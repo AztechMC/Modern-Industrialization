@@ -21,6 +21,9 @@
   "entrypoints": {
     "main": [
       "aztech.modern_industrialization.ModernIndustrialization"
+    ],
+    "client": [
+      "aztech.modern_industrialization.ModernIndustrializationClient"
     ]
   },
   "mixins": [

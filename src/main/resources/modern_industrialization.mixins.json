@@ -4,9 +4,7 @@
   "package": "aztech.modern_industrialization.mixin",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
-  ],
-  "client": [
-    "ExampleMixin"
+    "BucketFluidContainerItemMixin"
   ],
   "injectors": {
     "defaultRequire": 1

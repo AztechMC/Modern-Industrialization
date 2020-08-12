@@ -1,0 +1,5 @@
+{
+  "variants": {
+    "": { "model": "modern_industrialization:block/steam_boiler" }
+  }
+}

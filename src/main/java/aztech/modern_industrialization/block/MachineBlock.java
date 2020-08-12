@@ -8,6 +8,7 @@ import net.minecraft.block.BlockEntityProvider;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Material;
 import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
@@ -65,5 +66,12 @@ public class MachineBlock extends Block implements BlockEntityProvider {
             }
             return ActionResult.CONSUME;
         }
+    }
+
+    @Override
+    public void onPlaced(World world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack itemStack) {
+        AbstractMachineBlockEntity entity = (AbstractMachineBlockEntity)world.getBlockEntity(pos);
+        entity.setFacingDirection(placer.getHorizontalFacing().getOpposite());
+        super.onPlaced(world, pos, state, placer, itemStack);
     }
 }

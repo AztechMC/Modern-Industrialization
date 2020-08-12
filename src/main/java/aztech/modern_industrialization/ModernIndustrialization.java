@@ -30,6 +30,7 @@ public class ModernIndustrialization implements ModInitializer {
 
 	// Block
 	public static final Block BLOCK_STEAM_BOILER = new MachineBlock(SteamBoilerBlockEntity::new);
+	public static final Item ITEM_STEAM_BOILER = new BlockItem(BLOCK_STEAM_BOILER, new Item.Settings().group(ITEM_GROUP));
 
 	// BlockEntity
 	public static BlockEntityType<SteamBoilerBlockEntity> BLOCK_ENTITY_STEAM_BOILER;
@@ -55,6 +56,7 @@ public class ModernIndustrialization implements ModInitializer {
 
 	private void setupBlocks() {
 		registerBlock(BLOCK_STEAM_BOILER, "steam_boiler");
+		registerItem(ITEM_STEAM_BOILER, "steam_boiler");
 	}
 
 	private void setupBlockEntities() {
@@ -69,7 +71,10 @@ public class ModernIndustrialization implements ModInitializer {
 
 	private void registerBlock(Block block, String id) {
 		Registry.register(Registry.BLOCK, new Identifier(MOD_ID, id), block);
-		Registry.register(Registry.ITEM, new Identifier(MOD_ID, id), new BlockItem(block, new Item.Settings().group(ITEM_GROUP)));
+	}
+
+	private void registerItem(Item item, String id) {
+		Registry.register(Registry.ITEM, new Identifier(MOD_ID, id), item);
 	}
 
 	private void registerFluid(Fluid fluid, String id) {

@@ -19,7 +19,7 @@ import net.minecraft.util.math.Direction;
 public class SteamBoilerBlockEntity extends AbstractMachineBlockEntity implements SidedInventory {
 
     public SteamBoilerBlockEntity() {
-        super(ModernIndustrialization.BLOCK_ENTITY_STEAM_BOILER, 2);
+        super(ModernIndustrialization.BLOCK_ENTITY_STEAM_BOILER, 2, Direction.NORTH);
 
         ItemStack fluidStack = FluidStackItem.getEmptyStack();
         FluidStackItem.setCapacity(fluidStack, 4 * FluidUnit.DROPS_PER_BUCKET);

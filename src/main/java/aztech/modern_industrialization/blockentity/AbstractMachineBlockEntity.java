@@ -1,9 +1,12 @@
 package aztech.modern_industrialization.blockentity;
 
+import aztech.modern_industrialization.mixin_impl.WorldRendererGetter;
+import net.fabricmc.fabric.api.block.entity.BlockEntityClientSerializable;
 import net.fabricmc.fabric.api.rendering.data.v1.RenderAttachmentBlockEntity;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.block.entity.LockableContainerBlockEntity;
+import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.Inventories;
 import net.minecraft.item.ItemStack;
@@ -14,7 +17,7 @@ import net.minecraft.util.math.Direction;
 /**
  * A generic machine BlockEntity.
  */
-public abstract class AbstractMachineBlockEntity extends LockableContainerBlockEntity implements RenderAttachmentBlockEntity {
+public abstract class AbstractMachineBlockEntity extends LockableContainerBlockEntity implements RenderAttachmentBlockEntity, BlockEntityClientSerializable {
     protected Direction facingDirection;
     protected DefaultedList<ItemStack> inventory;
     protected final int inventorySize;
@@ -85,6 +88,20 @@ public abstract class AbstractMachineBlockEntity extends LockableContainerBlockE
     }
 
     @Override
+    public void fromClientTag(CompoundTag tag) {
+        setFacingDirection(Direction.byId(tag.getInt("facingDirection")));
+        ClientWorld clientWorld = (ClientWorld)world;
+        WorldRendererGetter wrg = (WorldRendererGetter)clientWorld;
+        wrg.modern_industrialization_getWorldRenderer().updateBlock(null, this.pos, null, null, 0);
+    }
+
+    @Override
+    public CompoundTag toClientTag(CompoundTag tag) {
+        tag.putInt("facingDirection", this.facingDirection.getId());
+        return tag;
+    }
+
+    @Override
     public void clear() {
         inventory.clear();
     }
@@ -96,6 +113,9 @@ public abstract class AbstractMachineBlockEntity extends LockableContainerBlockE
     public void setFacingDirection(Direction facingDirection) {
         this.facingDirection = facingDirection;
         markDirty();
+        if(!world.isClient) {
+            sync();
+        }
     }
 
     @Override

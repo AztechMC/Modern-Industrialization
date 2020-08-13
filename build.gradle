@@ -8,6 +8,12 @@ targetCompatibility = JavaVersion.VERSION_1_8
 
 version = project.mod_version
 
+repositories {
+	maven {
+		url = 'https://raw.githubusercontent.com/Devan-Kerman/Devan-Repo/master/'
+	}
+}
+
 dependencies {
 	//to change the versions see the gradle.properties file
 	minecraft "com.mojang:minecraft:${project.minecraft_version}"
@@ -16,6 +22,8 @@ dependencies {
 
 	// Fabric API. This is technically optional, but you probably want it anyway.
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
+
+	modImplementation group: 'net.devtech', name: 'arrp', version: '0.2.6'
 }
 
 processResources {

@@ -7,7 +7,6 @@ import net.minecraft.client.render.model.BakedQuad;
 import net.minecraft.client.render.model.UnbakedModel;
 import net.minecraft.client.render.model.json.ModelOverrideList;
 import net.minecraft.client.render.model.json.ModelTransformation;
-import net.minecraft.client.texture.Sprite;
 import net.minecraft.util.math.Direction;
 
 import java.util.List;
@@ -44,12 +43,12 @@ public interface BaseModel extends UnbakedModel, BakedModel, FabricBakedModel {
 
     @Override
     default ModelTransformation getTransformation() {
-        return null;
+        return ModelUtil.BLOCK_TRANSFORMATION;
     }
 
     @Override
     default ModelOverrideList getOverrides() {
-        return null;
+        return ModelOverrideList.EMPTY;
     }
 
     @Override

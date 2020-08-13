@@ -5,6 +5,12 @@ import aztech.modern_industrialization.blockentity.SteamBoilerBlockEntity;
 import aztech.modern_industrialization.fluid.CraftingFluid;
 import aztech.modern_industrialization.fluid.FluidStackItem;
 import aztech.modern_industrialization.gui.SteamBoilerScreenHandler;
+import net.devtech.arrp.api.RRPCallback;
+import net.devtech.arrp.api.RuntimeResourcePack;
+import net.devtech.arrp.json.blockstate.JBlockModel;
+import net.devtech.arrp.json.blockstate.JState;
+import net.devtech.arrp.json.blockstate.JVariant;
+import net.devtech.arrp.json.models.JModel;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.client.itemgroup.FabricItemGroupBuilder;
 import net.fabricmc.fabric.api.screenhandler.v1.ScreenHandlerRegistry;
@@ -15,12 +21,14 @@ import net.minecraft.item.*;
 import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
+import org.apache.commons.codec.language.RefinedSoundex;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public class ModernIndustrialization implements ModInitializer {
 	public static final String MOD_ID = "modern_industrialization";
 	public static final Logger LOGGER = LogManager.getLogger("Modern Industrialization");
+	public static final RuntimeResourcePack RESOURCE_PACK = RuntimeResourcePack.create("modern_industrialization:general");
 
 	public static final ItemGroup ITEM_GROUP = FabricItemGroupBuilder.build(
 			new Identifier(MOD_ID, "general"),
@@ -51,12 +59,13 @@ public class ModernIndustrialization implements ModInitializer {
 		setupBlockEntities();
 		setupFluids();
 
+		RRPCallback.EVENT.register(a -> a.add(RESOURCE_PACK));
+
 		LOGGER.info("Modern Industrialization setup done!");
 	}
 
 	private void setupBlocks() {
-		registerBlock(BLOCK_STEAM_BOILER, "steam_boiler");
-		registerItem(ITEM_STEAM_BOILER, "steam_boiler");
+		registerBlock(BLOCK_STEAM_BOILER, ITEM_STEAM_BOILER,"steam_boiler");
 	}
 
 	private void setupBlockEntities() {
@@ -69,8 +78,12 @@ public class ModernIndustrialization implements ModInitializer {
 		Registry.register(Registry.ITEM, new Identifier(MOD_ID, "fluid_slot"), ITEM_FLUID_SLOT);
 	}
 
-	private void registerBlock(Block block, String id) {
-		Registry.register(Registry.BLOCK, new Identifier(MOD_ID, id), block);
+	private void registerBlock(Block block, Item item, String id) {
+		Identifier identifier = new MIIdentifier(id);
+		Registry.register(Registry.BLOCK, identifier, block);
+		Registry.register(Registry.ITEM, identifier, item);
+
+		RESOURCE_PACK.addBlockState(JState.state().add(new JVariant().put("", new JBlockModel(MOD_ID + ":block/" + id))), identifier);
 	}
 
 	private void registerItem(Item item, String id) {

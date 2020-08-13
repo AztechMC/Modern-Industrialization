@@ -70,8 +70,8 @@ public class MachineBlock extends Block implements BlockEntityProvider {
 
     @Override
     public void onPlaced(World world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack itemStack) {
-        AbstractMachineBlockEntity entity = (AbstractMachineBlockEntity)world.getBlockEntity(pos);
-        entity.setFacingDirection(placer.getHorizontalFacing().getOpposite());
         super.onPlaced(world, pos, state, placer, itemStack);
+        AbstractMachineBlockEntity entity = (AbstractMachineBlockEntity) world.getBlockEntity(pos);
+        entity.setFacingDirection(placer.getHorizontalFacing().getOpposite());
     }
 }

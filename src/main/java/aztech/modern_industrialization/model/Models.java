@@ -10,7 +10,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Models {
-    public static final MachineModel STEAM_BOILER = new MachineModel(new MIIdentifier("block/steam_boiler"), new MIIdentifier("blocks/casings/steam/bricked_bronze/")).withFrontOverlay(new MIIdentifier("blocks/generators/boiler/coal/overlay_front"));
+    public static final MachineModel STEAM_BOILER = new MachineModel("steam_boiler", new MIIdentifier("blocks/casings/steam/bricked_bronze/")).withFrontOverlay(new MIIdentifier("blocks/generators/boiler/coal/overlay_front"));
 
     public static Map<Identifier, UnbakedModel> getModelMap() {
         Map<Identifier, UnbakedModel> modelMap = new HashMap<>();
@@ -19,7 +19,8 @@ public class Models {
             if (java.lang.reflect.Modifier.isStatic(field.getModifiers())) {
                 try {
                     MachineModel model = (MachineModel)field.get(null);
-                    modelMap.put(model.id, model);
+                    modelMap.put(new MIIdentifier("block/" + model.model_name), model);
+                    modelMap.put(new MIIdentifier("item/" + model.model_name), model);
                 } catch (IllegalAccessException e) {
                     ModernIndustrialization.LOGGER.error("Exception:", e);
                 }

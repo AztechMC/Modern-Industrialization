@@ -34,15 +34,16 @@ import java.util.function.Supplier;
  * A generic machine model. For now it supports having a top/side/bottom texture and also adding an overlay on the front face.
  */
 public class MachineModel implements BaseModel {
-    public final Identifier id;
+    public final String model_name;
     private SpriteIdentifier[] sprite_ids;
+    private boolean baked = false;
     private Sprite[] sprites;
 
     private RenderMaterial cutoutMaterial;
     private Mesh mesh;
 
-    public MachineModel(Identifier id, Identifier topTexture, Identifier sideTexture, Identifier bottomTexture) {
-        this.id = id;
+    public MachineModel(String model_name, Identifier topTexture, Identifier sideTexture, Identifier bottomTexture) {
+        this.model_name = model_name;
         sprite_ids = new SpriteIdentifier[] {
                 new SpriteIdentifier(SpriteAtlasTexture.BLOCK_ATLAS_TEX, topTexture),
                 new SpriteIdentifier(SpriteAtlasTexture.BLOCK_ATLAS_TEX, sideTexture),
@@ -55,8 +56,8 @@ public class MachineModel implements BaseModel {
         return new Identifier(base.getNamespace(), base.getPath() + extension);
     }
 
-    public MachineModel(Identifier id, Identifier textureFolder) {
-        this(id, appendPath(textureFolder, "top"), appendPath(textureFolder, "side"), appendPath(textureFolder, "bottom"));
+    public MachineModel(String model_name, Identifier textureFolder) {
+        this(model_name, appendPath(textureFolder, "top"), appendPath(textureFolder, "side"), appendPath(textureFolder, "bottom"));
     }
 
     public MachineModel withFrontOverlay(Identifier overlayTexture) {
@@ -72,7 +73,7 @@ public class MachineModel implements BaseModel {
         RenderAttachedBlockView view = (RenderAttachedBlockView) blockRenderView;
         AbstractMachineBlockEntity.AttachmentData attachmentData = (AbstractMachineBlockEntity.AttachmentData)view.getBlockEntityRenderAttachment(blockPos);
         QuadEmitter emitter = renderContext.getEmitter();
-        if(this.sprites[3] != null) {
+        if(this.sprites[3] != null && attachmentData != null) {
             emitter.material(cutoutMaterial);
             emitter.square(attachmentData.facingDirection, 0.0f, 0.0f, 1.0f, 1.0f, -0.000001f);
             emitter.spriteBake(0, sprites[3], MutableQuadView.BAKE_LOCK_UV);
@@ -83,7 +84,17 @@ public class MachineModel implements BaseModel {
 
     @Override
     public void emitItemQuads(ItemStack itemStack, Supplier<Random> supplier, RenderContext renderContext) {
-
+        // Base mesh
+        renderContext.meshConsumer().accept(mesh);
+        QuadEmitter emitter = renderContext.getEmitter();
+        // Front overlay, always facing NORTH
+        if(this.sprites[3] != null) {
+            emitter.material(cutoutMaterial);
+            emitter.square(Direction.NORTH, 0.0f, 0.0f, 1.0f, 1.0f, -0.000001f);
+            emitter.spriteBake(0, sprites[3], MutableQuadView.BAKE_LOCK_UV);
+            emitter.spriteColor(0, -1, -1, -1, -1);
+            emitter.emit();
+        }
     }
 
     @Override
@@ -103,6 +114,10 @@ public class MachineModel implements BaseModel {
 
     @Override
     public BakedModel bake(ModelLoader loader, Function<SpriteIdentifier, Sprite> textureGetter, ModelBakeSettings rotationContainer, Identifier modelId) {
+        if(baked) {
+           return this;
+        }
+        baked = true;
         // Get sprites
         sprites = new Sprite[sprite_ids.length];
         for(int i = 0; i < 4; ++i) {

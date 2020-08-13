@@ -50,7 +50,7 @@ public abstract class BaseModel implements UnbakedModel, BakedModel, FabricBaked
 
     @Override
     public boolean isSideLit() {
-        return false;
+        return true;
     }
 
     @Override

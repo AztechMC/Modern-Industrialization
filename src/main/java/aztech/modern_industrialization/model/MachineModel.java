@@ -33,7 +33,7 @@ import java.util.function.Supplier;
 /**
  * A generic machine model. For now it supports having a top/side/bottom texture and also adding an overlay on the front face.
  */
-public class MachineModel implements BaseModel {
+public class MachineModel extends BaseModel {
     public final String model_name;
     private SpriteIdentifier[] sprite_ids;
     private boolean baked = false;
@@ -103,11 +103,6 @@ public class MachineModel implements BaseModel {
     }
 
     @Override
-    public Collection<Identifier> getModelDependencies() {
-        return Collections.emptyList();
-    }
-
-    @Override
     public Collection<SpriteIdentifier> getTextureDependencies(Function<Identifier, UnbakedModel> unbakedModelGetter, Set<Pair<String, String>> unresolvedTextureReferences) {
         return Arrays.asList(sprite_ids);
     }
@@ -118,6 +113,9 @@ public class MachineModel implements BaseModel {
            return this;
         }
         baked = true;
+
+        super.bake(loader, textureGetter, rotationContainer, modelId);
+
         // Get sprites
         sprites = new Sprite[sprite_ids.length];
         for(int i = 0; i < 4; ++i) {

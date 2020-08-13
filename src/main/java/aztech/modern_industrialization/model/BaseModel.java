@@ -2,57 +2,74 @@ package aztech.modern_industrialization.model;
 
 import net.fabricmc.fabric.api.renderer.v1.model.FabricBakedModel;
 import net.minecraft.block.BlockState;
-import net.minecraft.client.render.model.BakedModel;
-import net.minecraft.client.render.model.BakedQuad;
-import net.minecraft.client.render.model.UnbakedModel;
+import net.minecraft.client.render.model.*;
+import net.minecraft.client.render.model.json.JsonUnbakedModel;
 import net.minecraft.client.render.model.json.ModelOverrideList;
 import net.minecraft.client.render.model.json.ModelTransformation;
+import net.minecraft.client.texture.Sprite;
+import net.minecraft.client.util.SpriteIdentifier;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Direction;
 
-import java.util.List;
-import java.util.Random;
+import java.util.*;
+import java.util.function.Function;
 
 /**
  * Reasonable defaults for a model.
  */
-public interface BaseModel extends UnbakedModel, BakedModel, FabricBakedModel {
+public abstract class BaseModel implements UnbakedModel, BakedModel, FabricBakedModel {
+    ModelTransformation transformation;
+    private static final Identifier BASE_BLOCK_MODEL = new Identifier("minecraft:block/block");
+
     @Override
-    default List<BakedQuad> getQuads(BlockState state, Direction face, Random random) {
+    public BakedModel bake(ModelLoader loader, Function<SpriteIdentifier, Sprite> textureGetter, ModelBakeSettings rotationContainer, Identifier modelId) {
+        JsonUnbakedModel blockModel = (JsonUnbakedModel)loader.getOrLoadModel(BASE_BLOCK_MODEL);
+        transformation = blockModel.getTransformations();
+        return this;
+    }
+
+    @Override
+    public Collection<Identifier> getModelDependencies() {
+        return Arrays.asList(BASE_BLOCK_MODEL);
+    }
+
+    @Override
+    public List<BakedQuad> getQuads(BlockState state, Direction face, Random random) {
         return null;
     }
 
     @Override
-    default boolean useAmbientOcclusion() {
+    public boolean useAmbientOcclusion() {
         return false;
     }
 
     @Override
-    default boolean hasDepth() {
+    public boolean hasDepth() {
         return false;
     }
 
     @Override
-    default boolean isSideLit() {
+    public boolean isSideLit() {
         return false;
     }
 
     @Override
-    default boolean isBuiltin() {
+    public boolean isBuiltin() {
         return false;
     }
 
     @Override
-    default ModelTransformation getTransformation() {
-        return ModelUtil.BLOCK_TRANSFORMATION;
+    public ModelTransformation getTransformation() {
+        return transformation;
     }
 
     @Override
-    default ModelOverrideList getOverrides() {
+    public ModelOverrideList getOverrides() {
         return ModelOverrideList.EMPTY;
     }
 
     @Override
-    default boolean isVanillaAdapter() {
+    public boolean isVanillaAdapter() {
         return false;
     }
 }

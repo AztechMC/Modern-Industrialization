@@ -1,4 +1,4 @@
-package aztech.modern_industrialization.model;
+package aztech.modern_industrialization.model.block;
 
 import net.fabricmc.fabric.api.renderer.v1.model.FabricBakedModel;
 import net.minecraft.block.BlockState;
@@ -17,7 +17,7 @@ import java.util.function.Function;
 /**
  * Reasonable defaults for a model.
  */
-public abstract class BaseModel implements UnbakedModel, BakedModel, FabricBakedModel {
+public abstract class CustomBlockModel implements UnbakedModel, BakedModel, FabricBakedModel {
     ModelTransformation transformation;
     private static final Identifier BASE_BLOCK_MODEL = new Identifier("minecraft:block/block");
 

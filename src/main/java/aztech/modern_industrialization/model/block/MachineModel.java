@@ -1,4 +1,4 @@
-package aztech.modern_industrialization.model;
+package aztech.modern_industrialization.model.block;
 
 import aztech.modern_industrialization.blockentity.AbstractMachineBlockEntity;
 import com.mojang.datafixers.util.Pair;
@@ -33,7 +33,7 @@ import java.util.function.Supplier;
 /**
  * A generic machine model. For now it supports having a top/side/bottom texture and also adding an overlay on the front face.
  */
-public class MachineModel extends BaseModel {
+public class MachineModel extends CustomBlockModel {
     public final String model_name;
     private SpriteIdentifier[] sprite_ids;
     private boolean baked = false;

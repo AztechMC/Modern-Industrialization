@@ -2,6 +2,7 @@ package aztech.modern_industrialization.model;
 
 import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.ModernIndustrialization;
+import aztech.modern_industrialization.model.block.MachineModel;
 import net.minecraft.client.render.model.UnbakedModel;
 import net.minecraft.util.Identifier;
 
@@ -10,11 +11,14 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Models {
-    public static final MachineModel STEAM_BOILER = new MachineModel("steam_boiler", new MIIdentifier("blocks/casings/steam/bricked_bronze/")).withFrontOverlay(new MIIdentifier("blocks/generators/boiler/coal/overlay_front"));
+    public static class BlockModels {
+        public static final MachineModel STEAM_BOILER = new MachineModel("steam_boiler", new MIIdentifier("blocks/casings/steam/bricked_bronze/")).withFrontOverlay(new MIIdentifier("blocks/generators/boiler/coal/overlay_front"));
+    }
+    public static final UnbakedModel FLUID_SLOT = new FluidSlotModel();
 
     public static Map<Identifier, UnbakedModel> getModelMap() {
         Map<Identifier, UnbakedModel> modelMap = new HashMap<>();
-        Field[] declaredFields = Models.class.getDeclaredFields();
+        Field[] declaredFields = BlockModels.class.getDeclaredFields();
         for (Field field : declaredFields) {
             if (java.lang.reflect.Modifier.isStatic(field.getModifiers())) {
                 try {
@@ -26,6 +30,7 @@ public class Models {
                 }
             }
         }
+        modelMap.put(new MIIdentifier("item/fluid_slot"), FLUID_SLOT);
         return modelMap;
     }
 }

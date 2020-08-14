@@ -1,5 +1,6 @@
-package aztech.modern_industrialization.model;
+package aztech.modern_industrialization.model.block;
 
+import aztech.modern_industrialization.model.Models;
 import net.fabricmc.fabric.api.client.model.ModelProviderContext;
 import net.fabricmc.fabric.api.client.model.ModelProviderException;
 import net.fabricmc.fabric.api.client.model.ModelResourceProvider;
@@ -8,12 +9,10 @@ import net.minecraft.util.Identifier;
 
 import java.util.Map;
 
-public class MachineModelProvider implements ModelResourceProvider {
-    private final Map<Identifier, UnbakedModel> modelMap;
+public class ModelProvider implements ModelResourceProvider {
+    private static final Map<Identifier, UnbakedModel> modelMap = Models.getModelMap();
 
-    public MachineModelProvider(Map<Identifier, UnbakedModel> modelMap) {
-        this.modelMap = modelMap;
-    }
+    public ModelProvider() {}
 
     @Override
     public UnbakedModel loadModelResource(Identifier identifier, ModelProviderContext modelProviderContext) throws ModelProviderException {

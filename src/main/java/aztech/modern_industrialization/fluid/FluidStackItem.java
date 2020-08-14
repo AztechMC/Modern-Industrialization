@@ -56,6 +56,8 @@ public class FluidStackItem extends Item {
     }
 
     public static void setAmount(ItemStack stack, int amount) {
+        int capacity = getCapacity(stack);
+        amount = Math.min(capacity, amount);
         stack.getTag().putInt("fluid_amount", amount);
         if(amount == 0) {
             setFluid(stack, Fluids.EMPTY);

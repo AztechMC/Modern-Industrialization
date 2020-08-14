@@ -11,6 +11,8 @@ import net.minecraft.fluid.Fluids;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.inventory.SimpleInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.screen.ArrayPropertyDelegate;
+import net.minecraft.screen.PropertyDelegate;
 import net.minecraft.screen.slot.Slot;
 
 /**
@@ -18,14 +20,17 @@ import net.minecraft.screen.slot.Slot;
  */
 public class SteamBoilerScreenHandler extends FluidContainerScreenHandler {
     private Inventory inventory;
+    private PropertyDelegate propertyDelegate;
 
     public SteamBoilerScreenHandler(int syncId, PlayerInventory playerInventory) {
-        this(syncId, playerInventory, new SimpleInventory(3)); // TODO: don't hardcode constant
+        this(syncId, playerInventory, new SimpleInventory(3), new ArrayPropertyDelegate(4)); // TODO: don't hardcode constant
     }
 
-    public SteamBoilerScreenHandler(int syncId, PlayerInventory playerInventory, Inventory inventory) {
+    public SteamBoilerScreenHandler(int syncId, PlayerInventory playerInventory, Inventory inventory, PropertyDelegate propertyDelegate) {
         super(ModernIndustrialization.SCREEN_HANDLER_TYPE_STEAM_BOILER, syncId, 3);
         this.inventory = inventory;
+        this.propertyDelegate = propertyDelegate;
+        this.addProperties(propertyDelegate);
 
         this.addSlot(new FuelSlot(inventory, 0, 45, 32));
         this.addSlot(new WaterSlot(inventory, 1, 81, 18));
@@ -48,6 +53,11 @@ public class SteamBoilerScreenHandler extends FluidContainerScreenHandler {
     public boolean canUse(PlayerEntity player) {
         return this.inventory.canPlayerUse(player);
     }
+
+    public int getBurnTime() { return propertyDelegate.get(0); }
+    public int getTotalBurnTime() { return propertyDelegate.get(1); }
+    public int getTemperature() { return propertyDelegate.get(2); }
+    public boolean getIsActive() { return propertyDelegate.get(3) == 1; }
 
     private static class FuelSlot extends Slot {
         public FuelSlot(Inventory inventory, int index, int x, int y) {

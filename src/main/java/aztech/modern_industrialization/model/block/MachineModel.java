@@ -49,6 +49,7 @@ public class MachineModel extends CustomBlockModel {
                 new SpriteIdentifier(SpriteAtlasTexture.BLOCK_ATLAS_TEX, sideTexture),
                 new SpriteIdentifier(SpriteAtlasTexture.BLOCK_ATLAS_TEX, bottomTexture),
                 null, // front overlay
+                null, // active front overlay
         };
     }
 
@@ -60,8 +61,13 @@ public class MachineModel extends CustomBlockModel {
         this(model_name, appendPath(textureFolder, "top"), appendPath(textureFolder, "side"), appendPath(textureFolder, "bottom"));
     }
 
-    public MachineModel withFrontOverlay(Identifier overlayTexture) {
-        sprite_ids[3] = new SpriteIdentifier(SpriteAtlasTexture.BLOCK_ATLAS_TEX, overlayTexture);
+    public MachineModel withFrontOverlay(Identifier overlay) {
+        return this.withFrontOverlay(overlay, overlay);
+    }
+
+    public MachineModel withFrontOverlay(Identifier inactiveOverlay, Identifier activeOverlay) {
+        sprite_ids[3] = new SpriteIdentifier(SpriteAtlasTexture.BLOCK_ATLAS_TEX, inactiveOverlay);
+        sprite_ids[4] = new SpriteIdentifier(SpriteAtlasTexture.BLOCK_ATLAS_TEX, activeOverlay);
         return this;
     }
 
@@ -74,9 +80,10 @@ public class MachineModel extends CustomBlockModel {
         AbstractMachineBlockEntity.AttachmentData attachmentData = (AbstractMachineBlockEntity.AttachmentData)view.getBlockEntityRenderAttachment(blockPos);
         QuadEmitter emitter = renderContext.getEmitter();
         if(this.sprites[3] != null && attachmentData != null) {
+            Sprite frontOverlaySprite = attachmentData.isActive ? this.sprites[4] : this.sprites[3];
             emitter.material(cutoutMaterial);
             emitter.square(attachmentData.facingDirection, 0.0f, 0.0f, 1.0f, 1.0f, -0.000001f);
-            emitter.spriteBake(0, sprites[3], MutableQuadView.BAKE_LOCK_UV);
+            emitter.spriteBake(0, frontOverlaySprite, MutableQuadView.BAKE_LOCK_UV);
             emitter.spriteColor(0, -1, -1, -1, -1);
             emitter.emit();
         }
@@ -118,7 +125,7 @@ public class MachineModel extends CustomBlockModel {
 
         // Get sprites
         sprites = new Sprite[sprite_ids.length];
-        for(int i = 0; i < 4; ++i) {
+        for(int i = 0; i < sprite_ids.length; ++i) {
             if(sprite_ids[i] != null) {
                 sprites[i] = textureGetter.apply(sprite_ids[i]);
             }

@@ -25,23 +25,26 @@ public abstract class FluidContainerScreenHandler extends ScreenHandler {
 
     @Override
     public ItemStack onSlotClick(int i, int j, SlotActionType actionType, PlayerEntity playerEntity) {
-        if(actionType == SlotActionType.PICKUP && i >= 0) {
+        if(i >= 0) {
             Slot slot = this.slots.get(i);
-            if(slot instanceof FluidSlot) {
-                FluidSlot fluidSlot = (FluidSlot)slot;
+            if (slot instanceof FluidSlot) {
+                if(actionType != SlotActionType.PICKUP) {
+                    return ItemStack.EMPTY;
+                }
+                FluidSlot fluidSlot = (FluidSlot) slot;
                 ItemStack heldStack = playerEntity.inventory.getCursorStack();
-                if(heldStack.getItem() instanceof FluidContainerItem) {
+                if (heldStack.getItem() instanceof FluidContainerItem) {
                     FluidContainerItem fluidContainer = (FluidContainerItem) heldStack.getItem();
                     ItemStack fluidStack = slot.getStack();
                     int amount = FluidStackItem.getAmount(fluidStack);
                     int capacity = FluidStackItem.getCapacity(fluidStack);
                     // Try to extract from held item, then try to insert into held item
                     Fluid extractedFluid = FluidStackItem.getFluid(fluidStack);
-                    if(extractedFluid == Fluids.EMPTY) {
+                    if (extractedFluid == Fluids.EMPTY) {
                         extractedFluid = fluidContainer.getExtractableFluid();
                     }
                     int extractedAmount = 0;
-                    if(fluidSlot.canInsertFluid(extractedFluid)) {
+                    if (fluidSlot.canInsertFluid(extractedFluid)) {
                         final boolean[] firstInvoke = new boolean[]{true};
                         extractedAmount = fluidContainer.extractFluid(heldStack, extractedFluid, capacity - amount, stack -> {
                             if (firstInvoke[0]) {
@@ -52,12 +55,12 @@ public abstract class FluidContainerScreenHandler extends ScreenHandler {
                             }
                         });
                     }
-                    if(extractedAmount > 0) {
+                    if (extractedAmount > 0) {
                         FluidStackItem.setAmount(fluidStack, amount + extractedAmount);
                         FluidStackItem.setFluid(fluidStack, extractedFluid);
                     } else {
                         Fluid fluid = FluidStackItem.getFluid(fluidStack);
-                        if(fluidSlot.canExtractFluid(fluid)) {
+                        if (fluidSlot.canExtractFluid(fluid)) {
                             final boolean[] firstInvoke_ = new boolean[]{true};
                             int insertedAmount = fluidContainer.insertFluid(heldStack, fluid, amount, stack -> {
                                 if (firstInvoke_[0]) {
@@ -66,7 +69,6 @@ public abstract class FluidContainerScreenHandler extends ScreenHandler {
                                 } else {
                                     playerEntity.inventory.offerOrDrop(playerEntity.world, stack);
                                 }
-                                // TODO: fix copy/paste
                             });
                             FluidStackItem.setAmount(fluidStack, amount - insertedAmount);
                         }

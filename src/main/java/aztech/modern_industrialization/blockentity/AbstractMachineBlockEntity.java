@@ -21,6 +21,7 @@ public abstract class AbstractMachineBlockEntity extends LockableContainerBlockE
     protected Direction facingDirection;
     protected DefaultedList<ItemStack> inventory;
     protected final int inventorySize;
+    protected boolean isActive = false;
 
     protected AbstractMachineBlockEntity(BlockEntityType<?> blockEntityType, int inventorySize, Direction facingDirection) {
         super(blockEntityType);
@@ -77,6 +78,7 @@ public abstract class AbstractMachineBlockEntity extends LockableContainerBlockE
         super.fromTag(state, tag);
         facingDirection = Direction.byId(tag.getInt("facingDirection"));
         Inventories.fromTag(tag, this.inventory);
+        isActive = tag.getBoolean("isActive");
     }
 
     @Override
@@ -84,12 +86,14 @@ public abstract class AbstractMachineBlockEntity extends LockableContainerBlockE
         super.toTag(tag);
         tag.putInt("facingDirection", this.facingDirection.getId());
         Inventories.toTag(tag, this.inventory);
+        tag.putBoolean("isActive", this.isActive);
         return tag;
     }
 
     @Override
     public void fromClientTag(CompoundTag tag) {
         setFacingDirection(Direction.byId(tag.getInt("facingDirection")));
+        this.isActive = tag.getBoolean("isActive");
         ClientWorld clientWorld = (ClientWorld)world;
         WorldRendererGetter wrg = (WorldRendererGetter)clientWorld;
         wrg.modern_industrialization_getWorldRenderer().updateBlock(null, this.pos, null, null, 0);
@@ -98,6 +102,7 @@ public abstract class AbstractMachineBlockEntity extends LockableContainerBlockE
     @Override
     public CompoundTag toClientTag(CompoundTag tag) {
         tag.putInt("facingDirection", this.facingDirection.getId());
+        tag.putBoolean("isActive", this.isActive);
         return tag;
     }
 
@@ -118,6 +123,10 @@ public abstract class AbstractMachineBlockEntity extends LockableContainerBlockE
         }
     }
 
+    public boolean isActive() {
+        return isActive;
+    }
+
     @Override
     public Object getRenderAttachmentData() {
         return new AttachmentData(this);
@@ -125,9 +134,11 @@ public abstract class AbstractMachineBlockEntity extends LockableContainerBlockE
 
     public static class AttachmentData {
         public final Direction facingDirection;
+        public final boolean isActive;
 
         public AttachmentData(AbstractMachineBlockEntity blockEntity) {
             this.facingDirection = blockEntity.getFacingDirection();
+            this.isActive = blockEntity.isActive;
         }
     }
 }

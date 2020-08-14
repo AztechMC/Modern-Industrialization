@@ -45,12 +45,10 @@ public class FluidSlotModel implements UnbakedModel, BakedModel, FabricBakedMode
                 Sprite stillSprite = renderHandler.getFluidSprites(null, null, null)[0];
                 int color = 255 << 24 | renderHandler.getFluidColor(null, null, null);
                 QuadEmitter emitter = renderContext.getEmitter();
-                for(Direction direction : Direction.values()) {
-                    emitter.square(direction, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f);
-                    emitter.spriteBake(0, stillSprite, MutableQuadView.BAKE_LOCK_UV);
-                    emitter.spriteColor(0, color, color, color, color);
-                    emitter.emit();
-                }
+                emitter.square(Direction.SOUTH, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f);
+                emitter.spriteBake(0, stillSprite, MutableQuadView.BAKE_LOCK_UV);
+                emitter.spriteColor(0, color, color, color, color);
+                emitter.emit();
             }
         }
     }

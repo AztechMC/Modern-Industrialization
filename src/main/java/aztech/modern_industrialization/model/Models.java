@@ -12,7 +12,7 @@ import java.util.Map;
 
 public class Models {
     public static class BlockModels {
-        public static final MachineModel STEAM_BOILER = new MachineModel("steam_boiler", new MIIdentifier("blocks/casings/steam/bricked_bronze/")).withFrontOverlay(new MIIdentifier("blocks/generators/boiler/coal/overlay_front"));
+        public static final MachineModel STEAM_BOILER = new MachineModel("steam_boiler", new MIIdentifier("blocks/casings/steam/bricked_bronze/")).withFrontOverlay(new MIIdentifier("blocks/generators/boiler/coal/overlay_front"), new MIIdentifier("blocks/generators/boiler/coal/overlay_front_active"));
     }
     public static final UnbakedModel FLUID_SLOT = new FluidSlotModel();
 

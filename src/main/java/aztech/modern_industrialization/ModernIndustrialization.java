@@ -11,6 +11,7 @@ import net.devtech.arrp.json.blockstate.JBlockModel;
 import net.devtech.arrp.json.blockstate.JState;
 import net.devtech.arrp.json.blockstate.JVariant;
 import net.devtech.arrp.json.models.JModel;
+import net.devtech.arrp.json.models.JTextures;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.client.itemgroup.FabricItemGroupBuilder;
 import net.fabricmc.fabric.api.screenhandler.v1.ScreenHandlerRegistry;
@@ -92,6 +93,8 @@ public class ModernIndustrialization implements ModInitializer {
 
 	private void registerFluid(Fluid fluid, String id) {
 		Registry.register(Registry.FLUID, new Identifier(MOD_ID, id), fluid);
-		Registry.register(Registry.ITEM, new Identifier(MOD_ID, id + "_bucket"), fluid.getBucketItem());
+		Registry.register(Registry.ITEM, new Identifier(MOD_ID, "bucket_" + id), fluid.getBucketItem());
+
+		RESOURCE_PACK.addModel(JModel.model().parent("minecraft:item/generated").textures(new JTextures().layer0(MOD_ID + ":items/bucket/" + id)), new MIIdentifier("item/bucket_" + id));
 	}
 }

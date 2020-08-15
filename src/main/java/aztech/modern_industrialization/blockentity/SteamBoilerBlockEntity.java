@@ -1,6 +1,7 @@
 package aztech.modern_industrialization.blockentity;
 
 import aztech.modern_industrialization.ModernIndustrialization;
+import aztech.modern_industrialization.fluid.FluidSlotIO;
 import aztech.modern_industrialization.fluid.FluidStackItem;
 import aztech.modern_industrialization.fluid.FluidUnit;
 import aztech.modern_industrialization.gui.SteamBoilerScreenHandler;
@@ -41,10 +42,12 @@ public class SteamBoilerBlockEntity extends AbstractMachineBlockEntity implement
 
         ItemStack waterFluidStack = FluidStackItem.getEmptyStack();
         FluidStackItem.setCapacity(waterFluidStack, 4 * FluidUnit.DROPS_PER_BUCKET);
+        FluidStackItem.setIO(waterFluidStack, FluidSlotIO.INPUT_AND_OUTPUT);
         this.inventory.set(1, waterFluidStack);
 
         ItemStack steamFluidStack = FluidStackItem.getEmptyStack();
         FluidStackItem.setCapacity(steamFluidStack, 4 * FluidUnit.DROPS_PER_BUCKET);
+        FluidStackItem.setIO(steamFluidStack, FluidSlotIO.OUTPUT_ONLY);
         this.inventory.set(2, steamFluidStack);
 
         this.propertyDelegate = new PropertyDelegate() {

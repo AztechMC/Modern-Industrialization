@@ -76,7 +76,7 @@ public class ModernIndustrialization implements ModInitializer {
 	private void setupFluids() {
 		registerFluid(FLUID_STEAM, "steam");
 
-		Registry.register(Registry.ITEM, new Identifier(MOD_ID, "fluid_slot"), ITEM_FLUID_SLOT);
+		Registry.register(Registry.ITEM, new MIIdentifier("fluid_slot"), ITEM_FLUID_SLOT);
 	}
 
 	private void registerBlock(Block block, Item item, String id) {
@@ -92,9 +92,8 @@ public class ModernIndustrialization implements ModInitializer {
 	}
 
 	private void registerFluid(Fluid fluid, String id) {
-		Registry.register(Registry.FLUID, new Identifier(MOD_ID, id), fluid);
-		Registry.register(Registry.ITEM, new Identifier(MOD_ID, "bucket_" + id), fluid.getBucketItem());
-
+		Registry.register(Registry.FLUID, new MIIdentifier(id), fluid);
+		Registry.register(Registry.ITEM, new MIIdentifier("bucket_"+id), fluid.getBucketItem());
 		RESOURCE_PACK.addModel(JModel.model().parent("minecraft:item/generated").textures(new JTextures().layer0(MOD_ID + ":items/bucket/" + id)), new MIIdentifier("item/bucket_" + id));
 	}
 }

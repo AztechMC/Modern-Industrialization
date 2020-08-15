@@ -1,0 +1,13 @@
+{
+  "block.modern_industrialization.steam_boiler" : "Steam Boiler",
+  "machine.steam_boiler" : "Steam Boiler",
+  "item.modern_industrialization.bucket_steam" : "Steam Bucket",
+  "item.modern_industrialization.fluid_slot" : "Fluid Slot",
+  "block.modern_industrialization.steam" : "Steam",
+  "text.modern_industrialization.fluid_slot_empty" : "Empty",
+  "text.modern_industrialization.fluid_slot_quantity" : "%s drops",
+
+  "text.modern_industrialization.fluid_slot_input" : "Fluid Input, Left Click to Insert",
+  "text.modern_industrialization.fluid_slot_output" : "Fluid Output, Left Click to Extract",
+  "text.modern_industrialization.fluid_slot_IO" : "Fluid IO, Left Click to Insert or Extract"
+}

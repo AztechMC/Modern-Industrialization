@@ -65,7 +65,7 @@ public class FluidStackItem extends Item {
     }
 
     public static Fluid getFluid(ItemStack stack) {
-        return Registry.FLUID.get(stack.getTag().getInt("fluid_id"));
+        return FluidNbtHelper.getFluid(stack.getTag(), "fluid_id");
     }
 
     public static int getAmount(ItemStack stack) {
@@ -91,7 +91,7 @@ public class FluidStackItem extends Item {
     }
 
     public static void setFluid(ItemStack stack, Fluid fluid) {
-        stack.getTag().putInt("fluid_id", Registry.FLUID.getRawId(fluid));
+        FluidNbtHelper.putFluid(stack.getTag(), "fluid_id", fluid);
     }
 
     public static void setAmount(ItemStack stack, int amount) {

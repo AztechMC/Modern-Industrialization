@@ -9,8 +9,14 @@ targetCompatibility = JavaVersion.VERSION_1_8
 version = project.mod_version
 
 repositories {
+	// for ARRP
 	maven {
 		url = 'https://raw.githubusercontent.com/Devan-Kerman/Devan-Repo/master/'
+	}
+	// for Cardinal Components
+	maven {
+		name = "Ladysnake Libs"
+		url = "https://dl.bintray.com/ladysnake/libs"
 	}
 }
 
@@ -23,7 +29,9 @@ dependencies {
 	// Fabric API. This is technically optional, but you probably want it anyway.
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
-	modImplementation group: 'net.devtech', name: 'arrp', version: '0.2.6'
+	modImplementation group: 'net.devtech', name: 'arrp', version: '0.2.6' // TODO: include in jar
+	modImplementation "io.github.onyxstudios:Cardinal-Components-API:2.5.0" // TODO: include in jar
+
 }
 
 processResources {

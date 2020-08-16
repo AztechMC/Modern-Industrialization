@@ -5,6 +5,7 @@ import aztech.modern_industrialization.blockentity.SteamBoilerBlockEntity;
 import aztech.modern_industrialization.fluid.CraftingFluid;
 import aztech.modern_industrialization.fluid.FluidStackItem;
 import aztech.modern_industrialization.gui.SteamBoilerScreenHandler;
+import aztech.modern_industrialization.pipes.MIPipes;
 import net.devtech.arrp.api.RRPCallback;
 import net.devtech.arrp.api.RuntimeResourcePack;
 import net.devtech.arrp.json.blockstate.JBlockModel;
@@ -59,6 +60,8 @@ public class ModernIndustrialization implements ModInitializer {
 		setupBlocks();
 		setupBlockEntities();
 		setupFluids();
+
+		new MIPipes().onInitialize();
 
 		RRPCallback.EVENT.register(a -> a.add(RESOURCE_PACK));
 

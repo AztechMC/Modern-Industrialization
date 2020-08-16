@@ -1,6 +1,7 @@
 package aztech.modern_industrialization.blockentity;
 
 import aztech.modern_industrialization.ModernIndustrialization;
+import aztech.modern_industrialization.fluid.FluidInventory;
 import aztech.modern_industrialization.fluid.FluidSlotIO;
 import aztech.modern_industrialization.fluid.FluidStackItem;
 import aztech.modern_industrialization.fluid.FluidUnit;
@@ -9,6 +10,8 @@ import net.fabricmc.fabric.impl.content.registry.FuelRegistryImpl;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.AbstractFurnaceBlockEntity;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.fluid.Fluid;
+import net.minecraft.fluid.Fluids;
 import net.minecraft.inventory.SidedInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemConvertible;
@@ -25,7 +28,7 @@ import net.minecraft.util.math.Direction;
  * Steam boiler BlockEntity.
  * Slots: 0 is the burnable fuel, 1 is the input water.
  */
-public class SteamBoilerBlockEntity extends AbstractMachineBlockEntity implements SidedInventory, Tickable {
+public class SteamBoilerBlockEntity extends AbstractMachineBlockEntity implements SidedInventory, Tickable, FluidInventory {
     private static final int WATER_CONSUMPTION = 1;
     private static final int STEAM_PRODUCTION = 8;
     private static final int BURN_TIME_MULTIPLIER = 10;
@@ -166,5 +169,43 @@ public class SteamBoilerBlockEntity extends AbstractMachineBlockEntity implement
             sync();
         }
         markDirty();
+    }
+
+    @Override
+    public int insert(Direction direction, Fluid fluid, int maxAmount, boolean simulate) {
+        if(fluid == Fluids.WATER) {
+            int waterAmount = FluidStackItem.getAmount(inventory.get(1));
+            int waterCapacity = FluidStackItem.getCapacity(inventory.get(1));
+            int amount = waterCapacity - waterAmount;
+            int inserted = Math.min(amount, maxAmount);
+            if(!simulate) {
+                int newAmount = amount + inserted;
+                FluidStackItem.setAmount(inventory.get(1), newAmount);
+                if(amount == 0 && newAmount > 0) {
+                    FluidStackItem.setFluid(inventory.get(1), fluid);
+                }
+            }
+            return inserted;
+        } else {
+            return 0;
+        }
+    }
+
+    @Override
+    public int extract(Direction direction, Fluid fluid, int maxAmount, boolean simulate) {
+        if(fluid == ModernIndustrialization.FLUID_STEAM) {
+            int amount = FluidStackItem.getAmount(inventory.get(2));
+            int extracted = Math.min(amount, maxAmount);
+            if(!simulate) {
+                FluidStackItem.setAmount(inventory.get(2), amount - extracted);
+            }
+            return extracted;
+        }
+        return 0;
+    }
+
+    @Override
+    public Fluid[] getExtractableFluids(Direction direction) {
+        return new Fluid[] { ModernIndustrialization.FLUID_STEAM };
     }
 }

@@ -126,6 +126,8 @@ public class SteamBoilerBlockEntity extends AbstractMachineBlockEntity implement
 
     @Override
     public void tick() {
+        if(this.world.isClient) return;
+
         boolean wasActive = this.isActive;
 
         this.isActive = false;
@@ -161,9 +163,7 @@ public class SteamBoilerBlockEntity extends AbstractMachineBlockEntity implement
         }
 
         if(isActive != wasActive) {
-            if(!world.isClient) {
-                sync();
-            }
+            sync();
         }
         markDirty();
     }

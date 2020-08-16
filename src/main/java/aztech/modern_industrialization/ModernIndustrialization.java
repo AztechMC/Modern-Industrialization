@@ -4,6 +4,7 @@ import aztech.modern_industrialization.block.MachineBlock;
 import aztech.modern_industrialization.blockentity.SteamBoilerBlockEntity;
 import aztech.modern_industrialization.fluid.CraftingFluid;
 import aztech.modern_industrialization.fluid.FluidStackItem;
+import aztech.modern_industrialization.gui.MachineScreenHandler;
 import aztech.modern_industrialization.gui.SteamBoilerScreenHandler;
 import net.devtech.arrp.api.RRPCallback;
 import net.devtech.arrp.api.RuntimeResourcePack;
@@ -46,7 +47,7 @@ public class ModernIndustrialization implements ModInitializer {
 
 	// ScreenHandlerType
 	public static final ScreenHandlerType<SteamBoilerScreenHandler> SCREEN_HANDLER_TYPE_STEAM_BOILER = ScreenHandlerRegistry.registerSimple(new Identifier(MOD_ID, "steam_boiler"), SteamBoilerScreenHandler::new);
-
+	public static final ScreenHandlerType<MachineScreenHandler> SCREEN_HANDLER_TYPE_MACHINE = ScreenHandlerRegistry.registerExtended(new Identifier(MOD_ID, "machine"), MachineScreenHandler::new);
 	// Fluid
 	public static final Fluid FLUID_STEAM = new CraftingFluid();
 

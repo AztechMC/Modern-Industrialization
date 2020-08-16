@@ -19,6 +19,7 @@ import net.minecraft.screen.slot.Slot;
  * Screen handler for the steam boiler.
  */
 public class SteamBoilerScreenHandler extends FluidContainerScreenHandler {
+
     private Inventory inventory;
     private PropertyDelegate propertyDelegate;
 

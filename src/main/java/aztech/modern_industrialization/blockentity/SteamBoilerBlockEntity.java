@@ -42,7 +42,7 @@ public class SteamBoilerBlockEntity extends AbstractMachineBlockEntity implement
 
         ItemStack waterFluidStack = FluidStackItem.getEmptyStack();
         FluidStackItem.setCapacity(waterFluidStack, 4 * FluidUnit.DROPS_PER_BUCKET);
-        FluidStackItem.setIO(waterFluidStack, FluidSlotIO.INPUT_AND_OUTPUT);
+        FluidStackItem.setIO(waterFluidStack, FluidSlotIO.INPUT_ONLY);
         this.inventory.set(1, waterFluidStack);
 
         ItemStack steamFluidStack = FluidStackItem.getEmptyStack();

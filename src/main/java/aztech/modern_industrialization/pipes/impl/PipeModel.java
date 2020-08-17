@@ -36,7 +36,6 @@ import java.util.function.Supplier;
 public class PipeModel implements UnbakedModel, BakedModel, FabricBakedModel {
     private static final SpriteIdentifier FLUID_SPRITE_ID = new SpriteIdentifier(SpriteAtlasTexture.BLOCK_ATLAS_TEX, new MIIdentifier("blocks/pipes/fluid"));
     private Sprite fluidSprite;
-    private Mesh[][][] meshCache;
 
     @Override
     public boolean isVanillaAdapter() {
@@ -53,7 +52,7 @@ public class PipeModel implements UnbakedModel, BakedModel, FabricBakedModel {
             int color = attachment.types[slot].getColor();
 
             for(Direction direction : Direction.values()) {
-                PipePartBuilder pmb = new PipePartBuilder(emitter, slot == 0 ? 1 : slot == 1 ? 0 : 2, direction, fluidSprite);
+                PipePartBuilder pmb = new PipePartBuilder(emitter, slot == 0 ? 1 : slot == 1 ? 0 : 2, direction, fluidSprite, color);
                 if((attachment.renderedConnections[slot] & (1 << direction.getId())) == 0) {
                     pmb.noConnection();
                 } else {

@@ -29,11 +29,13 @@ class PipePartBuilder {
     private Vec3d facing;
     private Vec3d right;
     private Sprite sprite;
+    private int color;
 
-    PipePartBuilder(QuadEmitter emitter, int slotPos, Direction direction, Sprite sprite) {
+    PipePartBuilder(QuadEmitter emitter, int slotPos, Direction direction, Sprite sprite, int color) {
         this.emitter = emitter;
         this.facing = Vec3d.of(direction.getVector());
         this.sprite = sprite;
+        this.color = color;
         // initial position + half pipe + slotPos * width
         float position = (1.0f - 3 * SIDE - 2 * SPACING) / 2.0f + SIDE / 2.0f + slotPos * (SIDE + SPACING);
         this.pos = new Vec3d(position, position, position);
@@ -50,7 +52,7 @@ class PipePartBuilder {
      * Find out whether the axis direction is far from the sides of the block.
      */
     private boolean isTowardsInside(Vec3d direction) {
-        return distanceToSide(direction) > 0.5f + 1e-6;
+        return distanceToSide(direction) > 0.5f - 1e-6;
     }
 
     /**
@@ -71,6 +73,7 @@ class PipePartBuilder {
     private void quad(Direction direction, float left, float bottom, float right, float top, float depth) {
         square(direction, left, bottom, right, top, depth);
         emitter.spriteBake(0, sprite, MutableQuadView.BAKE_LOCK_UV);
+        emitter.spriteColor(0, color, color, color, color);
         emitter.cullFace(null);
         emitter.emit();
     }

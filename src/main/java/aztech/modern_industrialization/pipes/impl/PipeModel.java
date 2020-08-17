@@ -3,7 +3,9 @@ package aztech.modern_industrialization.pipes.impl;
 import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.pipes.api.PipeBlockEntity;
 import com.mojang.datafixers.util.Pair;
+import net.fabricmc.fabric.api.renderer.v1.RendererAccess;
 import net.fabricmc.fabric.api.renderer.v1.mesh.Mesh;
+import net.fabricmc.fabric.api.renderer.v1.mesh.MeshBuilder;
 import net.fabricmc.fabric.api.renderer.v1.mesh.MutableQuadView;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
 import net.fabricmc.fabric.api.renderer.v1.model.FabricBakedModel;
@@ -36,6 +38,7 @@ import java.util.function.Supplier;
 public class PipeModel implements UnbakedModel, BakedModel, FabricBakedModel {
     private static final SpriteIdentifier FLUID_SPRITE_ID = new SpriteIdentifier(SpriteAtlasTexture.BLOCK_ATLAS_TEX, new MIIdentifier("blocks/pipes/fluid"));
     private Sprite fluidSprite;
+    private Mesh[][][] meshCache;
 
     @Override
     public boolean isVanillaAdapter() {
@@ -44,17 +47,22 @@ public class PipeModel implements UnbakedModel, BakedModel, FabricBakedModel {
 
     @Override
     public void emitBlockQuads(BlockRenderView blockRenderView, BlockState state, BlockPos pos, Supplier<Random> supplier, RenderContext renderContext) {
-        QuadEmitter emitter = renderContext.getEmitter();
 
         PipeBlockEntity.RenderAttachment attachment = (PipeBlockEntity.RenderAttachment)((RenderAttachedBlockView) blockRenderView).getBlockEntityRenderAttachment(pos);
         int centerSlots = attachment.types.length;
         for(int slot = 0; slot < centerSlots; slot++) {
+            // Set color
             int color = attachment.types[slot].getColor();
+            renderContext.pushTransform(quad -> {
+                quad.spriteColor(0, color, color, color, color);
+                return true;
+            });
 
+            // Draw cached meshes
             for(Direction direction : Direction.values()) {
-                PipePartBuilder pmb = new PipePartBuilder(emitter, slot == 0 ? 1 : slot == 1 ? 0 : 2, direction, fluidSprite, color);
+                int connectionType;
                 if((attachment.renderedConnections[slot] & (1 << direction.getId())) == 0) {
-                    pmb.noConnection();
+                    connectionType = 0;
                 } else {
                     int connSlot = 0;
                     for(int i = 0; i < slot; i++) {
@@ -63,14 +71,17 @@ public class PipeModel implements UnbakedModel, BakedModel, FabricBakedModel {
                         }
                     }
                     if(connSlot == slot) {
-                        pmb.straightLine();
+                        connectionType = 1;
                     } else if(connSlot == 0) {
-                        pmb.shortBend();
+                        connectionType = 2;
                     } else {
-                        pmb.longBend();
+                        connectionType = 3;
                     }
                 }
+                renderContext.meshConsumer().accept(meshCache[slot][direction.getId()][connectionType]);
             }
+
+            renderContext.popTransform();
         }
     }
 
@@ -106,7 +117,7 @@ public class PipeModel implements UnbakedModel, BakedModel, FabricBakedModel {
 
     @Override
     public Sprite getSprite() {
-        return fluidSprite;
+        return fluidSprite; // TODO: fix color.
     }
 
     @Override
@@ -132,6 +143,25 @@ public class PipeModel implements UnbakedModel, BakedModel, FabricBakedModel {
     @Override
     public BakedModel bake(ModelLoader loader, Function<SpriteIdentifier, Sprite> textureGetter, ModelBakeSettings rotationContainer, Identifier modelId) {
         fluidSprite = textureGetter.apply(FLUID_SPRITE_ID);
+
+        meshCache = new Mesh[3][6][4];
+        MeshBuilder builder = RendererAccess.INSTANCE.getRenderer().meshBuilder();
+        for(int slot = 0; slot < 3; slot++) {
+            for(Direction direction : Direction.values()) {
+                for(int connectionType = 0; connectionType <= slot+1; connectionType++) {
+                    PipePartBuilder ppb = new PipePartBuilder(builder.getEmitter(), getSlotPos(slot), direction, fluidSprite);
+                    if(connectionType == 0) ppb.noConnection();
+                    else if(connectionType == 1) ppb.straightLine();
+                    else if(connectionType == 2) ppb.shortBend();
+                    else ppb.longBend();
+                    meshCache[slot][direction.getId()][connectionType] = builder.build();
+                }
+            }
+        }
         return this;
+    }
+
+    static int getSlotPos(int slot) {
+        return slot == 0 ? 1 : slot == 1 ? 0 : 2;
     }
 }

@@ -29,13 +29,11 @@ class PipePartBuilder {
     private Vec3d facing;
     private Vec3d right;
     private Sprite sprite;
-    private int color;
 
-    PipePartBuilder(QuadEmitter emitter, int slotPos, Direction direction, Sprite sprite, int color) {
+    PipePartBuilder(QuadEmitter emitter, int slotPos, Direction direction, Sprite sprite) {
         this.emitter = emitter;
         this.facing = Vec3d.of(direction.getVector());
         this.sprite = sprite;
-        this.color = color;
         // initial position + half pipe + slotPos * width
         float position = (1.0f - 3 * SIDE - 2 * SPACING) / 2.0f + SIDE / 2.0f + slotPos * (SIDE + SPACING);
         this.pos = new Vec3d(position, position, position);
@@ -73,7 +71,6 @@ class PipePartBuilder {
     private void quad(Direction direction, float left, float bottom, float right, float top, float depth) {
         square(direction, left, bottom, right, top, depth);
         emitter.spriteBake(0, sprite, MutableQuadView.BAKE_LOCK_UV);
-        emitter.spriteColor(0, color, color, color, color);
         emitter.cullFace(null);
         emitter.emit();
     }

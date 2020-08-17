@@ -1,7 +1,9 @@
 package aztech.modern_industrialization.pipes.impl;
 
+import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.pipes.api.PipeBlockEntity;
 import com.mojang.datafixers.util.Pair;
+import net.fabricmc.fabric.api.renderer.v1.mesh.Mesh;
 import net.fabricmc.fabric.api.renderer.v1.mesh.MutableQuadView;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
 import net.fabricmc.fabric.api.renderer.v1.model.FabricBakedModel;
@@ -19,15 +21,22 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import static net.minecraft.util.math.Direction.*;
+
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.BlockRenderView;
 
 import java.util.*;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+/**
+ * The model of a pipe block. It can handle up to three different pipe types.
+ * The block is divided in five slots of width SIDE, three for the main pipes and two for connection handling.
+ */
 public class PipeModel implements UnbakedModel, BakedModel, FabricBakedModel {
-    private static final SpriteIdentifier TEMP_SPRITE_ID = new SpriteIdentifier(SpriteAtlasTexture.BLOCK_ATLAS_TEX, new Identifier("minecraft:block/iron_block"));
-    private Sprite tempSprite;
+    private static final SpriteIdentifier FLUID_SPRITE_ID = new SpriteIdentifier(SpriteAtlasTexture.BLOCK_ATLAS_TEX, new MIIdentifier("blocks/pipes/fluid"));
+    private Sprite fluidSprite;
+    private Mesh[][][] meshCache;
 
     @Override
     public boolean isVanillaAdapter() {
@@ -36,87 +45,34 @@ public class PipeModel implements UnbakedModel, BakedModel, FabricBakedModel {
 
     @Override
     public void emitBlockQuads(BlockRenderView blockRenderView, BlockState state, BlockPos pos, Supplier<Random> supplier, RenderContext renderContext) {
-        PipeBlockEntity.RenderAttachment attachment = (PipeBlockEntity.RenderAttachment)((RenderAttachedBlockView) blockRenderView).getBlockEntityRenderAttachment(pos);
-        if(attachment.renderedConnections.length == 0) return;
-        byte connections = attachment.renderedConnections[0];
-
-        float pipe_width = 1.5f / 16;
-        float cl = 0.5f - pipe_width / 2; // center, a bit lower
-        float ch = 0.5f + pipe_width / 2; // center, a bit higher
-
-        int color = attachment.types[0].getColor();
         QuadEmitter emitter = renderContext.getEmitter();
-        // center cube
-        for(Direction direction : Direction.values()) {
-            emitter.square(direction, cl, cl, ch, ch, cl);
-            emitter.spriteBake(0, tempSprite, MutableQuadView.BAKE_LOCK_UV);
-            emitter.spriteColor(0, color, color, color, color);
-            emitter.cullFace(null);
-            emitter.emit();
-        }
 
-        QuadBuilder quad = (direction, left, bottom, right, top, depth) -> {
-            addQuad(emitter, direction, left, bottom, right, top, depth, color);
-        };
+        PipeBlockEntity.RenderAttachment attachment = (PipeBlockEntity.RenderAttachment)((RenderAttachedBlockView) blockRenderView).getBlockEntityRenderAttachment(pos);
+        int centerSlots = attachment.types.length;
+        for(int slot = 0; slot < centerSlots; slot++) {
+            int color = attachment.types[slot].getColor();
 
-        Function<Direction, Boolean> hasConnection = (direction) -> (connections & (1 << direction.getId())) != 0;
-
-        // side connections
-        if(hasConnection.apply(NORTH)) {
-            quad.build(NORTH, cl, cl, ch, ch, 0);
-            quad.build(EAST, ch, cl, 1, ch, cl);
-            quad.build(WEST, 0, cl, cl, ch, cl);
-            quad.build(UP, cl, ch, ch, 1, cl);
-            quad.build(DOWN, cl, 0, ch, cl, cl);
+            for(Direction direction : Direction.values()) {
+                PipePartBuilder pmb = new PipePartBuilder(emitter, slot == 0 ? 1 : slot == 1 ? 0 : 2, direction, fluidSprite);
+                if((attachment.renderedConnections[slot] & (1 << direction.getId())) == 0) {
+                    pmb.noConnection();
+                } else {
+                    int connSlot = 0;
+                    for(int i = 0; i < slot; i++) {
+                        if((attachment.renderedConnections[i] & (1 << direction.getId())) != 0) {
+                            connSlot++;
+                        }
+                    }
+                    if(connSlot == slot) {
+                        pmb.straightLine();
+                    } else if(connSlot == 0) {
+                        pmb.shortBend();
+                    } else {
+                        pmb.longBend();
+                    }
+                }
+            }
         }
-        if(hasConnection.apply(SOUTH)) {
-            quad.build(SOUTH, cl, cl, ch, ch, 0);
-            quad.build(EAST, 0, cl, cl, ch, cl);
-            quad.build(WEST, ch, cl, 1, ch, cl);
-            quad.build(UP, cl, 0, ch, cl, cl);
-            quad.build(DOWN, cl, ch, ch, 1, cl);
-        }
-        if(hasConnection.apply(EAST)) {
-            quad.build(EAST, cl, cl, ch, ch, 0);
-            quad.build(NORTH, ch, cl, 1, ch, cl);
-            quad.build(SOUTH, 0, cl, cl, ch, cl);
-            quad.build(UP, ch, cl, 1, ch, cl);
-            quad.build(DOWN, ch, cl, 1, ch, cl);
-        }
-        if(hasConnection.apply(WEST)) {
-            quad.build(WEST, cl, cl, ch, ch, 0);
-            quad.build(NORTH, 0, cl, cl, ch, cl);
-            quad.build(SOUTH, ch, cl, 1, ch, cl);
-            quad.build(UP, 0, cl, ch, ch, cl);
-            quad.build(DOWN, 0, cl, ch, ch, cl);
-        }
-        if(hasConnection.apply(DOWN)) {
-            quad.build(DOWN, cl, cl, ch, ch, 0);
-            quad.build(NORTH, cl, 0, ch, ch, cl);
-            quad.build(EAST, cl, 0, ch, ch, cl);
-            quad.build(SOUTH, cl, 0, ch, ch, cl);
-            quad.build(WEST, cl, 0, ch, ch, cl);
-        }
-        if(hasConnection.apply(UP)) {
-            quad.build(UP, cl, cl, ch, ch, 0);
-            quad.build(NORTH, cl, ch, ch, 1, cl);
-            quad.build(EAST, cl, ch, ch, 1, cl);
-            quad.build(SOUTH, cl, ch, ch, 1, cl);
-            quad.build(WEST, cl, ch, ch, 1, cl);
-        }
-    }
-
-    @FunctionalInterface
-    private interface QuadBuilder {
-        void build(Direction direction, float left, float bottom, float right, float top, float depth);
-    }
-
-    private void addQuad(QuadEmitter emitter, Direction direction, float left, float bottom, float right, float top, float depth, int color) {
-        emitter.square(direction, left, bottom, right, top, depth);
-        emitter.spriteBake(0, tempSprite, MutableQuadView.BAKE_LOCK_UV);
-        emitter.spriteColor(0, color, color, color, color);
-        emitter.cullFace(null);
-        emitter.emit();
     }
 
     @Override
@@ -151,7 +107,7 @@ public class PipeModel implements UnbakedModel, BakedModel, FabricBakedModel {
 
     @Override
     public Sprite getSprite() {
-        return tempSprite;
+        return fluidSprite;
     }
 
     @Override
@@ -171,12 +127,12 @@ public class PipeModel implements UnbakedModel, BakedModel, FabricBakedModel {
 
     @Override
     public Collection<SpriteIdentifier> getTextureDependencies(Function<Identifier, UnbakedModel> unbakedModelGetter, Set<Pair<String, String>> unresolvedTextureReferences) {
-        return Arrays.asList(TEMP_SPRITE_ID);
+        return Arrays.asList(FLUID_SPRITE_ID);
     }
 
     @Override
     public BakedModel bake(ModelLoader loader, Function<SpriteIdentifier, Sprite> textureGetter, ModelBakeSettings rotationContainer, Identifier modelId) {
-        tempSprite = textureGetter.apply(TEMP_SPRITE_ID);
+        fluidSprite = textureGetter.apply(FLUID_SPRITE_ID);
         return this;
     }
 }

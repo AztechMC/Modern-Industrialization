@@ -1,12 +1,18 @@
 package aztech.modern_industrialization.pipes.api;
 
+import aztech.modern_industrialization.mixin_impl.WorldRendererGetter;
 import aztech.modern_industrialization.pipes.MIPipes;
+import aztech.modern_industrialization.util.NbtHelper;
+import net.fabricmc.fabric.api.block.entity.BlockEntityClientSerializable;
+import net.fabricmc.fabric.api.rendering.data.v1.RenderAttachmentBlockEntity;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.client.world.ClientWorld;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Pair;
 import net.minecraft.util.Tickable;
+import net.minecraft.util.math.Direction;
 
 import java.util.*;
 
@@ -14,9 +20,10 @@ import java.util.*;
  * The BlockEntity for a pipe.
  */
 // TODO: add isClient checks wherever it is necessary
-public class PipeBlockEntity extends BlockEntity implements Tickable {
+public class PipeBlockEntity extends BlockEntity implements Tickable, BlockEntityClientSerializable, RenderAttachmentBlockEntity {
     private static final int MAX_PIPES = 6;
     private SortedSet<PipeNetworkNode> pipes = new TreeSet<>(Comparator.comparing(PipeNetworkNode::getType));
+    private SortedMap<PipeNetworkType, Byte> renderedConnections = new TreeMap<>();
 
     // because we can't access the PipeNetworksComponent in fromTag, we defer the node loading
     private List<Pair<PipeNetworkType, PipeNetworkNode>> unloadedPipes = new ArrayList<>();
@@ -38,26 +45,44 @@ public class PipeBlockEntity extends BlockEntity implements Tickable {
             pipe.updateConnections(world, pos);
         }
         markDirty();
+        sync();
     }
 
     /**
-     * Add a pipe type.
+     * Check if it's possible to add a pipe.
      * @param type The type to add.
-     * @return True if the pipe was placed, false otherwise.
+     * @return True if the pipe can be added, false otherwise.
      */
-    public boolean addPipe(PipeNetworkType type, PipeNetworkData data) {
+    public boolean canAddPipe(PipeNetworkType type) {
         loadPipes();
-        if(pipes.size() == MAX_PIPES) return false;
-        for(PipeNetworkNode pipe : pipes) {
-            if(pipe.getType() == type) return false;
+        if(world.isClient) {
+            return pipes.size() < MAX_PIPES && !renderedConnections.containsKey(type);
+        } else {
+            if (pipes.size() == MAX_PIPES) return false;
+            for (PipeNetworkNode pipe : pipes) {
+                if (pipe.getType() == type) return false;
+            }
+            return true;
         }
+    }
+
+    /**
+     * Add a pipe type. Will not do anything if the pipe couldn't be added.
+     * @param type The type to add.
+     */
+    public void addPipe(PipeNetworkType type, PipeNetworkData data) {
+        if(!canAddPipe(type)) return;
 
         PipeNetworkNode node = type.getNodeCtor().get();
-        MIPipes.PIPE_NETWORKS.get(world).getManager(type).addNode(node, pos, data);
+        PipeNetworkManager manager = MIPipes.PIPE_NETWORKS.get(world).getManager(type);
+        manager.addNode(node, pos, data);
+        for(Direction direction : Direction.values()) {
+            manager.addLink(pos, direction);
+        }
         pipes.add(node);
         node.updateConnections(world, pos);
         markDirty();
-        return true;
+        sync();
     }
 
     /**
@@ -73,12 +98,13 @@ public class PipeBlockEntity extends BlockEntity implements Tickable {
                 break;
             }
         }
-        if(removedPipe != null) {
+        if(removedPipe == null) {
             throw new IllegalArgumentException("Can't remove type " + type.getIdentifier() + " from BlockEntity at pos " + pos);
         }
         pipes.remove(removedPipe);
-        MIPipes.PIPE_NETWORKS.get(world).getManager(type).removeNode(removedPipe, pos);
+        removedPipe.network.manager.removeNode(pos);
         markDirty();
+        sync();
     }
 
     @Override
@@ -86,7 +112,7 @@ public class PipeBlockEntity extends BlockEntity implements Tickable {
         loadPipes();
         // TODO: drop items when necessary, probably not here
         for(PipeNetworkNode pipe : pipes) {
-            MIPipes.PIPE_NETWORKS.get(world).getManager(pipe.getType()).removeNode(pipe, pos);
+            pipe.network.manager.removeNode(pos);
         }
         pipes.clear();
 
@@ -114,7 +140,7 @@ public class PipeBlockEntity extends BlockEntity implements Tickable {
         int i = 0;
         while(tag.contains("pipe_type_" + i)) {
             Identifier typeId = new Identifier(tag.getString("pipe_type_" + i));
-            PipeNetworkType type = PipeNetworkType.getTypes().get(typeId);
+            PipeNetworkType type = PipeNetworkType.get(typeId);
             PipeNetworkNode node = type.getNodeCtor().get();
             node.fromTag(tag.getCompound("pipe_data_" + i));
             unloadedPipes.add(new Pair<>(type, node));
@@ -134,7 +160,52 @@ public class PipeBlockEntity extends BlockEntity implements Tickable {
     public void onChunkUnload() {
         loadPipes();
         for(PipeNetworkNode pipe : pipes) {
-            MIPipes.PIPE_NETWORKS.get(world).getManager(pipe.getType()).nodeUnloaded(pipe, pos);
+            pipe.network.manager.nodeUnloaded(pipe, pos);
+        }
+    }
+
+    @Override
+    public void fromClientTag(CompoundTag tag) {
+        renderedConnections.clear();
+        CompoundTag pipesTag = tag.getCompound("pipes");
+        for(String key : pipesTag.getKeys()) {
+            renderedConnections.put(PipeNetworkType.get(new Identifier(key)), pipesTag.getByte(key));
+        }
+
+        ClientWorld clientWorld = (ClientWorld)world;
+        WorldRendererGetter wrg = (WorldRendererGetter)clientWorld;
+        wrg.modern_industrialization_getWorldRenderer().updateBlock(null, this.pos, null, null, 0);
+    }
+
+    @Override
+    public CompoundTag toClientTag(CompoundTag tag) {
+        loadPipes();
+        CompoundTag pipesTag = new CompoundTag();
+        for(PipeNetworkNode pipe : pipes) {
+            pipesTag.putByte(pipe.getType().getIdentifier().toString(), NbtHelper.encodeDirections(pipe.getRenderedConnections(pos)));
+        }
+        tag.put("pipes", pipesTag);
+        return tag;
+    }
+
+    @Override
+    public Object getRenderAttachmentData() {
+        return new RenderAttachment(new TreeMap<>(this.renderedConnections));
+    }
+
+    public static class RenderAttachment {
+        public byte[] renderedConnections;
+        public PipeNetworkType[] types;
+
+        private RenderAttachment(SortedMap<PipeNetworkType, Byte> renderedConnections) {
+            this.renderedConnections = new byte[renderedConnections.size()];
+            this.types = new PipeNetworkType[renderedConnections.size()];
+            int i = 0;
+            for(Map.Entry<PipeNetworkType, Byte> entry : renderedConnections.entrySet()) {
+                this.renderedConnections[i] = entry.getValue();
+                this.types[i] = entry.getKey();
+                i++;
+            }
         }
     }
 }

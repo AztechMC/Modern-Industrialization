@@ -36,11 +36,34 @@ public class MIPipes implements ModInitializer {
     public static final PipeNetworkType NETWORK_TYPE_FLUID_BRONZE = PipeNetworkType.register(
             new MIIdentifier("fluid_bronze"),
             FluidNetwork::new,
-            FluidNetworkNode::new
+            FluidNetworkNode::new,
+            255 << 24 | 227 << 16 | 103 << 8
+    );
+    public static final PipeNetworkType NETWORK_TYPE_FLUID_STEEL = PipeNetworkType.register(
+            new MIIdentifier("fluid_steel"),
+            FluidNetwork::new,
+            FluidNetworkNode::new,
+            255 << 24 | 63 << 16 | 63 << 8 | 63
+    );
+    public static final PipeNetworkType NETWORK_TYPE_FLUID_ALUMINIUM = PipeNetworkType.register(
+            new MIIdentifier("fluid_aluminium"),
+            FluidNetwork::new,
+            FluidNetworkNode::new,
+            255 << 24 | 63 << 16 | 202 << 8 | 255
     );
     public static final Item ITEM_PIPE_FLUID_BRONZE = new PipeItem(
             new Item.Settings().group(ModernIndustrialization.ITEM_GROUP),
             NETWORK_TYPE_FLUID_BRONZE,
+            new FluidNetworkData(Fluids.EMPTY, FluidUnit.DROPS_PER_BUCKET)
+    );
+    public static final Item ITEM_PIPE_FLUID_STEEL = new PipeItem(
+            new Item.Settings().group(ModernIndustrialization.ITEM_GROUP),
+            NETWORK_TYPE_FLUID_STEEL,
+            new FluidNetworkData(Fluids.EMPTY, FluidUnit.DROPS_PER_BUCKET)
+    );
+    public static final Item ITEM_PIPE_FLUID_ALUMINIUM = new PipeItem(
+            new Item.Settings().group(ModernIndustrialization.ITEM_GROUP),
+            NETWORK_TYPE_FLUID_ALUMINIUM,
             new FluidNetworkData(Fluids.EMPTY, FluidUnit.DROPS_PER_BUCKET)
     );
 
@@ -49,6 +72,8 @@ public class MIPipes implements ModInitializer {
         Registry.register(Registry.BLOCK, new MIIdentifier("pipe"), BLOCK_PIPE);
         BLOCK_ENTITY_TYPE_PIPE = Registry.register(Registry.BLOCK_ENTITY_TYPE, new MIIdentifier("pipe"), BlockEntityType.Builder.create(PipeBlockEntity::new, BLOCK_PIPE).build(null));
         Registry.register(Registry.ITEM, new MIIdentifier("pipe_fluid_bronze"), ITEM_PIPE_FLUID_BRONZE);
+        Registry.register(Registry.ITEM, new MIIdentifier("pipe_fluid_steel"), ITEM_PIPE_FLUID_STEEL);
+        Registry.register(Registry.ITEM, new MIIdentifier("pipe_fluid_aluminium"), ITEM_PIPE_FLUID_ALUMINIUM);
 
         ServerTickEvents.START_SERVER_TICK.register(server -> {
             for(World world : server.getWorlds()) {

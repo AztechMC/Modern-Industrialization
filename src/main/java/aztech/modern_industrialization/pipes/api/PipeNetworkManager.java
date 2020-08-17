@@ -1,5 +1,6 @@
 package aztech.modern_industrialization.pipes.api;
 
+import aztech.modern_industrialization.util.NbtHelper;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
@@ -10,6 +11,7 @@ import java.util.*;
 
 public class PipeNetworkManager {
     private Map<BlockPos, PipeNetwork> networkByBlock = new HashMap<>();
+    private Map<BlockPos, Set<Direction>> links = new HashMap<>(); // TODO: (de)serialize
     private Set<PipeNetwork> networks = new HashSet<>();
     private int nextNetworkId = 0;
     private PipeNetworkType type;
@@ -19,78 +21,124 @@ public class PipeNetworkManager {
     }
 
     /**
-     * Add a node to the networks.
+     * Add a network link and merge networks if necessary. Both the node at pos and the node at pos + direction must exist in the network.
      */
-    public void addNode(PipeNetworkNode node, BlockPos pos, PipeNetworkData data) {
-        PipeNetwork nodeNetwork = null;
+    public void addLink(BlockPos pos, Direction direction) {
+        if(hasLink(pos, direction)) return;
+        if(!canLink(pos, direction)) return;
 
-        // Try to link with existing networks
-        for(Direction direction : Direction.values()) {
-            PipeNetwork network = networkByBlock.get(pos.offset(direction));
-            if(network != null) {
-                if(network.data.equals(data)) {
-                    if(nodeNetwork == null) {
-                        assignNode(network, node, pos);
-                        nodeNetwork = network;
-                    } else {
-                        mergeNetworks(nodeNetwork, network);
-                    }
+        // Add links
+        BlockPos otherPos = pos.offset(direction);
+        links.get(pos).add(direction);
+        links.get(otherPos).add(direction.getOpposite());
+
+        // If the networks are different, we merge all nodes into `network`. We don't change other links.
+        PipeNetwork network = networkByBlock.get(pos);
+        PipeNetwork otherNetwork = networkByBlock.get(otherPos);
+        if(network != otherNetwork) {
+            for(Map.Entry<BlockPos, PipeNetworkNode> entry : otherNetwork.nodes.entrySet()) {
+                PipeNetworkNode node = entry.getValue();
+                BlockPos nodePos = entry.getKey();
+                if(nodePos != null) {
+                    node.network = network;
                 }
+                networkByBlock.put(nodePos, network);
+                network.nodes.put(nodePos, node);
             }
-        }
-
-        // If we couldn't link, create a new network instead.
-        if(nodeNetwork == null) {
-            nodeNetwork = createNetwork(data);
-            assignNode(nodeNetwork, node, pos);
+            networks.remove(otherNetwork);
         }
     }
 
     /**
-     * Remove a node from the networks.
+     * Remove a network link and split networks if necessary. Both the node at pos and the node at pos + direction must exist in the network.
      */
-    public void removeNode(PipeNetworkNode node, BlockPos pos) {
+    public void removeLink(BlockPos pos, Direction direction) {
+        if(!hasLink(pos, direction)) return;
+
+        // Remove links
+        BlockPos otherPos = pos.offset(direction);
+        links.get(pos).remove(direction);
+        links.get(otherPos).remove(direction.getOpposite());
+
+        // Run a DFS to mark all disconnected nodes.
         PipeNetwork network = networkByBlock.get(pos);
-        networkByBlock.remove(pos);
-        network.nodes.remove(pos);
-        node.network = null;
-        // If the node was alone, remove the network
-        if(network.nodes.isEmpty()) {
-            destroyNetwork(network);
-        }
-        // Otherwise, run a DFS to split the networks correctly
-        else {
-            Map<BlockPos, PipeNetworkNode> unassignedNodes = network.nodes;
-            network.nodes = new HashMap<>();
-            // The network we are currently adding nodes to. It is final for use in inner class
-            final PipeNetwork[] newNetwork = new PipeNetwork[] { network };
+        Map<BlockPos, PipeNetworkNode> unvisitedNodes = new HashMap<>(network.nodes);
 
-            class Dfs {
-                private void dfs(BlockPos currentPos) {
-                    PipeNetworkNode node = unassignedNodes.remove(currentPos);
-                    // If the node is null, it was already assigned.
-                    if(node == null) return;
-                    // Otherwise, assign it and move to a neighbor.
-                    assignNode(newNetwork[0], node, currentPos);
-                    for(Direction direction : Direction.values()) {
-                        dfs(currentPos.offset(direction));
-                    }
+        class Dfs {
+            private void dfs(BlockPos currentPos) {
+                // warning: don't try to use the return value of Map#remove, because it might be null if the node is not loaded.
+                if(!unvisitedNodes.containsKey(currentPos)) {
+                    return;
+                }
+                unvisitedNodes.remove(currentPos);
+                for(Direction direction : links.get(currentPos)) {
+                    dfs(currentPos.offset(direction));
                 }
             }
+        }
 
-            Dfs dfs = new Dfs();
-            while(!unassignedNodes.isEmpty()) {
-                // Get any key in the map as a starting pos
-                BlockPos startingPos = unassignedNodes.entrySet().iterator().next().getKey();
-                // Create new network if needed
-                if(newNetwork[0] == null) {
-                    newNetwork[0] = createNetwork(network.data.clone());
+        // Try to put all nodes in the current network
+        Dfs dfs = new Dfs();
+        dfs.dfs(pos);
+
+        // If it was not possible, create a new network and transfer all unvisitedNodes to it.
+        if(unvisitedNodes.size() > 0) {
+            PipeNetwork newNetwork = createNetwork(network.data.clone());
+            for(Map.Entry<BlockPos, PipeNetworkNode> entry : unvisitedNodes.entrySet()) {
+                PipeNetworkNode node = entry.getValue();
+                BlockPos nodePos = entry.getKey();
+                if(node != null) {
+                    node.network = newNetwork;
                 }
-                // Run dfs
-                dfs.dfs(startingPos);
-                newNetwork[0] = null;
+                networkByBlock.put(nodePos, newNetwork);
+                newNetwork.nodes.put(nodePos, node);
             }
         }
+    }
+
+    /**
+     * Check if a link exists. A node must exist at pos.
+     */
+    public boolean hasLink(BlockPos pos, Direction direction) {
+        return links.get(pos).contains(direction);
+    }
+
+    /**
+     * Check if a link would be possible. A node must exist at pos.
+     */
+    public boolean canLink(BlockPos pos, Direction direction) {
+        BlockPos otherPos = pos.offset(direction);
+        PipeNetwork network = networkByBlock.get(pos);
+        PipeNetwork otherNetwork = networkByBlock.get(otherPos);
+        return otherNetwork != null && network.data.equals(otherNetwork.data);
+    }
+
+    /**
+     * Add a node and create a new network for it.
+     */
+    public void addNode(PipeNetworkNode node, BlockPos pos, PipeNetworkData data) {
+        if(networkByBlock.containsKey(pos)) throw new IllegalArgumentException("Cannot add a node that is already in the network.");
+
+        PipeNetwork network = createNetwork(data.clone());
+        if(node != null) {
+            node.network = network;
+        }
+        networkByBlock.put(pos.toImmutable(), network);
+        network.nodes.put(pos.toImmutable(), node);
+        links.put(pos.toImmutable(), new HashSet<>());
+    }
+
+    /**
+     * Remove a node and its network. Will remove all remaining links.
+     */
+    public void removeNode(BlockPos pos) {
+        for(Direction direction : Direction.values()) {
+            removeLink(pos, direction);
+        }
+
+        PipeNetwork network = networkByBlock.remove(pos);
+        networks.remove(network);
+        links.remove(pos);
     }
 
     /**
@@ -106,23 +154,7 @@ public class PipeNetworkManager {
      * Should be called when a node is unloaded, it will unlink the node from its network.
      */
     public void nodeUnloaded(PipeNetworkNode node, BlockPos pos) {
-        node.network.nodes.remove(pos);
-    }
-
-    /**
-     * Assign a node to a network.
-     */
-    private void assignNode(PipeNetwork network, PipeNetworkNode node, BlockPos pos) {
-        pos = pos.toImmutable();
-        PipeNetwork previousNetwork = networkByBlock.put(pos, network);
-        network.nodes.put(pos, node);
-        node.network = network;
-        if(previousNetwork != null && previousNetwork != network) {
-            previousNetwork.nodes.remove(pos);
-            if(previousNetwork.nodes.size() == 0) {
-                destroyNetwork(previousNetwork);
-            }
-        }
+        node.network.nodes.put(pos.toImmutable(), null);
     }
 
     /**
@@ -130,27 +162,10 @@ public class PipeNetworkManager {
      */
     private PipeNetwork createNetwork(PipeNetworkData data) {
         PipeNetwork network = type.getNetworkCtor().apply(nextNetworkId, data);
-        network.type = type;
+        network.manager = this;
         nextNetworkId++;
         networks.add(network);
         return network;
-    }
-
-    /**
-     * Destroy an empty network.
-     */
-    private void destroyNetwork(PipeNetwork network) {
-        networks.remove(network);
-    }
-
-    /**
-     * Merge child network into parent network.
-     */
-    private void mergeNetworks(PipeNetwork parent, PipeNetwork child) {
-        while(child.nodes.size() > 0) {
-            Map.Entry<BlockPos, PipeNetworkNode> entry = child.nodes.entrySet().iterator().next();
-            assignNode(parent, entry.getValue(), entry.getKey());
-        }
     }
 
     /**
@@ -167,22 +182,23 @@ public class PipeNetworkManager {
         ListTag networksTag = tag.getList("networks", new CompoundTag().getType());
         for(Tag networkTag : networksTag) {
             PipeNetwork network = type.getNetworkCtor().apply(-1, null);
-            network.type = type;
+            network.manager = this;
             network.fromTag((CompoundTag) networkTag);
             networks.add(network);
         }
 
-        // network_by_block
+        // networkByBlock and links
         Map<Integer, PipeNetwork> networkIds = new HashMap<>();
         for(PipeNetwork network : networks) {
             networkIds.put(network.id, network);
         }
         int[] data = tag.getIntArray("networkByBlock");
-        for(int i = 0; i < data.length/4; i++) {
-            PipeNetwork network = networkIds.get(data[4*i+3]);
-            BlockPos pos = new BlockPos(data[4*i], data[4*i+1], data[4*i+2]);
+        for(int i = 0; i < data.length/5; i++) {
+            PipeNetwork network = networkIds.get(data[5*i+3]);
+            BlockPos pos = new BlockPos(data[5*i], data[5*i+1], data[5*i+2]);
             networkByBlock.put(pos, network);
             network.nodes.put(pos, null);
+            links.put(pos, new HashSet<Direction>(Arrays.asList(NbtHelper.decodeDirections((byte)data[5*i+4]))));
         }
 
         // nextNetworkId
@@ -199,19 +215,28 @@ public class PipeNetworkManager {
         networksTag.addAll(networksTags);
         tag.put("networks", networksTag);
 
-        // network_by_block, every entry is identified by four consecutive integers: x, y, z, network id
-        int[] networkByBlockData = new int[networkByBlock.size() * 4];
+        // networkByBlock and links, every entry is identified by five consecutive integers: x, y, z, network id, encoded links
+        int[] networkByBlockData = new int[networkByBlock.size() * 5];
         int i = 0;
         for(Map.Entry<BlockPos, PipeNetwork> entry : networkByBlock.entrySet()) {
             networkByBlockData[i++] = entry.getKey().getX();
             networkByBlockData[i++] = entry.getKey().getY();
             networkByBlockData[i++] = entry.getKey().getZ();
             networkByBlockData[i++] = entry.getValue().id;
+            networkByBlockData[i++] = NbtHelper.encodeDirections(links.get(entry.getKey()));
         }
         tag.putIntArray("networkByBlock", networkByBlockData);
 
         // nextNetworkId
         tag.putInt("nextNetworkId", nextNetworkId);
         return tag;
+    }
+
+    public PipeNetworkType getType() {
+        return type;
+    }
+
+    public Set<Direction> getNodeLinks(BlockPos pos) {
+        return new HashSet<>(links.get(pos));
     }
 }

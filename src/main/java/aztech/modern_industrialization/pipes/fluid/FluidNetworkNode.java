@@ -2,6 +2,7 @@ package aztech.modern_industrialization.pipes.fluid;
 
 import aztech.modern_industrialization.fluid.FluidInventory;
 import aztech.modern_industrialization.pipes.api.PipeNetworkNode;
+import aztech.modern_industrialization.util.NbtHelper;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.Fluids;
@@ -13,6 +14,8 @@ import net.minecraft.world.World;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class FluidNetworkNode extends PipeNetworkNode implements Tickable {
     int amount = 0;
@@ -60,6 +63,14 @@ public class FluidNetworkNode extends PipeNetworkNode implements Tickable {
                connections.add(new FluidConnection(direction, (FluidInventory)entity));
             }
         }
+    }
+
+    public Set<Direction> getRenderedConnections(BlockPos pos) {
+        Set<Direction> links = network.manager.getNodeLinks(pos);
+        for(FluidConnection connection : connections) {
+            links.add(connection.direction);
+        }
+        return links;
     }
 
     @Override

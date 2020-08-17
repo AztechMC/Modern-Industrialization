@@ -1,6 +1,7 @@
 package aztech.modern_industrialization.pipes.api;
 
 import aztech.modern_industrialization.pipes.MIPipes;
+import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemUsageContext;
 import net.minecraft.util.ActionResult;
@@ -19,13 +20,31 @@ public class PipeItem extends Item {
 
     @Override
     public ActionResult useOnBlock(ItemUsageContext context) {
-        BlockPos placingPos = context.getBlockPos().offset(context.getSide());
+        // TODO: Check BlockItem code and implement all checks.
+        // TODO: Check advancement criteria.
         World world = context.getWorld();
+        // First, try to add a pipe to an existing block
+        BlockPos hitPos = context.getBlockPos();
+        BlockEntity entity = world.getBlockEntity(hitPos);
+        if(entity instanceof PipeBlockEntity) {
+            PipeBlockEntity pipeEntity = (PipeBlockEntity) entity;
+            if(pipeEntity.canAddPipe(type)) {
+                // The pipe could be added, it's a success
+                if(!world.isClient) {
+                    pipeEntity.addPipe(type, defaultData);
+                }
+                world.updateNeighbors(hitPos, null);
+                return ActionResult.success(world.isClient);
+            }
+        }
+        // Place a new block otherwise
+        BlockPos placingPos = context.getBlockPos().offset(context.getSide());
         if(world.getBlockState(placingPos).isAir()) {
-            // TODO: Check BlockItem code and implement all checks
             world.setBlockState(placingPos, MIPipes.BLOCK_PIPE.getDefaultState(), 11); // TODO: check flags
-            PipeBlockEntity entity = (PipeBlockEntity)world.getBlockEntity(placingPos);
-            entity.addPipe(type, defaultData.clone());
+            if(!world.isClient) {
+                PipeBlockEntity pipeEntity = (PipeBlockEntity) world.getBlockEntity(placingPos);
+                pipeEntity.addPipe(type, defaultData.clone());
+            }
         }
 
         return super.useOnBlock(context);

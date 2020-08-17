@@ -1,6 +1,7 @@
 package aztech.modern_industrialization.fluid;
 
 import aztech.modern_industrialization.ModernIndustrialization;
+import aztech.modern_industrialization.util.NbtHelper;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.Fluids;
@@ -65,7 +66,7 @@ public class FluidStackItem extends Item {
     }
 
     public static Fluid getFluid(ItemStack stack) {
-        return FluidNbtHelper.getFluid(stack.getTag(), "fluid_id");
+        return NbtHelper.getFluid(stack.getTag(), "fluid_id");
     }
 
     public static int getAmount(ItemStack stack) {
@@ -91,7 +92,7 @@ public class FluidStackItem extends Item {
     }
 
     public static void setFluid(ItemStack stack, Fluid fluid) {
-        FluidNbtHelper.putFluid(stack.getTag(), "fluid_id", fluid);
+        NbtHelper.putFluid(stack.getTag(), "fluid_id", fluid);
     }
 
     public static void setAmount(ItemStack stack, int amount) {

@@ -87,6 +87,7 @@ public class ModernIndustrialization implements ModInitializer {
 		Registry.register(Registry.BLOCK, identifier, block);
 		Registry.register(Registry.ITEM, identifier, item);
 
+		// TODO: client side?
 		RESOURCE_PACK.addBlockState(JState.state().add(new JVariant().put("", new JBlockModel(MOD_ID + ":block/" + id))), identifier);
 	}
 

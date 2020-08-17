@@ -12,10 +12,10 @@ import java.util.Map;
  */
 public abstract class PipeNetwork implements Tickable {
     protected int id;
+    public PipeNetworkManager manager;
     public PipeNetworkData data;
     public Map<BlockPos, PipeNetworkNode> nodes = new HashMap<>();
     public boolean ticked = false;
-    public PipeNetworkType type;
 
     public PipeNetwork(int id, PipeNetworkData data) {
         this.id = id;

@@ -2,6 +2,7 @@ package aztech.modern_industrialization;
 
 import aztech.modern_industrialization.gui.SteamBoilerScreen;
 import aztech.modern_industrialization.model.block.ModelProvider;
+import aztech.modern_industrialization.pipes.MIPipesClient;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.model.ModelLoadingRegistry;
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandler;
@@ -32,6 +33,7 @@ public class ModernIndustrializationClient implements ClientModInitializer {
         ModelLoadingRegistry.INSTANCE.registerResourceProvider(rm -> {
             return new ModelProvider();
         });
+        (new MIPipesClient()).onInitializeClient();
 
         ModernIndustrialization.LOGGER.info("Modern Industrialization client setup done!");
     }

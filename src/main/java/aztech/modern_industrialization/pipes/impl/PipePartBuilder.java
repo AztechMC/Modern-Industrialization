@@ -217,6 +217,13 @@ class PipePartBuilder {
     }
 
     /**
+     * Draw a straight line with a face at the end.
+     */
+    void straightLineWithFace() {
+        drawPipeWithEnd(distanceToSide(facing));
+    }
+
+    /**
      * Draw a short bend.
      */
     void shortBend() {

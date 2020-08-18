@@ -7,10 +7,7 @@ import aztech.modern_industrialization.pipes.api.*;
 import aztech.modern_industrialization.pipes.fluid.FluidNetwork;
 import aztech.modern_industrialization.pipes.fluid.FluidNetworkData;
 import aztech.modern_industrialization.pipes.fluid.FluidNetworkNode;
-import aztech.modern_industrialization.pipes.impl.PipeBlock;
-import aztech.modern_industrialization.pipes.impl.PipeBlockEntity;
-import aztech.modern_industrialization.pipes.impl.PipeItem;
-import aztech.modern_industrialization.pipes.impl.PipeNetworksComponentImpl;
+import aztech.modern_industrialization.pipes.impl.*;
 import nerdhub.cardinal.components.api.ComponentRegistry;
 import nerdhub.cardinal.components.api.ComponentType;
 import nerdhub.cardinal.components.api.event.WorldComponentCallback;
@@ -24,8 +21,12 @@ import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.item.Item;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
+
+import java.util.HashSet;
+import java.util.Set;
 
 public class MIPipes implements ModInitializer {
     public static final ComponentType<PipeNetworksComponent> PIPE_NETWORKS =
@@ -35,47 +36,13 @@ public class MIPipes implements ModInitializer {
     public static final Block BLOCK_PIPE = new PipeBlock(FabricBlockSettings.of(Material.METAL).hardness(4.0f));
     public static BlockEntityType<PipeBlockEntity> BLOCK_ENTITY_TYPE_PIPE;
 
-    public static final PipeNetworkType NETWORK_TYPE_FLUID_BRONZE = PipeNetworkType.register(
-            new MIIdentifier("fluid_bronze"),
-            FluidNetwork::new,
-            FluidNetworkNode::new,
-            255 << 24 | 227 << 16 | 103 << 8
-    );
-    public static final PipeNetworkType NETWORK_TYPE_FLUID_STEEL = PipeNetworkType.register(
-            new MIIdentifier("fluid_steel"),
-            FluidNetwork::new,
-            FluidNetworkNode::new,
-            255 << 24 | 63 << 16 | 63 << 8 | 63
-    );
-    public static final PipeNetworkType NETWORK_TYPE_FLUID_ALUMINIUM = PipeNetworkType.register(
-            new MIIdentifier("fluid_aluminium"),
-            FluidNetwork::new,
-            FluidNetworkNode::new,
-            255 << 24 | 63 << 16 | 202 << 8 | 255
-    );
-    public static final Item ITEM_PIPE_FLUID_BRONZE = new PipeItem(
-            new Item.Settings().group(ModernIndustrialization.ITEM_GROUP),
-            NETWORK_TYPE_FLUID_BRONZE,
-            new FluidNetworkData(Fluids.EMPTY, FluidUnit.DROPS_PER_BUCKET)
-    );
-    public static final Item ITEM_PIPE_FLUID_STEEL = new PipeItem(
-            new Item.Settings().group(ModernIndustrialization.ITEM_GROUP),
-            NETWORK_TYPE_FLUID_STEEL,
-            new FluidNetworkData(Fluids.EMPTY, FluidUnit.DROPS_PER_BUCKET)
-    );
-    public static final Item ITEM_PIPE_FLUID_ALUMINIUM = new PipeItem(
-            new Item.Settings().group(ModernIndustrialization.ITEM_GROUP),
-            NETWORK_TYPE_FLUID_ALUMINIUM,
-            new FluidNetworkData(Fluids.EMPTY, FluidUnit.DROPS_PER_BUCKET)
-    );
-
     @Override
     public void onInitialize() {
         Registry.register(Registry.BLOCK, new MIIdentifier("pipe"), BLOCK_PIPE);
         BLOCK_ENTITY_TYPE_PIPE = Registry.register(Registry.BLOCK_ENTITY_TYPE, new MIIdentifier("pipe"), BlockEntityType.Builder.create(PipeBlockEntity::new, BLOCK_PIPE).build(null));
-        Registry.register(Registry.ITEM, new MIIdentifier("pipe_fluid_bronze"), ITEM_PIPE_FLUID_BRONZE);
-        Registry.register(Registry.ITEM, new MIIdentifier("pipe_fluid_steel"), ITEM_PIPE_FLUID_STEEL);
-        Registry.register(Registry.ITEM, new MIIdentifier("pipe_fluid_aluminium"), ITEM_PIPE_FLUID_ALUMINIUM);
+        registerFluidPipeType("bronze",255 << 24 | 227 << 16 | 103 << 8, FluidUnit.DROPS_PER_BUCKET);
+        registerFluidPipeType("steel",255 << 24 | 63 << 16 | 63 << 8 | 63, FluidUnit.DROPS_PER_BUCKET);
+        registerFluidPipeType("aluminium",255 << 24 | 63 << 16 | 202 << 8 | 255, FluidUnit.DROPS_PER_BUCKET);
 
         ServerTickEvents.START_SERVER_TICK.register(server -> {
             for(World world : server.getWorlds()) {
@@ -90,5 +57,22 @@ public class MIPipes implements ModInitializer {
                 }
             }
         });
+    }
+
+    public void registerFluidPipeType(String name, int color, int nodeCapacity) {
+        // TODO: maybe save the objects somewhere?
+        PipeNetworkType type = PipeNetworkType.register(
+                new MIIdentifier("fluid_" + name),
+                FluidNetwork::new,
+                FluidNetworkNode::new,
+                color
+        );
+        Item item = new PipeItem(
+                new Item.Settings().group(ModernIndustrialization.ITEM_GROUP),
+                type,
+                new FluidNetworkData(Fluids.EMPTY, nodeCapacity)
+        );
+        Registry.register(Registry.ITEM, new MIIdentifier("pipe_fluid_" + name), item);
+        PipeModelProvider.modelNames.add(new MIIdentifier("item/pipe_fluid_" + name));
     }
 }

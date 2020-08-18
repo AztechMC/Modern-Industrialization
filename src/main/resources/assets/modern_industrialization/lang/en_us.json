@@ -5,6 +5,9 @@
 
   "item.modern_industrialization.bucket_steam" : "Steam Bucket",
   "item.modern_industrialization.fluid_slot" : "Fluid Slot",
+  "item.modern_industrialization.pipe_fluid_bronze" : "Bronze Fluid Pipe",
+  "item.modern_industrialization.pipe_fluid_steel" : "Steel Fluid Pipe",
+  "item.modern_industrialization.pipe_fluid_aluminium" : "Aluminium Fluid Pipe",
 
 
   "block.modern_industrialization.steam" : "Steam",

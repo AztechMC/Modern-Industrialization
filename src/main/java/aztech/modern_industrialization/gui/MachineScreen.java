@@ -1,16 +1,19 @@
 package aztech.modern_industrialization.gui;
 
-import aztech.modern_industrialization.blockentity.SteamBoilerBlockEntity;
+import aztech.modern_industrialization.ModernIndustrialization;
 import aztech.modern_industrialization.blockentity.factory.MachineFactory;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.text.Text;
+import net.minecraft.util.Identifier;
 
 public class MachineScreen extends HandledScreen<MachineScreenHandler> {
 
     private MachineScreenHandler handler;
+
+    private static final Identifier SLOT_ATLAS = new Identifier(ModernIndustrialization.MOD_ID, "textures/gui/container/slot_atlas.png");
 
     public MachineScreen(MachineScreenHandler handler, PlayerInventory inventory, Text title) {
         super(handler, inventory, title);
@@ -46,7 +49,17 @@ public class MachineScreen extends HandledScreen<MachineScreenHandler> {
                 int progressPixel = (int)(progress*sy);
                 this.drawTexture(matrices, px, py, u, v, sx, progressPixel);
             }
+        }
 
+        this.client.getTextureManager().bindTexture(SLOT_ATLAS);
+        for(int l = 0 ; l < factory.getSlots(); l++){
+            int px = i+factory.getSlotPosX(l)-1;
+            int py = j+factory.getSlotPosY(l)-1;
+            if(!factory.isFluidSlot(l)){
+                this.drawTexture(matrices, px, py, 0, 0, 18, 18);
+            }else{
+                this.drawTexture(matrices, px, py, 18, 0, 18, 18);
+            }
         }
     }
 

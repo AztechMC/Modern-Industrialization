@@ -1,7 +1,7 @@
 package aztech.modern_industrialization.gui;
 
 import aztech.modern_industrialization.ModernIndustrialization;
-import aztech.modern_industrialization.blockentity.SteamBoilerBlockEntity;
+import aztech.modern_industrialization.blockentity.steam.SteamBoilerBlockEntity;
 import aztech.modern_industrialization.fluid.gui.FluidContainerScreenHandler;
 import aztech.modern_industrialization.fluid.gui.FluidSlot;
 import net.minecraft.entity.player.PlayerEntity;

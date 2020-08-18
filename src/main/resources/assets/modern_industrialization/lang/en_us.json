@@ -1,6 +1,7 @@
 {
 
   "machine.steam_boiler" : "Steam Boiler",
+  "machine.steam_furnace" : "Steam Furnace",
 
 
   "item.modern_industrialization.bucket_steam" : "Steam Bucket",
@@ -9,7 +10,7 @@
 
   "block.modern_industrialization.steam" : "Steam",
   "block.modern_industrialization.steam_boiler" : "Steam Boiler",
-
+  "block.modern_industrialization.steam_furnace" : "Steam Furnace",
 
   "text.modern_industrialization.fluid_slot_empty" : "Empty",
   "text.modern_industrialization.fluid_slot_quantity" : "%s drops",

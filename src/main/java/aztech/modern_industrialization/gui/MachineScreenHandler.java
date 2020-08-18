@@ -27,7 +27,7 @@ public class MachineScreenHandler extends FluidContainerScreenHandler {
 
     public MachineScreenHandler(int syncId, PlayerInventory playerInventory, PacketByteBuf buf) {
         this(syncId, playerInventory, new SimpleInventory(buf.readInt()),
-                new ArrayPropertyDelegate(buf.readInt()), MachineFactory.getFactoryByID(buf.readInt()));
+                new ArrayPropertyDelegate(buf.readInt()), MachineFactory.getFactoryByID(buf.readString()));
     }
 
     public MachineScreenHandler(int syncId, PlayerInventory playerInventory,

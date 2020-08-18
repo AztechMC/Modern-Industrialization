@@ -1,7 +1,8 @@
 package aztech.modern_industrialization;
 
 import aztech.modern_industrialization.block.MachineBlock;
-import aztech.modern_industrialization.blockentity.SteamBoilerBlockEntity;
+import aztech.modern_industrialization.blockentity.steam.SteamBoilerBlockEntity;
+import aztech.modern_industrialization.blockentity.steam.SteamFurnaceBlockEntity;
 import aztech.modern_industrialization.fluid.CraftingFluid;
 import aztech.modern_industrialization.fluid.FluidStackItem;
 import aztech.modern_industrialization.gui.MachineScreenHandler;
@@ -24,7 +25,6 @@ import net.minecraft.item.*;
 import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
-import org.apache.commons.codec.language.RefinedSoundex;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -42,9 +42,12 @@ public class ModernIndustrialization implements ModInitializer {
 	// Block
 	public static final Block BLOCK_STEAM_BOILER = new MachineBlock(SteamBoilerBlockEntity::new);
 	public static final Item ITEM_STEAM_BOILER = new BlockItem(BLOCK_STEAM_BOILER, new Item.Settings().group(ITEM_GROUP));
+	public static final Block BLOCK_STEAM_FURNACE =  new MachineBlock(SteamFurnaceBlockEntity::new);
+	public static final Item ITEM_STEAM_FURNACE =  new BlockItem(BLOCK_STEAM_FURNACE, new Item.Settings().group(ITEM_GROUP));
 
 	// BlockEntity
 	public static BlockEntityType<SteamBoilerBlockEntity> BLOCK_ENTITY_STEAM_BOILER;
+	public static BlockEntityType<SteamFurnaceBlockEntity> BLOCK_ENTITY_STEAM_FURNACE;
 
 	// ScreenHandlerType
 	public static final ScreenHandlerType<SteamBoilerScreenHandler> SCREEN_HANDLER_TYPE_STEAM_BOILER = ScreenHandlerRegistry.registerSimple(new Identifier(MOD_ID, "steam_boiler"), SteamBoilerScreenHandler::new);
@@ -71,10 +74,12 @@ public class ModernIndustrialization implements ModInitializer {
 
 	private void setupBlocks() {
 		registerBlock(BLOCK_STEAM_BOILER, ITEM_STEAM_BOILER,"steam_boiler");
+		registerBlock(BLOCK_STEAM_FURNACE, ITEM_STEAM_FURNACE,"steam_furnace");
 	}
 
 	private void setupBlockEntities() {
 		BLOCK_ENTITY_STEAM_BOILER = Registry.register(Registry.BLOCK_ENTITY_TYPE, new Identifier(MOD_ID, "steam_boiler"), BlockEntityType.Builder.create(SteamBoilerBlockEntity::new, BLOCK_STEAM_BOILER).build(null));
+		BLOCK_ENTITY_STEAM_FURNACE = Registry.register(Registry.BLOCK_ENTITY_TYPE, new Identifier(MOD_ID, "steam_furnace"), BlockEntityType.Builder.create(SteamFurnaceBlockEntity::new, BLOCK_STEAM_FURNACE).build(null));
 	}
 
 	private void setupFluids() {

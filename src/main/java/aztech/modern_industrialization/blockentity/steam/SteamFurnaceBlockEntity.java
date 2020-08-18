@@ -5,9 +5,9 @@ import aztech.modern_industrialization.blockentity.MachineBlockEntity;
 import aztech.modern_industrialization.blockentity.factory.MachineFactory;
 import net.minecraft.block.entity.BlockEntityType;
 
-public class SteamFurnace extends MachineBlockEntity {
+public class SteamFurnaceBlockEntity extends MachineBlockEntity {
 
-    protected SteamFurnace() {
+    public SteamFurnaceBlockEntity() {
         super(ModernIndustrialization.BLOCK_ENTITY_STEAM_FURNACE, MachineFactory.steamFurnaceFactory);
     }
 

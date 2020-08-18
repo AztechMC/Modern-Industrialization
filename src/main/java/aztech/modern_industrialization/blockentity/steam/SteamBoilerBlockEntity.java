@@ -1,6 +1,7 @@
-package aztech.modern_industrialization.blockentity;
+package aztech.modern_industrialization.blockentity.steam;
 
 import aztech.modern_industrialization.ModernIndustrialization;
+import aztech.modern_industrialization.blockentity.AbstractMachineBlockEntity;
 import aztech.modern_industrialization.fluid.FluidInventory;
 import aztech.modern_industrialization.fluid.FluidSlotIO;
 import aztech.modern_industrialization.fluid.FluidStackItem;

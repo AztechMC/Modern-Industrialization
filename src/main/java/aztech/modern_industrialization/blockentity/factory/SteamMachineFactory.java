@@ -4,11 +4,11 @@ public class SteamMachineFactory extends MachineFactory {
 
     private int steamBucketCapacity;
 
-    public SteamMachineFactory(int ID, int inputSlots, int outputSlots, int liquidInputSlots, int liquidOutputSlots) {
+    public SteamMachineFactory(String ID, int inputSlots, int outputSlots, int liquidInputSlots, int liquidOutputSlots) {
         super(ID, inputSlots, outputSlots, liquidInputSlots + 1, liquidOutputSlots);
     }
 
-    public SteamMachineFactory(int ID, int inputSlots, int outputSlots) {
+    public SteamMachineFactory(String ID, int inputSlots, int outputSlots) {
         super(ID, inputSlots, outputSlots,  1, 0);
     }
 

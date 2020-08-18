@@ -8,8 +8,8 @@ import static aztech.modern_industrialization.blockentity.factory.MachineSlotTyp
 
 public class MachineFactory {
 
-    private int factoryID;
-    private static HashMap<Integer, MachineFactory> map = new HashMap<Integer, MachineFactory>();
+    private String machineID;
+    private static HashMap<String, MachineFactory> map = new HashMap<String, MachineFactory>();
 
     private int inputSlots;
     private int outputSlots;
@@ -46,7 +46,14 @@ public class MachineFactory {
     private int backgroundWidth = 176;
     private int backgroundHeight = 166;
 
-    public MachineFactory(int ID, int inputSlots, int outputSlots, int liquidInputSlots, int liquidOutputSlots){
+    public MachineFactory(String ID, int inputSlots, int outputSlots, int liquidInputSlots, int liquidOutputSlots){
+        this.machineID = ID;
+        if(map.containsKey(machineID)){
+            throw new IllegalArgumentException("Machine ID already taken : " + machineID);
+        }else{
+            map.put(machineID, this);
+        }
+
         this.inputSlots = inputSlots;
         this.outputSlots = outputSlots;
         this.liquidInputSlots = liquidInputSlots;
@@ -57,19 +64,15 @@ public class MachineFactory {
         slotPositionsX = new int[slots];
         slotPositionsY = new int[slots];
 
-        this.factoryID = ID;
-        if(map.containsKey(factoryID)){
-            throw new IllegalArgumentException("Factory ID already taken : " + factoryID);
-        }else{
-            map.put(factoryID, this);
-        }
+        setTranslationKey("machine."+machineID);
+        setupBackground(machineID+".png");
     }
 
-    public static MachineFactory getFactoryByID(int factoryID){
-        return map.get(factoryID);
+    public static MachineFactory getFactoryByID(String machineID) {
+        return map.get(machineID);
     }
 
-    public MachineFactory(int ID, int inputSlots, int outputSlots){
+    public MachineFactory(String ID, int inputSlots, int outputSlots){
         this(ID, inputSlots, outputSlots, 0 , 0);
     }
 
@@ -115,16 +118,12 @@ public class MachineFactory {
         return inventoryPosX;
     }
 
-    public MachineFactory setInventoryPosX(int posX){
-        this.inventoryPosX = posX;
-        return this;
-    }
-
     public int getInventoryPosY(){
         return inventoryPosY;
     }
 
-    public MachineFactory setInventoryPosY(int posY){
+    public MachineFactory setInventoryPos(int posX, int posY){
+        this.inventoryPosX = posX;
         this.inventoryPosY = posY;
         return this;
     }
@@ -188,6 +187,11 @@ public class MachineFactory {
         this.progressBarHorizontal = horizontal;
         this.progressBarSizeX = sizeX;
         this.progressBarSizeY = sizeY;
+        return this;
+    }
+
+    public MachineFactory setupProgressBar(int drawX, int drawY, int sizeX, int sizeY, boolean horizontal) {
+        setupProgressBar(176, 0, drawX, drawY, sizeX, sizeY, horizontal);
         return this;
     }
 
@@ -280,8 +284,18 @@ public class MachineFactory {
         return this;
     }
 
-    public int getID() {
-        return factoryID;
+    public String getID() {
+        return machineID;
     }
 
+    public static  MachineFactory steamFurnaceFactory = new SteamMachineFactory("steam_furnace", 1, 1)
+            .setSteamBucketCapacity(64).setSteamSlotPos(23, 23)
+            .setInputSlotPosition(56, 45, 1, 1).setOutputSlotPosition(102, 45, 1, 1)
+            .setupProgressBar(76, 45, 22, 15, true);
+
+    public boolean isFluidSlot(int l) {
+        return (l >= inputSlots && l < inputSlots + liquidInputSlots)
+                || (l >= inputSlots + liquidInputSlots + outputSlots &&
+                    l < inputSlots + liquidInputSlots + outputSlots + liquidOutputSlots);
+    }
 }

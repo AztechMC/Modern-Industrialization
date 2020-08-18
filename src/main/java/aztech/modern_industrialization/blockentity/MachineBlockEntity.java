@@ -1,7 +1,9 @@
 package aztech.modern_industrialization.blockentity;
 
+import aztech.modern_industrialization.ModernIndustrialization;
 import aztech.modern_industrialization.blockentity.factory.MachineFactory;
 import aztech.modern_industrialization.blockentity.factory.MachineSlotType;
+import aztech.modern_industrialization.fluid.FluidInventory;
 import aztech.modern_industrialization.fluid.FluidSlotIO;
 import aztech.modern_industrialization.fluid.FluidStackItem;
 import aztech.modern_industrialization.fluid.FluidUnit;
@@ -11,6 +13,7 @@ import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.fluid.Fluid;
 import net.minecraft.inventory.SidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
@@ -28,9 +31,11 @@ import static aztech.modern_industrialization.blockentity.factory.MachineSlotTyp
 
 
 
-public abstract class MachineBlockEntity extends AbstractMachineBlockEntity implements SidedInventory, Tickable, ExtendedScreenHandlerFactory {
+public abstract class MachineBlockEntity extends AbstractMachineBlockEntity
+        implements SidedInventory, Tickable, ExtendedScreenHandlerFactory, FluidInventory {
 
     private MachineFactory factory;
+
 
     private int tickProgress;
     private int tickRecipe;
@@ -134,7 +139,22 @@ public abstract class MachineBlockEntity extends AbstractMachineBlockEntity impl
     public void writeScreenOpeningData(ServerPlayerEntity serverPlayerEntity, PacketByteBuf packetByteBuf) {
         packetByteBuf.writeInt(factory.getSlots());
         packetByteBuf.writeInt(propertyDelegate.size());
-        packetByteBuf.writeInt(factory.getID());
+        packetByteBuf.writeString(factory.getID());
+    }
+
+    @Override
+    public int insert(Direction direction, Fluid fluid, int maxAmount, boolean simulate){
+        return 0;
+    }
+
+    @Override
+    public int extract(Direction direction, Fluid fluid, int maxAmount, boolean simulate) {
+        return 0;
+    }
+
+    @Override
+    public Fluid[] getExtractableFluids(Direction direction) {
+        return new Fluid[] {};
     }
 
 }

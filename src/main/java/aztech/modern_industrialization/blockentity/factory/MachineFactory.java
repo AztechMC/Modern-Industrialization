@@ -1,12 +1,31 @@
 package aztech.modern_industrialization.blockentity.factory;
 
 import aztech.modern_industrialization.MIIdentifier;
+import aztech.modern_industrialization.ModernIndustrialization;
+import aztech.modern_industrialization.block.MachineBlock;
+import aztech.modern_industrialization.blockentity.AbstractMachineBlockEntity;
+import aztech.modern_industrialization.blockentity.steam.SteamFurnaceBlockEntity;
+import aztech.modern_industrialization.blockentity.steam.SteamMaceratorBlockEntity;
+import aztech.modern_industrialization.model.block.MachineModel;
+import aztech.modern_industrialization.model.block.ModelProvider;
+import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.block.entity.BlockEntityType;
+import net.minecraft.item.BlockItem;
 
 import java.util.HashMap;
+import java.util.function.Supplier;
 
 import static aztech.modern_industrialization.blockentity.factory.MachineSlotType.*;
 
 public class MachineFactory {
+
+    public MachineBlock block;
+    public BlockItem item;
+    public BlockEntityType blockEntityType;
+
+    public MachineModel machineModel;
+
+    public final Supplier<AbstractMachineBlockEntity> blockEntityConstructor;
 
     private String machineID;
     private static HashMap<String, MachineFactory> map = new HashMap<String, MachineFactory>();
@@ -43,16 +62,20 @@ public class MachineFactory {
     private int outputBucketCapacity = 16;
 
     private MIIdentifier backgroundIdentifier = new MIIdentifier("textures/gui/container/default.png");
+
     private int backgroundWidth = 176;
     private int backgroundHeight = 166;
 
-    public MachineFactory(String ID, int inputSlots, int outputSlots, int liquidInputSlots, int liquidOutputSlots){
+    public MachineFactory(String ID, Supplier<AbstractMachineBlockEntity> blockEntityConstructor, int inputSlots, int outputSlots, int liquidInputSlots, int liquidOutputSlots){
         this.machineID = ID;
+
         if(map.containsKey(machineID)){
             throw new IllegalArgumentException("Machine ID already taken : " + machineID);
         }else{
             map.put(machineID, this);
         }
+
+        this.blockEntityConstructor = blockEntityConstructor;
 
         this.inputSlots = inputSlots;
         this.outputSlots = outputSlots;
@@ -64,16 +87,24 @@ public class MachineFactory {
         slotPositionsX = new int[slots];
         slotPositionsY = new int[slots];
 
-        setTranslationKey("machine."+machineID);
+        setTranslationKey("block.modern_industrialization."+machineID);
         setupBackground(machineID+".png");
+
+        // TODO : REFACTOR AND ADD PARAMTER
+        machineModel = new MachineModel(machineID, new MIIdentifier("blocks/casings/steam/bricked_bronze/"))
+                .withFrontOverlay(new MIIdentifier("blocks/generators/boiler/coal/overlay_front"), new MIIdentifier("blocks/generators/boiler/coal/overlay_front_active"));
+
+        ModelProvider.modelMap.put(new MIIdentifier("block/"+machineID), machineModel);
+        ModelProvider.modelMap.put(new MIIdentifier("item/"+machineID), machineModel);
+
     }
 
     public static MachineFactory getFactoryByID(String machineID) {
         return map.get(machineID);
     }
 
-    public MachineFactory(String ID, int inputSlots, int outputSlots){
-        this(ID, inputSlots, outputSlots, 0 , 0);
+    public MachineFactory(String ID,  Supplier<AbstractMachineBlockEntity> blockEntityConstructor, int inputSlots, int outputSlots){
+        this(ID, blockEntityConstructor, inputSlots, outputSlots, 0 , 0);
     }
 
     public int getInputSlots() {
@@ -288,14 +319,24 @@ public class MachineFactory {
         return machineID;
     }
 
-    public static  MachineFactory steamFurnaceFactory = new SteamMachineFactory("steam_furnace", 1, 1)
+    public boolean isFluidSlot(int l) {
+        return (l >= inputSlots && l < inputSlots + liquidInputSlots)
+                || (l >= inputSlots + liquidInputSlots + outputSlots &&
+                l < inputSlots + liquidInputSlots + outputSlots + liquidOutputSlots);
+    }
+
+    public static Iterable<MachineFactory> getFactories(){
+        return map.values();
+    }
+
+
+    public static  MachineFactory steamFurnaceFactory = new SteamMachineFactory("steam_furnace", SteamFurnaceBlockEntity::new, 1, 1)
             .setSteamBucketCapacity(64).setSteamSlotPos(23, 23)
             .setInputSlotPosition(56, 45, 1, 1).setOutputSlotPosition(102, 45, 1, 1)
             .setupProgressBar(76, 45, 22, 15, true);
 
-    public boolean isFluidSlot(int l) {
-        return (l >= inputSlots && l < inputSlots + liquidInputSlots)
-                || (l >= inputSlots + liquidInputSlots + outputSlots &&
-                    l < inputSlots + liquidInputSlots + outputSlots + liquidOutputSlots);
-    }
+    public static  MachineFactory steamMaceratorFactory = new SteamMachineFactory("steam_macerator", SteamMaceratorBlockEntity::new, 1, 4)
+            .setSteamBucketCapacity(64).setSteamSlotPos(23, 23)
+            .setInputSlotPosition(56, 45, 1, 1).setOutputSlotPosition(102, 45, 2, 2)
+            .setupProgressBar(76, 45, 22, 15, true).setupBackground("default.png");
 }

@@ -10,7 +10,8 @@ import net.minecraft.util.Identifier;
 import java.util.Map;
 
 public class ModelProvider implements ModelResourceProvider {
-    private static final Map<Identifier, UnbakedModel> modelMap = Models.getModelMap();
+
+    public static Map<Identifier, UnbakedModel> modelMap = Models.getModelMap();
 
     public ModelProvider() {}
 

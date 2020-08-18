@@ -1,6 +1,7 @@
 package aztech.modern_industrialization;
 
 import aztech.modern_industrialization.block.MachineBlock;
+import aztech.modern_industrialization.blockentity.factory.MachineFactory;
 import aztech.modern_industrialization.blockentity.steam.SteamBoilerBlockEntity;
 import aztech.modern_industrialization.blockentity.steam.SteamFurnaceBlockEntity;
 import aztech.modern_industrialization.fluid.CraftingFluid;
@@ -46,12 +47,9 @@ public class ModernIndustrialization implements ModInitializer {
 	// Block
 	public static final Block BLOCK_STEAM_BOILER = new MachineBlock(SteamBoilerBlockEntity::new);
 	public static final Item ITEM_STEAM_BOILER = new BlockItem(BLOCK_STEAM_BOILER, new Item.Settings().group(ITEM_GROUP));
-	public static final Block BLOCK_STEAM_FURNACE =  new MachineBlock(SteamFurnaceBlockEntity::new);
-	public static final Item ITEM_STEAM_FURNACE =  new BlockItem(BLOCK_STEAM_FURNACE, new Item.Settings().group(ITEM_GROUP));
 
 	// BlockEntity
 	public static BlockEntityType<SteamBoilerBlockEntity> BLOCK_ENTITY_STEAM_BOILER;
-	public static BlockEntityType<SteamFurnaceBlockEntity> BLOCK_ENTITY_STEAM_FURNACE;
 
 	// ScreenHandlerType
 	public static final ScreenHandlerType<SteamBoilerScreenHandler> SCREEN_HANDLER_TYPE_STEAM_BOILER = ScreenHandlerRegistry.registerSimple(new Identifier(MOD_ID, "steam_boiler"), SteamBoilerScreenHandler::new);
@@ -69,6 +67,7 @@ public class ModernIndustrialization implements ModInitializer {
 		setupBlocks();
 		setupBlockEntities();
 		setupFluids();
+		setupMachine();
 
 		MIPipes.INSTANCE.onInitialize();
 
@@ -83,12 +82,20 @@ public class ModernIndustrialization implements ModInitializer {
 
 	private void setupBlocks() {
 		registerBlock(BLOCK_STEAM_BOILER, ITEM_STEAM_BOILER,"steam_boiler");
-		registerBlock(BLOCK_STEAM_FURNACE, ITEM_STEAM_FURNACE,"steam_furnace");
+
+	}
+
+	private void setupMachine() {
+		for(MachineFactory factory : MachineFactory.getFactories()) {
+			factory.block = new MachineBlock(factory.blockEntityConstructor);
+			factory.item = new BlockItem(factory.block, new Item.Settings().group(ITEM_GROUP));
+			registerBlock(factory.block, factory.item,factory.getID());
+			factory.blockEntityType = Registry.register(Registry.BLOCK_ENTITY_TYPE, new Identifier(MOD_ID, factory.getID()), BlockEntityType.Builder.create(factory.blockEntityConstructor, factory.block).build(null));
+		}
 	}
 
 	private void setupBlockEntities() {
 		BLOCK_ENTITY_STEAM_BOILER = Registry.register(Registry.BLOCK_ENTITY_TYPE, new Identifier(MOD_ID, "steam_boiler"), BlockEntityType.Builder.create(SteamBoilerBlockEntity::new, BLOCK_STEAM_BOILER).build(null));
-		BLOCK_ENTITY_STEAM_FURNACE = Registry.register(Registry.BLOCK_ENTITY_TYPE, new Identifier(MOD_ID, "steam_furnace"), BlockEntityType.Builder.create(SteamFurnaceBlockEntity::new, BLOCK_STEAM_FURNACE).build(null));
 	}
 
 	private void setupFluids() {

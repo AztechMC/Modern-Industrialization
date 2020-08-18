@@ -48,10 +48,6 @@ public final class PipeNetworkType implements Comparable<PipeNetworkType> {
         return color;
     }
 
-    public int getSerialNumber() {
-        return serialNumber;
-    }
-
     public static PipeNetworkType get(Identifier identifier) {
         return types.get(identifier);
     }

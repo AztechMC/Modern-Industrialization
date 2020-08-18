@@ -6,12 +6,19 @@ import net.fabricmc.fabric.api.client.model.ModelResourceProvider;
 import net.minecraft.client.render.model.UnbakedModel;
 import net.minecraft.util.Identifier;
 
+import java.util.HashSet;
+import java.util.Set;
+
 public class PipeModelProvider implements ModelResourceProvider {
     private static final PipeModel PIPE_MODEL = new PipeModel();
-    private static final Identifier PIPE_MODEL_ID = new MIIdentifier("block/pipe");
+    public static Set<Identifier> modelNames = new HashSet<>();
 
     @Override
     public UnbakedModel loadModelResource(Identifier identifier, ModelProviderContext modelProviderContext) {
-        return identifier.equals(PIPE_MODEL_ID) ? PIPE_MODEL : null;
+        return modelNames.contains(identifier) ? PIPE_MODEL : null;
+    }
+
+    static {
+        modelNames.add(new MIIdentifier("block/pipe"));
     }
 }

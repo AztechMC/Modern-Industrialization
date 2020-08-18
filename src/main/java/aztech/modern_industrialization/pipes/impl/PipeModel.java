@@ -5,16 +5,19 @@ import com.mojang.datafixers.util.Pair;
 import net.fabricmc.fabric.api.renderer.v1.RendererAccess;
 import net.fabricmc.fabric.api.renderer.v1.mesh.Mesh;
 import net.fabricmc.fabric.api.renderer.v1.mesh.MeshBuilder;
+import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
 import net.fabricmc.fabric.api.renderer.v1.model.FabricBakedModel;
 import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
 import net.fabricmc.fabric.api.rendering.data.v1.RenderAttachedBlockView;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.render.model.*;
+import net.minecraft.client.render.model.json.JsonUnbakedModel;
 import net.minecraft.client.render.model.json.ModelOverrideList;
 import net.minecraft.client.render.model.json.ModelTransformation;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.texture.SpriteAtlasTexture;
 import net.minecraft.client.util.SpriteIdentifier;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
@@ -26,7 +29,7 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import static net.minecraft.util.math.Direction.WEST;
+import static net.minecraft.util.math.Direction.*;
 
 /**
  * The model of a pipe block. It can handle up to three different pipe types.
@@ -36,6 +39,10 @@ public class PipeModel implements UnbakedModel, BakedModel, FabricBakedModel {
     private static final SpriteIdentifier FLUID_SPRITE_ID = new SpriteIdentifier(SpriteAtlasTexture.BLOCK_ATLAS_TEX, new MIIdentifier("blocks/pipes/fluid"));
     private Sprite fluidSprite;
     private Mesh[][][] meshCache;
+    private Mesh itemMesh;
+    private static final Identifier DEFAULT_BLOCK_MODEL = new Identifier("minecraft:block/block");
+    private ModelTransformation modelTransformation;
+    private boolean isBaked = false;
 
     @Override
     public boolean isVanillaAdapter() {
@@ -50,10 +57,7 @@ public class PipeModel implements UnbakedModel, BakedModel, FabricBakedModel {
         for(int slot = 0; slot < centerSlots; slot++) {
             // Set color
             int color = attachment.types[slot].getColor();
-            renderContext.pushTransform(quad -> {
-                quad.spriteColor(0, color, color, color, color);
-                return true;
-            });
+            renderContext.pushTransform(getColorTransform(color));
 
             // Draw cached meshes
             for(Direction direction : Direction.values()) {
@@ -99,7 +103,22 @@ public class PipeModel implements UnbakedModel, BakedModel, FabricBakedModel {
 
     @Override
     public void emitItemQuads(ItemStack itemStack, Supplier<Random> supplier, RenderContext renderContext) {
+        Item item = itemStack.getItem();
+        if(item instanceof PipeItem) {
+            int color = ((PipeItem) item).type.getColor();
+            renderContext.pushTransform(getColorTransform(color));
 
+            renderContext.meshConsumer().accept(itemMesh);
+
+            renderContext.popTransform();
+        }
+    }
+
+    private static RenderContext.QuadTransform getColorTransform(int color) {
+        return quad -> {
+            quad.spriteColor(0, color, color, color, color);
+            return true;
+        };
     }
 
     @Override
@@ -119,7 +138,7 @@ public class PipeModel implements UnbakedModel, BakedModel, FabricBakedModel {
 
     @Override
     public boolean isSideLit() {
-        return false;
+        return true;
     }
 
     @Override
@@ -134,17 +153,17 @@ public class PipeModel implements UnbakedModel, BakedModel, FabricBakedModel {
 
     @Override
     public ModelTransformation getTransformation() {
-        return null;
+        return modelTransformation;
     }
 
     @Override
     public ModelOverrideList getOverrides() {
-        return null;
+        return ModelOverrideList.EMPTY;
     }
 
     @Override
     public Collection<Identifier> getModelDependencies() {
-        return Collections.emptyList();
+        return Arrays.asList(DEFAULT_BLOCK_MODEL);
     }
 
     @Override
@@ -154,7 +173,11 @@ public class PipeModel implements UnbakedModel, BakedModel, FabricBakedModel {
 
     @Override
     public BakedModel bake(ModelLoader loader, Function<SpriteIdentifier, Sprite> textureGetter, ModelBakeSettings rotationContainer, Identifier modelId) {
+        if(isBaked) return this;
+        isBaked = true;
+
         fluidSprite = textureGetter.apply(FLUID_SPRITE_ID);
+        modelTransformation = ((JsonUnbakedModel)loader.getOrLoadModel(DEFAULT_BLOCK_MODEL)).getTransformations();
 
         meshCache = new Mesh[3][6][5];
         MeshBuilder builder = RendererAccess.INSTANCE.getRenderer().meshBuilder();
@@ -172,6 +195,17 @@ public class PipeModel implements UnbakedModel, BakedModel, FabricBakedModel {
                 }
             }
         }
+
+        QuadEmitter itemMeshEmitter = builder.getEmitter();
+        for(Direction direction : Direction.values()) {
+            PipePartBuilder ppb = new PipePartBuilder(itemMeshEmitter, getSlotPos(0), direction, fluidSprite);
+            if(direction == NORTH || direction == SOUTH) {
+                ppb.straightLineWithFace();
+            } else {
+                ppb.noConnection();
+            }
+        }
+        itemMesh = builder.build();
         return this;
     }
 

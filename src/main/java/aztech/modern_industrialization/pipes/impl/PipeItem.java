@@ -47,6 +47,7 @@ public class PipeItem extends Item {
             if(!world.isClient) {
                 PipeBlockEntity pipeEntity = (PipeBlockEntity) world.getBlockEntity(placingPos);
                 pipeEntity.addPipe(type, defaultData.clone());
+                world.updateNeighbors(placingPos, null);
             }
         }
 

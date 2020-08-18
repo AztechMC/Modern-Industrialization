@@ -47,6 +47,7 @@ public class PipeNetworkManager {
             }
             networks.remove(otherNetwork);
         }
+        checkStateCoherence();
     }
 
     /**
@@ -94,6 +95,7 @@ public class PipeNetworkManager {
                 newNetwork.nodes.put(nodePos, node);
             }
         }
+        checkStateCoherence();
     }
 
     /**
@@ -126,6 +128,7 @@ public class PipeNetworkManager {
         networkByBlock.put(pos.toImmutable(), network);
         network.nodes.put(pos.toImmutable(), node);
         links.put(pos.toImmutable(), new HashSet<>());
+        checkStateCoherence();
     }
 
     /**
@@ -139,6 +142,7 @@ public class PipeNetworkManager {
         PipeNetwork network = networkByBlock.remove(pos);
         networks.remove(network);
         links.remove(pos);
+        checkStateCoherence();
     }
 
     /**
@@ -148,6 +152,7 @@ public class PipeNetworkManager {
         PipeNetwork network = networkByBlock.get(pos);
         node.network = network;
         network.nodes.put(pos.toImmutable(), node);
+        checkStateCoherence();
     }
 
     /**
@@ -155,6 +160,7 @@ public class PipeNetworkManager {
      */
     public void nodeUnloaded(PipeNetworkNode node, BlockPos pos) {
         node.network.nodes.put(pos.toImmutable(), null);
+        checkStateCoherence();
     }
 
     /**
@@ -165,6 +171,7 @@ public class PipeNetworkManager {
         network.manager = this;
         nextNetworkId++;
         networks.add(network);
+        checkStateCoherence();
         return network;
     }
 
@@ -203,6 +210,7 @@ public class PipeNetworkManager {
 
         // nextNetworkId
         nextNetworkId = tag.getInt("nextNetworkId");
+        checkStateCoherence();
     }
 
     public CompoundTag toTag(CompoundTag tag) {
@@ -229,6 +237,7 @@ public class PipeNetworkManager {
 
         // nextNetworkId
         tag.putInt("nextNetworkId", nextNetworkId);
+        checkStateCoherence();
         return tag;
     }
 
@@ -238,5 +247,25 @@ public class PipeNetworkManager {
 
     public Set<Direction> getNodeLinks(BlockPos pos) {
         return new HashSet<>(links.get(pos));
+    }
+
+    /**
+     * Check all internal state coherence for debugging purposes.
+     */
+    public void checkStateCoherence() {
+        assert networkByBlock.keySet().equals(links.keySet());
+        for(Map.Entry<BlockPos, PipeNetwork> entry : networkByBlock.entrySet()) {
+            assert networks.contains(entry.getValue());
+            assert entry.getValue().nodes.get(entry.getKey()).network == entry.getValue();
+        }
+        for(Map.Entry<BlockPos, Set<Direction>> entry : links.entrySet()) {
+            assert entry.getValue() != null;
+        }
+        for(PipeNetwork network : networks) {
+            for(Map.Entry<BlockPos, PipeNetworkNode> entry : network.nodes.entrySet()) {
+                assert entry.getValue() == null || entry.getValue().network == network;
+                assert networkByBlock.get(entry.getKey()) == network;
+            }
+        }
     }
 }

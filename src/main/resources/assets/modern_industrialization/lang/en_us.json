@@ -10,6 +10,8 @@
   "item.modern_industrialization.pipe_fluid_steel" : "Steel Fluid Pipe",
   "item.modern_industrialization.pipe_fluid_aluminium" : "Aluminium Fluid Pipe",
 
+  "item.modern_industrialization.wrench" : "Wrench",
+
 
   "block.modern_industrialization.steam" : "Steam",
   "block.modern_industrialization.steam_boiler" : "Steam Boiler",

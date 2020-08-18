@@ -8,6 +8,7 @@ import aztech.modern_industrialization.fluid.FluidStackItem;
 import aztech.modern_industrialization.gui.MachineScreenHandler;
 import aztech.modern_industrialization.gui.SteamBoilerScreenHandler;
 import aztech.modern_industrialization.pipes.MIPipes;
+import aztech.modern_industrialization.tools.WrenchItem;
 import net.devtech.arrp.api.RRPCallback;
 import net.devtech.arrp.api.RuntimeResourcePack;
 import net.devtech.arrp.json.blockstate.JBlockModel;
@@ -39,6 +40,9 @@ public class ModernIndustrialization implements ModInitializer {
 	);
 	public static final Item ITEM_FLUID_SLOT = new FluidStackItem(new Item.Settings().maxCount(1)); // evil hack
 
+	// Item
+	public static final Item ITEM_WRENCH = new WrenchItem(new Item.Settings());
+
 	// Block
 	public static final Block BLOCK_STEAM_BOILER = new MachineBlock(SteamBoilerBlockEntity::new);
 	public static final Item ITEM_STEAM_BOILER = new BlockItem(BLOCK_STEAM_BOILER, new Item.Settings().group(ITEM_GROUP));
@@ -61,15 +65,20 @@ public class ModernIndustrialization implements ModInitializer {
 		// However, some things (like resources) may still be uninitialized.
 		// Proceed with mild caution.
 
+		setupItems();
 		setupBlocks();
 		setupBlockEntities();
 		setupFluids();
 
-		new MIPipes().onInitialize();
+		MIPipes.INSTANCE.onInitialize();
 
 		RRPCallback.EVENT.register(a -> a.add(RESOURCE_PACK));
 
 		LOGGER.info("Modern Industrialization setup done!");
+	}
+
+	private void setupItems() {
+		registerItem(ITEM_WRENCH, "wrench");
 	}
 
 	private void setupBlocks() {
@@ -99,6 +108,7 @@ public class ModernIndustrialization implements ModInitializer {
 
 	private void registerItem(Item item, String id) {
 		Registry.register(Registry.ITEM, new Identifier(MOD_ID, id), item);
+		RESOURCE_PACK.addModel(JModel.model().parent("minecraft:item/generated").textures(new JTextures().layer0(MOD_ID + ":items/" + id)), new MIIdentifier("item/" + id));
 	}
 
 	private void registerFluid(Fluid fluid, String id) {

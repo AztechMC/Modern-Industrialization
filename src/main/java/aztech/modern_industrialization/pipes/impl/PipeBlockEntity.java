@@ -249,24 +249,27 @@ public class PipeBlockEntity extends BlockEntity implements Tickable, BlockEntit
     /**
      * Get the currently visible shapes.
      */
-    Collection<VoxelShape> getPartShapes() {
-        Collection<VoxelShape> shapes = new ArrayList<>();
+    Collection<PipeVoxelShape> getPartShapes() {
+        Collection<PipeVoxelShape> shapes = new ArrayList<>();
 
         byte[] renderedConnections = new byte[this.renderedConnections.size()];
+        PipeNetworkType[] types = new PipeNetworkType[this.renderedConnections.size()];
         int slot = 0;
         for (Map.Entry<PipeNetworkType, Byte> connections : this.renderedConnections.entrySet()) {
-            renderedConnections[slot++] = connections.getValue();
+            renderedConnections[slot] = connections.getValue();
+            types[slot] = connections.getKey();
+            slot++;
         }
         for(slot = 0; slot < renderedConnections.length; ++slot) {
             // Center connector
-            shapes.add(SHAPE_CACHE[slot][NORTH.getId()][0]);
+            shapes.add(new PipeVoxelShape(SHAPE_CACHE[slot][NORTH.getId()][0], types[slot], null));
 
             // Side connectors
             for (Direction direction : Direction.values()) {
                 PipeShapeBuilder psb = new PipeShapeBuilder(PipeModel.getSlotPos(slot), direction);
                 int connectionType = PipeModel.getConnectionType(slot, direction, renderedConnections);
                 if (connectionType != 0) {
-                    shapes.add(SHAPE_CACHE[slot][direction.getId()][connectionType]);
+                    shapes.add(new PipeVoxelShape(SHAPE_CACHE[slot][direction.getId()][connectionType], types[slot], direction));
                 }
             }
         }
@@ -275,7 +278,7 @@ public class PipeBlockEntity extends BlockEntity implements Tickable, BlockEntit
     }
 
     private void rebuildCollisionShape() {
-        currentCollisionShape = getPartShapes().stream().reduce(VoxelShapes.empty(), VoxelShapes::union);
+        currentCollisionShape = getPartShapes().stream().map(vs -> vs.shape).reduce(VoxelShapes.empty(), VoxelShapes::union);
     }
 
     static {

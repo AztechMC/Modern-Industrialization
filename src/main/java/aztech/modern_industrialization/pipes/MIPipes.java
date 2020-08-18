@@ -25,16 +25,20 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 public class MIPipes implements ModInitializer {
+    public static final MIPipes INSTANCE = new MIPipes();
     public static final ComponentType<PipeNetworksComponent> PIPE_NETWORKS =
             ComponentRegistry.INSTANCE.registerIfAbsent(new MIIdentifier("pipe_networks"), PipeNetworksComponent.class)
                     .attach(WorldComponentCallback.EVENT, PipeNetworksComponentImpl::new);
 
     public static final Block BLOCK_PIPE = new PipeBlock(FabricBlockSettings.of(Material.METAL).hardness(4.0f));
     public static BlockEntityType<PipeBlockEntity> BLOCK_ENTITY_TYPE_PIPE;
+    private Map<PipeNetworkType, Item> pipeItems = new HashMap<>();
 
     @Override
     public void onInitialize() {
@@ -72,7 +76,12 @@ public class MIPipes implements ModInitializer {
                 type,
                 new FluidNetworkData(Fluids.EMPTY, nodeCapacity)
         );
+        pipeItems.put(type, item);
         Registry.register(Registry.ITEM, new MIIdentifier("pipe_fluid_" + name), item);
         PipeModelProvider.modelNames.add(new MIIdentifier("item/pipe_fluid_" + name));
+    }
+
+    public Item getPipeItem(PipeNetworkType type) {
+        return pipeItems.get(type);
     }
 }

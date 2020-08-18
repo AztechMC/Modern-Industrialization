@@ -244,6 +244,33 @@ class PipePartBuilder {
     }
 
     /**
+     * Draw a short bend, on the extra slot.
+     */
+    void farShortBend() {
+        // horizontal
+        float dist = FIRST_POS + SIDE;
+        float advDist = distanceToSide(facing) - dist;
+        drawPipeWithEnd(advDist + SIDE);
+        moveForward(advDist + SIDE / 2);
+        turnUp();
+        // vertical
+        moveForward(SIDE / 2);
+        drawPipeWithEnd(SPACING + SIDE);
+        moveForward(SPACING + SIDE / 2);
+        rotateCw();
+        turnUp();
+        // perpendicular
+        moveForward(SIDE / 2);
+        drawPipeWithEnd(SPACING + SIDE);
+        moveForward(SPACING + SIDE / 2);
+        rotateCw();
+        turnUp();
+        // again vertical
+        moveForward(SIDE / 2);
+        drawPipe(distanceToSide(facing));
+    }
+
+    /**
      * Draw a long bend.
      */
     void longBend() {

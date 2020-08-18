@@ -26,6 +26,8 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+import static net.minecraft.util.math.Direction.WEST;
+
 /**
  * The model of a pipe block. It can handle up to three different pipe types.
  * The block is divided in five slots of width SIDE, three for the main pipes and two for connection handling.
@@ -55,28 +57,43 @@ public class PipeModel implements UnbakedModel, BakedModel, FabricBakedModel {
 
             // Draw cached meshes
             for(Direction direction : Direction.values()) {
-                int connectionType;
-                if((attachment.renderedConnections[slot] & (1 << direction.getId())) == 0) {
-                    connectionType = 0;
-                } else {
-                    int connSlot = 0;
-                    for(int i = 0; i < slot; i++) {
-                        if((attachment.renderedConnections[i] & (1 << direction.getId())) != 0) {
-                            connSlot++;
-                        }
-                    }
-                    if(connSlot == slot) {
-                        connectionType = 1;
-                    } else if(connSlot == 0) {
-                        connectionType = 2;
-                    } else {
-                        connectionType = 3;
-                    }
-                }
-                renderContext.meshConsumer().accept(meshCache[slot][direction.getId()][connectionType]);
+                renderContext.meshConsumer().accept(meshCache[slot][direction.getId()][getConnectionType(slot, direction, attachment.renderedConnections)]);
             }
 
             renderContext.popTransform();
+        }
+    }
+
+    /**
+     * Get the type of a connection.
+     */
+    public static int getConnectionType(int slot, Direction direction, byte[] connections) {
+        if((connections[slot] & (1 << direction.getId())) == 0) {
+            return 0;
+        } else {
+            int connSlot = 0;
+            for(int i = 0; i < slot; i++) {
+                if((connections[i] & (1 << direction.getId())) != 0) {
+                    connSlot++;
+                }
+            }
+            if(slot == 1) {
+                // short bend
+                if(connSlot == 0) {
+                    return 2;
+                }
+            }
+            else if(slot == 2) {
+                if(connSlot == 0) {
+                    // short bend, but far if the direction is west to avoid collisions in some cases.
+                    return direction == WEST ? 3 : 2;
+                } else if(connSlot == 1) {
+                    // long bend
+                    return 4;
+                }
+            }
+            // default to straight line
+            return 1;
         }
     }
 
@@ -139,15 +156,17 @@ public class PipeModel implements UnbakedModel, BakedModel, FabricBakedModel {
     public BakedModel bake(ModelLoader loader, Function<SpriteIdentifier, Sprite> textureGetter, ModelBakeSettings rotationContainer, Identifier modelId) {
         fluidSprite = textureGetter.apply(FLUID_SPRITE_ID);
 
-        meshCache = new Mesh[3][6][4];
+        meshCache = new Mesh[3][6][5];
         MeshBuilder builder = RendererAccess.INSTANCE.getRenderer().meshBuilder();
         for(int slot = 0; slot < 3; slot++) {
             for(Direction direction : Direction.values()) {
-                for(int connectionType = 0; connectionType <= slot+1; connectionType++) {
+                int connectionTypes = slot == 0 ? 2 : slot == 1 ? 3 : 5;
+                for(int connectionType = 0; connectionType < connectionTypes; connectionType++) {
                     PipePartBuilder ppb = new PipePartBuilder(builder.getEmitter(), getSlotPos(slot), direction, fluidSprite);
                     if(connectionType == 0) ppb.noConnection();
                     else if(connectionType == 1) ppb.straightLine();
                     else if(connectionType == 2) ppb.shortBend();
+                    else if(connectionType == 3) ppb.farShortBend();
                     else ppb.longBend();
                     meshCache[slot][direction.getId()][connectionType] = builder.build();
                 }

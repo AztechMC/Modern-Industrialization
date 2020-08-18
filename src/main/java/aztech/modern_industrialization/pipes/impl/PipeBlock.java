@@ -81,22 +81,12 @@ public class PipeBlock extends Block implements BlockEntityProvider {
                 // Side connectors
                 for (Direction direction : Direction.values()) {
                     PipeShapeBuilder psb = new PipeShapeBuilder(PipeModel.getSlotPos(slot), direction);
-                    if ((renderedConnections[slot] & (1 << direction.getId())) == 0) {
-                        // todo: clean up
-                    } else {
-                        int connSlot = 0;
-                        for (int i = 0; i < slot; i++) {
-                            if ((renderedConnections[i] & (1 << direction.getId())) != 0) {
-                                connSlot++;
-                            }
-                        }
-                        if (connSlot == slot) {
-                            psb.straightLine();
-                        } else if (connSlot == 0) {
-                            psb.shortBend();
-                        } else {
-                            psb.longBend();
-                        }
+                    int connectionType = PipeModel.getConnectionType(slot, direction, renderedConnections);
+                    if (connectionType != 0) {
+                        if (connectionType == 1) psb.straightLine();
+                        else if (connectionType == 2) psb.shortBend();
+                        else if (connectionType == 3) psb.farShortBend();
+                        else psb.longBend();
                         VoxelShape shape = psb.getShape();
                         rayTrace.accept(shape);
                     }

@@ -93,6 +93,7 @@ public class PipeNetworkManager {
                 }
                 networkByBlock.put(nodePos, newNetwork);
                 newNetwork.nodes.put(nodePos, node);
+                network.nodes.remove(nodePos);
             }
         }
         checkStateCoherence();

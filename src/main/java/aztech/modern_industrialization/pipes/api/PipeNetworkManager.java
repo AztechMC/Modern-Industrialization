@@ -253,19 +253,23 @@ public class PipeNetworkManager {
      * Check all internal state coherence for debugging purposes.
      */
     public void checkStateCoherence() {
-        assert networkByBlock.keySet().equals(links.keySet());
+        customAssert(networkByBlock.keySet().equals(links.keySet()));
         for(Map.Entry<BlockPos, PipeNetwork> entry : networkByBlock.entrySet()) {
-            assert networks.contains(entry.getValue());
-            assert entry.getValue().nodes.get(entry.getKey()).network == entry.getValue();
+            customAssert(networks.contains(entry.getValue()));
+            customAssert(entry.getValue().nodes.get(entry.getKey()).network == entry.getValue());
         }
         for(Map.Entry<BlockPos, Set<Direction>> entry : links.entrySet()) {
-            assert entry.getValue() != null;
+            customAssert(entry.getValue() != null);
         }
         for(PipeNetwork network : networks) {
             for(Map.Entry<BlockPos, PipeNetworkNode> entry : network.nodes.entrySet()) {
-                assert entry.getValue() == null || entry.getValue().network == network;
-                assert networkByBlock.get(entry.getKey()) == network;
+                customAssert(entry.getValue() == null || entry.getValue().network == network);
+                customAssert(networkByBlock.get(entry.getKey()) == network);
             }
         }
+    }
+
+    private void customAssert(boolean predicate) {
+        if(!predicate) throw new NullPointerException("Predicate was false");
     }
 }

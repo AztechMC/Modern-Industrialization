@@ -39,7 +39,7 @@ public class PipeNetworkManager {
             for(Map.Entry<BlockPos, PipeNetworkNode> entry : otherNetwork.nodes.entrySet()) {
                 PipeNetworkNode node = entry.getValue();
                 BlockPos nodePos = entry.getKey();
-                if(nodePos != null) {
+                if(node != null) {
                     node.network = network;
                 }
                 networkByBlock.put(nodePos, network);

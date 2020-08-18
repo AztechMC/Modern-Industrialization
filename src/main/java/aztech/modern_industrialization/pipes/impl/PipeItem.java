@@ -4,9 +4,14 @@ import aztech.modern_industrialization.pipes.MIPipes;
 import aztech.modern_industrialization.pipes.api.PipeNetworkData;
 import aztech.modern_industrialization.pipes.api.PipeNetworkType;
 import aztech.modern_industrialization.pipes.impl.PipeBlockEntity;
+import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUsageContext;
+import net.minecraft.sound.BlockSoundGroup;
+import net.minecraft.sound.SoundCategory;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -25,6 +30,31 @@ public class PipeItem extends Item {
     public ActionResult useOnBlock(ItemUsageContext context) {
         // TODO: Check BlockItem code and implement all checks.
         // TODO: Check advancement criteria.
+
+        BlockPos placingPos = tryPlace(context);
+        if(placingPos != null) {
+            World world = context.getWorld();
+            PlayerEntity player = context.getPlayer();
+
+            // update adjacent pipes
+            world.updateNeighbors(placingPos, null);
+            // remove one from stack
+            ItemStack placementStack = context.getStack();
+            if(player != null && !player.abilities.creativeMode) {
+                placementStack.decrement(1);
+            }
+            // play placing sound
+            BlockState newState = world.getBlockState(placingPos);
+            BlockSoundGroup group = newState.getSoundGroup();
+            world.playSound(player, placingPos, group.getPlaceSound(), SoundCategory.BLOCKS, (group.getVolume() + 1.0F) / 2.0F, group.getPitch() * 0.8F);
+
+            return ActionResult.success(world.isClient);
+        }
+        return super.useOnBlock(context);
+    }
+
+    // Try placing the pipe and registering the new pipe to the entity, returns null if it failed
+    private BlockPos tryPlace(ItemUsageContext context) {
         World world = context.getWorld();
         // First, try to add a pipe to an existing block
         BlockPos hitPos = context.getBlockPos();
@@ -36,8 +66,7 @@ public class PipeItem extends Item {
                 if(!world.isClient) {
                     pipeEntity.addPipe(type, defaultData);
                 }
-                world.updateNeighbors(hitPos, null);
-                return ActionResult.success(world.isClient);
+                return hitPos;
             }
         }
         // Place a new block otherwise
@@ -47,10 +76,18 @@ public class PipeItem extends Item {
             if(!world.isClient) {
                 PipeBlockEntity pipeEntity = (PipeBlockEntity) world.getBlockEntity(placingPos);
                 pipeEntity.addPipe(type, defaultData.clone());
-                world.updateNeighbors(placingPos, null);
+            }
+            return placingPos;
+        } else if(world.getBlockState(placingPos).isOf(MIPipes.BLOCK_PIPE)) {
+            // Or try to add to the side of the block
+            PipeBlockEntity pipeEntity = (PipeBlockEntity) world.getBlockEntity(placingPos);
+            if(pipeEntity.canAddPipe(type)) {
+                if(!world.isClient) {
+                    pipeEntity.addPipe(type, defaultData);
+                }
+                return placingPos;
             }
         }
-
-        return super.useOnBlock(context);
+        return null;
     }
 }

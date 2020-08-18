@@ -45,8 +45,8 @@ public abstract class MachineBlockEntity extends AbstractMachineBlockEntity
 
     private int availableSlot[];
 
-    protected MachineBlockEntity(BlockEntityType<?> blockEntityType, MachineFactory factory) {
-        super(blockEntityType, factory.getSlots(), Direction.NORTH);
+    protected MachineBlockEntity(MachineFactory factory) {
+        super(factory.blockEntityType, factory.getSlots(), Direction.NORTH);
         this.factory = factory;
 
         for(int i = 0; i < factory.getSlots(); i++){

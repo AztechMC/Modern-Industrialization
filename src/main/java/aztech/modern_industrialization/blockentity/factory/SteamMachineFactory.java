@@ -1,15 +1,20 @@
 package aztech.modern_industrialization.blockentity.factory;
 
+import aztech.modern_industrialization.blockentity.AbstractMachineBlockEntity;
+import net.minecraft.block.entity.BlockEntity;
+
+import java.util.function.Supplier;
+
 public class SteamMachineFactory extends MachineFactory {
 
     private int steamBucketCapacity;
 
-    public SteamMachineFactory(String ID, int inputSlots, int outputSlots, int liquidInputSlots, int liquidOutputSlots) {
-        super(ID, inputSlots, outputSlots, liquidInputSlots + 1, liquidOutputSlots);
+    public SteamMachineFactory(String ID, Supplier<AbstractMachineBlockEntity> blockEntityConstructor, int inputSlots, int outputSlots, int liquidInputSlots, int liquidOutputSlots) {
+        super(ID, blockEntityConstructor, inputSlots, outputSlots, liquidInputSlots + 1, liquidOutputSlots);
     }
 
-    public SteamMachineFactory(String ID, int inputSlots, int outputSlots) {
-        super(ID, inputSlots, outputSlots,  1, 0);
+    public SteamMachineFactory(String ID, Supplier<AbstractMachineBlockEntity> blockEntityConstructor, int inputSlots, int outputSlots) {
+        super(ID, blockEntityConstructor, inputSlots, outputSlots,  1, 0);
     }
 
     public SteamMachineFactory setSteamSlotPos(int posX, int posY) {

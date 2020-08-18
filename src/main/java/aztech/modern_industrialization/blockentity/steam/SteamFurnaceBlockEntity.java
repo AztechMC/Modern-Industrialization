@@ -8,7 +8,7 @@ import net.minecraft.block.entity.BlockEntityType;
 public class SteamFurnaceBlockEntity extends MachineBlockEntity {
 
     public SteamFurnaceBlockEntity() {
-        super(ModernIndustrialization.BLOCK_ENTITY_STEAM_FURNACE, MachineFactory.steamFurnaceFactory);
+        super(MachineFactory.steamFurnaceFactory);
     }
 
     @Override

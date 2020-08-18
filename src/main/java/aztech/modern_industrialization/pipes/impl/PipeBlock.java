@@ -1,7 +1,9 @@
 package aztech.modern_industrialization.pipes.impl;
 
 import aztech.modern_industrialization.pipes.MIPipes;
+import aztech.modern_industrialization.pipes.api.PipeNetworkType;
 import aztech.modern_industrialization.tools.IWrenchable;
+import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
 import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.MinecraftClient;
@@ -9,9 +11,13 @@ import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUsageContext;
+import net.minecraft.item.Items;
 import net.minecraft.loot.context.LootContext;
+import net.minecraft.loot.context.LootContextParameters;
+import net.minecraft.loot.context.LootContextTypes;
 import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvent;
@@ -25,7 +31,9 @@ import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class PipeBlock extends Block implements BlockEntityProvider, IWrenchable {
     public PipeBlock(Settings settings) {
@@ -36,8 +44,6 @@ public class PipeBlock extends Block implements BlockEntityProvider, IWrenchable
     public BlockEntity createBlockEntity(BlockView world) {
         return new PipeBlockEntity();
     }
-
-
 
     @Override
     public ActionResult onWrenchUse(ItemUsageContext context) {
@@ -95,7 +101,46 @@ public class PipeBlock extends Block implements BlockEntityProvider, IWrenchable
 
     @Override
     public List<ItemStack> getDroppedStacks(BlockState state, LootContext.Builder builder) {
-        return super.getDroppedStacks(state, builder); // TODO: drops
+        LootContext lootContext = builder.parameter(LootContextParameters.BLOCK_STATE, state).build(LootContextTypes.BLOCK);
+        PipeBlockEntity pipeEntity = (PipeBlockEntity) lootContext.get(LootContextParameters.BLOCK_ENTITY);
+        ItemStack tool = lootContext.get(LootContextParameters.TOOL);
+        if(tool != null && FabricToolTags.PICKAXES.contains(tool.getItem())) {
+            return pipeEntity.renderedConnections.keySet().stream().map(t -> new ItemStack(MIPipes.INSTANCE.getPipeItem(t))).collect(Collectors.toList());
+        } else {
+            return Collections.emptyList();
+        }
+    }
+
+    @Override
+    public ItemStack getPickStack(BlockView world, BlockPos pos, BlockState state) {
+        PipeBlockEntity entity = (PipeBlockEntity) world.getBlockEntity(pos);
+        PipeNetworkType[] itemType = new PipeNetworkType[]{null};
+        if (entity != null) {
+            double[] smallestDistance = new double[]{10000};
+            VoxelShape[] closestShape = new VoxelShape[]{null};
+
+            // TODO: don't copy/paste?
+            for (PipeVoxelShape pipePartShape : entity.getPartShapes()) {
+                VoxelShape partShape = pipePartShape.shape;
+                assert (world instanceof ClientWorld);
+                float tickDelta = 0; // TODO: fix this
+                ClientPlayerEntity player = MinecraftClient.getInstance().player;
+                Vec3d vec3d = player.getCameraPosVec(tickDelta);
+                Vec3d vec3d2 = player.getRotationVec(tickDelta);
+                double maxDistance = MinecraftClient.getInstance().interactionManager.getReachDistance();
+                Vec3d vec3d3 = vec3d.add(vec3d2.x * maxDistance, vec3d2.y * maxDistance, vec3d2.z * maxDistance);
+                BlockHitResult hit = partShape.rayTrace(vec3d, vec3d3, pos);
+                if (hit != null && hit.getType() == HitResult.Type.BLOCK) {
+                    double dist = hit.getPos().distanceTo(vec3d);
+                    if (dist < smallestDistance[0]) {
+                        smallestDistance[0] = dist;
+                        closestShape[0] = partShape;
+                        itemType[0] = pipePartShape.type;
+                    }
+                }
+            }
+        }
+        return new ItemStack(itemType[0] == null ? Items.AIR : MIPipes.INSTANCE.getPipeItem(itemType[0]));
     }
 
     @Override

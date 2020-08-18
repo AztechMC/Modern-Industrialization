@@ -9,12 +9,10 @@ import aztech.modern_industrialization.fluid.FluidUnit;
 import aztech.modern_industrialization.gui.SteamBoilerScreenHandler;
 import net.fabricmc.fabric.impl.content.registry.FuelRegistryImpl;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.entity.AbstractFurnaceBlockEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.inventory.SidedInventory;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemConvertible;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
@@ -174,6 +172,8 @@ public class SteamBoilerBlockEntity extends AbstractMachineBlockEntity implement
 
     @Override
     public int insert(Direction direction, Fluid fluid, int maxAmount, boolean simulate) {
+        if(!canFluidContainerConnect(direction)) return 0;
+
         if(fluid == Fluids.WATER) {
             int waterAmount = FluidStackItem.getAmount(inventory.get(1));
             int waterCapacity = FluidStackItem.getCapacity(inventory.get(1));
@@ -194,6 +194,8 @@ public class SteamBoilerBlockEntity extends AbstractMachineBlockEntity implement
 
     @Override
     public int extract(Direction direction, Fluid fluid, int maxAmount, boolean simulate) {
+        if(!canFluidContainerConnect(direction)) return 0;
+
         if(fluid == ModernIndustrialization.FLUID_STEAM) {
             int amount = FluidStackItem.getAmount(inventory.get(2));
             int extracted = Math.min(amount, maxAmount);
@@ -208,5 +210,15 @@ public class SteamBoilerBlockEntity extends AbstractMachineBlockEntity implement
     @Override
     public Fluid[] getExtractableFluids(Direction direction) {
         return new Fluid[] { ModernIndustrialization.FLUID_STEAM };
+    }
+
+    @Override
+    public boolean canFluidContainerConnect(Direction direction) {
+        return direction != facingDirection;
+    }
+
+    @Override
+    public boolean providesFluidExtractionForce(Direction direction, Fluid fluid) {
+        return true;
     }
 }

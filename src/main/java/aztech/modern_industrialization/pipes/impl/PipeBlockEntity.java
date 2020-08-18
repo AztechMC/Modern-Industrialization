@@ -134,6 +134,34 @@ public class PipeBlockEntity extends BlockEntity implements Tickable, BlockEntit
         onConnectionsChanged();
     }
 
+    /**
+     * Remove a pipe connection.
+     */
+    public void removeConnection(PipeNetworkType type, Direction direction) {
+        for(PipeNetworkNode pipe : pipes) {
+            if(pipe.getType() == type) {
+                pipe.removeConnection(world, pos, direction);
+                pipe.getManager().removeLink(pos, direction);
+                onConnectionsChanged();
+                return;
+            }
+        }
+    }
+
+    /**
+     * Add a pipe connection.
+     */
+    public void addConnection(PipeNetworkType type, Direction direction) {
+        for(PipeNetworkNode pipe : pipes) {
+            if(pipe.getType() == type) {
+                pipe.addConnection(world, pos, direction);
+                pipe.getManager().addLink(pos, direction);
+                onConnectionsChanged();
+                return;
+            }
+        }
+    }
+
     @Override
     public void markRemoved() {
         loadPipes();

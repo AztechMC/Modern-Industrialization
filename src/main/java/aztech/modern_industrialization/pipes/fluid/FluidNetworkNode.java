@@ -7,7 +7,6 @@ import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.util.Tickable;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
@@ -32,30 +31,49 @@ public class FluidNetworkNode extends PipeNetworkNode {
             // Extract any
             if(data.fluid == Fluids.EMPTY) {
                 for(Fluid fluid : connection.fluidInventory.getExtractableFluids(connection.direction)) {
-                    int extracted = connection.fluidInventory.extract(connection.direction, fluid, data.nodeCapacity, false);
-                    if(extracted > 0) {
-                        amount = extracted;
-                        data.fluid = fluid;
-                        break;
+                    if(connection.canExtract(fluid)) {
+                        int extracted = connection.fluidInventory.extract(connection.direction, fluid, data.nodeCapacity, false);
+                        if (extracted > 0) {
+                            amount = extracted;
+                            data.fluid = fluid;
+                            break;
+                        }
                     }
                 }
             }
             // Extract current fluid
             else {
-                int extracted = connection.fluidInventory.extract(connection.direction, data.fluid, data.nodeCapacity - amount, false);
-                amount += extracted;
+                if(connection.canExtract(data.fluid)) {
+                    int extracted = connection.fluidInventory.extract(connection.direction, data.fluid, data.nodeCapacity - amount, false);
+                    amount += extracted;
+                }
             }
         }
     }
 
     @Override
     public void updateConnections(World world, BlockPos pos) {
-        connections.clear();
-        for(Direction direction : Direction.values()) {
-            BlockPos adjPos = pos.offset(direction);
+        // We don't connect by default, so we just have to remove connections that have become unavailable
+        for(int i = 0; i < connections.size();) {
+            FluidConnection conn = connections.get(i);
+            BlockPos adjPos = pos.offset(conn.direction);
             BlockEntity entity = world.getBlockEntity(adjPos);
-            if(entity instanceof FluidInventory) {
-               connections.add(new FluidConnection(direction, (FluidInventory)entity));
+            if(conn.fluidInventory == null) {
+                // The node was just loaded, it doesn't have the fluid inventory yet, so we accept any connection.
+                if(canConnect(entity, conn.direction)) {
+                    connections.set(i, new FluidConnection(conn.direction, (FluidInventory) entity));
+                    i++;
+                } else {
+                    connections.remove(i);
+                }
+            } else {
+                // The connected inventory must be the same and it must still accept connections, otherwise we disconnect
+                if(entity == conn.fluidInventory && conn.fluidInventory.canFluidContainerConnect(conn.direction.getOpposite())) {
+                    i++;
+                } else {
+                    connections.remove(i);
+                }
+
             }
         }
     }
@@ -68,15 +86,56 @@ public class FluidNetworkNode extends PipeNetworkNode {
         return links;
     }
 
+    private boolean canConnect(BlockEntity entity, Direction direction) {
+        return entity instanceof FluidInventory && ((FluidInventory) entity).canFluidContainerConnect(direction.getOpposite());
+    }
+
+    @Override
+    public boolean removeConnection(World world, BlockPos pos, Direction direction) {
+        // Remove if it exists
+        for(int i = 0; i < connections.size(); i++) {
+            if(connections.get(i).direction == direction) {
+                connections.remove(i);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public boolean addConnection(World world, BlockPos pos, Direction direction) {
+        // Refuse if it already exists
+        for(int i = 0; i < connections.size(); i++) {
+            if(connections.get(i).direction == direction) {
+                connections.remove(i);
+                return false;
+            }
+        }
+        // Otherwise try to connect
+        BlockPos adjPos = pos.offset(direction);
+        BlockEntity entity = world.getBlockEntity(adjPos);
+        if (canConnect(entity, direction)) {
+            connections.add(new FluidConnection(direction, (FluidInventory) entity));
+            return true;
+        }
+        return false;
+    }
+
     @Override
     public CompoundTag toTag(CompoundTag tag) {
         tag.putInt("amount", amount);
+        tag.putByte("connections", NbtHelper.encodeDirections(connections.stream().map(c -> c.direction).collect(Collectors.toList())));
         return tag;
     }
 
     @Override
     public void fromTag(CompoundTag tag) {
         amount = tag.getInt("amount");
+        Direction[] directions = NbtHelper.decodeDirections(tag.getByte("connections"));
+        connections.clear();
+        for(int i = 0; i < directions.length; i++) {
+            connections.add(new FluidConnection(directions[i], null));
+        }
     }
 
     private static class FluidConnection {
@@ -93,7 +152,7 @@ public class FluidNetworkNode extends PipeNetworkNode {
         }
 
         private boolean canExtract(Fluid fluid) {
-            return true;
+            return fluidInventory.providesFluidExtractionForce(direction.getOpposite(), fluid);
         }
     }
 }

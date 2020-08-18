@@ -14,6 +14,7 @@ import net.minecraft.item.ItemUsageContext;
 import net.minecraft.loot.context.LootContext;
 import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.sound.SoundCategory;
+import net.minecraft.sound.SoundEvent;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.HitResult;
@@ -44,6 +45,7 @@ public class PipeBlock extends Block implements BlockEntityProvider, IWrenchable
         PlayerEntity player = context.getPlayer();
         BlockPos blockPos = context.getBlockPos();
         PipeBlockEntity pipeEntity = (PipeBlockEntity) world.getBlockEntity(blockPos);
+        BlockSoundGroup group = world.getBlockState(blockPos).getSoundGroup();
 
         Vec3d hitPos = context.getHitPos();
         for(PipeVoxelShape partShape : pipeEntity.getPartShapes()) {
@@ -65,8 +67,23 @@ public class PipeBlock extends Block implements BlockEntityProvider, IWrenchable
                         // spawn pipe item
                         world.spawnEntity(new ItemEntity(world, hitPos.x, hitPos.y, hitPos.z, new ItemStack(MIPipes.INSTANCE.getPipeItem(partShape.type))));
                         // play break sound
-                        BlockSoundGroup group = world.getBlockState(blockPos).getSoundGroup();
                         world.playSound(player, blockPos, group.getBreakSound(), SoundCategory.BLOCKS, (group.getVolume() + 1.0F) / 2.0F, group.getPitch() * 0.8F);
+                        return ActionResult.success(world.isClient);
+                    } else {
+                        SoundEvent sound;
+                        if(partShape.direction == null) {
+                            if(!world.isClient) {
+                                pipeEntity.addConnection(partShape.type, context.getSide());
+                            }
+                            sound = group.getPlaceSound();
+                        } else {
+                            if(!world.isClient) {
+                                pipeEntity.removeConnection(partShape.type, partShape.direction);
+                            }
+                            sound = group.getBreakSound();
+                        }
+                        world.updateNeighbors(blockPos, null);
+                        world.playSound(player, blockPos, sound, SoundCategory.BLOCKS, (group.getVolume() + 1.0F) / 4.0F, group.getPitch() * 0.8F);
                         return ActionResult.success(world.isClient);
                     }
                 }

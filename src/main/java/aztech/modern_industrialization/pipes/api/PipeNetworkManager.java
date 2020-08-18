@@ -257,7 +257,8 @@ public class PipeNetworkManager {
         customAssert(networkByBlock.keySet().equals(links.keySet()));
         for(Map.Entry<BlockPos, PipeNetwork> entry : networkByBlock.entrySet()) {
             customAssert(networks.contains(entry.getValue()));
-            customAssert(entry.getValue().nodes.get(entry.getKey()).network == entry.getValue());
+            PipeNetworkNode node = entry.getValue().nodes.get(entry.getKey());
+            customAssert(node == null || node.network == entry.getValue());
         }
         for(Map.Entry<BlockPos, Set<Direction>> entry : links.entrySet()) {
             customAssert(entry.getValue() != null);

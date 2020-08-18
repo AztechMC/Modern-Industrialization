@@ -14,7 +14,7 @@ public class NbtHelper {
     public static void putFluid(CompoundTag tag, String key, Fluid fluid) {
         tag.putInt("fluid_id", Registry.FLUID.getRawId(fluid));
     }
-    public static byte encodeDirections(Collection<Direction> directions) {
+    public static byte encodeDirections(Iterable<Direction> directions) {
         byte mask = 0;
         for(Direction direction : directions) {
             mask |= 1 << direction.getId();

@@ -157,4 +157,13 @@ public abstract class MachineBlockEntity extends AbstractMachineBlockEntity
         return new Fluid[] {};
     }
 
+    @Override
+    public boolean providesFluidExtractionForce(Direction direction, Fluid fluid) {
+        return false;
+    }
+
+    @Override
+    public boolean canFluidContainerConnect(Direction direction) {
+        return direction != facingDirection;
+    }
 }

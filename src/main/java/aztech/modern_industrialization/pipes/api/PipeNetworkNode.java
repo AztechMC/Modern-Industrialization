@@ -12,6 +12,8 @@ public abstract class PipeNetworkNode implements Tickable {
     protected PipeNetwork network;
     public abstract void updateConnections(World world, BlockPos pos);
     public abstract Set<Direction> getRenderedConnections(BlockPos pos);
+    public abstract boolean removeConnection(World world, BlockPos pos, Direction direction);
+    public abstract boolean addConnection(World world, BlockPos pos, Direction direction);
 
     public abstract CompoundTag toTag(CompoundTag tag);
     public abstract void fromTag(CompoundTag tag);

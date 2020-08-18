@@ -49,12 +49,17 @@ public class PipeBlockEntity extends BlockEntity implements Tickable, BlockEntit
     // Because we can't access the PipeNetworksComponent in fromTag because the world is null, we defer the node loading.
     private List<Pair<PipeNetworkType, PipeNetworkNode>> unloadedPipes = new ArrayList<>();
     private void loadPipes() {
+        boolean changed = false;
         for(Pair<PipeNetworkType, PipeNetworkNode> unloaded : unloadedPipes) {
             MIPipes.PIPE_NETWORKS.get(world).getManager(unloaded.getLeft()).nodeLoaded(unloaded.getRight(), pos);
             pipes.add(unloaded.getRight());
             unloaded.getRight().updateConnections(world, pos);
+            changed = true;
         }
         unloadedPipes.clear();
+        if(changed) {
+            onConnectionsChanged();
+        }
     }
 
     public PipeBlockEntity() {

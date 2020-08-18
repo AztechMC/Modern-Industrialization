@@ -1,5 +1,6 @@
 package aztech.modern_industrialization;
 
+import aztech.modern_industrialization.gui.MachineScreen;
 import aztech.modern_industrialization.gui.SteamBoilerScreen;
 import aztech.modern_industrialization.model.block.ModelProvider;
 import aztech.modern_industrialization.pipes.MIPipesClient;
@@ -40,6 +41,7 @@ public class ModernIndustrializationClient implements ClientModInitializer {
 
     private void setupScreens() {
         ScreenRegistry.register(ModernIndustrialization.SCREEN_HANDLER_TYPE_STEAM_BOILER, SteamBoilerScreen::new);
+        ScreenRegistry.register(ModernIndustrialization.SCREEN_HANDLER_TYPE_MACHINE, MachineScreen::new);
     }
 
     private void setupFluidRenders() {

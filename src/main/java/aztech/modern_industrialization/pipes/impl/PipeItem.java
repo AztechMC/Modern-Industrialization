@@ -1,6 +1,9 @@
-package aztech.modern_industrialization.pipes.api;
+package aztech.modern_industrialization.pipes.impl;
 
 import aztech.modern_industrialization.pipes.MIPipes;
+import aztech.modern_industrialization.pipes.api.PipeNetworkData;
+import aztech.modern_industrialization.pipes.api.PipeNetworkType;
+import aztech.modern_industrialization.pipes.impl.PipeBlockEntity;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemUsageContext;

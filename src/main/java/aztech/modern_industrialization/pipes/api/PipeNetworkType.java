@@ -40,7 +40,7 @@ public final class PipeNetworkType implements Comparable<PipeNetworkType> {
         return networkCtor;
     }
 
-    Supplier<PipeNetworkNode> getNodeCtor() {
+    public Supplier<PipeNetworkNode> getNodeCtor() {
         return nodeCtor;
     }
 

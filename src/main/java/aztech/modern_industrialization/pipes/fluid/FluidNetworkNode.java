@@ -17,14 +17,9 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class FluidNetworkNode extends PipeNetworkNode implements Tickable {
+public class FluidNetworkNode extends PipeNetworkNode {
     int amount = 0;
     private List<FluidConnection> connections = new ArrayList<>();
-
-    @Override
-    public void tick() {
-        network.tick();
-    }
 
     void interactWithConnections() {
         FluidNetworkData data = (FluidNetworkData) network.data;

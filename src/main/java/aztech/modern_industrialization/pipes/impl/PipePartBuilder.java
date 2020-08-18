@@ -15,7 +15,7 @@ class PipePartBuilder {
     /**
      * The width of a pipe.
      */
-    private static final float SIDE = 2.0f / 16;
+    static final float SIDE = 2.0f / 16;
     /**
      * The spacing between two pipes.
      */
@@ -25,9 +25,9 @@ class PipePartBuilder {
      */
     private static final float FIRST_POS = (1.0f - 5 * SIDE - 4 * SPACING) / 2;
     private QuadEmitter emitter;
-    private Vec3d pos;
-    private Vec3d facing;
-    private Vec3d right;
+    Vec3d pos;
+    Vec3d facing;
+    Vec3d right;
     private Sprite sprite;
 
     PipePartBuilder(QuadEmitter emitter, int slotPos, Direction direction, Sprite sprite) {
@@ -155,7 +155,7 @@ class PipePartBuilder {
     /**
      * Draw a 4-sided pipe.
      */
-    private void drawPipe(float length) {
+    void drawPipe(float length) {
         for (int i = 0; i < 4; ++i) {
             Vec3d up = up();
             quad(up, pos.add(up.multiply(SIDE / 2)).add(right.multiply(SIDE / 2)), pos.add(up.multiply(SIDE / 2)).subtract(right.multiply(SIDE / 2)).add(facing.multiply(length)));
@@ -176,14 +176,14 @@ class PipePartBuilder {
     /**
      * Move forward.
      */
-    private void moveForward(float amount) {
+    void moveForward(float amount) {
         this.pos = this.pos.add(this.facing.multiply(amount));
     }
 
     /**
      * Get up vector.
      */
-    private Vec3d up() {
+    Vec3d up() {
         return right.crossProduct(facing);
     }
 

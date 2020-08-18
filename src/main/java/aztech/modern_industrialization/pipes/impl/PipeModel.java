@@ -1,13 +1,10 @@
 package aztech.modern_industrialization.pipes.impl;
 
 import aztech.modern_industrialization.MIIdentifier;
-import aztech.modern_industrialization.pipes.api.PipeBlockEntity;
 import com.mojang.datafixers.util.Pair;
 import net.fabricmc.fabric.api.renderer.v1.RendererAccess;
 import net.fabricmc.fabric.api.renderer.v1.mesh.Mesh;
 import net.fabricmc.fabric.api.renderer.v1.mesh.MeshBuilder;
-import net.fabricmc.fabric.api.renderer.v1.mesh.MutableQuadView;
-import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
 import net.fabricmc.fabric.api.renderer.v1.model.FabricBakedModel;
 import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
 import net.fabricmc.fabric.api.rendering.data.v1.RenderAttachedBlockView;
@@ -22,9 +19,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
-import static net.minecraft.util.math.Direction.*;
 
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.BlockRenderView;
 
 import java.util.*;

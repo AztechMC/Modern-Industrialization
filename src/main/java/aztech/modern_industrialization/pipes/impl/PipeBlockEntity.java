@@ -1,7 +1,11 @@
-package aztech.modern_industrialization.pipes.api;
+package aztech.modern_industrialization.pipes.impl;
 
 import aztech.modern_industrialization.mixin_impl.WorldRendererGetter;
 import aztech.modern_industrialization.pipes.MIPipes;
+import aztech.modern_industrialization.pipes.api.PipeNetworkData;
+import aztech.modern_industrialization.pipes.api.PipeNetworkManager;
+import aztech.modern_industrialization.pipes.api.PipeNetworkNode;
+import aztech.modern_industrialization.pipes.api.PipeNetworkType;
 import aztech.modern_industrialization.util.NbtHelper;
 import net.fabricmc.fabric.api.block.entity.BlockEntityClientSerializable;
 import net.fabricmc.fabric.api.rendering.data.v1.RenderAttachmentBlockEntity;
@@ -23,7 +27,7 @@ import java.util.*;
 public class PipeBlockEntity extends BlockEntity implements Tickable, BlockEntityClientSerializable, RenderAttachmentBlockEntity {
     private static final int MAX_PIPES = 6;
     private SortedSet<PipeNetworkNode> pipes = new TreeSet<>(Comparator.comparing(PipeNetworkNode::getType));
-    private SortedMap<PipeNetworkType, Byte> renderedConnections = new TreeMap<>();
+    SortedMap<PipeNetworkType, Byte> renderedConnections = new TreeMap<>();
 
     // because we can't access the PipeNetworksComponent in fromTag, we defer the node loading
     private List<Pair<PipeNetworkType, PipeNetworkNode>> unloadedPipes = new ArrayList<>();
@@ -39,7 +43,7 @@ public class PipeBlockEntity extends BlockEntity implements Tickable, BlockEntit
         super(MIPipes.BLOCK_ENTITY_TYPE_PIPE);
     }
 
-    public void updateConnections() {
+    void updateConnections() {
         loadPipes();
         for(PipeNetworkNode pipe : pipes) {
             pipe.updateConnections(world, pos);
@@ -53,7 +57,7 @@ public class PipeBlockEntity extends BlockEntity implements Tickable, BlockEntit
      * @param type The type to add.
      * @return True if the pipe can be added, false otherwise.
      */
-    public boolean canAddPipe(PipeNetworkType type) {
+     boolean canAddPipe(PipeNetworkType type) {
         loadPipes();
         if(world.isClient) {
             return pipes.size() < MAX_PIPES && !renderedConnections.containsKey(type);
@@ -70,7 +74,7 @@ public class PipeBlockEntity extends BlockEntity implements Tickable, BlockEntit
      * Add a pipe type. Will not do anything if the pipe couldn't be added.
      * @param type The type to add.
      */
-    public void addPipe(PipeNetworkType type, PipeNetworkData data) {
+    void addPipe(PipeNetworkType type, PipeNetworkData data) {
         if(!canAddPipe(type)) return;
 
         PipeNetworkNode node = type.getNodeCtor().get();
@@ -102,7 +106,7 @@ public class PipeBlockEntity extends BlockEntity implements Tickable, BlockEntit
             throw new IllegalArgumentException("Can't remove type " + type.getIdentifier() + " from BlockEntity at pos " + pos);
         }
         pipes.remove(removedPipe);
-        removedPipe.network.manager.removeNode(pos);
+        removedPipe.getManager().removeNode(pos);
         markDirty();
         sync();
     }
@@ -112,7 +116,7 @@ public class PipeBlockEntity extends BlockEntity implements Tickable, BlockEntit
         loadPipes();
         // TODO: drop items when necessary, probably not here
         for(PipeNetworkNode pipe : pipes) {
-            pipe.network.manager.removeNode(pos);
+            pipe.getManager().removeNode(pos);
         }
         pipes.clear();
 
@@ -152,7 +156,7 @@ public class PipeBlockEntity extends BlockEntity implements Tickable, BlockEntit
     public void tick() {
         loadPipes();
         for(PipeNetworkNode pipe : pipes) {
-            pipe.network.tick();
+            pipe.tick();
         }
         markDirty();
     }
@@ -160,7 +164,7 @@ public class PipeBlockEntity extends BlockEntity implements Tickable, BlockEntit
     public void onChunkUnload() {
         loadPipes();
         for(PipeNetworkNode pipe : pipes) {
-            pipe.network.manager.nodeUnloaded(pipe, pos);
+            pipe.getManager().nodeUnloaded(pipe, pos);
         }
     }
 
@@ -193,9 +197,9 @@ public class PipeBlockEntity extends BlockEntity implements Tickable, BlockEntit
         return new RenderAttachment(new TreeMap<>(this.renderedConnections));
     }
 
-    public static class RenderAttachment {
-        public byte[] renderedConnections;
-        public PipeNetworkType[] types;
+    static class RenderAttachment {
+        byte[] renderedConnections;
+        PipeNetworkType[] types;
 
         private RenderAttachment(SortedMap<PipeNetworkType, Byte> renderedConnections) {
             this.renderedConnections = new byte[renderedConnections.size()];

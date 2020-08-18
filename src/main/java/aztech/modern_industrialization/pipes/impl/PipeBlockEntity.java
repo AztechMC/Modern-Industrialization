@@ -17,8 +17,13 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.Pair;
 import net.minecraft.util.Tickable;
 import net.minecraft.util.math.Direction;
+import net.minecraft.util.shape.VoxelShape;
+import net.minecraft.util.shape.VoxelShapes;
 
 import java.util.*;
+import java.util.stream.Stream;
+
+import static net.minecraft.util.math.Direction.NORTH;
 
 /**
  * The BlockEntity for a pipe.
@@ -26,6 +31,12 @@ import java.util.*;
 // TODO: add isClient checks wherever it is necessary
 public class PipeBlockEntity extends BlockEntity implements Tickable, BlockEntityClientSerializable, RenderAttachmentBlockEntity {
     private static final int MAX_PIPES = 3;
+    private static final VoxelShape[][][] SHAPE_CACHE;
+    static final VoxelShape DEFAULT_SHAPE;
+    /**
+     * The current collision shape, i.e. the union of the shapes of the pipe parts.
+     */
+    VoxelShape currentCollisionShape = VoxelShapes.empty();
     /**
      * The loaded nodes, server-side only.
      */
@@ -177,12 +188,16 @@ public class PipeBlockEntity extends BlockEntity implements Tickable, BlockEntit
 
     public void onConnectionsChanged() {
         // Update connections on the server side, we need them for the bounding box.
-        renderedConnections.clear();
+        Map<PipeNetworkType, Byte> oldRendererConnections = renderedConnections;
+        renderedConnections = new TreeMap<>();
         for(PipeNetworkNode pipe : pipes) {
             renderedConnections.put(pipe.getType(), NbtHelper.encodeDirections(pipe.getRenderedConnections(pos)));
         }
-        // Then send the update to the client
-        sync();
+        // Then send the update to the client if there was a change.
+        if(!renderedConnections.equals(oldRendererConnections)) {
+            rebuildCollisionShape();
+            sync();
+        }
     }
 
     @Override
@@ -192,6 +207,7 @@ public class PipeBlockEntity extends BlockEntity implements Tickable, BlockEntit
         for(String key : pipesTag.getKeys()) {
             renderedConnections.put(PipeNetworkType.get(new Identifier(key)), pipesTag.getByte(key));
         }
+        rebuildCollisionShape();
 
         ClientWorld clientWorld = (ClientWorld)world;
         WorldRendererGetter wrg = (WorldRendererGetter)clientWorld;
@@ -228,5 +244,58 @@ public class PipeBlockEntity extends BlockEntity implements Tickable, BlockEntit
                 i++;
             }
         }
+    }
+
+    /**
+     * Get the currently visible shapes.
+     */
+    Collection<VoxelShape> getPartShapes() {
+        Collection<VoxelShape> shapes = new ArrayList<>();
+
+        byte[] renderedConnections = new byte[this.renderedConnections.size()];
+        int slot = 0;
+        for (Map.Entry<PipeNetworkType, Byte> connections : this.renderedConnections.entrySet()) {
+            renderedConnections[slot++] = connections.getValue();
+        }
+        for(slot = 0; slot < renderedConnections.length; ++slot) {
+            // Center connector
+            shapes.add(SHAPE_CACHE[slot][NORTH.getId()][0]);
+
+            // Side connectors
+            for (Direction direction : Direction.values()) {
+                PipeShapeBuilder psb = new PipeShapeBuilder(PipeModel.getSlotPos(slot), direction);
+                int connectionType = PipeModel.getConnectionType(slot, direction, renderedConnections);
+                if (connectionType != 0) {
+                    shapes.add(SHAPE_CACHE[slot][direction.getId()][connectionType]);
+                }
+            }
+        }
+
+        return shapes;
+    }
+
+    private void rebuildCollisionShape() {
+        currentCollisionShape = getPartShapes().stream().reduce(VoxelShapes.empty(), VoxelShapes::union);
+    }
+
+    static {
+        // Note: the centor connector are at connectionType 0.
+        SHAPE_CACHE = new VoxelShape[3][6][5];
+        for(int slot = 0; slot < 3; slot++) {
+            for(Direction direction : Direction.values()) {
+                int connectionTypes = slot == 0 ? 2 : slot == 1 ? 3 : 5;
+                for(int connectionType = 0; connectionType < connectionTypes; connectionType++) {
+                    PipeShapeBuilder psb = new PipeShapeBuilder(PipeModel.getSlotPos(slot), direction);
+                    if(connectionType == 0) psb.centerConnector();
+                    else if(connectionType == 1) psb.straightLine();
+                    else if(connectionType == 2) psb.shortBend();
+                    else if(connectionType == 3) psb.farShortBend();
+                    else psb.longBend();
+                    SHAPE_CACHE[slot][direction.getId()][connectionType] = psb.getShape();
+                }
+            }
+        }
+
+        DEFAULT_SHAPE = SHAPE_CACHE[0][0][0];
     }
 }

@@ -25,16 +25,23 @@ import java.util.*;
  */
 // TODO: add isClient checks wherever it is necessary
 public class PipeBlockEntity extends BlockEntity implements Tickable, BlockEntityClientSerializable, RenderAttachmentBlockEntity {
-    private static final int MAX_PIPES = 6;
+    private static final int MAX_PIPES = 3;
+    /**
+     * The loaded nodes, server-side only.
+     */
     private SortedSet<PipeNetworkNode> pipes = new TreeSet<>(Comparator.comparing(PipeNetworkNode::getType));
+    /**
+     * The rendered connections, both client-side for rendering and server-side for bounds check.
+     */
     SortedMap<PipeNetworkType, Byte> renderedConnections = new TreeMap<>();
 
-    // because we can't access the PipeNetworksComponent in fromTag, we defer the node loading
+    // Because we can't access the PipeNetworksComponent in fromTag because the world is null, we defer the node loading.
     private List<Pair<PipeNetworkType, PipeNetworkNode>> unloadedPipes = new ArrayList<>();
     private void loadPipes() {
         for(Pair<PipeNetworkType, PipeNetworkNode> unloaded : unloadedPipes) {
             MIPipes.PIPE_NETWORKS.get(world).getManager(unloaded.getLeft()).nodeLoaded(unloaded.getRight(), pos);
             pipes.add(unloaded.getRight());
+            unloaded.getRight().updateConnections(world, pos);
         }
         unloadedPipes.clear();
     }
@@ -49,7 +56,7 @@ public class PipeBlockEntity extends BlockEntity implements Tickable, BlockEntit
             pipe.updateConnections(world, pos);
         }
         markDirty();
-        sync();
+        onConnectionsChanged();
     }
 
     /**
@@ -86,7 +93,7 @@ public class PipeBlockEntity extends BlockEntity implements Tickable, BlockEntit
         pipes.add(node);
         node.updateConnections(world, pos);
         markDirty();
-        sync();
+        onConnectionsChanged();
     }
 
     /**
@@ -108,7 +115,7 @@ public class PipeBlockEntity extends BlockEntity implements Tickable, BlockEntit
         pipes.remove(removedPipe);
         removedPipe.getManager().removeNode(pos);
         markDirty();
-        sync();
+        onConnectionsChanged();
     }
 
     @Override
@@ -166,6 +173,16 @@ public class PipeBlockEntity extends BlockEntity implements Tickable, BlockEntit
         for(PipeNetworkNode pipe : pipes) {
             pipe.getManager().nodeUnloaded(pipe, pos);
         }
+    }
+
+    public void onConnectionsChanged() {
+        // Update connections on the server side, we need them for the bounding box.
+        renderedConnections.clear();
+        for(PipeNetworkNode pipe : pipes) {
+            renderedConnections.put(pipe.getType(), NbtHelper.encodeDirections(pipe.getRenderedConnections(pos)));
+        }
+        // Then send the update to the client
+        sync();
     }
 
     @Override

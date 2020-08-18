@@ -1,10 +1,7 @@
 package aztech.modern_industrialization.pipes.impl;
 
 import aztech.modern_industrialization.pipes.api.PipeNetworkType;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockEntityProvider;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.ShapeContext;
+import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
@@ -41,16 +38,25 @@ public class PipeBlock extends Block implements BlockEntityProvider {
     }
 
     @Override
+    public VoxelShape getVisualShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
+        return getCollisionShape(state, world, pos, context);
+    }
+
+    @Override
     public VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
+        return getOutlineShape(state, world, pos, context, false);
+    }
+
+    public VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context, boolean rayTraceInstead) {
         // TODO: no copy paste
         PipeBlockEntity entity = (PipeBlockEntity) world.getBlockEntity(pos);
         if(entity != null) {
             double[] smallestDistance = new double[] { 10000 };
             VoxelShape[] closestShape = new VoxelShape[] { null };
 
-            Consumer<VoxelShape> rayTrace = shape -> {
+            Consumer<VoxelShape> processShape = shape -> {
                 if(shape.isEmpty()) return;
-                if (world instanceof ClientWorld) {
+                if (!rayTraceInstead) {
                     float tickDelta = 0; // TODO: fix this
                     ClientPlayerEntity player = MinecraftClient.getInstance().player;
                     Vec3d vec3d = player.getCameraPosVec(tickDelta);
@@ -65,6 +71,12 @@ public class PipeBlock extends Block implements BlockEntityProvider {
                             closestShape[0] = shape;
                         }
                     }
+                } else {
+                    if(closestShape[0] == null) {
+                        closestShape[0] = shape;
+                    } else {
+                        closestShape[0] = VoxelShapes.union(closestShape[0], shape);
+                    }
                 }
             };
             byte[] renderedConnections = new byte[entity.renderedConnections.size()];
@@ -76,7 +88,7 @@ public class PipeBlock extends Block implements BlockEntityProvider {
                 // Center connector
                 PipeShapeBuilder centerPsb = new PipeShapeBuilder(PipeModel.getSlotPos(slot), Direction.NORTH);
                 centerPsb.centerConnector();
-                rayTrace.accept(centerPsb.getShape());
+                processShape.accept(centerPsb.getShape());
 
                 // Side connectors
                 for (Direction direction : Direction.values()) {
@@ -88,7 +100,7 @@ public class PipeBlock extends Block implements BlockEntityProvider {
                         else if (connectionType == 3) psb.farShortBend();
                         else psb.longBend();
                         VoxelShape shape = psb.getShape();
-                        rayTrace.accept(shape);
+                        processShape.accept(shape);
                     }
                 }
             }
@@ -106,11 +118,65 @@ public class PipeBlock extends Block implements BlockEntityProvider {
 
     @Override
     public int getOpacity(BlockState state, BlockView world, BlockPos pos) {
-        return super.getOpacity(state, world, pos);
+        return 0;
     }
 
     @Override
-    public VoxelShape getVisualShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
-        return super.getVisualShape(state, world, pos, context);
+    public boolean hasDynamicBounds() {
+        return true;
+    }
+
+    @Override
+    public VoxelShape getRayTraceShape(BlockState state, BlockView world, BlockPos pos) {
+        return getCollisionShape(state, world, pos, null);
+    }
+
+    @Override
+    public VoxelShape getCullingShape(BlockState state, BlockView world, BlockPos pos) {
+        return getCollisionShape(state, world, pos, null);
+    }
+
+    @Override
+    public VoxelShape getSidesShape(BlockState state, BlockView world, BlockPos pos) {
+        return getCollisionShape(state, world, pos, null);
+    }
+
+    @Override
+    public VoxelShape getCollisionShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
+        float pipe_width = 2.0f / 16;
+        float cl = 0.5f - pipe_width / 2; // center, a bit lower
+        float ch = 0.5f + pipe_width / 2; // center, a bit higher*
+        VoxelShape shape = VoxelShapes.empty();
+        shape = VoxelShapes.cuboid(cl, cl, cl, ch, ch, ch);
+
+        // TODO: no copy paste
+        PipeBlockEntity entity = (PipeBlockEntity) world.getBlockEntity(pos);
+        if(entity != null) {
+            byte[] renderedConnections = new byte[entity.renderedConnections.size()];
+            int slot = 0;
+            for (Map.Entry<PipeNetworkType, Byte> connections : entity.renderedConnections.entrySet()) {
+                renderedConnections[slot++] = connections.getValue();
+            }
+            for(slot = 0; slot < renderedConnections.length; ++slot) {
+                // Center connector
+                PipeShapeBuilder centerPsb = new PipeShapeBuilder(PipeModel.getSlotPos(slot), Direction.NORTH);
+                centerPsb.centerConnector();
+                shape = VoxelShapes.union(shape, centerPsb.getShape());
+
+                // Side connectors
+                for (Direction direction : Direction.values()) {
+                    PipeShapeBuilder psb = new PipeShapeBuilder(PipeModel.getSlotPos(slot), direction);
+                    int connectionType = PipeModel.getConnectionType(slot, direction, renderedConnections);
+                    if (connectionType != 0) {
+                        if (connectionType == 1) psb.straightLine();
+                        else if (connectionType == 2) psb.shortBend();
+                        else if (connectionType == 3) psb.farShortBend();
+                        else psb.longBend();
+                        shape = VoxelShapes.union(shape, psb.getShape());
+                    }
+                }
+            }
+        }
+        return shape;
     }
 }

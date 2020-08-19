@@ -33,6 +33,14 @@ public class FluidStackItem extends Item {
         super(settings);
     }
 
+    public static void decrement(ItemStack stack, int extracted) {
+        increment(stack, -extracted);
+    }
+
+    public static void increment(ItemStack stack, int i) {
+        setAmount(stack, getAmount(stack) + i);
+    }
+
     @Override
     public void appendTooltip(ItemStack stack, World world, List<Text> tooltip, TooltipContext context) {
         super.appendTooltip(stack, world, tooltip, context);

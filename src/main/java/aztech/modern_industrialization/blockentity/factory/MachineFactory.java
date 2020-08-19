@@ -339,7 +339,7 @@ public class MachineFactory {
     public static  MachineFactory steamMaceratorFactory = new SteamMachineFactory("steam_macerator", SteamMaceratorBlockEntity::new, 1, 4)
             .setSteamBucketCapacity(64).setSteamSlotPos(23, 23)
             .setInputSlotPosition(56, 45, 1, 1).setOutputSlotPosition(102, 45, 2, 2)
-            .setupProgressBar(76, 45, 22, 15, true).setupBackground("default.png");
+            .setupProgressBar(76, 45, 22, 15, true).setupBackground("steam_furnace.png");
 
     public static MachineFactory steamPumpFactory = new SteamMachineFactory("steam_pump", SteamPumpBlockEntity::new, 0, 0, 0, 1)
             .setSteamBucketCapacity(64).setSteamSlotPos(23, 23)

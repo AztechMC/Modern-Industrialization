@@ -74,8 +74,8 @@ public class MachineScreenHandler extends FluidContainerScreenHandler {
     public MachineFactory getMachineFactory() {
         return factory;
     }
-    public int getTickProgress() { return propertyDelegate.get(0); }
-    public int getTickRecipe() { return propertyDelegate.get(1); }
+    public int getTickProgress() { return propertyDelegate.get(1); }
+    public int getTickRecipe() { return propertyDelegate.get(2); }
     public boolean getIsActive() { return propertyDelegate.get(0) == 1; }
 
 

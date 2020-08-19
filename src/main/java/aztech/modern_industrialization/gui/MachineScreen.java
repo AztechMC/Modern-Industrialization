@@ -31,7 +31,7 @@ public class MachineScreen extends HandledScreen<MachineScreenHandler> {
         this.drawTexture(matrices, i, j, 0, 0, factory.getBackgroundWidth(), factory.getBackgroundHeight());
         // Fuel progress
         if(factory.hasProgressBar() && handler.getIsActive()) {
-            float progress = handler.getTickProgress() / handler.getTickRecipe();
+            float progress = (float)handler.getTickProgress() / handler.getTickRecipe();
 
             int sx = factory.getProgressBarSizeX();
             int sy = factory.getProgressBarSizeY();

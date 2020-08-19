@@ -1,0 +1,13 @@
+{
+  "type": "modern_industrialization:macerator",
+  "eu": 5,
+  "duration": 1000,
+  "item_inputs": {
+    "item": "minecraft:iron_ingot",
+    "amount": 2
+  },
+  "item_outputs": {
+    "item": "minecraft:iron_ingot",
+    "amount": 3
+  }
+}

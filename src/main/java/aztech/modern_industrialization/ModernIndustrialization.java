@@ -9,6 +9,7 @@ import aztech.modern_industrialization.fluid.FluidStackItem;
 import aztech.modern_industrialization.gui.MachineScreenHandler;
 import aztech.modern_industrialization.gui.SteamBoilerScreenHandler;
 import aztech.modern_industrialization.pipes.MIPipes;
+import aztech.modern_industrialization.recipe.MachineRecipeType;
 import aztech.modern_industrialization.tools.WrenchItem;
 import net.devtech.arrp.api.RRPCallback;
 import net.devtech.arrp.api.RuntimeResourcePack;
@@ -57,6 +58,9 @@ public class ModernIndustrialization implements ModInitializer {
 	// Fluid
 	public static final Fluid FLUID_STEAM = new CraftingFluid();
 
+	// Recipe
+    public static final MachineRecipeType RECIPE_TYPE_MACERATOR = new MachineRecipeType().withItemInputs().withItemOutputs();
+
 	@Override
 	public void onInitialize() {
 		// This code runs as soon as Minecraft is in a mod-load-ready state.
@@ -92,6 +96,8 @@ public class ModernIndustrialization implements ModInitializer {
 			registerBlock(factory.block, factory.item,factory.getID());
 			factory.blockEntityType = Registry.register(Registry.BLOCK_ENTITY_TYPE, new Identifier(MOD_ID, factory.getID()), BlockEntityType.Builder.create(factory.blockEntityConstructor, factory.block).build(null));
 		}
+		Registry.register(Registry.RECIPE_TYPE, new MIIdentifier("macerator"), RECIPE_TYPE_MACERATOR);
+        Registry.register(Registry.RECIPE_SERIALIZER, new MIIdentifier("macerator"), RECIPE_TYPE_MACERATOR);
 	}
 
 	private void setupBlockEntities() {

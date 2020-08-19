@@ -6,6 +6,7 @@ import aztech.modern_industrialization.block.MachineBlock;
 import aztech.modern_industrialization.blockentity.AbstractMachineBlockEntity;
 import aztech.modern_industrialization.blockentity.steam.SteamFurnaceBlockEntity;
 import aztech.modern_industrialization.blockentity.steam.SteamMaceratorBlockEntity;
+import aztech.modern_industrialization.blockentity.steam.SteamPumpBlockEntity;
 import aztech.modern_industrialization.model.block.MachineModel;
 import aztech.modern_industrialization.model.block.ModelProvider;
 import net.minecraft.block.entity.BlockEntity;
@@ -339,4 +340,8 @@ public class MachineFactory {
             .setSteamBucketCapacity(64).setSteamSlotPos(23, 23)
             .setInputSlotPosition(56, 45, 1, 1).setOutputSlotPosition(102, 45, 2, 2)
             .setupProgressBar(76, 45, 22, 15, true).setupBackground("default.png");
+
+    public static MachineFactory steamPumpFactory = new SteamMachineFactory("steam_pump", SteamPumpBlockEntity::new, 0, 0, 0, 1)
+            .setSteamBucketCapacity(64).setSteamSlotPos(23, 23)
+            .setupBackground("default.png");
 }

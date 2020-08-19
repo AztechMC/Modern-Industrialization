@@ -7,7 +7,7 @@
     "amount": 1
   },
   "fluid_outputs": {
-    "item": "minecraft:water",
+    "fluid": "minecraft:water",
     "amount": 1296
   }
 }

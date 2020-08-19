@@ -49,6 +49,25 @@ public class PipeItem extends Item {
             world.playSound(player, placingPos, group.getPlaceSound(), SoundCategory.BLOCKS, (group.getVolume() + 1.0F) / 2.0F, group.getPitch() * 0.8F);
 
             return ActionResult.success(world.isClient);
+        } else {
+            // if we couldn't place a pipe, we try to add a connection instead
+            placingPos = context.getBlockPos().offset(context.getSide());
+            World world = context.getWorld();
+            BlockEntity entity = world.getBlockEntity(placingPos);
+            if(entity instanceof PipeBlockEntity) {
+                PipeBlockEntity pipeEntity = (PipeBlockEntity) entity;
+                if(pipeEntity.connections.containsKey(type)) {
+                    if(!world.isClient) {
+                        pipeEntity.addConnection(type, context.getSide().getOpposite());
+                    }
+                    // update adjacent pipes
+                    world.updateNeighbors(placingPos, null);
+                    // play placing sound
+                    BlockState newState = world.getBlockState(placingPos);
+                    BlockSoundGroup group = newState.getSoundGroup();
+                    world.playSound(context.getPlayer(), placingPos, group.getPlaceSound(), SoundCategory.BLOCKS, (group.getVolume() + 1.0F) / 2.0F, group.getPitch() * 0.8F);
+                }
+            }
         }
         return super.useOnBlock(context);
     }

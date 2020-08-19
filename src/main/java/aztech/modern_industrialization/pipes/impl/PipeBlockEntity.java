@@ -2,10 +2,7 @@ package aztech.modern_industrialization.pipes.impl;
 
 import aztech.modern_industrialization.mixin_impl.WorldRendererGetter;
 import aztech.modern_industrialization.pipes.MIPipes;
-import aztech.modern_industrialization.pipes.api.PipeNetworkData;
-import aztech.modern_industrialization.pipes.api.PipeNetworkManager;
-import aztech.modern_industrialization.pipes.api.PipeNetworkNode;
-import aztech.modern_industrialization.pipes.api.PipeNetworkType;
+import aztech.modern_industrialization.pipes.api.*;
 import aztech.modern_industrialization.util.NbtHelper;
 import net.fabricmc.fabric.api.block.entity.BlockEntityClientSerializable;
 import net.fabricmc.fabric.api.rendering.data.v1.RenderAttachmentBlockEntity;
@@ -21,7 +18,6 @@ import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.util.shape.VoxelShapes;
 
 import java.util.*;
-import java.util.stream.Stream;
 
 import static net.minecraft.util.math.Direction.NORTH;
 
@@ -44,7 +40,7 @@ public class PipeBlockEntity extends BlockEntity implements Tickable, BlockEntit
     /**
      * The rendered connections, both client-side for rendering and server-side for bounds check.
      */
-    SortedMap<PipeNetworkType, Byte> renderedConnections = new TreeMap<>();
+    SortedMap<PipeNetworkType, PipeConnectionType[]> connections = new TreeMap<>();
 
     // Because we can't access the PipeNetworksComponent in fromTag because the world is null, we defer the node loading.
     private List<Pair<PipeNetworkType, PipeNetworkNode>> unloadedPipes = new ArrayList<>();
@@ -71,7 +67,6 @@ public class PipeBlockEntity extends BlockEntity implements Tickable, BlockEntit
         for(PipeNetworkNode pipe : pipes) {
             pipe.updateConnections(world, pos);
         }
-        markDirty();
         onConnectionsChanged();
     }
 
@@ -83,7 +78,7 @@ public class PipeBlockEntity extends BlockEntity implements Tickable, BlockEntit
      boolean canAddPipe(PipeNetworkType type) {
         loadPipes();
         if(world.isClient) {
-            return pipes.size() < MAX_PIPES && !renderedConnections.containsKey(type);
+            return pipes.size() < MAX_PIPES && !connections.containsKey(type);
         } else {
             if (pipes.size() == MAX_PIPES) return false;
             for (PipeNetworkNode pipe : pipes) {
@@ -108,7 +103,6 @@ public class PipeBlockEntity extends BlockEntity implements Tickable, BlockEntit
         }
         pipes.add(node);
         node.updateConnections(world, pos);
-        markDirty();
         onConnectionsChanged();
     }
 
@@ -130,7 +124,6 @@ public class PipeBlockEntity extends BlockEntity implements Tickable, BlockEntit
         }
         pipes.remove(removedPipe);
         removedPipe.getManager().removeNode(pos);
-        markDirty();
         onConnectionsChanged();
     }
 
@@ -221,24 +214,25 @@ public class PipeBlockEntity extends BlockEntity implements Tickable, BlockEntit
 
     public void onConnectionsChanged() {
         // Update connections on the server side, we need them for the bounding box.
-        Map<PipeNetworkType, Byte> oldRendererConnections = renderedConnections;
-        renderedConnections = new TreeMap<>();
+        Map<PipeNetworkType, PipeConnectionType[]> oldRendererConnections = connections;
+        connections = new TreeMap<>();
         for(PipeNetworkNode pipe : pipes) {
-            renderedConnections.put(pipe.getType(), NbtHelper.encodeDirections(pipe.getRenderedConnections(pos)));
+            connections.put(pipe.getType(), pipe.getConnections(pos));
         }
         // Then send the update to the client if there was a change.
-        if(!renderedConnections.equals(oldRendererConnections)) {
+        if(!connections.equals(oldRendererConnections)) {
             rebuildCollisionShape();
             sync();
         }
+        markDirty();
     }
 
     @Override
     public void fromClientTag(CompoundTag tag) {
-        renderedConnections.clear();
+        connections.clear();
         CompoundTag pipesTag = tag.getCompound("pipes");
         for(String key : pipesTag.getKeys()) {
-            renderedConnections.put(PipeNetworkType.get(new Identifier(key)), pipesTag.getByte(key));
+            connections.put(PipeNetworkType.get(new Identifier(key)), NbtHelper.decodeConnections(pipesTag.getByteArray(key)));
         }
         rebuildCollisionShape();
 
@@ -252,7 +246,7 @@ public class PipeBlockEntity extends BlockEntity implements Tickable, BlockEntit
         loadPipes();
         CompoundTag pipesTag = new CompoundTag();
         for(PipeNetworkNode pipe : pipes) {
-            pipesTag.putByte(pipe.getType().getIdentifier().toString(), NbtHelper.encodeDirections(pipe.getRenderedConnections(pos)));
+            pipesTag.putByteArray(pipe.getType().getIdentifier().toString(), NbtHelper.encodeConnections(pipe.getConnections(pos)));
         }
         tag.put("pipes", pipesTag);
         return tag;
@@ -260,22 +254,24 @@ public class PipeBlockEntity extends BlockEntity implements Tickable, BlockEntit
 
     @Override
     public Object getRenderAttachmentData() {
-        return new RenderAttachment(new TreeMap<>(this.renderedConnections));
+        PipeNetworkType[] types = new PipeNetworkType[connections.size()];
+        PipeConnectionType[][] renderedConnections = new PipeConnectionType[connections.size()][];
+        int i = 0;
+        for(Map.Entry<PipeNetworkType, PipeConnectionType[]> entry : connections.entrySet()) {
+            types[i] = entry.getKey();
+            renderedConnections[i] = Arrays.copyOf(entry.getValue(), 6);
+            i++;
+        }
+        return new RenderAttachment(types, renderedConnections);
     }
 
     static class RenderAttachment {
-        byte[] renderedConnections;
         PipeNetworkType[] types;
+        PipeConnectionType[][] renderedConnections;
 
-        private RenderAttachment(SortedMap<PipeNetworkType, Byte> renderedConnections) {
-            this.renderedConnections = new byte[renderedConnections.size()];
-            this.types = new PipeNetworkType[renderedConnections.size()];
-            int i = 0;
-            for(Map.Entry<PipeNetworkType, Byte> entry : renderedConnections.entrySet()) {
-                this.renderedConnections[i] = entry.getValue();
-                this.types[i] = entry.getKey();
-                i++;
-            }
+        private RenderAttachment(PipeNetworkType[] types, PipeConnectionType[][] renderedConnections) {
+            this.types = types;
+            this.renderedConnections = renderedConnections;
         }
     }
 
@@ -285,10 +281,10 @@ public class PipeBlockEntity extends BlockEntity implements Tickable, BlockEntit
     Collection<PipeVoxelShape> getPartShapes() {
         Collection<PipeVoxelShape> shapes = new ArrayList<>();
 
-        byte[] renderedConnections = new byte[this.renderedConnections.size()];
-        PipeNetworkType[] types = new PipeNetworkType[this.renderedConnections.size()];
+        PipeConnectionType[][] renderedConnections = new PipeConnectionType[connections.size()][];
+        PipeNetworkType[] types = new PipeNetworkType[this.connections.size()];
         int slot = 0;
-        for (Map.Entry<PipeNetworkType, Byte> connections : this.renderedConnections.entrySet()) {
+        for (Map.Entry<PipeNetworkType, PipeConnectionType[]> connections : this.connections.entrySet()) {
             renderedConnections[slot] = connections.getValue();
             types[slot] = connections.getKey();
             slot++;
@@ -300,7 +296,7 @@ public class PipeBlockEntity extends BlockEntity implements Tickable, BlockEntit
             // Side connectors
             for (Direction direction : Direction.values()) {
                 PipeShapeBuilder psb = new PipeShapeBuilder(PipeModel.getSlotPos(slot), direction);
-                int connectionType = PipeModel.getConnectionType(slot, direction, renderedConnections);
+                int connectionType = PipeModel.getRenderType(slot, direction, renderedConnections);
                 if (connectionType != 0) {
                     shapes.add(new PipeVoxelShape(SHAPE_CACHE[slot][direction.getId()][connectionType], types[slot], direction));
                 }

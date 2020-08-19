@@ -1,6 +1,7 @@
 package aztech.modern_industrialization.pipes.fluid;
 
 import aztech.modern_industrialization.fluid.FluidInventory;
+import aztech.modern_industrialization.pipes.api.PipeConnectionType;
 import aztech.modern_industrialization.pipes.api.PipeNetworkNode;
 import aztech.modern_industrialization.util.NbtHelper;
 import net.minecraft.block.entity.BlockEntity;
@@ -11,10 +12,10 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
+
+import static aztech.modern_industrialization.pipes.api.PipeConnectionType.*;
 
 public class FluidNetworkNode extends PipeNetworkNode {
     int amount = 0;
@@ -61,7 +62,7 @@ public class FluidNetworkNode extends PipeNetworkNode {
             if(conn.fluidInventory == null) {
                 // The node was just loaded, it doesn't have the fluid inventory yet, so we accept any connection.
                 if(canConnect(entity, conn.direction)) {
-                    connections.set(i, new FluidConnection(conn.direction, (FluidInventory) entity));
+                    connections.set(i, new FluidConnection(conn.direction, (FluidInventory) entity, conn.type));
                     i++;
                 } else {
                     connections.remove(i);
@@ -78,12 +79,16 @@ public class FluidNetworkNode extends PipeNetworkNode {
         }
     }
 
-    public Set<Direction> getRenderedConnections(BlockPos pos) {
-        Set<Direction> links = network.manager.getNodeLinks(pos);
-        for(FluidConnection connection : connections) {
-            links.add(connection.direction);
+    @Override
+    public PipeConnectionType[] getConnections(BlockPos pos) {
+        PipeConnectionType[] connections = new PipeConnectionType[6];
+        for(Direction direction : network.manager.getNodeLinks(pos)) {
+            connections[direction.getId()] = FLUID;
         }
-        return links;
+        for(FluidConnection connection : this.connections) {
+            connections[connection.direction.getId()] = connection.type;
+        }
+        return connections;
     }
 
     private boolean canConnect(BlockEntity entity, Direction direction) {
@@ -91,40 +96,46 @@ public class FluidNetworkNode extends PipeNetworkNode {
     }
 
     @Override
-    public boolean removeConnection(World world, BlockPos pos, Direction direction) {
-        // Remove if it exists
+    public void removeConnection(World world, BlockPos pos, Direction direction) {
+        // Cycle if it exists
         for(int i = 0; i < connections.size(); i++) {
-            if(connections.get(i).direction == direction) {
-                connections.remove(i);
-                return true;
+            FluidConnection conn = connections.get(i);
+            if(conn.direction == direction) {
+                if(conn.type == FLUID_IN) conn.type = FLUID_IN_OUT;
+                else if(conn.type == FLUID_IN_OUT) conn.type = FLUID_OUT;
+                else connections.remove(i);
+                return;
             }
         }
-        return false;
     }
 
     @Override
-    public boolean addConnection(World world, BlockPos pos, Direction direction) {
+    public void addConnection(World world, BlockPos pos, Direction direction) {
         // Refuse if it already exists
-        for(int i = 0; i < connections.size(); i++) {
-            if(connections.get(i).direction == direction) {
-                connections.remove(i);
-                return false;
+        for (FluidConnection connection : connections) {
+            if (connection.direction == direction) {
+                return;
             }
         }
         // Otherwise try to connect
         BlockPos adjPos = pos.offset(direction);
         BlockEntity entity = world.getBlockEntity(adjPos);
         if (canConnect(entity, direction)) {
-            connections.add(new FluidConnection(direction, (FluidInventory) entity));
-            return true;
+            connections.add(new FluidConnection(direction, (FluidInventory) entity, FLUID_IN));
         }
-        return false;
     }
 
     @Override
     public CompoundTag toTag(CompoundTag tag) {
         tag.putInt("amount", amount);
         tag.putByte("connections", NbtHelper.encodeDirections(connections.stream().map(c -> c.direction).collect(Collectors.toList())));
+        int types = 0;
+        int mul = 1;
+        for(FluidConnection connection : connections) {
+            types += mul * encodeConnectionType(connection.type);
+            mul *= 3;
+        }
+        tag.putInt("types", types);
         return tag;
     }
 
@@ -132,27 +143,39 @@ public class FluidNetworkNode extends PipeNetworkNode {
     public void fromTag(CompoundTag tag) {
         amount = tag.getInt("amount");
         Direction[] directions = NbtHelper.decodeDirections(tag.getByte("connections"));
+        int types = tag.getInt("types");
         connections.clear();
         for(int i = 0; i < directions.length; i++) {
-            connections.add(new FluidConnection(directions[i], null));
+            connections.add(new FluidConnection(directions[i], null, decodeConnectionType(types % 3)));
+            types /= 3;
         }
+    }
+
+    private PipeConnectionType decodeConnectionType(int i) {
+        return i == 0 ? FLUID_IN : i == 1 ? FLUID_IN_OUT : FLUID_OUT;
+    }
+
+    private int encodeConnectionType(PipeConnectionType connection) {
+        return connection == FLUID_IN ? 0 : connection == FLUID_IN_OUT ? 1 : 2;
     }
 
     private static class FluidConnection {
         private final Direction direction;
         private final FluidInventory fluidInventory;
+        private PipeConnectionType type;
 
-        private FluidConnection(Direction direction, FluidInventory fluidInventory) {
+        private FluidConnection(Direction direction, FluidInventory fluidInventory, PipeConnectionType type) {
             this.direction = direction;
             this.fluidInventory = fluidInventory;
+            this.type = type;
         }
 
         private boolean canInsert(Fluid fluid) {
-            return true;
+            return type == FLUID_IN || type == FLUID_IN_OUT;
         }
 
         private boolean canExtract(Fluid fluid) {
-            return fluidInventory.providesFluidExtractionForce(direction.getOpposite(), fluid);
+            return (type == FLUID_OUT || type == FLUID_IN_OUT) && fluidInventory.providesFluidExtractionForce(direction.getOpposite(), fluid);
         }
     }
 }

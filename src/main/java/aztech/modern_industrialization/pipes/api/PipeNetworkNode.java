@@ -6,14 +6,19 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 
-import java.util.Set;
+import java.util.Map;
 
 public abstract class PipeNetworkNode implements Tickable {
     protected PipeNetwork network;
     public abstract void updateConnections(World world, BlockPos pos);
-    public abstract Set<Direction> getRenderedConnections(BlockPos pos);
-    public abstract boolean removeConnection(World world, BlockPos pos, Direction direction);
-    public abstract boolean addConnection(World world, BlockPos pos, Direction direction);
+
+    /**
+     * Get connections. Must return a size 6 array containing the 6 connections in the Direction order.
+     * Null can be used to render no connection.
+     */
+    public abstract PipeConnectionType[] getConnections(BlockPos pos);
+    public abstract void removeConnection(World world, BlockPos pos, Direction direction);
+    public abstract void addConnection(World world, BlockPos pos, Direction direction);
 
     public abstract CompoundTag toTag(CompoundTag tag);
     public abstract void fromTag(CompoundTag tag);

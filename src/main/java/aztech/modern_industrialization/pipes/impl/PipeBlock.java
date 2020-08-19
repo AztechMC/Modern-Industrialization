@@ -11,7 +11,6 @@ import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUsageContext;
 import net.minecraft.item.Items;
@@ -61,7 +60,7 @@ public class PipeBlock extends Block implements BlockEntityProvider, IWrenchable
                 Vec3d dir = box.getCenter().subtract(posInBlock).normalize().multiply(1e-4);
                 if(box.contains(posInBlock.add(dir))) {
                     if(player != null && player.isSneaking()) {
-                        boolean removeBlock = pipeEntity.renderedConnections.size() == 1;
+                        boolean removeBlock = pipeEntity.connections.size() == 1;
                         if(!world.isClient) {
                             pipeEntity.removePipe(partShape.type);
                         }
@@ -105,7 +104,7 @@ public class PipeBlock extends Block implements BlockEntityProvider, IWrenchable
         PipeBlockEntity pipeEntity = (PipeBlockEntity) lootContext.get(LootContextParameters.BLOCK_ENTITY);
         ItemStack tool = lootContext.get(LootContextParameters.TOOL);
         if(tool != null && FabricToolTags.PICKAXES.contains(tool.getItem())) {
-            return pipeEntity.renderedConnections.keySet().stream().map(t -> new ItemStack(MIPipes.INSTANCE.getPipeItem(t))).collect(Collectors.toList());
+            return pipeEntity.connections.keySet().stream().map(t -> new ItemStack(MIPipes.INSTANCE.getPipeItem(t))).collect(Collectors.toList());
         } else {
             return Collections.emptyList();
         }

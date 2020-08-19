@@ -1,5 +1,6 @@
 package aztech.modern_industrialization.util;
 
+import aztech.modern_industrialization.pipes.api.PipeConnectionType;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.math.Direction;
@@ -30,5 +31,20 @@ public class NbtHelper {
             }
         }
         return directions;
+    }
+    public static byte[] encodeConnections(PipeConnectionType[] connections) {
+        byte[] encoded = new byte[6];
+        for(int i = 0; i < 6; ++i) {
+            PipeConnectionType type = connections[i];
+            encoded[i] = type == null ? 127 : (byte)type.getId();
+        }
+        return encoded;
+    }
+    public static PipeConnectionType[] decodeConnections(byte[] encoded) {
+        PipeConnectionType[] connections = new PipeConnectionType[6];
+        for(int i = 0; i < 6; ++i) {
+            connections[i] = PipeConnectionType.byId(encoded[i]);
+        }
+        return connections;
     }
 }

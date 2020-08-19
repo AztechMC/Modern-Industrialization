@@ -13,9 +13,9 @@ public class PipeColorProvider implements BlockColorProvider {
     public int getColor(BlockState state, BlockRenderView world, BlockPos pos, int tintIndex) {
         PipeBlockEntity entity = (PipeBlockEntity) world.getBlockEntity(pos);
         if(entity == null) return -1;
-        int n = entity.renderedConnections.size();
+        int n = entity.connections.size();
         if(n == 0) return -1;
         int i = ThreadLocalRandom.current().nextInt(n);
-        return entity.renderedConnections.keySet().stream().toArray(PipeNetworkType[]::new)[i].getColor();
+        return entity.connections.keySet().stream().toArray(PipeNetworkType[]::new)[i].getColor();
     }
 }

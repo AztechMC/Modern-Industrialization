@@ -1,13 +1,13 @@
 {
-  "type": "modern_industrialization:macerator",
+  "type": "modern_industrialization:fluid_extractor",
   "eu": 5,
-  "duration": 1000,
+  "duration": 20,
   "item_inputs": {
-    "item": "minecraft:iron_ingot",
-    "amount": 2
+    "item": "minecraft:ice",
+    "amount": 1
   },
-  "item_outputs": {
-    "item": "minecraft:iron_ingot",
-    "amount": 3
+  "fluid_outputs": {
+    "item": "minecraft:water",
+    "amount": 1296
   }
 }

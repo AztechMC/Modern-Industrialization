@@ -4,6 +4,7 @@ import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.ModernIndustrialization;
 import aztech.modern_industrialization.block.MachineBlock;
 import aztech.modern_industrialization.blockentity.AbstractMachineBlockEntity;
+import aztech.modern_industrialization.blockentity.steam.SteamFluidExtractorBlockEntity;
 import aztech.modern_industrialization.blockentity.steam.SteamFurnaceBlockEntity;
 import aztech.modern_industrialization.blockentity.steam.SteamMaceratorBlockEntity;
 import aztech.modern_industrialization.blockentity.steam.SteamPumpBlockEntity;
@@ -339,6 +340,11 @@ public class MachineFactory {
     public static  MachineFactory steamMaceratorFactory = new SteamMachineFactory("steam_macerator", SteamMaceratorBlockEntity::new, 1, 4)
             .setSteamBucketCapacity(64).setSteamSlotPos(23, 23)
             .setInputSlotPosition(56, 45, 1, 1).setOutputSlotPosition(102, 45, 2, 2)
+            .setupProgressBar(76, 45, 22, 15, true).setupBackground("steam_furnace.png");
+
+    public static  MachineFactory steamFluidExtractor = new SteamMachineFactory("steam_fluid_extractor", SteamFluidExtractorBlockEntity::new, 1, 0, 0, 1)
+            .setSteamBucketCapacity(64).setSteamSlotPos(23, 23)
+            .setInputSlotPosition(56, 45, 1, 1).setLiquidOutputSlotPosition(102, 45, 1, 1)
             .setupProgressBar(76, 45, 22, 15, true).setupBackground("steam_furnace.png");
 
     public static MachineFactory steamPumpFactory = new SteamMachineFactory("steam_pump", SteamPumpBlockEntity::new, 0, 0, 0, 1)

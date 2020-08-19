@@ -60,6 +60,7 @@ public class ModernIndustrialization implements ModInitializer {
 
 	// Recipe
     public static final MachineRecipeType RECIPE_TYPE_MACERATOR = new MachineRecipeType().withItemInputs().withItemOutputs();
+	public static final MachineRecipeType RECIPE_FLUID_EXTRACTOR = new MachineRecipeType().withItemInputs().withFluidOutputs();
 
 	@Override
 	public void onInitialize() {
@@ -97,7 +98,10 @@ public class ModernIndustrialization implements ModInitializer {
 			factory.blockEntityType = Registry.register(Registry.BLOCK_ENTITY_TYPE, new Identifier(MOD_ID, factory.getID()), BlockEntityType.Builder.create(factory.blockEntityConstructor, factory.block).build(null));
 		}
 		Registry.register(Registry.RECIPE_TYPE, new MIIdentifier("macerator"), RECIPE_TYPE_MACERATOR);
-        Registry.register(Registry.RECIPE_SERIALIZER, new MIIdentifier("macerator"), RECIPE_TYPE_MACERATOR);
+		Registry.register(Registry.RECIPE_SERIALIZER, new MIIdentifier("macerator"), RECIPE_TYPE_MACERATOR);
+
+		Registry.register(Registry.RECIPE_TYPE, new MIIdentifier("fluid_extractor"), RECIPE_FLUID_EXTRACTOR);
+		Registry.register(Registry.RECIPE_SERIALIZER, new MIIdentifier("fluid_extractor"), RECIPE_FLUID_EXTRACTOR);
 	}
 
 	private void setupBlockEntities() {

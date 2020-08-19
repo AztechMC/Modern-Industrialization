@@ -1,9 +1,8 @@
-package aztech.modern_industrialization.blockentity.steam;
+package aztech.modern_industrialization.machines.steam;
 
 import aztech.modern_industrialization.ModernIndustrialization;
-import aztech.modern_industrialization.blockentity.MachineBlockEntity;
-import aztech.modern_industrialization.blockentity.factory.MachineFactory;
-import net.minecraft.block.entity.BlockEntityType;
+import aztech.modern_industrialization.machines.factory.MachineBlockEntity;
+import aztech.modern_industrialization.machines.factory.MachineFactory;
 
 public class SteamFurnaceBlockEntity extends MachineBlockEntity {
 

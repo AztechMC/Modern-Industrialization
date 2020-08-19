@@ -1,7 +1,7 @@
-package aztech.modern_industrialization.gui;
+package aztech.modern_industrialization.machines.impl;
 
 import aztech.modern_industrialization.ModernIndustrialization;
-import aztech.modern_industrialization.blockentity.factory.MachineFactory;
+import aztech.modern_industrialization.machines.factory.MachineFactory;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.util.math.MatrixStack;

@@ -1,7 +1,7 @@
 package aztech.modern_industrialization;
 
-import aztech.modern_industrialization.gui.MachineScreen;
-import aztech.modern_industrialization.gui.SteamBoilerScreen;
+import aztech.modern_industrialization.machines.impl.MachineScreen;
+import aztech.modern_industrialization.machines.impl.SteamBoilerScreen;
 import aztech.modern_industrialization.model.block.ModelProvider;
 import aztech.modern_industrialization.pipes.MIPipesClient;
 import net.fabricmc.api.ClientModInitializer;

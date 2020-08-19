@@ -1,4 +1,4 @@
-package aztech.modern_industrialization.blockentity.factory;
+package aztech.modern_industrialization.machines.factory;
 
 public enum MachineSlotType {
 

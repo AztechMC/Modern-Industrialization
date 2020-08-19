@@ -1,7 +1,4 @@
-package aztech.modern_industrialization.blockentity.factory;
-
-import aztech.modern_industrialization.blockentity.AbstractMachineBlockEntity;
-import net.minecraft.block.entity.BlockEntity;
+package aztech.modern_industrialization.machines.factory;
 
 import java.util.function.Supplier;
 

@@ -1,23 +1,20 @@
-package aztech.modern_industrialization.blockentity.factory;
+package aztech.modern_industrialization.machines.factory;
 
 import aztech.modern_industrialization.MIIdentifier;
-import aztech.modern_industrialization.ModernIndustrialization;
-import aztech.modern_industrialization.block.MachineBlock;
-import aztech.modern_industrialization.blockentity.AbstractMachineBlockEntity;
-import aztech.modern_industrialization.blockentity.steam.SteamFluidExtractorBlockEntity;
-import aztech.modern_industrialization.blockentity.steam.SteamFurnaceBlockEntity;
-import aztech.modern_industrialization.blockentity.steam.SteamMaceratorBlockEntity;
-import aztech.modern_industrialization.blockentity.steam.SteamPumpBlockEntity;
+import aztech.modern_industrialization.machines.impl.MachineBlock;
+import aztech.modern_industrialization.machines.steam.SteamFluidExtractorBlockEntity;
+import aztech.modern_industrialization.machines.steam.SteamFurnaceBlockEntity;
+import aztech.modern_industrialization.machines.steam.SteamMaceratorBlockEntity;
+import aztech.modern_industrialization.machines.steam.SteamPumpBlockEntity;
 import aztech.modern_industrialization.model.block.MachineModel;
 import aztech.modern_industrialization.model.block.ModelProvider;
-import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.item.BlockItem;
 
 import java.util.HashMap;
 import java.util.function.Supplier;
 
-import static aztech.modern_industrialization.blockentity.factory.MachineSlotType.*;
+import static aztech.modern_industrialization.machines.factory.MachineSlotType.*;
 
 public class MachineFactory {
 

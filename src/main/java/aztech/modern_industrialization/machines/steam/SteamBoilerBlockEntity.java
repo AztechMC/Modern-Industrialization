@@ -1,12 +1,12 @@
-package aztech.modern_industrialization.blockentity.steam;
+package aztech.modern_industrialization.machines.steam;
 
 import aztech.modern_industrialization.ModernIndustrialization;
-import aztech.modern_industrialization.blockentity.AbstractMachineBlockEntity;
+import aztech.modern_industrialization.machines.factory.AbstractMachineBlockEntity;
 import aztech.modern_industrialization.fluid.FluidInventory;
 import aztech.modern_industrialization.fluid.FluidSlotIO;
 import aztech.modern_industrialization.fluid.FluidStackItem;
 import aztech.modern_industrialization.fluid.FluidUnit;
-import aztech.modern_industrialization.gui.SteamBoilerScreenHandler;
+import aztech.modern_industrialization.machines.impl.SteamBoilerScreenHandler;
 import net.fabricmc.fabric.impl.content.registry.FuelRegistryImpl;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerInventory;

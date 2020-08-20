@@ -2,7 +2,7 @@ package aztech.modern_industrialization.model;
 
 import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.ModernIndustrialization;
-import aztech.modern_industrialization.model.block.MachineModel;
+import aztech.modern_industrialization.machines.impl.MachineModel;
 import net.minecraft.client.render.model.UnbakedModel;
 import net.minecraft.util.Identifier;
 

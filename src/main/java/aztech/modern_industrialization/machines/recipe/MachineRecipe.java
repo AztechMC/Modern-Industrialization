@@ -1,6 +1,6 @@
-package aztech.modern_industrialization.recipe;
+package aztech.modern_industrialization.machines.recipe;
 
-import aztech.modern_industrialization.machines.factory.MachineBlockEntity;
+import aztech.modern_industrialization.machines.impl.MachineBlockEntity;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;

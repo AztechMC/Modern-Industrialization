@@ -1,4 +1,4 @@
-package aztech.modern_industrialization.machines.factory;
+package aztech.modern_industrialization.machines.impl;
 
 import aztech.modern_industrialization.mixin_impl.WorldRendererGetter;
 import net.fabricmc.fabric.api.block.entity.BlockEntityClientSerializable;

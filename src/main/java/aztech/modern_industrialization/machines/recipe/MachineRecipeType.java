@@ -1,4 +1,4 @@
-package aztech.modern_industrialization.recipe;
+package aztech.modern_industrialization.machines.recipe;
 
 import com.google.gson.*;
 import net.minecraft.fluid.Fluid;

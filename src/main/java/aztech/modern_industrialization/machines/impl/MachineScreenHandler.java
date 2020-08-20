@@ -1,7 +1,6 @@
 package aztech.modern_industrialization.machines.impl;
 
 import aztech.modern_industrialization.ModernIndustrialization;
-import aztech.modern_industrialization.machines.factory.MachineFactory;
 import aztech.modern_industrialization.fluid.gui.FluidContainerScreenHandler;
 import aztech.modern_industrialization.fluid.gui.FluidSlot;
 import net.minecraft.entity.player.PlayerEntity;
@@ -15,7 +14,7 @@ import net.minecraft.screen.ArrayPropertyDelegate;
 import net.minecraft.screen.PropertyDelegate;
 import net.minecraft.screen.slot.Slot;
 
-import static aztech.modern_industrialization.machines.factory.MachineSlotType.*;
+import static aztech.modern_industrialization.machines.impl.MachineSlotType.*;
 
 
 public class MachineScreenHandler extends FluidContainerScreenHandler {

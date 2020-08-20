@@ -1,12 +1,11 @@
-package aztech.modern_industrialization.machines.factory;
+package aztech.modern_industrialization.machines.impl;
 
 import aztech.modern_industrialization.fluid.FluidInventory;
 import aztech.modern_industrialization.fluid.FluidSlotIO;
 import aztech.modern_industrialization.fluid.FluidStackItem;
 import aztech.modern_industrialization.fluid.FluidUnit;
-import aztech.modern_industrialization.machines.impl.MachineScreenHandler;
-import aztech.modern_industrialization.recipe.MachineRecipe;
-import aztech.modern_industrialization.recipe.MachineRecipeType;
+import aztech.modern_industrialization.machines.recipe.MachineRecipe;
+import aztech.modern_industrialization.machines.recipe.MachineRecipeType;
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerInventory;
@@ -29,8 +28,7 @@ import net.minecraft.util.math.Direction;
 import java.util.ArrayList;
 import java.util.List;
 
-import static aztech.modern_industrialization.machines.factory.MachineSlotType.LIQUID_INPUT_SLOT;
-import static aztech.modern_industrialization.machines.factory.MachineSlotType.LIQUID_OUTPUT_SLOT;
+import static aztech.modern_industrialization.machines.impl.MachineSlotType.*;
 
 
 

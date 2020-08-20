@@ -1,6 +1,6 @@
-package aztech.modern_industrialization.model.block;
+package aztech.modern_industrialization.machines.impl;
 
-import aztech.modern_industrialization.machines.factory.AbstractMachineBlockEntity;
+import aztech.modern_industrialization.model.block.CustomBlockModel;
 import com.mojang.datafixers.util.Pair;
 import net.fabricmc.fabric.api.renderer.v1.Renderer;
 import net.fabricmc.fabric.api.renderer.v1.RendererAccess;

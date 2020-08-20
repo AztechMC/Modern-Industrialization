@@ -1,4 +1,4 @@
-package aztech.modern_industrialization.machines.factory;
+package aztech.modern_industrialization.machines.impl;
 
 import java.util.function.Supplier;
 

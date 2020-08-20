@@ -1,14 +1,14 @@
 package aztech.modern_industrialization;
 
 import aztech.modern_industrialization.machines.impl.MachineBlock;
-import aztech.modern_industrialization.machines.factory.MachineFactory;
+import aztech.modern_industrialization.machines.impl.MachineFactory;
 import aztech.modern_industrialization.machines.steam.SteamBoilerBlockEntity;
 import aztech.modern_industrialization.fluid.CraftingFluid;
 import aztech.modern_industrialization.fluid.FluidStackItem;
 import aztech.modern_industrialization.machines.impl.MachineScreenHandler;
 import aztech.modern_industrialization.machines.impl.SteamBoilerScreenHandler;
 import aztech.modern_industrialization.pipes.MIPipes;
-import aztech.modern_industrialization.recipe.MachineRecipeType;
+import aztech.modern_industrialization.machines.recipe.MachineRecipeType;
 import aztech.modern_industrialization.tools.WrenchItem;
 import net.devtech.arrp.api.RRPCallback;
 import net.devtech.arrp.api.RuntimeResourcePack;

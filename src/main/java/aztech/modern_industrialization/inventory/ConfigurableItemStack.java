@@ -135,13 +135,11 @@ public class ConfigurableItemStack {
             super(inventory, id, x, y);
         }
 
-        // We don't allow item insertion obviously.
         @Override
         public boolean canInsert(ItemStack stack) {
             return playerInsert && (lockedItem == null || stack.getItem() == lockedItem);
         }
 
-        // No extraction either.
         @Override
         public boolean canTakeItems(PlayerEntity playerEntity) {
             return playerExtract;

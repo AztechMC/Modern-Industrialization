@@ -15,15 +15,18 @@ import net.minecraft.util.math.Direction;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
- * A fluid stack that can be configured. TODO: send data in opening packet
+ * A fluid stack that can be configured. TODO: sync fluid and lock state
  */
 public class ConfigurableFluidStack {
     private Fluid fluid = Fluids.EMPTY;
     private int amount = 0;
     private int capacity;
     private Fluid lockedFluid = null;
+    private boolean playerLocked = false;
+    private boolean machineLocked = false;
     private boolean playerLockable = true;
     private boolean playerInsert = false;
     private boolean playerExtract = true;
@@ -57,17 +60,48 @@ public class ConfigurableFluidStack {
         return stack;
     }
 
+    public static ConfigurableFluidStack steamInputSlot(ConfigurableInventory inventory, int capacity) {
+        ConfigurableFluidStack stack = new ConfigurableFluidStack(inventory, capacity);
+        stack.fluid = stack.lockedFluid = ModernIndustrialization.FLUID_STEAM;
+        stack.steamInput = true;
+        stack.playerInsert = true;
+        stack.playerLockable = false;
+        stack.playerLocked = true;
+        return stack;
+    }
+
     public ConfigurableFluidStack(ConfigurableFluidStack other) {
         this.fluid = other.fluid;
         this.amount = other.amount;
         this.capacity = other.capacity;
         this.lockedFluid = other.lockedFluid;
+        this.playerLocked = other.playerLocked;
+        this.machineLocked = other.machineLocked;
         this.playerLockable = other.playerLockable;
         this.playerInsert = other.playerInsert;
         this.playerExtract = other.playerExtract;
         this.pipesInsert = other.pipesInsert;
         this.pipesExtract = other.pipesExtract;
         this.steamInput = other.steamInput;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ConfigurableFluidStack that = (ConfigurableFluidStack) o;
+        return amount == that.amount &&
+                capacity == that.capacity &&
+                playerLocked == that.playerLocked &&
+                machineLocked == that.machineLocked &&
+                playerLockable == that.playerLockable &&
+                playerInsert == that.playerInsert &&
+                playerExtract == that.playerExtract &&
+                pipesInsert == that.pipesInsert &&
+                pipesExtract == that.pipesExtract &&
+                steamInput == that.steamInput &&
+                fluid == that.fluid &&
+                lockedFluid == that.lockedFluid;
     }
 
     /**
@@ -87,10 +121,6 @@ public class ConfigurableFluidStack {
 
     public int getAmount() {
         return amount;
-    }
-
-    public int getCapacity() {
-        return capacity;
     }
 
     public boolean isSteamInput() {
@@ -134,9 +164,11 @@ public class ConfigurableFluidStack {
         return capacity - amount;
     }
 
-    public boolean isVisiblyLocked() {
-        return playerLockable && lockedFluid != null;
+    public boolean isPlayerLocked() {
+        return playerLocked;
     }
+
+    public boolean isMachineLocked() { return machineLocked; }
 
     public CompoundTag writeToTag(CompoundTag tag) {
         NbtHelper.putFluid(tag, "fluid", fluid);
@@ -146,6 +178,8 @@ public class ConfigurableFluidStack {
             NbtHelper.putFluid(tag, "lockedFluid", lockedFluid);
         }
         // TODO: more efficient encoding?
+        tag.putBoolean("machineLocked", machineLocked);
+        tag.putBoolean("playerLocked", playerLocked);
         tag.putBoolean("playerLockable", playerLockable);
         tag.putBoolean("playerInsert", playerInsert);
         tag.putBoolean("playerExtract", playerExtract);
@@ -162,6 +196,8 @@ public class ConfigurableFluidStack {
         if(tag.contains("lockedFluid")) {
             lockedFluid = NbtHelper.getFluid(tag, "lockedFluid");
         }
+        machineLocked = tag.getBoolean("machineLocked");
+        playerLocked = tag.getBoolean("playerLocked");
         playerLockable = tag.getBoolean("playerLockable");
         playerInsert = tag.getBoolean("playerInsert");
         playerExtract = tag.getBoolean("playerExtract");
@@ -189,17 +225,33 @@ public class ConfigurableFluidStack {
         }
     }
 
-    public void toggleLock() {
+    public void enableMachineLock(Fluid lockedFluid) {
+        if(this.lockedFluid != null && lockedFluid != this.lockedFluid) throw new RuntimeException("Trying to override locked fluid");
+        machineLocked = true;
+        this.fluid = this.lockedFluid = lockedFluid;
+    }
+
+    public void disableMachineLock() {
+        machineLocked = false;
+        onToggleLock();
+    }
+
+    public void togglePlayerLock() {
         if(playerLockable) {
-            if(lockedFluid == null) {
-                lockedFluid = fluid;
-            } else {
-                lockedFluid = null;
-                if(amount == 0) {
-                    setFluid(Fluids.EMPTY);
-                    updateDisplayedItem();
-                }
+            playerLocked = !playerLocked;
+            onToggleLock();
+        }
+    }
+
+    private void onToggleLock() {
+        if(!machineLocked && !playerLocked) {
+            lockedFluid = null;
+            if(amount == 0) {
+                setFluid(Fluids.EMPTY);
+                updateDisplayedItem();
             }
+        } else if(lockedFluid == null) {
+            lockedFluid = fluid;
         }
     }
 

@@ -8,6 +8,9 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
@@ -54,7 +57,7 @@ public class MachineScreen extends HandledScreen<MachineScreenHandler> {
             }
         }
 
-        // TOOD: move to custom screen class
+        // TODO: move to custom screen class
         this.client.getTextureManager().bindTexture(SLOT_ATLAS);
         for(Slot slot : this.handler.slots) {
             int px = i + slot.x - 1;
@@ -62,10 +65,10 @@ public class MachineScreen extends HandledScreen<MachineScreenHandler> {
             int u;
             if(slot instanceof ConfigurableFluidStack.ConfigurableFluidSlot) {
                 ConfigurableFluidStack.ConfigurableFluidSlot fluidSlot = (ConfigurableFluidStack.ConfigurableFluidSlot) slot;
-                u = fluidSlot.getConfStack().isVisiblyLocked() ? 90 : 18;
+                u = fluidSlot.getConfStack().isPlayerLocked() ? 90 : fluidSlot.getConfStack().isMachineLocked() ? 126 : 18;
             } else if(slot instanceof ConfigurableItemStack.ConfigurableItemSlot) {
                 ConfigurableItemStack.ConfigurableItemSlot itemSlot = (ConfigurableItemStack.ConfigurableItemSlot) slot;
-                u = itemSlot.getConfStack().isVisiblyLocked() ? 72 : 0;
+                u = itemSlot.getConfStack().isPlayerLocked() ? 72 : itemSlot.getConfStack().isMachineLocked() ? 108 : 0;
             } else if(slot instanceof ConfigurableScreenHandler.LockingModeSlot) {
                 u = this.handler.lockingMode ? 54 : 36;
             } else {
@@ -73,6 +76,32 @@ public class MachineScreen extends HandledScreen<MachineScreenHandler> {
             }
             this.drawTexture(matrices, px, py, u, 0, 18, 18);
         }
+    }
+
+    @Override
+    protected void drawForeground(MatrixStack matrices, int mouseX, int mouseY) {
+        // Render items for locked slots
+        for(Slot slot : this.handler.slots) {
+            if(slot instanceof ConfigurableItemStack.ConfigurableItemSlot) {
+                ConfigurableItemStack.ConfigurableItemSlot itemSlot = (ConfigurableItemStack.ConfigurableItemSlot) slot;
+                ConfigurableItemStack itemStack = itemSlot.getConfStack();
+                if((itemStack.isPlayerLocked() || itemStack.isMachineLocked()) && itemStack.getStack().isEmpty()) {
+                    Item item = itemStack.getLockedItem();
+                    if (item != Items.AIR) {
+                        this.setZOffset(100);
+                        this.itemRenderer.zOffset = 100.0F;
+
+                        RenderSystem.enableDepthTest();
+                        this.itemRenderer.renderInGuiWithOverrides(this.client.player, new ItemStack(item), slot.x, slot.y);
+                        this.itemRenderer.renderGuiItemOverlay(this.textRenderer, new ItemStack(item), slot.x, slot.y, "0");
+
+                        this.itemRenderer.zOffset = 0.0F;
+                        this.setZOffset(0);
+                    }
+                }
+            }
+        }
+        super.drawForeground(matrices, mouseX, mouseY);
     }
 
     @Override

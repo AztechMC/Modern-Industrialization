@@ -1,18 +1,24 @@
 package aztech.modern_industrialization.inventory;
 
 import aztech.modern_industrialization.fluid.FluidContainerItem;
-import aztech.modern_industrialization.fluid.FluidStackItem;
-import aztech.modern_industrialization.fluid.gui.FluidSlot;
+import io.netty.buffer.Unpooled;
+import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.PacketByteBuf;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.screen.slot.SlotActionType;
+import net.minecraft.server.network.ServerPlayerEntity;
+
+import java.util.List;
 
 /**
  * The ScreenHandler for a configurable inventory.
@@ -21,11 +27,48 @@ import net.minecraft.screen.slot.SlotActionType;
 public abstract class ConfigurableScreenHandler extends ScreenHandler {
     private static final int PLAYER_SLOTS = 36;
     public boolean lockingMode = false;
+    protected PlayerInventory playerInventory;
     protected ConfigurableInventory inventory;
+    private List<ConfigurableItemStack> trackedItems;
+    private List<ConfigurableFluidStack> trackedFluids;
 
-    protected ConfigurableScreenHandler(ScreenHandlerType<?> type, int syncId, ConfigurableInventory inventory) {
+    protected ConfigurableScreenHandler(ScreenHandlerType<?> type, int syncId, PlayerInventory playerInventory, ConfigurableInventory inventory) {
         super(type, syncId);
+        this.playerInventory = playerInventory;
         this.inventory = inventory;
+
+        if(playerInventory.player instanceof ServerPlayerEntity) {
+            trackedItems = ConfigurableItemStack.copyList(inventory.getItemStacks());
+            trackedFluids = ConfigurableFluidStack.copyList(inventory.getFluidStacks());
+        }
+    }
+
+    @Override
+    public void sendContentUpdates() {
+        if(playerInventory.player instanceof ServerPlayerEntity) {
+            ServerPlayerEntity player = (ServerPlayerEntity)playerInventory.player;
+            for(int i = 0; i < trackedItems.size(); i++) {
+                if(!trackedItems.get(i).equals(inventory.getItemStacks().get(i))) {
+                    trackedItems.set(i, new ConfigurableItemStack(inventory.getItemStacks().get(i)));
+                    PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
+                    buf.writeInt(syncId);
+                    buf.writeInt(i);
+                    buf.writeCompoundTag(trackedItems.get(i).writeToTag(new CompoundTag()));
+                    ServerSidePacketRegistry.INSTANCE.sendToPlayer(player, ConfigurableInventoryPackets.UPDATE_ITEM_SLOT, buf);
+                }
+            }
+            for(int i = 0; i < trackedFluids.size(); i++) {
+                if(!trackedFluids.get(i).equals(inventory.getFluidStacks().get(i))) {
+                    trackedFluids.set(i, new ConfigurableFluidStack(inventory.getFluidStacks().get(i)));
+                    PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
+                    buf.writeInt(syncId);
+                    buf.writeInt(i);
+                    buf.writeCompoundTag(trackedFluids.get(i).writeToTag(new CompoundTag()));
+                    ServerSidePacketRegistry.INSTANCE.sendToPlayer(player, ConfigurableInventoryPackets.UPDATE_FLUID_SLOT, buf);
+                }
+            }
+        }
+        super.sendContentUpdates();
     }
 
     @Override
@@ -46,7 +89,7 @@ public abstract class ConfigurableScreenHandler extends ScreenHandler {
                 ConfigurableFluidStack.ConfigurableFluidSlot fluidSlot = (ConfigurableFluidStack.ConfigurableFluidSlot) slot;
                 ConfigurableFluidStack fluidStack = fluidSlot.getConfStack();
                 if(lockingMode) {
-                    fluidStack.toggleLock();
+                    fluidStack.togglePlayerLock();
                 } else {
                     ItemStack heldStack = playerEntity.inventory.getCursorStack();
                     if (heldStack.getItem() instanceof FluidContainerItem) {
@@ -100,7 +143,7 @@ public abstract class ConfigurableScreenHandler extends ScreenHandler {
                     }
                     ConfigurableItemStack.ConfigurableItemSlot itemSlot = (ConfigurableItemStack.ConfigurableItemSlot) slot;
                     ConfigurableItemStack itemStack = itemSlot.getConfStack();
-                    itemStack.toggleLock();
+                    itemStack.togglePlayerLock();
                     return itemStack.getStack().copy();
                 }
             }

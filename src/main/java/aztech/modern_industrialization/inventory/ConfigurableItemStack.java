@@ -12,13 +12,16 @@ import net.minecraft.util.math.Direction;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
- * An item stack that can be configured.
+ * An item stack that can be configured. TODO: sync lock state
  */
 public class ConfigurableItemStack {
     ItemStack stack = ItemStack.EMPTY;
     Item lockedItem = null;
+    private boolean playerLocked = false;
+    private boolean machineLocked = false;
     boolean playerLockable = true;
     boolean playerInsert = false;
     boolean playerExtract = true;
@@ -43,11 +46,29 @@ public class ConfigurableItemStack {
     public ConfigurableItemStack(ConfigurableItemStack other) {
         this.stack = other.stack.copy();
         this.lockedItem = other.lockedItem;
+        this.playerLocked = other.playerLocked;
+        this.machineLocked = other.machineLocked;
         this.playerLockable = other.playerLockable;
         this.playerInsert = other.playerInsert;
         this.playerExtract = other.playerExtract;
         this.pipesInsert = other.pipesInsert;
         this.pipesExtract = other.pipesExtract;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ConfigurableItemStack that = (ConfigurableItemStack) o;
+        return playerLocked == that.playerLocked &&
+                machineLocked == that.machineLocked &&
+                playerLockable == that.playerLockable &&
+                playerInsert == that.playerInsert &&
+                playerExtract == that.playerExtract &&
+                pipesInsert == that.pipesInsert &&
+                pipesExtract == that.pipesExtract &&
+                ItemStack.areEqual(stack, that.stack) &&
+                lockedItem == that.lockedItem;
     }
 
     /**
@@ -63,6 +84,10 @@ public class ConfigurableItemStack {
 
     public ItemStack getStack() {
         return stack;
+    }
+
+    public Item getLockedItem() {
+        return lockedItem;
     }
 
     /**
@@ -94,13 +119,35 @@ public class ConfigurableItemStack {
         return lockedItem == null || lockedItem == stack.getItem();
     }
 
-    public boolean isVisiblyLocked() {
-        return playerLockable && lockedItem != null;
+    public boolean isPlayerLocked() {
+        return playerLocked;
     }
 
-    public void toggleLock() {
+    public boolean isMachineLocked() { return machineLocked; }
+
+    public void enableMachineLock(Item lockedItem) {
+        if(this.lockedItem != null && lockedItem != this.lockedItem) throw new RuntimeException("Trying to override locked item");
+        machineLocked = true;
+        this.lockedItem = lockedItem;
+    }
+
+    public void disableMachineLock() {
+        machineLocked = false;
+        onToggleLock();
+    }
+
+    public void togglePlayerLock() {
         if(playerLockable) {
-            lockedItem = lockedItem == null ? stack.getItem() : null;
+            playerLocked = !playerLocked;
+            onToggleLock();
+        }
+    }
+
+    private void onToggleLock() {
+        if(!machineLocked && !playerLocked) {
+            lockedItem = null;
+        } else if(lockedItem == null) {
+            lockedItem = stack.getItem();
         }
     }
 
@@ -110,6 +157,8 @@ public class ConfigurableItemStack {
             NbtHelper.putItem(tag, "lockedItem", lockedItem);
         }
         // TODO: more efficient encoding?
+        tag.putBoolean("machineLocked", machineLocked);
+        tag.putBoolean("playerLocked", playerLocked);
         tag.putBoolean("playerLockable", playerLockable);
         tag.putBoolean("playerInsert", playerInsert);
         tag.putBoolean("playerExtract", playerExtract);
@@ -123,6 +172,8 @@ public class ConfigurableItemStack {
         if(tag.contains("lockedItem")) {
             lockedItem = NbtHelper.getItem(tag, "lockedItem");
         }
+        machineLocked = tag.getBoolean("machineLocked");
+        playerLocked = tag.getBoolean("playerLocked");
         playerLockable = tag.getBoolean("playerLockable");
         playerInsert = tag.getBoolean("playerInsert");
         playerExtract = tag.getBoolean("playerExtract");

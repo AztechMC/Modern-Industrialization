@@ -1,5 +1,7 @@
 package aztech.modern_industrialization;
 
+import aztech.modern_industrialization.inventory.ConfigurableInventoryPacketHandlers;
+import aztech.modern_industrialization.inventory.ConfigurableInventoryPackets;
 import aztech.modern_industrialization.machines.impl.MachineScreen;
 //import aztech.modern_industrialization.machines.impl.SteamBoilerScreen;
 import aztech.modern_industrialization.model.block.ModelProvider;
@@ -9,6 +11,7 @@ import net.fabricmc.fabric.api.client.model.ModelLoadingRegistry;
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandler;
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry;
 import net.fabricmc.fabric.api.client.screenhandler.v1.ScreenRegistry;
+import net.fabricmc.fabric.api.network.ClientSidePacketRegistry;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.fabricmc.fabric.api.resource.SimpleSynchronousResourceReloadListener;
 import net.minecraft.client.MinecraftClient;
@@ -31,6 +34,7 @@ public class ModernIndustrializationClient implements ClientModInitializer {
     public void onInitializeClient() {
         setupScreens();
         setupFluidRenders();
+        setupPackets();
         ModelLoadingRegistry.INSTANCE.registerResourceProvider(rm -> {
             return new ModelProvider();
         });
@@ -78,5 +82,10 @@ public class ModernIndustrializationClient implements ClientModInitializer {
         };
 
         registerWaterlikeFluid.accept(ModernIndustrialization.FLUID_STEAM, -1);
+    }
+
+    private void setupPackets() {
+        ClientSidePacketRegistry.INSTANCE.register(ConfigurableInventoryPackets.UPDATE_ITEM_SLOT, ConfigurableInventoryPacketHandlers.UPDATE_ITEM_SLOT);
+        ClientSidePacketRegistry.INSTANCE.register(ConfigurableInventoryPackets.UPDATE_FLUID_SLOT, ConfigurableInventoryPacketHandlers.UPDATE_FLUID_SLOT);
     }
 }

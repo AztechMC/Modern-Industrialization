@@ -15,6 +15,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.Fluids;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.PacketByteBuf;
@@ -62,7 +63,11 @@ public class MachineBlockEntity extends AbstractMachineBlockEntity
         }
         fluidStacks = new ArrayList<>();
         for(int i = 0; i < factory.getLiquidInputSlots(); ++i) {
-            fluidStacks.add(ConfigurableFluidStack.standardInputSlot(this, factory.getInputBucketCapacity() * FluidUnit.DROPS_PER_BUCKET));
+            if(i == 0 && factory instanceof SteamMachineFactory) {
+                fluidStacks.add(ConfigurableFluidStack.steamInputSlot(this, ((SteamMachineFactory) factory).getSteamBucketCapacity() * FluidUnit.DROPS_PER_BUCKET));
+            } else {
+                fluidStacks.add(ConfigurableFluidStack.standardInputSlot(this, factory.getInputBucketCapacity() * FluidUnit.DROPS_PER_BUCKET));
+            }
         }
         for(int i = 0; i < factory.getLiquidOutputSlots(); ++i) {
             fluidStacks.add(ConfigurableFluidStack.standardOutputSlot(this, factory.getOutputBucketCapacity() * FluidUnit.DROPS_PER_BUCKET));
@@ -184,9 +189,11 @@ public class MachineBlockEntity extends AbstractMachineBlockEntity
 
         if(activeRecipe == null) { // TODO: don't start recipe if no energy
             for(MachineRecipe recipe : recipeType.getRecipes((ServerWorld) world)) {
-                if(takeItemInputs(recipe, true) && takeFluidInputs(recipe, true) && putItemOutputs(recipe, true) && putFluidOutputs(recipe, true)) {
+                if(takeItemInputs(recipe, true) && takeFluidInputs(recipe, true) && putItemOutputs(recipe, true, false) && putFluidOutputs(recipe, true, false)) {
                     takeItemInputs(recipe, false);
                     takeFluidInputs(recipe, false);
+                    putItemOutputs(recipe, true, true);
+                    putFluidOutputs(recipe, true, true);
                     activeRecipe = recipe;
                     usedEnergy = 0;
                     recipeEnergy = recipe.eu * recipe.duration;
@@ -201,9 +208,11 @@ public class MachineBlockEntity extends AbstractMachineBlockEntity
             usedEnergy += eu;
 
             if(usedEnergy == recipeEnergy) {
-                putItemOutputs(activeRecipe, false);
-                putFluidOutputs(activeRecipe, false);
+                putItemOutputs(activeRecipe, false, false);
+                putFluidOutputs(activeRecipe, false, false);
+                clearLocks();
                 activeRecipe = null; // TODO: reuse recipe
+                usedEnergy = 0;
             }
         } else {
             isActive = false;
@@ -255,21 +264,26 @@ public class MachineBlockEntity extends AbstractMachineBlockEntity
         return ok;
     }
 
-    private boolean putItemOutputs(MachineRecipe recipe, boolean simulate) {
+    private boolean putItemOutputs(MachineRecipe recipe, boolean simulate, boolean toggleLock) {
         List<ConfigurableItemStack> baseList = itemStacks.subList(factory.getInputSlots(), itemStacks.size());
         List<ConfigurableItemStack> stacks = simulate ? ConfigurableItemStack.copyList(baseList) : baseList;
+
+        List<Integer> locksToToggle = new ArrayList<>();
+        List<Item> lockItems = new ArrayList<>();
 
         boolean ok = true;
         for(MachineRecipe.ItemOutput output : recipe.itemOutputs) {
             int remainingAmount = output.amount;
-            // Try to insert in non-empty stacks first, then also allow insertion in empty stacks.
+            // Try to insert in non-empty stacks or locked first, then also allow insertion in empty stacks.
             for(int loopRun = 0; loopRun < 2; loopRun++) {
+                int stackId = 0;
                 for (ConfigurableItemStack stack : stacks) {
+                    stackId++;
                     ItemStack st = stack.getStack();
                     if(st.getItem() == output.item || st.isEmpty()) {
                         int ins = Math.min(remainingAmount, Math.min(getMaxCountPerStack(), output.item.getMaxCount()) - st.getCount());
                         if (st.isEmpty()) {
-                            if (loopRun == 1) {
+                            if (stack.isMachineLocked() || stack.isPlayerLocked() || loopRun == 1) {
                                 stack.setStack(new ItemStack(output.item, ins));
                             } else {
                                 ins = 0;
@@ -278,18 +292,31 @@ public class MachineBlockEntity extends AbstractMachineBlockEntity
                             st.increment(ins);
                         }
                         remainingAmount -= ins;
+                        if(ins > 0) {
+                            locksToToggle.add(stackId-1);
+                            lockItems.add(output.item);
+                        }
                         if (remainingAmount == 0) break;
                     }
                 }
             }
             if(remainingAmount > 0) ok = false;
         }
+
+        if(toggleLock) {
+            for(int i = 0; i < locksToToggle.size(); i++) {
+                baseList.get(locksToToggle.get(i)).enableMachineLock(lockItems.get(i));
+            }
+        }
         return ok;
     }
 
-    private boolean putFluidOutputs(MachineRecipe recipe, boolean simulate) {
+    private boolean putFluidOutputs(MachineRecipe recipe, boolean simulate, boolean toggleLock) {
         List<ConfigurableFluidStack> baseList = fluidStacks.subList(factory.getLiquidInputSlots(), fluidStacks.size());
         List<ConfigurableFluidStack> stacks = simulate ? ConfigurableFluidStack.copyList(baseList) : baseList;
+
+        List<Integer> locksToToggle = new ArrayList<>();
+        List<Fluid> lockFluids = new ArrayList<>();
 
         boolean ok = true;
         for(MachineRecipe.FluidOutput output : recipe.fluidOutputs) {
@@ -297,11 +324,13 @@ public class MachineBlockEntity extends AbstractMachineBlockEntity
             // Try to insert in non-empty stacks first, then also allow insertion in empty stacks if there was no empty stack.
             outerLoop:
             for(int loopRun = 0; loopRun < 2; loopRun++) {
+                int stackId = 0;
                 for (ConfigurableFluidStack stack : stacks) {
+                    stackId++;
                     if(stack.getFluid() == output.fluid || stack.getFluid() == Fluids.EMPTY) {
                         int ins = Math.min(remainingAmount, stack.getRemainingSpace());
                         if (stack.getFluid() == Fluids.EMPTY) {
-                            if (loopRun == 1) {
+                            if (stack.isPlayerLocked() || stack.isMachineLocked() || loopRun == 1) {
                                 stack.setFluid(output.fluid);
                                 stack.setAmount(ins);
                             } else {
@@ -311,6 +340,10 @@ public class MachineBlockEntity extends AbstractMachineBlockEntity
                             stack.increment(ins);
                         }
                         remainingAmount -= ins;
+                        if(ins > 0) {
+                            locksToToggle.add(stackId-1);
+                            lockFluids.add(output.fluid);
+                        }
                         // only allow one insertion
                         if(ins > 0) break outerLoop;
                     }
@@ -318,7 +351,22 @@ public class MachineBlockEntity extends AbstractMachineBlockEntity
             }
             if(remainingAmount > 0) ok = false;
         }
+
+        if(toggleLock) {
+            for(int i = 0; i < locksToToggle.size(); i++) {
+                baseList.get(locksToToggle.get(i)).enableMachineLock(lockFluids.get(i));
+            }
+        }
         return ok;
+    }
+
+    protected void clearLocks() {
+        for(ConfigurableItemStack stack : itemStacks) {
+            if (stack.isMachineLocked()) stack.disableMachineLock();
+        }
+        for(ConfigurableFluidStack stack : fluidStacks) {
+            if (stack.isMachineLocked()) stack.disableMachineLock();
+        }
     }
 
     private int getEu(int maxEu, boolean simulate) {

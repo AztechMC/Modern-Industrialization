@@ -8,14 +8,14 @@ import net.minecraft.network.PacketByteBuf;
 import net.minecraft.screen.ArrayPropertyDelegate;
 import net.minecraft.screen.PropertyDelegate;
 import net.minecraft.screen.slot.Slot;
+import net.minecraft.server.network.ServerPlayerEntity;
 
 import static aztech.modern_industrialization.machines.impl.MachineSlotType.*;
 
 
 public class MachineScreenHandler extends ConfigurableScreenHandler {
 
-    private PlayerInventory playerInventory;
-    private ConfigurableInventory inventory;
+    public ConfigurableInventory inventory;
     private PropertyDelegate propertyDelegate;
     private MachineFactory factory;
 
@@ -27,9 +27,8 @@ public class MachineScreenHandler extends ConfigurableScreenHandler {
     public MachineScreenHandler(int syncId, PlayerInventory playerInventory,
                                 ConfigurableInventory inventory, PropertyDelegate propertyDelegate, MachineFactory factory) {
 
-        super(ModernIndustrialization.SCREEN_HANDLER_TYPE_MACHINE, syncId, inventory);
+        super(ModernIndustrialization.SCREEN_HANDLER_TYPE_MACHINE, syncId, playerInventory, inventory);
 
-        this.playerInventory = playerInventory;
         this.inventory = inventory;
         inventory.onOpen(playerInventory.player);
         this.factory = factory;
@@ -63,7 +62,6 @@ public class MachineScreenHandler extends ConfigurableScreenHandler {
         }
 
         addSlot(new LockingModeSlot(inventory, 152, 7));
-
     }
     @Override
     public boolean canUse(PlayerEntity player) {

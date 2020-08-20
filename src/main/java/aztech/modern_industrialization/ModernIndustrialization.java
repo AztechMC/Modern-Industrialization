@@ -2,11 +2,10 @@ package aztech.modern_industrialization;
 
 import aztech.modern_industrialization.machines.impl.MachineBlock;
 import aztech.modern_industrialization.machines.impl.MachineFactory;
-import aztech.modern_industrialization.machines.steam.SteamBoilerBlockEntity;
 import aztech.modern_industrialization.fluid.CraftingFluid;
 import aztech.modern_industrialization.fluid.FluidStackItem;
 import aztech.modern_industrialization.machines.impl.MachineScreenHandler;
-import aztech.modern_industrialization.machines.impl.SteamBoilerScreenHandler;
+//import aztech.modern_industrialization.machines.impl.SteamBoilerScreenHandler;
 import aztech.modern_industrialization.pipes.MIPipes;
 import aztech.modern_industrialization.machines.recipe.MachineRecipeType;
 import aztech.modern_industrialization.tools.WrenchItem;
@@ -45,14 +44,14 @@ public class ModernIndustrialization implements ModInitializer {
 	public static final Item ITEM_WRENCH = new WrenchItem(new Item.Settings());
 
 	// Block
-	public static final Block BLOCK_STEAM_BOILER = new MachineBlock(SteamBoilerBlockEntity::new);
-	public static final Item ITEM_STEAM_BOILER = new BlockItem(BLOCK_STEAM_BOILER, new Item.Settings().group(ITEM_GROUP));
+	//public static final Block BLOCK_STEAM_BOILER = new MachineBlock(SteamBoilerBlockEntity::new);
+	//public static final Item ITEM_STEAM_BOILER = new BlockItem(BLOCK_STEAM_BOILER, new Item.Settings().group(ITEM_GROUP));
 
 	// BlockEntity
-	public static BlockEntityType<SteamBoilerBlockEntity> BLOCK_ENTITY_STEAM_BOILER;
+	//public static BlockEntityType<SteamBoilerBlockEntity> BLOCK_ENTITY_STEAM_BOILER;
 
 	// ScreenHandlerType
-	public static final ScreenHandlerType<SteamBoilerScreenHandler> SCREEN_HANDLER_TYPE_STEAM_BOILER = ScreenHandlerRegistry.registerSimple(new Identifier(MOD_ID, "steam_boiler"), SteamBoilerScreenHandler::new);
+	//public static final ScreenHandlerType<SteamBoilerScreenHandler> SCREEN_HANDLER_TYPE_STEAM_BOILER = ScreenHandlerRegistry.registerSimple(new Identifier(MOD_ID, "steam_boiler"), SteamBoilerScreenHandler::new);
 	public static final ScreenHandlerType<MachineScreenHandler> SCREEN_HANDLER_TYPE_MACHINE = ScreenHandlerRegistry.registerExtended(new Identifier(MOD_ID, "machine"), MachineScreenHandler::new);
 	// Fluid
 	public static final Fluid FLUID_STEAM = new CraftingFluid();
@@ -85,7 +84,7 @@ public class ModernIndustrialization implements ModInitializer {
 	}
 
 	private void setupBlocks() {
-		registerBlock(BLOCK_STEAM_BOILER, ITEM_STEAM_BOILER,"steam_boiler");
+		//registerBlock(BLOCK_STEAM_BOILER, ITEM_STEAM_BOILER,"steam_boiler");
 
 	}
 
@@ -104,7 +103,7 @@ public class ModernIndustrialization implements ModInitializer {
 	}
 
 	private void setupBlockEntities() {
-		BLOCK_ENTITY_STEAM_BOILER = Registry.register(Registry.BLOCK_ENTITY_TYPE, new Identifier(MOD_ID, "steam_boiler"), BlockEntityType.Builder.create(SteamBoilerBlockEntity::new, BLOCK_STEAM_BOILER).build(null));
+		//BLOCK_ENTITY_STEAM_BOILER = Registry.register(Registry.BLOCK_ENTITY_TYPE, new Identifier(MOD_ID, "steam_boiler"), BlockEntityType.Builder.create(SteamBoilerBlockEntity::new, BLOCK_STEAM_BOILER).build(null));
 	}
 
 	private void setupFluids() {

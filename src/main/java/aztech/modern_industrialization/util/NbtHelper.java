@@ -2,18 +2,30 @@ package aztech.modern_industrialization.util;
 
 import aztech.modern_industrialization.pipes.api.PipeConnectionType;
 import net.minecraft.fluid.Fluid;
+import net.minecraft.item.Item;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.registry.Registry;
 
 import java.util.Collection;
+import java.util.List;
+import java.util.function.BiConsumer;
+import java.util.function.BiFunction;
 
 public class NbtHelper {
     public static Fluid getFluid(CompoundTag tag, String key) {
-        return Registry.FLUID.get(tag.getInt(key));
+        return Registry.FLUID.get(new Identifier(tag.getString(key)));
     }
     public static void putFluid(CompoundTag tag, String key, Fluid fluid) {
-        tag.putInt("fluid_id", Registry.FLUID.getRawId(fluid));
+        tag.putString(key, Registry.FLUID.getId(fluid).toString());
+    }
+    public static Item getItem(CompoundTag tag, String key) {
+        return Registry.ITEM.get(new Identifier(tag.getString(key)));
+    }
+    public static void putItem(CompoundTag tag, String key, Item item) {
+        tag.putString(key, Registry.ITEM.getId(item).toString());
     }
     public static byte encodeDirections(Iterable<Direction> directions) {
         byte mask = 0;
@@ -46,5 +58,21 @@ public class NbtHelper {
             connections[i] = PipeConnectionType.byId(encoded[i]);
         }
         return connections;
+    }
+    public static <T> void putList(CompoundTag tag, String key, List<T> list, BiFunction<T, CompoundTag, CompoundTag> encoder) {
+        ListTag listTag = new ListTag();
+        for(int i = 0; i < list.size(); ++i) {
+            CompoundTag elementTag = new CompoundTag();
+            elementTag.putByte("Slot", (byte)i);
+            listTag.add(encoder.apply(list.get(i), elementTag));
+        }
+        tag.put(key, listTag);
+    }
+    public static <T> void getList(CompoundTag tag, String key, List<T> list, BiConsumer<T, CompoundTag> decoder) {
+        ListTag listTag = tag.getList(key, (new CompoundTag()).getType());
+        for(int i = 0; i < listTag.size(); ++i) {
+            CompoundTag elementTag = listTag.getCompound(i);
+            decoder.accept(list.get(elementTag.getByte("Slot")), elementTag);
+        }
     }
 }

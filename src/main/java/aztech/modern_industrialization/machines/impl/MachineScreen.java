@@ -1,10 +1,14 @@
 package aztech.modern_industrialization.machines.impl;
 
 import aztech.modern_industrialization.ModernIndustrialization;
+import aztech.modern_industrialization.inventory.ConfigurableFluidStack;
+import aztech.modern_industrialization.inventory.ConfigurableItemStack;
+import aztech.modern_industrialization.inventory.ConfigurableScreenHandler;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.screen.slot.Slot;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
@@ -29,7 +33,7 @@ public class MachineScreen extends HandledScreen<MachineScreenHandler> {
         int j = this.y;
         this.drawTexture(matrices, i, j, 0, 0, factory.getBackgroundWidth(), factory.getBackgroundHeight());
         // Fuel progress
-        if(factory.hasProgressBar() && handler.getIsActive()) {
+        if(factory.hasProgressBar()) {
             float progress = (float)handler.getTickProgress() / handler.getTickRecipe();
 
             int sx = factory.getProgressBarSizeX();
@@ -50,15 +54,24 @@ public class MachineScreen extends HandledScreen<MachineScreenHandler> {
             }
         }
 
+        // TOOD: move to custom screen class
         this.client.getTextureManager().bindTexture(SLOT_ATLAS);
-        for(int l = 0 ; l < factory.getSlots(); l++){
-            int px = i+factory.getSlotPosX(l)-1;
-            int py = j+factory.getSlotPosY(l)-1;
-            if(!factory.isFluidSlot(l)){
-                this.drawTexture(matrices, px, py, 0, 0, 18, 18);
-            }else{
-                this.drawTexture(matrices, px, py, 18, 0, 18, 18);
+        for(Slot slot : this.handler.slots) {
+            int px = i + slot.x - 1;
+            int py = j + slot.y - 1;
+            int u;
+            if(slot instanceof ConfigurableFluidStack.ConfigurableFluidSlot) {
+                ConfigurableFluidStack.ConfigurableFluidSlot fluidSlot = (ConfigurableFluidStack.ConfigurableFluidSlot) slot;
+                u = fluidSlot.getConfStack().isVisiblyLocked() ? 90 : 18;
+            } else if(slot instanceof ConfigurableItemStack.ConfigurableItemSlot) {
+                ConfigurableItemStack.ConfigurableItemSlot itemSlot = (ConfigurableItemStack.ConfigurableItemSlot) slot;
+                u = itemSlot.getConfStack().isVisiblyLocked() ? 72 : 0;
+            } else if(slot instanceof ConfigurableScreenHandler.LockingModeSlot) {
+                u = this.handler.lockingMode ? 54 : 36;
+            } else {
+                continue;
             }
+            this.drawTexture(matrices, px, py, u, 0, 18, 18);
         }
     }
 

@@ -6,7 +6,7 @@ import aztech.modern_industrialization.fluid.FluidInventory;
 import aztech.modern_industrialization.fluid.FluidSlotIO;
 import aztech.modern_industrialization.fluid.FluidStackItem;
 import aztech.modern_industrialization.fluid.FluidUnit;
-import aztech.modern_industrialization.machines.impl.SteamBoilerScreenHandler;
+//import aztech.modern_industrialization.machines.impl.SteamBoilerScreenHandler;
 import net.fabricmc.fabric.impl.content.registry.FuelRegistryImpl;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerInventory;
@@ -27,6 +27,7 @@ import net.minecraft.util.math.Direction;
  * Steam boiler BlockEntity.
  * Slots: 0 is the burnable fuel, 1 is the input water.
  */
+/*
 public class SteamBoilerBlockEntity extends AbstractMachineBlockEntity implements SidedInventory, Tickable, FluidInventory {
     private static final int WATER_CONSUMPTION = 1;
     private static final int STEAM_PRODUCTION = 8;
@@ -222,3 +223,4 @@ public class SteamBoilerBlockEntity extends AbstractMachineBlockEntity implement
         return true;
     }
 }
+*/

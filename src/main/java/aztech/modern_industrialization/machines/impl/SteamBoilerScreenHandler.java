@@ -1,7 +1,7 @@
 package aztech.modern_industrialization.machines.impl;
 
 import aztech.modern_industrialization.ModernIndustrialization;
-import aztech.modern_industrialization.machines.steam.SteamBoilerBlockEntity;
+//import aztech.modern_industrialization.machines.steam.SteamBoilerBlockEntity;
 import aztech.modern_industrialization.fluid.gui.FluidContainerScreenHandler;
 import aztech.modern_industrialization.fluid.gui.FluidSlot;
 import net.minecraft.entity.player.PlayerEntity;
@@ -18,6 +18,7 @@ import net.minecraft.screen.slot.Slot;
 /**
  * Screen handler for the steam boiler.
  */
+/*
 public class SteamBoilerScreenHandler extends FluidContainerScreenHandler {
 
     private Inventory inventory;
@@ -98,3 +99,4 @@ public class SteamBoilerScreenHandler extends FluidContainerScreenHandler {
         }
     }
 }
+ */

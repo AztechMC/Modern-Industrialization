@@ -22,7 +22,7 @@ public class MachineFactory {
 
     public MachineModel machineModel;
 
-    public final Supplier<AbstractMachineBlockEntity> blockEntityConstructor;
+    public final Supplier<MachineBlockEntity> blockEntityConstructor;
 
     private String machineID;
     private static HashMap<String, MachineFactory> map = new HashMap<String, MachineFactory>();
@@ -63,7 +63,7 @@ public class MachineFactory {
     private int backgroundWidth = 176;
     private int backgroundHeight = 166;
 
-    public MachineFactory(String ID, Supplier<AbstractMachineBlockEntity> blockEntityConstructor, int inputSlots, int outputSlots, int liquidInputSlots, int liquidOutputSlots){
+    public MachineFactory(String ID, Supplier<MachineBlockEntity> blockEntityConstructor, int inputSlots, int outputSlots, int liquidInputSlots, int liquidOutputSlots){
         this.machineID = ID;
 
         if(map.containsKey(machineID)){
@@ -100,7 +100,7 @@ public class MachineFactory {
         return map.get(machineID);
     }
 
-    public MachineFactory(String ID,  Supplier<AbstractMachineBlockEntity> blockEntityConstructor, int inputSlots, int outputSlots){
+    public MachineFactory(String ID,  Supplier<MachineBlockEntity> blockEntityConstructor, int inputSlots, int outputSlots){
         this(ID, blockEntityConstructor, inputSlots, outputSlots, 0 , 0);
     }
 

@@ -24,9 +24,9 @@ import java.util.function.Supplier;
  * A generic machine block.
  */
 public class MachineBlock extends Block implements BlockEntityProvider {
-    private final Supplier<AbstractMachineBlockEntity> blockEntityFactory;
+    private final Supplier<MachineBlockEntity> blockEntityFactory;
 
-    public MachineBlock(Supplier<AbstractMachineBlockEntity> blockEntityFactory) {
+    public MachineBlock(Supplier<MachineBlockEntity> blockEntityFactory) {
         super(FabricBlockSettings.of(Material.METAL).hardness(4.0f));
         this.blockEntityFactory = blockEntityFactory;
     }
@@ -40,14 +40,12 @@ public class MachineBlock extends Block implements BlockEntityProvider {
     public void onStateReplaced(BlockState state, World world, BlockPos pos, BlockState newState, boolean moved) {
         if(!state.isOf(newState.getBlock())) {
             BlockEntity entity = world.getBlockEntity(pos);
-            if (entity instanceof AbstractMachineBlockEntity) {
-                AbstractMachineBlockEntity machineBlockEntity = (AbstractMachineBlockEntity) entity;
+            if (entity instanceof MachineBlockEntity) {
+                MachineBlockEntity machineBlockEntity = (MachineBlockEntity) entity;
                 double x = pos.getX(), y = pos.getY(), z = pos.getZ();
                 for(int i = 0; i < machineBlockEntity.size(); ++i) {
                     ItemStack stack = machineBlockEntity.getStack(i);
-                    if(stack.getItem() != ModernIndustrialization.ITEM_FLUID_SLOT) {
-                        ItemScatterer.spawn(world, x, y, z, stack);
-                    }
+                    ItemScatterer.spawn(world, x, y, z, stack);
                 }
             }
             super.onStateReplaced(state, world, pos, newState, moved);
@@ -60,8 +58,8 @@ public class MachineBlock extends Block implements BlockEntityProvider {
             return ActionResult.SUCCESS;
         } else {
             BlockEntity blockEntity = world.getBlockEntity(pos);
-            if(blockEntity instanceof AbstractMachineBlockEntity) {
-                player.openHandledScreen((AbstractMachineBlockEntity)blockEntity);
+            if(blockEntity instanceof MachineBlockEntity) {
+                player.openHandledScreen((MachineBlockEntity)blockEntity);
             }
             return ActionResult.CONSUME;
         }
@@ -70,7 +68,7 @@ public class MachineBlock extends Block implements BlockEntityProvider {
     @Override
     public void onPlaced(World world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack itemStack) {
         super.onPlaced(world, pos, state, placer, itemStack);
-        AbstractMachineBlockEntity entity = (AbstractMachineBlockEntity) world.getBlockEntity(pos);
+        MachineBlockEntity entity = (MachineBlockEntity) world.getBlockEntity(pos);
         entity.setFacingDirection(placer.getHorizontalFacing().getOpposite());
     }
 }

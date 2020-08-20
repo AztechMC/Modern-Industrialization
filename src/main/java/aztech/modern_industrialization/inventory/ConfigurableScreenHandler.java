@@ -1,0 +1,167 @@
+package aztech.modern_industrialization.inventory;
+
+import aztech.modern_industrialization.fluid.FluidContainerItem;
+import aztech.modern_industrialization.fluid.FluidStackItem;
+import aztech.modern_industrialization.fluid.gui.FluidSlot;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.fluid.Fluid;
+import net.minecraft.fluid.Fluids;
+import net.minecraft.inventory.Inventory;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
+import net.minecraft.screen.ScreenHandler;
+import net.minecraft.screen.ScreenHandlerType;
+import net.minecraft.screen.slot.Slot;
+import net.minecraft.screen.slot.SlotActionType;
+
+/**
+ * The ScreenHandler for a configurable inventory.
+ * The first slots must be the player slots for shift-click to work correctly!
+ */ // TODO: lockable item slots
+public abstract class ConfigurableScreenHandler extends ScreenHandler {
+    private static final int PLAYER_SLOTS = 36;
+    public boolean lockingMode = false;
+    protected ConfigurableInventory inventory;
+
+    protected ConfigurableScreenHandler(ScreenHandlerType<?> type, int syncId, ConfigurableInventory inventory) {
+        super(type, syncId);
+        this.inventory = inventory;
+    }
+
+    @Override
+    public ItemStack onSlotClick(int i, int j, SlotActionType actionType, PlayerEntity playerEntity) {
+        if(i >= 0) {
+            Slot slot = this.slots.get(i);
+            if (slot instanceof LockingModeSlot) {
+                if(actionType != SlotActionType.PICKUP) {
+                    return ItemStack.EMPTY;
+                }
+                lockingMode = !lockingMode;
+                // sync locking state TODO: handle data re-sent
+                return new ItemStack(Items.DIAMOND, lockingMode ? 1 : 0);
+            } else if (slot instanceof ConfigurableFluidStack.ConfigurableFluidSlot) {
+                if(actionType != SlotActionType.PICKUP) {
+                    return ItemStack.EMPTY;
+                }
+                ConfigurableFluidStack.ConfigurableFluidSlot fluidSlot = (ConfigurableFluidStack.ConfigurableFluidSlot) slot;
+                ConfigurableFluidStack fluidStack = fluidSlot.getConfStack();
+                if(lockingMode) {
+                    fluidStack.toggleLock();
+                } else {
+                    ItemStack heldStack = playerEntity.inventory.getCursorStack();
+                    if (heldStack.getItem() instanceof FluidContainerItem) {
+                        FluidContainerItem fluidContainer = (FluidContainerItem) heldStack.getItem();
+                        // Try to extract from held item, then try to insert into held item
+                        Fluid extractedFluid = fluidStack.getFluid();
+                        if (extractedFluid == Fluids.EMPTY) {
+                            extractedFluid = fluidContainer.getExtractableFluid();
+                        }
+                        int extractedAmount = 0;
+                        if (fluidSlot.canInsertFluid(extractedFluid)) {
+                            final boolean[] firstInvoke = new boolean[]{true};
+                            extractedAmount = fluidContainer.extractFluid(heldStack, extractedFluid, fluidStack.getRemainingSpace(), stack -> {
+                                if (firstInvoke[0]) {
+                                    playerEntity.inventory.setCursorStack(stack);
+                                    firstInvoke[0] = false;
+                                } else {
+                                    playerEntity.inventory.offerOrDrop(playerEntity.world, stack);
+                                }
+                            });
+                        }
+                        if (extractedAmount > 0) {
+                            fluidStack.increment(extractedAmount);
+                            fluidStack.setFluid(extractedFluid);
+                            fluidStack.updateDisplayedItem();
+                            inventory.markDirty();
+                        } else {
+                            Fluid fluid = fluidStack.getFluid();
+                            if (fluidSlot.canExtractFluid(fluid)) {
+                                final boolean[] firstInvoke = new boolean[]{true};
+                                int insertedAmount = fluidContainer.insertFluid(heldStack, fluid, fluidStack.getAmount(), stack -> {
+                                    if (firstInvoke[0]) {
+                                        playerEntity.inventory.setCursorStack(stack);
+                                        firstInvoke[0] = false;
+                                    } else {
+                                        playerEntity.inventory.offerOrDrop(playerEntity.world, stack);
+                                    }
+                                });
+                                fluidStack.decrement(insertedAmount);
+                                fluidStack.updateDisplayedItem();
+                                inventory.markDirty();
+                            }
+                        }
+                    }
+                }
+                return fluidSlot.getStack().copy();
+            } else if(slot instanceof ConfigurableItemStack.ConfigurableItemSlot) {
+                if(lockingMode) {
+                    if(actionType != SlotActionType.PICKUP) {
+                        return ItemStack.EMPTY;
+                    }
+                    ConfigurableItemStack.ConfigurableItemSlot itemSlot = (ConfigurableItemStack.ConfigurableItemSlot) slot;
+                    ConfigurableItemStack itemStack = itemSlot.getConfStack();
+                    itemStack.toggleLock();
+                    return itemStack.getStack().copy();
+                }
+            }
+        }
+        return super.onSlotClick(i, j, actionType, playerEntity);
+    }
+
+    @Override
+    public ItemStack transferSlot(PlayerEntity player, int slotIndex) {
+        ItemStack newStack = ItemStack.EMPTY;
+        Slot slot = this.slots.get(slotIndex);
+        if(slot != null && slot.hasStack()) {
+            ItemStack originalStack = slot.getStack();
+            newStack = originalStack.copy();
+            if(slotIndex < PLAYER_SLOTS) {
+                // from player to container inventory
+                if(!this.insertItem(originalStack, PLAYER_SLOTS, this.slots.size(), false)) {
+                    return ItemStack.EMPTY;
+                }
+            } else if(!this.insertItem(originalStack, 0, PLAYER_SLOTS, false)) {
+                // from container inventory to player
+                return ItemStack.EMPTY;
+            }
+
+            if(originalStack.isEmpty()) {
+                slot.setStack(ItemStack.EMPTY);
+            } else {
+                slot.markDirty();
+            }
+        }
+        return newStack;
+    }
+
+    public static class LockingModeSlot extends Slot {
+        public LockingModeSlot(Inventory inventory, int x, int y) {
+            super(inventory, -1, x, y);
+        }
+
+        @Override
+        public boolean canTakeItems(PlayerEntity playerEntity) {
+            return false;
+        }
+
+        @Override
+        public boolean canInsert(ItemStack stack) {
+            return false;
+        }
+
+        @Override
+        public ItemStack getStack() {
+            return ItemStack.EMPTY;
+        }
+
+        @Override
+        public void setStack(ItemStack stack) {
+
+        }
+
+        @Override
+        public boolean doDrawHoveringEffect() {
+            return true;
+        }
+    }
+}

@@ -45,8 +45,8 @@ public class FluidStackItem extends Item {
     public void appendTooltip(ItemStack stack, World world, List<Text> tooltip, TooltipContext context) {
         super.appendTooltip(stack, world, tooltip, context);
         tooltip.clear(); // remove Fluid Slot
-        if(getAmount(stack) > 0){
-            Fluid fluid = getFluid(stack);
+        Fluid fluid = getFluid(stack);
+        if(fluid != Fluids.EMPTY){
             Identifier fluid_id = Registry.FLUID.getId(fluid);
             TranslatableText fluid_name = new TranslatableText("block."+ fluid_id.getNamespace()+"."+ fluid_id.getPath());
             tooltip.add(fluid_name);
@@ -107,9 +107,6 @@ public class FluidStackItem extends Item {
         int capacity = getCapacity(stack);
         amount = Math.min(capacity, amount);
         stack.getTag().putInt("fluid_amount", amount);
-        if(amount == 0) {
-            setFluid(stack, Fluids.EMPTY);
-        }
     }
 
     public static void setCapacity(ItemStack stack, int capacity) {

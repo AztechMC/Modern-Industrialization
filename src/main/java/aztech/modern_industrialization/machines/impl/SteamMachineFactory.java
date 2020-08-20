@@ -6,11 +6,11 @@ public class SteamMachineFactory extends MachineFactory {
 
     private int steamBucketCapacity;
 
-    public SteamMachineFactory(String ID, Supplier<AbstractMachineBlockEntity> blockEntityConstructor, int inputSlots, int outputSlots, int liquidInputSlots, int liquidOutputSlots) {
+    public SteamMachineFactory(String ID, Supplier<MachineBlockEntity> blockEntityConstructor, int inputSlots, int outputSlots, int liquidInputSlots, int liquidOutputSlots) {
         super(ID, blockEntityConstructor, inputSlots, outputSlots, liquidInputSlots + 1, liquidOutputSlots);
     }
 
-    public SteamMachineFactory(String ID, Supplier<AbstractMachineBlockEntity> blockEntityConstructor, int inputSlots, int outputSlots) {
+    public SteamMachineFactory(String ID, Supplier<MachineBlockEntity> blockEntityConstructor, int inputSlots, int outputSlots) {
         super(ID, blockEntityConstructor, inputSlots, outputSlots,  1, 0);
     }
 

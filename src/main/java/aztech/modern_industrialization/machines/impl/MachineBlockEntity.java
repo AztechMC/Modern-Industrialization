@@ -1,18 +1,20 @@
 package aztech.modern_industrialization.machines.impl;
 
-import aztech.modern_industrialization.fluid.FluidInventory;
-import aztech.modern_industrialization.fluid.FluidSlotIO;
 import aztech.modern_industrialization.fluid.FluidStackItem;
 import aztech.modern_industrialization.fluid.FluidUnit;
+import aztech.modern_industrialization.inventory.ConfigurableFluidStack;
+import aztech.modern_industrialization.inventory.ConfigurableInventories;
+import aztech.modern_industrialization.inventory.ConfigurableInventory;
+import aztech.modern_industrialization.inventory.ConfigurableItemStack;
 import aztech.modern_industrialization.machines.recipe.MachineRecipe;
 import aztech.modern_industrialization.machines.recipe.MachineRecipeType;
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
 import net.minecraft.block.BlockState;
+import net.minecraft.client.tutorial.OpenInventoryTutorialStepHandler;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.Fluids;
-import net.minecraft.inventory.SidedInventory;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.PacketByteBuf;
@@ -22,22 +24,24 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.Tickable;
 import net.minecraft.util.math.Direction;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static aztech.modern_industrialization.machines.impl.MachineSlotType.*;
+public class MachineBlockEntity extends AbstractMachineBlockEntity
+        implements Tickable, ExtendedScreenHandlerFactory, ConfigurableInventory {
 
-
-
-public abstract class MachineBlockEntity extends AbstractMachineBlockEntity
-        implements SidedInventory, Tickable, ExtendedScreenHandlerFactory, FluidInventory {
+    private final List<ConfigurableItemStack> itemStacks;
+    private final List<ConfigurableFluidStack> fluidStacks; // TODO: sync with player
+    private int openCount = 0; // TODO: sync with player
 
     private MachineFactory factory;
     private MachineRecipeType recipeType;
-    private MachineRecipe activeRecipe = null;
+    private MachineRecipe activeRecipe = null; // TODO: efficiency progress bar
+    private Identifier delayedActiveRecipe;
 
     private int usedEnergy;
     private int recipeEnergy;
@@ -45,31 +49,23 @@ public abstract class MachineBlockEntity extends AbstractMachineBlockEntity
 
     private PropertyDelegate propertyDelegate;
 
-    private int availableSlot[];
-
     protected MachineBlockEntity(MachineFactory factory, MachineRecipeType recipeType) {
-        super(factory.blockEntityType, factory.getSlots(), Direction.NORTH);
+        super(factory.blockEntityType, Direction.NORTH);
         this.factory = factory;
         this.recipeType = recipeType;
-
-        for(int i = 0; i < factory.getSlots(); i++){
-            if(factory.getSlotType(i) == LIQUID_INPUT_SLOT){
-                ItemStack fluidInput = FluidStackItem.getEmptyStack();
-                FluidStackItem.setCapacity(fluidInput, factory.getInputBucketCapacity() * FluidUnit.DROPS_PER_BUCKET);
-                FluidStackItem.setIO(fluidInput, FluidSlotIO.INPUT_ONLY);
-                this.inventory.set(i, fluidInput);
-            }else if(factory.getSlotType(i) == LIQUID_OUTPUT_SLOT){
-                ItemStack fluidOutput = FluidStackItem.getEmptyStack();
-                FluidStackItem.setCapacity(fluidOutput, factory.getOutputBucketCapacity() * FluidUnit.DROPS_PER_BUCKET);
-                FluidStackItem.setIO(fluidOutput, FluidSlotIO.OUTPUT_ONLY);
-                this.inventory.set(i, fluidOutput);
-            }
+        itemStacks = new ArrayList<>();
+        for(int i = 0; i < factory.getInputSlots(); ++i) {
+            itemStacks.add(ConfigurableItemStack.standardInputSlot());
         }
-
-        availableSlot = new int[factory.getSlots()];
-
-        for(int i = 0; i < factory.getSlots(); i++) {
-            availableSlot[i] = i;
+        for(int i = 0; i < factory.getOutputSlots(); ++i) {
+            itemStacks.add(ConfigurableItemStack.standardOutputSlot());
+        }
+        fluidStacks = new ArrayList<>();
+        for(int i = 0; i < factory.getLiquidInputSlots(); ++i) {
+            fluidStacks.add(ConfigurableFluidStack.standardInputSlot(this, factory.getInputBucketCapacity() * FluidUnit.DROPS_PER_BUCKET));
+        }
+        for(int i = 0; i < factory.getLiquidOutputSlots(); ++i) {
+            fluidStacks.add(ConfigurableFluidStack.standardOutputSlot(this, factory.getOutputBucketCapacity() * FluidUnit.DROPS_PER_BUCKET));
         }
 
         this.propertyDelegate = new PropertyDelegate() {
@@ -96,42 +92,72 @@ public abstract class MachineBlockEntity extends AbstractMachineBlockEntity
 
     }
 
+
+
     @Override
-    protected ScreenHandler createScreenHandler(int syncId, PlayerInventory playerInventory) {
-        return new MachineScreenHandler(syncId, playerInventory, this, this.propertyDelegate, this.factory);
+    public List<ConfigurableItemStack> getItemStacks() {
+        return itemStacks;
     }
 
     @Override
-    protected Text getContainerName() {
+    public List<ConfigurableFluidStack> getFluidStacks() {
+        return fluidStacks;
+    }
+
+    @Override
+    public void onOpen(PlayerEntity player) {
+        openCount++;
+        for(ConfigurableFluidStack stack : fluidStacks) {
+            stack.updateDisplayedItem();
+        }
+    }
+
+    @Override
+    public void onClose(PlayerEntity player) {
+        openCount--;
+    }
+
+    @Override
+    public boolean isOpen() {
+        return openCount > 0;
+    }
+
+    @Override
+    public boolean providesFluidExtractionForce(Direction direction, Fluid fluid) {
+        return false; // TODO auto extract
+    }
+
+    @Override
+    public Text getDisplayName() {
         return new TranslatableText(factory.getTranslationKey());
     }
 
     @Override
-    public int[] getAvailableSlots(Direction side) {
-        return availableSlot;
-    }
-
-    @Override
-    public boolean canInsert(int slot, ItemStack stack, Direction dir) {
-        return factory.getSlotType(slot) == MachineSlotType.INPUT_SLOT;
-    }
-
-    @Override
-    public boolean canExtract(int slot, ItemStack stack, Direction dir) {
-        return factory.getSlotType(slot) == MachineSlotType.OUTPUT_SLOT;
+    public ScreenHandler createMenu(int syncId, PlayerInventory inv, PlayerEntity player) {
+        return new MachineScreenHandler(syncId, inv, this, this.propertyDelegate, this.factory);
     }
 
     @Override
     public CompoundTag toTag(CompoundTag tag) {
         super.toTag(tag);
-        tag.putInt("tickProgress", this.usedEnergy);
+        writeToTag(tag);
+        tag.putInt("usedEnergy", this.usedEnergy);
+        tag.putInt("recipeEnergy", this.recipeEnergy);
+        tag.putInt("recipeMaxEu", this.recipeMaxEu);
+        if(activeRecipe != null) {
+            tag.putString("activeRecipe", this.activeRecipe.getId().toString());
+        }
         return tag;
     }
 
     @Override
     public void fromTag(BlockState state, CompoundTag tag) {
         super.fromTag(state, tag);
-        this.usedEnergy = tag.getInt("tickProgress");
+        readFromTag(tag);
+        this.usedEnergy = tag.getInt("usedEnergy");
+        this.recipeEnergy = tag.getInt("recipeEnergy");
+        this.recipeMaxEu = tag.getInt("recipeMaxEu");
+        this.delayedActiveRecipe = tag.contains("activeRecipe") ? new Identifier(tag.getString("activeRecipe")) : null;
     }
 
     public MachineFactory getFactory() {
@@ -140,77 +166,19 @@ public abstract class MachineBlockEntity extends AbstractMachineBlockEntity
 
     @Override
     public void writeScreenOpeningData(ServerPlayerEntity serverPlayerEntity, PacketByteBuf packetByteBuf) {
-        packetByteBuf.writeInt(factory.getSlots());
+        ConfigurableInventories.toBuf(packetByteBuf, this);
         packetByteBuf.writeInt(propertyDelegate.size());
         packetByteBuf.writeString(factory.getID());
     }
 
     @Override
-    public int insert(Direction direction, Fluid fluid, int maxAmount, boolean simulate){ // TODO: steam machine with steam input slot
-        for(int i = 0; i < factory.getLiquidInputSlots(); i++) {
-            int idx = factory.getInputSlots() + i;
-            ItemStack stack = inventory.get(idx);
-            if(FluidStackItem.getFluid(stack) == fluid) {
-                int ins = Math.min(FluidStackItem.getCapacity(stack) - FluidStackItem.getAmount(stack), maxAmount);
-                if(!simulate) {
-                    FluidStackItem.increment(stack, ins);
-                }
-                return ins;
-            } else if(FluidStackItem.getFluid(stack) == Fluids.EMPTY) {
-                int ins = Math.min(FluidStackItem.getCapacity(stack), maxAmount);
-                if(!simulate) {
-                    FluidStackItem.setFluid(stack, fluid);
-                    FluidStackItem.setAmount(stack, ins);
-                }
-                return ins;
-            }
-        }
-        return 0;
-    }
-
-    @Override
-    public int extract(Direction direction, Fluid fluid, int maxAmount, boolean simulate) {
-        for(int i = 0; i < factory.getLiquidOutputSlots(); i++) {
-            int idx = factory.getInputSlots() + factory.getLiquidInputSlots() + factory.getOutputSlots();
-            ItemStack stack = inventory.get(idx);
-            if(FluidStackItem.getFluid(stack) == fluid) {
-                int ext = Math.min(FluidStackItem.getAmount(stack) - FluidStackItem.getCapacity(stack), maxAmount);
-                if(!simulate) {
-                    FluidStackItem.decrement(stack, ext);
-                }
-                return ext;
-            }
-        }
-        return 0;
-    }
-
-    @Override
-    public Fluid[] getExtractableFluids(Direction direction) {
-        List<Fluid> fluids = new ArrayList<>();
-        for(int i = 0; i < factory.getLiquidOutputSlots(); i++) {
-            int idx = factory.getInputSlots() + factory.getLiquidInputSlots() + factory.getOutputSlots();
-            ItemStack stack = inventory.get(idx);
-            Fluid fluid = FluidStackItem.getFluid(stack);
-            if(fluid != Fluids.EMPTY) {
-                fluids.add(fluid);
-            }
-        }
-        return fluids.toArray(new Fluid[0]);
-    }
-
-    @Override
-    public boolean providesFluidExtractionForce(Direction direction, Fluid fluid) {
-        return false; // TODO: auto-extract
-    }
-
-    @Override
-    public boolean canFluidContainerConnect(Direction direction) {
-        return factory.getLiquidInputSlots() + factory.getLiquidOutputSlots() > 0;
-    }
-
-    @Override
     public void tick() {
         if(world.isClient) return;
+
+        if(delayedActiveRecipe != null) {
+            activeRecipe = recipeType.getRecipe((ServerWorld) world, delayedActiveRecipe);
+            delayedActiveRecipe = null;
+        }
 
         boolean wasActive = isActive;
 
@@ -248,184 +216,120 @@ public abstract class MachineBlockEntity extends AbstractMachineBlockEntity
     }
 
     private boolean takeItemInputs(MachineRecipe recipe, boolean simulate) {
-        int[] itemCounts = new int[recipe.itemInputs.size()];
-        for (int i = 0; i < recipe.itemInputs.size(); i++) {
-            itemCounts[i] = recipe.itemInputs.get(i).amount;
-        }
+        List<ConfigurableItemStack> baseList = itemStacks.subList(0, factory.getInputSlots());
+        List<ConfigurableItemStack> stacks = simulate ? ConfigurableItemStack.copyList(baseList) : baseList;
 
-        for (int j = 0; j < factory.getInputSlots(); j++) {
-            ItemStack stack = inventory.get(j);
-            int count = stack.getCount();
-            for (int i = 0; i < recipe.itemInputs.size(); i++) {
-                MachineRecipe.ItemInput inp = recipe.itemInputs.get(i);
-                if (stack.getItem() == inp.item) {
-                    int removedCount = Math.min(itemCounts[i], count);
-                    if (!simulate) {
-                        stack.decrement(removedCount);
-                    }
-                    count -= removedCount;
-                    itemCounts[i] -= removedCount;
+        boolean ok = true;
+        for(MachineRecipe.ItemInput input : recipe.itemInputs) {
+            int remainingAmount = input.amount;
+            for(ConfigurableItemStack stack : stacks) {
+                if(stack.getStack().getItem() == input.item) {
+                    ItemStack taken = stack.splitStack(remainingAmount);
+                    remainingAmount -= taken.getCount();
+                    if(remainingAmount == 0) break;
                 }
             }
+            if(remainingAmount > 0) ok = false;
         }
-
-        for (int i = 0; i < recipe.itemInputs.size(); ++i) {
-            if (itemCounts[i] != 0) return false;
-        }
-        return true;
+        return ok;
     }
 
     private boolean takeFluidInputs(MachineRecipe recipe, boolean simulate) {
-        int[] fluidCounts = new int[recipe.fluidInputs.size()];
-        for(int i = 0; i < recipe.fluidInputs.size(); i++) {
-            fluidCounts[i] = recipe.fluidInputs.get(i).amount;
-        }
+        List<ConfigurableFluidStack> baseList = fluidStacks.subList(0, factory.getLiquidInputSlots());
+        List<ConfigurableFluidStack> stacks = simulate ? ConfigurableFluidStack.copyList(baseList) : baseList;
 
-        int firstSlot = factory instanceof SteamMachineFactory ? factory.getInputSlots() + 1 : factory.getInputSlots();
-        int lastSlot = factory.getInputSlots() + factory.getLiquidInputSlots();
-        for(int j = firstSlot; j < lastSlot; j++) {
-            ItemStack stack = inventory.get(j);
-            int count = FluidStackItem.getAmount(stack);
-            for(int i = 0; i < recipe.fluidInputs.size(); i++) {
-                MachineRecipe.FluidInput inp = recipe.fluidInputs.get(i);
-                if(FluidStackItem.getFluid(stack) == inp.fluid) {
-                    int removedCount = Math.min(fluidCounts[i], count);
-                    if(!simulate) {
-                        FluidStackItem.decrement(stack, removedCount);
-                    }
-                    count -= removedCount;
-                    fluidCounts[i] -= removedCount;
+        boolean ok = true;
+        for(MachineRecipe.FluidInput input : recipe.fluidInputs) {
+            int remainingAmount = input.amount;
+            for(ConfigurableFluidStack stack : stacks) {
+                if(stack.isSteamInput()) continue;
+                if(stack.getFluid() == input.fluid) {
+                    int taken = Math.min(remainingAmount, stack.getAmount());
+                    stack.decrement(taken);
+                    remainingAmount -= taken;
+                    if(remainingAmount == 0) break;
                 }
             }
+            if(remainingAmount > 0) ok = false;
         }
-        for(int i = 0; i < recipe.fluidInputs.size(); ++i) {
-            if(fluidCounts[i] != 0) return false;
-        }
-        return true;
+        return ok;
     }
 
     private boolean putItemOutputs(MachineRecipe recipe, boolean simulate) {
-        List<MachineRecipe.ItemOutput> itemOutputs = recipe.itemOutputs;
-        int[] outputCount = new int[itemOutputs.size()];
-        for(int i = 0; i < itemOutputs.size(); i++) {
-            outputCount[i] = itemOutputs.get(i).amount;
-        }
-        int firstSlot = factory.getInputSlots() + factory.getLiquidInputSlots();
-        for(int j = firstSlot; j < firstSlot + factory.getOutputSlots(); ++j) {
-            ItemStack stack = inventory.get(j);
-            if(stack.isEmpty()) continue;
-            int remCount = Math.min(stack.getMaxCount(), getMaxCountPerStack()) - stack.getCount();
-            for(int i = 0; i < itemOutputs.size(); i++) {
-                if(stack.getItem() == itemOutputs.get(i).item) {
-                    int addedCount = Math.min(remCount, outputCount[i]);
-                    if(!simulate) {
-                        stack.increment(addedCount);
-                    }
-                    remCount -= addedCount;
-                    outputCount[i] -= addedCount;
-                }
-            }
-        }
-        firstSlot = factory.getInputSlots() + factory.getLiquidInputSlots();
-        for(int j = firstSlot; j < firstSlot + factory.getOutputSlots(); ++j) {
-            ItemStack stack = inventory.get(j);
-            if(!stack.isEmpty()) continue;
-            stack = null;
-            Item newItem = null;
-            int remCount = 0;
-            for(int i = 0; i < itemOutputs.size(); i++) {
-                if(newItem == null && outputCount[i] > 0) {
-                    newItem = itemOutputs.get(i).item;
-                    remCount = Math.min(getMaxCountPerStack(), newItem.getMaxCount());
-                }
-                if(newItem == itemOutputs.get(i).item) {
-                    int addedCount = Math.min(remCount, outputCount[i]);
-                    if(!simulate) {
-                        if(stack == null) {
-                            stack = new ItemStack(newItem, addedCount);
-                            inventory.set(j, stack);
+        List<ConfigurableItemStack> baseList = itemStacks.subList(factory.getInputSlots(), itemStacks.size());
+        List<ConfigurableItemStack> stacks = simulate ? ConfigurableItemStack.copyList(baseList) : baseList;
+
+        boolean ok = true;
+        for(MachineRecipe.ItemOutput output : recipe.itemOutputs) {
+            int remainingAmount = output.amount;
+            // Try to insert in non-empty stacks first, then also allow insertion in empty stacks.
+            for(int loopRun = 0; loopRun < 2; loopRun++) {
+                for (ConfigurableItemStack stack : stacks) {
+                    ItemStack st = stack.getStack();
+                    if(st.getItem() == output.item || st.isEmpty()) {
+                        int ins = Math.min(remainingAmount, Math.min(getMaxCountPerStack(), output.item.getMaxCount()) - st.getCount());
+                        if (st.isEmpty()) {
+                            if (loopRun == 1) {
+                                stack.setStack(new ItemStack(output.item, ins));
+                            } else {
+                                ins = 0;
+                            }
                         } else {
-                            stack.increment(addedCount);
+                            st.increment(ins);
                         }
+                        remainingAmount -= ins;
+                        if (remainingAmount == 0) break;
                     }
-                    remCount -= addedCount;
-                    outputCount[i] -= addedCount;
                 }
             }
+            if(remainingAmount > 0) ok = false;
         }
-        for(int i = 0; i < recipe.fluidInputs.size(); ++i) {
-            if(outputCount[i] != 0) return false;
-        }
-        return true;
+        return ok;
     }
 
     private boolean putFluidOutputs(MachineRecipe recipe, boolean simulate) {
-        List<MachineRecipe.FluidOutput> fluidOutputs = recipe.fluidOutputs;
-        int[] outputCount = new int[fluidOutputs.size()];
-        for(int i = 0; i < fluidOutputs.size(); i++) {
-            outputCount[i] = fluidOutputs.get(i).amount;
-        }
-        int firstSlot = factory.getInputSlots() + factory.getLiquidInputSlots() + factory.getOutputSlots();
-        for(int j = firstSlot; j < firstSlot + factory.getLiquidOutputSlots(); ++j) {
-            ItemStack stack = inventory.get(j);
-            int amount = FluidStackItem.getAmount(stack);
-            if(amount == 0) continue;
-            int remCount = FluidStackItem.getCapacity(stack) - amount;
-            for(int i = 0; i < fluidOutputs.size(); i++) {
-                if(FluidStackItem.getFluid(stack) == fluidOutputs.get(i).fluid) {
-                    int addedCount = Math.min(remCount, outputCount[i]);
-                    if(!simulate) {
-                        FluidStackItem.increment(stack, addedCount);
-                    }
-                    remCount -= addedCount;
-                    outputCount[i] -= addedCount;
-                }
-            }
-        }
-        firstSlot = factory.getInputSlots() + factory.getLiquidInputSlots() + factory.getOutputSlots();
-        for(int j = firstSlot; j < firstSlot + factory.getLiquidOutputSlots(); ++j) {
-            ItemStack stack = inventory.get(j);
-            int amount = FluidStackItem.getAmount(stack);
-            if(amount != 0) continue;
-            Fluid newFluid = null;
-            boolean stackUpdated = false;
-            int remCount = 0;
-            for(int i = 0; i < fluidOutputs.size(); i++) {
-                if(newFluid == null && outputCount[i] > 0) {
-                    newFluid = fluidOutputs.get(i).fluid;
-                    remCount = FluidStackItem.getCapacity(stack);
-                }
-                if(newFluid == fluidOutputs.get(i).fluid) {
-                    int addedCount = Math.min(remCount, outputCount[i]);
-                    if(!simulate) {
-                        if(!stackUpdated) {
-                            stackUpdated = true;
-                            FluidStackItem.setFluid(stack, newFluid);
-                            FluidStackItem.setAmount(stack, addedCount);
+        List<ConfigurableFluidStack> baseList = fluidStacks.subList(factory.getLiquidInputSlots(), fluidStacks.size());
+        List<ConfigurableFluidStack> stacks = simulate ? ConfigurableFluidStack.copyList(baseList) : baseList;
+
+        boolean ok = true;
+        for(MachineRecipe.FluidOutput output : recipe.fluidOutputs) {
+            int remainingAmount = output.amount;
+            // Try to insert in non-empty stacks first, then also allow insertion in empty stacks if there was no empty stack.
+            outerLoop:
+            for(int loopRun = 0; loopRun < 2; loopRun++) {
+                for (ConfigurableFluidStack stack : stacks) {
+                    if(stack.getFluid() == output.fluid || stack.getFluid() == Fluids.EMPTY) {
+                        int ins = Math.min(remainingAmount, stack.getRemainingSpace());
+                        if (stack.getFluid() == Fluids.EMPTY) {
+                            if (loopRun == 1) {
+                                stack.setFluid(output.fluid);
+                                stack.setAmount(ins);
+                            } else {
+                                ins = 0;
+                            }
                         } else {
-                            FluidStackItem.increment(stack, addedCount);
+                            stack.increment(ins);
                         }
+                        remainingAmount -= ins;
+                        // only allow one insertion
+                        if(ins > 0) break outerLoop;
                     }
-                    remCount -= addedCount;
-                    outputCount[i] -= addedCount;
                 }
             }
+            if(remainingAmount > 0) ok = false;
         }
-        for(int i = 0; i < recipe.fluidInputs.size(); ++i) {
-            if(outputCount[i] != 0) return false;
-        }
-        return true;
+        return ok;
     }
 
     private int getEu(int maxEu, boolean simulate) {
         if(factory instanceof SteamMachineFactory) {
-            ItemStack steamSlot = inventory.get(factory.getInputSlots());
-            int amount = FluidStackItem.getAmount(steamSlot);
-            int remAmount = Math.min(maxEu, amount);
+            ConfigurableFluidStack steam = fluidStacks.get(0);
+            int amount = steam.getAmount();
+            int rem = Math.min(maxEu, amount);
             if(!simulate) {
-                FluidStackItem.decrement(steamSlot, remAmount);
+                steam.decrement(rem);
             }
-            return remAmount;
+            return rem;
         } else {
             throw new UnsupportedOperationException("Only steam machines are supported");
         }

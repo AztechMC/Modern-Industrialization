@@ -1,7 +1,7 @@
 package aztech.modern_industrialization.machines.impl;
 
 import aztech.modern_industrialization.ModernIndustrialization;
-import aztech.modern_industrialization.machines.steam.SteamBoilerBlockEntity;
+//import aztech.modern_industrialization.machines.steam.SteamBoilerBlockEntity;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.util.math.MatrixStack;
@@ -12,6 +12,7 @@ import net.minecraft.util.Identifier;
 /**
  * Screen for the steam boiler.
  */
+/*
 public class SteamBoilerScreen extends HandledScreen<SteamBoilerScreenHandler> {
     private static final Identifier TEXTURE = new Identifier(ModernIndustrialization.MOD_ID, "textures/gui/container/steam_boiler.png");
     private SteamBoilerScreenHandler handler;
@@ -48,4 +49,4 @@ public class SteamBoilerScreen extends HandledScreen<SteamBoilerScreenHandler> {
         super.render(matrices, mouseX, mouseY, delta);
         super.drawMouseoverTooltip(matrices, mouseX, mouseY);
     }
-}
+}*/

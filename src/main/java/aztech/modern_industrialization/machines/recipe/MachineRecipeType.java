@@ -23,6 +23,9 @@ public class MachineRecipeType implements RecipeType, RecipeSerializer {
     public List<MachineRecipe> getRecipes(ServerWorld world) {
         return world.getRecipeManager().listAllOfType(this);
     }
+    public MachineRecipe getRecipe(ServerWorld world, Identifier id) {
+        return getRecipes(world).stream().filter(r -> r.getId().equals(id)).findFirst().orElse(null);
+    }
 
     private boolean allowItemInput = false;
     private boolean allowFluidInput = false;

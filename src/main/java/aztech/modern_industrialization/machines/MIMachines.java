@@ -5,6 +5,7 @@ import aztech.modern_industrialization.machines.impl.MachineBlockEntity;
 import aztech.modern_industrialization.machines.impl.MachineFactory;
 import aztech.modern_industrialization.machines.impl.SteamMachineFactory;
 import aztech.modern_industrialization.machines.recipe.MachineRecipeType;
+import aztech.modern_industrialization.machines.special.SteamBoilerBlockEntity;
 import net.minecraft.util.registry.Registry;
 
 public class MIMachines {
@@ -26,6 +27,11 @@ public class MIMachines {
     public static MachineFactory BRONZE_MIXER;
 
     static {
+        BRONZE_BOILER = new MachineFactory("bronze_boiler", () -> new SteamBoilerBlockEntity(BRONZE_BOILER, null), 1, 0, 1, 1)
+                .setInputBucketCapacity(64).setOutputBucketCapacity(64)
+                .setInputSlotPosition(45, 32, 1, 1)
+                .setInputLiquidSlotPosition(81, 18, 1, 1).setLiquidOutputSlotPosition(105, 42, 1, 1)
+                .setupBackground("steam_boiler.png");
         BRONZE_COMPRESSOR = new SteamMachineFactory("bronze_compressor", () -> new MachineBlockEntity(BRONZE_COMPRESSOR, RECIPE_COMPRESSOR), 1, 1)
                 .setSteamBucketCapacity(64).setSteamSlotPos(23, 23)
                 .setInputSlotPosition(56, 45, 1, 1).setOutputSlotPosition(102, 45, 1, 1)

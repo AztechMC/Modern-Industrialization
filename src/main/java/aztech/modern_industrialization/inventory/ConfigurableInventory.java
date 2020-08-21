@@ -123,12 +123,15 @@ public interface ConfigurableInventory extends Inventory, SidedInventory, FluidI
             // Try to find a slot that contains the fluid already.
             while (firstStack < getFluidStacks().size()) {
                 ConfigurableFluidStack fluidStack = getFluidStacks().get(firstStack);
-                firstStack++;
-                if(!fluidStack.pipesInsert) continue;
+                if(!fluidStack.pipesInsert) {
+                    firstStack++;
+                    continue;
+                }
                 if (
                         (fluidStack.getFluid() == Fluids.EMPTY && fluidStack.steamInput && fluidStack.canInsertFluid(fluid))
                                 || (fluid == fluidStack.getFluid())
                 ) break;
+                firstStack++;
             }
         }
         for (int i = firstStack; i < getFluidStacks().size(); i++) {

@@ -35,18 +35,23 @@ import java.util.List;
 public class MachineBlockEntity extends AbstractMachineBlockEntity
         implements Tickable, ExtendedScreenHandlerFactory, ConfigurableInventory {
 
-    private final List<ConfigurableItemStack> itemStacks;
-    private final List<ConfigurableFluidStack> fluidStacks; // TODO: sync with player
-    private int openCount = 0; // TODO: sync with player
+    protected final List<ConfigurableItemStack> itemStacks;
+    protected final List<ConfigurableFluidStack> fluidStacks;
+    protected int openCount = 0;
 
-    private MachineFactory factory;
-    private MachineRecipeType recipeType;
-    private MachineRecipe activeRecipe = null; // TODO: efficiency progress bar
-    private Identifier delayedActiveRecipe;
+    protected MachineFactory factory;
+    protected MachineRecipeType recipeType;
+    protected MachineRecipe activeRecipe = null;
+    protected Identifier delayedActiveRecipe;
 
-    private int usedEnergy;
-    private int recipeEnergy;
-    private int recipeMaxEu;
+    protected int usedEnergy;
+    protected int recipeEnergy;
+    protected int recipeMaxEu;
+
+    // Used for efficiency display in the gui.
+    // TODO: recipe efficiency and efficiency progress bar
+    protected int efficiencyTicks;
+    protected int maxEfficiencyTicks;
 
     private PropertyDelegate propertyDelegate;
 
@@ -79,6 +84,8 @@ public class MachineBlockEntity extends AbstractMachineBlockEntity
                 if(index == 0) return isActive ? 1 : 0;
                 else if(index == 1) return usedEnergy;
                 else if(index == 2) return recipeEnergy;
+                else if(index == 3) return efficiencyTicks;
+                else if(index == 4) return maxEfficiencyTicks;
                 else return -1;
             }
 
@@ -87,11 +94,13 @@ public class MachineBlockEntity extends AbstractMachineBlockEntity
                 if(index == 0) isActive = value == 1;
                 else if(index == 1) usedEnergy = value;
                 else if(index == 2) recipeEnergy = value;
+                else if(index == 3) efficiencyTicks = value;
+                else if(index == 4) maxEfficiencyTicks = value;
             }
 
             @Override
             public int size() {
-                return 3;
+                return 5;
             }
         };
 
@@ -152,6 +161,8 @@ public class MachineBlockEntity extends AbstractMachineBlockEntity
         if(activeRecipe != null) {
             tag.putString("activeRecipe", this.activeRecipe.getId().toString());
         }
+        tag.putInt("efficiencyTicks", this.efficiencyTicks);
+        tag.putInt("maxEfficiencyTicks", this.maxEfficiencyTicks);
         return tag;
     }
 
@@ -163,6 +174,8 @@ public class MachineBlockEntity extends AbstractMachineBlockEntity
         this.recipeEnergy = tag.getInt("recipeEnergy");
         this.recipeMaxEu = tag.getInt("recipeMaxEu");
         this.delayedActiveRecipe = tag.contains("activeRecipe") ? new Identifier(tag.getString("activeRecipe")) : null;
+        this.efficiencyTicks = tag.getInt("efficiencyTicks");
+        this.maxEfficiencyTicks = tag.getInt("maxEfficiencyTicks");
     }
 
     public MachineFactory getFactory() {

@@ -67,6 +67,26 @@ public class ConfigurableFluidStack {
         stack.playerInsert = true;
         stack.playerLockable = false;
         stack.playerLocked = true;
+        stack.pipesInsert = true;
+        return stack;
+    }
+
+    public static ConfigurableFluidStack lockedInputSlot(ConfigurableInventory inventory, int capacity, Fluid fluid) {
+        ConfigurableFluidStack stack = new ConfigurableFluidStack(inventory, capacity);
+        stack.fluid = stack.lockedFluid = fluid;
+        stack.playerInsert = true;
+        stack.playerLockable = false;
+        stack.playerLocked = true;
+        stack.pipesInsert = true;
+        return stack;
+    }
+
+    public static ConfigurableFluidStack lockedOutputSlot(ConfigurableInventory inventory, int capacity, Fluid fluid) {
+        ConfigurableFluidStack stack = new ConfigurableFluidStack(inventory, capacity);
+        stack.fluid = stack.lockedFluid = fluid;
+        stack.playerLockable = false;
+        stack.playerLocked = true;
+        stack.pipesExtract = true;
         return stack;
     }
 

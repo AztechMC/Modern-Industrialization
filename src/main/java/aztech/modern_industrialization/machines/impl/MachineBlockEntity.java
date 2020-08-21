@@ -50,7 +50,7 @@ public class MachineBlockEntity extends AbstractMachineBlockEntity
 
     private PropertyDelegate propertyDelegate;
 
-    protected MachineBlockEntity(MachineFactory factory, MachineRecipeType recipeType) {
+    public MachineBlockEntity(MachineFactory factory, MachineRecipeType recipeType) {
         super(factory.blockEntityType, Direction.NORTH);
         this.factory = factory;
         this.recipeType = recipeType;

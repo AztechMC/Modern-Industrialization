@@ -16,7 +16,7 @@ import net.minecraft.world.World;
 import java.util.List;
 
 /**
- * An evil hack to store a fluid/amount/capacity in an ItemStack.
+ * An item that is used to render the fluid for the fluid slots in the machines.
  */
 public class FluidStackItem extends Item {
     public static ItemStack getEmptyStack() {

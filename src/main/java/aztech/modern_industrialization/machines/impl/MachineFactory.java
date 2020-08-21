@@ -1,10 +1,6 @@
 package aztech.modern_industrialization.machines.impl;
 
 import aztech.modern_industrialization.MIIdentifier;
-import aztech.modern_industrialization.machines.steam.SteamFluidExtractorBlockEntity;
-import aztech.modern_industrialization.machines.steam.SteamFurnaceBlockEntity;
-import aztech.modern_industrialization.machines.steam.SteamMaceratorBlockEntity;
-import aztech.modern_industrialization.machines.steam.SteamPumpBlockEntity;
 import aztech.modern_industrialization.model.block.ModelProvider;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.item.BlockItem;
@@ -325,24 +321,4 @@ public class MachineFactory {
     public static Iterable<MachineFactory> getFactories(){
         return map.values();
     }
-
-
-    public static  MachineFactory steamFurnaceFactory = new SteamMachineFactory("steam_furnace", SteamFurnaceBlockEntity::new, 1, 1)
-            .setSteamBucketCapacity(64).setSteamSlotPos(23, 23)
-            .setInputSlotPosition(56, 45, 1, 1).setOutputSlotPosition(102, 45, 1, 1)
-            .setupProgressBar(76, 45, 22, 15, true);
-
-    public static  MachineFactory steamMaceratorFactory = new SteamMachineFactory("steam_macerator", SteamMaceratorBlockEntity::new, 1, 4)
-            .setSteamBucketCapacity(64).setSteamSlotPos(23, 23)
-            .setInputSlotPosition(56, 45, 1, 1).setOutputSlotPosition(102, 45, 2, 2)
-            .setupProgressBar(76, 45, 22, 15, true).setupBackground("steam_furnace.png");
-
-    public static  MachineFactory steamFluidExtractor = new SteamMachineFactory("steam_fluid_extractor", SteamFluidExtractorBlockEntity::new, 1, 0, 0, 1)
-            .setSteamBucketCapacity(64).setSteamSlotPos(23, 23)
-            .setInputSlotPosition(56, 45, 1, 1).setLiquidOutputSlotPosition(102, 45, 1, 1)
-            .setupProgressBar(76, 45, 22, 15, true).setupBackground("steam_furnace.png");
-
-    public static MachineFactory steamPumpFactory = new SteamMachineFactory("steam_pump", SteamPumpBlockEntity::new, 0, 0, 0, 1)
-            .setSteamBucketCapacity(64).setSteamSlotPos(23, 23)
-            .setupBackground("default.png");
 }

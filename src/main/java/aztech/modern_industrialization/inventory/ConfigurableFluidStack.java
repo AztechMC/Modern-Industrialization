@@ -204,6 +204,7 @@ public class ConfigurableFluidStack {
         pipesInsert = tag.getBoolean("pipesInsert");
         pipesExtract = tag.getBoolean("pipesExtract");
         steamInput = tag.getBoolean("steamInput");
+        updateDisplayedItem();
     }
 
     /**

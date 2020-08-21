@@ -157,7 +157,7 @@ public class ConfigurableFluidStack {
     }
 
     public boolean canInsertFluid(Fluid fluid) {
-        return fluid == this.fluid || (lockedFluid == null && fluid == Fluids.EMPTY);
+        return fluid == this.fluid || (lockedFluid == null && this.fluid == Fluids.EMPTY);
     }
 
     public int getRemainingSpace() {

@@ -187,18 +187,20 @@ public class MachineBlockEntity extends AbstractMachineBlockEntity
 
         boolean wasActive = isActive;
 
-        if(activeRecipe == null) { // TODO: don't start recipe if no energy
-            for(MachineRecipe recipe : recipeType.getRecipes((ServerWorld) world)) {
-                if(takeItemInputs(recipe, true) && takeFluidInputs(recipe, true) && putItemOutputs(recipe, true, false) && putFluidOutputs(recipe, true, false)) {
-                    takeItemInputs(recipe, false);
-                    takeFluidInputs(recipe, false);
-                    putItemOutputs(recipe, true, true);
-                    putFluidOutputs(recipe, true, true);
-                    activeRecipe = recipe;
-                    usedEnergy = 0;
-                    recipeEnergy = recipe.eu * recipe.duration;
-                    recipeMaxEu = recipe.eu;
-                    break;
+        if(activeRecipe == null) {
+            if(getEu(1, true) == 1) {
+                for (MachineRecipe recipe : recipeType.getRecipes((ServerWorld) world)) {
+                    if (takeItemInputs(recipe, true) && takeFluidInputs(recipe, true) && putItemOutputs(recipe, true, false) && putFluidOutputs(recipe, true, false)) {
+                        takeItemInputs(recipe, false);
+                        takeFluidInputs(recipe, false);
+                        putItemOutputs(recipe, true, true);
+                        putFluidOutputs(recipe, true, true);
+                        activeRecipe = recipe;
+                        usedEnergy = 0;
+                        recipeEnergy = recipe.eu * recipe.duration;
+                        recipeMaxEu = recipe.eu;
+                        break;
+                    }
                 }
             }
         }
@@ -283,7 +285,7 @@ public class MachineBlockEntity extends AbstractMachineBlockEntity
                     if(st.getItem() == output.item || st.isEmpty()) {
                         int ins = Math.min(remainingAmount, Math.min(getMaxCountPerStack(), output.item.getMaxCount()) - st.getCount());
                         if (st.isEmpty()) {
-                            if (stack.isMachineLocked() || stack.isPlayerLocked() || loopRun == 1) {
+                            if ((stack.isMachineLocked() || stack.isPlayerLocked() || loopRun == 1) && stack.canInsert(new ItemStack(output.item), null)) {
                                 stack.setStack(new ItemStack(output.item, ins));
                             } else {
                                 ins = 0;
@@ -330,7 +332,7 @@ public class MachineBlockEntity extends AbstractMachineBlockEntity
                     if(stack.getFluid() == output.fluid || stack.getFluid() == Fluids.EMPTY) {
                         int ins = Math.min(remainingAmount, stack.getRemainingSpace());
                         if (stack.getFluid() == Fluids.EMPTY) {
-                            if (stack.isPlayerLocked() || stack.isMachineLocked() || loopRun == 1) {
+                            if ((stack.isPlayerLocked() || stack.isMachineLocked() || loopRun == 1) && stack.canInsertFluid(output.fluid)) {
                                 stack.setFluid(output.fluid);
                                 stack.setAmount(ins);
                             } else {

@@ -20,17 +20,22 @@ import net.minecraft.util.math.Direction;
  */
 public abstract class AbstractMachineBlockEntity extends BlockEntity implements RenderAttachmentBlockEntity, BlockEntityClientSerializable {
     protected Direction facingDirection;
+    protected Direction outputDirection;
     protected boolean isActive = false;
 
     protected AbstractMachineBlockEntity(BlockEntityType<?> blockEntityType, Direction facingDirection) {
         super(blockEntityType);
         this.facingDirection = facingDirection;
+        this.outputDirection = null;
     }
 
     @Override
     public void fromTag(BlockState state, CompoundTag tag) {
         super.fromTag(state, tag);
         facingDirection = Direction.byId(tag.getInt("facingDirection"));
+        if(tag.contains("outputDirection")) {
+            outputDirection = Direction.byId(tag.getInt("outputDirection"));
+        }
         isActive = tag.getBoolean("isActive");
     }
 
@@ -38,6 +43,9 @@ public abstract class AbstractMachineBlockEntity extends BlockEntity implements 
     public CompoundTag toTag(CompoundTag tag) {
         super.toTag(tag);
         tag.putInt("facingDirection", this.facingDirection.getId());
+        if(outputDirection != null) {
+            tag.putInt("outputDirection", this.outputDirection.getId());
+        }
         tag.putBoolean("isActive", this.isActive);
         return tag;
     }
@@ -45,6 +53,9 @@ public abstract class AbstractMachineBlockEntity extends BlockEntity implements 
     @Override
     public void fromClientTag(CompoundTag tag) {
         setFacingDirection(Direction.byId(tag.getInt("facingDirection")));
+        if(tag.contains("outputDirection")) {
+            outputDirection = Direction.byId(tag.getInt("outputDirection"));
+        }
         this.isActive = tag.getBoolean("isActive");
         ClientWorld clientWorld = (ClientWorld)world;
         WorldRendererGetter wrg = (WorldRendererGetter)clientWorld;
@@ -54,12 +65,11 @@ public abstract class AbstractMachineBlockEntity extends BlockEntity implements 
     @Override
     public CompoundTag toClientTag(CompoundTag tag) {
         tag.putInt("facingDirection", this.facingDirection.getId());
+        if(outputDirection != null) {
+            tag.putInt("outputDirection", this.outputDirection.getId());
+        }
         tag.putBoolean("isActive", this.isActive);
         return tag;
-    }
-
-    public Direction getFacingDirection() {
-        return facingDirection;
     }
 
     public void setFacingDirection(Direction facingDirection) {
@@ -70,8 +80,12 @@ public abstract class AbstractMachineBlockEntity extends BlockEntity implements 
         }
     }
 
-    public boolean isActive() {
-        return isActive;
+    public void setOutputDirection(Direction outputDirection) {
+        this.outputDirection = outputDirection;
+        markDirty();
+        if(!world.isClient) {
+            sync();
+        }
     }
 
     @Override
@@ -81,10 +95,12 @@ public abstract class AbstractMachineBlockEntity extends BlockEntity implements 
 
     public static class AttachmentData {
         public final Direction facingDirection;
+        public final Direction outputDirection;
         public final boolean isActive;
 
         public AttachmentData(AbstractMachineBlockEntity blockEntity) {
-            this.facingDirection = blockEntity.getFacingDirection();
+            this.facingDirection = blockEntity.facingDirection;
+            this.outputDirection = blockEntity.outputDirection;
             this.isActive = blockEntity.isActive;
         }
     }

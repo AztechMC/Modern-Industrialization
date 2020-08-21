@@ -157,10 +157,8 @@ public interface ConfigurableInventory extends Inventory, SidedInventory, FluidI
             if (fluidStack.getFluid() == fluid) {
                 int ext = Math.min(maxAmount, fluidStack.getAmount());
                 if (!simulate) {
-                    if (isOpen()) {
-                        fluidStack.decrement(ext);
-                        markDirty();
-                    }
+                    fluidStack.decrement(ext);
+                    markDirty();
                 }
                 return ext;
             }

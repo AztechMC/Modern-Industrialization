@@ -50,6 +50,7 @@ public class MachineModel extends CustomBlockModel {
                 new SpriteIdentifier(SpriteAtlasTexture.BLOCK_ATLAS_TEX, bottomTexture),
                 null, // front overlay
                 null, // active front overlay
+                null, // active output overlay
         };
     }
 
@@ -71,6 +72,11 @@ public class MachineModel extends CustomBlockModel {
         return this;
     }
 
+    public MachineModel withOutputOverlay(Identifier overlay) {
+        sprite_ids[5] = new SpriteIdentifier(SpriteAtlasTexture.BLOCK_ATLAS_TEX, overlay);
+        return this;
+    }
+
     @Override
     public void emitBlockQuads(BlockRenderView blockRenderView, BlockState blockState, BlockPos blockPos, Supplier<Random> supplier, RenderContext renderContext) {
         // Render base mesh
@@ -84,6 +90,13 @@ public class MachineModel extends CustomBlockModel {
             emitter.material(cutoutMaterial);
             emitter.square(attachmentData.facingDirection, 0.0f, 0.0f, 1.0f, 1.0f, -0.000001f);
             emitter.spriteBake(0, frontOverlaySprite, MutableQuadView.BAKE_LOCK_UV);
+            emitter.spriteColor(0, -1, -1, -1, -1);
+            emitter.emit();
+        }
+        if(this.sprites[5] != null && attachmentData.outputDirection != null) {
+            emitter.material(cutoutMaterial);
+            emitter.square(attachmentData.outputDirection, 0.0f, 0.0f, 1.0f, 1.0f, -0.000002f);
+            emitter.spriteBake(0, sprites[5], MutableQuadView.BAKE_LOCK_UV);
             emitter.spriteColor(0, -1, -1, -1, -1);
             emitter.emit();
         }

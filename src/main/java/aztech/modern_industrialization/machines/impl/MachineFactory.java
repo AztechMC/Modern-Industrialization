@@ -85,7 +85,8 @@ public class MachineFactory {
 
         // TODO : REFACTOR AND ADD PARAMTER
         machineModel = new MachineModel(machineID, new MIIdentifier("blocks/casings/steam/bricked_bronze/"))
-                .withFrontOverlay(new MIIdentifier("blocks/generators/boiler/coal/overlay_front"), new MIIdentifier("blocks/generators/boiler/coal/overlay_front_active"));
+                .withFrontOverlay(new MIIdentifier("blocks/generators/boiler/coal/overlay_front"), new MIIdentifier("blocks/generators/boiler/coal/overlay_front_active"))
+                .withOutputOverlay(new MIIdentifier("blocks/overlays/output"));
 
         ModelProvider.modelMap.put(new MIIdentifier("block/"+machineID), machineModel);
         ModelProvider.modelMap.put(new MIIdentifier("item/"+machineID), machineModel);

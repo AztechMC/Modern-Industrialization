@@ -129,7 +129,7 @@ public class MachineBlockEntity extends AbstractMachineBlockEntity
 
     @Override
     public boolean providesFluidExtractionForce(Direction direction, Fluid fluid) {
-        return false; // TODO auto extract
+        return direction == outputDirection;
     }
 
     @Override

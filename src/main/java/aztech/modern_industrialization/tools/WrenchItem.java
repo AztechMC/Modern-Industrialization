@@ -4,7 +4,7 @@ import net.minecraft.block.Block;
 import net.minecraft.item.ItemUsageContext;
 import net.minecraft.util.ActionResult;
 
-public class WrenchItem extends ToolItem {
+public class WrenchItem extends ToolItem implements MachineOverlayItem {
     public WrenchItem(Settings settings) {
         super(settings);
     }

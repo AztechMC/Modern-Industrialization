@@ -156,6 +156,7 @@ public abstract class ConfigurableScreenHandler extends ScreenHandler {
         ItemStack newStack = ItemStack.EMPTY;
         Slot slot = this.slots.get(slotIndex);
         if(slot != null && slot.hasStack()) {
+            if(!slot.canTakeItems(player)) return newStack;
             ItemStack originalStack = slot.getStack();
             newStack = originalStack.copy();
             if(slotIndex < PLAYER_SLOTS) {
@@ -175,6 +176,93 @@ public abstract class ConfigurableScreenHandler extends ScreenHandler {
             }
         }
         return newStack;
+    }
+
+    // (almost) Copy-paste from ScreenHandler, Mojang forgot to check slot2.canInsert(stack) at one of the places.
+    @Override
+    protected boolean insertItem(ItemStack stack, int startIndex, int endIndex, boolean fromLast) {
+        boolean bl = false;
+        int i = startIndex;
+        if (fromLast) {
+            i = endIndex - 1;
+        }
+
+        Slot slot2;
+        ItemStack itemStack;
+        if (stack.isStackable()) {
+            while(!stack.isEmpty()) {
+                if (fromLast) {
+                    if (i < startIndex) {
+                        break;
+                    }
+                } else if (i >= endIndex) {
+                    break;
+                }
+
+                slot2 = this.slots.get(i);
+                itemStack = slot2.getStack();
+                if (!itemStack.isEmpty() && canStacksCombine(stack, itemStack) && slot2.canInsert(stack)) {
+                    int j = itemStack.getCount() + stack.getCount();
+                    if (j <= stack.getMaxCount()) {
+                        stack.setCount(0);
+                        itemStack.setCount(j);
+                        slot2.markDirty();
+                        bl = true;
+                    } else if (itemStack.getCount() < stack.getMaxCount()) {
+                        stack.decrement(stack.getMaxCount() - itemStack.getCount());
+                        itemStack.setCount(stack.getMaxCount());
+                        slot2.markDirty();
+                        bl = true;
+                    }
+                }
+
+                if (fromLast) {
+                    --i;
+                } else {
+                    ++i;
+                }
+            }
+        }
+
+        if (!stack.isEmpty()) {
+            if (fromLast) {
+                i = endIndex - 1;
+            } else {
+                i = startIndex;
+            }
+
+            while(true) {
+                if (fromLast) {
+                    if (i < startIndex) {
+                        break;
+                    }
+                } else if (i >= endIndex) {
+                    break;
+                }
+
+                slot2 = (Slot)this.slots.get(i);
+                itemStack = slot2.getStack();
+                if (itemStack.isEmpty() && slot2.canInsert(stack)) {
+                    if (stack.getCount() > slot2.getMaxItemCount()) {
+                        slot2.setStack(stack.split(slot2.getMaxItemCount()));
+                    } else {
+                        slot2.setStack(stack.split(stack.getCount()));
+                    }
+
+                    slot2.markDirty();
+                    bl = true;
+                    break;
+                }
+
+                if (fromLast) {
+                    --i;
+                } else {
+                    ++i;
+                }
+            }
+        }
+
+        return bl;
     }
 
     public static class LockingModeSlot extends Slot {

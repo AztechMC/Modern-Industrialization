@@ -28,6 +28,7 @@ public class MachineScreen extends HandledScreen<MachineScreenHandler> {
 
     @Override
     protected void drawBackground(MatrixStack matrices, float delta, int mouseX, int mouseY) {
+        this.renderBackground(matrices);
         RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
         MachineFactory factory = handler.getMachineFactory();
         this.client.getTextureManager().bindTexture(factory.getBackgroundIdentifier());

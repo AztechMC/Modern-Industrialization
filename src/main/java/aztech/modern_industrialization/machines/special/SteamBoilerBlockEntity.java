@@ -42,8 +42,8 @@ public class SteamBoilerBlockEntity extends MachineBlockEntity {
         if(usedEnergy == 0) {
             ItemStack fuel = getItemStacks().get(0).getStack();
             if(fuel.getCount() > 0) {
-                int fuelTime = FuelRegistryImpl.INSTANCE.get(fuel.getItem());
-                if(fuelTime > 0) {
+                Integer fuelTime = FuelRegistryImpl.INSTANCE.get(fuel.getItem());
+                if(fuelTime != null && fuelTime > 0) {
                     recipeEnergy = fuelTime * BURN_TIME_MULTIPLIER;
                     usedEnergy = recipeEnergy;
                     fuel.decrement(1);

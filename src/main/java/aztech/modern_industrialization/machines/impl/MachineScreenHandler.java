@@ -80,4 +80,6 @@ public class MachineScreenHandler extends ConfigurableScreenHandler {
     public int getTickProgress() { return propertyDelegate.get(1); }
     public int getTickRecipe() { return propertyDelegate.get(2); }
     public boolean getIsActive() { return propertyDelegate.get(0) == 1; }
+    public int getEfficiencyTicks() { return propertyDelegate.get(3); }
+    public int getMaxEfficiencyTicks() { return propertyDelegate.get(4); }
 }

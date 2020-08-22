@@ -50,6 +50,15 @@ public class MachineFactory {
     private int progressBarSizeY;
 
     private boolean progressBarHorizontal;
+    private boolean progressBarFlipped;
+
+    boolean hasEfficiencyBar = false;
+    int efficiencyBarX;
+    int efficiencyBarY;
+    int efficiencyBarDrawX;
+    int efficiencyBarDrawY;
+    int efficiencyBarSizeX;
+    int efficiencyBarSizeY;
 
     private int inputBucketCapacity = 16;
     private int outputBucketCapacity = 16;
@@ -203,20 +212,32 @@ public class MachineFactory {
         return this;
     }
 
-    public MachineFactory setupProgressBar(int x, int y, int drawX, int drawY, int sizeX, int sizeY, boolean horizontal){
+    public MachineFactory setupProgressBar(int x, int y, int drawX, int drawY, int sizeX, int sizeY, boolean horizontal, boolean flipped){
         this.hasProgressBar = true;
         this.progressBarX = x;
         this.progressBarY = y;
         this.progressBarDrawX = drawX;
         this.progressBarDrawY = drawY;
         this.progressBarHorizontal = horizontal;
+        this.progressBarFlipped = flipped;
         this.progressBarSizeX = sizeX;
         this.progressBarSizeY = sizeY;
         return this;
     }
 
     public MachineFactory setupProgressBar(int drawX, int drawY, int sizeX, int sizeY, boolean horizontal) {
-        setupProgressBar(176, 0, drawX, drawY, sizeX, sizeY, horizontal);
+        setupProgressBar(176, 0, drawX, drawY, sizeX, sizeY, horizontal, false);
+        return this;
+    }
+
+    public MachineFactory setupEfficiencyBar(int x, int y, int drawX, int drawY, int sizeX, int sizeY) {
+        this.hasEfficiencyBar = true;
+        this.efficiencyBarX = x;
+        this.efficiencyBarY = y;
+        this.efficiencyBarDrawX = drawX;
+        this.efficiencyBarDrawY = drawY;
+        this.efficiencyBarSizeX = sizeX;
+        this.efficiencyBarSizeY = sizeY;
         return this;
     }
 
@@ -250,6 +271,10 @@ public class MachineFactory {
 
     public boolean isProgressBarHorizontal() {
         return progressBarHorizontal;
+    }
+
+    public boolean isProgressBarFlipped() {
+        return progressBarFlipped;
     }
 
     public MIIdentifier getBackgroundIdentifier() {

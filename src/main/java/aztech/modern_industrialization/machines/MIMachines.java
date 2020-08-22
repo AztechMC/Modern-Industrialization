@@ -29,8 +29,10 @@ public class MIMachines {
     static {
         BRONZE_BOILER = new MachineFactory("bronze_boiler", () -> new SteamBoilerBlockEntity(BRONZE_BOILER, null), 1, 0, 1, 1)
                 .setInputBucketCapacity(64).setOutputBucketCapacity(64)
-                .setInputSlotPosition(45, 32, 1, 1)
-                .setInputLiquidSlotPosition(81, 18, 1, 1).setLiquidOutputSlotPosition(105, 42, 1, 1)
+                .setInputSlotPosition(15, 32, 1, 1)
+                .setInputLiquidSlotPosition(50, 32, 1, 1).setLiquidOutputSlotPosition(134, 32, 1, 1)
+                .setupProgressBar(176, 0, 15, 51, 14, 14, false, true)
+                .setupEfficiencyBar(0, 166, 50, 62, 100, 2)
                 .setupBackground("steam_boiler.png");
         BRONZE_COMPRESSOR = new SteamMachineFactory("bronze_compressor", () -> new MachineBlockEntity(BRONZE_COMPRESSOR, RECIPE_COMPRESSOR), 1, 1)
                 .setSteamBucketCapacity(64).setSteamSlotPos(23, 23)

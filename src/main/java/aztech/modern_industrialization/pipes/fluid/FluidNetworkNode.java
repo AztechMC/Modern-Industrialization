@@ -128,26 +128,19 @@ public class FluidNetworkNode extends PipeNetworkNode {
     @Override
     public CompoundTag toTag(CompoundTag tag) {
         tag.putInt("amount", amount);
-        tag.putByte("connections", NbtHelper.encodeDirections(connections.stream().map(c -> c.direction).collect(Collectors.toList())));
-        int types = 0;
-        int mul = 1;
         for(FluidConnection connection : connections) {
-            types += mul * encodeConnectionType(connection.type);
-            mul *= 3;
+            tag.putByte(connection.direction.toString(), (byte)encodeConnectionType(connection.type));
         }
-        tag.putInt("types", types);
         return tag;
     }
 
     @Override
     public void fromTag(CompoundTag tag) {
         amount = tag.getInt("amount");
-        Direction[] directions = NbtHelper.decodeDirections(tag.getByte("connections"));
-        int types = tag.getInt("types");
-        connections.clear();
-        for(int i = 0; i < directions.length; i++) {
-            connections.add(new FluidConnection(directions[i], null, decodeConnectionType(types % 3)));
-            types /= 3;
+        for(Direction direction : Direction.values()) {
+            if(tag.contains(direction.toString())) {
+                connections.add(new FluidConnection(direction, null, decodeConnectionType(tag.getByte(direction.toString()))));
+            }
         }
     }
 

@@ -52,10 +52,26 @@ public class MachineScreen extends HandledScreen<MachineScreenHandler> {
             if(factory.isProgressBarHorizontal()){
                 int progressPixel = (int)(progress*sx);
                 this.drawTexture(matrices, px, py, u, v, progressPixel, sy);
-            }else{
+            }else if(factory.isProgressBarFlipped()){
+                if(handler.getTickProgress() > 0) {
+                    int progressPixel = (int) ((1 - progress) * sy);
+                    this.drawTexture(matrices, px, py + progressPixel, u, v + progressPixel, sx, sy - progressPixel);
+                }
+            } else {
                 int progressPixel = (int)(progress*sy);
                 this.drawTexture(matrices, px, py, u, v, sx, progressPixel);
             }
+        }
+        if(factory.hasEfficiencyBar) {
+            float efficiency = (float)handler.getEfficiencyTicks() / handler.getMaxEfficiencyTicks();
+            int sx = factory.efficiencyBarSizeX;
+            int sy = factory.efficiencyBarSizeY;
+            int px = i+factory.efficiencyBarDrawX;
+            int py = j+factory.efficiencyBarDrawY;
+            int u = factory.efficiencyBarX;
+            int v = factory.efficiencyBarY;
+            int progressPixel = (int)(efficiency * sx);
+            this.drawTexture(matrices, px, py, u, v, progressPixel, sy);
         }
 
         // TODO: move to custom screen class

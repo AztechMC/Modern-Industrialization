@@ -384,7 +384,7 @@ public class MachineBlockEntity extends AbstractMachineBlockEntity
         }
     }
 
-    private int getEu(int maxEu, boolean simulate) {
+    protected int getEu(int maxEu, boolean simulate) {
         if(factory instanceof SteamMachineFactory) {
             ConfigurableFluidStack steam = fluidStacks.get(0);
             int amount = steam.getAmount();

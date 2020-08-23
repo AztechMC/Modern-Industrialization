@@ -47,9 +47,8 @@ if not vanilla:
     except:
         pass
 
-    for f in ["top.png", "side.png", "bottom.png"]:
-        result_block.save(
-            "src/main/resources/assets/modern_industrialization/textures/blocks/materials/" + id + "/block/" + f)
+    result_block.save(
+        "src/main/resources/assets/modern_industrialization/textures/blocks/materials/" + id + "/block.png")
 
     if ore:
         try:
@@ -60,6 +59,5 @@ if not vanilla:
 
         result_ore = image_tint("template/ore.png", hex)
         stone = Image.open("template/stone.png")
-        for f in ["top.png", "side.png", "bottom.png"]:
-            Image.alpha_composite(stone, result_ore).save(
-                "src/main/resources/assets/modern_industrialization/textures/blocks/materials/" + id + "/ore/" + f)
+        Image.alpha_composite(stone, result_ore).save(
+            "src/main/resources/assets/modern_industrialization/textures/blocks/materials/" + id + "/ore.png")

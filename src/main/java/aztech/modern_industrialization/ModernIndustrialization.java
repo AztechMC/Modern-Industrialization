@@ -14,14 +14,21 @@ import net.devtech.arrp.api.RuntimeResourcePack;
 import net.devtech.arrp.json.blockstate.JBlockModel;
 import net.devtech.arrp.json.blockstate.JState;
 import net.devtech.arrp.json.blockstate.JVariant;
+import net.devtech.arrp.json.loot.JCondition;
+import net.devtech.arrp.json.loot.JEntry;
+import net.devtech.arrp.json.loot.JLootTable;
+import net.devtech.arrp.json.loot.JPool;
 import net.devtech.arrp.json.models.JModel;
 import net.devtech.arrp.json.models.JTextures;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.client.itemgroup.FabricItemGroupBuilder;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
+import net.fabricmc.fabric.api.object.builder.v1.block.FabricMaterialBuilder;
 import net.fabricmc.fabric.api.screenhandler.v1.ScreenHandlerRegistry;
+import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
 import net.minecraft.block.Block;
 import net.minecraft.block.Material;
+import net.minecraft.block.MaterialColor;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.item.*;
@@ -45,6 +52,10 @@ public class ModernIndustrialization implements ModInitializer {
 			() -> new ItemStack(Items.REDSTONE)
 	);
 	public static final Item ITEM_FLUID_SLOT = new FluidStackItem(new Item.Settings().maxCount(1)); // evil hack
+
+	// Materials
+	public static final Material METAL_MATERIAL = new FabricMaterialBuilder(MaterialColor.IRON).build();
+	public static final Material STONE_MATERIAL = new FabricMaterialBuilder(MaterialColor.STONE).build();
 
 	// Item
 	public static final Item ITEM_WRENCH = new WrenchItem(new Item.Settings());
@@ -107,6 +118,7 @@ public class ModernIndustrialization implements ModInitializer {
 			factory.block = new MachineBlock(factory.blockEntityConstructor);
 			factory.item = new BlockItem(factory.block, new Item.Settings().group(ITEM_GROUP));
 			registerBlock(factory.block, factory.item,factory.getID());
+			registerBlockLoot(factory.getID());
 			factory.blockEntityType = Registry.register(Registry.BLOCK_ENTITY_TYPE, new Identifier(MOD_ID, factory.getID()), BlockEntityType.Builder.create(factory.blockEntityConstructor, factory.block).build(null));
 		}
 	}
@@ -136,11 +148,17 @@ public class ModernIndustrialization implements ModInitializer {
 			for(String block_type : (material.hasOre() ? new String[] {"block", "ore"} : new String[] {"block"}) ){
 				Block block = null;
 				if(block_type.equals("block")) {
-					block =  new Block(FabricBlockSettings.of(Material.METAL).hardness(material.getHardness())
-							.resistance(material.getBlastResistance()));
+					block =  new Block(FabricBlockSettings.of(METAL_MATERIAL).hardness(material.getHardness())
+							.resistance(material.getBlastResistance())
+							.breakByTool(FabricToolTags.PICKAXES, 0)
+							.requiresTool()
+					);
 				}else if(block_type.equals("ore")){
-					block =  new Block(FabricBlockSettings.of(Material.STONE).hardness(material.getOreHardness())
-							.resistance(material.getOreBlastResistance()));
+					block =  new Block(FabricBlockSettings.of(STONE_MATERIAL).hardness(material.getOreHardness())
+							.resistance(material.getOreBlastResistance())
+							.breakByTool(FabricToolTags.PICKAXES, 1)
+							.requiresTool()
+					);
 
 					// TODO : Add ore generation
 				}
@@ -152,6 +170,14 @@ public class ModernIndustrialization implements ModInitializer {
 				Registry.register(Registry.ITEM, identifier, item);
 				RESOURCE_PACK.addBlockState(JState.state().add(
 						new JVariant().put("", new JBlockModel(MOD_ID + ":block/materials/" + id+"/"+block_type))), identifier);
+				RESOURCE_PACK.addModel(JModel.model().parent("block/cube_all").textures(
+						new JTextures().var("all", MOD_ID + ":blocks/materials/" + id + "/" + block_type)),
+						new MIIdentifier("block/materials/"+id+"/"+block_type)
+				);
+				RESOURCE_PACK.addModel(JModel.model().parent(MOD_ID + ":block/materials/"+id+"/"+block_type),
+						new MIIdentifier("item/"+id + "_"+block_type)
+				);
+				registerBlockLoot(id+"_"+block_type);
 			}
 			item_types.add("ingot");
 			item_types.add("nugget");
@@ -167,8 +193,6 @@ public class ModernIndustrialization implements ModInitializer {
 					.textures(new JTextures().layer0(MOD_ID + ":items/materials/" + id+"/"+item_type)), new MIIdentifier("item/" + custom_id));
 
 		}
-
-
 	}
 
 	private void registerItem(Item item, String id) {
@@ -180,5 +204,16 @@ public class ModernIndustrialization implements ModInitializer {
 		Registry.register(Registry.FLUID, new MIIdentifier(id), fluid);
 		Registry.register(Registry.ITEM, new MIIdentifier("bucket_"+id), fluid.getBucketItem());
 		RESOURCE_PACK.addModel(JModel.model().parent("minecraft:item/generated").textures(new JTextures().layer0(MOD_ID + ":items/bucket/" + id)), new MIIdentifier("item/bucket_" + id));
+	}
+
+	private void registerBlockLoot(String id) {
+		RESOURCE_PACK.addLootTable(
+				new MIIdentifier("blocks/" + id),
+				JLootTable.loot("minecraft:block").pool(
+				new JPool()
+						.rolls(1)
+						.entry(new JEntry().type("minecraft:item").name(MOD_ID + ":" + id))
+						.condition(new JCondition("minecraft:survives_explosion")))
+		);
 	}
 }

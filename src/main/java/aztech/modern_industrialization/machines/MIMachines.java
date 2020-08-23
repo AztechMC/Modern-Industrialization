@@ -6,6 +6,7 @@ import aztech.modern_industrialization.machines.impl.MachineFactory;
 import aztech.modern_industrialization.machines.impl.SteamMachineFactory;
 import aztech.modern_industrialization.machines.recipe.MachineRecipeType;
 import aztech.modern_industrialization.machines.special.SteamBoilerBlockEntity;
+import aztech.modern_industrialization.machines.special.WaterPumpBlockEntity;
 import net.minecraft.util.registry.Registry;
 
 public class MIMachines {
@@ -18,7 +19,7 @@ public class MIMachines {
 
     // Bronze
     public static MachineFactory BRONZE_BOILER;
-    public static MachineFactory BRONZE_PUMP;
+    public static MachineFactory BRONZE_WATER_PUMP;
 
     public static MachineFactory BRONZE_COMPRESSOR;
     public static MachineFactory BRONZE_FLUID_EXTRACTOR;
@@ -34,6 +35,11 @@ public class MIMachines {
                 .setupProgressBar(176, 0, 15, 51, 14, 14, false, true)
                 .setupEfficiencyBar(0, 166, 50, 62, 100, 2)
                 .setupBackground("steam_boiler.png");
+        BRONZE_WATER_PUMP = new SteamMachineFactory("bronze_water_pump", () -> new WaterPumpBlockEntity(BRONZE_WATER_PUMP, null), 0, 0, 0, 1)
+                .setSteamBucketCapacity(64).setSteamSlotPos(23, 23)
+                .setOutputBucketCapacity(64)
+                .setLiquidOutputSlotPosition(104, 32, 1, 1)
+                .setupBackground("bronze_water_pump.png");
         BRONZE_COMPRESSOR = new SteamMachineFactory("bronze_compressor", () -> new MachineBlockEntity(BRONZE_COMPRESSOR, RECIPE_COMPRESSOR), 1, 1)
                 .setSteamBucketCapacity(64).setSteamSlotPos(23, 23)
                 .setInputSlotPosition(56, 45, 1, 1).setOutputSlotPosition(102, 45, 1, 1)

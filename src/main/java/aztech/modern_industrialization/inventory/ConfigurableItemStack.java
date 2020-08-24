@@ -28,7 +28,7 @@ public class ConfigurableItemStack {
     boolean pipesInsert = false;
     boolean pipesExtract = false;
 
-    ConfigurableItemStack() {}
+    public ConfigurableItemStack() {}
 
     public static ConfigurableItemStack standardInputSlot() {
         ConfigurableItemStack stack = new ConfigurableItemStack();

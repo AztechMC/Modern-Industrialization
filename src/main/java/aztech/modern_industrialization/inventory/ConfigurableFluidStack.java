@@ -42,7 +42,7 @@ public class ConfigurableFluidStack {
 
     private ItemStack displayedStack = FluidStackItem.getEmptyStack();
 
-    ConfigurableFluidStack(ConfigurableInventory inventory, int capacity) {
+    public ConfigurableFluidStack(ConfigurableInventory inventory, int capacity) {
         this.capacity = capacity;
         this.inventory = inventory;
     }

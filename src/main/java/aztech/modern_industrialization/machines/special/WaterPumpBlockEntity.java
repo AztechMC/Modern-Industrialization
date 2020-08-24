@@ -36,10 +36,23 @@ public class WaterPumpBlockEntity extends MachineBlockEntity {
         if(world.isClient) return;
 
         ConfigurableFluidStack waterStack = fluidStacks.get(fluidStacks.size()-1);
-        if(waterStack.getRemainingSpace() < FluidUnit.DROPS_PER_BUCKET / 8) return;
+        if(waterStack.getRemainingSpace() < FluidUnit.DROPS_PER_BUCKET / 8) {
+            if(isActive) {
+                isActive = false;
+                sync();
+                markDirty();
+            }
+            return;
+        }
 
         int eu = getEu(1, false);
         usedEnergy += eu;
+        if(eu > 0) {
+            if(!isActive) {
+                isActive = true;
+                sync();
+            }
+        }
 
         if(usedEnergy == recipeEnergy) {
             boolean[] adjWater = new boolean[] { false, false, false, false, false, false, false, false };
@@ -62,6 +75,11 @@ public class WaterPumpBlockEntity extends MachineBlockEntity {
             }
             waterStack.increment(Math.min(providedBucketEights * FluidUnit.DROPS_PER_BUCKET / 8, waterStack.getRemainingSpace()));
             usedEnergy = 0;
+        }
+        markDirty();
+
+        for(Direction direction : Direction.values()) {
+            autoExtractFluids(direction, world.getBlockEntity(pos.offset(direction)));
         }
     }
 

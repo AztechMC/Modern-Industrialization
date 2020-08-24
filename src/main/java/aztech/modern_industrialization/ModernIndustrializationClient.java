@@ -2,6 +2,9 @@ package aztech.modern_industrialization;
 
 import aztech.modern_industrialization.inventory.ConfigurableInventoryPacketHandlers;
 import aztech.modern_industrialization.inventory.ConfigurableInventoryPackets;
+import aztech.modern_industrialization.machines.impl.MachineFactory;
+import aztech.modern_industrialization.machines.impl.MachineModel;
+import aztech.modern_industrialization.machines.impl.MachinePackets;
 import aztech.modern_industrialization.machines.impl.MachineScreen;
 //import aztech.modern_industrialization.machines.impl.SteamBoilerScreen;
 import aztech.modern_industrialization.model.block.ModelProvider;
@@ -35,6 +38,7 @@ public class ModernIndustrializationClient implements ClientModInitializer {
         setupScreens();
         setupFluidRenders();
         setupPackets();
+        setupMachines();
         ModelLoadingRegistry.INSTANCE.registerResourceProvider(rm -> {
             return new ModelProvider();
         });
@@ -87,5 +91,15 @@ public class ModernIndustrializationClient implements ClientModInitializer {
     private void setupPackets() {
         ClientSidePacketRegistry.INSTANCE.register(ConfigurableInventoryPackets.UPDATE_ITEM_SLOT, ConfigurableInventoryPacketHandlers.UPDATE_ITEM_SLOT);
         ClientSidePacketRegistry.INSTANCE.register(ConfigurableInventoryPackets.UPDATE_FLUID_SLOT, ConfigurableInventoryPacketHandlers.UPDATE_FLUID_SLOT);
+        ClientSidePacketRegistry.INSTANCE.register(MachinePackets.S2C.UPDATE_AUTO_EXTRACT, MachinePackets.S2C.ON_UPDATE_AUTO_EXTRACT);
+    }
+
+    private void setupMachines() {
+        for(MachineFactory factory : MachineFactory.getFactories()) {
+            MachineModel model = factory.buildModel();
+
+            ModelProvider.modelMap.put(new MIIdentifier("block/"+factory.getID()), model);
+            ModelProvider.modelMap.put(new MIIdentifier("item/"+factory.getID()), model);
+        }
     }
 }

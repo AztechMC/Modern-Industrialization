@@ -21,21 +21,23 @@ import net.minecraft.util.math.Direction;
 public abstract class AbstractMachineBlockEntity extends BlockEntity implements RenderAttachmentBlockEntity, BlockEntityClientSerializable {
     protected Direction facingDirection;
     protected Direction outputDirection;
+    protected boolean extractItems = false;
+    protected boolean extractFluids = false;
     protected boolean isActive = false;
 
     protected AbstractMachineBlockEntity(BlockEntityType<?> blockEntityType, Direction facingDirection) {
         super(blockEntityType);
         this.facingDirection = facingDirection;
-        this.outputDirection = null;
+        this.outputDirection = facingDirection.getOpposite();
     }
 
     @Override
     public void fromTag(BlockState state, CompoundTag tag) {
         super.fromTag(state, tag);
         facingDirection = Direction.byId(tag.getInt("facingDirection"));
-        if(tag.contains("outputDirection")) {
-            outputDirection = Direction.byId(tag.getInt("outputDirection"));
-        }
+        outputDirection = Direction.byId(tag.getInt("outputDirection"));
+        extractItems = tag.getBoolean("extractItems");
+        extractFluids = tag.getBoolean("extractFluids");
         isActive = tag.getBoolean("isActive");
     }
 
@@ -43,9 +45,9 @@ public abstract class AbstractMachineBlockEntity extends BlockEntity implements 
     public CompoundTag toTag(CompoundTag tag) {
         super.toTag(tag);
         tag.putInt("facingDirection", this.facingDirection.getId());
-        if(outputDirection != null) {
-            tag.putInt("outputDirection", this.outputDirection.getId());
-        }
+        tag.putInt("outputDirection", this.outputDirection.getId());
+        tag.putBoolean("extractItems", this.extractItems);
+        tag.putBoolean("extractFluids", this.extractFluids);
         tag.putBoolean("isActive", this.isActive);
         return tag;
     }
@@ -56,6 +58,8 @@ public abstract class AbstractMachineBlockEntity extends BlockEntity implements 
         if(tag.contains("outputDirection")) {
             outputDirection = Direction.byId(tag.getInt("outputDirection"));
         }
+        extractItems = tag.getBoolean("extractItems");
+        extractFluids = tag.getBoolean("extractFluids");
         this.isActive = tag.getBoolean("isActive");
         ClientWorld clientWorld = (ClientWorld)world;
         WorldRendererGetter wrg = (WorldRendererGetter)clientWorld;
@@ -68,6 +72,8 @@ public abstract class AbstractMachineBlockEntity extends BlockEntity implements 
         if(outputDirection != null) {
             tag.putInt("outputDirection", this.outputDirection.getId());
         }
+        tag.putBoolean("extractItems", this.extractItems);
+        tag.putBoolean("extractFluids", this.extractFluids);
         tag.putBoolean("isActive", this.isActive);
         return tag;
     }
@@ -96,11 +102,15 @@ public abstract class AbstractMachineBlockEntity extends BlockEntity implements 
     public static class AttachmentData {
         public final Direction facingDirection;
         public final Direction outputDirection;
+        public final boolean extractItems;
+        public final boolean extractFluids;
         public final boolean isActive;
 
         public AttachmentData(AbstractMachineBlockEntity blockEntity) {
             this.facingDirection = blockEntity.facingDirection;
             this.outputDirection = blockEntity.outputDirection;
+            this.extractItems = blockEntity.extractItems;
+            this.extractFluids = blockEntity.extractFluids;
             this.isActive = blockEntity.isActive;
         }
     }

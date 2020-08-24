@@ -17,6 +17,11 @@ public class MachineFactory {
     public BlockEntityType blockEntityType;
 
     public MachineModel machineModel;
+    private String casing; // example: "bricked_bronze"
+    private String machineType; // example: "boiler"
+    private boolean frontOverlay;
+    private boolean sideOverlay;
+    private boolean topOverlay;
 
     public final Supplier<MachineBlockEntity> blockEntityConstructor;
 
@@ -91,14 +96,6 @@ public class MachineFactory {
 
         setTranslationKey("block.modern_industrialization."+machineID);
         setupBackground(machineID+".png");
-
-        // TODO : REFACTOR AND ADD PARAMTER
-        machineModel = new MachineModel(machineID, new MIIdentifier("blocks/casings/steam/bricked_bronze/"))
-                .withFrontOverlay(new MIIdentifier("blocks/generators/boiler/coal/overlay_front"), new MIIdentifier("blocks/generators/boiler/coal/overlay_front_active"))
-                .withOutputOverlay(new MIIdentifier("blocks/overlays/output"));
-
-        ModelProvider.modelMap.put(new MIIdentifier("block/"+machineID), machineModel);
-        ModelProvider.modelMap.put(new MIIdentifier("item/"+machineID), machineModel);
 
     }
 
@@ -346,5 +343,30 @@ public class MachineFactory {
 
     public static Iterable<MachineFactory> getFactories(){
         return map.values();
+    }
+
+    public MachineFactory setupCasing(String category) {
+        casing = category + "/";
+        return this;
+    }
+
+    public MachineFactory setupOverlays(String machineType, boolean front, boolean side, boolean top) {
+        this.machineType = machineType;
+        this.frontOverlay = front;
+        this.sideOverlay = side;
+        this.topOverlay = top;
+        return this;
+    }
+
+    public MachineModel buildModel() {
+        machineModel = new MachineModel(machineID, new MIIdentifier("blocks/casings/" + casing)).withOutputOverlay(
+                new MIIdentifier("blocks/overlays/output"),
+                new MIIdentifier("blocks/overlays/extract_items"),
+                new MIIdentifier("blocks/overlays/extract_fluids"));
+        String machineFolder = "blocks/machines/" + machineType + "/";
+        if(frontOverlay) machineModel.withFrontOverlay(new MIIdentifier(machineFolder + "overlay_front"), new MIIdentifier(machineFolder + "overlay_front_active"));
+        if(sideOverlay) machineModel.withSideOverlay(new MIIdentifier(machineFolder + "overlay_side"), new MIIdentifier(machineFolder + "overlay_side_active"));
+        if(topOverlay) machineModel.withTopOverlay(new MIIdentifier(machineFolder + "overlay_top"), new MIIdentifier(machineFolder + "overlay_top_active"));
+        return machineModel;
     }
 }

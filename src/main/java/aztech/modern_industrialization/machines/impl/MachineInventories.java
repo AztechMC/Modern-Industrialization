@@ -1,5 +1,8 @@
-package aztech.modern_industrialization.inventory;
+package aztech.modern_industrialization.machines.impl;
 
+import aztech.modern_industrialization.inventory.ConfigurableFluidStack;
+import aztech.modern_industrialization.inventory.ConfigurableInventory;
+import aztech.modern_industrialization.inventory.ConfigurableItemStack;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.PacketByteBuf;
@@ -8,12 +11,33 @@ import net.minecraft.util.math.Direction;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ConfigurableInventories {
-    public static ConfigurableInventory clientOfBuf(PacketByteBuf buf) {
+public class MachineInventories {
+    public static MachineInventory clientOfBuf(PacketByteBuf buf) {
         List<ConfigurableItemStack> itemStacks = new ArrayList<>();
         List<ConfigurableFluidStack> fluidStacks = new ArrayList<>();
+        boolean[] autoExtract = new boolean[] { buf.readBoolean(), buf.readBoolean() };
 
-        ConfigurableInventory clientInv = new ConfigurableInventory() {
+        MachineInventory clientInv = new MachineInventory() {
+            @Override
+            public void setItemExtract(boolean extract) {
+                autoExtract[0] = extract;
+            }
+
+            @Override
+            public void setFluidExtract(boolean extract) {
+                autoExtract[1] = extract;
+            }
+
+            @Override
+            public boolean getItemExtract() {
+                return autoExtract[0];
+            }
+
+            @Override
+            public boolean getFluidExtract() {
+                return autoExtract[1];
+            }
+
             @Override
             public List<ConfigurableItemStack> getItemStacks() {
                 return itemStacks;
@@ -50,7 +74,9 @@ public class ConfigurableInventories {
         return clientInv;
     }
 
-    public static void toBuf(PacketByteBuf buf, ConfigurableInventory inventory) {
+    public static void toBuf(PacketByteBuf buf, MachineInventory inventory) {
+        buf.writeBoolean(inventory.getItemExtract());
+        buf.writeBoolean(inventory.getFluidExtract());
         buf.writeInt(inventory.getItemStacks().size());
         buf.writeInt(inventory.getFluidStacks().size());
         CompoundTag tag = new CompoundTag();

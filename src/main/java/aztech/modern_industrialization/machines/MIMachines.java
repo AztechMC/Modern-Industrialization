@@ -34,31 +34,45 @@ public class MIMachines {
                 .setInputLiquidSlotPosition(50, 32, 1, 1).setLiquidOutputSlotPosition(134, 32, 1, 1)
                 .setupProgressBar(176, 0, 15, 51, 14, 14, false, true)
                 .setupEfficiencyBar(0, 166, 50, 62, 100, 2)
-                .setupBackground("steam_boiler.png");
+                .setupBackground("steam_boiler.png")
+                .setupCasing("bricked_bronze")
+                .setupOverlays("boiler", true, false, false);
         BRONZE_WATER_PUMP = new SteamMachineFactory("bronze_water_pump", () -> new WaterPumpBlockEntity(BRONZE_WATER_PUMP, null), 0, 0, 0, 1)
                 .setSteamBucketCapacity(64).setSteamSlotPos(23, 23)
                 .setOutputBucketCapacity(64)
                 .setLiquidOutputSlotPosition(104, 32, 1, 1)
-                .setupBackground("bronze_water_pump.png");
+                .setupBackground("bronze_water_pump.png")
+                .setupCasing("bronze")
+                .setupOverlays("pump", true, true, true);
         BRONZE_COMPRESSOR = new SteamMachineFactory("bronze_compressor", () -> new MachineBlockEntity(BRONZE_COMPRESSOR, RECIPE_COMPRESSOR), 1, 1)
                 .setSteamBucketCapacity(64).setSteamSlotPos(23, 23)
                 .setInputSlotPosition(56, 45, 1, 1).setOutputSlotPosition(102, 45, 1, 1)
-                .setupProgressBar(76, 45, 22, 15, true);
+                .setupProgressBar(76, 45, 22, 15, true)
+                .setupCasing("bronze")
+                .setupOverlays("compressor", true, true, true);
         BRONZE_FLUID_EXTRACTOR = new SteamMachineFactory("bronze_fluid_extractor", () -> new MachineBlockEntity(BRONZE_FLUID_EXTRACTOR, RECIPE_FLUID_EXTRACTOR), 1, 0, 0, 1)
                 .setSteamBucketCapacity(64).setSteamSlotPos(23, 23)
                 .setInputSlotPosition(56, 45, 1, 1).setLiquidOutputSlotPosition(102, 45, 1, 1)
-                .setupProgressBar(76, 45, 22, 15, true).setupBackground("steam_furnace.png");
+                .setupProgressBar(76, 45, 22, 15, true).setupBackground("steam_furnace.png")
+                .setupCasing("bronze")
+                .setupOverlays("fluid_extractor", true, true, true);
         BRONZE_FURNACE = new SteamMachineFactory("bronze_furnace", () -> new MachineBlockEntity(BRONZE_FURNACE, RECIPE_FURNACE), 1, 1)
                 .setSteamBucketCapacity(64).setSteamSlotPos(23, 23)
                 .setInputSlotPosition(56, 45, 1, 1).setOutputSlotPosition(102, 45, 1, 1)
-                .setupProgressBar(76, 45, 22, 15, true);
+                .setupProgressBar(76, 45, 22, 15, true)
+                .setupCasing("bricked_bronze")
+                .setupOverlays("furnace", true, false, false);
         BRONZE_MACERATOR = new SteamMachineFactory("bronze_macerator", () -> new MachineBlockEntity(BRONZE_MACERATOR, RECIPE_MACERATOR), 1, 4)
                 .setSteamBucketCapacity(64).setSteamSlotPos(23, 23)
                 .setInputSlotPosition(56, 45, 1, 1).setOutputSlotPosition(102, 45, 2, 2)
-                .setupProgressBar(76, 45, 22, 15, true).setupBackground("steam_furnace.png");
+                .setupProgressBar(76, 45, 22, 15, true).setupBackground("steam_furnace.png")
+                .setupCasing("bronze")
+                .setupOverlays("macerator", true, false, true);
         BRONZE_MIXER = new SteamMachineFactory("bronze_mixer", () -> new MachineBlockEntity(BRONZE_MIXER, RECIPE_MIXER), 4, 2)
                 .setSteamBucketCapacity(64).setSteamSlotPos(23, 23)
-                .setInputSlotPosition(56, 45, 2, 2).setOutputSlotPosition(102, 45, 1, 2);
+                .setInputSlotPosition(56, 45, 2, 2).setOutputSlotPosition(102, 45, 1, 2)
+                .setupCasing("bronze")
+                .setupOverlays("mixer", true, true, true);
     }
 
     public static void setupRecipes() {

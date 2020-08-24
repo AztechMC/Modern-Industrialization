@@ -5,12 +5,15 @@ import aztech.modern_industrialization.inventory.ConfigurableFluidStack;
 import aztech.modern_industrialization.inventory.ConfigurableItemStack;
 import aztech.modern_industrialization.inventory.ConfigurableScreenHandler;
 import com.mojang.blaze3d.systems.RenderSystem;
+import io.netty.buffer.Unpooled;
+import net.fabricmc.fabric.api.network.ClientSidePacketRegistry;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.network.PacketByteBuf;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
@@ -18,6 +21,91 @@ import net.minecraft.util.Identifier;
 public class MachineScreen extends HandledScreen<MachineScreenHandler> {
 
     private MachineScreenHandler handler;
+
+    private interface Button {
+        int getX();
+        int getY();
+        int getSizeX();
+        int getSizeY();
+        void clicked();
+        void render(MatrixStack matrices, int i, int j);
+    }
+    private Button[] buttons = new Button[] {
+            new Button() {
+                @Override
+                public int getX() {
+                    return 112;
+                }
+
+                @Override
+                public int getY() {
+                    return 6;
+                }
+
+                @Override
+                public int getSizeX() {
+                    return 18;
+                }
+
+                @Override
+                public int getSizeY() {
+                    return 18;
+                }
+
+                @Override
+                public void clicked() {
+                    boolean newItemExtract = !handler.inventory.getItemExtract();
+                    handler.inventory.setItemExtract(newItemExtract);
+                    PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
+                    buf.writeInt(handler.syncId);
+                    buf.writeBoolean(true);
+                    buf.writeBoolean(newItemExtract);
+                    ClientSidePacketRegistry.INSTANCE.sendToServer(MachinePackets.C2S.SET_AUTO_EXTRACT, buf);
+                }
+
+                @Override
+                public void render(MatrixStack matrices, int i, int j) {
+                    drawTexture(matrices, i + getX(), j + getY(), handler.inventory.getItemExtract() ? 54 : 36, 18, 18, 18);
+                }
+            },
+            new Button() {
+                @Override
+                public int getX() {
+                    return 132;
+                }
+
+                @Override
+                public int getY() {
+                    return 6;
+                }
+
+                @Override
+                public int getSizeX() {
+                    return 18;
+                }
+
+                @Override
+                public int getSizeY() {
+                    return 18;
+                }
+
+                @Override
+                public void clicked() {
+                    boolean newFluidExtract = !handler.inventory.getFluidExtract();
+                    handler.inventory.setFluidExtract(newFluidExtract);
+                    PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
+                    buf.writeInt(handler.syncId);
+                    buf.writeBoolean(false);
+                    buf.writeBoolean(newFluidExtract);
+                    ClientSidePacketRegistry.INSTANCE.sendToServer(MachinePackets.C2S.SET_AUTO_EXTRACT, buf);
+                }
+
+                @Override
+                public void render(MatrixStack matrices, int i, int j) {
+                    drawTexture(matrices, i + getX(), j + getY(), handler.inventory.getFluidExtract() ? 18 : 0, 18, 18, 18);
+                }
+            }
+    };
 
     private static final Identifier SLOT_ATLAS = new Identifier(ModernIndustrialization.MOD_ID, "textures/gui/container/slot_atlas.png");
 
@@ -93,6 +181,9 @@ public class MachineScreen extends HandledScreen<MachineScreenHandler> {
             }
             this.drawTexture(matrices, px, py, u, 0, 18, 18);
         }
+        for(Button button : buttons) {
+            button.render(matrices, i, j);
+        }
     }
 
     @Override
@@ -125,5 +216,18 @@ public class MachineScreen extends HandledScreen<MachineScreenHandler> {
     public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
         super.render(matrices, mouseX, mouseY, delta);
         super.drawMouseoverTooltip(matrices, mouseX, mouseY);
+    }
+
+    @Override
+    public boolean mouseClicked(double mouseX, double mouseY, int mouseButton) {
+        if(mouseButton == 0) {
+            for (Button button : buttons) {
+                if (isPointWithinBounds(button.getX(), button.getY(), button.getSizeX(), button.getSizeY(), mouseX, mouseY)) {
+                    button.clicked();
+                    return true;
+                }
+            }
+        }
+        return super.mouseClicked(mouseX, mouseY, mouseButton);
     }
 }

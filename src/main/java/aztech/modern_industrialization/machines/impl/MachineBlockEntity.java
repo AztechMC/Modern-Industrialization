@@ -1,16 +1,13 @@
 package aztech.modern_industrialization.machines.impl;
 
-import aztech.modern_industrialization.fluid.FluidStackItem;
 import aztech.modern_industrialization.fluid.FluidUnit;
 import aztech.modern_industrialization.inventory.ConfigurableFluidStack;
-import aztech.modern_industrialization.inventory.ConfigurableInventories;
 import aztech.modern_industrialization.inventory.ConfigurableInventory;
 import aztech.modern_industrialization.inventory.ConfigurableItemStack;
 import aztech.modern_industrialization.machines.recipe.MachineRecipe;
 import aztech.modern_industrialization.machines.recipe.MachineRecipeType;
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
 import net.minecraft.block.BlockState;
-import net.minecraft.client.tutorial.OpenInventoryTutorialStepHandler;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.fluid.Fluid;
@@ -33,7 +30,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MachineBlockEntity extends AbstractMachineBlockEntity
-        implements Tickable, ExtendedScreenHandlerFactory, ConfigurableInventory {
+        implements Tickable, ExtendedScreenHandlerFactory, MachineInventory {
 
     protected final List<ConfigurableItemStack> itemStacks;
     protected final List<ConfigurableFluidStack> fluidStacks;
@@ -184,7 +181,7 @@ public class MachineBlockEntity extends AbstractMachineBlockEntity
 
     @Override
     public void writeScreenOpeningData(ServerPlayerEntity serverPlayerEntity, PacketByteBuf packetByteBuf) {
-        ConfigurableInventories.toBuf(packetByteBuf, this);
+        MachineInventories.toBuf(packetByteBuf, this);
         packetByteBuf.writeInt(propertyDelegate.size());
         packetByteBuf.writeString(factory.getID());
     }
@@ -237,6 +234,15 @@ public class MachineBlockEntity extends AbstractMachineBlockEntity
             sync();
         }
         markDirty();
+
+        autoExtract();
+    }
+
+    protected void autoExtract() {
+        if(outputDirection != null) {
+            if(extractItems) autoExtractItems(outputDirection, world.getBlockEntity(pos.offset(outputDirection)));
+            if(extractFluids) autoExtractFluids(outputDirection, world.getBlockEntity(pos.offset(outputDirection)));
+        }
     }
 
     private boolean takeItemInputs(MachineRecipe recipe, boolean simulate) {
@@ -396,5 +402,29 @@ public class MachineBlockEntity extends AbstractMachineBlockEntity
         } else {
             throw new UnsupportedOperationException("Only steam machines are supported");
         }
+    }
+
+    @Override
+    public void setItemExtract(boolean extract) {
+        extractItems = extract;
+        if(!world.isClient) sync();
+        markDirty();
+    }
+
+    @Override
+    public void setFluidExtract(boolean extract) {
+        extractFluids = extract;
+        if(!world.isClient) sync();
+        markDirty();
+    }
+
+    @Override
+    public boolean getItemExtract() {
+        return extractItems;
+    }
+
+    @Override
+    public boolean getFluidExtract() {
+        return extractFluids;
     }
 }

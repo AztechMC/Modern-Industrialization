@@ -2,6 +2,7 @@ package aztech.modern_industrialization.inventory;
 
 import aztech.modern_industrialization.fluid.FluidInventory;
 import aztech.modern_industrialization.util.NbtHelper;
+import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.Fluids;
@@ -104,8 +105,46 @@ public interface ConfigurableInventory extends Inventory, SidedInventory, FluidI
         return getItemStacks().get(slot).pipesExtract;
     }
 
-    default void autoExtractItems(Direction direction) {
+    default void autoExtractItems(Direction direction, BlockEntity targetEntity) {
+        if(targetEntity instanceof Inventory) {
+            for(ConfigurableItemStack stack : getItemStacks()) {
+                if(stack.pipesExtract) {
+                    Inventory inv = (Inventory) targetEntity;
+                    for(int i = 0; i < inv.size() && !stack.stack.isEmpty(); ++i) {
+                        if(targetEntity instanceof SidedInventory) {
+                            if (!((SidedInventory) targetEntity).canInsert(i, stack.stack, direction.getOpposite()))
+                                continue;
+                        }
+                        if(inv.isValid(i, stack.stack)) {
+                            if(inv.getStack(i).isEmpty()) {
+                                inv.setStack(i, stack.stack);
+                                stack.stack = ItemStack.EMPTY;
+                                markDirty();
+                            } else {
+                                int ins = Math.min(Math.min(inv.getMaxCountPerStack(), inv.getStack(i).getMaxCount() - inv.getStack(i).getCount()), stack.stack.getCount());
+                                stack.stack.decrement(ins);
+                                inv.getStack(i).increment(ins);
+                                markDirty();
+                            }
+                        }
+                    }
+                }
+            }
+        }
         // TODO this is the hook to auto-extract items, must yet be implemented and called!
+    }
+
+    default void autoExtractFluids(Direction direction, BlockEntity targetEntity) {
+        if(targetEntity instanceof FluidInventory) {
+            FluidInventory fluidInv = (FluidInventory) targetEntity;
+            for(ConfigurableFluidStack stack : getFluidStacks()) {
+                if(stack.getFluid() != Fluids.EMPTY && stack.pipesExtract) {
+                    int extracted = fluidInv.insert(direction.getOpposite(), stack.getFluid(), stack.getAmount(), false);
+                    stack.decrement(extracted);
+                    markDirty();
+                }
+            }
+        }
     }
 
     @Override
@@ -145,6 +184,7 @@ public interface ConfigurableInventory extends Inventory, SidedInventory, FluidI
                     if (isOpen()) {
                         fluidStack.updateDisplayedItem();
                     }
+                    markDirty();
                 }
                 return fluidStack.steamInput ? ins + insert(direction, fluid, maxAmount - ins, simulate, i + 1) : ins;
             }

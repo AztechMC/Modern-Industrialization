@@ -5,6 +5,7 @@ import aztech.modern_industrialization.fluid.FluidStackItem;
 import aztech.modern_industrialization.machines.MIMachines;
 import aztech.modern_industrialization.machines.impl.MachineBlock;
 import aztech.modern_industrialization.machines.impl.MachineFactory;
+import aztech.modern_industrialization.machines.impl.MachinePackets;
 import aztech.modern_industrialization.machines.impl.MachineScreenHandler;
 import aztech.modern_industrialization.material.MIMaterial;
 import aztech.modern_industrialization.pipes.MIPipes;
@@ -22,10 +23,12 @@ import net.devtech.arrp.json.models.JModel;
 import net.devtech.arrp.json.models.JTextures;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.client.itemgroup.FabricItemGroupBuilder;
+import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricMaterialBuilder;
 import net.fabricmc.fabric.api.screenhandler.v1.ScreenHandlerRegistry;
 import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
+import net.fabricmc.fabric.impl.networking.ServerSidePacketRegistryImpl;
 import net.minecraft.block.Block;
 import net.minecraft.block.Material;
 import net.minecraft.block.MaterialColor;
@@ -86,6 +89,7 @@ public class ModernIndustrialization implements ModInitializer {
 		setupMaterial();
 		MIMachines.setupRecipes(); // will also load the static fields.
 		setupMachines();
+		setupPackets();
 
 		MIPipes.INSTANCE.onInitialize();
 
@@ -215,5 +219,9 @@ public class ModernIndustrialization implements ModInitializer {
 						.entry(new JEntry().type("minecraft:item").name(MOD_ID + ":" + id))
 						.condition(new JCondition("minecraft:survives_explosion")))
 		);
+	}
+
+	private void setupPackets() {
+		ServerSidePacketRegistry.INSTANCE.register(MachinePackets.C2S.SET_AUTO_EXTRACT, MachinePackets.C2S.ON_SET_AUTO_EXTRACT);
 	}
 }

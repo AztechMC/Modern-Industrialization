@@ -2,6 +2,8 @@ package aztech.modern_industrialization.machines.impl;
 
 import aztech.modern_industrialization.ModernIndustrialization;
 import aztech.modern_industrialization.inventory.*;
+import io.netty.buffer.Unpooled;
+import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.network.PacketByteBuf;
@@ -15,17 +17,18 @@ import static aztech.modern_industrialization.machines.impl.MachineSlotType.*;
 
 public class MachineScreenHandler extends ConfigurableScreenHandler {
 
-    public ConfigurableInventory inventory;
+    public MachineInventory inventory;
     private PropertyDelegate propertyDelegate;
     private MachineFactory factory;
+    private boolean[] trackedExtract = new boolean[2];
 
     public MachineScreenHandler(int syncId, PlayerInventory playerInventory, PacketByteBuf buf) {
-        this(syncId, playerInventory, ConfigurableInventories.clientOfBuf(buf),
+        this(syncId, playerInventory, MachineInventories.clientOfBuf(buf),
                 new ArrayPropertyDelegate(buf.readInt()), MachineFactory.getFactoryByID(buf.readString()));
     }
 
     public MachineScreenHandler(int syncId, PlayerInventory playerInventory,
-                                ConfigurableInventory inventory, PropertyDelegate propertyDelegate, MachineFactory factory) {
+                                MachineInventory inventory, PropertyDelegate propertyDelegate, MachineFactory factory) {
 
         super(ModernIndustrialization.SCREEN_HANDLER_TYPE_MACHINE, syncId, playerInventory, inventory);
 
@@ -34,7 +37,7 @@ public class MachineScreenHandler extends ConfigurableScreenHandler {
         this.factory = factory;
         this.propertyDelegate = propertyDelegate;
         this.addProperties(propertyDelegate);
-
+        updateTrackedExtract();
 
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 9; j++) {
@@ -82,4 +85,24 @@ public class MachineScreenHandler extends ConfigurableScreenHandler {
     public boolean getIsActive() { return propertyDelegate.get(0) == 1; }
     public int getEfficiencyTicks() { return propertyDelegate.get(3); }
     public int getMaxEfficiencyTicks() { return propertyDelegate.get(4); }
+
+    private void updateTrackedExtract() {
+        trackedExtract[0] = inventory.getItemExtract();
+        trackedExtract[1] = inventory.getFluidExtract();
+    }
+
+    @Override
+    public void sendContentUpdates() {
+        if (playerInventory.player instanceof ServerPlayerEntity) {
+            if (trackedExtract[0] != inventory.getItemExtract() || trackedExtract[1] != inventory.getFluidExtract()) {
+                updateTrackedExtract();
+                PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
+                buf.writeInt(syncId);
+                buf.writeBoolean(inventory.getItemExtract());
+                buf.writeBoolean(inventory.getFluidExtract());
+                ServerSidePacketRegistry.INSTANCE.sendToPlayer(playerInventory.player, MachinePackets.S2C.UPDATE_AUTO_EXTRACT, buf);
+            }
+            super.sendContentUpdates();
+        }
+    }
 }

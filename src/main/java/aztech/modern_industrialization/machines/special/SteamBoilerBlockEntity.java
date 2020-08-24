@@ -78,6 +78,10 @@ public class SteamBoilerBlockEntity extends MachineBlockEntity {
             sync();
         }
         markDirty();
+
+        for(Direction direction : Direction.values()) {
+            autoExtractFluids(direction, world.getBlockEntity(pos.offset(direction)));
+        }
     }
 
     @Override

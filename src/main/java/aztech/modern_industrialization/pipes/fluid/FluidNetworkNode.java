@@ -168,7 +168,7 @@ public class FluidNetworkNode extends PipeNetworkNode {
         }
 
         private boolean canExtract(Fluid fluid) {
-            return (type == FLUID_OUT || type == FLUID_IN_OUT) && fluidInventory.providesFluidExtractionForce(direction.getOpposite(), fluid);
+            return type == FLUID_OUT || type == FLUID_IN_OUT;
         }
     }
 }

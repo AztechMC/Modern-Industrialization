@@ -134,11 +134,6 @@ public class MachineBlockEntity extends AbstractMachineBlockEntity
     }
 
     @Override
-    public boolean providesFluidExtractionForce(Direction direction, Fluid fluid) {
-        return direction == outputDirection;
-    }
-
-    @Override
     public Text getDisplayName() {
         return new TranslatableText(factory.getTranslationKey());
     }

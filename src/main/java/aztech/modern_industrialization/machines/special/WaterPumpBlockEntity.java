@@ -82,9 +82,4 @@ public class WaterPumpBlockEntity extends MachineBlockEntity {
             autoExtractFluids(direction, world.getBlockEntity(pos.offset(direction)));
         }
     }
-
-    @Override
-    public boolean providesFluidExtractionForce(Direction direction, Fluid fluid) {
-        return fluid == Fluids.WATER;
-    }
 }

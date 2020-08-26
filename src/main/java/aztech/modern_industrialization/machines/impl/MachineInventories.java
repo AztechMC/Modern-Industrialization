@@ -54,11 +54,6 @@ public class MachineInventories {
             }
 
             @Override
-            public boolean providesFluidExtractionForce(Direction direction, Fluid fluid) {
-                return false;
-            }
-
-            @Override
             public void markDirty() {
 
             }

@@ -40,12 +40,4 @@ public interface FluidInventory {
      * @return True if a connection should be displayed, false otherwise.
      */
     boolean canFluidContainerConnect(Direction direction);
-
-    /**
-     * Return whether this inventory provides an extraction force, e.g. from an auto-extract upgrade.
-     * @param direction The direction.
-     * @param fluid The fluid to extract.
-     * @return True if an extraction force is provided, false otherwise.
-     */
-    boolean providesFluidExtractionForce(Direction direction, Fluid fluid);
 }

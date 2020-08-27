@@ -33,7 +33,7 @@ import java.util.stream.Collectors;
 import static net.minecraft.util.math.Direction.*;
 
 /**
- * The model of a pipe block. It can handle up to three different pipe types.
+ * The models of a pipe block. It can handle up to three different pipe types.
  * The block is divided in five slots of width SIDE, three for the main pipes and two for connection handling.
  */
 public class PipeModel implements UnbakedModel, BakedModel, FabricBakedModel {

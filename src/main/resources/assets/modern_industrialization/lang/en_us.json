@@ -7,6 +7,7 @@
 
   "item.modern_industrialization.wrench" : "Wrench",
 
+  "block.modern_industrialization.forge_hammer" : "Forge Hammer",
   "block.modern_industrialization.steam" : "Steam",
   "block.modern_industrialization.bronze_boiler" : "Bronze Boiler",
   "block.modern_industrialization.bronze_pump" : "Bronze Pump",

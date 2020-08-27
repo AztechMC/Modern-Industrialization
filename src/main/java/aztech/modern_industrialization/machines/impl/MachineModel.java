@@ -32,7 +32,7 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 /**
- * A generic machine model.
+ * A generic machine models.
  */
 public class MachineModel extends CustomBlockModel {
     public final String model_name;

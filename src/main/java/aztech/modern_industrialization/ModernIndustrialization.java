@@ -9,6 +9,8 @@ import aztech.modern_industrialization.machines.impl.MachineFactory;
 import aztech.modern_industrialization.machines.impl.MachinePackets;
 import aztech.modern_industrialization.machines.impl.MachineScreenHandler;
 import aztech.modern_industrialization.material.MIMaterial;
+import aztech.modern_industrialization.material.MaterialBlockItem;
+import aztech.modern_industrialization.material.MaterialItem;
 import aztech.modern_industrialization.pipes.MIPipes;
 import aztech.modern_industrialization.tools.WrenchItem;
 import net.devtech.arrp.api.RRPCallback;
@@ -176,7 +178,7 @@ public class ModernIndustrialization implements ModInitializer {
 					// TODO : Add ore generation
 				}
 
-				Item item = new BlockItem(block, new Item.Settings().group(ITEM_GROUP));
+				Item item = new MaterialBlockItem(block, new Item.Settings().group(ITEM_GROUP), material.getId(), block_type);
 				Identifier identifier = new MIIdentifier(id + "_"+block_type);
 				material.saveBlock(block_type, block);
 				Registry.register(Registry.BLOCK, identifier, block);
@@ -198,7 +200,7 @@ public class ModernIndustrialization implements ModInitializer {
 		}
 
 		for(String item_type : item_types){
-			Item item = new Item(new Item.Settings().group(ITEM_GROUP));
+			Item item = new MaterialItem(new Item.Settings().group(ITEM_GROUP), material.getId(), item_type);
 			material.saveItem(item_type, item);
 			String custom_id = id+"_"+item_type;
 			Registry.register(Registry.ITEM, new MIIdentifier(custom_id), item);

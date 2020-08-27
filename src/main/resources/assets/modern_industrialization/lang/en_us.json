@@ -24,6 +24,22 @@
   "text.modern_industrialization.fluid_slot_output" : "Fluid Output, Left Click to Extract",
   "text.modern_industrialization.fluid_slot_IO" : "Fluid IO, Left Click to Insert or Extract",
 
+  "modern_industrialization:material:copper" : "Copper",
+  "modern_industrialization:material:tin" : "Tin",
+  "modern_industrialization:material:bronze" : "Bronze",
+  "modern_industrialization:material:iron" : "Iron",
+  "modern_industrialization:material:gold" : "Gold",
+
+  "modern_industrialization:item_type:ingot": "Ingot",
+  "modern_industrialization:item_type:nugget" : "Nugget",
+  "modern_industrialization:item_type:rod" : "Rod",
+  "modern_industrialization:item_type:small_dust" : "Small Dust",
+  "modern_industrialization:item_type:dust" : "Dust",
+  "modern_industrialization:item_type:plate" : "Plate",
+  "modern_industrialization:item_type:gear" : "Gear",
+
+  "modern_industrialization:block_type:block" : "Block",
+  "modern_industrialization:block_type:ore" : "Ore",
 
   "itemGroup.modern_industrialization.general" : "Modern Industrialization"
 }

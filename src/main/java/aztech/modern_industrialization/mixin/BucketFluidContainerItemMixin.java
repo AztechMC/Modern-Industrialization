@@ -54,7 +54,7 @@ public class BucketFluidContainerItemMixin implements FluidContainerItem {
     }
 
     @Override
-    public Fluid getExtractableFluid() {
+    public Fluid getExtractableFluid(ItemStack stack) {
         return fluid == EMPTY_FLUID ? null : fluid;
     }
 }

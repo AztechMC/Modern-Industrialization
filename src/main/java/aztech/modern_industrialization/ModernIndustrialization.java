@@ -1,5 +1,7 @@
 package aztech.modern_industrialization;
 
+import aztech.modern_industrialization.blocks.tank.TankBlockEntity;
+import aztech.modern_industrialization.blocks.tank.MITanks;
 import aztech.modern_industrialization.fluid.CraftingFluid;
 import aztech.modern_industrialization.fluid.FluidStackItem;
 import aztech.modern_industrialization.machines.MIMachines;
@@ -74,14 +76,7 @@ public class ModernIndustrialization implements ModInitializer {
 	public static final Block FORGE_HAMMER = new aztech.modern_industrialization.blocks.forgeHammer.ForgeHammerBlock();
 	public static final Item ITEM_FORGE_HAMMER = new BlockItem(FORGE_HAMMER, new Item.Settings().group(ITEM_GROUP));
 
-	//public static final Block BLOCK_STEAM_BOILER = new MachineBlock(SteamBoilerBlockEntity::new);
-	//public static final Item ITEM_STEAM_BOILER = new BlockItem(BLOCK_STEAM_BOILER, new Item.Settings().group(ITEM_GROUP));
-
-	// BlockEntity
-	//public static BlockEntityType<SteamBoilerBlockEntity> BLOCK_ENTITY_STEAM_BOILER;
-
 	// ScreenHandlerType
-	//public static final ScreenHandlerType<SteamBoilerScreenHandler> SCREEN_HANDLER_TYPE_STEAM_BOILER = ScreenHandlerRegistry.registerSimple(new Identifier(MOD_ID, "steam_boiler"), SteamBoilerScreenHandler::new);
 	public static final ScreenHandlerType<MachineScreenHandler> SCREEN_HANDLER_TYPE_MACHINE = ScreenHandlerRegistry.registerExtended(new Identifier(MOD_ID, "machine"), MachineScreenHandler::new);
 	// Fluid
 	public static final Fluid FLUID_STEAM = new CraftingFluid();
@@ -97,6 +92,7 @@ public class ModernIndustrialization implements ModInitializer {
 		setupBlockEntities();
 		setupFluids();
 		setupMaterial();
+		MITanks.setup();
 		MIMachines.setupRecipes(); // will also load the static fields.
 		setupMachines();
 		setupPackets();
@@ -120,7 +116,6 @@ public class ModernIndustrialization implements ModInitializer {
 
 	private void setupBlocks() {
 		registerBlock(FORGE_HAMMER, ITEM_FORGE_HAMMER,"forge_hammer");
-
 	}
 
 	private void setupBlockEntities() {
@@ -142,7 +137,7 @@ public class ModernIndustrialization implements ModInitializer {
 		Registry.register(Registry.ITEM, new MIIdentifier("fluid_slot"), ITEM_FLUID_SLOT);
 	}
 
-	private void registerBlock(Block block, Item item, String id, boolean loot) {
+	public static void registerBlock(Block block, Item item, String id, boolean loot) {
 		Identifier identifier = new MIIdentifier(id);
 		Registry.register(Registry.BLOCK, identifier, block);
 		Registry.register(Registry.ITEM, identifier, item);
@@ -152,7 +147,8 @@ public class ModernIndustrialization implements ModInitializer {
 		// TODO: client side?
 		RESOURCE_PACK.addBlockState(JState.state().add(new JVariant().put("", new JBlockModel(MOD_ID + ":block/" + id))), identifier);
 	}
-	private void registerBlock(Block block, Item item, String id) {
+
+	public static void registerBlock(Block block, Item item, String id) {
 		 registerBlock(block, item, id, true);
 	}
 
@@ -214,18 +210,18 @@ public class ModernIndustrialization implements ModInitializer {
 		}
 	}
 
-	private void registerItem(Item item, String id) {
+	public static void registerItem(Item item, String id) {
 		Registry.register(Registry.ITEM, new MIIdentifier(id), item);
 		RESOURCE_PACK.addModel(JModel.model().parent("minecraft:item/generated").textures(new JTextures().layer0(MOD_ID + ":items/" + id)), new MIIdentifier("item/" + id));
 	}
 
-	private void registerFluid(Fluid fluid, String id) {
+	private static void registerFluid(Fluid fluid, String id) {
 		Registry.register(Registry.FLUID, new MIIdentifier(id), fluid);
 		Registry.register(Registry.ITEM, new MIIdentifier("bucket_"+id), fluid.getBucketItem());
 		RESOURCE_PACK.addModel(JModel.model().parent("minecraft:item/generated").textures(new JTextures().layer0(MOD_ID + ":items/bucket/" + id)), new MIIdentifier("item/bucket_" + id));
 	}
 
-	private void registerBlockLoot(String id) {
+	private static void registerBlockLoot(String id) {
 		RESOURCE_PACK.addLootTable(
 				new MIIdentifier("blocks/" + id),
 				JLootTable.loot("minecraft:block").pool(

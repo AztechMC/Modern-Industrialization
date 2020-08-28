@@ -1,5 +1,6 @@
 package aztech.modern_industrialization.fluid;
 
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.item.ItemStack;
 
@@ -34,5 +35,36 @@ public interface FluidContainerItem {
      *
      * @return A fluid that can be extracted, or null if no fluid can be extracted.
      */
-    Fluid getExtractableFluid();
+    Fluid getExtractableFluid(ItemStack stack);
+
+    /**
+     * Get a consumer for player interactions in the inventory.
+     */
+    static Consumer<ItemStack> cursorPlayerConsumer(PlayerEntity player) {
+        boolean[] firstInvoke = new boolean[] { true };
+        return stack -> {
+            if(firstInvoke[0]) {
+                firstInvoke[0] = false;
+                player.inventory.setCursorStack(stack);
+            } else {
+                player.inventory.offerOrDrop(player.world, stack);
+            }
+        };
+    }
+
+
+    /**
+     * Get a consumer for player interactions in the world.
+     */
+    static Consumer<ItemStack> handPlayerConsumer(PlayerEntity player) {
+        boolean[] firstInvoke = new boolean[] { true };
+        return stack -> {
+            if(firstInvoke[0]) {
+                firstInvoke[0] = false;
+                player.inventory.main.set(player.inventory.selectedSlot, stack);
+            } else {
+                player.inventory.offerOrDrop(player.world, stack);
+            }
+        };
+    }
 }

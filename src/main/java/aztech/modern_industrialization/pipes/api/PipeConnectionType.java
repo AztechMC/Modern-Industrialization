@@ -8,6 +8,10 @@ public enum PipeConnectionType {
     FLUID_IN(1),
     FLUID_IN_OUT(2),
     FLUID_OUT(3),
+    ITEM(4),
+    ITEM_IN(5),
+    ITEM_IN_OUT(6),
+    ITEM_OUT(7),
     ;
 
     private final int id;
@@ -23,6 +27,10 @@ public enum PipeConnectionType {
         else if(id == 1) return FLUID_IN;
         else if(id == 2) return FLUID_IN_OUT;
         else if(id == 3) return FLUID_OUT;
+        else if(id == 4) return ITEM;
+        else if(id == 5) return ITEM_IN;
+        else if(id == 6) return ITEM_IN_OUT;
+        else if(id == 7) return ITEM_OUT;
         else return null;
     }
 }

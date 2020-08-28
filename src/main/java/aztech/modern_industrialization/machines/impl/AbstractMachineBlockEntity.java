@@ -28,14 +28,18 @@ public abstract class AbstractMachineBlockEntity extends BlockEntity implements 
     protected AbstractMachineBlockEntity(BlockEntityType<?> blockEntityType, Direction facingDirection) {
         super(blockEntityType);
         this.facingDirection = facingDirection;
-        this.outputDirection = facingDirection.getOpposite();
+        this.outputDirection = hasOutput() ? facingDirection.getOpposite() : null;
+    }
+
+    public boolean hasOutput() {
+        return true;
     }
 
     @Override
     public void fromTag(BlockState state, CompoundTag tag) {
         super.fromTag(state, tag);
         facingDirection = Direction.byId(tag.getInt("facingDirection"));
-        outputDirection = Direction.byId(tag.getInt("outputDirection"));
+        outputDirection = tag.contains("outputDirection") ? Direction.byId(tag.getInt("outputDirection")) : null;
         extractItems = tag.getBoolean("extractItems");
         extractFluids = tag.getBoolean("extractFluids");
         isActive = tag.getBoolean("isActive");
@@ -45,7 +49,9 @@ public abstract class AbstractMachineBlockEntity extends BlockEntity implements 
     public CompoundTag toTag(CompoundTag tag) {
         super.toTag(tag);
         tag.putInt("facingDirection", this.facingDirection.getId());
-        tag.putInt("outputDirection", this.outputDirection.getId());
+        if(outputDirection != null) {
+            tag.putInt("outputDirection", this.outputDirection.getId());
+        }
         tag.putBoolean("extractItems", this.extractItems);
         tag.putBoolean("extractFluids", this.extractFluids);
         tag.putBoolean("isActive", this.isActive);

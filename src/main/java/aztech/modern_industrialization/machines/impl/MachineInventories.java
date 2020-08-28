@@ -15,6 +15,7 @@ public class MachineInventories {
     public static MachineInventory clientOfBuf(PacketByteBuf buf) {
         List<ConfigurableItemStack> itemStacks = new ArrayList<>();
         List<ConfigurableFluidStack> fluidStacks = new ArrayList<>();
+        boolean hasOutput = buf.readBoolean();
         boolean[] autoExtract = new boolean[] { buf.readBoolean(), buf.readBoolean() };
 
         MachineInventory clientInv = new MachineInventory() {
@@ -36,6 +37,11 @@ public class MachineInventories {
             @Override
             public boolean getFluidExtract() {
                 return autoExtract[1];
+            }
+
+            @Override
+            public boolean hasOutput() {
+                return hasOutput;
             }
 
             @Override
@@ -70,6 +76,7 @@ public class MachineInventories {
     }
 
     public static void toBuf(PacketByteBuf buf, MachineInventory inventory) {
+        buf.writeBoolean(inventory.hasOutput());
         buf.writeBoolean(inventory.getItemExtract());
         buf.writeBoolean(inventory.getFluidExtract());
         buf.writeInt(inventory.getItemStacks().size());

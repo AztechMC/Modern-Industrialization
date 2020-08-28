@@ -21,14 +21,16 @@ public final class PipeNetworkType implements Comparable<PipeNetworkType> {
      */
     private final int serialNumber;
     private final int color;
+    private final PipeConnectionType defaultType;
     private static Map<Identifier, PipeNetworkType> types = new HashMap<>();
     private static int nextSerialNumber = 0;
 
-    private PipeNetworkType(Identifier identifier, BiFunction<Integer, PipeNetworkData, PipeNetwork> networkCtor, Supplier<PipeNetworkNode> nodeCtor, int color, int serialNumber) {
+    private PipeNetworkType(Identifier identifier, BiFunction<Integer, PipeNetworkData, PipeNetwork> networkCtor, Supplier<PipeNetworkNode> nodeCtor, int color, PipeConnectionType defaultType, int serialNumber) {
         this.identifier = identifier;
         this.networkCtor = networkCtor;
         this.nodeCtor = nodeCtor;
         this.color = color;
+        this.defaultType = defaultType;
         this.serialNumber = serialNumber;
     }
 
@@ -48,14 +50,18 @@ public final class PipeNetworkType implements Comparable<PipeNetworkType> {
         return color;
     }
 
+    public PipeConnectionType getDefaultConnectionType() {
+        return defaultType;
+    }
+
     public static PipeNetworkType get(Identifier identifier) {
         return types.get(identifier);
     }
 
     public static Map<Identifier, PipeNetworkType> getTypes() { return new HashMap<>(types); }
 
-    public static PipeNetworkType register(Identifier identifier, BiFunction<Integer, PipeNetworkData, PipeNetwork> networkCtor, Supplier<PipeNetworkNode> nodeCtor, int color) {
-        PipeNetworkType type = new PipeNetworkType(identifier, networkCtor, nodeCtor, color, nextSerialNumber++);
+    public static PipeNetworkType register(Identifier identifier, BiFunction<Integer, PipeNetworkData, PipeNetwork> networkCtor, Supplier<PipeNetworkNode> nodeCtor, int color, PipeConnectionType defaultType) {
+        PipeNetworkType type = new PipeNetworkType(identifier, networkCtor, nodeCtor, color, defaultType, nextSerialNumber++);
         PipeNetworkType previousType = types.put(identifier, type);
         if(previousType != null) {
             throw new IllegalArgumentException("Attempting to register another PipeNetworkType with the same identifier.");

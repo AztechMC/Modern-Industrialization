@@ -7,4 +7,5 @@ public interface MachineInventory extends ConfigurableInventory {
     void setFluidExtract(boolean extract);
     boolean getItemExtract();
     boolean getFluidExtract();
+    boolean hasOutput();
 }

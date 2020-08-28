@@ -92,7 +92,9 @@ public class MachineBlock extends Block implements BlockEntityProvider, IWrencha
         super.onPlaced(world, pos, state, placer, itemStack);
         MachineBlockEntity entity = (MachineBlockEntity) world.getBlockEntity(pos);
         entity.setFacingDirection(placer.getHorizontalFacing().getOpposite());
-        entity.setOutputDirection(placer.getHorizontalFacing());
+        if(entity.hasOutput()) {
+            entity.setOutputDirection(placer.getHorizontalFacing());
+        }
     }
 
     @Override
@@ -171,8 +173,10 @@ public class MachineBlock extends Block implements BlockEntityProvider, IWrencha
                         // TODO play sound
                         return ActionResult.success(world.isClient);
                     }
-                } else {
+                } else if(entity.hasOutput()) {
                     entity.setOutputDirection(newDirection);
+                    // TODO play sound
+                    return ActionResult.SUCCESS;
                 }
             }
         }

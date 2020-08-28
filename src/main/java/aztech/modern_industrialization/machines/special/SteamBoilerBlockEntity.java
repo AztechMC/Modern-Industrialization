@@ -83,4 +83,9 @@ public class SteamBoilerBlockEntity extends MachineBlockEntity {
             autoExtractFluids(direction, world.getBlockEntity(pos.offset(direction)));
         }
     }
+
+    @Override
+    public boolean hasOutput() {
+        return false;
+    }
 }

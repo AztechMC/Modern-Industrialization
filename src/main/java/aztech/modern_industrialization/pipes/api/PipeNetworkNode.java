@@ -1,5 +1,6 @@
 package aztech.modern_industrialization.pipes.api;
 
+import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Tickable;
 import net.minecraft.util.math.BlockPos;
@@ -8,7 +9,7 @@ import net.minecraft.world.World;
 
 import java.util.Map;
 
-public abstract class PipeNetworkNode implements Tickable {
+public abstract class PipeNetworkNode {
     protected PipeNetwork network;
     public abstract void updateConnections(World world, BlockPos pos);
 
@@ -20,6 +21,13 @@ public abstract class PipeNetworkNode implements Tickable {
     public abstract void removeConnection(World world, BlockPos pos, Direction direction);
     public abstract void addConnection(World world, BlockPos pos, Direction direction);
 
+    /**
+     * Get the connection screen handler factory, or null if there is not gui for this connection.
+     */
+    public ExtendedScreenHandlerFactory getConnectionGui(Direction direction, Runnable markDirty) {
+        return null;
+    }
+
     public abstract CompoundTag toTag(CompoundTag tag);
     public abstract void fromTag(CompoundTag tag);
 
@@ -29,7 +37,7 @@ public abstract class PipeNetworkNode implements Tickable {
     public final PipeNetworkManager getManager() {
         return network.manager;
     }
-    public void tick() {
+    public void tick(BlockPos pos) {
         network.tick();
     }
 }

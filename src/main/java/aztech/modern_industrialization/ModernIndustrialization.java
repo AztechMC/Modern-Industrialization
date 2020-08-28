@@ -27,6 +27,7 @@ import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricMaterialBuilder;
 import net.fabricmc.fabric.api.screenhandler.v1.ScreenHandlerRegistry;
+import net.fabricmc.fabric.api.tag.TagRegistry;
 import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
 import net.fabricmc.fabric.impl.networking.ServerSidePacketRegistryImpl;
 import net.minecraft.block.Block;
@@ -36,6 +37,8 @@ import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.item.*;
 import net.minecraft.screen.ScreenHandlerType;
+import net.minecraft.tag.ItemTags;
+import net.minecraft.tag.Tag;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import org.apache.logging.log4j.LogManager;
@@ -55,6 +58,10 @@ public class ModernIndustrialization implements ModInitializer {
 			() -> new ItemStack(Items.REDSTONE)
 	);
 	public static final Item ITEM_FLUID_SLOT = new FluidStackItem(new Item.Settings().maxCount(1)); // evil hack
+
+	// Tags
+	private static Identifier WRENCH_TAG = new Identifier("fabric", "wrenches");
+	public static Tag<Item> TAG_WRENCH = TagRegistry.item(WRENCH_TAG);
 
 	// Materials
 	public static final Material METAL_MATERIAL = new FabricMaterialBuilder(MaterialColor.IRON).build();

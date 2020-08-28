@@ -6,10 +6,12 @@ import aztech.modern_industrialization.pipes.api.*;
 import aztech.modern_industrialization.util.NbtHelper;
 import net.fabricmc.fabric.api.block.entity.BlockEntityClientSerializable;
 import net.fabricmc.fabric.api.rendering.data.v1.RenderAttachmentBlockEntity;
+import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.screen.NamedScreenHandlerFactory;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Pair;
 import net.minecraft.util.Tickable;
@@ -155,6 +157,15 @@ public class PipeBlockEntity extends BlockEntity implements Tickable, BlockEntit
         }
     }
 
+    public ExtendedScreenHandlerFactory getGui(PipeNetworkType type, Direction direction) {
+        for(PipeNetworkNode pipe : pipes) {
+            if(pipe.getType() == type) {
+                return pipe.getConnectionGui(direction, this::markDirty);
+            }
+        }
+        return null;
+    }
+
     @Override
     public void markRemoved() {
         loadPipes();
@@ -200,7 +211,7 @@ public class PipeBlockEntity extends BlockEntity implements Tickable, BlockEntit
     public void tick() {
         loadPipes();
         for(PipeNetworkNode pipe : pipes) {
-            pipe.tick();
+            pipe.tick(pos);
         }
         markDirty();
     }

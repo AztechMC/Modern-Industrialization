@@ -1,8 +1,10 @@
 package aztech.modern_industrialization.pipes.impl;
 
+import aztech.modern_industrialization.ModernIndustrialization;
 import aztech.modern_industrialization.pipes.MIPipes;
 import aztech.modern_industrialization.pipes.api.PipeNetworkType;
 import aztech.modern_industrialization.tools.IWrenchable;
+import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
 import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
 import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntity;
@@ -17,10 +19,12 @@ import net.minecraft.item.Items;
 import net.minecraft.loot.context.LootContext;
 import net.minecraft.loot.context.LootContextParameters;
 import net.minecraft.loot.context.LootContextTypes;
+import net.minecraft.screen.NamedScreenHandlerFactory;
 import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.util.ActionResult;
+import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
@@ -42,6 +46,67 @@ public class PipeBlock extends Block implements BlockEntityProvider, IWrenchable
     @Override
     public BlockEntity createBlockEntity(BlockView world) {
         return new PipeBlockEntity();
+    }
+
+    @Override
+    public ActionResult onUse(BlockState state, World world, BlockPos blockPos, PlayerEntity player, Hand hand, BlockHitResult hit) {
+        PipeBlockEntity pipeEntity = (PipeBlockEntity) world.getBlockEntity(blockPos);
+        BlockSoundGroup group = world.getBlockState(blockPos).getSoundGroup();
+
+        Vec3d hitPos = hit.getPos();
+        for(PipeVoxelShape partShape : pipeEntity.getPartShapes()) {
+            Vec3d posInBlock = hitPos.subtract(blockPos.getX(), blockPos.getY(), blockPos.getZ());
+            for(Box box : partShape.shape.getBoundingBoxes()) {
+                // move slightly towards box center
+                Vec3d dir = box.getCenter().subtract(posInBlock).normalize().multiply(1e-4);
+                if(box.contains(posInBlock.add(dir))) {
+                    if(ModernIndustrialization.TAG_WRENCH.contains(player.inventory.getMainHandStack().getItem())) {
+                        if (player != null && player.isSneaking()) {
+                            boolean removeBlock = pipeEntity.connections.size() == 1;
+                            if (!world.isClient) {
+                                pipeEntity.removePipe(partShape.type);
+                            }
+                            if (removeBlock) {
+                                world.setBlockState(blockPos, Blocks.AIR.getDefaultState());
+                            }
+                            // update adjacent blocks
+                            world.updateNeighbors(blockPos, null);
+                            // spawn pipe item
+                            world.spawnEntity(new ItemEntity(world, hitPos.x, hitPos.y, hitPos.z, new ItemStack(MIPipes.INSTANCE.getPipeItem(partShape.type))));
+                            // play break sound
+                            world.playSound(player, blockPos, group.getBreakSound(), SoundCategory.BLOCKS, (group.getVolume() + 1.0F) / 2.0F, group.getPitch() * 0.8F);
+                            return ActionResult.success(world.isClient);
+                        } else {
+                            SoundEvent sound;
+                            if (partShape.direction == null) {
+                                if (!world.isClient) {
+                                    pipeEntity.addConnection(partShape.type, hit.getSide());
+                                }
+                                sound = group.getPlaceSound();
+                            } else {
+                                if (!world.isClient) {
+                                    pipeEntity.removeConnection(partShape.type, partShape.direction);
+                                }
+                                sound = group.getBreakSound();
+                            }
+                            world.updateNeighbors(blockPos, null);
+                            world.playSound(player, blockPos, sound, SoundCategory.BLOCKS, (group.getVolume() + 1.0F) / 4.0F, group.getPitch() * 0.8F);
+                            return ActionResult.success(world.isClient);
+                        }
+                    } else {
+                        if(!world.isClient) {
+                            ExtendedScreenHandlerFactory guiFactory = pipeEntity.getGui(partShape.type, partShape.direction);
+                            if(guiFactory != null) {
+                                player.openHandledScreen(guiFactory);
+                                return ActionResult.CONSUME;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        return ActionResult.PASS;
     }
 
     @Override

@@ -1,6 +1,7 @@
 package aztech.modern_industrialization;
 
 import aztech.modern_industrialization.blocks.forgehammer.ForgeHammerScreen;
+import aztech.modern_industrialization.blocks.tank.MITanks;
 import aztech.modern_industrialization.inventory.ConfigurableInventoryPacketHandlers;
 import aztech.modern_industrialization.inventory.ConfigurableInventoryPackets;
 import aztech.modern_industrialization.machines.impl.MachineFactory;
@@ -19,6 +20,7 @@ import net.fabricmc.fabric.api.network.ClientSidePacketRegistry;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.fabricmc.fabric.api.resource.SimpleSynchronousResourceReloadListener;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.render.model.UnbakedModel;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.texture.SpriteAtlasTexture;
 import net.minecraft.fluid.Fluid;
@@ -39,6 +41,7 @@ public class ModernIndustrializationClient implements ClientModInitializer {
         setupScreens();
         setupFluidRenders();
         setupPackets();
+        MITanks.setupClient();
         setupMachines();
         ModelLoadingRegistry.INSTANCE.registerResourceProvider(rm -> {
             return new ModelProvider();
@@ -49,7 +52,6 @@ public class ModernIndustrializationClient implements ClientModInitializer {
     }
 
     private void setupScreens() {
-        //ScreenRegistry.register(ModernIndustrialization.SCREEN_HANDLER_TYPE_STEAM_BOILER, SteamBoilerScreen::new);
         ScreenRegistry.register(ModernIndustrialization.SCREEN_HANDLER_TYPE_MACHINE, MachineScreen::new);
         ScreenRegistry.register(ModernIndustrialization.SCREEN_HANDLER_FORGE_HAMMER, ForgeHammerScreen::new);
     }

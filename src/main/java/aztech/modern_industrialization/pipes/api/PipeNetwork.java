@@ -32,4 +32,14 @@ public abstract class PipeNetwork implements Tickable {
         tag.put("data", data.toTag(new CompoundTag()));
         return tag;
     }
+
+
+    /**
+     * Allow merging networks when the player explicitly requests to do so.
+     * When this function is called, it must return a new PipeNetworkData without modifying either itself or its parameter.
+     * @return null if there can be no merge, or the new pipe network data should there be a merge.
+     */
+    public PipeNetworkData merge(PipeNetwork other) {
+        return null;
+    }
 }

@@ -222,7 +222,7 @@ public class PipeModel implements UnbakedModel, BakedModel, FabricBakedModel {
         for (Direction direction : Direction.values()) {
             PipePartBuilder ppb = new PipePartBuilder(itemMeshEmitter, getSlotPos(0), direction, sprites[0]);
             if (direction == NORTH || direction == SOUTH) {
-                ppb.straightLineWithFace();
+                ppb.straightLine();
             } else {
                 ppb.noConnection();
             }

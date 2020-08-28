@@ -213,13 +213,6 @@ class PipePartBuilder {
      * Draw a straight line.
      */
     void straightLine() {
-        drawPipe(distanceToSide(facing));
-    }
-
-    /**
-     * Draw a straight line with a face at the end.
-     */
-    void straightLineWithFace() {
         drawPipeWithEnd(distanceToSide(facing));
     }
 
@@ -247,7 +240,7 @@ class PipePartBuilder {
         turnUp();
         // again vertical
         moveForward(SIDE / 2);
-        drawPipe(distanceToSide(facing));
+        drawPipeWithEnd(distanceToSide(facing));
     }
 
     /**
@@ -274,7 +267,7 @@ class PipePartBuilder {
         turnUp();
         // again vertical
         moveForward(SIDE / 2);
-        drawPipe(distanceToSide(facing));
+        drawPipeWithEnd(distanceToSide(facing));
     }
 
     /**
@@ -301,6 +294,6 @@ class PipePartBuilder {
         turnUp();
         // again vertical
         moveForward(SIDE / 2);
-        drawPipe(distanceToSide(facing));
+        drawPipeWithEnd(distanceToSide(facing));
     }
 }

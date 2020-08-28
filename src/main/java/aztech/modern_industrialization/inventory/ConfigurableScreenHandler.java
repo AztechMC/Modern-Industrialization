@@ -97,19 +97,11 @@ public abstract class ConfigurableScreenHandler extends ScreenHandler {
                         // Try to extract from held item, then try to insert into held item
                         Fluid extractedFluid = fluidStack.getFluid();
                         if (extractedFluid == Fluids.EMPTY) {
-                            extractedFluid = fluidContainer.getExtractableFluid();
+                            extractedFluid = fluidContainer.getExtractableFluid(heldStack);
                         }
                         int extractedAmount = 0;
                         if (fluidSlot.canInsertFluid(extractedFluid)) {
-                            final boolean[] firstInvoke = new boolean[]{true};
-                            extractedAmount = fluidContainer.extractFluid(heldStack, extractedFluid, fluidStack.getRemainingSpace(), stack -> {
-                                if (firstInvoke[0]) {
-                                    playerEntity.inventory.setCursorStack(stack);
-                                    firstInvoke[0] = false;
-                                } else {
-                                    playerEntity.inventory.offerOrDrop(playerEntity.world, stack);
-                                }
-                            });
+                            extractedAmount = fluidContainer.extractFluid(heldStack, extractedFluid, fluidStack.getRemainingSpace(), FluidContainerItem.cursorPlayerConsumer(playerEntity));
                         }
                         if (extractedAmount > 0) {
                             fluidStack.increment(extractedAmount);
@@ -119,15 +111,7 @@ public abstract class ConfigurableScreenHandler extends ScreenHandler {
                         } else {
                             Fluid fluid = fluidStack.getFluid();
                             if (fluidSlot.canExtractFluid(fluid)) {
-                                final boolean[] firstInvoke = new boolean[]{true};
-                                int insertedAmount = fluidContainer.insertFluid(heldStack, fluid, fluidStack.getAmount(), stack -> {
-                                    if (firstInvoke[0]) {
-                                        playerEntity.inventory.setCursorStack(stack);
-                                        firstInvoke[0] = false;
-                                    } else {
-                                        playerEntity.inventory.offerOrDrop(playerEntity.world, stack);
-                                    }
-                                });
+                                int insertedAmount = fluidContainer.insertFluid(heldStack, fluid, fluidStack.getAmount(), FluidContainerItem.cursorPlayerConsumer(playerEntity));
                                 fluidStack.decrement(insertedAmount);
                                 fluidStack.updateDisplayedItem();
                                 inventory.markDirty();

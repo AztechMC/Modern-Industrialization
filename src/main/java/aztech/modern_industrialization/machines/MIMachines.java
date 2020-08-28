@@ -41,7 +41,7 @@ public class MIMachines {
                 .setSteamBucketCapacity(64).setSteamSlotPos(23, 23)
                 .setOutputBucketCapacity(64)
                 .setLiquidOutputSlotPosition(104, 32, 1, 1)
-                .setupBackground("bronze_water_pump.png")
+                .setupBackground("water_pump.png")
                 .setupCasing("bronze")
                 .setupOverlays("pump", true, true, true);
         BRONZE_COMPRESSOR = new SteamMachineFactory("bronze_compressor", () -> new MachineBlockEntity(BRONZE_COMPRESSOR, RECIPE_COMPRESSOR), 1, 1)

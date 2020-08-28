@@ -25,7 +25,11 @@ public class MIMaterial {
     private float blastResistance = 6.0f;
     private float oreBlastResistance = 3.0f;
 
-    public static final String[] customItem = {"dust", "small_dust", "plate", "gear", "rod"};
+    public static final String[] customItem = {"dust",
+            "small_dust", "crushed_dust", "double_ingot", "plate", "large_plate", "curved_plate",
+            "ring", "rod", "bolt", "gear", "blade", "rotor"};
+
+
 
     private HashMap<String, Item> itemMap = new HashMap<String, Item>();
     private HashMap<String, Block> blockMap = new HashMap<String, Block>();
@@ -172,5 +176,5 @@ public class MIMaterial {
     public static MIMaterial tin = new MIMaterial("tin").setUpOreGenerator(4, 6, 64);
     public static MIMaterial bronze = new MIMaterial("bronze");
     public static MIMaterial steel = new MIMaterial("steel");
-    public static MIMaterial aluminium = new MIMaterial("aluminium").setUpOreGenerator(4, 6, 64);
+    public static MIMaterial aluminum = new MIMaterial("aluminum").setUpOreGenerator(4, 6, 64);
 }

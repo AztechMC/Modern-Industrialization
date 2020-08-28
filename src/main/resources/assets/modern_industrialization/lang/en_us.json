@@ -2,14 +2,14 @@
   "item.modern_industrialization.bucket_steam" : "Steam Bucket",
   "item.modern_industrialization.fluid_slot" : "Fluid Slot",
   "item.modern_industrialization.pipe_fluid_gold" : "Gold Fluid Pipe",
-  "item.modern_industrialization.pipe_fluid_aluminium" : "Aluminium Fluid Pipe",
+  "item.modern_industrialization.pipe_fluid_aluminum" : "Aluminum Fluid Pipe",
   "item.modern_industrialization.pipe_fluid_steel" : "Steel Fluid Pipe",
   "item.modern_industrialization.pipe_fluid_iron" : "Iron Fluid Pipe",
   "item.modern_industrialization.pipe_fluid_bronze" : "Bronze Fluid Pipe",
   "item.modern_industrialization.pipe_fluid_tin" : "Tin Fluid Pipe",
   "item.modern_industrialization.pipe_fluid_copper" : "Copper Fluid Pipe",
   "item.modern_industrialization.pipe_item_gold" : "Gold Item Pipe",
-  "item.modern_industrialization.pipe_item_aluminium" : "Aluminium Item Pipe",
+  "item.modern_industrialization.pipe_item_aluminum" : "Aluminum Item Pipe",
   "item.modern_industrialization.pipe_item_steel" : "Steel Item Pipe",
   "item.modern_industrialization.pipe_item_iron" : "Iron Item Pipe",
   "item.modern_industrialization.pipe_item_bronze" : "Bronze Item Pipe",
@@ -41,18 +41,30 @@
   "modern_industrialization:material:iron" : "Iron",
   "modern_industrialization:material:gold" : "Gold",
   "modern_industrialization:material:steel" : "Steel",
-  "modern_industrialization:material:aluminium" : "Aluminium",
+  "modern_industrialization:material:aluminum" : "Aluminum",
 
-  "modern_industrialization:item_type:ingot": "Ingot",
-  "modern_industrialization:item_type:nugget" : "Nugget",
-  "modern_industrialization:item_type:rod" : "Rod",
-  "modern_industrialization:item_type:small_dust" : "Small Dust",
-  "modern_industrialization:item_type:dust" : "Dust",
-  "modern_industrialization:item_type:plate" : "Plate",
-  "modern_industrialization:item_type:gear" : "Gear",
+  "modern_industrialization:item_type:ingot": "%s Ingot",
+  "modern_industrialization:item_type:double_ingot" : "%s Double Ingot",
+  "modern_industrialization:item_type:nugget" : "%s Nugget",
 
-  "modern_industrialization:block_type:block" : "Block",
-  "modern_industrialization:block_type:ore" : "Ore",
+  "modern_industrialization:item_type:dust" : "%s Dust",
+  "modern_industrialization:item_type:small_dust" : "%s Small Dust",
+  "modern_industrialization:item_type:crushed_dust" : "%s Crushed Dust",
+
+  "modern_industrialization:item_type:plate" : "%s Plate",
+  "modern_industrialization:item_type:large_plate" : "%s Large Plate",
+  "modern_industrialization:item_type:curved_plate" : "%s Curved Plate",
+
+  "modern_industrialization:item_type:gear" : "%s Gear",
+  "modern_industrialization:item_type:blade" : "%s Blade",
+  "modern_industrialization:item_type:rotor" : "%s Rotor",
+
+  "modern_industrialization:item_type:rod" : "%s Rod",
+  "modern_industrialization:item_type:bolt" : "%s Bolt",
+  "modern_industrialization:item_type:ring" : "%s Ring",
+
+  "modern_industrialization:block_type:block" : "%s Block",
+  "modern_industrialization:block_type:ore" : "%s Ore",
 
   "itemGroup.modern_industrialization.general" : "Modern Industrialization"
 }

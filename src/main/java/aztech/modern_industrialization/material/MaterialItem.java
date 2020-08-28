@@ -22,7 +22,7 @@ public class MaterialItem extends Item {
     public Text getName() {
         String itemTypeKey = "modern_industrialization:item_type:"+itemType;
         String materialKey = "modern_industrialization:material:"+materialId;
-        return new TranslatableText(materialKey).append(" ").append(new TranslatableText(itemTypeKey));
+        return new TranslatableText(itemTypeKey, new TranslatableText(materialKey).getString());
     }
 
     @Environment(EnvType.CLIENT)

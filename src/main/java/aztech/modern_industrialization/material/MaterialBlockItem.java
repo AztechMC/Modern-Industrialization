@@ -23,7 +23,7 @@ public class MaterialBlockItem extends BlockItem {
     public Text getName() {
         String blockTypeKey = "modern_industrialization:block_type:"+blockType;
         String materialKey = "modern_industrialization:material:"+materialId;
-        return new TranslatableText(materialKey).append(" ").append(new TranslatableText(blockTypeKey));
+        return new TranslatableText(blockTypeKey, new TranslatableText(materialKey).getString());
     }
 
     @Environment(EnvType.CLIENT)

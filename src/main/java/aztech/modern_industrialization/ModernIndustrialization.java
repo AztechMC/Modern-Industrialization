@@ -45,7 +45,13 @@ import net.minecraft.item.*;
 import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.tag.Tag;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.registry.BuiltinRegistries;
 import net.minecraft.util.registry.Registry;
+import net.minecraft.world.gen.decorator.Decorator;
+import net.minecraft.world.gen.decorator.RangeDecoratorConfig;
+import net.minecraft.world.gen.feature.ConfiguredFeature;
+import net.minecraft.world.gen.feature.Feature;
+import net.minecraft.world.gen.feature.OreFeatureConfig;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -57,6 +63,8 @@ public class ModernIndustrialization implements ModInitializer {
     public static final String MOD_ID = "modern_industrialization";
     public static final Logger LOGGER = LogManager.getLogger("Modern Industrialization");
     public static final RuntimeResourcePack RESOURCE_PACK = RuntimeResourcePack.create("modern_industrialization:general");
+
+    public static final ArrayList<ConfiguredFeature<?, ?>> ORE_GENERATOR = new ArrayList<>();
 
     public static final ItemGroup ITEM_GROUP = FabricItemGroupBuilder.build(
             new Identifier(MOD_ID, "general"),
@@ -202,6 +210,24 @@ public class ModernIndustrialization implements ModInitializer {
             }
             item_types.add("ingot");
             item_types.add("nugget");
+            if(material.hasOre()){
+                // TODO : add nether and end
+                ConfiguredFeature<?, ?> ore_generator = Feature.ORE
+                        .configure(new OreFeatureConfig(
+                                OreFeatureConfig.Rules.BASE_STONE_OVERWORLD,
+                                material.getBlock("ore").getDefaultState(),
+                                material.getVeinsSize())) // vein size
+                        .decorate(Decorator.RANGE.configure(new RangeDecoratorConfig(
+                                0, // bottom offset
+                                0, // min y level
+                                material.getMaxYLevel()))) // max y level
+                        .spreadHorizontally()
+                        .repeat(material.getVeinsPerChunk()); // number of veins per chunk
+
+
+                ModernIndustrialization.ORE_GENERATOR.add(ore_generator);
+                Registry.register(BuiltinRegistries.CONFIGURED_FEATURE, new MIIdentifier("ore_generator_"+material.getId()), ore_generator);
+            }
 
         }
 

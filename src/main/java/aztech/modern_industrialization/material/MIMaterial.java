@@ -90,7 +90,7 @@ public class MIMaterial {
         }else if(type == 2){
             isEnd = true;
         }
-        this.oreHardness = oreHardness;
+        this.oreHardness = hardness;
         return this;
     }
 

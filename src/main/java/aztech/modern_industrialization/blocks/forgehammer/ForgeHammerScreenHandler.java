@@ -9,6 +9,7 @@ import net.minecraft.inventory.Inventory;
 import net.minecraft.inventory.SimpleInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.ScreenHandlerContext;
 import net.minecraft.screen.slot.Slot;
@@ -35,6 +36,7 @@ public class ForgeHammerScreenHandler extends ScreenHandler {
             recipesSaw.put(material.getItem("rod"), material.getItem("bolt"));
             recipesSaw.put(material.getItem("pipe"), material.getItem("ring"));
         }
+        
     }
 
     private final CraftingResultInventory output = new CraftingResultInventory();
@@ -109,6 +111,24 @@ public class ForgeHammerScreenHandler extends ScreenHandler {
 
     @Override
     public ItemStack transferSlot(PlayerEntity player, int index) {
+        Slot slot = slots.get(index);
+        if(slot != null && slot.hasStack()){
+            ItemStack itemStack = slot.getStack();
+            if(index < 36){ // click in inventory
+                insertItem(itemStack, 36, 37, false);
+                updateStatus();
+            }else if(index == 36){ // click in input
+                insertItem(itemStack, 0, 36, false);
+                updateStatus();
+            }else{ // click in output
+                while(insertItem(itemStack, 0, 36, false)){
+                    input.getStack(0).decrement(1);
+                    updateStatus();
+                    itemStack = slot.getStack();
+                }
+            }
+
+        }
         return ItemStack.EMPTY;
     }
 

@@ -54,8 +54,8 @@ def gen(id, hex, vanilla, ore):
 if __name__ == '__main__':
     gen('gold', '#ffe100', True, False)
     gen('iron', '#f0f0f0', True, False)
-    gen('copper', '#ffcc00', False, True)
-    gen('bronze', '#ff6600', False, False)
+    gen('copper', '#ff6600', False, True)
+    gen('bronze', '#ffcc00', False, False)
     gen('tin', '#cbe4e4', False, True)
     gen('steel', '#3f3f3f', False, False)
     gen('aluminum', '#3fcaff', False, True)

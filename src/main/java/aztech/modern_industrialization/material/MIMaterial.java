@@ -6,6 +6,7 @@ import aztech.modern_industrialization.pipes.MIPipes;
 import aztech.modern_industrialization.pipes.api.PipeNetworkType;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
+import net.minecraft.item.Items;
 
 import java.util.HashMap;
 
@@ -169,6 +170,21 @@ public class MIMaterial {
         if(type.equals("pipe")){
             // TODO : Remove this eldricht abomination
             return MIPipes.INSTANCE.getPipeItem(PipeNetworkType.get(new MIIdentifier("fluid_"+ id)));
+        }
+        if(isVanilla){ // TODO : refactor this
+            if(type.equals("ingot")){
+                if(id.equals("iron")){
+                    return Items.IRON_INGOT;
+                }else if(id.equals("gold")){
+                    return Items.GOLD_INGOT;
+                }
+            }else if(type.equals("nugget")){
+                if(id.equals("iron")){
+                    return Items.IRON_NUGGET;
+                }else if(id.equals("gold")){
+                    return Items.GOLD_NUGGET;
+                }
+            }
         }
         return itemMap.get(type);
     }

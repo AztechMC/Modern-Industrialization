@@ -15,7 +15,7 @@ import java.util.*;
 import java.util.function.Function;
 
 /**
- * Reasonable defaults for a model.
+ * Reasonable defaults for a models.
  */
 public abstract class CustomBlockModel implements UnbakedModel, BakedModel, FabricBakedModel {
     ModelTransformation transformation;

@@ -1,5 +1,6 @@
 package aztech.modern_industrialization;
 
+import aztech.modern_industrialization.blocks.forgeHammer.BlockForgeHammer;
 import aztech.modern_industrialization.fluid.CraftingFluid;
 import aztech.modern_industrialization.fluid.FluidStackItem;
 import aztech.modern_industrialization.machines.MIMachines;
@@ -8,6 +9,8 @@ import aztech.modern_industrialization.machines.impl.MachineFactory;
 import aztech.modern_industrialization.machines.impl.MachinePackets;
 import aztech.modern_industrialization.machines.impl.MachineScreenHandler;
 import aztech.modern_industrialization.material.MIMaterial;
+import aztech.modern_industrialization.material.MaterialBlockItem;
+import aztech.modern_industrialization.material.MaterialItem;
 import aztech.modern_industrialization.pipes.MIPipes;
 import aztech.modern_industrialization.tools.WrenchItem;
 import net.devtech.arrp.api.RRPCallback;
@@ -71,6 +74,9 @@ public class ModernIndustrialization implements ModInitializer {
 	public static final Item ITEM_WRENCH = new WrenchItem(new Item.Settings());
 
 	// Block
+	public static final Block FORGE_HAMMER = new BlockForgeHammer();
+	public static final Item ITEM_FORGE_HAMMER = new BlockItem(FORGE_HAMMER, new Item.Settings().group(ITEM_GROUP));
+
 	//public static final Block BLOCK_STEAM_BOILER = new MachineBlock(SteamBoilerBlockEntity::new);
 	//public static final Item ITEM_STEAM_BOILER = new BlockItem(BLOCK_STEAM_BOILER, new Item.Settings().group(ITEM_GROUP));
 
@@ -116,7 +122,7 @@ public class ModernIndustrialization implements ModInitializer {
 	}
 
 	private void setupBlocks() {
-		//registerBlock(BLOCK_STEAM_BOILER, ITEM_STEAM_BOILER,"steam_boiler");
+		registerBlock(FORGE_HAMMER, ITEM_FORGE_HAMMER,"forge_hammer");
 
 	}
 
@@ -129,7 +135,6 @@ public class ModernIndustrialization implements ModInitializer {
 			factory.block = new MachineBlock(factory.blockEntityConstructor);
 			factory.item = new BlockItem(factory.block, new Item.Settings().group(ITEM_GROUP));
 			registerBlock(factory.block, factory.item,factory.getID());
-			registerBlockLoot(factory.getID());
 			factory.blockEntityType = Registry.register(Registry.BLOCK_ENTITY_TYPE, new Identifier(MOD_ID, factory.getID()), BlockEntityType.Builder.create(factory.blockEntityConstructor, factory.block).build(null));
 		}
 	}
@@ -140,14 +145,20 @@ public class ModernIndustrialization implements ModInitializer {
 		Registry.register(Registry.ITEM, new MIIdentifier("fluid_slot"), ITEM_FLUID_SLOT);
 	}
 
-	private void registerBlock(Block block, Item item, String id) {
+	private void registerBlock(Block block, Item item, String id, boolean loot) {
 		Identifier identifier = new MIIdentifier(id);
 		Registry.register(Registry.BLOCK, identifier, block);
 		Registry.register(Registry.ITEM, identifier, item);
-
+		if(loot){
+			registerBlockLoot(id);
+		}
 		// TODO: client side?
 		RESOURCE_PACK.addBlockState(JState.state().add(new JVariant().put("", new JBlockModel(MOD_ID + ":block/" + id))), identifier);
 	}
+	private void registerBlock(Block block, Item item, String id) {
+		 registerBlock(block, item, id, true);
+	}
+
 
 	private void registerMaterial(MIMaterial material){
 		String id = material.getId();
@@ -174,7 +185,7 @@ public class ModernIndustrialization implements ModInitializer {
 					// TODO : Add ore generation
 				}
 
-				Item item = new BlockItem(block, new Item.Settings().group(ITEM_GROUP));
+				Item item = new MaterialBlockItem(block, new Item.Settings().group(ITEM_GROUP), material.getId(), block_type);
 				Identifier identifier = new MIIdentifier(id + "_"+block_type);
 				material.saveBlock(block_type, block);
 				Registry.register(Registry.BLOCK, identifier, block);
@@ -196,7 +207,7 @@ public class ModernIndustrialization implements ModInitializer {
 		}
 
 		for(String item_type : item_types){
-			Item item = new Item(new Item.Settings().group(ITEM_GROUP));
+			Item item = new MaterialItem(new Item.Settings().group(ITEM_GROUP), material.getId(), item_type);
 			material.saveItem(item_type, item);
 			String custom_id = id+"_"+item_type;
 			Registry.register(Registry.ITEM, new MIIdentifier(custom_id), item);

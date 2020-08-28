@@ -74,7 +74,7 @@ public class FluidStackItem extends Item {
     }
 
     public static Fluid getFluid(ItemStack stack) {
-        return NbtHelper.getFluid(stack.getTag(), "fluid_id");
+        return stack.getTag() == null ? Fluids.EMPTY : NbtHelper.getFluid(stack.getTag(), "fluid_id");
     }
 
     public static int getAmount(ItemStack stack) {
@@ -86,6 +86,7 @@ public class FluidStackItem extends Item {
     }
 
     public static FluidSlotIO getIO(ItemStack stack){
+        if(stack.getTag() == null || !stack.getTag().contains("fluid_io")) return FluidSlotIO.INPUT_AND_OUTPUT; // failsafe, shouldn't happen
         int fluid_io = stack.getTag().getInt("fluid_io");
         if(fluid_io == FluidSlotIO.INPUT_ONLY.getValue()){
             return FluidSlotIO.INPUT_ONLY;

@@ -31,7 +31,8 @@ dependencies {
 
 	modImplementation group: 'net.devtech', name: 'arrp', version: '0.2.6' // TODO: include in jar
 	modImplementation "io.github.onyxstudios:Cardinal-Components-API:2.5.0" // TODO: include in jar
-
+	modCompileOnly "me.shedaniel:RoughlyEnoughItems-api:${project.rei_version}"
+	modRuntime "me.shedaniel:RoughlyEnoughItems:${project.rei_version}"
 }
 
 processResources {

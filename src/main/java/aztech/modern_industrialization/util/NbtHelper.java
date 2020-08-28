@@ -2,6 +2,7 @@ package aztech.modern_industrialization.util;
 
 import aztech.modern_industrialization.pipes.api.PipeConnectionType;
 import net.minecraft.fluid.Fluid;
+import net.minecraft.fluid.Fluids;
 import net.minecraft.item.Item;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -16,7 +17,7 @@ import java.util.function.BiFunction;
 
 public class NbtHelper {
     public static Fluid getFluid(CompoundTag tag, String key) {
-        return Registry.FLUID.get(new Identifier(tag.getString(key)));
+        return tag.contains(key) ? Registry.FLUID.get(new Identifier(tag.getString(key))) : Fluids.EMPTY;
     }
     public static void putFluid(CompoundTag tag, String key, Fluid fluid) {
         tag.putString(key, Registry.FLUID.getId(fluid).toString());

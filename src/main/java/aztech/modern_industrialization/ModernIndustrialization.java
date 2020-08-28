@@ -15,6 +15,7 @@ import aztech.modern_industrialization.machines.impl.MachineScreenHandler;
 import aztech.modern_industrialization.material.MIMaterial;
 import aztech.modern_industrialization.material.MaterialBlockItem;
 import aztech.modern_industrialization.material.MaterialItem;
+import aztech.modern_industrialization.material.MIMaterialSetup;
 import aztech.modern_industrialization.pipes.MIPipes;
 import aztech.modern_industrialization.tools.WrenchItem;
 import net.devtech.arrp.api.RRPCallback;
@@ -31,14 +32,9 @@ import net.devtech.arrp.json.models.JTextures;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.client.itemgroup.FabricItemGroupBuilder;
 import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
-import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
-import net.fabricmc.fabric.api.object.builder.v1.block.FabricMaterialBuilder;
 import net.fabricmc.fabric.api.screenhandler.v1.ScreenHandlerRegistry;
 import net.fabricmc.fabric.api.tag.TagRegistry;
-import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
 import net.minecraft.block.Block;
-import net.minecraft.block.Material;
-import net.minecraft.block.MaterialColor;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.item.*;
@@ -47,11 +43,7 @@ import net.minecraft.tag.Tag;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.BuiltinRegistries;
 import net.minecraft.util.registry.Registry;
-import net.minecraft.world.gen.decorator.Decorator;
-import net.minecraft.world.gen.decorator.RangeDecoratorConfig;
 import net.minecraft.world.gen.feature.ConfiguredFeature;
-import net.minecraft.world.gen.feature.Feature;
-import net.minecraft.world.gen.feature.OreFeatureConfig;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -64,8 +56,6 @@ public class ModernIndustrialization implements ModInitializer {
     public static final Logger LOGGER = LogManager.getLogger("Modern Industrialization");
     public static final RuntimeResourcePack RESOURCE_PACK = RuntimeResourcePack.create("modern_industrialization:general");
 
-    public static final ArrayList<ConfiguredFeature<?, ?>> ORE_GENERATOR = new ArrayList<>();
-
     public static final ItemGroup ITEM_GROUP = FabricItemGroupBuilder.build(
             new Identifier(MOD_ID, "general"),
             () -> new ItemStack(Items.REDSTONE)
@@ -75,10 +65,6 @@ public class ModernIndustrialization implements ModInitializer {
     // Tags
     private static Identifier WRENCH_TAG = new Identifier("fabric", "wrenches");
     public static Tag<Item> TAG_WRENCH = TagRegistry.item(WRENCH_TAG);
-
-    // Materials
-    public static final Material METAL_MATERIAL = new FabricMaterialBuilder(MaterialColor.IRON).build();
-    public static final Material STONE_MATERIAL = new FabricMaterialBuilder(MaterialColor.STONE).build();
 
     // Item
     public static final Item ITEM_WRENCH = new WrenchItem(new Item.Settings());
@@ -121,6 +107,9 @@ public class ModernIndustrialization implements ModInitializer {
     private void setupMaterial() {
         for (MIMaterial material : MIMaterial.getAllMaterials()) {
             registerMaterial(material);
+        }
+        for(Map.Entry<Identifier, ConfiguredFeature<?, ?>> entry : MIMaterialSetup.ORE_GENERATORS.entrySet()) {
+            Registry.register(BuiltinRegistries.CONFIGURED_FEATURE, entry.getKey(), entry.getValue());
         }
     }
 
@@ -175,23 +164,7 @@ public class ModernIndustrialization implements ModInitializer {
 
         if (!material.isVanilla()) {
             for (String block_type : (material.hasOre() ? new String[]{"block", "ore"} : new String[]{"block"})) {
-                Block block = null;
-                if (block_type.equals("block")) {
-                    block = new Block(FabricBlockSettings.of(METAL_MATERIAL).hardness(material.getHardness())
-                            .resistance(material.getBlastResistance())
-                            .breakByTool(FabricToolTags.PICKAXES, 0)
-                            .requiresTool()
-                    );
-                } else if (block_type.equals("ore")) {
-                    block = new Block(FabricBlockSettings.of(STONE_MATERIAL).hardness(material.getOreHardness())
-                            .resistance(material.getOreBlastResistance())
-                            .breakByTool(FabricToolTags.PICKAXES, 1)
-                            .requiresTool()
-                    );
-
-                    // TODO : Add ore generation
-                }
-
+                Block block = material.getBlock(block_type);
                 Item item = new MaterialBlockItem(block, new Item.Settings().group(ITEM_GROUP), material.getId(), block_type);
                 Identifier identifier = new MIIdentifier(id + "_" + block_type);
                 material.saveBlock(block_type, block);
@@ -210,25 +183,6 @@ public class ModernIndustrialization implements ModInitializer {
             }
             item_types.add("ingot");
             item_types.add("nugget");
-            if(material.hasOre()){
-                // TODO : add nether and end
-                ConfiguredFeature<?, ?> ore_generator = Feature.ORE
-                        .configure(new OreFeatureConfig(
-                                OreFeatureConfig.Rules.BASE_STONE_OVERWORLD,
-                                material.getBlock("ore").getDefaultState(),
-                                material.getVeinsSize())) // vein size
-                        .decorate(Decorator.RANGE.configure(new RangeDecoratorConfig(
-                                0, // bottom offset
-                                0, // min y level
-                                material.getMaxYLevel()))) // max y level
-                        .spreadHorizontally()
-                        .repeat(material.getVeinsPerChunk()); // number of veins per chunk
-
-
-                ModernIndustrialization.ORE_GENERATOR.add(ore_generator);
-                Registry.register(BuiltinRegistries.CONFIGURED_FEATURE, new MIIdentifier("ore_generator_"+material.getId()), ore_generator);
-            }
-
         }
 
         for (String item_type : item_types) {

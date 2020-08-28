@@ -1,6 +1,7 @@
 package aztech.modern_industrialization.machines.impl;
 
 import aztech.modern_industrialization.ModernIndustrialization;
+import aztech.modern_industrialization.material.MIMaterialSetup;
 import aztech.modern_industrialization.pipes.MIPipes;
 import aztech.modern_industrialization.tools.IWrenchable;
 import aztech.modern_industrialization.tools.MachineOverlayItem;
@@ -44,7 +45,7 @@ public class MachineBlock extends Block implements BlockEntityProvider, IWrencha
     private final Supplier<MachineBlockEntity> blockEntityFactory;
 
     public MachineBlock(Supplier<MachineBlockEntity> blockEntityFactory) {
-        super(FabricBlockSettings.of(ModernIndustrialization.METAL_MATERIAL).hardness(4.0f).breakByTool(FabricToolTags.PICKAXES).requiresTool());
+        super(FabricBlockSettings.of(MIMaterialSetup.METAL_MATERIAL).hardness(4.0f).breakByTool(FabricToolTags.PICKAXES).requiresTool());
         this.blockEntityFactory = blockEntityFactory;
     }
 

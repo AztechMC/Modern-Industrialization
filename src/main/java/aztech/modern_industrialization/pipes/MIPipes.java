@@ -55,16 +55,21 @@ public class MIPipes implements ModInitializer {
     public void onInitialize() {
         Registry.register(Registry.BLOCK, new MIIdentifier("pipe"), BLOCK_PIPE);
         BLOCK_ENTITY_TYPE_PIPE = Registry.register(Registry.BLOCK_ENTITY_TYPE, new MIIdentifier("pipe"), BlockEntityType.Builder.create(PipeBlockEntity::new, BLOCK_PIPE).build(null));
-        registerFluidPipeType("iron",255 << 24 | 178 << 16 | 178 << 8 | 178, FluidUnit.DROPS_PER_BUCKET);
-        registerFluidPipeType("copper",255 << 24 | 255 << 16 | 102 << 8, FluidUnit.DROPS_PER_BUCKET);
-        registerFluidPipeType("tin",255 << 24 | 203 << 16 | 228 << 8 | 228, FluidUnit.DROPS_PER_BUCKET);
         registerFluidPipeType("gold",255 << 24 | 255 << 16 | 226 << 8, FluidUnit.DROPS_PER_BUCKET);
-        registerFluidPipeType("bronze_other", 255 << 24 | 255 << 16 | 204 << 8, FluidUnit.DROPS_PER_BUCKET);
-        registerFluidPipeType("bronze",255 << 24 | 227 << 16 | 103 << 8, FluidUnit.DROPS_PER_BUCKET);
-        registerFluidPipeType("steel",255 << 24 | 63 << 16 | 63 << 8 | 63, FluidUnit.DROPS_PER_BUCKET);
         registerFluidPipeType("aluminium",255 << 24 | 63 << 16 | 202 << 8 | 255, FluidUnit.DROPS_PER_BUCKET);
+        registerFluidPipeType("steel",255 << 24 | 63 << 16 | 63 << 8 | 63, FluidUnit.DROPS_PER_BUCKET);
+        registerFluidPipeType("iron",255 << 24 | 178 << 16 | 178 << 8 | 178, FluidUnit.DROPS_PER_BUCKET);
+        registerFluidPipeType("bronze", 255 << 24 | 255 << 16 | 204 << 8, FluidUnit.DROPS_PER_BUCKET);
+        registerFluidPipeType("tin",255 << 24 | 203 << 16 | 228 << 8 | 228, FluidUnit.DROPS_PER_BUCKET);
+        registerFluidPipeType("copper",255 << 24 | 255 << 16 | 102 << 8, FluidUnit.DROPS_PER_BUCKET);
 
+        registerItemPipeType("gold",255 << 24 | 255 << 16 | 226 << 8);
+        registerItemPipeType("aluminium",255 << 24 | 63 << 16 | 202 << 8 | 255);
+        registerItemPipeType("steel",255 << 24 | 63 << 16 | 63 << 8 | 63);
+        registerItemPipeType("iron",255 << 24 | 178 << 16 | 178 << 8 | 178);
         registerItemPipeType("bronze", 255 << 24 | 255 << 16 | 204 << 8);
+        registerItemPipeType("tin",255 << 24 | 203 << 16 | 228 << 8 | 228);
+        registerItemPipeType("copper",255 << 24 | 255 << 16 | 102 << 8);
 
         ServerTickEvents.START_SERVER_TICK.register(server -> {
             for(World world : server.getWorlds()) {

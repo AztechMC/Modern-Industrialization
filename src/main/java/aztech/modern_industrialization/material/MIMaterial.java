@@ -171,5 +171,6 @@ public class MIMaterial {
     public static MIMaterial copper = new MIMaterial("copper").setUpOreGenerator(10, 8, 64);
     public static MIMaterial tin = new MIMaterial("tin").setUpOreGenerator(4, 6, 64);
     public static MIMaterial bronze = new MIMaterial("bronze");
-
+    public static MIMaterial steel = new MIMaterial("steel");
+    public static MIMaterial aluminium = new MIMaterial("aluminium").setUpOreGenerator(4, 6, 64);
 }

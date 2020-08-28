@@ -42,8 +42,6 @@ if not vanilla:
     try:
         os.mkdir(
             "src/main/resources/assets/modern_industrialization/textures/blocks/materials/" + id)
-        os.mkdir(
-            "src/main/resources/assets/modern_industrialization/textures/blocks/materials/" + id + "/block")
     except:
         pass
 
@@ -51,12 +49,6 @@ if not vanilla:
         "src/main/resources/assets/modern_industrialization/textures/blocks/materials/" + id + "/block.png")
 
     if ore:
-        try:
-            os.mkdir(
-                "src/main/resources/assets/modern_industrialization/textures/blocks/materials/" + id + "/ore")
-        except:
-            pass
-
         result_ore = image_tint("template/ore.png", hex)
         stone = Image.open("template/stone.png")
         Image.alpha_composite(stone, result_ore).save(

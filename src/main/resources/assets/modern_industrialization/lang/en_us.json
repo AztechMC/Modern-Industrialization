@@ -1,9 +1,20 @@
 {
   "item.modern_industrialization.bucket_steam" : "Steam Bucket",
   "item.modern_industrialization.fluid_slot" : "Fluid Slot",
-  "item.modern_industrialization.pipe_fluid_bronze" : "Bronze Fluid Pipe",
-  "item.modern_industrialization.pipe_fluid_steel" : "Steel Fluid Pipe",
+  "item.modern_industrialization.pipe_fluid_gold" : "Gold Fluid Pipe",
   "item.modern_industrialization.pipe_fluid_aluminium" : "Aluminium Fluid Pipe",
+  "item.modern_industrialization.pipe_fluid_steel" : "Steel Fluid Pipe",
+  "item.modern_industrialization.pipe_fluid_iron" : "Iron Fluid Pipe",
+  "item.modern_industrialization.pipe_fluid_bronze" : "Bronze Fluid Pipe",
+  "item.modern_industrialization.pipe_fluid_tin" : "Tin Fluid Pipe",
+  "item.modern_industrialization.pipe_fluid_copper" : "Copper Fluid Pipe",
+  "item.modern_industrialization.pipe_item_gold" : "Gold Item Pipe",
+  "item.modern_industrialization.pipe_item_aluminium" : "Aluminium Item Pipe",
+  "item.modern_industrialization.pipe_item_steel" : "Steel Item Pipe",
+  "item.modern_industrialization.pipe_item_iron" : "Iron Item Pipe",
+  "item.modern_industrialization.pipe_item_bronze" : "Bronze Item Pipe",
+  "item.modern_industrialization.pipe_item_tin" : "Tin Item Pipe",
+  "item.modern_industrialization.pipe_item_copper" : "Copper Item Pipe",
 
   "item.modern_industrialization.wrench" : "Wrench",
 
@@ -29,6 +40,8 @@
   "modern_industrialization:material:bronze" : "Bronze",
   "modern_industrialization:material:iron" : "Iron",
   "modern_industrialization:material:gold" : "Gold",
+  "modern_industrialization:material:steel" : "Steel",
+  "modern_industrialization:material:aluminium" : "Aluminium",
 
   "modern_industrialization:item_type:ingot": "Ingot",
   "modern_industrialization:item_type:nugget" : "Nugget",

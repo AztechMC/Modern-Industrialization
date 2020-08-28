@@ -16,13 +16,13 @@ import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 
-public class BlockForgeHammer extends Block {
+public class ForgeHammerBlock extends Block {
 
     private VoxelShape shape;
     private int part_height[] = {4, 1, 5, 5};
     private int part_width[] = {14, 10, 8, 14};
 
-    public BlockForgeHammer() {
+    public ForgeHammerBlock() {
         super(FabricBlockSettings.of(Material.METAL).hardness(6.0f).resistance(1200).sounds(BlockSoundGroup.ANVIL));
         VoxelShape[] parts = new VoxelShape[part_height.length];
         float currentY = 0;

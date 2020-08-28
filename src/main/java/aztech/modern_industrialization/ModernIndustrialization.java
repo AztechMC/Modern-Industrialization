@@ -1,6 +1,5 @@
 package aztech.modern_industrialization;
 
-import aztech.modern_industrialization.blocks.forgeHammer.BlockForgeHammer;
 import aztech.modern_industrialization.fluid.CraftingFluid;
 import aztech.modern_industrialization.fluid.FluidStackItem;
 import aztech.modern_industrialization.machines.MIMachines;
@@ -32,7 +31,6 @@ import net.fabricmc.fabric.api.object.builder.v1.block.FabricMaterialBuilder;
 import net.fabricmc.fabric.api.screenhandler.v1.ScreenHandlerRegistry;
 import net.fabricmc.fabric.api.tag.TagRegistry;
 import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
-import net.fabricmc.fabric.impl.networking.ServerSidePacketRegistryImpl;
 import net.minecraft.block.Block;
 import net.minecraft.block.Material;
 import net.minecraft.block.MaterialColor;
@@ -40,7 +38,6 @@ import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.item.*;
 import net.minecraft.screen.ScreenHandlerType;
-import net.minecraft.tag.ItemTags;
 import net.minecraft.tag.Tag;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
@@ -74,7 +71,7 @@ public class ModernIndustrialization implements ModInitializer {
 	public static final Item ITEM_WRENCH = new WrenchItem(new Item.Settings());
 
 	// Block
-	public static final Block FORGE_HAMMER = new BlockForgeHammer();
+	public static final Block FORGE_HAMMER = new aztech.modern_industrialization.blocks.forgeHammer.ForgeHammerBlock();
 	public static final Item ITEM_FORGE_HAMMER = new BlockItem(FORGE_HAMMER, new Item.Settings().group(ITEM_GROUP));
 
 	//public static final Block BLOCK_STEAM_BOILER = new MachineBlock(SteamBoilerBlockEntity::new);

@@ -23,9 +23,9 @@ public class PipeNetworkManager {
     /**
      * Add a network link and merge networks if necessary. Both the node at pos and the node at pos + direction must exist in the network.
      */
-    public void addLink(BlockPos pos, Direction direction) {
+    public void addLink(BlockPos pos, Direction direction, boolean force) {
         if(hasLink(pos, direction)) return;
-        if(!canLink(pos, direction)) return;
+        if(!canLink(pos, direction, force)) return;
 
         // Add links
         BlockPos otherPos = pos.offset(direction);
@@ -36,6 +36,9 @@ public class PipeNetworkManager {
         PipeNetwork network = networkByBlock.get(pos);
         PipeNetwork otherNetwork = networkByBlock.get(otherPos);
         if(network != otherNetwork) {
+            if(!network.data.equals(otherNetwork.data)) {
+                network.data = network.merge(otherNetwork);
+            }
             for(Map.Entry<BlockPos, PipeNetworkNode> entry : otherNetwork.nodes.entrySet()) {
                 PipeNetworkNode node = entry.getValue();
                 BlockPos nodePos = entry.getKey();
@@ -109,11 +112,11 @@ public class PipeNetworkManager {
     /**
      * Check if a link would be possible. A node must exist at pos.
      */
-    public boolean canLink(BlockPos pos, Direction direction) {
+    public boolean canLink(BlockPos pos, Direction direction, boolean forceLink) {
         BlockPos otherPos = pos.offset(direction);
         PipeNetwork network = networkByBlock.get(pos);
         PipeNetwork otherNetwork = networkByBlock.get(otherPos);
-        return otherNetwork != null && network.data.equals(otherNetwork.data);
+        return otherNetwork != null && (network.data.equals(otherNetwork.data) || forceLink && network.merge(otherNetwork) != null);
     }
 
     /**

@@ -37,4 +37,26 @@ public class FluidNetwork extends PipeNetwork {
             }
         }
     }
+
+    @Override
+    public PipeNetworkData merge(PipeNetwork other) {
+        FluidNetworkData thisData = (FluidNetworkData) data;
+        FluidNetworkData otherData = (FluidNetworkData) other.data;
+        if(thisData.nodeCapacity == otherData.nodeCapacity) {
+            // If one is empty, it's easy to merge.
+            if(this.isEmpty()) return otherData.clone();
+            if(((FluidNetwork) other).isEmpty()) return thisData.clone();
+        }
+        return null;
+    }
+
+    private boolean isEmpty() {
+        if(((FluidNetworkData) data).fluid == Fluids.EMPTY) return true;
+        for(PipeNetworkNode node : nodes.values()) {
+            if(node == null || ((FluidNetworkNode) node).amount != 0) {
+                return false;
+            }
+        }
+        return true;
+    }
 }

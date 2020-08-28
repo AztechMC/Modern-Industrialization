@@ -101,7 +101,7 @@ public class PipeBlockEntity extends BlockEntity implements Tickable, BlockEntit
         PipeNetworkManager manager = MIPipes.PIPE_NETWORKS.get(world).getManager(type);
         manager.addNode(node, pos, data);
         for(Direction direction : Direction.values()) {
-            manager.addLink(pos, direction);
+            manager.addLink(pos, direction, false);
         }
         pipes.add(node);
         node.updateConnections(world, pos);
@@ -150,7 +150,7 @@ public class PipeBlockEntity extends BlockEntity implements Tickable, BlockEntit
         for(PipeNetworkNode pipe : pipes) {
             if(pipe.getType() == type) {
                 pipe.addConnection(world, pos, direction);
-                pipe.getManager().addLink(pos, direction);
+                pipe.getManager().addLink(pos, direction, true);
                 onConnectionsChanged();
                 return;
             }

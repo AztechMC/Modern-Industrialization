@@ -1,6 +1,9 @@
 package aztech.modern_industrialization.material;
 
 
+import aztech.modern_industrialization.MIIdentifier;
+import aztech.modern_industrialization.pipes.MIPipes;
+import aztech.modern_industrialization.pipes.api.PipeNetworkType;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 
@@ -163,6 +166,10 @@ public class MIMaterial {
     }
 
     public Item getItem(String type) {
+        if(type.equals("pipe")){
+            // TODO : Remove this eldricht abomination
+            return MIPipes.INSTANCE.getPipeItem(PipeNetworkType.get(new MIIdentifier("fluid_"+ id)));
+        }
         return itemMap.get(type);
     }
 

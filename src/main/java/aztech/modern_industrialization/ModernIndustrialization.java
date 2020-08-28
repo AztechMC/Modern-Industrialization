@@ -1,5 +1,8 @@
 package aztech.modern_industrialization;
 
+import aztech.modern_industrialization.blocks.forgehammer.ForgeHammerBlock;
+import aztech.modern_industrialization.blocks.forgehammer.ForgeHammerPacket;
+import aztech.modern_industrialization.blocks.forgehammer.ForgeHammerScreenHandler;
 import aztech.modern_industrialization.fluid.CraftingFluid;
 import aztech.modern_industrialization.fluid.FluidStackItem;
 import aztech.modern_industrialization.machines.MIMachines;
@@ -71,7 +74,7 @@ public class ModernIndustrialization implements ModInitializer {
 	public static final Item ITEM_WRENCH = new WrenchItem(new Item.Settings());
 
 	// Block
-	public static final Block FORGE_HAMMER = new aztech.modern_industrialization.blocks.forgeHammer.ForgeHammerBlock();
+	public static final Block FORGE_HAMMER = new ForgeHammerBlock();
 	public static final Item ITEM_FORGE_HAMMER = new BlockItem(FORGE_HAMMER, new Item.Settings().group(ITEM_GROUP));
 
 	//public static final Block BLOCK_STEAM_BOILER = new MachineBlock(SteamBoilerBlockEntity::new);
@@ -82,7 +85,11 @@ public class ModernIndustrialization implements ModInitializer {
 
 	// ScreenHandlerType
 	//public static final ScreenHandlerType<SteamBoilerScreenHandler> SCREEN_HANDLER_TYPE_STEAM_BOILER = ScreenHandlerRegistry.registerSimple(new Identifier(MOD_ID, "steam_boiler"), SteamBoilerScreenHandler::new);
-	public static final ScreenHandlerType<MachineScreenHandler> SCREEN_HANDLER_TYPE_MACHINE = ScreenHandlerRegistry.registerExtended(new Identifier(MOD_ID, "machine"), MachineScreenHandler::new);
+	public static final ScreenHandlerType<MachineScreenHandler> SCREEN_HANDLER_TYPE_MACHINE =
+			ScreenHandlerRegistry.registerExtended(new Identifier(MOD_ID, "machine"), MachineScreenHandler::new);
+	public static final ScreenHandlerType<ForgeHammerScreenHandler> SCREEN_HANDLER_FORGE_HAMMER =
+			ScreenHandlerRegistry.registerSimple(new Identifier(MOD_ID, "forge_hammer"), ForgeHammerScreenHandler::new);
+
 	// Fluid
 	public static final Fluid FLUID_STEAM = new CraftingFluid();
 
@@ -238,5 +245,6 @@ public class ModernIndustrialization implements ModInitializer {
 
 	private void setupPackets() {
 		ServerSidePacketRegistry.INSTANCE.register(MachinePackets.C2S.SET_AUTO_EXTRACT, MachinePackets.C2S.ON_SET_AUTO_EXTRACT);
+		ServerSidePacketRegistry.INSTANCE.register(ForgeHammerPacket.SET_HAMMER, ForgeHammerPacket.ON_SET_HAMMER);
 	}
 }

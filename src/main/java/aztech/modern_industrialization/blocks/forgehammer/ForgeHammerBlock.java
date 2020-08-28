@@ -1,12 +1,19 @@
-package aztech.modern_industrialization.blocks.forgeHammer;
+package aztech.modern_industrialization.blocks.forgehammer;
 
+import aztech.modern_industrialization.ModernIndustrialization;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Material;
 import net.minecraft.block.ShapeContext;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.screen.NamedScreenHandlerFactory;
+import net.minecraft.screen.ScreenHandler;
+import net.minecraft.screen.ScreenHandlerContext;
 import net.minecraft.sound.BlockSoundGroup;
+import net.minecraft.text.Text;
+import net.minecraft.text.TranslatableText;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
@@ -45,7 +52,18 @@ public class ForgeHammerBlock extends Block {
         if (world.isClient) {
             return ActionResult.SUCCESS;
         } else {
-            //player.openHandledScreen();
+            player.openHandledScreen(new NamedScreenHandlerFactory(){
+
+                @Override
+                public ScreenHandler createMenu(int syncId, PlayerInventory inv, PlayerEntity player) {
+                    return new ForgeHammerScreenHandler(syncId, inv, ScreenHandlerContext.create(world, pos));
+                }
+
+                @Override
+                public Text getDisplayName() {
+                    return new TranslatableText(ModernIndustrialization.FORGE_HAMMER.getTranslationKey());
+                }
+            });
             return ActionResult.CONSUME;
         }
     }
@@ -54,6 +72,7 @@ public class ForgeHammerBlock extends Block {
     public VoxelShape getOutlineShape(BlockState state, BlockView view, BlockPos pos, ShapeContext context) {
         return shape;
     }
+
 
 
 }

@@ -39,6 +39,7 @@ public class MachineScreenHandler extends ConfigurableScreenHandler {
         this.addProperties(propertyDelegate);
         updateTrackedExtract();
 
+
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 9; j++) {
                 this.addSlot(new Slot(playerInventory, i * 9 + j + 9,

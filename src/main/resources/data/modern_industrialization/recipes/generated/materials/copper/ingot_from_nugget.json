@@ -1,0 +1,18 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        [
+            "###",
+            "###",
+            "###"
+        ]
+    ],
+    "key": {
+        "#": {
+            "item": "modern_industrialization:copper_nugget"
+        }
+    },
+    "result": {
+        "item": "modern_industrialization:copper_ingot"
+    }
+}

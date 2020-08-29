@@ -30,7 +30,7 @@ public class MIMaterial {
     private float oreBlastResistance = 3.0f;
 
     public static final String[] customItem = {"dust",
-            "small_dust", "crushed_dust", "double_ingot", "plate", "large_plate", "curved_plate",
+            "small_dust", "double_ingot", "plate", "large_plate", "curved_plate",
             "ring", "rod", "bolt", "gear", "blade", "rotor"};
 
 

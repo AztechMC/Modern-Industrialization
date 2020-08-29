@@ -1,0 +1,18 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        [
+            "###",
+            "###",
+            "###"
+        ]
+    ],
+    "key": {
+        "#": {
+            "item": "modern_industrialization:aluminum_small_dust"
+        }
+    },
+    "result": {
+        "item": "modern_industrialization:aluminum_dust"
+    }
+}

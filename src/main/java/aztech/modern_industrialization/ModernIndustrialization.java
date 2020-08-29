@@ -186,6 +186,10 @@ public class ModernIndustrialization implements ModInitializer {
             item_types.add("nugget");
         }
 
+        if(material.isVanilla() || material.hasOre()){
+            item_types.add("crushed_dust");
+        }
+
         for (String item_type : item_types) {
             Item item = new MaterialItem(new Item.Settings().group(ITEM_GROUP), material.getId(), item_type);
             material.saveItem(item_type, item);

@@ -1,0 +1,18 @@
+{
+    "type": "minecraft:large_plate",
+    "pattern": [
+        [
+            "##",
+            "##"
+        ]
+    ],
+    "key": {
+        "#": {
+            "item": "modern_industrialization:bronze_plate"
+        }
+    },
+    "result": {
+        "item": "modern_industrialization:bronze_large_plate",
+        "count": 1
+    }
+}

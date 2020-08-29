@@ -1,0 +1,18 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        [
+            "###",
+            "###",
+            "###"
+        ]
+    ],
+    "key": {
+        "#": {
+            "item": "modern_industrialization:tin_nugget"
+        }
+    },
+    "result": {
+        "item": "modern_industrialization:tin_ingot"
+    }
+}

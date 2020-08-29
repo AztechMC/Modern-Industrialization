@@ -1,9 +1,0 @@
-{
-  "type": "minecraft:blasting",
-  "ingredient": {
-    "item": "modern_industrialization:steel_small_dust"
-  },
-  "result": "modern_industrialization:steel_nugget",
-  "experience": 0.08,
-  "cookingtime": 100
-}

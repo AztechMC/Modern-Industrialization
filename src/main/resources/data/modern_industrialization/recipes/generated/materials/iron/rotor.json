@@ -1,0 +1,25 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        [
+            "bBb",
+            "BRB",
+            "bBb"
+        ]
+    ],
+    "key": {
+        "b": {
+            "item": "modern_industrialization:iron_bolt"
+        },
+        "B": {
+            "item": "modern_industrialization:iron_blade"
+        },
+        "R": {
+            "item": "modern_industrialization:iron_ring"
+        }
+    },
+    "result": {
+        "item": "modern_industrialization:iron_rotor",
+        "count": 1
+    }
+}

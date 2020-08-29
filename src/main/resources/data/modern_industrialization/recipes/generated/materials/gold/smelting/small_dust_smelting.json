@@ -1,0 +1,9 @@
+{
+    "type": "minecraft:smelting",
+    "ingredient": {
+        "item": "modern_industrialization:gold_small_dust"
+    },
+    "result": "minecraft:gold_nugget",
+    "experience": 0.08,
+    "cookingtime": 200
+}

@@ -1,0 +1,13 @@
+{
+    "type": "modern_industrialization:forge_hammer_hammer",
+    "eu": 1,
+    "duration": 1,
+    "item_inputs": {
+        "item": "modern_industrialization:copper_ore",
+        "amount": 1
+    },
+    "item_outputs": {
+        "item": "modern_industrialization:copper_crushed_dust",
+        "amount": 2
+    }
+}

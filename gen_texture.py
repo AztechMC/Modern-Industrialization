@@ -70,7 +70,7 @@ def getIdentifier(id, item_type, vanilla):
 
 
 def genForgeHammer(id, vanilla, ore):
-    forge_hammer_path = "src/main/resources/data/modern_industrialization/recipes/generated/forge_hammer/" + id
+    forge_hammer_path = "src/main/resources/data/modern_industrialization/recipes/generated/materials/" + id + "/forge_hammer"
     Path(forge_hammer_path).mkdir(parents=True, exist_ok=True)
 
     hammer = "modern_industrialization:forge_hammer_hammer"
@@ -114,7 +114,7 @@ def genCraft(id, vanilla, ore):
     for (a, b) in list_full:
         jsonf = {}
         jsonf["type"] = "minecraft:crafting_shaped"
-        jsonf["pattern"] = ["###", "###", "###"],
+        jsonf["pattern"] = ["###", "###", "###"]
         jsonf["key"] = {"#": {"item": getIdentifier(id, a, vanilla)}}
         jsonf["result"] = {"item": getIdentifier(id, b, vanilla)}
         with open(path + "/" + b + "_from_" + a + ".json", "w") as file:
@@ -134,7 +134,7 @@ def genCraft(id, vanilla, ore):
         "#",
         "#",
         "I"
-    ],
+    ]
     jsonf["key"] = {
         "#": {
             "item": getIdentifier(id, "plate", vanilla)
@@ -156,7 +156,7 @@ def genCraft(id, vanilla, ore):
     jsonf["pattern"] = [
         "#",
         "#"
-    ],
+    ]
     jsonf["key"] = {
         "#": {
             "item": getIdentifier(id, "ingot", vanilla)
@@ -171,11 +171,11 @@ def genCraft(id, vanilla, ore):
 
     # large_plate
     jsonf = {}
-    jsonf["type"] = "minecraft:large_plate"
+    jsonf["type"] = "minecraft:crafting_shaped"
     jsonf["pattern"] = [
         "##",
         "##"
-    ],
+    ]
     jsonf["key"] = {
         "#": {
             "item": getIdentifier(id, "plate", vanilla)
@@ -195,7 +195,7 @@ def genCraft(id, vanilla, ore):
         "bBb",
         "BRB",
         "bBb"
-    ],
+    ]
     jsonf["key"] = {
         "b": {
             "item": getIdentifier(id, "bolt", vanilla)

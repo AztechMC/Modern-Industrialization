@@ -1,10 +1,8 @@
 {
-    "type": "minecraft:large_plate",
+    "type": "minecraft:crafting_shaped",
     "pattern": [
-        [
-            "##",
-            "##"
-        ]
+        "##",
+        "##"
     ],
     "key": {
         "#": {

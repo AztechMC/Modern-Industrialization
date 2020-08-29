@@ -12,6 +12,7 @@ import me.shedaniel.rei.api.widgets.Widgets;
 import me.shedaniel.rei.gui.widget.Widget;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.resource.language.I18n;
+import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.NotNull;
 
@@ -58,8 +59,8 @@ public class MachineRecipeCategory implements RecipeCategory<MachineRecipeDispla
         widgets.add(Widgets.createRecipeBase(bounds));
 
         int x = 1000, y = 1000, X = 0, Y = 0;
-        for(int i = 0; i < factory.getSlots(); i++) {
-            if(i == factory.getInputSlots() && factory instanceof SteamMachineFactory) {
+        for (int i = 0; i < factory.getSlots(); i++) {
+            if (i == factory.getInputSlots() && factory instanceof SteamMachineFactory) {
                 continue;
             }
             x = Math.min(x, factory.getSlotPosX(i));
@@ -68,15 +69,19 @@ public class MachineRecipeCategory implements RecipeCategory<MachineRecipeDispla
             Y = Math.max(Y, factory.getSlotPosY(i) + 16);
         }
 
+        // Room for EU text below
+        int oldY = Y;
+        Y += 42;
+
         int xoffset = bounds.x + (bounds.width - X + x) / 2 - x;
         int yoffset = bounds.y + (bounds.height - Y + y) / 2 - y;
 
         SlotDrawer drawer = (entryStream, slots, input) -> {
             List<List<EntryStack>> entries = entryStream.collect(Collectors.toList());
-            for(int i = 0; i < slots.length; ++i) {
+            for (int i = 0; i < slots.length; ++i) {
                 List<EntryStack> stack = i < entries.size() ? entries.get(i) : Collections.emptyList();
                 Slot widget = Widgets.createSlot(new Point(xoffset + factory.getSlotPosX(slots[i]), yoffset + factory.getSlotPosY(slots[i]))).entries(stack);
-                if(input) {
+                if (input) {
                     widget.markInput();
                 } else {
                     widget.markOutput();
@@ -90,7 +95,7 @@ public class MachineRecipeCategory implements RecipeCategory<MachineRecipeDispla
         drawer.drawSlots(recipeDisplay.getItemOutputs(), factory.getOutputIndices(), false);
         drawer.drawSlots(recipeDisplay.getFluidOutputs(), factory.getFluidOutputIndices(), false);
 
-        if(factory.hasProgressBar()) {
+        if (factory.hasProgressBar()) {
             double recipeMillis = recipeDisplay.getSeconds() * 1000;
             widgets.add(Widgets.createDrawableWidget((helper, matrices, mouseX, mouseY, delta) -> {
                 MinecraftClient.getInstance().getTextureManager().bindTexture(factory.getBackgroundIdentifier());
@@ -120,6 +125,40 @@ public class MachineRecipeCategory implements RecipeCategory<MachineRecipeDispla
             }));
         }
 
+        widgets.add(Widgets.createLabel(new Point(bounds.x+5, yoffset + oldY + 3), new TranslatableText("text.modern_industrialization.base_eu_t", recipeDisplay.getEu())).leftAligned());
+        widgets.add(Widgets.createLabel(new Point(bounds.x+5, yoffset + oldY + 16), new TranslatableText("text.modern_industrialization.base_duration_seconds", recipeDisplay.getSeconds())).leftAligned());
+        widgets.add(Widgets.createLabel(new Point(bounds.x+5, yoffset + oldY + 29), new TranslatableText("text.modern_industrialization.base_eu_total", recipeDisplay.getTicks() * recipeDisplay.getEu())).leftAligned());
+
         return widgets;
+    }
+
+    @Override
+    public int getDisplayHeight() {
+        int y = 1000, Y = 0;
+        for (int i = 0; i < factory.getSlots(); i++) {
+            if (i == factory.getInputSlots() && factory instanceof SteamMachineFactory) {
+                continue;
+            }
+            y = Math.min(y, factory.getSlotPosY(i));
+            Y = Math.max(Y, factory.getSlotPosY(i) + 16);
+        }
+
+        // Room for EU text below
+        Y += 42;
+        return Y - y + 15;
+    }
+
+    @Override
+    public int getDisplayWidth(MachineRecipeDisplay display) {
+        int x = 1000, X = 0;
+        for (int i = 0; i < factory.getSlots(); i++) {
+            if (i == factory.getInputSlots() && factory instanceof SteamMachineFactory) {
+                continue;
+            }
+            x = Math.min(x, factory.getSlotPosX(i));
+            X = Math.max(X, factory.getSlotPosX(i) + 16);
+        }
+
+        return Math.max(X - x + 15, 150);
     }
 }

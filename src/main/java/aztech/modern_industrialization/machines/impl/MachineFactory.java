@@ -3,12 +3,11 @@ package aztech.modern_industrialization.machines.impl;
 import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.machines.MIMachines;
 import aztech.modern_industrialization.machines.recipe.MachineRecipeType;
-import aztech.modern_industrialization.model.block.ModelProvider;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.item.BlockItem;
 
-import java.util.HashMap;
-import java.util.function.BiFunction;
+import java.util.Map;
+import java.util.TreeMap;
 import java.util.function.Supplier;
 
 import static aztech.modern_industrialization.machines.impl.MachineSlotType.*;
@@ -18,6 +17,7 @@ public class MachineFactory {
     public MachineBlock block;
     public BlockItem item;
     public BlockEntityType blockEntityType;
+    public final MachineTier tier;
 
     public MachineModel machineModel;
     private String casing; // example: "bricked_bronze"
@@ -29,7 +29,7 @@ public class MachineFactory {
     public final Supplier<MachineBlockEntity> blockEntityConstructor;
 
     private String machineID;
-    private static HashMap<String, MachineFactory> map = new HashMap<String, MachineFactory>();
+    private static Map<String, MachineFactory> map = new TreeMap<String, MachineFactory>();
 
     private int inputSlots;
     private int outputSlots;
@@ -76,8 +76,9 @@ public class MachineFactory {
     private int backgroundWidth = 176;
     private int backgroundHeight = 166;
 
-    public MachineFactory(String ID, BlockEntityFactory blockEntityFactory, MachineRecipeType type, int inputSlots, int outputSlots, int liquidInputSlots, int liquidOutputSlots){
+    public MachineFactory(String ID, MachineTier tier, BlockEntityFactory blockEntityFactory, MachineRecipeType type, int inputSlots, int outputSlots, int liquidInputSlots, int liquidOutputSlots){
         this.machineID = ID;
+        this.tier = tier;
 
         if(map.containsKey(machineID)){
             throw new IllegalArgumentException("Machine ID already taken : " + machineID);
@@ -109,8 +110,8 @@ public class MachineFactory {
         return map.get(machineID);
     }
 
-    public MachineFactory(String ID, BlockEntityFactory blockEntityFactory, MachineRecipeType type, int inputSlots, int outputSlots){
-        this(ID, blockEntityFactory, type, inputSlots, outputSlots, 0 , 0);
+    public MachineFactory(String ID, MachineTier tier, BlockEntityFactory blockEntityFactory, MachineRecipeType type, int inputSlots, int outputSlots){
+        this(ID, tier, blockEntityFactory, type, inputSlots, outputSlots, 0 , 0);
     }
 
     public int getInputSlots() {

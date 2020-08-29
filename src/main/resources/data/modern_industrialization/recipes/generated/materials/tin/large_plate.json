@@ -1,0 +1,16 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "##",
+        "##"
+    ],
+    "key": {
+        "#": {
+            "item": "modern_industrialization:tin_plate"
+        }
+    },
+    "result": {
+        "item": "modern_industrialization:tin_large_plate",
+        "count": 1
+    }
+}

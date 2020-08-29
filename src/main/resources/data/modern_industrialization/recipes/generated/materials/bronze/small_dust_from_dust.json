@@ -1,0 +1,12 @@
+{
+    "type": "minecraft:crafting_shapeless",
+    "ingredients": [
+        {
+            "item": "modern_industrialization:bronze_dust"
+        }
+    ],
+    "result": {
+        "item": "modern_industrialization:bronze_small_dust",
+        "count": 9
+    }
+}

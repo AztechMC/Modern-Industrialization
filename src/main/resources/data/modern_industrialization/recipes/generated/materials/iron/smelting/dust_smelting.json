@@ -1,0 +1,9 @@
+{
+    "type": "minecraft:smelting",
+    "ingredient": {
+        "item": "modern_industrialization:iron_dust"
+    },
+    "result": "minecraft:iron_ingot",
+    "experience": 0.7,
+    "cookingtime": 200
+}

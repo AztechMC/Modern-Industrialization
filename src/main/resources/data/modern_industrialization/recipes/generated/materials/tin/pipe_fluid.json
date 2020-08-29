@@ -1,0 +1,20 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "###",
+        " g ",
+        "###"
+    ],
+    "key": {
+        "#": {
+            "item": "modern_industrialization:tin_curved_plate"
+        },
+        "g": {
+            "item": "minecraft:glass"
+        }
+    },
+    "result": {
+        "item": "modern_industrialization:pipe_fluid_tin",
+        "count": 6
+    }
+}

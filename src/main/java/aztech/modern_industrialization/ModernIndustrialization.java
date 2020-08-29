@@ -94,6 +94,7 @@ public class ModernIndustrialization implements ModInitializer {
         setupMaterial();
         MITanks.setup();
         MIMachines.setupRecipes(); // will also load the static fields.
+        ForgeHammerScreenHandler.setupRecipes();
         setupMachines();
         setupPackets();
 

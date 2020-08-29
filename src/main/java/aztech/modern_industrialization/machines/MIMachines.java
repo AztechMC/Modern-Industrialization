@@ -9,13 +9,26 @@ import aztech.modern_industrialization.machines.special.SteamBoilerBlockEntity;
 import aztech.modern_industrialization.machines.special.WaterPumpBlockEntity;
 import net.minecraft.util.registry.Registry;
 
+import java.util.*;
+
 public class MIMachines {
     // Recipe
-    public static final MachineRecipeType RECIPE_COMPRESSOR = new MachineRecipeType().withItemInputs().withItemOutputs();
-    public static final MachineRecipeType RECIPE_FLUID_EXTRACTOR = new MachineRecipeType().withItemInputs().withFluidOutputs();
-    public static final MachineRecipeType RECIPE_FURNACE = new MachineRecipeType().withItemInputs().withItemOutputs(); // TODO: import from vanilla
-    public static final MachineRecipeType RECIPE_MACERATOR = new MachineRecipeType().withItemInputs().withItemOutputs();
-    public static final MachineRecipeType RECIPE_MIXER = new MachineRecipeType().withItemInputs().withItemOutputs();
+    public static final Map<MachineRecipeType, RecipeInfo> RECIPE_TYPES = new HashMap<>();
+    private static MachineRecipeType createRecipeType(String kind) {
+        MachineRecipeType type = new MachineRecipeType(new MIIdentifier(kind));
+        RECIPE_TYPES.put(type, new RecipeInfo());
+        return type;
+    }
+
+    public static class RecipeInfo {
+        public final List<MachineFactory> factories = new ArrayList<>();
+    }
+
+    public static final MachineRecipeType RECIPE_COMPRESSOR = createRecipeType("compressor").withItemInputs().withItemOutputs();
+    public static final MachineRecipeType RECIPE_FLUID_EXTRACTOR = createRecipeType("fluid_extractor").withItemInputs().withFluidOutputs();
+    public static final MachineRecipeType RECIPE_FURNACE = createRecipeType("furnace").withItemInputs().withItemOutputs(); // TODO: import from vanilla
+    public static final MachineRecipeType RECIPE_MACERATOR = createRecipeType("macerator").withItemInputs().withItemOutputs();
+    public static final MachineRecipeType RECIPE_MIXER = createRecipeType("mixer").withItemInputs().withItemOutputs();
 
     // Bronze
     public static MachineFactory BRONZE_BOILER;
@@ -28,63 +41,80 @@ public class MIMachines {
     public static MachineFactory BRONZE_MIXER;
 
     static {
-        BRONZE_BOILER = new MachineFactory("bronze_boiler", () -> new SteamBoilerBlockEntity(BRONZE_BOILER, null), 1, 0, 1, 1)
+        BRONZE_BOILER = new MachineFactory("bronze_boiler", SteamBoilerBlockEntity::new, null, 1, 0, 1, 1)
                 .setInputBucketCapacity(64).setOutputBucketCapacity(64)
                 .setInputSlotPosition(15, 32, 1, 1)
                 .setInputLiquidSlotPosition(50, 32, 1, 1).setLiquidOutputSlotPosition(134, 32, 1, 1)
                 .setupProgressBar(176, 0, 15, 51, 14, 14, false, true)
                 .setupEfficiencyBar(0, 166, 50, 62, 100, 2)
                 .setupBackground("steam_boiler.png")
-                .setupCasing("bricked_bronze")
-                .setupOverlays("boiler", true, false, false);
-        BRONZE_WATER_PUMP = new SteamMachineFactory("bronze_water_pump", () -> new WaterPumpBlockEntity(BRONZE_WATER_PUMP, null), 0, 0, 0, 1)
+                .setupOverlays("boiler", true, false, false)
+                .setupCasing("bricked_bronze");
+        BRONZE_WATER_PUMP = new SteamMachineFactory("bronze_water_pump", WaterPumpBlockEntity::new, null, 0, 0, 0, 1)
                 .setSteamBucketCapacity(64).setSteamSlotPos(23, 23)
                 .setOutputBucketCapacity(64)
                 .setLiquidOutputSlotPosition(104, 32, 1, 1)
                 .setupBackground("water_pump.png")
-                .setupCasing("bronze")
-                .setupOverlays("pump", true, true, true);
-        BRONZE_COMPRESSOR = new SteamMachineFactory("bronze_compressor", () -> new MachineBlockEntity(BRONZE_COMPRESSOR, RECIPE_COMPRESSOR), 1, 1)
-                .setSteamBucketCapacity(64).setSteamSlotPos(23, 23)
+                .setupOverlays("pump", true, true, true)
+                .setupCasing("bronze");
+        BRONZE_COMPRESSOR = setupCompressor(new SteamMachineFactory("bronze_compressor", MachineBlockEntity::new, RECIPE_COMPRESSOR, 1, 1)
+                .setSteamBucketCapacity(64).setSteamSlotPos(23, 23))
+                .setupCasing("bronze");
+        BRONZE_FLUID_EXTRACTOR = setupFluidExtractor(new SteamMachineFactory("bronze_fluid_extractor", MachineBlockEntity::new, RECIPE_FLUID_EXTRACTOR, 1, 0, 0, 1)
+                .setSteamBucketCapacity(64).setSteamSlotPos(23, 23))
+                .setupCasing("bronze");
+        BRONZE_FURNACE = setupFurnace(new SteamMachineFactory("bronze_furnace", MachineBlockEntity::new, RECIPE_FURNACE, 1, 1)
+                .setSteamBucketCapacity(64).setSteamSlotPos(23, 23))
+                .setupCasing("bricked_bronze");
+        BRONZE_MACERATOR = setupMacerator(new SteamMachineFactory("bronze_macerator", MachineBlockEntity::new, RECIPE_MACERATOR, 1, 4)
+                .setSteamBucketCapacity(64).setSteamSlotPos(23, 23))
+                .setupCasing("bronze");
+        BRONZE_MIXER = setupMixer(new SteamMachineFactory("bronze_mixer", MachineBlockEntity::new, RECIPE_MIXER, 4, 2)
+                .setSteamBucketCapacity(64).setSteamSlotPos(23, 23))
+                .setupCasing("bronze");
+    }
+
+    public static MachineFactory setupCompressor(MachineFactory factory) {
+        return factory
                 .setInputSlotPosition(56, 45, 1, 1).setOutputSlotPosition(102, 45, 1, 1)
                 .setupProgressBar(76, 45, 22, 15, true)
-                .setupCasing("bronze")
                 .setupOverlays("compressor", true, true, true);
-        BRONZE_FLUID_EXTRACTOR = new SteamMachineFactory("bronze_fluid_extractor", () -> new MachineBlockEntity(BRONZE_FLUID_EXTRACTOR, RECIPE_FLUID_EXTRACTOR), 1, 0, 0, 1)
-                .setSteamBucketCapacity(64).setSteamSlotPos(23, 23)
-                .setInputSlotPosition(56, 45, 1, 1).setLiquidOutputSlotPosition(102, 45, 1, 1)
+    }
+
+    public static MachineFactory setupFluidExtractor(MachineFactory factory) {
+        return factory.setInputSlotPosition(56, 45, 1, 1).setLiquidOutputSlotPosition(102, 45, 1, 1)
                 .setupProgressBar(76, 45, 22, 15, true).setupBackground("steam_furnace.png")
-                .setupCasing("bronze")
                 .setupOverlays("fluid_extractor", true, true, true);
-        BRONZE_FURNACE = new SteamMachineFactory("bronze_furnace", () -> new MachineBlockEntity(BRONZE_FURNACE, RECIPE_FURNACE), 1, 1)
-                .setSteamBucketCapacity(64).setSteamSlotPos(23, 23)
+    }
+
+    public static MachineFactory setupFurnace(MachineFactory factory) {
+        return factory
                 .setInputSlotPosition(56, 45, 1, 1).setOutputSlotPosition(102, 45, 1, 1)
                 .setupProgressBar(76, 45, 22, 15, true)
-                .setupCasing("bricked_bronze")
                 .setupOverlays("furnace", true, false, false);
-        BRONZE_MACERATOR = new SteamMachineFactory("bronze_macerator", () -> new MachineBlockEntity(BRONZE_MACERATOR, RECIPE_MACERATOR), 1, 4)
-                .setSteamBucketCapacity(64).setSteamSlotPos(23, 23)
+    }
+
+    public static MachineFactory setupMacerator(MachineFactory factory) {
+        return factory
                 .setInputSlotPosition(56, 45, 1, 1).setOutputSlotPosition(102, 45, 2, 2)
                 .setupProgressBar(76, 45, 22, 15, true).setupBackground("steam_furnace.png")
-                .setupCasing("bronze")
                 .setupOverlays("macerator", true, false, true);
-        BRONZE_MIXER = new SteamMachineFactory("bronze_mixer", () -> new MachineBlockEntity(BRONZE_MIXER, RECIPE_MIXER), 4, 2)
-                .setSteamBucketCapacity(64).setSteamSlotPos(23, 23)
+    }
+
+    public static MachineFactory setupMixer(MachineFactory factory) {
+        return factory
                 .setInputSlotPosition(56, 45, 2, 2).setOutputSlotPosition(102, 45, 1, 2)
-                .setupCasing("bronze")
                 .setupOverlays("mixer", true, true, true);
     }
 
     public static void setupRecipes() {
-        registerRecipe("compressor", RECIPE_COMPRESSOR);
-        registerRecipe("fluid_extractor", RECIPE_FLUID_EXTRACTOR);
-        registerRecipe("furnace", RECIPE_FURNACE);
-        registerRecipe("macerator", RECIPE_MACERATOR);
-        registerRecipe("mixer", RECIPE_MIXER);
+        for(MachineRecipeType recipe : RECIPE_TYPES.keySet()) {
+            registerRecipe(recipe);
+        }
     }
 
-    private static void registerRecipe(String name, MachineRecipeType type) {
-        Registry.register(Registry.RECIPE_TYPE, new MIIdentifier(name), type);
-        Registry.register(Registry.RECIPE_SERIALIZER, new MIIdentifier(name), type);
+    private static void registerRecipe(MachineRecipeType type) {
+        Registry.register(Registry.RECIPE_TYPE, type.getId(), type);
+        Registry.register(Registry.RECIPE_SERIALIZER, type.getId(), type);
     }
 }

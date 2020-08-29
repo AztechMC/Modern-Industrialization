@@ -26,7 +26,8 @@
       "aztech.modern_industrialization.ModernIndustrializationClient"
     ],
     "rei_plugins": [
-      "aztech.modern_industrialization.rei.CorePlugin"
+      "aztech.modern_industrialization.rei.CorePlugin",
+      "aztech.modern_industrialization.rei.MachineRecipesPlugin"
     ]
   },
   "mixins": [

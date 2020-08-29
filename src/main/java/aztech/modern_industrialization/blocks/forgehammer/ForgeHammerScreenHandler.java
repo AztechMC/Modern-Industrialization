@@ -24,8 +24,8 @@ public class ForgeHammerScreenHandler extends ScreenHandler {
 
 
     // TODO : create custom recipe json
-    public static final MachineRecipeType RECIPE_HAMMER = new MachineRecipeType().withItemInputs().withItemOutputs();
-    public static final MachineRecipeType RECIPE_SAW = new MachineRecipeType().withItemInputs().withItemOutputs();
+    public static final MachineRecipeType RECIPE_HAMMER = new MachineRecipeType(new MIIdentifier("forge_hammer_hammer")).withItemInputs().withItemOutputs();
+    public static final MachineRecipeType RECIPE_SAW = new MachineRecipeType(new MIIdentifier("forge_hammer_saw")).withItemInputs().withItemOutputs();
 
     public static void setupRecipes() {
         registerRecipe("forge_hammer_hammer", RECIPE_HAMMER);

@@ -1,17 +1,19 @@
 package aztech.modern_industrialization.machines.impl;
 
+import aztech.modern_industrialization.machines.recipe.MachineRecipeType;
+
 import java.util.function.Supplier;
 
 public class SteamMachineFactory extends MachineFactory {
 
     private int steamBucketCapacity;
 
-    public SteamMachineFactory(String ID, Supplier<MachineBlockEntity> blockEntityConstructor, int inputSlots, int outputSlots, int liquidInputSlots, int liquidOutputSlots) {
-        super(ID, blockEntityConstructor, inputSlots, outputSlots, liquidInputSlots + 1, liquidOutputSlots);
+    public SteamMachineFactory(String ID, BlockEntityFactory factory, MachineRecipeType type, int inputSlots, int outputSlots, int liquidInputSlots, int liquidOutputSlots) {
+        super(ID, factory, type, inputSlots, outputSlots, liquidInputSlots + 1, liquidOutputSlots);
     }
 
-    public SteamMachineFactory(String ID, Supplier<MachineBlockEntity> blockEntityConstructor, int inputSlots, int outputSlots) {
-        super(ID, blockEntityConstructor, inputSlots, outputSlots,  1, 0);
+    public SteamMachineFactory(String ID, BlockEntityFactory factory, MachineRecipeType type, int inputSlots, int outputSlots) {
+        super(ID, factory, type, inputSlots, outputSlots,  1, 0);
     }
 
     public SteamMachineFactory setSteamSlotPos(int posX, int posY) {

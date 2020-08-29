@@ -1,11 +1,14 @@
 package aztech.modern_industrialization.machines.impl;
 
 import aztech.modern_industrialization.MIIdentifier;
+import aztech.modern_industrialization.machines.MIMachines;
+import aztech.modern_industrialization.machines.recipe.MachineRecipeType;
 import aztech.modern_industrialization.model.block.ModelProvider;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.item.BlockItem;
 
 import java.util.HashMap;
+import java.util.function.BiFunction;
 import java.util.function.Supplier;
 
 import static aztech.modern_industrialization.machines.impl.MachineSlotType.*;
@@ -73,7 +76,7 @@ public class MachineFactory {
     private int backgroundWidth = 176;
     private int backgroundHeight = 166;
 
-    public MachineFactory(String ID, Supplier<MachineBlockEntity> blockEntityConstructor, int inputSlots, int outputSlots, int liquidInputSlots, int liquidOutputSlots){
+    public MachineFactory(String ID, BlockEntityFactory blockEntityFactory, MachineRecipeType type, int inputSlots, int outputSlots, int liquidInputSlots, int liquidOutputSlots){
         this.machineID = ID;
 
         if(map.containsKey(machineID)){
@@ -82,7 +85,10 @@ public class MachineFactory {
             map.put(machineID, this);
         }
 
-        this.blockEntityConstructor = blockEntityConstructor;
+        this.blockEntityConstructor = () -> blockEntityFactory.create(this, type);
+        if(type != null) {
+            MIMachines.RECIPE_TYPES.get(type).factories.add(this);
+        }
 
         this.inputSlots = inputSlots;
         this.outputSlots = outputSlots;
@@ -103,8 +109,8 @@ public class MachineFactory {
         return map.get(machineID);
     }
 
-    public MachineFactory(String ID,  Supplier<MachineBlockEntity> blockEntityConstructor, int inputSlots, int outputSlots){
-        this(ID, blockEntityConstructor, inputSlots, outputSlots, 0 , 0);
+    public MachineFactory(String ID, BlockEntityFactory blockEntityFactory, MachineRecipeType type, int inputSlots, int outputSlots){
+        this(ID, blockEntityFactory, type, inputSlots, outputSlots, 0 , 0);
     }
 
     public int getInputSlots() {
@@ -121,6 +127,28 @@ public class MachineFactory {
 
     public int getLiquidOutputSlots() {
         return liquidOutputSlots;
+    }
+
+    private int[] getRange(int start, int end) {
+        int[] range = new int[end-start];
+        for(int i = start; i < end; i++) range[i-start] = i;
+        return range;
+    }
+
+    public int[] getInputIndices() {
+        return getRange(0, inputSlots);
+    }
+
+    public int[] getFluidInputIndices() {
+        return getRange(inputSlots + (this instanceof SteamMachineFactory ? 1 : 0), inputSlots + liquidInputSlots);
+    }
+
+    public int[] getOutputIndices() {
+        return getRange(inputSlots + liquidInputSlots, inputSlots + liquidInputSlots + outputSlots);
+    }
+
+    public int[] getFluidOutputIndices() {
+        return getRange(inputSlots + liquidInputSlots + outputSlots, inputSlots + liquidInputSlots + outputSlots + liquidOutputSlots);
     }
 
     public String getTranslationKey() {

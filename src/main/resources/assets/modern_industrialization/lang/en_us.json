@@ -70,5 +70,11 @@
   "modern_industrialization:block_type:block" : "%s Block",
   "modern_industrialization:block_type:ore" : "%s Ore",
 
+  "modern_industrialization:compressor" : "Compressor",
+  "modern_industrialization:fluid_extractor" : "Fluid Extractor",
+  "modern_industrialization:furnace" : "Furnace",
+  "modern_industrialization:macerator" : "Macerator",
+  "modern_industrialization:mixer" : "Mixer",
+
   "itemGroup.modern_industrialization.general" : "Modern Industrialization"
 }

@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "###",
+    "#G#",
+    "###"
+  ],
+  "key": {
+    "#": {
+      "item": "modern_industrialization:bronze_large_plate"
+    },
+    "G" : {
+      "item": "minecraft:glass"
+    }
+  },
+  "result": {
+    "item": "modern_industrialization:tank_bronze"
+  }
+}

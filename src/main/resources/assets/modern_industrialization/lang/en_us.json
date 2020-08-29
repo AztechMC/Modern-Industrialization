@@ -87,7 +87,6 @@
   "modern_industrialization:furnace" : "Furnace",
   "modern_industrialization:macerator" : "Macerator",
   "modern_industrialization:mixer" : "Mixer",
-  "modern_industrialization:cutting_saw" : "Cutting Saw",
 
   "itemGroup.modern_industrialization.general" : "Modern Industrialization"
 }

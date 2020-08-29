@@ -27,6 +27,10 @@ public enum MachineTier {
         return steam;
     }
 
+    public int getMaxEu() {
+        return maxEu;
+    }
+
     @Override
     public String toString() {
         return name;

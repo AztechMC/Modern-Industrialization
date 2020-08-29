@@ -195,6 +195,7 @@ public class MachineBlockEntity extends AbstractMachineBlockEntity
         if(activeRecipe == null) {
             if(getEu(1, true) == 1) {
                 for (MachineRecipe recipe : recipeType.getRecipes((ServerWorld) world)) {
+                    if(recipe.eu > factory.tier.getMaxEu()) continue;
                     if (takeItemInputs(recipe, true) && takeFluidInputs(recipe, true) && putItemOutputs(recipe, true, false) && putFluidOutputs(recipe, true, false)) {
                         takeItemInputs(recipe, false);
                         takeFluidInputs(recipe, false);
@@ -203,7 +204,13 @@ public class MachineBlockEntity extends AbstractMachineBlockEntity
                         activeRecipe = recipe;
                         usedEnergy = 0;
                         recipeEnergy = recipe.eu * recipe.duration;
-                        recipeMaxEu = recipe.eu;
+                        if(factory.tier == MachineTier.BRONZE) {
+                            recipeMaxEu = recipe.eu;
+                        } else if(factory.tier == MachineTier.STEEL) {
+                            recipeMaxEu = 2*recipe.eu <= factory.tier.getMaxEu() ? 2*recipe.eu : recipe.eu;
+                        } else {
+                            // TODO: electric overclock
+                        }
                         break;
                     }
                 }

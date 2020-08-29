@@ -29,7 +29,7 @@ public class MIMachines {
 
     public static final MachineRecipeType RECIPE_COMPRESSOR = createRecipeType("compressor").withItemInputs().withItemOutputs();
     public static final MachineRecipeType RECIPE_CUTTING_SAW = createRecipeType("cutting_saw").withItemInputs().withFluidInputs().withItemOutputs();
-    public static final MachineRecipeType RECIPE_FLUID_EXTRACTOR = createRecipeType("fluid_extractor").withItemInputs().withFluidOutputs();
+    //public static final MachineRecipeType RECIPE_FLUID_EXTRACTOR = createRecipeType("fluid_extractor").withItemInputs().withFluidOutputs();
     public static final MachineRecipeType RECIPE_FURNACE = createRecipeType("furnace").withItemInputs().withItemOutputs(); // TODO: import from vanilla
     public static final MachineRecipeType RECIPE_MACERATOR = createRecipeType("macerator").withItemInputs().withItemOutputs();
     public static final MachineRecipeType RECIPE_MIXER = createRecipeType("mixer").withItemInputs().withItemOutputs();
@@ -57,7 +57,7 @@ public class MIMachines {
                 .setupCasing("bronze");
         registerMachineTiers("compressor", RECIPE_COMPRESSOR, 1, 1, 0, 0, MIMachines::setupCompressor, false);
         registerMachineTiers("cutting_saw", RECIPE_CUTTING_SAW, 1, 1, 1, 0, MIMachines::setupCuttingSaw, false);
-        registerMachineTiers("fluid_extractor", RECIPE_FLUID_EXTRACTOR, 1, 0, 0, 1, MIMachines::setupFluidExtractor, false);
+        //registerMachineTiers("fluid_extractor", RECIPE_FLUID_EXTRACTOR, 1, 0, 0, 1, MIMachines::setupFluidExtractor, false);
         registerMachineTiers("furnace", RECIPE_FURNACE, 1, 1, 0, 0, MIMachines::setupFurnace, true);
         registerMachineTiers("macerator", RECIPE_MACERATOR, 1, 4, 0, 0, MIMachines::setupMacerator, false);
         registerMachineTiers("mixer", RECIPE_MIXER, 4, 2, 0, 0, MIMachines::setupMixer, false);
@@ -113,7 +113,7 @@ public class MIMachines {
             MachineFactory factory;
             if(tier.isSteam()) {
                 factory = new SteamMachineFactory(tier.toString() + "_" + machineType, tier, MachineBlockEntity::new, recipeType, inputSlots, outputSlots, fluidInputSlots, fluidOutputSlots)
-                    .setSteamBucketCapacity(2).setSteamSlotPos(23, 23);
+                    .setSteamBucketCapacity(tier == BRONZE ? 2 : 4).setSteamSlotPos(23, 23);
                 factory.setupCasing((steamBricked ? "bricked_" : "") + tier.toString());
             } else {
                 return;

@@ -28,7 +28,7 @@ public class MIMachines {
     }
 
     public static final MachineRecipeType RECIPE_COMPRESSOR = createRecipeType("compressor").withItemInputs().withItemOutputs();
-    public static final MachineRecipeType RECIPE_CUTTING_SAW = createRecipeType("cutting_saw").withItemInputs().withFluidInputs().withItemOutputs();
+    public static final MachineRecipeType RECIPE_CUTTING_MACHINE = createRecipeType("cutting_machine").withItemInputs().withFluidInputs().withItemOutputs();
     //public static final MachineRecipeType RECIPE_FLUID_EXTRACTOR = createRecipeType("fluid_extractor").withItemInputs().withFluidOutputs();
     public static final MachineRecipeType RECIPE_FURNACE = createRecipeType("furnace").withItemInputs().withItemOutputs(); // TODO: import from vanilla
     public static final MachineRecipeType RECIPE_MACERATOR = createRecipeType("macerator").withItemInputs().withItemOutputs();
@@ -56,7 +56,7 @@ public class MIMachines {
                 .setupOverlays("pump", true, true, true)
                 .setupCasing("bronze");
         registerMachineTiers("compressor", RECIPE_COMPRESSOR, 1, 1, 0, 0, MIMachines::setupCompressor, false);
-        registerMachineTiers("cutting_saw", RECIPE_CUTTING_SAW, 1, 1, 1, 0, MIMachines::setupCuttingSaw, false);
+        registerMachineTiers("cutting_machine", RECIPE_CUTTING_MACHINE, 1, 1, 1, 0, MIMachines::setupCuttingMachine, false);
         //registerMachineTiers("fluid_extractor", RECIPE_FLUID_EXTRACTOR, 1, 0, 0, 1, MIMachines::setupFluidExtractor, false);
         registerMachineTiers("furnace", RECIPE_FURNACE, 1, 1, 0, 0, MIMachines::setupFurnace, true);
         registerMachineTiers("macerator", RECIPE_MACERATOR, 1, 4, 0, 0, MIMachines::setupMacerator, false);
@@ -66,15 +66,16 @@ public class MIMachines {
     public static MachineFactory setupCompressor(MachineFactory factory) {
         return factory
                 .setInputSlotPosition(56, 45, 1, 1).setOutputSlotPosition(102, 45, 1, 1)
-                .setupProgressBar(76, 45, 22, 15, true)
+                .setupProgressBar(76, 45, 22, 15, true).setupBackground("steam_furnace.png")
                 .setupOverlays("compressor", true, true, true);
     }
 
-    public static MachineFactory setupCuttingSaw(MachineFactory factory) {
+    public static MachineFactory setupCuttingMachine(MachineFactory factory) {
         return factory
+                .setInputLiquidSlotPosition(36, 45, 1, 1)
                 .setInputSlotPosition(56, 45, 1, 1).setOutputSlotPosition(102, 45, 1, 1)
-                .setupProgressBar(76, 45, 22, 15, true)
-                .setupOverlays("cutting_saw", true, false, false);
+                .setupProgressBar(76, 45, 22, 15, true).setupBackground("steam_furnace.png")
+                .setupOverlays("cutting_machine", true, false, false);
     }
 
     public static MachineFactory setupFluidExtractor(MachineFactory factory) {
@@ -86,7 +87,7 @@ public class MIMachines {
     public static MachineFactory setupFurnace(MachineFactory factory) {
         return factory
                 .setInputSlotPosition(56, 45, 1, 1).setOutputSlotPosition(102, 45, 1, 1)
-                .setupProgressBar(76, 45, 22, 15, true)
+                .setupProgressBar(76, 45, 22, 15, true).setupBackground("steam_furnace.png")
                 .setupOverlays("furnace", true, false, false);
     }
 
@@ -100,6 +101,7 @@ public class MIMachines {
     public static MachineFactory setupMixer(MachineFactory factory) {
         return factory
                 .setInputSlotPosition(56, 45, 2, 2).setOutputSlotPosition(102, 45, 1, 2)
+                .setupProgressBar(76, 45, 22, 15, true).setupBackground("steam_furnace.png")
                 .setupOverlays("mixer", true, true, true);
     }
 

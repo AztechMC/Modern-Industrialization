@@ -329,9 +329,9 @@ def genCompressor(id, vanilla, ore):
 
 
 def genCuttingSaw(id, vanilla, ore):
-    path = "src/main/resources/data/modern_industrialization/recipes/generated/materials/" + id + "/cutting_saw"
+    path = "src/main/resources/data/modern_industrialization/recipes/generated/materials/" + id + "/cutting_machine"
     Path(path).mkdir(parents=True, exist_ok=True)
-    mac = "modern_industrialization:cutting_saw"
+    mac = "modern_industrialization:cutting_machine"
 
     for a, b, c in [('ingot', 'rod', 2), ('rod', 'bolt', 2), ('large_plate', 'gear', 2), ('pipe_item', 'ring', 6)]:
         jsonf = {}

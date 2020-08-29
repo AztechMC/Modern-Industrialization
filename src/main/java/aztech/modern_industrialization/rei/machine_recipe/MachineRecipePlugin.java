@@ -11,6 +11,7 @@ import me.shedaniel.rei.api.plugins.REIPluginV0;
 import net.minecraft.recipe.Recipe;
 import net.minecraft.util.Identifier;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
@@ -43,7 +44,7 @@ public class MachineRecipePlugin implements REIPluginV0 {
     @Override
     public void registerOthers(RecipeHelper recipeHelper) {
         for(Map.Entry<MachineRecipeType, MIMachines.RecipeInfo> entry : MIMachines.RECIPE_TYPES.entrySet()) {
-            recipeHelper.registerWorkingStations(entry.getKey().getId(), entry.getValue().factories.stream().map(f -> EntryStack.create(f.item)).collect(Collectors.toList()));
+            recipeHelper.registerWorkingStations(entry.getKey().getId(), entry.getValue().factories.stream().map(f -> EntryStack.create(f.item)).toArray(EntryStack[]::new));
             recipeHelper.removeAutoCraftButton(entry.getKey().getId());
         }
     }

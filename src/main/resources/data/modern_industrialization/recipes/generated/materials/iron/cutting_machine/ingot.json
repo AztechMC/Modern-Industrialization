@@ -1,0 +1,17 @@
+{
+    "type": "modern_industrialization:cutting_machine",
+    "eu": 2,
+    "duration": 200,
+    "item_inputs": {
+        "item": "minecraft:iron_ingot",
+        "amount": 1
+    },
+    "fluid_inputs": {
+        "fluid": "minecraft:water",
+        "amount": 1
+    },
+    "item_outputs": {
+        "item": "modern_industrialization:iron_rod",
+        "amount": 2
+    }
+}

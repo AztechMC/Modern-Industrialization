@@ -20,6 +20,10 @@ import java.util.stream.Collectors;
 
 public class MachineRecipeType implements RecipeType, RecipeSerializer {
 
+    public MachineRecipeType(Identifier id) {
+        this.id = id;
+    }
+
     public List<MachineRecipe> getRecipes(ServerWorld world) {
         return world.getRecipeManager().listAllOfType(this);
     }
@@ -27,6 +31,7 @@ public class MachineRecipeType implements RecipeType, RecipeSerializer {
         return getRecipes(world).stream().filter(r -> r.getId().equals(id)).findFirst().orElse(null);
     }
 
+    private final Identifier id;
     private boolean allowItemInput = false;
     private boolean allowFluidInput = false;
     private boolean allowItemOutput = false;
@@ -50,6 +55,10 @@ public class MachineRecipeType implements RecipeType, RecipeSerializer {
     public MachineRecipeType withFluidOutputs() {
         allowFluidOutput = true;
         return this;
+    }
+
+    public Identifier getId() {
+        return id;
     }
 
     private void validateRecipe(MachineRecipe recipe) {

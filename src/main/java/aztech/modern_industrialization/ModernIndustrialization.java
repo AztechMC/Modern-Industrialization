@@ -75,7 +75,7 @@ public class ModernIndustrialization implements ModInitializer {
 
     // ScreenHandlerType
     public static final ScreenHandlerType<MachineScreenHandler> SCREEN_HANDLER_TYPE_MACHINE =
-            ScreenHandlerRegistry.registerExtended(new Identifier(MOD_ID, "machine"), MachineScreenHandler::new);
+            ScreenHandlerRegistry.registerExtended(new Identifier(MOD_ID, "machine_recipe"), MachineScreenHandler::new);
     public static final ScreenHandlerType<ForgeHammerScreenHandler> SCREEN_HANDLER_FORGE_HAMMER =
             ScreenHandlerRegistry.registerSimple(new Identifier(MOD_ID, "forge_hammer"), ForgeHammerScreenHandler::new);
     // Fluid

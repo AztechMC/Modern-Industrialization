@@ -34,7 +34,7 @@ public class ConfigurableFluidStack {
     boolean pipesExtract = false;
 
     /**
-     * Whether this stack is for the steam input of a steam machine. It will be ignored by recipes and it will allow
+     * Whether this stack is for the steam input of a steam machine_recipe. It will be ignored by recipes and it will allow
      * other slots to be filled with its fluid.
      */
     boolean steamInput = false;

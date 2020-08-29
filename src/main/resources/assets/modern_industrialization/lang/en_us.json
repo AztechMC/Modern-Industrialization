@@ -38,6 +38,9 @@
   "text.modern_industrialization.fluid_slot_IO" : "Fluid IO, Left Click to Insert or Extract",
   "text:modern_industrialization:tooltip_hammer" : "Hammer, Click to switch to saw",
   "text:modern_industrialization:tooltip_saw" : "Saw, Click to switch to hammer",
+  "text.modern_industrialization.base_eu_t" : "%d EU/t",
+  "text.modern_industrialization.base_duration_seconds" : "%.02f seconds",
+  "text.modern_industrialization.base_eu_total" : "%d Total EU",
 
   "modern_industrialization:material:copper" : "Copper",
   "modern_industrialization:material:tin" : "Tin",
@@ -69,6 +72,14 @@
 
   "modern_industrialization:block_type:block" : "%s Block",
   "modern_industrialization:block_type:ore" : "%s Ore",
+
+  "modern_industrialization:forge_hammer_hammer" : "Hammering",
+  "modern_industrialization:forge_hammer_saw" : "Sawing",
+  "modern_industrialization:compressor" : "Compressor",
+  "modern_industrialization:fluid_extractor" : "Fluid Extractor",
+  "modern_industrialization:furnace" : "Furnace",
+  "modern_industrialization:macerator" : "Macerator",
+  "modern_industrialization:mixer" : "Mixer",
 
   "itemGroup.modern_industrialization.general" : "Modern Industrialization"
 }

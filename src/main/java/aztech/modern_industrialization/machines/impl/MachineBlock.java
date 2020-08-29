@@ -39,7 +39,7 @@ import java.util.List;
 import java.util.function.Supplier;
 
 /**
- * A generic machine block.
+ * A generic machine_recipe block.
  */
 public class MachineBlock extends Block implements BlockEntityProvider, IWrenchable {
     private final Supplier<MachineBlockEntity> blockEntityFactory;

@@ -1,4 +1,4 @@
-package aztech.modern_industrialization.rei;
+package aztech.modern_industrialization.rei.machine_recipe;
 
 import aztech.modern_industrialization.machines.impl.MachineFactory;
 import aztech.modern_industrialization.machines.impl.SteamMachineFactory;

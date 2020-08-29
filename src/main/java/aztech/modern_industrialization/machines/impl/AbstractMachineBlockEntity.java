@@ -16,7 +16,7 @@ import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.Direction;
 
 /**
- * A generic machine BlockEntity.
+ * A generic machine_recipe BlockEntity.
  */
 public abstract class AbstractMachineBlockEntity extends BlockEntity implements RenderAttachmentBlockEntity, BlockEntityClientSerializable {
     protected Direction facingDirection;

@@ -39,7 +39,7 @@ public class MachineFactory {
 
     private int slots;
 
-    private String translationKey = "machine.default";
+    private String translationKey = "machine_recipe.default";
 
     // slot index -> inputSlots next liquidInputSlots next outputSlots next liquidOutputSlots
 

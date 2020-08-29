@@ -19,7 +19,7 @@ import net.minecraft.util.Identifier;
 
 public class ForgeHammerScreen extends HandledScreen<ForgeHammerScreenHandler> {
 
-    private static final Identifier FORGE_HAMMER_GUI = new Identifier(ModernIndustrialization.MOD_ID, "textures/gui/container/forge_hammer.png");
+    public static final Identifier FORGE_HAMMER_GUI = new Identifier(ModernIndustrialization.MOD_ID, "textures/gui/container/forge_hammer.png");
     private static final Style style = Style.EMPTY.withColor(TextColor.fromRgb(0xa9a9a9)).withItalic(true);
 
 

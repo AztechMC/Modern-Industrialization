@@ -27,7 +27,8 @@
     ],
     "rei_plugins": [
       "aztech.modern_industrialization.rei.CorePlugin",
-      "aztech.modern_industrialization.rei.MachineRecipesPlugin"
+      "aztech.modern_industrialization.rei.machine_recipe.MachineRecipePlugin",
+      "aztech.modern_industrialization.rei.forgehammer_recipe.ForgeHammerRecipePlugin"
     ]
   },
   "mixins": [

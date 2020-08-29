@@ -1,4 +1,4 @@
-package aztech.modern_industrialization.rei;
+package aztech.modern_industrialization.rei.machine_recipe;
 
 import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.machines.MIMachines;
@@ -16,10 +16,10 @@ import java.util.Map;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-public class MachineRecipesPlugin implements REIPluginV0 {
+public class MachineRecipePlugin implements REIPluginV0 {
     @Override
     public Identifier getPluginIdentifier() {
-        return new MIIdentifier("machine_recipes");
+        return new MIIdentifier("machine_recipe");
     }
 
     @Override
@@ -44,6 +44,7 @@ public class MachineRecipesPlugin implements REIPluginV0 {
     public void registerOthers(RecipeHelper recipeHelper) {
         for(Map.Entry<MachineRecipeType, MIMachines.RecipeInfo> entry : MIMachines.RECIPE_TYPES.entrySet()) {
             recipeHelper.registerWorkingStations(entry.getKey().getId(), entry.getValue().factories.stream().map(f -> EntryStack.create(f.item)).collect(Collectors.toList()));
+            recipeHelper.removeAutoCraftButton(entry.getKey().getId());
         }
     }
 }

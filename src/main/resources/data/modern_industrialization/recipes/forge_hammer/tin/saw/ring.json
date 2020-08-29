@@ -3,11 +3,11 @@
   "eu": 1,
   "duration": 1,
   "item_inputs": {
-    "item": "modern_industrialization:pipe_item_copper",
+    "item": "modern_industrialization:pipe_item_tin",
     "amount": 1
   },
   "item_outputs": {
-    "item": "modern_industrialization:copper_ring",
+    "item": "modern_industrialization:tin_ring",
     "amount": 3
   }
 }

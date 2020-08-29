@@ -2,19 +2,16 @@
   "type": "minecraft:crafting_shaped",
   "pattern": [
     "###",
-    " g ",
+    "   ",
     "###"
   ],
   "key": {
     "#": {
       "item": "modern_industrialization:copper_curved_plate"
-    },
-    "g" : {
-      "item": "minecraft:glass"
     }
   },
   "result": {
-    "item": "modern_industrialization:pipe_fluid_copper",
+    "item": "modern_industrialization:pipe_item_copper",
     "count": 6
   }
 }

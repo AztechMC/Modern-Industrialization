@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "#",
+    "#",
+    "I"
+  ],
+  "key": {
+    "#": {
+      "item": "modern_industrialization:iron_plate"
+    },
+    "I": {
+      "item": "modern_industrialization:iron_rod"
+    }
+  },
+  "result": {
+    "item": "modern_industrialization:iron_blade",
+    "count": 4
+  }
+}

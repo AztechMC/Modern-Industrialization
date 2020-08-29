@@ -7,14 +7,14 @@
   ],
   "key": {
     "#": {
-      "item": "modern_industrialization:copper_curved_plate"
+      "item": "modern_industrialization:gold_curved_plate"
     },
     "g" : {
       "item": "minecraft:glass"
     }
   },
   "result": {
-    "item": "modern_industrialization:pipe_fluid_copper",
+    "item": "modern_industrialization:pipe_fluid_gold",
     "count": 6
   }
 }

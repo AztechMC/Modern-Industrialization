@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "CC",
+    "TC"
+  ],
+  "key": {
+    "C": {
+      "item": "modern_industrialization:copper_dust"
+    },
+    "T" : {
+      "item": "modern_industrialization:tin_dust"
+    }
+  },
+  "result": {
+    "item": "modern_industrialization:bronze_dust",
+    "count": 3
+  }
+}

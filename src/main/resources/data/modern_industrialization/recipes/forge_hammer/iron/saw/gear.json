@@ -3,11 +3,11 @@
   "eu": 1,
   "duration": 1,
   "item_inputs": {
-    "item": "modern_industrialization:pipe_item_copper",
+    "item": "modern_industrialization:iron_large_plate",
     "amount": 1
   },
   "item_outputs": {
-    "item": "modern_industrialization:copper_ring",
-    "amount": 3
+    "item": "modern_industrialization:iron_gear",
+    "amount": 1
   }
 }

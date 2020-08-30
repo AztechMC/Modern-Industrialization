@@ -1,0 +1,29 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "rTr",
+    "GCG",
+    "ppp"
+  ],
+  "key": {
+    "r": {
+      "item": "modern_industrialization:copper_rotor"
+    },
+    "C": {
+      "item": "modern_industrialization:bronze_machine_casing"
+    },
+    "p": {
+      "item": "modern_industrialization:pipe_fluid_copper"
+    },
+    "G": {
+      "item": "modern_industrialization:copper_gear"
+    },
+    "T": {
+      "item": "modern_industrialization:tank_bronze"
+    }
+  },
+  "result": {
+    "item": "modern_industrialization:bronze_water_pump",
+    "count": 1
+  }
+}

@@ -42,4 +42,8 @@ public class MIBlock extends Block {
                     .breakByTool(FabricToolTags.PICKAXES, 0)
                     .requiresTool());
 
+    public static final MIBlock BLOCK_BRONZE_MACHINE_CASING = new MIBlock("bronze_machine_casing",
+            FabricBlockSettings.of(MIMaterialSetup.METAL_MATERIAL).
+                    hardness(4.0f).breakByTool(FabricToolTags.PICKAXES).requiresTool());
+
 }

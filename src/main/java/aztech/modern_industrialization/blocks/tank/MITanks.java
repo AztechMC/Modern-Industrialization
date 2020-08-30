@@ -35,7 +35,7 @@ public enum MITanks {
 
     public static void setup() {
         for(MITanks tank : values()) {
-            ModernIndustrialization.registerBlock(tank.block, tank.item, "tank_" + tank.type, false);
+            ModernIndustrialization.registerBlock(tank.block, tank.item, "tank_" + tank.type, 0);
         }
         BLOCK_ENTITY_TYPE = Registry.register(Registry.BLOCK_ENTITY_TYPE, new MIIdentifier("tank"), BlockEntityType.Builder.create(TankBlockEntity::new, getBlocks()).build(null));
     }

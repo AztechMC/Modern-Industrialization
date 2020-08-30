@@ -17,6 +17,12 @@
   "item.modern_industrialization.pipe_item_copper" : "Copper Item Pipe",
 
   "item.modern_industrialization.wrench" : "Wrench",
+  "item.modern_industrialization.brick_dust" : "Brick Dust",
+  "item.modern_industrialization.fire_clay_dust" : "Fire Clay Dust",
+  "item.modern_industrialization.fire_clay_brick" : "Fire Clay Brick",
+  "item.modern_industrialization.coke" : "Coke",
+  "item.modern_industrialization.coke_dust" : "Coke Dust",
+  "item.modern_industrialization.uncooked_steel_dust" : "Uncooked Steel Dust",
 
   "block.modern_industrialization.forge_hammer" : "Forge Hammer",
   "block.modern_industrialization.steam" : "Steam",
@@ -36,6 +42,7 @@
   "block.modern_industrialization.steel_mixer" : "Steel Mixer",
   "block.modern_industrialization.tank_bronze" : "Steel Tank",
   "block.modern_industrialization.tank_steel" : "Steel Tank",
+  "block.modern_industrialization.fire_clay_bricks" : "Fire Clay Bricks",
 
   "text.modern_industrialization.fluid_slot_empty" : "Empty",
   "text.modern_industrialization.fluid_slot_quantity" : "%s drops",
@@ -88,6 +95,7 @@
   "modern_industrialization:furnace" : "Furnace",
   "modern_industrialization:macerator" : "Macerator",
   "modern_industrialization:mixer" : "Mixer",
+
 
   "itemGroup.modern_industrialization.general" : "Modern Industrialization"
 }

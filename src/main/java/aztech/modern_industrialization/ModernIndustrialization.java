@@ -52,6 +52,14 @@ import java.util.*;
 //import aztech.modern_industrialization.machines.impl.SteamBoilerScreenHandler;
 
 public class ModernIndustrialization implements ModInitializer {
+
+
+
+    public static final int FLAG_BLOCK_LOOT = 1;
+    public static final int FLAG_BLOCK_MODEL = 1 << 1;
+    public static final int FLAG_BLOCK_ITEM_MODEL = 1 << 2;
+
+
     public static final String MOD_ID = "modern_industrialization";
     public static final Logger LOGGER = LogManager.getLogger("Modern Industrialization");
     public static final RuntimeResourcePack RESOURCE_PACK = RuntimeResourcePack.create("modern_industrialization:general");
@@ -115,11 +123,18 @@ public class ModernIndustrialization implements ModInitializer {
     }
 
     private void setupItems() {
+        for(MIItem item : MIItem.items.values()){
+            registerItem(item, item.getId());
+        }
+
         registerItem(ITEM_WRENCH, "wrench");
     }
 
     private void setupBlocks() {
-        registerBlock(FORGE_HAMMER, ITEM_FORGE_HAMMER, "forge_hammer");
+        registerBlock(FORGE_HAMMER, ITEM_FORGE_HAMMER, "forge_hammer", FLAG_BLOCK_LOOT | FLAG_BLOCK_ITEM_MODEL);
+        for(MIBlock block : MIBlock.blocks.values()){
+            registerBlock(block, block.getItem(), block.getId());
+        }
     }
 
     private void setupBlockEntities() {
@@ -141,19 +156,34 @@ public class ModernIndustrialization implements ModInitializer {
         Registry.register(Registry.ITEM, new MIIdentifier("fluid_slot"), ITEM_FLUID_SLOT);
     }
 
-    public static void registerBlock(Block block, Item item, String id, boolean loot) {
+    public static void registerBlock(Block block, Item item, String id, int flag) {
         Identifier identifier = new MIIdentifier(id);
         Registry.register(Registry.BLOCK, identifier, block);
         Registry.register(Registry.ITEM, identifier, item);
-        if (loot) {
+        if ((flag & FLAG_BLOCK_LOOT) != 0) {
             registerBlockLoot(id);
         }
         // TODO: client side?
         RESOURCE_PACK.addBlockState(JState.state().add(new JVariant().put("", new JBlockModel(MOD_ID + ":block/" + id))), identifier);
+
+        if ((flag & FLAG_BLOCK_MODEL) != 0)
+            RESOURCE_PACK.addModel(JModel.model().parent("block/cube_all").textures(
+                    new JTextures().var("all", MOD_ID + ":blocks/" + id)),
+                    new MIIdentifier("block/" + id)
+            );
+
+        if ((flag & FLAG_BLOCK_ITEM_MODEL) != 0)
+            RESOURCE_PACK.addModel(JModel.model().parent(MOD_ID + ":block/" + id),
+                    new MIIdentifier("item/" + id)
+            );
+
+
     }
 
+
+
     public static void registerBlock(Block block, Item item, String id) {
-        registerBlock(block, item, id, true);
+        registerBlock(block, item, id, FLAG_BLOCK_LOOT | FLAG_BLOCK_ITEM_MODEL | FLAG_BLOCK_MODEL);
     }
 
 

@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "###",
+    "# #",
+    "###"
+  ],
+  "key": {
+    "#": {
+      "item": "modern_industrialization:steel_large_plate"
+    }
+  },
+  "result": {
+    "item": "modern_industrialization:steel_machine_casing",
+    "count": 1
+  }
+}

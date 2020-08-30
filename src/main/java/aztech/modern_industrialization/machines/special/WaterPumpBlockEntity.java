@@ -5,6 +5,7 @@ import aztech.modern_industrialization.fluid.FluidUnit;
 import aztech.modern_industrialization.inventory.ConfigurableFluidStack;
 import aztech.modern_industrialization.machines.impl.MachineBlockEntity;
 import aztech.modern_industrialization.machines.impl.MachineFactory;
+import aztech.modern_industrialization.machines.impl.MachineTier;
 import aztech.modern_industrialization.machines.recipe.MachineRecipeType;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -73,7 +74,8 @@ public class WaterPumpBlockEntity extends MachineBlockEntity {
                     }
                 }
             }
-            waterStack.increment(Math.min(providedBucketEights * FluidUnit.DROPS_PER_BUCKET / 8, waterStack.getRemainingSpace()));
+            int factorTier = ( factory.tier ==  MachineTier.BRONZE ? 1 : 2);
+            waterStack.increment(Math.min(factorTier*providedBucketEights * FluidUnit.DROPS_PER_BUCKET / 8, waterStack.getRemainingSpace()));
             usedEnergy = 0;
         }
         markDirty();

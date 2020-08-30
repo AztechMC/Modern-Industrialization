@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern" : [
+    "###",
+    "#F#",
+    "BBB"
+  ],
+  "key": {
+    "#": {
+      "item": "modern_industrialization:steel_large_plate"
+    },
+    "F": {
+      "item": "minecraft:furnace"
+    },
+    "B": {
+      "item": "modern_industrialization:fire_clay_bricks"
+    }
+  },
+    "result": {
+      "item": "modern_industrialization:steel_furnace",
+      "count": 1
+    }
+  }
+}

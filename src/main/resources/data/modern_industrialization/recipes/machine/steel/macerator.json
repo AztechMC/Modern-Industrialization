@@ -1,0 +1,29 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "dGd",
+    "GCG",
+    "pIp"
+  ],
+  "key": {
+    "d": {
+      "item": "minecraft:diamond"
+    },
+    "G": {
+      "item": "modern_industrialization:bronze_gear"
+    },
+    "C": {
+      "item": "modern_industrialization:steel_machine_casing"
+    },
+    "p": {
+      "item": "modern_industrialization:pipe_fluid_bronze"
+    },
+    "I" : {
+      "item": "modern_industrialization:bronze_macerator"
+    }
+  },
+  "result": {
+    "item": "modern_industrialization:steel_macerator",
+    "count": 1
+  }
+}

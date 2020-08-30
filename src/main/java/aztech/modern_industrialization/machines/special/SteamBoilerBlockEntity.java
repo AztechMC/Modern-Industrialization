@@ -5,6 +5,7 @@ import aztech.modern_industrialization.fluid.FluidUnit;
 import aztech.modern_industrialization.inventory.ConfigurableFluidStack;
 import aztech.modern_industrialization.machines.impl.MachineBlockEntity;
 import aztech.modern_industrialization.machines.impl.MachineFactory;
+import aztech.modern_industrialization.machines.impl.MachineTier;
 import aztech.modern_industrialization.machines.recipe.MachineRecipeType;
 import net.fabricmc.fabric.impl.content.registry.FuelRegistryImpl;
 import net.minecraft.fluid.Fluid;
@@ -63,7 +64,7 @@ public class SteamBoilerBlockEntity extends MachineBlockEntity {
         }
 
         if(efficiencyTicks > 1000) {
-            int steamProduction = 8 * efficiencyTicks / maxEfficiencyTicks;
+            int steamProduction = ( factory.tier ==  MachineTier.BRONZE ? 8 : 16) * efficiencyTicks / maxEfficiencyTicks;
             if(steamProduction > 0 && fluidStacks.get(0).getAmount() > 0) {
                 int remSpace = fluidStacks.get(1).getRemainingSpace();
                 int actualProduced = Math.min(steamProduction, remSpace);

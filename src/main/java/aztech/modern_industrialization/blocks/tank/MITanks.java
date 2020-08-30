@@ -18,7 +18,7 @@ import static aztech.modern_industrialization.ModernIndustrialization.ITEM_GROUP
 
 public enum MITanks {
     BRONZE("bronze", 4),
-    STEEL("steel", 16)
+    STEEL("steel", 8)
     ;
 
     public static BlockEntityType<TankBlockEntity> BLOCK_ENTITY_TYPE;
@@ -26,11 +26,13 @@ public enum MITanks {
     public final String type;
     public final Block block;
     public final Item item;
+    public final int bucketCapacity;
 
     MITanks(String type, int bucketCapacity) {
         this.type = type;
         this.block = new TankBlock(FabricBlockSettings.of(Material.METAL).hardness(4.0f));
         this.item = new TankItem(block, new Item.Settings().group(ITEM_GROUP), FluidUnit.DROPS_PER_BUCKET * bucketCapacity);
+        this.bucketCapacity = bucketCapacity;
     }
 
     public static void setup() {

@@ -1,6 +1,7 @@
 package aztech.modern_industrialization.machines;
 
 import aztech.modern_industrialization.MIIdentifier;
+import aztech.modern_industrialization.blocks.tank.MITanks;
 import aztech.modern_industrialization.machines.impl.MachineBlockEntity;
 import aztech.modern_industrialization.machines.impl.MachineFactory;
 import aztech.modern_industrialization.machines.impl.MachineTier;
@@ -37,10 +38,13 @@ public class MIMachines {
     // Bronze
     public static MachineFactory BRONZE_BOILER;
     public static MachineFactory BRONZE_WATER_PUMP;
+    //Steel
+    public static MachineFactory STEEL_BOILER;
+    public static MachineFactory STEEL_WATER_PUMP;
 
     static {
         BRONZE_BOILER = new MachineFactory("bronze_boiler", BRONZE, SteamBoilerBlockEntity::new, null, 1, 0, 1, 1)
-                .setInputBucketCapacity(64).setOutputBucketCapacity(64)
+                .setInputBucketCapacity(2*MITanks.BRONZE.bucketCapacity).setOutputBucketCapacity(2*MITanks.BRONZE.bucketCapacity)
                 .setInputSlotPosition(15, 32, 1, 1)
                 .setInputLiquidSlotPosition(50, 32, 1, 1).setLiquidOutputSlotPosition(134, 32, 1, 1)
                 .setupProgressBar(176, 0, 15, 51, 14, 14, false, true)
@@ -49,12 +53,35 @@ public class MIMachines {
                 .setupOverlays("boiler", true, false, false)
                 .setupCasing("bricked_bronze");
         BRONZE_WATER_PUMP = new SteamMachineFactory("bronze_water_pump", BRONZE, WaterPumpBlockEntity::new, null, 0, 0, 0, 1)
-                .setSteamBucketCapacity(64).setSteamSlotPos(23, 23)
-                .setOutputBucketCapacity(64)
+                .setSteamBucketCapacity(2*MITanks.BRONZE.bucketCapacity).setSteamSlotPos(23, 23)
+                .setOutputBucketCapacity(2*MITanks.BRONZE.bucketCapacity)
                 .setLiquidOutputSlotPosition(104, 32, 1, 1)
                 .setupBackground("water_pump.png")
                 .setupOverlays("pump", true, true, true)
                 .setupCasing("bronze");
+
+        STEEL_BOILER = new MachineFactory("steel_boiler", STEEL, SteamBoilerBlockEntity::new, null, 1, 0, 1, 1)
+                .setInputBucketCapacity(2*MITanks.STEEL.bucketCapacity).setOutputBucketCapacity(2*MITanks.STEEL.bucketCapacity)
+                .setInputSlotPosition(15, 32, 1, 1)
+                .setInputLiquidSlotPosition(50, 32, 1, 1).setLiquidOutputSlotPosition(134, 32, 1, 1)
+                .setupProgressBar(176, 0, 15, 51, 14, 14, false, true)
+                .setupEfficiencyBar(0, 166, 50, 62, 100, 2)
+                .setupBackground("steam_boiler.png")
+                .setupOverlays("boiler", true, false, false)
+                .setupCasing("bricked_steel");
+
+        STEEL_WATER_PUMP = new SteamMachineFactory("steel_water_pump", STEEL, WaterPumpBlockEntity::new, null, 0, 0, 0, 1)
+                .setSteamBucketCapacity(2*MITanks.STEEL.bucketCapacity).setSteamSlotPos(23, 23)
+                .setOutputBucketCapacity(2*MITanks.STEEL.bucketCapacity)
+                .setLiquidOutputSlotPosition(104, 32, 1, 1)
+                .setupBackground("water_pump.png")
+                .setupOverlays("pump", true, true, true)
+                .setupCasing("steel");
+
+
+
+
+
         registerMachineTiers("compressor", RECIPE_COMPRESSOR, 1, 1, 0, 0, MIMachines::setupCompressor, false);
         registerMachineTiers("cutting_machine", RECIPE_CUTTING_MACHINE, 1, 1, 1, 0, MIMachines::setupCuttingMachine, false);
         //registerMachineTiers("fluid_extractor", RECIPE_FLUID_EXTRACTOR, 1, 0, 0, 1, MIMachines::setupFluidExtractor, false);

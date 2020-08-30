@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "TTC",
+    "CCC",
+    "CCC"
+  ],
+  "key": {
+    "C": {
+      "item": "modern_industrialization:iron_dust"
+    },
+    "T" : {
+      "item": "modern_industrialization:coke_dust"
+    }
+  },
+  "result": {
+    "item": "modern_industrialization:uncooked_steel_dust",
+    "count": 7
+  }
+}

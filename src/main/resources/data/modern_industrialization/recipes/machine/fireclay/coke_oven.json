@@ -1,0 +1,20 @@
+{
+  "type" : "minecraft:crafting_shaped",
+  "pattern": [
+    "BBB",
+    "BFB",
+    "BBB"
+  ],
+  "key" : {
+    "B" : {
+      "item": "modern_industrialization:fire_clay_bricks"
+    },
+    "F" : {
+      "item": "minecraft:furnace"
+    }
+  },
+  "result": {
+    "item" : "modern_industrialization:coke_oven",
+    "count": 1
+  }
+}

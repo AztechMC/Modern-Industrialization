@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern" : [
+    "C",
+    "H"
+  ],
+  "key": {
+    "H": {
+      "item" : "minecraft:hopper"
+    },
+    "C": {
+      "item" : "modern_industrialization:steel_machine_casing"
+    }
+  },
+  "result": {
+    "item": "modern_industrialization:steel_item_output_hatch",
+    "count": 1
+  }
+}

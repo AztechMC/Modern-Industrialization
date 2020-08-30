@@ -40,6 +40,7 @@ public class MIMachines {
     public static final MachineRecipeType RECIPE_MACERATOR = createRecipeType("macerator").withItemInputs().withItemOutputs();
     public static final MachineRecipeType RECIPE_MIXER = createRecipeType("mixer").withItemInputs().withItemOutputs();
     public static final MachineRecipeType RECIPE_COKE_OVEN = createRecipeType("coke_oven").withItemInputs().withItemOutputs();
+    public static final MachineRecipeType RECIPE_BLAST_FURNACE = createRecipeType("blast_furnace").withItemInputs().withItemOutputs();
 
     // Shapes
     public static MultiblockShape COKE_OVEN_SHAPE;
@@ -232,6 +233,12 @@ public class MIMachines {
                 .setInputSlotPosition(56, 45, 1, 1).setOutputSlotPosition(102, 45, 1, 1)
                 .setupProgressBar(76, 45, 22, 15, true).setupBackground("steam_furnace.png")
                 .setupOverlays("coke_oven", true, false, false)
+                .setupCasing("firebricks")
+        ;
+        new SteamMachineFactory("steam_blast_furnace", BRONZE, (f, t) -> new MultiblockMachineBlockEntity(f, t, COKE_OVEN_SHAPE), RECIPE_BLAST_FURNACE, 1, 1, 0, 0)
+                .setInputSlotPosition(56, 45, 1, 1).setOutputSlotPosition(102, 45, 1, 1)
+                .setupProgressBar(76, 45, 22, 15, true).setupBackground("steam_furnace.png")
+                .setupOverlays("steam_blast_furnace", true, false, false)
                 .setupCasing("firebricks")
         ;
         registerHatches();

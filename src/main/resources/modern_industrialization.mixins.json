@@ -5,8 +5,9 @@
   "compatibilityLevel": "JAVA_8",
   "mixins": [
     "BucketFluidContainerItemMixin",
-    "WorldRendererGetterMixin",
-    "DefaultBiomeFeaturesMixin"
+    "DefaultBiomeFeaturesMixin",
+    "IngredientMixin",
+    "WorldRendererGetterMixin"
   ],
   "injectors": {
     "defaultRequire": 1

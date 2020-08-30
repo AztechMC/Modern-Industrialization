@@ -172,8 +172,8 @@ public interface ConfigurableInventory extends Inventory, SidedInventory, FluidI
                 ) break;
                 firstStack++;
             }
+            if(firstStack == getFluidStacks().size()) firstStack = 0;
         }
-        if(firstStack == getFluidStacks().size()) firstStack = 0;
         for (int i = firstStack; i < getFluidStacks().size(); i++) {
             ConfigurableFluidStack fluidStack = getFluidStacks().get(i);
             if (!fluidStack.pipesInsert) continue;

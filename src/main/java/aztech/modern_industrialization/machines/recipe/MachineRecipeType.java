@@ -13,6 +13,7 @@ import net.minecraft.util.JsonHelper;
 import net.minecraft.util.registry.Registry;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
@@ -24,7 +25,7 @@ public class MachineRecipeType implements RecipeType, RecipeSerializer {
         this.id = id;
     }
 
-    public List<MachineRecipe> getRecipes(ServerWorld world) {
+    public Collection<MachineRecipe> getRecipes(ServerWorld world) {
         return world.getRecipeManager().listAllOfType(this);
     }
     public MachineRecipe getRecipe(ServerWorld world, Identifier id) {

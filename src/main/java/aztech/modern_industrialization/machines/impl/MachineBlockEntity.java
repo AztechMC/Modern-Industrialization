@@ -188,6 +188,10 @@ public class MachineBlockEntity extends AbstractMachineBlockEntity
         }
     }
 
+    protected Iterable<MachineRecipe> getRecipes() {
+        return recipeType.getRecipes((ServerWorld) world);
+    }
+
     @Override
     public void tick() {
         if(world.isClient) return;
@@ -197,7 +201,7 @@ public class MachineBlockEntity extends AbstractMachineBlockEntity
 
         if(activeRecipe == null && canRecipeProgress()) {
             if(getEu(1, true) == 1) {
-                for (MachineRecipe recipe : recipeType.getRecipes((ServerWorld) world)) {
+                for (MachineRecipe recipe : getRecipes()) {
                     if(recipe.eu > factory.tier.getMaxEu()) continue;
                     if (takeItemInputs(recipe, true) && takeFluidInputs(recipe, true) && putItemOutputs(recipe, true, false) && putFluidOutputs(recipe, true, false)) {
                         takeItemInputs(recipe, false);

@@ -2,6 +2,7 @@ package aztech.modern_industrialization.machines.impl;
 
 import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.machines.MIMachines;
+import aztech.modern_industrialization.machines.recipe.FurnaceRecipeProxy;
 import aztech.modern_industrialization.machines.recipe.MachineRecipeType;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.item.BlockItem;
@@ -88,7 +89,11 @@ public class MachineFactory {
 
         this.blockEntityConstructor = () -> blockEntityFactory.create(this, type);
         if(type != null) {
-            MIMachines.RECIPE_TYPES.get(type).factories.add(this);
+            if(type instanceof FurnaceRecipeProxy) {
+                MIMachines.WORKSTATIONS_FURNACES.add(this);
+            } else {
+                MIMachines.RECIPE_TYPES.get(type).factories.add(this);
+            }
         }
 
         this.inputSlots = inputSlots;

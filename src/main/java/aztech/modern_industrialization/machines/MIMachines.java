@@ -8,6 +8,7 @@ import aztech.modern_industrialization.machines.impl.MachineFactory;
 import aztech.modern_industrialization.machines.impl.MachineTier;
 import aztech.modern_industrialization.machines.impl.SteamMachineFactory;
 import aztech.modern_industrialization.machines.impl.multiblock.*;
+import aztech.modern_industrialization.machines.recipe.FurnaceRecipeProxy;
 import aztech.modern_industrialization.machines.recipe.MachineRecipeType;
 import aztech.modern_industrialization.machines.special.SteamBoilerBlockEntity;
 import aztech.modern_industrialization.machines.special.WaterPumpBlockEntity;
@@ -22,6 +23,7 @@ import static aztech.modern_industrialization.machines.impl.multiblock.Multibloc
 public class MIMachines {
     // Recipe
     public static final Map<MachineRecipeType, RecipeInfo> RECIPE_TYPES = new HashMap<>();
+    public static final List<MachineFactory> WORKSTATIONS_FURNACES = new ArrayList<>();
 
     private static MachineRecipeType createRecipeType(String kind) {
         MachineRecipeType type = new MachineRecipeType(new MIIdentifier(kind));
@@ -36,7 +38,7 @@ public class MIMachines {
     public static final MachineRecipeType RECIPE_COMPRESSOR = createRecipeType("compressor").withItemInputs().withItemOutputs();
     public static final MachineRecipeType RECIPE_CUTTING_MACHINE = createRecipeType("cutting_machine").withItemInputs().withFluidInputs().withItemOutputs();
     //public static final MachineRecipeType RECIPE_FLUID_EXTRACTOR = createRecipeType("fluid_extractor").withItemInputs().withFluidOutputs();
-    public static final MachineRecipeType RECIPE_FURNACE = createRecipeType("furnace").withItemInputs().withItemOutputs(); // TODO: import from vanilla
+    public static final MachineRecipeType RECIPE_FURNACE = new FurnaceRecipeProxy(null);
     public static final MachineRecipeType RECIPE_MACERATOR = createRecipeType("macerator").withItemInputs().withItemOutputs();
     public static final MachineRecipeType RECIPE_MIXER = createRecipeType("mixer").withItemInputs().withItemOutputs();
     public static final MachineRecipeType RECIPE_COKE_OVEN = createRecipeType("coke_oven").withItemInputs().withItemOutputs();

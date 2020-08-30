@@ -17,6 +17,8 @@ import java.util.Map;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+import static me.shedaniel.rei.api.BuiltinPlugin.SMELTING;
+
 public class MachineRecipePlugin implements REIPluginV0 {
     @Override
     public Identifier getPluginIdentifier() {
@@ -46,6 +48,10 @@ public class MachineRecipePlugin implements REIPluginV0 {
         for(Map.Entry<MachineRecipeType, MIMachines.RecipeInfo> entry : MIMachines.RECIPE_TYPES.entrySet()) {
             recipeHelper.registerWorkingStations(entry.getKey().getId(), entry.getValue().factories.stream().map(f -> EntryStack.create(f.item)).toArray(EntryStack[]::new));
             recipeHelper.removeAutoCraftButton(entry.getKey().getId());
+        }
+
+        for(MachineFactory factory : MIMachines.WORKSTATIONS_FURNACES) {
+            recipeHelper.registerWorkingStations(SMELTING, EntryStack.create(factory.item));
         }
     }
 }

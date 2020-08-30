@@ -313,7 +313,7 @@ def genCompressor(id, vanilla, ore):
     Path(path).mkdir(parents=True, exist_ok=True)
     mac = "modern_industrialization:compressor"
 
-    for a, b in [('ingot', 'plate'), ('plate', 'curved_plate')]:
+    for a, b, c in [('ingot', 'plate', 1), ('plate', 'curved_plate', 1), ('double_ingot', 'plate', 2)]:
         jsonf = {}
         jsonf["type"] = mac
         jsonf["eu"] = 2
@@ -322,7 +322,7 @@ def genCompressor(id, vanilla, ore):
             "item": getIdentifier(id, a, vanilla), "amount": 1}
 
         jsonf["item_outputs"] = {
-            "item": getIdentifier(id, b, vanilla), "amount": 1}
+            "item": getIdentifier(id, b, vanilla), "amount": c}
 
         with open(path + "/" + a + ".json", "w") as file:
             json.dump(jsonf, file, indent=4)

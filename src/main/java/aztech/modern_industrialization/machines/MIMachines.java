@@ -58,6 +58,7 @@ public class MIMachines {
                 .setLiquidOutputSlotPosition(104, 32, 1, 1)
                 .setupBackground("water_pump.png")
                 .setupOverlays("pump", true, true, true)
+                .setupProgressBar( 79, 33, 20, 15, true)
                 .setupCasing("bronze");
 
         STEEL_BOILER = new MachineFactory("steel_boiler", STEEL, SteamBoilerBlockEntity::new, null, 1, 0, 1, 1)
@@ -76,6 +77,7 @@ public class MIMachines {
                 .setLiquidOutputSlotPosition(104, 32, 1, 1)
                 .setupBackground("water_pump.png")
                 .setupOverlays("pump", true, true, true)
+                .setupProgressBar( 79, 33, 20, 15, true)
                 .setupCasing("steel");
 
 
@@ -127,8 +129,8 @@ public class MIMachines {
 
     public static MachineFactory setupMixer(MachineFactory factory) {
         return factory
-                .setInputSlotPosition(56, 45, 2, 2).setOutputSlotPosition(102, 45, 1, 2)
-                .setupProgressBar(76, 45, 22, 15, true).setupBackground("steam_furnace.png")
+                .setInputSlotPosition(52, 37, 2, 2).setOutputSlotPosition(119, 37, 1, 2)
+                .setupProgressBar(92, 46, 22, 15, true).setupBackground("steam_mixer.png")
                 .setupOverlays("mixer", true, true, true);
     }
 

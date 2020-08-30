@@ -18,6 +18,7 @@ import aztech.modern_industrialization.material.MaterialItem;
 import aztech.modern_industrialization.material.MIMaterialSetup;
 import aztech.modern_industrialization.pipes.MIPipes;
 import aztech.modern_industrialization.tools.WrenchItem;
+import aztech.modern_industrialization.util.ChunkUnloadBlockEntity;
 import net.devtech.arrp.api.RRPCallback;
 import net.devtech.arrp.api.RuntimeResourcePack;
 import net.devtech.arrp.json.blockstate.JBlockModel;
@@ -31,10 +32,12 @@ import net.devtech.arrp.json.models.JModel;
 import net.devtech.arrp.json.models.JTextures;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.client.itemgroup.FabricItemGroupBuilder;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerChunkEvents;
 import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
 import net.fabricmc.fabric.api.screenhandler.v1.ScreenHandlerRegistry;
 import net.fabricmc.fabric.api.tag.TagRegistry;
 import net.minecraft.block.Block;
+import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.item.*;
@@ -109,6 +112,14 @@ public class ModernIndustrialization implements ModInitializer {
         MIPipes.INSTANCE.onInitialize();
 
         RRPCallback.EVENT.register(a -> a.add(RESOURCE_PACK));
+
+        ServerChunkEvents.CHUNK_UNLOAD.register((world, chunk) -> {
+            for(BlockEntity entity : chunk.getBlockEntities().values()) {
+                if(entity instanceof ChunkUnloadBlockEntity) {
+                    ((ChunkUnloadBlockEntity) entity).onChunkUnload();
+                }
+            }
+        });
 
         LOGGER.info("Modern Industrialization setup done!");
     }

@@ -76,14 +76,6 @@ public class MIPipes implements ModInitializer {
                 PIPE_NETWORKS.get(world).onServerTickStart();
             }
         });
-        ServerChunkEvents.CHUNK_UNLOAD.register((world, chunk) -> {
-            for(BlockEntity entity : world.tickingBlockEntities) {
-                if(entity instanceof PipeBlockEntity) {
-                    PipeBlockEntity pipeEntity = (PipeBlockEntity) entity;
-                    pipeEntity.onChunkUnload();
-                }
-            }
-        });
 
         registerPackets();
     }

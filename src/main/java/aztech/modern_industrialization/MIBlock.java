@@ -1,11 +1,16 @@
 package aztech.modern_industrialization;
 
+import aztech.modern_industrialization.machines.impl.multiblock.MultiblockMachineBlockEntity;
 import aztech.modern_industrialization.material.MIMaterialSetup;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
+import net.minecraft.server.world.ServerWorld;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 
 import java.util.HashMap;
 
@@ -35,6 +40,14 @@ public class MIBlock extends Block {
         return blockItem;
     }
 
+    public void onStateReplaced(BlockState state, World world, BlockPos pos, BlockState newState, boolean moved) {
+        if (!state.isOf(newState.getBlock())) {
+            if (!world.isClient) {
+                MultiblockMachineBlockEntity.onBlockBreakInChunk((ServerWorld) world, pos);
+            }
+            super.onStateReplaced(state, world, pos, newState, moved);
+        }
+    }
 
     public static final MIBlock BLOCK_FIRE_CLAY_BRICKS = new MIBlock("fire_clay_bricks",
             FabricBlockSettings.of(MIMaterialSetup.STONE_MATERIAL).hardness(2.0f)

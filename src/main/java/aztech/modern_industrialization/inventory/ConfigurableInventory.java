@@ -72,7 +72,7 @@ public interface ConfigurableInventory extends Inventory, SidedInventory, FluidI
 
     @Override
     default int getMaxCountPerStack() {
-        return 64;
+        return 64; // WARNING: never change this!!!
     }
 
     @Override
@@ -173,6 +173,7 @@ public interface ConfigurableInventory extends Inventory, SidedInventory, FluidI
                 firstStack++;
             }
         }
+        if(firstStack == getFluidStacks().size()) firstStack = 0;
         for (int i = firstStack; i < getFluidStacks().size(); i++) {
             ConfigurableFluidStack fluidStack = getFluidStacks().get(i);
             if (!fluidStack.pipesInsert) continue;

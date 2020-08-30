@@ -7,10 +7,11 @@ import net.minecraft.item.Item;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.registry.Registry;
+import org.jetbrains.annotations.Nullable;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
@@ -74,6 +75,19 @@ public class NbtHelper {
         for(int i = 0; i < listTag.size(); ++i) {
             CompoundTag elementTag = listTag.getCompound(i);
             decoder.accept(list.get(elementTag.getByte("Slot")), elementTag);
+        }
+    }
+    public static void putBlockPos(CompoundTag tag, String key, @Nullable BlockPos pos) {
+        if(pos != null) {
+            tag.putIntArray(key, new int[] {pos.getX(), pos.getY(), pos.getZ()});
+        }
+    }
+    public static BlockPos getBlockPos(CompoundTag tag, String key) {
+        if(tag.contains(key)) {
+            int[] pos = tag.getIntArray(key);
+            return new BlockPos(pos[0], pos[1], pos[2]);
+        } else {
+            return null;
         }
     }
 }

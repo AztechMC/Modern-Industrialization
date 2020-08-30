@@ -1,6 +1,8 @@
 package aztech.modern_industrialization.machines.impl;
 
 import aztech.modern_industrialization.ModernIndustrialization;
+import aztech.modern_industrialization.machines.impl.multiblock.HatchBlockEntity;
+import aztech.modern_industrialization.machines.impl.multiblock.MultiblockMachineBlockEntity;
 import aztech.modern_industrialization.material.MIMaterialSetup;
 import aztech.modern_industrialization.pipes.MIPipes;
 import aztech.modern_industrialization.tools.IWrenchable;
@@ -18,6 +20,7 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUsageContext;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvent;
@@ -57,6 +60,9 @@ public class MachineBlock extends Block implements BlockEntityProvider, IWrencha
     @Override
     public void onStateReplaced(BlockState state, World world, BlockPos pos, BlockState newState, boolean moved) {
         if(!state.isOf(newState.getBlock())) {
+            if(!world.isClient) {
+                MultiblockMachineBlockEntity.onBlockBreakInChunk((ServerWorld) world, pos);
+            }
             BlockEntity entity = world.getBlockEntity(pos);
             if (entity instanceof MachineBlockEntity) {
                 MachineBlockEntity machineBlockEntity = (MachineBlockEntity) entity;
@@ -72,6 +78,13 @@ public class MachineBlock extends Block implements BlockEntityProvider, IWrencha
 
     @Override
     public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
+        // TODO: remove this
+        if(!world.isClient && world.getBlockEntity(pos) instanceof MultiblockMachineBlockEntity) {
+            MultiblockMachineBlockEntity entity = (MultiblockMachineBlockEntity) world.getBlockEntity(pos);
+            if(entity.getErrorMessage() != null) {
+                player.sendMessage(entity.getErrorMessage(), true);
+            }
+        }
         // Allow wrench to process useOnBlock
         if(player.inventory.getMainHandStack().getItem() == ModernIndustrialization.ITEM_WRENCH) {
             return ActionResult.PASS;
@@ -94,7 +107,11 @@ public class MachineBlock extends Block implements BlockEntityProvider, IWrencha
         MachineBlockEntity entity = (MachineBlockEntity) world.getBlockEntity(pos);
         entity.setFacingDirection(placer.getHorizontalFacing().getOpposite());
         if(entity.hasOutput()) {
-            entity.setOutputDirection(placer.getHorizontalFacing());
+            if(entity instanceof HatchBlockEntity) {
+                entity.setOutputDirection(placer.getHorizontalFacing().getOpposite());
+            } else {
+                entity.setOutputDirection(placer.getHorizontalFacing());
+            }
         }
     }
 
@@ -173,6 +190,10 @@ public class MachineBlock extends Block implements BlockEntityProvider, IWrencha
                         world.updateNeighbors(blockPos, null);
                         // TODO play sound
                         return ActionResult.success(world.isClient);
+                    }
+                    if(!world.isClient && entity instanceof MultiblockMachineBlockEntity) {
+                        ((MultiblockMachineBlockEntity) entity).rebuildShape();
+                        return ActionResult.CONSUME;
                     }
                 } else if(entity.hasOutput()) {
                     entity.setOutputDirection(newDirection);

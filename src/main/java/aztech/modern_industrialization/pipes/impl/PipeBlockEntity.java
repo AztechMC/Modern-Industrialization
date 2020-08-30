@@ -3,6 +3,7 @@ package aztech.modern_industrialization.pipes.impl;
 import aztech.modern_industrialization.mixin_impl.WorldRendererGetter;
 import aztech.modern_industrialization.pipes.MIPipes;
 import aztech.modern_industrialization.pipes.api.*;
+import aztech.modern_industrialization.util.ChunkUnloadBlockEntity;
 import aztech.modern_industrialization.util.NbtHelper;
 import net.fabricmc.fabric.api.block.entity.BlockEntityClientSerializable;
 import net.fabricmc.fabric.api.rendering.data.v1.RenderAttachmentBlockEntity;
@@ -27,7 +28,7 @@ import static net.minecraft.util.math.Direction.NORTH;
  * The BlockEntity for a pipe.
  */
 // TODO: add isClient checks wherever it is necessary
-public class PipeBlockEntity extends BlockEntity implements Tickable, BlockEntityClientSerializable, RenderAttachmentBlockEntity {
+public class PipeBlockEntity extends BlockEntity implements Tickable, BlockEntityClientSerializable, RenderAttachmentBlockEntity, ChunkUnloadBlockEntity {
     private static final int MAX_PIPES = 3;
     private static final VoxelShape[][][] SHAPE_CACHE;
     static final VoxelShape DEFAULT_SHAPE;
@@ -216,6 +217,7 @@ public class PipeBlockEntity extends BlockEntity implements Tickable, BlockEntit
         markDirty();
     }
 
+    @Override
     public void onChunkUnload() {
         loadPipes();
         for(PipeNetworkNode pipe : pipes) {

@@ -53,19 +53,25 @@ public class MachineScreenHandler extends ConfigurableScreenHandler {
                     factory.getInventoryPosX() + j * 18, 58 + factory.getInventoryPosY()));
         }
 
-        int itemCnt = 0;
-        for(int i = 0; i < factory.getSlots(); i++){
-            if(factory.getSlotType(i) == INPUT_SLOT || factory.getSlotType(i) == OUTPUT_SLOT){
-                ConfigurableItemStack stack = inventory.getItemStacks().get(itemCnt);
-                this.addSlot(stack.new ConfigurableItemSlot(inventory, itemCnt, factory.getSlotPosX(i), factory.getSlotPosY(i)));
-                ++itemCnt;
-            }else{
-                ConfigurableFluidStack stack = inventory.getFluidStacks().get(i - itemCnt);
-                this.addSlot(stack.new ConfigurableFluidSlot(inventory, factory.getSlotPosX(i), factory.getSlotPosY(i)));
+        // TODO: properly detect multiblock
+        // TODO WAF WAF WAF
+        try {
+            int itemCnt = 0;
+            for (int i = 0; i < factory.getSlots(); i++) {
+                if (factory.getSlotType(i) == INPUT_SLOT || factory.getSlotType(i) == OUTPUT_SLOT) {
+                    ConfigurableItemStack stack = inventory.getItemStacks().get(itemCnt);
+                    this.addSlot(stack.new ConfigurableItemSlot(inventory, itemCnt, factory.getSlotPosX(i), factory.getSlotPosY(i)));
+                    ++itemCnt;
+                } else {
+                    ConfigurableFluidStack stack = inventory.getFluidStacks().get(i - itemCnt);
+                    this.addSlot(stack.new ConfigurableFluidSlot(inventory, factory.getSlotPosX(i), factory.getSlotPosY(i)));
+                }
             }
-        }
 
-        addSlot(new LockingModeSlot(inventory, 152, 7));
+            addSlot(new LockingModeSlot(inventory, 152, 7));
+        } catch (IndexOutOfBoundsException ex) {
+
+        }
     }
     @Override
     public boolean canUse(PlayerEntity player) {

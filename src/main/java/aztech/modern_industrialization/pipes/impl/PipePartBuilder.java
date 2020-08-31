@@ -1,5 +1,6 @@
 package aztech.modern_industrialization.pipes.impl;
 
+import aztech.modern_industrialization.pipes.api.PipeConnectionType;
 import net.fabricmc.fabric.api.renderer.v1.mesh.MutableQuadView;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
 import net.minecraft.client.texture.Sprite;
@@ -11,7 +12,7 @@ import static net.minecraft.util.math.Direction.*;
 /**
  * A class that can build pipe model parts using a simple interface.
  */
-class PipePartBuilder {
+abstract class PipePartBuilder {
     /**
      * The width of a pipe.
      */
@@ -19,21 +20,17 @@ class PipePartBuilder {
     /**
      * The spacing between two pipes.
      */
-    private static final float SPACING = 1.0f / 16;
+    protected static final float SPACING = 1.0f / 16;
     /**
      * The distance between the side of the block and the first of the five pipe slots.
      */
-    private static final float FIRST_POS = (1.0f - 5 * SIDE - 4 * SPACING) / 2;
-    private QuadEmitter emitter;
+    protected static final float FIRST_POS = (1.0f - 5 * SIDE - 4 * SPACING) / 2;
     Vec3d pos;
     Vec3d facing;
     Vec3d right;
-    private Sprite sprite;
 
-    PipePartBuilder(QuadEmitter emitter, int slotPos, Direction direction, Sprite sprite) {
-        this.emitter = emitter;
+    PipePartBuilder(int slotPos, Direction direction) {
         this.facing = Vec3d.of(direction.getVector());
-        this.sprite = sprite;
         // initial position + half pipe + slotPos * width
         float position = (1.0f - 3 * SIDE - 2 * SPACING) / 2.0f + SIDE / 2.0f + slotPos * (SIDE + SPACING);
         this.pos = new Vec3d(position, position, position);
@@ -49,14 +46,14 @@ class PipePartBuilder {
     /**
      * Find out whether the axis direction is far from the sides of the block.
      */
-    private boolean isTowardsInside(Vec3d direction) {
+    protected boolean isTowardsInside(Vec3d direction) {
         return distanceToSide(direction) > 0.5f - 1e-6;
     }
 
     /**
      * Get the distance along some axis direction to the nearest block side.
      */
-    private float distanceToSide(Vec3d direction) {
+    protected float distanceToSide(Vec3d direction) {
         float p = (float) direction.dotProduct(pos);
         if (p > 0) {
             return 1 - p;
@@ -65,108 +62,12 @@ class PipePartBuilder {
         }
     }
 
-    /**
-     * Add a quad.
-     */
-    private void quad(Direction direction, float left, float bottom, float right, float top, float depth) {
-        square(direction, left, bottom, right, top, depth);
-        emitter.spriteBake(0, sprite, MutableQuadView.BAKE_LOCK_UV);
-        emitter.cullFace(null);
-        emitter.emit();
-    }
-
-    /**
-     * Add a quad with double arguments.
-     */
-    private void quad(Direction direction, double left, double bottom, double right, double top, double depth) {
-        quad(direction, (float) left, (float) bottom, (float) right, (float) top, (float) depth);
-    }
-
-    // TODO: fix this in fabric api
-
-    /**
-     * Add a square. This is a fixed (?) version of the QuadEmitter#square function.
-     */
-    private void square(Direction nominalFace, float left, float bottom, float right, float top, float depth) {
-        emitter.nominalFace(nominalFace);
-        switch (nominalFace) {
-            case UP:
-                depth = 1 - depth;
-                top = 1 - top;
-                bottom = 1 - bottom;
-                emitter.pos(0, left, depth, top);
-                emitter.pos(1, left, depth, bottom);
-                emitter.pos(2, right, depth, bottom);
-                emitter.pos(3, right, depth, top);
-                break;
-
-            case DOWN:
-                right = 1 - right;
-                left = 1 - left;
-                emitter.pos(3, left, depth, top);
-                emitter.pos(2, left, depth, bottom);
-                emitter.pos(1, right, depth, bottom);
-                emitter.pos(0, right, depth, top);
-                break;
-
-            case EAST:
-                depth = 1 - depth;
-                left = 1 - left;
-                right = 1 - right;
-
-            case WEST:
-                emitter.pos(0, depth, top, left);
-                emitter.pos(1, depth, bottom, left);
-                emitter.pos(2, depth, bottom, right);
-                emitter.pos(3, depth, top, right);
-                break;
-
-            case SOUTH:
-                depth = 1 - depth;
-                left = 1 - left;
-                right = 1 - right;
-
-            case NORTH:
-                left = 1 - left;
-                right = 1 - right;
-                emitter.pos(3, right, top, depth);
-                emitter.pos(2, right, bottom, depth);
-                emitter.pos(1, left, bottom, depth);
-                emitter.pos(0, left, top, depth);
-                break;
-        }
-    }
-
-    /**
-     * Add a quad with two corners and the facing direction.
-     */
-    private void quad(Vec3d facing, Vec3d c1, Vec3d c2) {
-        Direction direction = Direction.getFacing(facing.x, facing.y, facing.z);
-        double x = Math.min(c1.x, c2.x), y = Math.min(c1.y, c2.y), z = Math.min(c1.z, c2.z);
-        double X = Math.max(c1.x, c2.x), Y = Math.max(c1.y, c2.y), Z = Math.max(c1.z, c2.z);
-        if (direction == UP) quad(UP, x, 1 - Z, X, 1 - z, 1 - Y);
-        else if (direction == DOWN) quad(DOWN, 1 - X, z, 1 - x, Z, y);
-        else if (direction == NORTH) quad(NORTH, 1 - X, y, 1 - x, Y, z);
-        else if (direction == EAST) quad(EAST, 1 - Z, y, 1 - z, Y, 1 - X);
-        else if (direction == SOUTH) quad(SOUTH, x, y, X, Y, 1 - Z);
-        else quad(WEST, z, y, Z, Y, x);
-    }
-
-    /**
-     * Draw a 4-sided pipe.
-     */
-    void drawPipe(float length) {
-        for (int i = 0; i < 4; ++i) {
-            Vec3d up = up();
-            quad(up, pos.add(up.multiply(SIDE / 2)).add(right.multiply(SIDE / 2)), pos.add(up.multiply(SIDE / 2)).subtract(right.multiply(SIDE / 2)).add(facing.multiply(length)));
-            rotateCw();
-        }
-    }
+    abstract void drawPipe(float length);
 
     /**
      * Draw a 5-sided pipe.
      */
-    private void drawPipeWithEnd(float length) {
+    protected void drawPipeWithEnd(float length) {
         drawPipe(length);
         moveForward(length);
         noConnection();
@@ -190,24 +91,21 @@ class PipePartBuilder {
     /**
      * Rotate clockwise around the facing axis.
      */
-    private void rotateCw() {
-        right = up().negate();
+    protected void rotateCw() {
+        right = up().multiply(-1);
     }
 
     /**
      * Turn 90° up.
      */
-    private void turnUp() {
+    protected void turnUp() {
         facing = up();
     }
 
     /**
      * Draw a single face.
      */
-    void noConnection() {
-        Vec3d up = up();
-        quad(facing, pos.add(up.multiply(SIDE / 2)).add(right.multiply(SIDE / 2)), pos.subtract(up.multiply(SIDE / 2)).subtract(right.multiply(SIDE / 2)));
-    }
+    abstract void noConnection();
 
     /**
      * Draw a straight line.
@@ -295,5 +193,41 @@ class PipePartBuilder {
         // again vertical
         moveForward(SIDE / 2);
         drawPipeWithEnd(distanceToSide(facing));
+    }
+
+    public static int getSlotPos(int slot) {
+        return slot == 0 ? 1 : slot == 1 ? 0 : 2;
+    }
+
+    /**
+     * Get the type of a connection.
+     */
+    static int getRenderType(int slot, Direction direction, PipeConnectionType[][] connections) {
+        if (connections[slot][direction.getId()] == null) {
+            return 0;
+        } else {
+            int connSlot = 0;
+            for (int i = 0; i < slot; i++) {
+                if (connections[i][direction.getId()] != null) {
+                    connSlot++;
+                }
+            }
+            if (slot == 1) {
+                // short bend
+                if (connSlot == 0) {
+                    return 2;
+                }
+            } else if (slot == 2) {
+                if (connSlot == 0) {
+                    // short bend, but far if the direction is west to avoid collisions in some cases.
+                    return direction == WEST ? 3 : 2;
+                } else if (connSlot == 1) {
+                    // long bend
+                    return 4;
+                }
+            }
+            // default to straight line
+            return 1;
+        }
     }
 }

@@ -116,6 +116,11 @@ public class MachineBlock extends Block implements BlockEntityProvider, IWrencha
     }
 
     @Override
+    public boolean isTranslucent(BlockState state, BlockView world, BlockPos pos) {
+        return false;
+    }
+
+    @Override
     public VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
         if(!(world instanceof ClientWorld)) return getCollisionShape(state, world, pos, context);
         ClientPlayerEntity player = MinecraftClient.getInstance().player;

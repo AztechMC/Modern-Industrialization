@@ -15,6 +15,7 @@ import aztech.modern_industrialization.pipes.item.ItemPipeScreenHandler;
 import nerdhub.cardinal.components.api.ComponentRegistry;
 import nerdhub.cardinal.components.api.ComponentType;
 import nerdhub.cardinal.components.api.event.WorldComponentCallback;
+import net.fabricmc.api.Environment;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerChunkEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
@@ -50,6 +51,7 @@ public class MIPipes implements ModInitializer {
     public static BlockEntityType<PipeBlockEntity> BLOCK_ENTITY_TYPE_PIPE;
     private Map<PipeNetworkType, Item> pipeItems = new HashMap<>();
     public static final ScreenHandlerType<ItemPipeScreenHandler> SCREN_HANDLER_TYPE_ITEM_PIPE = ScreenHandlerRegistry.registerExtended(new MIIdentifier("item_pipe"), ItemPipeScreenHandler::new);
+    public static final Set<Identifier> PIPE_MODEL_NAMES = new HashSet<>();
 
     @Override
     public void onInitialize() {
@@ -96,7 +98,7 @@ public class MIPipes implements ModInitializer {
         );
         pipeItems.put(type, item);
         Registry.register(Registry.ITEM, new MIIdentifier("pipe_fluid_" + name), item);
-        PipeModelProvider.modelNames.add(new MIIdentifier("item/pipe_fluid_" + name));
+        PIPE_MODEL_NAMES.add(new MIIdentifier("item/pipe_fluid_" + name));
     }
 
     public void registerItemPipeType(String name, int color) {
@@ -114,7 +116,7 @@ public class MIPipes implements ModInitializer {
         );
         pipeItems.put(type, item);
         Registry.register(Registry.ITEM, new MIIdentifier("pipe_item_" + name), item);
-        PipeModelProvider.modelNames.add(new MIIdentifier("item/pipe_item_" + name));
+        PIPE_MODEL_NAMES.add(new MIIdentifier("item/pipe_item_" + name));
     }
 
     public Item getPipeItem(PipeNetworkType type) {

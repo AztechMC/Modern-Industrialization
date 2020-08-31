@@ -6,8 +6,7 @@
   "mixins": [
     "BucketFluidContainerItemMixin",
     "DefaultBiomeFeaturesMixin",
-    "IngredientMixin",
-    "WorldRendererGetterMixin"
+    "IngredientMixin"
   ],
   "injectors": {
     "defaultRequire": 1

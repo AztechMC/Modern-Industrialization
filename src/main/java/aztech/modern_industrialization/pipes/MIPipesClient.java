@@ -14,6 +14,7 @@ import net.fabricmc.fabric.api.client.model.ModelLoadingRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry;
 import net.fabricmc.fabric.api.client.screenhandler.v1.ScreenRegistry;
 import net.fabricmc.fabric.api.network.ClientSidePacketRegistry;
+import net.minecraft.util.Identifier;
 
 public class MIPipesClient implements ClientModInitializer {
     @Override
@@ -23,6 +24,8 @@ public class MIPipesClient implements ClientModInitializer {
         ColorProviderRegistry.BLOCK.register(new PipeColorProvider(), MIPipes.BLOCK_PIPE);
         ScreenRegistry.register(MIPipes.SCREN_HANDLER_TYPE_ITEM_PIPE, ItemPipeScreen::new);
         registerPackets();
+
+        PipeModelProvider.modelNames.addAll(MIPipes.PIPE_MODEL_NAMES);
     }
 
 

@@ -308,8 +308,7 @@ public class PipeBlockEntity extends BlockEntity implements Tickable, BlockEntit
 
             // Side connectors
             for (Direction direction : Direction.values()) {
-                PipeShapeBuilder psb = new PipeShapeBuilder(PipeModel.getSlotPos(slot), direction);
-                int connectionType = PipeModel.getRenderType(slot, direction, renderedConnections);
+                int connectionType = PipePartBuilder.getRenderType(slot, direction, renderedConnections);
                 if (connectionType != 0) {
                     shapes.add(new PipeVoxelShape(SHAPE_CACHE[slot][direction.getId()][connectionType], types[slot], direction));
                 }
@@ -330,7 +329,7 @@ public class PipeBlockEntity extends BlockEntity implements Tickable, BlockEntit
             for(Direction direction : Direction.values()) {
                 int connectionTypes = slot == 0 ? 2 : slot == 1 ? 3 : 5;
                 for(int connectionType = 0; connectionType < connectionTypes; connectionType++) {
-                    PipeShapeBuilder psb = new PipeShapeBuilder(PipeModel.getSlotPos(slot), direction);
+                    PipeShapeBuilder psb = new PipeShapeBuilder(PipePartBuilder.getSlotPos(slot), direction);
                     if(connectionType == 0) psb.centerConnector();
                     else if(connectionType == 1) psb.straightLine();
                     else if(connectionType == 2) psb.shortBend();

@@ -12,7 +12,7 @@ public class PipeShapeBuilder extends PipePartBuilder {
     private VoxelShape shape;
 
     PipeShapeBuilder(int slotPos, Direction direction) {
-        super(null, slotPos, direction, null);
+        super(slotPos, direction);
         shape = VoxelShapes.empty();
     }
 

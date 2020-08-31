@@ -78,43 +78,11 @@ public class PipeModel implements UnbakedModel, BakedModel, FabricBakedModel {
                         ][
                         direction.getId()
                         ][
-                        getRenderType(slot, direction, attachment.renderedConnections)
+                        PipePartBuilder.getRenderType(slot, direction, attachment.renderedConnections)
                         ]);
             }
 
             renderContext.popTransform();
-        }
-    }
-
-    /**
-     * Get the type of a connection.
-     */
-    static int getRenderType(int slot, Direction direction, PipeConnectionType[][] connections) {
-        if (connections[slot][direction.getId()] == null) {
-            return 0;
-        } else {
-            int connSlot = 0;
-            for (int i = 0; i < slot; i++) {
-                if (connections[i][direction.getId()] != null) {
-                    connSlot++;
-                }
-            }
-            if (slot == 1) {
-                // short bend
-                if (connSlot == 0) {
-                    return 2;
-                }
-            } else if (slot == 2) {
-                if (connSlot == 0) {
-                    // short bend, but far if the direction is west to avoid collisions in some cases.
-                    return direction == WEST ? 3 : 2;
-                } else if (connSlot == 1) {
-                    // long bend
-                    return 4;
-                }
-            }
-            // default to straight line
-            return 1;
         }
     }
 
@@ -206,7 +174,7 @@ public class PipeModel implements UnbakedModel, BakedModel, FabricBakedModel {
                 for (Direction direction : Direction.values()) {
                     int connectionTypes = slot == 0 ? 2 : slot == 1 ? 3 : 5;
                     for (int renderType = 0; renderType < connectionTypes; renderType++) {
-                        PipePartBuilder ppb = new PipePartBuilder(builder.getEmitter(), getSlotPos(slot), direction, sprites[connectionType]);
+                        PipePartBuilder ppb = new PipeMeshBuilder(builder.getEmitter(), PipePartBuilder.getSlotPos(slot), direction, sprites[connectionType]);
                         if (renderType == 0) ppb.noConnection();
                         else if (renderType == 1) ppb.straightLine();
                         else if (renderType == 2) ppb.shortBend();
@@ -220,7 +188,7 @@ public class PipeModel implements UnbakedModel, BakedModel, FabricBakedModel {
 
         QuadEmitter itemMeshEmitter = builder.getEmitter();
         for (Direction direction : Direction.values()) {
-            PipePartBuilder ppb = new PipePartBuilder(itemMeshEmitter, getSlotPos(0), direction, sprites[0]);
+            PipePartBuilder ppb = new PipeMeshBuilder(itemMeshEmitter, PipePartBuilder.getSlotPos(0), direction, sprites[0]);
             if (direction == NORTH || direction == SOUTH) {
                 ppb.straightLine();
             } else {
@@ -229,9 +197,5 @@ public class PipeModel implements UnbakedModel, BakedModel, FabricBakedModel {
         }
         itemMesh = builder.build();
         return this;
-    }
-
-    static int getSlotPos(int slot) {
-        return slot == 0 ? 1 : slot == 1 ? 0 : 2;
     }
 }

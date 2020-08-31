@@ -181,7 +181,7 @@ public class ItemNetworkNode extends PipeNetworkNode {
                                 } else {
                                     ItemStack targetStack = target.getStack(j);
                                     if(ItemStackHelper.areEqualIgnoreCount(stack, targetStack)) {
-                                        int inserted = Math.min(Math.min(targetStack.getMaxCount() - targetStack.getCount(), target.getMaxCountPerStack()), 16);
+                                        int inserted = Math.min(stack.getCount(), Math.min(Math.min(targetStack.getMaxCount() - targetStack.getCount(), target.getMaxCountPerStack()), 16));
                                         if(inserted > 0) {
                                             targetStack.increment(inserted);
                                             stack.decrement(inserted);

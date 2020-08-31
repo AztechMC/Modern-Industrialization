@@ -1,0 +1,12 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "aztech.modern_industrialization.mixin_client",
+  "compatibilityLevel": "JAVA_8",
+  "mixins": [
+    "WorldRendererGetterMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

@@ -34,9 +34,9 @@ public class FurnaceRecipeProxy extends MachineRecipeType {
                 MachineRecipe recipe = new MachineRecipe(id, this);
                 recipe.eu = 2;
                 recipe.duration = smeltingRecipe.getCookTime();
-                recipe.itemInputs = Collections.singletonList(new MachineRecipe.ItemInput(matchingStack.getItem(), matchingStack.getCount()));
+                recipe.itemInputs = Collections.singletonList(new MachineRecipe.ItemInput(matchingStack.getItem(), matchingStack.getCount(), 1));
                 recipe.fluidInputs = Collections.emptyList();
-                recipe.itemOutputs = Collections.singletonList(new MachineRecipe.ItemOutput(smeltingRecipe.getOutput().getItem(), 1));
+                recipe.itemOutputs = Collections.singletonList(new MachineRecipe.ItemOutput(smeltingRecipe.getOutput().getItem(), 1, 1));
                 recipe.fluidOutputs = Collections.emptyList();
                 cachedRecipes.put(id, recipe);
             }

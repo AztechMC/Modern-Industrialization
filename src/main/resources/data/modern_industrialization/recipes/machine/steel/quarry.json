@@ -1,0 +1,29 @@
+{
+  "type" : "minecraft:crafting_shaped",
+  "pattern": [
+    "LpL",
+    "GCG",
+    "LPL"
+  ],
+  "key": {
+    "L": {
+      "item": "modern_industrialization:steel_large_plate"
+    },
+    "p":{
+      "item": "modern_industrialization:pipe_item_steel"
+    },
+    "G": {
+      "item": "modern_industrialization:steel_gear"
+    },
+    "P": {
+      "item": "minecraft:diamond_pickaxe"
+    },
+    "C": {
+      "item": "modern_industrialization:steel_machine_casing"
+    }
+  },
+  "result": {
+    "item": "modern_industrialization:quarry",
+    "count": 1
+  }
+}

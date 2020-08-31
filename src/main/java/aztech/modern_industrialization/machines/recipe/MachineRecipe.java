@@ -71,10 +71,12 @@ public class MachineRecipe implements Recipe<MachineBlockEntity> {
     public static class ItemInput {
         public final Item item;
         public final int amount;
+        public final float probability;
 
-        public ItemInput(Item item, int amount) {
+        public ItemInput(Item item, int amount, float probability) {
             this.item = item;
             this.amount = amount;
+            this.probability = probability;
         }
     }
 
@@ -91,10 +93,12 @@ public class MachineRecipe implements Recipe<MachineBlockEntity> {
     public static class ItemOutput {
         public final Item item;
         public final int amount;
+        public final float probability;
 
-        public ItemOutput(Item item, int amount) {
+        public ItemOutput(Item item, int amount, float probability) {
             this.item = item;
             this.amount = amount;
+            this.probability = probability;
         }
     }
 

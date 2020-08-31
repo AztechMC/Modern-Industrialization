@@ -1,5 +1,6 @@
 package aztech.modern_industrialization.machines.impl;
 
+import aztech.modern_industrialization.ModernIndustrialization;
 import aztech.modern_industrialization.fluid.FluidUnit;
 import aztech.modern_industrialization.inventory.ConfigurableFluidStack;
 import aztech.modern_industrialization.inventory.ConfigurableInventory;
@@ -28,6 +29,7 @@ import net.minecraft.util.math.Direction;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class MachineBlockEntity extends AbstractMachineBlockEntity
         implements Tickable, ExtendedScreenHandlerFactory, MachineInventory {
@@ -192,6 +194,8 @@ public class MachineBlockEntity extends AbstractMachineBlockEntity
         return recipeType.getRecipes((ServerWorld) world);
     }
 
+    public MachineTier getTier() { return factory.tier; }
+
     @Override
     public void tick() {
         if(world.isClient) return;
@@ -202,7 +206,7 @@ public class MachineBlockEntity extends AbstractMachineBlockEntity
         if(activeRecipe == null && canRecipeProgress()) {
             if(getEu(1, true) == 1) {
                 for (MachineRecipe recipe : getRecipes()) {
-                    if(recipe.eu > factory.tier.getMaxEu()) continue;
+                    if(recipe.eu > getTier().getMaxEu()) continue;
                     if (takeItemInputs(recipe, true) && takeFluidInputs(recipe, true) && putItemOutputs(recipe, true, false) && putFluidOutputs(recipe, true, false)) {
                         takeItemInputs(recipe, false);
                         takeFluidInputs(recipe, false);
@@ -211,10 +215,10 @@ public class MachineBlockEntity extends AbstractMachineBlockEntity
                         activeRecipe = recipe;
                         usedEnergy = 0;
                         recipeEnergy = recipe.eu * recipe.duration;
-                        if(factory.tier == MachineTier.BRONZE) {
+                        if(getTier() == MachineTier.BRONZE) {
                             recipeMaxEu = recipe.eu;
-                        } else if(factory.tier == MachineTier.STEEL) {
-                            recipeMaxEu = 2*recipe.eu <= factory.tier.getMaxEu() ? 2*recipe.eu : recipe.eu;
+                        } else if(getTier() == MachineTier.STEEL) {
+                            recipeMaxEu = 2*recipe.eu <= getTier().getMaxEu() ? 2*recipe.eu : recipe.eu;
                         } else {
                             // TODO: electric overclock
                         }
@@ -277,6 +281,11 @@ public class MachineBlockEntity extends AbstractMachineBlockEntity
 
         boolean ok = true;
         for(MachineRecipe.ItemInput input : recipe.itemInputs) {
+            if(!simulate && input.probability < 1) { // if we are not simulating, there is a chance we don't need to take this output
+                if(ThreadLocalRandom.current().nextFloat() > input.probability) {
+                    continue;
+                }
+            }
             int remainingAmount = input.amount;
             for(ConfigurableItemStack stack : stacks) {
                 if(stack.getStack().getItem() == input.item) {
@@ -319,6 +328,11 @@ public class MachineBlockEntity extends AbstractMachineBlockEntity
 
         boolean ok = true;
         for(MachineRecipe.ItemOutput output : recipe.itemOutputs) {
+            if(output.probability < 1) {
+                if(simulate) continue; // don't check output space for probabilistic recipes
+                float randFloat = ThreadLocalRandom.current().nextFloat();
+                if(randFloat > output.probability) continue;
+            }
             int remainingAmount = output.amount;
             // Try to insert in non-empty stacks or locked first, then also allow insertion in empty stacks.
             for(int loopRun = 0; loopRun < 2; loopRun++) {
@@ -421,13 +435,19 @@ public class MachineBlockEntity extends AbstractMachineBlockEntity
 
     protected int getEu(int maxEu, boolean simulate) {
         if(factory instanceof SteamMachineFactory) {
-            ConfigurableFluidStack steam = getSteamInputStacks().get(0); // TODO: support multiple steam inputs ?
-            int amount = steam.getAmount();
-            int rem = Math.min(maxEu, amount);
-            if(!simulate) {
-                steam.decrement(rem);
+            int totalRem = 0;
+            for(ConfigurableFluidStack stack : getSteamInputStacks()) {
+                if(stack.getFluid() == ModernIndustrialization.FLUID_STEAM) {
+                    int amount = stack.getAmount();
+                    int rem = Math.min(maxEu, amount);
+                    if (!simulate) {
+                        stack.decrement(rem);
+                    }
+                    maxEu -= rem;
+                    totalRem += rem;
+                }
             }
-            return rem;
+            return totalRem;
         } else {
             throw new UnsupportedOperationException("Only steam machines are supported");
         }

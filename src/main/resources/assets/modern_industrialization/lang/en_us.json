@@ -24,11 +24,13 @@
   "item.modern_industrialization.coke" : "Coke",
   "item.modern_industrialization.coke_dust" : "Coke Dust",
   "item.modern_industrialization.uncooked_steel_dust" : "Uncooked Steel Dust",
+  "item.modern_industrialization.quarry_drill" : "Quarry Drill",
 
   "block.modern_industrialization.forge_hammer" : "Forge Hammer",
   "block.modern_industrialization.steam" : "Steam",
   "block.modern_industrialization.coke_oven" : "Coke Oven",
   "block.modern_industrialization.steam_blast_furnace" : "Steam Blast Furnace",
+  "block.modern_industrialization.quarry" : "Quarry",
   "block.modern_industrialization.bronze_boiler" : "Bronze Boiler",
   "block.modern_industrialization.bronze_water_pump" : "Bronze Water Pump",
   "block.modern_industrialization.bronze_compressor" : "Bronze Compressor",
@@ -68,6 +70,7 @@
   "text.modern_industrialization.base_eu_t" : "%d EU/t",
   "text.modern_industrialization.base_duration_seconds" : "%.02f seconds",
   "text.modern_industrialization.base_eu_total" : "%d Total EU",
+  "text.modern_industrialization.probability" : "Probability: %.1f %%",
 
   "text.modern_industrialization.shape_error" : "Multiblock shape error at (%d, %d, %d): %s",
   "text.modern_industrialization.shape_error_block" : "Expected block %s",
@@ -115,7 +118,7 @@
   "modern_industrialization:furnace" : "Furnace",
   "modern_industrialization:macerator" : "Macerator",
   "modern_industrialization:mixer" : "Mixer",
-
+  "modern_industrialization:quarry" : "Quarry",
 
   "itemGroup.modern_industrialization.general" : "Modern Industrialization"
 }

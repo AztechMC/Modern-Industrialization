@@ -12,6 +12,7 @@ import aztech.modern_industrialization.machines.recipe.FurnaceRecipeProxy;
 import aztech.modern_industrialization.machines.recipe.MachineRecipeType;
 import aztech.modern_industrialization.machines.special.SteamBoilerBlockEntity;
 import aztech.modern_industrialization.machines.special.WaterPumpBlockEntity;
+import net.minecraft.block.Blocks;
 import net.minecraft.util.registry.Registry;
 
 import java.util.*;
@@ -43,20 +44,22 @@ public class MIMachines {
     public static final MachineRecipeType RECIPE_MIXER = createRecipeType("mixer").withItemInputs().withItemOutputs();
     public static final MachineRecipeType RECIPE_COKE_OVEN = createRecipeType("coke_oven").withItemInputs().withItemOutputs();
     public static final MachineRecipeType RECIPE_BLAST_FURNACE = createRecipeType("blast_furnace").withItemInputs().withItemOutputs();
+    public static final MachineRecipeType RECIPE_QUARRY = createRecipeType("quarry").withItemInputs().withItemOutputs();
 
     // Shapes
     public static MultiblockShape COKE_OVEN_SHAPE;
+    public static MultiblockShape QUARRY_SHAPE;
 
     static {
         COKE_OVEN_SHAPE = new MultiblockShape();
         MultiblockShape.Entry firebricks = MultiblockShapes.block(MIBlock.BLOCK_FIRE_CLAY_BRICKS);
         // two layers of pillars
-        for(int i = -3; i <= -2; i++) {
+        /*for(int i = -3; i <= -2; i++) {
             COKE_OVEN_SHAPE.addEntry(1, i, 0, firebricks);
             COKE_OVEN_SHAPE.addEntry(1, i, 2, firebricks);
             COKE_OVEN_SHAPE.addEntry(-1, i, 0, firebricks);
             COKE_OVEN_SHAPE.addEntry(-1, i, 2, firebricks);
-        }
+        }*/
         // firebricks + fluid input hatch in center
         for(int i = -1; i <= 1; ++i) {
             for(int j = -1; j <= 1; ++j) {
@@ -77,6 +80,32 @@ public class MIMachines {
         for(int i = -1; i <= 1; ++i) {
             for(int j = -1; j <= 1; ++j) {
                 COKE_OVEN_SHAPE.addEntry(i, 1, j+1, i == 0 && j == 0 ? optionalItem : firebricks);
+            }
+        }
+
+        QUARRY_SHAPE = new MultiblockShape();
+        MultiblockShape.Entry steelBlock = MultiblockShapes.blockId(new MIIdentifier("steel_block"));
+        MultiblockShape.Entry optionalQuarryHatch = MultiblockShapes.or(MultiblockShapes.block(Blocks.AIR), MultiblockShapes.hatch(HATCH_FLAG_ITEM_INPUT | HATCH_FLAG_ITEM_OUTPUT | HATCH_FLAG_FLUID_INPUT));
+        // for now, just hatches in a 5x5 hollow pattern
+        QUARRY_SHAPE.addEntry(-2, 0, 0, optionalQuarryHatch);
+        QUARRY_SHAPE.addEntry(-1, 0, 0, optionalQuarryHatch);
+        QUARRY_SHAPE.addEntry(1, 0, 0, optionalQuarryHatch);
+        QUARRY_SHAPE.addEntry(2, 0, 0, optionalQuarryHatch);
+        QUARRY_SHAPE.addEntry(2, 0, 1, optionalQuarryHatch);
+        QUARRY_SHAPE.addEntry(2, 0, 2, optionalQuarryHatch);
+        QUARRY_SHAPE.addEntry(2, 0, 3, optionalQuarryHatch);
+        QUARRY_SHAPE.addEntry(2, 0, 4, optionalQuarryHatch);
+        QUARRY_SHAPE.addEntry(1, 0, 4, optionalQuarryHatch);
+        QUARRY_SHAPE.addEntry(0, 0, 4, optionalQuarryHatch);
+        QUARRY_SHAPE.addEntry(-1, 0, 4, optionalQuarryHatch);
+        QUARRY_SHAPE.addEntry(-2, 0, 4, optionalQuarryHatch);
+        QUARRY_SHAPE.addEntry(-2, 0, 3, optionalQuarryHatch);
+        QUARRY_SHAPE.addEntry(-2, 0, 2, optionalQuarryHatch);
+        QUARRY_SHAPE.addEntry(-2, 0, 1, optionalQuarryHatch);
+        // and steel blocks in the center
+        for(int i = -1; i <= 1; i++) {
+            for(int j = 1; j <= 3; j++) {
+                QUARRY_SHAPE.addEntry(i, 0, j, steelBlock);
             }
         }
     }
@@ -242,6 +271,12 @@ public class MIMachines {
                 .setupProgressBar(76, 45, 22, 15, true).setupBackground("steam_furnace.png")
                 .setupOverlays("steam_blast_furnace", true, false, false)
                 .setupCasing("firebricks")
+        ;
+        new SteamMachineFactory("quarry", BRONZE, (f, t) -> new MultiblockMachineBlockEntity(f, t, QUARRY_SHAPE), RECIPE_QUARRY, 1, 16, 0, 0)
+                .setInputSlotPosition(56, 45, 1, 1).setOutputSlotPosition(102, 45, 4, 4)
+                .setupProgressBar(76, 45, 22, 15, true).setupBackground("steam_furnace.png")
+                .setupOverlays("quarry", true, false, false)
+                .setupCasing("steel")
         ;
         registerHatches();
     }

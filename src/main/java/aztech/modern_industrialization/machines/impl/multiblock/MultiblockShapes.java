@@ -3,7 +3,9 @@ package aztech.modern_industrialization.machines.impl.multiblock;
 import net.minecraft.block.Block;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.registry.Registry;
 import net.minecraft.world.BlockView;
 
 public class MultiblockShapes {
@@ -17,6 +19,20 @@ public class MultiblockShapes {
             @Override
             public Text getErrorMessage() {
                 return new TranslatableText("text.modern_industrialization.shape_error_block", new TranslatableText(block.getTranslationKey()));
+            }
+        };
+    }
+
+    public static MultiblockShape.Entry blockId(Identifier id) {
+        return new MultiblockShape.Entry() {
+            @Override
+            public boolean matches(BlockView world, BlockPos pos) {
+                return Registry.BLOCK.getId(world.getBlockState(pos).getBlock()).equals(id);
+            }
+
+            @Override
+            public Text getErrorMessage() {
+                return new TranslatableText("text.modern_industrialization.shape_error_block", id);
             }
         };
     }

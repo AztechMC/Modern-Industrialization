@@ -4,16 +4,21 @@ import aztech.modern_industrialization.inventory.ConfigurableFluidStack;
 import aztech.modern_industrialization.inventory.ConfigurableItemStack;
 import aztech.modern_industrialization.machines.impl.MachineBlockEntity;
 import aztech.modern_industrialization.machines.impl.MachineFactory;
+import aztech.modern_industrialization.machines.impl.MachineTier;
 import aztech.modern_industrialization.machines.recipe.MachineRecipeType;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
+import net.minecraft.util.math.Direction;
 import net.minecraft.world.chunk.WorldChunk;
 
 import java.util.*;
 import java.util.stream.Collectors;
+
+import static aztech.modern_industrialization.machines.impl.MachineTier.BRONZE;
+import static aztech.modern_industrialization.machines.impl.MachineTier.STEEL;
 
 public class MultiblockMachineBlockEntity extends MachineBlockEntity {
     protected Map<BlockPos, HatchBlockEntity> linkedHatches = new TreeMap<>();
@@ -23,6 +28,7 @@ public class MultiblockMachineBlockEntity extends MachineBlockEntity {
     private boolean lateLoaded = false;
     private boolean isBuildingShape = false;
     private Text errorMessage = null;
+    private MachineTier tier = null;
 
     public MultiblockMachineBlockEntity(MachineFactory factory, MachineRecipeType recipeType, MultiblockShape shape) {
         super(factory, recipeType);
@@ -67,6 +73,12 @@ public class MultiblockMachineBlockEntity extends MachineBlockEntity {
         }
     }
 
+    @Override
+    public void setFacingDirection(Direction facingDirection) {
+        super.setFacingDirection(facingDirection);
+        rebuildShape();
+    }
+
     public void rebuildShape() {
         isBuildingShape = true;
         for(HatchBlockEntity hatch : linkedHatches.values()) {
@@ -101,6 +113,8 @@ public class MultiblockMachineBlockEntity extends MachineBlockEntity {
                 ready = false;
             }
         }
+
+        if(ready) updateTier();
 
         isBuildingShape = false;
     }
@@ -158,5 +172,25 @@ public class MultiblockMachineBlockEntity extends MachineBlockEntity {
                 }
             }
         }
+    }
+
+    /**
+     * Calculate the multiblock tier.
+     * If the multiblock has a steel hatch, it is steel tier. Otherwise, it is bronze tier.
+     */
+    private void updateTier() {
+        // TODO: electric hatches
+        for(HatchBlockEntity hatch : linkedHatches.values()) {
+            if(hatch.getTier() == STEEL) {
+                tier = STEEL;
+                return;
+            }
+        }
+        tier = BRONZE;
+    }
+
+    @Override
+    public MachineTier getTier() {
+        return tier;
     }
 }

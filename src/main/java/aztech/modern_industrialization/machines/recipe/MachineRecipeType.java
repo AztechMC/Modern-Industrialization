@@ -98,6 +98,16 @@ public class MachineRecipeType implements RecipeType, RecipeSerializer {
         return x;
     }
 
+    private static float readProbability(JsonObject json, String element) {
+        if(JsonHelper.hasPrimitive(json, element)) {
+            float x = JsonHelper.getFloat(json, element);
+            if (x < 0 || x > 1) throw new RuntimeException(element + " should be a float between 0 and 1.");
+            return x;
+        } else {
+            return 1;
+        }
+    }
+
     private static Identifier readIdentifier(JsonObject json, String element) {
         return new Identifier(JsonHelper.getString(json, element));
     }
@@ -127,7 +137,8 @@ public class MachineRecipeType implements RecipeType, RecipeSerializer {
             throw new RuntimeException("Item " + id + " does not exist.");
         });
         int amount = readNonNegativeInt(json, "amount");
-        return new MachineRecipe.ItemInput(item, amount);
+        float probability = readProbability(json, "probability");
+        return new MachineRecipe.ItemInput(item, amount, probability);
     }
 
     private static MachineRecipe.FluidInput readFluidInput(JsonObject json) {
@@ -145,7 +156,8 @@ public class MachineRecipeType implements RecipeType, RecipeSerializer {
             throw new RuntimeException("Item " + id + " does not exist.");
         });
         int amount = readPositiveInt(json, "amount");
-        return new MachineRecipe.ItemOutput(item, amount);
+        float probability = readProbability(json, "probability");
+        return new MachineRecipe.ItemOutput(item, amount, probability);
     }
 
     private static MachineRecipe.FluidOutput readFluidOutput(JsonObject json) {
@@ -172,6 +184,7 @@ public class MachineRecipeType implements RecipeType, RecipeSerializer {
         JsonObject json = new JsonObject();
         json.addProperty("item", Registry.ITEM.getId(itemInput.item).toString());
         json.addProperty("amount", itemInput.amount);
+        json.addProperty("probability", itemInput.probability);
         return json;
     }
 
@@ -186,6 +199,7 @@ public class MachineRecipeType implements RecipeType, RecipeSerializer {
         JsonObject json = new JsonObject();
         json.addProperty("item", Registry.ITEM.getId(itemOutput.item).toString());
         json.addProperty("amount", itemOutput.amount);
+        json.addProperty("probability", itemOutput.probability);
         return json;
     }
 

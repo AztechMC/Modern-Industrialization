@@ -121,5 +121,9 @@
   "modern_industrialization:mixer" : "Mixer",
   "modern_industrialization:quarry" : "Quarry",
 
-  "itemGroup.modern_industrialization.general" : "Modern Industrialization"
+  "itemGroup.modern_industrialization.general" : "Modern Industrialization",
+
+
+  "book.modern_industrialization.name" : "Modern Industrial Engineering",
+  "book.modern_industrialization.landing_text" : "Welcome to Modern Industrialization! To get started, be sure to collect a lot of Copper Ore and Tin Ore."
 }

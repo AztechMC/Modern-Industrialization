@@ -18,6 +18,8 @@ repositories {
 		name = "Ladysnake Libs"
 		url = "https://dl.bintray.com/ladysnake/libs"
 	}
+	// for Patchouli
+	maven { url 'https://maven.blamejared.com' }
 }
 
 dependencies {
@@ -33,6 +35,7 @@ dependencies {
 	modImplementation "io.github.onyxstudios:Cardinal-Components-API:2.5.0" // TODO: include in jar
 	modCompileOnly "me.shedaniel:RoughlyEnoughItems-api:${project.rei_version}"
 	modRuntime "me.shedaniel:RoughlyEnoughItems:${project.rei_version}"
+	modImplementation "vazkii.patchouli:Patchouli:${project.patchouli_version}"
 }
 
 processResources {

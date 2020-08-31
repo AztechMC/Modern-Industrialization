@@ -7,7 +7,7 @@
   ],
   "key" : {
     "B" : {
-      "item": "modern_industrialization:fire_clay_bricks"
+      "item": "minecraft:bricks"
     },
     "F" : {
       "item": "minecraft:furnace"

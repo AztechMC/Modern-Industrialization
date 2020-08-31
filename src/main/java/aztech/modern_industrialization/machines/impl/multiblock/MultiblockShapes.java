@@ -1,10 +1,14 @@
 package aztech.modern_industrialization.machines.impl.multiblock;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.Blocks;
+import net.minecraft.block.ChainBlock;
+import net.minecraft.block.PillarBlock;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.BlockView;
 
@@ -18,7 +22,24 @@ public class MultiblockShapes {
 
             @Override
             public Text getErrorMessage() {
-                return new TranslatableText("text.modern_industrialization.shape_error_block", new TranslatableText(block.getTranslationKey()));
+                return new TranslatableText("text.modern_industrialization.shape_error_block", block.getName());
+            }
+        };
+    }
+
+    // TODO :
+    public static MultiblockShape.Entry verticalChain() {
+        return new MultiblockShape.Entry() {
+            @Override
+
+            public boolean matches(BlockView world, BlockPos pos) {
+                return world.getBlockState(pos).isOf(Blocks.CHAIN) && (world.getBlockState(pos).get(PillarBlock.AXIS)
+                         == Direction.Axis.Y) && !world.getBlockState(pos).get(ChainBlock.WATERLOGGED);
+            }
+
+            @Override
+            public Text getErrorMessage() {
+                return new TranslatableText("text.modern_industrialization.shape_error_block", Blocks.CHAIN.getName());
             }
         };
     }
@@ -32,7 +53,8 @@ public class MultiblockShapes {
 
             @Override
             public Text getErrorMessage() {
-                return new TranslatableText("text.modern_industrialization.shape_error_block", id);
+                Block block = Registry.BLOCK.get(id);
+                return new TranslatableText("text.modern_industrialization.shape_error_block", block.getName());
             }
         };
     }

@@ -63,4 +63,8 @@ public class MIBlock extends Block {
             FabricBlockSettings.of(MIMaterialSetup.METAL_MATERIAL).
                     hardness(4.0f).breakByTool(FabricToolTags.PICKAXES).requiresTool());
 
+    public static final MIBlock BLOCK_STEEL_MACHINE_CASING_PIPE = new MIBlock("steel_machine_casing_pipe",
+            FabricBlockSettings.of(MIMaterialSetup.METAL_MATERIAL).
+                    hardness(4.0f).breakByTool(FabricToolTags.PICKAXES).requiresTool());
+
 }

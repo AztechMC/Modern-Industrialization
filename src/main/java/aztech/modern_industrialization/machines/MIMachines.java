@@ -12,6 +12,7 @@ import aztech.modern_industrialization.machines.recipe.FurnaceRecipeProxy;
 import aztech.modern_industrialization.machines.recipe.MachineRecipeType;
 import aztech.modern_industrialization.machines.special.SteamBoilerBlockEntity;
 import aztech.modern_industrialization.machines.special.WaterPumpBlockEntity;
+import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.util.registry.Registry;
 
@@ -48,66 +49,67 @@ public class MIMachines {
 
     // Shapes
     public static MultiblockShape COKE_OVEN_SHAPE;
+    public static MultiblockShape BLAST_FURNACE_SHAPE;
     public static MultiblockShape QUARRY_SHAPE;
 
-    static {
-        COKE_OVEN_SHAPE = new MultiblockShape();
-        MultiblockShape.Entry firebricks = MultiblockShapes.block(MIBlock.BLOCK_FIRE_CLAY_BRICKS);
-        // two layers of pillars
-        /*for(int i = -3; i <= -2; i++) {
-            COKE_OVEN_SHAPE.addEntry(1, i, 0, firebricks);
-            COKE_OVEN_SHAPE.addEntry(1, i, 2, firebricks);
-            COKE_OVEN_SHAPE.addEntry(-1, i, 0, firebricks);
-            COKE_OVEN_SHAPE.addEntry(-1, i, 2, firebricks);
-        }*/
-        // firebricks + fluid input hatch in center
-        for(int i = -1; i <= 1; ++i) {
-            for(int j = -1; j <= 1; ++j) {
-                COKE_OVEN_SHAPE.addEntry(i, -1, j+1, i == 0 && j == 0 ? MultiblockShapes.hatch(HATCH_FLAG_FLUID_INPUT) : firebricks);
-            }
-        }
-        // corners of main layer
-        COKE_OVEN_SHAPE.addEntry(1, 0, 0, firebricks);
-        COKE_OVEN_SHAPE.addEntry(1, 0, 2, firebricks);
-        COKE_OVEN_SHAPE.addEntry(-1, 0, 0, firebricks);
-        COKE_OVEN_SHAPE.addEntry(-1, 0, 2, firebricks);
-        // main layer hatches
-        MultiblockShape.Entry optionalItem = MultiblockShapes.or(firebricks, MultiblockShapes.hatch(HATCH_FLAG_ITEM_INPUT | HATCH_FLAG_ITEM_OUTPUT));
-        COKE_OVEN_SHAPE.addEntry(1, 0, 1, optionalItem);
-        COKE_OVEN_SHAPE.addEntry(0, 0, 2, optionalItem);
-        COKE_OVEN_SHAPE.addEntry(-1, 0, 1, optionalItem);
-        // top layer firebricks + optional hatch in the center
-        for(int i = -1; i <= 1; ++i) {
-            for(int j = -1; j <= 1; ++j) {
-                COKE_OVEN_SHAPE.addEntry(i, 1, j+1, i == 0 && j == 0 ? optionalItem : firebricks);
+
+    private static MultiblockShape cokeOvenLike(int height, Block block){
+        MultiblockShape shape = new MultiblockShape();
+        MultiblockShape.Entry main_block = MultiblockShapes.block(block);
+        for(int y = 1; y < height; y++){
+            for(int x = -1; x <=1; x++){
+                for(int z = 0; z <= 2; z++){
+                    if((x != 0 || z != 1)){
+                        shape.addEntry(x, y, z, main_block);
+                    }
+                }
             }
         }
 
-        QUARRY_SHAPE = new MultiblockShape();
-        MultiblockShape.Entry steelBlock = MultiblockShapes.blockId(new MIIdentifier("steel_block"));
-        MultiblockShape.Entry optionalQuarryHatch = MultiblockShapes.or(MultiblockShapes.block(Blocks.AIR), MultiblockShapes.hatch(HATCH_FLAG_ITEM_INPUT | HATCH_FLAG_ITEM_OUTPUT | HATCH_FLAG_FLUID_INPUT));
-        // for now, just hatches in a 5x5 hollow pattern
-        QUARRY_SHAPE.addEntry(-2, 0, 0, optionalQuarryHatch);
-        QUARRY_SHAPE.addEntry(-1, 0, 0, optionalQuarryHatch);
-        QUARRY_SHAPE.addEntry(1, 0, 0, optionalQuarryHatch);
-        QUARRY_SHAPE.addEntry(2, 0, 0, optionalQuarryHatch);
-        QUARRY_SHAPE.addEntry(2, 0, 1, optionalQuarryHatch);
-        QUARRY_SHAPE.addEntry(2, 0, 2, optionalQuarryHatch);
-        QUARRY_SHAPE.addEntry(2, 0, 3, optionalQuarryHatch);
-        QUARRY_SHAPE.addEntry(2, 0, 4, optionalQuarryHatch);
-        QUARRY_SHAPE.addEntry(1, 0, 4, optionalQuarryHatch);
-        QUARRY_SHAPE.addEntry(0, 0, 4, optionalQuarryHatch);
-        QUARRY_SHAPE.addEntry(-1, 0, 4, optionalQuarryHatch);
-        QUARRY_SHAPE.addEntry(-2, 0, 4, optionalQuarryHatch);
-        QUARRY_SHAPE.addEntry(-2, 0, 3, optionalQuarryHatch);
-        QUARRY_SHAPE.addEntry(-2, 0, 2, optionalQuarryHatch);
-        QUARRY_SHAPE.addEntry(-2, 0, 1, optionalQuarryHatch);
-        // and steel blocks in the center
-        for(int i = -1; i <= 1; i++) {
-            for(int j = 1; j <= 3; j++) {
-                QUARRY_SHAPE.addEntry(i, 0, j, steelBlock);
+        MultiblockShape.Entry optionalItem = MultiblockShapes.or(main_block, MultiblockShapes.hatch(HATCH_FLAG_FLUID_INPUT | HATCH_FLAG_ITEM_INPUT | HATCH_FLAG_ITEM_OUTPUT));
+        for(int x = -1; x <=1; x++){
+            for(int z = 0; z <= 2; z++){
+                if(!(x == 0 && z <= 1)){
+                    shape.addEntry(x, 0, z, optionalItem);
+                }
             }
         }
+        return shape;
+    }
+
+    static {
+        COKE_OVEN_SHAPE = cokeOvenLike(3, Blocks.BRICKS);
+        BLAST_FURNACE_SHAPE = cokeOvenLike(4, MIBlock.BLOCK_FIRE_CLAY_BRICKS);
+
+        QUARRY_SHAPE = new MultiblockShape();
+        MultiblockShape.Entry steelCasing = MultiblockShapes.blockId(new MIIdentifier("steel_machine_casing"));
+        MultiblockShape.Entry steelCasingPipe = MultiblockShapes.blockId(new MIIdentifier("steel_machine_casing_pipe"));
+        MultiblockShape.Entry optionalQuarryHatch = MultiblockShapes.or(steelCasing, MultiblockShapes.hatch(HATCH_FLAG_ITEM_INPUT | HATCH_FLAG_ITEM_OUTPUT | HATCH_FLAG_FLUID_INPUT));
+
+        for(int z = 0; z < 3; z++){
+            QUARRY_SHAPE.addEntry(1, 0, z, optionalQuarryHatch);
+            QUARRY_SHAPE.addEntry(-1, 0, z, optionalQuarryHatch);
+        }
+        QUARRY_SHAPE.addEntry(0, 0, 2, optionalQuarryHatch);
+        QUARRY_SHAPE.addEntry(0, 0, 1, MultiblockShapes.verticalChain());
+
+        for(int x = -1; x <=1 ; ++x){
+            for(int z = 0; z < 3; z++){
+                if((x != 0 || z != 1)){
+                    QUARRY_SHAPE.addEntry(x, 1, z, steelCasing);
+                }else{
+                    QUARRY_SHAPE.addEntry(0, 1, 1, MultiblockShapes.verticalChain());
+                }
+            }
+        }
+
+        for(int y = 2; y < 5; y++){
+            QUARRY_SHAPE.addEntry(-1, y, 1, steelCasingPipe);
+            QUARRY_SHAPE.addEntry(1, y, 1, steelCasingPipe);
+            QUARRY_SHAPE.addEntry(0, y, 1, y < 4 ? MultiblockShapes.verticalChain() : steelCasing);
+        }
+
+
     }
 
 
@@ -260,13 +262,14 @@ public class MIMachines {
         registerMachineTiers("furnace", RECIPE_FURNACE, 1, 1, 0, 0, MIMachines::setupFurnace, true);
         registerMachineTiers("macerator", RECIPE_MACERATOR, 1, 4, 0, 0, MIMachines::setupMacerator, false);
         registerMachineTiers("mixer", RECIPE_MIXER, 4, 2, 0, 0, MIMachines::setupMixer, false);
+
         new SteamMachineFactory("coke_oven", BRONZE, (f, t) -> new MultiblockMachineBlockEntity(f, t, COKE_OVEN_SHAPE), RECIPE_COKE_OVEN, 1, 1, 0, 0)
                 .setInputSlotPosition(56, 45, 1, 1).setOutputSlotPosition(102, 45, 1, 1)
                 .setupProgressBar(76, 45, 22, 15, true).setupBackground("steam_furnace.png")
                 .setupOverlays("coke_oven", true, false, false)
-                .setupCasing("firebricks")
+                .setupCasing("bricks")
         ;
-        new SteamMachineFactory("steam_blast_furnace", BRONZE, (f, t) -> new MultiblockMachineBlockEntity(f, t, COKE_OVEN_SHAPE), RECIPE_BLAST_FURNACE, 1, 1, 0, 0)
+        new SteamMachineFactory("steam_blast_furnace", BRONZE, (f, t) -> new MultiblockMachineBlockEntity(f, t, BLAST_FURNACE_SHAPE), RECIPE_BLAST_FURNACE, 1, 1, 0, 0)
                 .setInputSlotPosition(56, 45, 1, 1).setOutputSlotPosition(102, 45, 1, 1)
                 .setupProgressBar(76, 45, 22, 15, true).setupBackground("steam_furnace.png")
                 .setupOverlays("steam_blast_furnace", true, false, false)

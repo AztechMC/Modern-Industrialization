@@ -58,6 +58,7 @@
   "block.modern_industrialization.fire_clay_bricks" : "Fire Clay Bricks",
   "block.modern_industrialization.bronze_machine_casing" : "Bronze Machine Casing",
   "block.modern_industrialization.steel_machine_casing" : "Steel Machine Casing",
+  "block.modern_industrialization.steel_machine_casing_pipe" : "Steel Pipe Machine Casing",
 
   "text.modern_industrialization.fluid_slot_empty" : "Empty",
   "text.modern_industrialization.fluid_slot_quantity" : "%s drops",

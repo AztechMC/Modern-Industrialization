@@ -28,16 +28,16 @@ public class MIMaterialSetup {
             for (String block_type : (material.hasOre() ? new String[]{"block", "ore"} : new String[]{"block"})) {
                 Block block = null;
                 if (block_type.equals("block")) {
-                    block = new Block(FabricBlockSettings.of(METAL_MATERIAL).hardness(material.getHardness())
+                    block = new MaterialBlock(FabricBlockSettings.of(METAL_MATERIAL).hardness(material.getHardness())
                             .resistance(material.getBlastResistance())
                             .breakByTool(FabricToolTags.PICKAXES, 0)
-                            .requiresTool()
+                            .requiresTool(), material.getId(), "block"
                     );
                 } else if (block_type.equals("ore")) {
-                    block = new Block(FabricBlockSettings.of(STONE_MATERIAL).hardness(material.getOreHardness())
+                    block = new MaterialBlock(FabricBlockSettings.of(STONE_MATERIAL).hardness(material.getOreHardness())
                             .resistance(material.getOreBlastResistance())
                             .breakByTool(FabricToolTags.PICKAXES, 1)
-                            .requiresTool()
+                            .requiresTool(), material.getId(), "ore"
                     );
                 }
                 material.saveBlock(block_type, block);

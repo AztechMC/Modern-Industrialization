@@ -195,9 +195,9 @@ public class MIMaterial {
 
     public static MIMaterial iron = new MIMaterial("iron").setIsVanilla(true);
     public static MIMaterial gold = new MIMaterial("gold").setIsVanilla(true);
-    public static MIMaterial copper = new MIMaterial("copper").setUpOreGenerator(10, 8, 64);
-    public static MIMaterial tin = new MIMaterial("tin").setUpOreGenerator(4, 8, 64);
+    public static MIMaterial copper = new MIMaterial("copper").setUpOreGenerator(20, 9, 128);
+    public static MIMaterial tin = new MIMaterial("tin").setUpOreGenerator(8, 9, 64);
     public static MIMaterial bronze = new MIMaterial("bronze");
     public static MIMaterial steel = new MIMaterial("steel");
-    public static MIMaterial aluminum = new MIMaterial("aluminum").setUpOreGenerator(4, 6, 64);
+    public static MIMaterial aluminum = new MIMaterial("aluminum").setUpOreGenerator(6, 6, 64);
 }

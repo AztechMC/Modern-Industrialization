@@ -22,7 +22,7 @@ public class MultiblockShapes {
 
             @Override
             public Text getErrorMessage() {
-                return new TranslatableText("text.modern_industrialization.shape_error_block", block.getName());
+                return new TranslatableText("text.modern_industrialization.shape_error_block", new TranslatableText(block.getTranslationKey()));
             }
         };
     }
@@ -39,7 +39,7 @@ public class MultiblockShapes {
 
             @Override
             public Text getErrorMessage() {
-                return new TranslatableText("text.modern_industrialization.shape_error_block", Blocks.CHAIN.getName());
+                return new TranslatableText("text.modern_industrialization.shape_error_block", new TranslatableText(Blocks.CHAIN.getTranslationKey()));
             }
         };
     }
@@ -54,7 +54,7 @@ public class MultiblockShapes {
             @Override
             public Text getErrorMessage() {
                 Block block = Registry.BLOCK.get(id);
-                return new TranslatableText("text.modern_industrialization.shape_error_block", block.getName());
+                return new TranslatableText("text.modern_industrialization.shape_error_block", block.getTranslationKey());
             }
         };
     }

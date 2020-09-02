@@ -76,13 +76,13 @@ def genForgeHammer(id, vanilla, ore):
     hammer = "modern_industrialization:forge_hammer_hammer"
     saw = "modern_industrialization:forge_hammer_saw"
 
-    list_todo = [('plate', 'curved_plate', 1, hammer),
+    list_todo = [('large_plate', 'curved_plate', 3, hammer),
                  ('double_ingot', 'plate', 1, hammer),
                  ('nugget', 'small_dust', 1, hammer),
                  ('ingot', 'rod', 1, saw),
                  ('large_plate', 'gear', 1, saw),
                  ('rod', 'bolt', 1, saw),
-                 ('pipe_item', 'ring', 3, saw)]
+                 ('pipe_item', 'ring', 1, saw)]
 
     if ore:
         list_todo.append(('ore', 'crushed_dust', 2, hammer))
@@ -264,7 +264,7 @@ def genMacerator(id, vanilla, ore):
     path = "src/main/resources/data/modern_industrialization/recipes/generated/materials/" + id + "/macerator"
     Path(path).mkdir(parents=True, exist_ok=True)
     list_todo = [('ingot', 9), ('double_ingot', 18), ('plate', 9), ('curved_plate', 9),
-                 ('nugget', 1), ('large_plate', 36), ('gear', 18), ('ring', 1),
+                 ('nugget', 1), ('large_plate', 36), ('gear', 18), ('ring', 4),
                  ('bolt', 2), ('rod', 4), ('pipe_item', 9), ('pipe_fluid', 9),
                  ('rotor', 27)]
 
@@ -333,7 +333,7 @@ def genCuttingSaw(id, vanilla, ore):
     Path(path).mkdir(parents=True, exist_ok=True)
     mac = "modern_industrialization:cutting_machine"
 
-    for a, b, c in [('ingot', 'rod', 2), ('rod', 'bolt', 2), ('large_plate', 'gear', 2), ('pipe_item', 'ring', 6)]:
+    for a, b, c in [('ingot', 'rod', 2), ('rod', 'bolt', 2), ('large_plate', 'gear', 2), ('pipe_item', 'ring', 2)]:
         jsonf = {}
         jsonf["type"] = mac
         jsonf["eu"] = 2

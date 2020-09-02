@@ -21,7 +21,7 @@
     {
       "item": "modern_industrialization:copper_ore",
       "amount" : 1,
-      "probability" : 0.6   
+      "probability" : 0.6
     },
     {
       "item": "modern_industrialization:tin_ore",

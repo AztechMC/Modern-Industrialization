@@ -1,6 +1,7 @@
 package aztech.modern_industrialization.inventory;
 
 import aztech.modern_industrialization.fluid.FluidInventory;
+import aztech.modern_industrialization.util.ItemStackHelper;
 import aztech.modern_industrialization.util.NbtHelper;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -120,7 +121,7 @@ public interface ConfigurableInventory extends Inventory, SidedInventory, FluidI
                                 inv.setStack(i, stack.stack);
                                 stack.stack = ItemStack.EMPTY;
                                 markDirty();
-                            } else {
+                            } else if(ItemStackHelper.areEqualIgnoreCount(stack.stack, inv.getStack(i))) {
                                 int ins = Math.min(Math.min(inv.getMaxCountPerStack(), inv.getStack(i).getMaxCount() - inv.getStack(i).getCount()), stack.stack.getCount());
                                 stack.stack.decrement(ins);
                                 inv.getStack(i).increment(ins);

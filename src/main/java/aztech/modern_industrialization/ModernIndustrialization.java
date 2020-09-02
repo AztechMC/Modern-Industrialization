@@ -34,6 +34,7 @@ import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.client.itemgroup.FabricItemGroupBuilder;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerChunkEvents;
 import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
+import net.fabricmc.fabric.api.registry.FuelRegistry;
 import net.fabricmc.fabric.api.screenhandler.v1.ScreenHandlerRegistry;
 import net.fabricmc.fabric.api.tag.TagRegistry;
 import net.minecraft.block.Block;
@@ -108,6 +109,7 @@ public class ModernIndustrialization implements ModInitializer {
         ForgeHammerScreenHandler.setupRecipes();
         setupMachines();
         setupPackets();
+        setupFuels();
 
         MIPipes.INSTANCE.onInitialize();
 
@@ -267,5 +269,9 @@ public class ModernIndustrialization implements ModInitializer {
     private void setupPackets() {
         ServerSidePacketRegistry.INSTANCE.register(MachinePackets.C2S.SET_AUTO_EXTRACT, MachinePackets.C2S.ON_SET_AUTO_EXTRACT);
         ServerSidePacketRegistry.INSTANCE.register(ForgeHammerPacket.SET_HAMMER, ForgeHammerPacket.ON_SET_HAMMER);
+    }
+
+    private void setupFuels() {
+        FuelRegistry.INSTANCE.add(MIItem.ITEM_COKE, 6400);
     }
 }

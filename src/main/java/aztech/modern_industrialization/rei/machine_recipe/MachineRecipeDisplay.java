@@ -12,6 +12,7 @@ import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.NotNull;
 
+import java.text.DecimalFormat;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
@@ -21,6 +22,7 @@ import java.util.stream.Stream;
 public class MachineRecipeDisplay implements RecipeDisplay {
     private final MachineRecipe recipe;
     private final Identifier category;
+    private static final DecimalFormat PROBABILITY_FORMAT = new DecimalFormat("#.#");
 
     public MachineRecipeDisplay(MachineRecipeType type, MachineRecipe recipe) {
         this.recipe = recipe;
@@ -28,7 +30,7 @@ public class MachineRecipeDisplay implements RecipeDisplay {
     }
 
     private static Function<EntryStack, List<Text>> getProbabilityTooltip(float probability) {
-        return (stack) -> probability == 1 ? Collections.emptyList() : Collections.singletonList(new TranslatableText("text.modern_industrialization.probability", probability*100));
+        return (stack) -> probability == 1 ? Collections.emptyList() : Collections.singletonList(new TranslatableText("text.modern_industrialization.probability", PROBABILITY_FORMAT.format(probability*100)));
     }
 
     public Stream<List<EntryStack>> getItemInputs() {
@@ -36,7 +38,7 @@ public class MachineRecipeDisplay implements RecipeDisplay {
     }
 
     public Stream<List<EntryStack>> getFluidInputs() {
-        return recipe.fluidInputs.stream().map(i -> Collections.singletonList(EntryStack.create(i.fluid, Fraction.of(i.amount, FluidUnit.DROPS_PER_BUCKET))));
+        return recipe.fluidInputs.stream().map(i -> Collections.singletonList(EntryStack.create(i.fluid, Fraction.of(i.amount, FluidUnit.DROPS_PER_BUCKET)).addSetting(EntryStack.Settings.TOOLTIP_APPEND_EXTRA, getProbabilityTooltip(i.probability))));
     }
 
     @Override
@@ -52,7 +54,7 @@ public class MachineRecipeDisplay implements RecipeDisplay {
     }
 
     public Stream<List<EntryStack>> getFluidOutputs() {
-        return recipe.fluidOutputs.stream().map(i -> Collections.singletonList(EntryStack.create(i.fluid, Fraction.of(i.amount, FluidUnit.DROPS_PER_BUCKET))));
+        return recipe.fluidOutputs.stream().map(i -> Collections.singletonList(EntryStack.create(i.fluid, Fraction.of(i.amount, FluidUnit.DROPS_PER_BUCKET)).addSetting(EntryStack.Settings.TOOLTIP_APPEND_EXTRA, getProbabilityTooltip(i.probability))));
     }
 
     @Override

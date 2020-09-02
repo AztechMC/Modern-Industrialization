@@ -83,10 +83,12 @@ public class MachineRecipe implements Recipe<MachineBlockEntity> {
     public static class FluidInput {
         public final Fluid fluid;
         public final int amount;
+        public final float probability;
 
-        public FluidInput(Fluid fluid, int amount) {
+        public FluidInput(Fluid fluid, int amount, float probability) {
             this.fluid = fluid;
             this.amount = amount;
+            this.probability = probability;
         }
     }
 
@@ -105,10 +107,12 @@ public class MachineRecipe implements Recipe<MachineBlockEntity> {
     public static class FluidOutput {
         public final Fluid fluid;
         public final int amount;
+        public final float probability;
 
-        public FluidOutput(Fluid fluid, int amount) {
+        public FluidOutput(Fluid fluid, int amount, float probability) {
             this.fluid = fluid;
             this.amount = amount;
+            this.probability = probability;
         }
     }
 }

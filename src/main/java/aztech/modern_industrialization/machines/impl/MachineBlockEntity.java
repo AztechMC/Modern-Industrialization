@@ -34,8 +34,8 @@ import java.util.concurrent.ThreadLocalRandom;
 public class MachineBlockEntity extends AbstractMachineBlockEntity
         implements Tickable, ExtendedScreenHandlerFactory, MachineInventory {
 
-    protected final List<ConfigurableItemStack> itemStacks;
-    protected final List<ConfigurableFluidStack> fluidStacks;
+    protected List<ConfigurableItemStack> itemStacks;
+    protected List<ConfigurableFluidStack> fluidStacks;
     protected int openCount = 0;
 
     protected MachineFactory factory;
@@ -163,7 +163,20 @@ public class MachineBlockEntity extends AbstractMachineBlockEntity
     @Override
     public void fromTag(BlockState state, CompoundTag tag) {
         super.fromTag(state, tag);
-        readFromTag(tag);
+        {
+            // This is a failsafe in case the number of slots in a machine changed
+            // When this happens, we destroy all items/fluids, but at least we don't crash the world.
+            // TODO: find a better solution?
+            List<ConfigurableItemStack> itemStackCopy = ConfigurableItemStack.copyList(itemStacks);
+            List<ConfigurableFluidStack> fluidStackCopy = ConfigurableFluidStack.copyList(fluidStacks);
+            readFromTag(tag);
+            if (itemStackCopy.size() != itemStacks.size()) {
+                itemStacks = itemStackCopy;
+            }
+            if (fluidStackCopy.size() != fluidStacks.size()) {
+                fluidStacks = fluidStackCopy;
+            }
+        }
         this.usedEnergy = tag.getInt("usedEnergy");
         this.recipeEnergy = tag.getInt("recipeEnergy");
         this.recipeMaxEu = tag.getInt("recipeMaxEu");
@@ -282,7 +295,7 @@ public class MachineBlockEntity extends AbstractMachineBlockEntity
         boolean ok = true;
         for(MachineRecipe.ItemInput input : recipe.itemInputs) {
             if(!simulate && input.probability < 1) { // if we are not simulating, there is a chance we don't need to take this output
-                if(ThreadLocalRandom.current().nextFloat() > input.probability) {
+                if(ThreadLocalRandom.current().nextFloat() >= input.probability) {
                     continue;
                 }
             }
@@ -305,6 +318,11 @@ public class MachineBlockEntity extends AbstractMachineBlockEntity
 
         boolean ok = true;
         for(MachineRecipe.FluidInput input : recipe.fluidInputs) {
+            if(!simulate && input.probability < 1) { // if we are not simulating, there is a chance we don't need to take this output
+                if(ThreadLocalRandom.current().nextFloat() >= input.probability) {
+                    continue;
+                }
+            }
             int remainingAmount = input.amount;
             for(ConfigurableFluidStack stack : stacks) {
                 if(stack.getFluid() == input.fluid) {
@@ -380,6 +398,11 @@ public class MachineBlockEntity extends AbstractMachineBlockEntity
 
         boolean ok = true;
         for(MachineRecipe.FluidOutput output : recipe.fluidOutputs) {
+            if(output.probability < 1) {
+                if(simulate) continue; // don't check output space for probabilistic recipes
+                float randFloat = ThreadLocalRandom.current().nextFloat();
+                if(randFloat > output.probability) continue;
+            }
             int remainingAmount = output.amount;
             // Try to insert in non-empty stacks first, then also allow insertion in empty stacks if there was no empty stack.
             outerLoop:

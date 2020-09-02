@@ -42,7 +42,7 @@ public class MIMachines {
     //public static final MachineRecipeType RECIPE_FLUID_EXTRACTOR = createRecipeType("fluid_extractor").withItemInputs().withFluidOutputs();
     public static final MachineRecipeType RECIPE_FURNACE = new FurnaceRecipeProxy(null);
     public static final MachineRecipeType RECIPE_MACERATOR = createRecipeType("macerator").withItemInputs().withItemOutputs();
-    public static final MachineRecipeType RECIPE_MIXER = createRecipeType("mixer").withItemInputs().withItemOutputs();
+    public static final MachineRecipeType RECIPE_MIXER = createRecipeType("mixer").withItemInputs().withFluidInputs().withItemOutputs();
     public static final MachineRecipeType RECIPE_COKE_OVEN = createRecipeType("coke_oven").withItemInputs().withItemOutputs();
     public static final MachineRecipeType RECIPE_BLAST_FURNACE = createRecipeType("blast_furnace").withItemInputs().withItemOutputs();
     public static final MachineRecipeType RECIPE_QUARRY = createRecipeType("quarry").withItemInputs().withItemOutputs();
@@ -150,8 +150,9 @@ public class MIMachines {
 
     public static MachineFactory setupMixer(MachineFactory factory) {
         return factory
-                .setInputSlotPosition(52, 37, 2, 2).setOutputSlotPosition(119, 37, 1, 2)
-                .setupProgressBar(92, 46, 22, 15, true).setupBackground("steam_mixer.png")
+                .setInputSlotPosition(62, 37, 2, 2).setOutputSlotPosition(129, 37, 1, 2)
+                .setInputLiquidSlotPosition(42, 37, 1, 2)
+                .setupProgressBar(102, 46, 22, 15, true).setupBackground("steam_mixer.png")
                 .setupOverlays("mixer", true, true, true);
     }
 
@@ -261,7 +262,7 @@ public class MIMachines {
         //registerMachineTiers("fluid_extractor", RECIPE_FLUID_EXTRACTOR, 1, 0, 0, 1, MIMachines::setupFluidExtractor, false);
         registerMachineTiers("furnace", RECIPE_FURNACE, 1, 1, 0, 0, MIMachines::setupFurnace, true);
         registerMachineTiers("macerator", RECIPE_MACERATOR, 1, 4, 0, 0, MIMachines::setupMacerator, false);
-        registerMachineTiers("mixer", RECIPE_MIXER, 4, 2, 0, 0, MIMachines::setupMixer, false);
+        registerMachineTiers("mixer", RECIPE_MIXER, 4, 2, 2, 0, MIMachines::setupMixer, false);
 
         new SteamMachineFactory("coke_oven", BRONZE, (f, t) -> new MultiblockMachineBlockEntity(f, t, COKE_OVEN_SHAPE), RECIPE_COKE_OVEN, 1, 1, 0, 0)
                 .setInputSlotPosition(56, 45, 1, 1).setOutputSlotPosition(102, 45, 1, 1)

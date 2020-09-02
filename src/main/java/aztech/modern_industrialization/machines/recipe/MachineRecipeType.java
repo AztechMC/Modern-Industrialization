@@ -147,7 +147,8 @@ public class MachineRecipeType implements RecipeType, RecipeSerializer {
             throw new RuntimeException("Fluid " + id + " does not exist.");
         });
         int amount = readNonNegativeInt(json, "amount");
-        return new MachineRecipe.FluidInput(fluid, amount);
+        float probability = readProbability(json, "probability");
+        return new MachineRecipe.FluidInput(fluid, amount, probability);
     }
 
     private static MachineRecipe.ItemOutput readItemOutput(JsonObject json) {
@@ -166,7 +167,8 @@ public class MachineRecipeType implements RecipeType, RecipeSerializer {
             throw new RuntimeException("Fluid " + id + " does not exist.");
         });
         int amount = readPositiveInt(json, "amount");
-        return new MachineRecipe.FluidOutput(fluid, amount);
+        float probability = readProbability(json, "probability");
+        return new MachineRecipe.FluidOutput(fluid, amount, probability);
     }
 
     public JsonObject write(MachineRecipe recipe) {

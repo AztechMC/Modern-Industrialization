@@ -24,23 +24,28 @@ public class MIMaterialSetup {
     public static final Material STONE_MATERIAL = new FabricMaterialBuilder(MaterialColor.STONE).build();
 
     static {
+        MIMaterial fetcher = MIMaterials.gold; // force static load TODO : REFACTOR
+
         for(MIMaterial material : MIMaterial.getAllMaterials()) {
-            for (String block_type : (material.hasOre() ? new String[]{"block", "ore"} : new String[]{"block"})) {
+
+            for (String block_type : material.getBlockType()) {
+
                 Block block = null;
                 if (block_type.equals("block")) {
-                    block = new MaterialBlock(FabricBlockSettings.of(METAL_MATERIAL).hardness(material.getHardness())
-                            .resistance(material.getBlastResistance())
+                    block = new MaterialBlock(FabricBlockSettings.of(METAL_MATERIAL).hardness(5.0f)
+                            .resistance(6.0f)
                             .breakByTool(FabricToolTags.PICKAXES, 0)
                             .requiresTool(), material.getId(), "block"
                     );
                 } else if (block_type.equals("ore")) {
-                    block = new MaterialBlock(FabricBlockSettings.of(STONE_MATERIAL).hardness(material.getOreHardness())
-                            .resistance(material.getOreBlastResistance())
+                    block = new MaterialBlock(FabricBlockSettings.of(STONE_MATERIAL).hardness(3.0f)
+                            .resistance(3.0f)
                             .breakByTool(FabricToolTags.PICKAXES, 1)
                             .requiresTool(), material.getId(), "ore"
                     );
                 }
                 material.saveBlock(block_type, block);
+
             }
 
             if(material.hasOre()) {

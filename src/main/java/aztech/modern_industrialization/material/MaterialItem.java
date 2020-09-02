@@ -20,6 +20,9 @@ public class MaterialItem extends Item {
     @Environment(EnvType.CLIENT)
     @Override
     public Text getName() {
+        if(itemType.equals(materialId)){
+            return new TranslatableText("modern_industrialization:material:"+materialId);
+        }
         String itemTypeKey = "modern_industrialization:item_type:"+itemType;
         String materialKey = "modern_industrialization:material:"+materialId;
         return new TranslatableText(itemTypeKey, new TranslatableText(materialKey).getString());

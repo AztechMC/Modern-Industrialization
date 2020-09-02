@@ -87,6 +87,7 @@
   "modern_industrialization:material:gold" : "Gold",
   "modern_industrialization:material:steel" : "Steel",
   "modern_industrialization:material:aluminum" : "Aluminum",
+  "modern_industrialization:material:lignite_coal" : "Lignite Coal",
 
   "modern_industrialization:item_type:ingot": "%s Ingot",
   "modern_industrialization:item_type:double_ingot" : "%s Double Ingot",

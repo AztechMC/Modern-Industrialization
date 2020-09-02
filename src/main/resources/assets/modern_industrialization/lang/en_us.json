@@ -77,6 +77,8 @@
   "text.modern_industrialization.shape_error_block" : "Expected block %s",
   "text.modern_industrialization.shape_error_hatch" : "Expected hatches %s",
   "text.modern_industrialization.shape_error_or" : "%s or %s",
+  "text.modern_industrialization.shape_error_too_many_hatches" : "Multiblock shape error: found %d hatches, but only up to %d are allowed.",
+  "text.modern_industrialization.shape_valid" : "Multiblock shape is correct",
 
   "modern_industrialization:material:copper" : "Copper",
   "modern_industrialization:material:tin" : "Tin",

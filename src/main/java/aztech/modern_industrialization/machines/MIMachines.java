@@ -56,22 +56,22 @@ public class MIMachines {
     private static MultiblockShape cokeOvenLike(int height, Block block){
         MultiblockShape shape = new MultiblockShape();
         MultiblockShape.Entry main_block = MultiblockShapes.block(block);
-        for(int y = 1; y < height; y++){
+        for(int y = 0; y < height-1; y++){
             for(int x = -1; x <=1; x++){
                 for(int z = 0; z <= 2; z++){
-                    if((x != 0 || z != 1)){
-                        shape.addEntry(x, y, z, main_block);
+                    if(x != 0 || z != 1){
+                        if(x != 0 || y != 0 || z != 0) {
+                            shape.addEntry(x, y, z, main_block);
+                        }
                     }
                 }
             }
         }
 
-        MultiblockShape.Entry optionalItem = MultiblockShapes.or(main_block, MultiblockShapes.hatch(HATCH_FLAG_FLUID_INPUT | HATCH_FLAG_ITEM_INPUT | HATCH_FLAG_ITEM_OUTPUT));
+        MultiblockShape.Entry optionalHatch = MultiblockShapes.or(main_block, MultiblockShapes.hatch(HATCH_FLAG_FLUID_INPUT | HATCH_FLAG_ITEM_INPUT | HATCH_FLAG_ITEM_OUTPUT));
         for(int x = -1; x <=1; x++){
             for(int z = 0; z <= 2; z++){
-                if(!(x == 0 && z <= 1)){
-                    shape.addEntry(x, 0, z, optionalItem);
-                }
+                shape.addEntry(x, -1, z, optionalHatch);
             }
         }
         return shape;
@@ -96,7 +96,7 @@ public class MIMachines {
         for(int x = -1; x <=1 ; ++x){
             for(int z = 0; z < 3; z++){
                 if((x != 0 || z != 1)){
-                    QUARRY_SHAPE.addEntry(x, 1, z, steelCasing);
+                    QUARRY_SHAPE.addEntry(x, 1, z, optionalQuarryHatch);
                 }else{
                     QUARRY_SHAPE.addEntry(0, 1, 1, MultiblockShapes.verticalChain());
                 }
@@ -108,8 +108,7 @@ public class MIMachines {
             QUARRY_SHAPE.addEntry(1, y, 1, steelCasingPipe);
             QUARRY_SHAPE.addEntry(0, y, 1, y < 4 ? MultiblockShapes.verticalChain() : steelCasing);
         }
-
-
+        QUARRY_SHAPE.setMaxHatches(4);
     }
 
 

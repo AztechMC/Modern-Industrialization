@@ -49,6 +49,7 @@
   "block.modern_industrialization.steel_furnace" : "Steel Furnace",
   "block.modern_industrialization.steel_macerator" : "Steel Macerator",
   "block.modern_industrialization.steel_mixer" : "Steel Mixer",
+  "block.modern_industrialization.steel_packer" : "Steel Packer",
   "block.modern_industrialization.steel_item_input_hatch" : "Steel Item Input Hatch",
   "block.modern_industrialization.steel_item_output_hatch" : "Steel Item Output Hatch",
   "block.modern_industrialization.steel_fluid_input_hatch" : "Steel Fluid Input Hatch",
@@ -122,6 +123,7 @@
   "modern_industrialization:furnace" : "Furnace",
   "modern_industrialization:macerator" : "Macerator",
   "modern_industrialization:mixer" : "Mixer",
+  "modern_industrialization:packer" : "Packer",
   "modern_industrialization:quarry" : "Quarry",
 
   "itemGroup.modern_industrialization.general" : "Modern Industrialization",

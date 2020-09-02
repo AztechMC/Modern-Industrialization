@@ -371,6 +371,50 @@ def genCuttingSaw(id, vanilla, item_set, isMetal):
             with open(path + "/" + a + ".json", "w") as file:
                 json.dump(jsonf, file, indent=4)
 
+def genPacker(id, vanilla, item_set, isMetal, hasPipe):
+    path = "src/main/resources/data/modern_industrialization/recipes/generated/materials/" + \
+           id + "/packer"
+    Path(path).mkdir(parents=True, exist_ok=True)
+    mac = "modern_industrialization:packer"
+
+    list_todo = [('main', 2, 'double_ingot', 1), ('plate', 4, 'large_plate', 1)]
+    if hasPipe: list_todo.append(('curved_plate', 6, 'pipe_item', 6))
+
+    for i, ic, o, oc in list_todo:
+        if i in item_set and o in item_set:
+            jsonf = {}
+            jsonf["type"] = mac
+            jsonf["eu"] = 2
+            jsonf["duration"] = 200
+            jsonf["item_inputs"] = {
+                "item": getIdentifier(id, i, vanilla, isMetal), "amount": ic}
+
+            jsonf["item_outputs"] = {
+                "item": getIdentifier(id, o, vanilla, isMetal), "amount": oc}
+
+            with open(path + "/" + i + ".json", "w") as file:
+                json.dump(jsonf, file, indent=4)
+
+    if hasPipe:
+        jsonf = {}
+        jsonf["type"] = mac
+        jsonf["eu"] = 2
+        jsonf["duration"] = 200
+        jsonf["item_inputs"] = [
+            {
+                "item": getIdentifier(id, "pipe_item", vanilla, isMetal), "amount": 2
+            },
+            {
+                "item": "minecraft:glass_pane", "amount": 1
+            }
+        ]
+
+        jsonf["item_outputs"] = {
+            "item": getIdentifier(id, "pipe_fluid", vanilla, isMetal), "amount": 2
+        }
+
+        with open(path + "/" + i + ".json", "w") as file:
+            json.dump(jsonf, file, indent=4)
 
 def gen(file, id, hex, item_set, block_set, vanilla=False,  forge_hammer=False, smelting=True, isMetal=True, veinsPerChunk=0, veinsSize=0, maxYLevel=64, texture=''):
 
@@ -433,16 +477,17 @@ def gen(file, id, hex, item_set, block_set, vanilla=False,  forge_hammer=False, 
     genMacerator(id, vanilla, item_set, isMetal)
     genCompressor(id, vanilla, item_set, isMetal)
     genCuttingSaw(id, vanilla, item_set, isMetal)
+    genPacker(id, vanilla, item_set, isMetal, pipe)
 
 
 BLOCK_ONLY = {'block'}
 ORE_ONLY = {'ore'}
 BOTH = {'block', 'ore'}
 
-ITEM_BASE = {'plate', 'large_plate', 'nugget',
+ITEM_BASE = {'plate', 'large_plate', 'nugget', 'double_ingot',
              'small_dust', 'dust', 'curved_plate', 'pipe', 'rod', 'crushed_dust'}
 ITEM_ALL = ITEM_BASE | {'bolt', 'blade',
-                        'ring', 'rotor', 'gear'} | {'double_ingot'}
+                        'ring', 'rotor', 'gear'}
 
 ITEM_ALL_NO_ORE = ITEM_ALL - {'crushed_dust'}
 
@@ -470,7 +515,7 @@ public class MIMaterials {
         smelting=False, veinsPerChunk=6, veinsSize=6)
     gen(file, 'lignite_coal', '#604020', {
         'dust', 'crushed_dust'}, ORE_ONLY, forge_hammer=True, isMetal=False,
-        veinsPerChunk=30, veinsSize=12, maxYLevel=128, texture='lignite_coal')
+        veinsPerChunk=20, veinsSize=17, maxYLevel=128, texture='lignite_coal')
 
     file.write("\n")
     file.write("}")

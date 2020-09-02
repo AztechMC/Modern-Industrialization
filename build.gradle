@@ -31,8 +31,10 @@ dependencies {
 	// Fabric API. This is technically optional, but you probably want it anyway.
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
-	modImplementation group: 'net.devtech', name: 'arrp', version: '0.2.6' // TODO: include in jar
-	modImplementation "io.github.onyxstudios:Cardinal-Components-API:2.5.0" // TODO: include in jar
+	modImplementation 'net.devtech:arrp:0.2.6'
+	include "net.devtech:arrp:0.2.6"
+	modImplementation "io.github.onyxstudios:Cardinal-Components-API:2.5.0"
+	include "io.github.onyxstudios:Cardinal-Components-API:2.5.0"
 	modCompileOnly "me.shedaniel:RoughlyEnoughItems-api:${project.rei_version}"
 	modRuntime "me.shedaniel:RoughlyEnoughItems:${project.rei_version}"
 	modImplementation "vazkii.patchouli:Patchouli:${project.patchouli_version}"

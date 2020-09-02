@@ -216,7 +216,7 @@ public class MachineBlockEntity extends AbstractMachineBlockEntity
 
         boolean wasActive = isActive;
 
-        if(activeRecipe == null && canRecipeProgress()) {
+        if(activeRecipe == null && canRecipeStart()) {
             if(getEu(1, true) == 1) {
                 for (MachineRecipe recipe : getRecipes()) {
                     if(recipe.eu > getTier().getMaxEu()) continue;
@@ -262,6 +262,10 @@ public class MachineBlockEntity extends AbstractMachineBlockEntity
         markDirty();
 
         autoExtract();
+    }
+
+    protected boolean canRecipeStart() {
+        return true;
     }
 
     protected void autoExtract() {

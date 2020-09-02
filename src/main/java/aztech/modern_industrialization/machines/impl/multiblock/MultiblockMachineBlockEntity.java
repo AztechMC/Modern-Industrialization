@@ -29,6 +29,7 @@ public class MultiblockMachineBlockEntity extends MachineBlockEntity {
     private boolean isBuildingShape = false;
     private Text errorMessage = null;
     private MachineTier tier = null;
+    private int shapeCheckTicks = 0;
 
     public MultiblockMachineBlockEntity(MachineFactory factory, MachineRecipeType recipeType, MultiblockShape shape) {
         super(factory, recipeType);
@@ -49,14 +50,9 @@ public class MultiblockMachineBlockEntity extends MachineBlockEntity {
         return false;
     }
 
-    public void blockRemoved(BlockPos pos) {
-        if(linkedStructureBlocks.remove(pos)) {
-            rebuildShape();
-        }
-        if(linkedHatches.containsKey(pos)) {
-            linkedHatches.remove(pos);
-            rebuildShape();
-        }
+    public void hatchRemoved(BlockPos pos) {
+        linkedHatches.remove(pos);
+        rebuildShape();
     }
 
     protected void hatchLoaded() {
@@ -126,6 +122,13 @@ public class MultiblockMachineBlockEntity extends MachineBlockEntity {
     }
 
     @Override
+    protected boolean canRecipeStart() {
+        lateLoad();
+        rebuildShape();
+        return ready;
+    }
+
+    @Override
     protected List<ConfigurableFluidStack> getSteamInputStacks() {
         return getFluidInputStacks();
     }
@@ -156,22 +159,18 @@ public class MultiblockMachineBlockEntity extends MachineBlockEntity {
         clearLocks();
     }
 
-    public Text getErrorMessage() {
-        return errorMessage;
+    @Override
+    public void tick() {
+        if(shapeCheckTicks == 0) {
+            rebuildShape();
+            shapeCheckTicks = 20;
+        }
+        --shapeCheckTicks;
+        super.tick();
     }
 
-    public static void onBlockBreakInChunk(ServerWorld world, BlockPos pos) {
-        ChunkPos chunkPos = new ChunkPos(pos);
-        for(int i = -1; i <= 1; ++i) {
-            for(int j = -1; j <= 1; ++j) {
-                WorldChunk chunk = world.getChunk(chunkPos.x + i, chunkPos.z + j);
-                for(BlockEntity entity : chunk.getBlockEntities().values()) {
-                    if(entity instanceof MultiblockMachineBlockEntity) {
-                        ((MultiblockMachineBlockEntity) entity).blockRemoved(pos);
-                    }
-                }
-            }
-        }
+    public Text getErrorMessage() {
+        return errorMessage;
     }
 
     /**

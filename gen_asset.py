@@ -264,7 +264,7 @@ def genMacerator(id, vanilla, ore):
     path = "src/main/resources/data/modern_industrialization/recipes/generated/materials/" + id + "/macerator"
     Path(path).mkdir(parents=True, exist_ok=True)
     list_todo = [('ingot', 9), ('double_ingot', 18), ('plate', 9), ('curved_plate', 9),
-                 ('nugget', 1), ('large_plate', 36), ('gear', 18), ('ring', 4),
+                 ('nugget', 1), ('large_plate', 36), ('gear', 18), ('ring', 1),
                  ('bolt', 2), ('rod', 4), ('pipe_item', 9), ('pipe_fluid', 9),
                  ('rotor', 27)]
 

@@ -40,15 +40,6 @@ public class MIBlock extends Block {
         return blockItem;
     }
 
-    public void onStateReplaced(BlockState state, World world, BlockPos pos, BlockState newState, boolean moved) {
-        if (!state.isOf(newState.getBlock())) {
-            if (!world.isClient) {
-                MultiblockMachineBlockEntity.onBlockBreakInChunk((ServerWorld) world, pos);
-            }
-            super.onStateReplaced(state, world, pos, newState, moved);
-        }
-    }
-
     public static final MIBlock BLOCK_FIRE_CLAY_BRICKS = new MIBlock("fire_clay_bricks",
             FabricBlockSettings.of(MIMaterialSetup.STONE_MATERIAL).hardness(2.0f)
                     .resistance(6.0f)

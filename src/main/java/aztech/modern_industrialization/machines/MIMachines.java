@@ -37,12 +37,15 @@ public class MIMachines {
         public final List<MachineFactory> factories = new ArrayList<>();
     }
 
+    // Single block
     public static final MachineRecipeType RECIPE_COMPRESSOR = createRecipeType("compressor").withItemInputs().withItemOutputs();
     public static final MachineRecipeType RECIPE_CUTTING_MACHINE = createRecipeType("cutting_machine").withItemInputs().withFluidInputs().withItemOutputs();
     //public static final MachineRecipeType RECIPE_FLUID_EXTRACTOR = createRecipeType("fluid_extractor").withItemInputs().withFluidOutputs();
     public static final MachineRecipeType RECIPE_FURNACE = new FurnaceRecipeProxy(null);
     public static final MachineRecipeType RECIPE_MACERATOR = createRecipeType("macerator").withItemInputs().withItemOutputs();
     public static final MachineRecipeType RECIPE_MIXER = createRecipeType("mixer").withItemInputs().withFluidInputs().withItemOutputs();
+    public static final MachineRecipeType RECIPE_PACKER = createRecipeType("packer").withItemInputs().withItemOutputs();
+    // Multi block
     public static final MachineRecipeType RECIPE_COKE_OVEN = createRecipeType("coke_oven").withItemInputs().withItemOutputs();
     public static final MachineRecipeType RECIPE_BLAST_FURNACE = createRecipeType("blast_furnace").withItemInputs().withItemOutputs();
     public static final MachineRecipeType RECIPE_QUARRY = createRecipeType("quarry").withItemInputs().withItemOutputs();
@@ -155,15 +158,24 @@ public class MIMachines {
                 .setupOverlays("mixer", true, true, true);
     }
 
+    public static MachineFactory setupPacker(MachineFactory factory) {
+        return factory
+                .setInputSlotPosition(56, 37, 1, 2).setOutputSlotPosition(102, 37, 1, 2)
+                .setupProgressBar(76, 45, 22, 15, true).setupBackground("steam_furnace.png")
+                .setupOverlays("packer", true, false, false);
+    }
+
     @FunctionalInterface
     private interface MachineSetup {
         MachineFactory setup(MachineFactory factory);
     }
 
-    private static void registerMachineTiers(String machineType, MachineRecipeType recipeType, int inputSlots, int outputSlots, int fluidInputSlots, int fluidOutputSlots, MachineSetup setup, boolean steamBricked) {
+    private static void registerMachineTiers(String machineType, MachineRecipeType recipeType, int inputSlots, int outputSlots, int fluidInputSlots, int fluidOutputSlots, MachineSetup setup, boolean steamBricked, boolean bronze, boolean steel) {
         for (MachineTier tier : MachineTier.values()) {
             MachineFactory factory;
             if (tier.isSteam()) {
+                if(tier == BRONZE && !bronze) continue;
+                if(tier == STEEL && !steel) continue;
                 factory = new SteamMachineFactory(tier.toString() + "_" + machineType, tier, MachineBlockEntity::new, recipeType, inputSlots, outputSlots, fluidInputSlots, fluidOutputSlots)
                         .setSteamBucketCapacity(tier == BRONZE ? 2 : 4).setSteamSlotPos(23, 23);
                 factory.setupCasing((steamBricked ? "bricked_" : "") + tier.toString());
@@ -173,6 +185,9 @@ public class MIMachines {
             }
             setup.setup(factory);
         }
+    }
+    private static void registerMachineTiers(String machineType, MachineRecipeType recipeType, int inputSlots, int outputSlots, int fluidInputSlots, int fluidOutputSlots, MachineSetup setup, boolean steamBricked) {
+        registerMachineTiers(machineType, recipeType, inputSlots, outputSlots, fluidInputSlots, fluidOutputSlots, setup, steamBricked, true, true);
     }
 
     private static int[] ITEM_HATCH_ROWS = new int[] {1, 2};
@@ -262,6 +277,7 @@ public class MIMachines {
         registerMachineTiers("furnace", RECIPE_FURNACE, 1, 1, 0, 0, MIMachines::setupFurnace, true);
         registerMachineTiers("macerator", RECIPE_MACERATOR, 1, 4, 0, 0, MIMachines::setupMacerator, false);
         registerMachineTiers("mixer", RECIPE_MIXER, 4, 2, 2, 0, MIMachines::setupMixer, false);
+        registerMachineTiers("packer", RECIPE_PACKER, 2, 2, 0, 0, MIMachines::setupPacker, false, false, true);
 
         new SteamMachineFactory("coke_oven", BRONZE, (f, t) -> new MultiblockMachineBlockEntity(f, t, COKE_OVEN_SHAPE), RECIPE_COKE_OVEN, 1, 1, 0, 0)
                 .setInputSlotPosition(56, 45, 1, 1).setOutputSlotPosition(102, 45, 1, 1)

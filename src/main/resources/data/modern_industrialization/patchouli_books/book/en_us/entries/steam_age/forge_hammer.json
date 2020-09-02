@@ -1,0 +1,16 @@
+{
+  "name": "The Forge Hammer",
+  "category": "modern_industrialization:steam_age",
+  "icon": "modern_industrialization:forge_hammer",
+  "pages": [
+    {
+      "type": "text",
+      "text": "Before making bronze, we will need to create a Forge Hammer. It can hammer or saw items.$(br2)You can put iron, copper and tin ore in the forge hammer and you will receive 2 Crushed Dust per ore. Every crushed dust can be smelted into an ingot."
+    },
+    {
+      "type": "crafting",
+      "recipe": "modern_industrialization:forge_hammer"
+    }
+  ],
+  "sortnum": 0
+}

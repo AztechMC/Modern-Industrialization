@@ -1,0 +1,43 @@
+{
+  "name": "Do You Like Coke?",
+  "category": "modern_industrialization:steam_age",
+  "icon": "modern_industrialization:coke_oven",
+  "pages": [
+    {
+      "type": "text",
+      "text": "Once you have had enough of the bronze machines, you can start working towards making steel. The ultimate goal is to be able to build the quarry, a multiblock that will dig ores for you!$(br2)The first step is to make coke, by heating coal without oxygen. For that, you will need to build a Coke Oven multiblock."
+    },
+    {
+      "type": "crafting",
+      "recipe": "modern_industrialization:machine/fireclay/coke_oven",
+      "text": "For this first multiblock, you will need the Coke Oven itself of course, 21 Bricks and 3 $(thing)Hatches$(): an item input, an item output and a fluid input."
+    },
+    {
+      "type": "crafting",
+      "recipe": "modern_industrialization:machine/bronze/item_input_hatch",
+      "recipe2": "modern_industrialization:machine/bronze/item_output_hatch"
+    },
+    {
+      "type": "crafting",
+      "recipe": "modern_industrialization:machine/bronze/fluid_input_hatch",
+      "recipe2": "modern_industrialization:machine/bronze/fluid_output_hatch"
+    },
+    {
+      "type": "text",
+      "text": "The Coke Oven here is the $(thing)Controller$(). Every multiblock is managed by a controller, but you cannot interact with the controller directly, all input and output goes through hatches. We need a fluid input because the coke oven is powered by steam, we need an item input for the coal and an output for the coke. If we forget one of the hatches, the coke oven will not be able to start!"
+    },
+    {
+      "type": "text",
+      "text": "The Coke Oven is made of three layers: a 3x3 square with the three hatches, then two hollow 3x3 squares above. In the middle of one of the sides, place the controller. If that isn't clear enough, have a look at $(l:https://streamable.com/08f74x)this video$().$(br2)The exact placement of the hatches doesn't matter, as long as they are on the bottom layer."
+    },
+    {
+      "type": "text",
+      "text": "When you have placed all the blocks, make sure the Controller is oriented correctly, and right-click its center with a wrench. You should receive a success message. Otherwise, have a look at the error and fix it.$(br2)Fill the fluid input hatch with steam, put coal in the item input hatch and you're good to go!"
+    },
+    {
+      "type": "text",
+      "text": "Coke will be very useful for steel, but it is also a powerful fuel. It lasts 4 times as long as coal!"
+    }
+  ],
+  "sortnum": 9
+}

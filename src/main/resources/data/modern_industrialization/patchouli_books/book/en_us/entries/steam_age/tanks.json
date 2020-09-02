@@ -1,0 +1,16 @@
+{
+  "name": "Tanks",
+  "category": "modern_industrialization:steam_age",
+  "icon": "modern_industrialization:tank_bronze",
+  "pages": [
+    {
+      "type": "text",
+      "text": "Bronze tanks can store 4 buckets of fluid each, you can use them to interact with machines, and you can place them in the world.$(br2)When placed in the world, you can right-click them with buckets or other tanks to transfer fluids.$(br2)Also, you can stack them if they have the same contents. How nifty!"
+    },
+    {
+      "type": "crafting",
+      "recipe": "modern_industrialization:tank/tank_bronze"
+    }
+  ],
+  "sortnum": 7
+}

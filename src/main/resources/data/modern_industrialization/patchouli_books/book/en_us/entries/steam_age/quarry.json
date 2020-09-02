@@ -2,6 +2,15 @@
   "name": "Infinite Resources?",
   "category": "modern_industrialization:steam_age",
   "icon": "modern_industrialization:quarry",
-  "pages": [],
+  "pages": [
+    {
+      "type": "text",
+      "text": "The Quarry is a steam multiblock machine that consumes item pipes, uses them to dig deeper than the bedrock and gives you back some ores, as you can see in REI.$(br2)It's recommended that you have at least 4 Blast Furnaces running before you attempt to build it because it requires $(l)a lot of steel$()."
+    },
+    {
+      "type": "text",
+      "text": "The basic shape of the Quarry is two layers of 3x3 hollow Steel Machine Casings with vertical Chains, with the Quarry in one of the 4 faces of the bottom layer. Then, in the center, two other layers of vertical Chains and another Steel Machine Casing on top, and three Steel Pipe Machine Casings on each side. The Quarry can have up to 4 hatches, they can replace any steel casing of the first two layers. $(l:https://streamable.com/9wk7xb)Video$()"
+    }
+  ],
   "sortnum": 12
 }

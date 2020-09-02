@@ -1,0 +1,17 @@
+{
+  "name": "Hot Water",
+  "category": "modern_industrialization:steam_age",
+  "icon": "modern_industrialization:bronze_boiler",
+  "pages": [
+    {
+      "type": "text",
+      "text": "Steam machines need steam to function, and that's exactly what the boiler provides.$(br2)It will slowly use fuel to heat up. When it's hot enough, it will start to produce steam. Don't forget to feed it with water or your fuel will burn for nothing."
+    },
+    {
+      "type": "crafting",
+      "recipe": "modern_industrialization:machine/bronze/boiler",
+      "text": "It probably looks crazy expensive to you right now, but don't forget that you can double ores. Also, as soon as you will have your first two machines, it will become three times less expensive!"
+    }
+  ],
+  "sortnum": 2
+}

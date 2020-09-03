@@ -1,0 +1,15 @@
+{
+    "type": "modern_industrialization:macerator",
+    "eu": 2,
+    "duration": 200,
+    "item_inputs": {
+        "amount": 1,
+        "item": "modern_industrialization:pipe_fluid_bronze"
+    },
+    "item_outputs": [
+        {
+            "item": "modern_industrialization:bronze_dust",
+            "amount": 1
+        }
+    ]
+}

@@ -3,8 +3,8 @@
     "eu": 1,
     "duration": 1,
     "item_inputs": {
-        "item": "modern_industrialization:bronze_large_plate",
-        "amount": 1
+        "amount": 1,
+        "item": "modern_industrialization:bronze_large_plate"
     },
     "item_outputs": {
         "item": "modern_industrialization:bronze_gear",

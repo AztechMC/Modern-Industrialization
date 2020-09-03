@@ -3,8 +3,8 @@
     "eu": 2,
     "duration": 200,
     "item_inputs": {
-        "item": "modern_industrialization:steel_ingot",
-        "amount": 2
+        "amount": 2,
+        "tag": "c:steel_ingots"
     },
     "item_outputs": {
         "item": "modern_industrialization:steel_double_ingot",

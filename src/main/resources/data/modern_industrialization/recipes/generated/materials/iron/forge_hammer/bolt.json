@@ -3,8 +3,8 @@
     "eu": 1,
     "duration": 1,
     "item_inputs": {
-        "item": "modern_industrialization:iron_rod",
-        "amount": 1
+        "amount": 1,
+        "item": "modern_industrialization:iron_rod"
     },
     "item_outputs": {
         "item": "modern_industrialization:iron_bolt",

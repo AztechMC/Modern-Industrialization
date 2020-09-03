@@ -3,8 +3,8 @@
     "eu": 1,
     "duration": 1,
     "item_inputs": {
-        "item": "modern_industrialization:tin_nugget",
-        "amount": 1
+        "amount": 1,
+        "tag": "c:tin_nuggets"
     },
     "item_outputs": {
         "item": "modern_industrialization:tin_small_dust",

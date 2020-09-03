@@ -7,6 +7,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.recipe.Recipe;
 import net.minecraft.recipe.RecipeSerializer;
 import net.minecraft.recipe.RecipeType;
+import net.minecraft.tag.Tag;
 import net.minecraft.util.Identifier;
 import net.minecraft.world.World;
 
@@ -70,13 +71,26 @@ public class MachineRecipe implements Recipe<MachineBlockEntity> {
 
     public static class ItemInput {
         public final Item item;
+        public final Tag<Item> tag;
         public final int amount;
         public final float probability;
 
         public ItemInput(Item item, int amount, float probability) {
             this.item = item;
+            this.tag = null;
             this.amount = amount;
             this.probability = probability;
+        }
+
+        public ItemInput(Tag<Item> tag, int amount, float probability) {
+            this.item = null;
+            this.tag = tag;
+            this.amount = amount;
+            this.probability = probability;
+        }
+
+        public boolean matches(ItemStack otherStack) {
+            return item == null ? tag.contains(otherStack.getItem()) : otherStack.getItem() == item;
         }
     }
 

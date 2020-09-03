@@ -3,8 +3,8 @@
     "eu": 2,
     "duration": 200,
     "item_inputs": {
-        "item": "minecraft:gold_ingot",
-        "amount": 1
+        "amount": 1,
+        "item": "minecraft:gold_ingot"
     },
     "item_outputs": {
         "item": "modern_industrialization:gold_plate",

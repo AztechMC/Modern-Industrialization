@@ -6,6 +6,7 @@ from pathlib import Path
 import os
 import json
 
+C = "c:"
 MC = "minecraft:"
 MI = "modern_industrialization:"
 
@@ -69,6 +70,15 @@ def getIdentifier(id, item_type, vanilla=False, isMetal=True):
     else:
         return MI + id + '_' + item_type
 
+def getTypeTags(id):
+    return ["ore"] if id in TAG_BLACKLIST else ['main', 'nugget', 'ore']
+
+def addItemInput(itemInputs, id, item_type, vanilla=False, isMetal=True):
+    if not vanilla and isMetal and item_type in getTypeTags(id):
+        itemInputs["tag"] = C + id + "_" + ("ingot" if item_type == "main" else item_type) + "s"
+    else:
+        itemInputs["item"] = getIdentifier(id, item_type, vanilla, isMetal)
+
 
 def genForgeHammer(id, vanilla, item_set, isMetal):
     forge_hammer_path = "src/main/resources/data/modern_industrialization/recipes/generated/materials/" + id + "/forge_hammer"
@@ -92,8 +102,8 @@ def genForgeHammer(id, vanilla, item_set, isMetal):
             json_file["type"] = d
             json_file["eu"] = 1
             json_file["duration"] = 1
-            json_file["item_inputs"] = {
-                "item": getIdentifier(id, a, vanilla, isMetal), "amount": 1}
+            json_file["item_inputs"] = {"amount": 1}
+            addItemInput(json_file["item_inputs"], id, a, vanilla, isMetal)
             json_file["item_outputs"] = {
                 "item": getIdentifier(id, b, vanilla, isMetal), "amount": c}
 
@@ -163,10 +173,10 @@ def genCraft(id, vanilla, item_set, isMetal, pipe):
             "#",
             "#"
         ]
+        ingredient = {}
+        addItemInput(ingredient, id, "main", vanilla, isMetal)
         jsonf["key"] = {
-            "#": {
-                "item": getIdentifier(id, "main", vanilla, isMetal)
-            }
+            "#": ingredient
         }
         jsonf["result"] = {
             "item": getIdentifier(id, "double_ingot", vanilla),
@@ -289,8 +299,8 @@ def genMacerator(id, vanilla, item_set, isMetal):
                 jsonf["type"] = mac
                 jsonf["eu"] = 2
                 jsonf["duration"] = 200
-                jsonf["item_inputs"] = {
-                    "item": getIdentifier(id, a, vanilla, isMetal), "amount": 1}
+                jsonf["item_inputs"] = {"amount": 1}
+                addItemInput(jsonf["item_inputs"], id, a, vanilla, isMetal)
 
                 jsonf["item_outputs"] = []
 
@@ -315,8 +325,8 @@ def genMacerator(id, vanilla, item_set, isMetal):
             jsonf["type"] = mac
             jsonf["eu"] = 2
             jsonf["duration"] = 200
-            jsonf["item_inputs"] = {
-                "item": getIdentifier(id, "crushed_dust" if crushed_dust else "ore", vanilla), "amount": 2 if crushed_dust else 1}
+            jsonf["item_inputs"] = {"amount": 2 if crushed_dust else 1}
+            addItemInput(jsonf["item_inputs"], id, "crushed_dust" if crushed_dust else "ore", vanilla)
 
             jsonf["item_outputs"] = {
                 "item": getIdentifier(id, "dust" if crushed_dust else "crushed_dust", vanilla), "amount": 3 if crushed_dust else 2}
@@ -337,8 +347,8 @@ def genCompressor(id, vanilla, item_set, isMetal):
             jsonf["type"] = mac
             jsonf["eu"] = 2
             jsonf["duration"] = 200
-            jsonf["item_inputs"] = {
-                "item": getIdentifier(id, a, vanilla, isMetal), "amount": 1}
+            jsonf["item_inputs"] = {"amount": 1}
+            addItemInput(jsonf["item_inputs"], id, a, vanilla, isMetal)
 
             jsonf["item_outputs"] = {
                 "item": getIdentifier(id, b, vanilla, isMetal), "amount": c}
@@ -359,8 +369,8 @@ def genCuttingSaw(id, vanilla, item_set, isMetal):
             jsonf["type"] = mac
             jsonf["eu"] = 2
             jsonf["duration"] = 200
-            jsonf["item_inputs"] = {
-                "item": getIdentifier(id, a, vanilla, isMetal), "amount": 1}
+            jsonf["item_inputs"] = {"amount": 1}
+            addItemInput(jsonf["item_inputs"], id, a, vanilla, isMetal)
 
             jsonf["fluid_inputs"] = {
                 "fluid": "minecraft:water", "amount": 1}
@@ -386,8 +396,9 @@ def genPacker(id, vanilla, item_set, isMetal, hasPipe):
             jsonf["type"] = mac
             jsonf["eu"] = 2
             jsonf["duration"] = 200
-            jsonf["item_inputs"] = {
-                "item": getIdentifier(id, i, vanilla, isMetal), "amount": ic}
+            jsonf["item_inputs"] = {"amount": ic}
+
+            addItemInput(jsonf["item_inputs"], id, i, vanilla, isMetal)
 
             jsonf["item_outputs"] = {
                 "item": getIdentifier(id, o, vanilla, isMetal), "amount": oc}
@@ -465,6 +476,8 @@ def gen(file, id, hex, item_set, block_set, vanilla=False,  forge_hammer=False, 
             gen_texture(id, hex, item_set - {id}, set())
 
     item_set = item_set | block_set | {'main'}
+    if pipe:
+        item_set |= {'pipe_item', 'pipe_fluid'}
 
     if forge_hammer:
         genForgeHammer(id, vanilla, item_set, isMetal)
@@ -490,6 +503,7 @@ ITEM_ALL = ITEM_BASE | {'bolt', 'blade',
                         'ring', 'rotor', 'gear'}
 
 ITEM_ALL_NO_ORE = ITEM_ALL - {'crushed_dust'}
+TAG_BLACKLIST = { 'aluminum' } # will only allow ores from this material as tag, but nothing else
 
 if __name__ == '__main__':
     file = open(

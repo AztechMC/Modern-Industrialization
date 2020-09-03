@@ -305,7 +305,7 @@ public class MachineBlockEntity extends AbstractMachineBlockEntity
             }
             int remainingAmount = input.amount;
             for(ConfigurableItemStack stack : stacks) {
-                if(stack.getStack().getItem() == input.item) {
+                if(input.matches(stack.getStack())) {
                     ItemStack taken = stack.splitStack(remainingAmount);
                     remainingAmount -= taken.getCount();
                     if(remainingAmount == 0) break;

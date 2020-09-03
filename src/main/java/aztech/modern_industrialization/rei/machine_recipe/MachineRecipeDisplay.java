@@ -7,6 +7,7 @@ import me.shedaniel.rei.api.EntryStack;
 import me.shedaniel.rei.api.RecipeDisplay;
 import me.shedaniel.rei.api.fractions.Fraction;
 import net.minecraft.item.ItemStack;
+import net.minecraft.recipe.Ingredient;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
@@ -30,11 +31,17 @@ public class MachineRecipeDisplay implements RecipeDisplay {
     }
 
     private static Function<EntryStack, List<Text>> getProbabilityTooltip(float probability) {
-        return (stack) -> probability == 1 ? Collections.emptyList() : Collections.singletonList(new TranslatableText("text.modern_industrialization.probability", PROBABILITY_FORMAT.format(probability*100)));
+        return (stack) -> probability == 1 ? Collections.emptyList() : Collections.singletonList(new TranslatableText("text.modern_industrialization.probability", PROBABILITY_FORMAT.format(probability * 100)));
     }
 
     public Stream<List<EntryStack>> getItemInputs() {
-        return recipe.itemInputs.stream().map(i -> Collections.singletonList(EntryStack.create(new ItemStack(i.item, i.amount)).addSetting(EntryStack.Settings.TOOLTIP_APPEND_EXTRA, getProbabilityTooltip(i.probability))));
+        return recipe.itemInputs.stream().map(i -> createInputEntries(i).stream().map(e -> e.addSetting(EntryStack.Settings.TOOLTIP_APPEND_EXTRA, getProbabilityTooltip(i.probability))).collect(Collectors.toList()));
+    }
+
+    private static List<EntryStack> createInputEntries(MachineRecipe.ItemInput input) {
+        return input.item == null
+                ? input.tag.values().stream().map(i -> EntryStack.create(new ItemStack(i, input.amount))).collect(Collectors.toList())
+                : Collections.singletonList(EntryStack.create(new ItemStack(input.item, input.amount)));
     }
 
     public Stream<List<EntryStack>> getFluidInputs() {

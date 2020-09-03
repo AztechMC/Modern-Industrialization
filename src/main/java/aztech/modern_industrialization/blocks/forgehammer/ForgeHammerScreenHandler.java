@@ -117,8 +117,7 @@ public class ForgeHammerScreenHandler extends ScreenHandler {
 
                 // absolutely nothing could go wrong
                 for (MachineRecipe recipe : (isHammer ? RECIPE_HAMMER : RECIPE_SAW).getRecipes((ServerWorld) world)) {
-                    Item inputItem = input.getStack(0).getItem();
-                    if (recipe.itemInputs.get(0).item == inputItem) {
+                    if (recipe.itemInputs.get(0).matches(input.getStack(0))) {
                         MachineRecipe.ItemOutput output = recipe.itemOutputs.get(0);
                         outputStack = new ItemStack(output.item, output.amount);
                         break;

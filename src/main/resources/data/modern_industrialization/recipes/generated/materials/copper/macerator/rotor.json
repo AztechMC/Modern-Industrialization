@@ -3,8 +3,8 @@
     "eu": 2,
     "duration": 200,
     "item_inputs": {
-        "item": "modern_industrialization:copper_rotor",
-        "amount": 1
+        "amount": 1,
+        "item": "modern_industrialization:copper_rotor"
     },
     "item_outputs": [
         {

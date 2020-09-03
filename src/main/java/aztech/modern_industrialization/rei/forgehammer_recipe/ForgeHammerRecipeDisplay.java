@@ -10,6 +10,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class ForgeHammerRecipeDisplay implements RecipeDisplay {
     private final MachineRecipe recipe;
@@ -23,7 +24,13 @@ public class ForgeHammerRecipeDisplay implements RecipeDisplay {
     @Override
     public @NotNull List<List<EntryStack>> getInputEntries() {
         MachineRecipe.ItemInput input = recipe.itemInputs.get(0);
-        return Collections.singletonList(Collections.singletonList(EntryStack.create(new ItemStack(input.item, input.amount))));
+        return Collections.singletonList(createInputEntries(input));
+    }
+
+    private static List<EntryStack> createInputEntries(MachineRecipe.ItemInput input) {
+        return input.item == null
+                ? input.tag.values().stream().map(i -> EntryStack.create(new ItemStack(i, input.amount))).collect(Collectors.toList())
+                : Collections.singletonList(EntryStack.create(new ItemStack(input.item, input.amount)));
     }
 
     @Override

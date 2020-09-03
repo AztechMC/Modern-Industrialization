@@ -1,17 +1,26 @@
 package aztech.modern_industrialization.pipes.fluid;
 
+import alexiil.mc.lib.attributes.fluid.volume.FluidKeys;
 import aztech.modern_industrialization.fluid.FluidUnit;
 import aztech.modern_industrialization.pipes.api.PipeNetwork;
 import aztech.modern_industrialization.pipes.api.PipeNetworkData;
 import aztech.modern_industrialization.pipes.api.PipeNetworkNode;
 import net.minecraft.fluid.Fluids;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
+
+import java.util.Map;
 
 public class FluidNetwork extends PipeNetwork {
-    public FluidNetwork(int id, PipeNetworkData data) {
-        super(id, data == null ? new FluidNetworkData(Fluids.EMPTY, FluidUnit.DROPS_PER_BUCKET) : data);
+    final int nodeCapacity;
+
+    public FluidNetwork(int id, PipeNetworkData data, int nodeCapacity) {
+        super(id, data == null ? new FluidNetworkData(FluidKeys.EMPTY) : data);
+        this.nodeCapacity = nodeCapacity;
     }
 
-    public void tick() {
+    @Override
+    public void tick(World world) {
         // Only tick once
         if(ticked) return;
         ticked = true;
@@ -19,10 +28,10 @@ public class FluidNetwork extends PipeNetwork {
         int totalAmount = 0;
         int remainingNodes = 0;
         // Interact with other inventories
-        for(PipeNetworkNode node : nodes.values()) {
+        for(Map.Entry<BlockPos, PipeNetworkNode> node : nodes.entrySet()) {
             if(node != null) {
-                FluidNetworkNode fluidNode = (FluidNetworkNode) node;
-                fluidNode.interactWithConnections();
+                FluidNetworkNode fluidNode = (FluidNetworkNode) node.getValue();
+                fluidNode.interactWithConnections(world, node.getKey());
                 totalAmount += fluidNode.amount;
                 remainingNodes++;
             }
@@ -42,16 +51,14 @@ public class FluidNetwork extends PipeNetwork {
     public PipeNetworkData merge(PipeNetwork other) {
         FluidNetworkData thisData = (FluidNetworkData) data;
         FluidNetworkData otherData = (FluidNetworkData) other.data;
-        if(thisData.nodeCapacity == otherData.nodeCapacity) {
-            // If one is empty, it's easy to merge.
-            if(this.isEmpty()) return otherData.clone();
-            if(((FluidNetwork) other).isEmpty()) return thisData.clone();
-        }
+        // If one is empty, it's easy to merge.
+        if(this.isEmpty()) return otherData.clone();
+        if(((FluidNetwork) other).isEmpty()) return thisData.clone();
         return null;
     }
 
     private boolean isEmpty() {
-        if(((FluidNetworkData) data).fluid == Fluids.EMPTY) return true;
+        if(((FluidNetworkData) data).fluid.isEmpty()) return true;
         for(PipeNetworkNode node : nodes.values()) {
             if(node == null || ((FluidNetworkNode) node).amount != 0) {
                 return false;

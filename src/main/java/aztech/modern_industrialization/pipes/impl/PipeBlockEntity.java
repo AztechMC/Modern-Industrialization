@@ -212,7 +212,7 @@ public class PipeBlockEntity extends BlockEntity implements Tickable, BlockEntit
     public void tick() {
         loadPipes();
         for(PipeNetworkNode pipe : pipes) {
-            pipe.tick(pos);
+            pipe.tick(world, pos);
         }
         markDirty();
     }

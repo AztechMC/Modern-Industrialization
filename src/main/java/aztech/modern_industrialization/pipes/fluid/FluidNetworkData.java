@@ -1,34 +1,36 @@
 package aztech.modern_industrialization.pipes.fluid;
 
+import alexiil.mc.lib.attributes.fluid.volume.FluidKey;
+import alexiil.mc.lib.attributes.fluid.volume.SimpleFluidKey;
 import aztech.modern_industrialization.util.NbtHelper;
 import aztech.modern_industrialization.pipes.api.PipeNetworkData;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.nbt.CompoundTag;
 
 public class FluidNetworkData extends PipeNetworkData {
-    Fluid fluid;
-    int nodeCapacity;
+    FluidKey fluid;
 
-    public FluidNetworkData(Fluid fluid, int nodeCapacity) {
+    public FluidNetworkData(FluidKey fluid) {
         this.fluid = fluid;
-        this.nodeCapacity = nodeCapacity;
     }
 
     @Override
     public FluidNetworkData clone() {
-        return new FluidNetworkData(fluid, nodeCapacity);
+        return new FluidNetworkData(fluid);
     }
 
     @Override
     public void fromTag(CompoundTag tag) {
-        fluid = NbtHelper.getFluid(tag, "fluid");
-        nodeCapacity = tag.getInt("nodeCapacity");
+        if(tag.contains("fluid")) { // backwards-compatibility
+            fluid = new SimpleFluidKey(new FluidKey.FluidKeyBuilder(NbtHelper.getFluid(tag, "fluid")));
+        } else {
+            fluid = FluidKey.fromTag(tag.getCompound("fluidkey"));
+        }
     }
 
     @Override
     public CompoundTag toTag(CompoundTag tag) {
-        NbtHelper.putFluid(tag, "fluid", fluid);
-        tag.putInt("nodeCapacity", nodeCapacity);
+        tag.put("fluidkey", fluid.toTag());
         return tag;
     }
 
@@ -36,7 +38,7 @@ public class FluidNetworkData extends PipeNetworkData {
     public boolean equals(Object obj) {
         if(obj instanceof FluidNetworkData) {
             FluidNetworkData otherData = (FluidNetworkData)obj;
-            return otherData.fluid.equals(fluid) && otherData.nodeCapacity == nodeCapacity;
+            return otherData.fluid == fluid;
         } else {
             return false;
         }

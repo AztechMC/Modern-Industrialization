@@ -37,7 +37,7 @@ public abstract class PipeNetworkNode {
     public final PipeNetworkManager getManager() {
         return network.manager;
     }
-    public void tick(BlockPos pos) {
-        network.tick();
+    public void tick(World world, BlockPos pos) {
+        network.tick(world);
     }
 }

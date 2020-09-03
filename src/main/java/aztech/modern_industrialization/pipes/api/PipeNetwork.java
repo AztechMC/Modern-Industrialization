@@ -3,6 +3,7 @@ package aztech.modern_industrialization.pipes.api;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Tickable;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -10,7 +11,7 @@ import java.util.Map;
 /**
  * A pipe network. It is very important that you create a new empty data object if your constructor was passed null.
  */
-public abstract class PipeNetwork implements Tickable {
+public abstract class PipeNetwork {
     protected int id;
     public PipeNetworkManager manager;
     public PipeNetworkData data;
@@ -33,6 +34,9 @@ public abstract class PipeNetwork implements Tickable {
         return tag;
     }
 
+    public void tick(World world) {
+
+    }
 
     /**
      * Allow merging networks when the player explicitly requests to do so.

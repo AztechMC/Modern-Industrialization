@@ -7,9 +7,4 @@ public class ItemNetwork extends PipeNetwork {
     public ItemNetwork(int id, PipeNetworkData data) {
         super(id, data == null ? new ItemNetworkData() : data);
     }
-
-    @Override
-    public void tick() {
-        // item transfer is handled by the nodes, nothing to do here
-    }
 }

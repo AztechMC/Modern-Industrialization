@@ -20,6 +20,11 @@ repositories {
 	}
 	// for Patchouli
 	maven { url 'https://maven.blamejared.com' }
+	// for LBA
+	maven {
+		name = "BuildCraft"
+		url = "https://mod-buildcraft.com/maven"
+	}
 }
 
 dependencies {
@@ -38,6 +43,8 @@ dependencies {
 	modCompileOnly "me.shedaniel:RoughlyEnoughItems-api:${project.rei_version}"
 	modRuntime "me.shedaniel:RoughlyEnoughItems:${project.rei_version}"
 	modImplementation "vazkii.patchouli:Patchouli:${project.patchouli_version}"
+	modApi "alexiil.mc.lib:libblockattributes-all:${project.lba_version}"
+	modRuntime "alexiil.mc.mod:simplepipes-all:0.4.1"
 }
 
 processResources {

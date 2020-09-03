@@ -152,7 +152,7 @@ public class ItemNetworkNode extends PipeNetworkNode {
     }
 
     @Override
-    public void tick(BlockPos pos) {
+    public void tick(World world, BlockPos pos) {
         if(inactiveTicks == 0) {
             List<ItemConnection> reachableInputs = null;
             connection_loop: for(ItemConnection connection : connections) {

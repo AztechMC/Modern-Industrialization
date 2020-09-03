@@ -1,5 +1,7 @@
 package aztech.modern_industrialization.pipes;
 
+import alexiil.mc.lib.attributes.fluid.volume.FluidKey;
+import alexiil.mc.lib.attributes.fluid.volume.FluidKeys;
 import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.ModernIndustrialization;
 import aztech.modern_industrialization.fluid.FluidUnit;
@@ -86,7 +88,7 @@ public class MIPipes implements ModInitializer {
         // TODO: maybe save the objects somewhere?
         PipeNetworkType type = PipeNetworkType.register(
                 new MIIdentifier("fluid_" + name),
-                FluidNetwork::new,
+                (id, data) -> new FluidNetwork(id, data, nodeCapacity),
                 FluidNetworkNode::new,
                 color,
                 FLUID
@@ -94,7 +96,7 @@ public class MIPipes implements ModInitializer {
         Item item = new PipeItem(
                 new Item.Settings().group(ModernIndustrialization.ITEM_GROUP),
                 type,
-                new FluidNetworkData(Fluids.EMPTY, nodeCapacity)
+                new FluidNetworkData(FluidKeys.EMPTY)
         );
         pipeItems.put(type, item);
         Registry.register(Registry.ITEM, new MIIdentifier("pipe_fluid_" + name), item);

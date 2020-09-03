@@ -146,7 +146,7 @@ public class MachineRecipeType implements RecipeType, RecipeSerializer {
         }
         if(hasItem) {
             Identifier id = readIdentifier(json, "item");
-            Item item = Registry.ITEM.getOrEmpty(id).orElseThrow(() -> {
+            Item item = Registry.ITEM.getOrEmpty(id).<RuntimeException>orElseThrow(() -> {
                 throw new RuntimeException("Item " + id + " does not exist.");
             });
             return new MachineRecipe.ItemInput(item, amount, probability);
@@ -159,7 +159,7 @@ public class MachineRecipeType implements RecipeType, RecipeSerializer {
 
     private static MachineRecipe.FluidInput readFluidInput(JsonObject json) {
         Identifier id = readIdentifier(json, "fluid");
-        Fluid fluid = Registry.FLUID.getOrEmpty(id).orElseThrow(() -> {
+        Fluid fluid = Registry.FLUID.getOrEmpty(id).<RuntimeException>orElseThrow(() -> {
             throw new RuntimeException("Fluid " + id + " does not exist.");
         });
         int amount = readNonNegativeInt(json, "amount");
@@ -169,7 +169,7 @@ public class MachineRecipeType implements RecipeType, RecipeSerializer {
 
     private static MachineRecipe.ItemOutput readItemOutput(JsonObject json) {
         Identifier id = readIdentifier(json, "item");
-        Item item = Registry.ITEM.getOrEmpty(id).orElseThrow(() -> {
+        Item item = Registry.ITEM.getOrEmpty(id).<RuntimeException>orElseThrow(() -> {
             throw new RuntimeException("Item " + id + " does not exist.");
         });
         int amount = readPositiveInt(json, "amount");
@@ -179,7 +179,7 @@ public class MachineRecipeType implements RecipeType, RecipeSerializer {
 
     private static MachineRecipe.FluidOutput readFluidOutput(JsonObject json) {
         Identifier id = readIdentifier(json, "fluid");
-        Fluid fluid = Registry.FLUID.getOrEmpty(id).orElseThrow(() -> {
+        Fluid fluid = Registry.FLUID.getOrEmpty(id).<RuntimeException>orElseThrow(() -> {
             throw new RuntimeException("Fluid " + id + " does not exist.");
         });
         int amount = readPositiveInt(json, "amount");

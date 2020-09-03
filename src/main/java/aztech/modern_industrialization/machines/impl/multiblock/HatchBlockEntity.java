@@ -9,6 +9,9 @@ import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.math.BlockPos;
 
+import static aztech.modern_industrialization.machines.impl.multiblock.HatchType.FLUID_OUTPUT;
+import static aztech.modern_industrialization.machines.impl.multiblock.HatchType.ITEM_OUTPUT;
+
 public class HatchBlockEntity extends MachineBlockEntity implements ChunkUnloadBlockEntity {
     protected BlockPos controllerPos = null;
     protected boolean lateLoaded = false;
@@ -37,7 +40,13 @@ public class HatchBlockEntity extends MachineBlockEntity implements ChunkUnloadB
     @Override
     public void tick() {
         lateLoad();
-        // TODO: auto-input/auto-output
+        if(extractItems && type == ITEM_OUTPUT) {
+            autoExtractItems(outputDirection, world.getBlockEntity(pos.offset(outputDirection)));
+        }
+        if(extractFluids && type == FLUID_OUTPUT) {
+            autoExtractFluids(outputDirection, world.getBlockEntity(pos.offset(outputDirection)));
+        }
+        // TODO: auto-input
     }
 
     @Override

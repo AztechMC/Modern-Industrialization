@@ -51,7 +51,7 @@ public class MachineRecipe implements Recipe<MachineBlockEntity> {
 
     @Override
     public ItemStack getOutput() {
-        throw new UnsupportedOperationException();
+        return ItemStack.EMPTY;
     }
 
     @Override

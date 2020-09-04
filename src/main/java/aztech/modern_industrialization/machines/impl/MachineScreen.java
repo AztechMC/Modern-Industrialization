@@ -1,5 +1,10 @@
 package aztech.modern_industrialization.machines.impl;
 
+import alexiil.mc.lib.attributes.fluid.amount.FluidAmount;
+import alexiil.mc.lib.attributes.fluid.render.FluidRenderFace;
+import alexiil.mc.lib.attributes.fluid.render.FluidVolumeRenderer;
+import alexiil.mc.lib.attributes.fluid.volume.FluidKey;
+import alexiil.mc.lib.attributes.fluid.volume.FluidVolume;
 import aztech.modern_industrialization.ModernIndustrialization;
 import aztech.modern_industrialization.inventory.ConfigurableFluidStack;
 import aztech.modern_industrialization.inventory.ConfigurableItemStack;
@@ -15,8 +20,14 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.screen.slot.Slot;
+import net.minecraft.text.Style;
 import net.minecraft.text.Text;
+import net.minecraft.text.TextColor;
+import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MachineScreen extends HandledScreen<MachineScreenHandler> {
 
@@ -223,6 +234,61 @@ public class MachineScreen extends HandledScreen<MachineScreenHandler> {
     @Override
     public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
         super.render(matrices, mouseX, mouseY, delta);
+
+        // Render fluid slots
+        for(Slot slot : handler.slots) {
+            if(slot instanceof ConfigurableFluidStack.ConfigurableFluidSlot) {
+                int i = x + slot.x;
+                int j = y + slot.y;
+
+                ConfigurableFluidStack stack = ((ConfigurableFluidStack.ConfigurableFluidSlot) slot).getConfStack();
+                if(!stack.getFluid().isEmpty()) {
+                    List<FluidRenderFace> faces = new ArrayList<>();
+                    faces.add(FluidRenderFace.createFlatFaceZ(i, j, 0, i + 16, j + 16, 0, 1 / 16., false, false));
+                    FluidVolume vol = stack.getFluid().withAmount(FluidAmount.of(stack.getAmount(), 1000));
+                    vol.render(faces, FluidVolumeRenderer.VCPS, matrices);
+                }
+                RenderSystem.runAsFancy(FluidVolumeRenderer.VCPS::draw);
+
+                if (isPointWithinBounds(slot.x, slot.y, 16, 16, mouseX, mouseY) && slot.doDrawHoveringEffect()) {
+                    this.focusedSlot = slot;
+                    RenderSystem.disableDepthTest();
+                    RenderSystem.colorMask(true, true, true, false);
+                    this.fillGradient(matrices, i, j, i + 16, j + 16, -2130706433, -2130706433);
+                    RenderSystem.colorMask(true, true, true, true);
+                    RenderSystem.enableDepthTest();
+                }
+            }
+        }
+
+        // Render fluid slot tooltips
+        for(Slot slot : handler.slots) {
+            if(isPointWithinBounds(slot.x, slot.y, 16, 16, mouseX, mouseY) && slot instanceof ConfigurableFluidStack.ConfigurableFluidSlot) {
+                ConfigurableFluidStack stack = ((ConfigurableFluidStack.ConfigurableFluidSlot) slot).getConfStack();
+                List<Text> tooltip = new ArrayList<>();
+                FluidKey fluid = stack.getFluid();
+                if(fluid.isEmpty()){
+                    tooltip.add(new TranslatableText("text.modern_industrialization.fluid_slot_empty"));
+                }else{
+                    tooltip.add(fluid.name);
+                }
+                String quantity = stack.getAmount() + " / " + stack.getCapacity();
+                tooltip.add(new TranslatableText("text.modern_industrialization.fluid_slot_quantity", quantity));
+
+                Style style = Style.EMPTY.withColor(TextColor.fromRgb(0xa9a9a9)).withItalic(true);
+
+                if(stack.canPlayerInsert()) {
+                    if (stack.canPlayerExtract()) {
+                        tooltip.add(new TranslatableText("text.modern_industrialization.fluid_slot_IO").setStyle(style));
+                    } else {
+                        tooltip.add(new TranslatableText("text.modern_industrialization.fluid_slot_input").setStyle(style));
+                    }
+                } else if(stack.canPlayerExtract()) {
+                    tooltip.add(new TranslatableText("text.modern_industrialization.fluid_slot_output").setStyle(style));
+                }
+                this.renderTooltip(matrices, tooltip, mouseX, mouseY);
+            }
+        }
         super.drawMouseoverTooltip(matrices, mouseX, mouseY);
     }
 

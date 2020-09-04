@@ -1,8 +1,14 @@
 package aztech.modern_industrialization.blocks.tank;
 
-import aztech.modern_industrialization.ModernIndustrialization;
-import aztech.modern_industrialization.fluid.FluidContainerItem;
-import aztech.modern_industrialization.fluid.FluidInventory;
+import alexiil.mc.lib.attributes.Simulation;
+import alexiil.mc.lib.attributes.fluid.*;
+import alexiil.mc.lib.attributes.fluid.amount.FluidAmount;
+import alexiil.mc.lib.attributes.fluid.filter.FluidFilter;
+import alexiil.mc.lib.attributes.fluid.volume.FluidKey;
+import alexiil.mc.lib.attributes.fluid.volume.FluidKeys;
+import alexiil.mc.lib.attributes.fluid.volume.FluidVolume;
+import alexiil.mc.lib.attributes.misc.LimitedConsumer;
+import alexiil.mc.lib.attributes.misc.Reference;
 import aztech.modern_industrialization.mixin_impl.WorldRendererGetter;
 import aztech.modern_industrialization.util.NbtHelper;
 import net.fabricmc.fabric.api.block.entity.BlockEntityClientSerializable;
@@ -11,14 +17,15 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.fluid.Fluid;
-import net.minecraft.fluid.Fluids;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.util.math.Direction;
 
-public class TankBlockEntity extends BlockEntity implements FluidInventory, BlockEntityClientSerializable, RenderAttachmentBlockEntity {
-    private Fluid fluid = Fluids.EMPTY;
+import java.math.RoundingMode;
+
+public class TankBlockEntity extends BlockEntity implements FluidTransferable, BlockEntityClientSerializable, RenderAttachmentBlockEntity {
+    private FluidKey fluid = FluidKeys.EMPTY;
     private int amount;
     private int capacity;
 
@@ -32,7 +39,7 @@ public class TankBlockEntity extends BlockEntity implements FluidInventory, Bloc
 
     @Override
     public void fromClientTag(CompoundTag tag) {
-        fluid = NbtHelper.getFluid(tag, "fluid");
+        fluid = NbtHelper.getFluidCompatible(tag, "fluid");
         amount = tag.getInt("amount");
         capacity = tag.getInt("capacity");
 
@@ -45,7 +52,7 @@ public class TankBlockEntity extends BlockEntity implements FluidInventory, Bloc
 
     @Override
     public CompoundTag toClientTag(CompoundTag tag) {
-        NbtHelper.putFluid(tag, "fluid", fluid);
+        tag.put("fluid", fluid.toTag());
         tag.putInt("amount", amount);
         tag.putInt("capacity", capacity);
         return tag;
@@ -69,53 +76,43 @@ public class TankBlockEntity extends BlockEntity implements FluidInventory, Bloc
     }
 
     @Override
-    public int insert(Direction direction, Fluid fluid, int maxAmount, boolean simulate) {
-        if(this.fluid == Fluids.EMPTY) {
-            int ins = Math.min(capacity, maxAmount);
-            if(ins > 0 && !simulate) {
-                this.fluid = fluid;
+    public FluidVolume attemptInsertion(FluidVolume fluid, Simulation simulation) {
+        int ins = 0;
+        if(this.fluid.isEmpty()) {
+            ins = Math.min(capacity, fluid.amount().asInt(1000, RoundingMode.FLOOR));
+            if(ins > 0 && simulation.isAction()) {
+                this.fluid = fluid.getFluidKey();
                 this.amount += ins;
                 onChanged();
             }
-            return ins;
-        } else if(this.fluid == fluid) {
-            int ins = Math.min(capacity - amount, maxAmount);
-            if(!simulate) {
-                amount += ins;
+        } else if(this.fluid == fluid.getFluidKey()) {
+            ins = Math.min(capacity - amount, fluid.amount().asInt(1000, RoundingMode.FLOOR));
+            if(ins > 0 && simulation.isAction()) {
+                this.amount += ins;
                 onChanged();
             }
-            return ins;
         }
-        return 0;
+        return fluid.getFluidKey().withAmount(fluid.amount().sub(FluidAmount.of(ins, 1000)));
     }
 
     @Override
-    public int extract(Direction direction, Fluid fluid, int maxAmount, boolean simulate) {
-        if(this.fluid == fluid) {
-            int ext = Math.min(amount, maxAmount);
-            if(!simulate) {
+    public FluidVolume attemptExtraction(FluidFilter filter, FluidAmount maxAmount, Simulation simulation) {
+        if(filter.matches(this.fluid)) {
+            int ext = Math.min(amount, maxAmount.asInt(1000, RoundingMode.FLOOR));
+            FluidKey key = this.fluid;
+            if(simulation.isAction()) {
                 amount -= ext;
-                if(amount == 0) this.fluid = Fluids.EMPTY;
+                if(amount == 0) this.fluid = FluidKeys.EMPTY;
                 onChanged();
             }
-            return ext;
+            return key.withAmount(FluidAmount.of(ext, 1000));
         }
-        return 0;
-    }
-
-    @Override
-    public Fluid[] getExtractableFluids(Direction direction) {
-        return fluid == Fluids.EMPTY ? new Fluid[0] : new Fluid[] { fluid };
-    }
-
-    @Override
-    public boolean canFluidContainerConnect(Direction direction) {
-        return true;
+        return FluidVolumeUtil.EMPTY;
     }
 
     @Override
     public Object getRenderAttachmentData() {
-        return new RenderAttachment(fluid, (float) amount / capacity);
+        return new RenderAttachment(fluid.getRawFluid(), (float) amount / capacity);
     }
 
     public void setCapacity(int capacity) {
@@ -133,28 +130,53 @@ public class TankBlockEntity extends BlockEntity implements FluidInventory, Bloc
     }
 
     public boolean onPlayerUse(PlayerEntity player) {
-        ItemStack heldStack = player.inventory.getMainHandStack();
-        if (heldStack.getItem() instanceof FluidContainerItem) {
-            FluidContainerItem fluidContainer = (FluidContainerItem) heldStack.getItem();
-            // Try to extract from held item, then try to insert into held item
-            Fluid extractedFluid = fluid;
-            if (extractedFluid == Fluids.EMPTY) {
-                extractedFluid = fluidContainer.getExtractableFluid(heldStack);
+        Reference<ItemStack> heldStackRef = new Reference<ItemStack>() {
+            @Override
+            public ItemStack get() {
+                return player.inventory.getMainHandStack();
             }
-            int ext = fluidContainer.extractFluid(heldStack, extractedFluid, capacity - amount, FluidContainerItem.handPlayerConsumer(player));
-            if (ext > 0) {
-                amount += ext;
-                fluid = extractedFluid;
+
+            @Override
+            public boolean set(ItemStack value) {
+                if(PlayerInventory.isValidHotbarIndex(player.inventory.selectedSlot)) {
+                    player.inventory.main.set(player.inventory.selectedSlot, value);
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+
+            @Override
+            public boolean isValid(ItemStack value) {
+                return true;
+            }
+        };
+        LimitedConsumer<ItemStack> excessConsumer = (itemStack, simulation) -> {
+            if(simulation.isAction()) {
+                player.inventory.offerOrDrop(player.world, itemStack);
+            }
+            return true;
+        };
+        // Try to extract from held item first
+        FluidExtractable extractable = FluidAttributes.EXTRACTABLE.get(heldStackRef, excessConsumer);
+        FluidVolume extracted = extractable.extract(fk -> fk == this.fluid || this.fluid.isEmpty(), FluidAmount.of(capacity - amount, 1000));
+        int ext = extracted.amount().asInt(1000, RoundingMode.FLOOR);
+        if (ext > 0) {
+            amount += ext;
+            this.fluid = extracted.getFluidKey();
+            onChanged();
+            return true;
+        } else {
+            // Otherwise insert into held item
+            FluidInsertable insertable = FluidAttributes.INSERTABLE.get(heldStackRef, excessConsumer);
+            int leftover = insertable.insert(this.fluid.withAmount(FluidAmount.of(amount, 1000))).amount().asInt(1000, RoundingMode.FLOOR);
+            if(leftover != amount) {
+                amount = leftover;
+                if(amount == 0) {
+                    this.fluid = FluidKeys.EMPTY;
+                }
                 onChanged();
                 return true;
-            } else {
-                int ins = fluidContainer.insertFluid(heldStack, fluid, amount, FluidContainerItem.handPlayerConsumer(player));
-                if(ins > 0) {
-                    amount -= ins;
-                    if(amount == 0) this.fluid = Fluids.EMPTY;
-                    onChanged();
-                    return true;
-                }
             }
         }
         return false;

@@ -62,7 +62,7 @@
   "block.modern_industrialization.steel_machine_casing_pipe" : "Steel Pipe Machine Casing",
 
   "text.modern_industrialization.fluid_slot_empty" : "Empty",
-  "text.modern_industrialization.fluid_slot_quantity" : "%s drops",
+  "text.modern_industrialization.fluid_slot_quantity" : "%s mb",
 
   "text.modern_industrialization.fluid_slot_input" : "Fluid Input, Left Click to Insert or Extract",
   "text.modern_industrialization.fluid_slot_output" : "Fluid Output, Left Click to Extract",

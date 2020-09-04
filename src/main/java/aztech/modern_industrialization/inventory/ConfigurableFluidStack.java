@@ -126,6 +126,18 @@ public class ConfigurableFluidStack {
         return amount;
     }
 
+    public int getCapacity() {
+        return capacity;
+    }
+
+    public boolean canPlayerInsert() {
+        return playerInsert;
+    }
+
+    public boolean canPlayerExtract() {
+        return playerExtract;
+    }
+
     public void setFluid(FluidKey fluid) {
         boolean needsUpdate = fluid != this.fluid;
         this.fluid = fluid;
@@ -285,7 +297,8 @@ public class ConfigurableFluidStack {
 
         @Override
         public ItemStack getStack() {
-            return displayedStack;
+            //return displayedStack;
+            return ItemStack.EMPTY;
         }
 
         @Override

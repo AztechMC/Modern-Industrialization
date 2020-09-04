@@ -2,22 +2,15 @@ package aztech.modern_industrialization.pipes.fluid;
 
 import alexiil.mc.lib.attributes.SearchOption;
 import alexiil.mc.lib.attributes.SearchOptions;
-import alexiil.mc.lib.attributes.Simulation;
 import alexiil.mc.lib.attributes.fluid.FluidAttributes;
 import alexiil.mc.lib.attributes.fluid.FluidExtractable;
 import alexiil.mc.lib.attributes.fluid.FluidInsertable;
 import alexiil.mc.lib.attributes.fluid.amount.FluidAmount;
-import alexiil.mc.lib.attributes.fluid.filter.ConstantFluidFilter;
 import alexiil.mc.lib.attributes.fluid.filter.ExactFluidFilter;
-import alexiil.mc.lib.attributes.fluid.filter.FluidFilterUtil;
 import alexiil.mc.lib.attributes.fluid.volume.*;
-import aztech.modern_industrialization.fluid.FluidInventory;
+import aztech.modern_industrialization.ModernIndustrialization;
 import aztech.modern_industrialization.pipes.api.PipeConnectionType;
 import aztech.modern_industrialization.pipes.api.PipeNetworkNode;
-import aztech.modern_industrialization.util.NbtHelper;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.fluid.Fluid;
-import net.minecraft.fluid.Fluids;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
@@ -25,7 +18,6 @@ import net.minecraft.world.World;
 
 import java.math.RoundingMode;
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static alexiil.mc.lib.attributes.Simulation.ACTION;
 import static aztech.modern_industrialization.pipes.api.PipeConnectionType.*;
@@ -33,11 +25,13 @@ import static aztech.modern_industrialization.pipes.api.PipeConnectionType.*;
 public class FluidNetworkNode extends PipeNetworkNode {
     int amount = 0;
     private List<FluidConnection> connections = new ArrayList<>();
-    private int capacity;
 
     void interactWithConnections(World world, BlockPos pos) {
         FluidNetworkData data = (FluidNetworkData) network.data;
         FluidNetwork network = (FluidNetwork) this.network;
+        if(amount > network.nodeCapacity) {
+            ModernIndustrialization.LOGGER.warn("Fluid amount > nodeCapacity, deleting some fluid!");
+        }
         for(FluidConnection connection : connections) { // TODO: limit insert and extract rate
             // Insert
             if(amount > 0 && connection.canInsert()) {

@@ -69,7 +69,7 @@ public class TankModel implements UnbakedModel, FabricBakedModel, BakedModel {
         TankItem item = (TankItem) stack.getItem();
         if(!item.isEmpty(stack)) {
             float fillFraction = (float) item.getAmount(stack) / item.capacity;
-            drawFluid(context.getEmitter(), fillFraction, item.getFluid(stack));
+            drawFluid(context.getEmitter(), fillFraction, item.getFluid(stack).getRawFluid());
         }
     }
 

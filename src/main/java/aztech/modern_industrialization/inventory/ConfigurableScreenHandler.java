@@ -4,17 +4,13 @@ import alexiil.mc.lib.attributes.fluid.FluidAttributes;
 import alexiil.mc.lib.attributes.fluid.FluidExtractable;
 import alexiil.mc.lib.attributes.fluid.FluidInsertable;
 import alexiil.mc.lib.attributes.fluid.amount.FluidAmount;
-import alexiil.mc.lib.attributes.fluid.filter.FluidFilter;
 import alexiil.mc.lib.attributes.fluid.volume.FluidVolume;
 import alexiil.mc.lib.attributes.misc.LimitedConsumer;
 import alexiil.mc.lib.attributes.misc.Reference;
-import aztech.modern_industrialization.fluid.FluidContainerItem;
 import io.netty.buffer.Unpooled;
 import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.fluid.Fluid;
-import net.minecraft.fluid.Fluids;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -133,6 +129,7 @@ public abstract class ConfigurableScreenHandler extends ScreenHandler {
                         fluidStack.updateDisplayedItem();
                         inventory.markDirty();
                     } else {
+                        // Otherwise insert into held item
                         FluidInsertable insertable = FluidAttributes.INSERTABLE.get(heldStackRef, excessConsumer);
                         if (fluidSlot.canExtractFluid(fluidStack.getFluid())) {
                             int leftover = insertable.insert(fluidStack.getFluid().withAmount(FluidAmount.of(fluidStack.getAmount(), 1000))).amount().asInt(1000, RoundingMode.FLOOR);

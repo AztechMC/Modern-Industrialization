@@ -1,5 +1,6 @@
 package aztech.modern_industrialization.machines.special;
 
+import alexiil.mc.lib.attributes.fluid.volume.FluidKeys;
 import aztech.modern_industrialization.ModernIndustrialization;
 import aztech.modern_industrialization.fluid.FluidUnit;
 import aztech.modern_industrialization.inventory.ConfigurableFluidStack;
@@ -26,8 +27,8 @@ public class SteamBoilerBlockEntity extends MachineBlockEntity {
     public SteamBoilerBlockEntity(MachineFactory factory, MachineRecipeType recipeType) {
         super(factory, recipeType);
 
-        getFluidStacks().set(0, ConfigurableFluidStack.lockedInputSlot(this, factory.getInputBucketCapacity() * FluidUnit.DROPS_PER_BUCKET, Fluids.WATER));
-        getFluidStacks().set(1, ConfigurableFluidStack.lockedOutputSlot(this, factory.getOutputBucketCapacity() * FluidUnit.DROPS_PER_BUCKET, ModernIndustrialization.FLUID_STEAM));
+        getFluidStacks().set(0, ConfigurableFluidStack.lockedInputSlot(this, factory.getInputBucketCapacity() * FluidUnit.DROPS_PER_BUCKET, FluidKeys.WATER));
+        getFluidStacks().set(1, ConfigurableFluidStack.lockedOutputSlot(this, factory.getOutputBucketCapacity() * FluidUnit.DROPS_PER_BUCKET, STEAM_KEY));
 
         maxEfficiencyTicks = 10000;
         efficiencyTicks = 0;
@@ -81,7 +82,7 @@ public class SteamBoilerBlockEntity extends MachineBlockEntity {
         markDirty();
 
         for(Direction direction : Direction.values()) {
-            autoExtractFluids(direction, world.getBlockEntity(pos.offset(direction)));
+            autoExtractFluids(world, pos, direction);
         }
     }
 

@@ -238,6 +238,10 @@ public class PipeBlock extends Block implements BlockEntityProvider, IWrenchable
 
     @Override
     public VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
+        if(!((World) world).isClient) {
+            // LBA compat
+            return getCollisionShape(state, world, pos, context);
+        }
         PipeBlockEntity entity = (PipeBlockEntity) world.getBlockEntity(pos);
         if (entity != null) {
             double[] smallestDistance = new double[]{10000};

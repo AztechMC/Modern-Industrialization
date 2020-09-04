@@ -1,5 +1,6 @@
 package aztech.modern_industrialization.machines.special;
 
+import alexiil.mc.lib.attributes.fluid.volume.FluidKeys;
 import aztech.modern_industrialization.ModernIndustrialization;
 import aztech.modern_industrialization.fluid.FluidUnit;
 import aztech.modern_industrialization.inventory.ConfigurableFluidStack;
@@ -24,7 +25,7 @@ public class WaterPumpBlockEntity extends MachineBlockEntity {
         super(factory, recipeType);
 
         int waterSlotId = fluidStacks.size()-1;
-        fluidStacks.set(1, ConfigurableFluidStack.lockedOutputSlot(this, factory.getOutputBucketCapacity() * FluidUnit.DROPS_PER_BUCKET, Fluids.WATER));
+        fluidStacks.set(1, ConfigurableFluidStack.lockedOutputSlot(this, factory.getOutputBucketCapacity() * FluidUnit.DROPS_PER_BUCKET, FluidKeys.WATER));
         usedEnergy = 0;
         recipeEnergy = 100;
     }
@@ -43,45 +44,45 @@ public class WaterPumpBlockEntity extends MachineBlockEntity {
                 sync();
                 markDirty();
             }
-            return;
-        }
+        } else {
 
-        int eu = getEu(1, false);
-        usedEnergy += eu;
-        if(eu > 0) {
-            if(!isActive) {
-                isActive = true;
-                sync();
-            }
-        }
-
-        if(usedEnergy == recipeEnergy) {
-            boolean[] adjWater = new boolean[] { false, false, false, false, false, false, false, false };
-            for(int i = 0; i < 8; ++i) {
-                BlockPos adjPos = pos.add(DX[i], 0, DZ[i]);
-                if(world.isChunkLoaded(adjPos)) {
-                    FluidState adjState = world.getFluidState(adjPos);
-                    if(adjState.isStill() && adjState.getFluid() == Fluids.WATER) {
-                        adjWater[i] = true;
-                    }
+            int eu = getEu(1, false);
+            usedEnergy += eu;
+            if (eu > 0) {
+                if (!isActive) {
+                    isActive = true;
+                    sync();
                 }
             }
-            int providedBucketEights = 0;
-            for(int i = 0; i < 8; ++i) {
-                if(adjWater[i]) {
-                    if(i%2 == 1 || (adjWater[(i+7)%8] || adjWater[(i+1)%8])) {
-                        providedBucketEights++;
+
+            if (usedEnergy == recipeEnergy) {
+                boolean[] adjWater = new boolean[]{false, false, false, false, false, false, false, false};
+                for (int i = 0; i < 8; ++i) {
+                    BlockPos adjPos = pos.add(DX[i], 0, DZ[i]);
+                    if (world.isChunkLoaded(adjPos)) {
+                        FluidState adjState = world.getFluidState(adjPos);
+                        if (adjState.isStill() && adjState.getFluid() == Fluids.WATER) {
+                            adjWater[i] = true;
+                        }
                     }
                 }
+                int providedBucketEights = 0;
+                for (int i = 0; i < 8; ++i) {
+                    if (adjWater[i]) {
+                        if (i % 2 == 1 || (adjWater[(i + 7) % 8] || adjWater[(i + 1) % 8])) {
+                            providedBucketEights++;
+                        }
+                    }
+                }
+                int factorTier = (factory.tier == MachineTier.BRONZE ? 1 : 2);
+                waterStack.increment(Math.min(factorTier * providedBucketEights * FluidUnit.DROPS_PER_BUCKET / 8, waterStack.getRemainingSpace()));
+                usedEnergy = 0;
             }
-            int factorTier = ( factory.tier ==  MachineTier.BRONZE ? 1 : 2);
-            waterStack.increment(Math.min(factorTier*providedBucketEights * FluidUnit.DROPS_PER_BUCKET / 8, waterStack.getRemainingSpace()));
-            usedEnergy = 0;
+            markDirty();
         }
-        markDirty();
 
         for(Direction direction : Direction.values()) {
-            autoExtractFluids(direction, world.getBlockEntity(pos.offset(direction)));
+            autoExtractFluids(world, pos, direction);
         }
     }
 

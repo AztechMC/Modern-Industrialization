@@ -1,6 +1,7 @@
 package aztech.modern_industrialization.fluid;
 
 import aztech.modern_industrialization.ModernIndustrialization;
+import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.block.BlockState;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.FluidState;
@@ -19,9 +20,13 @@ import net.minecraft.world.WorldView;
  */
 public class CraftingFluid extends Fluid {
     public final Item bucketItem;
+    public final String name;
+    private final CraftingFluidBlock block;
 
-    public CraftingFluid() {
+    public CraftingFluid(String name) {
         bucketItem = new BucketItem(this, new Item.Settings().recipeRemainder(Items.BUCKET).maxCount(1).group(ModernIndustrialization.ITEM_GROUP));
+        this.name = name;
+        this.block = new CraftingFluidBlock(name);
     }
 
     @Override
@@ -61,7 +66,7 @@ public class CraftingFluid extends Fluid {
 
     @Override
     protected BlockState toBlockState(FluidState state) {
-        return null;
+        return block.getDefaultState();
     }
 
     @Override

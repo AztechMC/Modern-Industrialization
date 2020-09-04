@@ -1,5 +1,7 @@
 package aztech.modern_industrialization.machines.impl;
 
+import alexiil.mc.lib.attributes.AttributeList;
+import alexiil.mc.lib.attributes.AttributeProvider;
 import aztech.modern_industrialization.ModernIndustrialization;
 import aztech.modern_industrialization.machines.impl.multiblock.HatchBlockEntity;
 import aztech.modern_industrialization.machines.impl.multiblock.MultiblockMachineBlockEntity;
@@ -44,7 +46,7 @@ import java.util.function.Supplier;
 /**
  * A generic machine_recipe block.
  */
-public class MachineBlock extends Block implements BlockEntityProvider, IWrenchable {
+public class MachineBlock extends Block implements BlockEntityProvider, IWrenchable, AttributeProvider {
     private final Supplier<MachineBlockEntity> blockEntityFactory;
 
     public MachineBlock(Supplier<MachineBlockEntity> blockEntityFactory) {
@@ -204,5 +206,11 @@ public class MachineBlock extends Block implements BlockEntityProvider, IWrencha
             }
         }
         return ActionResult.PASS;
+    }
+
+    @Override
+    public void addAllAttributes(World world, BlockPos pos, BlockState state, AttributeList<?> to) {
+        MachineBlockEntity be = (MachineBlockEntity) world.getBlockEntity(pos);
+        to.offer(be);
     }
 }

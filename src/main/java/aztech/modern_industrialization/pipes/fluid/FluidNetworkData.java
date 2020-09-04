@@ -21,16 +21,12 @@ public class FluidNetworkData extends PipeNetworkData {
 
     @Override
     public void fromTag(CompoundTag tag) {
-        if(tag.contains("fluid")) { // backwards-compatibility
-            fluid = new SimpleFluidKey(new FluidKey.FluidKeyBuilder(NbtHelper.getFluid(tag, "fluid")));
-        } else {
-            fluid = FluidKey.fromTag(tag.getCompound("fluidkey"));
-        }
+        fluid = NbtHelper.getFluidCompatible(tag, "fluid");
     }
 
     @Override
     public CompoundTag toTag(CompoundTag tag) {
-        tag.put("fluidkey", fluid.toTag());
+        tag.put("fluid", fluid.toTag());
         return tag;
     }
 

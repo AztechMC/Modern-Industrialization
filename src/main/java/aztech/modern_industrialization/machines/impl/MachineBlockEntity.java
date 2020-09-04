@@ -1,9 +1,10 @@
 package aztech.modern_industrialization.machines.impl;
 
+import alexiil.mc.lib.attributes.fluid.volume.FluidKey;
+import alexiil.mc.lib.attributes.fluid.volume.FluidKeys;
 import aztech.modern_industrialization.ModernIndustrialization;
 import aztech.modern_industrialization.fluid.FluidUnit;
 import aztech.modern_industrialization.inventory.ConfigurableFluidStack;
-import aztech.modern_industrialization.inventory.ConfigurableInventory;
 import aztech.modern_industrialization.inventory.ConfigurableItemStack;
 import aztech.modern_industrialization.machines.recipe.MachineRecipe;
 import aztech.modern_industrialization.machines.recipe.MachineRecipeType;
@@ -31,8 +32,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
+import static alexiil.mc.lib.attributes.Simulation.ACTION;
+import static alexiil.mc.lib.attributes.Simulation.SIMULATE;
+
 public class MachineBlockEntity extends AbstractMachineBlockEntity
         implements Tickable, ExtendedScreenHandlerFactory, MachineInventory {
+    protected static final FluidKey STEAM_KEY = FluidKeys.get(ModernIndustrialization.FLUID_STEAM);
 
     protected List<ConfigurableItemStack> itemStacks;
     protected List<ConfigurableFluidStack> fluidStacks;
@@ -68,7 +73,7 @@ public class MachineBlockEntity extends AbstractMachineBlockEntity
         fluidStacks = new ArrayList<>();
         for(int i = 0; i < factory.getLiquidInputSlots(); ++i) {
             if(i == 0 && factory instanceof SteamMachineFactory) {
-                fluidStacks.add(ConfigurableFluidStack.steamInputSlot(this, ((SteamMachineFactory) factory).getSteamBucketCapacity() * FluidUnit.DROPS_PER_BUCKET));
+                fluidStacks.add(ConfigurableFluidStack.lockedInputSlot(this, ((SteamMachineFactory) factory).getSteamBucketCapacity() * FluidUnit.DROPS_PER_BUCKET, STEAM_KEY));
             } else {
                 fluidStacks.add(ConfigurableFluidStack.standardInputSlot(this, factory.getInputBucketCapacity() * FluidUnit.DROPS_PER_BUCKET));
             }
@@ -271,7 +276,7 @@ public class MachineBlockEntity extends AbstractMachineBlockEntity
     protected void autoExtract() {
         if(outputDirection != null) {
             if(extractItems) autoExtractItems(outputDirection, world.getBlockEntity(pos.offset(outputDirection)));
-            if(extractFluids) autoExtractFluids(outputDirection, world.getBlockEntity(pos.offset(outputDirection)));
+            if(extractFluids) autoExtractFluids(world, pos, outputDirection);
         }
     }
 
@@ -329,7 +334,7 @@ public class MachineBlockEntity extends AbstractMachineBlockEntity
             }
             int remainingAmount = input.amount;
             for(ConfigurableFluidStack stack : stacks) {
-                if(stack.getFluid() == input.fluid) {
+                if(stack.getFluid().getRawFluid() == input.fluid) {
                     int taken = Math.min(remainingAmount, stack.getAmount());
                     stack.decrement(taken);
                     remainingAmount -= taken;
@@ -398,7 +403,7 @@ public class MachineBlockEntity extends AbstractMachineBlockEntity
         List<ConfigurableFluidStack> stacks = simulate ? ConfigurableFluidStack.copyList(baseList) : baseList;
 
         List<Integer> locksToToggle = new ArrayList<>();
-        List<Fluid> lockFluids = new ArrayList<>();
+        List<FluidKey> lockFluids = new ArrayList<>();
 
         boolean ok = true;
         for(MachineRecipe.FluidOutput output : recipe.fluidOutputs) {
@@ -407,35 +412,11 @@ public class MachineBlockEntity extends AbstractMachineBlockEntity
                 float randFloat = ThreadLocalRandom.current().nextFloat();
                 if(randFloat > output.probability) continue;
             }
-            int remainingAmount = output.amount;
-            // Try to insert in non-empty stacks first, then also allow insertion in empty stacks if there was no empty stack.
-            outerLoop:
-            for(int loopRun = 0; loopRun < 2; loopRun++) {
-                int stackId = 0;
-                for (ConfigurableFluidStack stack : stacks) {
-                    stackId++;
-                    if(stack.getFluid() == output.fluid || stack.getFluid() == Fluids.EMPTY) {
-                        int ins = Math.min(remainingAmount, stack.getRemainingSpace());
-                        if (stack.getFluid() == Fluids.EMPTY) {
-                            if ((stack.isPlayerLocked() || stack.isMachineLocked() || loopRun == 1) && stack.canInsertFluid(output.fluid)) {
-                                stack.setFluid(output.fluid);
-                                stack.setAmount(ins);
-                            } else {
-                                ins = 0;
-                            }
-                        } else {
-                            stack.increment(ins);
-                        }
-                        remainingAmount -= ins;
-                        if(ins > 0) {
-                            locksToToggle.add(stackId-1);
-                            lockFluids.add(output.fluid);
-                        }
-                        // only allow one insertion
-                        if(ins > 0) break outerLoop;
-                    }
-                }
-            }
+            FluidKey key = FluidKeys.get(output.fluid);
+            int remainingAmount = internalInsert(key, output.amount, simulate ? SIMULATE : ACTION, s -> true, index -> {
+                locksToToggle.add(index);
+                lockFluids.add(key);
+            });
             if(remainingAmount > 0) ok = false;
         }
 
@@ -464,7 +445,7 @@ public class MachineBlockEntity extends AbstractMachineBlockEntity
         if(factory instanceof SteamMachineFactory) {
             int totalRem = 0;
             for(ConfigurableFluidStack stack : getSteamInputStacks()) {
-                if(stack.getFluid() == ModernIndustrialization.FLUID_STEAM) {
+                if(stack.getFluid() == STEAM_KEY) {
                     int amount = stack.getAmount();
                     int rem = Math.min(maxEu, amount);
                     if (!simulate) {

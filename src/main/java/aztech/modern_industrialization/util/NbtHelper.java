@@ -1,11 +1,14 @@
 package aztech.modern_industrialization.util;
 
+import alexiil.mc.lib.attributes.fluid.volume.FluidKey;
+import alexiil.mc.lib.attributes.fluid.volume.FluidKeys;
 import aztech.modern_industrialization.pipes.api.PipeConnectionType;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.item.Item;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.StringTag;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
@@ -88,6 +91,14 @@ public class NbtHelper {
             return new BlockPos(pos[0], pos[1], pos[2]);
         } else {
             return null;
+        }
+    }
+    public static FluidKey getFluidCompatible(CompoundTag tag, String key) {
+        if(!tag.contains(key)) return FluidKeys.EMPTY;
+        if(tag.get(key) instanceof StringTag) {
+            return FluidKeys.get(Registry.FLUID.get(new Identifier(tag.getString(key))));
+        } else {
+            return FluidKey.fromTag(tag.getCompound(key));
         }
     }
 }

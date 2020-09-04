@@ -28,10 +28,10 @@ public class FluidNetwork extends PipeNetwork {
         int totalAmount = 0;
         int remainingNodes = 0;
         // Interact with other inventories
-        for(Map.Entry<BlockPos, PipeNetworkNode> node : nodes.entrySet()) {
-            if(node != null) {
-                FluidNetworkNode fluidNode = (FluidNetworkNode) node.getValue();
-                fluidNode.interactWithConnections(world, node.getKey());
+        for(Map.Entry<BlockPos, PipeNetworkNode> entry : nodes.entrySet()) {
+            if(entry.getValue() != null) {
+                FluidNetworkNode fluidNode = (FluidNetworkNode) entry.getValue();
+                fluidNode.interactWithConnections(world, entry.getKey());
                 totalAmount += fluidNode.amount;
                 remainingNodes++;
             }

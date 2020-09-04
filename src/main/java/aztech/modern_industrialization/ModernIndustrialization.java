@@ -87,7 +87,7 @@ public class ModernIndustrialization implements ModInitializer {
     public static final ScreenHandlerType<ForgeHammerScreenHandler> SCREEN_HANDLER_FORGE_HAMMER =
             ScreenHandlerRegistry.registerSimple(new Identifier(MOD_ID, "forge_hammer"), ForgeHammerScreenHandler::new);
     // Fluid
-    public static final Fluid FLUID_STEAM = new CraftingFluid();
+    public static final CraftingFluid FLUID_STEAM = new CraftingFluid("steam");
 
     @Override
     public void onInitialize() {
@@ -161,7 +161,7 @@ public class ModernIndustrialization implements ModInitializer {
     }
 
     private void setupFluids() {
-        registerFluid(FLUID_STEAM, "steam");
+        registerFluid(FLUID_STEAM);
 
         Registry.register(Registry.ITEM, new MIIdentifier("fluid_slot"), ITEM_FLUID_SLOT);
     }
@@ -240,7 +240,8 @@ public class ModernIndustrialization implements ModInitializer {
         RESOURCE_PACK.addModel(JModel.model().parent("minecraft:item/generated").textures(new JTextures().layer0(MOD_ID + ":items/" + id)), new MIIdentifier("item/" + id));
     }
 
-    private static void registerFluid(Fluid fluid, String id) {
+    private static void registerFluid(CraftingFluid fluid) {
+        String id = fluid.name;
         Registry.register(Registry.FLUID, new MIIdentifier(id), fluid);
         Registry.register(Registry.ITEM, new MIIdentifier("bucket_" + id), fluid.getBucketItem());
         RESOURCE_PACK.addModel(JModel.model().parent("minecraft:item/generated").textures(new JTextures().layer0(MOD_ID + ":items/bucket/" + id)), new MIIdentifier("item/bucket_" + id));

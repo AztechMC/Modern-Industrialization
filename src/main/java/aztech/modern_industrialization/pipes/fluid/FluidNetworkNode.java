@@ -31,6 +31,7 @@ public class FluidNetworkNode extends PipeNetworkNode {
         FluidNetwork network = (FluidNetwork) this.network;
         if(amount > network.nodeCapacity) {
             ModernIndustrialization.LOGGER.warn("Fluid amount > nodeCapacity, deleting some fluid!");
+            amount = network.nodeCapacity;
         }
         for(FluidConnection connection : connections) { // TODO: limit insert and extract rate
             // Insert

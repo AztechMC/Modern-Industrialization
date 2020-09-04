@@ -2,7 +2,6 @@ package aztech.modern_industrialization.blocks.tank;
 
 import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.ModernIndustrialization;
-import aztech.modern_industrialization.fluid.FluidUnit;
 import aztech.modern_industrialization.model.block.ModelProvider;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.block.Block;
@@ -31,7 +30,7 @@ public enum MITanks {
     MITanks(String type, int bucketCapacity) {
         this.type = type;
         this.block = new TankBlock(FabricBlockSettings.of(Material.METAL).hardness(4.0f));
-        this.item = new TankItem(block, new Item.Settings().group(ITEM_GROUP), FluidUnit.DROPS_PER_BUCKET * bucketCapacity);
+        this.item = new TankItem(block, new Item.Settings().group(ITEM_GROUP), 1000 * bucketCapacity);
         this.bucketCapacity = bucketCapacity;
     }
 

@@ -15,7 +15,6 @@ public class Models {
         public static final MachineModel STEAM_BOILER = new MachineModel("steam_boiler", new MIIdentifier("blocks/casings/steam/bricked_bronze/"))
                 .withFrontOverlay(new MIIdentifier("blocks/generators/boiler/coal/overlay_front"), new MIIdentifier("blocks/generators/boiler/coal/overlay_front_active"));
     }
-    public static final UnbakedModel FLUID_SLOT = new FluidSlotModel();
 
     public static Map<Identifier, UnbakedModel> getModelMap() {
         Map<Identifier, UnbakedModel> modelMap = new HashMap<>();
@@ -31,7 +30,6 @@ public class Models {
                 }
             }
         }
-        modelMap.put(new MIIdentifier("item/fluid_slot"), FLUID_SLOT);
         return modelMap;
     }
 }

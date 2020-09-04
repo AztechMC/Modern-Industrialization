@@ -1,13 +1,11 @@
-package aztech.modern_industrialization.rei.machine_recipe;
+package aztech.modern_industrialization.compat.rei.machine_recipe;
 
-import aztech.modern_industrialization.fluid.FluidUnit;
 import aztech.modern_industrialization.machines.recipe.MachineRecipe;
 import aztech.modern_industrialization.machines.recipe.MachineRecipeType;
 import me.shedaniel.rei.api.EntryStack;
 import me.shedaniel.rei.api.RecipeDisplay;
 import me.shedaniel.rei.api.fractions.Fraction;
 import net.minecraft.item.ItemStack;
-import net.minecraft.recipe.Ingredient;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
@@ -45,7 +43,7 @@ public class MachineRecipeDisplay implements RecipeDisplay {
     }
 
     public Stream<List<EntryStack>> getFluidInputs() {
-        return recipe.fluidInputs.stream().map(i -> Collections.singletonList(EntryStack.create(i.fluid, Fraction.of(i.amount, FluidUnit.DROPS_PER_BUCKET)).addSetting(EntryStack.Settings.TOOLTIP_APPEND_EXTRA, getProbabilityTooltip(i.probability))));
+        return recipe.fluidInputs.stream().map(i -> Collections.singletonList(EntryStack.create(i.fluid, Fraction.of(i.amount, 1000)).addSetting(EntryStack.Settings.TOOLTIP_APPEND_EXTRA, getProbabilityTooltip(i.probability))));
     }
 
     @Override
@@ -61,7 +59,7 @@ public class MachineRecipeDisplay implements RecipeDisplay {
     }
 
     public Stream<List<EntryStack>> getFluidOutputs() {
-        return recipe.fluidOutputs.stream().map(i -> Collections.singletonList(EntryStack.create(i.fluid, Fraction.of(i.amount, FluidUnit.DROPS_PER_BUCKET)).addSetting(EntryStack.Settings.TOOLTIP_APPEND_EXTRA, getProbabilityTooltip(i.probability))));
+        return recipe.fluidOutputs.stream().map(i -> Collections.singletonList(EntryStack.create(i.fluid, Fraction.of(i.amount, 1000)).addSetting(EntryStack.Settings.TOOLTIP_APPEND_EXTRA, getProbabilityTooltip(i.probability))));
     }
 
     @Override

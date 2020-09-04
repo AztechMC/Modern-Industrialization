@@ -45,11 +45,6 @@ public interface ConfigurableInventory extends Inventory, SidedInventory, FluidT
      */
     List<ConfigurableFluidStack> getFluidStacks();
 
-    /**
-     * Whether the inventory is currently open, i.e. a player can see its contents.
-     */
-    boolean isOpen();
-
     @Override
     default int size() {
         return getItemStacks().size();
@@ -191,7 +186,6 @@ public interface ConfigurableInventory extends Inventory, SidedInventory, FluidT
             if (simulation.isAction()) {
                 targetStack.setFluid(fluid);
                 targetStack.increment(ins);
-                if (isOpen()) targetStack.updateDisplayedItem();
                 markDirty();
             }
             stackUpdater.accept(index);

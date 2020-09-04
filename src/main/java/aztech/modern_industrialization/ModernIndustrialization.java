@@ -6,7 +6,6 @@ import aztech.modern_industrialization.blocks.forgehammer.ForgeHammerPacket;
 import aztech.modern_industrialization.blocks.forgehammer.ForgeHammerScreenHandler;
 import aztech.modern_industrialization.blocks.tank.MITanks;
 import aztech.modern_industrialization.fluid.CraftingFluid;
-import aztech.modern_industrialization.fluid.FluidStackItem;
 import aztech.modern_industrialization.machines.MIMachines;
 import aztech.modern_industrialization.machines.impl.MachineBlock;
 import aztech.modern_industrialization.machines.impl.MachineFactory;
@@ -37,7 +36,6 @@ import net.fabricmc.fabric.api.tag.TagRegistry;
 import net.minecraft.block.Block;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.fluid.Fluid;
 import net.minecraft.item.*;
 import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.tag.Tag;
@@ -68,7 +66,6 @@ public class ModernIndustrialization implements ModInitializer {
             new Identifier(MOD_ID, "general"),
             () -> new ItemStack(Items.REDSTONE)
     );
-    public static final Item ITEM_FLUID_SLOT = new FluidStackItem(new Item.Settings().maxCount(1)); // evil hack
 
     // Tags
     private static Identifier WRENCH_TAG = new Identifier("fabric", "wrenches");
@@ -162,8 +159,6 @@ public class ModernIndustrialization implements ModInitializer {
 
     private void setupFluids() {
         registerFluid(FLUID_STEAM);
-
-        Registry.register(Registry.ITEM, new MIIdentifier("fluid_slot"), ITEM_FLUID_SLOT);
     }
 
     public static void registerBlock(Block block, Item item, String id, int flag) {

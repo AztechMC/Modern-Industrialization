@@ -2,22 +2,15 @@ package aztech.modern_industrialization.inventory;
 
 import alexiil.mc.lib.attributes.fluid.volume.FluidKey;
 import alexiil.mc.lib.attributes.fluid.volume.FluidKeys;
-import aztech.modern_industrialization.ModernIndustrialization;
-import aztech.modern_industrialization.fluid.FluidSlotIO;
-import aztech.modern_industrialization.fluid.FluidStackItem;
 import aztech.modern_industrialization.util.NbtHelper;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.fluid.Fluid;
-import net.minecraft.fluid.Fluids;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.screen.slot.Slot;
-import net.minecraft.util.math.Direction;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * A fluid stack that can be configured. TODO: sync fluid and lock state
@@ -34,30 +27,26 @@ public class ConfigurableFluidStack {
     private boolean playerExtract = true;
     boolean pipesInsert = false;
     boolean pipesExtract = false;
-    private ConfigurableInventory inventory = null;
 
-    private ItemStack displayedStack = FluidStackItem.getEmptyStack();
-
-    public ConfigurableFluidStack(ConfigurableInventory inventory, int capacity) {
+    public ConfigurableFluidStack(int capacity) {
         this.capacity = capacity;
-        this.inventory = inventory;
     }
 
-    public static ConfigurableFluidStack standardInputSlot(ConfigurableInventory inventory, int capacity) {
-        ConfigurableFluidStack stack = new ConfigurableFluidStack(inventory, capacity);
+    public static ConfigurableFluidStack standardInputSlot(int capacity) {
+        ConfigurableFluidStack stack = new ConfigurableFluidStack(capacity);
         stack.playerInsert = true;
         stack.pipesInsert = true;
         return stack;
     }
 
-    public static ConfigurableFluidStack standardOutputSlot(ConfigurableInventory inventory, int capacity) {
-        ConfigurableFluidStack stack = new ConfigurableFluidStack(inventory, capacity);
+    public static ConfigurableFluidStack standardOutputSlot(int capacity) {
+        ConfigurableFluidStack stack = new ConfigurableFluidStack(capacity);
         stack.pipesExtract = true;
         return stack;
     }
 
-    public static ConfigurableFluidStack lockedInputSlot(ConfigurableInventory inventory, int capacity, FluidKey fluid) {
-        ConfigurableFluidStack stack = new ConfigurableFluidStack(inventory, capacity);
+    public static ConfigurableFluidStack lockedInputSlot(int capacity, FluidKey fluid) {
+        ConfigurableFluidStack stack = new ConfigurableFluidStack(capacity);
         stack.fluid = stack.lockedFluid = fluid;
         stack.playerInsert = true;
         stack.playerLockable = false;
@@ -66,8 +55,8 @@ public class ConfigurableFluidStack {
         return stack;
     }
 
-    public static ConfigurableFluidStack lockedOutputSlot(ConfigurableInventory inventory, int capacity, FluidKey fluid) {
-        ConfigurableFluidStack stack = new ConfigurableFluidStack(inventory, capacity);
+    public static ConfigurableFluidStack lockedOutputSlot(int capacity, FluidKey fluid) {
+        ConfigurableFluidStack stack = new ConfigurableFluidStack(capacity);
         stack.fluid = stack.lockedFluid = fluid;
         stack.playerLockable = false;
         stack.playerLocked = true;
@@ -139,23 +128,15 @@ public class ConfigurableFluidStack {
     }
 
     public void setFluid(FluidKey fluid) {
-        boolean needsUpdate = fluid != this.fluid;
         this.fluid = fluid;
-        if(needsUpdate) {
-            updateDisplayedItem();
-        }
     }
 
     public void setAmount(int amount) {
-        boolean needsUpdate = amount != this.amount;
         this.amount = amount;
         if(amount > capacity) throw new IllegalStateException("amount > capacity in the fluid stack");
         if(amount < 0) throw new IllegalStateException("amount < 0 in the fluid stack");
         if(amount == 0 && lockedFluid == null) {
             fluid = FluidKeys.EMPTY;
-        }
-        if(needsUpdate) {
-            updateDisplayedItem();
         }
     }
 
@@ -213,26 +194,6 @@ public class ConfigurableFluidStack {
         playerExtract = tag.getBoolean("playerExtract");
         pipesInsert = tag.getBoolean("pipesInsert");
         pipesExtract = tag.getBoolean("pipesExtract");
-        updateDisplayedItem();
-    }
-
-    /**
-     * Update the displayed item if necessary.
-     */
-    public void updateDisplayedItem() {
-        if(inventory == null || !inventory.isOpen()) return;
-
-        displayedStack = FluidStackItem.getEmptyStack();
-        FluidStackItem.setFluid(displayedStack, fluid.getRawFluid());
-        FluidStackItem.setCapacity(displayedStack, capacity);
-        FluidStackItem.setAmount(displayedStack, amount);
-        if(playerInsert) {
-            FluidStackItem.setIO(displayedStack, playerExtract ? FluidSlotIO.INPUT_AND_OUTPUT : FluidSlotIO.INPUT_ONLY);
-        } else if(playerExtract) {
-            FluidStackItem.setIO(displayedStack, FluidSlotIO.OUTPUT_ONLY);
-        } else {
-             throw new UnsupportedOperationException("A fluid slot must either have input or output.");
-        }
     }
 
     public void enableMachineLock(FluidKey lockedFluid) {
@@ -258,7 +219,6 @@ public class ConfigurableFluidStack {
             lockedFluid = null;
             if(amount == 0) {
                 setFluid(FluidKeys.EMPTY);
-                updateDisplayedItem();
             }
         } else if(lockedFluid == null) {
             lockedFluid = fluid;
@@ -268,7 +228,6 @@ public class ConfigurableFluidStack {
     public class ConfigurableFluidSlot extends Slot {
         public ConfigurableFluidSlot(Inventory inventory, int x, int y) {
             super(inventory, -1, x, y);
-            updateDisplayedItem();
         }
 
         // We don't allow item insertion obviously.
@@ -297,13 +256,10 @@ public class ConfigurableFluidStack {
 
         @Override
         public ItemStack getStack() {
-            //return displayedStack;
             return ItemStack.EMPTY;
         }
 
         @Override
-        public void setStack(ItemStack stack) {
-            displayedStack = stack;
-        }
+        public void setStack(ItemStack stack) {}
     }
 }

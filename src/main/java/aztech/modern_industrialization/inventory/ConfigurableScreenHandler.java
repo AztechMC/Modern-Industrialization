@@ -126,7 +126,6 @@ public abstract class ConfigurableScreenHandler extends ScreenHandler {
                     if (amount > 0) {
                         fluidStack.increment(amount);
                         fluidStack.setFluid(extracted.getFluidKey());
-                        fluidStack.updateDisplayedItem();
                         inventory.markDirty();
                     } else {
                         // Otherwise insert into held item
@@ -134,7 +133,6 @@ public abstract class ConfigurableScreenHandler extends ScreenHandler {
                         if (fluidSlot.canExtractFluid(fluidStack.getFluid())) {
                             int leftover = insertable.insert(fluidStack.getFluid().withAmount(FluidAmount.of(fluidStack.getAmount(), 1000))).amount().asInt(1000, RoundingMode.FLOOR);
                             fluidStack.setAmount(leftover);
-                            fluidStack.updateDisplayedItem();
                             inventory.markDirty();
                         }
                     }

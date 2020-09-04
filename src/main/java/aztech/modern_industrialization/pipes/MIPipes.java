@@ -1,10 +1,8 @@
 package aztech.modern_industrialization.pipes;
 
-import alexiil.mc.lib.attributes.fluid.volume.FluidKey;
 import alexiil.mc.lib.attributes.fluid.volume.FluidKeys;
 import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.ModernIndustrialization;
-import aztech.modern_industrialization.fluid.FluidUnit;
 import aztech.modern_industrialization.pipes.api.*;
 import aztech.modern_industrialization.pipes.fluid.FluidNetwork;
 import aztech.modern_industrialization.pipes.fluid.FluidNetworkData;
@@ -17,18 +15,14 @@ import aztech.modern_industrialization.pipes.item.ItemPipeScreenHandler;
 import nerdhub.cardinal.components.api.ComponentRegistry;
 import nerdhub.cardinal.components.api.ComponentType;
 import nerdhub.cardinal.components.api.event.WorldComponentCallback;
-import net.fabricmc.api.Environment;
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerChunkEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.fabricmc.fabric.api.screenhandler.v1.ScreenHandlerRegistry;
 import net.minecraft.block.Block;
 import net.minecraft.block.Material;
-import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.fluid.Fluids;
 import net.minecraft.item.Item;
 import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.util.Identifier;
@@ -59,13 +53,13 @@ public class MIPipes implements ModInitializer {
     public void onInitialize() {
         Registry.register(Registry.BLOCK, new MIIdentifier("pipe"), BLOCK_PIPE);
         BLOCK_ENTITY_TYPE_PIPE = Registry.register(Registry.BLOCK_ENTITY_TYPE, new MIIdentifier("pipe"), BlockEntityType.Builder.create(PipeBlockEntity::new, BLOCK_PIPE).build(null));
-        registerFluidPipeType("gold",255 << 24 | 255 << 16 | 225 << 8 | 0, FluidUnit.DROPS_PER_BUCKET);
-        registerFluidPipeType("aluminum",255 << 24 | 63 << 16 | 202 << 8 | 255, FluidUnit.DROPS_PER_BUCKET);
-        registerFluidPipeType("steel",255 << 24 | 63 << 16 | 63 << 8 | 63, FluidUnit.DROPS_PER_BUCKET);
-        registerFluidPipeType("iron",255 << 24 | 240 << 16 | 240 << 8 | 240, FluidUnit.DROPS_PER_BUCKET);
-        registerFluidPipeType("bronze", 255 << 24 | 255 << 16 | 204 << 8, FluidUnit.DROPS_PER_BUCKET);
-        registerFluidPipeType("tin",255 << 24 | 203 << 16 | 228 << 8 | 228, FluidUnit.DROPS_PER_BUCKET);
-        registerFluidPipeType("copper",255 << 24 | 255 << 16 | 102 << 8, FluidUnit.DROPS_PER_BUCKET);
+        registerFluidPipeType("gold",255 << 24 | 255 << 16 | 225 << 8 | 0, 1000);
+        registerFluidPipeType("aluminum",255 << 24 | 63 << 16 | 202 << 8 | 255, 1000);
+        registerFluidPipeType("steel",255 << 24 | 63 << 16 | 63 << 8 | 63, 1000);
+        registerFluidPipeType("iron",255 << 24 | 240 << 16 | 240 << 8 | 240, 1000);
+        registerFluidPipeType("bronze", 255 << 24 | 255 << 16 | 204 << 8, 1000);
+        registerFluidPipeType("tin",255 << 24 | 203 << 16 | 228 << 8 | 228, 1000);
+        registerFluidPipeType("copper",255 << 24 | 255 << 16 | 102 << 8, 1000);
 
         registerItemPipeType("gold",255 << 24 | 255 << 16 | 225 << 8 | 0);
         registerItemPipeType("aluminum",255 << 24 | 63 << 16 | 202 << 8 | 255);

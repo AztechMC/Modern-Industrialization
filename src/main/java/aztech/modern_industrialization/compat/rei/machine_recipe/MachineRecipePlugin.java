@@ -1,4 +1,4 @@
-package aztech.modern_industrialization.rei.machine_recipe;
+package aztech.modern_industrialization.compat.rei.machine_recipe;
 
 import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.machines.MIMachines;
@@ -11,11 +11,9 @@ import me.shedaniel.rei.api.plugins.REIPluginV0;
 import net.minecraft.recipe.Recipe;
 import net.minecraft.util.Identifier;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
 import static me.shedaniel.rei.api.BuiltinPlugin.SMELTING;
 

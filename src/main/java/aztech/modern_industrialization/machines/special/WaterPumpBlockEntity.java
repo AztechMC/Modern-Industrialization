@@ -1,16 +1,11 @@
 package aztech.modern_industrialization.machines.special;
 
 import alexiil.mc.lib.attributes.fluid.volume.FluidKeys;
-import aztech.modern_industrialization.ModernIndustrialization;
-import aztech.modern_industrialization.fluid.FluidUnit;
 import aztech.modern_industrialization.inventory.ConfigurableFluidStack;
 import aztech.modern_industrialization.machines.impl.MachineBlockEntity;
 import aztech.modern_industrialization.machines.impl.MachineFactory;
 import aztech.modern_industrialization.machines.impl.MachineTier;
 import aztech.modern_industrialization.machines.recipe.MachineRecipeType;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.util.math.BlockPos;
@@ -24,8 +19,7 @@ public class WaterPumpBlockEntity extends MachineBlockEntity {
     public WaterPumpBlockEntity(MachineFactory factory, MachineRecipeType recipeType) {
         super(factory, recipeType);
 
-        int waterSlotId = fluidStacks.size()-1;
-        fluidStacks.set(1, ConfigurableFluidStack.lockedOutputSlot(this, factory.getOutputBucketCapacity() * FluidUnit.DROPS_PER_BUCKET, FluidKeys.WATER));
+        fluidStacks.set(fluidStacks.size()-1, ConfigurableFluidStack.lockedOutputSlot(factory.getOutputBucketCapacity() * 1000, FluidKeys.WATER));
         usedEnergy = 0;
         recipeEnergy = 100;
     }
@@ -38,7 +32,7 @@ public class WaterPumpBlockEntity extends MachineBlockEntity {
         if(world.isClient) return;
 
         ConfigurableFluidStack waterStack = fluidStacks.get(fluidStacks.size()-1);
-        if(waterStack.getRemainingSpace() < FluidUnit.DROPS_PER_BUCKET / 8) {
+        if(waterStack.getRemainingSpace() < 1000 / 8) {
             if(isActive) {
                 isActive = false;
                 sync();
@@ -75,7 +69,7 @@ public class WaterPumpBlockEntity extends MachineBlockEntity {
                     }
                 }
                 int factorTier = (factory.tier == MachineTier.BRONZE ? 1 : 2);
-                waterStack.increment(Math.min(factorTier * providedBucketEights * FluidUnit.DROPS_PER_BUCKET / 8, waterStack.getRemainingSpace()));
+                waterStack.increment(Math.min(factorTier * providedBucketEights * 1000 / 8, waterStack.getRemainingSpace()));
                 usedEnergy = 0;
             }
             markDirty();

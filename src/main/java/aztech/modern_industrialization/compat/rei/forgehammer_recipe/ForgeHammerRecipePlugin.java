@@ -1,4 +1,4 @@
-package aztech.modern_industrialization.rei.forgehammer_recipe;
+package aztech.modern_industrialization.compat.rei.forgehammer_recipe;
 
 import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.ModernIndustrialization;

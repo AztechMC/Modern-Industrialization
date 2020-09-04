@@ -55,11 +55,6 @@ public class MachineInventories {
             }
 
             @Override
-            public boolean isOpen() {
-                return true;
-            }
-
-            @Override
             public void markDirty() {
 
             }
@@ -69,7 +64,7 @@ public class MachineInventories {
         int itemStackCnt = buf.readInt();
         while(itemStackCnt --> 0) itemStacks.add(new ConfigurableItemStack());
         int fluidStackCnt = buf.readInt();
-        while(fluidStackCnt --> 0) fluidStacks.add(new ConfigurableFluidStack(clientInv, 0));
+        while(fluidStackCnt --> 0) fluidStacks.add(new ConfigurableFluidStack(0));
 
         clientInv.readFromTag(buf.readCompoundTag());
         return clientInv;

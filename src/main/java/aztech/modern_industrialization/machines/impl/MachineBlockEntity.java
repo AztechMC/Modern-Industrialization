@@ -3,7 +3,6 @@ package aztech.modern_industrialization.machines.impl;
 import alexiil.mc.lib.attributes.fluid.volume.FluidKey;
 import alexiil.mc.lib.attributes.fluid.volume.FluidKeys;
 import aztech.modern_industrialization.ModernIndustrialization;
-import aztech.modern_industrialization.fluid.FluidUnit;
 import aztech.modern_industrialization.inventory.ConfigurableFluidStack;
 import aztech.modern_industrialization.inventory.ConfigurableItemStack;
 import aztech.modern_industrialization.machines.recipe.MachineRecipe;
@@ -12,8 +11,6 @@ import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.fluid.Fluid;
-import net.minecraft.fluid.Fluids;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
@@ -73,13 +70,13 @@ public class MachineBlockEntity extends AbstractMachineBlockEntity
         fluidStacks = new ArrayList<>();
         for(int i = 0; i < factory.getLiquidInputSlots(); ++i) {
             if(i == 0 && factory instanceof SteamMachineFactory) {
-                fluidStacks.add(ConfigurableFluidStack.lockedInputSlot(this, ((SteamMachineFactory) factory).getSteamBucketCapacity() * FluidUnit.DROPS_PER_BUCKET, STEAM_KEY));
+                fluidStacks.add(ConfigurableFluidStack.lockedInputSlot(((SteamMachineFactory) factory).getSteamBucketCapacity() * 1000, STEAM_KEY));
             } else {
-                fluidStacks.add(ConfigurableFluidStack.standardInputSlot(this, factory.getInputBucketCapacity() * FluidUnit.DROPS_PER_BUCKET));
+                fluidStacks.add(ConfigurableFluidStack.standardInputSlot(factory.getInputBucketCapacity() * 1000));
             }
         }
         for(int i = 0; i < factory.getLiquidOutputSlots(); ++i) {
-            fluidStacks.add(ConfigurableFluidStack.standardOutputSlot(this, factory.getOutputBucketCapacity() * FluidUnit.DROPS_PER_BUCKET));
+            fluidStacks.add(ConfigurableFluidStack.standardOutputSlot(factory.getOutputBucketCapacity() * 1000));
         }
 
         this.propertyDelegate = new PropertyDelegate() {
@@ -120,24 +117,6 @@ public class MachineBlockEntity extends AbstractMachineBlockEntity
     @Override
     public List<ConfigurableFluidStack> getFluidStacks() {
         return fluidStacks;
-    }
-
-    @Override
-    public void onOpen(PlayerEntity player) {
-        openCount++;
-        for(ConfigurableFluidStack stack : fluidStacks) {
-            stack.updateDisplayedItem();
-        }
-    }
-
-    @Override
-    public void onClose(PlayerEntity player) {
-        openCount--;
-    }
-
-    @Override
-    public boolean isOpen() {
-        return openCount > 0;
     }
 
     @Override

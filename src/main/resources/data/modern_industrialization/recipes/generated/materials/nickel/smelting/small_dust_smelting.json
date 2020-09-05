@@ -1,0 +1,9 @@
+{
+    "type": "minecraft:smelting",
+    "ingredient": {
+        "item": "modern_industrialization:nickel_small_dust"
+    },
+    "result": "modern_industrialization:nickel_nugget",
+    "experience": 0.08,
+    "cookingtime": 200
+}

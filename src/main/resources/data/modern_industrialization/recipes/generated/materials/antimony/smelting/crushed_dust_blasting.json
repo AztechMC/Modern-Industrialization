@@ -1,0 +1,9 @@
+{
+    "type": "minecraft:blasting",
+    "ingredient": {
+        "item": "modern_industrialization:antimony_crushed_dust"
+    },
+    "result": "modern_industrialization:antimony_ingot",
+    "experience": 0.7,
+    "cookingtime": 100
+}

@@ -196,7 +196,7 @@ public class ModernIndustrialization implements ModInitializer {
 
         for (String block_type : material.getBlockType()) {
             Block block = material.getBlock(block_type);
-            Item item = new MaterialBlockItem(block, new Item.Settings().group(ITEM_GROUP), material.getId(), block_type);
+            Item item = new BlockItem(block, new Item.Settings().group(ITEM_GROUP));
             Identifier identifier = new MIIdentifier(id + "_" + block_type);
             material.saveBlock(block_type, block);
             Registry.register(Registry.BLOCK, identifier, block);
@@ -214,7 +214,7 @@ public class ModernIndustrialization implements ModInitializer {
         }
 
         for (String item_type : material.getItemType()) {
-            Item item = new MaterialItem(new Item.Settings().group(ITEM_GROUP), material.getId(), item_type);
+            Item item = new Item(new Item.Settings().group(ITEM_GROUP));
             material.saveItem(item_type, item);
             String custom_id = id;
             if (!id.equals(item_type)) {

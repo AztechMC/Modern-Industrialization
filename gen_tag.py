@@ -9,7 +9,16 @@ tags = [
     "copper_ore",
     "tin_ingot",
     "tin_nugget",
-    "tin_ore"
+    "tin_ore",
+    "antimony_ingot",
+    "antimony_nugget",
+    "antimony_ore",
+    "lead_ingot",
+    "lead_nugget",
+    "lead_ore",
+    "nickel_ingot",
+    "nickel_nugget",
+    "nickel_ore",
 ]
 
 if __name__ == '__main__':

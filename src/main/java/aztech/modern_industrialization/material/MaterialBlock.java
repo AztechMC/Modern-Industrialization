@@ -31,8 +31,8 @@ public class MaterialBlock extends Block {
     @Override
     public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
         ItemStack handStack = player.inventory.getMainHandStack();
-        if(handStack.getItem() == Items.BOOK && blockType == "ore") {
-            if(FabricLoader.getInstance().isModLoaded("patchouli")) {
+        if (handStack.getItem() == Items.BOOK && blockType == "ore") {
+            if (FabricLoader.getInstance().isModLoaded("patchouli")) {
                 ItemStack guide = new ItemStack(PatchouliItems.book);
                 CompoundTag tag = new CompoundTag();
                 tag.putString("patchouli:book", "modern_industrialization:book");
@@ -44,12 +44,4 @@ public class MaterialBlock extends Block {
         }
         return super.onUse(state, world, pos, player, hand, hit);
     }
-
-    @Environment(EnvType.CLIENT)
-    public MutableText getName() {
-        String blockTypeKey = "modern_industrialization:block_type:"+blockType;
-        String materialKey = "modern_industrialization:material:"+materialId;
-        return new TranslatableText(blockTypeKey, new TranslatableText(materialKey).getString());
-    }
-
 }

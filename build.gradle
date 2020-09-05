@@ -44,7 +44,6 @@ dependencies {
 	modRuntime "me.shedaniel:RoughlyEnoughItems:${project.rei_version}"
 	modImplementation "vazkii.patchouli:Patchouli:${project.patchouli_version}"
 	modApi "alexiil.mc.lib:libblockattributes-all:${project.lba_version}"
-	modRuntime "alexiil.mc.mod:simplepipes-all:0.4.1"
 }
 
 processResources {

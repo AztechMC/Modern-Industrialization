@@ -20,6 +20,44 @@ def image_tint(src, tint='#ffffff'):
     return result
 
 
+def clean(string):
+    return (" ".join(string.split('_'))).capitalize()
+
+
+def gen_name(id, item_set, block_set, isMetal, pipe):
+
+    lang_json = {}
+    with open('src/main/resources/assets/modern_industrialization/lang/en_us.json', 'r') as lang_file:
+        lang_json = json.load(lang_file)
+        lang_file.close()
+
+    for item in item_set:
+        lang_id = 'item.modern_industrialization.' + (id + '_' + item)
+        name = clean(id) + " " + clean(item)
+        if item == 'main':
+            if isMetal:
+                lang_id = 'item.modern_industrialization.' + (id + '_ingot')
+                name = clean(id)+' Ingot'
+            else:
+                lang_id = 'item.modern_industrialization.' + (id)
+                name = clean(id)
+        lang_json[lang_id] = name
+
+    if pipe:
+        lang_json['item.modern_industrialization.pipe_fluid_'+id] = clean(id) + ' Fluid Pipe'
+        lang_json['item.modern_industrialization.pipe_item_'+id] = clean(id) + ' Item Pipe'
+
+    for block in block_set:
+        lang_id = 'block.modern_industrialization.' + (id + '_' + block)
+        name = clean(id) + " " + clean(block)
+
+        lang_json[lang_id] = name
+
+    with open('src/main/resources/assets/modern_industrialization/lang/en_us.json', 'w') as lang_file:
+        json.dump(lang_json, lang_file, indent=4)
+        lang_file.close()
+
+
 def gen_texture(id, hex, item_set, block_set, special_texture=''):
 
     item = glob("template/item/*.png")
@@ -70,12 +108,15 @@ def getIdentifier(id, item_type, vanilla=False, isMetal=True):
     else:
         return MI + id + '_' + item_type
 
+
 def getTypeTags(id):
     return ["ore"] if id in TAG_BLACKLIST else ['main', 'nugget', 'ore']
 
+
 def addItemInput(itemInputs, id, item_type, vanilla=False, isMetal=True):
     if not vanilla and isMetal and item_type in getTypeTags(id):
-        itemInputs["tag"] = C + id + "_" + ("ingot" if item_type == "main" else item_type) + "s"
+        itemInputs["tag"] = C + id + "_" + \
+            ("ingot" if item_type == "main" else item_type) + "s"
     else:
         itemInputs["item"] = getIdentifier(id, item_type, vanilla, isMetal)
 
@@ -326,7 +367,8 @@ def genMacerator(id, vanilla, item_set, isMetal):
             jsonf["eu"] = 2
             jsonf["duration"] = 200
             jsonf["item_inputs"] = {"amount": 2 if crushed_dust else 1}
-            addItemInput(jsonf["item_inputs"], id, "crushed_dust" if crushed_dust else "ore", vanilla)
+            addItemInput(jsonf["item_inputs"], id,
+                         "crushed_dust" if crushed_dust else "ore", vanilla)
 
             jsonf["item_outputs"] = {
                 "item": getIdentifier(id, "dust" if crushed_dust else "crushed_dust", vanilla), "amount": 3 if crushed_dust else 2}
@@ -381,14 +423,17 @@ def genCuttingSaw(id, vanilla, item_set, isMetal):
             with open(path + "/" + a + ".json", "w") as file:
                 json.dump(jsonf, file, indent=4)
 
+
 def genPacker(id, vanilla, item_set, isMetal, hasPipe):
     path = "src/main/resources/data/modern_industrialization/recipes/generated/materials/" + \
            id + "/packer"
     Path(path).mkdir(parents=True, exist_ok=True)
     mac = "modern_industrialization:packer"
 
-    list_todo = [('main', 2, 'double_ingot', 1), ('plate', 4, 'large_plate', 1)]
-    if hasPipe: list_todo.append(('curved_plate', 6, 'pipe_item', 6))
+    list_todo = [('main', 2, 'double_ingot', 1),
+                 ('plate', 4, 'large_plate', 1)]
+    if hasPipe:
+        list_todo.append(('curved_plate', 6, 'pipe_item', 6))
 
     for i, ic, o, oc in list_todo:
         if i in item_set and o in item_set:
@@ -427,6 +472,7 @@ def genPacker(id, vanilla, item_set, isMetal, hasPipe):
         with open(path + "/" + "item_to_fluid_pipes" + ".json", "w") as file:
             json.dump(jsonf, file, indent=4)
 
+
 def gen(file, id, hex, item_set, block_set, vanilla=False,  forge_hammer=False, smelting=True, isMetal=True, veinsPerChunk=0, veinsSize=0, maxYLevel=64, texture=''):
 
     pipe = False
@@ -459,6 +505,9 @@ def gen(file, id, hex, item_set, block_set, vanilla=False,  forge_hammer=False, 
         line += '.setupOreGenerator(%d, %d, %d)' % (veinsPerChunk,
                                                     veinsSize, maxYLevel)
 
+    gen_name(id, (item_set | ({'main'} if not vanilla else set())) - (
+        {'nugget'} if vanilla and isMetal else set()), set() if vanilla else block_set, isMetal, pipe)
+
     line += ';'
     file.write(line + "\n")
 
@@ -466,7 +515,8 @@ def gen(file, id, hex, item_set, block_set, vanilla=False,  forge_hammer=False, 
 
     if not vanilla:
         if not isMetal:
-            gen_texture(id, hex, item_set | {texture}, block_set, special_texture=texture)
+            gen_texture(id, hex, item_set | {
+                        texture}, block_set, special_texture=texture)
         else:
             gen_texture(id, hex, item_set | {'ingot'}, block_set)
     else:
@@ -499,11 +549,16 @@ BOTH = {'block', 'ore'}
 
 ITEM_BASE = {'plate', 'large_plate', 'nugget', 'double_ingot',
              'small_dust', 'dust', 'curved_plate', 'pipe', 'rod', 'crushed_dust'}
+
+PURE_METAL = {'nugget', 'small_dust', 'dust', 'crushed_dust'}
+PURE_NON_METAL = {'small_dust', 'dust', 'crushed_dust'}
+
 ITEM_ALL = ITEM_BASE | {'bolt', 'blade',
                         'ring', 'rotor', 'gear'}
 
 ITEM_ALL_NO_ORE = ITEM_ALL - {'crushed_dust'}
-TAG_BLACKLIST = { 'aluminum', 'steel' } # will only allow ores from this material as tag, but nothing else
+# will only allow ores from this material as tag, but nothing else
+TAG_BLACKLIST = {'aluminum', 'steel'}
 
 if __name__ == '__main__':
     file = open(
@@ -527,9 +582,14 @@ public class MIMaterials {
     gen(file, 'steel', '#3f3f3f', ITEM_ALL_NO_ORE, BLOCK_ONLY)
     gen(file, 'aluminum', '#3fcaff', ITEM_BASE, BOTH,
         smelting=False, veinsPerChunk=6, veinsSize=6)
-    gen(file, 'lignite_coal', '#604020', {
-        'dust', 'crushed_dust'}, ORE_ONLY, forge_hammer=True, isMetal=False,
+    gen(file, 'lignite_coal', '#604020', PURE_NON_METAL, ORE_ONLY, forge_hammer=True, isMetal=False,
         veinsPerChunk=20, veinsSize=17, maxYLevel=128, texture='lignite_coal')
+    gen(file, 'lead', '#4a2649', ITEM_BASE, BOTH,
+        veinsPerChunk=4, veinsSize=8, maxYLevel=64)
+    gen(file, 'antimony', '#91bdb4', PURE_METAL, ORE_ONLY,
+        veinsPerChunk=4, veinsSize=6, maxYLevel=64)
+    gen(file, 'nickel', '#ba4576', ITEM_BASE, BOTH,
+        veinsPerChunk=4, veinsSize=6, maxYLevel=64)
 
     file.write("\n")
     file.write("}")

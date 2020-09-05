@@ -18,6 +18,15 @@ public class MITags {
     private static final Tag<Item> TIN_INGOTS = TagRegistry.item(new Identifier("c", "tin_ingots"));
     private static final Tag<Item> TIN_NUGGETS = TagRegistry.item(new Identifier("c", "tin_nuggets"));
     private static final Tag<Item> TIN_ORES = TagRegistry.item(new Identifier("c", "tin_ores"));
+    private static final Tag<Item> ANTIMONY_INGOTS = TagRegistry.item(new Identifier("c", "antimony_ingots"));
+    private static final Tag<Item> ANTIMONY_NUGGETS = TagRegistry.item(new Identifier("c", "antimony_nuggets"));
+    private static final Tag<Item> ANTIMONY_ORES = TagRegistry.item(new Identifier("c", "antimony_ores"));
+    private static final Tag<Item> LEAD_INGOTS = TagRegistry.item(new Identifier("c", "lead_ingots"));
+    private static final Tag<Item> LEAD_NUGGETS = TagRegistry.item(new Identifier("c", "lead_nuggets"));
+    private static final Tag<Item> LEAD_ORES = TagRegistry.item(new Identifier("c", "lead_ores"));
+    private static final Tag<Item> NICKEL_INGOTS = TagRegistry.item(new Identifier("c", "nickel_ingots"));
+    private static final Tag<Item> NICKEL_NUGGETS = TagRegistry.item(new Identifier("c", "nickel_nuggets"));
+    private static final Tag<Item> NICKEL_ORES = TagRegistry.item(new Identifier("c", "nickel_ores"));
 
     public static void setup() {
         // Will register the tags by loading the static fields!

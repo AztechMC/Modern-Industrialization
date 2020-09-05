@@ -503,7 +503,7 @@ ITEM_ALL = ITEM_BASE | {'bolt', 'blade',
                         'ring', 'rotor', 'gear'}
 
 ITEM_ALL_NO_ORE = ITEM_ALL - {'crushed_dust'}
-TAG_BLACKLIST = { 'aluminum' } # will only allow ores from this material as tag, but nothing else
+TAG_BLACKLIST = { 'aluminum', 'steel' } # will only allow ores from this material as tag, but nothing else
 
 if __name__ == '__main__':
     file = open(

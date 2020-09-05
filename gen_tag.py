@@ -7,8 +7,6 @@ tags = [
     "copper_ingot",
     "copper_nugget",
     "copper_ore",
-    "steel_ingot",
-    "steel_nugget",
     "tin_ingot",
     "tin_nugget",
     "tin_ore"

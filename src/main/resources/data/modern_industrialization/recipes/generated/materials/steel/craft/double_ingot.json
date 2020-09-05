@@ -6,7 +6,7 @@
     ],
     "key": {
         "#": {
-            "tag": "c:steel_ingots"
+            "item": "modern_industrialization:steel_ingot"
         }
     },
     "result": {

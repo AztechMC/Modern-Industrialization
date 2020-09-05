@@ -424,7 +424,7 @@ def genPacker(id, vanilla, item_set, isMetal, hasPipe):
             "item": getIdentifier(id, "pipe_fluid", vanilla, isMetal), "amount": 2
         }
 
-        with open(path + "/" + i + ".json", "w") as file:
+        with open(path + "/" + "item_to_fluid_pipes" + ".json", "w") as file:
             json.dump(jsonf, file, indent=4)
 
 def gen(file, id, hex, item_set, block_set, vanilla=False,  forge_hammer=False, smelting=True, isMetal=True, veinsPerChunk=0, veinsSize=0, maxYLevel=64, texture=''):
@@ -443,7 +443,7 @@ def gen(file, id, hex, item_set, block_set, vanilla=False,  forge_hammer=False, 
         item_set_to_add = item_set_to_add | ({'ingot'} if isMetal else {id})
 
     item_to_add = ','.join([(lambda s: "\"%s\"" % s)(s)
-                            for s in item_set_to_add])
+                            for s in sorted(list(item_set_to_add))])
 
     line = "    public static MIMaterial %s = new MIMaterial(\"%s\", %s)" % (
         id, id, ("%s" % vanilla).lower())
@@ -452,7 +452,7 @@ def gen(file, id, hex, item_set, block_set, vanilla=False,  forge_hammer=False, 
 
     if not vanilla and len(block_set) > 0:
         block_to_add = ','.join([(lambda s: "\"%s\"" % s)(s)
-                                 for s in block_set])
+                                 for s in sorted(list(block_set))])
         line += ".addBlockType(new String [] { %s })" % block_to_add
 
     if not vanilla and 'ore' in block_set:

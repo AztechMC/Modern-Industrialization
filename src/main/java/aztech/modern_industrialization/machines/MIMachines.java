@@ -11,6 +11,7 @@ import aztech.modern_industrialization.machines.impl.multiblock.*;
 import aztech.modern_industrialization.machines.recipe.FurnaceRecipeProxy;
 import aztech.modern_industrialization.machines.recipe.MachineRecipeType;
 import aztech.modern_industrialization.machines.special.SteamBoilerBlockEntity;
+import aztech.modern_industrialization.machines.special.SteamTurbineBlockEntity;
 import aztech.modern_industrialization.machines.special.WaterPumpBlockEntity;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
@@ -138,8 +139,9 @@ public class MIMachines {
 
     public static MachineFactory setupFurnace(MachineFactory factory) {
         return factory
-                .setInputSlotPosition(56, 45, 1, 1).setOutputSlotPosition(102, 45, 1, 1)
-                .setupProgressBar(76, 45, 22, 15, true).setupBackground("steam_furnace.png")
+                .setInputSlotPosition(56, 35, 1, 1).setOutputSlotPosition(102, 35, 1, 1)
+                .setupProgressBar(76, 35, 22, 15, true).setupBackground("steam_furnace.png")
+                .setupEfficiencyBar(0, 166, 38, 62, 100, 2, true).setupElectricityBar(18, 34)
                 .setupOverlays("furnace", true, false, false);
     }
 
@@ -180,8 +182,8 @@ public class MIMachines {
                         .setSteamBucketCapacity(tier == BRONZE ? 2 : 4).setSteamSlotPos(23, 23);
                 factory.setupCasing((steamBricked ? "bricked_" : "") + tier.toString());
             } else {
-                return;
-                // TODO: electric machines
+                factory = new MachineFactory(tier.toString() + "_" + machineType, tier, MachineBlockEntity::new, recipeType, inputSlots, outputSlots, fluidInputSlots, fluidOutputSlots);
+                factory.setupCasing(tier.toString());
             }
             setup.setup(factory);
         }
@@ -298,5 +300,12 @@ public class MIMachines {
                 .setupCasing("steel")
         ;
         registerHatches();
+
+        new MachineFactory("lv_steam_turbine", LV, SteamTurbineBlockEntity::new, null, 0, 0, 1, 0)
+                .setInputLiquidSlotPosition(23, 23, 1, 1).setupElectricityBar(76, 39)
+                .setupBackground("default.png")
+                .setupCasing("lv") // TODO: custom electric output
+                .setupOverlays("steam_turbine", true, true, false)
+        ;
     }
 }

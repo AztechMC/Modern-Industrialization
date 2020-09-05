@@ -69,6 +69,10 @@ public class MachineFactory {
     int efficiencyBarSizeX;
     int efficiencyBarSizeY;
 
+    boolean hasEnergyBar = false;
+    int electricityBarX;
+    int electricityBarY;
+
     private int inputBucketCapacity = 16;
     private int outputBucketCapacity = 16;
 
@@ -262,13 +266,28 @@ public class MachineFactory {
     }
 
     public MachineFactory setupEfficiencyBar(int x, int y, int drawX, int drawY, int sizeX, int sizeY) {
-        this.hasEfficiencyBar = true;
-        this.efficiencyBarX = x;
-        this.efficiencyBarY = y;
-        this.efficiencyBarDrawX = drawX;
-        this.efficiencyBarDrawY = drawY;
-        this.efficiencyBarSizeX = sizeX;
-        this.efficiencyBarSizeY = sizeY;
+        return setupEfficiencyBar(x, y, drawX, drawY, sizeX, sizeY, false);
+    }
+
+    public MachineFactory setupEfficiencyBar(int x, int y, int drawX, int drawY, int sizeX, int sizeY, boolean onlyElectric) {
+        if(!onlyElectric || tier.isElectric()) {
+            this.hasEfficiencyBar = true;
+            this.efficiencyBarX = x;
+            this.efficiencyBarY = y;
+            this.efficiencyBarDrawX = drawX;
+            this.efficiencyBarDrawY = drawY;
+            this.efficiencyBarSizeX = sizeX;
+            this.efficiencyBarSizeY = sizeY;
+        }
+        return this;
+    }
+
+    public MachineFactory setupElectricityBar(int x, int y) {
+        if(tier.isElectric()) {
+            hasEnergyBar = true;
+            this.electricityBarX = x;
+            this.electricityBarY = y;
+        }
         return this;
     }
 

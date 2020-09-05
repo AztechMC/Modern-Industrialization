@@ -92,6 +92,8 @@ public class MachineScreenHandler extends ConfigurableScreenHandler {
     public boolean getIsActive() { return propertyDelegate.get(0) == 1; }
     public int getEfficiencyTicks() { return propertyDelegate.get(3); }
     public int getMaxEfficiencyTicks() { return propertyDelegate.get(4); }
+    public int getStoredEu() { return propertyDelegate.get(5); }
+    public int getMaxStoredEu() { return factory.tier.getMaxStoredEu(); }
 
     private void updateTrackedExtract() {
         trackedExtract[0] = inventory.getItemExtract();

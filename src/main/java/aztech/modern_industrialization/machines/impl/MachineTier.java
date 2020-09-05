@@ -6,7 +6,7 @@ public enum MachineTier {
     LV("lv", false, 16, 4, 8),
     MV("mv", false, 32, 8, 16),
     HV("hv", false, 64, 12, 32),
-    EV("ev", false, 256, 16, 128),
+    EV("ev", false, 1024, 16, 512),
     ;
 
     private final String name;
@@ -27,6 +27,18 @@ public enum MachineTier {
         return steam;
     }
 
+    public boolean isElectric() {
+        return !steam;
+    }
+
+    public int getBaseOverclock() {
+        return baseOverclock;
+    }
+
+    public int getMaxOverclock() {
+        return maxOverclock;
+    }
+
     public int getMaxEu() {
         return maxEu;
     }
@@ -34,5 +46,9 @@ public enum MachineTier {
     @Override
     public String toString() {
         return name;
+    }
+
+    public int getMaxStoredEu() {
+        return isSteam() ? 0 : getMaxEu() * 100;
     }
 }

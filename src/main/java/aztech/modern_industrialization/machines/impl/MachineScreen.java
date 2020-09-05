@@ -26,7 +26,9 @@ import net.minecraft.text.TextColor;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class MachineScreen extends HandledScreen<MachineScreenHandler> {
@@ -178,11 +180,25 @@ public class MachineScreen extends HandledScreen<MachineScreenHandler> {
             int u = factory.efficiencyBarX;
             int v = factory.efficiencyBarY;
             int progressPixel = (int) (efficiency * sx);
+            // background of the bar
+            this.drawTexture(matrices, px-1, py-1, u, v + sy, sx+2, sy+2);
+            // the bar itself
             this.drawTexture(matrices, px, py, u, v, progressPixel, sy);
         }
 
-        // TODO: move to custom screen class
         this.client.getTextureManager().bindTexture(SLOT_ATLAS);
+        if(factory.hasEnergyBar && handler.getMaxStoredEu() > 0) {
+            int px = i + factory.electricityBarX;
+            int py = j + factory.electricityBarY;
+            int sx = 13; // FIXME: harcoded
+            int sy = 18; // FIXME: harcoded
+            this.drawTexture(matrices, px, py, 230, 0, sx, sy);
+            float fill = (float) handler.getStoredEu() / handler.getMaxStoredEu();
+            int fillPixels = (int) (fill * sy);
+            if(fill > 0.95) fillPixels = sy;
+            this.drawTexture(matrices, px, py + sy - fillPixels, 243, sy - fillPixels, sx, fillPixels);
+        }
+
         for (Slot slot : this.handler.slots) {
             int px = i + slot.x - 1;
             int py = j + slot.y - 1;
@@ -289,6 +305,24 @@ public class MachineScreen extends HandledScreen<MachineScreenHandler> {
                 this.renderTooltip(matrices, tooltip, mouseX, mouseY);
             }
         }
+
+        MachineFactory factory = handler.getMachineFactory();
+        if(factory.hasEnergyBar && handler.getMaxStoredEu() > 0) {
+            if(isPointWithinBounds(factory.electricityBarX, factory.electricityBarY, 13, 18, mouseX, mouseY)) { // FIXME: harcoded
+                this.renderTooltip(matrices, Collections.singletonList(new TranslatableText("text.modern_industrialization.energy_bar", handler.getStoredEu(), handler.getMaxStoredEu())), mouseX, mouseY);
+            }
+        }
+
+        if(factory.hasEfficiencyBar) {
+            if(isPointWithinBounds(factory.efficiencyBarDrawX, factory.efficiencyBarDrawY, factory.efficiencyBarSizeX, factory.efficiencyBarSizeY, mouseX, mouseY)) {
+                DecimalFormat factorFormat = new DecimalFormat("#.#");
+                List<Text> tooltip = new ArrayList<>();
+                tooltip.add(new TranslatableText("text.modern_industrialization.efficiency_ticks", handler.getEfficiencyTicks(), handler.getMaxEfficiencyTicks()));
+                tooltip.add(new TranslatableText("text.modern_industrialization.efficiency_factor", factorFormat.format(MachineBlockEntity.getOverclock(factory.tier, handler.getEfficiencyTicks()))));
+                this.renderTooltip(matrices, tooltip, mouseX, mouseY);
+            }
+        }
+
         super.drawMouseoverTooltip(matrices, mouseX, mouseY);
     }
 

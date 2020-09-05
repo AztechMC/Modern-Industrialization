@@ -1,8 +1,11 @@
 package aztech.modern_industrialization.machines.impl;
 
+import alexiil.mc.lib.attributes.AttributeList;
+import alexiil.mc.lib.attributes.AttributeProviderBlockEntity;
 import alexiil.mc.lib.attributes.fluid.volume.FluidKey;
 import alexiil.mc.lib.attributes.fluid.volume.FluidKeys;
 import aztech.modern_industrialization.ModernIndustrialization;
+import aztech.modern_industrialization.api.EnergyInsertable;
 import aztech.modern_industrialization.inventory.ConfigurableFluidStack;
 import aztech.modern_industrialization.inventory.ConfigurableItemStack;
 import aztech.modern_industrialization.machines.recipe.MachineRecipe;
@@ -24,26 +27,35 @@ import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Tickable;
 import net.minecraft.util.math.Direction;
+import org.lwjgl.system.CallbackI;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
 import static alexiil.mc.lib.attributes.Simulation.ACTION;
 import static alexiil.mc.lib.attributes.Simulation.SIMULATE;
 
+// TODO: refactor
 public class MachineBlockEntity extends AbstractMachineBlockEntity
-        implements Tickable, ExtendedScreenHandlerFactory, MachineInventory {
+        implements Tickable, ExtendedScreenHandlerFactory, MachineInventory, AttributeProviderBlockEntity {
     protected static final FluidKey STEAM_KEY = FluidKeys.get(ModernIndustrialization.FLUID_STEAM);
 
     protected List<ConfigurableItemStack> itemStacks;
     protected List<ConfigurableFluidStack> fluidStacks;
-    protected int openCount = 0;
+
+    protected long storedEu = 0;
+    protected long getMaxStoredEu() {
+        return factory.tier.getMaxStoredEu();
+    }
 
     protected MachineFactory factory;
     protected MachineRecipeType recipeType;
     protected MachineRecipe activeRecipe = null;
     protected Identifier delayedActiveRecipe;
+    protected boolean usedAmp = false;
 
     protected int usedEnergy;
     protected int recipeEnergy;
@@ -87,6 +99,7 @@ public class MachineBlockEntity extends AbstractMachineBlockEntity
                 else if(index == 2) return recipeEnergy;
                 else if(index == 3) return efficiencyTicks;
                 else if(index == 4) return maxEfficiencyTicks;
+                else if(index == 5) return (int)storedEu;
                 else return -1;
             }
 
@@ -97,11 +110,12 @@ public class MachineBlockEntity extends AbstractMachineBlockEntity
                 else if(index == 2) recipeEnergy = value;
                 else if(index == 3) efficiencyTicks = value;
                 else if(index == 4) maxEfficiencyTicks = value;
+                else if(index == 5) storedEu = value;
             }
 
             @Override
             public int size() {
-                return 5;
+                return 6;
             }
         };
 
@@ -141,6 +155,7 @@ public class MachineBlockEntity extends AbstractMachineBlockEntity
         }
         tag.putInt("efficiencyTicks", this.efficiencyTicks);
         tag.putInt("maxEfficiencyTicks", this.maxEfficiencyTicks);
+        tag.putLong("storedEu", this.storedEu);
         return tag;
     }
 
@@ -167,6 +182,7 @@ public class MachineBlockEntity extends AbstractMachineBlockEntity
         this.delayedActiveRecipe = tag.contains("activeRecipe") ? new Identifier(tag.getString("activeRecipe")) : null;
         this.efficiencyTicks = tag.getInt("efficiencyTicks");
         this.maxEfficiencyTicks = tag.getInt("maxEfficiencyTicks");
+        this.storedEu = tag.getLong("storedEu");
     }
 
     public MachineFactory getFactory() {
@@ -188,10 +204,61 @@ public class MachineBlockEntity extends AbstractMachineBlockEntity
     }
 
     protected Iterable<MachineRecipe> getRecipes() {
-        return recipeType.getRecipes((ServerWorld) world);
+        if(efficiencyTicks > 0) {
+            return Collections.singletonList(activeRecipe);
+        } else {
+            return recipeType.getRecipes((ServerWorld) world);
+        }
     }
 
     public MachineTier getTier() { return factory.tier; }
+
+    /**
+     * Try to start a recipe. Return true if success, false otherwise. If false, nothing was changed.
+     */
+    protected boolean tryStartRecipe(MachineRecipe recipe) {
+        if (takeItemInputs(recipe, true) && takeFluidInputs(recipe, true) && putItemOutputs(recipe, true, false) && putFluidOutputs(recipe, true, false)) {
+            takeItemInputs(recipe, false);
+            takeFluidInputs(recipe, false);
+            putItemOutputs(recipe, true, true);
+            putFluidOutputs(recipe, true, true);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public static double getOverclock(MachineTier tier, int efficiencyTicks) {
+        return tier.getBaseOverclock() * Math.pow(Math.pow(2.0, 1.0/64.0), efficiencyTicks);
+    }
+
+    public static int getRecipeMaxEu(MachineTier tier, int eu, int efficiencyTicks) {
+        return Math.min((int) Math.floor(eu*getOverclock(tier, efficiencyTicks)), tier.getMaxEu());
+    }
+
+    private int getRecipeMaxEfficiencyTicks(int eu) {
+        if(efficiencyTicks != 0) throw new RuntimeException("Illegal state");
+        for(int ticks = 0; true; ++ticks) {
+            if(getRecipeMaxEu(getTier(), eu, ticks) == getTier().getMaxEu()) return ticks;
+        }
+    }
+
+    protected boolean updateActiveRecipe() {
+        for (MachineRecipe recipe : getRecipes()) {
+            if(recipe.eu > getTier().getMaxEu()) continue;
+            if (tryStartRecipe(recipe)) {
+                if(activeRecipe != recipe) {
+                    maxEfficiencyTicks = getRecipeMaxEfficiencyTicks(recipe.eu);
+                }
+                activeRecipe = recipe;
+                usedEnergy = 0;
+                recipeEnergy = recipe.eu * recipe.duration;
+                recipeMaxEu = getRecipeMaxEu(getTier(), recipe.eu, efficiencyTicks);
+                return true;
+            }
+        }
+        return false;
+    }
 
     @Override
     public void tick() {
@@ -199,33 +266,22 @@ public class MachineBlockEntity extends AbstractMachineBlockEntity
         loadDelayedActiveRecipe();
 
         boolean wasActive = isActive;
+        usedAmp = false;
 
-        if(activeRecipe == null && canRecipeStart()) {
+        // START RECIPE IF NECESSARY
+        // usedEnergy == 0 means that no recipe is currently started
+        boolean recipeStarted = false;
+        if(usedEnergy == 0 && canRecipeStart()) {
             if(getEu(1, true) == 1) {
-                for (MachineRecipe recipe : getRecipes()) {
-                    if(recipe.eu > getTier().getMaxEu()) continue;
-                    if (takeItemInputs(recipe, true) && takeFluidInputs(recipe, true) && putItemOutputs(recipe, true, false) && putFluidOutputs(recipe, true, false)) {
-                        takeItemInputs(recipe, false);
-                        takeFluidInputs(recipe, false);
-                        putItemOutputs(recipe, true, true);
-                        putFluidOutputs(recipe, true, true);
-                        activeRecipe = recipe;
-                        usedEnergy = 0;
-                        recipeEnergy = recipe.eu * recipe.duration;
-                        if(getTier() == MachineTier.BRONZE) {
-                            recipeMaxEu = recipe.eu;
-                        } else if(getTier() == MachineTier.STEEL) {
-                            recipeMaxEu = 2*recipe.eu <= getTier().getMaxEu() ? 2*recipe.eu : recipe.eu;
-                        } else {
-                            // TODO: electric overclock
-                        }
-                        break;
-                    }
-                }
+                recipeStarted = updateActiveRecipe();
             }
         }
-        if(activeRecipe != null && canRecipeProgress()) {
-            int eu = getEu(Math.min(recipeMaxEu, recipeEnergy - usedEnergy), false);
+
+        // PROCESS RECIPE TICK
+        int eu = 0;
+        boolean finishedRecipe = false; // whether the recipe finished this tick
+        if(activeRecipe != null && canRecipeProgress() && (usedEnergy > 0 || recipeStarted)) {
+            eu = getEu(Math.min(recipeMaxEu, recipeEnergy - usedEnergy), false);
             isActive = eu > 0;
             usedEnergy += eu;
 
@@ -233,11 +289,24 @@ public class MachineBlockEntity extends AbstractMachineBlockEntity
                 putItemOutputs(activeRecipe, false, false);
                 putFluidOutputs(activeRecipe, false, false);
                 clearLocks();
-                activeRecipe = null; // TODO: reuse recipe
                 usedEnergy = 0;
+                finishedRecipe = true;
             }
         } else {
             isActive = false;
+        }
+
+        // ADD OR REMOVE EFFICIENCY TICKS
+        // If we finished a recipe, we can add an efficiency tick
+        if(finishedRecipe) {
+            if(efficiencyTicks < maxEfficiencyTicks) ++efficiencyTicks;
+        } else if(eu < recipeMaxEu) { // If we didn't use the max energy this tick and the recipe is still ongoing, remove one efficiency tick
+            if(efficiencyTicks > 0) {
+                efficiencyTicks--;
+                if(efficiencyTicks == 0 && usedEnergy == 0) { // If the recipe is done, allow starting another one when the efficiency reaches zero
+                    activeRecipe = null;
+                }
+            }
         }
 
         if(wasActive != isActive) {
@@ -259,6 +328,7 @@ public class MachineBlockEntity extends AbstractMachineBlockEntity
         }
     }
 
+    // Must be true if canRecipeStart is true!
     protected boolean canRecipeProgress() {
         return true;
     }
@@ -436,7 +506,11 @@ public class MachineBlockEntity extends AbstractMachineBlockEntity
             }
             return totalRem;
         } else {
-            throw new UnsupportedOperationException("Only steam machines are supported");
+            int ext = (int) Math.min(storedEu, maxEu);
+            if(!simulate) {
+                storedEu -= ext;
+            }
+            return ext;
         }
     }
 
@@ -462,5 +536,23 @@ public class MachineBlockEntity extends AbstractMachineBlockEntity
     @Override
     public boolean getFluidExtract() {
         return extractFluids;
+    }
+
+    @Override
+    public void addAllAttributes(AttributeList<?> to) {
+        if(factory.tier.isElectric()) {
+            to.offer((EnergyInsertable) (packet, simulation) -> {
+                if(usedAmp) return false;
+                if(factory.tier.getMaxEu() >= packet && storedEu + packet <= getMaxStoredEu()) {
+                    if(simulation.isAction()) {
+                        storedEu += packet;
+                        usedAmp = true;
+                        markDirty();
+                    }
+                    return true;
+                }
+                return false;
+            });
+        }
     }
 }

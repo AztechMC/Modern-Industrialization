@@ -3,7 +3,11 @@ package aztech.modern_industrialization.pipes;
 import alexiil.mc.lib.attributes.fluid.volume.FluidKeys;
 import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.ModernIndustrialization;
+import aztech.modern_industrialization.machines.impl.MachineTier;
 import aztech.modern_industrialization.pipes.api.*;
+import aztech.modern_industrialization.pipes.electricity.ElectricityNetwork;
+import aztech.modern_industrialization.pipes.electricity.ElectricityNetworkData;
+import aztech.modern_industrialization.pipes.electricity.ElectricityNetworkNode;
 import aztech.modern_industrialization.pipes.fluid.FluidNetwork;
 import aztech.modern_industrialization.pipes.fluid.FluidNetworkData;
 import aztech.modern_industrialization.pipes.fluid.FluidNetworkNode;
@@ -34,8 +38,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import static aztech.modern_industrialization.pipes.api.PipeConnectionType.FLUID;
-import static aztech.modern_industrialization.pipes.api.PipeConnectionType.ITEM;
+import static aztech.modern_industrialization.pipes.api.PipeConnectionType.*;
 
 public class MIPipes implements ModInitializer {
     public static final MIPipes INSTANCE = new MIPipes();
@@ -74,6 +77,8 @@ public class MIPipes implements ModInitializer {
         registerItemPipeType("lead",255 << 24 | 0x4a2649);
         registerItemPipeType("nickel",255 << 24 | 0xc2b2bf);
         registerItemPipeType("silver",255 << 24 | 0x99ffff);
+
+        registerElectricityPipeType("tin", 255 << 24 | 203 << 16 | 228 << 8 | 228, MachineTier.LV.getMaxEu());
 
         ServerTickEvents.START_SERVER_TICK.register(server -> {
             for(World world : server.getWorlds()) {
@@ -119,6 +124,24 @@ public class MIPipes implements ModInitializer {
         pipeItems.put(type, item);
         Registry.register(Registry.ITEM, new MIIdentifier("pipe_item_" + name), item);
         PIPE_MODEL_NAMES.add(new MIIdentifier("item/pipe_item_" + name));
+    }
+
+    public void registerElectricityPipeType(String name, int color, int maxEu) {
+        PipeNetworkType type = PipeNetworkType.register(
+                new MIIdentifier("electricity_" + name),
+                (id, data) -> new ElectricityNetwork(id, data, maxEu),
+                ElectricityNetworkNode::new,
+                color,
+                ELECTRICITY
+        );
+        Item item = new PipeItem(
+                new Item.Settings().group(ModernIndustrialization.ITEM_GROUP),
+                type,
+                new ElectricityNetworkData()
+        );
+        pipeItems.put(type, item);
+        Registry.register(Registry.ITEM, new MIIdentifier("pipe_electricity_" + name), item);
+        PIPE_MODEL_NAMES.add(new MIIdentifier("item/pipe_electricity_" + name));
     }
 
     public Item getPipeItem(PipeNetworkType type) {

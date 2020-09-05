@@ -75,7 +75,7 @@ public class NbtHelper {
     }
     public static <T> void getList(CompoundTag tag, String key, List<T> list, BiConsumer<T, CompoundTag> decoder) {
         ListTag listTag = tag.getList(key, (new CompoundTag()).getType());
-        for(int i = 0; i < listTag.size(); ++i) {
+        for(int i = 0; i < list.size(); ++i) {
             CompoundTag elementTag = listTag.getCompound(i);
             decoder.accept(list.get(elementTag.getByte("Slot")), elementTag);
         }

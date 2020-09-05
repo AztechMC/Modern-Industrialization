@@ -50,7 +50,7 @@ public class MultiblockMachineBlockEntity extends MachineBlockEntity {
         return false;
     }
 
-    public void hatchRemoved(BlockPos pos) {
+    public void hatchRemoved(BlockPos pos) { // TODO: use this?
         linkedHatches.remove(pos);
         rebuildShape();
     }
@@ -125,7 +125,7 @@ public class MultiblockMachineBlockEntity extends MachineBlockEntity {
     protected boolean canRecipeStart() {
         lateLoad();
         rebuildShape();
-        return ready;
+        return ready && super.canRecipeStart();
     }
 
     @Override

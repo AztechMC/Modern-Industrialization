@@ -62,6 +62,7 @@ public class MIPipes implements ModInitializer {
         registerFluidPipeType("copper",255 << 24 | 255 << 16 | 102 << 8, 1000);
         registerFluidPipeType("lead",255 << 24 | 0x4a2649, 1000);
         registerFluidPipeType("nickel",255 << 24 | 0xc2b2bf, 1000);
+        registerFluidPipeType("silver",255 << 24 | 0x99ffff, 1000);
 
         registerItemPipeType("gold",255 << 24 | 255 << 16 | 225 << 8 | 0);
         registerItemPipeType("aluminum",255 << 24 | 63 << 16 | 202 << 8 | 255);
@@ -72,6 +73,7 @@ public class MIPipes implements ModInitializer {
         registerItemPipeType("copper",255 << 24 | 255 << 16 | 102 << 8);
         registerItemPipeType("lead",255 << 24 | 0x4a2649);
         registerItemPipeType("nickel",255 << 24 | 0xc2b2bf);
+        registerItemPipeType("silver",255 << 24 | 0x99ffff);
 
         ServerTickEvents.START_SERVER_TICK.register(server -> {
             for(World world : server.getWorlds()) {

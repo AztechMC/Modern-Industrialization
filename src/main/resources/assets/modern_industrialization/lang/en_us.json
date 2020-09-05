@@ -245,5 +245,22 @@
     "item.modern_industrialization.pipe_fluid_lead": "Lead Fluid Pipe",
     "item.modern_industrialization.pipe_item_lead": "Lead Item Pipe",
     "item.modern_industrialization.pipe_fluid_nickel": "Nickel Fluid Pipe",
-    "item.modern_industrialization.pipe_item_nickel": "Nickel Item Pipe"
+    "item.modern_industrialization.pipe_item_nickel": "Nickel Item Pipe",
+    "item.modern_industrialization.silver_double_ingot": "Silver Double ingot",
+    "item.modern_industrialization.silver_dust": "Silver Dust",
+    "item.modern_industrialization.silver_small_dust": "Silver Small dust",
+    "item.modern_industrialization.silver_large_plate": "Silver Large plate",
+    "item.modern_industrialization.silver_rod": "Silver Rod",
+    "item.modern_industrialization.silver_ingot": "Silver Ingot",
+    "item.modern_industrialization.silver_crushed_dust": "Silver Crushed dust",
+    "item.modern_industrialization.silver_plate": "Silver Plate",
+    "item.modern_industrialization.silver_nugget": "Silver Nugget",
+    "item.modern_industrialization.silver_curved_plate": "Silver Curved plate",
+    "item.modern_industrialization.pipe_fluid_silver": "Silver Fluid Pipe",
+    "item.modern_industrialization.pipe_item_silver": "Silver Item Pipe",
+    "block.modern_industrialization.silver_ore": "Silver Ore",
+    "block.modern_industrialization.silver_block": "Silver Block",
+    "item.modern_industrialization.coal_dust": "Coal Dust",
+    "item.modern_industrialization.coal_small_dust": "Coal Small dust",
+    "item.modern_industrialization.coal_crushed_dust": "Coal Crushed dust"
 }

@@ -4,10 +4,10 @@
     "duration": 200,
     "item_inputs": {
         "amount": 1,
-        "item": "modern_industrialization:lignite_coal_ore"
+        "tag": "c:silver_ores"
     },
     "item_outputs": {
-        "item": "modern_industrialization:lignite_coal_crushed_dust",
+        "item": "modern_industrialization:silver_crushed_dust",
         "amount": 2
     }
 }

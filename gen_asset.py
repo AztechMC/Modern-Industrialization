@@ -113,7 +113,7 @@ def getTypeTags(id):
     return ["ore"] if id in TAG_BLACKLIST else ['main', 'nugget', 'ore']
 
 
-def addItemInput(itemInputs, id, item_type, vanilla=False, isMetal=True):
+def addItemInput(itemInputs, id, item_type, vanilla, isMetal):
     if not vanilla and isMetal and item_type in getTypeTags(id):
         itemInputs["tag"] = C + id + "_" + \
             ("ingot" if item_type == "main" else item_type) + "s"
@@ -360,7 +360,7 @@ def genMacerator(id, vanilla, item_set, isMetal):
                     with open(path + "/" + a + ".json", "w") as file:
                         json.dump(jsonf, file, indent=4)
 
-    if 'dust' in item_set and 'crushed_dust' in item_set and 'ore' in item_set:
+    if 'dust' in item_set and 'crushed_dust' in item_set and ('ore' in item_set or vanilla):
         for crushed_dust in [True, False]:
             jsonf = {}
             jsonf["type"] = mac
@@ -368,7 +368,7 @@ def genMacerator(id, vanilla, item_set, isMetal):
             jsonf["duration"] = 200
             jsonf["item_inputs"] = {"amount": 2 if crushed_dust else 1}
             addItemInput(jsonf["item_inputs"], id,
-                         "crushed_dust" if crushed_dust else "ore", vanilla)
+                         "crushed_dust" if crushed_dust else "ore", vanilla, isMetal)
 
             jsonf["item_outputs"] = {
                 "item": getIdentifier(id, "dust" if crushed_dust else "crushed_dust", vanilla), "amount": 3 if crushed_dust else 2}
@@ -485,7 +485,7 @@ def gen(file, id, hex, item_set, block_set, vanilla=False,  forge_hammer=False, 
 
     if vanilla and isMetal:
         item_set_to_add = item_set_to_add - {'nugget'}
-    else:
+    elif not vanilla:
         item_set_to_add = item_set_to_add | ({'ingot'} if isMetal else {id})
 
     item_to_add = ','.join([(lambda s: "\"%s\"" % s)(s)
@@ -574,6 +574,7 @@ public class MIMaterials {
 
     gen(file, 'gold', '#ffe100', ITEM_BASE, BOTH, vanilla=True)
     gen(file, 'iron', '#f0f0f0', ITEM_ALL, BOTH, vanilla=True, forge_hammer=True)
+    gen(file, 'coal', '#282828', PURE_NON_METAL, set(), vanilla=True, forge_hammer=True, isMetal=False, smelting=False)
     gen(file, 'copper', '#ff6600', ITEM_ALL, BOTH, forge_hammer=True,
         veinsPerChunk=20, veinsSize=9, maxYLevel=128)
     gen(file, 'bronze', '#ffcc00', ITEM_ALL_NO_ORE, BLOCK_ONLY, forge_hammer=True)
@@ -589,6 +590,8 @@ public class MIMaterials {
     gen(file, 'antimony', '#91bdb4', PURE_METAL, ORE_ONLY,
         veinsPerChunk=4, veinsSize=6, maxYLevel=64)
     gen(file, 'nickel', '#ba4576', ITEM_BASE, BOTH,
+        veinsPerChunk=4, veinsSize=6, maxYLevel=64)
+    gen(file, 'silver', '#99ffff', ITEM_BASE, BOTH,
         veinsPerChunk=4, veinsSize=6, maxYLevel=64)
 
     file.write("\n")

@@ -27,6 +27,9 @@ public class MITags {
     private static final Tag<Item> NICKEL_INGOTS = TagRegistry.item(new Identifier("c", "nickel_ingots"));
     private static final Tag<Item> NICKEL_NUGGETS = TagRegistry.item(new Identifier("c", "nickel_nuggets"));
     private static final Tag<Item> NICKEL_ORES = TagRegistry.item(new Identifier("c", "nickel_ores"));
+    private static final Tag<Item> SILVER_INGOTS = TagRegistry.item(new Identifier("c", "silver_ingots"));
+    private static final Tag<Item> SILVER_NUGGETS = TagRegistry.item(new Identifier("c", "silver_nuggets"));
+    private static final Tag<Item> SILVER_ORES = TagRegistry.item(new Identifier("c", "silver_ores"));
 
     public static void setup() {
         // Will register the tags by loading the static fields!

@@ -1,0 +1,12 @@
+{
+    "type": "minecraft:crafting_shapeless",
+    "ingredients": [
+        {
+            "item": "modern_industrialization:silver_block"
+        }
+    ],
+    "result": {
+        "item": "modern_industrialization:silver_ingot",
+        "count": 9
+    }
+}

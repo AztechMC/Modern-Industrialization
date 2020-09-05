@@ -19,6 +19,9 @@ tags = [
     "nickel_ingot",
     "nickel_nugget",
     "nickel_ore",
+    "silver_ingot",
+    "silver_nugget",
+    "silver_ore",
 ]
 
 if __name__ == '__main__':

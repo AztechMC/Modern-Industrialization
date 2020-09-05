@@ -54,7 +54,7 @@ def gen_name(id, item_set, block_set, isMetal, pipe):
         lang_json[lang_id] = name
 
     with open('src/main/resources/assets/modern_industrialization/lang/en_us.json', 'w') as lang_file:
-        json.dump(lang_json, lang_file, indent=4)
+        json.dump(lang_json, lang_file, indent=4, sort_keys=True)
         lang_file.close()
 
 

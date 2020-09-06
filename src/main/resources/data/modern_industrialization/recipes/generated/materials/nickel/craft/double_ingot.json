@@ -1,14 +1,13 @@
 {
-    "type": "minecraft:crafting_shaped",
-    "pattern": [
-        "#",
-        "#"
-    ],
-    "key": {
-        "#": {
+    "type": "minecraft:crafting_shapeless",
+    "ingredients": [
+        {
+            "tag": "c:nickel_ingots"
+        },
+        {
             "tag": "c:nickel_ingots"
         }
-    },
+    ],
     "result": {
         "item": "modern_industrialization:nickel_double_ingot",
         "count": 1

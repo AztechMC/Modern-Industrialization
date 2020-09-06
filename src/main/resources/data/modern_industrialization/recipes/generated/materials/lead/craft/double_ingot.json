@@ -1,14 +1,13 @@
 {
-    "type": "minecraft:crafting_shaped",
-    "pattern": [
-        "#",
-        "#"
-    ],
-    "key": {
-        "#": {
+    "type": "minecraft:crafting_shapeless",
+    "ingredients": [
+        {
+            "tag": "c:lead_ingots"
+        },
+        {
             "tag": "c:lead_ingots"
         }
-    },
+    ],
     "result": {
         "item": "modern_industrialization:lead_double_ingot",
         "count": 1

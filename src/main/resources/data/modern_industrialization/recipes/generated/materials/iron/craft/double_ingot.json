@@ -1,14 +1,13 @@
 {
-    "type": "minecraft:crafting_shaped",
-    "pattern": [
-        "#",
-        "#"
-    ],
-    "key": {
-        "#": {
+    "type": "minecraft:crafting_shapeless",
+    "ingredients": [
+        {
+            "item": "minecraft:iron_ingot"
+        },
+        {
             "item": "minecraft:iron_ingot"
         }
-    },
+    ],
     "result": {
         "item": "modern_industrialization:iron_double_ingot",
         "count": 1

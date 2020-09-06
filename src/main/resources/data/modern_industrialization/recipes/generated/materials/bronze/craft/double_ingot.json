@@ -1,14 +1,13 @@
 {
-    "type": "minecraft:crafting_shaped",
-    "pattern": [
-        "#",
-        "#"
-    ],
-    "key": {
-        "#": {
+    "type": "minecraft:crafting_shapeless",
+    "ingredients": [
+        {
+            "tag": "c:bronze_ingots"
+        },
+        {
             "tag": "c:bronze_ingots"
         }
-    },
+    ],
     "result": {
         "item": "modern_industrialization:bronze_double_ingot",
         "count": 1

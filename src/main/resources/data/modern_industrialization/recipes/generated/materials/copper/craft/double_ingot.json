@@ -1,14 +1,13 @@
 {
-    "type": "minecraft:crafting_shaped",
-    "pattern": [
-        "#",
-        "#"
-    ],
-    "key": {
-        "#": {
+    "type": "minecraft:crafting_shapeless",
+    "ingredients": [
+        {
+            "tag": "c:copper_ingots"
+        },
+        {
             "tag": "c:copper_ingots"
         }
-    },
+    ],
     "result": {
         "item": "modern_industrialization:copper_double_ingot",
         "count": 1

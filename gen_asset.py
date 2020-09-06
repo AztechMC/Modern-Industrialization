@@ -209,16 +209,13 @@ def genCraft(id, vanilla, item_set, isMetal, pipe):
     # double_ingot
     if 'double_ingot' in item_set:
         jsonf = {}
-        jsonf["type"] = "minecraft:crafting_shaped"
-        jsonf["pattern"] = [
-            "#",
-            "#"
-        ]
+        jsonf["type"] = "minecraft:crafting_shapeless"
         ingredient = {}
         addItemInput(ingredient, id, "main", vanilla, isMetal)
-        jsonf["key"] = {
-            "#": ingredient
-        }
+        jsonf["ingredients"] = [
+            ingredient,
+            ingredient
+        ]
         jsonf["result"] = {
             "item": getIdentifier(id, "double_ingot", vanilla),
             "count": 1

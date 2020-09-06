@@ -32,6 +32,18 @@ public class MIItem extends Item {
     public static final MIItem ITEM_COKE_DUST = new MIItem("coke_dust");
     public static final MIItem ITEM_UNCOOKED_STEEL_DUST = new MIItem("uncooked_steel_dust");
 
-
+    public static final MIItem ITEM_LV_MOTOR = new MIItem("lv_motor");
+    public static final MIItem ITEM_LV_PISTON = new MIItem("lv_piston");
+    public static final MIItem ITEM_LV_CONVEYOR = new MIItem("lv_conveyor");
+    public static final MIItem ITEM_LV_ROBOT_ARM = new MIItem("lv_robot_arm");
+    public static final MIItem ITEM_LV_CIRCUIT = new MIItem("lv_circuit");
+    public static final MIItem ITEM_LV_CIRCUIT_BOARD = new MIItem("lv_circuit_board");
+    public static final MIItem ITEM_LV_BATTERY = new MIItem("lv_battery");
+    public static final MIItem ITEM_RESISTOR = new MIItem("resistor");
+    public static final MIItem ITEM_CAPACITOR = new MIItem("capacitor");
+    public static final MIItem ITEM_INDUCTOR = new MIItem("inductor");
+    public static final MIItem ITEM_STEEL_ROD_MAGNETIC = new MIItem("steel_rod_magnetic");
+    public static final MIItem ITEM_WOOD_PULP = new MIItem("wood_pulp");
+    public static final MIItem ITEM_RUBBER_SHEET = new MIItem("rubber_sheet");
 
 }

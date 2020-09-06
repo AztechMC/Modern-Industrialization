@@ -1,3 +1,6 @@
+##### 0.1.4
+* Make double plates in the forge hammer instead of the crafting table, fixes vanilla conflict.
+
 ##### 0.1.3
 * Add alternative guide book recipe when NBT Crafting is installed
 * Add item pipe packer recipes

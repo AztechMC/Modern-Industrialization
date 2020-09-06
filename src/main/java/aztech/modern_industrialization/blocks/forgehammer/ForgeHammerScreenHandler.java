@@ -26,6 +26,7 @@ public class ForgeHammerScreenHandler extends ScreenHandler {
     // TODO : create custom recipe json
     public static final MachineRecipeType RECIPE_HAMMER = new MachineRecipeType(new MIIdentifier("forge_hammer_hammer")).withItemInputs().withItemOutputs();
     public static final MachineRecipeType RECIPE_SAW = new MachineRecipeType(new MIIdentifier("forge_hammer_saw")).withItemInputs().withItemOutputs();
+    private int inputCount;
 
     public static void setupRecipes() {
         registerRecipe("forge_hammer_hammer", RECIPE_HAMMER);
@@ -87,7 +88,7 @@ public class ForgeHammerScreenHandler extends ScreenHandler {
 
             @Override
             public ItemStack onTakeItem(PlayerEntity player, ItemStack stack) {
-                input.getStack(0).decrement(1);
+                input.getStack(0).decrement(inputCount);
                 ItemStack current = getStack();
                 updateStatus();
                 return current;
@@ -117,9 +118,11 @@ public class ForgeHammerScreenHandler extends ScreenHandler {
 
                 // absolutely nothing could go wrong
                 for (MachineRecipe recipe : (isHammer ? RECIPE_HAMMER : RECIPE_SAW).getRecipes((ServerWorld) world)) {
-                    if (recipe.itemInputs.get(0).matches(input.getStack(0))) {
+                    MachineRecipe.ItemInput recipeInput = recipe.itemInputs.get(0);
+                    if (recipeInput.matches(input.getStack(0)) && recipeInput.amount <= input.getStack(0).getCount()) {
                         MachineRecipe.ItemOutput output = recipe.itemOutputs.get(0);
                         outputStack = new ItemStack(output.item, output.amount);
+                        inputCount = recipeInput.amount;
                         break;
                     }
                 }

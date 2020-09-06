@@ -128,22 +128,24 @@ def genForgeHammer(id, vanilla, item_set, isMetal):
     hammer = "modern_industrialization:forge_hammer_hammer"
     saw = "modern_industrialization:forge_hammer_saw"
 
-    list_todo = [('large_plate', 'curved_plate', 3, hammer),
-                 ('double_ingot', 'plate', 1, hammer),
-                 ('nugget', 'small_dust', 1, hammer),
-                 ('main', 'rod', 1, saw),
-                 ('large_plate', 'gear', 1, saw),
-                 ('rod', 'bolt', 1, saw),
-                 ('ore', 'crushed_dust', 2, hammer),
-                 ('pipe_item', 'ring', 1, saw)]
+    list_todo = [('large_plate', 1, 'curved_plate', 3, hammer),
+                 ('double_ingot', 1, 'plate', 1, hammer),
+                 ('nugget', 1, 'small_dust', 1, hammer),
+                 ('main', 1, 'rod', 1, saw),
+                 ('large_plate', 1, 'gear', 1, saw),
+                 ('rod', 1, 'bolt', 1, saw),
+                 ('ore', 1, 'crushed_dust', 2, hammer),
+                 ('pipe_item', 1, 'ring', 1, saw),
+                 ('main', 2, 'double_ingot', 1, hammer),
+                 ]
 
-    for a, b, c, d in list_todo:
+    for a, inputCount, b, c, d in list_todo:
         if a in item_set and b in item_set:
             json_file = {}
             json_file["type"] = d
             json_file["eu"] = 1
             json_file["duration"] = 1
-            json_file["item_inputs"] = {"amount": 1}
+            json_file["item_inputs"] = {"amount": inputCount}
             addItemInput(json_file["item_inputs"], id, a, vanilla, isMetal)
             json_file["item_outputs"] = {
                 "item": getIdentifier(id, b, vanilla, isMetal), "amount": c}
@@ -206,27 +208,8 @@ def genCraft(id, vanilla, item_set, isMetal, pipe):
         with open(path + "/blade.json", "w") as file:
             json.dump(jsonf, file, indent=4)
 
-    # double_ingot
-    if 'double_ingot' in item_set:
-        jsonf = {}
-        jsonf["type"] = "minecraft:crafting_shaped"
-        jsonf["pattern"] = [
-            "#",
-            "#"
-        ]
-        ingredient = {}
-        addItemInput(ingredient, id, "main", vanilla, isMetal)
-        jsonf["key"] = {
-            "#": ingredient
-        }
-        jsonf["result"] = {
-            "item": getIdentifier(id, "double_ingot", vanilla),
-            "count": 1
-        }
-        with open(path + "/double_ingot.json", "w") as file:
-            json.dump(jsonf, file, indent=4)
-
-        # large_plate
+    # large plate
+    if 'large_plate' in item_set:
         jsonf = {}
         jsonf["type"] = "minecraft:crafting_shaped"
         jsonf["pattern"] = [

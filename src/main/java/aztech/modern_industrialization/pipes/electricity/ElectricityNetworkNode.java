@@ -90,7 +90,7 @@ public class ElectricityNetworkNode extends PipeNetworkNode {
 
     @Override
     public void fromTag(CompoundTag tag) {
-        connections = Arrays.asList(NbtHelper.decodeDirections(tag.getByte("connections")));
+        connections = new ArrayList<>(Arrays.asList(NbtHelper.decodeDirections(tag.getByte("connections"))));
     }
 
     private boolean canConnect(World world, BlockPos pos, Direction direction) {

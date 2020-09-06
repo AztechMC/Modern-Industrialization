@@ -4,7 +4,7 @@ import alexiil.mc.lib.attributes.AttributeList;
 import alexiil.mc.lib.attributes.AttributeProviderBlockEntity;
 import alexiil.mc.lib.attributes.fluid.volume.FluidKey;
 import alexiil.mc.lib.attributes.fluid.volume.FluidKeys;
-import aztech.modern_industrialization.ModernIndustrialization;
+import aztech.modern_industrialization.MIFluids;
 import aztech.modern_industrialization.api.EnergyInsertable;
 import aztech.modern_industrialization.inventory.ConfigurableFluidStack;
 import aztech.modern_industrialization.inventory.ConfigurableItemStack;
@@ -27,10 +27,8 @@ import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Tickable;
 import net.minecraft.util.math.Direction;
-import org.lwjgl.system.CallbackI;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
@@ -41,7 +39,7 @@ import static alexiil.mc.lib.attributes.Simulation.SIMULATE;
 // TODO: refactor
 public class MachineBlockEntity extends AbstractMachineBlockEntity
         implements Tickable, ExtendedScreenHandlerFactory, MachineInventory, AttributeProviderBlockEntity {
-    protected static final FluidKey STEAM_KEY = FluidKeys.get(ModernIndustrialization.FLUID_STEAM);
+    protected static final FluidKey STEAM_KEY = MIFluids.FLUID_STEAM.key;
 
     protected List<ConfigurableItemStack> itemStacks;
     protected List<ConfigurableFluidStack> fluidStacks;

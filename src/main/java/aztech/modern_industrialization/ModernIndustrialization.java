@@ -83,8 +83,6 @@ public class ModernIndustrialization implements ModInitializer {
             ScreenHandlerRegistry.registerExtended(new Identifier(MOD_ID, "machine_recipe"), MachineScreenHandler::new);
     public static final ScreenHandlerType<ForgeHammerScreenHandler> SCREEN_HANDLER_FORGE_HAMMER =
             ScreenHandlerRegistry.registerSimple(new Identifier(MOD_ID, "forge_hammer"), ForgeHammerScreenHandler::new);
-    // Fluid
-    public static final CraftingFluid FLUID_STEAM = new CraftingFluid("steam");
 
     @Override
     public void onInitialize() {
@@ -96,7 +94,7 @@ public class ModernIndustrialization implements ModInitializer {
         setupItems();
         setupBlocks();
         setupBlockEntities();
-        setupFluids();
+        MIFluids.setupFluids();
         setupMaterial();
         MITanks.setup();
         MIMachines.setupRecipes(); // will also load the static fields.
@@ -155,10 +153,6 @@ public class ModernIndustrialization implements ModInitializer {
             registerBlock(factory.block, factory.item, factory.getID());
             factory.blockEntityType = Registry.register(Registry.BLOCK_ENTITY_TYPE, new Identifier(MOD_ID, factory.getID()), BlockEntityType.Builder.create(factory.blockEntityConstructor, factory.block).build(null));
         }
-    }
-
-    private void setupFluids() {
-        registerFluid(FLUID_STEAM);
     }
 
     public static void registerBlock(Block block, Item item, String id, int flag) {
@@ -233,13 +227,6 @@ public class ModernIndustrialization implements ModInitializer {
     public static void registerItem(Item item, String id) {
         Registry.register(Registry.ITEM, new MIIdentifier(id), item);
         RESOURCE_PACK.addModel(JModel.model().parent("minecraft:item/generated").textures(new JTextures().layer0(MOD_ID + ":items/" + id)), new MIIdentifier("item/" + id));
-    }
-
-    private static void registerFluid(CraftingFluid fluid) {
-        String id = fluid.name;
-        Registry.register(Registry.FLUID, new MIIdentifier(id), fluid);
-        Registry.register(Registry.ITEM, new MIIdentifier("bucket_" + id), fluid.getBucketItem());
-        RESOURCE_PACK.addModel(JModel.model().parent("minecraft:item/generated").textures(new JTextures().layer0(MOD_ID + ":items/bucket/" + id)), new MIIdentifier("item/bucket_" + id));
     }
 
     private static void registerBlockLoot(String id) {

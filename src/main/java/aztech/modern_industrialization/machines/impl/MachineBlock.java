@@ -200,6 +200,7 @@ public class MachineBlock extends Block implements BlockEntityProvider, IWrencha
                     }
                 } else if(entity.hasOutput()) {
                     entity.setOutputDirection(newDirection);
+                    world.updateNeighbors(blockPos, null);
                     // TODO play sound
                     return ActionResult.SUCCESS;
                 }

@@ -39,16 +39,19 @@ public class MIMachines {
     }
 
     // Single block
+    public static final MachineRecipeType RECIPE_ASSEMBLER = createRecipeType("assembler").withItemInputs().withFluidInputs().withItemOutputs();
     public static final MachineRecipeType RECIPE_COMPRESSOR = createRecipeType("compressor").withItemInputs().withItemOutputs();
     public static final MachineRecipeType RECIPE_CUTTING_MACHINE = createRecipeType("cutting_machine").withItemInputs().withFluidInputs().withItemOutputs();
     //public static final MachineRecipeType RECIPE_FLUID_EXTRACTOR = createRecipeType("fluid_extractor").withItemInputs().withFluidOutputs();
     public static final MachineRecipeType RECIPE_FURNACE = new FurnaceRecipeProxy(null);
     public static final MachineRecipeType RECIPE_MACERATOR = createRecipeType("macerator").withItemInputs().withItemOutputs();
-    public static final MachineRecipeType RECIPE_MIXER = createRecipeType("mixer").withItemInputs().withFluidInputs().withItemOutputs();
+    public static final MachineRecipeType RECIPE_MIXER = createRecipeType("mixer").withItemInputs().withFluidInputs().withItemOutputs().withFluidOutputs();
     public static final MachineRecipeType RECIPE_PACKER = createRecipeType("packer").withItemInputs().withItemOutputs();
+    public static final MachineRecipeType RECIPE_POLARIZER = createRecipeType("polarizer").withItemInputs().withItemOutputs();
+    public static final MachineRecipeType RECIPE_WIREMILL = createRecipeType("wiremill").withItemInputs().withItemOutputs();
     // Multi block
     public static final MachineRecipeType RECIPE_COKE_OVEN = createRecipeType("coke_oven").withItemInputs().withItemOutputs();
-    public static final MachineRecipeType RECIPE_BLAST_FURNACE = createRecipeType("blast_furnace").withItemInputs().withItemOutputs();
+    public static final MachineRecipeType RECIPE_BLAST_FURNACE = createRecipeType("blast_furnace").withItemInputs().withItemOutputs().withFluidInputs().withFluidOutputs();
     public static final MachineRecipeType RECIPE_QUARRY = createRecipeType("quarry").withItemInputs().withItemOutputs();
 
     // Shapes
@@ -115,6 +118,13 @@ public class MIMachines {
         QUARRY_SHAPE.setMaxHatches(4);
     }
 
+    public static MachineFactory setupAssembler(MachineFactory factory) {
+        return factory
+                .setInputSlotPosition(56, 35, 3, 3).setOutputSlotPosition(102, 35, 1, 3)
+                .setupProgressBar(76, 35, 22, 15, true).setupBackground("steam_furnace.png")
+                .setupEfficiencyBar(0, 166, 38, 62, 100, 2, true).setupElectricityBar(18, 34)
+                .setupOverlays("assembler", true, false, true);
+    }
 
     public static MachineFactory setupCompressor(MachineFactory factory) {
         return factory
@@ -167,6 +177,22 @@ public class MIMachines {
                 .setupOverlays("packer", true, false, false);
     }
 
+    public static MachineFactory setupPolarizer(MachineFactory factory) {
+        return factory
+                .setInputSlotPosition(56, 35, 1, 1).setOutputSlotPosition(102, 35, 1, 1)
+                .setupProgressBar(76, 35, 22, 15, true).setupBackground("steam_furnace.png")
+                .setupEfficiencyBar(0, 166, 38, 62, 100, 2, true).setupElectricityBar(18, 34)
+                .setupOverlays("polarizer", true, false, true);
+    }
+
+    public static MachineFactory setupWiremill(MachineFactory factory) {
+        return factory
+                .setInputSlotPosition(56, 35, 1, 1).setOutputSlotPosition(102, 35, 1, 1)
+                .setupProgressBar(76, 35, 22, 15, true).setupBackground("steam_furnace.png")
+                .setupEfficiencyBar(0, 166, 38, 62, 100, 2, true).setupElectricityBar(18, 34)
+                .setupOverlays("wiremill", true, false, true);
+    }
+
     @FunctionalInterface
     private interface MachineSetup {
         MachineFactory setup(MachineFactory factory);
@@ -190,6 +216,9 @@ public class MIMachines {
     }
     private static void registerMachineTiers(String machineType, MachineRecipeType recipeType, int inputSlots, int outputSlots, int fluidInputSlots, int fluidOutputSlots, MachineSetup setup, boolean steamBricked) {
         registerMachineTiers(machineType, recipeType, inputSlots, outputSlots, fluidInputSlots, fluidOutputSlots, setup, steamBricked, true, true);
+    }
+    private static void registerMachineTiersElectricOnly(String machineType, MachineRecipeType recipeType, int inputSlots, int outputSlots, int fluidInputSlots, int fluidOutputSlots, MachineSetup setup) {
+        registerMachineTiers(machineType, recipeType, inputSlots, outputSlots, fluidInputSlots, fluidOutputSlots, setup, false, false, false);
     }
 
     private static int[] ITEM_HATCH_ROWS = new int[] {1, 2};
@@ -280,6 +309,10 @@ public class MIMachines {
         registerMachineTiers("macerator", RECIPE_MACERATOR, 1, 4, 0, 0, MIMachines::setupMacerator, false);
         registerMachineTiers("mixer", RECIPE_MIXER, 4, 2, 2, 0, MIMachines::setupMixer, false);
         registerMachineTiers("packer", RECIPE_PACKER, 2, 2, 0, 0, MIMachines::setupPacker, false, false, true);
+        registerMachineTiers("wiremill", RECIPE_WIREMILL, 1, 1, 0, 0, MIMachines::setupWiremill, false, false, true);
+
+        registerMachineTiersElectricOnly("assembler", RECIPE_ASSEMBLER, 9, 3, 1, 0, MIMachines::setupAssembler);
+        registerMachineTiersElectricOnly("polarizer", RECIPE_POLARIZER, 1, 1, 0, 0, MIMachines::setupPolarizer);
 
         new SteamMachineFactory("coke_oven", BRONZE, (f, t) -> new MultiblockMachineBlockEntity(f, t, COKE_OVEN_SHAPE), RECIPE_COKE_OVEN, 1, 1, 0, 0)
                 .setInputSlotPosition(56, 45, 1, 1).setOutputSlotPosition(102, 45, 1, 1)

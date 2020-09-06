@@ -1,7 +1,7 @@
 package aztech.modern_industrialization.fluid;
 
+import alexiil.mc.lib.attributes.fluid.volume.FluidKey;
 import aztech.modern_industrialization.ModernIndustrialization;
-import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.block.BlockState;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.FluidState;
@@ -21,12 +21,15 @@ import net.minecraft.world.WorldView;
 public class CraftingFluid extends Fluid {
     public final Item bucketItem;
     public final String name;
+    public final int color;
+    public FluidKey key;
     private final CraftingFluidBlock block;
 
-    public CraftingFluid(String name) {
+    public CraftingFluid(String name, int color) {
         bucketItem = new BucketItem(this, new Item.Settings().recipeRemainder(Items.BUCKET).maxCount(1).group(ModernIndustrialization.ITEM_GROUP));
         this.name = name;
         this.block = new CraftingFluidBlock(name);
+        this.color = color;
     }
 
     @Override

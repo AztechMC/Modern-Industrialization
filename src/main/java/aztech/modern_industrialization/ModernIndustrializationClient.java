@@ -39,7 +39,7 @@ public class ModernIndustrializationClient implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
         setupScreens();
-        setupFluidRenders();
+        MIFluids.setupFluidRenders();
         setupPackets();
         MITanks.setupClient();
         setupMachines();
@@ -54,42 +54,6 @@ public class ModernIndustrializationClient implements ClientModInitializer {
     private void setupScreens() {
         ScreenRegistry.register(ModernIndustrialization.SCREEN_HANDLER_TYPE_MACHINE, MachineScreen::new);
         ScreenRegistry.register(ModernIndustrialization.SCREEN_HANDLER_FORGE_HAMMER, ForgeHammerScreen::new);
-    }
-
-    private void setupFluidRenders() {
-        final Identifier[] waterSpriteIds = new Identifier[] { new Identifier("minecraft:block/water_still"), new Identifier("minecraft:block/water_flow") };
-        final Sprite[] waterSprites = new Sprite[2];
-
-        final Identifier listenerId = new MIIdentifier("waterlike_reload_listener");
-        ResourceManagerHelper.get(ResourceType.CLIENT_RESOURCES).registerReloadListener(new SimpleSynchronousResourceReloadListener() {
-            @Override
-            public Identifier getFabricId() {
-                return listenerId;
-            }
-
-            @Override
-            public void apply(ResourceManager manager) {
-                for(int i = 0; i < 2; ++i) {
-                    waterSprites[i] = MinecraftClient.getInstance().getSpriteAtlas(SpriteAtlasTexture.BLOCK_ATLAS_TEX).apply(waterSpriteIds[i]);
-                }
-            }
-        });
-
-        BiConsumer<Fluid, Integer> registerWaterlikeFluid = (fluid, color) -> {
-            FluidRenderHandlerRegistry.INSTANCE.register(fluid, new FluidRenderHandler() {
-                @Override
-                public Sprite[] getFluidSprites(BlockRenderView blockRenderView, BlockPos blockPos, FluidState fluidState) {
-                    return waterSprites;
-                }
-
-                @Override
-                public int getFluidColor(BlockRenderView view, BlockPos pos, FluidState state) {
-                    return color;
-                }
-            });
-        };
-
-        registerWaterlikeFluid.accept(ModernIndustrialization.FLUID_STEAM, -1);
     }
 
     private void setupPackets() {

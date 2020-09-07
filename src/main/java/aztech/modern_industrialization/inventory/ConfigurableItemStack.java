@@ -109,13 +109,13 @@ public class ConfigurableItemStack {
     }
 
     public void setStack(ItemStack stack) {
-        if(lockedItem != null && stack.getItem() != lockedItem) {
+        if(lockedItem != null && stack.getItem() != lockedItem && !stack.isEmpty()) {
             throw new RuntimeException("Trying to override locked item");
         }
         this.stack = stack;
     }
 
-    public boolean canInsert(ItemStack stack, Direction direction) {
+    public boolean canInsert(ItemStack stack) {
         return lockedItem == null || lockedItem == stack.getItem();
     }
 
@@ -188,7 +188,7 @@ public class ConfigurableItemStack {
 
         @Override
         public boolean canInsert(ItemStack stack) {
-            return playerInsert && (lockedItem == null || stack.getItem() == lockedItem);
+            return playerInsert && ConfigurableItemStack.this.canInsert(stack);
         }
 
         @Override

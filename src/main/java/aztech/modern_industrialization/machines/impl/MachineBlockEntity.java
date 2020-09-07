@@ -349,7 +349,7 @@ public class MachineBlockEntity extends AbstractMachineBlockEntity
                     if(st.getItem() == output.item || st.isEmpty()) {
                         int ins = Math.min(remainingAmount, output.item.getMaxCount() - st.getCount());
                         if (st.isEmpty()) {
-                            if ((stack.isMachineLocked() || stack.isPlayerLocked() || loopRun == 1) && stack.canInsert(new ItemStack(output.item), null)) {
+                            if ((stack.isMachineLocked() || stack.isPlayerLocked() || loopRun == 1) && stack.canInsert(new ItemStack(output.item))) {
                                 stack.setStack(new ItemStack(output.item, ins));
                             } else {
                                 ins = 0;

@@ -1,6 +1,8 @@
 package aztech.modern_industrialization;
 
+import alexiil.mc.lib.attributes.fluid.volume.FluidKey;
 import alexiil.mc.lib.attributes.fluid.volume.FluidKeys;
+import alexiil.mc.lib.attributes.fluid.volume.SimpleFluidKey;
 import aztech.modern_industrialization.fluid.CraftingFluid;
 import net.devtech.arrp.json.models.JModel;
 import net.devtech.arrp.json.models.JTextures;
@@ -14,9 +16,7 @@ import net.minecraft.client.texture.SpriteAtlasTexture;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.resource.ResourceType;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.Style;
-import net.minecraft.text.TextColor;
+import net.minecraft.text.*;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
@@ -43,8 +43,9 @@ public class MIFluids {
         for(CraftingFluid fluid : FLUIDS) {
             registerFluid(fluid);
 
-            fluid.key = FluidKeys.get(fluid);
-            ((MutableText) fluid.key.name).setStyle(Style.EMPTY.withColor(TextColor.fromRgb(fluid.color)));
+            Text name = new TranslatableText(fluid.getDefaultState().getBlockState().getBlock().getTranslationKey()).setStyle(Style.EMPTY.withColor(TextColor.fromRgb(fluid.color)));
+            fluid.key = new SimpleFluidKey(new FluidKey.FluidKeyBuilder(fluid).setName(name).setRenderColor(fluid.color));
+            FluidKeys.put(fluid, fluid.key);
         }
     }
 

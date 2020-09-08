@@ -1,10 +1,15 @@
 package aztech.modern_industrialization.pipes.item;
 
+import alexiil.mc.lib.attributes.SearchOption;
+import alexiil.mc.lib.attributes.SearchOptions;
+import alexiil.mc.lib.attributes.item.ItemAttributes;
+import alexiil.mc.lib.attributes.item.ItemExtractable;
+import alexiil.mc.lib.attributes.item.ItemInsertable;
+import alexiil.mc.lib.attributes.item.ItemInvUtil;
 import aztech.modern_industrialization.pipes.api.PipeConnectionType;
 import aztech.modern_industrialization.pipes.api.PipeNetworkNode;
 import aztech.modern_industrialization.util.ItemStackHelper;
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
-import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.Inventory;
@@ -34,30 +39,18 @@ public class ItemNetworkNode extends PipeNetworkNode {
         // We don't connect by default, so we just have to remove connections that have become unavailable
         for(int i = 0; i < connections.size();) {
             ItemConnection conn = connections.get(i);
-            BlockPos adjPos = pos.offset(conn.direction);
-            BlockEntity entity = world.getBlockEntity(adjPos);
-            if(conn.inventory == null) {
-                // The node was just loaded, it doesn't have the inventory yet, so we accept any connection.
-                if(canConnect(entity, conn.direction)) {
-                    conn.inventory = (Inventory) entity;
-                    i++;
-                } else {
-                    connections.remove(i);
-                }
+            if(canConnect(world, pos, conn.direction)) {
+                i++;
             } else {
-                // The connected inventory must be the same and it must still accept connections, otherwise we disconnect
-                if(entity == conn.inventory) {
-                    i++;
-                } else {
-                    connections.remove(i);
-                }
-
+                connections.remove(i);
             }
         }
     }
 
-    private boolean canConnect(BlockEntity entity, Direction direction) {
-        return entity instanceof Inventory; // TODO: check for sided inventory?
+    private boolean canConnect(World world, BlockPos pos, Direction direction) {
+        SearchOption option = SearchOptions.inDirection(direction);
+        return ItemAttributes.INSERTABLE.getAll(world, pos.offset(direction), option).hasOfferedAny()
+                || ItemAttributes.EXTRACTABLE.getAll(world, pos.offset(direction), option).hasOfferedAny();
     }
 
     @Override
@@ -95,10 +88,8 @@ public class ItemNetworkNode extends PipeNetworkNode {
             }
         }
         // Otherwise try to connect
-        BlockPos adjPos = pos.offset(direction);
-        BlockEntity entity = world.getBlockEntity(adjPos);
-        if (canConnect(entity, direction)) {
-            connections.add(new ItemConnection(direction, (Inventory) entity, ITEM_IN));
+        if (canConnect(world, pos, direction)) {
+            connections.add(new ItemConnection(direction, ITEM_IN));
         }
     }
 
@@ -122,7 +113,7 @@ public class ItemNetworkNode extends PipeNetworkNode {
         for(Direction direction : Direction.values()) {
             if(tag.contains(direction.toString())) {
                 CompoundTag connectionTag = tag.getCompound(direction.toString());
-                ItemConnection connection = new ItemConnection(direction, null, decodeConnectionType(connectionTag.getByte("connections")));
+                ItemConnection connection = new ItemConnection(direction, decodeConnectionType(connectionTag.getByte("connections")));
                 connection.whitelist = connectionTag.getBoolean("whitelist");
                 for(int i = 0; i < ItemPipeInterface.SLOTS; i++) {
                     connection.stacks[i] = ItemStack.fromTag(connectionTag.getCompound(Integer.toString(i)));
@@ -154,41 +145,17 @@ public class ItemNetworkNode extends PipeNetworkNode {
     @Override
     public void tick(World world, BlockPos pos) {
         if(inactiveTicks == 0) {
-            List<ItemConnection> reachableInputs = null;
-            connection_loop: for(ItemConnection connection : connections) {
+            List<InsertTarget> reachableInputs = null;
+            int movesLeft = 16;
+            for(ItemConnection connection : connections) {
                 if(connection.canExtract()) {
-                    if(reachableInputs == null) reachableInputs = getInputs(pos);
-                    Inventory src = connection.inventory;
-                    for(int i = 0; i < src.size(); i++) {
-                        ItemStack stack = src.getStack(i);
-                        if(stack.isEmpty()) continue;
-                        if(!connection.canStackMoveThrough(stack)) continue;
-                        if(src instanceof SidedInventory) {
-                            if(!((SidedInventory) src).canExtract(i, stack, connection.direction.getOpposite())) continue;
-                        }
-                        for(ItemConnection input : reachableInputs) {
-                            if(!input.canStackMoveThrough(stack)) continue;
-                            Inventory target = input.inventory;
-                            for(int j = 0; j < target.size(); j++) {
-                                if(!target.isValid(j, stack)) continue;
-                                if(target instanceof SidedInventory) {
-                                    if(!((SidedInventory) target).canInsert(j, stack, connection.direction.getOpposite())) continue;
-                                }
-                                if(target.getStack(j).isEmpty()) {
-                                    int inserted = Math.min(target.getMaxCountPerStack(), 16);
-                                    target.setStack(j, stack.split(inserted));
-                                    continue connection_loop;
-                                } else {
-                                    ItemStack targetStack = target.getStack(j);
-                                    if(ItemStackHelper.areEqualIgnoreCount(stack, targetStack)) {
-                                        int inserted = Math.min(stack.getCount(), Math.min(Math.min(targetStack.getMaxCount() - targetStack.getCount(), target.getMaxCountPerStack()), 16));
-                                        if(inserted > 0) {
-                                            targetStack.increment(inserted);
-                                            stack.decrement(inserted);
-                                            continue connection_loop;
-                                        }
-                                    }
-                                }
+                    if(reachableInputs == null) reachableInputs = getInputs(world, pos);
+                    ItemExtractable extractable = ItemAttributes.EXTRACTABLE.get(world, pos.offset(connection.direction), SearchOptions.inDirection(connection.direction));
+
+                    for(InsertTarget target : reachableInputs) {
+                        if(target.connection.canInsert()) {
+                            if(ItemInvUtil.move(extractable, target.insertable, s -> connection.canStackMoveThrough(s) && target.connection.canStackMoveThrough(s), movesLeft) > 0) {
+                                break;
                             }
                         }
                     }
@@ -202,8 +169,8 @@ public class ItemNetworkNode extends PipeNetworkNode {
     /**
      * Run a bfs to find all connections in which to insert that are loaded and reachable from the given startPos.
      */
-    public List<ItemConnection> getInputs(BlockPos startPos) {
-        List<ItemConnection> result = new ArrayList<>();
+    public List<InsertTarget> getInputs(World world, BlockPos startPos) {
+        List<InsertTarget> result = new ArrayList<>();
 
         Queue<BlockPos> queue = new ArrayDeque<>();
         Set<BlockPos> visited = new HashSet<>();
@@ -216,7 +183,8 @@ public class ItemNetworkNode extends PipeNetworkNode {
                     ItemNetworkNode node = (ItemNetworkNode) maybeUnloaded;
                     for (ItemConnection connection : node.connections) {
                         if (connection.canInsert()) {
-                            result.add(connection);
+                            SearchOption option = SearchOptions.inDirection(connection.direction);
+                            result.add(new InsertTarget(connection, ItemAttributes.INSERTABLE.get(world, u.offset(connection.direction), option)));
                         }
                     }
                 }
@@ -229,16 +197,24 @@ public class ItemNetworkNode extends PipeNetworkNode {
         return result;
     }
 
+    private static class InsertTarget {
+        private final ItemConnection connection;
+        private final ItemInsertable insertable;
+
+        private InsertTarget(ItemConnection connection, ItemInsertable insertable) {
+            this.connection = connection;
+            this.insertable = insertable;
+        }
+    }
+
     private static class ItemConnection {
         private final Direction direction;
-        private Inventory inventory;
         private PipeConnectionType type;
         private boolean whitelist = true;
         private final ItemStack[] stacks = new ItemStack[ItemPipeInterface.SLOTS];
 
-        private ItemConnection(Direction direction, Inventory inventory, PipeConnectionType type) {
+        private ItemConnection(Direction direction, PipeConnectionType type) {
             this.direction = direction;
-            this.inventory = inventory;
             this.type = type;
             for(int i = 0; i < ItemPipeInterface.SLOTS; i++) {
                 stacks[i] = ItemStack.EMPTY;

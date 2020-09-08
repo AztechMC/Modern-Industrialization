@@ -164,9 +164,10 @@ public class MIMachines {
 
     public static MachineFactory setupMixer(MachineFactory factory) {
         return factory
-                .setInputSlotPosition(62, 37, 2, 2).setOutputSlotPosition(129, 37, 1, 2)
-                .setInputLiquidSlotPosition(42, 37, 1, 2)
-                .setupProgressBar(102, 46, 22, 15, true).setupBackground("steam_mixer.png")
+                .setInputSlotPosition(62, 27, 2, 2).setOutputSlotPosition(129, 27, 1, 2)
+                .setInputLiquidSlotPosition(42, 27, 1, 2).setLiquidOutputSlotPosition(149, 27, 1, 2)
+                .setupProgressBar(102, 36, 22, 15, true).setupBackground("steam_mixer.png")
+                .setupEfficiencyBar(0, 166, 50, 66, 100, 2, true).setupElectricityBar(18, 34)
                 .setupOverlays("mixer", true, true, true);
     }
 
@@ -307,7 +308,7 @@ public class MIMachines {
         //registerMachineTiers("fluid_extractor", RECIPE_FLUID_EXTRACTOR, 1, 0, 0, 1, MIMachines::setupFluidExtractor, false);
         registerMachineTiers("furnace", RECIPE_FURNACE, 1, 1, 0, 0, MIMachines::setupFurnace, true);
         registerMachineTiers("macerator", RECIPE_MACERATOR, 1, 4, 0, 0, MIMachines::setupMacerator, false);
-        registerMachineTiers("mixer", RECIPE_MIXER, 4, 2, 2, 0, MIMachines::setupMixer, false);
+        registerMachineTiers("mixer", RECIPE_MIXER, 4, 2, 2, 2, MIMachines::setupMixer, false);
         registerMachineTiers("packer", RECIPE_PACKER, 2, 2, 0, 0, MIMachines::setupPacker, false, false, true);
         registerMachineTiers("wiremill", RECIPE_WIREMILL, 1, 1, 0, 0, MIMachines::setupWiremill, false, false, true);
 
@@ -320,8 +321,9 @@ public class MIMachines {
                 .setupOverlays("coke_oven", true, false, false)
                 .setupCasing("bricks")
         ;
-        new SteamMachineFactory("steam_blast_furnace", BRONZE, (f, t) -> new MultiblockMachineBlockEntity(f, t, BLAST_FURNACE_SHAPE), RECIPE_BLAST_FURNACE, 1, 1, 0, 0)
+        new SteamMachineFactory("steam_blast_furnace", BRONZE, (f, t) -> new MultiblockMachineBlockEntity(f, t, BLAST_FURNACE_SHAPE), RECIPE_BLAST_FURNACE, 1, 1, 1, 1)
                 .setInputSlotPosition(56, 45, 1, 1).setOutputSlotPosition(102, 45, 1, 1)
+                .setInputLiquidSlotPosition(36, 45, 1, 1).setLiquidOutputSlotPosition(122, 45, 1, 1)
                 .setupProgressBar(76, 45, 22, 15, true).setupBackground("steam_furnace.png")
                 .setupOverlays("steam_blast_furnace", true, false, false)
                 .setupCasing("firebricks")

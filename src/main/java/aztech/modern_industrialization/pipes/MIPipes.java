@@ -38,6 +38,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import static aztech.modern_industrialization.machines.impl.MachineTier.*;
 import static aztech.modern_industrialization.pipes.api.PipeConnectionType.*;
 
 public class MIPipes implements ModInitializer {
@@ -78,7 +79,8 @@ public class MIPipes implements ModInitializer {
         registerItemPipeType("nickel",255 << 24 | 0xc2b2bf);
         registerItemPipeType("silver",255 << 24 | 0x99ffff);
 
-        registerElectricityPipeType("tin", 255 << 24 | 203 << 16 | 228 << 8 | 228, MachineTier.LV.getMaxEu());
+        registerElectricityPipeType("tin", 255 << 24 | 203 << 16 | 228 << 8 | 228, LV);
+        registerElectricityPipeType("copper", 255 << 24 | 255 << 16 | 102 << 8, LV);
 
         ServerTickEvents.START_SERVER_TICK.register(server -> {
             for(World world : server.getWorlds()) {
@@ -126,10 +128,10 @@ public class MIPipes implements ModInitializer {
         PIPE_MODEL_NAMES.add(new MIIdentifier("item/pipe_item_" + name));
     }
 
-    public void registerElectricityPipeType(String name, int color, int maxEu) {
+    public void registerElectricityPipeType(String name, int color, MachineTier tier) {
         PipeNetworkType type = PipeNetworkType.register(
                 new MIIdentifier("electricity_" + name),
-                (id, data) -> new ElectricityNetwork(id, data, maxEu),
+                (id, data) -> new ElectricityNetwork(id, data, tier.getMaxEu()),
                 ElectricityNetworkNode::new,
                 color,
                 ELECTRICITY

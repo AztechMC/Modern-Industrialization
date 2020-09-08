@@ -137,6 +137,9 @@ public class MachineScreen extends HandledScreen<MachineScreenHandler> {
 
     @Override
     protected void drawBackground(MatrixStack matrices, float delta, int mouseX, int mouseY) {
+    }
+
+    protected void actualDrawBackground(MatrixStack matrices, float delta, int mouseX, int mouseY) {
         this.renderBackground(matrices);
         RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
         MachineFactory factory = handler.getMachineFactory();
@@ -249,7 +252,7 @@ public class MachineScreen extends HandledScreen<MachineScreenHandler> {
 
     @Override
     public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
-        super.render(matrices, mouseX, mouseY, delta);
+        actualDrawBackground(matrices, delta, mouseX, mouseY);
 
         // Render fluid slots
         for(Slot slot : handler.slots) {
@@ -276,6 +279,8 @@ public class MachineScreen extends HandledScreen<MachineScreenHandler> {
                 }
             }
         }
+
+        super.render(matrices, mouseX, mouseY, delta);
 
         // Render fluid slot tooltips
         for(Slot slot : handler.slots) {

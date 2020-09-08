@@ -1,0 +1,27 @@
+{
+  "type" : "minecraft:crafting_shaped",
+  "pattern" : [
+    " A ",
+    "BCB",
+    "ccc"
+  ],
+  "key":
+  {
+    "A" : {
+      "item" : "modern_industrialization:lv_circuit"
+    },
+    "c" : {
+      "item" : "modern_industrialization:pipe_electricity_tin"
+    },
+    "B" : {
+      "item" : "modern_industrialization:lv_battery"
+    },
+    "C" :{
+      "item" : "modern_industrialization:steel_machine_casing"
+    }
+  },
+
+  "result": {
+    "item": "modern_industrialization:lv_machine_hull"
+  }
+}

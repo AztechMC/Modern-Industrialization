@@ -1,0 +1,24 @@
+{
+  "type" : "minecraft:crafting_shaped",
+  "pattern" : [
+    " P ",
+    "wSw",
+    " P "
+  ],
+  "key":
+  {
+    "P" : {
+      "item" : "modern_industrialization:gold_plate"
+    },
+    "w" : {
+      "item" : "modern_industrialization:copper_wire"
+    },
+    "S" : {
+      "item" : "modern_industrialization:rubber_sheet"
+    }
+  },
+
+  "result": {
+    "item": "modern_industrialization:capacitor"
+  }
+}

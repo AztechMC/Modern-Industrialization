@@ -1,0 +1,31 @@
+
+{
+  "type" : "minecraft:crafting_shaped",
+  "pattern" : [
+    "ccc",
+    "mrm",
+    "pCr"
+  ],
+  "key":
+  {
+    "m" : {
+      "item" : "modern_industrialization:lv_motor"
+    },
+    "r" : {
+      "item" : "modern_industrialization:steel_rod"
+    },
+    "c" : {
+      "item" : "modern_industrialization:pipe_electricity_tin"
+    },
+    "p" :{
+      "item" : "modern_industrialization:lv_piston"
+    },
+    "C" :{
+      "item" : "modern_industrialization:lv_circuit"
+    }
+  },
+
+  "result": {
+    "item": "modern_industrialization:lv_robot_arm"
+  }
+}

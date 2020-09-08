@@ -32,6 +32,11 @@ public class MIBlock extends Block {
         }
     }
 
+    public MIBlock(String id) {
+        this(id, FabricBlockSettings.of(MIMaterialSetup.METAL_MATERIAL).
+                hardness(4.0f).breakByTool(FabricToolTags.PICKAXES).requiresTool());
+    }
+
     public String getId() {
         return id;
     }
@@ -46,16 +51,8 @@ public class MIBlock extends Block {
                     .breakByTool(FabricToolTags.PICKAXES, 0)
                     .requiresTool());
 
-    public static final MIBlock BLOCK_BRONZE_MACHINE_CASING = new MIBlock("bronze_machine_casing",
-            FabricBlockSettings.of(MIMaterialSetup.METAL_MATERIAL).
-                    hardness(4.0f).breakByTool(FabricToolTags.PICKAXES).requiresTool());
-
-    public static final MIBlock BLOCK_STEEL_MACHINE_CASING = new MIBlock("steel_machine_casing",
-            FabricBlockSettings.of(MIMaterialSetup.METAL_MATERIAL).
-                    hardness(4.0f).breakByTool(FabricToolTags.PICKAXES).requiresTool());
-
-    public static final MIBlock BLOCK_STEEL_MACHINE_CASING_PIPE = new MIBlock("steel_machine_casing_pipe",
-            FabricBlockSettings.of(MIMaterialSetup.METAL_MATERIAL).
-                    hardness(4.0f).breakByTool(FabricToolTags.PICKAXES).requiresTool());
-
+    public static final MIBlock BLOCK_BRONZE_MACHINE_CASING = new MIBlock("bronze_machine_casing");
+    public static final MIBlock BLOCK_STEEL_MACHINE_CASING = new MIBlock("steel_machine_casing");
+    public static final MIBlock BLOCK_STEEL_MACHINE_CASING_PIPE = new MIBlock("steel_machine_casing_pipe");
+    public static final MIBlock BLOCK_LV_MACHINE_HULL = new MIBlock("lv_machine_hull");
 }

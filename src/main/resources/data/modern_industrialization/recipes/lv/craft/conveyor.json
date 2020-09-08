@@ -1,0 +1,24 @@
+{
+  "type" : "minecraft:crafting_shaped",
+  "pattern" : [
+    "rrr",
+    "mcm",
+    "rrr"
+  ],
+  "key":
+  {
+    "m" : {
+      "item" : "modern_industrialization:lv_motor"
+    },
+    "r" : {
+      "item" : "modern_industrialization:rubber_sheet"
+    },
+    "c" : {
+      "item" : "modern_industrialization:pipe_electricity_tin"
+    }
+  },
+
+  "result": {
+    "item": "modern_industrialization:lv_conveyor"
+  }
+}

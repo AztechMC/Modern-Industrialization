@@ -98,6 +98,63 @@ def gen_texture(id, hex, item_set, block_set, special_texture=''):
                 result = Image.alpha_composite(result, overlay)
             result.save(output_path + '/' + os.path.basename(filename))
 
+class MIRecipe:
+    def __init__(self, type, eu=2, duration=200):
+        self.type = type
+        self.eu = eu
+        self.duration = duration
+
+    def __ensure_list(self, attr):
+        if not hasattr(self, attr):
+            setattr(self, attr, [])
+
+    def input(self, item="", tag="", amount=1):
+        self.__ensure_list(self, "item_inputs")
+        self.item_inputs.append({"item": item, "tag": tag, "amount": amount})
+        return self
+
+    def fluid_input(self, fluid, amount):
+        self.__ensure_list(self, "fluid_inputs")
+        self.fluid_inputs.append({"fluid": fluid, "amount": amount})
+        return self
+
+    def output(self, item, amount=1):
+        self.__ensure_list(self, "item_outputs")
+        self.item_outputs.append({"item": item, "amount": amount})
+        return self
+
+    def fluid_output(self, fluid, amount):
+        self.__ensure_list(self, "fluid_outputs")
+        self.fluid_outputs.append({"fluid": fluid, "amount": amount})
+        return self
+
+    def save(self, id, suffix):
+        path = "src/main/resources/data/modern_industrialization/recipes/generated/materials/" + id + "/" + self.type + "/" + suffix + ".json"
+
+        jsonf = { "type": "modern_industrialization" + self.type, "eu": self.eu, "duration": self.duration }
+        optionals = ["item_inputs", "fluid_inputs", "item_outputs", "fluid_outputs"]
+        for opt in optionals:
+            if hasattr(self, opt):
+                inputs = []
+                for i in getattr(self, opt):
+                    obj = { "item": i[0], "tag": i[1], "amount": i[2] }
+                    for key in obj:
+                        if obj[key] == "":
+                            del obj[key]
+                    inputs.push(obj)
+                jsonf["item_inputs"] = inputs
+        with open(path, "w") as file:
+            json.dump(jsonf, file, indent=4)
+
+class CraftingRecipe:
+    def _init__(self, pattern, output, count=1, **kwargs):
+        self.pattern = pattern
+        self.output = output
+        self.count = count
+
+    def save(self, id, suffix):
+        path = "src/main/resources/data/modern_industrialization/recipes/generated/materials/" + id + "/crafting_shaped/" + suffix + ".json"
+        jsonf = { "type": "minecraft:crafting_shaped", "pattern": self.pattern, }
 
 def getIdentifier(id, item_type, vanilla=False, isMetal=True):
     if item_type == "pipe_item" or item_type == "pipe_fluid":

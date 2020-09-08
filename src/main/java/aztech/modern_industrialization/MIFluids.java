@@ -31,8 +31,8 @@ public class MIFluids {
     public static final CraftingFluid FLUID_STEAM = new CraftingFluid("steam", 0xffeeeeee);
     public static final CraftingFluid[] FLUIDS = new CraftingFluid[] {
             FLUID_STEAM,
-            new CraftingFluid("raw_synthetic_oil", 0xff000000),
-            new CraftingFluid("synthetic_oil", 0xff000000),
+            new CraftingFluid("raw_synthetic_oil", 0xff474740),
+            new CraftingFluid("synthetic_oil", 0xff1a1a1a),
     };
 
     public static void setupFluids() {

@@ -3,10 +3,10 @@ import json
 
 tags = [
     "aluminum_plate",
-    "aluminum_ore",
     "antimony_ingot",
     "antimony_nugget",
     "antimony_ore",
+    "bauxite_ore",
     "bronze_ingot",
     "bronze_nugget",
     "bronze_plate",

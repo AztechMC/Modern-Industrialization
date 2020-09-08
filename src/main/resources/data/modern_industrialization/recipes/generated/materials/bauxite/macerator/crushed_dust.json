@@ -4,10 +4,10 @@
     "duration": 200,
     "item_inputs": {
         "amount": 2,
-        "item": "modern_industrialization:aluminum_crushed_dust"
+        "item": "modern_industrialization:bauxite_crushed_dust"
     },
     "item_outputs": {
-        "item": "modern_industrialization:aluminum_dust",
+        "item": "modern_industrialization:bauxite_dust",
         "amount": 3
     }
 }

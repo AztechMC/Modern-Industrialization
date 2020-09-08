@@ -1,0 +1,15 @@
+{
+    "type": "modern_industrialization:macerator",
+    "eu": 2,
+    "duration": 200,
+    "item_inputs": {
+        "amount": 1,
+        "item": "modern_industrialization:battery_alloy_curved_plate"
+    },
+    "item_outputs": [
+        {
+            "item": "modern_industrialization:battery_alloy_dust",
+            "amount": 1
+        }
+    ]
+}

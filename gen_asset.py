@@ -71,6 +71,12 @@ def gen_texture(id, hex, item_set, block_set, special_texture=''):
         if t in item_set:
             print(filename)
             result = image_tint(filename, hex)
+            if t in TEXTURE_UNDERLAYS:
+                underlay = Image.open("template/item/%s_underlay.png" % t)
+                result = Image.alpha_composite(underlay, result)
+            if t in TEXTURE_OVERLAYS:
+                overlay = Image.open("template/item/%s_overlay.png" % t)
+                result = Image.alpha_composite(result, overlay)
             if t != special_texture:
                 result.save(output_path + '/' + os.path.basename(filename))
             else:
@@ -83,15 +89,14 @@ def gen_texture(id, hex, item_set, block_set, special_texture=''):
     for filename in block:
         t = os.path.basename(filename).split('.')[0]
         if t in block_set:
-            if t == 'ore':
-                result_ore = image_tint(filename, hex)
-                stone = Image.open("template/block/stone.png")
-                Image.alpha_composite(stone, result_ore).save(
-                    output_path + "/ore.png")
-            else:
-                result_block = image_tint(filename, hex)
-                result_block.save(output_path + '/' +
-                                  os.path.basename(filename))
+            result = image_tint(filename, hex)
+            if t in TEXTURE_UNDERLAYS:
+                underlay = Image.open("template/block/%s_underlay.png" % t)
+                result = Image.alpha_composite(underlay, result)
+            if t in TEXTURE_OVERLAYS:
+                overlay = Image.open("template/block/%s_overlay.png" % t)
+                result = Image.alpha_composite(result, overlay)
+            result.save(output_path + '/' + os.path.basename(filename))
 
 
 def getIdentifier(id, item_type, vanilla=False, isMetal=True):
@@ -154,7 +159,7 @@ def genForgeHammer(id, vanilla, item_set, isMetal):
                 json.dump(json_file, file, indent=4)
 
 
-def genCraft(id, vanilla, item_set, isMetal, pipe):
+def genCraft(id, vanilla, item_set, isMetal, pipe, cable):
     path = "src/main/resources/data/modern_industrialization/recipes/generated/materials/" + id + "/craft"
     Path(path).mkdir(parents=True, exist_ok=True)
 
@@ -455,8 +460,34 @@ def genPacker(id, vanilla, item_set, isMetal, hasPipe):
         with open(path + "/" + "item_to_fluid_pipes" + ".json", "w") as file:
             json.dump(jsonf, file, indent=4)
 
+def genWiremill(id, vanilla, item_set, isMetal):
+    path = "src/main/resources/data/modern_industrialization/recipes/generated/materials/" + \
+           id + "/wiremill"
+    Path(path).mkdir(parents=True, exist_ok=True)
+    mac = "modern_industrialization:wiremill"
 
-def gen(file, id, hex, item_set, block_set, vanilla=False,  forge_hammer=False, smelting=True, isMetal=True, veinsPerChunk=0, veinsSize=0, maxYLevel=64, texture=''):
+    list_todo = [('main', 1, 'wire', 2),
+                 ('wire', 1, 'fine_wire', 4),
+                 ]
+
+    for i, ic, o, oc in list_todo:
+        if i in item_set and o in item_set:
+            jsonf = {}
+            jsonf["type"] = mac
+            jsonf["eu"] = 2
+            jsonf["duration"] = 200
+            jsonf["item_inputs"] = {"amount": ic}
+
+            addItemInput(jsonf["item_inputs"], id, i, vanilla, isMetal)
+
+            jsonf["item_outputs"] = {
+                "item": getIdentifier(id, o, vanilla, isMetal), "amount": oc}
+
+            with open(path + "/" + i + ".json", "w") as file:
+                json.dump(jsonf, file, indent=4)
+
+
+def gen(file, id, hex, item_set, block_set, vanilla=False,  forge_hammer=False, smelting=True, isMetal=True, veinsPerChunk=0, veinsSize=0, maxYLevel=64, texture='', hasMain=True, cable=False):
 
     pipe = False
 
@@ -468,7 +499,7 @@ def gen(file, id, hex, item_set, block_set, vanilla=False,  forge_hammer=False, 
 
     if vanilla and isMetal:
         item_set_to_add = item_set_to_add - {'nugget'}
-    elif not vanilla:
+    elif not vanilla and hasMain:
         item_set_to_add = item_set_to_add | ({'ingot'} if isMetal else {id})
 
     item_to_add = ','.join([(lambda s: "\"%s\"" % s)(s)
@@ -515,7 +546,7 @@ def gen(file, id, hex, item_set, block_set, vanilla=False,  forge_hammer=False, 
     if forge_hammer:
         genForgeHammer(id, vanilla, item_set, isMetal)
 
-    genCraft(id, vanilla, item_set, isMetal, pipe)
+    genCraft(id, vanilla, item_set, isMetal, pipe, cable)
 
     if smelting:
         genSmelting(id, vanilla, item_set, isMetal)
@@ -524,6 +555,7 @@ def gen(file, id, hex, item_set, block_set, vanilla=False,  forge_hammer=False, 
     genCompressor(id, vanilla, item_set, isMetal)
     genCuttingSaw(id, vanilla, item_set, isMetal)
     genPacker(id, vanilla, item_set, isMetal, pipe)
+    genWiremill(id, vanilla, item_set, isMetal)
 
 
 BLOCK_ONLY = {'block'}
@@ -542,6 +574,8 @@ ITEM_ALL = ITEM_BASE | {'bolt', 'blade',
 ITEM_ALL_NO_ORE = ITEM_ALL - {'crushed_dust'}
 # will only allow ores from this material as tag, but nothing else
 TAG_BLACKLIST = {'aluminum', 'steel'}
+TEXTURE_UNDERLAYS = {'ore'}
+TEXTURE_OVERLAYS = {'fine_wire'}
 
 if __name__ == '__main__':
     file = open(
@@ -558,18 +592,20 @@ public class MIMaterials {
     gen(file, 'gold', '#ffe100', ITEM_BASE, BOTH, vanilla=True)
     gen(file, 'iron', '#f0f0f0', ITEM_ALL, BOTH, vanilla=True, forge_hammer=True)
     gen(file, 'coal', '#282828', PURE_NON_METAL, set(), vanilla=True, forge_hammer=True, isMetal=False, smelting=False)
-    gen(file, 'copper', '#ff6600', ITEM_ALL, BOTH, forge_hammer=True,
-        veinsPerChunk=20, veinsSize=9, maxYLevel=128)
+    gen(file, 'copper', '#ff6600', ITEM_ALL | {'wire', 'fine_wire'}, BOTH, forge_hammer=True,
+        veinsPerChunk=20, veinsSize=9, maxYLevel=128, cable=True)
     gen(file, 'bronze', '#ffcc00', ITEM_ALL_NO_ORE, BLOCK_ONLY, forge_hammer=True)
     gen(file, 'tin', '#cbe4e4', ITEM_ALL, BOTH,
-        forge_hammer=True, veinsPerChunk=8, veinsSize=9)
+        forge_hammer=True, veinsPerChunk=8, veinsSize=9, cable=True)
     gen(file, 'steel', '#3f3f3f', ITEM_ALL_NO_ORE, BLOCK_ONLY)
-    gen(file, 'aluminum', '#3fcaff', ITEM_BASE, BOTH,
-        smelting=False, veinsPerChunk=6, veinsSize=6)
+    gen(file, 'aluminum', '#3fcaff', ITEM_BASE, BLOCK_ONLY,
+        smelting=False)
+    gen(file, 'bauxite', '#cc3908', PURE_NON_METAL, ORE_ONLY, isMetal=False, smelting=False, hasMain=False)
     gen(file, 'lignite_coal', '#604020', PURE_NON_METAL, ORE_ONLY, forge_hammer=True, isMetal=False,
         veinsPerChunk=20, veinsSize=17, maxYLevel=128, texture='lignite_coal')
     gen(file, 'lead', '#4a2649', ITEM_BASE, BOTH,
         veinsPerChunk=4, veinsSize=8, maxYLevel=64)
+    gen(file, 'battery_alloy', '#a694a5', {'small_dust', 'dust', 'plate', 'curved_plate'}, BLOCK_ONLY)
     gen(file, 'antimony', '#91bdb4', PURE_METAL, ORE_ONLY,
         veinsPerChunk=4, veinsSize=6, maxYLevel=64)
     gen(file, 'nickel', '#ba4576', ITEM_BASE, BOTH,

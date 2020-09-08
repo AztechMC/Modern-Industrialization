@@ -151,10 +151,14 @@ class CraftingRecipe:
         self.pattern = pattern
         self.output = output
         self.count = count
+        self.kwargs = kwargs
 
     def save(self, id, suffix):
         path = "src/main/resources/data/modern_industrialization/recipes/generated/materials/" + id + "/crafting_shaped/" + suffix + ".json"
-        jsonf = { "type": "minecraft:crafting_shaped", "pattern": self.pattern, }
+        jsonf = { "type": "minecraft:crafting_shaped", "pattern": self.pattern, "result": {"item": self.output, "count": self.count} }
+        keys = {}
+        #for line in self.pattern:
+
 
 def getIdentifier(id, item_type, vanilla=False, isMetal=True):
     if item_type == "pipe_item" or item_type == "pipe_fluid":
@@ -368,17 +372,19 @@ def genSmelting(id, vanilla, item_set, isMetal):
                     json.dump(jsonf, file, indent=4)
 
 
-def genMacerator(id, vanilla, item_set, isMetal):
+def genMacerator(id, vanilla, item_set, isMetal, hasMain):
     path = "src/main/resources/data/modern_industrialization/recipes/generated/materials/" + id + "/macerator"
     Path(path).mkdir(parents=True, exist_ok=True)
 
     mac = "modern_industrialization:macerator"
 
     if 'dust' in item_set:
-        list_todo = [('main', 9), ('double_ingot', 18), ('plate', 9), ('curved_plate', 9),
+        list_todo = [('double_ingot', 18), ('plate', 9), ('curved_plate', 9),
                      ('nugget', 1), ('large_plate', 36), ('gear', 18), ('ring', 4),
                      ('bolt', 2), ('rod', 4), ('pipe_item', 9), ('pipe_fluid', 9),
                      ('rotor', 27)]
+        if hasMain:
+            list_todo.append(('main', 9))
         for a, b in list_todo:
             if a in item_set:
                 jsonf = {}
@@ -608,7 +614,7 @@ def gen(file, id, hex, item_set, block_set, vanilla=False,  forge_hammer=False, 
     if smelting:
         genSmelting(id, vanilla, item_set, isMetal)
 
-    genMacerator(id, vanilla, item_set, isMetal)
+    genMacerator(id, vanilla, item_set, isMetal, hasMain)
     genCompressor(id, vanilla, item_set, isMetal)
     genCuttingSaw(id, vanilla, item_set, isMetal)
     genPacker(id, vanilla, item_set, isMetal, pipe)
@@ -652,7 +658,7 @@ public class MIMaterials {
     gen(file, 'copper', '#ff6600', ITEM_ALL | {'wire', 'fine_wire'}, BOTH, forge_hammer=True,
         veinsPerChunk=20, veinsSize=9, maxYLevel=128, cable=True)
     gen(file, 'bronze', '#ffcc00', ITEM_ALL_NO_ORE, BLOCK_ONLY, forge_hammer=True)
-    gen(file, 'tin', '#cbe4e4', ITEM_ALL, BOTH,
+    gen(file, 'tin', '#cbe4e4', ITEM_ALL | {'wire'}, BOTH,
         forge_hammer=True, veinsPerChunk=8, veinsSize=9, cable=True)
     gen(file, 'steel', '#3f3f3f', ITEM_ALL_NO_ORE, BLOCK_ONLY)
     gen(file, 'aluminum', '#3fcaff', ITEM_BASE, BLOCK_ONLY,

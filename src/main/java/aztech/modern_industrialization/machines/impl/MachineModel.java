@@ -37,7 +37,6 @@ import java.util.stream.Collectors;
 public class MachineModel extends CustomBlockModel {
     public final String model_name;
     private SpriteIdentifier[] sprite_ids;
-    private boolean baked = false;
     private Sprite[] sprites;
 
     private RenderMaterial cutoutMaterial;
@@ -171,11 +170,6 @@ public class MachineModel extends CustomBlockModel {
 
     @Override
     public BakedModel bake(ModelLoader loader, Function<SpriteIdentifier, Sprite> textureGetter, ModelBakeSettings rotationContainer, Identifier modelId) {
-        if(baked) {
-           return this;
-        }
-        baked = true;
-
         super.bake(loader, textureGetter, rotationContainer, modelId);
 
         // Get sprites

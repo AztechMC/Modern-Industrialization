@@ -133,6 +133,9 @@ public class MachineScreen extends HandledScreen<MachineScreenHandler> {
                     }
                 }
         } : new Button[0];
+        this.backgroundHeight = handler.getMachineFactory().getBackgroundHeight();
+        this.backgroundWidth = handler.getMachineFactory().getBackgroundWidth();
+        this.playerInventoryTitleY = this.backgroundHeight - 94;
     }
 
     @Override

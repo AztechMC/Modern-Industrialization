@@ -39,6 +39,7 @@ public class MIItem extends Item {
     public static final MIItem ITEM_LV_CIRCUIT = new MIItem("lv_circuit");
     public static final MIItem ITEM_LV_CIRCUIT_BOARD = new MIItem("lv_circuit_board");
     public static final MIItem ITEM_LV_BATTERY = new MIItem("lv_battery");
+    public static final MIItem ITEM_LV_PUMP = new MIItem("lv_pump");
     public static final MIItem ITEM_RESISTOR = new MIItem("resistor");
     public static final MIItem ITEM_CAPACITOR = new MIItem("capacitor");
     public static final MIItem ITEM_INDUCTOR = new MIItem("inductor");

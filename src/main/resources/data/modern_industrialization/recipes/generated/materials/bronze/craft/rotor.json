@@ -5,6 +5,10 @@
         "BRB",
         "bBb"
     ],
+    "result": {
+        "item": "modern_industrialization:bronze_rotor",
+        "count": 1
+    },
     "key": {
         "b": {
             "item": "modern_industrialization:bronze_bolt"
@@ -15,9 +19,5 @@
         "R": {
             "item": "modern_industrialization:bronze_ring"
         }
-    },
-    "result": {
-        "item": "modern_industrialization:bronze_rotor",
-        "count": 1
     }
 }

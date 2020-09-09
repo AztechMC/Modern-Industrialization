@@ -1,0 +1,17 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "ppp",
+        "   ",
+        "ppp"
+    ],
+    "result": {
+        "item": "modern_industrialization:pipe_item_tin",
+        "count": 6
+    },
+    "key": {
+        "p": {
+            "item": "modern_industrialization:tin_curved_plate"
+        }
+    }
+}

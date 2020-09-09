@@ -1,16 +1,17 @@
 {
     "type": "minecraft:crafting_shaped",
     "pattern": [
-        "###",
-        "###",
-        "###"
+        "xxx",
+        "xxx",
+        "xxx"
     ],
+    "result": {
+        "item": "modern_industrialization:tin_ingot",
+        "count": 1
+    },
     "key": {
-        "#": {
+        "x": {
             "item": "modern_industrialization:tin_nugget"
         }
-    },
-    "result": {
-        "item": "modern_industrialization:tin_ingot"
     }
 }

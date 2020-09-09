@@ -1,0 +1,20 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "ppp",
+        "ggg",
+        "ppp"
+    ],
+    "result": {
+        "item": "modern_industrialization:pipe_fluid_iron",
+        "count": 6
+    },
+    "key": {
+        "p": {
+            "item": "modern_industrialization:iron_curved_plate"
+        },
+        "g": {
+            "item": "minecraft:glass_pane"
+        }
+    }
+}

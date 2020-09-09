@@ -8,6 +8,8 @@ import net.minecraft.block.Block;
 import net.minecraft.block.Material;
 import net.minecraft.block.MaterialColor;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.registry.BuiltinRegistries;
+import net.minecraft.util.registry.Registry;
 import net.minecraft.world.gen.decorator.Decorator;
 import net.minecraft.world.gen.decorator.RangeDecoratorConfig;
 import net.minecraft.world.gen.feature.ConfiguredFeature;
@@ -60,7 +62,9 @@ public class MIMaterialSetup {
                                 material.getMaxYLevel()))) // max y level
                         .spreadHorizontally()
                         .repeat(material.getVeinsPerChunk()); // number of veins per chunk
-                ORE_GENERATORS.put(new MIIdentifier("ore_generator_" + material.getId()), ore_generator);
+                Identifier oregen_id = new MIIdentifier("ore_generator_" + material.getId());
+                ORE_GENERATORS.put(oregen_id, ore_generator);
+                Registry.register(BuiltinRegistries.CONFIGURED_FEATURE, oregen_id, ore_generator);
             }
         }
     }

@@ -1,0 +1,27 @@
+{
+  "type" : "minecraft:crafting_shaped",
+  "pattern" : [
+    "wCw",
+    "wHw",
+    "cCc"
+  ],
+  "key":
+  {
+    "w": {
+      "item" : "modern_industrialization:copper_wire"
+    },
+    "H" :{
+      "item" : "modern_industrialization:lv_machine_hull"
+    },
+    "c": {
+      "item" : "modern_industrialization:pipe_electricity_tin"
+    },
+    "C" : {
+      "item" : "modern_industrialization:lv_circuit"
+    }
+  },
+
+  "result": {
+    "item": "modern_industrialization:lv_furnace"
+  }
+}

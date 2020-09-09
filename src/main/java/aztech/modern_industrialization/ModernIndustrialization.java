@@ -122,9 +122,6 @@ public class ModernIndustrialization implements ModInitializer {
         for (MIMaterial material : MIMaterial.getAllMaterials()) {
             registerMaterial(material);
         }
-        for (Map.Entry<Identifier, ConfiguredFeature<?, ?>> entry : MIMaterialSetup.ORE_GENERATORS.entrySet()) {
-            Registry.register(BuiltinRegistries.CONFIGURED_FEATURE, entry.getKey(), entry.getValue());
-        }
     }
 
     private void setupItems() {
@@ -247,8 +244,8 @@ public class ModernIndustrialization implements ModInitializer {
 
     private void setupFuels() {
         FuelRegistry.INSTANCE.add(MIItem.ITEM_COKE, 6400);
-        //FuelRegistry.INSTANCE.add(MIMaterials.coal.getItem("dust"), 1600);
-        //FuelRegistry.INSTANCE.add(MIMaterials.coal.getItem("small_dust"), 160);
-        //FuelRegistry.INSTANCE.add(MIMaterials.lignite_coal.getItem("lignite_coal"), 1600);
+        FuelRegistry.INSTANCE.add(MIMaterials.coal.getItem("dust"), 1600);
+        FuelRegistry.INSTANCE.add(MIMaterials.coal.getItem("small_dust"), 160);
+        FuelRegistry.INSTANCE.add(MIMaterials.lignite_coal.getItem("lignite_coal"), 1600);
     }
 }

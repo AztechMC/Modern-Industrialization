@@ -120,24 +120,28 @@ public class MIMachines {
 
     public static MachineFactory setupAssembler(MachineFactory factory) {
         return factory
-                .setInputSlotPosition(56, 35, 3, 3).setOutputSlotPosition(102, 35, 1, 3)
-                .setupProgressBar(76, 35, 22, 15, true).setupBackground("steam_furnace.png")
-                .setupEfficiencyBar(0, 166, 38, 62, 100, 2, true).setupElectricityBar(18, 34)
+                .setInputSlotPosition(42, 27, 3, 3).setOutputSlotPosition(129, 27, 1, 3)
+                .setInputLiquidSlotPosition(98, 27, 1, 1)
+                .setupProgressBar(103, 48, 22, 15, true).setupBackground("assembler.png", 176, 186)
+                .setupEfficiencyBar(0, 186, 43, 86, 100, 2, true).setupElectricityBar(18, 44)
+                .setInventoryPos(8, 104)
                 .setupOverlays("assembler", true, false, true);
     }
 
     public static MachineFactory setupCompressor(MachineFactory factory) {
         return factory
-                .setInputSlotPosition(56, 45, 1, 1).setOutputSlotPosition(102, 45, 1, 1)
-                .setupProgressBar(76, 45, 22, 15, true).setupBackground("steam_furnace.png")
+                .setInputSlotPosition(56, 35, 1, 1).setOutputSlotPosition(102, 35, 1, 1)
+                .setupProgressBar(76, 35, 22, 15, true).setupBackground("steam_furnace.png")
+                .setupEfficiencyBar(0, 166, 38, 62, 100, 2, true).setupElectricityBar(18, 34)
                 .setupOverlays("compressor", true, true, true);
     }
 
     public static MachineFactory setupCuttingMachine(MachineFactory factory) {
         return factory
-                .setInputLiquidSlotPosition(36, 45, 1, 1)
-                .setInputSlotPosition(56, 45, 1, 1).setOutputSlotPosition(102, 45, 1, 1)
-                .setupProgressBar(76, 45, 22, 15, true).setupBackground("steam_furnace.png")
+                .setInputLiquidSlotPosition(40, 35, 1, 1)
+                .setInputSlotPosition(60, 35, 1, 1).setOutputSlotPosition(120, 35, 1, 1)
+                .setupProgressBar(88, 35, 22, 15, true).setupBackground("cutting_machine.png")
+                .setupEfficiencyBar(0, 166, 38, 62, 100, 2, true).setupElectricityBar(18, 34)
                 .setupOverlays("cutting_machine", true, false, false);
     }
 
@@ -157,8 +161,9 @@ public class MIMachines {
 
     public static MachineFactory setupMacerator(MachineFactory factory) {
         return factory
-                .setInputSlotPosition(56, 45, 1, 1).setOutputSlotPosition(102, 45, 2, 2)
-                .setupProgressBar(76, 45, 22, 15, true).setupBackground("steam_furnace.png")
+                .setInputSlotPosition(56, 35, 1, 1).setOutputSlotPosition(102, 27, 2, 2)
+                .setupProgressBar(76, 36, 22, 15, true).setupBackground("steam_furnace.png")
+                .setupEfficiencyBar(0, 166, 38, 66, 100, 2, true).setupElectricityBar(18, 34)
                 .setupOverlays("macerator", true, false, true);
     }
 
@@ -173,8 +178,9 @@ public class MIMachines {
 
     public static MachineFactory setupPacker(MachineFactory factory) {
         return factory
-                .setInputSlotPosition(56, 37, 1, 2).setOutputSlotPosition(102, 37, 1, 2)
-                .setupProgressBar(76, 45, 22, 15, true).setupBackground("steam_furnace.png")
+                .setInputSlotPosition(56, 27, 1, 2).setOutputSlotPosition(102, 27, 1, 2)
+                .setupProgressBar(76, 35, 22, 15, true).setupBackground("steam_furnace.png")
+                .setupEfficiencyBar(0, 166, 38, 66, 100, 2, true).setupElectricityBar(18, 34)
                 .setupOverlays("packer", true, false, false);
     }
 

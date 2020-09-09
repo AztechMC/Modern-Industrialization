@@ -8,7 +8,7 @@
   "key":
   {
     "d": {
-      "item" : "minecraft:diamond"
+      "item" : "modern_industrialization:invar_rotary_blade"
     },
     "m" : {
       "item" : "modern_industrialization:lv_motor"

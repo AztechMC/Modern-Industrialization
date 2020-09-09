@@ -1,0 +1,9 @@
+{
+    "type": "minecraft:smelting",
+    "ingredient": {
+        "item": "modern_industrialization:invar_dust"
+    },
+    "result": "modern_industrialization:invar_ingot",
+    "experience": 0.7,
+    "cookingtime": 200
+}

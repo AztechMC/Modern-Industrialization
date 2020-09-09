@@ -35,11 +35,14 @@ def gen_name(ty):
         lang_json[lang_id] = name
 
     if 'fluid_pipe' in ty.overrides:
-        lang_json['item.modern_industrialization.pipe_fluid_'+id] = clean(id) + ' Fluid Pipe'
+        lang_json['item.modern_industrialization.pipe_fluid_' +
+                  id] = clean(id) + ' Fluid Pipe'
     if 'item_pipe' in ty.overrides:
-        lang_json['item.modern_industrialization.pipe_item_'+id] = clean(id) + ' Item Pipe'
+        lang_json['item.modern_industrialization.pipe_item_' +
+                  id] = clean(id) + ' Item Pipe'
     if 'cable' in ty.overrides:
-        lang_json['item.modern_industrialization.pipe_electricity_'+id] = clean(id) + ' Cable'
+        lang_json['item.modern_industrialization.pipe_electricity_' +
+                  id] = clean(id) + ' Cable'
 
     for block in ty.mi_blocks:
         lang_id = 'block.modern_industrialization.' + (id + '_' + block)
@@ -49,6 +52,7 @@ def gen_name(ty):
     with open('src/main/resources/assets/modern_industrialization/lang/en_us.json', 'w') as lang_file:
         json.dump(lang_json, lang_file, indent=4, sort_keys=True)
         lang_file.close()
+
 
 def gen_texture(id, hex, item_set, block_set, special_texture=''):
 
@@ -93,13 +97,17 @@ def gen_texture(id, hex, item_set, block_set, special_texture=''):
 loaded_items = {'modern_industrialization:rubber_sheet'}
 
 # check if the item json is valid based on the loaded items
+
+
 def allow_recipe(jsonf):
     if "item" not in jsonf:
         return True
     namespace, _ = jsonf["item"].split(":")
     return namespace == "minecraft" or jsonf["item"] in loaded_items
 
+
 class MIRecipe:
+
     def __init__(self, type, eu=2, duration=200):
         self.type = type
         self.eu = eu
@@ -132,12 +140,15 @@ class MIRecipe:
         return self
 
     def save(self, id, suffix):
-        path = "src/main/resources/data/modern_industrialization/recipes/generated/materials/" + id + "/" + self.type + "/"
+        path = "src/main/resources/data/modern_industrialization/recipes/generated/materials/" + \
+            id + "/" + self.type + "/"
         Path(path).mkdir(parents=True, exist_ok=True)
 
         allowed = True
-        jsonf = { "type": "modern_industrialization:" + self.type, "eu": self.eu, "duration": self.duration }
-        optionals = ["item_inputs", "fluid_inputs", "item_outputs", "fluid_outputs"]
+        jsonf = {"type": "modern_industrialization:" +
+                 self.type, "eu": self.eu, "duration": self.duration}
+        optionals = ["item_inputs", "fluid_inputs",
+                     "item_outputs", "fluid_outputs"]
         for opt in optionals:
             if hasattr(self, opt):
                 inputs = []
@@ -149,10 +160,13 @@ class MIRecipe:
             with open(path + suffix + ".json", "w") as file:
                 json.dump(jsonf, file, indent=4)
 
+
 def get_input_json(string):
     return {"tag": string[1:]} if string[0] == '#' else {"item": string}
 
+
 class CraftingRecipe:
+
     def __init__(self, pattern, output, count=1, **kwargs):
         self.pattern = pattern
         self.output = output
@@ -162,7 +176,8 @@ class CraftingRecipe:
     def save(self, id, suffix):
         path = "src/main/resources/data/modern_industrialization/recipes/generated/materials/" + id + "/craft/"
         Path(path).mkdir(parents=True, exist_ok=True)
-        jsonf = { "type": "minecraft:crafting_shaped", "pattern": self.pattern, "result": {"item": self.output, "count": self.count} }
+        jsonf = {"type": "minecraft:crafting_shaped", "pattern": self.pattern,
+                 "result": {"item": self.output, "count": self.count}}
         keys = {}
         allowed = allow_recipe(jsonf["result"])
         for line in self.pattern:
@@ -176,7 +191,7 @@ class CraftingRecipe:
                 json.dump(jsonf, file, indent=4)
         return self
 
-    def export(self, other_type, id, suffix, **kwargs): # will also save
+    def export(self, other_type, id, suffix, **kwargs):  # will also save
         recipe = MIRecipe(other_type, **kwargs)
         recipe.output(self.output, self.count)
         keycount = defaultdict(lambda: 0)
@@ -184,11 +199,14 @@ class CraftingRecipe:
         for line in self.pattern:
             for c in line:
                 if c != " ":
-                    keys[c] = {"tag": self.kwargs[c][1:]} if self.kwargs[c][0] == '#' else {"item": self.kwargs[c]}
+                    keys[c] = {"tag": self.kwargs[c][1:]} if self.kwargs[
+                        c][0] == '#' else {"item": self.kwargs[c]}
                     keycount[c] += 1
         for k in keys:
-            recipe.input("#" + keys[k]["tag"] if "tag" in keys[k] else keys[k]["item"], amount=keycount[k])
+            recipe.input("#" + keys[k]["tag"] if "tag" in keys[k]
+                         else keys[k]["item"], amount=keycount[k])
         recipe.save(id, suffix)
+
 
 def genForgeHammer(ty, tyo):
     hammer = "forge_hammer_hammer"
@@ -230,10 +248,10 @@ def genCraft(vanilla, ty):
         ).save(ty.id, "%s_from_%s" % (a, b))
 
     CraftingRecipe([
-            "P",
-            "P",
-            "I"
-        ],
+        "P",
+        "P",
+        "I"
+    ],
         ty["blade"],
         4,
         P=ty["plate"],
@@ -241,18 +259,38 @@ def genCraft(vanilla, ty):
     ).save(ty.id, "blade").export("assembler", ty.id, "blade")
 
     CraftingRecipe([
-            "PP",
-            "PP"
-        ],
+        "PPP",
+        "P P",
+        "PPP"
+    ],
+        ty["machine_casing"],
+        1,
+        P=ty["large_plate"],
+    ).save(ty.id, "machine_casing").export("assembler", ty.id, "machine_casing")
+
+    CraftingRecipe([
+        "PPP",
+        "P P",
+        "PPP"
+    ],
+        ty["coil"],
+        1,
+        P=ty["wire"],
+    ).save(ty.id, "coil").export("assembler", ty.id, "coil")
+
+    CraftingRecipe([
+        "PP",
+        "PP"
+    ],
         ty["large_plate"],
         P=ty["plate"],
     ).save(ty.id, "large_plate").export("packer", ty.id, "large_plate")
 
     CraftingRecipe([
-            "bBb",
-            "BRB",
-            "bBb"
-        ],
+        "bBb",
+        "BRB",
+        "bBb"
+    ],
         ty["rotor"],
         b=ty["bolt"],
         B=ty["blade"],
@@ -260,20 +298,20 @@ def genCraft(vanilla, ty):
     ).save(ty.id, "rotor").export("assembler", ty.id, "rotor")
 
     CraftingRecipe([
-            "ppp",
-            "   ",
-            "ppp",
-        ],
+        "ppp",
+        "   ",
+        "ppp",
+    ],
         ty["item_pipe"],
         6,
         p=ty["curved_plate"],
     ).save(ty.id, "item_pipe").export("packer", ty.id, "item_pipe")
 
     CraftingRecipe([
-            "ppp",
-            "ggg",
-            "ppp",
-        ],
+        "ppp",
+        "ggg",
+        "ppp",
+    ],
         ty["fluid_pipe"],
         6,
         g="minecraft:glass_pane",
@@ -281,10 +319,10 @@ def genCraft(vanilla, ty):
     ).save(ty.id, "fluid_pipe")
 
     CraftingRecipe([
-            "rrr",
-            "www",
-            "rrr",
-        ],
+        "rrr",
+        "www",
+        "rrr",
+    ],
         ty["cable"],
         3,
         r="modern_industrialization:rubber_sheet",
@@ -293,7 +331,8 @@ def genCraft(vanilla, ty):
 
 
 def genSmelting(vanilla, ty, isMetal):
-    path = "src/main/resources/data/modern_industrialization/recipes/generated/materials/" + ty.id + "/smelting/"
+    path = "src/main/resources/data/modern_industrialization/recipes/generated/materials/" + \
+        ty.id + "/smelting/"
     Path(path).mkdir(parents=True, exist_ok=True)
 
     list_todo = [('small_dust', 'nugget', 0.08),
@@ -326,31 +365,44 @@ def genMacerator(ty, tyo):
     for a, b in list_todo:
         recipe = MIRecipe('macerator').input(tyo[a])
         if b // 9 != 0:
-            recipe.output(ty["dust"], b//9)
+            recipe.output(ty["dust"], b // 9)
         if b % 9 != 0:
-            recipe.output(ty["small_dust"], b%9)
+            recipe.output(ty["small_dust"], b % 9)
         recipe.save(ty.id, a)
 
-    MIRecipe("macerator").input(tyo["ore"]).output(ty["crushed_dust"], amount=2).save(ty.id, "ore")
-    MIRecipe("macerator").input(ty["crushed_dust"], amount=2).output(ty["dust"], amount=3).save(ty.id, "crushed_dust")
+    MIRecipe("macerator").input(tyo["ore"]).output(
+        ty["crushed_dust"], amount=2).save(ty.id, "ore")
+    MIRecipe("macerator").input(ty["crushed_dust"], amount=2).output(
+        ty["dust"], amount=3).save(ty.id, "crushed_dust")
+
 
 def genCompressor(ty, tyo):
     for a, b, c in [('main', 'plate', 1), ('plate', 'curved_plate', 1), ('double_ingot', 'plate', 2)]:
-        MIRecipe("compressor").input(tyo[a]).output(ty[b], amount=c).save(ty.id, a)
+        MIRecipe("compressor").input(tyo[a]).output(
+            ty[b], amount=c).save(ty.id, a)
+
 
 def genCuttingSaw(ty, tyo):
     for a, b, c in [('main', 'rod', 2), ('rod', 'bolt', 2), ('large_plate', 'gear', 2), ('item_pipe', 'ring', 2)]:
-        MIRecipe("cutting_machine").input(tyo[a]).fluid_input('minecraft:water', amount=1).output(ty[b], amount=c).save(ty.id, a)
+        MIRecipe("cutting_machine").input(tyo[a]).fluid_input(
+            'minecraft:water', amount=1).output(ty[b], amount=c).save(ty.id, a)
+
 
 def genPacker(ty, tyo):
-    MIRecipe("packer").input(ty["main"], amount=2).output(ty["double_ingot"]).save(ty.id, "double_ingot")
-    MIRecipe("packer").input(ty["item_pipe"], amount=2).input("minecraft:glass_pane").output(ty["fluid_pipe"], amount=2).save(ty.id, "fluid_pipe")
+    MIRecipe("packer").input(ty["main"], amount=2).output(
+        ty["double_ingot"]).save(ty.id, "double_ingot")
+    MIRecipe("packer").input(ty["item_pipe"], amount=2).input(
+        "minecraft:glass_pane").output(ty["fluid_pipe"], amount=2).save(ty.id, "fluid_pipe")
+
 
 def genWiremill(ty, tyo):
-    for i, ic, o, oc in [('main', 1, 'wire', 2), ('wire', 1, 'fine_wire', 4)]:
-        MIRecipe("wiremill").input(tyo[i], amount=ic).output(ty[o], amount=oc).save(ty.id, o)
+    for i, ic, o, oc in [('plate', 1, 'wire', 2), ('wire', 1, 'fine_wire', 4)]:
+        MIRecipe("wiremill").input(tyo[i], amount=ic).output(
+            ty[o], amount=oc).save(ty.id, o)
 
 material_lines = []
+
+
 def gen(file, ty, hex, vanilla=False, forge_hammer=False, smelting=True, isMetal=True, veinsPerChunk=0, veinsSize=0, maxYLevel=64, texture=''):
 
     item_to_add = ','.join([(lambda s: "\"%s\"" % s)(s)
@@ -398,11 +450,12 @@ def gen(file, ty, hex, vanilla=False, forge_hammer=False, smelting=True, isMetal
 
 
 BLOCK_ONLY = {'block'}
+BLOCK_CASING = {'block', 'machine_casing'}
 ORE_ONLY = {'ore'}
 BOTH = {'block', 'ore'}
 
 ITEM_BASE = {'ingot', 'plate', 'large_plate', 'nugget', 'double_ingot',
-             'small_dust', 'dust', 'curved_plate', 'crushed_dust'} # TODO: pipes
+             'small_dust', 'dust', 'curved_plate', 'crushed_dust'}  # TODO: pipes
 
 PURE_METAL = {'ingot', 'nugget', 'small_dust', 'dust', 'crushed_dust'}
 PURE_NON_METAL = {'small_dust', 'dust', 'crushed_dust'}
@@ -416,7 +469,9 @@ TEXTURE_OVERLAYS = {'fine_wire'}
 DEFAULT_OREDICT = {'main': '_ingots', 'nugget': '_nuggets', 'ore': '_ores'}
 RESTRICTIVE_OREDICT = {'ore': '_ores'}
 
+
 class Material:
+
     def __init__(self, id, mi_items, mi_blocks, overrides={}, oredicted={}):
         self.id = id
         self.mi_items = mi_items
@@ -428,17 +483,22 @@ class Material:
         self.overrides = overrides
         self.oredicted = oredicted
         self.__load()
+
     def __load(self):
         global loaded_items
         for item in self.mi_items | self.mi_blocks:
-            loaded_items |= {"modern_industrialization:" + self.id + "_" + item}
+            loaded_items |= {
+                "modern_industrialization:" + self.id + "_" + item}
         for ov in self.overrides.values():
             loaded_items |= {ov}
         return self
+
     def get_oredicted(self):
         class OredictedMaterial:
+
             def __init__(self, outer):
                 self.outer = outer
+
             def __getitem__(self, item):
                 if item in self.outer.oredicted:
                     return '#c:' + self.outer.id + self.outer.oredicted[item]
@@ -446,6 +506,7 @@ class Material:
                     return self.outer[item]
 
         return OredictedMaterial(self)
+
     def __getitem__(self, item):
         return "modern_industrialization:" + self.id + "_" + item if item not in self.overrides else self.overrides[item]
 
@@ -503,7 +564,7 @@ public class MIMaterials {
     )
     gen(
         file,
-        Material('bronze', ITEM_ALL_NO_ORE, BLOCK_ONLY, overrides={
+        Material('bronze', ITEM_ALL_NO_ORE, BLOCK_CASING, overrides={
             "item_pipe": "modern_industrialization:pipe_item_bronze",
             "fluid_pipe": "modern_industrialization:pipe_fluid_bronze",
         }),
@@ -520,7 +581,7 @@ public class MIMaterials {
     )
     gen(
         file,
-        Material('steel', ITEM_ALL_NO_ORE, BLOCK_ONLY, oredicted=RESTRICTIVE_OREDICT, overrides={
+        Material('steel', ITEM_ALL_NO_ORE, BLOCK_CASING, oredicted=RESTRICTIVE_OREDICT, overrides={
             "item_pipe": "modern_industrialization:pipe_item_steel",
             "fluid_pipe": "modern_industrialization:pipe_fluid_steel",
         }),
@@ -528,7 +589,7 @@ public class MIMaterials {
     )
     gen(
         file,
-        Material('aluminum', ITEM_BASE | {'ingot'}, BLOCK_ONLY, oredicted={'nope'}, overrides={
+        Material('aluminum', ITEM_BASE | {'ingot'}, BLOCK_CASING, oredicted={'nope'}, overrides={
             "item_pipe": "modern_industrialization:pipe_item_aluminum",
             "fluid_pipe": "modern_industrialization:pipe_fluid_aluminum",
         }),
@@ -556,9 +617,25 @@ public class MIMaterials {
     )
     gen(
         file,
-        Material('battery_alloy', {'small_dust', 'dust', 'plate', 'curved_plate', 'ingot'}, BLOCK_ONLY),
+        Material('battery_alloy', {'small_dust', 'dust',
+                                   'plate', 'nugget', 'curved_plate', 'ingot',
+                                   'double_ingot'}, BLOCK_ONLY),
         '#a694a5',
     )
+    gen(
+        file,
+        Material('invar', {'small_dust', 'dust', 'plate',
+                           'ingot', 'double_ingot', 'nugget', 'large_plate', 'gear'}, BLOCK_CASING, oredicted={'nope'}),
+        '#b4b478',
+    )
+
+    gen(
+        file,
+        Material('cupronickel', {'small_dust', 'dust', 'plate',
+                                 'ingot', 'nugget', 'wire', 'double_ingot'}, BLOCK_ONLY | {'coil'}, oredicted={'nope'}),
+        '#e39680',
+    )
+
     gen(
         file,
         Material('antimony', PURE_METAL, BOTH),

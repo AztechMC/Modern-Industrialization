@@ -46,5 +46,6 @@ public class MIItem extends Item {
     public static final MIItem ITEM_STEEL_ROD_MAGNETIC = new MIItem("steel_rod_magnetic");
     public static final MIItem ITEM_WOOD_PULP = new MIItem("wood_pulp");
     public static final MIItem ITEM_RUBBER_SHEET = new MIItem("rubber_sheet");
+    public static final MIItem ITEM_INVAR_ROTARY_BLADE = new MIItem("invar_rotary_blade");
 
 }

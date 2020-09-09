@@ -570,7 +570,7 @@ public class MIMaterials {
             "item_pipe": "modern_industrialization:pipe_item_nickel",
             "fluid_pipe": "modern_industrialization:pipe_fluid_nickel",
         }),
-        '#ba4576', veinsPerChunk=7, veinsSize=6, maxYLevel=64,
+        '#a9a9d4', veinsPerChunk=7, veinsSize=6, maxYLevel=64,
     )
     gen(
         file,

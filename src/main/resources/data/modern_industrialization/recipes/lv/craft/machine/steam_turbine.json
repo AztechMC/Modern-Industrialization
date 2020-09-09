@@ -1,0 +1,33 @@
+{
+  "type" : "minecraft:crafting_shaped",
+  "pattern" : [
+    "pCp",
+    "rHr",
+    "mcm"
+  ],
+  "key":
+  {
+    "C": {
+      "item" : "modern_industrialization:lv_circuit"
+    },
+    "m" : {
+      "item" : "modern_industrialization:lv_motor"
+    },
+    "H" :{
+      "item" : "modern_industrialization:lv_machine_hull"
+    },
+    "p": {
+      "item" : "modern_industrialization:pipe_fluid_bronze"
+    },
+    "r" : {
+      "item" : "modern_industrialization:tin_rotor"
+    },
+    "c" : {
+      "item" : "modern_industrialization:pipe_electricity_tin"
+    }
+  },
+
+  "result": {
+    "item": "modern_industrialization:lv_steam_turbine"
+  }
+}

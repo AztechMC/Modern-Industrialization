@@ -1,0 +1,27 @@
+{
+  "type" : "minecraft:crafting_shaped",
+  "pattern" : [
+    "wrw",
+    "pHp",
+    "wrw"
+  ],
+  "key":
+  {
+    "w" : {
+      "item" : "modern_industrialization:tin_wire"
+    },
+    "H" :{
+      "item" : "modern_industrialization:lv_machine_hull"
+    },
+    "p": {
+      "item" : "modern_industrialization:pipe_electricity_tin"
+    },
+    "r" : {
+      "item" : "modern_industrialization:steel_rod"
+    }
+  },
+
+  "result": {
+    "item": "modern_industrialization:lv_polarizer"
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "type" : "minecraft:crafting_shaped",
+  "pattern" : [
+    "AcA",
+    "CHC",
+    "pcp"
+  ],
+  "key":
+  {
+    "A" : {
+      "item" : "modern_industrialization:lv_robot_arm"
+    },
+    "c" : {
+      "item" : "modern_industrialization:lv_circuit"
+    },
+    "C" : {
+      "item" : "modern_industrialization:lv_conveyor"
+    },
+    "H" :{
+      "item" : "modern_industrialization:lv_machine_hull"
+    },
+    "p": {
+      "item" : "modern_industrialization:pipe_electricity_tin"
+    }
+  },
+
+  "result": {
+    "item": "modern_industrialization:lv_packer"
+  }
+}

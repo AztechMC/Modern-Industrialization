@@ -256,7 +256,7 @@ def genCraft(vanilla, ty):
         4,
         P=ty["plate"],
         I=ty["rod"],
-    ).save(ty.id, "blade").export("assembler", ty.id, "blade")
+    ).save(ty.id, "blade").export("assembler", ty.id, "blade", eu=8)
 
     CraftingRecipe([
         "PPP",
@@ -266,7 +266,7 @@ def genCraft(vanilla, ty):
         ty["machine_casing"],
         1,
         P=ty["large_plate"],
-    ).save(ty.id, "machine_casing").export("assembler", ty.id, "machine_casing")
+    ).save(ty.id, "machine_casing").export("assembler", ty.id, "machine_casing", eu=8)
 
     CraftingRecipe([
         "PPP",
@@ -276,7 +276,7 @@ def genCraft(vanilla, ty):
         ty["coil"],
         1,
         P=ty["wire"],
-    ).save(ty.id, "coil").export("assembler", ty.id, "coil")
+    ).save(ty.id, "coil").export("assembler", ty.id, "coil", eu=8)
 
     CraftingRecipe([
         "PP",
@@ -295,7 +295,7 @@ def genCraft(vanilla, ty):
         b=ty["bolt"],
         B=ty["blade"],
         R=ty["ring"],
-    ).save(ty.id, "rotor").export("assembler", ty.id, "rotor")
+    ).save(ty.id, "rotor").export("assembler", ty.id, "rotor", eu=8)
 
     CraftingRecipe([
         "ppp",
@@ -327,7 +327,7 @@ def genCraft(vanilla, ty):
         3,
         r="modern_industrialization:rubber_sheet",
         w=ty["wire"],
-    ).save(ty.id, "cable").export("assembler", ty.id, "cable")
+    ).save(ty.id, "cable").export("assembler", ty.id, "cable", eu=8)
 
 
 def genSmelting(vanilla, ty, isMetal):

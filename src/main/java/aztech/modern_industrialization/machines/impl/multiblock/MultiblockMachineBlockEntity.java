@@ -156,6 +156,9 @@ public class MultiblockMachineBlockEntity extends MachineBlockEntity {
     @Override
     public void markRemoved() {
         super.markRemoved();
+        for(HatchBlockEntity hbe : linkedHatches.values()) {
+            hbe.controllerPos = null;
+        }
         clearLocks();
     }
 

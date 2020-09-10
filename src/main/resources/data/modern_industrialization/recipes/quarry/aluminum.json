@@ -1,0 +1,17 @@
+{
+  "type": "modern_industrialization:quarry",
+  "eu": 8,
+  "duration": 600,
+  "item_inputs": {
+    "item": "modern_industrialization:pipe_item_aluminum",
+    "amount": 1,
+    "probability": 0.2
+  },
+  "item_outputs": [
+    {
+      "item": "modern_industrialization:bauxite_ore",
+      "amount": 1,
+      "probability": 0.4
+    }
+  ]
+}

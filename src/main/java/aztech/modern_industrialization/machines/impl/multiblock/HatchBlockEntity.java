@@ -65,7 +65,10 @@ public class HatchBlockEntity extends MachineBlockEntity implements ChunkUnloadB
     @Override
     public void onChunkUnload() {
         if(controllerPos != null) {
-            ((MultiblockMachineBlockEntity) world.getBlockEntity(controllerPos)).hatchUnloaded(pos);
+            BlockEntity be = world.getBlockEntity(controllerPos);
+            if(be instanceof MultiblockMachineBlockEntity) {
+                ((MultiblockMachineBlockEntity) be).hatchUnloaded(pos);
+            }
         }
     }
 }

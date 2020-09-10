@@ -321,7 +321,7 @@ public class MachineScreen extends HandledScreen<MachineScreenHandler> {
             }
         }
 
-        if(factory.hasEfficiencyBar) {
+        if(factory.hasEfficiencyBar && factory.efficiencyBarDrawTooltip) {
             if(isPointWithinBounds(factory.efficiencyBarDrawX, factory.efficiencyBarDrawY, factory.efficiencyBarSizeX, factory.efficiencyBarSizeY, mouseX, mouseY)) {
                 DecimalFormat factorFormat = new DecimalFormat("#.#");
                 List<Text> tooltip = new ArrayList<>();

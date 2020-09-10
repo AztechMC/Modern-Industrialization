@@ -1,0 +1,33 @@
+{
+    "type": "modern_industrialization:assembler",
+    "eu": 8,
+    "duration": 200,
+    "item_inputs": [
+        {
+            "item": "modern_industrialization:lv_robot_arm",
+            "amount": 2
+        },
+        {
+            "item": "modern_industrialization:lv_circuit",
+            "amount": 2
+        },
+        {
+            "item": "modern_industrialization:lv_conveyor",
+            "amount": 2
+        },
+        {
+            "item": "modern_industrialization:lv_machine_hull",
+            "amount": 1
+        },
+        {
+            "item": "modern_industrialization:pipe_electricity_tin",
+            "amount": 2
+        }
+    ],
+    "item_outputs": [
+        {
+            "item": "modern_industrialization:lv_packer",
+            "amount": 1
+        }
+    ]
+}

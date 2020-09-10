@@ -11,10 +11,12 @@ import net.minecraft.util.Identifier;
  */
 public class MITags {
     private static final Tag<Item> ALUMINUM_PLATES = TagRegistry.item(new Identifier("c", "aluminum_plates"));
-    private static final Tag<Item> ALUMINUM_ORES = TagRegistry.item(new Identifier("c", "aluminum_ores"));
     private static final Tag<Item> ANTIMONY_INGOTS = TagRegistry.item(new Identifier("c", "antimony_ingots"));
     private static final Tag<Item> ANTIMONY_NUGGETS = TagRegistry.item(new Identifier("c", "antimony_nuggets"));
     private static final Tag<Item> ANTIMONY_ORES = TagRegistry.item(new Identifier("c", "antimony_ores"));
+    private static final Tag<Item> BATTERY_ALLOY_INGOTS = TagRegistry.item(new Identifier("c", "battery_alloy_ingots"));
+    private static final Tag<Item> BATTERY_ALLOY_NUGGETS = TagRegistry.item(new Identifier("c", "battery_alloy_nuggets"));
+    private static final Tag<Item> BAUXITE_ORES = TagRegistry.item(new Identifier("c", "bauxite_ores"));
     private static final Tag<Item> BRONZE_INGOTS = TagRegistry.item(new Identifier("c", "bronze_ingots"));
     private static final Tag<Item> BRONZE_NUGGETS = TagRegistry.item(new Identifier("c", "bronze_nuggets"));
     private static final Tag<Item> BRONZE_PLATES = TagRegistry.item(new Identifier("c", "bronze_plates"));

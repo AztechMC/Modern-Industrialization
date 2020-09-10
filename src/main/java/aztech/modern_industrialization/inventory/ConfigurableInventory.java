@@ -160,19 +160,19 @@ public interface ConfigurableInventory extends Inventory, SidedInventory, FluidT
 
     @Override
     default FluidVolume attemptInsertion(FluidVolume fluid, Simulation simulation) { // TODO: don't lose fluid
-        int leftover = internalInsert(fluid.getFluidKey(), fluid.amount().asInt(1000, RoundingMode.FLOOR), simulation, s -> s.pipesInsert, s -> {});
+        int leftover = internalInsert(getFluidStacks(), fluid.getFluidKey(), fluid.amount().asInt(1000, RoundingMode.FLOOR), simulation, s -> s.pipesInsert, s -> {}, this::markDirty);
         return fluid.getFluidKey().withAmount(FluidAmount.of(leftover, 1000));
     }
 
     /**
      * Internal insert. Returns leftover fluid.
      */
-    default int internalInsert(FluidKey fluid, int amount, Simulation simulation, Predicate<ConfigurableFluidStack> stackFilter, Consumer<Integer> stackUpdater) {
+    static int internalInsert(List<ConfigurableFluidStack> fluidStacks, FluidKey fluid, int amount, Simulation simulation, Predicate<ConfigurableFluidStack> stackFilter, Consumer<Integer> stackUpdater, Runnable markDirty) {
         int index = -1;
         // First, try to find a slot that contains the fluid. If we couldn't find one, we insert in any stack
         outer: for(int tries = 0; tries < 2; ++tries) {
-            for(int i = 0; i < getFluidStacks().size(); i++) {
-                ConfigurableFluidStack stack = getFluidStacks().get(i);
+            for(int i = 0; i < fluidStacks.size(); i++) {
+                ConfigurableFluidStack stack = fluidStacks.get(i);
                 if (stackFilter.test(stack) && stack.isFluidValid(fluid) && (tries == 1 || stack.getFluid() == fluid)) {
                     index = i;
                     break outer;
@@ -180,13 +180,13 @@ public interface ConfigurableInventory extends Inventory, SidedInventory, FluidT
             }
         }
         if(index == -1) return amount;
-        ConfigurableFluidStack targetStack = getFluidStacks().get(index);
+        ConfigurableFluidStack targetStack = fluidStacks.get(index);
         int ins = Math.min(amount, targetStack.getRemainingSpace());
         if (ins > 0) {
             if (simulation.isAction()) {
                 targetStack.setFluid(fluid);
                 targetStack.increment(ins);
-                markDirty();
+                markDirty.run();
             }
             stackUpdater.accept(index);
         }

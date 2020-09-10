@@ -6,6 +6,8 @@ tags = [
     "antimony_ingot",
     "antimony_nugget",
     "antimony_ore",
+    "battery_alloy_ingot",
+    "battery_alloy_nugget",
     "bauxite_ore",
     "bronze_ingot",
     "bronze_nugget",

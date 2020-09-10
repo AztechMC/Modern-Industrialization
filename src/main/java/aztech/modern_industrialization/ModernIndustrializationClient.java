@@ -39,7 +39,7 @@ public class ModernIndustrializationClient implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
         setupScreens();
-        MIFluids.setupFluidRenders();
+        MIFluidsRender.setupFluidRenders();
         setupPackets();
         MITanks.setupClient();
         setupMachines();

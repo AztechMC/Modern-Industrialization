@@ -56,42 +56,4 @@ public class MIFluids {
         Registry.register(Registry.ITEM, new MIIdentifier("bucket_" + id), fluid.getBucketItem());
         RESOURCE_PACK.addModel(JModel.model().parent("minecraft:item/generated").textures(new JTextures().layer0(MOD_ID + ":items/bucket/" + id)), new MIIdentifier("item/bucket_" + id));
     }
-
-    public static void setupFluidRenders() {
-        final Identifier[] waterSpriteIds = new Identifier[] { new Identifier("minecraft:block/water_still"), new Identifier("minecraft:block/water_flow") };
-        final Sprite[] waterSprites = new Sprite[2];
-
-        final Identifier listenerId = new MIIdentifier("waterlike_reload_listener");
-        ResourceManagerHelper.get(ResourceType.CLIENT_RESOURCES).registerReloadListener(new SimpleSynchronousResourceReloadListener() {
-            @Override
-            public Identifier getFabricId() {
-                return listenerId;
-            }
-
-            @Override
-            public void apply(ResourceManager manager) {
-                for(int i = 0; i < 2; ++i) {
-                    waterSprites[i] = MinecraftClient.getInstance().getSpriteAtlas(SpriteAtlasTexture.BLOCK_ATLAS_TEX).apply(waterSpriteIds[i]);
-                }
-            }
-        });
-
-        Consumer<CraftingFluid> registerWaterlikeFluid = (fluid) -> {
-            FluidRenderHandlerRegistry.INSTANCE.register(fluid, new FluidRenderHandler() {
-                @Override
-                public Sprite[] getFluidSprites(BlockRenderView blockRenderView, BlockPos blockPos, FluidState fluidState) {
-                    return waterSprites;
-                }
-
-                @Override
-                public int getFluidColor(BlockRenderView view, BlockPos pos, FluidState state) {
-                    return fluid.color;
-                }
-            });
-        };
-
-        for(CraftingFluid fluid : FLUIDS) {
-            registerWaterlikeFluid.accept(fluid);
-        }
-    }
 }

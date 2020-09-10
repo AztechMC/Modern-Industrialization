@@ -198,6 +198,10 @@ public class MachineBlockEntity extends AbstractMachineBlockEntity
         if(delayedActiveRecipe != null) {
             activeRecipe = recipeType.getRecipe((ServerWorld) world, delayedActiveRecipe);
             delayedActiveRecipe = null;
+            if(activeRecipe == null) { // If a recipe got removed, we need to reset the efficiency and the used energy to allow the machinea to resume processing.
+                efficiencyTicks = 0;
+                usedEnergy = 0;
+            }
         }
     }
 

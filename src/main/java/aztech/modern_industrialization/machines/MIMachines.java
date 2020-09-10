@@ -278,7 +278,7 @@ public class MIMachines {
                 .setInputSlotPosition(15, 32, 1, 1)
                 .setInputLiquidSlotPosition(50, 32, 1, 1).setLiquidOutputSlotPosition(134, 32, 1, 1)
                 .setupProgressBar(176, 0, 15, 51, 14, 14, false, true)
-                .setupEfficiencyBar(0, 166, 50, 62, 100, 2)
+                .setupEfficiencyBar(0, 166, 50, 62, 100, 2).hideEfficiencyTooltip()
                 .setupBackground("steam_boiler.png")
                 .setupOverlays("boiler", true, false, false)
                 .setupCasing("bricked_bronze");
@@ -296,7 +296,7 @@ public class MIMachines {
                 .setInputSlotPosition(15, 32, 1, 1)
                 .setInputLiquidSlotPosition(50, 32, 1, 1).setLiquidOutputSlotPosition(134, 32, 1, 1)
                 .setupProgressBar(176, 0, 15, 51, 14, 14, false, true)
-                .setupEfficiencyBar(0, 166, 50, 62, 100, 2)
+                .setupEfficiencyBar(0, 166, 50, 62, 100, 2).hideEfficiencyTooltip()
                 .setupBackground("steam_boiler.png")
                 .setupOverlays("boiler", true, false, false)
                 .setupCasing("bricked_steel");
@@ -322,21 +322,21 @@ public class MIMachines {
         registerMachineTiersElectricOnly("polarizer", RECIPE_POLARIZER, 1, 1, 0, 0, MIMachines::setupPolarizer);
 
         new SteamMachineFactory("coke_oven", BRONZE, (f, t) -> new MultiblockMachineBlockEntity(f, t, COKE_OVEN_SHAPE), RECIPE_COKE_OVEN, 1, 1, 0, 0)
-                .setInputSlotPosition(56, 45, 1, 1).setOutputSlotPosition(102, 45, 1, 1)
-                .setupProgressBar(76, 45, 22, 15, true).setupBackground("steam_furnace.png")
+                .setInputSlotPosition(56, 35, 1, 1).setOutputSlotPosition(102, 35, 1, 1)
+                .setupProgressBar(76, 35, 22, 15, true).setupBackground("steam_furnace.png")
                 .setupOverlays("coke_oven", true, false, false)
                 .setupCasing("bricks")
         ;
         new SteamMachineFactory("steam_blast_furnace", BRONZE, (f, t) -> new MultiblockMachineBlockEntity(f, t, BLAST_FURNACE_SHAPE), RECIPE_BLAST_FURNACE, 1, 1, 1, 1)
-                .setInputSlotPosition(56, 45, 1, 1).setOutputSlotPosition(102, 45, 1, 1)
-                .setInputLiquidSlotPosition(36, 45, 1, 1).setLiquidOutputSlotPosition(122, 45, 1, 1)
-                .setupProgressBar(76, 45, 22, 15, true).setupBackground("steam_furnace.png")
+                .setInputSlotPosition(56, 35, 1, 1).setOutputSlotPosition(102, 35, 1, 1)
+                .setInputLiquidSlotPosition(36, 35, 1, 1).setLiquidOutputSlotPosition(122, 35, 1, 1)
+                .setupProgressBar(76, 35, 22, 15, true).setupBackground("steam_furnace.png")
                 .setupOverlays("steam_blast_furnace", true, false, false)
                 .setupCasing("firebricks")
         ;
         new SteamMachineFactory("quarry", BRONZE, (f, t) -> new MultiblockMachineBlockEntity(f, t, QUARRY_SHAPE), RECIPE_QUARRY, 1, 16, 0, 0)
-                .setInputSlotPosition(56, 45, 1, 1).setOutputSlotPosition(102, 45, 4, 4)
-                .setupProgressBar(76, 45, 22, 15, true).setupBackground("steam_furnace.png")
+                .setInputSlotPosition(56, 35, 1, 1).setOutputSlotPosition(102, 35, 4, 4)
+                .setupProgressBar(76, 35, 22, 15, true).setupBackground("steam_furnace.png")
                 .setupOverlays("quarry", true, false, false)
                 .setupCasing("steel")
         ;

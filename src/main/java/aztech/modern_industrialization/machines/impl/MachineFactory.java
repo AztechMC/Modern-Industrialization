@@ -68,6 +68,7 @@ public class MachineFactory {
     int efficiencyBarDrawY;
     int efficiencyBarSizeX;
     int efficiencyBarSizeY;
+    boolean efficiencyBarDrawTooltip = true;
 
     boolean hasEnergyBar = false;
     int electricityBarX;
@@ -288,6 +289,11 @@ public class MachineFactory {
             this.electricityBarX = x;
             this.electricityBarY = y;
         }
+        return this;
+    }
+
+    public MachineFactory hideEfficiencyTooltip() {
+        this.efficiencyBarDrawTooltip = false;
         return this;
     }
 

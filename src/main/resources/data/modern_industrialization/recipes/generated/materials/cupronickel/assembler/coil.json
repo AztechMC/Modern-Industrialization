@@ -1,0 +1,17 @@
+{
+    "type": "modern_industrialization:assembler",
+    "eu": 2,
+    "duration": 200,
+    "item_inputs": [
+        {
+            "item": "modern_industrialization:cupronickel_wire",
+            "amount": 8
+        }
+    ],
+    "item_outputs": [
+        {
+            "item": "modern_industrialization:cupronickel_coil",
+            "amount": 1
+        }
+    ]
+}

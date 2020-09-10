@@ -4,16 +4,16 @@
   "duration": 200,
   "item_inputs": [
     {
-      "item": "modern_industrialization:lead_small_dust",
+      "item": "modern_industrialization:nickel_dust",
       "amount": 1
     },
     {
-      "item": "modern_industrialization:antimony_small_dust",
+      "item": "modern_industrialization:copper_dust",
       "amount": 1
     }
   ],
   "item_outputs": {
-    "item": "modern_industrialization:battery_alloy_small_dust",
+    "item": "modern_industrialization:cupronickel_dust",
     "amount": 2
   }
 }

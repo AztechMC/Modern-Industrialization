@@ -1,0 +1,9 @@
+{
+    "type": "minecraft:smelting",
+    "ingredient": {
+        "item": "modern_industrialization:cupronickel_small_dust"
+    },
+    "result": "modern_industrialization:cupronickel_nugget",
+    "experience": 0.08,
+    "cookingtime": 200
+}

@@ -33,13 +33,13 @@ public class MIMaterialSetup {
             for (String block_type : material.getBlockType()) {
 
                 Block block = null;
-                if (block_type.equals("block")) {
+                if (!block_type.equals("ore")) {
                     block = new MaterialBlock(FabricBlockSettings.of(METAL_MATERIAL).hardness(5.0f)
                             .resistance(6.0f)
                             .breakByTool(FabricToolTags.PICKAXES, 0)
                             .requiresTool(), material.getId(), "block"
                     );
-                } else if (block_type.equals("ore")) {
+                } else {
                     block = new MaterialBlock(FabricBlockSettings.of(STONE_MATERIAL).hardness(3.0f)
                             .resistance(3.0f)
                             .breakByTool(FabricToolTags.PICKAXES, 1)

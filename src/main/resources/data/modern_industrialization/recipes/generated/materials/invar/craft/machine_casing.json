@@ -1,0 +1,17 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "PPP",
+        "P P",
+        "PPP"
+    ],
+    "result": {
+        "item": "modern_industrialization:invar_machine_casing",
+        "count": 1
+    },
+    "key": {
+        "P": {
+            "item": "modern_industrialization:invar_large_plate"
+        }
+    }
+}

@@ -1,0 +1,19 @@
+{
+  "type" : "minecraft:crafting_shaped",
+  "pattern" : [
+    " d ",
+    "dGd",
+    " d "
+    ],
+  "key": {
+    "d" : {
+      "item" : "minecraft:diamond"
+    },
+    "G": {
+      "item" : "modern_industrialization:invar_gear"
+    }
+  },
+  "result": {
+    "item": "modern_industrialization:invar_rotary_blade"
+  }
+}

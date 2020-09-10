@@ -4,7 +4,7 @@
     "duration": 200,
     "item_inputs": [
         {
-            "tag": "c:copper_ingots",
+            "item": "modern_industrialization:copper_plate",
             "amount": 1
         }
     ],

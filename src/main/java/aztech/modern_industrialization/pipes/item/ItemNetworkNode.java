@@ -2,10 +2,7 @@ package aztech.modern_industrialization.pipes.item;
 
 import alexiil.mc.lib.attributes.SearchOption;
 import alexiil.mc.lib.attributes.SearchOptions;
-import alexiil.mc.lib.attributes.item.ItemAttributes;
-import alexiil.mc.lib.attributes.item.ItemExtractable;
-import alexiil.mc.lib.attributes.item.ItemInsertable;
-import alexiil.mc.lib.attributes.item.ItemInvUtil;
+import alexiil.mc.lib.attributes.item.*;
 import aztech.modern_industrialization.pipes.api.PipeConnectionType;
 import aztech.modern_industrialization.pipes.api.PipeNetworkNode;
 import aztech.modern_industrialization.util.ItemStackHelper;
@@ -147,15 +144,17 @@ public class ItemNetworkNode extends PipeNetworkNode {
         if(inactiveTicks == 0) {
             List<InsertTarget> reachableInputs = null;
             int movesLeft = 16;
-            for(ItemConnection connection : connections) {
+            outer: for(ItemConnection connection : connections) { // TODO: optimize!
                 if(connection.canExtract()) {
                     if(reachableInputs == null) reachableInputs = getInputs(world, pos);
-                    ItemExtractable extractable = ItemAttributes.EXTRACTABLE.get(world, pos.offset(connection.direction), SearchOptions.inDirection(connection.direction));
-
-                    for(InsertTarget target : reachableInputs) {
-                        if(target.connection.canInsert()) {
-                            if(ItemInvUtil.move(extractable, target.insertable, s -> connection.canStackMoveThrough(s) && target.connection.canStackMoveThrough(s), movesLeft) > 0) {
-                                break;
+                    GroupedItemInv inv = ItemAttributes.GROUPED_INV.get(world, pos.offset(connection.direction), SearchOptions.inDirection(connection.direction));
+                    for(ItemStack stack : inv.getStoredStacks()) {
+                        ItemExtractable extractable = inv.getPureExtractable().filtered(s -> ItemStackUtil.areEqualIgnoreAmounts(stack, s));
+                        for(InsertTarget target : reachableInputs) {
+                            if(target.connection.canInsert()) {
+                                if(ItemInvUtil.move(extractable, target.insertable, s -> connection.canStackMoveThrough(s) && target.connection.canStackMoveThrough(s), movesLeft) > 0) {
+                                    continue outer;
+                                }
                             }
                         }
                     }

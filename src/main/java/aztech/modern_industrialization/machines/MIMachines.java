@@ -60,7 +60,7 @@ public class MIMachines {
     public static MultiblockShape QUARRY_SHAPE;
 
 
-    private static MultiblockShape cokeOvenLike(int height, Block block){
+    private static MultiblockShape cokeOvenLike(int height, Block block, int extra_flags){
         MultiblockShape shape = new MultiblockShape();
         MultiblockShape.Entry main_block = MultiblockShapes.block(block);
         for(int y = 0; y < height-1; y++){
@@ -75,7 +75,7 @@ public class MIMachines {
             }
         }
 
-        MultiblockShape.Entry optionalHatch = MultiblockShapes.or(main_block, MultiblockShapes.hatch(HATCH_FLAG_FLUID_INPUT | HATCH_FLAG_ITEM_INPUT | HATCH_FLAG_ITEM_OUTPUT));
+        MultiblockShape.Entry optionalHatch = MultiblockShapes.or(main_block, MultiblockShapes.hatch(HATCH_FLAG_FLUID_INPUT | HATCH_FLAG_ITEM_INPUT | HATCH_FLAG_ITEM_OUTPUT | extra_flags));
         for(int x = -1; x <=1; x++){
             for(int z = 0; z <= 2; z++){
                 shape.addEntry(x, -1, z, optionalHatch);
@@ -85,8 +85,8 @@ public class MIMachines {
     }
 
     static {
-        COKE_OVEN_SHAPE = cokeOvenLike(3, Blocks.BRICKS);
-        BLAST_FURNACE_SHAPE = cokeOvenLike(4, MIBlock.BLOCK_FIRE_CLAY_BRICKS);
+        COKE_OVEN_SHAPE = cokeOvenLike(3, Blocks.BRICKS, 0);
+        BLAST_FURNACE_SHAPE = cokeOvenLike(4, MIBlock.BLOCK_FIRE_CLAY_BRICKS, HATCH_FLAG_FLUID_OUTPUT);
 
         QUARRY_SHAPE = new MultiblockShape();
         MultiblockShape.Entry steelCasing = MultiblockShapes.blockId(new MIIdentifier("steel_machine_casing"));

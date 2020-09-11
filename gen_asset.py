@@ -217,7 +217,7 @@ def genForgeHammer(ty, tyo):
 
     list_todo = [('large_plate', 1, 'curved_plate', 3, hammer),
                  ('double_ingot', 1, 'plate', 1, hammer),
-                 ('nugget', 1, 'small_dust', 1, hammer),
+                 ('nugget', 1, 'tiny_dust', 1, hammer),
                  ('main', 1, 'rod', 1, saw),
                  ('large_plate', 1, 'gear', 1, saw),
                  ('rod', 1, 'bolt', 1, saw),
@@ -691,7 +691,9 @@ public class MIMaterials {
     )
     gen(
         file,
-        Material('redstone', {'crushed_dust', 'tiny_dust'}, set(), oredicted={
+        Material('redstone', {'crushed_dust', 'tiny_dust'}, set(), overrides={
+            "dust": "minecraft:redstone",
+        }, oredicted={
             "tiny_dust": "c:redstone_tiny_dusts",
         }),
         '#d20000', macerator=False

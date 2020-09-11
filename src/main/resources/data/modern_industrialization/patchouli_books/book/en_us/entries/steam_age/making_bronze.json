@@ -5,12 +5,12 @@
   "pages": [
     {
       "type": "text",
-      "text": "First, you need to make small copper and tin dusts by hammering copper and tin nuggets in the forge hammer.$(br2)You can then combine copper and tin (small) dusts to make bronze (small) dust.$(br2)Always remember that 9 small dusts are one dust."
+      "text": "First, you need to make small copper and tin dusts by hammering copper and tin nuggets in the forge hammer.$(br2)You can then combine copper and tin (tiny) dusts to make bronze (tiny) dust.$(br2)Always remember that 9 tiny dusts are one dust."
     },
     {
       "type": "crafting",
       "recipe": "modern_industrialization:bronze/dust",
-      "recipe2": "modern_industrialization:bronze/small_dust"
+      "recipe2": "modern_industrialization:bronze/tiny_dust"
     },
     {
       "type": "text",

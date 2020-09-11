@@ -4,7 +4,7 @@
     "duration": 200,
     "item_inputs": [
         {
-            "item": "modern_industrialization:bronze_gear",
+            "tag": "c:bronze_gears",
             "amount": 4
         },
         {

@@ -8,7 +8,7 @@
   "key":
   {
     "G": {
-      "item" : "modern_industrialization:bronze_gear"
+      "tag" : "c:bronze_gears"
     },
     "H" :{
       "item" : "modern_industrialization:steel_machine_casing"

@@ -561,6 +561,9 @@ public class MIMaterials {
             "ore": "minecraft:iron_ore",
             "item_pipe": "modern_industrialization:pipe_item_iron",
             "fluid_pipe": "modern_industrialization:pipe_fluid_iron",
+        }, oredicted={
+            "plate": "c:iron_plates",
+            "dust": "c:iron_dusts",
         }),
         '#f0f0f0', vanilla=True, forge_hammer=True,
     )
@@ -569,6 +572,8 @@ public class MIMaterials {
         Material('coal', PURE_NON_METAL, set(), overrides={
             "main": "minecraft:coal",
             "ore": "minecraft:coal_ore",
+        }, oredicted={
+            "dust": "c:coal_dusts",
         }),
         '#282828', vanilla=True, forge_hammer=True, isMetal=False, smelting=False,
     )

@@ -29,6 +29,7 @@ public class MITags {
     private static final Tag<Item> BRONZE_INGOTS = TagRegistry.item(new Identifier("c", "bronze_ingots"));
     private static final Tag<Item> BRONZE_NUGGETS = TagRegistry.item(new Identifier("c", "bronze_nuggets"));
     private static final Tag<Item> BRONZE_PLATES = TagRegistry.item(new Identifier("c", "bronze_plates"));
+    private static final Tag<Item> COAL_DUSTS = TagRegistry.item(new Identifier("c", "coal_dusts"));
     private static final Tag<Item> COPPER_DUSTS = TagRegistry.item(new Identifier("c", "copper_dusts"));
     private static final Tag<Item> COPPER_GEARS = TagRegistry.item(new Identifier("c", "copper_gears"));
     private static final Tag<Item> COPPER_INGOTS = TagRegistry.item(new Identifier("c", "copper_ingots"));
@@ -47,6 +48,8 @@ public class MITags {
     private static final Tag<Item> INVAR_INGOTS = TagRegistry.item(new Identifier("c", "invar_ingots"));
     private static final Tag<Item> INVAR_NUGGETS = TagRegistry.item(new Identifier("c", "invar_nuggets"));
     private static final Tag<Item> INVAR_PLATES = TagRegistry.item(new Identifier("c", "invar_plates"));
+    private static final Tag<Item> IRON_DUSTS = TagRegistry.item(new Identifier("c", "iron_dusts"));
+    private static final Tag<Item> IRON_PLATES = TagRegistry.item(new Identifier("c", "iron_plates"));
     private static final Tag<Item> LEAD_DUSTS = TagRegistry.item(new Identifier("c", "lead_dusts"));
     private static final Tag<Item> LEAD_INGOTS = TagRegistry.item(new Identifier("c", "lead_ingots"));
     private static final Tag<Item> LEAD_NUGGETS = TagRegistry.item(new Identifier("c", "lead_nuggets"));

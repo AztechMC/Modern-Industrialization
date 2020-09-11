@@ -24,7 +24,7 @@ public class MIItem extends Item {
         return id;
     }
 
-    public static final MIItem ITEM_SMALL_BRICK_DUST = new MIItem("brick_small_dust");
+    public static final MIItem ITEM_TINY_BRICK_DUST = new MIItem("brick_tiny_dust");
     public static final MIItem ITEM_BRICK_DUST = new MIItem("brick_dust");
     public static final MIItem ITEM_FIRE_CLAY_DUST = new MIItem("fire_clay_dust");
     public static final MIItem ITEM_FIRE_CLAY_BRICK = new MIItem("fire_clay_brick");

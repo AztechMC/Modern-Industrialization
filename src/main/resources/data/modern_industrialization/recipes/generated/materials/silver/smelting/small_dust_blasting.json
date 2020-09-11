@@ -1,7 +1,7 @@
 {
     "type": "minecraft:blasting",
     "ingredient": {
-        "item": "modern_industrialization:silver_small_dust"
+        "item": "modern_industrialization:silver_tiny_dust"
     },
     "result": "modern_industrialization:silver_nugget",
     "experience": 0.08,

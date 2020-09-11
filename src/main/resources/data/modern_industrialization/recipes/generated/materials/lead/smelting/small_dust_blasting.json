@@ -1,7 +1,7 @@
 {
     "type": "minecraft:blasting",
     "ingredient": {
-        "item": "modern_industrialization:lead_small_dust"
+        "item": "modern_industrialization:lead_tiny_dust"
     },
     "result": "modern_industrialization:lead_nugget",
     "experience": 0.08,

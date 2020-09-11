@@ -1,7 +1,7 @@
 {
     "type": "minecraft:blasting",
     "ingredient": {
-        "item": "modern_industrialization:tin_small_dust"
+        "item": "modern_industrialization:tin_tiny_dust"
     },
     "result": "modern_industrialization:tin_nugget",
     "experience": 0.08,

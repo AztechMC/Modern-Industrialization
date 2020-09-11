@@ -1,7 +1,7 @@
 {
     "type": "minecraft:smelting",
     "ingredient": {
-        "item": "modern_industrialization:bronze_small_dust"
+        "item": "modern_industrialization:bronze_tiny_dust"
     },
     "result": "modern_industrialization:bronze_nugget",
     "experience": 0.08,

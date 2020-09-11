@@ -1,7 +1,7 @@
 {
     "type": "minecraft:blasting",
     "ingredient": {
-        "item": "modern_industrialization:cupronickel_small_dust"
+        "item": "modern_industrialization:cupronickel_tiny_dust"
     },
     "result": "modern_industrialization:cupronickel_nugget",
     "experience": 0.08,

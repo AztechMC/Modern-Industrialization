@@ -6,14 +6,14 @@
   ],
   "key": {
     "C": {
-      "item": "modern_industrialization:copper_small_dust"
+      "item": "modern_industrialization:copper_tiny_dust"
     },
     "T" : {
-      "item": "modern_industrialization:tin_small_dust"
+      "item": "modern_industrialization:tin_tiny_dust"
     }
   },
   "result": {
-    "item": "modern_industrialization:bronze_small_dust",
+    "item": "modern_industrialization:bronze_tiny_dust",
     "count": 3
   }
 }

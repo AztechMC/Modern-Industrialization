@@ -231,7 +231,7 @@ def genForgeHammer(ty, tyo):
 
 
 def genCraft(vanilla, ty, tyo):
-    list_full = [('small_dust', 'dust')]
+    list_full = [('tiny_dust', 'dust')]
 
     if not vanilla:
         list_full.append(('nugget', 'main'))
@@ -334,7 +334,7 @@ def genCraft(vanilla, ty, tyo):
 
 
 def genSmelting(vanilla, ty, isMetal):
-    list_todo = [('small_dust', 'nugget', 0.08),
+    list_todo = [('tiny_dust', 'nugget', 0.08),
                  ('crushed_dust', 'main', 0.7),  ('dust', 'main', 0.7)]
 
     if not vanilla:
@@ -370,7 +370,7 @@ def genMacerator(ty, tyo):
         if b // 9 != 0:
             recipe.output(ty["dust"], b // 9)
         if b % 9 != 0:
-            recipe.output(ty["small_dust"], b % 9)
+            recipe.output(ty["tiny_dust"], b % 9)
         recipe.save(ty.id, a)
 
     MIRecipe("macerator").input(tyo["ore"]).output(
@@ -459,10 +459,10 @@ ORE_ONLY = {'ore'}
 BOTH = {'block', 'ore'}
 
 ITEM_BASE = {'ingot', 'plate', 'large_plate', 'nugget', 'double_ingot',
-             'small_dust', 'dust', 'curved_plate', 'crushed_dust'}  # TODO: pipes
+             'tiny_dust', 'dust', 'curved_plate', 'crushed_dust'}  # TODO: pipes
 
-PURE_METAL = {'ingot', 'nugget', 'small_dust', 'dust', 'crushed_dust'}
-PURE_NON_METAL = {'small_dust', 'dust', 'crushed_dust'}
+PURE_METAL = {'ingot', 'nugget', 'tiny_dust', 'dust', 'crushed_dust'}
+PURE_NON_METAL = {'tiny_dust', 'dust', 'crushed_dust'}
 
 ITEM_ALL = ITEM_BASE | {'bolt', 'blade',
                         'ring', 'rotor', 'gear', 'rod'}
@@ -470,7 +470,7 @@ ITEM_ALL = ITEM_BASE | {'bolt', 'blade',
 ITEM_ALL_NO_ORE = ITEM_ALL - {'crushed_dust'}
 TEXTURE_UNDERLAYS = {'ore'}
 TEXTURE_OVERLAYS = {'fine_wire'}
-DEFAULT_OREDICT = {'nugget': '_nuggets', 'ore': '_ores', 'plate': '_plates', 'gear': '_gears', 'dust': '_dusts'}
+DEFAULT_OREDICT = {'nugget': '_nuggets', 'ore': '_ores', 'plate': '_plates', 'gear': '_gears', 'dust': '_dusts', 'tiny_dust': '_tiny_dusts'}
 RESTRICTIVE_OREDICT = {'ore': '_ores'}
 
 
@@ -550,6 +550,7 @@ public class MIMaterials {
             "ore": "c:gold_ores",
             "plate": "c:gold_plates",
             "dust": "c:gold_dusts",
+            "tiny_dust": "c:gold_tiny_dusts",
         }),
         '#ffe100', vanilla=True,
     )
@@ -564,6 +565,7 @@ public class MIMaterials {
         }, oredicted={
             "plate": "c:iron_plates",
             "dust": "c:iron_dusts",
+            "tiny_dust": "c:iron_tiny_dusts",
         }),
         '#f0f0f0', vanilla=True, forge_hammer=True,
     )
@@ -574,6 +576,7 @@ public class MIMaterials {
             "ore": "minecraft:coal_ore",
         }, oredicted={
             "dust": "c:coal_dusts",
+            "tiny_dust": "c:coal_tiny_dusts",
         }),
         '#282828', vanilla=True, forge_hammer=True, isMetal=False, smelting=False,
     )
@@ -624,6 +627,7 @@ public class MIMaterials {
         Material('bauxite', PURE_NON_METAL, ORE_ONLY, oredicted={
             "dust": "c:bauxite_dusts",
             "ore": "c:bauxite_ores",
+            "tiny_dust": "c:bauxite_tiny_dusts",
         }),
         '#cc3908', isMetal=False, smelting=False, veinsPerChunk=8, veinsSize=7, maxYLevel=32,
     )
@@ -644,21 +648,21 @@ public class MIMaterials {
     )
     gen(
         file,
-        Material('battery_alloy', {'small_dust', 'dust',
+        Material('battery_alloy', {'tiny_dust', 'dust',
                                    'plate', 'nugget', 'curved_plate', 'ingot',
                                    'double_ingot'}, BLOCK_ONLY),
         '#a694a5',
     )
     gen(
         file,
-        Material('invar', {'small_dust', 'dust', 'plate',
+        Material('invar', {'tiny_dust', 'dust', 'plate',
                            'ingot', 'double_ingot', 'nugget', 'large_plate', 'gear'}, BLOCK_CASING),
         '#b4b478',
     )
 
     gen(
         file,
-        Material('cupronickel', {'small_dust', 'dust', 'plate',
+        Material('cupronickel', {'tiny_dust', 'dust', 'plate',
                                  'ingot', 'nugget', 'wire', 'double_ingot'}, BLOCK_ONLY | {'coil'}),
         '#e39680',
     )
@@ -686,7 +690,9 @@ public class MIMaterials {
     )
     gen(
         file,
-        Material('redstone', {'crushed_dust'}, set()),
+        Material('redstone', {'crushed_dust', 'tiny_dust'}, set(), oredicted={
+            "tiny_dust": "c:redstone_tiny_dusts",
+        }),
         '#d20000', macerator=False
     )
 

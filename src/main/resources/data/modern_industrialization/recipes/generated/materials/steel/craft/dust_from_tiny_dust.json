@@ -1,0 +1,17 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "xxx",
+        "xxx",
+        "xxx"
+    ],
+    "result": {
+        "item": "modern_industrialization:steel_dust",
+        "count": 1
+    },
+    "key": {
+        "x": {
+            "item": "modern_industrialization:steel_tiny_dust"
+        }
+    }
+}

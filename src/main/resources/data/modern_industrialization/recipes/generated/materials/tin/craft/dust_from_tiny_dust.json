@@ -1,7 +1,7 @@
 {
     "type": "minecraft:crafting_shaped",
     "pattern": [
-        "xxx",
+        "yxx",
         "xxx",
         "xxx"
     ],
@@ -10,8 +10,11 @@
         "count": 1
     },
     "key": {
-        "x": {
+        "y": {
             "item": "modern_industrialization:tin_tiny_dust"
+        },
+        "x": {
+            "tag": "c:tin_tiny_dusts"
         }
     }
 }

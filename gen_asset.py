@@ -239,9 +239,10 @@ def genCraft(vanilla, ty, tyo):
 
     for (a, b) in list_full:
         CraftingRecipe(
-            ["xxx", "xxx", "xxx"],
+            ["yxx", "xxx", "xxx"],
             ty[b],
-            x=ty[a],
+            x=tyo[a],
+            y=ty[a],
         ).save(ty.id, "%s_from_%s" % (b, a))
         CraftingRecipe(
             ["x"],

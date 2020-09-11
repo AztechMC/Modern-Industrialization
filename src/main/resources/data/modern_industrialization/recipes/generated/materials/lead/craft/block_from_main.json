@@ -1,7 +1,7 @@
 {
     "type": "minecraft:crafting_shaped",
     "pattern": [
-        "xxx",
+        "yxx",
         "xxx",
         "xxx"
     ],
@@ -10,8 +10,11 @@
         "count": 1
     },
     "key": {
-        "x": {
+        "y": {
             "item": "modern_industrialization:lead_ingot"
+        },
+        "x": {
+            "tag": "c:lead_ingots"
         }
     }
 }

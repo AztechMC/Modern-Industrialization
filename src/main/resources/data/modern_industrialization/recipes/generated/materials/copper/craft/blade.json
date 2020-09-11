@@ -11,7 +11,7 @@
     },
     "key": {
         "P": {
-            "tag": "c:copper_plates"
+            "item": "modern_industrialization:copper_plate"
         },
         "I": {
             "item": "modern_industrialization:copper_rod"

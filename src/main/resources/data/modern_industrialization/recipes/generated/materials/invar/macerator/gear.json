@@ -4,7 +4,7 @@
     "duration": 200,
     "item_inputs": [
         {
-            "tag": "c:invar_gears",
+            "item": "modern_industrialization:invar_gear",
             "amount": 1
         }
     ],

@@ -16,7 +16,7 @@
       "item": "modern_industrialization:pipe_fluid_copper"
     },
     "G": {
-      "tag": "c:copper_gears"
+      "item": "modern_industrialization:copper_gear"
     },
     "T": {
       "item": "modern_industrialization:tank_bronze"

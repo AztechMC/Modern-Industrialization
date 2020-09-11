@@ -4,7 +4,7 @@
     "duration": 200,
     "item_inputs": [
         {
-            "tag": "c:steel_ingots",
+            "item": "modern_industrialization:steel_ingot",
             "amount": 1
         }
     ],

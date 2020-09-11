@@ -4,7 +4,7 @@
     "duration": 200,
     "item_inputs": [
         {
-            "tag": "c:bauxite_ores",
+            "item": "modern_industrialization:bauxite_ore",
             "amount": 1
         }
     ],

@@ -4,7 +4,7 @@
     "duration": 200,
     "item_inputs": [
         {
-            "tag": "c:steel_nuggets",
+            "item": "modern_industrialization:steel_nugget",
             "amount": 1
         }
     ],

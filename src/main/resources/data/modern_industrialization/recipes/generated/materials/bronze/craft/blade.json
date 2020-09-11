@@ -11,7 +11,7 @@
     },
     "key": {
         "P": {
-            "tag": "c:bronze_plates"
+            "item": "modern_industrialization:bronze_plate"
         },
         "I": {
             "item": "modern_industrialization:bronze_rod"

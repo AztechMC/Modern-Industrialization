@@ -4,7 +4,7 @@
     "duration": 200,
     "item_inputs": [
         {
-            "tag": "c:cupronickel_nuggets",
+            "item": "modern_industrialization:cupronickel_nugget",
             "amount": 1
         }
     ],

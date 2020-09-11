@@ -11,7 +11,7 @@
     },
     "key": {
         "P": {
-            "tag": "c:steel_plates"
+            "item": "modern_industrialization:steel_plate"
         },
         "I": {
             "item": "modern_industrialization:steel_rod"

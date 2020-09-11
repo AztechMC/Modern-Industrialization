@@ -4,7 +4,7 @@
     "duration": 200,
     "item_inputs": [
         {
-            "tag": "c:invar_nuggets",
+            "item": "modern_industrialization:invar_nugget",
             "amount": 1
         }
     ],

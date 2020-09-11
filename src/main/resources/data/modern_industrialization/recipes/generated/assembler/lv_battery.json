@@ -8,7 +8,7 @@
             "amount": 2
         },
         {
-            "tag": "c:battery_alloy_plates",
+            "item": "modern_industrialization:battery_alloy_plate",
             "amount": 1
         },
         {

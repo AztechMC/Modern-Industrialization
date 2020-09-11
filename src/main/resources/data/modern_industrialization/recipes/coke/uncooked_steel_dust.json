@@ -7,7 +7,7 @@
   ],
   "key": {
     "C": {
-      "tag": "c:iron_dusts"
+      "item": "modern_industrialization:iron_dust"
     },
     "T" : {
       "item": "modern_industrialization:coke_dust"

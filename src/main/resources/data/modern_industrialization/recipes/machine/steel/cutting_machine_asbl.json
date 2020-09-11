@@ -10,7 +10,7 @@
       "item": "modern_industrialization:bronze_rod"
     },
     "G": {
-      "tag": "c:bronze_gears"
+      "item": "modern_industrialization:bronze_gear"
     },
     "C": {
       "item": "modern_industrialization:steel_machine_casing"

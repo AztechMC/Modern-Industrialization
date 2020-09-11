@@ -4,7 +4,7 @@
     "duration": 200,
     "item_inputs": [
         {
-            "tag": "c:steel_plates",
+            "item": "modern_industrialization:steel_plate",
             "amount": 3
         },
         {
@@ -20,7 +20,7 @@
             "amount": 1
         },
         {
-            "tag": "c:steel_gears",
+            "item": "modern_industrialization:steel_gear",
             "amount": 1
         }
     ],

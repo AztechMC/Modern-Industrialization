@@ -11,7 +11,7 @@
     },
     "key": {
         "P": {
-            "tag": "c:tin_plates"
+            "item": "modern_industrialization:tin_plate"
         },
         "I": {
             "item": "modern_industrialization:tin_rod"

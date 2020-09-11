@@ -10,7 +10,7 @@
     },
     "key": {
         "P": {
-            "tag": "c:copper_plates"
+            "item": "modern_industrialization:copper_plate"
         }
     }
 }

@@ -4,11 +4,11 @@
   "duration": 200,
   "item_inputs": [
     {
-      "tag": "c:nickel_dusts",
+      "item": "modern_industrialization:nickel_dust",
       "amount": 1
     },
     {
-      "tag": "c:copper_dusts",
+      "item": "modern_industrialization:copper_dust",
       "amount": 1
     }
   ],

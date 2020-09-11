@@ -12,7 +12,7 @@
             "amount": 1
         },
         {
-            "tag": "c:steel_gears",
+            "item": "modern_industrialization:steel_gear",
             "amount": 2
         },
         {

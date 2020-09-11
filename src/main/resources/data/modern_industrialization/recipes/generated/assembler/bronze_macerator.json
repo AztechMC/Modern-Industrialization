@@ -8,7 +8,7 @@
             "amount": 2
         },
         {
-            "tag": "c:copper_gears",
+            "item": "modern_industrialization:copper_gear",
             "amount": 3
         },
         {

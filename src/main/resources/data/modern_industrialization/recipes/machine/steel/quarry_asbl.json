@@ -13,7 +13,7 @@
       "item": "modern_industrialization:pipe_item_steel"
     },
     "G": {
-      "tag": "c:steel_gears"
+      "item": "modern_industrialization:steel_gear"
     },
     "P": {
       "item": "minecraft:diamond_pickaxe"

@@ -4,7 +4,7 @@
     "duration": 200,
     "item_inputs": [
         {
-            "item": "modern_industrialization:cupronickel_plate",
+            "tag": "c:cupronickel_plates",
             "amount": 1
         }
     ],

@@ -30,11 +30,16 @@ for f in file_list:
             for s in json_file["pattern"]:
                 for c in s:
                     if c != " ":
-                        key = json_file["key"][c]["item"]
-                        item_inputs_dict[key] = item_inputs_dict[key] + 1
+                        if "item" in json_file["key"][c]:
+                            key = json_file["key"][c]["item"]
+                        else:
+                            key = "#" + json_file["key"][c]["tag"]
+                        item_inputs_dict[key] += 1
 
             for i, c in item_inputs_dict.items():
-                item_inputs.append({"item": i, "amount": c})
+                dct = {"tag": i[1:]} if i[0] == "#" else {"item":i}
+                dct["amount"] = c
+                item_inputs.append(dct)
 
             json_output["item_inputs"] = item_inputs
             item_ouput = json_file["result"]["item"]

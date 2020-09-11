@@ -4,11 +4,11 @@
   "duration": 200,
   "item_inputs": [
     {
-      "item": "modern_industrialization:lead_dust",
+      "tag": "c:lead_dusts",
       "amount": 1
     },
     {
-      "item": "modern_industrialization:antimony_dust",
+      "tag": "c:antimony_dusts",
       "amount": 1
     }
   ],

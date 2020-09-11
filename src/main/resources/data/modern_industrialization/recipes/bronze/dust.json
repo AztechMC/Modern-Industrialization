@@ -6,10 +6,10 @@
   ],
   "key": {
     "C": {
-      "item": "modern_industrialization:copper_dust"
+      "tag": "c:copper_dusts"
     },
     "T" : {
-      "item": "modern_industrialization:tin_dust"
+      "tag": "c:tin_dusts"
     }
   },
   "result": {

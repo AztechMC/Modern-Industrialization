@@ -4,7 +4,7 @@
     "duration": 200,
     "item_inputs": [
         {
-            "item": "modern_industrialization:invar_ingot",
+            "tag": "c:invar_ingots",
             "amount": 1
         }
     ],

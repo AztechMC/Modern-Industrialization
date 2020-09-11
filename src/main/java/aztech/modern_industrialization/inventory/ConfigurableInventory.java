@@ -107,7 +107,12 @@ public interface ConfigurableInventory extends Inventory, SidedInventory, FluidT
     @Override
     default boolean canInsert(int slot, ItemStack stack, Direction dir) {
         ConfigurableItemStack itemStack = getItemStacks().get(slot);
-        return itemStack.pipesInsert && itemStack.canInsert(stack, dir);
+        return itemStack.pipesInsert && itemStack.canInsert(stack);
+    }
+
+    @Override
+    default boolean isValid(int slot, ItemStack stack) {
+        return getItemStacks().get(slot).canInsert(stack);
     }
 
     @Override

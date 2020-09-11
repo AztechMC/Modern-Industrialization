@@ -222,7 +222,7 @@ def genForgeHammer(ty, tyo):
                  ('large_plate', 1, 'gear', 1, saw),
                  ('rod', 1, 'bolt', 1, saw),
                  ('ore', 1, 'crushed_dust', 2, hammer),
-                 ('pipe_item', 1, 'ring', 1, saw),
+                 ('item_pipe', 1, 'ring', 1, saw),
                  ('main', 2, 'double_ingot', 1, hammer),
                  ]
 

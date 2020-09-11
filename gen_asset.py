@@ -59,7 +59,7 @@ def gen_texture(id, hex, item_set, block_set, special_texture=''):
     item = glob("template/item/*.png")
 
     output_path = (
-        "src/main/resources/assets/modern_industrialization/textures/items/materials/" + id)
+            "src/main/resources/assets/modern_industrialization/textures/items/materials/" + id)
     Path(output_path).mkdir(parents=True, exist_ok=True)
 
     for filename in item:
@@ -95,13 +95,17 @@ def gen_texture(id, hex, item_set, block_set, special_texture=''):
             result.save(output_path + '/' + os.path.basename(filename))
 
 loaded_items = {'modern_industrialization:rubber_sheet'}
+tags = defaultdict(lambda: [])
+tags["c:gold_ores"].append("#minecraft:gold_ores")
 
 # check if the item json is valid based on the loaded items
 
 
 def allow_recipe(jsonf):
-    if "item" not in jsonf:
+    if "fluid" in jsonf:
         return True
+    if "item" not in jsonf:
+        return jsonf["tag"] in tags
     namespace, _ = jsonf["item"].split(":")
     return namespace == "minecraft" or jsonf["item"] in loaded_items
 
@@ -140,13 +144,9 @@ class MIRecipe:
         return self
 
     def save(self, id, suffix):
-        path = "src/main/resources/data/modern_industrialization/recipes/generated/materials/" + \
-            id + "/" + self.type + "/"
-        Path(path).mkdir(parents=True, exist_ok=True)
-
         allowed = True
         jsonf = {"type": "modern_industrialization:" +
-                 self.type, "eu": self.eu, "duration": self.duration}
+                         self.type, "eu": self.eu, "duration": self.duration}
         optionals = ["item_inputs", "fluid_inputs",
                      "item_outputs", "fluid_outputs"]
         for opt in optionals:
@@ -157,6 +157,9 @@ class MIRecipe:
                     inputs.append(i)
                 jsonf[opt] = inputs
         if allowed:
+            path = "src/main/resources/data/modern_industrialization/recipes/generated/materials/" + \
+                   id + "/" + self.type + "/"
+            Path(path).mkdir(parents=True, exist_ok=True)
             with open(path + suffix + ".json", "w") as file:
                 json.dump(jsonf, file, indent=4)
 
@@ -174,8 +177,6 @@ class CraftingRecipe:
         self.kwargs = kwargs
 
     def save(self, id, suffix):
-        path = "src/main/resources/data/modern_industrialization/recipes/generated/materials/" + id + "/craft/"
-        Path(path).mkdir(parents=True, exist_ok=True)
         jsonf = {"type": "minecraft:crafting_shaped", "pattern": self.pattern,
                  "result": {"item": self.output, "count": self.count}}
         keys = {}
@@ -187,6 +188,8 @@ class CraftingRecipe:
                     allowed = allowed and allow_recipe(keys[c])
         jsonf["key"] = keys
         if allowed:
+            path = "src/main/resources/data/modern_industrialization/recipes/generated/materials/" + id + "/craft/"
+            Path(path).mkdir(parents=True, exist_ok=True)
             with open(path + suffix + ".json", "w") as file:
                 json.dump(jsonf, file, indent=4)
         return self
@@ -200,7 +203,7 @@ class CraftingRecipe:
             for c in line:
                 if c != " ":
                     keys[c] = {"tag": self.kwargs[c][1:]} if self.kwargs[
-                        c][0] == '#' else {"item": self.kwargs[c]}
+                                                                 c][0] == '#' else {"item": self.kwargs[c]}
                     keycount[c] += 1
         for k in keys:
             recipe.input("#" + keys[k]["tag"] if "tag" in keys[k]
@@ -227,7 +230,7 @@ def genForgeHammer(ty, tyo):
         MIRecipe(d).input(tyo[a], inputCount).output(ty[b], c).save(ty.id, b)
 
 
-def genCraft(vanilla, ty):
+def genCraft(vanilla, ty, tyo):
     list_full = [('small_dust', 'dust')]
 
     if not vanilla:
@@ -254,8 +257,8 @@ def genCraft(vanilla, ty):
     ],
         ty["blade"],
         4,
-        P=ty["plate"],
-        I=ty["rod"],
+        P=tyo["plate"],
+        I=tyo["rod"],
     ).save(ty.id, "blade").export("assembler", ty.id, "blade", eu=8)
 
     CraftingRecipe([
@@ -265,7 +268,7 @@ def genCraft(vanilla, ty):
     ],
         ty["machine_casing"],
         1,
-        P=ty["large_plate"],
+        P=tyo["large_plate"],
     ).save(ty.id, "machine_casing").export("assembler", ty.id, "machine_casing", eu=8)
 
     CraftingRecipe([
@@ -275,7 +278,7 @@ def genCraft(vanilla, ty):
     ],
         ty["coil"],
         1,
-        P=ty["wire"],
+        P=tyo["wire"],
     ).save(ty.id, "coil").export("assembler", ty.id, "coil", eu=8)
 
     CraftingRecipe([
@@ -283,7 +286,7 @@ def genCraft(vanilla, ty):
         "PP"
     ],
         ty["large_plate"],
-        P=ty["plate"],
+        P=tyo["plate"],
     ).save(ty.id, "large_plate").export("packer", ty.id, "large_plate")
 
     CraftingRecipe([
@@ -292,9 +295,9 @@ def genCraft(vanilla, ty):
         "bBb"
     ],
         ty["rotor"],
-        b=ty["bolt"],
-        B=ty["blade"],
-        R=ty["ring"],
+        b=tyo["bolt"],
+        B=tyo["blade"],
+        R=tyo["ring"],
     ).save(ty.id, "rotor").export("assembler", ty.id, "rotor", eu=8)
 
     CraftingRecipe([
@@ -304,7 +307,7 @@ def genCraft(vanilla, ty):
     ],
         ty["item_pipe"],
         6,
-        p=ty["curved_plate"],
+        p=tyo["curved_plate"],
     ).save(ty.id, "item_pipe").export("packer", ty.id, "item_pipe")
 
     CraftingRecipe([
@@ -315,7 +318,7 @@ def genCraft(vanilla, ty):
         ty["fluid_pipe"],
         6,
         g="minecraft:glass_pane",
-        p=ty["curved_plate"],
+        p=tyo["curved_plate"],
     ).save(ty.id, "fluid_pipe")
 
     CraftingRecipe([
@@ -331,10 +334,6 @@ def genCraft(vanilla, ty):
 
 
 def genSmelting(vanilla, ty, isMetal):
-    path = "src/main/resources/data/modern_industrialization/recipes/generated/materials/" + \
-        ty.id + "/smelting/"
-    Path(path).mkdir(parents=True, exist_ok=True)
-
     list_todo = [('small_dust', 'nugget', 0.08),
                  ('crushed_dust', 'main', 0.7),  ('dust', 'main', 0.7)]
 
@@ -353,6 +352,10 @@ def genSmelting(vanilla, ty, isMetal):
                 jsonf["result"] = ty[b]
                 jsonf["experience"] = c
                 jsonf["cookingtime"] = e
+
+                path = "src/main/resources/data/modern_industrialization/recipes/generated/materials/" + \
+                       ty.id + "/smelting/"
+                Path(path).mkdir(parents=True, exist_ok=True)
                 with open(path + "/" + a + "_" + d + ".json", "w") as file:
                     json.dump(jsonf, file, indent=4)
 
@@ -403,7 +406,7 @@ def genWiremill(ty, tyo):
 material_lines = []
 
 
-def gen(file, ty, hex, vanilla=False, forge_hammer=False, smelting=True, isMetal=True, veinsPerChunk=0, veinsSize=0, maxYLevel=64, texture=''):
+def gen(file, ty, hex, vanilla=False, forge_hammer=False, smelting=True, isMetal=True, veinsPerChunk=0, veinsSize=0, maxYLevel=64, macerator=True):
 
     item_to_add = ','.join([(lambda s: "\"%s\"" % s)(s)
                             for s in sorted(list(ty.mi_items))])
@@ -437,12 +440,13 @@ def gen(file, ty, hex, vanilla=False, forge_hammer=False, smelting=True, isMetal
     if forge_hammer:
         genForgeHammer(ty, tyo)
 
-    genCraft(vanilla, ty)
+    genCraft(vanilla, ty, tyo)
 
     if smelting:
         genSmelting(vanilla, ty, isMetal)
 
-    genMacerator(ty, tyo)
+    if macerator:
+        genMacerator(ty, tyo)
     genCompressor(ty, tyo)
     genCuttingSaw(ty, tyo)
     genPacker(ty, tyo)
@@ -466,20 +470,27 @@ ITEM_ALL = ITEM_BASE | {'bolt', 'blade',
 ITEM_ALL_NO_ORE = ITEM_ALL - {'crushed_dust'}
 TEXTURE_UNDERLAYS = {'ore'}
 TEXTURE_OVERLAYS = {'fine_wire'}
-DEFAULT_OREDICT = {'main': '_ingots', 'nugget': '_nuggets', 'ore': '_ores'}
+DEFAULT_OREDICT = {'nugget': '_nuggets', 'ore': '_ores', 'plate': '_plates', 'gear': '_gears', 'dust': '_dusts'}
 RESTRICTIVE_OREDICT = {'ore': '_ores'}
 
 
 class Material:
 
-    def __init__(self, id, mi_items, mi_blocks, overrides={}, oredicted={}):
+    def __init__(self, id, mi_items, mi_blocks, overrides=None, oredicted=None):
+        if overrides is None:
+            overrides = {}
+        if oredicted is None:
+            oredicted = {}
         self.id = id
         self.mi_items = mi_items
         self.mi_blocks = mi_blocks
         if "ingot" in mi_items:
             overrides["main"] = "modern_industrialization:" + id + "_ingot"
             if oredicted == {}:
-                oredicted = DEFAULT_OREDICT
+                oredicted["main"] = "c:" + id + "_ingots"
+                for key in DEFAULT_OREDICT:
+                    if key in mi_items or key in mi_blocks:
+                        oredicted[key] = "c:" + id + DEFAULT_OREDICT[key]
         self.overrides = overrides
         self.oredicted = oredicted
         self.__load()
@@ -491,6 +502,10 @@ class Material:
                 "modern_industrialization:" + self.id + "_" + item}
         for ov in self.overrides.values():
             loaded_items |= {ov}
+        for key, suffix in self.oredicted.items():
+            tags[suffix].append(self[key])
+            if key == "ore":
+                tags["c:ores"].append(self[key])
         return self
 
     def get_oredicted(self):
@@ -501,7 +516,7 @@ class Material:
 
             def __getitem__(self, item):
                 if item in self.outer.oredicted:
-                    return '#c:' + self.outer.id + self.outer.oredicted[item]
+                    return '#' + self.outer.oredicted[item]
                 else:
                     return self.outer[item]
 
@@ -531,6 +546,10 @@ public class MIMaterials {
             "ore": "minecraft:gold_ore",
             "item_pipe": "modern_industrialization:pipe_item_gold",
             "fluid_pipe": "modern_industrialization:pipe_fluid_gold",
+        }, oredicted={
+            "ore": "c:gold_ores",
+            "plate": "c:gold_plates",
+            "dust": "c:gold_dusts",
         }),
         '#ffe100', vanilla=True,
     )
@@ -581,7 +600,7 @@ public class MIMaterials {
     )
     gen(
         file,
-        Material('steel', ITEM_ALL_NO_ORE, BLOCK_CASING, oredicted=RESTRICTIVE_OREDICT, overrides={
+        Material('steel', ITEM_ALL_NO_ORE, BLOCK_CASING, overrides={
             "item_pipe": "modern_industrialization:pipe_item_steel",
             "fluid_pipe": "modern_industrialization:pipe_fluid_steel",
         }),
@@ -589,7 +608,7 @@ public class MIMaterials {
     )
     gen(
         file,
-        Material('aluminum', ITEM_BASE | {'ingot'}, BLOCK_CASING, oredicted={'nope'}, overrides={
+        Material('aluminum', ITEM_BASE | {'ingot'}, BLOCK_CASING, overrides={
             "item_pipe": "modern_industrialization:pipe_item_aluminum",
             "fluid_pipe": "modern_industrialization:pipe_fluid_aluminum",
         }),
@@ -597,7 +616,10 @@ public class MIMaterials {
     )
     gen(
         file,
-        Material('bauxite', PURE_NON_METAL, ORE_ONLY),
+        Material('bauxite', PURE_NON_METAL, ORE_ONLY, oredicted={
+            "dust": "c:bauxite_dusts",
+            "ore": "c:bauxite_ores",
+        }),
         '#cc3908', isMetal=False, smelting=False, veinsPerChunk=8, veinsSize=7, maxYLevel=32,
     )
     gen(
@@ -625,14 +647,14 @@ public class MIMaterials {
     gen(
         file,
         Material('invar', {'small_dust', 'dust', 'plate',
-                           'ingot', 'double_ingot', 'nugget', 'large_plate', 'gear'}, BLOCK_CASING, oredicted={'nope'}),
+                           'ingot', 'double_ingot', 'nugget', 'large_plate', 'gear'}, BLOCK_CASING),
         '#b4b478',
     )
 
     gen(
         file,
         Material('cupronickel', {'small_dust', 'dust', 'plate',
-                                 'ingot', 'nugget', 'wire', 'double_ingot'}, BLOCK_ONLY | {'coil'}, oredicted={'nope'}),
+                                 'ingot', 'nugget', 'wire', 'double_ingot'}, BLOCK_ONLY | {'coil'}),
         '#e39680',
     )
 
@@ -657,10 +679,48 @@ public class MIMaterials {
         }),
         '#99ffff', veinsPerChunk=4, veinsSize=6, maxYLevel=64,
     )
+    gen(
+        file,
+        Material('redstone', {'crushed_dust'}, set()),
+        '#d20000', macerator=False
+    )
 
     file.write("\n".join(sorted(material_lines)))
     file.write("\n")
     file.write("}")
     file.close()
 
-print(loaded_items)
+    print(loaded_items)
+
+    # save tags
+    Path("src/main/resources/data/c/tags/items/").mkdir(parents=True, exist_ok=True)
+    for key, values in tags.items():
+        with open("src/main/resources/data/c/tags/items/" + key[2:] + ".json", "w") as f:
+            jsonf = {
+                "replace": False,
+                "values": values,
+            }
+            json.dump(jsonf, f, indent=4)
+
+    java_class ="""
+package aztech.modern_industrialization;
+
+import net.fabricmc.fabric.api.tag.TagRegistry;
+import net.minecraft.item.Item;
+import net.minecraft.tag.Tag;
+import net.minecraft.util.Identifier;
+
+/**
+ * This is auto-generated, don't edit by hand!
+ */
+public class MITags {\n"""
+    for key in sorted(list(tags.keys())):
+        java_class += '    private static final Tag<Item> %s = TagRegistry.item(new Identifier("c", "%s"));\n' % (key[2:].upper(), key[2:])
+    java_class += """
+    public static void setup() {
+        // Will register the tags by loading the static fields!
+    }
+}
+"""
+    with open("src/main/java/aztech/modern_industrialization/MITags.java", "w") as f:
+        f.write(java_class)

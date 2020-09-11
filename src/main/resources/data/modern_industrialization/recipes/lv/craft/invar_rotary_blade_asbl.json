@@ -10,7 +10,7 @@
       "item" : "minecraft:diamond"
     },
     "G": {
-      "item" : "modern_industrialization:invar_gear"
+      "tag" : "c:invar_gears"
     }
   },
   "result": {

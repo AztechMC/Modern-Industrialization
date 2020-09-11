@@ -1,0 +1,13 @@
+{
+    "replace": false,
+    "values": [
+        "minecraft:gold_ore",
+        "modern_industrialization:copper_ore",
+        "modern_industrialization:tin_ore",
+        "modern_industrialization:bauxite_ore",
+        "modern_industrialization:lead_ore",
+        "modern_industrialization:antimony_ore",
+        "modern_industrialization:nickel_ore",
+        "modern_industrialization:silver_ore"
+    ]
+}

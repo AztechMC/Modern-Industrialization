@@ -17,10 +17,10 @@
       "item" : "modern_industrialization:pipe_electricity_tin"
     },
     "p" :{
-      "item" : "modern_industrialization:steel_plate"
+      "tag" : "c:steel_plates"
     },
     "g" :{
-      "item" : "modern_industrialization:steel_gear"
+      "tag" : "c:steel_gears"
     }
   },
 

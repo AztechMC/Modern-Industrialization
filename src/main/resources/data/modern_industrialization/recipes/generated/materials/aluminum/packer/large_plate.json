@@ -4,7 +4,7 @@
     "duration": 200,
     "item_inputs": [
         {
-            "item": "modern_industrialization:aluminum_plate",
+            "tag": "c:aluminum_plates",
             "amount": 4
         }
     ],

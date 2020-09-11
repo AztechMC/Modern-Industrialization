@@ -8,7 +8,7 @@
             "amount": 2
         },
         {
-            "item": "modern_industrialization:copper_plate",
+            "tag": "c:copper_plates",
             "amount": 1
         }
     ],

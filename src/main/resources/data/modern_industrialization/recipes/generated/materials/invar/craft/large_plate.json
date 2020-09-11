@@ -10,7 +10,7 @@
     },
     "key": {
         "P": {
-            "item": "modern_industrialization:invar_plate"
+            "tag": "c:invar_plates"
         }
     }
 }

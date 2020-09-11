@@ -9,10 +9,9 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
+
+import static aztech.modern_industrialization.ModernIndustrialization.MOD_ID;
 
 public class FurnaceRecipeProxy extends MachineRecipeType {
     public FurnaceRecipeProxy(Identifier id) {
@@ -23,6 +22,7 @@ public class FurnaceRecipeProxy extends MachineRecipeType {
     private static final long UPDATE_INTERVAL = 20 * 1000;
 
     private Map<Identifier, MachineRecipe> cachedRecipes = new HashMap<>();
+    private List<MachineRecipe> sortedRecipes;
 
     private void buildCachedRecipes(ServerWorld world) {
         cachedRecipes.clear();
@@ -41,6 +41,9 @@ public class FurnaceRecipeProxy extends MachineRecipeType {
                 cachedRecipes.put(id, recipe);
             }
         }
+
+        sortedRecipes = new ArrayList<>(cachedRecipes.values());
+        sortedRecipes.sort(Comparator.comparing(r -> r.getId().getNamespace().equals(MOD_ID) ? 0 : 1));
     }
 
     @Override
@@ -50,6 +53,6 @@ public class FurnaceRecipeProxy extends MachineRecipeType {
             lastUpdate = time;
             buildCachedRecipes(world);
         }
-        return cachedRecipes.values();
+        return sortedRecipes;
     }
 }

@@ -4,7 +4,7 @@
     "duration": 200,
     "item_inputs": [
         {
-            "item": "modern_industrialization:copper_gear",
+            "tag": "c:copper_gears",
             "amount": 1
         }
     ],

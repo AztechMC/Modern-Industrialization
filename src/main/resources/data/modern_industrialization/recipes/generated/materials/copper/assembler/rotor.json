@@ -1,6 +1,6 @@
 {
     "type": "modern_industrialization:assembler",
-    "eu": 2,
+    "eu": 8,
     "duration": 200,
     "item_inputs": [
         {

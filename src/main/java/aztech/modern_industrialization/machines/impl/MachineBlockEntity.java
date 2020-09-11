@@ -7,6 +7,7 @@ import alexiil.mc.lib.attributes.fluid.volume.FluidKeys;
 import aztech.modern_industrialization.MIFluids;
 import aztech.modern_industrialization.api.EnergyInsertable;
 import aztech.modern_industrialization.inventory.ConfigurableFluidStack;
+import aztech.modern_industrialization.inventory.ConfigurableInventory;
 import aztech.modern_industrialization.inventory.ConfigurableItemStack;
 import aztech.modern_industrialization.machines.recipe.MachineRecipe;
 import aztech.modern_industrialization.machines.recipe.MachineRecipeType;
@@ -198,7 +199,7 @@ public class MachineBlockEntity extends AbstractMachineBlockEntity
         if(delayedActiveRecipe != null) {
             activeRecipe = recipeType.getRecipe((ServerWorld) world, delayedActiveRecipe);
             delayedActiveRecipe = null;
-            if(activeRecipe == null) { // If a recipe got removed, we need to reset the efficiency and the used energy to allow the machinea to resume processing.
+            if(activeRecipe == null) { // If a recipe got removed, we need to reset the efficiency and the used energy to allow the machine to resume processing.
                 efficiencyTicks = 0;
                 usedEnergy = 0;
             }
@@ -464,9 +465,11 @@ public class MachineBlockEntity extends AbstractMachineBlockEntity
                 if(randFloat > output.probability) continue;
             }
             FluidKey key = FluidKeys.get(output.fluid);
-            int remainingAmount = internalInsert(key, output.amount, simulate ? SIMULATE : ACTION, s -> true, index -> {
+            int remainingAmount = ConfigurableInventory.internalInsert(stacks, key, output.amount, simulate ? SIMULATE : ACTION, s -> true, index -> {
                 locksToToggle.add(index);
                 lockFluids.add(key);
+            }, () -> {
+                if(!simulate) markDirty();
             });
             if(remainingAmount > 0) ok = false;
         }

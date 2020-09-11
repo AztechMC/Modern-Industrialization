@@ -8,7 +8,7 @@
             "amount": 2
         },
         {
-            "item": "modern_industrialization:coal_dust",
+            "tag": "c:coal_dusts",
             "amount": 1
         }
     ],

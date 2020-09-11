@@ -1,10 +1,10 @@
 {
     "type": "modern_industrialization:assembler",
-    "eu": 2,
+    "eu": 8,
     "duration": 200,
     "item_inputs": [
         {
-            "item": "modern_industrialization:tin_plate",
+            "tag": "c:tin_plates",
             "amount": 2
         },
         {

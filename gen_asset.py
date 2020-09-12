@@ -299,7 +299,7 @@ def genCraft(vanilla, ty, tyo):
         b=tyo["bolt"],
         B=tyo["blade"],
         R=tyo["ring"],
-    ).save(ty.id, "rotor").export("assembler", ty.id, "rotor", eu=8)
+    ).save(ty.id, "rotor")
 
     CraftingRecipe([
         "ppp",
@@ -404,6 +404,9 @@ def genWiremill(ty, tyo):
         MIRecipe("wiremill").input(tyo[i], amount=ic).output(
             ty[o], amount=oc).save(ty.id, o)
 
+def genAssembler(ty, tyo):
+    MIRecipe("assembler", eu=8).input(tyo["blade"], amount=4).input(tyo["ring"], amount=1).output(ty["rotor"]).save(ty.id, "rotor")
+
 material_lines = []
 
 
@@ -452,6 +455,7 @@ def gen(file, ty, hex, vanilla=False, forge_hammer=False, smelting=True, isMetal
     genCuttingSaw(ty, tyo)
     genPacker(ty, tyo)
     genWiremill(ty, tyo)
+    genAssembler(ty, tyo)
 
 
 BLOCK_ONLY = {'block'}

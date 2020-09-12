@@ -4,10 +4,6 @@
     "duration": 200,
     "item_inputs": [
         {
-            "item": "modern_industrialization:bronze_bolt",
-            "amount": 4
-        },
-        {
             "item": "modern_industrialization:bronze_blade",
             "amount": 4
         },

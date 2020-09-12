@@ -44,7 +44,7 @@ public class ElectricityNetwork extends PipeNetwork {
             for(int i = 0; i < insertables.size();) {
                 EnergyInsertable insertable = insertables.get(i);
                 long ext = extractable.attemptPacketExtraction(SIMULATE);
-                if(ext > maxEu) continue outer_loop;
+                if(ext > maxEu || ext == 0) continue outer_loop;
                 if(insertable.attemptPacketInsertion(ext, SIMULATE)) {
                     extractable.attemptPacketExtraction(ACTION);
                     insertable.attemptPacketInsertion(ext, ACTION);

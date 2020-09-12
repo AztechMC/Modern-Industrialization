@@ -143,18 +143,18 @@ public class ItemNetworkNode extends PipeNetworkNode {
     public void tick(World world, BlockPos pos) {
         if(inactiveTicks == 0) {
             List<InsertTarget> reachableInputs = null;
-            int movesLeft = 16;
             outer: for(ItemConnection connection : connections) { // TODO: optimize!
                 if(connection.canExtract()) {
+                    int movesLeft = 16;
                     if(reachableInputs == null) reachableInputs = getInputs(world, pos);
                     GroupedItemInv inv = ItemAttributes.GROUPED_INV.get(world, pos.offset(connection.direction), SearchOptions.inDirection(connection.direction));
                     for(ItemStack stack : inv.getStoredStacks()) {
                         ItemExtractable extractable = inv.getPureExtractable().filtered(s -> ItemStackUtil.areEqualIgnoreAmounts(stack, s));
                         for(InsertTarget target : reachableInputs) {
                             if(target.connection.canInsert()) {
-                                if(ItemInvUtil.move(extractable, target.insertable, s -> connection.canStackMoveThrough(s) && target.connection.canStackMoveThrough(s), movesLeft) > 0) {
-                                    continue outer;
-                                }
+                                int moved = ItemInvUtil.move(extractable, target.insertable, s -> connection.canStackMoveThrough(s) && target.connection.canStackMoveThrough(s), movesLeft);
+                                movesLeft -= moved;
+                                if(movesLeft == 0) continue outer;
                             }
                         }
                     }

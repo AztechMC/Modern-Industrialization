@@ -6,6 +6,7 @@ import net.minecraft.fluid.Fluid;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.util.math.Direction;
@@ -136,9 +137,13 @@ public class ConfigurableItemStack {
         onToggleLock();
     }
 
-    public void togglePlayerLock() {
+    public void togglePlayerLock(ItemStack cursorStack) {
         if(playerLockable) {
-            playerLocked = !playerLocked;
+            if(playerLocked && lockedItem == Items.AIR && !cursorStack.isEmpty()) {
+                lockedItem = cursorStack.getItem();
+            } else {
+                playerLocked = !playerLocked;
+            }
             onToggleLock();
         }
     }

@@ -145,7 +145,7 @@ public abstract class ConfigurableScreenHandler extends ScreenHandler {
                     }
                     ConfigurableItemStack.ConfigurableItemSlot itemSlot = (ConfigurableItemStack.ConfigurableItemSlot) slot;
                     ConfigurableItemStack itemStack = itemSlot.getConfStack();
-                    itemStack.togglePlayerLock();
+                    itemStack.togglePlayerLock(playerInventory.getCursorStack());
                     return itemStack.getStack().copy();
                 }
             }

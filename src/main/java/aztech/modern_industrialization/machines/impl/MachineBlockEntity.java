@@ -99,6 +99,7 @@ public class MachineBlockEntity extends AbstractMachineBlockEntity
                 else if(index == 3) return efficiencyTicks;
                 else if(index == 4) return maxEfficiencyTicks;
                 else if(index == 5) return (int)storedEu;
+                else if(index == 6) return activeRecipe != null ? activeRecipe.eu : 0;
                 else return -1;
             }
 
@@ -110,11 +111,12 @@ public class MachineBlockEntity extends AbstractMachineBlockEntity
                 else if(index == 3) efficiencyTicks = value;
                 else if(index == 4) maxEfficiencyTicks = value;
                 else if(index == 5) storedEu = value;
+                else if(index == 6) throw new UnsupportedOperationException();
             }
 
             @Override
             public int size() {
-                return 6;
+                return 7;
             }
         };
 
@@ -231,12 +233,13 @@ public class MachineBlockEntity extends AbstractMachineBlockEntity
         }
     }
 
-    public static double getOverclock(MachineTier tier, int efficiencyTicks) {
-        return tier.getBaseOverclock() * Math.pow(Math.pow(2.0, 1.0/64.0), efficiencyTicks);
+    public static double getEfficiencyOverclock(int efficiencyTicks) {
+        return Math.pow(2.0, efficiencyTicks/64.0);
     }
 
-    public static int getRecipeMaxEu(MachineTier tier, int eu, int efficiencyTicks) {
-        return Math.min((int) Math.floor(eu*getOverclock(tier, efficiencyTicks)), tier.getMaxEu());
+    public static int getRecipeMaxEu(MachineTier tier, int recipeEu, int efficiencyTicks) {
+        int baseEu = Math.max(tier.getBaseEu(), recipeEu);
+        return Math.min((int) Math.floor(baseEu*getEfficiencyOverclock(efficiencyTicks)), tier.getMaxEu());
     }
 
     private int getRecipeMaxEfficiencyTicks(int eu) {

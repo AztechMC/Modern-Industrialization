@@ -25,6 +25,7 @@ import net.minecraft.text.Text;
 import net.minecraft.text.TextColor;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
+import org.lwjgl.system.CallbackI;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -325,8 +326,14 @@ public class MachineScreen extends HandledScreen<MachineScreenHandler> {
             if(isPointWithinBounds(factory.efficiencyBarDrawX, factory.efficiencyBarDrawY, factory.efficiencyBarSizeX, factory.efficiencyBarSizeY, mouseX, mouseY)) {
                 DecimalFormat factorFormat = new DecimalFormat("#.#");
                 List<Text> tooltip = new ArrayList<>();
-                tooltip.add(new TranslatableText("text.modern_industrialization.efficiency_ticks", handler.getEfficiencyTicks(), handler.getMaxEfficiencyTicks()));
-                tooltip.add(new TranslatableText("text.modern_industrialization.efficiency_factor", factorFormat.format(MachineBlockEntity.getOverclock(factory.tier, handler.getEfficiencyTicks()))));
+                if(handler.getMaxEfficiencyTicks() > 0) {
+                    tooltip.add(new TranslatableText("text.modern_industrialization.efficiency_ticks", handler.getEfficiencyTicks(), handler.getMaxEfficiencyTicks()));
+                }
+                if(handler.getRecipeEu() != 0) {
+                    tooltip.add(new TranslatableText("text.modern_industrialization.efficiency_factor", factorFormat.format((double) MachineBlockEntity.getRecipeMaxEu(factory.tier, handler.getRecipeEu(), handler.getEfficiencyTicks()) / handler.getRecipeEu())));
+                } else {
+                    tooltip.add(new TranslatableText("text.modern_industrialization.efficiency_default_message"));
+                }
                 this.renderTooltip(matrices, tooltip, mouseX, mouseY);
             }
         }

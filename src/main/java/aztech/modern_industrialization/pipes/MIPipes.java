@@ -1,9 +1,9 @@
 package aztech.modern_industrialization.pipes;
 
 import alexiil.mc.lib.attributes.fluid.volume.FluidKeys;
+import aztech.modern_industrialization.api.CableTier;
 import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.ModernIndustrialization;
-import aztech.modern_industrialization.machines.impl.MachineTier;
 import aztech.modern_industrialization.pipes.api.*;
 import aztech.modern_industrialization.pipes.electricity.ElectricityNetwork;
 import aztech.modern_industrialization.pipes.electricity.ElectricityNetworkData;
@@ -38,7 +38,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import static aztech.modern_industrialization.machines.impl.MachineTier.*;
+import static aztech.modern_industrialization.api.CableTier.*;
 import static aztech.modern_industrialization.pipes.api.PipeConnectionType.*;
 
 public class MIPipes implements ModInitializer {
@@ -128,10 +128,10 @@ public class MIPipes implements ModInitializer {
         PIPE_MODEL_NAMES.add(new MIIdentifier("item/pipe_item_" + name));
     }
 
-    public void registerElectricityPipeType(String name, int color, MachineTier tier) {
+    public void registerElectricityPipeType(String name, int color, CableTier tier) {
         PipeNetworkType type = PipeNetworkType.register(
                 new MIIdentifier("electricity_" + name),
-                (id, data) -> new ElectricityNetwork(id, data, tier.getMaxEu()),
+                (id, data) -> new ElectricityNetwork(id, data, tier),
                 ElectricityNetworkNode::new,
                 color,
                 ELECTRICITY

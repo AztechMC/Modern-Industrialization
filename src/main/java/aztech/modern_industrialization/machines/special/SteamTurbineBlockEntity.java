@@ -18,16 +18,11 @@ public final class SteamTurbineBlockEntity extends MachineBlockEntity {
     @Override
     public void addAllAttributes(AttributeList<?> to) {
         if(to.getTargetSide() == outputDirection) {
-            to.offer((EnergyExtractable) simulation -> {
-                if(usedAmp) return 0;
-                int extracted = getTier().getMaxEu();
-                if(storedEu < extracted) return 0;
-                if(simulation.isAction()) {
-                    storedEu -= extracted;
-                    usedAmp = true;
-                    markDirty();
-                }
-                return extracted;
+            to.offer((EnergyExtractable) maxAmount -> {
+                long ext = Math.min(maxAmount, storedEu);
+                storedEu -= ext;
+                markDirty();
+                return ext;
             });
         }
     }
@@ -37,7 +32,6 @@ public final class SteamTurbineBlockEntity extends MachineBlockEntity {
         if(world.isClient) return;
 
         boolean wasActive = isActive;
-        usedAmp = false;
 
         int transformed = (int) Math.min(Math.min(fluidStacks.get(0).getAmount(), getMaxStoredEu() - storedEu), getTier().getMaxEu());
         if(transformed > 0) {

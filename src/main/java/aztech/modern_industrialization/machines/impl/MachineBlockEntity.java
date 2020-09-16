@@ -4,6 +4,7 @@ import alexiil.mc.lib.attributes.AttributeList;
 import alexiil.mc.lib.attributes.AttributeProviderBlockEntity;
 import alexiil.mc.lib.attributes.fluid.volume.FluidKey;
 import alexiil.mc.lib.attributes.fluid.volume.FluidKeys;
+import aztech.modern_industrialization.api.CableTier;
 import aztech.modern_industrialization.MIFluids;
 import aztech.modern_industrialization.api.EnergyInsertable;
 import aztech.modern_industrialization.inventory.ConfigurableFluidStack;
@@ -54,7 +55,6 @@ public class MachineBlockEntity extends AbstractMachineBlockEntity
     protected MachineRecipeType recipeType;
     protected MachineRecipe activeRecipe = null;
     protected Identifier delayedActiveRecipe;
-    protected boolean usedAmp = false;
 
     protected int usedEnergy;
     protected int recipeEnergy;
@@ -272,7 +272,6 @@ public class MachineBlockEntity extends AbstractMachineBlockEntity
         loadDelayedActiveRecipe();
 
         boolean wasActive = isActive;
-        usedAmp = false;
 
         // START RECIPE IF NECESSARY
         // usedEnergy == 0 means that no recipe is currently started
@@ -549,17 +548,19 @@ public class MachineBlockEntity extends AbstractMachineBlockEntity
     @Override
     public void addAllAttributes(AttributeList<?> to) {
         if(factory.tier.isElectric()) {
-            to.offer((EnergyInsertable) (packet, simulation) -> {
-                if(usedAmp) return false;
-                if(factory.tier.getMaxEu() >= packet && storedEu + packet <= getMaxStoredEu()) {
-                    if(simulation.isAction()) {
-                        storedEu += packet;
-                        usedAmp = true;
-                        markDirty();
-                    }
-                    return true;
+            to.offer(new EnergyInsertable() {
+                @Override
+                public long insertEnergy(long amount) {
+                    long ins = Math.min(amount, getMaxStoredEu() - storedEu);
+                    storedEu += ins;
+                    markDirty();
+                    return amount - ins;
                 }
-                return false;
+
+                @Override
+                public boolean canInsert(CableTier tier) {
+                    return tier == CableTier.LV;
+                }
             });
         }
     }

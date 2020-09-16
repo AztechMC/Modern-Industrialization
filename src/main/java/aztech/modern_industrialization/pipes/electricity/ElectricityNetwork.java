@@ -1,5 +1,6 @@
 package aztech.modern_industrialization.pipes.electricity;
 
+import aztech.modern_industrialization.api.CableTier;
 import aztech.modern_industrialization.api.EnergyExtractable;
 import aztech.modern_industrialization.api.EnergyInsertable;
 import aztech.modern_industrialization.pipes.api.PipeNetwork;
@@ -12,16 +13,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import static alexiil.mc.lib.attributes.Simulation.ACTION;
-import static alexiil.mc.lib.attributes.Simulation.SIMULATE;
-
 public class ElectricityNetwork extends PipeNetwork {
-    private final long maxEu;
-    private static final int AMPS = 8;
+    private final CableTier tier;
 
-    public ElectricityNetwork(int id, PipeNetworkData data, long maxEu) {
+    public ElectricityNetwork(int id, PipeNetworkData data, CableTier tier) {
         super(id, data == null ? new ElectricityNetworkData() : data);
-        this.maxEu = maxEu;
+        this.tier = tier;
     }
 
     @Override
@@ -32,27 +29,38 @@ public class ElectricityNetwork extends PipeNetwork {
 
         List<EnergyInsertable> insertables = new ArrayList<>();
         List<EnergyExtractable> extractables = new ArrayList<>();
+        long networkAmount = 0;
+        long remainingInsert = 0;
+        int loadedNodes = 0;
         for(Map.Entry<BlockPos, PipeNetworkNode> entry : nodes.entrySet()) {
             if(entry.getValue() != null) {
                 ElectricityNetworkNode node = (ElectricityNetworkNode) entry.getValue();
                 node.appendAttributes(world, entry.getKey(), insertables, extractables);
+                networkAmount += node.eu;
+                remainingInsert += tier.maxInsert - node.eu;
+                loadedNodes++;
+            }
+        }
+        remainingInsert = Math.min(remainingInsert, tier.maxInsert);
+
+        for(EnergyExtractable extractable : extractables) {
+            long ext = extractable.extractEnergy(remainingInsert);
+            remainingInsert -= ext;
+            networkAmount += ext;
+        }
+
+        for(EnergyInsertable insertable : insertables) {
+            if(insertable.canInsert(tier)) {
+                networkAmount = insertable.insertEnergy(networkAmount);
             }
         }
 
-        int remAmps = AMPS;
-        outer_loop: for(EnergyExtractable extractable : extractables) {
-            for(int i = 0; i < insertables.size();) {
-                EnergyInsertable insertable = insertables.get(i);
-                long ext = extractable.attemptPacketExtraction(SIMULATE);
-                if(ext > maxEu || ext == 0) continue outer_loop;
-                if(insertable.attemptPacketInsertion(ext, SIMULATE)) {
-                    extractable.attemptPacketExtraction(ACTION);
-                    insertable.attemptPacketInsertion(ext, ACTION);
-                    --remAmps;
-                    if(remAmps == 0) break outer_loop;;
-                } else {
-                    ++i;
-                }
+        for(PipeNetworkNode node : nodes.values()) {
+            if(node != null) {
+                ElectricityNetworkNode electricityNode = (ElectricityNetworkNode) node;
+                electricityNode.eu = networkAmount / loadedNodes;
+                networkAmount -= electricityNode.eu;
+                --loadedNodes;
             }
         }
     }

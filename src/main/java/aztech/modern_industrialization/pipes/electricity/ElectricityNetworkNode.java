@@ -21,6 +21,7 @@ import static aztech.modern_industrialization.pipes.api.PipeConnectionType.ELECT
 
 public class ElectricityNetworkNode extends PipeNetworkNode {
     private List<Direction> connections = new ArrayList<>();
+    long eu = 0;
 
     public void appendAttributes(World world, BlockPos pos, List<EnergyInsertable> insertables, List<EnergyExtractable> extractables) {
         for(Direction direction : connections) {
@@ -85,12 +86,14 @@ public class ElectricityNetworkNode extends PipeNetworkNode {
     @Override
     public CompoundTag toTag(CompoundTag tag) {
         tag.putByte("connections", NbtHelper.encodeDirections(connections));
+        tag.putLong("eu", eu);
         return tag;
     }
 
     @Override
     public void fromTag(CompoundTag tag) {
         connections = new ArrayList<>(Arrays.asList(NbtHelper.decodeDirections(tag.getByte("connections"))));
+        eu = tag.getLong("eu");
     }
 
     private boolean canConnect(World world, BlockPos pos, Direction direction) {

@@ -82,7 +82,7 @@ public class TankModel implements UnbakedModel, FabricBakedModel, BakedModel {
                 float topSpace = direction.getAxis().isHorizontal() ? 1 - fillFraction : 0;
                 float depth = direction == Direction.UP ? 1 - fillFraction : 0;
                 emitter.material(translucentMaterial);
-                emitter.square(direction, 0, 0, 1, 1 - topSpace, depth);
+                emitter.square(direction, 0, 0, 1, 1 - topSpace, depth + 0.01f);
                 emitter.spriteBake(0, stillSprite, MutableQuadView.BAKE_LOCK_UV);
                 emitter.spriteColor(0, color, color, color, color);
                 emitter.emit();
@@ -152,7 +152,7 @@ public class TankModel implements UnbakedModel, FabricBakedModel, BakedModel {
         QuadEmitter emitter = builder.getEmitter();
         for(Direction direction : Direction.values()) {
             emitter.material(cutoutMaterial);
-            emitter.square(direction, 0, 0, 1, 1, -0.0001f);
+            emitter.square(direction, 0, 0, 1, 1, 0.0f);
             emitter.cullFace(direction);
             emitter.spriteBake(0, tankSprite, MutableQuadView.BAKE_LOCK_UV);
             emitter.spriteColor(0, -1, -1, -1, -1);

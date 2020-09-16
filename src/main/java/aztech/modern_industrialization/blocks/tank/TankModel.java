@@ -79,7 +79,7 @@ public class TankModel implements UnbakedModel, FabricBakedModel, BakedModel {
             Sprite stillSprite = handler.getFluidSprites(null, null, null)[0];
             int color = 255 << 24 | handler.getFluidColor(null, null, null);
             for(Direction direction : Direction.values()) {
-                float topSpace = direction.getAxis().isHorizontal() ? 1 - fillFraction : 0;
+                float topSpace = direction.getAxis().isHorizontal() ? 1 - fillFraction + 0.01f : 0;
                 float depth = direction == Direction.UP ? 1 - fillFraction : 0;
                 emitter.material(translucentMaterial);
                 emitter.square(direction, 0, 0, 1, 1 - topSpace, depth + 0.01f);

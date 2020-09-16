@@ -95,11 +95,11 @@ public class MachineModel extends CustomBlockModel {
 
     @Override
     public void emitBlockQuads(BlockRenderView blockRenderView, BlockState blockState, BlockPos blockPos, Supplier<Random> supplier, RenderContext renderContext) {
-        // Render base mesh
-        renderContext.meshConsumer().accept(mesh);
-        // Render overlays
         RenderAttachedBlockView view = (RenderAttachedBlockView) blockRenderView;
         AbstractMachineBlockEntity.AttachmentData attachmentData = (AbstractMachineBlockEntity.AttachmentData)view.getBlockEntityRenderAttachment(blockPos);
+        // Render base mesh
+        renderContext.meshConsumer().accept(attachmentData.casingOverride == null ? mesh : attachmentData.casingOverride.mesh);
+        // Render overlays
         QuadEmitter emitter = renderContext.getEmitter();
         for(Direction direction : Direction.values()) {
             int spriteId = -2;

@@ -24,6 +24,7 @@ public abstract class AbstractMachineBlockEntity extends BlockEntity implements 
     protected boolean extractItems = false;
     protected boolean extractFluids = false;
     protected boolean isActive = false;
+    protected MachineModel casingOverride = null;
 
     protected AbstractMachineBlockEntity(BlockEntityType<?> blockEntityType, Direction facingDirection) {
         super(blockEntityType);
@@ -111,6 +112,7 @@ public abstract class AbstractMachineBlockEntity extends BlockEntity implements 
         public final boolean extractItems;
         public final boolean extractFluids;
         public final boolean isActive;
+        public final MachineModel casingOverride;
 
         public AttachmentData(AbstractMachineBlockEntity blockEntity) {
             this.facingDirection = blockEntity.facingDirection;
@@ -118,6 +120,7 @@ public abstract class AbstractMachineBlockEntity extends BlockEntity implements 
             this.extractItems = blockEntity.extractItems;
             this.extractFluids = blockEntity.extractFluids;
             this.isActive = blockEntity.isActive;
+            this.casingOverride = blockEntity.casingOverride;
         }
     }
 }

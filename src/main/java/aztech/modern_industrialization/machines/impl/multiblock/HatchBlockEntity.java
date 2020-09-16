@@ -13,8 +13,8 @@ import static aztech.modern_industrialization.machines.impl.multiblock.HatchType
 import static aztech.modern_industrialization.machines.impl.multiblock.HatchType.ITEM_OUTPUT;
 
 public class HatchBlockEntity extends MachineBlockEntity implements ChunkUnloadBlockEntity {
-    protected BlockPos controllerPos = null;
-    protected boolean lateLoaded = false;
+    private BlockPos controllerPos = null;
+    private boolean lateLoaded = false;
     public final HatchType type;
 
     public HatchBlockEntity(MachineFactory factory, HatchType type) {
@@ -22,7 +22,7 @@ public class HatchBlockEntity extends MachineBlockEntity implements ChunkUnloadB
         this.type = type;
     }
 
-    protected void lateLoad() {
+    private void lateLoad() {
         if(lateLoaded) return;
         lateLoaded = true;
         clearLocks();
@@ -33,6 +33,22 @@ public class HatchBlockEntity extends MachineBlockEntity implements ChunkUnloadB
                 ((MultiblockMachineBlockEntity) controllerEntity).hatchLoaded();
             }
         }
+    }
+
+    boolean isUnlinked() {
+        return controllerPos == null;
+    }
+
+    void unlink() {
+        controllerPos = null;
+        casingOverride = null;
+        markDirty();
+    }
+
+    void link(MultiblockMachineBlockEntity controller) {
+        controllerPos = controller.getPos();
+        casingOverride = controller.getFactory().machineModel;
+        markDirty();
     }
 
     // TODO: override methods
@@ -46,6 +62,7 @@ public class HatchBlockEntity extends MachineBlockEntity implements ChunkUnloadB
         if(extractFluids && type == FLUID_OUTPUT) {
             autoExtractFluids(world, pos, outputDirection);
         }
+        markDirty();
         // TODO: auto-input
     }
 

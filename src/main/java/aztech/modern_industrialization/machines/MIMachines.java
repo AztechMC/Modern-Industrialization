@@ -10,6 +10,7 @@ import aztech.modern_industrialization.machines.impl.SteamMachineFactory;
 import aztech.modern_industrialization.machines.impl.multiblock.*;
 import aztech.modern_industrialization.machines.recipe.FurnaceRecipeProxy;
 import aztech.modern_industrialization.machines.recipe.MachineRecipeType;
+import aztech.modern_industrialization.machines.special.LargeSteamBoilerBlockEntity;
 import aztech.modern_industrialization.machines.special.SteamBoilerBlockEntity;
 import aztech.modern_industrialization.machines.special.SteamTurbineBlockEntity;
 import aztech.modern_industrialization.machines.special.WaterPumpBlockEntity;
@@ -58,6 +59,7 @@ public class MIMachines {
     public static MultiblockShape COKE_OVEN_SHAPE;
     public static MultiblockShape BLAST_FURNACE_SHAPE;
     public static MultiblockShape QUARRY_SHAPE;
+    public static MultiblockShape LARGE_BOILER_SHAPE;
 
 
     private static MultiblockShape cokeOvenLike(int height, Block block, int extra_flags){
@@ -116,6 +118,29 @@ public class MIMachines {
             QUARRY_SHAPE.addEntry(0, y, 1, y < 4 ? MultiblockShapes.verticalChain() : steelCasing);
         }
         QUARRY_SHAPE.setMaxHatches(4);
+
+        LARGE_BOILER_SHAPE = new MultiblockShape();
+        MultiblockShape.Entry bronzeCasing = MultiblockShapes.block(MIBlock.BRONZE_PLATED_BRICKS);
+        MultiblockShape.Entry bronzeCasingPipe = MultiblockShapes.block(MIBlock.BRONZE_MACHINE_CASING_PIPE);
+        MultiblockShape.Entry optionalLargeBoilerHatch = MultiblockShapes.or(bronzeCasing, MultiblockShapes.hatch(HATCH_FLAG_ITEM_INPUT | HATCH_FLAG_FLUID_INPUT | HATCH_FLAG_FLUID_OUTPUT));
+
+        for(int x = -1; x <= 1; ++x) {
+            for(int z = 0; z < 3; ++z) {
+                LARGE_BOILER_SHAPE.addEntry(x, -1, z, optionalLargeBoilerHatch);
+            }
+        }
+        for(int x = -1; x <= 1; ++x) {
+            for(int y = 0; y < 3; ++y) {
+                for(int z = 0; z < 3; ++z) {
+                    if(x == 0 && y == 0 && z == 0) continue;
+                    if(x == 0 && z == 1) {
+                        LARGE_BOILER_SHAPE.addEntry(x, y, z, y == 2 ? bronzeCasing : bronzeCasingPipe);
+                    } else {
+                        LARGE_BOILER_SHAPE.addEntry(x, y, z, bronzeCasing);
+                    }
+                }
+            }
+        }
     }
 
     public static MachineFactory setupAssembler(MachineFactory factory) {
@@ -339,6 +364,13 @@ public class MIMachines {
                 .setupProgressBar(76, 35, 22, 15, true).setupBackground("steam_furnace.png")
                 .setupOverlays("quarry", true, false, false)
                 .setupCasing("steel")
+        ;
+        new SteamMachineFactory("large_steam_boiler", BRONZE, (f, t) -> new LargeSteamBoilerBlockEntity(f, LARGE_BOILER_SHAPE), null, 0, 0, 0, 0)
+                .setupProgressBar(176, 0, 15, 51, 14, 14, false, true)
+                .setupEfficiencyBar(0, 166, 50, 62, 100, 2).hideEfficiencyTooltip()
+                .setupBackground("steam_boiler.png")
+                .setupOverlays("large_boiler", true, false, false)
+                .setupCasing("bronze_plated_bricks")
         ;
         registerHatches();
 

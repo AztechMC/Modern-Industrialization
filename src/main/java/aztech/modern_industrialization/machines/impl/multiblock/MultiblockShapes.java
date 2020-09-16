@@ -69,7 +69,7 @@ public class MultiblockShapes {
             public boolean matches(BlockView world, BlockPos pos) {
                 if(world.getBlockEntity(pos) instanceof HatchBlockEntity) {
                     HatchBlockEntity entity = (HatchBlockEntity) world.getBlockEntity(pos);
-                    return entity.controllerPos == null && (hatchesFlag & (1 << entity.type.getId())) > 0;
+                    return entity.isUnlinked() && (hatchesFlag & (1 << entity.type.getId())) > 0;
                 }
                 return false;
             }

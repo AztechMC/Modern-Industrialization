@@ -29,7 +29,7 @@ public class MultiblockMachineBlockEntity extends MachineBlockEntity {
     private boolean isBuildingShape = false;
     private Text errorMessage = null;
     private MachineTier tier = null;
-    private int shapeCheckTicks = 0;
+    protected int shapeCheckTicks = 0;
 
     public MultiblockMachineBlockEntity(MachineFactory factory, MachineRecipeType recipeType, MultiblockShape shape) {
         super(factory, recipeType);
@@ -79,7 +79,7 @@ public class MultiblockMachineBlockEntity extends MachineBlockEntity {
         isBuildingShape = true;
         for(HatchBlockEntity hatch : linkedHatches.values()) {
             if(hatch != null) {
-                hatch.controllerPos = null;
+                hatch.unlink();
             }
         }
         linkedHatches.clear();
@@ -89,9 +89,7 @@ public class MultiblockMachineBlockEntity extends MachineBlockEntity {
         this.errorMessage = shape.errorMessage;
         if(ready) {
             for(HatchBlockEntity hatch : linkedHatches.values()) {
-                hatch.lateLoad();
-                hatch.controllerPos = pos;
-                hatch.markDirty();
+                hatch.link(this);
             }
         } else {
             linkedHatches.clear();
@@ -157,7 +155,7 @@ public class MultiblockMachineBlockEntity extends MachineBlockEntity {
     public void markRemoved() {
         super.markRemoved();
         for(HatchBlockEntity hbe : linkedHatches.values()) {
-            hbe.controllerPos = null;
+            hbe.unlink();
         }
         clearLocks();
     }

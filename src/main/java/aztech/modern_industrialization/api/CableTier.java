@@ -1,14 +1,16 @@
 package aztech.modern_industrialization.api;
 
 public enum CableTier {
-    LV(32*8),
-    MV(32*8*4),
-    HV(32*8*4*4),
+    LV("lv", 32*8),
+    MV("mv", 32*8*4),
+    HV("hv", 32*8*4*4),
     ;
 
+    public final String name;
     public final long maxInsert;
 
-    CableTier(long maxInsert) {
+    CableTier(String name, long maxInsert) {
+        this.name = name;
         this.maxInsert = maxInsert;
     }
 }

@@ -41,20 +41,21 @@ public class HatchBlockEntity extends MachineBlockEntity implements ChunkUnloadB
 
     void unlink() {
         controllerPos = null;
-        casingOverride = null;
         markDirty();
+        if(!world.isClient) sync();
     }
 
     void link(MultiblockMachineBlockEntity controller) {
         controllerPos = controller.getPos();
-        casingOverride = controller.getFactory().machineModel;
         markDirty();
+        if(!world.isClient) sync();
     }
 
     // TODO: override methods
 
     @Override
     public void tick() {
+        if(world.isClient) return;
         lateLoad();
         if(extractItems && type == ITEM_OUTPUT) {
             autoExtractItems(outputDirection, world.getBlockEntity(pos.offset(outputDirection)));
@@ -77,6 +78,25 @@ public class HatchBlockEntity extends MachineBlockEntity implements ChunkUnloadB
     public void fromTag(BlockState state, CompoundTag tag) {
         super.fromTag(state, tag);
         controllerPos = NbtHelper.getBlockPos(tag, "controllerPos");
+    }
+
+    @Override
+    public CompoundTag toClientTag(CompoundTag tag) {
+        NbtHelper.putBlockPos(tag, "controllerPos", controllerPos);
+        return super.toClientTag(tag);
+    }
+
+    @Override
+    public void fromClientTag(CompoundTag tag) {
+        controllerPos = NbtHelper.getBlockPos(tag, "controllerPos");
+        if(controllerPos == null) {
+            controllerPos = null;
+            casingOverride = null;
+        } else {
+            MultiblockMachineBlockEntity be = (MultiblockMachineBlockEntity) world.getBlockEntity(controllerPos);
+            casingOverride = be == null ? null : be.hatchCasing;
+        }
+        super.fromClientTag(tag);
     }
 
     @Override

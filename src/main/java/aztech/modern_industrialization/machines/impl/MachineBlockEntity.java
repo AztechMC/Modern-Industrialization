@@ -48,7 +48,7 @@ public class MachineBlockEntity extends AbstractMachineBlockEntity
 
     protected long storedEu = 0;
     protected long getMaxStoredEu() {
-        return factory.tier.getMaxStoredEu();
+        return factory.tier == null ? -1 : factory.tier.getMaxStoredEu();
     }
 
     protected MachineFactory factory;
@@ -60,8 +60,6 @@ public class MachineBlockEntity extends AbstractMachineBlockEntity
     protected int recipeEnergy;
     protected int recipeMaxEu;
 
-    // Used for efficiency display in the gui.
-    // TODO: recipe efficiency and efficiency progress bar
     protected int efficiencyTicks;
     protected int maxEfficiencyTicks;
 
@@ -100,6 +98,7 @@ public class MachineBlockEntity extends AbstractMachineBlockEntity
                 else if(index == 4) return maxEfficiencyTicks;
                 else if(index == 5) return (int)storedEu;
                 else if(index == 6) return activeRecipe != null ? activeRecipe.eu : 0;
+                else if(index == 7) return (int)getMaxStoredEu();
                 else return -1;
             }
 
@@ -111,12 +110,12 @@ public class MachineBlockEntity extends AbstractMachineBlockEntity
                 else if(index == 3) efficiencyTicks = value;
                 else if(index == 4) maxEfficiencyTicks = value;
                 else if(index == 5) storedEu = value;
-                else if(index == 6) throw new UnsupportedOperationException();
+                else throw new UnsupportedOperationException();
             }
 
             @Override
             public int size() {
-                return 7;
+                return 8;
             }
         };
 
@@ -249,9 +248,13 @@ public class MachineBlockEntity extends AbstractMachineBlockEntity
         }
     }
 
+    protected boolean banRecipe(MachineRecipe recipe) {
+        return recipe.eu > getTier().getMaxEu();
+    }
+
     protected boolean updateActiveRecipe() {
         for (MachineRecipe recipe : getRecipes()) {
-            if(recipe.eu > getTier().getMaxEu()) continue;
+            if(banRecipe(recipe)) continue;
             if (tryStartRecipe(recipe)) {
                 if(activeRecipe != recipe) {
                     maxEfficiencyTicks = getRecipeMaxEfficiencyTicks(recipe.eu);
@@ -497,7 +500,7 @@ public class MachineBlockEntity extends AbstractMachineBlockEntity
         return fluidStacks.subList(0, 1);
     }
 
-    protected int getEu(int maxEu, boolean simulate) {
+    public int getEu(int maxEu, boolean simulate) {
         if(factory instanceof SteamMachineFactory) {
             int totalRem = 0;
             for(ConfigurableFluidStack stack : getSteamInputStacks()) {
@@ -547,7 +550,7 @@ public class MachineBlockEntity extends AbstractMachineBlockEntity
 
     @Override
     public void addAllAttributes(AttributeList<?> to) {
-        if(factory.tier.isElectric()) {
+        if(getTier().isElectric()) {
             to.offer(new EnergyInsertable() {
                 @Override
                 public long insertEnergy(long amount) {

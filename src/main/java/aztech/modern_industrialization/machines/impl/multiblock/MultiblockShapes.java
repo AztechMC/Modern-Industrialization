@@ -63,6 +63,8 @@ public class MultiblockShapes {
     public static final int HATCH_FLAG_ITEM_OUTPUT = 1 << 1;
     public static final int HATCH_FLAG_FLUID_INPUT = 1 << 2;
     public static final int HATCH_FLAG_FLUID_OUTPUT = 1 << 3;
+    public static final int HATCH_FLAG_ENERGY_INPUT = 1 << 4;
+    public static final int HATCH_FLAG_ENERGY_OUTPUT = 1 << 5;
     public static MultiblockShape.Entry hatch(int hatchesFlag) {
         return new MultiblockShape.Entry() {
             @Override

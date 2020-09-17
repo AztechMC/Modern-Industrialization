@@ -51,8 +51,11 @@ public class MIBlock extends Block {
                     .breakByTool(FabricToolTags.PICKAXES, 0)
                     .requiresTool());
 
+    public static final MIBlock STEEL_MACHINE_CASING = new MIBlock("steel_machine_casing");
     public static final MIBlock STEEL_MACHINE_CASING_PIPE = new MIBlock("steel_machine_casing_pipe");
     public static final MIBlock LV_MACHINE_HULL = new MIBlock("lv_machine_hull");
     public static final MIBlock BRONZE_PLATED_BRICKS = new MIBlock("bronze_plated_bricks");
+    public static final MIBlock BRONZE_MACHINE_CASING = new MIBlock("bronze_machine_casing");
     public static final MIBlock BRONZE_MACHINE_CASING_PIPE = new MIBlock("bronze_machine_casing_pipe");
+    public static final MIBlock HEATPROOF_MACHINE_CASING = new MIBlock("heatproof_machine_casing");
 }

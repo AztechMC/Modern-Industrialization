@@ -2,6 +2,7 @@ package aztech.modern_industrialization.machines;
 
 import aztech.modern_industrialization.MIBlock;
 import aztech.modern_industrialization.MIIdentifier;
+import aztech.modern_industrialization.api.CableTier;
 import aztech.modern_industrialization.blocks.tank.MITanks;
 import aztech.modern_industrialization.machines.impl.MachineBlockEntity;
 import aztech.modern_industrialization.machines.impl.MachineFactory;
@@ -10,10 +11,7 @@ import aztech.modern_industrialization.machines.impl.SteamMachineFactory;
 import aztech.modern_industrialization.machines.impl.multiblock.*;
 import aztech.modern_industrialization.machines.recipe.FurnaceRecipeProxy;
 import aztech.modern_industrialization.machines.recipe.MachineRecipeType;
-import aztech.modern_industrialization.machines.special.LargeSteamBoilerBlockEntity;
-import aztech.modern_industrialization.machines.special.SteamBoilerBlockEntity;
-import aztech.modern_industrialization.machines.special.SteamTurbineBlockEntity;
-import aztech.modern_industrialization.machines.special.WaterPumpBlockEntity;
+import aztech.modern_industrialization.machines.special.*;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.util.registry.Registry;
@@ -60,6 +58,8 @@ public class MIMachines {
     public static MultiblockShape BLAST_FURNACE_SHAPE;
     public static MultiblockShape QUARRY_SHAPE;
     public static MultiblockShape LARGE_BOILER_SHAPE;
+
+    public static final MachineFactory ELECTRIC_BLAST_FURNACE;
 
 
     private static MultiblockShape cokeOvenLike(int height, Block block, int extra_flags){
@@ -122,7 +122,7 @@ public class MIMachines {
         LARGE_BOILER_SHAPE = new MultiblockShape();
         MultiblockShape.Entry bronzeCasing = MultiblockShapes.block(MIBlock.BRONZE_PLATED_BRICKS);
         MultiblockShape.Entry bronzeCasingPipe = MultiblockShapes.block(MIBlock.BRONZE_MACHINE_CASING_PIPE);
-        MultiblockShape.Entry optionalLargeBoilerHatch = MultiblockShapes.or(bronzeCasing, MultiblockShapes.hatch(HATCH_FLAG_ITEM_INPUT | HATCH_FLAG_FLUID_INPUT | HATCH_FLAG_FLUID_OUTPUT));
+        MultiblockShape.Entry optionalLargeBoilerHatch = MultiblockShapes.or(MultiblockShapes.block(MIBlock.HEATPROOF_MACHINE_CASING), MultiblockShapes.hatch(HATCH_FLAG_ITEM_INPUT | HATCH_FLAG_FLUID_INPUT | HATCH_FLAG_FLUID_OUTPUT));
 
         for(int x = -1; x <= 1; ++x) {
             for(int z = 0; z < 3; ++z) {
@@ -239,9 +239,11 @@ public class MIMachines {
                 factory = new SteamMachineFactory(tier.toString() + "_" + machineType, tier, MachineBlockEntity::new, recipeType, inputSlots, outputSlots, fluidInputSlots, fluidOutputSlots)
                         .setSteamBucketCapacity(tier == BRONZE ? 2 : 4).setSteamSlotPos(23, 23);
                 factory.setupCasing((steamBricked ? "bricked_" : "") + tier.toString());
-            } else {
+            } else if(tier == LV) {
                 factory = new MachineFactory(tier.toString() + "_" + machineType, tier, MachineBlockEntity::new, recipeType, inputSlots, outputSlots, fluidInputSlots, fluidOutputSlots);
                 factory.setupCasing(tier.toString());
+            } else {
+                continue;
             }
             setup.setup(factory);
         }
@@ -283,6 +285,13 @@ public class MIMachines {
                     .setupBackground("default.png")
                     .setupCasing(tier.toString());
             i++;
+        }
+
+        for(CableTier tier : CableTier.values()) {
+            new MachineFactory(tier.name + "_energy_input_hatch", LV, (f, t) -> new EnergyInputHatchBlockEntity(f, tier), null, 0, 0, 0, 0)
+                    .setupElectricityBar(76, 39)
+                    .setupBackground("default.png")
+                    .setupCasing(tier.name);
         }
     }
 
@@ -346,31 +355,39 @@ public class MIMachines {
         registerMachineTiersElectricOnly("assembler", RECIPE_ASSEMBLER, 9, 3, 1, 0, MIMachines::setupAssembler);
         registerMachineTiersElectricOnly("polarizer", RECIPE_POLARIZER, 1, 1, 0, 0, MIMachines::setupPolarizer);
 
-        new SteamMachineFactory("coke_oven", BRONZE, (f, t) -> new MultiblockMachineBlockEntity(f, t, COKE_OVEN_SHAPE), RECIPE_COKE_OVEN, 1, 1, 0, 0)
+        new SteamMachineFactory("coke_oven", null, (f, t) -> new MultiblockMachineBlockEntity(f, t, COKE_OVEN_SHAPE), RECIPE_COKE_OVEN, 1, 1, 0, 0)
                 .setInputSlotPosition(56, 35, 1, 1).setOutputSlotPosition(102, 35, 1, 1)
                 .setupProgressBar(76, 35, 22, 15, true).setupBackground("steam_furnace.png")
                 .setupOverlays("coke_oven", true, false, false)
                 .setupCasing("bricks")
         ;
-        new SteamMachineFactory("steam_blast_furnace", BRONZE, (f, t) -> new MultiblockMachineBlockEntity(f, t, BLAST_FURNACE_SHAPE), RECIPE_BLAST_FURNACE, 1, 1, 1, 1)
+        new SteamMachineFactory("steam_blast_furnace", null, (f, t) -> new MultiblockMachineBlockEntity(f, t, BLAST_FURNACE_SHAPE), RECIPE_BLAST_FURNACE, 1, 1, 1, 1)
                 .setInputSlotPosition(56, 35, 1, 1).setOutputSlotPosition(102, 35, 1, 1)
                 .setInputLiquidSlotPosition(36, 35, 1, 1).setLiquidOutputSlotPosition(122, 35, 1, 1)
                 .setupProgressBar(76, 35, 22, 15, true).setupBackground("steam_furnace.png")
                 .setupOverlays("steam_blast_furnace", true, false, false)
                 .setupCasing("firebricks")
         ;
-        new SteamMachineFactory("quarry", BRONZE, (f, t) -> new MultiblockMachineBlockEntity(f, t, QUARRY_SHAPE), RECIPE_QUARRY, 1, 16, 0, 0)
+        new SteamMachineFactory("quarry", null, (f, t) -> new MultiblockMachineBlockEntity(f, t, QUARRY_SHAPE), RECIPE_QUARRY, 1, 16, 0, 0)
                 .setInputSlotPosition(56, 35, 1, 1).setOutputSlotPosition(102, 35, 4, 4)
                 .setupProgressBar(76, 35, 22, 15, true).setupBackground("steam_furnace.png")
                 .setupOverlays("quarry", true, false, false)
                 .setupCasing("steel")
         ;
-        new SteamMachineFactory("large_steam_boiler", BRONZE, (f, t) -> new LargeSteamBoilerBlockEntity(f, LARGE_BOILER_SHAPE), null, 0, 0, 0, 0)
+        new MachineFactory("large_steam_boiler", null, (f, t) -> new LargeSteamBoilerBlockEntity(f, LARGE_BOILER_SHAPE), null, 0, 0, 0, 0)
                 .setupProgressBar(176, 0, 15, 51, 14, 14, false, true)
                 .setupEfficiencyBar(0, 166, 50, 62, 100, 2).hideEfficiencyTooltip()
                 .setupBackground("steam_boiler.png")
                 .setupOverlays("large_boiler", true, false, false)
                 .setupCasing("bronze_plated_bricks")
+        ;
+        ELECTRIC_BLAST_FURNACE = new MachineFactory("electric_blast_furnace", UNLIMITED, ElectricBlastFurnaceBlockEntity::new, RECIPE_BLAST_FURNACE, 1, 1, 1, 1)
+                .setInputSlotPosition(56, 35, 1, 1).setOutputSlotPosition(102, 35, 1, 1)
+                .setInputLiquidSlotPosition(36, 35, 1, 1).setLiquidOutputSlotPosition(122, 35, 1, 1)
+                .setupProgressBar(76, 35, 22, 15, true).setupBackground("steam_furnace.png")
+                .setupEfficiencyBar(0, 166, 38, 62, 100, 2)
+                .setupOverlays("electric_blast_furnace", true, false, false)
+                .setupCasing("heatproof")
         ;
         registerHatches();
 

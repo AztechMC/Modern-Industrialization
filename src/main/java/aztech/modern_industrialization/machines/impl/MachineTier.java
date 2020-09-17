@@ -4,6 +4,7 @@ public enum MachineTier {
     BRONZE("bronze", true, 2, 2),
     STEEL("steel", true, 4, 4),
     LV("lv", false, 32, 8),
+    UNLIMITED("unlimited", false, Integer.MAX_VALUE, 8),
     ;
 
     private final String name;

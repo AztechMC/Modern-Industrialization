@@ -267,16 +267,6 @@ def genCraft(vanilla, ty, tyo):
         "P P",
         "PPP"
     ],
-        ty["machine_casing"],
-        1,
-        P=tyo["large_plate"],
-    ).save(ty.id, "machine_casing").export("assembler", ty.id, "machine_casing", eu=8)
-
-    CraftingRecipe([
-        "PPP",
-        "P P",
-        "PPP"
-    ],
         ty["coil"],
         1,
         P=tyo["wire"],
@@ -459,7 +449,6 @@ def gen(file, ty, hex, vanilla=False, forge_hammer=False, smelting=True, isMetal
 
 
 BLOCK_ONLY = {'block'}
-BLOCK_CASING = {'block', 'machine_casing'}
 ORE_ONLY = {'ore'}
 BOTH = {'block', 'ore'}
 
@@ -596,7 +585,7 @@ public class MIMaterials {
     )
     gen(
         file,
-        Material('bronze', ITEM_ALL_NO_ORE, BLOCK_CASING, overrides={
+        Material('bronze', ITEM_ALL_NO_ORE, BLOCK_ONLY, overrides={
             "item_pipe": "modern_industrialization:pipe_item_bronze",
             "fluid_pipe": "modern_industrialization:pipe_fluid_bronze",
         }),
@@ -613,7 +602,7 @@ public class MIMaterials {
     )
     gen(
         file,
-        Material('steel', ITEM_ALL_NO_ORE, BLOCK_CASING, overrides={
+        Material('steel', ITEM_ALL_NO_ORE, BLOCK_ONLY, overrides={
             "item_pipe": "modern_industrialization:pipe_item_steel",
             "fluid_pipe": "modern_industrialization:pipe_fluid_steel",
         }),
@@ -621,7 +610,7 @@ public class MIMaterials {
     )
     gen(
         file,
-        Material('aluminum', ITEM_BASE | {'ingot'}, BLOCK_CASING, overrides={
+        Material('aluminum', ITEM_BASE | {'ingot'}, BLOCK_ONLY, overrides={
             "item_pipe": "modern_industrialization:pipe_item_aluminum",
             "fluid_pipe": "modern_industrialization:pipe_fluid_aluminum",
         }),
@@ -661,8 +650,8 @@ public class MIMaterials {
     gen(
         file,
         Material('invar', {'tiny_dust', 'dust', 'plate',
-                           'ingot', 'double_ingot', 'nugget', 'large_plate', 'gear'}, BLOCK_CASING),
-        '#b4b478',
+                           'ingot', 'double_ingot', 'nugget', 'large_plate', 'gear'}, BLOCK_ONLY),
+        '#909050',
     )
 
     gen(

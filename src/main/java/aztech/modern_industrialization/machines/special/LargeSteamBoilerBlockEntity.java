@@ -3,6 +3,7 @@ package aztech.modern_industrialization.machines.special;
 import alexiil.mc.lib.attributes.fluid.volume.FluidKeys;
 import aztech.modern_industrialization.inventory.ConfigurableFluidStack;
 import aztech.modern_industrialization.inventory.ConfigurableItemStack;
+import aztech.modern_industrialization.machines.MIMachines;
 import aztech.modern_industrialization.machines.impl.MachineFactory;
 import aztech.modern_industrialization.machines.impl.multiblock.MultiblockMachineBlockEntity;
 import aztech.modern_industrialization.machines.impl.multiblock.MultiblockShape;
@@ -16,6 +17,7 @@ public class LargeSteamBoilerBlockEntity extends MultiblockMachineBlockEntity {
 
         maxEfficiencyTicks = 10000;
         efficiencyTicks = 0;
+        hatchCasing = MIMachines.ELECTRIC_BLAST_FURNACE.machineModel;
     }
 
     @Override

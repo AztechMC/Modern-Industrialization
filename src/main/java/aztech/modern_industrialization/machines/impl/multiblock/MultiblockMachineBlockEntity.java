@@ -2,9 +2,8 @@ package aztech.modern_industrialization.machines.impl.multiblock;
 
 import aztech.modern_industrialization.inventory.ConfigurableFluidStack;
 import aztech.modern_industrialization.inventory.ConfigurableItemStack;
-import aztech.modern_industrialization.machines.impl.MachineBlockEntity;
-import aztech.modern_industrialization.machines.impl.MachineFactory;
-import aztech.modern_industrialization.machines.impl.MachineTier;
+import aztech.modern_industrialization.machines.impl.*;
+import aztech.modern_industrialization.machines.recipe.MachineRecipe;
 import aztech.modern_industrialization.machines.recipe.MachineRecipeType;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.server.world.ServerWorld;
@@ -17,8 +16,7 @@ import net.minecraft.world.chunk.WorldChunk;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static aztech.modern_industrialization.machines.impl.MachineTier.BRONZE;
-import static aztech.modern_industrialization.machines.impl.MachineTier.STEEL;
+import static aztech.modern_industrialization.machines.impl.MachineTier.*;
 
 public class MultiblockMachineBlockEntity extends MachineBlockEntity {
     protected Map<BlockPos, HatchBlockEntity> linkedHatches = new TreeMap<>();
@@ -27,15 +25,17 @@ public class MultiblockMachineBlockEntity extends MachineBlockEntity {
     protected boolean ready = false;
     private boolean lateLoaded = false;
     private boolean isBuildingShape = false;
-    private Text errorMessage = null;
+    protected Text errorMessage = null;
     private MachineTier tier = null;
     protected int shapeCheckTicks = 0;
+    protected MachineModel hatchCasing;
 
     public MultiblockMachineBlockEntity(MachineFactory factory, MachineRecipeType recipeType, MultiblockShape shape) {
         super(factory, recipeType);
         itemStacks.clear();
         fluidStacks.clear();
         this.shape = shape;
+        this.hatchCasing = factory.machineModel;
     }
 
     private void lateLoad() {
@@ -75,6 +75,11 @@ public class MultiblockMachineBlockEntity extends MachineBlockEntity {
         rebuildShape();
     }
 
+    protected void matchShape() {
+        ready = shape.matchShape(world, pos, facingDirection, linkedHatches, linkedStructureBlocks);
+        this.errorMessage = shape.getErrorMessage();
+    }
+
     public void rebuildShape() {
         isBuildingShape = true;
         for(HatchBlockEntity hatch : linkedHatches.values()) {
@@ -85,8 +90,7 @@ public class MultiblockMachineBlockEntity extends MachineBlockEntity {
         linkedHatches.clear();
         linkedStructureBlocks.clear();
 
-        ready = shape.matchShape(world, pos, facingDirection, linkedHatches, linkedStructureBlocks);
-        this.errorMessage = shape.errorMessage;
+        matchShape();
         if(ready) {
             for(HatchBlockEntity hatch : linkedHatches.values()) {
                 hatch.link(this);
@@ -181,12 +185,30 @@ public class MultiblockMachineBlockEntity extends MachineBlockEntity {
     private void updateTier() {
         // TODO: electric hatches
         for(HatchBlockEntity hatch : linkedHatches.values()) {
-            if(hatch.getTier() == STEEL) {
+            if(hatch instanceof EnergyInputHatchBlockEntity) {
+                tier = UNLIMITED;
+                return;
+            } else if(hatch.getFactory().tier == STEEL && factory instanceof SteamMachineFactory) {
                 tier = STEEL;
                 return;
             }
         }
         tier = BRONZE;
+    }
+
+    @Override
+    public int getEu(int maxEu, boolean simulate) {
+        if(factory instanceof SteamMachineFactory) {
+            return super.getEu(maxEu, simulate);
+        } else {
+            int total = 0;
+            for(HatchBlockEntity hatch : linkedHatches.values()) {
+                if(hatch instanceof EnergyInputHatchBlockEntity) {
+                    total += hatch.getEu(maxEu - total, simulate);
+                }
+            }
+            return total;
+        }
     }
 
     @Override

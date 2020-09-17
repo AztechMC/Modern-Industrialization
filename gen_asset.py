@@ -691,6 +691,16 @@ public class MIMaterials {
         }),
         '#d20000', macerator=False
     )
+    gen(
+        file,
+        Material('sodium', PURE_METAL - {'crushed_dust'}, BLOCK_ONLY),
+        '#071CB8',
+    )
+    gen(
+        file,
+        Material('salt', PURE_NON_METAL, BOTH),
+        '#c7d6c5', isMetal=False, smelting=False, veinsPerChunk=8, veinsSize=7, maxYLevel=32
+    )
 
     file.write("\n".join(sorted(material_lines)))
     file.write("\n")

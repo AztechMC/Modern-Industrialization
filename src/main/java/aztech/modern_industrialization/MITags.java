@@ -81,6 +81,10 @@ public class MITags {
     private static final Tag<Item> SILVER_ORES = TagRegistry.item(new Identifier("c", "silver_ores"));
     private static final Tag<Item> SILVER_PLATES = TagRegistry.item(new Identifier("c", "silver_plates"));
     private static final Tag<Item> SILVER_TINY_DUSTS = TagRegistry.item(new Identifier("c", "silver_tiny_dusts"));
+    private static final Tag<Item> SODIUM_DUSTS = TagRegistry.item(new Identifier("c", "sodium_dusts"));
+    private static final Tag<Item> SODIUM_INGOTS = TagRegistry.item(new Identifier("c", "sodium_ingots"));
+    private static final Tag<Item> SODIUM_NUGGETS = TagRegistry.item(new Identifier("c", "sodium_nuggets"));
+    private static final Tag<Item> SODIUM_TINY_DUSTS = TagRegistry.item(new Identifier("c", "sodium_tiny_dusts"));
     private static final Tag<Item> STEEL_DUSTS = TagRegistry.item(new Identifier("c", "steel_dusts"));
     private static final Tag<Item> STEEL_GEARS = TagRegistry.item(new Identifier("c", "steel_gears"));
     private static final Tag<Item> STEEL_INGOTS = TagRegistry.item(new Identifier("c", "steel_ingots"));

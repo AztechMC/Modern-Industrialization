@@ -39,8 +39,12 @@ public class MIMachines {
 
     // Single block
     public static final MachineRecipeType RECIPE_ASSEMBLER = createRecipeType("assembler").withItemInputs().withFluidInputs().withItemOutputs();
+    public static final MachineRecipeType RECIPE_CENTRIFUGE = createRecipeType("centrifuge").withItemInputs().withFluidInputs().withItemOutputs().withFluidOutputs();
+    public static final MachineRecipeType RECIPE_CHEMICAL_REACTOR = createRecipeType("chemical_reactor").withItemInputs().withFluidInputs().withItemOutputs().withFluidOutputs();
     public static final MachineRecipeType RECIPE_COMPRESSOR = createRecipeType("compressor").withItemInputs().withItemOutputs();
     public static final MachineRecipeType RECIPE_CUTTING_MACHINE = createRecipeType("cutting_machine").withItemInputs().withFluidInputs().withItemOutputs();
+    public static final MachineRecipeType RECIPE_DISTILLERY = createRecipeType("distillery").withFluidInputs().withFluidOutputs();
+    public static final MachineRecipeType RECIPE_ELECTROLYZER = createRecipeType("electrolyzer").withItemInputs().withFluidInputs().withItemOutputs().withFluidOutputs();
     //public static final MachineRecipeType RECIPE_FLUID_EXTRACTOR = createRecipeType("fluid_extractor").withItemInputs().withFluidOutputs();
     public static final MachineRecipeType RECIPE_FURNACE = new FurnaceRecipeProxy(null);
     public static final MachineRecipeType RECIPE_MACERATOR = createRecipeType("macerator").withItemInputs().withItemOutputs();
@@ -168,6 +172,16 @@ public class MIMachines {
                 .setupProgressBar(88, 35, 22, 15, true).setupBackground("cutting_machine.png")
                 .setupEfficiencyBar(0, 166, 38, 62, 100, 2, true).setupElectricityBar(18, 34)
                 .setupOverlays("cutting_machine", true, false, false);
+    }
+
+    public static MachineFactory setupElectrolyzer(MachineFactory factory) {
+        return factory
+                .setInputSlotPosition(42, 27, 1, 1).setOutputSlotPosition(93, 27, 2, 2)
+                .setInputLiquidSlotPosition(42, 47, 1, 1).setLiquidOutputSlotPosition(131, 27, 2, 2)
+                .setupProgressBar(66, 35, 22, 15, true).setupBackground("electrolyzer.png")
+                .setupEfficiencyBar(0, 166, 50, 66, 100, 2, true).setupElectricityBar(18, 34)
+                .setupOverlays("electrolyzer", true, true, false)
+                .setupCasing("mv");
     }
 
     public static MachineFactory setupFluidExtractor(MachineFactory factory) {
@@ -353,6 +367,7 @@ public class MIMachines {
         registerMachineTiers("wiremill", RECIPE_WIREMILL, 1, 1, 0, 0, MIMachines::setupWiremill, false, false, true);
 
         registerMachineTiersElectricOnly("assembler", RECIPE_ASSEMBLER, 9, 3, 1, 0, MIMachines::setupAssembler);
+        registerMachineTiersElectricOnly("electrolyzer", RECIPE_ELECTROLYZER, 1, 4, 1, 4, MIMachines::setupElectrolyzer);
         registerMachineTiersElectricOnly("polarizer", RECIPE_POLARIZER, 1, 1, 0, 0, MIMachines::setupPolarizer);
 
         new SteamMachineFactory("coke_oven", null, (f, t) -> new MultiblockMachineBlockEntity(f, t, COKE_OVEN_SHAPE), RECIPE_COKE_OVEN, 1, 1, 0, 0)

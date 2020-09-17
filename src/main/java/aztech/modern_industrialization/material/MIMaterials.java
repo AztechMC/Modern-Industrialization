@@ -17,7 +17,9 @@ public class MIMaterials {
     public static MIMaterial lignite_coal = new MIMaterial("lignite_coal", false).addItemType(new String [] { "crushed_dust","dust","lignite_coal","tiny_dust"}).addBlockType(new String [] { "ore" }).setupOreGenerator(20, 17, 128);
     public static MIMaterial nickel = new MIMaterial("nickel", false).addItemType(new String [] { "crushed_dust","curved_plate","double_ingot","dust","ingot","large_plate","nugget","plate","tiny_dust"}).addBlockType(new String [] { "block","ore" }).setupOreGenerator(7, 6, 64);
     public static MIMaterial redstone = new MIMaterial("redstone", false).addItemType(new String [] { "crushed_dust","tiny_dust"});
+    public static MIMaterial salt = new MIMaterial("salt", false).addItemType(new String [] { "crushed_dust","dust","tiny_dust"}).addBlockType(new String [] { "block","ore" }).setupOreGenerator(8, 7, 32);
     public static MIMaterial silver = new MIMaterial("silver", false).addItemType(new String [] { "crushed_dust","curved_plate","double_ingot","dust","ingot","large_plate","nugget","plate","tiny_dust"}).addBlockType(new String [] { "block","ore" }).setupOreGenerator(4, 6, 64);
+    public static MIMaterial sodium = new MIMaterial("sodium", false).addItemType(new String [] { "dust","ingot","nugget","tiny_dust"}).addBlockType(new String [] { "block" });
     public static MIMaterial steel = new MIMaterial("steel", false).addItemType(new String [] { "blade","bolt","curved_plate","double_ingot","dust","gear","ingot","large_plate","nugget","plate","ring","rod","rotor","tiny_dust"}).addBlockType(new String [] { "block" });
     public static MIMaterial tin = new MIMaterial("tin", false).addItemType(new String [] { "blade","bolt","crushed_dust","curved_plate","double_ingot","dust","gear","ingot","large_plate","nugget","plate","ring","rod","rotor","tiny_dust","wire"}).addBlockType(new String [] { "block","ore" }).setupOreGenerator(8, 9, 64);
 }

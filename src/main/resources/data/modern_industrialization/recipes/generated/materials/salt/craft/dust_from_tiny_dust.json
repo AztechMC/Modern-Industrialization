@@ -14,7 +14,7 @@
             "item": "modern_industrialization:salt_tiny_dust"
         },
         "x": {
-            "item": "modern_industrialization:salt_tiny_dust"
+            "tag": "c:salt_tiny_dusts"
         }
     }
 }

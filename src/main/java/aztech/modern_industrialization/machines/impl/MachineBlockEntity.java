@@ -470,7 +470,7 @@ public class MachineBlockEntity extends AbstractMachineBlockEntity
                 if(randFloat > output.probability) continue;
             }
             FluidKey key = FluidKeys.get(output.fluid);
-            int remainingAmount = ConfigurableInventory.internalInsert(stacks, key, output.amount, simulate ? SIMULATE : ACTION, s -> true, index -> {
+            int remainingAmount = ConfigurableInventory.internalInsert(stacks, key, output.amount, ACTION, s -> true, index -> {
                 locksToToggle.add(index);
                 lockFluids.add(key);
             }, () -> {

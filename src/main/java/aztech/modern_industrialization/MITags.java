@@ -75,6 +75,9 @@ public class MITags {
     private static final Tag<Item> NICKEL_TINY_DUSTS = TagRegistry.item(new Identifier("c", "nickel_tiny_dusts"));
     private static final Tag<Item> ORES = TagRegistry.item(new Identifier("c", "ores"));
     private static final Tag<Item> REDSTONE_TINY_DUSTS = TagRegistry.item(new Identifier("c", "redstone_tiny_dusts"));
+    private static final Tag<Item> SALT_DUSTS = TagRegistry.item(new Identifier("c", "salt_dusts"));
+    private static final Tag<Item> SALT_ORES = TagRegistry.item(new Identifier("c", "salt_ores"));
+    private static final Tag<Item> SALT_TINY_DUSTS = TagRegistry.item(new Identifier("c", "salt_tiny_dusts"));
     private static final Tag<Item> SILVER_DUSTS = TagRegistry.item(new Identifier("c", "silver_dusts"));
     private static final Tag<Item> SILVER_INGOTS = TagRegistry.item(new Identifier("c", "silver_ingots"));
     private static final Tag<Item> SILVER_NUGGETS = TagRegistry.item(new Identifier("c", "silver_nuggets"));

@@ -24,7 +24,6 @@ def clean(string):
 def gen_name(ty):
     id = ty.id
 
-    lang_json = {}
     with open('src/main/resources/assets/modern_industrialization/lang/en_us.json', 'r') as lang_file:
         lang_json = json.load(lang_file)
         lang_file.close()
@@ -698,7 +697,11 @@ public class MIMaterials {
     )
     gen(
         file,
-        Material('salt', PURE_NON_METAL, BOTH),
+        Material('salt', PURE_NON_METAL, BOTH, oredicted={
+            "dust": "c:salt_dusts",
+            "ore": "c:salt_ores",
+            "tiny_dust": "c:salt_tiny_dusts",
+        }),
         '#c7d6c5', isMetal=False, smelting=False, veinsPerChunk=8, veinsSize=7, maxYLevel=32
     )
 

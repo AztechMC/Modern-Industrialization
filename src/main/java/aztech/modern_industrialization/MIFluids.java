@@ -1,3 +1,4 @@
+
 package aztech.modern_industrialization;
 
 import alexiil.mc.lib.attributes.fluid.volume.FluidKey;
@@ -6,32 +7,27 @@ import alexiil.mc.lib.attributes.fluid.volume.SimpleFluidKey;
 import aztech.modern_industrialization.fluid.CraftingFluid;
 import net.devtech.arrp.json.models.JModel;
 import net.devtech.arrp.json.models.JTextures;
-import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandler;
-import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry;
-import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
-import net.fabricmc.fabric.api.resource.SimpleSynchronousResourceReloadListener;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.texture.Sprite;
-import net.minecraft.client.texture.SpriteAtlasTexture;
-import net.minecraft.fluid.FluidState;
-import net.minecraft.resource.ResourceManager;
-import net.minecraft.resource.ResourceType;
 import net.minecraft.text.*;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
-import net.minecraft.world.BlockRenderView;
-
-import java.util.function.Consumer;
 
 import static aztech.modern_industrialization.ModernIndustrialization.MOD_ID;
 import static aztech.modern_industrialization.ModernIndustrialization.RESOURCE_PACK;
 
+/**
+ * This is auto-generated, don't edit by hand!
+ */
 public class MIFluids {
     public static final CraftingFluid FLUID_STEAM = new CraftingFluid("steam", 0xffeeeeee);
     public static final CraftingFluid[] FLUIDS = new CraftingFluid[] {
             FLUID_STEAM,
+            new CraftingFluid("air", 0xff76c7f9),
+            new CraftingFluid("chlorine", 0xffb7c114),
+            new CraftingFluid("hydrogen", 0xff1b4acc),
+            new CraftingFluid("oxygen", 0xff3296f2),
             new CraftingFluid("raw_synthetic_oil", 0xff474740),
+            new CraftingFluid("rubber", 0xff1a1a1a),
+            new CraftingFluid("sodium_hydroxide", 0xff5071c9),
+            new CraftingFluid("sulfuric_acid", 0xffe15b00),
             new CraftingFluid("synthetic_oil", 0xff1a1a1a),
     };
 

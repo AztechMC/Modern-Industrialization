@@ -4,7 +4,7 @@
     "duration": 200,
     "item_inputs": [
         {
-            "item": "modern_industrialization:salt_ore",
+            "tag": "c:salt_ores",
             "amount": 1
         }
     ],

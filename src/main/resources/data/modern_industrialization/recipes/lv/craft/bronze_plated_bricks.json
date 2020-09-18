@@ -1,0 +1,19 @@
+{
+  "type" : "minecraft:crafting_shaped",
+  "pattern" : [
+    "AAA",
+    "AHA",
+    "AAA"
+  ],
+  "key": {
+    "A" : {
+      "item" : "modern_industrialization:bronze_large_plate"
+    },
+    "H" : {
+      "item" : "modern_industrialization:fire_clay_bricks"
+    }
+  },
+  "result": {
+    "item": "modern_industrialization:bronze_plated_bricks"
+  }
+}

@@ -28,3 +28,7 @@ bin/
 # fabric
 
 run/
+
+# datagen script
+
+__pycache__/

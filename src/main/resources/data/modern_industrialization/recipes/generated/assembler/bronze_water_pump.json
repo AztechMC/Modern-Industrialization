@@ -1,0 +1,33 @@
+{
+    "type": "modern_industrialization:assembler",
+    "eu": 8,
+    "duration": 200,
+    "item_inputs": [
+        {
+            "item": "modern_industrialization:copper_rotor",
+            "amount": 2
+        },
+        {
+            "item": "modern_industrialization:tank_bronze",
+            "amount": 1
+        },
+        {
+            "tag": "c:copper_gears",
+            "amount": 2
+        },
+        {
+            "item": "modern_industrialization:bronze_machine_casing",
+            "amount": 1
+        },
+        {
+            "item": "modern_industrialization:pipe_fluid_copper",
+            "amount": 3
+        }
+    ],
+    "item_outputs": [
+        {
+            "item": "modern_industrialization:bronze_water_pump",
+            "amount": 1
+        }
+    ]
+}

@@ -21,6 +21,7 @@ public class MIFluids {
     public static final CraftingFluid[] FLUIDS = new CraftingFluid[] {
             FLUID_STEAM,
             new CraftingFluid("air", 0xff76c7f9),
+            new CraftingFluid("bauxite_solution", 0xffd05739),
             new CraftingFluid("chlorine", 0xffb7c114),
             new CraftingFluid("hydrogen", 0xff1b4acc),
             new CraftingFluid("oxygen", 0xff3296f2),
@@ -30,22 +31,22 @@ public class MIFluids {
             new CraftingFluid("sulfuric_acid", 0xffe15b00),
             new CraftingFluid("synthetic_oil", 0xff1a1a1a),
     };
-
+    
     public static void setupFluids() {
-
+    
     }
-
+    
     static {
         for(CraftingFluid fluid : FLUIDS) {
             registerFluid(fluid);
-
+    
             Text name = new TranslatableText(fluid.getDefaultState().getBlockState().getBlock().getTranslationKey()).setStyle(Style.EMPTY.withColor(TextColor.fromRgb(fluid.color)));
             fluid.key = new SimpleFluidKey(new FluidKey.FluidKeyBuilder(fluid).setName(name).setRenderColor(fluid.color));
             FluidKeys.put(fluid, fluid.key);
         }
     }
-
-
+    
+    
     private static void registerFluid(CraftingFluid fluid) {
         String id = fluid.name;
         Registry.register(Registry.FLUID, new MIIdentifier(id), fluid);

@@ -1,12 +1,9 @@
-from glob import glob
 from PIL import Image
 from PIL.ImageOps import grayscale, colorize
-from pathlib import Path
-from collections import defaultdict
 
-import os
 import json
-
+import shutil
+from pathlib import Path
 
 def image_tint(src, tint='#ffffff'):
     src = Image.open(src).convert('RGBA')
@@ -58,9 +55,10 @@ public class MIFluids {
 """
 
 
-def gen_fluid(name, color, gas=False):
-    global java_class
-    java_class += '            new CraftingFluid("%s", 0xff%s),\n' % (name, color[1:])
+def gen_fluid(name, color, gas=False, register=True):
+    if register:
+        global java_class
+        java_class += '            new CraftingFluid("%s", 0xff%s),\n' % (name, color[1:])
     gen_name(name)
     bucket_image = image_tint("template/fluid/bucket_content.png", color)
     bucket_image = Image.alpha_composite(bucket_image, Image.open("template/fluid/bucket.png"))
@@ -69,36 +67,39 @@ def gen_fluid(name, color, gas=False):
     bucket_image.save("src/main/resources/assets/modern_industrialization/textures/items/bucket/%s.png" % name)
 
 
-if __name__ == "__main__":
+shutil.rmtree("src/main/resources/assets/modern_industrialization/textures/items/bucket", ignore_errors=True)
+Path("src/main/resources/assets/modern_industrialization/textures/items/bucket").mkdir(parents=True, exist_ok=True)
 
-    gen_fluid("air", "#76c7f9", True),
-    gen_fluid("chlorine", "#b7c114", True),
-    gen_fluid("hydrogen", "#1b4acc", True),
-    gen_fluid("oxygen", "#3296f2", True),
-    gen_fluid("raw_synthetic_oil", "#474740"),
-    gen_fluid("rubber", "#1a1a1a"),
-    gen_fluid("sodium_hydroxide", "#5071c9"),
-    gen_fluid("sulfuric_acid", "#e15b00"),
-    gen_fluid("synthetic_oil", "#1a1a1a"),
+gen_fluid("steam", "#eeeeee", True, register=False)
+gen_fluid("air", "#76c7f9", True),
+gen_fluid("bauxite_solution", "#d05739"),
+gen_fluid("chlorine", "#b7c114", True),
+gen_fluid("hydrogen", "#1b4acc", True),
+gen_fluid("oxygen", "#3296f2", True),
+gen_fluid("raw_synthetic_oil", "#474740"),
+gen_fluid("rubber", "#1a1a1a"),
+gen_fluid("sodium_hydroxide", "#5071c9"),
+gen_fluid("sulfuric_acid", "#e15b00"),
+gen_fluid("synthetic_oil", "#1a1a1a"),
 
-    java_class += """\
+java_class += """\
     };
-
+    
     public static void setupFluids() {
-
+    
     }
-
+    
     static {
         for(CraftingFluid fluid : FLUIDS) {
             registerFluid(fluid);
-
+    
             Text name = new TranslatableText(fluid.getDefaultState().getBlockState().getBlock().getTranslationKey()).setStyle(Style.EMPTY.withColor(TextColor.fromRgb(fluid.color)));
             fluid.key = new SimpleFluidKey(new FluidKey.FluidKeyBuilder(fluid).setName(name).setRenderColor(fluid.color));
             FluidKeys.put(fluid, fluid.key);
         }
     }
-
-
+    
+    
     private static void registerFluid(CraftingFluid fluid) {
         String id = fluid.name;
         Registry.register(Registry.FLUID, new MIIdentifier(id), fluid);
@@ -107,5 +108,5 @@ if __name__ == "__main__":
     }
 }
 """
-    with open("src/main/java/aztech/modern_industrialization/MIFluids.java", "w") as f:
-        f.write(java_class)
+with open("src/main/java/aztech/modern_industrialization/MIFluids.java", "w") as f:
+    f.write(java_class)

@@ -1,12 +1,14 @@
-from glob import glob
 from collections import defaultdict
 from pathlib import Path
 
 import os
 import json
+import shutil
 
 path = "src/main/resources/data/modern_industrialization/recipes/"
 path_output = "src/main/resources/data/modern_industrialization/recipes/generated/assembler/"
+
+shutil.rmtree(path_output, ignore_errors=True)
 
 Path(path_output).mkdir(parents=True, exist_ok=True)
 

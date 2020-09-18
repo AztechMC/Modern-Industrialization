@@ -1,0 +1,29 @@
+{
+    "type": "modern_industrialization:assembler",
+    "eu": 8,
+    "duration": 200,
+    "item_inputs": [
+        {
+            "item": "modern_industrialization:bronze_plated_bricks",
+            "amount": 4
+        },
+        {
+            "item": "modern_industrialization:lv_circuit",
+            "amount": 2
+        },
+        {
+            "item": "modern_industrialization:pipe_fluid_bronze",
+            "amount": 2
+        },
+        {
+            "item": "modern_industrialization:bronze_boiler",
+            "amount": 1
+        }
+    ],
+    "item_outputs": [
+        {
+            "item": "modern_industrialization:large_steam_boiler",
+            "amount": 1
+        }
+    ]
+}

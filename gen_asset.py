@@ -6,6 +6,7 @@ from collections import defaultdict
 
 import os
 import json
+import shutil
 
 
 def image_tint(src, tint='#ffffff'):
@@ -462,7 +463,7 @@ ITEM_ALL = ITEM_BASE | {'bolt', 'blade',
 
 ITEM_ALL_NO_ORE = ITEM_ALL - {'crushed_dust'}
 TEXTURE_UNDERLAYS = {'ore'}
-TEXTURE_OVERLAYS = {'fine_wire'}
+TEXTURE_OVERLAYS = {'fine_wire', 'oxide'}
 DEFAULT_OREDICT = {'nugget': '_nuggets', 'ore': '_ores', 'plate': '_plates', 'gear': '_gears', 'dust': '_dusts', 'tiny_dust': '_tiny_dusts'}
 RESTRICTIVE_OREDICT = {'ore': '_ores'}
 
@@ -518,211 +519,214 @@ class Material:
     def __getitem__(self, item):
         return "modern_industrialization:" + self.id + "_" + item if item not in self.overrides else self.overrides[item]
 
-
-if __name__ == '__main__':
-    file = open(
-        "src/main/java/aztech/modern_industrialization/material/MIMaterials.java", "w")
-    file.write("""package aztech.modern_industrialization.material;
+file = open(
+    "src/main/java/aztech/modern_industrialization/material/MIMaterials.java", "w")
+file.write("""package aztech.modern_industrialization.material;
 
 public class MIMaterials {
 
 """)
-    file.close()
-    file = open(
-        "src/main/java/aztech/modern_industrialization/material/MIMaterials.java", "a")
+file.close()
+file = open(
+    "src/main/java/aztech/modern_industrialization/material/MIMaterials.java", "a")
 
-    gen(
-        file,
-        Material('gold', ITEM_BASE - {'ingot', 'nugget'}, set(), overrides={
-            "main": "minecraft:gold_ingot",
-            "nugget": "minecraft:gold_nugget",
-            "ore": "minecraft:gold_ore",
-            "item_pipe": "modern_industrialization:pipe_item_gold",
-            "fluid_pipe": "modern_industrialization:pipe_fluid_gold",
-        }, oredicted={
-            "ore": "c:gold_ores",
-            "plate": "c:gold_plates",
-            "dust": "c:gold_dusts",
-            "tiny_dust": "c:gold_tiny_dusts",
-        }),
-        '#ffe100', vanilla=True,
-    )
-    gen(
-        file,
-        Material('iron', ITEM_BASE - {'ingot', 'nugget'}, set(), overrides={
-            "main": "minecraft:iron_ingot",
-            "nugget": "minecraft:iron_nugget",
-            "ore": "minecraft:iron_ore",
-            "item_pipe": "modern_industrialization:pipe_item_iron",
-            "fluid_pipe": "modern_industrialization:pipe_fluid_iron",
-        }, oredicted={
-            "plate": "c:iron_plates",
-            "dust": "c:iron_dusts",
-            "tiny_dust": "c:iron_tiny_dusts",
-        }),
-        '#f0f0f0', vanilla=True, forge_hammer=True,
-    )
-    gen(
-        file,
-        Material('coal', PURE_NON_METAL, set(), overrides={
-            "main": "minecraft:coal",
-            "ore": "minecraft:coal_ore",
-        }, oredicted={
-            "dust": "c:coal_dusts",
-            "tiny_dust": "c:coal_tiny_dusts",
-        }),
-        '#282828', vanilla=True, forge_hammer=True, isMetal=False, smelting=False,
-    )
-    gen(
-        file,
-        Material('copper', ITEM_ALL | {'wire', 'fine_wire'}, BOTH, overrides={
-            "item_pipe": "modern_industrialization:pipe_item_copper",
-            "fluid_pipe": "modern_industrialization:pipe_fluid_copper",
-            "cable": "modern_industrialization:pipe_electricity_copper",
-        }),
-        '#ff6600', forge_hammer=True, veinsPerChunk=20, veinsSize=9, maxYLevel=128,
-    )
-    gen(
-        file,
-        Material('bronze', ITEM_ALL_NO_ORE, BLOCK_ONLY, overrides={
-            "item_pipe": "modern_industrialization:pipe_item_bronze",
-            "fluid_pipe": "modern_industrialization:pipe_fluid_bronze",
-        }),
-        '#ffcc00', forge_hammer=True,
-    )
-    gen(
-        file,
-        Material('tin', ITEM_ALL | {'wire'}, BOTH, overrides={
-            "item_pipe": "modern_industrialization:pipe_item_tin",
-            "fluid_pipe": "modern_industrialization:pipe_fluid_tin",
-            "cable": "modern_industrialization:pipe_electricity_tin",
-        }),
-        '#cbe4e4', forge_hammer=True, veinsPerChunk=8, veinsSize=9,
-    )
-    gen(
-        file,
-        Material('steel', ITEM_ALL_NO_ORE, BLOCK_ONLY, overrides={
-            "item_pipe": "modern_industrialization:pipe_item_steel",
-            "fluid_pipe": "modern_industrialization:pipe_fluid_steel",
-        }),
-        '#3f3f3f',
-    )
-    gen(
-        file,
-        Material('aluminum', ITEM_BASE | {'ingot'}, BLOCK_ONLY, overrides={
-            "item_pipe": "modern_industrialization:pipe_item_aluminum",
-            "fluid_pipe": "modern_industrialization:pipe_fluid_aluminum",
-        }),
-        '#3fcaff', smelting=False,
-    )
-    gen(
-        file,
-        Material('bauxite', PURE_NON_METAL, ORE_ONLY, oredicted={
-            "dust": "c:bauxite_dusts",
-            "ore": "c:bauxite_ores",
-            "tiny_dust": "c:bauxite_tiny_dusts",
-        }),
-        '#cc3908', isMetal=False, smelting=False, veinsPerChunk=8, veinsSize=7, maxYLevel=32,
-    )
-    gen(
-        file,
-        Material('lignite_coal', PURE_NON_METAL | {'lignite_coal'}, ORE_ONLY, overrides={
-            'main': 'modern_industrialization:lignite_coal',
-        }),
-        '#604020', forge_hammer=True, isMetal=False, veinsPerChunk=20, veinsSize=17, maxYLevel=128,
-    )
-    gen(
-        file,
-        Material('lead', ITEM_BASE, BOTH, overrides={
-            "item_pipe": "modern_industrialization:pipe_item_lead",
-            "fluid_pipe": "modern_industrialization:pipe_fluid_lead",
-        }),
-        '#4a2649', veinsPerChunk=4, veinsSize=8, maxYLevel=64,
-    )
-    gen(
-        file,
-        Material('battery_alloy', {'tiny_dust', 'dust',
-                                   'plate', 'nugget', 'curved_plate', 'ingot',
-                                   'double_ingot'}, BLOCK_ONLY),
-        '#a694a5',
-    )
-    gen(
-        file,
-        Material('invar', {'tiny_dust', 'dust', 'plate',
-                           'ingot', 'double_ingot', 'nugget', 'large_plate', 'gear'}, BLOCK_ONLY),
-        '#909050',
-    )
+shutil.rmtree("src/main/resources/assets/modern_industrialization/textures/blocks/materials", ignore_errors=True)
+shutil.rmtree("src/main/resources/assets/modern_industrialization/textures/items/materials", ignore_errors=True)
+shutil.rmtree("src/main/resources/data/c/tags/items", ignore_errors=True)
+shutil.rmtree("src/main/resources/data/modern_industrialization/recipes/generated/materials", ignore_errors=True)
 
-    gen(
-        file,
-        Material('cupronickel', {'tiny_dust', 'dust', 'plate',
-                                 'ingot', 'nugget', 'wire', 'double_ingot'}, BLOCK_ONLY | {'coil'}),
-        '#e39680',
-    )
+gen(
+    file,
+    Material('gold', ITEM_BASE - {'ingot', 'nugget'}, set(), overrides={
+        "main": "minecraft:gold_ingot",
+        "nugget": "minecraft:gold_nugget",
+        "ore": "minecraft:gold_ore",
+        "item_pipe": "modern_industrialization:pipe_item_gold",
+        "fluid_pipe": "modern_industrialization:pipe_fluid_gold",
+    }, oredicted={
+        "ore": "c:gold_ores",
+        "plate": "c:gold_plates",
+        "dust": "c:gold_dusts",
+        "tiny_dust": "c:gold_tiny_dusts",
+    }),
+    '#ffe100', vanilla=True,
+)
+gen(
+    file,
+    Material('iron', ITEM_BASE - {'ingot', 'nugget'}, set(), overrides={
+        "main": "minecraft:iron_ingot",
+        "nugget": "minecraft:iron_nugget",
+        "ore": "minecraft:iron_ore",
+        "item_pipe": "modern_industrialization:pipe_item_iron",
+        "fluid_pipe": "modern_industrialization:pipe_fluid_iron",
+    }, oredicted={
+        "plate": "c:iron_plates",
+        "dust": "c:iron_dusts",
+        "tiny_dust": "c:iron_tiny_dusts",
+    }),
+    '#f0f0f0', vanilla=True, forge_hammer=True,
+)
+gen(
+    file,
+    Material('coal', PURE_NON_METAL, set(), overrides={
+        "main": "minecraft:coal",
+        "ore": "minecraft:coal_ore",
+    }, oredicted={
+        "dust": "c:coal_dusts",
+        "tiny_dust": "c:coal_tiny_dusts",
+    }),
+    '#282828', vanilla=True, forge_hammer=True, isMetal=False, smelting=False,
+)
+gen(
+    file,
+    Material('copper', ITEM_ALL | {'wire', 'fine_wire'}, BOTH, overrides={
+        "item_pipe": "modern_industrialization:pipe_item_copper",
+        "fluid_pipe": "modern_industrialization:pipe_fluid_copper",
+        "cable": "modern_industrialization:pipe_electricity_copper",
+    }),
+    '#ff6600', forge_hammer=True, veinsPerChunk=20, veinsSize=9, maxYLevel=128,
+)
+gen(
+    file,
+    Material('bronze', ITEM_ALL_NO_ORE, BLOCK_ONLY, overrides={
+        "item_pipe": "modern_industrialization:pipe_item_bronze",
+        "fluid_pipe": "modern_industrialization:pipe_fluid_bronze",
+    }),
+    '#ffcc00', forge_hammer=True,
+)
+gen(
+    file,
+    Material('tin', ITEM_ALL | {'wire'}, BOTH, overrides={
+        "item_pipe": "modern_industrialization:pipe_item_tin",
+        "fluid_pipe": "modern_industrialization:pipe_fluid_tin",
+        "cable": "modern_industrialization:pipe_electricity_tin",
+    }),
+    '#cbe4e4', forge_hammer=True, veinsPerChunk=8, veinsSize=9,
+)
+gen(
+    file,
+    Material('steel', ITEM_ALL_NO_ORE, BLOCK_ONLY, overrides={
+        "item_pipe": "modern_industrialization:pipe_item_steel",
+        "fluid_pipe": "modern_industrialization:pipe_fluid_steel",
+    }),
+    '#3f3f3f',
+)
+gen(
+    file,
+    Material('aluminum', ITEM_BASE | {'ingot'}, BLOCK_ONLY, overrides={
+        "item_pipe": "modern_industrialization:pipe_item_aluminum",
+        "fluid_pipe": "modern_industrialization:pipe_fluid_aluminum",
+    }),
+    '#3fcaff', smelting=False,
+)
+gen(
+    file,
+    Material('bauxite', PURE_NON_METAL, ORE_ONLY, oredicted={
+        "dust": "c:bauxite_dusts",
+        "ore": "c:bauxite_ores",
+        "tiny_dust": "c:bauxite_tiny_dusts",
+    }),
+    '#cc3908', isMetal=False, smelting=False, veinsPerChunk=8, veinsSize=7, maxYLevel=32,
+)
+gen(
+    file,
+    Material('lignite_coal', PURE_NON_METAL | {'lignite_coal'}, ORE_ONLY, overrides={
+        'main': 'modern_industrialization:lignite_coal',
+    }),
+    '#604020', forge_hammer=True, isMetal=False, veinsPerChunk=20, veinsSize=17, maxYLevel=128,
+)
+gen(
+    file,
+    Material('lead', ITEM_BASE, BOTH, overrides={
+        "item_pipe": "modern_industrialization:pipe_item_lead",
+        "fluid_pipe": "modern_industrialization:pipe_fluid_lead",
+    }),
+    '#4a2649', veinsPerChunk=4, veinsSize=8, maxYLevel=64,
+)
+gen(
+    file,
+    Material('battery_alloy', {'tiny_dust', 'dust',
+                               'plate', 'nugget', 'curved_plate', 'ingot',
+                               'double_ingot'}, BLOCK_ONLY),
+    '#a694a5',
+)
+gen(
+    file,
+    Material('invar', {'tiny_dust', 'dust', 'plate',
+                       'ingot', 'double_ingot', 'nugget', 'large_plate', 'gear'}, BLOCK_ONLY),
+    '#909050',
+)
 
-    gen(
-        file,
-        Material('antimony', PURE_METAL, BOTH),
-        '#91bdb4', veinsPerChunk=4, veinsSize=6, maxYLevel=64,
-    )
-    gen(
-        file,
-        Material('nickel', ITEM_BASE, BOTH, overrides={
-            "item_pipe": "modern_industrialization:pipe_item_nickel",
-            "fluid_pipe": "modern_industrialization:pipe_fluid_nickel",
-        }),
-        '#a9a9d4', veinsPerChunk=7, veinsSize=6, maxYLevel=64,
-    )
-    gen(
-        file,
-        Material('silver', ITEM_BASE, BOTH, overrides={
-            "item_pipe": "modern_industrialization:pipe_item_silver",
-            "fluid_pipe": "modern_industrialization:pipe_fluid_silver",
-        }),
-        '#99ffff', veinsPerChunk=4, veinsSize=6, maxYLevel=64,
-    )
-    gen(
-        file,
-        Material('redstone', {'crushed_dust', 'tiny_dust'}, set(), overrides={
-            "dust": "minecraft:redstone",
-        }, oredicted={
-            "tiny_dust": "c:redstone_tiny_dusts",
-        }),
-        '#d20000', macerator=False
-    )
-    gen(
-        file,
-        Material('sodium', PURE_METAL - {'crushed_dust'}, BLOCK_ONLY),
-        '#071CB8',
-    )
-    gen(
-        file,
-        Material('salt', PURE_NON_METAL, BOTH, oredicted={
-            "dust": "c:salt_dusts",
-            "ore": "c:salt_ores",
-            "tiny_dust": "c:salt_tiny_dusts",
-        }),
-        '#c7d6c5', isMetal=False, smelting=False, veinsPerChunk=8, veinsSize=7, maxYLevel=32
-    )
+gen(
+    file,
+    Material('cupronickel', {'tiny_dust', 'dust', 'plate',
+                             'ingot', 'nugget', 'wire', 'double_ingot'}, BLOCK_ONLY | {'coil'}),
+    '#e39680',
+)
 
-    file.write("\n".join(sorted(material_lines)))
-    file.write("\n")
-    file.write("}")
-    file.close()
+gen(
+    file,
+    Material('antimony', PURE_METAL, BOTH),
+    '#91bdb4', veinsPerChunk=4, veinsSize=6, maxYLevel=64,
+)
+gen(
+    file,
+    Material('nickel', ITEM_BASE, BOTH, overrides={
+        "item_pipe": "modern_industrialization:pipe_item_nickel",
+        "fluid_pipe": "modern_industrialization:pipe_fluid_nickel",
+    }),
+    '#a9a9d4', veinsPerChunk=7, veinsSize=6, maxYLevel=64,
+)
+gen(
+    file,
+    Material('silver', ITEM_BASE, BOTH, overrides={
+        "item_pipe": "modern_industrialization:pipe_item_silver",
+        "fluid_pipe": "modern_industrialization:pipe_fluid_silver",
+    }),
+    '#99ffff', veinsPerChunk=4, veinsSize=6, maxYLevel=64,
+)
+gen(
+    file,
+    Material('redstone', {'crushed_dust', 'tiny_dust'}, set(), overrides={
+        "dust": "minecraft:redstone",
+    }, oredicted={
+        "tiny_dust": "c:redstone_tiny_dusts",
+    }),
+    '#d20000', macerator=False
+)
+gen(
+    file,
+    Material('sodium', PURE_METAL - {'crushed_dust'}, BLOCK_ONLY),
+    '#071CB8',
+)
+gen(
+    file,
+    Material('salt', PURE_NON_METAL, BOTH, oredicted={
+        "dust": "c:salt_dusts",
+        "ore": "c:salt_ores",
+        "tiny_dust": "c:salt_tiny_dusts",
+    }),
+    '#c7d6c5', isMetal=False, smelting=False, veinsPerChunk=8, veinsSize=7, maxYLevel=32
+)
 
-    print(loaded_items)
+file.write("\n".join(sorted(material_lines)))
+file.write("\n")
+file.write("}")
+file.close()
 
-    # save tags
-    Path("src/main/resources/data/c/tags/items/").mkdir(parents=True, exist_ok=True)
-    for key, values in tags.items():
-        with open("src/main/resources/data/c/tags/items/" + key[2:] + ".json", "w") as f:
-            jsonf = {
-                "replace": False,
-                "values": values,
-            }
-            json.dump(jsonf, f, indent=4)
+print(loaded_items)
 
-    java_class ="""
+# save tags
+Path("src/main/resources/data/c/tags/items/").mkdir(parents=True, exist_ok=True)
+for key, values in tags.items():
+    with open("src/main/resources/data/c/tags/items/" + key[2:] + ".json", "w") as f:
+        jsonf = {
+            "replace": False,
+            "values": values,
+        }
+        json.dump(jsonf, f, indent=4)
+
+java_class ="""
 package aztech.modern_industrialization;
 
 import net.fabricmc.fabric.api.tag.TagRegistry;
@@ -734,13 +738,13 @@ import net.minecraft.util.Identifier;
  * This is auto-generated, don't edit by hand!
  */
 public class MITags {\n"""
-    for key in sorted(list(tags.keys())):
-        java_class += '    private static final Tag<Item> %s = TagRegistry.item(new Identifier("c", "%s"));\n' % (key[2:].upper(), key[2:])
-    java_class += """
+for key in sorted(list(tags.keys())):
+    java_class += '    private static final Tag<Item> %s = TagRegistry.item(new Identifier("c", "%s"));\n' % (key[2:].upper(), key[2:])
+java_class += """
     public static void setup() {
         // Will register the tags by loading the static fields!
     }
 }
 """
-    with open("src/main/java/aztech/modern_industrialization/MITags.java", "w") as f:
-        f.write(java_class)
+with open("src/main/java/aztech/modern_industrialization/MITags.java", "w") as f:
+    f.write(java_class)

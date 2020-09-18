@@ -1,0 +1,22 @@
+{
+  "type" : "minecraft:crafting_shaped",
+  "pattern" : [
+    "mpm",
+    "pHp",
+    "mpm"
+  ],
+  "key": {
+    "m" : {
+      "item" : "modern_industrialization:lv_motor"
+    },
+    "H" : {
+      "item" : "modern_industrialization:advanced_machine_hull"
+    },
+    "p": {
+      "item" : "modern_industrialization:pipe_electricity_tin"
+    }
+  },
+  "result": {
+    "item": "modern_industrialization:lv_centrifuge"
+  }
+}

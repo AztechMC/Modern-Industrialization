@@ -43,7 +43,7 @@ public class MIMachines {
     public static final MachineRecipeType RECIPE_CHEMICAL_REACTOR = createRecipeType("chemical_reactor").withItemInputs().withFluidInputs().withItemOutputs().withFluidOutputs();
     public static final MachineRecipeType RECIPE_COMPRESSOR = createRecipeType("compressor").withItemInputs().withItemOutputs();
     public static final MachineRecipeType RECIPE_CUTTING_MACHINE = createRecipeType("cutting_machine").withItemInputs().withFluidInputs().withItemOutputs();
-    public static final MachineRecipeType RECIPE_DISTILLERY = createRecipeType("distillery").withFluidInputs().withFluidOutputs();
+    //public static final MachineRecipeType RECIPE_DISTILLERY = createRecipeType("distillery").withFluidInputs().withFluidOutputs();
     public static final MachineRecipeType RECIPE_ELECTROLYZER = createRecipeType("electrolyzer").withItemInputs().withFluidInputs().withItemOutputs().withFluidOutputs();
     //public static final MachineRecipeType RECIPE_FLUID_EXTRACTOR = createRecipeType("fluid_extractor").withItemInputs().withFluidOutputs();
     public static final MachineRecipeType RECIPE_FURNACE = new FurnaceRecipeProxy(null);
@@ -155,6 +155,26 @@ public class MIMachines {
                 .setupEfficiencyBar(0, 186, 43, 86, 100, 2, true).setupElectricityBar(18, 44)
                 .setInventoryPos(8, 104)
                 .setupOverlays("assembler", true, false, true);
+    }
+
+    public static MachineFactory setupCentrifuge(MachineFactory factory) {
+        return factory
+                .setInputSlotPosition(42, 27, 1, 1).setOutputSlotPosition(93, 27, 2, 2)
+                .setInputLiquidSlotPosition(42, 47, 1, 1).setLiquidOutputSlotPosition(131, 27, 2, 2)
+                .setupProgressBar(66, 35, 22, 15, true).setupBackground("electrolyzer.png")
+                .setupEfficiencyBar(0, 166, 50, 66, 100, 2, true).setupElectricityBar(18, 34)
+                .setupOverlays("centrifuge", true, true, true)
+                .setupCasing("mv");
+    }
+
+    public static MachineFactory setupChemicalReactor(MachineFactory factory) {
+        return factory
+                .setInputSlotPosition(30, 27, 3, 1).setOutputSlotPosition(116, 27, 3, 1)
+                .setInputLiquidSlotPosition(30, 47, 3, 1).setLiquidOutputSlotPosition(116, 47, 3, 1)
+                .setupProgressBar(88, 35, 22, 15, true).setupBackground("chemical_reactor.png")
+                .setupEfficiencyBar(0, 166, 50, 66, 100, 2, true).setupElectricityBar(12, 34)
+                .setupOverlays("chemical_reactor", true, false, false)
+                .setupCasing("mv");
     }
 
     public static MachineFactory setupCompressor(MachineFactory factory) {
@@ -367,6 +387,8 @@ public class MIMachines {
         registerMachineTiers("wiremill", RECIPE_WIREMILL, 1, 1, 0, 0, MIMachines::setupWiremill, false, false, true);
 
         registerMachineTiersElectricOnly("assembler", RECIPE_ASSEMBLER, 9, 3, 1, 0, MIMachines::setupAssembler);
+        registerMachineTiersElectricOnly("centrifuge", RECIPE_CENTRIFUGE, 1, 4, 1, 4, MIMachines::setupCentrifuge);
+        registerMachineTiersElectricOnly("chemical_reactor", RECIPE_CHEMICAL_REACTOR, 3, 3, 3, 3, MIMachines::setupChemicalReactor);
         registerMachineTiersElectricOnly("electrolyzer", RECIPE_ELECTROLYZER, 1, 4, 1, 4, MIMachines::setupElectrolyzer);
         registerMachineTiersElectricOnly("polarizer", RECIPE_POLARIZER, 1, 1, 0, 0, MIMachines::setupPolarizer);
 

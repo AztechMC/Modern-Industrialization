@@ -19,7 +19,6 @@ import net.minecraft.item.Items;
 import net.minecraft.loot.context.LootContext;
 import net.minecraft.loot.context.LootContextParameters;
 import net.minecraft.loot.context.LootContextTypes;
-import net.minecraft.screen.NamedScreenHandlerFactory;
 import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvent;
@@ -238,40 +237,41 @@ public class PipeBlock extends Block implements BlockEntityProvider, IWrenchable
 
     @Override
     public VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
-        if(!((World) world).isClient) {
-            // LBA compat
-            return getCollisionShape(state, world, pos, context);
-        }
-        PipeBlockEntity entity = (PipeBlockEntity) world.getBlockEntity(pos);
-        if (entity != null) {
-            double[] smallestDistance = new double[]{10000};
-            VoxelShape[] closestShape = new VoxelShape[]{null};
+	    if (world instanceof World && ((World) world).isClient) {
+		    PipeBlockEntity entity = (PipeBlockEntity) world.getBlockEntity(pos);
+		    if (entity != null) {
+			    double[] smallestDistance = new double[]{10000};
+			    VoxelShape[] closestShape = new VoxelShape[]{null};
 
-            for (PipeVoxelShape pipePartShape : entity.getPartShapes()) {
-                VoxelShape partShape = pipePartShape.shape;
-                assert (world instanceof ClientWorld);
-                float tickDelta = 0; // TODO: fix this
-                ClientPlayerEntity player = MinecraftClient.getInstance().player;
-                Vec3d vec3d = player.getCameraPosVec(tickDelta);
-                Vec3d vec3d2 = player.getRotationVec(tickDelta);
-                double maxDistance = MinecraftClient.getInstance().interactionManager.getReachDistance();
-                Vec3d vec3d3 = vec3d.add(vec3d2.x * maxDistance, vec3d2.y * maxDistance, vec3d2.z * maxDistance);
-                BlockHitResult hit = partShape.rayTrace(vec3d, vec3d3, pos);
-                if (hit != null && hit.getType() == HitResult.Type.BLOCK) {
-                    double dist = hit.getPos().distanceTo(vec3d);
-                    if (dist < smallestDistance[0]) {
-                        smallestDistance[0] = dist;
-                        closestShape[0] = partShape;
-                    }
-                }
-            }
+			    for (PipeVoxelShape pipePartShape : entity.getPartShapes()) {
+				    VoxelShape partShape = pipePartShape.shape;
+				    assert (world instanceof ClientWorld);
+				    float tickDelta = 0; // TODO: fix this
+				    ClientPlayerEntity player = MinecraftClient.getInstance().player;
+				    Vec3d vec3d = player.getCameraPosVec(tickDelta);
+				    Vec3d vec3d2 = player.getRotationVec(tickDelta);
+				    double maxDistance = MinecraftClient.getInstance().interactionManager.getReachDistance();
+				    Vec3d vec3d3 = vec3d.add(vec3d2.x * maxDistance, vec3d2.y * maxDistance, vec3d2.z * maxDistance);
+				    BlockHitResult hit = partShape.rayTrace(vec3d, vec3d3, pos);
+				    if (hit != null && hit.getType() == HitResult.Type.BLOCK) {
+					    double dist = hit.getPos().distanceTo(vec3d);
+					    if (dist < smallestDistance[0]) {
+						    smallestDistance[0] = dist;
+						    closestShape[0] = partShape;
+					    }
+				    }
+			    }
 
-            if (closestShape[0] != null) {
-                return closestShape[0];
-            }
-        }
+			    if (closestShape[0] != null) {
+				    return closestShape[0];
+			    }
+		    }
 
-        return PipeBlockEntity.DEFAULT_SHAPE;
+		    return PipeBlockEntity.DEFAULT_SHAPE;
+	    } else {
+		    // LBA compat
+		    return getCollisionShape(state, world, pos, context);
+	    }
     }
 
     @Override

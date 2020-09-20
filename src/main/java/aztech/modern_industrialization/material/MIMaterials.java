@@ -22,4 +22,5 @@ public class MIMaterials {
     public static MIMaterial sodium = new MIMaterial("sodium", false).addItemType(new String [] { "dust","ingot","nugget","tiny_dust"}).addBlockType(new String [] { "block" });
     public static MIMaterial steel = new MIMaterial("steel", false).addItemType(new String [] { "blade","bolt","curved_plate","double_ingot","dust","gear","ingot","large_plate","nugget","plate","ring","rod","rotor","tiny_dust"}).addBlockType(new String [] { "block" });
     public static MIMaterial tin = new MIMaterial("tin", false).addItemType(new String [] { "blade","bolt","crushed_dust","curved_plate","double_ingot","dust","gear","ingot","large_plate","nugget","plate","ring","rod","rotor","tiny_dust","wire"}).addBlockType(new String [] { "block","ore" }).setupOreGenerator(8, 9, 64);
+    public static MIMaterial titanium = new MIMaterial("titanium", false).addItemType(new String [] { "blade","bolt","curved_plate","double_ingot","dust","gear","ingot","large_plate","nugget","plate","ring","rod","rotor","tiny_dust"}).addBlockType(new String [] { "block" });
 }

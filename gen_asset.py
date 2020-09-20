@@ -708,6 +708,11 @@ gen(
     }),
     '#c7d6c5', isMetal=False, smelting=False, veinsPerChunk=8, veinsSize=7, maxYLevel=32
 )
+gen(
+    file,
+    Material('titanium', ITEM_ALL_NO_ORE, BLOCK_ONLY),
+    '#dbb1f1', smelting=False
+)
 
 file.write("\n".join(sorted(material_lines)))
 file.write("\n")

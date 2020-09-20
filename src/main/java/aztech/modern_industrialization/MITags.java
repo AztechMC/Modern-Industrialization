@@ -101,6 +101,12 @@ public class MITags {
     private static final Tag<Item> TIN_ORES = TagRegistry.item(new Identifier("c", "tin_ores"));
     private static final Tag<Item> TIN_PLATES = TagRegistry.item(new Identifier("c", "tin_plates"));
     private static final Tag<Item> TIN_TINY_DUSTS = TagRegistry.item(new Identifier("c", "tin_tiny_dusts"));
+    private static final Tag<Item> TITANIUM_DUSTS = TagRegistry.item(new Identifier("c", "titanium_dusts"));
+    private static final Tag<Item> TITANIUM_GEARS = TagRegistry.item(new Identifier("c", "titanium_gears"));
+    private static final Tag<Item> TITANIUM_INGOTS = TagRegistry.item(new Identifier("c", "titanium_ingots"));
+    private static final Tag<Item> TITANIUM_NUGGETS = TagRegistry.item(new Identifier("c", "titanium_nuggets"));
+    private static final Tag<Item> TITANIUM_PLATES = TagRegistry.item(new Identifier("c", "titanium_plates"));
+    private static final Tag<Item> TITANIUM_TINY_DUSTS = TagRegistry.item(new Identifier("c", "titanium_tiny_dusts"));
 
     public static void setup() {
         // Will register the tags by loading the static fields!

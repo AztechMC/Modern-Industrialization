@@ -1,17 +1,21 @@
 {
   "type": "modern_industrialization:blast_furnace",
   "eu": 32,
-  "duration": 600,
-  "fluid_inputs": {
-    "fluid": "modern_industrialization:bauxite_solution",
-    "amount": 1000
-  },
+  "duration": 400,
+
+  "item_inputs":[
+    {
+    "item": "modern_industrialization:quartz_dust",
+    "amount": 1
+    },
+    {
+      "item": "modern_industrialization:coke_dust",
+      "amount": 1
+    }
+  ],
+
   "item_outputs": {
-    "item": "modern_industrialization:aluminum_ingot",
-    "amount": 2
-  },
-  "fluid_outputs": {
-    "fluid": "modern_industrialization:sodium_hydroxide",
-    "amount": 1000
+    "item": "modern_industrialization:silicon_dust",
+    "amount": 1
   }
 }

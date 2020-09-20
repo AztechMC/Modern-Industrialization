@@ -613,7 +613,7 @@ gen(
 )
 gen(
     file,
-    Material('aluminum', ITEM_BASE | {'ingot'}, BLOCK_ONLY, overrides={
+    Material('aluminum', ITEM_ALL | {'ingot'}, BLOCK_ONLY, overrides={
         "item_pipe": "modern_industrialization:pipe_item_aluminum",
         "fluid_pipe": "modern_industrialization:pipe_fluid_aluminum",
     }),
@@ -712,6 +712,33 @@ gen(
     file,
     Material('titanium', ITEM_ALL_NO_ORE, BLOCK_ONLY),
     '#dbb1f1', smelting=False
+)
+
+gen(
+    file,
+    Material('quartz', {'crushed_dust', 'dust', 'tiny_dust'}, set(), overrides={
+                "main": "minecraft:quartz"
+    }, oredicted={
+        "tiny_dust": "c:quartz_tiny_dusts",
+        "dust": "c:quartz_dusts"
+    }),
+    '#f0ebe4'
+)
+
+gen(
+    file,
+    Material('electrum', ITEM_BASE | {'wire', 'fine_wire'}, BLOCK_ONLY, overrides={
+        "item_pipe": "modern_industrialization:pipe_item_electrum",
+        "fluid_pipe": "modern_industrialization:pipe_fluid_electrum",
+        "cable": "modern_industrialization:pipe_electricity_electrum",
+
+    }),
+    '#efff5e')
+
+gen(
+    file,
+    Material('silicon', (PURE_METAL - {'crushed_dust'}) | {'plate', 'double_ingot'}, BLOCK_ONLY),
+    '#7a6a9e',
 )
 
 file.write("\n".join(sorted(material_lines)))

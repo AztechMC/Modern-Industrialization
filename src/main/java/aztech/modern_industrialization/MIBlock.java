@@ -57,6 +57,7 @@ public class MIBlock extends Block {
     public static final MIBlock BRONZE_PLATED_BRICKS = new MIBlock("bronze_plated_bricks");
     public static final MIBlock BRONZE_MACHINE_CASING = new MIBlock("bronze_machine_casing");
     public static final MIBlock BRONZE_MACHINE_CASING_PIPE = new MIBlock("bronze_machine_casing_pipe");
+    public static final MIBlock ADVANCED_MACHINE_CASING = new MIBlock("advanced_machine_casing");
     public static final MIBlock HEATPROOF_MACHINE_CASING = new MIBlock("heatproof_machine_casing");
     public static final MIBlock ADVANCED_MACHINE_HULL = new MIBlock("advanced_machine_hull");
 }

@@ -10,7 +10,7 @@
       "item" : "modern_industrialization:pipe_fluid_aluminum"
     },
     "m" : {
-      "item" : "modern_industrialization:lv_motor"
+      "item" : "modern_industrialization:large_pump"
     },
     "H" :{
       "item" : "modern_industrialization:advanced_machine_hull"
@@ -19,10 +19,10 @@
       "item" : "minecraft:glass"
     },
     "C" : {
-      "item" : "modern_industrialization:lv_circuit"
+      "item" : "modern_industrialization:electronic_circuit"
     },
     "p": {
-      "item" : "modern_industrialization:pipe_electricity_tin"
+      "item" : "modern_industrialization:pipe_electricity_electrum"
     }
   },
   "result": {

@@ -11,17 +11,17 @@
       "tag" : "c:battery_alloy_plates"
     },
     "c" : {
-      "item" : "modern_industrialization:pipe_electricity_tin"
+      "item" : "modern_industrialization:pipe_electricity_electrum"
     },
     "B" : {
       "item" : "modern_industrialization:battery_alloy_curved_plate"
     },
     "r" :{
-      "item" : "minecraft:redstone"
+      "item" : "modern_industrialization:silicon_dust"
     }
   },
 
   "result": {
-    "item": "modern_industrialization:lv_battery"
+    "item": "modern_industrialization:silicon_battery"
   }
 }

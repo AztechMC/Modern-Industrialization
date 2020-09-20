@@ -48,4 +48,13 @@ public class MIItem extends Item {
     public static final MIItem ITEM_RUBBER_SHEET = new MIItem("rubber_sheet");
     public static final MIItem ITEM_INVAR_ROTARY_BLADE = new MIItem("invar_rotary_blade");
 
+    public static final MIItem ITEM_ELECTRONIC_CIRCUIT = new MIItem("electronic_circuit");
+    public static final MIItem ITEM_DIODE = new MIItem("diode");
+    public static final MIItem ITEM_ELECTRONIC_CIRCUIT_BOARD = new MIItem("electronic_circuit_board");
+    public static final MIItem ITEM_TRANSISTOR = new MIItem("transistor");
+    public static final MIItem ITEM_SILICON_BATTERY = new MIItem("silicon_battery");
+    public static final MIItem ITEM_LARGE_MOTOR = new MIItem("large_motor");
+    public static final MIItem ITEM_LARGE_PUMP = new MIItem("large_pump");
+
+
 }

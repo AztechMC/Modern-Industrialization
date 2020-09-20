@@ -3,13 +3,13 @@
   "pattern" : [
     "ePg",
     "eSg",
-    "ePdg"
+    "ePg"
   ],
 
   "key":
   {
     "S" : {
-      "tag" : "modern_industrialization:silicium_dust"
+      "item" : "modern_industrialization:silicon_dust"
     },
     "g" : {
       "item" : "minecraft:glass"

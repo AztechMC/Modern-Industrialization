@@ -4,15 +4,23 @@
     "duration": 200,
     "item_inputs": [
         {
-            "item": "modern_industrialization:lv_motor",
+            "item": "modern_industrialization:large_motor",
             "amount": 4
         },
         {
-            "item": "modern_industrialization:pipe_electricity_tin",
-            "amount": 4
+            "item": "modern_industrialization:large_pump",
+            "amount": 1
+        },
+        {
+            "item": "modern_industrialization:pipe_electricity_electrum",
+            "amount": 2
         },
         {
             "item": "modern_industrialization:advanced_machine_hull",
+            "amount": 1
+        },
+        {
+            "item": "modern_industrialization:electronic_circuit",
             "amount": 1
         }
     ],

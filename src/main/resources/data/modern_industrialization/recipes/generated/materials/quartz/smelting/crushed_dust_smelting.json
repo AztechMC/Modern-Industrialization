@@ -1,0 +1,9 @@
+{
+    "type": "minecraft:smelting",
+    "ingredient": {
+        "item": "modern_industrialization:quartz_crushed_dust"
+    },
+    "result": "minecraft:quartz",
+    "experience": 0.7,
+    "cookingtime": 200
+}

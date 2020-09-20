@@ -1,7 +1,7 @@
 {
   "type": "minecraft:crafting_shaped",
   "pattern" : [
-    " e",
+    " e ",
     "PPP",
     "SSS"
   ],
@@ -9,7 +9,7 @@
   "key":
   {
     "S" : {
-      "tag" : "modern_industrialization:silicium_plate"
+      "item" : "modern_industrialization:silicon_plate"
     },
     "e" : {
       "item" : "modern_industrialization:electrum_fine_wire"

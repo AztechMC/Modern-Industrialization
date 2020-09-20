@@ -11,6 +11,7 @@ import net.minecraft.util.Identifier;
  */
 public class MITags {
     private static final Tag<Item> ALUMINUM_DUSTS = TagRegistry.item(new Identifier("c", "aluminum_dusts"));
+    private static final Tag<Item> ALUMINUM_GEARS = TagRegistry.item(new Identifier("c", "aluminum_gears"));
     private static final Tag<Item> ALUMINUM_INGOTS = TagRegistry.item(new Identifier("c", "aluminum_ingots"));
     private static final Tag<Item> ALUMINUM_NUGGETS = TagRegistry.item(new Identifier("c", "aluminum_nuggets"));
     private static final Tag<Item> ALUMINUM_PLATES = TagRegistry.item(new Identifier("c", "aluminum_plates"));
@@ -48,6 +49,11 @@ public class MITags {
     private static final Tag<Item> CUPRONICKEL_NUGGETS = TagRegistry.item(new Identifier("c", "cupronickel_nuggets"));
     private static final Tag<Item> CUPRONICKEL_PLATES = TagRegistry.item(new Identifier("c", "cupronickel_plates"));
     private static final Tag<Item> CUPRONICKEL_TINY_DUSTS = TagRegistry.item(new Identifier("c", "cupronickel_tiny_dusts"));
+    private static final Tag<Item> ELECTRUM_DUSTS = TagRegistry.item(new Identifier("c", "electrum_dusts"));
+    private static final Tag<Item> ELECTRUM_INGOTS = TagRegistry.item(new Identifier("c", "electrum_ingots"));
+    private static final Tag<Item> ELECTRUM_NUGGETS = TagRegistry.item(new Identifier("c", "electrum_nuggets"));
+    private static final Tag<Item> ELECTRUM_PLATES = TagRegistry.item(new Identifier("c", "electrum_plates"));
+    private static final Tag<Item> ELECTRUM_TINY_DUSTS = TagRegistry.item(new Identifier("c", "electrum_tiny_dusts"));
     private static final Tag<Item> GOLD_DUSTS = TagRegistry.item(new Identifier("c", "gold_dusts"));
     private static final Tag<Item> GOLD_ORES = TagRegistry.item(new Identifier("c", "gold_ores"));
     private static final Tag<Item> GOLD_PLATES = TagRegistry.item(new Identifier("c", "gold_plates"));
@@ -74,10 +80,17 @@ public class MITags {
     private static final Tag<Item> NICKEL_PLATES = TagRegistry.item(new Identifier("c", "nickel_plates"));
     private static final Tag<Item> NICKEL_TINY_DUSTS = TagRegistry.item(new Identifier("c", "nickel_tiny_dusts"));
     private static final Tag<Item> ORES = TagRegistry.item(new Identifier("c", "ores"));
+    private static final Tag<Item> QUARTZ_DUSTS = TagRegistry.item(new Identifier("c", "quartz_dusts"));
+    private static final Tag<Item> QUARTZ_TINY_DUSTS = TagRegistry.item(new Identifier("c", "quartz_tiny_dusts"));
     private static final Tag<Item> REDSTONE_TINY_DUSTS = TagRegistry.item(new Identifier("c", "redstone_tiny_dusts"));
     private static final Tag<Item> SALT_DUSTS = TagRegistry.item(new Identifier("c", "salt_dusts"));
     private static final Tag<Item> SALT_ORES = TagRegistry.item(new Identifier("c", "salt_ores"));
     private static final Tag<Item> SALT_TINY_DUSTS = TagRegistry.item(new Identifier("c", "salt_tiny_dusts"));
+    private static final Tag<Item> SILICON_DUSTS = TagRegistry.item(new Identifier("c", "silicon_dusts"));
+    private static final Tag<Item> SILICON_INGOTS = TagRegistry.item(new Identifier("c", "silicon_ingots"));
+    private static final Tag<Item> SILICON_NUGGETS = TagRegistry.item(new Identifier("c", "silicon_nuggets"));
+    private static final Tag<Item> SILICON_PLATES = TagRegistry.item(new Identifier("c", "silicon_plates"));
+    private static final Tag<Item> SILICON_TINY_DUSTS = TagRegistry.item(new Identifier("c", "silicon_tiny_dusts"));
     private static final Tag<Item> SILVER_DUSTS = TagRegistry.item(new Identifier("c", "silver_dusts"));
     private static final Tag<Item> SILVER_INGOTS = TagRegistry.item(new Identifier("c", "silver_ingots"));
     private static final Tag<Item> SILVER_NUGGETS = TagRegistry.item(new Identifier("c", "silver_nuggets"));

@@ -1,0 +1,9 @@
+{
+    "type": "minecraft:blasting",
+    "ingredient": {
+        "item": "modern_industrialization:silicon_dust"
+    },
+    "result": "modern_industrialization:silicon_ingot",
+    "experience": 0.7,
+    "cookingtime": 100
+}

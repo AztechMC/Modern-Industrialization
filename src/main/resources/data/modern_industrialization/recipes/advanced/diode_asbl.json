@@ -1,0 +1,29 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern" : [
+    "ePg",
+    "eSg",
+    "ePdg"
+  ],
+
+  "key":
+  {
+    "S" : {
+      "tag" : "modern_industrialization:silicium_dust"
+    },
+    "g" : {
+      "item" : "minecraft:glass"
+    },
+    "e" : {
+      "item" : "modern_industrialization:electrum_fine_wire"
+    },
+    "P" :{
+      "item" : "modern_industrialization:steel_plate"
+    }
+  },
+
+  "result": {
+    "item": "modern_industrialization:diode"
+  }
+
+}

@@ -1,0 +1,19 @@
+{
+  "type" : "minecraft:crafting_shaped",
+  "pattern" : [
+    "AAA",
+    "AHA",
+    "AAA"
+  ],
+  "key": {
+    "A" : {
+      "item" : "modern_industrialization:aluminum_large_plate"
+    },
+    "H" : {
+      "item" : "modern_industrialization:lv_machine_hull"
+    }
+  },
+  "result": {
+    "item": "modern_industrialization:advanced_machine_hull"
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern" : [
+    "cdc",
+    "tbt",
+    "cdc"
+  ],
+
+}

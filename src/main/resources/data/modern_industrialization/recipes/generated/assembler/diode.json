@@ -1,0 +1,29 @@
+{
+    "type": "modern_industrialization:assembler",
+    "eu": 8,
+    "duration": 200,
+    "item_inputs": [
+        {
+            "item": "modern_industrialization:electrum_fine_wire",
+            "amount": 3
+        },
+        {
+            "item": "modern_industrialization:steel_plate",
+            "amount": 2
+        },
+        {
+            "item": "minecraft:glass",
+            "amount": 3
+        },
+        {
+            "item": "modern_industrialization:silicium_dust",
+            "amount": 1
+        }
+    ],
+    "item_outputs": [
+        {
+            "item": "modern_industrialization:diode",
+            "amount": 1
+        }
+    ]
+}

@@ -71,16 +71,17 @@ shutil.rmtree("src/main/resources/assets/modern_industrialization/textures/items
 Path("src/main/resources/assets/modern_industrialization/textures/items/bucket").mkdir(parents=True, exist_ok=True)
 
 gen_fluid("steam", "#eeeeee", True, register=False)
-gen_fluid("air", "#76c7f9", True),
-gen_fluid("bauxite_solution", "#d05739"),
-gen_fluid("chlorine", "#b7c114", True),
-gen_fluid("hydrogen", "#1b4acc", True),
-gen_fluid("oxygen", "#3296f2", True),
-gen_fluid("raw_synthetic_oil", "#474740"),
-gen_fluid("rubber", "#1a1a1a"),
-gen_fluid("sodium_hydroxide", "#5071c9"),
-gen_fluid("sulfuric_acid", "#e15b00"),
-gen_fluid("synthetic_oil", "#1a1a1a"),
+gen_fluid("air", "#76c7f9", True)
+gen_fluid("bauxite_solution", "#d05739")
+gen_fluid("chlorine", "#b7c114", True)
+gen_fluid("crude_oil", "#3e3838")
+gen_fluid("hydrogen", "#1b4acc", True)
+gen_fluid("oxygen", "#3296f2", True)
+gen_fluid("raw_synthetic_oil", "#474740")
+gen_fluid("rubber", "#1a1a1a")
+gen_fluid("sodium_hydroxide", "#5071c9")
+gen_fluid("sulfuric_acid", "#e15b00")
+gen_fluid("synthetic_oil", "#1a1a1a")
 
 java_class += """\
     };

@@ -43,7 +43,7 @@ public class MIMachines {
     public static final MachineRecipeType RECIPE_CHEMICAL_REACTOR = createRecipeType("chemical_reactor").withItemInputs().withFluidInputs().withItemOutputs().withFluidOutputs();
     public static final MachineRecipeType RECIPE_COMPRESSOR = createRecipeType("compressor").withItemInputs().withItemOutputs();
     public static final MachineRecipeType RECIPE_CUTTING_MACHINE = createRecipeType("cutting_machine").withItemInputs().withFluidInputs().withItemOutputs();
-    //public static final MachineRecipeType RECIPE_DISTILLERY = createRecipeType("distillery").withFluidInputs().withFluidOutputs();
+    public static final MachineRecipeType RECIPE_DISTILLERY = createRecipeType("distillery").withFluidInputs().withFluidOutputs();
     public static final MachineRecipeType RECIPE_ELECTROLYZER = createRecipeType("electrolyzer").withItemInputs().withFluidInputs().withItemOutputs().withFluidOutputs();
     //public static final MachineRecipeType RECIPE_FLUID_EXTRACTOR = createRecipeType("fluid_extractor").withItemInputs().withFluidOutputs();
     public static final MachineRecipeType RECIPE_FURNACE = new FurnaceRecipeProxy(null);
@@ -55,6 +55,7 @@ public class MIMachines {
     // Multi block
     public static final MachineRecipeType RECIPE_COKE_OVEN = createRecipeType("coke_oven").withItemInputs().withItemOutputs();
     public static final MachineRecipeType RECIPE_BLAST_FURNACE = createRecipeType("blast_furnace").withItemInputs().withItemOutputs().withFluidInputs().withFluidOutputs();
+    public static final MachineRecipeType RECIPE_OIL_DRILLING_RIG = createRecipeType("oil_drilling_rig").withItemInputs().withFluidOutputs();
     public static final MachineRecipeType RECIPE_QUARRY = createRecipeType("quarry").withItemInputs().withItemOutputs();
 
     // Shapes
@@ -62,6 +63,7 @@ public class MIMachines {
     public static MultiblockShape BLAST_FURNACE_SHAPE;
     public static MultiblockShape QUARRY_SHAPE;
     public static MultiblockShape LARGE_BOILER_SHAPE;
+    public static MultiblockShape OIL_DRILLING_RIG_SHAPE;
 
     public static final MachineFactory ELECTRIC_BLAST_FURNACE;
 
@@ -145,6 +147,42 @@ public class MIMachines {
                 }
             }
         }
+
+        OIL_DRILLING_RIG_SHAPE = new MultiblockShape();
+        MultiblockShape.Entry optionalRigHatch = MultiblockShapes.or(steelCasing, MultiblockShapes.hatch(HATCH_FLAG_ITEM_INPUT | HATCH_FLAG_FLUID_OUTPUT | HATCH_FLAG_ENERGY_INPUT));
+        // pillars
+        for(int y = -4; y <= -2; ++y) {
+            OIL_DRILLING_RIG_SHAPE.addEntry(-2, y, -1, steelCasing);
+            OIL_DRILLING_RIG_SHAPE.addEntry(2, y, -1, steelCasing);
+            OIL_DRILLING_RIG_SHAPE.addEntry(-2, y, 3, steelCasing);
+            OIL_DRILLING_RIG_SHAPE.addEntry(2, y, 3, steelCasing);
+        }
+        // platform
+        for(int x = -2; x <= 2; ++x) {
+            for(int z = -1; z <= 3; ++z) {
+                if(x == 2 || x == -2 || z == -1 || z == 3) {
+                    OIL_DRILLING_RIG_SHAPE.addEntry(x, -1, z, steelCasing);
+                }
+            }
+        }
+        // chains and pipe casings
+        for(int y = -4; y <= 4; ++y) {
+            OIL_DRILLING_RIG_SHAPE.addEntry(-1, y, 1, verticalChain());
+            OIL_DRILLING_RIG_SHAPE.addEntry(1, y, 1, verticalChain());
+            if(y >= -1) {
+                OIL_DRILLING_RIG_SHAPE.addEntry(0, y, 1, steelCasingPipe);
+            }
+        }
+        // top
+        for(int x = -2; x <= 2; ++x) {
+            OIL_DRILLING_RIG_SHAPE.addEntry(x, 5, 1, steelCasing);
+        }
+        // hatches
+        OIL_DRILLING_RIG_SHAPE.addEntry(-1, 0, 0, optionalRigHatch);
+        OIL_DRILLING_RIG_SHAPE.addEntry(1, 0, 0, optionalRigHatch);
+        OIL_DRILLING_RIG_SHAPE.addEntry(-1, 0, 2, optionalRigHatch);
+        OIL_DRILLING_RIG_SHAPE.addEntry(0, 0, 2, optionalRigHatch);
+        OIL_DRILLING_RIG_SHAPE.addEntry(1, 0, 2, optionalRigHatch);
     }
 
     public static MachineFactory setupAssembler(MachineFactory factory) {
@@ -192,6 +230,15 @@ public class MIMachines {
                 .setupProgressBar(88, 35, 22, 15, true).setupBackground("cutting_machine.png")
                 .setupEfficiencyBar(0, 166, 38, 62, 100, 2, true).setupElectricityBar(18, 34)
                 .setupOverlays("cutting_machine", true, false, false);
+    }
+
+    public static MachineFactory setupDistillery(MachineFactory factory) {
+        return factory
+                .setInputLiquidSlotPosition(56, 35, 1, 1).setLiquidOutputSlotPosition(102, 35, 1, 1)
+                .setupProgressBar(76, 35, 22, 15, true).setupBackground("steam_furnace.png")
+                .setupEfficiencyBar(0, 166, 38, 62, 100, 2, true).setupElectricityBar(18, 34)
+                .setupOverlays("distillery", true, false, false)
+                .setupCasing("mv");
     }
 
     public static MachineFactory setupElectrolyzer(MachineFactory factory) {
@@ -389,6 +436,7 @@ public class MIMachines {
         registerMachineTiersElectricOnly("assembler", RECIPE_ASSEMBLER, 9, 3, 1, 0, MIMachines::setupAssembler);
         registerMachineTiersElectricOnly("centrifuge", RECIPE_CENTRIFUGE, 1, 4, 1, 4, MIMachines::setupCentrifuge);
         registerMachineTiersElectricOnly("chemical_reactor", RECIPE_CHEMICAL_REACTOR, 3, 3, 3, 3, MIMachines::setupChemicalReactor);
+        registerMachineTiersElectricOnly("distillery", RECIPE_DISTILLERY, 0, 0, 1, 1, MIMachines::setupDistillery);
         registerMachineTiersElectricOnly("electrolyzer", RECIPE_ELECTROLYZER, 1, 4, 1, 4, MIMachines::setupElectrolyzer);
         registerMachineTiersElectricOnly("polarizer", RECIPE_POLARIZER, 1, 1, 0, 0, MIMachines::setupPolarizer);
 
@@ -425,6 +473,13 @@ public class MIMachines {
                 .setupEfficiencyBar(0, 166, 38, 62, 100, 2)
                 .setupOverlays("electric_blast_furnace", true, false, false)
                 .setupCasing("heatproof")
+        ;
+        new MachineFactory("oil_drilling_rig", UNLIMITED, (f, t) -> new MultiblockMachineBlockEntity(f, t, OIL_DRILLING_RIG_SHAPE), RECIPE_OIL_DRILLING_RIG, 1, 0, 0, 1)
+                .setInputSlotPosition(56, 35, 1, 1).setLiquidOutputSlotPosition(102, 35, 1, 1)
+                .setupProgressBar(76, 35, 22, 15, true).setupBackground("steam_furnace.png")
+                .setupEfficiencyBar(0, 166, 38, 62, 100, 2)
+                .setupOverlays("oil_drilling_rig", true, false, false)
+                .setupCasing("steel")
         ;
         registerHatches();
 

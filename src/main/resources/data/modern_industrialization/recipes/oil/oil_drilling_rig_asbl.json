@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "LGL",
+    "PHP",
+    "LpL"
+  ],
+  "key": {
+    "L": {
+      "item": "modern_industrialization:steel_large_plate"
+    },
+    "G": {
+      "tag": "c:aluminum_gears"
+    },
+    "P": {
+      "item": "modern_industrialization:large_pump"
+    },
+    "H": {
+      "item": "modern_industrialization:lv_machine_hull"
+    },
+    "p": {
+      "item": "modern_industrialization:pipe_fluid_aluminum"
+    }
+  },
+  "result": {
+    "item": "modern_industrialization:oil_drilling_rig"
+  }
+}

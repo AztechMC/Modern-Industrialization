@@ -23,6 +23,7 @@ public class MIFluids {
             new CraftingFluid("air", 0xff76c7f9),
             new CraftingFluid("bauxite_solution", 0xffd05739),
             new CraftingFluid("chlorine", 0xffb7c114),
+            new CraftingFluid("crude_oil", 0xff3e3838),
             new CraftingFluid("hydrogen", 0xff1b4acc),
             new CraftingFluid("oxygen", 0xff3296f2),
             new CraftingFluid("raw_synthetic_oil", 0xff474740),

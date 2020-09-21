@@ -59,7 +59,7 @@ def gen_texture(id, hex, item_set, block_set, special_texture=''):
     item = glob("template/item/*.png")
 
     output_path = (
-            "src/main/resources/assets/modern_industrialization/textures/items/materials/" + id)
+        "src/main/resources/assets/modern_industrialization/textures/items/materials/" + id)
     Path(output_path).mkdir(parents=True, exist_ok=True)
 
     for filename in item:
@@ -203,7 +203,7 @@ class CraftingRecipe:
             for c in line:
                 if c != " ":
                     keys[c] = {"tag": self.kwargs[c][1:]} if self.kwargs[
-                                                                 c][0] == '#' else {"item": self.kwargs[c]}
+                        c][0] == '#' else {"item": self.kwargs[c]}
                     keycount[c] += 1
         for k in keys:
             recipe.input("#" + keys[k]["tag"] if "tag" in keys[k]
@@ -351,7 +351,7 @@ def genSmelting(vanilla, ty, isMetal):
                     json.dump(jsonf, file, indent=4)
 
 
-def genMacerator(ty, tyo):
+def genMacerator(ty, tyo, macerator_disable):
     list_todo = [('double_ingot', 18), ('plate', 9), ('curved_plate', 9),
                  ('nugget', 1), ('large_plate', 36), ('gear', 18), ('ring', 4),
                  ('bolt', 2), ('rod', 4), ('item_pipe', 9), ('fluid_pipe', 9),
@@ -364,10 +364,12 @@ def genMacerator(ty, tyo):
             recipe.output(ty["tiny_dust"], b % 9)
         recipe.save(ty.id, a)
 
-    MIRecipe("macerator").input(tyo["ore"]).output(
-        ty["crushed_dust"], amount=2).save(ty.id, "ore")
-    MIRecipe("macerator").input(ty["crushed_dust"], amount=2).output(
-        ty["dust"], amount=3).save(ty.id, "crushed_dust")
+    if 'crushed_dust' not in macerator_disable:
+        MIRecipe("macerator").input(tyo["ore"]).output(
+            ty["crushed_dust"], amount=2).save(ty.id, "ore")
+    if 'dust' not in macerator_disable:
+        MIRecipe("macerator").input(ty["crushed_dust"], amount=2).output(
+            ty["dust"], amount=3).save(ty.id, "crushed_dust")
 
 
 def genCompressor(ty, tyo):
@@ -394,13 +396,15 @@ def genWiremill(ty, tyo):
         MIRecipe("wiremill").input(tyo[i], amount=ic).output(
             ty[o], amount=oc).save(ty.id, o)
 
+
 def genAssembler(ty, tyo):
-    MIRecipe("assembler", eu=8).input(tyo["blade"], amount=4).input(tyo["ring"], amount=1).output(ty["rotor"]).save(ty.id, "rotor")
+    MIRecipe("assembler", eu=8).input(tyo["blade"], amount=4).input(
+        tyo["ring"], amount=1).output(ty["rotor"]).save(ty.id, "rotor")
 
 material_lines = []
 
 
-def gen(file, ty, hex, vanilla=False, forge_hammer=False, smelting=True, isMetal=True, veinsPerChunk=0, veinsSize=0, maxYLevel=64, macerator=True):
+def gen(file, ty, hex, vanilla=False, forge_hammer=False, smelting=True, isMetal=True, veinsPerChunk=0, veinsSize=0, maxYLevel=64, macerator_disable={}):
 
     item_to_add = ','.join([(lambda s: "\"%s\"" % s)(s)
                             for s in sorted(list(ty.mi_items))])
@@ -439,8 +443,7 @@ def gen(file, ty, hex, vanilla=False, forge_hammer=False, smelting=True, isMetal
     if smelting:
         genSmelting(vanilla, ty, isMetal)
 
-    if macerator:
-        genMacerator(ty, tyo)
+    genMacerator(ty, tyo, macerator_disable)
     genCompressor(ty, tyo)
     genCuttingSaw(ty, tyo)
     genPacker(ty, tyo)
@@ -464,7 +467,8 @@ ITEM_ALL = ITEM_BASE | {'bolt', 'blade',
 ITEM_ALL_NO_ORE = ITEM_ALL - {'crushed_dust'}
 TEXTURE_UNDERLAYS = {'ore'}
 TEXTURE_OVERLAYS = {'fine_wire', 'oxide'}
-DEFAULT_OREDICT = {'nugget': '_nuggets', 'ore': '_ores', 'plate': '_plates', 'gear': '_gears', 'dust': '_dusts', 'tiny_dust': '_tiny_dusts'}
+DEFAULT_OREDICT = {'nugget': '_nuggets', 'ore': '_ores', 'plate': '_plates',
+                   'gear': '_gears', 'dust': '_dusts', 'tiny_dust': '_tiny_dusts'}
 RESTRICTIVE_OREDICT = {'ore': '_ores'}
 
 
@@ -530,10 +534,13 @@ file.close()
 file = open(
     "src/main/java/aztech/modern_industrialization/material/MIMaterials.java", "a")
 
-shutil.rmtree("src/main/resources/assets/modern_industrialization/textures/blocks/materials", ignore_errors=True)
-shutil.rmtree("src/main/resources/assets/modern_industrialization/textures/items/materials", ignore_errors=True)
+shutil.rmtree(
+    "src/main/resources/assets/modern_industrialization/textures/blocks/materials", ignore_errors=True)
+shutil.rmtree(
+    "src/main/resources/assets/modern_industrialization/textures/items/materials", ignore_errors=True)
 shutil.rmtree("src/main/resources/data/c/tags/items", ignore_errors=True)
-shutil.rmtree("src/main/resources/data/modern_industrialization/recipes/generated/materials", ignore_errors=True)
+shutil.rmtree(
+    "src/main/resources/data/modern_industrialization/recipes/generated/materials", ignore_errors=True)
 
 gen(
     file,
@@ -642,6 +649,7 @@ gen(
         "fluid_pipe": "modern_industrialization:pipe_fluid_lead",
     }),
     '#4a2649', veinsPerChunk=4, veinsSize=8, maxYLevel=64,
+    macerator_disable={'dust'}
 )
 gen(
     file,
@@ -692,7 +700,7 @@ gen(
     }, oredicted={
         "tiny_dust": "c:redstone_tiny_dusts",
     }),
-    '#d20000', macerator=False
+    '#d20000', macerator_disable={'crushed_dust', 'dust'}
 )
 gen(
     file,
@@ -717,7 +725,7 @@ gen(
 gen(
     file,
     Material('quartz', {'crushed_dust', 'dust', 'tiny_dust'}, set(), overrides={
-                "main": "minecraft:quartz"
+        "main": "minecraft:quartz"
     }, oredicted={
         "tiny_dust": "c:quartz_tiny_dusts",
         "dust": "c:quartz_dusts"
@@ -737,7 +745,8 @@ gen(
 
 gen(
     file,
-    Material('silicon', (PURE_METAL - {'crushed_dust'}) | {'plate', 'double_ingot'}, BLOCK_ONLY),
+    Material('silicon', (PURE_METAL - {'crushed_dust'})
+             | {'plate', 'double_ingot'}, BLOCK_ONLY),
     '#7a6a9e',
 )
 
@@ -758,7 +767,7 @@ for key, values in tags.items():
         }
         json.dump(jsonf, f, indent=4)
 
-java_class ="""
+java_class = """
 package aztech.modern_industrialization;
 
 import net.fabricmc.fabric.api.tag.TagRegistry;
@@ -771,7 +780,8 @@ import net.minecraft.util.Identifier;
  */
 public class MITags {\n"""
 for key in sorted(list(tags.keys())):
-    java_class += '    private static final Tag<Item> %s = TagRegistry.item(new Identifier("c", "%s"));\n' % (key[2:].upper(), key[2:])
+    java_class += '    private static final Tag<Item> %s = TagRegistry.item(new Identifier("c", "%s"));\n' % (key[
+        2:].upper(), key[2:])
 java_class += """
     public static void setup() {
         // Will register the tags by loading the static fields!

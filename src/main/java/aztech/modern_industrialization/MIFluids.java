@@ -21,15 +21,22 @@ public class MIFluids {
     public static final CraftingFluid[] FLUIDS = new CraftingFluid[] {
             FLUID_STEAM,
             new CraftingFluid("air", 0xff76c7f9),
-            new CraftingFluid("bauxite_solution", 0xffd05739),
             new CraftingFluid("chlorine", 0xffb7c114),
             new CraftingFluid("crude_oil", 0xff3e3838),
+            new CraftingFluid("heavy_fuel", 0xffffdb46),
             new CraftingFluid("hydrogen", 0xff1b4acc),
+            new CraftingFluid("light_fuel", 0xffffe946),
+            new CraftingFluid("naphta", 0xffa5a25e),
             new CraftingFluid("oxygen", 0xff3296f2),
             new CraftingFluid("raw_synthetic_oil", 0xff474740),
+            new CraftingFluid("raw_rubber", 0xff514a4a),
             new CraftingFluid("rubber", 0xff1a1a1a),
             new CraftingFluid("sodium_hydroxide", 0xff5071c9),
+            new CraftingFluid("steam_cracked_naphta", 0xffd2d0ae),
             new CraftingFluid("sulfuric_acid", 0xffe15b00),
+            new CraftingFluid("sulfuric_heavy_fuel", 0xfff2cf3c),
+            new CraftingFluid("sulfuric_light_fuel", 0xfff4dd34),
+            new CraftingFluid("sulfuric_naphta", 0xffa5975e),
             new CraftingFluid("synthetic_oil", 0xff1a1a1a),
     };
     

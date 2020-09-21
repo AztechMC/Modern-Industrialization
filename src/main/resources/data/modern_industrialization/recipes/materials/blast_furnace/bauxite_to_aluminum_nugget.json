@@ -4,7 +4,7 @@
   "duration": 200,
   "item_inputs": {
     "tag": "c:bauxite_dusts",
-    "amount": 4
+    "amount": 1
   },
   "item_outputs": {
     "item": "modern_industrialization:aluminum_nugget",

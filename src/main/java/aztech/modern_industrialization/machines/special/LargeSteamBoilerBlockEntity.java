@@ -62,7 +62,7 @@ public class LargeSteamBoilerBlockEntity extends MultiblockMachineBlockEntity {
 
         if(ready) {
             if (efficiencyTicks > 1000) {
-                int steamProduction = 128 * efficiencyTicks / maxEfficiencyTicks;
+                int steamProduction = 256 * efficiencyTicks / maxEfficiencyTicks;
                 boolean waterAvailable = false;
                 // Check if there is some water available
                 for (ConfigurableFluidStack fluidStack : getFluidInputStacks()) {

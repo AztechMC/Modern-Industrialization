@@ -31,10 +31,8 @@ public class MultiblockShapes {
     public static MultiblockShape.Entry verticalChain() {
         return new MultiblockShape.Entry() {
             @Override
-
             public boolean matches(BlockView world, BlockPos pos) {
-                return world.getBlockState(pos).isOf(Blocks.CHAIN) && (world.getBlockState(pos).get(PillarBlock.AXIS)
-                         == Direction.Axis.Y) && !world.getBlockState(pos).get(ChainBlock.WATERLOGGED);
+                return world.getBlockState(pos).isOf(Blocks.CHAIN) && world.getBlockState(pos).get(PillarBlock.AXIS) == Direction.Axis.Y;
             }
 
             @Override

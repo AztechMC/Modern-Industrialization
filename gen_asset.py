@@ -668,7 +668,9 @@ gen(
 gen(
     file,
     Material('cupronickel', {'tiny_dust', 'dust', 'plate',
-                             'ingot', 'nugget', 'wire', 'double_ingot'}, BLOCK_ONLY | {'coil'}),
+                             'ingot', 'nugget', 'wire', 'double_ingot'}, BLOCK_ONLY | {'coil'}, overrides={
+        "cable": "modern_industrialization:pipe_electricity_cupronickel",
+    }),
     '#e39680',
 )
 
@@ -735,7 +737,7 @@ gen(
 
 gen(
     file,
-    Material('electrum', ITEM_BASE | {'wire', 'fine_wire'}, BLOCK_ONLY, overrides={
+    Material('electrum', ITEM_BASE - { 'crushed_dust' } | {'wire', 'fine_wire'}, BLOCK_ONLY, overrides={
         "item_pipe": "modern_industrialization:pipe_item_electrum",
         "fluid_pipe": "modern_industrialization:pipe_fluid_electrum",
         "cable": "modern_industrialization:pipe_electricity_electrum",

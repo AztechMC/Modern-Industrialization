@@ -1,0 +1,19 @@
+{
+  "type": "modern_industrialization:chemical_reactor",
+  "eu": 8,
+  "duration": 200,
+  "fluid_inputs": [
+    {
+      "fluid": "modern_industrialization:raw_rubber",
+      "amount": 1000
+    },
+    {
+      "fluid": "modern_industrialization:sulfuric_acid",
+      "amount": 250
+    }
+  ],
+  "item_outputs": {
+    "item": "modern_industrialization:rubber_sheet",
+    "amount": 20
+  }
+}

@@ -202,7 +202,7 @@ public interface ConfigurableInventory extends Inventory, SidedInventory, FluidT
     default FluidVolume attemptExtraction(FluidFilter filter, FluidAmount maxAmount, Simulation simulation) {
         for(ConfigurableFluidStack fluidStack : getFluidStacks()) {
             FluidKey fluid = fluidStack.getFluid();
-            if(fluidStack.pipesExtract && filter.matches(fluid)) {
+            if(fluidStack.pipesExtract && !fluid.isEmpty() && filter.matches(fluid)) {
                 int ext = Math.min(maxAmount.asInt(1000, RoundingMode.FLOOR), fluidStack.getAmount());
                 if(simulation.isAction()) {
                     fluidStack.decrement(ext);

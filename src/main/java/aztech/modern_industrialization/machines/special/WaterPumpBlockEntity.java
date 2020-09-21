@@ -4,12 +4,14 @@ import alexiil.mc.lib.attributes.fluid.volume.FluidKeys;
 import aztech.modern_industrialization.inventory.ConfigurableFluidStack;
 import aztech.modern_industrialization.machines.impl.MachineBlockEntity;
 import aztech.modern_industrialization.machines.impl.MachineFactory;
-import aztech.modern_industrialization.machines.impl.MachineTier;
 import aztech.modern_industrialization.machines.recipe.MachineRecipeType;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
+
+import static aztech.modern_industrialization.machines.impl.MachineTier.LV;
+import static aztech.modern_industrialization.machines.impl.MachineTier.STEEL;
 
 /**
  * We reuse the generic MachineBlockEntity, overriding tick() and using the energy
@@ -68,7 +70,12 @@ public class WaterPumpBlockEntity extends MachineBlockEntity {
                         }
                     }
                 }
-                int factorTier = (factory.tier == MachineTier.BRONZE ? 1 : 2);
+                int factorTier = 1;
+                if(factory.tier == STEEL) {
+                    factorTier = 2;
+                } else if(factory.tier == LV) {
+                    factorTier = 16;
+                }
                 waterStack.increment(Math.min(factorTier * providedBucketEights * 1000 / 8, waterStack.getRemainingSpace()));
                 usedEnergy = 0;
             }

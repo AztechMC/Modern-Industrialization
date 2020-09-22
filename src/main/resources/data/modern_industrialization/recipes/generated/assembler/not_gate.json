@@ -1,0 +1,25 @@
+{
+    "type": "modern_industrialization:assembler",
+    "eu": 8,
+    "duration": 200,
+    "item_inputs": [
+        {
+            "item": "modern_industrialization:aluminum_wire",
+            "amount": 1
+        },
+        {
+            "item": "modern_industrialization:op_amp",
+            "amount": 1
+        },
+        {
+            "item": "modern_industrialization:resistor",
+            "amount": 1
+        }
+    ],
+    "item_outputs": [
+        {
+            "item": "modern_industrialization:not_gate",
+            "amount": 1
+        }
+    ]
+}

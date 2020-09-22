@@ -101,6 +101,12 @@ public class MITags {
     private static final Tag<Item> SODIUM_INGOTS = TagRegistry.item(new Identifier("c", "sodium_ingots"));
     private static final Tag<Item> SODIUM_NUGGETS = TagRegistry.item(new Identifier("c", "sodium_nuggets"));
     private static final Tag<Item> SODIUM_TINY_DUSTS = TagRegistry.item(new Identifier("c", "sodium_tiny_dusts"));
+    private static final Tag<Item> STAINLESS_STEEL_DUSTS = TagRegistry.item(new Identifier("c", "stainless_steel_dusts"));
+    private static final Tag<Item> STAINLESS_STEEL_GEARS = TagRegistry.item(new Identifier("c", "stainless_steel_gears"));
+    private static final Tag<Item> STAINLESS_STEEL_INGOTS = TagRegistry.item(new Identifier("c", "stainless_steel_ingots"));
+    private static final Tag<Item> STAINLESS_STEEL_NUGGETS = TagRegistry.item(new Identifier("c", "stainless_steel_nuggets"));
+    private static final Tag<Item> STAINLESS_STEEL_PLATES = TagRegistry.item(new Identifier("c", "stainless_steel_plates"));
+    private static final Tag<Item> STAINLESS_STEEL_TINY_DUSTS = TagRegistry.item(new Identifier("c", "stainless_steel_tiny_dusts"));
     private static final Tag<Item> STEEL_DUSTS = TagRegistry.item(new Identifier("c", "steel_dusts"));
     private static final Tag<Item> STEEL_GEARS = TagRegistry.item(new Identifier("c", "steel_gears"));
     private static final Tag<Item> STEEL_INGOTS = TagRegistry.item(new Identifier("c", "steel_ingots"));

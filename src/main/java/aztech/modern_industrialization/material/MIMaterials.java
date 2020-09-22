@@ -2,7 +2,7 @@ package aztech.modern_industrialization.material;
 
 public class MIMaterials {
 
-    public static MIMaterial aluminum = new MIMaterial("aluminum", false).addItemType(new String [] { "blade","bolt","crushed_dust","curved_plate","double_ingot","dust","gear","ingot","large_plate","nugget","plate","ring","rod","rotor","tiny_dust"}).addBlockType(new String [] { "block" });
+    public static MIMaterial aluminum = new MIMaterial("aluminum", false).addItemType(new String [] { "blade","bolt","crushed_dust","curved_plate","double_ingot","dust","gear","ingot","large_plate","nugget","plate","ring","rod","rotor","tiny_dust","wire"}).addBlockType(new String [] { "block" });
     public static MIMaterial antimony = new MIMaterial("antimony", false).addItemType(new String [] { "crushed_dust","dust","ingot","nugget","tiny_dust"}).addBlockType(new String [] { "block","ore" }).setupOreGenerator(4, 6, 64);
     public static MIMaterial battery_alloy = new MIMaterial("battery_alloy", false).addItemType(new String [] { "curved_plate","double_ingot","dust","ingot","nugget","plate","tiny_dust"}).addBlockType(new String [] { "block" });
     public static MIMaterial bauxite = new MIMaterial("bauxite", false).addItemType(new String [] { "crushed_dust","dust","tiny_dust"}).addBlockType(new String [] { "ore" }).setupOreGenerator(8, 7, 32);
@@ -23,6 +23,7 @@ public class MIMaterials {
     public static MIMaterial silicon = new MIMaterial("silicon", false).addItemType(new String [] { "double_ingot","dust","ingot","nugget","plate","tiny_dust"}).addBlockType(new String [] { "block" });
     public static MIMaterial silver = new MIMaterial("silver", false).addItemType(new String [] { "crushed_dust","curved_plate","double_ingot","dust","ingot","large_plate","nugget","plate","tiny_dust"}).addBlockType(new String [] { "block","ore" }).setupOreGenerator(4, 6, 64);
     public static MIMaterial sodium = new MIMaterial("sodium", false).addItemType(new String [] { "dust","ingot","nugget","tiny_dust"}).addBlockType(new String [] { "block" });
+    public static MIMaterial stainless_steel = new MIMaterial("stainless_steel", false).addItemType(new String [] { "blade","bolt","curved_plate","double_ingot","dust","gear","ingot","large_plate","nugget","plate","ring","rod","rotor","tiny_dust"}).addBlockType(new String [] { "block" });
     public static MIMaterial steel = new MIMaterial("steel", false).addItemType(new String [] { "blade","bolt","curved_plate","double_ingot","dust","gear","ingot","large_plate","nugget","plate","ring","rod","rotor","tiny_dust"}).addBlockType(new String [] { "block" });
     public static MIMaterial tin = new MIMaterial("tin", false).addItemType(new String [] { "blade","bolt","crushed_dust","curved_plate","double_ingot","dust","gear","ingot","large_plate","nugget","plate","ring","rod","rotor","tiny_dust","wire"}).addBlockType(new String [] { "block","ore" }).setupOreGenerator(8, 9, 64);
     public static MIMaterial titanium = new MIMaterial("titanium", false).addItemType(new String [] { "blade","bolt","curved_plate","double_ingot","dust","gear","ingot","large_plate","nugget","plate","ring","rod","rotor","tiny_dust"}).addBlockType(new String [] { "block" });

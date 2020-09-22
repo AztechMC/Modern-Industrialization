@@ -1,0 +1,21 @@
+{
+    "type": "modern_industrialization:assembler",
+    "eu": 8,
+    "duration": 200,
+    "item_inputs": [
+        {
+            "item": "modern_industrialization:rubber_sheet",
+            "amount": 6
+        },
+        {
+            "item": "modern_industrialization:aluminum_wire",
+            "amount": 3
+        }
+    ],
+    "item_outputs": [
+        {
+            "item": "modern_industrialization:pipe_electricity_aluminum",
+            "amount": 3
+        }
+    ]
+}

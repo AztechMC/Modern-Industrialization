@@ -4,25 +4,25 @@
     "duration": 200,
     "item_inputs": [
         {
-            "item": "modern_industrialization:pipe_electricity_electrum",
+            "item": "modern_industrialization:pipe_electricity_aluminum",
             "amount": 4
         },
         {
-            "item": "modern_industrialization:aluminum_plate",
+            "item": "modern_industrialization:stainless_steel_plate",
             "amount": 3
         },
         {
-            "item": "modern_industrialization:lv_circuit_board",
+            "item": "modern_industrialization:electronic_circuit_board",
             "amount": 1
         },
         {
-            "item": "modern_industrialization:lv_battery",
+            "item": "modern_industrialization:silicon_battery",
             "amount": 1
         }
     ],
     "item_outputs": [
         {
-            "item": "modern_industrialization:electronic_circuit_board",
+            "item": "modern_industrialization:digital_circuit_board",
             "amount": 1
         }
     ]

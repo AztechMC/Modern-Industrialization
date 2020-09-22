@@ -56,5 +56,10 @@ public class MIItem extends Item {
     public static final MIItem ITEM_LARGE_MOTOR = new MIItem("large_motor");
     public static final MIItem ITEM_LARGE_PUMP = new MIItem("large_pump");
 
-
+    public static final MIItem ITEM_DIGITAL_CIRCUIT = new MIItem("digital_circuit");
+    public static final MIItem ITEM_DIGITAL_CIRCUIT_BOARD = new MIItem("digital_circuit_board");
+    public static final MIItem ITEM_OP_AMP = new MIItem("op_amp");
+    public static final MIItem ITEM_AND_GATE = new MIItem("and_gate");
+    public static final MIItem ITEM_OR_GATE = new MIItem("or_gate");
+    public static final MIItem ITEM_NOT_GATE = new MIItem("not_gate");
 }

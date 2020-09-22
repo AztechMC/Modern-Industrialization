@@ -85,6 +85,7 @@ public class MIPipes implements ModInitializer {
         registerElectricityPipeType("copper", 255 << 24 | 255 << 16 | 102 << 8, LV);
         registerElectricityPipeType("cupronickel", 0xffe39680, MV);
         registerElectricityPipeType("electrum",255 << 24 | 0xefff5e, MV);
+        registerElectricityPipeType("aluminum",255 << 24 | 63 << 16 | 202 << 8 | 255, HV);
 
         ServerTickEvents.START_SERVER_TICK.register(server -> {
             for(World world : server.getWorlds()) {

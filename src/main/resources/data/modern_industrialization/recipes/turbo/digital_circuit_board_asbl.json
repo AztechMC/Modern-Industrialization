@@ -1,0 +1,29 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern" : [
+    "eAe",
+    "AbA",
+    "eBe"
+  ],
+
+  "key":
+  {
+    "A" : {
+      "item" : "modern_industrialization:stainless_steel_plate"
+    },
+    "e" : {
+      "item" : "modern_industrialization:pipe_electricity_aluminum"
+    },
+    "b" :{
+      "item" : "modern_industrialization:electronic_circuit_board"
+    },
+    "B" : {
+      "item" : "modern_industrialization:silicon_battery"
+    }
+  },
+
+  "result": {
+    "item": "modern_industrialization:digital_circuit_board"
+  }
+
+}

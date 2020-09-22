@@ -620,9 +620,10 @@ gen(
 )
 gen(
     file,
-    Material('aluminum', ITEM_ALL | {'ingot'}, BLOCK_ONLY, overrides={
+    Material('aluminum', ITEM_ALL | {'ingot', 'wire'}, BLOCK_ONLY, overrides={
         "item_pipe": "modern_industrialization:pipe_item_aluminum",
         "fluid_pipe": "modern_industrialization:pipe_fluid_aluminum",
+        "cable": "modern_industrialization:pipe_electricity_aluminum",
     }),
     '#3fcaff', smelting=False,
 )
@@ -751,6 +752,13 @@ gen(
              | {'plate', 'double_ingot'}, BLOCK_ONLY),
     '#7a6a9e',
 )
+
+gen(
+    file,
+    Material('stainless_steel', ITEM_ALL_NO_ORE, BLOCK_ONLY),
+    '#98abbb', smelting=False
+)
+
 
 file.write("\n".join(sorted(material_lines)))
 file.write("\n")

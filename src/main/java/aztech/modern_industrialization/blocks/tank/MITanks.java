@@ -17,7 +17,9 @@ import static aztech.modern_industrialization.ModernIndustrialization.ITEM_GROUP
 
 public enum MITanks {
     BRONZE("bronze", 4),
-    STEEL("steel", 8)
+    STEEL("steel", 8),
+    ALUMINUM("aluminum", 16),
+    STAINLESS_STEEL("stainless_steel", 32)
     ;
 
     public static BlockEntityType<TankBlockEntity> BLOCK_ENTITY_TYPE;

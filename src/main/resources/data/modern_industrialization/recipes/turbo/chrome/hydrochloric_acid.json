@@ -1,0 +1,20 @@
+{
+  "type": "modern_industrialization:chemical_reactor",
+  "eu": 8,
+  "duration": 100,
+
+  "fluid_inputs" : [
+    {
+      "fluid": "modern_industrialization:hydrogen",
+      "amount": 1000
+    },
+    {
+      "fluid": "modern_industrialization:chlorine",
+      "amount": 1000
+    }
+  ],
+  "fluid_outputs" : {
+    "fluid" : "modern_industrialization:hydrochloric_acid",
+    "amount" : 2000
+  }
+}

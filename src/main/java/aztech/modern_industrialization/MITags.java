@@ -35,6 +35,11 @@ public class MITags {
     private static final Tag<Item> BRONZE_NUGGETS = TagRegistry.item(new Identifier("c", "bronze_nuggets"));
     private static final Tag<Item> BRONZE_PLATES = TagRegistry.item(new Identifier("c", "bronze_plates"));
     private static final Tag<Item> BRONZE_TINY_DUSTS = TagRegistry.item(new Identifier("c", "bronze_tiny_dusts"));
+    private static final Tag<Item> CHROME_DUSTS = TagRegistry.item(new Identifier("c", "chrome_dusts"));
+    private static final Tag<Item> CHROME_INGOTS = TagRegistry.item(new Identifier("c", "chrome_ingots"));
+    private static final Tag<Item> CHROME_NUGGETS = TagRegistry.item(new Identifier("c", "chrome_nuggets"));
+    private static final Tag<Item> CHROME_PLATES = TagRegistry.item(new Identifier("c", "chrome_plates"));
+    private static final Tag<Item> CHROME_TINY_DUSTS = TagRegistry.item(new Identifier("c", "chrome_tiny_dusts"));
     private static final Tag<Item> COAL_DUSTS = TagRegistry.item(new Identifier("c", "coal_dusts"));
     private static final Tag<Item> COAL_TINY_DUSTS = TagRegistry.item(new Identifier("c", "coal_tiny_dusts"));
     private static final Tag<Item> COPPER_DUSTS = TagRegistry.item(new Identifier("c", "copper_dusts"));
@@ -73,6 +78,10 @@ public class MITags {
     private static final Tag<Item> LEAD_ORES = TagRegistry.item(new Identifier("c", "lead_ores"));
     private static final Tag<Item> LEAD_PLATES = TagRegistry.item(new Identifier("c", "lead_plates"));
     private static final Tag<Item> LEAD_TINY_DUSTS = TagRegistry.item(new Identifier("c", "lead_tiny_dusts"));
+    private static final Tag<Item> MANGANESE_DUSTS = TagRegistry.item(new Identifier("c", "manganese_dusts"));
+    private static final Tag<Item> MANGANESE_INGOTS = TagRegistry.item(new Identifier("c", "manganese_ingots"));
+    private static final Tag<Item> MANGANESE_NUGGETS = TagRegistry.item(new Identifier("c", "manganese_nuggets"));
+    private static final Tag<Item> MANGANESE_TINY_DUSTS = TagRegistry.item(new Identifier("c", "manganese_tiny_dusts"));
     private static final Tag<Item> NICKEL_DUSTS = TagRegistry.item(new Identifier("c", "nickel_dusts"));
     private static final Tag<Item> NICKEL_INGOTS = TagRegistry.item(new Identifier("c", "nickel_ingots"));
     private static final Tag<Item> NICKEL_NUGGETS = TagRegistry.item(new Identifier("c", "nickel_nuggets"));

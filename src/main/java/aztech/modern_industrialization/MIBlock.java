@@ -60,4 +60,9 @@ public class MIBlock extends Block {
     public static final MIBlock ADVANCED_MACHINE_CASING = new MIBlock("advanced_machine_casing");
     public static final MIBlock HEATPROOF_MACHINE_CASING = new MIBlock("heatproof_machine_casing");
     public static final MIBlock ADVANCED_MACHINE_HULL = new MIBlock("advanced_machine_hull");
+
+    public static final MIBlock TURBO_MACHINE_CASING = new MIBlock("turbo_machine_casing");
+    public static final MIBlock TURBO_MACHINE_HULL = new MIBlock("turbo_machine_hull");
+    public static final MIBlock FROSTPROOF_MACHINE_CASING = new MIBlock("frostproof_machine_casing");
+    public static final MIBlock CLEAN_STAINLESS_STEEL_MACHINE_CASING = new MIBlock("clean_stainless_steel_machine_casing");
 }

@@ -1,0 +1,17 @@
+{
+  "type": "modern_industrialization:chemical_reactor",
+  "eu": 8,
+  "duration": 200,
+  "item_inputs" : [
+    {"item" :  "modern_industrialization:manganese_crushed_dust",
+      "amount": 1}
+  ],
+  "fluid_inputs" : {
+    "fluid" : "modern_industrialization:sulfuric_acid",
+    "amount": 9000
+  },
+  "fluid_outputs" : {
+    "fluid" : "modern_industrialization:manganese_sulfuric_solution",
+    "amount" : 9000
+  }
+}

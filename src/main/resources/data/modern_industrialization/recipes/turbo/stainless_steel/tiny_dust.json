@@ -1,0 +1,26 @@
+{
+  "type": "modern_industrialization:mixer",
+  "eu": 8,
+  "duration": 20,
+  "item_inputs": [{
+    "tag": "c:iron_tiny_dusts",
+    "amount": 6
+  },
+    {
+      "tag": "c:nickel_tiny_dusts",
+      "amount": 1
+    },
+    {"item" : "modern_industrialization:chrome_tiny_dust",
+      "amount": 1
+    },
+
+    {"item" : "modern_industrialization:manganese_tiny_dust",
+      "amount": 1
+    }
+
+  ],
+  "item_outputs": {
+    "item": "modern_industrialization:stainless_steel_tiny_dust",
+    "amount": 9
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "type": "modern_industrialization:blast_furnace",
+  "eu": 32,
+  "duration": 400,
+  "item_inputs": {
+    "item": "modern_industrialization:stainless_steel_dust",
+    "amount": 1
+  },
+  "item_outputs": {
+    "item": "modern_industrialization:stainless_steel_hot_ingot",
+    "amount": 1
+  }
+}

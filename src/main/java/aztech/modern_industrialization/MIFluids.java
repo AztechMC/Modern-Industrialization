@@ -38,6 +38,9 @@ public class MIFluids {
             new CraftingFluid("sulfuric_light_fuel", 0xfff4dd34),
             new CraftingFluid("sulfuric_naphta", 0xffa5975e),
             new CraftingFluid("synthetic_oil", 0xff1a1a1a),
+            new CraftingFluid("manganese_sulfuric_solution", 0xffb96c3f),
+            new CraftingFluid("hydrochloric_acid", 0xff9ebd06),
+            new CraftingFluid("chrome_hydrochloric_solution", 0xfffabe73),
     };
     
     public static void setupFluids() {

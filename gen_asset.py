@@ -355,7 +355,7 @@ def genMacerator(ty, tyo, macerator_disable):
     list_todo = [('double_ingot', 18), ('plate', 9), ('curved_plate', 9),
                  ('nugget', 1), ('large_plate', 36), ('gear', 18), ('ring', 4),
                  ('bolt', 2), ('rod', 4), ('item_pipe', 9), ('fluid_pipe', 9),
-                 ('rotor', 27), ('main', 9)]
+                 ('rotor', 27), ('main', 9), ('blade', 5)]
     for a, b in list_todo:
         recipe = MIRecipe('macerator').input(tyo[a])
         if b // 9 != 0:
@@ -389,6 +389,8 @@ def genPacker(ty, tyo):
         ty["double_ingot"]).save(ty.id, "double_ingot")
     MIRecipe("packer").input(ty["item_pipe"], amount=2).input(
         "minecraft:glass_pane").output(ty["fluid_pipe"], amount=2).save(ty.id, "fluid_pipe")
+    MIRecipe("packer").input(ty["tiny_dust"], amount=9).output(
+        ty["dust"]).save(ty.id, "dust")
 
 
 def genWiremill(ty, tyo):
@@ -738,7 +740,7 @@ gen(
 
 gen(
     file,
-    Material('electrum', ITEM_BASE - { 'crushed_dust' } | {'wire', 'fine_wire'}, BLOCK_ONLY, overrides={
+    Material('electrum', ITEM_BASE - {'crushed_dust'} | {'wire', 'fine_wire'}, BLOCK_ONLY, overrides={
         "item_pipe": "modern_industrialization:pipe_item_electrum",
         "fluid_pipe": "modern_industrialization:pipe_fluid_electrum",
         "cable": "modern_industrialization:pipe_electricity_electrum",
@@ -757,6 +759,19 @@ gen(
     file,
     Material('stainless_steel', ITEM_ALL_NO_ORE, BLOCK_ONLY),
     '#98abbb', smelting=False
+)
+
+gen(
+    file,
+    Material('manganese', PURE_METAL, BLOCK_ONLY),
+    '#7f7f7f', smelting=False, macerator_disable={'dust'}
+)
+
+gen(
+    file,
+    Material('chrome', PURE_METAL | {
+             'plate', 'large_plate', 'double_ingot'}, BLOCK_ONLY),
+    '#eec4e4', smelting=False, macerator_disable={'dust'}
 )
 
 

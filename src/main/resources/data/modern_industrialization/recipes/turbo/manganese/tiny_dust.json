@@ -1,0 +1,18 @@
+{
+  "type": "modern_industrialization:electrolyzer",
+  "eu": 16,
+  "duration": 400,
+  "item_outputs" : [
+    {"item" :  "modern_industrialization:manganese_tiny_dust",
+    "amount": 3}
+  ],
+  "fluid_inputs" : {
+    "fluid" : "modern_industrialization:manganese_sulfuric_solution",
+    "amount" : 1000
+  },
+  "fluid_outputs" : {
+    "fluid" : "modern_industrialization:sulfuric_acid",
+    "amount": 900
+  }
+
+}

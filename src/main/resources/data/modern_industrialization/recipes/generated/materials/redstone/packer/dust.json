@@ -1,0 +1,17 @@
+{
+    "type": "modern_industrialization:packer",
+    "eu": 2,
+    "duration": 200,
+    "item_inputs": [
+        {
+            "item": "modern_industrialization:redstone_tiny_dust",
+            "amount": 9
+        }
+    ],
+    "item_outputs": [
+        {
+            "item": "minecraft:redstone",
+            "amount": 1
+        }
+    ]
+}

@@ -1,0 +1,20 @@
+{
+  "type": "modern_industrialization:centrifuge",
+  "eu": 8,
+  "duration": 1200,
+  "item_inputs" : [
+    {"item" :  "modern_industrialization:iron_crushed_dust",
+    "amount": 6}
+  ],
+  "item_outputs":[
+    {
+      "item": "modern_industrialization:iron_dust",
+      "amount":8
+
+    },
+    {
+      "item": "modern_industrialization:manganese_crushed_dust",
+      "amount":1
+    }
+  ]
+}

@@ -89,6 +89,9 @@ gen_fluid("sulfuric_heavy_fuel", "#f2cf3c")
 gen_fluid("sulfuric_light_fuel", "#f4dd34")
 gen_fluid("sulfuric_naphta", "#a5975e")
 gen_fluid("synthetic_oil", "#1a1a1a")
+gen_fluid("manganese_sulfuric_solution", "#b96c3f")
+gen_fluid("hydrochloric_acid", "#9ebd06")
+gen_fluid("chrome_hydrochloric_solution", "#fabe73")
 
 java_class += """\
     };

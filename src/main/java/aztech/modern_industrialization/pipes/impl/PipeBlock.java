@@ -293,7 +293,7 @@ public class PipeBlock extends Block implements BlockEntityProvider, IWrenchable
     public VoxelShape getCollisionShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
         BlockEntity be = world.getBlockEntity(pos);
         if(!(be instanceof PipeBlockEntity)) return PipeBlockEntity.DEFAULT_SHAPE; // Because Mojang fucked up
-        PipeBlockEntity entity = (PipeBlockEntity) world.getBlockEntity(pos);
-        return entity == null ? PipeBlockEntity.DEFAULT_SHAPE : entity.currentCollisionShape;
+        PipeBlockEntity entity = (PipeBlockEntity) be;
+        return entity.currentCollisionShape;
     }
 }

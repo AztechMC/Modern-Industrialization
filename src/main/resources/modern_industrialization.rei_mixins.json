@@ -1,0 +1,12 @@
+{
+  "required": false,
+  "minVersion": "0.8",
+  "package": "aztech.modern_industrialization.compat.rei.mixin",
+  "compatibilityLevel": "JAVA_8",
+  "mixins": [
+    "FluidEntryStackMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

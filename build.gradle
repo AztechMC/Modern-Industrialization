@@ -40,8 +40,7 @@ dependencies {
 	include "net.devtech:arrp:0.2.6"
 	modImplementation "io.github.onyxstudios:Cardinal-Components-API:${project.cardinal_components_version}"
 	include "io.github.onyxstudios:Cardinal-Components-API:${project.cardinal_components_version}"
-	modCompileOnly "me.shedaniel:RoughlyEnoughItems-api:${project.rei_version}"
-	modRuntime "me.shedaniel:RoughlyEnoughItems:${project.rei_version}"
+	modImplementation "me.shedaniel:RoughlyEnoughItems:${project.rei_version}"
 	modImplementation "vazkii.patchouli:Patchouli:${project.patchouli_version}"
 	modApi "alexiil.mc.lib:libblockattributes-all:${project.lba_version}"
 }

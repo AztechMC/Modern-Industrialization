@@ -4,7 +4,7 @@
   "duration": 1200,
   "item_inputs": {
     "tag": "c:bauxite_dusts",
-    "amount": 40
+    "amount": 10
   },
   "item_outputs": [
     {

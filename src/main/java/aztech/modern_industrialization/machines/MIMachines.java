@@ -433,6 +433,14 @@ public class MIMachines {
                 .setupOverlays("pump", true, true, true)
                 .setupProgressBar( 79, 33, 20, 15, true)
                 .setupCasing("steel");
+        new MachineFactory("lv_water_pump", LV, WaterPumpBlockEntity::new, null, 0, 0, 0, 1)
+                .setupElectricityBar(18, 34)
+                .setOutputBucketCapacity(4*MITanks.STEEL.bucketCapacity)
+                .setLiquidOutputSlotPosition(104, 32, 1, 1)
+                .setupBackground("water_pump.png")
+                .setupOverlays("pump", true, true, true)
+                .setupProgressBar( 79, 33, 20, 15, true)
+                .setupCasing("lv");
         registerMachineTiers("compressor", RECIPE_COMPRESSOR, 1, 1, 0, 0, MIMachines::setupCompressor, false);
         registerMachineTiers("cutting_machine", RECIPE_CUTTING_MACHINE, 1, 1, 1, 0, MIMachines::setupCuttingMachine, false);
         //registerMachineTiers("fluid_extractor", RECIPE_FLUID_EXTRACTOR, 1, 0, 0, 1, MIMachines::setupFluidExtractor, false);
@@ -455,8 +463,8 @@ public class MIMachines {
                 .setupOverlays("coke_oven", true, false, false)
                 .setupCasing("bricks")
         ;
-        new SteamMachineFactory("steam_blast_furnace", null, (f, t) -> new MultiblockMachineBlockEntity(f, t, BLAST_FURNACE_SHAPE), RECIPE_BLAST_FURNACE, 1, 1, 1, 1)
-                .setInputSlotPosition(56, 35, 1, 1).setOutputSlotPosition(102, 35, 1, 1)
+        new SteamMachineFactory("steam_blast_furnace", null, (f, t) -> new MultiblockMachineBlockEntity(f, t, BLAST_FURNACE_SHAPE), RECIPE_BLAST_FURNACE, 2, 1, 1, 1)
+                .setInputSlotPosition(56, 35, 1, 2).setOutputSlotPosition(102, 35, 1, 1)
                 .setInputLiquidSlotPosition(36, 35, 1, 1).setLiquidOutputSlotPosition(122, 35, 1, 1)
                 .setupProgressBar(76, 35, 22, 15, true).setupBackground("steam_furnace.png")
                 .setupOverlays("steam_blast_furnace", true, false, false)
@@ -482,8 +490,8 @@ public class MIMachines {
                 .setupOverlays("large_boiler", true, false, false)
                 .setupCasing("bronze_plated_bricks")
         ;
-        ELECTRIC_BLAST_FURNACE = new MachineFactory("electric_blast_furnace", UNLIMITED, ElectricBlastFurnaceBlockEntity::new, RECIPE_BLAST_FURNACE, 1, 1, 1, 1)
-                .setInputSlotPosition(56, 35, 1, 1).setOutputSlotPosition(102, 35, 1, 1)
+        ELECTRIC_BLAST_FURNACE = new MachineFactory("electric_blast_furnace", UNLIMITED, ElectricBlastFurnaceBlockEntity::new, RECIPE_BLAST_FURNACE, 2, 1, 1, 1)
+                .setInputSlotPosition(56, 35, 1, 2).setOutputSlotPosition(102, 35, 1, 1)
                 .setInputLiquidSlotPosition(36, 35, 1, 1).setLiquidOutputSlotPosition(122, 35, 1, 1)
                 .setupProgressBar(76, 35, 22, 15, true).setupBackground("steam_furnace.png")
                 .setupEfficiencyBar(0, 166, 38, 62, 100, 2)

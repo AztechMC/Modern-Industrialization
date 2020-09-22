@@ -1,0 +1,33 @@
+{
+  "type" : "minecraft:crafting_shaped",
+  "pattern" : [
+    "frf",
+    "PHP",
+    "pcp"
+  ],
+  "key":
+  {
+    "f" : {
+      "item" : "modern_industrialization:pipe_fluid_bronze"
+    },
+    "H" :{
+      "item" : "modern_industrialization:lv_machine_hull"
+    },
+    "p": {
+      "item" : "modern_industrialization:pipe_electricity_tin"
+    },
+    "P" : {
+      "item" : "modern_industrialization:lv_pump"
+    },
+    "c": {
+      "item": "modern_industrialization:lv_circuit"
+    },
+    "r": {
+      "item": "modern_industrialization:tin_rotor"
+    }
+  },
+
+  "result": {
+    "item": "modern_industrialization:lv_water_pump"
+  }
+}

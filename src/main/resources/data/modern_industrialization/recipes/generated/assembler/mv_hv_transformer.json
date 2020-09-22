@@ -1,0 +1,25 @@
+{
+    "type": "modern_industrialization:assembler",
+    "eu": 8,
+    "duration": 200,
+    "item_inputs": [
+        {
+            "item": "modern_industrialization:pipe_electricity_electrum",
+            "amount": 4
+        },
+        {
+            "item": "modern_industrialization:advanced_machine_hull",
+            "amount": 1
+        },
+        {
+            "item": "modern_industrialization:pipe_electricity_aluminum",
+            "amount": 1
+        }
+    ],
+    "item_outputs": [
+        {
+            "item": "modern_industrialization:mv_hv_transformer",
+            "amount": 1
+        }
+    ]
+}

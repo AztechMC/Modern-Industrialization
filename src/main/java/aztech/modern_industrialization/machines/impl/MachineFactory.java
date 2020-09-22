@@ -284,7 +284,11 @@ public class MachineFactory {
     }
 
     public MachineFactory setupElectricityBar(int x, int y) {
-        if(tier.isElectric()) {
+        return setupElectricityBar(x, y, true);
+    }
+
+    public MachineFactory setupElectricityBar(int x, int y, boolean checkTier) {
+        if(!checkTier || tier.isElectric()) {
             hasEnergyBar = true;
             this.electricityBarX = x;
             this.electricityBarY = y;

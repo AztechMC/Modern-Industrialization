@@ -6,6 +6,7 @@ import alexiil.mc.lib.attributes.fluid.volume.FluidKey;
 import alexiil.mc.lib.attributes.fluid.volume.FluidKeys;
 import aztech.modern_industrialization.api.CableTier;
 import aztech.modern_industrialization.MIFluids;
+import aztech.modern_industrialization.api.EnergyExtractable;
 import aztech.modern_industrialization.api.EnergyInsertable;
 import aztech.modern_industrialization.inventory.ConfigurableFluidStack;
 import aztech.modern_industrialization.inventory.ConfigurableInventory;
@@ -551,20 +552,41 @@ public class MachineBlockEntity extends AbstractMachineBlockEntity
     @Override
     public void addAllAttributes(AttributeList<?> to) {
         if(getTier().isElectric()) {
-            to.offer(new EnergyInsertable() {
-                @Override
-                public long insertEnergy(long amount) {
-                    long ins = Math.min(amount, getMaxStoredEu() - storedEu);
-                    storedEu += ins;
-                    markDirty();
-                    return amount - ins;
-                }
-
-                @Override
-                public boolean canInsert(CableTier tier) {
-                    return tier == CableTier.LV;
-                }
-            });
+            to.offer(buildInsertable(CableTier.LV)); // TODO: cache this to prevent allocation
         }
+    }
+
+    protected EnergyInsertable buildInsertable(CableTier cableTier) {
+        return new EnergyInsertable() {
+            @Override
+            public long insertEnergy(long amount) {
+                long ins = Math.min(amount, getMaxStoredEu() - storedEu);
+                storedEu += ins;
+                markDirty();
+                return amount - ins;
+            }
+
+            @Override
+            public boolean canInsert(CableTier tier) {
+                return tier == cableTier;
+            }
+        };
+    }
+
+    protected EnergyExtractable buildExtractable(CableTier cableTier) {
+        return new EnergyExtractable() {
+            @Override
+            public long extractEnergy(long maxAmount) {
+                long ext = Math.min(maxAmount, storedEu);
+                storedEu -= ext;
+                markDirty();
+                return ext;
+            }
+
+            @Override
+            public boolean canExtract(CableTier tier) {
+                return tier == cableTier;
+            }
+        };
     }
 }

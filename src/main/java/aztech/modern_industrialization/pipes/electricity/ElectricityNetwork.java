@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Map;
 
 public class ElectricityNetwork extends PipeNetwork {
-    private final CableTier tier;
+    final CableTier tier;
 
     public ElectricityNetwork(int id, PipeNetworkData data, CableTier tier) {
         super(id, data == null ? new ElectricityNetworkData() : data);
@@ -37,11 +37,11 @@ public class ElectricityNetwork extends PipeNetwork {
                 ElectricityNetworkNode node = (ElectricityNetworkNode) entry.getValue();
                 node.appendAttributes(world, entry.getKey(), insertables, extractables);
                 networkAmount += node.eu;
-                remainingInsert += tier.maxInsert - node.eu;
+                remainingInsert += tier.getMaxInsert() - node.eu;
                 loadedNodes++;
             }
         }
-        remainingInsert = Math.min(remainingInsert, tier.maxInsert);
+        remainingInsert = Math.min(remainingInsert, tier.getMaxInsert());
 
         for(EnergyExtractable extractable : extractables) {
             long ext = extractable.extractEnergy(remainingInsert);

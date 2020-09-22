@@ -101,7 +101,7 @@ java_class += """\
         for(CraftingFluid fluid : FLUIDS) {
             registerFluid(fluid);
     
-            Text name = new TranslatableText(fluid.getDefaultState().getBlockState().getBlock().getTranslationKey()).setStyle(Style.EMPTY.withColor(TextColor.fromRgb(fluid.color)));
+            Text name = fluid.getDefaultState().getBlockState().getBlock().getName();
             fluid.key = new SimpleFluidKey(new FluidKey.FluidKeyBuilder(fluid).setName(name).setRenderColor(fluid.color));
             FluidKeys.put(fluid, fluid.key);
         }

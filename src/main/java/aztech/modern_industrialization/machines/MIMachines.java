@@ -378,11 +378,18 @@ public class MIMachines {
         }
 
         for(CableTier tier : CableTier.values()) {
-            new MachineFactory(tier.name + "_energy_input_hatch", LV, (f, t) -> new EnergyInputHatchBlockEntity(f, tier), null, 0, 0, 0, 0)
-                    .setupElectricityBar(76, 39)
+            new MachineFactory(tier.name + "_energy_input_hatch", null, (f, t) -> new EnergyInputHatchBlockEntity(f, tier), null, 0, 0, 0, 0)
+                    .setupElectricityBar(76, 39, false)
                     .setupBackground("default.png")
                     .setupCasing(tier.name);
         }
+    }
+
+    private static void registerTransformer(CableTier in, CableTier out, String casing) {
+        new MachineFactory(in.toString() + "_" + out.toString() + "_transformer", null, (f, t) -> new TransformerBlockEntity(f, in, out), null, 0, 0, 0, 0)
+                .setupElectricityBar(76, 39, false)
+                .setupBackground("default.png")
+                .setupCasing(casing); // TODO: better output texture
     }
 
     public static void setupRecipes() {
@@ -483,7 +490,7 @@ public class MIMachines {
                 .setupOverlays("quarry", true, false, false)
                 .setupCasing("steel")
         ;
-        new MachineFactory("large_steam_boiler", null, (f, t) -> new LargeSteamBoilerBlockEntity(f, LARGE_BOILER_SHAPE), null, 0, 0, 0, 0)
+        new MachineFactory("large_steam_boiler", null, (f, t) -> new LargeSteamBoilerBlockEntity(f, LARGE_BOILER_SHAPE), null, 1, 0, 1, 1)
                 .setupProgressBar(176, 0, 15, 51, 14, 14, false, true)
                 .setupEfficiencyBar(0, 166, 50, 62, 100, 2).hideEfficiencyTooltip()
                 .setupBackground("steam_boiler.png")
@@ -507,11 +514,16 @@ public class MIMachines {
         ;
         registerHatches();
 
-        new MachineFactory("lv_steam_turbine", LV, SteamTurbineBlockEntity::new, null, 0, 0, 1, 0)
+        new MachineFactory("lv_steam_turbine", LV, (f, t) -> new SteamTurbineBlockEntity(f, CableTier.LV), null, 0, 0, 1, 0)
                 .setInputLiquidSlotPosition(23, 23, 1, 1).setupElectricityBar(76, 39)
                 .setupBackground("default.png")
                 .setupCasing("lv") // TODO: custom electric output
                 .setupOverlays("steam_turbine", true, true, false)
         ;
+
+        registerTransformer(CableTier.LV, CableTier.MV, "lv");
+        registerTransformer(CableTier.MV, CableTier.LV, "lv");
+        registerTransformer(CableTier.MV, CableTier.HV, "mv");
+        registerTransformer(CableTier.HV, CableTier.MV, "mv");
     }
 }

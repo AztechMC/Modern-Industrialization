@@ -28,7 +28,7 @@ public class CraftingFluid extends Fluid {
     public CraftingFluid(String name, int color) {
         bucketItem = new BucketItem(this, new Item.Settings().recipeRemainder(Items.BUCKET).maxCount(1).group(ModernIndustrialization.ITEM_GROUP));
         this.name = name;
-        this.block = new CraftingFluidBlock(name);
+        this.block = new CraftingFluidBlock(name, color);
         this.color = color;
     }
 

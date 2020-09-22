@@ -2,6 +2,7 @@ package aztech.modern_industrialization.pipes.electricity;
 
 import alexiil.mc.lib.attributes.SearchOption;
 import alexiil.mc.lib.attributes.SearchOptions;
+import aztech.modern_industrialization.api.CableTier;
 import aztech.modern_industrialization.api.EnergyAttributes;
 import aztech.modern_industrialization.api.EnergyExtractable;
 import aztech.modern_industrialization.api.EnergyInsertable;
@@ -98,7 +99,9 @@ public class ElectricityNetworkNode extends PipeNetworkNode {
 
     private boolean canConnect(World world, BlockPos pos, Direction direction) {
         SearchOption option = SearchOptions.inDirection(direction);
-        return EnergyAttributes.INSERTABLE.getAll(world, pos.offset(direction), option).hasOfferedAny()
-                || EnergyAttributes.EXTRACTABLE.getAll(world, pos.offset(direction), option).hasOfferedAny();
+        EnergyInsertable insertable = EnergyAttributes.INSERTABLE.getFirstOrNull(world, pos.offset(direction), option);
+        EnergyExtractable extractable = EnergyAttributes.EXTRACTABLE.getFirstOrNull(world, pos.offset(direction), option);
+        CableTier tier = ((ElectricityNetwork) network).tier;
+        return insertable != null && insertable.canInsert(tier) || extractable != null && extractable.canExtract(tier);
     }
 }

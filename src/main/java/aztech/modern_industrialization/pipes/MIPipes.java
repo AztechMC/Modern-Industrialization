@@ -157,5 +157,7 @@ public class MIPipes implements ModInitializer {
 
     public void registerPackets() {
         ServerSidePacketRegistry.INSTANCE.register(PipePackets.SET_ITEM_WHITELIST, PipePackets.ON_SET_ITEM_WHITELIST);
+        ServerSidePacketRegistry.INSTANCE.register(PipePackets.SET_ITEM_CONNECTION_TYPE, PipePackets.ON_SET_ITEM_CONNECTION_TYPE);
+        ServerSidePacketRegistry.INSTANCE.register(PipePackets.INCREMENT_ITEM_PRIORITY, PipePackets.ON_INCREMENT_ITEM_PRIORITY);
     }
 }

@@ -31,5 +31,7 @@ public class MIPipesClient implements ClientModInitializer {
 
     public void registerPackets() {
         ClientSidePacketRegistry.INSTANCE.register(PipePackets.SET_ITEM_WHITELIST, PipePackets.ON_SET_ITEM_WHITELIST);
+        ClientSidePacketRegistry.INSTANCE.register(PipePackets.SET_ITEM_CONNECTION_TYPE, PipePackets.ON_SET_ITEM_CONNECTION_TYPE);
+        ClientSidePacketRegistry.INSTANCE.register(PipePackets.SET_ITEM_PRIORITY, PipePackets.ON_SET_ITEM_PRIORITY);
     }
 }

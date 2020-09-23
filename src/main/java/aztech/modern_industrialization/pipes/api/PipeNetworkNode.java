@@ -24,7 +24,7 @@ public abstract class PipeNetworkNode {
     /**
      * Get the connection screen handler factory, or null if there is not gui for this connection.
      */
-    public ExtendedScreenHandlerFactory getConnectionGui(Direction direction, Runnable markDirty) {
+    public ExtendedScreenHandlerFactory getConnectionGui(Direction direction, Runnable markDirty, Runnable sync) {
         return null;
     }
 

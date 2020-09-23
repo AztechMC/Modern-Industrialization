@@ -86,7 +86,7 @@ public class ItemNetworkNode extends PipeNetworkNode {
         }
         // Otherwise try to connect
         if (canConnect(world, pos, direction)) {
-            connections.add(new ItemConnection(direction, ITEM_IN));
+            connections.add(new ItemConnection(direction, ITEM_IN, 0));
         }
     }
 
@@ -96,6 +96,7 @@ public class ItemNetworkNode extends PipeNetworkNode {
             CompoundTag connectionTag = new CompoundTag();
             connectionTag.putByte("connections", (byte)encodeConnectionType(connection.type));
             connectionTag.putBoolean("whitelist", connection.whitelist);
+            connectionTag.putInt("priority", connection.priority);
             for(int i = 0; i < ItemPipeInterface.SLOTS; i++) {
                 connectionTag.put(Integer.toString(i), connection.stacks[i].toTag(new CompoundTag()));
             }
@@ -110,10 +111,11 @@ public class ItemNetworkNode extends PipeNetworkNode {
         for(Direction direction : Direction.values()) {
             if(tag.contains(direction.toString())) {
                 CompoundTag connectionTag = tag.getCompound(direction.toString());
-                ItemConnection connection = new ItemConnection(direction, decodeConnectionType(connectionTag.getByte("connections")));
+                ItemConnection connection = new ItemConnection(direction, decodeConnectionType(connectionTag.getByte("connections")), connectionTag.getInt("priority"));
                 connection.whitelist = connectionTag.getBoolean("whitelist");
                 for(int i = 0; i < ItemPipeInterface.SLOTS; i++) {
                     connection.stacks[i] = ItemStack.fromTag(connectionTag.getCompound(Integer.toString(i)));
+                    connection.stacks[i].setCount(1);
                 }
                 connections.add(connection);
             }
@@ -121,19 +123,19 @@ public class ItemNetworkNode extends PipeNetworkNode {
         inactiveTicks = tag.getInt("inactiveTicks");
     }
 
-    private PipeConnectionType decodeConnectionType(int i) {
+    private static PipeConnectionType decodeConnectionType(int i) {
         return i == 0 ? ITEM_IN : i == 1 ? ITEM_IN_OUT : ITEM_OUT;
     }
 
-    private int encodeConnectionType(PipeConnectionType connection) {
+    private static int encodeConnectionType(PipeConnectionType connection) {
         return connection == ITEM_IN ? 0 : connection == ITEM_IN_OUT ? 1 : 2;
     }
 
     @Override
-    public ExtendedScreenHandlerFactory getConnectionGui(Direction guiDirection, Runnable markDirty) {
+    public ExtendedScreenHandlerFactory getConnectionGui(Direction guiDirection, Runnable markDirty, Runnable sync) {
         for(ItemConnection connection : connections) {
             if(connection.direction == guiDirection) {
-                return connection.new ScreenHandlerFactory(markDirty, getType().getIdentifier().getPath());
+                return connection.new ScreenHandlerFactory(markDirty, sync, getType().getIdentifier().getPath());
             }
         }
         return null;
@@ -193,6 +195,20 @@ public class ItemNetworkNode extends PipeNetworkNode {
             }
         }
 
+        // Now we sort by priority, high to low
+        result.sort(Comparator.comparing(target -> -target.connection.priority));
+        // We randomly shuffle for connections with the same priority
+        int prevPriority = Integer.MIN_VALUE;
+        int st = 0;
+        for(int i = 0; i < result.size()+1; ++i) {
+            int p = i == result.size() ? Integer.MAX_VALUE : result.get(i).connection.priority;
+            if(p != prevPriority) {
+                Collections.shuffle(result.subList(st, i));
+                prevPriority = p;
+                st = i;
+            }
+        }
+
         return result;
     }
 
@@ -210,11 +226,13 @@ public class ItemNetworkNode extends PipeNetworkNode {
         private final Direction direction;
         private PipeConnectionType type;
         private boolean whitelist = true;
+        private int priority;
         private final ItemStack[] stacks = new ItemStack[ItemPipeInterface.SLOTS];
 
-        private ItemConnection(Direction direction, PipeConnectionType type) {
+        private ItemConnection(Direction direction, PipeConnectionType type, int priority) {
             this.direction = direction;
             this.type = type;
+            this.priority = priority;
             for(int i = 0; i < ItemPipeInterface.SLOTS; i++) {
                 stacks[i] = ItemStack.EMPTY;
             }
@@ -241,11 +259,11 @@ public class ItemNetworkNode extends PipeNetworkNode {
             private final ItemPipeInterface iface;
             private final String pipeType;
 
-            private ScreenHandlerFactory(Runnable markDirty, String pipeType) {
+            private ScreenHandlerFactory(Runnable markDirty, Runnable sync, String pipeType) {
                 this.iface = new ItemPipeInterface() {
                     @Override
                     public boolean isWhitelist() {
-                        return ItemConnection.this.whitelist;
+                        return whitelist;
                     }
 
                     @Override
@@ -263,6 +281,29 @@ public class ItemNetworkNode extends PipeNetworkNode {
                     public void setStack(int slot, ItemStack stack) {
                         stacks[slot] = stack;
                         markDirty.run();
+                    }
+
+                    @Override
+                    public int getConnectionType() {
+                        return encodeConnectionType(type);
+                    }
+
+                    @Override
+                    public void setConnectionType(int type) {
+                        if(0 <= type && type < 3) {
+                            ItemConnection.this.type = decodeConnectionType(type);
+                            sync.run();
+                        }
+                    }
+
+                    @Override
+                    public int getPriority() {
+                        return priority;
+                    }
+
+                    @Override
+                    public void setPriority(int priority) {
+                        ItemConnection.this.priority = priority;
                     }
                 };
                 this.pipeType = pipeType;

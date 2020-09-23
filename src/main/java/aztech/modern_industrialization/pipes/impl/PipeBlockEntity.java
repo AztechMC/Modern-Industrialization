@@ -161,7 +161,7 @@ public class PipeBlockEntity extends BlockEntity implements Tickable, BlockEntit
     public ExtendedScreenHandlerFactory getGui(PipeNetworkType type, Direction direction) {
         for(PipeNetworkNode pipe : pipes) {
             if(pipe.getType() == type) {
-                return pipe.getConnectionGui(direction, this::markDirty);
+                return pipe.getConnectionGui(direction, this::markDirty, this::sync);
             }
         }
         return null;

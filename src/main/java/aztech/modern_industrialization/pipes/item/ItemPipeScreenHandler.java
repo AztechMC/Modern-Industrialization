@@ -2,6 +2,7 @@ package aztech.modern_industrialization.pipes.item;
 
 import aztech.modern_industrialization.pipes.MIPipes;
 import aztech.modern_industrialization.pipes.impl.PipePackets;
+import aztech.modern_industrialization.util.ItemStackHelper;
 import io.netty.buffer.Unpooled;
 import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
 import net.minecraft.entity.player.PlayerEntity;
@@ -57,9 +58,9 @@ public class ItemPipeScreenHandler extends ScreenHandler {
             Slot slot = slots.get(i);
             if(slot instanceof FilterSlot) {
                 if(actionType == SlotActionType.PICKUP) {
-                    pipeInterface.setStack(((FilterSlot) slot).index, playerEntity.inventory.getCursorStack().copy());
+                    slot.setStack(playerEntity.inventory.getCursorStack().copy());
                 } else if(actionType == SlotActionType.QUICK_MOVE) {
-                    pipeInterface.setStack(((FilterSlot) slot).index, ItemStack.EMPTY);
+                    slot.setStack(ItemStack.EMPTY);
                 }
                 return slot.getStack();
             }
@@ -73,8 +74,13 @@ public class ItemPipeScreenHandler extends ScreenHandler {
         if(slot != null && slot.hasStack()) {
             if(index < 36) {
                 for(int i = 0; i < 21; i++) {
+                    if(ItemStackHelper.areEqualIgnoreCount(slots.get(36+i).getStack(), slot.getStack())) {
+                        return ItemStack.EMPTY;
+                    }
+                }
+                for(int i = 0; i < 21; i++) {
                     if(pipeInterface.getStack(i).isEmpty()) {
-                        pipeInterface.setStack(i, slot.getStack().copy());
+                        slots.get(36+i).setStack(slot.getStack().copy());
                         break;
                     }
                 }
@@ -143,6 +149,9 @@ public class ItemPipeScreenHandler extends ScreenHandler {
 
         @Override
         public void setStack(ItemStack stack) {
+            if(!stack.isEmpty()) {
+                stack.setCount(1);
+            }
             pipeInterface.setStack(index, stack);
         }
     }

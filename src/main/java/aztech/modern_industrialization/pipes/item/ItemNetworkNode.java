@@ -115,6 +115,7 @@ public class ItemNetworkNode extends PipeNetworkNode {
                 connection.whitelist = connectionTag.getBoolean("whitelist");
                 for(int i = 0; i < ItemPipeInterface.SLOTS; i++) {
                     connection.stacks[i] = ItemStack.fromTag(connectionTag.getCompound(Integer.toString(i)));
+                    connection.stacks[i].setCount(1);
                 }
                 connections.add(connection);
             }

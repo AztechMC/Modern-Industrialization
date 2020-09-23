@@ -1,0 +1,19 @@
+{
+  "type": "modern_industrialization:chemical_reactor",
+  "eu": 8,
+  "duration": 400,
+  "item_inputs": [
+    {
+    "item" : "modern_industrialization:silicon_plate",
+    "amount": 1
+    },
+    {
+      "item" : "modern_industrialization:aluminum_dust",
+      "amount": 1
+    }
+    ],
+  "item_outputs": {
+    "item" : "modern_industrialization:p_doped_silicon_plate",
+    "amount": 1
+  }
+}

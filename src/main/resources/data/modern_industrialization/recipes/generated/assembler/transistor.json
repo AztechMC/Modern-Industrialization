@@ -12,14 +12,18 @@
             "amount": 3
         },
         {
-            "item": "modern_industrialization:silicon_plate",
-            "amount": 3
+            "item": "modern_industrialization:p_doped_silicon_plate",
+            "amount": 2
+        },
+        {
+            "item": "modern_industrialization:n_doped_silicon_plate",
+            "amount": 1
         }
     ],
     "item_outputs": [
         {
             "item": "modern_industrialization:transistor",
-            "amount": 2
+            "amount": 4
         }
     ]
 }

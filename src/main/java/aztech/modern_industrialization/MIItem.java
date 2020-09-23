@@ -63,6 +63,9 @@ public class MIItem extends Item {
     public static final MIItem ITEM_OR_GATE = new MIItem("or_gate");
     public static final MIItem ITEM_NOT_GATE = new MIItem("not_gate");
 
+    public static final MIItem ITEM_P_DOPED_SILICON_PLATE = new MIItem("p_doped_silicon_plate");
+    public static final MIItem ITEM_N_DOPED_SILICON_PLATE = new MIItem("n_doped_silicon_plate");
+
     public static final MIItem ITEM_CARBON_DUST = new MIItem("carbon_dust");
     public static final MIItem ITEM_SODIUM_BATTERY = new MIItem("sodium_battery");
 

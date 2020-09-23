@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "p p",
+    "pcp",
+    " p "
+  ],
+  "key": {
+    "c": {
+      "item": "minecraft:chest"
+    },
+    "p": {
+      "item": "modern_industrialization:steel_plate"
+    }
+  },
+  "result": {
+    "item": "minecraft:hopper",
+    "count": 2
+  }
+}

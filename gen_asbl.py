@@ -13,6 +13,9 @@ shutil.rmtree(path_output, ignore_errors=True)
 Path(path_output).mkdir(parents=True, exist_ok=True)
 
 file_list = Path(path).rglob('*.json')
+
+count_output = {}
+
 for f in file_list:
     file_name = os.path.basename(f)
 
@@ -39,7 +42,7 @@ for f in file_list:
                         item_inputs_dict[key] += 1
 
             for i, c in item_inputs_dict.items():
-                dct = {"tag": i[1:]} if i[0] == "#" else {"item":i}
+                dct = {"tag": i[1:]} if i[0] == "#" else {"item": i}
                 dct["amount"] = c
                 item_inputs.append(dct)
 
@@ -51,5 +54,10 @@ for f in file_list:
             json_output["item_outputs"] = [
                 {"item": item_ouput, "amount": item_ouput_count}]
 
-            with open(path_output + item_ouput.split(':')[-1] + ".json", "w") as file_output:
+            output_name = item_ouput.split(':')[-1]
+            count = count_output.get(output_name, 0)
+
+            count_output[output_name] = count + 1
+
+            with open(path_output + output_name + (".json" if count == 0 else str(count)+'.json'), "w") as file_output:
                 json.dump(json_output, file_output, indent=4)

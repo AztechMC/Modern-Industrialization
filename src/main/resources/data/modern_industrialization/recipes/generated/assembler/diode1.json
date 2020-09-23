@@ -16,14 +16,14 @@
             "amount": 3
         },
         {
-            "item": "modern_industrialization:silicon_dust",
+            "item": "modern_industrialization:n_doped_silicon_plate",
             "amount": 1
         }
     ],
     "item_outputs": [
         {
             "item": "modern_industrialization:diode",
-            "amount": 1
+            "amount": 2
         }
     ]
 }

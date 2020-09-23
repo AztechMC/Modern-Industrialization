@@ -1,6 +1,7 @@
 package aztech.modern_industrialization;
 
 
+import aztech.modern_industrialization.blocks.TrashCanBlock;
 import aztech.modern_industrialization.blocks.forgehammer.ForgeHammerBlock;
 import aztech.modern_industrialization.blocks.forgehammer.ForgeHammerPacket;
 import aztech.modern_industrialization.blocks.forgehammer.ForgeHammerScreenHandler;
@@ -30,6 +31,7 @@ import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.client.itemgroup.FabricItemGroupBuilder;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerChunkEvents;
 import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
+import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.fabricmc.fabric.api.registry.FuelRegistry;
 import net.fabricmc.fabric.api.screenhandler.v1.ScreenHandlerRegistry;
 import net.fabricmc.fabric.api.tag.TagRegistry;
@@ -77,6 +79,8 @@ public class ModernIndustrialization implements ModInitializer {
     // Block
     public static final Block FORGE_HAMMER = new ForgeHammerBlock();
     public static final Item ITEM_FORGE_HAMMER = new BlockItem(FORGE_HAMMER, new Item.Settings().group(ITEM_GROUP));
+    public static final TrashCanBlock TRASH_CAN = new TrashCanBlock();
+    public static final BlockItem ITEM_TRASH_CAN = new BlockItem(TRASH_CAN, new Item.Settings().group(ITEM_GROUP));
 
     // ScreenHandlerType
     public static final ScreenHandlerType<MachineScreenHandler> SCREEN_HANDLER_TYPE_MACHINE =
@@ -134,6 +138,7 @@ public class ModernIndustrialization implements ModInitializer {
 
     private void setupBlocks() {
         registerBlock(FORGE_HAMMER, ITEM_FORGE_HAMMER, "forge_hammer", FLAG_BLOCK_LOOT | FLAG_BLOCK_ITEM_MODEL);
+        registerBlock(TRASH_CAN, ITEM_TRASH_CAN, "trash_can", 7);
         for (MIBlock block : MIBlock.blocks.values()) {
             registerBlock(block, block.getItem(), block.getId());
         }

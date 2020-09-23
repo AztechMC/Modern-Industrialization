@@ -353,35 +353,37 @@ public class MIMachines {
         registerMachineTiers(machineType, recipeType, inputSlots, outputSlots, fluidInputSlots, fluidOutputSlots, setup, false, false, false);
     }
 
-    private static int[] ITEM_HATCH_ROWS = new int[] {1, 2};
-    private static int[] ITEM_HATCH_COLUMNS = new int[] {1, 1};
-    private static int[] ITEM_HATCH_X = new int[] {80, 80};
-    private static int[] ITEM_HATCH_Y = new int[] {40, 30};
+    private static int[] ITEM_HATCH_ROWS = new int[] {1, 2, 2, 3};
+    private static int[] ITEM_HATCH_COLUMNS = new int[] {1, 1, 2, 3};
+    private static int[] ITEM_HATCH_X = new int[] {80, 80, 80, 71};
+    private static int[] ITEM_HATCH_Y = new int[] {40, 30, 21, 21};
     private static int FLUID_HATCH_X = ITEM_HATCH_X[0];
     private static int FLUID_HATCH_Y = ITEM_HATCH_Y[0];
-    private static int[] FLUID_HATCH_BUCKETS = new int[] {4, 8};
+    private static int[] FLUID_HATCH_BUCKETS = new int[] {4, 8, 16, 32};
+    private static String[] casing = new String[] {"bronze", "steel", "mv", "hv"};
+
     private static void registerHatches() {
         int i = 0;
-        for(MachineTier tier : MachineTier.values()) {
-            if(!tier.isSteam()) continue; // TODO: hatches for electric tiers
-            new MachineFactory(tier.toString() + "_item_input_hatch", tier, (f, t) -> new HatchBlockEntity(f, ITEM_INPUT), null, ITEM_HATCH_ROWS[i] * ITEM_HATCH_COLUMNS[i], 0, 0, 0)
+        for(String s : new String[] {"bronze", "steel", "advanced", "turbo"}) {
+
+            new MachineFactory(s + "_item_input_hatch", null, (f, t) -> new HatchBlockEntity(f, ITEM_INPUT), null, ITEM_HATCH_ROWS[i] * ITEM_HATCH_COLUMNS[i], 0, 0, 0)
                     .setInputSlotPosition(ITEM_HATCH_X[i], ITEM_HATCH_Y[i], ITEM_HATCH_ROWS[i], ITEM_HATCH_COLUMNS[i])
                     .setupBackground("default.png")
-                    .setupCasing(tier.toString());
-            new MachineFactory(tier.toString() + "_item_output_hatch", tier, (f, t) -> new HatchBlockEntity(f, ITEM_OUTPUT), null, 0, ITEM_HATCH_ROWS[i] * ITEM_HATCH_COLUMNS[i], 0, 0)
+                    .setupCasing(casing[i]);
+            new MachineFactory(s + "_item_output_hatch", null, (f, t) -> new HatchBlockEntity(f, ITEM_OUTPUT), null, 0, ITEM_HATCH_ROWS[i] * ITEM_HATCH_COLUMNS[i], 0, 0)
                     .setOutputSlotPosition(ITEM_HATCH_X[i], ITEM_HATCH_Y[i], ITEM_HATCH_ROWS[i], ITEM_HATCH_COLUMNS[i])
                     .setupBackground("default.png")
-                    .setupCasing(tier.toString());
-            new MachineFactory(tier.toString() + "_fluid_input_hatch", tier, (f, t) -> new HatchBlockEntity(f, FLUID_INPUT), null, 0, 0, 1, 0)
+                    .setupCasing(casing[i]);
+            new MachineFactory(s + "_fluid_input_hatch", null, (f, t) -> new HatchBlockEntity(f, FLUID_INPUT), null, 0, 0, 1, 0)
                     .setInputBucketCapacity(FLUID_HATCH_BUCKETS[i])
                     .setInputLiquidSlotPosition(FLUID_HATCH_X, FLUID_HATCH_Y, 1, 1)
                     .setupBackground("default.png")
-                    .setupCasing(tier.toString());
-            new MachineFactory(tier.toString() + "_fluid_output_hatch", tier, (f, t) -> new HatchBlockEntity(f, FLUID_OUTPUT), null, 0, 0, 0, 1)
+                    .setupCasing(casing[i]);
+            new MachineFactory(s + "_fluid_output_hatch", null, (f, t) -> new HatchBlockEntity(f, FLUID_OUTPUT), null, 0, 0, 0, 1)
                     .setOutputBucketCapacity(FLUID_HATCH_BUCKETS[i])
                     .setLiquidOutputSlotPosition(FLUID_HATCH_X, FLUID_HATCH_Y, 1, 1)
                     .setupBackground("default.png")
-                    .setupCasing(tier.toString());
+                    .setupCasing(casing[i]);
             i++;
         }
 

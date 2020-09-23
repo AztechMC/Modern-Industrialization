@@ -1,0 +1,21 @@
+{
+    "type": "modern_industrialization:assembler",
+    "eu": 8,
+    "duration": 200,
+    "item_inputs": [
+        {
+            "item": "modern_industrialization:steel_block",
+            "amount": 5
+        },
+        {
+            "item": "modern_industrialization:steel_ingot",
+            "amount": 4
+        }
+    ],
+    "item_outputs": [
+        {
+            "item": "modern_industrialization:forge_hammer",
+            "amount": 2
+        }
+    ]
+}

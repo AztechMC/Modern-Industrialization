@@ -1,4 +1,8 @@
 {
+    "block.modern_industrialization.advanced_fluid_input_hatch": "Advanced Fluid Input Hatch",
+    "block.modern_industrialization.advanced_fluid_output_hatch": "Advanced Fluid Output Hatch",
+    "block.modern_industrialization.advanced_item_input_hatch": "Advanced Item Input Hatch",
+    "block.modern_industrialization.advanced_item_output_hatch": "Advanced Item Output Hatch",
     "block.modern_industrialization.advanced_machine_casing": "Advanced Machine Casing",
     "block.modern_industrialization.advanced_machine_hull": "Advanced Machine Hull",
     "block.modern_industrialization.air": "Air",
@@ -125,8 +129,13 @@
     "block.modern_industrialization.tin_block": "Tin Block",
     "block.modern_industrialization.tin_ore": "Tin Ore",
     "block.modern_industrialization.titanium_block": "Titanium Block",
+    "block.modern_industrialization.turbo_fluid_input_hatch": "Turbo Fluid Input Hatch",
+    "block.modern_industrialization.turbo_fluid_output_hatch": "Turbo Fluid Output Hatch",
+    "block.modern_industrialization.turbo_item_input_hatch": "Turbo Item Input Hatch",
+    "block.modern_industrialization.turbo_item_output_hatch": "Turbo Item Output Hatch",
     "block.modern_industrialization.turbo_machine_casing": "Turbo Machine Casing",
     "block.modern_industrialization.turbo_machine_hull": "Turbo Machine Hull",
+    "block.modern_industrialization.vacuum_freezer": "Vacuum Freezer",
     "book.modern_industrialization.landing_text": "Welcome to Modern Industrialization! To get started, be sure to collect a lot of Copper Ore and Tin Ore.",
     "book.modern_industrialization.name": "Modern Industrialization",
     "item.modern_industrialization.aluminum_blade": "Aluminum Blade",
@@ -478,7 +487,6 @@
     "modern_industrialization:distillery": "Distillery",
     "modern_industrialization:electrolyzer": "Electrolyzer",
     "modern_industrialization:fluid_extractor": "Fluid Extractor",
-    "modern_industrialization:vacuum_freezer": "Vacuum Freezer",
     "modern_industrialization:forge_hammer_hammer": "Hammering",
     "modern_industrialization:forge_hammer_saw": "Sawing",
     "modern_industrialization:furnace": "Furnace",
@@ -488,6 +496,7 @@
     "modern_industrialization:packer": "Packer",
     "modern_industrialization:polarizer": "Polarizer",
     "modern_industrialization:quarry": "Quarry",
+    "modern_industrialization:vacuum_freezer": "Vacuum Freezer",
     "modern_industrialization:wiremill": "Wiremill",
     "text.modern_industrialization.base_duration_seconds": "%.02f seconds",
     "text.modern_industrialization.base_eu_t": "%d EU/t",
@@ -509,6 +518,5 @@
     "text.modern_industrialization.shape_error_too_many_hatches": "Multiblock shape error: found %d hatches, but only up to %d are allowed.",
     "text.modern_industrialization.shape_valid": "Multiblock shape is correct",
     "text:modern_industrialization:tooltip_hammer": "Hammer, Click to switch to saw",
-    "text:modern_industrialization:tooltip_saw": "Saw, Click to switch to hammer",
-    "block.modern_industrialization.vacuum_freezer" : "Vacuum Freezer"
+    "text:modern_industrialization:tooltip_saw": "Saw, Click to switch to hammer"
 }

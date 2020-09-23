@@ -478,6 +478,7 @@
     "modern_industrialization:distillery": "Distillery",
     "modern_industrialization:electrolyzer": "Electrolyzer",
     "modern_industrialization:fluid_extractor": "Fluid Extractor",
+    "modern_industrialization:vacuum_freezer": "Vacuum Freezer",
     "modern_industrialization:forge_hammer_hammer": "Hammering",
     "modern_industrialization:forge_hammer_saw": "Sawing",
     "modern_industrialization:furnace": "Furnace",
@@ -508,5 +509,6 @@
     "text.modern_industrialization.shape_error_too_many_hatches": "Multiblock shape error: found %d hatches, but only up to %d are allowed.",
     "text.modern_industrialization.shape_valid": "Multiblock shape is correct",
     "text:modern_industrialization:tooltip_hammer": "Hammer, Click to switch to saw",
-    "text:modern_industrialization:tooltip_saw": "Saw, Click to switch to hammer"
+    "text:modern_industrialization:tooltip_saw": "Saw, Click to switch to hammer",
+    "block.modern_industrialization.vacuum_freezer" : "Vacuum Freezer"
 }

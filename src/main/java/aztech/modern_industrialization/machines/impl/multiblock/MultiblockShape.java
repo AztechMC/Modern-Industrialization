@@ -36,8 +36,9 @@ public class MultiblockShape {
         addEntry(new BlockPos(x, y, z), entry);
     }
 
-    public void setMaxHatches(int maxHatches) {
+    public MultiblockShape setMaxHatches(int maxHatches) {
         this.maxHatches = maxHatches;
+        return this;
     }
 
     public boolean matchShape(World world, BlockPos controllerPos, Direction controllerDirection, Map<BlockPos, HatchBlockEntity> outHatches, Set<BlockPos> outStructure) {

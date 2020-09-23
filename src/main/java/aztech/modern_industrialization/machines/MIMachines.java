@@ -55,6 +55,7 @@ public class MIMachines {
     // Multi block
     public static final MachineRecipeType RECIPE_COKE_OVEN = createRecipeType("coke_oven").withItemInputs().withItemOutputs();
     public static final MachineRecipeType RECIPE_BLAST_FURNACE = createRecipeType("blast_furnace").withItemInputs().withItemOutputs().withFluidInputs().withFluidOutputs();
+    public static final MachineRecipeType RECIPE_VACUUM_FREEZER = createRecipeType("vacuum_freezer").withItemInputs().withItemOutputs().withFluidInputs().withFluidOutputs();
     public static final MachineRecipeType RECIPE_OIL_DRILLING_RIG = createRecipeType("oil_drilling_rig").withItemInputs().withFluidOutputs();
     public static final MachineRecipeType RECIPE_QUARRY = createRecipeType("quarry").withItemInputs().withItemOutputs();
 
@@ -65,6 +66,7 @@ public class MIMachines {
     public static MultiblockShape ELECTRIC_QUARRY_SHAPE;
     public static MultiblockShape LARGE_BOILER_SHAPE;
     public static MultiblockShape OIL_DRILLING_RIG_SHAPE;
+    public static MultiblockShape VACUUM_FREEZER_SHAPE;
 
     public static final MachineFactory ELECTRIC_BLAST_FURNACE;
 
@@ -132,6 +134,8 @@ public class MIMachines {
         STEAM_QUARRY_SHAPE = quarryLike(HATCH_FLAG_ITEM_INPUT | HATCH_FLAG_ITEM_OUTPUT | HATCH_FLAG_FLUID_INPUT, 4);
         ELECTRIC_QUARRY_SHAPE = quarryLike(HATCH_FLAG_ITEM_INPUT | HATCH_FLAG_ITEM_OUTPUT | HATCH_FLAG_ENERGY_INPUT, 6);
 
+        VACUUM_FREEZER_SHAPE = cokeOvenLike(3, MIBlock.FROSTPROOF_MACHINE_CASING, 31).setMaxHatches(5);
+
         LARGE_BOILER_SHAPE = new MultiblockShape();
         MultiblockShape.Entry bronzeCasing = MultiblockShapes.block(MIBlock.BRONZE_PLATED_BRICKS);
         MultiblockShape.Entry bronzeCasingPipe = MultiblockShapes.block(MIBlock.BRONZE_MACHINE_CASING_PIPE);
@@ -192,6 +196,10 @@ public class MIMachines {
         OIL_DRILLING_RIG_SHAPE.addEntry(-1, 0, 2, optionalRigHatch);
         OIL_DRILLING_RIG_SHAPE.addEntry(0, 0, 2, optionalRigHatch);
         OIL_DRILLING_RIG_SHAPE.addEntry(1, 0, 2, optionalRigHatch);
+
+
+        // vacuum freezer
+
     }
 
     public static MachineFactory setupAssembler(MachineFactory factory) {
@@ -505,6 +513,7 @@ public class MIMachines {
                 .setupOverlays("electric_blast_furnace", true, false, false)
                 .setupCasing("heatproof")
         ;
+
         new MachineFactory("oil_drilling_rig", UNLIMITED, (f, t) -> new MultiblockMachineBlockEntity(f, t, OIL_DRILLING_RIG_SHAPE), RECIPE_OIL_DRILLING_RIG, 1, 0, 0, 1)
                 .setInputSlotPosition(56, 35, 1, 1).setLiquidOutputSlotPosition(102, 35, 1, 1)
                 .setupProgressBar(76, 35, 22, 15, true).setupBackground("steam_furnace.png")
@@ -512,6 +521,16 @@ public class MIMachines {
                 .setupOverlays("oil_drilling_rig", true, false, false)
                 .setupCasing("steel")
         ;
+
+        new MachineFactory("vacuum_freezer", UNLIMITED, (f, t) -> new MultiblockMachineBlockEntity(f, t, VACUUM_FREEZER_SHAPE), RECIPE_VACUUM_FREEZER, 2, 1, 1, 1)
+                .setInputSlotPosition(56, 35, 1, 2).setOutputSlotPosition(102, 35, 1, 1)
+                .setInputLiquidSlotPosition(36, 35, 1, 1).setLiquidOutputSlotPosition(122, 35, 1, 1)
+                .setupProgressBar(76, 35, 22, 15, true).setupBackground("steam_furnace.png")
+                .setupEfficiencyBar(0, 166, 38, 62, 100, 2)
+                .setupOverlays("vacuum_freezer", true, false, false)
+                .setupCasing("frostproof")
+        ;
+
         registerHatches();
 
         new MachineFactory("lv_steam_turbine", LV, (f, t) -> new SteamTurbineBlockEntity(f, CableTier.LV), null, 0, 0, 1, 0)

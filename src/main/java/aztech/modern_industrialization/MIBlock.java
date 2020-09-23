@@ -24,7 +24,7 @@ public class MIBlock extends Block {
     public MIBlock(String id, Settings settings) {
         super(settings);
         if (blocks.containsKey(id)) {
-            throw new IllegalArgumentException("Item id already taken : " + id);
+            throw new IllegalArgumentException("Block id already taken : " + id);
         } else {
             this.id = id;
             blocks.put(id, this);

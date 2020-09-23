@@ -129,10 +129,14 @@
     "block.modern_industrialization.tin_block": "Tin Block",
     "block.modern_industrialization.tin_ore": "Tin Ore",
     "block.modern_industrialization.titanium_block": "Titanium Block",
+<<<<<<< Updated upstream
     "block.modern_industrialization.turbo_fluid_input_hatch": "Turbo Fluid Input Hatch",
     "block.modern_industrialization.turbo_fluid_output_hatch": "Turbo Fluid Output Hatch",
     "block.modern_industrialization.turbo_item_input_hatch": "Turbo Item Input Hatch",
     "block.modern_industrialization.turbo_item_output_hatch": "Turbo Item Output Hatch",
+=======
+    "block.modern_industrialization.trash_can": "Automatic Trash Can",
+>>>>>>> Stashed changes
     "block.modern_industrialization.turbo_machine_casing": "Turbo Machine Casing",
     "block.modern_industrialization.turbo_machine_hull": "Turbo Machine Hull",
     "block.modern_industrialization.vacuum_freezer": "Vacuum Freezer",

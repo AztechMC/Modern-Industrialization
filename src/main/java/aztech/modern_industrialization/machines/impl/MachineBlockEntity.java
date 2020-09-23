@@ -551,7 +551,7 @@ public class MachineBlockEntity extends AbstractMachineBlockEntity
 
     @Override
     public void addAllAttributes(AttributeList<?> to) {
-        if(getTier().isElectric()) {
+        if(getTier() != null && getTier().isElectric()) {
             to.offer(buildInsertable(CableTier.LV)); // TODO: cache this to prevent allocation
         }
     }

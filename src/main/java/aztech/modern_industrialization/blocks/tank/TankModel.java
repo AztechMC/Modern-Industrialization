@@ -1,6 +1,7 @@
 package aztech.modern_industrialization.blocks.tank;
 
 import aztech.modern_industrialization.MIIdentifier;
+import aztech.modern_industrialization.blocks.creativetank.CreativeTankItem;
 import com.mojang.datafixers.util.Pair;
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandler;
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry;
@@ -24,6 +25,7 @@ import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.texture.SpriteAtlasTexture;
 import net.minecraft.client.util.SpriteIdentifier;
 import net.minecraft.fluid.Fluid;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
@@ -66,10 +68,18 @@ public class TankModel implements UnbakedModel, FabricBakedModel, BakedModel {
     public void emitItemQuads(ItemStack stack, Supplier<Random> randomSupplier, RenderContext context) {
         context.meshConsumer().accept(tankMesh);
 
-        TankItem item = (TankItem) stack.getItem();
-        if(!item.isEmpty(stack)) {
-            float fillFraction = (float) item.getAmount(stack) / item.capacity;
-            drawFluid(context.getEmitter(), fillFraction, item.getFluid(stack).getRawFluid());
+        Item it = stack.getItem();
+        if(it instanceof TankItem) {
+            TankItem item = (TankItem) it;
+            if (!item.isEmpty(stack)) {
+                float fillFraction = (float) item.getAmount(stack) / item.capacity;
+                drawFluid(context.getEmitter(), fillFraction, item.getFluid(stack).getRawFluid());
+            }
+        } else if(it instanceof CreativeTankItem) {
+            CreativeTankItem item = (CreativeTankItem) it;
+            if(!item.isEmpty(stack)) {
+                drawFluid(context.getEmitter(), 1, item.getFluid(stack).getRawFluid());
+            }
         }
     }
 

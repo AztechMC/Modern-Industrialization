@@ -2,6 +2,9 @@ package aztech.modern_industrialization.blocks.tank;
 
 import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.ModernIndustrialization;
+import aztech.modern_industrialization.blocks.creativetank.CreativeTankBlock;
+import aztech.modern_industrialization.blocks.creativetank.CreativeTankBlockEntity;
+import aztech.modern_industrialization.blocks.creativetank.CreativeTankItem;
 import aztech.modern_industrialization.model.block.ModelProvider;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.block.Block;
@@ -23,6 +26,9 @@ public enum MITanks {
     ;
 
     public static BlockEntityType<TankBlockEntity> BLOCK_ENTITY_TYPE;
+    public static BlockEntityType<CreativeTankBlockEntity> CREATIVE_BLOCK_ENTITY_TYPE;
+    public static CreativeTankBlock CREATIVE_TANK_BLOCK = new CreativeTankBlock(FabricBlockSettings.of(Material.METAL).hardness(4.0f));
+    public static CreativeTankItem CREATIVE_TANK_ITEM = new CreativeTankItem(CREATIVE_TANK_BLOCK, new Item.Settings().group(ITEM_GROUP));
 
     public final String type;
     public final Block block;
@@ -37,10 +43,12 @@ public enum MITanks {
     }
 
     public static void setup() {
+        ModernIndustrialization.registerBlock(CREATIVE_TANK_BLOCK, CREATIVE_TANK_ITEM, "creative_tank");
         for(MITanks tank : values()) {
             ModernIndustrialization.registerBlock(tank.block, tank.item, "tank_" + tank.type, 0);
         }
         BLOCK_ENTITY_TYPE = Registry.register(Registry.BLOCK_ENTITY_TYPE, new MIIdentifier("tank"), BlockEntityType.Builder.create(TankBlockEntity::new, getBlocks()).build(null));
+        CREATIVE_BLOCK_ENTITY_TYPE = Registry.register(Registry.BLOCK_ENTITY_TYPE, new MIIdentifier("creative_tank"), BlockEntityType.Builder.create(CreativeTankBlockEntity::new, CREATIVE_TANK_BLOCK).build(null));
     }
 
     public static void setupClient() {
@@ -49,6 +57,9 @@ public enum MITanks {
             ModelProvider.modelMap.put(new MIIdentifier("block/tank_" + tank.type), tankModel);
             ModelProvider.modelMap.put(new MIIdentifier("item/tank_" + tank.type), tankModel);
         }
+        UnbakedModel creativeTankModel = new TankModel("creative");
+        ModelProvider.modelMap.put(new MIIdentifier("block/creative_tank"), creativeTankModel);
+        ModelProvider.modelMap.put(new MIIdentifier("item/creative_tank"), creativeTankModel);
     }
 
     private static Block[] getBlocks() {

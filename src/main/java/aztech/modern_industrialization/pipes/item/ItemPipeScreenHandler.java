@@ -17,6 +17,8 @@ public class ItemPipeScreenHandler extends ScreenHandler {
     private final PlayerInventory playerInventory;
     public final ItemPipeInterface pipeInterface;
     private boolean trackedWhitelist;
+    private int trackedPriority;
+    private int trackedType;
 
 
     public ItemPipeScreenHandler(int syncId, PlayerInventory playerInventory, PacketByteBuf buf) {
@@ -28,15 +30,17 @@ public class ItemPipeScreenHandler extends ScreenHandler {
         this.playerInventory = playerInventory;
         this.pipeInterface = pipeInterface;
         this.trackedWhitelist = pipeInterface.isWhitelist();
+        this.trackedPriority = pipeInterface.getPriority();
+        this.trackedType = pipeInterface.getConnectionType();
 
         // Player slots
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 9; j++) {
-                this.addSlot(new Slot(playerInventory, i * 9 + j + 9, 8 + j * 18, 84 + i * 18));
+                this.addSlot(new Slot(playerInventory, i * 9 + j + 9, 8 + j * 18, 98 + i * 18));
             }
         }
         for (int j = 0; j < 9; j++) {
-            this.addSlot(new Slot(playerInventory, j, 8 + j * 18, 58 + 84));
+            this.addSlot(new Slot(playerInventory, j, 8 + j * 18, 58 + 98));
         }
 
         // Filter slots
@@ -88,6 +92,7 @@ public class ItemPipeScreenHandler extends ScreenHandler {
 
     @Override
     public void sendContentUpdates() {
+        super.sendContentUpdates();
         if(playerInventory.player instanceof ServerPlayerEntity) {
             if(trackedWhitelist != pipeInterface.isWhitelist()) {
                 trackedWhitelist = pipeInterface.isWhitelist();
@@ -95,6 +100,20 @@ public class ItemPipeScreenHandler extends ScreenHandler {
                 buf.writeInt(syncId);
                 buf.writeBoolean(trackedWhitelist);
                 ServerSidePacketRegistry.INSTANCE.sendToPlayer(playerInventory.player, PipePackets.SET_ITEM_WHITELIST, buf);
+            }
+            if(trackedType != pipeInterface.getConnectionType()) {
+                trackedWhitelist = pipeInterface.isWhitelist();
+                PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
+                buf.writeInt(syncId);
+                buf.writeInt(trackedType);
+                ServerSidePacketRegistry.INSTANCE.sendToPlayer(playerInventory.player, PipePackets.SET_ITEM_WHITELIST, buf);
+            }
+            if(trackedPriority != pipeInterface.getPriority()) {
+                trackedPriority = pipeInterface.getPriority();
+                PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
+                buf.writeInt(syncId);
+                buf.writeInt(trackedPriority);
+                ServerSidePacketRegistry.INSTANCE.sendToPlayer(playerInventory.player, PipePackets.SET_ITEM_PRIORITY, buf);
             }
         }
     }

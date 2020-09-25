@@ -75,7 +75,7 @@ public class CreativeTankBlockEntity extends BlockEntity implements FluidExtract
 
     @Override
     public FluidVolume attemptExtraction(FluidFilter filter, FluidAmount maxAmount, Simulation simulation) {
-        if(filter.matches(this.fluid)) {
+        if(!this.fluid.isEmpty() && filter.matches(this.fluid)) {
             return this.fluid.withAmount(maxAmount);
         }
         return FluidVolumeUtil.EMPTY;

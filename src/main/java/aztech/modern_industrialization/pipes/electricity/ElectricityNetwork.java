@@ -1,8 +1,8 @@
 package aztech.modern_industrialization.pipes.electricity;
 
-import aztech.modern_industrialization.api.CableTier;
-import aztech.modern_industrialization.api.EnergyExtractable;
-import aztech.modern_industrialization.api.EnergyInsertable;
+import aztech.modern_industrialization.api.energy.CableTier;
+import aztech.modern_industrialization.api.energy.EnergyExtractable;
+import aztech.modern_industrialization.api.energy.EnergyInsertable;
 import aztech.modern_industrialization.pipes.api.PipeNetwork;
 import aztech.modern_industrialization.pipes.api.PipeNetworkData;
 import aztech.modern_industrialization.pipes.api.PipeNetworkNode;

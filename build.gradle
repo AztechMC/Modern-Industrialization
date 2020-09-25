@@ -43,6 +43,8 @@ dependencies {
 	modImplementation "me.shedaniel:RoughlyEnoughItems:${project.rei_version}"
 	modImplementation "vazkii.patchouli:Patchouli:${project.patchouli_version}"
 	modApi "alexiil.mc.lib:libblockattributes-all:${project.lba_version}"
+	modApi "me.shedaniel.cloth.api:cloth-api:${project.cloth_api_version}"
+	include "me.shedaniel.cloth.api:cloth-api:${project.cloth_api_version}"
 }
 
 processResources {

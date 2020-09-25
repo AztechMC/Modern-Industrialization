@@ -1,9 +1,9 @@
 package aztech.modern_industrialization.machines.special;
 
 import alexiil.mc.lib.attributes.AttributeList;
-import aztech.modern_industrialization.api.CableTier;
-import aztech.modern_industrialization.api.EnergyExtractable;
-import aztech.modern_industrialization.api.EnergyInsertable;
+import aztech.modern_industrialization.api.energy.CableTier;
+import aztech.modern_industrialization.api.energy.EnergyExtractable;
+import aztech.modern_industrialization.api.energy.EnergyInsertable;
 import aztech.modern_industrialization.machines.impl.MachineBlockEntity;
 import aztech.modern_industrialization.machines.impl.MachineFactory;
 

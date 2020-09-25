@@ -1,7 +1,7 @@
 package aztech.modern_industrialization.pipes;
 
 import alexiil.mc.lib.attributes.fluid.volume.FluidKeys;
-import aztech.modern_industrialization.api.CableTier;
+import aztech.modern_industrialization.api.energy.CableTier;
 import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.ModernIndustrialization;
 import aztech.modern_industrialization.pipes.api.*;
@@ -38,7 +38,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import static aztech.modern_industrialization.api.CableTier.*;
+import static aztech.modern_industrialization.api.energy.CableTier.*;
 import static aztech.modern_industrialization.pipes.api.PipeConnectionType.*;
 
 public class MIPipes implements ModInitializer {

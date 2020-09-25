@@ -1,4 +1,4 @@
-package aztech.modern_industrialization.api;
+package aztech.modern_industrialization.api.energy;
 
 public enum CableTier {
     LV("lv", 32),

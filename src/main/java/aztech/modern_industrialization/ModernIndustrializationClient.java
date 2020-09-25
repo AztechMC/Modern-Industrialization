@@ -4,6 +4,8 @@ import aztech.modern_industrialization.blocks.forgehammer.ForgeHammerScreen;
 import aztech.modern_industrialization.blocks.tank.MITanks;
 import aztech.modern_industrialization.inventory.ConfigurableInventoryPacketHandlers;
 import aztech.modern_industrialization.inventory.ConfigurableInventoryPackets;
+import aztech.modern_industrialization.items.armor.ClientKeyHandler;
+import aztech.modern_industrialization.items.armor.HudRenderer;
 import aztech.modern_industrialization.machines.impl.MachineFactory;
 import aztech.modern_industrialization.machines.impl.MachineModel;
 import aztech.modern_industrialization.machines.impl.MachinePackets;
@@ -12,9 +14,11 @@ import aztech.modern_industrialization.machines.impl.MachineScreen;
 import aztech.modern_industrialization.model.block.ModelProvider;
 import aztech.modern_industrialization.pipes.MIPipesClient;
 import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.model.ModelLoadingRegistry;
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandler;
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry;
+import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.fabricmc.fabric.api.client.screenhandler.v1.ScreenRegistry;
 import net.fabricmc.fabric.api.network.ClientSidePacketRegistry;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
@@ -47,6 +51,9 @@ public class ModernIndustrializationClient implements ClientModInitializer {
             return new ModelProvider();
         });
         (new MIPipesClient()).onInitializeClient();
+        ClientKeyHandler.setup();
+        ClientTickEvents.END_CLIENT_TICK.register(ClientKeyHandler::onEndTick);
+        HudRenderCallback.EVENT.register(HudRenderer::onRenderHud);
 
         ModernIndustrialization.LOGGER.info("Modern Industrialization client setup done!");
     }

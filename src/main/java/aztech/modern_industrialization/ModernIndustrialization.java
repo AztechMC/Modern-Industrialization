@@ -1,11 +1,15 @@
 package aztech.modern_industrialization;
 
 
+import aztech.modern_industrialization.api.FluidFuelRegistry;
 import aztech.modern_industrialization.blocks.TrashCanBlock;
 import aztech.modern_industrialization.blocks.forgehammer.ForgeHammerBlock;
 import aztech.modern_industrialization.blocks.forgehammer.ForgeHammerPacket;
 import aztech.modern_industrialization.blocks.forgehammer.ForgeHammerScreenHandler;
 import aztech.modern_industrialization.blocks.tank.MITanks;
+import aztech.modern_industrialization.items.armor.ArmorPackets;
+import aztech.modern_industrialization.items.armor.JetpackItem;
+import aztech.modern_industrialization.items.armor.MIKeyMap;
 import aztech.modern_industrialization.machines.MIMachines;
 import aztech.modern_industrialization.machines.impl.MachineBlock;
 import aztech.modern_industrialization.machines.impl.MachineFactory;
@@ -15,6 +19,8 @@ import aztech.modern_industrialization.material.*;
 import aztech.modern_industrialization.pipes.MIPipes;
 import aztech.modern_industrialization.tools.WrenchItem;
 import aztech.modern_industrialization.util.ChunkUnloadBlockEntity;
+import me.shedaniel.cloth.api.common.events.v1.PlayerChangeWorldCallback;
+import me.shedaniel.cloth.api.common.events.v1.PlayerLeaveCallback;
 import net.devtech.arrp.api.RRPCallback;
 import net.devtech.arrp.api.RuntimeResourcePack;
 import net.devtech.arrp.json.blockstate.JBlockModel;
@@ -30,7 +36,6 @@ import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.client.itemgroup.FabricItemGroupBuilder;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerChunkEvents;
 import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
-import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.fabricmc.fabric.api.registry.FuelRegistry;
 import net.fabricmc.fabric.api.screenhandler.v1.ScreenHandlerRegistry;
 import net.fabricmc.fabric.api.tag.TagRegistry;
@@ -41,13 +46,9 @@ import net.minecraft.item.*;
 import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.tag.Tag;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.BuiltinRegistries;
 import net.minecraft.util.registry.Registry;
-import net.minecraft.world.gen.feature.ConfiguredFeature;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import java.util.*;
 
 //import aztech.modern_industrialization.machines.impl.SteamBoilerScreenHandler;
 
@@ -74,6 +75,7 @@ public class ModernIndustrialization implements ModInitializer {
 
     // Item
     public static final Item ITEM_WRENCH = new WrenchItem(new Item.Settings());
+    public static final JetpackItem ITEM_JETPACK = new JetpackItem(new Item.Settings().group(ITEM_GROUP));
 
     // Block
     public static final Block FORGE_HAMMER = new ForgeHammerBlock();
@@ -117,6 +119,8 @@ public class ModernIndustrialization implements ModInitializer {
                 }
             }
         });
+        PlayerChangeWorldCallback.EVENT.register((player, oldWorld, newWorld) -> MIKeyMap.clear(player));
+        PlayerLeaveCallback.EVENT.register(MIKeyMap::clear);
 
         LOGGER.info("Modern Industrialization setup done!");
     }
@@ -133,6 +137,7 @@ public class ModernIndustrialization implements ModInitializer {
         }
 
         registerItem(ITEM_WRENCH, "wrench");
+        registerItem(ITEM_JETPACK, "jetpack");
     }
 
     private void setupBlocks() {
@@ -244,6 +249,8 @@ public class ModernIndustrialization implements ModInitializer {
     private void setupPackets() {
         ServerSidePacketRegistry.INSTANCE.register(MachinePackets.C2S.SET_AUTO_EXTRACT, MachinePackets.C2S.ON_SET_AUTO_EXTRACT);
         ServerSidePacketRegistry.INSTANCE.register(ForgeHammerPacket.SET_HAMMER, ForgeHammerPacket.ON_SET_HAMMER);
+        ServerSidePacketRegistry.INSTANCE.register(ArmorPackets.UPDATE_KEYS, ArmorPackets.ON_UPDATE_KEYS);
+        ServerSidePacketRegistry.INSTANCE.register(ArmorPackets.ACTIVATE_JETPACK, ArmorPackets.ON_ACTIVATE_JETPACK);
     }
 
     private void setupFuels() {
@@ -251,5 +258,11 @@ public class ModernIndustrialization implements ModInitializer {
         FuelRegistry.INSTANCE.add(MIMaterials.coal.getItem("dust"), 1600);
         FuelRegistry.INSTANCE.add(MIMaterials.coal.getItem("tiny_dust"), 160);
         FuelRegistry.INSTANCE.add(MIMaterials.lignite_coal.getItem("lignite_coal"), 1600);
+
+        FluidFuelRegistry.register(MIFluids.CRUDE_OIL.key, 1);
+        FluidFuelRegistry.register(MIFluids.DIESEL.key, 50);
+        FluidFuelRegistry.register(MIFluids.HEAVY_FUEL.key, 20);
+        FluidFuelRegistry.register(MIFluids.LIGHT_FUEL.key, 20);
+        FluidFuelRegistry.register(MIFluids.NAPHTA.key, 10);
     }
 }

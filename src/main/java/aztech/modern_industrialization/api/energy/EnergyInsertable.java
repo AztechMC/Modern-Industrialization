@@ -1,4 +1,4 @@
-package aztech.modern_industrialization.api;
+package aztech.modern_industrialization.api.energy;
 
 public interface EnergyInsertable {
     /**

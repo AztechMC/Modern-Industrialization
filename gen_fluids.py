@@ -30,6 +30,7 @@ def gen_name(fluid):
         json.dump(lang_json, lang_file, indent=4, sort_keys=True)
         lang_file.close()
 
+
 java_class="""
 package aztech.modern_industrialization;
 
@@ -39,6 +40,8 @@ import alexiil.mc.lib.attributes.fluid.volume.SimpleFluidKey;
 import aztech.modern_industrialization.fluid.CraftingFluid;
 import net.devtech.arrp.json.models.JModel;
 import net.devtech.arrp.json.models.JTextures;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.text.*;
 import net.minecraft.util.registry.Registry;
 
@@ -49,16 +52,15 @@ import static aztech.modern_industrialization.ModernIndustrialization.RESOURCE_P
  * This is auto-generated, don't edit by hand!
  */
 public class MIFluids {
-    public static final CraftingFluid FLUID_STEAM = new CraftingFluid("steam", 0xffeeeeee);
-    public static final CraftingFluid[] FLUIDS = new CraftingFluid[] {
-            FLUID_STEAM,
 """
+fluid_variables = []
 
 
-def gen_fluid(name, color, gas=False, register=True):
-    if register:
-        global java_class
-        java_class += '            new CraftingFluid("%s", 0xff%s),\n' % (name, color[1:])
+def gen_fluid(name, color, gas=False):
+    global java_class
+    java_class += '    public static final CraftingFluid %s = new CraftingFluid("%s", 0xff%s);\n' % (name.upper(), name, color[1:])
+    global fluid_variables
+    fluid_variables.append(name.upper())
     gen_name(name)
     bucket_image = image_tint("template/fluid/bucket_content.png", color)
     bucket_image = Image.alpha_composite(bucket_image, Image.open("template/fluid/bucket.png"))
@@ -70,28 +72,33 @@ def gen_fluid(name, color, gas=False, register=True):
 shutil.rmtree("src/main/resources/assets/modern_industrialization/textures/items/bucket", ignore_errors=True)
 Path("src/main/resources/assets/modern_industrialization/textures/items/bucket").mkdir(parents=True, exist_ok=True)
 
-gen_fluid("steam", "#eeeeee", True, register=False)
 gen_fluid("air", "#76c7f9", True)
 gen_fluid("chlorine", "#b7c114", True)
+gen_fluid("chrome_hydrochloric_solution", "#fabe73")
 gen_fluid("crude_oil", "#3e3838")
+gen_fluid("diesel", "#e9bf2d")
 gen_fluid("heavy_fuel", "#ffdb46")
+gen_fluid("hydrochloric_acid", "#9ebd06")
 gen_fluid("hydrogen", "#1b4acc", True)
 gen_fluid("light_fuel", "#ffe946")
+gen_fluid("manganese_sulfuric_solution", "#b96c3f")
 gen_fluid("naphta", "#a5a25e")
 gen_fluid("oxygen", "#3296f2", True)
 gen_fluid("raw_synthetic_oil", "#474740")
 gen_fluid("raw_rubber", "#514a4a")
 gen_fluid("rubber", "#1a1a1a")
 gen_fluid("sodium_hydroxide", "#5071c9")
+gen_fluid("steam", "#eeeeee", True)
 gen_fluid("steam_cracked_naphta", "#d2d0ae")
 gen_fluid("sulfuric_acid", "#e15b00")
 gen_fluid("sulfuric_heavy_fuel", "#f2cf3c")
 gen_fluid("sulfuric_light_fuel", "#f4dd34")
 gen_fluid("sulfuric_naphta", "#a5975e")
 gen_fluid("synthetic_oil", "#1a1a1a")
-gen_fluid("manganese_sulfuric_solution", "#b96c3f")
-gen_fluid("hydrochloric_acid", "#9ebd06")
-gen_fluid("chrome_hydrochloric_solution", "#fabe73")
+
+java_class += "    public static final CraftingFluid[] FLUIDS = new CraftingFluid[] {\n"
+for var in fluid_variables:
+    java_class += "            " + var + ",\n"
 
 java_class += """\
     };
@@ -104,8 +111,12 @@ java_class += """\
         for(CraftingFluid fluid : FLUIDS) {
             registerFluid(fluid);
     
-            Text name = fluid.getDefaultState().getBlockState().getBlock().getName();
-            fluid.key = new SimpleFluidKey(new FluidKey.FluidKeyBuilder(fluid).setName(name).setRenderColor(fluid.color));
+            if(FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
+                Text name = fluid.getDefaultState().getBlockState().getBlock().getName();
+                fluid.key = new SimpleFluidKey(new FluidKey.FluidKeyBuilder(fluid).setName(name).setRenderColor(fluid.color));
+            } else {
+                fluid.key = FluidKeys.get(fluid);
+            }
             FluidKeys.put(fluid, fluid.key);
         }
     }

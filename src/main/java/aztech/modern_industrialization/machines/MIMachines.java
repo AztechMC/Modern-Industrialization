@@ -2,7 +2,7 @@ package aztech.modern_industrialization.machines;
 
 import aztech.modern_industrialization.MIBlock;
 import aztech.modern_industrialization.MIIdentifier;
-import aztech.modern_industrialization.api.CableTier;
+import aztech.modern_industrialization.api.energy.CableTier;
 import aztech.modern_industrialization.blocks.tank.MITanks;
 import aztech.modern_industrialization.machines.impl.MachineBlockEntity;
 import aztech.modern_industrialization.machines.impl.MachineFactory;

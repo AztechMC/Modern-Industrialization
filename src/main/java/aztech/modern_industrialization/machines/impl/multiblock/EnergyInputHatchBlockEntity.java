@@ -1,8 +1,8 @@
 package aztech.modern_industrialization.machines.impl.multiblock;
 
 import alexiil.mc.lib.attributes.AttributeList;
-import aztech.modern_industrialization.api.CableTier;
-import aztech.modern_industrialization.api.EnergyInsertable;
+import aztech.modern_industrialization.api.energy.CableTier;
+import aztech.modern_industrialization.api.energy.EnergyInsertable;
 import aztech.modern_industrialization.machines.impl.MachineFactory;
 
 import static aztech.modern_industrialization.machines.impl.multiblock.HatchType.ENERGY_INPUT;

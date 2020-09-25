@@ -1,4 +1,4 @@
-package aztech.modern_industrialization.api;
+package aztech.modern_industrialization.api.energy;
 
 import alexiil.mc.lib.attributes.Attribute;
 import alexiil.mc.lib.attributes.Attributes;

@@ -4,10 +4,10 @@ import alexiil.mc.lib.attributes.AttributeList;
 import alexiil.mc.lib.attributes.AttributeProviderBlockEntity;
 import alexiil.mc.lib.attributes.fluid.volume.FluidKey;
 import alexiil.mc.lib.attributes.fluid.volume.FluidKeys;
-import aztech.modern_industrialization.api.CableTier;
+import aztech.modern_industrialization.api.energy.CableTier;
 import aztech.modern_industrialization.MIFluids;
-import aztech.modern_industrialization.api.EnergyExtractable;
-import aztech.modern_industrialization.api.EnergyInsertable;
+import aztech.modern_industrialization.api.energy.EnergyExtractable;
+import aztech.modern_industrialization.api.energy.EnergyInsertable;
 import aztech.modern_industrialization.inventory.ConfigurableFluidStack;
 import aztech.modern_industrialization.inventory.ConfigurableInventory;
 import aztech.modern_industrialization.inventory.ConfigurableItemStack;
@@ -37,12 +37,11 @@ import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
 import static alexiil.mc.lib.attributes.Simulation.ACTION;
-import static alexiil.mc.lib.attributes.Simulation.SIMULATE;
 
 // TODO: refactor
 public class MachineBlockEntity extends AbstractMachineBlockEntity
         implements Tickable, ExtendedScreenHandlerFactory, MachineInventory, AttributeProviderBlockEntity {
-    protected static final FluidKey STEAM_KEY = MIFluids.FLUID_STEAM.key;
+    protected static final FluidKey STEAM_KEY = MIFluids.STEAM.key;
 
     protected List<ConfigurableItemStack> itemStacks;
     protected List<ConfigurableFluidStack> fluidStacks;

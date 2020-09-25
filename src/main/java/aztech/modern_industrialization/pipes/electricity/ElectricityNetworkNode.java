@@ -2,10 +2,10 @@ package aztech.modern_industrialization.pipes.electricity;
 
 import alexiil.mc.lib.attributes.SearchOption;
 import alexiil.mc.lib.attributes.SearchOptions;
-import aztech.modern_industrialization.api.CableTier;
-import aztech.modern_industrialization.api.EnergyAttributes;
-import aztech.modern_industrialization.api.EnergyExtractable;
-import aztech.modern_industrialization.api.EnergyInsertable;
+import aztech.modern_industrialization.api.energy.CableTier;
+import aztech.modern_industrialization.api.energy.EnergyAttributes;
+import aztech.modern_industrialization.api.energy.EnergyExtractable;
+import aztech.modern_industrialization.api.energy.EnergyInsertable;
 import aztech.modern_industrialization.pipes.api.PipeConnectionType;
 import aztech.modern_industrialization.pipes.api.PipeNetworkNode;
 import aztech.modern_industrialization.util.NbtHelper;

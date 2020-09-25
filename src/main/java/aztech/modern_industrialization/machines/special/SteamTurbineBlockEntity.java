@@ -1,13 +1,11 @@
 package aztech.modern_industrialization.machines.special;
 
 import alexiil.mc.lib.attributes.AttributeList;
-import alexiil.mc.lib.attributes.Simulation;
-import aztech.modern_industrialization.api.CableTier;
-import aztech.modern_industrialization.api.EnergyExtractable;
+import aztech.modern_industrialization.api.energy.CableTier;
+import aztech.modern_industrialization.api.energy.EnergyExtractable;
 import aztech.modern_industrialization.inventory.ConfigurableFluidStack;
 import aztech.modern_industrialization.machines.impl.MachineBlockEntity;
 import aztech.modern_industrialization.machines.impl.MachineFactory;
-import aztech.modern_industrialization.machines.recipe.MachineRecipeType;
 
 public final class SteamTurbineBlockEntity extends MachineBlockEntity {
     private final EnergyExtractable extractable;

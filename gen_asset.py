@@ -385,12 +385,14 @@ def genCuttingSaw(ty, tyo):
 
 
 def genPacker(ty, tyo):
-    MIRecipe("packer").input(ty["main"], amount=2).output(
+    MIRecipe("packer").input(tyo["main"], amount=2).output(
         ty["double_ingot"]).save(ty.id, "double_ingot")
     MIRecipe("packer").input(ty["item_pipe"], amount=2).input(
         "minecraft:glass_pane").output(ty["fluid_pipe"], amount=2).save(ty.id, "fluid_pipe")
-    MIRecipe("packer").input(ty["tiny_dust"], amount=9).output(
+    MIRecipe("packer").input(tyo["tiny_dust"], amount=9).output(
         ty["dust"]).save(ty.id, "dust")
+    MIRecipe("packer").input(tyo["nugget"], amount=9).output(
+        ty["ingot"]).save(ty.id, "ingot")
 
 
 def genWiremill(ty, tyo):

@@ -4,7 +4,7 @@
     "duration": 200,
     "item_inputs": [
         {
-            "item": "modern_industrialization:electrum_ingot",
+            "tag": "c:electrum_ingots",
             "amount": 2
         }
     ],

@@ -4,7 +4,7 @@
     "duration": 200,
     "item_inputs": [
         {
-            "item": "modern_industrialization:bronze_tiny_dust",
+            "tag": "c:bronze_tiny_dusts",
             "amount": 9
         }
     ],

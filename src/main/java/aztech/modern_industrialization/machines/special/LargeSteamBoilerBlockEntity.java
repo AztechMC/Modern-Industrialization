@@ -40,7 +40,7 @@ public class LargeSteamBoilerBlockEntity extends MultiblockMachineBlockEntity {
                     if (fuel.getCount() > 0) {
                         Integer fuelTime = FuelRegistryImpl.INSTANCE.get(fuel.getItem());
                         if (fuelTime != null && fuelTime > 0) {
-                            recipeEnergy = fuelTime;
+                            recipeEnergy = fuelTime / 8;
                             usedEnergy = recipeEnergy;
                             fuel.decrement(1);
                         }

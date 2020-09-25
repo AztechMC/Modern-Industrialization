@@ -29,6 +29,7 @@ import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.text.TextColor;
 import net.minecraft.text.TranslatableText;
+import net.minecraft.util.Rarity;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
@@ -38,7 +39,7 @@ import java.util.List;
 public class JetpackItem extends ArmorItem implements Wearable, AttributeProviderItem, TickableArmor, DurabilityBarItem {
     private static int CAPACITY = 1000;
     public JetpackItem(Settings settings) {
-        super(buildMaterial(), EquipmentSlot.CHEST, settings.maxCount(1));
+        super(buildMaterial(), EquipmentSlot.CHEST, settings.maxCount(1).rarity(Rarity.UNCOMMON));
     }
 
     public FluidKey getFluid(ItemStack stack) {

@@ -6,6 +6,7 @@ import aztech.modern_industrialization.inventory.ConfigurableInventoryPacketHand
 import aztech.modern_industrialization.inventory.ConfigurableInventoryPackets;
 import aztech.modern_industrialization.items.armor.ClientKeyHandler;
 import aztech.modern_industrialization.items.armor.HudRenderer;
+import aztech.modern_industrialization.items.armor.JetpackParticleAdder;
 import aztech.modern_industrialization.machines.impl.MachineFactory;
 import aztech.modern_industrialization.machines.impl.MachineModel;
 import aztech.modern_industrialization.machines.impl.MachinePackets;
@@ -52,6 +53,7 @@ public class ModernIndustrializationClient implements ClientModInitializer {
         });
         (new MIPipesClient()).onInitializeClient();
         ClientKeyHandler.setup();
+        ClientTickEvents.START_CLIENT_TICK.register(JetpackParticleAdder::addJetpackParticles);
         ClientTickEvents.END_CLIENT_TICK.register(ClientKeyHandler::onEndTick);
         HudRenderCallback.EVENT.register(HudRenderer::onRenderHud);
 

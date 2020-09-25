@@ -97,7 +97,7 @@ public class TankBlockEntity extends BlockEntity implements FluidTransferable, B
 
     @Override
     public FluidVolume attemptExtraction(FluidFilter filter, FluidAmount maxAmount, Simulation simulation) {
-        if(filter.matches(this.fluid)) {
+        if(!this.fluid.isEmpty() && filter.matches(this.fluid)) {
             int ext = Math.min(amount, maxAmount.asInt(1000, RoundingMode.FLOOR));
             FluidKey key = this.fluid;
             if(simulation.isAction()) {

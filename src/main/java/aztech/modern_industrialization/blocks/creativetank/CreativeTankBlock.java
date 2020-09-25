@@ -3,6 +3,7 @@ package aztech.modern_industrialization.blocks.creativetank;
 import alexiil.mc.lib.attributes.AttributeList;
 import alexiil.mc.lib.attributes.AttributeProvider;
 import aztech.modern_industrialization.ModernIndustrialization;
+import aztech.modern_industrialization.blocks.tank.TankBlockEntity;
 import aztech.modern_industrialization.tools.IWrenchable;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockEntityProvider;

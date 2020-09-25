@@ -183,7 +183,7 @@ public class MachineBlockEntity extends AbstractMachineBlockEntity
         this.recipeEnergy = tag.getInt("recipeEnergy");
         this.recipeMaxEu = tag.getInt("recipeMaxEu");
         this.delayedActiveRecipe = tag.contains("activeRecipe") ? new Identifier(tag.getString("activeRecipe")) : null;
-        if(delayedActiveRecipe == null && recipeType != null) {
+        if(delayedActiveRecipe == null && recipeType != null && usedEnergy > 0) {
             usedEnergy = 0;
             ModernIndustrialization.LOGGER.error("Had to set the usedEnergy of a machine to 0, but that should never happen!");
         }

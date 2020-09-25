@@ -32,7 +32,7 @@ public class CreativeTankBlockEntity extends BlockEntity implements FluidExtract
     private FluidKey fluid = FluidKeys.EMPTY;
 
     public CreativeTankBlockEntity() {
-        super(MITanks.BLOCK_ENTITY_TYPE);
+        super(MITanks.CREATIVE_BLOCK_ENTITY_TYPE);
     }
 
     public boolean isEmpty() {

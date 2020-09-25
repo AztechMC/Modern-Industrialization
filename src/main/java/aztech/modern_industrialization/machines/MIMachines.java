@@ -541,6 +541,12 @@ public class MIMachines {
                 .setupCasing("lv") // TODO: custom electric output
                 .setupOverlays("steam_turbine", true, true, false)
         ;
+        new MachineFactory("diesel_generator", null, (f, t) -> new DieselGeneratorBlockEntity(f, CableTier.MV), null, 0, 0, 1, 0)
+                .setInputLiquidSlotPosition(23, 23, 1, 1).setupElectricityBar(76, 39, false)
+                .setupBackground("default.png")
+                .setupCasing("mv") // TODO: custom electric output
+                .setupOverlays("diesel_generator", false, false, true)
+        ;
 
         registerTransformer(CableTier.LV, CableTier.MV, "lv");
         registerTransformer(CableTier.MV, CableTier.LV, "lv");

@@ -90,17 +90,27 @@ public class JetpackItem extends ArmorItem implements Wearable, AttributeProvide
     public void addAllAttributes(Reference<ItemStack> stack, LimitedConsumer<ItemStack> excess, ItemAttributeList<?> to) {
         to.offer((FluidInsertable) (fluidVolume, simulation) -> {
             FluidKey storedFluid = getFluid(stack.get());
-            if(storedFluid.isEmpty() && FluidFuelRegistry.getBurnTicks(fluidVolume.getFluidKey()) != 0) {
-                int inserted = Math.min(CAPACITY - getAmount(stack.get()), fluidVolume.amount().asInt(1000, RoundingMode.FLOOR));
-                ItemStack copy = stack.get();
-                setFluid(copy, fluidVolume.getFluidKey());
-                setAmount(copy, inserted);
+            if(storedFluid.isEmpty()) {
+                if(FluidFuelRegistry.getBurnTicks(fluidVolume.getFluidKey()) != 0) {
+                    int inserted = Math.min(CAPACITY - getAmount(stack.get()), fluidVolume.amount().asInt(1000, RoundingMode.FLOOR));
+                    ItemStack copy = stack.get().copy();
+                    setFluid(copy, fluidVolume.getFluidKey());
+                    setAmount(copy, inserted);
+                    if (!stack.set(copy, simulation)) {
+                        return fluidVolume;
+                    }
+                    return fluidVolume.getFluidKey().withAmount(fluidVolume.amount().sub(FluidAmount.of(inserted, 1000)));
+                }
+            } else if(storedFluid.equals(fluidVolume.getFluidKey())) {
+                int amount = getAmount(stack.get());
+                int inserted = Math.min(getCapacity() - amount, fluidVolume.amount().asInt(1000, RoundingMode.FLOOR));
+                ItemStack copy = stack.get().copy();
+                setAmount(copy, amount + inserted);
                 if(!stack.set(copy, simulation)) {
                     return fluidVolume;
                 }
                 return fluidVolume.getFluidKey().withAmount(fluidVolume.amount().sub(FluidAmount.of(inserted, 1000)));
             }
-            // TODO: implement partial filling
             return fluidVolume;
         });
     }

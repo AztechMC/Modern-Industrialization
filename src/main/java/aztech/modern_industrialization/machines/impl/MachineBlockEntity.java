@@ -4,6 +4,7 @@ import alexiil.mc.lib.attributes.AttributeList;
 import alexiil.mc.lib.attributes.AttributeProviderBlockEntity;
 import alexiil.mc.lib.attributes.fluid.volume.FluidKey;
 import alexiil.mc.lib.attributes.fluid.volume.FluidKeys;
+import aztech.modern_industrialization.ModernIndustrialization;
 import aztech.modern_industrialization.api.energy.CableTier;
 import aztech.modern_industrialization.MIFluids;
 import aztech.modern_industrialization.api.energy.EnergyExtractable;
@@ -152,6 +153,8 @@ public class MachineBlockEntity extends AbstractMachineBlockEntity
         tag.putInt("recipeMaxEu", this.recipeMaxEu);
         if(activeRecipe != null) {
             tag.putString("activeRecipe", this.activeRecipe.getId().toString());
+        } else if(delayedActiveRecipe != null) {
+            tag.putString("activeRecipe", this.delayedActiveRecipe.toString());
         }
         tag.putInt("efficiencyTicks", this.efficiencyTicks);
         tag.putInt("maxEfficiencyTicks", this.maxEfficiencyTicks);
@@ -180,6 +183,10 @@ public class MachineBlockEntity extends AbstractMachineBlockEntity
         this.recipeEnergy = tag.getInt("recipeEnergy");
         this.recipeMaxEu = tag.getInt("recipeMaxEu");
         this.delayedActiveRecipe = tag.contains("activeRecipe") ? new Identifier(tag.getString("activeRecipe")) : null;
+        if(delayedActiveRecipe == null && recipeType != null) {
+            usedEnergy = 0;
+            ModernIndustrialization.LOGGER.error("Had to set the usedEnergy of a machine to 0, but that should never happen!");
+        }
         this.efficiencyTicks = tag.getInt("efficiencyTicks");
         this.maxEfficiencyTicks = tag.getInt("maxEfficiencyTicks");
         this.storedEu = tag.getLong("storedEu");

@@ -4,7 +4,7 @@
     "duration": 200,
     "item_inputs": [
         {
-            "item": "modern_industrialization:coal_tiny_dust",
+            "tag": "c:coal_tiny_dusts",
             "amount": 9
         }
     ],

@@ -15,7 +15,7 @@ public abstract class FluidEntryStackMixin extends AbstractEntryStack {
     @Shadow
     private Fluid fluid;
 
-    @Inject(method="asFormattedText", at=@At("HEAD"), cancellable = true)
+    @Inject(method="asFormattedText", at=@At("HEAD"), cancellable = true, remap = false)
     public void asFormattedText(CallbackInfoReturnable<Text> ci) {
         try {
             ci.setReturnValue(fluid.getDefaultState().getBlockState().getBlock().getName());

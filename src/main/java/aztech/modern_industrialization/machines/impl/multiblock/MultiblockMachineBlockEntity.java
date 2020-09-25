@@ -188,7 +188,7 @@ public class MultiblockMachineBlockEntity extends MachineBlockEntity {
             if(hatch instanceof EnergyInputHatchBlockEntity) {
                 tier = UNLIMITED;
                 return;
-            } else if(hatch.getFactory().tier == STEEL && factory instanceof SteamMachineFactory) {
+            } else if(hatch.getFactory().tier != BRONZE && factory instanceof SteamMachineFactory) {
                 tier = STEEL;
                 return;
             }

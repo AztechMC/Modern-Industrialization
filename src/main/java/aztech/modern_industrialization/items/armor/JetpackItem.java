@@ -77,6 +77,14 @@ public class JetpackItem extends ArmorItem implements Wearable, AttributeProvide
         stack.getOrCreateTag().putBoolean("activated", activated);
     }
 
+    public boolean showParticles(ItemStack stack) {
+        return stack.getTag() != null && stack.getTag().getBoolean("showParticles");
+    }
+
+    public void setParticles(ItemStack stack, boolean showParticles) {
+        stack.getOrCreateTag().putBoolean("showParticles", showParticles);
+    }
+
     @Override
     public void addAllAttributes(Reference<ItemStack> stack, LimitedConsumer<ItemStack> excess, ItemAttributeList<?> to) {
         to.offer((FluidInsertable) (fluidVolume, simulation) -> {
@@ -142,9 +150,11 @@ public class JetpackItem extends ArmorItem implements Wearable, AttributeProvide
 
     @Override
     public void tickArmor(ItemStack stack, PlayerEntity player) {
+        boolean showParticles = false;
         if(isActivated(stack)) {
             int amount = getAmount(stack);
             if (MIKeyMap.isHoldingUp(player) && amount > 0) {
+                showParticles = true;
                 double maxSpeed = Math.sqrt(FluidFuelRegistry.getBurnTicks(getFluid(stack))) / 5;
                 double acceleration = 0.25;
                 setAmount(stack, amount-1);
@@ -159,6 +169,10 @@ public class JetpackItem extends ArmorItem implements Wearable, AttributeProvide
                     }
                 }
             }
+        }
+
+        if(!player.world.isClient()) {
+            setParticles(stack, showParticles);
         }
     }
 

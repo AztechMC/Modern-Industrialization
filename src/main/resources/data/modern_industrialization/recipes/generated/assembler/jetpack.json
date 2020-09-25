@@ -1,0 +1,33 @@
+{
+    "type": "modern_industrialization:assembler",
+    "eu": 8,
+    "duration": 200,
+    "item_inputs": [
+        {
+            "item": "modern_industrialization:large_pump",
+            "amount": 2
+        },
+        {
+            "item": "modern_industrialization:tank_aluminum",
+            "amount": 1
+        },
+        {
+            "item": "modern_industrialization:large_motor",
+            "amount": 2
+        },
+        {
+            "item": "modern_industrialization:electronic_circuit",
+            "amount": 1
+        },
+        {
+            "item": "modern_industrialization:aluminum_rotor",
+            "amount": 2
+        }
+    ],
+    "item_outputs": [
+        {
+            "item": "modern_industrialization:jetpack",
+            "amount": 1
+        }
+    ]
+}

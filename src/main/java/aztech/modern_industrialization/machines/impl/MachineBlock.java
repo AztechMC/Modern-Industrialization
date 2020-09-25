@@ -2,6 +2,7 @@ package aztech.modern_industrialization.machines.impl;
 
 import alexiil.mc.lib.attributes.AttributeList;
 import alexiil.mc.lib.attributes.AttributeProvider;
+import alexiil.mc.lib.attributes.fluid.FluidAttributes;
 import aztech.modern_industrialization.ModernIndustrialization;
 import aztech.modern_industrialization.machines.impl.multiblock.HatchBlockEntity;
 import aztech.modern_industrialization.machines.impl.multiblock.MultiblockMachineBlockEntity;
@@ -212,6 +213,8 @@ public class MachineBlock extends Block implements BlockEntityProvider, IWrencha
     @Override
     public void addAllAttributes(World world, BlockPos pos, BlockState state, AttributeList<?> to) {
         MachineBlockEntity be = (MachineBlockEntity) world.getBlockEntity(pos);
-        to.offer(be);
+        if((to.attribute == FluidAttributes.INSERTABLE || to.attribute == FluidAttributes.EXTRACTABLE) && be.fluidStacks.size() > 0) {
+            to.offer(be);
+        }
     }
 }

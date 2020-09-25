@@ -1,0 +1,19 @@
+{
+  "type" : "minecraft:crafting_shaped",
+  "pattern" : [
+    "PCP",
+    "GHG",
+    "ccc"
+  ],
+  "key" : {
+  "H" : { "item" : "modern_industrialization:advanced_machine_hull"},
+    "P": { "item" : "modern_industrialization:large_pump"},
+    "G": { "item" : "modern_industrialization:aluminum_gear"},
+    "c" : {"item" : "modern_industrialization:pipe_electricity_electrum"},
+    "C" : {"item" : "modern_industrialization:electronic_circuit"}
+
+},
+  "result": {
+    "item": "modern_industrialization:diesel_generator"
+  }
+}

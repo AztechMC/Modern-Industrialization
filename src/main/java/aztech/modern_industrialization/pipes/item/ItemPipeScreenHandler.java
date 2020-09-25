@@ -108,7 +108,7 @@ public class ItemPipeScreenHandler extends ScreenHandler {
                 ServerSidePacketRegistry.INSTANCE.sendToPlayer(playerInventory.player, PipePackets.SET_ITEM_WHITELIST, buf);
             }
             if(trackedType != pipeInterface.getConnectionType()) {
-                trackedWhitelist = pipeInterface.isWhitelist();
+                trackedType = pipeInterface.getConnectionType();
                 PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
                 buf.writeInt(syncId);
                 buf.writeInt(trackedType);

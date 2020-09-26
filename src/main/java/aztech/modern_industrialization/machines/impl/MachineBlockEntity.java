@@ -339,7 +339,7 @@ public class MachineBlockEntity extends AbstractMachineBlockEntity
 
     protected void autoExtract() {
         if(outputDirection != null) {
-            if(extractItems) autoExtractItems(outputDirection, world.getBlockEntity(pos.offset(outputDirection)));
+            if(extractItems) autoExtractItems(world, pos, outputDirection);
             if(extractFluids) autoExtractFluids(world, pos, outputDirection);
         }
     }

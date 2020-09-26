@@ -58,7 +58,7 @@ public class HatchBlockEntity extends MachineBlockEntity implements ChunkUnloadB
         if(world.isClient) return;
         lateLoad();
         if(extractItems && type == ITEM_OUTPUT) {
-            autoExtractItems(outputDirection, world.getBlockEntity(pos.offset(outputDirection)));
+            autoExtractItems(world, pos, outputDirection);
         }
         if(extractFluids && type == FLUID_OUTPUT) {
             autoExtractFluids(world, pos, outputDirection);

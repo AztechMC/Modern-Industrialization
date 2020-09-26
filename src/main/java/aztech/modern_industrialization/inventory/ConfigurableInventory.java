@@ -11,6 +11,8 @@ import alexiil.mc.lib.attributes.fluid.filter.FluidFilter;
 import alexiil.mc.lib.attributes.fluid.volume.FluidKey;
 import alexiil.mc.lib.attributes.fluid.volume.FluidKeys;
 import alexiil.mc.lib.attributes.fluid.volume.FluidVolume;
+import alexiil.mc.lib.attributes.item.ItemAttributes;
+import alexiil.mc.lib.attributes.item.ItemInsertable;
 import aztech.modern_industrialization.util.ItemStackHelper;
 import aztech.modern_industrialization.util.NbtHelper;
 import net.minecraft.block.entity.BlockEntity;
@@ -120,33 +122,17 @@ public interface ConfigurableInventory extends Inventory, SidedInventory, FluidT
         return getItemStacks().get(slot).pipesExtract;
     }
 
-    default void autoExtractItems(Direction direction, BlockEntity targetEntity) {
-        if(targetEntity instanceof Inventory) {
+    default void autoExtractItems(World world, BlockPos pos, Direction direction) {
+        SearchOption option = SearchOptions.inDirection(direction);
+        if(ItemAttributes.INSERTABLE.getAll(world, pos.offset(direction), option).hasOfferedAny()) {
+            ItemInsertable insertable = ItemAttributes.INSERTABLE.get(world, pos.offset(direction), option);
             for(ConfigurableItemStack stack : getItemStacks()) {
-                if(stack.pipesExtract) {
-                    Inventory inv = (Inventory) targetEntity;
-                    for(int i = 0; i < inv.size() && !stack.stack.isEmpty(); ++i) {
-                        if(targetEntity instanceof SidedInventory) {
-                            if (!((SidedInventory) targetEntity).canInsert(i, stack.stack, direction.getOpposite()))
-                                continue;
-                        }
-                        if(inv.isValid(i, stack.stack)) {
-                            if(inv.getStack(i).isEmpty()) {
-                                inv.setStack(i, stack.stack);
-                                stack.stack = ItemStack.EMPTY;
-                                markDirty();
-                            } else if(ItemStackHelper.areEqualIgnoreCount(stack.stack, inv.getStack(i))) {
-                                int ins = Math.min(Math.min(inv.getMaxCountPerStack(), inv.getStack(i).getMaxCount() - inv.getStack(i).getCount()), stack.stack.getCount());
-                                stack.stack.decrement(ins);
-                                inv.getStack(i).increment(ins);
-                                markDirty();
-                            }
-                        }
-                    }
+                if(stack.pipesExtract && !stack.stack.isEmpty()) {
+                    stack.stack = insertable.insert(stack.stack);
+                    markDirty();
                 }
             }
         }
-        // TODO this is the hook to auto-extract items, must yet be implemented and called!
     }
 
     default void autoExtractFluids(World world, BlockPos pos, Direction direction) {

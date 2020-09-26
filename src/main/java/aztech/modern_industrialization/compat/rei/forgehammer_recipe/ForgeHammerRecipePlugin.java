@@ -2,9 +2,12 @@ package aztech.modern_industrialization.compat.rei.forgehammer_recipe;
 
 import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.ModernIndustrialization;
+import aztech.modern_industrialization.blocks.forgehammer.ForgeHammerScreen;
 import aztech.modern_industrialization.blocks.forgehammer.ForgeHammerScreenHandler;
 import aztech.modern_industrialization.machines.recipe.MachineRecipe;
 import aztech.modern_industrialization.machines.recipe.MachineRecipeType;
+import me.shedaniel.math.Rectangle;
+import me.shedaniel.rei.api.DisplayHelper;
 import me.shedaniel.rei.api.EntryStack;
 import me.shedaniel.rei.api.RecipeHelper;
 import me.shedaniel.rei.api.plugins.REIPluginV0;
@@ -44,5 +47,7 @@ public class ForgeHammerRecipePlugin implements REIPluginV0 {
             recipeHelper.registerWorkingStations(type.getId(), EntryStack.create(ModernIndustrialization.ITEM_FORGE_HAMMER));
             recipeHelper.removeAutoCraftButton(type.getId());
         }
+
+        recipeHelper.registerScreenClickArea(new Rectangle(71, 48, 53, 15), ForgeHammerScreen.class, RECIPE_TYPES[0].getId(), RECIPE_TYPES[1].getId());
     }
 }

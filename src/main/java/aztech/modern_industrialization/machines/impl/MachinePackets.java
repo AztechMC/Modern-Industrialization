@@ -1,9 +1,14 @@
 package aztech.modern_industrialization.machines.impl;
 
 import aztech.modern_industrialization.MIIdentifier;
+import aztech.modern_industrialization.machines.recipe.MachineRecipe;
 import net.fabricmc.fabric.api.network.PacketConsumer;
+import net.minecraft.recipe.Recipe;
 import net.minecraft.screen.ScreenHandler;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.Identifier;
+
+import java.util.Optional;
 
 public class MachinePackets {
     public static class S2C {
@@ -34,6 +39,23 @@ public class MachinePackets {
                         ((MachineScreenHandler) handler).inventory.setItemExtract(isExtract);
                     } else {
                         ((MachineScreenHandler) handler).inventory.setFluidExtract(isExtract);
+                    }
+                }
+            });
+        };
+        public static final Identifier LOCK_RECIPE = new MIIdentifier("lock_recipe");
+        public static final PacketConsumer ON_LOCK_RECIPE = (context, data) -> {
+            int syncId = data.readInt();
+            Identifier recipeId = new Identifier(data.readString());
+            context.getTaskQueue().execute(() -> {
+                ScreenHandler handler = context.getPlayer().currentScreenHandler;
+                if(handler.syncId == syncId && handler instanceof MachineScreenHandler) {
+                    Recipe recipe = context.getPlayer().world.getRecipeManager().get(recipeId).orElse(null);
+                    if(recipe instanceof MachineRecipe) {
+                        MachineScreenHandler machineHandler = (MachineScreenHandler) handler;
+                        // this cast should always be safe because we are on the logical server
+                        MachineBlockEntity be = (MachineBlockEntity) machineHandler.inventory;
+                        be.lockRecipe((MachineRecipe) recipe, context.getPlayer().inventory);
                     }
                 }
             });

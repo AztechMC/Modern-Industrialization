@@ -30,8 +30,8 @@ public class MultiblockMachineBlockEntity extends MachineBlockEntity {
     protected int shapeCheckTicks = 0;
     protected MachineModel hatchCasing;
 
-    public MultiblockMachineBlockEntity(MachineFactory factory, MachineRecipeType recipeType, MultiblockShape shape) {
-        super(factory, recipeType);
+    public MultiblockMachineBlockEntity(MachineFactory factory, MultiblockShape shape) {
+        super(factory);
         itemStacks.clear();
         fluidStacks.clear();
         this.shape = shape;

@@ -45,11 +45,13 @@ public class MachineRecipePlugin implements REIPluginV0 {
     public void registerOthers(RecipeHelper recipeHelper) {
         for(Map.Entry<MachineRecipeType, MIMachines.RecipeInfo> entry : MIMachines.RECIPE_TYPES.entrySet()) {
             recipeHelper.registerWorkingStations(entry.getKey().getId(), entry.getValue().factories.stream().map(f -> EntryStack.create(f.item)).toArray(EntryStack[]::new));
-            recipeHelper.removeAutoCraftButton(entry.getKey().getId());
+            //recipeHelper.removeAutoCraftButton(entry.getKey().getId());
         }
 
         for(MachineFactory factory : MIMachines.WORKSTATIONS_FURNACES) {
             recipeHelper.registerWorkingStations(SMELTING, EntryStack.create(factory.item));
         }
+
+        recipeHelper.registerAutoCraftingHandler(new OutputLockTransferHandler());
     }
 }

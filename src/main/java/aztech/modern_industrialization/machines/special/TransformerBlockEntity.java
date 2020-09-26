@@ -13,7 +13,7 @@ public class TransformerBlockEntity extends MachineBlockEntity {
     private final long maxStoredEu;
 
     public TransformerBlockEntity(MachineFactory factory, CableTier inputTier, CableTier outputTier) {
-        super(factory, null);
+        super(factory);
 
         insertable = buildInsertable(inputTier);
         extractable = buildExtractable(outputTier);

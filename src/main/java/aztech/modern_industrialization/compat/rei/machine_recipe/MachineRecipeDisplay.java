@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class MachineRecipeDisplay implements RecipeDisplay {
-    private final MachineRecipe recipe;
+    final MachineRecipe recipe;
     private final Identifier category;
     private static final DecimalFormat PROBABILITY_FORMAT = new DecimalFormat("#.#");
 

@@ -20,8 +20,8 @@ import net.minecraft.util.math.Direction;
  */
 public class SteamBoilerBlockEntity extends MachineBlockEntity {
     private static final int BURN_TIME_MULTIPLIER = 10;
-    public SteamBoilerBlockEntity(MachineFactory factory, MachineRecipeType recipeType) {
-        super(factory, recipeType);
+    public SteamBoilerBlockEntity(MachineFactory factory) {
+        super(factory);
 
         getFluidStacks().set(0, ConfigurableFluidStack.lockedInputSlot(factory.getInputBucketCapacity() * 1000, FluidKeys.WATER));
         getFluidStacks().set(1, ConfigurableFluidStack.lockedOutputSlot(factory.getOutputBucketCapacity() * 1000, STEAM_KEY));

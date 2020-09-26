@@ -16,7 +16,7 @@ public class DieselGeneratorBlockEntity extends MachineBlockEntity {
     private int extraStoredEu = 0;
 
     public DieselGeneratorBlockEntity(MachineFactory factory, CableTier tier) {
-        super(factory, null);
+        super(factory);
 
         this.tier = tier;
         extractable = buildExtractable(tier);

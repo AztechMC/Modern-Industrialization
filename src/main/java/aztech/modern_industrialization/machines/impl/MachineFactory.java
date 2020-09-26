@@ -19,6 +19,7 @@ public class MachineFactory {
     public BlockItem item;
     public BlockEntityType blockEntityType;
     public final MachineTier tier;
+    public final MachineRecipeType recipeType;
 
     public MachineModel machineModel;
     private String casing; // example: "bricked_bronze"
@@ -92,7 +93,7 @@ public class MachineFactory {
             map.put(machineID, this);
         }
 
-        this.blockEntityConstructor = () -> blockEntityFactory.create(this, type);
+        this.blockEntityConstructor = () -> blockEntityFactory.create(this);
         if(type != null) {
             if(type instanceof FurnaceRecipeProxy) {
                 MIMachines.WORKSTATIONS_FURNACES.add(this);
@@ -100,6 +101,7 @@ public class MachineFactory {
                 MIMachines.RECIPE_TYPES.get(type).factories.add(this);
             }
         }
+        this.recipeType = type;
 
         this.inputSlots = inputSlots;
         this.outputSlots = outputSlots;

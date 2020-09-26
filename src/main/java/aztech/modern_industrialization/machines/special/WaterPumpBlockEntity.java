@@ -18,8 +18,8 @@ import static aztech.modern_industrialization.machines.impl.MachineTier.STEEL;
  * for the cooldown between two pumping attempts.
  */
 public class WaterPumpBlockEntity extends MachineBlockEntity {
-    public WaterPumpBlockEntity(MachineFactory factory, MachineRecipeType recipeType) {
-        super(factory, recipeType);
+    public WaterPumpBlockEntity(MachineFactory factory) {
+        super(factory);
 
         fluidStacks.set(fluidStacks.size()-1, ConfigurableFluidStack.lockedOutputSlot(factory.getOutputBucketCapacity() * 1000, FluidKeys.WATER));
         usedEnergy = 0;

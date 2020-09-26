@@ -186,6 +186,18 @@ public class ConfigurableItemStack {
         pipesExtract = tag.getBoolean("pipesExtract");
     }
 
+    /**
+     * Try locking the slot to the given item, return true if it succeeded
+      */
+    public boolean playerLock(Item item) {
+        if((stack.isEmpty() || stack.getItem() == item) && (lockedItem == null || lockedItem == Items.AIR)) {
+            lockedItem = item;
+            playerLocked = true;
+            return true;
+        }
+        return false;
+    }
+
     public class ConfigurableItemSlot extends Slot {
         public ConfigurableItemSlot(Inventory inventory, int id, int x, int y) {
             super(inventory, id, x, y);

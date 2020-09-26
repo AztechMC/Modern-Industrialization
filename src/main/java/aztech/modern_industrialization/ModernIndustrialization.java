@@ -248,6 +248,7 @@ public class ModernIndustrialization implements ModInitializer {
 
     private void setupPackets() {
         ServerSidePacketRegistry.INSTANCE.register(MachinePackets.C2S.SET_AUTO_EXTRACT, MachinePackets.C2S.ON_SET_AUTO_EXTRACT);
+        ServerSidePacketRegistry.INSTANCE.register(MachinePackets.C2S.LOCK_RECIPE, MachinePackets.C2S.ON_LOCK_RECIPE);
         ServerSidePacketRegistry.INSTANCE.register(ForgeHammerPacket.SET_HAMMER, ForgeHammerPacket.ON_SET_HAMMER);
         ServerSidePacketRegistry.INSTANCE.register(ArmorPackets.UPDATE_KEYS, ArmorPackets.ON_UPDATE_KEYS);
         ServerSidePacketRegistry.INSTANCE.register(ArmorPackets.ACTIVATE_JETPACK, ArmorPackets.ON_ACTIVATE_JETPACK);

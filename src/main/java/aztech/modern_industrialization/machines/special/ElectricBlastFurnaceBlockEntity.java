@@ -21,8 +21,8 @@ public class ElectricBlastFurnaceBlockEntity extends MultiblockMachineBlockEntit
     private static final int[] COIL_EU;
     private int coilId = -1;
 
-    public ElectricBlastFurnaceBlockEntity(MachineFactory factory, MachineRecipeType type) {
-        super(factory, type, null);
+    public ElectricBlastFurnaceBlockEntity(MachineFactory factory) {
+        super(factory, null);
     }
 
     @Override

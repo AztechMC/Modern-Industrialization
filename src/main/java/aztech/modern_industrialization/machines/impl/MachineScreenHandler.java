@@ -69,7 +69,7 @@ public class MachineScreenHandler extends ConfigurableScreenHandler {
             }
 
             addSlot(new LockingModeSlot(inventory, 152, 7));
-        } catch (IndexOutOfBoundsException ex) {
+        } catch (IndexOutOfBoundsException ignored) {
 
         }
     }

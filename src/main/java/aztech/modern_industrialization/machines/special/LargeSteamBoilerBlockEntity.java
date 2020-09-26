@@ -13,7 +13,7 @@ import net.minecraft.util.math.Direction;
 
 public class LargeSteamBoilerBlockEntity extends MultiblockMachineBlockEntity {
     public LargeSteamBoilerBlockEntity(MachineFactory factory, MultiblockShape shape) {
-        super(factory, null, shape);
+        super(factory, shape);
 
         maxEfficiencyTicks = 10000;
         efficiencyTicks = 0;

@@ -31,6 +31,7 @@ import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Tickable;
 import net.minecraft.util.math.Direction;
+import net.minecraft.util.registry.Registry;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -53,7 +54,6 @@ public class MachineBlockEntity extends AbstractMachineBlockEntity
     }
 
     protected MachineFactory factory;
-    protected MachineRecipeType recipeType;
     protected MachineRecipe activeRecipe = null;
     protected Identifier delayedActiveRecipe;
 
@@ -66,10 +66,9 @@ public class MachineBlockEntity extends AbstractMachineBlockEntity
 
     private PropertyDelegate propertyDelegate;
 
-    public MachineBlockEntity(MachineFactory factory, MachineRecipeType recipeType) {
+    public MachineBlockEntity(MachineFactory factory) {
         super(factory.blockEntityType, Direction.NORTH);
         this.factory = factory;
-        this.recipeType = recipeType;
         itemStacks = new ArrayList<>();
         for(int i = 0; i < factory.getInputSlots(); ++i) {
             itemStacks.add(ConfigurableItemStack.standardInputSlot());
@@ -184,7 +183,7 @@ public class MachineBlockEntity extends AbstractMachineBlockEntity
         this.recipeEnergy = tag.getInt("recipeEnergy");
         this.recipeMaxEu = tag.getInt("recipeMaxEu");
         this.delayedActiveRecipe = tag.contains("activeRecipe") ? new Identifier(tag.getString("activeRecipe")) : null;
-        if(delayedActiveRecipe == null && recipeType != null && usedEnergy > 0) {
+        if(delayedActiveRecipe == null && factory.recipeType != null && usedEnergy > 0) {
             usedEnergy = 0;
             ModernIndustrialization.LOGGER.error("Had to set the usedEnergy of a machine to 0, but that should never happen!");
         }
@@ -206,7 +205,7 @@ public class MachineBlockEntity extends AbstractMachineBlockEntity
 
     protected void loadDelayedActiveRecipe() {
         if(delayedActiveRecipe != null) {
-            activeRecipe = recipeType.getRecipe((ServerWorld) world, delayedActiveRecipe);
+            activeRecipe = factory.recipeType.getRecipe((ServerWorld) world, delayedActiveRecipe);
             delayedActiveRecipe = null;
             if(activeRecipe == null) { // If a recipe got removed, we need to reset the efficiency and the used energy to allow the machine to resume processing.
                 efficiencyTicks = 0;
@@ -219,7 +218,7 @@ public class MachineBlockEntity extends AbstractMachineBlockEntity
         if(efficiencyTicks > 0) {
             return Collections.singletonList(activeRecipe);
         } else {
-            return recipeType.getRecipes((ServerWorld) world);
+            return factory.recipeType.getRecipes((ServerWorld) world);
         }
     }
 
@@ -595,5 +594,85 @@ public class MachineBlockEntity extends AbstractMachineBlockEntity
                 return tier == cableTier;
             }
         };
+    }
+
+    void lockRecipe(MachineRecipe recipe, PlayerInventory inventory) {
+        // ITEM INPUTS
+        outer: for(MachineRecipe.ItemInput input : recipe.itemInputs) {
+            for(ConfigurableItemStack stack : getItemInputStacks()) {
+                if(input.matches(stack.getLockedItem())) continue outer;
+            }
+            Item targetItem = null;
+            if(input.tag == null) {
+                targetItem = input.item;
+            } else {
+                // Find the first match in the player inventory (useful for logs for example)
+                for(int i = 0; i < inventory.size(); i++) {
+                    ItemStack playerStack = inventory.getStack(i);
+                    if(!playerStack.isEmpty() && input.matches(playerStack.getItem())) {
+                        targetItem = playerStack.getItem();
+                        break;
+                    }
+                }
+                if(targetItem == null) {
+                    // Find the first match that is an item from MI (useful for ingots for example)
+                    for(Item item : input.tag.values()) {
+                        Identifier id = Registry.ITEM.getId(item);
+                        if(id != null && id.getNamespace().equals(ModernIndustrialization.MOD_ID)) {
+                            targetItem = item;
+                            break;
+                        }
+                    }
+                }
+            }
+
+            if(targetItem != null) {
+                for(ConfigurableItemStack stack : getItemInputStacks()) {
+                    if(stack.playerLock(targetItem)) {
+                        markDirty();
+                        break;
+                    }
+                }
+            }
+        }
+        // ITEM OUTPUTS
+        outer: for(MachineRecipe.ItemOutput output : recipe.itemOutputs) {
+            for(ConfigurableItemStack stack : getItemOutputStacks()) {
+                if(stack.getLockedItem() == output.item) continue outer;
+            }
+            for(ConfigurableItemStack stack : getItemOutputStacks()) {
+                if(stack.playerLock(output.item)) {
+                    markDirty();
+                    break;
+                }
+            }
+        }
+
+        // FLUID INPUTS
+        outer: for(MachineRecipe.FluidInput input : recipe.fluidInputs) {
+            FluidKey fluid = FluidKeys.get(input.fluid);
+            for(ConfigurableFluidStack stack : getFluidInputStacks()) {
+                if(stack.getLockedFluid() == fluid) continue outer;
+            }
+            for(ConfigurableFluidStack stack : getFluidInputStacks()) {
+                if(stack.playerLock(fluid)) {
+                    markDirty();
+                    break;
+                }
+            }
+        }
+        // FLUID OUTPUTS
+        outer: for(MachineRecipe.FluidOutput output : recipe.fluidOutputs) {
+            FluidKey fluid = FluidKeys.get(output.fluid);
+            for(ConfigurableFluidStack stack : getFluidOutputStacks()) {
+                if(stack.getLockedFluid() == fluid) continue outer;
+            }
+            for(ConfigurableFluidStack stack : getFluidOutputStacks()) {
+                if(stack.playerLock(fluid)) {
+                    markDirty();
+                    break;
+                }
+            }
+        }
     }
 }

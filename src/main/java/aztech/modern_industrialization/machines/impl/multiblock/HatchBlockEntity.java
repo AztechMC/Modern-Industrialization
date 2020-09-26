@@ -18,7 +18,7 @@ public class HatchBlockEntity extends MachineBlockEntity implements ChunkUnloadB
     public final HatchType type;
 
     public HatchBlockEntity(MachineFactory factory, HatchType type) {
-        super(factory, null);
+        super(factory);
         this.type = type;
     }
 

@@ -366,20 +366,20 @@ public class MIMachines {
         int i = 0;
         for(String s : new String[] {"bronze", "steel", "advanced", "turbo"}) {
             MachineTier tier = s.equals("bronze") ? BRONZE : null;
-            new MachineFactory(s + "_item_input_hatch", tier, (f, t) -> new HatchBlockEntity(f, ITEM_INPUT), null, ITEM_HATCH_ROWS[i] * ITEM_HATCH_COLUMNS[i], 0, 0, 0)
+            new MachineFactory(s + "_item_input_hatch", tier, f -> new HatchBlockEntity(f, ITEM_INPUT), null, ITEM_HATCH_ROWS[i] * ITEM_HATCH_COLUMNS[i], 0, 0, 0)
                     .setInputSlotPosition(ITEM_HATCH_X[i], ITEM_HATCH_Y[i], ITEM_HATCH_ROWS[i], ITEM_HATCH_COLUMNS[i])
                     .setupBackground("default.png")
                     .setupCasing(casing[i]);
-            new MachineFactory(s + "_item_output_hatch", tier, (f, t) -> new HatchBlockEntity(f, ITEM_OUTPUT), null, 0, ITEM_HATCH_ROWS[i] * ITEM_HATCH_COLUMNS[i], 0, 0)
+            new MachineFactory(s + "_item_output_hatch", tier, f -> new HatchBlockEntity(f, ITEM_OUTPUT), null, 0, ITEM_HATCH_ROWS[i] * ITEM_HATCH_COLUMNS[i], 0, 0)
                     .setOutputSlotPosition(ITEM_HATCH_X[i], ITEM_HATCH_Y[i], ITEM_HATCH_ROWS[i], ITEM_HATCH_COLUMNS[i])
                     .setupBackground("default.png")
                     .setupCasing(casing[i]);
-            new MachineFactory(s + "_fluid_input_hatch", tier, (f, t) -> new HatchBlockEntity(f, FLUID_INPUT), null, 0, 0, 1, 0)
+            new MachineFactory(s + "_fluid_input_hatch", tier, f -> new HatchBlockEntity(f, FLUID_INPUT), null, 0, 0, 1, 0)
                     .setInputBucketCapacity(FLUID_HATCH_BUCKETS[i])
                     .setInputLiquidSlotPosition(FLUID_HATCH_X, FLUID_HATCH_Y, 1, 1)
                     .setupBackground("default.png")
                     .setupCasing(casing[i]);
-            new MachineFactory(s + "_fluid_output_hatch", tier, (f, t) -> new HatchBlockEntity(f, FLUID_OUTPUT), null, 0, 0, 0, 1)
+            new MachineFactory(s + "_fluid_output_hatch", tier, f -> new HatchBlockEntity(f, FLUID_OUTPUT), null, 0, 0, 0, 1)
                     .setOutputBucketCapacity(FLUID_HATCH_BUCKETS[i])
                     .setLiquidOutputSlotPosition(FLUID_HATCH_X, FLUID_HATCH_Y, 1, 1)
                     .setupBackground("default.png")
@@ -388,7 +388,7 @@ public class MIMachines {
         }
 
         for(CableTier tier : CableTier.values()) {
-            new MachineFactory(tier.name + "_energy_input_hatch", null, (f, t) -> new EnergyInputHatchBlockEntity(f, tier), null, 0, 0, 0, 0)
+            new MachineFactory(tier.name + "_energy_input_hatch", null, f -> new EnergyInputHatchBlockEntity(f, tier), null, 0, 0, 0, 0)
                     .setupElectricityBar(76, 39, false)
                     .setupBackground("default.png")
                     .setupCasing(tier.name);
@@ -396,7 +396,7 @@ public class MIMachines {
     }
 
     private static void registerTransformer(CableTier in, CableTier out, String casing) {
-        new MachineFactory(in.toString() + "_" + out.toString() + "_transformer", null, (f, t) -> new TransformerBlockEntity(f, in, out), null, 0, 0, 0, 0)
+        new MachineFactory(in.toString() + "_" + out.toString() + "_transformer", null, f -> new TransformerBlockEntity(f, in, out), null, 0, 0, 0, 0)
                 .setupElectricityBar(76, 39, false)
                 .setupBackground("default.png")
                 .setupCasing(casing); // TODO: better output texture
@@ -474,33 +474,33 @@ public class MIMachines {
         registerMachineTiersElectricOnly("electrolyzer", RECIPE_ELECTROLYZER, 1, 4, 1, 4, MIMachines::setupElectrolyzer);
         registerMachineTiersElectricOnly("polarizer", RECIPE_POLARIZER, 1, 1, 0, 0, MIMachines::setupPolarizer);
 
-        new SteamMachineFactory("coke_oven", null, (f, t) -> new MultiblockMachineBlockEntity(f, t, COKE_OVEN_SHAPE), RECIPE_COKE_OVEN, 1, 1, 0, 0)
+        new SteamMachineFactory("coke_oven", null, f -> new MultiblockMachineBlockEntity(f, COKE_OVEN_SHAPE), RECIPE_COKE_OVEN, 1, 1, 0, 0)
                 .setInputSlotPosition(56, 35, 1, 1).setOutputSlotPosition(102, 35, 1, 1)
                 .setupProgressBar(76, 35, 22, 15, true).setupBackground("steam_furnace.png")
                 .setupOverlays("coke_oven", true, false, false)
                 .setupCasing("bricks")
         ;
-        new SteamMachineFactory("steam_blast_furnace", null, (f, t) -> new MultiblockMachineBlockEntity(f, t, BLAST_FURNACE_SHAPE), RECIPE_BLAST_FURNACE, 2, 1, 1, 1)
+        new SteamMachineFactory("steam_blast_furnace", null, f -> new MultiblockMachineBlockEntity(f, BLAST_FURNACE_SHAPE), RECIPE_BLAST_FURNACE, 2, 1, 1, 1)
                 .setInputSlotPosition(56, 35, 1, 2).setOutputSlotPosition(102, 35, 1, 1)
                 .setInputLiquidSlotPosition(36, 35, 1, 1).setLiquidOutputSlotPosition(122, 35, 1, 1)
                 .setupProgressBar(76, 35, 22, 15, true).setupBackground("steam_furnace.png")
                 .setupOverlays("steam_blast_furnace", true, false, false)
                 .setupCasing("firebricks")
         ;
-        new SteamMachineFactory("quarry", null, (f, t) -> new MultiblockMachineBlockEntity(f, t, STEAM_QUARRY_SHAPE), RECIPE_QUARRY, 1, 16, 0, 0)
+        new SteamMachineFactory("quarry", null, f -> new MultiblockMachineBlockEntity(f, STEAM_QUARRY_SHAPE), RECIPE_QUARRY, 1, 16, 0, 0)
                 .setInputSlotPosition(56, 35, 1, 1).setOutputSlotPosition(102, 35, 4, 4)
                 .setupProgressBar(76, 35, 22, 15, true).setupBackground("steam_furnace.png")
                 .setupOverlays("quarry", true, false, false)
                 .setupCasing("steel")
         ;
-        new MachineFactory("electric_quarry", UNLIMITED, (f, t) -> new MultiblockMachineBlockEntity(f, t, ELECTRIC_QUARRY_SHAPE), RECIPE_QUARRY, 1, 16, 0, 0)
+        new MachineFactory("electric_quarry", UNLIMITED, f -> new MultiblockMachineBlockEntity(f, ELECTRIC_QUARRY_SHAPE), RECIPE_QUARRY, 1, 16, 0, 0)
                 .setInputSlotPosition(56, 35, 1, 1).setOutputSlotPosition(102, 35, 4, 4)
                 .setupProgressBar(76, 35, 22, 15, true).setupBackground("steam_furnace.png")
                 .setupEfficiencyBar(0, 166, 38, 62, 100, 2)
                 .setupOverlays("quarry", true, false, false)
                 .setupCasing("steel")
         ;
-        new MachineFactory("large_steam_boiler", null, (f, t) -> new LargeSteamBoilerBlockEntity(f, LARGE_BOILER_SHAPE), null, 1, 0, 1, 1)
+        new MachineFactory("large_steam_boiler", null, f -> new LargeSteamBoilerBlockEntity(f, LARGE_BOILER_SHAPE), null, 1, 0, 1, 1)
                 .setupProgressBar(176, 0, 15, 51, 14, 14, false, true)
                 .setupEfficiencyBar(0, 166, 50, 62, 100, 2).hideEfficiencyTooltip()
                 .setupBackground("steam_boiler.png")
@@ -516,7 +516,7 @@ public class MIMachines {
                 .setupCasing("heatproof")
         ;
 
-        new MachineFactory("oil_drilling_rig", UNLIMITED, (f, t) -> new MultiblockMachineBlockEntity(f, t, OIL_DRILLING_RIG_SHAPE), RECIPE_OIL_DRILLING_RIG, 1, 0, 0, 1)
+        new MachineFactory("oil_drilling_rig", UNLIMITED, f -> new MultiblockMachineBlockEntity(f, OIL_DRILLING_RIG_SHAPE), RECIPE_OIL_DRILLING_RIG, 1, 0, 0, 1)
                 .setInputSlotPosition(56, 35, 1, 1).setLiquidOutputSlotPosition(102, 35, 1, 1)
                 .setupProgressBar(76, 35, 22, 15, true).setupBackground("steam_furnace.png")
                 .setupEfficiencyBar(0, 166, 38, 62, 100, 2)
@@ -524,7 +524,7 @@ public class MIMachines {
                 .setupCasing("steel")
         ;
 
-        new MachineFactory("vacuum_freezer", UNLIMITED, (f, t) -> new MultiblockMachineBlockEntity(f, t, VACUUM_FREEZER_SHAPE), RECIPE_VACUUM_FREEZER, 2, 1, 1, 1)
+        new MachineFactory("vacuum_freezer", UNLIMITED, f -> new MultiblockMachineBlockEntity(f, VACUUM_FREEZER_SHAPE), RECIPE_VACUUM_FREEZER, 2, 1, 1, 1)
                 .setInputSlotPosition(56, 35, 1, 2).setOutputSlotPosition(102, 35, 1, 1)
                 .setInputLiquidSlotPosition(36, 35, 1, 1).setLiquidOutputSlotPosition(122, 35, 1, 1)
                 .setupProgressBar(76, 35, 22, 15, true).setupBackground("steam_furnace.png")
@@ -535,13 +535,13 @@ public class MIMachines {
 
         registerHatches();
 
-        new MachineFactory("lv_steam_turbine", LV, (f, t) -> new SteamTurbineBlockEntity(f, CableTier.LV), null, 0, 0, 1, 0)
+        new MachineFactory("lv_steam_turbine", LV, f -> new SteamTurbineBlockEntity(f, CableTier.LV), null, 0, 0, 1, 0)
                 .setInputLiquidSlotPosition(23, 23, 1, 1).setupElectricityBar(76, 39)
                 .setupBackground("default.png")
                 .setupCasing("lv") // TODO: custom electric output
                 .setupOverlays("steam_turbine", true, true, false)
         ;
-        new MachineFactory("diesel_generator", null, (f, t) -> new DieselGeneratorBlockEntity(f, CableTier.MV), null, 0, 0, 1, 0)
+        new MachineFactory("diesel_generator", null, f -> new DieselGeneratorBlockEntity(f, CableTier.MV), null, 0, 0, 1, 0)
                 .setInputLiquidSlotPosition(23, 23, 1, 1).setupElectricityBar(76, 39, false)
                 .setupBackground("default.png")
                 .setupCasing("mv") // TODO: custom electric output

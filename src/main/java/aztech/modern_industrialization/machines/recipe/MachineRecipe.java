@@ -92,6 +92,10 @@ public class MachineRecipe implements Recipe<MachineBlockEntity> {
         public boolean matches(ItemStack otherStack) {
             return item == null ? tag.contains(otherStack.getItem()) : otherStack.getItem() == item;
         }
+
+        public boolean matches(Item otherItem) {
+            return item == null ? tag.contains(otherItem) : otherItem == item;
+        }
     }
 
     public static class FluidInput {

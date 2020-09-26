@@ -11,7 +11,7 @@ public final class SteamTurbineBlockEntity extends MachineBlockEntity {
     private final EnergyExtractable extractable;
     private final CableTier tier;
     public SteamTurbineBlockEntity(MachineFactory factory, CableTier tier) {
-        super(factory, null);
+        super(factory);
 
         fluidStacks.set(0, ConfigurableFluidStack.lockedInputSlot(factory.getInputBucketCapacity() * 1000, STEAM_KEY));
         this.tier = tier;

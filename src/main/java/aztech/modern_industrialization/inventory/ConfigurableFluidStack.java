@@ -225,6 +225,20 @@ public class ConfigurableFluidStack {
         }
     }
 
+    public FluidKey getLockedFluid() {
+        return lockedFluid;
+    }
+
+    public boolean playerLock(FluidKey fluid) {
+        if(lockedFluid == null && (this.fluid.isEmpty() || this.fluid == fluid)) {
+            lockedFluid = fluid;
+            this.fluid = fluid;
+            playerLocked = true;
+            return true;
+        }
+        return false;
+    }
+
     public class ConfigurableFluidSlot extends Slot {
         public ConfigurableFluidSlot(Inventory inventory, int x, int y) {
             super(inventory, -1, x, y);

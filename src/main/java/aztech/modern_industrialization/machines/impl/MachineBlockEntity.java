@@ -14,6 +14,7 @@ import aztech.modern_industrialization.inventory.ConfigurableInventory;
 import aztech.modern_industrialization.inventory.ConfigurableItemStack;
 import aztech.modern_industrialization.machines.recipe.MachineRecipe;
 import aztech.modern_industrialization.machines.recipe.MachineRecipeType;
+import it.unimi.dsi.fastutil.ints.IntArrayList;
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
@@ -361,9 +362,29 @@ public class MachineBlockEntity extends AbstractMachineBlockEntity
         return fluidStacks.subList(factory.getLiquidInputSlots(), fluidStacks.size());
     }
 
-    protected boolean takeItemInputs(MachineRecipe recipe, boolean simulate) {
+    /**
+     * This allows not having to copy the input stacks when trying to match a recipe. Just keeping track of the counts
+     * of the various stacks is enough, and that's exactly what this shared array does. We need the ThreadLocal because
+     * machines in different worlds may be ticked at different times.
+     */
+    private static ThreadLocal<IntArrayList> cachedItemCounts = new ThreadLocal<>();
+    private IntArrayList getCachedItemCounts() {
+        // Note: Not using the default constructor, because empty fastutils lists don't resize properly.
+        if(cachedItemCounts.get() == null) cachedItemCounts.set(new IntArrayList(1));
+        return cachedItemCounts.get();
+    }
+    private void prepareItemInputs() {
         List<ConfigurableItemStack> baseList = getItemInputStacks();
-        List<ConfigurableItemStack> stacks = simulate ? ConfigurableItemStack.copyList(baseList) : baseList;
+        IntArrayList itemCounts = getCachedItemCounts();
+        itemCounts.size(baseList.size());
+        for(int i = 0; i < baseList.size(); i++) {
+            itemCounts.set(i, baseList.get(i).getStack().getCount());
+        }
+    }
+    private boolean takeItemInputs(MachineRecipe recipe, boolean simulate) {
+        List<ConfigurableItemStack> baseList = getItemInputStacks();
+        prepareItemInputs(); // TODO: optimize more by calling this less often?
+        IntArrayList itemCounts = getCachedItemCounts();
 
         boolean ok = true;
         for(MachineRecipe.ItemInput input : recipe.itemInputs) {
@@ -373,15 +394,19 @@ public class MachineBlockEntity extends AbstractMachineBlockEntity
                 }
             }
             int remainingAmount = input.amount;
-            for(ConfigurableItemStack stack : stacks) {
-                if(input.matches(stack.getStack())) {
-                    ItemStack taken = stack.splitStack(remainingAmount);
-                    remainingAmount -= taken.getCount();
+            for(int i = 0; i < baseList.size(); i++) {
+                ConfigurableItemStack stack = baseList.get(i);
+                if(itemCounts.getInt(i) > 0 && input.matches(stack.getStack())) {
+                    int taken = Math.min(itemCounts.getInt(i), remainingAmount);
+                    if(!simulate) stack.getStack().decrement(taken);
+                    itemCounts.set(i, itemCounts.getInt(i) - taken);
+                    remainingAmount -= taken;
                     if(remainingAmount == 0) break;
                 }
             }
             if(remainingAmount > 0) ok = false;
         }
+
         return ok;
     }
 

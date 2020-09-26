@@ -100,6 +100,7 @@ public class MachineBlockEntity extends AbstractMachineBlockEntity
                 else if(index == 5) return (int)storedEu;
                 else if(index == 6) return activeRecipe != null ? activeRecipe.eu : 0;
                 else if(index == 7) return (int)getMaxStoredEu();
+                else if(index == 8) return recipeMaxEu;
                 else return -1;
             }
 
@@ -116,7 +117,7 @@ public class MachineBlockEntity extends AbstractMachineBlockEntity
 
             @Override
             public int size() {
-                return 8;
+                return 9;
             }
         };
 
@@ -239,19 +240,19 @@ public class MachineBlockEntity extends AbstractMachineBlockEntity
         }
     }
 
-    public static double getEfficiencyOverclock(int efficiencyTicks) {
+    private static double getEfficiencyOverclock(int efficiencyTicks) {
         return Math.pow(2.0, efficiencyTicks/64.0);
     }
 
-    public static int getRecipeMaxEu(MachineTier tier, int recipeEu, int efficiencyTicks) {
+    private static int getRecipeMaxEu(MachineTier tier, int recipeEu, int totalEu, int efficiencyTicks) {
         int baseEu = Math.max(tier.getBaseEu(), recipeEu);
-        return Math.min((int) Math.floor(baseEu*getEfficiencyOverclock(efficiencyTicks)), tier.getMaxEu());
+        return Math.min(totalEu, Math.min((int) Math.floor(baseEu*getEfficiencyOverclock(efficiencyTicks)), tier.getMaxEu()));
     }
 
-    private int getRecipeMaxEfficiencyTicks(int eu) {
+    private int getRecipeMaxEfficiencyTicks(int eu, int totalEu) {
         if(efficiencyTicks != 0) throw new RuntimeException("Illegal state");
         for(int ticks = 0; true; ++ticks) {
-            if(getRecipeMaxEu(getTier(), eu, ticks) == getTier().getMaxEu()) return ticks;
+            if(getRecipeMaxEu(getTier(), eu, totalEu, ticks) == Math.min(getTier().getMaxEu(), totalEu)) return ticks;
         }
     }
 
@@ -264,12 +265,12 @@ public class MachineBlockEntity extends AbstractMachineBlockEntity
             if(banRecipe(recipe)) continue;
             if (tryStartRecipe(recipe)) {
                 if(activeRecipe != recipe) {
-                    maxEfficiencyTicks = getRecipeMaxEfficiencyTicks(recipe.eu);
+                    maxEfficiencyTicks = getRecipeMaxEfficiencyTicks(recipe.eu, recipe.eu * recipe.duration);
                 }
                 activeRecipe = recipe;
                 usedEnergy = 0;
                 recipeEnergy = recipe.eu * recipe.duration;
-                recipeMaxEu = getRecipeMaxEu(getTier(), recipe.eu, efficiencyTicks);
+                recipeMaxEu = getRecipeMaxEu(getTier(), recipe.eu, recipeEnergy, efficiencyTicks);
                 return true;
             }
         }

@@ -330,7 +330,7 @@ public class MachineScreen extends HandledScreen<MachineScreenHandler> {
                     tooltip.add(new TranslatableText("text.modern_industrialization.efficiency_ticks", handler.getEfficiencyTicks(), handler.getMaxEfficiencyTicks()));
                 }
                 if(handler.getRecipeEu() != 0) {
-                    tooltip.add(new TranslatableText("text.modern_industrialization.efficiency_factor", factorFormat.format((double) MachineBlockEntity.getRecipeMaxEu(factory.tier, handler.getRecipeEu(), handler.getEfficiencyTicks()) / handler.getRecipeEu())));
+                    tooltip.add(new TranslatableText("text.modern_industrialization.efficiency_factor", factorFormat.format((double) handler.getRecipeMaxEu() / handler.getRecipeEu())));
                 } else {
                     tooltip.add(new TranslatableText("text.modern_industrialization.efficiency_default_message"));
                 }

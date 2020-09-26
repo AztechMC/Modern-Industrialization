@@ -46,7 +46,7 @@ public class MachinePackets {
         public static final Identifier LOCK_RECIPE = new MIIdentifier("lock_recipe");
         public static final PacketConsumer ON_LOCK_RECIPE = (context, data) -> {
             int syncId = data.readInt();
-            Identifier recipeId = new Identifier(data.readString());
+            Identifier recipeId = data.readIdentifier();
             context.getTaskQueue().execute(() -> {
                 ScreenHandler handler = context.getPlayer().currentScreenHandler;
                 if(handler.syncId == syncId && handler instanceof MachineScreenHandler) {

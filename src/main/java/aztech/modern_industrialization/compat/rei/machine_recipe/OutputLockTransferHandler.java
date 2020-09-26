@@ -27,7 +27,7 @@ public class OutputLockTransferHandler implements AutoTransferHandler {
         if(context.isActuallyCrafting()) {
             PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
             buf.writeInt(handler.syncId);
-            buf.writeString(display.recipe.getId().toString());
+            buf.writeIdentifier(display.recipe.getId());
             ClientSidePacketRegistry.INSTANCE.sendToServer(MachinePackets.C2S.LOCK_RECIPE, buf);
         }
         return Result.createSuccessful().blocksFurtherHandling(true);

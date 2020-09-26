@@ -6,6 +6,7 @@
   "mixins": [
     "DefaultBiomeFeaturesMixin",
     "IngredientMixin",
+    "RecipeManagerAccessor",
     "ServerPlayNetworkHandlerAccessor"
   ],
   "injectors": {

@@ -1,6 +1,6 @@
 package aztech.modern_industrialization.machines.recipe;
 
-import aztech.modern_industrialization.ModernIndustrialization;
+import aztech.modern_industrialization.mixin.RecipeManagerAccessor;
 import com.google.gson.*;
 import net.fabricmc.fabric.api.tag.TagRegistry;
 import net.minecraft.fluid.Fluid;
@@ -29,8 +29,12 @@ public class MachineRecipeType implements RecipeType, RecipeSerializer {
         this.id = id;
     }
 
+    /**
+     * Never modify or store the result!
+     */
+    @SuppressWarnings("unchecked")
     public Collection<MachineRecipe> getRecipes(ServerWorld world) {
-        return world.getRecipeManager().listAllOfType(this);
+        return (Collection<MachineRecipe>)(Collection)((RecipeManagerAccessor) world.getRecipeManager()).modern_industrialization_getAllOfType(this).values();
     }
     public MachineRecipe getRecipe(ServerWorld world, Identifier id) {
         return getRecipes(world).stream().filter(r -> r.getId().equals(id)).findFirst().orElse(null);

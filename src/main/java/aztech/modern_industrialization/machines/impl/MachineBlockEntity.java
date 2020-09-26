@@ -228,9 +228,9 @@ public class MachineBlockEntity extends AbstractMachineBlockEntity
     /**
      * Try to start a recipe. Return true if success, false otherwise. If false, nothing was changed.
      */
-    protected boolean tryStartRecipe(MachineRecipe recipe) {
-        if (takeItemInputs(recipe, true) && takeFluidInputs(recipe, true) && putItemOutputs(recipe, true, false) && putFluidOutputs(recipe, true, false)) {
-            takeItemInputs(recipe, false);
+    private boolean tryStartRecipe(MachineRecipe recipe, IntArrayList cachedItemCounts) {
+        if (takeItemInputs(recipe, true, cachedItemCounts) && takeFluidInputs(recipe, true) && putItemOutputs(recipe, true, false) && putFluidOutputs(recipe, true, false)) {
+            takeItemInputs(recipe, false, cachedItemCounts);
             takeFluidInputs(recipe, false);
             putItemOutputs(recipe, true, true);
             putFluidOutputs(recipe, true, true);
@@ -261,9 +261,14 @@ public class MachineBlockEntity extends AbstractMachineBlockEntity
     }
 
     protected boolean updateActiveRecipe() {
+        // We need to setup the item counts before calling takeItemInputs
+        IntArrayList cachedItemCounts = getCachedItemCounts();
+        prepareItemInputs(cachedItemCounts);
+
+        // Only then can we run the iteration over the recipes
         for (MachineRecipe recipe : getRecipes()) {
             if(banRecipe(recipe)) continue;
-            if (tryStartRecipe(recipe)) {
+            if (tryStartRecipe(recipe, cachedItemCounts)) {
                 if(activeRecipe != recipe) {
                     maxEfficiencyTicks = getRecipeMaxEfficiencyTicks(recipe.eu, recipe.eu * recipe.duration);
                 }
@@ -373,19 +378,21 @@ public class MachineBlockEntity extends AbstractMachineBlockEntity
         if(cachedItemCounts.get() == null) cachedItemCounts.set(new IntArrayList(1));
         return cachedItemCounts.get();
     }
-    private void prepareItemInputs() {
+    private void prepareItemInputs(IntArrayList itemCounts) {
         List<ConfigurableItemStack> baseList = getItemInputStacks();
-        IntArrayList itemCounts = getCachedItemCounts();
         itemCounts.size(baseList.size());
         for(int i = 0; i < baseList.size(); i++) {
             itemCounts.set(i, baseList.get(i).getStack().getCount());
         }
     }
-    private boolean takeItemInputs(MachineRecipe recipe, boolean simulate) {
-        List<ConfigurableItemStack> baseList = getItemInputStacks();
-        prepareItemInputs(); // TODO: optimize more by calling this less often?
-        IntArrayList itemCounts = getCachedItemCounts();
 
+    /**
+     * cachedItemCounts must be correct when this function is called, and are guaranteed to be correct after this call
+     */
+    private boolean takeItemInputs(MachineRecipe recipe, boolean simulate, IntArrayList itemCounts) {
+        List<ConfigurableItemStack> baseList = getItemInputStacks();
+
+        boolean changedItems = false;
         boolean ok = true;
         for(MachineRecipe.ItemInput input : recipe.itemInputs) {
             if(!simulate && input.probability < 1) { // if we are not simulating, there is a chance we don't need to take this output
@@ -400,11 +407,16 @@ public class MachineBlockEntity extends AbstractMachineBlockEntity
                     int taken = Math.min(itemCounts.getInt(i), remainingAmount);
                     if(!simulate) stack.getStack().decrement(taken);
                     itemCounts.set(i, itemCounts.getInt(i) - taken);
+                    changedItems = true;
                     remainingAmount -= taken;
                     if(remainingAmount == 0) break;
                 }
             }
             if(remainingAmount > 0) ok = false;
+        }
+
+        if(changedItems) {
+            prepareItemInputs(itemCounts);
         }
 
         return ok;

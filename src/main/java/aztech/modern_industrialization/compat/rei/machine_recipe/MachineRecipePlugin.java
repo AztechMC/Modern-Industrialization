@@ -69,6 +69,11 @@ public class MachineRecipePlugin implements REIPluginV0 {
 
         @Override
         public boolean contains(int x, int y) {
+            return contains((double) x, y);
+        }
+
+        @Override
+        public boolean contains(double x, double y) {
             Screen sc = MinecraftClient.getInstance().currentScreen;
             return sc instanceof MachineScreen && ((MachineScreen) sc).getScreenHandler().getMachineFactory().recipeType == this.recipeType && super.contains(x, y);
         }

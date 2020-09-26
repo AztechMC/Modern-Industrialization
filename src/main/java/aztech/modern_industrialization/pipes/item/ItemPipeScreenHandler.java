@@ -112,7 +112,7 @@ public class ItemPipeScreenHandler extends ScreenHandler {
                 PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
                 buf.writeInt(syncId);
                 buf.writeInt(trackedType);
-                ServerSidePacketRegistry.INSTANCE.sendToPlayer(playerInventory.player, PipePackets.SET_ITEM_WHITELIST, buf);
+                ServerSidePacketRegistry.INSTANCE.sendToPlayer(playerInventory.player, PipePackets.SET_ITEM_CONNECTION_TYPE, buf);
             }
             if(trackedPriority != pipeInterface.getPriority()) {
                 trackedPriority = pipeInterface.getPriority();

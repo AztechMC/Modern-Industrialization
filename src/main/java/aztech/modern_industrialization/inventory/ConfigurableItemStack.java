@@ -156,6 +156,10 @@ public class ConfigurableItemStack {
         }
     }
 
+    public boolean canPlayerLock() {
+        return playerLockable;
+    }
+
     public CompoundTag writeToTag(CompoundTag tag) {
         stack.toTag(tag);
         if(lockedItem != null) {
@@ -196,6 +200,10 @@ public class ConfigurableItemStack {
             return true;
         }
         return false;
+    }
+
+    public boolean canPipesExtract() {
+        return pipesExtract;
     }
 
     public class ConfigurableItemSlot extends Slot {

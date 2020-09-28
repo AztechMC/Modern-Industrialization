@@ -68,8 +68,6 @@ public class MachineScreenHandler extends ConfigurableScreenHandler {
                     this.addSlot(stack.new ConfigurableFluidSlot(inventory, factory.getSlotPosX(i), factory.getSlotPosY(i)));
                 }
             }
-
-            addSlot(new LockingModeSlot(inventory, 152, 7));
         } catch (IndexOutOfBoundsException ignored) {
 
         }

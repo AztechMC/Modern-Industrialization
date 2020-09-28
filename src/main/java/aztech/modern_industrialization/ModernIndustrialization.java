@@ -7,6 +7,8 @@ import aztech.modern_industrialization.blocks.forgehammer.ForgeHammerBlock;
 import aztech.modern_industrialization.blocks.forgehammer.ForgeHammerPacket;
 import aztech.modern_industrialization.blocks.forgehammer.ForgeHammerScreenHandler;
 import aztech.modern_industrialization.blocks.tank.MITanks;
+import aztech.modern_industrialization.inventory.ConfigurableInventoryPacketHandlers;
+import aztech.modern_industrialization.inventory.ConfigurableInventoryPackets;
 import aztech.modern_industrialization.items.armor.ArmorPackets;
 import aztech.modern_industrialization.items.armor.JetpackItem;
 import aztech.modern_industrialization.items.armor.MIKeyMap;
@@ -247,6 +249,7 @@ public class ModernIndustrialization implements ModInitializer {
     }
 
     private void setupPackets() {
+        ServerSidePacketRegistry.INSTANCE.register(ConfigurableInventoryPackets.SET_LOCKING_MODE, ConfigurableInventoryPacketHandlers.SET_LOCKING_MODE);
         ServerSidePacketRegistry.INSTANCE.register(MachinePackets.C2S.SET_AUTO_EXTRACT, MachinePackets.C2S.ON_SET_AUTO_EXTRACT);
         ServerSidePacketRegistry.INSTANCE.register(MachinePackets.C2S.LOCK_RECIPE, MachinePackets.C2S.ON_LOCK_RECIPE);
         ServerSidePacketRegistry.INSTANCE.register(ForgeHammerPacket.SET_HAMMER, ForgeHammerPacket.ON_SET_HAMMER);

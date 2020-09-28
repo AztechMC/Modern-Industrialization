@@ -80,14 +80,7 @@ public abstract class ConfigurableScreenHandler extends ScreenHandler {
     public ItemStack onSlotClick(int i, int j, SlotActionType actionType, PlayerEntity playerEntity) {
         if(i >= 0) {
             Slot slot = this.slots.get(i);
-            if (slot instanceof LockingModeSlot) {
-                if(actionType != SlotActionType.PICKUP) {
-                    return ItemStack.EMPTY;
-                }
-                lockingMode = !lockingMode;
-                // sync locking state TODO: handle data re-sent
-                return new ItemStack(Items.DIAMOND, lockingMode ? 1 : 0);
-            } else if (slot instanceof ConfigurableFluidStack.ConfigurableFluidSlot) {
+            if (slot instanceof ConfigurableFluidStack.ConfigurableFluidSlot) {
                 if(actionType != SlotActionType.PICKUP) {
                     return ItemStack.EMPTY;
                 }
@@ -269,36 +262,5 @@ public abstract class ConfigurableScreenHandler extends ScreenHandler {
         }
 
         return bl;
-    }
-
-    public static class LockingModeSlot extends Slot {
-        public LockingModeSlot(Inventory inventory, int x, int y) {
-            super(inventory, -1, x, y);
-        }
-
-        @Override
-        public boolean canTakeItems(PlayerEntity playerEntity) {
-            return false;
-        }
-
-        @Override
-        public boolean canInsert(ItemStack stack) {
-            return false;
-        }
-
-        @Override
-        public ItemStack getStack() {
-            return ItemStack.EMPTY;
-        }
-
-        @Override
-        public void setStack(ItemStack stack) {
-
-        }
-
-        @Override
-        public boolean doDrawHoveringEffect() {
-            return true;
-        }
     }
 }

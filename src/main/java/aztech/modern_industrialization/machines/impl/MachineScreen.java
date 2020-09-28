@@ -7,12 +7,15 @@ import alexiil.mc.lib.attributes.fluid.volume.FluidKey;
 import alexiil.mc.lib.attributes.fluid.volume.FluidVolume;
 import aztech.modern_industrialization.ModernIndustrialization;
 import aztech.modern_industrialization.inventory.ConfigurableFluidStack;
+import aztech.modern_industrialization.inventory.ConfigurableInventoryPackets;
 import aztech.modern_industrialization.inventory.ConfigurableItemStack;
 import aztech.modern_industrialization.inventory.ConfigurableScreenHandler;
 import com.mojang.blaze3d.systems.RenderSystem;
 import io.netty.buffer.Unpooled;
 import net.fabricmc.fabric.api.network.ClientSidePacketRegistry;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
+import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.Item;
@@ -20,123 +23,135 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.screen.slot.Slot;
-import net.minecraft.text.Style;
-import net.minecraft.text.Text;
-import net.minecraft.text.TextColor;
-import net.minecraft.text.TranslatableText;
+import net.minecraft.text.*;
 import net.minecraft.util.Identifier;
-import org.lwjgl.system.CallbackI;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Supplier;
 
 public class MachineScreen extends HandledScreen<MachineScreenHandler> {
 
     private MachineScreenHandler handler;
 
-    private interface Button {
-        int getX();
-
-        int getY();
-
-        int getSizeX();
-
-        int getSizeY();
-
-        void clicked();
-
-        void render(MatrixStack matrices, int i, int j);
-    }
-
-    private Button[] buttons;
-
     private static final Identifier SLOT_ATLAS = new Identifier(ModernIndustrialization.MOD_ID, "textures/gui/container/slot_atlas.png");
+    private static final Style SECONDARY_INFO = Style.EMPTY.withColor(TextColor.fromRgb(0xa9a9a9)).withItalic(true);
 
     public MachineScreen(MachineScreenHandler handler, PlayerInventory inventory, Text title) {
         super(handler, inventory, title);
         this.handler = handler;
-
-        this.buttons = handler.inventory.hasOutput() ? new Button[]{
-                new Button() {
-                    @Override
-                    public int getX() {
-                        return 112;
-                    }
-
-                    @Override
-                    public int getY() {
-                        return 6;
-                    }
-
-                    @Override
-                    public int getSizeX() {
-                        return 18;
-                    }
-
-                    @Override
-                    public int getSizeY() {
-                        return 18;
-                    }
-
-                    @Override
-                    public void clicked() {
-                        boolean newItemExtract = !handler.inventory.getItemExtract();
-                        handler.inventory.setItemExtract(newItemExtract);
-                        PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
-                        buf.writeInt(handler.syncId);
-                        buf.writeBoolean(true);
-                        buf.writeBoolean(newItemExtract);
-                        ClientSidePacketRegistry.INSTANCE.sendToServer(MachinePackets.C2S.SET_AUTO_EXTRACT, buf);
-                    }
-
-                    @Override
-                    public void render(MatrixStack matrices, int i, int j) {
-                        drawTexture(matrices, i + getX(), j + getY(), handler.inventory.getItemExtract() ? 54 : 36, 18, 18, 18);
-                    }
-                },
-                new Button() {
-                    @Override
-                    public int getX() {
-                        return 132;
-                    }
-
-                    @Override
-                    public int getY() {
-                        return 6;
-                    }
-
-                    @Override
-                    public int getSizeX() {
-                        return 18;
-                    }
-
-                    @Override
-                    public int getSizeY() {
-                        return 18;
-                    }
-
-                    @Override
-                    public void clicked() {
-                        boolean newFluidExtract = !handler.inventory.getFluidExtract();
-                        handler.inventory.setFluidExtract(newFluidExtract);
-                        PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
-                        buf.writeInt(handler.syncId);
-                        buf.writeBoolean(false);
-                        buf.writeBoolean(newFluidExtract);
-                        ClientSidePacketRegistry.INSTANCE.sendToServer(MachinePackets.C2S.SET_AUTO_EXTRACT, buf);
-                    }
-
-                    @Override
-                    public void render(MatrixStack matrices, int i, int j) {
-                        drawTexture(matrices, i + getX(), j + getY(), handler.inventory.getFluidExtract() ? 18 : 0, 18, 18, 18);
-                    }
-                }
-        } : new Button[0];
         this.backgroundHeight = handler.getMachineFactory().getBackgroundHeight();
         this.backgroundWidth = handler.getMachineFactory().getBackgroundWidth();
         this.playerInventoryTitleY = this.backgroundHeight - 94;
+    }
+
+    private int nextButtonX = 152;
+    private int buttonX() {
+        nextButtonX -= 22;
+        return nextButtonX + 22 + x;
+    }
+
+    private boolean hasLock() {
+        for(ConfigurableItemStack stack : handler.inventory.getItemStacks()) {
+            if(stack.canPlayerLock()) {
+                return true;
+            }
+        }
+        for(ConfigurableFluidStack stack : handler.inventory.getFluidStacks()) {
+            if(stack.canPlayerLock()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean hasItemOutput() {
+        for(ConfigurableItemStack stack : handler.inventory.getItemStacks()) {
+            if(stack.canPipesExtract()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean hasFluidOutput() {
+        for(ConfigurableFluidStack stack : handler.inventory.getFluidStacks()) {
+            if(stack.canPipesExtract()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    protected void init() {
+        super.init();
+        if(hasLock()) {
+            addButton(new MachineButton(buttonX(), 4 + y, 40, new LiteralText("slot locking"), b -> {
+                boolean newLockingMode = !handler.lockingMode;
+                handler.lockingMode = newLockingMode;
+                PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
+                buf.writeInt(handler.syncId);
+                buf.writeBoolean(newLockingMode);
+                ClientSidePacketRegistry.INSTANCE.sendToServer(ConfigurableInventoryPackets.SET_LOCKING_MODE, buf);
+            }, (button, matrices, mouseX, mouseY) -> {
+                List<Text> lines = new ArrayList<>();
+                if(handler.lockingMode) {
+                    lines.add(new TranslatableText("text.modern_industrialization.locking_mode_on"));
+                    lines.add(new TranslatableText("text.modern_industrialization.click_to_disable").setStyle(SECONDARY_INFO));
+                } else {
+                    lines.add(new TranslatableText("text.modern_industrialization.locking_mode_off"));
+                    lines.add(new TranslatableText("text.modern_industrialization.click_to_enable").setStyle(SECONDARY_INFO));
+                }
+                renderTooltip(matrices, lines, mouseX, mouseY);
+            }, () -> handler.lockingMode));
+        }
+        if(handler.inventory.hasOutput()) {
+            if(hasFluidOutput()) {
+                addButton(new MachineButton(buttonX(), 4 + y, 0, new LiteralText("fluid auto-extract"), b -> {
+                    boolean newFluidExtract = !handler.inventory.getFluidExtract();
+                    handler.inventory.setFluidExtract(newFluidExtract);
+                    PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
+                    buf.writeInt(handler.syncId);
+                    buf.writeBoolean(false);
+                    buf.writeBoolean(newFluidExtract);
+                    ClientSidePacketRegistry.INSTANCE.sendToServer(MachinePackets.C2S.SET_AUTO_EXTRACT, buf);
+                }, (button, matrices, mouseX, mouseY) -> {
+                    List<Text> lines = new ArrayList<>();
+                    if(handler.inventory.getFluidExtract()) {
+                        lines.add(new TranslatableText("text.modern_industrialization.fluid_auto_extract_on"));
+                        lines.add(new TranslatableText("text.modern_industrialization.click_to_disable").setStyle(SECONDARY_INFO));
+                    } else {
+                        lines.add(new TranslatableText("text.modern_industrialization.fluid_auto_extract_off"));
+                        lines.add(new TranslatableText("text.modern_industrialization.click_to_enable").setStyle(SECONDARY_INFO));
+                    }
+                    renderTooltip(matrices, lines, mouseX, mouseY);
+                }, () -> handler.inventory.getFluidExtract()));
+            }
+            if(hasItemOutput()) {
+                addButton(new MachineButton(buttonX(), 4 + y, 20, new LiteralText("item auto-extract"), b -> {
+                    boolean newItemExtract = !handler.inventory.getItemExtract();
+                    handler.inventory.setItemExtract(newItemExtract);
+                    PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
+                    buf.writeInt(handler.syncId);
+                    buf.writeBoolean(true);
+                    buf.writeBoolean(newItemExtract);
+                    ClientSidePacketRegistry.INSTANCE.sendToServer(MachinePackets.C2S.SET_AUTO_EXTRACT, buf);
+                }, (button, matrices, mouseX, mouseY) -> {
+                    List<Text> lines = new ArrayList<>();
+                    if(handler.inventory.getItemExtract()) {
+                        lines.add(new TranslatableText("text.modern_industrialization.item_auto_extract_on"));
+                        lines.add(new TranslatableText("text.modern_industrialization.click_to_disable").setStyle(SECONDARY_INFO));
+                    } else {
+                        lines.add(new TranslatableText("text.modern_industrialization.item_auto_extract_off"));
+                        lines.add(new TranslatableText("text.modern_industrialization.click_to_enable").setStyle(SECONDARY_INFO));
+                    }
+                    renderTooltip(matrices, lines, mouseX, mouseY);
+                }, () -> handler.inventory.getItemExtract()));
+            }
+        }
     }
 
     @Override
@@ -216,15 +231,10 @@ public class MachineScreen extends HandledScreen<MachineScreenHandler> {
             } else if (slot instanceof ConfigurableItemStack.ConfigurableItemSlot) {
                 ConfigurableItemStack.ConfigurableItemSlot itemSlot = (ConfigurableItemStack.ConfigurableItemSlot) slot;
                 u = itemSlot.getConfStack().isPlayerLocked() ? 72 : itemSlot.getConfStack().isMachineLocked() ? 108 : 0;
-            } else if (slot instanceof ConfigurableScreenHandler.LockingModeSlot) {
-                u = this.handler.lockingMode ? 54 : 36;
             } else {
                 continue;
             }
             this.drawTexture(matrices, px, py, u, 0, 18, 18);
-        }
-        for (Button button : buttons) {
-            button.render(matrices, i, j);
         }
     }
 
@@ -341,16 +351,29 @@ public class MachineScreen extends HandledScreen<MachineScreenHandler> {
         super.drawMouseoverTooltip(matrices, mouseX, mouseY);
     }
 
-    @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int mouseButton) {
-        if (mouseButton == 0) {
-            for (Button button : buttons) {
-                if (isPointWithinBounds(button.getX(), button.getY(), button.getSizeX(), button.getSizeY(), mouseX, mouseY)) {
-                    button.clicked();
-                    return true;
-                }
+    private static class MachineButton extends ButtonWidget {
+        private final int u;
+        private final Supplier<Boolean> isPressed;
+        private MachineButton(int x, int y, int u, Text message, PressAction onPress, TooltipSupplier tooltipSupplier, Supplier<Boolean> isPressed) {
+            super(x, y, 20, 20, message, onPress, tooltipSupplier);
+            this.u = u;
+            this.isPressed = isPressed;
+        }
+
+        @Override
+        public void renderButton(MatrixStack matrices, int mouseX, int mouseY, float delta) {
+            MinecraftClient minecraftClient = MinecraftClient.getInstance();
+            minecraftClient.getTextureManager().bindTexture(SLOT_ATLAS);
+
+            int v = 18;
+            if(isPressed.get()) {
+                v += 20;
+            }
+            drawTexture(matrices, x, y, u, v, 20, 20);
+            if(isHovered()) {
+                drawTexture(matrices, x, y, 60, 18, 20, 20);
+                this.renderToolTip(matrices, mouseX, mouseY);
             }
         }
-        return super.mouseClicked(mouseX, mouseY, mouseButton);
     }
 }

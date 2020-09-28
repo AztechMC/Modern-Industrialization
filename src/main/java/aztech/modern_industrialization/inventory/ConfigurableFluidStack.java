@@ -239,6 +239,14 @@ public class ConfigurableFluidStack {
         return false;
     }
 
+    public boolean canPlayerLock() {
+        return playerLockable;
+    }
+
+    public boolean canPipesExtract() {
+        return pipesExtract;
+    }
+
     public class ConfigurableFluidSlot extends Slot {
         public ConfigurableFluidSlot(Inventory inventory, int x, int y) {
             super(inventory, -1, x, y);

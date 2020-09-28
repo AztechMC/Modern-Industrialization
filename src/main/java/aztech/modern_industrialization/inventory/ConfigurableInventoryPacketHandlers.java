@@ -33,4 +33,16 @@ public class ConfigurableInventoryPacketHandlers {
             }
         });
     };
+    // sync id, new locking mode
+    public static final PacketConsumer SET_LOCKING_MODE = (context, data) -> {
+        int syncId = data.readInt();
+        boolean lockingMode = data.readBoolean();
+        context.getTaskQueue().execute(() -> {
+            ScreenHandler handler = context.getPlayer().currentScreenHandler;
+            if(handler.syncId == syncId) {
+                ConfigurableScreenHandler confHandler = (ConfigurableScreenHandler) handler;
+                confHandler.lockingMode = lockingMode;
+            }
+        });
+    };
 }

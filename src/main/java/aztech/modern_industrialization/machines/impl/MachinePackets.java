@@ -25,6 +25,18 @@ public class MachinePackets {
                 }
             });
         };
+        public static final Identifier SYNC_PROPERTY = new MIIdentifier("sync_property");
+        public static final PacketConsumer ON_SYNC_PROPERTY = (context, data) -> {
+            int syncId = data.readInt();
+            int index = data.readInt();
+            int value = data.readInt();
+            context.getTaskQueue().execute(() -> {
+                ScreenHandler handler = context.getPlayer().currentScreenHandler;
+                if(handler.syncId == syncId) {
+                    ((MachineScreenHandler) handler).propertyDelegate.set(index, value);
+                }
+            });
+        };
     }
     public static class C2S {
         public static final Identifier SET_AUTO_EXTRACT = new MIIdentifier("set_auto_extract");

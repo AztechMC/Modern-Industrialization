@@ -18,7 +18,8 @@ import static aztech.modern_industrialization.machines.impl.MachineSlotType.*;
 public class MachineScreenHandler extends ConfigurableScreenHandler {
 
     public MachineInventory inventory;
-    private PropertyDelegate propertyDelegate;
+    final PropertyDelegate propertyDelegate;
+    private final int[] trackedProperties;
     private MachineFactory factory;
     private boolean[] trackedExtract = new boolean[2];
 
@@ -36,7 +37,7 @@ public class MachineScreenHandler extends ConfigurableScreenHandler {
         inventory.onOpen(playerInventory.player);
         this.factory = factory;
         this.propertyDelegate = propertyDelegate;
-        this.addProperties(propertyDelegate);
+        this.trackedProperties = new int[propertyDelegate.size()];
         updateTrackedExtract();
 
 
@@ -112,6 +113,16 @@ public class MachineScreenHandler extends ConfigurableScreenHandler {
                 buf.writeBoolean(inventory.getItemExtract());
                 buf.writeBoolean(inventory.getFluidExtract());
                 ServerSidePacketRegistry.INSTANCE.sendToPlayer(playerInventory.player, MachinePackets.S2C.UPDATE_AUTO_EXTRACT, buf);
+            }
+            for(int i = 0; i < trackedProperties.length; ++i) {
+                if(trackedProperties[i] != propertyDelegate.get(i)) {
+                    trackedProperties[i] = propertyDelegate.get(i);
+                    PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
+                    buf.writeInt(syncId);
+                    buf.writeInt(i);
+                    buf.writeInt(trackedProperties[i]);
+                    ServerSidePacketRegistry.INSTANCE.sendToPlayer(playerInventory.player, MachinePackets.S2C.SYNC_PROPERTY, buf);
+                }
             }
             super.sendContentUpdates();
         }

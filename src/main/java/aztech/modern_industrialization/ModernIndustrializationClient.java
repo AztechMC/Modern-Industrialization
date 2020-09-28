@@ -69,6 +69,7 @@ public class ModernIndustrializationClient implements ClientModInitializer {
         ClientSidePacketRegistry.INSTANCE.register(ConfigurableInventoryPackets.UPDATE_ITEM_SLOT, ConfigurableInventoryPacketHandlers.UPDATE_ITEM_SLOT);
         ClientSidePacketRegistry.INSTANCE.register(ConfigurableInventoryPackets.UPDATE_FLUID_SLOT, ConfigurableInventoryPacketHandlers.UPDATE_FLUID_SLOT);
         ClientSidePacketRegistry.INSTANCE.register(MachinePackets.S2C.UPDATE_AUTO_EXTRACT, MachinePackets.S2C.ON_UPDATE_AUTO_EXTRACT);
+        ClientSidePacketRegistry.INSTANCE.register(MachinePackets.S2C.SYNC_PROPERTY, MachinePackets.S2C.ON_SYNC_PROPERTY);
     }
 
     private void setupMachines() {

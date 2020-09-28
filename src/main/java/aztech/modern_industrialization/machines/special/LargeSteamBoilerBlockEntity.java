@@ -1,6 +1,8 @@
 package aztech.modern_industrialization.machines.special;
 
+import alexiil.mc.lib.attributes.fluid.volume.FluidKey;
 import alexiil.mc.lib.attributes.fluid.volume.FluidKeys;
+import aztech.modern_industrialization.api.FluidFuelRegistry;
 import aztech.modern_industrialization.inventory.ConfigurableFluidStack;
 import aztech.modern_industrialization.inventory.ConfigurableItemStack;
 import aztech.modern_industrialization.machines.MIMachines;
@@ -12,6 +14,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.Direction;
 
 public class LargeSteamBoilerBlockEntity extends MultiblockMachineBlockEntity {
+    private static final int EU_PRODUCTION = 256;
+
     public LargeSteamBoilerBlockEntity(MachineFactory factory, MultiblockShape shape) {
         super(factory, shape);
 
@@ -34,6 +38,7 @@ public class LargeSteamBoilerBlockEntity extends MultiblockMachineBlockEntity {
 
         this.isActive = false;
         if(ready) {
+            // Item fuels
             if (usedEnergy == 0) {
                 for (ConfigurableItemStack stack : getItemInputStacks()) {
                     ItemStack fuel = stack.getStack();
@@ -43,6 +48,23 @@ public class LargeSteamBoilerBlockEntity extends MultiblockMachineBlockEntity {
                             recipeEnergy = fuelTime / 8;
                             usedEnergy = recipeEnergy;
                             fuel.decrement(1);
+                            break;
+                        }
+                    }
+                }
+            }
+            // Fluid fuels
+            if(usedEnergy == 0) {
+                for(ConfigurableFluidStack stack : getFluidInputStacks()) {
+                    FluidKey fluid = stack.getFluid();
+                    int burnTicks = FluidFuelRegistry.getBurnTicks(fluid);
+                    if(burnTicks > 0) {
+                        int mbEu = FluidFuelRegistry.getBurnTicks(fluid) * 32 * 2;
+                        int necessaryAmount = Math.max(1, EU_PRODUCTION / mbEu);
+                        if(stack.getAmount() >= necessaryAmount) {
+                            recipeEnergy = mbEu * necessaryAmount / EU_PRODUCTION;
+                            usedEnergy = recipeEnergy;
+                            stack.decrement(necessaryAmount);
                             break;
                         }
                     }
@@ -63,7 +85,7 @@ public class LargeSteamBoilerBlockEntity extends MultiblockMachineBlockEntity {
 
         if(ready) {
             if (efficiencyTicks > 1000) {
-                int steamProduction = 256 * efficiencyTicks / maxEfficiencyTicks;
+                int steamProduction = EU_PRODUCTION * efficiencyTicks / maxEfficiencyTicks;
                 boolean waterAvailable = false;
                 // Check if there is some water available
                 for (ConfigurableFluidStack fluidStack : getFluidInputStacks()) {

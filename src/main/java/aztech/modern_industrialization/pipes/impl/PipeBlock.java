@@ -4,6 +4,7 @@ import aztech.modern_industrialization.ModernIndustrialization;
 import aztech.modern_industrialization.pipes.MIPipes;
 import aztech.modern_industrialization.pipes.api.PipeNetworkType;
 import aztech.modern_industrialization.tools.IWrenchable;
+import aztech.modern_industrialization.util.MobSpawning;
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
 import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
 import net.minecraft.block.*;
@@ -39,7 +40,7 @@ import java.util.stream.Collectors;
 
 public class PipeBlock extends Block implements BlockEntityProvider, IWrenchable {
     public PipeBlock(Settings settings) {
-        super(settings);
+        super(settings.allowsSpawning(MobSpawning.NO_SPAWN).nonOpaque());
     }
 
     @Override

@@ -11,6 +11,7 @@ import aztech.modern_industrialization.pipes.MIPipes;
 import aztech.modern_industrialization.tools.IWrenchable;
 import aztech.modern_industrialization.tools.MachineOverlayItem;
 import aztech.modern_industrialization.tools.WrenchItem;
+import aztech.modern_industrialization.util.MobSpawning;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
 import net.minecraft.block.*;
@@ -52,7 +53,7 @@ public class MachineBlock extends Block implements BlockEntityProvider, IWrencha
     private final Supplier<MachineBlockEntity> blockEntityFactory;
 
     public MachineBlock(Supplier<MachineBlockEntity> blockEntityFactory) {
-        super(FabricBlockSettings.of(MIMaterialSetup.METAL_MATERIAL).hardness(4.0f).breakByTool(FabricToolTags.PICKAXES).requiresTool());
+        super(FabricBlockSettings.of(MIMaterialSetup.METAL_MATERIAL).hardness(4.0f).breakByTool(FabricToolTags.PICKAXES).requiresTool().allowsSpawning(MobSpawning.NO_SPAWN));
         this.blockEntityFactory = blockEntityFactory;
     }
 

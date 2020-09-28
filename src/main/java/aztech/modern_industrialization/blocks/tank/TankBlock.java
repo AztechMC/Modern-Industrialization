@@ -4,6 +4,7 @@ import alexiil.mc.lib.attributes.AttributeList;
 import alexiil.mc.lib.attributes.AttributeProvider;
 import aztech.modern_industrialization.ModernIndustrialization;
 import aztech.modern_industrialization.tools.IWrenchable;
+import aztech.modern_industrialization.util.MobSpawning;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockEntityProvider;
 import net.minecraft.block.BlockState;
@@ -29,7 +30,7 @@ import java.util.List;
 
 public class TankBlock extends Block implements BlockEntityProvider, IWrenchable, AttributeProvider {
     public TankBlock(Settings settings) {
-        super(settings.nonOpaque());
+        super(settings.nonOpaque().allowsSpawning(MobSpawning.NO_SPAWN));
     }
 
     @Override

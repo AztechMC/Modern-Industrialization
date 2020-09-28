@@ -1,5 +1,6 @@
 package aztech.modern_industrialization.material;
 
+import aztech.modern_industrialization.util.MobSpawning;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.loader.api.FabricLoader;
@@ -23,7 +24,7 @@ public class MaterialBlock extends Block {
     private String materialId, blockType;
 
     public MaterialBlock(Settings settings, String materialId, String blockType) {
-        super(settings);
+        super(settings.allowsSpawning(MobSpawning.NO_SPAWN));
         this.materialId = materialId;
         this.blockType = blockType;
     }

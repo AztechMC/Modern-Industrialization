@@ -2,6 +2,7 @@ package aztech.modern_industrialization;
 
 import aztech.modern_industrialization.machines.impl.multiblock.MultiblockMachineBlockEntity;
 import aztech.modern_industrialization.material.MIMaterialSetup;
+import aztech.modern_industrialization.util.MobSpawning;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
 import net.minecraft.block.Block;
@@ -34,7 +35,7 @@ public class MIBlock extends Block {
 
     public MIBlock(String id) {
         this(id, FabricBlockSettings.of(MIMaterialSetup.METAL_MATERIAL).
-                hardness(4.0f).breakByTool(FabricToolTags.PICKAXES).requiresTool());
+                hardness(4.0f).breakByTool(FabricToolTags.PICKAXES).requiresTool().allowsSpawning(MobSpawning.NO_SPAWN));
     }
 
     public String getId() {

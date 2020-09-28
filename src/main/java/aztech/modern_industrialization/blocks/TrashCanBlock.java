@@ -5,6 +5,7 @@ import alexiil.mc.lib.attributes.AttributeProvider;
 import alexiil.mc.lib.attributes.fluid.FluidInsertable;
 import alexiil.mc.lib.attributes.fluid.FluidVolumeUtil;
 import alexiil.mc.lib.attributes.item.ItemInsertable;
+import aztech.modern_industrialization.util.MobSpawning;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -19,7 +20,7 @@ public class TrashCanBlock extends Block implements AttributeProvider {
     private static final FluidInsertable FLUID_TRASH = (fluidVolume, simulation) -> FluidVolumeUtil.EMPTY;
 
     public TrashCanBlock() {
-        super(FabricBlockSettings.of(Material.METAL).hardness(6.0f).resistance(1200).sounds(BlockSoundGroup.METAL));
+        super(FabricBlockSettings.of(Material.METAL).hardness(6.0f).resistance(1200).sounds(BlockSoundGroup.METAL).allowsSpawning(MobSpawning.NO_SPAWN));
     }
 
     @Override

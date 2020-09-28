@@ -71,6 +71,8 @@ public class DieselGeneratorBlockEntity extends MachineBlockEntity {
             isActive = false;
         }
 
+        autoExtractEnergy(outputDirection, tier);
+
         if(wasActive != isActive) {
             sync();
         }

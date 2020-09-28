@@ -2,11 +2,13 @@ package aztech.modern_industrialization.machines.impl;
 
 import alexiil.mc.lib.attributes.AttributeList;
 import alexiil.mc.lib.attributes.AttributeProviderBlockEntity;
+import alexiil.mc.lib.attributes.SearchOptions;
 import alexiil.mc.lib.attributes.fluid.volume.FluidKey;
 import alexiil.mc.lib.attributes.fluid.volume.FluidKeys;
 import aztech.modern_industrialization.ModernIndustrialization;
 import aztech.modern_industrialization.api.energy.CableTier;
 import aztech.modern_industrialization.MIFluids;
+import aztech.modern_industrialization.api.energy.EnergyAttributes;
 import aztech.modern_industrialization.api.energy.EnergyExtractable;
 import aztech.modern_industrialization.api.energy.EnergyInsertable;
 import aztech.modern_industrialization.inventory.ConfigurableFluidStack;
@@ -33,6 +35,7 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.Tickable;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.registry.Registry;
+import net.minecraft.world.World;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -639,6 +642,13 @@ public class MachineBlockEntity extends AbstractMachineBlockEntity
                 return tier == cableTier;
             }
         };
+    }
+
+    protected void autoExtractEnergy(Direction direction, CableTier extractTier) {
+        EnergyInsertable insertable = EnergyAttributes.INSERTABLE.getFirstOrNull(world, pos.offset(direction), SearchOptions.inDirection(direction));
+        if(insertable != null && insertable.canInsert(extractTier)) {
+            storedEu = insertable.insertEnergy(storedEu);
+        }
     }
 
     void lockRecipe(MachineRecipe recipe, PlayerInventory inventory) {

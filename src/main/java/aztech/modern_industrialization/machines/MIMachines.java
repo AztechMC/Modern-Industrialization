@@ -536,13 +536,13 @@ public class MIMachines {
         registerHatches();
 
         new MachineFactory("lv_steam_turbine", null, f -> new SteamTurbineBlockEntity(f, CableTier.LV), null, 0, 0, 1, 0)
-                .setInputLiquidSlotPosition(23, 23, 1, 1).setupElectricityBar(76, 39)
+                .setInputLiquidSlotPosition(23, 23, 1, 1).setupElectricityBar(76, 39, false)
                 .setupBackground("default.png")
                 .setupCasing("lv") // TODO: custom electric output
                 .setupOverlays("steam_turbine", true, true, false)
         ;
         new MachineFactory("mv_steam_turbine", null, f -> new SteamTurbineBlockEntity(f, CableTier.MV), null, 0, 0, 1, 0)
-                .setInputLiquidSlotPosition(23, 23, 1, 1).setupElectricityBar(76, 39)
+                .setInputLiquidSlotPosition(23, 23, 1, 1).setupElectricityBar(76, 39, false)
                 .setupBackground("default.png")
                 .setupCasing("mv") // TODO: custom electric output
                 .setupOverlays("steam_turbine", true, true, false)

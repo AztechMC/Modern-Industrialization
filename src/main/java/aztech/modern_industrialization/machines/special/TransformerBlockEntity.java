@@ -11,6 +11,7 @@ public class TransformerBlockEntity extends MachineBlockEntity {
     private final EnergyInsertable insertable;
     private final EnergyExtractable extractable;
     private final long maxStoredEu;
+    private final CableTier outputTier;
 
     public TransformerBlockEntity(MachineFactory factory, CableTier inputTier, CableTier outputTier) {
         super(factory);
@@ -18,6 +19,7 @@ public class TransformerBlockEntity extends MachineBlockEntity {
         insertable = buildInsertable(inputTier);
         extractable = buildExtractable(outputTier);
         maxStoredEu = Math.min(inputTier.getMaxInsert(), outputTier.getMaxInsert()) * 10;
+        this.outputTier = outputTier;
     }
 
     @Override
@@ -36,6 +38,7 @@ public class TransformerBlockEntity extends MachineBlockEntity {
 
     @Override
     public void tick() {
-        // TODO: auto-extract energy
+        autoExtractEnergy(outputDirection, outputTier);
+        markDirty();
     }
 }

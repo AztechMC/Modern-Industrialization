@@ -45,6 +45,8 @@ public final class SteamTurbineBlockEntity extends MachineBlockEntity {
             isActive = false;
         }
 
+        autoExtractEnergy(outputDirection, tier);
+
         if(wasActive != isActive) {
             sync();
         }

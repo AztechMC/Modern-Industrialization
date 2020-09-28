@@ -161,13 +161,17 @@ public abstract class ConfigurableScreenHandler extends ScreenHandler {
             if(!slot.canTakeItems(player)) return newStack;
             ItemStack originalStack = slot.getStack();
             newStack = originalStack.copy();
-            if(slotIndex < PLAYER_SLOTS) {
-                // from player to container inventory
+            if(slotIndex < PLAYER_SLOTS) { // from player to container inventory
                 if(!this.insertItem(originalStack, PLAYER_SLOTS, this.slots.size(), false)) {
-                    return ItemStack.EMPTY;
+                    if (slotIndex < 27) { // inside inventory
+                        if (!this.insertItem(originalStack, 27, 36, false)) { // toolbar
+                            return ItemStack.EMPTY;
+                        }
+                    } else if (!this.insertItem(originalStack, 0, 27, false)) {
+                        return ItemStack.EMPTY;
+                    }
                 }
-            } else if(!this.insertItem(originalStack, 0, PLAYER_SLOTS, false)) {
-                // from container inventory to player
+            } else if(!this.insertItem(originalStack, 0, PLAYER_SLOTS, true)) { // from container inventory to player
                 return ItemStack.EMPTY;
             }
 

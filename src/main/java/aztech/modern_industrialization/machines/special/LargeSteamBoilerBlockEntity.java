@@ -43,6 +43,7 @@ public class LargeSteamBoilerBlockEntity extends MultiblockMachineBlockEntity {
                             recipeEnergy = fuelTime / 8;
                             usedEnergy = recipeEnergy;
                             fuel.decrement(1);
+                            break;
                         }
                     }
                 }

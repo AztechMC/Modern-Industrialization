@@ -23,6 +23,7 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUsageContext;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.sound.SoundCategory;
@@ -194,7 +195,7 @@ public class MachineBlock extends Block implements BlockEntityProvider, IWrencha
                             MultiblockMachineBlockEntity multiblock = (MultiblockMachineBlockEntity) entity;
                             multiblock.rebuildShape();
                             if (multiblock.getErrorMessage() != null) {
-                                player.sendMessage(multiblock.getErrorMessage(), true);
+                                player.sendMessage(multiblock.getErrorMessage(), false);
                             }
                         }
                         return ActionResult.success(world.isClient);

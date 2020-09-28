@@ -101,7 +101,7 @@ public class MachineBlockEntity extends AbstractMachineBlockEntity
                 else if(index == 3) return efficiencyTicks;
                 else if(index == 4) return maxEfficiencyTicks;
                 else if(index == 5) return (int)storedEu;
-                else if(index == 6) return activeRecipe != null ? activeRecipe.eu : 0;
+                else if(index == 6) return activeRecipe != null && recipeEnergy != 0 ? activeRecipe.eu : 0;
                 else if(index == 7) return (int)getMaxStoredEu();
                 else if(index == 8) return recipeMaxEu;
                 else return -1;

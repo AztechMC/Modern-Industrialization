@@ -219,7 +219,15 @@ public class MachineBlockEntity extends AbstractMachineBlockEntity
         if(efficiencyTicks > 0) {
             return Collections.singletonList(activeRecipe);
         } else {
-            return factory.recipeType.getRecipes((ServerWorld) world);
+            ServerWorld serverWorld = (ServerWorld) world;
+            MachineRecipeType recipeType = factory.recipeType;
+            List<MachineRecipe> recipes = new ArrayList<>(recipeType.getFluidOnlyRecipes(serverWorld));
+            for(ConfigurableItemStack stack : getItemInputStacks()) {
+                if(!stack.getStack().isEmpty()) {
+                    recipes.addAll(recipeType.getMatchingRecipes(serverWorld, stack.getStack().getItem()));
+                }
+            }
+            return recipes;
         }
     }
 

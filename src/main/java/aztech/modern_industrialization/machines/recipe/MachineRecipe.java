@@ -11,6 +11,7 @@ import net.minecraft.tag.Tag;
 import net.minecraft.util.Identifier;
 import net.minecraft.world.World;
 
+import java.util.Arrays;
 import java.util.List;
 
 public class MachineRecipe implements Recipe<MachineBlockEntity> {
@@ -95,6 +96,10 @@ public class MachineRecipe implements Recipe<MachineBlockEntity> {
 
         public boolean matches(Item otherItem) {
             return item == null ? tag.contains(otherItem) : otherItem == item;
+        }
+
+        Iterable<Item> getInputItems() {
+            return tag == null ? Arrays.asList(item) : tag.values();
         }
     }
 

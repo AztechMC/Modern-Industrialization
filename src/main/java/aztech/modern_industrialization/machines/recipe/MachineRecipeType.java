@@ -5,6 +5,7 @@ import com.google.gson.*;
 import net.fabricmc.fabric.api.tag.TagRegistry;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.recipe.Recipe;
 import net.minecraft.recipe.RecipeSerializer;
@@ -16,10 +17,7 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.JsonHelper;
 import net.minecraft.util.registry.Registry;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -38,6 +36,59 @@ public class MachineRecipeType implements RecipeType, RecipeSerializer {
     }
     public MachineRecipe getRecipe(ServerWorld world, Identifier id) {
         return getRecipes(world).stream().filter(r -> r.getId().equals(id)).findFirst().orElse(null);
+    }
+
+
+    /*
+     * Smart recipe system to avoid iterating over all available recipes.
+     * Every recipe can be accessed by the type of its first input, so we build a cache Item -> MachineRecipe.
+     * We also need to store recipes that have fluid inputs but no item inputs.
+     * This cache is updated every 20 seconds in case the recipes are sometimes reloaded. TODO: only rebuild when the recipes have been reloaded
+     */
+    private Map<Item, List<MachineRecipe>> recipeCache = new HashMap<>();
+    private List<MachineRecipe> fluidOnlyRecipes = new ArrayList<>();
+    private long lastUpdate = 0;
+    private static final long UPDATE_INTERVAL = 20 * 1000; // 20 seconds
+
+    /**
+     * Update recipe cache if necessary
+     */
+    private void updateRecipeCache(ServerWorld world) {
+        long time = System.currentTimeMillis();
+        if(time - lastUpdate <= UPDATE_INTERVAL) return;
+
+        // Update cache
+        lastUpdate = time;
+        recipeCache.clear();
+        fluidOnlyRecipes.clear();
+        for(MachineRecipe recipe : getRecipes(world)) {
+            if(recipe.itemInputs.size() == 0) {
+                if(recipe.fluidInputs.size() > 0) {
+                    fluidOnlyRecipes.add(recipe);
+                }
+            } else {
+                for(Item inputItem : recipe.itemInputs.get(0).getInputItems()) {
+                    recipeCache.putIfAbsent(inputItem, new ArrayList<>());
+                    recipeCache.get(inputItem).add(recipe);
+                }
+            }
+        }
+    }
+
+    /**
+     * Get all recipes that are using some Item.
+     */
+    public Collection<MachineRecipe> getMatchingRecipes(ServerWorld world, Item input) {
+        updateRecipeCache(world);
+        return Collections.unmodifiableCollection(recipeCache.getOrDefault(input, Collections.emptyList()));
+    }
+
+    /**
+     * Get all recipes that are not using any input item.
+     */
+    public Collection<MachineRecipe> getFluidOnlyRecipes(ServerWorld world) {
+        updateRecipeCache(world);
+        return Collections.unmodifiableList(fluidOnlyRecipes);
     }
 
     private final Identifier id;

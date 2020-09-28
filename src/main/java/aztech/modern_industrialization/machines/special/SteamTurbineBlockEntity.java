@@ -50,6 +50,4 @@ public final class SteamTurbineBlockEntity extends MachineBlockEntity {
         }
         markDirty();
     }
-
-
 }

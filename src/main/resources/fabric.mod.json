@@ -35,8 +35,7 @@
     {
       "config": "modern_industrialization.client_mixins.json",
       "environment": "client"
-    },
-    "modern_industrialization.rei_mixins.json"
+    }
   ],
 
   "depends": {

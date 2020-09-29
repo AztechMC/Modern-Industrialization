@@ -49,7 +49,14 @@ public class MachineRecipePlugin implements REIPluginV0 {
     public void registerOthers(RecipeHelper recipeHelper) {
         for(Map.Entry<MachineRecipeType, MIMachines.RecipeInfo> entry : MIMachines.RECIPE_TYPES.entrySet()) {
             recipeHelper.registerWorkingStations(entry.getKey().getId(), entry.getValue().factories.stream().map(f -> EntryStack.create(f.item)).toArray(EntryStack[]::new));
-            recipeHelper.registerScreenClickArea(new ArrowOverlayRectangle(entry.getValue().factories.get(entry.getValue().factories.size()-1)), MachineScreen.class, entry.getKey().getId());
+            MachineFactory factory = entry.getValue().factories.get(entry.getValue().factories.size()-1);
+            recipeHelper.registerContainerClickArea(screen -> {
+                if(screen.getScreenHandler().getMachineFactory().recipeType == factory.recipeType) {
+                    return new Rectangle(factory.getProgressBarDrawX(), factory.getProgressBarDrawY(), factory.getProgressBarSizeX(), factory.getProgressBarSizeY());
+                } else {
+                    return new Rectangle(-1, -1, 0, 0);
+                }
+            }, MachineScreen.class, entry.getKey().getId());
         }
 
         for(MachineFactory factory : MIMachines.WORKSTATIONS_FURNACES) {
@@ -57,25 +64,5 @@ public class MachineRecipePlugin implements REIPluginV0 {
         }
 
         recipeHelper.registerAutoCraftingHandler(new OutputLockTransferHandler());
-    }
-
-    // WARNING: Evil hack!
-    private static class ArrowOverlayRectangle extends Rectangle {
-        private final MachineRecipeType recipeType;
-        private ArrowOverlayRectangle(MachineFactory factory) {
-            super(factory.getProgressBarDrawX(), factory.getProgressBarDrawY(), factory.getProgressBarSizeX(), factory.getProgressBarSizeY());
-            this.recipeType = factory.recipeType;
-        }
-
-        @Override
-        public boolean contains(int x, int y) {
-            return contains((double) x, y);
-        }
-
-        @Override
-        public boolean contains(double x, double y) {
-            Screen sc = MinecraftClient.getInstance().currentScreen;
-            return sc instanceof MachineScreen && ((MachineScreen) sc).getScreenHandler().getMachineFactory().recipeType == this.recipeType && super.contains(x, y);
-        }
     }
 }

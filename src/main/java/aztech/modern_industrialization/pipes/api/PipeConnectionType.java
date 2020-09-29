@@ -35,4 +35,8 @@ public enum PipeConnectionType {
         else if(id == 8) return ELECTRICITY;
         else return null;
     }
+
+    public boolean opensGui() {
+        return this == ITEM_IN || this == ITEM_IN_OUT || this == ITEM_OUT;
+    }
 }

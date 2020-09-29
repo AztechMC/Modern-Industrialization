@@ -11,19 +11,25 @@ class PipeVoxelShape {
     /**
      * The shape.
      */
-    VoxelShape shape;
+    final VoxelShape shape;
     /**
      * The network type.
      */
-    PipeNetworkType type;
+    final PipeNetworkType type;
     /**
      * If null, the center of the pipe. Otherwise, the connector in the given direction.
      */
-    Direction direction;
+    final Direction direction;
 
-    public PipeVoxelShape(VoxelShape shape, PipeNetworkType type, Direction direction) {
+    /**
+     * Whether this pipe being right-clicked opens a gui.
+     */
+    final boolean opensGui;
+
+    PipeVoxelShape(VoxelShape shape, PipeNetworkType type, Direction direction, boolean opensGui) {
         this.shape = shape;
         this.type = type;
         this.direction = direction;
+        this.opensGui = opensGui;
     }
 }

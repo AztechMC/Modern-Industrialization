@@ -97,14 +97,11 @@ public class PipeBlock extends Block implements BlockEntityProvider, IWrenchable
                             }
                             return ActionResult.success(world.isClient);
                         }
-                    } else {
+                    } else if(partShape.opensGui) {
                         if(!world.isClient) {
-                            ExtendedScreenHandlerFactory guiFactory = pipeEntity.getGui(partShape.type, partShape.direction);
-                            if(guiFactory != null) {
-                                player.openHandledScreen(guiFactory);
-                                return ActionResult.CONSUME;
-                            }
+                            player.openHandledScreen(pipeEntity.getGui(partShape.type, partShape.direction));
                         }
+                        return ActionResult.success(world.isClient);
                     }
                 }
             }

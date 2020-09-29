@@ -12,7 +12,6 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.screen.NamedScreenHandlerFactory;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Pair;
 import net.minecraft.util.Tickable;
@@ -304,13 +303,14 @@ public class PipeBlockEntity extends BlockEntity implements Tickable, BlockEntit
         }
         for(slot = 0; slot < renderedConnections.length; ++slot) {
             // Center connector
-            shapes.add(new PipeVoxelShape(SHAPE_CACHE[slot][NORTH.getId()][0], types[slot], null));
+            shapes.add(new PipeVoxelShape(SHAPE_CACHE[slot][NORTH.getId()][0], types[slot], null, false));
 
             // Side connectors
             for (Direction direction : Direction.values()) {
                 int connectionType = PipePartBuilder.getRenderType(slot, direction, renderedConnections);
                 if (connectionType != 0) {
-                    shapes.add(new PipeVoxelShape(SHAPE_CACHE[slot][direction.getId()][connectionType], types[slot], direction));
+                    PipeConnectionType connType = renderedConnections[slot][direction.getId()];
+                    shapes.add(new PipeVoxelShape(SHAPE_CACHE[slot][direction.getId()][connectionType], types[slot], direction, connType != null && connType.opensGui()));
                 }
             }
         }

@@ -8,14 +8,12 @@ import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.Items;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
+import java.util.*;
 
 public class MIMaterial {
 
     private String id;
-    private static HashMap<String, MIMaterial> map = new HashMap<String, MIMaterial>();
+    private static Map<String, MIMaterial> map = new TreeMap<>();
 
     public static Iterable<MIMaterial> getAllMaterials(){
         return map.values();
@@ -29,8 +27,8 @@ public class MIMaterial {
     private ArrayList<String> itemType = new ArrayList<String>();
     private ArrayList<String> blockType = new ArrayList<String>();
 
-    private HashMap<String, Item> itemMap = new HashMap<String, Item>();
-    private HashMap<String, Block> blockMap = new HashMap<String, Block>();
+    private Map<String, Item> itemMap = new HashMap<String, Item>();
+    private Map<String, Block> blockMap = new HashMap<String, Block>();
 
     public MIMaterial(String id, boolean isVanilla){
         this.id = id;

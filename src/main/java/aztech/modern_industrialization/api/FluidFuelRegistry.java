@@ -2,8 +2,7 @@ package aztech.modern_industrialization.api;
 
 import alexiil.mc.lib.attributes.fluid.volume.FluidKey;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class FluidFuelRegistry {
     private static final Map<FluidKey, Integer> fluidBurnTicks = new HashMap<>();
@@ -26,5 +25,11 @@ public class FluidFuelRegistry {
      */
     public static int getBurnTicks(FluidKey fluid) {
         return fluidBurnTicks.getOrDefault(fluid, 0);
+    }
+
+    public static List<FluidKey> getRegisteredFluids() {
+        List<FluidKey> fluids = new ArrayList<>(fluidBurnTicks.keySet());
+        fluids.sort(Comparator.comparing(fluidBurnTicks::get));
+        return fluids;
     }
 }

@@ -24,7 +24,7 @@ import static aztech.modern_industrialization.machines.impl.multiblock.Multibloc
 
 public class MIMachines {
     // Recipe
-    public static final Map<MachineRecipeType, RecipeInfo> RECIPE_TYPES = new HashMap<>();
+    public static final Map<MachineRecipeType, RecipeInfo> RECIPE_TYPES = new TreeMap<>(Comparator.comparing(MachineRecipeType::getId));
     public static final List<MachineFactory> WORKSTATIONS_FURNACES = new ArrayList<>();
 
     private static MachineRecipeType createRecipeType(String kind) {
@@ -68,8 +68,9 @@ public class MIMachines {
     public static MultiblockShape OIL_DRILLING_RIG_SHAPE;
     public static MultiblockShape VACUUM_FREEZER_SHAPE;
 
+    public static final MachineFactory LARGE_STEAM_BOILER;
     public static final MachineFactory ELECTRIC_BLAST_FURNACE;
-
+    public static final MachineFactory DIESEL_GENERATOR;
 
     private static MultiblockShape cokeOvenLike(int height, Block block, int extra_flags){
         MultiblockShape shape = new MultiblockShape();
@@ -500,7 +501,7 @@ public class MIMachines {
                 .setupOverlays("quarry", true, false, false)
                 .setupCasing("steel")
         ;
-        new MachineFactory("large_steam_boiler", null, f -> new LargeSteamBoilerBlockEntity(f, LARGE_BOILER_SHAPE), null, 1, 0, 1, 1)
+        LARGE_STEAM_BOILER = new MachineFactory("large_steam_boiler", null, f -> new LargeSteamBoilerBlockEntity(f, LARGE_BOILER_SHAPE), null, 1, 0, 1, 1)
                 .setupProgressBar(176, 0, 15, 51, 14, 14, false, true)
                 .setupEfficiencyBar(0, 166, 50, 62, 100, 2).hideEfficiencyTooltip()
                 .setupBackground("steam_boiler.png")
@@ -547,7 +548,7 @@ public class MIMachines {
                 .setupCasing("mv") // TODO: custom electric output
                 .setupOverlays("steam_turbine", true, true, false)
         ;
-        new MachineFactory("diesel_generator", null, f -> new DieselGeneratorBlockEntity(f, CableTier.MV), null, 0, 0, 1, 0)
+        DIESEL_GENERATOR = new MachineFactory("diesel_generator", null, f -> new DieselGeneratorBlockEntity(f, CableTier.MV), null, 0, 0, 1, 0)
                 .setInputLiquidSlotPosition(23, 23, 1, 1).setupElectricityBar(76, 39, false)
                 .setupBackground("default.png")
                 .setupCasing("mv") // TODO: custom electric output

@@ -240,32 +240,6 @@ public class MachineScreen extends HandledScreen<MachineScreenHandler> {
     }
 
     @Override
-    protected void drawForeground(MatrixStack matrices, int mouseX, int mouseY) {
-        // Render items for locked slots
-        for (Slot slot : this.handler.slots) {
-            if (slot instanceof ConfigurableItemStack.ConfigurableItemSlot) {
-                ConfigurableItemStack.ConfigurableItemSlot itemSlot = (ConfigurableItemStack.ConfigurableItemSlot) slot;
-                ConfigurableItemStack itemStack = itemSlot.getConfStack();
-                if ((itemStack.isPlayerLocked() || itemStack.isMachineLocked()) && itemStack.getStack().isEmpty()) {
-                    Item item = itemStack.getLockedItem();
-                    if (item != Items.AIR) {
-                        this.setZOffset(100);
-                        this.itemRenderer.zOffset = 100.0F;
-
-                        RenderSystem.enableDepthTest();
-                        this.itemRenderer.renderInGuiWithOverrides(this.client.player, new ItemStack(item), slot.x, slot.y);
-                        this.itemRenderer.renderGuiItemOverlay(this.textRenderer, new ItemStack(item), slot.x, slot.y, "0");
-
-                        this.itemRenderer.zOffset = 0.0F;
-                        this.setZOffset(0);
-                    }
-                }
-            }
-        }
-        super.drawForeground(matrices, mouseX, mouseY);
-    }
-
-    @Override
     public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
         actualDrawBackground(matrices, delta, mouseX, mouseY);
 
@@ -295,34 +269,63 @@ public class MachineScreen extends HandledScreen<MachineScreenHandler> {
             }
         }
 
+        // Render items for locked slots
+        for (Slot slot : this.handler.slots) {
+            if (slot instanceof ConfigurableItemStack.ConfigurableItemSlot) {
+                ConfigurableItemStack.ConfigurableItemSlot itemSlot = (ConfigurableItemStack.ConfigurableItemSlot) slot;
+                ConfigurableItemStack itemStack = itemSlot.getConfStack();
+                if ((itemStack.isPlayerLocked() || itemStack.isMachineLocked()) && itemStack.getStack().isEmpty()) {
+                    Item item = itemStack.getLockedItem();
+                    if (item != Items.AIR) {
+                        this.setZOffset(100);
+                        this.itemRenderer.zOffset = 100.0F;
+
+                        RenderSystem.enableDepthTest();
+                        this.itemRenderer.renderInGuiWithOverrides(this.client.player, new ItemStack(item), slot.x+this.x, slot.y+this.y);
+                        this.itemRenderer.renderGuiItemOverlay(this.textRenderer, new ItemStack(item), slot.x+this.x, slot.y+this.y, "0");
+
+                        this.itemRenderer.zOffset = 0.0F;
+                        this.setZOffset(0);
+                    }
+                }
+            }
+        }
+
         super.render(matrices, mouseX, mouseY, delta);
 
-        // Render fluid slot tooltips
+        // Render fluid and locked item slot tooltips
         for(Slot slot : handler.slots) {
-            if(isPointWithinBounds(slot.x, slot.y, 16, 16, mouseX, mouseY) && slot instanceof ConfigurableFluidStack.ConfigurableFluidSlot) {
-                ConfigurableFluidStack stack = ((ConfigurableFluidStack.ConfigurableFluidSlot) slot).getConfStack();
-                List<Text> tooltip = new ArrayList<>();
-                FluidKey fluid = stack.getFluid();
-                if(fluid.isEmpty()){
-                    tooltip.add(new TranslatableText("text.modern_industrialization.fluid_slot_empty"));
-                }else{
-                    tooltip.add(fluid.name);
-                }
-                String quantity = stack.getAmount() + " / " + stack.getCapacity();
-                tooltip.add(new TranslatableText("text.modern_industrialization.fluid_slot_quantity", quantity));
-
-                Style style = Style.EMPTY.withColor(TextColor.fromRgb(0xa9a9a9)).withItalic(true);
-
-                if(stack.canPlayerInsert()) {
-                    if (stack.canPlayerExtract()) {
-                        tooltip.add(new TranslatableText("text.modern_industrialization.fluid_slot_IO").setStyle(style));
+            if(isPointWithinBounds(slot.x, slot.y, 16, 16, mouseX, mouseY)) {
+                if(slot instanceof ConfigurableFluidStack.ConfigurableFluidSlot) {
+                    ConfigurableFluidStack stack = ((ConfigurableFluidStack.ConfigurableFluidSlot) slot).getConfStack();
+                    List<Text> tooltip = new ArrayList<>();
+                    FluidKey fluid = stack.getFluid();
+                    if (fluid.isEmpty()) {
+                        tooltip.add(new TranslatableText("text.modern_industrialization.fluid_slot_empty"));
                     } else {
-                        tooltip.add(new TranslatableText("text.modern_industrialization.fluid_slot_input").setStyle(style));
+                        tooltip.add(fluid.name);
                     }
-                } else if(stack.canPlayerExtract()) {
-                    tooltip.add(new TranslatableText("text.modern_industrialization.fluid_slot_output").setStyle(style));
+                    String quantity = stack.getAmount() + " / " + stack.getCapacity();
+                    tooltip.add(new TranslatableText("text.modern_industrialization.fluid_slot_quantity", quantity));
+
+                    Style style = Style.EMPTY.withColor(TextColor.fromRgb(0xa9a9a9)).withItalic(true);
+
+                    if (stack.canPlayerInsert()) {
+                        if (stack.canPlayerExtract()) {
+                            tooltip.add(new TranslatableText("text.modern_industrialization.fluid_slot_IO").setStyle(style));
+                        } else {
+                            tooltip.add(new TranslatableText("text.modern_industrialization.fluid_slot_input").setStyle(style));
+                        }
+                    } else if (stack.canPlayerExtract()) {
+                        tooltip.add(new TranslatableText("text.modern_industrialization.fluid_slot_output").setStyle(style));
+                    }
+                    this.renderTooltip(matrices, tooltip, mouseX, mouseY);
+                } else if(slot instanceof ConfigurableItemStack.ConfigurableItemSlot) {
+                    ConfigurableItemStack stack = ((ConfigurableItemStack.ConfigurableItemSlot) slot).getConfStack();
+                    if(stack.getStack().isEmpty() && stack.getLockedItem() != null) {
+                        this.renderTooltip(matrices, new ItemStack(stack.getLockedItem()), mouseX, mouseY);
+                    }
                 }
-                this.renderTooltip(matrices, tooltip, mouseX, mouseY);
             }
         }
 
@@ -349,7 +352,7 @@ public class MachineScreen extends HandledScreen<MachineScreenHandler> {
             }
         }
 
-        super.drawMouseoverTooltip(matrices, mouseX, mouseY);
+        drawMouseoverTooltip(matrices, mouseX, mouseY);
     }
 
     private static class MachineButton extends ButtonWidget {

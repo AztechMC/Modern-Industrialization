@@ -1,6 +1,8 @@
 package aztech.modern_industrialization.compat.rei.machine_recipe;
 
 import aztech.modern_industrialization.MIIdentifier;
+import aztech.modern_industrialization.inventory.ConfigurableFluidStack;
+import aztech.modern_industrialization.inventory.ConfigurableItemStack;
 import aztech.modern_industrialization.machines.MIMachines;
 import aztech.modern_industrialization.machines.impl.MachineFactory;
 import aztech.modern_industrialization.machines.impl.MachineScreen;
@@ -12,8 +14,11 @@ import me.shedaniel.rei.api.RecipeHelper;
 import me.shedaniel.rei.api.plugins.REIPluginV0;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.recipe.Recipe;
+import net.minecraft.screen.slot.Slot;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.TypedActionResult;
 
 import java.util.List;
 import java.util.Map;
@@ -64,5 +69,27 @@ public class MachineRecipePlugin implements REIPluginV0 {
         }
 
         recipeHelper.registerAutoCraftingHandler(new OutputLockTransferHandler());
+
+        recipeHelper.registerFocusedStackProvider(screen -> {
+            if(screen instanceof MachineScreen) {
+                MachineScreen machineScreen = (MachineScreen) screen;
+                Slot slot = machineScreen.getFocusedSlot();
+                if(slot instanceof ConfigurableFluidStack.ConfigurableFluidSlot) {
+                    ConfigurableFluidStack stack = ((ConfigurableFluidStack.ConfigurableFluidSlot) slot).getConfStack();
+                    if(stack.getAmount() > 0) {
+                        return TypedActionResult.success(EntryStack.create(stack.getFluid().getRawFluid()));
+                    } else if(stack.getLockedFluid() != null) {
+                        return TypedActionResult.success(EntryStack.create(stack.getLockedFluid().getRawFluid()));
+                    }
+                } else if(slot instanceof ConfigurableItemStack.ConfigurableItemSlot) {
+                    ConfigurableItemStack stack = ((ConfigurableItemStack.ConfigurableItemSlot) slot).getConfStack();
+                    // the normal stack is already handled by REI, we just need to handle the locked item!
+                    if(stack.getLockedItem() != null) {
+                        return TypedActionResult.success(EntryStack.create(stack.getLockedItem()));
+                    }
+                }
+            }
+            return TypedActionResult.pass(EntryStack.empty());
+        });
     }
 }

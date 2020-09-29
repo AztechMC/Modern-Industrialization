@@ -377,4 +377,9 @@ public class MachineScreen extends HandledScreen<MachineScreenHandler> {
             }
         }
     }
+
+    // This is used by the REI plugin to detect fluid slots
+    public Slot getFocusedSlot() {
+        return focusedSlot;
+    }
 }

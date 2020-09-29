@@ -25,15 +25,16 @@ repositories {
 		name = "BuildCraft"
 		url = "https://mod-buildcraft.com/maven"
 	}
+	maven {
+		name "Siphalor's Maven"
+		url "https://maven.siphalor.de"
+	}
 }
 
 dependencies {
-	//to change the versions see the gradle.properties file
 	minecraft "com.mojang:minecraft:${project.minecraft_version}"
 	mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
 	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
-
-	// Fabric API. This is technically optional, but you probably want it anyway.
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
 	modImplementation 'net.devtech:arrp:0.2.6'
@@ -50,6 +51,8 @@ dependencies {
 	include "me.shedaniel.cloth.api:cloth-armor-api-v1:${project.cloth_api_version}"
 	include "me.shedaniel.cloth.api:cloth-common-events-v1:${project.cloth_api_version}"
 	include "me.shedaniel.cloth.api:cloth-durability-bar-api-v1:${project.cloth_api_version}"
+	modImplementation "de.siphalor:nbtcrafting-${project.nbt_crafting_version}"
+	include "de.siphalor:nbtcrafting-${project.nbt_crafting_version}"
 }
 
 processResources {

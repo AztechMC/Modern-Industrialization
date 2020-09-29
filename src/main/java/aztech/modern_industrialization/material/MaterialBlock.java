@@ -27,14 +27,14 @@ public class MaterialBlock extends Block {
     @Override
     public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
         ItemStack handStack = player.inventory.getMainHandStack();
-        if (handStack.getItem() == Items.BOOK && blockType == "ore") {
+        if (handStack.getItem() == Items.BOOK && blockType.equals("ore")) {
             if (FabricLoader.getInstance().isModLoaded("patchouli")) {
                 ItemStack guide = new ItemStack(PatchouliItems.book);
                 CompoundTag tag = new CompoundTag();
                 tag.putString("patchouli:book", "modern_industrialization:book");
                 guide.setTag(tag);
-                player.inventory.offerOrDrop(world, guide);
                 handStack.decrement(1);
+                player.inventory.offerOrDrop(world, guide);
                 return ActionResult.success(world.isClient);
             }
         }

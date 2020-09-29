@@ -46,7 +46,7 @@ public class TankModel implements UnbakedModel, FabricBakedModel, BakedModel {
     private Mesh tankMesh;
 
     public TankModel(String tankType) {
-        tankSpriteId = new SpriteIdentifier(SpriteAtlasTexture.BLOCK_ATLAS_TEX, new MIIdentifier("blocks/tanks/" + tankType));
+        tankSpriteId = new SpriteIdentifier(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE, new MIIdentifier("blocks/tanks/" + tankType));
     }
 
     @Override

@@ -41,7 +41,7 @@ public class PipeModel implements UnbakedModel, BakedModel, FabricBakedModel {
 
     static {
         List<String> names = Arrays.asList("fluid", "fluid_in", "fluid_in_out", "fluid_out", "item", "item_in", "item_in_out", "item_out", "electricity");
-        SPRITE_IDS = names.stream().map(n -> new SpriteIdentifier(SpriteAtlasTexture.BLOCK_ATLAS_TEX, new MIIdentifier("blocks/pipes/" + n))).collect(Collectors.toList());
+        SPRITE_IDS = names.stream().map(n -> new SpriteIdentifier(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE, new MIIdentifier("blocks/pipes/" + n))).collect(Collectors.toList());
     }
 
     private Sprite[] sprites;

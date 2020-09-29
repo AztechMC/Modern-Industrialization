@@ -130,7 +130,7 @@ public class MachineBlock extends Block implements BlockEntityProvider, IWrencha
                 Vec3d vec3d2 = player.getRotationVec(tickDelta);
                 double maxDistance = MinecraftClient.getInstance().interactionManager.getReachDistance();
                 Vec3d vec3d3 = vec3d.add(vec3d2.x * maxDistance, vec3d2.y * maxDistance, vec3d2.z * maxDistance);
-                BlockHitResult hit = shape.rayTrace(vec3d, vec3d3, pos);
+                BlockHitResult hit = shape.raycast(vec3d, vec3d3, pos);
                 if (hit != null && hit.getType() == HitResult.Type.BLOCK) {
                     double dist = hit.getPos().distanceTo(vec3d);
                     if (dist < smallestDistance[0]) {
@@ -154,7 +154,7 @@ public class MachineBlock extends Block implements BlockEntityProvider, IWrencha
     }
 
     @Override
-    public VoxelShape getRayTraceShape(BlockState state, BlockView world, BlockPos pos) {
+    public VoxelShape getRaycastShape(BlockState state, BlockView world, BlockPos pos) {
         return VoxelShapes.cuboid(0, 0, 0, 1, 1, 1);
     }
 

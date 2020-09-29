@@ -48,6 +48,6 @@ public class ForgeHammerRecipePlugin implements REIPluginV0 {
             recipeHelper.removeAutoCraftButton(type.getId());
         }
 
-        recipeHelper.registerScreenClickArea(new Rectangle(71, 48, 53, 15), ForgeHammerScreen.class, RECIPE_TYPES[0].getId(), RECIPE_TYPES[1].getId());
+        recipeHelper.registerContainerClickArea(new Rectangle(71, 48, 53, 15), ForgeHammerScreen.class, RECIPE_TYPES[0].getId(), RECIPE_TYPES[1].getId());
     }
 }

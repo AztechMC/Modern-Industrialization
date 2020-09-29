@@ -47,7 +47,7 @@ public class MachineScreen extends HandledScreen<MachineScreenHandler> {
         this.playerInventoryTitleY = this.backgroundHeight - 94;
     }
 
-    private int nextButtonX = 152;
+    private int nextButtonX;
     private int buttonX() {
         nextButtonX -= 22;
         return nextButtonX + 22 + x;
@@ -88,6 +88,7 @@ public class MachineScreen extends HandledScreen<MachineScreenHandler> {
     @Override
     protected void init() {
         super.init();
+        nextButtonX = 152;
         if(hasLock()) {
             addButton(new MachineButton(buttonX(), 4 + y, 40, new LiteralText("slot locking"), b -> {
                 boolean newLockingMode = !handler.lockingMode;

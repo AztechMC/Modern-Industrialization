@@ -1,8 +1,5 @@
 package aztech.modern_industrialization.material;
 
-import aztech.modern_industrialization.util.MobSpawning;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -10,8 +7,6 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.TranslatableText;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
@@ -24,7 +19,7 @@ public class MaterialBlock extends Block {
     private String materialId, blockType;
 
     public MaterialBlock(Settings settings, String materialId, String blockType) {
-        super(settings.allowsSpawning(MobSpawning.NO_SPAWN));
+        super(settings);
         this.materialId = materialId;
         this.blockType = blockType;
     }

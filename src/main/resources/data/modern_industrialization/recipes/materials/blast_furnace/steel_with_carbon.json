@@ -9,13 +9,13 @@
       "amount": 1
     },
     {
-      "item": "modern_industrialization:iron_dust",
+      "tag": "c:iron_dusts",
       "amount": 4
     }
   ],
 
   "item_outputs": {
-    "item": "modern_industrialization:steel_dust",
+    "item": "modern_industrialization:steel_ingot",
     "amount": 4
   }
 }

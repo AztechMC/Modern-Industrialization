@@ -10,38 +10,38 @@
   "item_outputs": [
     {
       "item": "minecraft:iron_ore",
-      "amount": 1,
-      "probability": 0.4
+      "amount": 40,
+      "probability": 0.01
     },
     {
       "item": "minecraft:coal_ore",
-      "amount": 1,
-      "probability": 0.4
+      "amount": 40,
+      "probability": 0.01
     },
     {
       "item": "modern_industrialization:copper_ore",
-      "amount": 1,
-      "probability": 0.6
+      "amount": 60,
+      "probability": 0.01
     },
     {
       "item": "modern_industrialization:tin_ore",
-      "amount": 1,
-      "probability": 0.3
+      "amount": 30,
+      "probability": 0.01
     },
     {
       "item": "minecraft:gold_ore",
-      "amount": 1,
-      "probability": 0.05
+      "amount": 5,
+      "probability": 0.01
     },
     {
       "item": "minecraft:redstone_ore",
-      "amount": 1,
-      "probability": 0.2
+      "amount": 20,
+      "probability": 0.01
     },
     {
       "item": "minecraft:nether_quartz_ore",
-      "amount": 1,
-      "probability": 0.2
+      "amount": 20,
+      "probability": 0.01
     }
   ]
 }

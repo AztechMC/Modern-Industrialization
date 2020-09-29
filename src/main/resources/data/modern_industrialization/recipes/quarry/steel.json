@@ -10,33 +10,33 @@
   "item_outputs": [
     {
       "item": "modern_industrialization:antimony_ore",
-      "amount": 1,
-      "probability": 0.2
+      "amount": 20,
+      "probability": 0.01
     },
     {
       "item": "minecraft:diamond_ore",
-      "amount": 1,
-      "probability": 0.03
+      "amount": 3,
+      "probability": 0.01
     },
     {
       "item": "modern_industrialization:lead_ore",
-      "amount": 1,
-      "probability": 0.3
+      "amount": 30,
+      "probability": 0.01
     },
     {
       "item": "modern_industrialization:nickel_ore",
-      "amount": 1,
-      "probability": 0.3
+      "amount": 30,
+      "probability": 0.01
     },
     {
       "item": "modern_industrialization:bauxite_ore",
-      "amount": 1,
-      "probability": 0.4
+      "amount": 40,
+      "probability": 0.01
     },
     {
       "item": "modern_industrialization:salt_ore",
-      "amount": 1,
-      "probability": 0.2
+      "amount": 20,
+      "probability": 0.01
     }
   ]
 }

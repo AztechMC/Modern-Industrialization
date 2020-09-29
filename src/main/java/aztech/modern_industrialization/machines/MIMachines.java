@@ -286,7 +286,7 @@ public class MIMachines {
     public static MachineFactory setupMacerator(MachineFactory factory) {
         return factory
                 .setInputSlotPosition(56, 35, 1, 1).setOutputSlotPosition(102, 27, 2, 2)
-                .setupProgressBar(76, 36, 22, 15, true).setupBackground("steam_furnace.png")
+                .setupProgressBar(76, 35, 22, 15, true).setupBackground("steam_furnace.png")
                 .setupEfficiencyBar(0, 166, 38, 66, 100, 2, true).setupElectricityBar(18, 34)
                 .setupOverlays("macerator", true, false, true);
     }
@@ -540,13 +540,13 @@ public class MIMachines {
                 .setInputLiquidSlotPosition(23, 23, 1, 1).setupElectricityBar(76, 39, false)
                 .setupBackground("default.png")
                 .setupCasing("lv") // TODO: custom electric output
-                .setupOverlays("steam_turbine", true, true, false)
+                .setupOverlays("steam_turbine", true, false, false)
         ;
         new MachineFactory("mv_steam_turbine", null, f -> new SteamTurbineBlockEntity(f, CableTier.MV), null, 0, 0, 1, 0)
                 .setInputLiquidSlotPosition(23, 23, 1, 1).setupElectricityBar(76, 39, false)
                 .setupBackground("default.png")
                 .setupCasing("mv") // TODO: custom electric output
-                .setupOverlays("steam_turbine", true, true, false)
+                .setupOverlays("steam_turbine", true, false, false)
         ;
         DIESEL_GENERATOR = new MachineFactory("diesel_generator", null, f -> new DieselGeneratorBlockEntity(f, CableTier.MV), null, 0, 0, 1, 0)
                 .setInputLiquidSlotPosition(23, 23, 1, 1).setupElectricityBar(76, 39, false)

@@ -9,27 +9,27 @@
     },
     {
       "type": "crafting",
-      "recipe": "modern_industrialization:machine/bronze/compressor",
+      "recipe": "modern_industrialization:machine/bronze/compressor_asbl",
       "text": "The Compressor will turn ingots into plates at 1:1 ratio. It can also turn each double ingot into 2 plates. This is probably the first machine you will want to build!"
     },
     {
       "type": "crafting",
-      "recipe": "modern_industrialization:machine/bronze/mixer",
+      "recipe": "modern_industrialization:machine/bronze/mixer_asbl",
       "text": "The Mixer will help you mix dusts, giving you a better ratio for bronze, fire clay and later uncooked steel. It can also create cobblestone and clay."
     },
     {
       "type": "crafting",
-      "recipe": "modern_industrialization:machine/bronze/macerator",
+      "recipe": "modern_industrialization:machine/bronze/macerator_asbl",
       "text": "The Macerator will turn 2 crushed dusts into 3 dusts. Ore tripling for the win! It can also recycle all kinds of materials by turning them into dust."
     },
     {
       "type": "crafting",
-      "recipe": "modern_industrialization:machine/bronze/cutting_machine",
+      "recipe": "modern_industrialization:machine/bronze/cutting_machine_asbl",
       "text": "The Cutting Machine will give you better ratios for bolts, gears, rings and rods. It uses a bit of lubricant every time. For now, you can only use water, but other lubricants will speed up the processing later."
     },
     {
       "type": "crafting",
-      "recipe": "modern_industrialization:machine/bronze/furnace",
+      "recipe": "modern_industrialization:machine/bronze/furnace_asbl",
       "text": "The Furnace is... well... a Furnace. It is as slow as normal Furnaces, but it uses 40 times less fuel because steam is very effective."
     },
     {

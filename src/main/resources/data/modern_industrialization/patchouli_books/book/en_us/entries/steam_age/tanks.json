@@ -9,7 +9,7 @@
     },
     {
       "type": "crafting",
-      "recipe": "modern_industrialization:tank/tank_bronze"
+      "recipe": "modern_industrialization:tank/tank_bronze_asbl"
     }
   ],
   "sortnum": 7

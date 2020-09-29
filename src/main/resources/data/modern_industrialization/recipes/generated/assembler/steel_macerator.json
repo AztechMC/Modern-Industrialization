@@ -1,0 +1,33 @@
+{
+    "type": "modern_industrialization:assembler",
+    "eu": 8,
+    "duration": 200,
+    "item_inputs": [
+        {
+            "item": "modern_industrialization:bronze_rod",
+            "amount": 2
+        },
+        {
+            "tag": "c:bronze_gears",
+            "amount": 3
+        },
+        {
+            "item": "modern_industrialization:steel_machine_casing",
+            "amount": 1
+        },
+        {
+            "item": "modern_industrialization:pipe_fluid_bronze",
+            "amount": 2
+        },
+        {
+            "item": "modern_industrialization:bronze_macerator",
+            "amount": 1
+        }
+    ],
+    "item_outputs": [
+        {
+            "item": "modern_industrialization:steel_macerator",
+            "amount": 1
+        }
+    ]
+}

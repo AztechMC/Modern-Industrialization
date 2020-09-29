@@ -46,7 +46,10 @@ def gen_name(ty):
 
     for block in ty.mi_blocks:
         lang_id = 'block.modern_industrialization.' + (id + '_' + block)
-        name = clean(id) + " " + clean(block)
+        if block == "block":
+            name = "Block of " + clean(id)
+        else:
+            name = clean(id) + " " + clean(block)
         lang_json[lang_id] = name
 
     with open('src/main/resources/assets/modern_industrialization/lang/en_us.json', 'w') as lang_file:

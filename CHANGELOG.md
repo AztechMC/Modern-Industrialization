@@ -1,3 +1,8 @@
+##### 0.2.0
+* **HUGE UPDATE**
+* Added tons of content: electricity, oil processing, jetpack, better GUIs, ...
+* Note that despite the version bump, this release is still compatible with 0.1.4.
+
 ##### 0.1.4
 * Make double plates in the forge hammer instead of the crafting table, fixes vanilla conflict.
 

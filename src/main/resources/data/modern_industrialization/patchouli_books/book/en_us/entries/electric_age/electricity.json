@@ -1,0 +1,30 @@
+{
+  "name": "Electricity",
+  "category": "modern_industrialization:electric_age",
+  "icon": "modern_industrialization:lv_steam_turbine",
+  "pages": [
+    {
+      "type": "crafting",
+      "recipe": "modern_industrialization:lv/craft/machine/steam_turbine_asbl",
+      "text": "The Steam Turbine uses Steam to produce electricity. It converts every mb of Steam to 1 EU, up to 32 mb converted every tick."
+    },
+    {
+      "type": "text",
+      "text": "The Steam Turbine will automatically send electricity to any machine connected directly to its output side. It will only connect to cables placed on its output side. It has the Low Voltage (LV) $(thing)Tier$().$(br2)Every electric cable has a Tier which determines how much EU it can transfer and to which machines it can connect. Copper and Tin are LV, Cupronickel and Electrum are MV, Aluminum is HV."
+    },
+    {
+      "type": "text",
+      "text": "Cable networks have limitations to the amount of energy they will pull into the network: at most 256 EU/t for LV cables, 1024 EU/t for MV cables and 4096 EU/t for HV cables. Because there is no output limit for the network and because cables have a small internal storage, an LV network can provide more than 256 EU/t for a short amount of time.$(br2)Note however that single block electric machines will only connect to LV cables!"
+    },
+    {
+      "type": "text",
+      "text": "To transfer more energy, you need to either create multiple pipe networks or use Transformers. As you would expect, an X to Y Transformer will connect to Y cables on its output side and to X cables on its 5 other sides."
+    },
+    {
+      "type": "crafting",
+      "recipe": "modern_industrialization:transformers/lv_mv/up_asbl",
+      "recipe2": "modern_industrialization:transformers/lv_mv/down_asbl"
+    }
+  ],
+  "sortnum": 101
+}

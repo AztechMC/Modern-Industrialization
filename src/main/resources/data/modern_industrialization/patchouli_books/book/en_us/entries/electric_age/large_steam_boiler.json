@@ -1,0 +1,27 @@
+{
+  "name": "Large Steam Boiler",
+  "category": "modern_industrialization:electric_age",
+  "icon": "modern_industrialization:large_steam_boiler",
+  "pages": [
+    {
+      "type": "crafting",
+      "recipe": "modern_industrialization:lv/craft/machine/large_steam_boiler_asbl",
+      "text": "The Large Steam Boiler is an upgraded version of the smaller Bronze and Steel Boilers. It uses fuels 8 times faster than the Furnace, but it produces 256 mb/t of Steam when fully heated. Don't forget Water or it won't work!"
+    },
+    {
+      "type": "crafting",
+      "recipe": "modern_industrialization:lv/craft/bronze_plated_bricks_asbl",
+      "text": "The main block you'll need is the Bronze Plated Bricks, but you'll also need Bronze Pipe Machine Casings and Heatproof Machine Casings."
+    },
+    {
+      "type": "crafting",
+      "recipe": "modern_industrialization:machine/bronze/casing_pipe_asbl",
+      "recipe2": "modern_industrialization:lv/craft/heatproof_machine_casing_asbl"
+    },
+    {
+      "type": "text",
+      "text": "The Large Steam Boiler is comprised of one layer of Heatproof Machine Casings and three layers of Bronze Plated Bricks.$(br2)The controller goes on the second layer (i.e. the first layer of Bronze Plated Bricks).$(br2)The two middle blocks are Bronze Pipe Machine Casings.$(br2)Hatches must be placed on the bottom layer.$(br2)$(l:https://streamable.com/i8ssr9)Video$()"
+    }
+  ],
+  "sortnum": 103
+}

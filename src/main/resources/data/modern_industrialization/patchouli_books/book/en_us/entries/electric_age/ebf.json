@@ -1,0 +1,28 @@
+{
+  "name": "Electric Blast Furnace",
+  "category": "modern_industrialization:electric_age",
+  "icon": "modern_industrialization:electric_blast_furnace",
+  "pages": [
+    {
+      "type": "crafting",
+      "recipe": "modern_industrialization:lv/craft/machine/electric_blast_furnace_asbl",
+      "text": "The Electric Blast Furnace is the electric version of the Steam Blast Furnace. It unlocks new recipes and like other multiblock electric machines, its overclock is not bounded. Provided with enough energy, it will reach 1 craft / tick eventually."
+    },
+    {
+      "type": "crafting",
+      "recipe": "modern_industrialization:generated/materials/cupronickel/craft/coil",
+      "text": "The EBF is made of one layer of Heatproof Machine Casings, two hollow layers of Cupronickel Coils and one other layer of Heatproof Machine Casings. The controller must go on the bottom layer, and hatches on the top or bottom layer. $(l:https://imgur.com/a/9XzZWCG)Image$()"
+    },
+    {
+      "type": "crafting",
+      "recipe": "modern_industrialization:lv/craft/energy_input_hatch_asbl",
+      "text": "Don't forget to add Energy Input Hatch(es) or the EBF won't have energy! The LV Energy Input Hatch will only connect to LV pipes."
+    },
+    {
+      "type": "crafting",
+      "recipe": "modern_industrialization:advanced/energy_input_hatch_asbl",
+      "text": "MV Energy Input Hatches will only connect to MV pipes, which can be useful if you need a ton of energy for your EBF! You can't craft them yet, but keep in mind they exist..."
+    }
+  ],
+  "sortnum": 104
+}

@@ -11,7 +11,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class JetpackParticleAdder {
     public static void addJetpackParticles(MinecraftClient client) {
-        if(client.world != null) {
+        if(client.world != null && !client.isPaused()) {
             for (PlayerEntity player : client.world.getPlayers()) {
                 ItemStack chest = player.getEquippedStack(EquipmentSlot.CHEST);
                 if (chest.getItem() instanceof JetpackItem) {

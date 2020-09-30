@@ -5,7 +5,7 @@
   "pages": [
     {
       "type": "text",
-      "text": "The Quarry is a steam multiblock machine that consumes item pipes, uses them to dig deeper than the bedrock and gives you back some ores, as you can see in REI.$(br2)It's recommended that you have at least 4 Blast Furnaces running before you attempt to build it because it requires $(l)a lot of steel$()."
+      "text": "The Steam Quarry is a steam multiblock machine that consumes item pipes, uses them to dig deeper than the bedrock and gives you back some ores, as you can see in REI.$(br2)It's recommended that you have at least 4 Blast Furnaces running before you attempt to build it because it requires $(l)a lot of steel$()."
     },
     {
       "type": "text",

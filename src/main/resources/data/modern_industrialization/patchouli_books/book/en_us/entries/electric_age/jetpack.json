@@ -3,6 +3,11 @@
   "category": "modern_industrialization:electric_age",
   "icon": "modern_industrialization:jetpack",
   "pages": [
+    {
+      "type": "crafting",
+      "recipe": "modern_industrialization:advanced/jetpack_asbl",
+      "text": "Jetpack go brrr... The more powerful the fuel, the faster the jetpack!$(br2)Don't forget to activate it using the $(o)Toggle Flight$() keybinding!"
+    }
   ],
   "sortnum": 108
 }

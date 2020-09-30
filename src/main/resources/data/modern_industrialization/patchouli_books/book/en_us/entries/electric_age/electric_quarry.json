@@ -3,6 +3,11 @@
   "category": "modern_industrialization:electric_age",
   "icon": "modern_industrialization:electric_quarry",
   "pages": [
+    {
+      "type": "crafting",
+      "recipe": "modern_industrialization:lv/craft/machine/electric_quarry_asbl",
+      "text": "The Electric Quarry is the electric equivalent of the Steam Quarry. Its processing speed is only limited by the energy and items you provide it with!$(br2)Its structure is exactly the same as the Steam Quarry's."
+    }
   ],
   "sortnum": 106
 }

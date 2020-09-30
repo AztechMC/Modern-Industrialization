@@ -16,7 +16,7 @@
             "amount": 4
         },
         {
-            "item": "modern_industrialization:sodium_dust",
+            "tag": "c:sodium_dusts",
             "amount": 2
         }
     ],

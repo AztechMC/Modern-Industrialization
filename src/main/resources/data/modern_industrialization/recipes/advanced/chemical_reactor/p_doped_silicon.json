@@ -4,11 +4,11 @@
   "duration": 400,
   "item_inputs": [
     {
-    "item" : "modern_industrialization:silicon_plate",
+      "tag" : "c:silicon_plates",
     "amount": 1
     },
     {
-      "item" : "modern_industrialization:aluminum_dust",
+      "tag" : "c:aluminum_dusts",
       "amount": 1
     }
     ],

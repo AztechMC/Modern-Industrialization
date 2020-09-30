@@ -3,7 +3,7 @@
   "eu": 32,
   "duration": 400,
   "item_inputs": {
-    "item": "modern_industrialization:stainless_steel_dust",
+    "tag": "c:stainless_steel_dusts",
     "amount": 1
   },
   "item_outputs": {

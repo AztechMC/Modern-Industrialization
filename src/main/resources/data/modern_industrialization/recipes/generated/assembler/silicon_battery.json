@@ -16,7 +16,7 @@
             "amount": 4
         },
         {
-            "item": "modern_industrialization:silicon_dust",
+            "tag": "c:silicon_dusts",
             "amount": 2
         }
     ],

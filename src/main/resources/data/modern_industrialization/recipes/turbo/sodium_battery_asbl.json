@@ -17,7 +17,7 @@
       "item" : "modern_industrialization:battery_alloy_curved_plate"
     },
     "r" :{
-      "item" : "modern_industrialization:sodium_dust"
+      "tag" : "c:sodium_dusts"
     }
   },
 

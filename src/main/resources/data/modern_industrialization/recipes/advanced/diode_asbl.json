@@ -9,7 +9,7 @@
   "key":
   {
     "S" : {
-      "item" : "modern_industrialization:silicon_dust"
+      "tag" : "c:silicon_dusts"
     },
     "g" : {
       "item" : "minecraft:glass"
@@ -18,7 +18,7 @@
       "item" : "modern_industrialization:electrum_fine_wire"
     },
     "P" :{
-      "item" : "modern_industrialization:steel_plate"
+      "tag" : "c:steel_plates"
     }
   },
 

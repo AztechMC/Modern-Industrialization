@@ -9,7 +9,7 @@
   "key":
   {
     "A" : {
-      "item" : "modern_industrialization:aluminum_plate"
+      "tag" : "c:aluminum_plates"
     },
     "e" : {
       "item" : "modern_industrialization:pipe_electricity_electrum"

@@ -8,7 +8,7 @@
             "amount": 3
         },
         {
-            "item": "modern_industrialization:steel_plate",
+            "tag": "c:steel_plates",
             "amount": 2
         },
         {
@@ -16,7 +16,7 @@
             "amount": 3
         },
         {
-            "item": "modern_industrialization:silicon_dust",
+            "tag": "c:silicon_dusts",
             "amount": 1
         }
     ],

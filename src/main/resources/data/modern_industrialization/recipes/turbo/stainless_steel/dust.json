@@ -10,11 +10,11 @@
       "tag": "c:nickel_dusts",
       "amount": 1
     },
-    {"item" : "modern_industrialization:chrome_dust",
+    {"tag" : "c:chrome_dusts",
       "amount": 1
     },
 
-    {"item" : "modern_industrialization:manganese_dust",
+    {"tag" : "c:manganese_dusts",
       "amount": 1
     }
 

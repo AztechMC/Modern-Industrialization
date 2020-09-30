@@ -10,11 +10,11 @@
       "tag": "c:nickel_tiny_dusts",
       "amount": 1
     },
-    {"item" : "modern_industrialization:chrome_tiny_dust",
+    {"tag" : "c:chrome_tiny_dusts",
       "amount": 1
     },
 
-    {"item" : "modern_industrialization:manganese_tiny_dust",
+    {"tag" : "c:manganese_tiny_dusts",
       "amount": 1
     }
 

@@ -30,8 +30,12 @@ def gen_name(ty):
         lang_file.close()
 
     for item in ty.mi_items:
-        lang_id = 'item.modern_industrialization.' + (id + '_' + item)
-        name = clean(id) + " " + clean(item)
+        if item != id:
+            lang_id = 'item.modern_industrialization.' + (id + '_' + item)
+            name = clean(id) + " " + clean(item)
+        else:
+            lang_id = 'item.modern_industrialization.' + id
+            name = clean(id)
         lang_json[lang_id] = name
 
     if 'fluid_pipe' in ty.overrides:

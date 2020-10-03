@@ -1,0 +1,25 @@
+{
+  "name": "大炼钢",
+  "category": "modern_industrialization:steam_age",
+  "icon": "modern_industrialization:steel_boiler",
+  "pages": [
+    {
+      "type": "text",
+      "text": "现在你有钢了，你可以将你的青铜机器升级为钢机器了。钢机器的处理效率为 4 EU/t，只要能量占用不超过4 EU/t，钢机器的处理速度就是青铜机器的两倍。基本上，其速度是青铜机器的两倍，而且它还可以解锁新的配方。"
+    },
+    {
+      "type": "text",
+      "text": "钢制仓比青铜仓容量更大，多方块结构至少要有一个仓升级为钢。只要能量占用不超过4 EU/t，钢机器的处理速度就是青铜机器的两倍。$(br2)钢锅炉的产能是青铜锅炉的两倍，处理效率最高为 16 EU/t，钢水泵可产出青铜水泵两倍的产物，效率为 2桶/5秒 。"
+    },
+    {
+      "type": "text",
+      "text": "钢储罐可以存储8桶流体。$(br2)钢管道和其它材质的管道一样，你可以在一格方块内将钢管道和其它材质的管道混合使用。$(br2)你可以用REI查看所有的配方！"
+    },
+    {
+      "type": "crafting",
+      "recipe": "modern_industrialization:machine/steel/packer",
+      "text": "打包机是用钢打造的新机器，可以帮你自动合成简易物品。你可以自动合成双层锭、管道等物品，详见REI。"
+    }
+  ],
+  "sortnum": 11
+}

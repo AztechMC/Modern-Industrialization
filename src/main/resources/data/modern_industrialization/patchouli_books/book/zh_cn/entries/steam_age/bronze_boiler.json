@@ -1,0 +1,17 @@
+{
+  "name": "热水",
+  "category": "modern_industrialization:steam_age",
+  "icon": "modern_industrialization:bronze_boiler",
+  "pages": [
+    {
+      "type": "text",
+      "text": "蒸汽机器需要蒸汽来运转，而锅炉就能提供蒸汽。$(br2)锅炉会缓慢消耗燃料来加热。温度足够时，锅炉就会产出蒸汽。别忘了加水，否则你的燃料就白烧了。"
+    },
+    {
+      "type": "crafting",
+      "recipe": "modern_industrialization:machine/bronze/boiler",
+      "text": "虽然锅炉的造价高昂，但别忘了你可以获得双倍的矿石。而且，一旦你有了头两台机器，它的造价就会降低三倍！"
+    }
+  ],
+  "sortnum": 2
+}

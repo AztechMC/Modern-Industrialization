@@ -1,0 +1,16 @@
+{
+  "name": "储罐",
+  "category": "modern_industrialization:steam_age",
+  "icon": "modern_industrialization:tank_bronze",
+  "pages": [
+    {
+      "type": "text",
+      "text": "青铜储罐可以存储4桶流体，可用于与机器交互，也可以直接放置。$(br2)放置后你可以用桶或其它储罐右击已放置的储罐来转移流体。$(br2)有相同储存物的储罐可以堆叠。"
+    },
+    {
+      "type": "crafting",
+      "recipe": "modern_industrialization:tank/tank_bronze"
+    }
+  ],
+  "sortnum": 7
+}

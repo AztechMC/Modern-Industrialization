@@ -1,0 +1,16 @@
+{
+  "name": "锻造台",
+  "category": "modern_industrialization:steam_age",
+  "icon": "modern_industrialization:forge_hammer",
+  "pages": [
+    {
+      "type": "text",
+      "text": "在制作青铜前，我们需要一个锻造台。锻造台可以锤炼或锯开物品。$(br2)你可以放入铁、铜和锡矿石，之后你会获得2个矿物碎粉。每个矿物碎粉可熔炼为一块锭。"
+    },
+    {
+      "type": "crafting",
+      "recipe": "modern_industrialization:forge_hammer"
+    }
+  ],
+  "sortnum": 0
+}

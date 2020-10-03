@@ -1,0 +1,16 @@
+{
+  "name": "无限资源？",
+  "category": "modern_industrialization:steam_age",
+  "icon": "modern_industrialization:quarry",
+  "pages": [
+    {
+      "type": "text",
+      "text": "采石机是个蒸汽驱动的多方块结构，它消耗物流管道来掘入地底并挖掘矿物，你可以在REI中查看可挖到的矿物。$(br2)你最好准备好4个高炉，建造采石机需要消耗$(l)很多钢$()。"
+    },
+    {
+      "type": "text",
+      "text": "采石机的基础形状是两层3x3的空心机器外壳和2格高的垂直锁链，采石机放在底层的一面。在中心放置两个垂直的锁链，在锁链顶部放置一个钢机器外壳，在锁链两侧放置共6个钢管道机器外壳。采石机最多可包含4个仓，可替换底下两层的任意钢机器外壳。$(l:https://streamable.com/9wk7xb)视频$()"
+    }
+  ],
+  "sortnum": 12
+}

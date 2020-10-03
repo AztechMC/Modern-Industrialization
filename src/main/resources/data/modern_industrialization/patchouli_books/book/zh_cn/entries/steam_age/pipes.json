@@ -1,0 +1,28 @@
+{
+  "name": "管道",
+  "category": "modern_industrialization:steam_age",
+  "icon": "modern_industrialization:wrench",
+  "pages": [
+    {
+      "type": "text",
+      "text": "管道可用于合成一些机器，也可直接放置。1格的空间可放置最多3根管道。$(br2)不同材质的管道无法相连。$(br2)用扳手右击管道可更改其连接类型，潜行+右击拆掉管道。"
+    },
+    {
+      "type": "spotlight",
+      "item": "modern_industrialization:pipe_fluid_bronze",
+      "title": "流体管道",
+      "text": "流体管道只能运输一种流体，默认流体管道不会连接到空导管或方块。你可以用扳手右击导管中心来使其强制连接，或手持管道右击一个方块——该方法不会消耗你手里的管道。"
+    },
+    {
+      "type": "spotlight",
+      "item": "modern_industrialization:pipe_item_bronze",
+      "title": "物流管道",
+      "text": "物流管道默认不会连接到库存中，但你也可以强制连接。$(br2)右击连接处可查看过滤器。默认开启白名单模式，因此不会直接输送物品。"
+    },
+    {
+      "type": "text",
+      "text": "不同类型的管道的工作方式也不一样。$(br2)流体管道每刻会运输一定量的流体到相邻的方块，剩余的流体会在管道间流动。$(br2)物流管道总是运输物品到最近的库存内，每隔几秒最多运输16件物品。"
+    }
+  ],
+  "sortnum": 4
+}

@@ -12,8 +12,12 @@ import net.minecraft.util.math.BlockPos;
 import static aztech.modern_industrialization.machines.impl.multiblock.HatchType.FLUID_OUTPUT;
 import static aztech.modern_industrialization.machines.impl.multiblock.HatchType.ITEM_OUTPUT;
 
-public class HatchBlockEntity extends MachineBlockEntity implements ChunkUnloadBlockEntity {
+public class HatchBlockEntity extends MachineBlockEntity {
     private BlockPos controllerPos = null;
+    /**
+     * This variable is use to lazily sync controllerPos, to prevent needless updates when the controller checks the shape!
+     */
+    private BlockPos lastSyncedControllerPos = null;
     private boolean lateLoaded = false;
     public final HatchType type;
 
@@ -42,13 +46,11 @@ public class HatchBlockEntity extends MachineBlockEntity implements ChunkUnloadB
     void unlink() {
         controllerPos = null;
         markDirty();
-        if(!world.isClient) sync();
     }
 
     void link(MultiblockMachineBlockEntity controller) {
         controllerPos = controller.getPos();
         markDirty();
-        if(!world.isClient) sync();
     }
 
     // TODO: override methods
@@ -57,6 +59,7 @@ public class HatchBlockEntity extends MachineBlockEntity implements ChunkUnloadB
     public void tick() {
         if(world.isClient) return;
         lateLoad();
+        if(controllerPos != lastSyncedControllerPos) sync();
         if(extractItems && type == ITEM_OUTPUT) {
             autoExtractItems(world, pos, outputDirection);
         }
@@ -83,6 +86,7 @@ public class HatchBlockEntity extends MachineBlockEntity implements ChunkUnloadB
     @Override
     public CompoundTag toClientTag(CompoundTag tag) {
         NbtHelper.putBlockPos(tag, "controllerPos", controllerPos);
+        lastSyncedControllerPos = controllerPos;
         return super.toClientTag(tag);
     }
 
@@ -100,14 +104,13 @@ public class HatchBlockEntity extends MachineBlockEntity implements ChunkUnloadB
     }
 
     @Override
-    public void onChunkUnload() {
+    public void markRemoved() {
         if(controllerPos != null) {
-            if(world.isChunkLoaded(controllerPos)) {
-                BlockEntity be = world.getBlockEntity(controllerPos);
-                if (be instanceof MultiblockMachineBlockEntity) {
-                    ((MultiblockMachineBlockEntity) be).hatchUnloaded(pos);
-                }
+            MultiblockMachineBlockEntity be = (MultiblockMachineBlockEntity) world.getBlockEntity(controllerPos);
+            if(be != null) {
+                be.hatchRemoved(pos);
             }
         }
+        super.markRemoved();
     }
 }

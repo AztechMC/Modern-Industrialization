@@ -62,13 +62,6 @@ public class MultiblockMachineBlockEntity extends MachineBlockEntity {
         }
     }
 
-    public void hatchUnloaded(BlockPos pos) {
-        if(linkedHatches.containsKey(pos)) {
-            linkedHatches.put(pos, null);
-            ready = false;
-        }
-    }
-
     @Override
     public void setFacingDirection(Direction facingDirection) {
         super.setFacingDirection(facingDirection);
@@ -126,7 +119,6 @@ public class MultiblockMachineBlockEntity extends MachineBlockEntity {
     @Override
     protected boolean canRecipeStart() {
         lateLoad();
-        rebuildShape();
         return ready && super.canRecipeStart();
     }
 

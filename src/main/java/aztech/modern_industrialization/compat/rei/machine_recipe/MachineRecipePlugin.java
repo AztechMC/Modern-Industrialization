@@ -15,6 +15,7 @@ import me.shedaniel.rei.api.plugins.REIPluginV0;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
+import net.minecraft.fluid.Fluid;
 import net.minecraft.recipe.Recipe;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.util.Identifier;
@@ -77,9 +78,15 @@ public class MachineRecipePlugin implements REIPluginV0 {
                 if(slot instanceof ConfigurableFluidStack.ConfigurableFluidSlot) {
                     ConfigurableFluidStack stack = ((ConfigurableFluidStack.ConfigurableFluidSlot) slot).getConfStack();
                     if(stack.getAmount() > 0) {
-                        return TypedActionResult.success(EntryStack.create(stack.getFluid().getRawFluid()));
+                        Fluid fluid = stack.getFluid().getRawFluid();
+                        if(fluid != null) {
+                            return TypedActionResult.success(EntryStack.create(fluid));
+                        }
                     } else if(stack.getLockedFluid() != null) {
-                        return TypedActionResult.success(EntryStack.create(stack.getLockedFluid().getRawFluid()));
+                        Fluid fluid = stack.getLockedFluid().getRawFluid();
+                        if(fluid != null) {
+                            return TypedActionResult.success(EntryStack.create(fluid));
+                        }
                     }
                 } else if(slot instanceof ConfigurableItemStack.ConfigurableItemSlot) {
                     ConfigurableItemStack stack = ((ConfigurableItemStack.ConfigurableItemSlot) slot).getConfStack();

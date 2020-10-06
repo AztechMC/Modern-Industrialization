@@ -15,7 +15,6 @@ import net.fabricmc.fabric.api.renderer.v1.mesh.MutableQuadView;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
 import net.fabricmc.fabric.api.renderer.v1.model.FabricBakedModel;
 import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
-import net.fabricmc.fabric.api.rendering.data.v1.RenderAttachedBlockView;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.render.model.*;
 import net.minecraft.client.render.model.json.JsonUnbakedModel;
@@ -58,10 +57,6 @@ public class TankModel implements UnbakedModel, FabricBakedModel, BakedModel {
     public void emitBlockQuads(BlockRenderView blockView, BlockState state, BlockPos pos, Supplier<Random> randomSupplier, RenderContext context) {
         // Base mesh
         context.meshConsumer().accept(tankMesh);
-        // Fluid inside
-        RenderAttachedBlockView view = (RenderAttachedBlockView) blockView;
-        TankBlockEntity.RenderAttachment attachment = (TankBlockEntity.RenderAttachment) view.getBlockEntityRenderAttachment(pos);
-        drawFluid(context.getEmitter(), attachment.fillFraction, attachment.fluid);
     }
 
     @Override

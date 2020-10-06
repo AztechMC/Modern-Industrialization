@@ -12,7 +12,6 @@ import alexiil.mc.lib.attributes.misc.Reference;
 import aztech.modern_industrialization.mixin_impl.WorldRendererGetter;
 import aztech.modern_industrialization.util.NbtHelper;
 import net.fabricmc.fabric.api.block.entity.BlockEntityClientSerializable;
-import net.fabricmc.fabric.api.rendering.data.v1.RenderAttachmentBlockEntity;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.world.ClientWorld;
@@ -24,10 +23,10 @@ import net.minecraft.nbt.CompoundTag;
 
 import java.math.RoundingMode;
 
-public class TankBlockEntity extends BlockEntity implements FluidTransferable, BlockEntityClientSerializable, RenderAttachmentBlockEntity {
-    private FluidKey fluid = FluidKeys.EMPTY;
-    private int amount;
-    private int capacity;
+public class TankBlockEntity extends BlockEntity implements FluidTransferable, BlockEntityClientSerializable {
+    FluidKey fluid = FluidKeys.EMPTY;
+    int amount;
+    int capacity;
 
     public TankBlockEntity() {
         super(MITanks.BLOCK_ENTITY_TYPE);
@@ -110,23 +109,8 @@ public class TankBlockEntity extends BlockEntity implements FluidTransferable, B
         return FluidVolumeUtil.EMPTY;
     }
 
-    @Override
-    public Object getRenderAttachmentData() {
-        return new RenderAttachment(fluid.getRawFluid(), (float) amount / capacity);
-    }
-
     public void setCapacity(int capacity) {
         this.capacity = capacity;
-    }
-
-    public static class RenderAttachment {
-        public final Fluid fluid;
-        public final float fillFraction;
-
-        public RenderAttachment(Fluid fluid, float fillFraction) {
-            this.fluid = fluid;
-            this.fillFraction = fillFraction;
-        }
     }
 
     public boolean onPlayerUse(PlayerEntity player) {

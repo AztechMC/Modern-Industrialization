@@ -28,8 +28,8 @@ import net.minecraft.nbt.CompoundTag;
 
 import java.math.RoundingMode;
 
-public class CreativeTankBlockEntity extends BlockEntity implements FluidExtractable, BlockEntityClientSerializable, RenderAttachmentBlockEntity {
-    private FluidKey fluid = FluidKeys.EMPTY;
+public class CreativeTankBlockEntity extends BlockEntity implements FluidExtractable, BlockEntityClientSerializable {
+    FluidKey fluid = FluidKeys.EMPTY;
 
     public CreativeTankBlockEntity() {
         super(MITanks.CREATIVE_BLOCK_ENTITY_TYPE);
@@ -79,11 +79,6 @@ public class CreativeTankBlockEntity extends BlockEntity implements FluidExtract
             return this.fluid.withAmount(maxAmount);
         }
         return FluidVolumeUtil.EMPTY;
-    }
-
-    @Override
-    public Object getRenderAttachmentData() {
-        return new TankBlockEntity.RenderAttachment(fluid.getRawFluid(), isEmpty() ? 0 : 1);
     }
 
     public boolean onPlayerUse(PlayerEntity player) {

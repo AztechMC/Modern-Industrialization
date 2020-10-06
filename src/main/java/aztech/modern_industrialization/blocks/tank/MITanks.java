@@ -5,7 +5,9 @@ import aztech.modern_industrialization.ModernIndustrialization;
 import aztech.modern_industrialization.blocks.creativetank.CreativeTankBlock;
 import aztech.modern_industrialization.blocks.creativetank.CreativeTankBlockEntity;
 import aztech.modern_industrialization.blocks.creativetank.CreativeTankItem;
+import aztech.modern_industrialization.blocks.creativetank.CreativeTankRenderer;
 import aztech.modern_industrialization.model.block.ModelProvider;
+import net.fabricmc.fabric.api.client.rendereregistry.v1.BlockEntityRendererRegistry;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.block.Block;
 import net.minecraft.block.Material;
@@ -60,6 +62,9 @@ public enum MITanks {
         UnbakedModel creativeTankModel = new TankModel("creative");
         ModelProvider.modelMap.put(new MIIdentifier("block/creative_tank"), creativeTankModel);
         ModelProvider.modelMap.put(new MIIdentifier("item/creative_tank"), creativeTankModel);
+
+        BlockEntityRendererRegistry.INSTANCE.register(BLOCK_ENTITY_TYPE, TankRenderer::new);
+        BlockEntityRendererRegistry.INSTANCE.register(CREATIVE_BLOCK_ENTITY_TYPE, CreativeTankRenderer::new);
     }
 
     private static Block[] getBlocks() {

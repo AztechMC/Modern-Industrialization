@@ -5,6 +5,8 @@ import aztech.modern_industrialization.machines.recipe.MachineRecipeType;
 import me.shedaniel.rei.api.EntryStack;
 import me.shedaniel.rei.api.RecipeDisplay;
 import me.shedaniel.rei.api.fractions.Fraction;
+import net.minecraft.client.resource.language.I18n;
+import net.minecraft.fluid.Fluid;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
@@ -22,6 +24,7 @@ public class MachineRecipeDisplay implements RecipeDisplay {
     final MachineRecipe recipe;
     private final Identifier category;
     private static final DecimalFormat PROBABILITY_FORMAT = new DecimalFormat("#.#");
+    private static Function<EntryStack, String> FLUID_TOOLTIP = stack -> I18n.translate("text.modern_industrialization.fluid_slot_quantity", stack.getAccurateAmount().multiply(Fraction.ofWhole(1000)).intValue());
 
     public MachineRecipeDisplay(MachineRecipeType type, MachineRecipe recipe) {
         this.recipe = recipe;
@@ -30,6 +33,10 @@ public class MachineRecipeDisplay implements RecipeDisplay {
 
     private static Function<EntryStack, List<Text>> getProbabilityTooltip(float probability) {
         return (stack) -> probability == 1 ? Collections.emptyList() : Collections.singletonList(new TranslatableText("text.modern_industrialization.probability", PROBABILITY_FORMAT.format(probability * 100)));
+    }
+
+    private static EntryStack createFluidEntryStack(Fluid fluid, int amount) {
+        return EntryStack.create(fluid, Fraction.of(amount, 1000)).addSetting(EntryStack.Settings.Fluid.AMOUNT_TOOLTIP, FLUID_TOOLTIP);
     }
 
     public Stream<List<EntryStack>> getItemInputs() {
@@ -43,7 +50,7 @@ public class MachineRecipeDisplay implements RecipeDisplay {
     }
 
     public Stream<List<EntryStack>> getFluidInputs() {
-        return recipe.fluidInputs.stream().map(i -> Collections.singletonList(EntryStack.create(i.fluid, Fraction.of(i.amount, 1000)).addSetting(EntryStack.Settings.TOOLTIP_APPEND_EXTRA, getProbabilityTooltip(i.probability))));
+        return recipe.fluidInputs.stream().map(i -> Collections.singletonList(createFluidEntryStack(i.fluid, i.amount).addSetting(EntryStack.Settings.TOOLTIP_APPEND_EXTRA, getProbabilityTooltip(i.probability))));
     }
 
     @Override
@@ -59,7 +66,7 @@ public class MachineRecipeDisplay implements RecipeDisplay {
     }
 
     public Stream<List<EntryStack>> getFluidOutputs() {
-        return recipe.fluidOutputs.stream().map(i -> Collections.singletonList(EntryStack.create(i.fluid, Fraction.of(i.amount, 1000)).addSetting(EntryStack.Settings.TOOLTIP_APPEND_EXTRA, getProbabilityTooltip(i.probability))));
+        return recipe.fluidOutputs.stream().map(i -> Collections.singletonList(createFluidEntryStack(i.fluid, i.amount).addSetting(EntryStack.Settings.TOOLTIP_APPEND_EXTRA, getProbabilityTooltip(i.probability))));
     }
 
     @Override

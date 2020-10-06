@@ -36,7 +36,7 @@ public class MachineScreen extends HandledScreen<MachineScreenHandler> {
 
     private MachineScreenHandler handler;
 
-    private static final Identifier SLOT_ATLAS = new Identifier(ModernIndustrialization.MOD_ID, "textures/gui/container/slot_atlas.png");
+    public static final Identifier SLOT_ATLAS = new Identifier(ModernIndustrialization.MOD_ID, "textures/gui/container/slot_atlas.png");
     private static final Style SECONDARY_INFO = Style.EMPTY.withColor(TextColor.fromRgb(0xa9a9a9)).withItalic(true);
 
     public MachineScreen(MachineScreenHandler handler, PlayerInventory inventory, Text title) {

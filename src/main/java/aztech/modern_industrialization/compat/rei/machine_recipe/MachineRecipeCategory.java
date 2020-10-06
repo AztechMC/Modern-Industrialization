@@ -1,6 +1,7 @@
 package aztech.modern_industrialization.compat.rei.machine_recipe;
 
 import aztech.modern_industrialization.machines.impl.MachineFactory;
+import aztech.modern_industrialization.machines.impl.MachineScreen;
 import aztech.modern_industrialization.machines.impl.SteamMachineFactory;
 import aztech.modern_industrialization.machines.recipe.MachineRecipeType;
 import me.shedaniel.math.Point;
@@ -50,7 +51,7 @@ public class MachineRecipeCategory implements RecipeCategory<MachineRecipeDispla
 
     @FunctionalInterface
     private interface SlotDrawer {
-        void drawSlots(Stream<List<EntryStack>> entries, int[] slots, boolean input);
+        void drawSlots(Stream<List<EntryStack>> entries, int[] slots, boolean input, boolean fluid);
     }
 
     @Override
@@ -76,24 +77,29 @@ public class MachineRecipeCategory implements RecipeCategory<MachineRecipeDispla
         int xoffset = bounds.x + (bounds.width - X + x) / 2 - x;
         int yoffset = bounds.y + (bounds.height - Y + y) / 2 - y;
 
-        SlotDrawer drawer = (entryStream, slots, input) -> {
+        SlotDrawer drawer = (entryStream, slots, input, fluid) -> {
             List<List<EntryStack>> entries = entryStream.collect(Collectors.toList());
             for (int i = 0; i < slots.length; ++i) {
                 List<EntryStack> stack = i < entries.size() ? entries.get(i) : Collections.emptyList();
-                Slot widget = Widgets.createSlot(new Point(xoffset + factory.getSlotPosX(slots[i]), yoffset + factory.getSlotPosY(slots[i]))).entries(stack);
+                Point point = new Point(xoffset + factory.getSlotPosX(slots[i]), yoffset + factory.getSlotPosY(slots[i]));
+                Slot widget = Widgets.createSlot(point).entries(stack);
                 if (input) {
                     widget.markInput();
                 } else {
                     widget.markOutput();
                 }
+                if(fluid) {
+                    widgets.add(createFluidSlotBackground(point));
+                    widget.disableBackground();
+                }
                 widgets.add(widget);
             }
         };
 
-        drawer.drawSlots(recipeDisplay.getItemInputs(), factory.getInputIndices(), true);
-        drawer.drawSlots(recipeDisplay.getFluidInputs(), factory.getFluidInputIndices(), true);
-        drawer.drawSlots(recipeDisplay.getItemOutputs(), factory.getOutputIndices(), false);
-        drawer.drawSlots(recipeDisplay.getFluidOutputs(), factory.getFluidOutputIndices(), false);
+        drawer.drawSlots(recipeDisplay.getItemInputs(), factory.getInputIndices(), true, false);
+        drawer.drawSlots(recipeDisplay.getFluidInputs(), factory.getFluidInputIndices(), true, true);
+        drawer.drawSlots(recipeDisplay.getItemOutputs(), factory.getOutputIndices(), false, false);
+        drawer.drawSlots(recipeDisplay.getFluidOutputs(), factory.getFluidOutputIndices(), false, true);
 
         if (factory.hasProgressBar()) {
             double recipeMillis = recipeDisplay.getSeconds() * 1000;
@@ -160,5 +166,12 @@ public class MachineRecipeCategory implements RecipeCategory<MachineRecipeDispla
         }
 
         return Math.max(X - x + 15, 150);
+    }
+
+    private static Widget createFluidSlotBackground(Point point) {
+        return Widgets.createDrawableWidget((helper, matrices, mouseX, mouseY, delta) -> {
+            MinecraftClient.getInstance().getTextureManager().bindTexture(MachineScreen.SLOT_ATLAS);
+            helper.drawTexture(matrices, point.x-1, point.y-1, 18, 0, 18, 18);
+        });
     }
 }

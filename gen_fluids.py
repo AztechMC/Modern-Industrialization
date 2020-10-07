@@ -34,6 +34,8 @@ def gen_name(fluid):
 java_class="""
 package aztech.modern_industrialization;
 
+import alexiil.mc.lib.attributes.fluid.FluidContainerRegistry;
+import alexiil.mc.lib.attributes.fluid.amount.FluidAmount;
 import alexiil.mc.lib.attributes.fluid.volume.FluidKey;
 import alexiil.mc.lib.attributes.fluid.volume.FluidKeys;
 import alexiil.mc.lib.attributes.fluid.volume.SimpleFluidKey;
@@ -42,6 +44,7 @@ import net.devtech.arrp.json.models.JModel;
 import net.devtech.arrp.json.models.JTextures;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.item.Items;
 import net.minecraft.text.*;
 import net.minecraft.util.registry.Registry;
 
@@ -118,9 +121,9 @@ java_class += """\
                 fluid.key = FluidKeys.get(fluid);
             }
             FluidKeys.put(fluid, fluid.key);
+            FluidContainerRegistry.mapContainer(Items.BUCKET, fluid.bucketItem, fluid.key.withAmount(FluidAmount.BUCKET));
         }
     }
-    
     
     private static void registerFluid(CraftingFluid fluid) {
         String id = fluid.name;

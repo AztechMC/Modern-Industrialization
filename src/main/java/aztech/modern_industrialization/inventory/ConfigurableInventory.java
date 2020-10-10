@@ -126,12 +126,16 @@ public interface ConfigurableInventory extends Inventory, SidedInventory, FluidT
         SearchOption option = SearchOptions.inDirection(direction);
         if(ItemAttributes.INSERTABLE.getAll(world, pos.offset(direction), option).hasOfferedAny()) {
             ItemInsertable insertable = ItemAttributes.INSERTABLE.get(world, pos.offset(direction), option);
-            for(ConfigurableItemStack stack : getItemStacks()) {
-                if(stack.pipesExtract && !stack.stack.isEmpty()) {
+            autoExtractItems(insertable, false);
+        }
+    }
+
+    default void autoExtractItems(ItemInsertable insertable, boolean force) {
+        for(ConfigurableItemStack stack : getItemStacks()) {
+                if((stack.pipesExtract || force) && !stack.stack.isEmpty()) {
                     stack.stack = insertable.insert(stack.stack);
                     markDirty();
                 }
-            }
         }
     }
 
@@ -139,12 +143,16 @@ public interface ConfigurableInventory extends Inventory, SidedInventory, FluidT
         SearchOption option = SearchOptions.inDirection(direction);
         if(FluidAttributes.INSERTABLE.getAll(world, pos.offset(direction), option).hasOfferedAny()) {
             FluidInsertable insertable = FluidAttributes.INSERTABLE.get(world, pos.offset(direction), option);
-            for(ConfigurableFluidStack stack : getFluidStacks()) {
-                if(!stack.getFluid().isEmpty() && stack.pipesExtract) {
-                    FluidVolume leftover = insertable.attemptInsertion(stack.getFluid().withAmount(FluidAmount.of(stack.getAmount(), 1000)), ACTION);
-                    stack.setAmount(leftover.amount().asInt(1000, RoundingMode.FLOOR));
-                    markDirty();
-                }
+            autoExtractFluids(insertable, false);
+        }
+    }
+
+    default void autoExtractFluids(FluidInsertable insertable, boolean force) {
+        for(ConfigurableFluidStack stack : getFluidStacks()) {
+            if(!stack.getFluid().isEmpty() && (stack.pipesExtract || force)) {
+                FluidVolume leftover = insertable.attemptInsertion(stack.getFluid().withAmount(FluidAmount.of(stack.getAmount(), 1000)), ACTION);
+                stack.setAmount(leftover.amount().asInt(1000, RoundingMode.FLOOR));
+                markDirty();
             }
         }
     }

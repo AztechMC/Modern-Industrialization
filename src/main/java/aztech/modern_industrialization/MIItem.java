@@ -11,7 +11,11 @@ public class MIItem extends Item {
     public static HashMap<String, MIItem> items = new HashMap<String, MIItem>();
 
     public MIItem(String id){
-        super(new Item.Settings().group(ModernIndustrialization.ITEM_GROUP));
+        this(id, 64);
+    }
+
+    public MIItem(String id, int maxCount){
+        super(new Item.Settings().maxCount(maxCount).group(ModernIndustrialization.ITEM_GROUP));
         if(items.containsKey(id)){
             throw new IllegalArgumentException("Item id already taken : " + id);
         }else{
@@ -72,4 +76,9 @@ public class MIItem extends Item {
     public static final MIItem ITEM_RUBY_DUST = new MIItem("ruby_dust");
     public static final MIItem ITEM_STAINLESS_STEEL_HOT_INGOT = new MIItem("stainless_steel_hot_ingot");
     public static final MIItem ITEM_CHROME_HOT_INGOT = new MIItem("chrome_hot_ingot");
+
+    public static final MIItem ITEM_DEPLETED_URANIUM_FUEL_ROD = new MIItem("depleted_uranium_fuel_rod");
+    public static final MIItem ITEM_URANIUM_FUEL_ROD = new MINuclearItem("uranium_fuel_rod", 1000,
+            ITEM_DEPLETED_URANIUM_FUEL_ROD);
+
 }

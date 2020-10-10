@@ -14,4 +14,8 @@ public interface NuclearReactorComponent {
 
     public double getHeatTransferNeighbourFraction(); // the rest of heat is transfered to itself
 
+    public double getHeatSink();
+
+    public double tick(double neutronReceived, double heat, double heatSink);
+
 }

@@ -1,0 +1,13 @@
+{
+  "type": "modern_industrialization:compressor",
+  "eu": 2,
+  "duration": 200,
+  "item_inputs": {
+    "item": "minecraft:sugar_cane",
+    "amount": 1
+  },
+  "item_outputs": {
+    "item": "minecraft:paper",
+    "amount": 2
+  }
+}

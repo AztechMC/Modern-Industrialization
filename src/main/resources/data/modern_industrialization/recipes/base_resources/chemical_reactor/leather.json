@@ -1,0 +1,17 @@
+{
+  "type": "modern_industrialization:chemical_reactor",
+  "eu": 8,
+  "duration": 100,
+  "item_inputs": {
+    "item": "minecraft:rotten_flesh",
+    "amount": 5
+  },
+  "fluid_inputs": {
+    "fluid": "modern_industrialization:oxygen",
+    "amount": 100
+  },
+  "item_outputs": {
+    "item": "minecraft:leather",
+    "amount": 1
+  }
+}

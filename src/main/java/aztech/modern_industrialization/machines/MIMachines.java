@@ -9,6 +9,7 @@ import aztech.modern_industrialization.machines.impl.MachineFactory;
 import aztech.modern_industrialization.machines.impl.MachineTier;
 import aztech.modern_industrialization.machines.impl.SteamMachineFactory;
 import aztech.modern_industrialization.machines.impl.multiblock.*;
+import aztech.modern_industrialization.machines.nuclear.NuclearReactorBlockEntity;
 import aztech.modern_industrialization.machines.recipe.FurnaceRecipeProxy;
 import aztech.modern_industrialization.machines.recipe.MachineRecipeType;
 import aztech.modern_industrialization.machines.special.*;
@@ -67,6 +68,7 @@ public class MIMachines {
     public static MultiblockShape LARGE_BOILER_SHAPE;
     public static MultiblockShape OIL_DRILLING_RIG_SHAPE;
     public static MultiblockShape VACUUM_FREEZER_SHAPE;
+    public static MultiblockShape NUCLEAR_REACTOR_SHAPE;
 
     public static final MachineFactory LARGE_STEAM_BOILER;
     public static final MachineFactory ELECTRIC_BLAST_FURNACE;
@@ -199,7 +201,32 @@ public class MIMachines {
         OIL_DRILLING_RIG_SHAPE.addEntry(1, 0, 2, optionalRigHatch);
 
 
-        // vacuum freezer
+        // nuclear reactor
+        MultiblockShape.Entry nuclearCasing = MultiblockShapes.blockId(new MIIdentifier("nuclear_machine_casing"));
+        MultiblockShape.Entry optionalNuclearInputHatch = MultiblockShapes.or(nuclearCasing,
+                MultiblockShapes.hatch(HATCH_FLAG_ITEM_INPUT | HATCH_FLAG_FLUID_INPUT));
+        MultiblockShape.Entry optionalNuclearOutputHatch = MultiblockShapes.or(nuclearCasing,
+                MultiblockShapes.hatch( HATCH_FLAG_FLUID_OUTPUT | HATCH_FLAG_ITEM_OUTPUT));
+
+        NUCLEAR_REACTOR_SHAPE = new MultiblockShape();
+        for(int i = 0; i < 5; i++){
+            for(int j = -2; j <= 2; j++){
+                for(int k = -2; k <= 2; k++){
+                    if( (i == 0 || i == 4) || (j == -2 || j == 2 ) || (k == -2 || k == 2 )){
+                        if(!(i == 0 && j == 0 && k == 0)){
+                            if(j == -2){
+                                NUCLEAR_REACTOR_SHAPE.addEntry(k,j,i, optionalNuclearOutputHatch);
+                            }else if(j== 2){
+                                NUCLEAR_REACTOR_SHAPE.addEntry(k,j,i, optionalNuclearInputHatch);
+                            }else{
+                                NUCLEAR_REACTOR_SHAPE.addEntry(k,j,i, nuclearCasing);
+                            }
+
+                        }
+                    }
+                }
+            }
+        }
 
     }
 
@@ -532,6 +559,12 @@ public class MIMachines {
                 .setupEfficiencyBar(0, 166, 38, 62, 100, 2)
                 .setupOverlays("vacuum_freezer", true, false, false)
                 .setupCasing("frostproof")
+        ;
+
+        new MachineFactory("nuclear_reactor", null, f -> new NuclearReactorBlockEntity(f, NUCLEAR_REACTOR_SHAPE), null, 64, 0, 0, 0)
+                .setInputSlotPosition(15, 20, 8, 8).setupBackground("nuclear.png", 176, 256).setInventoryPos(8, 174)
+                .setupOverlays("vacuum_freezer", true, false, false)
+                .setupCasing("nuclear")
         ;
 
         registerHatches();

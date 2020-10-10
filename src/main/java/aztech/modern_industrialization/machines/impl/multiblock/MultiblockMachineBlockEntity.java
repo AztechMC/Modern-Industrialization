@@ -30,13 +30,20 @@ public class MultiblockMachineBlockEntity extends MachineBlockEntity {
     protected int shapeCheckTicks = 0;
     protected MachineModel hatchCasing;
 
-    public MultiblockMachineBlockEntity(MachineFactory factory, MultiblockShape shape) {
+    public MultiblockMachineBlockEntity(MachineFactory factory, MultiblockShape shape, boolean clear) {
         super(factory);
-        itemStacks.clear();
-        fluidStacks.clear();
+        if(clear) {
+            itemStacks.clear();
+            fluidStacks.clear();
+        }
         this.shape = shape;
         this.hatchCasing = factory.machineModel;
     }
+
+    public MultiblockMachineBlockEntity(MachineFactory factory, MultiblockShape shape) {
+        this(factory, shape, false);
+    }
+
 
     private void lateLoad() {
         loadDelayedActiveRecipe();
@@ -156,13 +163,17 @@ public class MultiblockMachineBlockEntity extends MachineBlockEntity {
         clearLocks();
     }
 
-    @Override
-    public void tick() {
+    public void tickCheckShape(){
         if(shapeCheckTicks == 0) {
             rebuildShape();
             shapeCheckTicks = 20;
         }
         --shapeCheckTicks;
+    }
+
+    @Override
+    public void tick() {
+        this.tickCheckShape();
         super.tick();
     }
 

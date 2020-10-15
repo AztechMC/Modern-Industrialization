@@ -9,7 +9,7 @@ import alexiil.mc.lib.attributes.fluid.amount.FluidAmount;
 import alexiil.mc.lib.attributes.fluid.filter.ExactFluidFilter;
 import alexiil.mc.lib.attributes.fluid.volume.*;
 import aztech.modern_industrialization.ModernIndustrialization;
-import aztech.modern_industrialization.pipes.api.PipeConnectionType;
+import aztech.modern_industrialization.pipes.api.PipeEndpointType;
 import aztech.modern_industrialization.pipes.api.PipeNetworkNode;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.math.BlockPos;
@@ -20,11 +20,13 @@ import java.math.RoundingMode;
 import java.util.*;
 
 import static alexiil.mc.lib.attributes.Simulation.ACTION;
-import static aztech.modern_industrialization.pipes.api.PipeConnectionType.*;
+import static aztech.modern_industrialization.pipes.api.PipeEndpointType.*;
 
 public class FluidNetworkNode extends PipeNetworkNode {
     int amount = 0;
     private List<FluidConnection> connections = new ArrayList<>();
+    private FluidKey cachedFluid = FluidKeys.EMPTY;
+    private boolean needsSync = false;
 
     void interactWithConnections(World world, BlockPos pos) {
         FluidNetworkData data = (FluidNetworkData) network.data;
@@ -78,10 +80,10 @@ public class FluidNetworkNode extends PipeNetworkNode {
     }
 
     @Override
-    public PipeConnectionType[] getConnections(BlockPos pos) {
-        PipeConnectionType[] connections = new PipeConnectionType[6];
+    public PipeEndpointType[] getConnections(BlockPos pos) {
+        PipeEndpointType[] connections = new PipeEndpointType[6];
         for(Direction direction : network.manager.getNodeLinks(pos)) {
-            connections[direction.getId()] = FLUID;
+            connections[direction.getId()] = PipeEndpointType.PIPE;
         }
         for(FluidConnection connection : this.connections) {
             connections[connection.direction.getId()] = connection.type;
@@ -101,8 +103,8 @@ public class FluidNetworkNode extends PipeNetworkNode {
         for(int i = 0; i < connections.size(); i++) {
             FluidConnection conn = connections.get(i);
             if(conn.direction == direction) {
-                if(conn.type == FLUID_IN) conn.type = FLUID_IN_OUT;
-                else if(conn.type == FLUID_IN_OUT) conn.type = FLUID_OUT;
+                if(conn.type == BLOCK_IN) conn.type = BLOCK_IN_OUT;
+                else if(conn.type == BLOCK_IN_OUT) conn.type = BLOCK_OUT;
                 else connections.remove(i);
                 return;
             }
@@ -119,7 +121,7 @@ public class FluidNetworkNode extends PipeNetworkNode {
         }
         // Otherwise try to connect
         if (canConnect(world, pos, direction)) {
-            connections.add(new FluidConnection(direction, FLUID_IN));
+            connections.add(new FluidConnection(direction, BLOCK_IN));
         }
     }
 
@@ -142,29 +144,54 @@ public class FluidNetworkNode extends PipeNetworkNode {
         }
     }
 
-    private PipeConnectionType decodeConnectionType(int i) {
-        return i == 0 ? FLUID_IN : i == 1 ? FLUID_IN_OUT : FLUID_OUT;
+    private PipeEndpointType decodeConnectionType(int i) {
+        return i == 0 ? BLOCK_IN : i == 1 ? BLOCK_IN_OUT : BLOCK_OUT;
     }
 
-    private int encodeConnectionType(PipeConnectionType connection) {
-        return connection == FLUID_IN ? 0 : connection == FLUID_IN_OUT ? 1 : 2;
+    private int encodeConnectionType(PipeEndpointType connection) {
+        return connection == BLOCK_IN ? 0 : connection == BLOCK_IN_OUT ? 1 : 2;
     }
 
     private static class FluidConnection {
         private final Direction direction;
-        private PipeConnectionType type;
+        private PipeEndpointType type;
 
-        private FluidConnection(Direction direction, PipeConnectionType type) {
+        private FluidConnection(Direction direction, PipeEndpointType type) {
             this.direction = direction;
             this.type = type;
         }
 
         private boolean canInsert() {
-            return type == FLUID_IN || type == FLUID_IN_OUT;
+            return type == BLOCK_IN || type == BLOCK_IN_OUT;
         }
 
         private boolean canExtract() {
-            return type == FLUID_OUT || type == FLUID_IN_OUT;
+            return type == BLOCK_OUT || type == BLOCK_IN_OUT;
         }
+    }
+
+    @Override
+    public CompoundTag writeCustomData() {
+        CompoundTag tag = new CompoundTag();
+        tag.put("fluid", ((FluidNetworkData) network.data).fluid.toTag());
+        return tag;
+    }
+
+    @Override
+    public void tick(World world, BlockPos pos) {
+        super.tick(world, pos);
+
+        FluidKey networkFluid = ((FluidNetworkData) network.data).fluid;
+        if(networkFluid != cachedFluid) {
+            cachedFluid = networkFluid;
+            needsSync = true;
+        }
+    }
+
+    @Override
+    public boolean shouldSync() {
+        boolean sync = needsSync;
+        needsSync = false;
+        return sync;
     }
 }

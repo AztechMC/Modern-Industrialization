@@ -3,7 +3,7 @@ package aztech.modern_industrialization.pipes.item;
 import alexiil.mc.lib.attributes.SearchOption;
 import alexiil.mc.lib.attributes.SearchOptions;
 import alexiil.mc.lib.attributes.item.*;
-import aztech.modern_industrialization.pipes.api.PipeConnectionType;
+import aztech.modern_industrialization.pipes.api.PipeEndpointType;
 import aztech.modern_industrialization.pipes.api.PipeNetworkNode;
 import aztech.modern_industrialization.util.ItemStackHelper;
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
@@ -24,7 +24,7 @@ import net.minecraft.world.World;
 
 import java.util.*;
 
-import static aztech.modern_industrialization.pipes.api.PipeConnectionType.*;
+import static aztech.modern_industrialization.pipes.api.PipeEndpointType.*;
 
 // TODO: item filters
 public class ItemNetworkNode extends PipeNetworkNode {
@@ -51,10 +51,10 @@ public class ItemNetworkNode extends PipeNetworkNode {
     }
 
     @Override
-    public PipeConnectionType[] getConnections(BlockPos pos) {
-        PipeConnectionType[] connections = new PipeConnectionType[6];
+    public PipeEndpointType[] getConnections(BlockPos pos) {
+        PipeEndpointType[] connections = new PipeEndpointType[6];
         for(Direction direction : network.manager.getNodeLinks(pos)) {
-            connections[direction.getId()] = ITEM;
+            connections[direction.getId()] = PIPE;
         }
         for(ItemConnection connection : this.connections) {
             connections[connection.direction.getId()] = connection.type;
@@ -68,8 +68,8 @@ public class ItemNetworkNode extends PipeNetworkNode {
         for(int i = 0; i < connections.size(); i++) {
             ItemConnection conn = connections.get(i);
             if(conn.direction == direction) {
-                if(conn.type == ITEM_IN) conn.type = ITEM_IN_OUT;
-                else if(conn.type == ITEM_IN_OUT) conn.type = ITEM_OUT;
+                if(conn.type == BLOCK_IN) conn.type = BLOCK_IN_OUT;
+                else if(conn.type == BLOCK_IN_OUT) conn.type = BLOCK_OUT;
                 else connections.remove(i);
                 return;
             }
@@ -86,7 +86,7 @@ public class ItemNetworkNode extends PipeNetworkNode {
         }
         // Otherwise try to connect
         if (canConnect(world, pos, direction)) {
-            connections.add(new ItemConnection(direction, ITEM_IN, 0));
+            connections.add(new ItemConnection(direction, BLOCK_IN, 0));
         }
     }
 
@@ -123,12 +123,12 @@ public class ItemNetworkNode extends PipeNetworkNode {
         inactiveTicks = tag.getInt("inactiveTicks");
     }
 
-    private static PipeConnectionType decodeConnectionType(int i) {
-        return i == 0 ? ITEM_IN : i == 1 ? ITEM_IN_OUT : ITEM_OUT;
+    private static PipeEndpointType decodeConnectionType(int i) {
+        return i == 0 ? BLOCK_IN : i == 1 ? BLOCK_IN_OUT : BLOCK_OUT;
     }
 
-    private static int encodeConnectionType(PipeConnectionType connection) {
-        return connection == ITEM_IN ? 0 : connection == ITEM_IN_OUT ? 1 : 2;
+    private static int encodeConnectionType(PipeEndpointType connection) {
+        return connection == BLOCK_IN ? 0 : connection == BLOCK_IN_OUT ? 1 : 2;
     }
 
     @Override
@@ -221,12 +221,12 @@ public class ItemNetworkNode extends PipeNetworkNode {
 
     private static class ItemConnection {
         private final Direction direction;
-        private PipeConnectionType type;
+        private PipeEndpointType type;
         private boolean whitelist = true;
         private int priority;
         private final ItemStack[] stacks = new ItemStack[ItemPipeInterface.SLOTS];
 
-        private ItemConnection(Direction direction, PipeConnectionType type, int priority) {
+        private ItemConnection(Direction direction, PipeEndpointType type, int priority) {
             this.direction = direction;
             this.type = type;
             this.priority = priority;
@@ -236,11 +236,11 @@ public class ItemNetworkNode extends PipeNetworkNode {
         }
 
         private boolean canInsert() {
-            return type == ITEM_IN || type == ITEM_IN_OUT;
+            return type == BLOCK_IN || type == BLOCK_IN_OUT;
         }
 
         private boolean canExtract() {
-            return type == ITEM_OUT || type == ITEM_IN_OUT;
+            return type == BLOCK_OUT || type == BLOCK_IN_OUT;
         }
 
         private boolean canStackMoveThrough(ItemStack stack) {

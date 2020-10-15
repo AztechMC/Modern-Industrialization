@@ -1,11 +1,11 @@
 package aztech.modern_industrialization.pipes.api;
 
 import net.minecraft.util.Identifier;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.function.BiFunction;
 import java.util.function.Supplier;
 
@@ -21,16 +21,20 @@ public final class PipeNetworkType implements Comparable<PipeNetworkType> {
      */
     private final int serialNumber;
     private final int color;
-    private final PipeConnectionType defaultType;
+    private final boolean opensGui;
+    private final PipeRenderer.Factory renderer;
+
     private static Map<Identifier, PipeNetworkType> types = new HashMap<>();
+    private static Set<PipeRenderer.Factory> pipeRenderers = new HashSet<>();
     private static int nextSerialNumber = 0;
 
-    private PipeNetworkType(Identifier identifier, BiFunction<Integer, PipeNetworkData, PipeNetwork> networkCtor, Supplier<PipeNetworkNode> nodeCtor, int color, PipeConnectionType defaultType, int serialNumber) {
+    private PipeNetworkType(Identifier identifier, BiFunction<Integer, PipeNetworkData, PipeNetwork> networkCtor, Supplier<PipeNetworkNode> nodeCtor, int color, boolean opensGui, PipeRenderer.Factory renderer, int serialNumber) {
         this.identifier = identifier;
         this.networkCtor = networkCtor;
         this.nodeCtor = nodeCtor;
         this.color = color;
-        this.defaultType = defaultType;
+        this.opensGui = opensGui;
+        this.renderer = renderer;
         this.serialNumber = serialNumber;
     }
 
@@ -50,8 +54,8 @@ public final class PipeNetworkType implements Comparable<PipeNetworkType> {
         return color;
     }
 
-    public PipeConnectionType getDefaultConnectionType() {
-        return defaultType;
+    public boolean opensGui() {
+        return opensGui;
     }
 
     public static PipeNetworkType get(Identifier identifier) {
@@ -60,17 +64,26 @@ public final class PipeNetworkType implements Comparable<PipeNetworkType> {
 
     public static Map<Identifier, PipeNetworkType> getTypes() { return new HashMap<>(types); }
 
-    public static PipeNetworkType register(Identifier identifier, BiFunction<Integer, PipeNetworkData, PipeNetwork> networkCtor, Supplier<PipeNetworkNode> nodeCtor, int color, PipeConnectionType defaultType) {
-        PipeNetworkType type = new PipeNetworkType(identifier, networkCtor, nodeCtor, color, defaultType, nextSerialNumber++);
+    public static PipeNetworkType register(Identifier identifier, BiFunction<Integer, PipeNetworkData, PipeNetwork> networkCtor, Supplier<PipeNetworkNode> nodeCtor, int color, boolean opensGui, PipeRenderer.Factory renderer) {
+        PipeNetworkType type = new PipeNetworkType(identifier, networkCtor, nodeCtor, color, opensGui, renderer, nextSerialNumber++);
         PipeNetworkType previousType = types.put(identifier, type);
         if(previousType != null) {
             throw new IllegalArgumentException("Attempting to register another PipeNetworkType with the same identifier.");
         }
+        pipeRenderers.add(renderer);
         return type;
     }
 
     @Override
     public int compareTo(PipeNetworkType o) {
         return Integer.compare(serialNumber, o.serialNumber);
+    }
+
+    public PipeRenderer.Factory getRenderer() {
+        return renderer;
+    }
+
+    public static Set<PipeRenderer.Factory> getRenderers() {
+        return new HashSet<>(pipeRenderers);
     }
 }

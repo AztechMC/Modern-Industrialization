@@ -27,19 +27,20 @@ import net.fabricmc.fabric.api.screenhandler.v1.ScreenHandlerRegistry;
 import net.minecraft.block.Block;
 import net.minecraft.block.Material;
 import net.minecraft.block.entity.BlockEntityType;
+import net.minecraft.client.texture.Sprite;
+import net.minecraft.client.texture.SpriteAtlasTexture;
+import net.minecraft.client.util.SpriteIdentifier;
 import net.minecraft.item.Item;
 import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import static aztech.modern_industrialization.api.energy.CableTier.*;
-import static aztech.modern_industrialization.pipes.api.PipeConnectionType.*;
 
 public class MIPipes implements ModInitializer {
     public static final MIPipes INSTANCE = new MIPipes();
@@ -52,6 +53,26 @@ public class MIPipes implements ModInitializer {
     private Map<PipeNetworkType, Item> pipeItems = new HashMap<>();
     public static final ScreenHandlerType<ItemPipeScreenHandler> SCREN_HANDLER_TYPE_ITEM_PIPE = ScreenHandlerRegistry.registerExtended(new MIIdentifier("item_pipe"), ItemPipeScreenHandler::new);
     public static final Set<Identifier> PIPE_MODEL_NAMES = new HashSet<>();
+
+    // TODO: move this to MIPipesClient ?
+    private static PipeRenderer.Factory makeRenderer(List<String> sprites, boolean innerQuads) {
+        return new PipeRenderer.Factory() {
+            @Override
+            public Collection<SpriteIdentifier> getSpriteDependencies() {
+                return sprites.stream().map(n -> new SpriteIdentifier(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE, new MIIdentifier("blocks/pipes/" + n))).collect(Collectors.toList());
+            }
+
+            @Override
+            public PipeRenderer create(Function<SpriteIdentifier, Sprite> textureGetter) {
+                SpriteIdentifier[] ids = sprites.stream().map(n -> new SpriteIdentifier(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE, new MIIdentifier("blocks/pipes/" + n))).toArray(SpriteIdentifier[]::new);
+                return new PipeMeshCache(textureGetter, ids, innerQuads);
+            }
+        };
+    }
+
+    private static final PipeRenderer.Factory ITEM_RENDERER = makeRenderer(Arrays.asList("item", "item", "item_in", "item_in_out", "item_out"), false);
+    private static final PipeRenderer.Factory FLUID_RENDERER = makeRenderer(Arrays.asList("fluid", "fluid_item", "fluid_in", "fluid_in_out", "fluid_out"), true);
+    private static final PipeRenderer.Factory ELECTRICITY_RENDERER = makeRenderer(Arrays.asList("electricity", "electricity"), false);
 
     @Override
     public void onInitialize() {
@@ -103,7 +124,8 @@ public class MIPipes implements ModInitializer {
                 (id, data) -> new FluidNetwork(id, data, nodeCapacity),
                 FluidNetworkNode::new,
                 color,
-                FLUID
+                false,
+                FLUID_RENDERER
         );
         Item item = new PipeItem(
                 new Item.Settings().group(ModernIndustrialization.ITEM_GROUP),
@@ -121,7 +143,8 @@ public class MIPipes implements ModInitializer {
                 ItemNetwork::new,
                 ItemNetworkNode::new,
                 color,
-                ITEM
+                true,
+                ITEM_RENDERER
         );
         Item item = new PipeItem(
                 new Item.Settings().group(ModernIndustrialization.ITEM_GROUP),
@@ -139,7 +162,8 @@ public class MIPipes implements ModInitializer {
                 (id, data) -> new ElectricityNetwork(id, data, tier),
                 ElectricityNetworkNode::new,
                 color,
-                ELECTRICITY
+                false,
+                ELECTRICITY_RENDERER
         );
         Item item = new PipeItem(
                 new Item.Settings().group(ModernIndustrialization.ITEM_GROUP),

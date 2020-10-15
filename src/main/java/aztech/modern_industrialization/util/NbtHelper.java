@@ -2,7 +2,7 @@ package aztech.modern_industrialization.util;
 
 import alexiil.mc.lib.attributes.fluid.volume.FluidKey;
 import alexiil.mc.lib.attributes.fluid.volume.FluidKeys;
-import aztech.modern_industrialization.pipes.api.PipeConnectionType;
+import aztech.modern_industrialization.pipes.api.PipeEndpointType;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.item.Item;
@@ -49,18 +49,18 @@ public class NbtHelper {
         }
         return directions;
     }
-    public static byte[] encodeConnections(PipeConnectionType[] connections) {
+    public static byte[] encodeConnections(PipeEndpointType[] connections) {
         byte[] encoded = new byte[6];
         for(int i = 0; i < 6; ++i) {
-            PipeConnectionType type = connections[i];
+            PipeEndpointType type = connections[i];
             encoded[i] = type == null ? 127 : (byte)type.getId();
         }
         return encoded;
     }
-    public static PipeConnectionType[] decodeConnections(byte[] encoded) {
-        PipeConnectionType[] connections = new PipeConnectionType[6];
+    public static PipeEndpointType[] decodeConnections(byte[] encoded) {
+        PipeEndpointType[] connections = new PipeEndpointType[6];
         for(int i = 0; i < 6; ++i) {
-            connections[i] = PipeConnectionType.byId(encoded[i]);
+            connections[i] = PipeEndpointType.byId(encoded[i]);
         }
         return connections;
     }

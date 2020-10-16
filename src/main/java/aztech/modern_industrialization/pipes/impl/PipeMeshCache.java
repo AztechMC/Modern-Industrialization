@@ -8,6 +8,7 @@ import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandler;
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry;
 import net.fabricmc.fabric.api.renderer.v1.Renderer;
 import net.fabricmc.fabric.api.renderer.v1.RendererAccess;
+import net.fabricmc.fabric.api.renderer.v1.material.RenderMaterial;
 import net.fabricmc.fabric.api.renderer.v1.mesh.Mesh;
 import net.fabricmc.fabric.api.renderer.v1.mesh.MeshBuilder;
 import net.fabricmc.fabric.api.renderer.v1.mesh.MutableQuadView;
@@ -31,6 +32,10 @@ public class PipeMeshCache implements PipeRenderer {
      * bitmask stores for which direction there is a connection.
      */
     private final Mesh[][] centerMeshes;
+    /**
+     * Custom material for the fluids.
+     */
+    private final RenderMaterial fluidMaterial;
 
     /**
      * Create a new `PipeMeshCache`, and populate it.
@@ -91,6 +96,8 @@ public class PipeMeshCache implements PipeRenderer {
                 centerMeshes[logicalSlot][mask] = meshBuilder.build();
             }
         }
+
+        fluidMaterial = renderer.materialFinder().emissive(0, true).find();
     }
 
     /**
@@ -135,6 +142,7 @@ public class PipeMeshCache implements PipeRenderer {
                     if (still != null) {
                         quad.spriteBake(0, still, MutableQuadView.BAKE_LOCK_UV);
                         quad.spriteColor(0, color, color, color, color);
+                        quad.material(fluidMaterial);
                         return true;
                     } else {
                         return false;

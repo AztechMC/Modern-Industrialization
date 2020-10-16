@@ -153,7 +153,7 @@ public class TankModel implements UnbakedModel, FabricBakedModel, BakedModel {
 
         Renderer renderer = RendererAccess.INSTANCE.getRenderer();
         cutoutMaterial = renderer.materialFinder().blendMode(0, BlendMode.CUTOUT_MIPPED).find();
-        translucentMaterial = renderer.materialFinder().blendMode(0, BlendMode.TRANSLUCENT).find();
+        translucentMaterial = renderer.materialFinder().blendMode(0, BlendMode.TRANSLUCENT).emissive(0, true).find();
         MeshBuilder builder = RendererAccess.INSTANCE.getRenderer().meshBuilder();
         QuadEmitter emitter = builder.getEmitter();
         for (Direction direction : Direction.values()) {

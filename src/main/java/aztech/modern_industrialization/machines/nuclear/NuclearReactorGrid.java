@@ -27,7 +27,7 @@ public class NuclearReactorGrid {
 
     public NuclearReactorComponent getComponent(int x, int y) {
         if (x >= 0 && y >= 0 && x < sizeX && y < sizeY) {
-                    return grid[x+y*sizeX];
+            return grid[x + y * sizeX];
         } else {
             throw new IllegalArgumentException("Position : " + x + "," + y + "outside of grid of size : " + sizeX + "," + sizeY);
         }
@@ -35,7 +35,7 @@ public class NuclearReactorGrid {
 
     public void setComponent(int x, int y, NuclearReactorComponent component) {
         if (x >= 0 && y >= 0 && x < sizeX && y < sizeY) {
-             grid[x+y*sizeX] = component;
+            grid[x + y * sizeX] = component;
         } else {
             throw new IllegalArgumentException("Position : " + x + "," + y + "outside of grid of size : " + sizeX + "," + sizeY);
         }
@@ -43,7 +43,7 @@ public class NuclearReactorGrid {
 
     public double getHeat(int x, int y) {
         if (x >= 0 && y >= 0 && x < sizeX && y < sizeY) {
-            return heat[x+y*sizeX];
+            return heat[x + y * sizeX];
         } else {
             throw new IllegalArgumentException("Position : " + x + "," + y + "outside of grid of size : " + sizeX + "," + sizeY);
         }
@@ -51,7 +51,7 @@ public class NuclearReactorGrid {
 
     public void setHeat(int x, int y, double heat) {
         if (x >= 0 && y >= 0 && x < sizeX && y < sizeY) {
-            this.heat[x+y*sizeX] = heat;
+            this.heat[x + y * sizeX] = heat;
         } else {
             throw new IllegalArgumentException("Position : " + x + "," + y + "outside of grid of size : " + sizeX + "," + sizeY);
         }

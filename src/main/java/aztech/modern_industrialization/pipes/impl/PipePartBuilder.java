@@ -1,13 +1,10 @@
 package aztech.modern_industrialization.pipes.impl;
 
+import static net.minecraft.util.math.Direction.*;
+
 import aztech.modern_industrialization.pipes.api.PipeConnectionType;
-import net.fabricmc.fabric.api.renderer.v1.mesh.MutableQuadView;
-import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
-import net.minecraft.client.texture.Sprite;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
-
-import static net.minecraft.util.math.Direction.*;
 
 /**
  * A class that can build pipe model parts using a simple interface.
@@ -22,7 +19,8 @@ abstract class PipePartBuilder {
      */
     protected static final float SPACING = 1.0f / 16;
     /**
-     * The distance between the side of the block and the first of the five pipe slots.
+     * The distance between the side of the block and the first of the five pipe
+     * slots.
      */
     protected static final float FIRST_POS = (1.0f - 5 * SIDE - 4 * SPACING) / 2;
     Vec3d pos;
@@ -34,10 +32,12 @@ abstract class PipePartBuilder {
         // initial position + half pipe + slotPos * width
         float position = (1.0f - 3 * SIDE - 2 * SPACING) / 2.0f + SIDE / 2.0f + slotPos * (SIDE + SPACING);
         this.pos = new Vec3d(position, position, position);
-        // Find a suitable right direction (both right and up must face inside of the block).
+        // Find a suitable right direction (both right and up must face inside of the
+        // block).
         for (Direction d : Direction.values()) {
             this.right = Vec3d.of(d.getVector());
-            if (isTowardsInside(this.right) && isTowardsInside(up())) break;
+            if (isTowardsInside(this.right) && isTowardsInside(up()))
+                break;
         }
         // Move out of the center cube.
         moveForward(SIDE / 2);
@@ -219,7 +219,8 @@ abstract class PipePartBuilder {
                 }
             } else if (slot == 2) {
                 if (connSlot == 0) {
-                    // short bend, but far if the direction is west to avoid collisions in some cases.
+                    // short bend, but far if the direction is west to avoid collisions in some
+                    // cases.
                     return direction == WEST ? 3 : 2;
                 } else if (connSlot == 1) {
                     // long bend

@@ -1,15 +1,11 @@
 package aztech.modern_industrialization.machines.impl;
 
 import aztech.modern_industrialization.inventory.ConfigurableFluidStack;
-import aztech.modern_industrialization.inventory.ConfigurableInventory;
 import aztech.modern_industrialization.inventory.ConfigurableItemStack;
-import net.minecraft.fluid.Fluid;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.util.math.Direction;
-
 import java.util.ArrayList;
 import java.util.List;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.PacketByteBuf;
 
 public class MachineInventories {
     public static MachineInventory clientOfBuf(PacketByteBuf buf) {
@@ -60,11 +56,12 @@ public class MachineInventories {
             }
         };
 
-
         int itemStackCnt = buf.readInt();
-        while(itemStackCnt --> 0) itemStacks.add(new ConfigurableItemStack());
+        while (itemStackCnt-- > 0)
+            itemStacks.add(new ConfigurableItemStack());
         int fluidStackCnt = buf.readInt();
-        while(fluidStackCnt --> 0) fluidStacks.add(new ConfigurableFluidStack(0));
+        while (fluidStackCnt-- > 0)
+            fluidStacks.add(new ConfigurableFluidStack(0));
 
         clientInv.readFromTag(buf.readCompoundTag());
         return clientInv;

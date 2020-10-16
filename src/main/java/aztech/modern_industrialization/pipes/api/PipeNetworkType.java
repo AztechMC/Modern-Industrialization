@@ -1,13 +1,10 @@
 package aztech.modern_industrialization.pipes.api;
 
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.BiFunction;
 import java.util.function.Supplier;
+import net.minecraft.util.Identifier;
 
 /**
  * A pipe network type.
@@ -25,7 +22,8 @@ public final class PipeNetworkType implements Comparable<PipeNetworkType> {
     private static Map<Identifier, PipeNetworkType> types = new HashMap<>();
     private static int nextSerialNumber = 0;
 
-    private PipeNetworkType(Identifier identifier, BiFunction<Integer, PipeNetworkData, PipeNetwork> networkCtor, Supplier<PipeNetworkNode> nodeCtor, int color, PipeConnectionType defaultType, int serialNumber) {
+    private PipeNetworkType(Identifier identifier, BiFunction<Integer, PipeNetworkData, PipeNetwork> networkCtor, Supplier<PipeNetworkNode> nodeCtor,
+            int color, PipeConnectionType defaultType, int serialNumber) {
         this.identifier = identifier;
         this.networkCtor = networkCtor;
         this.nodeCtor = nodeCtor;
@@ -58,12 +56,15 @@ public final class PipeNetworkType implements Comparable<PipeNetworkType> {
         return types.get(identifier);
     }
 
-    public static Map<Identifier, PipeNetworkType> getTypes() { return new HashMap<>(types); }
+    public static Map<Identifier, PipeNetworkType> getTypes() {
+        return new HashMap<>(types);
+    }
 
-    public static PipeNetworkType register(Identifier identifier, BiFunction<Integer, PipeNetworkData, PipeNetwork> networkCtor, Supplier<PipeNetworkNode> nodeCtor, int color, PipeConnectionType defaultType) {
+    public static PipeNetworkType register(Identifier identifier, BiFunction<Integer, PipeNetworkData, PipeNetwork> networkCtor,
+            Supplier<PipeNetworkNode> nodeCtor, int color, PipeConnectionType defaultType) {
         PipeNetworkType type = new PipeNetworkType(identifier, networkCtor, nodeCtor, color, defaultType, nextSerialNumber++);
         PipeNetworkType previousType = types.put(identifier, type);
-        if(previousType != null) {
+        if (previousType != null) {
             throw new IllegalArgumentException("Attempting to register another PipeNetworkType with the same identifier.");
         }
         return type;

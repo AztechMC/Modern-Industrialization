@@ -6,10 +6,8 @@ import aztech.modern_industrialization.machines.recipe.MachineRecipe;
 import aztech.modern_industrialization.machines.recipe.MachineRecipeType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.CraftingResultInventory;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.inventory.SimpleInventory;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.packet.s2c.play.ScreenHandlerSlotUpdateS2CPacket;
 import net.minecraft.screen.ScreenHandler;
@@ -22,9 +20,9 @@ import net.minecraft.world.World;
 
 public class ForgeHammerScreenHandler extends ScreenHandler {
 
-
     // TODO : create custom recipe json
-    public static final MachineRecipeType RECIPE_HAMMER = new MachineRecipeType(new MIIdentifier("forge_hammer_hammer")).withItemInputs().withItemOutputs();
+    public static final MachineRecipeType RECIPE_HAMMER = new MachineRecipeType(new MIIdentifier("forge_hammer_hammer")).withItemInputs()
+            .withItemOutputs();
     public static final MachineRecipeType RECIPE_SAW = new MachineRecipeType(new MIIdentifier("forge_hammer_saw")).withItemInputs().withItemOutputs();
     private int inputCount;
 
@@ -38,8 +36,6 @@ public class ForgeHammerScreenHandler extends ScreenHandler {
         Registry.register(Registry.RECIPE_TYPE, new MIIdentifier(name), type);
         Registry.register(Registry.RECIPE_SERIALIZER, new MIIdentifier(name), type);
     }
-
-
 
     private final Inventory output = new SimpleInventory(1) {
         public void markDirty() {
@@ -58,7 +54,7 @@ public class ForgeHammerScreenHandler extends ScreenHandler {
 
     private boolean isHammer;
 
-    public ForgeHammerScreenHandler(int syncId, PlayerInventory playerInventory){
+    public ForgeHammerScreenHandler(int syncId, PlayerInventory playerInventory) {
         this(syncId, playerInventory, ScreenHandlerContext.EMPTY);
     }
 
@@ -70,14 +66,12 @@ public class ForgeHammerScreenHandler extends ScreenHandler {
 
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 9; j++) {
-                this.addSlot(new Slot(playerInventory, i * 9 + j + 9,
-                        8 + j * 18, 84 + i * 18));
+                this.addSlot(new Slot(playerInventory, i * 9 + j + 9, 8 + j * 18, 84 + i * 18));
             }
         }
 
         for (int j = 0; j < 9; j++) {
-            this.addSlot(new Slot(playerInventory, j,
-                    8 + j * 18, 58 + 84));
+            this.addSlot(new Slot(playerInventory, j, 8 + j * 18, 58 + 84));
         }
 
         this.addSlot(new Slot(this.input, 0, 47, 47));
@@ -96,7 +90,6 @@ public class ForgeHammerScreenHandler extends ScreenHandler {
         });
     }
 
-
     public void onContentChanged(Inventory inventory) {
         super.onContentChanged(inventory);
         if (inventory == this.input) {
@@ -104,15 +97,15 @@ public class ForgeHammerScreenHandler extends ScreenHandler {
         }
     }
 
-    public void updateStatus(){
+    public void updateStatus() {
         this.context.run((world, blockPos) -> {
             updateStatus(this.syncId, world);
         });
     }
 
-    public void updateStatus(int syncId, World world){
+    public void updateStatus(int syncId, World world) {
         if (!world.isClient) {
-            ServerPlayerEntity serverPlayerEntity = (ServerPlayerEntity)playerInventory.player;
+            ServerPlayerEntity serverPlayerEntity = (ServerPlayerEntity) playerInventory.player;
             ItemStack outputStack = ItemStack.EMPTY;
             if (!input.getStack(0).isEmpty()) {
 

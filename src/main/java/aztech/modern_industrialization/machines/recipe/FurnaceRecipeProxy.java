@@ -1,6 +1,9 @@
 package aztech.modern_industrialization.machines.recipe;
 
+import static aztech.modern_industrialization.ModernIndustrialization.MOD_ID;
+
 import aztech.modern_industrialization.mixin_impl.IngredientMatchingStacksAccessor;
+import java.util.*;
 import net.minecraft.item.ItemStack;
 import net.minecraft.recipe.Ingredient;
 import net.minecraft.recipe.RecipeType;
@@ -8,10 +11,6 @@ import net.minecraft.recipe.SmeltingRecipe;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
-
-import java.util.*;
-
-import static aztech.modern_industrialization.ModernIndustrialization.MOD_ID;
 
 public class FurnaceRecipeProxy extends MachineRecipeType {
     public FurnaceRecipeProxy(Identifier id) {
@@ -26,11 +25,12 @@ public class FurnaceRecipeProxy extends MachineRecipeType {
 
     private void buildCachedRecipes(ServerWorld world) {
         cachedRecipes.clear();
-        for(SmeltingRecipe smeltingRecipe : world.getRecipeManager().listAllOfType(RecipeType.SMELTING)) {
+        for (SmeltingRecipe smeltingRecipe : world.getRecipeManager().listAllOfType(RecipeType.SMELTING)) {
             Ingredient ingredient = smeltingRecipe.getPreviewInputs().get(0);
-            ItemStack[] matchingStacks = ((IngredientMatchingStacksAccessor)(Object) ingredient).modern_industrialization_getMatchingStacks();
-            for(ItemStack matchingStack : matchingStacks) {
-                Identifier id = new Identifier(smeltingRecipe.getId().getNamespace(), smeltingRecipe.getId().getPath() + Registry.ITEM.getId(matchingStack.getItem()).toString().replace(":", "__modern_industrialization_furnace_proxy__"));
+            ItemStack[] matchingStacks = ((IngredientMatchingStacksAccessor) (Object) ingredient).modern_industrialization_getMatchingStacks();
+            for (ItemStack matchingStack : matchingStacks) {
+                Identifier id = new Identifier(smeltingRecipe.getId().getNamespace(), smeltingRecipe.getId().getPath()
+                        + Registry.ITEM.getId(matchingStack.getItem()).toString().replace(":", "__modern_industrialization_furnace_proxy__"));
                 MachineRecipe recipe = new MachineRecipe(id, this);
                 recipe.eu = 2;
                 recipe.duration = smeltingRecipe.getCookTime();
@@ -49,7 +49,7 @@ public class FurnaceRecipeProxy extends MachineRecipeType {
     @Override
     public Collection<MachineRecipe> getRecipes(ServerWorld world) {
         long time = System.currentTimeMillis();
-        if(time - lastUpdate > UPDATE_INTERVAL) {
+        if (time - lastUpdate > UPDATE_INTERVAL) {
             lastUpdate = time;
             buildCachedRecipes(world);
         }

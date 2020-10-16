@@ -6,14 +6,12 @@ import aztech.modern_industrialization.machines.impl.multiblock.MultiblockMachin
 import aztech.modern_industrialization.machines.impl.multiblock.MultiblockShape;
 import aztech.modern_industrialization.machines.impl.multiblock.MultiblockShapes;
 import aztech.modern_industrialization.machines.recipe.MachineRecipe;
-import aztech.modern_industrialization.machines.recipe.MachineRecipeType;
 import aztech.modern_industrialization.material.MIMaterials;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 import net.minecraft.block.Block;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.math.Direction;
-
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 public class ElectricBlastFurnaceBlockEntity extends MultiblockMachineBlockEntity {
     private static final Block[] COIL_MATERIALS;
@@ -29,11 +27,12 @@ public class ElectricBlastFurnaceBlockEntity extends MultiblockMachineBlockEntit
     protected void matchShape() {
         Block coilType = world.getBlockState(pos.offset(Direction.UP)).getBlock();
         int coilId = 0;
-        for(; coilId < COIL_MATERIALS.length; coilId++) {
-            if(coilType == COIL_MATERIALS[coilId]) break;
+        for (; coilId < COIL_MATERIALS.length; coilId++) {
+            if (coilType == COIL_MATERIALS[coilId])
+                break;
         }
 
-        if(coilId == COIL_MATERIALS.length) {
+        if (coilId == COIL_MATERIALS.length) {
             ready = false;
             this.coilId = -1;
             this.errorMessage = new TranslatableText("text.modern_industrialization.shape_error_no_coil", pos.offset(Direction.UP));
@@ -50,26 +49,24 @@ public class ElectricBlastFurnaceBlockEntity extends MultiblockMachineBlockEntit
     }
 
     static {
-        COIL_MATERIALS = new Block[] {
-                MIMaterials.cupronickel.getBlock("coil"),
-        };
-        COIL_EU = new int[] {
-                128,
-        };
+        COIL_MATERIALS = new Block[] { MIMaterials.cupronickel.getBlock("coil"), };
+        COIL_EU = new int[] { 128, };
         COIL_SHAPE = new MultiblockShape[COIL_MATERIALS.length];
 
         int i = 0;
-        for(Block coilBlock : COIL_MATERIALS) {
+        for (Block coilBlock : COIL_MATERIALS) {
             COIL_SHAPE[i] = new MultiblockShape();
 
-            MultiblockShape.Entry optionalHatch = MultiblockShapes.or(MultiblockShapes.block(MIBlock.HEATPROOF_MACHINE_CASING), MultiblockShapes.hatch(31));
+            MultiblockShape.Entry optionalHatch = MultiblockShapes.or(MultiblockShapes.block(MIBlock.HEATPROOF_MACHINE_CASING),
+                    MultiblockShapes.hatch(31));
             MultiblockShape.Entry coil = MultiblockShapes.block(coilBlock);
 
-            for(int x = -1; x <= 1; x++) {
-                for(int z = 0; z < 3; ++z) {
-                    if(x != 0 || z != 0) COIL_SHAPE[i].addEntry(x, 0, z, optionalHatch);
+            for (int x = -1; x <= 1; x++) {
+                for (int z = 0; z < 3; ++z) {
+                    if (x != 0 || z != 0)
+                        COIL_SHAPE[i].addEntry(x, 0, z, optionalHatch);
                     COIL_SHAPE[i].addEntry(x, 3, z, optionalHatch);
-                    if(x != 0 || z != 1) {
+                    if (x != 0 || z != 1) {
                         for (int y = 1; y <= 2; ++y) {
                             COIL_SHAPE[i].addEntry(x, y, z, coil);
                         }

@@ -9,9 +9,13 @@ import aztech.modern_industrialization.ModernIndustrialization;
 import aztech.modern_industrialization.inventory.ConfigurableFluidStack;
 import aztech.modern_industrialization.inventory.ConfigurableInventoryPackets;
 import aztech.modern_industrialization.inventory.ConfigurableItemStack;
-import aztech.modern_industrialization.inventory.ConfigurableScreenHandler;
 import com.mojang.blaze3d.systems.RenderSystem;
 import io.netty.buffer.Unpooled;
+import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.function.Supplier;
 import net.fabricmc.fabric.api.network.ClientSidePacketRegistry;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
@@ -25,12 +29,6 @@ import net.minecraft.network.PacketByteBuf;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.text.*;
 import net.minecraft.util.Identifier;
-
-import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.function.Supplier;
 
 public class MachineScreen extends HandledScreen<MachineScreenHandler> {
 
@@ -48,19 +46,20 @@ public class MachineScreen extends HandledScreen<MachineScreenHandler> {
     }
 
     private int nextButtonX;
+
     private int buttonX() {
         nextButtonX -= 22;
         return nextButtonX + 22 + x;
     }
 
     private boolean hasLock() {
-        for(ConfigurableItemStack stack : handler.inventory.getItemStacks()) {
-            if(stack.canPlayerLock()) {
+        for (ConfigurableItemStack stack : handler.inventory.getItemStacks()) {
+            if (stack.canPlayerLock()) {
                 return true;
             }
         }
-        for(ConfigurableFluidStack stack : handler.inventory.getFluidStacks()) {
-            if(stack.canPlayerLock()) {
+        for (ConfigurableFluidStack stack : handler.inventory.getFluidStacks()) {
+            if (stack.canPlayerLock()) {
                 return true;
             }
         }
@@ -68,8 +67,8 @@ public class MachineScreen extends HandledScreen<MachineScreenHandler> {
     }
 
     private boolean hasItemOutput() {
-        for(ConfigurableItemStack stack : handler.inventory.getItemStacks()) {
-            if(stack.canPipesExtract()) {
+        for (ConfigurableItemStack stack : handler.inventory.getItemStacks()) {
+            if (stack.canPipesExtract()) {
                 return true;
             }
         }
@@ -77,8 +76,8 @@ public class MachineScreen extends HandledScreen<MachineScreenHandler> {
     }
 
     private boolean hasFluidOutput() {
-        for(ConfigurableFluidStack stack : handler.inventory.getFluidStacks()) {
-            if(stack.canPipesExtract()) {
+        for (ConfigurableFluidStack stack : handler.inventory.getFluidStacks()) {
+            if (stack.canPipesExtract()) {
                 return true;
             }
         }
@@ -89,7 +88,7 @@ public class MachineScreen extends HandledScreen<MachineScreenHandler> {
     protected void init() {
         super.init();
         nextButtonX = 152;
-        if(hasLock()) {
+        if (hasLock()) {
             addButton(new MachineButton(buttonX(), 4 + y, 40, new LiteralText("slot locking"), b -> {
                 boolean newLockingMode = !handler.lockingMode;
                 handler.lockingMode = newLockingMode;
@@ -99,7 +98,7 @@ public class MachineScreen extends HandledScreen<MachineScreenHandler> {
                 ClientSidePacketRegistry.INSTANCE.sendToServer(ConfigurableInventoryPackets.SET_LOCKING_MODE, buf);
             }, (button, matrices, mouseX, mouseY) -> {
                 List<Text> lines = new ArrayList<>();
-                if(handler.lockingMode) {
+                if (handler.lockingMode) {
                     lines.add(new TranslatableText("text.modern_industrialization.locking_mode_on"));
                     lines.add(new TranslatableText("text.modern_industrialization.click_to_disable").setStyle(SECONDARY_INFO));
                 } else {
@@ -109,8 +108,8 @@ public class MachineScreen extends HandledScreen<MachineScreenHandler> {
                 renderTooltip(matrices, lines, mouseX, mouseY);
             }, () -> handler.lockingMode));
         }
-        if(handler.inventory.hasOutput()) {
-            if(hasFluidOutput()) {
+        if (handler.inventory.hasOutput()) {
+            if (hasFluidOutput()) {
                 addButton(new MachineButton(buttonX(), 4 + y, 0, new LiteralText("fluid auto-extract"), b -> {
                     boolean newFluidExtract = !handler.inventory.getFluidExtract();
                     handler.inventory.setFluidExtract(newFluidExtract);
@@ -121,7 +120,7 @@ public class MachineScreen extends HandledScreen<MachineScreenHandler> {
                     ClientSidePacketRegistry.INSTANCE.sendToServer(MachinePackets.C2S.SET_AUTO_EXTRACT, buf);
                 }, (button, matrices, mouseX, mouseY) -> {
                     List<Text> lines = new ArrayList<>();
-                    if(handler.inventory.getFluidExtract()) {
+                    if (handler.inventory.getFluidExtract()) {
                         lines.add(new TranslatableText("text.modern_industrialization.fluid_auto_extract_on"));
                         lines.add(new TranslatableText("text.modern_industrialization.click_to_disable").setStyle(SECONDARY_INFO));
                     } else {
@@ -131,7 +130,7 @@ public class MachineScreen extends HandledScreen<MachineScreenHandler> {
                     renderTooltip(matrices, lines, mouseX, mouseY);
                 }, () -> handler.inventory.getFluidExtract()));
             }
-            if(hasItemOutput()) {
+            if (hasItemOutput()) {
                 addButton(new MachineButton(buttonX(), 4 + y, 20, new LiteralText("item auto-extract"), b -> {
                     boolean newItemExtract = !handler.inventory.getItemExtract();
                     handler.inventory.setItemExtract(newItemExtract);
@@ -142,7 +141,7 @@ public class MachineScreen extends HandledScreen<MachineScreenHandler> {
                     ClientSidePacketRegistry.INSTANCE.sendToServer(MachinePackets.C2S.SET_AUTO_EXTRACT, buf);
                 }, (button, matrices, mouseX, mouseY) -> {
                     List<Text> lines = new ArrayList<>();
-                    if(handler.inventory.getItemExtract()) {
+                    if (handler.inventory.getItemExtract()) {
                         lines.add(new TranslatableText("text.modern_industrialization.item_auto_extract_on"));
                         lines.add(new TranslatableText("text.modern_industrialization.click_to_disable").setStyle(SECONDARY_INFO));
                     } else {
@@ -204,13 +203,13 @@ public class MachineScreen extends HandledScreen<MachineScreenHandler> {
             int v = factory.efficiencyBarY;
             int progressPixel = (int) (efficiency * sx);
             // background of the bar
-            this.drawTexture(matrices, px-1, py-1, u, v + sy, sx+2, sy+2);
+            this.drawTexture(matrices, px - 1, py - 1, u, v + sy, sx + 2, sy + 2);
             // the bar itself
             this.drawTexture(matrices, px, py, u, v, progressPixel, sy);
         }
 
         this.client.getTextureManager().bindTexture(SLOT_ATLAS);
-        if(factory.hasEnergyBar && handler.getMaxStoredEu() > 0) {
+        if (factory.hasEnergyBar && handler.getMaxStoredEu() > 0) {
             int px = i + factory.electricityBarX;
             int py = j + factory.electricityBarY;
             int sx = 13; // FIXME: harcoded
@@ -218,7 +217,8 @@ public class MachineScreen extends HandledScreen<MachineScreenHandler> {
             this.drawTexture(matrices, px, py, 230, 0, sx, sy);
             float fill = (float) handler.getStoredEu() / handler.getMaxStoredEu();
             int fillPixels = (int) (fill * sy);
-            if(fill > 0.95) fillPixels = sy;
+            if (fill > 0.95)
+                fillPixels = sy;
             this.drawTexture(matrices, px, py + sy - fillPixels, 243, sy - fillPixels, sx, fillPixels);
         }
 
@@ -244,13 +244,13 @@ public class MachineScreen extends HandledScreen<MachineScreenHandler> {
         actualDrawBackground(matrices, delta, mouseX, mouseY);
 
         // Render fluid slots
-        for(Slot slot : handler.slots) {
-            if(slot instanceof ConfigurableFluidStack.ConfigurableFluidSlot) {
+        for (Slot slot : handler.slots) {
+            if (slot instanceof ConfigurableFluidStack.ConfigurableFluidSlot) {
                 int i = x + slot.x;
                 int j = y + slot.y;
 
                 ConfigurableFluidStack stack = ((ConfigurableFluidStack.ConfigurableFluidSlot) slot).getConfStack();
-                if(!stack.getFluid().isEmpty()) {
+                if (!stack.getFluid().isEmpty()) {
                     List<FluidRenderFace> faces = new ArrayList<>();
                     faces.add(FluidRenderFace.createFlatFaceZ(i, j, 0, i + 16, j + 16, 0, 1 / 16., false, false));
                     FluidVolume vol = stack.getFluid().withAmount(FluidAmount.of(stack.getAmount(), 1000));
@@ -281,8 +281,8 @@ public class MachineScreen extends HandledScreen<MachineScreenHandler> {
                         this.itemRenderer.zOffset = 100.0F;
 
                         RenderSystem.enableDepthTest();
-                        this.itemRenderer.renderInGuiWithOverrides(this.client.player, new ItemStack(item), slot.x+this.x, slot.y+this.y);
-                        this.itemRenderer.renderGuiItemOverlay(this.textRenderer, new ItemStack(item), slot.x+this.x, slot.y+this.y, "0");
+                        this.itemRenderer.renderInGuiWithOverrides(this.client.player, new ItemStack(item), slot.x + this.x, slot.y + this.y);
+                        this.itemRenderer.renderGuiItemOverlay(this.textRenderer, new ItemStack(item), slot.x + this.x, slot.y + this.y, "0");
 
                         this.itemRenderer.zOffset = 0.0F;
                         this.setZOffset(0);
@@ -294,9 +294,9 @@ public class MachineScreen extends HandledScreen<MachineScreenHandler> {
         super.render(matrices, mouseX, mouseY, delta);
 
         // Render fluid and locked item slot tooltips
-        for(Slot slot : handler.slots) {
-            if(isPointWithinBounds(slot.x, slot.y, 16, 16, mouseX, mouseY)) {
-                if(slot instanceof ConfigurableFluidStack.ConfigurableFluidSlot) {
+        for (Slot slot : handler.slots) {
+            if (isPointWithinBounds(slot.x, slot.y, 16, 16, mouseX, mouseY)) {
+                if (slot instanceof ConfigurableFluidStack.ConfigurableFluidSlot) {
                     ConfigurableFluidStack stack = ((ConfigurableFluidStack.ConfigurableFluidSlot) slot).getConfStack();
                     List<Text> tooltip = new ArrayList<>();
                     FluidKey fluid = stack.getFluid();
@@ -320,9 +320,9 @@ public class MachineScreen extends HandledScreen<MachineScreenHandler> {
                         tooltip.add(new TranslatableText("text.modern_industrialization.fluid_slot_output").setStyle(style));
                     }
                     this.renderTooltip(matrices, tooltip, mouseX, mouseY);
-                } else if(slot instanceof ConfigurableItemStack.ConfigurableItemSlot) {
+                } else if (slot instanceof ConfigurableItemStack.ConfigurableItemSlot) {
                     ConfigurableItemStack stack = ((ConfigurableItemStack.ConfigurableItemSlot) slot).getConfStack();
-                    if(stack.getStack().isEmpty() && stack.getLockedItem() != null) {
+                    if (stack.getStack().isEmpty() && stack.getLockedItem() != null) {
                         this.renderTooltip(matrices, new ItemStack(stack.getLockedItem()), mouseX, mouseY);
                     }
                 }
@@ -330,21 +330,27 @@ public class MachineScreen extends HandledScreen<MachineScreenHandler> {
         }
 
         MachineFactory factory = handler.getMachineFactory();
-        if(factory.hasEnergyBar && handler.getMaxStoredEu() > 0) {
-            if(isPointWithinBounds(factory.electricityBarX, factory.electricityBarY, 13, 18, mouseX, mouseY)) { // FIXME: harcoded
-                this.renderTooltip(matrices, Collections.singletonList(new TranslatableText("text.modern_industrialization.energy_bar", handler.getStoredEu(), handler.getMaxStoredEu())), mouseX, mouseY);
+        if (factory.hasEnergyBar && handler.getMaxStoredEu() > 0) {
+            if (isPointWithinBounds(factory.electricityBarX, factory.electricityBarY, 13, 18, mouseX, mouseY)) { // FIXME: harcoded
+                this.renderTooltip(matrices,
+                        Collections.singletonList(
+                                new TranslatableText("text.modern_industrialization.energy_bar", handler.getStoredEu(), handler.getMaxStoredEu())),
+                        mouseX, mouseY);
             }
         }
 
-        if(factory.hasEfficiencyBar && factory.efficiencyBarDrawTooltip) {
-            if(isPointWithinBounds(factory.efficiencyBarDrawX, factory.efficiencyBarDrawY, factory.efficiencyBarSizeX, factory.efficiencyBarSizeY, mouseX, mouseY)) {
+        if (factory.hasEfficiencyBar && factory.efficiencyBarDrawTooltip) {
+            if (isPointWithinBounds(factory.efficiencyBarDrawX, factory.efficiencyBarDrawY, factory.efficiencyBarSizeX, factory.efficiencyBarSizeY,
+                    mouseX, mouseY)) {
                 DecimalFormat factorFormat = new DecimalFormat("#.#");
                 List<Text> tooltip = new ArrayList<>();
-                if(handler.getMaxEfficiencyTicks() > 0) {
-                    tooltip.add(new TranslatableText("text.modern_industrialization.efficiency_ticks", handler.getEfficiencyTicks(), handler.getMaxEfficiencyTicks()));
+                if (handler.getMaxEfficiencyTicks() > 0) {
+                    tooltip.add(new TranslatableText("text.modern_industrialization.efficiency_ticks", handler.getEfficiencyTicks(),
+                            handler.getMaxEfficiencyTicks()));
                 }
-                if(handler.getRecipeEu() != 0) {
-                    tooltip.add(new TranslatableText("text.modern_industrialization.efficiency_factor", factorFormat.format((double) handler.getRecipeMaxEu() / handler.getRecipeEu())));
+                if (handler.getRecipeEu() != 0) {
+                    tooltip.add(new TranslatableText("text.modern_industrialization.efficiency_factor",
+                            factorFormat.format((double) handler.getRecipeMaxEu() / handler.getRecipeEu())));
                 } else {
                     tooltip.add(new TranslatableText("text.modern_industrialization.efficiency_default_message"));
                 }
@@ -358,6 +364,7 @@ public class MachineScreen extends HandledScreen<MachineScreenHandler> {
     private static class MachineButton extends ButtonWidget {
         private final int u;
         private final Supplier<Boolean> isPressed;
+
         private MachineButton(int x, int y, int u, Text message, PressAction onPress, TooltipSupplier tooltipSupplier, Supplier<Boolean> isPressed) {
             super(x, y, 20, 20, message, onPress, tooltipSupplier);
             this.u = u;
@@ -370,11 +377,11 @@ public class MachineScreen extends HandledScreen<MachineScreenHandler> {
             minecraftClient.getTextureManager().bindTexture(SLOT_ATLAS);
 
             int v = 18;
-            if(isPressed.get()) {
+            if (isPressed.get()) {
                 v += 20;
             }
             drawTexture(matrices, x, y, u, v, 20, 20);
-            if(isHovered()) {
+            if (isHovered()) {
                 drawTexture(matrices, x, y, 60, 18, 20, 20);
                 this.renderToolTip(matrices, mouseX, mouseY);
             }

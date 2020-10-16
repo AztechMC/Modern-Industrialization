@@ -1,5 +1,7 @@
 package aztech.modern_industrialization.inventory;
 
+import static alexiil.mc.lib.attributes.Simulation.ACTION;
+
 import alexiil.mc.lib.attributes.SearchOption;
 import alexiil.mc.lib.attributes.SearchOptions;
 import alexiil.mc.lib.attributes.Simulation;
@@ -13,9 +15,11 @@ import alexiil.mc.lib.attributes.fluid.volume.FluidKeys;
 import alexiil.mc.lib.attributes.fluid.volume.FluidVolume;
 import alexiil.mc.lib.attributes.item.ItemAttributes;
 import alexiil.mc.lib.attributes.item.ItemInsertable;
-import aztech.modern_industrialization.util.ItemStackHelper;
 import aztech.modern_industrialization.util.NbtHelper;
-import net.minecraft.block.entity.BlockEntity;
+import java.math.RoundingMode;
+import java.util.List;
+import java.util.function.Consumer;
+import java.util.function.Predicate;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.inventory.SidedInventory;
@@ -25,25 +29,20 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 
-import java.math.RoundingMode;
-import java.util.List;
-import java.util.function.Consumer;
-import java.util.function.Predicate;
-
-import static alexiil.mc.lib.attributes.Simulation.ACTION;
-
 /**
- * A generic configurable inventory class.
- * Don't forget to call the nbt serialization functions!
+ * A generic configurable inventory class. Don't forget to call the nbt
+ * serialization functions!
  */
 public interface ConfigurableInventory extends Inventory, SidedInventory, FluidTransferable {
     /**
-     * The item stack list, must always be the same. It will be mutated by the inventory.
+     * The item stack list, must always be the same. It will be mutated by the
+     * inventory.
      */
     List<ConfigurableItemStack> getItemStacks();
 
     /**
-     * The fluid stack list, must always be the same. It will be mutated by the inventory.
+     * The fluid stack list, must always be the same. It will be mutated by the
+     * inventory.
      */
     List<ConfigurableFluidStack> getFluidStacks();
 
@@ -124,32 +123,32 @@ public interface ConfigurableInventory extends Inventory, SidedInventory, FluidT
 
     default void autoExtractItems(World world, BlockPos pos, Direction direction) {
         SearchOption option = SearchOptions.inDirection(direction);
-        if(ItemAttributes.INSERTABLE.getAll(world, pos.offset(direction), option).hasOfferedAny()) {
+        if (ItemAttributes.INSERTABLE.getAll(world, pos.offset(direction), option).hasOfferedAny()) {
             ItemInsertable insertable = ItemAttributes.INSERTABLE.get(world, pos.offset(direction), option);
             autoExtractItems(insertable, false);
         }
     }
 
     default void autoExtractItems(ItemInsertable insertable, boolean force) {
-        for(ConfigurableItemStack stack : getItemStacks()) {
-                if((stack.pipesExtract || force) && !stack.stack.isEmpty()) {
-                    stack.stack = insertable.insert(stack.stack);
-                    markDirty();
-                }
+        for (ConfigurableItemStack stack : getItemStacks()) {
+            if ((stack.pipesExtract || force) && !stack.stack.isEmpty()) {
+                stack.stack = insertable.insert(stack.stack);
+                markDirty();
+            }
         }
     }
 
     default void autoExtractFluids(World world, BlockPos pos, Direction direction) {
         SearchOption option = SearchOptions.inDirection(direction);
-        if(FluidAttributes.INSERTABLE.getAll(world, pos.offset(direction), option).hasOfferedAny()) {
+        if (FluidAttributes.INSERTABLE.getAll(world, pos.offset(direction), option).hasOfferedAny()) {
             FluidInsertable insertable = FluidAttributes.INSERTABLE.get(world, pos.offset(direction), option);
             autoExtractFluids(insertable, false);
         }
     }
 
     default void autoExtractFluids(FluidInsertable insertable, boolean force) {
-        for(ConfigurableFluidStack stack : getFluidStacks()) {
-            if(!stack.getFluid().isEmpty() && (stack.pipesExtract || force)) {
+        for (ConfigurableFluidStack stack : getFluidStacks()) {
+            if (!stack.getFluid().isEmpty() && (stack.pipesExtract || force)) {
                 FluidVolume leftover = insertable.attemptInsertion(stack.getFluid().withAmount(FluidAmount.of(stack.getAmount(), 1000)), ACTION);
                 stack.setAmount(leftover.amount().asInt(1000, RoundingMode.FLOOR));
                 markDirty();
@@ -159,18 +158,22 @@ public interface ConfigurableInventory extends Inventory, SidedInventory, FluidT
 
     @Override
     default FluidVolume attemptInsertion(FluidVolume fluid, Simulation simulation) { // TODO: don't lose fluid
-        int leftover = internalInsert(getFluidStacks(), fluid.getFluidKey(), fluid.amount().asInt(1000, RoundingMode.FLOOR), simulation, s -> s.pipesInsert, s -> {}, this::markDirty);
+        int leftover = internalInsert(getFluidStacks(), fluid.getFluidKey(), fluid.amount().asInt(1000, RoundingMode.FLOOR), simulation,
+                s -> s.pipesInsert, s -> {
+                }, this::markDirty);
         return fluid.getFluidKey().withAmount(FluidAmount.of(leftover, 1000));
     }
 
     /**
      * Internal insert. Returns leftover fluid.
      */
-    static int internalInsert(List<ConfigurableFluidStack> fluidStacks, FluidKey fluid, int amount, Simulation simulation, Predicate<ConfigurableFluidStack> stackFilter, Consumer<Integer> stackUpdater, Runnable markDirty) {
+    static int internalInsert(List<ConfigurableFluidStack> fluidStacks, FluidKey fluid, int amount, Simulation simulation,
+            Predicate<ConfigurableFluidStack> stackFilter, Consumer<Integer> stackUpdater, Runnable markDirty) {
         int index = -1;
-        // First, try to find a slot that contains the fluid. If we couldn't find one, we insert in any stack
-        outer: for(int tries = 0; tries < 2; ++tries) {
-            for(int i = 0; i < fluidStacks.size(); i++) {
+        // First, try to find a slot that contains the fluid. If we couldn't find one,
+        // we insert in any stack
+        outer: for (int tries = 0; tries < 2; ++tries) {
+            for (int i = 0; i < fluidStacks.size(); i++) {
                 ConfigurableFluidStack stack = fluidStacks.get(i);
                 if (stackFilter.test(stack) && stack.isFluidValid(fluid) && (tries == 1 || stack.getFluid() == fluid)) {
                     index = i;
@@ -178,7 +181,8 @@ public interface ConfigurableInventory extends Inventory, SidedInventory, FluidT
                 }
             }
         }
-        if(index == -1) return amount;
+        if (index == -1)
+            return amount;
         ConfigurableFluidStack targetStack = fluidStacks.get(index);
         int ins = Math.min(amount, targetStack.getRemainingSpace());
         if (ins > 0) {
@@ -194,11 +198,11 @@ public interface ConfigurableInventory extends Inventory, SidedInventory, FluidT
 
     @Override
     default FluidVolume attemptExtraction(FluidFilter filter, FluidAmount maxAmount, Simulation simulation) {
-        for(ConfigurableFluidStack fluidStack : getFluidStacks()) {
+        for (ConfigurableFluidStack fluidStack : getFluidStacks()) {
             FluidKey fluid = fluidStack.getFluid();
-            if(fluidStack.pipesExtract && !fluid.isEmpty() && filter.matches(fluid)) {
+            if (fluidStack.pipesExtract && !fluid.isEmpty() && filter.matches(fluid)) {
                 int ext = Math.min(maxAmount.asInt(1000, RoundingMode.FLOOR), fluidStack.getAmount());
-                if(simulation.isAction()) {
+                if (simulation.isAction()) {
                     fluidStack.decrement(ext);
                     markDirty();
                 }

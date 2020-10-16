@@ -1,8 +1,14 @@
 package aztech.modern_industrialization.pipes.impl;
 
+import static net.minecraft.util.math.Direction.*;
+
 import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.pipes.api.PipeConnectionType;
 import com.mojang.datafixers.util.Pair;
+import java.util.*;
+import java.util.function.Function;
+import java.util.function.Supplier;
+import java.util.stream.Collectors;
 import net.fabricmc.fabric.api.renderer.v1.RendererAccess;
 import net.fabricmc.fabric.api.renderer.v1.mesh.Mesh;
 import net.fabricmc.fabric.api.renderer.v1.mesh.MeshBuilder;
@@ -25,27 +31,24 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.BlockRenderView;
 
-import java.util.*;
-import java.util.function.Function;
-import java.util.function.Supplier;
-import java.util.stream.Collectors;
-
-import static net.minecraft.util.math.Direction.*;
-
 /**
  * The models of a pipe block. It can handle up to three different pipe types.
- * The block is divided in five slots of width SIDE, three for the main pipes and two for connection handling.
+ * The block is divided in five slots of width SIDE, three for the main pipes
+ * and two for connection handling.
  */
 public class PipeModel implements UnbakedModel, BakedModel, FabricBakedModel {
     private static final List<SpriteIdentifier> SPRITE_IDS;
 
     static {
-        List<String> names = Arrays.asList("fluid", "fluid_in", "fluid_in_out", "fluid_out", "item", "item_in", "item_in_out", "item_out", "electricity");
-        SPRITE_IDS = names.stream().map(n -> new SpriteIdentifier(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE, new MIIdentifier("blocks/pipes/" + n))).collect(Collectors.toList());
+        List<String> names = Arrays.asList("fluid", "fluid_in", "fluid_in_out", "fluid_out", "item", "item_in", "item_in_out", "item_out",
+                "electricity");
+        SPRITE_IDS = names.stream().map(n -> new SpriteIdentifier(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE, new MIIdentifier("blocks/pipes/" + n)))
+                .collect(Collectors.toList());
     }
 
     private Sprite[] sprites;
-    // [connection type (fluid, fluid in, etc...)][slot][direction][render type (no connection, straight line, short bend, etc...)]
+    // [connection type (fluid, fluid in, etc...)][slot][direction][render type (no
+    // connection, straight line, short bend, etc...)]
     private Mesh[][][][] meshCache;
     private Mesh itemMesh;
     private static final Identifier DEFAULT_BLOCK_MODEL = new Identifier("minecraft:block/block");
@@ -57,9 +60,11 @@ public class PipeModel implements UnbakedModel, BakedModel, FabricBakedModel {
     }
 
     @Override
-    public void emitBlockQuads(BlockRenderView blockRenderView, BlockState state, BlockPos pos, Supplier<Random> supplier, RenderContext renderContext) {
+    public void emitBlockQuads(BlockRenderView blockRenderView, BlockState state, BlockPos pos, Supplier<Random> supplier,
+            RenderContext renderContext) {
 
-        PipeBlockEntity.RenderAttachment attachment = (PipeBlockEntity.RenderAttachment) ((RenderAttachedBlockView) blockRenderView).getBlockEntityRenderAttachment(pos);
+        PipeBlockEntity.RenderAttachment attachment = (PipeBlockEntity.RenderAttachment) ((RenderAttachedBlockView) blockRenderView)
+                .getBlockEntityRenderAttachment(pos);
         int centerSlots = attachment.types.length;
         for (int slot = 0; slot < centerSlots; slot++) {
             // Set color
@@ -69,16 +74,9 @@ public class PipeModel implements UnbakedModel, BakedModel, FabricBakedModel {
             // Draw cached meshes
             for (Direction direction : Direction.values()) {
                 PipeConnectionType type = attachment.renderedConnections[slot][direction.getId()];
-                renderContext.meshConsumer().accept(meshCache
-                        [
-                        type == null ? attachment.types[slot].getDefaultConnectionType().getId() : type.getId()
-                        ][
-                        slot
-                        ][
-                        direction.getId()
-                        ][
-                        PipePartBuilder.getRenderType(slot, direction, attachment.renderedConnections)
-                        ]);
+                renderContext.meshConsumer()
+                        .accept(meshCache[type == null ? attachment.types[slot].getDefaultConnectionType().getId() : type.getId()][slot][direction
+                                .getId()][PipePartBuilder.getRenderType(slot, direction, attachment.renderedConnections)]);
             }
 
             renderContext.popTransform();
@@ -151,31 +149,39 @@ public class PipeModel implements UnbakedModel, BakedModel, FabricBakedModel {
     }
 
     @Override
-    public Collection<SpriteIdentifier> getTextureDependencies(Function<Identifier, UnbakedModel> unbakedModelGetter, Set<Pair<String, String>> unresolvedTextureReferences) {
+    public Collection<SpriteIdentifier> getTextureDependencies(Function<Identifier, UnbakedModel> unbakedModelGetter,
+            Set<Pair<String, String>> unresolvedTextureReferences) {
         return SPRITE_IDS;
     }
 
     @Override
-    public BakedModel bake(ModelLoader loader, Function<SpriteIdentifier, Sprite> textureGetter, ModelBakeSettings rotationContainer, Identifier modelId) {
+    public BakedModel bake(ModelLoader loader, Function<SpriteIdentifier, Sprite> textureGetter, ModelBakeSettings rotationContainer,
+            Identifier modelId) {
         sprites = new Sprite[SPRITE_IDS.size()];
-        for(int i = 0; i < SPRITE_IDS.size(); i++) {
+        for (int i = 0; i < SPRITE_IDS.size(); i++) {
             sprites[i] = textureGetter.apply(SPRITE_IDS.get(i));
         }
         modelTransformation = ((JsonUnbakedModel) loader.getOrLoadModel(DEFAULT_BLOCK_MODEL)).getTransformations();
 
         meshCache = new Mesh[SPRITE_IDS.size()][3][6][5];
         MeshBuilder builder = RendererAccess.INSTANCE.getRenderer().meshBuilder();
-        for(int connectionType = 0; connectionType < SPRITE_IDS.size(); connectionType++) {
+        for (int connectionType = 0; connectionType < SPRITE_IDS.size(); connectionType++) {
             for (int slot = 0; slot < 3; slot++) {
                 for (Direction direction : Direction.values()) {
                     int connectionTypes = slot == 0 ? 2 : slot == 1 ? 3 : 5;
                     for (int renderType = 0; renderType < connectionTypes; renderType++) {
-                        PipePartBuilder ppb = new PipeMeshBuilder(builder.getEmitter(), PipePartBuilder.getSlotPos(slot), direction, sprites[connectionType]);
-                        if (renderType == 0) ppb.noConnection();
-                        else if (renderType == 1) ppb.straightLine();
-                        else if (renderType == 2) ppb.shortBend();
-                        else if (renderType == 3) ppb.farShortBend();
-                        else ppb.longBend();
+                        PipePartBuilder ppb = new PipeMeshBuilder(builder.getEmitter(), PipePartBuilder.getSlotPos(slot), direction,
+                                sprites[connectionType]);
+                        if (renderType == 0)
+                            ppb.noConnection();
+                        else if (renderType == 1)
+                            ppb.straightLine();
+                        else if (renderType == 2)
+                            ppb.shortBend();
+                        else if (renderType == 3)
+                            ppb.farShortBend();
+                        else
+                            ppb.longBend();
                         meshCache[connectionType][slot][direction.getId()][renderType] = builder.build();
                     }
                 }

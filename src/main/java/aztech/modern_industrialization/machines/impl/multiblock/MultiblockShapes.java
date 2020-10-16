@@ -2,7 +2,6 @@ package aztech.modern_industrialization.machines.impl.multiblock;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
-import net.minecraft.block.ChainBlock;
 import net.minecraft.block.PillarBlock;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.MutableText;
@@ -64,11 +63,12 @@ public class MultiblockShapes {
     public static final int HATCH_FLAG_FLUID_OUTPUT = 1 << 3;
     public static final int HATCH_FLAG_ENERGY_INPUT = 1 << 4;
     public static final int HATCH_FLAG_ENERGY_OUTPUT = 1 << 5;
+
     public static MultiblockShape.Entry hatch(int hatchesFlag) {
         return new MultiblockShape.Entry() {
             @Override
             public boolean matches(BlockView world, BlockPos pos) {
-                if(world.getBlockEntity(pos) instanceof HatchBlockEntity) {
+                if (world.getBlockEntity(pos) instanceof HatchBlockEntity) {
                     HatchBlockEntity entity = (HatchBlockEntity) world.getBlockEntity(pos);
                     return entity.isUnlinked() && (hatchesFlag & (1 << entity.type.getId())) > 0;
                 }
@@ -84,8 +84,8 @@ public class MultiblockShapes {
 
     private static Text writeHatchTypes(int hatchesFlag) {
         MutableText text = new LiteralText("");
-        for(int i = 0; i < 6; ++i) {
-            if((hatchesFlag & (1 << i)) > 0) {
+        for (int i = 0; i < 6; ++i) {
+            if ((hatchesFlag & (1 << i)) > 0) {
                 if (i != 0) {
                     text.append(new TranslatableText("text.modern_industrialization.shape_error_hatch_separator"));
                 }

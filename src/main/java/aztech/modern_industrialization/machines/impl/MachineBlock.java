@@ -7,28 +7,22 @@ import aztech.modern_industrialization.ModernIndustrialization;
 import aztech.modern_industrialization.machines.impl.multiblock.HatchBlockEntity;
 import aztech.modern_industrialization.machines.impl.multiblock.MultiblockMachineBlockEntity;
 import aztech.modern_industrialization.material.MIMaterialSetup;
-import aztech.modern_industrialization.pipes.MIPipes;
 import aztech.modern_industrialization.tools.IWrenchable;
 import aztech.modern_industrialization.tools.MachineOverlayItem;
-import aztech.modern_industrialization.tools.WrenchItem;
 import aztech.modern_industrialization.util.MobSpawning;
+import java.util.List;
+import java.util.function.Supplier;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
 import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
-import net.minecraft.client.world.ClientWorld;
-import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUsageContext;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.BlockSoundGroup;
-import net.minecraft.sound.SoundCategory;
-import net.minecraft.sound.SoundEvent;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ItemScatterer;
@@ -43,9 +37,6 @@ import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 
-import java.util.List;
-import java.util.function.Supplier;
-
 /**
  * A generic machine_recipe block.
  */
@@ -53,7 +44,8 @@ public class MachineBlock extends Block implements BlockEntityProvider, IWrencha
     private final Supplier<MachineBlockEntity> blockEntityFactory;
 
     public MachineBlock(Supplier<MachineBlockEntity> blockEntityFactory) {
-        super(FabricBlockSettings.of(MIMaterialSetup.METAL_MATERIAL).hardness(4.0f).breakByTool(FabricToolTags.PICKAXES).requiresTool().allowsSpawning(MobSpawning.NO_SPAWN));
+        super(FabricBlockSettings.of(MIMaterialSetup.METAL_MATERIAL).hardness(4.0f).breakByTool(FabricToolTags.PICKAXES).requiresTool()
+                .allowsSpawning(MobSpawning.NO_SPAWN));
         this.blockEntityFactory = blockEntityFactory;
     }
 
@@ -64,12 +56,12 @@ public class MachineBlock extends Block implements BlockEntityProvider, IWrencha
 
     @Override
     public void onStateReplaced(BlockState state, World world, BlockPos pos, BlockState newState, boolean moved) {
-        if(!state.isOf(newState.getBlock())) {
+        if (!state.isOf(newState.getBlock())) {
             BlockEntity entity = world.getBlockEntity(pos);
             if (entity instanceof MachineBlockEntity) {
                 MachineBlockEntity machineBlockEntity = (MachineBlockEntity) entity;
                 double x = pos.getX(), y = pos.getY(), z = pos.getZ();
-                for(int i = 0; i < machineBlockEntity.size(); ++i) {
+                for (int i = 0; i < machineBlockEntity.size(); ++i) {
                     ItemStack stack = machineBlockEntity.getStack(i);
                     ItemScatterer.spawn(world, x, y, z, stack);
                 }
@@ -81,7 +73,7 @@ public class MachineBlock extends Block implements BlockEntityProvider, IWrencha
     @Override
     public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
         // Allow wrench to process useOnBlock
-        if(player.inventory.getMainHandStack().getItem() == ModernIndustrialization.ITEM_WRENCH) {
+        if (player.inventory.getMainHandStack().getItem() == ModernIndustrialization.ITEM_WRENCH) {
             return ActionResult.PASS;
         }
         // Otherwise open inventory
@@ -89,8 +81,8 @@ public class MachineBlock extends Block implements BlockEntityProvider, IWrencha
             return ActionResult.SUCCESS;
         } else {
             BlockEntity blockEntity = world.getBlockEntity(pos);
-            if(blockEntity instanceof MachineBlockEntity) {
-                player.openHandledScreen((MachineBlockEntity)blockEntity);
+            if (blockEntity instanceof MachineBlockEntity) {
+                player.openHandledScreen((MachineBlockEntity) blockEntity);
             }
             return ActionResult.CONSUME;
         }
@@ -101,8 +93,8 @@ public class MachineBlock extends Block implements BlockEntityProvider, IWrencha
         super.onPlaced(world, pos, state, placer, itemStack);
         MachineBlockEntity entity = (MachineBlockEntity) world.getBlockEntity(pos);
         entity.setFacingDirection(placer.getHorizontalFacing().getOpposite());
-        if(entity.hasOutput()) {
-            if(entity instanceof HatchBlockEntity) {
+        if (entity.hasOutput()) {
+            if (entity instanceof HatchBlockEntity) {
                 entity.setOutputDirection(placer.getHorizontalFacing().getOpposite());
             } else {
                 entity.setOutputDirection(placer.getHorizontalFacing());
@@ -117,13 +109,14 @@ public class MachineBlock extends Block implements BlockEntityProvider, IWrencha
 
     @Override
     public VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
-        if(!((World) world).isClient) return getCollisionShape(state, world, pos, context);
+        if (!((World) world).isClient)
+            return getCollisionShape(state, world, pos, context);
         ClientPlayerEntity player = MinecraftClient.getInstance().player;
 
-        double[] smallestDistance = new double[]{10000};
-        VoxelShape[] closestShape = new VoxelShape[]{VoxelShapes.cuboid(0, 0, 0, 1, 1, 1) };
+        double[] smallestDistance = new double[] { 10000 };
+        VoxelShape[] closestShape = new VoxelShape[] { VoxelShapes.cuboid(0, 0, 0, 1, 1, 1) };
 
-        if(player.inventory.getMainHandStack().getItem() instanceof MachineOverlayItem) {
+        if (player.inventory.getMainHandStack().getItem() instanceof MachineOverlayItem) {
             for (VoxelShape shape : MachineOverlay.OVERLAY_SHAPES) {
                 float tickDelta = 0; // TODO: fix this
                 Vec3d vec3d = player.getCameraPosVec(tickDelta);
@@ -167,32 +160,34 @@ public class MachineBlock extends Block implements BlockEntityProvider, IWrencha
 
         Vec3d hitPos = context.getHitPos();
         Vec3d posInBlock = hitPos.subtract(blockPos.getX(), blockPos.getY(), blockPos.getZ());
-        for(int i = 0; i < MachineOverlay.OVERLAY_SHAPES.size(); i++) {
+        for (int i = 0; i < MachineOverlay.OVERLAY_SHAPES.size(); i++) {
             Box box = MachineOverlay.OVERLAY_SHAPES.get(i).getBoundingBox();
             // move slightly towards box center
             Vec3d dir = box.getCenter().subtract(posInBlock).normalize().multiply(1e-4);
-            if(box.contains(posInBlock.add(dir))) {
+            if (box.contains(posInBlock.add(dir))) {
                 Direction newDirection = null;
                 List<Direction> shapeDirections = MachineOverlay.TOUCHING_DIRECTIONS.get(i);
-                if(shapeDirections.size() == 1) newDirection = context.getSide();
-                else if(shapeDirections.size() == 3) newDirection = context.getSide().getOpposite();
+                if (shapeDirections.size() == 1)
+                    newDirection = context.getSide();
+                else if (shapeDirections.size() == 3)
+                    newDirection = context.getSide().getOpposite();
                 else {
-                    for(Direction direction : shapeDirections) {
-                        if(direction != context.getSide()) {
+                    for (Direction direction : shapeDirections) {
+                        if (direction != context.getSide()) {
                             newDirection = direction;
                         }
                     }
                 }
                 MachineBlockEntity entity = (MachineBlockEntity) context.getWorld().getBlockEntity(blockPos);
-                if(player != null && !player.isSneaking()) {
-                    if(entity.facingDirection != newDirection && newDirection.getAxis().isHorizontal()) {
+                if (player != null && !player.isSneaking()) {
+                    if (entity.facingDirection != newDirection && newDirection.getAxis().isHorizontal()) {
                         entity.setFacingDirection(newDirection);
                         world.updateNeighbors(blockPos, null);
                         // TODO play sound
                         return ActionResult.success(world.isClient);
                     }
-                    if(entity instanceof MultiblockMachineBlockEntity) {
-                        if(!world.isClient) {
+                    if (entity instanceof MultiblockMachineBlockEntity) {
+                        if (!world.isClient) {
                             MultiblockMachineBlockEntity multiblock = (MultiblockMachineBlockEntity) entity;
                             multiblock.rebuildShape();
                             if (multiblock.getErrorMessage() != null) {
@@ -201,7 +196,7 @@ public class MachineBlock extends Block implements BlockEntityProvider, IWrencha
                         }
                         return ActionResult.success(world.isClient);
                     }
-                } else if(entity.hasOutput()) {
+                } else if (entity.hasOutput()) {
                     entity.setOutputDirection(newDirection);
                     world.updateNeighbors(blockPos, null);
                     // TODO play sound
@@ -215,7 +210,7 @@ public class MachineBlock extends Block implements BlockEntityProvider, IWrencha
     @Override
     public void addAllAttributes(World world, BlockPos pos, BlockState state, AttributeList<?> to) {
         MachineBlockEntity be = (MachineBlockEntity) world.getBlockEntity(pos);
-        if((to.attribute == FluidAttributes.INSERTABLE || to.attribute == FluidAttributes.EXTRACTABLE) && be.fluidStacks.size() > 0) {
+        if ((to.attribute == FluidAttributes.INSERTABLE || to.attribute == FluidAttributes.EXTRACTABLE) && be.fluidStacks.size() > 0) {
             to.offer(be);
         }
     }

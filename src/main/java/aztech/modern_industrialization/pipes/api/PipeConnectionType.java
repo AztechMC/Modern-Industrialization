@@ -12,8 +12,7 @@ public enum PipeConnectionType {
     ITEM_IN(5),
     ITEM_IN_OUT(6),
     ITEM_OUT(7),
-    ELECTRICITY(8)
-    ;
+    ELECTRICITY(8);
 
     private final int id;
 
@@ -21,19 +20,31 @@ public enum PipeConnectionType {
         this.id = id;
     }
 
-    public int getId() { return id; }
+    public int getId() {
+        return id;
+    }
 
     public static PipeConnectionType byId(int id) {
-        if(id == 0) return FLUID;
-        else if(id == 1) return FLUID_IN;
-        else if(id == 2) return FLUID_IN_OUT;
-        else if(id == 3) return FLUID_OUT;
-        else if(id == 4) return ITEM;
-        else if(id == 5) return ITEM_IN;
-        else if(id == 6) return ITEM_IN_OUT;
-        else if(id == 7) return ITEM_OUT;
-        else if(id == 8) return ELECTRICITY;
-        else return null;
+        if (id == 0)
+            return FLUID;
+        else if (id == 1)
+            return FLUID_IN;
+        else if (id == 2)
+            return FLUID_IN_OUT;
+        else if (id == 3)
+            return FLUID_OUT;
+        else if (id == 4)
+            return ITEM;
+        else if (id == 5)
+            return ITEM_IN;
+        else if (id == 6)
+            return ITEM_IN_OUT;
+        else if (id == 7)
+            return ITEM_OUT;
+        else if (id == 8)
+            return ELECTRICITY;
+        else
+            return null;
     }
 
     public boolean opensGui() {

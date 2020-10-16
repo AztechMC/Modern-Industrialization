@@ -29,7 +29,7 @@ public class DieselGeneratorBlockEntity extends MachineBlockEntity {
 
     @Override
     public void addAllAttributes(AttributeList<?> to) {
-        if(to.getTargetSide() == outputDirection) {
+        if (to.getTargetSide() == outputDirection) {
             to.offer(extractable);
         }
     }
@@ -49,21 +49,24 @@ public class DieselGeneratorBlockEntity extends MachineBlockEntity {
 
     @Override
     public void tick() {
-        if(world.isClient) return;
+        if (world.isClient)
+            return;
 
         boolean wasActive = isActive;
 
-        while(tier.getEu() > extraStoredEu) {
+        while (tier.getEu() > extraStoredEu) {
             ConfigurableFluidStack stack = fluidStacks.get(0);
-            if(stack.getAmount() <= 0) break;
+            if (stack.getAmount() <= 0)
+                break;
             int burnTicks = FluidFuelRegistry.getBurnTicks(stack.getFluid());
-            if(burnTicks == 0) break;
+            if (burnTicks == 0)
+                break;
             extraStoredEu += 32 * burnTicks;
             stack.decrement(1);
         }
 
         int transformed = (int) Math.min(Math.min(extraStoredEu, tier.getEu()), getMaxStoredEu() - storedEu);
-        if(transformed > 0) {
+        if (transformed > 0) {
             extraStoredEu -= transformed;
             storedEu += transformed;
             isActive = true;
@@ -73,7 +76,7 @@ public class DieselGeneratorBlockEntity extends MachineBlockEntity {
 
         autoExtractEnergy(outputDirection, tier);
 
-        if(wasActive != isActive) {
+        if (wasActive != isActive) {
             sync();
         }
         markDirty();

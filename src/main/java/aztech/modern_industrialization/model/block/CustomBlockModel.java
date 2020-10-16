@@ -1,5 +1,7 @@
 package aztech.modern_industrialization.model.block;
 
+import java.util.*;
+import java.util.function.Function;
 import net.fabricmc.fabric.api.renderer.v1.model.FabricBakedModel;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.render.model.*;
@@ -11,9 +13,6 @@ import net.minecraft.client.util.SpriteIdentifier;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Direction;
 
-import java.util.*;
-import java.util.function.Function;
-
 /**
  * Reasonable defaults for a models.
  */
@@ -22,8 +21,9 @@ public abstract class CustomBlockModel implements UnbakedModel, BakedModel, Fabr
     private static final Identifier BASE_BLOCK_MODEL = new Identifier("minecraft:block/block");
 
     @Override
-    public BakedModel bake(ModelLoader loader, Function<SpriteIdentifier, Sprite> textureGetter, ModelBakeSettings rotationContainer, Identifier modelId) {
-        JsonUnbakedModel blockModel = (JsonUnbakedModel)loader.getOrLoadModel(BASE_BLOCK_MODEL);
+    public BakedModel bake(ModelLoader loader, Function<SpriteIdentifier, Sprite> textureGetter, ModelBakeSettings rotationContainer,
+            Identifier modelId) {
+        JsonUnbakedModel blockModel = (JsonUnbakedModel) loader.getOrLoadModel(BASE_BLOCK_MODEL);
         transformation = blockModel.getTransformations();
         return this;
     }

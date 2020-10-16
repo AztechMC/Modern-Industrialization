@@ -21,7 +21,6 @@ public class ItemPipeScreenHandler extends ScreenHandler {
     private int trackedPriority;
     private int trackedType;
 
-
     public ItemPipeScreenHandler(int syncId, PlayerInventory playerInventory, PacketByteBuf buf) {
         this(syncId, playerInventory, ItemPipeInterface.ofBuf(buf));
     }
@@ -45,21 +44,21 @@ public class ItemPipeScreenHandler extends ScreenHandler {
         }
 
         // Filter slots
-        for(int i = 0; i < 3; i++) {
-            for(int j = 0; j < 7; ++j) {
-                this.addSlot(new FilterSlot(i*7 + j, 16 + 18 * j, 18 + 18 * i));
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 7; ++j) {
+                this.addSlot(new FilterSlot(i * 7 + j, 16 + 18 * j, 18 + 18 * i));
             }
         }
     }
 
     @Override
     public ItemStack onSlotClick(int i, int j, SlotActionType actionType, PlayerEntity playerEntity) {
-        if(i >= 0) {
+        if (i >= 0) {
             Slot slot = slots.get(i);
-            if(slot instanceof FilterSlot) {
-                if(actionType == SlotActionType.PICKUP) {
+            if (slot instanceof FilterSlot) {
+                if (actionType == SlotActionType.PICKUP) {
                     slot.setStack(playerEntity.inventory.getCursorStack().copy());
-                } else if(actionType == SlotActionType.QUICK_MOVE) {
+                } else if (actionType == SlotActionType.QUICK_MOVE) {
                     slot.setStack(ItemStack.EMPTY);
                 }
                 return slot.getStack();
@@ -71,16 +70,16 @@ public class ItemPipeScreenHandler extends ScreenHandler {
     @Override
     public ItemStack transferSlot(PlayerEntity player, int index) {
         Slot slot = slots.get(index);
-        if(slot != null && slot.hasStack()) {
-            if(index < 36) {
-                for(int i = 0; i < 21; i++) {
-                    if(ItemStackHelper.areEqualIgnoreCount(slots.get(36+i).getStack(), slot.getStack())) {
+        if (slot != null && slot.hasStack()) {
+            if (index < 36) {
+                for (int i = 0; i < 21; i++) {
+                    if (ItemStackHelper.areEqualIgnoreCount(slots.get(36 + i).getStack(), slot.getStack())) {
                         return ItemStack.EMPTY;
                     }
                 }
-                for(int i = 0; i < 21; i++) {
-                    if(pipeInterface.getStack(i).isEmpty()) {
-                        slots.get(36+i).setStack(slot.getStack().copy());
+                for (int i = 0; i < 21; i++) {
+                    if (pipeInterface.getStack(i).isEmpty()) {
+                        slots.get(36 + i).setStack(slot.getStack().copy());
                         break;
                     }
                 }
@@ -99,22 +98,22 @@ public class ItemPipeScreenHandler extends ScreenHandler {
     @Override
     public void sendContentUpdates() {
         super.sendContentUpdates();
-        if(playerInventory.player instanceof ServerPlayerEntity) {
-            if(trackedWhitelist != pipeInterface.isWhitelist()) {
+        if (playerInventory.player instanceof ServerPlayerEntity) {
+            if (trackedWhitelist != pipeInterface.isWhitelist()) {
                 trackedWhitelist = pipeInterface.isWhitelist();
                 PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
                 buf.writeInt(syncId);
                 buf.writeBoolean(trackedWhitelist);
                 ServerSidePacketRegistry.INSTANCE.sendToPlayer(playerInventory.player, PipePackets.SET_ITEM_WHITELIST, buf);
             }
-            if(trackedType != pipeInterface.getConnectionType()) {
+            if (trackedType != pipeInterface.getConnectionType()) {
                 trackedType = pipeInterface.getConnectionType();
                 PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
                 buf.writeInt(syncId);
                 buf.writeInt(trackedType);
                 ServerSidePacketRegistry.INSTANCE.sendToPlayer(playerInventory.player, PipePackets.SET_ITEM_CONNECTION_TYPE, buf);
             }
-            if(trackedPriority != pipeInterface.getPriority()) {
+            if (trackedPriority != pipeInterface.getPriority()) {
                 trackedPriority = pipeInterface.getPriority();
                 PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
                 buf.writeInt(syncId);
@@ -149,7 +148,7 @@ public class ItemPipeScreenHandler extends ScreenHandler {
 
         @Override
         public void setStack(ItemStack stack) {
-            if(!stack.isEmpty()) {
+            if (!stack.isEmpty()) {
                 stack.setCount(1);
             }
             pipeInterface.setStack(index, stack);

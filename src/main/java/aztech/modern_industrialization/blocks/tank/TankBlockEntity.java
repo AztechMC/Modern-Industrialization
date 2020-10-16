@@ -10,6 +10,7 @@ import alexiil.mc.lib.attributes.fluid.volume.FluidVolume;
 import alexiil.mc.lib.attributes.misc.LimitedConsumer;
 import alexiil.mc.lib.attributes.misc.Reference;
 import aztech.modern_industrialization.util.NbtHelper;
+import java.math.RoundingMode;
 import net.fabricmc.fabric.api.block.entity.BlockEntityClientSerializable;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
@@ -17,8 +18,6 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
-
-import java.math.RoundingMode;
 
 public class TankBlockEntity extends BlockEntity implements FluidTransferable, BlockEntityClientSerializable {
     FluidKey fluid = FluidKeys.EMPTY;
@@ -50,7 +49,8 @@ public class TankBlockEntity extends BlockEntity implements FluidTransferable, B
 
     public void onChanged() {
         markDirty();
-        if(!world.isClient) sync();
+        if (!world.isClient)
+            sync();
     }
 
     @Override
@@ -68,16 +68,16 @@ public class TankBlockEntity extends BlockEntity implements FluidTransferable, B
     @Override
     public FluidVolume attemptInsertion(FluidVolume fluid, Simulation simulation) {
         int ins = 0;
-        if(this.fluid.isEmpty()) {
+        if (this.fluid.isEmpty()) {
             ins = Math.min(capacity, fluid.amount().asInt(1000, RoundingMode.FLOOR));
-            if(ins > 0 && simulation.isAction()) {
+            if (ins > 0 && simulation.isAction()) {
                 this.fluid = fluid.getFluidKey();
                 this.amount += ins;
                 onChanged();
             }
-        } else if(this.fluid == fluid.getFluidKey()) {
+        } else if (this.fluid == fluid.getFluidKey()) {
             ins = Math.min(capacity - amount, fluid.amount().asInt(1000, RoundingMode.FLOOR));
-            if(ins > 0 && simulation.isAction()) {
+            if (ins > 0 && simulation.isAction()) {
                 this.amount += ins;
                 onChanged();
             }
@@ -87,12 +87,13 @@ public class TankBlockEntity extends BlockEntity implements FluidTransferable, B
 
     @Override
     public FluidVolume attemptExtraction(FluidFilter filter, FluidAmount maxAmount, Simulation simulation) {
-        if(!this.fluid.isEmpty() && filter.matches(this.fluid)) {
+        if (!this.fluid.isEmpty() && filter.matches(this.fluid)) {
             int ext = Math.min(amount, maxAmount.asInt(1000, RoundingMode.FLOOR));
             FluidKey key = this.fluid;
-            if(simulation.isAction()) {
+            if (simulation.isAction()) {
                 amount -= ext;
-                if(amount == 0) this.fluid = FluidKeys.EMPTY;
+                if (amount == 0)
+                    this.fluid = FluidKeys.EMPTY;
                 onChanged();
             }
             return key.withAmount(FluidAmount.of(ext, 1000));
@@ -113,7 +114,7 @@ public class TankBlockEntity extends BlockEntity implements FluidTransferable, B
 
             @Override
             public boolean set(ItemStack value) {
-                if(PlayerInventory.isValidHotbarIndex(player.inventory.selectedSlot)) {
+                if (PlayerInventory.isValidHotbarIndex(player.inventory.selectedSlot)) {
                     player.inventory.main.set(player.inventory.selectedSlot, value);
                     return true;
                 } else {
@@ -127,7 +128,7 @@ public class TankBlockEntity extends BlockEntity implements FluidTransferable, B
             }
         };
         LimitedConsumer<ItemStack> excessConsumer = (itemStack, simulation) -> {
-            if(simulation.isAction()) {
+            if (simulation.isAction()) {
                 player.inventory.offerOrDrop(player.world, itemStack);
             }
             return true;
@@ -145,9 +146,9 @@ public class TankBlockEntity extends BlockEntity implements FluidTransferable, B
             // Otherwise insert into held item
             FluidInsertable insertable = FluidAttributes.INSERTABLE.get(heldStackRef, excessConsumer);
             int leftover = insertable.insert(this.fluid.withAmount(FluidAmount.of(amount, 1000))).amount().asInt(1000, RoundingMode.FLOOR);
-            if(leftover != amount) {
+            if (leftover != amount) {
                 amount = leftover;
-                if(amount == 0) {
+                if (amount == 0) {
                     this.fluid = FluidKeys.EMPTY;
                 }
                 onChanged();

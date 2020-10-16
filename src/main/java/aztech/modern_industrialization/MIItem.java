@@ -1,24 +1,22 @@
 package aztech.modern_industrialization;
 
+import java.util.HashMap;
 import net.minecraft.item.Item;
 
-import java.util.HashMap;
-
 public class MIItem extends Item {
-
 
     private String id;
     public static HashMap<String, MIItem> items = new HashMap<String, MIItem>();
 
-    public MIItem(String id){
+    public MIItem(String id) {
         this(id, 64);
     }
 
-    public MIItem(String id, int maxCount){
+    public MIItem(String id, int maxCount) {
         super(new Item.Settings().maxCount(maxCount).group(ModernIndustrialization.ITEM_GROUP));
-        if(items.containsKey(id)){
+        if (items.containsKey(id)) {
             throw new IllegalArgumentException("Item id already taken : " + id);
-        }else{
+        } else {
             this.id = id;
             items.put(id, this);
         }
@@ -78,7 +76,6 @@ public class MIItem extends Item {
     public static final MIItem ITEM_CHROME_HOT_INGOT = new MIItem("chrome_hot_ingot");
 
     public static final MIItem ITEM_DEPLETED_URANIUM_FUEL_ROD = new MIItem("depleted_uranium_fuel_rod");
-    public static final MIItem ITEM_URANIUM_FUEL_ROD = new MINuclearItem("uranium_fuel_rod", 1000,
-            ITEM_DEPLETED_URANIUM_FUEL_ROD);
+    public static final MIItem ITEM_URANIUM_FUEL_ROD = new MINuclearItem("uranium_fuel_rod", 1000, ITEM_DEPLETED_URANIUM_FUEL_ROD);
 
 }

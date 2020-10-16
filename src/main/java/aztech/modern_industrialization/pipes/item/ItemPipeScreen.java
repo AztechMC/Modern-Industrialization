@@ -4,6 +4,8 @@ import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.pipes.impl.PipePackets;
 import com.mojang.blaze3d.systems.RenderSystem;
 import io.netty.buffer.Unpooled;
+import java.util.ArrayList;
+import java.util.List;
 import net.fabricmc.fabric.api.network.ClientSidePacketRegistry;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
@@ -15,9 +17,6 @@ import net.minecraft.network.PacketByteBuf;
 import net.minecraft.text.*;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class ItemPipeScreen extends HandledScreen<ItemPipeScreenHandler> {
     private static final Identifier TEXTURE = new MIIdentifier("textures/gui/pipe/item.png");
@@ -39,28 +38,26 @@ public class ItemPipeScreen extends HandledScreen<ItemPipeScreenHandler> {
     @Override
     protected void init() {
         super.init();
-        addButton(new WhitelistButton(
-                this.x, this.y, widget -> {
-                    boolean newWhitelist = !handler.pipeInterface.isWhitelist();
-                    handler.pipeInterface.setWhitelist(newWhitelist);
-                    PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
-                    buf.writeInt(handler.syncId);
-                    buf.writeBoolean(newWhitelist);
-                    ClientSidePacketRegistry.INSTANCE.sendToServer(PipePackets.SET_ITEM_WHITELIST, buf);
-                }, (button, matrices, mouseX, mouseY) -> {
-                    List<Text> lines = new ArrayList<>();
-                    if(handler.pipeInterface.isWhitelist()) {
-                        lines.add(new TranslatableText("text.modern_industrialization.whitelist"));
-                        lines.add(new TranslatableText("text.modern_industrialization.click_to_toggle_blacklist").setStyle(SECONDARY_INFO));
-                    } else {
-                        lines.add(new TranslatableText("text.modern_industrialization.blacklist"));
-                        lines.add(new TranslatableText("text.modern_industrialization.click_to_toggle_whitelist").setStyle(SECONDARY_INFO));
-                    }
-                    renderTooltip(matrices, lines, mouseX, mouseY);
-                }
-        ));
-        addButton(new ConnectionTypeButton(148+this.x, 22+this.y, 20, 20, null, widget -> {
-            int newType = (handler.pipeInterface.getConnectionType()+1) % 3;
+        addButton(new WhitelistButton(this.x, this.y, widget -> {
+            boolean newWhitelist = !handler.pipeInterface.isWhitelist();
+            handler.pipeInterface.setWhitelist(newWhitelist);
+            PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
+            buf.writeInt(handler.syncId);
+            buf.writeBoolean(newWhitelist);
+            ClientSidePacketRegistry.INSTANCE.sendToServer(PipePackets.SET_ITEM_WHITELIST, buf);
+        }, (button, matrices, mouseX, mouseY) -> {
+            List<Text> lines = new ArrayList<>();
+            if (handler.pipeInterface.isWhitelist()) {
+                lines.add(new TranslatableText("text.modern_industrialization.whitelist"));
+                lines.add(new TranslatableText("text.modern_industrialization.click_to_toggle_blacklist").setStyle(SECONDARY_INFO));
+            } else {
+                lines.add(new TranslatableText("text.modern_industrialization.blacklist"));
+                lines.add(new TranslatableText("text.modern_industrialization.click_to_toggle_whitelist").setStyle(SECONDARY_INFO));
+            }
+            renderTooltip(matrices, lines, mouseX, mouseY);
+        }));
+        addButton(new ConnectionTypeButton(148 + this.x, 22 + this.y, 20, 20, null, widget -> {
+            int newType = (handler.pipeInterface.getConnectionType() + 1) % 3;
             handler.pipeInterface.setConnectionType(newType);
             PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
             buf.writeInt(handler.syncId);
@@ -76,11 +73,11 @@ public class ItemPipeScreen extends HandledScreen<ItemPipeScreenHandler> {
         addPriorityButton(94, 72, 12, 176, "-", -1);
         addPriorityButton(134, 72, 12, 176, "+", +1);
         addPriorityButton(148, 72, 20, 188, "++", +10);
-        addButton(new PriorityDisplay(106+this.x, 72+this.y, 28, 12, new LiteralText(""), priorityTooltip));
+        addButton(new PriorityDisplay(106 + this.x, 72 + this.y, 28, 12, new LiteralText(""), priorityTooltip));
     }
 
     private void addPriorityButton(int x, int y, int width, int u, String text, int delta) {
-        addButton(new PriorityButton(x+this.x, y+this.y, width, u, text, button -> {
+        addButton(new PriorityButton(x + this.x, y + this.y, width, u, text, button -> {
             handler.pipeInterface.incrementPriority(delta);
             PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
             buf.writeInt(handler.syncId);
@@ -136,6 +133,7 @@ public class ItemPipeScreen extends HandledScreen<ItemPipeScreenHandler> {
 
     private static class PriorityButton extends ButtonWidget {
         private final int u;
+
         public PriorityButton(int x, int y, int width, int u, String message, PressAction onPress, TooltipSupplier tooltipSupplier) {
             super(x, y, width, 12, new LiteralText(message), onPress, tooltipSupplier);
             this.u = u;
@@ -153,7 +151,8 @@ public class ItemPipeScreen extends HandledScreen<ItemPipeScreenHandler> {
             RenderSystem.enableDepthTest();
             drawTexture(matrices, this.x, this.y, u, v, this.width, this.height);
             int j = this.active ? 16777215 : 10526880;
-            drawCenteredText(matrices, textRenderer, getMessage(), this.x + this.width / 2, this.y + (this.height - 8) / 2, j | MathHelper.ceil(this.alpha * 255.0F) << 24);
+            drawCenteredText(matrices, textRenderer, getMessage(), this.x + this.width / 2, this.y + (this.height - 8) / 2,
+                    j | MathHelper.ceil(this.alpha * 255.0F) << 24);
             if (this.isHovered()) {
                 this.renderToolTip(matrices, mouseX, mouseY);
             }
@@ -162,7 +161,8 @@ public class ItemPipeScreen extends HandledScreen<ItemPipeScreenHandler> {
 
     private class PriorityDisplay extends ButtonWidget {
         public PriorityDisplay(int x, int y, int width, int height, Text message, TooltipSupplier tooltipSupplier) {
-            super(x, y, width, height, message, button -> {}, tooltipSupplier);
+            super(x, y, width, height, message, button -> {
+            }, tooltipSupplier);
             this.active = false;
         }
 
@@ -174,7 +174,8 @@ public class ItemPipeScreen extends HandledScreen<ItemPipeScreenHandler> {
         @Override
         public void renderButton(MatrixStack matrices, int mouseX, int mouseY, float delta) {
             OrderedText orderedText = getMessage().asOrderedText();
-            textRenderer.draw(matrices, orderedText, (float)(this.x + this.width / 2 - textRenderer.getWidth(orderedText) / 2), (float)(this.y + (this.height - 8) / 2), 4210752);
+            textRenderer.draw(matrices, orderedText, (float) (this.x + this.width / 2 - textRenderer.getWidth(orderedText) / 2),
+                    (float) (this.y + (this.height - 8) / 2), 4210752);
             if (this.isHovered()) {
                 this.renderToolTip(matrices, mouseX, mouseY);
             }

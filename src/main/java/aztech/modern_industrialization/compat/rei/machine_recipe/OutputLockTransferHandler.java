@@ -13,18 +13,18 @@ import org.jetbrains.annotations.NotNull;
 public class OutputLockTransferHandler implements AutoTransferHandler {
     @Override
     public @NotNull Result handle(@NotNull Context context) {
-        if(!(context.getRecipe() instanceof MachineRecipeDisplay))
+        if (!(context.getRecipe() instanceof MachineRecipeDisplay))
             return Result.createNotApplicable();
-        if(!(context.getContainerScreen() instanceof MachineScreen))
+        if (!(context.getContainerScreen() instanceof MachineScreen))
             return Result.createNotApplicable();
         MachineRecipeDisplay display = (MachineRecipeDisplay) context.getRecipe();
         MachineScreen screen = (MachineScreen) context.getContainerScreen();
         MachineScreenHandler handler = screen.getScreenHandler();
         MachineFactory factory = handler.getMachineFactory();
-        if(factory.recipeType != display.recipe.getType())
+        if (factory.recipeType != display.recipe.getType())
             return Result.createNotApplicable();
         // Try to lock output slots
-        if(context.isActuallyCrafting()) {
+        if (context.isActuallyCrafting()) {
             PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
             buf.writeInt(handler.syncId);
             buf.writeIdentifier(display.recipe.getId());

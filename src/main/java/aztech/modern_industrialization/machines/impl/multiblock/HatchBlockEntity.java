@@ -1,21 +1,21 @@
 package aztech.modern_industrialization.machines.impl.multiblock;
 
+import static aztech.modern_industrialization.machines.impl.multiblock.HatchType.FLUID_OUTPUT;
+import static aztech.modern_industrialization.machines.impl.multiblock.HatchType.ITEM_OUTPUT;
+
 import aztech.modern_industrialization.machines.impl.MachineBlockEntity;
 import aztech.modern_industrialization.machines.impl.MachineFactory;
-import aztech.modern_industrialization.util.ChunkUnloadBlockEntity;
 import aztech.modern_industrialization.util.NbtHelper;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.math.BlockPos;
 
-import static aztech.modern_industrialization.machines.impl.multiblock.HatchType.FLUID_OUTPUT;
-import static aztech.modern_industrialization.machines.impl.multiblock.HatchType.ITEM_OUTPUT;
-
 public class HatchBlockEntity extends MachineBlockEntity {
     private BlockPos controllerPos = null;
     /**
-     * This variable is use to lazily sync controllerPos, to prevent needless updates when the controller checks the shape!
+     * This variable is use to lazily sync controllerPos, to prevent needless
+     * updates when the controller checks the shape!
      */
     private BlockPos lastSyncedControllerPos = null;
     private boolean lateLoaded = false;
@@ -27,13 +27,14 @@ public class HatchBlockEntity extends MachineBlockEntity {
     }
 
     private void lateLoad() {
-        if(lateLoaded) return;
+        if (lateLoaded)
+            return;
         lateLoaded = true;
         clearLocks();
-        if(controllerPos != null) {
+        if (controllerPos != null) {
             BlockEntity controllerEntity = world.getBlockEntity(controllerPos);
             controllerPos = null;
-            if(controllerEntity instanceof MultiblockMachineBlockEntity) {
+            if (controllerEntity instanceof MultiblockMachineBlockEntity) {
                 ((MultiblockMachineBlockEntity) controllerEntity).hatchLoaded();
             }
         }
@@ -57,13 +58,15 @@ public class HatchBlockEntity extends MachineBlockEntity {
 
     @Override
     public void tick() {
-        if(world.isClient) return;
+        if (world.isClient)
+            return;
         lateLoad();
-        if(controllerPos != lastSyncedControllerPos) sync();
-        if(extractItems && type == ITEM_OUTPUT) {
+        if (controllerPos != lastSyncedControllerPos)
+            sync();
+        if (extractItems && type == ITEM_OUTPUT) {
             autoExtractItems(world, pos, outputDirection);
         }
-        if(extractFluids && type == FLUID_OUTPUT) {
+        if (extractFluids && type == FLUID_OUTPUT) {
             autoExtractFluids(world, pos, outputDirection);
         }
         markDirty();
@@ -93,7 +96,7 @@ public class HatchBlockEntity extends MachineBlockEntity {
     @Override
     public void fromClientTag(CompoundTag tag) {
         controllerPos = NbtHelper.getBlockPos(tag, "controllerPos");
-        if(controllerPos == null) {
+        if (controllerPos == null) {
             controllerPos = null;
             casingOverride = null;
         } else {
@@ -105,9 +108,9 @@ public class HatchBlockEntity extends MachineBlockEntity {
 
     @Override
     public void markRemoved() {
-        if(controllerPos != null) {
+        if (controllerPos != null) {
             MultiblockMachineBlockEntity be = (MultiblockMachineBlockEntity) world.getBlockEntity(controllerPos);
-            if(be != null) {
+            if (be != null) {
                 be.hatchRemoved(pos);
             }
         }

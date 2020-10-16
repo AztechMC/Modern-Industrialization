@@ -20,7 +20,8 @@ public class TrashCanBlock extends Block implements AttributeProvider {
     private static final FluidInsertable FLUID_TRASH = (fluidVolume, simulation) -> FluidVolumeUtil.EMPTY;
 
     public TrashCanBlock() {
-        super(FabricBlockSettings.of(Material.METAL).hardness(6.0f).resistance(1200).sounds(BlockSoundGroup.METAL).allowsSpawning(MobSpawning.NO_SPAWN));
+        super(FabricBlockSettings.of(Material.METAL).hardness(6.0f).resistance(1200).sounds(BlockSoundGroup.METAL)
+                .allowsSpawning(MobSpawning.NO_SPAWN));
     }
 
     @Override

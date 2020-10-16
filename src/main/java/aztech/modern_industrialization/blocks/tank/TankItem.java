@@ -13,25 +13,21 @@ import alexiil.mc.lib.attributes.misc.AbstractItemBasedAttribute;
 import alexiil.mc.lib.attributes.misc.LimitedConsumer;
 import alexiil.mc.lib.attributes.misc.Reference;
 import aztech.modern_industrialization.util.NbtHelper;
+import java.math.RoundingMode;
+import java.util.ArrayList;
+import java.util.List;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.fluid.Fluid;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.text.TextColor;
 import net.minecraft.text.TranslatableText;
-import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
-
-import java.math.RoundingMode;
-import java.util.ArrayList;
-import java.util.List;
 
 public class TankItem extends BlockItem implements AttributeProviderItem {
     public final int capacity;
@@ -48,15 +44,19 @@ public class TankItem extends BlockItem implements AttributeProviderItem {
     public FluidKey getFluid(ItemStack stack) {
         return NbtHelper.getFluidCompatible(stack.getSubTag("BlockEntityTag"), "fluid");
     }
+
     private void setFluid(ItemStack stack, FluidKey fluid) {
         stack.getSubTag("BlockEntityTag").put("fluid", fluid.toTag());
     }
+
     public int getAmount(ItemStack stack) {
         return Math.min(stack.getSubTag("BlockEntityTag").getInt("amount"), capacity);
     }
+
     private void setAmount(ItemStack stack, int amount) {
         stack.getSubTag("BlockEntityTag").putInt("amount", amount);
     }
+
     private void setCapacity(ItemStack stack, int capacity) {
         stack.getSubTag("BlockEntityTag").putInt("capacity", capacity);
     }
@@ -92,17 +92,17 @@ public class TankItem extends BlockItem implements AttributeProviderItem {
         @Override
         public FluidVolume attemptInsertion(FluidVolume fluid, Simulation simulation) {
             int inserted = 0;
-            if(isEmpty(stackRef.get())) {
+            if (isEmpty(stackRef.get())) {
                 inserted = Math.min(capacity, fluid.amount().asInt(1000, RoundingMode.FLOOR));
-            } else if(!fluid.getFluidKey().isEmpty()) {
+            } else if (!fluid.getFluidKey().isEmpty()) {
                 FluidKey storedFluid = getFluid(stackRef.get());
-                if(fluid.getFluidKey() == storedFluid) {
+                if (fluid.getFluidKey() == storedFluid) {
                     int amount = getAmount(stackRef.get());
-                    inserted = Math.min(capacity-amount, fluid.amount().asInt(1000, RoundingMode.FLOOR));
+                    inserted = Math.min(capacity - amount, fluid.amount().asInt(1000, RoundingMode.FLOOR));
                 }
             }
-            if(inserted > 0) {
-                if(!sendStacks(fluid.getFluidKey(), inserted, simulation)) {
+            if (inserted > 0) {
+                if (!sendStacks(fluid.getFluidKey(), inserted, simulation)) {
                     return fluid;
                 }
             }
@@ -111,14 +111,15 @@ public class TankItem extends BlockItem implements AttributeProviderItem {
 
         @Override
         public FluidVolume attemptExtraction(FluidFilter filter, FluidAmount maxAmount, Simulation simulation) {
-            if(isEmpty(stackRef.get())) return FluidVolumeUtil.EMPTY;
+            if (isEmpty(stackRef.get()))
+                return FluidVolumeUtil.EMPTY;
 
             FluidKey fluid = getFluid(stackRef.get());
-            if(filter.matches(fluid)) {
+            if (filter.matches(fluid)) {
                 int amount = getAmount(stackRef.get());
                 int ext = Math.min(amount, maxAmount.asInt(1000, RoundingMode.FLOOR));
-                if(ext > 0) {
-                    if(!sendStacks(fluid, amount - ext, simulation)) {
+                if (ext > 0) {
+                    if (!sendStacks(fluid, amount - ext, simulation)) {
                         return FluidVolumeUtil.EMPTY;
                     } else {
                         return fluid.withAmount(FluidAmount.of(ext, 1000));
@@ -131,14 +132,14 @@ public class TankItem extends BlockItem implements AttributeProviderItem {
         private boolean sendStacks(FluidKey newFluid, int newAmount, Simulation simulation) {
             List<ItemStack> resultingStacks = new ArrayList<>(2);
             ItemStack remainder = stackRef.get();
-            if(remainder.getCount() > 1) {
+            if (remainder.getCount() > 1) {
                 remainder = remainder.copy();
                 remainder.decrement(1);
                 resultingStacks.add(remainder);
             }
 
             ItemStack filledStack = new ItemStack(TankItem.this);
-            if(newAmount != 0) {
+            if (newAmount != 0) {
                 filledStack.getOrCreateSubTag("BlockEntityTag");
                 setCapacity(filledStack, capacity);
                 setFluid(filledStack, newFluid);
@@ -146,8 +147,8 @@ public class TankItem extends BlockItem implements AttributeProviderItem {
             }
             resultingStacks.add(filledStack);
 
-            if(stackRef.isValid(resultingStacks.get(0))) {
-                if(simulation.isAction()) {
+            if (stackRef.isValid(resultingStacks.get(0))) {
+                if (simulation.isAction()) {
                     stackRef.set(resultingStacks.get(0));
                 }
             } else {

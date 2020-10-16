@@ -17,7 +17,8 @@ class PipeVoxelShape {
      */
     final PipeNetworkType type;
     /**
-     * If null, the center of the pipe. Otherwise, the connector in the given direction.
+     * If null, the center of the pipe. Otherwise, the connector in the given
+     * direction.
      */
     final Direction direction;
 

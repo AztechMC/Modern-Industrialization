@@ -5,10 +5,7 @@ import aztech.modern_industrialization.machines.recipe.MachineRecipe;
 import net.fabricmc.fabric.api.network.PacketConsumer;
 import net.minecraft.recipe.Recipe;
 import net.minecraft.screen.ScreenHandler;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.Identifier;
-
-import java.util.Optional;
 
 public class MachinePackets {
     public static class S2C {
@@ -19,7 +16,7 @@ public class MachinePackets {
             boolean fluidExtract = data.readBoolean();
             context.getTaskQueue().execute(() -> {
                 ScreenHandler handler = context.getPlayer().currentScreenHandler;
-                if(handler.syncId == syncId) {
+                if (handler.syncId == syncId) {
                     ((MachineScreenHandler) handler).inventory.setItemExtract(itemExtract);
                     ((MachineScreenHandler) handler).inventory.setFluidExtract(fluidExtract);
                 }
@@ -32,12 +29,13 @@ public class MachinePackets {
             int value = data.readInt();
             context.getTaskQueue().execute(() -> {
                 ScreenHandler handler = context.getPlayer().currentScreenHandler;
-                if(handler.syncId == syncId) {
+                if (handler.syncId == syncId) {
                     ((MachineScreenHandler) handler).propertyDelegate.set(index, value);
                 }
             });
         };
     }
+
     public static class C2S {
         public static final Identifier SET_AUTO_EXTRACT = new MIIdentifier("set_auto_extract");
         public static final PacketConsumer ON_SET_AUTO_EXTRACT = (context, data) -> {
@@ -46,8 +44,8 @@ public class MachinePackets {
             boolean isExtract = data.readBoolean();
             context.getTaskQueue().execute(() -> {
                 ScreenHandler handler = context.getPlayer().currentScreenHandler;
-                if(handler.syncId == syncId) {
-                    if(isItem) {
+                if (handler.syncId == syncId) {
+                    if (isItem) {
                         ((MachineScreenHandler) handler).inventory.setItemExtract(isExtract);
                     } else {
                         ((MachineScreenHandler) handler).inventory.setFluidExtract(isExtract);
@@ -61,9 +59,9 @@ public class MachinePackets {
             Identifier recipeId = data.readIdentifier();
             context.getTaskQueue().execute(() -> {
                 ScreenHandler handler = context.getPlayer().currentScreenHandler;
-                if(handler.syncId == syncId && handler instanceof MachineScreenHandler) {
+                if (handler.syncId == syncId && handler instanceof MachineScreenHandler) {
                     Recipe recipe = context.getPlayer().world.getRecipeManager().get(recipeId).orElse(null);
-                    if(recipe instanceof MachineRecipe) {
+                    if (recipe instanceof MachineRecipe) {
                         MachineScreenHandler machineHandler = (MachineScreenHandler) handler;
                         // this cast should always be safe because we are on the logical server
                         MachineBlockEntity be = (MachineBlockEntity) machineHandler.inventory;

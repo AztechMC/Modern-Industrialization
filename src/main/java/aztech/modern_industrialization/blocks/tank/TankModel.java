@@ -3,6 +3,9 @@ package aztech.modern_industrialization.blocks.tank;
 import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.blocks.creativetank.CreativeTankItem;
 import com.mojang.datafixers.util.Pair;
+import java.util.*;
+import java.util.function.Function;
+import java.util.function.Supplier;
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandler;
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry;
 import net.fabricmc.fabric.api.renderer.v1.Renderer;
@@ -30,10 +33,6 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.BlockRenderView;
-
-import java.util.*;
-import java.util.function.Function;
-import java.util.function.Supplier;
 
 public class TankModel implements UnbakedModel, FabricBakedModel, BakedModel {
     private static final Identifier BASE_BLOCK_MODEL = new Identifier("minecraft:block/block");
@@ -64,15 +63,15 @@ public class TankModel implements UnbakedModel, FabricBakedModel, BakedModel {
         context.meshConsumer().accept(tankMesh);
 
         Item it = stack.getItem();
-        if(it instanceof TankItem) {
+        if (it instanceof TankItem) {
             TankItem item = (TankItem) it;
             if (!item.isEmpty(stack)) {
                 float fillFraction = (float) item.getAmount(stack) / item.capacity;
                 drawFluid(context.getEmitter(), fillFraction, item.getFluid(stack).getRawFluid());
             }
-        } else if(it instanceof CreativeTankItem) {
+        } else if (it instanceof CreativeTankItem) {
             CreativeTankItem item = (CreativeTankItem) it;
-            if(!item.isEmpty(stack)) {
+            if (!item.isEmpty(stack)) {
                 drawFluid(context.getEmitter(), 1, item.getFluid(stack).getRawFluid());
             }
         }
@@ -80,10 +79,10 @@ public class TankModel implements UnbakedModel, FabricBakedModel, BakedModel {
 
     private void drawFluid(QuadEmitter emitter, float fillFraction, Fluid fluid) {
         FluidRenderHandler handler = FluidRenderHandlerRegistry.INSTANCE.get(fluid);
-        if(handler != null) {
+        if (handler != null) {
             Sprite stillSprite = handler.getFluidSprites(null, null, null)[0];
             int color = 255 << 24 | handler.getFluidColor(null, null, null);
-            for(Direction direction : Direction.values()) {
+            for (Direction direction : Direction.values()) {
                 float topSpace = direction.getAxis().isHorizontal() ? 1 - fillFraction + 0.01f : 0;
                 float depth = direction == Direction.UP ? 1 - fillFraction : 0;
                 emitter.material(translucentMaterial);
@@ -141,12 +140,14 @@ public class TankModel implements UnbakedModel, FabricBakedModel, BakedModel {
     }
 
     @Override
-    public Collection<SpriteIdentifier> getTextureDependencies(Function<Identifier, UnbakedModel> unbakedModelGetter, Set<Pair<String, String>> unresolvedTextureReferences) {
+    public Collection<SpriteIdentifier> getTextureDependencies(Function<Identifier, UnbakedModel> unbakedModelGetter,
+            Set<Pair<String, String>> unresolvedTextureReferences) {
         return Arrays.asList(tankSpriteId);
     }
 
     @Override
-    public BakedModel bake(ModelLoader loader, Function<SpriteIdentifier, Sprite> textureGetter, ModelBakeSettings rotationContainer, Identifier modelId) {
+    public BakedModel bake(ModelLoader loader, Function<SpriteIdentifier, Sprite> textureGetter, ModelBakeSettings rotationContainer,
+            Identifier modelId) {
         transformation = ((JsonUnbakedModel) loader.getOrLoadModel(BASE_BLOCK_MODEL)).getTransformations();
         tankSprite = textureGetter.apply(tankSpriteId);
 
@@ -155,7 +156,7 @@ public class TankModel implements UnbakedModel, FabricBakedModel, BakedModel {
         translucentMaterial = renderer.materialFinder().blendMode(0, BlendMode.TRANSLUCENT).find();
         MeshBuilder builder = RendererAccess.INSTANCE.getRenderer().meshBuilder();
         QuadEmitter emitter = builder.getEmitter();
-        for(Direction direction : Direction.values()) {
+        for (Direction direction : Direction.values()) {
             emitter.material(cutoutMaterial);
             emitter.square(direction, 0, 0, 1, 1, 0.0f);
             emitter.cullFace(direction);

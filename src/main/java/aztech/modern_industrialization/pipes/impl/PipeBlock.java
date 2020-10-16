@@ -5,7 +5,9 @@ import aztech.modern_industrialization.pipes.MIPipes;
 import aztech.modern_industrialization.pipes.api.PipeNetworkType;
 import aztech.modern_industrialization.tools.IWrenchable;
 import aztech.modern_industrialization.util.MobSpawning;
-import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
 import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntity;
@@ -34,10 +36,6 @@ import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.stream.Collectors;
-
 public class PipeBlock extends Block implements BlockEntityProvider, IWrenchable {
     public PipeBlock(Settings settings) {
         super(settings.allowsSpawning(MobSpawning.NO_SPAWN).nonOpaque());
@@ -54,13 +52,13 @@ public class PipeBlock extends Block implements BlockEntityProvider, IWrenchable
         BlockSoundGroup group = world.getBlockState(blockPos).getSoundGroup();
 
         Vec3d hitPos = hit.getPos();
-        for(PipeVoxelShape partShape : pipeEntity.getPartShapes()) {
+        for (PipeVoxelShape partShape : pipeEntity.getPartShapes()) {
             Vec3d posInBlock = hitPos.subtract(blockPos.getX(), blockPos.getY(), blockPos.getZ());
-            for(Box box : partShape.shape.getBoundingBoxes()) {
+            for (Box box : partShape.shape.getBoundingBoxes()) {
                 // move slightly towards box center
                 Vec3d dir = box.getCenter().subtract(posInBlock).normalize().multiply(1e-4);
-                if(box.contains(posInBlock.add(dir))) {
-                    if(ModernIndustrialization.TAG_WRENCH.contains(player.inventory.getMainHandStack().getItem())) {
+                if (box.contains(posInBlock.add(dir))) {
+                    if (ModernIndustrialization.TAG_WRENCH.contains(player.inventory.getMainHandStack().getItem())) {
                         if (player != null && player.isSneaking()) {
                             boolean removeBlock = pipeEntity.connections.size() == 1;
                             if (!world.isClient) {
@@ -72,9 +70,11 @@ public class PipeBlock extends Block implements BlockEntityProvider, IWrenchable
                             // update adjacent blocks
                             world.updateNeighbors(blockPos, null);
                             // spawn pipe item
-                            world.spawnEntity(new ItemEntity(world, hitPos.x, hitPos.y, hitPos.z, new ItemStack(MIPipes.INSTANCE.getPipeItem(partShape.type))));
+                            world.spawnEntity(
+                                    new ItemEntity(world, hitPos.x, hitPos.y, hitPos.z, new ItemStack(MIPipes.INSTANCE.getPipeItem(partShape.type))));
                             // play break sound
-                            world.playSound(player, blockPos, group.getBreakSound(), SoundCategory.BLOCKS, (group.getVolume() + 1.0F) / 2.0F, group.getPitch() * 0.8F);
+                            world.playSound(player, blockPos, group.getBreakSound(), SoundCategory.BLOCKS, (group.getVolume() + 1.0F) / 2.0F,
+                                    group.getPitch() * 0.8F);
                             return ActionResult.success(world.isClient);
                         } else {
                             SoundEvent sound = null;
@@ -92,13 +92,14 @@ public class PipeBlock extends Block implements BlockEntityProvider, IWrenchable
                                 }
                             }
                             world.updateNeighbors(blockPos, null);
-                            if(sound != null) {
-                                world.playSound(player, blockPos, sound, SoundCategory.BLOCKS, (group.getVolume() + 1.0F) / 4.0F, group.getPitch() * 0.8F);
+                            if (sound != null) {
+                                world.playSound(player, blockPos, sound, SoundCategory.BLOCKS, (group.getVolume() + 1.0F) / 4.0F,
+                                        group.getPitch() * 0.8F);
                             }
                             return ActionResult.success(world.isClient);
                         }
-                    } else if(partShape.opensGui) {
-                        if(!world.isClient) {
+                    } else if (partShape.opensGui) {
+                        if (!world.isClient) {
                             player.openHandledScreen(pipeEntity.getGui(partShape.type, partShape.direction));
                         }
                         return ActionResult.success(world.isClient);
@@ -119,38 +120,40 @@ public class PipeBlock extends Block implements BlockEntityProvider, IWrenchable
         BlockSoundGroup group = world.getBlockState(blockPos).getSoundGroup();
 
         Vec3d hitPos = context.getHitPos();
-        for(PipeVoxelShape partShape : pipeEntity.getPartShapes()) {
+        for (PipeVoxelShape partShape : pipeEntity.getPartShapes()) {
             Vec3d posInBlock = hitPos.subtract(blockPos.getX(), blockPos.getY(), blockPos.getZ());
-            for(Box box : partShape.shape.getBoundingBoxes()) {
+            for (Box box : partShape.shape.getBoundingBoxes()) {
                 // move slightly towards box center
                 Vec3d dir = box.getCenter().subtract(posInBlock).normalize().multiply(1e-4);
-                if(box.contains(posInBlock.add(dir))) {
-                    if(player != null && player.isSneaking()) {
+                if (box.contains(posInBlock.add(dir))) {
+                    if (player != null && player.isSneaking()) {
                         boolean removeBlock = pipeEntity.connections.size() == 1;
-                        if(!world.isClient) {
+                        if (!world.isClient) {
                             pipeEntity.removePipe(partShape.type);
                         }
-                        if(removeBlock) {
+                        if (removeBlock) {
                             world.setBlockState(blockPos, Blocks.AIR.getDefaultState());
                         }
                         // update adjacent blocks
                         world.updateNeighbors(blockPos, null);
                         // spawn pipe item
-                        world.spawnEntity(new ItemEntity(world, hitPos.x, hitPos.y, hitPos.z, new ItemStack(MIPipes.INSTANCE.getPipeItem(partShape.type))));
+                        world.spawnEntity(
+                                new ItemEntity(world, hitPos.x, hitPos.y, hitPos.z, new ItemStack(MIPipes.INSTANCE.getPipeItem(partShape.type))));
                         // play break sound
-                        if(world.isClient) {
-                            world.playSound(player, blockPos, group.getBreakSound(), SoundCategory.BLOCKS, (group.getVolume() + 1.0F) / 2.0F, group.getPitch() * 0.8F);
+                        if (world.isClient) {
+                            world.playSound(player, blockPos, group.getBreakSound(), SoundCategory.BLOCKS, (group.getVolume() + 1.0F) / 2.0F,
+                                    group.getPitch() * 0.8F);
                         }
                         return ActionResult.success(world.isClient);
                     } else {
                         SoundEvent sound;
-                        if(partShape.direction == null) {
-                            if(!world.isClient) {
+                        if (partShape.direction == null) {
+                            if (!world.isClient) {
                                 pipeEntity.addConnection(partShape.type, context.getSide());
                             }
                             sound = group.getPlaceSound();
                         } else {
-                            if(!world.isClient) {
+                            if (!world.isClient) {
                                 pipeEntity.removeConnection(partShape.type, partShape.direction);
                             }
                             sound = group.getBreakSound();
@@ -171,7 +174,7 @@ public class PipeBlock extends Block implements BlockEntityProvider, IWrenchable
         LootContext lootContext = builder.parameter(LootContextParameters.BLOCK_STATE, state).build(LootContextTypes.BLOCK);
         PipeBlockEntity pipeEntity = (PipeBlockEntity) lootContext.get(LootContextParameters.BLOCK_ENTITY);
         ItemStack tool = lootContext.get(LootContextParameters.TOOL);
-        if(tool != null && FabricToolTags.PICKAXES.contains(tool.getItem())) {
+        if (tool != null && FabricToolTags.PICKAXES.contains(tool.getItem())) {
             return pipeEntity.connections.keySet().stream().map(t -> new ItemStack(MIPipes.INSTANCE.getPipeItem(t))).collect(Collectors.toList());
         } else {
             return Collections.emptyList();
@@ -181,10 +184,10 @@ public class PipeBlock extends Block implements BlockEntityProvider, IWrenchable
     @Override
     public ItemStack getPickStack(BlockView world, BlockPos pos, BlockState state) {
         PipeBlockEntity entity = (PipeBlockEntity) world.getBlockEntity(pos);
-        PipeNetworkType[] itemType = new PipeNetworkType[]{null};
+        PipeNetworkType[] itemType = new PipeNetworkType[] { null };
         if (entity != null) {
-            double[] smallestDistance = new double[]{10000};
-            VoxelShape[] closestShape = new VoxelShape[]{null};
+            double[] smallestDistance = new double[] { 10000 };
+            VoxelShape[] closestShape = new VoxelShape[] { null };
 
             // TODO: don't copy/paste?
             for (PipeVoxelShape pipePartShape : entity.getPartShapes()) {
@@ -235,41 +238,41 @@ public class PipeBlock extends Block implements BlockEntityProvider, IWrenchable
 
     @Override
     public VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
-	    if (world instanceof World && ((World) world).isClient) {
-		    PipeBlockEntity entity = (PipeBlockEntity) world.getBlockEntity(pos);
-		    if (entity != null) {
-			    double[] smallestDistance = new double[]{10000};
-			    VoxelShape[] closestShape = new VoxelShape[]{null};
+        if (world instanceof World && ((World) world).isClient) {
+            PipeBlockEntity entity = (PipeBlockEntity) world.getBlockEntity(pos);
+            if (entity != null) {
+                double[] smallestDistance = new double[] { 10000 };
+                VoxelShape[] closestShape = new VoxelShape[] { null };
 
-			    for (PipeVoxelShape pipePartShape : entity.getPartShapes()) {
-				    VoxelShape partShape = pipePartShape.shape;
-				    assert (world instanceof ClientWorld);
-				    float tickDelta = 0; // TODO: fix this
-				    ClientPlayerEntity player = MinecraftClient.getInstance().player;
-				    Vec3d vec3d = player.getCameraPosVec(tickDelta);
-				    Vec3d vec3d2 = player.getRotationVec(tickDelta);
-				    double maxDistance = MinecraftClient.getInstance().interactionManager.getReachDistance();
-				    Vec3d vec3d3 = vec3d.add(vec3d2.x * maxDistance, vec3d2.y * maxDistance, vec3d2.z * maxDistance);
-				    BlockHitResult hit = partShape.raycast(vec3d, vec3d3, pos);
-				    if (hit != null && hit.getType() == HitResult.Type.BLOCK) {
-					    double dist = hit.getPos().distanceTo(vec3d);
-					    if (dist < smallestDistance[0]) {
-						    smallestDistance[0] = dist;
-						    closestShape[0] = partShape;
-					    }
-				    }
-			    }
+                for (PipeVoxelShape pipePartShape : entity.getPartShapes()) {
+                    VoxelShape partShape = pipePartShape.shape;
+                    assert (world instanceof ClientWorld);
+                    float tickDelta = 0; // TODO: fix this
+                    ClientPlayerEntity player = MinecraftClient.getInstance().player;
+                    Vec3d vec3d = player.getCameraPosVec(tickDelta);
+                    Vec3d vec3d2 = player.getRotationVec(tickDelta);
+                    double maxDistance = MinecraftClient.getInstance().interactionManager.getReachDistance();
+                    Vec3d vec3d3 = vec3d.add(vec3d2.x * maxDistance, vec3d2.y * maxDistance, vec3d2.z * maxDistance);
+                    BlockHitResult hit = partShape.raycast(vec3d, vec3d3, pos);
+                    if (hit != null && hit.getType() == HitResult.Type.BLOCK) {
+                        double dist = hit.getPos().distanceTo(vec3d);
+                        if (dist < smallestDistance[0]) {
+                            smallestDistance[0] = dist;
+                            closestShape[0] = partShape;
+                        }
+                    }
+                }
 
-			    if (closestShape[0] != null) {
-				    return closestShape[0];
-			    }
-		    }
+                if (closestShape[0] != null) {
+                    return closestShape[0];
+                }
+            }
 
-		    return PipeBlockEntity.DEFAULT_SHAPE;
-	    } else {
-		    // LBA compat
-		    return getCollisionShape(state, world, pos, context);
-	    }
+            return PipeBlockEntity.DEFAULT_SHAPE;
+        } else {
+            // LBA compat
+            return getCollisionShape(state, world, pos, context);
+        }
     }
 
     @Override
@@ -290,7 +293,8 @@ public class PipeBlock extends Block implements BlockEntityProvider, IWrenchable
     @Override
     public VoxelShape getCollisionShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
         BlockEntity be = world.getBlockEntity(pos);
-        if(!(be instanceof PipeBlockEntity)) return PipeBlockEntity.DEFAULT_SHAPE; // Because Mojang fucked up
+        if (!(be instanceof PipeBlockEntity))
+            return PipeBlockEntity.DEFAULT_SHAPE; // Because Mojang fucked up
         PipeBlockEntity entity = (PipeBlockEntity) be;
         return entity.currentCollisionShape;
     }

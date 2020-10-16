@@ -1,9 +1,8 @@
 package aztech.modern_industrialization.items.armor;
 
-import net.minecraft.entity.player.PlayerEntity;
-
 import java.util.HashMap;
 import java.util.Map;
+import net.minecraft.entity.player.PlayerEntity;
 
 public class MIKeyMap {
     private static final Map<PlayerEntity, Boolean> HOLDING_UP = new HashMap<>();

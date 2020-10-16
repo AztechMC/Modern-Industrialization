@@ -380,14 +380,14 @@ public class MIMachines {
             new MachineFactory(s + "_item_input_hatch", tier, f -> new HatchBlockEntity(f, ITEM_INPUT), null,
                     ITEM_HATCH_ROWS[i] * ITEM_HATCH_COLUMNS[i], 0, 0, 0)
                             .setInputSlotPosition(ITEM_HATCH_X[i], ITEM_HATCH_Y[i], ITEM_HATCH_ROWS[i], ITEM_HATCH_COLUMNS[i])
-                            .setupBackground("default.png").setupCasing(casing[i]);
+                            .setupBackground("default.png").setupCasing(casing[i]).setAutoInsert();
             new MachineFactory(s + "_item_output_hatch", tier, f -> new HatchBlockEntity(f, ITEM_OUTPUT), null, 0,
                     ITEM_HATCH_ROWS[i] * ITEM_HATCH_COLUMNS[i], 0, 0)
                             .setOutputSlotPosition(ITEM_HATCH_X[i], ITEM_HATCH_Y[i], ITEM_HATCH_ROWS[i], ITEM_HATCH_COLUMNS[i])
                             .setupBackground("default.png").setupCasing(casing[i]);
             new MachineFactory(s + "_fluid_input_hatch", tier, f -> new HatchBlockEntity(f, FLUID_INPUT), null, 0, 0, 1, 0)
                     .setInputBucketCapacity(FLUID_HATCH_BUCKETS[i]).setInputLiquidSlotPosition(FLUID_HATCH_X, FLUID_HATCH_Y, 1, 1)
-                    .setupBackground("default.png").setupCasing(casing[i]);
+                    .setupBackground("default.png").setupCasing(casing[i]).setAutoInsert();
             new MachineFactory(s + "_fluid_output_hatch", tier, f -> new HatchBlockEntity(f, FLUID_OUTPUT), null, 0, 0, 0, 1)
                     .setOutputBucketCapacity(FLUID_HATCH_BUCKETS[i]).setLiquidOutputSlotPosition(FLUID_HATCH_X, FLUID_HATCH_Y, 1, 1)
                     .setupBackground("default.png").setupCasing(casing[i]);

@@ -203,6 +203,10 @@ public class ConfigurableItemStack {
         return pipesExtract;
     }
 
+    public boolean canPipesInsert() {
+        return pipesInsert;
+    }
+
     public class ConfigurableItemSlot extends Slot {
         public ConfigurableItemSlot(Inventory inventory, int id, int x, int y) {
             super(inventory, id, x, y);

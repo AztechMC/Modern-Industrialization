@@ -75,10 +75,36 @@ public class MachineScreen extends HandledScreen<MachineScreenHandler> {
         return false;
     }
 
+    private boolean hasItemAutoInsert() {
+        if (hasItemOutput())
+            return false;
+        if (handler.getMachineFactory().autoInsert) {
+            for (ConfigurableItemStack stack : handler.inventory.getItemStacks()) {
+                if (stack.canPipesInsert()) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
     private boolean hasFluidOutput() {
         for (ConfigurableFluidStack stack : handler.inventory.getFluidStacks()) {
             if (stack.canPipesExtract()) {
                 return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean hasFluidAutoInsert() {
+        if (hasFluidOutput())
+            return false;
+        if (handler.getMachineFactory().autoInsert) {
+            for (ConfigurableFluidStack stack : handler.inventory.getFluidStacks()) {
+                if (stack.canPipesInsert()) {
+                    return true;
+                }
             }
         }
         return false;
@@ -109,7 +135,7 @@ public class MachineScreen extends HandledScreen<MachineScreenHandler> {
             }, () -> handler.lockingMode));
         }
         if (handler.inventory.hasOutput()) {
-            if (hasFluidOutput()) {
+            if (hasFluidOutput() || hasFluidAutoInsert()) {
                 addButton(new MachineButton(buttonX(), 4 + y, 0, new LiteralText("fluid auto-extract"), b -> {
                     boolean newFluidExtract = !handler.inventory.getFluidExtract();
                     handler.inventory.setFluidExtract(newFluidExtract);
@@ -120,17 +146,18 @@ public class MachineScreen extends HandledScreen<MachineScreenHandler> {
                     ClientSidePacketRegistry.INSTANCE.sendToServer(MachinePackets.C2S.SET_AUTO_EXTRACT, buf);
                 }, (button, matrices, mouseX, mouseY) -> {
                     List<Text> lines = new ArrayList<>();
+                    String extract = hasFluidOutput() ? "extract" : "insert";
                     if (handler.inventory.getFluidExtract()) {
-                        lines.add(new TranslatableText("text.modern_industrialization.fluid_auto_extract_on"));
+                        lines.add(new TranslatableText("text.modern_industrialization.fluid_auto_" + extract + "_on"));
                         lines.add(new TranslatableText("text.modern_industrialization.click_to_disable").setStyle(SECONDARY_INFO));
                     } else {
-                        lines.add(new TranslatableText("text.modern_industrialization.fluid_auto_extract_off"));
+                        lines.add(new TranslatableText("text.modern_industrialization.fluid_auto_" + extract + "_off"));
                         lines.add(new TranslatableText("text.modern_industrialization.click_to_enable").setStyle(SECONDARY_INFO));
                     }
                     renderTooltip(matrices, lines, mouseX, mouseY);
                 }, () -> handler.inventory.getFluidExtract()));
             }
-            if (hasItemOutput()) {
+            if (hasItemOutput() || hasItemAutoInsert()) {
                 addButton(new MachineButton(buttonX(), 4 + y, 20, new LiteralText("item auto-extract"), b -> {
                     boolean newItemExtract = !handler.inventory.getItemExtract();
                     handler.inventory.setItemExtract(newItemExtract);
@@ -141,11 +168,12 @@ public class MachineScreen extends HandledScreen<MachineScreenHandler> {
                     ClientSidePacketRegistry.INSTANCE.sendToServer(MachinePackets.C2S.SET_AUTO_EXTRACT, buf);
                 }, (button, matrices, mouseX, mouseY) -> {
                     List<Text> lines = new ArrayList<>();
+                    String extract = hasFluidOutput() ? "extract" : "insert";
                     if (handler.inventory.getItemExtract()) {
-                        lines.add(new TranslatableText("text.modern_industrialization.item_auto_extract_on"));
+                        lines.add(new TranslatableText("text.modern_industrialization.item_auto_" + extract + "_on"));
                         lines.add(new TranslatableText("text.modern_industrialization.click_to_disable").setStyle(SECONDARY_INFO));
                     } else {
-                        lines.add(new TranslatableText("text.modern_industrialization.item_auto_extract_off"));
+                        lines.add(new TranslatableText("text.modern_industrialization.item_auto_" + extract + "_off"));
                         lines.add(new TranslatableText("text.modern_industrialization.click_to_enable").setStyle(SECONDARY_INFO));
                     }
                     renderTooltip(matrices, lines, mouseX, mouseY);

@@ -39,6 +39,10 @@ public class MachineFactory {
     private int liquidOutputSlots;
 
     private int slots;
+    // whether autoInsert replaces autoExtract when there are no slots to extract
+    // from.
+    // only used in the gui
+    boolean autoInsert = false;
 
     private String translationKey = "machine_recipe.default";
 
@@ -441,5 +445,10 @@ public class MachineFactory {
         if (topOverlay)
             machineModel.withTopOverlay(new MIIdentifier(machineFolder + "overlay_top"), new MIIdentifier(machineFolder + "overlay_top_active"));
         return machineModel;
+    }
+
+    public MachineFactory setAutoInsert() {
+        this.autoInsert = true;
+        return this;
     }
 }

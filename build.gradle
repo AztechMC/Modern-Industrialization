@@ -1,7 +1,6 @@
 plugins {
 	id 'fabric-loom' version '0.4-SNAPSHOT'
 	id 'maven-publish'
-	id 'com.diffplug.spotless' version '5.6.1'
 }
 
 sourceCompatibility = JavaVersion.VERSION_1_8
@@ -106,27 +105,5 @@ publishing {
 	repositories {
 		// uncomment to publish to the local maven
 		// mavenLocal()
-	}
-}
-
-spotless {
-	format 'misc', {
-		target '*.gradle', '*.md', '.gitignore'
-
-		trimTrailingWhitespace()
-		indentWithSpaces()
-		endWithNewline()
-	}
-	java {
-		targetExclude '**/MIFluids.java', '**/MIMaterials.java', '**/MITags.java'
-
-		importOrder()
-
-		removeUnusedImports()
-
-		eclipse().configFile('eclipse-format.xml')
-
-		indentWithSpaces()
-		endWithNewline()
 	}
 }

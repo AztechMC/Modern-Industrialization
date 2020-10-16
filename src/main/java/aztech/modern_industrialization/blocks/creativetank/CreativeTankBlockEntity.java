@@ -42,12 +42,6 @@ public class CreativeTankBlockEntity extends BlockEntity implements FluidExtract
     @Override
     public void fromClientTag(CompoundTag tag) {
         fluid = NbtHelper.getFluidCompatible(tag, "fluid");
-
-        if(world != null && world.isClient) {
-            ClientWorld clientWorld = (ClientWorld) world;
-            WorldRendererGetter wrg = (WorldRendererGetter) clientWorld;
-            wrg.modern_industrialization_getWorldRenderer().updateBlock(null, this.pos, null, null, 0);
-        }
     }
 
     @Override

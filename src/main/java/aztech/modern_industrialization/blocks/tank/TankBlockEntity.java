@@ -9,15 +9,12 @@ import alexiil.mc.lib.attributes.fluid.volume.FluidKeys;
 import alexiil.mc.lib.attributes.fluid.volume.FluidVolume;
 import alexiil.mc.lib.attributes.misc.LimitedConsumer;
 import alexiil.mc.lib.attributes.misc.Reference;
-import aztech.modern_industrialization.mixin_impl.WorldRendererGetter;
 import aztech.modern_industrialization.util.NbtHelper;
 import net.fabricmc.fabric.api.block.entity.BlockEntityClientSerializable;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.fluid.Fluid;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 
@@ -41,12 +38,6 @@ public class TankBlockEntity extends BlockEntity implements FluidTransferable, B
         fluid = NbtHelper.getFluidCompatible(tag, "fluid");
         amount = tag.getInt("amount");
         capacity = tag.getInt("capacity");
-
-        if(world != null && world.isClient) {
-            ClientWorld clientWorld = (ClientWorld) world;
-            WorldRendererGetter wrg = (WorldRendererGetter) clientWorld;
-            wrg.modern_industrialization_getWorldRenderer().updateBlock(null, this.pos, null, null, 0);
-        }
     }
 
     @Override

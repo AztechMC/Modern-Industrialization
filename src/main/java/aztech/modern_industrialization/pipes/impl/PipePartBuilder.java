@@ -2,7 +2,7 @@ package aztech.modern_industrialization.pipes.impl;
 
 import static net.minecraft.util.math.Direction.*;
 
-import aztech.modern_industrialization.pipes.api.PipeConnectionType;
+import aztech.modern_industrialization.pipes.api.PipeEndpointType;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
 
@@ -62,17 +62,17 @@ abstract class PipePartBuilder {
         }
     }
 
-    abstract void drawPipe(float length);
-
     /**
      * Draw a 5-sided pipe.
      */
-    protected void drawPipeWithEnd(float length) {
-        drawPipe(length);
-        moveForward(length);
-        noConnection();
-        moveForward(-length);
+    protected final void drawPipe(float length, Intent intent) {
+        drawPipe(length, intent, true);
     }
+
+    /**
+     * Draw a pipe.
+     */
+    abstract void drawPipe(float length, Intent intent, boolean end);
 
     /**
      * Move forward.
@@ -103,96 +103,100 @@ abstract class PipePartBuilder {
     }
 
     /**
-     * Draw a single face.
-     */
-    abstract void noConnection();
-
-    /**
      * Draw a straight line.
      */
-    void straightLine() {
-        drawPipeWithEnd(distanceToSide(facing));
+    void straightLine(boolean reduced, boolean end) {
+        if (reduced)
+            moveForward(SIDE + SPACING);
+        drawPipe(distanceToSide(facing), Intent.STRAIGHT, end);
     }
 
     /**
      * Draw a short bend.
      */
-    void shortBend() {
+    void shortBend(boolean reduced, boolean end) {
+        if (reduced)
+            moveForward(SIDE + SPACING);
         // horizontal
         float dist = FIRST_POS + 2 * SIDE + SPACING;
         float advDist = distanceToSide(facing) - dist;
-        drawPipeWithEnd(advDist + SIDE);
+        boolean bendConflicting = advDist + SIDE < 0;
+        drawPipe(advDist + SIDE, Intent.BEND);
         moveForward(advDist + SIDE / 2);
         turnUp();
+        rotateCw();
         // vertical
         moveForward(SIDE / 2);
-        drawPipeWithEnd(SPACING + SIDE);
+        drawPipe(SPACING + SIDE, bendConflicting ? Intent.BEND_CONFLICTING : Intent.BEND, !bendConflicting);
         moveForward(SPACING + SIDE / 2);
-        rotateCw();
         turnUp();
+        rotateCw();
         // perpendicular
         moveForward(SIDE / 2);
-        drawPipeWithEnd(SPACING + SIDE);
+        drawPipe(SPACING + SIDE, Intent.BEND);
         moveForward(SPACING + SIDE / 2);
-        rotateCw();
         turnUp();
         // again vertical
         moveForward(SIDE / 2);
-        drawPipeWithEnd(distanceToSide(facing));
+        drawPipe(distanceToSide(facing), Intent.STRAIGHT, end);
     }
 
     /**
      * Draw a short bend, on the extra slot.
      */
-    void farShortBend() {
+    void farShortBend(boolean reduced, boolean end) {
+        if (reduced)
+            moveForward(SIDE + SPACING);
         // horizontal
         float dist = FIRST_POS + SIDE;
         float advDist = distanceToSide(facing) - dist;
-        drawPipeWithEnd(advDist + SIDE);
+        drawPipe(advDist + SIDE, Intent.BEND);
         moveForward(advDist + SIDE / 2);
         turnUp();
+        rotateCw();
         // vertical
         moveForward(SIDE / 2);
-        drawPipeWithEnd(SPACING + SIDE);
+        drawPipe(SPACING + SIDE, Intent.BEND);
         moveForward(SPACING + SIDE / 2);
-        rotateCw();
         turnUp();
+        rotateCw();
         // perpendicular
         moveForward(SIDE / 2);
-        drawPipeWithEnd(SPACING + SIDE);
+        drawPipe(SPACING + SIDE, Intent.BEND);
         moveForward(SPACING + SIDE / 2);
-        rotateCw();
         turnUp();
         // again vertical
         moveForward(SIDE / 2);
-        drawPipeWithEnd(distanceToSide(facing));
+        drawPipe(distanceToSide(facing), Intent.STRAIGHT, end);
     }
 
     /**
      * Draw a long bend.
      */
-    void longBend() {
+    void longBend(boolean reduced, boolean end) {
+        if (reduced)
+            moveForward(SIDE + SPACING);
         // horizontal
         float dist = FIRST_POS + SIDE;
         float advDist = distanceToSide(facing) - dist;
-        drawPipeWithEnd(advDist + SIDE);
+        drawPipe(advDist + SIDE, Intent.BEND);
         moveForward(advDist + SIDE / 2);
         turnUp();
+        rotateCw();
         // vertical
         moveForward(SIDE / 2);
-        drawPipeWithEnd(2 * SPACING + 2 * SIDE);
+        drawPipe(2 * SPACING + 2 * SIDE, Intent.BEND);
         moveForward(2 * SPACING + 1.5f * SIDE);
-        rotateCw();
         turnUp();
+        rotateCw();
         // perpendicular
         moveForward(SIDE / 2);
-        drawPipeWithEnd(2 * SPACING + 2 * SIDE);
+        drawPipe(2 * SPACING + 2 * SIDE, Intent.BEND);
         moveForward(2 * SPACING + 1.5f * SIDE);
-        rotateCw();
         turnUp();
         // again vertical
         moveForward(SIDE / 2);
-        drawPipeWithEnd(distanceToSide(facing));
+        drawPipe(distanceToSide(facing), Intent.STRAIGHT, end);
     }
 
     public static int getSlotPos(int slot) {
@@ -202,22 +206,26 @@ abstract class PipePartBuilder {
     /**
      * Get the type of a connection.
      */
-    static int getRenderType(int slot, Direction direction, PipeConnectionType[][] connections) {
-        if (connections[slot][direction.getId()] == null) {
+    static int getRenderType(int logicalSlot, Direction direction, PipeEndpointType[][] connections) {
+        if (connections[logicalSlot][direction.getId()] == null) {
+            // no connection
             return 0;
+        } else if (connections[logicalSlot][direction.getId()] != PipeEndpointType.PIPE) {
+            // straight line when connecting to a block
+            return 1;
         } else {
             int connSlot = 0;
-            for (int i = 0; i < slot; i++) {
+            for (int i = 0; i < logicalSlot; i++) {
                 if (connections[i][direction.getId()] != null) {
                     connSlot++;
                 }
             }
-            if (slot == 1) {
+            if (logicalSlot == 1) {
                 // short bend
                 if (connSlot == 0) {
                     return 2;
                 }
-            } else if (slot == 2) {
+            } else if (logicalSlot == 2) {
                 if (connSlot == 0) {
                     // short bend, but far if the direction is west to avoid collisions in some
                     // cases.
@@ -230,5 +238,38 @@ abstract class PipePartBuilder {
             // default to straight line
             return 1;
         }
+    }
+
+    /**
+     * Get the initial direction of a connection.
+     */
+    static Direction getInitialDirection(int logicalSlot, Direction connectionDirection, int renderType) {
+        if (renderType == 2) { // only for short bend
+            if (logicalSlot == 1) {
+                if (connectionDirection == NORTH)
+                    return UP;
+                if (connectionDirection == WEST)
+                    return SOUTH;
+                if (connectionDirection == DOWN)
+                    return EAST;
+            } else if (logicalSlot == 2) {
+                if (connectionDirection == UP)
+                    return NORTH;
+                if (connectionDirection == SOUTH)
+                    return WEST;
+                if (connectionDirection == EAST)
+                    return DOWN;
+            }
+        }
+        return connectionDirection;
+    }
+
+    /**
+     * Indicates why a particular pipe kind is being used
+     */
+    public enum Intent {
+        STRAIGHT,
+        BEND,
+        BEND_CONFLICTING,
     }
 }

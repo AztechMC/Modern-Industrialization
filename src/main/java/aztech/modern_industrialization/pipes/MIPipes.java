@@ -1,7 +1,6 @@
 package aztech.modern_industrialization.pipes;
 
 import static aztech.modern_industrialization.api.energy.CableTier.*;
-import static aztech.modern_industrialization.pipes.api.PipeConnectionType.*;
 
 import alexiil.mc.lib.attributes.fluid.volume.FluidKeys;
 import aztech.modern_industrialization.MIIdentifier;
@@ -19,10 +18,9 @@ import aztech.modern_industrialization.pipes.item.ItemNetwork;
 import aztech.modern_industrialization.pipes.item.ItemNetworkData;
 import aztech.modern_industrialization.pipes.item.ItemNetworkNode;
 import aztech.modern_industrialization.pipes.item.ItemPipeScreenHandler;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 import nerdhub.cardinal.components.api.ComponentRegistry;
 import nerdhub.cardinal.components.api.ComponentType;
 import nerdhub.cardinal.components.api.event.WorldComponentCallback;
@@ -34,6 +32,9 @@ import net.fabricmc.fabric.api.screenhandler.v1.ScreenHandlerRegistry;
 import net.minecraft.block.Block;
 import net.minecraft.block.Material;
 import net.minecraft.block.entity.BlockEntityType;
+import net.minecraft.client.texture.Sprite;
+import net.minecraft.client.texture.SpriteAtlasTexture;
+import net.minecraft.client.util.SpriteIdentifier;
 import net.minecraft.item.Item;
 import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.util.Identifier;
@@ -52,6 +53,31 @@ public class MIPipes implements ModInitializer {
     public static final ScreenHandlerType<ItemPipeScreenHandler> SCREN_HANDLER_TYPE_ITEM_PIPE = ScreenHandlerRegistry
             .registerExtended(new MIIdentifier("item_pipe"), ItemPipeScreenHandler::new);
     public static final Set<Identifier> PIPE_MODEL_NAMES = new HashSet<>();
+
+    // TODO: move this to MIPipesClient ?
+    private static PipeRenderer.Factory makeRenderer(List<String> sprites, boolean innerQuads) {
+        return new PipeRenderer.Factory() {
+            @Override
+            public Collection<SpriteIdentifier> getSpriteDependencies() {
+                return sprites.stream().map(n -> new SpriteIdentifier(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE, new MIIdentifier("blocks/pipes/" + n)))
+                        .collect(Collectors.toList());
+            }
+
+            @Override
+            public PipeRenderer create(Function<SpriteIdentifier, Sprite> textureGetter) {
+                SpriteIdentifier[] ids = sprites.stream()
+                        .map(n -> new SpriteIdentifier(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE, new MIIdentifier("blocks/pipes/" + n)))
+                        .toArray(SpriteIdentifier[]::new);
+                return new PipeMeshCache(textureGetter, ids, innerQuads);
+            }
+        };
+    }
+
+    private static final PipeRenderer.Factory ITEM_RENDERER = makeRenderer(Arrays.asList("item", "item_item", "item_in", "item_in_out", "item_out"),
+            false);
+    private static final PipeRenderer.Factory FLUID_RENDERER = makeRenderer(
+            Arrays.asList("fluid", "fluid_item", "fluid_in", "fluid_in_out", "fluid_out"), true);
+    private static final PipeRenderer.Factory ELECTRICITY_RENDERER = makeRenderer(Arrays.asList("electricity", "electricity_blocks"), false);
 
     @Override
     public void onInitialize() {
@@ -98,9 +124,8 @@ public class MIPipes implements ModInitializer {
     }
 
     public void registerFluidPipeType(String name, int color, int nodeCapacity) {
-        // TODO: maybe save the objects somewhere?
         PipeNetworkType type = PipeNetworkType.register(new MIIdentifier("fluid_" + name), (id, data) -> new FluidNetwork(id, data, nodeCapacity),
-                FluidNetworkNode::new, color, FLUID);
+                FluidNetworkNode::new, color, false, FLUID_RENDERER);
         Item item = new PipeItem(new Item.Settings().group(ModernIndustrialization.ITEM_GROUP), type, new FluidNetworkData(FluidKeys.EMPTY));
         pipeItems.put(type, item);
         Registry.register(Registry.ITEM, new MIIdentifier("pipe_fluid_" + name), item);
@@ -108,7 +133,8 @@ public class MIPipes implements ModInitializer {
     }
 
     public void registerItemPipeType(String name, int color) {
-        PipeNetworkType type = PipeNetworkType.register(new MIIdentifier("item_" + name), ItemNetwork::new, ItemNetworkNode::new, color, ITEM);
+        PipeNetworkType type = PipeNetworkType.register(new MIIdentifier("item_" + name), ItemNetwork::new, ItemNetworkNode::new, color, true,
+                ITEM_RENDERER);
         Item item = new PipeItem(new Item.Settings().group(ModernIndustrialization.ITEM_GROUP), type, new ItemNetworkData());
         pipeItems.put(type, item);
         Registry.register(Registry.ITEM, new MIIdentifier("pipe_item_" + name), item);
@@ -117,7 +143,7 @@ public class MIPipes implements ModInitializer {
 
     public void registerElectricityPipeType(String name, int color, CableTier tier) {
         PipeNetworkType type = PipeNetworkType.register(new MIIdentifier("electricity_" + name), (id, data) -> new ElectricityNetwork(id, data, tier),
-                ElectricityNetworkNode::new, color, ELECTRICITY);
+                ElectricityNetworkNode::new, color, false, ELECTRICITY_RENDERER);
         Item item = new PipeItem(new Item.Settings().group(ModernIndustrialization.ITEM_GROUP), type, new ElectricityNetworkData());
         pipeItems.put(type, item);
         Registry.register(Registry.ITEM, new MIIdentifier("pipe_electricity_" + name), item);

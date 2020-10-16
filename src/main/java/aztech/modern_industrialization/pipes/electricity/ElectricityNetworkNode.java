@@ -1,6 +1,6 @@
 package aztech.modern_industrialization.pipes.electricity;
 
-import static aztech.modern_industrialization.pipes.api.PipeConnectionType.ELECTRICITY;
+import static aztech.modern_industrialization.pipes.api.PipeEndpointType.*;
 
 import alexiil.mc.lib.attributes.SearchOption;
 import alexiil.mc.lib.attributes.SearchOptions;
@@ -8,7 +8,7 @@ import aztech.modern_industrialization.api.energy.CableTier;
 import aztech.modern_industrialization.api.energy.EnergyAttributes;
 import aztech.modern_industrialization.api.energy.EnergyExtractable;
 import aztech.modern_industrialization.api.energy.EnergyInsertable;
-import aztech.modern_industrialization.pipes.api.PipeConnectionType;
+import aztech.modern_industrialization.pipes.api.PipeEndpointType;
 import aztech.modern_industrialization.pipes.api.PipeNetworkNode;
 import aztech.modern_industrialization.util.NbtHelper;
 import java.util.ArrayList;
@@ -50,13 +50,13 @@ public class ElectricityNetworkNode extends PipeNetworkNode {
     }
 
     @Override
-    public PipeConnectionType[] getConnections(BlockPos pos) {
-        PipeConnectionType[] connections = new PipeConnectionType[6];
+    public PipeEndpointType[] getConnections(BlockPos pos) {
+        PipeEndpointType[] connections = new PipeEndpointType[6];
         for (Direction direction : network.manager.getNodeLinks(pos)) {
-            connections[direction.getId()] = ELECTRICITY;
+            connections[direction.getId()] = PIPE;
         }
         for (Direction connection : this.connections) {
-            connections[connection.getId()] = ELECTRICITY;
+            connections[connection.getId()] = BLOCK;
         }
         return connections;
     }

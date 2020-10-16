@@ -43,7 +43,11 @@ public class PipeBlockEntity extends BlockEntity
      * The rendered connections, both client-side for rendering and server-side for
      * bounds check.
      */
-    SortedMap<PipeNetworkType, PipeConnectionType[]> connections = new TreeMap<>();
+    SortedMap<PipeNetworkType, PipeEndpointType[]> connections = new TreeMap<>();
+    /**
+     * Extra rendering data
+     */
+    SortedMap<PipeNetworkType, CompoundTag> customData = new TreeMap<>();
 
     // Because we can't access the PipeNetworksComponent in fromTag because the
     // world is null, we defer the node loading.
@@ -221,6 +225,9 @@ public class PipeBlockEntity extends BlockEntity
         loadPipes();
         for (PipeNetworkNode pipe : pipes) {
             pipe.tick(world, pos);
+            if (pipe.shouldSync()) {
+                sync();
+            }
         }
         markDirty();
     }
@@ -235,7 +242,7 @@ public class PipeBlockEntity extends BlockEntity
 
     public void onConnectionsChanged() {
         // Update connections on the server side, we need them for the bounding box.
-        Map<PipeNetworkType, PipeConnectionType[]> oldRendererConnections = connections;
+        Map<PipeNetworkType, PipeEndpointType[]> oldRendererConnections = connections;
         connections = new TreeMap<>();
         for (PipeNetworkNode pipe : pipes) {
             connections.put(pipe.getType(), pipe.getConnections(pos));
@@ -251,9 +258,13 @@ public class PipeBlockEntity extends BlockEntity
     @Override
     public void fromClientTag(CompoundTag tag) {
         connections.clear();
+        customData.clear();
         CompoundTag pipesTag = tag.getCompound("pipes");
         for (String key : pipesTag.getKeys()) {
-            connections.put(PipeNetworkType.get(new Identifier(key)), NbtHelper.decodeConnections(pipesTag.getByteArray(key)));
+            CompoundTag nodeTag = pipesTag.getCompound(key);
+            PipeNetworkType type = PipeNetworkType.get(new Identifier(key));
+            connections.put(type, NbtHelper.decodeConnections(nodeTag.getByteArray("connections")));
+            customData.put(type, nodeTag.getCompound("custom").copy());
         }
         rebuildCollisionShape();
 
@@ -267,7 +278,10 @@ public class PipeBlockEntity extends BlockEntity
         loadPipes();
         CompoundTag pipesTag = new CompoundTag();
         for (PipeNetworkNode pipe : pipes) {
-            pipesTag.putByteArray(pipe.getType().getIdentifier().toString(), NbtHelper.encodeConnections(pipe.getConnections(pos)));
+            CompoundTag nodeTag = new CompoundTag();
+            nodeTag.put("custom", pipe.writeCustomData());
+            nodeTag.putByteArray("connections", NbtHelper.encodeConnections(pipe.getConnections(pos)));
+            pipesTag.put(pipe.getType().getIdentifier().toString(), nodeTag);
         }
         tag.put("pipes", pipesTag);
         return tag;
@@ -276,23 +290,27 @@ public class PipeBlockEntity extends BlockEntity
     @Override
     public Object getRenderAttachmentData() {
         PipeNetworkType[] types = new PipeNetworkType[connections.size()];
-        PipeConnectionType[][] renderedConnections = new PipeConnectionType[connections.size()][];
+        PipeEndpointType[][] renderedConnections = new PipeEndpointType[connections.size()][];
+        CompoundTag[] customData = new CompoundTag[connections.size()];
         int i = 0;
-        for (Map.Entry<PipeNetworkType, PipeConnectionType[]> entry : connections.entrySet()) {
+        for (Map.Entry<PipeNetworkType, PipeEndpointType[]> entry : connections.entrySet()) {
             types[i] = entry.getKey();
             renderedConnections[i] = Arrays.copyOf(entry.getValue(), 6);
+            customData[i] = this.customData.get(entry.getKey());
             i++;
         }
-        return new RenderAttachment(types, renderedConnections);
+        return new RenderAttachment(types, renderedConnections, customData);
     }
 
     static class RenderAttachment {
         PipeNetworkType[] types;
-        PipeConnectionType[][] renderedConnections;
+        PipeEndpointType[][] renderedConnections;
+        CompoundTag[] customData;
 
-        private RenderAttachment(PipeNetworkType[] types, PipeConnectionType[][] renderedConnections) {
+        private RenderAttachment(PipeNetworkType[] types, PipeEndpointType[][] renderedConnections, CompoundTag[] customData) {
             this.types = types;
             this.renderedConnections = renderedConnections;
+            this.customData = customData;
         }
     }
 
@@ -302,10 +320,10 @@ public class PipeBlockEntity extends BlockEntity
     Collection<PipeVoxelShape> getPartShapes() {
         Collection<PipeVoxelShape> shapes = new ArrayList<>();
 
-        PipeConnectionType[][] renderedConnections = new PipeConnectionType[connections.size()][];
+        PipeEndpointType[][] renderedConnections = new PipeEndpointType[connections.size()][];
         PipeNetworkType[] types = new PipeNetworkType[this.connections.size()];
         int slot = 0;
-        for (Map.Entry<PipeNetworkType, PipeConnectionType[]> connections : this.connections.entrySet()) {
+        for (Map.Entry<PipeNetworkType, PipeEndpointType[]> connections : this.connections.entrySet()) {
             renderedConnections[slot] = connections.getValue();
             types[slot] = connections.getKey();
             slot++;
@@ -318,9 +336,9 @@ public class PipeBlockEntity extends BlockEntity
             for (Direction direction : Direction.values()) {
                 int connectionType = PipePartBuilder.getRenderType(slot, direction, renderedConnections);
                 if (connectionType != 0) {
-                    PipeConnectionType connType = renderedConnections[slot][direction.getId()];
-                    shapes.add(new PipeVoxelShape(SHAPE_CACHE[slot][direction.getId()][connectionType], types[slot], direction,
-                            connType != null && connType.opensGui()));
+                    PipeEndpointType connType = renderedConnections[slot][direction.getId()];
+                    boolean opensGui = connType != null && connType != PipeEndpointType.PIPE && types[slot].opensGui();
+                    shapes.add(new PipeVoxelShape(SHAPE_CACHE[slot][direction.getId()][connectionType], types[slot], direction, opensGui));
                 }
             }
         }
@@ -343,13 +361,13 @@ public class PipeBlockEntity extends BlockEntity
                     if (connectionType == 0)
                         psb.centerConnector();
                     else if (connectionType == 1)
-                        psb.straightLine();
+                        psb.straightLine(false, false);
                     else if (connectionType == 2)
-                        psb.shortBend();
+                        psb.shortBend(false, false);
                     else if (connectionType == 3)
-                        psb.farShortBend();
+                        psb.farShortBend(false, false);
                     else
-                        psb.longBend();
+                        psb.longBend(false, false);
                     SHAPE_CACHE[slot][direction.getId()][connectionType] = psb.getShape();
                 }
             }

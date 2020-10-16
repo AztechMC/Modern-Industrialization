@@ -17,12 +17,7 @@ public class PipeShapeBuilder extends PipePartBuilder {
     }
 
     @Override
-    void noConnection() {
-        // don't draw the single face, it would crash.
-    }
-
-    @Override
-    protected void drawPipe(float length) {
+    protected void drawPipe(float length, Intent intent, boolean end) {
         Vec3d up = up();
         addShape(pos.add(up.multiply(SIDE / 2)).add(right.multiply(SIDE / 2)),
                 pos.subtract(up.multiply(SIDE / 2)).subtract(right.multiply(SIDE / 2)).add(facing.multiply(length)));
@@ -49,6 +44,6 @@ public class PipeShapeBuilder extends PipePartBuilder {
      */
     public void centerConnector() {
         moveForward(-SIDE);
-        drawPipe(SIDE);
+        drawPipe(SIDE, null);
     }
 }

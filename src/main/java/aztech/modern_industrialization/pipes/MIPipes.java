@@ -70,7 +70,7 @@ public class MIPipes implements ModInitializer {
         };
     }
 
-    private static final PipeRenderer.Factory ITEM_RENDERER = makeRenderer(Arrays.asList("item", "item", "item_in", "item_in_out", "item_out"), false);
+    private static final PipeRenderer.Factory ITEM_RENDERER = makeRenderer(Arrays.asList("item", "item_item", "item_in", "item_in_out", "item_out"), false);
     private static final PipeRenderer.Factory FLUID_RENDERER = makeRenderer(Arrays.asList("fluid", "fluid_item", "fluid_in", "fluid_in_out", "fluid_out"), true);
     private static final PipeRenderer.Factory ELECTRICITY_RENDERER = makeRenderer(Arrays.asList("electricity", "electricity_blocks"), false);
 
@@ -118,7 +118,6 @@ public class MIPipes implements ModInitializer {
     }
 
     public void registerFluidPipeType(String name, int color, int nodeCapacity) {
-        // TODO: maybe save the objects somewhere?
         PipeNetworkType type = PipeNetworkType.register(
                 new MIIdentifier("fluid_" + name),
                 (id, data) -> new FluidNetwork(id, data, nodeCapacity),

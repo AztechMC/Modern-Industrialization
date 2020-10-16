@@ -39,7 +39,7 @@ import java.util.stream.Collectors;
  */
 public class PipeModel implements UnbakedModel, BakedModel, FabricBakedModel {
     private static final Identifier DEFAULT_BLOCK_MODEL = new Identifier("minecraft:block/block");
-    private static final SpriteIdentifier PARTICLE_SPRITE = new SpriteIdentifier(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE, new MIIdentifier("blocks/pipes/particles"));
+    private static final SpriteIdentifier PARTICLE_SPRITE = new SpriteIdentifier(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE, new Identifier("minecraft:block/iron_block"));
     private Sprite particleSprite;
     private Map<PipeRenderer.Factory, PipeRenderer> renderers = new Reference2ObjectOpenHashMap<>();
     private ModelTransformation modelTransformation;
@@ -125,7 +125,7 @@ public class PipeModel implements UnbakedModel, BakedModel, FabricBakedModel {
 
     @Override
     public Sprite getSprite() {
-        return particleSprite; // TODO: this...
+        return particleSprite;
     }
 
     @Override

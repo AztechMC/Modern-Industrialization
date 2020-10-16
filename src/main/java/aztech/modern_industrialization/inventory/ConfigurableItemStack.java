@@ -1,19 +1,15 @@
 package aztech.modern_industrialization.inventory;
 
 import aztech.modern_industrialization.util.NbtHelper;
+import java.util.ArrayList;
+import java.util.List;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.fluid.Fluid;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.screen.slot.Slot;
-import net.minecraft.util.math.Direction;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
 
 /**
  * An item stack that can be configured. TODO: sync lock state
@@ -29,7 +25,8 @@ public class ConfigurableItemStack {
     boolean pipesInsert = false;
     boolean pipesExtract = false;
 
-    public ConfigurableItemStack() {}
+    public ConfigurableItemStack() {
+    }
 
     public static ConfigurableItemStack standardInputSlot() {
         ConfigurableItemStack stack = new ConfigurableItemStack();
@@ -58,18 +55,14 @@ public class ConfigurableItemStack {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
         ConfigurableItemStack that = (ConfigurableItemStack) o;
-        return playerLocked == that.playerLocked &&
-                machineLocked == that.machineLocked &&
-                playerLockable == that.playerLockable &&
-                playerInsert == that.playerInsert &&
-                playerExtract == that.playerExtract &&
-                pipesInsert == that.pipesInsert &&
-                pipesExtract == that.pipesExtract &&
-                ItemStack.areEqual(stack, that.stack) &&
-                lockedItem == that.lockedItem;
+        return playerLocked == that.playerLocked && machineLocked == that.machineLocked && playerLockable == that.playerLockable
+                && playerInsert == that.playerInsert && playerExtract == that.playerExtract && pipesInsert == that.pipesInsert
+                && pipesExtract == that.pipesExtract && ItemStack.areEqual(stack, that.stack) && lockedItem == that.lockedItem;
     }
 
     /**
@@ -77,7 +70,7 @@ public class ConfigurableItemStack {
      */
     public static ArrayList<ConfigurableItemStack> copyList(List<ConfigurableItemStack> list) {
         ArrayList<ConfigurableItemStack> copy = new ArrayList<>(list.size());
-        for(ConfigurableItemStack stack : list) {
+        for (ConfigurableItemStack stack : list) {
             copy.add(new ConfigurableItemStack(stack));
         }
         return copy;
@@ -93,6 +86,7 @@ public class ConfigurableItemStack {
 
     /**
      * Try to take some items from the stack.
+     * 
      * @param count How many items to take
      * @return What was taken: a stack with at most count items.
      */
@@ -110,7 +104,7 @@ public class ConfigurableItemStack {
     }
 
     public void setStack(ItemStack stack) {
-        if(lockedItem != null && stack.getItem() != lockedItem && !stack.isEmpty()) {
+        if (lockedItem != null && stack.getItem() != lockedItem && !stack.isEmpty()) {
             throw new RuntimeException("Trying to override locked item");
         }
         this.stack = stack;
@@ -124,10 +118,13 @@ public class ConfigurableItemStack {
         return playerLocked;
     }
 
-    public boolean isMachineLocked() { return machineLocked; }
+    public boolean isMachineLocked() {
+        return machineLocked;
+    }
 
     public void enableMachineLock(Item lockedItem) {
-        if(this.lockedItem != null && lockedItem != this.lockedItem) throw new RuntimeException("Trying to override locked item");
+        if (this.lockedItem != null && lockedItem != this.lockedItem)
+            throw new RuntimeException("Trying to override locked item");
         machineLocked = true;
         this.lockedItem = lockedItem;
     }
@@ -138,8 +135,8 @@ public class ConfigurableItemStack {
     }
 
     public void togglePlayerLock(ItemStack cursorStack) {
-        if(playerLockable) {
-            if(playerLocked && lockedItem == Items.AIR && !cursorStack.isEmpty()) {
+        if (playerLockable) {
+            if (playerLocked && lockedItem == Items.AIR && !cursorStack.isEmpty()) {
                 lockedItem = cursorStack.getItem();
             } else {
                 playerLocked = !playerLocked;
@@ -149,9 +146,9 @@ public class ConfigurableItemStack {
     }
 
     private void onToggleLock() {
-        if(!machineLocked && !playerLocked) {
+        if (!machineLocked && !playerLocked) {
             lockedItem = null;
-        } else if(lockedItem == null) {
+        } else if (lockedItem == null) {
             lockedItem = stack.getItem();
         }
     }
@@ -162,7 +159,7 @@ public class ConfigurableItemStack {
 
     public CompoundTag writeToTag(CompoundTag tag) {
         stack.toTag(tag);
-        if(lockedItem != null) {
+        if (lockedItem != null) {
             NbtHelper.putItem(tag, "lockedItem", lockedItem);
         }
         // TODO: more efficient encoding?
@@ -178,7 +175,7 @@ public class ConfigurableItemStack {
 
     public void readFromTag(CompoundTag tag) {
         stack = ItemStack.fromTag(tag);
-        if(tag.contains("lockedItem")) {
+        if (tag.contains("lockedItem")) {
             lockedItem = NbtHelper.getItem(tag, "lockedItem");
         }
         machineLocked = tag.getBoolean("machineLocked");
@@ -192,9 +189,9 @@ public class ConfigurableItemStack {
 
     /**
      * Try locking the slot to the given item, return true if it succeeded
-      */
+     */
     public boolean playerLock(Item item) {
-        if((stack.isEmpty() || stack.getItem() == item) && (lockedItem == null || lockedItem == Items.AIR)) {
+        if ((stack.isEmpty() || stack.getItem() == item) && (lockedItem == null || lockedItem == Items.AIR)) {
             lockedItem = item;
             playerLocked = true;
             return true;

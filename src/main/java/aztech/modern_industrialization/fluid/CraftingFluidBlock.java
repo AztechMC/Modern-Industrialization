@@ -9,7 +9,8 @@ import net.minecraft.text.TextColor;
 import net.minecraft.text.TranslatableText;
 
 /**
- * This is not a registered block, but it allows LBA to get the name of the fluid by calling fluid.getBlockState().getBlock().getTranslationKey()
+ * This is not a registered block, but it allows LBA to get the name of the
+ * fluid by calling fluid.getBlockState().getBlock().getTranslationKey()
  */
 public class CraftingFluidBlock extends Block {
     private final String translationKey;

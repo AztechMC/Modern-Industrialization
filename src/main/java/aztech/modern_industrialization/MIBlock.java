@@ -1,22 +1,15 @@
 package aztech.modern_industrialization;
 
-import aztech.modern_industrialization.machines.impl.multiblock.MultiblockMachineBlockEntity;
 import aztech.modern_industrialization.material.MIMaterialSetup;
 import aztech.modern_industrialization.util.MobSpawning;
+import java.util.HashMap;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
-
-import java.util.HashMap;
 
 public class MIBlock extends Block {
-
 
     private String id;
     public static HashMap<String, MIBlock> blocks = new HashMap<String, MIBlock>();
@@ -34,8 +27,8 @@ public class MIBlock extends Block {
     }
 
     public MIBlock(String id) {
-        this(id, FabricBlockSettings.of(MIMaterialSetup.METAL_MATERIAL).
-                hardness(4.0f).breakByTool(FabricToolTags.PICKAXES).requiresTool().allowsSpawning(MobSpawning.NO_SPAWN));
+        this(id, FabricBlockSettings.of(MIMaterialSetup.METAL_MATERIAL).hardness(4.0f).breakByTool(FabricToolTags.PICKAXES).requiresTool()
+                .allowsSpawning(MobSpawning.NO_SPAWN));
     }
 
     public String getId() {
@@ -46,11 +39,8 @@ public class MIBlock extends Block {
         return blockItem;
     }
 
-    public static final MIBlock BLOCK_FIRE_CLAY_BRICKS = new MIBlock("fire_clay_bricks",
-            FabricBlockSettings.of(MIMaterialSetup.STONE_MATERIAL).hardness(2.0f)
-                    .resistance(6.0f)
-                    .breakByTool(FabricToolTags.PICKAXES, 0)
-                    .requiresTool());
+    public static final MIBlock BLOCK_FIRE_CLAY_BRICKS = new MIBlock("fire_clay_bricks", FabricBlockSettings.of(MIMaterialSetup.STONE_MATERIAL)
+            .hardness(2.0f).resistance(6.0f).breakByTool(FabricToolTags.PICKAXES, 0).requiresTool());
 
     public static final MIBlock STEEL_MACHINE_CASING = new MIBlock("steel_machine_casing");
     public static final MIBlock STEEL_MACHINE_CASING_PIPE = new MIBlock("steel_machine_casing_pipe");

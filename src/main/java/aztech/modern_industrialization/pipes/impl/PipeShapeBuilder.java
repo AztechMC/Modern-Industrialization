@@ -19,7 +19,8 @@ public class PipeShapeBuilder extends PipePartBuilder {
     @Override
     protected void drawPipe(float length, Intent intent, boolean end) {
         Vec3d up = up();
-        addShape(pos.add(up.multiply(SIDE / 2)).add(right.multiply(SIDE / 2)), pos.subtract(up.multiply(SIDE / 2)).subtract(right.multiply(SIDE / 2)).add(facing.multiply(length)));
+        addShape(pos.add(up.multiply(SIDE / 2)).add(right.multiply(SIDE / 2)),
+                pos.subtract(up.multiply(SIDE / 2)).subtract(right.multiply(SIDE / 2)).add(facing.multiply(length)));
     }
 
     /**

@@ -6,8 +6,7 @@ public enum HatchType {
     FLUID_INPUT(2),
     FLUID_OUTPUT(3),
     ENERGY_INPUT(4),
-    ENERGY_OUTPUT(5),
-    ;
+    ENERGY_OUTPUT(5),;
 
     private final int id;
 

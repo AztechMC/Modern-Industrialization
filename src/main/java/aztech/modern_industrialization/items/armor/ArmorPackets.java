@@ -23,7 +23,7 @@ public class ArmorPackets {
 
     static void activateJetpack(PlayerEntity player, boolean activated) {
         ItemStack chest = player.getEquippedStack(EquipmentSlot.CHEST);
-        if(chest.getItem() instanceof JetpackItem) {
+        if (chest.getItem() instanceof JetpackItem) {
             JetpackItem jetpack = (JetpackItem) chest.getItem();
             jetpack.setActivated(chest, activated);
         }

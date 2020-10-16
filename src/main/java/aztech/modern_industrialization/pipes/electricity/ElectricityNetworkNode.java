@@ -1,5 +1,7 @@
 package aztech.modern_industrialization.pipes.electricity;
 
+import static aztech.modern_industrialization.pipes.api.PipeEndpointType.*;
+
 import alexiil.mc.lib.attributes.SearchOption;
 import alexiil.mc.lib.attributes.SearchOptions;
 import aztech.modern_industrialization.api.energy.CableTier;
@@ -9,37 +11,37 @@ import aztech.modern_industrialization.api.energy.EnergyInsertable;
 import aztech.modern_industrialization.pipes.api.PipeEndpointType;
 import aztech.modern_industrialization.pipes.api.PipeNetworkNode;
 import aztech.modern_industrialization.util.NbtHelper;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import static aztech.modern_industrialization.pipes.api.PipeEndpointType.*;
 
 public class ElectricityNetworkNode extends PipeNetworkNode {
     private List<Direction> connections = new ArrayList<>();
     long eu = 0;
 
     public void appendAttributes(World world, BlockPos pos, List<EnergyInsertable> insertables, List<EnergyExtractable> extractables) {
-        for(Direction direction : connections) {
+        for (Direction direction : connections) {
             SearchOption option = SearchOptions.inDirection(direction);
             // TODO: get() instead of getFirst() ?
             EnergyInsertable insertable = EnergyAttributes.INSERTABLE.getFirstOrNull(world, pos.offset(direction), option);
-            if(insertable != null) insertables.add(insertable);
+            if (insertable != null)
+                insertables.add(insertable);
             EnergyExtractable extractable = EnergyAttributes.EXTRACTABLE.getFirstOrNull(world, pos.offset(direction), option);
-            if(extractable != null) extractables.add(extractable);
+            if (extractable != null)
+                extractables.add(extractable);
         }
     }
 
     @Override
     public void updateConnections(World world, BlockPos pos) {
-        // We don't connect by default, so we just have to remove connections that have become unavailable
-        for(int i = 0; i < connections.size();) {
-            if(canConnect(world, pos, connections.get(i))) {
+        // We don't connect by default, so we just have to remove connections that have
+        // become unavailable
+        for (int i = 0; i < connections.size();) {
+            if (canConnect(world, pos, connections.get(i))) {
                 i++;
             } else {
                 connections.remove(i);
@@ -50,10 +52,10 @@ public class ElectricityNetworkNode extends PipeNetworkNode {
     @Override
     public PipeEndpointType[] getConnections(BlockPos pos) {
         PipeEndpointType[] connections = new PipeEndpointType[6];
-        for(Direction direction : network.manager.getNodeLinks(pos)) {
+        for (Direction direction : network.manager.getNodeLinks(pos)) {
             connections[direction.getId()] = PIPE;
         }
-        for(Direction connection : this.connections) {
+        for (Direction connection : this.connections) {
             connections[connection.getId()] = BLOCK;
         }
         return connections;
@@ -62,8 +64,8 @@ public class ElectricityNetworkNode extends PipeNetworkNode {
     @Override
     public void removeConnection(World world, BlockPos pos, Direction direction) {
         // Remove if it exists
-        for(int i = 0; i < connections.size(); i++) {
-            if(connections.get(i) == direction) {
+        for (int i = 0; i < connections.size(); i++) {
+            if (connections.get(i) == direction) {
                 connections.remove(i);
                 return;
             }

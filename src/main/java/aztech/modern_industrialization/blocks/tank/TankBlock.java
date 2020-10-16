@@ -5,6 +5,8 @@ import alexiil.mc.lib.attributes.AttributeProvider;
 import aztech.modern_industrialization.ModernIndustrialization;
 import aztech.modern_industrialization.tools.IWrenchable;
 import aztech.modern_industrialization.util.MobSpawning;
+import java.util.Arrays;
+import java.util.List;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockEntityProvider;
 import net.minecraft.block.BlockState;
@@ -24,9 +26,6 @@ import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
-
-import java.util.Arrays;
-import java.util.List;
 
 public class TankBlock extends Block implements BlockEntityProvider, IWrenchable, AttributeProvider {
     public TankBlock(Settings settings) {
@@ -86,7 +85,8 @@ public class TankBlock extends Block implements BlockEntityProvider, IWrenchable
     public ActionResult onWrenchUse(ItemUsageContext context) {
         // FIXME: create an api for this.
         BlockHitResult hit = new BlockHitResult(context.getHitPos(), context.getSide(), context.getBlockPos(), context.hitsInsideBlock());
-        return onUse(context.getWorld().getBlockState(hit.getBlockPos()), context.getWorld(), hit.getBlockPos(), context.getPlayer(), context.getHand(), hit);
+        return onUse(context.getWorld().getBlockState(hit.getBlockPos()), context.getWorld(), hit.getBlockPos(), context.getPlayer(),
+                context.getHand(), hit);
     }
 
     @Override

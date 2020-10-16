@@ -1,0 +1,25 @@
+{
+  "type": "modern_industrialization:mixer",
+  "eu": 2,
+  "duration": 200,
+  "item_inputs": {
+    "item": "minecraft:andesite",
+    "amount": 1
+  },
+  "fluid_inputs": [
+    {
+      "fluid": "minecraft:water",
+      "amount": 1,
+      "probability" : 0
+    },
+    {
+      "fluid": "minecraft:lava",
+      "amount": 1,
+      "probability" : 0
+    }
+  ],
+  "item_outputs": {
+    "item": "minecraft:andesite",
+    "amount": 2
+  }
+}

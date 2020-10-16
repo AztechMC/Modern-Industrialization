@@ -10,7 +10,6 @@ import aztech.modern_industrialization.machines.impl.MachineFactory;
 public final class SteamTurbineBlockEntity extends MachineBlockEntity {
     private final EnergyExtractable extractable;
     private final CableTier tier;
-
     public SteamTurbineBlockEntity(MachineFactory factory, CableTier tier) {
         super(factory);
 
@@ -26,20 +25,19 @@ public final class SteamTurbineBlockEntity extends MachineBlockEntity {
 
     @Override
     public void addAllAttributes(AttributeList<?> to) {
-        if (to.getTargetSide() == outputDirection) {
+        if(to.getTargetSide() == outputDirection) {
             to.offer(extractable);
         }
     }
 
     @Override
     public void tick() {
-        if (world.isClient)
-            return;
+        if(world.isClient) return;
 
         boolean wasActive = isActive;
 
         int transformed = (int) Math.min(Math.min(fluidStacks.get(0).getAmount(), getMaxStoredEu() - storedEu), tier.getEu());
-        if (transformed > 0) {
+        if(transformed > 0) {
             fluidStacks.get(0).decrement(transformed);
             storedEu += transformed;
             isActive = true;
@@ -49,7 +47,7 @@ public final class SteamTurbineBlockEntity extends MachineBlockEntity {
 
         autoExtractEnergy(outputDirection, tier);
 
-        if (wasActive != isActive) {
+        if(wasActive != isActive) {
             sync();
         }
         markDirty();

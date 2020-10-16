@@ -26,10 +26,9 @@ public class LargeSteamBoilerBlockEntity extends MultiblockMachineBlockEntity {
 
     @Override
     public void tick() {
-        if (world.isClient)
-            return;
+        if(world.isClient) return;
 
-        if (shapeCheckTicks == 0) {
+        if(shapeCheckTicks == 0) {
             rebuildShape();
             shapeCheckTicks = 20;
         }
@@ -38,7 +37,7 @@ public class LargeSteamBoilerBlockEntity extends MultiblockMachineBlockEntity {
         boolean wasActive = isActive;
 
         this.isActive = false;
-        if (ready) {
+        if(ready) {
             // Item fuels
             if (usedEnergy == 0) {
                 for (ConfigurableItemStack stack : getItemInputStacks()) {
@@ -55,14 +54,14 @@ public class LargeSteamBoilerBlockEntity extends MultiblockMachineBlockEntity {
                 }
             }
             // Fluid fuels
-            if (usedEnergy == 0) {
-                for (ConfigurableFluidStack stack : getFluidInputStacks()) {
+            if(usedEnergy == 0) {
+                for(ConfigurableFluidStack stack : getFluidInputStacks()) {
                     FluidKey fluid = stack.getFluid();
                     int burnTicks = FluidFuelRegistry.getBurnTicks(fluid);
-                    if (burnTicks > 0) {
+                    if(burnTicks > 0) {
                         int mbEu = FluidFuelRegistry.getBurnTicks(fluid) * 32 * 2;
                         int necessaryAmount = Math.max(1, EU_PRODUCTION / mbEu);
-                        if (stack.getAmount() >= necessaryAmount) {
+                        if(stack.getAmount() >= necessaryAmount) {
                             recipeEnergy = mbEu * necessaryAmount / EU_PRODUCTION;
                             usedEnergy = recipeEnergy;
                             stack.decrement(necessaryAmount);
@@ -78,13 +77,13 @@ public class LargeSteamBoilerBlockEntity extends MultiblockMachineBlockEntity {
             }
         }
 
-        if (isActive) {
-            efficiencyTicks = Math.min(efficiencyTicks + 1, maxEfficiencyTicks);
+        if(isActive) {
+            efficiencyTicks = Math.min(efficiencyTicks+1, maxEfficiencyTicks);
         } else {
-            efficiencyTicks = Math.max(efficiencyTicks - 1, 0);
+            efficiencyTicks = Math.max(efficiencyTicks-1, 0);
         }
 
-        if (ready) {
+        if(ready) {
             if (efficiencyTicks > 1000) {
                 int steamProduction = EU_PRODUCTION * efficiencyTicks / maxEfficiencyTicks;
                 boolean waterAvailable = false;
@@ -121,12 +120,12 @@ public class LargeSteamBoilerBlockEntity extends MultiblockMachineBlockEntity {
             }
         }
 
-        if (isActive != wasActive) {
+        if(isActive != wasActive) {
             sync();
         }
         markDirty();
 
-        for (Direction direction : Direction.values()) {
+        for(Direction direction : Direction.values()) {
             autoExtractFluids(world, pos, direction);
         }
     }

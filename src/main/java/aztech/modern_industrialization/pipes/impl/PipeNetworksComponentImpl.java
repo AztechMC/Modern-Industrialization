@@ -3,17 +3,18 @@ package aztech.modern_industrialization.pipes.impl;
 import aztech.modern_industrialization.pipes.api.PipeNetworkManager;
 import aztech.modern_industrialization.pipes.api.PipeNetworkType;
 import aztech.modern_industrialization.pipes.api.PipeNetworksComponent;
-import java.util.HashMap;
-import java.util.Map;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Identifier;
 import net.minecraft.world.World;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class PipeNetworksComponentImpl implements PipeNetworksComponent {
     private Map<PipeNetworkType, PipeNetworkManager> managers = new HashMap<>();
 
     public PipeNetworksComponentImpl(World world) {
-        for (PipeNetworkType type : PipeNetworkType.getTypes().values()) {
+        for(PipeNetworkType type : PipeNetworkType.getTypes().values()) {
             managers.put(type, new PipeNetworkManager(type));
         }
     }
@@ -25,17 +26,17 @@ public class PipeNetworksComponentImpl implements PipeNetworksComponent {
 
     @Override
     public void onServerTickStart() {
-        for (PipeNetworkManager manager : managers.values()) {
+        for(PipeNetworkManager manager : managers.values()) {
             manager.markNetworksAsUnticked();
         }
     }
 
     @Override
     public void fromTag(CompoundTag tag) {
-        for (Map.Entry<Identifier, PipeNetworkType> entry : PipeNetworkType.getTypes().entrySet()) {
+        for(Map.Entry<Identifier, PipeNetworkType> entry : PipeNetworkType.getTypes().entrySet()) {
             PipeNetworkManager manager = new PipeNetworkManager(entry.getValue());
             String tagKey = entry.getKey().toString();
-            if (tag.contains(tagKey)) {
+            if(tag.contains(tagKey)) {
                 manager.fromTag(tag.getCompound(tagKey));
             }
             managers.put(entry.getValue(), manager);
@@ -44,7 +45,7 @@ public class PipeNetworksComponentImpl implements PipeNetworksComponent {
 
     @Override
     public CompoundTag toTag(CompoundTag tag) {
-        for (Map.Entry<PipeNetworkType, PipeNetworkManager> entry : managers.entrySet()) {
+        for(Map.Entry<PipeNetworkType, PipeNetworkManager> entry : managers.entrySet()) {
             tag.put(entry.getKey().getIdentifier().toString(), entry.getValue().toTag(new CompoundTag()));
         }
         return tag;

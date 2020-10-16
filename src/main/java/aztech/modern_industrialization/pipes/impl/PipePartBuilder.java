@@ -1,10 +1,10 @@
 package aztech.modern_industrialization.pipes.impl;
 
-import static net.minecraft.util.math.Direction.*;
-
 import aztech.modern_industrialization.pipes.api.PipeEndpointType;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
+
+import static net.minecraft.util.math.Direction.*;
 
 /**
  * A class that can build pipe model parts using a simple interface.
@@ -19,8 +19,7 @@ abstract class PipePartBuilder {
      */
     protected static final float SPACING = 1.0f / 16;
     /**
-     * The distance between the side of the block and the first of the five pipe
-     * slots.
+     * The distance between the side of the block and the first of the five pipe slots.
      */
     protected static final float FIRST_POS = (1.0f - 5 * SIDE - 4 * SPACING) / 2;
     Vec3d pos;
@@ -32,12 +31,10 @@ abstract class PipePartBuilder {
         // initial position + half pipe + slotPos * width
         float position = (1.0f - 3 * SIDE - 2 * SPACING) / 2.0f + SIDE / 2.0f + slotPos * (SIDE + SPACING);
         this.pos = new Vec3d(position, position, position);
-        // Find a suitable right direction (both right and up must face inside of the
-        // block).
+        // Find a suitable right direction (both right and up must face inside of the block).
         for (Direction d : Direction.values()) {
             this.right = Vec3d.of(d.getVector());
-            if (isTowardsInside(this.right) && isTowardsInside(up()))
-                break;
+            if (isTowardsInside(this.right) && isTowardsInside(up())) break;
         }
         // Move out of the center cube.
         moveForward(SIDE / 2);
@@ -106,8 +103,7 @@ abstract class PipePartBuilder {
      * Draw a straight line.
      */
     void straightLine(boolean reduced, boolean end) {
-        if (reduced)
-            moveForward(SIDE + SPACING);
+        if(reduced) moveForward(SIDE + SPACING);
         drawPipe(distanceToSide(facing), Intent.STRAIGHT, end);
     }
 
@@ -115,8 +111,7 @@ abstract class PipePartBuilder {
      * Draw a short bend.
      */
     void shortBend(boolean reduced, boolean end) {
-        if (reduced)
-            moveForward(SIDE + SPACING);
+        if(reduced) moveForward(SIDE + SPACING);
         // horizontal
         float dist = FIRST_POS + 2 * SIDE + SPACING;
         float advDist = distanceToSide(facing) - dist;
@@ -145,8 +140,7 @@ abstract class PipePartBuilder {
      * Draw a short bend, on the extra slot.
      */
     void farShortBend(boolean reduced, boolean end) {
-        if (reduced)
-            moveForward(SIDE + SPACING);
+        if(reduced) moveForward(SIDE + SPACING);
         // horizontal
         float dist = FIRST_POS + SIDE;
         float advDist = distanceToSide(facing) - dist;
@@ -174,8 +168,7 @@ abstract class PipePartBuilder {
      * Draw a long bend.
      */
     void longBend(boolean reduced, boolean end) {
-        if (reduced)
-            moveForward(SIDE + SPACING);
+        if(reduced) moveForward(SIDE + SPACING);
         // horizontal
         float dist = FIRST_POS + SIDE;
         float advDist = distanceToSide(facing) - dist;
@@ -227,8 +220,7 @@ abstract class PipePartBuilder {
                 }
             } else if (logicalSlot == 2) {
                 if (connSlot == 0) {
-                    // short bend, but far if the direction is west to avoid collisions in some
-                    // cases.
+                    // short bend, but far if the direction is west to avoid collisions in some cases.
                     return direction == WEST ? 3 : 2;
                 } else if (connSlot == 1) {
                     // long bend
@@ -246,19 +238,13 @@ abstract class PipePartBuilder {
     static Direction getInitialDirection(int logicalSlot, Direction connectionDirection, int renderType) {
         if (renderType == 2) { // only for short bend
             if (logicalSlot == 1) {
-                if (connectionDirection == NORTH)
-                    return UP;
-                if (connectionDirection == WEST)
-                    return SOUTH;
-                if (connectionDirection == DOWN)
-                    return EAST;
-            } else if (logicalSlot == 2) {
-                if (connectionDirection == UP)
-                    return NORTH;
-                if (connectionDirection == SOUTH)
-                    return WEST;
-                if (connectionDirection == EAST)
-                    return DOWN;
+                if(connectionDirection == NORTH) return UP;
+                if(connectionDirection == WEST) return SOUTH;
+                if(connectionDirection == DOWN) return EAST;
+            } else if(logicalSlot == 2) {
+                if(connectionDirection == UP) return NORTH;
+                if(connectionDirection == SOUTH) return WEST;
+                if(connectionDirection == EAST) return DOWN;
             }
         }
         return connectionDirection;

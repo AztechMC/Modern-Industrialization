@@ -1,19 +1,20 @@
 package aztech.modern_industrialization.api;
 
 import alexiil.mc.lib.attributes.fluid.volume.FluidKey;
+
 import java.util.*;
 
 public class FluidFuelRegistry {
     private static final Map<FluidKey, Integer> fluidBurnTicks = new HashMap<>();
 
     public static void register(FluidKey fluid, int burnTicks) {
-        if (burnTicks <= 0) {
+        if(burnTicks <= 0) {
             throw new RuntimeException("Fluids must have a positive burn time!");
         }
-        if (fluid == null || fluid.isEmpty()) {
+        if(fluid == null || fluid.isEmpty()) {
             throw new RuntimeException("May not register a null or empty fluid!");
         }
-        if (fluidBurnTicks.containsKey(fluid)) {
+        if(fluidBurnTicks.containsKey(fluid)) {
             throw new RuntimeException("May not re-register a fluid fuel!");
         }
         fluidBurnTicks.put(fluid, burnTicks);

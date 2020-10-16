@@ -23,8 +23,7 @@ public class ClientKeyHandler {
     private static KeyBinding keyActivate;
 
     public static void setup() {
-        keyActivate = KeyBindingHelper.registerKeyBinding(
-                new KeyBinding("key.modern_industrialization.activate", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_V, "modern_industrialization"));
+        keyActivate = KeyBindingHelper.registerKeyBinding(new KeyBinding("key.modern_industrialization.activate", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_V, "modern_industrialization"));
     }
 
     public static void onEndTick(MinecraftClient client) {
@@ -33,13 +32,12 @@ public class ClientKeyHandler {
     }
 
     public static void updateState(MinecraftClient client) {
-        if (client.player == null)
-            return;
+        if(client.player == null) return;
 
         ItemStack chest = client.player.getEquippedStack(EquipmentSlot.CHEST);
-        if (chest.getItem() instanceof JetpackItem) {
+        if(chest.getItem() instanceof JetpackItem) {
             JetpackItem jetpack = (JetpackItem) chest.getItem();
-            while (keyActivate.wasPressed()) {
+            while(keyActivate.wasPressed()) {
                 boolean activated = !jetpack.isActivated(chest);
                 ArmorPackets.activateJetpack(client.player, activated);
                 PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
@@ -52,11 +50,10 @@ public class ClientKeyHandler {
     public static void updateKeyMap(MinecraftClient client) {
         GameOptions settings = client.options;
 
-        if (client.getNetworkHandler() == null)
-            return;
+        if(client.getNetworkHandler() == null) return;
 
         boolean upNow = settings.keyJump.isPressed();
-        if (upNow != up) {
+        if(upNow != up) {
             up = upNow;
 
             MIKeyMap.update(client.player, up);

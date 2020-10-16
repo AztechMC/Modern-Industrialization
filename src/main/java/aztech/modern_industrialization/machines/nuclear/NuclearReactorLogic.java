@@ -2,8 +2,8 @@ package aztech.modern_industrialization.machines.nuclear;
 
 public class NuclearReactorLogic {
 
-    public static final int[] DX = { 1, 0, -1, 0 };
-    public static final int[] DY = { 0, -1, 0, 1 };
+    public static final int[] DX = {1, 0, -1, 0};
+    public static final int[] DY = {0, -1, 0, 1};
 
     public static void tick(NuclearReactorGrid grid) {
 
@@ -23,8 +23,7 @@ public class NuclearReactorLogic {
                             int rx2 = rx + DX[d2];
                             int ry2 = ry + DY[d2];
                             if (grid.inGrid(rx2, ry2)) {
-                                neutronReceived[rx2][ry2] += neutronPulse
-                                        * grid.getComponent(rx, ry).getNeutronReflection(Math.abs((d1 + 2) % 4 - d2));
+                                neutronReceived[rx2][ry2] += neutronPulse * grid.getComponent(rx, ry).getNeutronReflection(Math.abs((d1 + 2) % 4 - d2));
                                 // neutron deflection coefficient bewteen external normal direction
                             }
                         }
@@ -61,21 +60,21 @@ public class NuclearReactorLogic {
             }
         }
 
-        for (int i = 0; i < grid.getSizeX(); i++) {
-            for (int j = 0; j < grid.getSizeY(); j++) {
+        for(int i = 0; i < grid.getSizeX(); i++){
+            for(int j = 0; j < grid.getSizeY(); j++){
                 NuclearReactorComponent component = grid.getComponent(i, j);
                 double movedHeat = 0;
                 for (int d = 0; d < 4; d++) {
                     int rx = i + DX[d];
                     int ry = j + DY[d];
-                    movedHeat += (-deltaHeat[rx][ry]) * component.getHeatTransferMax() / heatTranferOut[rx][ry];
+                    movedHeat += (-deltaHeat[rx][ry]) * component.getHeatTransferMax()/heatTranferOut[rx][ry];
                 }
                 double remainingHeat = movedHeat;
                 for (int d = 0; d < 4; d++) {
                     int rx2 = i + DX[d];
                     int ry2 = j + DY[d];
                     if (grid.inGrid(rx2, ry2)) {
-                        double heatToR2 = movedHeat * component.getHeatTransferNeighbourFraction() / 4.0d;
+                        double heatToR2 = movedHeat * component.getHeatTransferNeighbourFraction()/4.0d;
                         deltaHeat[rx2][ry2] += heatToR2;
                         remainingHeat -= heatToR2;
                     }
@@ -86,23 +85,24 @@ public class NuclearReactorLogic {
 
         double heatSink[][] = new double[grid.getSizeX()][grid.getSizeY()];
 
-        for (int i = 0; i < grid.getSizeX(); i++) {
-            for (int j = 0; j < grid.getSizeY(); j++) {
+        for(int i = 0; i < grid.getSizeX(); i++){
+            for(int j = 0; j < grid.getSizeY(); j++) {
                 currentHeat[i][j] += deltaHeat[i][j];
-                if (currentHeat[i][j] < 0) {
-                    throw new IllegalStateException("Negative heat : " + currentHeat[i][j] + " at position (" + i + "," + j + ")");
+                if(currentHeat[i][j] < 0){
+                    throw new IllegalStateException("Negative heat : " + currentHeat[i][j] + " at position ("+i+","+j+")");
                 }
-                heatSink[i][j] = Math.min(currentHeat[i][j], grid.getComponent(i, j).getHeatSink());
+                heatSink[i][j] = Math.min(currentHeat[i][j], grid.getComponent(i,j).getHeatSink());
                 currentHeat[i][j] -= heatSink[i][j];
             }
         }
 
-        for (int i = 0; i < grid.getSizeX(); i++) {
-            for (int j = 0; j < grid.getSizeY(); j++) {
-                grid.setHeat(i, j, currentHeat[i][j]);
-                grid.getComponent(i, j).tick(neutronReceived[i][j], grid.getHeat(i, j), heatSink[i][j]);
+        for(int i = 0; i < grid.getSizeX(); i++){
+            for(int j = 0; j < grid.getSizeY(); j++) {
+                grid.setHeat(i,j, currentHeat[i][j]);
+                grid.getComponent(i,j).tick(neutronReceived[i][j], grid.getHeat(i, j), heatSink[i][j]);
             }
         }
+
 
     }
 

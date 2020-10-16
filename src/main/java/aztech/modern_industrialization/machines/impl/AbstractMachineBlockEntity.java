@@ -6,8 +6,13 @@ import net.fabricmc.fabric.api.rendering.data.v1.RenderAttachmentBlockEntity;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
+import net.minecraft.block.entity.LockableContainerBlockEntity;
 import net.minecraft.client.world.ClientWorld;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.Inventories;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.Direction;
 
 /**
@@ -45,7 +50,7 @@ public abstract class AbstractMachineBlockEntity extends BlockEntity implements 
     public CompoundTag toTag(CompoundTag tag) {
         super.toTag(tag);
         tag.putInt("facingDirection", this.facingDirection.getId());
-        if (outputDirection != null) {
+        if(outputDirection != null) {
             tag.putInt("outputDirection", this.outputDirection.getId());
         }
         tag.putBoolean("extractItems", this.extractItems);
@@ -57,21 +62,21 @@ public abstract class AbstractMachineBlockEntity extends BlockEntity implements 
     @Override
     public void fromClientTag(CompoundTag tag) {
         setFacingDirection(Direction.byId(tag.getInt("facingDirection")));
-        if (tag.contains("outputDirection")) {
+        if(tag.contains("outputDirection")) {
             outputDirection = Direction.byId(tag.getInt("outputDirection"));
         }
         extractItems = tag.getBoolean("extractItems");
         extractFluids = tag.getBoolean("extractFluids");
         this.isActive = tag.getBoolean("isActive");
-        ClientWorld clientWorld = (ClientWorld) world;
-        WorldRendererGetter wrg = (WorldRendererGetter) clientWorld;
+        ClientWorld clientWorld = (ClientWorld)world;
+        WorldRendererGetter wrg = (WorldRendererGetter)clientWorld;
         wrg.modern_industrialization_getWorldRenderer().updateBlock(null, this.pos, null, null, 0);
     }
 
     @Override
     public CompoundTag toClientTag(CompoundTag tag) {
         tag.putInt("facingDirection", this.facingDirection.getId());
-        if (outputDirection != null) {
+        if(outputDirection != null) {
             tag.putInt("outputDirection", this.outputDirection.getId());
         }
         tag.putBoolean("extractItems", this.extractItems);
@@ -83,7 +88,7 @@ public abstract class AbstractMachineBlockEntity extends BlockEntity implements 
     public void setFacingDirection(Direction facingDirection) {
         this.facingDirection = facingDirection;
         markDirty();
-        if (!world.isClient) {
+        if(!world.isClient) {
             sync();
         }
     }
@@ -91,7 +96,7 @@ public abstract class AbstractMachineBlockEntity extends BlockEntity implements 
     public void setOutputDirection(Direction outputDirection) {
         this.outputDirection = outputDirection;
         markDirty();
-        if (!world.isClient) {
+        if(!world.isClient) {
             sync();
         }
     }

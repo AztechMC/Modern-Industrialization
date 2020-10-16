@@ -1,7 +1,7 @@
 plugins {
-    id 'fabric-loom' version '0.4-SNAPSHOT'
-    id 'maven-publish'
-    id 'com.diffplug.spotless' version '5.6.1'
+	id 'fabric-loom' version '0.4-SNAPSHOT'
+	id 'maven-publish'
+	id 'com.diffplug.spotless' version '5.6.1'
 }
 
 sourceCompatibility = JavaVersion.VERSION_1_8
@@ -10,123 +10,123 @@ targetCompatibility = JavaVersion.VERSION_1_8
 version = project.mod_version
 
 repositories {
-    // for ARRP
-    maven {
-        url = 'https://raw.githubusercontent.com/Devan-Kerman/Devan-Repo/master/'
-    }
-    // for Cardinal Components
-    maven {
-        name = "Ladysnake Libs"
-        url = "https://dl.bintray.com/ladysnake/libs"
-    }
-    // for Patchouli
-    maven { url 'https://maven.blamejared.com' }
-    // for LBA
-    maven {
-        name = "BuildCraft"
-        url = "https://mod-buildcraft.com/maven"
-    }
-    maven {
-        name "Siphalor's Maven"
-        url "https://maven.siphalor.de"
-    }
+	// for ARRP
+	maven {
+		url = 'https://raw.githubusercontent.com/Devan-Kerman/Devan-Repo/master/'
+	}
+	// for Cardinal Components
+	maven {
+		name = "Ladysnake Libs"
+		url = "https://dl.bintray.com/ladysnake/libs"
+	}
+	// for Patchouli
+	maven { url 'https://maven.blamejared.com' }
+	// for LBA
+	maven {
+		name = "BuildCraft"
+		url = "https://mod-buildcraft.com/maven"
+	}
+	maven {
+		name "Siphalor's Maven"
+		url "https://maven.siphalor.de"
+	}
 }
 
 dependencies {
-    minecraft "com.mojang:minecraft:${project.minecraft_version}"
-    mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
-    modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
-    modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
+	minecraft "com.mojang:minecraft:${project.minecraft_version}"
+	mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
+	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
+	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
-    modImplementation 'net.devtech:arrp:0.2.6'
-    include "net.devtech:arrp:0.2.6"
-    modImplementation "io.github.onyxstudios:Cardinal-Components-API:${project.cardinal_components_version}"
-    include "io.github.onyxstudios:Cardinal-Components-API:${project.cardinal_components_version}"
-    modImplementation "me.shedaniel:RoughlyEnoughItems:${project.rei_version}"
-    modImplementation "vazkii.patchouli:Patchouli:${project.patchouli_version}"
-    modApi "alexiil.mc.lib:libblockattributes-all:${project.lba_version}"
-    include "alexiil.mc.lib:libblockattributes-all:${project.lba_version}"
-    modApi "me.shedaniel.cloth.api:cloth-armor-api-v1:${project.cloth_api_version}"
-    modApi "me.shedaniel.cloth.api:cloth-common-events-v1:${project.cloth_api_version}"
-    modApi "me.shedaniel.cloth.api:cloth-durability-bar-api-v1:${project.cloth_api_version}"
-    include "me.shedaniel.cloth.api:cloth-armor-api-v1:${project.cloth_api_version}"
-    include "me.shedaniel.cloth.api:cloth-common-events-v1:${project.cloth_api_version}"
-    include "me.shedaniel.cloth.api:cloth-durability-bar-api-v1:${project.cloth_api_version}"
-    modImplementation "de.siphalor:nbtcrafting-${project.nbt_crafting_version}"
-    include "de.siphalor:nbtcrafting-${project.nbt_crafting_version}"
+	modImplementation 'net.devtech:arrp:0.2.6'
+	include "net.devtech:arrp:0.2.6"
+	modImplementation "io.github.onyxstudios:Cardinal-Components-API:${project.cardinal_components_version}"
+	include "io.github.onyxstudios:Cardinal-Components-API:${project.cardinal_components_version}"
+	modImplementation "me.shedaniel:RoughlyEnoughItems:${project.rei_version}"
+	modImplementation "vazkii.patchouli:Patchouli:${project.patchouli_version}"
+	modApi "alexiil.mc.lib:libblockattributes-all:${project.lba_version}"
+	include "alexiil.mc.lib:libblockattributes-all:${project.lba_version}"
+	modApi "me.shedaniel.cloth.api:cloth-armor-api-v1:${project.cloth_api_version}"
+	modApi "me.shedaniel.cloth.api:cloth-common-events-v1:${project.cloth_api_version}"
+	modApi "me.shedaniel.cloth.api:cloth-durability-bar-api-v1:${project.cloth_api_version}"
+	include "me.shedaniel.cloth.api:cloth-armor-api-v1:${project.cloth_api_version}"
+	include "me.shedaniel.cloth.api:cloth-common-events-v1:${project.cloth_api_version}"
+	include "me.shedaniel.cloth.api:cloth-durability-bar-api-v1:${project.cloth_api_version}"
+	modImplementation "de.siphalor:nbtcrafting-${project.nbt_crafting_version}"
+	include "de.siphalor:nbtcrafting-${project.nbt_crafting_version}"
 }
 
 processResources {
-    inputs.property "version", project.version
+	inputs.property "version", project.version
 
-    from(sourceSets.main.resources.srcDirs) {
-        include "fabric.mod.json"
-        expand "version": project.version
-    }
+	from(sourceSets.main.resources.srcDirs) {
+		include "fabric.mod.json"
+		expand "version": project.version
+	}
 
-    from(sourceSets.main.resources.srcDirs) {
-        exclude "fabric.mod.json"
-    }
+	from(sourceSets.main.resources.srcDirs) {
+		exclude "fabric.mod.json"
+	}
 }
 
 // ensure that the encoding is set to UTF-8, no matter what the system default is
 // this fixes some edge cases with special characters not displaying correctly
 // see http://yodaconditions.net/blog/fix-for-java-file-encoding-problems-with-gradle.html
 tasks.withType(JavaCompile) {
-    options.encoding = "UTF-8"
+	options.encoding = "UTF-8"
 }
 
 // Loom will automatically attach sourcesJar to a RemapSourcesJar task and to the "build" task
 // if it is present.
 // If you remove this task, sources will not be generated.
 task sourcesJar(type: Jar, dependsOn: classes) {
-    classifier = "sources"
-    from sourceSets.main.allSource
+	classifier = "sources"
+	from sourceSets.main.allSource
 }
 
 jar {
-    from "LICENSE"
+	from "LICENSE"
 }
 
 // configure the maven publication
 publishing {
-    publications {
-        mavenJava(MavenPublication) {
-            // add all the jars that should be included when publishing to maven
-            artifact(remapJar) {
-                builtBy remapJar
-            }
-            artifact(sourcesJar) {
-                builtBy remapSourcesJar
-            }
-        }
-    }
+	publications {
+		mavenJava(MavenPublication) {
+			// add all the jars that should be included when publishing to maven
+			artifact(remapJar) {
+				builtBy remapJar
+			}
+			artifact(sourcesJar) {
+				builtBy remapSourcesJar
+			}
+		}
+	}
 
-    // select the repositories you want to publish to
-    repositories {
-        // uncomment to publish to the local maven
-        // mavenLocal()
-    }
+	// select the repositories you want to publish to
+	repositories {
+		// uncomment to publish to the local maven
+		// mavenLocal()
+	}
 }
 
 spotless {
-    format 'misc', {
-        target '*.gradle', '*.md', '.gitignore'
+	format 'misc', {
+		target '*.gradle', '*.md', '.gitignore'
 
-        trimTrailingWhitespace()
-        indentWithSpaces()
-        endWithNewline()
-    }
-    java {
-        targetExclude '**/MIFluids.java', '**/MIMaterials.java', '**/MITags.java'
+		trimTrailingWhitespace()
+		indentWithSpaces()
+		endWithNewline()
+	}
+	java {
+		targetExclude '**/MIFluids.java', '**/MIMaterials.java', '**/MITags.java'
 
-        importOrder()
+		importOrder()
 
-        removeUnusedImports()
+		removeUnusedImports()
 
-        eclipse().configFile('eclipse-format.xml')
+		eclipse().configFile('eclipse-format.xml')
 
-        indentWithSpaces()
-        endWithNewline()
-    }
+		indentWithSpaces()
+		endWithNewline()
+	}
 }

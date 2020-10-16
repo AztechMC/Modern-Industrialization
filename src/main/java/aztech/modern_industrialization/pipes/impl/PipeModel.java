@@ -1,14 +1,11 @@
 package aztech.modern_industrialization.pipes.impl;
 
+import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.pipes.api.PipeEndpointType;
 import aztech.modern_industrialization.pipes.api.PipeNetworkType;
 import aztech.modern_industrialization.pipes.api.PipeRenderer;
 import com.mojang.datafixers.util.Pair;
 import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
-import java.util.*;
-import java.util.function.Function;
-import java.util.function.Supplier;
-import java.util.stream.Collectors;
 import net.fabricmc.fabric.api.renderer.v1.RendererAccess;
 import net.fabricmc.fabric.api.renderer.v1.material.BlendMode;
 import net.fabricmc.fabric.api.renderer.v1.material.RenderMaterial;
@@ -31,15 +28,18 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.BlockRenderView;
 
+import java.util.*;
+import java.util.function.Function;
+import java.util.function.Supplier;
+import java.util.stream.Collectors;
+
 /**
  * The models of a pipe block. It can handle up to three different pipe types.
- * The block is divided in five slots of width SIDE, three for the main pipes
- * and two for connection handling.
+ * The block is divided in five slots of width SIDE, three for the main pipes and two for connection handling.
  */
 public class PipeModel implements UnbakedModel, BakedModel, FabricBakedModel {
     private static final Identifier DEFAULT_BLOCK_MODEL = new Identifier("minecraft:block/block");
-    private static final SpriteIdentifier PARTICLE_SPRITE = new SpriteIdentifier(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE,
-            new Identifier("minecraft:block/iron_block"));
+    private static final SpriteIdentifier PARTICLE_SPRITE = new SpriteIdentifier(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE, new Identifier("minecraft:block/iron_block"));
     private Sprite particleSprite;
     private Map<PipeRenderer.Factory, PipeRenderer> renderers = new Reference2ObjectOpenHashMap<>();
     private ModelTransformation modelTransformation;
@@ -51,25 +51,22 @@ public class PipeModel implements UnbakedModel, BakedModel, FabricBakedModel {
     }
 
     @Override
-    public void emitBlockQuads(BlockRenderView blockRenderView, BlockState state, BlockPos pos, Supplier<Random> supplier,
-            RenderContext renderContext) {
+    public void emitBlockQuads(BlockRenderView blockRenderView, BlockState state, BlockPos pos, Supplier<Random> supplier, RenderContext renderContext) {
         renderContext.pushTransform(quad -> {
-            if (quad.tag() == 0) {
+            if(quad.tag() == 0) {
                 quad.material(cutoutMaterial);
             }
             return true;
         });
 
-        PipeBlockEntity.RenderAttachment attachment = (PipeBlockEntity.RenderAttachment) ((RenderAttachedBlockView) blockRenderView)
-                .getBlockEntityRenderAttachment(pos);
+        PipeBlockEntity.RenderAttachment attachment = (PipeBlockEntity.RenderAttachment) ((RenderAttachedBlockView) blockRenderView).getBlockEntityRenderAttachment(pos);
         int centerSlots = attachment.types.length;
         for (int slot = 0; slot < centerSlots; slot++) {
             // Set color
             int color = attachment.types[slot].getColor();
             renderContext.pushTransform(getColorTransform(color));
 
-            renderers.get(attachment.types[slot].getRenderer()).draw(renderContext, slot, attachment.renderedConnections,
-                    attachment.customData[slot]);
+            renderers.get(attachment.types[slot].getRenderer()).draw(renderContext, slot, attachment.renderedConnections, attachment.customData[slot]);
 
             renderContext.popTransform();
         }
@@ -85,8 +82,7 @@ public class PipeModel implements UnbakedModel, BakedModel, FabricBakedModel {
             int color = type.getColor();
             renderContext.pushTransform(getColorTransform(color));
 
-            PipeEndpointType[][] connections = new PipeEndpointType[][] {
-                    { null, null, null, null, PipeEndpointType.BLOCK, PipeEndpointType.BLOCK } };
+            PipeEndpointType[][] connections = new PipeEndpointType[][] {{ null, null, null, null, PipeEndpointType.BLOCK, PipeEndpointType.BLOCK }};
             renderers.get(type.getRenderer()).draw(renderContext, 0, connections, new CompoundTag());
 
             renderContext.popTransform();
@@ -95,7 +91,7 @@ public class PipeModel implements UnbakedModel, BakedModel, FabricBakedModel {
 
     private static RenderContext.QuadTransform getColorTransform(int color) {
         return quad -> {
-            if (quad.tag() == 0) {
+            if(quad.tag() == 0) {
                 quad.spriteColor(0, color, color, color, color);
             }
             return true;
@@ -148,20 +144,17 @@ public class PipeModel implements UnbakedModel, BakedModel, FabricBakedModel {
     }
 
     @Override
-    public Collection<SpriteIdentifier> getTextureDependencies(Function<Identifier, UnbakedModel> unbakedModelGetter,
-            Set<Pair<String, String>> unresolvedTextureReferences) {
-        return PipeNetworkType.getTypes().values().stream().flatMap(r -> r.getRenderer().getSpriteDependencies().stream())
-                .collect(Collectors.toList());
+    public Collection<SpriteIdentifier> getTextureDependencies(Function<Identifier, UnbakedModel> unbakedModelGetter, Set<Pair<String, String>> unresolvedTextureReferences) {
+        return PipeNetworkType.getTypes().values().stream().flatMap(r -> r.getRenderer().getSpriteDependencies().stream()).collect(Collectors.toList());
     }
 
     @Override
-    public BakedModel bake(ModelLoader loader, Function<SpriteIdentifier, Sprite> textureGetter, ModelBakeSettings rotationContainer,
-            Identifier modelId) {
+    public BakedModel bake(ModelLoader loader, Function<SpriteIdentifier, Sprite> textureGetter, ModelBakeSettings rotationContainer, Identifier modelId) {
         particleSprite = textureGetter.apply(PARTICLE_SPRITE);
         modelTransformation = ((JsonUnbakedModel) loader.getOrLoadModel(DEFAULT_BLOCK_MODEL)).getTransformations();
 
         renderers.clear();
-        for (PipeRenderer.Factory rendererFactory : PipeNetworkType.getRenderers()) {
+        for(PipeRenderer.Factory rendererFactory : PipeNetworkType.getRenderers()) {
             renderers.put(rendererFactory, rendererFactory.create(textureGetter));
         }
 

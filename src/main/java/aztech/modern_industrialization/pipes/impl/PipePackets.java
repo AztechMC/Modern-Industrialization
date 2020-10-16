@@ -13,7 +13,7 @@ public class PipePackets {
         boolean whitelist = data.readBoolean();
         context.getTaskQueue().execute(() -> {
             ScreenHandler handler = context.getPlayer().currentScreenHandler;
-            if (handler.syncId == syncId) {
+            if(handler.syncId == syncId) {
                 ((ItemPipeScreenHandler) handler).pipeInterface.setWhitelist(whitelist);
             }
         });
@@ -24,7 +24,7 @@ public class PipePackets {
         int type = data.readInt();
         context.getTaskQueue().execute(() -> {
             ScreenHandler handler = context.getPlayer().currentScreenHandler;
-            if (handler.syncId == syncId) {
+            if(handler.syncId == syncId) {
                 ((ItemPipeScreenHandler) handler).pipeInterface.setConnectionType(type);
             }
         });
@@ -35,7 +35,7 @@ public class PipePackets {
         int priority = data.readInt();
         context.getTaskQueue().execute(() -> {
             ScreenHandler handler = context.getPlayer().currentScreenHandler;
-            if (handler.syncId == syncId) {
+            if(handler.syncId == syncId) {
                 ((ItemPipeScreenHandler) handler).pipeInterface.incrementPriority(priority);
             }
         });
@@ -46,7 +46,7 @@ public class PipePackets {
         int priority = data.readInt();
         context.getTaskQueue().execute(() -> {
             ScreenHandler handler = context.getPlayer().currentScreenHandler;
-            if (handler.syncId == syncId) {
+            if(handler.syncId == syncId) {
                 ((ItemPipeScreenHandler) handler).pipeInterface.setPriority(priority);
             }
         });

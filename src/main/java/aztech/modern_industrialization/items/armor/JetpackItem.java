@@ -12,8 +12,6 @@ import aztech.modern_industrialization.api.FluidFuelRegistry;
 import aztech.modern_industrialization.mixin.ServerPlayNetworkHandlerAccessor;
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
-import java.math.RoundingMode;
-import java.util.List;
 import me.shedaniel.cloth.api.armor.v1.TickableArmor;
 import me.shedaniel.cloth.api.durability.bar.DurabilityBarItem;
 import net.minecraft.client.item.TooltipContext;
@@ -35,9 +33,11 @@ import net.minecraft.util.Rarity;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
+import java.math.RoundingMode;
+import java.util.List;
+
 public class JetpackItem extends ArmorItem implements Wearable, AttributeProviderItem, TickableArmor, DurabilityBarItem {
     private static int CAPACITY = 1000;
-
     public JetpackItem(Settings settings) {
         super(buildMaterial(), EquipmentSlot.CHEST, settings.maxCount(1).rarity(Rarity.UNCOMMON));
     }
@@ -61,7 +61,7 @@ public class JetpackItem extends ArmorItem implements Wearable, AttributeProvide
 
     public void setAmount(ItemStack stack, int amount) {
         stack.getOrCreateTag().putInt("amount", amount);
-        if (amount == 0) {
+        if(amount == 0) {
             setFluid(stack, FluidKeys.EMPTY);
         }
     }
@@ -90,8 +90,8 @@ public class JetpackItem extends ArmorItem implements Wearable, AttributeProvide
     public void addAllAttributes(Reference<ItemStack> stack, LimitedConsumer<ItemStack> excess, ItemAttributeList<?> to) {
         to.offer((FluidInsertable) (fluidVolume, simulation) -> {
             FluidKey storedFluid = getFluid(stack.get());
-            if (storedFluid.isEmpty()) {
-                if (FluidFuelRegistry.getBurnTicks(fluidVolume.getFluidKey()) != 0) {
+            if(storedFluid.isEmpty()) {
+                if(FluidFuelRegistry.getBurnTicks(fluidVolume.getFluidKey()) != 0) {
                     int inserted = Math.min(CAPACITY - getAmount(stack.get()), fluidVolume.amount().asInt(1000, RoundingMode.FLOOR));
                     ItemStack copy = stack.get().copy();
                     setFluid(copy, fluidVolume.getFluidKey());
@@ -101,12 +101,12 @@ public class JetpackItem extends ArmorItem implements Wearable, AttributeProvide
                     }
                     return fluidVolume.getFluidKey().withAmount(fluidVolume.amount().sub(FluidAmount.of(inserted, 1000)));
                 }
-            } else if (storedFluid.equals(fluidVolume.getFluidKey())) {
+            } else if(storedFluid.equals(fluidVolume.getFluidKey())) {
                 int amount = getAmount(stack.get());
                 int inserted = Math.min(getCapacity() - amount, fluidVolume.amount().asInt(1000, RoundingMode.FLOOR));
                 ItemStack copy = stack.get().copy();
                 setAmount(copy, amount + inserted);
-                if (!stack.set(copy, simulation)) {
+                if(!stack.set(copy, simulation)) {
                     return fluidVolume;
                 }
                 return fluidVolume.getFluidKey().withAmount(fluidVolume.amount().sub(FluidAmount.of(inserted, 1000)));
@@ -162,27 +162,27 @@ public class JetpackItem extends ArmorItem implements Wearable, AttributeProvide
     @Override
     public void tickArmor(ItemStack stack, PlayerEntity player) {
         boolean showParticles = false;
-        if (isActivated(stack)) {
+        if(isActivated(stack)) {
             int amount = getAmount(stack);
             if (MIKeyMap.isHoldingUp(player) && amount > 0) {
                 showParticles = true;
                 double maxSpeed = Math.sqrt(FluidFuelRegistry.getBurnTicks(getFluid(stack))) / 5;
                 double acceleration = 0.25;
-                setAmount(stack, amount - 1);
+                setAmount(stack, amount-1);
                 Vec3d v = player.getVelocity();
-                if (v.y < maxSpeed) {
+                if(v.y < maxSpeed) {
                     player.setVelocity(v.x, Math.min(maxSpeed, v.y + acceleration), v.z);
                 }
-                if (!player.world.isClient()) {
+                if(!player.world.isClient()) {
                     player.fallDistance = 0;
-                    if (player instanceof ServerPlayerEntity) {
+                    if(player instanceof ServerPlayerEntity) {
                         ((ServerPlayNetworkHandlerAccessor) ((ServerPlayerEntity) player).networkHandler).setFloatingTicks(0);
                     }
                 }
             }
         }
 
-        if (!player.world.isClient()) {
+        if(!player.world.isClient()) {
             setParticles(stack, showParticles);
         }
     }

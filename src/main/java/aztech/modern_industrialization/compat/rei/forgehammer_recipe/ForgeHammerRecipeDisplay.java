@@ -2,14 +2,15 @@ package aztech.modern_industrialization.compat.rei.forgehammer_recipe;
 
 import aztech.modern_industrialization.machines.recipe.MachineRecipe;
 import aztech.modern_industrialization.machines.recipe.MachineRecipeType;
-import java.util.Collections;
-import java.util.List;
-import java.util.stream.Collectors;
 import me.shedaniel.rei.api.EntryStack;
 import me.shedaniel.rei.api.RecipeDisplay;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class ForgeHammerRecipeDisplay implements RecipeDisplay {
     private final MachineRecipe recipe;

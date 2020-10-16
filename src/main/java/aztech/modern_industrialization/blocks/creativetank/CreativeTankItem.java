@@ -13,7 +13,6 @@ import alexiil.mc.lib.attributes.misc.AbstractItemBasedAttribute;
 import alexiil.mc.lib.attributes.misc.LimitedConsumer;
 import alexiil.mc.lib.attributes.misc.Reference;
 import aztech.modern_industrialization.util.NbtHelper;
-import java.util.List;
 import net.minecraft.block.Block;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.item.BlockItem;
@@ -23,6 +22,8 @@ import net.minecraft.text.Text;
 import net.minecraft.text.TextColor;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.world.World;
+
+import java.util.List;
 
 public class CreativeTankItem extends BlockItem implements AttributeProviderItem {
     public CreativeTankItem(Block block, Settings settings) {
@@ -59,11 +60,10 @@ public class CreativeTankItem extends BlockItem implements AttributeProviderItem
 
         @Override
         public FluidVolume attemptExtraction(FluidFilter filter, FluidAmount maxAmount, Simulation simulation) {
-            if (isEmpty(stackRef.get()))
-                return FluidVolumeUtil.EMPTY;
+            if(isEmpty(stackRef.get())) return FluidVolumeUtil.EMPTY;
 
             FluidKey fluid = getFluid(stackRef.get());
-            if (filter.matches(fluid)) {
+            if(filter.matches(fluid)) {
                 return fluid.withAmount(maxAmount);
             }
             return FluidVolumeUtil.EMPTY;

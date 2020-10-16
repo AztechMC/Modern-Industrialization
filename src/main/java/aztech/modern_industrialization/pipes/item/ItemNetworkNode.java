@@ -1,17 +1,16 @@
 package aztech.modern_industrialization.pipes.item;
 
-import static aztech.modern_industrialization.pipes.api.PipeEndpointType.*;
-
 import alexiil.mc.lib.attributes.SearchOption;
 import alexiil.mc.lib.attributes.SearchOptions;
 import alexiil.mc.lib.attributes.item.*;
 import aztech.modern_industrialization.pipes.api.PipeEndpointType;
 import aztech.modern_industrialization.pipes.api.PipeNetworkNode;
 import aztech.modern_industrialization.util.ItemStackHelper;
-import java.util.*;
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.Inventory;
+import net.minecraft.inventory.SidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.PacketByteBuf;
@@ -23,6 +22,10 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 
+import java.util.*;
+
+import static aztech.modern_industrialization.pipes.api.PipeEndpointType.*;
+
 // TODO: item filters
 public class ItemNetworkNode extends PipeNetworkNode {
     private List<ItemConnection> connections = new ArrayList<>();
@@ -30,11 +33,10 @@ public class ItemNetworkNode extends PipeNetworkNode {
 
     @Override
     public void updateConnections(World world, BlockPos pos) {
-        // We don't connect by default, so we just have to remove connections that have
-        // become unavailable
-        for (int i = 0; i < connections.size();) {
+        // We don't connect by default, so we just have to remove connections that have become unavailable
+        for(int i = 0; i < connections.size();) {
             ItemConnection conn = connections.get(i);
-            if (canConnect(world, pos, conn.direction)) {
+            if(canConnect(world, pos, conn.direction)) {
                 i++;
             } else {
                 connections.remove(i);
@@ -51,10 +53,10 @@ public class ItemNetworkNode extends PipeNetworkNode {
     @Override
     public PipeEndpointType[] getConnections(BlockPos pos) {
         PipeEndpointType[] connections = new PipeEndpointType[6];
-        for (Direction direction : network.manager.getNodeLinks(pos)) {
+        for(Direction direction : network.manager.getNodeLinks(pos)) {
             connections[direction.getId()] = PIPE;
         }
-        for (ItemConnection connection : this.connections) {
+        for(ItemConnection connection : this.connections) {
             connections[connection.direction.getId()] = connection.type;
         }
         return connections;
@@ -63,15 +65,12 @@ public class ItemNetworkNode extends PipeNetworkNode {
     @Override
     public void removeConnection(World world, BlockPos pos, Direction direction) {
         // Cycle if it exists
-        for (int i = 0; i < connections.size(); i++) {
+        for(int i = 0; i < connections.size(); i++) {
             ItemConnection conn = connections.get(i);
-            if (conn.direction == direction) {
-                if (conn.type == BLOCK_IN)
-                    conn.type = BLOCK_IN_OUT;
-                else if (conn.type == BLOCK_IN_OUT)
-                    conn.type = BLOCK_OUT;
-                else
-                    connections.remove(i);
+            if(conn.direction == direction) {
+                if(conn.type == BLOCK_IN) conn.type = BLOCK_IN_OUT;
+                else if(conn.type == BLOCK_IN_OUT) conn.type = BLOCK_OUT;
+                else connections.remove(i);
                 return;
             }
         }
@@ -93,12 +92,12 @@ public class ItemNetworkNode extends PipeNetworkNode {
 
     @Override
     public CompoundTag toTag(CompoundTag tag) {
-        for (ItemConnection connection : connections) {
+        for(ItemConnection connection : connections) {
             CompoundTag connectionTag = new CompoundTag();
-            connectionTag.putByte("connections", (byte) encodeConnectionType(connection.type));
+            connectionTag.putByte("connections", (byte)encodeConnectionType(connection.type));
             connectionTag.putBoolean("whitelist", connection.whitelist);
             connectionTag.putInt("priority", connection.priority);
-            for (int i = 0; i < ItemPipeInterface.SLOTS; i++) {
+            for(int i = 0; i < ItemPipeInterface.SLOTS; i++) {
                 connectionTag.put(Integer.toString(i), connection.stacks[i].toTag(new CompoundTag()));
             }
             tag.put(connection.direction.toString(), connectionTag);
@@ -109,13 +108,12 @@ public class ItemNetworkNode extends PipeNetworkNode {
 
     @Override
     public void fromTag(CompoundTag tag) {
-        for (Direction direction : Direction.values()) {
-            if (tag.contains(direction.toString())) {
+        for(Direction direction : Direction.values()) {
+            if(tag.contains(direction.toString())) {
                 CompoundTag connectionTag = tag.getCompound(direction.toString());
-                ItemConnection connection = new ItemConnection(direction, decodeConnectionType(connectionTag.getByte("connections")),
-                        connectionTag.getInt("priority"));
+                ItemConnection connection = new ItemConnection(direction, decodeConnectionType(connectionTag.getByte("connections")), connectionTag.getInt("priority"));
                 connection.whitelist = connectionTag.getBoolean("whitelist");
-                for (int i = 0; i < ItemPipeInterface.SLOTS; i++) {
+                for(int i = 0; i < ItemPipeInterface.SLOTS; i++) {
                     connection.stacks[i] = ItemStack.fromTag(connectionTag.getCompound(Integer.toString(i)));
                     connection.stacks[i].setCount(1);
                 }
@@ -135,8 +133,8 @@ public class ItemNetworkNode extends PipeNetworkNode {
 
     @Override
     public ExtendedScreenHandlerFactory getConnectionGui(Direction guiDirection, Runnable markDirty, Runnable sync) {
-        for (ItemConnection connection : connections) {
-            if (connection.direction == guiDirection) {
+        for(ItemConnection connection : connections) {
+            if(connection.direction == guiDirection) {
                 return connection.new ScreenHandlerFactory(markDirty, sync, getType().getIdentifier().getPath());
             }
         }
@@ -145,23 +143,18 @@ public class ItemNetworkNode extends PipeNetworkNode {
 
     @Override
     public void tick(World world, BlockPos pos) {
-        if (inactiveTicks == 0) {
+        if(inactiveTicks == 0) {
             List<InsertTarget> reachableInputs = null;
-            outer: for (ItemConnection connection : connections) { // TODO: optimize!
-                if (connection.canExtract()) {
+            outer: for(ItemConnection connection : connections) { // TODO: optimize!
+                if(connection.canExtract()) {
                     int movesLeft = 16;
-                    if (reachableInputs == null)
-                        reachableInputs = getInputs(world, pos);
-                    ItemExtractable extractable = ItemAttributes.EXTRACTABLE.get(world, pos.offset(connection.direction),
-                            SearchOptions.inDirection(connection.direction));
-                    for (InsertTarget target : reachableInputs) {
-                        if (target.connection.canInsert()) {
-                            int moved = ItemInvUtil.moveMultiple(extractable, target.insertable,
-                                    s -> connection.canStackMoveThrough(s) && target.connection.canStackMoveThrough(s), movesLeft,
-                                    movesLeft).itemsMoved;
+                    if(reachableInputs == null) reachableInputs = getInputs(world, pos);
+                    ItemExtractable extractable = ItemAttributes.EXTRACTABLE.get(world, pos.offset(connection.direction), SearchOptions.inDirection(connection.direction));
+                    for(InsertTarget target : reachableInputs) {
+                        if(target.connection.canInsert()) {
+                            int moved = ItemInvUtil.moveMultiple(extractable, target.insertable, s -> connection.canStackMoveThrough(s) && target.connection.canStackMoveThrough(s), movesLeft, movesLeft).itemsMoved;
                             movesLeft -= moved;
-                            if (movesLeft == 0)
-                                continue outer;
+                            if(movesLeft == 0) continue outer;
                         }
                     }
                 }
@@ -172,8 +165,7 @@ public class ItemNetworkNode extends PipeNetworkNode {
     }
 
     /**
-     * Run a bfs to find all connections in which to insert that are loaded and
-     * reachable from the given startPos.
+     * Run a bfs to find all connections in which to insert that are loaded and reachable from the given startPos.
      */
     public List<InsertTarget> getInputs(World world, BlockPos startPos) {
         List<InsertTarget> result = new ArrayList<>();
@@ -181,11 +173,11 @@ public class ItemNetworkNode extends PipeNetworkNode {
         Queue<BlockPos> queue = new ArrayDeque<>();
         Set<BlockPos> visited = new HashSet<>();
         queue.add(startPos);
-        while (!queue.isEmpty()) {
+        while(!queue.isEmpty()) {
             BlockPos u = queue.remove();
-            if (visited.add(u)) {
+            if(visited.add(u)) {
                 PipeNetworkNode maybeUnloaded = network.nodes.get(u);
-                if (maybeUnloaded != null) {
+                if(maybeUnloaded != null) {
                     ItemNetworkNode node = (ItemNetworkNode) maybeUnloaded;
                     for (ItemConnection connection : node.connections) {
                         if (connection.canInsert()) {
@@ -194,7 +186,7 @@ public class ItemNetworkNode extends PipeNetworkNode {
                         }
                     }
                 }
-                for (Direction direction : network.manager.getNodeLinks(u)) {
+                for(Direction direction : network.manager.getNodeLinks(u)) {
                     queue.add(u.offset(direction));
                 }
             }
@@ -205,9 +197,9 @@ public class ItemNetworkNode extends PipeNetworkNode {
         // We randomly shuffle for connections with the same priority
         int prevPriority = Integer.MIN_VALUE;
         int st = 0;
-        for (int i = 0; i < result.size() + 1; ++i) {
+        for(int i = 0; i < result.size()+1; ++i) {
             int p = i == result.size() ? Integer.MAX_VALUE : result.get(i).connection.priority;
-            if (p != prevPriority) {
+            if(p != prevPriority) {
                 Collections.shuffle(result.subList(st, i));
                 prevPriority = p;
                 st = i;
@@ -238,7 +230,7 @@ public class ItemNetworkNode extends PipeNetworkNode {
             this.direction = direction;
             this.type = type;
             this.priority = priority;
-            for (int i = 0; i < ItemPipeInterface.SLOTS; i++) {
+            for(int i = 0; i < ItemPipeInterface.SLOTS; i++) {
                 stacks[i] = ItemStack.EMPTY;
             }
         }
@@ -252,8 +244,8 @@ public class ItemNetworkNode extends PipeNetworkNode {
         }
 
         private boolean canStackMoveThrough(ItemStack stack) {
-            for (ItemStack filterStack : stacks) {
-                if (ItemStackHelper.areEqualIgnoreCount(stack, filterStack)) {
+            for(ItemStack filterStack : stacks) {
+                if(ItemStackHelper.areEqualIgnoreCount(stack, filterStack)) {
                     return whitelist;
                 }
             }
@@ -295,7 +287,7 @@ public class ItemNetworkNode extends PipeNetworkNode {
 
                     @Override
                     public void setConnectionType(int type) {
-                        if (0 <= type && type < 3) {
+                        if(0 <= type && type < 3) {
                             ItemConnection.this.type = decodeConnectionType(type);
                             sync.run();
                         }

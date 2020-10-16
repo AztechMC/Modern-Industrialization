@@ -1,8 +1,6 @@
 package aztech.modern_industrialization.machines.recipe;
 
 import aztech.modern_industrialization.machines.impl.MachineBlockEntity;
-import java.util.Arrays;
-import java.util.List;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -12,6 +10,9 @@ import net.minecraft.recipe.RecipeType;
 import net.minecraft.tag.Tag;
 import net.minecraft.util.Identifier;
 import net.minecraft.world.World;
+
+import java.util.Arrays;
+import java.util.List;
 
 public class MachineRecipe implements Recipe<MachineBlockEntity> {
     final Identifier id;

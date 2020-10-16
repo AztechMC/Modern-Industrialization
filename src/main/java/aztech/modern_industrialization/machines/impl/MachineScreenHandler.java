@@ -1,7 +1,5 @@
 package aztech.modern_industrialization.machines.impl;
 
-import static aztech.modern_industrialization.machines.impl.MachineSlotType.*;
-
 import aztech.modern_industrialization.ModernIndustrialization;
 import aztech.modern_industrialization.inventory.*;
 import io.netty.buffer.Unpooled;
@@ -14,6 +12,9 @@ import net.minecraft.screen.PropertyDelegate;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.server.network.ServerPlayerEntity;
 
+import static aztech.modern_industrialization.machines.impl.MachineSlotType.*;
+
+
 public class MachineScreenHandler extends ConfigurableScreenHandler {
 
     public MachineInventory inventory;
@@ -23,12 +24,12 @@ public class MachineScreenHandler extends ConfigurableScreenHandler {
     private boolean[] trackedExtract = new boolean[2];
 
     public MachineScreenHandler(int syncId, PlayerInventory playerInventory, PacketByteBuf buf) {
-        this(syncId, playerInventory, MachineInventories.clientOfBuf(buf), new ArrayPropertyDelegate(buf.readInt()),
-                MachineFactory.getFactoryByID(buf.readString()));
+        this(syncId, playerInventory, MachineInventories.clientOfBuf(buf),
+                new ArrayPropertyDelegate(buf.readInt()), MachineFactory.getFactoryByID(buf.readString()));
     }
 
-    public MachineScreenHandler(int syncId, PlayerInventory playerInventory, MachineInventory inventory, PropertyDelegate propertyDelegate,
-            MachineFactory factory) {
+    public MachineScreenHandler(int syncId, PlayerInventory playerInventory,
+                                MachineInventory inventory, PropertyDelegate propertyDelegate, MachineFactory factory) {
 
         super(ModernIndustrialization.SCREEN_HANDLER_TYPE_MACHINE, syncId, playerInventory, inventory);
 
@@ -39,14 +40,18 @@ public class MachineScreenHandler extends ConfigurableScreenHandler {
         this.trackedProperties = new int[propertyDelegate.size()];
         updateTrackedExtract();
 
+
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 9; j++) {
-                this.addSlot(new Slot(playerInventory, i * 9 + j + 9, factory.getInventoryPosX() + j * 18, factory.getInventoryPosY() + i * 18));
+                this.addSlot(new Slot(playerInventory, i * 9 + j + 9,
+                        factory.getInventoryPosX() + j * 18, factory.getInventoryPosY() + i * 18));
             }
         }
 
+
         for (int j = 0; j < 9; j++) {
-            this.addSlot(new Slot(playerInventory, j, factory.getInventoryPosX() + j * 18, 58 + factory.getInventoryPosY()));
+            this.addSlot(new Slot(playerInventory, j,
+                    factory.getInventoryPosX() + j * 18, 58 + factory.getInventoryPosY()));
         }
 
         // TODO: properly detect multiblock
@@ -67,7 +72,6 @@ public class MachineScreenHandler extends ConfigurableScreenHandler {
 
         }
     }
-
     @Override
     public boolean canUse(PlayerEntity player) {
         return this.inventory.canPlayerUse(player);
@@ -82,42 +86,15 @@ public class MachineScreenHandler extends ConfigurableScreenHandler {
     public MachineFactory getMachineFactory() {
         return factory;
     }
-
-    public int getTickProgress() {
-        return propertyDelegate.get(1);
-    }
-
-    public int getTickRecipe() {
-        return propertyDelegate.get(2);
-    }
-
-    public boolean getIsActive() {
-        return propertyDelegate.get(0) == 1;
-    }
-
-    public int getEfficiencyTicks() {
-        return propertyDelegate.get(3);
-    }
-
-    public int getMaxEfficiencyTicks() {
-        return propertyDelegate.get(4);
-    }
-
-    public int getStoredEu() {
-        return propertyDelegate.get(5);
-    }
-
-    public int getMaxStoredEu() {
-        return propertyDelegate.get(7);
-    }
-
-    public int getRecipeEu() {
-        return propertyDelegate.get(6);
-    }
-
-    public int getRecipeMaxEu() {
-        return propertyDelegate.get(8);
-    }
+    public int getTickProgress() { return propertyDelegate.get(1); }
+    public int getTickRecipe() { return propertyDelegate.get(2); }
+    public boolean getIsActive() { return propertyDelegate.get(0) == 1; }
+    public int getEfficiencyTicks() { return propertyDelegate.get(3); }
+    public int getMaxEfficiencyTicks() { return propertyDelegate.get(4); }
+    public int getStoredEu() { return propertyDelegate.get(5); }
+    public int getMaxStoredEu() { return propertyDelegate.get(7); }
+    public int getRecipeEu() { return propertyDelegate.get(6); }
+    public int getRecipeMaxEu() { return propertyDelegate.get(8); }
 
     private void updateTrackedExtract() {
         trackedExtract[0] = inventory.getItemExtract();
@@ -135,8 +112,8 @@ public class MachineScreenHandler extends ConfigurableScreenHandler {
                 buf.writeBoolean(inventory.getFluidExtract());
                 ServerSidePacketRegistry.INSTANCE.sendToPlayer(playerInventory.player, MachinePackets.S2C.UPDATE_AUTO_EXTRACT, buf);
             }
-            for (int i = 0; i < trackedProperties.length; ++i) {
-                if (trackedProperties[i] != propertyDelegate.get(i)) {
+            for(int i = 0; i < trackedProperties.length; ++i) {
+                if(trackedProperties[i] != propertyDelegate.get(i)) {
                     trackedProperties[i] = propertyDelegate.get(i);
                     PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
                     buf.writeInt(syncId);

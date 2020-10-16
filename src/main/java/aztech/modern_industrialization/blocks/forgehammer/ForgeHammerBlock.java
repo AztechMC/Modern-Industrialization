@@ -27,24 +27,24 @@ import net.minecraft.world.World;
 public class ForgeHammerBlock extends Block {
 
     private VoxelShape shape;
-    private int part_height[] = { 4, 1, 5, 5 };
-    private int part_width[] = { 14, 10, 8, 14 };
+    private int part_height[] = {4, 1, 5, 5};
+    private int part_width[] = {14, 10, 8, 14};
 
     public ForgeHammerBlock() {
-        super(FabricBlockSettings.of(Material.METAL).hardness(6.0f).resistance(1200).sounds(BlockSoundGroup.ANVIL)
-                .allowsSpawning(MobSpawning.NO_SPAWN));
+        super(FabricBlockSettings.of(Material.METAL).hardness(6.0f).resistance(1200).sounds(BlockSoundGroup.ANVIL).allowsSpawning(MobSpawning.NO_SPAWN));
         VoxelShape[] parts = new VoxelShape[part_height.length];
         float currentY = 0;
-        for (int i = 0; i < part_height.length; i++) {
-            float o = (16 - part_width[i]) / 32.0f;
-            float e = o + part_width[i] / 16.0f;
-            parts[i] = VoxelShapes.cuboid(o, currentY, o, e, currentY + part_height[i] / 16.0f, e);
-            currentY += part_height[i] / 16.0f;
+        for(int i = 0; i < part_height.length; i++) {
+            float o = (16 - part_width[i])/32.0f;
+            float e = o + part_width[i]/16.0f;
+            parts[i] = VoxelShapes.cuboid(o, currentY, o, e, currentY+part_height[i]/16.0f, e);
+            currentY += part_height[i]/16.0f;
         }
         shape = parts[0];
-        for (int i = 1; i < part_height.length; i++) {
+        for(int i = 1; i < part_height.length; i++) {
             shape = VoxelShapes.union(shape, parts[i]);
         }
+
 
     }
 
@@ -53,7 +53,7 @@ public class ForgeHammerBlock extends Block {
         if (world.isClient) {
             return ActionResult.SUCCESS;
         } else {
-            player.openHandledScreen(new NamedScreenHandlerFactory() {
+            player.openHandledScreen(new NamedScreenHandlerFactory(){
 
                 @Override
                 public ScreenHandler createMenu(int syncId, PlayerInventory inv, PlayerEntity player) {
@@ -73,5 +73,7 @@ public class ForgeHammerBlock extends Block {
     public VoxelShape getOutlineShape(BlockState state, BlockView view, BlockPos pos, ShapeContext context) {
         return shape;
     }
+
+
 
 }

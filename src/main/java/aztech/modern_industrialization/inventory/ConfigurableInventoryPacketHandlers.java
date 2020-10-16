@@ -14,7 +14,7 @@ public class ConfigurableInventoryPacketHandlers {
         CompoundTag tag = data.readCompoundTag();
         context.getTaskQueue().execute(() -> {
             ScreenHandler handler = MinecraftClient.getInstance().player.currentScreenHandler;
-            if (handler.syncId == syncId) {
+            if(handler.syncId == syncId) {
                 MachineScreenHandler machineHandler = (MachineScreenHandler) handler;
                 machineHandler.inventory.getItemStacks().get(stackId).readFromTag(tag);
             }
@@ -27,7 +27,7 @@ public class ConfigurableInventoryPacketHandlers {
         CompoundTag tag = data.readCompoundTag();
         context.getTaskQueue().execute(() -> {
             ScreenHandler handler = MinecraftClient.getInstance().player.currentScreenHandler;
-            if (handler.syncId == syncId) {
+            if(handler.syncId == syncId) {
                 MachineScreenHandler machineHandler = (MachineScreenHandler) handler;
                 machineHandler.inventory.getFluidStacks().get(stackId).readFromTag(tag);
             }
@@ -39,7 +39,7 @@ public class ConfigurableInventoryPacketHandlers {
         boolean lockingMode = data.readBoolean();
         context.getTaskQueue().execute(() -> {
             ScreenHandler handler = context.getPlayer().currentScreenHandler;
-            if (handler.syncId == syncId) {
+            if(handler.syncId == syncId) {
                 ConfigurableScreenHandler confHandler = (ConfigurableScreenHandler) handler;
                 confHandler.lockingMode = lockingMode;
             }

@@ -3,13 +3,14 @@ package aztech.modern_industrialization.inventory;
 import alexiil.mc.lib.attributes.fluid.volume.FluidKey;
 import alexiil.mc.lib.attributes.fluid.volume.FluidKeys;
 import aztech.modern_industrialization.util.NbtHelper;
-import java.util.ArrayList;
-import java.util.List;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.screen.slot.Slot;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A fluid stack that can be configured. TODO: sync fluid and lock state
@@ -79,14 +80,20 @@ public class ConfigurableFluidStack {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o)
-            return true;
-        if (o == null || getClass() != o.getClass())
-            return false;
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
         ConfigurableFluidStack that = (ConfigurableFluidStack) o;
-        return amount == that.amount && capacity == that.capacity && playerLocked == that.playerLocked && machineLocked == that.machineLocked
-                && playerLockable == that.playerLockable && playerInsert == that.playerInsert && playerExtract == that.playerExtract
-                && pipesInsert == that.pipesInsert && pipesExtract == that.pipesExtract && fluid == that.fluid && lockedFluid == that.lockedFluid;
+        return amount == that.amount &&
+                capacity == that.capacity &&
+                playerLocked == that.playerLocked &&
+                machineLocked == that.machineLocked &&
+                playerLockable == that.playerLockable &&
+                playerInsert == that.playerInsert &&
+                playerExtract == that.playerExtract &&
+                pipesInsert == that.pipesInsert &&
+                pipesExtract == that.pipesExtract &&
+                fluid == that.fluid &&
+                lockedFluid == that.lockedFluid;
     }
 
     /**
@@ -94,7 +101,7 @@ public class ConfigurableFluidStack {
      */
     public static ArrayList<ConfigurableFluidStack> copyList(List<ConfigurableFluidStack> list) {
         ArrayList<ConfigurableFluidStack> copy = new ArrayList<>(list.size());
-        for (ConfigurableFluidStack stack : list) {
+        for(ConfigurableFluidStack stack : list) {
             copy.add(new ConfigurableFluidStack(stack));
         }
         return copy;
@@ -126,11 +133,9 @@ public class ConfigurableFluidStack {
 
     public void setAmount(int amount) {
         this.amount = amount;
-        if (amount > capacity)
-            throw new IllegalStateException("amount > capacity in the fluid stack");
-        if (amount < 0)
-            throw new IllegalStateException("amount < 0 in the fluid stack");
-        if (amount == 0 && lockedFluid == null) {
+        if(amount > capacity) throw new IllegalStateException("amount > capacity in the fluid stack");
+        if(amount < 0) throw new IllegalStateException("amount < 0 in the fluid stack");
+        if(amount == 0 && lockedFluid == null) {
             fluid = FluidKeys.EMPTY;
         }
     }
@@ -155,15 +160,13 @@ public class ConfigurableFluidStack {
         return playerLocked;
     }
 
-    public boolean isMachineLocked() {
-        return machineLocked;
-    }
+    public boolean isMachineLocked() { return machineLocked; }
 
     public CompoundTag writeToTag(CompoundTag tag) {
         tag.put("fluid", fluid.toTag());
         tag.putInt("amount", amount);
         tag.putInt("capacity", capacity);
-        if (lockedFluid != null) {
+        if(lockedFluid != null) {
             tag.put("lockedFluid", lockedFluid.toTag());
         }
         // TODO: more efficient encoding?
@@ -181,7 +184,7 @@ public class ConfigurableFluidStack {
         fluid = NbtHelper.getFluidCompatible(tag, "fluid");
         amount = tag.getInt("amount");
         capacity = tag.getInt("capacity");
-        if (tag.contains("lockedFluid")) {
+        if(tag.contains("lockedFluid")) {
             lockedFluid = NbtHelper.getFluidCompatible(tag, "lockedFluid");
         }
         machineLocked = tag.getBoolean("machineLocked");
@@ -194,8 +197,7 @@ public class ConfigurableFluidStack {
     }
 
     public void enableMachineLock(FluidKey lockedFluid) {
-        if (this.lockedFluid != null && lockedFluid != this.lockedFluid)
-            throw new RuntimeException("Trying to override locked fluid");
+        if(this.lockedFluid != null && lockedFluid != this.lockedFluid) throw new RuntimeException("Trying to override locked fluid");
         machineLocked = true;
         this.fluid = this.lockedFluid = lockedFluid;
     }
@@ -206,19 +208,19 @@ public class ConfigurableFluidStack {
     }
 
     public void togglePlayerLock() {
-        if (playerLockable) {
+        if(playerLockable) {
             playerLocked = !playerLocked;
             onToggleLock();
         }
     }
 
     private void onToggleLock() {
-        if (!machineLocked && !playerLocked) {
+        if(!machineLocked && !playerLocked) {
             lockedFluid = null;
-            if (amount == 0) {
+            if(amount == 0) {
                 setFluid(FluidKeys.EMPTY);
             }
-        } else if (lockedFluid == null) {
+        } else if(lockedFluid == null) {
             lockedFluid = fluid;
         }
     }
@@ -228,7 +230,7 @@ public class ConfigurableFluidStack {
     }
 
     public boolean playerLock(FluidKey fluid) {
-        if (lockedFluid == null && (this.fluid.isEmpty() || this.fluid == fluid)) {
+        if(lockedFluid == null && (this.fluid.isEmpty() || this.fluid == fluid)) {
             lockedFluid = fluid;
             this.fluid = fluid;
             playerLocked = true;
@@ -280,7 +282,6 @@ public class ConfigurableFluidStack {
         }
 
         @Override
-        public void setStack(ItemStack stack) {
-        }
+        public void setStack(ItemStack stack) {}
     }
 }

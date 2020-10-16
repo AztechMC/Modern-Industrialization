@@ -3,17 +3,17 @@ package aztech.modern_industrialization.model;
 import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.ModernIndustrialization;
 import aztech.modern_industrialization.machines.impl.MachineModel;
+import net.minecraft.client.render.model.UnbakedModel;
+import net.minecraft.util.Identifier;
+
 import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
-import net.minecraft.client.render.model.UnbakedModel;
-import net.minecraft.util.Identifier;
 
 public class Models {
     public static class BlockModels {
         public static final MachineModel STEAM_BOILER = new MachineModel("steam_boiler", new MIIdentifier("blocks/casings/steam/bricked_bronze/"))
-                .withFrontOverlay(new MIIdentifier("blocks/generators/boiler/coal/overlay_front"),
-                        new MIIdentifier("blocks/generators/boiler/coal/overlay_front_active"));
+                .withFrontOverlay(new MIIdentifier("blocks/generators/boiler/coal/overlay_front"), new MIIdentifier("blocks/generators/boiler/coal/overlay_front_active"));
     }
 
     public static Map<Identifier, UnbakedModel> getModelMap() {
@@ -22,7 +22,7 @@ public class Models {
         for (Field field : declaredFields) {
             if (java.lang.reflect.Modifier.isStatic(field.getModifiers())) {
                 try {
-                    MachineModel model = (MachineModel) field.get(null);
+                    MachineModel model = (MachineModel)field.get(null);
                     modelMap.put(new MIIdentifier("block/" + model.model_name), model);
                     modelMap.put(new MIIdentifier("item/" + model.model_name), model);
                 } catch (IllegalAccessException e) {

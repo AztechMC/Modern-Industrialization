@@ -6,6 +6,5 @@ public abstract class PipeNetworkData {
     public abstract PipeNetworkData clone();
 
     public abstract void fromTag(CompoundTag tag);
-
     public abstract CompoundTag toTag(CompoundTag tag);
 }

@@ -2,12 +2,10 @@ package aztech.modern_industrialization.machines.recipe;
 
 import aztech.modern_industrialization.mixin.RecipeManagerAccessor;
 import com.google.gson.*;
-import java.util.*;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 import net.fabricmc.fabric.api.tag.TagRegistry;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.recipe.Recipe;
 import net.minecraft.recipe.RecipeSerializer;
@@ -18,6 +16,10 @@ import net.minecraft.tag.Tag;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.JsonHelper;
 import net.minecraft.util.registry.Registry;
+
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public class MachineRecipeType implements RecipeType, RecipeSerializer {
 
@@ -30,21 +32,18 @@ public class MachineRecipeType implements RecipeType, RecipeSerializer {
      */
     @SuppressWarnings("unchecked")
     public Collection<MachineRecipe> getRecipes(ServerWorld world) {
-        return (Collection<MachineRecipe>) (Collection) ((RecipeManagerAccessor) world.getRecipeManager()).modern_industrialization_getAllOfType(this)
-                .values();
+        return (Collection<MachineRecipe>)(Collection)((RecipeManagerAccessor) world.getRecipeManager()).modern_industrialization_getAllOfType(this).values();
     }
-
     public MachineRecipe getRecipe(ServerWorld world, Identifier id) {
         return getRecipes(world).stream().filter(r -> r.getId().equals(id)).findFirst().orElse(null);
     }
 
+
     /*
-     * Smart recipe system to avoid iterating over all available recipes. Every
-     * recipe can be accessed by the type of its first input, so we build a cache
-     * Item -> MachineRecipe. We also need to store recipes that have fluid inputs
-     * but no item inputs. This cache is updated every 20 seconds in case the
-     * recipes are sometimes reloaded. TODO: only rebuild when the recipes have been
-     * reloaded
+     * Smart recipe system to avoid iterating over all available recipes.
+     * Every recipe can be accessed by the type of its first input, so we build a cache Item -> MachineRecipe.
+     * We also need to store recipes that have fluid inputs but no item inputs.
+     * This cache is updated every 20 seconds in case the recipes are sometimes reloaded. TODO: only rebuild when the recipes have been reloaded
      */
     private Map<Item, List<MachineRecipe>> recipeCache = new HashMap<>();
     private List<MachineRecipe> fluidOnlyRecipes = new ArrayList<>();
@@ -56,20 +55,19 @@ public class MachineRecipeType implements RecipeType, RecipeSerializer {
      */
     private void updateRecipeCache(ServerWorld world) {
         long time = System.currentTimeMillis();
-        if (time - lastUpdate <= UPDATE_INTERVAL)
-            return;
+        if(time - lastUpdate <= UPDATE_INTERVAL) return;
 
         // Update cache
         lastUpdate = time;
         recipeCache.clear();
         fluidOnlyRecipes.clear();
-        for (MachineRecipe recipe : getRecipes(world)) {
-            if (recipe.itemInputs.size() == 0) {
-                if (recipe.fluidInputs.size() > 0) {
+        for(MachineRecipe recipe : getRecipes(world)) {
+            if(recipe.itemInputs.size() == 0) {
+                if(recipe.fluidInputs.size() > 0) {
                     fluidOnlyRecipes.add(recipe);
                 }
             } else {
-                for (Item inputItem : recipe.itemInputs.get(0).getInputItems()) {
+                for(Item inputItem : recipe.itemInputs.get(0).getInputItems()) {
                     recipeCache.putIfAbsent(inputItem, new ArrayList<>());
                     recipeCache.get(inputItem).add(recipe);
                 }
@@ -124,18 +122,12 @@ public class MachineRecipeType implements RecipeType, RecipeSerializer {
     }
 
     private void validateRecipe(MachineRecipe recipe) {
-        if (!allowItemInput && recipe.itemInputs.size() > 0)
-            throw new RuntimeException("Item inputs are not allowed.");
-        if (!allowFluidInput && recipe.fluidInputs.size() > 0)
-            throw new RuntimeException("Fluid inputs are not allowed.");
-        if (!allowItemOutput && recipe.itemOutputs.size() > 0)
-            throw new RuntimeException("Item outputs are not allowed.");
-        if (!allowFluidOutput && recipe.fluidOutputs.size() > 0)
-            throw new RuntimeException("Fluid outputs are not allowed.");
-        if (recipe.itemInputs.size() + recipe.fluidInputs.size() == 0)
-            throw new RuntimeException("Must have at least one fluid or item input.");
-        if (recipe.itemOutputs.size() + recipe.fluidOutputs.size() == 0)
-            throw new RuntimeException("Must have at least one fluid or item output.");
+        if(!allowItemInput && recipe.itemInputs.size() > 0) throw new RuntimeException("Item inputs are not allowed.");
+        if(!allowFluidInput && recipe.fluidInputs.size() > 0) throw new RuntimeException("Fluid inputs are not allowed.");
+        if(!allowItemOutput && recipe.itemOutputs.size() > 0) throw new RuntimeException("Item outputs are not allowed.");
+        if(!allowFluidOutput && recipe.fluidOutputs.size() > 0) throw new RuntimeException("Fluid outputs are not allowed.");
+        if(recipe.itemInputs.size() + recipe.fluidInputs.size() == 0) throw new RuntimeException("Must have at least one fluid or item input.");
+        if(recipe.itemOutputs.size() + recipe.fluidOutputs.size() == 0) throw new RuntimeException("Must have at least one fluid or item output.");
     }
 
     @Override
@@ -155,23 +147,20 @@ public class MachineRecipeType implements RecipeType, RecipeSerializer {
 
     private static int readPositiveInt(JsonObject json, String element) {
         int x = JsonHelper.getInt(json, element);
-        if (x <= 0)
-            throw new RuntimeException(element + " should be a positive integer.");
+        if(x <= 0) throw new RuntimeException(element + " should be a positive integer.");
         return x;
     }
 
     private static int readNonNegativeInt(JsonObject json, String element) {
         int x = JsonHelper.getInt(json, element);
-        if (x < 0)
-            throw new RuntimeException(element + " should be a positive integer.");
+        if(x < 0) throw new RuntimeException(element + " should be a positive integer.");
         return x;
     }
 
     private static float readProbability(JsonObject json, String element) {
-        if (JsonHelper.hasPrimitive(json, element)) {
+        if(JsonHelper.hasPrimitive(json, element)) {
             float x = JsonHelper.getFloat(json, element);
-            if (x < 0 || x > 1)
-                throw new RuntimeException(element + " should be a float between 0 and 1.");
+            if (x < 0 || x > 1) throw new RuntimeException(element + " should be a float between 0 and 1.");
             return x;
         } else {
             return 1;
@@ -183,10 +172,10 @@ public class MachineRecipeType implements RecipeType, RecipeSerializer {
     }
 
     private static <T> List<T> readArray(JsonObject json, String element, Function<JsonObject, T> reader) {
-        if (!JsonHelper.hasArray(json, element)) {
+        if(!JsonHelper.hasArray(json, element)) {
             // If there is no array, try to parse a single element object instead.
             JsonElement backupObject = json.get(element);
-            if (backupObject != null && backupObject.isJsonObject()) {
+            if(backupObject != null && backupObject.isJsonObject()) {
                 return Arrays.asList(reader.apply(backupObject.getAsJsonObject()));
             } else {
                 return Collections.emptyList();
@@ -207,10 +196,10 @@ public class MachineRecipeType implements RecipeType, RecipeSerializer {
 
         boolean hasItem = JsonHelper.hasString(json, "item");
         boolean hasTag = JsonHelper.hasString(json, "tag");
-        if (hasItem == hasTag) {
+        if(hasItem == hasTag) {
             throw new RuntimeException("Need at least an item or a tag, and can't have both!");
         }
-        if (hasItem) {
+        if(hasItem) {
             Identifier id = readIdentifier(json, "item");
             Item item = Registry.ITEM.getOrEmpty(id).<RuntimeException>orElseThrow(() -> {
                 throw new RuntimeException("Item " + id + " does not exist.");
@@ -218,7 +207,7 @@ public class MachineRecipeType implements RecipeType, RecipeSerializer {
             return new MachineRecipe.ItemInput(item, amount, probability);
         } else {
             Identifier id = readIdentifier(json, "tag");
-            Tag<Item> tag = TagRegistry.item(id);
+            Tag<Item> tag =  TagRegistry.item(id);
             return new MachineRecipe.ItemInput(tag, amount, probability);
         }
     }
@@ -266,7 +255,7 @@ public class MachineRecipeType implements RecipeType, RecipeSerializer {
 
     private static JsonObject writeItemInput(MachineRecipe.ItemInput itemInput) {
         JsonObject json = new JsonObject();
-        if (itemInput.item != null) {
+        if(itemInput.item != null) {
             json.addProperty("item", Registry.ITEM.getId(itemInput.item).toString());
         } else {
             json.addProperty("tag", ItemTags.getTagGroup().getTagId(itemInput.tag).toString());

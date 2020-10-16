@@ -1,5 +1,6 @@
 package aztech.modern_industrialization;
 
+
 import aztech.modern_industrialization.api.FluidFuelRegistry;
 import aztech.modern_industrialization.blocks.TrashCanBlock;
 import aztech.modern_industrialization.blocks.forgehammer.ForgeHammerBlock;
@@ -55,16 +56,20 @@ import org.apache.logging.log4j.Logger;
 
 public class ModernIndustrialization implements ModInitializer {
 
+
     public static final int FLAG_BLOCK_LOOT = 1;
     public static final int FLAG_BLOCK_MODEL = 1 << 1;
     public static final int FLAG_BLOCK_ITEM_MODEL = 1 << 2;
+
 
     public static final String MOD_ID = "modern_industrialization";
     public static final Logger LOGGER = LogManager.getLogger("Modern Industrialization");
     public static final RuntimeResourcePack RESOURCE_PACK = RuntimeResourcePack.create("modern_industrialization:general");
 
-    public static final ItemGroup ITEM_GROUP = FabricItemGroupBuilder.build(new Identifier(MOD_ID, "general"),
-            () -> new ItemStack(Registry.ITEM.get(new MIIdentifier("bronze_boiler"))));
+    public static final ItemGroup ITEM_GROUP = FabricItemGroupBuilder.build(
+            new Identifier(MOD_ID, "general"),
+            () -> new ItemStack(Registry.ITEM.get(new MIIdentifier("bronze_boiler")))
+    );
 
     // Tags
     private static Identifier WRENCH_TAG = new Identifier("fabric", "wrenches");
@@ -81,10 +86,10 @@ public class ModernIndustrialization implements ModInitializer {
     public static final BlockItem ITEM_TRASH_CAN = new BlockItem(TRASH_CAN, new Item.Settings().group(ITEM_GROUP));
 
     // ScreenHandlerType
-    public static final ScreenHandlerType<MachineScreenHandler> SCREEN_HANDLER_TYPE_MACHINE = ScreenHandlerRegistry
-            .registerExtended(new Identifier(MOD_ID, "machine_recipe"), MachineScreenHandler::new);
-    public static final ScreenHandlerType<ForgeHammerScreenHandler> SCREEN_HANDLER_FORGE_HAMMER = ScreenHandlerRegistry
-            .registerSimple(new Identifier(MOD_ID, "forge_hammer"), ForgeHammerScreenHandler::new);
+    public static final ScreenHandlerType<MachineScreenHandler> SCREEN_HANDLER_TYPE_MACHINE =
+            ScreenHandlerRegistry.registerExtended(new Identifier(MOD_ID, "machine_recipe"), MachineScreenHandler::new);
+    public static final ScreenHandlerType<ForgeHammerScreenHandler> SCREEN_HANDLER_FORGE_HAMMER =
+            ScreenHandlerRegistry.registerSimple(new Identifier(MOD_ID, "forge_hammer"), ForgeHammerScreenHandler::new);
 
     @Override
     public void onInitialize() {
@@ -146,10 +151,7 @@ public class ModernIndustrialization implements ModInitializer {
     }
 
     private void setupBlockEntities() {
-        // BLOCK_ENTITY_STEAM_BOILER = Registry.register(Registry.BLOCK_ENTITY_TYPE, new
-        // Identifier(MOD_ID, "steam_boiler"),
-        // BlockEntityType.Builder.create(SteamBoilerBlockEntity::new,
-        // BLOCK_STEAM_BOILER).build(null));
+        //BLOCK_ENTITY_STEAM_BOILER = Registry.register(Registry.BLOCK_ENTITY_TYPE, new Identifier(MOD_ID, "steam_boiler"), BlockEntityType.Builder.create(SteamBoilerBlockEntity::new, BLOCK_STEAM_BOILER).build(null));
     }
 
     private void setupMachines() {
@@ -157,8 +159,7 @@ public class ModernIndustrialization implements ModInitializer {
             factory.block = new MachineBlock(factory.blockEntityConstructor);
             factory.item = new BlockItem(factory.block, new Item.Settings().group(ITEM_GROUP));
             registerBlock(factory.block, factory.item, factory.getID());
-            factory.blockEntityType = Registry.register(Registry.BLOCK_ENTITY_TYPE, new Identifier(MOD_ID, factory.getID()),
-                    BlockEntityType.Builder.create(factory.blockEntityConstructor, factory.block).build(null));
+            factory.blockEntityType = Registry.register(Registry.BLOCK_ENTITY_TYPE, new Identifier(MOD_ID, factory.getID()), BlockEntityType.Builder.create(factory.blockEntityConstructor, factory.block).build(null));
         }
     }
 
@@ -173,17 +174,24 @@ public class ModernIndustrialization implements ModInitializer {
         RESOURCE_PACK.addBlockState(JState.state().add(new JVariant().put("", new JBlockModel(MOD_ID + ":block/" + id))), identifier);
 
         if ((flag & FLAG_BLOCK_MODEL) != 0)
-            RESOURCE_PACK.addModel(JModel.model().parent("block/cube_all").textures(new JTextures().var("all", MOD_ID + ":blocks/" + id)),
-                    new MIIdentifier("block/" + id));
+            RESOURCE_PACK.addModel(JModel.model().parent("block/cube_all").textures(
+                    new JTextures().var("all", MOD_ID + ":blocks/" + id)),
+                    new MIIdentifier("block/" + id)
+            );
 
         if ((flag & FLAG_BLOCK_ITEM_MODEL) != 0)
-            RESOURCE_PACK.addModel(JModel.model().parent(MOD_ID + ":block/" + id), new MIIdentifier("item/" + id));
+            RESOURCE_PACK.addModel(JModel.model().parent(MOD_ID + ":block/" + id),
+                    new MIIdentifier("item/" + id)
+            );
+
 
     }
+
 
     public static void registerBlock(Block block, Item item, String id) {
         registerBlock(block, item, id, FLAG_BLOCK_LOOT | FLAG_BLOCK_ITEM_MODEL | FLAG_BLOCK_MODEL);
     }
+
 
     private void registerMaterial(MIMaterial material) {
         String id = material.getId();
@@ -195,14 +203,15 @@ public class ModernIndustrialization implements ModInitializer {
             material.saveBlock(block_type, block);
             Registry.register(Registry.BLOCK, identifier, block);
             Registry.register(Registry.ITEM, identifier, item);
-            RESOURCE_PACK.addBlockState(
-                    JState.state().add(new JVariant().put("", new JBlockModel(MOD_ID + ":block/materials/" + id + "/" + block_type))), identifier);
-            RESOURCE_PACK.addModel(
-                    JModel.model().parent("block/cube_all")
-                            .textures(new JTextures().var("all", MOD_ID + ":blocks/materials/" + id + "/" + block_type)),
-                    new MIIdentifier("block/materials/" + id + "/" + block_type));
+            RESOURCE_PACK.addBlockState(JState.state().add(
+                    new JVariant().put("", new JBlockModel(MOD_ID + ":block/materials/" + id + "/" + block_type))), identifier);
+            RESOURCE_PACK.addModel(JModel.model().parent("block/cube_all").textures(
+                    new JTextures().var("all", MOD_ID + ":blocks/materials/" + id + "/" + block_type)),
+                    new MIIdentifier("block/materials/" + id + "/" + block_type)
+            );
             RESOURCE_PACK.addModel(JModel.model().parent(MOD_ID + ":block/materials/" + id + "/" + block_type),
-                    new MIIdentifier("item/" + id + "_" + block_type));
+                    new MIIdentifier("item/" + id + "_" + block_type)
+            );
             registerBlockLoot(id + "_" + block_type);
         }
 
@@ -218,22 +227,29 @@ public class ModernIndustrialization implements ModInitializer {
                     .textures(new JTextures().layer0(MOD_ID + ":items/materials/" + id + "/" + item_type)), new MIIdentifier("item/" + custom_id));
         }
 
+
     }
+
+
 
     public static void registerItem(Item item, String id) {
         Registry.register(Registry.ITEM, new MIIdentifier(id), item);
-        RESOURCE_PACK.addModel(JModel.model().parent("minecraft:item/generated").textures(new JTextures().layer0(MOD_ID + ":items/" + id)),
-                new MIIdentifier("item/" + id));
+        RESOURCE_PACK.addModel(JModel.model().parent("minecraft:item/generated").textures(new JTextures().layer0(MOD_ID + ":items/" + id)), new MIIdentifier("item/" + id));
     }
 
     private static void registerBlockLoot(String id) {
-        RESOURCE_PACK.addLootTable(new MIIdentifier("blocks/" + id), JLootTable.loot("minecraft:block").pool(new JPool().rolls(1)
-                .entry(new JEntry().type("minecraft:item").name(MOD_ID + ":" + id)).condition(new JCondition("minecraft:survives_explosion"))));
+        RESOURCE_PACK.addLootTable(
+                new MIIdentifier("blocks/" + id),
+                JLootTable.loot("minecraft:block").pool(
+                        new JPool()
+                                .rolls(1)
+                                .entry(new JEntry().type("minecraft:item").name(MOD_ID + ":" + id))
+                                .condition(new JCondition("minecraft:survives_explosion")))
+        );
     }
 
     private void setupPackets() {
-        ServerSidePacketRegistry.INSTANCE.register(ConfigurableInventoryPackets.SET_LOCKING_MODE,
-                ConfigurableInventoryPacketHandlers.SET_LOCKING_MODE);
+        ServerSidePacketRegistry.INSTANCE.register(ConfigurableInventoryPackets.SET_LOCKING_MODE, ConfigurableInventoryPacketHandlers.SET_LOCKING_MODE);
         ServerSidePacketRegistry.INSTANCE.register(MachinePackets.C2S.SET_AUTO_EXTRACT, MachinePackets.C2S.ON_SET_AUTO_EXTRACT);
         ServerSidePacketRegistry.INSTANCE.register(MachinePackets.C2S.LOCK_RECIPE, MachinePackets.C2S.ON_LOCK_RECIPE);
         ServerSidePacketRegistry.INSTANCE.register(ForgeHammerPacket.SET_HAMMER, ForgeHammerPacket.ON_SET_HAMMER);

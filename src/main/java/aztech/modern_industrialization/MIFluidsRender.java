@@ -1,9 +1,6 @@
 package aztech.modern_industrialization;
 
-import static aztech.modern_industrialization.MIFluids.FLUIDS;
-
 import aztech.modern_industrialization.fluid.CraftingFluid;
-import java.util.function.Consumer;
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandler;
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
@@ -18,10 +15,13 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.BlockRenderView;
 
+import java.util.function.Consumer;
+
+import static aztech.modern_industrialization.MIFluids.FLUIDS;
+
 public class MIFluidsRender {
     public static void setupFluidRenders() {
-        final Identifier[] waterSpriteIds = new Identifier[] { new Identifier("minecraft:block/water_still"),
-                new Identifier("minecraft:block/water_flow") };
+        final Identifier[] waterSpriteIds = new Identifier[] { new Identifier("minecraft:block/water_still"), new Identifier("minecraft:block/water_flow") };
         final Sprite[] waterSprites = new Sprite[2];
 
         final Identifier listenerId = new MIIdentifier("waterlike_reload_listener");
@@ -33,7 +33,7 @@ public class MIFluidsRender {
 
             @Override
             public void apply(ResourceManager manager) {
-                for (int i = 0; i < 2; ++i) {
+                for(int i = 0; i < 2; ++i) {
                     waterSprites[i] = MinecraftClient.getInstance().getSpriteAtlas(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE).apply(waterSpriteIds[i]);
                 }
             }
@@ -53,7 +53,7 @@ public class MIFluidsRender {
             });
         };
 
-        for (CraftingFluid fluid : FLUIDS) {
+        for(CraftingFluid fluid : FLUIDS) {
             registerWaterlikeFluid.accept(fluid);
         }
     }

@@ -1,16 +1,17 @@
 package aztech.modern_industrialization.machines.impl;
 
-import static aztech.modern_industrialization.machines.impl.MachineSlotType.*;
-
 import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.machines.MIMachines;
 import aztech.modern_industrialization.machines.recipe.FurnaceRecipeProxy;
 import aztech.modern_industrialization.machines.recipe.MachineRecipeType;
+import net.minecraft.block.entity.BlockEntityType;
+import net.minecraft.item.BlockItem;
+
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.function.Supplier;
-import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.item.BlockItem;
+
+import static aztech.modern_industrialization.machines.impl.MachineSlotType.*;
 
 public class MachineFactory {
 
@@ -42,8 +43,7 @@ public class MachineFactory {
 
     private String translationKey = "machine_recipe.default";
 
-    // slot index -> inputSlots next liquidInputSlots next outputSlots next
-    // liquidOutputSlots
+    // slot index -> inputSlots next liquidInputSlots next outputSlots next liquidOutputSlots
 
     private int[] slotPositionsX;
     private int[] slotPositionsY;
@@ -83,20 +83,19 @@ public class MachineFactory {
     private int backgroundWidth = 176;
     private int backgroundHeight = 166;
 
-    public MachineFactory(String ID, MachineTier tier, BlockEntityFactory blockEntityFactory, MachineRecipeType type, int inputSlots, int outputSlots,
-            int liquidInputSlots, int liquidOutputSlots) {
+    public MachineFactory(String ID, MachineTier tier, BlockEntityFactory blockEntityFactory, MachineRecipeType type, int inputSlots, int outputSlots, int liquidInputSlots, int liquidOutputSlots){
         this.machineID = ID;
         this.tier = tier;
 
-        if (map.containsKey(machineID)) {
+        if(map.containsKey(machineID)){
             throw new IllegalArgumentException("Machine ID already taken : " + machineID);
-        } else {
+        }else{
             map.put(machineID, this);
         }
 
         this.blockEntityConstructor = () -> blockEntityFactory.create(this);
-        if (type != null) {
-            if (type instanceof FurnaceRecipeProxy) {
+        if(type != null) {
+            if(type instanceof FurnaceRecipeProxy) {
                 MIMachines.WORKSTATIONS_FURNACES.add(this);
             } else {
                 MIMachines.RECIPE_TYPES.get(type).factories.add(this);
@@ -109,13 +108,13 @@ public class MachineFactory {
         this.liquidInputSlots = liquidInputSlots;
         this.liquidOutputSlots = liquidOutputSlots;
 
-        slots = liquidInputSlots + liquidOutputSlots + inputSlots + outputSlots;
+        slots =  liquidInputSlots + liquidOutputSlots + inputSlots + outputSlots;
 
         slotPositionsX = new int[slots];
         slotPositionsY = new int[slots];
 
-        setTranslationKey("block.modern_industrialization." + machineID);
-        setupBackground(machineID + ".png");
+        setTranslationKey("block.modern_industrialization."+machineID);
+        setupBackground(machineID+".png");
 
     }
 
@@ -123,9 +122,8 @@ public class MachineFactory {
         return map.get(machineID);
     }
 
-    public MachineFactory(String ID, MachineTier tier, BlockEntityFactory blockEntityFactory, MachineRecipeType type, int inputSlots,
-            int outputSlots) {
-        this(ID, tier, blockEntityFactory, type, inputSlots, outputSlots, 0, 0);
+    public MachineFactory(String ID, MachineTier tier, BlockEntityFactory blockEntityFactory, MachineRecipeType type, int inputSlots, int outputSlots){
+        this(ID, tier, blockEntityFactory, type, inputSlots, outputSlots, 0 , 0);
     }
 
     public int getInputSlots() {
@@ -145,9 +143,8 @@ public class MachineFactory {
     }
 
     private int[] getRange(int start, int end) {
-        int[] range = new int[end - start];
-        for (int i = start; i < end; i++)
-            range[i - start] = i;
+        int[] range = new int[end-start];
+        for(int i = start; i < end; i++) range[i-start] = i;
         return range;
     }
 
@@ -189,63 +186,61 @@ public class MachineFactory {
         return this;
     }
 
-    public int getInventoryPosX() {
+    public int getInventoryPosX(){
         return inventoryPosX;
     }
 
-    public int getInventoryPosY() {
+    public int getInventoryPosY(){
         return inventoryPosY;
     }
 
-    public MachineFactory setInventoryPos(int posX, int posY) {
+    public MachineFactory setInventoryPos(int posX, int posY){
         this.inventoryPosX = posX;
         this.inventoryPosY = posY;
         return this;
     }
 
-    public MachineFactory setInputSlotPosition(int x, int y, int column, int row) {
-        if (row * column != inputSlots) {
-            throw new IllegalArgumentException("Row x Column : " + row + " and " + column + " must be que equal to inputSlot : " + inputSlots);
-        } else {
+    public MachineFactory setInputSlotPosition(int x, int y, int column, int row){
+        if(row*column != inputSlots){
+            throw new IllegalArgumentException("Row x Column : " + row + " and " + column + " must be que equal to inputSlot : " + inputSlots );
+        }else{
             setInputSlotPositionWithDelta(x, y, column, row, 0);
         }
         return this;
     }
 
-    public MachineFactory setInputLiquidSlotPosition(int x, int y, int column, int row) {
-        if (row * column != liquidInputSlots) {
-            throw new IllegalArgumentException(
-                    "Row x Column : " + row + " and " + column + " must be que equal to liquidInputSlots : " + liquidInputSlots);
-        } else {
+    public MachineFactory setInputLiquidSlotPosition(int x, int y, int column, int row){
+        if(row*column != liquidInputSlots){
+            throw new IllegalArgumentException("Row x Column : " + row + " and " + column + " must be que equal to liquidInputSlots : " + liquidInputSlots );
+        }else{
             setInputSlotPositionWithDelta(x, y, column, row, inputSlots);
         }
         return this;
     }
 
-    public MachineFactory setOutputSlotPosition(int x, int y, int column, int row) {
-        if (row * column != outputSlots) {
-            throw new IllegalArgumentException("Row x Column : " + row + " and " + column + " must be que equal to outputSlots : " + outputSlots);
-        } else {
+    public MachineFactory setOutputSlotPosition(int x, int y, int column, int row){
+        if(row*column != outputSlots){
+            throw new IllegalArgumentException("Row x Column : " + row + " and " + column + " must be que equal to outputSlots : " + outputSlots );
+        }else{
             setInputSlotPositionWithDelta(x, y, column, row, inputSlots + liquidInputSlots);
         }
         return this;
     }
 
-    public MachineFactory setLiquidOutputSlotPosition(int x, int y, int column, int row) {
-        if (row * column != liquidOutputSlots) {
-            throw new IllegalArgumentException(
-                    "Row x Column : " + row + " and " + column + " must be que equal to liquidOutputSlots : " + liquidOutputSlots);
-        } else {
+    public MachineFactory setLiquidOutputSlotPosition(int x, int y, int column, int row){
+        if(row*column != liquidOutputSlots){
+            throw new IllegalArgumentException("Row x Column : " + row + " and " + column + " must be que equal to liquidOutputSlots : " + liquidOutputSlots );
+        }else{
             setInputSlotPositionWithDelta(x, y, column, row, inputSlots + liquidInputSlots + outputSlots);
         }
         return this;
     }
 
-    protected void setInputSlotPositionWithDelta(int x, int y, int column, int row, int delta) {
-        for (int i = 0; i < column; i++) {
-            for (int j = 0; j < row; j++) {
-                int index = delta + i + j * column;
-                setSlotPos(index, x + i * 18, y + j * 18);
+    protected void setInputSlotPositionWithDelta(int x, int y, int column, int row, int delta){
+        for(int i = 0; i < column; i++){
+            for(int j = 0; j < row; j++){
+                int index = delta + i + j*column;
+                setSlotPos(index, x + i*18, y + j*18);
             }
         }
     }
@@ -255,7 +250,7 @@ public class MachineFactory {
         return this;
     }
 
-    public MachineFactory setupProgressBar(int x, int y, int drawX, int drawY, int sizeX, int sizeY, boolean horizontal, boolean flipped) {
+    public MachineFactory setupProgressBar(int x, int y, int drawX, int drawY, int sizeX, int sizeY, boolean horizontal, boolean flipped){
         this.hasProgressBar = true;
         this.progressBarX = x;
         this.progressBarY = y;
@@ -278,7 +273,7 @@ public class MachineFactory {
     }
 
     public MachineFactory setupEfficiencyBar(int x, int y, int drawX, int drawY, int sizeX, int sizeY, boolean onlyElectric) {
-        if (!onlyElectric || tier.isElectric()) {
+        if(!onlyElectric || tier.isElectric()) {
             this.hasEfficiencyBar = true;
             this.efficiencyBarX = x;
             this.efficiencyBarY = y;
@@ -295,7 +290,7 @@ public class MachineFactory {
     }
 
     public MachineFactory setupElectricityBar(int x, int y, boolean checkTier) {
-        if (!checkTier || tier.isElectric()) {
+        if(!checkTier || tier.isElectric()) {
             hasEnergyBar = true;
             this.electricityBarX = x;
             this.electricityBarY = y;
@@ -307,6 +302,7 @@ public class MachineFactory {
         this.efficiencyBarDrawTooltip = false;
         return this;
     }
+
 
     public int getProgressBarSizeX() {
         return progressBarSizeX;
@@ -323,7 +319,6 @@ public class MachineFactory {
     public int getProgressBarX() {
         return progressBarX;
     }
-
     public int getProgressBarY() {
         return progressBarY;
     }
@@ -347,7 +342,6 @@ public class MachineFactory {
     public MIIdentifier getBackgroundIdentifier() {
         return backgroundIdentifier;
     }
-
     public int getBackgroundHeight() {
         return backgroundHeight;
     }
@@ -356,28 +350,28 @@ public class MachineFactory {
         return backgroundWidth;
     }
 
-    public MachineFactory setupBackground(String filename, int backgroundWidth, int backgroundHeight) {
-        backgroundIdentifier = new MIIdentifier("textures/gui/container/" + filename);
+    public MachineFactory setupBackground(String filename, int backgroundWidth,int backgroundHeight){
+        backgroundIdentifier = new MIIdentifier("textures/gui/container/"+filename);
         this.backgroundWidth = backgroundWidth;
         this.backgroundHeight = backgroundHeight;
         return this;
     }
 
-    public MachineFactory setupBackground(String filename) {
+    public MachineFactory setupBackground(String filename){
         return setupBackground(filename, 176, 166);
     }
 
     public MachineSlotType getSlotType(int index) {
-        if (index < 0 || index > slots) {
-            throw new IllegalArgumentException("index : " + index + " is out of range : " + 0 + " " + (slots - 1));
-        } else {
-            if (index < inputSlots) {
+        if(index < 0 || index > slots){
+            throw new IllegalArgumentException("index : " + index + " is out of range : " + 0 + " " + (slots-1));
+        }else{
+            if( index < inputSlots){
                 return INPUT_SLOT;
-            } else if (index < inputSlots + liquidInputSlots) {
+            }else if(index < inputSlots+liquidInputSlots){
                 return LIQUID_INPUT_SLOT;
-            } else if (index < inputSlots + liquidInputSlots + outputSlots) {
+            }else if(index < inputSlots+liquidInputSlots + outputSlots){
                 return OUTPUT_SLOT;
-            } else {
+            }else{
                 return LIQUID_OUTPUT_SLOT;
             }
         }
@@ -408,10 +402,11 @@ public class MachineFactory {
 
     public boolean isFluidSlot(int l) {
         return (l >= inputSlots && l < inputSlots + liquidInputSlots)
-                || (l >= inputSlots + liquidInputSlots + outputSlots && l < inputSlots + liquidInputSlots + outputSlots + liquidOutputSlots);
+                || (l >= inputSlots + liquidInputSlots + outputSlots &&
+                l < inputSlots + liquidInputSlots + outputSlots + liquidOutputSlots);
     }
 
-    public static Iterable<MachineFactory> getFactories() {
+    public static Iterable<MachineFactory> getFactories(){
         return map.values();
     }
 
@@ -430,16 +425,13 @@ public class MachineFactory {
 
     public MachineModel buildModel() {
         machineModel = new MachineModel(machineID, new MIIdentifier("blocks/casings/" + casing)).withOutputOverlay(
-                new MIIdentifier("blocks/overlays/output"), new MIIdentifier("blocks/overlays/extract_items"),
+                new MIIdentifier("blocks/overlays/output"),
+                new MIIdentifier("blocks/overlays/extract_items"),
                 new MIIdentifier("blocks/overlays/extract_fluids"));
         String machineFolder = "blocks/machines/" + machineType + "/";
-        if (frontOverlay)
-            machineModel.withFrontOverlay(new MIIdentifier(machineFolder + "overlay_front"),
-                    new MIIdentifier(machineFolder + "overlay_front_active"));
-        if (sideOverlay)
-            machineModel.withSideOverlay(new MIIdentifier(machineFolder + "overlay_side"), new MIIdentifier(machineFolder + "overlay_side_active"));
-        if (topOverlay)
-            machineModel.withTopOverlay(new MIIdentifier(machineFolder + "overlay_top"), new MIIdentifier(machineFolder + "overlay_top_active"));
+        if(frontOverlay) machineModel.withFrontOverlay(new MIIdentifier(machineFolder + "overlay_front"), new MIIdentifier(machineFolder + "overlay_front_active"));
+        if(sideOverlay) machineModel.withSideOverlay(new MIIdentifier(machineFolder + "overlay_side"), new MIIdentifier(machineFolder + "overlay_side_active"));
+        if(topOverlay) machineModel.withTopOverlay(new MIIdentifier(machineFolder + "overlay_top"), new MIIdentifier(machineFolder + "overlay_top_active"));
         return machineModel;
     }
 }

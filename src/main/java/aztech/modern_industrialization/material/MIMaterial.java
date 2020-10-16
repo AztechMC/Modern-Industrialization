@@ -1,19 +1,21 @@
 package aztech.modern_industrialization.material;
 
+
 import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.pipes.MIPipes;
 import aztech.modern_industrialization.pipes.api.PipeNetworkType;
-import java.util.*;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.Items;
+
+import java.util.*;
 
 public class MIMaterial {
 
     private String id;
     private static Map<String, MIMaterial> map = new TreeMap<>();
 
-    public static Iterable<MIMaterial> getAllMaterials() {
+    public static Iterable<MIMaterial> getAllMaterials(){
         return map.values();
     }
 
@@ -28,56 +30,57 @@ public class MIMaterial {
     private Map<String, Item> itemMap = new HashMap<String, Item>();
     private Map<String, Block> blockMap = new HashMap<String, Block>();
 
-    public MIMaterial(String id, boolean isVanilla) {
+    public MIMaterial(String id, boolean isVanilla){
         this.id = id;
 
-        if (map.containsKey(id)) {
-            throw new IllegalArgumentException("Material ID : " + id + " already exists");
-        } else {
+        if(map.containsKey(id)){
+            throw new IllegalArgumentException("Material ID : "+ id + " already exists");
+        }else{
             map.put(id, this);
         }
         this.isVanilla = isVanilla;
     }
 
-    public MIMaterial(String id) {
+    public MIMaterial(String id){
         this(id, false);
     }
 
-    public Iterable<String> getItemType() {
+    public Iterable<String> getItemType(){
         return itemType;
     }
 
-    public Iterable<String> getBlockType() {
+    public Iterable<String> getBlockType(){
         return blockType;
     }
 
-    public MIMaterial addItemType(String itemType) {
-        if (!this.itemType.contains(itemType)) {
+    public MIMaterial addItemType(String itemType){
+        if(!this.itemType.contains(itemType)) {
             this.itemType.add(itemType);
         }
         return this;
     }
 
-    public MIMaterial addItemType(String itemTypes[]) {
-        for (String s : itemTypes) {
+    public MIMaterial addItemType(String itemTypes[]){
+        for(String s : itemTypes){
             addItemType(s);
         }
         return this;
     }
 
-    public MIMaterial addBlockType(String blockType) {
-        if (!this.blockType.contains(itemType)) {
+    public MIMaterial addBlockType(String blockType){
+        if(!this.blockType.contains(itemType)) {
             this.blockType.add(blockType);
         }
         return this;
     }
 
-    public MIMaterial addBlockType(String blockTypes[]) {
-        for (String s : blockTypes) {
+    public MIMaterial addBlockType(String blockTypes[]){
+        for(String s : blockTypes){
             addBlockType(s);
         }
         return this;
     }
+
 
     public String getId() {
         return id;
@@ -99,7 +102,7 @@ public class MIMaterial {
         return maxYLevel;
     }
 
-    public MIMaterial setupOreGenerator(int veinsPerChunk, int veinsSize, int maxYLevel) {
+    public MIMaterial setupOreGenerator(int veinsPerChunk, int veinsSize, int maxYLevel){
         this.hasOre = true;
 
         this.veinsPerChunk = veinsPerChunk;
@@ -117,22 +120,22 @@ public class MIMaterial {
     }
 
     public Item getItem(String type) {
-        if (type.equals("pipe")) {
+        if(type.equals("pipe")){
             // TODO : Remove this eldricht abomination
-            return MIPipes.INSTANCE.getPipeItem(PipeNetworkType.get(new MIIdentifier("fluid_" + id)));
+            return MIPipes.INSTANCE.getPipeItem(PipeNetworkType.get(new MIIdentifier("fluid_"+ id)));
         }
 
-        if (isVanilla) { // TODO : refactor this
-            if (type.equals("ingot")) {
-                if (id.equals("iron")) {
+        if(isVanilla){ // TODO : refactor this
+            if(type.equals("ingot")){
+                if(id.equals("iron")){
                     return Items.IRON_INGOT;
-                } else if (id.equals("gold")) {
+                }else if(id.equals("gold")){
                     return Items.GOLD_INGOT;
                 }
-            } else if (type.equals("nugget")) {
-                if (id.equals("iron")) {
+            }else if(type.equals("nugget")){
+                if(id.equals("iron")){
                     return Items.IRON_NUGGET;
-                } else if (id.equals("gold")) {
+                }else if(id.equals("gold")){
                     return Items.GOLD_NUGGET;
                 }
             }
@@ -143,5 +146,6 @@ public class MIMaterial {
     public Block getBlock(String type) {
         return blockMap.get(type);
     }
+
 
 }

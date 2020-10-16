@@ -4,11 +4,6 @@ import aztech.modern_industrialization.machines.impl.MachineFactory;
 import aztech.modern_industrialization.machines.impl.MachineScreen;
 import aztech.modern_industrialization.machines.impl.SteamMachineFactory;
 import aztech.modern_industrialization.machines.recipe.MachineRecipeType;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import me.shedaniel.math.Point;
 import me.shedaniel.math.Rectangle;
 import me.shedaniel.rei.api.EntryStack;
@@ -21,6 +16,12 @@ import net.minecraft.client.resource.language.I18n;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class MachineRecipeCategory implements RecipeCategory<MachineRecipeDisplay> {
     private final Identifier id;
@@ -87,7 +88,7 @@ public class MachineRecipeCategory implements RecipeCategory<MachineRecipeDispla
                 } else {
                     widget.markOutput();
                 }
-                if (fluid) {
+                if(fluid) {
                     widgets.add(createFluidSlotBackground(point));
                     widget.disableBackground();
                 }
@@ -130,14 +131,9 @@ public class MachineRecipeCategory implements RecipeCategory<MachineRecipeDispla
             }));
         }
 
-        widgets.add(Widgets.createLabel(new Point(bounds.x + 5, yoffset + oldY + 3),
-                new TranslatableText("text.modern_industrialization.base_eu_t", recipeDisplay.getEu())).leftAligned());
-        widgets.add(Widgets.createLabel(new Point(bounds.x + 5, yoffset + oldY + 16),
-                new TranslatableText("text.modern_industrialization.base_duration_seconds", recipeDisplay.getSeconds())).leftAligned());
-        widgets.add(Widgets
-                .createLabel(new Point(bounds.x + 5, yoffset + oldY + 29),
-                        new TranslatableText("text.modern_industrialization.base_eu_total", recipeDisplay.getTicks() * recipeDisplay.getEu()))
-                .leftAligned());
+        widgets.add(Widgets.createLabel(new Point(bounds.x+5, yoffset + oldY + 3), new TranslatableText("text.modern_industrialization.base_eu_t", recipeDisplay.getEu())).leftAligned());
+        widgets.add(Widgets.createLabel(new Point(bounds.x+5, yoffset + oldY + 16), new TranslatableText("text.modern_industrialization.base_duration_seconds", recipeDisplay.getSeconds())).leftAligned());
+        widgets.add(Widgets.createLabel(new Point(bounds.x+5, yoffset + oldY + 29), new TranslatableText("text.modern_industrialization.base_eu_total", recipeDisplay.getTicks() * recipeDisplay.getEu())).leftAligned());
 
         return widgets;
     }
@@ -175,7 +171,7 @@ public class MachineRecipeCategory implements RecipeCategory<MachineRecipeDispla
     private static Widget createFluidSlotBackground(Point point) {
         return Widgets.createDrawableWidget((helper, matrices, mouseX, mouseY, delta) -> {
             MinecraftClient.getInstance().getTextureManager().bindTexture(MachineScreen.SLOT_ATLAS);
-            helper.drawTexture(matrices, point.x - 1, point.y - 1, 18, 0, 18, 18);
+            helper.drawTexture(matrices, point.x-1, point.y-1, 18, 0, 18, 18);
         });
     }
 }

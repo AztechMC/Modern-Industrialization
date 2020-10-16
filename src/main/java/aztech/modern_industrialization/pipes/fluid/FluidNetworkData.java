@@ -1,8 +1,10 @@
 package aztech.modern_industrialization.pipes.fluid;
 
 import alexiil.mc.lib.attributes.fluid.volume.FluidKey;
-import aztech.modern_industrialization.pipes.api.PipeNetworkData;
+import alexiil.mc.lib.attributes.fluid.volume.SimpleFluidKey;
 import aztech.modern_industrialization.util.NbtHelper;
+import aztech.modern_industrialization.pipes.api.PipeNetworkData;
+import net.minecraft.fluid.Fluid;
 import net.minecraft.nbt.CompoundTag;
 
 public class FluidNetworkData extends PipeNetworkData {
@@ -30,8 +32,8 @@ public class FluidNetworkData extends PipeNetworkData {
 
     @Override
     public boolean equals(Object obj) {
-        if (obj instanceof FluidNetworkData) {
-            FluidNetworkData otherData = (FluidNetworkData) obj;
+        if(obj instanceof FluidNetworkData) {
+            FluidNetworkData otherData = (FluidNetworkData)obj;
             return otherData.fluid == fluid;
         } else {
             return false;

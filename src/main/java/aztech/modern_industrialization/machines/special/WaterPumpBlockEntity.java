@@ -1,41 +1,41 @@
 package aztech.modern_industrialization.machines.special;
 
-import static aztech.modern_industrialization.machines.impl.MachineTier.LV;
-import static aztech.modern_industrialization.machines.impl.MachineTier.STEEL;
-
 import alexiil.mc.lib.attributes.fluid.volume.FluidKeys;
 import aztech.modern_industrialization.inventory.ConfigurableFluidStack;
 import aztech.modern_industrialization.machines.impl.MachineBlockEntity;
 import aztech.modern_industrialization.machines.impl.MachineFactory;
+import aztech.modern_industrialization.machines.recipe.MachineRecipeType;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 
+import static aztech.modern_industrialization.machines.impl.MachineTier.LV;
+import static aztech.modern_industrialization.machines.impl.MachineTier.STEEL;
+
 /**
- * We reuse the generic MachineBlockEntity, overriding tick() and using the
- * energy for the cooldown between two pumping attempts.
+ * We reuse the generic MachineBlockEntity, overriding tick() and using the energy
+ * for the cooldown between two pumping attempts.
  */
 public class WaterPumpBlockEntity extends MachineBlockEntity {
     public WaterPumpBlockEntity(MachineFactory factory) {
         super(factory);
 
-        fluidStacks.set(fluidStacks.size() - 1, ConfigurableFluidStack.lockedOutputSlot(factory.getOutputBucketCapacity() * 1000, FluidKeys.WATER));
+        fluidStacks.set(fluidStacks.size()-1, ConfigurableFluidStack.lockedOutputSlot(factory.getOutputBucketCapacity() * 1000, FluidKeys.WATER));
         usedEnergy = 0;
         recipeEnergy = 100;
     }
 
+
     private static final int[] DX = new int[] { -1, 0, 1, 1, 1, 0, -1, -1 };
     private static final int[] DZ = new int[] { -1, -1, -1, 0, 1, 1, 1, 0 };
-
     @Override
     public void tick() {
-        if (world.isClient)
-            return;
+        if(world.isClient) return;
 
-        ConfigurableFluidStack waterStack = fluidStacks.get(fluidStacks.size() - 1);
-        if (waterStack.getRemainingSpace() < 1000 / 8) {
-            if (isActive) {
+        ConfigurableFluidStack waterStack = fluidStacks.get(fluidStacks.size()-1);
+        if(waterStack.getRemainingSpace() < 1000 / 8) {
+            if(isActive) {
                 isActive = false;
                 sync();
                 markDirty();
@@ -52,7 +52,7 @@ public class WaterPumpBlockEntity extends MachineBlockEntity {
             }
 
             if (usedEnergy == recipeEnergy) {
-                boolean[] adjWater = new boolean[] { false, false, false, false, false, false, false, false };
+                boolean[] adjWater = new boolean[]{false, false, false, false, false, false, false, false};
                 for (int i = 0; i < 8; ++i) {
                     BlockPos adjPos = pos.add(DX[i], 0, DZ[i]);
                     if (world.isChunkLoaded(adjPos)) {
@@ -71,9 +71,9 @@ public class WaterPumpBlockEntity extends MachineBlockEntity {
                     }
                 }
                 int factorTier = 1;
-                if (factory.tier == STEEL) {
+                if(factory.tier == STEEL) {
                     factorTier = 2;
-                } else if (factory.tier == LV) {
+                } else if(factory.tier == LV) {
                     factorTier = 16;
                 }
                 waterStack.increment(Math.min(factorTier * providedBucketEights * 1000 / 8, waterStack.getRemainingSpace()));
@@ -82,7 +82,7 @@ public class WaterPumpBlockEntity extends MachineBlockEntity {
             markDirty();
         }
 
-        for (Direction direction : Direction.values()) {
+        for(Direction direction : Direction.values()) {
             autoExtractFluids(world, pos, direction);
         }
     }

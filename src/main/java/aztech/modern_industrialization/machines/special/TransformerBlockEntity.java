@@ -29,7 +29,7 @@ public class TransformerBlockEntity extends MachineBlockEntity {
 
     @Override
     public void addAllAttributes(AttributeList<?> to) {
-        if (to.getTargetSide() == outputDirection) {
+        if(to.getTargetSide() == outputDirection) {
             to.offer(extractable);
         } else {
             to.offer(insertable);

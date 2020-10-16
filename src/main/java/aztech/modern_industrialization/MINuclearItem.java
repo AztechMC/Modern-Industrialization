@@ -1,6 +1,6 @@
 package aztech.modern_industrialization;
 
-import java.util.List;
+import alexiil.mc.lib.attributes.fluid.volume.FluidKey;
 import me.shedaniel.cloth.api.durability.bar.DurabilityBarItem;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.item.Item;
@@ -10,6 +10,8 @@ import net.minecraft.text.Text;
 import net.minecraft.text.TextColor;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.world.World;
+
+import java.util.List;
 
 public class MINuclearItem extends MIItem implements DurabilityBarItem {
 
@@ -32,24 +34,23 @@ public class MINuclearItem extends MIItem implements DurabilityBarItem {
 
     @Override
     public double getDurabilityBarProgress(ItemStack itemStack) {
-        return ((double) itemStack.getDamage()) / durability;
+        return ((double)itemStack.getDamage())/durability;
     }
 
     @Override
     public boolean hasDurabilityBar(ItemStack itemStack) {
         return itemStack.getDamage() != 0;
     }
-
     @Override
     public void appendTooltip(ItemStack stack, World world, List<Text> tooltip, TooltipContext context) {
-        if (stack.getTag() != null) {
+        if(stack.getTag() != null) {
             Style style = Style.EMPTY.withColor(TextColor.fromRgb(0xcbf026)).withItalic(true);
             String quantity = (getDurability() - stack.getDamage()) + " / " + getDurability();
             tooltip.add(new TranslatableText("text.modern_industrialization.burnup", quantity).setStyle(style));
         }
     }
 
-    public Item getDepleted() {
+    public Item getDepleted(){
         return depleted;
     }
 

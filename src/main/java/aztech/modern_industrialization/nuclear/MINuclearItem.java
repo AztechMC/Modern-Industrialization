@@ -4,7 +4,6 @@ import aztech.modern_industrialization.MIItem;
 import aztech.modern_industrialization.items.LockableFluidItem;
 import java.util.List;
 import java.util.Random;
-
 import me.shedaniel.cloth.api.durability.bar.DurabilityBarItem;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.item.Item;
@@ -15,7 +14,7 @@ import net.minecraft.text.TextColor;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.world.World;
 
-public abstract class  MINuclearItem extends MIItem implements DurabilityBarItem, LockableFluidItem, NuclearReactorComponent {
+public abstract class MINuclearItem extends MIItem implements DurabilityBarItem, LockableFluidItem, NuclearReactorComponent {
 
     private int durability;
     private int maxHeat;

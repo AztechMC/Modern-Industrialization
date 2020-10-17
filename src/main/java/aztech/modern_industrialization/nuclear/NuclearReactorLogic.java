@@ -1,8 +1,7 @@
 package aztech.modern_industrialization.nuclear;
 
-import net.minecraft.item.ItemStack;
-
 import java.util.Random;
+import net.minecraft.item.ItemStack;
 
 public class NuclearReactorLogic {
 
@@ -11,16 +10,16 @@ public class NuclearReactorLogic {
 
     public static boolean itemStackOk(ItemStack stack) {
 
-         if(stack != null && !stack.isEmpty() && stack.getItem() instanceof MINuclearItem){
-             MINuclearItem item  = (MINuclearItem) stack.getItem();
-             if(item.getDurability() == -1 || stack.getDamage() < item.getDurability()){
-                 return true;
-             }
-         }
-         return false;
+        if (stack != null && !stack.isEmpty() && stack.getItem() instanceof MINuclearItem) {
+            MINuclearItem item = (MINuclearItem) stack.getItem();
+            if (item.getDurability() == -1 || stack.getDamage() < item.getDurability()) {
+                return true;
+            }
+        }
+        return false;
     }
 
-    public static boolean inGrid(int x, int y){
+    public static boolean inGrid(int x, int y) {
         return x >= 0 && y >= 0 && x < 8 && y < 8;
     }
 
@@ -32,7 +31,7 @@ public class NuclearReactorLogic {
         // neutrons production
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
-                if(itemStackOk(grid[i][j])) {
+                if (itemStackOk(grid[i][j])) {
                     MINuclearItem item = (MINuclearItem) grid[i][j].getItem();
                     double neutronPulse = item.getNeutronPulse(grid[i][j]);
                     for (int d1 = 0; d1 < 4; d1++) {
@@ -44,8 +43,7 @@ public class NuclearReactorLogic {
                                 int rx2 = rx + DX[d2];
                                 int ry2 = ry + DY[d2];
                                 if (inGrid(rx2, ry2) && itemStackOk(grid[rx2][ry2])) {
-                                    neutronReceived[rx2][ry2] += neutronPulse
-                                            * item1.getNeutronReflection(grid[rx][ry], Math.abs((d1 + 2) % 4 - d2));
+                                    neutronReceived[rx2][ry2] += neutronPulse * item1.getNeutronReflection(grid[rx][ry], Math.abs((d1 + 2) % 4 - d2));
                                     // neutron deflection coefficient bewteen external normal direction
                                 }
                             }
@@ -57,7 +55,7 @@ public class NuclearReactorLogic {
 
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
-                if(itemStackOk(grid[i][j])) {
+                if (itemStackOk(grid[i][j])) {
                     MINuclearItem item = (MINuclearItem) grid[i][j].getItem();
                     double heatProduction = item.getHeatProduction(grid[i][j], neutronReceived[i][j]);
                     currentHeat[i][j] = item.getHeat(grid[i][j]) + heatProduction;
@@ -67,7 +65,7 @@ public class NuclearReactorLogic {
 
         double heatTranferOut[][] = new double[8][8];
         for (int i = 0; i < 8; i++) {
-            for (int j = 0; j <8; j++) {
+            for (int j = 0; j < 8; j++) {
 
                 for (int d = 0; d < 4; d++) {
                     int rx = i + DX[d];
@@ -84,7 +82,7 @@ public class NuclearReactorLogic {
 
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
-                if(itemStackOk(grid[i][j])) {
+                if (itemStackOk(grid[i][j])) {
                     double movedHeat = Math.min(heatTranferOut[i][j], currentHeat[i][j]);
                     deltaHeat[i][j] -= movedHeat;
                 }
@@ -95,7 +93,7 @@ public class NuclearReactorLogic {
 
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
-                if(itemStackOk(grid[i][j])) {
+                if (itemStackOk(grid[i][j])) {
                     MINuclearItem item = (MINuclearItem) grid[i][j].getItem();
                     double heatTransferMax = item.getHeatTransferMax(grid[i][j]);
                     if (heatTransferMax > 0) {
@@ -130,16 +128,16 @@ public class NuclearReactorLogic {
                 if (itemStackOk(grid[i][j])) {
                     MINuclearItem item = (MINuclearItem) grid[i][j].getItem();
                     item.setHeat(grid[i][j], doubleToInt(currentHeat[i][j] + deltaHeat[i][j] + deltaHeat_2[i][j], rand));
-                    item.tick(grid[i][j], nuclearReactor, neutronReceived[i][j] ,rand);
+                    item.tick(grid[i][j], nuclearReactor, neutronReceived[i][j], rand);
                 }
             }
         }
 
     }
 
-    public static int doubleToInt(double s, Random rand){
+    public static int doubleToInt(double s, Random rand) {
         int q = (int) Math.floor(s);
-        if(rand.nextDouble() <= s - q){
+        if (rand.nextDouble() <= s - q) {
             q += 1;
         }
         return q;

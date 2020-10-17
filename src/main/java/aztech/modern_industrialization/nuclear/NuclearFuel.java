@@ -1,9 +1,8 @@
 package aztech.modern_industrialization.nuclear;
 
+import java.util.Random;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-
-import java.util.Random;
 
 public class NuclearFuel extends MINuclearItem {
 
@@ -18,12 +17,12 @@ public class NuclearFuel extends MINuclearItem {
 
     @Override
     public double getNeutronPulse(ItemStack is) {
-        return type.neutronPulse*multiplier;
+        return type.neutronPulse * multiplier;
     }
 
     @Override
     public double getHeatProduction(ItemStack is, double neutronReceived) {
-        return type.heatProduction*multiplier*(1.0d + neutronReceived*0.5)*( 1 - (0.5*getHeat(is))/getMaxHeat());
+        return type.heatProduction * multiplier * (1.0d + neutronReceived * 0.5) * (1 - (0.5 * getHeat(is)) / getMaxHeat());
     }
 
     @Override
@@ -41,7 +40,6 @@ public class NuclearFuel extends MINuclearItem {
         return 0;
     }
 
-
     public int getMultiplier() {
         return multiplier;
     }
@@ -54,7 +52,7 @@ public class NuclearFuel extends MINuclearItem {
     public void tick(ItemStack is, NuclearReactorBlockEntity nuclearReactor, double neutronPulse, Random rand) {
         int damage = is.getDamage();
         damage += 1;
-        damage += NuclearReactorLogic.doubleToInt(neutronPulse*0.1, rand);
+        damage += NuclearReactorLogic.doubleToInt(neutronPulse * 0.1, rand);
         is.setDamage(Math.min(this.getDurability(), damage));
 
     }

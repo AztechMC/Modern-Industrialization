@@ -1,22 +1,17 @@
 package aztech.modern_industrialization.nuclear;
 
 import alexiil.mc.lib.attributes.fluid.volume.FluidKey;
-import alexiil.mc.lib.attributes.fluid.volume.FluidKeys;
 import alexiil.mc.lib.attributes.item.ItemAttributes;
-import aztech.modern_industrialization.MIFluids;
-import aztech.modern_industrialization.MIItem;
 import aztech.modern_industrialization.inventory.ConfigurableFluidStack;
 import aztech.modern_industrialization.inventory.ConfigurableItemStack;
-import aztech.modern_industrialization.items.LockableFluidItem;
 import aztech.modern_industrialization.machines.impl.MachineFactory;
 import aztech.modern_industrialization.machines.impl.multiblock.HatchBlockEntity;
 import aztech.modern_industrialization.machines.impl.multiblock.HatchType;
 import aztech.modern_industrialization.machines.impl.multiblock.MultiblockMachineBlockEntity;
 import aztech.modern_industrialization.machines.impl.multiblock.MultiblockShape;
+import java.util.Random;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-
-import java.util.Random;
 
 public class NuclearReactorBlockEntity extends MultiblockMachineBlockEntity {
 
@@ -24,9 +19,9 @@ public class NuclearReactorBlockEntity extends MultiblockMachineBlockEntity {
         super(factory, shape, false);
     }
 
-    public boolean tryInsertItemInOutputHatch(Item item){
+    public boolean tryInsertItemInOutputHatch(Item item) {
 
-        if(item == null){
+        if (item == null) {
             return true;
         }
 
@@ -59,12 +54,12 @@ public class NuclearReactorBlockEntity extends MultiblockMachineBlockEntity {
 
     }
 
-    private int getMaxFluid(FluidKey fluidKey, boolean extraction){
+    private int getMaxFluid(FluidKey fluidKey, boolean extraction) {
         int totalAvailable = 0;
         for (HatchBlockEntity hatch : linkedHatches.values()) {
             if (hatch.type == (extraction ? HatchType.FLUID_INPUT : HatchType.FLUID_OUTPUT)) {
-                for(ConfigurableFluidStack stack : (extraction ? hatch.getFluidInputStacks() : hatch.getFluidOutputStacks())){
-                    if(stack.isFluidValid(fluidKey)){
+                for (ConfigurableFluidStack stack : (extraction ? hatch.getFluidInputStacks() : hatch.getFluidOutputStacks())) {
+                    if (stack.isFluidValid(fluidKey)) {
                         System.out.println(extraction);
                         totalAvailable += (extraction ? stack.getAmount() : stack.getRemainingSpace());
                     }
@@ -77,9 +72,9 @@ public class NuclearReactorBlockEntity extends MultiblockMachineBlockEntity {
     public int extractFluidFromInputHatch(FluidKey fluidKey, int amount) {
         int remaining = amount;
         for (HatchBlockEntity hatch : linkedHatches.values()) {
-            if (hatch.type ==  HatchType.FLUID_INPUT) {
-                for(ConfigurableFluidStack stack : hatch.getFluidInputStacks()){
-                    if(stack.getFluid() == fluidKey) {
+            if (hatch.type == HatchType.FLUID_INPUT) {
+                for (ConfigurableFluidStack stack : hatch.getFluidInputStacks()) {
+                    if (stack.getFluid() == fluidKey) {
                         int extract = Math.min(remaining, stack.getAmount());
                         stack.decrement(extract);
                         remaining -= extract;
@@ -92,17 +87,17 @@ public class NuclearReactorBlockEntity extends MultiblockMachineBlockEntity {
 
     public int insertFluidInOutputHatch(FluidKey fluidKey, int amount) {
         int remaining = amount;
-        for(int attempts = 0; attempts < 2; attempts++) {
+        for (int attempts = 0; attempts < 2; attempts++) {
             for (HatchBlockEntity hatch : linkedHatches.values()) {
                 if (hatch.type == HatchType.FLUID_OUTPUT) {
                     for (ConfigurableFluidStack stack : hatch.getFluidOutputStacks()) {
-                        if(!stack.isEmpty() || attempts == 1){
-                            if(stack.isFluidValid(fluidKey)){
+                        if (!stack.isEmpty() || attempts == 1) {
+                            if (stack.isFluidValid(fluidKey)) {
                                 if (!stack.isEmpty()) {
                                     int insert = Math.min(remaining, stack.getRemainingSpace());
                                     stack.increment(insert);
                                     remaining -= insert;
-                                }else if(remaining > 0){
+                                } else if (remaining > 0) {
                                     int insert = Math.min(remaining, stack.getRemainingSpace());
                                     stack.setFluid(fluidKey);
                                     stack.increment(insert);
@@ -117,8 +112,6 @@ public class NuclearReactorBlockEntity extends MultiblockMachineBlockEntity {
         return remaining;
     }
 
-
-
     public int getMaxFluidExtraction(FluidKey fluidKey) {
         return getMaxFluid(fluidKey, true);
     }
@@ -127,10 +120,7 @@ public class NuclearReactorBlockEntity extends MultiblockMachineBlockEntity {
         return getMaxFluid(fluidKey, false);
     }
 
-
-
-    public void tickNuclearItemStack(ItemStack is){
-
+    public void tickNuclearItemStack(ItemStack is) {
 
     }
 
@@ -145,22 +135,22 @@ public class NuclearReactorBlockEntity extends MultiblockMachineBlockEntity {
             }
         }
         ItemStack[][] grid = new ItemStack[8][8];
-        for(int i = 0; i < 64; i++){
+        for (int i = 0; i < 64; i++) {
             ItemStack is = this.itemStacks.get(i).getStack();
-            if(!is.isEmpty()){
+            if (!is.isEmpty()) {
                 grid[i % 8][i / 8] = is;
             }
 
         }
-        if(ready) {
+        if (ready) {
             NuclearReactorLogic.tick(grid, new Random(), this);
-            for(ConfigurableItemStack is : this.itemStacks){
-                if(!is.getStack().isEmpty() && is.getStack().getItem() instanceof MINuclearItem){
+            for (ConfigurableItemStack is : this.itemStacks) {
+                if (!is.getStack().isEmpty() && is.getStack().getItem() instanceof MINuclearItem) {
                     MINuclearItem item = (MINuclearItem) is.getStack().getItem();
-                    if(MINuclearItem.getHeat(is.getStack()) >= item.getMaxHeat()){
+                    if (MINuclearItem.getHeat(is.getStack()) >= item.getMaxHeat()) {
                         is.getStack().setCount(0);
-                    }else if(item.getDurability() != -1 && is.getStack().getDamage() == item.getDurability()){
-                        if(tryInsertItemInOutputHatch(item.getDepleted())){
+                    } else if (item.getDurability() != -1 && is.getStack().getDamage() == item.getDurability()) {
+                        if (tryInsertItemInOutputHatch(item.getDepleted())) {
                             is.getStack().setCount(0);
                         }
                     }

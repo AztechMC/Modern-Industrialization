@@ -237,7 +237,7 @@ public class ConfigurableFluidStack {
         return false;
     }
 
-    public boolean isEmpty(){
+    public boolean isEmpty() {
         return amount == 0;
     }
 

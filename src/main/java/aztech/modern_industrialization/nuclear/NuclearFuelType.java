@@ -11,7 +11,7 @@ public enum NuclearFuelType {
     public final double heatProduction;
     public final double neutronPulse;
 
-    NuclearFuelType(int maxHeat, int durability, double heatProduction, double neutronPulse){
+    NuclearFuelType(int maxHeat, int durability, double heatProduction, double neutronPulse) {
         this.maxHeat = maxHeat;
         this.durability = durability;
         this.heatProduction = heatProduction;

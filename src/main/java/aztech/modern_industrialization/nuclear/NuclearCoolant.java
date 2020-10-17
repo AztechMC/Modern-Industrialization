@@ -3,10 +3,8 @@ package aztech.modern_industrialization.nuclear;
 import alexiil.mc.lib.attributes.fluid.volume.FluidKeys;
 import aztech.modern_industrialization.MIFluids;
 import aztech.modern_industrialization.items.LockableFluidItem;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-
 import java.util.Random;
+import net.minecraft.item.ItemStack;
 
 public class NuclearCoolant extends MINuclearItem {
 
@@ -21,13 +19,13 @@ public class NuclearCoolant extends MINuclearItem {
     @Override
     public void tick(ItemStack is, NuclearReactorBlockEntity nuclearReactor, double neutronPulse, Random rand) {
         NuclearFluidCoolant coolant = getCoolant(is);
-        if(coolant != null) {
+        if (coolant != null) {
             int extractMax = nuclearReactor.getMaxFluidExtraction(coolant.fluid);
             int insertMax = nuclearReactor.getMaxFluidInsertion(coolant.fluidResult);
             int s = Math.min(extractMax, insertMax);
-            int u = Math.min(s, 64*multiplier);
-            int v = Math.min(u, getHeat(is)/coolant.heatConsumed);
-            setHeat(is, getHeat(is) - v*coolant.heatConsumed);
+            int u = Math.min(s, 64 * multiplier);
+            int v = Math.min(u, getHeat(is) / coolant.heatConsumed);
+            setHeat(is, getHeat(is) - v * coolant.heatConsumed);
             int r = nuclearReactor.extractFluidFromInputHatch(FluidKeys.WATER, v);
             if (r != 0) {
                 throw new IllegalStateException("Remaining extracted fluid : " + r);
@@ -39,9 +37,9 @@ public class NuclearCoolant extends MINuclearItem {
         }
     }
 
-    public NuclearFluidCoolant getCoolant(ItemStack is){
-        for(NuclearFluidCoolant coolant : NuclearFluidCoolant.values()){
-            if(coolant.fluid == LockableFluidItem.getFluid(is)){
+    public NuclearFluidCoolant getCoolant(ItemStack is) {
+        for (NuclearFluidCoolant coolant : NuclearFluidCoolant.values()) {
+            if (coolant.fluid == LockableFluidItem.getFluid(is)) {
                 return coolant;
             }
         }
@@ -61,8 +59,8 @@ public class NuclearCoolant extends MINuclearItem {
     @Override
     public double getNeutronReflection(ItemStack is, int angle) {
         NuclearFluidCoolant coolant = getCoolant(is);
-        if(coolant != null){
-            return coolant.neutronReflection*0.25;
+        if (coolant != null) {
+            return coolant.neutronReflection * 0.25;
         }
         return 0;
     }
@@ -70,8 +68,8 @@ public class NuclearCoolant extends MINuclearItem {
     @Override
     public double getHeatTransferMax(ItemStack is) {
         NuclearFluidCoolant coolant = getCoolant(is);
-        if(coolant != null){
-            return coolant.heatTransfer*multiplier;
+        if (coolant != null) {
+            return coolant.heatTransfer * multiplier;
         }
         return 0;
     }

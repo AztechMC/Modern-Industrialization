@@ -1,8 +1,16 @@
 package aztech.modern_industrialization.machines.impl.multiblock;
 
-import static aztech.modern_industrialization.machines.impl.multiblock.HatchType.FLUID_OUTPUT;
-import static aztech.modern_industrialization.machines.impl.multiblock.HatchType.ITEM_OUTPUT;
+import static aztech.modern_industrialization.machines.impl.multiblock.HatchType.*;
 
+import alexiil.mc.lib.attributes.SearchOptions;
+import alexiil.mc.lib.attributes.fluid.FluidAttributes;
+import alexiil.mc.lib.attributes.fluid.FluidExtractable;
+import alexiil.mc.lib.attributes.fluid.FluidInsertable;
+import alexiil.mc.lib.attributes.fluid.FluidVolumeUtil;
+import alexiil.mc.lib.attributes.item.ItemAttributes;
+import alexiil.mc.lib.attributes.item.ItemExtractable;
+import alexiil.mc.lib.attributes.item.ItemInsertable;
+import alexiil.mc.lib.attributes.item.ItemInvUtil;
 import aztech.modern_industrialization.machines.impl.MachineBlockEntity;
 import aztech.modern_industrialization.machines.impl.MachineFactory;
 import aztech.modern_industrialization.util.NbtHelper;
@@ -69,8 +77,19 @@ public class HatchBlockEntity extends MachineBlockEntity {
         if (extractFluids && type == FLUID_OUTPUT) {
             autoExtractFluids(world, pos, outputDirection);
         }
+        if (extractItems && type == ITEM_INPUT) {
+            ItemExtractable extractable = ItemAttributes.EXTRACTABLE.get(world, pos.offset(outputDirection),
+                    SearchOptions.inDirection(outputDirection));
+            ItemInsertable insertable = ItemAttributes.INSERTABLE.get(world, pos);
+            ItemInvUtil.moveMultiple(extractable, insertable);
+        }
+        if (extractFluids && type == FLUID_INPUT) {
+            FluidExtractable extractable = FluidAttributes.EXTRACTABLE.get(world, pos.offset(outputDirection),
+                    SearchOptions.inDirection(outputDirection));
+            FluidInsertable insertable = FluidAttributes.INSERTABLE.get(world, pos);
+            FluidVolumeUtil.move(extractable, insertable);
+        }
         markDirty();
-        // TODO: auto-input
     }
 
     @Override

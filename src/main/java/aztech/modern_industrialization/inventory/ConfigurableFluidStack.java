@@ -249,6 +249,10 @@ public class ConfigurableFluidStack {
         return pipesExtract;
     }
 
+    public boolean canPipesInsert() {
+        return pipesInsert;
+    }
+
     public class ConfigurableFluidSlot extends Slot {
         public ConfigurableFluidSlot(Inventory inventory, int x, int y) {
             super(inventory, -1, x, y);

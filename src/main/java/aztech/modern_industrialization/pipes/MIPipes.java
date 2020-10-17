@@ -49,7 +49,7 @@ public class MIPipes implements ModInitializer {
 
     public static final Block BLOCK_PIPE = new PipeBlock(FabricBlockSettings.of(Material.METAL).hardness(4.0f));
     public static BlockEntityType<PipeBlockEntity> BLOCK_ENTITY_TYPE_PIPE;
-    private Map<PipeNetworkType, Item> pipeItems = new HashMap<>();
+    private Map<PipeNetworkType, PipeItem> pipeItems = new HashMap<>();
     public static final ScreenHandlerType<ItemPipeScreenHandler> SCREN_HANDLER_TYPE_ITEM_PIPE = ScreenHandlerRegistry
             .registerExtended(new MIIdentifier("item_pipe"), ItemPipeScreenHandler::new);
     public static final Set<Identifier> PIPE_MODEL_NAMES = new HashSet<>();
@@ -126,7 +126,7 @@ public class MIPipes implements ModInitializer {
     public void registerFluidPipeType(String name, int color, int nodeCapacity) {
         PipeNetworkType type = PipeNetworkType.register(new MIIdentifier("fluid_" + name), (id, data) -> new FluidNetwork(id, data, nodeCapacity),
                 FluidNetworkNode::new, color, false, FLUID_RENDERER);
-        Item item = new PipeItem(new Item.Settings().group(ModernIndustrialization.ITEM_GROUP), type, new FluidNetworkData(FluidKeys.EMPTY));
+        PipeItem item = new PipeItem(new Item.Settings().group(ModernIndustrialization.ITEM_GROUP), type, new FluidNetworkData(FluidKeys.EMPTY));
         pipeItems.put(type, item);
         Registry.register(Registry.ITEM, new MIIdentifier("pipe_fluid_" + name), item);
         PIPE_MODEL_NAMES.add(new MIIdentifier("item/pipe_fluid_" + name));
@@ -135,7 +135,7 @@ public class MIPipes implements ModInitializer {
     public void registerItemPipeType(String name, int color) {
         PipeNetworkType type = PipeNetworkType.register(new MIIdentifier("item_" + name), ItemNetwork::new, ItemNetworkNode::new, color, true,
                 ITEM_RENDERER);
-        Item item = new PipeItem(new Item.Settings().group(ModernIndustrialization.ITEM_GROUP), type, new ItemNetworkData());
+        PipeItem item = new PipeItem(new Item.Settings().group(ModernIndustrialization.ITEM_GROUP), type, new ItemNetworkData());
         pipeItems.put(type, item);
         Registry.register(Registry.ITEM, new MIIdentifier("pipe_item_" + name), item);
         PIPE_MODEL_NAMES.add(new MIIdentifier("item/pipe_item_" + name));
@@ -144,13 +144,13 @@ public class MIPipes implements ModInitializer {
     public void registerElectricityPipeType(String name, int color, CableTier tier) {
         PipeNetworkType type = PipeNetworkType.register(new MIIdentifier("electricity_" + name), (id, data) -> new ElectricityNetwork(id, data, tier),
                 ElectricityNetworkNode::new, color, false, ELECTRICITY_RENDERER);
-        Item item = new PipeItem(new Item.Settings().group(ModernIndustrialization.ITEM_GROUP), type, new ElectricityNetworkData());
+        PipeItem item = new PipeItem(new Item.Settings().group(ModernIndustrialization.ITEM_GROUP), type, new ElectricityNetworkData());
         pipeItems.put(type, item);
         Registry.register(Registry.ITEM, new MIIdentifier("pipe_electricity_" + name), item);
         PIPE_MODEL_NAMES.add(new MIIdentifier("item/pipe_electricity_" + name));
     }
 
-    public Item getPipeItem(PipeNetworkType type) {
+    public PipeItem getPipeItem(PipeNetworkType type) {
         return pipeItems.get(type);
     }
 

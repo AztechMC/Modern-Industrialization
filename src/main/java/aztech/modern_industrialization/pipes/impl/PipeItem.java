@@ -17,7 +17,7 @@ import net.minecraft.world.World;
 
 public class PipeItem extends Item {
     final PipeNetworkType type;
-    final PipeNetworkData defaultData;
+    public final PipeNetworkData defaultData;
 
     public PipeItem(Settings settings, PipeNetworkType type, PipeNetworkData defaultData) {
         super(settings);

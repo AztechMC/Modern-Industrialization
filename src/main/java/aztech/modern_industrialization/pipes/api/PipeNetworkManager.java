@@ -1,5 +1,6 @@
 package aztech.modern_industrialization.pipes.api;
 
+import aztech.modern_industrialization.pipes.MIPipes;
 import aztech.modern_industrialization.util.NbtHelper;
 import java.util.*;
 import net.minecraft.nbt.CompoundTag;
@@ -162,8 +163,20 @@ public class PipeNetworkManager {
      */
     public void nodeLoaded(PipeNetworkNode node, BlockPos pos) {
         PipeNetwork network = networkByBlock.get(pos);
-        node.network = network;
-        network.nodes.put(pos.toImmutable(), node);
+        if (network == null) {
+            // The network is null! That probably means that the node doesn't exist, e.g.
+            // because a pipe was moved with Carrier.
+            // If that happens, we just create the node here. Hopefully it goes well.
+            // TODO: refactor this in an api
+            PipeNetworkData data = MIPipes.INSTANCE.getPipeItem(getType()).defaultData;
+            addNode(node, pos, data);
+            for (Direction direction : Direction.values()) {
+                addLink(pos, direction, false);
+            }
+        } else {
+            node.network = network;
+            network.nodes.put(pos.toImmutable(), node);
+        }
         checkStateCoherence();
     }
 

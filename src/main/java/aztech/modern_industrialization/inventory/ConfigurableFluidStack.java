@@ -237,6 +237,10 @@ public class ConfigurableFluidStack {
         return false;
     }
 
+    public boolean isEmpty(){
+        return amount == 0;
+    }
+
     public boolean canPlayerLock() {
         return playerLockable;
     }

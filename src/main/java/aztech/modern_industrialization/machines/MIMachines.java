@@ -13,7 +13,7 @@ import aztech.modern_industrialization.machines.impl.MachineFactory;
 import aztech.modern_industrialization.machines.impl.MachineTier;
 import aztech.modern_industrialization.machines.impl.SteamMachineFactory;
 import aztech.modern_industrialization.machines.impl.multiblock.*;
-import aztech.modern_industrialization.machines.nuclear.NuclearReactorBlockEntity;
+import aztech.modern_industrialization.nuclear.NuclearReactorBlockEntity;
 import aztech.modern_industrialization.machines.recipe.FurnaceRecipeProxy;
 import aztech.modern_industrialization.machines.recipe.MachineRecipeType;
 import aztech.modern_industrialization.machines.special.*;

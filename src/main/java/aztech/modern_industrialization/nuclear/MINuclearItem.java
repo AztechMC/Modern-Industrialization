@@ -1,7 +1,10 @@
-package aztech.modern_industrialization;
+package aztech.modern_industrialization.nuclear;
 
+import aztech.modern_industrialization.MIItem;
 import aztech.modern_industrialization.items.LockableFluidItem;
 import java.util.List;
+import java.util.Random;
+
 import me.shedaniel.cloth.api.durability.bar.DurabilityBarItem;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.item.Item;
@@ -12,7 +15,7 @@ import net.minecraft.text.TextColor;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.world.World;
 
-public class MINuclearItem extends MIItem implements DurabilityBarItem, LockableFluidItem {
+public abstract class  MINuclearItem extends MIItem implements DurabilityBarItem, LockableFluidItem, NuclearReactorComponent {
 
     private int durability;
     private int maxHeat;
@@ -26,7 +29,7 @@ public class MINuclearItem extends MIItem implements DurabilityBarItem, Lockable
         this.depleted = depleted;
     }
 
-    public MINuclearItem setFluidLockable(boolean fluidLockable) {
+    protected MINuclearItem setFluidLockable(boolean fluidLockable) {
         this.isFluidLockable = fluidLockable;
         return this;
     }
@@ -39,11 +42,11 @@ public class MINuclearItem extends MIItem implements DurabilityBarItem, Lockable
         this(id, -1, maxHeat, null);
     }
 
-    public int getHeat(ItemStack itemStack) {
+    public static int getHeat(ItemStack itemStack) {
         return itemStack.getOrCreateTag().contains("heat") ? itemStack.getOrCreateTag().getInt("heat") : 0;
     }
 
-    public void setHeat(ItemStack itemStack, int heat) {
+    public static void setHeat(ItemStack itemStack, int heat) {
         if (heat > 0) {
             itemStack.getOrCreateTag().putInt("heat", heat);
         } else if (heat == 0) {
@@ -53,6 +56,8 @@ public class MINuclearItem extends MIItem implements DurabilityBarItem, Lockable
         }
 
     }
+
+    public abstract void tick(ItemStack is, NuclearReactorBlockEntity nuclearReactor, double neutronPulse, Random rand);
 
     public int getDurability() {
         return durability;

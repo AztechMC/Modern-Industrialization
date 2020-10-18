@@ -92,6 +92,7 @@ public class MITags {
     private static final Tag<Item> QUARTZ_DUSTS = TagRegistry.item(new Identifier("c", "quartz_dusts"));
     private static final Tag<Item> QUARTZ_TINY_DUSTS = TagRegistry.item(new Identifier("c", "quartz_tiny_dusts"));
     private static final Tag<Item> REDSTONE_TINY_DUSTS = TagRegistry.item(new Identifier("c", "redstone_tiny_dusts"));
+    private static final Tag<Item> RUBY_DUSTS = TagRegistry.item(new Identifier("c", "ruby_dusts"));
     private static final Tag<Item> SALT_DUSTS = TagRegistry.item(new Identifier("c", "salt_dusts"));
     private static final Tag<Item> SALT_ORES = TagRegistry.item(new Identifier("c", "salt_ores"));
     private static final Tag<Item> SALT_TINY_DUSTS = TagRegistry.item(new Identifier("c", "salt_tiny_dusts"));

@@ -132,5 +132,6 @@ spotless {
 
         indentWithSpaces()
         endWithNewline()
+        licenseHeaderFile 'LICENSE.java'
     }
 }

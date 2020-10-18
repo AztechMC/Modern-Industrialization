@@ -57,7 +57,7 @@ public class MultiblockMachineBlockEntity extends MachineBlockEntity {
     }
 
     public MultiblockMachineBlockEntity(MachineFactory factory, MultiblockShape shape) {
-        this(factory, shape, false);
+        this(factory, shape, true);
     }
 
     private void lateLoad() {

@@ -191,7 +191,7 @@ public class MachineScreen extends HandledScreen<MachineScreenHandler> {
                     ClientSidePacketRegistry.INSTANCE.sendToServer(MachinePackets.C2S.SET_AUTO_EXTRACT, buf);
                 }, (button, matrices, mouseX, mouseY) -> {
                     List<Text> lines = new ArrayList<>();
-                    String extract = hasFluidOutput() ? "extract" : "insert";
+                    String extract = hasItemOutput() ? "extract" : "insert";
                     if (handler.inventory.getItemExtract()) {
                         lines.add(new TranslatableText("text.modern_industrialization.item_auto_" + extract + "_on"));
                         lines.add(new TranslatableText("text.modern_industrialization.click_to_disable").setStyle(SECONDARY_INFO));

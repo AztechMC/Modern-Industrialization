@@ -546,5 +546,8 @@ public class MIMachines {
         registerTransformer(CableTier.MV, CableTier.LV, "lv");
         registerTransformer(CableTier.MV, CableTier.HV, "mv");
         registerTransformer(CableTier.HV, CableTier.MV, "mv");
+
+        new MachineFactory("configurable_chest", null, ConfigurableChestBlockEntity::new, null, 21, 0, 0, 0).setInputSlotPosition(16, 26, 7, 3)
+                .setInventoryPos(8, 96).setupBackground("configurable_chest.png", 176, 178).setupCasing("steel_crate");
     }
 }

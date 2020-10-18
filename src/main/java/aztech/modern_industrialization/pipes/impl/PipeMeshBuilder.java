@@ -155,7 +155,7 @@ public class PipeMeshBuilder extends PipePartBuilder {
      */
     @Override
     void drawPipe(float length, Intent intent, boolean end) {
-        if (length < 0)
+        if (length <= 1e-9)
             return;
         // Four sides
         double[] cols = intent == Intent.STRAIGHT ? STRAIGHT_COL : intent == Intent.BEND ? BEND_COL : BEND_CONFLICTING_COL;

@@ -26,6 +26,7 @@ package aztech.modern_industrialization.inventory;
 import aztech.modern_industrialization.util.NbtHelper;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Predicate;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.item.Item;
@@ -61,6 +62,16 @@ public class ConfigurableItemStack {
     public static ConfigurableItemStack standardOutputSlot() {
         ConfigurableItemStack stack = new ConfigurableItemStack();
         stack.pipesExtract = true;
+        return stack;
+    }
+
+    public static ConfigurableItemStack standardIOSlot(boolean pipeIO) {
+        ConfigurableItemStack stack = new ConfigurableItemStack();
+        stack.playerInsert = true;
+        if (pipeIO) {
+            stack.pipesInsert = true;
+            stack.pipesExtract = true;
+        }
         return stack;
     }
 
@@ -231,13 +242,17 @@ public class ConfigurableItemStack {
     }
 
     public class ConfigurableItemSlot extends Slot {
-        public ConfigurableItemSlot(Inventory inventory, int id, int x, int y) {
+        private final Predicate<ItemStack> insertPredicate;
+
+        public ConfigurableItemSlot(Inventory inventory, int id, int x, int y, Predicate<ItemStack> insertPredicate) {
             super(inventory, id, x, y);
+
+            this.insertPredicate = insertPredicate;
         }
 
         @Override
         public boolean canInsert(ItemStack stack) {
-            return playerInsert && ConfigurableItemStack.this.canInsert(stack);
+            return playerInsert && ConfigurableItemStack.this.canInsert(stack) && insertPredicate.test(stack);
         }
 
         @Override

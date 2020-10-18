@@ -39,6 +39,7 @@ import aztech.modern_industrialization.machines.impl.multiblock.*;
 import aztech.modern_industrialization.machines.recipe.FurnaceRecipeProxy;
 import aztech.modern_industrialization.machines.recipe.MachineRecipeType;
 import aztech.modern_industrialization.machines.special.*;
+import aztech.modern_industrialization.nuclear.MINuclearItem;
 import aztech.modern_industrialization.nuclear.NuclearReactorBlockEntity;
 import java.util.*;
 import net.minecraft.block.Block;
@@ -517,7 +518,8 @@ public class MIMachines {
 
         new MachineFactory("nuclear_reactor", null, f -> new NuclearReactorBlockEntity(f, NUCLEAR_REACTOR_SHAPE), null, 64, 0, 0, 0)
                 .setInputSlotPosition(15, 20, 8, 8).setupBackground("nuclear.png", 176, 256).setInventoryPos(8, 174)
-                .setupOverlays("vacuum_freezer", true, false, false).setupCasing("nuclear");
+                .setupOverlays("vacuum_freezer", true, false, false).setupCasing("nuclear")
+                .setInsertPredicate(stack -> stack.getItem() instanceof MINuclearItem);
 
         registerHatches();
 

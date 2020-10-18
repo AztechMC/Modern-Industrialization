@@ -31,9 +31,11 @@ import aztech.modern_industrialization.machines.recipe.FurnaceRecipeProxy;
 import aztech.modern_industrialization.machines.recipe.MachineRecipeType;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.item.BlockItem;
+import net.minecraft.item.ItemStack;
 
 public class MachineFactory {
 
@@ -66,6 +68,8 @@ public class MachineFactory {
     // from.
     // only used in the gui
     boolean autoInsert = false;
+    // only allow some items to be put in the item slots
+    Predicate<ItemStack> insertPredicate = stack -> true;
 
     private String translationKey = "machine_recipe.default";
 
@@ -472,6 +476,11 @@ public class MachineFactory {
 
     public MachineFactory setAutoInsert() {
         this.autoInsert = true;
+        return this;
+    }
+
+    public MachineFactory setInsertPredicate(Predicate<ItemStack> insertPredicate) {
+        this.insertPredicate = insertPredicate;
         return this;
     }
 }

@@ -79,7 +79,8 @@ public class MachineScreenHandler extends ConfigurableScreenHandler {
             for (int i = 0; i < factory.getSlots(); i++) {
                 if (factory.getSlotType(i) == INPUT_SLOT || factory.getSlotType(i) == OUTPUT_SLOT) {
                     ConfigurableItemStack stack = inventory.getItemStacks().get(itemCnt);
-                    this.addSlot(stack.new ConfigurableItemSlot(inventory, itemCnt, factory.getSlotPosX(i), factory.getSlotPosY(i)));
+                    this.addSlot(stack.new ConfigurableItemSlot(inventory, itemCnt, factory.getSlotPosX(i), factory.getSlotPosY(i),
+                            factory.insertPredicate));
                     ++itemCnt;
                 } else {
                     ConfigurableFluidStack stack = inventory.getFluidStacks().get(i - itemCnt);

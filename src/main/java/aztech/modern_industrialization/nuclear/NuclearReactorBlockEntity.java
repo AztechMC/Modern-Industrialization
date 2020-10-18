@@ -40,6 +40,11 @@ public class NuclearReactorBlockEntity extends MultiblockMachineBlockEntity {
 
     public NuclearReactorBlockEntity(MachineFactory factory, MultiblockShape shape) {
         super(factory, shape, false);
+
+        // Replace the existing slots by slots that prevent any pipe I/O.
+        for (int i = 0; i < itemStacks.size(); ++i) {
+            itemStacks.set(i, ConfigurableItemStack.standardIOSlot(false));
+        }
     }
 
     public boolean tryInsertItemInOutputHatch(Item item) {

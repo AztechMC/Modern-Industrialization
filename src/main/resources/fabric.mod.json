@@ -47,5 +47,11 @@
   "recommends": {
     "roughlyenoughitems": "*",
     "patchouli": "*"
+  },
+  "custom": {
+    "waila:plugins": {
+      "id": "modern_industrialization:plugin",
+      "initializer": "aztech.modern_industrialization.compat.waila.MIWailaPlugin"
+    }
   }
 }

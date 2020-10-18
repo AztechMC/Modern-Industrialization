@@ -79,6 +79,11 @@ public class PipeBlockEntity extends BlockEntity
         onConnectionsChanged();
     }
 
+    public SortedSet<PipeNetworkNode> getNodes() {
+        loadPipes();
+        return Collections.unmodifiableSortedSet(pipes);
+    }
+
     /**
      * Check if it's possible to add a pipe.
      * 
@@ -317,7 +322,7 @@ public class PipeBlockEntity extends BlockEntity
     /**
      * Get the currently visible shapes.
      */
-    Collection<PipeVoxelShape> getPartShapes() {
+    public Collection<PipeVoxelShape> getPartShapes() {
         Collection<PipeVoxelShape> shapes = new ArrayList<>();
 
         PipeEndpointType[][] renderedConnections = new PipeEndpointType[connections.size()][];

@@ -7,20 +7,20 @@ import net.minecraft.util.shape.VoxelShape;
 /**
  * A voxel shape and the part of the pipe it represents.
  */
-class PipeVoxelShape {
+public class PipeVoxelShape {
     /**
      * The shape.
      */
-    final VoxelShape shape;
+    public final VoxelShape shape;
     /**
      * The network type.
      */
-    final PipeNetworkType type;
+    public final PipeNetworkType type;
     /**
      * If null, the center of the pipe. Otherwise, the connector in the given
      * direction.
      */
-    final Direction direction;
+    public final Direction direction;
 
     /**
      * Whether this pipe being right-clicked opens a gui.

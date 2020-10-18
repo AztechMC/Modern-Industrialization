@@ -106,4 +106,17 @@ public class ElectricityNetworkNode extends PipeNetworkNode {
         CableTier tier = ((ElectricityNetwork) network).tier;
         return insertable != null && insertable.canInsert(tier) || extractable != null && extractable.canExtract(tier);
     }
+
+    // Used in the Waila plugin
+    public long getEu() {
+        return eu;
+    }
+
+    public long getMaxEu() {
+        return getTier().getMaxInsert();
+    }
+
+    public CableTier getTier() {
+        return ((ElectricityNetwork) network).tier;
+    }
 }

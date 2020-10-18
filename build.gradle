@@ -26,10 +26,13 @@ repositories {
         name = "BuildCraft"
         url = "https://mod-buildcraft.com/maven"
     }
+    // for NBT Crafting
     maven {
         name "Siphalor's Maven"
         url "https://maven.siphalor.de"
     }
+    // for HWYLA
+    maven { url "https://maven.tehnut.info" }
 }
 
 dependencies {
@@ -54,6 +57,7 @@ dependencies {
     include "me.shedaniel.cloth.api:cloth-durability-bar-api-v1:${project.cloth_api_version}"
     modImplementation "de.siphalor:nbtcrafting-${project.nbt_crafting_version}"
     include "de.siphalor:nbtcrafting-${project.nbt_crafting_version}"
+    modImplementation "mcp.mobius.waila:Hwyla:${project.hwyla_version}"
 }
 
 processResources {

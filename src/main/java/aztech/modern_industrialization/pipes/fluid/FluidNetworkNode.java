@@ -198,4 +198,17 @@ public class FluidNetworkNode extends PipeNetworkNode {
         needsSync = false;
         return sync;
     }
+
+    // Used in the Waila plugin
+    public int getAmount() {
+        return amount;
+    }
+
+    public int getCapacity() {
+        return ((FluidNetwork) network).nodeCapacity;
+    }
+
+    public FluidKey getFluid() {
+        return ((FluidNetworkData) network.data).fluid;
+    }
 }

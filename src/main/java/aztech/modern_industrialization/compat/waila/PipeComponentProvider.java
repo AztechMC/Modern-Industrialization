@@ -1,0 +1,83 @@
+package aztech.modern_industrialization.compat.waila;
+
+import alexiil.mc.lib.attributes.fluid.volume.FluidKey;
+import aztech.modern_industrialization.pipes.MIPipes;
+import aztech.modern_industrialization.pipes.impl.PipeBlockEntity;
+import aztech.modern_industrialization.pipes.impl.PipeVoxelShape;
+import java.util.List;
+import mcp.mobius.waila.api.IComponentProvider;
+import mcp.mobius.waila.api.IDataAccessor;
+import mcp.mobius.waila.api.IPluginConfig;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.text.Style;
+import net.minecraft.text.Text;
+import net.minecraft.text.TextColor;
+import net.minecraft.text.TranslatableText;
+import net.minecraft.util.Formatting;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Box;
+import net.minecraft.util.math.Vec3d;
+import org.jetbrains.annotations.Nullable;
+
+/**
+ * Overrides the name of the pipes in Waila to prevent
+ * "block.modern_industrialization.pipe" being displayed.
+ */
+public class PipeComponentProvider implements IComponentProvider {
+    private @Nullable PipeVoxelShape getHitShape(IDataAccessor accessor) {
+        PipeBlockEntity pipe = (PipeBlockEntity) accessor.getBlockEntity();
+        Vec3d hitPos = accessor.getHitResult().getPos();
+        BlockPos blockPos = accessor.getPosition();
+        for (PipeVoxelShape partShape : pipe.getPartShapes()) {
+            Vec3d posInBlock = hitPos.subtract(blockPos.getX(), blockPos.getY(), blockPos.getZ());
+            for (Box box : partShape.shape.getBoundingBoxes()) {
+                // move slightly towards box center
+                Vec3d dir = box.getCenter().subtract(posInBlock).normalize().multiply(1e-4);
+                if (box.contains(posInBlock.add(dir))) {
+                    return partShape;
+                }
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public void appendHead(List<Text> tooltip, IDataAccessor accessor, IPluginConfig config) {
+        PipeVoxelShape shape = getHitShape(accessor);
+        if (shape != null) {
+            Text text = new TranslatableText(MIPipes.INSTANCE.getPipeItem(shape.type).getTranslationKey())
+                    .setStyle(Style.EMPTY.withColor(Formatting.WHITE));
+            tooltip.set(0, text);
+        }
+    }
+
+    @Override
+    public void appendBody(List<Text> tooltip, IDataAccessor accessor, IPluginConfig config) {
+        PipeVoxelShape shape = getHitShape(accessor);
+        if (shape != null) {
+            CompoundTag tag = accessor.getServerData().getCompound(shape.type.getIdentifier().toString());
+            Style style = Style.EMPTY.withColor(TextColor.fromRgb(0xa9a9a9)).withItalic(true);
+
+            if (tag.contains("fluid")) {
+                FluidKey fluid = FluidKey.fromTag(tag.getCompound("fluid"));
+                int amount = tag.getInt("amount");
+                int capacity = tag.getInt("capacity");
+                if (fluid.isEmpty()) {
+                    tooltip.add(new TranslatableText("text.modern_industrialization.fluid_slot_empty"));
+                } else {
+                    tooltip.add(fluid.name);
+                    String quantity = amount + " / " + capacity;
+                    tooltip.add(new TranslatableText("text.modern_industrialization.fluid_slot_quantity", quantity).setStyle(style));
+                }
+            }
+
+            if (tag.contains("eu")) {
+                long eu = tag.getLong("eu");
+                long maxEu = tag.getLong("maxEu");
+                String tier = tag.getString("tier");
+                tooltip.add(new TranslatableText("text.modern_industrialization.cable_tier_" + tier));
+                tooltip.add(new TranslatableText("text.modern_industrialization.energy_bar", eu, maxEu).setStyle(style));
+            }
+        }
+    }
+}

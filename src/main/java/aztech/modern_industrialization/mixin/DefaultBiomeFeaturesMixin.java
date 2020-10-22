@@ -23,6 +23,7 @@
  */
 package aztech.modern_industrialization.mixin;
 
+import aztech.modern_industrialization.MIConfig;
 import aztech.modern_industrialization.material.MIMaterialSetup;
 import net.minecraft.world.biome.GenerationSettings;
 import net.minecraft.world.gen.GenerationStep;
@@ -37,8 +38,10 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class DefaultBiomeFeaturesMixin {
     @Inject(method = "addDefaultOres(Lnet/minecraft/world/biome/GenerationSettings$Builder;)V", at = @At("TAIL"))
     private static void addDefaultOres(GenerationSettings.Builder builder, CallbackInfo ci) {
-        for (ConfiguredFeature<?, ?> ore_generator : MIMaterialSetup.ORE_GENERATORS.values()) {
-            builder.feature(GenerationStep.Feature.UNDERGROUND_ORES, ore_generator);
+        if (MIConfig.getConfig().generateOres) {
+            for (ConfiguredFeature<?, ?> oreGenerator : MIMaterialSetup.ORE_GENERATORS.values()) {
+                builder.feature(GenerationStep.Feature.UNDERGROUND_ORES, oreGenerator);
+            }
         }
     }
 }

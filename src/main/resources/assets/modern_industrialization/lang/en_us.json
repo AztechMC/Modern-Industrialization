@@ -524,6 +524,7 @@
     "modern_industrialization:quarry": "Quarry",
     "modern_industrialization:vacuum_freezer": "Vacuum Freezer",
     "modern_industrialization:wiremill": "Wiremill",
+    "text.autoconfig.modern_industrialization.option.generateOres": "Enable Ore Generation",
     "text.modern_industrialization.base_duration_seconds": "%.02f seconds",
     "text.modern_industrialization.base_eu_t": "%d EU/t",
     "text.modern_industrialization.base_eu_total": "%d Total EU",

@@ -29,6 +29,9 @@
       "aztech.modern_industrialization.compat.rei.fluid_fuels.FluidFuelsPlugin",
       "aztech.modern_industrialization.compat.rei.forgehammer_recipe.ForgeHammerRecipePlugin",
       "aztech.modern_industrialization.compat.rei.machine_recipe.MachineRecipePlugin"
+    ],
+    "modmenu": [
+      "aztech.modern_industrialization.compat.modmenu.MIModMenuEntrypoint"
     ]
   },
   "mixins": [

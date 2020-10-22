@@ -20,13 +20,13 @@
     },
     {
       "item": "modern_industrialization:lead_ore",
-      "amount": 10,
+      "amount": 5,
       "probability": 0.03
     },
     {
       "item": "modern_industrialization:nickel_ore",
-      "amount": 10,
-      "probability": 0.03
+      "amount": 5,
+      "probability": 0.02
     },
     {
       "item": "modern_industrialization:bauxite_ore",
@@ -36,7 +36,7 @@
     {
       "item": "modern_industrialization:salt_ore",
       "amount": 4,
-      "probability": 0.05
+      "probability": 0.03
     }
   ]
 }

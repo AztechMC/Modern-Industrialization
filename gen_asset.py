@@ -603,7 +603,7 @@ gen(
         "fluid_pipe": "modern_industrialization:pipe_fluid_copper",
         "cable": "modern_industrialization:pipe_electricity_copper",
     }),
-    '#ff6600', forge_hammer=True, veinsPerChunk=20, veinsSize=9, maxYLevel=128,
+    '#ff6600', forge_hammer=True, veinsPerChunk=30, veinsSize=9, maxYLevel=128,
 )
 gen(
     file,
@@ -729,7 +729,7 @@ gen(
         "ore": "c:salt_ores",
         "tiny_dust": "c:salt_tiny_dusts",
     }),
-    '#c7d6c5', isMetal=False, smelting=False, veinsPerChunk=8, veinsSize=7, maxYLevel=32
+    '#c7d6c5', isMetal=False, smelting=False, veinsPerChunk=2, veinsSize=7, maxYLevel=32
 )
 gen(
     file,

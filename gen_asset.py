@@ -653,7 +653,7 @@ gen(
     Material('lignite_coal', PURE_NON_METAL | {'lignite_coal'}, ORE_ONLY, overrides={
         'main': 'modern_industrialization:lignite_coal',
     }),
-    '#604020', forge_hammer=True, isMetal=False, veinsPerChunk=20, veinsSize=17, maxYLevel=128,
+    '#604020', forge_hammer=True, isMetal=False, veinsPerChunk=10, veinsSize=17, maxYLevel=128,
 )
 gen(
     file,

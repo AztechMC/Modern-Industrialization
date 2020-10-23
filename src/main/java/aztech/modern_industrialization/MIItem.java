@@ -27,13 +27,15 @@ import static aztech.modern_industrialization.nuclear.NuclearFuelType.*;
 
 import aztech.modern_industrialization.nuclear.NuclearCoolant;
 import aztech.modern_industrialization.nuclear.NuclearFuel;
-import java.util.HashMap;
+import java.util.SortedMap;
+import java.util.TreeMap;
+
 import net.minecraft.item.Item;
 
 public class MIItem extends Item {
 
     private String id;
-    public static HashMap<String, MIItem> items = new HashMap<String, MIItem>();
+    public static SortedMap<String, MIItem> items = new TreeMap<>();
 
     public MIItem(String id) {
         this(id, 64);

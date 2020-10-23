@@ -48,8 +48,8 @@ public class MIMaterial {
     private ArrayList<String> itemType = new ArrayList<String>();
     private ArrayList<String> blockType = new ArrayList<String>();
 
-    private Map<String, Item> itemMap = new HashMap<String, Item>();
-    private Map<String, Block> blockMap = new HashMap<String, Block>();
+    private Map<String, Item> itemMap = new TreeMap<>();
+    private Map<String, Block> blockMap = new TreeMap<String, Block>();
 
     public MIMaterial(String id, boolean isVanilla) {
         this.id = id;

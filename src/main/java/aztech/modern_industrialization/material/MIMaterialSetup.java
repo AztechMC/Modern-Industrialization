@@ -24,8 +24,9 @@
 package aztech.modern_industrialization.material;
 
 import aztech.modern_industrialization.MIIdentifier;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.TreeMap;
+
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricMaterialBuilder;
 import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
@@ -42,7 +43,7 @@ import net.minecraft.world.gen.feature.Feature;
 import net.minecraft.world.gen.feature.OreFeatureConfig;
 
 public class MIMaterialSetup {
-    public static final Map<Identifier, ConfiguredFeature<?, ?>> ORE_GENERATORS = new HashMap<>();
+    public static final Map<Identifier, ConfiguredFeature<?, ?>> ORE_GENERATORS = new TreeMap<>();
     // Materials
     public static final Material METAL_MATERIAL = new FabricMaterialBuilder(MaterialColor.IRON).build();
     public static final Material STONE_MATERIAL = new FabricMaterialBuilder(MaterialColor.STONE).build();

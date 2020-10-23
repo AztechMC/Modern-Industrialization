@@ -25,7 +25,9 @@ package aztech.modern_industrialization;
 
 import aztech.modern_industrialization.material.MIMaterialSetup;
 import aztech.modern_industrialization.util.MobSpawning;
-import java.util.HashMap;
+import java.util.SortedMap;
+import java.util.TreeMap;
+
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
 import net.minecraft.block.Block;
@@ -35,7 +37,7 @@ import net.minecraft.item.Item;
 public class MIBlock extends Block {
 
     private String id;
-    public static HashMap<String, MIBlock> blocks = new HashMap<String, MIBlock>();
+    public static SortedMap<String, MIBlock> blocks = new TreeMap<String, MIBlock>();
     private BlockItem blockItem;
 
     public MIBlock(String id, Settings settings) {

@@ -26,7 +26,6 @@ package aztech.modern_industrialization.material;
 import aztech.modern_industrialization.MIIdentifier;
 import java.util.Map;
 import java.util.TreeMap;
-
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricMaterialBuilder;
 import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;

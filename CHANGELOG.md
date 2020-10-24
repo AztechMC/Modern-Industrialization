@@ -1,3 +1,16 @@
+##### 0.3.0
+* Rewrite the pipe rendering
+* Add a Waila plugin for the pipes
+* Add a configurable chest
+* Incrase copper frequency
+* Add a config file to allow disabling the ore generation
+* Make the pipes movable with Carrier
+* Add auto-insert for hatches
+* Improve fluid rendering in the tanks and the pipes
+* Improve the REI plugin to show mb instead of Units
+* Improve tank and multiblock performance
+* Recolor wrench
+
 ##### 0.2.0
 * **HUGE UPDATE**
 * Added tons of content: electricity, oil processing, jetpack, better GUIs, ...

@@ -29,7 +29,6 @@ import aztech.modern_industrialization.nuclear.NuclearCoolant;
 import aztech.modern_industrialization.nuclear.NuclearFuel;
 import java.util.SortedMap;
 import java.util.TreeMap;
-
 import net.minecraft.item.Item;
 
 public class MIItem extends Item {

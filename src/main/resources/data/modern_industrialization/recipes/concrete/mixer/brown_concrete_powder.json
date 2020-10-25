@@ -1,0 +1,23 @@
+{
+  "type": "modern_industrialization:mixer",
+  "eu": 2,
+  "duration": 200,
+  "item_inputs": [
+    {
+      "item": "minecraft:sand",
+      "amount": 4
+	},
+    {
+      "item": "minecraft:gravel",
+      "amount": 4
+	},
+    {
+      "item": "minecraft:brown_dye",
+      "amount": 1
+	}
+  ],
+  "item_outputs": {
+    "item": "minecraft:brown_concrete_powder",
+    "amount": 1
+  }
+}

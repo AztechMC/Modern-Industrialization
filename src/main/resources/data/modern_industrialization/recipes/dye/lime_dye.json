@@ -1,0 +1,18 @@
+{
+  "type": "modern_industrialization:mixer",
+  "eu": 2,
+  "duration": 200,
+  "item_inputs": [{
+      "amount": 1,
+      "item" : "minecraft:green_dye"
+    },
+    {
+      "amount": 1,
+      "item" : "minecraft:white_dye"
+    }],
+
+  "item_outputs": {
+    "item": "minecraft:lime_dye",
+    "amount": 2
+  }
+}

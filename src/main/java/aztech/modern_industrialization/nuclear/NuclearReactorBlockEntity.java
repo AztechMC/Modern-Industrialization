@@ -148,10 +148,6 @@ public class NuclearReactorBlockEntity extends MultiblockMachineBlockEntity {
         return getMaxFluid(fluidKey, false);
     }
 
-    public void tickNuclearItemStack(ItemStack is) {
-
-    }
-
     @Override
     public void tick() {
         if (world.isClient)

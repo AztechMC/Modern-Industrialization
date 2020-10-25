@@ -45,7 +45,7 @@ public class NuclearFuel extends MINuclearItem {
 
     @Override
     public double getHeatProduction(ItemStack is, double neutronReceived) {
-        return type.heatProduction * multiplier * (1.0d + neutronReceived * 0.5) * (1 - (0.5 * getHeat(is)) / getMaxHeat());
+        return type.heatProduction * multiplier * (1.0d + (neutronReceived / multiplier) * 0.5) * (1 - (0.5 * getHeat(is)) / getMaxHeat());
     }
 
     @Override
@@ -72,10 +72,10 @@ public class NuclearFuel extends MINuclearItem {
     }
 
     @Override
-    public void tick(ItemStack is, NuclearReactorBlockEntity nuclearReactor, double neutronPulse, Random rand) {
+    public void tick(ItemStack is, NuclearReactorBlockEntity nuclearReactor, double neutronReceived, Random rand) {
         int damage = is.getDamage();
         damage += 1;
-        damage += NuclearReactorLogic.doubleToInt(neutronPulse * 0.1, rand);
+        damage += NuclearReactorLogic.doubleToInt(neutronReceived * 0.2 / multiplier, rand);
         is.setDamage(Math.min(this.getDurability(), damage));
 
     }

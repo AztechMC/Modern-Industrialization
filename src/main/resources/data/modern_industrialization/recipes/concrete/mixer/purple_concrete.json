@@ -8,7 +8,7 @@
   },
   "fluid_inputs": {
     "fluid": "minecraft:water",
-    "amount": 162
+    "amount": 1000
   },
   "item_outputs": {
     "item": "minecraft:purple_concrete",

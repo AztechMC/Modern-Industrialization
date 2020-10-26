@@ -1,6 +1,9 @@
 
 package aztech.modern_industrialization.material;
 
+/**
+ * This is auto-generated, don't edit by hand!
+ */
 public class MIOreGenerators {
     public boolean generateAntimony = true;
     public boolean generateBauxite = true;

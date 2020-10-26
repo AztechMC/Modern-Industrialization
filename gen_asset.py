@@ -838,6 +838,9 @@ ore_config.sort()
 ore_config_class = """
 package aztech.modern_industrialization.material;
 
+/**
+ * This is auto-generated, don't edit by hand!
+ */
 public class MIOreGenerators {
 """
 ore_config_class += ''.join([ "    public boolean %s = true;\n" % ore_config_entry for ore_config_entry in ore_config ])

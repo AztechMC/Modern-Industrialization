@@ -125,7 +125,7 @@ spotless {
         endWithNewline()
     }
     java {
-        targetExclude '**/MIFluids.java', '**/MIMaterials.java', '**/MITags.java'
+        targetExclude '**/MIFluids.java', '**/MIMaterials.java', '**/MIOreGenerators.java', '**/MITags.java'
 
         importOrder()
 

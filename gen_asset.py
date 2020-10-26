@@ -56,6 +56,9 @@ def gen_name(ty):
             name = clean(id) + " " + clean(block)
         lang_json[lang_id] = name
 
+        if block == "ore":
+            lang_json['text.autoconfig.modern_industrialization.option.ores.generate%s' % id.replace('_', ' ').title().replace(' ', '')] = "Generate " + clean(id) + " Ore"
+
     with open('src/main/resources/assets/modern_industrialization/lang/en_us.json', 'w') as lang_file:
         json.dump(lang_json, lang_file, indent=4, sort_keys=True)
         lang_file.close()
@@ -414,6 +417,7 @@ def genAssembler(ty, tyo):
         tyo["ring"], amount=1).output(ty["rotor"]).save(ty.id, "rotor")
 
 material_lines = []
+ore_config = []
 
 
 def gen(file, ty, hex, vanilla=False, forge_hammer=False, smelting=True, isMetal=True, veinsPerChunk=0, veinsSize=0, maxYLevel=64, macerator_disable={}):
@@ -432,8 +436,10 @@ def gen(file, ty, hex, vanilla=False, forge_hammer=False, smelting=True, isMetal
         line += ".addBlockType(new String [] { %s })" % block_to_add
 
     if 'ore' in ty.mi_blocks:
-        line += '.setupOreGenerator(%d, %d, %d)' % (veinsPerChunk,
-                                                    veinsSize, maxYLevel)
+        config_field = 'generate' + ty.id.replace('_', ' ').title().replace(' ', '')
+        line += '.setupOreGenerator(%d, %d, %d, MIConfig.getConfig().ores.%s)' % (veinsPerChunk,
+                                                    veinsSize, maxYLevel, config_field)
+        ore_config.append(config_field)
 
     gen_name(ty)
 
@@ -538,6 +544,8 @@ class Material:
 file = open(
     "src/main/java/aztech/modern_industrialization/material/MIMaterials.java", "w")
 file.write("""package aztech.modern_industrialization.material;
+
+import aztech.modern_industrialization.MIConfig;
 
 public class MIMaterials {
 
@@ -825,3 +833,14 @@ java_class += """
 """
 with open("src/main/java/aztech/modern_industrialization/MITags.java", "w") as f:
     f.write(java_class)
+
+ore_config.sort()
+ore_config_class = """
+package aztech.modern_industrialization.material;
+
+public class MIOreGenerators {
+"""
+ore_config_class += ''.join([ "    public boolean %s = true;\n" % ore_config_entry for ore_config_entry in ore_config ])
+ore_config_class += '}\n'
+with open("src/main/java/aztech/modern_industrialization/material/MIOreGenerators.java", "w") as f:
+    f.write(ore_config_class)

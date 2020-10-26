@@ -23,6 +23,7 @@
  */
 package aztech.modern_industrialization;
 
+import aztech.modern_industrialization.material.MIOreGenerators;
 import me.sargunvohra.mcmods.autoconfig1u.AutoConfig;
 import me.sargunvohra.mcmods.autoconfig1u.ConfigData;
 import me.sargunvohra.mcmods.autoconfig1u.annotation.Config;
@@ -32,6 +33,9 @@ import me.sargunvohra.mcmods.autoconfig1u.serializer.Toml4jConfigSerializer;
 @Config(name = "modern_industrialization")
 public class MIConfig implements ConfigData {
     public boolean generateOres = true;
+
+    @ConfigEntry.Gui.CollapsibleObject
+    public MIOreGenerators ores = new MIOreGenerators();
 
     @ConfigEntry.Gui.Excluded
     private transient static boolean registered = false;

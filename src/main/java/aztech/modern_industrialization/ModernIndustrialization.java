@@ -75,8 +75,6 @@ import net.minecraft.util.registry.Registry;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-//import aztech.modern_industrialization.machines.impl.SteamBoilerScreenHandler;
-
 public class ModernIndustrialization implements ModInitializer {
 
     public static final int FLAG_BLOCK_LOOT = 1;
@@ -161,8 +159,8 @@ public class ModernIndustrialization implements ModInitializer {
 
         registerItem(ITEM_WRENCH, "wrench");
         registerItem(ITEM_JETPACK, "jetpack");
-        registerItem(ITEM_DIESEL_CHAINSAW, "diesel_chainsaw");
-        registerItem(ITEM_DIESEL_DRILL, "diesel_mining_drill");
+        registerItem(ITEM_DIESEL_CHAINSAW, "diesel_chainsaw", true);
+        registerItem(ITEM_DIESEL_DRILL, "diesel_mining_drill", true);
     }
 
     private void setupBlocks() {
@@ -248,10 +246,16 @@ public class ModernIndustrialization implements ModInitializer {
 
     }
 
-    public static void registerItem(Item item, String id) {
+    public static void registerItem(Item item, String id, boolean handheld) {
         Registry.register(Registry.ITEM, new MIIdentifier(id), item);
-        RESOURCE_PACK.addModel(JModel.model().parent("minecraft:item/generated").textures(new JTextures().layer0(MOD_ID + ":items/" + id)),
+        RESOURCE_PACK.addModel(JModel.model()
+                        .parent(handheld ? "minecraft:item/handheld" : "minecraft:item/generated")
+                        .textures(new JTextures().layer0(MOD_ID + ":items/" + id)),
                 new MIIdentifier("item/" + id));
+    }
+
+    public static void registerItem(Item item, String id) {
+        registerItem(item, id, false);
     }
 
     private static void registerBlockLoot(String id) {

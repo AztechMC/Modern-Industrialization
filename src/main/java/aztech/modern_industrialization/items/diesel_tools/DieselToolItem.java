@@ -114,11 +114,6 @@ public class DieselToolItem extends Item
     }
 
     @Override
-    public boolean hasGlint(ItemStack stack) {
-        return false;
-    }
-
-    @Override
     public double getDurabilityBarProgress(ItemStack stack) {
         return 1.0 - (double) FluidFuelItemHelper.getAmount(stack) / CAPACITY;
     }
@@ -144,9 +139,12 @@ public class DieselToolItem extends Item
     @Override
     public TypedActionResult<ItemStack> use(World world, PlayerEntity user, Hand hand) {
         // Toggle between silk touch and fortune
-        ItemStack stack = user.getStackInHand(hand);
-        setFortune(stack, !isFortune(stack));
-        return TypedActionResult.method_29237(stack, world.isClient);
+        if (user.isSneaking()) {
+            ItemStack stack = user.getStackInHand(hand);
+            setFortune(stack, !isFortune(stack));
+            return TypedActionResult.method_29237(stack, world.isClient);
+        }
+        return super.use(world, user, hand);
     }
 
     @Override

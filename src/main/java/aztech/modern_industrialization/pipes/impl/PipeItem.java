@@ -90,6 +90,7 @@ public class PipeItem extends Item {
                     BlockSoundGroup group = newState.getSoundGroup();
                     world.playSound(context.getPlayer(), placingPos, group.getPlaceSound(), SoundCategory.BLOCKS, (group.getVolume() + 1.0F) / 2.0F,
                             group.getPitch() * 0.8F);
+                    return ActionResult.success(world.isClient);
                 }
             }
         }

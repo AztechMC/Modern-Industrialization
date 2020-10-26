@@ -116,7 +116,7 @@ public class PipeBlockEntity extends BlockEntity
     boolean canAddPipe(PipeNetworkType type) {
         loadPipes();
         if (world.isClient) {
-            return pipes.size() < MAX_PIPES && !connections.containsKey(type);
+            return connections.size() < MAX_PIPES && !connections.containsKey(type);
         } else {
             if (pipes.size() == MAX_PIPES)
                 return false;

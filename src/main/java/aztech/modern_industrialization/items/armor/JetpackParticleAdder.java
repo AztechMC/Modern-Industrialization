@@ -23,6 +23,7 @@
  */
 package aztech.modern_industrialization.items.armor;
 
+import aztech.modern_industrialization.items.FluidFuelItemHelper;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 import net.minecraft.client.MinecraftClient;
@@ -38,7 +39,7 @@ public class JetpackParticleAdder {
                 ItemStack chest = player.getEquippedStack(EquipmentSlot.CHEST);
                 if (chest.getItem() instanceof JetpackItem) {
                     JetpackItem jetpack = (JetpackItem) chest.getItem();
-                    if (jetpack.showParticles(chest) && jetpack.getAmount(chest) > 0) {
+                    if (jetpack.showParticles(chest) && FluidFuelItemHelper.getAmount(chest) > 0) {
                         Random r = ThreadLocalRandom.current();
                         for (int i = 0; i < 20; ++i) {
                             client.world.addParticle(ParticleTypes.FLAME, player.getX(), player.getY() + 1.0, player.getZ(), r.nextFloat() - 0.5, -5,

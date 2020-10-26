@@ -34,6 +34,7 @@ import aztech.modern_industrialization.inventory.ConfigurableInventoryPackets;
 import aztech.modern_industrialization.items.armor.ArmorPackets;
 import aztech.modern_industrialization.items.armor.JetpackItem;
 import aztech.modern_industrialization.items.armor.MIKeyMap;
+import aztech.modern_industrialization.items.diesel_tools.DieselToolItem;
 import aztech.modern_industrialization.machines.MIMachines;
 import aztech.modern_industrialization.machines.impl.MachineBlock;
 import aztech.modern_industrialization.machines.impl.MachineFactory;
@@ -96,6 +97,8 @@ public class ModernIndustrialization implements ModInitializer {
     // Item
     public static final Item ITEM_WRENCH = new WrenchItem(new Item.Settings());
     public static final JetpackItem ITEM_JETPACK = new JetpackItem(new Item.Settings().group(ITEM_GROUP));
+    public static final DieselToolItem ITEM_DIESEL_CHAINSAW = new DieselToolItem(new Item.Settings().group(ITEM_GROUP));
+    public static final DieselToolItem ITEM_DIESEL_DRILL = new DieselToolItem(new Item.Settings().group(ITEM_GROUP));
 
     // Block
     public static final Block FORGE_HAMMER = new ForgeHammerBlock();
@@ -158,6 +161,8 @@ public class ModernIndustrialization implements ModInitializer {
 
         registerItem(ITEM_WRENCH, "wrench");
         registerItem(ITEM_JETPACK, "jetpack");
+        registerItem(ITEM_DIESEL_CHAINSAW, "diesel_chainsaw");
+        registerItem(ITEM_DIESEL_DRILL, "diesel_mining_drill");
     }
 
     private void setupBlocks() {

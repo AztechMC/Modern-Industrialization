@@ -23,6 +23,7 @@
  */
 package aztech.modern_industrialization.items.armor;
 
+import aztech.modern_industrialization.items.FluidFuelItemHelper;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
@@ -47,7 +48,7 @@ public class HudRenderer {
                         .setStyle(Style.EMPTY.withColor(active ? Formatting.GREEN : Formatting.RED));
                 mc.textRenderer.drawWithShadow(matrices, activeText, 4, 4, 16383998);
                 Text fillText = new TranslatableText("text.modern_industrialization.jetpack_fill",
-                        jetpack.getAmount(chest) * 100 / jetpack.getCapacity());
+                        FluidFuelItemHelper.getAmount(chest) * 100 / JetpackItem.CAPACITY);
                 mc.textRenderer.drawWithShadow(matrices, fillText, 4, 14, 16383998);
             }
         }

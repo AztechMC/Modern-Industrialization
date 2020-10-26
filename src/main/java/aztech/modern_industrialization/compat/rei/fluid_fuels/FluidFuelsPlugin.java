@@ -59,7 +59,7 @@ public class FluidFuelsPlugin implements REIPluginV0 {
     @Override
     public void registerOthers(RecipeHelper recipeHelper) {
         List<Item> workstations = Arrays.asList(MIMachines.DIESEL_GENERATOR.item, MIMachines.LARGE_STEAM_BOILER.item,
-                ModernIndustrialization.ITEM_JETPACK);
+                ModernIndustrialization.ITEM_JETPACK, ModernIndustrialization.ITEM_DIESEL_CHAINSAW, ModernIndustrialization.ITEM_DIESEL_DRILL);
         for (Item item : workstations) {
             recipeHelper.registerWorkingStations(CATEGORY, EntryStack.create(item));
         }

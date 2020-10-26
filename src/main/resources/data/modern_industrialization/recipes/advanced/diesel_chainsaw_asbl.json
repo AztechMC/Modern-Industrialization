@@ -1,0 +1,22 @@
+{
+  "type" : "minecraft:crafting_shaped",
+  "pattern" : [
+    "  r",
+    "Mr ",
+    "tM "
+  ],
+  "key" : {
+    "M": {
+      "item" : "modern_industrialization:large_motor"
+    },
+    "r" : {
+      "item" : "modern_industrialization:invar_rotary_blade"
+    },
+    "t" : {
+      "item" : "modern_industrialization:tank_aluminum"
+    }
+  },
+  "result": {
+    "item" : "modern_industrialization:diesel_chainsaw"
+  }
+}

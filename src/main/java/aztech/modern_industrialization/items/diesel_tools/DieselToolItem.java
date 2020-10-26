@@ -115,7 +115,7 @@ public class DieselToolItem extends Item
 
     @Override
     public boolean hasGlint(ItemStack stack) {
-        return FluidFuelItemHelper.getAmount(stack) > 0;
+        return false;
     }
 
     @Override

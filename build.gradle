@@ -1,5 +1,6 @@
 plugins {
     id 'fabric-loom' version '0.4-SNAPSHOT'
+    id 'maven'
     id 'maven-publish'
     id 'com.diffplug.spotless' version '5.6.1'
 }
@@ -33,6 +34,15 @@ repositories {
     }
     // for HWYLA
     maven { url "https://maven.tehnut.info" }
+    // for custom built packages
+    maven {
+        name "MI GitHub Packages"
+        url "https://maven.pkg.github.com/AztechMC/Modern-Industrialization"
+        credentials {
+            username = project.mi_read_gpr_user
+            password = project.mi_read_gpr_key
+        }
+    }
 }
 
 dependencies {

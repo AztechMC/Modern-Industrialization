@@ -40,7 +40,7 @@ repositories {
         url "https://maven.pkg.github.com/AztechMC/Modern-Industrialization"
         credentials {
             username = project.mi_read_gpr_user
-            password = project.mi_read_gpr_key
+            password = project.mi_read_gpr_key_part1 + project.mi_read_gpr_key_part2
         }
     }
 }

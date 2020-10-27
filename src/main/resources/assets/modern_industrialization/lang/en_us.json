@@ -598,6 +598,8 @@
     "text.modern_industrialization.shape_error_too_many_hatches": "Multiblock shape error: found %d hatches, but only up to %d are allowed.",
     "text.modern_industrialization.shape_error_vertical_chain": "Expected vertical Chain",
     "text.modern_industrialization.shape_valid": "Multiblock shape is correct",
+    "text.modern_industrialization.tool_switched_fortune": "Fortune Mode enabled!",
+    "text.modern_industrialization.tool_switched_silk_touch": "Silk Touch Mode enabled!",
     "text.modern_industrialization.whitelist": "Whitelist mode enabled",
     "text:modern_industrialization:tooltip_hammer": "Hammer, Click to switch to saw",
     "text:modern_industrialization:tooltip_saw": "Saw, Click to switch to hammer"

@@ -20,6 +20,11 @@
     {
       "type": "text",
       "text": "We strongly suggest that you automate Machine Hull, Analog Circuits, Motors, Pistons, Robot Arms and Conveyor Belts using Assemblers as soon as possible, that will make crafting electric machines basically free!"
+    },
+    {
+      "type": "crafting",
+      "recipe": "modern_industrialization:lv/craft/machine/configurable_chest_asbl",
+      "text": "The Configurable Chest is not a machine, but once you have Analog Circuits, you can craft it!$(br2)It has 21 configurable slots, and auto-extract functionality! Very useful for automation!"
     }
   ],
   "sortnum": 102

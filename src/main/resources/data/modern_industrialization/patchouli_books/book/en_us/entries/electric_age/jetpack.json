@@ -1,5 +1,5 @@
 {
-  "name": "Diesel Jetpack",
+  "name": "Diesel Jetpack and Tools",
   "category": "modern_industrialization:electric_age",
   "icon": "modern_industrialization:jetpack",
   "pages": [
@@ -7,6 +7,16 @@
       "type": "crafting",
       "recipe": "modern_industrialization:advanced/jetpack_asbl",
       "text": "Jetpack go brrr... The more powerful the fuel, the faster the jetpack!$(br2)Don't forget to activate it using the $(o)Toggle Flight$() keybinding!"
+    },
+    {
+      "type": "crafting",
+      "recipe": "modern_industrialization:advanced/diesel_mining_drill_asbl",
+      "text": "This Mining Drill can finally replace your Pickaxes and Shovels. Fill it with powerful fuel for the best speed!$(br2)Toggle between Silk Touch and Fortune III with shift right-click."
+    },
+    {
+      "type": "crafting",
+      "recipe": "modern_industrialization:advanced/diesel_chainsaw_asbl",
+      "text": "Cutting down trees in style!"
     }
   ],
   "sortnum": 108

@@ -19,6 +19,11 @@
       "type": "crafting",
       "recipe": "modern_industrialization:machine/steel/packer_asbl",
       "text": "The Packer, a new machine only available in steel, can perform simple crafts for you. You can now automate double ingots and pipes, for example! Again, check REI."
+    },
+    {
+      "type": "crafting",
+      "recipe": "modern_industrialization:trash_can",
+      "text": "With a few steel plates, you can now craft a very useful block!$(br2)The Automatic Trash Can will destroy any item or fluid that is piped into it!"
     }
   ],
   "sortnum": 11

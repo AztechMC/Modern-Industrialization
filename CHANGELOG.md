@@ -1,3 +1,11 @@
+##### 0.3.1
+* Add diesel Chainsaw and Mining Drill
+* Add useful machine recipes: concrete (thanks Emi!), dye, glowstone, redstone, bone meal
+* Add more granular oregen config
+* Update the guidebook for diesel tools, configurable chests and trash cans
+* Update LBA to fix an item pipe transfer bug
+* Fix a pipe placement bug
+
 ##### 0.3.0
 * Rewrite the pipe rendering
 * Add a Waila plugin for the pipes

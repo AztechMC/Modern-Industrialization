@@ -1,0 +1,17 @@
+{
+  "type": "modern_industrialization:mixer",
+  "eu": 2,
+  "duration": 2400,
+  "item_inputs": {
+    "item": "minecraft:stone",
+    "amount": 1
+  },
+  "fluid_inputs": {
+    "fluid": "minecraft:lava",
+    "amount": 1000
+  },
+  "fluid_outputs": {
+    "fluid": "minecraft:lava",
+    "amount": 1500
+  }
+}

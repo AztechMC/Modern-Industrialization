@@ -1,3 +1,6 @@
+##### 0.3.2
+* Add KubeJS `replaceOutputs` support for custom recipes
+
 ##### 0.3.1
 * Add diesel Chainsaw and Mining Drill
 * Add useful machine recipes: concrete (thanks Emi!), dye, glowstone, redstone, bone meal

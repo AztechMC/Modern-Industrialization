@@ -34,6 +34,10 @@ repositories {
     }
     // for HWYLA
     maven { url "https://maven.tehnut.info" }
+    // for KJS
+    maven {
+        url 'https://jitpack.io'
+    }
     // for custom built packages
     maven {
         name "MI GitHub Packages"
@@ -71,6 +75,7 @@ dependencies {
     modImplementation "me.sargunvohra.mcmods:autoconfig1u:${project.auto_config_version}"
     include "me.sargunvohra.mcmods:autoconfig1u:${project.auto_config_version}"
     modImplementation "io.github.prospector:modmenu:${project.mod_menu_version}"
+    modImplementation "com.github.KubeJS-Mods:KubeJS-Fabric:${project.kjs_commit}"
 }
 
 processResources {

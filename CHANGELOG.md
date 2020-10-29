@@ -1,5 +1,6 @@
 ##### 0.3.2
 * Add KubeJS `replaceOutputs` support for custom recipes
+* Add Tech Reborn, Industrial Revolution and AE2 compat recipes
 
 ##### 0.3.1
 * Add diesel Chainsaw and Mining Drill

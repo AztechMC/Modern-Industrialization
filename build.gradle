@@ -33,8 +33,21 @@ repositories {
         url "https://maven.siphalor.de"
     }
     // for HWYLA
-    maven { url "https://maven.tehnut.info" }
-    // for KJS
+    maven {
+        url "https://maven.tehnut.info"
+        content {
+            includeGroup "mcp.mobius.waila"
+        }
+    }
+    // for AE2
+    maven {
+        name "Modmaven"
+        url "https://modmaven.k-4u.nl"
+        content {
+            includeGroup "appeng"
+        }
+    }
+    // for KJS and indrev
     maven {
         url 'https://jitpack.io'
     }
@@ -69,13 +82,14 @@ dependencies {
     include "me.shedaniel.cloth.api:cloth-armor-api-v1:${project.cloth_api_version}"
     include "me.shedaniel.cloth.api:cloth-common-events-v1:${project.cloth_api_version}"
     include "me.shedaniel.cloth.api:cloth-durability-bar-api-v1:${project.cloth_api_version}"
-    modImplementation "de.siphalor:nbtcrafting-${project.nbt_crafting_version}"
+    modRuntime "de.siphalor:nbtcrafting-${project.nbt_crafting_version}"
     include "de.siphalor:nbtcrafting-${project.nbt_crafting_version}"
     modImplementation "mcp.mobius.waila:Hwyla:${project.hwyla_version}"
     modImplementation "me.sargunvohra.mcmods:autoconfig1u:${project.auto_config_version}"
     include "me.sargunvohra.mcmods:autoconfig1u:${project.auto_config_version}"
     modImplementation "io.github.prospector:modmenu:${project.mod_menu_version}"
     modImplementation "com.github.KubeJS-Mods:KubeJS-Fabric:${project.kjs_commit}"
+    //modRuntime "appeng:appliedenergistics2-fabric:${project.appeng_version}"
 }
 
 processResources {

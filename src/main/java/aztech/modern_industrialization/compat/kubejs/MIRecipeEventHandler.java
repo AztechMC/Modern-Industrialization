@@ -30,18 +30,35 @@ import com.google.gson.JsonObject;
 import dev.latvian.kubejs.KubeJSInitializer;
 import dev.latvian.kubejs.item.ItemStackJS;
 import dev.latvian.kubejs.recipe.RecipeJS;
+import dev.latvian.kubejs.recipe.RecipeTypeJS;
 import dev.latvian.kubejs.recipe.RegisterRecipeHandlersEvent;
 import dev.latvian.kubejs.util.ListJS;
+import dev.latvian.kubejs.util.UtilsJS;
+import java.util.Objects;
+import java.util.function.Supplier;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
+import org.jetbrains.annotations.NotNull;
 
 public class MIRecipeEventHandler implements KubeJSInitializer {
     @Override
     public void onKubeJSInitialization() {
         RegisterRecipeHandlersEvent.EVENT.register(event -> {
-            MIMachines.RECIPE_TYPES.keySet().forEach(t -> event.register(t.getId().toString(), MachineRecipe::new));
-            event.register("modern_industrialization:forge_hammer_hammer", MachineRecipe::new);
-            event.register("modern_industrialization:forge_hammer_saw", MachineRecipe::new);
+            MIMachines.RECIPE_TYPES.keySet().forEach(t -> event.register(new MachineRecipeType(t.getId().toString(), MachineRecipe::new)));
+            event.register(new MachineRecipeType("modern_industrialization:forge_hammer_hammer", MachineRecipe::new));
+            event.register(new MachineRecipeType("modern_industrialization:forge_hammer_saw", MachineRecipe::new));
         });
+    }
+
+    private static class MachineRecipeType extends RecipeTypeJS {
+        public MachineRecipeType(String id, Supplier<RecipeJS> f) {
+            super(Objects.requireNonNull(Registry.RECIPE_SERIALIZER.get(UtilsJS.getMCID(id))), id, f);
+        }
+
+        @Override
+        public boolean isCustom() {
+            return true;
+        }
     }
 
     private static class MachineRecipe extends RecipeJS {
@@ -52,8 +69,8 @@ public class MIRecipeEventHandler implements KubeJSInitializer {
         private JsonElement fluidInputs, fluidOutputs;
 
         @Override
-        public void create(ListJS listJS) {
-            throw new UnsupportedOperationException("Sorry, creation of MI recipes is not (yet) supported.");
+        public void create(@NotNull ListJS listJS) {
+            throw new UnsupportedOperationException("MachineRecipe#create should never be called");
         }
 
         @Override
@@ -76,6 +93,12 @@ public class MIRecipeEventHandler implements KubeJSInitializer {
                     itemOutputProbabilities = new float[1];
                     readItemOutput(o, 0);
                 }
+            }
+
+            if (json.has("id")) {
+                id = new Identifier(json.get("id").getAsString());
+            } else if (id == null) {
+                throw new RuntimeException("You must specify an id for custom MI recipes! Recipe: " + json.toString());
             }
         }
 

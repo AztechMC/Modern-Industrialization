@@ -145,7 +145,11 @@ public class ConfigurableItemStack {
     }
 
     public boolean canInsert(ItemStack stack) {
-        return lockedItem == null || lockedItem == stack.getItem();
+        return canInsert(stack.getItem());
+    }
+
+    public boolean canInsert(Item item) {
+        return lockedItem == null || lockedItem == item;
     }
 
     public boolean isPlayerLocked() {

@@ -32,6 +32,7 @@ import aztech.modern_industrialization.machines.MIMachines;
 import aztech.modern_industrialization.machines.impl.MachineFactory;
 import aztech.modern_industrialization.machines.impl.multiblock.MultiblockMachineBlockEntity;
 import aztech.modern_industrialization.machines.impl.multiblock.MultiblockShape;
+import aztech.modern_industrialization.util.ItemStackHelper;
 import net.fabricmc.fabric.impl.content.registry.FuelRegistryImpl;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.Direction;
@@ -66,12 +67,12 @@ public class LargeSteamBoilerBlockEntity extends MultiblockMachineBlockEntity {
             if (usedEnergy == 0) {
                 for (ConfigurableItemStack stack : getItemInputStacks()) {
                     ItemStack fuel = stack.getStack();
-                    if (fuel.getCount() > 0) {
+                    if (ItemStackHelper.consumeFuel(stack, true)) {
                         Integer fuelTime = FuelRegistryImpl.INSTANCE.get(fuel.getItem());
                         if (fuelTime != null && fuelTime > 0) {
                             recipeEnergy = fuelTime / 8;
                             usedEnergy = recipeEnergy;
-                            fuel.decrement(1);
+                            ItemStackHelper.consumeFuel(stack, false);
                             break;
                         }
                     }

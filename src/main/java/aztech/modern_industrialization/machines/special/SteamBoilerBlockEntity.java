@@ -25,9 +25,11 @@ package aztech.modern_industrialization.machines.special;
 
 import alexiil.mc.lib.attributes.fluid.volume.FluidKeys;
 import aztech.modern_industrialization.inventory.ConfigurableFluidStack;
+import aztech.modern_industrialization.inventory.ConfigurableItemStack;
 import aztech.modern_industrialization.machines.impl.MachineBlockEntity;
 import aztech.modern_industrialization.machines.impl.MachineFactory;
 import aztech.modern_industrialization.machines.impl.MachineTier;
+import aztech.modern_industrialization.util.ItemStackHelper;
 import net.fabricmc.fabric.impl.content.registry.FuelRegistryImpl;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.Direction;
@@ -63,13 +65,14 @@ public class SteamBoilerBlockEntity extends MachineBlockEntity {
 
         this.isActive = false;
         if (usedEnergy == 0) {
-            ItemStack fuel = getItemStacks().get(0).getStack();
-            if (fuel.getCount() > 0) {
+            ConfigurableItemStack stack = getItemStacks().get(0);
+            ItemStack fuel = stack.getStack();
+            if (ItemStackHelper.consumeFuel(stack, true)) {
                 Integer fuelTime = FuelRegistryImpl.INSTANCE.get(fuel.getItem());
                 if (fuelTime != null && fuelTime > 0) {
                     recipeEnergy = fuelTime * BURN_TIME_MULTIPLIER;
                     usedEnergy = recipeEnergy;
-                    fuel.decrement(1);
+                    ItemStackHelper.consumeFuel(stack, false);
                 }
             }
         }

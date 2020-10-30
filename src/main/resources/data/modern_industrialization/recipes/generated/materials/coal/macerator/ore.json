@@ -4,7 +4,7 @@
     "duration": 200,
     "item_inputs": [
         {
-            "item": "minecraft:coal_ore",
+            "tag": "c:coal_ores",
             "amount": 1
         }
     ],

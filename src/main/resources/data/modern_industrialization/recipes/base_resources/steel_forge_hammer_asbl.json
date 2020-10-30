@@ -7,10 +7,10 @@
   ],
   "key": {
     "I": {
-      "item": "modern_industrialization:steel_block"
+      "tag": "c:steel_blocks"
     },
     "i": {
-      "item": "modern_industrialization:steel_ingot"
+      "tag": "c:steel_ingots"
     }
   },
   "result": {

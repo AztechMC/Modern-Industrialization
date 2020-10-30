@@ -2,6 +2,8 @@
     "replace": false,
     "values": [
         "minecraft:gold_ore",
+        "minecraft:iron_ore",
+        "minecraft:coal_ore",
         "modern_industrialization:copper_ore",
         "modern_industrialization:tin_ore",
         "modern_industrialization:bauxite_ore",

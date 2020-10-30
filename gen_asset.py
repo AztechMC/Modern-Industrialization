@@ -107,6 +107,7 @@ def gen_texture(id, hex, item_set, block_set, special_texture=''):
 loaded_items = {'modern_industrialization:rubber_sheet'}
 tags = defaultdict(lambda: [])
 tags["c:gold_ores"].append("#minecraft:gold_ores")
+tags["c:redstone_ores"].append("minecraft:redstone_ores")
 tags["c:ruby_dusts"].append("modern_industrialization:ruby_dust")
 
 # check if the item json is valid based on the loaded items
@@ -587,6 +588,7 @@ gen(
         "item_pipe": "modern_industrialization:pipe_item_iron",
         "fluid_pipe": "modern_industrialization:pipe_fluid_iron",
     }, oredicted={
+        "ore": "c:iron_ores",
         "plate": "c:iron_plates",
         "dust": "c:iron_dusts",
         "tiny_dust": "c:iron_tiny_dusts",
@@ -599,6 +601,7 @@ gen(
         "main": "minecraft:coal",
         "ore": "minecraft:coal_ore",
     }, oredicted={
+        "ore": "c:coal_ores",
         "dust": "c:coal_dusts",
         "tiny_dust": "c:coal_tiny_dusts",
     }),

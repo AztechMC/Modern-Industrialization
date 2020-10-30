@@ -68,8 +68,8 @@ dependencies {
     modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
-    modImplementation 'net.devtech:arrp:0.2.6'
-    include "net.devtech:arrp:0.2.6"
+    modImplementation "net.devtech:arrp:${project.arrp_version}"
+    include "net.devtech:arrp:${project.arrp_version}"
     modImplementation "io.github.onyxstudios:Cardinal-Components-API:${project.cardinal_components_version}"
     include "io.github.onyxstudios:Cardinal-Components-API:${project.cardinal_components_version}"
     modImplementation "me.shedaniel:RoughlyEnoughItems:${project.rei_version}"

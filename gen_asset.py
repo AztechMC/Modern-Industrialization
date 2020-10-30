@@ -107,7 +107,7 @@ def gen_texture(id, hex, item_set, block_set, special_texture=''):
 loaded_items = {'modern_industrialization:rubber_sheet'}
 tags = defaultdict(lambda: [])
 tags["c:gold_ores"].append("#minecraft:gold_ores")
-tags["c:redstone_ores"].append("minecraft:redstone_ores")
+tags["c:redstone_ores"].append("minecraft:redstone_ore")
 tags["c:ruby_dusts"].append("modern_industrialization:ruby_dust")
 
 # check if the item json is valid based on the loaded items

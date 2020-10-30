@@ -4,11 +4,11 @@
     "duration": 200,
     "item_inputs": [
         {
-            "item": "modern_industrialization:steel_block",
+            "tag": "c:steel_blocks",
             "amount": 5
         },
         {
-            "item": "modern_industrialization:steel_ingot",
+            "tag": "c:steel_ingots",
             "amount": 4
         }
     ],

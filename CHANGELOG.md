@@ -1,6 +1,7 @@
 ##### 0.3.2
 * Add KubeJS `replaceOutputs` support for custom recipes
-* Add Tech Reborn, Industrial Revolution and AE2 compat recipes
+* Add Tech Reborn, Industrial Revolution, AE2 and Astromine compat recipes
+* Make the boilers give back an empty bucket when they consume a lava bucket
 
 ##### 0.3.1
 * Add diesel Chainsaw and Mining Drill

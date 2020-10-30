@@ -146,14 +146,16 @@ events.listen('recipes', function (event) {
         })
 
         miCurvedPlates.forEach(function (plate) {
-            event.recipes.indrev.compress({
-                ingredients: { tag: 'c:' + plate + '_plates' },
-                output: {
-                    item: 'modern_industrialization:' + plate + '_curved_plate',
-                    count: 1
-                },
-                processTime: 300
-            })
+            if (plate !== "tin") { // No tin because it conflicts with IR's upgrades (4 plates in a compressor)
+                event.recipes.indrev.compress({
+                    ingredients: {tag: 'c:' + plate + '_plates'},
+                    output: {
+                        item: 'modern_industrialization:' + plate + '_curved_plate',
+                        count: 1
+                    },
+                    processTime: 300
+                })
+            }
         })
     }
 

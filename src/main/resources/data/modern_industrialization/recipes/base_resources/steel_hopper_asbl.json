@@ -10,7 +10,7 @@
       "item": "minecraft:chest"
     },
     "p": {
-      "item": "modern_industrialization:steel_plate"
+      "tag": "c:steel_plates"
     }
   },
   "result": {

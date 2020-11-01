@@ -12,11 +12,11 @@
   },
   "fluid_outputs" : [{
     "fluid" : "modern_industrialization:hydrogen",
-    "amount": 900
+    "amount": 450
   },
     {
       "fluid" : "modern_industrialization:chlorine",
-      "amount": 900
+      "amount": 450
     }
   ]
 

@@ -25,6 +25,9 @@ package aztech.modern_industrialization.api.energy;
 
 import alexiil.mc.lib.attributes.Attribute;
 import alexiil.mc.lib.attributes.Attributes;
+import net.minecraft.block.entity.BlockEntity;
+import team.reborn.energy.Energy;
+import team.reborn.energy.EnergyHandler;
 
 public class EnergyAttributes {
     public static final Attribute<EnergyInsertable> INSERTABLE;
@@ -33,5 +36,27 @@ public class EnergyAttributes {
     static {
         INSERTABLE = Attributes.create(EnergyInsertable.class);
         EXTRACTABLE = Attributes.create(EnergyExtractable.class);
+
+        INSERTABLE.appendBlockAdder(((world, pos, state, to) -> {
+            BlockEntity be = world.getBlockEntity(pos);
+            if (Energy.valid(be)) {
+                EnergyHandler handler = Energy.of(be);
+                handler.side(to.getTargetSide());
+                to.add(new EnergyInsertable() {
+                    @Override
+                    public long insertEnergy(long amount) {
+                        double maxIns = Math.min(Math.min(handler.getMaxStored() - handler.getEnergy(), amount), handler.getMaxInput());
+                        long ins = Math.min(amount, (long) Math.floor(maxIns));
+                        handler.insert(ins);
+                        return amount - ins;
+                    }
+
+                    @Override
+                    public boolean canInsert(CableTier tier) {
+                        return true;
+                    }
+                });
+            }
+        }));
     }
 }

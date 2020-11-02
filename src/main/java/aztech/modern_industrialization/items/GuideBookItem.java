@@ -21,38 +21,39 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.material;
+package aztech.modern_industrialization.items;
 
+import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.MIItem;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
+import aztech.modern_industrialization.util.TextHelper;
+import java.util.List;
+import net.minecraft.client.item.TooltipContext;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.util.ActionResult;
+import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.text.Text;
+import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Hand;
-import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.TypedActionResult;
 import net.minecraft.world.World;
+import vazkii.patchouli.api.PatchouliAPI;
 
-public class MaterialBlock extends Block {
-
-    private String materialId, blockType;
-
-    public MaterialBlock(Settings settings, String materialId, String blockType) {
-        super(settings);
-        this.materialId = materialId;
-        this.blockType = blockType;
+public class GuideBookItem extends MIItem {
+    public GuideBookItem(String id) {
+        super(id, 1);
     }
 
     @Override
-    public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
-        ItemStack handStack = player.inventory.getMainHandStack();
-        if (handStack.getItem() == Items.BOOK && blockType.equals("ore")) {
-            handStack.decrement(1);
-            player.inventory.offerOrDrop(world, new ItemStack(MIItem.ITEM_GUIDE_BOOK));
-            return ActionResult.success(world.isClient);
+    public TypedActionResult<ItemStack> use(World world, PlayerEntity user, Hand hand) {
+        if (!world.isClient && user instanceof ServerPlayerEntity) {
+            PatchouliAPI.instance.openBookGUI((ServerPlayerEntity) user, new MIIdentifier("book"));
+            return TypedActionResult.success(user.getStackInHand(hand));
         }
-        return super.onUse(state, world, pos, player, hand, hit);
+        return TypedActionResult.consume(user.getStackInHand(hand));
+    }
+
+    @Override
+    public void appendTooltip(ItemStack stack, World world, List<Text> tooltip, TooltipContext context) {
+        tooltip.add(new TranslatableText("book.modern_industrialization.subtitle").setStyle(TextHelper.GRAY_TEXT));
     }
 }

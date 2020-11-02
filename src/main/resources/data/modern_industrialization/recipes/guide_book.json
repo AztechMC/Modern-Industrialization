@@ -14,9 +14,6 @@
     }
   },
   "result": {
-    "item": "patchouli:guide_book",
-    "data": {
-      "patchouli:book": "modern_industrialization:book"
-    }
+    "item": "modern_industrialization:guidebook"
   }
 }

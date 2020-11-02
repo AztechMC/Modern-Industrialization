@@ -1,5 +1,8 @@
 {
-  "name": "book.modern_industrialization.name",
+  "name": "item.modern_industrialization.guidebook",
   "landing_text": "book.modern_industrialization.landing_text",
-  "version": 1
+  "subtitle": "book.modern_industrialization.subtitle",
+  "model": "modern_industrialization:guidebook",
+  "dont_generate_book": true,
+  "custom_book_item": "modern_industrialization:guidebook"
 }

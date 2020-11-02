@@ -25,6 +25,7 @@ package aztech.modern_industrialization;
 
 import static aztech.modern_industrialization.nuclear.NuclearFuelType.*;
 
+import aztech.modern_industrialization.items.GuideBookItem;
 import aztech.modern_industrialization.nuclear.NuclearCoolant;
 import aztech.modern_industrialization.nuclear.NuclearFuel;
 import java.util.SortedMap;
@@ -53,6 +54,8 @@ public class MIItem extends Item {
     public String getId() {
         return id;
     }
+
+    public static final MIItem ITEM_GUIDE_BOOK = new GuideBookItem("guidebook");
 
     public static final MIItem ITEM_BRICK_TINY_DUST = new MIItem("brick_tiny_dust");
     public static final MIItem ITEM_BRICK_DUST = new MIItem("brick_dust");

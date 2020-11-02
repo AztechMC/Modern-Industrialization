@@ -27,11 +27,6 @@ repositories {
         name = "BuildCraft"
         url = "https://mod-buildcraft.com/maven"
     }
-    // for NBT Crafting
-    maven {
-        name "Siphalor's Maven"
-        url "https://maven.siphalor.de"
-    }
     // for HWYLA
     maven {
         url "https://maven.tehnut.info"
@@ -74,6 +69,7 @@ dependencies {
     include "io.github.onyxstudios:Cardinal-Components-API:${project.cardinal_components_version}"
     modImplementation "me.shedaniel:RoughlyEnoughItems:${project.rei_version}"
     modImplementation "vazkii.patchouli:Patchouli:${project.patchouli_version}"
+    include "vazkii.patchouli:Patchouli:${project.patchouli_version}"
     modApi "alexiil.mc.lib:libblockattributes-all:${project.lba_version}"
     include "alexiil.mc.lib:libblockattributes-all:${project.lba_version}"
     modApi "me.shedaniel.cloth.api:cloth-armor-api-v1:${project.cloth_api_version}"
@@ -82,8 +78,6 @@ dependencies {
     include "me.shedaniel.cloth.api:cloth-armor-api-v1:${project.cloth_api_version}"
     include "me.shedaniel.cloth.api:cloth-common-events-v1:${project.cloth_api_version}"
     include "me.shedaniel.cloth.api:cloth-durability-bar-api-v1:${project.cloth_api_version}"
-    modRuntime "de.siphalor:nbtcrafting-${project.nbt_crafting_version}"
-    include "de.siphalor:nbtcrafting-${project.nbt_crafting_version}"
     modImplementation "mcp.mobius.waila:Hwyla:${project.hwyla_version}"
     modImplementation "me.sargunvohra.mcmods:autoconfig1u:${project.auto_config_version}"
     include "me.sargunvohra.mcmods:autoconfig1u:${project.auto_config_version}"

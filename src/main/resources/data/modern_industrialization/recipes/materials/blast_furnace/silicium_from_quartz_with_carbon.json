@@ -5,7 +5,7 @@
 
   "item_inputs":[
     {
-    "item": "modern_industrialization:quartz_dust",
+    "tag": "c:quartz_dusts",
     "amount": 2
     },
     {

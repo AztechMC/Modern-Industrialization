@@ -1,9 +1,0 @@
-{
-    "type": "minecraft:blasting",
-    "ingredient": {
-        "item": "modern_industrialization:quartz_dust"
-    },
-    "result": "minecraft:quartz",
-    "experience": 0.7,
-    "cookingtime": 100
-}

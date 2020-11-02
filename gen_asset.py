@@ -756,7 +756,7 @@ gen(
         "tiny_dust": "c:quartz_tiny_dusts",
         "dust": "c:quartz_dusts"
     }),
-    '#f0ebe4'
+    '#f0ebe4', smelting=False
 )
 
 gen(

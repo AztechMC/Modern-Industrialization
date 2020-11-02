@@ -37,7 +37,7 @@ repositories {
     // for AE2
     maven {
         name "Modmaven"
-        url "https://modmaven.k-4u.nl"
+        url "https://modmaven.dev"
         content {
             includeGroup "appeng"
         }
@@ -83,7 +83,7 @@ dependencies {
     include "me.sargunvohra.mcmods:autoconfig1u:${project.auto_config_version}"
     modImplementation "io.github.prospector:modmenu:${project.mod_menu_version}"
     modImplementation "com.github.KubeJS-Mods:KubeJS-Fabric:${project.kjs_commit}"
-    //modRuntime "appeng:appliedenergistics2-fabric:${project.appeng_version}"
+    modRuntime "appeng:appliedenergistics2-fabric:${project.appeng_version}"
 }
 
 processResources {

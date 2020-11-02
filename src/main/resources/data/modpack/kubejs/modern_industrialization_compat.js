@@ -42,7 +42,6 @@ events.listen('recipes', function (event) {
         addMiRecipe('compressor', 'techreborn:plantball', 'techreborn:compressed_plantball', 1)
         addMiRecipe('compressor', '#c:platinum_ingots', 'techreborn:platinum_plate', 1)
         addMiRecipe('compressor', 'minecraft:prismarine_crystals', 'minecraft:prismarine_shard', 1) // TODO
-        addMiRecipe('compressor', 'techreborn:quartz_dust', 'techreborn:quartz_plate', 1)
         addMiRecipe('compressor', 'techreborn:red_garnet_dust', 'techreborn:red_garnet_plate', 1)
         addMiRecipe('compressor', 'minecraft:redstone_block', 'techreborn:redstone_plate', 1)
         addMiRecipe('compressor', '#c:ruby_dusts', 'techreborn:ruby_plate', 1)

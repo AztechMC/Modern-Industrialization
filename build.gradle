@@ -83,6 +83,7 @@ dependencies {
     include "me.sargunvohra.mcmods:autoconfig1u:${project.auto_config_version}"
     modImplementation "io.github.prospector:modmenu:${project.mod_menu_version}"
     modImplementation "com.github.KubeJS-Mods:KubeJS-Fabric:${project.kjs_commit}"
+    include "com.github.KubeJS-Mods:KubeJS-Fabric:${project.kjs_commit}"
     modRuntime "appeng:appliedenergistics2-fabric:${project.appeng_version}"
     modApi "teamreborn:energy:${project.tr_energy_version}"
     include "teamreborn:energy:${project.tr_energy_version}"

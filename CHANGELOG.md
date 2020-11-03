@@ -1,3 +1,11 @@
+##### 0.3.3
+* Add one-way compat with the other tech mods' energy
+* Fix guidebook recipe, add custom item and include Patchouli
+* Add missing recipe tags
+* Add lignite coal dust and tiny dust fuels
+* Fix hydrogen duplication
+* Fix ae2 recipe conflict
+
 ##### 0.3.2
 * Add KubeJS `replaceOutputs` support for custom recipes
 * Add Tech Reborn, Industrial Revolution, AE2 and Astromine compat recipes

@@ -39,7 +39,7 @@ public class EnergyAttributes {
 
         INSERTABLE.appendBlockAdder(((world, pos, state, to) -> {
             BlockEntity be = world.getBlockEntity(pos);
-            if (Energy.valid(be)) {
+            if (be != null && Energy.valid(be)) {
                 EnergyHandler handler = Energy.of(be);
                 handler.side(to.getTargetSide());
                 to.add(new EnergyInsertable() {

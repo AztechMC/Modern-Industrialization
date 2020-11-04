@@ -753,10 +753,16 @@ public class MachineBlockEntity extends AbstractMachineBlockEntity
                     // Find the first match that is an item from MI (useful for ingots for example)
                     for (Item item : input.tag.values()) {
                         Identifier id = Registry.ITEM.getId(item);
-                        if (id != null && id.getNamespace().equals(ModernIndustrialization.MOD_ID)) {
+                        if (id.getNamespace().equals(ModernIndustrialization.MOD_ID)) {
                             targetItem = item;
                             break;
                         }
+                    }
+                }
+                if (targetItem == null) {
+                    // If there is only one value in the tag, pick that one
+                    if (input.tag.values().size() == 1) {
+                        targetItem = input.tag.values().get(0);
                     }
                 }
             }

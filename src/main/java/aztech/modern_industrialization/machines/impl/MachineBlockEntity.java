@@ -734,36 +734,32 @@ public class MachineBlockEntity extends AbstractMachineBlockEntity
         // ITEM INPUTS
         outer: for (MachineRecipe.ItemInput input : recipe.itemInputs) {
             for (ConfigurableItemStack stack : getItemInputStacks()) {
-                if (input.matches(stack.getLockedItem()))
+                if (input.matches(new ItemStack(stack.getLockedItem())))
                     continue outer;
             }
             Item targetItem = null;
-            if (input.tag == null) {
-                targetItem = input.item;
-            } else {
-                // Find the first match in the player inventory (useful for logs for example)
-                for (int i = 0; i < inventory.size(); i++) {
-                    ItemStack playerStack = inventory.getStack(i);
-                    if (!playerStack.isEmpty() && input.matches(playerStack.getItem())) {
-                        targetItem = playerStack.getItem();
+            // Find the first match in the player inventory (useful for logs for example)
+            for (int i = 0; i < inventory.size(); i++) {
+                ItemStack playerStack = inventory.getStack(i);
+                if (!playerStack.isEmpty() && input.matches(new ItemStack(playerStack.getItem()))) {
+                    targetItem = playerStack.getItem();
+                    break;
+                }
+            }
+            if (targetItem == null) {
+                // Find the first match that is an item from MI (useful for ingots for example)
+                for (Item item : input.getInputItems()) {
+                    Identifier id = Registry.ITEM.getId(item);
+                    if (id.getNamespace().equals(ModernIndustrialization.MOD_ID)) {
+                        targetItem = item;
                         break;
                     }
                 }
-                if (targetItem == null) {
-                    // Find the first match that is an item from MI (useful for ingots for example)
-                    for (Item item : input.tag.values()) {
-                        Identifier id = Registry.ITEM.getId(item);
-                        if (id.getNamespace().equals(ModernIndustrialization.MOD_ID)) {
-                            targetItem = item;
-                            break;
-                        }
-                    }
-                }
-                if (targetItem == null) {
-                    // If there is only one value in the tag, pick that one
-                    if (input.tag.values().size() == 1) {
-                        targetItem = input.tag.values().get(0);
-                    }
+            }
+            if (targetItem == null) {
+                // If there is only one value in the tag, pick that one
+                if (input.getInputItems().size() == 1) {
+                    targetItem = input.getInputItems().get(0);
                 }
             }
 

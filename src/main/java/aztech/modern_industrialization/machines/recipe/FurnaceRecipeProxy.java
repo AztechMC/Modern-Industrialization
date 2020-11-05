@@ -25,15 +25,12 @@ package aztech.modern_industrialization.machines.recipe;
 
 import static aztech.modern_industrialization.ModernIndustrialization.MOD_ID;
 
-import aztech.modern_industrialization.mixin_impl.IngredientMatchingStacksAccessor;
 import java.util.*;
-import net.minecraft.item.ItemStack;
 import net.minecraft.recipe.Ingredient;
 import net.minecraft.recipe.RecipeType;
 import net.minecraft.recipe.SmeltingRecipe;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
 
 public class FurnaceRecipeProxy extends MachineRecipeType {
     public FurnaceRecipeProxy(Identifier id) {
@@ -43,26 +40,22 @@ public class FurnaceRecipeProxy extends MachineRecipeType {
     private long lastUpdate = 0;
     private static final long UPDATE_INTERVAL = 20 * 1000;
 
-    private Map<Identifier, MachineRecipe> cachedRecipes = new HashMap<>();
+    private final Map<Identifier, MachineRecipe> cachedRecipes = new HashMap<>();
     private List<MachineRecipe> sortedRecipes;
 
     private void buildCachedRecipes(ServerWorld world) {
         cachedRecipes.clear();
         for (SmeltingRecipe smeltingRecipe : world.getRecipeManager().listAllOfType(RecipeType.SMELTING)) {
             Ingredient ingredient = smeltingRecipe.getPreviewInputs().get(0);
-            ItemStack[] matchingStacks = ((IngredientMatchingStacksAccessor) (Object) ingredient).modern_industrialization_getMatchingStacks();
-            for (ItemStack matchingStack : matchingStacks) {
-                Identifier id = new Identifier(smeltingRecipe.getId().getNamespace(), smeltingRecipe.getId().getPath()
-                        + Registry.ITEM.getId(matchingStack.getItem()).toString().replace(":", "__modern_industrialization_furnace_proxy__"));
-                MachineRecipe recipe = new MachineRecipe(id, this);
-                recipe.eu = 2;
-                recipe.duration = smeltingRecipe.getCookTime();
-                recipe.itemInputs = Collections.singletonList(new MachineRecipe.ItemInput(matchingStack.getItem(), matchingStack.getCount(), 1));
-                recipe.fluidInputs = Collections.emptyList();
-                recipe.itemOutputs = Collections.singletonList(new MachineRecipe.ItemOutput(smeltingRecipe.getOutput().getItem(), 1, 1));
-                recipe.fluidOutputs = Collections.emptyList();
-                cachedRecipes.put(id, recipe);
-            }
+            Identifier id = new Identifier(smeltingRecipe.getId().getNamespace(), smeltingRecipe.getId().getPath() + "_exported_mi_furnace");
+            MachineRecipe recipe = new MachineRecipe(id, this);
+            recipe.eu = 2;
+            recipe.duration = smeltingRecipe.getCookTime();
+            recipe.itemInputs = Collections.singletonList(new MachineRecipe.ItemInput(ingredient, 1, 1));
+            recipe.fluidInputs = Collections.emptyList();
+            recipe.itemOutputs = Collections.singletonList(new MachineRecipe.ItemOutput(smeltingRecipe.getOutput().getItem(), 1, 1));
+            recipe.fluidOutputs = Collections.emptyList();
+            cachedRecipes.put(id, recipe);
         }
 
         sortedRecipes = new ArrayList<>(cachedRecipes.values());

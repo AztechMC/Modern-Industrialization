@@ -50,9 +50,7 @@ public class ForgeHammerRecipeDisplay implements RecipeDisplay {
     }
 
     private static List<EntryStack> createInputEntries(MachineRecipe.ItemInput input) {
-        return input.item == null
-                ? input.tag.values().stream().map(i -> EntryStack.create(new ItemStack(i, input.amount))).collect(Collectors.toList())
-                : Collections.singletonList(EntryStack.create(new ItemStack(input.item, input.amount)));
+        return input.getInputItems().stream().map(i -> EntryStack.create(new ItemStack(i, input.amount))).collect(Collectors.toList());
     }
 
     @Override

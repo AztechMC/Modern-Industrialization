@@ -28,16 +28,14 @@ import com.google.gson.*;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-import net.fabricmc.fabric.api.tag.TagRegistry;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.item.Item;
 import net.minecraft.network.PacketByteBuf;
+import net.minecraft.recipe.Ingredient;
 import net.minecraft.recipe.Recipe;
 import net.minecraft.recipe.RecipeSerializer;
 import net.minecraft.recipe.RecipeType;
 import net.minecraft.server.world.ServerWorld;
-import net.minecraft.tag.ItemTags;
-import net.minecraft.tag.Tag;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.JsonHelper;
 import net.minecraft.util.registry.Registry;
@@ -225,25 +223,21 @@ public class MachineRecipeType implements RecipeType, RecipeSerializer {
     }
 
     private static MachineRecipe.ItemInput readItemInput(JsonObject json) {
-        int amount = readNonNegativeInt(json, "amount");
+        int amount = 1;
+        if (json.has("amount")) {
+            amount = readNonNegativeInt(json, "amount");
+        } else if (json.has("count")) {
+            amount = readNonNegativeInt(json, "count");
+        }
         float probability = readProbability(json, "probability");
+        Ingredient ingredient;
 
-        boolean hasItem = JsonHelper.hasString(json, "item");
-        boolean hasTag = JsonHelper.hasString(json, "tag");
-        if (hasItem == hasTag) {
-            throw new RuntimeException("Need at least an item or a tag, and can't have both!");
-        }
-        if (hasItem) {
-            Identifier id = readIdentifier(json, "item");
-            Item item = Registry.ITEM.getOrEmpty(id).<RuntimeException>orElseThrow(() -> {
-                throw new RuntimeException("Item " + id + " does not exist.");
-            });
-            return new MachineRecipe.ItemInput(item, amount, probability);
+        if (json.has("ingredient")) {
+            ingredient = Ingredient.fromJson(json.get("ingredient"));
         } else {
-            Identifier id = readIdentifier(json, "tag");
-            Tag<Item> tag = TagRegistry.item(id);
-            return new MachineRecipe.ItemInput(tag, amount, probability);
+            ingredient = Ingredient.fromJson(json);
         }
+        return new MachineRecipe.ItemInput(ingredient, amount, probability);
     }
 
     private static MachineRecipe.FluidInput readFluidInput(JsonObject json) {
@@ -289,11 +283,7 @@ public class MachineRecipeType implements RecipeType, RecipeSerializer {
 
     private static JsonObject writeItemInput(MachineRecipe.ItemInput itemInput) {
         JsonObject json = new JsonObject();
-        if (itemInput.item != null) {
-            json.addProperty("item", Registry.ITEM.getId(itemInput.item).toString());
-        } else {
-            json.addProperty("tag", ItemTags.getTagGroup().getTagId(itemInput.tag).toString());
-        }
+        json.add("ingredient", itemInput.ingredient.toJson());
         json.addProperty("amount", itemInput.amount);
         json.addProperty("probability", itemInput.probability);
         return json;

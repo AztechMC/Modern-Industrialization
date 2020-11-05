@@ -274,9 +274,11 @@ public class ModernIndustrialization implements ModInitializer {
     private void setupFuels() {
         FuelRegistry.INSTANCE.add(MIItem.ITEM_COKE, 6400);
         FuelRegistry.INSTANCE.add(MIItem.ITEM_COKE_DUST, 6400);
+        FuelRegistry.INSTANCE.add(MIMaterials.coal.getItem("crushed_dust"), 1600);
         FuelRegistry.INSTANCE.add(MIMaterials.coal.getItem("dust"), 1600);
         FuelRegistry.INSTANCE.add(MIMaterials.coal.getItem("tiny_dust"), 160);
         FuelRegistry.INSTANCE.add(MIMaterials.lignite_coal.getItem("lignite_coal"), 1600);
+        FuelRegistry.INSTANCE.add(MIMaterials.lignite_coal.getItem("crushed_dust"), 1600);
         FuelRegistry.INSTANCE.add(MIMaterials.lignite_coal.getItem("dust"), 1600);
         FuelRegistry.INSTANCE.add(MIMaterials.lignite_coal.getItem("tiny_dust"), 160);
         FuelRegistry.INSTANCE.add(MIItem.ITEM_CARBON_DUST, 3200);

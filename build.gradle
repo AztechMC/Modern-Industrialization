@@ -50,6 +50,7 @@ repositories {
             includeGroup "com.github.KubeJS-Mods"
             includeGroup "com.github.Mixinors.Astromine"
             includeGroup "com.github.GabrielOlvH"
+            includeGroup "com.github.Technici4n"
             /* To build indrev */
             includeGroup "com.github.Draylar"
             /* To build astromine */
@@ -121,15 +122,17 @@ dependencies {
     modImplementation "me.sargunvohra.mcmods:autoconfig1u:${project.auto_config_version}"
     include "me.sargunvohra.mcmods:autoconfig1u:${project.auto_config_version}"
     modImplementation "io.github.prospector:modmenu:${project.mod_menu_version}"
-    modImplementation "com.github.KubeJS-Mods:KubeJS-Fabric:${project.kjs_commit}"
-    include "com.github.KubeJS-Mods:KubeJS-Fabric:${project.kjs_commit}"
+    modImplementation "com.github.Technici4n:KubeJS-Fabric:${project.kjs_commit}"
+    include "com.github.Technici4n:KubeJS-Fabric:${project.kjs_commit}"
     modApi "teamreborn:energy:${project.tr_energy_version}"
     include "teamreborn:energy:${project.tr_energy_version}"
 
     // Other mods for testing purposes
     modRuntime "appeng:appliedenergistics2-fabric:${project.appeng_version}"
     modRuntime "com.github.Mixinors.Astromine:astromine:${project.astromine_commit}"
-    //modRuntime "com.github.GabrielOlvH:Industrial-Revolution:${project.indrev_commit}"
+    //modRuntime ("com.github.GabrielOlvH:Industrial-Revolution:${project.indrev_commit}") {
+    //    exclude group: "teamreborn", module: "energy"
+    //}
 }
 
 processResources {

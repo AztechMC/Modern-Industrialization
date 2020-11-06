@@ -124,7 +124,7 @@ public class MIRecipeEventHandler implements KubeJSInitializer {
             if (obj.has("count"))
                 amount = obj.get("count").getAsInt();
             IngredientJS ing = IngredientJS.of(obj);
-            ing.count(amount);
+            ing = ing.count(amount);
             inputItems.add(ing);
             itemInputProbabilities[index] = readProbability(obj);
         }

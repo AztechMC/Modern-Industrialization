@@ -41,7 +41,7 @@ public class MIFluids {
     public static final CraftingFluid LIGHT_FUEL = new CraftingFluid("light_fuel", 0xffffe946);
     public static final CraftingFluid MANGANESE_SULFURIC_SOLUTION = new CraftingFluid("manganese_sulfuric_solution", 0xffb96c3f);
     public static final CraftingFluid METHANE = new CraftingFluid("methane", 0xffb740d9);
-    public static final CraftingFluid NAPHTA = new CraftingFluid("naphta", 0xffa5a25e);
+    public static final CraftingFluid NAPHTHA = new CraftingFluid("naphtha", 0xffa5a25e);
     public static final CraftingFluid NYLON = new CraftingFluid("nylon", 0xff986a64);
     public static final CraftingFluid OXYGEN = new CraftingFluid("oxygen", 0xff3296f2);
     public static final CraftingFluid POLYETHYLENE = new CraftingFluid("polyethylene", 0xff639c98);
@@ -53,13 +53,13 @@ public class MIFluids {
     public static final CraftingFluid SHALE_OIL = new CraftingFluid("shale_oil", 0xff6e7373);
     public static final CraftingFluid SODIUM_HYDROXIDE = new CraftingFluid("sodium_hydroxide", 0xff5071c9);
     public static final CraftingFluid STEAM = new CraftingFluid("steam", 0xffeeeeee);
-    public static final CraftingFluid STEAM_CRACKED_NAPHTA = new CraftingFluid("steam_cracked_naphta", 0xffd2d0ae);
+    public static final CraftingFluid STEAM_CRACKED_NAPHTHA = new CraftingFluid("steam_cracked_naphtha", 0xffd2d0ae);
     public static final CraftingFluid STYRENE = new CraftingFluid("styrene", 0xff9e47f2);
     public static final CraftingFluid SULFURIC_ACID = new CraftingFluid("sulfuric_acid", 0xffe15b00);
     public static final CraftingFluid SULFURIC_CRUDE_OIL = new CraftingFluid("sulfuric_crude_oil", 0xff4b5151);
     public static final CraftingFluid SULFURIC_HEAVY_FUEL = new CraftingFluid("sulfuric_heavy_fuel", 0xfff2cf3c);
     public static final CraftingFluid SULFURIC_LIGHT_FUEL = new CraftingFluid("sulfuric_light_fuel", 0xfff4dd34);
-    public static final CraftingFluid SULFURIC_NAPHTA = new CraftingFluid("sulfuric_naphta", 0xffa5975e);
+    public static final CraftingFluid SULFURIC_NAPHTHA = new CraftingFluid("sulfuric_naphtha", 0xffa5975e);
     public static final CraftingFluid SYNTHETIC_OIL = new CraftingFluid("synthetic_oil", 0xff1a1a1a);
     public static final CraftingFluid TOLUENE = new CraftingFluid("toluene", 0xff9ce6ed);
     public static final CraftingFluid VINYL_CHLORIDE = new CraftingFluid("vinyl_chloride", 0xffeda7d9);
@@ -86,7 +86,7 @@ public class MIFluids {
             LIGHT_FUEL,
             MANGANESE_SULFURIC_SOLUTION,
             METHANE,
-            NAPHTA,
+            NAPHTHA,
             NYLON,
             OXYGEN,
             POLYETHYLENE,
@@ -98,13 +98,13 @@ public class MIFluids {
             SHALE_OIL,
             SODIUM_HYDROXIDE,
             STEAM,
-            STEAM_CRACKED_NAPHTA,
+            STEAM_CRACKED_NAPHTHA,
             STYRENE,
             SULFURIC_ACID,
             SULFURIC_CRUDE_OIL,
             SULFURIC_HEAVY_FUEL,
             SULFURIC_LIGHT_FUEL,
-            SULFURIC_NAPHTA,
+            SULFURIC_NAPHTHA,
             SYNTHETIC_OIL,
             TOLUENE,
             VINYL_CHLORIDE,

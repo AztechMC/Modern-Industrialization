@@ -285,7 +285,7 @@ public class ModernIndustrialization implements ModInitializer {
         FluidFuelRegistry.register(MIFluids.DIESEL.key, 50);
         FluidFuelRegistry.register(MIFluids.HEAVY_FUEL.key, 20);
         FluidFuelRegistry.register(MIFluids.LIGHT_FUEL.key, 20);
-        FluidFuelRegistry.register(MIFluids.NAPHTA.key, 10);
+        FluidFuelRegistry.register(MIFluids.NAPHTHA.key, 10);
         FluidFuelRegistry.register(MIFluids.SYNTHETIC_OIL.key, 2);
     }
 }

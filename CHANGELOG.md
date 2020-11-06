@@ -1,3 +1,8 @@
+##### 0.3.4
+* Fix a lot of recipes
+* Fix TR energy compat crash
+* Fix KubeJS support
+
 ##### 0.3.3
 * Add one-way compat with the other tech mods' energy
 * Fix guidebook recipe, add custom item and include Patchouli

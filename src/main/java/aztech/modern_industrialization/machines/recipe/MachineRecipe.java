@@ -24,15 +24,17 @@
 package aztech.modern_industrialization.machines.recipe;
 
 import aztech.modern_industrialization.machines.impl.MachineBlockEntity;
+import aztech.modern_industrialization.mixin_impl.IngredientMatchingStacksAccessor;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.recipe.Ingredient;
 import net.minecraft.recipe.Recipe;
 import net.minecraft.recipe.RecipeSerializer;
 import net.minecraft.recipe.RecipeType;
-import net.minecraft.tag.Tag;
 import net.minecraft.util.Identifier;
 import net.minecraft.world.World;
 
@@ -93,35 +95,23 @@ public class MachineRecipe implements Recipe<MachineBlockEntity> {
     }
 
     public static class ItemInput {
-        public final Item item;
-        public final Tag<Item> tag;
+        public final Ingredient ingredient;
         public final int amount;
         public final float probability;
 
-        public ItemInput(Item item, int amount, float probability) {
-            this.item = item;
-            this.tag = null;
-            this.amount = amount;
-            this.probability = probability;
-        }
-
-        public ItemInput(Tag<Item> tag, int amount, float probability) {
-            this.item = null;
-            this.tag = tag;
+        public ItemInput(Ingredient ingredient, int amount, float probability) {
+            this.ingredient = ingredient;
             this.amount = amount;
             this.probability = probability;
         }
 
         public boolean matches(ItemStack otherStack) {
-            return item == null ? tag.contains(otherStack.getItem()) : otherStack.getItem() == item;
+            return ingredient.test(otherStack);
         }
 
-        public boolean matches(Item otherItem) {
-            return item == null ? tag.contains(otherItem) : otherItem == item;
-        }
-
-        Iterable<Item> getInputItems() {
-            return tag == null ? Arrays.asList(item) : tag.values();
+        public List<Item> getInputItems() {
+            return Arrays.stream(((IngredientMatchingStacksAccessor) (Object) ingredient).modern_industrialization_getMatchingStacks())
+                    .map(ItemStack::getItem).distinct().collect(Collectors.toList());
         }
     }
 

@@ -26,23 +26,21 @@ package aztech.modern_industrialization.machines.recipe;
 import aztech.modern_industrialization.mixin.RecipeManagerAccessor;
 import com.google.gson.*;
 import java.util.*;
+import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-import net.fabricmc.fabric.api.tag.TagRegistry;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.item.Item;
 import net.minecraft.network.PacketByteBuf;
-import net.minecraft.recipe.Recipe;
+import net.minecraft.recipe.Ingredient;
 import net.minecraft.recipe.RecipeSerializer;
 import net.minecraft.recipe.RecipeType;
 import net.minecraft.server.world.ServerWorld;
-import net.minecraft.tag.ItemTags;
-import net.minecraft.tag.Tag;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.JsonHelper;
 import net.minecraft.util.registry.Registry;
 
-public class MachineRecipeType implements RecipeType, RecipeSerializer {
+public class MachineRecipeType implements RecipeType<MachineRecipe>, RecipeSerializer<MachineRecipe> {
 
     public MachineRecipeType(Identifier id) {
         this.id = id;
@@ -162,7 +160,7 @@ public class MachineRecipeType implements RecipeType, RecipeSerializer {
     }
 
     @Override
-    public Recipe<?> read(Identifier id, JsonObject json) {
+    public MachineRecipe read(Identifier id, JsonObject json) {
         MachineRecipe recipe = new MachineRecipe(id, this);
         recipe.eu = readPositiveInt(json, "eu");
         recipe.duration = readPositiveInt(json, "duration");
@@ -225,25 +223,21 @@ public class MachineRecipeType implements RecipeType, RecipeSerializer {
     }
 
     private static MachineRecipe.ItemInput readItemInput(JsonObject json) {
-        int amount = readNonNegativeInt(json, "amount");
+        int amount = 1;
+        if (json.has("amount")) {
+            amount = readNonNegativeInt(json, "amount");
+        } else if (json.has("count")) {
+            amount = readNonNegativeInt(json, "count");
+        }
         float probability = readProbability(json, "probability");
+        Ingredient ingredient;
 
-        boolean hasItem = JsonHelper.hasString(json, "item");
-        boolean hasTag = JsonHelper.hasString(json, "tag");
-        if (hasItem == hasTag) {
-            throw new RuntimeException("Need at least an item or a tag, and can't have both!");
-        }
-        if (hasItem) {
-            Identifier id = readIdentifier(json, "item");
-            Item item = Registry.ITEM.getOrEmpty(id).<RuntimeException>orElseThrow(() -> {
-                throw new RuntimeException("Item " + id + " does not exist.");
-            });
-            return new MachineRecipe.ItemInput(item, amount, probability);
+        if (json.has("ingredient")) {
+            ingredient = Ingredient.fromJson(json.get("ingredient"));
         } else {
-            Identifier id = readIdentifier(json, "tag");
-            Tag<Item> tag = TagRegistry.item(id);
-            return new MachineRecipe.ItemInput(tag, amount, probability);
+            ingredient = Ingredient.fromJson(json);
         }
+        return new MachineRecipe.ItemInput(ingredient, amount, probability);
     }
 
     private static MachineRecipe.FluidInput readFluidInput(JsonObject json) {
@@ -276,69 +270,58 @@ public class MachineRecipeType implements RecipeType, RecipeSerializer {
         return new MachineRecipe.FluidOutput(fluid, amount, probability);
     }
 
-    public JsonObject write(MachineRecipe recipe) {
-        JsonObject json = new JsonObject();
-        json.addProperty("eu", recipe.eu);
-        json.addProperty("duration", recipe.duration);
-        json.add("item_inputs", writeArray(recipe.itemInputs, MachineRecipeType::writeItemInput));
-        json.add("fluid_inputs", writeArray(recipe.fluidInputs, MachineRecipeType::writeFluidInput));
-        json.add("item_outputs", writeArray(recipe.itemOutputs, MachineRecipeType::writeItemOutput));
-        json.add("fluid_outputs", writeArray(recipe.fluidOutputs, MachineRecipeType::writeFluidOutput));
-        return json;
-    }
-
-    private static JsonObject writeItemInput(MachineRecipe.ItemInput itemInput) {
-        JsonObject json = new JsonObject();
-        if (itemInput.item != null) {
-            json.addProperty("item", Registry.ITEM.getId(itemInput.item).toString());
-        } else {
-            json.addProperty("tag", ItemTags.getTagGroup().getTagId(itemInput.tag).toString());
+    private static <T> List<T> readList(PacketByteBuf buf, Function<PacketByteBuf, T> reader) {
+        List<T> l = new ArrayList<>();
+        int size = buf.readVarInt();
+        for (int i = 0; i < size; ++i) {
+            l.add(reader.apply(buf));
         }
-        json.addProperty("amount", itemInput.amount);
-        json.addProperty("probability", itemInput.probability);
-        return json;
+        return l;
     }
 
-    private static JsonObject writeFluidInput(MachineRecipe.FluidInput fluidInput) {
-        JsonObject json = new JsonObject();
-        json.addProperty("fluid", Registry.FLUID.getId(fluidInput.fluid).toString());
-        json.addProperty("amount", fluidInput.amount);
-        return json;
-    }
-
-    private static JsonObject writeItemOutput(MachineRecipe.ItemOutput itemOutput) {
-        JsonObject json = new JsonObject();
-        json.addProperty("item", Registry.ITEM.getId(itemOutput.item).toString());
-        json.addProperty("amount", itemOutput.amount);
-        json.addProperty("probability", itemOutput.probability);
-        return json;
-    }
-
-    private static JsonObject writeFluidOutput(MachineRecipe.FluidOutput fluidOutput) {
-        JsonObject json = new JsonObject();
-        json.addProperty("fluid", Registry.FLUID.getId(fluidOutput.fluid).toString());
-        json.addProperty("amount", fluidOutput.amount);
-        return json;
-    }
-
-    private static <T> JsonArray writeArray(List<T> list, Function<T, JsonObject> writer) {
-        JsonArray json = new JsonArray();
-        list.stream().map(writer).forEach(json::add);
-        return json;
-    }
-
-    private static final Gson GSON = new GsonBuilder().create();
-
-    @Override
-    public Recipe<?> read(Identifier id, PacketByteBuf buf) {
-        String input = buf.readString(buf.readInt());
-        return read(id, GSON.fromJson(input, JsonObject.class));
+    private static <T> void writeList(PacketByteBuf buf, List<T> list, BiConsumer<PacketByteBuf, T> writer) {
+        buf.writeVarInt(list.size());
+        for (T t : list) {
+            writer.accept(buf, t);
+        }
     }
 
     @Override
-    public void write(PacketByteBuf buf, Recipe recipe) {
-        String json = GSON.toJson(write((MachineRecipe) recipe));
-        buf.writeInt(json.length());
-        buf.writeString(json);
+    public MachineRecipe read(Identifier id, PacketByteBuf buf) {
+        MachineRecipe recipe = new MachineRecipe(id, this);
+        recipe.eu = buf.readVarInt();
+        recipe.duration = buf.readVarInt();
+        recipe.itemInputs = readList(buf, b -> new MachineRecipe.ItemInput(Ingredient.fromPacket(b), b.readVarInt(), b.readFloat()));
+        recipe.fluidInputs = readList(buf, b -> new MachineRecipe.FluidInput(Registry.FLUID.get(b.readVarInt()), b.readVarInt(), b.readFloat()));
+        recipe.itemOutputs = readList(buf, b -> new MachineRecipe.ItemOutput(Item.byRawId(b.readVarInt()), b.readVarInt(), b.readFloat()));
+        recipe.fluidOutputs = readList(buf, b -> new MachineRecipe.FluidOutput(Registry.FLUID.get(b.readVarInt()), b.readVarInt(), b.readFloat()));
+
+        return recipe;
+    }
+
+    @Override
+    public void write(PacketByteBuf buf, MachineRecipe recipe) {
+        buf.writeVarInt(recipe.eu);
+        buf.writeVarInt(recipe.duration);
+        writeList(buf, recipe.itemInputs, (b, i) -> {
+            i.ingredient.write(buf);
+            buf.writeVarInt(i.amount);
+            buf.writeFloat(i.probability);
+        });
+        writeList(buf, recipe.fluidInputs, (b, i) -> {
+            buf.writeVarInt(Registry.FLUID.getRawId(i.fluid));
+            buf.writeVarInt(i.amount);
+            buf.writeFloat(i.probability);
+        });
+        writeList(buf, recipe.itemOutputs, (b, i) -> {
+            buf.writeVarInt(Item.getRawId(i.item));
+            buf.writeVarInt(i.amount);
+            buf.writeFloat(i.probability);
+        });
+        writeList(buf, recipe.fluidOutputs, (b, i) -> {
+            buf.writeVarInt(Registry.FLUID.getRawId(i.fluid));
+            buf.writeVarInt(i.amount);
+            buf.writeFloat(i.probability);
+        });
     }
 }

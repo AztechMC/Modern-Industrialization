@@ -29,6 +29,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import dev.latvian.kubejs.KubeJSInitializer;
 import dev.latvian.kubejs.item.ItemStackJS;
+import dev.latvian.kubejs.item.ingredient.IngredientJS;
 import dev.latvian.kubejs.recipe.RecipeJS;
 import dev.latvian.kubejs.recipe.RecipeTypeJS;
 import dev.latvian.kubejs.recipe.RegisterRecipeHandlersEvent;
@@ -64,7 +65,7 @@ public class MIRecipeEventHandler implements KubeJSInitializer {
     private static class MachineRecipe extends RecipeJS {
         private int eu;
         private int duration;
-        private JsonElement itemInputs;
+        private float[] itemInputProbabilities;
         private float[] itemOutputProbabilities;
         private JsonElement fluidInputs, fluidOutputs;
 
@@ -77,9 +78,22 @@ public class MIRecipeEventHandler implements KubeJSInitializer {
         public void deserialize() {
             eu = json.get("eu").getAsInt();
             duration = json.get("duration").getAsInt();
-            itemInputs = json.get("item_inputs");
             fluidInputs = json.get("fluid_inputs");
             fluidOutputs = json.get("fluid_outputs");
+
+            JsonElement j = json.get("item_inputs");
+            if (j != null) {
+                if (j.isJsonArray()) {
+                    JsonArray arr = j.getAsJsonArray();
+                    itemInputProbabilities = new float[arr.size()];
+                    for (int i = 0; i < arr.size(); ++i) {
+                        readItemInput(arr.get(i), i);
+                    }
+                } else {
+                    itemInputProbabilities = new float[1];
+                    readItemInput(j, 0);
+                }
+            }
 
             JsonElement o = json.get("item_outputs");
             if (o != null) {
@@ -102,16 +116,32 @@ public class MIRecipeEventHandler implements KubeJSInitializer {
             }
         }
 
+        private void readItemInput(JsonElement el, int index) {
+            JsonObject obj = el.getAsJsonObject();
+            int amount = 1;
+            if (obj.has("amount"))
+                amount = obj.get("amount").getAsInt();
+            if (obj.has("count"))
+                amount = obj.get("count").getAsInt();
+            IngredientJS ing = IngredientJS.of(obj);
+            ing = ing.count(amount);
+            inputItems.add(ing);
+            itemInputProbabilities[index] = readProbability(obj);
+        }
+
         private void readItemOutput(JsonElement el, int index) {
             JsonObject obj = el.getAsJsonObject();
             ItemStackJS stack = ItemStackJS.resultFromRecipeJson(obj);
             stack.setCount(obj.get("amount").getAsInt());
             outputItems.add(stack);
-            inputItems.add(stack); // TODO: remove this evil hack when KJS is fixed
-            if (obj.has("probability")) {
-                itemOutputProbabilities[index] = obj.get("probability").getAsFloat();
+            itemOutputProbabilities[index] = readProbability(obj);
+        }
+
+        private float readProbability(JsonObject o) {
+            if (o.has("probability")) {
+                return o.get("probability").getAsFloat();
             } else {
-                itemOutputProbabilities[index] = 1.0f;
+                return 1.0f;
             }
         }
 
@@ -119,21 +149,30 @@ public class MIRecipeEventHandler implements KubeJSInitializer {
         protected void serialize() {
             json.addProperty("eu", eu);
             json.addProperty("duration", duration);
-            if (itemInputs != null)
-                json.add("item_inputs", itemInputs);
             if (fluidInputs != null)
                 json.add("fluid_inputs", fluidInputs);
             if (fluidOutputs != null)
                 json.add("fluid_outputs", fluidOutputs);
+
+            if (inputItems.size() > 0) {
+                JsonArray itemInputs = new JsonArray();
+                for (int i = 0; i < inputItems.size(); ++i) {
+                    IngredientJS ingredient = inputItems.get(i);
+                    JsonObject o = new JsonObject();
+                    o.addProperty("probability", itemInputProbabilities[i]);
+                    o.add("ingredient", ingredient.toJson());
+                    o.addProperty("amount", ingredient.getCount());
+                    itemInputs.add(o);
+                }
+                json.add("item_inputs", itemInputs);
+            }
 
             if (outputItems.size() > 0) {
                 JsonArray itemOutputs = new JsonArray();
                 for (int i = 0; i < outputItems.size(); ++i) {
                     ItemStackJS stack = outputItems.get(i);
                     JsonObject o = new JsonObject();
-                    if (itemOutputProbabilities[i] < 1) {
-                        o.addProperty("probability", itemOutputProbabilities[i]);
-                    }
+                    o.addProperty("probability", itemOutputProbabilities[i]);
                     o.addProperty("item", Registry.ITEM.getId(stack.getItem()).toString());
                     o.addProperty("amount", stack.getCount());
                     itemOutputs.add(o);

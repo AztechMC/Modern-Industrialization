@@ -1,3 +1,6 @@
+##### 0.3.5
+* Fix a bug that forced players to open and close a singleplayer world before joining a server
+
 ##### 0.3.4
 * Fix a lot of recipes
 * Fix TR energy compat crash

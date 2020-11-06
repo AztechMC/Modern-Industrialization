@@ -1,0 +1,21 @@
+{
+  "type": "modern_industrialization:mixer",
+  "eu": 12,
+  "duration": 300,
+  "fluid_inputs": [
+    {
+      "fluid": "modern_industrialization:diesel",
+      "amount": 1000
+    },
+    {
+      "fluid": "modern_industrialization:diethyl_ether",
+      "amount": 250
+    }
+  ],
+  "fluid_outputs": [
+    {
+      "fluid": "modern_industrialization:boosted_diesel",
+      "amount": 1200
+    }
+  ]
+}

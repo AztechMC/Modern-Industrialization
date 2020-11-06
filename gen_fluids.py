@@ -15,16 +15,17 @@ def image_tint(src, tint='#ffffff'):
 
 
 def clean(string):
-    return " ".join([word.capitalize() for word in string.split('_')])
+    return " ".join([word.title() for word in string.split('_')])
 
 
 def gen_name(fluid):
+    fluid_no_minus = fluid.replace("-", "_")
     with open('src/main/resources/assets/modern_industrialization/lang/en_us.json', 'r') as lang_file:
         lang_json = json.load(lang_file)
         lang_file.close()
 
-    lang_json['block.modern_industrialization.' + fluid] = clean(fluid)
-    lang_json['item.modern_industrialization.bucket_' + fluid] = clean(fluid) + " Bucket"
+    lang_json['block.modern_industrialization.' + fluid_no_minus] = clean(fluid)
+    lang_json['item.modern_industrialization.bucket_' + fluid_no_minus] = clean(fluid) + " Bucket"
 
     with open('src/main/resources/assets/modern_industrialization/lang/en_us.json', 'w') as lang_file:
         json.dump(lang_json, lang_file, indent=4, sort_keys=True)
@@ -57,16 +58,17 @@ fluid_variables = []
 
 
 def gen_fluid(name, color, gas=False):
+    name_no_minus = name.replace("-", "_")
     global java_class
-    java_class += '    public static final CraftingFluid %s = new CraftingFluid("%s", 0xff%s);\n' % (name.upper(), name, color[1:])
+    java_class += '    public static final CraftingFluid %s = new CraftingFluid("%s", 0xff%s);\n' % (name_no_minus.upper(), name_no_minus, color[1:])
     global fluid_variables
-    fluid_variables.append(name.upper())
+    fluid_variables.append(name_no_minus.upper())
     gen_name(name)
     bucket_image = image_tint("template/fluid/bucket_content.png", color)
     bucket_image = Image.alpha_composite(bucket_image, Image.open("template/fluid/bucket.png"))
     if gas:
         bucket_image = bucket_image.rotate(180)
-    bucket_image.save("src/main/resources/assets/modern_industrialization/textures/items/bucket/%s.png" % name)
+    bucket_image.save("src/main/resources/assets/modern_industrialization/textures/items/bucket/%s.png" % name_no_minus)
 
 
 shutil.rmtree("src/main/resources/assets/modern_industrialization/textures/items/bucket", ignore_errors=True)
@@ -106,8 +108,10 @@ gen_fluid("rubber", "#1a1a1a")
 gen_fluid("shale_oil", "#6e7373", True)
 gen_fluid("sodium_hydroxide", "#5071c9")
 gen_fluid("steam", "#eeeeee", True)
-gen_fluid("steam_cracked_naphtha", "#d2d0ae")
+gen_fluid("steam-cracked_naphtha", "#d2d0ae")
 gen_fluid("styrene", "#9e47f2")
+gen_fluid("styrene-butadiene", "#9c8040")
+gen_fluid("styrene-butadiene_rubber", "#423821")
 gen_fluid("sulfuric_acid", "#e15b00")
 gen_fluid("sulfuric_crude_oil", "#4b5151")
 gen_fluid("sulfuric_heavy_fuel", "#f2cf3c")

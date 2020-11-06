@@ -1,0 +1,25 @@
+{
+  "type": "modern_industrialization:chemical_reactor",
+  "eu": 12,
+  "duration": 300,
+  "fluid_inputs": [
+    {
+      "fluid": "modern_industrialization:benzene",
+      "amount": 750
+    },
+    {
+      "fluid": "modern_industrialization:ethylene",
+      "amount": 750
+    },
+    {
+      "fluid": "modern_industrialization:hydrochloric_acid",
+      "amount": 100
+    }
+  ],
+  "fluid_outputs": [
+    {
+      "fluid": "modern_industrialization:ethylbenzene",
+      "amount": 750
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "type": "modern_industrialization:chemical_reactor",
+  "eu": 20,
+  "duration": 300,
+  "fluid_inputs": [
+    {
+      "fluid": "modern_industrialization:ethanol",
+      "amount": 500
+    },
+    {
+      "fluid": "modern_industrialization:acrylic_acid",
+      "amount": 25
+    }
+  ],
+  "fluid_outputs": [
+    {
+      "fluid": "modern_industrialization:diethyl_ether",
+      "amount": 250
+    },
+    {
+      "fluid": "minecraft:water",
+      "amount": 250
+    }
+  ]
+}

@@ -55,6 +55,8 @@ public class MIFluids {
     public static final CraftingFluid STEAM = new CraftingFluid("steam", 0xffeeeeee);
     public static final CraftingFluid STEAM_CRACKED_NAPHTHA = new CraftingFluid("steam_cracked_naphtha", 0xffd2d0ae);
     public static final CraftingFluid STYRENE = new CraftingFluid("styrene", 0xff9e47f2);
+    public static final CraftingFluid STYRENE_BUTADIENE = new CraftingFluid("styrene_butadiene", 0xff9c8040);
+    public static final CraftingFluid STYRENE_BUTADIENE_RUBBER = new CraftingFluid("styrene_butadiene_rubber", 0xff423821);
     public static final CraftingFluid SULFURIC_ACID = new CraftingFluid("sulfuric_acid", 0xffe15b00);
     public static final CraftingFluid SULFURIC_CRUDE_OIL = new CraftingFluid("sulfuric_crude_oil", 0xff4b5151);
     public static final CraftingFluid SULFURIC_HEAVY_FUEL = new CraftingFluid("sulfuric_heavy_fuel", 0xfff2cf3c);
@@ -100,6 +102,8 @@ public class MIFluids {
             STEAM,
             STEAM_CRACKED_NAPHTHA,
             STYRENE,
+            STYRENE_BUTADIENE,
+            STYRENE_BUTADIENE_RUBBER,
             SULFURIC_ACID,
             SULFURIC_CRUDE_OIL,
             SULFURIC_HEAVY_FUEL,

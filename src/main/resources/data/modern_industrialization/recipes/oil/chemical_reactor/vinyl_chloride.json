@@ -1,0 +1,21 @@
+{
+  "type": "modern_industrialization:chemical_reactor",
+  "eu": 16,
+  "duration": 500,
+  "fluid_inputs": [
+    {
+      "fluid": "modern_industrialization:acetylene",
+      "amount": 1000
+    },
+    {
+      "fluid": "modern_industrialization:hydrochloric_acid",
+      "amount": 1000
+    }
+  ],
+  "fluid_outputs": [
+    {
+      "fluid": "modern_industrialization:vinyl_chloride",
+      "amount": 1000
+    }
+  ]
+}

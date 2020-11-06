@@ -4,7 +4,7 @@
   "duration": 100,
   "fluid_inputs": [
     {
-      "fluid": "modern_industrialization:naphta",
+      "fluid": "modern_industrialization:naphtha",
       "amount": 1000
     },
     {
@@ -13,7 +13,7 @@
     }
   ],
   "fluid_outputs": {
-    "fluid": "modern_industrialization:steam_cracked_naphta",
+    "fluid": "modern_industrialization:steam_cracked_naphtha",
     "amount": 1000
   }
 }

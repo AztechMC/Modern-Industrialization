@@ -778,7 +778,10 @@ gen(
 
 gen(
     file,
-    Material('stainless_steel', ITEM_ALL_NO_ORE, BLOCK_ONLY),
+    Material('stainless_steel', ITEM_ALL_NO_ORE, BLOCK_ONLY, overrides={
+        "item_pipe": "modern_industrialization:pipe_item_stainless_steel",
+        "fluid_pipe": "modern_industrialization:pipe_fluid_stainless_steel",
+    }),
     '#98abbb', smelting=False
 )
 

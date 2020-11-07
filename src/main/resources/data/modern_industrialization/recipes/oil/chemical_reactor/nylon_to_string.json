@@ -1,0 +1,18 @@
+{
+  "type": "modern_industrialization:chemical_reactor",
+  "eu": 8,
+  "duration": 100,
+  "item_inputs": {
+    "item": "minecraft:string"
+  },
+  "fluid_inputs": [
+    {
+      "fluid": "modern_industrialization:nylon",
+      "amount": 20
+    }
+  ],
+  "item_outputs": {
+    "item": "minecraft:string",
+    "amount": 2
+  }
+}

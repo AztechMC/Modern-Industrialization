@@ -131,4 +131,7 @@ public class MIItem extends Item {
     public static final MIItem ITEM_MOX_FUEL_ROD_QUAD = new NuclearFuel("mox_fuel_rod_quad", MOX, 4, ITEM_DEPLETED_MOX_FUEL_ROD_QUAD);
 
     public static final MIItem ITEM_SIMPLE_FLUID_COOLANT = new NuclearCoolant("simple_fluid_coolant", 25000, 1);
+
+    public static final MIItem ITEM_POLYETHYLENE_SHEET = new MIItem("polyethylene_sheet");
+    public static final MIItem ITEM_POLYVINYL_CHLORIDE_SHEET = new MIItem("polyvinyl_chloride_sheet");
 }

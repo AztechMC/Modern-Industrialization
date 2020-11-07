@@ -1,3 +1,6 @@
+##### 0.3.6
+* Add AE2 pattern terminal shift-clicking for machine recipes
+
 ##### 0.3.5
 * Fix a bug that forced players to open and close a singleplayer world before joining a server
 

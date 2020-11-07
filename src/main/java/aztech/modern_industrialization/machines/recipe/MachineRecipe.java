@@ -25,6 +25,7 @@ package aztech.modern_industrialization.machines.recipe;
 
 import aztech.modern_industrialization.machines.impl.MachineBlockEntity;
 import aztech.modern_industrialization.mixin_impl.IngredientMatchingStacksAccessor;
+import aztech.modern_industrialization.util.DefaultedListWrapper;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -36,6 +37,7 @@ import net.minecraft.recipe.Recipe;
 import net.minecraft.recipe.RecipeSerializer;
 import net.minecraft.recipe.RecipeType;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.world.World;
 
 public class MachineRecipe implements Recipe<MachineBlockEntity> {
@@ -75,7 +77,26 @@ public class MachineRecipe implements Recipe<MachineBlockEntity> {
     }
 
     @Override
+    public DefaultedList<Ingredient> getPreviewInputs() {
+        // This function is implemented for AE2 pattern shift-clicking compat.
+        // This is the reason the counts of the ItemStacks in the ingredient are
+        // modified.
+        // (They should never be used somewhere else anyway)
+        return new DefaultedListWrapper<>(itemInputs.stream().filter(i -> i.probability == 1).map(i -> {
+            for (ItemStack stack : ((IngredientMatchingStacksAccessor) (Object) i.ingredient).modern_industrialization_getMatchingStacks()) {
+                stack.setCount(i.amount);
+            }
+            return i.ingredient;
+        }).collect(Collectors.toList()));
+    }
+
+    @Override
     public ItemStack getOutput() {
+        for (ItemOutput o : itemOutputs) {
+            if (o.probability == 1) {
+                return new ItemStack(o.item);
+            }
+        }
         return ItemStack.EMPTY;
     }
 

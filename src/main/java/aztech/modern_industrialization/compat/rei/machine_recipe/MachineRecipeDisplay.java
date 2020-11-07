@@ -28,6 +28,7 @@ import aztech.modern_industrialization.machines.recipe.MachineRecipeType;
 import java.text.DecimalFormat;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -113,5 +114,10 @@ public class MachineRecipeDisplay implements RecipeDisplay {
 
     public int getTicks() {
         return recipe.duration;
+    }
+
+    @Override
+    public @NotNull Optional<Identifier> getRecipeLocation() {
+        return Optional.of(recipe.getId());
     }
 }

@@ -37,6 +37,20 @@ def gen_distillation(eu, duration, input, outputs):
                 }
             }, f, indent=4)
         i += 1
+    with open(out_dir + "full.json", "w") as f:
+        json.dump({
+            "type": "modern_industrialization:distillation_tower",
+            "eu": eu * len(outputs),
+            "duration": duration,
+            "fluid_inputs": {
+                "fluid": "modern_industrialization:" + in_fluid,
+                "amount": in_amount,
+            },
+            "fluid_outputs": [{
+                "fluid": "modern_industrialization:" + out_fluid,
+                "amount": out_amount
+            } for out_amount, out_fluid in map(split_fluid, outputs)],
+        }, f, indent=4)
 
 
 # Generate the Sulfuric X to X recipe
@@ -80,6 +94,7 @@ def gen_polymerization(input, output):
     names = ["lead", "chrome"]
     in_counts = [4, 1]
     out_counts = [300, 700]
+    probabilities = [1.0, 0.5]
     for i in range(2):
         with open(out_dir + input + "_" + names[i] + ".json", "w") as f:
             json.dump({

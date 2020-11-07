@@ -86,6 +86,7 @@ public class MIMachines {
     public static final MachineRecipeType RECIPE_COKE_OVEN = createRecipeType("coke_oven").withItemInputs().withItemOutputs();
     public static final MachineRecipeType RECIPE_BLAST_FURNACE = createRecipeType("blast_furnace").withItemInputs().withItemOutputs()
             .withFluidInputs().withFluidOutputs();
+    public static final MachineRecipeType RECIPE_DISTILLATION_TOWER = createRecipeType("distillation_tower").withFluidInputs().withFluidOutputs();
     public static final MachineRecipeType RECIPE_VACUUM_FREEZER = createRecipeType("vacuum_freezer").withItemInputs().withItemOutputs()
             .withFluidInputs().withFluidOutputs();
     public static final MachineRecipeType RECIPE_OIL_DRILLING_RIG = createRecipeType("oil_drilling_rig").withItemInputs().withFluidOutputs();
@@ -520,6 +521,11 @@ public class MIMachines {
                 .setInputSlotPosition(15, 20, 8, 8).setupBackground("nuclear.png", 176, 256).setInventoryPos(8, 174)
                 .setupOverlays("vacuum_freezer", true, false, false).setupCasing("nuclear")
                 .setInsertPredicate(stack -> stack.getItem() instanceof MINuclearItem);
+
+        new MachineFactory("distillation_tower", UNLIMITED, DistillationTowerBlockEntity::new, RECIPE_DISTILLATION_TOWER, 0, 0, 1, 8)
+                .setInputLiquidSlotPosition(56, 35, 1, 1).setLiquidOutputSlotPosition(102, 35, 1, 8).setupProgressBar(76, 35, 22, 15, true)
+                .setupBackground("steam_furnace.png").setupEfficiencyBar(0, 166, 38, 62, 100, 2)
+                .setupOverlays("distillation_tower", true, false, false).setupCasing("clean");
 
         registerHatches();
 

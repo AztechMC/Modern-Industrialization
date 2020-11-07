@@ -251,6 +251,10 @@ public class ConfigurableFluidStack {
     }
 
     public boolean playerLock(FluidKey fluid) {
+        if (machineLocked) {
+            playerLocked = true;
+            return true;
+        }
         if (lockedFluid == null && (this.fluid.isEmpty() || this.fluid == fluid)) {
             lockedFluid = fluid;
             this.fluid = fluid;

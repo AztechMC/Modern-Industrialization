@@ -90,7 +90,7 @@ public class MachineBlockEntity extends AbstractMachineBlockEntity
     protected int efficiencyTicks;
     protected int maxEfficiencyTicks;
 
-    private PropertyDelegate propertyDelegate;
+    private final PropertyDelegate propertyDelegate;
 
     public MachineBlockEntity(MachineFactory factory) {
         super(factory.blockEntityType, Direction.NORTH);
@@ -439,7 +439,7 @@ public class MachineBlockEntity extends AbstractMachineBlockEntity
      * that's exactly what this shared array does. We need the ThreadLocal because
      * machines in different worlds may be ticked at different times.
      */
-    private static ThreadLocal<IntArrayList> cachedItemCounts = new ThreadLocal<>();
+    private static final ThreadLocal<IntArrayList> cachedItemCounts = new ThreadLocal<>();
 
     private IntArrayList getCachedItemCounts() {
         // Note: Not using the default constructor, because empty fastutils lists don't
@@ -581,6 +581,10 @@ public class MachineBlockEntity extends AbstractMachineBlockEntity
         return ok;
     }
 
+    protected int getMaxFluidOutputs() {
+        return Integer.MAX_VALUE;
+    }
+
     protected boolean putFluidOutputs(MachineRecipe recipe, boolean simulate, boolean toggleLock) {
         List<ConfigurableFluidStack> baseList = getFluidOutputStacks();
         List<ConfigurableFluidStack> stacks = simulate ? ConfigurableFluidStack.copyList(baseList) : baseList;
@@ -589,7 +593,8 @@ public class MachineBlockEntity extends AbstractMachineBlockEntity
         List<FluidKey> lockFluids = new ArrayList<>();
 
         boolean ok = true;
-        for (MachineRecipe.FluidOutput output : recipe.fluidOutputs) {
+        for (int i = 0; i < Math.min(recipe.fluidOutputs.size(), getMaxFluidOutputs()); ++i) {
+            MachineRecipe.FluidOutput output = recipe.fluidOutputs.get(i);
             if (output.probability < 1) {
                 if (simulate)
                     continue; // don't check output space for probabilistic recipes
@@ -734,8 +739,12 @@ public class MachineBlockEntity extends AbstractMachineBlockEntity
         // ITEM INPUTS
         outer: for (MachineRecipe.ItemInput input : recipe.itemInputs) {
             for (ConfigurableItemStack stack : getItemInputStacks()) {
-                if (input.matches(new ItemStack(stack.getLockedItem())))
+                if (input.matches(new ItemStack(stack.getLockedItem()))) {
+                    if (!stack.isPlayerLocked()) {
+                        stack.playerLock(stack.getLockedItem());
+                    }
                     continue outer;
+                }
             }
             Item targetItem = null;
             // Find the first match in the player inventory (useful for logs for example)
@@ -775,8 +784,12 @@ public class MachineBlockEntity extends AbstractMachineBlockEntity
         // ITEM OUTPUTS
         outer: for (MachineRecipe.ItemOutput output : recipe.itemOutputs) {
             for (ConfigurableItemStack stack : getItemOutputStacks()) {
-                if (stack.getLockedItem() == output.item)
+                if (stack.getLockedItem() == output.item) {
+                    if (!stack.isPlayerLocked()) {
+                        stack.playerLock(stack.getLockedItem());
+                    }
                     continue outer;
+                }
             }
             for (ConfigurableItemStack stack : getItemOutputStacks()) {
                 if (stack.playerLock(output.item)) {
@@ -790,8 +803,12 @@ public class MachineBlockEntity extends AbstractMachineBlockEntity
         outer: for (MachineRecipe.FluidInput input : recipe.fluidInputs) {
             FluidKey fluid = FluidKeys.get(input.fluid);
             for (ConfigurableFluidStack stack : getFluidInputStacks()) {
-                if (stack.getLockedFluid() == fluid)
+                if (stack.getLockedFluid() == fluid) {
+                    if (!stack.isPlayerLocked()) {
+                        stack.playerLock(stack.getLockedFluid());
+                    }
                     continue outer;
+                }
             }
             for (ConfigurableFluidStack stack : getFluidInputStacks()) {
                 if (stack.playerLock(fluid)) {
@@ -804,8 +821,12 @@ public class MachineBlockEntity extends AbstractMachineBlockEntity
         outer: for (MachineRecipe.FluidOutput output : recipe.fluidOutputs) {
             FluidKey fluid = FluidKeys.get(output.fluid);
             for (ConfigurableFluidStack stack : getFluidOutputStacks()) {
-                if (stack.getLockedFluid() == fluid)
+                if (stack.getLockedFluid() == fluid) {
+                    if (!stack.isPlayerLocked()) {
+                        stack.playerLock(stack.getLockedFluid());
+                    }
                     continue outer;
+                }
             }
             for (ConfigurableFluidStack stack : getFluidOutputStacks()) {
                 if (stack.playerLock(fluid)) {

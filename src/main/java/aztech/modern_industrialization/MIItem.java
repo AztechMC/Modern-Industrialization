@@ -114,6 +114,8 @@ public class MIItem extends Item {
             ITEM_DEPLETED_URANIUM_FUEL_ROD_DOUBLE);
     public static final MIItem ITEM_URANIUM_FUEL_ROD_QUAD = new NuclearFuel("uranium_fuel_rod_quad", URANIUM, 4, ITEM_DEPLETED_URANIUM_FUEL_ROD_QUAD);
 
+    public static final MIItem ITEM_CROWBAR = new MIItem("crowbar");
+
     public static final MIItem ITEM_DEPLETED_PLUTONIUM_FUEL_ROD = new MIItem("depleted_plutonium_fuel_rod");
     public static final MIItem ITEM_DEPLETED_PLUTONIUM_FUEL_ROD_DOUBLE = new MIItem("depleted_plutonium_fuel_rod_double");
     public static final MIItem ITEM_DEPLETED_PLUTONIUM_FUEL_ROD_QUAD = new MIItem("depleted_plutonium_fuel_rod_quad");

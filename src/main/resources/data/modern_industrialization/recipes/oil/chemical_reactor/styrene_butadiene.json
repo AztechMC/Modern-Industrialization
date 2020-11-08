@@ -1,0 +1,21 @@
+{
+  "type": "modern_industrialization:chemical_reactor",
+  "eu": 10,
+  "duration": 150,
+  "fluid_inputs": [
+    {
+      "fluid": "modern_industrialization:styrene",
+      "amount": 500
+    },
+    {
+      "fluid": "modern_industrialization:butadiene",
+      "amount": 500
+    }
+  ],
+  "fluid_outputs": [
+    {
+      "fluid": "modern_industrialization:styrene_butadiene",
+      "amount": 1000
+    }
+  ]
+}

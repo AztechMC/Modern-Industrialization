@@ -229,6 +229,10 @@ public class ConfigurableItemStack {
      * Try locking the slot to the given item, return true if it succeeded
      */
     public boolean playerLock(Item item) {
+        if (machineLocked) {
+            playerLocked = true;
+            return true;
+        }
         if ((stack.isEmpty() || stack.getItem() == item) && (lockedItem == null || lockedItem == Items.AIR)) {
             lockedItem = item;
             playerLocked = true;

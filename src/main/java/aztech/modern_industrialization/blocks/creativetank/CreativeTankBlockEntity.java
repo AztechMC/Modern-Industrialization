@@ -45,6 +45,7 @@ import net.minecraft.nbt.CompoundTag;
 
 public class CreativeTankBlockEntity extends BlockEntity implements FluidExtractable, BlockEntityClientSerializable {
     FluidKey fluid = FluidKeys.EMPTY;
+    static final FluidAmount MAX_OUTPUT = FluidAmount.of(Integer.MAX_VALUE, 1000);
 
     public CreativeTankBlockEntity() {
         super(MITanks.CREATIVE_BLOCK_ENTITY_TYPE);
@@ -86,7 +87,7 @@ public class CreativeTankBlockEntity extends BlockEntity implements FluidExtract
     @Override
     public FluidVolume attemptExtraction(FluidFilter filter, FluidAmount maxAmount, Simulation simulation) {
         if (!this.fluid.isEmpty() && filter.matches(this.fluid)) {
-            return this.fluid.withAmount(maxAmount);
+            return this.fluid.withAmount(maxAmount.min(MAX_OUTPUT));
         }
         return FluidVolumeUtil.EMPTY;
     }

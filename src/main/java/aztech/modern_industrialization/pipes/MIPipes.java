@@ -118,6 +118,7 @@ public class MIPipes implements ModInitializer {
         registerFluidPipeType("nickel", 255 << 24 | 0xa9a9d4, 1000);
         registerFluidPipeType("silver", 255 << 24 | 0x99ffff, 1000);
         registerFluidPipeType("electrum", 255 << 24 | 0xefff5e, 1000);
+        registerFluidPipeType("stainless_steel", 255 << 24 | 0x98abbb, 1000);
 
         registerItemPipeType("gold", 255 << 24 | 255 << 16 | 225 << 8 | 0);
         registerItemPipeType("aluminum", 255 << 24 | 63 << 16 | 202 << 8 | 255);
@@ -130,6 +131,7 @@ public class MIPipes implements ModInitializer {
         registerItemPipeType("nickel", 255 << 24 | 0xa9a9d4);
         registerItemPipeType("silver", 255 << 24 | 0x99ffff);
         registerItemPipeType("electrum", 255 << 24 | 0xefff5e);
+        registerItemPipeType("stainless_steel", 255 << 24 | 0x98abbb);
 
         registerElectricityPipeType("tin", 255 << 24 | 203 << 16 | 228 << 8 | 228, LV);
         registerElectricityPipeType("copper", 255 << 24 | 255 << 16 | 102 << 8, LV);

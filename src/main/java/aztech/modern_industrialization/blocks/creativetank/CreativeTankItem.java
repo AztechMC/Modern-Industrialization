@@ -23,6 +23,8 @@
  */
 package aztech.modern_industrialization.blocks.creativetank;
 
+import static aztech.modern_industrialization.blocks.creativetank.CreativeTankBlockEntity.MAX_OUTPUT;
+
 import alexiil.mc.lib.attributes.AttributeProviderItem;
 import alexiil.mc.lib.attributes.ItemAttributeList;
 import alexiil.mc.lib.attributes.Simulation;
@@ -87,7 +89,7 @@ public class CreativeTankItem extends BlockItem implements AttributeProviderItem
 
             FluidKey fluid = getFluid(stackRef.get());
             if (filter.matches(fluid)) {
-                return fluid.withAmount(maxAmount);
+                return fluid.withAmount(maxAmount.min(MAX_OUTPUT));
             }
             return FluidVolumeUtil.EMPTY;
         }

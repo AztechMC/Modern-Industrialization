@@ -1,0 +1,18 @@
+{
+  "type": "modern_industrialization:chemical_reactor",
+  "eu": 10,
+  "duration": 80,
+  "item_inputs": {
+    "item": "minecraft:slime_ball"
+  },
+  "fluid_inputs": [
+    {
+      "fluid": "modern_industrialization:acrylic_glue",
+      "amount": 25
+    }
+  ],
+  "item_outputs": {
+    "item": "minecraft:slime_ball",
+    "amount": 2
+  }
+}

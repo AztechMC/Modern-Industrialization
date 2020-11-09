@@ -384,11 +384,12 @@ public class MachineBlockEntity extends AbstractMachineBlockEntity
                                        // remove one efficiency tick
             if (efficiencyTicks > 0) {
                 efficiencyTicks--;
-                if (efficiencyTicks == 0 && usedEnergy == 0) { // If the recipe is done, allow starting another one when the efficiency reaches
-                                                               // zero
-                    activeRecipe = null;
-                }
             }
+        }
+
+        // If the recipe is done, allow starting another one when the efficiency reaches zero
+        if (efficiencyTicks == 0 && usedEnergy == 0) {
+            activeRecipe = null;
         }
 
         if (wasActive != isActive) {

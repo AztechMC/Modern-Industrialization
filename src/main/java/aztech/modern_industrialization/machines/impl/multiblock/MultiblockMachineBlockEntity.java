@@ -97,6 +97,8 @@ public class MultiblockMachineBlockEntity extends MachineBlockEntity {
     }
 
     public void rebuildShape() {
+        clearLocks();
+
         isBuildingShape = true;
         for (HatchBlockEntity hatch : linkedHatches.values()) {
             if (hatch != null) {

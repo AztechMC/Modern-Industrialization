@@ -53,11 +53,7 @@ public class LargeSteamBoilerBlockEntity extends MultiblockMachineBlockEntity {
         if (world.isClient)
             return;
 
-        if (shapeCheckTicks == 0) {
-            rebuildShape();
-            shapeCheckTicks = 20;
-        }
-        --shapeCheckTicks;
+        this.tickCheckShape();
 
         boolean wasActive = isActive;
 

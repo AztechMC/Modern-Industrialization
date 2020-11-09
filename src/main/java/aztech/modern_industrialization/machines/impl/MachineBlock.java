@@ -132,7 +132,7 @@ public class MachineBlock extends Block implements BlockEntityProvider, IWrencha
 
     @Override
     public VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
-        if (!((World) world).isClient)
+        if (!(world instanceof World) || !((World) world).isClient)
             return getCollisionShape(state, world, pos, context);
         ClientPlayerEntity player = MinecraftClient.getInstance().player;
 

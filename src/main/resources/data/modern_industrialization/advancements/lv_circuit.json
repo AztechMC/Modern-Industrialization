@@ -1,0 +1,31 @@
+{
+    "criteria": {
+        "checkInv": {
+            "conditions": {
+                "items": [
+                    {
+                        "count": {
+                            "min": 1
+                        },
+                        "item": "modern_industrialization:lv_circuit"
+                    }
+                ]
+            },
+            "trigger": "minecraft:inventory_changed"
+        }
+    },
+    "display": {
+        "description": {
+            "translate": "advancements.modern_industrialization.lv_circuit.description"
+        },
+        "frame": "goal",
+        "icon": {
+            "item": "modern_industrialization:lv_circuit"
+        },
+        "title": {
+            "translate": "advancements.modern_industrialization.lv_circuit"
+        }
+    },
+    "hidden": false,
+    "parent": "modern_industrialization:resistor"
+}

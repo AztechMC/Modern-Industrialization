@@ -1,0 +1,31 @@
+{
+    "criteria": {
+        "checkInv": {
+            "conditions": {
+                "items": [
+                    {
+                        "count": {
+                            "min": 1
+                        },
+                        "item": "modern_industrialization:oil_drilling_rig"
+                    }
+                ]
+            },
+            "trigger": "minecraft:inventory_changed"
+        }
+    },
+    "display": {
+        "description": {
+            "translate": "advancements.modern_industrialization.oil_drilling_rig.description"
+        },
+        "frame": "goal",
+        "icon": {
+            "item": "modern_industrialization:oil_drilling_rig"
+        },
+        "title": {
+            "translate": "advancements.modern_industrialization.oil_drilling_rig"
+        }
+    },
+    "hidden": false,
+    "parent": "modern_industrialization:electric_blast_furnace"
+}

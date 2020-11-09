@@ -1,0 +1,31 @@
+{
+    "criteria": {
+        "checkInv": {
+            "conditions": {
+                "items": [
+                    {
+                        "count": {
+                            "min": 1
+                        },
+                        "item": "modern_industrialization:diesel_generator"
+                    }
+                ]
+            },
+            "trigger": "minecraft:inventory_changed"
+        }
+    },
+    "display": {
+        "description": {
+            "translate": "advancements.modern_industrialization.diesel_generator.description"
+        },
+        "frame": "task",
+        "icon": {
+            "item": "modern_industrialization:diesel_generator"
+        },
+        "title": {
+            "translate": "advancements.modern_industrialization.diesel_generator"
+        }
+    },
+    "hidden": false,
+    "parent": "modern_industrialization:electric_blast_furnace"
+}

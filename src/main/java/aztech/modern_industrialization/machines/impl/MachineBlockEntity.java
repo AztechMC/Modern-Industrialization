@@ -387,7 +387,8 @@ public class MachineBlockEntity extends AbstractMachineBlockEntity
             }
         }
 
-        // If the recipe is done, allow starting another one when the efficiency reaches zero
+        // If the recipe is done, allow starting another one when the efficiency reaches
+        // zero
         if (efficiencyTicks == 0 && usedEnergy == 0) {
             activeRecipe = null;
         }

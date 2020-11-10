@@ -1,5 +1,7 @@
 events.listen('recipes', function (event) {
-    function addMiRecipe(machine, input, output, outputAmount) {
+    function addMiRecipe(machine, input, output, outputAmount, eu, duration) {
+        if (typeof eu === 'undefined') eu = 2;
+        if (typeof duration == 'undefined') duration = 200;
         var i = {amount: 1};
         if (input.startsWith('#')) {
             input = input.substring(1);
@@ -12,8 +14,8 @@ events.listen('recipes', function (event) {
             amount: outputAmount
         };
         event.recipes.modern_industrialization[machine]({
-            eu: 2,
-            duration: 200,
+            eu: eu,
+            duration: duration,
             item_inputs: i,
             item_outputs: o,
             id: 'modern_industrialization:compat_' + machine + '_' + input.replace(':', '_') + '_to_' + output.replace(':', '_')
@@ -98,6 +100,29 @@ events.listen('recipes', function (event) {
         addMiRecipe('macerator', '#c:certus_quartz_crystals', 'appliedenergistics2:certus_quartz_dust', 1)
         addMiRecipe('macerator', '#c:certus_quartz_ores', 'appliedenergistics2:certus_quartz_dust', 5)
         addMiRecipe('macerator', 'appliedenergistics2:fluix_crystal', 'appliedenergistics2:fluix_dust', 1)
+        addMiRecipe('compressor', 'appliedenergistics2:certus_quartz_dust', 'appliedenergistics2:certus_quartz_crystal', 1)
+        addMiRecipe('compressor', 'appliedenergistics2:fluix_dust', 'appliedenergistics2:fluix_crystal', 1)
+        addMiRecipe('electrolyzer', 'appliedenergistics2:certus_quartz_crystal', 'appliedenergistics2:charged_certus_quartz_crystal', 1, 8, 60)
+
+        event.recipes.modern_industrialization.mixer({
+            eu: 8,
+            duration: 100,
+            item_inputs: [
+                { item: 'minecraft:quartz' },
+                { item: 'appliedenergistics2:charged_certus_quartz_crystal' },
+                { item: 'minecraft:redstone' },
+            ],
+            fluid_inputs: {
+                fluid: 'minecraft:water',
+                amount: 1000,
+                probability: 0.0,
+            },
+            item_outputs: {
+                item: 'appliedenergistics2:fluix_crystal',
+                amount: 2
+            },
+            id: 'modern_industrialization:mixer/fluix_crystal'
+        })
 
         event.recipes.modern_industrialization.quarry({
             eu: 16,

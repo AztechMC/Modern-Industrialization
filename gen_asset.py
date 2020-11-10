@@ -826,7 +826,7 @@ import net.minecraft.util.Identifier;
  */
 public class MITags {\n"""
 for key in sorted(list(tags.keys())):
-    java_class += '    private static final Tag<Item> %s = TagRegistry.item(new Identifier("c", "%s"));\n' % (key[
+    java_class += '    public static final Tag<Item> %s = TagRegistry.item(new Identifier("c", "%s"));\n' % (key[
         2:].upper(), key[2:])
 java_class += """
     public static void setup() {

@@ -616,6 +616,7 @@
     "text.autoconfig.modern_industrialization.option.ores.generateSalt": "Generate Salt Ore",
     "text.autoconfig.modern_industrialization.option.ores.generateSilver": "Generate Silver Ore",
     "text.autoconfig.modern_industrialization.option.ores.generateTin": "Generate Tin Ore",
+    "text.autoconfig.modern_industrialization.title": "Modern Industrialization Config",
     "text.modern_industrialization.base_duration_seconds": "%.02f seconds",
     "text.modern_industrialization.base_eu_t": "%d EU/t",
     "text.modern_industrialization.base_eu_total": "%d Total EU",

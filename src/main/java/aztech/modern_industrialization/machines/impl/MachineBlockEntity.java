@@ -295,7 +295,7 @@ public class MachineBlockEntity extends AbstractMachineBlockEntity
     }
 
     private static double getEfficiencyOverclock(int efficiencyTicks) {
-        return Math.pow(2.0, efficiencyTicks / 64.0);
+        return Math.pow(2.0, efficiencyTicks / 32.0);
     }
 
     private static int getRecipeMaxEu(MachineTier tier, int recipeEu, int totalEu, int efficiencyTicks) {
@@ -326,7 +326,10 @@ public class MachineBlockEntity extends AbstractMachineBlockEntity
             if (banRecipe(recipe))
                 continue;
             if (tryStartRecipe(recipe, cachedItemCounts)) {
-                if (activeRecipe != recipe) {
+                // Make sure we recalculate the max efficiency ticks if the recipe changes or if
+                // the efficiency has reached 0 (the latter is to recalculate the efficiency for
+                // 0.3.6 worlds without having to break and replace the machines)
+                if (activeRecipe != recipe || efficiencyTicks == 0) {
                     maxEfficiencyTicks = getRecipeMaxEfficiencyTicks(recipe.eu, recipe.eu * recipe.duration);
                 }
                 activeRecipe = recipe;

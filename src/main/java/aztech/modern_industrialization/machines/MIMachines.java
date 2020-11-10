@@ -365,7 +365,7 @@ public class MIMachines {
                 if (tier == STEEL && !steel)
                     continue;
                 factory = new SteamMachineFactory(tier.toString() + "_" + machineType, tier, MachineBlockEntity::new, recipeType, inputSlots,
-                        outputSlots, fluidInputSlots, fluidOutputSlots).setSteamBucketCapacity(tier == BRONZE ? 2 : 4).setSteamSlotPos(23, 23);
+                        outputSlots, fluidInputSlots, fluidOutputSlots).setSteamBucketCapacity(tier == BRONZE ? 2 : 4).setSteamSlotPos(12, 35);
                 factory.setupCasing((steamBricked ? "bricked_" : "") + tier.toString());
             } else if (tier == LV) {
                 factory = new MachineFactory(tier.toString() + "_" + machineType, tier, MachineBlockEntity::new, recipeType, inputSlots, outputSlots,

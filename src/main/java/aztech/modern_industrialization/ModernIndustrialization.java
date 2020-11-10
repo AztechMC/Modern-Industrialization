@@ -86,7 +86,7 @@ public class ModernIndustrialization implements ModInitializer {
     public static final RuntimeResourcePack RESOURCE_PACK = RuntimeResourcePack.create("modern_industrialization:general");
 
     public static final ItemGroup ITEM_GROUP = FabricItemGroupBuilder.build(new Identifier(MOD_ID, "general"),
-            () -> new ItemStack(Registry.ITEM.get(new MIIdentifier("bronze_boiler"))));
+            () -> new ItemStack(Registry.ITEM.get(new MIIdentifier("forge_hammer"))));
 
     // Tags
     private static Identifier WRENCH_TAG = new Identifier("fabric", "wrenches");

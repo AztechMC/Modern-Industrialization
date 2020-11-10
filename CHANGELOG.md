@@ -1,3 +1,10 @@
+##### 0.3.7
+* Add advancements
+* Various recipe improvements
+* Overclocking buff for electric machines
+* Fix multiblock slot locking
+* Fix Torohealth crash
+
 ##### 0.3.6
 * Add AE2 pattern terminal shift-clicking for machine recipes
 

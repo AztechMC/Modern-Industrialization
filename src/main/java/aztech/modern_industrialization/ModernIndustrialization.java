@@ -147,6 +147,7 @@ public class ModernIndustrialization implements ModInitializer {
     }
 
     private void setupMaterial() {
+        MIMaterialSetup.register();
         for (MIMaterial material : MIMaterial.getAllMaterials()) {
             registerMaterial(material);
         }

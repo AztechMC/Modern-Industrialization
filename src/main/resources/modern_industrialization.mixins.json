@@ -4,7 +4,6 @@
   "package": "aztech.modern_industrialization.mixin",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
-    "DefaultBiomeFeaturesMixin",
     "IngredientMixin",
     "ItemStackMixin",
     "RecipeManagerAccessor",

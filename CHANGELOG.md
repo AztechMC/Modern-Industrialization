@@ -1,3 +1,6 @@
+##### 0.3.8
+* Fix worldgen bug
+
 ##### 0.3.7
 * Add advancements
 * Various recipe improvements

@@ -218,8 +218,7 @@ public class ModernIndustrialization implements ModInitializer {
             Block block = material.getBlock(block_type);
             Item item = new BlockItem(block, new Item.Settings().group(ITEM_GROUP));
             Identifier identifier = new MIIdentifier(id + "_" + block_type);
-            material.saveBlock(block_type, block);
-            Registry.register(Registry.BLOCK, identifier, block);
+            // Registry.register(Registry.BLOCK, identifier, block);
             Registry.register(Registry.ITEM, identifier, item);
             RESOURCE_PACK.addBlockState(
                     JState.state().add(new JVariant().put("", new JBlockModel(MOD_ID + ":block/materials/" + id + "/" + block_type))), identifier);

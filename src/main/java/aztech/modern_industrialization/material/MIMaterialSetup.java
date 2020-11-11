@@ -54,7 +54,7 @@ public class MIMaterialSetup {
 
             for (String block_type : material.getBlockType()) {
 
-                Block block = null;
+                Block block;
                 if (!block_type.equals("ore")) {
                     block = new MaterialBlock(FabricBlockSettings.of(METAL_MATERIAL).hardness(5.0f).resistance(6.0f)
                             .breakByTool(FabricToolTags.PICKAXES, 0).requiresTool(), material.getId(), "block");
@@ -63,7 +63,8 @@ public class MIMaterialSetup {
                             .breakByTool(FabricToolTags.PICKAXES, 1).requiresTool(), material.getId(), "ore");
                 }
                 material.saveBlock(block_type, block);
-
+                Identifier identifier = new MIIdentifier(material.getId() + "_" + block_type);
+                Registry.register(Registry.BLOCK, identifier, block);
             }
 
             if (material.hasOre()) {

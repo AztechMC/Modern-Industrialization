@@ -85,6 +85,10 @@ public class PipeModel implements UnbakedModel, BakedModel, FabricBakedModel {
 
         PipeBlockEntity.RenderAttachment attachment = (PipeBlockEntity.RenderAttachment) ((RenderAttachedBlockView) blockRenderView)
                 .getBlockEntityRenderAttachment(pos);
+        if (attachment == null) {
+            throw new NullPointerException(
+                    String.format("Null attachment for pipe rendering! This is not supposed to happen!\nPos: %s\nState: %s", pos, state));
+        }
         int centerSlots = attachment.types.length;
         for (int slot = 0; slot < centerSlots; slot++) {
             // Set color

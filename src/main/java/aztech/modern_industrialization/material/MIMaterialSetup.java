@@ -24,16 +24,12 @@
 package aztech.modern_industrialization.material;
 
 import aztech.modern_industrialization.MIIdentifier;
-import java.util.Map;
-import java.util.TreeMap;
-
 import net.fabricmc.fabric.api.biome.v1.BiomeModifications;
 import net.fabricmc.fabric.api.biome.v1.BiomeSelectors;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricMaterialBuilder;
 import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
 import net.minecraft.block.Block;
-import net.minecraft.block.Blocks;
 import net.minecraft.block.Material;
 import net.minecraft.block.MaterialColor;
 import net.minecraft.util.Identifier;
@@ -75,8 +71,9 @@ public class MIMaterialSetup {
             if (material.hasOre()) {
                 Block block = material.getBlock("ore");
                 ConfiguredFeature<?, ?> oreGenerator = Feature.ORE
-                        .configure(new OreFeatureConfig(OreFeatureConfig.Rules.BASE_STONE_OVERWORLD, block.getDefaultState(),
-                                material.getVeinsSize())) // vein size
+                        .configure(
+                                new OreFeatureConfig(OreFeatureConfig.Rules.BASE_STONE_OVERWORLD, block.getDefaultState(), material.getVeinsSize())) // vein
+                                                                                                                                                     // size
                         .decorate(Decorator.RANGE.configure(new RangeDecoratorConfig(0, // bottom offset
                                 0, // min y level
                                 material.getMaxYLevel()))) // max y level

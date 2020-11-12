@@ -114,6 +114,11 @@ public class MachineModel extends CustomBlockModel {
     }
 
     @Override
+    public boolean useAmbientOcclusion() {
+        return true;
+    }
+
+    @Override
     public void emitBlockQuads(BlockRenderView blockRenderView, BlockState blockState, BlockPos blockPos, Supplier<Random> supplier,
             RenderContext renderContext) {
         RenderAttachedBlockView view = (RenderAttachedBlockView) blockRenderView;

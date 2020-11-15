@@ -8,6 +8,7 @@ path_translation = 'src/main/resources/assets/modern_industrialization/lang/en_u
 shutil.rmtree(path_output, ignore_errors=True)
 Path(path_output).mkdir(parents=True, exist_ok=True)
 
+par = {}
 
 def createAdvancement(item, title, description, parent, item_count=1, frame='task'):
     advancement_tag = 'modern_industrialization:' + item
@@ -60,6 +61,15 @@ def createAdvancement(item, title, description, parent, item_count=1, frame='tas
         json.dump(advancement, adv_file, indent=4, sort_keys=True)
         adv_file.close()
 
+    par[item] = parent
+    cur = item
+    for i in range(1000):
+        if i == 999:
+            raise RuntimeError("Achievement %s has more than 999 parents!" % item)
+        if cur in par:
+            cur = par[cur]
+        else:
+            break
 
 createAdvancement('forge_hammer', 'Is This A Forge Mod ?',
                   'Craft a Forge Hammer and begin exploring Modern Industrialization', None, frame='goal')

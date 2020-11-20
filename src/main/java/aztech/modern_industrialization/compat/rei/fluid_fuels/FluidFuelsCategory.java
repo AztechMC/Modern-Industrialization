@@ -59,7 +59,7 @@ public class FluidFuelsCategory implements RecipeCategory<FluidFuelDisplay> {
         List<Widget> widgets = new ArrayList<>();
         widgets.add(Widgets.createRecipeBase(bounds));
         widgets.add(Widgets.createSlot(new Point(bounds.x + 66, bounds.y + 10)).entry(EntryStack.create(recipeDisplay.fluid.getRawFluid())));
-        int totalEnergy = FluidFuelRegistry.getBurnTicks(recipeDisplay.fluid) * 4;
+        int totalEnergy = FluidFuelRegistry.getEu(recipeDisplay.fluid);
         widgets.add(Widgets.createLabel(new Point(bounds.x + 10, bounds.y + 35),
                 new TranslatableText("text.modern_industrialization.eu_in_diesel_generator", totalEnergy)).leftAligned());
         return widgets;

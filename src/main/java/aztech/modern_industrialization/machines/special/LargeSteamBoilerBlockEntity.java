@@ -78,9 +78,9 @@ public class LargeSteamBoilerBlockEntity extends MultiblockMachineBlockEntity {
             if (usedEnergy == 0) {
                 for (ConfigurableFluidStack stack : getFluidInputStacks()) {
                     FluidKey fluid = stack.getFluid();
-                    int burnTicks = FluidFuelRegistry.getBurnTicks(fluid);
+                    int burnTicks = FluidFuelRegistry.getEu(fluid);
                     if (burnTicks > 0) {
-                        int mbEu = FluidFuelRegistry.getBurnTicks(fluid) * 4 * 2;
+                        int mbEu = FluidFuelRegistry.getEu(fluid) * 2;
                         int necessaryAmount = Math.max(1, EU_PRODUCTION / mbEu);
                         if (stack.getAmount() >= necessaryAmount) {
                             recipeEnergy = mbEu * necessaryAmount / EU_PRODUCTION;

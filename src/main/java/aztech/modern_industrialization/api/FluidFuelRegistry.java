@@ -27,31 +27,31 @@ import alexiil.mc.lib.attributes.fluid.volume.FluidKey;
 import java.util.*;
 
 public class FluidFuelRegistry {
-    private static final Map<FluidKey, Integer> fluidBurnTicks = new HashMap<>();
+    private static final Map<FluidKey, Integer> fluidEus = new HashMap<>();
 
-    public static void register(FluidKey fluid, int burnTicks) {
-        if (burnTicks <= 0) {
-            throw new RuntimeException("Fluids must have a positive burn time!");
+    public static void register(FluidKey fluid, int eu) {
+        if (eu <= 0) {
+            throw new RuntimeException("Fluids must have a positive eu amount!");
         }
         if (fluid == null || fluid.isEmpty()) {
             throw new RuntimeException("May not register a null or empty fluid!");
         }
-        if (fluidBurnTicks.containsKey(fluid)) {
+        if (fluidEus.containsKey(fluid)) {
             throw new RuntimeException("May not re-register a fluid fuel!");
         }
-        fluidBurnTicks.put(fluid, burnTicks);
+        fluidEus.put(fluid, eu);
     }
 
     /**
      * Get the burn time of a fluid, or 0 if the fluid is not a registered fuel.
      */
-    public static int getBurnTicks(FluidKey fluid) {
-        return fluidBurnTicks.getOrDefault(fluid, 0);
+    public static int getEu(FluidKey fluid) {
+        return fluidEus.getOrDefault(fluid, 0);
     }
 
     public static List<FluidKey> getRegisteredFluids() {
-        List<FluidKey> fluids = new ArrayList<>(fluidBurnTicks.keySet());
-        fluids.sort(Comparator.comparing(fluidBurnTicks::get));
+        List<FluidKey> fluids = new ArrayList<>(fluidEus.keySet());
+        fluids.sort(Comparator.comparing(fluidEus::get));
         return fluids;
     }
 }

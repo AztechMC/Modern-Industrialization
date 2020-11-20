@@ -81,10 +81,10 @@ public class DieselGeneratorBlockEntity extends MachineBlockEntity {
             ConfigurableFluidStack stack = fluidStacks.get(0);
             if (stack.getAmount() <= 0)
                 break;
-            int burnTicks = FluidFuelRegistry.getBurnTicks(stack.getFluid());
-            if (burnTicks == 0)
+            int fuelEu = FluidFuelRegistry.getEu(stack.getFluid());
+            if (fuelEu == 0)
                 break;
-            extraStoredEu += 32 * burnTicks;
+            extraStoredEu += fuelEu;
             stack.decrement(1);
         }
 

@@ -284,11 +284,11 @@ public class ModernIndustrialization implements ModInitializer {
         FuelRegistry.INSTANCE.add(MIMaterials.lignite_coal.getItem("tiny_dust"), 160);
         FuelRegistry.INSTANCE.add(MIItem.ITEM_CARBON_DUST, 6400);
 
-        FluidFuelRegistry.register(MIFluids.CRUDE_OIL.key, 2);
-        FluidFuelRegistry.register(MIFluids.DIESEL.key, 50);
-        FluidFuelRegistry.register(MIFluids.HEAVY_FUEL.key, 30);
-        FluidFuelRegistry.register(MIFluids.LIGHT_FUEL.key, 20);
-        FluidFuelRegistry.register(MIFluids.NAPHTA.key, 10);
-        FluidFuelRegistry.register(MIFluids.SYNTHETIC_OIL.key, 2);
+        FluidFuelRegistry.register(MIFluids.CRUDE_OIL.key, 8);
+        FluidFuelRegistry.register(MIFluids.DIESEL.key, 200);
+        FluidFuelRegistry.register(MIFluids.HEAVY_FUEL.key, 120);
+        FluidFuelRegistry.register(MIFluids.LIGHT_FUEL.key, 80);
+        FluidFuelRegistry.register(MIFluids.NAPHTA.key, 40);
+        FluidFuelRegistry.register(MIFluids.SYNTHETIC_OIL.key, 8);
     }
 }

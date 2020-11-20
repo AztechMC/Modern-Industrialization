@@ -77,7 +77,7 @@ createAdvancement('forge_hammer', 'Is This A Forge Mod ?',
 createAdvancement('fire_clay_bricks', 'Almost Steam ?',
                   'Craft 3 Fire Clay Bricks', 'forge_hammer', item_count=3)
 
-createAdvancement('bronze_furnace', 'Fourty Times More Fuel Efficient',
+createAdvancement('bronze_furnace', 'Twenty Times More Fuel Efficient',
                   'Craft a Steam Furnace', 'fire_clay_bricks')
 
 createAdvancement('bronze_boiler', 'Hot Water',

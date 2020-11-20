@@ -30,6 +30,8 @@ import aztech.modern_industrialization.inventory.ConfigurableItemStack;
 import aztech.modern_industrialization.machines.impl.*;
 import java.util.*;
 import java.util.stream.Collectors;
+import net.minecraft.block.BlockState;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
@@ -37,7 +39,8 @@ import net.minecraft.util.math.Direction;
 public class MultiblockMachineBlockEntity extends MachineBlockEntity {
     protected Map<BlockPos, HatchBlockEntity> linkedHatches = new TreeMap<>();
     protected Set<BlockPos> linkedStructureBlocks = new HashSet<>();
-    protected final MultiblockShape shape;
+    protected final List<MultiblockShape> shapes;
+    protected int selectedShape = 0;
     protected boolean ready = false;
     private boolean lateLoaded = false;
     private boolean isBuildingShape = false;
@@ -46,18 +49,37 @@ public class MultiblockMachineBlockEntity extends MachineBlockEntity {
     protected int shapeCheckTicks = 0;
     protected MachineModel hatchCasing;
 
-    public MultiblockMachineBlockEntity(MachineFactory factory, MultiblockShape shape, boolean clear) {
+    public MultiblockMachineBlockEntity(MachineFactory factory, List<MultiblockShape> shapes, boolean clear) {
         super(factory);
         if (clear) {
             itemStacks.clear();
             fluidStacks.clear();
         }
-        this.shape = shape;
+        this.shapes = shapes;
         this.hatchCasing = factory.machineModel;
     }
 
-    public MultiblockMachineBlockEntity(MachineFactory factory, MultiblockShape shape) {
-        this(factory, shape, true);
+    @Override
+    protected int getProperty(int index) {
+        if (index < super.getPropertyCount())
+            return super.getProperty(index);
+        index -= super.getPropertyCount();
+        if (index == 0)
+            return ready ? 1 : 0;
+        else if (index == 1)
+            return selectedShape;
+        else if (index == 2)
+            return shapes.size();
+        return -1;
+    }
+
+    @Override
+    protected int getPropertyCount() {
+        return super.getPropertyCount() + 3;
+    }
+
+    public MultiblockMachineBlockEntity(MachineFactory factory, List<MultiblockShape> shapes) {
+        this(factory, shapes, true);
     }
 
     private void lateLoad() {
@@ -92,11 +114,16 @@ public class MultiblockMachineBlockEntity extends MachineBlockEntity {
     }
 
     protected void matchShape() {
-        ready = shape.matchShape(world, pos, facingDirection, linkedHatches, linkedStructureBlocks);
-        this.errorMessage = shape.getErrorMessage();
+        ready = shapes.get(selectedShape).matchShape(world, pos, facingDirection, linkedHatches, linkedStructureBlocks);
+        this.errorMessage = shapes.get(selectedShape).getErrorMessage();
     }
 
     public void rebuildShape() {
+        if (world.isClient)
+            return;
+
+        boolean wasReady = ready;
+
         clearLocks();
 
         isBuildingShape = true;
@@ -135,6 +162,10 @@ public class MultiblockMachineBlockEntity extends MachineBlockEntity {
             updateTier();
 
         isBuildingShape = false;
+
+        if (ready != wasReady) {
+            sync();
+        }
     }
 
     @Override
@@ -210,7 +241,6 @@ public class MultiblockMachineBlockEntity extends MachineBlockEntity {
      * steel tier. Otherwise, it is bronze tier.
      */
     private void updateTier() {
-        // TODO: electric hatches
         for (HatchBlockEntity hatch : linkedHatches.values()) {
             if (hatch instanceof EnergyInputHatchBlockEntity) {
                 tier = UNLIMITED;
@@ -241,5 +271,38 @@ public class MultiblockMachineBlockEntity extends MachineBlockEntity {
     @Override
     public MachineTier getTier() {
         return tier;
+    }
+
+    @Override
+    public CompoundTag toClientTag(CompoundTag tag) {
+        tag.putInt("selectedShape", this.selectedShape);
+        tag.putBoolean("ready", this.ready);
+        return super.toClientTag(tag);
+    }
+
+    @Override
+    public void fromClientTag(CompoundTag tag) {
+        super.fromClientTag(tag);
+        this.selectedShape = tag.getInt("selectedShape");
+        this.ready = tag.getBoolean("ready");
+    }
+
+    @Override
+    public CompoundTag toTag(CompoundTag tag) {
+        tag.putInt("selectedShape", this.selectedShape);
+        return super.toTag(tag);
+    }
+
+    @Override
+    public void fromTag(BlockState state, CompoundTag tag) {
+        super.fromTag(state, tag);
+        this.selectedShape = tag.getInt("selectedShape");
+        if (selectedShape >= shapes.size()) {
+            selectedShape = shapes.size();
+        }
+    }
+
+    protected Direction getFacingDirection() {
+        return facingDirection;
     }
 }

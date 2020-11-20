@@ -27,6 +27,7 @@ import static aztech.modern_industrialization.machines.impl.MachineSlotType.*;
 
 import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.machines.MIMachines;
+import aztech.modern_industrialization.machines.impl.multiblock.MultiblockMachineBlockEntity;
 import aztech.modern_industrialization.machines.recipe.FurnaceRecipeProxy;
 import aztech.modern_industrialization.machines.recipe.MachineRecipeType;
 import java.util.Map;
@@ -114,6 +115,8 @@ public class MachineFactory {
     private int backgroundWidth = 176;
     private int backgroundHeight = 166;
 
+    public int multiblock = 0; // 0 we don't know, 1 it's not, 2 it is
+
     public MachineFactory(String ID, MachineTier tier, BlockEntityFactory blockEntityFactory, MachineRecipeType type, int inputSlots, int outputSlots,
             int liquidInputSlots, int liquidOutputSlots) {
         this.machineID = ID;
@@ -147,7 +150,6 @@ public class MachineFactory {
 
         setTranslationKey("block.modern_industrialization." + machineID);
         setupBackground(machineID + ".png");
-
     }
 
     public static MachineFactory getFactoryByID(String machineID) {
@@ -482,5 +484,12 @@ public class MachineFactory {
     public MachineFactory setInsertPredicate(Predicate<ItemStack> insertPredicate) {
         this.insertPredicate = insertPredicate;
         return this;
+    }
+
+    public boolean isMultiblock() {
+        if (multiblock == 0) {
+            multiblock = blockEntityConstructor.get() instanceof MultiblockMachineBlockEntity ? 2 : 1;
+        }
+        return multiblock == 2;
     }
 }

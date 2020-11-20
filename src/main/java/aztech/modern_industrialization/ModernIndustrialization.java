@@ -181,7 +181,7 @@ public class ModernIndustrialization implements ModInitializer {
 
     private void setupMachines() {
         for (MachineFactory factory : MachineFactory.getFactories()) {
-            factory.block = new MachineBlock(factory.blockEntityConstructor);
+            factory.block = new MachineBlock(factory);
             factory.item = new BlockItem(factory.block, new Item.Settings().group(ITEM_GROUP));
             registerBlock(factory.block, factory.item, factory.getID());
             factory.blockEntityType = Registry.register(Registry.BLOCK_ENTITY_TYPE, new Identifier(MOD_ID, factory.getID()),

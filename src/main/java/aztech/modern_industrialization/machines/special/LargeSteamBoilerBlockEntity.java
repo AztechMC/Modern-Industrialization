@@ -33,6 +33,7 @@ import aztech.modern_industrialization.machines.impl.MachineFactory;
 import aztech.modern_industrialization.machines.impl.multiblock.MultiblockMachineBlockEntity;
 import aztech.modern_industrialization.machines.impl.multiblock.MultiblockShape;
 import aztech.modern_industrialization.util.ItemStackHelper;
+import java.util.List;
 import net.fabricmc.fabric.impl.content.registry.FuelRegistryImpl;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.Direction;
@@ -40,8 +41,8 @@ import net.minecraft.util.math.Direction;
 public class LargeSteamBoilerBlockEntity extends MultiblockMachineBlockEntity {
     private static final int EU_PRODUCTION = 256;
 
-    public LargeSteamBoilerBlockEntity(MachineFactory factory, MultiblockShape shape) {
-        super(factory, shape);
+    public LargeSteamBoilerBlockEntity(MachineFactory factory, List<MultiblockShape> shapes) {
+        super(factory, shapes);
 
         maxEfficiencyTicks = 10000;
         efficiencyTicks = 0;

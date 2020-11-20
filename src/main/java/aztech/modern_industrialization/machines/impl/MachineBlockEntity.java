@@ -90,7 +90,7 @@ public class MachineBlockEntity extends AbstractMachineBlockEntity
     protected int efficiencyTicks;
     protected int maxEfficiencyTicks;
 
-    private PropertyDelegate propertyDelegate;
+    protected PropertyDelegate propertyDelegate;
 
     public MachineBlockEntity(MachineFactory factory) {
         super(factory.blockEntityType, Direction.NORTH);
@@ -117,52 +117,46 @@ public class MachineBlockEntity extends AbstractMachineBlockEntity
         this.propertyDelegate = new PropertyDelegate() {
             @Override
             public int get(int index) {
-                if (index == 0)
-                    return isActive ? 1 : 0;
-                else if (index == 1)
-                    return usedEnergy;
-                else if (index == 2)
-                    return recipeEnergy;
-                else if (index == 3)
-                    return efficiencyTicks;
-                else if (index == 4)
-                    return maxEfficiencyTicks;
-                else if (index == 5)
-                    return (int) storedEu;
-                else if (index == 6)
-                    return activeRecipe != null && recipeEnergy != 0 ? activeRecipe.eu : 0;
-                else if (index == 7)
-                    return (int) getMaxStoredEu();
-                else if (index == 8)
-                    return recipeMaxEu;
-                else
-                    return -1;
+                return getProperty(index);
             }
 
             @Override
             public void set(int index, int value) {
-                if (index == 0)
-                    isActive = value == 1;
-                else if (index == 1)
-                    usedEnergy = value;
-                else if (index == 2)
-                    recipeEnergy = value;
-                else if (index == 3)
-                    efficiencyTicks = value;
-                else if (index == 4)
-                    maxEfficiencyTicks = value;
-                else if (index == 5)
-                    storedEu = value;
-                else
-                    throw new UnsupportedOperationException();
+                throw new UnsupportedOperationException();
             }
 
             @Override
             public int size() {
-                return 9;
+                return getPropertyCount();
             }
         };
 
+    }
+
+    protected int getProperty(int index) {
+        if (index == 0)
+            return isActive ? 1 : 0;
+        else if (index == 1)
+            return usedEnergy;
+        else if (index == 2)
+            return recipeEnergy;
+        else if (index == 3)
+            return efficiencyTicks;
+        else if (index == 4)
+            return maxEfficiencyTicks;
+        else if (index == 5)
+            return (int) storedEu;
+        else if (index == 6)
+            return activeRecipe != null && recipeEnergy != 0 ? activeRecipe.eu : 0;
+        else if (index == 7)
+            return (int) getMaxStoredEu();
+        else if (index == 8)
+            return recipeMaxEu;
+        return -1;
+    }
+
+    protected int getPropertyCount() {
+        return 9;
     }
 
     @Override

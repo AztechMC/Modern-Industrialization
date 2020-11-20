@@ -34,7 +34,6 @@ import aztech.modern_industrialization.tools.IWrenchable;
 import aztech.modern_industrialization.tools.MachineOverlayItem;
 import aztech.modern_industrialization.util.MobSpawning;
 import java.util.List;
-import java.util.function.Supplier;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
 import net.minecraft.block.*;
@@ -64,17 +63,17 @@ import net.minecraft.world.World;
  * A generic machine_recipe block.
  */
 public class MachineBlock extends Block implements BlockEntityProvider, IWrenchable, AttributeProvider {
-    private final Supplier<MachineBlockEntity> blockEntityFactory;
+    public final MachineFactory factory;
 
-    public MachineBlock(Supplier<MachineBlockEntity> blockEntityFactory) {
+    public MachineBlock(MachineFactory factory) {
         super(FabricBlockSettings.of(MIMaterialSetup.METAL_MATERIAL).hardness(4.0f).breakByTool(FabricToolTags.PICKAXES).requiresTool()
                 .allowsSpawning(MobSpawning.NO_SPAWN));
-        this.blockEntityFactory = blockEntityFactory;
+        this.factory = factory;
     }
 
     @Override
     public BlockEntity createBlockEntity(BlockView blockView) {
-        return blockEntityFactory.get();
+        return factory.blockEntityConstructor.get();
     }
 
     @Override

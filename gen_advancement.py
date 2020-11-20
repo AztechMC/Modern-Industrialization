@@ -135,6 +135,9 @@ createAdvancement('large_steam_boiler', 'Kiss Your Fuel Goodbye !',
 createAdvancement('lv_assembler', 'Avengers, Assemble !',
                   'Craft an Assembler', 'lv_circuit', frame='goal')
 
+createAdvancement('mv_lv_transformer', 'Optimus Prime!',
+                  'Craft an MV to LV Transformer', 'lv_circuit')
+
 createAdvancement('electric_blast_furnace', 'Electric Best Friend',
                   'Craft an Electric Blast Furnace to start producing Aluminum', 'lv_steam_turbine', frame='goal')
 

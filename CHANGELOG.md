@@ -1,3 +1,10 @@
+##### 0.3.9
+* Add multiblock previews (hold wrench to see the preview, or hold a hatch to see where it can be placed)
+* Nerf fluid fuels and small boilers
+* Optimize pipe `isSolid` check
+* Fix AO bug with machines
+* Use BiomeModifications for worldgen
+
 ##### 0.3.8
 * Fix worldgen bug
 

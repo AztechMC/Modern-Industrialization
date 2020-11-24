@@ -735,7 +735,7 @@ gen(
 )
 gen(
     file,
-    Material('salt', PURE_NON_METAL, BOTH, oredicted={
+    Material('salt', PURE_NON_METAL, ORE_ONLY, oredicted={
         "dust": "c:salt_dusts",
         "ore": "c:salt_ores",
         "tiny_dust": "c:salt_tiny_dusts",

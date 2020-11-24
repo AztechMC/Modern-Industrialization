@@ -40,7 +40,7 @@ public class RenderHelper {
     private static final float W = 0.05f;
 
     public static void drawOverlay(MatrixStack ms, VertexConsumerProvider vcp, float r, float g, float b, int light, int overlay) {
-        VertexConsumer vc = vcp.getBuffer(RenderLayer.getTranslucent());
+        VertexConsumer vc = vcp.getBuffer(RenderLayer.getSolid());
         for (int i = 0; i < quads.length; ++i) {
             vc.quad(ms.peek(), quads[i], r, g, b, light, overlay);
         }

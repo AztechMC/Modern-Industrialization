@@ -72,7 +72,7 @@ public class MachineScreenHandler extends ConfigurableScreenHandler {
             this.addSlot(new Slot(playerInventory, j, factory.getInventoryPosX() + j * 18, 58 + factory.getInventoryPosY()));
         }
 
-        if (!factory.isMultiblock() || factory.getInputSlots() > 0) {
+        if (!factory.isMultiblock() || inventory.getItemStacks().size() > 0) {
             int itemCnt = 0;
             for (int i = 0; i < factory.getSlots(); i++) {
                 if (factory.getSlotType(i) == INPUT_SLOT || factory.getSlotType(i) == OUTPUT_SLOT) {

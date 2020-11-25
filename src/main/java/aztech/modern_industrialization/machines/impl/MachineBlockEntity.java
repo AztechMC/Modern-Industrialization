@@ -25,17 +25,11 @@ package aztech.modern_industrialization.machines.impl;
 
 import static alexiil.mc.lib.attributes.Simulation.ACTION;
 
-import alexiil.mc.lib.attributes.AttributeList;
-import alexiil.mc.lib.attributes.AttributeProviderBlockEntity;
-import alexiil.mc.lib.attributes.SearchOptions;
 import alexiil.mc.lib.attributes.fluid.volume.FluidKey;
 import alexiil.mc.lib.attributes.fluid.volume.FluidKeys;
 import aztech.modern_industrialization.MIFluids;
 import aztech.modern_industrialization.ModernIndustrialization;
-import aztech.modern_industrialization.api.energy.CableTier;
-import aztech.modern_industrialization.api.energy.EnergyAttributes;
-import aztech.modern_industrialization.api.energy.EnergyExtractable;
-import aztech.modern_industrialization.api.energy.EnergyInsertable;
+import aztech.modern_industrialization.api.energy.*;
 import aztech.modern_industrialization.inventory.ConfigurableFluidStack;
 import aztech.modern_industrialization.inventory.ConfigurableInventory;
 import aztech.modern_industrialization.inventory.ConfigurableItemStack;
@@ -66,8 +60,7 @@ import net.minecraft.util.math.Direction;
 import net.minecraft.util.registry.Registry;
 
 // TODO: refactor
-public class MachineBlockEntity extends AbstractMachineBlockEntity
-        implements Tickable, ExtendedScreenHandlerFactory, MachineInventory, AttributeProviderBlockEntity {
+public class MachineBlockEntity extends AbstractMachineBlockEntity implements Tickable, ExtendedScreenHandlerFactory, MachineInventory {
     protected static final FluidKey STEAM_KEY = MIFluids.STEAM.key;
 
     protected List<ConfigurableItemStack> itemStacks;
@@ -91,6 +84,8 @@ public class MachineBlockEntity extends AbstractMachineBlockEntity
     protected int maxEfficiencyTicks;
 
     protected PropertyDelegate propertyDelegate;
+
+    protected EnergyInsertable insertable = null;
 
     public MachineBlockEntity(MachineFactory factory) {
         super(factory.blockEntityType, Direction.NORTH);
@@ -131,6 +126,9 @@ public class MachineBlockEntity extends AbstractMachineBlockEntity
             }
         };
 
+        if (getTier() == MachineTier.LV) {
+            insertable = buildInsertable(CableTier.LV);
+        }
     }
 
     protected int getProperty(int index) {
@@ -681,13 +679,6 @@ public class MachineBlockEntity extends AbstractMachineBlockEntity
         return extractFluids;
     }
 
-    @Override
-    public void addAllAttributes(AttributeList<?> to) {
-        if (getTier() != null && getTier().isElectric()) {
-            to.offer(buildInsertable(CableTier.LV)); // TODO: cache this to prevent allocation
-        }
-    }
-
     protected EnergyInsertable buildInsertable(CableTier cableTier) {
         return new EnergyInsertable() {
             @Override
@@ -723,7 +714,7 @@ public class MachineBlockEntity extends AbstractMachineBlockEntity
     }
 
     protected void autoExtractEnergy(Direction direction, CableTier extractTier) {
-        EnergyInsertable insertable = EnergyAttributes.INSERTABLE.getFirstOrNull(world, pos.offset(direction), SearchOptions.inDirection(direction));
+        EnergyInsertable insertable = EnergyApi.INSERTABLE.get(world, pos.offset(direction), direction.getOpposite());
         if (insertable != null && insertable.canInsert(extractTier)) {
             storedEu = insertable.insertEnergy(storedEu);
         }
@@ -813,5 +804,10 @@ public class MachineBlockEntity extends AbstractMachineBlockEntity
                 }
             }
         }
+    }
+
+    // TODO: move this somewhere else!
+    public void registerApis() {
+        EnergyApi.INSERTABLE.registerForBlockEntities((be, direction) -> ((MachineBlockEntity) be).insertable, getType());
     }
 }

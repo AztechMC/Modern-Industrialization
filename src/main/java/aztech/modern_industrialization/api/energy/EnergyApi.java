@@ -23,26 +23,29 @@
  */
 package aztech.modern_industrialization.api.energy;
 
-import alexiil.mc.lib.attributes.Attribute;
-import alexiil.mc.lib.attributes.Attributes;
-import net.minecraft.block.entity.BlockEntity;
+import net.fabricmc.fabric.api.provider.v1.ContextKey;
+import net.fabricmc.fabric.api.provider.v1.block.BlockApiLookup;
+import net.fabricmc.fabric.api.provider.v1.block.BlockApiLookupRegistry;
+import net.minecraft.util.Identifier;
+import net.minecraft.util.math.Direction;
+import org.jetbrains.annotations.NotNull;
 import team.reborn.energy.Energy;
 import team.reborn.energy.EnergyHandler;
 
-public class EnergyAttributes {
-    public static final Attribute<EnergyInsertable> INSERTABLE;
-    public static final Attribute<EnergyExtractable> EXTRACTABLE;
+public class EnergyApi {
+    public static final ContextKey<@NotNull Direction> SIDED = ContextKey.of(Direction.class, new Identifier("modern_industrialization:sided"));
+    public static final BlockApiLookup<EnergyInsertable, @NotNull Direction> INSERTABLE = BlockApiLookupRegistry
+            .getLookup(new Identifier("modern_industrialization:energy_insertable"), SIDED);
+    public static final BlockApiLookup<EnergyExtractable, @NotNull Direction> EXTRACTABLE = BlockApiLookupRegistry
+            .getLookup(new Identifier("modern_industrialization:energy_extractable"), SIDED);
 
     static {
-        INSERTABLE = Attributes.create(EnergyInsertable.class);
-        EXTRACTABLE = Attributes.create(EnergyExtractable.class);
-
-        INSERTABLE.appendBlockAdder(((world, pos, state, to) -> {
-            BlockEntity be = world.getBlockEntity(pos);
-            if (be != null && Energy.valid(be)) {
-                EnergyHandler handler = Energy.of(be);
-                handler.side(to.getTargetSide());
-                to.add(new EnergyInsertable() {
+        // Compat wrapper for tech reborn
+        INSERTABLE.registerBlockEntityFallback(((blockEntity, direction) -> {
+            if (Energy.valid(blockEntity)) {
+                EnergyHandler handler = Energy.of(blockEntity);
+                handler.side(direction);
+                return new EnergyInsertable() {
                     @Override
                     public long insertEnergy(long amount) {
                         double maxIns = Math.min(Math.min(handler.getMaxStored() - handler.getEnergy(), amount), handler.getMaxInput());
@@ -55,7 +58,9 @@ public class EnergyAttributes {
                     public boolean canInsert(CableTier tier) {
                         return true;
                     }
-                });
+                };
+            } else {
+                return null;
             }
         }));
     }

@@ -1,5 +1,5 @@
 plugins {
-    id 'fabric-loom' version '0.4-SNAPSHOT'
+    id 'fabric-loom' version '0.5-SNAPSHOT'
     id 'maven'
     id 'maven-publish'
     id 'com.diffplug.spotless' version '5.6.1'
@@ -14,18 +14,33 @@ repositories {
     // for ARRP
     maven {
         url = 'https://raw.githubusercontent.com/Devan-Kerman/Devan-Repo/master/'
+        content {
+            includeGroup "net.devtech"
+        }
     }
     // for Cardinal Components
     maven {
         name = "Ladysnake Libs"
         url = "https://dl.bintray.com/ladysnake/libs"
+        content {
+            includeGroup "io.github.onyxstudios"
+            includeGroup "io.github.onyxstudios.Cardinal-Components-API"
+        }
     }
     // for Patchouli
-    maven { url 'https://maven.blamejared.com' }
+    maven {
+        url 'https://maven.blamejared.com'
+        content {
+            includeGroup "vazkii.patchouli"
+        }
+    }
     // for LBA
     maven {
         name = "BuildCraft"
         url = "https://mod-buildcraft.com/maven"
+        content {
+            includeGroup "alexiil.mc.lib"
+        }
     }
     // for HWYLA
     maven {
@@ -42,7 +57,7 @@ repositories {
             includeGroup "appeng"
         }
     }
-    // for Astromine, KJS and Indrev
+    // for Astromine, KJS and Indrev, and api-provider
     maven {
         name 'Jitpack for MI'
         url 'https://jitpack.io'
@@ -56,15 +71,6 @@ repositories {
             /* To build astromine */
             includeGroup "com.github.vini2003"
             includeGroup "com.github.Shnupbups"
-        }
-    }
-    // for custom built packages
-    maven {
-        name "MI GitHub Packages"
-        url "https://maven.pkg.github.com/AztechMC/Modern-Industrialization"
-        credentials {
-            username = project.mi_read_gpr_user
-            password = project.mi_read_gpr_key_part1 + project.mi_read_gpr_key_part2
         }
     }
     // to build indrev
@@ -93,6 +99,13 @@ repositories {
     maven {
         name = "dblsaiko"
         url = "https://maven.dblsaiko.net/"
+    }
+    maven {
+        name = "Technici4n"
+        url = "https://raw.githubusercontent.com/Technici4n/Technici4n-maven/master/"
+        content {
+            includeGroup "net.fabricmc.fabric-api"
+        }
     }
 }
 
@@ -124,8 +137,10 @@ dependencies {
     modImplementation "io.github.prospector:modmenu:${project.mod_menu_version}"
     modImplementation "com.github.Technici4n:KubeJS-Fabric:${project.kjs_commit}"
     include "com.github.Technici4n:KubeJS-Fabric:${project.kjs_commit}"
-    modApi "teamreborn:energy:${project.tr_energy_version}"
+    modImplementation "teamreborn:energy:${project.tr_energy_version}"
     include "teamreborn:energy:${project.tr_energy_version}"
+    modApi "net.fabricmc.fabric-api:fabric-provider-api-v1:${project.api_provider_version}"
+    include "net.fabricmc.fabric-api:fabric-provider-api-v1:${project.api_provider_version}"
 
     // Other mods for testing purposes
     modRuntime "appeng:appliedenergistics2-fabric:${project.appeng_version}"

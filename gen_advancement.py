@@ -71,10 +71,10 @@ def createAdvancement(item, title, description, parent, item_count=1, frame='tas
         else:
             break
 
-createAdvancement('forge_hammer', 'Is This A Forge Mod ?',
+createAdvancement('forge_hammer', 'Is This A Forge Mod?',
                   'Craft a Forge Hammer and begin exploring Modern Industrialization', None, frame='goal')
 
-createAdvancement('fire_clay_bricks', 'Almost Steam ?',
+createAdvancement('fire_clay_bricks', 'Almost Steam?',
                   'Craft 3 Fire Clay Bricks', 'forge_hammer', item_count=3)
 
 createAdvancement('bronze_furnace', 'Twenty Times More Fuel Efficient',
@@ -84,7 +84,7 @@ createAdvancement('bronze_boiler', 'Hot Water',
                   'Craft a Bronze Boiler', 'fire_clay_bricks')
 
 
-createAdvancement('bronze_compressor', 'An Automatic Forge Mod !',
+createAdvancement('bronze_compressor', 'An Automatic Forge Mod',
                   'Craft a Bronze Compressor', 'bronze_boiler')
 
 createAdvancement('bronze_mixer', 'Mixing Without Mixins',
@@ -96,10 +96,10 @@ createAdvancement('bronze_macerator', 'Ore Tripling',
 createAdvancement('coke_oven', 'Coke-A Cola',
                   'Craft a Coke Oven to start Steel Production', 'forge_hammer', frame='goal')
 
-createAdvancement('steam_blast_furnace', 'Almost Steel !',
+createAdvancement('steam_blast_furnace', 'Almost Steel!',
                   'Craft a Steam Blast Furnace', 'fire_clay_bricks')
 
-createAdvancement('steel_machine_casing', 'Cooked Uncooked Steel !',
+createAdvancement('steel_machine_casing', 'Cooked Uncooked Steel!',
                   'Use a Steam Blast Furnace to produce Steel and craft a Steel Machine Casing', 'steam_blast_furnace',  frame='goal')
 
 createAdvancement('steel_wiremill', 'Neither a Wire nor a Mill',
@@ -129,10 +129,10 @@ createAdvancement('lv_steam_turbine', 'Better Than Solar Panels',
 createAdvancement('lv_polarizer', 'One Recipe To Rule Them All',
                   'Craft a Polarizer', 'lv_steam_turbine')
 
-createAdvancement('large_steam_boiler', 'Kiss Your Fuel Goodbye !',
+createAdvancement('large_steam_boiler', 'Kiss Your Fuel Goodbye!',
                   'Craft a Large Steam Boiler', 'lv_circuit')
 
-createAdvancement('lv_assembler', 'Avengers, Assemble !',
+createAdvancement('lv_assembler', 'Avengers, Assemble!',
                   'Craft an Assembler', 'lv_circuit', frame='goal')
 
 createAdvancement('mv_lv_transformer', 'Optimus Prime!',
@@ -153,7 +153,7 @@ createAdvancement('lv_chemical_reactor', 'Walter White Approves',
 createAdvancement('lv_distillery', 'Al Capone Approves',
                   'Craft a Distillery', 'electric_blast_furnace')
 
-createAdvancement('electric_quarry', 'Resources GO BRRRRRR !!!',
+createAdvancement('electric_quarry', 'Resources GO BRRRRRR!!!',
                   'Craft an Electric Quarry', 'electric_blast_furnace', frame='challenge')
 
 createAdvancement('oil_drilling_rig', 'Bringing Freedom To Your Country',

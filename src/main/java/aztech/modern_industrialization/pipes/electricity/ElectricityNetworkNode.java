@@ -25,10 +25,7 @@ package aztech.modern_industrialization.pipes.electricity;
 
 import static aztech.modern_industrialization.pipes.api.PipeEndpointType.*;
 
-import aztech.modern_industrialization.api.energy.CableTier;
-import aztech.modern_industrialization.api.energy.EnergyApi;
-import aztech.modern_industrialization.api.energy.EnergyExtractable;
-import aztech.modern_industrialization.api.energy.EnergyInsertable;
+import aztech.modern_industrialization.api.energy.*;
 import aztech.modern_industrialization.pipes.api.PipeEndpointType;
 import aztech.modern_industrialization.pipes.api.PipeNetworkNode;
 import aztech.modern_industrialization.util.NbtHelper;
@@ -45,27 +42,23 @@ import org.jetbrains.annotations.NotNull;
 
 public class ElectricityNetworkNode extends PipeNetworkNode {
     private List<Direction> connections = new ArrayList<>();
-    private final List<BlockApiCache<EnergyInsertable, @NotNull Direction>> cachedInsertables = new ArrayList<>();
-    private final List<BlockApiCache<EnergyExtractable, @NotNull Direction>> cachedExtractables = new ArrayList<>();
+    private final List<BlockApiCache<EnergyMoveable, @NotNull Direction>> caches = new ArrayList<>();
     long eu = 0;
 
     public void appendAttributes(World world, BlockPos pos, List<EnergyInsertable> insertables, List<EnergyExtractable> extractables) {
-        if (cachedInsertables.size() != connections.size()) {
-            cachedInsertables.clear();
-            cachedExtractables.clear();
+        if (caches.size() != connections.size()) {
+            caches.clear();
             for (Direction direction : connections) {
-                cachedInsertables.add(BlockApiCache.create(EnergyApi.INSERTABLE, (ServerWorld) world, pos.offset(direction)));
-                cachedExtractables.add(BlockApiCache.create(EnergyApi.EXTRACTABLE, (ServerWorld) world, pos.offset(direction)));
+                caches.add(BlockApiCache.create(EnergyApi.MOVEABLE, (ServerWorld) world, pos.offset(direction)));
             }
         }
         for (int i = 0; i < connections.size(); ++i) {
             Direction targetDir = connections.get(i).getOpposite();
-            EnergyInsertable insertable = cachedInsertables.get(i).get(targetDir);
-            if (insertable != null)
-                insertables.add(insertable);
-            EnergyExtractable extractable = cachedExtractables.get(i).get(targetDir);
-            if (extractable != null)
-                extractables.add(extractable);
+            EnergyMoveable moveable = caches.get(i).get(targetDir);
+            if (moveable instanceof EnergyInsertable)
+                insertables.add((EnergyInsertable) moveable);
+            if (moveable instanceof EnergyExtractable)
+                extractables.add((EnergyExtractable) moveable);
         }
     }
 
@@ -78,8 +71,7 @@ public class ElectricityNetworkNode extends PipeNetworkNode {
                 i++;
             } else {
                 connections.remove(i);
-                cachedInsertables.clear();
-                cachedExtractables.clear();
+                caches.clear();
             }
         }
     }
@@ -102,8 +94,7 @@ public class ElectricityNetworkNode extends PipeNetworkNode {
         for (int i = 0; i < connections.size(); i++) {
             if (connections.get(i) == direction) {
                 connections.remove(i);
-                cachedInsertables.clear();
-                cachedExtractables.clear();
+                caches.clear();
                 return;
             }
         }
@@ -120,8 +111,7 @@ public class ElectricityNetworkNode extends PipeNetworkNode {
         // Otherwise try to connect
         if (canConnect(world, pos, direction)) {
             connections.add(direction);
-            cachedInsertables.clear();
-            cachedExtractables.clear();
+            caches.clear();
         }
     }
 
@@ -135,16 +125,15 @@ public class ElectricityNetworkNode extends PipeNetworkNode {
     @Override
     public void fromTag(CompoundTag tag) {
         connections = new ArrayList<>(Arrays.asList(NbtHelper.decodeDirections(tag.getByte("connections"))));
-        cachedInsertables.clear();
-        cachedExtractables.clear();
+        caches.clear();
         eu = tag.getLong("eu");
     }
 
     private boolean canConnect(World world, BlockPos pos, Direction direction) {
-        EnergyInsertable insertable = EnergyApi.INSERTABLE.get(world, pos.offset(direction), direction.getOpposite());
-        EnergyExtractable extractable = EnergyApi.EXTRACTABLE.get(world, pos.offset(direction), direction.getOpposite());
+        EnergyMoveable moveable = EnergyApi.MOVEABLE.get(world, pos.offset(direction), direction.getOpposite());
         CableTier tier = ((ElectricityNetwork) network).tier;
-        return insertable != null && insertable.canInsert(tier) || extractable != null && extractable.canExtract(tier);
+        return moveable instanceof EnergyInsertable && ((EnergyInsertable) moveable).canInsert(tier)
+                || moveable instanceof EnergyExtractable && ((EnergyExtractable) moveable).canExtract(tier);
     }
 
     // Used in the Waila plugin

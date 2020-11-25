@@ -23,7 +23,7 @@
  */
 package aztech.modern_industrialization.api.energy;
 
-public interface EnergyExtractable {
+public interface EnergyExtractable extends EnergyMoveable {
     /**
      * Attempt to extract an energy packet.
      * 

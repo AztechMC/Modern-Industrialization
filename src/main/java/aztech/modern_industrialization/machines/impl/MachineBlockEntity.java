@@ -714,9 +714,9 @@ public class MachineBlockEntity extends AbstractMachineBlockEntity implements Ti
     }
 
     protected void autoExtractEnergy(Direction direction, CableTier extractTier) {
-        EnergyInsertable insertable = EnergyApi.INSERTABLE.get(world, pos.offset(direction), direction.getOpposite());
-        if (insertable != null && insertable.canInsert(extractTier)) {
-            storedEu = insertable.insertEnergy(storedEu);
+        EnergyMoveable insertable = EnergyApi.MOVEABLE.get(world, pos.offset(direction), direction.getOpposite());
+        if (insertable instanceof EnergyInsertable && ((EnergyInsertable) insertable).canInsert(extractTier)) {
+            storedEu = ((EnergyInsertable) insertable).insertEnergy(storedEu);
         }
     }
 
@@ -808,6 +808,6 @@ public class MachineBlockEntity extends AbstractMachineBlockEntity implements Ti
 
     // TODO: move this somewhere else!
     public void registerApis() {
-        EnergyApi.INSERTABLE.registerForBlockEntities((be, direction) -> ((MachineBlockEntity) be).insertable, getType());
+        EnergyApi.MOVEABLE.registerForBlockEntities((be, direction) -> ((MachineBlockEntity) be).insertable, getType());
     }
 }

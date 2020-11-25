@@ -34,14 +34,12 @@ import team.reborn.energy.EnergyHandler;
 
 public class EnergyApi {
     public static final ContextKey<@NotNull Direction> SIDED = ContextKey.of(Direction.class, new Identifier("modern_industrialization:sided"));
-    public static final BlockApiLookup<EnergyInsertable, @NotNull Direction> INSERTABLE = BlockApiLookupRegistry
-            .getLookup(new Identifier("modern_industrialization:energy_insertable"), SIDED);
-    public static final BlockApiLookup<EnergyExtractable, @NotNull Direction> EXTRACTABLE = BlockApiLookupRegistry
-            .getLookup(new Identifier("modern_industrialization:energy_extractable"), SIDED);
+    public static final BlockApiLookup<EnergyMoveable, @NotNull Direction> MOVEABLE = BlockApiLookupRegistry
+            .getLookup(new Identifier("modern_industrialization:energy_moveable"), SIDED);
 
     static {
         // Compat wrapper for tech reborn
-        INSERTABLE.registerBlockEntityFallback(((blockEntity, direction) -> {
+        MOVEABLE.registerBlockEntityFallback(((blockEntity, direction) -> {
             if (Energy.valid(blockEntity)) {
                 EnergyHandler handler = Energy.of(blockEntity);
                 handler.side(direction);

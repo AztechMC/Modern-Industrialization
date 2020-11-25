@@ -73,7 +73,7 @@ public final class SteamTurbineBlockEntity extends MachineBlockEntity {
 
     @Override
     public void registerApis() {
-        EnergyApi.EXTRACTABLE.registerForBlockEntities((blockEntity, direction) -> {
+        EnergyApi.MOVEABLE.registerForBlockEntities((blockEntity, direction) -> {
             SteamTurbineBlockEntity be = ((SteamTurbineBlockEntity) blockEntity);
             return direction == be.outputDirection ? be.extractable : null;
         }, getType());

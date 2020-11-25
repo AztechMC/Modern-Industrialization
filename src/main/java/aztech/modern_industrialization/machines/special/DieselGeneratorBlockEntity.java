@@ -100,7 +100,7 @@ public class DieselGeneratorBlockEntity extends MachineBlockEntity {
 
     @Override
     public void registerApis() {
-        EnergyApi.EXTRACTABLE.registerForBlockEntities((blockEntity, direction) -> {
+        EnergyApi.MOVEABLE.registerForBlockEntities((blockEntity, direction) -> {
             DieselGeneratorBlockEntity be = ((DieselGeneratorBlockEntity) blockEntity);
             return direction == be.outputDirection ? be.extractable : null;
         }, getType());

@@ -1,0 +1,20 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "yxx",
+        "xxx",
+        "xxx"
+    ],
+    "result": {
+        "item": "modern_industrialization:supraconductor_dust",
+        "count": 1
+    },
+    "key": {
+        "y": {
+            "item": "modern_industrialization:supraconductor_tiny_dust"
+        },
+        "x": {
+            "tag": "c:supraconductor_tiny_dusts"
+        }
+    }
+}

@@ -138,6 +138,10 @@ public class MIPipes implements ModInitializer {
         registerElectricityPipeType("cupronickel", 0xffe39680, MV);
         registerElectricityPipeType("electrum", 255 << 24 | 0xefff5e, MV);
         registerElectricityPipeType("aluminum", 255 << 24 | 63 << 16 | 202 << 8 | 255, HV);
+        registerElectricityPipeType("annealed_copper", 255 << 24 | 255 << 16 | 146 << 8 | 79, HV);
+        registerElectricityPipeType("platinum", 255 << 24 | 255 << 16 | 229 << 8 | 186, EV);
+        registerElectricityPipeType("kanthal", 255 << 24 | 207 << 16 | 203 << 8, EV);
+        registerElectricityPipeType("supraconductor", 255 << 24 | 163 << 16 | 217 << 8 | 255, SUPRACONDUCTOR);
 
         ServerTickEvents.START_SERVER_TICK.register(server -> {
             for (World world : server.getWorlds()) {

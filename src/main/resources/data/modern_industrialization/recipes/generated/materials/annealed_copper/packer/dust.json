@@ -1,0 +1,17 @@
+{
+    "type": "modern_industrialization:packer",
+    "eu": 2,
+    "duration": 200,
+    "item_inputs": [
+        {
+            "tag": "c:annealed_copper_tiny_dusts",
+            "amount": 9
+        }
+    ],
+    "item_outputs": [
+        {
+            "item": "modern_industrialization:annealed_copper_dust",
+            "amount": 1
+        }
+    ]
+}

@@ -120,6 +120,21 @@ gen_fluid("sulfuric_naphtha", "#a5975e")
 gen_fluid("synthetic_oil", "#1a1a1a")
 gen_fluid("toluene", "#9ce6ed")
 gen_fluid("vinyl_chloride", "#eda7d9")
+gen_fluid("helium", "#e6e485", True)
+gen_fluid("argon", "#e339a7", True)
+gen_fluid("helium_3", "#83de52", True)
+gen_fluid("deuterium", "#941bcc", True)
+gen_fluid("tritium", "#cc1b50", True)
+gen_fluid("heavy_water", "#6e18f0")
+gen_fluid("heavy_water_steam", "#d9cfe8", True)
+gen_fluid("high_pressure_water", "#144cb8")
+gen_fluid("high_pressure_steam", "#9c9c9c", True)
+gen_fluid("high_pressure_heavy_water", "#3d0b8a")
+gen_fluid("high_pressure_heavy_water_steam", "#6d647a", True)
+gen_fluid("lead_sodium_eutectic", "#604170")
+gen_fluid("soldering_alloy", "#abc4bf")
+gen_fluid("lubricant", "#ffc400")
+
 
 java_class += "    public static final CraftingFluid[] FLUIDS = new CraftingFluid[] {\n"
 for var in fluid_variables:

@@ -1,0 +1,9 @@
+{
+    "type": "minecraft:smelting",
+    "ingredient": {
+        "item": "modern_industrialization:kanthal_tiny_dust"
+    },
+    "result": "modern_industrialization:kanthal_nugget",
+    "experience": 0.08,
+    "cookingtime": 200
+}

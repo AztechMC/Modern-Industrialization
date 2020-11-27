@@ -11,6 +11,9 @@
         "modern_industrialization:antimony_ore",
         "modern_industrialization:nickel_ore",
         "modern_industrialization:silver_ore",
-        "modern_industrialization:salt_ore"
+        "modern_industrialization:salt_ore",
+        "modern_industrialization:plutonium_ore",
+        "modern_industrialization:platinum_ore",
+        "modern_industrialization:tungsten_ore"
     ]
 }

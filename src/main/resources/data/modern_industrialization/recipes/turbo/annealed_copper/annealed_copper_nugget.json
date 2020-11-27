@@ -1,0 +1,17 @@
+{
+  "type": "modern_industrialization:blast_furnace",
+  "eu": 64,
+  "duration": 60,
+  "item_inputs": {
+    "tag": "c:copper_nuggets",
+    "amount": 1
+  },
+  "fluid_inputs":{
+    "fluid" : "modern_industrialization:oxygen",
+    "amount": 25
+  },
+  "item_outputs": {
+    "item": "modern_industrialization:annealed_copper_nugget",
+    "amount": 1
+  }
+}

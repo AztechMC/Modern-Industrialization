@@ -48,6 +48,10 @@ public class EnergyApi {
                     public long insertEnergy(long amount) {
                         double maxIns = Math.min(Math.min(handler.getMaxStored() - handler.getEnergy(), amount), handler.getMaxInput());
                         long ins = Math.min(amount, (long) Math.floor(maxIns));
+                        if (ins <= 0) {
+                            return amount;
+                        }
+
                         handler.insert(ins);
                         return amount - ins;
                     }

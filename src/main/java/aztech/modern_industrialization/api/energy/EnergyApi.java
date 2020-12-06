@@ -23,7 +23,6 @@
  */
 package aztech.modern_industrialization.api.energy;
 
-import net.fabricmc.fabric.api.provider.v1.ContextKey;
 import net.fabricmc.fabric.api.provider.v1.block.BlockApiLookup;
 import net.fabricmc.fabric.api.provider.v1.block.BlockApiLookupRegistry;
 import net.minecraft.util.Identifier;
@@ -33,9 +32,8 @@ import team.reborn.energy.Energy;
 import team.reborn.energy.EnergyHandler;
 
 public class EnergyApi {
-    public static final ContextKey<@NotNull Direction> SIDED = ContextKey.of(Direction.class, new Identifier("modern_industrialization:sided"));
     public static final BlockApiLookup<EnergyMoveable, @NotNull Direction> MOVEABLE = BlockApiLookupRegistry
-            .getLookup(new Identifier("modern_industrialization:energy_moveable"), SIDED);
+            .getLookup(new Identifier("modern_industrialization:energy_moveable"), EnergyMoveable.class, Direction.class);
 
     static {
         // Compat wrapper for tech reborn

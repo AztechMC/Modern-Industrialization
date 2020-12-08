@@ -53,10 +53,9 @@ public class MachineScreenHandler extends ConfigurableScreenHandler {
     public MachineScreenHandler(int syncId, PlayerInventory playerInventory, MachineInventory inventory, PropertyDelegate propertyDelegate,
             MachineFactory factory) {
 
-        super(ModernIndustrialization.SCREEN_HANDLER_TYPE_MACHINE, syncId, playerInventory, inventory);
+        super(ModernIndustrialization.SCREEN_HANDLER_TYPE_MACHINE, syncId, playerInventory, inventory.getInventory());
 
         this.inventory = inventory;
-        inventory.onOpen(playerInventory.player);
         this.factory = factory;
         this.propertyDelegate = propertyDelegate;
         this.trackedProperties = new int[propertyDelegate.size()];
@@ -72,17 +71,17 @@ public class MachineScreenHandler extends ConfigurableScreenHandler {
             this.addSlot(new Slot(playerInventory, j, factory.getInventoryPosX() + j * 18, 58 + factory.getInventoryPosY()));
         }
 
-        if (!factory.isMultiblock() || inventory.getItemStacks().size() > 0) {
+        if (!factory.isMultiblock() || inventory.getInventory().itemStacks.size() > 0) {
             int itemCnt = 0;
             for (int i = 0; i < factory.getSlots(); i++) {
                 if (factory.getSlotType(i) == INPUT_SLOT || factory.getSlotType(i) == OUTPUT_SLOT) {
-                    ConfigurableItemStack stack = inventory.getItemStacks().get(itemCnt);
-                    this.addSlot(stack.new ConfigurableItemSlot(inventory, itemCnt, factory.getSlotPosX(i), factory.getSlotPosY(i),
+                    ConfigurableItemStack stack = inventory.getInventory().itemStacks.get(itemCnt);
+                    this.addSlot(stack.new ConfigurableItemSlot(inventory::markDirty, itemCnt, factory.getSlotPosX(i), factory.getSlotPosY(i),
                             factory.insertPredicate));
                     ++itemCnt;
                 } else {
-                    ConfigurableFluidStack stack = inventory.getFluidStacks().get(i - itemCnt);
-                    this.addSlot(stack.new ConfigurableFluidSlot(inventory, factory.getSlotPosX(i), factory.getSlotPosY(i)));
+                    ConfigurableFluidStack stack = inventory.getInventory().fluidStacks.get(i - itemCnt);
+                    this.addSlot(stack.new ConfigurableFluidSlot(inventory::markDirty, factory.getSlotPosX(i), factory.getSlotPosY(i)));
                 }
             }
         }
@@ -90,13 +89,7 @@ public class MachineScreenHandler extends ConfigurableScreenHandler {
 
     @Override
     public boolean canUse(PlayerEntity player) {
-        return this.inventory.canPlayerUse(player);
-    }
-
-    @Override
-    public void close(PlayerEntity player) {
-        inventory.onClose(playerInventory.player);
-        super.close(player);
+        return true;
     }
 
     public MachineFactory getMachineFactory() {

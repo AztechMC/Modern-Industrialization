@@ -23,11 +23,12 @@
  */
 package aztech.modern_industrialization.pipes.fluid;
 
-import alexiil.mc.lib.attributes.fluid.volume.FluidKeys;
 import aztech.modern_industrialization.pipes.api.PipeNetwork;
 import aztech.modern_industrialization.pipes.api.PipeNetworkData;
 import aztech.modern_industrialization.pipes.api.PipeNetworkNode;
 import java.util.Map;
+
+import net.minecraft.fluid.Fluids;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -35,7 +36,7 @@ public class FluidNetwork extends PipeNetwork {
     final int nodeCapacity;
 
     public FluidNetwork(int id, PipeNetworkData data, int nodeCapacity) {
-        super(id, data == null ? new FluidNetworkData(FluidKeys.EMPTY) : data);
+        super(id, data == null ? new FluidNetworkData(Fluids.EMPTY) : data);
         this.nodeCapacity = nodeCapacity;
     }
 
@@ -81,7 +82,7 @@ public class FluidNetwork extends PipeNetwork {
     }
 
     private boolean isEmpty() {
-        if (((FluidNetworkData) data).fluid.isEmpty())
+        if (((FluidNetworkData) data).fluid == Fluids.EMPTY)
             return true;
         for (PipeNetworkNode node : nodes.values()) {
             if (node == null || ((FluidNetworkNode) node).amount != 0) {

@@ -32,8 +32,8 @@ public class ConfigurableChestBlockEntity extends MachineBlockEntity {
         super(factory);
 
         // Replace the existing slots by slots that allow any pipe I/O.
-        for (int i = 0; i < itemStacks.size(); ++i) {
-            itemStacks.set(i, ConfigurableItemStack.standardIOSlot(true));
+        for (int i = 0; i < inventory.itemStacks.size(); ++i) {
+            inventory.itemStacks.set(i, ConfigurableItemStack.standardIOSlot(true));
         }
     }
 

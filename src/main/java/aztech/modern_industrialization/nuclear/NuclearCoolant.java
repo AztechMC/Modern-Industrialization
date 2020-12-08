@@ -43,6 +43,7 @@ public class NuclearCoolant extends MINuclearItem {
     public void tick(ItemStack is, NuclearReactorBlockEntity nuclearReactor, double neutronPulse, Random rand) {
         NuclearFluidCoolant coolant = getCoolant(is);
         if (coolant != null) {
+            /* FIXME
             int extractMax = nuclearReactor.getMaxFluidExtraction(coolant.fluid);
             int insertMax = nuclearReactor.getMaxFluidInsertion(coolant.fluidResult);
             int s = Math.min(extractMax, insertMax);
@@ -57,6 +58,7 @@ public class NuclearCoolant extends MINuclearItem {
             if (r != 0) {
                 throw new IllegalStateException("Remaining inserted fluid : " + r);
             }
+             */
         }
     }
 

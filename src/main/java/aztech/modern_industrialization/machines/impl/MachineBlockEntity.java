@@ -23,18 +23,19 @@
  */
 package aztech.modern_industrialization.machines.impl;
 
-import static alexiil.mc.lib.attributes.Simulation.ACTION;
-
 import alexiil.mc.lib.attributes.fluid.volume.FluidKey;
 import alexiil.mc.lib.attributes.fluid.volume.FluidKeys;
 import aztech.modern_industrialization.MIFluids;
 import aztech.modern_industrialization.ModernIndustrialization;
 import aztech.modern_industrialization.api.energy.*;
 import aztech.modern_industrialization.inventory.ConfigurableFluidStack;
-import aztech.modern_industrialization.inventory.ConfigurableInventory;
 import aztech.modern_industrialization.inventory.ConfigurableItemStack;
+import aztech.modern_industrialization.inventory.MIInventory;
 import aztech.modern_industrialization.machines.recipe.MachineRecipe;
 import aztech.modern_industrialization.machines.recipe.MachineRecipeType;
+import dev.technici4n.fasttransferlib.api.fluid.FluidApi;
+import dev.technici4n.fasttransferlib.api.item.ItemApi;
+import dev.technici4n.fasttransferlib.api.item.ItemKey;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -44,6 +45,7 @@ import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.fluid.Fluid;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
@@ -61,11 +63,6 @@ import net.minecraft.util.registry.Registry;
 
 // TODO: refactor
 public class MachineBlockEntity extends AbstractMachineBlockEntity implements Tickable, ExtendedScreenHandlerFactory, MachineInventory {
-    protected static final FluidKey STEAM_KEY = MIFluids.STEAM.key;
-
-    protected List<ConfigurableItemStack> itemStacks;
-    protected List<ConfigurableFluidStack> fluidStacks;
-
     protected long storedEu = 0;
 
     protected long getMaxStoredEu() {
@@ -87,20 +84,22 @@ public class MachineBlockEntity extends AbstractMachineBlockEntity implements Ti
 
     protected EnergyInsertable insertable = null;
 
+    protected final MIInventory inventory;
+
     public MachineBlockEntity(MachineFactory factory) {
         super(factory.blockEntityType, Direction.NORTH);
         this.factory = factory;
-        itemStacks = new ArrayList<>();
+        List<ConfigurableItemStack> itemStacks = new ArrayList<>();
         for (int i = 0; i < factory.getInputSlots(); ++i) {
             itemStacks.add(ConfigurableItemStack.standardInputSlot());
         }
         for (int i = 0; i < factory.getOutputSlots(); ++i) {
             itemStacks.add(ConfigurableItemStack.standardOutputSlot());
         }
-        fluidStacks = new ArrayList<>();
+        List<ConfigurableFluidStack> fluidStacks = new ArrayList<>();
         for (int i = 0; i < factory.getLiquidInputSlots(); ++i) {
             if (i == 0 && factory instanceof SteamMachineFactory) {
-                fluidStacks.add(ConfigurableFluidStack.lockedInputSlot(((SteamMachineFactory) factory).getSteamBucketCapacity() * 1000, STEAM_KEY));
+                fluidStacks.add(ConfigurableFluidStack.lockedInputSlot(((SteamMachineFactory) factory).getSteamBucketCapacity() * 1000, MIFluids.STEAM));
             } else {
                 fluidStacks.add(ConfigurableFluidStack.standardInputSlot(factory.getInputBucketCapacity() * 1000));
             }
@@ -108,6 +107,7 @@ public class MachineBlockEntity extends AbstractMachineBlockEntity implements Ti
         for (int i = 0; i < factory.getLiquidOutputSlots(); ++i) {
             fluidStacks.add(ConfigurableFluidStack.standardOutputSlot(factory.getOutputBucketCapacity() * 1000));
         }
+        inventory = new MIInventory(itemStacks, fluidStacks, this::markDirty);
 
         this.propertyDelegate = new PropertyDelegate() {
             @Override
@@ -129,6 +129,11 @@ public class MachineBlockEntity extends AbstractMachineBlockEntity implements Ti
         if (getTier() == MachineTier.LV) {
             insertable = buildInsertable(CableTier.LV);
         }
+    }
+
+    @Override
+    public MIInventory getInventory() {
+        return inventory;
     }
 
     protected int getProperty(int index) {
@@ -158,16 +163,6 @@ public class MachineBlockEntity extends AbstractMachineBlockEntity implements Ti
     }
 
     @Override
-    public List<ConfigurableItemStack> getItemStacks() {
-        return itemStacks;
-    }
-
-    @Override
-    public List<ConfigurableFluidStack> getFluidStacks() {
-        return fluidStacks;
-    }
-
-    @Override
     public Text getDisplayName() {
         return new TranslatableText(factory.getTranslationKey());
     }
@@ -180,7 +175,7 @@ public class MachineBlockEntity extends AbstractMachineBlockEntity implements Ti
     @Override
     public CompoundTag toTag(CompoundTag tag) {
         super.toTag(tag);
-        writeToTag(tag);
+        inventory.writeToTag(tag);
         tag.putInt("usedEnergy", this.usedEnergy);
         tag.putInt("recipeEnergy", this.recipeEnergy);
         tag.putInt("recipeMaxEu", this.recipeMaxEu);
@@ -198,21 +193,7 @@ public class MachineBlockEntity extends AbstractMachineBlockEntity implements Ti
     @Override
     public void fromTag(BlockState state, CompoundTag tag) {
         super.fromTag(state, tag);
-        {
-            // This is a failsafe in case the number of slots in a machine changed
-            // When this happens, we destroy all items/fluids, but at least we don't crash
-            // the world.
-            // TODO: find a better solution?
-            List<ConfigurableItemStack> itemStackCopy = ConfigurableItemStack.copyList(itemStacks);
-            List<ConfigurableFluidStack> fluidStackCopy = ConfigurableFluidStack.copyList(fluidStacks);
-            readFromTag(tag);
-            if (itemStackCopy.size() != itemStacks.size()) {
-                itemStacks = itemStackCopy;
-            }
-            if (fluidStackCopy.size() != fluidStacks.size()) {
-                fluidStacks = fluidStackCopy;
-            }
-        }
+        inventory.readFromTag(tag);
         this.usedEnergy = tag.getInt("usedEnergy");
         this.recipeEnergy = tag.getInt("recipeEnergy");
         this.recipeMaxEu = tag.getInt("recipeMaxEu");
@@ -257,8 +238,8 @@ public class MachineBlockEntity extends AbstractMachineBlockEntity implements Ti
             MachineRecipeType recipeType = factory.recipeType;
             List<MachineRecipe> recipes = new ArrayList<>(recipeType.getFluidOnlyRecipes(serverWorld));
             for (ConfigurableItemStack stack : getItemInputStacks()) {
-                if (!stack.getStack().isEmpty()) {
-                    recipes.addAll(recipeType.getMatchingRecipes(serverWorld, stack.getStack().getItem()));
+                if (!stack.getItemKey().isEmpty()) {
+                    recipes.addAll(recipeType.getMatchingRecipes(serverWorld, stack.getItemKey().getItem()));
                 }
             }
             return recipes;
@@ -403,9 +384,9 @@ public class MachineBlockEntity extends AbstractMachineBlockEntity implements Ti
     protected void autoExtract() {
         if (outputDirection != null) {
             if (extractItems)
-                autoExtractItems(world, pos, outputDirection);
+                inventory.autoExtractItems(world, pos, outputDirection);
             if (extractFluids)
-                autoExtractFluids(world, pos, outputDirection);
+                inventory.autoExtractFluids(world, pos, outputDirection);
         }
     }
 
@@ -415,19 +396,19 @@ public class MachineBlockEntity extends AbstractMachineBlockEntity implements Ti
     }
 
     public List<ConfigurableItemStack> getItemInputStacks() {
-        return itemStacks.subList(0, factory.getInputSlots());
+        return inventory.itemStacks.subList(0, factory.getInputSlots());
     }
 
     public List<ConfigurableFluidStack> getFluidInputStacks() {
-        return fluidStacks.subList(factory instanceof SteamMachineFactory ? 1 : 0, factory.getLiquidInputSlots());
+        return inventory.fluidStacks.subList(factory instanceof SteamMachineFactory ? 1 : 0, factory.getLiquidInputSlots());
     }
 
     public List<ConfigurableItemStack> getItemOutputStacks() {
-        return itemStacks.subList(factory.getInputSlots(), itemStacks.size());
+        return inventory.itemStacks.subList(factory.getInputSlots(), inventory.itemStacks.size());
     }
 
     public List<ConfigurableFluidStack> getFluidOutputStacks() {
-        return fluidStacks.subList(factory.getLiquidInputSlots(), fluidStacks.size());
+        return inventory.fluidStacks.subList(factory.getLiquidInputSlots(), inventory.fluidStacks.size());
     }
 
     /**
@@ -436,7 +417,7 @@ public class MachineBlockEntity extends AbstractMachineBlockEntity implements Ti
      * that's exactly what this shared array does. We need the ThreadLocal because
      * machines in different worlds may be ticked at different times.
      */
-    private static ThreadLocal<IntArrayList> cachedItemCounts = new ThreadLocal<>();
+    private static final ThreadLocal<IntArrayList> cachedItemCounts = new ThreadLocal<>();
 
     private IntArrayList getCachedItemCounts() {
         // Note: Not using the default constructor, because empty fastutils lists don't
@@ -450,7 +431,7 @@ public class MachineBlockEntity extends AbstractMachineBlockEntity implements Ti
         List<ConfigurableItemStack> baseList = getItemInputStacks();
         itemCounts.size(baseList.size());
         for (int i = 0; i < baseList.size(); i++) {
-            itemCounts.set(i, baseList.get(i).getStack().getCount());
+            itemCounts.set(i, baseList.get(i).getCount());
         }
     }
 
@@ -472,10 +453,10 @@ public class MachineBlockEntity extends AbstractMachineBlockEntity implements Ti
             int remainingAmount = input.amount;
             for (int i = 0; i < baseList.size(); i++) {
                 ConfigurableItemStack stack = baseList.get(i);
-                if (itemCounts.getInt(i) > 0 && input.matches(stack.getStack())) {
+                if (itemCounts.getInt(i) > 0 && input.matches(stack.getItemKey().toStack())) { // TODO: ItemStack creation slow?
                     int taken = Math.min(itemCounts.getInt(i), remainingAmount);
                     if (!simulate)
-                        stack.getStack().decrement(taken);
+                        stack.decrement(taken);
                     itemCounts.set(i, itemCounts.getInt(i) - taken);
                     changedItems = true;
                     remainingAmount -= taken;
@@ -507,8 +488,8 @@ public class MachineBlockEntity extends AbstractMachineBlockEntity implements Ti
             }
             int remainingAmount = input.amount;
             for (ConfigurableFluidStack stack : stacks) {
-                if (stack.getFluid().getRawFluid() == input.fluid) {
-                    int taken = Math.min(remainingAmount, stack.getAmount());
+                if (stack.getFluid() == input.fluid) {
+                    long taken = Math.min(remainingAmount, stack.getAmount());
                     stack.decrement(taken);
                     remainingAmount -= taken;
                     if (remainingAmount == 0)
@@ -544,17 +525,18 @@ public class MachineBlockEntity extends AbstractMachineBlockEntity implements Ti
                 int stackId = 0;
                 for (ConfigurableItemStack stack : stacks) {
                     stackId++;
-                    ItemStack st = stack.getStack();
-                    if (st.getItem() == output.item || st.isEmpty()) {
-                        int ins = Math.min(remainingAmount, output.item.getMaxCount() - st.getCount());
-                        if (st.isEmpty()) {
+                    ItemKey key = stack.getItemKey();
+                    if (key.getItem() == output.item || key.isEmpty()) {
+                        int ins = Math.min(remainingAmount, output.item.getMaxCount() - stack.getCount());
+                        if (key.isEmpty()) {
                             if ((stack.isMachineLocked() || stack.isPlayerLocked() || loopRun == 1) && stack.canInsert(new ItemStack(output.item))) {
-                                stack.setStack(new ItemStack(output.item, ins));
+                                stack.setCount(ins);
+                                stack.setItemKey(key);
                             } else {
                                 ins = 0;
                             }
                         } else {
-                            st.increment(ins);
+                            stack.increment(ins);
                         }
                         remainingAmount -= ins;
                         if (ins > 0) {
@@ -583,7 +565,7 @@ public class MachineBlockEntity extends AbstractMachineBlockEntity implements Ti
         List<ConfigurableFluidStack> stacks = simulate ? ConfigurableFluidStack.copyList(baseList) : baseList;
 
         List<Integer> locksToToggle = new ArrayList<>();
-        List<FluidKey> lockFluids = new ArrayList<>();
+        List<Fluid> lockFluids = new ArrayList<>();
 
         boolean ok = true;
         for (MachineRecipe.FluidOutput output : recipe.fluidOutputs) {
@@ -594,16 +576,26 @@ public class MachineBlockEntity extends AbstractMachineBlockEntity implements Ti
                 if (randFloat > output.probability)
                     continue;
             }
-            FluidKey key = FluidKeys.get(output.fluid);
-            int remainingAmount = ConfigurableInventory.internalInsert(stacks, key, output.amount, ACTION, s -> true, index -> {
-                locksToToggle.add(index);
-                lockFluids.add(key);
-            }, () -> {
-                if (!simulate)
-                    markDirty();
-            });
-            if (remainingAmount > 0)
-                ok = false;
+            int index = -1;
+            // First, try to find a slot that contains the fluid. If we couldn't find one,
+            // we insert in any stack
+            outer: for (int tries = 0; tries < 2; ++tries) {
+                for (int i = 0; i < stacks.size(); i++) {
+                    ConfigurableFluidStack stack = stacks.get(i);
+                    if (stack.isFluidValid(output.fluid) && (tries == 1 || stack.getFluid() == output.fluid)) {
+                        long inserted = Math.min(output.amount, stack.getRemainingSpace());
+                        if (inserted > 0) {
+                            stack.setFluid(output.fluid);
+                            stack.increment(output.amount);
+                            locksToToggle.add(index);
+                            lockFluids.add(output.fluid);
+
+                            if (inserted <= output.amount) ok = false;
+                            break outer;
+                        }
+                    }
+                }
+            }
         }
 
         if (toggleLock) {
@@ -626,16 +618,16 @@ public class MachineBlockEntity extends AbstractMachineBlockEntity implements Ti
     }
 
     protected List<ConfigurableFluidStack> getSteamInputStacks() {
-        return fluidStacks.subList(0, 1);
+        return inventory.fluidStacks.subList(0, 1);
     }
 
     public int getEu(int maxEu, boolean simulate) {
         if (factory instanceof SteamMachineFactory) {
             int totalRem = 0;
             for (ConfigurableFluidStack stack : getSteamInputStacks()) {
-                if (stack.getFluid() == STEAM_KEY) {
-                    int amount = stack.getAmount();
-                    int rem = Math.min(maxEu, amount);
+                if (stack.getFluid() == MIFluids.STEAM) {
+                    long amount = stack.getAmount();
+                    long rem = Math.min(maxEu, amount);
                     if (!simulate) {
                         stack.decrement(rem);
                     }
@@ -778,13 +770,12 @@ public class MachineBlockEntity extends AbstractMachineBlockEntity implements Ti
 
         // FLUID INPUTS
         outer: for (MachineRecipe.FluidInput input : recipe.fluidInputs) {
-            FluidKey fluid = FluidKeys.get(input.fluid);
             for (ConfigurableFluidStack stack : getFluidInputStacks()) {
-                if (stack.getLockedFluid() == fluid)
+                if (stack.getLockedFluid() == input.fluid)
                     continue outer;
             }
             for (ConfigurableFluidStack stack : getFluidInputStacks()) {
-                if (stack.playerLock(fluid)) {
+                if (stack.playerLock(input.fluid)) {
                     markDirty();
                     break;
                 }
@@ -794,11 +785,11 @@ public class MachineBlockEntity extends AbstractMachineBlockEntity implements Ti
         outer: for (MachineRecipe.FluidOutput output : recipe.fluidOutputs) {
             FluidKey fluid = FluidKeys.get(output.fluid);
             for (ConfigurableFluidStack stack : getFluidOutputStacks()) {
-                if (stack.getLockedFluid() == fluid)
+                if (stack.getLockedFluid() == output.fluid)
                     continue outer;
             }
             for (ConfigurableFluidStack stack : getFluidOutputStacks()) {
-                if (stack.playerLock(fluid)) {
+                if (stack.playerLock(output.fluid)) {
                     markDirty();
                     break;
                 }
@@ -807,7 +798,13 @@ public class MachineBlockEntity extends AbstractMachineBlockEntity implements Ti
     }
 
     // TODO: move this somewhere else!
-    public void registerApis() {
+    protected void registerAdditionalApis() {
         EnergyApi.MOVEABLE.registerForBlockEntities((be, direction) -> ((MachineBlockEntity) be).insertable, getType());
+    }
+
+    public final void registerApis() {
+        ItemApi.SIDED_VIEW.registerForBlockEntities((be, direction) -> ((MachineBlockEntity) be).inventory.getItemView(), getType());
+        FluidApi.SIDED_VIEW.registerForBlockEntities((be, direction) -> ((MachineBlockEntity) be).inventory.getFluidView(), getType());
+        registerAdditionalApis();
     }
 }

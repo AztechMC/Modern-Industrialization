@@ -56,7 +56,7 @@ public class CreativeTankBlockEntity extends FastBlockEntity implements FluidExt
 
     @Override
     public void fromClientTag(CompoundTag tag) {
-        fluid = NbtHelper.getFluidCompatible(tag, "fluid");
+        fluid = FluidKeys.get(NbtHelper.getFluidCompatible(tag, "fluid"));
     }
 
     @Override

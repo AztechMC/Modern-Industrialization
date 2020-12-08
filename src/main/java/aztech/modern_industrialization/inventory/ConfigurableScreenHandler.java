@@ -53,18 +53,18 @@ public abstract class ConfigurableScreenHandler extends ScreenHandler {
     private static final int PLAYER_SLOTS = 36;
     public boolean lockingMode = false;
     protected PlayerInventory playerInventory;
-    protected ConfigurableInventory inventory;
+    protected MIInventory inventory;
     private List<ConfigurableItemStack> trackedItems;
     private List<ConfigurableFluidStack> trackedFluids;
 
-    protected ConfigurableScreenHandler(ScreenHandlerType<?> type, int syncId, PlayerInventory playerInventory, ConfigurableInventory inventory) {
+    protected ConfigurableScreenHandler(ScreenHandlerType<?> type, int syncId, PlayerInventory playerInventory, MIInventory inventory) {
         super(type, syncId);
         this.playerInventory = playerInventory;
         this.inventory = inventory;
 
         if (playerInventory.player instanceof ServerPlayerEntity) {
-            trackedItems = ConfigurableItemStack.copyList(inventory.getItemStacks());
-            trackedFluids = ConfigurableFluidStack.copyList(inventory.getFluidStacks());
+            trackedItems = ConfigurableItemStack.copyList(inventory.itemStacks);
+            trackedFluids = ConfigurableFluidStack.copyList(inventory.fluidStacks);
         }
     }
 
@@ -73,8 +73,8 @@ public abstract class ConfigurableScreenHandler extends ScreenHandler {
         if (playerInventory.player instanceof ServerPlayerEntity) {
             ServerPlayerEntity player = (ServerPlayerEntity) playerInventory.player;
             for (int i = 0; i < trackedItems.size(); i++) {
-                if (!trackedItems.get(i).equals(inventory.getItemStacks().get(i))) {
-                    trackedItems.set(i, new ConfigurableItemStack(inventory.getItemStacks().get(i)));
+                if (!trackedItems.get(i).equals(inventory.itemStacks.get(i))) {
+                    trackedItems.set(i, new ConfigurableItemStack(inventory.itemStacks.get(i)));
                     PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
                     buf.writeInt(syncId);
                     buf.writeInt(i);
@@ -83,8 +83,8 @@ public abstract class ConfigurableScreenHandler extends ScreenHandler {
                 }
             }
             for (int i = 0; i < trackedFluids.size(); i++) {
-                if (!trackedFluids.get(i).equals(inventory.getFluidStacks().get(i))) {
-                    trackedFluids.set(i, new ConfigurableFluidStack(inventory.getFluidStacks().get(i)));
+                if (!trackedFluids.get(i).equals(inventory.fluidStacks.get(i))) {
+                    trackedFluids.set(i, new ConfigurableFluidStack(inventory.fluidStacks.get(i)));
                     PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
                     buf.writeInt(syncId);
                     buf.writeInt(i);
@@ -109,7 +109,8 @@ public abstract class ConfigurableScreenHandler extends ScreenHandler {
                 if (lockingMode) {
                     fluidStack.togglePlayerLock();
                 } else {
-                    Reference<ItemStack> heldStackRef = new Reference<ItemStack>() {
+                    // FIXME
+                    /*Reference<ItemStack> heldStackRef = new Reference<ItemStack>() {
                         @Override
                         public ItemStack get() {
                             return playerInventory.getCursorStack();
@@ -149,7 +150,7 @@ public abstract class ConfigurableScreenHandler extends ScreenHandler {
                             fluidStack.setAmount(leftover);
                             inventory.markDirty();
                         }
-                    }
+                    }*/
                 }
                 return fluidSlot.getStack().copy();
             } else if (slot instanceof ConfigurableItemStack.ConfigurableItemSlot) {
@@ -160,7 +161,7 @@ public abstract class ConfigurableScreenHandler extends ScreenHandler {
                     ConfigurableItemStack.ConfigurableItemSlot itemSlot = (ConfigurableItemStack.ConfigurableItemSlot) slot;
                     ConfigurableItemStack itemStack = itemSlot.getConfStack();
                     itemStack.togglePlayerLock(playerInventory.getCursorStack());
-                    return itemStack.getStack().copy();
+                    return itemStack.getItemKey().toStack(itemStack.getCount()).copy();
                 }
             }
         }

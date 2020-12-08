@@ -52,8 +52,8 @@ public class MultiblockMachineBlockEntity extends MachineBlockEntity {
     public MultiblockMachineBlockEntity(MachineFactory factory, List<MultiblockShape> shapes, boolean clear) {
         super(factory);
         if (clear) {
-            itemStacks.clear();
-            fluidStacks.clear();
+            inventory.itemStacks.clear();
+            inventory.fluidStacks.clear();
         }
         this.shapes = shapes;
         this.hatchCasing = factory.machineModel;

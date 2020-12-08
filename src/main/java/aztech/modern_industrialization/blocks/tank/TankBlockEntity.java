@@ -57,7 +57,7 @@ public class TankBlockEntity extends FastBlockEntity implements FluidTransferabl
 
     @Override
     public void fromClientTag(CompoundTag tag) {
-        fluid = NbtHelper.getFluidCompatible(tag, "fluid");
+        fluid = FluidKeys.get(NbtHelper.getFluidCompatible(tag, "fluid"));
         amount = tag.getInt("amount");
         capacity = tag.getInt("capacity");
     }

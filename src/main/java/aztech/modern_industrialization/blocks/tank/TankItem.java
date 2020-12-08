@@ -31,6 +31,7 @@ import alexiil.mc.lib.attributes.fluid.FluidVolumeUtil;
 import alexiil.mc.lib.attributes.fluid.amount.FluidAmount;
 import alexiil.mc.lib.attributes.fluid.filter.FluidFilter;
 import alexiil.mc.lib.attributes.fluid.volume.FluidKey;
+import alexiil.mc.lib.attributes.fluid.volume.FluidKeys;
 import alexiil.mc.lib.attributes.fluid.volume.FluidVolume;
 import alexiil.mc.lib.attributes.misc.AbstractItemBasedAttribute;
 import alexiil.mc.lib.attributes.misc.LimitedConsumer;
@@ -65,7 +66,7 @@ public class TankItem extends BlockItem implements AttributeProviderItem {
     }
 
     public FluidKey getFluid(ItemStack stack) {
-        return NbtHelper.getFluidCompatible(stack.getSubTag("BlockEntityTag"), "fluid");
+        return FluidKeys.get(NbtHelper.getFluidCompatible(stack.getSubTag("BlockEntityTag"), "fluid"));
     }
 
     private void setFluid(ItemStack stack, FluidKey fluid) {

@@ -43,7 +43,7 @@ public class WaterPumpBlockEntity extends MachineBlockEntity {
     public WaterPumpBlockEntity(MachineFactory factory) {
         super(factory);
 
-        fluidStacks.set(fluidStacks.size() - 1, ConfigurableFluidStack.lockedOutputSlot(factory.getOutputBucketCapacity() * 1000, FluidKeys.WATER));
+        inventory.fluidStacks.set(inventory.fluidStacks.size() - 1, ConfigurableFluidStack.lockedOutputSlot(factory.getOutputBucketCapacity() * 81000, Fluids.WATER));
         usedEnergy = 0;
         recipeEnergy = 100;
     }
@@ -56,7 +56,7 @@ public class WaterPumpBlockEntity extends MachineBlockEntity {
         if (world.isClient)
             return;
 
-        ConfigurableFluidStack waterStack = fluidStacks.get(fluidStacks.size() - 1);
+        ConfigurableFluidStack waterStack = inventory.fluidStacks.get(inventory.fluidStacks.size() - 1);
         if (waterStack.getRemainingSpace() < 1000 / 8) {
             if (isActive) {
                 isActive = false;
@@ -106,7 +106,7 @@ public class WaterPumpBlockEntity extends MachineBlockEntity {
         }
 
         for (Direction direction : Direction.values()) {
-            autoExtractFluids(world, pos, direction);
+            inventory.autoExtractFluids(world, pos, direction);
         }
     }
 

@@ -127,13 +127,14 @@ public class NbtHelper {
         }
     }
 
-    public static FluidKey getFluidCompatible(CompoundTag tag, String key) {
+    public static Fluid getFluidCompatible(CompoundTag tag, String key) {
         if (!tag.contains(key))
-            return FluidKeys.EMPTY;
+            return Fluids.EMPTY;
         if (tag.get(key) instanceof StringTag) {
-            return FluidKeys.get(Registry.FLUID.get(new Identifier(tag.getString(key))));
+            return Registry.FLUID.get(new Identifier(tag.getString(key)));
         } else {
-            return FluidKey.fromTag(tag.getCompound(key));
+            FluidKey fluidKey = FluidKey.fromTag(tag.getCompound(key));
+            return fluidKey.getRawFluid() == null ? Fluids.EMPTY : fluidKey.getRawFluid();
         }
     }
 }

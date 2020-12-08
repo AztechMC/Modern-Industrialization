@@ -95,10 +95,10 @@ public class HatchBlockEntity extends MachineBlockEntity {
         if (controllerPos != lastSyncedControllerPos)
             sync();
         if (extractItems && type == ITEM_OUTPUT) {
-            autoExtractItems(world, pos, outputDirection);
+            inventory.autoExtractItems(world, pos, outputDirection);
         }
         if (extractFluids && type == FLUID_OUTPUT) {
-            autoExtractFluids(world, pos, outputDirection);
+            inventory.autoExtractFluids(world, pos, outputDirection);
         }
         if (extractItems && type == ITEM_INPUT) {
             ItemExtractable extractable = ItemAttributes.EXTRACTABLE.get(world, pos.offset(outputDirection),

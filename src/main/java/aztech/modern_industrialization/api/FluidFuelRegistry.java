@@ -24,16 +24,19 @@
 package aztech.modern_industrialization.api;
 
 import alexiil.mc.lib.attributes.fluid.volume.FluidKey;
+import net.minecraft.fluid.Fluid;
+import net.minecraft.fluid.Fluids;
+
 import java.util.*;
 
 public class FluidFuelRegistry {
-    private static final Map<FluidKey, Integer> fluidEus = new HashMap<>();
+    private static final Map<Fluid, Integer> fluidEus = new HashMap<>();
 
-    public static void register(FluidKey fluid, int eu) {
+    public static void register(Fluid fluid, int eu) {
         if (eu <= 0) {
             throw new RuntimeException("Fluids must have a positive eu amount!");
         }
-        if (fluid == null || fluid.isEmpty()) {
+        if (fluid == null || fluid == Fluids.EMPTY) {
             throw new RuntimeException("May not register a null or empty fluid!");
         }
         if (fluidEus.containsKey(fluid)) {
@@ -45,12 +48,12 @@ public class FluidFuelRegistry {
     /**
      * Get the burn time of a fluid, or 0 if the fluid is not a registered fuel.
      */
-    public static int getEu(FluidKey fluid) {
+    public static int getEu(Fluid fluid) {
         return fluidEus.getOrDefault(fluid, 0);
     }
 
-    public static List<FluidKey> getRegisteredFluids() {
-        List<FluidKey> fluids = new ArrayList<>(fluidEus.keySet());
+    public static List<Fluid> getRegisteredFluids() {
+        List<Fluid> fluids = new ArrayList<>(fluidEus.keySet());
         fluids.sort(Comparator.comparing(fluidEus::get));
         return fluids;
     }

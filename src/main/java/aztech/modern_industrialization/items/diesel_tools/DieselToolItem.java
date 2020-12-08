@@ -107,7 +107,7 @@ public class DieselToolItem extends Item
         int amount = FluidFuelItemHelper.getAmount(stack);
         if (amount > 0) {
             FluidKey fluid = FluidFuelItemHelper.getFluid(stack);
-            int burnTicks = FluidFuelRegistry.getEu(fluid);
+            int burnTicks = FluidFuelRegistry.getEu(fluid.getRawFluid());
             if (burnTicks > 0) {
                 return 1.0f + burnTicks / 4.0f;
             }

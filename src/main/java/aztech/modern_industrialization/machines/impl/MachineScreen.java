@@ -27,11 +27,13 @@ import alexiil.mc.lib.attributes.fluid.amount.FluidAmount;
 import alexiil.mc.lib.attributes.fluid.render.FluidRenderFace;
 import alexiil.mc.lib.attributes.fluid.render.FluidVolumeRenderer;
 import alexiil.mc.lib.attributes.fluid.volume.FluidKey;
+import alexiil.mc.lib.attributes.fluid.volume.FluidKeys;
 import alexiil.mc.lib.attributes.fluid.volume.FluidVolume;
 import aztech.modern_industrialization.ModernIndustrialization;
 import aztech.modern_industrialization.inventory.ConfigurableFluidStack;
 import aztech.modern_industrialization.inventory.ConfigurableInventoryPackets;
 import aztech.modern_industrialization.inventory.ConfigurableItemStack;
+import aztech.modern_industrialization.util.FluidHelper;
 import com.mojang.blaze3d.systems.RenderSystem;
 import io.netty.buffer.Unpooled;
 import java.text.DecimalFormat;
@@ -45,6 +47,7 @@ import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.fluid.Fluids;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -76,12 +79,12 @@ public class MachineScreen extends HandledScreen<MachineScreenHandler> {
     }
 
     private boolean hasLock() {
-        for (ConfigurableItemStack stack : handler.inventory.getItemStacks()) {
+        for (ConfigurableItemStack stack : handler.inventory.getInventory().itemStacks) {
             if (stack.canPlayerLock()) {
                 return true;
             }
         }
-        for (ConfigurableFluidStack stack : handler.inventory.getFluidStacks()) {
+        for (ConfigurableFluidStack stack : handler.inventory.getInventory().fluidStacks) {
             if (stack.canPlayerLock()) {
                 return true;
             }
@@ -90,7 +93,7 @@ public class MachineScreen extends HandledScreen<MachineScreenHandler> {
     }
 
     private boolean hasItemOutput() {
-        for (ConfigurableItemStack stack : handler.inventory.getItemStacks()) {
+        for (ConfigurableItemStack stack : handler.inventory.getInventory().itemStacks) {
             if (stack.canPipesExtract()) {
                 return true;
             }
@@ -102,7 +105,7 @@ public class MachineScreen extends HandledScreen<MachineScreenHandler> {
         if (hasItemOutput())
             return false;
         if (handler.getMachineFactory().autoInsert) {
-            for (ConfigurableItemStack stack : handler.inventory.getItemStacks()) {
+            for (ConfigurableItemStack stack : handler.inventory.getInventory().itemStacks) {
                 if (stack.canPipesInsert()) {
                     return true;
                 }
@@ -112,7 +115,7 @@ public class MachineScreen extends HandledScreen<MachineScreenHandler> {
     }
 
     private boolean hasFluidOutput() {
-        for (ConfigurableFluidStack stack : handler.inventory.getFluidStacks()) {
+        for (ConfigurableFluidStack stack : handler.inventory.getInventory().fluidStacks) {
             if (stack.canPipesExtract()) {
                 return true;
             }
@@ -124,7 +127,7 @@ public class MachineScreen extends HandledScreen<MachineScreenHandler> {
         if (hasFluidOutput())
             return false;
         if (handler.getMachineFactory().autoInsert) {
-            for (ConfigurableFluidStack stack : handler.inventory.getFluidStacks()) {
+            for (ConfigurableFluidStack stack : handler.inventory.getInventory().fluidStacks) {
                 if (stack.canPipesInsert()) {
                     return true;
                 }
@@ -320,10 +323,10 @@ public class MachineScreen extends HandledScreen<MachineScreenHandler> {
                 int j = y + slot.y;
 
                 ConfigurableFluidStack stack = ((ConfigurableFluidStack.ConfigurableFluidSlot) slot).getConfStack();
-                if (!stack.getFluid().isEmpty()) {
+                if (stack.getFluid() != Fluids.EMPTY) {
                     List<FluidRenderFace> faces = new ArrayList<>();
                     faces.add(FluidRenderFace.createFlatFaceZ(i, j, 0, i + 16, j + 16, 0, 1 / 16., false, false));
-                    FluidVolume vol = stack.getFluid().withAmount(FluidAmount.of(stack.getAmount(), 1000));
+                    FluidVolume vol = FluidKeys.get(stack.getFluid()).withAmount(FluidAmount.of(stack.getAmount(), 1000));
                     vol.render(faces, FluidVolumeRenderer.VCPS, matrices);
                 }
                 RenderSystem.runAsFancy(FluidVolumeRenderer.VCPS::draw);
@@ -344,7 +347,7 @@ public class MachineScreen extends HandledScreen<MachineScreenHandler> {
             if (slot instanceof ConfigurableItemStack.ConfigurableItemSlot) {
                 ConfigurableItemStack.ConfigurableItemSlot itemSlot = (ConfigurableItemStack.ConfigurableItemSlot) slot;
                 ConfigurableItemStack itemStack = itemSlot.getConfStack();
-                if ((itemStack.isPlayerLocked() || itemStack.isMachineLocked()) && itemStack.getStack().isEmpty()) {
+                if ((itemStack.isPlayerLocked() || itemStack.isMachineLocked()) && itemStack.getItemKey().isEmpty()) {
                     Item item = itemStack.getLockedItem();
                     if (item != Items.AIR) {
                         this.setZOffset(100);
@@ -369,12 +372,7 @@ public class MachineScreen extends HandledScreen<MachineScreenHandler> {
                 if (slot instanceof ConfigurableFluidStack.ConfigurableFluidSlot) {
                     ConfigurableFluidStack stack = ((ConfigurableFluidStack.ConfigurableFluidSlot) slot).getConfStack();
                     List<Text> tooltip = new ArrayList<>();
-                    FluidKey fluid = stack.getFluid();
-                    if (fluid.isEmpty()) {
-                        tooltip.add(new TranslatableText("text.modern_industrialization.fluid_slot_empty"));
-                    } else {
-                        tooltip.add(fluid.name);
-                    }
+                    tooltip.add(FluidHelper.getFluidName(stack.getFluid()));
                     String quantity = stack.getAmount() + " / " + stack.getCapacity();
                     tooltip.add(new TranslatableText("text.modern_industrialization.fluid_slot_quantity", quantity));
 
@@ -392,7 +390,7 @@ public class MachineScreen extends HandledScreen<MachineScreenHandler> {
                     this.renderTooltip(matrices, tooltip, mouseX, mouseY);
                 } else if (slot instanceof ConfigurableItemStack.ConfigurableItemSlot) {
                     ConfigurableItemStack stack = ((ConfigurableItemStack.ConfigurableItemSlot) slot).getConfStack();
-                    if (stack.getStack().isEmpty() && stack.getLockedItem() != null) {
+                    if (stack.getItemKey().isEmpty() && stack.getLockedItem() != null) {
                         this.renderTooltip(matrices, new ItemStack(stack.getLockedItem()), mouseX, mouseY);
                     }
                 }

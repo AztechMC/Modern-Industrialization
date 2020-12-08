@@ -39,7 +39,7 @@ public class ConfigurableInventoryPacketHandlers {
             ScreenHandler handler = MinecraftClient.getInstance().player.currentScreenHandler;
             if (handler.syncId == syncId) {
                 MachineScreenHandler machineHandler = (MachineScreenHandler) handler;
-                machineHandler.inventory.getItemStacks().get(stackId).readFromTag(tag);
+                machineHandler.inventory.getInventory().itemStacks.get(stackId).readFromTag(tag);
             }
         });
     };
@@ -52,7 +52,7 @@ public class ConfigurableInventoryPacketHandlers {
             ScreenHandler handler = MinecraftClient.getInstance().player.currentScreenHandler;
             if (handler.syncId == syncId) {
                 MachineScreenHandler machineHandler = (MachineScreenHandler) handler;
-                machineHandler.inventory.getFluidStacks().get(stackId).readFromTag(tag);
+                machineHandler.inventory.getInventory().fluidStacks.get(stackId).readFromTag(tag);
             }
         });
     };

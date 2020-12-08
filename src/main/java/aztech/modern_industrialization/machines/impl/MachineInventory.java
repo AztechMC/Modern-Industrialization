@@ -23,9 +23,9 @@
  */
 package aztech.modern_industrialization.machines.impl;
 
-import aztech.modern_industrialization.inventory.ConfigurableInventory;
+import aztech.modern_industrialization.inventory.MIInventory;
 
-public interface MachineInventory extends ConfigurableInventory {
+public interface MachineInventory {
     void setItemExtract(boolean extract);
 
     void setFluidExtract(boolean extract);
@@ -35,4 +35,8 @@ public interface MachineInventory extends ConfigurableInventory {
     boolean getFluidExtract();
 
     boolean hasOutput();
+
+    MIInventory getInventory();
+
+    void markDirty();
 }

@@ -27,6 +27,7 @@ import aztech.modern_industrialization.pipes.api.PipeNetworkNode;
 import aztech.modern_industrialization.pipes.electricity.ElectricityNetworkNode;
 import aztech.modern_industrialization.pipes.fluid.FluidNetworkNode;
 import aztech.modern_industrialization.pipes.impl.PipeBlockEntity;
+import aztech.modern_industrialization.util.NbtHelper;
 import mcp.mobius.waila.api.IServerDataProvider;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.nbt.CompoundTag;
@@ -43,9 +44,9 @@ public class PipeDataProvider implements IServerDataProvider<BlockEntity> {
 
             if (node instanceof FluidNetworkNode) {
                 FluidNetworkNode fluidNode = (FluidNetworkNode) node;
-                pipeData.putInt("amount", fluidNode.getAmount());
+                pipeData.putLong("amount", fluidNode.getAmount());
                 pipeData.putInt("capacity", fluidNode.getCapacity());
-                pipeData.put("fluid", fluidNode.getFluid().toTag());
+                NbtHelper.putFluid(pipeData, "fluid", fluidNode.getFluid());
             }
 
             if (node instanceof ElectricityNetworkNode) {

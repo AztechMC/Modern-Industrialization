@@ -28,19 +28,20 @@ import java.util.Collections;
 import java.util.List;
 import me.shedaniel.rei.api.EntryStack;
 import me.shedaniel.rei.api.RecipeDisplay;
+import net.minecraft.fluid.Fluid;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.NotNull;
 
 class FluidFuelDisplay implements RecipeDisplay {
-    final FluidKey fluid;
+    final Fluid fluid;
 
-    FluidFuelDisplay(FluidKey fluid) {
+    FluidFuelDisplay(Fluid fluid) {
         this.fluid = fluid;
     }
 
     @Override
     public @NotNull List<List<EntryStack>> getInputEntries() {
-        return Collections.singletonList(Collections.singletonList(EntryStack.create(fluid.getRawFluid())));
+        return Collections.singletonList(Collections.singletonList(EntryStack.create(fluid)));
     }
 
     @Override

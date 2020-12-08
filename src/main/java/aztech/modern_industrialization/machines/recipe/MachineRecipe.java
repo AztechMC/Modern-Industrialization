@@ -30,6 +30,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import net.minecraft.fluid.Fluid;
+import net.minecraft.inventory.Inventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.recipe.Ingredient;
@@ -40,7 +41,7 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.world.World;
 
-public class MachineRecipe implements Recipe<MachineBlockEntity> {
+public class MachineRecipe implements Recipe<Inventory> {
     final Identifier id;
     final MachineRecipeType type;
 
@@ -62,12 +63,12 @@ public class MachineRecipe implements Recipe<MachineBlockEntity> {
     }
 
     @Override
-    public boolean matches(MachineBlockEntity inv, World world) {
+    public boolean matches(Inventory inv, World world) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public ItemStack craft(MachineBlockEntity inv) {
+    public ItemStack craft(Inventory inv) {
         throw new UnsupportedOperationException();
     }
 

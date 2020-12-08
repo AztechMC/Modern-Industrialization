@@ -74,16 +74,21 @@ public class FluidNetwork extends PipeNetwork {
         FluidNetworkData thisData = (FluidNetworkData) data;
         FluidNetworkData otherData = (FluidNetworkData) other.data;
         // If one is empty, it's easy to merge.
-        if (this.isEmpty())
-            return otherData.clone();
-        if (((FluidNetwork) other).isEmpty())
-            return thisData.clone();
+        // First check for empty fluid, then also check for empty network the second time
+        for(int i = 0; i < 2; ++i) {
+            boolean onlyFluid = i == 0;
+            if (this.isEmpty(onlyFluid))
+                return otherData.clone();
+            if (((FluidNetwork) other).isEmpty(onlyFluid))
+                return thisData.clone();
+        }
         return null;
     }
 
-    private boolean isEmpty() {
+    private boolean isEmpty(boolean onlyFluid) {
         if (((FluidNetworkData) data).fluid == Fluids.EMPTY)
             return true;
+        if (onlyFluid) return false;
         for (PipeNetworkNode node : nodes.values()) {
             if (node == null || ((FluidNetworkNode) node).amount != 0) {
                 return false;

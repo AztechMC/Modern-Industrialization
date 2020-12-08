@@ -61,7 +61,7 @@ public class MachineRecipeDisplay implements RecipeDisplay {
                         new TranslatableText("text.modern_industrialization.probability", PROBABILITY_FORMAT.format(probability * 100)));
     }
 
-    private static EntryStack createFluidEntryStack(Fluid fluid, int amount) {
+    private static EntryStack createFluidEntryStack(Fluid fluid, long amount) {
         return EntryStack.create(fluid, Fraction.of(amount, 1000)).addSetting(EntryStack.Settings.Fluid.AMOUNT_TOOLTIP, FLUID_TOOLTIP);
     }
 

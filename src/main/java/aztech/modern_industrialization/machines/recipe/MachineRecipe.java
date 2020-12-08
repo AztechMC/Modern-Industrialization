@@ -139,10 +139,10 @@ public class MachineRecipe implements Recipe<Inventory> {
 
     public static class FluidInput {
         public final Fluid fluid;
-        public final int amount;
+        public final long amount;
         public final float probability;
 
-        public FluidInput(Fluid fluid, int amount, float probability) {
+        public FluidInput(Fluid fluid, long amount, float probability) {
             this.fluid = fluid;
             this.amount = amount;
             this.probability = probability;
@@ -163,10 +163,10 @@ public class MachineRecipe implements Recipe<Inventory> {
 
     public static class FluidOutput {
         public final Fluid fluid;
-        public final int amount;
+        public final long amount;
         public final float probability;
 
-        public FluidOutput(Fluid fluid, int amount, float probability) {
+        public FluidOutput(Fluid fluid, long amount, float probability) {
             this.fluid = fluid;
             this.amount = amount;
             this.probability = probability;

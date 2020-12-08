@@ -169,7 +169,7 @@ public class ConfigurableFluidStack {
     }
 
     public boolean isFluidValid(Fluid fluid) {
-        return fluid == this.fluid || (lockedFluid == null && this.fluid != Fluids.EMPTY);
+        return fluid == this.fluid || (lockedFluid == null && this.fluid == Fluids.EMPTY);
     }
 
     public long getRemainingSpace() {

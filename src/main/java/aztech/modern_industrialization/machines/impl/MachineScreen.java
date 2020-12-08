@@ -373,8 +373,7 @@ public class MachineScreen extends HandledScreen<MachineScreenHandler> {
                     ConfigurableFluidStack stack = ((ConfigurableFluidStack.ConfigurableFluidSlot) slot).getConfStack();
                     List<Text> tooltip = new ArrayList<>();
                     tooltip.add(FluidHelper.getFluidName(stack.getFluid()));
-                    String quantity = stack.getAmount() + " / " + stack.getCapacity();
-                    tooltip.add(new TranslatableText("text.modern_industrialization.fluid_slot_quantity", quantity));
+                    tooltip.add(FluidHelper.getFluidAmount(stack.getAmount(), stack.getCapacity()));
 
                     Style style = Style.EMPTY.withColor(TextColor.fromRgb(0xa9a9a9)).withItalic(true);
 

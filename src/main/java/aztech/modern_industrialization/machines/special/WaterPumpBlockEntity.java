@@ -26,7 +26,6 @@ package aztech.modern_industrialization.machines.special;
 import static aztech.modern_industrialization.machines.impl.MachineTier.LV;
 import static aztech.modern_industrialization.machines.impl.MachineTier.STEEL;
 
-import alexiil.mc.lib.attributes.fluid.volume.FluidKeys;
 import aztech.modern_industrialization.inventory.ConfigurableFluidStack;
 import aztech.modern_industrialization.machines.impl.MachineBlockEntity;
 import aztech.modern_industrialization.machines.impl.MachineFactory;

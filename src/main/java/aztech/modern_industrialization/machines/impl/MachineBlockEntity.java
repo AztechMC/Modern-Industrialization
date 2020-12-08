@@ -99,13 +99,13 @@ public class MachineBlockEntity extends AbstractMachineBlockEntity implements Ti
         List<ConfigurableFluidStack> fluidStacks = new ArrayList<>();
         for (int i = 0; i < factory.getLiquidInputSlots(); ++i) {
             if (i == 0 && factory instanceof SteamMachineFactory) {
-                fluidStacks.add(ConfigurableFluidStack.lockedInputSlot(((SteamMachineFactory) factory).getSteamBucketCapacity() * 1000, MIFluids.STEAM));
+                fluidStacks.add(ConfigurableFluidStack.lockedInputSlot(((SteamMachineFactory) factory).getSteamBucketCapacity() * 81000, MIFluids.STEAM));
             } else {
-                fluidStacks.add(ConfigurableFluidStack.standardInputSlot(factory.getInputBucketCapacity() * 1000));
+                fluidStacks.add(ConfigurableFluidStack.standardInputSlot(factory.getInputBucketCapacity() * 81000));
             }
         }
         for (int i = 0; i < factory.getLiquidOutputSlots(); ++i) {
-            fluidStacks.add(ConfigurableFluidStack.standardOutputSlot(factory.getOutputBucketCapacity() * 1000));
+            fluidStacks.add(ConfigurableFluidStack.standardOutputSlot(factory.getOutputBucketCapacity() * 81000));
         }
         inventory = new MIInventory(itemStacks, fluidStacks, this::markDirty);
 
@@ -486,7 +486,7 @@ public class MachineBlockEntity extends AbstractMachineBlockEntity implements Ti
                     continue;
                 }
             }
-            int remainingAmount = input.amount;
+            long remainingAmount = input.amount;
             for (ConfigurableFluidStack stack : stacks) {
                 if (stack.getFluid() == input.fluid) {
                     long taken = Math.min(remainingAmount, stack.getAmount());
@@ -586,7 +586,7 @@ public class MachineBlockEntity extends AbstractMachineBlockEntity implements Ti
                         long inserted = Math.min(output.amount, stack.getRemainingSpace());
                         if (inserted > 0) {
                             stack.setFluid(output.fluid);
-                            stack.increment(output.amount);
+                            stack.increment(inserted);
                             locksToToggle.add(index);
                             lockFluids.add(output.fluid);
 

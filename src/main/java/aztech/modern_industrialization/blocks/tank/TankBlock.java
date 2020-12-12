@@ -23,8 +23,6 @@
  */
 package aztech.modern_industrialization.blocks.tank;
 
-import alexiil.mc.lib.attributes.AttributeList;
-import alexiil.mc.lib.attributes.AttributeProvider;
 import aztech.modern_industrialization.ModernIndustrialization;
 import aztech.modern_industrialization.tools.IWrenchable;
 import aztech.modern_industrialization.util.MobSpawning;
@@ -50,7 +48,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 
-public class TankBlock extends Block implements BlockEntityProvider, IWrenchable, AttributeProvider {
+public class TankBlock extends Block implements BlockEntityProvider, IWrenchable {
     public TankBlock(Settings settings) {
         super(settings.nonOpaque().allowsSpawning(MobSpawning.NO_SPAWN));
     }
@@ -110,11 +108,5 @@ public class TankBlock extends Block implements BlockEntityProvider, IWrenchable
         BlockHitResult hit = new BlockHitResult(context.getHitPos(), context.getSide(), context.getBlockPos(), context.hitsInsideBlock());
         return onUse(context.getWorld().getBlockState(hit.getBlockPos()), context.getWorld(), hit.getBlockPos(), context.getPlayer(),
                 context.getHand(), hit);
-    }
-
-    @Override
-    public void addAllAttributes(World world, BlockPos pos, BlockState state, AttributeList<?> to) {
-        TankBlockEntity be = (TankBlockEntity) world.getBlockEntity(pos);
-        to.offer(be);
     }
 }

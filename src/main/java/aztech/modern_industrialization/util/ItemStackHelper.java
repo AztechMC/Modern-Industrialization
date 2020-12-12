@@ -41,7 +41,8 @@ public class ItemStackHelper {
      * @return false if the fuel could not be consumed, true otherwise
      */
     public static boolean consumeFuel(ConfigurableItemStack stack, boolean simulate) {
-        if (stack.getItemKey().isEmpty()) return false;
+        if (stack.getItemKey().isEmpty())
+            return false;
         Item item = stack.getItemKey().getItem();
         if (item.hasRecipeRemainder()) {
             if (stack.getCount() == 1 && stack.canInsert(item.getRecipeRemainder())) {

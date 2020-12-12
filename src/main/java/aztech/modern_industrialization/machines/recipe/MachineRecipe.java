@@ -23,7 +23,6 @@
  */
 package aztech.modern_industrialization.machines.recipe;
 
-import aztech.modern_industrialization.machines.impl.MachineBlockEntity;
 import aztech.modern_industrialization.mixin_impl.IngredientMatchingStacksAccessor;
 import aztech.modern_industrialization.util.DefaultedListWrapper;
 import java.util.Arrays;

@@ -23,12 +23,10 @@
  */
 package aztech.modern_industrialization.pipes.impl;
 
-import alexiil.mc.lib.attributes.fluid.volume.FluidKey;
 import aztech.modern_industrialization.pipes.api.PipeEndpointType;
 import aztech.modern_industrialization.pipes.api.PipeRenderer;
-import java.util.function.Function;
-
 import aztech.modern_industrialization.util.NbtHelper;
+import java.util.function.Function;
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandler;
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry;
 import net.fabricmc.fabric.api.renderer.v1.Renderer;

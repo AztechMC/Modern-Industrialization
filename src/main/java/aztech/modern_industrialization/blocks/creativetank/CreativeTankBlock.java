@@ -23,8 +23,6 @@
  */
 package aztech.modern_industrialization.blocks.creativetank;
 
-import alexiil.mc.lib.attributes.AttributeList;
-import alexiil.mc.lib.attributes.AttributeProvider;
 import aztech.modern_industrialization.ModernIndustrialization;
 import aztech.modern_industrialization.tools.IWrenchable;
 import aztech.modern_industrialization.util.MobSpawning;
@@ -50,7 +48,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 
-public class CreativeTankBlock extends Block implements BlockEntityProvider, IWrenchable, AttributeProvider {
+public class CreativeTankBlock extends Block implements BlockEntityProvider, IWrenchable {
     public CreativeTankBlock(Settings settings) {
         super(settings.nonOpaque().allowsSpawning(MobSpawning.NO_SPAWN));
     }
@@ -110,11 +108,5 @@ public class CreativeTankBlock extends Block implements BlockEntityProvider, IWr
         BlockHitResult hit = new BlockHitResult(context.getHitPos(), context.getSide(), context.getBlockPos(), context.hitsInsideBlock());
         return onUse(context.getWorld().getBlockState(hit.getBlockPos()), context.getWorld(), hit.getBlockPos(), context.getPlayer(),
                 context.getHand(), hit);
-    }
-
-    @Override
-    public void addAllAttributes(World world, BlockPos pos, BlockState state, AttributeList<?> to) {
-        CreativeTankBlockEntity be = (CreativeTankBlockEntity) world.getBlockEntity(pos);
-        to.offer(be);
     }
 }

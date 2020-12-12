@@ -23,8 +23,6 @@
  */
 package aztech.modern_industrialization.machines.special;
 
-import alexiil.mc.lib.attributes.fluid.volume.FluidKey;
-import alexiil.mc.lib.attributes.fluid.volume.FluidKeys;
 import aztech.modern_industrialization.MIFluids;
 import aztech.modern_industrialization.api.FluidFuelRegistry;
 import aztech.modern_industrialization.inventory.ConfigurableFluidStack;
@@ -39,7 +37,6 @@ import net.fabricmc.fabric.impl.content.registry.FuelRegistryImpl;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.Direction;
 
 public class LargeSteamBoilerBlockEntity extends MultiblockMachineBlockEntity {

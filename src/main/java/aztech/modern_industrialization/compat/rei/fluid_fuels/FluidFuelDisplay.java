@@ -23,7 +23,6 @@
  */
 package aztech.modern_industrialization.compat.rei.fluid_fuels;
 
-import alexiil.mc.lib.attributes.fluid.volume.FluidKey;
 import java.util.Collections;
 import java.util.List;
 import me.shedaniel.rei.api.EntryStack;

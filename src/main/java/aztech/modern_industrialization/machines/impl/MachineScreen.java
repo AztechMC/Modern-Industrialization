@@ -26,7 +26,6 @@ package aztech.modern_industrialization.machines.impl;
 import alexiil.mc.lib.attributes.fluid.amount.FluidAmount;
 import alexiil.mc.lib.attributes.fluid.render.FluidRenderFace;
 import alexiil.mc.lib.attributes.fluid.render.FluidVolumeRenderer;
-import alexiil.mc.lib.attributes.fluid.volume.FluidKey;
 import alexiil.mc.lib.attributes.fluid.volume.FluidKeys;
 import alexiil.mc.lib.attributes.fluid.volume.FluidVolume;
 import aztech.modern_industrialization.ModernIndustrialization;
@@ -372,7 +371,7 @@ public class MachineScreen extends HandledScreen<MachineScreenHandler> {
                 if (slot instanceof ConfigurableFluidStack.ConfigurableFluidSlot) {
                     ConfigurableFluidStack stack = ((ConfigurableFluidStack.ConfigurableFluidSlot) slot).getConfStack();
                     List<Text> tooltip = new ArrayList<>();
-                    tooltip.add(FluidHelper.getFluidName(stack.getFluid()));
+                    tooltip.add(FluidHelper.getFluidName(stack.getFluid(), false));
                     tooltip.add(FluidHelper.getFluidAmount(stack.getAmount(), stack.getCapacity()));
 
                     Style style = Style.EMPTY.withColor(TextColor.fromRgb(0xa9a9a9)).withItalic(true);

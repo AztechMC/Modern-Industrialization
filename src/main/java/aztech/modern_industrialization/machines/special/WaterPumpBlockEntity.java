@@ -42,7 +42,8 @@ public class WaterPumpBlockEntity extends MachineBlockEntity {
     public WaterPumpBlockEntity(MachineFactory factory) {
         super(factory);
 
-        inventory.fluidStacks.set(inventory.fluidStacks.size() - 1, ConfigurableFluidStack.lockedOutputSlot(factory.getOutputBucketCapacity() * 81000, Fluids.WATER));
+        inventory.fluidStacks.set(inventory.fluidStacks.size() - 1,
+                ConfigurableFluidStack.lockedOutputSlot(factory.getOutputBucketCapacity() * 81000, Fluids.WATER));
         usedEnergy = 0;
         recipeEnergy = 100;
     }

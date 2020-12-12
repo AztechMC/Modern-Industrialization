@@ -1,9 +1,33 @@
+/*
+ * MIT License
+ *
+ * Copyright (c) 2020 Azercoco & Technici4n
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
 package aztech.modern_industrialization.inventory;
 
 import aztech.modern_industrialization.util.NbtHelper;
 import dev.technici4n.fasttransferlib.api.Simulation;
 import dev.technici4n.fasttransferlib.api.fluid.*;
 import dev.technici4n.fasttransferlib.api.item.*;
+import java.util.List;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.nbt.CompoundTag;
@@ -11,8 +35,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.List;
 
 public final class MIInventory {
     public final List<ConfigurableItemStack> itemStacks;
@@ -30,20 +52,20 @@ public final class MIInventory {
     }
 
     public void autoExtractItems(World world, BlockPos pos, Direction direction) {
-        ItemView view = ItemApi.SIDED_VIEW.get(world, pos.offset(direction), direction.getOpposite());
-        if (view instanceof ItemInsertable) {
-            autoExtractItems((ItemInsertable) view);
+        ItemIo target = ItemApi.SIDED.get(world, pos.offset(direction), direction.getOpposite());
+        if (target != null) {
+            autoExtractItems(target);
         }
     }
 
-    public void autoExtractItems(ItemInsertable target) {
+    public void autoExtractItems(ItemIo target) {
         ItemMovement.moveMultiple(itemView, target, Integer.MAX_VALUE);
     }
 
     public void autoExtractFluids(World world, BlockPos pos, Direction direction) {
-        FluidView view = FluidApi.SIDED_VIEW.get(world, pos.offset(direction), direction.getOpposite());
-        if (view instanceof FluidInsertable) {
-            FluidMovement.moveRange(fluidView, (FluidInsertable) view, Long.MAX_VALUE);
+        FluidIo target = FluidApi.SIDED.get(world, pos.offset(direction), direction.getOpposite());
+        if (target != null) {
+            FluidMovement.moveMultiple(fluidView, target, Long.MAX_VALUE);
         }
     }
 
@@ -81,19 +103,42 @@ public final class MIInventory {
         return fluidView;
     }
 
-    public class MIItemView implements ItemInsertable, ItemExtractable {
-        private MIItemView() {}
+    public class MIItemView implements ItemIo {
+        private MIItemView() {
+        }
+
+        @Override
+        public boolean supportsItemExtraction() {
+            for (ConfigurableItemStack stack : itemStacks) {
+                if (stack.pipesExtract) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        @Override
+        public boolean supportsItemInsertion() {
+            for (ConfigurableItemStack stack : itemStacks) {
+                if (stack.pipesInsert) {
+                    return true;
+                }
+            }
+            return false;
+        }
 
         @Override
         public int extract(int slot, ItemKey key, int maxCount, Simulation simulation) {
             ConfigurableItemStack stack = itemStacks.get(slot);
-            if (!stack.pipesExtract || stack.key != key) return 0;
+            if (!stack.pipesExtract || stack.key != key)
+                return 0;
 
             int extracted = Math.min(maxCount, stack.count);
 
             if (simulation.isActing()) {
                 stack.count -= extracted;
-                if (stack.count == 0) stack.key = ItemKey.EMPTY;
+                if (stack.count == 0)
+                    stack.key = ItemKey.EMPTY;
 
                 markDirty.run();
             }
@@ -106,13 +151,13 @@ public final class MIInventory {
             boolean success = false;
 
             for (int outer = 0; outer < 2 && !success; ++outer) {
-                for (int i = 0; i < itemStacks.size(); ++i) {
-                    ConfigurableItemStack stack = itemStacks.get(i);
+                for (ConfigurableItemStack stack : itemStacks) {
                     if (stack.pipesInsert && stack.canInsert(key.getItem())) {
                         if (stack.key.equals(key) || (stack.key.isEmpty() && outer == 1)) {
                             int maxSlotInsert = Math.min(64, key.getItem().getMaxCount()) - stack.count;
                             int inserted = Math.min(count, maxSlotInsert);
-                            if (inserted == 0) continue;
+                            if (inserted == 0)
+                                continue;
 
                             if (simulation.isActing()) {
                                 stack.key = key;
@@ -146,13 +191,35 @@ public final class MIInventory {
         }
     }
 
-    public class MIFluidView implements FluidInsertable, FluidExtractable {
-        private MIFluidView() {}
+    public class MIFluidView implements FluidIo {
+        private MIFluidView() {
+        }
+
+        @Override
+        public boolean supportsFluidExtraction() {
+            for (ConfigurableFluidStack stack : fluidStacks) {
+                if (stack.pipesExtract) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        @Override
+        public boolean supportsFluidInsertion() {
+            for (ConfigurableFluidStack stack : fluidStacks) {
+                if (stack.pipesInsert) {
+                    return true;
+                }
+            }
+            return false;
+        }
 
         @Override
         public long extract(int slot, Fluid fluid, long maxAmount, Simulation simulation) {
             ConfigurableFluidStack stack = fluidStacks.get(slot);
-            if (!stack.pipesExtract || stack.getFluid() != fluid) return 0;
+            if (!stack.pipesExtract || stack.getFluid() != fluid)
+                return 0;
 
             long extracted = Math.min(maxAmount, stack.getAmount());
 
@@ -167,12 +234,12 @@ public final class MIInventory {
         @Override
         public long insert(Fluid fluid, long amount, Simulation simulation) {
             for (int outer = 0; outer < 2; ++outer) {
-                for (int i = 0; i < fluidStacks.size(); ++i) {
-                    ConfigurableFluidStack stack = fluidStacks.get(i);
+                for (ConfigurableFluidStack stack : fluidStacks) {
                     if (stack.pipesInsert && stack.isFluidValid(fluid)) {
                         if (stack.getFluid() == fluid || (stack.getFluid() == Fluids.EMPTY && outer == 1)) {
                             long inserted = Math.min(amount, stack.getRemainingSpace());
-                            if (inserted == 0) continue;
+                            if (inserted == 0)
+                                continue;
 
                             if (simulation.isActing()) {
                                 stack.setFluid(fluid);

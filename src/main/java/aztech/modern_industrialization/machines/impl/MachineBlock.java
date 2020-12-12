@@ -23,9 +23,6 @@
  */
 package aztech.modern_industrialization.machines.impl;
 
-import alexiil.mc.lib.attributes.AttributeList;
-import alexiil.mc.lib.attributes.AttributeProvider;
-import alexiil.mc.lib.attributes.fluid.FluidAttributes;
 import aztech.modern_industrialization.ModernIndustrialization;
 import aztech.modern_industrialization.inventory.ConfigurableItemStack;
 import aztech.modern_industrialization.machines.impl.multiblock.HatchBlockEntity;

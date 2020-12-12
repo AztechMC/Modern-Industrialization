@@ -27,7 +27,6 @@ import aztech.modern_industrialization.pipes.api.PipeNetwork;
 import aztech.modern_industrialization.pipes.api.PipeNetworkData;
 import aztech.modern_industrialization.pipes.api.PipeNetworkNode;
 import java.util.Map;
-
 import net.minecraft.fluid.Fluids;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -74,8 +73,9 @@ public class FluidNetwork extends PipeNetwork {
         FluidNetworkData thisData = (FluidNetworkData) data;
         FluidNetworkData otherData = (FluidNetworkData) other.data;
         // If one is empty, it's easy to merge.
-        // First check for empty fluid, then also check for empty network the second time
-        for(int i = 0; i < 2; ++i) {
+        // First check for empty fluid, then also check for empty network the second
+        // time
+        for (int i = 0; i < 2; ++i) {
             boolean onlyFluid = i == 0;
             if (this.isEmpty(onlyFluid))
                 return otherData.clone();
@@ -88,7 +88,8 @@ public class FluidNetwork extends PipeNetwork {
     private boolean isEmpty(boolean onlyFluid) {
         if (((FluidNetworkData) data).fluid == Fluids.EMPTY)
             return true;
-        if (onlyFluid) return false;
+        if (onlyFluid)
+            return false;
         for (PipeNetworkNode node : nodes.values()) {
             if (node == null || ((FluidNetworkNode) node).amount != 0) {
                 return false;

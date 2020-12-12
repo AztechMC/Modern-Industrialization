@@ -25,10 +25,9 @@ package aztech.modern_industrialization.machines.impl;
 
 import aztech.modern_industrialization.inventory.ConfigurableFluidStack;
 import aztech.modern_industrialization.inventory.ConfigurableItemStack;
+import aztech.modern_industrialization.inventory.MIInventory;
 import java.util.ArrayList;
 import java.util.List;
-
-import aztech.modern_industrialization.inventory.MIInventory;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.PacketByteBuf;
 
@@ -36,7 +35,8 @@ public class MachineInventories {
     public static MachineInventory clientOfBuf(PacketByteBuf buf) {
         List<ConfigurableItemStack> itemStacks = new ArrayList<>();
         List<ConfigurableFluidStack> fluidStacks = new ArrayList<>();
-        MIInventory inventory = new MIInventory(itemStacks, fluidStacks, () -> {});
+        MIInventory inventory = new MIInventory(itemStacks, fluidStacks, () -> {
+        });
         boolean hasOutput = buf.readBoolean();
         boolean[] autoExtract = new boolean[] { buf.readBoolean(), buf.readBoolean() };
 

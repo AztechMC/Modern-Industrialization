@@ -23,29 +23,23 @@
  */
 package aztech.modern_industrialization.blocks.tank;
 
-import alexiil.mc.lib.attributes.AttributeProviderItem;
-import alexiil.mc.lib.attributes.ItemAttributeList;
-import alexiil.mc.lib.attributes.Simulation;
-import alexiil.mc.lib.attributes.fluid.FluidTransferable;
-import alexiil.mc.lib.attributes.fluid.FluidVolumeUtil;
-import alexiil.mc.lib.attributes.fluid.amount.FluidAmount;
-import alexiil.mc.lib.attributes.fluid.filter.FluidFilter;
-import alexiil.mc.lib.attributes.fluid.volume.FluidKey;
-import alexiil.mc.lib.attributes.fluid.volume.FluidKeys;
-import alexiil.mc.lib.attributes.fluid.volume.FluidVolume;
-import alexiil.mc.lib.attributes.misc.AbstractItemBasedAttribute;
-import alexiil.mc.lib.attributes.misc.LimitedConsumer;
-import alexiil.mc.lib.attributes.misc.Reference;
+import aztech.modern_industrialization.util.FluidHelper;
 import aztech.modern_industrialization.util.NbtHelper;
-import java.math.RoundingMode;
-import java.util.ArrayList;
+import dev.technici4n.fasttransferlib.api.ContainerItemContext;
+import dev.technici4n.fasttransferlib.api.Simulation;
+import dev.technici4n.fasttransferlib.api.fluid.FluidApi;
+import dev.technici4n.fasttransferlib.api.fluid.FluidIo;
+import dev.technici4n.fasttransferlib.api.item.ItemKey;
 import java.util.List;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.fluid.Fluid;
+import net.minecraft.fluid.Fluids;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.text.TextColor;
@@ -53,45 +47,50 @@ import net.minecraft.text.TranslatableText;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
-public class TankItem extends BlockItem implements AttributeProviderItem {
-    public final int capacity;
+public class TankItem extends BlockItem {
+    public final long capacity;
 
-    public TankItem(Block block, Settings settings, int capacity) {
+    public TankItem(Block block, Settings settings, long capacity) {
         super(block, settings);
         this.capacity = capacity;
+    }
+
+    public void registerItemApi() {
+        FluidApi.ITEM.register(Io::new, this);
     }
 
     public boolean isEmpty(ItemStack stack) {
         return stack.getSubTag("BlockEntityTag") == null;
     }
 
-    public FluidKey getFluid(ItemStack stack) {
-        return FluidKeys.get(NbtHelper.getFluidCompatible(stack.getSubTag("BlockEntityTag"), "fluid"));
+    public Fluid getFluid(ItemStack stack) {
+        return NbtHelper.getFluidCompatible(stack.getSubTag("BlockEntityTag"), "fluid");
     }
 
-    private void setFluid(ItemStack stack, FluidKey fluid) {
-        stack.getSubTag("BlockEntityTag").put("fluid", fluid.toTag());
+    private void setFluid(ItemStack stack, Fluid fluid) {
+        NbtHelper.putFluid(stack.getOrCreateSubTag("BlockEntityTag"), "fluid", fluid);
     }
 
-    public int getAmount(ItemStack stack) {
-        return Math.min(stack.getSubTag("BlockEntityTag").getInt("amount"), capacity);
+    public long getAmount(ItemStack stack) {
+        CompoundTag tag = stack.getSubTag("BlockEntityTag");
+        if (tag == null)
+            return 0;
+        else if (tag.contains("amount"))
+            return tag.getInt("amount") * 81;
+        else
+            return tag.getLong("amt");
     }
 
-    private void setAmount(ItemStack stack, int amount) {
-        stack.getSubTag("BlockEntityTag").putInt("amount", amount);
-    }
-
-    private void setCapacity(ItemStack stack, int capacity) {
-        stack.getSubTag("BlockEntityTag").putInt("capacity", capacity);
+    private void setAmount(ItemStack stack, long amount) {
+        stack.getOrCreateSubTag("BlockEntityTag").putLong("amt", amount);
     }
 
     @Override
     public void appendTooltip(ItemStack stack, World world, List<Text> tooltip, TooltipContext context) {
         Style style = Style.EMPTY.withColor(TextColor.fromRgb(0xa9a9a9)).withItalic(true);
         if (!isEmpty(stack)) {
-            tooltip.add(getFluid(stack).name);
-            String quantity = getAmount(stack) + " / " + capacity;
-            tooltip.add(new TranslatableText("text.modern_industrialization.fluid_slot_quantity", quantity).setStyle(style));
+            tooltip.add(FluidHelper.getFluidName(getFluid(stack), true));
+            tooltip.add(FluidHelper.getFluidAmount(getAmount(stack), capacity));
         } else {
             tooltip.add(new TranslatableText("text.modern_industrialization.fluid_slot_empty").setStyle(style));
         }
@@ -103,82 +102,100 @@ public class TankItem extends BlockItem implements AttributeProviderItem {
         return super.postPlacement(pos, world, player, stack, state);
     }
 
-    @Override
-    public void addAllAttributes(Reference<ItemStack> stack, LimitedConsumer<ItemStack> excess, ItemAttributeList<?> to) {
-        to.offer(new TankFluidTransferable(stack, excess));
-    }
+    class Io implements FluidIo {
+        private final Fluid fluid;
+        private final long amount;
+        private final ContainerItemContext ctx;
 
-    private class TankFluidTransferable extends AbstractItemBasedAttribute implements FluidTransferable {
-        protected TankFluidTransferable(Reference<ItemStack> stackRef, LimitedConsumer<ItemStack> excessStacks) {
-            super(stackRef, excessStacks);
+        Io(ItemKey key, ContainerItemContext ctx) {
+            ItemStack stack = key.toStack();
+            this.fluid = TankItem.this.getFluid(stack);
+            this.amount = getAmount(stack);
+            this.ctx = ctx;
         }
 
         @Override
-        public FluidVolume attemptInsertion(FluidVolume fluid, Simulation simulation) {
-            int inserted = 0;
-            if (isEmpty(stackRef.get())) {
-                inserted = Math.min(capacity, fluid.amount().asInt(1000, RoundingMode.FLOOR));
-            } else if (!fluid.getFluidKey().isEmpty()) {
-                FluidKey storedFluid = getFluid(stackRef.get());
-                if (fluid.getFluidKey() == storedFluid) {
-                    int amount = getAmount(stackRef.get());
-                    inserted = Math.min(capacity - amount, fluid.amount().asInt(1000, RoundingMode.FLOOR));
-                }
+        public int getFluidSlotCount() {
+            return 1;
+        }
+
+        @Override
+        public Fluid getFluid(int i) {
+            checkSingleSlot(i);
+            return fluid;
+        }
+
+        @Override
+        public long getFluidAmount(int i) {
+            checkSingleSlot(i);
+            return amount;
+        }
+
+        @Override
+        public boolean supportsFluidInsertion() {
+            return true;
+        }
+
+        @Override
+        public long insert(Fluid fluid, long amount, Simulation simulation) {
+            if (ctx.getCount() == 0)
+                return amount;
+            if (fluid == Fluids.EMPTY)
+                return amount;
+
+            long inserted = 0;
+            if (this.fluid == Fluids.EMPTY) {
+                inserted = Math.min(capacity, amount);
+            } else if (this.fluid == fluid) {
+                inserted = Math.min(capacity - this.amount, amount);
             }
             if (inserted > 0) {
-                if (!sendStacks(fluid.getFluidKey(), inserted, simulation)) {
-                    return fluid;
+                if (!updateTank(fluid, this.amount + inserted, simulation)) {
+                    return amount;
                 }
             }
-            return fluid.getFluidKey().withAmount(fluid.amount().sub(FluidAmount.of(inserted, 1000)));
+            return amount - inserted;
         }
 
         @Override
-        public FluidVolume attemptExtraction(FluidFilter filter, FluidAmount maxAmount, Simulation simulation) {
-            if (isEmpty(stackRef.get()))
-                return FluidVolumeUtil.EMPTY;
-
-            FluidKey fluid = getFluid(stackRef.get());
-            if (filter.matches(fluid)) {
-                int amount = getAmount(stackRef.get());
-                int ext = Math.min(amount, maxAmount.asInt(1000, RoundingMode.FLOOR));
-                if (ext > 0) {
-                    if (!sendStacks(fluid, amount - ext, simulation)) {
-                        return FluidVolumeUtil.EMPTY;
-                    } else {
-                        return fluid.withAmount(FluidAmount.of(ext, 1000));
-                    }
-                }
-            }
-            return FluidVolumeUtil.EMPTY;
+        public boolean supportsFluidExtraction() {
+            return true;
         }
 
-        private boolean sendStacks(FluidKey newFluid, int newAmount, Simulation simulation) {
-            List<ItemStack> resultingStacks = new ArrayList<>(2);
-            ItemStack remainder = stackRef.get();
-            if (remainder.getCount() > 1) {
-                remainder = remainder.copy();
-                remainder.decrement(1);
-                resultingStacks.add(remainder);
-            }
+        @Override
+        public long extract(int slot, Fluid fluid, long maxAmount, Simulation simulation) {
+            if (ctx.getCount() == 0)
+                return 0;
+            if (fluid == Fluids.EMPTY)
+                return 0;
 
-            ItemStack filledStack = new ItemStack(TankItem.this);
-            if (newAmount != 0) {
-                filledStack.getOrCreateSubTag("BlockEntityTag");
-                setCapacity(filledStack, capacity);
-                setFluid(filledStack, newFluid);
-                setAmount(filledStack, newAmount);
+            long extracted = 0;
+            if (this.fluid == fluid) {
+                extracted = Math.min(maxAmount, amount);
             }
-            resultingStacks.add(filledStack);
-
-            if (stackRef.isValid(resultingStacks.get(0))) {
-                if (simulation.isAction()) {
-                    stackRef.set(resultingStacks.get(0));
+            if (extracted > 0) {
+                if (!updateTank(fluid, amount - extracted, simulation)) {
+                    return 0;
                 }
-            } else {
-                return false;
             }
-            return resultingStacks.size() == 1 || excessStacks.offer(resultingStacks.get(1), simulation);
+            return extracted;
+        }
+
+        private boolean updateTank(Fluid fluid, long amount, Simulation simulation) {
+            ItemStack result = new ItemStack(TankItem.this);
+            if (amount > 0) {
+                setFluid(result, fluid);
+                setAmount(result, amount);
+            }
+            ItemKey into = ItemKey.of(result);
+
+            return ctx.transform(into, simulation);
+        }
+    }
+
+    private static void checkSingleSlot(int slot) {
+        if (slot != 0) {
+            throw new IndexOutOfBoundsException("This tank only has 1 slot, this slot is out of bounds: " + slot);
         }
     }
 }

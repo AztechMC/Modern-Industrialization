@@ -23,7 +23,6 @@
  */
 package aztech.modern_industrialization.compat.rei.fluid_fuels;
 
-import alexiil.mc.lib.attributes.fluid.volume.FluidKey;
 import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.ModernIndustrialization;
 import aztech.modern_industrialization.api.FluidFuelRegistry;

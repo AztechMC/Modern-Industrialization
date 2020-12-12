@@ -25,7 +25,6 @@ package aztech.modern_industrialization.pipes;
 
 import static aztech.modern_industrialization.api.energy.CableTier.*;
 
-import alexiil.mc.lib.attributes.fluid.volume.FluidKeys;
 import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.ModernIndustrialization;
 import aztech.modern_industrialization.api.energy.CableTier;

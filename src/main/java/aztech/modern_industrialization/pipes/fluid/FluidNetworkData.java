@@ -23,7 +23,6 @@
  */
 package aztech.modern_industrialization.pipes.fluid;
 
-import alexiil.mc.lib.attributes.fluid.volume.FluidKey;
 import aztech.modern_industrialization.pipes.api.PipeNetworkData;
 import aztech.modern_industrialization.util.NbtHelper;
 import net.minecraft.fluid.Fluid;

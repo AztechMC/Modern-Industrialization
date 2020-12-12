@@ -23,14 +23,12 @@
  */
 package aztech.modern_industrialization.compat.waila;
 
-import alexiil.mc.lib.attributes.fluid.volume.FluidKey;
 import aztech.modern_industrialization.pipes.MIPipes;
 import aztech.modern_industrialization.pipes.impl.PipeBlockEntity;
 import aztech.modern_industrialization.pipes.impl.PipeVoxelShape;
-import java.util.List;
-
 import aztech.modern_industrialization.util.FluidHelper;
 import aztech.modern_industrialization.util.NbtHelper;
+import java.util.List;
 import mcp.mobius.waila.api.IComponentProvider;
 import mcp.mobius.waila.api.IDataAccessor;
 import mcp.mobius.waila.api.IPluginConfig;
@@ -88,14 +86,13 @@ public class PipeComponentProvider implements IComponentProvider {
 
             if (tag.contains("fluid")) {
                 Fluid fluid = NbtHelper.getFluid(tag, "fluid");
-                int amount = tag.getInt("amount");
+                long amount = tag.getLong("amount");
                 int capacity = tag.getInt("capacity");
                 if (fluid == Fluids.EMPTY) {
                     tooltip.add(new TranslatableText("text.modern_industrialization.fluid_slot_empty"));
                 } else {
-                    tooltip.add(FluidHelper.getFluidName(fluid));
-                    String quantity = amount + " / " + capacity;
-                    tooltip.add(new TranslatableText("text.modern_industrialization.fluid_slot_quantity", quantity).setStyle(style));
+                    tooltip.add(FluidHelper.getFluidName(fluid, true));
+                    tooltip.add(FluidHelper.getFluidAmount(amount, capacity));
                 }
             }
 

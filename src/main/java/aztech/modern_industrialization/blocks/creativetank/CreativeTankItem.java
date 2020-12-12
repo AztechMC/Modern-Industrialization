@@ -23,74 +23,74 @@
  */
 package aztech.modern_industrialization.blocks.creativetank;
 
-import alexiil.mc.lib.attributes.AttributeProviderItem;
-import alexiil.mc.lib.attributes.ItemAttributeList;
-import alexiil.mc.lib.attributes.Simulation;
-import alexiil.mc.lib.attributes.fluid.FluidExtractable;
-import alexiil.mc.lib.attributes.fluid.FluidVolumeUtil;
-import alexiil.mc.lib.attributes.fluid.amount.FluidAmount;
-import alexiil.mc.lib.attributes.fluid.filter.FluidFilter;
-import alexiil.mc.lib.attributes.fluid.volume.FluidKey;
-import alexiil.mc.lib.attributes.fluid.volume.FluidKeys;
-import alexiil.mc.lib.attributes.fluid.volume.FluidVolume;
-import alexiil.mc.lib.attributes.misc.AbstractItemBasedAttribute;
-import alexiil.mc.lib.attributes.misc.LimitedConsumer;
-import alexiil.mc.lib.attributes.misc.Reference;
+import aztech.modern_industrialization.util.FluidHelper;
 import aztech.modern_industrialization.util.NbtHelper;
+import dev.technici4n.fasttransferlib.api.ContainerItemContext;
+import dev.technici4n.fasttransferlib.api.fluid.FluidIo;
+import dev.technici4n.fasttransferlib.api.item.ItemKey;
 import java.util.List;
 import net.minecraft.block.Block;
 import net.minecraft.client.item.TooltipContext;
+import net.minecraft.fluid.Fluid;
+import net.minecraft.fluid.Fluids;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
-import net.minecraft.text.Style;
 import net.minecraft.text.Text;
-import net.minecraft.text.TextColor;
-import net.minecraft.text.TranslatableText;
 import net.minecraft.world.World;
 
-public class CreativeTankItem extends BlockItem implements AttributeProviderItem {
+public class CreativeTankItem extends BlockItem {
     public CreativeTankItem(Block block, Settings settings) {
         super(block, settings);
     }
 
-    public boolean isEmpty(ItemStack stack) {
+    public static boolean isEmpty(ItemStack stack) {
         return stack.getSubTag("BlockEntityTag") == null;
     }
 
-    public FluidKey getFluid(ItemStack stack) {
-        return FluidKeys.get(NbtHelper.getFluidCompatible(stack.getSubTag("BlockEntityTag"), "fluid"));
+    public static Fluid getFluid(ItemStack stack) {
+        return NbtHelper.getFluidCompatible(stack.getSubTag("BlockEntityTag"), "fluid");
     }
 
     @Override
     public void appendTooltip(ItemStack stack, World world, List<Text> tooltip, TooltipContext context) {
-        Style style = Style.EMPTY.withColor(TextColor.fromRgb(0xa9a9a9)).withItalic(true);
-        if (!isEmpty(stack)) {
-            tooltip.add(getFluid(stack).name);
-        } else {
-            tooltip.add(new TranslatableText("text.modern_industrialization.fluid_slot_empty").setStyle(style));
-        }
+        tooltip.add(FluidHelper.getFluidName(getFluid(stack), true));
     }
 
-    @Override
-    public void addAllAttributes(Reference<ItemStack> stack, LimitedConsumer<ItemStack> excess, ItemAttributeList<?> to) {
-        to.offer(new TankFluidTransferable(stack, excess));
-    }
+    public static class Io implements FluidIo {
+        private final Fluid fluid;
 
-    private class TankFluidTransferable extends AbstractItemBasedAttribute implements FluidExtractable {
-        private TankFluidTransferable(Reference<ItemStack> stackRef, LimitedConsumer<ItemStack> excessStacks) {
-            super(stackRef, excessStacks);
+        public Io(ItemKey key, ContainerItemContext ignored) {
+            ItemStack stack = key.toStack();
+            this.fluid = CreativeTankItem.getFluid(stack);
         }
 
         @Override
-        public FluidVolume attemptExtraction(FluidFilter filter, FluidAmount maxAmount, Simulation simulation) {
-            if (isEmpty(stackRef.get()))
-                return FluidVolumeUtil.EMPTY;
+        public int getFluidSlotCount() {
+            return 1;
+        }
 
-            FluidKey fluid = getFluid(stackRef.get());
-            if (filter.matches(fluid)) {
-                return fluid.withAmount(maxAmount);
+        @Override
+        public Fluid getFluid(int i) {
+            return fluid;
+        }
+
+        @Override
+        public long getFluidAmount(int i) {
+            return Long.MAX_VALUE;
+        }
+
+        @Override
+        public boolean supportsFluidExtraction() {
+            return true;
+        }
+
+        @Override
+        public long extract(int slot, Fluid fluid, long maxAmount, dev.technici4n.fasttransferlib.api.Simulation simulation) {
+            if (fluid != Fluids.EMPTY && fluid == this.fluid) {
+                return maxAmount;
+            } else {
+                return 0;
             }
-            return FluidVolumeUtil.EMPTY;
         }
     }
 }

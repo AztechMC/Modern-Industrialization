@@ -24,13 +24,11 @@
 package aztech.modern_industrialization.inventory;
 
 import aztech.modern_industrialization.util.NbtHelper;
+import dev.technici4n.fasttransferlib.api.item.ItemKey;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
-
-import dev.technici4n.fasttransferlib.api.item.ItemKey;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.Inventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;

@@ -25,6 +25,7 @@ package aztech.modern_industrialization.blocks.creativetank;
 
 import alexiil.mc.lib.attributes.fluid.amount.FluidAmount;
 import alexiil.mc.lib.attributes.fluid.render.FluidRenderFace;
+import alexiil.mc.lib.attributes.fluid.volume.FluidKeys;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
@@ -42,10 +43,10 @@ public class CreativeTankRenderer extends BlockEntityRenderer<CreativeTankBlockE
     @Override
     public void render(CreativeTankBlockEntity entity, float tickDelta, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light,
             int overlay) {
-        if (!entity.fluid.isEmpty()) {
+        if (!entity.isEmpty()) {
             List<FluidRenderFace> faces = new ArrayList<>();
             FluidRenderFace.appendCuboid(0.01, 0.01, 0.01, 0.99, 0.99, 0.99, 1, EnumSet.allOf(Direction.class), faces);
-            entity.fluid.withAmount(FluidAmount.ONE).render(faces, vertexConsumers, matrices);
+            FluidKeys.get(entity.fluid).withAmount(FluidAmount.ONE).render(faces, vertexConsumers, matrices);
         }
     }
 }

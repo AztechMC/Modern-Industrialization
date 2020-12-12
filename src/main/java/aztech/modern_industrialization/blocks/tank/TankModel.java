@@ -62,7 +62,6 @@ public class TankModel implements UnbakedModel, FabricBakedModel, BakedModel {
     ModelTransformation transformation;
     private final SpriteIdentifier tankSpriteId;
     private Sprite tankSprite;
-    private RenderMaterial cutoutMaterial;
     private RenderMaterial translucentMaterial;
     private Mesh tankMesh;
 
@@ -90,12 +89,11 @@ public class TankModel implements UnbakedModel, FabricBakedModel, BakedModel {
             TankItem item = (TankItem) it;
             if (!item.isEmpty(stack)) {
                 float fillFraction = (float) item.getAmount(stack) / item.capacity;
-                drawFluid(context.getEmitter(), fillFraction, item.getFluid(stack).getRawFluid());
+                drawFluid(context.getEmitter(), fillFraction, item.getFluid(stack));
             }
         } else if (it instanceof CreativeTankItem) {
-            CreativeTankItem item = (CreativeTankItem) it;
-            if (!item.isEmpty(stack)) {
-                drawFluid(context.getEmitter(), 1, item.getFluid(stack).getRawFluid());
+            if (!CreativeTankItem.isEmpty(stack)) {
+                drawFluid(context.getEmitter(), 1, CreativeTankItem.getFluid(stack));
             }
         }
     }
@@ -175,7 +173,7 @@ public class TankModel implements UnbakedModel, FabricBakedModel, BakedModel {
         tankSprite = textureGetter.apply(tankSpriteId);
 
         Renderer renderer = RendererAccess.INSTANCE.getRenderer();
-        cutoutMaterial = renderer.materialFinder().blendMode(0, BlendMode.CUTOUT_MIPPED).find();
+        RenderMaterial cutoutMaterial = renderer.materialFinder().blendMode(0, BlendMode.CUTOUT_MIPPED).find();
         translucentMaterial = renderer.materialFinder().blendMode(0, BlendMode.TRANSLUCENT).emissive(0, true).find();
         MeshBuilder builder = RendererAccess.INSTANCE.getRenderer().meshBuilder();
         QuadEmitter emitter = builder.getEmitter();

@@ -23,8 +23,6 @@
  */
 package aztech.modern_industrialization.nuclear;
 
-import alexiil.mc.lib.attributes.fluid.volume.FluidKey;
-import alexiil.mc.lib.attributes.item.ItemAttributes;
 import aztech.modern_industrialization.inventory.ConfigurableFluidStack;
 import aztech.modern_industrialization.inventory.ConfigurableItemStack;
 import aztech.modern_industrialization.machines.impl.MachineFactory;
@@ -32,10 +30,8 @@ import aztech.modern_industrialization.machines.impl.multiblock.HatchBlockEntity
 import aztech.modern_industrialization.machines.impl.multiblock.HatchType;
 import aztech.modern_industrialization.machines.impl.multiblock.MultiblockMachineBlockEntity;
 import aztech.modern_industrialization.machines.impl.multiblock.MultiblockShape;
-import java.util.List;
-import java.util.Random;
-
 import dev.technici4n.fasttransferlib.api.item.ItemKey;
+import java.util.List;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -165,30 +161,20 @@ public class NuclearReactorBlockEntity extends MultiblockMachineBlockEntity {
         }
         // FIXME
         /*
-        ItemStack[][] grid = new ItemStack[8][8];
-        for (int i = 0; i < 64; i++) {
-            ItemStack is = inventory.itemStacks.get(i).getStack();
-            if (!is.isEmpty()) {
-                grid[i % 8][i / 8] = is;
-            }
-
-        }
-        if (ready) {
-            NuclearReactorLogic.tick(grid, new Random(), this);
-            for (ConfigurableItemStack is : inventory.itemStacks) {
-                if (!is.getItemKey().isEmpty() && is.getItemKey().getItem() instanceof MINuclearItem) {
-                    MINuclearItem item = (MINuclearItem) is.getItemKey().getItem();
-                    if (MINuclearItem.getHeat(is.getStack()) >= item.getMaxHeat()) {
-                        is.getStack().setCount(0);
-                    } else if (item.getDurability() != -1 && is.getStack().getDamage() == item.getDurability()) {
-                        if (tryInsertItemInOutputHatch(item.getDepleted())) {
-                            is.getStack().setCount(0);
-                        }
-                    }
-                }
-            }
-        }
-        */
+         * ItemStack[][] grid = new ItemStack[8][8]; for (int i = 0; i < 64; i++) {
+         * ItemStack is = inventory.itemStacks.get(i).getStack(); if (!is.isEmpty()) {
+         * grid[i % 8][i / 8] = is; }
+         * 
+         * } if (ready) { NuclearReactorLogic.tick(grid, new Random(), this); for
+         * (ConfigurableItemStack is : inventory.itemStacks) { if
+         * (!is.getItemKey().isEmpty() && is.getItemKey().getItem() instanceof
+         * MINuclearItem) { MINuclearItem item = (MINuclearItem)
+         * is.getItemKey().getItem(); if (MINuclearItem.getHeat(is.getStack()) >=
+         * item.getMaxHeat()) { is.getStack().setCount(0); } else if
+         * (item.getDurability() != -1 && is.getStack().getDamage() ==
+         * item.getDurability()) { if (tryInsertItemInOutputHatch(item.getDepleted())) {
+         * is.getStack().setCount(0); } } } } }
+         */
         markDirty();
     }
 }

@@ -99,7 +99,8 @@ public class MachineBlockEntity extends AbstractMachineBlockEntity implements Ti
         List<ConfigurableFluidStack> fluidStacks = new ArrayList<>();
         for (int i = 0; i < factory.getLiquidInputSlots(); ++i) {
             if (i == 0 && factory instanceof SteamMachineFactory) {
-                fluidStacks.add(ConfigurableFluidStack.lockedInputSlot(((SteamMachineFactory) factory).getSteamBucketCapacity() * 81000, MIFluids.STEAM));
+                fluidStacks.add(
+                        ConfigurableFluidStack.lockedInputSlot(((SteamMachineFactory) factory).getSteamBucketCapacity() * 81000, MIFluids.STEAM));
             } else {
                 fluidStacks.add(ConfigurableFluidStack.standardInputSlot(factory.getInputBucketCapacity() * 81000));
             }
@@ -590,7 +591,8 @@ public class MachineBlockEntity extends AbstractMachineBlockEntity implements Ti
                             locksToToggle.add(index);
                             lockFluids.add(output.fluid);
 
-                            if (inserted <= output.amount) ok = false;
+                            if (inserted <= output.amount)
+                                ok = false;
                             break outer;
                         }
                     }
@@ -803,8 +805,8 @@ public class MachineBlockEntity extends AbstractMachineBlockEntity implements Ti
     }
 
     public final void registerApis() {
-        ItemApi.SIDED_VIEW.registerForBlockEntities((be, direction) -> ((MachineBlockEntity) be).inventory.getItemView(), getType());
-        FluidApi.SIDED_VIEW.registerForBlockEntities((be, direction) -> ((MachineBlockEntity) be).inventory.getFluidView(), getType());
+        ItemApi.SIDED.registerForBlockEntities((be, direction) -> ((MachineBlockEntity) be).inventory.getItemView(), getType());
+        FluidApi.SIDED.registerForBlockEntities((be, direction) -> ((MachineBlockEntity) be).inventory.getFluidView(), getType());
         registerAdditionalApis();
     }
 }

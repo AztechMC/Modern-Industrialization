@@ -28,14 +28,11 @@ import static aztech.modern_industrialization.pipes.api.PipeEndpointType.*;
 import aztech.modern_industrialization.ModernIndustrialization;
 import aztech.modern_industrialization.pipes.api.PipeEndpointType;
 import aztech.modern_industrialization.pipes.api.PipeNetworkNode;
-import java.util.*;
-
 import aztech.modern_industrialization.util.NbtHelper;
 import dev.technici4n.fasttransferlib.api.Simulation;
 import dev.technici4n.fasttransferlib.api.fluid.FluidApi;
-import dev.technici4n.fasttransferlib.api.fluid.FluidExtractable;
-import dev.technici4n.fasttransferlib.api.fluid.FluidInsertable;
-import dev.technici4n.fasttransferlib.api.fluid.FluidView;
+import dev.technici4n.fasttransferlib.api.fluid.FluidIo;
+import java.util.*;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.nbt.CompoundTag;
@@ -62,18 +59,16 @@ public class FluidNetworkNode extends PipeNetworkNode {
         }
         for (FluidConnection connection : connections) { // TODO: limit insert and extract rate
             // Insert
-            FluidView view = FluidApi.SIDED_VIEW.get(world, pos.offset(connection.direction), connection.direction.getOpposite());
-            if (amount > 0 && connection.canInsert() && view instanceof FluidInsertable) {
-                FluidInsertable insertable = (FluidInsertable) view;
-                amount = insertable.insert(data.fluid, amount, Simulation.ACT);
+            FluidIo io = FluidApi.SIDED.get(world, pos.offset(connection.direction), connection.direction.getOpposite());
+            if (amount > 0 && connection.canInsert() && io != null && io.supportsFluidInsertion()) {
+                amount = io.insert(data.fluid, amount, Simulation.ACT);
             }
-            if (connection.canExtract() && view instanceof FluidExtractable) {
-                FluidExtractable extractable = (FluidExtractable) view;
+            if (connection.canExtract() && io != null && io.supportsFluidExtraction()) {
                 // Extract any
                 if (data.fluid == Fluids.EMPTY) {
-                    for (int i = 0; i < extractable.getFluidSlotCount(); ++i) {
-                        Fluid fluid = extractable.getFluid(i);
-                        amount = extractable.extract(i, fluid, network.nodeCapacity, Simulation.ACT);
+                    for (int i = 0; i < io.getFluidSlotCount(); ++i) {
+                        Fluid fluid = io.getFluid(i);
+                        amount = io.extract(i, fluid, network.nodeCapacity, Simulation.ACT);
 
                         if (amount > 0) {
                             data.fluid = fluid;
@@ -83,7 +78,7 @@ public class FluidNetworkNode extends PipeNetworkNode {
                 }
                 // Extract current fluid
                 else {
-                    amount += extractable.extract(data.fluid, network.nodeCapacity - amount, Simulation.ACT);
+                    amount += io.extract(data.fluid, network.nodeCapacity - amount, Simulation.ACT);
                 }
             }
         }
@@ -116,8 +111,8 @@ public class FluidNetworkNode extends PipeNetworkNode {
     }
 
     private boolean canConnect(World world, BlockPos pos, Direction direction) {
-        FluidView view = FluidApi.SIDED_VIEW.get(world, pos.offset(direction), direction.getOpposite());
-        return view instanceof FluidInsertable || view instanceof FluidExtractable;
+        FluidIo io = FluidApi.SIDED.get(world, pos.offset(direction), direction.getOpposite());
+        return io != null && (io.supportsFluidInsertion() || io.supportsFluidExtraction());
     }
 
     @Override

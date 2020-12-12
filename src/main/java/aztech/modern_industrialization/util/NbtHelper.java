@@ -24,7 +24,6 @@
 package aztech.modern_industrialization.util;
 
 import alexiil.mc.lib.attributes.fluid.volume.FluidKey;
-import alexiil.mc.lib.attributes.fluid.volume.FluidKeys;
 import aztech.modern_industrialization.pipes.api.PipeEndpointType;
 import java.util.List;
 import java.util.function.BiConsumer;
@@ -128,6 +127,9 @@ public class NbtHelper {
     }
 
     public static Fluid getFluidCompatible(CompoundTag tag, String key) {
+        if (tag == null)
+            return Fluids.EMPTY;
+
         if (!tag.contains(key))
             return Fluids.EMPTY;
         if (tag.get(key) instanceof StringTag) {

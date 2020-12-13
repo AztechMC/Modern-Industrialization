@@ -164,6 +164,7 @@ public class TankItem extends BlockItem {
 
         @Override
         public long extract(int slot, Fluid fluid, long maxAmount, Simulation simulation) {
+            checkSingleSlot(slot);
             if (ctx.getCount() == 0)
                 return 0;
             if (fluid == Fluids.EMPTY)

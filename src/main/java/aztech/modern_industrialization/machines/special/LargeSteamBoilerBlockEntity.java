@@ -84,10 +84,10 @@ public class LargeSteamBoilerBlockEntity extends MultiblockMachineBlockEntity {
                     if (burnTicks > 0) {
                         int mbEu = FluidFuelRegistry.getEu(fluid) * 2;
                         int necessaryAmount = Math.max(1, EU_PRODUCTION / mbEu);
-                        if (stack.getAmount() >= necessaryAmount) {
+                        if (stack.getAmount() / 81 >= necessaryAmount) {
                             recipeEnergy = mbEu * necessaryAmount / EU_PRODUCTION;
                             usedEnergy = recipeEnergy;
-                            stack.decrement(necessaryAmount);
+                            stack.decrement(necessaryAmount * 81);
                             break;
                         }
                     }
@@ -108,7 +108,7 @@ public class LargeSteamBoilerBlockEntity extends MultiblockMachineBlockEntity {
 
         if (ready) {
             if (efficiencyTicks > 1000) {
-                int steamProduction = EU_PRODUCTION * efficiencyTicks / maxEfficiencyTicks;
+                int steamProduction = 81 * EU_PRODUCTION * efficiencyTicks / maxEfficiencyTicks;
                 boolean waterAvailable = false;
                 // Check if there is some water available
                 for (ConfigurableFluidStack fluidStack : getFluidInputStacks()) {

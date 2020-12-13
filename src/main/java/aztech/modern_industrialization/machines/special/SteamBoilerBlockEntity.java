@@ -90,13 +90,13 @@ public class SteamBoilerBlockEntity extends MachineBlockEntity {
         }
 
         if (efficiencyTicks > 1000) {
-            int steamProduction = (factory.tier == MachineTier.BRONZE ? 8 : 16) * efficiencyTicks / maxEfficiencyTicks;
+            int steamProduction = 81 * (factory.tier == MachineTier.BRONZE ? 8 : 16) * efficiencyTicks / maxEfficiencyTicks;
             if (steamProduction > 0 && inventory.fluidStacks.get(0).getAmount() > 0) {
                 long remSpace = inventory.fluidStacks.get(1).getRemainingSpace();
                 long actualProduced = Math.min(steamProduction, remSpace);
                 if (actualProduced > 0) {
                     inventory.fluidStacks.get(1).increment(actualProduced);
-                    inventory.fluidStacks.get(0).decrement(1);
+                    inventory.fluidStacks.get(0).decrement(Math.min(81, inventory.fluidStacks.get(0).getAmount()));
                 }
             }
         }

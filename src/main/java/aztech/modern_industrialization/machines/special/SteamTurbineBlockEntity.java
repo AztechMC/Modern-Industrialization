@@ -55,9 +55,9 @@ public final class SteamTurbineBlockEntity extends MachineBlockEntity {
 
         boolean wasActive = isActive;
 
-        int transformed = (int) Math.min(Math.min(inventory.fluidStacks.get(0).getAmount(), getMaxStoredEu() - storedEu), tier.getEu());
+        int transformed = (int) Math.min(Math.min(inventory.fluidStacks.get(0).getAmount() / 81, getMaxStoredEu() - storedEu), tier.getEu());
         if (transformed > 0) {
-            inventory.fluidStacks.get(0).decrement(transformed);
+            inventory.fluidStacks.get(0).decrement(transformed * 81);
             storedEu += transformed;
             isActive = true;
         } else {

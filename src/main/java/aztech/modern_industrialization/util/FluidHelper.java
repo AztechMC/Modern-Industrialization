@@ -28,10 +28,7 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.Fluids;
-import net.minecraft.text.Style;
-import net.minecraft.text.Text;
-import net.minecraft.text.TextColor;
-import net.minecraft.text.TranslatableText;
+import net.minecraft.text.*;
 
 public class FluidHelper {
     public static Text getFluidName(Fluid fluid, boolean grayIfEmpty) {
@@ -44,7 +41,7 @@ public class FluidHelper {
     }
 
     @Environment(EnvType.CLIENT)
-    public static Text getFluidAmount(long amount, long capacity) {
+    public static MutableText getFluidAmount(long amount, long capacity) {
         String text = FluidTextHelper.getUnicodeMillibuckets(amount, false) + " / " + capacity / 81;
         return new TranslatableText("text.modern_industrialization.fluid_slot_quantity", text);
     }

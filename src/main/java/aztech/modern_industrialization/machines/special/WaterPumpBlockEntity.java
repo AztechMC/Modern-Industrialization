@@ -57,14 +57,13 @@ public class WaterPumpBlockEntity extends MachineBlockEntity {
             return;
 
         ConfigurableFluidStack waterStack = inventory.fluidStacks.get(inventory.fluidStacks.size() - 1);
-        if (waterStack.getRemainingSpace() < 1000 / 8) {
+        if (waterStack.getRemainingSpace() < 81000 / 8) {
             if (isActive) {
                 isActive = false;
                 sync();
                 markDirty();
             }
         } else {
-
             int eu = getEu(1, false);
             usedEnergy += eu;
             if (eu > 0) {
@@ -99,7 +98,7 @@ public class WaterPumpBlockEntity extends MachineBlockEntity {
                 } else if (factory.tier == LV) {
                     factorTier = 16;
                 }
-                waterStack.increment(Math.min(factorTier * providedBucketEights * 1000 / 8, waterStack.getRemainingSpace()));
+                waterStack.increment(Math.min(factorTier * providedBucketEights * 81000 / 8, waterStack.getRemainingSpace()));
                 usedEnergy = 0;
             }
             markDirty();

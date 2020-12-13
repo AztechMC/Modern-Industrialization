@@ -294,5 +294,17 @@ public class ConfigurableItemStack {
         public void markDirty() {
             markDirty.run();
         }
+
+        @Override
+        public int getMaxItemCount() {
+            return 64;
+        }
+
+        @Override
+        public ItemStack takeStack(int amount) {
+            ItemStack stack = getStack();
+            setStack(ItemStack.EMPTY);
+            return stack;
+        }
     }
 }

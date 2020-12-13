@@ -23,11 +23,16 @@
  */
 package aztech.modern_industrialization.inventory;
 
+import dev.technici4n.fasttransferlib.api.Simulation;
+import dev.technici4n.fasttransferlib.api.fluid.FluidApi;
+import dev.technici4n.fasttransferlib.api.fluid.FluidIo;
 import io.netty.buffer.Unpooled;
 import java.util.List;
 import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.fluid.Fluid;
+import net.minecraft.fluid.Fluids;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.PacketByteBuf;
@@ -101,33 +106,34 @@ public abstract class ConfigurableScreenHandler extends ScreenHandler {
                 if (lockingMode) {
                     fluidStack.togglePlayerLock();
                 } else {
-                    // FIXME
-                    /*
-                     * Reference<ItemStack> heldStackRef = new Reference<ItemStack>() {
-                     * 
-                     * @Override public ItemStack get() { return playerInventory.getCursorStack(); }
-                     * 
-                     * @Override public boolean set(ItemStack value) {
-                     * playerInventory.setCursorStack(value); return true; }
-                     * 
-                     * @Override public boolean isValid(ItemStack value) { return true; } };
-                     * LimitedConsumer<ItemStack> excessConsumer = (itemStack, simulation) -> { if
-                     * (simulation.isAction()) { playerInventory.offerOrDrop(playerEntity.world,
-                     * itemStack); } return true; }; // Try to extract from held item first
-                     * FluidExtractable extractable = FluidAttributes.EXTRACTABLE.get(heldStackRef,
-                     * excessConsumer); FluidVolume extracted =
-                     * extractable.extract(fluidSlot::canInsertFluid,
-                     * FluidAmount.of(fluidStack.getRemainingSpace(), 1000)); int amount =
-                     * extracted.amount().asInt(1000, RoundingMode.FLOOR); if (amount > 0) {
-                     * fluidStack.increment(amount); fluidStack.setFluid(extracted.getFluidKey());
-                     * inventory.markDirty(); } else { // Otherwise insert into held item
-                     * FluidInsertable insertable = FluidAttributes.INSERTABLE.get(heldStackRef,
-                     * excessConsumer); if (fluidSlot.canExtractFluid(fluidStack.getFluid())) { int
-                     * leftover =
-                     * insertable.insert(fluidStack.getFluid().withAmount(FluidAmount.of(fluidStack.
-                     * getAmount(), 1000))).amount() .asInt(1000, RoundingMode.FLOOR);
-                     * fluidStack.setAmount(leftover); inventory.markDirty(); } }
-                     */
+                    FluidIo io = FluidApi.ofPlayerCursor(playerEntity);
+                    // Extract first
+                    if (io != null && io.supportsFluidExtraction()) {
+                        for (int id = 0; id < io.getFluidSlotCount(); ++id) {
+                            Fluid fluid = io.getFluid(id);
+                            if (fluid != Fluids.EMPTY && fluidSlot.canInsertFluid(fluid)) {
+                                long extracted = io.extract(id, fluid, fluidStack.getRemainingSpace(), Simulation.ACT);
+                                if (extracted > 0) {
+                                    fluidStack.increment(extracted);
+                                    fluidStack.setFluid(fluid);
+                                    // TODO: markDirty?
+                                    return fluidSlot.getStack().copy();
+                                }
+                            }
+                        }
+                    }
+                    // Otherwise insert
+                    if (io != null && io.supportsFluidInsertion()) {
+                        Fluid fluid = fluidStack.getFluid();
+                        if (fluidSlot.canExtractFluid(fluid)) {
+                            long leftover = io.insert(fluid, fluidStack.getAmount(), Simulation.ACT);
+                            if (leftover != fluidStack.getAmount()) {
+                                fluidStack.setAmount(leftover);
+                                // TODO: markDirty???
+                                return fluidSlot.getStack().copy();
+                            }
+                        }
+                    }
                 }
                 return fluidSlot.getStack().copy();
             } else if (slot instanceof ConfigurableItemStack.ConfigurableItemSlot) {

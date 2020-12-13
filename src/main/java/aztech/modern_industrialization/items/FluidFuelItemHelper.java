@@ -23,96 +23,129 @@
  */
 package aztech.modern_industrialization.items;
 
-import alexiil.mc.lib.attributes.ItemAttributeList;
-import alexiil.mc.lib.attributes.fluid.FluidInsertable;
-import alexiil.mc.lib.attributes.fluid.amount.FluidAmount;
-import alexiil.mc.lib.attributes.fluid.volume.FluidKey;
-import alexiil.mc.lib.attributes.fluid.volume.FluidKeys;
-import alexiil.mc.lib.attributes.misc.Reference;
-import aztech.modern_industrialization.api.FluidFuelRegistry;
-import java.math.RoundingMode;
+import aztech.modern_industrialization.util.FluidHelper;
+import aztech.modern_industrialization.util.NbtHelper;
+import dev.technici4n.fasttransferlib.api.ContainerItemContext;
+import dev.technici4n.fasttransferlib.api.Simulation;
+import dev.technici4n.fasttransferlib.api.fluid.FluidIo;
+import dev.technici4n.fasttransferlib.api.item.ItemKey;
 import java.util.List;
+import net.minecraft.fluid.Fluid;
+import net.minecraft.fluid.Fluids;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.text.TextColor;
-import net.minecraft.text.TranslatableText;
 
 /**
  * Helper class for fluid items that can only contain FluidFuels
  */
 public interface FluidFuelItemHelper {
-    static FluidKey getFluid(ItemStack stack) {
-        CompoundTag fluidTag = stack.getSubTag("fluid");
-        return fluidTag == null ? FluidKeys.EMPTY : FluidKey.fromTag(fluidTag);
+    static Fluid getFluid(ItemStack stack) {
+        CompoundTag tag = stack.getTag();
+        return tag == null ? Fluids.EMPTY : NbtHelper.getFluid(tag, "fluid");
     }
 
-    static void setFluid(ItemStack stack, FluidKey fluid) {
-        stack.getOrCreateTag().put("fluid", fluid.toTag());
+    static void setFluid(ItemStack stack, Fluid fluid) {
+        NbtHelper.putFluid(stack.getOrCreateTag(), "fluid", fluid);
     }
 
-    static int getAmount(ItemStack stack) {
-        if (stack.getTag() != null) {
-            return stack.getTag().getInt("amount");
+    static long getAmount(ItemStack stack) {
+        CompoundTag tag = stack.getTag();
+        if (tag != null) {
+            return tag.contains("amount") ? tag.getInt("amount") * 81 : tag.getLong("amt");
         } else {
             return 0;
         }
     }
 
-    static void setAmount(ItemStack stack, int amount) {
+    static void setAmount(ItemStack stack, long amount) {
         if (amount != 0) {
-            stack.getOrCreateTag().putInt("amount", amount);
+            stack.getOrCreateTag().putLong("amt", amount);
         } else {
-            stack.removeSubTag("amount");
+            stack.removeSubTag("amt");
             stack.removeSubTag("fluid");
         }
     }
 
     static void decrement(ItemStack stack) {
-        int amount = getAmount(stack);
+        long amount = getAmount(stack);
         if (amount > 0) {
-            setAmount(stack, amount - 1);
+            setAmount(stack, Math.max(0, amount - 81));
         }
     }
 
-    static void offerInsertable(Reference<ItemStack> stack, ItemAttributeList<?> to, int capacity) {
-        to.offer((FluidInsertable) (fluidVolume, simulation) -> {
-            FluidKey storedFluid = getFluid(stack.get());
-            if (storedFluid.isEmpty()) {
-                if (FluidFuelRegistry.getEu(fluidVolume.getFluidKey().getRawFluid()) != 0) {
-                    int inserted = Math.min(capacity - getAmount(stack.get()), fluidVolume.amount().asInt(1000, RoundingMode.FLOOR));
-                    ItemStack copy = stack.get().copy();
-                    setFluid(copy, fluidVolume.getFluidKey());
-                    setAmount(copy, inserted);
-                    if (!stack.set(copy, simulation)) {
-                        return fluidVolume;
-                    }
-                    return fluidVolume.getFluidKey().withAmount(fluidVolume.amount().sub(FluidAmount.of(inserted, 1000)));
-                }
-            } else if (storedFluid.equals(fluidVolume.getFluidKey())) {
-                int amount = getAmount(stack.get());
-                int inserted = Math.min(capacity - amount, fluidVolume.amount().asInt(1000, RoundingMode.FLOOR));
-                ItemStack copy = stack.get().copy();
-                setAmount(copy, amount + inserted);
-                if (!stack.set(copy, simulation)) {
-                    return fluidVolume;
-                }
-                return fluidVolume.getFluidKey().withAmount(fluidVolume.amount().sub(FluidAmount.of(inserted, 1000)));
+    class Io implements FluidIo {
+        private final Item item;
+        private final Fluid fluid;
+        private final long amount;
+        private final long capacity;
+        private final ContainerItemContext ctx;
+
+        public Io(long capacity, ItemKey key, ContainerItemContext ctx) {
+            ItemStack stack = key.toStack();
+            this.item = key.getItem();
+            this.fluid = FluidFuelItemHelper.getFluid(stack);
+            this.amount = getAmount(stack);
+            this.capacity = capacity;
+            this.ctx = ctx;
+        }
+
+        @Override
+        public int getFluidSlotCount() {
+            return 1;
+        }
+
+        @Override
+        public Fluid getFluid(int i) {
+            return fluid;
+        }
+
+        @Override
+        public long getFluidAmount(int i) {
+            return amount;
+        }
+
+        @Override
+        public boolean supportsFluidInsertion() {
+            return true;
+        }
+
+        @Override
+        public long insert(Fluid fluid, long amount, Simulation simulation) {
+            if (ctx.getCount() <= 0)
+                return amount;
+            if (fluid == Fluids.EMPTY)
+                return amount;
+
+            long inserted = 0;
+            if (fluid == this.fluid || this.fluid == Fluids.EMPTY) {
+                inserted = Math.min(capacity - this.amount, amount);
             }
-            return fluidVolume;
-        });
+            if (inserted > 0) {
+                if (!updateItem(fluid, this.amount + inserted, simulation)) {
+                    return amount;
+                }
+            }
+            return amount - inserted;
+        }
+
+        private boolean updateItem(Fluid fluid, long amount, Simulation simulation) {
+            ItemStack stack = new ItemStack(item);
+            setAmount(stack, amount);
+            setFluid(stack, fluid);
+            return ctx.transform(ItemKey.of(stack), simulation);
+        }
     }
 
-    static void appendTooltip(ItemStack stack, List<Text> tooltip, int capacity) {
+    static void appendTooltip(ItemStack stack, List<Text> tooltip, long capacity) {
         Style style = Style.EMPTY.withColor(TextColor.fromRgb(0xa9a9a9)).withItalic(true);
-        FluidKey fluid = getFluid(stack);
-        if (!fluid.isEmpty()) {
-            tooltip.add(getFluid(stack).name);
-            String quantity = getAmount(stack) + " / " + capacity;
-            tooltip.add(new TranslatableText("text.modern_industrialization.fluid_slot_quantity", quantity).setStyle(style));
-        } else {
-            tooltip.add(new TranslatableText("text.modern_industrialization.fluid_slot_empty").setStyle(style));
+        Fluid fluid = getFluid(stack);
+        tooltip.add(FluidHelper.getFluidName(fluid, true));
+        if (fluid != Fluids.EMPTY) {
+            tooltip.add(FluidHelper.getFluidAmount(getAmount(stack), capacity).setStyle(style));
         }
     }
 }

@@ -72,13 +72,13 @@ public class DieselGeneratorBlockEntity extends MachineBlockEntity {
 
         while (tier.getEu() > extraStoredEu) {
             ConfigurableFluidStack stack = inventory.fluidStacks.get(0);
-            if (stack.getAmount() <= 0)
+            if (stack.getAmount() / 81 <= 0)
                 break;
             int fuelEu = FluidFuelRegistry.getEu(stack.getFluid());
             if (fuelEu == 0)
                 break;
             extraStoredEu += fuelEu;
-            stack.decrement(1);
+            stack.decrement(81);
         }
 
         int transformed = (int) Math.min(Math.min(extraStoredEu, tier.getEu()), getMaxStoredEu() - storedEu);

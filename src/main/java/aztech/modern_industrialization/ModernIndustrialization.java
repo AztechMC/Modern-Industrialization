@@ -31,6 +31,7 @@ import aztech.modern_industrialization.blocks.forgehammer.ForgeHammerScreenHandl
 import aztech.modern_industrialization.blocks.tank.MITanks;
 import aztech.modern_industrialization.inventory.ConfigurableInventoryPacketHandlers;
 import aztech.modern_industrialization.inventory.ConfigurableInventoryPackets;
+import aztech.modern_industrialization.items.FluidFuelItemHelper;
 import aztech.modern_industrialization.items.armor.ArmorPackets;
 import aztech.modern_industrialization.items.armor.JetpackItem;
 import aztech.modern_industrialization.items.armor.MIKeyMap;
@@ -44,6 +45,8 @@ import aztech.modern_industrialization.material.*;
 import aztech.modern_industrialization.pipes.MIPipes;
 import aztech.modern_industrialization.tools.WrenchItem;
 import aztech.modern_industrialization.util.ChunkUnloadBlockEntity;
+import dev.technici4n.fasttransferlib.api.fluid.FluidApi;
+import dev.technici4n.fasttransferlib.api.item.ItemApi;
 import me.shedaniel.cloth.api.common.events.v1.PlayerChangeWorldCallback;
 import me.shedaniel.cloth.api.common.events.v1.PlayerLeaveCallback;
 import net.devtech.arrp.api.RRPCallback;
@@ -119,7 +122,6 @@ public class ModernIndustrialization implements ModInitializer {
         MITags.setup();
         setupItems();
         setupBlocks();
-        setupBlockEntities();
         MIFluids.setupFluids();
         setupMaterial();
         MITanks.setup();
@@ -162,6 +164,9 @@ public class ModernIndustrialization implements ModInitializer {
         registerItem(ITEM_JETPACK, "jetpack");
         registerItem(ITEM_DIESEL_CHAINSAW, "diesel_chainsaw", true);
         registerItem(ITEM_DIESEL_DRILL, "diesel_mining_drill", true);
+
+        FluidApi.ITEM.register((key, ctx) -> new FluidFuelItemHelper.Io(DieselToolItem.CAPACITY, key, ctx), ITEM_DIESEL_CHAINSAW, ITEM_DIESEL_DRILL);
+        FluidApi.ITEM.register((key, ctx) -> new FluidFuelItemHelper.Io(JetpackItem.CAPACITY, key, ctx), ITEM_JETPACK);
     }
 
     private void setupBlocks() {
@@ -170,13 +175,10 @@ public class ModernIndustrialization implements ModInitializer {
         for (MIBlock block : MIBlock.blocks.values()) {
             registerBlock(block, block.getItem(), block.getId());
         }
-    }
 
-    private void setupBlockEntities() {
-        // BLOCK_ENTITY_STEAM_BOILER = Registry.register(Registry.BLOCK_ENTITY_TYPE, new
-        // Identifier(MOD_ID, "steam_boiler"),
-        // BlockEntityType.Builder.create(SteamBoilerBlockEntity::new,
-        // BLOCK_STEAM_BOILER).build(null));
+        ItemApi.SIDED.registerForBlocks((world, pos, state, direction) -> TrashCanBlock.ITEM_TRASH, TRASH_CAN);
+        FluidApi.SIDED.registerForBlocks((world, pos, state, direction) -> TrashCanBlock.FLUID_TRASH, TRASH_CAN);
+        FluidApi.ITEM.register((key, ctx) -> TrashCanBlock.FLUID_TRASH, ITEM_TRASH_CAN);
     }
 
     private void setupMachines() {

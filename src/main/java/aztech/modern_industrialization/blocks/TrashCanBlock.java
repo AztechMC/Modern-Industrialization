@@ -23,33 +23,75 @@
  */
 package aztech.modern_industrialization.blocks;
 
-import alexiil.mc.lib.attributes.AttributeList;
-import alexiil.mc.lib.attributes.AttributeProvider;
-import alexiil.mc.lib.attributes.fluid.FluidInsertable;
-import alexiil.mc.lib.attributes.fluid.FluidVolumeUtil;
-import alexiil.mc.lib.attributes.item.ItemInsertable;
 import aztech.modern_industrialization.util.MobSpawning;
+import dev.technici4n.fasttransferlib.api.Simulation;
+import dev.technici4n.fasttransferlib.api.fluid.FluidIo;
+import dev.technici4n.fasttransferlib.api.item.ItemIo;
+import dev.technici4n.fasttransferlib.api.item.ItemKey;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
 import net.minecraft.block.Material;
-import net.minecraft.item.ItemStack;
+import net.minecraft.fluid.Fluid;
+import net.minecraft.fluid.Fluids;
 import net.minecraft.sound.BlockSoundGroup;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
 
-public class TrashCanBlock extends Block implements AttributeProvider {
-    private static final ItemInsertable ITEM_TRASH = (stack, simulation) -> ItemStack.EMPTY;
-    private static final FluidInsertable FLUID_TRASH = (fluidVolume, simulation) -> FluidVolumeUtil.EMPTY;
+public class TrashCanBlock extends Block {
+    public static final ItemIo ITEM_TRASH = new ItemIo() {
+        @Override
+        public int getItemSlotCount() {
+            return 0;
+        }
+
+        @Override
+        public ItemKey getItemKey(int i) {
+            return ItemKey.EMPTY;
+        }
+
+        @Override
+        public int getItemCount(int i) {
+            return 0;
+        }
+
+        @Override
+        public boolean supportsItemInsertion() {
+            return true;
+        }
+
+        @Override
+        public int insert(ItemKey key, int count, Simulation simulation) {
+            return 0;
+        }
+    };
+
+    public static final FluidIo FLUID_TRASH = new FluidIo() {
+        @Override
+        public int getFluidSlotCount() {
+            return 0;
+        }
+
+        @Override
+        public Fluid getFluid(int i) {
+            return Fluids.EMPTY;
+        }
+
+        @Override
+        public long getFluidAmount(int i) {
+            return 0;
+        }
+
+        @Override
+        public boolean supportsFluidInsertion() {
+            return true;
+        }
+
+        @Override
+        public long insert(Fluid fluid, long amount, Simulation simulation) {
+            return 0;
+        }
+    };
 
     public TrashCanBlock() {
         super(FabricBlockSettings.of(Material.METAL).hardness(6.0f).resistance(1200).sounds(BlockSoundGroup.METAL)
                 .allowsSpawning(MobSpawning.NO_SPAWN));
-    }
-
-    @Override
-    public void addAllAttributes(World world, BlockPos pos, BlockState state, AttributeList<?> to) {
-        to.offer(ITEM_TRASH);
-        to.offer(FLUID_TRASH);
     }
 }

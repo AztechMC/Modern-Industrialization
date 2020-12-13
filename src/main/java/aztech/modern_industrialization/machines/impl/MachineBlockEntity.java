@@ -23,8 +23,6 @@
  */
 package aztech.modern_industrialization.machines.impl;
 
-import alexiil.mc.lib.attributes.fluid.volume.FluidKey;
-import alexiil.mc.lib.attributes.fluid.volume.FluidKeys;
 import aztech.modern_industrialization.MIFluids;
 import aztech.modern_industrialization.ModernIndustrialization;
 import aztech.modern_industrialization.api.energy.*;
@@ -532,7 +530,7 @@ public class MachineBlockEntity extends AbstractMachineBlockEntity implements Ti
                         if (key.isEmpty()) {
                             if ((stack.isMachineLocked() || stack.isPlayerLocked() || loopRun == 1) && stack.canInsert(new ItemStack(output.item))) {
                                 stack.setCount(ins);
-                                stack.setItemKey(key);
+                                stack.setItemKey(ItemKey.of(output.item));
                             } else {
                                 ins = 0;
                             }
@@ -785,7 +783,6 @@ public class MachineBlockEntity extends AbstractMachineBlockEntity implements Ti
         }
         // FLUID OUTPUTS
         outer: for (MachineRecipe.FluidOutput output : recipe.fluidOutputs) {
-            FluidKey fluid = FluidKeys.get(output.fluid);
             for (ConfigurableFluidStack stack : getFluidOutputStacks()) {
                 if (stack.getLockedFluid() == output.fluid)
                     continue outer;

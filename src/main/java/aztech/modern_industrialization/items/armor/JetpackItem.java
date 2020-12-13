@@ -23,10 +23,6 @@
  */
 package aztech.modern_industrialization.items.armor;
 
-import alexiil.mc.lib.attributes.AttributeProviderItem;
-import alexiil.mc.lib.attributes.ItemAttributeList;
-import alexiil.mc.lib.attributes.misc.LimitedConsumer;
-import alexiil.mc.lib.attributes.misc.Reference;
 import aztech.modern_industrialization.api.FluidFuelRegistry;
 import aztech.modern_industrialization.items.FluidFuelItemHelper;
 import aztech.modern_industrialization.mixin.ServerPlayNetworkHandlerAccessor;
@@ -50,8 +46,8 @@ import net.minecraft.util.Rarity;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
-public class JetpackItem extends ArmorItem implements Wearable, AttributeProviderItem, TickableArmor, DurabilityBarItem {
-    static final int CAPACITY = 4000;
+public class JetpackItem extends ArmorItem implements Wearable, TickableArmor, DurabilityBarItem {
+    public static final int CAPACITY = 4 * 81000;
 
     public JetpackItem(Settings settings) {
         super(buildMaterial(), EquipmentSlot.CHEST, settings.maxCount(1).rarity(Rarity.UNCOMMON));
@@ -71,11 +67,6 @@ public class JetpackItem extends ArmorItem implements Wearable, AttributeProvide
 
     public void setParticles(ItemStack stack, boolean showParticles) {
         stack.getOrCreateTag().putBoolean("showParticles", showParticles);
-    }
-
-    @Override
-    public void addAllAttributes(Reference<ItemStack> stack, LimitedConsumer<ItemStack> excess, ItemAttributeList<?> to) {
-        FluidFuelItemHelper.offerInsertable(stack, to, CAPACITY);
     }
 
     private static ArmorMaterial buildMaterial() {
@@ -126,12 +117,12 @@ public class JetpackItem extends ArmorItem implements Wearable, AttributeProvide
     public void tickArmor(ItemStack stack, PlayerEntity player) {
         boolean showParticles = false;
         if (isActivated(stack)) {
-            int amount = FluidFuelItemHelper.getAmount(stack);
+            long amount = FluidFuelItemHelper.getAmount(stack);
             if (MIKeyMap.isHoldingUp(player) && amount > 0) {
                 showParticles = true;
-                double maxSpeed = Math.sqrt(FluidFuelRegistry.getEu(FluidFuelItemHelper.getFluid(stack).getRawFluid())) / 10;
+                double maxSpeed = Math.sqrt(FluidFuelRegistry.getEu(FluidFuelItemHelper.getFluid(stack))) / 10;
                 double acceleration = 0.25;
-                FluidFuelItemHelper.setAmount(stack, amount - 1);
+                FluidFuelItemHelper.decrement(stack);
                 Vec3d v = player.getVelocity();
                 if (v.y < maxSpeed) {
                     player.setVelocity(v.x, Math.min(maxSpeed, v.y + acceleration), v.z);

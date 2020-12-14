@@ -23,6 +23,7 @@
  */
 package aztech.modern_industrialization.items;
 
+import aztech.modern_industrialization.api.FluidFuelRegistry;
 import aztech.modern_industrialization.util.FluidHelper;
 import aztech.modern_industrialization.util.NbtHelper;
 import dev.technici4n.fasttransferlib.api.ContainerItemContext;
@@ -57,6 +58,9 @@ public interface FluidFuelItemHelper {
     }
 
     static long getAmount(ItemStack stack) {
+        if (getFluid(stack) == Fluids.EMPTY) {
+            return 0;
+        }
         CompoundTag tag = stack.getTag();
         if (tag != null) {
             return tag.contains("amount") ? tag.getInt("amount") * 81 : tag.getLong("amt");
@@ -121,7 +125,7 @@ public interface FluidFuelItemHelper {
         public long insert(Fluid fluid, long amount, Simulation simulation) {
             if (ctx.getCount() <= 0)
                 return amount;
-            if (fluid == Fluids.EMPTY)
+            if (fluid == Fluids.EMPTY || FluidFuelRegistry.getEu(fluid) == 0)
                 return amount;
 
             long inserted = 0;

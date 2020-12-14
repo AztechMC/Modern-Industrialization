@@ -302,8 +302,9 @@ public class ConfigurableItemStack {
 
         @Override
         public ItemStack takeStack(int amount) {
-            ItemStack stack = getStack();
-            setStack(ItemStack.EMPTY);
+            ItemStack stack = key.toStack(amount);
+            decrement(amount);
+            markDirty.run();
             return stack;
         }
     }

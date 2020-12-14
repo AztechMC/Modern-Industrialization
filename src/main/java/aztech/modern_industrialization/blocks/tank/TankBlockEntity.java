@@ -62,6 +62,9 @@ public class TankBlockEntity extends FastBlockEntity implements FluidIo, BlockEn
             amount = tag.getLong("amt");
             capacity = tag.getLong("cap");
         }
+        if (fluid == Fluids.EMPTY) {
+            amount = 0;
+        }
     }
 
     @Override

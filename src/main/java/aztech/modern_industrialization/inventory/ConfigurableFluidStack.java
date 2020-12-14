@@ -218,6 +218,9 @@ public class ConfigurableFluidStack {
         playerExtract = tag.getBoolean("playerExtract");
         pipesInsert = tag.getBoolean("pipesInsert");
         pipesExtract = tag.getBoolean("pipesExtract");
+        if (fluid == Fluids.EMPTY) {
+            amount = 0;
+        }
     }
 
     public void enableMachineLock(Fluid lockedFluid) {

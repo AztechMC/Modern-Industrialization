@@ -575,7 +575,6 @@ public class MachineBlockEntity extends AbstractMachineBlockEntity implements Ti
                 if (randFloat > output.probability)
                     continue;
             }
-            int index = -1;
             // First, try to find a slot that contains the fluid. If we couldn't find one,
             // we insert in any stack
             outer: for (int tries = 0; tries < 2; ++tries) {
@@ -586,10 +585,10 @@ public class MachineBlockEntity extends AbstractMachineBlockEntity implements Ti
                         if (inserted > 0) {
                             stack.setFluid(output.fluid);
                             stack.increment(inserted);
-                            locksToToggle.add(index);
+                            locksToToggle.add(i);
                             lockFluids.add(output.fluid);
 
-                            if (inserted <= output.amount)
+                            if (inserted < output.amount)
                                 ok = false;
                             break outer;
                         }

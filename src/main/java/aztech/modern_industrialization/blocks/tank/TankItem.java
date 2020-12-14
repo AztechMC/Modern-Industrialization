@@ -72,6 +72,9 @@ public class TankItem extends BlockItem {
     }
 
     public long getAmount(ItemStack stack) {
+        if (getFluid(stack) == Fluids.EMPTY) {
+            return 0;
+        }
         CompoundTag tag = stack.getSubTag("BlockEntityTag");
         if (tag == null)
             return 0;

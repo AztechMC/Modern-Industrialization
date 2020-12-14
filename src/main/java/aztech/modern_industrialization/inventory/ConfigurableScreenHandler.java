@@ -153,34 +153,35 @@ public abstract class ConfigurableScreenHandler extends ScreenHandler {
 
     @Override
     public ItemStack transferSlot(PlayerEntity player, int slotIndex) {
-        ItemStack newStack = ItemStack.EMPTY;
+        ItemStack stackBefore = ItemStack.EMPTY;
         Slot slot = this.slots.get(slotIndex);
         if (slot != null && slot.hasStack()) {
             if (!slot.canTakeItems(player))
-                return newStack;
-            ItemStack originalStack = slot.getStack();
-            newStack = originalStack.copy();
+                return stackBefore;
+            ItemStack stack = slot.getStack();
+            stackBefore = stack.copy();
             if (slotIndex < PLAYER_SLOTS) { // from player to container inventory
-                if (!this.insertItem(originalStack, PLAYER_SLOTS, this.slots.size(), false)) {
+                if (!this.insertItem(stack, PLAYER_SLOTS, this.slots.size(), false)) {
                     if (slotIndex < 27) { // inside inventory
-                        if (!this.insertItem(originalStack, 27, 36, false)) { // toolbar
+                        if (!this.insertItem(stack, 27, 36, false)) { // toolbar
                             return ItemStack.EMPTY;
                         }
-                    } else if (!this.insertItem(originalStack, 0, 27, false)) {
+                    } else if (!this.insertItem(stack, 0, 27, false)) {
                         return ItemStack.EMPTY;
                     }
                 }
-            } else if (!this.insertItem(originalStack, 0, PLAYER_SLOTS, true)) { // from container inventory to player
+            } else if (!this.insertItem(stack, 0, PLAYER_SLOTS, true)) { // from container inventory to player
                 return ItemStack.EMPTY;
             }
 
-            if (originalStack.isEmpty()) {
+            if (stack.isEmpty()) {
                 slot.setStack(ItemStack.EMPTY);
             } else {
+                slot.setStack(stack);
                 slot.markDirty();
             }
         }
-        return newStack;
+        return stackBefore;
     }
 
     // (almost) Copy-paste from ScreenHandler, Mojang forgot to check
@@ -221,6 +222,7 @@ public abstract class ConfigurableScreenHandler extends ScreenHandler {
                         bl = true;
                     }
                 }
+                slot2.setStack(itemStack);
 
                 if (fromLast) {
                     --i;
@@ -246,9 +248,8 @@ public abstract class ConfigurableScreenHandler extends ScreenHandler {
                     break;
                 }
 
-                slot2 = (Slot) this.slots.get(i);
-                itemStack = slot2.getStack();
-                if (itemStack.isEmpty() && slot2.canInsert(stack)) {
+                slot2 = this.slots.get(i);
+                if (!slot2.hasStack() && slot2.canInsert(stack)) {
                     if (stack.getCount() > slot2.getMaxItemCount()) {
                         slot2.setStack(stack.split(slot2.getMaxItemCount()));
                     } else {

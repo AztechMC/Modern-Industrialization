@@ -124,8 +124,6 @@ dependencies {
     modImplementation "me.shedaniel:RoughlyEnoughItems:${project.rei_version}"
     modImplementation "vazkii.patchouli:Patchouli:${project.patchouli_version}"
     include "vazkii.patchouli:Patchouli:${project.patchouli_version}"
-    modApi "alexiil.mc.lib:libblockattributes-all:${project.lba_version}"
-    include "alexiil.mc.lib:libblockattributes-all:${project.lba_version}"
     modApi "me.shedaniel.cloth.api:cloth-armor-api-v1:${project.cloth_api_version}"
     modApi "me.shedaniel.cloth.api:cloth-common-events-v1:${project.cloth_api_version}"
     modApi "me.shedaniel.cloth.api:cloth-durability-bar-api-v1:${project.cloth_api_version}"

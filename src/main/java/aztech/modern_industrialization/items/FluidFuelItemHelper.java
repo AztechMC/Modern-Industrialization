@@ -49,7 +49,11 @@ public interface FluidFuelItemHelper {
     }
 
     static void setFluid(ItemStack stack, Fluid fluid) {
-        NbtHelper.putFluid(stack.getOrCreateTag(), "fluid", fluid);
+        if (fluid != Fluids.EMPTY) {
+            NbtHelper.putFluid(stack.getOrCreateTag(), "fluid", fluid);
+        } else {
+            stack.removeSubTag("fluid");
+        }
     }
 
     static long getAmount(ItemStack stack) {

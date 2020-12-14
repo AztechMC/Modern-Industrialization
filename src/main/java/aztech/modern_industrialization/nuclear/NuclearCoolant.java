@@ -23,7 +23,7 @@
  */
 package aztech.modern_industrialization.nuclear;
 
-import aztech.modern_industrialization.items.LockableFluidItem;
+import aztech.modern_industrialization.items.FluidFuelItemHelper;
 import java.util.Random;
 import net.minecraft.item.ItemStack;
 
@@ -57,7 +57,7 @@ public class NuclearCoolant extends MINuclearItem {
 
     public NuclearFluidCoolant getCoolant(ItemStack is) {
         for (NuclearFluidCoolant coolant : NuclearFluidCoolant.values()) {
-            if (coolant.fluid == LockableFluidItem.getFluid(is)) {
+            if (coolant.fluid == FluidFuelItemHelper.getFluid(is)) {
                 return coolant;
             }
         }

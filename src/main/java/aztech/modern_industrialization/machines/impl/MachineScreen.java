@@ -23,16 +23,12 @@
  */
 package aztech.modern_industrialization.machines.impl;
 
-import alexiil.mc.lib.attributes.fluid.amount.FluidAmount;
-import alexiil.mc.lib.attributes.fluid.render.FluidRenderFace;
-import alexiil.mc.lib.attributes.fluid.render.FluidVolumeRenderer;
-import alexiil.mc.lib.attributes.fluid.volume.FluidKeys;
-import alexiil.mc.lib.attributes.fluid.volume.FluidVolume;
 import aztech.modern_industrialization.ModernIndustrialization;
 import aztech.modern_industrialization.inventory.ConfigurableFluidStack;
 import aztech.modern_industrialization.inventory.ConfigurableInventoryPackets;
 import aztech.modern_industrialization.inventory.ConfigurableItemStack;
 import aztech.modern_industrialization.util.FluidHelper;
+import aztech.modern_industrialization.util.RenderHelper;
 import com.mojang.blaze3d.systems.RenderSystem;
 import io.netty.buffer.Unpooled;
 import java.text.DecimalFormat;
@@ -57,7 +53,7 @@ import net.minecraft.util.Identifier;
 
 public class MachineScreen extends HandledScreen<MachineScreenHandler> {
 
-    private MachineScreenHandler handler;
+    private final MachineScreenHandler handler;
 
     public static final Identifier SLOT_ATLAS = new Identifier(ModernIndustrialization.MOD_ID, "textures/gui/container/slot_atlas.png");
     private static final Style SECONDARY_INFO = Style.EMPTY.withColor(TextColor.fromRgb(0xa9a9a9)).withItalic(true);
@@ -323,12 +319,8 @@ public class MachineScreen extends HandledScreen<MachineScreenHandler> {
 
                 ConfigurableFluidStack stack = ((ConfigurableFluidStack.ConfigurableFluidSlot) slot).getConfStack();
                 if (stack.getFluid() != Fluids.EMPTY) {
-                    List<FluidRenderFace> faces = new ArrayList<>();
-                    faces.add(FluidRenderFace.createFlatFaceZ(i, j, 0, i + 16, j + 16, 0, 1 / 16., false, false));
-                    FluidVolume vol = FluidKeys.get(stack.getFluid()).withAmount(FluidAmount.of(stack.getAmount(), 1000));
-                    vol.render(faces, FluidVolumeRenderer.VCPS, matrices);
+                    RenderHelper.drawFluidInGui(matrices, stack.getFluid(), i, j);
                 }
-                RenderSystem.runAsFancy(FluidVolumeRenderer.VCPS::draw);
 
                 if (isPointWithinBounds(slot.x, slot.y, 16, 16, mouseX, mouseY) && slot.doDrawHoveringEffect()) {
                     this.focusedSlot = slot;

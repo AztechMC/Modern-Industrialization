@@ -23,17 +23,11 @@
  */
 package aztech.modern_industrialization.blocks.creativetank;
 
-import alexiil.mc.lib.attributes.fluid.amount.FluidAmount;
-import alexiil.mc.lib.attributes.fluid.render.FluidRenderFace;
-import alexiil.mc.lib.attributes.fluid.volume.FluidKeys;
-import java.util.ArrayList;
-import java.util.EnumSet;
-import java.util.List;
+import aztech.modern_industrialization.util.RenderHelper;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.block.entity.BlockEntityRenderDispatcher;
 import net.minecraft.client.render.block.entity.BlockEntityRenderer;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.util.math.Direction;
 
 public class CreativeTankRenderer extends BlockEntityRenderer<CreativeTankBlockEntity> {
     public CreativeTankRenderer(BlockEntityRenderDispatcher dispatcher) {
@@ -44,9 +38,7 @@ public class CreativeTankRenderer extends BlockEntityRenderer<CreativeTankBlockE
     public void render(CreativeTankBlockEntity entity, float tickDelta, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light,
             int overlay) {
         if (!entity.isEmpty()) {
-            List<FluidRenderFace> faces = new ArrayList<>();
-            FluidRenderFace.appendCuboid(0.01, 0.01, 0.01, 0.99, 0.99, 0.99, 1, EnumSet.allOf(Direction.class), faces);
-            FluidKeys.get(entity.fluid).withAmount(FluidAmount.ONE).render(faces, vertexConsumers, matrices);
+            RenderHelper.drawFluidInTank(matrices, vertexConsumers, entity.fluid, 1);
         }
     }
 }

@@ -14,9 +14,8 @@ def image_tint(src, tint='#ffffff'):
     src = Image.open(src).convert('RGBA')
     r, g, b, alpha = src.split()
     gray = grayscale(src)
-    overlay = colorize(gray, (0, 0, 0, 0), tint)
-    overlay.putalpha(alpha)
-    result = multiply(gray, overlay)
+    result = colorize(gray, (0, 0, 0, 0), tint)
+    result.putalpha(alpha)
     return result
 
 
@@ -68,7 +67,7 @@ def gen_name(ty):
 
 def gen_texture(id, hex, icon_set, item_set, block_set, special_texture=''):
 
-    item = glob("template/item/"+ icon_set +"*.png")
+    item = glob("template/item/"+ icon_set +"/*.png")
 
     output_path = (
         "src/main/resources/assets/modern_industrialization/textures/items/materials/" + id)
@@ -80,10 +79,10 @@ def gen_texture(id, hex, icon_set, item_set, block_set, special_texture=''):
             print(filename)
             result = image_tint(filename, hex)
             if t in TEXTURE_UNDERLAYS:
-                underlay = Image.open("template/item/%s_underlay.png" % t)
+                underlay = Image.open("template/item/"+ icon_set +"/%s_underlay.png" % t)
                 result = Image.alpha_composite(underlay, result)
             if t in TEXTURE_OVERLAYS:
-                overlay = Image.open("template/item/%s_overlay.png" % t)
+                overlay = Image.open("template/item/"+ icon_set +"/%s_overlay.png" % t)
                 result = Image.alpha_composite(result, overlay)
             if t != special_texture:
                 result.save(output_path + '/' + os.path.basename(filename))
@@ -616,7 +615,7 @@ gen(
         "fluid_pipe": "modern_industrialization:pipe_fluid_copper",
         "cable": "modern_industrialization:pipe_electricity_copper",
     }),
-    '#FF6400', 'shiny' forge_hammer=True, veinsPerChunk=30, veinsSize=9, maxYLevel=128,
+    '#FF6400', 'shiny', forge_hammer=True, veinsPerChunk=30, veinsSize=9, maxYLevel=128,
 )
 gen(
     file,
@@ -728,7 +727,7 @@ gen(
     }, oredicted={
         "tiny_dust": "c:redstone_tiny_dusts",
     }),
-    '#d20000', 'stone', macerator_disable={'crushed_dust', 'dust'}
+    '#d20000', 'gem', macerator_disable={'crushed_dust', 'dust'}
 )
 gen(
     file,
@@ -742,7 +741,7 @@ gen(
         "ore": "c:salt_ores",
         "tiny_dust": "c:salt_tiny_dusts",
     }),
-    '#c7d6c5', 'dull', isMetal=False, smelting=False, veinsPerChunk=2, veinsSize=7, maxYLevel=32
+    '#c7d6c5', 'gem', isMetal=False, smelting=False, veinsPerChunk=2, veinsSize=7, maxYLevel=32
 )
 gen(
     file,
@@ -758,7 +757,7 @@ gen(
         "tiny_dust": "c:quartz_tiny_dusts",
         "dust": "c:quartz_dusts"
     }),
-    '#f0ebe4', 'dull', smelting=False
+    '#f0ebe4', 'gem', smelting=False
 )
 
 gen(

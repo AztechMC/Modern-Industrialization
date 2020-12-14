@@ -1,9 +1,6 @@
 
 package aztech.modern_industrialization;
 
-import alexiil.mc.lib.attributes.fluid.volume.FluidKey;
-import alexiil.mc.lib.attributes.fluid.volume.FluidKeys;
-import alexiil.mc.lib.attributes.fluid.volume.SimpleFluidKey;
 import aztech.modern_industrialization.fluid.CraftingFluid;
 import net.devtech.arrp.json.models.JModel;
 import net.devtech.arrp.json.models.JTextures;
@@ -75,14 +72,6 @@ public class MIFluids {
     static {
         for(CraftingFluid fluid : FLUIDS) {
             registerFluid(fluid);
-    
-            if(FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
-                Text name = fluid.getDefaultState().getBlockState().getBlock().getName();
-                fluid.key = new SimpleFluidKey(new FluidKey.FluidKeyBuilder(fluid).setName(name).setRenderColor(fluid.color));
-            } else {
-                fluid.key = FluidKeys.get(fluid);
-            }
-            FluidKeys.put(fluid, fluid.key);
         }
     }
     

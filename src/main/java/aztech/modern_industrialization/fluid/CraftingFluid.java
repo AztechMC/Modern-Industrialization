@@ -23,7 +23,6 @@
  */
 package aztech.modern_industrialization.fluid;
 
-import alexiil.mc.lib.attributes.fluid.volume.FluidKey;
 import aztech.modern_industrialization.ModernIndustrialization;
 import net.minecraft.block.BlockState;
 import net.minecraft.fluid.Fluid;
@@ -45,7 +44,6 @@ public class CraftingFluid extends Fluid {
     public final Item bucketItem;
     public final String name;
     public final int color;
-    public FluidKey key;
     private final CraftingFluidBlock block;
 
     public CraftingFluid(String name, int color) {

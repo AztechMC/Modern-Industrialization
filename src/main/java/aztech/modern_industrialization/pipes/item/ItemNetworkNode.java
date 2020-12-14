@@ -25,12 +25,12 @@ package aztech.modern_industrialization.pipes.item;
 
 import static aztech.modern_industrialization.pipes.api.PipeEndpointType.*;
 
-import alexiil.mc.lib.attributes.SearchOption;
-import alexiil.mc.lib.attributes.SearchOptions;
-import alexiil.mc.lib.attributes.item.*;
 import aztech.modern_industrialization.pipes.api.PipeEndpointType;
 import aztech.modern_industrialization.pipes.api.PipeNetworkNode;
 import aztech.modern_industrialization.util.ItemStackHelper;
+import dev.technici4n.fasttransferlib.api.item.ItemApi;
+import dev.technici4n.fasttransferlib.api.item.ItemIo;
+import dev.technici4n.fasttransferlib.api.item.ItemMovement;
 import java.util.*;
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
 import net.minecraft.entity.player.PlayerEntity;
@@ -48,7 +48,7 @@ import net.minecraft.world.World;
 
 // TODO: item filters
 public class ItemNetworkNode extends PipeNetworkNode {
-    private List<ItemConnection> connections = new ArrayList<>();
+    private final List<ItemConnection> connections = new ArrayList<>();
     private int inactiveTicks = 0;
 
     @Override
@@ -66,9 +66,8 @@ public class ItemNetworkNode extends PipeNetworkNode {
     }
 
     private boolean canConnect(World world, BlockPos pos, Direction direction) {
-        SearchOption option = SearchOptions.inDirection(direction);
-        return ItemAttributes.INSERTABLE.getAll(world, pos.offset(direction), option).hasOfferedAny()
-                || ItemAttributes.EXTRACTABLE.getAll(world, pos.offset(direction), option).hasOfferedAny();
+        ItemIo io = ItemApi.SIDED.get(world, pos.offset(direction), direction.getOpposite());
+        return io != null && (io.supportsItemInsertion() || io.supportsItemExtraction());
     }
 
     @Override
@@ -172,19 +171,20 @@ public class ItemNetworkNode extends PipeNetworkNode {
             List<InsertTarget> reachableInputs = null;
             outer: for (ItemConnection connection : connections) { // TODO: optimize!
                 if (connection.canExtract()) {
-                    int movesLeft = 16;
-                    if (reachableInputs == null)
-                        reachableInputs = getInputs(world, pos);
-                    ItemExtractable extractable = ItemAttributes.EXTRACTABLE.get(world, pos.offset(connection.direction),
-                            SearchOptions.inDirection(connection.direction));
-                    for (InsertTarget target : reachableInputs) {
-                        if (target.connection.canInsert()) {
-                            int moved = ItemInvUtil.moveMultiple(extractable, target.insertable,
-                                    s -> connection.canStackMoveThrough(s) && target.connection.canStackMoveThrough(s), movesLeft,
-                                    movesLeft).itemsMoved;
-                            movesLeft -= moved;
-                            if (movesLeft == 0)
-                                continue outer;
+                    ItemIo source = ItemApi.SIDED.get(world, pos.offset(connection.direction), connection.direction.getOpposite());
+                    if (source != null && source.supportsItemExtraction()) {
+                        int movesLeft = 16;
+                        if (reachableInputs == null)
+                            reachableInputs = getInputs(world, pos);
+                        for (InsertTarget target : reachableInputs) {
+                            if (target.connection.canInsert()) {
+                                int moved = ItemMovement.moveMultiple(
+                                        k -> connection.canStackMoveThrough(k.toStack()) && target.connection.canStackMoveThrough(k.toStack()),
+                                        source, target.io, movesLeft);
+                                movesLeft -= moved;
+                                if (movesLeft == 0)
+                                    continue outer;
+                            }
                         }
                     }
                 }
@@ -212,8 +212,10 @@ public class ItemNetworkNode extends PipeNetworkNode {
                     ItemNetworkNode node = (ItemNetworkNode) maybeUnloaded;
                     for (ItemConnection connection : node.connections) {
                         if (connection.canInsert()) {
-                            SearchOption option = SearchOptions.inDirection(connection.direction);
-                            result.add(new InsertTarget(connection, ItemAttributes.INSERTABLE.get(world, u.offset(connection.direction), option)));
+                            ItemIo target = ItemApi.SIDED.get(world, u.offset(connection.direction), connection.direction.getOpposite());
+                            if (target != null && target.supportsItemInsertion()) {
+                                result.add(new InsertTarget(connection, target));
+                            }
                         }
                     }
                 }
@@ -242,11 +244,11 @@ public class ItemNetworkNode extends PipeNetworkNode {
 
     private static class InsertTarget {
         private final ItemConnection connection;
-        private final ItemInsertable insertable;
+        private final ItemIo io;
 
-        private InsertTarget(ItemConnection connection, ItemInsertable insertable) {
+        private InsertTarget(ItemConnection connection, ItemIo io) {
             this.connection = connection;
-            this.insertable = insertable;
+            this.io = io;
         }
     }
 

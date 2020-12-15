@@ -82,7 +82,7 @@ def gen_texture(id, hex, icon_set, item_set, block_set, special_texture=''):
                 result = Image.alpha_composite(underlay, result)
             if t in TEXTURE_OVERLAYS:
                 overlay = Image.open("template/item/"+ icon_set +"/%s_overlay.png" % t)
-                result = Image.alpha_composite(result, overlay)
+                result = Image.alpha_composite(result, overlay.convert('RGBA'))
             if t != special_texture:
                 result.save(output_path + '/' + os.path.basename(filename))
             else:

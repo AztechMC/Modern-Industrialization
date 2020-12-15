@@ -193,7 +193,7 @@ public class TankItem extends BlockItem {
             }
             ItemKey into = ItemKey.of(result);
 
-            return ctx.transform(into, simulation);
+            return ctx.transform(1, into, simulation);
         }
     }
 

@@ -144,7 +144,7 @@ public interface FluidFuelItemHelper {
             ItemStack stack = new ItemStack(item);
             setAmount(stack, amount);
             setFluid(stack, fluid);
-            return ctx.transform(ItemKey.of(stack), simulation);
+            return ctx.transform(1, ItemKey.of(stack), simulation);
         }
     }
 

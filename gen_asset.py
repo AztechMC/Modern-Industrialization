@@ -1,7 +1,6 @@
 from glob import glob
 from PIL import Image
 from PIL.ImageOps import grayscale, colorize
-from PIL.ImageChops import multiply
 from pathlib import Path
 from collections import defaultdict
 

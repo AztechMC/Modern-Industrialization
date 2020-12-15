@@ -486,7 +486,7 @@ ITEM_ALL = ITEM_BASE | {'bolt', 'blade',
 
 ITEM_ALL_NO_ORE = ITEM_ALL - {'crushed_dust'}
 TEXTURE_UNDERLAYS = {'ore'}
-TEXTURE_OVERLAYS = {'fine_wire', 'oxide'}
+TEXTURE_OVERLAYS = {'fine_wire', 'oxide', 'double_ingot', 'dust', 'gear', 'ingot', 'nugget', 'ring', 'rod', 'tiny_dust'}
 DEFAULT_OREDICT = {'nugget': '_nuggets', 'ore': '_ores', 'plate': '_plates',
                    'gear': '_gears', 'dust': '_dusts', 'tiny_dust': '_tiny_dusts'}
 RESTRICTIVE_OREDICT = {'ore': '_ores'}

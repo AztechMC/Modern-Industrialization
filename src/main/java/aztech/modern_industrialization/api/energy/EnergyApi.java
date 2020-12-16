@@ -23,45 +23,38 @@
  */
 package aztech.modern_industrialization.api.energy;
 
+import dev.technici4n.fasttransferlib.api.Simulation;
+import dev.technici4n.fasttransferlib.api.energy.EnergyIo;
 import net.fabricmc.fabric.api.provider.v1.block.BlockApiLookup;
 import net.fabricmc.fabric.api.provider.v1.block.BlockApiLookupRegistry;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Direction;
 import org.jetbrains.annotations.NotNull;
-import team.reborn.energy.Energy;
-import team.reborn.energy.EnergyHandler;
 
 public class EnergyApi {
     public static final BlockApiLookup<EnergyMoveable, @NotNull Direction> MOVEABLE = BlockApiLookupRegistry
             .getLookup(new Identifier("modern_industrialization:energy_moveable"), EnergyMoveable.class, Direction.class);
 
     static {
-        // Compat wrapper for tech reborn
-        MOVEABLE.registerBlockEntityFallback(((blockEntity, direction) -> {
-            if (Energy.valid(blockEntity)) {
-                EnergyHandler handler = Energy.of(blockEntity);
-                handler.side(direction);
+        // Compat wrapper for FTL
+        MOVEABLE.registerBlockFallback((world, pos, state, direction) -> {
+            EnergyIo io = dev.technici4n.fasttransferlib.api.energy.EnergyApi.SIDED.get(world, pos, direction);
+
+            if (io != null) {
                 return new EnergyInsertable() {
                     @Override
                     public long insertEnergy(long amount) {
-                        double maxIns = Math.min(Math.min(handler.getMaxStored() - handler.getEnergy(), amount), handler.getMaxInput());
-                        long ins = Math.min(amount, (long) Math.floor(maxIns));
-                        if (ins <= 0) {
-                            return amount;
-                        }
-
-                        handler.insert(ins);
-                        return amount - ins;
+                        return (long) Math.floor(amount - io.insert(amount, Simulation.ACT));
                     }
 
                     @Override
                     public boolean canInsert(CableTier tier) {
-                        return true;
+                        return io.supportsInsertion();
                     }
                 };
-            } else {
-                return null;
             }
-        }));
+
+            return null;
+        });
     }
 }

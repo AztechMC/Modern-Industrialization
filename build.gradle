@@ -136,10 +136,8 @@ dependencies {
     modImplementation "io.github.prospector:modmenu:${project.mod_menu_version}"
     modImplementation "com.github.Technici4n:KubeJS-Fabric:${project.kjs_commit}"
     include "com.github.Technici4n:KubeJS-Fabric:${project.kjs_commit}"
-    modImplementation "teamreborn:energy:${project.tr_energy_version}"
-    include "teamreborn:energy:${project.tr_energy_version}"
-    modApi "com.github.Technici4n:FastTransferLib:${project.ftl_version}"
-    include "com.github.Technici4n:FastTransferLib:${project.ftl_version}"
+    modApi "dev.technici4n:FastTransferLib:${project.ftl_version}"
+    include "dev.technici4n:FastTransferLib:${project.ftl_version}"
 
     // Other mods for testing purposes
     //modRuntime "appeng:appliedenergistics2-fabric:${project.appeng_version}"

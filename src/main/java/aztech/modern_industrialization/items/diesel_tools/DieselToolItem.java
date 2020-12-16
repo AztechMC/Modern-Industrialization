@@ -142,7 +142,7 @@ public class DieselToolItem extends Item implements DynamicAttributeTool, Vanish
                 user.sendMessage(new TranslatableText("text.modern_industrialization.tool_switched_" + (isFortune(stack) ? "fortune" : "silk_touch")),
                         false);
             }
-            return TypedActionResult.method_29237(stack, world.isClient);
+            return TypedActionResult.success(stack, world.isClient);
         }
         return super.use(world, user, hand);
     }

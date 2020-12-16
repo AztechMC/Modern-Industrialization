@@ -1,0 +1,14 @@
+{
+  "type": "modern_industrialization:blast_furnace",
+  "eu": 64,
+  "duration": 20,
+  "item_inputs": {
+    "item": "modern_industrialization:annealed_copper_tiny_dust",
+    "amount": 1
+  },
+
+  "item_outputs": {
+    "item": "modern_industrialization:annealed_copper_nugget",
+    "amount": 1
+  }
+}

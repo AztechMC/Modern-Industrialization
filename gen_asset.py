@@ -57,7 +57,8 @@ def gen_name(ty):
         lang_json[lang_id] = name
 
         if block == "ore":
-            lang_json['text.autoconfig.modern_industrialization.option.ores.generate%s' % id.replace('_', ' ').title().replace(' ', '')] = "Generate " + clean(id) + " Ore"
+            lang_json['text.autoconfig.modern_industrialization.option.ores.generate%s' % id.replace(
+                '_', ' ').title().replace(' ', '')] = "Generate " + clean(id) + " Ore"
 
     with open('src/main/resources/assets/modern_industrialization/lang/en_us.json', 'w') as lang_file:
         json.dump(lang_json, lang_file, indent=4, sort_keys=True)
@@ -437,9 +438,10 @@ def gen(file, ty, hex, vanilla=False, forge_hammer=False, smelting=True, isMetal
         line += ".addBlockType(new String [] { %s })" % block_to_add
 
     if 'ore' in ty.mi_blocks:
-        config_field = 'generate' + ty.id.replace('_', ' ').title().replace(' ', '')
+        config_field = 'generate' + \
+            ty.id.replace('_', ' ').title().replace(' ', '')
         line += '.setupOreGenerator(%d, %d, %d, MIConfig.getConfig().ores.%s)' % (veinsPerChunk,
-                                                    veinsSize, maxYLevel, config_field)
+                                                                                  veinsSize, maxYLevel, config_field)
         ore_config.append(config_field)
 
     gen_name(ty)
@@ -478,6 +480,9 @@ ITEM_BASE = {'ingot', 'plate', 'large_plate', 'nugget', 'double_ingot',
              'tiny_dust', 'dust', 'curved_plate', 'crushed_dust'}  # TODO: pipes
 
 PURE_METAL = {'ingot', 'nugget', 'tiny_dust', 'dust', 'crushed_dust'}
+PURE_METAL_NO_CRUSHED = {'ingot', 'nugget',
+                         'tiny_dust', 'dust', 'crushed_dust'}
+
 PURE_NON_METAL = {'tiny_dust', 'dust', 'crushed_dust'}
 
 ITEM_ALL = ITEM_BASE | {'bolt', 'blade',
@@ -798,6 +803,118 @@ gen(
     '#eec4e4', smelting=False, macerator_disable={'dust'}
 )
 
+gen(
+    file,
+    Material('annealed_copper', (PURE_METAL - {'crushed_dust'}) | {
+             'plate', 'wire', 'double_ingot', 'wire'}, BLOCK_ONLY,
+             overrides={
+        "cable": "modern_industrialization:pipe_electricity_annealed_copper"
+    }),
+    '#ff924f', smelting=False, macerator_disable={'dust'}
+)
+
+gen(
+    file,
+    Material('uranium', PURE_NON_METAL | {'uranium'}, BOTH, overrides={
+        'main': 'modern_industrialization:uranium',
+    }),
+    '#39e600', isMetal=False, smelting=True, veinsPerChunk=2, veinsSize=3, maxYLevel=64,
+)
+
+gen(
+    file,
+    Material('uranium_235', PURE_METAL_NO_CRUSHED, BLOCK_ONLY),
+    '#e60045', smelting=False
+)
+
+gen(
+    file,
+    Material('uranium_238', PURE_METAL_NO_CRUSHED, BLOCK_ONLY),
+    '#55bd33', smelting=False
+)
+
+gen(
+    file,
+    # add plutonium ore for other mods
+    Material('plutonium', PURE_METAL_NO_CRUSHED, BOTH),
+    '#d701e7', smelting=False
+)
+
+gen(
+    file,
+    Material('mox', PURE_METAL_NO_CRUSHED, BLOCK_ONLY),
+    '#00e7e5', smelting=False
+)
+
+gen(
+    file,
+    Material('platinum', (PURE_METAL - {'crushed_dust'}) | {
+             'plate', 'wire', 'double_ingot', 'wire'}, BOTH,
+             overrides={
+        "cable": "modern_industrialization:pipe_electricity_platinum"
+    }),
+    '#ffe5ba', veinsPerChunk=3, veinsSize=6, maxYLevel=32
+)
+
+gen(
+    file,
+    Material('kanthal', {'tiny_dust', 'dust', 'plate',
+                         'ingot', 'nugget', 'wire', 'double_ingot'}, BLOCK_ONLY | {'coil'},  overrides={
+        "cable": "modern_industrialization:pipe_electricity_kanthal"
+    }),
+    '#cfcb00',
+)
+
+
+gen(
+    file,
+    Material('iridium', PURE_NON_METAL | {'iridium'}, BOTH, overrides={
+        'main': 'modern_industrialization:iridium',
+    }),
+    '#e1e6f5', isMetal=False, smelting=True, veinsPerChunk=1, veinsSize=1, maxYLevel=256,
+)
+
+gen(
+    file,
+    Material('mozanite', {'crushed_dust', 'tiny_dust', 'dust'}, ORE_ONLY),
+    '#96248e',
+)
+
+gen(
+    file,
+    Material('cadmium', {'tiny_dust', 'dust', 'ingot',
+                         'double_ingot', 'plate', 'rod'}, BLOCK_ONLY),
+    '#967224',
+)
+
+gen(
+    file,
+    Material('neodymium', {'tiny_dust', 'dust'}, set(),),
+    '#1d4506',
+)
+
+gen(
+    file,
+    Material('yttrium', {'tiny_dust', 'dust'}, set(),),
+    '#135166',
+)
+
+
+gen(
+    file,
+    Material('supraconductor', {'tiny_dust', 'dust', 'plate',
+                                'ingot', 'nugget', 'wire', 'double_ingot'}, {'coil'},  overrides={
+        "cable": "modern_industrialization:pipe_electricity_supraconductor"
+    }),
+    '#a3d9ff',
+)
+
+gen(
+    file,
+    Material('tungsten', {'tiny_dust', 'dust', 'plate',
+                          'ingot', 'nugget', 'large_plate', 'double_ingot', 'rod', 'crushed_dust'}, BOTH),
+    '#3b2817',
+)
 
 file.write("\n".join(sorted(material_lines)))
 file.write("\n")
@@ -849,7 +966,8 @@ package aztech.modern_industrialization.material;
  */
 public class MIOreGenerators {
 """
-ore_config_class += ''.join([ "    public boolean %s = true;\n" % ore_config_entry for ore_config_entry in ore_config ])
+ore_config_class += ''.join(["    public boolean %s = true;\n" %
+                             ore_config_entry for ore_config_entry in ore_config])
 ore_config_class += '}\n'
 with open("src/main/java/aztech/modern_industrialization/material/MIOreGenerators.java", "w") as f:
     f.write(ore_config_class)

@@ -65,6 +65,20 @@ public class MIFluids {
     public static final CraftingFluid SYNTHETIC_OIL = new CraftingFluid("synthetic_oil", 0xff1a1a1a);
     public static final CraftingFluid TOLUENE = new CraftingFluid("toluene", 0xff9ce6ed);
     public static final CraftingFluid VINYL_CHLORIDE = new CraftingFluid("vinyl_chloride", 0xffeda7d9);
+    public static final CraftingFluid HELIUM = new CraftingFluid("helium", 0xffe6e485);
+    public static final CraftingFluid ARGON = new CraftingFluid("argon", 0xffe339a7);
+    public static final CraftingFluid HELIUM_3 = new CraftingFluid("helium_3", 0xff83de52);
+    public static final CraftingFluid DEUTERIUM = new CraftingFluid("deuterium", 0xff941bcc);
+    public static final CraftingFluid TRITIUM = new CraftingFluid("tritium", 0xffcc1b50);
+    public static final CraftingFluid HEAVY_WATER = new CraftingFluid("heavy_water", 0xff6e18f0);
+    public static final CraftingFluid HEAVY_WATER_STEAM = new CraftingFluid("heavy_water_steam", 0xffd9cfe8);
+    public static final CraftingFluid HIGH_PRESSURE_WATER = new CraftingFluid("high_pressure_water", 0xff144cb8);
+    public static final CraftingFluid HIGH_PRESSURE_STEAM = new CraftingFluid("high_pressure_steam", 0xff9c9c9c);
+    public static final CraftingFluid HIGH_PRESSURE_HEAVY_WATER = new CraftingFluid("high_pressure_heavy_water", 0xff3d0b8a);
+    public static final CraftingFluid HIGH_PRESSURE_HEAVY_WATER_STEAM = new CraftingFluid("high_pressure_heavy_water_steam", 0xff6d647a);
+    public static final CraftingFluid LEAD_SODIUM_EUTECTIC = new CraftingFluid("lead_sodium_eutectic", 0xff604170);
+    public static final CraftingFluid SOLDERING_ALLOY = new CraftingFluid("soldering_alloy", 0xffabc4bf);
+    public static final CraftingFluid LUBRICANT = new CraftingFluid("lubricant", 0xffffc400);
     public static final CraftingFluid[] FLUIDS = new CraftingFluid[] {
             ACETYLENE,
             ACRYLIC_ACID,
@@ -112,6 +126,20 @@ public class MIFluids {
             SYNTHETIC_OIL,
             TOLUENE,
             VINYL_CHLORIDE,
+            HELIUM,
+            ARGON,
+            HELIUM_3,
+            DEUTERIUM,
+            TRITIUM,
+            HEAVY_WATER,
+            HEAVY_WATER_STEAM,
+            HIGH_PRESSURE_WATER,
+            HIGH_PRESSURE_STEAM,
+            HIGH_PRESSURE_HEAVY_WATER,
+            HIGH_PRESSURE_HEAVY_WATER_STEAM,
+            LEAD_SODIUM_EUTECTIC,
+            SOLDERING_ALLOY,
+            LUBRICANT,
     };
     
     public static void setupFluids() {

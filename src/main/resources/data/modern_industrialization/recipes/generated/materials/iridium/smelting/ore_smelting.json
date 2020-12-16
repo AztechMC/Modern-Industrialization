@@ -1,0 +1,9 @@
+{
+    "type": "minecraft:smelting",
+    "ingredient": {
+        "item": "modern_industrialization:iridium_ore"
+    },
+    "result": "modern_industrialization:iridium",
+    "experience": 0.7,
+    "cookingtime": 200
+}

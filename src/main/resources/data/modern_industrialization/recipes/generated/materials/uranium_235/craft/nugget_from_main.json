@@ -1,0 +1,15 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "x"
+    ],
+    "result": {
+        "item": "modern_industrialization:uranium_235_nugget",
+        "count": 9
+    },
+    "key": {
+        "x": {
+            "item": "modern_industrialization:uranium_235_ingot"
+        }
+    }
+}

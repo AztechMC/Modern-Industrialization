@@ -1,0 +1,20 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "yxx",
+        "xxx",
+        "xxx"
+    ],
+    "result": {
+        "item": "modern_industrialization:supraconductor_ingot",
+        "count": 1
+    },
+    "key": {
+        "y": {
+            "item": "modern_industrialization:supraconductor_nugget"
+        },
+        "x": {
+            "tag": "c:supraconductor_nuggets"
+        }
+    }
+}

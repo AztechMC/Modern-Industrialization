@@ -98,7 +98,7 @@ public class ModernIndustrializationClient implements ClientModInitializer {
     }
 
     private void registerBuiltinResourcePack() {
-        if (!ResourceManagerHelper.registerBuiltinResourcePack(new Identifier(ModernIndustrialization.MOD_ID, "alternate"), "alternate/modern_industrialization_gt", FabricLoader.getInstance().getModContainer(ModernIndustrialization.MOD_ID).orElseThrow(DependencyException::new), false)) {
+        if (!ResourceManagerHelper.registerBuiltinResourcePack(new Identifier(ModernIndustrialization.MOD_ID, "alternate"), "alternate", FabricLoader.getInstance().getModContainer(ModernIndustrialization.MOD_ID).orElseThrow(DependencyException::new), false)) {
             ModernIndustrialization.LOGGER.warn("Modern Industrialization's Alternate Builtin Resource Pack couldn't be registered! This is probably bad!");
         }
     }

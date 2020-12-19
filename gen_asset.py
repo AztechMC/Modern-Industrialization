@@ -71,47 +71,59 @@ def gen_texture(id, hex, icon_set, item_set, block_set, special_texture=''):
     output_path = (
         "src/main/resources/assets/modern_industrialization/textures/items/materials/" + id)
     Path(output_path).mkdir(parents=True, exist_ok=True)
+    alt_output_path = (
+            "src/main/resources/alternate/assets/modern_industrialization/textures/items/materials/" + id)
+    Path(alt_output_path).mkdir(parents=True, exist_ok=True)
 
     for filename in item:
         t = os.path.basename(filename).split('.')[0]
         if t in item_set:
-            if t.endswith("_alt"):
-                output_path = (
-                    "src/main/resources/alternate/modern_industrialization_gt/assets/modern_industrialization/textures/items/materials/" + id)
-                Path(output_path).mkdir(parents=True, exist_ok=True)
-                t.replace("_alt", "")
+            handle_texture(output_path, filename, hex, "item", icon_set, t, special_texture, False)
+            alt_path = "template/item/" + icon_set + "/%s_alt.png" % t
+            if os.path.isfile(alt_path):
+                handle_texture(alt_output_path, alt_path, hex, "item", icon_set, t, special_texture, True)
 
-            print(filename)
-            result = image_tint(filename, hex)
-            underlay_path = "template/item/"+ icon_set +"/%s_underlay.png" % t
-            overlay_path = "template/item/"+ icon_set +"/%s_overlay.png" % t
-            # todo rm overlay arrays?
-            if os.path.isfile(underlay_path):
-                underlay = Image.open(underlay_path)
-                result = Image.alpha_composite(underlay, result)
-            if os.path.isfile(overlay_path):
-                overlay = Image.open(overlay_path)
-                result = Image.alpha_composite(result, overlay.convert('RGBA'))
-            if t != special_texture:
-                result.save(output_path + '/' + os.path.basename(filename))
-            else:
-                result.save(output_path + '/' + t + ".png")
-
-    block = glob("template/block/*.png")
+    block = glob("template/block/" + icon_set + "/*.png")
     output_path = "src/main/resources/assets/modern_industrialization/textures/blocks/materials/" + id
     Path(output_path).mkdir(parents=True, exist_ok=True)
+    alt_output_path = "src/main/resources/alternate/assets/modern_industrialization/textures/blocks/materials/" + id
+    Path(alt_output_path).mkdir(parents=True, exist_ok=True)
 
     for filename in block:
         t = os.path.basename(filename).split('.')[0]
         if t in block_set:
-            result = image_tint(filename, hex)
-            if t in TEXTURE_UNDERLAYS:
-                underlay = Image.open("template/block/%s_underlay.png" % t)
-                result = Image.alpha_composite(underlay, result)
-            if t in TEXTURE_OVERLAYS:
-                overlay = Image.open("template/block/%s_overlay.png" % t)
-                result = Image.alpha_composite(result, overlay)
+            handle_texture(output_path, filename, hex, "block", icon_set, t, special_texture, False)
+            alt_path = "template/block/" + icon_set + "/%s_alt.png" % t
+            if os.path.isfile(alt_path):
+                handle_texture(alt_output_path, alt_path, hex, "block", icon_set, t, special_texture, True)
+
+
+def handle_texture(output_path, filename, hex, type_set, icon_set, t, special_texture, is_alt):
+    print(filename)
+    result = image_tint(filename, hex)
+    if is_alt:
+        underlay = "/%s_alt_underlay.png" % t
+        overlay = "/%s_alt_overlay.png" % t
+    else:
+        underlay = "/%s_underlay.png" % t
+        overlay = "/%s_overlay.png" % t
+    underlay_path = "template/" + type_set + "/" + icon_set + underlay
+    overlay_path = "template/" + type_set + "/" + icon_set + overlay
+    # todo rm overlay arrays?
+    if os.path.isfile(underlay_path):
+        underlay = Image.open(underlay_path).convert('RGBA')
+        result = Image.alpha_composite(underlay, result)
+    if os.path.isfile(overlay_path):
+        overlay = Image.open(overlay_path)
+        result = Image.alpha_composite(result, overlay.convert('RGBA'))
+    if t != special_texture:
+        if is_alt:
+            result.save(output_path + '/' + os.path.basename(filename).replace("_alt", ""))
+        else:
             result.save(output_path + '/' + os.path.basename(filename))
+    else:
+        result.save(output_path + '/' + t + ".png")
+
 
 loaded_items = {'modern_industrialization:rubber_sheet'}
 tags = defaultdict(lambda: [])

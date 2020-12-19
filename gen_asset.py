@@ -75,13 +75,22 @@ def gen_texture(id, hex, icon_set, item_set, block_set, special_texture=''):
     for filename in item:
         t = os.path.basename(filename).split('.')[0]
         if t in item_set:
+            if t.endswith("_alt"):
+                output_path = (
+                    "src/main/resources/alternate/modern_industrialization_gt/assets/modern_industrialization/textures/items/materials/" + id)
+                Path(output_path).mkdir(parents=True, exist_ok=True)
+                t.replace("_alt", "")
+
             print(filename)
             result = image_tint(filename, hex)
-            if t in TEXTURE_UNDERLAYS:
-                underlay = Image.open("template/item/"+ icon_set +"/%s_underlay.png" % t)
+            underlay_path = "template/item/"+ icon_set +"/%s_underlay.png" % t
+            overlay_path = "template/item/"+ icon_set +"/%s_overlay.png" % t
+            # todo rm overlay arrays?
+            if os.path.isfile(underlay_path):
+                underlay = Image.open(underlay_path)
                 result = Image.alpha_composite(underlay, result)
-            if t in TEXTURE_OVERLAYS:
-                overlay = Image.open("template/item/"+ icon_set +"/%s_overlay.png" % t)
+            if os.path.isfile(overlay_path):
+                overlay = Image.open(overlay_path)
                 result = Image.alpha_composite(result, overlay.convert('RGBA'))
             if t != special_texture:
                 result.save(output_path + '/' + os.path.basename(filename))

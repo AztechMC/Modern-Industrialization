@@ -44,6 +44,11 @@ import net.fabricmc.fabric.api.client.rendereregistry.v1.BlockEntityRendererRegi
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.fabricmc.fabric.api.client.screenhandler.v1.ScreenRegistry;
 import net.fabricmc.fabric.api.network.ClientSidePacketRegistry;
+import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
+import net.fabricmc.loader.DependencyException;
+import net.fabricmc.loader.api.FabricLoader;
+import net.fabricmc.loader.metadata.ParseMetadataException;
+import net.minecraft.util.Identifier;
 
 public class ModernIndustrializationClient implements ClientModInitializer {
     @Override
@@ -59,6 +64,7 @@ public class ModernIndustrializationClient implements ClientModInitializer {
         ClientTickEvents.START_CLIENT_TICK.register(JetpackParticleAdder::addJetpackParticles);
         ClientTickEvents.END_CLIENT_TICK.register(ClientKeyHandler::onEndTick);
         HudRenderCallback.EVENT.register(HudRenderer::onRenderHud);
+        registerBuiltinResourcePack();
 
         ModernIndustrialization.LOGGER.info("Modern Industrialization client setup done!");
     }
@@ -88,6 +94,12 @@ public class ModernIndustrializationClient implements ClientModInitializer {
             if (factory.isMultiblock()) {
                 BlockEntityRendererRegistry.INSTANCE.register(factory.blockEntityType, MultiblockMachineRenderer::new);
             }
+        }
+    }
+
+    private void registerBuiltinResourcePack() {
+        if (!ResourceManagerHelper.registerBuiltinResourcePack(new Identifier(ModernIndustrialization.MOD_ID, "alternate"), "alternate/modern_industrialization_gt", FabricLoader.getInstance().getModContainer(ModernIndustrialization.MOD_ID).orElseThrow(DependencyException::new), false)) {
+            ModernIndustrialization.LOGGER.warn("Modern Industrialization's Alternate Builtin Resource Pack couldn't be registered! This is probably bad!");
         }
     }
 }

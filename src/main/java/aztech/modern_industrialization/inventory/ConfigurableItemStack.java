@@ -256,6 +256,10 @@ public class ConfigurableItemStack {
     public class ConfigurableItemSlot extends Slot {
         private final Predicate<ItemStack> insertPredicate;
         private final Runnable markDirty;
+        // Vanilla MC code modifies the stack returned by `getStack()` directly, but it
+        // calls `markDirty()` when that happens, so we just cache the returned stack,
+        // and set it when `markDirty()` is called.
+        private ItemStack cachedReturnedStack = null;
 
         public ConfigurableItemSlot(Runnable markDirty, int id, int x, int y, Predicate<ItemStack> insertPredicate) {
             super(null, id, x, y);
@@ -280,7 +284,7 @@ public class ConfigurableItemStack {
 
         @Override
         public ItemStack getStack() {
-            return key.toStack(count);
+            return cachedReturnedStack = key.toStack(count);
         }
 
         @Override
@@ -292,7 +296,9 @@ public class ConfigurableItemStack {
 
         @Override
         public void markDirty() {
-            markDirty.run();
+            if (cachedReturnedStack != null) {
+                setStack(cachedReturnedStack);
+            }
         }
 
         @Override

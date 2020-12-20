@@ -805,4 +805,9 @@ public class MachineBlockEntity extends AbstractMachineBlockEntity implements Ti
         FluidApi.SIDED.registerForBlockEntities((be, direction) -> ((MachineBlockEntity) be).inventory.getFluidView(), getType());
         registerAdditionalApis();
     }
+
+    @Override
+    public void markDirty2() {
+        markDirty();
+    }
 }

@@ -72,7 +72,7 @@ public class MachineInventories {
             }
 
             @Override
-            public void markDirty() {
+            public void markDirty2() {
             }
         };
 

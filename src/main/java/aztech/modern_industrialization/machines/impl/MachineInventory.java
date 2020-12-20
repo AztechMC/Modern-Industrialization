@@ -38,5 +38,8 @@ public interface MachineInventory {
 
     MIInventory getInventory();
 
-    void markDirty();
+    // Not called markDirty because it wouldn't get remapped whereas the markDirty
+    // method on the classes this interface is implemented on would get remapped,
+    // causing AbstractMethodErrors at runtime.
+    void markDirty2();
 }

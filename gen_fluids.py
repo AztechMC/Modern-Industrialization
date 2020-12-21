@@ -59,15 +59,29 @@ def gen_fluid(name, color, gas=False):
     global fluid_variables
     fluid_variables.append(name.upper())
     gen_name(name)
-    bucket_image = image_tint("template/fluid/bucket_content.png", color)
-    bucket_image = Image.alpha_composite(bucket_image, Image.open("template/fluid/bucket.png"))
+    handle_fluid(name, color, gas, False)
+    handle_fluid(name, color, gas, True)
+
+
+def handle_fluid(name, color, gas, is_alt):
+    if is_alt:
+        content_path = "bucket_content_alt.png"
+        bucket_path = "bucket_alt.png"
+        output_path = "src/main/resources/alternate/assets/modern_industrialization/textures/items/bucket/"
+    else:
+        content_path = "bucket_content.png"
+        bucket_path = "bucket.png"
+        output_path = "src/main/resources/assets/modern_industrialization/textures/items/bucket/"
+    bucket_image = image_tint("template/fluid/" + content_path, color)
+    bucket_image = Image.alpha_composite(Image.open("template/fluid/" + bucket_path).convert('RGBA'), bucket_image)
     if gas:
         bucket_image = bucket_image.rotate(180)
-    bucket_image.save("src/main/resources/assets/modern_industrialization/textures/items/bucket/%s.png" % name)
+    bucket_image.save(output_path + "%s.png" % name)
 
 
 shutil.rmtree("src/main/resources/assets/modern_industrialization/textures/items/bucket", ignore_errors=True)
-Path("src/main/resources/assets/modern_industrialization/textures/items/bucket").mkdir(parents=True, exist_ok=True)
+Path("src/main/resources/assets/modern_industrialization/textures/items/bucket/").mkdir(parents=True, exist_ok=True)
+Path("src/main/resources/alternate/assets/modern_industrialization/textures/items/bucket/").mkdir(parents=True, exist_ok=True)
 
 gen_fluid("air", "#76c7f9", True)
 gen_fluid("chlorine", "#b7c114", True)

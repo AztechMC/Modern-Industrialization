@@ -292,6 +292,7 @@ public class ConfigurableItemStack {
             key = ItemKey.of(stack);
             count = stack.getCount();
             markDirty.run();
+            cachedReturnedStack = stack;
         }
 
         @Override
@@ -310,6 +311,7 @@ public class ConfigurableItemStack {
         public ItemStack takeStack(int amount) {
             ItemStack stack = key.toStack(amount);
             decrement(amount);
+            cachedReturnedStack = null;
             markDirty.run();
             return stack;
         }

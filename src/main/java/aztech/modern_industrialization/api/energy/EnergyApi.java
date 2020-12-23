@@ -25,8 +25,8 @@ package aztech.modern_industrialization.api.energy;
 
 import dev.technici4n.fasttransferlib.api.Simulation;
 import dev.technici4n.fasttransferlib.api.energy.EnergyIo;
-import net.fabricmc.fabric.api.provider.v1.block.BlockApiLookup;
-import net.fabricmc.fabric.api.provider.v1.block.BlockApiLookupRegistry;
+import net.fabricmc.fabric.api.lookup.v1.block.BlockApiLookup;
+import net.fabricmc.fabric.api.lookup.v1.block.BlockApiLookupRegistry;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Direction;
 import org.jetbrains.annotations.NotNull;
@@ -37,8 +37,8 @@ public class EnergyApi {
 
     static {
         // Compat wrapper for FTL
-        MOVEABLE.registerBlockFallback((world, pos, state, direction) -> {
-            EnergyIo io = dev.technici4n.fasttransferlib.api.energy.EnergyApi.SIDED.get(world, pos, direction);
+        MOVEABLE.registerFallback((world, pos, state, blockEntity, direction) -> {
+            EnergyIo io = dev.technici4n.fasttransferlib.api.energy.EnergyApi.SIDED.get(world, pos, state, blockEntity, direction);
 
             if (io != null) {
                 return new EnergyInsertable() {

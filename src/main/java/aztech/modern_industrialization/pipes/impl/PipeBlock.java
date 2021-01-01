@@ -61,7 +61,7 @@ import net.minecraft.world.World;
 
 public class PipeBlock extends Block implements BlockEntityProvider, IWrenchable {
     public PipeBlock(Settings settings) {
-        super(settings.allowsSpawning(MobSpawning.NO_SPAWN).nonOpaque());
+        super(settings.allowsSpawning(MobSpawning.NO_SPAWN).nonOpaque().solidBlock((s, p, w) -> false));
     }
 
     @Override

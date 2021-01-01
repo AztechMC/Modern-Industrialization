@@ -30,45 +30,23 @@ import aztech.modern_industrialization.machines.impl.multiblock.MultiblockShape;
 import aztech.modern_industrialization.machines.impl.multiblock.MultiblockShapes;
 import aztech.modern_industrialization.machines.recipe.MachineRecipe;
 import aztech.modern_industrialization.material.MIMaterials;
+import java.util.Arrays;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 import net.minecraft.block.Block;
-import net.minecraft.text.TranslatableText;
-import net.minecraft.util.math.Direction;
 
 public class ElectricBlastFurnaceBlockEntity extends MultiblockMachineBlockEntity {
     private static final Block[] COIL_MATERIALS;
     private static final MultiblockShape[] COIL_SHAPE;
     private static final int[] COIL_EU;
-    private int coilId = -1;
 
     public ElectricBlastFurnaceBlockEntity(MachineFactory factory) {
-        super(factory, null);
-    }
-
-    @Override
-    protected void matchShape() {
-        Block coilType = world.getBlockState(pos.offset(Direction.UP)).getBlock();
-        int coilId = 0;
-        for (; coilId < COIL_MATERIALS.length; coilId++) {
-            if (coilType == COIL_MATERIALS[coilId])
-                break;
-        }
-
-        if (coilId == COIL_MATERIALS.length) {
-            ready = false;
-            this.coilId = -1;
-            this.errorMessage = new TranslatableText("text.modern_industrialization.shape_error_no_coil", pos.offset(Direction.UP));
-        } else {
-            ready = COIL_SHAPE[coilId].matchShape(world, pos, facingDirection, linkedHatches, linkedStructureBlocks);
-            this.coilId = ready ? coilId : -1;
-            this.errorMessage = COIL_SHAPE[coilId].getErrorMessage();
-        }
+        super(factory, Arrays.asList(COIL_SHAPE));
     }
 
     @Override
     protected Iterable<MachineRecipe> getRecipes() {
-        return StreamSupport.stream(super.getRecipes().spliterator(), false).filter(r -> r.eu <= COIL_EU[coilId]).collect(Collectors.toList());
+        return StreamSupport.stream(super.getRecipes().spliterator(), false).filter(r -> r.eu <= COIL_EU[selectedShape]).collect(Collectors.toList());
     }
 
     static {

@@ -1,0 +1,31 @@
+{
+    "criteria": {
+        "checkInv": {
+            "conditions": {
+                "items": [
+                    {
+                        "count": {
+                            "min": 1
+                        },
+                        "item": "modern_industrialization:bronze_macerator"
+                    }
+                ]
+            },
+            "trigger": "minecraft:inventory_changed"
+        }
+    },
+    "display": {
+        "description": {
+            "translate": "advancements.modern_industrialization.bronze_macerator.description"
+        },
+        "frame": "task",
+        "icon": {
+            "item": "modern_industrialization:bronze_macerator"
+        },
+        "title": {
+            "translate": "advancements.modern_industrialization.bronze_macerator"
+        }
+    },
+    "hidden": false,
+    "parent": "modern_industrialization:bronze_boiler"
+}

@@ -209,6 +209,25 @@ public class MachineScreen extends HandledScreen<MachineScreenHandler> {
     protected void drawBackground(MatrixStack matrices, float delta, int mouseX, int mouseY) {
     }
 
+    @Override
+    protected void drawForeground(MatrixStack matrices, int mouseX, int mouseY) {
+        super.drawForeground(matrices, mouseX, mouseY);
+        if (handler.getMachineFactory().isMultiblock()) {
+            String shapeTranslationKey = "text.modern_industrialization.multiblock_shape_";
+            if (handler.getMaxShapes() > 1) {
+                shapeTranslationKey += handler.getMachineFactory().getID() + "_" + handler.getSelectedShape() + "_";
+            }
+            if (!handler.isShapeValid()) {
+                shapeTranslationKey += "in";
+            }
+            shapeTranslationKey += "valid";
+            Text validText = new TranslatableText(shapeTranslationKey);
+
+            // Show shape status
+            textRenderer.draw(matrices, validText, (backgroundWidth - textRenderer.getWidth(validText)) / 2f, 22, 4210752);
+        }
+    }
+
     protected void actualDrawBackground(MatrixStack matrices, float delta, int mouseX, int mouseY) {
         this.renderBackground(matrices);
         RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);

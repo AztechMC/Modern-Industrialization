@@ -34,18 +34,22 @@ import aztech.modern_industrialization.machines.impl.MachineFactory;
 import aztech.modern_industrialization.machines.impl.MachineModel;
 import aztech.modern_industrialization.machines.impl.MachinePackets;
 import aztech.modern_industrialization.machines.impl.MachineScreen;
+import aztech.modern_industrialization.machines.impl.multiblock.MultiblockMachineRenderer;
 import aztech.modern_industrialization.model.block.ModelProvider;
 import aztech.modern_industrialization.pipes.MIPipesClient;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.model.ModelLoadingRegistry;
+import net.fabricmc.fabric.api.client.rendereregistry.v1.BlockEntityRendererRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.fabricmc.fabric.api.client.screenhandler.v1.ScreenRegistry;
 import net.fabricmc.fabric.api.network.ClientSidePacketRegistry;
+import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
+import net.fabricmc.loader.DependencyException;
+import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.util.Identifier;
 
 public class ModernIndustrializationClient implements ClientModInitializer {
-    public static final String MOD_ID = ModernIndustrialization.MOD_ID;
-
     @Override
     public void onInitializeClient() {
         setupScreens();
@@ -53,14 +57,13 @@ public class ModernIndustrializationClient implements ClientModInitializer {
         setupPackets();
         MITanks.setupClient();
         setupMachines();
-        ModelLoadingRegistry.INSTANCE.registerResourceProvider(rm -> {
-            return new ModelProvider();
-        });
+        ModelLoadingRegistry.INSTANCE.registerResourceProvider(rm -> new ModelProvider());
         (new MIPipesClient()).onInitializeClient();
         ClientKeyHandler.setup();
         ClientTickEvents.START_CLIENT_TICK.register(JetpackParticleAdder::addJetpackParticles);
         ClientTickEvents.END_CLIENT_TICK.register(ClientKeyHandler::onEndTick);
         HudRenderCallback.EVENT.register(HudRenderer::onRenderHud);
+        registerBuiltinResourcePack();
 
         ModernIndustrialization.LOGGER.info("Modern Industrialization client setup done!");
     }
@@ -79,12 +82,25 @@ public class ModernIndustrializationClient implements ClientModInitializer {
         ClientSidePacketRegistry.INSTANCE.register(MachinePackets.S2C.SYNC_PROPERTY, MachinePackets.S2C.ON_SYNC_PROPERTY);
     }
 
+    @SuppressWarnings("unchecked")
     private void setupMachines() {
         for (MachineFactory factory : MachineFactory.getFactories()) {
             MachineModel model = factory.buildModel();
 
             ModelProvider.modelMap.put(new MIIdentifier("block/" + factory.getID()), model);
             ModelProvider.modelMap.put(new MIIdentifier("item/" + factory.getID()), model);
+
+            if (factory.isMultiblock()) {
+                BlockEntityRendererRegistry.INSTANCE.register(factory.blockEntityType, MultiblockMachineRenderer::new);
+            }
+        }
+    }
+
+    private void registerBuiltinResourcePack() {
+        if (!ResourceManagerHelper.registerBuiltinResourcePack(new Identifier(ModernIndustrialization.MOD_ID, "alternate"), "alternate",
+                FabricLoader.getInstance().getModContainer(ModernIndustrialization.MOD_ID).orElseThrow(DependencyException::new), false)) {
+            ModernIndustrialization.LOGGER
+                    .warn("Modern Industrialization's Alternate Builtin Resource Pack couldn't be registered! This is probably bad!");
         }
     }
 }

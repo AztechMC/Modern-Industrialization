@@ -42,8 +42,8 @@ public class MachineScreenHandler extends ConfigurableScreenHandler {
     public MachineInventory inventory;
     final PropertyDelegate propertyDelegate;
     private final int[] trackedProperties;
-    private MachineFactory factory;
-    private boolean[] trackedExtract = new boolean[2];
+    private final MachineFactory factory;
+    private final boolean[] trackedExtract = new boolean[2];
 
     public MachineScreenHandler(int syncId, PlayerInventory playerInventory, PacketByteBuf buf) {
         this(syncId, playerInventory, MachineInventories.clientOfBuf(buf), new ArrayPropertyDelegate(buf.readInt()),
@@ -72,9 +72,7 @@ public class MachineScreenHandler extends ConfigurableScreenHandler {
             this.addSlot(new Slot(playerInventory, j, factory.getInventoryPosX() + j * 18, 58 + factory.getInventoryPosY()));
         }
 
-        // TODO: properly detect multiblock
-        // TODO WAF WAF WAF
-        try {
+        if (!factory.isMultiblock() || inventory.getItemStacks().size() > 0) {
             int itemCnt = 0;
             for (int i = 0; i < factory.getSlots(); i++) {
                 if (factory.getSlotType(i) == INPUT_SLOT || factory.getSlotType(i) == OUTPUT_SLOT) {
@@ -87,8 +85,6 @@ public class MachineScreenHandler extends ConfigurableScreenHandler {
                     this.addSlot(stack.new ConfigurableFluidSlot(inventory, factory.getSlotPosX(i), factory.getSlotPosY(i)));
                 }
             }
-        } catch (IndexOutOfBoundsException ignored) {
-
         }
     }
 
@@ -141,6 +137,18 @@ public class MachineScreenHandler extends ConfigurableScreenHandler {
 
     public int getRecipeMaxEu() {
         return propertyDelegate.get(8);
+    }
+
+    public boolean isShapeValid() {
+        return propertyDelegate.get(9) == 1;
+    }
+
+    public int getSelectedShape() {
+        return propertyDelegate.get(10);
+    }
+
+    public int getMaxShapes() {
+        return propertyDelegate.get(11);
     }
 
     private void updateTrackedExtract() {

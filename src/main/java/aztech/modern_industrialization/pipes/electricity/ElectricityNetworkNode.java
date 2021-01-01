@@ -25,37 +25,40 @@ package aztech.modern_industrialization.pipes.electricity;
 
 import static aztech.modern_industrialization.pipes.api.PipeEndpointType.*;
 
-import alexiil.mc.lib.attributes.SearchOption;
-import alexiil.mc.lib.attributes.SearchOptions;
-import aztech.modern_industrialization.api.energy.CableTier;
-import aztech.modern_industrialization.api.energy.EnergyAttributes;
-import aztech.modern_industrialization.api.energy.EnergyExtractable;
-import aztech.modern_industrialization.api.energy.EnergyInsertable;
+import aztech.modern_industrialization.api.energy.*;
 import aztech.modern_industrialization.pipes.api.PipeEndpointType;
 import aztech.modern_industrialization.pipes.api.PipeNetworkNode;
 import aztech.modern_industrialization.util.NbtHelper;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import net.fabricmc.fabric.api.provider.v1.block.BlockApiCache;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
+import org.jetbrains.annotations.NotNull;
 
 public class ElectricityNetworkNode extends PipeNetworkNode {
     private List<Direction> connections = new ArrayList<>();
+    private final List<BlockApiCache<EnergyMoveable, @NotNull Direction>> caches = new ArrayList<>();
     long eu = 0;
 
     public void appendAttributes(World world, BlockPos pos, List<EnergyInsertable> insertables, List<EnergyExtractable> extractables) {
-        for (Direction direction : connections) {
-            SearchOption option = SearchOptions.inDirection(direction);
-            // TODO: get() instead of getFirst() ?
-            EnergyInsertable insertable = EnergyAttributes.INSERTABLE.getFirstOrNull(world, pos.offset(direction), option);
-            if (insertable != null)
-                insertables.add(insertable);
-            EnergyExtractable extractable = EnergyAttributes.EXTRACTABLE.getFirstOrNull(world, pos.offset(direction), option);
-            if (extractable != null)
-                extractables.add(extractable);
+        if (caches.size() != connections.size()) {
+            caches.clear();
+            for (Direction direction : connections) {
+                caches.add(BlockApiCache.create(EnergyApi.MOVEABLE, (ServerWorld) world, pos.offset(direction)));
+            }
+        }
+        for (int i = 0; i < connections.size(); ++i) {
+            Direction targetDir = connections.get(i).getOpposite();
+            EnergyMoveable moveable = caches.get(i).get(targetDir);
+            if (moveable instanceof EnergyInsertable)
+                insertables.add((EnergyInsertable) moveable);
+            if (moveable instanceof EnergyExtractable)
+                extractables.add((EnergyExtractable) moveable);
         }
     }
 
@@ -68,6 +71,7 @@ public class ElectricityNetworkNode extends PipeNetworkNode {
                 i++;
             } else {
                 connections.remove(i);
+                caches.clear();
             }
         }
     }
@@ -90,6 +94,7 @@ public class ElectricityNetworkNode extends PipeNetworkNode {
         for (int i = 0; i < connections.size(); i++) {
             if (connections.get(i) == direction) {
                 connections.remove(i);
+                caches.clear();
                 return;
             }
         }
@@ -106,6 +111,7 @@ public class ElectricityNetworkNode extends PipeNetworkNode {
         // Otherwise try to connect
         if (canConnect(world, pos, direction)) {
             connections.add(direction);
+            caches.clear();
         }
     }
 
@@ -119,15 +125,15 @@ public class ElectricityNetworkNode extends PipeNetworkNode {
     @Override
     public void fromTag(CompoundTag tag) {
         connections = new ArrayList<>(Arrays.asList(NbtHelper.decodeDirections(tag.getByte("connections"))));
+        caches.clear();
         eu = tag.getLong("eu");
     }
 
     private boolean canConnect(World world, BlockPos pos, Direction direction) {
-        SearchOption option = SearchOptions.inDirection(direction);
-        EnergyInsertable insertable = EnergyAttributes.INSERTABLE.getFirstOrNull(world, pos.offset(direction), option);
-        EnergyExtractable extractable = EnergyAttributes.EXTRACTABLE.getFirstOrNull(world, pos.offset(direction), option);
+        EnergyMoveable moveable = EnergyApi.MOVEABLE.get(world, pos.offset(direction), direction.getOpposite());
         CableTier tier = ((ElectricityNetwork) network).tier;
-        return insertable != null && insertable.canInsert(tier) || extractable != null && extractable.canExtract(tier);
+        return moveable instanceof EnergyInsertable && ((EnergyInsertable) moveable).canInsert(tier)
+                || moveable instanceof EnergyExtractable && ((EnergyExtractable) moveable).canExtract(tier);
     }
 
     // Used in the Waila plugin

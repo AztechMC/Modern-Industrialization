@@ -86,7 +86,7 @@ public class ModernIndustrialization implements ModInitializer {
     public static final RuntimeResourcePack RESOURCE_PACK = RuntimeResourcePack.create("modern_industrialization:general");
 
     public static final ItemGroup ITEM_GROUP = FabricItemGroupBuilder.build(new Identifier(MOD_ID, "general"),
-            () -> new ItemStack(Registry.ITEM.get(new MIIdentifier("bronze_boiler"))));
+            () -> new ItemStack(Registry.ITEM.get(new MIIdentifier("forge_hammer"))));
 
     // Tags
     private static Identifier WRENCH_TAG = new Identifier("fabric", "wrenches");
@@ -147,6 +147,7 @@ public class ModernIndustrialization implements ModInitializer {
     }
 
     private void setupMaterial() {
+        MIMaterialSetup.register();
         for (MIMaterial material : MIMaterial.getAllMaterials()) {
             registerMaterial(material);
         }
@@ -180,11 +181,12 @@ public class ModernIndustrialization implements ModInitializer {
 
     private void setupMachines() {
         for (MachineFactory factory : MachineFactory.getFactories()) {
-            factory.block = new MachineBlock(factory.blockEntityConstructor);
+            factory.block = new MachineBlock(factory);
             factory.item = new BlockItem(factory.block, new Item.Settings().group(ITEM_GROUP));
             registerBlock(factory.block, factory.item, factory.getID());
             factory.blockEntityType = Registry.register(Registry.BLOCK_ENTITY_TYPE, new Identifier(MOD_ID, factory.getID()),
                     BlockEntityType.Builder.create(factory.blockEntityConstructor, factory.block).build(null));
+            factory.blockEntityConstructor.get().registerApis();
         }
     }
 
@@ -218,8 +220,7 @@ public class ModernIndustrialization implements ModInitializer {
             Block block = material.getBlock(block_type);
             Item item = new BlockItem(block, new Item.Settings().group(ITEM_GROUP));
             Identifier identifier = new MIIdentifier(id + "_" + block_type);
-            material.saveBlock(block_type, block);
-            Registry.register(Registry.BLOCK, identifier, block);
+            // Registry.register(Registry.BLOCK, identifier, block);
             Registry.register(Registry.ITEM, identifier, item);
             RESOURCE_PACK.addBlockState(
                     JState.state().add(new JVariant().put("", new JBlockModel(MOD_ID + ":block/materials/" + id + "/" + block_type))), identifier);
@@ -275,20 +276,22 @@ public class ModernIndustrialization implements ModInitializer {
         FuelRegistry.INSTANCE.add(MIItem.ITEM_COKE, 6400);
         FuelRegistry.INSTANCE.add(MIItem.ITEM_COKE_DUST, 6400);
         FuelRegistry.INSTANCE.add(MIMaterials.coal.getItem("crushed_dust"), 1600);
+        FuelRegistry.INSTANCE.add(MITags.COAL_DUSTS, 1600);
         FuelRegistry.INSTANCE.add(MIMaterials.coal.getItem("dust"), 1600);
         FuelRegistry.INSTANCE.add(MIMaterials.coal.getItem("tiny_dust"), 160);
         FuelRegistry.INSTANCE.add(MIMaterials.lignite_coal.getItem("lignite_coal"), 1600);
         FuelRegistry.INSTANCE.add(MIMaterials.lignite_coal.getItem("crushed_dust"), 1600);
         FuelRegistry.INSTANCE.add(MIMaterials.lignite_coal.getItem("dust"), 1600);
         FuelRegistry.INSTANCE.add(MIMaterials.lignite_coal.getItem("tiny_dust"), 160);
-        FuelRegistry.INSTANCE.add(MIItem.ITEM_CARBON_DUST, 3200);
+        FuelRegistry.INSTANCE.add(MIItem.ITEM_CARBON_DUST, 6400);
 
-        FluidFuelRegistry.register(MIFluids.BOOSTED_DIESEL.key, 100);
-        FluidFuelRegistry.register(MIFluids.CRUDE_OIL.key, 2);
-        FluidFuelRegistry.register(MIFluids.DIESEL.key, 50);
-        FluidFuelRegistry.register(MIFluids.HEAVY_FUEL.key, 20);
-        FluidFuelRegistry.register(MIFluids.LIGHT_FUEL.key, 20);
-        FluidFuelRegistry.register(MIFluids.NAPHTHA.key, 10);
-        FluidFuelRegistry.register(MIFluids.SYNTHETIC_OIL.key, 2);
+        FluidFuelRegistry.register(MIFluids.CRUDE_OIL.key, 8);
+        FluidFuelRegistry.register(MIFluids.DIESEL.key, 200);
+        FluidFuelRegistry.register(MIFluids.HEAVY_FUEL.key, 120);
+        FluidFuelRegistry.register(MIFluids.LIGHT_FUEL.key, 80);
+        FluidFuelRegistry.register(MIFluids.NAPHTHA.key, 40);
+        FluidFuelRegistry.register(MIFluids.SYNTHETIC_OIL.key, 8);
+        FluidFuelRegistry.register(MIFluids.BOOSTED_DIESEL.key, 400);
+
     }
 }

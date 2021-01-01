@@ -1,9 +1,9 @@
 {
   "type": "minecraft:smelting",
   "ingredient": {
-    "item": "modern_industrialization:fire_clay_dust"
+    "item": "modern_industrialization:brick_dust"
   },
-  "result": "modern_industrialization:fire_clay_brick",
+  "result": "minecraft:brick",
   "experience": 0.3,
   "cookingtime": 200
 }

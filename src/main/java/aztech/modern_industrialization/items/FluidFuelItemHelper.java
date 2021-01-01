@@ -80,7 +80,7 @@ public interface FluidFuelItemHelper {
         to.offer((FluidInsertable) (fluidVolume, simulation) -> {
             FluidKey storedFluid = getFluid(stack.get());
             if (storedFluid.isEmpty()) {
-                if (FluidFuelRegistry.getBurnTicks(fluidVolume.getFluidKey()) != 0) {
+                if (FluidFuelRegistry.getEu(fluidVolume.getFluidKey()) != 0) {
                     int inserted = Math.min(capacity - getAmount(stack.get()), fluidVolume.amount().asInt(1000, RoundingMode.FLOOR));
                     ItemStack copy = stack.get().copy();
                     setFluid(copy, fluidVolume.getFluidKey());

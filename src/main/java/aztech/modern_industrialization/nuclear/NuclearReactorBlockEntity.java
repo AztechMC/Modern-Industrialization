@@ -32,14 +32,15 @@ import aztech.modern_industrialization.machines.impl.multiblock.HatchBlockEntity
 import aztech.modern_industrialization.machines.impl.multiblock.HatchType;
 import aztech.modern_industrialization.machines.impl.multiblock.MultiblockMachineBlockEntity;
 import aztech.modern_industrialization.machines.impl.multiblock.MultiblockShape;
+import java.util.List;
 import java.util.Random;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
 public class NuclearReactorBlockEntity extends MultiblockMachineBlockEntity {
 
-    public NuclearReactorBlockEntity(MachineFactory factory, MultiblockShape shape) {
-        super(factory, shape, false);
+    public NuclearReactorBlockEntity(MachineFactory factory, List<MultiblockShape> shapes) {
+        super(factory, shapes, false);
 
         // Replace the existing slots by slots that prevent any pipe I/O.
         for (int i = 0; i < itemStacks.size(); ++i) {

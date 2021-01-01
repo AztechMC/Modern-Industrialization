@@ -1,3 +1,20 @@
+##### 0.3.9
+* Add multiblock previews (hold wrench to see the preview, or hold a hatch to see where it can be placed)
+* Nerf fluid fuels and small boilers
+* Optimize pipe `isSolid` check
+* Fix AO bug with machines
+* Use BiomeModifications for worldgen
+
+##### 0.3.8
+* Fix worldgen bug
+
+##### 0.3.7
+* Add advancements
+* Various recipe improvements
+* Overclocking buff for electric machines
+* Fix multiblock slot locking
+* Fix Torohealth crash
+
 ##### 0.3.6
 * Add AE2 pattern terminal shift-clicking for machine recipes
 

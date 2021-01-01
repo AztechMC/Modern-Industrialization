@@ -28,7 +28,7 @@
     },
     {
       "type": "text",
-      "text": "The Coke Oven is made of three layers: a 3x3 square with the three hatches, then two hollow 3x3 squares above. In the middle of one of the sides, place the controller. If that isn't clear enough, have a look at $(l:https://streamable.com/08f74x)this video$().$(br2)The exact placement of the hatches doesn't matter, as long as they are on the bottom layer."
+      "text": "The Coke Oven is made of three layers: a 3x3 square with the three hatches, then two hollow 3x3 squares above. In the middle of one of the sides, place the controller.$(br2)Once you have placed the controller, hold a wrench to see the missing blocks, or hold a hatch to see where it can go."
     },
     {
       "type": "text",

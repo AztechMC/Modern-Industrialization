@@ -44,7 +44,7 @@ import net.minecraft.util.math.Direction;
  * temperature instead.
  */
 public class SteamBoilerBlockEntity extends MachineBlockEntity {
-    private static final int BURN_TIME_MULTIPLIER = 10;
+    private static final int BURN_TIME_MULTIPLIER = 5;
 
     public SteamBoilerBlockEntity(MachineFactory factory) {
         super(factory);
@@ -70,7 +70,7 @@ public class SteamBoilerBlockEntity extends MachineBlockEntity {
             if (ItemStackHelper.consumeFuel(stack, true)) {
                 Integer fuelTime = FuelRegistryImpl.INSTANCE.get(fuel.getItem());
                 if (fuelTime != null && fuelTime > 0) {
-                    recipeEnergy = fuelTime * BURN_TIME_MULTIPLIER;
+                    recipeEnergy = fuelTime * BURN_TIME_MULTIPLIER / (factory.tier == MachineTier.BRONZE ? 1 : 2);
                     usedEnergy = recipeEnergy;
                     ItemStackHelper.consumeFuel(stack, false);
                 }

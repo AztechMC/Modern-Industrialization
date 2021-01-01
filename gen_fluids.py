@@ -81,7 +81,7 @@ def handle_fluid(name, color, gas, is_alt):
     bucket_image = Image.alpha_composite(Image.open("template/fluid/" + bucket_path).convert('RGBA'), bucket_image)
     if gas:
         bucket_image = bucket_image.rotate(180)
-    bucket_image.save(output_path + "%s.png" % name)
+    bucket_image.save(output_path + "%s.png" % name.replace("-", "_"))
 
 
 shutil.rmtree("src/main/resources/assets/modern_industrialization/textures/items/bucket", ignore_errors=True)

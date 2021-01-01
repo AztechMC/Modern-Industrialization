@@ -144,7 +144,7 @@ dependencies {
 
     // Other mods for testing purposes
     modRuntime "appeng:appliedenergistics2-fabric:${project.appeng_version}"
-    modRuntime "com.github.Mixinors.Astromine:astromine:${project.astromine_commit}"
+    //modRuntime "com.github.Mixinors.Astromine:astromine:${project.astromine_commit}"
     //modRuntime ("com.github.GabrielOlvH:Industrial-Revolution:${project.indrev_commit}") {
     //    exclude group: "teamreborn", module: "energy"
     //}

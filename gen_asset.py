@@ -666,7 +666,7 @@ gen(
         "item_pipe": "modern_industrialization:pipe_item_steel",
         "fluid_pipe": "modern_industrialization:pipe_fluid_steel",
     }),
-    '#3f3f3f', 'shiny', forge_hammer=True,
+    '#3f3f3f', 'metallic', forge_hammer=True,
 )
 gen(
     file,

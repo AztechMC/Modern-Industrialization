@@ -28,7 +28,7 @@ import static net.minecraft.util.math.Direction.*;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-import java.util.function.Function;
+import net.minecraft.block.BlockState;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.math.BlockPos;
@@ -45,6 +45,12 @@ public class MultiblockShape {
         boolean matches(BlockView world, BlockPos pos);
 
         Text getErrorMessage();
+
+        BlockState getPreviewState();
+
+        default boolean allowsHatch(HatchType type) {
+            return false;
+        }
     }
 
     Map<BlockPos, Entry> entries = new HashMap<>();
@@ -73,22 +79,9 @@ public class MultiblockShape {
             throw new IllegalArgumentException("Multiblocks can only be oriented horizontally");
         errorMessage = null;
 
-        Function<BlockPos, BlockPos> shapeToWorld = shapePos -> {
-            BlockPos rotatedPos;
-            if (controllerDirection == NORTH)
-                rotatedPos = shapePos;
-            else if (controllerDirection == SOUTH)
-                rotatedPos = new BlockPos(-shapePos.getX(), shapePos.getY(), -shapePos.getZ());
-            else if (controllerDirection == EAST)
-                rotatedPos = new BlockPos(-shapePos.getZ(), shapePos.getY(), shapePos.getX());
-            else
-                rotatedPos = new BlockPos(shapePos.getZ(), shapePos.getY(), -shapePos.getX());
-            return rotatedPos.add(controllerPos);
-        };
-
         int hatches = 0;
         for (Map.Entry<BlockPos, Entry> entry : entries.entrySet()) {
-            BlockPos worldPos = shapeToWorld.apply(entry.getKey());
+            BlockPos worldPos = MultiblockShapes.toWorldPos(entry.getKey(), controllerDirection, controllerPos);
             if (entry.getValue().matches(world, worldPos)) {
                 if (world.getBlockEntity(worldPos) instanceof HatchBlockEntity) {
                     ++hatches;

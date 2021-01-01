@@ -23,7 +23,7 @@
  */
 package aztech.modern_industrialization.api.energy;
 
-public interface EnergyInsertable {
+public interface EnergyInsertable extends EnergyMoveable {
     /**
      * Attempt to partially insert energy into the block.
      * 

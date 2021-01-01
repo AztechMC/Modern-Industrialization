@@ -1,0 +1,31 @@
+{
+    "criteria": {
+        "checkInv": {
+            "conditions": {
+                "items": [
+                    {
+                        "count": {
+                            "min": 1
+                        },
+                        "item": "modern_industrialization:mv_lv_transformer"
+                    }
+                ]
+            },
+            "trigger": "minecraft:inventory_changed"
+        }
+    },
+    "display": {
+        "description": {
+            "translate": "advancements.modern_industrialization.mv_lv_transformer.description"
+        },
+        "frame": "task",
+        "icon": {
+            "item": "modern_industrialization:mv_lv_transformer"
+        },
+        "title": {
+            "translate": "advancements.modern_industrialization.mv_lv_transformer"
+        }
+    },
+    "hidden": false,
+    "parent": "modern_industrialization:lv_circuit"
+}

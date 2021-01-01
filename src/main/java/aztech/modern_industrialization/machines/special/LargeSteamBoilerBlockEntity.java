@@ -33,6 +33,7 @@ import aztech.modern_industrialization.machines.impl.MachineFactory;
 import aztech.modern_industrialization.machines.impl.multiblock.MultiblockMachineBlockEntity;
 import aztech.modern_industrialization.machines.impl.multiblock.MultiblockShape;
 import aztech.modern_industrialization.util.ItemStackHelper;
+import java.util.List;
 import net.fabricmc.fabric.impl.content.registry.FuelRegistryImpl;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.Direction;
@@ -40,8 +41,8 @@ import net.minecraft.util.math.Direction;
 public class LargeSteamBoilerBlockEntity extends MultiblockMachineBlockEntity {
     private static final int EU_PRODUCTION = 256;
 
-    public LargeSteamBoilerBlockEntity(MachineFactory factory, MultiblockShape shape) {
-        super(factory, shape);
+    public LargeSteamBoilerBlockEntity(MachineFactory factory, List<MultiblockShape> shapes) {
+        super(factory, shapes);
 
         maxEfficiencyTicks = 10000;
         efficiencyTicks = 0;
@@ -53,11 +54,7 @@ public class LargeSteamBoilerBlockEntity extends MultiblockMachineBlockEntity {
         if (world.isClient)
             return;
 
-        if (shapeCheckTicks == 0) {
-            rebuildShape();
-            shapeCheckTicks = 20;
-        }
-        --shapeCheckTicks;
+        this.tickCheckShape();
 
         boolean wasActive = isActive;
 
@@ -82,9 +79,9 @@ public class LargeSteamBoilerBlockEntity extends MultiblockMachineBlockEntity {
             if (usedEnergy == 0) {
                 for (ConfigurableFluidStack stack : getFluidInputStacks()) {
                     FluidKey fluid = stack.getFluid();
-                    int burnTicks = FluidFuelRegistry.getBurnTicks(fluid);
+                    int burnTicks = FluidFuelRegistry.getEu(fluid);
                     if (burnTicks > 0) {
-                        int mbEu = FluidFuelRegistry.getBurnTicks(fluid) * 32 * 2;
+                        int mbEu = FluidFuelRegistry.getEu(fluid) * 2;
                         int necessaryAmount = Math.max(1, EU_PRODUCTION / mbEu);
                         if (stack.getAmount() >= necessaryAmount) {
                             recipeEnergy = mbEu * necessaryAmount / EU_PRODUCTION;

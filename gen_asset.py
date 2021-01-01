@@ -65,45 +65,66 @@ def gen_name(ty):
         lang_file.close()
 
 
-def gen_texture(id, hex, item_set, block_set, special_texture=''):
+def gen_texture(id, hex, icon_set, item_set, block_set, special_texture=''):
 
-    item = glob("template/item/*.png")
+    item = glob("template/item/"+ icon_set +"/*.png")
 
     output_path = (
         "src/main/resources/assets/modern_industrialization/textures/items/materials/" + id)
     Path(output_path).mkdir(parents=True, exist_ok=True)
+    alt_output_path = (
+            "src/main/resources/alternate/assets/modern_industrialization/textures/items/materials/" + id)
+    Path(alt_output_path).mkdir(parents=True, exist_ok=True)
 
     for filename in item:
         t = os.path.basename(filename).split('.')[0]
         if t in item_set:
-            print(filename)
-            result = image_tint(filename, hex)
-            if t in TEXTURE_UNDERLAYS:
-                underlay = Image.open("template/item/%s_underlay.png" % t)
-                result = Image.alpha_composite(underlay, result)
-            if t in TEXTURE_OVERLAYS:
-                overlay = Image.open("template/item/%s_overlay.png" % t)
-                result = Image.alpha_composite(result, overlay)
-            if t != special_texture:
-                result.save(output_path + '/' + os.path.basename(filename))
-            else:
-                result.save(output_path + '/' + t + ".png")
+            handle_texture(output_path, filename, hex, "item", icon_set, t, special_texture, False)
+            alt_path = "template/item/" + icon_set + "/%s_alt.png" % t
+            if os.path.isfile(alt_path):
+                handle_texture(alt_output_path, alt_path, hex, "item", icon_set, t, special_texture, True)
 
-    block = glob("template/block/*.png")
+    block = glob("template/block/" + icon_set + "/*.png")
     output_path = "src/main/resources/assets/modern_industrialization/textures/blocks/materials/" + id
     Path(output_path).mkdir(parents=True, exist_ok=True)
+    alt_output_path = "src/main/resources/alternate/assets/modern_industrialization/textures/blocks/materials/" + id
+    Path(alt_output_path).mkdir(parents=True, exist_ok=True)
 
     for filename in block:
         t = os.path.basename(filename).split('.')[0]
         if t in block_set:
-            result = image_tint(filename, hex)
-            if t in TEXTURE_UNDERLAYS:
-                underlay = Image.open("template/block/%s_underlay.png" % t)
-                result = Image.alpha_composite(underlay, result)
-            if t in TEXTURE_OVERLAYS:
-                overlay = Image.open("template/block/%s_overlay.png" % t)
-                result = Image.alpha_composite(result, overlay)
+            handle_texture(output_path, filename, hex, "block", icon_set, t, special_texture, False)
+            alt_path = "template/block/" + icon_set + "/%s_alt.png" % t
+            if os.path.isfile(alt_path):
+                handle_texture(alt_output_path, alt_path, hex, "block", icon_set, t, special_texture, True)
+
+
+def handle_texture(output_path, filename, hex, type_set, icon_set, t, special_texture, is_alt):
+    print(filename)
+    result = image_tint(filename, hex)
+    if is_alt:
+        underlay = "/%s_alt_underlay.png" % t
+        overlay = "/%s_alt_overlay.png" % t
+    else:
+        underlay = "/%s_underlay.png" % t
+        overlay = "/%s_overlay.png" % t
+    underlay_path = "template/" + type_set + "/" + icon_set + underlay
+    overlay_path = "template/" + type_set + "/" + icon_set + overlay
+    # todo rm overlay arrays?
+    if os.path.isfile(underlay_path):
+        underlay = Image.open(underlay_path).convert('RGBA')
+        result = Image.alpha_composite(underlay, result)
+    if os.path.isfile(overlay_path):
+        overlay = Image.open(overlay_path)
+        result = Image.alpha_composite(result, overlay.convert('RGBA'))
+    if t != special_texture:
+        if is_alt:
+            result.save(output_path + '/' + os.path.basename(filename).replace("_alt", ""))
+        else:
             result.save(output_path + '/' + os.path.basename(filename))
+    else:
+        result.save(output_path + '/' + t + ".png")
+
 
 loaded_items = {'modern_industrialization:rubber_sheet'}
 tags = defaultdict(lambda: [])
@@ -418,11 +439,12 @@ def genAssembler(ty, tyo):
     MIRecipe("assembler", eu=8).input(tyo["blade"], amount=4).input(
         tyo["ring"], amount=1).output(ty["rotor"]).save(ty.id, "rotor")
 
+
 material_lines = []
 ore_config = []
 
 
-def gen(file, ty, hex, vanilla=False, forge_hammer=False, smelting=True, isMetal=True, veinsPerChunk=0, veinsSize=0, maxYLevel=64, macerator_disable={}):
+def gen(file, ty, hex, set="dull", vanilla=False, forge_hammer=False, smelting=True, isMetal=True, veinsPerChunk=0, veinsSize=0, maxYLevel=64, macerator_disable={}):
 
     item_to_add = ','.join([(lambda s: "\"%s\"" % s)(s)
                             for s in sorted(list(ty.mi_items))])
@@ -452,7 +474,7 @@ def gen(file, ty, hex, vanilla=False, forge_hammer=False, smelting=True, isMetal
 
     print(line)
 
-    gen_texture(ty.id, hex, ty.mi_items, ty.mi_blocks)
+    gen_texture(ty.id, hex, set, ty.mi_items, ty.mi_blocks)
 
     tyo = ty.get_oredicted()
 
@@ -490,7 +512,7 @@ ITEM_ALL = ITEM_BASE | {'bolt', 'blade',
 
 ITEM_ALL_NO_ORE = ITEM_ALL - {'crushed_dust'}
 TEXTURE_UNDERLAYS = {'ore'}
-TEXTURE_OVERLAYS = {'fine_wire', 'oxide'}
+TEXTURE_OVERLAYS = {'fine_wire', 'oxide', 'double_ingot', 'dust', 'gear', 'ingot', 'nugget', 'ring', 'rod', 'tiny_dust'}
 DEFAULT_OREDICT = {'nugget': '_nuggets', 'ore': '_ores', 'plate': '_plates',
                    'gear': '_gears', 'dust': '_dusts', 'tiny_dust': '_tiny_dusts'}
 RESTRICTIVE_OREDICT = {'ore': '_ores'}
@@ -582,7 +604,7 @@ gen(
         "dust": "c:gold_dusts",
         "tiny_dust": "c:gold_tiny_dusts",
     }),
-    '#ffe100', vanilla=True,
+    '#FFE650', 'shiny', vanilla=True,
 )
 gen(
     file,
@@ -598,7 +620,7 @@ gen(
         "dust": "c:iron_dusts",
         "tiny_dust": "c:iron_tiny_dusts",
     }),
-    '#f0f0f0', vanilla=True, forge_hammer=True,
+    '#C8C8C8', 'metallic', vanilla=True, forge_hammer=True,
 )
 gen(
     file,
@@ -610,7 +632,7 @@ gen(
         "dust": "c:coal_dusts",
         "tiny_dust": "c:coal_tiny_dusts",
     }),
-    '#282828', vanilla=True, forge_hammer=True, isMetal=False, smelting=False,
+    '#282828', 'stone', vanilla=True, forge_hammer=True, isMetal=False, smelting=False,
 )
 gen(
     file,
@@ -619,7 +641,7 @@ gen(
         "fluid_pipe": "modern_industrialization:pipe_fluid_copper",
         "cable": "modern_industrialization:pipe_electricity_copper",
     }),
-    '#ff6600', forge_hammer=True, veinsPerChunk=30, veinsSize=9, maxYLevel=128,
+    '#FF6400', 'shiny', forge_hammer=True, veinsPerChunk=30, veinsSize=9, maxYLevel=128,
 )
 gen(
     file,
@@ -627,7 +649,7 @@ gen(
         "item_pipe": "modern_industrialization:pipe_item_bronze",
         "fluid_pipe": "modern_industrialization:pipe_fluid_bronze",
     }),
-    '#ffcc00', forge_hammer=True,
+    '#ffcc00', 'metallic', forge_hammer=True,
 )
 gen(
     file,
@@ -636,7 +658,7 @@ gen(
         "fluid_pipe": "modern_industrialization:pipe_fluid_tin",
         "cable": "modern_industrialization:pipe_electricity_tin",
     }),
-    '#cbe4e4', forge_hammer=True, veinsPerChunk=8, veinsSize=9,
+    '#DCDCDC', 'dull', forge_hammer=True, veinsPerChunk=8, veinsSize=9,
 )
 gen(
     file,
@@ -644,7 +666,7 @@ gen(
         "item_pipe": "modern_industrialization:pipe_item_steel",
         "fluid_pipe": "modern_industrialization:pipe_fluid_steel",
     }),
-    '#3f3f3f',
+    '#3f3f3f', 'shiny', forge_hammer=True,
 )
 gen(
     file,
@@ -653,7 +675,7 @@ gen(
         "fluid_pipe": "modern_industrialization:pipe_fluid_aluminum",
         "cable": "modern_industrialization:pipe_electricity_aluminum",
     }),
-    '#3fcaff', smelting=False,
+    '#80C8F0', 'metallic', smelting=False,
 )
 gen(
     file,
@@ -662,14 +684,14 @@ gen(
         "ore": "c:bauxite_ores",
         "tiny_dust": "c:bauxite_tiny_dusts",
     }),
-    '#cc3908', isMetal=False, smelting=False, veinsPerChunk=8, veinsSize=7, maxYLevel=32,
+    '#C86400', 'dull', isMetal=False, smelting=False, veinsPerChunk=8, veinsSize=7, maxYLevel=32,
 )
 gen(
     file,
     Material('lignite_coal', PURE_NON_METAL | {'lignite_coal'}, ORE_ONLY, overrides={
         'main': 'modern_industrialization:lignite_coal',
     }),
-    '#604020', forge_hammer=True, isMetal=False, smelting=False, veinsPerChunk=10, veinsSize=17, maxYLevel=128,
+    '#644646', 'stone', forge_hammer=True, isMetal=False, smelting=False, veinsPerChunk=10, veinsSize=17, maxYLevel=128,
 )
 gen(
     file,
@@ -677,7 +699,7 @@ gen(
         "item_pipe": "modern_industrialization:pipe_item_lead",
         "fluid_pipe": "modern_industrialization:pipe_fluid_lead",
     }),
-    '#4a2649', veinsPerChunk=4, veinsSize=8, maxYLevel=64,
+    '#3C286E', 'dull', veinsPerChunk=4, veinsSize=8, maxYLevel=64,
     macerator_disable={'dust'}
 )
 gen(
@@ -685,13 +707,13 @@ gen(
     Material('battery_alloy', {'tiny_dust', 'dust',
                                'plate', 'nugget', 'curved_plate', 'ingot',
                                'double_ingot'}, BLOCK_ONLY),
-    '#a694a5',
+    '#9C7CA0', 'dull'
 )
 gen(
     file,
     Material('invar', {'tiny_dust', 'dust', 'plate',
                        'ingot', 'double_ingot', 'nugget', 'large_plate', 'gear'}, BLOCK_ONLY),
-    '#909050',
+    '#DCDC96', 'metallic'
 )
 
 gen(
@@ -700,13 +722,13 @@ gen(
                              'ingot', 'nugget', 'wire', 'double_ingot'}, BLOCK_ONLY | {'coil'}, overrides={
         "cable": "modern_industrialization:pipe_electricity_cupronickel",
     }),
-    '#e39680',
+    '#E39681', 'metallic'
 )
 
 gen(
     file,
     Material('antimony', PURE_METAL, BOTH),
-    '#91bdb4', veinsPerChunk=4, veinsSize=6, maxYLevel=64,
+    '#DCDCF0', 'shiny', veinsPerChunk=4, veinsSize=6, maxYLevel=64,
 )
 gen(
     file,
@@ -714,7 +736,7 @@ gen(
         "item_pipe": "modern_industrialization:pipe_item_nickel",
         "fluid_pipe": "modern_industrialization:pipe_fluid_nickel",
     }),
-    '#a9a9d4', veinsPerChunk=7, veinsSize=6, maxYLevel=64,
+    '#FAFAC8', 'metallic', veinsPerChunk=7, veinsSize=6, maxYLevel=64,
 )
 gen(
     file,
@@ -722,7 +744,7 @@ gen(
         "item_pipe": "modern_industrialization:pipe_item_silver",
         "fluid_pipe": "modern_industrialization:pipe_fluid_silver",
     }),
-    '#99ffff', veinsPerChunk=4, veinsSize=6, maxYLevel=64,
+    '#DCDCFF', 'shiny', veinsPerChunk=4, veinsSize=6, maxYLevel=64,
 )
 gen(
     file,
@@ -731,26 +753,26 @@ gen(
     }, oredicted={
         "tiny_dust": "c:redstone_tiny_dusts",
     }),
-    '#d20000', macerator_disable={'crushed_dust', 'dust'}
+    '#d20000', 'gem', macerator_disable={'crushed_dust', 'dust'}
 )
 gen(
     file,
     Material('sodium', PURE_METAL - {'crushed_dust'}, BLOCK_ONLY),
-    '#071CB8',
+    '#071CB8', 'stone'
 )
 gen(
     file,
-    Material('salt', PURE_NON_METAL, BOTH, oredicted={
+    Material('salt', PURE_NON_METAL, ORE_ONLY, oredicted={
         "dust": "c:salt_dusts",
         "ore": "c:salt_ores",
         "tiny_dust": "c:salt_tiny_dusts",
     }),
-    '#c7d6c5', isMetal=False, smelting=False, veinsPerChunk=2, veinsSize=7, maxYLevel=32
+    '#c7d6c5', 'gem', isMetal=False, smelting=False, veinsPerChunk=2, veinsSize=7, maxYLevel=32
 )
 gen(
     file,
     Material('titanium', ITEM_ALL_NO_ORE, BLOCK_ONLY),
-    '#dbb1f1', smelting=False
+    '#DCA0F0', 'metallic', smelting=False
 )
 
 gen(
@@ -761,7 +783,7 @@ gen(
         "tiny_dust": "c:quartz_tiny_dusts",
         "dust": "c:quartz_dusts"
     }),
-    '#f0ebe4', smelting=False
+    '#f0ebe4', 'gem', smelting=False
 )
 
 gen(
@@ -772,13 +794,13 @@ gen(
         "cable": "modern_industrialization:pipe_electricity_electrum",
 
     }),
-    '#efff5e')
+    '#FFFF64', 'shiny')
 
 gen(
     file,
     Material('silicon', (PURE_METAL - {'crushed_dust'})
              | {'plate', 'double_ingot'}, BLOCK_ONLY),
-    '#7a6a9e',
+    '#3C3C50', 'metallic'
 )
 
 gen(
@@ -787,20 +809,20 @@ gen(
         "item_pipe": "modern_industrialization:pipe_item_stainless_steel",
         "fluid_pipe": "modern_industrialization:pipe_fluid_stainless_steel",
     }),
-    '#98abbb', smelting=False
+    '#C8C8DC', 'shiny', smelting=False
 )
 
 gen(
     file,
     Material('manganese', PURE_METAL, BLOCK_ONLY),
-    '#7f7f7f', smelting=False, macerator_disable={'dust'}
+    '#C1C1C1', 'dull', smelting=False, macerator_disable={'dust'}
 )
 
 gen(
     file,
     Material('chrome', PURE_METAL | {
              'plate', 'large_plate', 'double_ingot'}, BLOCK_ONLY),
-    '#eec4e4', smelting=False, macerator_disable={'dust'}
+    '#FFE6E6', 'shiny', smelting=False, macerator_disable={'dust'}
 )
 
 gen(
@@ -810,7 +832,7 @@ gen(
              overrides={
         "cable": "modern_industrialization:pipe_electricity_annealed_copper"
     }),
-    '#ff924f', smelting=False, macerator_disable={'dust'}
+    '#ff924f', 'shiny', smelting=False, macerator_disable={'dust'}
 )
 
 gen(
@@ -818,32 +840,32 @@ gen(
     Material('uranium', PURE_NON_METAL | {'uranium'}, BOTH, overrides={
         'main': 'modern_industrialization:uranium',
     }),
-    '#39e600', isMetal=False, smelting=True, veinsPerChunk=2, veinsSize=3, maxYLevel=64,
+    '#39e600', 'dull', isMetal=False, smelting=True, veinsPerChunk=2, veinsSize=3, maxYLevel=64,
 )
 
 gen(
     file,
     Material('uranium_235', PURE_METAL_NO_CRUSHED, BLOCK_ONLY),
-    '#e60045', smelting=False
+    '#e60045', 'shiny', smelting=False
 )
 
 gen(
     file,
     Material('uranium_238', PURE_METAL_NO_CRUSHED, BLOCK_ONLY),
-    '#55bd33', smelting=False
+    '#55bd33', 'dull', smelting=False
 )
 
 gen(
     file,
     # add plutonium ore for other mods
     Material('plutonium', PURE_METAL_NO_CRUSHED, BOTH),
-    '#d701e7', smelting=False
+    '#d701e7', 'shiny', smelting=False
 )
 
 gen(
     file,
     Material('mox', PURE_METAL_NO_CRUSHED, BLOCK_ONLY),
-    '#00e7e5', smelting=False
+    '#00e7e5', 'shiny', smelting=False
 )
 
 gen(
@@ -853,7 +875,7 @@ gen(
              overrides={
         "cable": "modern_industrialization:pipe_electricity_platinum"
     }),
-    '#ffe5ba', veinsPerChunk=3, veinsSize=6, maxYLevel=32
+    '#ffe5ba', 'shiny', veinsPerChunk=3, veinsSize=6, maxYLevel=32
 )
 
 gen(
@@ -862,7 +884,7 @@ gen(
                          'ingot', 'nugget', 'wire', 'double_ingot'}, BLOCK_ONLY | {'coil'},  overrides={
         "cable": "modern_industrialization:pipe_electricity_kanthal"
     }),
-    '#cfcb00',
+    '#cfcb00', 'metallic'
 )
 
 
@@ -871,32 +893,32 @@ gen(
     Material('iridium', PURE_NON_METAL | {'iridium'}, BOTH, overrides={
         'main': 'modern_industrialization:iridium',
     }),
-    '#e1e6f5', isMetal=False, smelting=True, veinsPerChunk=1, veinsSize=1, maxYLevel=256,
+    '#e1e6f5', 'shiny', isMetal=False, smelting=True, veinsPerChunk=1, veinsSize=1, maxYLevel=256,
 )
 
 gen(
     file,
     Material('mozanite', {'crushed_dust', 'tiny_dust', 'dust'}, ORE_ONLY),
-    '#96248e',
+    '#96248e', 'stone',
 )
 
 gen(
     file,
     Material('cadmium', {'tiny_dust', 'dust', 'ingot',
                          'double_ingot', 'plate', 'rod'}, BLOCK_ONLY),
-    '#967224',
+    '#967224', 'dull'
 )
 
 gen(
     file,
     Material('neodymium', {'tiny_dust', 'dust'}, set(),),
-    '#1d4506',
+    '#1d4506', 'stone'
 )
 
 gen(
     file,
     Material('yttrium', {'tiny_dust', 'dust'}, set(),),
-    '#135166',
+    '#135166', 'stone'
 )
 
 
@@ -906,14 +928,14 @@ gen(
                                 'ingot', 'nugget', 'wire', 'double_ingot'}, {'coil'},  overrides={
         "cable": "modern_industrialization:pipe_electricity_supraconductor"
     }),
-    '#a3d9ff',
+    '#a3d9ff', 'shiny'
 )
 
 gen(
     file,
     Material('tungsten', {'tiny_dust', 'dust', 'plate',
                           'ingot', 'nugget', 'large_plate', 'double_ingot', 'rod', 'crushed_dust'}, BOTH),
-    '#3b2817',
+    '#3b2817', 'metallic'
 )
 
 file.write("\n".join(sorted(material_lines)))
@@ -946,7 +968,7 @@ import net.minecraft.util.Identifier;
  */
 public class MITags {\n"""
 for key in sorted(list(tags.keys())):
-    java_class += '    private static final Tag<Item> %s = TagRegistry.item(new Identifier("c", "%s"));\n' % (key[
+    java_class += '    public static final Tag<Item> %s = TagRegistry.item(new Identifier("c", "%s"));\n' % (key[
         2:].upper(), key[2:])
 java_class += """
     public static void setup() {

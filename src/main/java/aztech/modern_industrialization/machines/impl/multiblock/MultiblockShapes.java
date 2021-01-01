@@ -23,7 +23,10 @@
  */
 package aztech.modern_industrialization.machines.impl.multiblock;
 
+import static net.minecraft.util.math.Direction.*;
+
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.PillarBlock;
 import net.minecraft.text.LiteralText;
@@ -48,6 +51,11 @@ public class MultiblockShapes {
             public Text getErrorMessage() {
                 return new TranslatableText("text.modern_industrialization.shape_error_block", new TranslatableText(block.getTranslationKey()));
             }
+
+            @Override
+            public BlockState getPreviewState() {
+                return block.getDefaultState();
+            }
         };
     }
 
@@ -61,6 +69,11 @@ public class MultiblockShapes {
             @Override
             public Text getErrorMessage() {
                 return new TranslatableText("text.modern_industrialization.shape_error_vertical_chain");
+            }
+
+            @Override
+            public BlockState getPreviewState() {
+                return Blocks.CHAIN.getDefaultState().with(PillarBlock.AXIS, Direction.Axis.Y);
             }
         };
     }
@@ -76,6 +89,11 @@ public class MultiblockShapes {
             public Text getErrorMessage() {
                 Block block = Registry.BLOCK.get(id);
                 return new TranslatableText("text.modern_industrialization.shape_error_block", new TranslatableText(block.getTranslationKey()));
+            }
+
+            @Override
+            public BlockState getPreviewState() {
+                return Registry.BLOCK.get(id).getDefaultState();
             }
         };
     }
@@ -101,6 +119,16 @@ public class MultiblockShapes {
             @Override
             public Text getErrorMessage() {
                 return new TranslatableText("text.modern_industrialization.shape_error_hatch", writeHatchTypes(hatchesFlag));
+            }
+
+            @Override
+            public BlockState getPreviewState() {
+                return Blocks.AIR.getDefaultState();
+            }
+
+            @Override
+            public boolean allowsHatch(HatchType type) {
+                return (hatchesFlag & (1 << type.getId())) > 0;
             }
         };
     }
@@ -129,6 +157,37 @@ public class MultiblockShapes {
             public Text getErrorMessage() {
                 return new TranslatableText("text.modern_industrialization.shape_error_or", entry1.getErrorMessage(), entry2.getErrorMessage());
             }
+
+            @Override
+            public BlockState getPreviewState() {
+                BlockState state1 = entry1.getPreviewState();
+                if (state1.isAir()) {
+                    return entry2.getPreviewState();
+                } else {
+                    return state1;
+                }
+            }
+
+            @Override
+            public boolean allowsHatch(HatchType type) {
+                return entry1.allowsHatch(type) || entry2.allowsHatch(type);
+            }
         };
+    }
+
+    /**
+     * Converts a BlockPos in a shape to a BlockPos in the world
+     */
+    public static BlockPos toWorldPos(BlockPos shapePos, Direction controllerDirection, BlockPos controllerPos) {
+        BlockPos rotatedPos;
+        if (controllerDirection == NORTH)
+            rotatedPos = shapePos;
+        else if (controllerDirection == SOUTH)
+            rotatedPos = new BlockPos(-shapePos.getX(), shapePos.getY(), -shapePos.getZ());
+        else if (controllerDirection == EAST)
+            rotatedPos = new BlockPos(-shapePos.getZ(), shapePos.getY(), shapePos.getX());
+        else
+            rotatedPos = new BlockPos(shapePos.getZ(), shapePos.getY(), -shapePos.getX());
+        return rotatedPos.add(controllerPos);
     }
 }

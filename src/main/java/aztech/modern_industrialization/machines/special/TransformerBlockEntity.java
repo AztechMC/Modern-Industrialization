@@ -23,8 +23,8 @@
  */
 package aztech.modern_industrialization.machines.special;
 
-import alexiil.mc.lib.attributes.AttributeList;
 import aztech.modern_industrialization.api.energy.CableTier;
+import aztech.modern_industrialization.api.energy.EnergyApi;
 import aztech.modern_industrialization.api.energy.EnergyExtractable;
 import aztech.modern_industrialization.api.energy.EnergyInsertable;
 import aztech.modern_industrialization.machines.impl.MachineBlockEntity;
@@ -51,17 +51,16 @@ public class TransformerBlockEntity extends MachineBlockEntity {
     }
 
     @Override
-    public void addAllAttributes(AttributeList<?> to) {
-        if (to.getTargetSide() == outputDirection) {
-            to.offer(extractable);
-        } else {
-            to.offer(insertable);
-        }
-    }
-
-    @Override
     public void tick() {
         autoExtractEnergy(outputDirection, outputTier);
         markDirty();
+    }
+
+    @Override
+    public void registerApis() {
+        EnergyApi.MOVEABLE.registerForBlockEntities((blockEntity, direction) -> {
+            TransformerBlockEntity be = ((TransformerBlockEntity) blockEntity);
+            return direction == be.outputDirection ? be.extractable : be.insertable;
+        }, getType());
     }
 }

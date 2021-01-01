@@ -25,17 +25,11 @@ package aztech.modern_industrialization.machines.impl;
 
 import static alexiil.mc.lib.attributes.Simulation.ACTION;
 
-import alexiil.mc.lib.attributes.AttributeList;
-import alexiil.mc.lib.attributes.AttributeProviderBlockEntity;
-import alexiil.mc.lib.attributes.SearchOptions;
 import alexiil.mc.lib.attributes.fluid.volume.FluidKey;
 import alexiil.mc.lib.attributes.fluid.volume.FluidKeys;
 import aztech.modern_industrialization.MIFluids;
 import aztech.modern_industrialization.ModernIndustrialization;
-import aztech.modern_industrialization.api.energy.CableTier;
-import aztech.modern_industrialization.api.energy.EnergyAttributes;
-import aztech.modern_industrialization.api.energy.EnergyExtractable;
-import aztech.modern_industrialization.api.energy.EnergyInsertable;
+import aztech.modern_industrialization.api.energy.*;
 import aztech.modern_industrialization.inventory.ConfigurableFluidStack;
 import aztech.modern_industrialization.inventory.ConfigurableInventory;
 import aztech.modern_industrialization.inventory.ConfigurableItemStack;
@@ -66,8 +60,7 @@ import net.minecraft.util.math.Direction;
 import net.minecraft.util.registry.Registry;
 
 // TODO: refactor
-public class MachineBlockEntity extends AbstractMachineBlockEntity
-        implements Tickable, ExtendedScreenHandlerFactory, MachineInventory, AttributeProviderBlockEntity {
+public class MachineBlockEntity extends AbstractMachineBlockEntity implements Tickable, ExtendedScreenHandlerFactory, MachineInventory {
     protected static final FluidKey STEAM_KEY = MIFluids.STEAM.key;
 
     protected List<ConfigurableItemStack> itemStacks;
@@ -90,7 +83,9 @@ public class MachineBlockEntity extends AbstractMachineBlockEntity
     protected int efficiencyTicks;
     protected int maxEfficiencyTicks;
 
-    private final PropertyDelegate propertyDelegate;
+    protected PropertyDelegate propertyDelegate;
+
+    protected EnergyInsertable insertable = null;
 
     public MachineBlockEntity(MachineFactory factory) {
         super(factory.blockEntityType, Direction.NORTH);
@@ -117,52 +112,49 @@ public class MachineBlockEntity extends AbstractMachineBlockEntity
         this.propertyDelegate = new PropertyDelegate() {
             @Override
             public int get(int index) {
-                if (index == 0)
-                    return isActive ? 1 : 0;
-                else if (index == 1)
-                    return usedEnergy;
-                else if (index == 2)
-                    return recipeEnergy;
-                else if (index == 3)
-                    return efficiencyTicks;
-                else if (index == 4)
-                    return maxEfficiencyTicks;
-                else if (index == 5)
-                    return (int) storedEu;
-                else if (index == 6)
-                    return activeRecipe != null && recipeEnergy != 0 ? activeRecipe.eu : 0;
-                else if (index == 7)
-                    return (int) getMaxStoredEu();
-                else if (index == 8)
-                    return recipeMaxEu;
-                else
-                    return -1;
+                return getProperty(index);
             }
 
             @Override
             public void set(int index, int value) {
-                if (index == 0)
-                    isActive = value == 1;
-                else if (index == 1)
-                    usedEnergy = value;
-                else if (index == 2)
-                    recipeEnergy = value;
-                else if (index == 3)
-                    efficiencyTicks = value;
-                else if (index == 4)
-                    maxEfficiencyTicks = value;
-                else if (index == 5)
-                    storedEu = value;
-                else
-                    throw new UnsupportedOperationException();
+                throw new UnsupportedOperationException();
             }
 
             @Override
             public int size() {
-                return 9;
+                return getPropertyCount();
             }
         };
 
+        if (getTier() == MachineTier.LV) {
+            insertable = buildInsertable(CableTier.LV);
+        }
+    }
+
+    protected int getProperty(int index) {
+        if (index == 0)
+            return isActive ? 1 : 0;
+        else if (index == 1)
+            return usedEnergy;
+        else if (index == 2)
+            return recipeEnergy;
+        else if (index == 3)
+            return efficiencyTicks;
+        else if (index == 4)
+            return maxEfficiencyTicks;
+        else if (index == 5)
+            return (int) storedEu;
+        else if (index == 6)
+            return activeRecipe != null && recipeEnergy != 0 ? activeRecipe.eu : 0;
+        else if (index == 7)
+            return (int) getMaxStoredEu();
+        else if (index == 8)
+            return recipeMaxEu;
+        return -1;
+    }
+
+    protected int getPropertyCount() {
+        return 9;
     }
 
     @Override
@@ -295,7 +287,7 @@ public class MachineBlockEntity extends AbstractMachineBlockEntity
     }
 
     private static double getEfficiencyOverclock(int efficiencyTicks) {
-        return Math.pow(2.0, efficiencyTicks / 64.0);
+        return Math.pow(2.0, efficiencyTicks / 32.0);
     }
 
     private static int getRecipeMaxEu(MachineTier tier, int recipeEu, int totalEu, int efficiencyTicks) {
@@ -326,7 +318,10 @@ public class MachineBlockEntity extends AbstractMachineBlockEntity
             if (banRecipe(recipe))
                 continue;
             if (tryStartRecipe(recipe, cachedItemCounts)) {
-                if (activeRecipe != recipe) {
+                // Make sure we recalculate the max efficiency ticks if the recipe changes or if
+                // the efficiency has reached 0 (the latter is to recalculate the efficiency for
+                // 0.3.6 worlds without having to break and replace the machines)
+                if (activeRecipe != recipe || efficiencyTicks == 0) {
                     maxEfficiencyTicks = getRecipeMaxEfficiencyTicks(recipe.eu, recipe.eu * recipe.duration);
                 }
                 activeRecipe = recipe;
@@ -384,11 +379,13 @@ public class MachineBlockEntity extends AbstractMachineBlockEntity
                                        // remove one efficiency tick
             if (efficiencyTicks > 0) {
                 efficiencyTicks--;
-                if (efficiencyTicks == 0 && usedEnergy == 0) { // If the recipe is done, allow starting another one when the efficiency reaches
-                                                               // zero
-                    activeRecipe = null;
-                }
             }
+        }
+
+        // If the recipe is done, allow starting another one when the efficiency reaches
+        // zero
+        if (efficiencyTicks == 0 && usedEnergy == 0) {
+            activeRecipe = null;
         }
 
         if (wasActive != isActive) {
@@ -687,13 +684,6 @@ public class MachineBlockEntity extends AbstractMachineBlockEntity
         return extractFluids;
     }
 
-    @Override
-    public void addAllAttributes(AttributeList<?> to) {
-        if (getTier() != null && getTier().isElectric()) {
-            to.offer(buildInsertable(CableTier.LV)); // TODO: cache this to prevent allocation
-        }
-    }
-
     protected EnergyInsertable buildInsertable(CableTier cableTier) {
         return new EnergyInsertable() {
             @Override
@@ -729,9 +719,9 @@ public class MachineBlockEntity extends AbstractMachineBlockEntity
     }
 
     protected void autoExtractEnergy(Direction direction, CableTier extractTier) {
-        EnergyInsertable insertable = EnergyAttributes.INSERTABLE.getFirstOrNull(world, pos.offset(direction), SearchOptions.inDirection(direction));
-        if (insertable != null && insertable.canInsert(extractTier)) {
-            storedEu = insertable.insertEnergy(storedEu);
+        EnergyMoveable insertable = EnergyApi.MOVEABLE.get(world, pos.offset(direction), direction.getOpposite());
+        if (insertable instanceof EnergyInsertable && ((EnergyInsertable) insertable).canInsert(extractTier)) {
+            storedEu = ((EnergyInsertable) insertable).insertEnergy(storedEu);
         }
     }
 
@@ -835,5 +825,10 @@ public class MachineBlockEntity extends AbstractMachineBlockEntity
                 }
             }
         }
+    }
+
+    // TODO: move this somewhere else!
+    public void registerApis() {
+        EnergyApi.MOVEABLE.registerForBlockEntities((be, direction) -> ((MachineBlockEntity) be).insertable, getType());
     }
 }

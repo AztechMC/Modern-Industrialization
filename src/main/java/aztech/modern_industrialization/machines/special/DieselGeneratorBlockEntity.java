@@ -23,9 +23,9 @@
  */
 package aztech.modern_industrialization.machines.special;
 
-import alexiil.mc.lib.attributes.AttributeList;
 import aztech.modern_industrialization.api.FluidFuelRegistry;
 import aztech.modern_industrialization.api.energy.CableTier;
+import aztech.modern_industrialization.api.energy.EnergyApi;
 import aztech.modern_industrialization.api.energy.EnergyExtractable;
 import aztech.modern_industrialization.inventory.ConfigurableFluidStack;
 import aztech.modern_industrialization.machines.impl.MachineBlockEntity;
@@ -48,13 +48,6 @@ public class DieselGeneratorBlockEntity extends MachineBlockEntity {
     @Override
     protected long getMaxStoredEu() {
         return tier.getMaxInsert() * 10;
-    }
-
-    @Override
-    public void addAllAttributes(AttributeList<?> to) {
-        if (to.getTargetSide() == outputDirection) {
-            to.offer(extractable);
-        }
     }
 
     @Override
@@ -81,10 +74,10 @@ public class DieselGeneratorBlockEntity extends MachineBlockEntity {
             ConfigurableFluidStack stack = fluidStacks.get(0);
             if (stack.getAmount() <= 0)
                 break;
-            int burnTicks = FluidFuelRegistry.getBurnTicks(stack.getFluid());
-            if (burnTicks == 0)
+            int fuelEu = FluidFuelRegistry.getEu(stack.getFluid());
+            if (fuelEu == 0)
                 break;
-            extraStoredEu += 32 * burnTicks;
+            extraStoredEu += fuelEu;
             stack.decrement(1);
         }
 
@@ -103,5 +96,13 @@ public class DieselGeneratorBlockEntity extends MachineBlockEntity {
             sync();
         }
         markDirty();
+    }
+
+    @Override
+    public void registerApis() {
+        EnergyApi.MOVEABLE.registerForBlockEntities((blockEntity, direction) -> {
+            DieselGeneratorBlockEntity be = ((DieselGeneratorBlockEntity) blockEntity);
+            return direction == be.outputDirection ? be.extractable : null;
+        }, getType());
     }
 }

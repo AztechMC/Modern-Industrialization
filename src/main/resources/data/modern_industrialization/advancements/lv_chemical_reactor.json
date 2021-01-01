@@ -1,0 +1,31 @@
+{
+    "criteria": {
+        "checkInv": {
+            "conditions": {
+                "items": [
+                    {
+                        "count": {
+                            "min": 1
+                        },
+                        "item": "modern_industrialization:lv_chemical_reactor"
+                    }
+                ]
+            },
+            "trigger": "minecraft:inventory_changed"
+        }
+    },
+    "display": {
+        "description": {
+            "translate": "advancements.modern_industrialization.lv_chemical_reactor.description"
+        },
+        "frame": "task",
+        "icon": {
+            "item": "modern_industrialization:lv_chemical_reactor"
+        },
+        "title": {
+            "translate": "advancements.modern_industrialization.lv_chemical_reactor"
+        }
+    },
+    "hidden": false,
+    "parent": "modern_industrialization:electric_blast_furnace"
+}

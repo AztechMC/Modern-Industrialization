@@ -32,7 +32,7 @@ public class MIMaterials {
     public static MIMaterial plutonium = new MIMaterial("plutonium", false).addItemType(new String [] { "crushed_dust","dust","ingot","nugget","tiny_dust"}).addBlockType(new String [] { "block","ore" }).setupOreGenerator(0, 0, 64, MIConfig.getConfig().ores.generatePlutonium);
     public static MIMaterial quartz = new MIMaterial("quartz", false).addItemType(new String [] { "crushed_dust","dust","tiny_dust"});
     public static MIMaterial redstone = new MIMaterial("redstone", false).addItemType(new String [] { "crushed_dust","tiny_dust"});
-    public static MIMaterial salt = new MIMaterial("salt", false).addItemType(new String [] { "crushed_dust","dust","tiny_dust"}).addBlockType(new String [] { "block","ore" }).setupOreGenerator(2, 7, 32, MIConfig.getConfig().ores.generateSalt);
+    public static MIMaterial salt = new MIMaterial("salt", false).addItemType(new String [] { "crushed_dust","dust","tiny_dust"}).addBlockType(new String [] { "ore" }).setupOreGenerator(2, 7, 32, MIConfig.getConfig().ores.generateSalt);
     public static MIMaterial silicon = new MIMaterial("silicon", false).addItemType(new String [] { "double_ingot","dust","ingot","nugget","plate","tiny_dust"}).addBlockType(new String [] { "block" });
     public static MIMaterial silver = new MIMaterial("silver", false).addItemType(new String [] { "crushed_dust","curved_plate","double_ingot","dust","ingot","large_plate","nugget","plate","tiny_dust"}).addBlockType(new String [] { "block","ore" }).setupOreGenerator(4, 6, 64, MIConfig.getConfig().ores.generateSilver);
     public static MIMaterial sodium = new MIMaterial("sodium", false).addItemType(new String [] { "dust","ingot","nugget","tiny_dust"}).addBlockType(new String [] { "block" });

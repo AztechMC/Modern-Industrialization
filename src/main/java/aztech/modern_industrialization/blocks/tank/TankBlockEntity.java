@@ -32,17 +32,17 @@ import alexiil.mc.lib.attributes.fluid.volume.FluidKeys;
 import alexiil.mc.lib.attributes.fluid.volume.FluidVolume;
 import alexiil.mc.lib.attributes.misc.LimitedConsumer;
 import alexiil.mc.lib.attributes.misc.Reference;
+import aztech.modern_industrialization.api.FastBlockEntity;
 import aztech.modern_industrialization.util.NbtHelper;
 import java.math.RoundingMode;
 import net.fabricmc.fabric.api.block.entity.BlockEntityClientSerializable;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 
-public class TankBlockEntity extends BlockEntity implements FluidTransferable, BlockEntityClientSerializable {
+public class TankBlockEntity extends FastBlockEntity implements FluidTransferable, BlockEntityClientSerializable {
     FluidKey fluid = FluidKeys.EMPTY;
     int amount;
     int capacity;

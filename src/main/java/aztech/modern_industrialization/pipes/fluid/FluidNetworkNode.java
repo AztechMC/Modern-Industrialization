@@ -57,6 +57,10 @@ public class FluidNetworkNode extends PipeNetworkNode {
             ModernIndustrialization.LOGGER.warn("Fluid amount > nodeCapacity, deleting some fluid!");
             amount = network.nodeCapacity;
         }
+        if (amount > 0 && data.fluid.isEmpty()) {
+            ModernIndustrialization.LOGGER.warn("Amount > 0 but fluid is empty, deleting some fluid!");
+            amount = 0;
+        }
         for (FluidConnection connection : connections) { // TODO: limit insert and extract rate
             // Insert
             if (amount > 0 && connection.canInsert()) {

@@ -129,7 +129,7 @@ public class JetpackItem extends ArmorItem implements Wearable, AttributeProvide
             int amount = FluidFuelItemHelper.getAmount(stack);
             if (MIKeyMap.isHoldingUp(player) && amount > 0) {
                 showParticles = true;
-                double maxSpeed = Math.sqrt(FluidFuelRegistry.getBurnTicks(FluidFuelItemHelper.getFluid(stack))) / 5;
+                double maxSpeed = Math.sqrt(FluidFuelRegistry.getEu(FluidFuelItemHelper.getFluid(stack))) / 10;
                 double acceleration = 0.25;
                 FluidFuelItemHelper.setAmount(stack, amount - 1);
                 Vec3d v = player.getVelocity();

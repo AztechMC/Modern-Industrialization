@@ -23,8 +23,8 @@
  */
 package aztech.modern_industrialization.machines.special;
 
-import alexiil.mc.lib.attributes.AttributeList;
 import aztech.modern_industrialization.api.energy.CableTier;
+import aztech.modern_industrialization.api.energy.EnergyApi;
 import aztech.modern_industrialization.api.energy.EnergyExtractable;
 import aztech.modern_industrialization.inventory.ConfigurableFluidStack;
 import aztech.modern_industrialization.machines.impl.MachineBlockEntity;
@@ -45,13 +45,6 @@ public final class SteamTurbineBlockEntity extends MachineBlockEntity {
     @Override
     protected long getMaxStoredEu() {
         return tier.getMaxInsert() * 10;
-    }
-
-    @Override
-    public void addAllAttributes(AttributeList<?> to) {
-        if (to.getTargetSide() == outputDirection) {
-            to.offer(extractable);
-        }
     }
 
     @Override
@@ -76,5 +69,13 @@ public final class SteamTurbineBlockEntity extends MachineBlockEntity {
             sync();
         }
         markDirty();
+    }
+
+    @Override
+    public void registerApis() {
+        EnergyApi.MOVEABLE.registerForBlockEntities((blockEntity, direction) -> {
+            SteamTurbineBlockEntity be = ((SteamTurbineBlockEntity) blockEntity);
+            return direction == be.outputDirection ? be.extractable : null;
+        }, getType());
     }
 }

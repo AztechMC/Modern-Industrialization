@@ -1,0 +1,31 @@
+{
+    "criteria": {
+        "checkInv": {
+            "conditions": {
+                "items": [
+                    {
+                        "count": {
+                            "min": 1
+                        },
+                        "item": "modern_industrialization:quarry"
+                    }
+                ]
+            },
+            "trigger": "minecraft:inventory_changed"
+        }
+    },
+    "display": {
+        "description": {
+            "translate": "advancements.modern_industrialization.quarry.description"
+        },
+        "frame": "goal",
+        "icon": {
+            "item": "modern_industrialization:quarry"
+        },
+        "title": {
+            "translate": "advancements.modern_industrialization.quarry"
+        }
+    },
+    "hidden": false,
+    "parent": "modern_industrialization:steel_machine_casing"
+}

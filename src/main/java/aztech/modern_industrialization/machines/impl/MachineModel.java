@@ -114,11 +114,20 @@ public class MachineModel extends CustomBlockModel {
     }
 
     @Override
-    public void emitBlockQuads(BlockRenderView blockRenderView, BlockState blockState, BlockPos blockPos, Supplier<Random> supplier,
+    public boolean useAmbientOcclusion() {
+        return true;
+    }
+
+    @Override
+    public void emitBlockQuads(BlockRenderView blockRenderView, BlockState state, BlockPos pos, Supplier<Random> supplier,
             RenderContext renderContext) {
         RenderAttachedBlockView view = (RenderAttachedBlockView) blockRenderView;
         AbstractMachineBlockEntity.AttachmentData attachmentData = (AbstractMachineBlockEntity.AttachmentData) view
-                .getBlockEntityRenderAttachment(blockPos);
+                .getBlockEntityRenderAttachment(pos);
+        if (attachmentData == null) {
+            throw new NullPointerException(
+                    String.format("Null attachment for machine rendering! This is not supposed to happen!\nPos: %s\nState: %s", pos, state));
+        }
         // Render base mesh
         renderContext.meshConsumer().accept(attachmentData.casingOverride == null ? mesh : attachmentData.casingOverride.mesh);
         // Render overlays

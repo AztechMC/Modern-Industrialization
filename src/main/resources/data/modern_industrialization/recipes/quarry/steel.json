@@ -19,6 +19,11 @@
       "probability": 0.005
     },
     {
+      "item": "minecraft:lapis_ore",
+      "amount": 10,
+      "probability": 0.01
+    },
+    {
       "item": "modern_industrialization:lead_ore",
       "amount": 5,
       "probability": 0.03

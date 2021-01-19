@@ -1,0 +1,13 @@
+{
+  "type": "modern_industrialization:electrolyzer",
+  "eu": 8,
+  "duration": 400,
+  "item_inputs": {
+    "item": "modern_industrialization:fluorite_dust",
+    "amount": 2
+  },
+  "fluid_outputs": {
+    "fluid": "modern_industrialization:fluorine",
+    "amount": 250
+  }
+}

@@ -30,6 +30,8 @@ public class MIFluids {
     public static final CraftingFluid LIGHT_FUEL = new CraftingFluid("light_fuel", 0xffffe946);
     public static final CraftingFluid MANGANESE_SULFURIC_SOLUTION = new CraftingFluid("manganese_sulfuric_solution", 0xffb96c3f);
     public static final CraftingFluid NAPHTA = new CraftingFluid("naphta", 0xffa5a25e);
+    public static final CraftingFluid FLUORINE = new CraftingFluid("fluorine", 0xffDBD576);
+    public static final CraftingFluid BERYLLIUM_CHLORIDE = new CraftingFluid("beryllium_chloride", 0xff85B354);
     public static final CraftingFluid OXYGEN = new CraftingFluid("oxygen", 0xff3296f2);
     public static final CraftingFluid RAW_SYNTHETIC_OIL = new CraftingFluid("raw_synthetic_oil", 0xff474740);
     public static final CraftingFluid RAW_RUBBER = new CraftingFluid("raw_rubber", 0xff514a4a);
@@ -54,6 +56,8 @@ public class MIFluids {
             LIGHT_FUEL,
             MANGANESE_SULFURIC_SOLUTION,
             NAPHTA,
+            FLUORINE,
+            BERYLLIUM_CHLORIDE,
             OXYGEN,
             RAW_SYNTHETIC_OIL,
             RAW_RUBBER,

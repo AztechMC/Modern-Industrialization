@@ -1,0 +1,20 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "yxx",
+        "xxx",
+        "xxx"
+    ],
+    "result": {
+        "item": "modern_industrialization:emerald_dust",
+        "count": 1
+    },
+    "key": {
+        "y": {
+            "item": "modern_industrialization:emerald_tiny_dust"
+        },
+        "x": {
+            "item": "modern_industrialization:emerald_tiny_dust"
+        }
+    }
+}

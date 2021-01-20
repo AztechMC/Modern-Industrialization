@@ -263,10 +263,11 @@ public class MIMachines {
                 }
             }
         }
-        
+
         SINTERING_FURNACE_SHAPE = new MultiblockShape();
         MultiblockShape.Entry heatproofCasing = MultiblockShapes.block(MIBlock.HEATPROOF_MACHINE_CASING);
-        MultiblockShape.Entry optionalSinteringFurnaceHatch = MultiblockShapes.or(MultiblockShapes.block(MIBlock.CLEAN_STAINLESS_STEEL_MACHINE_CASING),
+        MultiblockShape.Entry optionalSinteringFurnaceHatch = MultiblockShapes.or(
+                MultiblockShapes.block(MIBlock.CLEAN_STAINLESS_STEEL_MACHINE_CASING),
                 MultiblockShapes.hatch(HATCH_FLAG_ITEM_INPUT | HATCH_FLAG_ITEM_OUTPUT | HATCH_FLAG_ENERGY_INPUT));
 
         for (int x = -1; x <= 1; ++x) {
@@ -535,12 +536,12 @@ public class MIMachines {
                         .setLiquidOutputSlotPosition(122, 35, 1, 1).setupProgressBar(76, 35, 22, 15, true).setupBackground("steam_furnace.png")
                         .setupEfficiencyBar(0, 166, 38, 62, 100, 2).setupOverlays("electric_blast_furnace", true, false, false)
                         .setupCasing("heatproof");
-        
-        new MachineFactory("sintering_furnace", null,
-                f -> new MultiblockMachineBlockEntity(f, Collections.singletonList(SINTERING_FURNACE_SHAPE)), RECIPE_SINTERING_FURNACE, 2, 2, 0, 0)
-                        .setInputSlotPosition(56, 35, 1, 2).setOutputSlotPosition(102, 35, 1, 2).setupProgressBar(76, 35, 22, 15, true)
-                        .setupProgressBar(76, 35, 22, 15, true).setupBackground("steam_furnace.png").setupEfficiencyBar(0, 166, 38, 62, 100, 2)
-                        .setupOverlays("electric_blast_furnace", true, false, false).setupCasing("clean_stainless_steel");
+
+        new MachineFactory("sintering_furnace", null, f -> new MultiblockMachineBlockEntity(f, Collections.singletonList(SINTERING_FURNACE_SHAPE)),
+                RECIPE_SINTERING_FURNACE, 2, 2, 0, 0).setInputSlotPosition(56, 35, 1, 2).setOutputSlotPosition(102, 35, 1, 2)
+                        .setupProgressBar(76, 35, 22, 15, true).setupProgressBar(76, 35, 22, 15, true).setupBackground("steam_furnace.png")
+                        .setupEfficiencyBar(0, 166, 38, 62, 100, 2).setupOverlays("electric_blast_furnace", true, false, false)
+                        .setupCasing("clean_stainless_steel");
 
         new MachineFactory("oil_drilling_rig", UNLIMITED, f -> new MultiblockMachineBlockEntity(f, Collections.singletonList(OIL_DRILLING_RIG_SHAPE)),
                 RECIPE_OIL_DRILLING_RIG, 1, 0, 0, 1).setInputSlotPosition(56, 35, 1, 1).setLiquidOutputSlotPosition(102, 35, 1, 1)

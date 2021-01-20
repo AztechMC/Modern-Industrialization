@@ -8,6 +8,7 @@ public class MIOreGenerators {
     public boolean generateAntimony = true;
     public boolean generateBauxite = true;
     public boolean generateCopper = true;
+    public boolean generateFluorite = true;
     public boolean generateLead = true;
     public boolean generateLigniteCoal = true;
     public boolean generateNickel = true;

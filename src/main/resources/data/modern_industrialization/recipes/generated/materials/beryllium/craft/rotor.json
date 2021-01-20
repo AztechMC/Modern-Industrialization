@@ -1,0 +1,23 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "bBb",
+        "BRB",
+        "bBb"
+    ],
+    "result": {
+        "item": "modern_industrialization:beryllium_rotor",
+        "count": 1
+    },
+    "key": {
+        "b": {
+            "item": "modern_industrialization:beryllium_bolt"
+        },
+        "B": {
+            "item": "modern_industrialization:beryllium_blade"
+        },
+        "R": {
+            "item": "modern_industrialization:beryllium_ring"
+        }
+    }
+}

@@ -816,6 +816,51 @@ gen(
     '#FFE6E6', 'shiny', smelting=False, macerator_disable={'dust'}
 )
 
+gen(
+    file,
+    Material('emerald', (PURE_NON_METAL), set(), overrides={
+        "ore": "minecraft:emerald_ore",
+        "main": "minecraft:emerald"
+    }),
+    '#3FF385', 'shiny', smelting=False
+)
+
+gen(
+    file,
+    Material('fluorite', (PURE_NON_METAL), ORE_ONLY),
+    '#AF69CF', 'shiny', smelting=False
+)
+
+gen(
+    file,
+    Material('sodium_fluorosilicate', (PURE_NON_METAL - {'crushed_dust'}), set()),
+    '#D1EDE5', 'dull', smelting=False
+)
+
+gen(
+    file,
+    Material('sodium_fluoroberyllate', {'crushed_dust'}, set()),
+    '#77B889', 'dull', smelting=False
+)
+
+gen(
+    file,
+    Material('beryllium_hydroxide', {'dust'}, set()),
+    '#4E875E', 'dull', smelting=False
+)
+
+gen(
+    file,
+    Material('beryllium_oxide', {'dust'}, set()),
+    '#54B36E', 'dull', smelting=False
+)
+
+gen(
+    file,
+    Material('beryllium', ITEM_ALL_NO_ORE, BLOCK_ONLY),
+    '#64B464', 'shiny', smelting=False
+)
+
 
 file.write("\n".join(sorted(material_lines)))
 file.write("\n")

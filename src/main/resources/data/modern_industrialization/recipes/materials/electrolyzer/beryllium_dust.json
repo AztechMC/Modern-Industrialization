@@ -1,0 +1,13 @@
+{
+  "type": "modern_industrialization:electrolyzer",
+  "eu": 32,
+  "duration": 400,
+  "fluid_inputs": {
+    "fluid": "modern_industrialization:beryllium_chloride",
+    "amount": 1250
+  },
+  "item_outputs": {
+    "item": "modern_industrialization:beryllium_tiny_dust",
+    "amount": 4
+  }
+}

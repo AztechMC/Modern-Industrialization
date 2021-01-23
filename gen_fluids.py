@@ -35,9 +35,6 @@ def gen_name(fluid):
 java_class="""
 package aztech.modern_industrialization;
 
-import alexiil.mc.lib.attributes.fluid.volume.FluidKey;
-import alexiil.mc.lib.attributes.fluid.volume.FluidKeys;
-import alexiil.mc.lib.attributes.fluid.volume.SimpleFluidKey;
 import aztech.modern_industrialization.fluid.CraftingFluid;
 import net.devtech.arrp.json.models.JModel;
 import net.devtech.arrp.json.models.JTextures;
@@ -93,6 +90,7 @@ gen_fluid("acrylic_acid", "#1bdeb5")
 gen_fluid("acrylic_glue", "#1bde54")
 gen_fluid("air", "#76c7f9", True)
 gen_fluid("benzene", "#f0d179")
+gen_fluid("beryllium_chloride", "#85B354")
 gen_fluid("boosted_diesel", "#fd9b0a")
 gen_fluid("butadiene", "#d0bd1a")
 gen_fluid("caprolactam", "#795450")
@@ -104,6 +102,7 @@ gen_fluid("diethyl_ether", "#8ec837")
 gen_fluid("ethanol", "#608936")
 gen_fluid("ethylbenzene", "#c4fa57")
 gen_fluid("ethylene", "#287671")
+gen_fluid("fluorine", "#DBD576", True)
 gen_fluid("heavy_fuel", "#ffdb46")
 gen_fluid("hydrochloric_acid", "#9ebd06")
 gen_fluid("hydrogen", "#1b4acc", True)
@@ -164,14 +163,6 @@ java_class += """\
     static {
         for(CraftingFluid fluid : FLUIDS) {
             registerFluid(fluid);
-    
-            if(FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
-                Text name = fluid.getDefaultState().getBlockState().getBlock().getName();
-                fluid.key = new SimpleFluidKey(new FluidKey.FluidKeyBuilder(fluid).setName(name).setRenderColor(fluid.color));
-            } else {
-                fluid.key = FluidKeys.get(fluid);
-            }
-            FluidKeys.put(fluid, fluid.key);
         }
     }
     

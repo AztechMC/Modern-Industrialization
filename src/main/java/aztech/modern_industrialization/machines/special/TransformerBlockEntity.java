@@ -57,7 +57,7 @@ public class TransformerBlockEntity extends MachineBlockEntity {
     }
 
     @Override
-    public void registerApis() {
+    public void registerAdditionalApis() {
         EnergyApi.MOVEABLE.registerForBlockEntities((blockEntity, direction) -> {
             TransformerBlockEntity be = ((TransformerBlockEntity) blockEntity);
             return direction == be.outputDirection ? be.extractable : be.insertable;

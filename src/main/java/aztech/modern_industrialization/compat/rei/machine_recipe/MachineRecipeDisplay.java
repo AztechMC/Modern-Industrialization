@@ -32,6 +32,8 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import aztech.modern_industrialization.util.FluidTextHelper;
 import me.shedaniel.rei.api.EntryStack;
 import me.shedaniel.rei.api.RecipeDisplay;
 import me.shedaniel.rei.api.fractions.Fraction;
@@ -47,8 +49,10 @@ public class MachineRecipeDisplay implements RecipeDisplay {
     final MachineRecipe recipe;
     private final Identifier category;
     private static final DecimalFormat PROBABILITY_FORMAT = new DecimalFormat("#.#");
-    private static Function<EntryStack, String> FLUID_TOOLTIP = stack -> I18n.translate("text.modern_industrialization.fluid_slot_quantity",
-            stack.getAccurateAmount().multiply(Fraction.ofWhole(1000)).intValue());
+    private static final Function<EntryStack, String> FLUID_TOOLTIP = stack -> {
+        long amount = stack.getAccurateAmount().multiply(Fraction.ofWhole(81000)).longValue();
+        return I18n.translate("text.modern_industrialization.fluid_slot_quantity", FluidTextHelper.getUnicodeMillibuckets(amount, false));
+    };
 
     public MachineRecipeDisplay(MachineRecipeType type, MachineRecipe recipe) {
         this.recipe = recipe;
@@ -61,8 +65,8 @@ public class MachineRecipeDisplay implements RecipeDisplay {
                         new TranslatableText("text.modern_industrialization.probability", PROBABILITY_FORMAT.format(probability * 100)));
     }
 
-    private static EntryStack createFluidEntryStack(Fluid fluid, int amount) {
-        return EntryStack.create(fluid, Fraction.of(amount, 1000)).addSetting(EntryStack.Settings.Fluid.AMOUNT_TOOLTIP, FLUID_TOOLTIP);
+    private static EntryStack createFluidEntryStack(Fluid fluid, long amount) {
+        return EntryStack.create(fluid, Fraction.of(amount, 81000)).addSetting(EntryStack.Settings.Fluid.AMOUNT_TOOLTIP, FLUID_TOOLTIP);
     }
 
     public Stream<List<EntryStack>> getItemInputs() {

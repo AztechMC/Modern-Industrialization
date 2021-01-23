@@ -23,9 +23,7 @@
  */
 package aztech.modern_industrialization.nuclear;
 
-import alexiil.mc.lib.attributes.fluid.volume.FluidKeys;
-import aztech.modern_industrialization.MIFluids;
-import aztech.modern_industrialization.items.LockableFluidItem;
+import aztech.modern_industrialization.items.FluidFuelItemHelper;
 import java.util.Random;
 import net.minecraft.item.ItemStack;
 
@@ -43,26 +41,23 @@ public class NuclearCoolant extends MINuclearItem {
     public void tick(ItemStack is, NuclearReactorBlockEntity nuclearReactor, double neutronPulse, Random rand) {
         NuclearFluidCoolant coolant = getCoolant(is);
         if (coolant != null) {
-            int extractMax = nuclearReactor.getMaxFluidExtraction(coolant.fluid);
-            int insertMax = nuclearReactor.getMaxFluidInsertion(coolant.fluidResult);
-            int s = Math.min(extractMax, insertMax);
-            int u = Math.min(s, 64 * multiplier);
-            int v = Math.min(u, getHeat(is) / coolant.heatConsumed);
-            setHeat(is, getHeat(is) - v * coolant.heatConsumed);
-            int r = nuclearReactor.extractFluidFromInputHatch(FluidKeys.WATER, v);
-            if (r != 0) {
-                throw new IllegalStateException("Remaining extracted fluid : " + r);
-            }
-            r = nuclearReactor.insertFluidInOutputHatch(MIFluids.STEAM.key, v);
-            if (r != 0) {
-                throw new IllegalStateException("Remaining inserted fluid : " + r);
-            }
+            /*
+             * FIXME int extractMax = nuclearReactor.getMaxFluidExtraction(coolant.fluid);
+             * int insertMax = nuclearReactor.getMaxFluidInsertion(coolant.fluidResult); int
+             * s = Math.min(extractMax, insertMax); int u = Math.min(s, 64 * multiplier);
+             * int v = Math.min(u, getHeat(is) / coolant.heatConsumed); setHeat(is,
+             * getHeat(is) - v * coolant.heatConsumed); int r =
+             * nuclearReactor.extractFluidFromInputHatch(FluidKeys.WATER, v); if (r != 0) {
+             * throw new IllegalStateException("Remaining extracted fluid : " + r); } r =
+             * nuclearReactor.insertFluidInOutputHatch(MIFluids.STEAM.key, v); if (r != 0) {
+             * throw new IllegalStateException("Remaining inserted fluid : " + r); }
+             */
         }
     }
 
     public NuclearFluidCoolant getCoolant(ItemStack is) {
         for (NuclearFluidCoolant coolant : NuclearFluidCoolant.values()) {
-            if (coolant.fluid == LockableFluidItem.getFluid(is)) {
+            if (coolant.fluid == FluidFuelItemHelper.getFluid(is)) {
                 return coolant;
             }
         }

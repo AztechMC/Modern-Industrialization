@@ -26,7 +26,6 @@ package aztech.modern_industrialization.machines.special;
 import static aztech.modern_industrialization.machines.impl.MachineTier.LV;
 import static aztech.modern_industrialization.machines.impl.MachineTier.STEEL;
 
-import alexiil.mc.lib.attributes.fluid.volume.FluidKeys;
 import aztech.modern_industrialization.inventory.ConfigurableFluidStack;
 import aztech.modern_industrialization.machines.impl.MachineBlockEntity;
 import aztech.modern_industrialization.machines.impl.MachineFactory;
@@ -43,7 +42,8 @@ public class WaterPumpBlockEntity extends MachineBlockEntity {
     public WaterPumpBlockEntity(MachineFactory factory) {
         super(factory);
 
-        fluidStacks.set(fluidStacks.size() - 1, ConfigurableFluidStack.lockedOutputSlot(factory.getOutputBucketCapacity() * 1000, FluidKeys.WATER));
+        inventory.fluidStacks.set(inventory.fluidStacks.size() - 1,
+                ConfigurableFluidStack.lockedOutputSlot(factory.getOutputBucketCapacity() * 81000, Fluids.WATER));
         usedEnergy = 0;
         recipeEnergy = 100;
     }
@@ -56,15 +56,14 @@ public class WaterPumpBlockEntity extends MachineBlockEntity {
         if (world.isClient)
             return;
 
-        ConfigurableFluidStack waterStack = fluidStacks.get(fluidStacks.size() - 1);
-        if (waterStack.getRemainingSpace() < 1000 / 8) {
+        ConfigurableFluidStack waterStack = inventory.fluidStacks.get(inventory.fluidStacks.size() - 1);
+        if (waterStack.getRemainingSpace() < 81000 / 8) {
             if (isActive) {
                 isActive = false;
                 sync();
                 markDirty();
             }
         } else {
-
             int eu = getEu(1, false);
             usedEnergy += eu;
             if (eu > 0) {
@@ -99,14 +98,14 @@ public class WaterPumpBlockEntity extends MachineBlockEntity {
                 } else if (factory.tier == LV) {
                     factorTier = 16;
                 }
-                waterStack.increment(Math.min(factorTier * providedBucketEights * 1000 / 8, waterStack.getRemainingSpace()));
+                waterStack.increment(Math.min(factorTier * providedBucketEights * 81000 / 8, waterStack.getRemainingSpace()));
                 usedEnergy = 0;
             }
             markDirty();
         }
 
         for (Direction direction : Direction.values()) {
-            autoExtractFluids(world, pos, direction);
+            inventory.autoExtractFluids(world, pos, direction);
         }
     }
 

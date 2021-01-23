@@ -31,6 +31,7 @@ import aztech.modern_industrialization.blocks.forgehammer.ForgeHammerScreenHandl
 import aztech.modern_industrialization.blocks.tank.MITanks;
 import aztech.modern_industrialization.inventory.ConfigurableInventoryPacketHandlers;
 import aztech.modern_industrialization.inventory.ConfigurableInventoryPackets;
+import aztech.modern_industrialization.items.FluidFuelItemHelper;
 import aztech.modern_industrialization.items.armor.ArmorPackets;
 import aztech.modern_industrialization.items.armor.JetpackItem;
 import aztech.modern_industrialization.items.armor.MIKeyMap;
@@ -64,6 +65,8 @@ import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
 import net.fabricmc.fabric.api.registry.FuelRegistry;
 import net.fabricmc.fabric.api.screenhandler.v1.ScreenHandlerRegistry;
 import net.fabricmc.fabric.api.tag.TagRegistry;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidApi;
+import net.fabricmc.fabric.api.transfer.v1.item.ItemApi;
 import net.minecraft.block.Block;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
@@ -119,7 +122,6 @@ public class ModernIndustrialization implements ModInitializer {
         MITags.setup();
         setupItems();
         setupBlocks();
-        setupBlockEntities();
         MIFluids.setupFluids();
         setupMaterial();
         MITanks.setup();
@@ -162,6 +164,9 @@ public class ModernIndustrialization implements ModInitializer {
         registerItem(ITEM_JETPACK, "jetpack");
         registerItem(ITEM_DIESEL_CHAINSAW, "diesel_chainsaw", true);
         registerItem(ITEM_DIESEL_DRILL, "diesel_mining_drill", true);
+
+        FluidApi.ITEM.register((key, ctx) -> new FluidFuelItemHelper.ItemStorage(DieselToolItem.CAPACITY, key, ctx), ITEM_DIESEL_CHAINSAW, ITEM_DIESEL_DRILL);
+        FluidApi.ITEM.register((key, ctx) -> new FluidFuelItemHelper.ItemStorage(JetpackItem.CAPACITY, key, ctx), ITEM_JETPACK);
     }
 
     private void setupBlocks() {
@@ -170,13 +175,10 @@ public class ModernIndustrialization implements ModInitializer {
         for (MIBlock block : MIBlock.blocks.values()) {
             registerBlock(block, block.getItem(), block.getId());
         }
-    }
 
-    private void setupBlockEntities() {
-        // BLOCK_ENTITY_STEAM_BOILER = Registry.register(Registry.BLOCK_ENTITY_TYPE, new
-        // Identifier(MOD_ID, "steam_boiler"),
-        // BlockEntityType.Builder.create(SteamBoilerBlockEntity::new,
-        // BLOCK_STEAM_BOILER).build(null));
+        ItemApi.SIDED.registerForBlocks((world, pos, state, direction) -> TrashCanBlock.trashStorage(), TRASH_CAN);
+        FluidApi.SIDED.registerForBlocks((world, pos, state, direction) -> TrashCanBlock.trashStorage(), TRASH_CAN);
+        FluidApi.ITEM.register((key, ctx) -> TrashCanBlock.trashStorage(), ITEM_TRASH_CAN);
     }
 
     private void setupMachines() {
@@ -285,13 +287,12 @@ public class ModernIndustrialization implements ModInitializer {
         FuelRegistry.INSTANCE.add(MIMaterials.lignite_coal.getItem("tiny_dust"), 160);
         FuelRegistry.INSTANCE.add(MIItem.ITEM_CARBON_DUST, 6400);
 
-        FluidFuelRegistry.register(MIFluids.CRUDE_OIL.key, 8);
-        FluidFuelRegistry.register(MIFluids.DIESEL.key, 200);
-        FluidFuelRegistry.register(MIFluids.HEAVY_FUEL.key, 120);
-        FluidFuelRegistry.register(MIFluids.LIGHT_FUEL.key, 80);
-        FluidFuelRegistry.register(MIFluids.NAPHTHA.key, 40);
-        FluidFuelRegistry.register(MIFluids.SYNTHETIC_OIL.key, 8);
-        FluidFuelRegistry.register(MIFluids.BOOSTED_DIESEL.key, 400);
-
+        FluidFuelRegistry.register(MIFluids.CRUDE_OIL, 8);
+        FluidFuelRegistry.register(MIFluids.DIESEL, 200);
+        FluidFuelRegistry.register(MIFluids.HEAVY_FUEL, 120);
+        FluidFuelRegistry.register(MIFluids.LIGHT_FUEL, 80);
+        FluidFuelRegistry.register(MIFluids.NAPHTHA, 40);
+        FluidFuelRegistry.register(MIFluids.SYNTHETIC_OIL, 8);
+        FluidFuelRegistry.register(MIFluids.BOOSTED_DIESEL, 400);
     }
 }

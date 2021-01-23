@@ -23,19 +23,19 @@
  */
 package aztech.modern_industrialization.inventory;
 
-import alexiil.mc.lib.attributes.fluid.FluidAttributes;
-import alexiil.mc.lib.attributes.fluid.FluidExtractable;
-import alexiil.mc.lib.attributes.fluid.FluidInsertable;
-import alexiil.mc.lib.attributes.fluid.amount.FluidAmount;
-import alexiil.mc.lib.attributes.fluid.volume.FluidVolume;
-import alexiil.mc.lib.attributes.misc.LimitedConsumer;
-import alexiil.mc.lib.attributes.misc.Reference;
 import io.netty.buffer.Unpooled;
-import java.math.RoundingMode;
 import java.util.List;
+
+import net.fabricmc.fabric.api.lookup.v1.item.ItemKey;
 import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
+import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidApi;
+import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
+import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.fluid.Fluid;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.PacketByteBuf;
@@ -53,18 +53,18 @@ public abstract class ConfigurableScreenHandler extends ScreenHandler {
     private static final int PLAYER_SLOTS = 36;
     public boolean lockingMode = false;
     protected PlayerInventory playerInventory;
-    protected ConfigurableInventory inventory;
+    protected MIInventory inventory;
     private List<ConfigurableItemStack> trackedItems;
     private List<ConfigurableFluidStack> trackedFluids;
 
-    protected ConfigurableScreenHandler(ScreenHandlerType<?> type, int syncId, PlayerInventory playerInventory, ConfigurableInventory inventory) {
+    protected ConfigurableScreenHandler(ScreenHandlerType<?> type, int syncId, PlayerInventory playerInventory, MIInventory inventory) {
         super(type, syncId);
         this.playerInventory = playerInventory;
         this.inventory = inventory;
 
         if (playerInventory.player instanceof ServerPlayerEntity) {
-            trackedItems = ConfigurableItemStack.copyList(inventory.getItemStacks());
-            trackedFluids = ConfigurableFluidStack.copyList(inventory.getFluidStacks());
+            trackedItems = ConfigurableItemStack.copyList(inventory.itemStacks);
+            trackedFluids = ConfigurableFluidStack.copyList(inventory.fluidStacks);
         }
     }
 
@@ -73,8 +73,8 @@ public abstract class ConfigurableScreenHandler extends ScreenHandler {
         if (playerInventory.player instanceof ServerPlayerEntity) {
             ServerPlayerEntity player = (ServerPlayerEntity) playerInventory.player;
             for (int i = 0; i < trackedItems.size(); i++) {
-                if (!trackedItems.get(i).equals(inventory.getItemStacks().get(i))) {
-                    trackedItems.set(i, new ConfigurableItemStack(inventory.getItemStacks().get(i)));
+                if (!trackedItems.get(i).equals(inventory.itemStacks.get(i))) {
+                    trackedItems.set(i, new ConfigurableItemStack(inventory.itemStacks.get(i)));
                     PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
                     buf.writeInt(syncId);
                     buf.writeInt(i);
@@ -83,8 +83,8 @@ public abstract class ConfigurableScreenHandler extends ScreenHandler {
                 }
             }
             for (int i = 0; i < trackedFluids.size(); i++) {
-                if (!trackedFluids.get(i).equals(inventory.getFluidStacks().get(i))) {
-                    trackedFluids.set(i, new ConfigurableFluidStack(inventory.getFluidStacks().get(i)));
+                if (!trackedFluids.get(i).equals(inventory.fluidStacks.get(i))) {
+                    trackedFluids.set(i, new ConfigurableFluidStack(inventory.fluidStacks.get(i)));
                     PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
                     buf.writeInt(syncId);
                     buf.writeInt(i);
@@ -109,45 +109,37 @@ public abstract class ConfigurableScreenHandler extends ScreenHandler {
                 if (lockingMode) {
                     fluidStack.togglePlayerLock();
                 } else {
-                    Reference<ItemStack> heldStackRef = new Reference<ItemStack>() {
-                        @Override
-                        public ItemStack get() {
-                            return playerInventory.getCursorStack();
+                    Storage<Fluid> io = FluidApi.ITEM.get(ItemKey.of(playerEntity.inventory.getCursorStack()), ContainerItemContext.ofPlayerCursor(playerEntity));
+                    if (io != null) {
+                        // Extract first
+                        long previousAmount = fluidStack.getAmount();
+                        io.forEach(view -> {
+                            Fluid fluid = view.resource();
+                            if (fluidSlot.canInsertFluid(fluid)) {
+                                try (Transaction tx = Transaction.openOuter()) {
+                                    long extracted = view.extractionFunction().apply(fluid, fluidStack.getRemainingSpace(), 81000, tx);
+                                    if (extracted > 0) {
+                                        tx.commit();
+                                        fluidStack.increment(extracted);
+                                        fluidStack.setFluid(fluid);
+                                    }
+                                }
+                            }
+                            return false;
+                        });
+                        if (previousAmount != fluidStack.getAmount()) {
+                            // TODO: markDirty?
+                            return ItemStack.EMPTY;
                         }
 
-                        @Override
-                        public boolean set(ItemStack value) {
-                            playerInventory.setCursorStack(value);
-                            return true;
-                        }
-
-                        @Override
-                        public boolean isValid(ItemStack value) {
-                            return true;
-                        }
-                    };
-                    LimitedConsumer<ItemStack> excessConsumer = (itemStack, simulation) -> {
-                        if (simulation.isAction()) {
-                            playerInventory.offerOrDrop(playerEntity.world, itemStack);
-                        }
-                        return true;
-                    };
-                    // Try to extract from held item first
-                    FluidExtractable extractable = FluidAttributes.EXTRACTABLE.get(heldStackRef, excessConsumer);
-                    FluidVolume extracted = extractable.extract(fluidSlot::canInsertFluid, FluidAmount.of(fluidStack.getRemainingSpace(), 1000));
-                    int amount = extracted.amount().asInt(1000, RoundingMode.FLOOR);
-                    if (amount > 0) {
-                        fluidStack.increment(amount);
-                        fluidStack.setFluid(extracted.getFluidKey());
-                        inventory.markDirty();
-                    } else {
-                        // Otherwise insert into held item
-                        FluidInsertable insertable = FluidAttributes.INSERTABLE.get(heldStackRef, excessConsumer);
-                        if (fluidSlot.canExtractFluid(fluidStack.getFluid())) {
-                            int leftover = insertable.insert(fluidStack.getFluid().withAmount(FluidAmount.of(fluidStack.getAmount(), 1000))).amount()
-                                    .asInt(1000, RoundingMode.FLOOR);
-                            fluidStack.setAmount(leftover);
-                            inventory.markDirty();
+                        // Otherwise insert
+                        Fluid fluid = fluidStack.getFluid();
+                        if (fluidSlot.canExtractFluid(fluid)) {
+                            try (Transaction tx = Transaction.openOuter()) {
+                                fluidStack.decrement(io.insertionFunction().apply(fluid, fluidStack.getAmount(), 81000, tx));
+                                // TODO: markDirty?
+                                return ItemStack.EMPTY;
+                            }
                         }
                     }
                 }
@@ -160,7 +152,7 @@ public abstract class ConfigurableScreenHandler extends ScreenHandler {
                     ConfigurableItemStack.ConfigurableItemSlot itemSlot = (ConfigurableItemStack.ConfigurableItemSlot) slot;
                     ConfigurableItemStack itemStack = itemSlot.getConfStack();
                     itemStack.togglePlayerLock(playerInventory.getCursorStack());
-                    return itemStack.getStack().copy();
+                    return itemStack.getItemKey().toStack(itemStack.getCount()).copy();
                 }
             }
         }
@@ -169,34 +161,35 @@ public abstract class ConfigurableScreenHandler extends ScreenHandler {
 
     @Override
     public ItemStack transferSlot(PlayerEntity player, int slotIndex) {
-        ItemStack newStack = ItemStack.EMPTY;
+        ItemStack stackBefore = ItemStack.EMPTY;
         Slot slot = this.slots.get(slotIndex);
         if (slot != null && slot.hasStack()) {
             if (!slot.canTakeItems(player))
-                return newStack;
-            ItemStack originalStack = slot.getStack();
-            newStack = originalStack.copy();
+                return stackBefore;
+            ItemStack stack = slot.getStack();
+            stackBefore = stack.copy();
             if (slotIndex < PLAYER_SLOTS) { // from player to container inventory
-                if (!this.insertItem(originalStack, PLAYER_SLOTS, this.slots.size(), false)) {
+                if (!this.insertItem(stack, PLAYER_SLOTS, this.slots.size(), false)) {
                     if (slotIndex < 27) { // inside inventory
-                        if (!this.insertItem(originalStack, 27, 36, false)) { // toolbar
+                        if (!this.insertItem(stack, 27, 36, false)) { // toolbar
                             return ItemStack.EMPTY;
                         }
-                    } else if (!this.insertItem(originalStack, 0, 27, false)) {
+                    } else if (!this.insertItem(stack, 0, 27, false)) {
                         return ItemStack.EMPTY;
                     }
                 }
-            } else if (!this.insertItem(originalStack, 0, PLAYER_SLOTS, true)) { // from container inventory to player
+            } else if (!this.insertItem(stack, 0, PLAYER_SLOTS, true)) { // from container inventory to player
                 return ItemStack.EMPTY;
             }
 
-            if (originalStack.isEmpty()) {
+            if (stack.isEmpty()) {
                 slot.setStack(ItemStack.EMPTY);
             } else {
+                slot.setStack(stack);
                 slot.markDirty();
             }
         }
-        return newStack;
+        return stackBefore;
     }
 
     // (almost) Copy-paste from ScreenHandler, Mojang forgot to check
@@ -237,6 +230,7 @@ public abstract class ConfigurableScreenHandler extends ScreenHandler {
                         bl = true;
                     }
                 }
+                slot2.setStack(itemStack);
 
                 if (fromLast) {
                     --i;
@@ -262,9 +256,8 @@ public abstract class ConfigurableScreenHandler extends ScreenHandler {
                     break;
                 }
 
-                slot2 = (Slot) this.slots.get(i);
-                itemStack = slot2.getStack();
-                if (itemStack.isEmpty() && slot2.canInsert(stack)) {
+                slot2 = this.slots.get(i);
+                if (!slot2.hasStack() && slot2.canInsert(stack)) {
                     if (stack.getCount() > slot2.getMaxItemCount()) {
                         slot2.setStack(stack.split(slot2.getMaxItemCount()));
                     } else {

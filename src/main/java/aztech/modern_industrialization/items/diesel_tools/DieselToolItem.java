@@ -23,11 +23,6 @@
  */
 package aztech.modern_industrialization.items.diesel_tools;
 
-import alexiil.mc.lib.attributes.AttributeProviderItem;
-import alexiil.mc.lib.attributes.ItemAttributeList;
-import alexiil.mc.lib.attributes.fluid.volume.FluidKey;
-import alexiil.mc.lib.attributes.misc.LimitedConsumer;
-import alexiil.mc.lib.attributes.misc.Reference;
 import aztech.modern_industrialization.api.DynamicEnchantmentItem;
 import aztech.modern_industrialization.api.FluidFuelRegistry;
 import aztech.modern_industrialization.items.FluidFuelItemHelper;
@@ -44,6 +39,7 @@ import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.fluid.Fluid;
 import net.minecraft.item.*;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.sound.SoundCategory;
@@ -60,9 +56,8 @@ import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
 // TODO: attack speed and damage
-public class DieselToolItem extends Item
-        implements DynamicAttributeTool, Vanishable, AttributeProviderItem, DurabilityBarItem, DynamicEnchantmentItem {
-    public static final int CAPACITY = 4000;
+public class DieselToolItem extends Item implements DynamicAttributeTool, Vanishable, DurabilityBarItem, DynamicEnchantmentItem {
+    public static final int CAPACITY = 4 * 81000;
 
     public DieselToolItem(Settings settings) {
         super(settings.maxCount(1).rarity(Rarity.UNCOMMON));
@@ -81,12 +76,6 @@ public class DieselToolItem extends Item
         return super.postMine(stack, world, state, pos, miner);
     }
 
-    /*
-     * @Override public boolean postHit(ItemStack stack, LivingEntity target,
-     * LivingEntity attacker) { if (isIn(FabricToolTags.SWORDS)) {
-     * FluidFuelItemHelper.decrement(stack); } return true; }
-     */
-
     @Override
     public float getMiningSpeedMultiplier(Tag<Item> tag, BlockState state, ItemStack stack, @Nullable LivingEntity user) {
         if (isIn(tag)) {
@@ -104,36 +93,15 @@ public class DieselToolItem extends Item
     }
 
     private float getMiningSpeedMultiplier(ItemStack stack) {
-        int amount = FluidFuelItemHelper.getAmount(stack);
+        long amount = FluidFuelItemHelper.getAmount(stack);
         if (amount > 0) {
-            FluidKey fluid = FluidFuelItemHelper.getFluid(stack);
+            Fluid fluid = FluidFuelItemHelper.getFluid(stack);
             int burnTicks = FluidFuelRegistry.getEu(fluid);
             if (burnTicks > 0) {
                 return 1.0f + burnTicks / 4.0f;
             }
         }
         return 1.0f;
-    }
-
-    /*
-     * @Override public Multimap<EntityAttribute, EntityAttributeModifier>
-     * getDynamicModifiers(EquipmentSlot slot, ItemStack stack, @Nullable
-     * LivingEntity user) { if (isIn(FabricToolTags.SWORDS) &&
-     * FluidFuelItemHelper.getAmount(stack) > 0 && slot == EquipmentSlot.MAINHAND) {
-     * Multimap<EntityAttribute, EntityAttributeModifier> mods =
-     * HashMultimap.create(); double extraDamage =
-     * FluidFuelRegistry.getBurnTicks(FluidFuelItemHelper.getFluid(stack)) / 5.0;
-     * mods.put(EntityAttributes.GENERIC_ATTACK_DAMAGE, new
-     * EntityAttributeModifier(ATTACK_DAMAGE_MODIFIER_ID, "Weapon modifier",
-     * extraDamage, EntityAttributeModifier.Operation.ADDITION));
-     * mods.put(EntityAttributes.GENERIC_ATTACK_SPEED, new
-     * EntityAttributeModifier(ATTACK_SPEED_MODIFIER_ID, "Weapon modifier", 2,
-     * EntityAttributeModifier.Operation.ADDITION)); return mods; } return EMPTY; }
-     */
-
-    @Override
-    public void addAllAttributes(Reference<ItemStack> reference, LimitedConsumer<ItemStack> limitedConsumer, ItemAttributeList<?> to) {
-        FluidFuelItemHelper.offerInsertable(reference, to, CAPACITY);
     }
 
     @Override
@@ -174,7 +142,7 @@ public class DieselToolItem extends Item
                 user.sendMessage(new TranslatableText("text.modern_industrialization.tool_switched_" + (isFortune(stack) ? "fortune" : "silk_touch")),
                         false);
             }
-            return TypedActionResult.method_29237(stack, world.isClient);
+            return TypedActionResult.success(stack, world.isClient);
         }
         return super.use(world, user, hand);
     }

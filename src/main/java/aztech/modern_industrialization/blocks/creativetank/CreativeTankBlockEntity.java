@@ -23,36 +23,33 @@
  */
 package aztech.modern_industrialization.blocks.creativetank;
 
-import alexiil.mc.lib.attributes.Simulation;
-import alexiil.mc.lib.attributes.fluid.*;
-import alexiil.mc.lib.attributes.fluid.amount.FluidAmount;
-import alexiil.mc.lib.attributes.fluid.filter.ConstantFluidFilter;
-import alexiil.mc.lib.attributes.fluid.filter.FluidFilter;
-import alexiil.mc.lib.attributes.fluid.volume.FluidKey;
-import alexiil.mc.lib.attributes.fluid.volume.FluidKeys;
-import alexiil.mc.lib.attributes.fluid.volume.FluidVolume;
-import alexiil.mc.lib.attributes.misc.LimitedConsumer;
-import alexiil.mc.lib.attributes.misc.Reference;
 import aztech.modern_industrialization.api.FastBlockEntity;
 import aztech.modern_industrialization.blocks.tank.MITanks;
 import aztech.modern_industrialization.util.NbtHelper;
 import net.fabricmc.fabric.api.block.entity.BlockEntityClientSerializable;
+import net.fabricmc.fabric.api.lookup.v1.item.ItemKey;
+import net.fabricmc.fabric.api.transfer.v1.base.FixedDenominatorStorageView;
+import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidApi;
+import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
+import net.fabricmc.fabric.api.transfer.v1.storage.StorageFunction;
+import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.item.ItemStack;
+import net.minecraft.fluid.Fluid;
+import net.minecraft.fluid.Fluids;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.util.Hand;
 
-public class CreativeTankBlockEntity extends FastBlockEntity implements FluidExtractable, BlockEntityClientSerializable {
-    FluidKey fluid = FluidKeys.EMPTY;
-    static final FluidAmount MAX_OUTPUT = FluidAmount.of(Integer.MAX_VALUE, 1000);
+public class CreativeTankBlockEntity extends FastBlockEntity implements Storage<Fluid>, FixedDenominatorStorageView<Fluid>, BlockEntityClientSerializable {
+    Fluid fluid = Fluids.EMPTY;
 
     public CreativeTankBlockEntity() {
         super(MITanks.CREATIVE_BLOCK_ENTITY_TYPE);
     }
 
     public boolean isEmpty() {
-        return fluid.isEmpty();
+        return fluid == Fluids.EMPTY;
     }
 
     @Override
@@ -62,7 +59,7 @@ public class CreativeTankBlockEntity extends FastBlockEntity implements FluidExt
 
     @Override
     public CompoundTag toClientTag(CompoundTag tag) {
-        tag.put("fluid", fluid.toTag());
+        NbtHelper.putFluid(tag, "fluid", fluid);
         return tag;
     }
 
@@ -84,56 +81,49 @@ public class CreativeTankBlockEntity extends FastBlockEntity implements FluidExt
         super.fromTag(state, tag);
     }
 
-    @Override
-    public FluidVolume attemptExtraction(FluidFilter filter, FluidAmount maxAmount, Simulation simulation) {
-        if (!this.fluid.isEmpty() && filter.matches(this.fluid)) {
-            return this.fluid.withAmount(maxAmount.min(MAX_OUTPUT));
-        }
-        return FluidVolumeUtil.EMPTY;
-    }
-
     public boolean onPlayerUse(PlayerEntity player) {
-        Reference<ItemStack> heldStackRef = new Reference<ItemStack>() {
-            @Override
-            public ItemStack get() {
-                return player.inventory.getMainHandStack();
-            }
-
-            @Override
-            public boolean set(ItemStack value) {
-                if (PlayerInventory.isValidHotbarIndex(player.inventory.selectedSlot)) {
-                    player.inventory.main.set(player.inventory.selectedSlot, value);
+        Storage<Fluid> handIo = FluidApi.ITEM.get(ItemKey.of(player.getMainHandStack()), ContainerItemContext.ofPlayerHand(player, Hand.MAIN_HAND));
+        if (handIo != null) {
+            if (isEmpty()) {
+                handIo.forEach(view -> {
+                    fluid = view.resource();
                     return true;
-                } else {
-                    return false;
+                });
+                return !isEmpty();
+            } else {
+                try (Transaction tx = Transaction.openOuter()) {
+                    return handIo.insertionFunction().apply(fluid, Integer.MAX_VALUE, 81000, tx) > 0;
                 }
             }
-
-            @Override
-            public boolean isValid(ItemStack value) {
-                return true;
-            }
-        };
-        LimitedConsumer<ItemStack> excessConsumer = (itemStack, simulation) -> {
-            if (simulation.isAction()) {
-                player.inventory.offerOrDrop(player.world, itemStack);
-            }
-            return true;
-        };
-        // Try to set fluid
-        if (fluid.isEmpty()) {
-            fluid = FluidAttributes.EXTRACTABLE.get(heldStackRef, excessConsumer)
-                    .attemptExtraction(ConstantFluidFilter.ANYTHING, FluidAmount.ABSOLUTE_MAXIMUM, Simulation.SIMULATE).getFluidKey();
-            onChanged();
-            if (!fluid.isEmpty())
-                return true;
-        }
-        // Try to insert into held item
-        if (!fluid.isEmpty()) {
-            FluidInsertable insertable = FluidAttributes.INSERTABLE.get(heldStackRef, excessConsumer);
-            FluidAmount leftover = insertable.insert(this.fluid.withAmount(FluidAmount.ABSOLUTE_MAXIMUM)).amount();
-            return !leftover.equals(FluidAmount.ABSOLUTE_MAXIMUM);
         }
         return false;
+    }
+
+    @Override
+    public StorageFunction<Fluid> extractionFunction() {
+        return StorageFunction.identity();
+    }
+
+    @Override
+    public Fluid resource() {
+        return fluid;
+    }
+
+    @Override
+    public boolean forEach(Visitor<Fluid> visitor) {
+        if (fluid != Fluids.EMPTY) {
+            return visitor.visit(this);
+        }
+        return false;
+    }
+
+    @Override
+    public long denominator() {
+        return 81000;
+    }
+
+    @Override
+    public long amountFixedDenominator() {
+        return Integer.MAX_VALUE;
     }
 }

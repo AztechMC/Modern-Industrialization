@@ -27,8 +27,17 @@ import aztech.modern_industrialization.util.NbtHelper;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
+
+import com.google.common.primitives.Ints;
+import net.fabricmc.fabric.api.lookup.v1.item.ItemKey;
+import net.fabricmc.fabric.api.transfer.v1.base.IntegerStorageFunction;
+import net.fabricmc.fabric.api.transfer.v1.base.IntegerStorageView;
+import net.fabricmc.fabric.api.transfer.v1.item.ItemPreconditions;
+import net.fabricmc.fabric.api.transfer.v1.storage.StorageFunction;
+import net.fabricmc.fabric.api.transfer.v1.transaction.Participant;
+import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
+import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionResult;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.Inventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -36,20 +45,41 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.screen.slot.Slot;
 
 /**
- * An item stack that can be configured. TODO: sync lock state
+ * An item stack that can be configured.
  */
-public class ConfigurableItemStack {
-    ItemStack stack = ItemStack.EMPTY;
-    Item lockedItem = null;
+public class ConfigurableItemStack implements IntegerStorageView<ItemKey>, Participant<ItemState> {
+    private ItemKey key = ItemKey.EMPTY;
+    private int count = 0;
+    private Item lockedItem = null;
     private boolean playerLocked = false;
     private boolean machineLocked = false;
-    boolean playerLockable = true;
-    boolean playerInsert = false;
-    boolean playerExtract = true;
-    boolean pipesInsert = false;
-    boolean pipesExtract = false;
+    private boolean playerLockable = true;
+    private boolean playerInsert = false;
+    private boolean playerExtract = true;
+    private boolean pipesInsert = false;
+    private boolean pipesExtract = false;
+    private final StorageFunction<ItemKey> extractionFunction;
 
     public ConfigurableItemStack() {
+        this.extractionFunction = new IntegerStorageFunction<ItemKey>() {
+            @Override
+            public long applyFixedDenominator(ItemKey key, long longCount, Transaction tx) {
+                ItemPreconditions.notEmptyNotNegative(key, longCount);
+                if (pipesExtract && key.equals(ConfigurableItemStack.this.key)) {
+                    int maxCount = Ints.saturatedCast(longCount);
+                    int extracted = Math.min(count, maxCount);
+                    tx.enlist(ConfigurableItemStack.this);
+                    decrement(extracted);
+                    return extracted;
+                }
+                return 0;
+            }
+
+            @Override
+            public boolean isEmpty() {
+                return !pipesExtract;
+            }
+        };
     }
 
     public static ConfigurableItemStack standardInputSlot() {
@@ -76,7 +106,9 @@ public class ConfigurableItemStack {
     }
 
     public ConfigurableItemStack(ConfigurableItemStack other) {
-        this.stack = other.stack.copy();
+        this();
+        this.key = other.key;
+        this.count = other.count;
         this.lockedItem = other.lockedItem;
         this.playerLocked = other.playerLocked;
         this.machineLocked = other.machineLocked;
@@ -96,7 +128,7 @@ public class ConfigurableItemStack {
         ConfigurableItemStack that = (ConfigurableItemStack) o;
         return playerLocked == that.playerLocked && machineLocked == that.machineLocked && playerLockable == that.playerLockable
                 && playerInsert == that.playerInsert && playerExtract == that.playerExtract && pipesInsert == that.pipesInsert
-                && pipesExtract == that.pipesExtract && ItemStack.areEqual(stack, that.stack) && lockedItem == that.lockedItem;
+                && pipesExtract == that.pipesExtract && lockedItem == that.lockedItem && count == that.count && key.equals(that.key);
     }
 
     /**
@@ -110,45 +142,42 @@ public class ConfigurableItemStack {
         return copy;
     }
 
-    public ItemStack getStack() {
-        return stack;
+    public ItemKey getItemKey() {
+        return key;
+    }
+
+    public int getCount() {
+        return count;
     }
 
     public Item getLockedItem() {
         return lockedItem;
     }
 
-    /**
-     * Try to take some items from the stack.
-     * 
-     * @param count How many items to take
-     * @return What was taken: a stack with at most count items.
-     */
-    public ItemStack splitStack(int count) {
-        return count > 0 ? stack.split(count) : ItemStack.EMPTY;
-    }
-
-    /**
-     * Take the stack.
-     */
-    public ItemStack removeStack() {
-        ItemStack removed = stack;
-        stack = ItemStack.EMPTY;
-        return removed;
-    }
-
-    public void setStack(ItemStack stack) {
-        if (lockedItem != null && stack.getItem() != lockedItem && !stack.isEmpty()) {
-            throw new RuntimeException("Trying to override locked item");
+    public void setCount(int count) {
+        this.count = count;
+        if (count == 0) {
+            this.key = ItemKey.EMPTY;
         }
-        this.stack = stack;
     }
 
-    public boolean canInsert(ItemStack stack) {
-        return canInsert(stack.getItem());
+    public void increment(int count) {
+        setCount(this.count + count);
     }
 
-    public boolean canInsert(Item item) {
+    public void decrement(int count) {
+        increment(-count);
+    }
+
+    public void setItemKey(ItemKey key) {
+        this.key = key;
+    }
+
+    public boolean isValid(ItemStack stack) {
+        return isValid(stack.getItem());
+    }
+
+    public boolean isValid(Item item) {
         return lockedItem == null || lockedItem == item;
     }
 
@@ -187,7 +216,7 @@ public class ConfigurableItemStack {
         if (!machineLocked && !playerLocked) {
             lockedItem = null;
         } else if (lockedItem == null) {
-            lockedItem = stack.getItem();
+            lockedItem = key.getItem();
         }
     }
 
@@ -196,7 +225,8 @@ public class ConfigurableItemStack {
     }
 
     public CompoundTag writeToTag(CompoundTag tag) {
-        stack.toTag(tag);
+        tag.put("key", key.toTag());
+        tag.putInt("count", count);
         if (lockedItem != null) {
             NbtHelper.putItem(tag, "lockedItem", lockedItem);
         }
@@ -212,7 +242,15 @@ public class ConfigurableItemStack {
     }
 
     public void readFromTag(CompoundTag tag) {
-        stack = ItemStack.fromTag(tag);
+        // compat
+        if (tag.contains("key")) {
+            key = ItemKey.fromTag(tag.getCompound("key"));
+            count = tag.getInt("count");
+        } else {
+            ItemStack stack = ItemStack.fromTag(tag);
+            key = ItemKey.of(stack);
+            count = stack.getCount();
+        }
         if (tag.contains("lockedItem")) {
             lockedItem = NbtHelper.getItem(tag, "lockedItem");
         }
@@ -229,11 +267,7 @@ public class ConfigurableItemStack {
      * Try locking the slot to the given item, return true if it succeeded
      */
     public boolean playerLock(Item item) {
-        if (machineLocked) {
-            playerLocked = true;
-            return true;
-        }
-        if ((stack.isEmpty() || stack.getItem() == item) && (lockedItem == null || lockedItem == Items.AIR)) {
+        if ((key.isEmpty() || key.getItem() == item) && (lockedItem == null || lockedItem == Items.AIR)) {
             lockedItem = item;
             playerLocked = true;
             return true;
@@ -249,18 +283,52 @@ public class ConfigurableItemStack {
         return pipesInsert;
     }
 
+    @Override
+    public StorageFunction<ItemKey> extractionFunction() {
+        return extractionFunction;
+    }
+
+    @Override
+    public ItemKey resource() {
+        return key;
+    }
+
+    @Override
+    public long amountFixedDenominator() {
+        return count;
+    }
+
+    @Override
+    public ItemState onEnlist() {
+        return new ItemState(key, count);
+    }
+
+    @Override
+    public void onClose(ItemState itemState, TransactionResult result) {
+        if (result.wasAborted()) {
+            this.count = itemState.count;
+            this.key = itemState.key;
+        }
+    }
+
     public class ConfigurableItemSlot extends Slot {
         private final Predicate<ItemStack> insertPredicate;
+        private final Runnable markDirty;
+        // Vanilla MC code modifies the stack returned by `getStack()` directly, but it
+        // calls `markDirty()` when that happens, so we just cache the returned stack,
+        // and set it when `markDirty()` is called.
+        private ItemStack cachedReturnedStack = null;
 
-        public ConfigurableItemSlot(Inventory inventory, int id, int x, int y, Predicate<ItemStack> insertPredicate) {
-            super(inventory, id, x, y);
+        public ConfigurableItemSlot(Runnable markDirty, int id, int x, int y, Predicate<ItemStack> insertPredicate) {
+            super(null, id, x, y);
 
             this.insertPredicate = insertPredicate;
+            this.markDirty = markDirty;
         }
 
         @Override
         public boolean canInsert(ItemStack stack) {
-            return playerInsert && ConfigurableItemStack.this.canInsert(stack) && insertPredicate.test(stack);
+            return playerInsert && ConfigurableItemStack.this.isValid(stack) && insertPredicate.test(stack);
         }
 
         @Override
@@ -274,12 +342,36 @@ public class ConfigurableItemStack {
 
         @Override
         public ItemStack getStack() {
-            return stack;
+            return cachedReturnedStack = key.toStack(count);
         }
 
         @Override
         public void setStack(ItemStack stack) {
-            ConfigurableItemStack.this.stack = stack;
+            key = ItemKey.of(stack);
+            count = stack.getCount();
+            markDirty.run();
+            cachedReturnedStack = stack;
+        }
+
+        @Override
+        public void markDirty() {
+            if (cachedReturnedStack != null) {
+                setStack(cachedReturnedStack);
+            }
+        }
+
+        @Override
+        public int getMaxItemCount() {
+            return 64;
+        }
+
+        @Override
+        public ItemStack takeStack(int amount) {
+            ItemStack stack = key.toStack(amount);
+            decrement(amount);
+            cachedReturnedStack = null;
+            markDirty.run();
+            return stack;
         }
     }
 }

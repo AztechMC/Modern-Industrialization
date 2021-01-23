@@ -105,11 +105,14 @@ repositories {
         url = "https://raw.githubusercontent.com/Technici4n/Technici4n-maven/master/"
         content {
             includeGroup "net.fabricmc.fabric-api"
+            includeGroup "dev.technici4n"
         }
     }
+    mavenLocal()
 }
 
 dependencies {
+    modImplementation "net.fabricmc.fabric-api:fabric-transfer-api-v1:0.1.0+74fc1dc03a"
     minecraft "com.mojang:minecraft:${project.minecraft_version}"
     mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
     modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
@@ -123,8 +126,6 @@ dependencies {
     modImplementation "me.shedaniel:RoughlyEnoughItems:${project.rei_version}"
     modImplementation "vazkii.patchouli:Patchouli:${project.patchouli_version}"
     include "vazkii.patchouli:Patchouli:${project.patchouli_version}"
-    modApi "alexiil.mc.lib:libblockattributes-all:${project.lba_version}"
-    include "alexiil.mc.lib:libblockattributes-all:${project.lba_version}"
     modApi "me.shedaniel.cloth.api:cloth-armor-api-v1:${project.cloth_api_version}"
     modApi "me.shedaniel.cloth.api:cloth-common-events-v1:${project.cloth_api_version}"
     modApi "me.shedaniel.cloth.api:cloth-durability-bar-api-v1:${project.cloth_api_version}"
@@ -137,13 +138,11 @@ dependencies {
     modImplementation "io.github.prospector:modmenu:${project.mod_menu_version}"
     modImplementation "com.github.Technici4n:KubeJS-Fabric:${project.kjs_commit}"
     include "com.github.Technici4n:KubeJS-Fabric:${project.kjs_commit}"
-    modImplementation "teamreborn:energy:${project.tr_energy_version}"
-    include "teamreborn:energy:${project.tr_energy_version}"
-    modApi "net.fabricmc.fabric-api:fabric-provider-api-v1:${project.api_provider_version}"
-    include "net.fabricmc.fabric-api:fabric-provider-api-v1:${project.api_provider_version}"
+    //modApi "dev.technici4n:FastTransferLib:${project.ftl_version}"
+    //include "dev.technici4n:FastTransferLib:${project.ftl_version}"
 
     // Other mods for testing purposes
-    modRuntime "appeng:appliedenergistics2-fabric:${project.appeng_version}"
+    //modRuntime "appeng:appliedenergistics2-fabric:${project.appeng_version}"
     //modRuntime "com.github.Mixinors.Astromine:astromine:${project.astromine_commit}"
     //modRuntime ("com.github.GabrielOlvH:Industrial-Revolution:${project.indrev_commit}") {
     //    exclude group: "teamreborn", module: "energy"

@@ -24,6 +24,7 @@
 package aztech.modern_industrialization.util;
 
 import aztech.modern_industrialization.inventory.ConfigurableItemStack;
+import net.fabricmc.fabric.api.lookup.v1.item.ItemKey;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
@@ -40,20 +41,20 @@ public class ItemStackHelper {
      * @return false if the fuel could not be consumed, true otherwise
      */
     public static boolean consumeFuel(ConfigurableItemStack stack, boolean simulate) {
-        ItemStack is = stack.getStack();
-        if (is.isEmpty())
+        if (stack.getItemKey().isEmpty())
             return false;
-        Item item = is.getItem();
+        Item item = stack.getItemKey().getItem();
         if (item.hasRecipeRemainder()) {
-            if (is.getCount() == 1 && stack.canInsert(item.getRecipeRemainder())) {
+            if (stack.getCount() == 1 && stack.isValid(item.getRecipeRemainder())) {
                 if (!simulate) {
-                    stack.setStack(new ItemStack(item.getRecipeRemainder()));
+                    stack.setCount(1);
+                    stack.setItemKey(ItemKey.of(item.getRecipeRemainder()));
                 }
                 return true;
             }
         } else {
             if (!simulate) {
-                is.decrement(1);
+                stack.decrement(1);
             }
             return true;
         }

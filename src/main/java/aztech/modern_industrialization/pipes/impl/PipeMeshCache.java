@@ -23,9 +23,9 @@
  */
 package aztech.modern_industrialization.pipes.impl;
 
-import alexiil.mc.lib.attributes.fluid.volume.FluidKey;
 import aztech.modern_industrialization.pipes.api.PipeEndpointType;
 import aztech.modern_industrialization.pipes.api.PipeRenderer;
+import aztech.modern_industrialization.util.NbtHelper;
 import java.util.function.Function;
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandler;
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry;
@@ -156,7 +156,7 @@ public class PipeMeshCache implements PipeRenderer {
 
         // Fluid handling logic
         if (customData.contains("fluid")) {
-            Fluid fluid = FluidKey.fromTag(customData.getCompound("fluid")).getRawFluid();
+            Fluid fluid = NbtHelper.getFluid(customData, "fluid");
             FluidRenderHandler handler = FluidRenderHandlerRegistry.INSTANCE.get(fluid);
             Sprite still = handler == null ? null : handler.getFluidSprites(null, null, null)[0];
             int color = handler == null ? -1 : 255 << 24 | handler.getFluidColor(null, null, null);

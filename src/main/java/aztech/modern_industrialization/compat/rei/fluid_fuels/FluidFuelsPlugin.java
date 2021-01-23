@@ -23,7 +23,6 @@
  */
 package aztech.modern_industrialization.compat.rei.fluid_fuels;
 
-import alexiil.mc.lib.attributes.fluid.volume.FluidKey;
 import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.ModernIndustrialization;
 import aztech.modern_industrialization.api.FluidFuelRegistry;
@@ -33,6 +32,7 @@ import java.util.List;
 import me.shedaniel.rei.api.EntryStack;
 import me.shedaniel.rei.api.RecipeHelper;
 import me.shedaniel.rei.api.plugins.REIPluginV0;
+import net.minecraft.fluid.Fluid;
 import net.minecraft.item.Item;
 import net.minecraft.util.Identifier;
 
@@ -51,7 +51,7 @@ public class FluidFuelsPlugin implements REIPluginV0 {
 
     @Override
     public void registerRecipeDisplays(RecipeHelper recipeHelper) {
-        for (FluidKey fluid : FluidFuelRegistry.getRegisteredFluids()) {
+        for (Fluid fluid : FluidFuelRegistry.getRegisteredFluids()) {
             recipeHelper.registerDisplay(new FluidFuelDisplay(fluid));
         }
     }

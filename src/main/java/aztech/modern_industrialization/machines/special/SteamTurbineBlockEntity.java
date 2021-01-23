@@ -23,6 +23,7 @@
  */
 package aztech.modern_industrialization.machines.special;
 
+import aztech.modern_industrialization.MIFluids;
 import aztech.modern_industrialization.api.energy.CableTier;
 import aztech.modern_industrialization.api.energy.EnergyApi;
 import aztech.modern_industrialization.api.energy.EnergyExtractable;
@@ -37,7 +38,7 @@ public final class SteamTurbineBlockEntity extends MachineBlockEntity {
     public SteamTurbineBlockEntity(MachineFactory factory, CableTier tier) {
         super(factory);
 
-        fluidStacks.set(0, ConfigurableFluidStack.lockedInputSlot(factory.getInputBucketCapacity() * 1000, STEAM_KEY));
+        inventory.fluidStacks.set(0, ConfigurableFluidStack.lockedInputSlot(factory.getInputBucketCapacity() * 81000, MIFluids.STEAM));
         this.tier = tier;
         extractable = buildExtractable(tier);
     }
@@ -54,9 +55,9 @@ public final class SteamTurbineBlockEntity extends MachineBlockEntity {
 
         boolean wasActive = isActive;
 
-        int transformed = (int) Math.min(Math.min(fluidStacks.get(0).getAmount(), getMaxStoredEu() - storedEu), tier.getEu());
+        int transformed = (int) Math.min(Math.min(inventory.fluidStacks.get(0).getAmount() / 81, getMaxStoredEu() - storedEu), tier.getEu());
         if (transformed > 0) {
-            fluidStacks.get(0).decrement(transformed);
+            inventory.fluidStacks.get(0).decrement(transformed * 81);
             storedEu += transformed;
             isActive = true;
         } else {
@@ -72,7 +73,7 @@ public final class SteamTurbineBlockEntity extends MachineBlockEntity {
     }
 
     @Override
-    public void registerApis() {
+    public void registerAdditionalApis() {
         EnergyApi.MOVEABLE.registerForBlockEntities((blockEntity, direction) -> {
             SteamTurbineBlockEntity be = ((SteamTurbineBlockEntity) blockEntity);
             return direction == be.outputDirection ? be.extractable : null;

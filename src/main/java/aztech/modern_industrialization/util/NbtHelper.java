@@ -23,8 +23,6 @@
  */
 package aztech.modern_industrialization.util;
 
-import alexiil.mc.lib.attributes.fluid.volume.FluidKey;
-import alexiil.mc.lib.attributes.fluid.volume.FluidKeys;
 import aztech.modern_industrialization.pipes.api.PipeEndpointType;
 import java.util.List;
 import java.util.function.BiConsumer;
@@ -127,13 +125,24 @@ public class NbtHelper {
         }
     }
 
-    public static FluidKey getFluidCompatible(CompoundTag tag, String key) {
+    public static Fluid getFluidCompatible(CompoundTag tag, String key) {
+        if (tag == null)
+            return Fluids.EMPTY;
+
         if (!tag.contains(key))
-            return FluidKeys.EMPTY;
+            return Fluids.EMPTY;
         if (tag.get(key) instanceof StringTag) {
-            return FluidKeys.get(Registry.FLUID.get(new Identifier(tag.getString(key))));
+            return Registry.FLUID.get(new Identifier(tag.getString(key)));
         } else {
-            return FluidKey.fromTag(tag.getCompound(key));
+            return readLbaTag(tag.getCompound(key));
+        }
+    }
+
+    private static Fluid readLbaTag(CompoundTag tag) {
+        if (tag.contains("ObjName") && tag.getString("Registry").equals("f")) {
+            return Registry.FLUID.get(new Identifier(tag.getString("ObjName")));
+        } else {
+            return Fluids.EMPTY;
         }
     }
 }

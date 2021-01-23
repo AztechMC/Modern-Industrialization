@@ -67,8 +67,8 @@ public class MachineRecipeType implements RecipeType<MachineRecipe>, RecipeSeria
      * recipes are sometimes reloaded. TODO: only rebuild when the recipes have been
      * reloaded
      */
-    private Map<Item, List<MachineRecipe>> recipeCache = new HashMap<>();
-    private List<MachineRecipe> fluidOnlyRecipes = new ArrayList<>();
+    private final Map<Item, List<MachineRecipe>> recipeCache = new HashMap<>();
+    private final List<MachineRecipe> fluidOnlyRecipes = new ArrayList<>();
     private long lastUpdate = 0;
     private static final long UPDATE_INTERVAL = 20 * 1000; // 20 seconds
 
@@ -245,7 +245,7 @@ public class MachineRecipeType implements RecipeType<MachineRecipe>, RecipeSeria
         Fluid fluid = Registry.FLUID.getOrEmpty(id).<RuntimeException>orElseThrow(() -> {
             throw new RuntimeException("Fluid " + id + " does not exist.");
         });
-        int amount = readNonNegativeInt(json, "amount");
+        int amount = readNonNegativeInt(json, "amount") * 81;
         float probability = readProbability(json, "probability");
         return new MachineRecipe.FluidInput(fluid, amount, probability);
     }
@@ -265,7 +265,7 @@ public class MachineRecipeType implements RecipeType<MachineRecipe>, RecipeSeria
         Fluid fluid = Registry.FLUID.getOrEmpty(id).<RuntimeException>orElseThrow(() -> {
             throw new RuntimeException("Fluid " + id + " does not exist.");
         });
-        int amount = readPositiveInt(json, "amount");
+        int amount = readPositiveInt(json, "amount") * 81;
         float probability = readProbability(json, "probability");
         return new MachineRecipe.FluidOutput(fluid, amount, probability);
     }
@@ -292,9 +292,9 @@ public class MachineRecipeType implements RecipeType<MachineRecipe>, RecipeSeria
         recipe.eu = buf.readVarInt();
         recipe.duration = buf.readVarInt();
         recipe.itemInputs = readList(buf, b -> new MachineRecipe.ItemInput(Ingredient.fromPacket(b), b.readVarInt(), b.readFloat()));
-        recipe.fluidInputs = readList(buf, b -> new MachineRecipe.FluidInput(Registry.FLUID.get(b.readVarInt()), b.readVarInt(), b.readFloat()));
+        recipe.fluidInputs = readList(buf, b -> new MachineRecipe.FluidInput(Registry.FLUID.get(b.readVarInt()), b.readVarLong(), b.readFloat()));
         recipe.itemOutputs = readList(buf, b -> new MachineRecipe.ItemOutput(Item.byRawId(b.readVarInt()), b.readVarInt(), b.readFloat()));
-        recipe.fluidOutputs = readList(buf, b -> new MachineRecipe.FluidOutput(Registry.FLUID.get(b.readVarInt()), b.readVarInt(), b.readFloat()));
+        recipe.fluidOutputs = readList(buf, b -> new MachineRecipe.FluidOutput(Registry.FLUID.get(b.readVarInt()), b.readVarLong(), b.readFloat()));
 
         return recipe;
     }
@@ -310,7 +310,7 @@ public class MachineRecipeType implements RecipeType<MachineRecipe>, RecipeSeria
         });
         writeList(buf, recipe.fluidInputs, (b, i) -> {
             buf.writeVarInt(Registry.FLUID.getRawId(i.fluid));
-            buf.writeVarInt(i.amount);
+            buf.writeVarLong(i.amount);
             buf.writeFloat(i.probability);
         });
         writeList(buf, recipe.itemOutputs, (b, i) -> {
@@ -320,7 +320,7 @@ public class MachineRecipeType implements RecipeType<MachineRecipe>, RecipeSeria
         });
         writeList(buf, recipe.fluidOutputs, (b, i) -> {
             buf.writeVarInt(Registry.FLUID.getRawId(i.fluid));
-            buf.writeVarInt(i.amount);
+            buf.writeVarLong(i.amount);
             buf.writeFloat(i.probability);
         });
     }

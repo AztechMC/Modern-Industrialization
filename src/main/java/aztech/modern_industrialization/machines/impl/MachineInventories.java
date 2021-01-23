@@ -25,6 +25,7 @@ package aztech.modern_industrialization.machines.impl;
 
 import aztech.modern_industrialization.inventory.ConfigurableFluidStack;
 import aztech.modern_industrialization.inventory.ConfigurableItemStack;
+import aztech.modern_industrialization.inventory.MIInventory;
 import java.util.ArrayList;
 import java.util.List;
 import net.minecraft.nbt.CompoundTag;
@@ -34,6 +35,8 @@ public class MachineInventories {
     public static MachineInventory clientOfBuf(PacketByteBuf buf) {
         List<ConfigurableItemStack> itemStacks = new ArrayList<>();
         List<ConfigurableFluidStack> fluidStacks = new ArrayList<>();
+        MIInventory inventory = new MIInventory(itemStacks, fluidStacks, () -> {
+        });
         boolean hasOutput = buf.readBoolean();
         boolean[] autoExtract = new boolean[] { buf.readBoolean(), buf.readBoolean() };
 
@@ -64,18 +67,12 @@ public class MachineInventories {
             }
 
             @Override
-            public List<ConfigurableItemStack> getItemStacks() {
-                return itemStacks;
+            public MIInventory getInventory() {
+                return inventory;
             }
 
             @Override
-            public List<ConfigurableFluidStack> getFluidStacks() {
-                return fluidStacks;
-            }
-
-            @Override
-            public void markDirty() {
-
+            public void markDirty2() {
             }
         };
 
@@ -86,7 +83,7 @@ public class MachineInventories {
         while (fluidStackCnt-- > 0)
             fluidStacks.add(new ConfigurableFluidStack(0));
 
-        clientInv.readFromTag(buf.readCompoundTag());
+        inventory.readFromTag(buf.readCompoundTag());
         return clientInv;
     }
 
@@ -94,10 +91,10 @@ public class MachineInventories {
         buf.writeBoolean(inventory.hasOutput());
         buf.writeBoolean(inventory.getItemExtract());
         buf.writeBoolean(inventory.getFluidExtract());
-        buf.writeInt(inventory.getItemStacks().size());
-        buf.writeInt(inventory.getFluidStacks().size());
+        buf.writeInt(inventory.getInventory().itemStacks.size());
+        buf.writeInt(inventory.getInventory().fluidStacks.size());
         CompoundTag tag = new CompoundTag();
-        inventory.writeToTag(tag);
+        inventory.getInventory().writeToTag(tag);
         buf.writeCompoundTag(tag);
     }
 }

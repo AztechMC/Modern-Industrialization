@@ -23,15 +23,15 @@
  */
 package aztech.modern_industrialization.pipes.fluid;
 
-import alexiil.mc.lib.attributes.fluid.volume.FluidKey;
 import aztech.modern_industrialization.pipes.api.PipeNetworkData;
 import aztech.modern_industrialization.util.NbtHelper;
+import net.minecraft.fluid.Fluid;
 import net.minecraft.nbt.CompoundTag;
 
 public class FluidNetworkData extends PipeNetworkData {
-    FluidKey fluid;
+    Fluid fluid;
 
-    public FluidNetworkData(FluidKey fluid) {
+    public FluidNetworkData(Fluid fluid) {
         this.fluid = fluid;
     }
 
@@ -47,7 +47,7 @@ public class FluidNetworkData extends PipeNetworkData {
 
     @Override
     public CompoundTag toTag(CompoundTag tag) {
-        tag.put("fluid", fluid.toTag());
+        NbtHelper.putFluid(tag, "fluid", fluid);
         return tag;
     }
 

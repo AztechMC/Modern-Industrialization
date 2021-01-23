@@ -99,12 +99,12 @@ public class MachineRecipePlugin implements REIPluginV0 {
                 if (slot instanceof ConfigurableFluidStack.ConfigurableFluidSlot) {
                     ConfigurableFluidStack stack = ((ConfigurableFluidStack.ConfigurableFluidSlot) slot).getConfStack();
                     if (stack.getAmount() > 0) {
-                        Fluid fluid = stack.getFluid().getRawFluid();
+                        Fluid fluid = stack.getFluid();
                         if (fluid != null) {
                             return TypedActionResult.success(EntryStack.create(fluid));
                         }
                     } else if (stack.getLockedFluid() != null) {
-                        Fluid fluid = stack.getLockedFluid().getRawFluid();
+                        Fluid fluid = stack.getLockedFluid();
                         if (fluid != null) {
                             return TypedActionResult.success(EntryStack.create(fluid));
                         }

@@ -23,9 +23,9 @@
  */
 package aztech.modern_industrialization.machines.impl;
 
-import aztech.modern_industrialization.inventory.ConfigurableInventory;
+import aztech.modern_industrialization.inventory.MIInventory;
 
-public interface MachineInventory extends ConfigurableInventory {
+public interface MachineInventory {
     void setItemExtract(boolean extract);
 
     void setFluidExtract(boolean extract);
@@ -35,4 +35,11 @@ public interface MachineInventory extends ConfigurableInventory {
     boolean getFluidExtract();
 
     boolean hasOutput();
+
+    MIInventory getInventory();
+
+    // Not called markDirty because it wouldn't get remapped whereas the markDirty
+    // method on the classes this interface is implemented on would get remapped,
+    // causing AbstractMethodErrors at runtime.
+    void markDirty2();
 }

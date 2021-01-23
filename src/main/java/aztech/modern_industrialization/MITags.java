@@ -34,6 +34,12 @@ public class MITags {
     public static final Tag<Item> BAUXITE_DUSTS = TagRegistry.item(new Identifier("c", "bauxite_dusts"));
     public static final Tag<Item> BAUXITE_ORES = TagRegistry.item(new Identifier("c", "bauxite_ores"));
     public static final Tag<Item> BAUXITE_TINY_DUSTS = TagRegistry.item(new Identifier("c", "bauxite_tiny_dusts"));
+    public static final Tag<Item> BERYLLIUM_DUSTS = TagRegistry.item(new Identifier("c", "beryllium_dusts"));
+    public static final Tag<Item> BERYLLIUM_GEARS = TagRegistry.item(new Identifier("c", "beryllium_gears"));
+    public static final Tag<Item> BERYLLIUM_INGOTS = TagRegistry.item(new Identifier("c", "beryllium_ingots"));
+    public static final Tag<Item> BERYLLIUM_NUGGETS = TagRegistry.item(new Identifier("c", "beryllium_nuggets"));
+    public static final Tag<Item> BERYLLIUM_PLATES = TagRegistry.item(new Identifier("c", "beryllium_plates"));
+    public static final Tag<Item> BERYLLIUM_TINY_DUSTS = TagRegistry.item(new Identifier("c", "beryllium_tiny_dusts"));
     public static final Tag<Item> BRONZE_DUSTS = TagRegistry.item(new Identifier("c", "bronze_dusts"));
     public static final Tag<Item> BRONZE_GEARS = TagRegistry.item(new Identifier("c", "bronze_gears"));
     public static final Tag<Item> BRONZE_INGOTS = TagRegistry.item(new Identifier("c", "bronze_ingots"));

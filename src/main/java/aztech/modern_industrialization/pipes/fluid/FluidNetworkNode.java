@@ -23,31 +23,28 @@
  */
 package aztech.modern_industrialization.pipes.fluid;
 
-import static alexiil.mc.lib.attributes.Simulation.ACTION;
 import static aztech.modern_industrialization.pipes.api.PipeEndpointType.*;
 
-import alexiil.mc.lib.attributes.SearchOption;
-import alexiil.mc.lib.attributes.SearchOptions;
-import alexiil.mc.lib.attributes.fluid.FluidAttributes;
-import alexiil.mc.lib.attributes.fluid.FluidExtractable;
-import alexiil.mc.lib.attributes.fluid.FluidInsertable;
-import alexiil.mc.lib.attributes.fluid.amount.FluidAmount;
-import alexiil.mc.lib.attributes.fluid.filter.ExactFluidFilter;
-import alexiil.mc.lib.attributes.fluid.volume.*;
 import aztech.modern_industrialization.ModernIndustrialization;
 import aztech.modern_industrialization.pipes.api.PipeEndpointType;
 import aztech.modern_industrialization.pipes.api.PipeNetworkNode;
-import java.math.RoundingMode;
+import aztech.modern_industrialization.util.NbtHelper;
 import java.util.*;
+
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidApi;
+import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
+import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
+import net.minecraft.fluid.Fluid;
+import net.minecraft.fluid.Fluids;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 
 public class FluidNetworkNode extends PipeNetworkNode {
-    int amount = 0;
-    private List<FluidConnection> connections = new ArrayList<>();
-    private FluidKey cachedFluid = FluidKeys.EMPTY;
+    long amount = 0;
+    private final List<FluidConnection> connections = new ArrayList<>();
+    private Fluid cachedFluid = Fluids.EMPTY;
     private boolean needsSync = false;
 
     void interactWithConnections(World world, BlockPos pos) {
@@ -57,37 +54,35 @@ public class FluidNetworkNode extends PipeNetworkNode {
             ModernIndustrialization.LOGGER.warn("Fluid amount > nodeCapacity, deleting some fluid!");
             amount = network.nodeCapacity;
         }
-        if (amount > 0 && data.fluid.isEmpty()) {
+        if (amount > 0 && data.fluid == Fluids.EMPTY) {
             ModernIndustrialization.LOGGER.warn("Amount > 0 but fluid is empty, deleting some fluid!");
             amount = 0;
         }
         for (FluidConnection connection : connections) { // TODO: limit insert and extract rate
             // Insert
-            if (amount > 0 && connection.canInsert()) {
-                SearchOption option = SearchOptions.inDirection(connection.direction);
-                FluidInsertable insertable = FluidAttributes.INSERTABLE.get(world, pos.offset(connection.direction), option);
-                FluidVolume leftover = insertable.attemptInsertion(data.fluid.withAmount(FluidAmount.of(amount, 1000)), ACTION);
-                amount = leftover.amount().asInt(1000, RoundingMode.FLOOR);
+            Storage<Fluid> io = FluidApi.SIDED.get(world, pos.offset(connection.direction), connection.direction.getOpposite());
+            if (amount > 0 && connection.canInsert() && io != null && !io.insertionFunction().isEmpty()) {
+                try (Transaction tx = Transaction.openOuter()) {
+                    amount -= io.insertionFunction().apply(data.fluid, amount, 81000, tx);
+                    tx.commit();
+                }
             }
-            if (connection.canExtract()) {
-                // Extract any
-                if (data.fluid.isEmpty()) {
-                    SearchOption option = SearchOptions.inDirection(connection.direction);
-                    FluidExtractable extractable = FluidAttributes.EXTRACTABLE.get(world, pos.offset(connection.direction), option);
-                    FluidVolume extractedVolume = extractable.extract(FluidAmount.of(network.nodeCapacity, 1000));
-                    if (extractedVolume.amount().isPositive()) {
-                        amount = extractedVolume.amount().asInt(1000, RoundingMode.FLOOR);
-                        data.fluid = extractedVolume.getFluidKey();
-                        break;
-                    }
+            if (connection.canExtract() && io != null && !io.extractionFunction().isEmpty()) {
+                // Find the fluid to extract
+                if (data.fluid == Fluids.EMPTY) {
+                    io.forEach(storageView -> {
+                        if (data.fluid != Fluids.EMPTY) throw new RuntimeException("Bad implementation!");
+                        if (storageView.amount(81000) > 0 && !storageView.extractionFunction().isEmpty()) {
+                            data.fluid = storageView.resource();
+                            return true;
+                        }
+                        return false;
+                    });
                 }
                 // Extract current fluid
-                else {
-                    SearchOption option = SearchOptions.inDirection(connection.direction);
-                    FluidExtractable extractable = FluidAttributes.EXTRACTABLE.get(world, pos.offset(connection.direction), option);
-                    FluidVolume extractedVolume = extractable.extract(new ExactFluidFilter(data.fluid),
-                            FluidAmount.of(network.nodeCapacity - amount, 1000));
-                    amount += extractedVolume.amount().asInt(1000, RoundingMode.FLOOR);
+                try (Transaction tx = Transaction.openOuter()) {
+                    amount += io.extractionFunction().apply(data.fluid, network.nodeCapacity - amount, 81000, tx);
+                    tx.commit();
                 }
             }
         }
@@ -120,9 +115,8 @@ public class FluidNetworkNode extends PipeNetworkNode {
     }
 
     private boolean canConnect(World world, BlockPos pos, Direction direction) {
-        SearchOption option = SearchOptions.inDirection(direction);
-        return FluidAttributes.INSERTABLE.getAll(world, pos.offset(direction), option).hasOfferedAny()
-                || FluidAttributes.EXTRACTABLE.getAll(world, pos.offset(direction), option).hasOfferedAny();
+        Storage<Fluid> io = FluidApi.SIDED.get(world, pos.offset(direction), direction.getOpposite());
+        return io != null && (!io.insertionFunction().isEmpty() || !io.extractionFunction().isEmpty());
     }
 
     @Override
@@ -158,7 +152,7 @@ public class FluidNetworkNode extends PipeNetworkNode {
 
     @Override
     public CompoundTag toTag(CompoundTag tag) {
-        tag.putInt("amount", amount);
+        tag.putLong("amount_ftl", amount);
         for (FluidConnection connection : connections) {
             tag.putByte(connection.direction.toString(), (byte) encodeConnectionType(connection.type));
         }
@@ -167,7 +161,11 @@ public class FluidNetworkNode extends PipeNetworkNode {
 
     @Override
     public void fromTag(CompoundTag tag) {
-        amount = tag.getInt("amount");
+        if (tag.contains("amount")) {
+            amount = tag.getInt("amount") * 81;
+        } else {
+            amount = tag.getLong("amount_ftl");
+        }
         for (Direction direction : Direction.values()) {
             if (tag.contains(direction.toString())) {
                 connections.add(new FluidConnection(direction, decodeConnectionType(tag.getByte(direction.toString()))));
@@ -204,7 +202,7 @@ public class FluidNetworkNode extends PipeNetworkNode {
     @Override
     public CompoundTag writeCustomData() {
         CompoundTag tag = new CompoundTag();
-        tag.put("fluid", ((FluidNetworkData) network.data).fluid.toTag());
+        NbtHelper.putFluid(tag, "fluid", ((FluidNetworkData) network.data).fluid);
         return tag;
     }
 
@@ -212,7 +210,7 @@ public class FluidNetworkNode extends PipeNetworkNode {
     public void tick(World world, BlockPos pos) {
         super.tick(world, pos);
 
-        FluidKey networkFluid = ((FluidNetworkData) network.data).fluid;
+        Fluid networkFluid = ((FluidNetworkData) network.data).fluid;
         if (networkFluid != cachedFluid) {
             cachedFluid = networkFluid;
             needsSync = true;
@@ -227,7 +225,7 @@ public class FluidNetworkNode extends PipeNetworkNode {
     }
 
     // Used in the Waila plugin
-    public int getAmount() {
+    public long getAmount() {
         return amount;
     }
 
@@ -235,7 +233,7 @@ public class FluidNetworkNode extends PipeNetworkNode {
         return ((FluidNetwork) network).nodeCapacity;
     }
 
-    public FluidKey getFluid() {
+    public Fluid getFluid() {
         return ((FluidNetworkData) network.data).fluid;
     }
 }

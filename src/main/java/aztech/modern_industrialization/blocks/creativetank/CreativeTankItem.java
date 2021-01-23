@@ -23,75 +23,76 @@
  */
 package aztech.modern_industrialization.blocks.creativetank;
 
-import static aztech.modern_industrialization.blocks.creativetank.CreativeTankBlockEntity.MAX_OUTPUT;
-
-import alexiil.mc.lib.attributes.AttributeProviderItem;
-import alexiil.mc.lib.attributes.ItemAttributeList;
-import alexiil.mc.lib.attributes.Simulation;
-import alexiil.mc.lib.attributes.fluid.FluidExtractable;
-import alexiil.mc.lib.attributes.fluid.FluidVolumeUtil;
-import alexiil.mc.lib.attributes.fluid.amount.FluidAmount;
-import alexiil.mc.lib.attributes.fluid.filter.FluidFilter;
-import alexiil.mc.lib.attributes.fluid.volume.FluidKey;
-import alexiil.mc.lib.attributes.fluid.volume.FluidVolume;
-import alexiil.mc.lib.attributes.misc.AbstractItemBasedAttribute;
-import alexiil.mc.lib.attributes.misc.LimitedConsumer;
-import alexiil.mc.lib.attributes.misc.Reference;
+import aztech.modern_industrialization.util.FluidHelper;
 import aztech.modern_industrialization.util.NbtHelper;
 import java.util.List;
+
+import net.fabricmc.fabric.api.lookup.v1.item.ItemKey;
+import net.fabricmc.fabric.api.transfer.v1.base.FixedDenominatorStorageView;
+import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext;
+import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
+import net.fabricmc.fabric.api.transfer.v1.storage.StorageFunction;
 import net.minecraft.block.Block;
 import net.minecraft.client.item.TooltipContext;
+import net.minecraft.fluid.Fluid;
+import net.minecraft.fluid.Fluids;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
-import net.minecraft.text.Style;
 import net.minecraft.text.Text;
-import net.minecraft.text.TextColor;
-import net.minecraft.text.TranslatableText;
 import net.minecraft.world.World;
 
-public class CreativeTankItem extends BlockItem implements AttributeProviderItem {
+public class CreativeTankItem extends BlockItem {
     public CreativeTankItem(Block block, Settings settings) {
         super(block, settings);
     }
 
-    public boolean isEmpty(ItemStack stack) {
+    public static boolean isEmpty(ItemStack stack) {
         return stack.getSubTag("BlockEntityTag") == null;
     }
 
-    public FluidKey getFluid(ItemStack stack) {
+    public static Fluid getFluid(ItemStack stack) {
         return NbtHelper.getFluidCompatible(stack.getSubTag("BlockEntityTag"), "fluid");
     }
 
     @Override
     public void appendTooltip(ItemStack stack, World world, List<Text> tooltip, TooltipContext context) {
-        Style style = Style.EMPTY.withColor(TextColor.fromRgb(0xa9a9a9)).withItalic(true);
-        if (!isEmpty(stack)) {
-            tooltip.add(getFluid(stack).name);
-        } else {
-            tooltip.add(new TranslatableText("text.modern_industrialization.fluid_slot_empty").setStyle(style));
-        }
+        tooltip.add(FluidHelper.getFluidName(getFluid(stack), true));
     }
 
-    @Override
-    public void addAllAttributes(Reference<ItemStack> stack, LimitedConsumer<ItemStack> excess, ItemAttributeList<?> to) {
-        to.offer(new TankFluidTransferable(stack, excess));
-    }
+    public static class TankItemStorage implements Storage<Fluid>, FixedDenominatorStorageView<Fluid> {
+        private final Fluid fluid;
 
-    private class TankFluidTransferable extends AbstractItemBasedAttribute implements FluidExtractable {
-        private TankFluidTransferable(Reference<ItemStack> stackRef, LimitedConsumer<ItemStack> excessStacks) {
-            super(stackRef, excessStacks);
+        public TankItemStorage(ItemKey key, ContainerItemContext ignored) {
+            ItemStack stack = key.toStack();
+            this.fluid = CreativeTankItem.getFluid(stack);
         }
 
         @Override
-        public FluidVolume attemptExtraction(FluidFilter filter, FluidAmount maxAmount, Simulation simulation) {
-            if (isEmpty(stackRef.get()))
-                return FluidVolumeUtil.EMPTY;
+        public StorageFunction<Fluid> extractionFunction() {
+            return StorageFunction.identity();
+        }
 
-            FluidKey fluid = getFluid(stackRef.get());
-            if (filter.matches(fluid)) {
-                return fluid.withAmount(maxAmount.min(MAX_OUTPUT));
+        @Override
+        public Fluid resource() {
+            return fluid;
+        }
+
+        @Override
+        public boolean forEach(Visitor<Fluid> visitor) {
+            if (fluid != Fluids.EMPTY) {
+                return visitor.visit(this);
             }
-            return FluidVolumeUtil.EMPTY;
+            return false;
+        }
+
+        @Override
+        public long denominator() {
+            return 81000;
+        }
+
+        @Override
+        public long amountFixedDenominator() {
+            return Integer.MAX_VALUE;
         }
     }
 }

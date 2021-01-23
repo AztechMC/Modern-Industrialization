@@ -25,7 +25,6 @@ package aztech.modern_industrialization.pipes;
 
 import static aztech.modern_industrialization.api.energy.CableTier.*;
 
-import alexiil.mc.lib.attributes.fluid.volume.FluidKeys;
 import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.ModernIndustrialization;
 import aztech.modern_industrialization.api.energy.CableTier;
@@ -58,6 +57,7 @@ import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.texture.SpriteAtlasTexture;
 import net.minecraft.client.util.SpriteIdentifier;
+import net.minecraft.fluid.Fluids;
 import net.minecraft.item.Item;
 import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.util.Identifier;
@@ -107,18 +107,18 @@ public class MIPipes implements ModInitializer {
         Registry.register(Registry.BLOCK, new MIIdentifier("pipe"), BLOCK_PIPE);
         BLOCK_ENTITY_TYPE_PIPE = Registry.register(Registry.BLOCK_ENTITY_TYPE, new MIIdentifier("pipe"),
                 BlockEntityType.Builder.create(PipeBlockEntity::new, BLOCK_PIPE).build(null));
-        registerFluidPipeType("gold", 255 << 24 | 255 << 16 | 225 << 8 | 0, 1000);
-        registerFluidPipeType("aluminum", 255 << 24 | 63 << 16 | 202 << 8 | 255, 1000);
-        registerFluidPipeType("steel", 255 << 24 | 63 << 16 | 63 << 8 | 63, 1000);
-        registerFluidPipeType("iron", 255 << 24 | 240 << 16 | 240 << 8 | 240, 1000);
-        registerFluidPipeType("bronze", 255 << 24 | 255 << 16 | 204 << 8, 1000);
-        registerFluidPipeType("tin", 255 << 24 | 203 << 16 | 228 << 8 | 228, 1000);
-        registerFluidPipeType("copper", 255 << 24 | 255 << 16 | 102 << 8, 1000);
-        registerFluidPipeType("lead", 255 << 24 | 0x4a2649, 1000);
-        registerFluidPipeType("nickel", 255 << 24 | 0xa9a9d4, 1000);
-        registerFluidPipeType("silver", 255 << 24 | 0x99ffff, 1000);
-        registerFluidPipeType("electrum", 255 << 24 | 0xefff5e, 1000);
-        registerFluidPipeType("stainless_steel", 255 << 24 | 0x98abbb, 1000);
+        registerFluidPipeType("gold", 255 << 24 | 255 << 16 | 225 << 8 | 0, 81000);
+        registerFluidPipeType("aluminum", 255 << 24 | 63 << 16 | 202 << 8 | 255, 81000);
+        registerFluidPipeType("steel", 255 << 24 | 63 << 16 | 63 << 8 | 63, 81000);
+        registerFluidPipeType("iron", 255 << 24 | 240 << 16 | 240 << 8 | 240, 81000);
+        registerFluidPipeType("bronze", 255 << 24 | 255 << 16 | 204 << 8, 81000);
+        registerFluidPipeType("tin", 255 << 24 | 203 << 16 | 228 << 8 | 228, 81000);
+        registerFluidPipeType("copper", 255 << 24 | 255 << 16 | 102 << 8, 81000);
+        registerFluidPipeType("lead", 255 << 24 | 0x4a2649, 81000);
+        registerFluidPipeType("nickel", 255 << 24 | 0xa9a9d4, 81000);
+        registerFluidPipeType("silver", 255 << 24 | 0x99ffff, 81000);
+        registerFluidPipeType("electrum", 255 << 24 | 0xefff5e, 81000);
+        registerFluidPipeType("stainless_steel", 255 << 24 | 0x98abbb, 81000);
 
         registerItemPipeType("gold", 255 << 24 | 255 << 16 | 225 << 8 | 0);
         registerItemPipeType("aluminum", 255 << 24 | 63 << 16 | 202 << 8 | 255);
@@ -155,7 +155,7 @@ public class MIPipes implements ModInitializer {
     public void registerFluidPipeType(String name, int color, int nodeCapacity) {
         PipeNetworkType type = PipeNetworkType.register(new MIIdentifier("fluid_" + name), (id, data) -> new FluidNetwork(id, data, nodeCapacity),
                 FluidNetworkNode::new, color, false, FLUID_RENDERER);
-        PipeItem item = new PipeItem(new Item.Settings().group(ModernIndustrialization.ITEM_GROUP), type, new FluidNetworkData(FluidKeys.EMPTY));
+        PipeItem item = new PipeItem(new Item.Settings().group(ModernIndustrialization.ITEM_GROUP), type, new FluidNetworkData(Fluids.EMPTY));
         pipeItems.put(type, item);
         Registry.register(Registry.ITEM, new MIIdentifier("pipe_fluid_" + name), item);
         PIPE_MODEL_NAMES.add(new MIIdentifier("item/pipe_fluid_" + name));

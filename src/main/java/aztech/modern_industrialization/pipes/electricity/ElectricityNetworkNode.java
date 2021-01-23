@@ -32,7 +32,7 @@ import aztech.modern_industrialization.util.NbtHelper;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import net.fabricmc.fabric.api.provider.v1.block.BlockApiCache;
+import net.fabricmc.fabric.api.lookup.v1.block.BlockApiCache;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;

@@ -1,0 +1,23 @@
+{
+  "type": "modern_industrialization:chemical_reactor",
+  "eu": 16,
+  "duration": 400,
+  "item_inputs": [
+    {
+      "item": "modern_industrialization:beryllium_oxide_dust",
+      "amount": 2
+    },
+    {
+      "item": "modern_industrialization:carbon_dust",
+      "amount": 1
+    }
+  ],
+  "fluid_inputs": {
+    "fluid": "modern_industrialization:chlorine",
+    "amount": 750
+  },
+  "fluid_outputs": {
+    "fluid": "modern_industrialization:beryllium_chloride",
+    "amount": 500
+  }
+}

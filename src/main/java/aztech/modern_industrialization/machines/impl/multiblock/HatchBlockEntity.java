@@ -25,20 +25,17 @@ package aztech.modern_industrialization.machines.impl.multiblock;
 
 import static aztech.modern_industrialization.machines.impl.multiblock.HatchType.*;
 
-import alexiil.mc.lib.attributes.SearchOptions;
-import alexiil.mc.lib.attributes.fluid.FluidAttributes;
-import alexiil.mc.lib.attributes.fluid.FluidExtractable;
-import alexiil.mc.lib.attributes.fluid.FluidInsertable;
-import alexiil.mc.lib.attributes.fluid.FluidVolumeUtil;
-import alexiil.mc.lib.attributes.item.ItemAttributes;
-import alexiil.mc.lib.attributes.item.ItemExtractable;
-import alexiil.mc.lib.attributes.item.ItemInsertable;
-import alexiil.mc.lib.attributes.item.ItemInvUtil;
 import aztech.modern_industrialization.machines.impl.MachineBlockEntity;
 import aztech.modern_industrialization.machines.impl.MachineFactory;
 import aztech.modern_industrialization.util.NbtHelper;
+import net.fabricmc.fabric.api.lookup.v1.item.ItemKey;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidApi;
+import net.fabricmc.fabric.api.transfer.v1.item.ItemApi;
+import net.fabricmc.fabric.api.transfer.v1.storage.Movement;
+import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.fluid.Fluid;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.math.BlockPos;
 
@@ -95,22 +92,22 @@ public class HatchBlockEntity extends MachineBlockEntity {
         if (controllerPos != lastSyncedControllerPos)
             sync();
         if (extractItems && type == ITEM_OUTPUT) {
-            autoExtractItems(world, pos, outputDirection);
+            inventory.autoExtractItems(world, pos, outputDirection);
         }
         if (extractFluids && type == FLUID_OUTPUT) {
-            autoExtractFluids(world, pos, outputDirection);
+            inventory.autoExtractFluids(world, pos, outputDirection);
         }
         if (extractItems && type == ITEM_INPUT) {
-            ItemExtractable extractable = ItemAttributes.EXTRACTABLE.get(world, pos.offset(outputDirection),
-                    SearchOptions.inDirection(outputDirection));
-            ItemInsertable insertable = ItemAttributes.INSERTABLE.get(world, pos);
-            ItemInvUtil.moveMultiple(extractable, insertable);
+            Storage<ItemKey> source = ItemApi.SIDED.get(world, pos.offset(outputDirection), outputDirection.getOpposite());
+            if (source != null) {
+                Movement.move(source, inventory.itemStorage.insertionFunction(), key -> true, Integer.MAX_VALUE, 1);
+            }
         }
         if (extractFluids && type == FLUID_INPUT) {
-            FluidExtractable extractable = FluidAttributes.EXTRACTABLE.get(world, pos.offset(outputDirection),
-                    SearchOptions.inDirection(outputDirection));
-            FluidInsertable insertable = FluidAttributes.INSERTABLE.get(world, pos);
-            FluidVolumeUtil.move(extractable, insertable);
+            Storage<Fluid> source = FluidApi.SIDED.get(world, pos.offset(outputDirection), outputDirection.getOpposite());
+            if (source != null) {
+                Movement.move(source, inventory.fluidStorage.insertionFunction(), key -> true, Integer.MAX_VALUE, 81000);
+            }
         }
         markDirty();
     }

@@ -87,6 +87,7 @@ public class MIMachines {
     public static final MachineRecipeType RECIPE_BLAST_FURNACE = createRecipeType("blast_furnace").withItemInputs().withItemOutputs()
             .withFluidInputs().withFluidOutputs();
     public static final MachineRecipeType RECIPE_DISTILLATION_TOWER = createRecipeType("distillation_tower").withFluidInputs().withFluidOutputs();
+    public static final MachineRecipeType RECIPE_SINTERING_FURNACE = createRecipeType("sintering_furnace").withItemInputs().withItemOutputs();
     public static final MachineRecipeType RECIPE_VACUUM_FREEZER = createRecipeType("vacuum_freezer").withItemInputs().withItemOutputs()
             .withFluidInputs().withFluidOutputs();
     public static final MachineRecipeType RECIPE_OIL_DRILLING_RIG = createRecipeType("oil_drilling_rig").withItemInputs().withFluidOutputs();
@@ -101,6 +102,7 @@ public class MIMachines {
     public static MultiblockShape OIL_DRILLING_RIG_SHAPE;
     public static MultiblockShape VACUUM_FREEZER_SHAPE;
     public static MultiblockShape NUCLEAR_REACTOR_SHAPE;
+    public static MultiblockShape SINTERING_FURNACE_SHAPE;
 
     public static final MachineFactory LARGE_STEAM_BOILER;
     public static final MachineFactory ELECTRIC_BLAST_FURNACE;
@@ -258,6 +260,32 @@ public class MIMachines {
                             }
 
                         }
+                    }
+                }
+            }
+        }
+
+        SINTERING_FURNACE_SHAPE = new MultiblockShape();
+        MultiblockShape.Entry heatproofCasing = MultiblockShapes.block(MIBlock.HEATPROOF_MACHINE_CASING);
+        MultiblockShape.Entry optionalSinteringFurnaceHatch = MultiblockShapes.or(
+                MultiblockShapes.block(MIBlock.CLEAN_STAINLESS_STEEL_MACHINE_CASING),
+                MultiblockShapes.hatch(HATCH_FLAG_ITEM_INPUT | HATCH_FLAG_ITEM_OUTPUT | HATCH_FLAG_ENERGY_INPUT));
+
+        for (int x = -1; x <= 1; ++x) {
+            for (int z = 0; z < 3; ++z) {
+                SINTERING_FURNACE_SHAPE.addEntry(x, 3, z, optionalSinteringFurnaceHatch);
+                if (x == 0 && z == 0)
+                    continue;
+                SINTERING_FURNACE_SHAPE.addEntry(x, 0, z, optionalSinteringFurnaceHatch);
+            }
+        }
+        for (int x = -1; x <= 1; ++x) {
+            for (int y = 1; y < 3; ++y) {
+                for (int z = 0; z < 3; ++z) {
+                    if (x == 0 && z == 1) {
+                        continue;
+                    } else {
+                        SINTERING_FURNACE_SHAPE.addEntry(x, y, z, heatproofCasing);
                     }
                 }
             }
@@ -509,6 +537,12 @@ public class MIMachines {
                         .setLiquidOutputSlotPosition(122, 35, 1, 1).setupProgressBar(76, 35, 22, 15, true).setupBackground("steam_furnace.png")
                         .setupEfficiencyBar(0, 166, 38, 62, 100, 2).setupOverlays("electric_blast_furnace", true, false, false)
                         .setupCasing("heatproof");
+
+        new MachineFactory("sintering_furnace", null, f -> new MultiblockMachineBlockEntity(f, Collections.singletonList(SINTERING_FURNACE_SHAPE)),
+                RECIPE_SINTERING_FURNACE, 2, 2, 0, 0).setInputSlotPosition(56, 35, 1, 2).setOutputSlotPosition(102, 35, 1, 2)
+                        .setupProgressBar(76, 35, 22, 15, true).setupProgressBar(76, 35, 22, 15, true).setupBackground("steam_furnace.png")
+                        .setupEfficiencyBar(0, 166, 38, 62, 100, 2).setupOverlays("electric_blast_furnace", true, false, false)
+                        .setupCasing("clean_stainless_steel");
 
         new MachineFactory("oil_drilling_rig", UNLIMITED, f -> new MultiblockMachineBlockEntity(f, Collections.singletonList(OIL_DRILLING_RIG_SHAPE)),
                 RECIPE_OIL_DRILLING_RIG, 1, 0, 0, 1).setInputSlotPosition(56, 35, 1, 1).setLiquidOutputSlotPosition(102, 35, 1, 1)

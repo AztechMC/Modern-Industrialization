@@ -23,14 +23,17 @@
  */
 package aztech.modern_industrialization.compat.waila;
 
-import alexiil.mc.lib.attributes.fluid.volume.FluidKey;
 import aztech.modern_industrialization.pipes.MIPipes;
 import aztech.modern_industrialization.pipes.impl.PipeBlockEntity;
 import aztech.modern_industrialization.pipes.impl.PipeVoxelShape;
+import aztech.modern_industrialization.util.FluidHelper;
+import aztech.modern_industrialization.util.NbtHelper;
 import java.util.List;
 import mcp.mobius.waila.api.IComponentProvider;
 import mcp.mobius.waila.api.IDataAccessor;
 import mcp.mobius.waila.api.IPluginConfig;
+import net.minecraft.fluid.Fluid;
+import net.minecraft.fluid.Fluids;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
@@ -82,15 +85,14 @@ public class PipeComponentProvider implements IComponentProvider {
             Style style = Style.EMPTY.withColor(TextColor.fromRgb(0xa9a9a9)).withItalic(true);
 
             if (tag.contains("fluid")) {
-                FluidKey fluid = FluidKey.fromTag(tag.getCompound("fluid"));
-                int amount = tag.getInt("amount");
+                Fluid fluid = NbtHelper.getFluid(tag, "fluid");
+                long amount = tag.getLong("amount");
                 int capacity = tag.getInt("capacity");
-                if (fluid.isEmpty()) {
+                if (fluid == Fluids.EMPTY) {
                     tooltip.add(new TranslatableText("text.modern_industrialization.fluid_slot_empty"));
                 } else {
-                    tooltip.add(fluid.name);
-                    String quantity = amount + " / " + capacity;
-                    tooltip.add(new TranslatableText("text.modern_industrialization.fluid_slot_quantity", quantity).setStyle(style));
+                    tooltip.add(FluidHelper.getFluidName(fluid, true));
+                    tooltip.add(FluidHelper.getFluidAmount(amount, capacity));
                 }
             }
 

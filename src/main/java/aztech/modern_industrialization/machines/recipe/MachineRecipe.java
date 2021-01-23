@@ -23,13 +23,13 @@
  */
 package aztech.modern_industrialization.machines.recipe;
 
-import aztech.modern_industrialization.machines.impl.MachineBlockEntity;
 import aztech.modern_industrialization.mixin_impl.IngredientMatchingStacksAccessor;
 import aztech.modern_industrialization.util.DefaultedListWrapper;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import net.minecraft.fluid.Fluid;
+import net.minecraft.inventory.Inventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.recipe.Ingredient;
@@ -40,7 +40,7 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.world.World;
 
-public class MachineRecipe implements Recipe<MachineBlockEntity> {
+public class MachineRecipe implements Recipe<Inventory> {
     final Identifier id;
     final MachineRecipeType type;
 
@@ -62,12 +62,12 @@ public class MachineRecipe implements Recipe<MachineBlockEntity> {
     }
 
     @Override
-    public boolean matches(MachineBlockEntity inv, World world) {
+    public boolean matches(Inventory inv, World world) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public ItemStack craft(MachineBlockEntity inv) {
+    public ItemStack craft(Inventory inv) {
         throw new UnsupportedOperationException();
     }
 
@@ -138,10 +138,10 @@ public class MachineRecipe implements Recipe<MachineBlockEntity> {
 
     public static class FluidInput {
         public final Fluid fluid;
-        public final int amount;
+        public final long amount;
         public final float probability;
 
-        public FluidInput(Fluid fluid, int amount, float probability) {
+        public FluidInput(Fluid fluid, long amount, float probability) {
             this.fluid = fluid;
             this.amount = amount;
             this.probability = probability;
@@ -162,10 +162,10 @@ public class MachineRecipe implements Recipe<MachineBlockEntity> {
 
     public static class FluidOutput {
         public final Fluid fluid;
-        public final int amount;
+        public final long amount;
         public final float probability;
 
-        public FluidOutput(Fluid fluid, int amount, float probability) {
+        public FluidOutput(Fluid fluid, long amount, float probability) {
             this.fluid = fluid;
             this.amount = amount;
             this.probability = probability;

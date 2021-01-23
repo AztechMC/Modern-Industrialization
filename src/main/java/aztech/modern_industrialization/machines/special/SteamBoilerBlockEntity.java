@@ -23,7 +23,7 @@
  */
 package aztech.modern_industrialization.machines.special;
 
-import alexiil.mc.lib.attributes.fluid.volume.FluidKeys;
+import aztech.modern_industrialization.MIFluids;
 import aztech.modern_industrialization.inventory.ConfigurableFluidStack;
 import aztech.modern_industrialization.inventory.ConfigurableItemStack;
 import aztech.modern_industrialization.machines.impl.MachineBlockEntity;
@@ -31,7 +31,8 @@ import aztech.modern_industrialization.machines.impl.MachineFactory;
 import aztech.modern_industrialization.machines.impl.MachineTier;
 import aztech.modern_industrialization.util.ItemStackHelper;
 import net.fabricmc.fabric.impl.content.registry.FuelRegistryImpl;
-import net.minecraft.item.ItemStack;
+import net.minecraft.fluid.Fluids;
+import net.minecraft.item.Item;
 import net.minecraft.util.math.Direction;
 
 // TODO: progress bar
@@ -49,8 +50,8 @@ public class SteamBoilerBlockEntity extends MachineBlockEntity {
     public SteamBoilerBlockEntity(MachineFactory factory) {
         super(factory);
 
-        getFluidStacks().set(0, ConfigurableFluidStack.lockedInputSlot(factory.getInputBucketCapacity() * 1000, FluidKeys.WATER));
-        getFluidStacks().set(1, ConfigurableFluidStack.lockedOutputSlot(factory.getOutputBucketCapacity() * 1000, STEAM_KEY));
+        inventory.fluidStacks.set(0, ConfigurableFluidStack.lockedInputSlot(factory.getInputBucketCapacity() * 81000, Fluids.WATER));
+        inventory.fluidStacks.set(1, ConfigurableFluidStack.lockedOutputSlot(factory.getOutputBucketCapacity() * 81000, MIFluids.STEAM));
 
         maxEfficiencyTicks = 10000;
         efficiencyTicks = 0;
@@ -65,10 +66,10 @@ public class SteamBoilerBlockEntity extends MachineBlockEntity {
 
         this.isActive = false;
         if (usedEnergy == 0) {
-            ConfigurableItemStack stack = getItemStacks().get(0);
-            ItemStack fuel = stack.getStack();
+            ConfigurableItemStack stack = inventory.itemStacks.get(0);
+            Item fuel = stack.getItemKey().getItem();
             if (ItemStackHelper.consumeFuel(stack, true)) {
-                Integer fuelTime = FuelRegistryImpl.INSTANCE.get(fuel.getItem());
+                Integer fuelTime = FuelRegistryImpl.INSTANCE.get(fuel);
                 if (fuelTime != null && fuelTime > 0) {
                     recipeEnergy = fuelTime * BURN_TIME_MULTIPLIER / (factory.tier == MachineTier.BRONZE ? 1 : 2);
                     usedEnergy = recipeEnergy;
@@ -89,13 +90,13 @@ public class SteamBoilerBlockEntity extends MachineBlockEntity {
         }
 
         if (efficiencyTicks > 1000) {
-            int steamProduction = (factory.tier == MachineTier.BRONZE ? 8 : 16) * efficiencyTicks / maxEfficiencyTicks;
-            if (steamProduction > 0 && fluidStacks.get(0).getAmount() > 0) {
-                int remSpace = fluidStacks.get(1).getRemainingSpace();
-                int actualProduced = Math.min(steamProduction, remSpace);
+            int steamProduction = 81 * (factory.tier == MachineTier.BRONZE ? 8 : 16) * efficiencyTicks / maxEfficiencyTicks;
+            if (steamProduction > 0 && inventory.fluidStacks.get(0).getAmount() > 0) {
+                long remSpace = inventory.fluidStacks.get(1).getRemainingSpace();
+                long actualProduced = Math.min(steamProduction, remSpace);
                 if (actualProduced > 0) {
-                    fluidStacks.get(1).increment(actualProduced);
-                    fluidStacks.get(0).decrement(1);
+                    inventory.fluidStacks.get(1).increment(actualProduced);
+                    inventory.fluidStacks.get(0).decrement(Math.min(81, inventory.fluidStacks.get(0).getAmount()));
                 }
             }
         }
@@ -106,7 +107,7 @@ public class SteamBoilerBlockEntity extends MachineBlockEntity {
         markDirty();
 
         for (Direction direction : Direction.values()) {
-            autoExtractFluids(world, pos, direction);
+            inventory.autoExtractFluids(world, pos, direction);
         }
     }
 

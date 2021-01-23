@@ -25,10 +25,13 @@ package aztech.modern_industrialization.blocks.creativetank;
 
 import aztech.modern_industrialization.util.FluidHelper;
 import aztech.modern_industrialization.util.NbtHelper;
-import dev.technici4n.fasttransferlib.api.ContainerItemContext;
-import dev.technici4n.fasttransferlib.api.fluid.FluidIo;
-import dev.technici4n.fasttransferlib.api.item.ItemKey;
 import java.util.List;
+
+import net.fabricmc.fabric.api.lookup.v1.item.ItemKey;
+import net.fabricmc.fabric.api.transfer.v1.base.FixedDenominatorStorageView;
+import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext;
+import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
+import net.fabricmc.fabric.api.transfer.v1.storage.StorageFunction;
 import net.minecraft.block.Block;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.fluid.Fluid;
@@ -56,41 +59,40 @@ public class CreativeTankItem extends BlockItem {
         tooltip.add(FluidHelper.getFluidName(getFluid(stack), true));
     }
 
-    public static class Io implements FluidIo {
+    public static class TankItemStorage implements Storage<Fluid>, FixedDenominatorStorageView<Fluid> {
         private final Fluid fluid;
 
-        public Io(ItemKey key, ContainerItemContext ignored) {
+        public TankItemStorage(ItemKey key, ContainerItemContext ignored) {
             ItemStack stack = key.toStack();
             this.fluid = CreativeTankItem.getFluid(stack);
         }
 
         @Override
-        public int getFluidSlotCount() {
-            return 1;
+        public StorageFunction<Fluid> extractionFunction() {
+            return StorageFunction.identity();
         }
 
         @Override
-        public Fluid getFluid(int i) {
+        public Fluid resource() {
             return fluid;
         }
 
         @Override
-        public long getFluidAmount(int i) {
-            return Long.MAX_VALUE;
-        }
-
-        @Override
-        public boolean supportsFluidExtraction() {
-            return true;
-        }
-
-        @Override
-        public long extract(int slot, Fluid fluid, long maxAmount, dev.technici4n.fasttransferlib.api.Simulation simulation) {
-            if (fluid != Fluids.EMPTY && fluid == this.fluid) {
-                return maxAmount;
-            } else {
-                return 0;
+        public boolean forEach(Visitor<Fluid> visitor) {
+            if (fluid != Fluids.EMPTY) {
+                return visitor.visit(this);
             }
+            return false;
+        }
+
+        @Override
+        public long denominator() {
+            return 81000;
+        }
+
+        @Override
+        public long amountFixedDenominator() {
+            return Integer.MAX_VALUE;
         }
     }
 }

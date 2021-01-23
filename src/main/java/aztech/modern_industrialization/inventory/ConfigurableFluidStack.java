@@ -26,6 +26,15 @@ package aztech.modern_industrialization.inventory;
 import aztech.modern_industrialization.util.NbtHelper;
 import java.util.ArrayList;
 import java.util.List;
+
+import com.google.common.base.Preconditions;
+import net.fabricmc.fabric.api.transfer.v1.base.FixedDenominatorStorageFunction;
+import net.fabricmc.fabric.api.transfer.v1.base.FixedDenominatorStorageView;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidPreconditions;
+import net.fabricmc.fabric.api.transfer.v1.storage.StorageFunction;
+import net.fabricmc.fabric.api.transfer.v1.transaction.Participant;
+import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
+import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionResult;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.Fluids;
@@ -34,9 +43,9 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.screen.slot.Slot;
 
 /**
- * A fluid stack that can be configured. TODO: sync fluid and lock state
+ * A fluid stack that can be configured.
  */
-public class ConfigurableFluidStack {
+public class ConfigurableFluidStack implements FixedDenominatorStorageView<Fluid>, Participant<FluidState> {
     private Fluid fluid = Fluids.EMPTY;
     private long amount = 0;
     private long capacity;
@@ -46,11 +55,35 @@ public class ConfigurableFluidStack {
     private boolean playerLockable = true;
     private boolean playerInsert = false;
     private boolean playerExtract = true;
-    boolean pipesInsert = false;
-    boolean pipesExtract = false;
+    private boolean pipesInsert = false;
+    private boolean pipesExtract = false;
+    private final StorageFunction<Fluid> extractionFunction;
 
     public ConfigurableFluidStack(long capacity) {
         this.capacity = capacity;
+        this.extractionFunction = new FixedDenominatorStorageFunction<Fluid>() {
+            @Override
+            public long denominator() {
+                return 81000;
+            }
+
+            @Override
+            public long applyFixedDenominator(Fluid fluid, long maxAmount, Transaction tx) {
+                FluidPreconditions.notEmptyNotNegative(fluid, maxAmount);
+                if (pipesExtract && fluid == getFluid()) {
+                    long extracted = Math.min(maxAmount, amount);
+                    tx.enlist(ConfigurableFluidStack.this);
+                    decrement(extracted);
+                    return extracted;
+                }
+                return 0;
+            }
+
+            @Override
+            public boolean isEmpty() {
+                return !pipesExtract;
+            }
+        };
     }
 
     public static ConfigurableFluidStack standardInputSlot(long capacity) {
@@ -86,6 +119,7 @@ public class ConfigurableFluidStack {
     }
 
     public ConfigurableFluidStack(ConfigurableFluidStack other) {
+        this(other.capacity);
         this.fluid = other.fluid;
         this.amount = other.amount;
         this.capacity = other.capacity;
@@ -165,7 +199,7 @@ public class ConfigurableFluidStack {
         increment(-amount);
     }
 
-    public boolean isFluidValid(Fluid fluid) {
+    public boolean isValid(Fluid fluid) {
         return fluid == this.fluid || (lockedFluid == null && this.fluid == Fluids.EMPTY);
     }
 
@@ -283,6 +317,39 @@ public class ConfigurableFluidStack {
         return pipesInsert;
     }
 
+    @Override
+    public StorageFunction<Fluid> extractionFunction() {
+        return extractionFunction;
+    }
+
+    @Override
+    public Fluid resource() {
+        return fluid;
+    }
+
+    @Override
+    public long denominator() {
+        return 81000;
+    }
+
+    @Override
+    public long amountFixedDenominator() {
+        return amount;
+    }
+
+    @Override
+    public FluidState onEnlist() {
+        return new FluidState(fluid, amount);
+    }
+
+    @Override
+    public void onClose(FluidState fluidState, TransactionResult result) {
+        if (result.wasAborted()) {
+            this.fluid = fluidState.fluid;
+            this.amount = fluidState.amount;
+        }
+    }
+
     public class ConfigurableFluidSlot extends Slot {
         private final Runnable markDirty;
 
@@ -305,7 +372,7 @@ public class ConfigurableFluidStack {
         }
 
         public boolean canInsertFluid(Fluid fluid) {
-            return playerInsert && isFluidValid(fluid);
+            return playerInsert && isValid(fluid);
         }
 
         public boolean canExtractFluid(Fluid fluid) {

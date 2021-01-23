@@ -24,74 +24,41 @@
 package aztech.modern_industrialization.blocks;
 
 import aztech.modern_industrialization.util.MobSpawning;
-import dev.technici4n.fasttransferlib.api.Simulation;
-import dev.technici4n.fasttransferlib.api.fluid.FluidIo;
-import dev.technici4n.fasttransferlib.api.item.ItemIo;
-import dev.technici4n.fasttransferlib.api.item.ItemKey;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
+import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
+import net.fabricmc.fabric.api.transfer.v1.storage.StorageFunction;
 import net.minecraft.block.Block;
 import net.minecraft.block.Material;
-import net.minecraft.fluid.Fluid;
-import net.minecraft.fluid.Fluids;
 import net.minecraft.sound.BlockSoundGroup;
 
+@SuppressWarnings("rawtypes")
 public class TrashCanBlock extends Block {
-    public static final ItemIo ITEM_TRASH = new ItemIo() {
-        @Override
-        public int getItemSlotCount() {
-            return 0;
-        }
-
-        @Override
-        public ItemKey getItemKey(int i) {
-            return ItemKey.EMPTY;
-        }
-
-        @Override
-        public int getItemCount(int i) {
-            return 0;
-        }
-
-        @Override
-        public boolean supportsItemInsertion() {
-            return true;
-        }
-
-        @Override
-        public int insert(ItemKey key, int count, Simulation simulation) {
-            return 0;
-        }
-    };
-
-    public static final FluidIo FLUID_TRASH = new FluidIo() {
-        @Override
-        public int getFluidSlotCount() {
-            return 0;
-        }
-
-        @Override
-        public Fluid getFluid(int i) {
-            return Fluids.EMPTY;
-        }
-
-        @Override
-        public long getFluidAmount(int i) {
-            return 0;
-        }
-
-        @Override
-        public boolean supportsFluidInsertion() {
-            return true;
-        }
-
-        @Override
-        public long insert(Fluid fluid, long amount, Simulation simulation) {
-            return 0;
-        }
-    };
-
     public TrashCanBlock() {
         super(FabricBlockSettings.of(Material.METAL).hardness(6.0f).resistance(1200).sounds(BlockSoundGroup.METAL)
                 .allowsSpawning(MobSpawning.NO_SPAWN));
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <T> Storage<T> trashStorage() {
+        return TRASH;
+    }
+
+    private static final Storage TRASH = new TrashStorage();
+
+    private static class TrashStorage implements Storage {
+        @Override
+        public StorageFunction insertionFunction() {
+            return StorageFunction.identity();
+        }
+
+        @Override
+        public boolean forEach(Visitor visitor) {
+            return false;
+        }
+
+        @Override
+        public int getVersion() {
+            return 0;
+        }
     }
 }

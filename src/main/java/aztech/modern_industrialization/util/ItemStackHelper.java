@@ -24,7 +24,7 @@
 package aztech.modern_industrialization.util;
 
 import aztech.modern_industrialization.inventory.ConfigurableItemStack;
-import dev.technici4n.fasttransferlib.api.item.ItemKey;
+import net.fabricmc.fabric.api.lookup.v1.item.ItemKey;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
@@ -45,7 +45,7 @@ public class ItemStackHelper {
             return false;
         Item item = stack.getItemKey().getItem();
         if (item.hasRecipeRemainder()) {
-            if (stack.getCount() == 1 && stack.canInsert(item.getRecipeRemainder())) {
+            if (stack.getCount() == 1 && stack.isValid(item.getRecipeRemainder())) {
                 if (!simulate) {
                     stack.setCount(1);
                     stack.setItemKey(ItemKey.of(item.getRecipeRemainder()));

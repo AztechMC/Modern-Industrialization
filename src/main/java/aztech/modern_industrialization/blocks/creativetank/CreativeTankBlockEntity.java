@@ -26,12 +26,14 @@ package aztech.modern_industrialization.blocks.creativetank;
 import aztech.modern_industrialization.api.FastBlockEntity;
 import aztech.modern_industrialization.blocks.tank.MITanks;
 import aztech.modern_industrialization.util.NbtHelper;
-import dev.technici4n.fasttransferlib.api.ContainerItemContext;
-import dev.technici4n.fasttransferlib.api.Simulation;
-import dev.technici4n.fasttransferlib.api.fluid.FluidApi;
-import dev.technici4n.fasttransferlib.api.fluid.FluidIo;
-import dev.technici4n.fasttransferlib.api.item.ItemKey;
 import net.fabricmc.fabric.api.block.entity.BlockEntityClientSerializable;
+import net.fabricmc.fabric.api.lookup.v1.item.ItemKey;
+import net.fabricmc.fabric.api.transfer.v1.base.FixedDenominatorStorageView;
+import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidApi;
+import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
+import net.fabricmc.fabric.api.transfer.v1.storage.StorageFunction;
+import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.Fluid;
@@ -39,7 +41,7 @@ import net.minecraft.fluid.Fluids;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Hand;
 
-public class CreativeTankBlockEntity extends FastBlockEntity implements FluidIo, BlockEntityClientSerializable {
+public class CreativeTankBlockEntity extends FastBlockEntity implements Storage<Fluid>, FixedDenominatorStorageView<Fluid>, BlockEntityClientSerializable {
     Fluid fluid = Fluids.EMPTY;
 
     public CreativeTankBlockEntity() {
@@ -80,51 +82,48 @@ public class CreativeTankBlockEntity extends FastBlockEntity implements FluidIo,
     }
 
     public boolean onPlayerUse(PlayerEntity player) {
-        FluidIo handIo = FluidApi.ITEM.get(ItemKey.of(player.getMainHandStack()), ContainerItemContext.ofPlayerHand(player, Hand.MAIN_HAND));
+        Storage<Fluid> handIo = FluidApi.ITEM.get(ItemKey.of(player.getMainHandStack()), ContainerItemContext.ofPlayerHand(player, Hand.MAIN_HAND));
         if (handIo != null) {
             if (isEmpty()) {
-                for (int i = 0; i < handIo.getFluidSlotCount(); ++i) {
-                    Fluid handFluid = handIo.getFluid(i);
-                    if (handFluid != Fluids.EMPTY) {
-                        fluid = handFluid;
-                        onChanged();
-                        return true;
-                    }
-                }
+                handIo.forEach(view -> {
+                    fluid = view.resource();
+                    return true;
+                });
+                return !isEmpty();
             } else {
-                long leftover = handIo.insert(fluid, Long.MAX_VALUE, Simulation.ACT);
-                return leftover < Long.MAX_VALUE;
+                try (Transaction tx = Transaction.openOuter()) {
+                    return handIo.insertionFunction().apply(fluid, Integer.MAX_VALUE, 81000, tx) > 0;
+                }
             }
         }
         return false;
     }
 
     @Override
-    public int getFluidSlotCount() {
-        return 1;
+    public StorageFunction<Fluid> extractionFunction() {
+        return StorageFunction.identity();
     }
 
     @Override
-    public Fluid getFluid(int i) {
+    public Fluid resource() {
         return fluid;
     }
 
     @Override
-    public long getFluidAmount(int i) {
-        return isEmpty() ? 0 : Long.MAX_VALUE;
-    }
-
-    @Override
-    public boolean supportsFluidExtraction() {
-        return true;
-    }
-
-    @Override
-    public long extract(int slot, Fluid fluid, long maxAmount, Simulation simulation) {
-        if (!isEmpty() && fluid == this.fluid) {
-            return maxAmount;
-        } else {
-            return 0;
+    public boolean forEach(Visitor<Fluid> visitor) {
+        if (fluid != Fluids.EMPTY) {
+            return visitor.visit(this);
         }
+        return false;
+    }
+
+    @Override
+    public long denominator() {
+        return 81000;
+    }
+
+    @Override
+    public long amountFixedDenominator() {
+        return Integer.MAX_VALUE;
     }
 }

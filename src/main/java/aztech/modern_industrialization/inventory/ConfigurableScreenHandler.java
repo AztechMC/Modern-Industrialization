@@ -23,16 +23,19 @@
  */
 package aztech.modern_industrialization.inventory;
 
-import dev.technici4n.fasttransferlib.api.Simulation;
-import dev.technici4n.fasttransferlib.api.fluid.FluidApi;
-import dev.technici4n.fasttransferlib.api.fluid.FluidIo;
 import io.netty.buffer.Unpooled;
 import java.util.List;
+
+import net.fabricmc.fabric.api.lookup.v1.item.ItemKey;
 import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
+import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidApi;
+import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
+import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.fluid.Fluid;
-import net.minecraft.fluid.Fluids;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.PacketByteBuf;
@@ -106,31 +109,36 @@ public abstract class ConfigurableScreenHandler extends ScreenHandler {
                 if (lockingMode) {
                     fluidStack.togglePlayerLock();
                 } else {
-                    FluidIo io = FluidApi.ofPlayerCursor(playerEntity);
-                    // Extract first
-                    if (io != null && io.supportsFluidExtraction()) {
-                        for (int id = 0; id < io.getFluidSlotCount(); ++id) {
-                            Fluid fluid = io.getFluid(id);
-                            if (fluid != Fluids.EMPTY && fluidSlot.canInsertFluid(fluid)) {
-                                long extracted = io.extract(id, fluid, fluidStack.getRemainingSpace(), Simulation.ACT);
-                                if (extracted > 0) {
-                                    fluidStack.increment(extracted);
-                                    fluidStack.setFluid(fluid);
-                                    // TODO: markDirty?
-                                    return fluidSlot.getStack().copy();
+                    Storage<Fluid> io = FluidApi.ITEM.get(ItemKey.of(playerEntity.inventory.getCursorStack()), ContainerItemContext.ofPlayerCursor(playerEntity));
+                    if (io != null) {
+                        // Extract first
+                        long previousAmount = fluidStack.getAmount();
+                        io.forEach(view -> {
+                            Fluid fluid = view.resource();
+                            if (fluidSlot.canInsertFluid(fluid)) {
+                                try (Transaction tx = Transaction.openOuter()) {
+                                    long extracted = view.extractionFunction().apply(fluid, fluidStack.getRemainingSpace(), 81000, tx);
+                                    if (extracted > 0) {
+                                        tx.commit();
+                                        fluidStack.increment(extracted);
+                                        fluidStack.setFluid(fluid);
+                                    }
                                 }
                             }
+                            return false;
+                        });
+                        if (previousAmount != fluidStack.getAmount()) {
+                            // TODO: markDirty?
+                            return ItemStack.EMPTY;
                         }
-                    }
-                    // Otherwise insert
-                    if (io != null && io.supportsFluidInsertion()) {
+
+                        // Otherwise insert
                         Fluid fluid = fluidStack.getFluid();
                         if (fluidSlot.canExtractFluid(fluid)) {
-                            long leftover = io.insert(fluid, fluidStack.getAmount(), Simulation.ACT);
-                            if (leftover != fluidStack.getAmount()) {
-                                fluidStack.setAmount(leftover);
-                                // TODO: markDirty???
-                                return fluidSlot.getStack().copy();
+                            try (Transaction tx = Transaction.openOuter()) {
+                                fluidStack.decrement(io.insertionFunction().apply(fluid, fluidStack.getAmount(), 81000, tx));
+                                // TODO: markDirty?
+                                return ItemStack.EMPTY;
                             }
                         }
                     }

@@ -29,10 +29,11 @@ import aztech.modern_industrialization.ModernIndustrialization;
 import aztech.modern_industrialization.pipes.api.PipeEndpointType;
 import aztech.modern_industrialization.pipes.api.PipeNetworkNode;
 import aztech.modern_industrialization.util.NbtHelper;
-import dev.technici4n.fasttransferlib.api.Simulation;
-import dev.technici4n.fasttransferlib.api.fluid.FluidApi;
-import dev.technici4n.fasttransferlib.api.fluid.FluidIo;
 import java.util.*;
+
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidApi;
+import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
+import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.nbt.CompoundTag;
@@ -59,26 +60,29 @@ public class FluidNetworkNode extends PipeNetworkNode {
         }
         for (FluidConnection connection : connections) { // TODO: limit insert and extract rate
             // Insert
-            FluidIo io = FluidApi.SIDED.get(world, pos.offset(connection.direction), connection.direction.getOpposite());
-            if (amount > 0 && connection.canInsert() && io != null && io.supportsFluidInsertion()) {
-                amount = io.insert(data.fluid, amount, Simulation.ACT);
+            Storage<Fluid> io = FluidApi.SIDED.get(world, pos.offset(connection.direction), connection.direction.getOpposite());
+            if (amount > 0 && connection.canInsert() && io != null && !io.insertionFunction().isEmpty()) {
+                try (Transaction tx = Transaction.openOuter()) {
+                    amount -= io.insertionFunction().apply(data.fluid, amount, 81000, tx);
+                    tx.commit();
+                }
             }
-            if (connection.canExtract() && io != null && io.supportsFluidExtraction()) {
-                // Extract any
+            if (connection.canExtract() && io != null && !io.extractionFunction().isEmpty()) {
+                // Find the fluid to extract
                 if (data.fluid == Fluids.EMPTY) {
-                    for (int i = 0; i < io.getFluidSlotCount(); ++i) {
-                        Fluid fluid = io.getFluid(i);
-                        amount = io.extract(i, fluid, network.nodeCapacity, Simulation.ACT);
-
-                        if (amount > 0) {
-                            data.fluid = fluid;
-                            break;
+                    io.forEach(storageView -> {
+                        if (data.fluid != Fluids.EMPTY) throw new RuntimeException("Bad implementation!");
+                        if (storageView.amount(81000) > 0 && !storageView.extractionFunction().isEmpty()) {
+                            data.fluid = storageView.resource();
+                            return true;
                         }
-                    }
+                        return false;
+                    });
                 }
                 // Extract current fluid
-                else {
-                    amount += io.extract(data.fluid, network.nodeCapacity - amount, Simulation.ACT);
+                try (Transaction tx = Transaction.openOuter()) {
+                    amount += io.extractionFunction().apply(data.fluid, network.nodeCapacity - amount, 81000, tx);
+                    tx.commit();
                 }
             }
         }
@@ -111,8 +115,8 @@ public class FluidNetworkNode extends PipeNetworkNode {
     }
 
     private boolean canConnect(World world, BlockPos pos, Direction direction) {
-        FluidIo io = FluidApi.SIDED.get(world, pos.offset(direction), direction.getOpposite());
-        return io != null && (io.supportsFluidInsertion() || io.supportsFluidExtraction());
+        Storage<Fluid> io = FluidApi.SIDED.get(world, pos.offset(direction), direction.getOpposite());
+        return io != null && (!io.insertionFunction().isEmpty() || !io.extractionFunction().isEmpty());
     }
 
     @Override

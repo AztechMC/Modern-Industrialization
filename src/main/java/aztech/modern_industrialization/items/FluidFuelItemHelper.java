@@ -24,13 +24,20 @@
 package aztech.modern_industrialization.items;
 
 import aztech.modern_industrialization.api.FluidFuelRegistry;
+import aztech.modern_industrialization.blocks.tank.TankItem;
 import aztech.modern_industrialization.util.FluidHelper;
 import aztech.modern_industrialization.util.NbtHelper;
-import dev.technici4n.fasttransferlib.api.ContainerItemContext;
-import dev.technici4n.fasttransferlib.api.Simulation;
-import dev.technici4n.fasttransferlib.api.fluid.FluidIo;
-import dev.technici4n.fasttransferlib.api.item.ItemKey;
 import java.util.List;
+
+import net.fabricmc.fabric.api.lookup.v1.item.ItemKey;
+import net.fabricmc.fabric.api.transfer.v1.base.FixedDenominatorStorageFunction;
+import net.fabricmc.fabric.api.transfer.v1.base.FixedDenominatorStorageView;
+import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidPreconditions;
+import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
+import net.fabricmc.fabric.api.transfer.v1.storage.StorageFunction;
+import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
+import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.item.Item;
@@ -85,66 +92,116 @@ public interface FluidFuelItemHelper {
         }
     }
 
-    class Io implements FluidIo {
+    class ItemStorage implements Storage<Fluid>, FixedDenominatorStorageView<Fluid> {
         private final Item item;
         private final Fluid fluid;
         private final long amount;
         private final long capacity;
         private final ContainerItemContext ctx;
+        private final StorageFunction<Fluid> insertionFunction;
+        private final StorageFunction<Fluid> extractionFunction;
 
-        public Io(long capacity, ItemKey key, ContainerItemContext ctx) {
+        public ItemStorage(long capacity, ItemKey key, ContainerItemContext ctx) {
             ItemStack stack = key.toStack();
             this.item = key.getItem();
             this.fluid = FluidFuelItemHelper.getFluid(stack);
             this.amount = getAmount(stack);
             this.capacity = capacity;
             this.ctx = ctx;
+            this.insertionFunction = new FixedDenominatorStorageFunction<Fluid>() {
+                @Override
+                public long denominator() {
+                    return 81000;
+                }
+
+                @Override
+                public long applyFixedDenominator(Fluid fluid, long maxAmount, Transaction tx) {
+                    FluidPreconditions.notEmptyNotNegative(fluid, maxAmount);
+                    if (ctx.getCount(tx) == 0) return 0;
+
+                    long inserted = 0;
+                    if (ItemStorage.this.fluid == Fluids.EMPTY) {
+                        inserted = Math.min(capacity, maxAmount);
+                    } else if (ItemStorage.this.fluid == fluid) {
+                        inserted = Math.min(capacity - amount, maxAmount);
+                    }
+                    if (inserted > 0) {
+                        try (Transaction nested = tx.openNested()) {
+                            if (updateItem(fluid, amount + inserted, nested)) {
+                                nested.commit();
+                                return inserted;
+                            }
+                        }
+                    }
+                    return 0;
+                }
+            };
+            this.extractionFunction = new FixedDenominatorStorageFunction<Fluid>() {
+                @Override
+                public long denominator() {
+                    return 81000;
+                }
+
+                @Override
+                public long applyFixedDenominator(Fluid fluid, long maxAmount, Transaction tx) {
+                    FluidPreconditions.notEmptyNotNegative(fluid, maxAmount);
+                    if (ctx.getCount(tx) == 0) return 0;
+
+                    long extracted = 0;
+                    if (ItemStorage.this.fluid == fluid) {
+                        extracted = Math.min(maxAmount, amount);
+                    }
+                    if (extracted > 0) {
+                        try (Transaction nested = tx.openNested()) {
+                            if (!updateItem(fluid, amount - extracted, nested)) {
+                                nested.commit();
+                                return extracted;
+                            }
+                        }
+                    }
+                    return 0;
+                }
+            };
+        }
+
+        private boolean updateItem(Fluid fluid, long amount, Transaction tx) {
+            ItemStack stack = new ItemStack(item);
+            setAmount(stack, amount);
+            setFluid(stack, fluid);
+            return ctx.transform(1, ItemKey.of(stack), tx);
         }
 
         @Override
-        public int getFluidSlotCount() {
-            return 1;
-        }
-
-        @Override
-        public Fluid getFluid(int i) {
+        public Fluid resource() {
             return fluid;
         }
 
         @Override
-        public long getFluidAmount(int i) {
+        public long denominator() {
+            return 81000;
+        }
+
+        @Override
+        public long amountFixedDenominator() {
             return amount;
         }
 
         @Override
-        public boolean supportsFluidInsertion() {
-            return true;
+        public StorageFunction<Fluid> insertionFunction() {
+            return insertionFunction;
         }
 
         @Override
-        public long insert(Fluid fluid, long amount, Simulation simulation) {
-            if (ctx.getCount() <= 0)
-                return amount;
-            if (fluid == Fluids.EMPTY || FluidFuelRegistry.getEu(fluid) == 0)
-                return amount;
-
-            long inserted = 0;
-            if (fluid == this.fluid || this.fluid == Fluids.EMPTY) {
-                inserted = Math.min(capacity - this.amount, amount);
-            }
-            if (inserted > 0) {
-                if (!updateItem(fluid, this.amount + inserted, simulation)) {
-                    return amount;
-                }
-            }
-            return amount - inserted;
+        public StorageFunction<Fluid> extractionFunction() {
+            return extractionFunction;
         }
 
-        private boolean updateItem(Fluid fluid, long amount, Simulation simulation) {
-            ItemStack stack = new ItemStack(item);
-            setAmount(stack, amount);
-            setFluid(stack, fluid);
-            return ctx.transform(1, ItemKey.of(stack), simulation);
+        @Override
+        public boolean forEach(Visitor<Fluid> visitor) {
+            if (fluid != Fluids.EMPTY) {
+                return visitor.visit(this);
+            }
+            return false;
         }
     }
 

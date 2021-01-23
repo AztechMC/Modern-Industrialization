@@ -30,8 +30,9 @@ import aztech.modern_industrialization.machines.impl.multiblock.HatchBlockEntity
 import aztech.modern_industrialization.machines.impl.multiblock.HatchType;
 import aztech.modern_industrialization.machines.impl.multiblock.MultiblockMachineBlockEntity;
 import aztech.modern_industrialization.machines.impl.multiblock.MultiblockShape;
-import dev.technici4n.fasttransferlib.api.item.ItemKey;
 import java.util.List;
+
+import net.fabricmc.fabric.api.lookup.v1.item.ItemKey;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -62,7 +63,7 @@ public class NuclearReactorBlockEntity extends MultiblockMachineBlockEntity {
                     for (ConfigurableItemStack outputCStack : hatch.getInventory().itemStacks) {
                         ItemKey key = outputCStack.getItemKey();
                         if (!key.isEmpty() || attempts == 1) {
-                            if (outputCStack.canInsert(insertedStack)) {
+                            if (outputCStack.isValid(insertedStack)) {
                                 if (key.isEmpty()) {
                                     outputCStack.setItemKey(key);
                                     outputCStack.setCount(insertedStack.getCount());
@@ -88,7 +89,7 @@ public class NuclearReactorBlockEntity extends MultiblockMachineBlockEntity {
         for (HatchBlockEntity hatch : linkedHatches.values()) {
             if (hatch.type == (extraction ? HatchType.FLUID_INPUT : HatchType.FLUID_OUTPUT)) {
                 for (ConfigurableFluidStack stack : (extraction ? hatch.getFluidInputStacks() : hatch.getFluidOutputStacks())) {
-                    if (stack.isFluidValid(fluid)) {
+                    if (stack.isValid(fluid)) {
                         System.out.println(extraction);
                         totalAvailable += (extraction ? stack.getAmount() : stack.getRemainingSpace());
                     }
@@ -121,7 +122,7 @@ public class NuclearReactorBlockEntity extends MultiblockMachineBlockEntity {
                 if (hatch.type == HatchType.FLUID_OUTPUT) {
                     for (ConfigurableFluidStack stack : hatch.getFluidOutputStacks()) {
                         if (!stack.isEmpty() || attempts == 1) {
-                            if (stack.isFluidValid(fluid)) {
+                            if (stack.isValid(fluid)) {
                                 if (!stack.isEmpty()) {
                                     long insert = Math.min(remaining, stack.getRemainingSpace());
                                     stack.increment(insert);
@@ -156,7 +157,7 @@ public class NuclearReactorBlockEntity extends MultiblockMachineBlockEntity {
         this.tickCheckShape();
         for (HatchBlockEntity hatch : linkedHatches.values()) {
             if (hatch.type == HatchType.ITEM_INPUT) {
-                hatch.getInventory().autoExtractItems(inventory.getItemView());
+                hatch.getInventory().autoExtractItems(inventory.itemStorage);
             }
         }
         // FIXME

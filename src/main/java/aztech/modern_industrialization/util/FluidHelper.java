@@ -23,7 +23,6 @@
  */
 package aztech.modern_industrialization.util;
 
-import dev.technici4n.fasttransferlib.api.fluid.FluidTextHelper;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.fluid.Fluid;
@@ -44,25 +43,5 @@ public class FluidHelper {
     public static MutableText getFluidAmount(long amount, long capacity) {
         String text = FluidTextHelper.getUnicodeMillibuckets(amount, false) + " / " + capacity / 81;
         return new TranslatableText("text.modern_industrialization.fluid_slot_quantity", text);
-    }
-
-    private static final char[] SUPERSCRIPT = new char[] { '\u2070', '\u00b9', '\u00b2', '\u00b3', '\u2074', '\u2075', '\u2076', '\u2077', '\u2078',
-            '\u2079' };
-    private static final char FRACTION_BAR = '\u2044';
-    private static final char[] SUBSCRIPT = new char[] { '\u2080', '\u2081', '\u2082', '\u2083', '\u2084', '\u2085', '\u2086', '\u2087', '\u2088',
-            '\u2089' };
-
-    public static String makeFraction(long num, long denom) {
-        StringBuilder numString = new StringBuilder();
-        while (num > 0) {
-            numString.append(SUPERSCRIPT[(int) (num % 10)]);
-            num /= 10;
-        }
-        StringBuilder denomString = new StringBuilder();
-        while (denom > 0) {
-            denomString.append(SUBSCRIPT[(int) (denom % 10)]);
-            denom /= 10;
-        }
-        return numString.reverse().toString() + FRACTION_BAR + denomString.reverse().toString();
     }
 }

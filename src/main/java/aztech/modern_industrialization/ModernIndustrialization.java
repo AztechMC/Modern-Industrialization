@@ -45,8 +45,6 @@ import aztech.modern_industrialization.material.*;
 import aztech.modern_industrialization.pipes.MIPipes;
 import aztech.modern_industrialization.tools.WrenchItem;
 import aztech.modern_industrialization.util.ChunkUnloadBlockEntity;
-import dev.technici4n.fasttransferlib.api.fluid.FluidApi;
-import dev.technici4n.fasttransferlib.api.item.ItemApi;
 import me.shedaniel.cloth.api.common.events.v1.PlayerChangeWorldCallback;
 import me.shedaniel.cloth.api.common.events.v1.PlayerLeaveCallback;
 import net.devtech.arrp.api.RRPCallback;
@@ -67,6 +65,8 @@ import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
 import net.fabricmc.fabric.api.registry.FuelRegistry;
 import net.fabricmc.fabric.api.screenhandler.v1.ScreenHandlerRegistry;
 import net.fabricmc.fabric.api.tag.TagRegistry;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidApi;
+import net.fabricmc.fabric.api.transfer.v1.item.ItemApi;
 import net.minecraft.block.Block;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
@@ -165,8 +165,8 @@ public class ModernIndustrialization implements ModInitializer {
         registerItem(ITEM_DIESEL_CHAINSAW, "diesel_chainsaw", true);
         registerItem(ITEM_DIESEL_DRILL, "diesel_mining_drill", true);
 
-        FluidApi.ITEM.register((key, ctx) -> new FluidFuelItemHelper.Io(DieselToolItem.CAPACITY, key, ctx), ITEM_DIESEL_CHAINSAW, ITEM_DIESEL_DRILL);
-        FluidApi.ITEM.register((key, ctx) -> new FluidFuelItemHelper.Io(JetpackItem.CAPACITY, key, ctx), ITEM_JETPACK);
+        FluidApi.ITEM.register((key, ctx) -> new FluidFuelItemHelper.ItemStorage(DieselToolItem.CAPACITY, key, ctx), ITEM_DIESEL_CHAINSAW, ITEM_DIESEL_DRILL);
+        FluidApi.ITEM.register((key, ctx) -> new FluidFuelItemHelper.ItemStorage(JetpackItem.CAPACITY, key, ctx), ITEM_JETPACK);
     }
 
     private void setupBlocks() {
@@ -176,9 +176,9 @@ public class ModernIndustrialization implements ModInitializer {
             registerBlock(block, block.getItem(), block.getId());
         }
 
-        ItemApi.SIDED.registerForBlocks((world, pos, state, direction) -> TrashCanBlock.ITEM_TRASH, TRASH_CAN);
-        FluidApi.SIDED.registerForBlocks((world, pos, state, direction) -> TrashCanBlock.FLUID_TRASH, TRASH_CAN);
-        FluidApi.ITEM.register((key, ctx) -> TrashCanBlock.FLUID_TRASH, ITEM_TRASH_CAN);
+        ItemApi.SIDED.registerForBlocks((world, pos, state, direction) -> TrashCanBlock.trashStorage(), TRASH_CAN);
+        FluidApi.SIDED.registerForBlocks((world, pos, state, direction) -> TrashCanBlock.trashStorage(), TRASH_CAN);
+        FluidApi.ITEM.register((key, ctx) -> TrashCanBlock.trashStorage(), ITEM_TRASH_CAN);
     }
 
     private void setupMachines() {

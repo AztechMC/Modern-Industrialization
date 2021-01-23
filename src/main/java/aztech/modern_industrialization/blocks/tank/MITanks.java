@@ -32,11 +32,10 @@ import aztech.modern_industrialization.blocks.creativetank.CreativeTankBlockEnti
 import aztech.modern_industrialization.blocks.creativetank.CreativeTankItem;
 import aztech.modern_industrialization.blocks.creativetank.CreativeTankRenderer;
 import aztech.modern_industrialization.model.block.ModelProvider;
-import dev.technici4n.fasttransferlib.api.fluid.FluidApi;
-import dev.technici4n.fasttransferlib.api.fluid.FluidConstants;
 import java.util.Arrays;
 import net.fabricmc.fabric.api.client.rendereregistry.v1.BlockEntityRendererRegistry;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidApi;
 import net.minecraft.block.Block;
 import net.minecraft.block.Material;
 import net.minecraft.block.entity.BlockEntityType;
@@ -63,7 +62,7 @@ public enum MITanks {
     MITanks(String type, int bucketCapacity) {
         this.type = type;
         this.block = new TankBlock(FabricBlockSettings.of(Material.METAL).hardness(4.0f));
-        this.item = new TankItem(block, new Item.Settings().group(ITEM_GROUP), FluidConstants.BUCKET * bucketCapacity);
+        this.item = new TankItem(block, new Item.Settings().group(ITEM_GROUP), 81000 * bucketCapacity);
         this.bucketCapacity = bucketCapacity;
     }
 
@@ -84,7 +83,7 @@ public enum MITanks {
         for (MITanks tank : values()) {
             tank.item.registerItemApi();
         }
-        FluidApi.ITEM.register(CreativeTankItem.Io::new, CREATIVE_TANK_ITEM);
+        FluidApi.ITEM.register(CreativeTankItem.TankItemStorage::new, CREATIVE_TANK_ITEM);
     }
 
     public static void setupClient() {

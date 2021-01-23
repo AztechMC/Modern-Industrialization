@@ -31,15 +31,16 @@ import aztech.modern_industrialization.inventory.ConfigurableItemStack;
 import aztech.modern_industrialization.inventory.MIInventory;
 import aztech.modern_industrialization.machines.recipe.MachineRecipe;
 import aztech.modern_industrialization.machines.recipe.MachineRecipeType;
-import dev.technici4n.fasttransferlib.api.fluid.FluidApi;
-import dev.technici4n.fasttransferlib.api.item.ItemApi;
-import dev.technici4n.fasttransferlib.api.item.ItemKey;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
+
+import net.fabricmc.fabric.api.lookup.v1.item.ItemKey;
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidApi;
+import net.fabricmc.fabric.api.transfer.v1.item.ItemApi;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -528,7 +529,7 @@ public class MachineBlockEntity extends AbstractMachineBlockEntity implements Ti
                     if (key.getItem() == output.item || key.isEmpty()) {
                         int ins = Math.min(remainingAmount, output.item.getMaxCount() - stack.getCount());
                         if (key.isEmpty()) {
-                            if ((stack.isMachineLocked() || stack.isPlayerLocked() || loopRun == 1) && stack.canInsert(new ItemStack(output.item))) {
+                            if ((stack.isMachineLocked() || stack.isPlayerLocked() || loopRun == 1) && stack.isValid(new ItemStack(output.item))) {
                                 stack.setCount(ins);
                                 stack.setItemKey(ItemKey.of(output.item));
                             } else {
@@ -580,7 +581,7 @@ public class MachineBlockEntity extends AbstractMachineBlockEntity implements Ti
             outer: for (int tries = 0; tries < 2; ++tries) {
                 for (int i = 0; i < stacks.size(); i++) {
                     ConfigurableFluidStack stack = stacks.get(i);
-                    if (stack.isFluidValid(output.fluid) && (tries == 1 || stack.getFluid() == output.fluid)) {
+                    if (stack.isValid(output.fluid) && (tries == 1 || stack.getFluid() == output.fluid)) {
                         long inserted = Math.min(output.amount, stack.getRemainingSpace());
                         if (inserted > 0) {
                             stack.setFluid(output.fluid);
@@ -801,8 +802,8 @@ public class MachineBlockEntity extends AbstractMachineBlockEntity implements Ti
     }
 
     public final void registerApis() {
-        ItemApi.SIDED.registerForBlockEntities((be, direction) -> ((MachineBlockEntity) be).inventory.getItemView(), getType());
-        FluidApi.SIDED.registerForBlockEntities((be, direction) -> ((MachineBlockEntity) be).inventory.getFluidView(), getType());
+        ItemApi.SIDED.registerForBlockEntities((be, direction) -> ((MachineBlockEntity) be).inventory.itemStorage, getType());
+        FluidApi.SIDED.registerForBlockEntities((be, direction) -> ((MachineBlockEntity) be).inventory.fluidStorage, getType());
         registerAdditionalApis();
     }
 

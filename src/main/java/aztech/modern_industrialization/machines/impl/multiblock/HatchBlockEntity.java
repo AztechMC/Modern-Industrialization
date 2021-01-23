@@ -28,14 +28,14 @@ import static aztech.modern_industrialization.machines.impl.multiblock.HatchType
 import aztech.modern_industrialization.machines.impl.MachineBlockEntity;
 import aztech.modern_industrialization.machines.impl.MachineFactory;
 import aztech.modern_industrialization.util.NbtHelper;
-import dev.technici4n.fasttransferlib.api.fluid.FluidApi;
-import dev.technici4n.fasttransferlib.api.fluid.FluidIo;
-import dev.technici4n.fasttransferlib.api.fluid.FluidMovement;
-import dev.technici4n.fasttransferlib.api.item.ItemApi;
-import dev.technici4n.fasttransferlib.api.item.ItemIo;
-import dev.technici4n.fasttransferlib.api.item.ItemMovement;
+import net.fabricmc.fabric.api.lookup.v1.item.ItemKey;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidApi;
+import net.fabricmc.fabric.api.transfer.v1.item.ItemApi;
+import net.fabricmc.fabric.api.transfer.v1.storage.Movement;
+import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.fluid.Fluid;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.math.BlockPos;
 
@@ -98,15 +98,15 @@ public class HatchBlockEntity extends MachineBlockEntity {
             inventory.autoExtractFluids(world, pos, outputDirection);
         }
         if (extractItems && type == ITEM_INPUT) {
-            ItemIo source = ItemApi.SIDED.get(world, pos.offset(outputDirection), outputDirection.getOpposite());
+            Storage<ItemKey> source = ItemApi.SIDED.get(world, pos.offset(outputDirection), outputDirection.getOpposite());
             if (source != null) {
-                ItemMovement.moveMultiple(source, inventory.getItemView(), Integer.MAX_VALUE);
+                Movement.move(source, inventory.itemStorage.insertionFunction(), key -> true, Integer.MAX_VALUE, 1);
             }
         }
         if (extractFluids && type == FLUID_INPUT) {
-            FluidIo source = FluidApi.SIDED.get(world, pos.offset(outputDirection), outputDirection.getOpposite());
+            Storage<Fluid> source = FluidApi.SIDED.get(world, pos.offset(outputDirection), outputDirection.getOpposite());
             if (source != null) {
-                FluidMovement.moveMultiple(source, inventory.getFluidView(), Integer.MAX_VALUE);
+                Movement.move(source, inventory.fluidStorage.insertionFunction(), key -> true, Integer.MAX_VALUE, 81000);
             }
         }
         markDirty();

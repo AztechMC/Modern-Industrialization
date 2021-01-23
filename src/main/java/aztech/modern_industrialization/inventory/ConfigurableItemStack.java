@@ -24,10 +24,19 @@
 package aztech.modern_industrialization.inventory;
 
 import aztech.modern_industrialization.util.NbtHelper;
-import dev.technici4n.fasttransferlib.api.item.ItemKey;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
+
+import com.google.common.primitives.Ints;
+import net.fabricmc.fabric.api.lookup.v1.item.ItemKey;
+import net.fabricmc.fabric.api.transfer.v1.base.IntegerStorageFunction;
+import net.fabricmc.fabric.api.transfer.v1.base.IntegerStorageView;
+import net.fabricmc.fabric.api.transfer.v1.item.ItemPreconditions;
+import net.fabricmc.fabric.api.transfer.v1.storage.StorageFunction;
+import net.fabricmc.fabric.api.transfer.v1.transaction.Participant;
+import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
+import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionResult;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -36,21 +45,41 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.screen.slot.Slot;
 
 /**
- * An item stack that can be configured. TODO: sync lock state
+ * An item stack that can be configured.
  */
-public class ConfigurableItemStack {
-    ItemKey key = ItemKey.EMPTY;
-    int count = 0;
-    Item lockedItem = null;
+public class ConfigurableItemStack implements IntegerStorageView<ItemKey>, Participant<ItemState> {
+    private ItemKey key = ItemKey.EMPTY;
+    private int count = 0;
+    private Item lockedItem = null;
     private boolean playerLocked = false;
     private boolean machineLocked = false;
-    boolean playerLockable = true;
-    boolean playerInsert = false;
-    boolean playerExtract = true;
-    boolean pipesInsert = false;
-    boolean pipesExtract = false;
+    private boolean playerLockable = true;
+    private boolean playerInsert = false;
+    private boolean playerExtract = true;
+    private boolean pipesInsert = false;
+    private boolean pipesExtract = false;
+    private final StorageFunction<ItemKey> extractionFunction;
 
     public ConfigurableItemStack() {
+        this.extractionFunction = new IntegerStorageFunction<ItemKey>() {
+            @Override
+            public long applyFixedDenominator(ItemKey key, long longCount, Transaction tx) {
+                ItemPreconditions.notEmptyNotNegative(key, longCount);
+                if (pipesExtract && key.equals(ConfigurableItemStack.this.key)) {
+                    int maxCount = Ints.saturatedCast(longCount);
+                    int extracted = Math.min(count, maxCount);
+                    tx.enlist(ConfigurableItemStack.this);
+                    decrement(extracted);
+                    return extracted;
+                }
+                return 0;
+            }
+
+            @Override
+            public boolean isEmpty() {
+                return !pipesExtract;
+            }
+        };
     }
 
     public static ConfigurableItemStack standardInputSlot() {
@@ -77,6 +106,7 @@ public class ConfigurableItemStack {
     }
 
     public ConfigurableItemStack(ConfigurableItemStack other) {
+        this();
         this.key = other.key;
         this.count = other.count;
         this.lockedItem = other.lockedItem;
@@ -143,11 +173,11 @@ public class ConfigurableItemStack {
         this.key = key;
     }
 
-    public boolean canInsert(ItemStack stack) {
-        return canInsert(stack.getItem());
+    public boolean isValid(ItemStack stack) {
+        return isValid(stack.getItem());
     }
 
-    public boolean canInsert(Item item) {
+    public boolean isValid(Item item) {
         return lockedItem == null || lockedItem == item;
     }
 
@@ -253,6 +283,34 @@ public class ConfigurableItemStack {
         return pipesInsert;
     }
 
+    @Override
+    public StorageFunction<ItemKey> extractionFunction() {
+        return extractionFunction;
+    }
+
+    @Override
+    public ItemKey resource() {
+        return key;
+    }
+
+    @Override
+    public long amountFixedDenominator() {
+        return count;
+    }
+
+    @Override
+    public ItemState onEnlist() {
+        return new ItemState(key, count);
+    }
+
+    @Override
+    public void onClose(ItemState itemState, TransactionResult result) {
+        if (result.wasAborted()) {
+            this.count = itemState.count;
+            this.key = itemState.key;
+        }
+    }
+
     public class ConfigurableItemSlot extends Slot {
         private final Predicate<ItemStack> insertPredicate;
         private final Runnable markDirty;
@@ -270,7 +328,7 @@ public class ConfigurableItemStack {
 
         @Override
         public boolean canInsert(ItemStack stack) {
-            return playerInsert && ConfigurableItemStack.this.canInsert(stack) && insertPredicate.test(stack);
+            return playerInsert && ConfigurableItemStack.this.isValid(stack) && insertPredicate.test(stack);
         }
 
         @Override

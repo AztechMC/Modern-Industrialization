@@ -28,11 +28,13 @@ import static aztech.modern_industrialization.pipes.api.PipeEndpointType.*;
 import aztech.modern_industrialization.pipes.api.PipeEndpointType;
 import aztech.modern_industrialization.pipes.api.PipeNetworkNode;
 import aztech.modern_industrialization.util.ItemStackHelper;
-import dev.technici4n.fasttransferlib.api.item.ItemApi;
-import dev.technici4n.fasttransferlib.api.item.ItemIo;
-import dev.technici4n.fasttransferlib.api.item.ItemMovement;
 import java.util.*;
+
+import net.fabricmc.fabric.api.lookup.v1.item.ItemKey;
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
+import net.fabricmc.fabric.api.transfer.v1.item.ItemApi;
+import net.fabricmc.fabric.api.transfer.v1.storage.Movement;
+import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
@@ -66,8 +68,8 @@ public class ItemNetworkNode extends PipeNetworkNode {
     }
 
     private boolean canConnect(World world, BlockPos pos, Direction direction) {
-        ItemIo io = ItemApi.SIDED.get(world, pos.offset(direction), direction.getOpposite());
-        return io != null && (io.supportsItemInsertion() || io.supportsItemExtraction());
+        Storage<ItemKey> io = ItemApi.SIDED.get(world, pos.offset(direction), direction.getOpposite());
+        return io != null && (!io.insertionFunction().isEmpty() || !io.extractionFunction().isEmpty());
     }
 
     @Override
@@ -171,16 +173,17 @@ public class ItemNetworkNode extends PipeNetworkNode {
             List<InsertTarget> reachableInputs = null;
             outer: for (ItemConnection connection : connections) { // TODO: optimize!
                 if (connection.canExtract()) {
-                    ItemIo source = ItemApi.SIDED.get(world, pos.offset(connection.direction), connection.direction.getOpposite());
-                    if (source != null && source.supportsItemExtraction()) {
-                        int movesLeft = 16;
+                    Storage<ItemKey> source = ItemApi.SIDED.get(world, pos.offset(connection.direction), connection.direction.getOpposite());
+                    if (source != null && !source.extractionFunction().isEmpty()) {
+                        long movesLeft = 16;
                         if (reachableInputs == null)
                             reachableInputs = getInputs(world, pos);
                         for (InsertTarget target : reachableInputs) {
                             if (target.connection.canInsert()) {
-                                int moved = ItemMovement.moveMultiple(
+                                long moved = Movement.move(
+                                        source, target.io.insertionFunction(),
                                         k -> connection.canStackMoveThrough(k.toStack()) && target.connection.canStackMoveThrough(k.toStack()),
-                                        source, target.io, movesLeft);
+                                        movesLeft, 1);
                                 movesLeft -= moved;
                                 if (movesLeft == 0)
                                     continue outer;
@@ -212,8 +215,8 @@ public class ItemNetworkNode extends PipeNetworkNode {
                     ItemNetworkNode node = (ItemNetworkNode) maybeUnloaded;
                     for (ItemConnection connection : node.connections) {
                         if (connection.canInsert()) {
-                            ItemIo target = ItemApi.SIDED.get(world, u.offset(connection.direction), connection.direction.getOpposite());
-                            if (target != null && target.supportsItemInsertion()) {
+                            Storage<ItemKey> target = ItemApi.SIDED.get(world, u.offset(connection.direction), connection.direction.getOpposite());
+                            if (target != null && !target.insertionFunction().isEmpty()) {
                                 result.add(new InsertTarget(connection, target));
                             }
                         }
@@ -244,9 +247,9 @@ public class ItemNetworkNode extends PipeNetworkNode {
 
     private static class InsertTarget {
         private final ItemConnection connection;
-        private final ItemIo io;
+        private final Storage<ItemKey> io;
 
-        private InsertTarget(ItemConnection connection, ItemIo io) {
+        private InsertTarget(ItemConnection connection, Storage<ItemKey> io) {
             this.connection = connection;
             this.io = io;
         }

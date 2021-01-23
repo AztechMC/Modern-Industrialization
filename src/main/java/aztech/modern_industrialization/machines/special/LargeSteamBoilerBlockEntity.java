@@ -121,7 +121,7 @@ public class LargeSteamBoilerBlockEntity extends MultiblockMachineBlockEntity {
                     boolean producedSteam = false;
                     // Try to output some steam
                     for (ConfigurableFluidStack fluidStack : getFluidOutputStacks()) {
-                        if (fluidStack.isFluidValid(MIFluids.STEAM)) {
+                        if (fluidStack.isValid(MIFluids.STEAM)) {
                             long ins = Math.min(steamProduction, fluidStack.getRemainingSpace());
                             if (ins > 0) {
                                 fluidStack.setFluid(MIFluids.STEAM);

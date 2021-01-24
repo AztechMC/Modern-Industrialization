@@ -36,7 +36,6 @@ import net.fabricmc.fabric.api.transfer.v1.fluid.FluidPreconditions;
 import net.fabricmc.fabric.api.transfer.v1.storage.Movement;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageFunction;
-import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Participant;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionResult;
@@ -47,7 +46,8 @@ import net.minecraft.fluid.Fluids;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Hand;
 
-public class TankBlockEntity extends FastBlockEntity implements Storage<Fluid>, FixedDenominatorStorageView<Fluid>, Participant<FluidState>, BlockEntityClientSerializable {
+public class TankBlockEntity extends FastBlockEntity
+        implements Storage<Fluid>, FixedDenominatorStorageView<Fluid>, Participant<FluidState>, BlockEntityClientSerializable {
     Fluid fluid = Fluids.EMPTY;
     long amount;
     long capacity;

@@ -114,7 +114,8 @@ public class ModernIndustrializationClient implements ClientModInitializer {
         ItemTooltipCallback.EVENT.register(((stack, context, lines) -> {
             SpeedUpgrade upgrade = SpeedUpgrade.LOOKUP.get(ItemKey.of(stack), null);
             if (upgrade != null) {
-                lines.add(new TranslatableText("text.modern_industrialization.tooltip_speed_upgrade", upgrade.value()).setStyle(TextHelper.GRAY_TEXT));
+                lines.add(
+                        new TranslatableText("text.modern_industrialization.tooltip_speed_upgrade", upgrade.value()).setStyle(TextHelper.GRAY_TEXT));
             }
         }));
     }

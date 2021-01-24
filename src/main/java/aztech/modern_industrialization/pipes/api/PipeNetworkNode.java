@@ -23,14 +23,13 @@
  */
 package aztech.modern_industrialization.pipes.api;
 
+import java.util.List;
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
-
-import java.util.List;
 
 public abstract class PipeNetworkNode {
     protected PipeNetwork network;

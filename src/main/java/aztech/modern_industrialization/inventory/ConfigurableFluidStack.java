@@ -26,8 +26,6 @@ package aztech.modern_industrialization.inventory;
 import aztech.modern_industrialization.util.NbtHelper;
 import java.util.ArrayList;
 import java.util.List;
-
-import com.google.common.base.Preconditions;
 import net.fabricmc.fabric.api.transfer.v1.base.FixedDenominatorStorageFunction;
 import net.fabricmc.fabric.api.transfer.v1.base.FixedDenominatorStorageView;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidPreconditions;

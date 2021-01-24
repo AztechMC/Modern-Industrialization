@@ -24,11 +24,10 @@
 package aztech.modern_industrialization.inventory;
 
 import aztech.modern_industrialization.util.NbtHelper;
+import com.google.common.primitives.Ints;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
-
-import com.google.common.primitives.Ints;
 import net.fabricmc.fabric.api.lookup.v1.item.ItemKey;
 import net.fabricmc.fabric.api.transfer.v1.base.IntegerStorageFunction;
 import net.fabricmc.fabric.api.transfer.v1.base.IntegerStorageView;

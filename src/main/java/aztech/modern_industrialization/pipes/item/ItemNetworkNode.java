@@ -30,7 +30,6 @@ import aztech.modern_industrialization.pipes.api.PipeEndpointType;
 import aztech.modern_industrialization.pipes.api.PipeNetworkNode;
 import aztech.modern_industrialization.util.ItemStackHelper;
 import java.util.*;
-
 import net.fabricmc.fabric.api.lookup.v1.item.ItemKey;
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemApi;
@@ -187,8 +186,7 @@ public class ItemNetworkNode extends PipeNetworkNode {
                             reachableInputs = getInputs(world, pos);
                         for (InsertTarget target : reachableInputs) {
                             if (target.connection.canInsert()) {
-                                long moved = Movement.move(
-                                        source, target.io.insertionFunction(),
+                                long moved = Movement.move(source, target.io.insertionFunction(),
                                         k -> connection.canStackMoveThrough(k.toStack()) && target.connection.canStackMoveThrough(k.toStack()),
                                         movesLeft, 1);
                                 movesLeft -= moved;

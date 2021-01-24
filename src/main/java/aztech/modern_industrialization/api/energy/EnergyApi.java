@@ -24,7 +24,9 @@
 package aztech.modern_industrialization.api.energy;
 
 //import dev.technici4n.fasttransferlib.api.Simulation;
+
 //import dev.technici4n.fasttransferlib.api.energy.EnergyIo;
+
 import net.fabricmc.fabric.api.lookup.v1.block.BlockApiLookup;
 import net.fabricmc.fabric.api.lookup.v1.block.BlockApiLookupRegistry;
 import net.minecraft.util.Identifier;
@@ -38,24 +40,21 @@ public class EnergyApi {
     static {
         // Compat wrapper for FTL
         // TODO add back when port to fabric-transfer-api-v1 is complete
-        /*MOVEABLE.registerFallback((world, pos, state, blockEntity, direction) -> {
-            EnergyIo io = dev.technici4n.fasttransferlib.api.energy.EnergyApi.SIDED.get(world, pos, state, blockEntity, direction);
-
-            if (io != null) {
-                return new EnergyInsertable() {
-                    @Override
-                    public long insertEnergy(long amount) {
-                        return (long) Math.floor(amount - io.insert(amount, Simulation.ACT));
-                    }
-
-                    @Override
-                    public boolean canInsert(CableTier tier) {
-                        return io.supportsInsertion();
-                    }
-                };
-            }
-
-            return null;
-        });*/
+        /*
+         * MOVEABLE.registerFallback((world, pos, state, blockEntity, direction) -> {
+         * EnergyIo io =
+         * dev.technici4n.fasttransferlib.api.energy.EnergyApi.SIDED.get(world, pos,
+         * state, blockEntity, direction);
+         * 
+         * if (io != null) { return new EnergyInsertable() {
+         * 
+         * @Override public long insertEnergy(long amount) { return (long)
+         * Math.floor(amount - io.insert(amount, Simulation.ACT)); }
+         * 
+         * @Override public boolean canInsert(CableTier tier) { return
+         * io.supportsInsertion(); } }; }
+         * 
+         * return null; });
+         */
     }
 }

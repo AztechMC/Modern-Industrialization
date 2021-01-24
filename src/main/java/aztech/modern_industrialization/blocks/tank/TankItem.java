@@ -26,7 +26,6 @@ package aztech.modern_industrialization.blocks.tank;
 import aztech.modern_industrialization.util.FluidHelper;
 import aztech.modern_industrialization.util.NbtHelper;
 import java.util.List;
-
 import net.fabricmc.fabric.api.lookup.v1.item.ItemKey;
 import net.fabricmc.fabric.api.transfer.v1.base.FixedDenominatorStorageFunction;
 import net.fabricmc.fabric.api.transfer.v1.base.FixedDenominatorStorageView;
@@ -35,7 +34,6 @@ import net.fabricmc.fabric.api.transfer.v1.fluid.FluidApi;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidPreconditions;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageFunction;
-import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -132,7 +130,8 @@ public class TankItem extends BlockItem {
                 @Override
                 public long applyFixedDenominator(Fluid fluid, long maxAmount, Transaction tx) {
                     FluidPreconditions.notEmptyNotNegative(fluid, maxAmount);
-                    if (ctx.getCount(tx) == 0) return 0;
+                    if (ctx.getCount(tx) == 0)
+                        return 0;
 
                     long inserted = 0;
                     if (TankItemStorage.this.fluid == Fluids.EMPTY) {
@@ -160,7 +159,8 @@ public class TankItem extends BlockItem {
                 @Override
                 public long applyFixedDenominator(Fluid fluid, long maxAmount, Transaction tx) {
                     FluidPreconditions.notEmptyNotNegative(fluid, maxAmount);
-                    if (ctx.getCount(tx) == 0) return 0;
+                    if (ctx.getCount(tx) == 0)
+                        return 0;
 
                     long extracted = 0;
                     if (TankItemStorage.this.fluid == fluid) {

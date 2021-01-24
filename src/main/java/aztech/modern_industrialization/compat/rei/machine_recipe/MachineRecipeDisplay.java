@@ -25,6 +25,7 @@ package aztech.modern_industrialization.compat.rei.machine_recipe;
 
 import aztech.modern_industrialization.machines.recipe.MachineRecipe;
 import aztech.modern_industrialization.machines.recipe.MachineRecipeType;
+import aztech.modern_industrialization.util.FluidTextHelper;
 import java.text.DecimalFormat;
 import java.util.Collections;
 import java.util.List;
@@ -32,8 +33,6 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
-import aztech.modern_industrialization.util.FluidTextHelper;
 import me.shedaniel.rei.api.EntryStack;
 import me.shedaniel.rei.api.RecipeDisplay;
 import me.shedaniel.rei.api.fractions.Fraction;

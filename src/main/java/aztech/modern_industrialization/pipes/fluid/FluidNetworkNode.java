@@ -30,7 +30,6 @@ import aztech.modern_industrialization.pipes.api.PipeEndpointType;
 import aztech.modern_industrialization.pipes.api.PipeNetworkNode;
 import aztech.modern_industrialization.util.NbtHelper;
 import java.util.*;
-
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidApi;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
@@ -71,7 +70,8 @@ public class FluidNetworkNode extends PipeNetworkNode {
                 // Find the fluid to extract
                 if (data.fluid == Fluids.EMPTY) {
                     io.forEach(storageView -> {
-                        if (data.fluid != Fluids.EMPTY) throw new RuntimeException("Bad implementation!");
+                        if (data.fluid != Fluids.EMPTY)
+                            throw new RuntimeException("Bad implementation!");
                         if (storageView.amount(81000) > 0 && !storageView.extractionFunction().isEmpty()) {
                             data.fluid = storageView.resource();
                             return true;

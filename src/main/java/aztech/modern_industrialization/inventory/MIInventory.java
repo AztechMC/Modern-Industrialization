@@ -25,7 +25,6 @@ package aztech.modern_industrialization.inventory;
 
 import aztech.modern_industrialization.util.NbtHelper;
 import java.util.List;
-
 import net.fabricmc.fabric.api.lookup.v1.item.ItemKey;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidApi;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemApi;

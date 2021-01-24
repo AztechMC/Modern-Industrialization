@@ -41,7 +41,8 @@ import net.minecraft.fluid.Fluids;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Hand;
 
-public class CreativeTankBlockEntity extends FastBlockEntity implements Storage<Fluid>, FixedDenominatorStorageView<Fluid>, BlockEntityClientSerializable {
+public class CreativeTankBlockEntity extends FastBlockEntity
+        implements Storage<Fluid>, FixedDenominatorStorageView<Fluid>, BlockEntityClientSerializable {
     Fluid fluid = Fluids.EMPTY;
 
     public CreativeTankBlockEntity() {

@@ -166,7 +166,8 @@ public class ModernIndustrialization implements ModInitializer {
         registerItem(ITEM_DIESEL_CHAINSAW, "diesel_chainsaw", true);
         registerItem(ITEM_DIESEL_DRILL, "diesel_mining_drill", true);
 
-        FluidApi.ITEM.register((key, ctx) -> new FluidFuelItemHelper.ItemStorage(DieselToolItem.CAPACITY, key, ctx), ITEM_DIESEL_CHAINSAW, ITEM_DIESEL_DRILL);
+        FluidApi.ITEM.register((key, ctx) -> new FluidFuelItemHelper.ItemStorage(DieselToolItem.CAPACITY, key, ctx), ITEM_DIESEL_CHAINSAW,
+                ITEM_DIESEL_DRILL);
         FluidApi.ITEM.register((key, ctx) -> new FluidFuelItemHelper.ItemStorage(JetpackItem.CAPACITY, key, ctx), ITEM_JETPACK);
 
         SpeedUpgrade.LOOKUP.register((key, vd) -> () -> 2, MIItem.ITEM_LV_MOTOR);

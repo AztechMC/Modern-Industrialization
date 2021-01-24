@@ -31,7 +31,6 @@ import aztech.modern_industrialization.machines.impl.multiblock.HatchType;
 import aztech.modern_industrialization.machines.impl.multiblock.MultiblockMachineBlockEntity;
 import aztech.modern_industrialization.machines.impl.multiblock.MultiblockShape;
 import java.util.List;
-
 import net.fabricmc.fabric.api.lookup.v1.item.ItemKey;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.item.Item;

@@ -23,10 +23,12 @@
  */
 package aztech.modern_industrialization.pipes.item;
 
+import aztech.modern_industrialization.api.pipes.item.SpeedUpgrade;
 import aztech.modern_industrialization.pipes.MIPipes;
 import aztech.modern_industrialization.pipes.impl.PipePackets;
 import aztech.modern_industrialization.util.ItemStackHelper;
 import io.netty.buffer.Unpooled;
+import net.fabricmc.fabric.api.lookup.v1.item.ItemKey;
 import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -72,6 +74,9 @@ public class ItemPipeScreenHandler extends ScreenHandler {
                 this.addSlot(new FilterSlot(i * 7 + j, 16 + 18 * j, 18 + 18 * i));
             }
         }
+
+        // Upgrade slot
+        this.addSlot(new UpgradeSlot(149, 70));
     }
 
     @Override
@@ -106,8 +111,12 @@ public class ItemPipeScreenHandler extends ScreenHandler {
                         break;
                     }
                 }
+            } else if (index == 57) { // upgrade slot
+                if (!insertItem(slot.getStack(), 0, 36, false)) {
+                    return ItemStack.EMPTY;
+                }
             } else {
-                throw new RuntimeException("Can't transfer slot from index >= 36");
+                throw new RuntimeException("Can't transfer slot from that index.");
             }
         }
         return ItemStack.EMPTY;
@@ -175,6 +184,41 @@ public class ItemPipeScreenHandler extends ScreenHandler {
                 stack.setCount(1);
             }
             pipeInterface.setStack(index, stack);
+        }
+    }
+
+    private class UpgradeSlot extends Slot {
+        public UpgradeSlot(int x, int y) {
+            super(null, -1, x, y);
+        }
+
+        @Override
+        public boolean canInsert(ItemStack stack) {
+            return SpeedUpgrade.LOOKUP.get(ItemKey.of(stack), null) != null;
+        }
+
+        @Override
+        public ItemStack getStack() {
+            return pipeInterface.getUpgradeStack();
+        }
+
+        @Override
+        public void setStack(ItemStack stack) {
+            pipeInterface.setUpgradeStack(stack);
+        }
+
+        @Override
+        public void markDirty() {
+        }
+
+        @Override
+        public int getMaxItemCount(ItemStack stack) {
+            return 64;
+        }
+
+        @Override
+        public ItemStack takeStack(int amount) {
+            return pipeInterface.getUpgradeStack().split(amount);
         }
     }
 }

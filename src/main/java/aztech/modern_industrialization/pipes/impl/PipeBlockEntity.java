@@ -37,6 +37,8 @@ import net.fabricmc.fabric.api.rendering.data.v1.RenderAttachmentBlockEntity;
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.world.ClientWorld;
+import net.minecraft.entity.ItemEntity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Pair;
@@ -153,7 +155,7 @@ public class PipeBlockEntity extends FastBlockEntity
      * 
      * @param type The type to remove.
      */
-    public void removePipe(PipeNetworkType type) {
+    public void removePipeAndDropContainedItems(PipeNetworkType type) {
         loadPipes();
         PipeNetworkNode removedPipe = null;
         for (PipeNetworkNode pipe : pipes) {
@@ -168,6 +170,13 @@ public class PipeBlockEntity extends FastBlockEntity
         pipes.remove(removedPipe);
         removedPipe.getManager().removeNode(pos);
         onConnectionsChanged();
+
+        // Drop items
+        List<ItemStack> droppedStacks = new ArrayList<>();
+        removedPipe.appendDroppedStacks(droppedStacks);
+        for (ItemStack droppedStack : droppedStacks) {
+            world.spawnEntity(new ItemEntity(world, pos.getX(), pos.getY(), pos.getZ(), droppedStack));
+        }
     }
 
     /**

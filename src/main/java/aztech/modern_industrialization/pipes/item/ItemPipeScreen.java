@@ -92,11 +92,12 @@ public class ItemPipeScreen extends HandledScreen<ItemPipeScreenHandler> {
             lines.add(new TranslatableText("text.modern_industrialization.item_connection_help").setStyle(SECONDARY_INFO));
             renderTooltip(matrices, lines, mouseX, mouseY);
         }));
-        addPriorityButton(72, 72, 20, 188, "--", -10);
-        addPriorityButton(94, 72, 12, 176, "-", -1);
-        addPriorityButton(134, 72, 12, 176, "+", +1);
-        addPriorityButton(148, 72, 20, 188, "++", +10);
-        addButton(new PriorityDisplay(106 + this.x, 72 + this.y, 28, 12, new LiteralText(""), priorityTooltip));
+        int priorityBeginX = 15;
+        addPriorityButton(priorityBeginX, 72, 20, 188, "--", -10);
+        addPriorityButton(priorityBeginX + 22, 72, 12, 176, "-", -1);
+        addPriorityButton(priorityBeginX + 62, 72, 12, 176, "+", +1);
+        addPriorityButton(priorityBeginX + 76, 72, 20, 188, "++", +10);
+        addButton(new PriorityDisplay(priorityBeginX + 34 + this.x, 72 + this.y, 28, 12, new LiteralText(""), priorityTooltip));
     }
 
     private void addPriorityButton(int x, int y, int width, int u, String text, int delta) {

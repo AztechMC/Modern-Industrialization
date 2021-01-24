@@ -25,12 +25,15 @@ package aztech.modern_industrialization.pipes.impl;
 
 import aztech.modern_industrialization.ModernIndustrialization;
 import aztech.modern_industrialization.pipes.MIPipes;
+import aztech.modern_industrialization.pipes.api.PipeNetworkNode;
 import aztech.modern_industrialization.pipes.api.PipeNetworkType;
 import aztech.modern_industrialization.tools.IWrenchable;
 import aztech.modern_industrialization.util.MobSpawning;
+
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
+
 import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
 import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntity;
@@ -85,7 +88,7 @@ public class PipeBlock extends Block implements BlockEntityProvider, IWrenchable
                         if (player != null && player.isSneaking()) {
                             boolean removeBlock = pipeEntity.connections.size() == 1;
                             if (!world.isClient) {
-                                pipeEntity.removePipe(partShape.type);
+                                pipeEntity.removePipeAndDropContainedItems(partShape.type);
                             }
                             if (removeBlock) {
                                 world.setBlockState(blockPos, Blocks.AIR.getDefaultState());
@@ -152,7 +155,7 @@ public class PipeBlock extends Block implements BlockEntityProvider, IWrenchable
                     if (player != null && player.isSneaking()) {
                         boolean removeBlock = pipeEntity.connections.size() == 1;
                         if (!world.isClient) {
-                            pipeEntity.removePipe(partShape.type);
+                            pipeEntity.removePipeAndDropContainedItems(partShape.type);
                         }
                         if (removeBlock) {
                             world.setBlockState(blockPos, Blocks.AIR.getDefaultState());
@@ -198,7 +201,12 @@ public class PipeBlock extends Block implements BlockEntityProvider, IWrenchable
         PipeBlockEntity pipeEntity = (PipeBlockEntity) lootContext.get(LootContextParameters.BLOCK_ENTITY);
         ItemStack tool = lootContext.get(LootContextParameters.TOOL);
         if (tool != null && FabricToolTags.PICKAXES.contains(tool.getItem())) {
-            return pipeEntity.connections.keySet().stream().map(t -> new ItemStack(MIPipes.INSTANCE.getPipeItem(t))).collect(Collectors.toList());
+            List<ItemStack> droppedStacks = new ArrayList<>();
+            for (PipeNetworkNode node : pipeEntity.getNodes()) {
+                droppedStacks.add(new ItemStack(MIPipes.INSTANCE.getPipeItem(node.getType())));
+                node.appendDroppedStacks(droppedStacks);
+            }
+            return droppedStacks;
         } else {
             return Collections.emptyList();
         }

@@ -584,14 +584,14 @@ public class MachineBlockEntity extends AbstractMachineBlockEntity implements Ti
             // First, try to find a slot that contains the fluid. If we couldn't find one,
             // we insert in any stack
             outer: for (int tries = 0; tries < 2; ++tries) {
-                for (int i = 0; i < stacks.size(); i++) {
-                    ConfigurableFluidStack stack = stacks.get(i);
+                for (int j = 0; j < stacks.size(); j++) {
+                    ConfigurableFluidStack stack = stacks.get(j);
                     if (stack.isValid(output.fluid) && (tries == 1 || stack.getFluid() == output.fluid)) {
                         long inserted = Math.min(output.amount, stack.getRemainingSpace());
                         if (inserted > 0) {
                             stack.setFluid(output.fluid);
                             stack.increment(inserted);
-                            locksToToggle.add(i);
+                            locksToToggle.add(j);
                             lockFluids.add(output.fluid);
 
                             if (inserted < output.amount)

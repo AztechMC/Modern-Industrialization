@@ -24,6 +24,7 @@
 package aztech.modern_industrialization;
 
 import aztech.modern_industrialization.api.FluidFuelRegistry;
+import aztech.modern_industrialization.api.pipes.item.SpeedUpgrade;
 import aztech.modern_industrialization.blocks.TrashCanBlock;
 import aztech.modern_industrialization.blocks.forgehammer.ForgeHammerBlock;
 import aztech.modern_industrialization.blocks.forgehammer.ForgeHammerPacket;
@@ -167,6 +168,9 @@ public class ModernIndustrialization implements ModInitializer {
 
         FluidApi.ITEM.register((key, ctx) -> new FluidFuelItemHelper.ItemStorage(DieselToolItem.CAPACITY, key, ctx), ITEM_DIESEL_CHAINSAW, ITEM_DIESEL_DRILL);
         FluidApi.ITEM.register((key, ctx) -> new FluidFuelItemHelper.ItemStorage(JetpackItem.CAPACITY, key, ctx), ITEM_JETPACK);
+
+        SpeedUpgrade.LOOKUP.register((key, vd) -> () -> 2, MIItem.ITEM_LV_MOTOR);
+        SpeedUpgrade.LOOKUP.register((key, vd) -> () -> 8, MIItem.ITEM_LARGE_MOTOR);
     }
 
     private void setupBlocks() {

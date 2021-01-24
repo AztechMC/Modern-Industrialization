@@ -23,6 +23,7 @@
  */
 package aztech.modern_industrialization;
 
+import aztech.modern_industrialization.api.pipes.item.SpeedUpgrade;
 import aztech.modern_industrialization.blocks.forgehammer.ForgeHammerScreen;
 import aztech.modern_industrialization.blocks.tank.MITanks;
 import aztech.modern_industrialization.inventory.ConfigurableInventoryPacketHandlers;
@@ -37,16 +38,20 @@ import aztech.modern_industrialization.machines.impl.MachineScreen;
 import aztech.modern_industrialization.machines.impl.multiblock.MultiblockMachineRenderer;
 import aztech.modern_industrialization.model.block.ModelProvider;
 import aztech.modern_industrialization.pipes.MIPipesClient;
+import aztech.modern_industrialization.util.TextHelper;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
+import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
 import net.fabricmc.fabric.api.client.model.ModelLoadingRegistry;
 import net.fabricmc.fabric.api.client.rendereregistry.v1.BlockEntityRendererRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.fabricmc.fabric.api.client.screenhandler.v1.ScreenRegistry;
+import net.fabricmc.fabric.api.lookup.v1.item.ItemKey;
 import net.fabricmc.fabric.api.network.ClientSidePacketRegistry;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.fabricmc.loader.DependencyException;
 import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
 
 public class ModernIndustrializationClient implements ClientModInitializer {
@@ -64,6 +69,7 @@ public class ModernIndustrializationClient implements ClientModInitializer {
         ClientTickEvents.END_CLIENT_TICK.register(ClientKeyHandler::onEndTick);
         HudRenderCallback.EVENT.register(HudRenderer::onRenderHud);
         registerBuiltinResourcePack();
+        setupTooltips();
 
         ModernIndustrialization.LOGGER.info("Modern Industrialization client setup done!");
     }
@@ -102,5 +108,14 @@ public class ModernIndustrializationClient implements ClientModInitializer {
             ModernIndustrialization.LOGGER
                     .warn("Modern Industrialization's Alternate Builtin Resource Pack couldn't be registered! This is probably bad!");
         }
+    }
+
+    private void setupTooltips() {
+        ItemTooltipCallback.EVENT.register(((stack, context, lines) -> {
+            SpeedUpgrade upgrade = SpeedUpgrade.LOOKUP.get(ItemKey.of(stack), null);
+            if (upgrade != null) {
+                lines.add(new TranslatableText("text.modern_industrialization.tooltip_speed_upgrade", upgrade.value()).setStyle(TextHelper.GRAY_TEXT));
+            }
+        }));
     }
 }

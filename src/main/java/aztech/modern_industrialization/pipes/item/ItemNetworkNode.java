@@ -25,6 +25,7 @@ package aztech.modern_industrialization.pipes.item;
 
 import static aztech.modern_industrialization.pipes.api.PipeEndpointType.*;
 
+import aztech.modern_industrialization.api.pipes.item.SpeedUpgrade;
 import aztech.modern_industrialization.pipes.api.PipeEndpointType;
 import aztech.modern_industrialization.pipes.api.PipeNetworkNode;
 import aztech.modern_industrialization.util.ItemStackHelper;
@@ -35,6 +36,7 @@ import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemApi;
 import net.fabricmc.fabric.api.transfer.v1.storage.Movement;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
+import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
@@ -62,6 +64,7 @@ public class ItemNetworkNode extends PipeNetworkNode {
             if (canConnect(world, pos, conn.direction)) {
                 i++;
             } else {
+                conn.dropUpgrades(world, pos);
                 connections.remove(i);
             }
         }
@@ -94,8 +97,10 @@ public class ItemNetworkNode extends PipeNetworkNode {
                     conn.type = BLOCK_IN_OUT;
                 else if (conn.type == BLOCK_IN_OUT)
                     conn.type = BLOCK_OUT;
-                else
+                else {
+                    conn.dropUpgrades(world, pos);
                     connections.remove(i);
+                }
                 return;
             }
         }
@@ -125,6 +130,7 @@ public class ItemNetworkNode extends PipeNetworkNode {
             for (int i = 0; i < ItemPipeInterface.SLOTS; i++) {
                 connectionTag.put(Integer.toString(i), connection.stacks[i].toTag(new CompoundTag()));
             }
+            connectionTag.put("upgradeStack", connection.upgradeStack.toTag(new CompoundTag()));
             tag.put(connection.direction.toString(), connectionTag);
         }
         tag.putInt("inactiveTicks", inactiveTicks);
@@ -143,6 +149,7 @@ public class ItemNetworkNode extends PipeNetworkNode {
                     connection.stacks[i] = ItemStack.fromTag(connectionTag.getCompound(Integer.toString(i)));
                     connection.stacks[i].setCount(1);
                 }
+                connection.upgradeStack = ItemStack.fromTag(connectionTag.getCompound("upgradeStack"));
                 connections.add(connection);
             }
         }
@@ -175,7 +182,7 @@ public class ItemNetworkNode extends PipeNetworkNode {
                 if (connection.canExtract()) {
                     Storage<ItemKey> source = ItemApi.SIDED.get(world, pos.offset(connection.direction), connection.direction.getOpposite());
                     if (source != null && !source.extractionFunction().isEmpty()) {
-                        long movesLeft = 16;
+                        long movesLeft = connection.getMoves();
                         if (reachableInputs == null)
                             reachableInputs = getInputs(world, pos);
                         for (InsertTarget target : reachableInputs) {
@@ -192,7 +199,7 @@ public class ItemNetworkNode extends PipeNetworkNode {
                     }
                 }
             }
-            inactiveTicks = 100;
+            inactiveTicks = 60;
         }
         --inactiveTicks;
     }
@@ -255,12 +262,23 @@ public class ItemNetworkNode extends PipeNetworkNode {
         }
     }
 
+    @Override
+    public void appendDroppedStacks(List<ItemStack> droppedStacks) {
+        for (ItemConnection conn : connections) {
+            if (!conn.upgradeStack.isEmpty()) {
+                droppedStacks.add(conn.upgradeStack);
+                conn.upgradeStack = ItemStack.EMPTY;
+            }
+        }
+    }
+
     private static class ItemConnection {
         private final Direction direction;
         private PipeEndpointType type;
         private boolean whitelist = true;
         private int priority;
         private final ItemStack[] stacks = new ItemStack[ItemPipeInterface.SLOTS];
+        private ItemStack upgradeStack = ItemStack.EMPTY;
 
         private ItemConnection(Direction direction, PipeEndpointType type, int priority) {
             this.direction = direction;
@@ -288,6 +306,18 @@ public class ItemNetworkNode extends PipeNetworkNode {
             return !whitelist;
         }
 
+        private long getMoves() {
+            SpeedUpgrade upgrade = SpeedUpgrade.LOOKUP.get(ItemKey.of(upgradeStack), null);
+            return 16 + (upgrade == null ? 0 : upgrade.value() * upgradeStack.getCount());
+        }
+
+        private void dropUpgrades(World world, BlockPos pos) {
+            if (!upgradeStack.isEmpty()) {
+                world.spawnEntity(new ItemEntity(world, pos.getX(), pos.getY(), pos.getZ(), upgradeStack));
+                upgradeStack = ItemStack.EMPTY;
+            }
+        }
+
         private class ScreenHandlerFactory implements ExtendedScreenHandlerFactory {
             private final ItemPipeInterface iface;
             private final String pipeType;
@@ -313,6 +343,17 @@ public class ItemNetworkNode extends PipeNetworkNode {
                     @Override
                     public void setStack(int slot, ItemStack stack) {
                         stacks[slot] = stack;
+                        markDirty.run();
+                    }
+
+                    @Override
+                    public ItemStack getUpgradeStack() {
+                        return upgradeStack;
+                    }
+
+                    @Override
+                    public void setUpgradeStack(ItemStack stack) {
+                        upgradeStack = stack;
                         markDirty.run();
                     }
 

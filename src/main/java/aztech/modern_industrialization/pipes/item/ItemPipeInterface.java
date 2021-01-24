@@ -43,6 +43,10 @@ public interface ItemPipeInterface {
 
     void setStack(int slot, ItemStack stack);
 
+    ItemStack getUpgradeStack();
+
+    void setUpgradeStack(ItemStack stack);
+
     int getConnectionType();
 
     void setConnectionType(int type);
@@ -72,6 +76,7 @@ public interface ItemPipeInterface {
         List<ItemStack> stacks = new ArrayList<>(SLOTS);
         for (int i = 0; i < SLOTS; ++i)
             stacks.add(buf.readItemStack());
+        ItemStack[] upgradeStack = new ItemStack[] { buf.readItemStack() };
 
         return new ItemPipeInterface() {
             @Override
@@ -92,6 +97,16 @@ public interface ItemPipeInterface {
             @Override
             public void setStack(int slot, ItemStack stack) {
                 stacks.set(slot, stack);
+            }
+
+            @Override
+            public ItemStack getUpgradeStack() {
+                return upgradeStack[0];
+            }
+
+            @Override
+            public void setUpgradeStack(ItemStack stack) {
+                upgradeStack[0] = stack;
             }
 
             @Override
@@ -122,5 +137,6 @@ public interface ItemPipeInterface {
         buf.writeInt(getPriority());
         for (int i = 0; i < SLOTS; ++i)
             buf.writeItemStack(getStack(i));
+        buf.writeItemStack(getUpgradeStack());
     }
 }

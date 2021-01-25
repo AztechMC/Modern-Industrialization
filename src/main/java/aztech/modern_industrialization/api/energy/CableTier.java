@@ -33,9 +33,13 @@ public enum CableTier {
     public final String name;
     public final long eu;
 
+    public final String translationKey;
+
     CableTier(String name, long eu) {
         this.name = name;
         this.eu = eu;
+        this.translationKey = "text.modern_industrialization.cable_tier_"+ name;
+
     }
 
     public long getMaxInsert() {

@@ -56,8 +56,8 @@ public class ForgeHammerScreen extends HandledScreen<ForgeHammerScreenHandler> {
         super(handler, inventory, title);
         this.handler = handler;
 
-        this.tooltipHammer = new TranslatableText("text:modern_industrialization:tooltip_hammer").setStyle(style);
-        this.tooltipSaw = new TranslatableText("text:modern_industrialization:tooltip_saw").setStyle(style);
+        this.tooltipHammer = new TranslatableText("text.modern_industrialization.tooltip_hammer").setStyle(style);
+        this.tooltipSaw = new TranslatableText("text.modern_industrialization.tooltip_saw").setStyle(style);
     }
 
     @Override

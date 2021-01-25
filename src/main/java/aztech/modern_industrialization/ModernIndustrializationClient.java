@@ -23,6 +23,7 @@
  */
 package aztech.modern_industrialization;
 
+import aztech.modern_industrialization.api.energy.CableTier;
 import aztech.modern_industrialization.api.pipes.item.SpeedUpgrade;
 import aztech.modern_industrialization.blocks.forgehammer.ForgeHammerScreen;
 import aztech.modern_industrialization.blocks.tank.MITanks;
@@ -37,7 +38,9 @@ import aztech.modern_industrialization.machines.impl.MachinePackets;
 import aztech.modern_industrialization.machines.impl.MachineScreen;
 import aztech.modern_industrialization.machines.impl.multiblock.MultiblockMachineRenderer;
 import aztech.modern_industrialization.model.block.ModelProvider;
+import aztech.modern_industrialization.pipes.MIPipes;
 import aztech.modern_industrialization.pipes.MIPipesClient;
+import aztech.modern_industrialization.pipes.impl.PipeItem;
 import aztech.modern_industrialization.util.TextHelper;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
@@ -115,7 +118,16 @@ public class ModernIndustrializationClient implements ClientModInitializer {
             SpeedUpgrade upgrade = SpeedUpgrade.LOOKUP.get(ItemKey.of(stack), null);
             if (upgrade != null) {
                 lines.add(
-                        new TranslatableText("text.modern_industrialization.tooltip_speed_upgrade", upgrade.value()).setStyle(TextHelper.GRAY_TEXT));
+                        new TranslatableText("text.modern_industrialization.tooltip_speed_upgrade", upgrade.value()).setStyle(TextHelper.UPGRADE_TEXT));
+            }
+
+            if(stack.getItem() instanceof PipeItem) {
+                PipeItem pipe = (PipeItem) stack.getItem();
+                if (MIPipes.electricityPipeTier.containsKey(pipe)){
+                    CableTier tier = MIPipes.electricityPipeTier.get(pipe);
+                    lines.add(
+                            new TranslatableText("text.modern_industrialization.eu_cable", new TranslatableText(tier.translationKey), tier.getMaxInsert()).setStyle(TextHelper.EU_TEXT));
+                }
             }
         }));
     }

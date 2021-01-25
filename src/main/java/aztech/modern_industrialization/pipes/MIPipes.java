@@ -73,6 +73,8 @@ public class MIPipes implements ModInitializer {
     public static final Block BLOCK_PIPE = new PipeBlock(FabricBlockSettings.of(Material.METAL).hardness(4.0f));
     public static BlockEntityType<PipeBlockEntity> BLOCK_ENTITY_TYPE_PIPE;
     private Map<PipeNetworkType, PipeItem> pipeItems = new HashMap<>();
+
+    public static final Map<PipeItem, CableTier> electricityPipeTier = new HashMap<>();
     public static final ScreenHandlerType<ItemPipeScreenHandler> SCREN_HANDLER_TYPE_ITEM_PIPE = ScreenHandlerRegistry
             .registerExtended(new MIIdentifier("item_pipe"), ItemPipeScreenHandler::new);
     public static final Set<Identifier> PIPE_MODEL_NAMES = new HashSet<>();
@@ -175,6 +177,7 @@ public class MIPipes implements ModInitializer {
                 ElectricityNetworkNode::new, color, false, ELECTRICITY_RENDERER);
         PipeItem item = new PipeItem(new Item.Settings().group(ModernIndustrialization.ITEM_GROUP), type, new ElectricityNetworkData());
         pipeItems.put(type, item);
+        electricityPipeTier.put(item, tier);
         Registry.register(Registry.ITEM, new MIIdentifier("pipe_electricity_" + name), item);
         PIPE_MODEL_NAMES.add(new MIIdentifier("item/pipe_electricity_" + name));
     }

@@ -860,9 +860,11 @@
     "text.modern_industrialization.base_eu_total": "%d Total EU",
     "text.modern_industrialization.blacklist": "Blacklist mode enabled",
     "text.modern_industrialization.burnup": "Burnup: %d",
+    "text.modern_industrialization.cable_tier_ev": "Extreme Voltage",
     "text.modern_industrialization.cable_tier_hv": "High Voltage",
     "text.modern_industrialization.cable_tier_lv": "Low Voltage",
     "text.modern_industrialization.cable_tier_mv": "Medium Voltage",
+    "text.modern_industrialization.cable_tier_supraconductor": "Supraconductor",
     "text.modern_industrialization.click_to_disable": "Click to disable",
     "text.modern_industrialization.click_to_enable": "Click to enable",
     "text.modern_industrialization.click_to_toggle_blacklist": "Click to enable blacklist mode",
@@ -871,6 +873,7 @@
     "text.modern_industrialization.efficiency_factor": "Overclock: x%s",
     "text.modern_industrialization.efficiency_ticks": "Efficiency: %d / %d",
     "text.modern_industrialization.energy_bar": "%d / %d EU",
+    "text.modern_industrialization.eu_cable": "%s - Max Network : %d EU/t",
     "text.modern_industrialization.eu_in_diesel_generator": "EU per mb : %d",
     "text.modern_industrialization.fluid_auto_extract_off": "Fluid auto-extraction disabled",
     "text.modern_industrialization.fluid_auto_extract_on": "Fluid auto-extraction enabled",
@@ -922,8 +925,8 @@
     "text.modern_industrialization.shape_valid": "Multiblock shape is correct",
     "text.modern_industrialization.tool_switched_fortune": "Fortune Mode enabled!",
     "text.modern_industrialization.tool_switched_silk_touch": "Silk Touch Mode enabled!",
+    "text.modern_industrialization.tooltip_hammer": "Hammer, Click to switch to saw",
+    "text.modern_industrialization.tooltip_saw": "Saw, Click to switch to hammer",
     "text.modern_industrialization.tooltip_speed_upgrade": "Item Pipe Speed Upgrade: +%d items / 3s.",
-    "text.modern_industrialization.whitelist": "Whitelist mode enabled",
-    "text:modern_industrialization:tooltip_hammer": "Hammer, Click to switch to saw",
-    "text:modern_industrialization:tooltip_saw": "Saw, Click to switch to hammer"
+    "text.modern_industrialization.whitelist": "Whitelist mode enabled"
 }

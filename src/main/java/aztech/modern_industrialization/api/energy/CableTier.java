@@ -38,7 +38,7 @@ public enum CableTier {
     CableTier(String name, long eu) {
         this.name = name;
         this.eu = eu;
-        this.translationKey = "text.modern_industrialization.cable_tier_"+ name;
+        this.translationKey = "text.modern_industrialization.cable_tier_" + name;
 
     }
 

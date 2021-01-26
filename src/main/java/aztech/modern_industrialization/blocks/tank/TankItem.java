@@ -27,13 +27,11 @@ import aztech.modern_industrialization.util.FluidHelper;
 import aztech.modern_industrialization.util.NbtHelper;
 import java.util.List;
 import net.fabricmc.fabric.api.lookup.v1.item.ItemKey;
-import net.fabricmc.fabric.api.transfer.v1.base.FixedDenominatorStorageFunction;
-import net.fabricmc.fabric.api.transfer.v1.base.FixedDenominatorStorageView;
 import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidApi;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidPreconditions;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
-import net.fabricmc.fabric.api.transfer.v1.storage.StorageFunction;
+import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -109,74 +107,16 @@ public class TankItem extends BlockItem {
         return super.postPlacement(pos, world, player, stack, state);
     }
 
-    class TankItemStorage implements Storage<Fluid>, FixedDenominatorStorageView<Fluid> {
+    class TankItemStorage implements Storage<Fluid>, StorageView<Fluid> {
         private final Fluid fluid;
         private final long amount;
         private final ContainerItemContext ctx;
-        private final StorageFunction<Fluid> insertionFunction;
-        private final StorageFunction<Fluid> extractionFunction;
 
         TankItemStorage(ItemKey key, ContainerItemContext ctx) {
             ItemStack stack = key.toStack();
             this.fluid = TankItem.this.getFluid(stack);
             this.amount = getAmount(stack);
             this.ctx = ctx;
-            this.insertionFunction = new FixedDenominatorStorageFunction<Fluid>() {
-                @Override
-                public long denominator() {
-                    return 81000;
-                }
-
-                @Override
-                public long applyFixedDenominator(Fluid fluid, long maxAmount, Transaction tx) {
-                    FluidPreconditions.notEmptyNotNegative(fluid, maxAmount);
-                    if (ctx.getCount(tx) == 0)
-                        return 0;
-
-                    long inserted = 0;
-                    if (TankItemStorage.this.fluid == Fluids.EMPTY) {
-                        inserted = Math.min(capacity, maxAmount);
-                    } else if (TankItemStorage.this.fluid == fluid) {
-                        inserted = Math.min(capacity - amount, maxAmount);
-                    }
-                    if (inserted > 0) {
-                        try (Transaction nested = tx.openNested()) {
-                            if (updateTank(fluid, amount + inserted, nested)) {
-                                nested.commit();
-                                return inserted;
-                            }
-                        }
-                    }
-                    return 0;
-                }
-            };
-            this.extractionFunction = new FixedDenominatorStorageFunction<Fluid>() {
-                @Override
-                public long denominator() {
-                    return 81000;
-                }
-
-                @Override
-                public long applyFixedDenominator(Fluid fluid, long maxAmount, Transaction tx) {
-                    FluidPreconditions.notEmptyNotNegative(fluid, maxAmount);
-                    if (ctx.getCount(tx) == 0)
-                        return 0;
-
-                    long extracted = 0;
-                    if (TankItemStorage.this.fluid == fluid) {
-                        extracted = Math.min(maxAmount, amount);
-                    }
-                    if (extracted > 0) {
-                        try (Transaction nested = tx.openNested()) {
-                            if (updateTank(fluid, amount - extracted, nested)) {
-                                nested.commit();
-                                return extracted;
-                            }
-                        }
-                    }
-                    return 0;
-                }
-            };
         }
 
         private boolean updateTank(Fluid fluid, long amount, Transaction tx) {
@@ -191,42 +131,69 @@ public class TankItem extends BlockItem {
         }
 
         @Override
+        public boolean supportsInsertion() {
+            return true;
+        }
+
+        @Override
+        public long insert(Fluid fluid, long maxAmount, Transaction transaction) {
+            FluidPreconditions.notEmptyNotNegative(fluid, maxAmount);
+            if (ctx.getCount(transaction) == 0)
+                return 0;
+
+            long inserted = 0;
+            if (TankItemStorage.this.fluid == Fluids.EMPTY) {
+                inserted = Math.min(capacity, maxAmount);
+            } else if (TankItemStorage.this.fluid == fluid) {
+                inserted = Math.min(capacity - amount, maxAmount);
+            }
+            if (inserted > 0) {
+                if (updateTank(fluid, amount + inserted, transaction)) {
+                    return inserted;
+                }
+            }
+            return 0;
+        }
+
+        @Override
+        public boolean supportsExtraction() {
+            return true;
+        }
+
+        @Override
+        public long extract(Fluid fluid, long maxAmount, Transaction transaction) {
+            FluidPreconditions.notEmptyNotNegative(fluid, maxAmount);
+            if (ctx.getCount(transaction) == 0)
+                return 0;
+
+            long extracted = 0;
+            if (TankItemStorage.this.fluid == fluid) {
+                extracted = Math.min(maxAmount, amount);
+            }
+            if (extracted > 0) {
+                if (updateTank(fluid, amount - extracted, transaction)) {
+                    return extracted;
+                }
+            }
+            return 0;
+        }
+
+        @Override
         public Fluid resource() {
             return fluid;
         }
 
         @Override
-        public long denominator() {
-            return 81000;
-        }
-
-        @Override
-        public long amountFixedDenominator() {
+        public long amount() {
             return amount;
         }
 
         @Override
-        public StorageFunction<Fluid> insertionFunction() {
-            return insertionFunction;
-        }
-
-        @Override
-        public StorageFunction<Fluid> extractionFunction() {
-            return extractionFunction;
-        }
-
-        @Override
-        public boolean forEach(Visitor<Fluid> visitor) {
+        public boolean forEach(Visitor<Fluid> visitor, Transaction transaction) {
             if (fluid != Fluids.EMPTY) {
-                return visitor.visit(this);
+                return visitor.accept(this);
             }
             return false;
-        }
-    }
-
-    private static void checkSingleSlot(int slot) {
-        if (slot != 0) {
-            throw new IndexOutOfBoundsException("This tank only has 1 slot, this slot is out of bounds: " + slot);
         }
     }
 }

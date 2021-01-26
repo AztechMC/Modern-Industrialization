@@ -71,7 +71,7 @@ public class ItemNetworkNode extends PipeNetworkNode {
 
     private boolean canConnect(World world, BlockPos pos, Direction direction) {
         Storage<ItemKey> io = ItemApi.SIDED.get(world, pos.offset(direction), direction.getOpposite());
-        return io != null && (!io.insertionFunction().isEmpty() || !io.extractionFunction().isEmpty());
+        return io != null && (io.supportsInsertion() || io.supportsExtraction());
     }
 
     @Override
@@ -180,15 +180,15 @@ public class ItemNetworkNode extends PipeNetworkNode {
             outer: for (ItemConnection connection : connections) { // TODO: optimize!
                 if (connection.canExtract()) {
                     Storage<ItemKey> source = ItemApi.SIDED.get(world, pos.offset(connection.direction), connection.direction.getOpposite());
-                    if (source != null && !source.extractionFunction().isEmpty()) {
+                    if (source != null && source.supportsExtraction()) {
                         long movesLeft = connection.getMoves();
                         if (reachableInputs == null)
                             reachableInputs = getInputs(world, pos);
                         for (InsertTarget target : reachableInputs) {
                             if (target.connection.canInsert()) {
-                                long moved = Movement.move(source, target.io.insertionFunction(),
+                                long moved = Movement.move(source, target.io,
                                         k -> connection.canStackMoveThrough(k.toStack()) && target.connection.canStackMoveThrough(k.toStack()),
-                                        movesLeft, 1);
+                                        movesLeft);
                                 movesLeft -= moved;
                                 if (movesLeft == 0)
                                     continue outer;
@@ -221,7 +221,7 @@ public class ItemNetworkNode extends PipeNetworkNode {
                     for (ItemConnection connection : node.connections) {
                         if (connection.canInsert()) {
                             Storage<ItemKey> target = ItemApi.SIDED.get(world, u.offset(connection.direction), connection.direction.getOpposite());
-                            if (target != null && !target.insertionFunction().isEmpty()) {
+                            if (target != null && target.supportsInsertion()) {
                                 result.add(new InsertTarget(connection, target));
                             }
                         }

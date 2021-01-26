@@ -29,10 +29,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
 import net.fabricmc.fabric.api.lookup.v1.item.ItemKey;
-import net.fabricmc.fabric.api.transfer.v1.base.IntegerStorageFunction;
-import net.fabricmc.fabric.api.transfer.v1.base.IntegerStorageView;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemPreconditions;
-import net.fabricmc.fabric.api.transfer.v1.storage.StorageFunction;
+import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Participant;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionResult;
@@ -46,7 +44,7 @@ import net.minecraft.screen.slot.Slot;
 /**
  * An item stack that can be configured.
  */
-public class ConfigurableItemStack implements IntegerStorageView<ItemKey>, Participant<ItemState> {
+public class ConfigurableItemStack implements StorageView<ItemKey>, Participant<ItemState> {
     private ItemKey key = ItemKey.EMPTY;
     private int count = 0;
     private Item lockedItem = null;
@@ -57,28 +55,8 @@ public class ConfigurableItemStack implements IntegerStorageView<ItemKey>, Parti
     private boolean playerExtract = true;
     private boolean pipesInsert = false;
     private boolean pipesExtract = false;
-    private final StorageFunction<ItemKey> extractionFunction;
 
     public ConfigurableItemStack() {
-        this.extractionFunction = new IntegerStorageFunction<ItemKey>() {
-            @Override
-            public long applyFixedDenominator(ItemKey key, long longCount, Transaction tx) {
-                ItemPreconditions.notEmptyNotNegative(key, longCount);
-                if (pipesExtract && key.equals(ConfigurableItemStack.this.key)) {
-                    int maxCount = Ints.saturatedCast(longCount);
-                    int extracted = Math.min(count, maxCount);
-                    tx.enlist(ConfigurableItemStack.this);
-                    decrement(extracted);
-                    return extracted;
-                }
-                return 0;
-            }
-
-            @Override
-            public boolean isEmpty() {
-                return !pipesExtract;
-            }
-        };
     }
 
     public static ConfigurableItemStack standardInputSlot() {
@@ -283,8 +261,16 @@ public class ConfigurableItemStack implements IntegerStorageView<ItemKey>, Parti
     }
 
     @Override
-    public StorageFunction<ItemKey> extractionFunction() {
-        return extractionFunction;
+    public long extract(ItemKey itemKey, long longCount, Transaction transaction) {
+        ItemPreconditions.notEmptyNotNegative(key, longCount);
+        if (pipesExtract && key.equals(this.key)) {
+            int maxCount = Ints.saturatedCast(longCount);
+            int extracted = Math.min(count, maxCount);
+            transaction.enlist(this);
+            decrement(extracted);
+            return extracted;
+        }
+        return 0;
     }
 
     @Override
@@ -293,7 +279,7 @@ public class ConfigurableItemStack implements IntegerStorageView<ItemKey>, Parti
     }
 
     @Override
-    public long amountFixedDenominator() {
+    public long amount() {
         return count;
     }
 

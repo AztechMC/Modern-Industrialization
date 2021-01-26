@@ -24,14 +24,15 @@
 package aztech.modern_industrialization.blocks;
 
 import aztech.modern_industrialization.util.MobSpawning;
+import com.google.common.base.Preconditions;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
-import net.fabricmc.fabric.api.transfer.v1.storage.StorageFunction;
+import net.fabricmc.fabric.api.transfer.v1.storage.base.InsertionOnlyStorage;
+import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.minecraft.block.Block;
 import net.minecraft.block.Material;
 import net.minecraft.sound.BlockSoundGroup;
 
-@SuppressWarnings("rawtypes")
 public class TrashCanBlock extends Block {
     public TrashCanBlock() {
         super(FabricBlockSettings.of(Material.METAL).hardness(6.0f).resistance(1200).sounds(BlockSoundGroup.METAL)
@@ -43,16 +44,19 @@ public class TrashCanBlock extends Block {
         return TRASH;
     }
 
+    @SuppressWarnings("rawtypes")
     private static final Storage TRASH = new TrashStorage();
 
-    private static class TrashStorage implements Storage {
+    @SuppressWarnings("rawtypes")
+    private static class TrashStorage implements InsertionOnlyStorage {
         @Override
-        public StorageFunction insertionFunction() {
-            return StorageFunction.identity();
+        public long insert(Object o, long maxAmount, Transaction transaction) {
+            Preconditions.checkArgument(maxAmount >= 0);
+            return maxAmount;
         }
 
         @Override
-        public boolean forEach(Visitor visitor) {
+        public boolean forEach(Visitor visitor, Transaction transaction) {
             return false;
         }
 

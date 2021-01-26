@@ -26,10 +26,8 @@ package aztech.modern_industrialization.inventory;
 import aztech.modern_industrialization.util.NbtHelper;
 import java.util.ArrayList;
 import java.util.List;
-import net.fabricmc.fabric.api.transfer.v1.base.FixedDenominatorStorageFunction;
-import net.fabricmc.fabric.api.transfer.v1.base.FixedDenominatorStorageView;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidPreconditions;
-import net.fabricmc.fabric.api.transfer.v1.storage.StorageFunction;
+import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Participant;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionResult;
@@ -43,7 +41,7 @@ import net.minecraft.screen.slot.Slot;
 /**
  * A fluid stack that can be configured.
  */
-public class ConfigurableFluidStack implements FixedDenominatorStorageView<Fluid>, Participant<FluidState> {
+public class ConfigurableFluidStack implements StorageView<Fluid>, Participant<FluidState> {
     private Fluid fluid = Fluids.EMPTY;
     private long amount = 0;
     private long capacity;
@@ -55,33 +53,9 @@ public class ConfigurableFluidStack implements FixedDenominatorStorageView<Fluid
     private boolean playerExtract = true;
     private boolean pipesInsert = false;
     private boolean pipesExtract = false;
-    private final StorageFunction<Fluid> extractionFunction;
 
     public ConfigurableFluidStack(long capacity) {
         this.capacity = capacity;
-        this.extractionFunction = new FixedDenominatorStorageFunction<Fluid>() {
-            @Override
-            public long denominator() {
-                return 81000;
-            }
-
-            @Override
-            public long applyFixedDenominator(Fluid fluid, long maxAmount, Transaction tx) {
-                FluidPreconditions.notEmptyNotNegative(fluid, maxAmount);
-                if (pipesExtract && fluid == getFluid()) {
-                    long extracted = Math.min(maxAmount, amount);
-                    tx.enlist(ConfigurableFluidStack.this);
-                    decrement(extracted);
-                    return extracted;
-                }
-                return 0;
-            }
-
-            @Override
-            public boolean isEmpty() {
-                return !pipesExtract;
-            }
-        };
     }
 
     public static ConfigurableFluidStack standardInputSlot(long capacity) {
@@ -316,8 +290,15 @@ public class ConfigurableFluidStack implements FixedDenominatorStorageView<Fluid
     }
 
     @Override
-    public StorageFunction<Fluid> extractionFunction() {
-        return extractionFunction;
+    public long extract(Fluid fluid, long maxAmount, Transaction transaction) {
+        FluidPreconditions.notEmptyNotNegative(fluid, maxAmount);
+        if (pipesExtract && fluid == getFluid()) {
+            long extracted = Math.min(maxAmount, amount);
+            transaction.enlist(ConfigurableFluidStack.this);
+            decrement(extracted);
+            return extracted;
+        }
+        return 0;
     }
 
     @Override
@@ -326,12 +307,7 @@ public class ConfigurableFluidStack implements FixedDenominatorStorageView<Fluid
     }
 
     @Override
-    public long denominator() {
-        return 81000;
-    }
-
-    @Override
-    public long amountFixedDenominator() {
+    public long amount() {
         return amount;
     }
 

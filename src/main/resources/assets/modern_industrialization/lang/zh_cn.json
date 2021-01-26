@@ -680,7 +680,7 @@
     "text.modern_industrialization.shape_valid": "多方块结构正确",
     "text.modern_industrialization.tool_switched_fortune": "已开启时运模式！",
     "text.modern_industrialization.tool_switched_silk_touch": "已开启精准采集模式！",
+    "text:modern_industrialization.tooltip_hammer": "目前为锻造锤，点击切换为锯子",
+    "text:modern_industrialization.tooltip_saw": "目前为锯子，点击切换为锻造锤",
     "text.modern_industrialization.whitelist": "已开启白名单模式",
-    "text:modern_industrialization:tooltip_hammer": "目前为锻造锤，点击切换为锯子",
-    "text:modern_industrialization:tooltip_saw": "目前为锯子，点击切换为锻造锤"
 }

@@ -100,13 +100,13 @@ public class HatchBlockEntity extends MachineBlockEntity {
         if (extractItems && type == ITEM_INPUT) {
             Storage<ItemKey> source = ItemApi.SIDED.get(world, pos.offset(outputDirection), outputDirection.getOpposite());
             if (source != null) {
-                Movement.move(source, inventory.itemStorage.insertionFunction(), key -> true, Integer.MAX_VALUE, 1);
+                Movement.move(source, inventory.itemStorage, key -> true, Integer.MAX_VALUE);
             }
         }
         if (extractFluids && type == FLUID_INPUT) {
             Storage<Fluid> source = FluidApi.SIDED.get(world, pos.offset(outputDirection), outputDirection.getOpposite());
             if (source != null) {
-                Movement.move(source, inventory.fluidStorage.insertionFunction(), key -> true, Integer.MAX_VALUE, 81000);
+                Movement.move(source, inventory.fluidStorage, key -> true, Integer.MAX_VALUE);
             }
         }
         markDirty();

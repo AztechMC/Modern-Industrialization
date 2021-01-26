@@ -28,14 +28,12 @@ import aztech.modern_industrialization.inventory.FluidState;
 import aztech.modern_industrialization.util.NbtHelper;
 import net.fabricmc.fabric.api.block.entity.BlockEntityClientSerializable;
 import net.fabricmc.fabric.api.lookup.v1.item.ItemKey;
-import net.fabricmc.fabric.api.transfer.v1.base.FixedDenominatorStorageFunction;
-import net.fabricmc.fabric.api.transfer.v1.base.FixedDenominatorStorageView;
 import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidApi;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidPreconditions;
 import net.fabricmc.fabric.api.transfer.v1.storage.Movement;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
-import net.fabricmc.fabric.api.transfer.v1.storage.StorageFunction;
+import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Participant;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionResult;
@@ -47,60 +45,14 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Hand;
 
 public class TankBlockEntity extends FastBlockEntity
-        implements Storage<Fluid>, FixedDenominatorStorageView<Fluid>, Participant<FluidState>, BlockEntityClientSerializable {
+        implements Storage<Fluid>, StorageView<Fluid>, Participant<FluidState>, BlockEntityClientSerializable {
     Fluid fluid = Fluids.EMPTY;
     long amount;
     long capacity;
-    private final StorageFunction<Fluid> insertionFunction;
-    private final StorageFunction<Fluid> extractionFunction;
     private int version = 0;
 
     public TankBlockEntity() {
         super(MITanks.BLOCK_ENTITY_TYPE);
-        this.insertionFunction = new FixedDenominatorStorageFunction<Fluid>() {
-            @Override
-            public long denominator() {
-                return 81000;
-            }
-
-            @Override
-            public long applyFixedDenominator(Fluid fluid, long maxAmount, Transaction tx) {
-                FluidPreconditions.notEmptyNotNegative(fluid, maxAmount);
-                if (TankBlockEntity.this.fluid == Fluids.EMPTY || TankBlockEntity.this.fluid == fluid) {
-                    long inserted = Math.min(maxAmount, capacity - amount);
-                    if (inserted > 0) {
-                        tx.enlist(TankBlockEntity.this);
-                        amount += inserted;
-                        TankBlockEntity.this.fluid = fluid;
-                    }
-                    return inserted;
-                }
-                return 0;
-            }
-        };
-        this.extractionFunction = new FixedDenominatorStorageFunction<Fluid>() {
-            @Override
-            public long denominator() {
-                return 81000;
-            }
-
-            @Override
-            public long applyFixedDenominator(Fluid fluid, long maxAmount, Transaction tx) {
-                FluidPreconditions.notEmptyNotNegative(fluid, maxAmount);
-                if (fluid == TankBlockEntity.this.fluid) {
-                    long extracted = Math.min(maxAmount, amount);
-                    if (extracted > 0) {
-                        tx.enlist(TankBlockEntity.this);
-                        amount -= extracted;
-                        if (amount == 0) {
-                            TankBlockEntity.this.fluid = Fluids.EMPTY;
-                        }
-                    }
-                    return extracted;
-                }
-                return 0;
-            }
-        };
     }
 
     public boolean isEmpty() {
@@ -157,13 +109,55 @@ public class TankBlockEntity extends FastBlockEntity
         Storage<Fluid> handIo = FluidApi.ITEM.get(ItemKey.of(player.getMainHandStack()), ContainerItemContext.ofPlayerHand(player, Hand.MAIN_HAND));
         if (handIo != null) {
             // move from hand into this tank
-            if (Movement.move(handIo, this, f -> true, Integer.MAX_VALUE, 81000) > 0)
+            if (Movement.move(handIo, this, f -> true, Integer.MAX_VALUE) > 0)
                 return true;
             // move from this tank into hand
-            if (Movement.move(this, handIo, f -> true, Integer.MAX_VALUE, 81000) > 0)
+            if (Movement.move(this, handIo, f -> true, Integer.MAX_VALUE) > 0)
                 return true;
         }
         return false;
+    }
+
+    @Override
+    public boolean supportsInsertion() {
+        return true;
+    }
+
+    @Override
+    public long insert(Fluid fluid, long maxAmount, Transaction transaction) {
+        FluidPreconditions.notEmptyNotNegative(fluid, maxAmount);
+        if (this.fluid == Fluids.EMPTY || TankBlockEntity.this.fluid == fluid) {
+            long inserted = Math.min(maxAmount, capacity - amount);
+            if (inserted > 0) {
+                transaction.enlist(TankBlockEntity.this);
+                amount += inserted;
+                TankBlockEntity.this.fluid = fluid;
+            }
+            return inserted;
+        }
+        return 0;
+    }
+
+    @Override
+    public boolean supportsExtraction() {
+        return true;
+    }
+
+    @Override
+    public long extract(Fluid fluid, long maxAmount, Transaction transaction) {
+        FluidPreconditions.notEmptyNotNegative(fluid, maxAmount);
+        if (fluid == TankBlockEntity.this.fluid) {
+            long extracted = Math.min(maxAmount, amount);
+            if (extracted > 0) {
+                transaction.enlist(TankBlockEntity.this);
+                amount -= extracted;
+                if (amount == 0) {
+                    TankBlockEntity.this.fluid = Fluids.EMPTY;
+                }
+            }
+            return extracted;
+        }
+        return 0;
     }
 
     @Override
@@ -172,29 +166,14 @@ public class TankBlockEntity extends FastBlockEntity
     }
 
     @Override
-    public long denominator() {
-        return 81000;
-    }
-
-    @Override
-    public long amountFixedDenominator() {
+    public long amount() {
         return amount;
     }
 
     @Override
-    public StorageFunction<Fluid> insertionFunction() {
-        return insertionFunction;
-    }
-
-    @Override
-    public StorageFunction<Fluid> extractionFunction() {
-        return extractionFunction;
-    }
-
-    @Override
-    public boolean forEach(Visitor<Fluid> visitor) {
+    public boolean forEach(Visitor<Fluid> visitor, Transaction transaction) {
         if (fluid != Fluids.EMPTY) {
-            return visitor.visit(this);
+            return visitor.accept(this);
         }
         return false;
     }

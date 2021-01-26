@@ -112,20 +112,22 @@ public abstract class ConfigurableScreenHandler extends ScreenHandler {
                     if (io != null) {
                         // Extract first
                         long previousAmount = fluidStack.getAmount();
-                        io.forEach(view -> {
-                            Fluid fluid = view.resource();
-                            if (fluidSlot.canInsertFluid(fluid)) {
-                                try (Transaction tx = Transaction.openOuter()) {
-                                    long extracted = view.extractionFunction().apply(fluid, fluidStack.getRemainingSpace(), 81000, tx);
-                                    if (extracted > 0) {
-                                        tx.commit();
-                                        fluidStack.increment(extracted);
-                                        fluidStack.setFluid(fluid);
+                        try (Transaction transaction = Transaction.openOuter()) {
+                            io.forEach(view -> {
+                                Fluid fluid = view.resource();
+                                if (fluidSlot.canInsertFluid(fluid)) {
+                                    try (Transaction tx = Transaction.openOuter()) {
+                                        long extracted = view.extract(fluid, fluidStack.getRemainingSpace(), tx);
+                                        if (extracted > 0) {
+                                            tx.commit();
+                                            fluidStack.increment(extracted);
+                                            fluidStack.setFluid(fluid);
+                                        }
                                     }
                                 }
-                            }
-                            return false;
-                        });
+                                return false;
+                            }, transaction);
+                        }
                         if (previousAmount != fluidStack.getAmount()) {
                             // TODO: markDirty?
                             return ItemStack.EMPTY;
@@ -135,7 +137,7 @@ public abstract class ConfigurableScreenHandler extends ScreenHandler {
                         Fluid fluid = fluidStack.getFluid();
                         if (fluidSlot.canExtractFluid(fluid)) {
                             try (Transaction tx = Transaction.openOuter()) {
-                                fluidStack.decrement(io.insertionFunction().apply(fluid, fluidStack.getAmount(), 81000, tx));
+                                fluidStack.decrement(io.insert(fluid, fluidStack.getAmount(), tx));
                                 // TODO: markDirty?
                                 return ItemStack.EMPTY;
                             }

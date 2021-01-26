@@ -602,7 +602,7 @@
 	"text.modern_industrialization.shape_valid": "Форма мультиблока правильная",
 	"text.modern_industrialization.tool_switched_fortune": "Режим удачи включен!",
 	"text.modern_industrialization.tool_switched_silk_touch": "Режим шёлкового касания включен!",
+	"text:modern_industrialization.tooltip_hammer": "Молоток, нажмите, чтобы переключиться на пилу",
+	"text:modern_industrialization.tooltip_saw": "Пила, нажмите, чтобы переключиться на молот",
 	"text.modern_industrialization.whitelist": "Включен режим белого списка",
-	"text:modern_industrialization:tooltip_hammer": "Молоток, нажмите, чтобы переключиться на пилу",
-	"text:modern_industrialization:tooltip_saw": "Пила, нажмите, чтобы переключиться на молот"
 }

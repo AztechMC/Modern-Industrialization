@@ -28,11 +28,12 @@ import aztech.modern_industrialization.blocks.tank.MITanks;
 import aztech.modern_industrialization.util.NbtHelper;
 import net.fabricmc.fabric.api.block.entity.BlockEntityClientSerializable;
 import net.fabricmc.fabric.api.lookup.v1.item.ItemKey;
-import net.fabricmc.fabric.api.transfer.v1.base.FixedDenominatorStorageView;
 import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidApi;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidPreconditions;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
-import net.fabricmc.fabric.api.transfer.v1.storage.StorageFunction;
+import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
+import net.fabricmc.fabric.api.transfer.v1.storage.base.ExtractionOnlyStorage;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
@@ -42,7 +43,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Hand;
 
 public class CreativeTankBlockEntity extends FastBlockEntity
-        implements Storage<Fluid>, FixedDenominatorStorageView<Fluid>, BlockEntityClientSerializable {
+        implements ExtractionOnlyStorage<Fluid>, StorageView<Fluid>, BlockEntityClientSerializable {
     Fluid fluid = Fluids.EMPTY;
 
     public CreativeTankBlockEntity() {
@@ -86,14 +87,17 @@ public class CreativeTankBlockEntity extends FastBlockEntity
         Storage<Fluid> handIo = FluidApi.ITEM.get(ItemKey.of(player.getMainHandStack()), ContainerItemContext.ofPlayerHand(player, Hand.MAIN_HAND));
         if (handIo != null) {
             if (isEmpty()) {
-                handIo.forEach(view -> {
-                    fluid = view.resource();
-                    return true;
-                });
+                try (Transaction transaction = Transaction.openOuter()) {
+                    handIo.forEach(view -> {
+                        fluid = view.resource();
+                        onChanged();
+                        return true;
+                    }, transaction);
+                }
                 return !isEmpty();
             } else {
                 try (Transaction tx = Transaction.openOuter()) {
-                    return handIo.insertionFunction().apply(fluid, Integer.MAX_VALUE, 81000, tx) > 0;
+                    return handIo.insert(fluid, Integer.MAX_VALUE, tx) > 0;
                 }
             }
         }
@@ -101,8 +105,9 @@ public class CreativeTankBlockEntity extends FastBlockEntity
     }
 
     @Override
-    public StorageFunction<Fluid> extractionFunction() {
-        return StorageFunction.identity();
+    public long extract(Fluid fluid, long maxAmount, Transaction transaction) {
+        FluidPreconditions.notEmptyNotNegative(fluid, maxAmount);
+        return maxAmount;
     }
 
     @Override
@@ -111,20 +116,15 @@ public class CreativeTankBlockEntity extends FastBlockEntity
     }
 
     @Override
-    public boolean forEach(Visitor<Fluid> visitor) {
+    public boolean forEach(Visitor<Fluid> visitor, Transaction transaction) {
         if (fluid != Fluids.EMPTY) {
-            return visitor.visit(this);
+            return visitor.accept(this);
         }
         return false;
     }
 
     @Override
-    public long denominator() {
-        return 81000;
-    }
-
-    @Override
-    public long amountFixedDenominator() {
+    public long amount() {
         return Integer.MAX_VALUE;
     }
 }

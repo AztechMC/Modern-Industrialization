@@ -24,64 +24,81 @@
 package aztech.modern_industrialization.inventory;
 
 import java.util.List;
-import java.util.stream.Collectors;
-import net.fabricmc.fabric.api.transfer.v1.base.CombinedStorageFunction;
+import java.util.function.Predicate;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidPreconditions;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
-import net.fabricmc.fabric.api.transfer.v1.storage.StorageFunction;
+import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.minecraft.fluid.Fluid;
 
 public class MIFluidStorage implements Storage<Fluid> {
     private final List<ConfigurableFluidStack> stacks;
-    private final FluidInsertionFunction insertionFunction;
-    private final StorageFunction<Fluid> extractionFunction;
 
     public MIFluidStorage(List<ConfigurableFluidStack> stacks) {
         this.stacks = stacks;
-        this.extractionFunction = new CombinedStorageFunction<>(
-                stacks.stream().map(ConfigurableFluidStack::extractionFunction).collect(Collectors.toList()));
-        this.insertionFunction = (fluid, amount, tx, filter, lockSlots) -> {
-            FluidPreconditions.notEmptyNotNegative(fluid, amount);
-            for (int iter = 0; iter < 2; ++iter) {
-                boolean insertIntoEmptySlots = iter == 1;
-                for (ConfigurableFluidStack stack : stacks) {
-                    if (filter.test(stack) && stack.isValid(fluid)) {
-                        if ((stack.getAmount() == 0 && insertIntoEmptySlots) || stack.getFluid() == fluid) {
-                            long inserted = Math.min(amount, stack.getRemainingSpace());
+    }
 
-                            if (inserted > 0) {
-                                tx.enlist(stack);
-                                stack.decrement(inserted);
+    @Override
+    public boolean supportsInsertion() {
+        return true;
+    }
 
-                                if (lockSlots) {
-                                    stack.enableMachineLock(fluid);
-                                }
+    /**
+     * @param filter    Return false to skip some ConfigurableFluidStacks.
+     * @param lockSlots Whether to lock slots or not.
+     */
+    public long insert(Fluid fluid, long amount, Transaction tx, Predicate<ConfigurableFluidStack> filter, boolean lockSlots) {
+        FluidPreconditions.notEmptyNotNegative(fluid, amount);
+        for (int iter = 0; iter < 2; ++iter) {
+            boolean insertIntoEmptySlots = iter == 1;
+            for (ConfigurableFluidStack stack : stacks) {
+                if (filter.test(stack) && stack.isValid(fluid)) {
+                    if ((stack.getAmount() == 0 && insertIntoEmptySlots) || stack.getFluid() == fluid) {
+                        long inserted = Math.min(amount, stack.getRemainingSpace());
 
-                                return inserted;
+                        if (inserted > 0) {
+                            tx.enlist(stack);
+                            stack.decrement(inserted);
+
+                            if (lockSlots) {
+                                stack.enableMachineLock(fluid);
                             }
+
+                            return inserted;
                         }
                     }
                 }
             }
-            return 0;
-        };
+        }
+        return 0;
     }
 
     @Override
-    public FluidInsertionFunction insertionFunction() {
-        return insertionFunction;
+    public long insert(Fluid fluid, long amount, Transaction tx) {
+        return insert(fluid, amount, tx, ConfigurableFluidStack::canPipesInsert, false);
     }
 
     @Override
-    public StorageFunction<Fluid> extractionFunction() {
-        return extractionFunction;
+    public boolean supportsExtraction() {
+        return true;
     }
 
     @Override
-    public boolean forEach(Storage.Visitor<Fluid> visitor) {
+    public long extract(Fluid fluid, long maxAmount, Transaction transaction) {
+        FluidPreconditions.notEmptyNotNegative(fluid, maxAmount);
+        long amount = 0L;
+
+        for (int i = 0; i < stacks.size() && amount < maxAmount; ++i) {
+            amount += this.stacks.get(i).extract(fluid, maxAmount - amount, transaction);
+        }
+
+        return amount;
+    }
+
+    @Override
+    public boolean forEach(Storage.Visitor<Fluid> visitor, Transaction transaction) {
         for (ConfigurableFluidStack stack : stacks) {
             if (stack.getAmount() > 0) {
-                if (visitor.visit(stack)) {
+                if (visitor.accept(stack)) {
                     return true;
                 }
             }

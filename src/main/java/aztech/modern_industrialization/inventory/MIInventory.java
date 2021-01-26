@@ -59,13 +59,13 @@ public final class MIInventory {
     }
 
     public void autoExtractItems(Storage<ItemKey> target) {
-        Movement.move(itemStorage, target.insertionFunction(), k -> true, Integer.MAX_VALUE, 1);
+        Movement.move(itemStorage, target, k -> true, Integer.MAX_VALUE);
     }
 
     public void autoExtractFluids(World world, BlockPos pos, Direction direction) {
         Storage<Fluid> target = FluidApi.SIDED.get(world, pos.offset(direction), direction.getOpposite());
         if (target != null) {
-            Movement.move(fluidStorage, target.insertionFunction(), f -> true, Integer.MAX_VALUE, 81000);
+            Movement.move(fluidStorage, target, f -> true, Integer.MAX_VALUE);
         }
     }
 

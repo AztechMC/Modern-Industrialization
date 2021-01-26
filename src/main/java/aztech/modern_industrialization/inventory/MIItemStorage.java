@@ -23,66 +23,84 @@
  */
 package aztech.modern_industrialization.inventory;
 
+import com.google.common.primitives.Ints;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.function.Predicate;
 import net.fabricmc.fabric.api.lookup.v1.item.ItemKey;
-import net.fabricmc.fabric.api.transfer.v1.base.CombinedStorageFunction;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemPreconditions;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
-import net.fabricmc.fabric.api.transfer.v1.storage.StorageFunction;
+import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 
 public class MIItemStorage implements Storage<ItemKey> {
     private final List<ConfigurableItemStack> stacks;
-    private final ItemInsertionFunction insertionFunction;
-    private final StorageFunction<ItemKey> extractionFunction;
 
     public MIItemStorage(List<ConfigurableItemStack> stacks) {
         this.stacks = stacks;
-        this.extractionFunction = new CombinedStorageFunction<>(
-                stacks.stream().map(ConfigurableItemStack::extractionFunction).collect(Collectors.toList()));
-        this.insertionFunction = (key, count, tx, filter, lockSlots) -> {
-            ItemPreconditions.notEmptyNotNegative(key, count);
-            int totalInsert = 0;
-            for (int iter = 0; iter < 2; ++iter) {
-                boolean insertIntoEmptySlots = iter == 1;
-                for (ConfigurableItemStack stack : stacks) {
-                    if (filter.test(stack) && stack.isValid(key.getItem())) {
-                        if ((stack.getCount() == 0 && insertIntoEmptySlots) || stack.getItemKey().equals(key)) {
-                            int inserted = Math.min(count, Math.min(key.getItem().getMaxCount(), 64) - stack.getCount());
+    }
 
-                            if (inserted > 0) {
-                                totalInsert += inserted;
-                                count -= inserted;
-                                tx.enlist(stack);
-                                stack.decrement(inserted);
+    @Override
+    public boolean supportsInsertion() {
+        return true;
+    }
 
-                                if (lockSlots) {
-                                    stack.enableMachineLock(key.getItem());
-                                }
+    /**
+     * @param filter    Return false to skip some ConfigurableItemStacks.
+     * @param lockSlots Whether to lock slots or not.
+     */
+    public long insert(ItemKey key, int count, Transaction tx, Predicate<ConfigurableItemStack> filter, boolean lockSlots) {
+        ItemPreconditions.notEmptyNotNegative(key, count);
+        int totalInsert = 0;
+        for (int iter = 0; iter < 2; ++iter) {
+            boolean insertIntoEmptySlots = iter == 1;
+            for (ConfigurableItemStack stack : stacks) {
+                if (filter.test(stack) && stack.isValid(key.getItem())) {
+                    if ((stack.getCount() == 0 && insertIntoEmptySlots) || stack.getItemKey().equals(key)) {
+                        int inserted = Math.min(count, Math.min(key.getItem().getMaxCount(), 64) - stack.getCount());
+
+                        if (inserted > 0) {
+                            totalInsert += inserted;
+                            count -= inserted;
+                            tx.enlist(stack);
+                            stack.decrement(inserted);
+
+                            if (lockSlots) {
+                                stack.enableMachineLock(key.getItem());
                             }
                         }
                     }
                 }
             }
-            return totalInsert;
-        };
+        }
+        return totalInsert;
     }
 
     @Override
-    public ItemInsertionFunction insertionFunction() {
-        return insertionFunction;
+    public long insert(ItemKey key, long count, Transaction transaction) {
+        return insert(key, Ints.saturatedCast(count), transaction, ConfigurableItemStack::canPipesInsert, false);
     }
 
     @Override
-    public StorageFunction<ItemKey> extractionFunction() {
-        return extractionFunction;
+    public boolean supportsExtraction() {
+        return true;
     }
 
     @Override
-    public boolean forEach(Visitor<ItemKey> visitor) {
+    public long extract(ItemKey key, long maxAmount, Transaction transaction) {
+        ItemPreconditions.notEmptyNotNegative(key, maxAmount);
+        long amount = 0L;
+
+        for (int i = 0; i < stacks.size() && amount < maxAmount; ++i) {
+            amount += this.stacks.get(i).extract(key, maxAmount - amount, transaction);
+        }
+
+        return amount;
+    }
+
+    @Override
+    public boolean forEach(Visitor<ItemKey> visitor, Transaction transaction) {
         for (ConfigurableItemStack stack : stacks) {
             if (stack.getCount() > 0) {
-                if (visitor.visit(stack)) {
+                if (visitor.accept(stack)) {
                     return true;
                 }
             }

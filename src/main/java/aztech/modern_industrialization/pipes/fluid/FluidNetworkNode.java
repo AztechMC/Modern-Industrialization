@@ -60,28 +60,34 @@ public class FluidNetworkNode extends PipeNetworkNode {
         for (FluidConnection connection : connections) { // TODO: limit insert and extract rate
             // Insert
             Storage<Fluid> io = FluidApi.SIDED.get(world, pos.offset(connection.direction), connection.direction.getOpposite());
-            if (amount > 0 && connection.canInsert() && io != null && !io.insertionFunction().isEmpty()) {
+            if (amount > 0 && connection.canInsert() && io != null && !io.supportsInsertion()) {
                 try (Transaction tx = Transaction.openOuter()) {
-                    amount -= io.insertionFunction().apply(data.fluid, amount, 81000, tx);
+                    amount -= io.insert(data.fluid, amount, tx);
                     tx.commit();
                 }
             }
-            if (connection.canExtract() && io != null && !io.extractionFunction().isEmpty()) {
-                // Find the fluid to extract
+            if (connection.canExtract() && io != null && !io.supportsExtraction()) {
+                // Find the fluid to extract (by simulating if extraction of said fluid is > 0).
                 if (data.fluid == Fluids.EMPTY) {
-                    io.forEach(storageView -> {
-                        if (data.fluid != Fluids.EMPTY)
-                            throw new RuntimeException("Bad implementation!");
-                        if (storageView.amount(81000) > 0 && !storageView.extractionFunction().isEmpty()) {
-                            data.fluid = storageView.resource();
-                            return true;
-                        }
-                        return false;
-                    });
+                    try (Transaction tx = Transaction.openOuter()) {
+                        io.forEach(storageView -> {
+                            if (data.fluid != Fluids.EMPTY)
+                                throw new RuntimeException("Bad implementation!");
+                            if (storageView.amount() > 0) {
+                                data.fluid = storageView.resource();
+                                try (Transaction nested = tx.openNested()) {
+                                    if (storageView.extract(data.fluid, Long.MAX_VALUE, nested) > 0) {
+                                        return true;
+                                    }
+                                }
+                            }
+                            return false;
+                        }, tx);
+                    }
                 }
                 // Extract current fluid
                 try (Transaction tx = Transaction.openOuter()) {
-                    amount += io.extractionFunction().apply(data.fluid, network.nodeCapacity - amount, 81000, tx);
+                    amount += io.extract(data.fluid, network.nodeCapacity - amount, tx);
                     tx.commit();
                 }
             }
@@ -116,7 +122,7 @@ public class FluidNetworkNode extends PipeNetworkNode {
 
     private boolean canConnect(World world, BlockPos pos, Direction direction) {
         Storage<Fluid> io = FluidApi.SIDED.get(world, pos.offset(direction), direction.getOpposite());
-        return io != null && (!io.insertionFunction().isEmpty() || !io.extractionFunction().isEmpty());
+        return io != null && (io.supportsInsertion() || io.supportsExtraction());
     }
 
     @Override

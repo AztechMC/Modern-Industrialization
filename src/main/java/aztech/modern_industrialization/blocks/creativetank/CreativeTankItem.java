@@ -27,10 +27,11 @@ import aztech.modern_industrialization.util.FluidHelper;
 import aztech.modern_industrialization.util.NbtHelper;
 import java.util.List;
 import net.fabricmc.fabric.api.lookup.v1.item.ItemKey;
-import net.fabricmc.fabric.api.transfer.v1.base.FixedDenominatorStorageView;
 import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext;
-import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
-import net.fabricmc.fabric.api.transfer.v1.storage.StorageFunction;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidPreconditions;
+import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
+import net.fabricmc.fabric.api.transfer.v1.storage.base.ExtractionOnlyStorage;
+import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.minecraft.block.Block;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.fluid.Fluid;
@@ -58,7 +59,7 @@ public class CreativeTankItem extends BlockItem {
         tooltip.add(FluidHelper.getFluidName(getFluid(stack), true));
     }
 
-    public static class TankItemStorage implements Storage<Fluid>, FixedDenominatorStorageView<Fluid> {
+    public static class TankItemStorage implements ExtractionOnlyStorage<Fluid>, StorageView<Fluid> {
         private final Fluid fluid;
 
         public TankItemStorage(ItemKey key, ContainerItemContext ignored) {
@@ -67,8 +68,9 @@ public class CreativeTankItem extends BlockItem {
         }
 
         @Override
-        public StorageFunction<Fluid> extractionFunction() {
-            return StorageFunction.identity();
+        public long extract(Fluid fluid, long maxAmount, Transaction transaction) {
+            FluidPreconditions.notEmptyNotNegative(fluid, maxAmount);
+            return maxAmount;
         }
 
         @Override
@@ -77,20 +79,15 @@ public class CreativeTankItem extends BlockItem {
         }
 
         @Override
-        public boolean forEach(Visitor<Fluid> visitor) {
+        public boolean forEach(Visitor<Fluid> visitor, Transaction transaction) {
             if (fluid != Fluids.EMPTY) {
-                return visitor.visit(this);
+                return visitor.accept(this);
             }
             return false;
         }
 
         @Override
-        public long denominator() {
-            return 81000;
-        }
-
-        @Override
-        public long amountFixedDenominator() {
+        public long amount() {
             return Integer.MAX_VALUE;
         }
     }

@@ -60,13 +60,13 @@ public class FluidNetworkNode extends PipeNetworkNode {
         for (FluidConnection connection : connections) { // TODO: limit insert and extract rate
             // Insert
             Storage<Fluid> io = FluidApi.SIDED.get(world, pos.offset(connection.direction), connection.direction.getOpposite());
-            if (amount > 0 && connection.canInsert() && io != null && !io.supportsInsertion()) {
+            if (amount > 0 && connection.canInsert() && io != null && io.supportsInsertion()) {
                 try (Transaction tx = Transaction.openOuter()) {
                     amount -= io.insert(data.fluid, amount, tx);
                     tx.commit();
                 }
             }
-            if (connection.canExtract() && io != null && !io.supportsExtraction()) {
+            if (connection.canExtract() && io != null && io.supportsExtraction()) {
                 // Find the fluid to extract (by simulating if extraction of said fluid is > 0).
                 if (data.fluid == Fluids.EMPTY) {
                     try (Transaction tx = Transaction.openOuter()) {
@@ -86,9 +86,11 @@ public class FluidNetworkNode extends PipeNetworkNode {
                     }
                 }
                 // Extract current fluid
-                try (Transaction tx = Transaction.openOuter()) {
-                    amount += io.extract(data.fluid, network.nodeCapacity - amount, tx);
-                    tx.commit();
+                if (data.fluid != Fluids.EMPTY) {
+                    try (Transaction tx = Transaction.openOuter()) {
+                        amount += io.extract(data.fluid, network.nodeCapacity - amount, tx);
+                        tx.commit();
+                    }
                 }
             }
         }

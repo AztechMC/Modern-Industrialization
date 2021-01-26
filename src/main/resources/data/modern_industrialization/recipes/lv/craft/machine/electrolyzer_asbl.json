@@ -1,19 +1,25 @@
 {
   "type" : "minecraft:crafting_shaped",
   "pattern" : [
-    "ccc",
-    "pHp",
-    "ccc"
+    "cCc",
+    "rHr",
+    "cPc"
   ],
   "key": {
     "c" : {
-      "item" : "modern_industrialization:cupronickel_wire"
+      "item" : "modern_industrialization:cupronickel_wire_magnetic"
     },
-    "p": {
-      "item" : "modern_industrialization:pipe_electricity_electrum"
+    "r": {
+      "item" : "modern_industrialization:aluminum_rod"
     },
     "H": {
-      "item": "modern_industrialization:advanced_machine_hull"
+      "item": "modern_industrialization:lv_machine_hull"
+    },
+    "C" : {
+      "item": "modern_industrialization:electronic_circuit"
+    },
+    "P" : {
+      "item": "modern_industrialization:large_pump"
     }
   },
   "result": {

@@ -303,14 +303,14 @@ public class MIMachines {
         return factory.setInputSlotPosition(42, 27, 1, 1).setOutputSlotPosition(93, 27, 2, 2).setInputLiquidSlotPosition(42, 47, 1, 1)
                 .setLiquidOutputSlotPosition(131, 27, 2, 2).setupProgressBar(66, 35, 22, 15, true).setupBackground("electrolyzer.png")
                 .setupEfficiencyBar(0, 166, 50, 66, 100, 2, true).setupElectricityBar(18, 34).setupOverlays("centrifuge", true, true, true)
-                .setupCasing("mv");
+                ;
     }
 
     public static MachineFactory setupChemicalReactor(MachineFactory factory) {
         return factory.setInputSlotPosition(30, 27, 3, 1).setOutputSlotPosition(116, 27, 3, 1).setInputLiquidSlotPosition(30, 47, 3, 1)
                 .setLiquidOutputSlotPosition(116, 47, 3, 1).setupProgressBar(88, 35, 22, 15, true).setupBackground("chemical_reactor.png")
                 .setupEfficiencyBar(0, 166, 50, 66, 100, 2, true).setupElectricityBar(12, 34).setupOverlays("chemical_reactor", true, false, false)
-                .setupCasing("mv");
+                ;
     }
 
     public static MachineFactory setupCompressor(MachineFactory factory) {
@@ -328,14 +328,14 @@ public class MIMachines {
     public static MachineFactory setupDistillery(MachineFactory factory) {
         return factory.setInputLiquidSlotPosition(56, 35, 1, 1).setLiquidOutputSlotPosition(102, 35, 1, 1).setupProgressBar(76, 35, 22, 15, true)
                 .setupBackground("steam_furnace.png").setupEfficiencyBar(0, 166, 38, 62, 100, 2, true).setupElectricityBar(18, 34)
-                .setupOverlays("distillery", true, false, false).setupCasing("mv");
+                .setupOverlays("distillery", true, false, false);
     }
 
     public static MachineFactory setupElectrolyzer(MachineFactory factory) {
         return factory.setInputSlotPosition(42, 27, 1, 1).setOutputSlotPosition(93, 27, 2, 2).setInputLiquidSlotPosition(42, 47, 1, 1)
                 .setLiquidOutputSlotPosition(131, 27, 2, 2).setupProgressBar(66, 35, 22, 15, true).setupBackground("electrolyzer.png")
                 .setupEfficiencyBar(0, 166, 50, 66, 100, 2, true).setupElectricityBar(18, 34).setupOverlays("electrolyzer", true, true, false)
-                .setupCasing("mv");
+                ;
     }
 
     public static MachineFactory setupFluidExtractor(MachineFactory factory) {

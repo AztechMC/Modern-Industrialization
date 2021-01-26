@@ -126,7 +126,7 @@ createAdvancement('lv_circuit', 'RLC Circuits',
 createAdvancement('lv_steam_turbine', 'Better Than Solar Panels',
                   'Craft a Steam Turbine', 'lv_circuit')
 
-createAdvancement('lv_polarizer', 'One Recipe To Rule Them All',
+createAdvancement('lv_polarizer', 'One Recipe (+1) To Rule Them All',
                   'Craft a Polarizer', 'lv_steam_turbine')
 
 createAdvancement('large_steam_boiler', 'Kiss Your Fuel Goodbye!',

@@ -87,6 +87,7 @@ public class MIItem extends Item {
     public static final MIItem ITEM_TRANSISTOR = new MIItem("transistor");
     public static final MIItem ITEM_SILICON_BATTERY = new MIItem("silicon_battery");
     public static final MIItem ITEM_LARGE_MOTOR = new MIItem("large_motor");
+    public static final MIItem ITEM_CUPRONICKEL_WIRE_MAGNETIC = new MIItem("cupronickel_wire_magnetic");
     public static final MIItem ITEM_LARGE_PUMP = new MIItem("large_pump");
 
     public static final MIItem ITEM_DIGITAL_CIRCUIT = new MIItem("digital_circuit");

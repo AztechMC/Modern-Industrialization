@@ -1,18 +1,37 @@
 {
-  "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "TTC",
-    "CCC",
-    "CCC"
-  ],
-  "key": {
-    "C": {
-      "tag": "c:iron_dusts"
+  "type": "minecraft:crafting_shapeless",
+  "ingredients":
+  [
+    {
+      "tag" : "c:iron_dusts"
     },
-    "T" : {
-      "item": "modern_industrialization:coke_dust"
+    {
+      "tag" : "c:iron_dusts"
+    },
+    {
+      "tag" : "c:iron_dusts"
+    },
+    {
+      "tag" : "c:iron_dusts"
+    },
+    {
+      "tag" : "c:iron_dusts"
+    },
+    {
+      "tag" : "c:iron_dusts"
+    },
+    {
+      "tag" : "c:iron_dusts"
+    },
+    {
+      "item" : "modern_industrialization:coke_dust"
     }
-  },
+  ,
+    {
+      "item" : "modern_industrialization:coke_dust"
+    }
+
+  ],
   "result": {
     "item": "modern_industrialization:uncooked_steel_dust",
     "count": 7

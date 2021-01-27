@@ -30,8 +30,8 @@
     },
     {
       "item": "modern_industrialization:nickel_ore",
-      "amount": 5,
-      "probability": 0.02
+      "amount": 6,
+      "probability": 0.03
     },
     {
       "item": "modern_industrialization:bauxite_ore",

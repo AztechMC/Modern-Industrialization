@@ -903,7 +903,7 @@ gen(
 gen(
     file,
     # add plutonium ore for other mods
-    Material('plutonium', PURE_METAL_NO_CRUSHED, BOTH),
+    Material('plutonium', PURE_METAL_NO_CRUSHED, BLOCK_ONLY),
     '#d701e7', 'shiny', smelting=False
 )
 

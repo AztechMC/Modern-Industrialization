@@ -1,0 +1,18 @@
+{
+  "type": "modern_industrialization:mixer",
+  "eu": 2,
+  "duration": 600,
+  "item_inputs":
+    {
+      "item": "minecraft:coarse_dirt",
+      "amount": 1
+    },
+  "fluid_inputs": {
+    "fluid" : "minecraft:water",
+    "amount":6000
+  },
+  "item_outputs": {
+    "item": "minecraft:dirt",
+    "amount": 1
+  }
+}

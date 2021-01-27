@@ -1,3 +1,6 @@
+##### 0.3.10
+* Update KubeJS
+
 ##### 0.3.9
 * Add multiblock previews (hold wrench to see the preview, or hold a hatch to see where it can be placed)
 * Nerf fluid fuels and small boilers

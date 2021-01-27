@@ -1,0 +1,14 @@
+{
+  "type": "modern_industrialization:polarizer",
+  "eu": 8,
+  "duration": 100,
+  "item_inputs":
+    {
+      "item": "modern_industrialization:cupronickel_wire",
+      "amount": 1
+    },
+  "item_outputs": {
+    "item": "modern_industrialization:cupronickel_wire_magnetic",
+    "amount": 1
+  }
+}

@@ -4,15 +4,23 @@
     "duration": 200,
     "item_inputs": [
         {
-            "item": "modern_industrialization:cupronickel_wire",
-            "amount": 6
+            "item": "modern_industrialization:cupronickel_wire_magnetic",
+            "amount": 4
         },
         {
-            "item": "modern_industrialization:pipe_electricity_electrum",
+            "item": "modern_industrialization:electronic_circuit",
+            "amount": 1
+        },
+        {
+            "item": "modern_industrialization:aluminum_rod",
             "amount": 2
         },
         {
-            "item": "modern_industrialization:advanced_machine_hull",
+            "item": "modern_industrialization:lv_machine_hull",
+            "amount": 1
+        },
+        {
+            "item": "modern_industrialization:large_pump",
             "amount": 1
         }
     ],

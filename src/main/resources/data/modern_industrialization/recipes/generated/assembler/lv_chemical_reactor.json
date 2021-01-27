@@ -4,15 +4,15 @@
     "duration": 200,
     "item_inputs": [
         {
-            "item": "modern_industrialization:large_motor",
-            "amount": 4
+            "item": "minecraft:glass",
+            "amount": 2
         },
         {
             "item": "modern_industrialization:large_pump",
             "amount": 1
         },
         {
-            "item": "modern_industrialization:pipe_electricity_electrum",
+            "item": "modern_industrialization:pipe_fluid_aluminum",
             "amount": 2
         },
         {
@@ -21,12 +21,16 @@
         },
         {
             "item": "modern_industrialization:electronic_circuit",
+            "amount": 2
+        },
+        {
+            "item": "modern_industrialization:pipe_electricity_electrum",
             "amount": 1
         }
     ],
     "item_outputs": [
         {
-            "item": "modern_industrialization:lv_centrifuge",
+            "item": "modern_industrialization:lv_chemical_reactor",
             "amount": 1
         }
     ]

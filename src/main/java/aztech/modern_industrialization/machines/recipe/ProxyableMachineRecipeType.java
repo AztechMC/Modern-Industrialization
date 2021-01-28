@@ -21,23 +21,36 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.mixin;
+package aztech.modern_industrialization.machines.recipe;
 
-import java.util.Map;
-import net.minecraft.recipe.Recipe;
-import net.minecraft.recipe.RecipeManager;
-import net.minecraft.recipe.RecipeType;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.gen.Invoker;
 
 /**
- * The point of this mixin is to directly access the map
- * {@code RecipeType -> List<Recipe>}, because the public access functions all
- * require an allocation and go through a useless stream.
+ * A machine recipe type that allows adding proxies
  */
-@Mixin(RecipeManager.class)
-public interface RecipeManagerAccessor {
-    @Invoker("getAllOfType")
-    Map<Identifier, Recipe<?>> modern_industrialization_getAllOfType(RecipeType<?> type);
+public abstract class ProxyableMachineRecipeType extends MachineRecipeType {
+    public ProxyableMachineRecipeType(Identifier id) {
+        super(id);
+    }
+
+    private long lastUpdate = 0;
+    private static final long UPDATE_INTERVAL = 20 * 1000;
+    protected List<MachineRecipe> recipeList = new ArrayList<>();
+
+    protected abstract void fillRecipeList(ServerWorld world);
+
+    @Override
+    public Collection<MachineRecipe> getRecipes(ServerWorld world) {
+        long time = System.currentTimeMillis();
+        if (time - lastUpdate > UPDATE_INTERVAL) {
+            lastUpdate = time;
+            recipeList.clear();
+            fillRecipeList(world);
+        }
+        return recipeList;
+    }
 }

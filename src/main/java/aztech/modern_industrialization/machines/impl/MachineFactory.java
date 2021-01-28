@@ -28,7 +28,6 @@ import static aztech.modern_industrialization.machines.impl.MachineSlotType.*;
 import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.machines.MIMachines;
 import aztech.modern_industrialization.machines.impl.multiblock.MultiblockMachineBlockEntity;
-import aztech.modern_industrialization.machines.recipe.FurnaceRecipeProxy;
 import aztech.modern_industrialization.machines.recipe.MachineRecipeType;
 import java.util.Map;
 import java.util.TreeMap;
@@ -130,11 +129,7 @@ public class MachineFactory {
 
         this.blockEntityConstructor = () -> blockEntityFactory.create(this);
         if (type != null) {
-            if (type instanceof FurnaceRecipeProxy) {
-                MIMachines.WORKSTATIONS_FURNACES.add(this);
-            } else {
-                MIMachines.RECIPE_TYPES.get(type).factories.add(this);
-            }
+            MIMachines.RECIPE_TYPES.get(type).factories.add(this);
         }
         this.recipeType = type;
 

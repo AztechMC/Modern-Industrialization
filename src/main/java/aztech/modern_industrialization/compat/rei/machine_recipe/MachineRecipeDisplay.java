@@ -24,7 +24,6 @@
 package aztech.modern_industrialization.compat.rei.machine_recipe;
 
 import aztech.modern_industrialization.machines.recipe.MachineRecipe;
-import aztech.modern_industrialization.machines.recipe.MachineRecipeType;
 import aztech.modern_industrialization.util.FluidTextHelper;
 import java.text.DecimalFormat;
 import java.util.Collections;
@@ -53,9 +52,9 @@ public class MachineRecipeDisplay implements RecipeDisplay {
         return I18n.translate("text.modern_industrialization.fluid_slot_quantity", FluidTextHelper.getUnicodeMillibuckets(amount, false));
     };
 
-    public MachineRecipeDisplay(MachineRecipeType type, MachineRecipe recipe) {
+    public MachineRecipeDisplay(Identifier categoryId, MachineRecipe recipe) {
         this.recipe = recipe;
-        this.category = type.getId();
+        this.category = categoryId;
     }
 
     private static Function<EntryStack, List<Text>> getProbabilityTooltip(float probability) {

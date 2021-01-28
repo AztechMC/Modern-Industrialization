@@ -24,10 +24,13 @@
 package aztech.modern_industrialization.machines.impl;
 
 import aztech.modern_industrialization.MIIdentifier;
+import aztech.modern_industrialization.machines.MIMachines;
 import aztech.modern_industrialization.machines.recipe.MachineRecipe;
+import aztech.modern_industrialization.machines.recipe.MachineRecipeType;
+import java.util.Optional;
 import net.fabricmc.fabric.api.network.PacketConsumer;
-import net.minecraft.recipe.Recipe;
 import net.minecraft.screen.ScreenHandler;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
 
 public class MachinePackets {
@@ -79,17 +82,27 @@ public class MachinePackets {
         public static final Identifier LOCK_RECIPE = new MIIdentifier("lock_recipe");
         public static final PacketConsumer ON_LOCK_RECIPE = (context, data) -> {
             int syncId = data.readInt();
+            Identifier typeId = data.readIdentifier();
             Identifier recipeId = data.readIdentifier();
             context.getTaskQueue().execute(() -> {
                 ScreenHandler handler = context.getPlayer().currentScreenHandler;
                 if (handler.syncId == syncId && handler instanceof MachineScreenHandler) {
-                    Recipe recipe = context.getPlayer().world.getRecipeManager().get(recipeId).orElse(null);
-                    if (recipe instanceof MachineRecipe) {
-                        MachineScreenHandler machineHandler = (MachineScreenHandler) handler;
-                        // this cast should always be safe because we are on the logical server
-                        MachineBlockEntity be = (MachineBlockEntity) machineHandler.inventory;
-                        be.lockRecipe((MachineRecipe) recipe, context.getPlayer().inventory);
-                    }
+                    // Find MachineRecipeType
+                    MachineRecipeType mrt = MIMachines.FUCK_YOU_MOJANG.get(typeId);
+                    if (mrt == null)
+                        return;
+
+                    // Find MachineRecipe
+                    Optional<MachineRecipe> optionalMachineRecipe = mrt.getRecipes((ServerWorld) context.getPlayer().world).stream()
+                            .filter(recipe -> recipe.getId().equals(recipeId)).findFirst();
+                    if (!optionalMachineRecipe.isPresent())
+                        return;
+                    MachineRecipe mr = optionalMachineRecipe.get();
+
+                    // Lock
+                    MachineScreenHandler machineHandler = (MachineScreenHandler) handler;
+                    MachineBlockEntity be = (MachineBlockEntity) machineHandler.inventory;
+                    be.lockRecipe(mr, context.getPlayer().inventory);
                 }
             });
         };

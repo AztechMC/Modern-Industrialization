@@ -36,24 +36,32 @@ import aztech.modern_industrialization.machines.impl.MachineFactory;
 import aztech.modern_industrialization.machines.impl.MachineTier;
 import aztech.modern_industrialization.machines.impl.SteamMachineFactory;
 import aztech.modern_industrialization.machines.impl.multiblock.*;
+import aztech.modern_industrialization.machines.recipe.CuttingMachineRecipeType;
 import aztech.modern_industrialization.machines.recipe.FurnaceRecipeProxy;
 import aztech.modern_industrialization.machines.recipe.MachineRecipeType;
 import aztech.modern_industrialization.machines.special.*;
 import aztech.modern_industrialization.nuclear.MINuclearItem;
 import aztech.modern_industrialization.nuclear.NuclearReactorBlockEntity;
 import java.util.*;
+import java.util.function.Function;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
 public class MIMachines {
     // Recipe
     public static final Map<MachineRecipeType, RecipeInfo> RECIPE_TYPES = new TreeMap<>(Comparator.comparing(MachineRecipeType::getId));
-    public static final List<MachineFactory> WORKSTATIONS_FURNACES = new ArrayList<>();
+    public static final Map<Identifier, MachineRecipeType> FUCK_YOU_MOJANG = new HashMap<>();
 
     private static MachineRecipeType createRecipeType(String kind) {
-        MachineRecipeType type = new MachineRecipeType(new MIIdentifier(kind));
+        return createRecipeType(kind, MachineRecipeType::new);
+    }
+
+    private static MachineRecipeType createRecipeType(String kind, Function<Identifier, MachineRecipeType> ctor) {
+        MachineRecipeType type = ctor.apply(new MIIdentifier(kind));
         RECIPE_TYPES.put(type, new RecipeInfo());
+        FUCK_YOU_MOJANG.put(type.getId(), type);
         return type;
     }
 
@@ -68,14 +76,12 @@ public class MIMachines {
     public static final MachineRecipeType RECIPE_CHEMICAL_REACTOR = createRecipeType("chemical_reactor").withItemInputs().withFluidInputs()
             .withItemOutputs().withFluidOutputs();
     public static final MachineRecipeType RECIPE_COMPRESSOR = createRecipeType("compressor").withItemInputs().withItemOutputs();
-    public static final MachineRecipeType RECIPE_CUTTING_MACHINE = createRecipeType("cutting_machine").withItemInputs().withFluidInputs()
-            .withItemOutputs();
+    public static final MachineRecipeType RECIPE_CUTTING_MACHINE = createRecipeType("cutting_machine", CuttingMachineRecipeType::new).withItemInputs()
+            .withFluidInputs().withItemOutputs();
     public static final MachineRecipeType RECIPE_DISTILLERY = createRecipeType("distillery").withFluidInputs().withFluidOutputs();
     public static final MachineRecipeType RECIPE_ELECTROLYZER = createRecipeType("electrolyzer").withItemInputs().withFluidInputs().withItemOutputs()
             .withFluidOutputs();
-    // public static final MachineRecipeType RECIPE_FLUID_EXTRACTOR =
-    // createRecipeType("fluid_extractor").withItemInputs().withFluidOutputs();
-    public static final MachineRecipeType RECIPE_FURNACE = new FurnaceRecipeProxy(null);
+    public static final MachineRecipeType RECIPE_FURNACE = createRecipeType("furnace", FurnaceRecipeProxy::new);
     public static final MachineRecipeType RECIPE_MACERATOR = createRecipeType("macerator").withItemInputs().withItemOutputs();
     public static final MachineRecipeType RECIPE_MIXER = createRecipeType("mixer").withItemInputs().withFluidInputs().withItemOutputs()
             .withFluidOutputs();

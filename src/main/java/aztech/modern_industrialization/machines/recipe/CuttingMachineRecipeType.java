@@ -21,23 +21,26 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.mixin;
+package aztech.modern_industrialization.machines.recipe;
 
-import java.util.Map;
-import net.minecraft.recipe.Recipe;
-import net.minecraft.recipe.RecipeManager;
 import net.minecraft.recipe.RecipeType;
+import net.minecraft.recipe.StonecuttingRecipe;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.gen.Invoker;
 
-/**
- * The point of this mixin is to directly access the map
- * {@code RecipeType -> List<Recipe>}, because the public access functions all
- * require an allocation and go through a useless stream.
- */
-@Mixin(RecipeManager.class)
-public interface RecipeManagerAccessor {
-    @Invoker("getAllOfType")
-    Map<Identifier, Recipe<?>> modern_industrialization_getAllOfType(RecipeType<?> type);
+public class CuttingMachineRecipeType extends ProxyableMachineRecipeType {
+    public CuttingMachineRecipeType(Identifier id) {
+        super(id);
+    }
+
+    @Override
+    protected void fillRecipeList(ServerWorld world) {
+        // Add all regular cutting machine recipes
+        recipeList.addAll(getManagerRecipes(world));
+        // Add all stone cutter recipes
+        for (StonecuttingRecipe stonecuttingRecipe : world.getRecipeManager().listAllOfType(RecipeType.STONECUTTING)) {
+            MachineRecipe recipe = RecipeConversions.of(stonecuttingRecipe, this);
+            recipeList.add(recipe);
+        }
+    }
 }

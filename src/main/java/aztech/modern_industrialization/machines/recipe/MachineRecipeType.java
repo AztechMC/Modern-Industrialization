@@ -49,10 +49,14 @@ public class MachineRecipeType implements RecipeType<MachineRecipe>, RecipeSeria
     /**
      * Never modify or store the result!
      */
-    @SuppressWarnings("unchecked")
-    public Collection<MachineRecipe> getRecipes(ServerWorld world) {
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    protected Collection<MachineRecipe> getManagerRecipes(ServerWorld world) {
         return (Collection<MachineRecipe>) (Collection) ((RecipeManagerAccessor) world.getRecipeManager()).modern_industrialization_getAllOfType(this)
                 .values();
+    }
+
+    public Collection<MachineRecipe> getRecipes(ServerWorld world) {
+        return getManagerRecipes(world);
     }
 
     public MachineRecipe getRecipe(ServerWorld world, Identifier id) {

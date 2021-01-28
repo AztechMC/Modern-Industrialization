@@ -23,8 +23,6 @@
  */
 package aztech.modern_industrialization.compat.rei.machine_recipe;
 
-import static me.shedaniel.rei.api.BuiltinPlugin.SMELTING;
-
 import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.inventory.ConfigurableFluidStack;
 import aztech.modern_industrialization.inventory.ConfigurableItemStack;
@@ -33,6 +31,7 @@ import aztech.modern_industrialization.machines.impl.MachineFactory;
 import aztech.modern_industrialization.machines.impl.MachineScreen;
 import aztech.modern_industrialization.machines.recipe.MachineRecipe;
 import aztech.modern_industrialization.machines.recipe.MachineRecipeType;
+import aztech.modern_industrialization.machines.recipe.RecipeConversions;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
@@ -42,6 +41,9 @@ import me.shedaniel.rei.api.RecipeHelper;
 import me.shedaniel.rei.api.plugins.REIPluginV0;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.recipe.Recipe;
+import net.minecraft.recipe.RecipeType;
+import net.minecraft.recipe.SmeltingRecipe;
+import net.minecraft.recipe.StonecuttingRecipe;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.TypedActionResult;
@@ -54,6 +56,7 @@ public class MachineRecipePlugin implements REIPluginV0 {
 
     @Override
     public void registerPluginCategories(RecipeHelper recipeHelper) {
+        // regular categories
         for (Map.Entry<MachineRecipeType, MIMachines.RecipeInfo> entry : MIMachines.RECIPE_TYPES.entrySet()) {
             List<MachineFactory> factories = entry.getValue().factories;
             recipeHelper.registerCategory(
@@ -62,12 +65,23 @@ public class MachineRecipePlugin implements REIPluginV0 {
     }
 
     @Override
+    @SuppressWarnings("rawtypes")
     public void registerRecipeDisplays(RecipeHelper recipeHelper) {
+        // regular recipes
         for (MachineRecipeType type : MIMachines.RECIPE_TYPES.keySet()) {
             recipeHelper.registerRecipes(type.getId(),
                     (Predicate<Recipe>) recipe -> recipe instanceof MachineRecipe && ((MachineRecipe) recipe).getType() == type,
-                    recipe -> new MachineRecipeDisplay(type, (MachineRecipe) recipe));
+                    recipe -> new MachineRecipeDisplay(type.getId(), (MachineRecipe) recipe));
         }
+        // furnace recipes
+        recipeHelper.registerRecipes(MIMachines.RECIPE_FURNACE.getId(), (Predicate<Recipe>) recipe -> recipe.getType() == RecipeType.SMELTING,
+                recipe -> new MachineRecipeDisplay(MIMachines.RECIPE_FURNACE.getId(),
+                        RecipeConversions.of((SmeltingRecipe) recipe, MIMachines.RECIPE_FURNACE)));
+        // cutting machine recipes
+        recipeHelper.registerRecipes(MIMachines.RECIPE_CUTTING_MACHINE.getId(),
+                (Predicate<Recipe>) recipe -> recipe.getType() == RecipeType.STONECUTTING,
+                recipe -> new MachineRecipeDisplay(MIMachines.RECIPE_CUTTING_MACHINE.getId(),
+                        RecipeConversions.of((StonecuttingRecipe) recipe, MIMachines.RECIPE_CUTTING_MACHINE)));
     }
 
     @Override
@@ -84,10 +98,6 @@ public class MachineRecipePlugin implements REIPluginV0 {
                     return new Rectangle(-1, -1, 0, 0);
                 }
             }, MachineScreen.class, entry.getKey().getId());
-        }
-
-        for (MachineFactory factory : MIMachines.WORKSTATIONS_FURNACES) {
-            recipeHelper.registerWorkingStations(SMELTING, EntryStack.create(factory.item));
         }
 
         recipeHelper.registerAutoCraftingHandler(new OutputLockTransferHandler());

@@ -1,3 +1,7 @@
+##### 0.3.11
+* Do not bundle KubeJS anymore (shedaniel can finally sleep in peace).
+* Remove Astromine compat 🦀
+
 ##### 0.3.10
 * Update KubeJS
 

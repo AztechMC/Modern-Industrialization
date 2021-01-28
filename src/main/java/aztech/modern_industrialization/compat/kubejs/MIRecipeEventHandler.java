@@ -53,7 +53,7 @@ public class MIRecipeEventHandler implements KubeJSInitializer {
 
     private static class MachineRecipeType extends RecipeTypeJS {
         public MachineRecipeType(String id, Supplier<RecipeJS> f) {
-            super(Objects.requireNonNull(Registry.RECIPE_SERIALIZER.get(UtilsJS.getMCID(id))), id, f);
+            super(Objects.requireNonNull(Registry.RECIPE_SERIALIZER.get(UtilsJS.getMCID(id))), f);
         }
 
         @Override
@@ -124,7 +124,7 @@ public class MIRecipeEventHandler implements KubeJSInitializer {
             if (obj.has("count"))
                 amount = obj.get("count").getAsInt();
             IngredientJS ing = IngredientJS.of(obj);
-            ing = ing.count(amount);
+            ing = ing.withCount(amount);
             inputItems.add(ing);
             itemInputProbabilities[index] = readProbability(obj);
         }
@@ -146,7 +146,7 @@ public class MIRecipeEventHandler implements KubeJSInitializer {
         }
 
         @Override
-        protected void serialize() {
+        public void serialize() {
             json.addProperty("eu", eu);
             json.addProperty("duration", duration);
             if (fluidInputs != null)

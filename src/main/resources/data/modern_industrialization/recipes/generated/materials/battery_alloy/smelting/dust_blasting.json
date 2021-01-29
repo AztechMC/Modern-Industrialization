@@ -1,9 +1,0 @@
-{
-    "type": "minecraft:blasting",
-    "ingredient": {
-        "item": "modern_industrialization:battery_alloy_dust"
-    },
-    "result": "modern_industrialization:battery_alloy_ingot",
-    "experience": 0.7,
-    "cookingtime": 100
-}

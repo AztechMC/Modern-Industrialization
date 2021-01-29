@@ -1,9 +1,0 @@
-{
-    "type": "minecraft:blasting",
-    "ingredient": {
-        "item": "modern_industrialization:platinum_dust"
-    },
-    "result": "modern_industrialization:platinum_ingot",
-    "experience": 0.7,
-    "cookingtime": 100
-}

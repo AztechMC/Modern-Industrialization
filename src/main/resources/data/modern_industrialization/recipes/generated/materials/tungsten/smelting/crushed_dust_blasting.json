@@ -1,9 +1,0 @@
-{
-    "type": "minecraft:blasting",
-    "ingredient": {
-        "item": "modern_industrialization:tungsten_crushed_dust"
-    },
-    "result": "modern_industrialization:tungsten_ingot",
-    "experience": 0.7,
-    "cookingtime": 100
-}

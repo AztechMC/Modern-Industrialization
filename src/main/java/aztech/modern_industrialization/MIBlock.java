@@ -23,7 +23,6 @@
  */
 package aztech.modern_industrialization;
 
-import aztech.modern_industrialization.material.MIMaterialSetup;
 import aztech.modern_industrialization.util.MobSpawning;
 import java.util.SortedMap;
 import java.util.TreeMap;
@@ -33,37 +32,29 @@ import net.minecraft.block.Block;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 
-public class MIBlock extends Block {
+import static aztech.modern_industrialization.ModernIndustrialization.METAL_MATERIAL;
+import static aztech.modern_industrialization.ModernIndustrialization.STONE_MATERIAL;
 
-    private String id;
+public class MIBlock extends Block {
     public static SortedMap<String, MIBlock> blocks = new TreeMap<String, MIBlock>();
-    private BlockItem blockItem;
+    public final Item blockItem;
 
     public MIBlock(String id, Settings settings) {
         super(settings);
         if (blocks.containsKey(id)) {
             throw new IllegalArgumentException("Block id already taken : " + id);
         } else {
-            this.id = id;
             blocks.put(id, this);
-            blockItem = new BlockItem(this, new Item.Settings().group(ModernIndustrialization.ITEM_GROUP));
+            blockItem = MIItem.of(itemSettings -> new BlockItem(this, itemSettings), id, 64);
         }
     }
 
     public MIBlock(String id) {
-        this(id, FabricBlockSettings.of(MIMaterialSetup.METAL_MATERIAL).hardness(4.0f).breakByTool(FabricToolTags.PICKAXES).requiresTool()
+        this(id, FabricBlockSettings.of(METAL_MATERIAL).hardness(4.0f).breakByTool(FabricToolTags.PICKAXES).requiresTool()
                 .allowsSpawning(MobSpawning.NO_SPAWN));
     }
 
-    public String getId() {
-        return id;
-    }
-
-    public BlockItem getItem() {
-        return blockItem;
-    }
-
-    public static final MIBlock BLOCK_FIRE_CLAY_BRICKS = new MIBlock("fire_clay_bricks", FabricBlockSettings.of(MIMaterialSetup.STONE_MATERIAL)
+    public static final MIBlock BLOCK_FIRE_CLAY_BRICKS = new MIBlock("fire_clay_bricks", FabricBlockSettings.of(STONE_MATERIAL)
             .hardness(2.0f).resistance(6.0f).breakByTool(FabricToolTags.PICKAXES, 0).requiresTool());
 
     public static final MIBlock STEEL_MACHINE_CASING = new MIBlock("steel_machine_casing");

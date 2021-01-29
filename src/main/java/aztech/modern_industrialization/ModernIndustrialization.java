@@ -44,6 +44,7 @@ import aztech.modern_industrialization.machines.impl.MachineFactory;
 import aztech.modern_industrialization.machines.impl.MachinePackets;
 import aztech.modern_industrialization.machines.impl.MachineScreenHandler;
 import aztech.modern_industrialization.material.*;
+import aztech.modern_industrialization.materials.MIMaterials;
 import aztech.modern_industrialization.pipes.MIPipes;
 import aztech.modern_industrialization.tools.WrenchItem;
 import aztech.modern_industrialization.util.ChunkUnloadBlockEntity;
@@ -64,12 +65,15 @@ import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.client.itemgroup.FabricItemGroupBuilder;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerChunkEvents;
 import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
+import net.fabricmc.fabric.api.object.builder.v1.block.FabricMaterialBuilder;
 import net.fabricmc.fabric.api.registry.FuelRegistry;
 import net.fabricmc.fabric.api.screenhandler.v1.ScreenHandlerRegistry;
 import net.fabricmc.fabric.api.tag.TagRegistry;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidApi;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemApi;
 import net.minecraft.block.Block;
+import net.minecraft.block.Material;
+import net.minecraft.block.MaterialColor;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.item.*;
@@ -80,6 +84,8 @@ import net.minecraft.util.registry.Registry;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.util.Map;
+
 public class ModernIndustrialization implements ModInitializer {
 
     public static final int FLAG_BLOCK_LOOT = 1;
@@ -89,6 +95,10 @@ public class ModernIndustrialization implements ModInitializer {
     public static final String MOD_ID = "modern_industrialization";
     public static final Logger LOGGER = LogManager.getLogger("Modern Industrialization");
     public static final RuntimeResourcePack RESOURCE_PACK = RuntimeResourcePack.create("modern_industrialization:general");
+
+    // Materials
+    public static final Material METAL_MATERIAL = new FabricMaterialBuilder(MaterialColor.IRON).build();
+    public static final Material STONE_MATERIAL = new FabricMaterialBuilder(MaterialColor.STONE).build();
 
     public static final ItemGroup ITEM_GROUP = FabricItemGroupBuilder.build(new Identifier(MOD_ID, "general"),
             () -> new ItemStack(Registry.ITEM.get(new MIIdentifier("forge_hammer"))));
@@ -121,11 +131,11 @@ public class ModernIndustrialization implements ModInitializer {
         // However, some things (like resources) may still be uninitialized.
         // Proceed with mild caution.
 
-        MITags.setup();
+        MIMaterials.init();
+        //MITags.setup();
         setupItems();
         setupBlocks();
         MIFluids.setupFluids();
-        setupMaterial();
         MITanks.setup();
         MIMachines.setupRecipes(); // will also load the static fields.
         ForgeHammerScreenHandler.setupRecipes();
@@ -151,16 +161,9 @@ public class ModernIndustrialization implements ModInitializer {
         LOGGER.info("Modern Industrialization setup done!");
     }
 
-    private void setupMaterial() {
-        MIMaterialSetup.register();
-        for (MIMaterial material : MIMaterial.getAllMaterials()) {
-            registerMaterial(material);
-        }
-    }
-
     private void setupItems() {
-        for (MIItem item : MIItem.items.values()) {
-            registerItem(item, item.getId());
+        for (Map.Entry<String, Item> entry : MIItem.items.entrySet()) {
+            registerItem(entry.getValue(), entry.getKey());
         }
 
         registerItem(ITEM_WRENCH, "wrench");
@@ -179,8 +182,8 @@ public class ModernIndustrialization implements ModInitializer {
     private void setupBlocks() {
         registerBlock(FORGE_HAMMER, ITEM_FORGE_HAMMER, "forge_hammer", FLAG_BLOCK_LOOT | FLAG_BLOCK_ITEM_MODEL);
         registerBlock(TRASH_CAN, ITEM_TRASH_CAN, "trash_can", 7);
-        for (MIBlock block : MIBlock.blocks.values()) {
-            registerBlock(block, block.getItem(), block.getId());
+        for (Map.Entry<String, MIBlock> entry : MIBlock.blocks.entrySet()) {
+            registerBlock(entry.getValue(), entry.getValue().blockItem, entry.getKey());
         }
 
         ItemApi.SIDED.registerForBlocks((world, pos, state, direction) -> TrashCanBlock.trashStorage(), TRASH_CAN);
@@ -222,44 +225,15 @@ public class ModernIndustrialization implements ModInitializer {
         registerBlock(block, item, id, FLAG_BLOCK_LOOT | FLAG_BLOCK_ITEM_MODEL | FLAG_BLOCK_MODEL);
     }
 
-    private void registerMaterial(MIMaterial material) {
-        String id = material.getId();
-
-        for (String block_type : material.getBlockType()) {
-            Block block = material.getBlock(block_type);
-            Item item = new BlockItem(block, new Item.Settings().group(ITEM_GROUP));
-            Identifier identifier = new MIIdentifier(id + "_" + block_type);
-            // Registry.register(Registry.BLOCK, identifier, block);
-            Registry.register(Registry.ITEM, identifier, item);
-            RESOURCE_PACK.addBlockState(
-                    JState.state().add(new JVariant().put("", new JBlockModel(MOD_ID + ":block/materials/" + id + "/" + block_type))), identifier);
-            RESOURCE_PACK.addModel(
-                    JModel.model().parent("block/cube_all")
-                            .textures(new JTextures().var("all", MOD_ID + ":blocks/materials/" + id + "/" + block_type)),
-                    new MIIdentifier("block/materials/" + id + "/" + block_type));
-            RESOURCE_PACK.addModel(JModel.model().parent(MOD_ID + ":block/materials/" + id + "/" + block_type),
-                    new MIIdentifier("item/" + id + "_" + block_type));
-            registerBlockLoot(id + "_" + block_type);
-        }
-
-        for (String item_type : material.getItemType()) {
-            Item item = new Item(new Item.Settings().group(ITEM_GROUP));
-            material.saveItem(item_type, item);
-            String custom_id = id;
-            if (!id.equals(item_type)) {
-                custom_id = id + "_" + item_type;
-            }
-            Registry.register(Registry.ITEM, new MIIdentifier(custom_id), item);
-            RESOURCE_PACK.addModel(JModel.model().parent("minecraft:item/generated")
-                    .textures(new JTextures().layer0(MOD_ID + ":items/materials/" + id + "/" + item_type)), new MIIdentifier("item/" + custom_id));
-        }
-
+    public static void registerItem(Item item, String id, boolean handheld) {
+        registerItem(item, new MIIdentifier(id), handheld);
     }
 
-    public static void registerItem(Item item, String id, boolean handheld) {
-        Registry.register(Registry.ITEM, new MIIdentifier(id), item);
+    public static void registerItem(Item item, Identifier id, boolean handheld) {
+        Registry.register(Registry.ITEM, id, item);
+        String layerPath = id.getNamespace() + ":items/" + id.getPath();
         RESOURCE_PACK.addModel(JModel.model().parent(handheld ? "minecraft:item/handheld" : "minecraft:item/generated")
-                .textures(new JTextures().layer0(MOD_ID + ":items/" + id)), new MIIdentifier("item/" + id));
+                .textures(new JTextures().layer0(layerPath)), new Identifier(layerPath));
     }
 
     public static void registerItem(Item item, String id) {
@@ -282,6 +256,7 @@ public class ModernIndustrialization implements ModInitializer {
     }
 
     private void setupFuels() {
+        /* FIXME
         FuelRegistry.INSTANCE.add(MIItem.ITEM_COKE, 6400);
         FuelRegistry.INSTANCE.add(MIItem.ITEM_COKE_DUST, 6400);
         FuelRegistry.INSTANCE.add(MIMaterials.coal.getItem("crushed_dust"), 1600);
@@ -293,6 +268,7 @@ public class ModernIndustrialization implements ModInitializer {
         FuelRegistry.INSTANCE.add(MIMaterials.lignite_coal.getItem("dust"), 1600);
         FuelRegistry.INSTANCE.add(MIMaterials.lignite_coal.getItem("tiny_dust"), 160);
         FuelRegistry.INSTANCE.add(MIItem.ITEM_CARBON_DUST, 6400);
+         */
 
         FluidFuelRegistry.register(MIFluids.CRUDE_OIL, 8);
         FluidFuelRegistry.register(MIFluids.DIESEL, 200);

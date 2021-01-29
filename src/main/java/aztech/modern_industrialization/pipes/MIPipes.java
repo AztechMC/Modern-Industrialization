@@ -109,6 +109,7 @@ public class MIPipes implements ModInitializer {
         Registry.register(Registry.BLOCK, new MIIdentifier("pipe"), BLOCK_PIPE);
         BLOCK_ENTITY_TYPE_PIPE = Registry.register(Registry.BLOCK_ENTITY_TYPE, new MIIdentifier("pipe"),
                 BlockEntityType.Builder.create(PipeBlockEntity::new, BLOCK_PIPE).build(null));
+        /* FIXME
         registerFluidPipeType("gold", 255 << 24 | 255 << 16 | 225 << 8 | 0, 81000);
         registerFluidPipeType("aluminum", 255 << 24 | 63 << 16 | 202 << 8 | 255, 81000);
         registerFluidPipeType("steel", 255 << 24 | 63 << 16 | 63 << 8 | 63, 81000);
@@ -143,7 +144,7 @@ public class MIPipes implements ModInitializer {
         registerElectricityPipeType("annealed_copper", 255 << 24 | 255 << 16 | 146 << 8 | 79, HV);
         registerElectricityPipeType("platinum", 255 << 24 | 255 << 16 | 229 << 8 | 186, EV);
         registerElectricityPipeType("kanthal", 255 << 24 | 207 << 16 | 203 << 8, EV);
-        registerElectricityPipeType("supraconductor", 255 << 24 | 163 << 16 | 217 << 8 | 255, SUPRACONDUCTOR);
+        registerElectricityPipeType("supraconductor", 255 << 24 | 163 << 16 | 217 << 8 | 255, SUPRACONDUCTOR);*/
 
         ServerTickEvents.START_SERVER_TICK.register(server -> {
             for (World world : server.getWorlds()) {

@@ -29,7 +29,6 @@ import aztech.modern_industrialization.machines.impl.multiblock.MultiblockMachin
 import aztech.modern_industrialization.machines.impl.multiblock.MultiblockShape;
 import aztech.modern_industrialization.machines.impl.multiblock.MultiblockShapes;
 import aztech.modern_industrialization.machines.recipe.MachineRecipe;
-import aztech.modern_industrialization.material.MIMaterials;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -50,7 +49,7 @@ public class ElectricBlastFurnaceBlockEntity extends MultiblockMachineBlockEntit
     }
 
     static {
-        COIL_MATERIALS = new Block[] { MIMaterials.cupronickel.getBlock("coil"), };
+        COIL_MATERIALS = new Block[] { /* FIXME MIMaterials.cupronickel.getBlock("coil"), */ };
         COIL_EU = new int[] { 128, };
         COIL_SHAPE = new MultiblockShape[COIL_MATERIALS.length];
 

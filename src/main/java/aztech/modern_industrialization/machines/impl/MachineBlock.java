@@ -27,7 +27,6 @@ import aztech.modern_industrialization.ModernIndustrialization;
 import aztech.modern_industrialization.inventory.ConfigurableItemStack;
 import aztech.modern_industrialization.machines.impl.multiblock.HatchBlockEntity;
 import aztech.modern_industrialization.machines.impl.multiblock.MultiblockMachineBlockEntity;
-import aztech.modern_industrialization.material.MIMaterialSetup;
 import aztech.modern_industrialization.tools.IWrenchable;
 import aztech.modern_industrialization.tools.MachineOverlayItem;
 import aztech.modern_industrialization.util.MobSpawning;
@@ -57,6 +56,8 @@ import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 
+import static aztech.modern_industrialization.ModernIndustrialization.METAL_MATERIAL;
+
 /**
  * A generic machine_recipe block.
  */
@@ -64,7 +65,7 @@ public class MachineBlock extends Block implements BlockEntityProvider, IWrencha
     public final MachineFactory factory;
 
     public MachineBlock(MachineFactory factory) {
-        super(FabricBlockSettings.of(MIMaterialSetup.METAL_MATERIAL).hardness(4.0f).breakByTool(FabricToolTags.PICKAXES).requiresTool()
+        super(FabricBlockSettings.of(METAL_MATERIAL).hardness(4.0f).breakByTool(FabricToolTags.PICKAXES).requiresTool()
                 .allowsSpawning(MobSpawning.NO_SPAWN));
         this.factory = factory;
     }

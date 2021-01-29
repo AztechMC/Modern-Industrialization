@@ -40,7 +40,6 @@ import aztech.modern_industrialization.machines.recipe.CuttingMachineRecipeType;
 import aztech.modern_industrialization.machines.recipe.FurnaceRecipeProxy;
 import aztech.modern_industrialization.machines.recipe.MachineRecipeType;
 import aztech.modern_industrialization.machines.special.*;
-import aztech.modern_industrialization.nuclear.MINuclearItem;
 import aztech.modern_industrialization.nuclear.NuclearReactorBlockEntity;
 import java.util.*;
 import java.util.function.Function;
@@ -563,8 +562,8 @@ public class MIMachines {
 
         new MachineFactory("nuclear_reactor", null, f -> new NuclearReactorBlockEntity(f, Collections.singletonList(NUCLEAR_REACTOR_SHAPE)), null, 64,
                 0, 0, 0).setInputSlotPosition(15, 20, 8, 8).setupBackground("nuclear.png", 176, 256).setInventoryPos(8, 174)
-                        .setupOverlays("vacuum_freezer", true, false, false).setupCasing("nuclear")
-                        .setInsertPredicate(stack -> stack.getItem() instanceof MINuclearItem);
+                        .setupOverlays("vacuum_freezer", true, false, false).setupCasing("nuclear");
+                        // FIXME .setInsertPredicate(stack -> stack.getItem() instanceof MINuclearItem);
 
         new MachineFactory("distillation_tower", UNLIMITED, DistillationTowerBlockEntity::new, RECIPE_DISTILLATION_TOWER, 0, 0, 1, 8)
                 .setInputLiquidSlotPosition(56, 35, 1, 1).setLiquidOutputSlotPosition(102, 35, 1, 8).setupProgressBar(76, 35, 22, 15, true)

@@ -1,9 +1,0 @@
-{
-    "type": "minecraft:smelting",
-    "ingredient": {
-        "item": "modern_industrialization:supraconductor_tiny_dust"
-    },
-    "result": "modern_industrialization:supraconductor_nugget",
-    "experience": 0.08,
-    "cookingtime": 200
-}

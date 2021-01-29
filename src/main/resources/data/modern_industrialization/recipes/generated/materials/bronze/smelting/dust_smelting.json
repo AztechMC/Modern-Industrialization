@@ -1,9 +1,0 @@
-{
-    "type": "minecraft:smelting",
-    "ingredient": {
-        "item": "modern_industrialization:bronze_dust"
-    },
-    "result": "modern_industrialization:bronze_ingot",
-    "experience": 0.7,
-    "cookingtime": 200
-}

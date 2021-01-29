@@ -590,7 +590,7 @@ shutil.rmtree("src/main/resources/data/c/tags/items", ignore_errors=True)
 shutil.rmtree(
     "src/main/resources/data/modern_industrialization/recipes/generated/materials", ignore_errors=True)
 
-gen(
+"""gen(
     file,
     Material('gold', ITEM_BASE - {'ingot', 'nugget'}, set(), overrides={
         "main": "minecraft:gold_ingot",
@@ -605,7 +605,7 @@ gen(
         "tiny_dust": "c:gold_tiny_dusts",
     }),
     '#FFE650', 'shiny', vanilla=True,
-)
+)"""
 gen(
     file,
     Material('iron', ITEM_BASE - {'ingot', 'nugget'}, set(), overrides={

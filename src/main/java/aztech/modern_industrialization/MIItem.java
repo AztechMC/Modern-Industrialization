@@ -23,118 +23,110 @@
  */
 package aztech.modern_industrialization;
 
-import static aztech.modern_industrialization.nuclear.NuclearFuelType.*;
-
 import aztech.modern_industrialization.items.GuideBookItem;
-import aztech.modern_industrialization.nuclear.NuclearCoolant;
-import aztech.modern_industrialization.nuclear.NuclearFuel;
 import java.util.SortedMap;
 import java.util.TreeMap;
+import java.util.function.Function;
+
 import net.minecraft.item.Item;
 
-public class MIItem extends Item {
-
-    private String id;
-    public static SortedMap<String, MIItem> items = new TreeMap<>();
-
-    public MIItem(String id) {
-        this(id, 64);
+public final class MIItem {
+    public static SortedMap<String, Item> items = new TreeMap<>();
+    
+    public static Item of(String id) {
+        return of(Item::new, id, 64);
     }
-
-    public MIItem(String id, int maxCount) {
-        super(new Item.Settings().maxCount(maxCount).group(ModernIndustrialization.ITEM_GROUP));
-        if (items.containsKey(id)) {
+    
+    public static Item of(Function<Item.Settings, Item> ctor, String id, int maxCount) {
+        Item item = ctor.apply(new Item.Settings().maxCount(maxCount).group(ModernIndustrialization.ITEM_GROUP));
+        if (items.put(id, item) != null) {
             throw new IllegalArgumentException("Item id already taken : " + id);
-        } else {
-            this.id = id;
-            items.put(id, this);
         }
+        return item;
     }
 
-    public String getId() {
-        return id;
-    }
+    public static final Item ITEM_GUIDE_BOOK = of(GuideBookItem::new, "guidebook", 1);
 
-    public static final MIItem ITEM_GUIDE_BOOK = new GuideBookItem("guidebook");
+    public static final Item ITEM_BRICK_TINY_DUST = of("brick_tiny_dust");
+    public static final Item ITEM_BRICK_DUST = of("brick_dust");
+    public static final Item ITEM_FIRE_CLAY_DUST = of("fire_clay_dust");
+    public static final Item ITEM_FIRE_CLAY_BRICK = of("fire_clay_brick");
+    public static final Item ITEM_COKE = of("coke");
+    public static final Item ITEM_COKE_DUST = of("coke_dust");
+    public static final Item ITEM_UNCOOKED_STEEL_DUST = of("uncooked_steel_dust");
 
-    public static final MIItem ITEM_BRICK_TINY_DUST = new MIItem("brick_tiny_dust");
-    public static final MIItem ITEM_BRICK_DUST = new MIItem("brick_dust");
-    public static final MIItem ITEM_FIRE_CLAY_DUST = new MIItem("fire_clay_dust");
-    public static final MIItem ITEM_FIRE_CLAY_BRICK = new MIItem("fire_clay_brick");
-    public static final MIItem ITEM_COKE = new MIItem("coke");
-    public static final MIItem ITEM_COKE_DUST = new MIItem("coke_dust");
-    public static final MIItem ITEM_UNCOOKED_STEEL_DUST = new MIItem("uncooked_steel_dust");
+    public static final Item ITEM_LV_MOTOR = of("lv_motor");
+    public static final Item ITEM_LV_PISTON = of("lv_piston");
+    public static final Item ITEM_LV_CONVEYOR = of("lv_conveyor");
+    public static final Item ITEM_LV_ROBOT_ARM = of("lv_robot_arm");
+    public static final Item ITEM_LV_CIRCUIT = of("lv_circuit");
+    public static final Item ITEM_LV_CIRCUIT_BOARD = of("lv_circuit_board");
+    public static final Item ITEM_LV_BATTERY = of("lv_battery");
+    public static final Item ITEM_LV_PUMP = of("lv_pump");
+    public static final Item ITEM_RESISTOR = of("resistor");
+    public static final Item ITEM_CAPACITOR = of("capacitor");
+    public static final Item ITEM_INDUCTOR = of("inductor");
+    public static final Item ITEM_STEEL_ROD_MAGNETIC = of("steel_rod_magnetic");
+    public static final Item ITEM_WOOD_PULP = of("wood_pulp");
+    public static final Item ITEM_RUBBER_SHEET = of("rubber_sheet");
+    public static final Item ITEM_INVAR_ROTARY_BLADE = of("invar_rotary_blade");
 
-    public static final MIItem ITEM_LV_MOTOR = new MIItem("lv_motor");
-    public static final MIItem ITEM_LV_PISTON = new MIItem("lv_piston");
-    public static final MIItem ITEM_LV_CONVEYOR = new MIItem("lv_conveyor");
-    public static final MIItem ITEM_LV_ROBOT_ARM = new MIItem("lv_robot_arm");
-    public static final MIItem ITEM_LV_CIRCUIT = new MIItem("lv_circuit");
-    public static final MIItem ITEM_LV_CIRCUIT_BOARD = new MIItem("lv_circuit_board");
-    public static final MIItem ITEM_LV_BATTERY = new MIItem("lv_battery");
-    public static final MIItem ITEM_LV_PUMP = new MIItem("lv_pump");
-    public static final MIItem ITEM_RESISTOR = new MIItem("resistor");
-    public static final MIItem ITEM_CAPACITOR = new MIItem("capacitor");
-    public static final MIItem ITEM_INDUCTOR = new MIItem("inductor");
-    public static final MIItem ITEM_STEEL_ROD_MAGNETIC = new MIItem("steel_rod_magnetic");
-    public static final MIItem ITEM_WOOD_PULP = new MIItem("wood_pulp");
-    public static final MIItem ITEM_RUBBER_SHEET = new MIItem("rubber_sheet");
-    public static final MIItem ITEM_INVAR_ROTARY_BLADE = new MIItem("invar_rotary_blade");
+    public static final Item ITEM_ELECTRONIC_CIRCUIT = of("electronic_circuit");
+    public static final Item ITEM_DIODE = of("diode");
+    public static final Item ITEM_ELECTRONIC_CIRCUIT_BOARD = of("electronic_circuit_board");
+    public static final Item ITEM_TRANSISTOR = of("transistor");
+    public static final Item ITEM_SILICON_BATTERY = of("silicon_battery");
+    public static final Item ITEM_LARGE_MOTOR = of("large_motor");
+    public static final Item ITEM_CUPRONICKEL_WIRE_MAGNETIC = of("cupronickel_wire_magnetic");
+    public static final Item ITEM_LARGE_PUMP = of("large_pump");
 
-    public static final MIItem ITEM_ELECTRONIC_CIRCUIT = new MIItem("electronic_circuit");
-    public static final MIItem ITEM_DIODE = new MIItem("diode");
-    public static final MIItem ITEM_ELECTRONIC_CIRCUIT_BOARD = new MIItem("electronic_circuit_board");
-    public static final MIItem ITEM_TRANSISTOR = new MIItem("transistor");
-    public static final MIItem ITEM_SILICON_BATTERY = new MIItem("silicon_battery");
-    public static final MIItem ITEM_LARGE_MOTOR = new MIItem("large_motor");
-    public static final MIItem ITEM_CUPRONICKEL_WIRE_MAGNETIC = new MIItem("cupronickel_wire_magnetic");
-    public static final MIItem ITEM_LARGE_PUMP = new MIItem("large_pump");
+    public static final Item ITEM_DIGITAL_CIRCUIT = of("digital_circuit");
+    public static final Item ITEM_DIGITAL_CIRCUIT_BOARD = of("digital_circuit_board");
+    public static final Item ITEM_OP_AMP = of("op_amp");
+    public static final Item ITEM_AND_GATE = of("and_gate");
+    public static final Item ITEM_OR_GATE = of("or_gate");
+    public static final Item ITEM_NOT_GATE = of("not_gate");
 
-    public static final MIItem ITEM_DIGITAL_CIRCUIT = new MIItem("digital_circuit");
-    public static final MIItem ITEM_DIGITAL_CIRCUIT_BOARD = new MIItem("digital_circuit_board");
-    public static final MIItem ITEM_OP_AMP = new MIItem("op_amp");
-    public static final MIItem ITEM_AND_GATE = new MIItem("and_gate");
-    public static final MIItem ITEM_OR_GATE = new MIItem("or_gate");
-    public static final MIItem ITEM_NOT_GATE = new MIItem("not_gate");
+    public static final Item ITEM_P_DOPED_SILICON_PLATE = of("p_doped_silicon_plate");
+    public static final Item ITEM_N_DOPED_SILICON_PLATE = of("n_doped_silicon_plate");
 
-    public static final MIItem ITEM_P_DOPED_SILICON_PLATE = new MIItem("p_doped_silicon_plate");
-    public static final MIItem ITEM_N_DOPED_SILICON_PLATE = new MIItem("n_doped_silicon_plate");
+    public static final Item ITEM_CARBON_DUST = of("carbon_dust");
+    public static final Item ITEM_SODIUM_BATTERY = of("sodium_battery");
 
-    public static final MIItem ITEM_CARBON_DUST = new MIItem("carbon_dust");
-    public static final MIItem ITEM_SODIUM_BATTERY = new MIItem("sodium_battery");
+    public static final Item ITEM_RUBY_DUST = of("ruby_dust");
+    public static final Item ITEM_STAINLESS_STEEL_HOT_INGOT = of("stainless_steel_hot_ingot");
+    public static final Item ITEM_CHROME_HOT_INGOT = of("chrome_hot_ingot");
 
-    public static final MIItem ITEM_RUBY_DUST = new MIItem("ruby_dust");
-    public static final MIItem ITEM_STAINLESS_STEEL_HOT_INGOT = new MIItem("stainless_steel_hot_ingot");
-    public static final MIItem ITEM_CHROME_HOT_INGOT = new MIItem("chrome_hot_ingot");
-
-    public static final MIItem ITEM_DEPLETED_URANIUM_FUEL_ROD = new MIItem("depleted_uranium_fuel_rod");
-    public static final MIItem ITEM_DEPLETED_URANIUM_FUEL_ROD_DOUBLE = new MIItem("depleted_uranium_fuel_rod_double");
-    public static final MIItem ITEM_DEPLETED_URANIUM_FUEL_ROD_QUAD = new MIItem("depleted_uranium_fuel_rod_quad");
-    public static final MIItem ITEM_URANIUM_FUEL_ROD = new NuclearFuel("uranium_fuel_rod", URANIUM, 1, ITEM_DEPLETED_URANIUM_FUEL_ROD);
-    public static final MIItem ITEM_URANIUM_FUEL_ROD_DOUBLE = new NuclearFuel("uranium_fuel_rod_double", URANIUM, 2,
+    /* FIXME
+    public static final Item ITEM_DEPLETED_URANIUM_FUEL_ROD = new MIItem("depleted_uranium_fuel_rod");
+    public static final Item ITEM_DEPLETED_URANIUM_FUEL_ROD_DOUBLE = new MIItem("depleted_uranium_fuel_rod_double");
+    public static final Item ITEM_DEPLETED_URANIUM_FUEL_ROD_QUAD = new MIItem("depleted_uranium_fuel_rod_quad");
+    public static final Item ITEM_URANIUM_FUEL_ROD = new NuclearFuel("uranium_fuel_rod", URANIUM, 1, ITEM_DEPLETED_URANIUM_FUEL_ROD);
+    public static final Item ITEM_URANIUM_FUEL_ROD_DOUBLE = new NuclearFuel("uranium_fuel_rod_double", URANIUM, 2,
             ITEM_DEPLETED_URANIUM_FUEL_ROD_DOUBLE);
-    public static final MIItem ITEM_URANIUM_FUEL_ROD_QUAD = new NuclearFuel("uranium_fuel_rod_quad", URANIUM, 4, ITEM_DEPLETED_URANIUM_FUEL_ROD_QUAD);
+    public static final Item ITEM_URANIUM_FUEL_ROD_QUAD = new NuclearFuel("uranium_fuel_rod_quad", URANIUM, 4, ITEM_DEPLETED_URANIUM_FUEL_ROD_QUAD);
 
-    public static final MIItem ITEM_CROWBAR = new MIItem("crowbar");
+    public static final Item ITEM_CROWBAR = new MIItem("crowbar");
 
-    public static final MIItem ITEM_DEPLETED_PLUTONIUM_FUEL_ROD = new MIItem("depleted_plutonium_fuel_rod");
-    public static final MIItem ITEM_DEPLETED_PLUTONIUM_FUEL_ROD_DOUBLE = new MIItem("depleted_plutonium_fuel_rod_double");
-    public static final MIItem ITEM_DEPLETED_PLUTONIUM_FUEL_ROD_QUAD = new MIItem("depleted_plutonium_fuel_rod_quad");
-    public static final MIItem ITEM_PLUTONIUM_FUEL_ROD = new NuclearFuel("plutonium_fuel_rod", PLUTONIUM, 1, ITEM_DEPLETED_PLUTONIUM_FUEL_ROD);
-    public static final MIItem ITEM_PLUTONIUM_FUEL_ROD_DOUBLE = new NuclearFuel("plutonium_fuel_rod_double", PLUTONIUM, 2,
+    public static final Item ITEM_DEPLETED_PLUTONIUM_FUEL_ROD = new MIItem("depleted_plutonium_fuel_rod");
+    public static final Item ITEM_DEPLETED_PLUTONIUM_FUEL_ROD_DOUBLE = new MIItem("depleted_plutonium_fuel_rod_double");
+    public static final Item ITEM_DEPLETED_PLUTONIUM_FUEL_ROD_QUAD = new MIItem("depleted_plutonium_fuel_rod_quad");
+    public static final Item ITEM_PLUTONIUM_FUEL_ROD = new NuclearFuel("plutonium_fuel_rod", PLUTONIUM, 1, ITEM_DEPLETED_PLUTONIUM_FUEL_ROD);
+    public static final Item ITEM_PLUTONIUM_FUEL_ROD_DOUBLE = new NuclearFuel("plutonium_fuel_rod_double", PLUTONIUM, 2,
             ITEM_DEPLETED_PLUTONIUM_FUEL_ROD_DOUBLE);
-    public static final MIItem ITEM_PLUTONIUM_FUEL_ROD_QUAD = new NuclearFuel("plutonium_fuel_rod_quad", PLUTONIUM, 4,
+    public static final Item ITEM_PLUTONIUM_FUEL_ROD_QUAD = new NuclearFuel("plutonium_fuel_rod_quad", PLUTONIUM, 4,
             ITEM_DEPLETED_PLUTONIUM_FUEL_ROD_QUAD);
 
-    public static final MIItem ITEM_DEPLETED_MOX_FUEL_ROD = new MIItem("depleted_mox_fuel_rod");
-    public static final MIItem ITEM_DEPLETED_MOX_FUEL_ROD_DOUBLE = new MIItem("depleted_mox_fuel_rod_double");
-    public static final MIItem ITEM_DEPLETED_MOX_FUEL_ROD_QUAD = new MIItem("depleted_mox_fuel_rod_quad");
-    public static final MIItem ITEM_MOX_FUEL_ROD = new NuclearFuel("mox_fuel_rod", MOX, 1, ITEM_DEPLETED_MOX_FUEL_ROD);
-    public static final MIItem ITEM_MOX_FUEL_ROD_DOUBLE = new NuclearFuel("mox_fuel_rod_double", MOX, 2, ITEM_DEPLETED_MOX_FUEL_ROD_DOUBLE);
-    public static final MIItem ITEM_MOX_FUEL_ROD_QUAD = new NuclearFuel("mox_fuel_rod_quad", MOX, 4, ITEM_DEPLETED_MOX_FUEL_ROD_QUAD);
+    public static final Item ITEM_DEPLETED_MOX_FUEL_ROD = new MIItem("depleted_mox_fuel_rod");
+    public static final Item ITEM_DEPLETED_MOX_FUEL_ROD_DOUBLE = new MIItem("depleted_mox_fuel_rod_double");
+    public static final Item ITEM_DEPLETED_MOX_FUEL_ROD_QUAD = new MIItem("depleted_mox_fuel_rod_quad");
+    public static final Item ITEM_MOX_FUEL_ROD = new NuclearFuel("mox_fuel_rod", MOX, 1, ITEM_DEPLETED_MOX_FUEL_ROD);
+    public static final Item ITEM_MOX_FUEL_ROD_DOUBLE = new NuclearFuel("mox_fuel_rod_double", MOX, 2, ITEM_DEPLETED_MOX_FUEL_ROD_DOUBLE);
+    public static final Item ITEM_MOX_FUEL_ROD_QUAD = new NuclearFuel("mox_fuel_rod_quad", MOX, 4, ITEM_DEPLETED_MOX_FUEL_ROD_QUAD);
 
-    public static final MIItem ITEM_SIMPLE_FLUID_COOLANT = new NuclearCoolant("simple_fluid_coolant", 25000, 1);
+    public static final Item ITEM_SIMPLE_FLUID_COOLANT = new NuclearCoolant("simple_fluid_coolant", 25000, 1);
+     */
 
-    public static final MIItem ITEM_POLYETHYLENE_SHEET = new MIItem("polyethylene_sheet");
-    public static final MIItem ITEM_POLYVINYL_CHLORIDE_SHEET = new MIItem("polyvinyl_chloride_sheet");
+    public static final Item ITEM_POLYETHYLENE_SHEET = of("polyethylene_sheet");
+    public static final Item ITEM_POLYVINYL_CHLORIDE_SHEET = of("polyvinyl_chloride_sheet");
 }

@@ -1,9 +1,0 @@
-{
-    "type": "minecraft:blasting",
-    "ingredient": {
-        "item": "modern_industrialization:cadmium_dust"
-    },
-    "result": "modern_industrialization:cadmium_ingot",
-    "experience": 0.7,
-    "cookingtime": 100
-}

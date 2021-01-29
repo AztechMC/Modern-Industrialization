@@ -21,40 +21,43 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.items;
+package aztech.modern_industrialization.material;
 
-import aztech.modern_industrialization.MIIdentifier;
+import aztech.modern_industrialization.MIBlock;
 import aztech.modern_industrialization.MIItem;
-import aztech.modern_industrialization.util.TextHelper;
-import java.util.List;
-import net.minecraft.client.item.TooltipContext;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
+import net.minecraft.item.Items;
+import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
-import net.minecraft.util.TypedActionResult;
+import net.minecraft.util.hit.BlockHitResult;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import vazkii.patchouli.api.PatchouliAPI;
 
-public class GuideBookItem extends Item {
-    public GuideBookItem(Settings settings) {
-        super(settings);
+// An MIBlock that converts a book into the guide book when right clicked
+public class OreBlock extends MIBlock {
+    public final int veinSize;
+    public final int maxYLevel;
+    public final int veinsPerChunk;
+
+    public OreBlock(String id, Settings settings) {
+        // TODO: load worldgen config
+        super(id, settings);
+        this.veinSize = 10;
+        this.maxYLevel = 64;
+        this.veinsPerChunk = 20;
     }
 
     @Override
-    public TypedActionResult<ItemStack> use(World world, PlayerEntity user, Hand hand) {
-        if (!world.isClient && user instanceof ServerPlayerEntity) {
-            PatchouliAPI.instance.openBookGUI((ServerPlayerEntity) user, new MIIdentifier("book"));
-            return TypedActionResult.success(user.getStackInHand(hand));
+    public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
+        ItemStack handStack = player.inventory.getMainHandStack();
+        if (handStack.getItem() == Items.BOOK) {
+            handStack.decrement(1);
+            player.inventory.offerOrDrop(world, new ItemStack(MIItem.ITEM_GUIDE_BOOK));
+            return ActionResult.success(world.isClient);
         }
-        return TypedActionResult.consume(user.getStackInHand(hand));
-    }
-
-    @Override
-    public void appendTooltip(ItemStack stack, World world, List<Text> tooltip, TooltipContext context) {
-        tooltip.add(new TranslatableText("book.modern_industrialization.subtitle").setStyle(TextHelper.GRAY_TEXT));
+        return super.onUse(state, world, pos, player, hand, hit);
     }
 }

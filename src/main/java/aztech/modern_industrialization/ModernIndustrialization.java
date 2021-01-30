@@ -231,9 +231,8 @@ public class ModernIndustrialization implements ModInitializer {
 
     public static void registerItem(Item item, Identifier id, boolean handheld) {
         Registry.register(Registry.ITEM, id, item);
-        String layerPath = id.getNamespace() + ":items/" + id.getPath();
         RESOURCE_PACK.addModel(JModel.model().parent(handheld ? "minecraft:item/handheld" : "minecraft:item/generated")
-                .textures(new JTextures().layer0(layerPath)), new Identifier(layerPath));
+                .textures(new JTextures().layer0(id.getNamespace() + ":items/" + id.getPath())), new Identifier(id.getNamespace() + ":item/" + id.getPath()));
     }
 
     public static void registerItem(Item item, String id) {

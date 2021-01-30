@@ -15,8 +15,8 @@ public class PipeMaterialPart implements MaterialPart {
     protected final int color;
     private PipeNetworkType pipeType;
 
-    public static Function<MaterialBuilder.Context, MaterialPart> of(PipeType type) {
-        return ctx -> new PipeMaterialPart(ctx.materialName, type, ctx.color);
+    public static Function<MaterialBuilder.PartContext, MaterialPart> of(PipeType type) {
+        return ctx -> new PipeMaterialPart(ctx.getMaterialName(), type, ctx.getColor());
     }
 
     protected PipeMaterialPart(String materialName, PipeType type, int color) {
@@ -45,9 +45,9 @@ public class PipeMaterialPart implements MaterialPart {
     @Override
     public void register() {
         if (type == PipeType.ITEM) {
-            MIPipes.INSTANCE.registerItemPipeType(materialName, color);
+            MIPipes.INSTANCE.registerItemPipeType(materialName, color | 0xff000000);
         } else if (type == PipeType.FLUID) {
-            MIPipes.INSTANCE.registerFluidPipeType(materialName, color, 81000);
+            MIPipes.INSTANCE.registerFluidPipeType(materialName, color | 0xff000000, 81000);
         }
     }
 

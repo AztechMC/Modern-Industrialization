@@ -22,6 +22,7 @@ import net.minecraft.world.gen.decorator.RangeDecoratorConfig;
 import net.minecraft.world.gen.feature.ConfiguredFeature;
 import net.minecraft.world.gen.feature.Feature;
 import net.minecraft.world.gen.feature.OreFeatureConfig;
+import org.lwjgl.system.CallbackI;
 
 import java.util.Objects;
 
@@ -31,7 +32,7 @@ import static aztech.modern_industrialization.ModernIndustrialization.STONE_MATE
 /**
  * A regular material item part, for example bronze curved plates.
  */
-public class RegularItemPart implements MaterialPart {
+public class RegularMaterialPart implements MaterialPart {
     private final String materialName;
     private final String part;
     private final String itemPath;
@@ -42,12 +43,16 @@ public class RegularItemPart implements MaterialPart {
     private MIBlock block;
     private Item item;
 
-    public RegularItemPart(String materialName, String part, String materialSet, int color) {
+    public RegularMaterialPart(String materialName, String part, String materialSet, int color) {
         this.materialName = materialName;
         this.part = part;
         this.itemPath = materialName + "_" + part;
         this.itemId = "modern_industrialization:" + itemPath;
-        this.itemTag = "#c:" + materialName + "_" + part + "s";
+        if (MIParts.TAGGED_PARTS.contains(part)) {
+            this.itemTag = "#c:" + materialName + "_" + part + "s";
+        } else {
+            this.itemTag = itemId;
+        }
         this.materialSet = materialSet;
         this.color = color;
     }

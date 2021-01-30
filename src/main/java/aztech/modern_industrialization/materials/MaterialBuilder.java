@@ -1,36 +1,40 @@
 package aztech.modern_industrialization.materials;
 
 import aztech.modern_industrialization.materials.part.MaterialPart;
-import aztech.modern_industrialization.materials.part.RegularItemPart;
+import aztech.modern_industrialization.materials.part.RegularMaterialPart;
+import aztech.modern_industrialization.materials.recipe.MaterialRecipeBuilder;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 public final class MaterialBuilder {
     private final Map<String, MaterialPart> partsMap = new TreeMap<>();
-    private final Context context;
+    private final Map<String, MaterialRecipeBuilder> recipesMap = new HashMap<>();
+    private final PartContext partContext = new PartContext();
+    private final RecipeContext recipeContext = new RecipeContext();
     private final String materialName;
     private final String materialSet;
     private final int color;
 
     public MaterialBuilder(String materialName, MaterialSet materialSet, int color) {
-        this.context = new Context(color, materialName);
         this.materialName = materialName;
         this.materialSet = materialSet.name;
         this.color = color;
     }
 
-    public MaterialBuilder addRegularItemParts(String... parts) {
+    public MaterialBuilder addRegularParts(String... parts) {
         for (String part : parts) {
-            addPart(new RegularItemPart(materialName, part, materialSet, color));
+            addPart(new RegularMaterialPart(materialName, part, materialSet, color));
         }
         return this;
     }
 
     @SafeVarargs
-    public final MaterialBuilder addParts(Function<Context, MaterialPart>... partFunctions) {
-        for (Function<Context, MaterialPart> partFunction : partFunctions) {
-            addPart(partFunction.apply(context));
+    public final MaterialBuilder addParts(Function<PartContext, MaterialPart>... partFunctions) {
+        for (Function<PartContext, MaterialPart> partFunction : partFunctions) {
+            addPart(partFunction.apply(partContext));
         }
         return this;
     }
@@ -41,25 +45,59 @@ public final class MaterialBuilder {
         }
     }
 
-    public MaterialBuilder overridePart(Function<Context, MaterialPart> partFunction) {
-        MaterialPart part = partFunction.apply(context);
+    public MaterialBuilder overridePart(Function<PartContext, MaterialPart> partFunction) {
+        MaterialPart part = partFunction.apply(partContext);
         if (partsMap.put(part.getPart(), part) == null) {
             throw new IllegalStateException("Part " + part.getItemId() + " was not already registered for this material!");
         }
         return this;
     }
 
+    public MaterialBuilder addRecipes(Consumer<RecipeContext> consumer) {
+        consumer.accept(recipeContext);
+        return this;
+    }
+
+    public void cancelRecipe(String recipeId) {
+        if (recipesMap.remove(recipeId) != null) {
+            throw new IllegalArgumentException("Recipe does not exist and cannot be cancelled: " + recipeId);
+        }
+    }
+
+    @SuppressWarnings("deprecation")
     public Material build() {
+        for (MaterialRecipeBuilder builder : recipesMap.values()) {
+            builder.save();
+        }
+        for (MaterialPart part : partsMap.values()) {
+            part.register();
+        }
         return new Material(materialName, Collections.unmodifiableMap(partsMap));
     }
 
-    public static class Context {
-        public final int color;
-        public final String materialName;
+    public class PartContext {
+        public int getColor() {
+            return color;
+        }
 
-        private Context(int color, String materialName) {
-            this.color = color;
-            this.materialName = materialName;
+        public String getMaterialName() {
+            return materialName;
+        }
+    }
+
+    public class RecipeContext {
+        public void addRecipe(MaterialRecipeBuilder builder) {
+            if (recipesMap.put(builder.getRecipeId(), builder) != null) {
+                throw new IllegalStateException("Duplicate registration of recipe " + builder.getRecipeId());
+            }
+        }
+
+        public @Nullable MaterialPart getPart(String part) {
+            return partsMap.get(part);
+        }
+
+        public String getMaterialName() {
+            return materialName;
         }
     }
 }

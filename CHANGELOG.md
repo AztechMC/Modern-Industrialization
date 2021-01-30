@@ -1,6 +1,9 @@
+##### 0.3.12
+* Fix KubeJS integration.
+
 ##### 0.3.11
 * Do not bundle KubeJS anymore (shedaniel can finally sleep in peace).
-* Remove Astromine compat 🦀
+* Remove Astromine recipe compat 🦀. Astromine is still compatible but machine recipe integration is removed.
 
 ##### 0.3.10
 * Update KubeJS

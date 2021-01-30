@@ -88,7 +88,7 @@ public class MachinePackets {
                 ScreenHandler handler = context.getPlayer().currentScreenHandler;
                 if (handler.syncId == syncId && handler instanceof MachineScreenHandler) {
                     // Find MachineRecipeType
-                    MachineRecipeType mrt = MIMachines.FUCK_YOU_MOJANG.get(typeId);
+                    MachineRecipeType mrt = MIMachines.RECIPE_TYPE_FROM_ID.get(typeId);
                     if (mrt == null)
                         return;
 

@@ -52,7 +52,7 @@ import net.minecraft.util.registry.Registry;
 public class MIMachines {
     // Recipe
     public static final Map<MachineRecipeType, RecipeInfo> RECIPE_TYPES = new TreeMap<>(Comparator.comparing(MachineRecipeType::getId));
-    public static final Map<Identifier, MachineRecipeType> FUCK_YOU_MOJANG = new HashMap<>();
+    public static final Map<Identifier, MachineRecipeType> RECIPE_TYPE_FROM_ID = new HashMap<>();
 
     private static MachineRecipeType createRecipeType(String kind) {
         return createRecipeType(kind, MachineRecipeType::new);
@@ -61,7 +61,7 @@ public class MIMachines {
     private static MachineRecipeType createRecipeType(String kind, Function<Identifier, MachineRecipeType> ctor) {
         MachineRecipeType type = ctor.apply(new MIIdentifier(kind));
         RECIPE_TYPES.put(type, new RecipeInfo());
-        FUCK_YOU_MOJANG.put(type.getId(), type);
+        RECIPE_TYPE_FROM_ID.put(type.getId(), type);
         return type;
     }
 

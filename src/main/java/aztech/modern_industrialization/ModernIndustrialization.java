@@ -48,6 +48,7 @@ import aztech.modern_industrialization.materials.MIMaterials;
 import aztech.modern_industrialization.pipes.MIPipes;
 import aztech.modern_industrialization.tools.WrenchItem;
 import aztech.modern_industrialization.util.ChunkUnloadBlockEntity;
+import java.util.Map;
 import me.shedaniel.cloth.api.common.events.v1.PlayerChangeWorldCallback;
 import me.shedaniel.cloth.api.common.events.v1.PlayerLeaveCallback;
 import net.devtech.arrp.api.RRPCallback;
@@ -66,7 +67,6 @@ import net.fabricmc.fabric.api.client.itemgroup.FabricItemGroupBuilder;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerChunkEvents;
 import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricMaterialBuilder;
-import net.fabricmc.fabric.api.registry.FuelRegistry;
 import net.fabricmc.fabric.api.screenhandler.v1.ScreenHandlerRegistry;
 import net.fabricmc.fabric.api.tag.TagRegistry;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidApi;
@@ -83,8 +83,6 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import java.util.Map;
 
 public class ModernIndustrialization implements ModInitializer {
 
@@ -132,7 +130,7 @@ public class ModernIndustrialization implements ModInitializer {
         // Proceed with mild caution.
 
         MIMaterials.init();
-        //MITags.setup();
+        // MITags.setup();
         setupItems();
         setupBlocks();
         MIFluids.setupFluids();
@@ -231,8 +229,10 @@ public class ModernIndustrialization implements ModInitializer {
 
     public static void registerItem(Item item, Identifier id, boolean handheld) {
         Registry.register(Registry.ITEM, id, item);
-        RESOURCE_PACK.addModel(JModel.model().parent(handheld ? "minecraft:item/handheld" : "minecraft:item/generated")
-                .textures(new JTextures().layer0(id.getNamespace() + ":items/" + id.getPath())), new Identifier(id.getNamespace() + ":item/" + id.getPath()));
+        RESOURCE_PACK.addModel(
+                JModel.model().parent(handheld ? "minecraft:item/handheld" : "minecraft:item/generated")
+                        .textures(new JTextures().layer0(id.getNamespace() + ":items/" + id.getPath())),
+                new Identifier(id.getNamespace() + ":item/" + id.getPath()));
     }
 
     public static void registerItem(Item item, String id) {
@@ -255,18 +255,20 @@ public class ModernIndustrialization implements ModInitializer {
     }
 
     private void setupFuels() {
-        /* FIXME
-        FuelRegistry.INSTANCE.add(MIItem.ITEM_COKE, 6400);
-        FuelRegistry.INSTANCE.add(MIItem.ITEM_COKE_DUST, 6400);
-        FuelRegistry.INSTANCE.add(MIMaterials.coal.getItem("crushed_dust"), 1600);
-        FuelRegistry.INSTANCE.add(MITags.COAL_DUSTS, 1600);
-        FuelRegistry.INSTANCE.add(MIMaterials.coal.getItem("dust"), 1600);
-        FuelRegistry.INSTANCE.add(MIMaterials.coal.getItem("tiny_dust"), 160);
-        FuelRegistry.INSTANCE.add(MIMaterials.lignite_coal.getItem("lignite_coal"), 1600);
-        FuelRegistry.INSTANCE.add(MIMaterials.lignite_coal.getItem("crushed_dust"), 1600);
-        FuelRegistry.INSTANCE.add(MIMaterials.lignite_coal.getItem("dust"), 1600);
-        FuelRegistry.INSTANCE.add(MIMaterials.lignite_coal.getItem("tiny_dust"), 160);
-        FuelRegistry.INSTANCE.add(MIItem.ITEM_CARBON_DUST, 6400);
+        /*
+         * FIXME FuelRegistry.INSTANCE.add(MIItem.ITEM_COKE, 6400);
+         * FuelRegistry.INSTANCE.add(MIItem.ITEM_COKE_DUST, 6400);
+         * FuelRegistry.INSTANCE.add(MIMaterials.coal.getItem("crushed_dust"), 1600);
+         * FuelRegistry.INSTANCE.add(MITags.COAL_DUSTS, 1600);
+         * FuelRegistry.INSTANCE.add(MIMaterials.coal.getItem("dust"), 1600);
+         * FuelRegistry.INSTANCE.add(MIMaterials.coal.getItem("tiny_dust"), 160);
+         * FuelRegistry.INSTANCE.add(MIMaterials.lignite_coal.getItem("lignite_coal"),
+         * 1600);
+         * FuelRegistry.INSTANCE.add(MIMaterials.lignite_coal.getItem("crushed_dust"),
+         * 1600); FuelRegistry.INSTANCE.add(MIMaterials.lignite_coal.getItem("dust"),
+         * 1600);
+         * FuelRegistry.INSTANCE.add(MIMaterials.lignite_coal.getItem("tiny_dust"),
+         * 160); FuelRegistry.INSTANCE.add(MIItem.ITEM_CARBON_DUST, 6400);
          */
 
         FluidFuelRegistry.register(MIFluids.CRUDE_OIL, 8);

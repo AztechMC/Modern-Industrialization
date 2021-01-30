@@ -23,6 +23,8 @@
  */
 package aztech.modern_industrialization.machines.impl;
 
+import static aztech.modern_industrialization.ModernIndustrialization.METAL_MATERIAL;
+
 import aztech.modern_industrialization.ModernIndustrialization;
 import aztech.modern_industrialization.inventory.ConfigurableItemStack;
 import aztech.modern_industrialization.machines.impl.multiblock.HatchBlockEntity;
@@ -55,8 +57,6 @@ import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
-
-import static aztech.modern_industrialization.ModernIndustrialization.METAL_MATERIAL;
 
 /**
  * A generic machine_recipe block.

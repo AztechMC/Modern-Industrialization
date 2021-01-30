@@ -25,7 +25,6 @@ package aztech.modern_industrialization.material;
 
 import aztech.modern_industrialization.MIBlock;
 import aztech.modern_industrialization.MIItem;
-import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;

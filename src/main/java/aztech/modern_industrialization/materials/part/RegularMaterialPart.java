@@ -1,16 +1,41 @@
+/*
+ * MIT License
+ *
+ * Copyright (c) 2020 Azercoco & Technici4n
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
 package aztech.modern_industrialization.materials.part;
+
+import static aztech.modern_industrialization.ModernIndustrialization.METAL_MATERIAL;
+import static aztech.modern_industrialization.ModernIndustrialization.STONE_MATERIAL;
 
 import aztech.modern_industrialization.MIBlock;
 import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.MIItem;
-import aztech.modern_industrialization.ModernIndustrialization;
 import aztech.modern_industrialization.material.OreBlock;
 import aztech.modern_industrialization.materials.MaterialHelper;
+import java.util.Objects;
 import net.fabricmc.fabric.api.biome.v1.BiomeModifications;
 import net.fabricmc.fabric.api.biome.v1.BiomeSelectors;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
-import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.BuiltinRegistries;
@@ -22,12 +47,6 @@ import net.minecraft.world.gen.decorator.RangeDecoratorConfig;
 import net.minecraft.world.gen.feature.ConfiguredFeature;
 import net.minecraft.world.gen.feature.Feature;
 import net.minecraft.world.gen.feature.OreFeatureConfig;
-import org.lwjgl.system.CallbackI;
-
-import java.util.Objects;
-
-import static aztech.modern_industrialization.ModernIndustrialization.METAL_MATERIAL;
-import static aztech.modern_industrialization.ModernIndustrialization.STONE_MATERIAL;
 
 /**
  * A regular material item part, for example bronze curved plates.
@@ -93,8 +112,8 @@ public class RegularMaterialPart implements MaterialPart {
             OreBlock ore = (OreBlock) block;
             ConfiguredFeature<?, ?> oreGenerator = Feature.ORE
                     .configure(new OreFeatureConfig(OreFeatureConfig.Rules.BASE_STONE_OVERWORLD, block.getDefaultState(), ore.veinSize))
-                    .decorate(Decorator.RANGE.configure(new RangeDecoratorConfig(0, 0, ore.maxYLevel)))
-                    .spreadHorizontally().repeat(ore.veinsPerChunk);
+                    .decorate(Decorator.RANGE.configure(new RangeDecoratorConfig(0, 0, ore.maxYLevel))).spreadHorizontally()
+                    .repeat(ore.veinsPerChunk);
             Identifier oregenId = new MIIdentifier("ore_generator_" + materialName);
             Registry.register(BuiltinRegistries.CONFIGURED_FEATURE, oregenId, oreGenerator);
             RegistryKey<ConfiguredFeature<?, ?>> featureKey = RegistryKey.of(Registry.CONFIGURED_FEATURE_WORLDGEN, oregenId);

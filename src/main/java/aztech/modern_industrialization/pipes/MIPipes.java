@@ -109,42 +109,45 @@ public class MIPipes implements ModInitializer {
         Registry.register(Registry.BLOCK, new MIIdentifier("pipe"), BLOCK_PIPE);
         BLOCK_ENTITY_TYPE_PIPE = Registry.register(Registry.BLOCK_ENTITY_TYPE, new MIIdentifier("pipe"),
                 BlockEntityType.Builder.create(PipeBlockEntity::new, BLOCK_PIPE).build(null));
-        /* FIXME
-        registerFluidPipeType("gold", 255 << 24 | 255 << 16 | 225 << 8 | 0, 81000);
-        registerFluidPipeType("aluminum", 255 << 24 | 63 << 16 | 202 << 8 | 255, 81000);
-        registerFluidPipeType("steel", 255 << 24 | 63 << 16 | 63 << 8 | 63, 81000);
-        registerFluidPipeType("iron", 255 << 24 | 240 << 16 | 240 << 8 | 240, 81000);
-        registerFluidPipeType("bronze", 255 << 24 | 255 << 16 | 204 << 8, 81000);
-        registerFluidPipeType("tin", 255 << 24 | 203 << 16 | 228 << 8 | 228, 81000);
-        registerFluidPipeType("copper", 255 << 24 | 255 << 16 | 102 << 8, 81000);
-        registerFluidPipeType("lead", 255 << 24 | 0x4a2649, 81000);
-        registerFluidPipeType("nickel", 255 << 24 | 0xa9a9d4, 81000);
-        registerFluidPipeType("silver", 255 << 24 | 0x99ffff, 81000);
-        registerFluidPipeType("electrum", 255 << 24 | 0xefff5e, 81000);
-        registerFluidPipeType("stainless_steel", 255 << 24 | 0x98abbb, 81000);
-
-        registerItemPipeType("gold", 255 << 24 | 255 << 16 | 225 << 8 | 0);
-        registerItemPipeType("aluminum", 255 << 24 | 63 << 16 | 202 << 8 | 255);
-        registerItemPipeType("steel", 255 << 24 | 63 << 16 | 63 << 8 | 63);
-        registerItemPipeType("iron", 255 << 24 | 240 << 16 | 240 << 8 | 240);
-        registerItemPipeType("bronze", 255 << 24 | 255 << 16 | 204 << 8);
-        registerItemPipeType("tin", 255 << 24 | 203 << 16 | 228 << 8 | 228);
-        registerItemPipeType("copper", 255 << 24 | 255 << 16 | 102 << 8);
-        registerItemPipeType("lead", 255 << 24 | 0x4a2649);
-        registerItemPipeType("nickel", 255 << 24 | 0xa9a9d4);
-        registerItemPipeType("silver", 255 << 24 | 0x99ffff);
-        registerItemPipeType("electrum", 255 << 24 | 0xefff5e);
-        registerItemPipeType("stainless_steel", 255 << 24 | 0x98abbb);
-
-        registerElectricityPipeType("tin", 255 << 24 | 203 << 16 | 228 << 8 | 228, LV);
-        registerElectricityPipeType("copper", 255 << 24 | 255 << 16 | 102 << 8, LV);
-        registerElectricityPipeType("cupronickel", 0xffe39680, MV);
-        registerElectricityPipeType("electrum", 255 << 24 | 0xefff5e, MV);
-        registerElectricityPipeType("aluminum", 255 << 24 | 63 << 16 | 202 << 8 | 255, HV);
-        registerElectricityPipeType("annealed_copper", 255 << 24 | 255 << 16 | 146 << 8 | 79, HV);
-        registerElectricityPipeType("platinum", 255 << 24 | 255 << 16 | 229 << 8 | 186, EV);
-        registerElectricityPipeType("kanthal", 255 << 24 | 207 << 16 | 203 << 8, EV);
-        registerElectricityPipeType("supraconductor", 255 << 24 | 163 << 16 | 217 << 8 | 255, SUPRACONDUCTOR);*/
+        /*
+         * FIXME registerFluidPipeType("gold", 255 << 24 | 255 << 16 | 225 << 8 | 0,
+         * 81000); registerFluidPipeType("aluminum", 255 << 24 | 63 << 16 | 202 << 8 |
+         * 255, 81000); registerFluidPipeType("steel", 255 << 24 | 63 << 16 | 63 << 8 |
+         * 63, 81000); registerFluidPipeType("iron", 255 << 24 | 240 << 16 | 240 << 8 |
+         * 240, 81000); registerFluidPipeType("bronze", 255 << 24 | 255 << 16 | 204 <<
+         * 8, 81000); registerFluidPipeType("tin", 255 << 24 | 203 << 16 | 228 << 8 |
+         * 228, 81000); registerFluidPipeType("copper", 255 << 24 | 255 << 16 | 102 <<
+         * 8, 81000); registerFluidPipeType("lead", 255 << 24 | 0x4a2649, 81000);
+         * registerFluidPipeType("nickel", 255 << 24 | 0xa9a9d4, 81000);
+         * registerFluidPipeType("silver", 255 << 24 | 0x99ffff, 81000);
+         * registerFluidPipeType("electrum", 255 << 24 | 0xefff5e, 81000);
+         * registerFluidPipeType("stainless_steel", 255 << 24 | 0x98abbb, 81000);
+         * 
+         * registerItemPipeType("gold", 255 << 24 | 255 << 16 | 225 << 8 | 0);
+         * registerItemPipeType("aluminum", 255 << 24 | 63 << 16 | 202 << 8 | 255);
+         * registerItemPipeType("steel", 255 << 24 | 63 << 16 | 63 << 8 | 63);
+         * registerItemPipeType("iron", 255 << 24 | 240 << 16 | 240 << 8 | 240);
+         * registerItemPipeType("bronze", 255 << 24 | 255 << 16 | 204 << 8);
+         * registerItemPipeType("tin", 255 << 24 | 203 << 16 | 228 << 8 | 228);
+         * registerItemPipeType("copper", 255 << 24 | 255 << 16 | 102 << 8);
+         * registerItemPipeType("lead", 255 << 24 | 0x4a2649);
+         * registerItemPipeType("nickel", 255 << 24 | 0xa9a9d4);
+         * registerItemPipeType("silver", 255 << 24 | 0x99ffff);
+         * registerItemPipeType("electrum", 255 << 24 | 0xefff5e);
+         * registerItemPipeType("stainless_steel", 255 << 24 | 0x98abbb);
+         * 
+         * registerElectricityPipeType("tin", 255 << 24 | 203 << 16 | 228 << 8 | 228,
+         * LV); registerElectricityPipeType("copper", 255 << 24 | 255 << 16 | 102 << 8,
+         * LV); registerElectricityPipeType("cupronickel", 0xffe39680, MV);
+         * registerElectricityPipeType("electrum", 255 << 24 | 0xefff5e, MV);
+         * registerElectricityPipeType("aluminum", 255 << 24 | 63 << 16 | 202 << 8 |
+         * 255, HV); registerElectricityPipeType("annealed_copper", 255 << 24 | 255 <<
+         * 16 | 146 << 8 | 79, HV); registerElectricityPipeType("platinum", 255 << 24 |
+         * 255 << 16 | 229 << 8 | 186, EV); registerElectricityPipeType("kanthal", 255
+         * << 24 | 207 << 16 | 203 << 8, EV);
+         * registerElectricityPipeType("supraconductor", 255 << 24 | 163 << 16 | 217 <<
+         * 8 | 255, SUPRACONDUCTOR);
+         */
 
         ServerTickEvents.START_SERVER_TICK.register(server -> {
             for (World world : server.getWorlds()) {

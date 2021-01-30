@@ -23,6 +23,9 @@
  */
 package aztech.modern_industrialization;
 
+import static aztech.modern_industrialization.ModernIndustrialization.METAL_MATERIAL;
+import static aztech.modern_industrialization.ModernIndustrialization.STONE_MATERIAL;
+
 import aztech.modern_industrialization.util.MobSpawning;
 import java.util.SortedMap;
 import java.util.TreeMap;
@@ -31,9 +34,6 @@ import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
 import net.minecraft.block.Block;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
-
-import static aztech.modern_industrialization.ModernIndustrialization.METAL_MATERIAL;
-import static aztech.modern_industrialization.ModernIndustrialization.STONE_MATERIAL;
 
 public class MIBlock extends Block {
     public static SortedMap<String, MIBlock> blocks = new TreeMap<String, MIBlock>();
@@ -54,8 +54,8 @@ public class MIBlock extends Block {
                 .allowsSpawning(MobSpawning.NO_SPAWN));
     }
 
-    public static final MIBlock BLOCK_FIRE_CLAY_BRICKS = new MIBlock("fire_clay_bricks", FabricBlockSettings.of(STONE_MATERIAL)
-            .hardness(2.0f).resistance(6.0f).breakByTool(FabricToolTags.PICKAXES, 0).requiresTool());
+    public static final MIBlock BLOCK_FIRE_CLAY_BRICKS = new MIBlock("fire_clay_bricks",
+            FabricBlockSettings.of(STONE_MATERIAL).hardness(2.0f).resistance(6.0f).breakByTool(FabricToolTags.PICKAXES, 0).requiresTool());
 
     public static final MIBlock STEEL_MACHINE_CASING = new MIBlock("steel_machine_casing");
     public static final MIBlock STEEL_MACHINE_CASING_PIPE = new MIBlock("steel_machine_casing_pipe");

@@ -24,7 +24,6 @@
 package aztech.modern_industrialization.items;
 
 import aztech.modern_industrialization.MIIdentifier;
-import aztech.modern_industrialization.MIItem;
 import aztech.modern_industrialization.util.TextHelper;
 import java.util.List;
 import net.minecraft.client.item.TooltipContext;

@@ -307,15 +307,13 @@ public class MIMachines {
     public static MachineFactory setupCentrifuge(MachineFactory factory) {
         return factory.setInputSlotPosition(42, 27, 1, 1).setOutputSlotPosition(93, 27, 2, 2).setInputLiquidSlotPosition(42, 47, 1, 1)
                 .setLiquidOutputSlotPosition(131, 27, 2, 2).setupProgressBar(66, 35, 22, 15, true).setupBackground("electrolyzer.png")
-                .setupEfficiencyBar(0, 166, 50, 66, 100, 2, true).setupElectricityBar(18, 34).setupOverlays("centrifuge", true, true, true)
-                ;
+                .setupEfficiencyBar(0, 166, 50, 66, 100, 2, true).setupElectricityBar(18, 34).setupOverlays("centrifuge", true, true, true);
     }
 
     public static MachineFactory setupChemicalReactor(MachineFactory factory) {
         return factory.setInputSlotPosition(30, 27, 3, 1).setOutputSlotPosition(116, 27, 3, 1).setInputLiquidSlotPosition(30, 47, 3, 1)
                 .setLiquidOutputSlotPosition(116, 47, 3, 1).setupProgressBar(88, 35, 22, 15, true).setupBackground("chemical_reactor.png")
-                .setupEfficiencyBar(0, 166, 50, 66, 100, 2, true).setupElectricityBar(12, 34).setupOverlays("chemical_reactor", true, false, false)
-                ;
+                .setupEfficiencyBar(0, 166, 50, 66, 100, 2, true).setupElectricityBar(12, 34).setupOverlays("chemical_reactor", true, false, false);
     }
 
     public static MachineFactory setupCompressor(MachineFactory factory) {
@@ -339,8 +337,7 @@ public class MIMachines {
     public static MachineFactory setupElectrolyzer(MachineFactory factory) {
         return factory.setInputSlotPosition(42, 27, 1, 1).setOutputSlotPosition(93, 27, 2, 2).setInputLiquidSlotPosition(42, 47, 1, 1)
                 .setLiquidOutputSlotPosition(131, 27, 2, 2).setupProgressBar(66, 35, 22, 15, true).setupBackground("electrolyzer.png")
-                .setupEfficiencyBar(0, 166, 50, 66, 100, 2, true).setupElectricityBar(18, 34).setupOverlays("electrolyzer", true, true, false)
-                ;
+                .setupEfficiencyBar(0, 166, 50, 66, 100, 2, true).setupElectricityBar(18, 34).setupOverlays("electrolyzer", true, true, false);
     }
 
     public static MachineFactory setupFluidExtractor(MachineFactory factory) {
@@ -563,7 +560,7 @@ public class MIMachines {
         new MachineFactory("nuclear_reactor", null, f -> new NuclearReactorBlockEntity(f, Collections.singletonList(NUCLEAR_REACTOR_SHAPE)), null, 64,
                 0, 0, 0).setInputSlotPosition(15, 20, 8, 8).setupBackground("nuclear.png", 176, 256).setInventoryPos(8, 174)
                         .setupOverlays("vacuum_freezer", true, false, false).setupCasing("nuclear");
-                        // FIXME .setInsertPredicate(stack -> stack.getItem() instanceof MINuclearItem);
+        // FIXME .setInsertPredicate(stack -> stack.getItem() instanceof MINuclearItem);
 
         new MachineFactory("distillation_tower", UNLIMITED, DistillationTowerBlockEntity::new, RECIPE_DISTILLATION_TOWER, 0, 0, 1, 8)
                 .setInputLiquidSlotPosition(56, 35, 1, 1).setLiquidOutputSlotPosition(102, 35, 1, 8).setupProgressBar(76, 35, 22, 15, true)

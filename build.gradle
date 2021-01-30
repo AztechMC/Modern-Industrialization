@@ -143,7 +143,10 @@ dependencies {
     modImplementation "me.sargunvohra.mcmods:autoconfig1u:${project.auto_config_version}"
     include "me.sargunvohra.mcmods:autoconfig1u:${project.auto_config_version}"
     modImplementation "io.github.prospector:modmenu:${project.mod_menu_version}"
-    modCompileOnly "curse.maven:kubejs-395864:3102076"
+    modImplementation "curse.maven:kubejs-395864:${project.kubejs_file}"
+    modImplementation "curse.maven:architectury-fabric-419697:${project.architectury_file}"
+    modRuntime "curse.maven:rhino-416294:${project.rhino_file}"
+
     //modApi "dev.technici4n:FastTransferLib:${project.ftl_version}"
     //include "dev.technici4n:FastTransferLib:${project.ftl_version}"
 

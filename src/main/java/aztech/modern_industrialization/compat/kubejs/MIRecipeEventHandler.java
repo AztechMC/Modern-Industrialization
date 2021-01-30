@@ -23,7 +23,9 @@
  */
 package aztech.modern_industrialization.compat.kubejs;
 
+import aztech.modern_industrialization.blocks.forgehammer.ForgeHammerScreenHandler;
 import aztech.modern_industrialization.machines.MIMachines;
+import aztech.modern_industrialization.machines.recipe.MachineRecipeType;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -34,8 +36,6 @@ import dev.latvian.kubejs.recipe.RecipeJS;
 import dev.latvian.kubejs.recipe.RecipeTypeJS;
 import dev.latvian.kubejs.recipe.RegisterRecipeHandlersEvent;
 import dev.latvian.kubejs.util.ListJS;
-import dev.latvian.kubejs.util.UtilsJS;
-import java.util.Objects;
 import java.util.function.Supplier;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
@@ -45,15 +45,15 @@ public class MIRecipeEventHandler implements KubeJSInitializer {
     @Override
     public void onKubeJSInitialization() {
         RegisterRecipeHandlersEvent.EVENT.register(event -> {
-            MIMachines.RECIPE_TYPES.keySet().forEach(t -> event.register(new MachineRecipeType(t.getId().toString(), MachineRecipe::new)));
-            event.register(new MachineRecipeType("modern_industrialization:forge_hammer_hammer", MachineRecipe::new));
-            event.register(new MachineRecipeType("modern_industrialization:forge_hammer_saw", MachineRecipe::new));
+            MIMachines.RECIPE_TYPES.keySet().forEach(t -> event.register(new MachineRecipeType(t, MachineRecipe::new)));
+            event.register(new MachineRecipeType(ForgeHammerScreenHandler.RECIPE_HAMMER, MachineRecipe::new));
+            event.register(new MachineRecipeType(ForgeHammerScreenHandler.RECIPE_SAW, MachineRecipe::new));
         });
     }
 
     private static class MachineRecipeType extends RecipeTypeJS {
-        public MachineRecipeType(String id, Supplier<RecipeJS> f) {
-            super(Objects.requireNonNull(Registry.RECIPE_SERIALIZER.get(UtilsJS.getMCID(id))), id, f);
+        public MachineRecipeType(aztech.modern_industrialization.machines.recipe.MachineRecipeType mrt, Supplier<RecipeJS> f) {
+            super(mrt, f);
         }
 
         @Override
@@ -124,7 +124,7 @@ public class MIRecipeEventHandler implements KubeJSInitializer {
             if (obj.has("count"))
                 amount = obj.get("count").getAsInt();
             IngredientJS ing = IngredientJS.of(obj);
-            ing = ing.count(amount);
+            ing = ing.withCount(amount);
             inputItems.add(ing);
             itemInputProbabilities[index] = readProbability(obj);
         }
@@ -146,7 +146,7 @@ public class MIRecipeEventHandler implements KubeJSInitializer {
         }
 
         @Override
-        protected void serialize() {
+        public void serialize() {
             json.addProperty("eu", eu);
             json.addProperty("duration", duration);
             if (fluidInputs != null)
@@ -158,10 +158,8 @@ public class MIRecipeEventHandler implements KubeJSInitializer {
                 JsonArray itemInputs = new JsonArray();
                 for (int i = 0; i < inputItems.size(); ++i) {
                     IngredientJS ingredient = inputItems.get(i);
-                    JsonObject o = new JsonObject();
+                    JsonObject o = (JsonObject) ingredient.toJson();
                     o.addProperty("probability", itemInputProbabilities[i]);
-                    o.add("ingredient", ingredient.toJson());
-                    o.addProperty("amount", ingredient.getCount());
                     itemInputs.add(o);
                 }
                 json.add("item_inputs", itemInputs);

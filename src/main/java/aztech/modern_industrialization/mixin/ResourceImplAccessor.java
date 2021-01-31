@@ -21,34 +21,15 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.materials.part;
+package aztech.modern_industrialization.mixin;
 
-import aztech.modern_industrialization.materials.textures.MaterialTextureManager;
-import net.minecraft.item.Item;
+import java.io.InputStream;
+import net.minecraft.resource.ResourceImpl;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.gen.Accessor;
 
-public interface MaterialPart {
-    /**
-     * @return The name of this part, for example "ingot" or "dust".
-     */
-    String getPart();
-
-    /**
-     * @return The common tag of this material prefixed by # if available, or the id
-     *         otherwise.
-     */
-    String getTaggedItemId();
-
-    /**
-     * @return The id of this part.
-     */
-    String getItemId();
-
-    void register();
-
-    /**
-     * @throws NullPointerException if no item available.
-     */
-    Item getItem();
-
-    void registerTextures(MaterialTextureManager materialTextureManager);
+@Mixin(ResourceImpl.class)
+public interface ResourceImplAccessor {
+    @Accessor("inputStream")
+    void setInputStream(InputStream is);
 }

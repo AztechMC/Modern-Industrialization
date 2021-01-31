@@ -31,6 +31,8 @@ import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.MIItem;
 import aztech.modern_industrialization.material.OreBlock;
 import aztech.modern_industrialization.materials.MaterialHelper;
+import aztech.modern_industrialization.materials.textures.MIMaterialTextures;
+import aztech.modern_industrialization.materials.textures.MaterialTextureManager;
 import java.util.Objects;
 import net.fabricmc.fabric.api.biome.v1.BiomeModifications;
 import net.fabricmc.fabric.api.biome.v1.BiomeSelectors;
@@ -59,6 +61,7 @@ public class RegularMaterialPart implements MaterialPart {
     private final String itemTag;
     private final String materialSet;
     private final int color;
+    @SuppressWarnings("FieldCanBeLocal")
     private MIBlock block;
     private Item item;
 
@@ -92,6 +95,7 @@ public class RegularMaterialPart implements MaterialPart {
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public void register() {
         // create item and block
         if (MaterialHelper.hasBlock(part)) {
@@ -124,5 +128,10 @@ public class RegularMaterialPart implements MaterialPart {
     @Override
     public Item getItem() {
         return Objects.requireNonNull(item);
+    }
+
+    @Override
+    public void registerTextures(MaterialTextureManager materialTextureManager) {
+        MIMaterialTextures.generateItemPartTexture(materialTextureManager, materialName, materialSet, part, color);
     }
 }

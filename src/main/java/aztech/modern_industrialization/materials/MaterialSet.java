@@ -24,6 +24,7 @@
 package aztech.modern_industrialization.materials;
 
 public enum MaterialSet {
+    METALLIC("metallic"),
     SHINY("shiny");
 
     MaterialSet(String name) {

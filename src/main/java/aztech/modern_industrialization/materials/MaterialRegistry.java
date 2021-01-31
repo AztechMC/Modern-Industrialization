@@ -23,6 +23,7 @@
  */
 package aztech.modern_industrialization.materials;
 
+import java.util.Collections;
 import java.util.Map;
 import java.util.Objects;
 import java.util.TreeMap;
@@ -40,5 +41,9 @@ public class MaterialRegistry {
         Material material = MATERIALS.get(name);
         Objects.requireNonNull(material);
         return material;
+    }
+
+    public static Map<String, Material> getMaterials() {
+        return Collections.unmodifiableMap(MATERIALS);
     }
 }

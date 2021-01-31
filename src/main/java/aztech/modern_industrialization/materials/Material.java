@@ -24,6 +24,7 @@
 package aztech.modern_industrialization.materials;
 
 import aztech.modern_industrialization.materials.part.MaterialPart;
+import java.util.Collections;
 import java.util.Map;
 
 /**
@@ -36,5 +37,9 @@ public class Material {
     Material(String name, Map<String, MaterialPart> parts) {
         this.name = name;
         this.parts = parts;
+    }
+
+    public Map<String, MaterialPart> getParts() {
+        return Collections.unmodifiableMap(parts);
     }
 }

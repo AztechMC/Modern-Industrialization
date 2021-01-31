@@ -89,6 +89,13 @@ public final class StandardRecipes {
         new ShapedRecipeBuilder(ctx, COIL, 1).setPattern(new String[][] { { WIRE, WIRE, WIRE }, { WIRE, "", WIRE }, { WIRE, WIRE, WIRE } })
                 .exportToAssembler();
 
+        for (boolean blasting : new boolean[] { true, false }) {
+            new SmeltingRecipeBuilder(ctx, TINY_DUST, NUGGET, 0.08, blasting);
+            new SmeltingRecipeBuilder(ctx, CRUSHED_DUST, INGOT, 0.7, blasting);
+            new SmeltingRecipeBuilder(ctx, DUST, INGOT, 0.7, blasting);
+            // new SmeltingRecipeBuilder(ctx, ORE, INGOT, 0.7, blasting);
+        }
+
     }
 
     /**

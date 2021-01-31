@@ -28,7 +28,6 @@ import static aztech.modern_industrialization.materials.part.MIParts.*;
 import aztech.modern_industrialization.materials.MaterialBuilder;
 import aztech.modern_industrialization.materials.recipe.builder.MIRecipeBuilder;
 import aztech.modern_industrialization.materials.recipe.builder.ShapedRecipeBuilder;
-import aztech.modern_industrialization.materials.recipe.builder.SmeltingRecipeBuilder;
 
 /**
  * Standard conversion recipes for all materials.
@@ -42,10 +41,13 @@ public final class StandardRecipes {
         new ShapedRecipeBuilder(ctx, BLADE, 4, "blade", "P", "P", "I").addTaggedPart('P', PLATE).addTaggedPart('I', ROD).exportToAssembler();
         new ShapedRecipeBuilder(ctx, COIL, 1, "coil", "xxx", "x x", "xxx").addTaggedPart('x', WIRE).exportToAssembler();
         new ShapedRecipeBuilder(ctx, LARGE_PLATE, 1, "large_plate", "xx", "xx").addTaggedPart('x', LARGE_PLATE).exportToMachine("packer");
-        new ShapedRecipeBuilder(ctx, ROTOR, 1, "rotor", "bBb", "BRB", "bBb").addTaggedPart('b', BOLT).addTaggedPart('B', BLADE).addTaggedPart('R', RING);
+        new ShapedRecipeBuilder(ctx, ROTOR, 1, "rotor", "bBb", "BRB", "bBb").addTaggedPart('b', BOLT).addTaggedPart('B', BLADE).addTaggedPart('R',
+                RING);
         new ShapedRecipeBuilder(ctx, ITEM_PIPE, 6, "item_pipe", "ccc", "   ", "ccc").addTaggedPart('c', CURVED_PLATE).exportToMachine("packer");
-        new ShapedRecipeBuilder(ctx, FLUID_PIPE, 6, "fluid_pipe", "ccc", "ggg", "ccc").addTaggedPart('c', CURVED_PLATE).addPart('g', "minecraft:glass_pane").exportToMachine("packer", 3);
-        new ShapedRecipeBuilder(ctx, CABLE, 3, "cable", "rrr", "www", "rrr").addInput('r', "modern_industrialization:rubber_sheet").addTaggedPart('w', WIRE).exportToAssembler();
+        new ShapedRecipeBuilder(ctx, FLUID_PIPE, 6, "fluid_pipe", "ccc", "ggg", "ccc").addTaggedPart('c', CURVED_PLATE)
+                .addPart('g', "minecraft:glass_pane").exportToMachine("packer", 3);
+        new ShapedRecipeBuilder(ctx, CABLE, 3, "cable", "rrr", "www", "rrr").addInput('r', "modern_industrialization:rubber_sheet")
+                .addTaggedPart('w', WIRE).exportToAssembler();
         // MACERATOR
         addMaceratorRecycling(ctx, DOUBLE_INGOT, 18);
         addMaceratorRecycling(ctx, PLATE, 9);
@@ -74,7 +76,8 @@ public final class StandardRecipes {
         addCuttingMachine(ctx, "item_pipe", ITEM_PIPE, RING, 2);
         // PACKER
         new MIRecipeBuilder(ctx, "packer", "double_ingot").addTaggedPartInput(INGOT, 2).addPartOutput(DOUBLE_INGOT, 1);
-        new MIRecipeBuilder(ctx, "packer", "fluid_pipe").addTaggedPartInput(ITEM_PIPE, 2).addItemInput("minecraft:glass_pane", 1).addPartOutput(FLUID_PIPE, 2);
+        new MIRecipeBuilder(ctx, "packer", "fluid_pipe").addTaggedPartInput(ITEM_PIPE, 2).addItemInput("minecraft:glass_pane", 1)
+                .addPartOutput(FLUID_PIPE, 2);
         new MIRecipeBuilder(ctx, "packer", "dust").addTaggedPartInput(TINY_DUST, 9).addPartOutput(DUST, 1);
         new MIRecipeBuilder(ctx, "packer", "ingot").addTaggedPartInput(NUGGET, 9).addPartOutput(INGOT, 1);
         // WIREMILL
@@ -101,12 +104,14 @@ public final class StandardRecipes {
      * Add 3x3 -> 1 and 1 -> 9 crafting recipes.
      */
     private static void add3By3Crafting(MaterialBuilder.RecipeContext ctx, String smallPart, String bigPart) {
-        new ShapedRecipeBuilder(ctx, bigPart, 1, bigPart + "_from_" + smallPart, "yxx", "xxx", "xxx").addInput('y', smallPart).addTaggedPart('x', smallPart);
+        new ShapedRecipeBuilder(ctx, bigPart, 1, bigPart + "_from_" + smallPart, "yxx", "xxx", "xxx").addInput('y', smallPart).addTaggedPart('x',
+                smallPart);
         new ShapedRecipeBuilder(ctx, smallPart, 9, smallPart + "_from_" + bigPart, "x").addInput('x', bigPart);
     }
 
     private static void addCuttingMachine(MaterialBuilder.RecipeContext ctx, String name, String inputPart, String outputPart, int amount) {
-        new MIRecipeBuilder(ctx, "cutting_machine", name).addTaggedPartInput(inputPart, 1).addPartOutput(outputPart, amount).addFluidInput("minecraft:water", 1);
+        new MIRecipeBuilder(ctx, "cutting_machine", name).addTaggedPartInput(inputPart, 1).addPartOutput(outputPart, amount)
+                .addFluidInput("minecraft:water", 1);
     }
 
     private StandardRecipes() {

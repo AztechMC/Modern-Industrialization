@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.materials.recipe;
+package aztech.modern_industrialization.materials.recipe.builder;
 
 import aztech.modern_industrialization.ModernIndustrialization;
 import aztech.modern_industrialization.materials.MaterialBuilder;
@@ -42,11 +42,17 @@ public class MIRecipeBuilder implements MaterialRecipeBuilder {
     private final int eu;
     private final int duration;
     private final List<MIItemInput> item_inputs = new ArrayList<>();
+    private final List<MIFluidInput> fluid_inputs = new ArrayList<>();
     private final List<MIItemOutput> item_outputs = new ArrayList<>();
 
     private static class MIItemInput {
         String item;
         String tag;
+        int amount;
+    }
+
+    private static class MIFluidInput {
+        String fluid;
         int amount;
     }
 
@@ -108,6 +114,14 @@ public class MIRecipeBuilder implements MaterialRecipeBuilder {
             input.item = maybeTag;
         }
         item_inputs.add(input);
+        return this;
+    }
+
+    public MIRecipeBuilder addFluidInput(String fluid, int amount) {
+        MIFluidInput input = new MIFluidInput();
+        input.fluid = fluid;
+        input.amount = amount;
+        fluid_inputs.add(input);
         return this;
     }
 

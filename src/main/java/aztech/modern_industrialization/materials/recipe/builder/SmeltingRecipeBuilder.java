@@ -21,11 +21,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.materials.recipe;
+package aztech.modern_industrialization.materials.recipe.builder;
 
 import aztech.modern_industrialization.ModernIndustrialization;
 import aztech.modern_industrialization.materials.MaterialBuilder;
-import aztech.modern_industrialization.materials.part.MaterialPart;
 import com.google.gson.Gson;
 import net.minecraft.util.Identifier;
 
@@ -46,37 +45,27 @@ public class SmeltingRecipeBuilder implements MaterialRecipeBuilder {
         String item;
     }
 
-    public SmeltingRecipeBuilder(MaterialBuilder.RecipeContext context, String partInput, String partOutput, int cookingtime, double experience,
+    public SmeltingRecipeBuilder(MaterialBuilder.RecipeContext context, String inputPart, String outputPart, int cookingtime, double experience,
             boolean blasting) {
         if (blasting) {
             this.type = "minecraft:blasting";
-            this.recipeId = "smelting/" + partInput + "_blasting";
+            this.recipeId = "smelting/" + inputPart + "_blasting";
         } else {
             this.type = "minecraft:smelting";
-            this.recipeId = "smelting/" + partInput + "_smelting";
+            this.recipeId = "smelting/" + inputPart + "_smelting";
         }
         this.cookingtime = cookingtime;
         this.experience = experience;
 
         this.context = context;
-        MaterialPart part_output = context.getPart(partOutput);
-        if (part_output != null) {
-            this.result = part_output.getItemId();
-
-            MaterialPart part_input = context.getPart(partInput);
-            if (part_input != null) {
-                this.ingredient = new Ingredient();
-                this.ingredient.item = part_input.getItemId();
-                context.addRecipe(this);
-            } else {
-                this.ingredient = null;
-                cancel();
-            }
-
-        } else {
+        if (context.getPart(inputPart) == null || context.getPart(outputPart) == null) {
             this.ingredient = null;
-            this.result = "";
-            cancel();
+            this.result = null;
+            canceled = true;
+        } else {
+            this.ingredient = new Ingredient();
+            this.ingredient.item = context.getPart(inputPart).getItemId();
+            this.result = context.getPart(outputPart).getItemId();
         }
     }
 

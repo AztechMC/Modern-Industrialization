@@ -4,6 +4,8 @@ import aztech.modern_industrialization.materials.part.ExternalPart;
 import aztech.modern_industrialization.materials.part.MaterialPart;
 import aztech.modern_industrialization.materials.part.PipeMaterialPart;
 import aztech.modern_industrialization.materials.part.PipeType;
+import aztech.modern_industrialization.materials.recipe.ForgeHammerRecipes;
+import aztech.modern_industrialization.materials.recipe.SmeltingRecipes;
 import aztech.modern_industrialization.materials.recipe.StandardRecipes;
 
 import static aztech.modern_industrialization.materials.MaterialSet.METALLIC;
@@ -26,7 +28,7 @@ public class MIMaterials {
                         .addParts(ExternalPart.of("ore", "#c:gold_ores", "minecraft:gold_ore"))
                         .addParts(PipeMaterialPart.of(PipeType.ITEM))
                         .addParts(PipeMaterialPart.of(PipeType.FLUID))
-                        .addRecipes(StandardRecipes::apply)
+                        .addRecipes(ForgeHammerRecipes::apply, SmeltingRecipes::apply, StandardRecipes::apply)
                         .build()
         );
         MaterialRegistry.addMaterial(
@@ -37,7 +39,7 @@ public class MIMaterials {
                         .addParts(ExternalPart.of("ore", "#c:iron_ores", "minecraft:iron_ore"))
                         .addParts(PipeMaterialPart.of(PipeType.ITEM))
                         .addParts(PipeMaterialPart.of(PipeType.FLUID))
-                        .addRecipes(StandardRecipes::apply)
+                        .addRecipes(ForgeHammerRecipes::apply, SmeltingRecipes::apply, StandardRecipes::apply)
                         .build()
         );
     }

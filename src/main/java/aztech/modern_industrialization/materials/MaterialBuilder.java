@@ -25,7 +25,7 @@ package aztech.modern_industrialization.materials;
 
 import aztech.modern_industrialization.materials.part.MaterialPart;
 import aztech.modern_industrialization.materials.part.RegularMaterialPart;
-import aztech.modern_industrialization.materials.recipe.MaterialRecipeBuilder;
+import aztech.modern_industrialization.materials.recipe.builder.MaterialRecipeBuilder;
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -75,8 +75,11 @@ public final class MaterialBuilder {
         return this;
     }
 
-    public MaterialBuilder addRecipes(Consumer<RecipeContext> consumer) {
-        consumer.accept(recipeContext);
+    @SafeVarargs
+    public final MaterialBuilder addRecipes(Consumer<RecipeContext>... consumers) {
+        for (Consumer<RecipeContext> consumer : consumers) {
+            consumer.accept(recipeContext);
+        }
         return this;
     }
 

@@ -34,6 +34,7 @@ import aztech.modern_industrialization.materials.MaterialHelper;
 import aztech.modern_industrialization.materials.textures.MIMaterialTextures;
 import aztech.modern_industrialization.materials.textures.MaterialTextureManager;
 import java.util.Objects;
+import net.devtech.arrp.json.tags.JTag;
 import net.fabricmc.fabric.api.biome.v1.BiomeModifications;
 import net.fabricmc.fabric.api.biome.v1.BiomeSelectors;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
@@ -122,6 +123,10 @@ public class RegularMaterialPart implements MaterialPart {
             Registry.register(BuiltinRegistries.CONFIGURED_FEATURE, oregenId, oreGenerator);
             RegistryKey<ConfiguredFeature<?, ?>> featureKey = RegistryKey.of(Registry.CONFIGURED_FEATURE_WORLDGEN, oregenId);
             BiomeModifications.addFeature(BiomeSelectors.foundInOverworld(), GenerationStep.Feature.UNDERGROUND_ORES, featureKey);
+        }
+        // item tag
+        if (MIParts.TAGGED_PARTS.contains(part)) {
+            MaterialHelper.registerItemTag(MaterialHelper.getPartTag(materialName, part), JTag.tag().add(new Identifier(getItemId())));
         }
     }
 

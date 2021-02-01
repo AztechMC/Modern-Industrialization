@@ -31,15 +31,15 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
 public class ExternalPart implements MaterialPart {
-    private final String part, taggedItemId, itemId;
+    private final String part, tag, itemId;
 
     public static Function<MaterialBuilder.PartContext, MaterialPart> of(String part, String taggedItemId, String itemId) {
         return ctx -> new ExternalPart(part, taggedItemId, itemId);
     }
 
-    private ExternalPart(String part, String taggedItemId, String itemId) {
+    private ExternalPart(String part, String tag, String itemId) {
         this.part = part;
-        this.taggedItemId = taggedItemId;
+        this.tag = tag;
         this.itemId = itemId;
     }
 
@@ -50,7 +50,7 @@ public class ExternalPart implements MaterialPart {
 
     @Override
     public String getTaggedItemId() {
-        return taggedItemId;
+        return tag;
     }
 
     @Override

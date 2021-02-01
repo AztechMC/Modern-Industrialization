@@ -92,7 +92,7 @@ public final class StandardRecipes {
      */
     private static void addMaceratorRecycling(MaterialBuilder.RecipeContext ctx, String partInput, int tinyDustOutput) {
         MIRecipeBuilder builder = new MIRecipeBuilder(ctx, "macerator", partInput);
-        builder.addPartInput(partInput, 1);
+        builder.addTaggedPartInput(partInput, 1);
         if (tinyDustOutput % 9 == 0) {
             builder.addPartOutput(DUST, tinyDustOutput / 9);
         } else {
@@ -104,9 +104,9 @@ public final class StandardRecipes {
      * Add 3x3 -> 1 and 1 -> 9 crafting recipes.
      */
     private static void add3By3Crafting(MaterialBuilder.RecipeContext ctx, String smallPart, String bigPart) {
-        new ShapedRecipeBuilder(ctx, bigPart, 1, bigPart + "_from_" + smallPart, "yxx", "xxx", "xxx").addInput('y', smallPart).addTaggedPart('x',
+        new ShapedRecipeBuilder(ctx, bigPart, 1, bigPart + "_from_" + smallPart, "yxx", "xxx", "xxx").addPart('y', smallPart).addTaggedPart('x',
                 smallPart);
-        new ShapedRecipeBuilder(ctx, smallPart, 9, smallPart + "_from_" + bigPart, "x").addInput('x', bigPart);
+        new ShapedRecipeBuilder(ctx, smallPart, 9, smallPart + "_from_" + bigPart, "x").addPart('x', bigPart);
     }
 
     private static void addCuttingMachine(MaterialBuilder.RecipeContext ctx, String name, String inputPart, String outputPart, int amount) {

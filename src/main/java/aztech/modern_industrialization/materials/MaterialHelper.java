@@ -23,6 +23,11 @@
  */
 package aztech.modern_industrialization.materials;
 
+import aztech.modern_industrialization.ModernIndustrialization;
+import net.devtech.arrp.json.tags.JTag;
+import net.fabricmc.fabric.api.tag.TagRegistry;
+import net.minecraft.util.Identifier;
+
 public class MaterialHelper {
     public static boolean hasBlock(String part) {
         return part.equals("block") || part.equals("ore") || part.equals("coil");
@@ -30,5 +35,20 @@ public class MaterialHelper {
 
     public static boolean isOre(String part) {
         return part.equals("ore");
+    }
+
+    public static String getPartTag(String materialName, String part) {
+        return "c:" + materialName + "_" + part + "s";
+    }
+
+    /**
+     * Register a tag in the runtime data pack, and also create it if it doesn't
+     * exist yet.
+     */
+    @SuppressWarnings("ResultOfMethodCallIgnored")
+    public static void registerItemTag(String tag, JTag content) {
+        Identifier tagId = new Identifier(tag);
+        ModernIndustrialization.RESOURCE_PACK.addTag(new Identifier(tagId.getNamespace(), "items/" + tagId.getPath()), content);
+        TagRegistry.item(tagId);
     }
 }

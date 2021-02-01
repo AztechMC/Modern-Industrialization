@@ -144,7 +144,10 @@ public class ModernIndustrialization implements ModInitializer {
 
         MIPipes.INSTANCE.onInitialize();
 
-        RRPCallback.EVENT.register(a -> a.add(RESOURCE_PACK));
+        RRPCallback.EVENT.register(a -> {
+            RESOURCE_PACK.dump();
+            a.add(RESOURCE_PACK);
+        });
 
         ServerChunkEvents.CHUNK_UNLOAD.register((world, chunk) -> {
             for (BlockEntity entity : chunk.getBlockEntities().values()) {

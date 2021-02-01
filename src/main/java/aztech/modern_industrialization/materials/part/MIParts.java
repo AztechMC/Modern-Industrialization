@@ -56,6 +56,6 @@ public class MIParts {
     public static final String[] ITEM_BASE = new String[] { CRUSHED_DUST, CURVED_PLATE, DOUBLE_INGOT, DUST, INGOT, LARGE_PLATE, NUGGET, PLATE,
             TINY_DUST };
 
-    public static final List<String> TAGGED_PARTS_LIST = Arrays.asList();
+    public static final List<String> TAGGED_PARTS_LIST = Arrays.asList(BLOCK, DUST, GEAR, INGOT, NUGGET, ORE, PLATE, TINY_DUST);
     public static final Set<String> TAGGED_PARTS = new HashSet<>(TAGGED_PARTS_LIST);
 }

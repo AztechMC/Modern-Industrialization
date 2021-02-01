@@ -45,6 +45,7 @@ public class SmeltingRecipeBuilder implements MaterialRecipeBuilder {
         String item;
     }
 
+    @SuppressWarnings("ConstantConditions")
     public SmeltingRecipeBuilder(MaterialBuilder.RecipeContext context, String inputPart, String outputPart, int cookingtime, double experience,
             boolean blasting) {
         if (blasting) {
@@ -66,6 +67,7 @@ public class SmeltingRecipeBuilder implements MaterialRecipeBuilder {
             this.ingredient = new Ingredient();
             this.ingredient.item = context.getPart(inputPart).getItemId();
             this.result = context.getPart(outputPart).getItemId();
+            context.addRecipe(this);
         }
     }
 

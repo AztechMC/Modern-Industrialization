@@ -83,10 +83,13 @@ public final class MaterialBuilder {
         return this;
     }
 
-    public void cancelRecipe(String recipeId) {
-        if (recipesMap.remove(recipeId) != null) {
-            throw new IllegalArgumentException("Recipe does not exist and cannot be cancelled: " + recipeId);
+    public MaterialBuilder cancelRecipes(String... recipeIds) {
+        for (String recipeId : recipeIds) {
+            if (recipesMap.remove(recipeId) == null) {
+                throw new IllegalArgumentException("Recipe does not exist and cannot be cancelled: " + recipeId);
+            }
         }
+        return this;
     }
 
     @SuppressWarnings("deprecation")

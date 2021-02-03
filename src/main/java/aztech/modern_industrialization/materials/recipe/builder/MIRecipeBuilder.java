@@ -133,7 +133,7 @@ public class MIRecipeBuilder implements MaterialRecipeBuilder {
         if (part == null) {
             canceled = true;
         } else {
-            return addPartOutput(part.getItemId(), amount);
+            return addOutput(part.getItemId(), amount);
         }
         return this;
     }

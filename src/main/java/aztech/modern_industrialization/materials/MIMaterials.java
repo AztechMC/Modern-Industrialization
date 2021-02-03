@@ -69,6 +69,15 @@ public class MIMaterials {
         );
 
         MaterialRegistry.addMaterial(
+                new MaterialBuilder("redstone", GEM, 0xd20000)
+                        .addRegularParts(DUST, TINY_DUST)
+                        .overridePart(ExternalPart.of("dust", "minecraft:redstone", "minecraft:redstone"))
+                        .addRecipes(StandardRecipes::apply, SmeltingRecipes::apply)
+                        .cancelRecipes("macerator/crushed_dust")
+                        .build()
+        );
+
+        MaterialRegistry.addMaterial(
                 new MaterialBuilder("copper", SHINY, 0xC8C8C8)
                         .addRegularParts(ITEM_ALL)
                         .addRegularParts(ORE)
@@ -187,7 +196,48 @@ public class MIMaterials {
                         .build()
         );
 
+        MaterialRegistry.addMaterial(
+                new MaterialBuilder("nickel", METALLIC, 0xFAFAC8)
+                        .addRegularParts(ITEM_BASE)
+                        .addRegularParts(BLOCK)
+                        .addParts(PipeMaterialPart.of(PipeType.ITEM))
+                        .addParts(PipeMaterialPart.of(PipeType.FLUID))
+                        .addRecipes(StandardRecipes::apply, SmeltingRecipes::apply)
+                        .build()
+        );
 
+        MaterialRegistry.addMaterial(
+                new MaterialBuilder("silver", SHINY, 0xDCDCFF)
+                        .addRegularParts(ITEM_BASE)
+                        .addRegularParts(BLOCK)
+                        .addParts(PipeMaterialPart.of(PipeType.ITEM))
+                        .addParts(PipeMaterialPart.of(PipeType.FLUID))
+                        .addRecipes(StandardRecipes::apply, SmeltingRecipes::apply)
+                        .build()
+        );
+
+        MaterialRegistry.addMaterial(
+                new MaterialBuilder("sodium", STONE, 0x071CB8)
+                        .addRegularParts(ITEM_PURE_NON_METAL)
+                        .addRecipes(StandardRecipes::apply, SmeltingRecipes::apply)
+                        .build()
+        );
+
+        MaterialRegistry.addMaterial(
+                new MaterialBuilder("salt", GEM, 0xc7d6c5)
+                        .addRegularParts(ITEM_PURE_NON_METAL)
+                        .removeRegularParts(BLOCK)
+                        .addRegularParts(ORE)
+                        .addRecipes(StandardRecipes::apply)
+                        .build()
+        );
+
+        MaterialRegistry.addMaterial(
+                new MaterialBuilder("titanium", METALLIC, 0xDCA0F0)
+                        .addRegularParts(ITEM_ALL)
+                        .addRecipes(StandardRecipes::apply)
+                        .build()
+        );
 
     }
 
@@ -207,5 +257,6 @@ public class MIMaterials {
 
         MaterialHelper.registerItemTag("c:coal_ores", JTag.tag().add(new Identifier("minecraft:coal_ore")));
         MaterialHelper.registerItemTag("c:coal_blocks", JTag.tag().add(new Identifier("minecraft:coal_block")));
+
     }
 }

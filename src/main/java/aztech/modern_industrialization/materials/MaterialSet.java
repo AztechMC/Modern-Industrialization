@@ -27,7 +27,8 @@ public enum MaterialSet {
     METALLIC("metallic"),
     SHINY("shiny"),
     STONE("stone"),
-    DULL("dull");
+    DULL("dull"),
+    GEM("gem");
 
     MaterialSet(String name) {
         this.name = name;

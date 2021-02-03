@@ -75,6 +75,7 @@ public class SmeltingRecipeBuilder implements MaterialRecipeBuilder {
         this(context, partInput, partOutput, blasting ? 100 : 200, experience, blasting);
     }
 
+
     @Override
     public String getRecipeId() {
         return recipeId;

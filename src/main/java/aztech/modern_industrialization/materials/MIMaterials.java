@@ -1,5 +1,7 @@
 package aztech.modern_industrialization.materials;
 
+import aztech.modern_industrialization.api.energy.CableTier;
+import aztech.modern_industrialization.materials.part.CableMaterialPart;
 import aztech.modern_industrialization.materials.part.ExternalPart;
 import aztech.modern_industrialization.materials.part.PipeMaterialPart;
 import aztech.modern_industrialization.materials.part.PipeType;
@@ -7,6 +9,7 @@ import aztech.modern_industrialization.materials.recipe.ForgeHammerRecipes;
 import aztech.modern_industrialization.materials.recipe.SmeltingRecipes;
 import aztech.modern_industrialization.materials.recipe.StandardRecipes;
 import aztech.modern_industrialization.materials.recipe.builder.MIRecipeBuilder;
+import aztech.modern_industrialization.materials.recipe.builder.SmeltingRecipeBuilder;
 import net.devtech.arrp.json.tags.JTag;
 import net.minecraft.util.Identifier;
 
@@ -64,6 +67,128 @@ public class MIMaterials {
                         })
                         .build()
         );
+
+        MaterialRegistry.addMaterial(
+                new MaterialBuilder("copper", SHINY, 0xC8C8C8)
+                        .addRegularParts(ITEM_ALL)
+                        .addRegularParts(ORE)
+                        .addRegularParts(WIRE)
+                        .addRegularParts(FINE_WIRE)
+                        .addParts(PipeMaterialPart.of(PipeType.ITEM))
+                        .addParts(PipeMaterialPart.of(PipeType.FLUID))
+                        .addParts(CableMaterialPart.of(CableTier.LV))
+                        .addRecipes(ForgeHammerRecipes::apply, SmeltingRecipes::apply, StandardRecipes::apply)
+                        .build()
+        );
+
+        MaterialRegistry.addMaterial(
+                new MaterialBuilder("bronze", METALLIC, 0xffcc00)
+                        .addRegularParts(ITEM_ALL)
+                        .removeRegularParts(CRUSHED_DUST)
+                        .addParts(PipeMaterialPart.of(PipeType.ITEM))
+                        .addParts(PipeMaterialPart.of(PipeType.FLUID))
+                        .addRecipes(ForgeHammerRecipes::apply, SmeltingRecipes::apply, StandardRecipes::apply)
+                        .build()
+        );
+
+        MaterialRegistry.addMaterial(
+                new MaterialBuilder("tin", DULL, 0xDCDCDC)
+                        .addRegularParts(ITEM_ALL)
+                        .addRegularParts(ORE)
+                        .addRegularParts(WIRE)
+                        .addParts(PipeMaterialPart.of(PipeType.ITEM))
+                        .addParts(PipeMaterialPart.of(PipeType.FLUID))
+                        .addParts(CableMaterialPart.of(CableTier.LV))
+                        .addRecipes(ForgeHammerRecipes::apply, SmeltingRecipes::apply, StandardRecipes::apply)
+                        .build()
+        );
+
+        MaterialRegistry.addMaterial(
+                new MaterialBuilder("steel", METALLIC, 0xDCDCDC)
+                        .addRegularParts(ITEM_ALL)
+                        .addParts(PipeMaterialPart.of(PipeType.ITEM))
+                        .addParts(PipeMaterialPart.of(PipeType.FLUID))
+                        .addRecipes(ForgeHammerRecipes::apply, SmeltingRecipes::apply, StandardRecipes::apply)
+                        .build()
+        );
+
+        /* TODO
+        MaterialRegistry.addMaterial(
+                new MaterialBuilder("lignite_coal", STONE, 0x644646)
+                        .addRegularParts(ITEM_PURE_NON_METAL)
+                        .removeRegularParts(BLOCK)
+                        .addRegularParts(ORE)
+                        .addRecipes(ForgeHammerRecipes::apply, SmeltingRecipes::apply, StandardRecipes::apply)
+                        .addRecipes(context -> {
+                            new MIRecipeBuilder(context, "compressor", "lignite_coal").addTaggedPartInput("dust", 1).addOutput("modern_industrialization:lignite_coal", 1);
+                            new MIRecipeBuilder(context, "macerator", "dust").addItemInput("modern_industrialization:lignite_coal", 1).addPartOutput(DUST, 1);
+                        })
+                        .build()
+        );*/
+
+        MaterialRegistry.addMaterial(
+                new MaterialBuilder("aluminum", METALLIC, 0x80C8F0)
+                        .addRegularParts(ITEM_ALL)
+                        .addRegularParts(WIRE, FINE_WIRE)
+                        .addParts(PipeMaterialPart.of(PipeType.ITEM))
+                        .addParts(PipeMaterialPart.of(PipeType.FLUID))
+                        .addParts(CableMaterialPart.of(CableTier.MV))
+                        .addRecipes(StandardRecipes::apply)
+                        .build()
+        );
+
+        MaterialRegistry.addMaterial(
+                new MaterialBuilder("bauxite", DULL, 0xC86400)
+                        .addRegularParts(ITEM_PURE_NON_METAL)
+                        .removeRegularParts(BLOCK)
+                        .addRegularParts(ORE)
+                        .addRecipes(StandardRecipes::apply)
+                        .build()
+        );
+
+        MaterialRegistry.addMaterial(
+                new MaterialBuilder("lead", DULL, 0x3C286E)
+                        .addRegularParts(ITEM_BASE)
+                        .addRegularParts(ORE)
+                        .addParts(PipeMaterialPart.of(PipeType.ITEM))
+                        .addParts(PipeMaterialPart.of(PipeType.FLUID))
+                        .addRecipes(StandardRecipes::apply, SmeltingRecipes::apply)
+                        .cancelRecipes("macerator/dust")
+                        .build()
+        );
+
+        MaterialRegistry.addMaterial(
+                new MaterialBuilder("battery_allow", DULL, 0x9C7CA0)
+                        .addRegularParts(TINY_DUST, DUST, INGOT, DOUBLE_INGOT, PLATE, CURVED_PLATE, NUGGET, BLOCK)
+                        .addRecipes(StandardRecipes::apply, SmeltingRecipes::apply)
+                        .build()
+        );
+
+        MaterialRegistry.addMaterial(
+                new MaterialBuilder("invar", METALLIC, 0xDCDC96)
+                        .addRegularParts(TINY_DUST, DUST, INGOT, DOUBLE_INGOT, PLATE, LARGE_PLATE, NUGGET, GEAR, BLOCK)
+                        .addRecipes(StandardRecipes::apply, SmeltingRecipes::apply)
+                        .build()
+        );
+
+        MaterialRegistry.addMaterial(
+                new MaterialBuilder("cupronickel", METALLIC, 0xE39681)
+                        .addRegularParts(TINY_DUST, DUST, INGOT, DOUBLE_INGOT, PLATE, WIRE, NUGGET, BLOCK, COIL)
+                        .addRecipes(StandardRecipes::apply, SmeltingRecipes::apply)
+                        .addParts(CableMaterialPart.of(CableTier.MV))
+                        .build()
+        );
+
+        MaterialRegistry.addMaterial(
+                new MaterialBuilder("antimony", SHINY, 0xDCDCF0)
+                        .addRegularParts(PURE_METAL)
+                        .addRegularParts(ORE, BLOCK)
+                        .addRecipes(StandardRecipes::apply, SmeltingRecipes::apply)
+                        .build()
+        );
+
+
+
     }
 
     /**

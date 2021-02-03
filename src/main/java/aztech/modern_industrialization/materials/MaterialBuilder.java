@@ -53,6 +53,13 @@ public final class MaterialBuilder {
         return this;
     }
 
+    public MaterialBuilder removeRegularParts(String... parts) {
+        for (String part : parts) {
+            removePart(new RegularMaterialPart(materialName, part, materialSet, color));
+        }
+        return this;
+    }
+
     @SafeVarargs
     public final MaterialBuilder addParts(Function<PartContext, MaterialPart>... partFunctions) {
         for (Function<PartContext, MaterialPart> partFunction : partFunctions) {
@@ -65,6 +72,10 @@ public final class MaterialBuilder {
         if (partsMap.put(part.getPart(), part) != null) {
             throw new IllegalStateException("Part " + part.getItemId() + " is already registered for this material!");
         }
+    }
+
+    private void removePart(MaterialPart part) {
+       partsMap.remove(part.getPart(), part);
     }
 
     public MaterialBuilder overridePart(Function<PartContext, MaterialPart> partFunction) {

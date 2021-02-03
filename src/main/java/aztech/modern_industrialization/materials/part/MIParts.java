@@ -61,7 +61,7 @@ public class MIParts {
             TINY_DUST, BLOCK  };
 
     public static final String[] ITEM_PURE_NON_METAL = new String[] {TINY_DUST, DUST, CRUSHED_DUST, BLOCK};
-    public static final String[] PURE_METAL = new String[] {"ingot", "nugget", "tiny_dust", "dust", "crushed_dust"};
+    public static final String[] ITEM_PURE_METAL = new String[] {INGOT, NUGGET, TINY_DUST, DUST, CRUSHED_DUST, BLOCK};
 
     public static final List<String> TAGGED_PARTS_LIST = Arrays.asList(BLOCK, DUST, GEAR, INGOT, NUGGET, ORE, PLATE, TINY_DUST);
     public static final Set<String> TAGGED_PARTS = new HashSet<>(TAGGED_PARTS_LIST);

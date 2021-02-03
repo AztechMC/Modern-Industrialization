@@ -55,7 +55,7 @@ public final class MaterialBuilder {
 
     public MaterialBuilder removeRegularParts(String... parts) {
         for (String part : parts) {
-            removePart(new RegularMaterialPart(materialName, part, materialSet, color));
+            removePart(part);
         }
         return this;
     }
@@ -74,8 +74,9 @@ public final class MaterialBuilder {
         }
     }
 
-    private void removePart(MaterialPart part) {
-       partsMap.remove(part.getPart(), part);
+    private void removePart(String part) {
+
+       partsMap.remove(part);
     }
 
     public MaterialBuilder overridePart(Function<PartContext, MaterialPart> partFunction) {

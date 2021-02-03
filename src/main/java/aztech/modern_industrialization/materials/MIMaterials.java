@@ -77,8 +77,10 @@ public class MIMaterials {
                         .build()
         );
 
+        // TODO : EMERALD + QUARTZ WITH GEM
+
         MaterialRegistry.addMaterial(
-                new MaterialBuilder("copper", SHINY, 0xC8C8C8)
+                new MaterialBuilder("copper", SHINY, 0xff6600)
                         .addRegularParts(ITEM_ALL)
                         .addRegularParts(ORE)
                         .addRegularParts(WIRE)
@@ -101,7 +103,7 @@ public class MIMaterials {
         );
 
         MaterialRegistry.addMaterial(
-                new MaterialBuilder("tin", DULL, 0xDCDCDC)
+                new MaterialBuilder("tin", DULL, 0xcbe4e4)
                         .addRegularParts(ITEM_ALL)
                         .addRegularParts(ORE)
                         .addRegularParts(WIRE)
@@ -113,8 +115,9 @@ public class MIMaterials {
         );
 
         MaterialRegistry.addMaterial(
-                new MaterialBuilder("steel", METALLIC, 0xDCDCDC)
+                new MaterialBuilder("steel", METALLIC, 0x3f3f3f)
                         .addRegularParts(ITEM_ALL)
+                        .removeRegularParts(CRUSHED_DUST)
                         .addParts(PipeMaterialPart.of(PipeType.ITEM))
                         .addParts(PipeMaterialPart.of(PipeType.FLUID))
                         .addRecipes(ForgeHammerRecipes::apply, SmeltingRecipes::apply, StandardRecipes::apply)
@@ -167,7 +170,7 @@ public class MIMaterials {
         );
 
         MaterialRegistry.addMaterial(
-                new MaterialBuilder("battery_allow", DULL, 0x9C7CA0)
+                new MaterialBuilder("battery_alloy", DULL, 0x9C7CA0)
                         .addRegularParts(TINY_DUST, DUST, INGOT, DOUBLE_INGOT, PLATE, CURVED_PLATE, NUGGET, BLOCK)
                         .addRecipes(StandardRecipes::apply, SmeltingRecipes::apply)
                         .build()
@@ -190,8 +193,8 @@ public class MIMaterials {
 
         MaterialRegistry.addMaterial(
                 new MaterialBuilder("antimony", SHINY, 0xDCDCF0)
-                        .addRegularParts(PURE_METAL)
-                        .addRegularParts(ORE, BLOCK)
+                        .addRegularParts(ITEM_PURE_METAL)
+                        .addRegularParts(ORE)
                         .addRecipes(StandardRecipes::apply, SmeltingRecipes::apply)
                         .build()
         );
@@ -217,6 +220,7 @@ public class MIMaterials {
         MaterialRegistry.addMaterial(
                 new MaterialBuilder("sodium", STONE, 0x071CB8)
                         .addRegularParts(ITEM_PURE_NON_METAL)
+                        .removeRegularParts(CRUSHED_DUST)
                         .addRecipes(StandardRecipes::apply, SmeltingRecipes::apply)
                         .build()
         );
@@ -233,6 +237,7 @@ public class MIMaterials {
         MaterialRegistry.addMaterial(
                 new MaterialBuilder("titanium", METALLIC, 0xDCA0F0)
                         .addRegularParts(ITEM_ALL)
+                        .removeRegularParts(CRUSHED_DUST)
                         .addRecipes(StandardRecipes::apply)
                         .build()
         );
@@ -248,6 +253,193 @@ public class MIMaterials {
                         .addParts(PipeMaterialPart.of(PipeType.FLUID))
                         .addParts(CableMaterialPart.of(CableTier.MV))
                         .addRecipes(StandardRecipes::apply, SmeltingRecipes::apply)
+                        .build()
+        );
+
+        MaterialRegistry.addMaterial(
+                new MaterialBuilder("silicon", METALLIC, 0x3C3C50)
+                        .addRegularParts(ITEM_PURE_METAL)
+                        .addRegularParts(PLATE, DOUBLE_INGOT)
+                        .removeRegularParts(CRUSHED_DUST)
+                        .addRecipes(StandardRecipes::apply, SmeltingRecipes::apply)
+                        .build()
+        );
+
+        MaterialRegistry.addMaterial(
+                new MaterialBuilder("stainless_steel", SHINY, 0xC8C8DC)
+                        .addRegularParts(ITEM_ALL)
+                        .removeRegularParts(CRUSHED_DUST)
+                        .addParts(PipeMaterialPart.of(PipeType.ITEM))
+                        .addParts(PipeMaterialPart.of(PipeType.FLUID))
+                        .addRecipes(StandardRecipes::apply)
+                        .build()
+        );
+
+        MaterialRegistry.addMaterial(
+                new MaterialBuilder("chrome", SHINY, 0xFFE6E6)
+                        .addRegularParts(ITEM_PURE_METAL)
+                        .addRegularParts(PLATE, LARGE_PLATE, DOUBLE_INGOT)
+                        .addRecipes(StandardRecipes::apply)
+                        .build()
+        );
+
+        MaterialRegistry.addMaterial(
+                new MaterialBuilder("manganese", DULL, 0xC1C1C1)
+                        .addRegularParts(ITEM_PURE_METAL)
+                        .addRecipes(StandardRecipes::apply)
+                        .build()
+        );
+
+        MaterialRegistry.addMaterial(
+                new MaterialBuilder("fluorite", SHINY, 0xAF69CF)
+                        .addRegularParts(ITEM_PURE_NON_METAL)
+                        .removeRegularParts(BLOCK)
+                        .addRegularParts(ORE)
+                        .addRecipes(StandardRecipes::apply)
+                        .build()
+        );
+
+        MaterialRegistry.addMaterial(
+                new MaterialBuilder("sodium_fluorosilicate", DULL, 0xD1EDE5)
+                        .addRegularParts(ITEM_PURE_NON_METAL)
+                        .removeRegularParts(BLOCK)
+                        .addRecipes(StandardRecipes::apply)
+                        .build()
+        );
+
+        MaterialRegistry.addMaterial(
+                new MaterialBuilder("sodium_fluoroberyllate", DULL, 0x77B889)
+                        .addRegularParts(CRUSHED_DUST)
+                        .addRecipes(StandardRecipes::apply)
+                        .build()
+        );
+
+        MaterialRegistry.addMaterial(
+                new MaterialBuilder("beryllium_hydroxide", DULL, 0x4E875E)
+                        .addRegularParts(DUST, TINY_DUST)
+                        .addRecipes(StandardRecipes::apply)
+                        .build()
+        );
+
+        MaterialRegistry.addMaterial(
+                new MaterialBuilder("beryllium_oxide", DULL, 0x54B36E)
+                        .addRegularParts(DUST, TINY_DUST)
+                        .addRecipes(StandardRecipes::apply)
+                        .build()
+        );
+
+        MaterialRegistry.addMaterial(
+                new MaterialBuilder("beryllium", SHINY, 0x64B464)
+                        .addRegularParts(ITEM_ALL)
+                        .addRecipes(StandardRecipes::apply)
+                        .build()
+        );
+
+        MaterialRegistry.addMaterial(
+                new MaterialBuilder("annealed_copper", SHINY, 0xff924f)
+                        .addRegularParts(ITEM_PURE_METAL)
+                        .removeRegularParts(CRUSHED_DUST)
+                        .addRegularParts(PLATE, WIRE, DOUBLE_INGOT)
+                        .addParts(CableMaterialPart.of(CableTier.HV))
+                        .addRecipes(StandardRecipes::apply)
+                        .build()
+        );
+
+        // TODO : URANIUM WITH CHUNK
+
+        MaterialRegistry.addMaterial(
+                new MaterialBuilder("uranium_235", SHINY, 0xe60045)
+                        .addRegularParts(ITEM_PURE_METAL)
+                        .removeRegularParts(CRUSHED_DUST)
+                        .addRecipes(StandardRecipes::apply)
+                        .build()
+        );
+
+        MaterialRegistry.addMaterial(
+                new MaterialBuilder("uranium_238", DULL, 0x55bd33)
+                        .addRegularParts(ITEM_PURE_METAL)
+                        .removeRegularParts(CRUSHED_DUST)
+                        .addRecipes(StandardRecipes::apply)
+                        .build()
+        );
+
+        MaterialRegistry.addMaterial(
+                new MaterialBuilder("plutonium", SHINY, 0xd701e7)
+                        .addRegularParts(ITEM_PURE_METAL)
+                        //.addRegularParts(ORE) if other mod
+                        .removeRegularParts(CRUSHED_DUST)
+                        .addRecipes(StandardRecipes::apply)
+                        .build()
+        );
+
+        MaterialRegistry.addMaterial(
+                new MaterialBuilder("mox", SHINY, 0x00e7e5)
+                        .addRegularParts(ITEM_PURE_METAL)
+                        .removeRegularParts(CRUSHED_DUST)
+                        .addRecipes(StandardRecipes::apply)
+                        .build()
+        );
+
+        MaterialRegistry.addMaterial(
+                new MaterialBuilder("platinum", SHINY, 0xffe5ba)
+                        .addRegularParts(ITEM_PURE_METAL)
+                        .addRegularParts(PLATE, DOUBLE_INGOT, WIRE, FINE_WIRE)
+                        .addParts(CableMaterialPart.of(CableTier.HV))
+                        .addRecipes(StandardRecipes::apply, SmeltingRecipes::apply)
+                        .cancelRecipes("macerator/ore")
+                        .build()
+        );
+
+        MaterialRegistry.addMaterial(
+                new MaterialBuilder("kanthal", METALLIC, 0xcfcb00)
+                        .addRegularParts(TINY_DUST, DUST, PLATE, INGOT, NUGGET, WIRE, DOUBLE_INGOT, BLOCK, COIL)
+                        .addParts(CableMaterialPart.of(CableTier.HV))
+                        .addRecipes(StandardRecipes::apply)
+                        .build()
+        );
+
+        // TODO : IRIDIUM WITH CHUNK
+
+        MaterialRegistry.addMaterial(
+                new MaterialBuilder("mozanite", STONE, 0x96248e)
+                        .addRegularParts(CRUSHED_DUST, DUST, TINY_DUST, ORE)
+                        .addRecipes(StandardRecipes::apply)
+                        .build()
+        );
+
+        MaterialRegistry.addMaterial(
+                new MaterialBuilder("cadmium", DULL, 0x967224)
+                        .addRegularParts(DUST, TINY_DUST, INGOT, PLATE, ROD, DOUBLE_INGOT)
+                        .addRecipes(StandardRecipes::apply, SmeltingRecipes::apply)
+                        .build()
+        );
+
+        MaterialRegistry.addMaterial(
+                new MaterialBuilder("neodymium", STONE, 0x1d4506)
+                        .addRegularParts(DUST, TINY_DUST)
+                        .addRecipes(StandardRecipes::apply)
+                        .build()
+        );
+
+        MaterialRegistry.addMaterial(
+                new MaterialBuilder("yttrium", STONE, 0x135166)
+                        .addRegularParts(DUST, TINY_DUST)
+                        .addRecipes(StandardRecipes::apply)
+                        .build()
+        );
+
+        MaterialRegistry.addMaterial(
+                new MaterialBuilder("supraconductor", SHINY, 0xa3d9ff)
+                        .addRegularParts(TINY_DUST, DUST, PLATE, INGOT, NUGGET, WIRE, DOUBLE_INGOT, COIL)
+                        .addParts(CableMaterialPart.of(CableTier.SUPRACONDUCTOR))
+                        .addRecipes(StandardRecipes::apply)
+                        .build()
+        );
+
+        MaterialRegistry.addMaterial(
+                new MaterialBuilder("tungsten", METALLIC, 0x3b2817)
+                        .addRegularParts(TINY_DUST, DUST, PLATE, INGOT, NUGGET, LARGE_PLATE, DOUBLE_INGOT, ROD, CRUSHED_DUST, BLOCK, ORE)
+                        .addRecipes(StandardRecipes::apply)
                         .build()
         );
 

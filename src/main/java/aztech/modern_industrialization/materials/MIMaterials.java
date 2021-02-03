@@ -199,7 +199,6 @@ public class MIMaterials {
         MaterialRegistry.addMaterial(
                 new MaterialBuilder("nickel", METALLIC, 0xFAFAC8)
                         .addRegularParts(ITEM_BASE)
-                        .addRegularParts(BLOCK)
                         .addParts(PipeMaterialPart.of(PipeType.ITEM))
                         .addParts(PipeMaterialPart.of(PipeType.FLUID))
                         .addRecipes(StandardRecipes::apply, SmeltingRecipes::apply)
@@ -209,7 +208,6 @@ public class MIMaterials {
         MaterialRegistry.addMaterial(
                 new MaterialBuilder("silver", SHINY, 0xDCDCFF)
                         .addRegularParts(ITEM_BASE)
-                        .addRegularParts(BLOCK)
                         .addParts(PipeMaterialPart.of(PipeType.ITEM))
                         .addParts(PipeMaterialPart.of(PipeType.FLUID))
                         .addRecipes(StandardRecipes::apply, SmeltingRecipes::apply)
@@ -238,6 +236,21 @@ public class MIMaterials {
                         .addRecipes(StandardRecipes::apply)
                         .build()
         );
+
+        //TODO : QUARTZ with GEM
+
+        MaterialRegistry.addMaterial(
+                new MaterialBuilder("electrum", SHINY, 0xFFFF64)
+                        .addRegularParts(ITEM_BASE)
+                        .removeRegularParts(CRUSHED_DUST)
+                        .addRegularParts(WIRE, FINE_WIRE)
+                        .addParts(PipeMaterialPart.of(PipeType.ITEM))
+                        .addParts(PipeMaterialPart.of(PipeType.FLUID))
+                        .addParts(CableMaterialPart.of(CableTier.MV))
+                        .addRecipes(StandardRecipes::apply, SmeltingRecipes::apply)
+                        .build()
+        );
+
 
     }
 

@@ -133,11 +133,16 @@ public class MIRecipeBuilder implements MaterialRecipeBuilder {
         if (part == null) {
             canceled = true;
         } else {
-            MIItemOutput output = new MIItemOutput();
-            output.item = part.getItemId();
-            output.amount = amount;
-            item_outputs.add(output);
+            return addPartOutput(part.getItemId(), amount);
         }
+        return this;
+    }
+
+    public MIRecipeBuilder addOutput(String itemId, int amount){
+        MIItemOutput output = new MIItemOutput();
+        output.item =  itemId;
+        output.amount = amount;
+        item_outputs.add(output);
         return this;
     }
 

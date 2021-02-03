@@ -153,7 +153,7 @@ public class MIMaterials {
                         .addParts(PipeMaterialPart.of(PipeType.ITEM))
                         .addParts(PipeMaterialPart.of(PipeType.FLUID))
                         .addRecipes(StandardRecipes::apply, SmeltingRecipes::apply)
-                        .cancelRecipes("macerator/dust")
+                        .cancelRecipes("macerator/crushed_dust")
                         .build()
         );
 

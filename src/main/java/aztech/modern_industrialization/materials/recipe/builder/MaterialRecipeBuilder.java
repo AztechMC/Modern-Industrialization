@@ -28,6 +28,8 @@ public interface MaterialRecipeBuilder {
 
     void cancel();
 
+    boolean isCanceled();
+
     /**
      * @deprecated don't call, let the MaterialBuilder do it
      */

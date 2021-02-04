@@ -25,6 +25,7 @@ package aztech.modern_industrialization.materials.textures;
 
 import aztech.modern_industrialization.ModernIndustrialization;
 import aztech.modern_industrialization.materials.Material;
+import aztech.modern_industrialization.materials.MaterialHelper;
 import aztech.modern_industrialization.materials.MaterialRegistry;
 import aztech.modern_industrialization.materials.part.MIParts;
 import aztech.modern_industrialization.materials.part.MaterialPart;
@@ -91,7 +92,13 @@ public final class MIMaterialTextures {
     public static void generateBlend(MaterialTextureManager mtm, String materialName, String materialSet, String part, int color) throws IOException {
         NativeImage image = null;
         for (String layer : LAYERS) {
-            String template = getTemplate(materialSet, part, layer);
+            String template;
+            if (part.equals(MIParts.GEM)) {
+                template = getTemplate(materialSet, materialName, layer);
+            } else {
+                template = getTemplate(materialSet, part, layer);
+            }
+
             if (mtm.hasAsset(template)) {
                 if (image == null) {
                     image = mtm.getAssetAsTexture(template);
@@ -105,7 +112,17 @@ public final class MIMaterialTextures {
             }
         }
         if (image != null) {
-            String texturePath = String.format("modern_industrialization:textures/items/%s_%s.png", materialName, part);
+            String texturePath;
+            if (MaterialHelper.hasBlock(part)) {
+                texturePath = String.format("modern_industrialization:textures/blocks/%s_%s.png", materialName, part);
+            } else {
+                if (part.equals(MIParts.GEM)) {
+                    texturePath = String.format("modern_industrialization:textures/items/%s.png", materialName);
+                } else {
+                    texturePath = String.format("modern_industrialization:textures/items/%s_%s.png", materialName, part);
+                }
+            }
+
             mtm.addTexture(texturePath, image);
             image.close();
         } else {

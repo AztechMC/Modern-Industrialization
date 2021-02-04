@@ -151,6 +151,10 @@ public class ShapedRecipeBuilder implements MaterialRecipeBuilder {
         return exportToMachine(machine, 2, 200, division);
     }
 
+    public boolean isCanceled() {
+        return canceled;
+    }
+
     @Override
     public String getRecipeId() {
         return recipeId;

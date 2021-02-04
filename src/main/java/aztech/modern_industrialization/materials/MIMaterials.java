@@ -1,10 +1,7 @@
 package aztech.modern_industrialization.materials;
 
 import aztech.modern_industrialization.api.energy.CableTier;
-import aztech.modern_industrialization.materials.part.CableMaterialPart;
-import aztech.modern_industrialization.materials.part.ExternalPart;
-import aztech.modern_industrialization.materials.part.PipeMaterialPart;
-import aztech.modern_industrialization.materials.part.PipeType;
+import aztech.modern_industrialization.materials.part.*;
 import aztech.modern_industrialization.materials.recipe.ForgeHammerRecipes;
 import aztech.modern_industrialization.materials.recipe.SmeltingRecipes;
 import aztech.modern_industrialization.materials.recipe.StandardRecipes;
@@ -14,9 +11,9 @@ import net.devtech.arrp.json.tags.JTag;
 import net.minecraft.util.Identifier;
 
 import static aztech.modern_industrialization.materials.MaterialSet.*;
+import static aztech.modern_industrialization.materials.MaterialSet.GEM;
 import static aztech.modern_industrialization.materials.part.MIParts.*;
 
-// TODO: register ALL MATERIALS in this class
 public class MIMaterials {
     public static void init() {
         addMaterials();
@@ -70,14 +67,34 @@ public class MIMaterials {
 
         MaterialRegistry.addMaterial(
                 new MaterialBuilder("redstone", GEM, 0xd20000)
-                        .addRegularParts(DUST, TINY_DUST)
+                        .addRegularParts(DUST, TINY_DUST, CRUSHED_DUST)
                         .overridePart(ExternalPart.of("dust", "minecraft:redstone", "minecraft:redstone"))
                         .addRecipes(StandardRecipes::apply, SmeltingRecipes::apply)
                         .cancelRecipes("macerator/crushed_dust")
                         .build()
         );
 
-        // TODO : EMERALD + QUARTZ WITH GEM
+        MaterialRegistry.addMaterial(
+                new MaterialBuilder("quartz", GEM, 0xf0ebe4)
+                        .addRegularParts(CRUSHED_DUST, MIParts.GEM, DUST, TINY_DUST)
+                        .overridePart(ExternalPart.of(MIParts.GEM, "minecraft:quatz", "minecraft:quatz"))
+                        .addRecipes(StandardRecipes::apply)
+                        .build()
+        );
+
+        MaterialRegistry.addMaterial(
+                new MaterialBuilder("emerald", SHINY, 0x3FF385)
+                        .addRegularParts(ITEM_PURE_NON_METAL)
+                        .removeRegularParts(BLOCK)
+                        .addRegularParts(MIParts.GEM)
+                        .overridePart(ExternalPart.of(MIParts.GEM, "minecraft:emerald", "minecraft:emerald"))
+                        .addRecipes(StandardRecipes::apply)
+                        .addRecipes(context -> {
+                            new MIRecipeBuilder(context, "macerator", "dust").addItemInput("minecraft:emerald_ore", 1).addPartOutput(CRUSHED_DUST, 2);
+                        })
+                        .build()
+        );
+
 
         MaterialRegistry.addMaterial(
                 new MaterialBuilder("copper", SHINY, 0xff6600)
@@ -124,22 +141,24 @@ public class MIMaterials {
                         .build()
         );
 
-        /* TODO
         MaterialRegistry.addMaterial(
                 new MaterialBuilder("lignite_coal", STONE, 0x644646)
                         .addRegularParts(ITEM_PURE_NON_METAL)
                         .removeRegularParts(BLOCK)
                         .addRegularParts(ORE)
+                        .addRegularParts(MIParts.GEM)
                         .addRecipes(ForgeHammerRecipes::apply, SmeltingRecipes::apply, StandardRecipes::apply)
                         .addRecipes(context -> {
-                            new MIRecipeBuilder(context, "compressor", "lignite_coal").addTaggedPartInput("dust", 1).addOutput("modern_industrialization:lignite_coal", 1);
-                            new MIRecipeBuilder(context, "macerator", "dust").addItemInput("modern_industrialization:lignite_coal", 1).addPartOutput(DUST, 1);
+                            new MIRecipeBuilder(context, "compressor", "lignite_coal").addTaggedPartInput("dust", 1).addPartOutput(MIParts.GEM, 1);
+                            new MIRecipeBuilder(context, "macerator", "dust").addPartInput(MIParts.GEM, 1).addPartOutput(DUST, 1);
+                            new SmeltingRecipeBuilder(context, ORE, MIParts.GEM, 0.7, true);
+                            new SmeltingRecipeBuilder(context, ORE, MIParts.GEM, 0.7, false);
                         })
                         .build()
-        );*/
+        );
 
         MaterialRegistry.addMaterial(
-                new MaterialBuilder("aluminum", METALLIC, 0x80C8F0)
+                new MaterialBuilder("aluminum", METALLIC, 0x3fcaff)
                         .addRegularParts(ITEM_ALL)
                         .addRegularParts(WIRE, FINE_WIRE)
                         .addParts(PipeMaterialPart.of(PipeType.ITEM))
@@ -202,6 +221,7 @@ public class MIMaterials {
         MaterialRegistry.addMaterial(
                 new MaterialBuilder("nickel", METALLIC, 0xFAFAC8)
                         .addRegularParts(ITEM_BASE)
+                        .addRegularParts(ORE)
                         .addParts(PipeMaterialPart.of(PipeType.ITEM))
                         .addParts(PipeMaterialPart.of(PipeType.FLUID))
                         .addRecipes(StandardRecipes::apply, SmeltingRecipes::apply)
@@ -242,7 +262,6 @@ public class MIMaterials {
                         .build()
         );
 
-        //TODO : QUARTZ with GEM
 
         MaterialRegistry.addMaterial(
                 new MaterialBuilder("electrum", SHINY, 0xFFFF64)
@@ -331,6 +350,7 @@ public class MIMaterials {
         MaterialRegistry.addMaterial(
                 new MaterialBuilder("beryllium", SHINY, 0x64B464)
                         .addRegularParts(ITEM_ALL)
+                        .removeRegularParts(CRUSHED_DUST)
                         .addRecipes(StandardRecipes::apply)
                         .build()
         );
@@ -345,7 +365,20 @@ public class MIMaterials {
                         .build()
         );
 
-        // TODO : URANIUM WITH CHUNK
+        MaterialRegistry.addMaterial(
+                new MaterialBuilder("uranium", DULL, 0x39e600)
+                        .addRegularParts(ITEM_PURE_METAL)
+                        .removeRegularParts(CRUSHED_DUST)
+                        .addRegularParts(ORE)
+                        .addRegularParts(MIParts.GEM)
+                        .addRecipes(StandardRecipes::apply)
+                        .addRecipes(context -> {
+                                new MIRecipeBuilder(context,"macerator", "ore").addPartInput(ORE, 1).addPartOutput(MIParts.GEM, 2);
+                                new MIRecipeBuilder(context,"macerator", "uranium").addPartInput(MIParts.GEM, 1).addPartOutput(DUST, 2);
+                        }
+                        )
+                        .build()
+        );
 
         MaterialRegistry.addMaterial(
                 new MaterialBuilder("uranium_235", SHINY, 0xe60045)
@@ -383,6 +416,7 @@ public class MIMaterials {
         MaterialRegistry.addMaterial(
                 new MaterialBuilder("platinum", SHINY, 0xffe5ba)
                         .addRegularParts(ITEM_PURE_METAL)
+                        .addRegularParts(ORE)
                         .addRegularParts(PLATE, DOUBLE_INGOT, WIRE, FINE_WIRE)
                         .addParts(CableMaterialPart.of(CableTier.HV))
                         .addRecipes(StandardRecipes::apply, SmeltingRecipes::apply)
@@ -398,7 +432,20 @@ public class MIMaterials {
                         .build()
         );
 
-        // TODO : IRIDIUM WITH CHUNK
+        MaterialRegistry.addMaterial(
+                new MaterialBuilder("iridium", SHINY, 0xe1e6f5)
+                        .addRegularParts(ITEM_PURE_METAL)
+                        .removeRegularParts(CRUSHED_DUST)
+                        .addRegularParts(ORE)
+                        .addRegularParts(MIParts.GEM)
+                        .addRecipes(StandardRecipes::apply)
+                        .addRecipes(context -> {
+                                    new MIRecipeBuilder(context,"macerator", "ore").addPartInput(ORE, 1).addPartOutput(MIParts.GEM, 2);
+                                    new MIRecipeBuilder(context,"macerator", "iridium").addPartInput(MIParts.GEM, 1).addPartOutput(DUST, 2);
+                                }
+                        )
+                        .build()
+        );
 
         MaterialRegistry.addMaterial(
                 new MaterialBuilder("mozanite", STONE, 0x96248e)

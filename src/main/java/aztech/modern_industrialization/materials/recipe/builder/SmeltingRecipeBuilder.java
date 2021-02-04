@@ -75,7 +75,6 @@ public class SmeltingRecipeBuilder implements MaterialRecipeBuilder {
         this(context, partInput, partOutput, blasting ? 100 : 200, experience, blasting);
     }
 
-
     @Override
     public String getRecipeId() {
         return recipeId;
@@ -84,6 +83,10 @@ public class SmeltingRecipeBuilder implements MaterialRecipeBuilder {
     @Override
     public void cancel() {
         canceled = true;
+    }
+
+    public boolean isCanceled() {
+        return canceled;
     }
 
     @Override

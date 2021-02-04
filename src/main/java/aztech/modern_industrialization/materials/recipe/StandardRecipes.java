@@ -40,7 +40,7 @@ public final class StandardRecipes {
         add3By3Crafting(ctx, "ingot", "block");
         new ShapedRecipeBuilder(ctx, BLADE, 4, "blade", "P", "P", "I").addTaggedPart('P', PLATE).addTaggedPart('I', ROD).exportToAssembler();
         new ShapedRecipeBuilder(ctx, COIL, 1, "coil", "xxx", "x x", "xxx").addTaggedPart('x', WIRE).exportToAssembler();
-        new ShapedRecipeBuilder(ctx, LARGE_PLATE, 1, "large_plate", "xx", "xx").addTaggedPart('x', LARGE_PLATE).exportToMachine("packer");
+        new ShapedRecipeBuilder(ctx, LARGE_PLATE, 1, "large_plate", "xx", "xx").addTaggedPart('x', PLATE).exportToMachine("packer");
         new ShapedRecipeBuilder(ctx, ROTOR, 1, "rotor", "bBb", "BRB", "bBb").addTaggedPart('b', BOLT).addTaggedPart('B', BLADE).addTaggedPart('R',
                 RING);
         new ShapedRecipeBuilder(ctx, ITEM_PIPE, 6, "item_pipe", "ccc", "   ", "ccc").addTaggedPart('c', CURVED_PLATE).exportToMachine("packer");

@@ -76,7 +76,7 @@ public final class MaterialBuilder {
 
     private void removePart(String part) {
 
-       partsMap.remove(part);
+        partsMap.remove(part);
     }
 
     public MaterialBuilder overridePart(Function<PartContext, MaterialPart> partFunction) {
@@ -127,9 +127,14 @@ public final class MaterialBuilder {
 
     public class RecipeContext {
         public void addRecipe(MaterialRecipeBuilder builder) {
-            if (recipesMap.put(builder.getRecipeId(), builder) != null) {
-                throw new IllegalStateException("Duplicate registration of recipe " + builder.getRecipeId());
+            if (recipesMap.containsKey(builder.getRecipeId())) {
+                if (recipesMap.get(builder.getRecipeId()).isCanceled()) {
+                    recipesMap.remove(builder.getRecipeId());
+                } else {
+                    throw new IllegalStateException("Duplicate registration of recipe " + builder.getRecipeId());
+                }
             }
+            recipesMap.put(builder.getRecipeId(), builder);
         }
 
         public @Nullable MaterialPart getPart(String part) {

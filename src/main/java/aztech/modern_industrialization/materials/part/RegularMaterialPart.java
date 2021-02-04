@@ -69,15 +69,23 @@ public class RegularMaterialPart implements MaterialPart {
     public RegularMaterialPart(String materialName, String part, String materialSet, int color) {
         this.materialName = materialName;
         this.part = part;
-        this.itemPath = materialName + "_" + part;
+
+        if (part.equals(MIParts.GEM)) {
+            this.itemPath = materialName;
+        } else {
+            this.itemPath = materialName + "_" + part;
+        }
+
         this.itemId = "modern_industrialization:" + itemPath;
         if (MIParts.TAGGED_PARTS.contains(part)) {
             this.itemTag = "#c:" + materialName + "_" + part + "s";
         } else {
             this.itemTag = itemId;
         }
+
         this.materialSet = materialSet;
         this.color = color;
+
     }
 
     @Override

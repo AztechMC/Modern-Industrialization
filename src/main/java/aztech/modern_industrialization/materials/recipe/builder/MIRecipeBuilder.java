@@ -138,12 +138,16 @@ public class MIRecipeBuilder implements MaterialRecipeBuilder {
         return this;
     }
 
-    public MIRecipeBuilder addOutput(String itemId, int amount){
+    public MIRecipeBuilder addOutput(String itemId, int amount) {
         MIItemOutput output = new MIItemOutput();
-        output.item =  itemId;
+        output.item = itemId;
         output.amount = amount;
         item_outputs.add(output);
         return this;
+    }
+
+    public boolean isCanceled() {
+        return canceled;
     }
 
     @Override

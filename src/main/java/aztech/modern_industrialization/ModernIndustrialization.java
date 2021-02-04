@@ -46,6 +46,7 @@ import aztech.modern_industrialization.machines.impl.MachineScreenHandler;
 import aztech.modern_industrialization.material.*;
 import aztech.modern_industrialization.materials.MIMaterials;
 import aztech.modern_industrialization.pipes.MIPipes;
+import aztech.modern_industrialization.recipe.MIRecipes;
 import aztech.modern_industrialization.tools.WrenchItem;
 import aztech.modern_industrialization.util.ChunkUnloadBlockEntity;
 import java.util.Map;
@@ -144,7 +145,10 @@ public class ModernIndustrialization implements ModInitializer {
 
         MIPipes.INSTANCE.onInitialize();
 
-        RRPCallback.EVENT.register(a -> a.add(RESOURCE_PACK));
+        RRPCallback.EVENT.register(a -> {
+            a.add(RESOURCE_PACK);
+            a.add(MIRecipes.buildRecipeDataPack());
+        });
 
         ServerChunkEvents.CHUNK_UNLOAD.register((world, chunk) -> {
             for (BlockEntity entity : chunk.getBlockEntities().values()) {

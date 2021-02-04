@@ -1,7 +1,12 @@
 package aztech.modern_industrialization.recipe.json;
 
+import net.minecraft.fluid.Fluid;
+import net.minecraft.util.Identifier;
+import net.minecraft.util.registry.Registry;
+
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @SuppressWarnings({"FieldCanBeLocal", "unused", "MismatchedQueryAndUpdateOfCollection"})
 public final class MIRecipeJson {
@@ -52,6 +57,14 @@ public final class MIRecipeJson {
         input.amount = amount;
         fluid_inputs.add(input);
         return this;
+    }
+
+    public MIRecipeJson addFluidInput(Fluid fluid, int amount) {
+        Identifier id = Registry.FLUID.getId(fluid);
+        if (id.equals(Registry.FLUID.getDefaultId())) {
+            throw new RuntimeException("Could not find id for fluid " + fluid);
+        }
+        return addFluidInput(id.toString(), amount);
     }
 
     public MIRecipeJson addOutput(String itemId, int amount) {

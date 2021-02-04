@@ -47,6 +47,7 @@ public final class MIMaterialTextures {
         } catch (Throwable exception) {
             ModernIndustrialization.LOGGER.error("Failed to generate texture pack.", exception);
         }
+        ModernIndustrialization.LOGGER.info("I used the png to destroy the png.");
         return pack;
     }
 

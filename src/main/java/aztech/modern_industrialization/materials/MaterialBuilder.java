@@ -137,7 +137,7 @@ public final class MaterialBuilder {
             recipesMap.put(builder.getRecipeId(), builder);
         }
 
-        public @Nullable MaterialPart getPart(String part) {
+        public MaterialPart getPart(String part) {
             return partsMap.get(part);
         }
 

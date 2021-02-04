@@ -25,6 +25,7 @@ package aztech.modern_industrialization.materials.recipe.builder;
 
 import aztech.modern_industrialization.ModernIndustrialization;
 import aztech.modern_industrialization.materials.MaterialBuilder;
+import aztech.modern_industrialization.recipe.json.SmeltingRecipeJson;
 import com.google.gson.Gson;
 import net.minecraft.util.Identifier;
 
@@ -32,14 +33,10 @@ import net.minecraft.util.Identifier;
 public class SmeltingRecipeBuilder implements MaterialRecipeBuilder {
     private static final transient Gson GSON = new Gson();
 
-    public final transient String recipeId;
-    private final transient MaterialBuilder.RecipeContext context;
-    private transient boolean canceled = false;
-    private final String type;
-    private final int cookingtime;
-    private final double experience;
-    private final Ingredient ingredient;
-    private final String result;
+    public final String recipeId;
+    private final MaterialBuilder.RecipeContext context;
+    private boolean canceled = false;
+    private final SmeltingRecipeJson json;
 
     public static class Ingredient {
         String item;
@@ -49,24 +46,17 @@ public class SmeltingRecipeBuilder implements MaterialRecipeBuilder {
     public SmeltingRecipeBuilder(MaterialBuilder.RecipeContext context, String inputPart, String outputPart, int cookingtime, double experience,
             boolean blasting) {
         if (blasting) {
-            this.type = "minecraft:blasting";
             this.recipeId = "smelting/" + inputPart + "_blasting";
         } else {
-            this.type = "minecraft:smelting";
             this.recipeId = "smelting/" + inputPart + "_smelting";
         }
-        this.cookingtime = cookingtime;
-        this.experience = experience;
 
         this.context = context;
         if (context.getPart(inputPart) == null || context.getPart(outputPart) == null) {
-            this.ingredient = null;
-            this.result = null;
             canceled = true;
+            this.json = null;
         } else {
-            this.ingredient = new Ingredient();
-            this.ingredient.item = context.getPart(inputPart).getItemId();
-            this.result = context.getPart(outputPart).getItemId();
+            this.json = new SmeltingRecipeJson(SmeltingRecipeJson.SmeltingRecipeType.ofBlasting(blasting), context.getPart(inputPart).getItemId(), context.getPart(outputPart).getItemId(), cookingtime, experience);
             context.addRecipe(this);
         }
     }
@@ -93,7 +83,7 @@ public class SmeltingRecipeBuilder implements MaterialRecipeBuilder {
     public void save() {
         if (!canceled) {
             String fullId = "modern_industrialization:recipes/generated/materials/" + context.getMaterialName() + "/" + recipeId + ".json";
-            String json = GSON.toJson(this);
+            String json = GSON.toJson(this.json);
             ModernIndustrialization.RESOURCE_PACK.addData(new Identifier(fullId), json.getBytes());
         }
     }

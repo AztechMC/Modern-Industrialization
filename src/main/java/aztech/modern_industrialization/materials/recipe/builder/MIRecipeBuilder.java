@@ -26,47 +26,22 @@ package aztech.modern_industrialization.materials.recipe.builder;
 import aztech.modern_industrialization.ModernIndustrialization;
 import aztech.modern_industrialization.materials.MaterialBuilder;
 import aztech.modern_industrialization.materials.part.MaterialPart;
+import aztech.modern_industrialization.recipe.json.MIRecipeJson;
 import com.google.gson.Gson;
-import java.util.ArrayList;
-import java.util.List;
 import net.minecraft.util.Identifier;
 
-@SuppressWarnings({ "FieldCanBeLocal", "MismatchedQueryAndUpdateOfCollection", "UnusedDeclaration" })
 public class MIRecipeBuilder implements MaterialRecipeBuilder {
-    private static final transient Gson GSON = new Gson();
+    private static final Gson GSON = new Gson();
 
-    public final transient String recipeId;
-    private final transient MaterialBuilder.RecipeContext context;
-    private transient boolean canceled = false;
-    private final String type;
-    private final int eu;
-    private final int duration;
-    private final List<MIItemInput> item_inputs = new ArrayList<>();
-    private final List<MIFluidInput> fluid_inputs = new ArrayList<>();
-    private final List<MIItemOutput> item_outputs = new ArrayList<>();
-
-    private static class MIItemInput {
-        String item;
-        String tag;
-        int amount;
-    }
-
-    private static class MIFluidInput {
-        String fluid;
-        int amount;
-    }
-
-    private static class MIItemOutput {
-        String item;
-        int amount;
-    }
+    public final String recipeId;
+    private final MaterialBuilder.RecipeContext context;
+    private boolean canceled = false;
+    private final MIRecipeJson json;
 
     public MIRecipeBuilder(MaterialBuilder.RecipeContext context, String type, String recipeSuffix, int eu, int duration) {
         this.recipeId = type + "/" + recipeSuffix;
         this.context = context;
-        this.type = "modern_industrialization:" + type;
-        this.eu = eu;
-        this.duration = duration;
+        this.json = new MIRecipeJson("modern_industrialization:" + type, eu, duration);
         context.addRecipe(this);
     }
 
@@ -106,22 +81,12 @@ public class MIRecipeBuilder implements MaterialRecipeBuilder {
      * Also supports tags prefixed by #.
      */
     public MIRecipeBuilder addItemInput(String maybeTag, int amount) {
-        MIItemInput input = new MIItemInput();
-        input.amount = amount;
-        if (maybeTag.startsWith("#")) {
-            input.tag = maybeTag.substring(1);
-        } else {
-            input.item = maybeTag;
-        }
-        item_inputs.add(input);
+        json.addItemInput(maybeTag, amount);
         return this;
     }
 
     public MIRecipeBuilder addFluidInput(String fluid, int amount) {
-        MIFluidInput input = new MIFluidInput();
-        input.fluid = fluid;
-        input.amount = amount;
-        fluid_inputs.add(input);
+        json.addFluidInput(fluid, amount);
         return this;
     }
 
@@ -139,10 +104,7 @@ public class MIRecipeBuilder implements MaterialRecipeBuilder {
     }
 
     public MIRecipeBuilder addOutput(String itemId, int amount) {
-        MIItemOutput output = new MIItemOutput();
-        output.item = itemId;
-        output.amount = amount;
-        item_outputs.add(output);
+        this.json.addOutput(itemId, amount);
         return this;
     }
 
@@ -164,7 +126,7 @@ public class MIRecipeBuilder implements MaterialRecipeBuilder {
     public void save() {
         if (!canceled) {
             String fullId = "modern_industrialization:recipes/generated/materials/" + context.getMaterialName() + "/" + recipeId + ".json";
-            ModernIndustrialization.RESOURCE_PACK.addData(new Identifier(fullId), GSON.toJson(this).getBytes());
+            ModernIndustrialization.RESOURCE_PACK.addData(new Identifier(fullId), GSON.toJson(json).getBytes());
         }
     }
 }

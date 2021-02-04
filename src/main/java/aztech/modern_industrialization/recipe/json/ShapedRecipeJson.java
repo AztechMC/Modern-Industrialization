@@ -1,5 +1,8 @@
 package aztech.modern_industrialization.recipe.json;
 
+import aztech.modern_industrialization.materials.recipe.builder.MIRecipeBuilder;
+import aztech.modern_industrialization.materials.recipe.builder.ShapedRecipeBuilder;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -30,7 +33,7 @@ public class ShapedRecipeJson {
 
     public static class Result {
         public final String item;
-        public final int count;
+        public int count;
 
         public Result(String item, int count) {
             this.item = item;
@@ -87,5 +90,36 @@ public class ShapedRecipeJson {
                 throw new IllegalArgumentException("Key mapping '" + c + "' is not used in the pattern.");
             }
         }
+    }
+
+    public MIRecipeJson exportToMachine(String machine, int eu, int duration, int division) {
+        if (result.count % division != 0) {
+            throw new IllegalArgumentException("Output must be divisible by division");
+        }
+
+        MIRecipeJson assemblerJson = new MIRecipeJson(machine, eu, duration).addOutput(result.item, result.count / division);
+        for (Map.Entry<Character, ShapedRecipeJson.ItemInput> entry : key.entrySet()) {
+            int count = 0;
+            for (String row : pattern) {
+                for (char c : row.toCharArray()) {
+                    if (c == entry.getKey()) {
+                        count++;
+                    }
+                }
+            }
+
+            if (count % division != 0) {
+                throw new IllegalArgumentException("Input must be divisible by division");
+            }
+
+            ShapedRecipeJson.ItemInput input = entry.getValue();
+            if (input.item != null) {
+                assemblerJson.addItemInput(input.item, count / division);
+            } else if (input.tag != null) {
+                assemblerJson.addItemInput("#" + input.tag, count / division);
+            }
+        }
+
+        return assemblerJson;
     }
 }

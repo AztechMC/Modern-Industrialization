@@ -90,33 +90,7 @@ public class ShapedRecipeBuilder implements MaterialRecipeBuilder {
             return this;
         }
 
-        if (json.result.count % division != 0) {
-            throw new IllegalArgumentException("Output must be divisible by division");
-        }
-
-        MIRecipeBuilder assemblerRecipe = new MIRecipeBuilder(context, machine, id, eu, duration).addPartOutput(json.result.item,
-                json.result.count / division);
-        for (Map.Entry<Character, ShapedRecipeJson.ItemInput> entry : json.key.entrySet()) {
-            int count = 0;
-            for (String row : json.pattern) {
-                for (char c : row.toCharArray()) {
-                    if (c == entry.getKey()) {
-                        count++;
-                    }
-                }
-            }
-
-            if (count % division != 0) {
-                throw new IllegalArgumentException("Input must be divisible by division");
-            }
-
-            ShapedRecipeJson.ItemInput input = entry.getValue();
-            if (input.item != null) {
-                assemblerRecipe.addItemInput(input.item, count / division);
-            } else if (input.tag != null) {
-                assemblerRecipe.addItemInput("#" + input.tag, count / division);
-            }
-        }
+        new MIRecipeBuilder(context, machine, id, json.exportToMachine(machine, eu, duration, division));
 
         return this;
     }

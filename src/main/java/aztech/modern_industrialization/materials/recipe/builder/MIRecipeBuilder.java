@@ -39,9 +39,13 @@ public class MIRecipeBuilder implements MaterialRecipeBuilder {
     private final MIRecipeJson json;
 
     public MIRecipeBuilder(MaterialBuilder.RecipeContext context, String type, String recipeSuffix, int eu, int duration) {
+        this(context, type, recipeSuffix, new MIRecipeJson(type, eu, duration));
+    }
+
+    public MIRecipeBuilder(MaterialBuilder.RecipeContext context, String type, String recipeSuffix, MIRecipeJson json) {
         this.recipeId = type + "/" + recipeSuffix;
         this.context = context;
-        this.json = new MIRecipeJson("modern_industrialization:" + type, eu, duration);
+        this.json = json;
         context.addRecipe(this);
     }
 

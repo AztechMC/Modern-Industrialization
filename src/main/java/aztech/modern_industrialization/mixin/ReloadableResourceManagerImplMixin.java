@@ -28,6 +28,8 @@ import aztech.modern_industrialization.materials.textures.MIMaterialTextures;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
+
+import aztech.modern_industrialization.recipe.MIRecipes;
 import net.minecraft.resource.ReloadableResourceManager;
 import net.minecraft.resource.ReloadableResourceManagerImpl;
 import net.minecraft.resource.ResourcePack;
@@ -54,9 +56,17 @@ public abstract class ReloadableResourceManagerImplMixin implements ReloadableRe
             CallbackInfoReturnable<?> cir) {
         if (this.type == ResourceType.CLIENT_RESOURCES) {
             ModernIndustrialization.LOGGER.info("Creating generated texture resource pack.");
+            long millis1 = System.currentTimeMillis();
             ResourcePack pack = MIMaterialTextures.buildResourcePack(this);
-            ModernIndustrialization.LOGGER.info("Injecting generated texture resource pack.");
+            long millis2 = System.currentTimeMillis();
+            ModernIndustrialization.LOGGER.info("Injecting generated texture resource pack. Took " + (millis2 - millis1) + " ms to build.");
             addPack(pack);
+        } else if (this.type == ResourceType.SERVER_DATA) {
+            ModernIndustrialization.LOGGER.info("Creating generated recipes pack.");
+            long millis1 = System.currentTimeMillis();
+            addPack(MIRecipes.buildGeneratedRecipesPack(this));
+            long millis2 = System.currentTimeMillis();
+            ModernIndustrialization.LOGGER.info("Injecting generated recipes pack. Took " + (millis2 - millis1) + " ms to build.");
         }
     }
 }

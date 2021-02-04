@@ -23,6 +23,7 @@
  */
 package aztech.modern_industrialization.materials.textures;
 
+import aztech.modern_industrialization.MIRuntimeResourcePack;
 import aztech.modern_industrialization.ModernIndustrialization;
 import aztech.modern_industrialization.materials.Material;
 import aztech.modern_industrialization.materials.MaterialHelper;
@@ -34,8 +35,8 @@ import net.minecraft.client.texture.NativeImage;
 import net.minecraft.resource.ResourceManager;
 
 public final class MIMaterialTextures {
-    public static MITextureResourcePack buildResourcePack(ResourceManager manager) {
-        MITextureResourcePack pack = new MITextureResourcePack();
+    public static MIRuntimeResourcePack buildResourcePack(ResourceManager manager) {
+        MIRuntimeResourcePack pack = new MIRuntimeResourcePack("MI Generated textures");
         MaterialTextureManager mtm = new MaterialTextureManager(manager, pack);
         try {
             for (Material material : MaterialRegistry.getMaterials().values()) {

@@ -23,12 +23,15 @@
  */
 package aztech.modern_industrialization.materials.textures;
 
+import aztech.modern_industrialization.MIRuntimeResourcePack;
 import aztech.modern_industrialization.mixin.ResourceImplAccessor;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+
+import aztech.modern_industrialization.util.ResourceUtil;
 import net.minecraft.client.texture.NativeImage;
 import net.minecraft.resource.Resource;
 import net.minecraft.resource.ResourceManager;
@@ -38,10 +41,10 @@ import org.apache.commons.io.IOUtils;
 
 public class MaterialTextureManager {
     private final ResourceManager rm;
-    private final MITextureResourcePack texturePack;
+    private final MIRuntimeResourcePack texturePack;
     private final List<Runnable> endRunnables = new ArrayList<>();
 
-    MaterialTextureManager(ResourceManager rm, MITextureResourcePack texturePack) {
+    MaterialTextureManager(ResourceManager rm, MIRuntimeResourcePack texturePack) {
         this.rm = rm;
         this.texturePack = texturePack;
     }
@@ -53,10 +56,7 @@ public class MaterialTextureManager {
     public NativeImage getAssetAsTexture(String textureId) throws IOException {
         if (rm.containsResource(new Identifier(textureId))) {
             Resource texture = rm.getResource(new Identifier(textureId));
-            InputStream is = texture.getInputStream();
-            byte[] textureBytes = IOUtils.toByteArray(is);
-            ((ResourceImplAccessor) texture).setInputStream(new ByteArrayInputStream(textureBytes));
-            return NativeImage.read(new ByteArrayInputStream(textureBytes));
+            return NativeImage.read(new ByteArrayInputStream(ResourceUtil.getBytes(texture)));
         } else if (texturePack.contains(ResourceType.CLIENT_RESOURCES, new Identifier(textureId))) {
             return NativeImage.read(texturePack.open(ResourceType.CLIENT_RESOURCES, new Identifier(textureId)));
         } else {

@@ -34,7 +34,7 @@ public final class MIRecipeJson {
     }
 
     public MIRecipeJson(String type, int eu, int duration) {
-        this.type = type;
+        this.type = "modern_industrialization:" + type;
         this.eu = eu;
         this.duration = duration;
     }

@@ -21,7 +21,7 @@ public final class PlankRecipes {
     }
 
     private static void genPlanks(RuntimeResourcePack pack, String prefix, String suffix) {
-        MIRecipeJson json = new MIRecipeJson("modern_industrialization:cutting_machine", 2, 200)
+        MIRecipeJson json = new MIRecipeJson("cutting_machine", 2, 200)
                 .addFluidInput(Fluids.WATER, 1)
                 .addItemInput("#minecraft:" + prefix + "_" + suffix, 1)
                 .addOutput("minecraft:" + prefix + "_planks", 4);

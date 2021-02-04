@@ -43,7 +43,6 @@ import aztech.modern_industrialization.machines.impl.MachineBlock;
 import aztech.modern_industrialization.machines.impl.MachineFactory;
 import aztech.modern_industrialization.machines.impl.MachinePackets;
 import aztech.modern_industrialization.machines.impl.MachineScreenHandler;
-import aztech.modern_industrialization.material.*;
 import aztech.modern_industrialization.materials.MIMaterials;
 import aztech.modern_industrialization.pipes.MIPipes;
 import aztech.modern_industrialization.recipe.MIRecipes;
@@ -147,7 +146,7 @@ public class ModernIndustrialization implements ModInitializer {
 
         RRPCallback.EVENT.register(a -> {
             a.add(RESOURCE_PACK);
-            a.add(MIRecipes.buildRecipeDataPack());
+            a.add(MIRecipes.buildRecipesPack());
         });
 
         ServerChunkEvents.CHUNK_UNLOAD.register((world, chunk) -> {

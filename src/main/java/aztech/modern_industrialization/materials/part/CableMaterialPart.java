@@ -42,6 +42,6 @@ public class CableMaterialPart extends PipeMaterialPart {
 
     @Override
     public void register() {
-        MIPipes.INSTANCE.registerElectricityPipeType(materialName, color, tier);
+        MIPipes.INSTANCE.registerElectricityPipeType(materialName, color | 0xff000000, tier);
     }
 }

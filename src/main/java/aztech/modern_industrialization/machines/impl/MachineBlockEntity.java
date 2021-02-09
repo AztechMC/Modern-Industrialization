@@ -106,7 +106,7 @@ public class MachineBlockEntity extends AbstractMachineBlockEntity implements Ti
         for (int i = 0; i < factory.getLiquidOutputSlots(); ++i) {
             fluidStacks.add(ConfigurableFluidStack.standardOutputSlot(factory.getOutputBucketCapacity() * 81000));
         }
-        inventory = new MIInventory(itemStacks, fluidStacks, this::markDirty);
+        inventory = new MIInventory(itemStacks, fluidStacks);
 
         this.propertyDelegate = new PropertyDelegate() {
             @Override

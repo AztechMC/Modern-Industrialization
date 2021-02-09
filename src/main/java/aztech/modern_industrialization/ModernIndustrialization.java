@@ -38,11 +38,11 @@ import aztech.modern_industrialization.items.armor.ArmorPackets;
 import aztech.modern_industrialization.items.armor.JetpackItem;
 import aztech.modern_industrialization.items.armor.MIKeyMap;
 import aztech.modern_industrialization.items.diesel_tools.DieselToolItem;
-import aztech.modern_industrialization.machines.MIMachines;
 import aztech.modern_industrialization.machines.impl.MachineBlock;
 import aztech.modern_industrialization.machines.impl.MachineFactory;
 import aztech.modern_industrialization.machines.impl.MachinePackets;
 import aztech.modern_industrialization.machines.impl.MachineScreenHandler;
+import aztech.modern_industrialization.machinesv2.MIMachines;
 import aztech.modern_industrialization.materials.MIMaterials;
 import aztech.modern_industrialization.pipes.MIPipes;
 import aztech.modern_industrialization.recipe.MIRecipes;
@@ -130,14 +130,15 @@ public class ModernIndustrialization implements ModInitializer {
         // Proceed with mild caution.
 
         MIMaterials.init();
+        MIMachines.init();
         // MITags.setup();
         setupItems();
         setupBlocks();
         MIFluids.setupFluids();
         MITanks.setup();
-        MIMachines.setupRecipes(); // will also load the static fields.
+        //MIMachines.setupRecipes(); // will also load the static fields.
         ForgeHammerScreenHandler.setupRecipes();
-        setupMachines();
+        //setupMachines();
         setupPackets();
         setupFuels();
         RecipeCompat.loadCompatRecipes();

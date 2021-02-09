@@ -64,7 +64,7 @@ public class ModernIndustrializationClient implements ClientModInitializer {
         MIFluidsRender.setupFluidRenders();
         setupPackets();
         MITanks.setupClient();
-        setupMachines();
+        //setupMachines();
         ModelLoadingRegistry.INSTANCE.registerResourceProvider(rm -> new ModelProvider());
         (new MIPipesClient()).onInitializeClient();
         ClientKeyHandler.setup();

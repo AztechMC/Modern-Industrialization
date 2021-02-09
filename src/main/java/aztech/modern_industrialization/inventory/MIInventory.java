@@ -41,14 +41,12 @@ public final class MIInventory {
     public final List<ConfigurableFluidStack> fluidStacks;
     public final MIItemStorage itemStorage;
     public final MIFluidStorage fluidStorage;
-    private final Runnable markDirty;
 
-    public MIInventory(List<ConfigurableItemStack> itemStacks, List<ConfigurableFluidStack> fluidStacks, Runnable markDirty) {
+    public MIInventory(List<ConfigurableItemStack> itemStacks, List<ConfigurableFluidStack> fluidStacks) {
         this.itemStacks = itemStacks;
         this.fluidStacks = fluidStacks;
         this.itemStorage = new MIItemStorage(itemStacks);
         this.fluidStorage = new MIFluidStorage(fluidStacks);
-        this.markDirty = markDirty;
     }
 
     public void autoExtractItems(World world, BlockPos pos, Direction direction) {

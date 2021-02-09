@@ -28,14 +28,10 @@
     "rei_plugins": [
       "aztech.modern_industrialization.compat.rei.MIREIPlugin",
       "aztech.modern_industrialization.compat.rei.fluid_fuels.FluidFuelsPlugin",
-      "aztech.modern_industrialization.compat.rei.forgehammer_recipe.ForgeHammerRecipePlugin",
-      "aztech.modern_industrialization.compat.rei.machine_recipe.MachineRecipePlugin"
+      "aztech.modern_industrialization.compat.rei.forgehammer_recipe.ForgeHammerRecipePlugin"
     ],
     "modmenu": [
       "aztech.modern_industrialization.compat.modmenu.MIModMenuEntrypoint"
-    ],
-    "kubejs-init": [
-      "aztech.modern_industrialization.compat.kubejs.MIRecipeEventHandler"
     ]
   },
   "mixins": [

@@ -304,8 +304,8 @@ public class ConfigurableItemStack implements StorageView<ItemKey>, Participant<
         // and set it when `markDirty()` is called.
         private ItemStack cachedReturnedStack = null;
 
-        public ConfigurableItemSlot(Runnable markDirty, int id, int x, int y, Predicate<ItemStack> insertPredicate) {
-            super(null, id, x, y);
+        public ConfigurableItemSlot(Runnable markDirty, int x, int y, Predicate<ItemStack> insertPredicate) {
+            super(null, 0, x, y);
 
             this.insertPredicate = insertPredicate;
             this.markDirty = markDirty;

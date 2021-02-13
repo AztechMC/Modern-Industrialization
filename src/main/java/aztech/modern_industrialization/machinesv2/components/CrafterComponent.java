@@ -61,6 +61,10 @@ public class CrafterComponent {
     private int efficiencyTicks;
     private int maxEfficiencyTicks;
 
+    public float getProgress() {
+        return (float) usedEnergy / recipeEnergy;
+    }
+
     /**
      * Perform a crafter tick, and return whether the crafter is active after the tick.
      */

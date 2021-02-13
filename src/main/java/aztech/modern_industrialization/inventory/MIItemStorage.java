@@ -61,7 +61,8 @@ public class MIItemStorage implements Storage<ItemKey> {
                             totalInsert += inserted;
                             count -= inserted;
                             tx.enlist(stack);
-                            stack.decrement(inserted);
+                            stack.setItemKey(key);
+                            stack.increment(inserted);
 
                             if (lockSlots) {
                                 stack.enableMachineLock(key.getItem());

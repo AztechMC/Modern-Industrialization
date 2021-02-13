@@ -38,15 +38,21 @@ import net.minecraft.item.Item;
 public class MIBlock extends Block {
     public static SortedMap<String, MIBlock> blocks = new TreeMap<String, MIBlock>();
     public final Item blockItem;
+    public final boolean arrpModel;
 
-    public MIBlock(String id, Settings settings) {
+    public MIBlock(String id, Settings settings, boolean arrpModel) {
         super(settings);
+        this.arrpModel = arrpModel;
         if (blocks.containsKey(id)) {
             throw new IllegalArgumentException("Block id already taken : " + id);
         } else {
             blocks.put(id, this);
             blockItem = MIItem.of(itemSettings -> new BlockItem(this, itemSettings), id, 64);
         }
+    }
+
+    public MIBlock(String id, Settings settings) {
+        this(id, settings, true);
     }
 
     public MIBlock(String id) {

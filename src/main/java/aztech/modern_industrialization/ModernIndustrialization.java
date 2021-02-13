@@ -41,8 +41,9 @@ import aztech.modern_industrialization.items.diesel_tools.DieselToolItem;
 import aztech.modern_industrialization.machines.impl.MachineBlock;
 import aztech.modern_industrialization.machines.impl.MachineFactory;
 import aztech.modern_industrialization.machines.impl.MachinePackets;
-import aztech.modern_industrialization.machines.impl.MachineScreenHandler;
-import aztech.modern_industrialization.machinesv2.MIMachines;
+import aztech.modern_industrialization.machinesv2.init.MIMachines;
+import aztech.modern_industrialization.machinesv2.MachineScreenHandlers;
+import aztech.modern_industrialization.machinesv2.init.MIMachineRecipeTypes;
 import aztech.modern_industrialization.materials.MIMaterials;
 import aztech.modern_industrialization.pipes.MIPipes;
 import aztech.modern_industrialization.recipe.MIRecipes;
@@ -66,6 +67,7 @@ import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.client.itemgroup.FabricItemGroupBuilder;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerChunkEvents;
 import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricMaterialBuilder;
 import net.fabricmc.fabric.api.screenhandler.v1.ScreenHandlerRegistry;
 import net.fabricmc.fabric.api.tag.TagRegistry;
@@ -118,8 +120,8 @@ public class ModernIndustrialization implements ModInitializer {
     public static final BlockItem ITEM_TRASH_CAN = new BlockItem(TRASH_CAN, new Item.Settings().group(ITEM_GROUP));
 
     // ScreenHandlerType
-    public static final ScreenHandlerType<MachineScreenHandler> SCREEN_HANDLER_TYPE_MACHINE = ScreenHandlerRegistry
-            .registerExtended(new Identifier(MOD_ID, "machine_recipe"), MachineScreenHandler::new);
+    public static final ScreenHandlerType<MachineScreenHandlers.Common> SCREEN_HANDLER_MACHINE =
+            ScreenHandlerRegistry.registerExtended(new MIIdentifier("machine"), MachineScreenHandlers::createClient);
     public static final ScreenHandlerType<ForgeHammerScreenHandler> SCREEN_HANDLER_FORGE_HAMMER = ScreenHandlerRegistry
             .registerSimple(new Identifier(MOD_ID, "forge_hammer"), ForgeHammerScreenHandler::new);
 
@@ -130,6 +132,7 @@ public class ModernIndustrialization implements ModInitializer {
         // Proceed with mild caution.
 
         MIMaterials.init();
+        MIMachineRecipeTypes.init();
         MIMachines.init();
         // MITags.setup();
         setupItems();
@@ -185,7 +188,11 @@ public class ModernIndustrialization implements ModInitializer {
         registerBlock(FORGE_HAMMER, ITEM_FORGE_HAMMER, "forge_hammer", FLAG_BLOCK_LOOT | FLAG_BLOCK_ITEM_MODEL);
         registerBlock(TRASH_CAN, ITEM_TRASH_CAN, "trash_can", 7);
         for (Map.Entry<String, MIBlock> entry : MIBlock.blocks.entrySet()) {
-            registerBlock(entry.getValue(), entry.getValue().blockItem, entry.getKey());
+            int flags = FLAG_BLOCK_LOOT | FLAG_BLOCK_ITEM_MODEL;
+            if (entry.getValue().arrpModel) {
+                flags |= FLAG_BLOCK_MODEL;
+            }
+            registerBlock(entry.getValue(), entry.getValue().blockItem, entry.getKey(), flags);
         }
 
         ItemApi.SIDED.registerForBlocks((world, pos, state, direction) -> TrashCanBlock.trashStorage(), TRASH_CAN);
@@ -251,8 +258,8 @@ public class ModernIndustrialization implements ModInitializer {
     }
 
     private void setupPackets() {
-        ServerSidePacketRegistry.INSTANCE.register(ConfigurableInventoryPackets.SET_LOCKING_MODE,
-                ConfigurableInventoryPacketHandlers.SET_LOCKING_MODE);
+        ServerPlayNetworking.registerGlobalReceiver(ConfigurableInventoryPackets.SET_LOCKING_MODE,
+                ConfigurableInventoryPacketHandlers.C2S.SET_LOCKING_MODE);
         ServerSidePacketRegistry.INSTANCE.register(MachinePackets.C2S.SET_AUTO_EXTRACT, MachinePackets.C2S.ON_SET_AUTO_EXTRACT);
         ServerSidePacketRegistry.INSTANCE.register(MachinePackets.C2S.LOCK_RECIPE, MachinePackets.C2S.ON_LOCK_RECIPE);
         ServerSidePacketRegistry.INSTANCE.register(ForgeHammerPacket.SET_HAMMER, ForgeHammerPacket.ON_SET_HAMMER);

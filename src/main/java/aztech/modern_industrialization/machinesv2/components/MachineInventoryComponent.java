@@ -3,6 +3,8 @@ package aztech.modern_industrialization.machinesv2.components;
 import aztech.modern_industrialization.inventory.ConfigurableFluidStack;
 import aztech.modern_industrialization.inventory.ConfigurableItemStack;
 import aztech.modern_industrialization.inventory.MIInventory;
+import aztech.modern_industrialization.inventory.SlotPositions;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,9 +14,12 @@ public class MachineInventoryComponent implements CrafterComponent.Inventory {
     public final int fluidInputCount;
     public final int fluidOutputCount;
 
-    private final MIInventory inventory;
+    public final MIInventory inventory;
 
-    public MachineInventoryComponent(List<ConfigurableItemStack> itemInputs, List<ConfigurableItemStack> itemOutputs, List<ConfigurableFluidStack> fluidInputs, List<ConfigurableFluidStack> fluidOutputs) {
+    public MachineInventoryComponent(
+            List<ConfigurableItemStack> itemInputs, List<ConfigurableItemStack> itemOutputs,
+            List<ConfigurableFluidStack> fluidInputs, List<ConfigurableFluidStack> fluidOutputs,
+            SlotPositions itemPositions, SlotPositions fluidPositions) {
         this.itemInputCount = itemInputs.size();
         this.itemOutputCount = itemOutputs.size();
         this.fluidInputCount = fluidInputs.size();
@@ -27,7 +32,7 @@ public class MachineInventoryComponent implements CrafterComponent.Inventory {
         fluidStacks.addAll(fluidInputs);
         fluidStacks.addAll(fluidOutputs);
 
-        this.inventory = new MIInventory(itemStacks, fluidStacks);
+        this.inventory = new MIInventory(itemStacks, fluidStacks, itemPositions, fluidPositions);
     }
 
     @Override

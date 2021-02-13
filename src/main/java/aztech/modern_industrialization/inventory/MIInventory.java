@@ -41,12 +41,22 @@ public final class MIInventory {
     public final List<ConfigurableFluidStack> fluidStacks;
     public final MIItemStorage itemStorage;
     public final MIFluidStorage fluidStorage;
+    public final SlotPositions itemPositions;
+    public final SlotPositions fluidPositions;
 
-    public MIInventory(List<ConfigurableItemStack> itemStacks, List<ConfigurableFluidStack> fluidStacks) {
+    public MIInventory(List<ConfigurableItemStack> itemStacks, List<ConfigurableFluidStack> fluidStacks, SlotPositions itemPositions, SlotPositions fluidPositions) {
         this.itemStacks = itemStacks;
         this.fluidStacks = fluidStacks;
         this.itemStorage = new MIItemStorage(itemStacks);
         this.fluidStorage = new MIFluidStorage(fluidStacks);
+        this.itemPositions = itemPositions;
+        this.fluidPositions = fluidPositions;
+        if (itemPositions.size() != itemStacks.size()) {
+            throw new IllegalArgumentException("Mismatched item slots and positions. Slot count: " + itemStacks.size() + ", position count: " + itemPositions.size());
+        }
+        if (fluidPositions.size() != fluidStacks.size()) {
+            throw new IllegalArgumentException("Mismatched fluid slots and positions. Slot count: " + fluidPositions.size() + ", position count: " + fluidStacks.size());
+        }
     }
 
     public void autoExtractItems(World world, BlockPos pos, Direction direction) {

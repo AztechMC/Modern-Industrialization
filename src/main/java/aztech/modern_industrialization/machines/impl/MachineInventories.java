@@ -35,7 +35,7 @@ public class MachineInventories {
     public static MachineInventory clientOfBuf(PacketByteBuf buf) {
         List<ConfigurableItemStack> itemStacks = new ArrayList<>();
         List<ConfigurableFluidStack> fluidStacks = new ArrayList<>();
-        MIInventory inventory = new MIInventory(itemStacks, fluidStacks);
+        MIInventory inventory = new MIInventory(itemStacks, fluidStacks, null, null);
         boolean hasOutput = buf.readBoolean();
         boolean[] autoExtract = new boolean[] { buf.readBoolean(), buf.readBoolean() };
 

@@ -46,7 +46,7 @@ import net.minecraft.server.network.ServerPlayerEntity;
 /**
  * The ScreenHandler for a configurable inventory. The first slots must be the
  * player slots for shift-click to work correctly!
- */ // TODO: lockable item slots
+ */
 public abstract class ConfigurableScreenHandler extends ScreenHandler {
     private static final int PLAYER_SLOTS = 36;
     public boolean lockingMode = false;

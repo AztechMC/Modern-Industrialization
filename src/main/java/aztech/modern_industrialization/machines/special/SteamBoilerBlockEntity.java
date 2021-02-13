@@ -38,7 +38,7 @@ import net.minecraft.util.math.Direction;
 // TODO: progress bar
 
 /**
- * The block entity for a steam boiler. We reuse the generic MachineBlockEntity,
+ * The block entity for a steam boiler. We reuse the generic ElectricMachineBlockEntity,
  * but we override the tick() function. We reuse usedEnergy and recipeEnergy to
  * keep track of the remaining burn time of the fuel. We also reuse
  * efficiencyTicks and maxEfficiencyTicks to keep track of the boiler

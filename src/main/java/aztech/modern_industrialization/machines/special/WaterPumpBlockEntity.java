@@ -35,7 +35,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 
 /**
- * We reuse the generic MachineBlockEntity, overriding tick() and using the
+ * We reuse the generic ElectricMachineBlockEntity, overriding tick() and using the
  * energy for the cooldown between two pumping attempts.
  */
 public class WaterPumpBlockEntity extends MachineBlockEntity {

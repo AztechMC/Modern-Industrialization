@@ -23,49 +23,52 @@
  */
 package aztech.modern_industrialization.inventory;
 
-import aztech.modern_industrialization.machines.impl.MachineScreenHandler;
-import net.fabricmc.fabric.api.network.PacketConsumer;
-import net.minecraft.client.MinecraftClient;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.screen.ScreenHandler;
 
 public class ConfigurableInventoryPacketHandlers {
-    // sync id, slot id, slot tag
-    public static final PacketConsumer UPDATE_ITEM_SLOT = (context, data) -> {
-        int syncId = data.readInt();
-        int stackId = data.readInt();
-        CompoundTag tag = data.readCompoundTag();
-        context.getTaskQueue().execute(() -> {
-            ScreenHandler handler = MinecraftClient.getInstance().player.currentScreenHandler;
-            if (handler.syncId == syncId) {
-                MachineScreenHandler machineHandler = (MachineScreenHandler) handler;
-                machineHandler.inventory.getInventory().itemStacks.get(stackId).readFromTag(tag);
-            }
-        });
-    };
-    // sync id, slot id, slot tag
-    public static final PacketConsumer UPDATE_FLUID_SLOT = (context, data) -> {
-        int syncId = data.readInt();
-        int stackId = data.readInt();
-        CompoundTag tag = data.readCompoundTag();
-        context.getTaskQueue().execute(() -> {
-            ScreenHandler handler = MinecraftClient.getInstance().player.currentScreenHandler;
-            if (handler.syncId == syncId) {
-                MachineScreenHandler machineHandler = (MachineScreenHandler) handler;
-                machineHandler.inventory.getInventory().fluidStacks.get(stackId).readFromTag(tag);
-            }
-        });
-    };
-    // sync id, new locking mode
-    public static final PacketConsumer SET_LOCKING_MODE = (context, data) -> {
-        int syncId = data.readInt();
-        boolean lockingMode = data.readBoolean();
-        context.getTaskQueue().execute(() -> {
-            ScreenHandler handler = context.getPlayer().currentScreenHandler;
-            if (handler.syncId == syncId) {
-                ConfigurableScreenHandler confHandler = (ConfigurableScreenHandler) handler;
-                confHandler.lockingMode = lockingMode;
-            }
-        });
-    };
+    public static class S2C {
+        // sync id, slot id, slot tag
+        public static final ClientPlayNetworking.PlayChannelHandler UPDATE_ITEM_SLOT = (mc, handler, buf, sender) -> {
+            int syncId = buf.readInt();
+            int stackId = buf.readInt();
+            CompoundTag tag = buf.readCompoundTag();
+            mc.execute(() -> {
+                ScreenHandler sh = mc.player.currentScreenHandler;
+                if (sh.syncId == syncId) {
+                    ConfigurableScreenHandler csh = (ConfigurableScreenHandler) sh;
+                    csh.inventory.itemStacks.get(stackId).readFromTag(tag);
+                }
+            });
+        };
+        // sync id, slot id, slot tag
+        public static final ClientPlayNetworking.PlayChannelHandler UPDATE_FLUID_SLOT = (mc, handler, buf, sender) -> {
+            int syncId = buf.readInt();
+            int stackId = buf.readInt();
+            CompoundTag tag = buf.readCompoundTag();
+            mc.execute(() -> {
+                ScreenHandler sh = mc.player.currentScreenHandler;
+                if (sh.syncId == syncId) {
+                    ConfigurableScreenHandler csh = (ConfigurableScreenHandler) sh;
+                    csh.inventory.fluidStacks.get(stackId).readFromTag(tag);
+                }
+            });
+        };
+    }
+    public static class C2S {
+        // sync id, new locking mode
+        public static final ServerPlayNetworking.PlayChannelHandler SET_LOCKING_MODE = (ms, player, handler, buf, sender) -> {
+            int syncId = buf.readInt();
+            boolean lockingMode = buf.readBoolean();
+            ms.execute(() -> {
+                ScreenHandler sh = player.currentScreenHandler;
+                if (sh.syncId == syncId) {
+                    ConfigurableScreenHandler csh = (ConfigurableScreenHandler) sh;
+                    csh.lockingMode = lockingMode;
+                }
+            });
+        };
+    }
 }

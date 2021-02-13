@@ -25,7 +25,7 @@ package aztech.modern_industrialization.machines.impl;
 
 import aztech.modern_industrialization.inventory.MIInventory;
 
-public interface MachineInventory {
+public interface  MachineInventory {
     void setItemExtract(boolean extract);
 
     void setFluidExtract(boolean extract);

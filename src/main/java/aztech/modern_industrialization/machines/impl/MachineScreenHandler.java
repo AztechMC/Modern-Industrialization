@@ -53,7 +53,7 @@ public class MachineScreenHandler extends ConfigurableScreenHandler {
     public MachineScreenHandler(int syncId, PlayerInventory playerInventory, MachineInventory inventory, PropertyDelegate propertyDelegate,
             MachineFactory factory) {
 
-        super(ModernIndustrialization.SCREEN_HANDLER_TYPE_MACHINE, syncId, playerInventory, inventory.getInventory());
+        super(ModernIndustrialization.SCREEN_HANDLER_MACHINE, syncId, playerInventory, inventory.getInventory());
 
         this.inventory = inventory;
         this.factory = factory;
@@ -76,7 +76,7 @@ public class MachineScreenHandler extends ConfigurableScreenHandler {
             for (int i = 0; i < factory.getSlots(); i++) {
                 if (factory.getSlotType(i) == INPUT_SLOT || factory.getSlotType(i) == OUTPUT_SLOT) {
                     ConfigurableItemStack stack = inventory.getInventory().itemStacks.get(itemCnt);
-                    this.addSlot(stack.new ConfigurableItemSlot(inventory::markDirty2, itemCnt, factory.getSlotPosX(i), factory.getSlotPosY(i),
+                    this.addSlot(stack.new ConfigurableItemSlot(inventory::markDirty2, factory.getSlotPosX(i), factory.getSlotPosY(i),
                             factory.insertPredicate));
                     ++itemCnt;
                 } else {

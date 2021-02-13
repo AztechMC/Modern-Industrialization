@@ -143,4 +143,11 @@ public class RenderHelper {
 
         RenderSystem.enableDepthTest();
     }
+
+    /**
+     * Return whether the point is within the passed rectangle.
+     */
+    public static boolean isPointWithinRectangle(int xStart, int yStart, int width, int height, double pointX, double pointY) {
+        return pointX >= (double)(xStart - 1) && pointX < (double)(xStart + width + 1) && pointY >= (double)(yStart - 1) && pointY < (double)(yStart + height + 1);
+    }
 }

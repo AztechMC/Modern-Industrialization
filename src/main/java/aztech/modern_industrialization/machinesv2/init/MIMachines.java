@@ -7,6 +7,7 @@ import aztech.modern_industrialization.inventory.SlotPositions;
 import aztech.modern_industrialization.machines.impl.MachineTier;
 import aztech.modern_industrialization.machinesv2.MachineBlock;
 import aztech.modern_industrialization.machinesv2.MachineBlockEntity;
+import aztech.modern_industrialization.machinesv2.components.sync.EnergyBar;
 import aztech.modern_industrialization.machinesv2.components.sync.ProgressBar;
 import aztech.modern_industrialization.machinesv2.gui.MachineGuiParameters;
 import aztech.modern_industrialization.machinesv2.blockentities.ElectricMachineBlockEntity;
@@ -27,8 +28,9 @@ public final class MIMachines {
         SlotPositions itemPositions = new SlotPositions.Builder().addSlot(56, 35).addSlots(102, 27, 2, 2).build();
         SlotPositions fluidPositions = SlotPositions.empty();
         MachineGuiParameters guiParams = new MachineGuiParameters.Builder(new LiteralText("FIXME"), new MIIdentifier("textures/gui/container/default.png"), true).build();
+        EnergyBar.Parameters energyBarParams = new EnergyBar.Parameters(18, 34);
         ProgressBar.Parameters progressBarParams = new ProgressBar.Parameters(78, 35, "macerator");
-        Supplier<BlockEntity> ctor = () -> new ElectricMachineBlockEntity(bet[0], MIMachineRecipeTypes.MACERATOR, buildComponent(1, 4, 0, 0, itemPositions, fluidPositions), guiParams, progressBarParams, MachineTier.LV, 3200);
+        Supplier<BlockEntity> ctor = () -> new ElectricMachineBlockEntity(bet[0], MIMachineRecipeTypes.MACERATOR, buildComponent(1, 4, 0, 0, itemPositions, fluidPositions), guiParams, energyBarParams, progressBarParams, MachineTier.LV, 3200);
         Block block = new MachineBlock("lv_macerator", ctor);
         bet[0] = Registry.register(Registry.BLOCK_ENTITY_TYPE, new MIIdentifier("lv_macerator"), BlockEntityType.Builder.create(ctor, block).build(null));
         ElectricMachineBlockEntity.registerEnergyApi(bet[0]);

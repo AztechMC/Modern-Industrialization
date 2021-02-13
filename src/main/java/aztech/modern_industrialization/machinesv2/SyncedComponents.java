@@ -1,6 +1,7 @@
 package aztech.modern_industrialization.machinesv2;
 
 import aztech.modern_industrialization.MIIdentifier;
+import aztech.modern_industrialization.machinesv2.components.sync.EnergyBar;
 import aztech.modern_industrialization.machinesv2.components.sync.ProgressBar;
 import net.minecraft.util.Identifier;
 
@@ -8,6 +9,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public final class SyncedComponents {
+    public static final Identifier ENERGY_BAR = new MIIdentifier("energy_bar");
     public static final Identifier PROGRESS_BAR = new MIIdentifier("progress_bar");
 
     public static final class Client {
@@ -24,6 +26,7 @@ public final class SyncedComponents {
         }
 
         static {
+            register(ENERGY_BAR, EnergyBar.Client::new);
             register(PROGRESS_BAR, ProgressBar.Client::new);
         }
     }

@@ -151,9 +151,9 @@ public class MachineScreenHandlers {
         }
     }
 
-    public static class ClientScreen extends HandledScreen<Client> {
-        static final Identifier SLOT_ATLAS = new Identifier(ModernIndustrialization.MOD_ID, "textures/gui/container/slot_atlas.png");
+    public static final Identifier SLOT_ATLAS = new Identifier(ModernIndustrialization.MOD_ID, "textures/gui/container/slot_atlas.png");
 
+    public static class ClientScreen extends HandledScreen<Client> {
         private final List<ClientComponentRenderer> renderers = new ArrayList<>();
 
         public ClientScreen(Client handler, PlayerInventory inventory, Text title) {
@@ -225,7 +225,7 @@ public class MachineScreenHandlers {
             // Tooltips
             renderConfigurableSlotTooltips(matrices, mouseX, mouseY);
             for (ClientComponentRenderer renderer : renderers) {
-                renderer.renderTooltip(this, matrices, mouseX, mouseY, x, y);
+                renderer.renderTooltip(this, matrices, x, y, mouseX, mouseY);
             }
             drawMouseoverTooltip(matrices, mouseX, mouseY);
         }

@@ -15,6 +15,14 @@ public class EnergyComponent {
         this.capacity = capacity;
     }
 
+    public long getEu() {
+        return storedEu;
+    }
+
+    public long getCapacity() {
+        return capacity;
+    }
+
     public long consumeEu(long max, Simulation simulation) {
         Preconditions.checkArgument(max >= 0, "May not consume < 0 energy.");
         long ext = Math.min(max, storedEu);

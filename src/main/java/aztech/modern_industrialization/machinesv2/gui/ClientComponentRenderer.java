@@ -1,5 +1,6 @@
 package aztech.modern_industrialization.machinesv2.gui;
 
+import aztech.modern_industrialization.machinesv2.MachineScreenHandlers;
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.util.math.MatrixStack;
 
@@ -8,6 +9,6 @@ import net.minecraft.client.util.math.MatrixStack;
  */
 public interface ClientComponentRenderer {
     void renderBackground(DrawableHelper helper, MatrixStack matrices, int x, int y);
-    default void renderTooltip(DrawableHelper helper, MatrixStack matrices, int x, int y, int cursorX, int cursorY) {
+    default void renderTooltip(MachineScreenHandlers.ClientScreen screen, MatrixStack matrices, int x, int y, int cursorX, int cursorY) {
     }
 }

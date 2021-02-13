@@ -57,7 +57,7 @@ public class ProgressBar {
 
         public Client(PacketByteBuf buf) {
             this.params = new Parameters(buf.readInt(), buf.readInt(), buf.readString());
-            this.progress = buf.readFloat();
+            read(buf);
         }
 
         @Override

@@ -18,7 +18,11 @@ import aztech.modern_industrialization.machinesv2.models.MachineCasings;
 import aztech.modern_industrialization.machinesv2.models.MachineModelClientData;
 import aztech.modern_industrialization.util.Simulation;
 import net.minecraft.block.entity.BlockEntityType;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.Hand;
 import net.minecraft.util.Tickable;
+import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.Direction;
 
 public class ElectricMachineBlockEntity extends MachineBlockEntity implements CrafterComponent.Behavior, Tickable {
@@ -76,6 +80,11 @@ public class ElectricMachineBlockEntity extends MachineBlockEntity implements Cr
     @Override
     public MIInventory getInventory() {
         return inventory.inventory;
+    }
+
+    @Override
+    protected ActionResult onUse(PlayerEntity player, Hand hand, BlockHitResult hit) {
+        return ActionResult.PASS;
     }
 
     @Override

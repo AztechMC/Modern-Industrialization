@@ -21,6 +21,9 @@ import net.minecraft.network.PacketByteBuf;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.Hand;
+import net.minecraft.util.hit.BlockHitResult;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -83,6 +86,8 @@ public abstract class MachineBlockEntity extends FastBlockEntity implements Exte
         // Write GUI params
         guiParams.write(buf);
     }
+
+    protected abstract ActionResult onUse(PlayerEntity player, Hand hand, BlockHitResult hit);
 
     protected abstract MachineModelClientData getModelData();
 

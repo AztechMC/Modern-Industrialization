@@ -56,7 +56,7 @@ public class MultiblockMachineRenderer extends BlockEntityRenderer<MultiblockMac
                 }
             }
         }
-        boolean renderHints = !entity.ready && handStack.getItem().isIn(ModernIndustrialization.TAG_WRENCH);
+        boolean renderHints = !entity.ready && handStack.getItem().isIn(ModernIndustrialization.WRENCHES);
         if (!renderHints && handHatch == null) {
             return;
         }

@@ -82,7 +82,7 @@ public class PipeBlock extends Block implements BlockEntityProvider, IWrenchable
                 // move slightly towards box center
                 Vec3d dir = box.getCenter().subtract(posInBlock).normalize().multiply(1e-4);
                 if (box.contains(posInBlock.add(dir))) {
-                    if (ModernIndustrialization.TAG_WRENCH.contains(player.inventory.getMainHandStack().getItem())) {
+                    if (ModernIndustrialization.WRENCHES.contains(player.inventory.getMainHandStack().getItem())) {
                         if (player != null && player.isSneaking()) {
                             boolean removeBlock = pipeEntity.connections.size() == 1;
                             if (!world.isClient) {

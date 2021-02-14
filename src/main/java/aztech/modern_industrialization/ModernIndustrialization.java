@@ -63,6 +63,7 @@ import net.devtech.arrp.json.loot.JLootTable;
 import net.devtech.arrp.json.loot.JPool;
 import net.devtech.arrp.json.models.JModel;
 import net.devtech.arrp.json.models.JTextures;
+import net.devtech.arrp.json.tags.JTag;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.client.itemgroup.FabricItemGroupBuilder;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerChunkEvents;
@@ -104,8 +105,9 @@ public class ModernIndustrialization implements ModInitializer {
             () -> new ItemStack(Registry.ITEM.get(new MIIdentifier("forge_hammer"))));
 
     // Tags
-    private static Identifier WRENCH_TAG = new Identifier("fabric", "wrenches");
-    public static Tag<Item> TAG_WRENCH = TagRegistry.item(WRENCH_TAG);
+    public static final Tag<Item> OVERLAY_SOURCES = TagRegistry.item(new MIIdentifier("overlay_sources"));
+    public static final Tag<Item> WRENCHES = TagRegistry.item(new Identifier("fabric:wrenches"));
+    public static final Tag<Block> WRENCHABLES = TagRegistry.block(new Identifier("fabric:wrenchables"));
 
     // Item
     public static final Item ITEM_WRENCH = new WrenchItem(new Item.Settings());
@@ -182,6 +184,8 @@ public class ModernIndustrialization implements ModInitializer {
 
         SpeedUpgrade.LOOKUP.register((key, vd) -> () -> 2, MIItem.ITEM_LV_MOTOR);
         SpeedUpgrade.LOOKUP.register((key, vd) -> () -> 8, MIItem.ITEM_LARGE_MOTOR);
+
+        RESOURCE_PACK.addTag(new MIIdentifier("items/overlay_sources"), JTag.tag().tag(new Identifier("fabric:wrenches")));
     }
 
     private void setupBlocks() {

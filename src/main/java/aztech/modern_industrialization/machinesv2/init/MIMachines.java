@@ -1,6 +1,7 @@
 package aztech.modern_industrialization.machinesv2.init;
 
 import aztech.modern_industrialization.MIIdentifier;
+import aztech.modern_industrialization.ModernIndustrialization;
 import aztech.modern_industrialization.inventory.ConfigurableFluidStack;
 import aztech.modern_industrialization.inventory.ConfigurableItemStack;
 import aztech.modern_industrialization.inventory.SlotPositions;
@@ -13,10 +14,12 @@ import aztech.modern_industrialization.machinesv2.components.sync.RecipeEfficien
 import aztech.modern_industrialization.machinesv2.gui.MachineGuiParameters;
 import aztech.modern_industrialization.machinesv2.blockentities.ElectricMachineBlockEntity;
 import aztech.modern_industrialization.machinesv2.components.MachineInventoryComponent;
+import net.devtech.arrp.json.tags.JTag;
 import net.minecraft.block.Block;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.text.LiteralText;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
 import java.util.ArrayList;
@@ -37,6 +40,7 @@ public final class MIMachines {
         bet[0] = Registry.register(Registry.BLOCK_ENTITY_TYPE, new MIIdentifier("lv_macerator"), BlockEntityType.Builder.create(ctor, block).build(null));
         ElectricMachineBlockEntity.registerEnergyApi(bet[0]);
         MachineBlockEntity.registerItemApi(bet[0]);
+        ModernIndustrialization.RESOURCE_PACK.addTag(new Identifier("fabric:wrenchables"), JTag.tag().add(new MIIdentifier("lv_macerator")));
     }
     
     private static MachineInventoryComponent buildComponent(int itemInputCount, int itemOutputCount, int fluidInputCount, int fluidOutputCount, SlotPositions itemPositions, SlotPositions fluidPositions) {

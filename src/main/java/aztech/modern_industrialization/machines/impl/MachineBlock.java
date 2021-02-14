@@ -29,6 +29,7 @@ import aztech.modern_industrialization.ModernIndustrialization;
 import aztech.modern_industrialization.inventory.ConfigurableItemStack;
 import aztech.modern_industrialization.machines.impl.multiblock.HatchBlockEntity;
 import aztech.modern_industrialization.machines.impl.multiblock.MultiblockMachineBlockEntity;
+import aztech.modern_industrialization.machinesv2.MachineOverlay;
 import aztech.modern_industrialization.tools.IWrenchable;
 import aztech.modern_industrialization.tools.MachineOverlayItem;
 import aztech.modern_industrialization.util.MobSpawning;

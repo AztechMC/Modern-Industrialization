@@ -45,7 +45,6 @@ class MachineBakedModel implements BakedModel, FabricBakedModel {
         return false;
     }
 
-    @SuppressWarnings("ConstantConditions")
     @Override
     public void emitBlockQuads(BlockRenderView blockRenderView, BlockState blockState, BlockPos blockPos, Supplier<Random> supplier, RenderContext renderContext) {
         if (blockRenderView instanceof RenderAttachedBlockView) {

@@ -40,7 +40,12 @@ public class MachineBlock extends MIBlock implements BlockEntityProvider {
         } else {
             BlockEntity be = world.getBlockEntity(pos);
             if (be instanceof MachineBlockEntity) {
-                player.openHandledScreen((MachineBlockEntity) be);
+                ActionResult beResult = ((MachineBlockEntity) be).onUse(player, hand, hit);
+                if (beResult.isAccepted()) {
+                    return beResult;
+                } else {
+                    player.openHandledScreen((MachineBlockEntity) be);
+                }
             }
             return ActionResult.CONSUME;
         }

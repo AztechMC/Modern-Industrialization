@@ -91,7 +91,7 @@ public class TankBlock extends Block implements BlockEntityProvider, IWrenchable
 
     @Override
     public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
-        if (player.isSneaking() && ModernIndustrialization.TAG_WRENCH.contains(player.inventory.getMainHandStack().getItem())) {
+        if (player.isSneaking() && ModernIndustrialization.WRENCHES.contains(player.inventory.getMainHandStack().getItem())) {
             world.spawnEntity(new ItemEntity(world, hit.getPos().x, hit.getPos().y, hit.getPos().z, getStack(world.getBlockEntity(pos))));
             world.setBlockState(pos, Blocks.AIR.getDefaultState());
             // TODO: play sound

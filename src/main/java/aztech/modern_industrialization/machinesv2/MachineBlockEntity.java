@@ -5,7 +5,11 @@ import aztech.modern_industrialization.inventory.ConfigurableFluidStack;
 import aztech.modern_industrialization.inventory.ConfigurableItemStack;
 import aztech.modern_industrialization.inventory.MIInventory;
 import aztech.modern_industrialization.machinesv2.gui.MachineGuiParameters;
+import aztech.modern_industrialization.machinesv2.models.MachineModelClientData;
 import aztech.modern_industrialization.util.NbtHelper;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import net.fabricmc.fabric.api.rendering.data.v1.RenderAttachmentBlockEntity;
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidApi;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemApi;
@@ -27,16 +31,18 @@ import java.util.List;
  * Contains components, and an inventory.
  */
 @SuppressWarnings("rawtypes")
-public abstract class MachineBlockEntity extends FastBlockEntity implements ExtendedScreenHandlerFactory {
+public abstract class MachineBlockEntity extends FastBlockEntity implements ExtendedScreenHandlerFactory, RenderAttachmentBlockEntity {
     final List<SyncedComponent.Server> syncedComponents = new ArrayList<>();
     private final MachineGuiParameters guiParams;
+    @Environment(EnvType.CLIENT)
+    private final MachineModelClientData clientData = null;
 
     public MachineBlockEntity(BlockEntityType<?> type, MachineGuiParameters guiParams) {
         super(type);
         this.guiParams = guiParams;
     }
 
-    protected void registerClientComponent(SyncedComponent.Server component) {
+    protected final void registerClientComponent(SyncedComponent.Server component) {
         syncedComponents.add(component);
     }
 
@@ -46,17 +52,17 @@ public abstract class MachineBlockEntity extends FastBlockEntity implements Exte
     public abstract MIInventory getInventory();
 
     @Override
-    public Text getDisplayName() {
+    public final Text getDisplayName() {
         return guiParams.title;
     }
 
     @Override
-    public @Nullable ScreenHandler createMenu(int syncId, PlayerInventory inv, PlayerEntity player) {
+    public final ScreenHandler createMenu(int syncId, PlayerInventory inv, PlayerEntity player) {
         return new MachineScreenHandlers.Server(syncId, inv, this, guiParams);
     }
 
     @Override
-    public void writeScreenOpeningData(ServerPlayerEntity player, PacketByteBuf buf) {
+    public final void writeScreenOpeningData(ServerPlayerEntity player, PacketByteBuf buf) {
         // Write inventory
         MIInventory inv = getInventory();
         buf.writeInt(inv.itemStacks.size());
@@ -76,6 +82,13 @@ public abstract class MachineBlockEntity extends FastBlockEntity implements Exte
         }
         // Write GUI params
         guiParams.write(buf);
+    }
+
+    protected abstract MachineModelClientData getModelData();
+
+    @Override
+    public final Object getRenderAttachmentData() {
+        return getModelData();
     }
 
     public static void registerItemApi(BlockEntityType<?> bet) {

@@ -23,6 +23,7 @@
  */
 package aztech.modern_industrialization.util;
 
+import aztech.modern_industrialization.mixin_client.ClientWorldAccessor;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandler;
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry;
@@ -38,7 +39,9 @@ import net.minecraft.client.render.model.BakedQuad;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.texture.SpriteAtlasTexture;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.client.world.ClientWorld;
 import net.minecraft.fluid.Fluid;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Matrix4f;
 
@@ -149,5 +152,12 @@ public class RenderHelper {
      */
     public static boolean isPointWithinRectangle(int xStart, int yStart, int width, int height, double pointX, double pointY) {
         return pointX >= (double)(xStart - 1) && pointX < (double)(xStart + width + 1) && pointY >= (double)(yStart - 1) && pointY < (double)(yStart + height + 1);
+    }
+
+    /**
+     * Force chunk remesh.
+     */
+    public static void forceChunkRemesh(ClientWorld world, BlockPos pos) {
+        ((ClientWorldAccessor) world).getWorldRenderer().updateBlock(null, pos, null, null, 0);
     }
 }

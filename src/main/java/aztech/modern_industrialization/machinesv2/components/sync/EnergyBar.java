@@ -1,7 +1,5 @@
 package aztech.modern_industrialization.machinesv2.components.sync;
 
-import aztech.modern_industrialization.MIIdentifier;
-import aztech.modern_industrialization.machines.impl.MachineScreenHandler;
 import aztech.modern_industrialization.machinesv2.MachineScreenHandlers;
 import aztech.modern_industrialization.machinesv2.SyncedComponent;
 import aztech.modern_industrialization.machinesv2.SyncedComponents;

@@ -26,12 +26,13 @@ package aztech.modern_industrialization.pipes.impl;
 import static net.minecraft.util.math.Direction.NORTH;
 
 import aztech.modern_industrialization.api.FastBlockEntity;
-import aztech.modern_industrialization.mixin_impl.WorldRendererGetter;
 import aztech.modern_industrialization.pipes.MIPipes;
 import aztech.modern_industrialization.pipes.api.*;
 import aztech.modern_industrialization.util.ChunkUnloadBlockEntity;
 import aztech.modern_industrialization.util.NbtHelper;
 import java.util.*;
+
+import aztech.modern_industrialization.util.RenderHelper;
 import net.fabricmc.fabric.api.block.entity.BlockEntityClientSerializable;
 import net.fabricmc.fabric.api.rendering.data.v1.RenderAttachmentBlockEntity;
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
@@ -305,9 +306,7 @@ public class PipeBlockEntity extends FastBlockEntity
         }
         rebuildCollisionShape();
 
-        ClientWorld clientWorld = (ClientWorld) world;
-        WorldRendererGetter wrg = (WorldRendererGetter) clientWorld;
-        wrg.modern_industrialization_getWorldRenderer().updateBlock(null, this.pos, null, null, 0);
+        RenderHelper.forceChunkRemesh((ClientWorld) world, pos);
     }
 
     @Override

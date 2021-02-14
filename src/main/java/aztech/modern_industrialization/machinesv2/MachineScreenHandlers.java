@@ -95,6 +95,7 @@ public class MachineScreenHandlers {
                     buf.writeInt(i);
                     component.writeCurrentData(buf);
                     ServerPlayNetworking.send((ServerPlayerEntity) playerInventory.player, MachinePackets.S2C.COMPONENT_SYNC, buf);
+                    trackedData.set(i, component.copyData());
                 }
             }
         }

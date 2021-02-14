@@ -5,6 +5,7 @@ import aztech.modern_industrialization.inventory.ConfigurableItemStack;
 import aztech.modern_industrialization.machines.recipe.MachineRecipe;
 import aztech.modern_industrialization.machines.recipe.MachineRecipeType;
 import aztech.modern_industrialization.util.Simulation;
+import com.google.common.base.Preconditions;
 import net.fabricmc.fabric.api.lookup.v1.item.ItemKey;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.item.Item;
@@ -63,6 +64,28 @@ public class CrafterComponent {
 
     public float getProgress() {
         return (float) usedEnergy / recipeEnergy;
+    }
+
+    public int getEfficiencyTicks() {
+        return efficiencyTicks;
+    }
+
+    public int getMaxEfficiencyTicks() {
+        return maxEfficiencyTicks;
+    }
+
+    public boolean hasActiveRecipe() {
+        return activeRecipe != null;
+    }
+
+    public long getCurrentRecipeEu() {
+        Preconditions.checkArgument(hasActiveRecipe());
+        return recipeMaxEu;
+    }
+
+    public long getBaseRecipeEu() {
+        Preconditions.checkArgument(hasActiveRecipe());
+        return activeRecipe.eu;
     }
 
     /**

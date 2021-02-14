@@ -7,18 +7,22 @@ import aztech.modern_industrialization.inventory.MIInventory;
 import aztech.modern_industrialization.machinesv2.MachineBlockEntity;
 import aztech.modern_industrialization.machinesv2.components.sync.EnergyBar;
 import aztech.modern_industrialization.machinesv2.components.sync.ProgressBar;
+import aztech.modern_industrialization.machinesv2.components.sync.RecipeEfficiencyBar;
 import aztech.modern_industrialization.machinesv2.gui.MachineGuiParameters;
 import aztech.modern_industrialization.machinesv2.components.CrafterComponent;
 import aztech.modern_industrialization.machinesv2.components.EnergyComponent;
 import aztech.modern_industrialization.machinesv2.components.MachineInventoryComponent;
 import aztech.modern_industrialization.machines.impl.MachineTier;
 import aztech.modern_industrialization.machines.recipe.MachineRecipeType;
+import aztech.modern_industrialization.machinesv2.models.MachineCasings;
+import aztech.modern_industrialization.machinesv2.models.MachineModelClientData;
 import aztech.modern_industrialization.util.Simulation;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.util.Tickable;
+import net.minecraft.util.math.Direction;
 
 public class ElectricMachineBlockEntity extends MachineBlockEntity implements CrafterComponent.Behavior, Tickable {
-    public ElectricMachineBlockEntity(BlockEntityType<?> type, MachineRecipeType recipeType, MachineInventoryComponent inventory, MachineGuiParameters guiParams, EnergyBar.Parameters energyBarParams, ProgressBar.Parameters progressBarParams, MachineTier tier, long euCapacity) {
+    public ElectricMachineBlockEntity(BlockEntityType<?> type, MachineRecipeType recipeType, MachineInventoryComponent inventory, MachineGuiParameters guiParams, EnergyBar.Parameters energyBarParams, ProgressBar.Parameters progressBarParams, RecipeEfficiencyBar.Parameters efficiencyBarParams, MachineTier tier, long euCapacity) {
         super(type, guiParams);
         this.inventory = inventory;
         this.crafter = new CrafterComponent(inventory, this);
@@ -28,6 +32,7 @@ public class ElectricMachineBlockEntity extends MachineBlockEntity implements Cr
         this.insertable = energy.buildInsertable(cableTier -> cableTier == CableTier.LV);
         registerClientComponent(new ProgressBar.Server(progressBarParams, crafter::getProgress));
         registerClientComponent(new EnergyBar.Server(energyBarParams, energy::getEu, energy::getCapacity));
+        registerClientComponent(new RecipeEfficiencyBar.Server(efficiencyBarParams, crafter));
     }
 
     private final MachineInventoryComponent inventory;
@@ -41,7 +46,7 @@ public class ElectricMachineBlockEntity extends MachineBlockEntity implements Cr
 
     @Override
     public long consumeEu(long max, Simulation simulation) {
-        return energy.consumeEu(max, simulation); // FIXME steam machines
+        return energy.consumeEu(max, simulation);
     }
 
     @Override
@@ -71,6 +76,11 @@ public class ElectricMachineBlockEntity extends MachineBlockEntity implements Cr
     @Override
     public MIInventory getInventory() {
         return inventory.inventory;
+    }
+
+    @Override
+    protected MachineModelClientData getModelData() {
+        return new MachineModelClientData(MachineCasings.LV, Direction.NORTH);
     }
 
     public static void registerEnergyApi(BlockEntityType<?> bet) {

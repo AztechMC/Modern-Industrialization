@@ -4,7 +4,7 @@
   "package": "aztech.modern_industrialization.mixin_client",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
-    "WorldRendererGetterMixin"
+    "ClientWorldAccessor"
   ],
   "injectors": {
     "defaultRequire": 1

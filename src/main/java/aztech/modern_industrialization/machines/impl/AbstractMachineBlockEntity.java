@@ -24,7 +24,6 @@
 package aztech.modern_industrialization.machines.impl;
 
 import aztech.modern_industrialization.api.FastBlockEntity;
-import aztech.modern_industrialization.mixin_impl.WorldRendererGetter;
 import net.fabricmc.fabric.api.block.entity.BlockEntityClientSerializable;
 import net.fabricmc.fabric.api.rendering.data.v1.RenderAttachmentBlockEntity;
 import net.minecraft.block.BlockState;
@@ -86,9 +85,9 @@ public abstract class AbstractMachineBlockEntity extends FastBlockEntity impleme
         extractItems = tag.getBoolean("extractItems");
         extractFluids = tag.getBoolean("extractFluids");
         this.isActive = tag.getBoolean("isActive");
-        ClientWorld clientWorld = (ClientWorld) world;
-        WorldRendererGetter wrg = (WorldRendererGetter) clientWorld;
-        wrg.modern_industrialization_getWorldRenderer().updateBlock(null, this.pos, null, null, 0);
+        //ClientWorld clientWorld = (ClientWorld) world;
+        //WorldRendererGetter wrg = (WorldRendererGetter) clientWorld;
+        //wrg.modern_industrialization_getWorldRenderer().updateBlock(null, this.pos, null, null, 0);
     }
 
     @Override

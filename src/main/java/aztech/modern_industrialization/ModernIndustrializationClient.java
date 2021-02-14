@@ -37,6 +37,7 @@ import aztech.modern_industrialization.machines.impl.MachineModel;
 import aztech.modern_industrialization.machines.impl.multiblock.MultiblockMachineRenderer;
 import aztech.modern_industrialization.machinesv2.MachinePackets;
 import aztech.modern_industrialization.machinesv2.MachineScreenHandlers;
+import aztech.modern_industrialization.machinesv2.models.MachineModels;
 import aztech.modern_industrialization.model.block.ModelProvider;
 import aztech.modern_industrialization.pipes.MIPipes;
 import aztech.modern_industrialization.pipes.MIPipesClient;
@@ -65,8 +66,7 @@ public class ModernIndustrializationClient implements ClientModInitializer {
         MIFluidsRender.setupFluidRenders();
         setupPackets();
         MITanks.setupClient();
-        //setupMachines();
-        ModelLoadingRegistry.INSTANCE.registerResourceProvider(rm -> new ModelProvider());
+        MachineModels.init();
         (new MIPipesClient()).onInitializeClient();
         ClientKeyHandler.setup();
         ClientTickEvents.START_CLIENT_TICK.register(JetpackParticleAdder::addJetpackParticles);

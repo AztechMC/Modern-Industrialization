@@ -9,7 +9,6 @@ import net.minecraft.util.Identifier;
 public class MachinePackets {
     public static class S2C {
         public static final Identifier COMPONENT_SYNC = new MIIdentifier("machine_component_sync");
-        @SuppressWarnings("unchecked")
         @Environment(EnvType.CLIENT)
         public static final ClientPlayNetworking.PlayChannelHandler ON_COMPONENT_SYNC = (mc, handler, buf, sender) -> {
             int syncId = buf.readInt();

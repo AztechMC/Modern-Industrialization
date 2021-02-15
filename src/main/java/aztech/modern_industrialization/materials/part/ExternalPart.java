@@ -24,7 +24,7 @@
 package aztech.modern_industrialization.materials.part;
 
 import aztech.modern_industrialization.materials.MaterialBuilder;
-import aztech.modern_industrialization.materials.textures.MaterialTextureManager;
+import aztech.modern_industrialization.textures.TextureManager;
 import java.util.function.Function;
 import net.minecraft.item.Item;
 import net.minecraft.util.Identifier;
@@ -68,6 +68,6 @@ public class ExternalPart implements MaterialPart {
     }
 
     @Override
-    public void registerTextures(MaterialTextureManager materialTextureManager) {
+    public void registerTextures(TextureManager textureManager) {
     }
 }

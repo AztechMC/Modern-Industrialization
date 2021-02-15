@@ -24,7 +24,7 @@
 package aztech.modern_industrialization.mixin;
 
 import aztech.modern_industrialization.ModernIndustrialization;
-import aztech.modern_industrialization.materials.textures.MIMaterialTextures;
+import aztech.modern_industrialization.textures.MITextures;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
@@ -57,7 +57,7 @@ public abstract class ReloadableResourceManagerImplMixin implements ReloadableRe
         if (this.type == ResourceType.CLIENT_RESOURCES) {
             ModernIndustrialization.LOGGER.info("Creating generated texture resource pack.");
             long millis1 = System.currentTimeMillis();
-            ResourcePack pack = MIMaterialTextures.buildResourcePack(this);
+            ResourcePack pack = MITextures.buildResourcePack(this);
             long millis2 = System.currentTimeMillis();
             ModernIndustrialization.LOGGER.info("Injecting generated texture resource pack. Took " + (millis2 - millis1) + " ms to build.");
             addPack(pack);

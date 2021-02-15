@@ -31,8 +31,8 @@ import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.MIItem;
 import aztech.modern_industrialization.material.OreBlock;
 import aztech.modern_industrialization.materials.MaterialHelper;
-import aztech.modern_industrialization.materials.textures.MIMaterialTextures;
-import aztech.modern_industrialization.materials.textures.MaterialTextureManager;
+import aztech.modern_industrialization.textures.MITextures;
+import aztech.modern_industrialization.textures.TextureManager;
 import java.util.Objects;
 import net.devtech.arrp.json.tags.JTag;
 import net.fabricmc.fabric.api.biome.v1.BiomeModifications;
@@ -144,7 +144,7 @@ public class RegularMaterialPart implements MaterialPart {
     }
 
     @Override
-    public void registerTextures(MaterialTextureManager materialTextureManager) {
-        MIMaterialTextures.generateItemPartTexture(materialTextureManager, materialName, materialSet, part, color);
+    public void registerTextures(TextureManager textureManager) {
+        MITextures.generateItemPartTexture(textureManager, materialName, materialSet, part, color);
     }
 }

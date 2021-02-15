@@ -24,7 +24,7 @@
 package aztech.modern_industrialization.materials.part;
 
 import aztech.modern_industrialization.materials.MaterialBuilder;
-import aztech.modern_industrialization.materials.textures.MaterialTextureManager;
+import aztech.modern_industrialization.textures.TextureManager;
 import aztech.modern_industrialization.pipes.MIPipes;
 import aztech.modern_industrialization.pipes.api.PipeNetworkType;
 import java.util.function.Function;
@@ -80,6 +80,6 @@ public class PipeMaterialPart implements MaterialPart {
     }
 
     @Override
-    public void registerTextures(MaterialTextureManager materialTextureManager) {
+    public void registerTextures(TextureManager textureManager) {
     }
 }

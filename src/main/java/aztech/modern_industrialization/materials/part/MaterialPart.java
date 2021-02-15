@@ -23,7 +23,7 @@
  */
 package aztech.modern_industrialization.materials.part;
 
-import aztech.modern_industrialization.materials.textures.MaterialTextureManager;
+import aztech.modern_industrialization.textures.TextureManager;
 import net.minecraft.item.Item;
 
 public interface MaterialPart {
@@ -50,5 +50,5 @@ public interface MaterialPart {
      */
     Item getItem();
 
-    void registerTextures(MaterialTextureManager materialTextureManager);
+    void registerTextures(TextureManager textureManager);
 }

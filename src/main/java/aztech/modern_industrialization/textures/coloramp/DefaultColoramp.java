@@ -21,7 +21,9 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.textures;
+package aztech.modern_industrialization.textures.coloramp;
+
+import aztech.modern_industrialization.textures.TextureHelper;
 
 public class DefaultColoramp implements Coloramp {
 
@@ -33,10 +35,10 @@ public class DefaultColoramp implements Coloramp {
 
     @Override
     public int getRGB(double luminance) {
-        int r = (rgb >> 16) & 0xff;
-        int g = (rgb >> 8) & 0xff;
-        int b = (rgb & 0xff);
-        return ((int) (luminance * r) << 16) + ((int) (luminance * g) << 8) + (int) (luminance * b);
+        int r = TextureHelper.getRrgb(rgb);
+        int g = TextureHelper.getGrgb(rgb);
+        int b = TextureHelper.getBrgb(rgb);
+        return TextureHelper.toRGB((int) (r * luminance), (int) (g * luminance), (int) (b * luminance));
     }
 
     @Override

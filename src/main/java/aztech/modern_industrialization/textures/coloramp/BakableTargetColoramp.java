@@ -21,8 +21,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.textures;
+package aztech.modern_industrialization.textures.coloramp;
 
+import aztech.modern_industrialization.textures.TextureHelper;
+import aztech.modern_industrialization.textures.TextureManager;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -99,7 +101,7 @@ public class BakableTargetColoramp implements Coloramp {
         g = (int) (TextureHelper.getG(toRgb.get(r1 - 1)) * (1 - frac) + frac * (TextureHelper.getG(toRgb.get(r1))));
         b = (int) (TextureHelper.getB(toRgb.get(r1 - 1)) * (1 - frac) + frac * (TextureHelper.getB(toRgb.get(r1))));
 
-        return (r << 16) + (g << 8) + b;
+        return TextureHelper.toRGB(r, g, b);
     }
 
     @Override

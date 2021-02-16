@@ -23,13 +23,16 @@
  */
 package aztech.modern_industrialization.textures;
 
+import aztech.modern_industrialization.textures.coloramp.Coloramp;
+import aztech.modern_industrialization.textures.coloramp.DefaultColoramp;
+import java.awt.*;
 import java.util.function.BiFunction;
 import net.minecraft.client.texture.NativeImage;
 
 public class TextureHelper {
 
     public static void colorize(NativeImage image, int r, int g, int b) {
-        colorize(image, (r << 16) + (g << 8) + b);
+        colorize(image, toRGB(r, g, b));
     }
 
     public static void colorize(NativeImage image, Coloramp colorramp) {
@@ -39,9 +42,9 @@ public class TextureHelper {
                 // relative luminance
                 double l = getLuminance(color);
                 int rgb = colorramp.getRGB(l);
-                int r = (rgb >> 16) & 0xff;
-                int g = (rgb >> 8) & 0xff;
-                int b = (rgb & 0xff);
+                int r = getRrgb(rgb);
+                int g = getGrgb(rgb);
+                int b = getBrgb(rgb);
                 image.setPixelColor(i, j, fromArgb(getA(color), r, g, b));
             }
         }
@@ -49,6 +52,39 @@ public class TextureHelper {
 
     public static double getLuminance(int color) {
         return (0.2126 * getR(color) + 0.7152 * getG(color) + 0.0722 * getB(color)) / 255;
+    }
+
+    public static int mixRGB(int rgb1, int rgb2, double fact) {
+        int r1 = getRrgb(rgb1);
+        int r2 = getRrgb(rgb2);
+        int g1 = getGrgb(rgb1);
+        int g2 = getGrgb(rgb2);
+        int b1 = getBrgb(rgb1);
+        int b2 = getBrgb(rgb2);
+
+        return toRGB((int) (fact * r1 + (1 - fact) * r2), ((int) (fact * g1 + (1 - fact) * g2)), ((int) (fact * b1 + (1 - fact) * b2)));
+    }
+
+    public static int setHue(int rgb, float hue) {
+        float[] hsbval = new float[3];
+        Color.RGBtoHSB(getRrgb(rgb), getGrgb(rgb), getBrgb(rgb), hsbval);
+        return 0xFFFFFF & Color.HSBtoRGB(hue, hsbval[1], hsbval[2]);
+    }
+
+    public static int toRGB(int r, int g, int b) {
+        return (r << 16) + (g << 8) + b;
+    }
+
+    public static int getRrgb(int rgb) {
+        return rgb >> 16;
+    }
+
+    public static int getGrgb(int rgb) {
+        return (rgb >> 8) & 0xFF;
+    }
+
+    public static int getBrgb(int rgb) {
+        return rgb & 0xFF;
     }
 
     public static void colorize(NativeImage image, int rgb) {

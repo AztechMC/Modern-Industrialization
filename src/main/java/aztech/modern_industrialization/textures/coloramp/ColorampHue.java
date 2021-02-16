@@ -21,22 +21,28 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.machinesv2.models;
+package aztech.modern_industrialization.textures.coloramp;
 
-import aztech.modern_industrialization.MIIdentifier;
-import net.fabricmc.fabric.api.client.model.ModelLoadingRegistry;
+import aztech.modern_industrialization.textures.TextureHelper;
+import java.awt.*;
 
-public final class MachineModels {
-    public static void init() {
-        ModelLoadingRegistry.INSTANCE.registerResourceProvider(rm -> new MachineModelProvider());
-        ModelLoadingRegistry.INSTANCE.registerModelProvider(new MachineModelProvider());
+public class ColorampHue implements Coloramp {
 
-        MachineUnbakedModel model = new MachineUnbakedModel("macerator", true, true, false, MachineCasings.LV).withOutputOverlay("output")
-                .withItemAutoExportOverlay("extract_items").withFluidAutoExportOverlay("extract_fluids");
-        MachineModelProvider.register(new MIIdentifier("block/lv_macerator"), model);
-        MachineModelProvider.register(new MIIdentifier("item/lv_macerator"), model);
+    private final Coloramp coloramp;
+    private final float hue;
+
+    public ColorampHue(float hue, Coloramp coloramp) {
+        this.coloramp = coloramp;
+        this.hue = hue;
     }
 
-    private MachineModels() {
+    @Override
+    public int getRGB(double luminance) {
+        return TextureHelper.setHue(coloramp.getRGB(luminance), hue);
+    }
+
+    @Override
+    public int getMeanRGB() {
+        return TextureHelper.setHue(coloramp.getMeanRGB(), hue);
     }
 }

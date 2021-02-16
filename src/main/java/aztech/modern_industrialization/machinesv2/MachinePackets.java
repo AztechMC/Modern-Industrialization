@@ -52,6 +52,7 @@ public class MachinePackets {
             });
         };
     }
+
     public static class C2S {
         public static final Identifier SET_AUTO_EXTRACT = new MIIdentifier("set_auto_extract");
         public static final ServerPlayNetworking.PlayChannelHandler ON_SET_AUTO_EXTRACT = (ms, player, handler, buf, sender) -> {

@@ -21,22 +21,31 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.machinesv2.models;
+package aztech.modern_industrialization.textures.coloramp;
 
-import aztech.modern_industrialization.MIIdentifier;
-import net.fabricmc.fabric.api.client.model.ModelLoadingRegistry;
+import aztech.modern_industrialization.textures.TextureHelper;
+import java.util.function.Function;
 
-public final class MachineModels {
-    public static void init() {
-        ModelLoadingRegistry.INSTANCE.registerResourceProvider(rm -> new MachineModelProvider());
-        ModelLoadingRegistry.INSTANCE.registerModelProvider(new MachineModelProvider());
+public class MixedColoramp implements Coloramp {
 
-        MachineUnbakedModel model = new MachineUnbakedModel("macerator", true, true, false, MachineCasings.LV).withOutputOverlay("output")
-                .withItemAutoExportOverlay("extract_items").withFluidAutoExportOverlay("extract_fluids");
-        MachineModelProvider.register(new MIIdentifier("block/lv_macerator"), model);
-        MachineModelProvider.register(new MIIdentifier("item/lv_macerator"), model);
+    private final Coloramp coloramp1, coloramp2;
+    private final Function<Double, Double> mixer;
+    private final double meanMix;
+
+    public MixedColoramp(Coloramp coloramp1, Coloramp coloramp2, Function<Double, Double> mixer, double meanMix) {
+        this.coloramp1 = coloramp1;
+        this.coloramp2 = coloramp2;
+        this.mixer = mixer;
+        this.meanMix = meanMix;
     }
 
-    private MachineModels() {
+    @Override
+    public int getRGB(double luminance) {
+        return TextureHelper.mixRGB(coloramp1.getRGB(luminance), coloramp2.getRGB(luminance), mixer.apply(luminance));
+    }
+
+    @Override
+    public int getMeanRGB() {
+        return TextureHelper.mixRGB(coloramp1.getMeanRGB(), coloramp2.getMeanRGB(), meanMix);
     }
 }

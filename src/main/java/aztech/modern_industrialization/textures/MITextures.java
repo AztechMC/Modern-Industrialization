@@ -32,6 +32,8 @@ import aztech.modern_industrialization.materials.MaterialHelper;
 import aztech.modern_industrialization.materials.MaterialRegistry;
 import aztech.modern_industrialization.materials.part.MIParts;
 import aztech.modern_industrialization.materials.part.MaterialPart;
+import aztech.modern_industrialization.textures.coloramp.BakableTargetColoramp;
+import aztech.modern_industrialization.textures.coloramp.Coloramp;
 import java.io.IOException;
 import net.minecraft.client.texture.NativeImage;
 import net.minecraft.resource.ResourceManager;

@@ -23,8 +23,12 @@
  */
 package aztech.modern_industrialization.fluid;
 
+import aztech.modern_industrialization.MIFluids;
 import aztech.modern_industrialization.ModernIndustrialization;
+import aztech.modern_industrialization.textures.TextureHelper;
+import aztech.modern_industrialization.textures.TextureManager;
 import net.minecraft.block.BlockState;
+import net.minecraft.client.texture.NativeImage;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.item.BucketItem;
@@ -37,6 +41,8 @@ import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.WorldView;
 
+import java.io.IOException;
+
 /**
  * A fluid that can only be used for crafting, i.e. not be placed in the world.
  */
@@ -44,13 +50,20 @@ public class CraftingFluid extends Fluid {
     public final Item bucketItem;
     public final String name;
     public final int color;
+    public final boolean isGas;
     private final CraftingFluidBlock block;
 
-    public CraftingFluid(String name, int color) {
+    public CraftingFluid(String name, int color, boolean isGas) {
         bucketItem = new BucketItem(this, new Item.Settings().recipeRemainder(Items.BUCKET).maxCount(1).group(ModernIndustrialization.ITEM_GROUP));
         this.name = name;
         this.block = new CraftingFluidBlock(name, color);
         this.color = color;
+        this.isGas = isGas;
+        MIFluids.FLUIDS.add(this);
+    }
+
+    public CraftingFluid(String name, int color) {
+        this(name, color, false);
     }
 
     @Override
@@ -106,5 +119,29 @@ public class CraftingFluid extends Fluid {
     @Override
     public VoxelShape getShape(FluidState state, BlockView world, BlockPos pos) {
         return null;
+    }
+
+    public void registerTextures(TextureManager tm) {
+        String path = "modern_industrialization:textures/fluid/";
+
+        for(String alt : new String[] {""}) {
+
+            String bucket = path + String.format("bucket%s.png", alt);
+            String bucket_content = path + String.format("bucket_content%s.png", alt);
+
+            try {
+                NativeImage bucket_image  = tm.getAssetAsTexture(bucket);
+                NativeImage bucket_content_image  = tm.getAssetAsTexture(bucket_content);
+                TextureHelper.colorize(bucket_content_image, color);
+                TextureHelper.blend(bucket_image, bucket_content_image);
+                if(isGas){
+                    TextureHelper.flip(bucket_image);
+                }
+                tm.addTexture(String.format("modern_industrialization:textures/items/bucket/%s.png", name), bucket_image);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
     }
 }

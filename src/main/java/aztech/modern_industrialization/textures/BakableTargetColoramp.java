@@ -210,11 +210,12 @@ public class BakableTargetColoramp implements Coloramp {
                         String.format("Could not correctly processed the coloramp from = %s, to = %s", this.from, this.target));
             }
             isBaked = true;
+            from.close();
+            to.close();
 
         } catch (IOException e) {
             e.printStackTrace();
         }
-
     }
 
 }

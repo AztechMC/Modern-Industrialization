@@ -21,21 +21,23 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+/**
+ * The sprites are, in order:
+ * <ol>
+ *     <li>Inactive front overlay</li>
+ *     <li>Active front overlay</li>
+ *     <li>Inactive top overlay</li>
+ *     <li>Active top overlay</li>
+ *     <li>Inactive side overlay</li>
+ *     <li>Active side overlay</li>
+ *     <li>Output overlay</li>
+ *     <li>Item auto-export overlay</li>
+ *     <li>Fluid auto-export overlay</li>
+ * </ol>
+ */
 public class MachineUnbakedModel implements UnbakedModel {
     private static final Identifier BASE_BLOCK_MODEL = new Identifier("minecraft:block/block");
-    /**
-     * <ol>
-     *     <li>Inactive front overlay</li>
-     *     <li>Active front overlay</li>
-     *     <li>Inactive top overlay</li>
-     *     <li>Active top overlay</li>
-     *     <li>Inactive side overlay</li>
-     *     <li>Active side overlay</li>
-     *     <li>Output overlay</li>
-     *     <li>Item auto-export overlay</li>
-     *     <li>Fluid auto-export overlay</li>
-     * </ol>
-     */
+
     private final SpriteIdentifier[] spriteIds = new SpriteIdentifier[9];
     private final MachineCasingModel defaultCasing;
 

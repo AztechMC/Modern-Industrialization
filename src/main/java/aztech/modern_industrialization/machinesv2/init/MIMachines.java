@@ -40,7 +40,7 @@ public final class MIMachines {
         bet[0] = Registry.register(Registry.BLOCK_ENTITY_TYPE, new MIIdentifier("lv_macerator"), BlockEntityType.Builder.create(ctor, block).build(null));
         ElectricMachineBlockEntity.registerEnergyApi(bet[0]);
         MachineBlockEntity.registerItemApi(bet[0]);
-        ModernIndustrialization.RESOURCE_PACK.addTag(new Identifier("fabric:wrenchables"), JTag.tag().add(new MIIdentifier("lv_macerator")));
+        ModernIndustrialization.RESOURCE_PACK.addTag(new Identifier("fabric:blocks/wrenchables"), JTag.tag().add(new MIIdentifier("lv_macerator")));
     }
     
     private static MachineInventoryComponent buildComponent(int itemInputCount, int itemOutputCount, int fluidInputCount, int fluidOutputCount, SlotPositions itemPositions, SlotPositions fluidPositions) {

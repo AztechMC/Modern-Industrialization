@@ -34,6 +34,7 @@ import net.minecraft.util.math.BlockPos;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -154,7 +155,7 @@ public class MachineScreenHandlers {
 
     public static final Identifier SLOT_ATLAS = new Identifier(ModernIndustrialization.MOD_ID, "textures/gui/container/slot_atlas.png");
 
-    public static class ClientScreen extends HandledScreen<Client> {
+    public static class ClientScreen extends HandledScreen<Client> implements ClientComponentRenderer.ButtonContainer {
         private final List<ClientComponentRenderer> renderers = new ArrayList<>();
 
         public ClientScreen(Client handler, PlayerInventory inventory, Text title) {
@@ -188,17 +189,28 @@ public class MachineScreenHandlers {
             if (handler.guiParams.lockButton) {
                 addLockButton();
             }
+
+            for (ClientComponentRenderer renderer : renderers) {
+                renderer.addButtons(this);
+            }
+        }
+
+        @Override
+        public void addButton(int u, Text message, Consumer<Integer> pressAction, Supplier<List<Text>> tooltipSupplier, Supplier<Boolean> isPressed) {
+            addButton(new MachineButton(buttonX(), buttonY(), u, message, b -> pressAction.accept(handler.syncId), (button, matrices, mouseX, mouseY) -> {
+                renderTooltip(matrices, tooltipSupplier.get(), mouseX, mouseY);
+            }, isPressed));
         }
 
         private void addLockButton() {
-            addButton(new MachineButton(buttonX(), buttonY(), 40, new LiteralText("slot locking"), b -> {
+            addButton(40, new LiteralText("slot locking"), syncId -> {
                 boolean newLockingMode = !handler.lockingMode;
                 handler.lockingMode = newLockingMode;
                 PacketByteBuf buf = PacketByteBufs.create();
-                buf.writeInt(handler.syncId);
+                buf.writeInt(syncId);
                 buf.writeBoolean(newLockingMode);
                 ClientPlayNetworking.send(ConfigurableInventoryPackets.SET_LOCKING_MODE, buf);
-            }, (button, matrices, mouseX, mouseY) -> {
+            }, () -> {
                 List<Text> lines = new ArrayList<>();
                 if (handler.lockingMode) {
                     lines.add(new TranslatableText("text.modern_industrialization.locking_mode_on"));
@@ -207,8 +219,8 @@ public class MachineScreenHandlers {
                     lines.add(new TranslatableText("text.modern_industrialization.locking_mode_off"));
                     lines.add(new TranslatableText("text.modern_industrialization.click_to_enable").setStyle(TextHelper.GRAY_TEXT));
                 }
-                renderTooltip(matrices, lines, mouseX, mouseY);
-            }, () -> handler.lockingMode));
+                return lines;
+            }, () -> handler.lockingMode);
         }
 
         @Override

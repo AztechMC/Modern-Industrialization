@@ -28,7 +28,7 @@ class MachineBakedModel implements BakedModel, FabricBakedModel {
     private final ModelTransformation blockTransformation;
     private final RenderMaterial cutoutMaterial;
     /**
-     * @see MachineUnbakedModel#spriteIds
+     * @see MachineUnbakedModel
      */
     private final Sprite[] sprites;
     private final MachineCasingModel defaultCasing;
@@ -53,6 +53,15 @@ class MachineBakedModel implements BakedModel, FabricBakedModel {
             if (attachment instanceof MachineModelClientData) {
                 MachineModelClientData clientData = (MachineModelClientData) attachment;
                 renderBase(renderContext, clientData.casing, clientData.frontDirection, clientData.isActive);
+                if (clientData.outputDirection != null) {
+                    emitSprite(renderContext.getEmitter(), clientData.outputDirection, sprites[6], 2e-6f);
+                    if (clientData.itemAutoExtract) {
+                        emitSprite(renderContext.getEmitter(), clientData.outputDirection, sprites[7], 2e-6f);
+                    }
+                    if (clientData.fluidAutoExtract) {
+                        emitSprite(renderContext.getEmitter(), clientData.outputDirection, sprites[8], 2e-6f);
+                    }
+                }
             }
         }
     }
@@ -79,13 +88,19 @@ class MachineBakedModel implements BakedModel, FabricBakedModel {
             if (isActive) {
                 spriteId++;
             }
-            if (spriteId >= 0 && sprites[spriteId] != null) {
-                emitter.material(cutoutMaterial);
-                emitter.square(d, 0.0f, 0.0f, 1.0f, 1.0f, -0.000001f);
-                emitter.spriteBake(0, sprites[spriteId], MutableQuadView.BAKE_LOCK_UV);
-                emitter.spriteColor(0, -1, -1, -1, -1);
-                emitter.emit();
+            if (spriteId >= 0) {
+                emitSprite(emitter, d, sprites[spriteId], 1e-6f);
             }
+        }
+    }
+
+    private void emitSprite(QuadEmitter emitter, Direction d, @Nullable Sprite sprite, float depth) {
+        if (sprite != null) {
+            emitter.material(cutoutMaterial);
+            emitter.square(d, 0, 0, 1, 1, -depth);
+            emitter.spriteBake(0, sprite, MutableQuadView.BAKE_LOCK_UV);
+            emitter.spriteColor(0, -1, -1, -1, -1);
+            emitter.emit();
         }
     }
 

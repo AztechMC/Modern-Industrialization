@@ -28,7 +28,6 @@ import net.fabricmc.fabric.api.block.entity.BlockEntityClientSerializable;
 import net.fabricmc.fabric.api.rendering.data.v1.RenderAttachmentBlockEntity;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.client.world.ClientWorld;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.math.Direction;
 
@@ -85,9 +84,10 @@ public abstract class AbstractMachineBlockEntity extends FastBlockEntity impleme
         extractItems = tag.getBoolean("extractItems");
         extractFluids = tag.getBoolean("extractFluids");
         this.isActive = tag.getBoolean("isActive");
-        //ClientWorld clientWorld = (ClientWorld) world;
-        //WorldRendererGetter wrg = (WorldRendererGetter) clientWorld;
-        //wrg.modern_industrialization_getWorldRenderer().updateBlock(null, this.pos, null, null, 0);
+        // ClientWorld clientWorld = (ClientWorld) world;
+        // WorldRendererGetter wrg = (WorldRendererGetter) clientWorld;
+        // wrg.modern_industrialization_getWorldRenderer().updateBlock(null, this.pos,
+        // null, null, 0);
     }
 
     @Override

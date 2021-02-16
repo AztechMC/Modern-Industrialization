@@ -27,7 +27,6 @@ import aztech.modern_industrialization.ModernIndustrialization;
 import aztech.modern_industrialization.materials.MaterialBuilder;
 import aztech.modern_industrialization.recipe.json.ShapedRecipeJson;
 import com.google.gson.Gson;
-import java.util.Map;
 import net.minecraft.util.Identifier;
 
 public class ShapedRecipeBuilder implements MaterialRecipeBuilder {

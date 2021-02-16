@@ -7,6 +7,7 @@ import aztech.modern_industrialization.materials.recipe.SmeltingRecipes;
 import aztech.modern_industrialization.materials.recipe.StandardRecipes;
 import aztech.modern_industrialization.materials.recipe.builder.MIRecipeBuilder;
 import aztech.modern_industrialization.materials.recipe.builder.SmeltingRecipeBuilder;
+import aztech.modern_industrialization.textures.BakableTargetColoramp;
 import net.devtech.arrp.json.tags.JTag;
 import net.minecraft.util.Identifier;
 
@@ -22,7 +23,9 @@ public class MIMaterials {
 
     private static void addMaterials() {
         MaterialRegistry.addMaterial(
-                new MaterialBuilder("gold", SHINY, 0xFFE650)
+                new MaterialBuilder("gold", SHINY,
+                        new BakableTargetColoramp(0xFFE650, "modern_industrialization:textures/materialsets/shiny/ingot.png" ,
+                        "minecraft:textures/item/gold_ingot.png"))
                         .addRegularParts(ITEM_BASE)
                         .overridePart(ExternalPart.of("ingot", "#c:gold_ingots", "minecraft:gold_ingot"))
                         .overridePart(ExternalPart.of("nugget", "#c:gold_nuggets", "minecraft:gold_nugget"))
@@ -37,7 +40,9 @@ public class MIMaterials {
                         .build()
         );
         MaterialRegistry.addMaterial(
-                new MaterialBuilder("iron", METALLIC, 0xC8C8C8)
+                new MaterialBuilder("iron", METALLIC,
+                        new BakableTargetColoramp(0xC8C8C8, "modern_industrialization:textures/materialsets/metallic/ingot.png",
+                                "minecraft:textures/item/iron_ingot.png"))
                         .addRegularParts(ITEM_BASE)
                         .overridePart(ExternalPart.of("ingot", "#c:iron_ingots", "minecraft:iron_ingot"))
                         .overridePart(ExternalPart.of("nugget", "#c:iron_nuggets", "minecraft:iron_nugget"))

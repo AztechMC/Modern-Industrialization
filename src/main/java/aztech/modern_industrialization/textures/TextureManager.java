@@ -24,20 +24,16 @@
 package aztech.modern_industrialization.textures;
 
 import aztech.modern_industrialization.MIRuntimeResourcePack;
-import aztech.modern_industrialization.mixin.ResourceImplAccessor;
+import aztech.modern_industrialization.util.ResourceUtil;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
-
-import aztech.modern_industrialization.util.ResourceUtil;
 import net.minecraft.client.texture.NativeImage;
 import net.minecraft.resource.Resource;
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.resource.ResourceType;
 import net.minecraft.util.Identifier;
-import org.apache.commons.io.IOUtils;
 
 public class TextureManager {
     private final ResourceManager rm;

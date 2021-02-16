@@ -1,8 +1,33 @@
+/*
+ * MIT License
+ *
+ * Copyright (c) 2020 Azercoco & Technici4n
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
 package aztech.modern_industrialization.machinesv2.models;
 
 import aztech.modern_industrialization.MIIdentifier;
 import com.mojang.datafixers.util.Pair;
-import net.fabricmc.fabric.api.renderer.v1.Renderer;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 import net.fabricmc.fabric.api.renderer.v1.RendererAccess;
 import net.fabricmc.fabric.api.renderer.v1.material.BlendMode;
 import net.fabricmc.fabric.api.renderer.v1.material.RenderMaterial;
@@ -17,23 +42,19 @@ import net.minecraft.client.texture.SpriteAtlasTexture;
 import net.minecraft.client.util.SpriteIdentifier;
 import net.minecraft.util.Identifier;
 
-import java.util.*;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-
 public class MachineUnbakedModel implements UnbakedModel {
     private static final Identifier BASE_BLOCK_MODEL = new Identifier("minecraft:block/block");
     /**
      * <ol>
-     *     <li>Inactive front overlay</li>
-     *     <li>Active front overlay</li>
-     *     <li>Inactive top overlay</li>
-     *     <li>Active top overlay</li>
-     *     <li>Inactive side overlay</li>
-     *     <li>Active side overlay</li>
-     *     <li>Output overlay</li>
-     *     <li>Item auto-export overlay</li>
-     *     <li>Fluid auto-export overlay</li>
+     * <li>Inactive front overlay</li>
+     * <li>Active front overlay</li>
+     * <li>Inactive top overlay</li>
+     * <li>Active top overlay</li>
+     * <li>Inactive side overlay</li>
+     * <li>Active side overlay</li>
+     * <li>Output overlay</li>
+     * <li>Item auto-export overlay</li>
+     * <li>Fluid auto-export overlay</li>
      * </ol>
      */
     private final SpriteIdentifier[] spriteIds = new SpriteIdentifier[9];
@@ -53,8 +74,10 @@ public class MachineUnbakedModel implements UnbakedModel {
     }
 
     private void setOverlay(String folder, String side, int id) {
-        spriteIds[id] = new SpriteIdentifier(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE, new MIIdentifier("blocks/machines/" + folder + "/overlay_" + side));
-        spriteIds[id+1] = new SpriteIdentifier(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE, new MIIdentifier("blocks/machines/" + folder + "/overlay_" + side + "_active"));
+        spriteIds[id] = new SpriteIdentifier(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE,
+                new MIIdentifier("blocks/machines/" + folder + "/overlay_" + side));
+        spriteIds[id + 1] = new SpriteIdentifier(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE,
+                new MIIdentifier("blocks/machines/" + folder + "/overlay_" + side + "_active"));
     }
 
     public MachineUnbakedModel withOutputOverlay(String suffix) {
@@ -80,13 +103,15 @@ public class MachineUnbakedModel implements UnbakedModel {
     }
 
     @Override
-    public Collection<SpriteIdentifier> getTextureDependencies(Function<Identifier, UnbakedModel> unbakedModelGetter, Set<Pair<String, String>> unresolvedTextureReferences) {
+    public Collection<SpriteIdentifier> getTextureDependencies(Function<Identifier, UnbakedModel> unbakedModelGetter,
+            Set<Pair<String, String>> unresolvedTextureReferences) {
         return Arrays.stream(spriteIds).filter(Objects::nonNull).collect(Collectors.toList());
     }
 
     @SuppressWarnings("ConstantConditions")
     @Override
-    public BakedModel bake(ModelLoader loader, Function<SpriteIdentifier, Sprite> textureGetter, ModelBakeSettings rotationContainer, Identifier modelId) {
+    public BakedModel bake(ModelLoader loader, Function<SpriteIdentifier, Sprite> textureGetter, ModelBakeSettings rotationContainer,
+            Identifier modelId) {
         ModelTransformation blockTransformation = ((JsonUnbakedModel) loader.getOrLoadModel(BASE_BLOCK_MODEL)).getTransformations();
         RenderMaterial cutoutMaterial = RendererAccess.INSTANCE.getRenderer().materialFinder().blendMode(0, BlendMode.CUTOUT_MIPPED).find();
         Sprite[] sprites = new Sprite[spriteIds.length];

@@ -23,11 +23,10 @@
  */
 package aztech.modern_industrialization.machinesv2;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import aztech.modern_industrialization.ModernIndustrialization;
 import aztech.modern_industrialization.util.GeometryHelper;
+import java.util.ArrayList;
+import java.util.List;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.fabricmc.fabric.api.renderer.v1.RendererAccess;
@@ -94,7 +93,8 @@ public class MachineOverlay {
                 BlockHitResult blockHitResult = (BlockHitResult) hitResult;
                 BlockPos pos = blockHitResult.getBlockPos();
                 BlockState state = wrc.world().getBlockState(pos);
-                if (state.getBlock() instanceof MachineBlock && MinecraftClient.getInstance().player.getMainHandStack().getItem().isIn(ModernIndustrialization.OVERLAY_SOURCES)) {
+                if (state.getBlock() instanceof MachineBlock
+                        && MinecraftClient.getInstance().player.getMainHandStack().getItem().isIn(ModernIndustrialization.OVERLAY_SOURCES)) {
                     wrc.matrixStack().push();
                     Vec3d cameraPos = MinecraftClient.getInstance().gameRenderer.getCamera().getPos();
                     double x = pos.getX() - cameraPos.x;

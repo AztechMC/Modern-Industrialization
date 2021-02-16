@@ -56,7 +56,8 @@ public class SmeltingRecipeBuilder implements MaterialRecipeBuilder {
             canceled = true;
             this.json = null;
         } else {
-            this.json = new SmeltingRecipeJson(SmeltingRecipeJson.SmeltingRecipeType.ofBlasting(blasting), context.getPart(inputPart).getItemId(), context.getPart(outputPart).getItemId(), cookingtime, experience);
+            this.json = new SmeltingRecipeJson(SmeltingRecipeJson.SmeltingRecipeType.ofBlasting(blasting), context.getPart(inputPart).getItemId(),
+                    context.getPart(outputPart).getItemId(), cookingtime, experience);
             context.addRecipe(this);
         }
     }

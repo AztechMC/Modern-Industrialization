@@ -57,6 +57,7 @@ public class ConfigurableInventoryPacketHandlers {
             });
         };
     }
+
     public static class C2S {
         // sync id, new locking mode
         public static final ServerPlayNetworking.PlayChannelHandler SET_LOCKING_MODE = (ms, player, handler, buf, sender) -> {

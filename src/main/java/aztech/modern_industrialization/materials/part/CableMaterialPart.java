@@ -32,7 +32,7 @@ public class CableMaterialPart extends PipeMaterialPart {
     private final CableTier tier;
 
     public static Function<MaterialBuilder.PartContext, MaterialPart> of(CableTier tier) {
-        return ctx -> new CableMaterialPart(ctx.getMaterialName(), tier, ctx.getColor());
+        return ctx -> new CableMaterialPart(ctx.getMaterialName(), tier, ctx.getColoramp().getMeanRGB());
     }
 
     protected CableMaterialPart(String material, CableTier tier, int color) {

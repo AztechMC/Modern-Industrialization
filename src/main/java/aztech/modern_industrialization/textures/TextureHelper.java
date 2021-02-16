@@ -29,18 +29,30 @@ import net.minecraft.client.texture.NativeImage;
 public class TextureHelper {
 
     public static void colorize(NativeImage image, int r, int g, int b) {
+        colorize(image, (r << 16) + (g << 8) + b);
+    }
+
+    public static void colorize(NativeImage image, Coloramp colorramp) {
         for (int i = 0; i < image.getWidth(); ++i) {
             for (int j = 0; j < image.getHeight(); ++j) {
                 int color = image.getPixelColor(i, j);
                 // relative luminance
-                double l = (0.2126 * getR(color) + 0.7152 * getG(color) + 0.0722 * getB(color)) / 255;
-                image.setPixelColor(i, j, fromArgb(getA(color), l * r, l * g, l * b));
+                double l = getLuminance(color);
+                int rgb = colorramp.getRGB(l);
+                int r = (rgb >> 16) & 0xff;
+                int g = (rgb >> 8) & 0xff;
+                int b = (rgb & 0xff);
+                image.setPixelColor(i, j, fromArgb(getA(color), r, g, b));
             }
         }
     }
 
+    public static double getLuminance(int color) {
+        return (0.2126 * getR(color) + 0.7152 * getG(color) + 0.0722 * getB(color)) / 255;
+    }
+
     public static void colorize(NativeImage image, int rgb) {
-        colorize(image, (rgb >> 16) & 0xff, (rgb >> 8) & 0xff, (rgb & 0xff));
+        colorize(image, new DefaultColoramp(rgb));
     }
 
     /**
@@ -103,19 +115,19 @@ public class TextureHelper {
         upperIngot.close();
     }
 
-    private static int getA(int color) {
+    public static int getA(int color) {
         return (color >> 24) & 0xff;
     }
 
-    private static int getR(int color) {
+    public static int getR(int color) {
         return color & 0xff;
     }
 
-    private static int getG(int color) {
+    public static int getG(int color) {
         return (color >> 8) & 0xff;
     }
 
-    private static int getB(int color) {
+    public static int getB(int color) {
         return (color >> 16) & 0xff;
     }
 
@@ -133,14 +145,14 @@ public class TextureHelper {
         int height = image.getHeight();
         int flipped[][] = new int[width][height];
 
-        for(int i = 0; i < width; i++){
-            for(int j = 0; j < height; j++){
-                flipped[i][height-j-1] =  image.getPixelColor(i, j);
+        for (int i = 0; i < width; i++) {
+            for (int j = 0; j < height; j++) {
+                flipped[i][height - j - 1] = image.getPixelColor(i, j);
             }
         }
 
-        for(int i = 0; i < width; i++){
-            for(int j = 0; j < height; j++){
+        for (int i = 0; i < width; i++) {
+            for (int j = 0; j < height; j++) {
                 image.setPixelColor(i, j, flipped[i][j]);
             }
         }

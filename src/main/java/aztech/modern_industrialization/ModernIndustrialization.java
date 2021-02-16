@@ -41,9 +41,9 @@ import aztech.modern_industrialization.items.diesel_tools.DieselToolItem;
 import aztech.modern_industrialization.machines.impl.MachineBlock;
 import aztech.modern_industrialization.machines.impl.MachineFactory;
 import aztech.modern_industrialization.machines.impl.MachinePackets;
-import aztech.modern_industrialization.machinesv2.init.MIMachines;
 import aztech.modern_industrialization.machinesv2.MachineScreenHandlers;
 import aztech.modern_industrialization.machinesv2.init.MIMachineRecipeTypes;
+import aztech.modern_industrialization.machinesv2.init.MIMachines;
 import aztech.modern_industrialization.materials.MIMaterials;
 import aztech.modern_industrialization.pipes.MIPipes;
 import aztech.modern_industrialization.recipe.MIRecipes;
@@ -122,8 +122,8 @@ public class ModernIndustrialization implements ModInitializer {
     public static final BlockItem ITEM_TRASH_CAN = new BlockItem(TRASH_CAN, new Item.Settings().group(ITEM_GROUP));
 
     // ScreenHandlerType
-    public static final ScreenHandlerType<MachineScreenHandlers.Common> SCREEN_HANDLER_MACHINE =
-            ScreenHandlerRegistry.registerExtended(new MIIdentifier("machine"), MachineScreenHandlers::createClient);
+    public static final ScreenHandlerType<MachineScreenHandlers.Common> SCREEN_HANDLER_MACHINE = ScreenHandlerRegistry
+            .registerExtended(new MIIdentifier("machine"), MachineScreenHandlers::createClient);
     public static final ScreenHandlerType<ForgeHammerScreenHandler> SCREEN_HANDLER_FORGE_HAMMER = ScreenHandlerRegistry
             .registerSimple(new Identifier(MOD_ID, "forge_hammer"), ForgeHammerScreenHandler::new);
 
@@ -141,9 +141,9 @@ public class ModernIndustrialization implements ModInitializer {
         setupBlocks();
         MIFluids.setupFluids();
         MITanks.setup();
-        //MIMachines.setupRecipes(); // will also load the static fields.
+        // MIMachines.setupRecipes(); // will also load the static fields.
         ForgeHammerScreenHandler.setupRecipes();
-        //setupMachines();
+        // setupMachines();
         setupPackets();
         setupFuels();
         RecipeCompat.loadCompatRecipes();

@@ -26,10 +26,11 @@ package aztech.modern_industrialization.materials;
 import aztech.modern_industrialization.materials.part.MaterialPart;
 import aztech.modern_industrialization.materials.part.RegularMaterialPart;
 import aztech.modern_industrialization.materials.recipe.builder.MaterialRecipeBuilder;
+import aztech.modern_industrialization.textures.Coloramp;
+import aztech.modern_industrialization.textures.DefaultColoramp;
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Function;
-import org.jetbrains.annotations.Nullable;
 
 public final class MaterialBuilder {
     private final Map<String, MaterialPart> partsMap = new TreeMap<>();
@@ -38,17 +39,27 @@ public final class MaterialBuilder {
     private final RecipeContext recipeContext = new RecipeContext();
     private final String materialName;
     private final String materialSet;
-    private final int color;
+    private final Coloramp coloramp;
+
+    public MaterialBuilder(String materialName, MaterialSet materialSet, Coloramp coloramp) {
+        this.materialName = materialName;
+        this.materialSet = materialSet.name;
+        this.coloramp = coloramp;
+    }
 
     public MaterialBuilder(String materialName, MaterialSet materialSet, int color) {
         this.materialName = materialName;
         this.materialSet = materialSet.name;
-        this.color = color;
+
+        int r = (color >> 16) & 0xff;
+        int g = (color >> 8) & 0xff;
+        int b = (color & 0xff);
+        this.coloramp = new DefaultColoramp(color);
     }
 
     public MaterialBuilder addRegularParts(String... parts) {
         for (String part : parts) {
-            addPart(new RegularMaterialPart(materialName, part, materialSet, color));
+            addPart(new RegularMaterialPart(materialName, part, materialSet, coloramp));
         }
         return this;
     }
@@ -116,8 +127,8 @@ public final class MaterialBuilder {
     }
 
     public class PartContext {
-        public int getColor() {
-            return color;
+        public Coloramp getColoramp() {
+            return coloramp;
         }
 
         public String getMaterialName() {

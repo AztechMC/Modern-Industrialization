@@ -24,12 +24,11 @@
 package aztech.modern_industrialization.mixin;
 
 import aztech.modern_industrialization.ModernIndustrialization;
+import aztech.modern_industrialization.recipe.MIRecipes;
 import aztech.modern_industrialization.textures.MITextures;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
-
-import aztech.modern_industrialization.recipe.MIRecipes;
 import net.minecraft.resource.ReloadableResourceManager;
 import net.minecraft.resource.ReloadableResourceManagerImpl;
 import net.minecraft.resource.ResourcePack;

@@ -24,9 +24,9 @@
 package aztech.modern_industrialization.materials.part;
 
 import aztech.modern_industrialization.materials.MaterialBuilder;
-import aztech.modern_industrialization.textures.TextureManager;
 import aztech.modern_industrialization.pipes.MIPipes;
 import aztech.modern_industrialization.pipes.api.PipeNetworkType;
+import aztech.modern_industrialization.textures.TextureManager;
 import java.util.function.Function;
 import net.minecraft.item.Item;
 
@@ -39,7 +39,7 @@ public class PipeMaterialPart implements MaterialPart {
     private PipeNetworkType pipeType;
 
     public static Function<MaterialBuilder.PartContext, MaterialPart> of(PipeType type) {
-        return ctx -> new PipeMaterialPart(ctx.getMaterialName(), type, ctx.getColor());
+        return ctx -> new PipeMaterialPart(ctx.getMaterialName(), type, ctx.getColoramp().getMeanRGB());
     }
 
     protected PipeMaterialPart(String materialName, PipeType type, int color) {

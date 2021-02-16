@@ -1,3 +1,26 @@
+/*
+ * MIT License
+ *
+ * Copyright (c) 2020 Azercoco & Technici4n
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
 package aztech.modern_industrialization.machinesv2.components.sync;
 
 import aztech.modern_industrialization.MIIdentifier;
@@ -7,6 +30,9 @@ import aztech.modern_industrialization.machinesv2.SyncedComponents;
 import aztech.modern_industrialization.machinesv2.components.CrafterComponent;
 import aztech.modern_industrialization.machinesv2.gui.ClientComponentRenderer;
 import aztech.modern_industrialization.util.RenderHelper;
+import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.List;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.util.math.MatrixStack;
@@ -14,10 +40,6 @@ import net.minecraft.network.PacketByteBuf;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
-
-import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.List;
 
 public class RecipeEfficiencyBar {
     public static class Server implements SyncedComponent.Server<Data> {
@@ -32,7 +54,8 @@ public class RecipeEfficiencyBar {
         @Override
         public Data copyData() {
             if (crafter.hasActiveRecipe()) {
-                return new Data(crafter.getEfficiencyTicks(), crafter.getMaxEfficiencyTicks(), crafter.getCurrentRecipeEu(), crafter.getBaseRecipeEu());
+                return new Data(crafter.getEfficiencyTicks(), crafter.getMaxEfficiencyTicks(), crafter.getCurrentRecipeEu(),
+                        crafter.getBaseRecipeEu());
             } else {
                 return new Data();
             }
@@ -43,10 +66,8 @@ public class RecipeEfficiencyBar {
             if (!cachedData.hasActiveRecipe) {
                 return crafter.hasActiveRecipe();
             } else {
-                return crafter.getEfficiencyTicks() != cachedData.efficiencyTicks
-                        || crafter.getMaxEfficiencyTicks() != cachedData.maxEfficiencyTicks
-                        || crafter.getCurrentRecipeEu() != cachedData.currentRecipeEu
-                        || crafter.getBaseRecipeEu() != cachedData.baseRecipeEu;
+                return crafter.getEfficiencyTicks() != cachedData.efficiencyTicks || crafter.getMaxEfficiencyTicks() != cachedData.maxEfficiencyTicks
+                        || crafter.getCurrentRecipeEu() != cachedData.currentRecipeEu || crafter.getBaseRecipeEu() != cachedData.baseRecipeEu;
             }
         }
 
@@ -112,10 +133,12 @@ public class RecipeEfficiencyBar {
             @Override
             public void renderBackground(DrawableHelper helper, MatrixStack matrices, int x, int y) {
                 MinecraftClient.getInstance().getTextureManager().bindTexture(TEXTURE);
-                DrawableHelper.drawTexture(matrices, x+params.renderX-1, y+params.renderY-1, helper.getZOffset(), 0, 2, WIDTH+2, HEIGHT+2, 6, 102);
+                DrawableHelper.drawTexture(matrices, x + params.renderX - 1, y + params.renderY - 1, helper.getZOffset(), 0, 2, WIDTH + 2, HEIGHT + 2,
+                        6, 102);
                 if (hasActiveRecipe) {
                     int barPixels = (int) ((float) efficiencyTicks / maxEfficiencyTicks * WIDTH);
-                    DrawableHelper.drawTexture(matrices, x+params.renderX, y+params.renderY, helper.getZOffset(), 0, 0, barPixels, HEIGHT, 6, 102);
+                    DrawableHelper.drawTexture(matrices, x + params.renderX, y + params.renderY, helper.getZOffset(), 0, 0, barPixels, HEIGHT, 6,
+                            102);
                 }
             }
 

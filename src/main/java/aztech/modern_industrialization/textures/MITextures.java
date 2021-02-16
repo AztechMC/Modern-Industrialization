@@ -33,9 +33,6 @@ import aztech.modern_industrialization.materials.MaterialRegistry;
 import aztech.modern_industrialization.materials.part.MIParts;
 import aztech.modern_industrialization.materials.part.MaterialPart;
 import java.io.IOException;
-
-import aztech.modern_industrialization.textures.TextureHelper;
-import aztech.modern_industrialization.textures.TextureManager;
 import net.minecraft.client.texture.NativeImage;
 import net.minecraft.resource.ResourceManager;
 
@@ -44,6 +41,11 @@ public final class MITextures {
     public static MIRuntimeResourcePack buildResourcePack(ResourceManager manager) {
         MIRuntimeResourcePack pack = new MIRuntimeResourcePack("MI Generated textures");
         TextureManager mtm = new TextureManager(manager, pack);
+
+        for (BakableTargetColoramp coloramp : BakableTargetColoramp.bakableTargetColoramps) {
+            coloramp.baked(mtm);
+        }
+
         try {
             for (Material material : MaterialRegistry.getMaterials().values()) {
                 for (MaterialPart part : material.getParts().values()) {
@@ -51,7 +53,7 @@ public final class MITextures {
                 }
             }
 
-            for(CraftingFluid fluid : MIFluids.FLUIDS){
+            for (CraftingFluid fluid : MIFluids.FLUIDS) {
                 fluid.registerTextures(mtm);
             }
 
@@ -72,37 +74,37 @@ public final class MITextures {
     /**
      * Colorize layer if necessary.
      */
-    private static void colorizeLayer(NativeImage image, String layer, int color) {
+    private static void colorizeLayer(NativeImage image, String layer, Coloramp coloramp) {
         if (layer.equals("")) {
-            TextureHelper.colorize(image, (color >> 16) & 0xff, (color >> 8) & 0xff, color & 0xff);
+            TextureHelper.colorize(image, coloramp);
         }
     }
 
-    public static void generateItemPartTexture(TextureManager mtm, String materialName, String materialSet, String part, int color) {
+    public static void generateItemPartTexture(TextureManager mtm, String materialName, String materialSet, String part, Coloramp coloramp) {
         if (part.equals(MIParts.DOUBLE_INGOT)) {
             mtm.runAtEnd(() -> {
                 try {
                     generateDoubleIngot(mtm, materialName);
                 } catch (Throwable throwable) {
-                    logTextureGenerationError(throwable, materialName, materialSet, part, color);
+                    logTextureGenerationError(throwable, materialName, materialSet, part);
                 }
             });
         } else {
             try {
-                generateBlend(mtm, materialName, materialSet, part, color);
+                generateBlend(mtm, materialName, materialSet, part, coloramp);
             } catch (Throwable throwable) {
-                logTextureGenerationError(throwable, materialName, materialSet, part, color);
+                logTextureGenerationError(throwable, materialName, materialSet, part);
             }
         }
     }
 
-    public static void logTextureGenerationError(Throwable throwable, String materialName, String materialSet, String part, int color) {
-        ModernIndustrialization.LOGGER
-                .warn(String.format("Failed to generate item part texture for material name %s, material set %s, part %s and color %d", materialName,
-                        materialSet, part, color), throwable);
+    public static void logTextureGenerationError(Throwable throwable, String materialName, String materialSet, String part) {
+        ModernIndustrialization.LOGGER.warn(
+                String.format("Failed to generate item part texture for material name %s, material set %s, part %s", materialName, materialSet, part),
+                throwable);
     }
 
-    public static void generateBlend(TextureManager mtm, String materialName, String materialSet, String part, int color) throws IOException {
+    public static void generateBlend(TextureManager mtm, String materialName, String materialSet, String part, Coloramp color) throws IOException {
         NativeImage image = null;
         for (String layer : LAYERS) {
             String template;

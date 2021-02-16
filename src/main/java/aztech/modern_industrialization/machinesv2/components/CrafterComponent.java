@@ -1,4 +1,30 @@
+/*
+ * MIT License
+ *
+ * Copyright (c) 2020 Azercoco & Technici4n
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
 package aztech.modern_industrialization.machinesv2.components;
+
+import static aztech.modern_industrialization.util.Simulation.ACT;
+import static aztech.modern_industrialization.util.Simulation.SIMULATE;
 
 import aztech.modern_industrialization.inventory.ConfigurableFluidStack;
 import aztech.modern_industrialization.inventory.ConfigurableItemStack;
@@ -6,6 +32,10 @@ import aztech.modern_industrialization.machines.recipe.MachineRecipe;
 import aztech.modern_industrialization.machines.recipe.MachineRecipeType;
 import aztech.modern_industrialization.util.Simulation;
 import com.google.common.base.Preconditions;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 import net.fabricmc.fabric.api.lookup.v1.item.ItemKey;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.item.Item;
@@ -13,14 +43,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
 import net.minecraft.world.World;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.concurrent.ThreadLocalRandom;
-
-import static aztech.modern_industrialization.util.Simulation.ACT;
-import static aztech.modern_industrialization.util.Simulation.SIMULATE;
 
 public class CrafterComponent {
     public CrafterComponent(Inventory inventory, Behavior behavior) {
@@ -40,12 +62,17 @@ public class CrafterComponent {
 
     public interface Behavior {
         long consumeEu(long max, Simulation simulation);
+
         default boolean banRecipe(MachineRecipe recipe) {
             return recipe.eu > getMaxRecipeEu();
         }
+
         MachineRecipeType recipeType();
+
         long getBaseRecipeEu();
+
         long getMaxRecipeEu();
+
         World getWorld();
     }
 
@@ -89,7 +116,8 @@ public class CrafterComponent {
     }
 
     /**
-     * Perform a crafter tick, and return whether the crafter is active after the tick.
+     * Perform a crafter tick, and return whether the crafter is active after the
+     * tick.
      */
     public boolean tickRecipe() {
         if (behavior.getWorld().isClient()) {

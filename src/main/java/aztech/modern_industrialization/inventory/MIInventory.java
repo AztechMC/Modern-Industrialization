@@ -44,7 +44,8 @@ public final class MIInventory {
     public final SlotPositions itemPositions;
     public final SlotPositions fluidPositions;
 
-    public MIInventory(List<ConfigurableItemStack> itemStacks, List<ConfigurableFluidStack> fluidStacks, SlotPositions itemPositions, SlotPositions fluidPositions) {
+    public MIInventory(List<ConfigurableItemStack> itemStacks, List<ConfigurableFluidStack> fluidStacks, SlotPositions itemPositions,
+            SlotPositions fluidPositions) {
         this.itemStacks = itemStacks;
         this.fluidStacks = fluidStacks;
         this.itemStorage = new MIItemStorage(itemStacks);
@@ -52,10 +53,12 @@ public final class MIInventory {
         this.itemPositions = itemPositions;
         this.fluidPositions = fluidPositions;
         if (itemPositions.size() != itemStacks.size()) {
-            throw new IllegalArgumentException("Mismatched item slots and positions. Slot count: " + itemStacks.size() + ", position count: " + itemPositions.size());
+            throw new IllegalArgumentException(
+                    "Mismatched item slots and positions. Slot count: " + itemStacks.size() + ", position count: " + itemPositions.size());
         }
         if (fluidPositions.size() != fluidStacks.size()) {
-            throw new IllegalArgumentException("Mismatched fluid slots and positions. Slot count: " + fluidPositions.size() + ", position count: " + fluidStacks.size());
+            throw new IllegalArgumentException(
+                    "Mismatched fluid slots and positions. Slot count: " + fluidPositions.size() + ", position count: " + fluidStacks.size());
         }
     }
 

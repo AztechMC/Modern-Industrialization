@@ -21,18 +21,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.machinesv2.gui;
+package aztech.modern_industrialization.textures;
 
-import aztech.modern_industrialization.machinesv2.MachineScreenHandlers;
-import net.minecraft.client.gui.DrawableHelper;
-import net.minecraft.client.util.math.MatrixStack;
+public interface Coloramp {
 
-/**
- * Renderer for the shared data of a client component on the machine screen.
- */
-public interface ClientComponentRenderer {
-    void renderBackground(DrawableHelper helper, MatrixStack matrices, int x, int y);
+    public int getRGB(double luminance);
 
-    default void renderTooltip(MachineScreenHandlers.ClientScreen screen, MatrixStack matrices, int x, int y, int cursorX, int cursorY) {
-    }
+    public int getMeanRGB();
+
 }

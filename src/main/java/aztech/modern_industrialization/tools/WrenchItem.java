@@ -24,7 +24,6 @@
 package aztech.modern_industrialization.tools;
 
 import aztech.modern_industrialization.ModernIndustrialization;
-import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.item.ItemUsageContext;
 import net.minecraft.util.ActionResult;
@@ -39,7 +38,8 @@ public class WrenchItem extends ToolItem implements MachineOverlayItem {
     public ActionResult useOnBlock(ItemUsageContext context) {
         BlockState state = context.getWorld().getBlockState(context.getBlockPos());
         if (state.isIn(ModernIndustrialization.WRENCHABLES)) {
-            return state.onUse(context.getWorld(), context.getPlayer(), context.getHand(), new BlockHitResult(context.getHitPos(), context.getSide(), context.getBlockPos(), context.hitsInsideBlock()));
+            return state.onUse(context.getWorld(), context.getPlayer(), context.getHand(),
+                    new BlockHitResult(context.getHitPos(), context.getSide(), context.getBlockPos(), context.hitsInsideBlock()));
         }
         return super.useOnBlock(context);
     }

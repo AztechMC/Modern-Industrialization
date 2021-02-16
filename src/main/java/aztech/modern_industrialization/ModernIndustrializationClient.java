@@ -47,7 +47,6 @@ import aztech.modern_industrialization.util.TextHelper;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
-import net.fabricmc.fabric.api.client.model.ModelLoadingRegistry;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.client.rendereregistry.v1.BlockEntityRendererRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
@@ -81,9 +80,11 @@ public class ModernIndustrializationClient implements ClientModInitializer {
         ModernIndustrialization.LOGGER.info("Modern Industrialization client setup done!");
     }
 
-    @SuppressWarnings({"unchecked", "RedundantCast", "rawtypes"})
+    @SuppressWarnings({ "unchecked", "RedundantCast", "rawtypes" })
     private void setupScreens() {
-        ScreenRegistry.register((ScreenHandlerType<? extends MachineScreenHandlers.Client>) (ScreenHandlerType) ModernIndustrialization.SCREEN_HANDLER_MACHINE, MachineScreenHandlers.ClientScreen::new);
+        ScreenRegistry.register(
+                (ScreenHandlerType<? extends MachineScreenHandlers.Client>) (ScreenHandlerType) ModernIndustrialization.SCREEN_HANDLER_MACHINE,
+                MachineScreenHandlers.ClientScreen::new);
         ScreenRegistry.register(ModernIndustrialization.SCREEN_HANDLER_FORGE_HAMMER, ForgeHammerScreen::new);
     }
 

@@ -73,6 +73,11 @@ public class MachineOverlay {
         }
     }
 
+    public static Vec3d getPosInBlock(BlockHitResult blockHitResult) {
+        BlockPos blockPos = blockHitResult.getBlockPos();
+        return blockHitResult.getPos().subtract(blockPos.getX(), blockPos.getY(), blockPos.getZ());
+    }
+
     public static int findHitIndex(Vec3d posInBlock) {
         for (int i = 0; i < MachineOverlay.OVERLAY_SHAPES.size(); i++) {
             Box box = MachineOverlay.OVERLAY_SHAPES.get(i).getBoundingBox();
@@ -83,6 +88,28 @@ public class MachineOverlay {
             }
         }
         throw new UnsupportedOperationException("Hit shape could not be found :(");
+    }
+
+    public static Direction findHitSide(Vec3d posInBlock, Direction hitFace) {
+        int i = findHitIndex(posInBlock);
+        List<Direction> shapeDirections = MachineOverlay.TOUCHING_DIRECTIONS.get(i);
+        if (shapeDirections.size() == 1) {
+            return hitFace; // center
+        } else if (shapeDirections.size() == 3) {
+            return hitFace.getOpposite(); // corner
+        } else {
+            // one of the sides. There are 2 directions, so it must be the other one
+            for (Direction direction : shapeDirections) {
+                if (direction != hitFace) {
+                    return direction;
+                }
+            }
+        }
+        throw new RuntimeException("Unreachable!");
+    }
+
+    public static Direction findHitSide(BlockHitResult bhr) {
+        return findHitSide(getPosInBlock(bhr), bhr.getSide());
     }
 
     public static class Renderer implements WorldRenderEvents.BeforeBlockOutline {
@@ -103,8 +130,7 @@ public class MachineOverlay {
                     wrc.matrixStack().translate(x, y, z);
 
                     // Colored face overlay
-                    BlockPos blockPos = blockHitResult.getBlockPos();
-                    Vec3d posInBlock = blockHitResult.getPos().subtract(blockPos.getX(), blockPos.getY(), blockPos.getZ());
+                    Vec3d posInBlock = getPosInBlock(blockHitResult);
                     Vec3d posOnFace = GeometryHelper.toFaceCoords(posInBlock, blockHitResult.getSide());
 
                     MeshBuilder meshBuilder = RendererAccess.INSTANCE.getRenderer().meshBuilder();

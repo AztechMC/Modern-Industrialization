@@ -33,13 +33,16 @@ import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
 import net.minecraft.block.BlockEntityProvider;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
+import org.jetbrains.annotations.Nullable;
 
 public class MachineBlock extends MIBlock implements BlockEntityProvider {
     private final Supplier<BlockEntity> blockEntityConstructor;
@@ -62,8 +65,9 @@ public class MachineBlock extends MIBlock implements BlockEntityProvider {
         } else {
             BlockEntity be = world.getBlockEntity(pos);
             if (be instanceof MachineBlockEntity) {
-                ActionResult beResult = ((MachineBlockEntity) be).onUse(player, hand, hit);
+                ActionResult beResult = ((MachineBlockEntity) be).onUse(player, hand, MachineOverlay.findHitSide(hit));
                 if (beResult.isAccepted()) {
+                    world.updateNeighbors(pos, null);
                     return beResult;
                 } else {
                     player.openHandledScreen((MachineBlockEntity) be);
@@ -71,5 +75,12 @@ public class MachineBlock extends MIBlock implements BlockEntityProvider {
             }
             return ActionResult.CONSUME;
         }
+    }
+
+    @SuppressWarnings("ConstantConditions")
+    @Override
+    public void onPlaced(World world, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack itemStack) {
+        BlockEntity be = world.getBlockEntity(pos);
+        ((MachineBlockEntity) be).onPlaced(placer, itemStack);
     }
 }

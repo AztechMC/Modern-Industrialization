@@ -66,7 +66,7 @@ public final class MIMachines {
                 BlockEntityType.Builder.create(ctor, block).build(null));
         ElectricMachineBlockEntity.registerEnergyApi(bet[0]);
         MachineBlockEntity.registerItemApi(bet[0]);
-        ModernIndustrialization.RESOURCE_PACK.addTag(new Identifier("fabric:wrenchables"), JTag.tag().add(new MIIdentifier("lv_macerator")));
+        ModernIndustrialization.RESOURCE_PACK.addTag(new Identifier("fabric:blocks/wrenchables"), JTag.tag().add(new MIIdentifier("lv_macerator")));
     }
 
     private static MachineInventoryComponent buildComponent(int itemInputCount, int itemOutputCount, int fluidInputCount, int fluidOutputCount,

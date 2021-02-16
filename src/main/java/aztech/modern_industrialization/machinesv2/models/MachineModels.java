@@ -31,7 +31,7 @@ public final class MachineModels {
         ModelLoadingRegistry.INSTANCE.registerResourceProvider(rm -> new MachineModelProvider());
         ModelLoadingRegistry.INSTANCE.registerModelProvider(new MachineModelProvider());
 
-        MachineUnbakedModel model = new MachineUnbakedModel("macerator", true, true, false, MachineCasings.LV);
+        MachineUnbakedModel model = new MachineUnbakedModel("macerator", true, true, false, MachineCasings.LV).withOutputOverlay("output").withItemAutoExportOverlay("extract_items").withFluidAutoExportOverlay("extract_fluids");
         MachineModelProvider.register(new MIIdentifier("block/lv_macerator"), model);
         MachineModelProvider.register(new MIIdentifier("item/lv_macerator"), model);
     }

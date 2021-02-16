@@ -27,7 +27,7 @@ import net.minecraft.util.math.Direction;
 
 public class MachineModelClientData {
     public final MachineCasingModel casing;
-    public final Direction frontDirection;
+    public Direction frontDirection;
     public boolean isActive = false;
     /**
      * May be null for no output.
@@ -36,8 +36,7 @@ public class MachineModelClientData {
     public boolean itemAutoExtract = false;
     public boolean fluidAutoExtract = false;
 
-    public MachineModelClientData(MachineCasingModel casing, Direction frontDirection) {
+    public MachineModelClientData(MachineCasingModel casing) {
         this.casing = casing;
-        this.frontDirection = frontDirection;
     }
 }

@@ -23,15 +23,18 @@
  */
 package aztech.modern_industrialization.machinesv2.init;
 
+import aztech.modern_industrialization.MIFluids;
 import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.ModernIndustrialization;
 import aztech.modern_industrialization.inventory.ConfigurableFluidStack;
 import aztech.modern_industrialization.inventory.ConfigurableItemStack;
 import aztech.modern_industrialization.inventory.SlotPositions;
 import aztech.modern_industrialization.machines.impl.MachineTier;
+import aztech.modern_industrialization.machines.recipe.MachineRecipeType;
 import aztech.modern_industrialization.machinesv2.MachineBlock;
 import aztech.modern_industrialization.machinesv2.MachineBlockEntity;
 import aztech.modern_industrialization.machinesv2.blockentities.ElectricMachineBlockEntity;
+import aztech.modern_industrialization.machinesv2.blockentities.SteamMachineBlockEntity;
 import aztech.modern_industrialization.machinesv2.components.MachineInventoryComponent;
 import aztech.modern_industrialization.machinesv2.components.sync.EnergyBar;
 import aztech.modern_industrialization.machinesv2.components.sync.ProgressBar;
@@ -39,8 +42,14 @@ import aztech.modern_industrialization.machinesv2.components.sync.RecipeEfficien
 import aztech.modern_industrialization.machinesv2.gui.MachineGuiParameters;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.Supplier;
+
+import aztech.modern_industrialization.machinesv2.models.MachineModels;
 import net.devtech.arrp.json.tags.JTag;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.block.Block;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
@@ -50,27 +59,90 @@ import net.minecraft.util.registry.Registry;
 
 public final class MIMachines {
     public static void init() {
-        BlockEntityType<?>[] bet = new BlockEntityType<?>[] { null };
-        SlotPositions itemPositions = new SlotPositions.Builder().addSlot(56, 35).addSlots(102, 27, 2, 2).build();
-        SlotPositions fluidPositions = SlotPositions.empty();
-        MachineGuiParameters guiParams = new MachineGuiParameters.Builder(new LiteralText("FIXME"),
-                new MIIdentifier("textures/gui/container/default.png"), true).build();
-        EnergyBar.Parameters energyBarParams = new EnergyBar.Parameters(18, 34);
+        MachineGuiParameters guiParams = new MachineGuiParameters.Builder(new LiteralText("FIXME"), "default", true).build();
         ProgressBar.Parameters progressBarParams = new ProgressBar.Parameters(78, 35, "macerator");
         RecipeEfficiencyBar.Parameters efficiencyBarParams = new RecipeEfficiencyBar.Parameters(38, 66);
-        Supplier<BlockEntity> ctor = () -> new ElectricMachineBlockEntity(bet[0], MIMachineRecipeTypes.MACERATOR,
-                buildComponent(1, 4, 0, 0, itemPositions, fluidPositions), guiParams, energyBarParams, progressBarParams, efficiencyBarParams,
-                MachineTier.LV, 3200);
-        Block block = new MachineBlock("lv_macerator", ctor);
-        bet[0] = Registry.register(Registry.BLOCK_ENTITY_TYPE, new MIIdentifier("lv_macerator"),
-                BlockEntityType.Builder.create(ctor, block).build(null));
-        ElectricMachineBlockEntity.registerEnergyApi(bet[0]);
-        MachineBlockEntity.registerItemApi(bet[0]);
-        ModernIndustrialization.RESOURCE_PACK.addTag(new Identifier("fabric:blocks/wrenchables"), JTag.tag().add(new MIIdentifier("lv_macerator")));
+        registerMachineTiers("macerator", guiParams, MIMachineRecipeTypes.MACERATOR, 1, 4, 0, 0, progressBarParams, efficiencyBarParams,
+                items -> items.addSlot(56, 35).addSlots(102, 27, 2, 2),
+                fluids -> {},
+                true, true, false,
+                TIER_BRONZE | TIER_STEEL | TIER_ELECTRIC);
     }
 
+    private static final EnergyBar.Parameters ENERGY_BAR_PARAMS = new EnergyBar.Parameters(18, 34);
+
+    public static void registerMachineTiers(String machine, MachineGuiParameters guiParams, MachineRecipeType type,
+                                            int itemInputCount, int itemOutputCount, int fluidInputCount, int fluidOutputCount,
+                                            ProgressBar.Parameters progressBarParams, RecipeEfficiencyBar.Parameters efficiencyBarParams,
+                                            Consumer<SlotPositions.Builder> itemPositions, Consumer<SlotPositions.Builder> fluidPositions,
+                                            boolean frontOverlay, boolean topOverlay, boolean sideOverlay,
+                                            int tiers) {
+        for (int i = 0; i < 2; ++i) {
+            if (i == 0 && (tiers & TIER_BRONZE) == 0) {
+                continue;
+            }
+            if (i == 1 && (tiers & TIER_STEEL) == 0) {
+                continue;
+            }
+
+            SlotPositions.Builder itemPositionsBuilder = new SlotPositions.Builder();
+            itemPositions.accept(itemPositionsBuilder);
+            SlotPositions.Builder fluidPositionsBuilder = new SlotPositions.Builder();
+            fluidPositionsBuilder.addSlot(12, 35);
+            fluidPositions.accept(fluidPositionsBuilder);
+            MachineTier tier = i == 0 ? MachineTier.BRONZE : MachineTier.STEEL;
+            String prefix = i == 0 ? "bronze" : "steel";
+            int steamBuckets = i == 0 ? 2 : 4;
+            registerMachine(prefix + "_" + machine,
+                    bet -> new SteamMachineBlockEntity(bet, type, buildComponent(itemInputCount, itemOutputCount, fluidInputCount, fluidOutputCount, itemPositionsBuilder.build(), fluidPositionsBuilder.build(), steamBuckets), guiParams, progressBarParams, tier),
+                    bet -> {
+                        if (itemInputCount + itemOutputCount > 0) {
+                            MachineBlockEntity.registerItemApi(bet);
+                        }
+                        MachineBlockEntity.registerFluidApi(bet);
+                    });
+            if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
+                MachineModels.addMachine(prefix, machine, frontOverlay, topOverlay, sideOverlay);
+            }
+        }
+        if ((tiers & TIER_ELECTRIC) > 0) {
+            SlotPositions.Builder itemPositionsBuilder = new SlotPositions.Builder();
+            itemPositions.accept(itemPositionsBuilder);
+            SlotPositions.Builder fluidPositionsBuilder = new SlotPositions.Builder();
+            fluidPositions.accept(fluidPositionsBuilder);
+            registerMachine("lv_" + machine,
+                    bet -> new ElectricMachineBlockEntity(bet, type, buildComponent(itemInputCount, itemOutputCount, fluidInputCount, fluidOutputCount, itemPositionsBuilder.build(), fluidPositionsBuilder.build(), 0), guiParams, ENERGY_BAR_PARAMS, progressBarParams, efficiencyBarParams, MachineTier.LV, 3200),
+                    bet -> {
+                        ElectricMachineBlockEntity.registerEnergyApi(bet);
+                        if (itemInputCount + itemOutputCount > 0) {
+                            MachineBlockEntity.registerItemApi(bet);
+                        }
+                        if (fluidInputCount + fluidOutputCount > 0) {
+                            MachineBlockEntity.registerFluidApi(bet);
+                        }
+                    });
+            if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
+                MachineModels.addMachine("lv", machine, frontOverlay, topOverlay, sideOverlay);
+            }
+        }
+    }
+
+    private static final int TIER_BRONZE = 1, TIER_STEEL = 2, TIER_ELECTRIC = 4;
+
+    public static void registerMachine(String id, Function<BlockEntityType<?>, BlockEntity> factory, Consumer<BlockEntityType<?>> extraRegistrator) {
+        BlockEntityType<?>[] bet = new BlockEntityType[1];
+        Supplier<BlockEntity> ctor = () -> factory.apply(bet[0]);
+        Block block = new MachineBlock(id, ctor);
+        bet[0] = Registry.register(Registry.BLOCK_ENTITY_TYPE, new MIIdentifier(id), BlockEntityType.Builder.create(ctor, block).build(null));
+        ModernIndustrialization.RESOURCE_PACK.addTag(new Identifier("fabric:blocks/wrenchable"), JTag.tag().add(new MIIdentifier(id)));
+        extraRegistrator.accept(bet[0]);
+    }
+
+    /**
+     * @param steamBuckets Number of steam buckets in the steam input slot, or 0 for no steam input slot
+     */
     private static MachineInventoryComponent buildComponent(int itemInputCount, int itemOutputCount, int fluidInputCount, int fluidOutputCount,
-            SlotPositions itemPositions, SlotPositions fluidPositions) {
+            SlotPositions itemPositions, SlotPositions fluidPositions, int steamBuckets) {
         int bucketCapacity = 16;
 
         List<ConfigurableItemStack> itemInputStacks = new ArrayList<>();
@@ -82,6 +154,9 @@ public final class MIMachines {
             itemOutputStacks.add(ConfigurableItemStack.standardOutputSlot());
         }
         List<ConfigurableFluidStack> fluidInputStacks = new ArrayList<>();
+        if (steamBuckets > 0) {
+            fluidInputStacks.add(ConfigurableFluidStack.lockedInputSlot(81000 * steamBuckets, MIFluids.STEAM));
+        }
         for (int i = 0; i < fluidInputCount; ++i) {
             fluidInputStacks.add(ConfigurableFluidStack.standardInputSlot(81000 * bucketCapacity));
         }

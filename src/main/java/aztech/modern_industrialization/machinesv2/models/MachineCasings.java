@@ -24,5 +24,7 @@
 package aztech.modern_industrialization.machinesv2.models;
 
 public class MachineCasings {
+    public static final MachineCasingModel BRONZE = new MachineCasingModel("bronze");
+    public static final MachineCasingModel STEEL = new MachineCasingModel("steel");
     public static final MachineCasingModel LV = new MachineCasingModel("lv");
 }

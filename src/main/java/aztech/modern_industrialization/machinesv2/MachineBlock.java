@@ -26,6 +26,7 @@ package aztech.modern_industrialization.machinesv2;
 import static aztech.modern_industrialization.ModernIndustrialization.METAL_MATERIAL;
 
 import aztech.modern_industrialization.MIBlock;
+import aztech.modern_industrialization.inventory.ConfigurableItemStack;
 import aztech.modern_industrialization.util.MobSpawning;
 import java.util.function.Supplier;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
@@ -38,6 +39,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
+import net.minecraft.util.ItemScatterer;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.BlockView;
@@ -82,5 +84,21 @@ public class MachineBlock extends MIBlock implements BlockEntityProvider {
     public void onPlaced(World world, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack itemStack) {
         BlockEntity be = world.getBlockEntity(pos);
         ((MachineBlockEntity) be).onPlaced(placer, itemStack);
+    }
+
+    @Override
+    public void onStateReplaced(BlockState state, World world, BlockPos pos, BlockState newState, boolean moved) {
+        if (!state.isOf(newState.getBlock())) {
+            // Drop items
+            BlockEntity be = world.getBlockEntity(pos);
+            if (be instanceof MachineBlockEntity) {
+                MachineBlockEntity machine = (MachineBlockEntity) be;
+                for (ConfigurableItemStack stack : machine.getInventory().itemStacks) {
+                    ItemScatterer.spawn(world, pos.getX(), pos.getY(), pos.getZ(), stack.getItemKey().toStack(stack.getCount()));
+                    stack.setCount(0);
+                }
+            }
+        }
+        super.onStateReplaced(state, world, pos, newState, moved);
     }
 }

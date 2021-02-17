@@ -58,7 +58,7 @@ public final class MIInventory {
         }
         if (fluidPositions.size() != fluidStacks.size()) {
             throw new IllegalArgumentException(
-                    "Mismatched fluid slots and positions. Slot count: " + fluidPositions.size() + ", position count: " + fluidStacks.size());
+                    "Mismatched fluid slots and positions. Slot count: " + fluidStacks.size() + ", position count: " + fluidPositions.size());
         }
     }
 
@@ -80,12 +80,12 @@ public final class MIInventory {
         }
     }
 
-    public void writeToTag(CompoundTag tag) {
+    public void writeNbt(CompoundTag tag) {
         NbtHelper.putList(tag, "items", itemStacks, ConfigurableItemStack::writeToTag);
         NbtHelper.putList(tag, "fluids", fluidStacks, ConfigurableFluidStack::writeToTag);
     }
 
-    public void readFromTag(CompoundTag tag) {
+    public void readNbt(CompoundTag tag) {
         // This is a failsafe in case the number of slots in a machine changed
         // When this happens, we destroy all items/fluids, but at least we don't crash
         // the world.

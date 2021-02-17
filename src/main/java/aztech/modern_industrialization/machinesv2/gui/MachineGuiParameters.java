@@ -23,6 +23,7 @@
  */
 package aztech.modern_industrialization.machinesv2.gui;
 
+import aztech.modern_industrialization.MIIdentifier;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
@@ -67,9 +68,9 @@ public class MachineGuiParameters {
         public final int backgroundSizeX = 176, backgroundSizeY = 166;
         public final boolean lockButton;
 
-        public Builder(Text title, Identifier backgroundTexture, boolean lockButton) {
+        public Builder(Text title, String name, boolean lockButton) {
             this.title = title;
-            this.backgroundTexture = backgroundTexture;
+            this.backgroundTexture = new MIIdentifier("textures/gui/container/" + name + ".png");
             this.lockButton = lockButton;
         }
 

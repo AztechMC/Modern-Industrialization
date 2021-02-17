@@ -24,6 +24,7 @@
 package aztech.modern_industrialization;
 
 import aztech.modern_industrialization.api.FluidFuelRegistry;
+import aztech.modern_industrialization.api.energy.EnergyApi;
 import aztech.modern_industrialization.api.pipes.item.SpeedUpgrade;
 import aztech.modern_industrialization.blocks.TrashCanBlock;
 import aztech.modern_industrialization.blocks.forgehammer.ForgeHammerBlock;
@@ -206,6 +207,7 @@ public class ModernIndustrialization implements ModInitializer {
         ItemApi.SIDED.registerForBlocks((world, pos, state, direction) -> TrashCanBlock.trashStorage(), TRASH_CAN);
         FluidApi.SIDED.registerForBlocks((world, pos, state, direction) -> TrashCanBlock.trashStorage(), TRASH_CAN);
         FluidApi.ITEM.register((key, ctx) -> TrashCanBlock.trashStorage(), ITEM_TRASH_CAN);
+        EnergyApi.MOVEABLE.registerForBlocks((world, pos, state, direction) -> EnergyApi.CREATIVE_EXTRACTABLE, MITanks.CREATIVE_TANK_BLOCK);
     }
 
     private void setupMachines() {

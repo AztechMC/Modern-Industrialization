@@ -10,8 +10,8 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.math.Direction;
 
 public class OrientationComponent {
-    private Direction facingDirection = Direction.NORTH;
-    private Direction outputDirection = null;
+    public Direction facingDirection = Direction.NORTH;
+    public Direction outputDirection = null;
     public boolean extractItems = false;
     public boolean extractFluids = false;
     public final Params params;

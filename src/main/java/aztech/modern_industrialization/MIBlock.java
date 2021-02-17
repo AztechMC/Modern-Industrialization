@@ -78,4 +78,6 @@ public class MIBlock extends Block {
     public static final MIBlock FROSTPROOF_MACHINE_CASING = new MIBlock("frostproof_machine_casing");
     public static final MIBlock CLEAN_STAINLESS_STEEL_MACHINE_CASING = new MIBlock("clean_stainless_steel_machine_casing");
     public static final MIBlock NUCLEAR_MACHINE_CASING = new MIBlock("nuclear_machine_casing");
+
+    public static final MIBlock CREATIVE_ENERGY_SOURCE = new MIBlock("creative_energy_source");
 }

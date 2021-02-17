@@ -82,7 +82,7 @@ public class MachineInventories {
         while (fluidStackCnt-- > 0)
             fluidStacks.add(new ConfigurableFluidStack(0));
 
-        inventory.readFromTag(buf.readCompoundTag());
+        inventory.readNbt(buf.readCompoundTag());
         return clientInv;
     }
 
@@ -93,7 +93,7 @@ public class MachineInventories {
         buf.writeInt(inventory.getInventory().itemStacks.size());
         buf.writeInt(inventory.getInventory().fluidStacks.size());
         CompoundTag tag = new CompoundTag();
-        inventory.getInventory().writeToTag(tag);
+        inventory.getInventory().writeNbt(tag);
         buf.writeCompoundTag(tag);
     }
 }

@@ -51,9 +51,6 @@ public final class MaterialBuilder {
         this.materialName = materialName;
         this.materialSet = materialSet.name;
 
-        int r = (color >> 16) & 0xff;
-        int g = (color >> 8) & 0xff;
-        int b = (color & 0xff);
         this.coloramp = new DefaultColoramp(color);
     }
 

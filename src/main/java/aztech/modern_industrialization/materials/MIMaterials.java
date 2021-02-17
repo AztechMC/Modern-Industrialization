@@ -139,7 +139,10 @@ public class MIMaterials {
         );
 
         MaterialRegistry.addMaterial(
-                new MaterialBuilder("tin", DULL, 0xcbe4e4)
+                new MaterialBuilder("tin", DULL,
+                        new BakableTargetColoramp(0xc0bcd0,
+                                "modern_industrialization:textures/materialsets/shiny/ingot.png",
+                        "modern_industrialization:textures/template/tin_ingot.png"))
                         .addRegularParts(ITEM_ALL)
                         .addRegularParts(ORE)
                         .addRegularParts(WIRE)

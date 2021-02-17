@@ -31,15 +31,10 @@ import net.minecraft.client.texture.NativeImage;
 
 public class TextureHelper {
 
-    public static void colorize(NativeImage image, int r, int g, int b) {
-        colorize(image, toRGB(r, g, b));
-    }
-
     public static void colorize(NativeImage image, Coloramp colorramp) {
         for (int i = 0; i < image.getWidth(); ++i) {
             for (int j = 0; j < image.getHeight(); ++j) {
                 int color = image.getPixelColor(i, j);
-                // relative luminance
                 double l = getLuminance(color);
                 int rgb = colorramp.getRGB(l);
                 int r = getRrgb(rgb);
@@ -76,7 +71,7 @@ public class TextureHelper {
     }
 
     public static int getRrgb(int rgb) {
-        return rgb >> 16;
+        return (rgb >> 16) & 0xFF;
     }
 
     public static int getGrgb(int rgb) {

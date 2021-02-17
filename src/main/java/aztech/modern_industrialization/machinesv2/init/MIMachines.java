@@ -40,13 +40,12 @@ import aztech.modern_industrialization.machinesv2.components.sync.EnergyBar;
 import aztech.modern_industrialization.machinesv2.components.sync.ProgressBar;
 import aztech.modern_industrialization.machinesv2.components.sync.RecipeEfficiencyBar;
 import aztech.modern_industrialization.machinesv2.gui.MachineGuiParameters;
+import aztech.modern_industrialization.machinesv2.models.MachineModels;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
-
-import aztech.modern_industrialization.machinesv2.models.MachineModels;
 import net.devtech.arrp.json.tags.JTag;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.loader.api.FabricLoader;
@@ -63,20 +62,16 @@ public final class MIMachines {
         ProgressBar.Parameters progressBarParams = new ProgressBar.Parameters(78, 35, "macerator");
         RecipeEfficiencyBar.Parameters efficiencyBarParams = new RecipeEfficiencyBar.Parameters(38, 66);
         registerMachineTiers("macerator", guiParams, MIMachineRecipeTypes.MACERATOR, 1, 4, 0, 0, progressBarParams, efficiencyBarParams,
-                items -> items.addSlot(56, 35).addSlots(102, 27, 2, 2),
-                fluids -> {},
-                true, true, false,
-                TIER_BRONZE | TIER_STEEL | TIER_ELECTRIC);
+                items -> items.addSlot(56, 35).addSlots(102, 27, 2, 2), fluids -> {
+                }, true, true, false, TIER_BRONZE | TIER_STEEL | TIER_ELECTRIC);
     }
 
     private static final EnergyBar.Parameters ENERGY_BAR_PARAMS = new EnergyBar.Parameters(18, 34);
 
-    public static void registerMachineTiers(String machine, MachineGuiParameters guiParams, MachineRecipeType type,
-                                            int itemInputCount, int itemOutputCount, int fluidInputCount, int fluidOutputCount,
-                                            ProgressBar.Parameters progressBarParams, RecipeEfficiencyBar.Parameters efficiencyBarParams,
-                                            Consumer<SlotPositions.Builder> itemPositions, Consumer<SlotPositions.Builder> fluidPositions,
-                                            boolean frontOverlay, boolean topOverlay, boolean sideOverlay,
-                                            int tiers) {
+    public static void registerMachineTiers(String machine, MachineGuiParameters guiParams, MachineRecipeType type, int itemInputCount,
+            int itemOutputCount, int fluidInputCount, int fluidOutputCount, ProgressBar.Parameters progressBarParams,
+            RecipeEfficiencyBar.Parameters efficiencyBarParams, Consumer<SlotPositions.Builder> itemPositions,
+            Consumer<SlotPositions.Builder> fluidPositions, boolean frontOverlay, boolean topOverlay, boolean sideOverlay, int tiers) {
         for (int i = 0; i < 2; ++i) {
             if (i == 0 && (tiers & TIER_BRONZE) == 0) {
                 continue;
@@ -94,7 +89,8 @@ public final class MIMachines {
             String prefix = i == 0 ? "bronze" : "steel";
             int steamBuckets = i == 0 ? 2 : 4;
             registerMachine(prefix + "_" + machine,
-                    bet -> new SteamMachineBlockEntity(bet, type, buildComponent(itemInputCount, itemOutputCount, fluidInputCount, fluidOutputCount, itemPositionsBuilder.build(), fluidPositionsBuilder.build(), steamBuckets), guiParams, progressBarParams, tier),
+                    bet -> new SteamMachineBlockEntity(bet, type, buildComponent(itemInputCount, itemOutputCount, fluidInputCount, fluidOutputCount,
+                            itemPositionsBuilder.build(), fluidPositionsBuilder.build(), steamBuckets), guiParams, progressBarParams, tier),
                     bet -> {
                         if (itemInputCount + itemOutputCount > 0) {
                             MachineBlockEntity.registerItemApi(bet);
@@ -111,7 +107,10 @@ public final class MIMachines {
             SlotPositions.Builder fluidPositionsBuilder = new SlotPositions.Builder();
             fluidPositions.accept(fluidPositionsBuilder);
             registerMachine("lv_" + machine,
-                    bet -> new ElectricMachineBlockEntity(bet, type, buildComponent(itemInputCount, itemOutputCount, fluidInputCount, fluidOutputCount, itemPositionsBuilder.build(), fluidPositionsBuilder.build(), 0), guiParams, ENERGY_BAR_PARAMS, progressBarParams, efficiencyBarParams, MachineTier.LV, 3200),
+                    bet -> new ElectricMachineBlockEntity(bet, type,
+                            buildComponent(itemInputCount, itemOutputCount, fluidInputCount, fluidOutputCount, itemPositionsBuilder.build(),
+                                    fluidPositionsBuilder.build(), 0),
+                            guiParams, ENERGY_BAR_PARAMS, progressBarParams, efficiencyBarParams, MachineTier.LV, 3200),
                     bet -> {
                         ElectricMachineBlockEntity.registerEnergyApi(bet);
                         if (itemInputCount + itemOutputCount > 0) {
@@ -139,7 +138,8 @@ public final class MIMachines {
     }
 
     /**
-     * @param steamBuckets Number of steam buckets in the steam input slot, or 0 for no steam input slot
+     * @param steamBuckets Number of steam buckets in the steam input slot, or 0 for
+     *                     no steam input slot
      */
     private static MachineInventoryComponent buildComponent(int itemInputCount, int itemOutputCount, int fluidInputCount, int fluidOutputCount,
             SlotPositions itemPositions, SlotPositions fluidPositions, int steamBuckets) {

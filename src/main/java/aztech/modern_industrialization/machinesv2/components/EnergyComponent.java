@@ -27,9 +27,8 @@ import aztech.modern_industrialization.api.energy.CableTier;
 import aztech.modern_industrialization.api.energy.EnergyInsertable;
 import aztech.modern_industrialization.util.Simulation;
 import com.google.common.base.Preconditions;
-import net.minecraft.nbt.CompoundTag;
-
 import java.util.function.Predicate;
+import net.minecraft.nbt.CompoundTag;
 
 public class EnergyComponent {
     private long storedEu;

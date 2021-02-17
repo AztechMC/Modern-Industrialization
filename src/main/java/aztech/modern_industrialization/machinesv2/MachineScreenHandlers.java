@@ -1,3 +1,26 @@
+/*
+ * MIT License
+ *
+ * Copyright (c) 2020 Azercoco & Technici4n
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
 package aztech.modern_industrialization.machinesv2;
 
 import aztech.modern_industrialization.ModernIndustrialization;
@@ -9,6 +32,12 @@ import aztech.modern_industrialization.util.NbtHelper;
 import aztech.modern_industrialization.util.RenderHelper;
 import aztech.modern_industrialization.util.TextHelper;
 import com.mojang.blaze3d.systems.RenderSystem;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
@@ -32,14 +61,7 @@ import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.function.Consumer;
-import java.util.function.Supplier;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
-
-@SuppressWarnings({"rawtypes", "unchecked"})
+@SuppressWarnings({ "rawtypes", "unchecked" })
 public class MachineScreenHandlers {
     public static abstract class Common extends ConfigurableScreenHandler {
         protected final MachineGuiParameters guiParams;
@@ -62,12 +84,14 @@ public class MachineScreenHandlers {
             for (int i = 0; i < inventory.itemStacks.size(); ++i) {
                 ConfigurableItemStack stack = inventory.itemStacks.get(i);
                 // FIXME: markDirty and insert predicate
-                this.addSlot(stack.new ConfigurableItemSlot(() -> {}, inventory.itemPositions.getX(i), inventory.itemPositions.getY(i), s -> true));
+                this.addSlot(stack.new ConfigurableItemSlot(() -> {
+                }, inventory.itemPositions.getX(i), inventory.itemPositions.getY(i), s -> true));
             }
             for (int i = 0; i < inventory.fluidStacks.size(); ++i) {
                 ConfigurableFluidStack stack = inventory.fluidStacks.get(i);
                 // FIXME: markDirty
-                this.addSlot(stack.new ConfigurableFluidSlot(() -> {}, inventory.fluidPositions.getX(i), inventory.fluidPositions.getY(i)));
+                this.addSlot(stack.new ConfigurableFluidSlot(() -> {
+                }, inventory.fluidPositions.getX(i), inventory.fluidPositions.getY(i)));
             }
         }
     }
@@ -117,8 +141,10 @@ public class MachineScreenHandlers {
         // Inventory
         int itemStackCount = buf.readInt();
         int fluidStackCount = buf.readInt();
-        List<ConfigurableItemStack> itemStacks = IntStream.range(0, itemStackCount).mapToObj(i -> new ConfigurableItemStack()).collect(Collectors.toList());
-        List<ConfigurableFluidStack> fluidStacks = IntStream.range(0, fluidStackCount).mapToObj(i -> new ConfigurableFluidStack(0)).collect(Collectors.toList());
+        List<ConfigurableItemStack> itemStacks = IntStream.range(0, itemStackCount).mapToObj(i -> new ConfigurableItemStack())
+                .collect(Collectors.toList());
+        List<ConfigurableFluidStack> fluidStacks = IntStream.range(0, fluidStackCount).mapToObj(i -> new ConfigurableFluidStack(0))
+                .collect(Collectors.toList());
         CompoundTag tag = buf.readCompoundTag();
         NbtHelper.getList(tag, "items", itemStacks, ConfigurableItemStack::readFromTag);
         NbtHelper.getList(tag, "fluids", fluidStacks, ConfigurableFluidStack::readFromTag);
@@ -142,7 +168,8 @@ public class MachineScreenHandlers {
     public static class Client extends Common {
         final List<SyncedComponent.Client> components;
 
-        Client(int syncId, PlayerInventory playerInventory, MIInventory inventory, List<SyncedComponent.Client> components, MachineGuiParameters guiParams) {
+        Client(int syncId, PlayerInventory playerInventory, MIInventory inventory, List<SyncedComponent.Client> components,
+                MachineGuiParameters guiParams) {
             super(syncId, playerInventory, inventory, guiParams);
             this.components = components;
         }
@@ -197,9 +224,10 @@ public class MachineScreenHandlers {
 
         @Override
         public void addButton(int u, Text message, Consumer<Integer> pressAction, Supplier<List<Text>> tooltipSupplier, Supplier<Boolean> isPressed) {
-            addButton(new MachineButton(buttonX(), buttonY(), u, message, b -> pressAction.accept(handler.syncId), (button, matrices, mouseX, mouseY) -> {
-                renderTooltip(matrices, tooltipSupplier.get(), mouseX, mouseY);
-            }, isPressed));
+            addButton(new MachineButton(buttonX(), buttonY(), u, message, b -> pressAction.accept(handler.syncId),
+                    (button, matrices, mouseX, mouseY) -> {
+                        renderTooltip(matrices, tooltipSupplier.get(), mouseX, mouseY);
+                    }, isPressed));
         }
 
         private void addLockButton() {
@@ -356,7 +384,8 @@ public class MachineScreenHandlers {
             private final int u;
             private final Supplier<Boolean> isPressed;
 
-            private MachineButton(int x, int y, int u, Text message, PressAction onPress, TooltipSupplier tooltipSupplier, Supplier<Boolean> isPressed) {
+            private MachineButton(int x, int y, int u, Text message, PressAction onPress, TooltipSupplier tooltipSupplier,
+                    Supplier<Boolean> isPressed) {
                 super(x, y, 20, 20, message, onPress, tooltipSupplier);
                 this.u = u;
                 this.isPressed = isPressed;

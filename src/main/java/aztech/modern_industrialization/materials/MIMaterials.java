@@ -7,7 +7,7 @@ import aztech.modern_industrialization.materials.recipe.SmeltingRecipes;
 import aztech.modern_industrialization.materials.recipe.StandardRecipes;
 import aztech.modern_industrialization.materials.recipe.builder.MIRecipeBuilder;
 import aztech.modern_industrialization.materials.recipe.builder.SmeltingRecipeBuilder;
-import aztech.modern_industrialization.textures.BakableTargetColoramp;
+import aztech.modern_industrialization.textures.coloramp.BakableTargetColoramp;
 import net.devtech.arrp.json.tags.JTag;
 import net.minecraft.util.Identifier;
 
@@ -43,7 +43,7 @@ public class MIMaterials {
                 new MaterialBuilder("iron", METALLIC,
                         new BakableTargetColoramp(0xC8C8C8, "modern_industrialization:textures/materialsets/metallic/ingot.png",
                                 "minecraft:textures/item/iron_ingot.png"))
-                        .addRegularParts(ITEM_BASE)
+                        .addRegularParts(ITEM_ALL)
                         .overridePart(ExternalPart.of("ingot", "#c:iron_ingots", "minecraft:iron_ingot"))
                         .overridePart(ExternalPart.of("nugget", "#c:iron_nuggets", "minecraft:iron_nugget"))
                         .overridePart(ExternalPart.of("block", "#c:iron_blocks", "minecraft:iron_block"))
@@ -71,7 +71,9 @@ public class MIMaterials {
         );
 
         MaterialRegistry.addMaterial(
-                new MaterialBuilder("redstone", GEM, 0xd20000)
+                new MaterialBuilder("redstone", GEM,
+                        new BakableTargetColoramp(0xd20000, "modern_industrialization:textures/materialsets/gem/dust.png",
+                                "minecraft:textures/item/redstone.png"))
                         .addRegularParts(DUST, TINY_DUST, CRUSHED_DUST)
                         .overridePart(ExternalPart.of("dust", "minecraft:redstone", "minecraft:redstone"))
                         .addRecipes(StandardRecipes::apply, SmeltingRecipes::apply)
@@ -80,7 +82,8 @@ public class MIMaterials {
         );
 
         MaterialRegistry.addMaterial(
-                new MaterialBuilder("quartz", GEM, 0xf0ebe4)
+                new MaterialBuilder("quartz", GEM, new BakableTargetColoramp(0xf0ebe4, "minecraft:textures/item/quartz.png",
+                        "minecraft:textures/item/quartz.png"))
                         .addRegularParts(CRUSHED_DUST, MIParts.GEM, DUST, TINY_DUST)
                         .overridePart(ExternalPart.of(MIParts.GEM, "minecraft:quatz", "minecraft:quatz"))
                         .addRecipes(StandardRecipes::apply)
@@ -88,7 +91,18 @@ public class MIMaterials {
         );
 
         MaterialRegistry.addMaterial(
-                new MaterialBuilder("emerald", SHINY, 0x3FF385)
+                new MaterialBuilder("diamond", GEM, new BakableTargetColoramp(0x48eeda, "minecraft:textures/item/diamond.png",
+                        "minecraft:textures/item/diamond.png"))
+                        .addRegularParts(CRUSHED_DUST, MIParts.GEM, DUST, TINY_DUST)
+                        .addParts(ExternalPart.of("ore", "#c:diamond_ores", "minecraft:diamond_ore"))
+                        .overridePart(ExternalPart.of(MIParts.GEM, "minecraft:diamond", "minecraft:diamond"))
+                        .addRecipes(StandardRecipes::apply)
+                        .build()
+        );
+
+        MaterialRegistry.addMaterial(
+                new MaterialBuilder("emerald", SHINY,  new BakableTargetColoramp(0x3FF385, "minecraft:textures/item/emerald.png",
+                        "minecraft:textures/item/emerald.png"))
                         .addRegularParts(ITEM_PURE_NON_METAL)
                         .removeRegularParts(BLOCK)
                         .addRegularParts(MIParts.GEM)
@@ -125,7 +139,10 @@ public class MIMaterials {
         );
 
         MaterialRegistry.addMaterial(
-                new MaterialBuilder("tin", DULL, 0xcbe4e4)
+                new MaterialBuilder("tin", DULL,
+                        new BakableTargetColoramp(0xc0bcd0,
+                                "modern_industrialization:textures/materialsets/shiny/ingot.png",
+                        "modern_industrialization:textures/template/tin_ingot.png"))
                         .addRegularParts(ITEM_ALL)
                         .addRegularParts(ORE)
                         .addRegularParts(WIRE)

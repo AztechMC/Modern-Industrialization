@@ -26,8 +26,8 @@ package aztech.modern_industrialization.materials;
 import aztech.modern_industrialization.materials.part.MaterialPart;
 import aztech.modern_industrialization.materials.part.RegularMaterialPart;
 import aztech.modern_industrialization.materials.recipe.builder.MaterialRecipeBuilder;
-import aztech.modern_industrialization.textures.Coloramp;
-import aztech.modern_industrialization.textures.DefaultColoramp;
+import aztech.modern_industrialization.textures.coloramp.Coloramp;
+import aztech.modern_industrialization.textures.coloramp.DefaultColoramp;
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -51,9 +51,6 @@ public final class MaterialBuilder {
         this.materialName = materialName;
         this.materialSet = materialSet.name;
 
-        int r = (color >> 16) & 0xff;
-        int g = (color >> 8) & 0xff;
-        int b = (color & 0xff);
         this.coloramp = new DefaultColoramp(color);
     }
 

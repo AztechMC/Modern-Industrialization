@@ -27,6 +27,7 @@ import aztech.modern_industrialization.MIFluids;
 import aztech.modern_industrialization.ModernIndustrialization;
 import aztech.modern_industrialization.textures.TextureHelper;
 import aztech.modern_industrialization.textures.TextureManager;
+import aztech.modern_industrialization.textures.coloramp.DefaultColoramp;
 import java.io.IOException;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.texture.NativeImage;
@@ -131,7 +132,7 @@ public class CraftingFluid extends Fluid {
             try {
                 NativeImage bucket_image = tm.getAssetAsTexture(bucket);
                 NativeImage bucket_content_image = tm.getAssetAsTexture(bucket_content);
-                TextureHelper.colorize(bucket_content_image, color);
+                TextureHelper.colorize(bucket_content_image, new DefaultColoramp(color));
                 TextureHelper.blend(bucket_image, bucket_content_image);
                 if (isGas) {
                     TextureHelper.flip(bucket_image);

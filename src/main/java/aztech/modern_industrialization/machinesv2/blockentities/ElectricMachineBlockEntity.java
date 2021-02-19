@@ -41,7 +41,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.nbt.CompoundTag;
 
-public class ElectricMachineBlockEntity extends AbstractRegularMachineBlockEntity {
+public class ElectricMachineBlockEntity extends SingleBlockCraftingMachineBlockEntity {
     public ElectricMachineBlockEntity(BlockEntityType<?> type, MachineRecipeType recipeType, MachineInventoryComponent inventory,
             MachineGuiParameters guiParams, EnergyBar.Parameters energyBarParams, ProgressBar.Parameters progressBarParams,
             RecipeEfficiencyBar.Parameters efficiencyBarParams, MachineTier tier, long euCapacity) {

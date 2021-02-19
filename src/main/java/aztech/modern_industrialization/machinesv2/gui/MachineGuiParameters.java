@@ -31,16 +31,14 @@ import net.minecraft.util.Identifier;
 public class MachineGuiParameters {
     public final Text title;
     public final int playerInventoryX, playerInventoryY;
-    public final Identifier backgroundTexture;
     public final int backgroundWidth, backgroundHeight;
     public final boolean lockButton;
 
-    private MachineGuiParameters(Text title, int playerInventoryX, int playerInventoryY, Identifier backgroundTexture, int backgroundWidth,
+    private MachineGuiParameters(Text title, int playerInventoryX, int playerInventoryY, int backgroundWidth,
             int backgroundHeight, boolean lockButton) {
         this.title = title;
         this.playerInventoryX = playerInventoryX;
         this.playerInventoryY = playerInventoryY;
-        this.backgroundTexture = backgroundTexture;
         this.backgroundWidth = backgroundWidth;
         this.backgroundHeight = backgroundHeight;
         this.lockButton = lockButton;
@@ -50,32 +48,35 @@ public class MachineGuiParameters {
         buf.writeText(title);
         buf.writeInt(playerInventoryX);
         buf.writeInt(playerInventoryY);
-        buf.writeIdentifier(backgroundTexture);
         buf.writeInt(backgroundWidth);
         buf.writeInt(backgroundHeight);
         buf.writeBoolean(lockButton);
     }
 
     public static MachineGuiParameters read(PacketByteBuf buf) {
-        return new MachineGuiParameters(buf.readText(), buf.readInt(), buf.readInt(), buf.readIdentifier(), buf.readInt(), buf.readInt(),
+        return new MachineGuiParameters(buf.readText(), buf.readInt(), buf.readInt(), buf.readInt(), buf.readInt(),
                 buf.readBoolean());
     }
 
     public static class Builder {
         private final Text title;
         public int playerInventoryX = 8, playerInventoryY = 84;
-        private final Identifier backgroundTexture;
-        public final int backgroundSizeX = 176, backgroundSizeY = 166;
+        private int backgroundSizeX = 176, backgroundSizeY = 166;
         public final boolean lockButton;
 
-        public Builder(Text title, String name, boolean lockButton) {
+        public Builder(Text title, boolean lockButton) {
             this.title = title;
-            this.backgroundTexture = new MIIdentifier("textures/gui/container/" + name + ".png");
             this.lockButton = lockButton;
         }
 
+        public Builder backgroundHeight(int height) {
+            this.backgroundSizeY = height;
+            this.playerInventoryY = height - 82;
+            return this;
+        }
+
         public MachineGuiParameters build() {
-            return new MachineGuiParameters(title, playerInventoryX, playerInventoryY, backgroundTexture, backgroundSizeX, backgroundSizeY,
+            return new MachineGuiParameters(title, playerInventoryX, playerInventoryY, backgroundSizeX, backgroundSizeY,
                     lockButton);
         }
     }

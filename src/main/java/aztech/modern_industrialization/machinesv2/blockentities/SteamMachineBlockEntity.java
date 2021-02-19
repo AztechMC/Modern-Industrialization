@@ -35,7 +35,7 @@ import aztech.modern_industrialization.machinesv2.models.MachineModelClientData;
 import aztech.modern_industrialization.util.Simulation;
 import net.minecraft.block.entity.BlockEntityType;
 
-public class SteamMachineBlockEntity extends AbstractRegularMachineBlockEntity {
+public class SteamMachineBlockEntity extends SingleBlockCraftingMachineBlockEntity {
     public SteamMachineBlockEntity(BlockEntityType<?> type, MachineRecipeType recipeType, MachineInventoryComponent inventory,
             MachineGuiParameters guiParams, ProgressBar.Parameters progressBarParams, MachineTier tier) {
         super(type, recipeType, inventory, guiParams, progressBarParams, tier);

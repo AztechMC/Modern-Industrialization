@@ -44,7 +44,7 @@ import aztech.modern_industrialization.machines.impl.MachineFactory;
 import aztech.modern_industrialization.machinesv2.MachinePackets;
 import aztech.modern_industrialization.machinesv2.MachineScreenHandlers;
 import aztech.modern_industrialization.machinesv2.init.MIMachineRecipeTypes;
-import aztech.modern_industrialization.machinesv2.init.MIMachines;
+import aztech.modern_industrialization.machinesv2.init.SingleBlockCraftingMachines;
 import aztech.modern_industrialization.materials.MIMaterials;
 import aztech.modern_industrialization.pipes.MIPipes;
 import aztech.modern_industrialization.recipe.MIRecipes;
@@ -139,13 +139,13 @@ public class ModernIndustrialization implements ModInitializer {
 
         MIMaterials.init();
         MIMachineRecipeTypes.init();
-        MIMachines.init();
+        SingleBlockCraftingMachines.init();
         // MITags.setup();
         setupItems();
         setupBlocks();
         MIFluids.setupFluids();
         MITanks.setup();
-        // MIMachines.setupRecipes(); // will also load the static fields.
+        // SingleBlockCraftingMachines.setupRecipes(); // will also load the static fields.
         ForgeHammerScreenHandler.setupRecipes();
         // setupMachines();
         setupPackets();

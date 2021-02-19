@@ -33,7 +33,7 @@ public final class MachineModels {
     }
 
     @SuppressWarnings("IfCanBeSwitch")
-    public static void addMachine(String tier, String name, boolean frontOverlay, boolean topOverlay, boolean sideOverlay) {
+    public static void addTieredMachine(String tier, String name, boolean frontOverlay, boolean topOverlay, boolean sideOverlay) {
         MachineCasingModel defaultCasing;
         if (tier.equals("bronze")) {
             defaultCasing = MachineCasings.BRONZE;

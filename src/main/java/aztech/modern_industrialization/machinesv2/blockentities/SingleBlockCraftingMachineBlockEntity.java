@@ -46,9 +46,9 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.Tickable;
 import net.minecraft.util.math.Direction;
 
-public abstract class AbstractRegularMachineBlockEntity extends MachineBlockEntity implements CrafterComponent.Behavior, Tickable {
-    public AbstractRegularMachineBlockEntity(BlockEntityType<?> type, MachineRecipeType recipeType, MachineInventoryComponent inventory,
-            MachineGuiParameters guiParams, ProgressBar.Parameters progressBarParams, MachineTier tier) {
+public abstract class SingleBlockCraftingMachineBlockEntity extends MachineBlockEntity implements CrafterComponent.Behavior, Tickable {
+    public SingleBlockCraftingMachineBlockEntity(BlockEntityType<?> type, MachineRecipeType recipeType, MachineInventoryComponent inventory,
+                                                 MachineGuiParameters guiParams, ProgressBar.Parameters progressBarParams, MachineTier tier) {
         super(type, guiParams);
         this.inventory = inventory;
         this.crafter = new CrafterComponent(inventory, this);

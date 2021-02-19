@@ -23,10 +23,8 @@
  */
 package aztech.modern_industrialization.machinesv2.gui;
 
-import aztech.modern_industrialization.MIIdentifier;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
 
 public class MachineGuiParameters {
     public final Text title;
@@ -34,8 +32,8 @@ public class MachineGuiParameters {
     public final int backgroundWidth, backgroundHeight;
     public final boolean lockButton;
 
-    private MachineGuiParameters(Text title, int playerInventoryX, int playerInventoryY, int backgroundWidth,
-            int backgroundHeight, boolean lockButton) {
+    private MachineGuiParameters(Text title, int playerInventoryX, int playerInventoryY, int backgroundWidth, int backgroundHeight,
+            boolean lockButton) {
         this.title = title;
         this.playerInventoryX = playerInventoryX;
         this.playerInventoryY = playerInventoryY;
@@ -54,8 +52,7 @@ public class MachineGuiParameters {
     }
 
     public static MachineGuiParameters read(PacketByteBuf buf) {
-        return new MachineGuiParameters(buf.readText(), buf.readInt(), buf.readInt(), buf.readInt(), buf.readInt(),
-                buf.readBoolean());
+        return new MachineGuiParameters(buf.readText(), buf.readInt(), buf.readInt(), buf.readInt(), buf.readInt(), buf.readBoolean());
     }
 
     public static class Builder {
@@ -76,8 +73,7 @@ public class MachineGuiParameters {
         }
 
         public MachineGuiParameters build() {
-            return new MachineGuiParameters(title, playerInventoryX, playerInventoryY, backgroundSizeX, backgroundSizeY,
-                    lockButton);
+            return new MachineGuiParameters(title, playerInventoryX, playerInventoryY, backgroundSizeX, backgroundSizeY, lockButton);
         }
     }
 }

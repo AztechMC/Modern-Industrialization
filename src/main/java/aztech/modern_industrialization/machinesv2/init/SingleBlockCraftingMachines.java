@@ -124,7 +124,6 @@ public final class SingleBlockCraftingMachines {
                 true, true, true,
                 TIER_BRONZE | TIER_STEEL | TIER_ELECTRIC
         );
-        // TODO packer, polarizer, wiremill
         registerMachineTiers(
                 "packer", MIMachineRecipeTypes.PACKER, 2, 2, 0, 0, guiParams -> {},
                 new ProgressBar.Parameters(77, 31, "arrow"), new RecipeEfficiencyBar.Parameters(38, 66), new EnergyBar.Parameters(18, 30),

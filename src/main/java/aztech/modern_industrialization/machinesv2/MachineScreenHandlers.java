@@ -278,7 +278,7 @@ public class MachineScreenHandlers {
             this.client.getTextureManager().bindTexture(new MIIdentifier("textures/gui/container/background.png"));
             int bw = handler.guiParams.backgroundWidth;
             int bh = handler.guiParams.backgroundHeight;
-            drawTexture(matrices, x, y+4, 0, 256 - bh + 4, bw, bh - 4);
+            drawTexture(matrices, x, y + 4, 0, 256 - bh + 4, bw, bh - 4);
             drawTexture(matrices, x, y, 0, 0, bw, 4);
 
             for (ClientComponentRenderer renderer : renderers) {

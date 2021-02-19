@@ -1,18 +1,37 @@
-
+/*
+ * MIT License
+ *
+ * Copyright (c) 2020 Azercoco & Technici4n
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
 package aztech.modern_industrialization;
-
-import aztech.modern_industrialization.fluid.CraftingFluid;
-import net.devtech.arrp.json.models.JModel;
-import net.devtech.arrp.json.models.JTextures;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.text.*;
-import net.minecraft.util.registry.Registry;
-
-import java.util.ArrayList;
 
 import static aztech.modern_industrialization.ModernIndustrialization.MOD_ID;
 import static aztech.modern_industrialization.ModernIndustrialization.RESOURCE_PACK;
+
+import aztech.modern_industrialization.fluid.CraftingFluid;
+import java.util.ArrayList;
+import net.devtech.arrp.json.models.JModel;
+import net.devtech.arrp.json.models.JTextures;
+import net.minecraft.text.*;
+import net.minecraft.util.registry.Registry;
 
 /**
  * This is auto-generated, don't edit by hand!
@@ -84,21 +103,21 @@ public class MIFluids {
     public static final CraftingFluid SOLDERING_ALLOY = new CraftingFluid("soldering_alloy", 0xffabc4bf);
     public static final CraftingFluid LUBRICANT = new CraftingFluid("lubricant", 0xffffc400);
 
-    
     public static void setupFluids() {
-    
+
     }
-    
+
     static {
-        for(CraftingFluid fluid : FLUIDS) {
+        for (CraftingFluid fluid : FLUIDS) {
             registerFluid(fluid);
         }
     }
-    
+
     private static void registerFluid(CraftingFluid fluid) {
         String id = fluid.name;
         Registry.register(Registry.FLUID, new MIIdentifier(id), fluid);
         Registry.register(Registry.ITEM, new MIIdentifier("bucket_" + id), fluid.getBucketItem());
-        RESOURCE_PACK.addModel(JModel.model().parent("minecraft:item/generated").textures(new JTextures().layer0(MOD_ID + ":items/bucket/" + id)), new MIIdentifier("item/bucket_" + id));
+        RESOURCE_PACK.addModel(JModel.model().parent("minecraft:item/generated").textures(new JTextures().layer0(MOD_ID + ":items/bucket/" + id)),
+                new MIIdentifier("item/bucket_" + id));
     }
 }

@@ -41,18 +41,16 @@ import aztech.modern_industrialization.machinesv2.models.MachineModels;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
-
 import net.fabricmc.api.EnvType;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.text.TranslatableText;
-import org.lwjgl.system.CallbackI;
 
 /**
  * Registration of all single block crafting machines.
  */
 public final class SingleBlockCraftingMachines {
     public static void init() {
-        // @formatter:off
+        // @formatter:off // TODO: figure out why this doesn't work and remove the exclude from the build.gradle
         registerMachineTiers(
                 "assembler", MIMachineRecipeTypes.ASSEMBLER, 9, 3, 1, 0,
                 guiParams -> guiParams.backgroundHeight(186),
@@ -150,12 +148,10 @@ public final class SingleBlockCraftingMachines {
 
     private static final EnergyBar.Parameters DEFAULT_ENERGY_BAR = new EnergyBar.Parameters(18, 34);
 
-    public static void registerMachineTiers(String machine, MachineRecipeType type, int itemInputCount,
-            int itemOutputCount, int fluidInputCount, int fluidOutputCount,
-            Consumer<MachineGuiParameters.Builder> guiParams, ProgressBar.Parameters progressBarParams,
-            RecipeEfficiencyBar.Parameters efficiencyBarParams, EnergyBar.Parameters energyBarParams,
-            Consumer<SlotPositions.Builder> itemPositions, Consumer<SlotPositions.Builder> fluidPositions,
-            boolean frontOverlay, boolean topOverlay, boolean sideOverlay, int tiers) {
+    public static void registerMachineTiers(String machine, MachineRecipeType type, int itemInputCount, int itemOutputCount, int fluidInputCount,
+            int fluidOutputCount, Consumer<MachineGuiParameters.Builder> guiParams, ProgressBar.Parameters progressBarParams,
+            RecipeEfficiencyBar.Parameters efficiencyBarParams, EnergyBar.Parameters energyBarParams, Consumer<SlotPositions.Builder> itemPositions,
+            Consumer<SlotPositions.Builder> fluidPositions, boolean frontOverlay, boolean topOverlay, boolean sideOverlay, int tiers) {
         for (int i = 0; i < 2; ++i) {
             if (i == 0 && (tiers & TIER_BRONZE) == 0) {
                 continue;
@@ -172,12 +168,15 @@ public final class SingleBlockCraftingMachines {
             MachineTier tier = i == 0 ? MachineTier.BRONZE : MachineTier.STEEL;
             String prefix = i == 0 ? "bronze" : "steel";
             int steamBuckets = i == 0 ? 2 : 4;
-            MachineGuiParameters.Builder guiParamsBuilder = new MachineGuiParameters.Builder(new TranslatableText("block.modern_industrialization." + prefix + "_" + machine), true);
+            MachineGuiParameters.Builder guiParamsBuilder = new MachineGuiParameters.Builder(
+                    new TranslatableText("block.modern_industrialization." + prefix + "_" + machine), true);
             guiParams.accept(guiParamsBuilder);
             MachineGuiParameters builtGuiParams = guiParamsBuilder.build();
             MachineRegistrationHelper.registerMachine(prefix + "_" + machine,
-                    bet -> new SteamMachineBlockEntity(bet, type, buildComponent(itemInputCount, itemOutputCount, fluidInputCount, fluidOutputCount,
-                            itemPositionsBuilder.build(), fluidPositionsBuilder.build(), steamBuckets), builtGuiParams, progressBarParams, tier),
+                    bet -> new SteamMachineBlockEntity(
+                            bet, type, buildComponent(itemInputCount, itemOutputCount, fluidInputCount, fluidOutputCount,
+                                    itemPositionsBuilder.build(), fluidPositionsBuilder.build(), steamBuckets),
+                            builtGuiParams, progressBarParams, tier),
                     bet -> {
                         if (itemInputCount + itemOutputCount > 0) {
                             MachineBlockEntity.registerItemApi(bet);
@@ -193,7 +192,8 @@ public final class SingleBlockCraftingMachines {
             itemPositions.accept(itemPositionsBuilder);
             SlotPositions.Builder fluidPositionsBuilder = new SlotPositions.Builder();
             fluidPositions.accept(fluidPositionsBuilder);
-            MachineGuiParameters.Builder guiParamsBuilder = new MachineGuiParameters.Builder(new TranslatableText("block.modern_industrialization.lv_" + machine), true);
+            MachineGuiParameters.Builder guiParamsBuilder = new MachineGuiParameters.Builder(
+                    new TranslatableText("block.modern_industrialization.lv_" + machine), true);
             guiParams.accept(guiParamsBuilder);
             MachineGuiParameters builtGuiParams = guiParamsBuilder.build();
             MachineRegistrationHelper.registerMachine("lv_" + machine,

@@ -41,33 +41,32 @@ public class MaterialHelper {
         return "c:" + materialName + "_" + part + "s";
     }
 
-    public static String partWithOverlay(String partWithMabyeOverlay){
+    public static String partWithOverlay(String partWithMabyeOverlay) {
         int len = partWithMabyeOverlay.length();
 
-        if(partWithMabyeOverlay.endsWith("_magnetic")){
+        if (partWithMabyeOverlay.endsWith("_magnetic")) {
             return partWithMabyeOverlay.substring(0, len - 9);
-        }else if(partWithMabyeOverlay.startsWith("n_doped_")){
+        } else if (partWithMabyeOverlay.startsWith("n_doped_")) {
             return partWithMabyeOverlay.substring(8, len);
-        }else if(partWithMabyeOverlay.startsWith("p_doped_")){
+        } else if (partWithMabyeOverlay.startsWith("p_doped_")) {
             return partWithMabyeOverlay.substring(8, len);
-        }else{
+        } else {
             return partWithMabyeOverlay;
         }
     }
 
-    public static String overlayWithOverlay(String partWithMabyeOverlay){
+    public static String overlayWithOverlay(String partWithMabyeOverlay) {
 
-        if(partWithMabyeOverlay.endsWith("_magnetic")){
+        if (partWithMabyeOverlay.endsWith("_magnetic")) {
             return "magnetic";
-        }else if(partWithMabyeOverlay.startsWith("n_doped_")){
+        } else if (partWithMabyeOverlay.startsWith("n_doped_")) {
             return "n_doped";
-        }else if(partWithMabyeOverlay.startsWith("p_doped_")){
+        } else if (partWithMabyeOverlay.startsWith("p_doped_")) {
             return "p_doped";
-        }else{
+        } else {
             return null;
         }
     }
-
 
     /**
      * Register a tag in the runtime data pack, and also create it if it doesn't

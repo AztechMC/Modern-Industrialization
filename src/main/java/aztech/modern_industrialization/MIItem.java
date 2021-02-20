@@ -81,7 +81,6 @@ public final class MIItem {
     public static final Item ITEM_OR_GATE = of("or_gate");
     public static final Item ITEM_NOT_GATE = of("not_gate");
 
-
     public static final Item ITEM_SODIUM_BATTERY = of("sodium_battery");
 
     /*

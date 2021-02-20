@@ -113,11 +113,11 @@ public final class MITextures {
 
             if (part.equals(MIParts.GEM)) {
                 template = getTemplate("specials", materialName, layer);
-            } else if(part.equals(MIParts.HOT_INGOT)){
+            } else if (part.equals(MIParts.HOT_INGOT)) {
                 template = getTemplate("common", "ingot", layer);
-            } else{
+            } else {
                 template = getTemplate("common", MaterialHelper.partWithOverlay(part), layer);
-                if(!mtm.hasAsset(template)){
+                if (!mtm.hasAsset(template)) {
                     template = getTemplate(materialSet, MaterialHelper.partWithOverlay(part), layer);
                 }
             }
@@ -126,7 +126,7 @@ public final class MITextures {
                 if (image == null) {
                     image = mtm.getAssetAsTexture(template);
                     colorizeLayer(image, layer, color);
-                    if(part.equals(MIParts.HOT_INGOT)){
+                    if (part.equals(MIParts.HOT_INGOT)) {
                         TextureHelper.increaseBrightness(image, 0.85f);
                     }
                 } else {
@@ -138,22 +138,20 @@ public final class MITextures {
             }
         }
 
-
         if (image != null) {
 
             String overlay = MaterialHelper.overlayWithOverlay(part);
 
-            if(overlay != null){
+            if (overlay != null) {
                 String overlayTemplate = getTemplate("common", overlay, "");
-                if(mtm.hasAsset(overlayTemplate)){
+                if (mtm.hasAsset(overlayTemplate)) {
                     NativeImage overlayImage = mtm.getAssetAsTexture(overlayTemplate);
                     TextureHelper.blend(image, overlayImage);
                     overlayImage.close();
-                }else{
+                } else {
                     throw new RuntimeException("Could not find the overlay : " + overlay);
                 }
             }
-
 
             String texturePath;
             if (MaterialHelper.hasBlock(part)) {
@@ -168,7 +166,7 @@ public final class MITextures {
 
             mtm.addTexture(texturePath, image);
             image.close();
-        } else if(!part.equals(MIParts.GEM)) {
+        } else if (!part.equals(MIParts.GEM)) {
             throw new RuntimeException("Could not find any texture!");
         }
     }

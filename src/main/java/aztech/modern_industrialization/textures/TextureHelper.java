@@ -54,7 +54,7 @@ public class TextureHelper {
                 int g = getG(color);
                 int b = getB(color);
 
-                int rgb = inecreaseBrightness(toRGB(r,g,b), minBrightness);
+                int rgb = inecreaseBrightness(toRGB(r, g, b), minBrightness);
                 r = getRrgb(rgb);
                 g = getGrgb(rgb);
                 b = getBrgb(rgb);
@@ -88,7 +88,7 @@ public class TextureHelper {
     public static int inecreaseBrightness(int rgb, float minBrightness) {
         float[] hsbval = new float[3];
         Color.RGBtoHSB(getRrgb(rgb), getGrgb(rgb), getBrgb(rgb), hsbval);
-        return 0xFFFFFF & Color.HSBtoRGB(hsbval[0], hsbval[1], minBrightness + (1 - minBrightness)*hsbval[2]);
+        return 0xFFFFFF & Color.HSBtoRGB(hsbval[0], hsbval[1], minBrightness + (1 - minBrightness) * hsbval[2]);
     }
 
     public static int toRGB(int r, int g, int b) {

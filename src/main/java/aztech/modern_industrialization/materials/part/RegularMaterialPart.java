@@ -91,7 +91,6 @@ public class RegularMaterialPart implements MaterialPart {
 
     }
 
-
     @Override
     public String getPart() {
         return part;

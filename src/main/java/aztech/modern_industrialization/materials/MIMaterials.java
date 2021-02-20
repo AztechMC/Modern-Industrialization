@@ -232,18 +232,6 @@ public class MIMaterials {
         MaterialRegistry.addMaterial(new MaterialBuilder("sodium_fluorosilicate", DULL, 0xD1EDE5).addRegularParts(ITEM_PURE_NON_METAL)
                 .removeRegularParts(BLOCK).addRecipes(StandardRecipes::apply).build());
 
-        MaterialRegistry.addMaterial(
-                new MaterialBuilder("manganese", DULL, 0xC1C1C1).addRegularParts(ITEM_PURE_METAL).addRecipes(StandardRecipes::apply).build());
-
-        MaterialRegistry.addMaterial(new MaterialBuilder("fluorite", SHINY, 0xAF69CF).addRegularParts(ITEM_PURE_NON_METAL).removeRegularParts(BLOCK)
-                .addRegularParts(ORE).addRecipes(StandardRecipes::apply).build());
-
-        MaterialRegistry.addMaterial(new MaterialBuilder("sodium_fluorosilicate", DULL, 0xD1EDE5).addRegularParts(ITEM_PURE_NON_METAL)
-                .removeRegularParts(BLOCK).addRecipes(StandardRecipes::apply).build());
-
-        MaterialRegistry.addMaterial(new MaterialBuilder("sodium_fluoroberyllate", DULL, 0x77B889).addRegularParts(CRUSHED_DUST)
-                .addRecipes(StandardRecipes::apply).build());
-
         MaterialRegistry.addMaterial(new MaterialBuilder("beryllium_hydroxide", DULL, 0x4E875E).addRegularParts(DUST, TINY_DUST)
                 .addRecipes(StandardRecipes::apply).build());
 

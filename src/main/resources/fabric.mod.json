@@ -28,7 +28,8 @@
     "rei_plugins": [
       "aztech.modern_industrialization.compat.rei.MIREIPlugin",
       "aztech.modern_industrialization.compat.rei.fluid_fuels.FluidFuelsPlugin",
-      "aztech.modern_industrialization.compat.rei.forgehammer_recipe.ForgeHammerRecipePlugin"
+      "aztech.modern_industrialization.compat.rei.forgehammer_recipe.ForgeHammerRecipePlugin",
+      "aztech.modern_industrialization.compat.rei.machines.MachinesPlugin"
     ],
     "modmenu": [
       "aztech.modern_industrialization.compat.modmenu.MIModMenuEntrypoint"

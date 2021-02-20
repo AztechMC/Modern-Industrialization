@@ -95,16 +95,21 @@ public class ProgressBar {
         public class Renderer implements ClientComponentRenderer {
             @Override
             public void renderBackground(DrawableHelper helper, MatrixStack matrices, int x, int y) {
-                MinecraftClient.getInstance().getTextureManager()
-                        .bindTexture(new MIIdentifier("textures/gui/progress_bar/" + params.progressBarType + ".png"));
-                // background
-                DrawableHelper.drawTexture(matrices, x + params.renderX, y + params.renderY, helper.getZOffset(), 0, 0, 20, 20, 40, 20);
-                // foreground
-                int foregroundPixels = (int) (progress * 20);
-                if (foregroundPixels > 0) {
-                    DrawableHelper.drawTexture(matrices, x + params.renderX, y + params.renderY, helper.getZOffset(), 0, 20, foregroundPixels, 20, 40,
-                            20);
-                }
+                RenderHelper.renderProgress(helper, matrices, x, y, params, progress);
+            }
+        }
+    }
+
+    public static class RenderHelper {
+        public static void renderProgress(DrawableHelper helper, MatrixStack matrices, int x, int y, Parameters params, float progress) {
+            MinecraftClient.getInstance().getTextureManager().bindTexture(params.getTextureId());
+            // background
+            DrawableHelper.drawTexture(matrices, x + params.renderX, y + params.renderY, helper.getZOffset(), 0, 0, 20, 20, 40, 20);
+            // foreground
+            int foregroundPixels = (int) (progress * 20);
+            if (foregroundPixels > 0) {
+                DrawableHelper.drawTexture(matrices, x + params.renderX, y + params.renderY, helper.getZOffset(), 0, 20, foregroundPixels, 20, 40,
+                        20);
             }
         }
     }
@@ -122,6 +127,10 @@ public class ProgressBar {
             this.renderX = renderX;
             this.renderY = renderY;
             this.progressBarType = progressBarType;
+        }
+
+        public Identifier getTextureId() {
+            return new MIIdentifier("textures/gui/progress_bar/" + progressBarType + ".png");
         }
     }
 }

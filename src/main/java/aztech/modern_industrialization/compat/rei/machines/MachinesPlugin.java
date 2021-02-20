@@ -21,21 +21,17 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.compat.rei.machine_recipe;
+package aztech.modern_industrialization.compat.rei.machines;
 
 import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.inventory.ConfigurableFluidStack;
 import aztech.modern_industrialization.inventory.ConfigurableItemStack;
-import aztech.modern_industrialization.machines.MIMachines;
-import aztech.modern_industrialization.machines.impl.MachineFactory;
-import aztech.modern_industrialization.machines.impl.MachineScreen;
 import aztech.modern_industrialization.machines.recipe.MachineRecipe;
-import aztech.modern_industrialization.machines.recipe.MachineRecipeType;
 import aztech.modern_industrialization.machines.recipe.RecipeConversions;
-import java.util.List;
+import aztech.modern_industrialization.machinesv2.MachineScreenHandlers;
+import aztech.modern_industrialization.machinesv2.init.MIMachineRecipeTypes;
 import java.util.Map;
 import java.util.function.Predicate;
-import me.shedaniel.math.Rectangle;
 import me.shedaniel.rei.api.EntryStack;
 import me.shedaniel.rei.api.RecipeHelper;
 import me.shedaniel.rei.api.plugins.REIPluginV0;
@@ -48,64 +44,53 @@ import net.minecraft.screen.slot.Slot;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.TypedActionResult;
 
-public class MachineRecipePlugin implements REIPluginV0 {
+public class MachinesPlugin implements REIPluginV0 {
     @Override
     public Identifier getPluginIdentifier() {
-        return new MIIdentifier("machine_recipe");
+        return new MIIdentifier("machines");
     }
 
     @Override
     public void registerPluginCategories(RecipeHelper recipeHelper) {
-        // regular categories
-        for (Map.Entry<MachineRecipeType, MIMachines.RecipeInfo> entry : MIMachines.RECIPE_TYPES.entrySet()) {
-            List<MachineFactory> factories = entry.getValue().factories;
-            recipeHelper.registerCategory(
-                    new MachineRecipeCategory(entry.getKey(), factories.get(factories.size() - 1), EntryStack.create(factories.get(0).item)));
+        for (Map.Entry<String, MachineCategoryParams> entry : ReiMachineRecipes.categories.entrySet()) {
+            Identifier id = new MIIdentifier(entry.getKey());
+            recipeHelper.registerCategory(new MachineRecipeCategory(id, entry.getValue()));
         }
     }
 
-    @Override
     @SuppressWarnings("rawtypes")
+    @Override
     public void registerRecipeDisplays(RecipeHelper recipeHelper) {
         // regular recipes
-        for (MachineRecipeType type : MIMachines.RECIPE_TYPES.keySet()) {
-            recipeHelper.registerRecipes(type.getId(),
-                    (Predicate<Recipe>) recipe -> recipe instanceof MachineRecipe && ((MachineRecipe) recipe).getType() == type,
-                    recipe -> new MachineRecipeDisplay(type.getId(), (MachineRecipe) recipe));
+        for (Map.Entry<String, MachineCategoryParams> entry : ReiMachineRecipes.categories.entrySet()) {
+            Identifier id = new MIIdentifier(entry.getKey());
+            recipeHelper.registerRecipes(id, (Predicate<Recipe>) recipe -> {
+                if (recipe instanceof MachineRecipe) {
+                    return entry.getValue().recipePredicate.test((MachineRecipe) recipe);
+                } else {
+                    return false;
+                }
+            }, recipe -> new MachineRecipeDisplay(id, (MachineRecipe) recipe));
         }
         // furnace recipes
-        recipeHelper.registerRecipes(MIMachines.RECIPE_FURNACE.getId(), (Predicate<Recipe>) recipe -> recipe.getType() == RecipeType.SMELTING,
-                recipe -> new MachineRecipeDisplay(MIMachines.RECIPE_FURNACE.getId(),
-                        RecipeConversions.of((SmeltingRecipe) recipe, MIMachines.RECIPE_FURNACE)));
-        // cutting machine recipes
-        recipeHelper.registerRecipes(MIMachines.RECIPE_CUTTING_MACHINE.getId(),
-                (Predicate<Recipe>) recipe -> recipe.getType() == RecipeType.STONECUTTING,
-                recipe -> new MachineRecipeDisplay(MIMachines.RECIPE_CUTTING_MACHINE.getId(),
-                        RecipeConversions.of((StonecuttingRecipe) recipe, MIMachines.RECIPE_CUTTING_MACHINE)));
+        Identifier furnaceId = new MIIdentifier("bronze_furnace");
+        recipeHelper.registerRecipes(furnaceId, (Predicate<Recipe>) recipe -> recipe.getType() == RecipeType.SMELTING,
+                recipe -> new MachineRecipeDisplay(furnaceId, RecipeConversions.of((SmeltingRecipe) recipe, MIMachineRecipeTypes.FURNACE)));
+        // stonecutter recipes
+        Identifier cuttingMachineId = new MIIdentifier("bronze_cutting_machine");
+        recipeHelper.registerRecipes(cuttingMachineId, (Predicate<Recipe>) recipe -> recipe.getType() == RecipeType.STONECUTTING,
+                recipe -> new MachineRecipeDisplay(cuttingMachineId,
+                        RecipeConversions.of((StonecuttingRecipe) recipe, MIMachineRecipeTypes.CUTTING_MACHINE)));
     }
 
     @Override
     public void registerOthers(RecipeHelper recipeHelper) {
-        for (Map.Entry<MachineRecipeType, MIMachines.RecipeInfo> entry : MIMachines.RECIPE_TYPES.entrySet()) {
-            recipeHelper.registerWorkingStations(entry.getKey().getId(),
-                    entry.getValue().factories.stream().map(f -> EntryStack.create(f.item)).toArray(EntryStack[]::new));
-            MachineFactory factory = entry.getValue().factories.get(entry.getValue().factories.size() - 1);
-            recipeHelper.registerContainerClickArea(screen -> {
-                if (screen.getScreenHandler().getMachineFactory().recipeType == factory.recipeType) {
-                    return new Rectangle(factory.getProgressBarDrawX(), factory.getProgressBarDrawY(), factory.getProgressBarSizeX(),
-                            factory.getProgressBarSizeY());
-                } else {
-                    return new Rectangle(-1, -1, 0, 0);
-                }
-            }, MachineScreen.class, entry.getKey().getId());
-        }
-
-        recipeHelper.registerAutoCraftingHandler(new OutputLockTransferHandler());
-
+        // TODO: workstations
+        // TODO: arrow clicking
+        // TODO: "+" handler
         recipeHelper.registerFocusedStackProvider(screen -> {
-            if (screen instanceof MachineScreen) {
-                MachineScreen machineScreen = (MachineScreen) screen;
-                Slot slot = machineScreen.getFocusedSlot();
+            if (screen instanceof MachineScreenHandlers.ClientScreen) {
+                Slot slot = ((MachineScreenHandlers.ClientScreen) screen).getFocusedSlot();
                 if (slot instanceof ConfigurableFluidStack.ConfigurableFluidSlot) {
                     ConfigurableFluidStack stack = ((ConfigurableFluidStack.ConfigurableFluidSlot) slot).getConfStack();
                     if (stack.getAmount() > 0) {

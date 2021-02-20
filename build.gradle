@@ -49,6 +49,15 @@ repositories {
             includeGroup "appeng"
         }
     }
+    // for FTL
+    maven {
+        name = "Technici4n"
+        url = "https://raw.githubusercontent.com/Technici4n/Technici4n-maven/master/"
+        content {
+            includeGroup "net.fabricmc.fabric-api" // until fabric-api-lookup-api-v1 is merged
+            includeGroup "dev.technici4n"
+        }
+    }
     // for Astromine, KJS and Indrev
     maven {
         name 'Jitpack for MI'
@@ -134,6 +143,7 @@ dependencies {
     modRuntime "curse.maven:rhino-416294:${project.rhino_file}"
     modApi "teamreborn:energy:${project.tr_energy_version}"
     include "teamreborn:energy:${project.tr_energy_version}"
+    modApi include("dev.technici4n:FastTransferLib:${project.ftl_version}")
 
     // Other mods for testing purposes
     modRuntime "appeng:appliedenergistics2-fabric:${project.appeng_version}"

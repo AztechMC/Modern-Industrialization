@@ -110,16 +110,25 @@ public final class MITextures {
         NativeImage image = null;
         for (String layer : LAYERS) {
             String template;
+
             if (part.equals(MIParts.GEM)) {
-                template = getTemplate(materialSet, materialName, layer);
-            } else {
-                template = getTemplate(materialSet, part, layer);
+                template = getTemplate("specials", materialName, layer);
+            } else if(part.equals(MIParts.HOT_INGOT)){
+                template = getTemplate("common", "ingot", layer);
+            } else{
+                template = getTemplate("common", MaterialHelper.partWithOverlay(part), layer);
+                if(!mtm.hasAsset(template)){
+                    template = getTemplate(materialSet, MaterialHelper.partWithOverlay(part), layer);
+                }
             }
 
             if (mtm.hasAsset(template)) {
                 if (image == null) {
                     image = mtm.getAssetAsTexture(template);
                     colorizeLayer(image, layer, color);
+                    if(part.equals(MIParts.HOT_INGOT)){
+                        TextureHelper.increaseBrightness(image, 0.85f);
+                    }
                 } else {
                     NativeImage topLayer = mtm.getAssetAsTexture(template);
                     colorizeLayer(topLayer, layer, color);
@@ -128,7 +137,24 @@ public final class MITextures {
                 }
             }
         }
+
+
         if (image != null) {
+
+            String overlay = MaterialHelper.overlayWithOverlay(part);
+
+            if(overlay != null){
+                String overlayTemplate = getTemplate("common", overlay, "");
+                if(mtm.hasAsset(overlayTemplate)){
+                    NativeImage overlayImage = mtm.getAssetAsTexture(overlayTemplate);
+                    TextureHelper.blend(image, overlayImage);
+                    overlayImage.close();
+                }else{
+                    throw new RuntimeException("Could not find the overlay : " + overlay);
+                }
+            }
+
+
             String texturePath;
             if (MaterialHelper.hasBlock(part)) {
                 texturePath = String.format("modern_industrialization:textures/blocks/%s_%s.png", materialName, part);
@@ -142,7 +168,7 @@ public final class MITextures {
 
             mtm.addTexture(texturePath, image);
             image.close();
-        } else {
+        } else if(!part.equals(MIParts.GEM)) {
             throw new RuntimeException("Could not find any texture!");
         }
     }

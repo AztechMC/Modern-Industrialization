@@ -46,12 +46,8 @@ public final class MIItem {
 
     public static final Item ITEM_GUIDE_BOOK = of(GuideBookItem::new, "guidebook", 1);
 
-    public static final Item ITEM_BRICK_TINY_DUST = of("brick_tiny_dust");
-    public static final Item ITEM_BRICK_DUST = of("brick_dust");
-    public static final Item ITEM_FIRE_CLAY_DUST = of("fire_clay_dust");
-    public static final Item ITEM_FIRE_CLAY_BRICK = of("fire_clay_brick");
-    public static final Item ITEM_COKE = of("coke");
-    public static final Item ITEM_COKE_DUST = of("coke_dust");
+    public static final Item FIRE_CLAY_BRICK = of("fire_clay_brick");
+
     public static final Item ITEM_UNCOOKED_STEEL_DUST = of("uncooked_steel_dust");
 
     public static final Item ITEM_LV_MOTOR = of("lv_motor");
@@ -65,7 +61,6 @@ public final class MIItem {
     public static final Item ITEM_RESISTOR = of("resistor");
     public static final Item ITEM_CAPACITOR = of("capacitor");
     public static final Item ITEM_INDUCTOR = of("inductor");
-    public static final Item ITEM_STEEL_ROD_MAGNETIC = of("steel_rod_magnetic");
     public static final Item ITEM_WOOD_PULP = of("wood_pulp");
     public static final Item ITEM_RUBBER_SHEET = of("rubber_sheet");
     public static final Item ITEM_INVAR_ROTARY_BLADE = of("invar_rotary_blade");
@@ -76,7 +71,7 @@ public final class MIItem {
     public static final Item ITEM_TRANSISTOR = of("transistor");
     public static final Item ITEM_SILICON_BATTERY = of("silicon_battery");
     public static final Item ITEM_LARGE_MOTOR = of("large_motor");
-    public static final Item ITEM_CUPRONICKEL_WIRE_MAGNETIC = of("cupronickel_wire_magnetic");
+
     public static final Item ITEM_LARGE_PUMP = of("large_pump");
 
     public static final Item ITEM_DIGITAL_CIRCUIT = of("digital_circuit");
@@ -86,15 +81,8 @@ public final class MIItem {
     public static final Item ITEM_OR_GATE = of("or_gate");
     public static final Item ITEM_NOT_GATE = of("not_gate");
 
-    public static final Item ITEM_P_DOPED_SILICON_PLATE = of("p_doped_silicon_plate");
-    public static final Item ITEM_N_DOPED_SILICON_PLATE = of("n_doped_silicon_plate");
 
-    public static final Item ITEM_CARBON_DUST = of("carbon_dust");
     public static final Item ITEM_SODIUM_BATTERY = of("sodium_battery");
-
-    public static final Item ITEM_RUBY_DUST = of("ruby_dust");
-    public static final Item ITEM_STAINLESS_STEEL_HOT_INGOT = of("stainless_steel_hot_ingot");
-    public static final Item ITEM_CHROME_HOT_INGOT = of("chrome_hot_ingot");
 
     /*
      * FIXME public static final Item ITEM_DEPLETED_URANIUM_FUEL_ROD = new
@@ -142,6 +130,7 @@ public final class MIItem {
      * NuclearCoolant("simple_fluid_coolant", 25000, 1);
      */
 
+    // TO MATERIAL ?
     public static final Item ITEM_POLYETHYLENE_SHEET = of("polyethylene_sheet");
     public static final Item ITEM_POLYVINYL_CHLORIDE_SHEET = of("polyvinyl_chloride_sheet");
 }

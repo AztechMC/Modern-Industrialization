@@ -53,6 +53,11 @@ public class MIParts {
     public static final String CABLE = "electricity_pipe";
     public static final String COIL = "coil";
     public static final String GEM = "gem";
+    public static final String ROD_MAGNETIC = "rod_magnetic";
+    public static final String WIRE_MAGNETIC = "wire_magnetic";
+    public static final String N_DOPED_PLATE = "n_doped_plate";
+    public static final String P_DOPED_PLATE = "p_doped_plate";
+    public static final String HOT_INGOT = "hot_ingot";
 
     public static final String[] ITEM_BASE = new String[] { CRUSHED_DUST, CURVED_PLATE, DOUBLE_INGOT, DUST, INGOT, LARGE_PLATE, NUGGET, PLATE,
             TINY_DUST, BLOCK };

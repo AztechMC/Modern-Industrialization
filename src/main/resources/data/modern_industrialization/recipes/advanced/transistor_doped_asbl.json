@@ -9,10 +9,10 @@
   "key":
   {
     "S" : {
-      "item" : "modern_industrialization:p_doped_silicon_plate"
+      "item" : "modern_industrialization:silicon_p_doped_plate"
     },
     "s" : {
-      "item" : "modern_industrialization:n_doped_silicon_plate"
+      "item" : "modern_industrialization:silicon_n_doped_plate"
     },
     "e" : {
       "item" : "modern_industrialization:electrum_fine_wire"

@@ -13,7 +13,7 @@
     }
     ],
   "item_outputs": {
-    "item" : "modern_industrialization:p_doped_silicon_plate",
+    "item" : "modern_industrialization:silicon_p_doped_plate",
     "amount": 1
   }
 }

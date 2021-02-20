@@ -71,11 +71,13 @@ public class RegularMaterialPart implements MaterialPart {
         this.materialName = materialName;
         this.part = part;
 
-        if (part.equals(MIParts.GEM)) {
-            this.itemPath = materialName;
-        } else {
-            this.itemPath = materialName + "_" + part;
+        String path = materialName;
+
+        if (!part.equals(MIParts.GEM)) {
+            path += "_" + part;
         }
+
+        itemPath = path;
 
         this.itemId = "modern_industrialization:" + itemPath;
         if (MIParts.TAGGED_PARTS.contains(part)) {
@@ -88,6 +90,7 @@ public class RegularMaterialPart implements MaterialPart {
         this.coloramp = coloramp;
 
     }
+
 
     @Override
     public String getPart() {

@@ -45,6 +45,25 @@ public class TextureHelper {
         }
     }
 
+    public static void increaseBrightness(NativeImage image, float minBrightness) {
+        for (int i = 0; i < image.getWidth(); ++i) {
+            for (int j = 0; j < image.getHeight(); ++j) {
+                int color = image.getPixelColor(i, j);
+                double l = getLuminance(color);
+                int r = getR(color);
+                int g = getG(color);
+                int b = getB(color);
+
+                int rgb = inecreaseBrightness(toRGB(r,g,b), minBrightness);
+                r = getRrgb(rgb);
+                g = getGrgb(rgb);
+                b = getBrgb(rgb);
+
+                image.setPixelColor(i, j, fromArgb(getA(color), r, g, b));
+            }
+        }
+    }
+
     public static double getLuminance(int color) {
         return (0.2126 * getR(color) + 0.7152 * getG(color) + 0.0722 * getB(color)) / 255;
     }
@@ -64,6 +83,12 @@ public class TextureHelper {
         float[] hsbval = new float[3];
         Color.RGBtoHSB(getRrgb(rgb), getGrgb(rgb), getBrgb(rgb), hsbval);
         return 0xFFFFFF & Color.HSBtoRGB(hue, hsbval[1], hsbval[2]);
+    }
+
+    public static int inecreaseBrightness(int rgb, float minBrightness) {
+        float[] hsbval = new float[3];
+        Color.RGBtoHSB(getRrgb(rgb), getGrgb(rgb), getBrgb(rgb), hsbval);
+        return 0xFFFFFF & Color.HSBtoRGB(hsbval[0], hsbval[1], minBrightness + (1 - minBrightness)*hsbval[2]);
     }
 
     public static int toRGB(int r, int g, int b) {

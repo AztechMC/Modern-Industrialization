@@ -24,7 +24,7 @@ public class MIMaterials {
     private static void addMaterials() {
         MaterialRegistry.addMaterial(
                 new MaterialBuilder("gold", SHINY,
-                        new BakableTargetColoramp(0xFFE650, "modern_industrialization:textures/materialsets/shiny/ingot.png" ,
+                        new BakableTargetColoramp(0xFFE650, "modern_industrialization:textures/materialsets/common/ingot.png" ,
                         "minecraft:textures/item/gold_ingot.png"))
                         .addRegularParts(ITEM_BASE)
                         .overridePart(ExternalPart.of("ingot", "#c:gold_ingots", "minecraft:gold_ingot"))
@@ -41,7 +41,7 @@ public class MIMaterials {
         );
         MaterialRegistry.addMaterial(
                 new MaterialBuilder("iron", METALLIC,
-                        new BakableTargetColoramp(0xC8C8C8, "modern_industrialization:textures/materialsets/metallic/ingot.png",
+                        new BakableTargetColoramp(0xC8C8C8, "modern_industrialization:textures/materialsets/common/ingot.png",
                                 "minecraft:textures/item/iron_ingot.png"))
                         .addRegularParts(ITEM_ALL)
                         .overridePart(ExternalPart.of("ingot", "#c:iron_ingots", "minecraft:iron_ingot"))
@@ -72,7 +72,7 @@ public class MIMaterials {
 
         MaterialRegistry.addMaterial(
                 new MaterialBuilder("redstone", GEM,
-                        new BakableTargetColoramp(0xd20000, "modern_industrialization:textures/materialsets/gem/dust.png",
+                        new BakableTargetColoramp(0xd20000, "modern_industrialization:textures/materialsets/common/dust.png",
                                 "minecraft:textures/item/redstone.png"))
                         .addRegularParts(DUST, TINY_DUST, CRUSHED_DUST)
                         .overridePart(ExternalPart.of("dust", "minecraft:redstone", "minecraft:redstone"))
@@ -114,6 +114,40 @@ public class MIMaterials {
                         .build()
         );
 
+        MaterialRegistry.addMaterial(
+                new MaterialBuilder("brick", STONE,  new BakableTargetColoramp(0xb75a36,
+                        "modern_industrialization:textures/materialsets/common/ingot.png",
+                        "minecraft:textures/item/brick.png"))
+                        .addRegularParts(DUST, TINY_DUST, INGOT)
+                        .overridePart(ExternalPart.of(MIParts.INGOT, "minecraft:brick", "minecraft:brick"))
+                        .addRecipes(StandardRecipes::apply, SmeltingRecipes::apply)
+                        .build()
+        );
+
+        MaterialRegistry.addMaterial(
+                new MaterialBuilder("fire_clay", STONE,  new BakableTargetColoramp(0xb75a36,
+                        "modern_industrialization:textures/materialsets/common/ingot.png",
+                        "modern_industrialization:textures/items/fire_clay_brick.png"))
+                        .addRegularParts(DUST, INGOT)
+                        .overridePart(ExternalPart.of(MIParts.INGOT,
+                                "modern_industrialization:fire_clay_brick",
+                                "modern_industrialization:fire_clay_brick"))
+                        .addRecipes(StandardRecipes::apply, SmeltingRecipes::apply)
+                        .build()
+        );
+
+        MaterialRegistry.addMaterial(
+                new MaterialBuilder("coke", STONE,  new BakableTargetColoramp(0x6d6d57,
+                        "modern_industrialization:textures/materialsets/common/dust.png",
+                        "modern_industrialization:textures/items/coke.png"))
+                        .addRegularParts(MIParts.GEM, DUST)
+                        .addRecipes(context -> {
+                            new MIRecipeBuilder(context, "compressor", "coke").addTaggedPartInput("dust", 1).addPartOutput(MIParts.GEM, 1);
+                        })
+                        .addRecipes(StandardRecipes::apply)
+                        .build()
+        );
+
 
         MaterialRegistry.addMaterial(
                 new MaterialBuilder("copper", SHINY, 0xff6600)
@@ -129,7 +163,9 @@ public class MIMaterials {
         );
 
         MaterialRegistry.addMaterial(
-                new MaterialBuilder("bronze", METALLIC, 0xffcc00)
+                new MaterialBuilder("bronze", METALLIC,  new BakableTargetColoramp(0xffcc00,
+                        "modern_industrialization:textures/materialsets/common/ingot.png",
+                        "modern_industrialization:textures/template/bronze_ingot.png"))
                         .addRegularParts(ITEM_ALL)
                         .removeRegularParts(CRUSHED_DUST)
                         .addParts(PipeMaterialPart.of(PipeType.ITEM))
@@ -141,7 +177,7 @@ public class MIMaterials {
         MaterialRegistry.addMaterial(
                 new MaterialBuilder("tin", DULL,
                         new BakableTargetColoramp(0xc0bcd0,
-                                "modern_industrialization:textures/materialsets/shiny/ingot.png",
+                                "modern_industrialization:textures/materialsets/common/ingot.png",
                         "modern_industrialization:textures/template/tin_ingot.png"))
                         .addRegularParts(ITEM_ALL)
                         .addRegularParts(ORE)
@@ -156,6 +192,7 @@ public class MIMaterials {
         MaterialRegistry.addMaterial(
                 new MaterialBuilder("steel", METALLIC, 0x3f3f3f)
                         .addRegularParts(ITEM_ALL)
+                        .addRegularParts(ROD_MAGNETIC)
                         .removeRegularParts(CRUSHED_DUST)
                         .addParts(PipeMaterialPart.of(PipeType.ITEM))
                         .addParts(PipeMaterialPart.of(PipeType.FLUID))
@@ -300,6 +337,7 @@ public class MIMaterials {
         MaterialRegistry.addMaterial(
                 new MaterialBuilder("silicon", METALLIC, 0x3C3C50)
                         .addRegularParts(ITEM_PURE_METAL)
+                        .addRegularParts(N_DOPED_PLATE, P_DOPED_PLATE)
                         .addRegularParts(PLATE, DOUBLE_INGOT)
                         .removeRegularParts(CRUSHED_DUST)
                         .addRecipes(StandardRecipes::apply, SmeltingRecipes::apply)
@@ -309,6 +347,7 @@ public class MIMaterials {
         MaterialRegistry.addMaterial(
                 new MaterialBuilder("stainless_steel", SHINY, 0xC8C8DC)
                         .addRegularParts(ITEM_ALL)
+                        .addRegularParts(HOT_INGOT)
                         .removeRegularParts(CRUSHED_DUST)
                         .addParts(PipeMaterialPart.of(PipeType.ITEM))
                         .addParts(PipeMaterialPart.of(PipeType.FLUID))
@@ -317,8 +356,23 @@ public class MIMaterials {
         );
 
         MaterialRegistry.addMaterial(
+                new MaterialBuilder("ruby", SHINY, 0xffb3b3)
+                        .addRegularParts(DUST, TINY_DUST)
+                        .addRecipes(StandardRecipes::apply)
+                        .build()
+        );
+
+        MaterialRegistry.addMaterial(
+                new MaterialBuilder("carbon", DULL, 0x222222)
+                        .addRegularParts(DUST, TINY_DUST)
+                        .addRecipes(StandardRecipes::apply)
+                        .build()
+        );
+
+        MaterialRegistry.addMaterial(
                 new MaterialBuilder("chrome", SHINY, 0xFFE6E6)
                         .addRegularParts(ITEM_PURE_METAL)
+                        .addRegularParts(HOT_INGOT)
                         .addRegularParts(PLATE, LARGE_PLATE, DOUBLE_INGOT)
                         .addRecipes(StandardRecipes::apply)
                         .build()

@@ -45,197 +45,119 @@ public class MIMaterials {
     }
 
     private static void addMaterials() {
-        MaterialRegistry.addMaterial(
-                new MaterialBuilder("gold", SHINY,
-                        new BakableTargetColoramp(0xFFE650, "modern_industrialization:textures/materialsets/common/ingot.png" ,
-                        "minecraft:textures/item/gold_ingot.png"))
-                        .addRegularParts(ITEM_BASE)
-                        .overridePart(ExternalPart.of("ingot", "#c:gold_ingots", "minecraft:gold_ingot"))
-                        .overridePart(ExternalPart.of("nugget", "#c:gold_nuggets", "minecraft:gold_nugget"))
-                        .overridePart(ExternalPart.of("block", "#c:gold_blocks", "minecraft:gold_block"))
-                        .addParts(ExternalPart.of("ore", "#c:gold_ores", "minecraft:gold_ore"))
-                        .addParts(PipeMaterialPart.of(PipeType.ITEM))
-                        .addParts(PipeMaterialPart.of(PipeType.FLUID))
-                        .addRecipes(ForgeHammerRecipes::apply, SmeltingRecipes::apply, StandardRecipes::apply)
-                        .cancelRecipes("craft/block_from_ingot", "craft/ingot_from_block")
-                        .cancelRecipes("craft/ingot_from_nugget", "craft/nugget_from_ingot")
-                        .cancelRecipes("smelting/ore_smelting", "smelting/ore_blasting")
-                        .build()
-        );
-        MaterialRegistry.addMaterial(
-                new MaterialBuilder("iron", METALLIC,
-                        new BakableTargetColoramp(0xC8C8C8, "modern_industrialization:textures/materialsets/common/ingot.png",
-                                "minecraft:textures/item/iron_ingot.png"))
-                        .addRegularParts(ITEM_ALL)
-                        .overridePart(ExternalPart.of("ingot", "#c:iron_ingots", "minecraft:iron_ingot"))
-                        .overridePart(ExternalPart.of("nugget", "#c:iron_nuggets", "minecraft:iron_nugget"))
-                        .overridePart(ExternalPart.of("block", "#c:iron_blocks", "minecraft:iron_block"))
-                        .addParts(ExternalPart.of("ore", "#c:iron_ores", "minecraft:iron_ore"))
-                        .addParts(PipeMaterialPart.of(PipeType.ITEM))
-                        .addParts(PipeMaterialPart.of(PipeType.FLUID))
-                        .addRecipes(ForgeHammerRecipes::apply, SmeltingRecipes::apply, StandardRecipes::apply)
-                        .cancelRecipes("craft/block_from_ingot", "craft/ingot_from_block")
-                        .cancelRecipes("craft/ingot_from_nugget", "craft/nugget_from_ingot")
-                        .cancelRecipes("smelting/ore_smelting", "smelting/ore_blasting")
-                        .build()
-        );
-        MaterialRegistry.addMaterial(
-                new MaterialBuilder("coal", STONE, 0x282828)
-                        .addRegularParts(ITEM_PURE_NON_METAL)
-                        .addParts(ExternalPart.of("ore", "#c:coal_ores", "minecraft:coal_ore"))
-                        .overridePart(ExternalPart.of("block", "#c:coal_blocks", "minecraft:coal_block"))
-                        .addRecipes(ForgeHammerRecipes::apply, SmeltingRecipes::apply, StandardRecipes::apply)
-                        .addRecipes(context -> {
-                            new MIRecipeBuilder(context, "compressor", "coal").addTaggedPartInput("dust", 1).addOutput("minecraft:coal", 1);
-                            new MIRecipeBuilder(context, "macerator", "dust").addItemInput("minecraft:coal", 1).addPartOutput(DUST, 1);
+        MaterialRegistry.addMaterial(new MaterialBuilder("gold", SHINY,
+                new BakableTargetColoramp(0xFFE650, "modern_industrialization:textures/materialsets/common/ingot.png",
+                        "minecraft:textures/item/gold_ingot.png")).addRegularParts(ITEM_BASE)
+                                .overridePart(ExternalPart.of("ingot", "#c:gold_ingots", "minecraft:gold_ingot"))
+                                .overridePart(ExternalPart.of("nugget", "#c:gold_nuggets", "minecraft:gold_nugget"))
+                                .overridePart(ExternalPart.of("block", "#c:gold_blocks", "minecraft:gold_block"))
+                                .addParts(ExternalPart.of("ore", "#c:gold_ores", "minecraft:gold_ore")).addParts(PipeMaterialPart.of(PipeType.ITEM))
+                                .addParts(PipeMaterialPart.of(PipeType.FLUID))
+                                .addRecipes(ForgeHammerRecipes::apply, SmeltingRecipes::apply, StandardRecipes::apply)
+                                .cancelRecipes("craft/block_from_ingot", "craft/ingot_from_block")
+                                .cancelRecipes("craft/ingot_from_nugget", "craft/nugget_from_ingot")
+                                .cancelRecipes("smelting/ore_smelting", "smelting/ore_blasting").build());
+        MaterialRegistry.addMaterial(new MaterialBuilder("iron", METALLIC,
+                new BakableTargetColoramp(0xC8C8C8, "modern_industrialization:textures/materialsets/common/ingot.png",
+                        "minecraft:textures/item/iron_ingot.png")).addRegularParts(ITEM_ALL)
+                                .overridePart(ExternalPart.of("ingot", "#c:iron_ingots", "minecraft:iron_ingot"))
+                                .overridePart(ExternalPart.of("nugget", "#c:iron_nuggets", "minecraft:iron_nugget"))
+                                .overridePart(ExternalPart.of("block", "#c:iron_blocks", "minecraft:iron_block"))
+                                .addParts(ExternalPart.of("ore", "#c:iron_ores", "minecraft:iron_ore")).addParts(PipeMaterialPart.of(PipeType.ITEM))
+                                .addParts(PipeMaterialPart.of(PipeType.FLUID))
+                                .addRecipes(ForgeHammerRecipes::apply, SmeltingRecipes::apply, StandardRecipes::apply)
+                                .cancelRecipes("craft/block_from_ingot", "craft/ingot_from_block")
+                                .cancelRecipes("craft/ingot_from_nugget", "craft/nugget_from_ingot")
+                                .cancelRecipes("smelting/ore_smelting", "smelting/ore_blasting").build());
+        MaterialRegistry.addMaterial(new MaterialBuilder("coal", STONE, 0x282828).addRegularParts(ITEM_PURE_NON_METAL)
+                .addParts(ExternalPart.of("ore", "#c:coal_ores", "minecraft:coal_ore"))
+                .overridePart(ExternalPart.of("block", "#c:coal_blocks", "minecraft:coal_block"))
+                .addRecipes(ForgeHammerRecipes::apply, SmeltingRecipes::apply, StandardRecipes::apply).addRecipes(context -> {
+                    new MIRecipeBuilder(context, "compressor", "coal").addTaggedPartInput("dust", 1).addOutput("minecraft:coal", 1);
+                    new MIRecipeBuilder(context, "macerator", "dust").addItemInput("minecraft:coal", 1).addPartOutput(DUST, 1);
 
                 }).build());
 
-        MaterialRegistry.addMaterial(
-                new MaterialBuilder("redstone", GEM,
-                        new BakableTargetColoramp(0xd20000, "modern_industrialization:textures/materialsets/common/dust.png",
-                                "minecraft:textures/item/redstone.png"))
-                        .addRegularParts(DUST, TINY_DUST, CRUSHED_DUST)
-                        .overridePart(ExternalPart.of("dust", "minecraft:redstone", "minecraft:redstone"))
-                        .addRecipes(StandardRecipes::apply, SmeltingRecipes::apply)
-                        .cancelRecipes("macerator/crushed_dust")
-                        .build()
-        );
+        MaterialRegistry.addMaterial(new MaterialBuilder("redstone", GEM,
+                new BakableTargetColoramp(0xd20000, "modern_industrialization:textures/materialsets/common/dust.png",
+                        "minecraft:textures/item/redstone.png")).addRegularParts(DUST, TINY_DUST, CRUSHED_DUST)
+                                .overridePart(ExternalPart.of("dust", "minecraft:redstone", "minecraft:redstone"))
+                                .addRecipes(StandardRecipes::apply, SmeltingRecipes::apply).cancelRecipes("macerator/crushed_dust").build());
 
-        MaterialRegistry.addMaterial(
-                new MaterialBuilder("quartz", GEM, new BakableTargetColoramp(0xf0ebe4, "minecraft:textures/item/quartz.png",
-                        "minecraft:textures/item/quartz.png"))
+        MaterialRegistry.addMaterial(new MaterialBuilder("quartz", GEM,
+                new BakableTargetColoramp(0xf0ebe4, "minecraft:textures/item/quartz.png", "minecraft:textures/item/quartz.png"))
                         .addRegularParts(CRUSHED_DUST, MIParts.GEM, DUST, TINY_DUST)
-                        .overridePart(ExternalPart.of(MIParts.GEM, "minecraft:quatz", "minecraft:quatz"))
-                        .addRecipes(StandardRecipes::apply)
-                        .build()
-        );
+                        .overridePart(ExternalPart.of(MIParts.GEM, "minecraft:quatz", "minecraft:quatz")).addRecipes(StandardRecipes::apply).build());
 
-        MaterialRegistry.addMaterial(
-                new MaterialBuilder("diamond", GEM, new BakableTargetColoramp(0x48eeda, "minecraft:textures/item/diamond.png",
-                        "minecraft:textures/item/diamond.png"))
+        MaterialRegistry.addMaterial(new MaterialBuilder("diamond", GEM,
+                new BakableTargetColoramp(0x48eeda, "minecraft:textures/item/diamond.png", "minecraft:textures/item/diamond.png"))
                         .addRegularParts(CRUSHED_DUST, MIParts.GEM, DUST, TINY_DUST)
                         .addParts(ExternalPart.of("ore", "#c:diamond_ores", "minecraft:diamond_ore"))
-                        .overridePart(ExternalPart.of(MIParts.GEM, "minecraft:diamond", "minecraft:diamond"))
-                        .addRecipes(StandardRecipes::apply)
-                        .build()
-        );
+                        .overridePart(ExternalPart.of(MIParts.GEM, "minecraft:diamond", "minecraft:diamond")).addRecipes(StandardRecipes::apply)
+                        .build());
 
-        MaterialRegistry.addMaterial(
-                new MaterialBuilder("emerald", SHINY,  new BakableTargetColoramp(0x3FF385, "minecraft:textures/item/emerald.png",
-                        "minecraft:textures/item/emerald.png"))
-                        .addRegularParts(ITEM_PURE_NON_METAL)
-                        .removeRegularParts(BLOCK)
-                        .addRegularParts(MIParts.GEM)
-                        .overridePart(ExternalPart.of(MIParts.GEM, "minecraft:emerald", "minecraft:emerald"))
-                        .addRecipes(StandardRecipes::apply)
+        MaterialRegistry.addMaterial(new MaterialBuilder("emerald", SHINY,
+                new BakableTargetColoramp(0x3FF385, "minecraft:textures/item/emerald.png", "minecraft:textures/item/emerald.png"))
+                        .addRegularParts(ITEM_PURE_NON_METAL).removeRegularParts(BLOCK).addRegularParts(MIParts.GEM)
+                        .overridePart(ExternalPart.of(MIParts.GEM, "minecraft:emerald", "minecraft:emerald")).addRecipes(StandardRecipes::apply)
                         .addRecipes(context -> {
                             new MIRecipeBuilder(context, "macerator", "dust").addItemInput("minecraft:emerald_ore", 1).addPartOutput(CRUSHED_DUST, 2);
-                        })
-                        .build()
-        );
+                        }).build());
 
-        MaterialRegistry.addMaterial(
-                new MaterialBuilder("brick", STONE,  new BakableTargetColoramp(0xb75a36,
-                        "modern_industrialization:textures/materialsets/common/ingot.png",
-                        "minecraft:textures/item/brick.png"))
-                        .addRegularParts(DUST, TINY_DUST, INGOT)
-                        .overridePart(ExternalPart.of(MIParts.INGOT, "minecraft:brick", "minecraft:brick"))
-                        .addRecipes(StandardRecipes::apply, SmeltingRecipes::apply)
-                        .build()
-        );
+        MaterialRegistry.addMaterial(new MaterialBuilder("brick", STONE,
+                new BakableTargetColoramp(0xb75a36, "modern_industrialization:textures/materialsets/common/ingot.png",
+                        "minecraft:textures/item/brick.png")).addRegularParts(DUST, TINY_DUST, INGOT)
+                                .overridePart(ExternalPart.of(MIParts.INGOT, "minecraft:brick", "minecraft:brick"))
+                                .addRecipes(StandardRecipes::apply, SmeltingRecipes::apply).build());
 
-        MaterialRegistry.addMaterial(
-                new MaterialBuilder("fire_clay", STONE,  new BakableTargetColoramp(0xb75a36,
-                        "modern_industrialization:textures/materialsets/common/ingot.png",
+        MaterialRegistry.addMaterial(new MaterialBuilder("fire_clay", STONE,
+                new BakableTargetColoramp(0xb75a36, "modern_industrialization:textures/materialsets/common/ingot.png",
                         "modern_industrialization:textures/items/fire_clay_brick.png"))
-                        .addRegularParts(DUST, INGOT)
-                        .overridePart(ExternalPart.of(MIParts.INGOT,
-                                "modern_industrialization:fire_clay_brick",
-                                "modern_industrialization:fire_clay_brick"))
-                        .addRecipes(StandardRecipes::apply, SmeltingRecipes::apply)
-                        .build()
-        );
+                                .addRegularParts(DUST, INGOT)
+                                .overridePart(ExternalPart.of(MIParts.INGOT, "modern_industrialization:fire_clay_brick",
+                                        "modern_industrialization:fire_clay_brick"))
+                                .addRecipes(StandardRecipes::apply, SmeltingRecipes::apply).build());
 
-        MaterialRegistry.addMaterial(
-                new MaterialBuilder("coke", STONE,  new BakableTargetColoramp(0x6d6d57,
-                        "modern_industrialization:textures/materialsets/common/dust.png",
-                        "modern_industrialization:textures/items/coke.png"))
-                        .addRegularParts(MIParts.GEM, DUST)
-                        .addRecipes(context -> {
-                            new MIRecipeBuilder(context, "compressor", "coke").addTaggedPartInput("dust", 1).addPartOutput(MIParts.GEM, 1);
-                        })
-                        .addRecipes(StandardRecipes::apply)
-                        .build()
-        );
+        MaterialRegistry
+                .addMaterial(
+                        new MaterialBuilder("coke", STONE,
+                                new BakableTargetColoramp(0x6d6d57, "modern_industrialization:textures/materialsets/common/dust.png",
+                                        "modern_industrialization:textures/items/coke.png")).addRegularParts(MIParts.GEM, DUST)
+                                                .addRecipes(context -> {
+                                                    new MIRecipeBuilder(context, "compressor", "coke").addTaggedPartInput("dust", 1)
+                                                            .addPartOutput(MIParts.GEM, 1);
+                                                }).addRecipes(StandardRecipes::apply).build());
 
+        MaterialRegistry.addMaterial(new MaterialBuilder("copper", SHINY, 0xff6600).addRegularParts(ITEM_ALL).addRegularParts(ORE)
+                .addRegularParts(WIRE).addRegularParts(FINE_WIRE).addParts(PipeMaterialPart.of(PipeType.ITEM))
+                .addParts(PipeMaterialPart.of(PipeType.FLUID)).addParts(CableMaterialPart.of(CableTier.LV))
+                .addRecipes(ForgeHammerRecipes::apply, SmeltingRecipes::apply, StandardRecipes::apply).build());
 
-        MaterialRegistry.addMaterial(
-                new MaterialBuilder("copper", SHINY, 0xff6600)
-                        .addRegularParts(ITEM_ALL)
-                        .addRegularParts(ORE)
-                        .addRegularParts(WIRE)
-                        .addRegularParts(FINE_WIRE)
-                        .addParts(PipeMaterialPart.of(PipeType.ITEM))
-                        .addParts(PipeMaterialPart.of(PipeType.FLUID))
-                        .addParts(CableMaterialPart.of(CableTier.LV))
-                        .addRecipes(ForgeHammerRecipes::apply, SmeltingRecipes::apply, StandardRecipes::apply)
-                        .build()
-        );
+        MaterialRegistry.addMaterial(new MaterialBuilder("bronze", METALLIC,
+                new BakableTargetColoramp(0xffcc00, "modern_industrialization:textures/materialsets/common/ingot.png",
+                        "modern_industrialization:textures/template/bronze_ingot.png")).addRegularParts(ITEM_ALL).removeRegularParts(CRUSHED_DUST)
+                                .addParts(PipeMaterialPart.of(PipeType.ITEM)).addParts(PipeMaterialPart.of(PipeType.FLUID))
+                                .addRecipes(ForgeHammerRecipes::apply, SmeltingRecipes::apply, StandardRecipes::apply).build());
 
-        MaterialRegistry.addMaterial(
-                new MaterialBuilder("bronze", METALLIC,  new BakableTargetColoramp(0xffcc00,
-                        "modern_industrialization:textures/materialsets/common/ingot.png",
-                        "modern_industrialization:textures/template/bronze_ingot.png"))
-                        .addRegularParts(ITEM_ALL)
-                        .removeRegularParts(CRUSHED_DUST)
-                        .addParts(PipeMaterialPart.of(PipeType.ITEM))
-                        .addParts(PipeMaterialPart.of(PipeType.FLUID))
-                        .addRecipes(ForgeHammerRecipes::apply, SmeltingRecipes::apply, StandardRecipes::apply)
-                        .build()
-        );
+        MaterialRegistry.addMaterial(new MaterialBuilder("tin", DULL,
+                new BakableTargetColoramp(0xc0bcd0, "modern_industrialization:textures/materialsets/common/ingot.png",
+                        "modern_industrialization:textures/template/tin_ingot.png")).addRegularParts(ITEM_ALL).addRegularParts(ORE)
+                                .addRegularParts(WIRE).addParts(PipeMaterialPart.of(PipeType.ITEM)).addParts(PipeMaterialPart.of(PipeType.FLUID))
+                                .addParts(CableMaterialPart.of(CableTier.LV))
+                                .addRecipes(ForgeHammerRecipes::apply, SmeltingRecipes::apply, StandardRecipes::apply).build());
 
-        MaterialRegistry.addMaterial(
-                new MaterialBuilder("tin", DULL,
-                        new BakableTargetColoramp(0xc0bcd0,
-                                "modern_industrialization:textures/materialsets/common/ingot.png",
-                        "modern_industrialization:textures/template/tin_ingot.png"))
-                        .addRegularParts(ITEM_ALL)
-                        .addRegularParts(ORE)
-                        .addRegularParts(WIRE)
-                        .addParts(PipeMaterialPart.of(PipeType.ITEM))
-                        .addParts(PipeMaterialPart.of(PipeType.FLUID))
-                        .addParts(CableMaterialPart.of(CableTier.LV))
-                        .addRecipes(ForgeHammerRecipes::apply, SmeltingRecipes::apply, StandardRecipes::apply)
-                        .build()
-        );
+        MaterialRegistry.addMaterial(new MaterialBuilder("steel", METALLIC, 0x3f3f3f).addRegularParts(ITEM_ALL).addRegularParts(ROD_MAGNETIC)
+                .removeRegularParts(CRUSHED_DUST).addParts(PipeMaterialPart.of(PipeType.ITEM)).addParts(PipeMaterialPart.of(PipeType.FLUID))
+                .addRecipes(ForgeHammerRecipes::apply, SmeltingRecipes::apply, StandardRecipes::apply).build());
 
-        MaterialRegistry.addMaterial(
-                new MaterialBuilder("steel", METALLIC, 0x3f3f3f)
-                        .addRegularParts(ITEM_ALL)
-                        .addRegularParts(ROD_MAGNETIC)
-                        .removeRegularParts(CRUSHED_DUST)
-                        .addParts(PipeMaterialPart.of(PipeType.ITEM))
-                        .addParts(PipeMaterialPart.of(PipeType.FLUID))
-                        .addRecipes(ForgeHammerRecipes::apply, SmeltingRecipes::apply, StandardRecipes::apply)
-                        .build()
-        );
-
-        MaterialRegistry.addMaterial(
-                new MaterialBuilder("lignite_coal", STONE, 0x644646)
-                        .addRegularParts(ITEM_PURE_NON_METAL)
-                        .removeRegularParts(BLOCK)
-                        .addRegularParts(ORE)
-                        .addRegularParts(MIParts.GEM)
-                        .addRecipes(ForgeHammerRecipes::apply, SmeltingRecipes::apply, StandardRecipes::apply)
-                        .addRecipes(context -> {
-                            new MIRecipeBuilder(context, "compressor", "lignite_coal").addTaggedPartInput("dust", 1).addPartOutput(MIParts.GEM, 1);
-                            new MIRecipeBuilder(context, "macerator", "dust").addPartInput(MIParts.GEM, 1).addPartOutput(DUST, 1);
-                            new SmeltingRecipeBuilder(context, ORE, MIParts.GEM, 0.7, true);
-                            new SmeltingRecipeBuilder(context, ORE, MIParts.GEM, 0.7, false);
-                        })
-                        .build()
-        );
+        MaterialRegistry.addMaterial(new MaterialBuilder("lignite_coal", STONE, 0x644646).addRegularParts(ITEM_PURE_NON_METAL)
+                .removeRegularParts(BLOCK).addRegularParts(ORE).addRegularParts(MIParts.GEM)
+                .addRecipes(ForgeHammerRecipes::apply, SmeltingRecipes::apply, StandardRecipes::apply).addRecipes(context -> {
+                    new MIRecipeBuilder(context, "compressor", "lignite_coal").addTaggedPartInput("dust", 1).addPartOutput(MIParts.GEM, 1);
+                    new MIRecipeBuilder(context, "macerator", "dust").addPartInput(MIParts.GEM, 1).addPartOutput(DUST, 1);
+                    new SmeltingRecipeBuilder(context, ORE, MIParts.GEM, 0.7, true);
+                    new SmeltingRecipeBuilder(context, ORE, MIParts.GEM, 0.7, false);
+                }).build());
 
         MaterialRegistry.addMaterial(new MaterialBuilder("aluminum", METALLIC, 0x3fcaff).addRegularParts(ITEM_ALL).addRegularParts(WIRE, FINE_WIRE)
                 .addParts(PipeMaterialPart.of(PipeType.ITEM)).addParts(PipeMaterialPart.of(PipeType.FLUID))
@@ -284,74 +206,31 @@ public class MIMaterials {
                 .addRegularParts(WIRE, FINE_WIRE).addParts(PipeMaterialPart.of(PipeType.ITEM)).addParts(PipeMaterialPart.of(PipeType.FLUID))
                 .addParts(CableMaterialPart.of(CableTier.MV)).addRecipes(StandardRecipes::apply, SmeltingRecipes::apply).build());
 
+        MaterialRegistry.addMaterial(new MaterialBuilder("silicon", METALLIC, 0x3C3C50).addRegularParts(ITEM_PURE_METAL)
+                .addRegularParts(N_DOPED_PLATE, P_DOPED_PLATE).addRegularParts(PLATE, DOUBLE_INGOT).removeRegularParts(CRUSHED_DUST)
+                .addRecipes(StandardRecipes::apply, SmeltingRecipes::apply).build());
+
+        MaterialRegistry.addMaterial(new MaterialBuilder("stainless_steel", SHINY, 0xC8C8DC).addRegularParts(ITEM_ALL).addRegularParts(HOT_INGOT)
+                .removeRegularParts(CRUSHED_DUST).addParts(PipeMaterialPart.of(PipeType.ITEM)).addParts(PipeMaterialPart.of(PipeType.FLUID))
+                .addRecipes(StandardRecipes::apply).build());
 
         MaterialRegistry.addMaterial(
-                new MaterialBuilder("silicon", METALLIC, 0x3C3C50)
-                        .addRegularParts(ITEM_PURE_METAL)
-                        .addRegularParts(N_DOPED_PLATE, P_DOPED_PLATE)
-                        .addRegularParts(PLATE, DOUBLE_INGOT)
-                        .removeRegularParts(CRUSHED_DUST)
-                        .addRecipes(StandardRecipes::apply, SmeltingRecipes::apply)
-                        .build()
-        );
+                new MaterialBuilder("ruby", SHINY, 0xffb3b3).addRegularParts(DUST, TINY_DUST).addRecipes(StandardRecipes::apply).build());
 
         MaterialRegistry.addMaterial(
-                new MaterialBuilder("stainless_steel", SHINY, 0xC8C8DC)
-                        .addRegularParts(ITEM_ALL)
-                        .addRegularParts(HOT_INGOT)
-                        .removeRegularParts(CRUSHED_DUST)
-                        .addParts(PipeMaterialPart.of(PipeType.ITEM))
-                        .addParts(PipeMaterialPart.of(PipeType.FLUID))
-                        .addRecipes(StandardRecipes::apply)
-                        .build()
-        );
+                new MaterialBuilder("carbon", DULL, 0x222222).addRegularParts(DUST, TINY_DUST).addRecipes(StandardRecipes::apply).build());
+
+        MaterialRegistry.addMaterial(new MaterialBuilder("chrome", SHINY, 0xFFE6E6).addRegularParts(ITEM_PURE_METAL).addRegularParts(HOT_INGOT)
+                .addRegularParts(PLATE, LARGE_PLATE, DOUBLE_INGOT).addRecipes(StandardRecipes::apply).build());
 
         MaterialRegistry.addMaterial(
-                new MaterialBuilder("ruby", SHINY, 0xffb3b3)
-                        .addRegularParts(DUST, TINY_DUST)
-                        .addRecipes(StandardRecipes::apply)
-                        .build()
-        );
+                new MaterialBuilder("manganese", DULL, 0xC1C1C1).addRegularParts(ITEM_PURE_METAL).addRecipes(StandardRecipes::apply).build());
 
-        MaterialRegistry.addMaterial(
-                new MaterialBuilder("carbon", DULL, 0x222222)
-                        .addRegularParts(DUST, TINY_DUST)
-                        .addRecipes(StandardRecipes::apply)
-                        .build()
-        );
+        MaterialRegistry.addMaterial(new MaterialBuilder("fluorite", SHINY, 0xAF69CF).addRegularParts(ITEM_PURE_NON_METAL).removeRegularParts(BLOCK)
+                .addRegularParts(ORE).addRecipes(StandardRecipes::apply).build());
 
-        MaterialRegistry.addMaterial(
-                new MaterialBuilder("chrome", SHINY, 0xFFE6E6)
-                        .addRegularParts(ITEM_PURE_METAL)
-                        .addRegularParts(HOT_INGOT)
-                        .addRegularParts(PLATE, LARGE_PLATE, DOUBLE_INGOT)
-                        .addRecipes(StandardRecipes::apply)
-                        .build()
-        );
-
-        MaterialRegistry.addMaterial(
-                new MaterialBuilder("manganese", DULL, 0xC1C1C1)
-                        .addRegularParts(ITEM_PURE_METAL)
-                        .addRecipes(StandardRecipes::apply)
-                        .build()
-        );
-
-        MaterialRegistry.addMaterial(
-                new MaterialBuilder("fluorite", SHINY, 0xAF69CF)
-                        .addRegularParts(ITEM_PURE_NON_METAL)
-                        .removeRegularParts(BLOCK)
-                        .addRegularParts(ORE)
-                        .addRecipes(StandardRecipes::apply)
-                        .build()
-        );
-
-        MaterialRegistry.addMaterial(
-                new MaterialBuilder("sodium_fluorosilicate", DULL, 0xD1EDE5)
-                        .addRegularParts(ITEM_PURE_NON_METAL)
-                        .removeRegularParts(BLOCK)
-                        .addRecipes(StandardRecipes::apply)
-                        .build()
-        );
+        MaterialRegistry.addMaterial(new MaterialBuilder("sodium_fluorosilicate", DULL, 0xD1EDE5).addRegularParts(ITEM_PURE_NON_METAL)
+                .removeRegularParts(BLOCK).addRecipes(StandardRecipes::apply).build());
 
         MaterialRegistry.addMaterial(
                 new MaterialBuilder("manganese", DULL, 0xC1C1C1).addRegularParts(ITEM_PURE_METAL).addRecipes(StandardRecipes::apply).build());

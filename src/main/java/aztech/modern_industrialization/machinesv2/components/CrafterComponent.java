@@ -26,6 +26,7 @@ package aztech.modern_industrialization.machinesv2.components;
 import static aztech.modern_industrialization.util.Simulation.ACT;
 import static aztech.modern_industrialization.util.Simulation.SIMULATE;
 
+import aztech.modern_industrialization.ModernIndustrialization;
 import aztech.modern_industrialization.inventory.ConfigurableFluidStack;
 import aztech.modern_industrialization.inventory.ConfigurableItemStack;
 import aztech.modern_industrialization.machines.recipe.MachineRecipe;
@@ -40,6 +41,7 @@ import net.fabricmc.fabric.api.lookup.v1.item.ItemKey;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
 import net.minecraft.world.World;
@@ -259,6 +261,32 @@ public class CrafterComponent {
             if (getRecipeMaxEu(eu, totalEu, ticks) == Math.min(behavior.getMaxRecipeEu(), totalEu))
                 return ticks;
         }
+    }
+
+    public void writeNbt(CompoundTag tag) {
+        tag.putLong("usedEnergy", this.usedEnergy);
+        tag.putLong("recipeEnergy", this.recipeEnergy);
+        tag.putLong("recipeMaxEu", this.recipeMaxEu);
+        if (activeRecipe != null) {
+            tag.putString("activeRecipe", this.activeRecipe.getId().toString());
+        } else if (delayedActiveRecipe != null) {
+            tag.putString("activeRecipe", this.delayedActiveRecipe.toString());
+        }
+        tag.putInt("efficiencyTicks", this.efficiencyTicks);
+        tag.putInt("maxEfficiencyTicks", this.maxEfficiencyTicks);
+    }
+
+    public void readNbt(CompoundTag tag) {
+        this.usedEnergy = tag.getInt("usedEnergy");
+        this.recipeEnergy = tag.getInt("recipeEnergy");
+        this.recipeMaxEu = tag.getInt("recipeMaxEu");
+        this.delayedActiveRecipe = tag.contains("activeRecipe") ? new Identifier(tag.getString("activeRecipe")) : null;
+        if (delayedActiveRecipe == null && usedEnergy > 0) {
+            usedEnergy = 0;
+            ModernIndustrialization.LOGGER.error("Had to set the usedEnergy of CrafterComponent to 0, but that should never happen!");
+        }
+        this.efficiencyTicks = tag.getInt("efficiencyTicks");
+        this.maxEfficiencyTicks = tag.getInt("maxEfficiencyTicks");
     }
 
     /**

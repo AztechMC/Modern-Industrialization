@@ -174,7 +174,7 @@ public class MachineBlockEntity extends AbstractMachineBlockEntity implements Ti
     @Override
     public CompoundTag toTag(CompoundTag tag) {
         super.toTag(tag);
-        inventory.writeToTag(tag);
+        inventory.writeNbt(tag);
         tag.putInt("usedEnergy", this.usedEnergy);
         tag.putInt("recipeEnergy", this.recipeEnergy);
         tag.putInt("recipeMaxEu", this.recipeMaxEu);
@@ -192,7 +192,7 @@ public class MachineBlockEntity extends AbstractMachineBlockEntity implements Ti
     @Override
     public void fromTag(BlockState state, CompoundTag tag) {
         super.fromTag(state, tag);
-        inventory.readFromTag(tag);
+        inventory.readNbt(tag);
         this.usedEnergy = tag.getInt("usedEnergy");
         this.recipeEnergy = tag.getInt("recipeEnergy");
         this.recipeMaxEu = tag.getInt("recipeMaxEu");

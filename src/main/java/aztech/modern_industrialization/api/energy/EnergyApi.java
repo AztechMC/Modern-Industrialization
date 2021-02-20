@@ -37,6 +37,18 @@ public class EnergyApi {
     public static final BlockApiLookup<EnergyMoveable, @NotNull Direction> MOVEABLE = BlockApiLookupRegistry
             .getLookup(new Identifier("modern_industrialization:energy_moveable"), EnergyMoveable.class, Direction.class);
 
+    public static final EnergyExtractable CREATIVE_EXTRACTABLE = new EnergyExtractable() {
+        @Override
+        public long extractEnergy(long maxAmount) {
+            return maxAmount;
+        }
+
+        @Override
+        public boolean canExtract(CableTier tier) {
+            return true;
+        }
+    };
+
     static {
         // Compat wrapper for FTL
         // TODO add back when port to fabric-transfer-api-v1 is complete

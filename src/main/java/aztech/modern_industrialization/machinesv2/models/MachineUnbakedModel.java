@@ -82,6 +82,10 @@ public class MachineUnbakedModel implements UnbakedModel {
                 new MIIdentifier("blocks/machines/" + folder + "/overlay_" + side + "_active"));
     }
 
+    public MachineUnbakedModel withStandardOverlays() {
+        return withOutputOverlay("output").withItemAutoExportOverlay("extract_items").withFluidAutoExportOverlay("extract_fluids");
+    }
+
     public MachineUnbakedModel withOutputOverlay(String suffix) {
         return withOverlay(suffix, 6);
     }

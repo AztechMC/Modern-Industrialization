@@ -30,11 +30,23 @@ public final class MachineModels {
     public static void init() {
         ModelLoadingRegistry.INSTANCE.registerResourceProvider(rm -> new MachineModelProvider());
         ModelLoadingRegistry.INSTANCE.registerModelProvider(new MachineModelProvider());
+    }
 
-        MachineUnbakedModel model = new MachineUnbakedModel("macerator", true, true, false, MachineCasings.LV).withOutputOverlay("output")
-                .withItemAutoExportOverlay("extract_items").withFluidAutoExportOverlay("extract_fluids");
-        MachineModelProvider.register(new MIIdentifier("block/lv_macerator"), model);
-        MachineModelProvider.register(new MIIdentifier("item/lv_macerator"), model);
+    @SuppressWarnings("IfCanBeSwitch")
+    public static void addTieredMachine(String tier, String name, boolean frontOverlay, boolean topOverlay, boolean sideOverlay) {
+        MachineCasingModel defaultCasing;
+        if (tier.equals("bronze")) {
+            defaultCasing = MachineCasings.BRONZE;
+        } else if (tier.equals("steel")) {
+            defaultCasing = MachineCasings.STEEL;
+        } else if (tier.equals("lv")) {
+            defaultCasing = MachineCasings.LV;
+        } else {
+            throw new RuntimeException("Invalid tier: " + tier);
+        }
+        MachineUnbakedModel model = new MachineUnbakedModel(name, frontOverlay, topOverlay, sideOverlay, defaultCasing).withStandardOverlays();
+        MachineModelProvider.register(new MIIdentifier("block/" + tier + "_" + name), model);
+        MachineModelProvider.register(new MIIdentifier("item/" + tier + "_" + name), model);
     }
 
     private MachineModels() {

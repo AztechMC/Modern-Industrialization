@@ -28,6 +28,7 @@ import aztech.modern_industrialization.api.energy.EnergyInsertable;
 import aztech.modern_industrialization.util.Simulation;
 import com.google.common.base.Preconditions;
 import java.util.function.Predicate;
+import net.minecraft.nbt.CompoundTag;
 
 public class EnergyComponent {
     private long storedEu;
@@ -43,6 +44,14 @@ public class EnergyComponent {
 
     public long getCapacity() {
         return capacity;
+    }
+
+    public void writeNbt(CompoundTag tag) {
+        tag.putLong("storedEu", storedEu);
+    }
+
+    public void readNbt(CompoundTag tag) {
+        storedEu = tag.getLong("storedEu");
     }
 
     public long consumeEu(long max, Simulation simulation) {

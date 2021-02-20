@@ -24,6 +24,7 @@
 package aztech.modern_industrialization;
 
 import aztech.modern_industrialization.api.FluidFuelRegistry;
+import aztech.modern_industrialization.api.energy.EnergyApi;
 import aztech.modern_industrialization.api.pipes.item.SpeedUpgrade;
 import aztech.modern_industrialization.blocks.TrashCanBlock;
 import aztech.modern_industrialization.blocks.forgehammer.ForgeHammerBlock;
@@ -43,7 +44,7 @@ import aztech.modern_industrialization.machines.impl.MachineFactory;
 import aztech.modern_industrialization.machinesv2.MachinePackets;
 import aztech.modern_industrialization.machinesv2.MachineScreenHandlers;
 import aztech.modern_industrialization.machinesv2.init.MIMachineRecipeTypes;
-import aztech.modern_industrialization.machinesv2.init.MIMachines;
+import aztech.modern_industrialization.machinesv2.init.SingleBlockCraftingMachines;
 import aztech.modern_industrialization.materials.MIMaterials;
 import aztech.modern_industrialization.pipes.MIPipes;
 import aztech.modern_industrialization.recipe.MIRecipes;
@@ -138,13 +139,14 @@ public class ModernIndustrialization implements ModInitializer {
 
         MIMaterials.init();
         MIMachineRecipeTypes.init();
-        MIMachines.init();
+        SingleBlockCraftingMachines.init();
         // MITags.setup();
         setupItems();
         setupBlocks();
         MIFluids.setupFluids();
         MITanks.setup();
-        // MIMachines.setupRecipes(); // will also load the static fields.
+        // SingleBlockCraftingMachines.setupRecipes(); // will also load the static
+        // fields.
         ForgeHammerScreenHandler.setupRecipes();
         // setupMachines();
         setupPackets();
@@ -205,6 +207,7 @@ public class ModernIndustrialization implements ModInitializer {
         ItemApi.SIDED.registerForBlocks((world, pos, state, direction) -> TrashCanBlock.trashStorage(), TRASH_CAN);
         FluidApi.SIDED.registerForBlocks((world, pos, state, direction) -> TrashCanBlock.trashStorage(), TRASH_CAN);
         FluidApi.ITEM.register((key, ctx) -> TrashCanBlock.trashStorage(), ITEM_TRASH_CAN);
+        EnergyApi.MOVEABLE.registerForBlocks((world, pos, state, direction) -> EnergyApi.CREATIVE_EXTRACTABLE, MITanks.CREATIVE_TANK_BLOCK);
     }
 
     private void setupMachines() {

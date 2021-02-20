@@ -23,6 +23,7 @@
  */
 package aztech.modern_industrialization.machinesv2;
 
+import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.ModernIndustrialization;
 import aztech.modern_industrialization.inventory.*;
 import aztech.modern_industrialization.machinesv2.gui.ClientComponentRenderer;
@@ -274,8 +275,11 @@ public class MachineScreenHandlers {
         // drawBackground() is called too late, so it's not used at all.
         // This function is used by our custom render() function when appropriate.
         private void actualDrawBackground(MatrixStack matrices) {
-            this.client.getTextureManager().bindTexture(handler.guiParams.backgroundTexture);
-            drawTexture(matrices, x, y, 0, 0, handler.guiParams.backgroundWidth, handler.guiParams.backgroundHeight);
+            this.client.getTextureManager().bindTexture(new MIIdentifier("textures/gui/container/background.png"));
+            int bw = handler.guiParams.backgroundWidth;
+            int bh = handler.guiParams.backgroundHeight;
+            drawTexture(matrices, x, y + 4, 0, 256 - bh + 4, bw, bh - 4);
+            drawTexture(matrices, x, y, 0, 0, bw, 4);
 
             for (ClientComponentRenderer renderer : renderers) {
                 renderer.renderBackground(this, matrices, x, y);

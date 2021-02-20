@@ -500,7 +500,7 @@ public class MIMachines {
         registerMachineTiers("compressor", RECIPE_COMPRESSOR, 1, 1, 0, 0, MIMachines::setupCompressor, false);
         registerMachineTiers("cutting_machine", RECIPE_CUTTING_MACHINE, 1, 1, 1, 0, MIMachines::setupCuttingMachine, false);
         // registerMachineTiers("fluid_extractor", RECIPE_FLUID_EXTRACTOR, 1, 0, 0, 1,
-        // MIMachines::setupFluidExtractor, false);
+        // SingleBlockCraftingMachines::setupFluidExtractor, false);
         registerMachineTiers("furnace", RECIPE_FURNACE, 1, 1, 0, 0, MIMachines::setupFurnace, true);
         registerMachineTiers("macerator", RECIPE_MACERATOR, 1, 4, 0, 0, MIMachines::setupMacerator, false);
         registerMachineTiers("mixer", RECIPE_MIXER, 4, 2, 2, 2, MIMachines::setupMixer, false);

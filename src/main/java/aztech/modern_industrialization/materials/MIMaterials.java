@@ -112,8 +112,7 @@ public class MIMaterials {
 
         MaterialRegistry.addMaterial(new MaterialBuilder("fire_clay", STONE,
                 new BakableTargetColoramp(0xb75a36, "modern_industrialization:textures/materialsets/common/ingot.png",
-                        "modern_industrialization:textures/template/fire_clay_brick.png"))
-                                .addRegularParts(DUST, INGOT)
+                        "modern_industrialization:textures/template/fire_clay_brick.png")).addRegularParts(DUST, INGOT)
                                 .addRecipes(StandardRecipes::apply, SmeltingRecipes::apply).build());
 
         MaterialRegistry
@@ -160,9 +159,9 @@ public class MIMaterials {
                 }).build());
 
         MaterialRegistry.addMaterial(new MaterialBuilder("aluminum", METALLIC, 0x3fcaff).addRegularParts(ITEM_ALL).addRegularParts(WIRE, FINE_WIRE)
-                .addRegularParts(MACHINE_CASING_SPECIAL, MACHINE_CASING)
-                .addParts(PipeMaterialPart.of(PipeType.ITEM)).addParts(PipeMaterialPart.of(PipeType.FLUID))
-                .addParts(CableMaterialPart.of(CableTier.MV)).addRecipes(StandardRecipes::apply).build());
+                .addRegularParts(MACHINE_CASING_SPECIAL, MACHINE_CASING).addParts(PipeMaterialPart.of(PipeType.ITEM))
+                .addParts(PipeMaterialPart.of(PipeType.FLUID)).addParts(CableMaterialPart.of(CableTier.MV)).addRecipes(StandardRecipes::apply)
+                .build());
 
         MaterialRegistry.addMaterial(new MaterialBuilder("bauxite", DULL, 0xC86400).addRegularParts(ITEM_PURE_NON_METAL).removeRegularParts(BLOCK)
                 .addRegularParts(ORE).addRecipes(StandardRecipes::apply).build());
@@ -175,8 +174,7 @@ public class MIMaterials {
                 .addRegularParts(TINY_DUST, DUST, INGOT, DOUBLE_INGOT, PLATE, CURVED_PLATE, NUGGET, BLOCK)
                 .addRecipes(StandardRecipes::apply, SmeltingRecipes::apply).build());
 
-        MaterialRegistry.addMaterial(new MaterialBuilder("invar", METALLIC, 0xDCDC96)
-                .addRegularParts(MACHINE_CASING_SPECIAL)
+        MaterialRegistry.addMaterial(new MaterialBuilder("invar", METALLIC, 0xDCDC96).addRegularParts(MACHINE_CASING_SPECIAL)
                 .addRegularParts(TINY_DUST, DUST, INGOT, DOUBLE_INGOT, PLATE, LARGE_PLATE, NUGGET, GEAR, BLOCK)
                 .addRecipes(StandardRecipes::apply, SmeltingRecipes::apply).build());
 
@@ -213,9 +211,8 @@ public class MIMaterials {
                 .addRecipes(StandardRecipes::apply, SmeltingRecipes::apply).build());
 
         MaterialRegistry.addMaterial(new MaterialBuilder("stainless_steel", SHINY, 0xC8C8DC).addRegularParts(ITEM_ALL).addRegularParts(HOT_INGOT)
-                .addRegularParts(MACHINE_CASING_SPECIAL, MACHINE_CASING)
-                .removeRegularParts(CRUSHED_DUST).addParts(PipeMaterialPart.of(PipeType.ITEM)).addParts(PipeMaterialPart.of(PipeType.FLUID))
-                .addRecipes(StandardRecipes::apply).build());
+                .addRegularParts(MACHINE_CASING_SPECIAL, MACHINE_CASING).removeRegularParts(CRUSHED_DUST).addParts(PipeMaterialPart.of(PipeType.ITEM))
+                .addParts(PipeMaterialPart.of(PipeType.FLUID)).addRecipes(StandardRecipes::apply).build());
 
         MaterialRegistry.addMaterial(
                 new MaterialBuilder("ruby", SHINY, 0xffb3b3).addRegularParts(DUST, TINY_DUST).addRecipes(StandardRecipes::apply).build());

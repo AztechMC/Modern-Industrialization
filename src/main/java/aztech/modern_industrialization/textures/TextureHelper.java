@@ -215,7 +215,7 @@ public class TextureHelper {
 
     }
 
-    public static NativeImage copy(NativeImage image){
+    public static NativeImage copy(NativeImage image) {
         NativeImage copy = new NativeImage(image.getWidth(), image.getHeight(), true);
         copy.copyFrom(image);
         return copy;

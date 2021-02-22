@@ -162,6 +162,7 @@ public class MIMachines {
         }
         return shape;
     }
+
     private static MultiblockShape quarryLike(int hatchFlags, int maxHatches) {
         MultiblockShape shape = new MultiblockShape();
         MultiblockShape.Entry steelCasing = MultiblockShapes.blockId(new MIIdentifier("steel_machine_casing"));

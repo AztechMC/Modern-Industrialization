@@ -53,7 +53,7 @@ public class MIBlock extends Block {
         }
     }
 
-    public String getFullId(){
+    public String getFullId() {
         return "modern_industrialization:" + id;
     }
 
@@ -74,7 +74,7 @@ public class MIBlock extends Block {
     public static final MIBlock ADVANCED_MACHINE_HULL = new MIBlock("advanced_machine_hull");
     public static final MIBlock TURBO_MACHINE_HULL = new MIBlock("turbo_machine_hull");
 
-    //other
+    // other
     public static final MIBlock NUCLEAR_MACHINE_CASING = new MIBlock("nuclear_machine_casing");
 
     public static final MIBlock CREATIVE_ENERGY_SOURCE = new MIBlock("creative_energy_source");

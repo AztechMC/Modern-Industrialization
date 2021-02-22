@@ -23,7 +23,6 @@
  */
 package aztech.modern_industrialization.machines.special;
 
-import aztech.modern_industrialization.MIBlock;
 import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.machines.impl.MachineFactory;
 import aztech.modern_industrialization.machines.impl.multiblock.MultiblockMachineBlockEntity;

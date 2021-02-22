@@ -30,8 +30,8 @@ import net.minecraft.util.Identifier;
 
 public class MaterialHelper {
     public static boolean hasBlock(String part) {
-        return part.equals("block") || part.equals("ore") || part.equals("coil")
-                || part.equals("machine_casing") || part.equals("machine_casing_pipe") || part.equals("machine_casing_special");
+        return part.equals("block") || part.equals("ore") || part.equals("coil") || part.equals("machine_casing")
+                || part.equals("machine_casing_pipe") || part.equals("machine_casing_special");
     }
 
     public static boolean isOre(String part) {
@@ -69,24 +69,25 @@ public class MaterialHelper {
         }
     }
 
-    public static String overrideItemPath(String itemPath){
-        if(itemPath.equals("fire_clay_ingot")){
+    public static String overrideItemPath(String itemPath) {
+        if (itemPath.equals("fire_clay_ingot")) {
             return "fire_clay_brick";
-        }else if(itemPath.equals("bronze_machine_casing_special")){
+        } else if (itemPath.equals("bronze_machine_casing_special")) {
             return "bronze_plated_bricks";
-        }else if(itemPath.equals("aluminum_machine_casing")){
+        } else if (itemPath.equals("aluminum_machine_casing")) {
             return "advanced_machine_casing";
-        }else if(itemPath.equals("aluminum_machine_casing_special")){
+        } else if (itemPath.equals("aluminum_machine_casing_special")) {
             return "frostproof_machine_casing";
-        }else if(itemPath.equals("invar_machine_casing_special")){
+        } else if (itemPath.equals("invar_machine_casing_special")) {
             return "heatproof_machine_casing";
-        }else if(itemPath.equals("stainless_steel_machine_casing_special")){
+        } else if (itemPath.equals("stainless_steel_machine_casing_special")) {
             return "clean_stainless_steel_machine_casing";
-        }else if(itemPath.equals("stainless_steel_machine_casing")){
+        } else if (itemPath.equals("stainless_steel_machine_casing")) {
             return "turbo_machine_casing";
         }
         return itemPath;
     }
+
     /**
      * Register a tag in the runtime data pack, and also create it if it doesn't
      * exist yet.

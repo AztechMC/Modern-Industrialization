@@ -59,31 +59,22 @@ public final class MITextures {
                 fluid.registerTextures(mtm);
             }
 
-            casingFromTexture(mtm, "lv",
-                    mtm.getAssetAsTexture("modern_industrialization:textures/blocks/lv_machine_hull.png"));
-            casingFromTexture(mtm, "mv",
-                    mtm.getAssetAsTexture("modern_industrialization:textures/blocks/advanced_machine_hull.png"));
-            casingFromTexture(mtm, "hv",
-                    mtm.getAssetAsTexture("modern_industrialization:textures/blocks/turbo_machine_hull.png"));
-            casingFromTexture(mtm, "ev",
-                    mtm.getAssetAsTexture("modern_industrialization:textures/blocks/nitro_machine_hull.png"));
-            casingFromTexture(mtm, "supraconductor",
-                    mtm.getAssetAsTexture("modern_industrialization:textures/blocks/ultimate_machine_hull.png"));
-            casingFromTexture(mtm, "nuclear",
-                    mtm.getAssetAsTexture("modern_industrialization:textures/blocks/nuclear_machine_casing.png"));
+            casingFromTexture(mtm, "lv", mtm.getAssetAsTexture("modern_industrialization:textures/blocks/lv_machine_hull.png"));
+            casingFromTexture(mtm, "mv", mtm.getAssetAsTexture("modern_industrialization:textures/blocks/advanced_machine_hull.png"));
+            casingFromTexture(mtm, "hv", mtm.getAssetAsTexture("modern_industrialization:textures/blocks/turbo_machine_hull.png"));
+            casingFromTexture(mtm, "ev", mtm.getAssetAsTexture("modern_industrialization:textures/blocks/nitro_machine_hull.png"));
+            casingFromTexture(mtm, "supraconductor", mtm.getAssetAsTexture("modern_industrialization:textures/blocks/ultimate_machine_hull.png"));
+            casingFromTexture(mtm, "nuclear", mtm.getAssetAsTexture("modern_industrialization:textures/blocks/nuclear_machine_casing.png"));
 
-            casingFromTexture(mtm, "firebricks",
-                    mtm.getAssetAsTexture("modern_industrialization:textures/blocks/fire_clay_bricks.png"));
+            casingFromTexture(mtm, "firebricks", mtm.getAssetAsTexture("modern_industrialization:textures/blocks/fire_clay_bricks.png"));
 
-            casingFromTexture(mtm, "bricks",
-                    mtm.getAssetAsTexture("minecraft:textures/block/bricks.png"));
+            casingFromTexture(mtm, "bricks", mtm.getAssetAsTexture("minecraft:textures/block/bricks.png"));
 
             casingFromTextureBricked(mtm, "bricked_bronze",
                     mtm.getAssetAsTexture("modern_industrialization:textures/blocks/bronze_machine_casing.png"),
                     mtm.getAssetAsTexture("modern_industrialization:textures/blocks/fire_clay_bricks.png"));
 
-            casingFromTextureBricked(mtm, "bricked_steel",
-                    mtm.getAssetAsTexture("modern_industrialization:textures/blocks/steel_machine_casing.png"),
+            casingFromTextureBricked(mtm, "bricked_steel", mtm.getAssetAsTexture("modern_industrialization:textures/blocks/steel_machine_casing.png"),
                     mtm.getAssetAsTexture("modern_industrialization:textures/blocks/fire_clay_bricks.png"));
 
             mtm.onEnd();
@@ -187,9 +178,9 @@ public final class MITextures {
 
                 texturePath = String.format("modern_industrialization:textures/blocks/%s.png", itemPath);
 
-                if(part.equals(MIParts.MACHINE_CASING)){
+                if (part.equals(MIParts.MACHINE_CASING)) {
                     casingFromTexture(mtm, materialName, image);
-                }else if(part.equals(MIParts.MACHINE_CASING_SPECIAL)){
+                } else if (part.equals(MIParts.MACHINE_CASING_SPECIAL)) {
                     casingFromTexture(mtm, itemPath, image);
                 }
 
@@ -201,7 +192,7 @@ public final class MITextures {
                 } else {
                     String itemPath = String.format("%s_%s", materialName, part);
                     itemPath = MaterialHelper.overrideItemPath(itemPath);
-                    texturePath = String.format("modern_industrialization:textures/items/%s.png",itemPath);
+                    texturePath = String.format("modern_industrialization:textures/items/%s.png", itemPath);
                 }
             }
 
@@ -219,16 +210,14 @@ public final class MITextures {
         }
         NativeImage image = mtm.getAssetAsTexture(ingotTexture);
         TextureHelper.doubleIngot(image);
-        String itemPath = MaterialHelper.overrideItemPath(materialName +"_double_ingot");
+        String itemPath = MaterialHelper.overrideItemPath(materialName + "_double_ingot");
 
         mtm.addTexture(String.format("modern_industrialization:textures/items/%s.png", itemPath), image);
         image.close();
     }
 
-
-
-    private static void casingFromTexture(TextureManager tm, String casing, NativeImage texture){
-        for(String side : new String[] {"top", "side", "bottom"}){
+    private static void casingFromTexture(TextureManager tm, String casing, NativeImage texture) {
+        for (String side : new String[] { "top", "side", "bottom" }) {
 
             try {
                 String s = String.format("modern_industrialization:textures/blocks/casings/%s/%s.png", casing, side);
@@ -239,25 +228,25 @@ public final class MITextures {
         }
     }
 
-    private static void casingFromTextureBricked(TextureManager tm, String casing, NativeImage texture, NativeImage brick){
-        for(String side : new String[] {"top", "side", "bottom"}){
+    private static void casingFromTextureBricked(TextureManager tm, String casing, NativeImage texture, NativeImage brick) {
+        for (String side : new String[] { "top", "side", "bottom" }) {
             try {
 
                 NativeImage target;
 
-                if(side.equals("top")){
+                if (side.equals("top")) {
                     target = TextureHelper.copy(texture);
-                }else if(side.equals("bottom")){
+                } else if (side.equals("bottom")) {
                     target = TextureHelper.copy(brick);
-                }else{
-                    if(texture.getWidth() != brick.getWidth() || texture.getHeight() != brick.getHeight()){
+                } else {
+                    if (texture.getWidth() != brick.getWidth() || texture.getHeight() != brick.getHeight()) {
                         throw new IllegalArgumentException("Texture and Brick must have same dimension");
                     }
 
                     NativeImage copy = TextureHelper.copy(texture);
-                    for(int i = 0; i < copy.getWidth(); ++i){
-                        for(int j = copy.getHeight()/2; j < copy.getHeight(); j++){
-                            copy.setPixelColor(i, j, brick.getPixelColor(i,j));
+                    for (int i = 0; i < copy.getWidth(); ++i) {
+                        for (int j = copy.getHeight() / 2; j < copy.getHeight(); j++) {
+                            copy.setPixelColor(i, j, brick.getPixelColor(i, j));
                         }
                     }
                     target = TextureHelper.copy(texture);

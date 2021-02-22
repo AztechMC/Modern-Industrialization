@@ -24,6 +24,8 @@
 package aztech.modern_industrialization.machinesv2.init;
 
 import aztech.modern_industrialization.MIFluids;
+import aztech.modern_industrialization.compat.rei.machines.MachineCategoryParams;
+import aztech.modern_industrialization.compat.rei.machines.ReiMachineRecipes;
 import aztech.modern_industrialization.inventory.ConfigurableFluidStack;
 import aztech.modern_industrialization.inventory.ConfigurableItemStack;
 import aztech.modern_industrialization.inventory.SlotPositions;
@@ -160,11 +162,8 @@ public final class SingleBlockCraftingMachines {
                 continue;
             }
 
-            SlotPositions.Builder itemPositionsBuilder = new SlotPositions.Builder();
-            itemPositions.accept(itemPositionsBuilder);
-            SlotPositions.Builder fluidPositionsBuilder = new SlotPositions.Builder();
-            fluidPositionsBuilder.addSlot(12, 35);
-            fluidPositions.accept(fluidPositionsBuilder);
+            SlotPositions items = new SlotPositions.Builder().buildWithConsumer(itemPositions);
+            SlotPositions fluids = new SlotPositions.Builder().addSlot(12, 35).buildWithConsumer(fluidPositions);
             MachineTier tier = i == 0 ? MachineTier.BRONZE : MachineTier.STEEL;
             String prefix = i == 0 ? "bronze" : "steel";
             int steamBuckets = i == 0 ? 2 : 4;
@@ -175,7 +174,7 @@ public final class SingleBlockCraftingMachines {
             MachineRegistrationHelper.registerMachine(prefix + "_" + machine,
                     bet -> new SteamMachineBlockEntity(
                             bet, type, buildComponent(itemInputCount, itemOutputCount, fluidInputCount, fluidOutputCount,
-                                    itemPositionsBuilder.build(), fluidPositionsBuilder.build(), steamBuckets),
+                                    items, fluids, steamBuckets),
                             builtGuiParams, progressBarParams, tier),
                     bet -> {
                         if (itemInputCount + itemOutputCount > 0) {
@@ -188,18 +187,15 @@ public final class SingleBlockCraftingMachines {
             }
         }
         if ((tiers & TIER_ELECTRIC) > 0) {
-            SlotPositions.Builder itemPositionsBuilder = new SlotPositions.Builder();
-            itemPositions.accept(itemPositionsBuilder);
-            SlotPositions.Builder fluidPositionsBuilder = new SlotPositions.Builder();
-            fluidPositions.accept(fluidPositionsBuilder);
+            SlotPositions items = new SlotPositions.Builder().buildWithConsumer(itemPositions);
+            SlotPositions fluids = new SlotPositions.Builder().buildWithConsumer(fluidPositions);
             MachineGuiParameters.Builder guiParamsBuilder = new MachineGuiParameters.Builder(
                     new TranslatableText("block.modern_industrialization.lv_" + machine), true);
             guiParams.accept(guiParamsBuilder);
             MachineGuiParameters builtGuiParams = guiParamsBuilder.build();
             MachineRegistrationHelper.registerMachine("lv_" + machine,
                     bet -> new ElectricMachineBlockEntity(bet, type,
-                            buildComponent(itemInputCount, itemOutputCount, fluidInputCount, fluidOutputCount, itemPositionsBuilder.build(),
-                                    fluidPositionsBuilder.build(), 0),
+                            buildComponent(itemInputCount, itemOutputCount, fluidInputCount, fluidOutputCount, items, fluids, 0),
                             builtGuiParams, energyBarParams, progressBarParams, efficiencyBarParams, MachineTier.LV, 3200),
                     bet -> {
                         ElectricMachineBlockEntity.registerEnergyApi(bet);
@@ -214,6 +210,14 @@ public final class SingleBlockCraftingMachines {
                 MachineModels.addTieredMachine("lv", machine, frontOverlay, topOverlay, sideOverlay);
             }
         }
+
+        SlotPositions items = new SlotPositions.Builder().buildWithConsumer(itemPositions);
+        SlotPositions fluids = new SlotPositions.Builder().buildWithConsumer(fluidPositions);
+        registerReiTiers(machine, type, new MachineCategoryParams(
+                items.sublist(0, itemInputCount), items.sublist(itemInputCount, itemInputCount + itemOutputCount),
+                fluids.sublist(0, fluidInputCount), fluids.sublist(fluidInputCount, fluidInputCount + fluidOutputCount),
+                progressBarParams, null
+        ), tiers);
     }
 
     private static final int TIER_BRONZE = 1, TIER_STEEL = 2, TIER_ELECTRIC = 4;
@@ -247,6 +251,28 @@ public final class SingleBlockCraftingMachines {
         }
 
         return new MachineInventoryComponent(itemInputStacks, itemOutputStacks, fluidInputStacks, fluidOutputStacks, itemPositions, fluidPositions);
+    }
+
+    private static void registerReiTiers(String machine, MachineRecipeType recipeType, MachineCategoryParams categoryParams, int tiers) {
+        List<MachineCategoryParams> previousCategories = new ArrayList<>();
+        for (int i = 0; i < 3; ++i) {
+            if (((tiers >> i) & 1) > 0) {
+                int minEu = i == 0 ? 1 : i == 1 ? 3 : 5;
+                int maxEu = i == 0 ? 2 : i == 1 ? 4 : Integer.MAX_VALUE;
+                String prefix = i == 0 ? "bronze_" : i == 1 ? "steel_" : "lv_";
+                String itemId = prefix + machine;
+                MachineCategoryParams category = new MachineCategoryParams(
+                        categoryParams.itemInputs, categoryParams.itemOutputs,
+                        categoryParams.fluidInputs, categoryParams.fluidOutputs,
+                        categoryParams.progressBarParams,
+                        recipe -> recipe.getType() == recipeType && minEu <= recipe.eu && recipe.eu <= maxEu);
+                ReiMachineRecipes.registerCategory(itemId, category);
+                previousCategories.add(category);
+                for (MachineCategoryParams param : previousCategories) {
+                    param.workstations.add(itemId);
+                }
+            }
+        }
     }
 
     private SingleBlockCraftingMachines() {

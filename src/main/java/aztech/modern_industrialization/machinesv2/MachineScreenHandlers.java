@@ -384,6 +384,11 @@ public class MachineScreenHandlers {
         protected void drawBackground(MatrixStack matrices, float delta, int mouseX, int mouseY) {
         }
 
+        // This is used by the REI plugin to detect fluid slots
+        public Slot getFocusedSlot() {
+            return focusedSlot;
+        }
+
         private static class MachineButton extends ButtonWidget {
             private final int u;
             private final Supplier<Boolean> isPressed;

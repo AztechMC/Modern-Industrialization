@@ -255,10 +255,12 @@ public final class SingleBlockCraftingMachines {
 
     private static void registerReiTiers(String machine, MachineRecipeType recipeType, MachineCategoryParams categoryParams, int tiers) {
         List<MachineCategoryParams> previousCategories = new ArrayList<>();
+        int previousMaxEu = 0;
         for (int i = 0; i < 3; ++i) {
             if (((tiers >> i) & 1) > 0) {
-                int minEu = i == 0 ? 1 : i == 1 ? 3 : 5;
+                int minEu = previousMaxEu+1;
                 int maxEu = i == 0 ? 2 : i == 1 ? 4 : Integer.MAX_VALUE;
+                previousMaxEu = maxEu;
                 String prefix = i == 0 ? "bronze_" : i == 1 ? "steel_" : "lv_";
                 String itemId = prefix + machine;
                 MachineCategoryParams category = new MachineCategoryParams(

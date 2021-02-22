@@ -62,7 +62,7 @@ public class MachineRecipeCategory implements RecipeCategory<MachineRecipeDispla
 
     @Override
     public @NotNull String getCategoryName() {
-        return I18n.translate(id.toString());
+        return I18n.translate("rei_categories.modern_industrialization." + id.getPath());
     }
 
     @Override

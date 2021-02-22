@@ -43,6 +43,7 @@ import net.minecraft.recipe.StonecuttingRecipe;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.TypedActionResult;
+import net.minecraft.util.registry.Registry;
 
 public class MachinesPlugin implements REIPluginV0 {
     @Override
@@ -85,7 +86,12 @@ public class MachinesPlugin implements REIPluginV0 {
 
     @Override
     public void registerOthers(RecipeHelper recipeHelper) {
-        // TODO: workstations
+        for (Map.Entry<String, MachineCategoryParams> entry : ReiMachineRecipes.categories.entrySet()) {
+            for (String workstation : entry.getValue().workstations) {
+                recipeHelper.registerWorkingStations(new MIIdentifier(entry.getKey()),
+                        EntryStack.create(Registry.ITEM.get(new MIIdentifier(workstation))));
+            }
+        }
         // TODO: arrow clicking
         // TODO: "+" handler
         recipeHelper.registerFocusedStackProvider(screen -> {

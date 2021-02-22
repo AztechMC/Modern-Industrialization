@@ -113,6 +113,31 @@ public class MIMachines {
     public static final MachineFactory ELECTRIC_BLAST_FURNACE;
     public static final MachineFactory DIESEL_GENERATOR;
 
+    private static MultiblockShape cokeOvenLike(int height, Identifier id, int extra_flags) {
+        MultiblockShape shape = new MultiblockShape();
+        MultiblockShape.Entry main_block = MultiblockShapes.blockId(id);
+        for (int y = 0; y < height - 1; y++) {
+            for (int x = -1; x <= 1; x++) {
+                for (int z = 0; z <= 2; z++) {
+                    if (x != 0 || z != 1) {
+                        if (x != 0 || y != 0 || z != 0) {
+                            shape.addEntry(x, y, z, main_block);
+                        }
+                    }
+                }
+            }
+        }
+
+        MultiblockShape.Entry optionalHatch = MultiblockShapes.or(main_block,
+                MultiblockShapes.hatch(HATCH_FLAG_FLUID_INPUT | HATCH_FLAG_ITEM_INPUT | HATCH_FLAG_ITEM_OUTPUT | extra_flags));
+        for (int x = -1; x <= 1; x++) {
+            for (int z = 0; z <= 2; z++) {
+                shape.addEntry(x, -1, z, optionalHatch);
+            }
+        }
+        return shape;
+    }
+
     private static MultiblockShape cokeOvenLike(int height, Block block, int extra_flags) {
         MultiblockShape shape = new MultiblockShape();
         MultiblockShape.Entry main_block = MultiblockShapes.block(block);
@@ -137,7 +162,6 @@ public class MIMachines {
         }
         return shape;
     }
-
     private static MultiblockShape quarryLike(int hatchFlags, int maxHatches) {
         MultiblockShape shape = new MultiblockShape();
         MultiblockShape.Entry steelCasing = MultiblockShapes.blockId(new MIIdentifier("steel_machine_casing"));
@@ -177,12 +201,12 @@ public class MIMachines {
         STEAM_QUARRY_SHAPE = quarryLike(HATCH_FLAG_ITEM_INPUT | HATCH_FLAG_ITEM_OUTPUT | HATCH_FLAG_FLUID_INPUT, 4);
         ELECTRIC_QUARRY_SHAPE = quarryLike(HATCH_FLAG_ITEM_INPUT | HATCH_FLAG_ITEM_OUTPUT | HATCH_FLAG_ENERGY_INPUT, 6);
 
-        VACUUM_FREEZER_SHAPE = cokeOvenLike(3, MIBlock.FROSTPROOF_MACHINE_CASING, 31).setMaxHatches(5);
+        VACUUM_FREEZER_SHAPE = cokeOvenLike(3, new MIIdentifier("frostproof_machine_casing"), 31).setMaxHatches(5);
 
         LARGE_BOILER_SHAPE = new MultiblockShape();
-        MultiblockShape.Entry bronzeCasing = MultiblockShapes.block(MIBlock.BRONZE_PLATED_BRICKS);
-        MultiblockShape.Entry bronzeCasingPipe = MultiblockShapes.block(MIBlock.BRONZE_MACHINE_CASING_PIPE);
-        MultiblockShape.Entry optionalLargeBoilerHatch = MultiblockShapes.or(MultiblockShapes.block(MIBlock.HEATPROOF_MACHINE_CASING),
+        MultiblockShape.Entry bronzeCasing = MultiblockShapes.blockId(new MIIdentifier("bronze_plated_bricks"));
+        MultiblockShape.Entry bronzeCasingPipe = MultiblockShapes.blockId(new MIIdentifier("bronze_machine_casing_pipe"));
+        MultiblockShape.Entry optionalLargeBoilerHatch = MultiblockShapes.or(MultiblockShapes.blockId(new MIIdentifier("heatproof_machine_casing")),
                 MultiblockShapes.hatch(HATCH_FLAG_ITEM_INPUT | HATCH_FLAG_FLUID_INPUT | HATCH_FLAG_FLUID_OUTPUT));
 
         for (int x = -1; x <= 1; ++x) {
@@ -271,9 +295,9 @@ public class MIMachines {
         }
 
         SINTERING_FURNACE_SHAPE = new MultiblockShape();
-        MultiblockShape.Entry heatproofCasing = MultiblockShapes.block(MIBlock.HEATPROOF_MACHINE_CASING);
+        MultiblockShape.Entry heatproofCasing = MultiblockShapes.blockId(new MIIdentifier("heatproof_machine_casing"));
         MultiblockShape.Entry optionalSinteringFurnaceHatch = MultiblockShapes.or(
-                MultiblockShapes.block(MIBlock.CLEAN_STAINLESS_STEEL_MACHINE_CASING),
+                MultiblockShapes.blockId(new MIIdentifier("clean_stainless_steel_machine_casing")),
                 MultiblockShapes.hatch(HATCH_FLAG_ITEM_INPUT | HATCH_FLAG_ITEM_OUTPUT | HATCH_FLAG_ENERGY_INPUT));
 
         for (int x = -1; x <= 1; ++x) {

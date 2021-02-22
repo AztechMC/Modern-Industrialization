@@ -24,6 +24,7 @@
 package aztech.modern_industrialization.machines.special;
 
 import aztech.modern_industrialization.MIBlock;
+import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.machines.impl.MachineFactory;
 import aztech.modern_industrialization.machines.impl.multiblock.MultiblockMachineBlockEntity;
 import aztech.modern_industrialization.machines.impl.multiblock.MultiblockShape;
@@ -62,9 +63,9 @@ public class DistillationTowerBlockEntity extends MultiblockMachineBlockEntity {
     static {
         SHAPES = new MultiblockShape[MAX_OUTPUTS];
 
-        MultiblockShape.Entry baseLayer = MultiblockShapes.or(MultiblockShapes.block(MIBlock.CLEAN_STAINLESS_STEEL_MACHINE_CASING),
+        MultiblockShape.Entry baseLayer = MultiblockShapes.or(MultiblockShapes.blockId(new MIIdentifier("clean_stainless_steel_machine_casing")),
                 MultiblockShapes.hatch(MultiblockShapes.HATCH_FLAG_ENERGY_INPUT | MultiblockShapes.HATCH_FLAG_FLUID_INPUT));
-        MultiblockShape.Entry outputLayer = MultiblockShapes.or(MultiblockShapes.block(MIBlock.CLEAN_STAINLESS_STEEL_MACHINE_CASING),
+        MultiblockShape.Entry outputLayer = MultiblockShapes.or(MultiblockShapes.blockId(new MIIdentifier("clean_stainless_steel_machine_casing")),
                 MultiblockShapes.hatch(MultiblockShapes.HATCH_FLAG_FLUID_OUTPUT));
 
         for (int i = 0; i < MAX_OUTPUTS; ++i) {

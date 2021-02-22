@@ -39,9 +39,11 @@ public class MIBlock extends Block {
     public static SortedMap<String, MIBlock> blocks = new TreeMap<String, MIBlock>();
     public final Item blockItem;
     public final boolean arrpModel;
+    private final String id;
 
     public MIBlock(String id, Settings settings, boolean arrpModel) {
         super(settings);
+        this.id = id;
         this.arrpModel = arrpModel;
         if (blocks.containsKey(id)) {
             throw new IllegalArgumentException("Block id already taken : " + id);
@@ -49,6 +51,10 @@ public class MIBlock extends Block {
             blocks.put(id, this);
             blockItem = MIItem.of(itemSettings -> new BlockItem(this, itemSettings), id, 64);
         }
+    }
+
+    public String getFullId(){
+        return "modern_industrialization:" + id;
     }
 
     public MIBlock(String id, Settings settings) {
@@ -63,20 +69,12 @@ public class MIBlock extends Block {
     public static final MIBlock BLOCK_FIRE_CLAY_BRICKS = new MIBlock("fire_clay_bricks",
             FabricBlockSettings.of(STONE_MATERIAL).hardness(2.0f).resistance(6.0f).breakByTool(FabricToolTags.PICKAXES, 0).requiresTool());
 
-    public static final MIBlock STEEL_MACHINE_CASING = new MIBlock("steel_machine_casing");
-    public static final MIBlock STEEL_MACHINE_CASING_PIPE = new MIBlock("steel_machine_casing_pipe");
+    // hull
     public static final MIBlock BASIC_MACHINE_HULL = new MIBlock("lv_machine_hull");
-    public static final MIBlock BRONZE_PLATED_BRICKS = new MIBlock("bronze_plated_bricks");
-    public static final MIBlock BRONZE_MACHINE_CASING = new MIBlock("bronze_machine_casing");
-    public static final MIBlock BRONZE_MACHINE_CASING_PIPE = new MIBlock("bronze_machine_casing_pipe");
-    public static final MIBlock ADVANCED_MACHINE_CASING = new MIBlock("advanced_machine_casing");
-    public static final MIBlock HEATPROOF_MACHINE_CASING = new MIBlock("heatproof_machine_casing");
     public static final MIBlock ADVANCED_MACHINE_HULL = new MIBlock("advanced_machine_hull");
-
-    public static final MIBlock TURBO_MACHINE_CASING = new MIBlock("turbo_machine_casing");
     public static final MIBlock TURBO_MACHINE_HULL = new MIBlock("turbo_machine_hull");
-    public static final MIBlock FROSTPROOF_MACHINE_CASING = new MIBlock("frostproof_machine_casing");
-    public static final MIBlock CLEAN_STAINLESS_STEEL_MACHINE_CASING = new MIBlock("clean_stainless_steel_machine_casing");
+
+    //other
     public static final MIBlock NUCLEAR_MACHINE_CASING = new MIBlock("nuclear_machine_casing");
 
     public static final MIBlock CREATIVE_ENERGY_SOURCE = new MIBlock("creative_energy_source");

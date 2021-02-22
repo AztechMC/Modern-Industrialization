@@ -24,6 +24,7 @@
 package aztech.modern_industrialization.machines.special;
 
 import aztech.modern_industrialization.MIBlock;
+import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.machines.impl.MachineFactory;
 import aztech.modern_industrialization.machines.impl.multiblock.MultiblockMachineBlockEntity;
 import aztech.modern_industrialization.machines.impl.multiblock.MultiblockShape;
@@ -57,7 +58,7 @@ public class ElectricBlastFurnaceBlockEntity extends MultiblockMachineBlockEntit
         for (Block coilBlock : COIL_MATERIALS) {
             COIL_SHAPE[i] = new MultiblockShape();
 
-            MultiblockShape.Entry optionalHatch = MultiblockShapes.or(MultiblockShapes.block(MIBlock.HEATPROOF_MACHINE_CASING),
+            MultiblockShape.Entry optionalHatch = MultiblockShapes.or(MultiblockShapes.blockId(new MIIdentifier("heatproof_machine_casing")),
                     MultiblockShapes.hatch(31));
             MultiblockShape.Entry coil = MultiblockShapes.block(coilBlock);
 

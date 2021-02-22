@@ -112,16 +112,16 @@ public class RegularMaterialPart implements MaterialPart {
         // create item and block
         if (MaterialHelper.hasBlock(part)) {
             if (MaterialHelper.isOre(part)) {
-                block = new OreBlock(itemPath, FabricBlockSettings.of(STONE_MATERIAL).hardness(3.0f).resistance(3.0f)
+                block = new OreBlock(MaterialHelper.overrideItemPath(itemPath), FabricBlockSettings.of(STONE_MATERIAL).hardness(3.0f).resistance(3.0f)
                         .breakByTool(FabricToolTags.PICKAXES, 1).requiresTool());
             } else {
-                block = new MIBlock(itemPath, FabricBlockSettings.of(METAL_MATERIAL).hardness(5.0f).resistance(6.0f)
+                block = new MIBlock(MaterialHelper.overrideItemPath(itemPath), FabricBlockSettings.of(METAL_MATERIAL).hardness(5.0f).resistance(6.0f)
                         .breakByTool(FabricToolTags.PICKAXES, 0).requiresTool());
             }
             item = block.blockItem;
         } else {
             block = null;
-            item = MIItem.of(itemPath);
+            item = MIItem.of(MaterialHelper.overrideItemPath(itemPath));
         }
         // ore generator
         if (MaterialHelper.isOre(part)) {

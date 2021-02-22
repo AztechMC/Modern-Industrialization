@@ -155,12 +155,19 @@ public final class MITextures {
 
             String texturePath;
             if (MaterialHelper.hasBlock(part)) {
-                texturePath = String.format("modern_industrialization:textures/blocks/%s_%s.png", materialName, part);
+                String itemPath = String.format("%s_%s", materialName, part);
+                itemPath = MaterialHelper.overrideItemPath(itemPath);
+
+                texturePath = String.format("modern_industrialization:textures/blocks/%s.png", itemPath);
             } else {
                 if (part.equals(MIParts.GEM)) {
-                    texturePath = String.format("modern_industrialization:textures/items/%s.png", materialName);
+                    String itemPath = materialName;
+                    itemPath = MaterialHelper.overrideItemPath(itemPath);
+                    texturePath = String.format("modern_industrialization:textures/items/%s.png", itemPath);
                 } else {
-                    texturePath = String.format("modern_industrialization:textures/items/%s_%s.png", materialName, part);
+                    String itemPath = String.format("%s_%s", materialName, part);
+                    itemPath = MaterialHelper.overrideItemPath(itemPath);
+                    texturePath = String.format("modern_industrialization:textures/items/%s.png",itemPath);
                 }
             }
 
@@ -178,7 +185,9 @@ public final class MITextures {
         }
         NativeImage image = mtm.getAssetAsTexture(ingotTexture);
         TextureHelper.doubleIngot(image);
-        mtm.addTexture(String.format("modern_industrialization:textures/items/%s_double_ingot.png", materialName), image);
+        String itemPath = MaterialHelper.overrideItemPath(materialName +"_double_ingot");
+
+        mtm.addTexture(String.format("modern_industrialization:textures/items/%s.png", itemPath), image);
         image.close();
     }
 }

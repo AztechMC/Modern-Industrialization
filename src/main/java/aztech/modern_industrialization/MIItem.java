@@ -45,9 +45,6 @@ public final class MIItem {
     }
 
     public static final Item ITEM_GUIDE_BOOK = of(GuideBookItem::new, "guidebook", 1);
-
-    public static final Item FIRE_CLAY_BRICK = of("fire_clay_brick");
-
     public static final Item ITEM_UNCOOKED_STEEL_DUST = of("uncooked_steel_dust");
 
     public static final Item ITEM_LV_MOTOR = of("lv_motor");

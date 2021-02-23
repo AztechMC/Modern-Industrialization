@@ -31,7 +31,7 @@ import aztech.modern_industrialization.blocks.creativetank.CreativeTankBlock;
 import aztech.modern_industrialization.blocks.creativetank.CreativeTankBlockEntity;
 import aztech.modern_industrialization.blocks.creativetank.CreativeTankItem;
 import aztech.modern_industrialization.blocks.creativetank.CreativeTankRenderer;
-import aztech.modern_industrialization.model.block.ModelProvider;
+import aztech.modern_industrialization.machinesv2.models.MachineModelProvider;
 import java.util.Arrays;
 import net.fabricmc.fabric.api.client.rendereregistry.v1.BlockEntityRendererRegistry;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
@@ -89,12 +89,12 @@ public enum MITanks {
     public static void setupClient() {
         for (MITanks tank : values()) {
             UnbakedModel tankModel = new TankModel(tank.type);
-            ModelProvider.modelMap.put(new MIIdentifier("block/tank_" + tank.type), tankModel);
-            ModelProvider.modelMap.put(new MIIdentifier("item/tank_" + tank.type), tankModel);
+            MachineModelProvider.register(new MIIdentifier("block/tank_" + tank.type), tankModel);
+            MachineModelProvider.register(new MIIdentifier("item/tank_" + tank.type), tankModel);
         }
         UnbakedModel creativeTankModel = new TankModel("creative");
-        ModelProvider.modelMap.put(new MIIdentifier("block/creative_tank"), creativeTankModel);
-        ModelProvider.modelMap.put(new MIIdentifier("item/creative_tank"), creativeTankModel);
+        MachineModelProvider.register(new MIIdentifier("block/creative_tank"), creativeTankModel);
+        MachineModelProvider.register(new MIIdentifier("item/creative_tank"), creativeTankModel);
 
         BlockEntityRendererRegistry.INSTANCE.register(BLOCK_ENTITY_TYPE, TankRenderer::new);
         BlockEntityRendererRegistry.INSTANCE.register(CREATIVE_BLOCK_ENTITY_TYPE, CreativeTankRenderer::new);

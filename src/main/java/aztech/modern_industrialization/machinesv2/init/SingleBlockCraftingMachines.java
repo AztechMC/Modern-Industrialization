@@ -32,8 +32,8 @@ import aztech.modern_industrialization.inventory.SlotPositions;
 import aztech.modern_industrialization.machines.impl.MachineTier;
 import aztech.modern_industrialization.machines.recipe.MachineRecipeType;
 import aztech.modern_industrialization.machinesv2.MachineBlockEntity;
-import aztech.modern_industrialization.machinesv2.blockentities.ElectricMachineBlockEntity;
-import aztech.modern_industrialization.machinesv2.blockentities.SteamMachineBlockEntity;
+import aztech.modern_industrialization.machinesv2.blockentities.ElectricCraftingMachineBlockEntity;
+import aztech.modern_industrialization.machinesv2.blockentities.SteamCraftingMachineBlockEntity;
 import aztech.modern_industrialization.machinesv2.components.MachineInventoryComponent;
 import aztech.modern_industrialization.machinesv2.components.sync.EnergyBar;
 import aztech.modern_industrialization.machinesv2.components.sync.ProgressBar;
@@ -172,7 +172,7 @@ public final class SingleBlockCraftingMachines {
             guiParams.accept(guiParamsBuilder);
             MachineGuiParameters builtGuiParams = guiParamsBuilder.build();
             MachineRegistrationHelper.registerMachine(prefix + "_" + machine,
-                    bet -> new SteamMachineBlockEntity(
+                    bet -> new SteamCraftingMachineBlockEntity(
                             bet, type, buildComponent(itemInputCount, itemOutputCount, fluidInputCount, fluidOutputCount,
                                     items, fluids, steamBuckets),
                             builtGuiParams, progressBarParams, tier),
@@ -194,11 +194,11 @@ public final class SingleBlockCraftingMachines {
             guiParams.accept(guiParamsBuilder);
             MachineGuiParameters builtGuiParams = guiParamsBuilder.build();
             MachineRegistrationHelper.registerMachine("lv_" + machine,
-                    bet -> new ElectricMachineBlockEntity(bet, type,
+                    bet -> new ElectricCraftingMachineBlockEntity(bet, type,
                             buildComponent(itemInputCount, itemOutputCount, fluidInputCount, fluidOutputCount, items, fluids, 0),
                             builtGuiParams, energyBarParams, progressBarParams, efficiencyBarParams, MachineTier.LV, 3200),
                     bet -> {
-                        ElectricMachineBlockEntity.registerEnergyApi(bet);
+                        ElectricCraftingMachineBlockEntity.registerEnergyApi(bet);
                         if (itemInputCount + itemOutputCount > 0) {
                             MachineBlockEntity.registerItemApi(bet);
                         }

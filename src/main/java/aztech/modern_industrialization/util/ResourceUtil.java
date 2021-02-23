@@ -23,11 +23,15 @@
  */
 package aztech.modern_industrialization.util;
 
+import aztech.modern_industrialization.ModernIndustrialization;
 import aztech.modern_industrialization.mixin.ResourceImplAccessor;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.HashMap;
+import net.devtech.arrp.json.tags.JTag;
 import net.minecraft.resource.Resource;
+import net.minecraft.util.Identifier;
 import org.apache.commons.io.IOUtils;
 
 public class ResourceUtil {
@@ -36,5 +40,19 @@ public class ResourceUtil {
         byte[] textureBytes = IOUtils.toByteArray(is);
         ((ResourceImplAccessor) resource).setInputStream(new ByteArrayInputStream(textureBytes));
         return textureBytes;
+    }
+
+    private static final HashMap<Identifier, JTag> tags = new HashMap<>();
+
+    /**
+     * Append a value to a tag. Will only work if all calls go through this
+     * function.
+     */
+    public static synchronized void appendToTag(Identifier tagId, Identifier elementId) {
+        // We use a copy-on-write strategy to update the JTag every time with the added
+        // entry.
+        JTag jtag = tags.computeIfAbsent(tagId, id -> JTag.tag());
+        jtag.add(elementId);
+        ModernIndustrialization.RESOURCE_PACK.addTag(tagId, jtag);
     }
 }

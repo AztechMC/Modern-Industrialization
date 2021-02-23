@@ -24,12 +24,11 @@
 package aztech.modern_industrialization.machinesv2.init;
 
 import aztech.modern_industrialization.MIIdentifier;
-import aztech.modern_industrialization.ModernIndustrialization;
 import aztech.modern_industrialization.machinesv2.MachineBlock;
+import aztech.modern_industrialization.util.ResourceUtil;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
-import net.devtech.arrp.json.tags.JTag;
 import net.minecraft.block.Block;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
@@ -49,7 +48,7 @@ public class MachineRegistrationHelper {
         Supplier<BlockEntity> ctor = () -> factory.apply(bet[0]);
         Block block = new MachineBlock(id, ctor);
         bet[0] = Registry.register(Registry.BLOCK_ENTITY_TYPE, new MIIdentifier(id), BlockEntityType.Builder.create(ctor, block).build(null));
-        ModernIndustrialization.RESOURCE_PACK.addTag(new Identifier("fabric:blocks/wrenchables"), JTag.tag().add(new MIIdentifier(id)));
+        ResourceUtil.appendToTag(new Identifier("fabric:blocks/wrenchables"), new MIIdentifier(id));
         extraRegistrator.accept(bet[0]);
     }
 }

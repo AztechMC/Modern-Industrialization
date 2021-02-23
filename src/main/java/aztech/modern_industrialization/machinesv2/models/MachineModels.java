@@ -32,6 +32,7 @@ public final class MachineModels {
         ModelLoadingRegistry.INSTANCE.registerModelProvider(new MachineModelProvider());
     }
 
+    // The tier is a string to prevent loading client classes on a dedicated server.
     @SuppressWarnings("IfCanBeSwitch")
     public static void addTieredMachine(String tier, String name, boolean frontOverlay, boolean topOverlay, boolean sideOverlay) {
         MachineCasingModel defaultCasing;
@@ -47,6 +48,12 @@ public final class MachineModels {
         MachineUnbakedModel model = new MachineUnbakedModel(name, frontOverlay, topOverlay, sideOverlay, defaultCasing).withStandardOverlays();
         MachineModelProvider.register(new MIIdentifier("block/" + tier + "_" + name), model);
         MachineModelProvider.register(new MIIdentifier("item/" + tier + "_" + name), model);
+    }
+
+    public static void addTieredMachineTiers(String name, boolean frontOverlay, boolean topOverlay, boolean sideOverlay, String... tiers) {
+        for (String tier : tiers) {
+            addTieredMachine(tier, name, frontOverlay, topOverlay, sideOverlay);
+        }
     }
 
     private MachineModels() {

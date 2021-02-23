@@ -25,6 +25,7 @@ package aztech.modern_industrialization.machinesv2.gui;
 
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.text.Text;
+import net.minecraft.text.TranslatableText;
 
 public class MachineGuiParameters {
     public final Text title;
@@ -60,6 +61,10 @@ public class MachineGuiParameters {
         public int playerInventoryX = 8, playerInventoryY = 84;
         private int backgroundSizeX = 176, backgroundSizeY = 166;
         public final boolean lockButton;
+
+        public Builder(String blockId, boolean lockButton) {
+            this(new TranslatableText("block.modern_industrialization." + blockId), lockButton);
+        }
 
         public Builder(Text title, boolean lockButton) {
             this.title = title;

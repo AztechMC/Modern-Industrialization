@@ -23,53 +23,62 @@
  */
 package aztech.modern_industrialization.machinesv2.blockentities;
 
+import aztech.modern_industrialization.MIFluids;
 import aztech.modern_industrialization.api.energy.CableTier;
 import aztech.modern_industrialization.api.energy.EnergyApi;
 import aztech.modern_industrialization.api.energy.EnergyInsertable;
-import aztech.modern_industrialization.machines.impl.MachineTier;
-import aztech.modern_industrialization.machines.recipe.MachineRecipeType;
+import aztech.modern_industrialization.blocks.tank.MITanks;
+import aztech.modern_industrialization.inventory.ConfigurableFluidStack;
+import aztech.modern_industrialization.inventory.MIInventory;
+import aztech.modern_industrialization.inventory.SlotPositions;
 import aztech.modern_industrialization.machinesv2.components.EnergyComponent;
-import aztech.modern_industrialization.machinesv2.components.MachineInventoryComponent;
 import aztech.modern_industrialization.machinesv2.components.sync.EnergyBar;
-import aztech.modern_industrialization.machinesv2.components.sync.ProgressBar;
-import aztech.modern_industrialization.machinesv2.components.sync.RecipeEfficiencyBar;
-import aztech.modern_industrialization.machinesv2.gui.MachineGuiParameters;
 import aztech.modern_industrialization.machinesv2.models.MachineCasings;
 import aztech.modern_industrialization.machinesv2.models.MachineModelClientData;
 import aztech.modern_industrialization.util.Simulation;
+import java.util.Collections;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.nbt.CompoundTag;
 
-public class ElectricMachineBlockEntity extends SingleBlockCraftingMachineBlockEntity {
-    public ElectricMachineBlockEntity(BlockEntityType<?> type, MachineRecipeType recipeType, MachineInventoryComponent inventory,
-            MachineGuiParameters guiParams, EnergyBar.Parameters energyBarParams, ProgressBar.Parameters progressBarParams,
-            RecipeEfficiencyBar.Parameters efficiencyBarParams, MachineTier tier, long euCapacity) {
-        super(type, recipeType, inventory, guiParams, progressBarParams, tier);
-        this.energy = new EnergyComponent(euCapacity);
-        this.insertable = energy.buildInsertable(cableTier -> cableTier == CableTier.LV);
-        registerClientComponent(new EnergyBar.Server(energyBarParams, energy::getEu, energy::getCapacity));
-        registerClientComponent(new RecipeEfficiencyBar.Server(efficiencyBarParams, crafter));
+public class ElectricWaterPumpBlockEntity extends AbstractWaterPumpBlockEntity {
+    public ElectricWaterPumpBlockEntity(BlockEntityType<?> type) {
+        super(type, "lv_water_pump");
+
+        long capacity = 81000 * MITanks.BRONZE.bucketCapacity * 4;
+        this.inventory = new MIInventory(Collections.emptyList(),
+                Collections.singletonList(ConfigurableFluidStack.lockedOutputSlot(capacity, MIFluids.STEAM)), SlotPositions.empty(),
+                new SlotPositions.Builder().addSlot(OUTPUT_SLOT_X, OUTPUT_SLOT_Y).build());
+        this.energy = new EnergyComponent(3200);
+        this.insertable = energy.buildInsertable(tier -> tier == CableTier.LV);
+        registerClientComponent(new EnergyBar.Server(new EnergyBar.Parameters(18, 32), energy::getEu, energy::getCapacity));
     }
 
+    private final MIInventory inventory;
     private final EnergyComponent energy;
     private final EnergyInsertable insertable;
 
     @Override
-    public long consumeEu(long max, Simulation simulation) {
-        return energy.consumeEu(max, simulation);
+    protected long consumeEu(long max) {
+        return energy.consumeEu(max, Simulation.ACT);
+    }
+
+    @Override
+    protected int getWaterMultiplier() {
+        return 16;
+    }
+
+    @Override
+    public MIInventory getInventory() {
+        return inventory;
     }
 
     @Override
     protected MachineModelClientData getModelData() {
         MachineModelClientData data = new MachineModelClientData(MachineCasings.LV);
-        orientation.writeModelData(data);
         data.isActive = isActive;
+        orientation.writeModelData(data);
         return data;
-    }
-
-    public static void registerEnergyApi(BlockEntityType<?> bet) {
-        EnergyApi.MOVEABLE.registerForBlockEntities((be, direction) -> ((ElectricMachineBlockEntity) be).insertable, bet);
     }
 
     @Override
@@ -83,5 +92,9 @@ public class ElectricMachineBlockEntity extends SingleBlockCraftingMachineBlockE
     public void fromTag(BlockState state, CompoundTag tag) {
         super.fromTag(state, tag);
         energy.readNbt(tag);
+    }
+
+    public static void registerEnergyApi(BlockEntityType<?> bet) {
+        EnergyApi.MOVEABLE.registerForBlockEntities((be, direction) -> ((ElectricWaterPumpBlockEntity) be).insertable, bet);
     }
 }

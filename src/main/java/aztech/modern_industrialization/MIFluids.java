@@ -63,7 +63,7 @@ public class MIFluids {
     public static final CraftingFluid HYDROGEN = new CraftingFluid("hydrogen", 0xff1b4acc, true);
     public static final CraftingFluid LIGHT_FUEL = new CraftingFluid("light_fuel", 0xffffe946);
     public static final CraftingFluid MANGANESE_SULFURIC_SOLUTION = new CraftingFluid("manganese_sulfuric_solution", 0xffb96c3f);
-    public static final CraftingFluid METHANE = new CraftingFluid("methane", 0xffb740d9);
+    public static final CraftingFluid METHANE = new CraftingFluid("methane", 0xffb740d9, true);
     public static final CraftingFluid NAPHTHA = new CraftingFluid("naphtha", 0xffa5a25e);
     public static final CraftingFluid NYLON = new CraftingFluid("nylon", 0xff986a64);
     public static final CraftingFluid OXYGEN = new CraftingFluid("oxygen", 0xff3296f2, true);

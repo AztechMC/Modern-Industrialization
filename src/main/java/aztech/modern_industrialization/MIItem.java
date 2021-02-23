@@ -53,7 +53,6 @@ public final class MIItem {
     public static final Item ITEM_LV_ROBOT_ARM = of("lv_robot_arm");
     public static final Item ITEM_LV_CIRCUIT = of("lv_circuit");
     public static final Item ITEM_LV_CIRCUIT_BOARD = of("lv_circuit_board");
-    public static final Item ITEM_LV_BATTERY = of("lv_battery");
     public static final Item ITEM_LV_PUMP = of("lv_pump");
     public static final Item ITEM_RESISTOR = of("resistor");
     public static final Item ITEM_CAPACITOR = of("capacitor");
@@ -66,7 +65,6 @@ public final class MIItem {
     public static final Item ITEM_DIODE = of("diode");
     public static final Item ITEM_ELECTRONIC_CIRCUIT_BOARD = of("electronic_circuit_board");
     public static final Item ITEM_TRANSISTOR = of("transistor");
-    public static final Item ITEM_SILICON_BATTERY = of("silicon_battery");
     public static final Item ITEM_LARGE_MOTOR = of("large_motor");
 
     public static final Item ITEM_LARGE_PUMP = of("large_pump");
@@ -77,8 +75,6 @@ public final class MIItem {
     public static final Item ITEM_AND_GATE = of("and_gate");
     public static final Item ITEM_OR_GATE = of("or_gate");
     public static final Item ITEM_NOT_GATE = of("not_gate");
-
-    public static final Item ITEM_SODIUM_BATTERY = of("sodium_battery");
 
     /*
      * FIXME public static final Item ITEM_DEPLETED_URANIUM_FUEL_ROD = new

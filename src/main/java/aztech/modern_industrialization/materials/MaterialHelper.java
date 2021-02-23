@@ -84,6 +84,8 @@ public class MaterialHelper {
             return "clean_stainless_steel_machine_casing";
         } else if (itemPath.equals("stainless_steel_machine_casing")) {
             return "turbo_machine_casing";
+        }else if(itemPath.equals("redstone_battery")){
+            return "lv_battery";
         }
         return itemPath;
     }

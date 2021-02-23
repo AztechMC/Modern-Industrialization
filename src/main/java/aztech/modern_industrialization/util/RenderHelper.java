@@ -23,6 +23,7 @@
  */
 package aztech.modern_industrialization.util;
 
+import aztech.modern_industrialization.fluid.CraftingFluid;
 import aztech.modern_industrialization.mixin_client.ClientWorldAccessor;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandler;
@@ -101,11 +102,22 @@ public class RenderHelper {
         Renderer renderer = RendererAccess.INSTANCE.getRenderer();
         for (Direction direction : Direction.values()) {
             QuadEmitter emitter = renderer.meshBuilder().getEmitter();
-            if (direction.getAxis().isVertical()) {
-                emitter.square(direction, TANK_W, TANK_W, 1 - TANK_W, 1 - TANK_W, direction == Direction.UP ? 1 - fill : 0.01f);
-            } else {
-                emitter.square(direction, TANK_W, TANK_W, 1 - TANK_W, fill, TANK_W);
+
+            if(fluid instanceof CraftingFluid && ((CraftingFluid) fluid).isGas){
+                if (direction.getAxis().isVertical()) {
+                    emitter.square(direction, TANK_W, TANK_W, 1 - TANK_W, 1 - TANK_W, direction == Direction.DOWN ? fill : 0.01f);
+                } else {
+                    emitter.square(direction, TANK_W, 1 - TANK_W - fill, 1 - TANK_W, 1 - TANK_W, TANK_W);
+                }
+            }else{
+                if (direction.getAxis().isVertical()) {
+                    emitter.square(direction, TANK_W, TANK_W, 1 - TANK_W, 1 - TANK_W, direction == Direction.UP ? 1 - fill : 0.01f);
+                } else {
+                    emitter.square(direction, TANK_W, TANK_W, 1 - TANK_W, fill, TANK_W);
+                }
             }
+
+
             emitter.spriteBake(0, sprite, MutableQuadView.BAKE_LOCK_UV);
             emitter.spriteColor(0, -1, -1, -1, -1);
             vc.quad(ms.peek(), emitter.toBakedQuad(0, sprite, false), r, g, b, FULL_LIGHT, OverlayTexture.DEFAULT_UV);

@@ -25,6 +25,7 @@ package aztech.modern_industrialization.blocks.tank;
 
 import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.blocks.creativetank.CreativeTankItem;
+import aztech.modern_industrialization.fluid.CraftingFluid;
 import com.mojang.datafixers.util.Pair;
 import java.util.*;
 import java.util.function.Function;
@@ -104,10 +105,18 @@ public class TankModel implements UnbakedModel, FabricBakedModel, BakedModel {
             Sprite stillSprite = handler.getFluidSprites(null, null, null)[0];
             int color = 255 << 24 | handler.getFluidColor(null, null, null);
             for (Direction direction : Direction.values()) {
-                float topSpace = direction.getAxis().isHorizontal() ? 1 - fillFraction + 0.01f : 0;
-                float depth = direction == Direction.UP ? 1 - fillFraction : 0;
+                float topSpace, depth, bottomSpace;
+                if(fluid instanceof CraftingFluid && ((CraftingFluid) fluid).isGas){
+                    bottomSpace = direction.getAxis().isHorizontal() ? 1 - fillFraction + 0.01f : 0;
+                    depth = direction == Direction.DOWN ? fillFraction : 0;
+                    topSpace = 0;
+                }else{
+                    bottomSpace = 0;
+                    topSpace = direction.getAxis().isHorizontal() ? 1 - fillFraction + 0.01f : 0;
+                    depth = direction == Direction.UP ? 1 - fillFraction : 0;
+                }
                 emitter.material(translucentMaterial);
-                emitter.square(direction, 0, 0, 1, 1 - topSpace, depth + 0.01f);
+                emitter.square(direction, 0, bottomSpace, 1, 1 - topSpace, depth + 0.01f);
                 emitter.spriteBake(0, stillSprite, MutableQuadView.BAKE_LOCK_UV);
                 emitter.spriteColor(0, color, color, color, color);
                 emitter.emit();

@@ -80,7 +80,7 @@ public class MIMaterials {
 
         MaterialRegistry.addMaterial(new MaterialBuilder("redstone", GEM,
                 new BakableTargetColoramp(0xd20000, "modern_industrialization:textures/materialsets/common/dust.png",
-                        "minecraft:textures/item/redstone.png")).addRegularParts(DUST, TINY_DUST, CRUSHED_DUST)
+                        "minecraft:textures/item/redstone.png")).addRegularParts(DUST, TINY_DUST, CRUSHED_DUST, BATTERY)
                                 .overridePart(ExternalPart.of("dust", "minecraft:redstone", "minecraft:redstone"))
                                 .addRecipes(StandardRecipes::apply, SmeltingRecipes::apply).cancelRecipes("macerator/crushed_dust").build());
 
@@ -193,7 +193,7 @@ public class MIMaterials {
                 .addMaterial(new MaterialBuilder("silver", SHINY, 0xDCDCFF).addRegularParts(ITEM_BASE).addParts(PipeMaterialPart.of(PipeType.ITEM))
                         .addParts(PipeMaterialPart.of(PipeType.FLUID)).addRecipes(StandardRecipes::apply, SmeltingRecipes::apply).build());
 
-        MaterialRegistry.addMaterial(new MaterialBuilder("sodium", STONE, 0x071CB8).addRegularParts(ITEM_PURE_NON_METAL)
+        MaterialRegistry.addMaterial(new MaterialBuilder("sodium", STONE, 0x071CB8).addRegularParts(ITEM_PURE_NON_METAL).addRegularParts(BATTERY)
                 .removeRegularParts(CRUSHED_DUST).addRecipes(StandardRecipes::apply, SmeltingRecipes::apply).build());
 
         MaterialRegistry.addMaterial(new MaterialBuilder("salt", GEM, 0xc7d6c5).addRegularParts(ITEM_PURE_NON_METAL).removeRegularParts(BLOCK)
@@ -207,7 +207,7 @@ public class MIMaterials {
                 .addParts(CableMaterialPart.of(CableTier.MV)).addRecipes(StandardRecipes::apply, SmeltingRecipes::apply).build());
 
         MaterialRegistry.addMaterial(new MaterialBuilder("silicon", METALLIC, 0x3C3C50).addRegularParts(ITEM_PURE_METAL)
-                .addRegularParts(N_DOPED_PLATE, P_DOPED_PLATE).addRegularParts(PLATE, DOUBLE_INGOT).removeRegularParts(CRUSHED_DUST)
+                .addRegularParts(N_DOPED_PLATE, P_DOPED_PLATE).addRegularParts(PLATE, DOUBLE_INGOT, BATTERY).removeRegularParts(CRUSHED_DUST)
                 .addRecipes(StandardRecipes::apply, SmeltingRecipes::apply).build());
 
         MaterialRegistry.addMaterial(new MaterialBuilder("stainless_steel", SHINY, 0xC8C8DC).addRegularParts(ITEM_ALL).addRegularParts(HOT_INGOT)

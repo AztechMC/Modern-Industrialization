@@ -62,6 +62,8 @@ public class MIParts {
     public static final String MACHINE_CASING = "machine_casing";
     public static final String MACHINE_CASING_PIPE = "machine_casing_pipe";
     public static final String MACHINE_CASING_SPECIAL = "machine_casing_special";
+    public static final String BATTERY = "battery";
+
 
     public static final String[] ITEM_BASE = new String[] { CRUSHED_DUST, CURVED_PLATE, DOUBLE_INGOT, DUST, INGOT, LARGE_PLATE, NUGGET, PLATE,
             TINY_DUST, BLOCK };

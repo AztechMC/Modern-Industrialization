@@ -70,15 +70,15 @@ public final class SingleBlockCraftingMachines {
         );
         registerMachineTiers(
                 "chemical_reactor", MIMachineRecipeTypes.CHEMICAL_REACTOR, 3, 3, 3, 3, guiParams -> {},
-                new ProgressBar.Parameters(88, 37, "triple_arrow"), new RecipeEfficiencyBar.Parameters(50, 66), new EnergyBar.Parameters(12, 35),
+                new ProgressBar.Parameters(88, 35, "triple_arrow"), new RecipeEfficiencyBar.Parameters(50, 66), new EnergyBar.Parameters(12, 35),
                 items -> items.addSlots(30, 27, 3, 1).addSlots(116, 27, 3, 1), fluids -> fluids.addSlots(30, 47, 3, 1).addSlots(116, 47, 3, 1),
                 true, false, false,
                 TIER_ELECTRIC
         );
         registerMachineTiers(
                 "compressor", MIMachineRecipeTypes.COMPRESSOR, 1, 1, 0, 0, guiParams -> {},
-                new ProgressBar.Parameters(77, 31, "compress"), new RecipeEfficiencyBar.Parameters(38, 62), new EnergyBar.Parameters(18, 30),
-                items -> items.addSlot(56, 32).addSlot(102, 32), fluids -> {},
+                new ProgressBar.Parameters(77, 34, "compress"), new RecipeEfficiencyBar.Parameters(38, 62), new EnergyBar.Parameters(18, 30),
+                items -> items.addSlot(56, 35).addSlot(102, 35), fluids -> {},
                 true, true, true,
                 TIER_BRONZE | TIER_STEEL | TIER_ELECTRIC
         );
@@ -91,7 +91,7 @@ public final class SingleBlockCraftingMachines {
         );
         registerMachineTiers(
                 "distillery", MIMachineRecipeTypes.DISTILLERY, 0, 0, 1, 1, guiParams -> {},
-                new ProgressBar.Parameters(77, 31, "arrow"), new RecipeEfficiencyBar.Parameters(38, 62), new EnergyBar.Parameters(18, 30),
+                new ProgressBar.Parameters(77, 33, "arrow"), new RecipeEfficiencyBar.Parameters(38, 62), new EnergyBar.Parameters(18, 30),
                 items -> {}, fluids -> fluids.addSlot(56, 35).addSlot(102, 35),
                 true, false, false,
                 TIER_ELECTRIC
@@ -105,8 +105,8 @@ public final class SingleBlockCraftingMachines {
         );
         registerMachineTiers(
                 "furnace", MIMachineRecipeTypes.FURNACE, 1, 1, 0, 0, guiParams -> {},
-                new ProgressBar.Parameters(77, 31, "arrow"), new RecipeEfficiencyBar.Parameters(38, 62), new EnergyBar.Parameters(18, 30),
-                items -> items.addSlot(56, 32).addSlot(102, 32), fluids -> {},
+                new ProgressBar.Parameters(77, 33, "arrow"), new RecipeEfficiencyBar.Parameters(38, 62), new EnergyBar.Parameters(18, 30),
+                items -> items.addSlot(56, 35).addSlot(102, 35), fluids -> {},
                 true, false, false,
                 TIER_BRONZE | TIER_STEEL | TIER_ELECTRIC
         );
@@ -126,22 +126,22 @@ public final class SingleBlockCraftingMachines {
         );
         registerMachineTiers(
                 "packer", MIMachineRecipeTypes.PACKER, 2, 2, 0, 0, guiParams -> {},
-                new ProgressBar.Parameters(77, 31, "arrow"), new RecipeEfficiencyBar.Parameters(38, 66), new EnergyBar.Parameters(18, 30),
+                new ProgressBar.Parameters(77, 33, "arrow"), new RecipeEfficiencyBar.Parameters(38, 66), new EnergyBar.Parameters(18, 30),
                 items -> items.addSlots(56, 27, 1, 2).addSlots(102, 27, 1, 2), fluids -> {},
                 true, false, false,
                 TIER_STEEL | TIER_ELECTRIC
         );
         registerMachineTiers(
                 "polarizer", MIMachineRecipeTypes.POLARIZER, 1, 1, 0, 0, guiParams -> {},
-                new ProgressBar.Parameters(77, 31, "magnet"), new RecipeEfficiencyBar.Parameters(38, 62), new EnergyBar.Parameters(18, 30),
+                new ProgressBar.Parameters(77, 30, "magnet"), new RecipeEfficiencyBar.Parameters(38, 62), new EnergyBar.Parameters(18, 30),
                 items -> items.addSlot(56, 32).addSlot(102, 32), fluids -> {},
                 true, true, false,
                 TIER_ELECTRIC
         );
         registerMachineTiers(
                 "wiremill", MIMachineRecipeTypes.WIREMILL, 1, 1, 0, 0, guiParams -> {},
-                new ProgressBar.Parameters(77, 31, "wiremill"), new RecipeEfficiencyBar.Parameters(38, 62), new EnergyBar.Parameters(18, 30),
-                items -> items.addSlot(56, 32).addSlot(102, 32), fluids -> {},
+                new ProgressBar.Parameters(77, 34, "wiremill"), new RecipeEfficiencyBar.Parameters(38, 62), new EnergyBar.Parameters(18, 30),
+                items -> items.addSlot(56, 35).addSlot(102, 35), fluids -> {},
                 true, true, false,
                 TIER_STEEL | TIER_ELECTRIC
         );

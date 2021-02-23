@@ -47,7 +47,7 @@ import net.minecraft.util.math.Direction;
 public abstract class AbstractWaterPumpBlockEntity extends MachineBlockEntity implements Tickable {
     protected static final int OUTPUT_SLOT_X = 110;
     protected static final int OUTPUT_SLOT_Y = 30;
-    private static final ProgressBar.Parameters PROGRESS_BAR = new ProgressBar.Parameters(79, 31, "extract");
+    private static final ProgressBar.Parameters PROGRESS_BAR = new ProgressBar.Parameters(79, 29, "extract");
     private static final int OPERATION_TICKS = 100;
 
     public AbstractWaterPumpBlockEntity(BlockEntityType<?> type, String blockName) {

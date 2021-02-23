@@ -1,3 +1,6 @@
+##### 0.3.14
+* Fix a tiny issue with the KubeJS integration.
+
 ##### 0.3.13
 * Tidy KubeJS integration and make it properly support array ingredients.
 * Use FTL energy to make energy compatible one-way with Industrial Revolution's.

@@ -26,5 +26,6 @@ package aztech.modern_industrialization.tools;
 /**
  * An interface marking items enabling the advanced overlay for the machines.
  */
+// TODO: remove as it's now handled by a world render event.
 public interface MachineOverlayItem {
 }

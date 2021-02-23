@@ -27,7 +27,6 @@ import aztech.modern_industrialization.ModernIndustrialization;
 import aztech.modern_industrialization.pipes.MIPipes;
 import aztech.modern_industrialization.pipes.api.PipeNetworkNode;
 import aztech.modern_industrialization.pipes.api.PipeNetworkType;
-import aztech.modern_industrialization.tools.IWrenchable;
 import aztech.modern_industrialization.util.MobSpawning;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -41,7 +40,6 @@ import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemUsageContext;
 import net.minecraft.item.Items;
 import net.minecraft.loot.context.LootContext;
 import net.minecraft.loot.context.LootContextParameters;
@@ -60,7 +58,7 @@ import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 
-public class PipeBlock extends Block implements BlockEntityProvider, IWrenchable {
+public class PipeBlock extends Block implements BlockEntityProvider {
     public PipeBlock(Settings settings) {
         super(settings.allowsSpawning(MobSpawning.NO_SPAWN).nonOpaque().solidBlock((s, p, w) -> false));
     }
@@ -126,64 +124,6 @@ public class PipeBlock extends Block implements BlockEntityProvider, IWrenchable
                         if (!world.isClient) {
                             player.openHandledScreen(pipeEntity.getGui(partShape.type, partShape.direction));
                         }
-                        return ActionResult.success(world.isClient);
-                    }
-                }
-            }
-        }
-
-        return ActionResult.PASS;
-    }
-
-    @Override
-    public ActionResult onWrenchUse(ItemUsageContext context) {
-        World world = context.getWorld();
-        PlayerEntity player = context.getPlayer();
-        BlockPos blockPos = context.getBlockPos();
-        PipeBlockEntity pipeEntity = (PipeBlockEntity) world.getBlockEntity(blockPos);
-        BlockSoundGroup group = world.getBlockState(blockPos).getSoundGroup();
-
-        Vec3d hitPos = context.getHitPos();
-        for (PipeVoxelShape partShape : pipeEntity.getPartShapes()) {
-            Vec3d posInBlock = hitPos.subtract(blockPos.getX(), blockPos.getY(), blockPos.getZ());
-            for (Box box : partShape.shape.getBoundingBoxes()) {
-                // move slightly towards box center
-                Vec3d dir = box.getCenter().subtract(posInBlock).normalize().multiply(1e-4);
-                if (box.contains(posInBlock.add(dir))) {
-                    if (player != null && player.isSneaking()) {
-                        boolean removeBlock = pipeEntity.connections.size() == 1;
-                        if (!world.isClient) {
-                            pipeEntity.removePipeAndDropContainedItems(partShape.type);
-                        }
-                        if (removeBlock) {
-                            world.setBlockState(blockPos, Blocks.AIR.getDefaultState());
-                        }
-                        // update adjacent blocks
-                        world.updateNeighbors(blockPos, null);
-                        // spawn pipe item
-                        world.spawnEntity(
-                                new ItemEntity(world, hitPos.x, hitPos.y, hitPos.z, new ItemStack(MIPipes.INSTANCE.getPipeItem(partShape.type))));
-                        // play break sound
-                        if (world.isClient) {
-                            world.playSound(player, blockPos, group.getBreakSound(), SoundCategory.BLOCKS, (group.getVolume() + 1.0F) / 2.0F,
-                                    group.getPitch() * 0.8F);
-                        }
-                        return ActionResult.success(world.isClient);
-                    } else {
-                        SoundEvent sound;
-                        if (partShape.direction == null) {
-                            if (!world.isClient) {
-                                pipeEntity.addConnection(partShape.type, context.getSide());
-                            }
-                            sound = group.getPlaceSound();
-                        } else {
-                            if (!world.isClient) {
-                                pipeEntity.removeConnection(partShape.type, partShape.direction);
-                            }
-                            sound = group.getBreakSound();
-                        }
-                        world.updateNeighbors(blockPos, null);
-                        world.playSound(player, blockPos, sound, SoundCategory.BLOCKS, (group.getVolume() + 1.0F) / 4.0F, group.getPitch() * 0.8F);
                         return ActionResult.success(world.isClient);
                     }
                 }

@@ -32,7 +32,6 @@ import java.util.function.Supplier;
 import net.minecraft.block.Block;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
 public class MachineRegistrationHelper {
@@ -48,7 +47,7 @@ public class MachineRegistrationHelper {
         Supplier<BlockEntity> ctor = () -> factory.apply(bet[0]);
         Block block = new MachineBlock(id, ctor);
         bet[0] = Registry.register(Registry.BLOCK_ENTITY_TYPE, new MIIdentifier(id), BlockEntityType.Builder.create(ctor, block).build(null));
-        ResourceUtil.appendToTag(new Identifier("fabric:blocks/wrenchables"), new MIIdentifier(id));
+        ResourceUtil.appendWrenchable(new MIIdentifier(id));
         extraRegistrator.accept(bet[0]);
     }
 }

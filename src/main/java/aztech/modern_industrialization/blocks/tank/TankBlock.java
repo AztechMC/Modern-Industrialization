@@ -24,7 +24,6 @@
 package aztech.modern_industrialization.blocks.tank;
 
 import aztech.modern_industrialization.ModernIndustrialization;
-import aztech.modern_industrialization.tools.IWrenchable;
 import aztech.modern_industrialization.util.MobSpawning;
 import java.util.Arrays;
 import java.util.List;
@@ -36,7 +35,6 @@ import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemUsageContext;
 import net.minecraft.loot.context.LootContext;
 import net.minecraft.loot.context.LootContextParameters;
 import net.minecraft.loot.context.LootContextTypes;
@@ -48,7 +46,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 
-public class TankBlock extends Block implements BlockEntityProvider, IWrenchable {
+public class TankBlock extends Block implements BlockEntityProvider {
     public TankBlock(Settings settings) {
         super(settings.nonOpaque().allowsSpawning(MobSpawning.NO_SPAWN));
     }
@@ -100,13 +98,5 @@ public class TankBlock extends Block implements BlockEntityProvider, IWrenchable
             return ActionResult.success(world.isClient);
         }
         return ActionResult.PASS;
-    }
-
-    @Override
-    public ActionResult onWrenchUse(ItemUsageContext context) {
-        // FIXME: create an api for this.
-        BlockHitResult hit = new BlockHitResult(context.getHitPos(), context.getSide(), context.getBlockPos(), context.hitsInsideBlock());
-        return onUse(context.getWorld().getBlockState(hit.getBlockPos()), context.getWorld(), hit.getBlockPos(), context.getPlayer(),
-                context.getHand(), hit);
     }
 }

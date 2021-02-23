@@ -30,7 +30,6 @@ import aztech.modern_industrialization.inventory.ConfigurableItemStack;
 import aztech.modern_industrialization.machines.impl.multiblock.HatchBlockEntity;
 import aztech.modern_industrialization.machines.impl.multiblock.MultiblockMachineBlockEntity;
 import aztech.modern_industrialization.machinesv2.MachineOverlay;
-import aztech.modern_industrialization.tools.IWrenchable;
 import aztech.modern_industrialization.tools.MachineOverlayItem;
 import aztech.modern_industrialization.util.MobSpawning;
 import java.util.List;
@@ -62,7 +61,7 @@ import net.minecraft.world.World;
 /**
  * A generic machine_recipe block.
  */
-public class MachineBlock extends Block implements BlockEntityProvider, IWrenchable {
+public class MachineBlock extends Block implements BlockEntityProvider {
     public final MachineFactory factory;
 
     public MachineBlock(MachineFactory factory) {
@@ -173,7 +172,7 @@ public class MachineBlock extends Block implements BlockEntityProvider, IWrencha
         return VoxelShapes.cuboid(0, 0, 0, 1, 1, 1);
     }
 
-    @Override
+    // TODO: remove this (it's not used anymore anyway)
     public ActionResult onWrenchUse(ItemUsageContext context) {
         World world = context.getWorld();
         PlayerEntity player = context.getPlayer();

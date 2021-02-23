@@ -32,6 +32,7 @@ import aztech.modern_industrialization.blocks.creativetank.CreativeTankBlockEnti
 import aztech.modern_industrialization.blocks.creativetank.CreativeTankItem;
 import aztech.modern_industrialization.blocks.creativetank.CreativeTankRenderer;
 import aztech.modern_industrialization.machinesv2.models.MachineModelProvider;
+import aztech.modern_industrialization.util.ResourceUtil;
 import java.util.Arrays;
 import net.fabricmc.fabric.api.client.rendereregistry.v1.BlockEntityRendererRegistry;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
@@ -68,8 +69,11 @@ public enum MITanks {
 
     public static void setup() {
         ModernIndustrialization.registerBlock(CREATIVE_TANK_BLOCK, CREATIVE_TANK_ITEM, "creative_tank");
+        ResourceUtil.appendWrenchable(new MIIdentifier("creative_tank"));
         for (MITanks tank : values()) {
-            ModernIndustrialization.registerBlock(tank.block, tank.item, "tank_" + tank.type, 0);
+            String tankId = "tank_" + tank.type;
+            ModernIndustrialization.registerBlock(tank.block, tank.item, tankId, 0);
+            ResourceUtil.appendWrenchable(new MIIdentifier(tankId));
         }
         BLOCK_ENTITY_TYPE = Registry.register(Registry.BLOCK_ENTITY_TYPE, new MIIdentifier("tank"),
                 BlockEntityType.Builder.create(TankBlockEntity::new, getBlocks()).build(null));

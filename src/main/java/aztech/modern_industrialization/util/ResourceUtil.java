@@ -55,4 +55,8 @@ public class ResourceUtil {
         jtag.add(elementId);
         ModernIndustrialization.RESOURCE_PACK.addTag(tagId, jtag);
     }
+
+    public static void appendWrenchable(Identifier blockId) {
+        appendToTag(new Identifier("fabric:blocks/wrenchables"), blockId);
+    }
 }

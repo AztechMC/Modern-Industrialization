@@ -101,7 +101,7 @@ public class MIRecipeEventHandler implements KubeJSInitializer {
             if (obj.has("count"))
                 amount = obj.get("count").getAsInt();
             IngredientJS ing = IngredientJS.of(obj);
-            ing = ing.withCount(amount).asIngredientStack();
+            ing = ing.withCount(amount);
             inputItems.add(ing);
             itemInputProbabilities[index] = readProbability(obj);
         }
@@ -131,7 +131,7 @@ public class MIRecipeEventHandler implements KubeJSInitializer {
             if (inputItems.size() > 0) {
                 JsonArray itemInputs = new JsonArray();
                 for (int i = 0; i < inputItems.size(); ++i) {
-                    IngredientJS ingredient = inputItems.get(i);
+                    IngredientJS ingredient = inputItems.get(i).asIngredientStack();
                     JsonObject o = (JsonObject) ingredient.toJson();
                     o.addProperty("probability", itemInputProbabilities[i]);
                     itemInputs.add(o);

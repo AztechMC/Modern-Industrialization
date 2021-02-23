@@ -40,6 +40,7 @@ import aztech.modern_industrialization.pipes.item.ItemNetwork;
 import aztech.modern_industrialization.pipes.item.ItemNetworkData;
 import aztech.modern_industrialization.pipes.item.ItemNetworkNode;
 import aztech.modern_industrialization.pipes.item.ItemPipeScreenHandler;
+import aztech.modern_industrialization.util.ResourceUtil;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -109,6 +110,8 @@ public class MIPipes implements ModInitializer {
         Registry.register(Registry.BLOCK, new MIIdentifier("pipe"), BLOCK_PIPE);
         BLOCK_ENTITY_TYPE_PIPE = Registry.register(Registry.BLOCK_ENTITY_TYPE, new MIIdentifier("pipe"),
                 BlockEntityType.Builder.create(PipeBlockEntity::new, BLOCK_PIPE).build(null));
+        ResourceUtil.appendWrenchable(new MIIdentifier("pipe"));
+
         /*
          * FIXME registerFluidPipeType("gold", 255 << 24 | 255 << 16 | 225 << 8 | 0,
          * 81000); registerFluidPipeType("aluminum", 255 << 24 | 63 << 16 | 202 << 8 |

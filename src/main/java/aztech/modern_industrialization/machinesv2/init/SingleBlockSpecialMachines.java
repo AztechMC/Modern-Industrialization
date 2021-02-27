@@ -24,6 +24,7 @@
 package aztech.modern_industrialization.machinesv2.init;
 
 import aztech.modern_industrialization.machinesv2.MachineBlockEntity;
+import aztech.modern_industrialization.machinesv2.blockentities.BoilerMachineBlockEntity;
 import aztech.modern_industrialization.machinesv2.blockentities.ElectricWaterPumpBlockEntity;
 import aztech.modern_industrialization.machinesv2.blockentities.SteamWaterPumpBlockEntity;
 import aztech.modern_industrialization.machinesv2.models.MachineModels;
@@ -32,6 +33,12 @@ import net.fabricmc.loader.api.FabricLoader;
 
 public class SingleBlockSpecialMachines {
     public static void init() {
+
+        MachineRegistrationHelper.registerMachine("bronze_boiler", bet -> new BoilerMachineBlockEntity(bet, true),
+                MachineBlockEntity::registerFluidApi, MachineBlockEntity::registerItemApi);
+        MachineRegistrationHelper.registerMachine("steel_boiler", bet -> new BoilerMachineBlockEntity(bet, false),
+                MachineBlockEntity::registerFluidApi, MachineBlockEntity::registerItemApi);
+
         // TODO: register water pumps in REI?
         MachineRegistrationHelper.registerMachine("bronze_water_pump", bet -> new SteamWaterPumpBlockEntity(bet, true),
                 MachineBlockEntity::registerFluidApi);
@@ -44,6 +51,8 @@ public class SingleBlockSpecialMachines {
 
         if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
             MachineModels.addTieredMachineTiers("water_pump", true, true, true, "bronze", "steel", "lv");
+            MachineModels.addTieredMachineTiers("boiler", true, false, false, "bronze", "steel");
+
         }
     }
 }

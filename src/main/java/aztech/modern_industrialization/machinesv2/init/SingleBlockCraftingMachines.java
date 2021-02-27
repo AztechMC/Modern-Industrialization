@@ -56,7 +56,7 @@ public final class SingleBlockCraftingMachines {
         registerMachineTiers(
                 "assembler", MIMachineRecipeTypes.ASSEMBLER, 9, 3, 1, 0,
                 guiParams -> guiParams.backgroundHeight(186),
-                new ProgressBar.Parameters(102, 43, "circuit"), new RecipeEfficiencyBar.Parameters(43, 86), new EnergyBar.Parameters(14, 44),
+                new ProgressBar.Parameters(102, 45, "circuit"), new RecipeEfficiencyBar.Parameters(43, 86), new EnergyBar.Parameters(14, 44),
                 items -> items.addSlots(42, 27, 3, 3).addSlots(129, 27, 1, 3), fluids -> fluids.addSlot(98, 27),
                 true, true, false,
                 TIER_ELECTRIC

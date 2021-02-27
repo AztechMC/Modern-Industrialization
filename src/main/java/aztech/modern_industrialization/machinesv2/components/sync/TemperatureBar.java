@@ -24,68 +24,76 @@
 package aztech.modern_industrialization.machinesv2.components.sync;
 
 import aztech.modern_industrialization.MIIdentifier;
+import aztech.modern_industrialization.machinesv2.MachineScreenHandlers;
 import aztech.modern_industrialization.machinesv2.SyncedComponent;
 import aztech.modern_industrialization.machinesv2.SyncedComponents;
+import aztech.modern_industrialization.machinesv2.components.CrafterComponent;
 import aztech.modern_industrialization.machinesv2.gui.ClientComponentRenderer;
-import java.util.function.Supplier;
+import aztech.modern_industrialization.util.RenderHelper;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.network.PacketByteBuf;
+import net.minecraft.text.Text;
+import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
 
-public class ProgressBar {
-    public static class Server implements SyncedComponent.Server<Float> {
+import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Supplier;
+
+public class TemperatureBar {
+    public static class Server implements SyncedComponent.Server<Integer> {
         private final Parameters params;
-        private final Supplier<Float> progressSupplier;
+        private final Supplier<Integer> temperatureSupplier;
 
-        public Server(Parameters params, Supplier<Float> progressSupplier) {
+        public Server(Parameters params, Supplier<Integer> temperatureSupplier) {
             this.params = params;
-            this.progressSupplier = progressSupplier;
+            this.temperatureSupplier = temperatureSupplier;
         }
 
         @Override
-        public Float copyData() {
-            return progressSupplier.get();
+        public Integer copyData() {
+            return temperatureSupplier.get();
         }
 
         @Override
-        public boolean needsSync(Float cachedData) {
-            return !cachedData.equals(progressSupplier.get());
+        public boolean needsSync(Integer cachedData) {
+            return !cachedData.equals(temperatureSupplier.get());
         }
 
         @Override
         public void writeInitialData(PacketByteBuf buf) {
             buf.writeInt(params.renderX);
             buf.writeInt(params.renderY);
-            buf.writeString(params.progressBarType);
-            buf.writeBoolean(params.isVertical);
+            buf.writeInt(params.temperatureMax);
             writeCurrentData(buf);
         }
 
         @Override
         public void writeCurrentData(PacketByteBuf buf) {
-            buf.writeFloat(progressSupplier.get());
+            buf.writeInt(temperatureSupplier.get());
         }
 
         @Override
         public Identifier getId() {
-            return SyncedComponents.PROGRESS_BAR;
+            return SyncedComponents.TEMPERATURE_BAR;
         }
     }
 
     public static class Client implements SyncedComponent.Client {
-        public final Parameters params;
-        public float progress;
+        public final TemperatureBar.Parameters params;
+        public int temperature;
 
         public Client(PacketByteBuf buf) {
-            this.params = new Parameters(buf.readInt(), buf.readInt(), buf.readString(), buf.readBoolean());
+            this.params = new TemperatureBar.Parameters(buf.readInt(), buf.readInt(), buf.readInt());
             read(buf);
         }
 
         @Override
         public void read(PacketByteBuf buf) {
-            this.progress = buf.readFloat();
+            this.temperature = buf.readInt();
         }
 
         @Override
@@ -94,57 +102,42 @@ public class ProgressBar {
         }
 
         public class Renderer implements ClientComponentRenderer {
+
+            private final MIIdentifier TEXTURE = new MIIdentifier("textures/gui/efficiency_bar.png");
+            private final int WIDTH = 100, HEIGHT = 2;
+
             @Override
             public void renderBackground(DrawableHelper helper, MatrixStack matrices, int x, int y) {
-                RenderHelper.renderProgress(helper, matrices, x, y, params, progress);
+                MinecraftClient.getInstance().getTextureManager().bindTexture(TEXTURE);
+                // background
+                DrawableHelper.drawTexture(matrices, x + params.renderX - 1, y + params.renderY - 1, helper.getZOffset(), 0, 2, WIDTH + 2, HEIGHT + 2,
+                        6, 102);
+                int barPixels = (int) ( (float) temperature / params.temperatureMax * WIDTH);
+                DrawableHelper.drawTexture(matrices, x + params.renderX, y + params.renderY, helper.getZOffset(), 0, 0, barPixels, HEIGHT, 6,
+                        102);
             }
-        }
-    }
 
-    public static class RenderHelper {
-        public static void renderProgress(DrawableHelper helper, MatrixStack matrices, int x, int y, Parameters params, float progress) {
-            MinecraftClient.getInstance().getTextureManager().bindTexture(params.getTextureId());
-            // background
-            DrawableHelper.drawTexture(matrices, x + params.renderX, y + params.renderY, helper.getZOffset(), 0, 0, 20, 20, 40, 20);
-            // foreground
-            int foregroundPixels = (int) (progress * 20);
-            if (foregroundPixels > 0) {
-                if(!params.isVertical){
-                    DrawableHelper.drawTexture(matrices, x + params.renderX, y + params.renderY, helper.getZOffset(), 0, 20, foregroundPixels, 20, 40,
-                            20);
-                }else{
-                    DrawableHelper.drawTexture(matrices, x + params.renderX, y + params.renderY + 20 - foregroundPixels,
-                            helper.getZOffset(), 0, 40 - foregroundPixels, 20, foregroundPixels, 40,
-                            20);
+            @Override
+            public void renderTooltip(MachineScreenHandlers.ClientScreen screen, MatrixStack matrices, int x, int y, int cursorX, int cursorY) {
+                if (aztech.modern_industrialization.util.RenderHelper
+                        .isPointWithinRectangle(params.renderX, params.renderY, WIDTH, HEIGHT, cursorX - x, cursorY - y)) {
+                    List<Text> tooltip = new ArrayList<>();
+                    tooltip.add(new TranslatableText("text.modern_industrialization.temperature", temperature));
+                    screen.renderTooltip(matrices, tooltip, cursorX, cursorY);
                 }
-
             }
         }
     }
+
 
     public static class Parameters {
         public final int renderX, renderY;
-        /**
-         * The real path will be
-         * {@code modern_industrialization:textures/gui/progress_bar/<progressBarType>.png}.
-         * Must have a size of 20 x 40.
-         */
-        public final String progressBarType;
-        public final boolean isVertical;
+        public final int temperatureMax;
 
-        public Parameters(int renderX, int renderY, String progressBarType) {
-            this(renderX, renderY, progressBarType, false);
-        }
-
-        public Parameters(int renderX, int renderY, String progressBarType, boolean isVertical) {
+        public Parameters(int renderX, int renderY, int temperatureMax) {
             this.renderX = renderX;
             this.renderY = renderY;
-            this.progressBarType = progressBarType;
-            this.isVertical = isVertical;
-        }
-
-        public Identifier getTextureId() {
-            return new MIIdentifier("textures/gui/progress_bar/" + progressBarType + ".png");
+            this.temperatureMax = temperatureMax;
         }
     }
 }

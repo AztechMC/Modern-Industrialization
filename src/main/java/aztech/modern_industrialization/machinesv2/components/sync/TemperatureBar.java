@@ -27,9 +27,10 @@ import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.machinesv2.MachineScreenHandlers;
 import aztech.modern_industrialization.machinesv2.SyncedComponent;
 import aztech.modern_industrialization.machinesv2.SyncedComponents;
-import aztech.modern_industrialization.machinesv2.components.CrafterComponent;
 import aztech.modern_industrialization.machinesv2.gui.ClientComponentRenderer;
-import aztech.modern_industrialization.util.RenderHelper;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Supplier;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.util.math.MatrixStack;
@@ -37,11 +38,6 @@ import net.minecraft.network.PacketByteBuf;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
-
-import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.function.Supplier;
 
 public class TemperatureBar {
     public static class Server implements SyncedComponent.Server<Integer> {
@@ -112,15 +108,14 @@ public class TemperatureBar {
                 // background
                 DrawableHelper.drawTexture(matrices, x + params.renderX - 1, y + params.renderY - 1, helper.getZOffset(), 0, 2, WIDTH + 2, HEIGHT + 2,
                         6, 102);
-                int barPixels = (int) ( (float) temperature / params.temperatureMax * WIDTH);
-                DrawableHelper.drawTexture(matrices, x + params.renderX, y + params.renderY, helper.getZOffset(), 0, 0, barPixels, HEIGHT, 6,
-                        102);
+                int barPixels = (int) ((float) temperature / params.temperatureMax * WIDTH);
+                DrawableHelper.drawTexture(matrices, x + params.renderX, y + params.renderY, helper.getZOffset(), 0, 0, barPixels, HEIGHT, 6, 102);
             }
 
             @Override
             public void renderTooltip(MachineScreenHandlers.ClientScreen screen, MatrixStack matrices, int x, int y, int cursorX, int cursorY) {
-                if (aztech.modern_industrialization.util.RenderHelper
-                        .isPointWithinRectangle(params.renderX, params.renderY, WIDTH, HEIGHT, cursorX - x, cursorY - y)) {
+                if (aztech.modern_industrialization.util.RenderHelper.isPointWithinRectangle(params.renderX, params.renderY, WIDTH, HEIGHT,
+                        cursorX - x, cursorY - y)) {
                     List<Text> tooltip = new ArrayList<>();
                     tooltip.add(new TranslatableText("text.modern_industrialization.temperature", temperature));
                     screen.renderTooltip(matrices, tooltip, cursorX, cursorY);
@@ -128,7 +123,6 @@ public class TemperatureBar {
             }
         }
     }
-
 
     public static class Parameters {
         public final int renderX, renderY;

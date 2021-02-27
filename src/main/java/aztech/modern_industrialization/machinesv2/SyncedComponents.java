@@ -25,7 +25,6 @@ package aztech.modern_industrialization.machinesv2;
 
 import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.machinesv2.components.sync.*;
-
 import java.util.HashMap;
 import java.util.Map;
 import net.minecraft.util.Identifier;

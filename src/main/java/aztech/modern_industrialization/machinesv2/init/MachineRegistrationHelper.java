@@ -38,11 +38,12 @@ public class MachineRegistrationHelper {
     /**
      * Register a machine's block, block entity type and wrenchable tag.
      * 
-     * @param id               Machine block id, for example "lv_macerator"
-     * @param factory          The block entity constructor, with a BET parameter.
+     * @param id                Machine block id, for example "lv_macerator"
+     * @param factory           The block entity constructor, with a BET parameter.
      * @param extraRegistrators A list of BET consumer used for API registration.
      */
-    public static void registerMachine(String id, Function<BlockEntityType<?>, BlockEntity> factory, Consumer<BlockEntityType<?>>  ... extraRegistrators) {
+    public static void registerMachine(String id, Function<BlockEntityType<?>, BlockEntity> factory,
+            Consumer<BlockEntityType<?>>... extraRegistrators) {
         BlockEntityType<?>[] bet = new BlockEntityType[1];
         Supplier<BlockEntity> ctor = () -> factory.apply(bet[0]);
         Block block = new MachineBlock(id, ctor);
@@ -52,6 +53,5 @@ public class MachineRegistrationHelper {
             extraRegistrator.accept(bet[0]);
         }
     }
-
 
 }

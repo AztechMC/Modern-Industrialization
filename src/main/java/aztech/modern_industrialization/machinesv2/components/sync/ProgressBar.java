@@ -109,13 +109,12 @@ public class ProgressBar {
             // foreground
             int foregroundPixels = (int) (progress * 20);
             if (foregroundPixels > 0) {
-                if(!params.isVertical){
+                if (!params.isVertical) {
                     DrawableHelper.drawTexture(matrices, x + params.renderX, y + params.renderY, helper.getZOffset(), 0, 20, foregroundPixels, 20, 40,
                             20);
-                }else{
-                    DrawableHelper.drawTexture(matrices, x + params.renderX, y + params.renderY + 20 - foregroundPixels,
-                            helper.getZOffset(), 0, 40 - foregroundPixels, 20, foregroundPixels, 40,
-                            20);
+                } else {
+                    DrawableHelper.drawTexture(matrices, x + params.renderX, y + params.renderY + 20 - foregroundPixels, helper.getZOffset(), 0,
+                            40 - foregroundPixels, 20, foregroundPixels, 40, 20);
                 }
 
             }

@@ -1,3 +1,26 @@
+/*
+ * MIT License
+ *
+ * Copyright (c) 2020 Azercoco & Technici4n
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
 package aztech.modern_industrialization.machinesv2.blockentities;
 
 import aztech.modern_industrialization.MIFluids;
@@ -15,6 +38,8 @@ import aztech.modern_industrialization.machinesv2.models.MachineCasings;
 import aztech.modern_industrialization.machinesv2.models.MachineModelClientData;
 import aztech.modern_industrialization.util.ItemStackHelper;
 import aztech.modern_industrialization.util.RenderHelper;
+import java.util.Arrays;
+import java.util.List;
 import net.fabricmc.fabric.impl.content.registry.FuelRegistryImpl;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntityType;
@@ -29,9 +54,6 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.Tickable;
 import net.minecraft.util.math.Direction;
-
-import java.util.Arrays;
-import java.util.List;
 
 public class BoilerMachineBlockEntity extends MachineBlockEntity implements Tickable {
 
@@ -58,12 +80,11 @@ public class BoilerMachineBlockEntity extends MachineBlockEntity implements Tick
 
     protected boolean isActive = false;
 
-
     public BoilerMachineBlockEntity(BlockEntityType<?> type, boolean bronze) {
         super(type, new MachineGuiParameters.Builder(bronze ? "bronze_boiler" : "steel_boiler", true).backgroundHeight(180).build());
         orientation = new OrientationComponent(new OrientationComponent.Params(true, false, false));
 
-        int capacity = 81000 * (bronze ? 2* MITanks.BRONZE.bucketCapacity : 2* MITanks.STEEL.bucketCapacity);
+        int capacity = 81000 * (bronze ? 2 * MITanks.BRONZE.bucketCapacity : 2 * MITanks.STEEL.bucketCapacity);
 
         List<ConfigurableItemStack> itemStacks = Arrays.asList(ConfigurableItemStack.standardInputSlot());
         SlotPositions itemPositions = new SlotPositions.Builder().addSlot(INPUT_SLOT_X, INPUT_SLOT_Y).build();
@@ -81,7 +102,6 @@ public class BoilerMachineBlockEntity extends MachineBlockEntity implements Tick
         TEMPERATURE_BAR = new TemperatureBar.Parameters(42, 75, temperatureMax);
         registerClientComponent(new ProgressBar.Server(PROGRESS_BAR, () -> (float) burningTick / burningTickProgress));
         registerClientComponent(new TemperatureBar.Server(TEMPERATURE_BAR, () -> temperature));
-
 
     }
 
@@ -115,15 +135,14 @@ public class BoilerMachineBlockEntity extends MachineBlockEntity implements Tick
         orientation.onPlaced(placer, itemStack);
     }
 
-
-    private void readTag(CompoundTag tag){
+    private void readTag(CompoundTag tag) {
         isActive = tag.getBoolean("isActive");
         burningTick = tag.getInt("burningTick");
         burningTickProgress = tag.getInt("burningTickProgress");
         temperature = tag.getInt("temperature");
     }
 
-    private void writeTag(CompoundTag tag){
+    private void writeTag(CompoundTag tag) {
         tag.putBoolean("isActive", isActive);
         tag.putInt("burningTick", burningTick);
         tag.putInt("burningTickProgress", burningTickProgress);
@@ -205,10 +224,9 @@ public class BoilerMachineBlockEntity extends MachineBlockEntity implements Tick
             }
         }
 
-        for (Direction direction : Direction.values()){
+        for (Direction direction : Direction.values()) {
             getInventory().autoExtractFluids(world, pos, direction);
         }
-
 
         if (isActive != wasActive) {
             sync();

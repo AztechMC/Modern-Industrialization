@@ -25,62 +25,41 @@ package aztech.modern_industrialization.compat.kubejs;
 
 import aztech.modern_industrialization.blocks.forgehammer.ForgeHammerScreenHandler;
 import aztech.modern_industrialization.machines.MIMachines;
-import aztech.modern_industrialization.machines.recipe.MachineRecipeType;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import dev.latvian.kubejs.KubeJSInitializer;
 import dev.latvian.kubejs.item.ItemStackJS;
 import dev.latvian.kubejs.item.ingredient.IngredientJS;
+import dev.latvian.kubejs.item.ingredient.IngredientStackJS;
+import dev.latvian.kubejs.recipe.RecipeExceptionJS;
 import dev.latvian.kubejs.recipe.RecipeJS;
-import dev.latvian.kubejs.recipe.RecipeTypeJS;
 import dev.latvian.kubejs.recipe.RegisterRecipeHandlersEvent;
 import dev.latvian.kubejs.util.ListJS;
-import java.util.function.Supplier;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
 import org.jetbrains.annotations.NotNull;
 
 public class MIRecipeEventHandler implements KubeJSInitializer {
     @Override
     public void onKubeJSInitialization() {
         RegisterRecipeHandlersEvent.EVENT.register(event -> {
-            MIMachines.RECIPE_TYPES.keySet().forEach(t -> event.register(new MachineRecipeType(t, MachineRecipe::new)));
-            event.register(new MachineRecipeType(ForgeHammerScreenHandler.RECIPE_HAMMER, MachineRecipe::new));
-            event.register(new MachineRecipeType(ForgeHammerScreenHandler.RECIPE_SAW, MachineRecipe::new));
+            MIMachines.RECIPE_TYPES.keySet().forEach(t -> event.register(t.getId(), MachineRecipe::new));
+            event.register(ForgeHammerScreenHandler.RECIPE_HAMMER.getId(), MachineRecipe::new);
+            event.register(ForgeHammerScreenHandler.RECIPE_SAW.getId(), MachineRecipe::new);
         });
     }
 
-    private static class MachineRecipeType extends RecipeTypeJS {
-        public MachineRecipeType(aztech.modern_industrialization.machines.recipe.MachineRecipeType mrt, Supplier<RecipeJS> f) {
-            super(mrt, f);
-        }
-
-        @Override
-        public boolean isCustom() {
-            return true;
-        }
-    }
-
     private static class MachineRecipe extends RecipeJS {
-        private int eu;
-        private int duration;
         private float[] itemInputProbabilities;
         private float[] itemOutputProbabilities;
-        private JsonElement fluidInputs, fluidOutputs;
 
         @Override
         public void create(@NotNull ListJS listJS) {
-            throw new UnsupportedOperationException("MachineRecipe#create should never be called");
+            throw new RecipeExceptionJS("MachineRecipe#create should never be called");
         }
 
         @Override
         public void deserialize() {
-            eu = json.get("eu").getAsInt();
-            duration = json.get("duration").getAsInt();
-            fluidInputs = json.get("fluid_inputs");
-            fluidOutputs = json.get("fluid_outputs");
-
             JsonElement j = json.get("item_inputs");
             if (j != null) {
                 if (j.isJsonArray()) {
@@ -111,8 +90,6 @@ public class MIRecipeEventHandler implements KubeJSInitializer {
 
             if (json.has("id")) {
                 id = new Identifier(json.get("id").getAsString());
-            } else if (id == null) {
-                throw new RuntimeException("You must specify an id for custom MI recipes! Recipe: " + json.toString());
             }
         }
 
@@ -147,17 +124,14 @@ public class MIRecipeEventHandler implements KubeJSInitializer {
 
         @Override
         public void serialize() {
-            json.addProperty("eu", eu);
-            json.addProperty("duration", duration);
-            if (fluidInputs != null)
-                json.add("fluid_inputs", fluidInputs);
-            if (fluidOutputs != null)
-                json.add("fluid_outputs", fluidOutputs);
+            if (id == null) {
+                throw new RecipeExceptionJS("You must specify an id for custom MI recipes! Recipe: " + json.toString());
+            }
 
             if (inputItems.size() > 0) {
                 JsonArray itemInputs = new JsonArray();
                 for (int i = 0; i < inputItems.size(); ++i) {
-                    IngredientJS ingredient = inputItems.get(i);
+                    IngredientJS ingredient = inputItems.get(i).asIngredientStack();
                     JsonObject o = (JsonObject) ingredient.toJson();
                     o.addProperty("probability", itemInputProbabilities[i]);
                     itemInputs.add(o);
@@ -171,12 +145,20 @@ public class MIRecipeEventHandler implements KubeJSInitializer {
                     ItemStackJS stack = outputItems.get(i);
                     JsonObject o = new JsonObject();
                     o.addProperty("probability", itemOutputProbabilities[i]);
-                    o.addProperty("item", Registry.ITEM.getId(stack.getItem()).toString());
+                    o.addProperty("item", stack.getId());
                     o.addProperty("amount", stack.getCount());
                     itemOutputs.add(o);
                 }
                 json.add("item_outputs", itemOutputs);
             }
+        }
+
+        @Override
+        public JsonElement serializeIngredientStack(IngredientStackJS in) {
+            JsonObject json = new JsonObject();
+            json.add(in.ingredientKey, in.ingredient.toJson());
+            json.addProperty(in.countKey, in.getCount());
+            return json;
         }
     }
 }

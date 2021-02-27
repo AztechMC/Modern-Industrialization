@@ -103,20 +103,19 @@ public class RenderHelper {
         for (Direction direction : Direction.values()) {
             QuadEmitter emitter = renderer.meshBuilder().getEmitter();
 
-            if(fluid instanceof CraftingFluid && ((CraftingFluid) fluid).isGas){
+            if (fluid instanceof CraftingFluid && ((CraftingFluid) fluid).isGas) {
                 if (direction.getAxis().isVertical()) {
                     emitter.square(direction, TANK_W, TANK_W, 1 - TANK_W, 1 - TANK_W, direction == Direction.DOWN ? fill : 0.01f);
                 } else {
                     emitter.square(direction, TANK_W, 1 - TANK_W - fill, 1 - TANK_W, 1 - TANK_W, TANK_W);
                 }
-            }else{
+            } else {
                 if (direction.getAxis().isVertical()) {
                     emitter.square(direction, TANK_W, TANK_W, 1 - TANK_W, 1 - TANK_W, direction == Direction.UP ? 1 - fill : 0.01f);
                 } else {
                     emitter.square(direction, TANK_W, TANK_W, 1 - TANK_W, fill, TANK_W);
                 }
             }
-
 
             emitter.spriteBake(0, sprite, MutableQuadView.BAKE_LOCK_UV);
             emitter.spriteColor(0, -1, -1, -1, -1);

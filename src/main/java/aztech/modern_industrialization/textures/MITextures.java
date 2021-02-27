@@ -230,23 +230,22 @@ public final class MITextures {
     }
 
     private static void tankFromTexture(TextureManager tm, String tank, NativeImage texture) {
-            try {
-                String s = String.format("modern_industrialization:textures/blocks/tanks/%s.png", tank);
-                NativeImage creativeTankTexture = tm.getAssetAsTexture("modern_industrialization:textures/blocks/tanks/creative.png");
-                NativeImage tankTexture = TextureHelper.copy(texture);
-                if(tankTexture.getHeight() != creativeTankTexture.getHeight() || tankTexture.getWidth() != creativeTankTexture.getWidth()){
-                    throw new RuntimeException("Casing and creative tank texture not the same size !");
-                }
-                for(int i = 1; i < tankTexture.getWidth() - 1; i++)
-                {
-                    for(int j = 1; j < tankTexture.getHeight() -1; j++){
-                        tankTexture.setPixelColor(i, j, creativeTankTexture.getPixelColor(i,j));
-                    }
-                }
-                tm.addTexture(s, tankTexture);
-            } catch (IOException e) {
-                e.printStackTrace();
+        try {
+            String s = String.format("modern_industrialization:textures/blocks/tanks/%s.png", tank);
+            NativeImage creativeTankTexture = tm.getAssetAsTexture("modern_industrialization:textures/blocks/tanks/creative.png");
+            NativeImage tankTexture = TextureHelper.copy(texture);
+            if (tankTexture.getHeight() != creativeTankTexture.getHeight() || tankTexture.getWidth() != creativeTankTexture.getWidth()) {
+                throw new RuntimeException("Casing and creative tank texture not the same size !");
             }
+            for (int i = 1; i < tankTexture.getWidth() - 1; i++) {
+                for (int j = 1; j < tankTexture.getHeight() - 1; j++) {
+                    tankTexture.setPixelColor(i, j, creativeTankTexture.getPixelColor(i, j));
+                }
+            }
+            tm.addTexture(s, tankTexture);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
     }
 

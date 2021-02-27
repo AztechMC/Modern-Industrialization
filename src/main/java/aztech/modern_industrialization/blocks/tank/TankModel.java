@@ -106,11 +106,11 @@ public class TankModel implements UnbakedModel, FabricBakedModel, BakedModel {
             int color = 255 << 24 | handler.getFluidColor(null, null, null);
             for (Direction direction : Direction.values()) {
                 float topSpace, depth, bottomSpace;
-                if(fluid instanceof CraftingFluid && ((CraftingFluid) fluid).isGas){
+                if (fluid instanceof CraftingFluid && ((CraftingFluid) fluid).isGas) {
                     bottomSpace = direction.getAxis().isHorizontal() ? 1 - fillFraction + 0.01f : 0;
                     depth = direction == Direction.DOWN ? fillFraction : 0;
                     topSpace = 0;
-                }else{
+                } else {
                     bottomSpace = 0;
                     topSpace = direction.getAxis().isHorizontal() ? 1 - fillFraction + 0.01f : 0;
                     depth = direction == Direction.UP ? 1 - fillFraction : 0;

@@ -24,6 +24,7 @@
 package aztech.modern_industrialization.inventory;
 
 import aztech.modern_industrialization.util.NbtHelper;
+import java.util.Collections;
 import java.util.List;
 import net.fabricmc.fabric.api.lookup.v1.item.ItemKey;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidApi;
@@ -37,6 +38,8 @@ import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 
 public final class MIInventory {
+    public static final MIInventory EMPTY;
+
     public final List<ConfigurableItemStack> itemStacks;
     public final List<ConfigurableFluidStack> fluidStacks;
     public final MIItemStorage itemStorage;
@@ -104,5 +107,9 @@ public final class MIInventory {
             fluidStacks.clear();
             fluidStacks.addAll(fluidStacksCopy);
         }
+    }
+
+    static {
+        EMPTY = new MIInventory(Collections.emptyList(), Collections.emptyList(), SlotPositions.empty(), SlotPositions.empty());
     }
 }

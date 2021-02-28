@@ -23,10 +23,32 @@
  */
 package aztech.modern_industrialization.machinesv2.models;
 
+import aztech.modern_industrialization.api.energy.CableTier;
+
 public class MachineCasings {
     public static final MachineCasingModel BRONZE = new MachineCasingModel("bronze");
     public static final MachineCasingModel STEEL = new MachineCasingModel("steel");
     public static final MachineCasingModel BRICKED_BRONZE = new MachineCasingModel("bricked_bronze");
     public static final MachineCasingModel BRICKED_STEEL = new MachineCasingModel("bricked_steel");
     public static final MachineCasingModel LV = new MachineCasingModel("lv");
+    public static final MachineCasingModel MV = new MachineCasingModel("mv");
+    public static final MachineCasingModel HV = new MachineCasingModel("hv");
+    public static final MachineCasingModel EV = new MachineCasingModel("ev");
+    public static final MachineCasingModel SUPRACONDUCTOR = new MachineCasingModel("supraconductor");
+
+
+    public static MachineCasingModel casingFromCableTier(CableTier tier){
+        if(tier == CableTier.LV){
+            return LV;
+        }else if(tier == CableTier.MV){
+            return MV;
+        }else if(tier == CableTier.HV){
+            return HV;
+        }else if(tier == CableTier.EV){
+            return EV;
+        }else if(tier == CableTier.SUPRACONDUCTOR){
+            return SUPRACONDUCTOR;
+        }
+        return null;
+    }
 }

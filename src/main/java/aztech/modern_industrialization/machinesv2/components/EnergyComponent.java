@@ -24,6 +24,7 @@
 package aztech.modern_industrialization.machinesv2.components;
 
 import aztech.modern_industrialization.api.energy.CableTier;
+import aztech.modern_industrialization.api.energy.EnergyExtractable;
 import aztech.modern_industrialization.api.energy.EnergyInsertable;
 import aztech.modern_industrialization.util.Simulation;
 import com.google.common.base.Preconditions;
@@ -80,4 +81,22 @@ public class EnergyComponent {
             }
         };
     }
+
+    public EnergyExtractable buildExtractable(Predicate<CableTier> canExtract) {
+        return new EnergyExtractable() {
+            @Override
+            public long extractEnergy(long amount) {
+                Preconditions.checkArgument(amount >= 0, "May not extract < 0 energy.");
+                long extracted = Math.min(amount, storedEu);
+                storedEu -= extracted;
+                return extracted;
+            }
+
+            @Override
+            public boolean canExtract(CableTier tier) {
+                return canExtract.test(tier);
+            }
+        };
+    }
+
 }

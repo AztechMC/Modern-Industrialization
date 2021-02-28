@@ -42,8 +42,9 @@ public class MachineRegistrationHelper {
      * @param factory           The block entity constructor, with a BET parameter.
      * @param extraRegistrators A list of BET consumer used for API registration.
      */
+    @SafeVarargs
     public static void registerMachine(String id, Function<BlockEntityType<?>, BlockEntity> factory,
-            Consumer<BlockEntityType<?>>... extraRegistrators) {
+                                       Consumer<BlockEntityType<?>>... extraRegistrators) {
         BlockEntityType<?>[] bet = new BlockEntityType[1];
         Supplier<BlockEntity> ctor = () -> factory.apply(bet[0]);
         Block block = new MachineBlock(id, ctor);

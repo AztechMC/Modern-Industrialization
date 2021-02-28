@@ -33,6 +33,7 @@ import aztech.modern_industrialization.machinesv2.components.OrientationComponen
 import aztech.modern_industrialization.machinesv2.components.sync.AutoExtract;
 import aztech.modern_industrialization.machinesv2.components.sync.ProgressBar;
 import aztech.modern_industrialization.machinesv2.gui.MachineGuiParameters;
+import aztech.modern_industrialization.machinesv2.helper.OrientationHelper;
 import aztech.modern_industrialization.util.RenderHelper;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntityType;
@@ -108,14 +109,7 @@ public abstract class AbstractCraftingMachineBlockEntity extends MachineBlockEnt
 
     @Override
     protected ActionResult onUse(PlayerEntity player, Hand hand, Direction face) {
-        if (orientation.onUse(player, hand, face)) {
-            markDirty();
-            if (!world.isClient()) {
-                sync();
-            }
-            return ActionResult.success(world.isClient);
-        }
-        return ActionResult.PASS;
+        return OrientationHelper.onUse(player, hand, face, orientation, this);
     }
 
     @Override

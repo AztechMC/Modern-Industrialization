@@ -34,6 +34,7 @@ import aztech.modern_industrialization.machinesv2.components.OrientationComponen
 import aztech.modern_industrialization.machinesv2.components.sync.ProgressBar;
 import aztech.modern_industrialization.machinesv2.components.sync.TemperatureBar;
 import aztech.modern_industrialization.machinesv2.gui.MachineGuiParameters;
+import aztech.modern_industrialization.machinesv2.helper.OrientationHelper;
 import aztech.modern_industrialization.machinesv2.models.MachineCasings;
 import aztech.modern_industrialization.machinesv2.models.MachineModelClientData;
 import aztech.modern_industrialization.util.ItemStackHelper;
@@ -112,14 +113,7 @@ public class BoilerMachineBlockEntity extends MachineBlockEntity implements Tick
 
     @Override
     protected ActionResult onUse(PlayerEntity player, Hand hand, Direction face) {
-        if (orientation.onUse(player, hand, face)) {
-            markDirty();
-            if (!world.isClient()) {
-                sync();
-            }
-            return ActionResult.success(world.isClient);
-        }
-        return ActionResult.PASS;
+        return OrientationHelper.onUse(player, hand, face, orientation, this);
     }
 
     @Override

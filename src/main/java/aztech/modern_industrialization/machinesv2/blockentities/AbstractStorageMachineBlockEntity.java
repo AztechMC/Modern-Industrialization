@@ -54,7 +54,6 @@ public abstract class AbstractStorageMachineBlockEntity extends MachineBlockEnti
     }
 
 
-
     @Override
     public MIInventory getInventory() {
         return MIInventory.EMPTY;
@@ -113,8 +112,7 @@ public abstract class AbstractStorageMachineBlockEntity extends MachineBlockEnti
         EnergyMoveable insertable = EnergyApi.MOVEABLE.get(world, pos.offset(orientation.outputDirection),
                 orientation.outputDirection.getOpposite());
         if (insertable instanceof EnergyInsertable && ((EnergyInsertable) insertable).canInsert(to)) {
-            long euExtracted = ((EnergyInsertable) insertable).insertEnergy(energy.getEu());
-            energy.consumeEu(euExtracted, Simulation.ACT);
+            energy.insertEnergy((EnergyInsertable) insertable);
         }
         markDirty();
     }

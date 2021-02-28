@@ -28,6 +28,7 @@ import static aztech.modern_industrialization.materials.part.MIParts.*;
 import aztech.modern_industrialization.materials.MaterialBuilder;
 import aztech.modern_industrialization.materials.recipe.builder.MIRecipeBuilder;
 import aztech.modern_industrialization.materials.recipe.builder.ShapedRecipeBuilder;
+import aztech.modern_industrialization.materials.recipe.builder.SmeltingRecipeBuilder;
 
 /**
  * Standard conversion recipes for all materials.
@@ -71,6 +72,7 @@ public final class StandardRecipes {
         new MIRecipeBuilder(ctx, "compressor", "double_ingot").addTaggedPartInput(DOUBLE_INGOT, 1).addPartOutput(PLATE, 2);
         // CUTTING MACHINE
         addCuttingMachine(ctx, "main", INGOT, ROD, 2);
+        addCuttingMachine(ctx, "double_ingot", DOUBLE_INGOT, ROD, 4);
         addCuttingMachine(ctx, "rod", ROD, BOLT, 2);
         addCuttingMachine(ctx, "large_plate", LARGE_PLATE, GEAR, 2);
         addCuttingMachine(ctx, "item_pipe", ITEM_PIPE, RING, 2);
@@ -88,6 +90,9 @@ public final class StandardRecipes {
 
         new MIRecipeBuilder(ctx, "polarizer", "rod_magnetic", 8, 200).addTaggedPartInput(ROD, 1).addPartOutput(ROD_MAGNETIC, 1);
         new MIRecipeBuilder(ctx, "polarizer", "wire_magnetic", 8, 200).addTaggedPartInput(WIRE, 1).addPartOutput(WIRE_MAGNETIC, 1);
+        new SmeltingRecipeBuilder(ctx, ROD_MAGNETIC, ROD, 0.0, false);
+        new SmeltingRecipeBuilder(ctx, WIRE_MAGNETIC, WIRE, 0.0, false);
+
 
         new MIRecipeBuilder(ctx, "vacuum_freezer", "hot_ingot", 32, 250).addTaggedPartInput(HOT_INGOT, 1).addPartOutput(INGOT, 1);
 

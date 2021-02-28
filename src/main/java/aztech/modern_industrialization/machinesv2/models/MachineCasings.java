@@ -36,17 +36,16 @@ public class MachineCasings {
     public static final MachineCasingModel EV = new MachineCasingModel("ev");
     public static final MachineCasingModel SUPRACONDUCTOR = new MachineCasingModel("supraconductor");
 
-
-    public static MachineCasingModel casingFromCableTier(CableTier tier){
-        if(tier == CableTier.LV){
+    public static MachineCasingModel casingFromCableTier(CableTier tier) {
+        if (tier == CableTier.LV) {
             return LV;
-        }else if(tier == CableTier.MV){
+        } else if (tier == CableTier.MV) {
             return MV;
-        }else if(tier == CableTier.HV){
+        } else if (tier == CableTier.HV) {
             return HV;
-        }else if(tier == CableTier.EV){
+        } else if (tier == CableTier.EV) {
             return EV;
-        }else if(tier == CableTier.SUPRACONDUCTOR){
+        } else if (tier == CableTier.SUPRACONDUCTOR) {
             return SUPRACONDUCTOR;
         }
         return null;

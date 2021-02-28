@@ -1,3 +1,26 @@
+/*
+ * MIT License
+ *
+ * Copyright (c) 2020 Azercoco & Technici4n
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
 package aztech.modern_industrialization.machinesv2.blockentities;
 
 import aztech.modern_industrialization.api.energy.*;
@@ -12,7 +35,6 @@ import aztech.modern_industrialization.machinesv2.models.MachineCasingModel;
 import aztech.modern_industrialization.machinesv2.models.MachineCasings;
 import aztech.modern_industrialization.machinesv2.models.MachineModelClientData;
 import aztech.modern_industrialization.util.RenderHelper;
-import aztech.modern_industrialization.util.Simulation;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.client.world.ClientWorld;
@@ -44,15 +66,13 @@ public abstract class AbstractStorageMachineBlockEntity extends MachineBlockEnti
         this.eu_capacity = eu_capacity;
 
         this.energy = new EnergyComponent(eu_capacity);
-        insertable = energy.buildInsertable((CableTier tier)-> tier  == from);
-        extractable = energy.buildExtractable((CableTier tier)-> tier  == to);
+        insertable = energy.buildInsertable((CableTier tier) -> tier == from);
+        extractable = energy.buildExtractable((CableTier tier) -> tier == to);
         EnergyBar.Parameters energyBarParams = new EnergyBar.Parameters(76, 39);
         registerClientComponent(new EnergyBar.Server(energyBarParams, energy::getEu, energy::getCapacity));
 
-
         this.orientation = new OrientationComponent(new OrientationComponent.Params(true, false, false));
     }
-
 
     @Override
     public MIInventory getInventory() {
@@ -64,7 +84,7 @@ public abstract class AbstractStorageMachineBlockEntity extends MachineBlockEnti
         return OrientationHelper.onUse(player, hand, face, orientation, this);
     }
 
-    public static MachineCasingModel getCasingFromTier(CableTier from, CableTier to){
+    public static MachineCasingModel getCasingFromTier(CableTier from, CableTier to) {
         return MachineCasings.casingFromCableTier(from.eu > to.eu ? from : to);
     }
 
@@ -109,8 +129,7 @@ public abstract class AbstractStorageMachineBlockEntity extends MachineBlockEnti
 
     @Override
     public void tick() {
-        EnergyMoveable insertable = EnergyApi.MOVEABLE.get(world, pos.offset(orientation.outputDirection),
-                orientation.outputDirection.getOpposite());
+        EnergyMoveable insertable = EnergyApi.MOVEABLE.get(world, pos.offset(orientation.outputDirection), orientation.outputDirection.getOpposite());
         if (insertable instanceof EnergyInsertable && ((EnergyInsertable) insertable).canInsert(to)) {
             energy.insertEnergy((EnergyInsertable) insertable);
         }
@@ -119,13 +138,12 @@ public abstract class AbstractStorageMachineBlockEntity extends MachineBlockEnti
 
     public static void registerEnergyApi(BlockEntityType<?> bet) {
         EnergyApi.MOVEABLE.registerForBlockEntities((be, direction) -> {
-                        AbstractStorageMachineBlockEntity abe = (AbstractStorageMachineBlockEntity) be;
-                        if(abe.orientation.outputDirection == direction){
-                            return abe.extractable;
-                        }else{
-                            return abe.insertable;
-                        }
-                        }
-                , bet);
+            AbstractStorageMachineBlockEntity abe = (AbstractStorageMachineBlockEntity) be;
+            if (abe.orientation.outputDirection == direction) {
+                return abe.extractable;
+            } else {
+                return abe.insertable;
+            }
+        }, bet);
     }
 }

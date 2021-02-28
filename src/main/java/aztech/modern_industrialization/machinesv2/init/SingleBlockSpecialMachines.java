@@ -26,7 +26,6 @@ package aztech.modern_industrialization.machinesv2.init;
 import aztech.modern_industrialization.api.energy.CableTier;
 import aztech.modern_industrialization.machinesv2.MachineBlockEntity;
 import aztech.modern_industrialization.machinesv2.blockentities.*;
-import aztech.modern_industrialization.machinesv2.models.MachineCasingModel;
 import aztech.modern_industrialization.machinesv2.models.MachineCasings;
 import aztech.modern_industrialization.machinesv2.models.MachineModels;
 import net.fabricmc.api.EnvType;
@@ -46,44 +45,37 @@ public class SingleBlockSpecialMachines {
                 MachineBlockEntity::registerFluidApi);
         MachineRegistrationHelper.registerMachine("steel_water_pump", bet -> new SteamWaterPumpBlockEntity(bet, false),
                 MachineBlockEntity::registerFluidApi);
-        MachineRegistrationHelper.registerMachine("lv_water_pump", ElectricWaterPumpBlockEntity::new,
-            MachineBlockEntity::registerFluidApi,
-            ElectricWaterPumpBlockEntity::registerEnergyApi
-        );
+        MachineRegistrationHelper.registerMachine("lv_water_pump", ElectricWaterPumpBlockEntity::new, MachineBlockEntity::registerFluidApi,
+                ElectricWaterPumpBlockEntity::registerEnergyApi);
 
         if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
             MachineModels.addTieredMachineTiers("water_pump", true, true, true, "bronze", "steel", "lv");
             MachineModels.addTieredMachine("bronze_boiler", "boiler", MachineCasings.BRICKED_BRONZE, true, false, false);
-            MachineModels.addTieredMachine("steel_boiler", "boiler",  MachineCasings.BRICKED_STEEL, true, false, false);
+            MachineModels.addTieredMachine("steel_boiler", "boiler", MachineCasings.BRICKED_STEEL, true, false, false);
 
         }
 
         registerTransformers();
 
-
     }
 
-    private static void registerTransformers(){
+    private static void registerTransformers() {
         CableTier[] tiers = CableTier.values();
-        for(int i = 0; i < tiers.length - 1; i++){
+        for (int i = 0; i < tiers.length - 1; i++) {
             final CableTier low = tiers[i];
             final CableTier up = tiers[i + 1];
 
             String name1 = TransformerMachineBlockEntity.getTransformerName(low, up);
-            MachineRegistrationHelper.registerMachine(name1,
-                    bet -> new TransformerMachineBlockEntity(bet, low, up),
+            MachineRegistrationHelper.registerMachine(name1, bet -> new TransformerMachineBlockEntity(bet, low, up),
                     AbstractStorageMachineBlockEntity::registerEnergyApi);
 
-            MachineModels.addTieredMachine(name1, "",  TransformerMachineBlockEntity.getCasingFromTier(low, up),
-                    false, false, false);
+            MachineModels.addTieredMachine(name1, "", TransformerMachineBlockEntity.getCasingFromTier(low, up), false, false, false);
 
             String name2 = TransformerMachineBlockEntity.getTransformerName(up, low);
-            MachineRegistrationHelper.registerMachine(name2,
-                    bet -> new TransformerMachineBlockEntity(bet, up, low),
+            MachineRegistrationHelper.registerMachine(name2, bet -> new TransformerMachineBlockEntity(bet, up, low),
                     AbstractStorageMachineBlockEntity::registerEnergyApi);
 
-            MachineModels.addTieredMachine(name2, "",  TransformerMachineBlockEntity.getCasingFromTier(up, low),
-                    false, false, false);
+            MachineModels.addTieredMachine(name2, "", TransformerMachineBlockEntity.getCasingFromTier(up, low), false, false, false);
         }
     }
 }

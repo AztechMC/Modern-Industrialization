@@ -64,10 +64,8 @@ public class EnergyComponent {
         return ext;
     }
 
-
-
-    public void insertEnergy(EnergyInsertable insertable){
-        storedEu =  insertable.insertEnergy(storedEu);
+    public void insertEnergy(EnergyInsertable insertable) {
+        storedEu = insertable.insertEnergy(storedEu);
     }
 
     public EnergyInsertable buildInsertable(Predicate<CableTier> canInsert) {

@@ -93,7 +93,6 @@ public final class StandardRecipes {
         new SmeltingRecipeBuilder(ctx, ROD_MAGNETIC, ROD, 0.0, false);
         new SmeltingRecipeBuilder(ctx, WIRE_MAGNETIC, WIRE, 0.0, false);
 
-
         new MIRecipeBuilder(ctx, "vacuum_freezer", "hot_ingot", 32, 250).addTaggedPartInput(HOT_INGOT, 1).addPartOutput(INGOT, 1);
 
     }

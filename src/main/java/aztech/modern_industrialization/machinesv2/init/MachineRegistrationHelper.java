@@ -44,7 +44,7 @@ public class MachineRegistrationHelper {
      */
     @SafeVarargs
     public static void registerMachine(String id, Function<BlockEntityType<?>, BlockEntity> factory,
-                                       Consumer<BlockEntityType<?>>... extraRegistrators) {
+            Consumer<BlockEntityType<?>>... extraRegistrators) {
         BlockEntityType<?>[] bet = new BlockEntityType[1];
         Supplier<BlockEntity> ctor = () -> factory.apply(bet[0]);
         Block block = new MachineBlock(id, ctor);

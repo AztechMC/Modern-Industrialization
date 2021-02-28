@@ -72,7 +72,6 @@ public class MachineCasingModel implements UnbakedModel, BakedModel {
         MachineModelProvider.loadManually(id);
     }
 
-
     public Identifier getId() {
         return id;
     }

@@ -46,7 +46,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.function.Predicate;
 import java.util.function.ToLongFunction;
-
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -136,8 +135,6 @@ public class EnergyFromFluidMachineBlockEntity extends MachineBlockEntity implem
     public void onPlaced(LivingEntity placer, ItemStack itemStack) {
         orientation.onPlaced(placer, itemStack);
     }
-
-
 
     @Override
     public void tick() {

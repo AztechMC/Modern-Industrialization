@@ -36,9 +36,8 @@ import aztech.modern_industrialization.machinesv2.components.sync.EnergyBar;
 import aztech.modern_industrialization.machinesv2.models.MachineCasings;
 import aztech.modern_industrialization.machinesv2.models.MachineModelClientData;
 import aztech.modern_industrialization.util.Simulation;
-import net.minecraft.block.entity.BlockEntityType;
-
 import java.util.Collections;
+import net.minecraft.block.entity.BlockEntityType;
 
 public class ElectricWaterPumpBlockEntity extends AbstractWaterPumpBlockEntity {
     public ElectricWaterPumpBlockEntity(BlockEntityType<?> type) {

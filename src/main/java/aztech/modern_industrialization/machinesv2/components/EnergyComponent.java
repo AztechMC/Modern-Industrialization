@@ -31,7 +31,7 @@ import com.google.common.base.Preconditions;
 import java.util.function.Predicate;
 import net.minecraft.nbt.CompoundTag;
 
-public class EnergyComponent implements IComponent{
+public class EnergyComponent implements IComponent {
     private long storedEu;
     private final long capacity;
 

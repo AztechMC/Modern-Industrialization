@@ -31,10 +31,9 @@ import aztech.modern_industrialization.machinesv2.components.IComponent;
 import aztech.modern_industrialization.machinesv2.gui.MachineGuiParameters;
 import aztech.modern_industrialization.machinesv2.models.MachineModelClientData;
 import aztech.modern_industrialization.util.NbtHelper;
+import aztech.modern_industrialization.util.RenderHelper;
 import java.util.ArrayList;
 import java.util.List;
-
-import aztech.modern_industrialization.util.RenderHelper;
 import net.fabricmc.fabric.api.block.entity.BlockEntityClientSerializable;
 import net.fabricmc.fabric.api.rendering.data.v1.RenderAttachmentBlockEntity;
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
@@ -77,8 +76,8 @@ public abstract class MachineBlockEntity extends FastBlockEntity
         syncedComponents.add(component);
     }
 
-    protected final void registerComponents(IComponent ... components){
-        for(IComponent c : components){
+    protected final void registerComponents(IComponent... components) {
+        for (IComponent c : components) {
             icomponents.add(c);
         }
     }
@@ -149,15 +148,15 @@ public abstract class MachineBlockEntity extends FastBlockEntity
     @Override
     public final void fromClientTag(CompoundTag tag) {
         boolean forceChunkRemesh = false;
-        for(IComponent component : icomponents){
-            if(component.isClientSynced()){
+        for (IComponent component : icomponents) {
+            if (component.isClientSynced()) {
                 component.readNbt(tag);
             }
-            if(component.forceRemesh()){
+            if (component.forceRemesh()) {
                 forceChunkRemesh = true;
             }
         }
-        if(forceChunkRemesh){
+        if (forceChunkRemesh) {
             RenderHelper.forceChunkRemesh((ClientWorld) world, pos);
         }
 
@@ -165,8 +164,8 @@ public abstract class MachineBlockEntity extends FastBlockEntity
 
     @Override
     public final CompoundTag toClientTag(CompoundTag tag) {
-        for(IComponent component : icomponents){
-            if(component.isClientSynced()){
+        for (IComponent component : icomponents) {
+            if (component.isClientSynced()) {
                 component.writeNbt(tag);
             }
         }
@@ -176,7 +175,7 @@ public abstract class MachineBlockEntity extends FastBlockEntity
     @Override
     public final CompoundTag toTag(CompoundTag tag) {
         super.toTag(tag);
-        for(IComponent component : icomponents){
+        for (IComponent component : icomponents) {
             component.writeNbt(tag);
         }
         return tag;
@@ -185,7 +184,7 @@ public abstract class MachineBlockEntity extends FastBlockEntity
     @Override
     public final void fromTag(BlockState state, CompoundTag tag) {
         super.fromTag(state, tag);
-        for(IComponent component : icomponents){
+        for (IComponent component : icomponents) {
             component.readNbt(tag);
         }
     }

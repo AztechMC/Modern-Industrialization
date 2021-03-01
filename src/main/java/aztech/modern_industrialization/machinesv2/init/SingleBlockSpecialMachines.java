@@ -69,12 +69,9 @@ public class SingleBlockSpecialMachines {
                                 MachineBlockEntity::registerFluidApi, EnergyFromFluidMachineBlockEntity::registerEnergyApi),
                         "diesel_generator", MachineCasings.MV, false, true, false);
 
-        MachineModels
-                .addTieredMachine(
-                        MachineRegistrationHelper.registerMachine("configurable_chest",
-                                bet -> new ConfigurableChestMachineBlockEntity(bet),
-                                MachineBlockEntity::registerItemApi),
-                        "", MachineCasings.STEEL_CRATE, false, false, false);
+        MachineModels.addTieredMachine(MachineRegistrationHelper.registerMachine("configurable_chest",
+                bet -> new ConfigurableChestMachineBlockEntity(bet), MachineBlockEntity::registerItemApi), "", MachineCasings.STEEL_CRATE, false,
+                false, false);
 
     }
 

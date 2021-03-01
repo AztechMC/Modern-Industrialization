@@ -31,10 +31,7 @@ import aztech.modern_industrialization.machinesv2.components.OrientationComponen
 import aztech.modern_industrialization.machinesv2.components.sync.ProgressBar;
 import aztech.modern_industrialization.machinesv2.gui.MachineGuiParameters;
 import aztech.modern_industrialization.machinesv2.helper.OrientationHelper;
-import aztech.modern_industrialization.util.RenderHelper;
-import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.FluidState;
@@ -46,7 +43,6 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.Tickable;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
-import aztech.modern_industrialization.machinesv2.components.IsActiveComponent;
 
 public abstract class AbstractWaterPumpBlockEntity extends MachineBlockEntity implements Tickable {
     protected static final int OUTPUT_SLOT_X = 110;
@@ -61,21 +57,17 @@ public abstract class AbstractWaterPumpBlockEntity extends MachineBlockEntity im
 
         isActiveComponent = new IsActiveComponent();
         registerClientComponent(new ProgressBar.Server(PROGRESS_BAR, () -> (float) pumpingTicks / OPERATION_TICKS));
-        this.registerComponents(
-                orientation,
-                isActiveComponent,
-                new IComponent(){
-                    @Override
-                    public void writeNbt(CompoundTag tag) {
-                        tag.putInt("pumpingTicks", pumpingTicks);
-                    }
+        this.registerComponents(orientation, isActiveComponent, new IComponent() {
+            @Override
+            public void writeNbt(CompoundTag tag) {
+                tag.putInt("pumpingTicks", pumpingTicks);
+            }
 
-                    @Override
-                    public void readNbt(CompoundTag tag) {
-                        pumpingTicks = tag.getInt("pumpingTicks");
-                    }
-                }
-        );
+            @Override
+            public void readNbt(CompoundTag tag) {
+                pumpingTicks = tag.getInt("pumpingTicks");
+            }
+        });
 
     }
 
@@ -85,7 +77,7 @@ public abstract class AbstractWaterPumpBlockEntity extends MachineBlockEntity im
 
     protected final OrientationComponent orientation;
     protected int pumpingTicks = 0; // number of ticks spent pumping this iteration
-    protected  IsActiveComponent isActiveComponent;
+    protected IsActiveComponent isActiveComponent;
 
     @Override
     protected ActionResult onUse(PlayerEntity player, Hand hand, Direction face) {

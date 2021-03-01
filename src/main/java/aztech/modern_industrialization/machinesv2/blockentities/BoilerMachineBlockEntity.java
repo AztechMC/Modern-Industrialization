@@ -40,13 +40,10 @@ import aztech.modern_industrialization.machinesv2.helper.OrientationHelper;
 import aztech.modern_industrialization.machinesv2.models.MachineCasings;
 import aztech.modern_industrialization.machinesv2.models.MachineModelClientData;
 import aztech.modern_industrialization.util.ItemStackHelper;
-import aztech.modern_industrialization.util.RenderHelper;
 import java.util.Arrays;
 import java.util.List;
 import net.fabricmc.fabric.impl.content.registry.FuelRegistryImpl;
-import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.Fluids;
@@ -108,7 +105,7 @@ public class BoilerMachineBlockEntity extends MachineBlockEntity implements Tick
         registerClientComponent(new ProgressBar.Server(PROGRESS_BAR, () -> (float) burningTick / burningTickProgress));
         registerClientComponent(new TemperatureBar.Server(TEMPERATURE_BAR, () -> temperature));
 
-        this.registerComponents(orientation, inventory, isActiveComponent,  new IComponent(){
+        this.registerComponents(orientation, inventory, isActiveComponent, new IComponent() {
 
             @Override
             public void readNbt(CompoundTag tag) {
@@ -116,6 +113,7 @@ public class BoilerMachineBlockEntity extends MachineBlockEntity implements Tick
                 burningTickProgress = tag.getInt("burningTickProgress");
                 temperature = tag.getInt("temperature");
             }
+
             @Override
             public void writeNbt(CompoundTag tag) {
                 tag.putInt("burningTick", burningTick);

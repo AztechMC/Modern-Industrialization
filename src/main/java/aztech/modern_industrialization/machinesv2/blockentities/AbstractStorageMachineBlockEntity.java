@@ -30,6 +30,7 @@ import aztech.modern_industrialization.machinesv2.components.EnergyComponent;
 import aztech.modern_industrialization.machinesv2.components.OrientationComponent;
 import aztech.modern_industrialization.machinesv2.components.sync.EnergyBar;
 import aztech.modern_industrialization.machinesv2.gui.MachineGuiParameters;
+import aztech.modern_industrialization.machinesv2.helper.EnergyHelper;
 import aztech.modern_industrialization.machinesv2.helper.OrientationHelper;
 import aztech.modern_industrialization.machinesv2.models.MachineCasingModel;
 import aztech.modern_industrialization.machinesv2.models.MachineCasings;
@@ -129,11 +130,7 @@ public abstract class AbstractStorageMachineBlockEntity extends MachineBlockEnti
 
     @Override
     public void tick() {
-        EnergyMoveable insertable = EnergyApi.MOVEABLE.get(world, pos.offset(orientation.outputDirection), orientation.outputDirection.getOpposite());
-        if (insertable instanceof EnergyInsertable && ((EnergyInsertable) insertable).canInsert(to)) {
-            energy.insertEnergy((EnergyInsertable) insertable);
-        }
-        markDirty();
+        EnergyHelper.autoOuput(this, orientation, to, energy);
     }
 
     public static void registerEnergyApi(BlockEntityType<?> bet) {

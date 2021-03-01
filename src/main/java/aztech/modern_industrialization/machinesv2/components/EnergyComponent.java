@@ -47,6 +47,10 @@ public class EnergyComponent {
         return capacity;
     }
 
+    public long getRemainingCapacity() {
+        return capacity - storedEu;
+    }
+
     public void writeNbt(CompoundTag tag) {
         tag.putLong("storedEu", storedEu);
     }
@@ -60,6 +64,15 @@ public class EnergyComponent {
         long ext = Math.min(max, storedEu);
         if (simulation.isActing()) {
             storedEu -= ext;
+        }
+        return ext;
+    }
+
+    public long insertEu(long max, Simulation simulation) {
+        Preconditions.checkArgument(max >= 0, "May not insert < 0 energy.");
+        long ext = Math.min(max, capacity - storedEu);
+        if (simulation.isActing()) {
+            storedEu += ext;
         }
         return ext;
     }

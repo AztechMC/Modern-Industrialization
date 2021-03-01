@@ -43,7 +43,7 @@ public class MachineRegistrationHelper {
      * @param extraRegistrators A list of BET consumer used for API registration.
      */
     @SafeVarargs
-    public static void registerMachine(String id, Function<BlockEntityType<?>, BlockEntity> factory,
+    public static String registerMachine(String id, Function<BlockEntityType<?>, BlockEntity> factory,
             Consumer<BlockEntityType<?>>... extraRegistrators) {
         BlockEntityType<?>[] bet = new BlockEntityType[1];
         Supplier<BlockEntity> ctor = () -> factory.apply(bet[0]);
@@ -53,6 +53,7 @@ public class MachineRegistrationHelper {
         for (Consumer<BlockEntityType<?>> extraRegistrator : extraRegistrators) {
             extraRegistrator.accept(bet[0]);
         }
+        return id;
     }
 
 }

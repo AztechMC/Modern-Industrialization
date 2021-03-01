@@ -23,6 +23,8 @@
  */
 package aztech.modern_industrialization.machinesv2.init;
 
+import aztech.modern_industrialization.MIFluids;
+import aztech.modern_industrialization.api.FluidFuelRegistry;
 import aztech.modern_industrialization.api.energy.CableTier;
 import aztech.modern_industrialization.machinesv2.MachineBlockEntity;
 import aztech.modern_industrialization.machinesv2.blockentities.*;
@@ -30,6 +32,7 @@ import aztech.modern_industrialization.machinesv2.models.MachineCasings;
 import aztech.modern_industrialization.machinesv2.models.MachineModels;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.fluid.Fluid;
 
 public class SingleBlockSpecialMachines {
 
@@ -56,7 +59,13 @@ public class SingleBlockSpecialMachines {
         }
 
         registerTransformers();
+        registerSteamTurbines(32, 128);
 
+        MachineModels.addTieredMachine(MachineRegistrationHelper.registerMachine("diesel_generator", bet ->
+                        new EnergyFromFluidMachineBlockEntity(bet, "diesel_generator", CableTier.MV, 12000, 32000, 1,
+                                (Fluid f) -> (FluidFuelRegistry.getEu(f) != 0), FluidFuelRegistry::getEu),
+                MachineBlockEntity::registerFluidApi, EnergyFromFluidMachineBlockEntity::registerEnergyApi
+        ), "diesel_generator", MachineCasings.MV, false, true, false);
     }
 
     private static void registerTransformers() {
@@ -65,17 +74,25 @@ public class SingleBlockSpecialMachines {
             final CableTier low = tiers[i];
             final CableTier up = tiers[i + 1];
 
-            String name1 = TransformerMachineBlockEntity.getTransformerName(low, up);
-            MachineRegistrationHelper.registerMachine(name1, bet -> new TransformerMachineBlockEntity(bet, low, up),
-                    AbstractStorageMachineBlockEntity::registerEnergyApi);
+            MachineModels.addTieredMachine(MachineRegistrationHelper.registerMachine(TransformerMachineBlockEntity.getTransformerName(low, up), bet -> new TransformerMachineBlockEntity(bet, low, up),
+                    AbstractStorageMachineBlockEntity::registerEnergyApi), "", TransformerMachineBlockEntity.getCasingFromTier(low, up), false, false, false);
 
-            MachineModels.addTieredMachine(name1, "", TransformerMachineBlockEntity.getCasingFromTier(low, up), false, false, false);
-
-            String name2 = TransformerMachineBlockEntity.getTransformerName(up, low);
-            MachineRegistrationHelper.registerMachine(name2, bet -> new TransformerMachineBlockEntity(bet, up, low),
-                    AbstractStorageMachineBlockEntity::registerEnergyApi);
-
-            MachineModels.addTieredMachine(name2, "", TransformerMachineBlockEntity.getCasingFromTier(up, low), false, false, false);
+            MachineModels.addTieredMachine(MachineRegistrationHelper.registerMachine(TransformerMachineBlockEntity.getTransformerName(up, low), bet -> new TransformerMachineBlockEntity(bet, up, low),
+                    AbstractStorageMachineBlockEntity::registerEnergyApi), "", TransformerMachineBlockEntity.getCasingFromTier(up, low), false, false, false);
         }
     }
+
+    private static void registerSteamTurbines(int ... maxConsumption){
+        for(int i = 0; i < maxConsumption.length; i++)
+        {
+            CableTier tier = CableTier.values()[i];
+            String id = tier.name+"_steam_turbine";
+            MachineModels.addTieredMachine(MachineRegistrationHelper.registerMachine(id, bet ->
+                            new EnergyFromFluidMachineBlockEntity(bet, id, tier, 3200, 16000, 32, MIFluids.STEAM, 1),
+                    MachineBlockEntity::registerFluidApi, EnergyFromFluidMachineBlockEntity::registerEnergyApi
+            ), "steam_turbine", MachineCasings.casingFromCableTier(tier), true, false, false);
+        }
+    }
+
+
 }

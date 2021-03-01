@@ -35,7 +35,7 @@ public class OrientationHelper {
     public static ActionResult onUse(PlayerEntity player, Hand hand, Direction face, OrientationComponent orientation, MachineBlockEntity be) {
         if (orientation.onUse(player, hand, face)) {
             be.markDirty();
-            if (!be.getWorld().isClient()) {
+            if (!(be.getWorld() == null) && !be.getWorld().isClient()) {
                 be.sync();
             }
             return ActionResult.success(be.getWorld().isClient);

@@ -32,7 +32,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.Direction;
 
-public class OrientationComponent {
+public class OrientationComponent implements IComponent{
     public Direction facingDirection = Direction.NORTH;
     public Direction outputDirection = null;
     public boolean extractItems = false;
@@ -113,4 +113,10 @@ public class OrientationComponent {
             this.hasExtractFluids = hasExtractFluids;
         }
     }
+
+    @Override
+    public boolean isClientSynced() {
+        return true;
+    }
+
 }

@@ -50,6 +50,7 @@ public class ElectricCraftingMachineBlockEntity extends AbstractCraftingMachineB
         this.insertable = energy.buildInsertable(cableTier -> cableTier == CableTier.LV);
         registerClientComponent(new EnergyBar.Server(energyBarParams, energy::getEu, energy::getCapacity));
         registerClientComponent(new RecipeEfficiencyBar.Server(efficiencyBarParams, crafter));
+        this.registerComponents(energy);
     }
 
     private final EnergyComponent energy;
@@ -64,7 +65,7 @@ public class ElectricCraftingMachineBlockEntity extends AbstractCraftingMachineB
     protected MachineModelClientData getModelData() {
         MachineModelClientData data = new MachineModelClientData(MachineCasings.LV);
         orientation.writeModelData(data);
-        data.isActive = isActive;
+        data.isActive = isActiveComponent.isActive;
         return data;
     }
 
@@ -72,16 +73,4 @@ public class ElectricCraftingMachineBlockEntity extends AbstractCraftingMachineB
         EnergyApi.MOVEABLE.registerForBlockEntities((be, direction) -> ((ElectricCraftingMachineBlockEntity) be).insertable, bet);
     }
 
-    @Override
-    public CompoundTag toTag(CompoundTag tag) {
-        super.toTag(tag);
-        energy.writeNbt(tag);
-        return tag;
-    }
-
-    @Override
-    public void fromTag(BlockState state, CompoundTag tag) {
-        super.fromTag(state, tag);
-        energy.readNbt(tag);
-    }
 }

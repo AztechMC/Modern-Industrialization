@@ -28,6 +28,7 @@ import aztech.modern_industrialization.machines.impl.MachineTier;
 import aztech.modern_industrialization.machines.recipe.MachineRecipeType;
 import aztech.modern_industrialization.machinesv2.MachineBlockEntity;
 import aztech.modern_industrialization.machinesv2.components.CrafterComponent;
+import aztech.modern_industrialization.machinesv2.components.IsActiveComponent;
 import aztech.modern_industrialization.machinesv2.components.MachineInventoryComponent;
 import aztech.modern_industrialization.machinesv2.components.OrientationComponent;
 import aztech.modern_industrialization.machinesv2.components.sync.AutoExtract;
@@ -57,8 +58,10 @@ public abstract class AbstractCraftingMachineBlockEntity extends MachineBlockEnt
                 new OrientationComponent.Params(true, inventory.itemOutputCount > 0, inventory.fluidOutputCount > 0));
         this.type = recipeType;
         this.tier = tier;
+        this.isActiveComponent = new IsActiveComponent();
         registerClientComponent(new AutoExtract.Server(orientation));
         registerClientComponent(new ProgressBar.Server(progressBarParams, crafter::getProgress));
+        this.registerComponents(crafter, this.inventory, orientation, isActiveComponent);
     }
 
     private final MachineInventoryComponent inventory;
@@ -67,7 +70,7 @@ public abstract class AbstractCraftingMachineBlockEntity extends MachineBlockEnt
 
     private final MachineRecipeType type;
     protected final MachineTier tier;
-    protected boolean isActive = false;
+    protected IsActiveComponent isActiveComponent;
 
     @Override
     public MachineRecipeType recipeType() {
@@ -88,8 +91,8 @@ public abstract class AbstractCraftingMachineBlockEntity extends MachineBlockEnt
     public void tick() {
         if (!world.isClient) {
             boolean newActive = crafter.tickRecipe();
-            if (newActive != isActive) {
-                isActive = newActive;
+            if (newActive != isActiveComponent.isActive) {
+                isActiveComponent.isActive = newActive;
                 sync();
             }
             if (orientation.extractItems) {
@@ -117,34 +120,4 @@ public abstract class AbstractCraftingMachineBlockEntity extends MachineBlockEnt
         orientation.onPlaced(placer, itemStack);
     }
 
-    @Override
-    public void fromClientTag(CompoundTag tag) {
-        orientation.readNbt(tag);
-        isActive = tag.getBoolean("isActive");
-        RenderHelper.forceChunkRemesh((ClientWorld) world, pos);
-    }
-
-    @Override
-    public CompoundTag toClientTag(CompoundTag tag) {
-        orientation.writeNbt(tag);
-        tag.putBoolean("isActive", isActive);
-        return tag;
-    }
-
-    @Override
-    public CompoundTag toTag(CompoundTag tag) {
-        super.toTag(tag);
-        inventory.inventory.writeNbt(tag);
-        crafter.writeNbt(tag);
-        orientation.writeNbt(tag);
-        return tag;
-    }
-
-    @Override
-    public void fromTag(BlockState state, CompoundTag tag) {
-        super.fromTag(state, tag);
-        inventory.inventory.readNbt(tag);
-        crafter.readNbt(tag);
-        orientation.readNbt(tag);
-    }
 }

@@ -23,7 +23,10 @@
  */
 package aztech.modern_industrialization.machinesv2.blockentities;
 
-import aztech.modern_industrialization.api.energy.*;
+import aztech.modern_industrialization.api.energy.CableTier;
+import aztech.modern_industrialization.api.energy.EnergyApi;
+import aztech.modern_industrialization.api.energy.EnergyExtractable;
+import aztech.modern_industrialization.api.energy.EnergyInsertable;
 import aztech.modern_industrialization.inventory.MIInventory;
 import aztech.modern_industrialization.machinesv2.MachineBlockEntity;
 import aztech.modern_industrialization.machinesv2.components.EnergyComponent;
@@ -35,14 +38,10 @@ import aztech.modern_industrialization.machinesv2.helper.OrientationHelper;
 import aztech.modern_industrialization.machinesv2.models.MachineCasingModel;
 import aztech.modern_industrialization.machinesv2.models.MachineCasings;
 import aztech.modern_industrialization.machinesv2.models.MachineModelClientData;
-import aztech.modern_industrialization.util.RenderHelper;
-import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.Tickable;
@@ -73,6 +72,8 @@ public abstract class AbstractStorageMachineBlockEntity extends MachineBlockEnti
         registerClientComponent(new EnergyBar.Server(energyBarParams, energy::getEu, energy::getCapacity));
 
         this.orientation = new OrientationComponent(new OrientationComponent.Params(true, false, false));
+        this.registerComponents(orientation, energy);
+
     }
 
     @Override
@@ -99,33 +100,6 @@ public abstract class AbstractStorageMachineBlockEntity extends MachineBlockEnti
     @Override
     public void onPlaced(LivingEntity placer, ItemStack itemStack) {
         orientation.onPlaced(placer, itemStack);
-    }
-
-    @Override
-    public void fromClientTag(CompoundTag tag) {
-        orientation.readNbt(tag);
-        RenderHelper.forceChunkRemesh((ClientWorld) world, pos);
-    }
-
-    @Override
-    public CompoundTag toClientTag(CompoundTag tag) {
-        orientation.writeNbt(tag);
-        return tag;
-    }
-
-    @Override
-    public CompoundTag toTag(CompoundTag tag) {
-        super.toTag(tag);
-        energy.writeNbt(tag);
-        orientation.writeNbt(tag);
-        return tag;
-    }
-
-    @Override
-    public void fromTag(BlockState state, CompoundTag tag) {
-        super.fromTag(state, tag);
-        energy.readNbt(tag);
-        orientation.readNbt(tag);
     }
 
     @Override

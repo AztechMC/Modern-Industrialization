@@ -30,6 +30,7 @@ public class MachineCasings {
     public static final MachineCasingModel STEEL = new MachineCasingModel("steel");
     public static final MachineCasingModel BRICKED_BRONZE = new MachineCasingModel("bricked_bronze");
     public static final MachineCasingModel BRICKED_STEEL = new MachineCasingModel("bricked_steel");
+    public static final MachineCasingModel STEEL_CRATE = new MachineCasingModel("steel_crate");
     public static final MachineCasingModel LV = new MachineCasingModel("lv");
     public static final MachineCasingModel MV = new MachineCasingModel("mv");
     public static final MachineCasingModel HV = new MachineCasingModel("hv");

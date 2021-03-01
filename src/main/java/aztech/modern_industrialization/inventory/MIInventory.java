@@ -23,6 +23,7 @@
  */
 package aztech.modern_industrialization.inventory;
 
+import aztech.modern_industrialization.machinesv2.components.IComponent;
 import aztech.modern_industrialization.util.NbtHelper;
 import java.util.Collections;
 import java.util.List;
@@ -37,7 +38,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 
-public final class MIInventory {
+public final class MIInventory implements IComponent {
     public static final MIInventory EMPTY;
 
     public final List<ConfigurableItemStack> itemStacks;

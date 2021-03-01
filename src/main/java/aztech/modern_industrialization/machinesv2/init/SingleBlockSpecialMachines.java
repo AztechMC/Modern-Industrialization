@@ -68,6 +68,14 @@ public class SingleBlockSpecialMachines {
                                         (Fluid f) -> (FluidFuelRegistry.getEu(f) != 0), FluidFuelRegistry::getEu),
                                 MachineBlockEntity::registerFluidApi, EnergyFromFluidMachineBlockEntity::registerEnergyApi),
                         "diesel_generator", MachineCasings.MV, false, true, false);
+
+        MachineModels
+                .addTieredMachine(
+                        MachineRegistrationHelper.registerMachine("configurable_chest",
+                                bet -> new ConfigurableChestMachineBlockEntity(bet),
+                                MachineBlockEntity::registerItemApi),
+                        "", MachineCasings.STEEL_CRATE, false, false, false);
+
     }
 
     private static void registerTransformers() {

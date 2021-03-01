@@ -32,6 +32,7 @@ import aztech.modern_industrialization.inventory.MIInventory;
 import aztech.modern_industrialization.inventory.SlotPositions;
 import aztech.modern_industrialization.machinesv2.MachineBlockEntity;
 import aztech.modern_industrialization.machinesv2.components.EnergyComponent;
+import aztech.modern_industrialization.machinesv2.components.IsActiveComponent;
 import aztech.modern_industrialization.machinesv2.components.OrientationComponent;
 import aztech.modern_industrialization.machinesv2.components.sync.EnergyBar;
 import aztech.modern_industrialization.machinesv2.gui.MachineGuiParameters;
@@ -39,21 +40,18 @@ import aztech.modern_industrialization.machinesv2.helper.EnergyHelper;
 import aztech.modern_industrialization.machinesv2.helper.OrientationHelper;
 import aztech.modern_industrialization.machinesv2.models.MachineCasings;
 import aztech.modern_industrialization.machinesv2.models.MachineModelClientData;
-import aztech.modern_industrialization.util.RenderHelper;
 import aztech.modern_industrialization.util.Simulation;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Predicate;
 import java.util.function.ToLongFunction;
-import net.minecraft.block.BlockState;
+
 import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.Tickable;
@@ -71,7 +69,7 @@ public class EnergyFromFluidMachineBlockEntity extends MachineBlockEntity implem
     protected final MIInventory inventory;
     protected EnergyComponent energy;
     protected OrientationComponent orientation;
-    protected boolean isActive;
+    protected IsActiveComponent isActiveComponent;
 
     private EnergyFromFluidMachineBlockEntity(BlockEntityType<?> type, String name, CableTier outputTier, long energyCapacity, long fluidCapacity,
             long fluidConsumption, Predicate<Fluid> acceptedFluid, ToLongFunction<Fluid> fluidEUperMb, Fluid locked) {
@@ -83,6 +81,7 @@ public class EnergyFromFluidMachineBlockEntity extends MachineBlockEntity implem
         EnergyBar.Parameters energyBarParams = new EnergyBar.Parameters(76, 39);
         registerClientComponent(new EnergyBar.Server(energyBarParams, energy::getEu, energy::getCapacity));
         this.orientation = new OrientationComponent(new OrientationComponent.Params(true, false, false));
+        this.isActiveComponent = new IsActiveComponent();
 
         List<ConfigurableItemStack> itemStacks = new ArrayList<>();
         SlotPositions itemPositions = SlotPositions.empty();
@@ -99,6 +98,8 @@ public class EnergyFromFluidMachineBlockEntity extends MachineBlockEntity implem
 
         SlotPositions fluidPositions = new SlotPositions.Builder().addSlot(25, 38).build();
         inventory = new MIInventory(itemStacks, fluidStacks, itemPositions, fluidPositions);
+
+        this.registerComponents(energy, orientation, isActiveComponent, inventory);
 
     }
 
@@ -126,7 +127,7 @@ public class EnergyFromFluidMachineBlockEntity extends MachineBlockEntity implem
     @Override
     protected MachineModelClientData getModelData() {
         MachineModelClientData data = new MachineModelClientData(MachineCasings.casingFromCableTier(outputTier));
-        data.isActive = isActive;
+        data.isActive = isActiveComponent.isActive;
         orientation.writeModelData(data);
         return data;
     }
@@ -136,45 +137,14 @@ public class EnergyFromFluidMachineBlockEntity extends MachineBlockEntity implem
         orientation.onPlaced(placer, itemStack);
     }
 
-    @Override
-    public void fromClientTag(CompoundTag tag) {
-        orientation.readNbt(tag);
-        isActive = tag.getBoolean("isActive");
-        RenderHelper.forceChunkRemesh((ClientWorld) world, pos);
-    }
 
-    @Override
-    public CompoundTag toClientTag(CompoundTag tag) {
-        orientation.writeNbt(tag);
-        tag.putBoolean("isActive", isActive);
-        return tag;
-    }
-
-    @Override
-    public CompoundTag toTag(CompoundTag tag) {
-        super.toTag(tag);
-        getInventory().writeNbt(tag);
-        energy.writeNbt(tag);
-        orientation.writeNbt(tag);
-        tag.putBoolean("isActive", isActive);
-        return tag;
-    }
-
-    @Override
-    public void fromTag(BlockState state, CompoundTag tag) {
-        super.fromTag(state, tag);
-        getInventory().readNbt(tag);
-        energy.readNbt(tag);
-        orientation.readNbt(tag);
-        isActive = tag.getBoolean("isActive");
-    }
 
     @Override
     public void tick() {
         if (world == null || world.isClient)
             return;
 
-        boolean wasActive = isActive;
+        boolean wasActive = isActiveComponent.isActive;
         ConfigurableFluidStack stack = inventory.fluidStacks.get(0);
 
         if (acceptedFluid.test(stack.getFluid())) {
@@ -183,18 +153,18 @@ public class EnergyFromFluidMachineBlockEntity extends MachineBlockEntity implem
             if (fluidConsumed > 0) {
                 stack.decrement(81 * fluidConsumed);
                 energy.insertEu(fluidConsumed * fuelEu, Simulation.ACT);
-                isActive = true;
+                isActiveComponent.isActive = true;
             } else {
-                isActive = false;
+                isActiveComponent.isActive = false;
             }
 
         } else {
-            isActive = false;
+            isActiveComponent.isActive = false;
         }
 
         EnergyHelper.autoOuput(this, orientation, outputTier, energy);
 
-        if (wasActive != isActive) {
+        if (wasActive != isActiveComponent.isActive) {
             sync();
         }
         markDirty();

@@ -36,10 +36,9 @@ import aztech.modern_industrialization.machinesv2.components.sync.EnergyBar;
 import aztech.modern_industrialization.machinesv2.models.MachineCasings;
 import aztech.modern_industrialization.machinesv2.models.MachineModelClientData;
 import aztech.modern_industrialization.util.Simulation;
-import java.util.Collections;
-import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.nbt.CompoundTag;
+
+import java.util.Collections;
 
 public class ElectricWaterPumpBlockEntity extends AbstractWaterPumpBlockEntity {
     public ElectricWaterPumpBlockEntity(BlockEntityType<?> type) {
@@ -52,6 +51,8 @@ public class ElectricWaterPumpBlockEntity extends AbstractWaterPumpBlockEntity {
         this.energy = new EnergyComponent(3200);
         this.insertable = energy.buildInsertable(tier -> tier == CableTier.LV);
         registerClientComponent(new EnergyBar.Server(new EnergyBar.Parameters(18, 32), energy::getEu, energy::getCapacity));
+        this.registerComponents(energy);
+        this.registerComponents(inventory);
     }
 
     private final MIInventory inventory;
@@ -76,22 +77,9 @@ public class ElectricWaterPumpBlockEntity extends AbstractWaterPumpBlockEntity {
     @Override
     protected MachineModelClientData getModelData() {
         MachineModelClientData data = new MachineModelClientData(MachineCasings.LV);
-        data.isActive = isActive;
+        data.isActive = isActiveComponent.isActive;
         orientation.writeModelData(data);
         return data;
-    }
-
-    @Override
-    public CompoundTag toTag(CompoundTag tag) {
-        super.toTag(tag);
-        energy.writeNbt(tag);
-        return tag;
-    }
-
-    @Override
-    public void fromTag(BlockState state, CompoundTag tag) {
-        super.fromTag(state, tag);
-        energy.readNbt(tag);
     }
 
     public static void registerEnergyApi(BlockEntityType<?> bet) {

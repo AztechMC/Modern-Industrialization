@@ -57,7 +57,7 @@ public final class SingleBlockCraftingMachines {
                 "assembler", MIMachineRecipeTypes.ASSEMBLER, 9, 3, 1, 0,
                 guiParams -> guiParams.backgroundHeight(186),
                 new ProgressBar.Parameters(102, 45, "circuit"), new RecipeEfficiencyBar.Parameters(43, 86), new EnergyBar.Parameters(14, 44),
-                items -> items.addSlots(42, 27, 3, 3).addSlots(129, 27, 1, 3), fluids -> fluids.addSlot(98, 27),
+                items -> items.addSlots(42, 27, 3, 3).addSlots(129, 27, 3, 1), fluids -> fluids.addSlot(98, 27),
                 true, true, false,
                 TIER_ELECTRIC
         );
@@ -71,7 +71,7 @@ public final class SingleBlockCraftingMachines {
         registerMachineTiers(
                 "chemical_reactor", MIMachineRecipeTypes.CHEMICAL_REACTOR, 3, 3, 3, 3, guiParams -> {},
                 new ProgressBar.Parameters(88, 35, "triple_arrow"), new RecipeEfficiencyBar.Parameters(50, 66), new EnergyBar.Parameters(12, 35),
-                items -> items.addSlots(30, 27, 3, 1).addSlots(116, 27, 3, 1), fluids -> fluids.addSlots(30, 47, 3, 1).addSlots(116, 47, 3, 1),
+                items -> items.addSlots(30, 27, 1, 3).addSlots(116, 27, 1, 3), fluids -> fluids.addSlots(30, 47, 1, 3).addSlots(116, 47, 1, 3),
                 true, false, false,
                 TIER_ELECTRIC
         );
@@ -120,14 +120,14 @@ public final class SingleBlockCraftingMachines {
         registerMachineTiers(
                 "mixer", MIMachineRecipeTypes.MIXER, 4, 2, 2, 2, guiParams -> {},
                 new ProgressBar.Parameters(103, 33, "arrow"), new RecipeEfficiencyBar.Parameters(50, 66), new EnergyBar.Parameters(15, 34),
-                items -> items.addSlots(62, 27, 2, 2).addSlots(129, 27, 1, 2), fluids -> fluids.addSlots(42, 27, 1, 2).addSlots(149, 27, 1, 2),
+                items -> items.addSlots(62, 27, 2, 2).addSlots(129, 27, 2, 1), fluids -> fluids.addSlots(42, 27, 2, 1).addSlots(149, 27, 2, 1),
                 true, true, true,
                 TIER_BRONZE | TIER_STEEL | TIER_ELECTRIC
         );
         registerMachineTiers(
                 "packer", MIMachineRecipeTypes.PACKER, 2, 2, 0, 0, guiParams -> {},
                 new ProgressBar.Parameters(77, 33, "arrow"), new RecipeEfficiencyBar.Parameters(38, 66), new EnergyBar.Parameters(18, 30),
-                items -> items.addSlots(56, 27, 1, 2).addSlots(102, 27, 1, 2), fluids -> {},
+                items -> items.addSlots(56, 27, 2, 1).addSlots(102, 27, 2, 1), fluids -> {},
                 true, false, false,
                 TIER_STEEL | TIER_ELECTRIC
         );

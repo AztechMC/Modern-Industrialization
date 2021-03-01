@@ -30,6 +30,8 @@ import aztech.modern_industrialization.inventory.ConfigurableItemStack;
 import aztech.modern_industrialization.inventory.MIInventory;
 import aztech.modern_industrialization.inventory.SlotPositions;
 import aztech.modern_industrialization.machinesv2.MachineBlockEntity;
+import aztech.modern_industrialization.machinesv2.components.IComponent;
+import aztech.modern_industrialization.machinesv2.components.IsActiveComponent;
 import aztech.modern_industrialization.machinesv2.components.OrientationComponent;
 import aztech.modern_industrialization.machinesv2.components.sync.ProgressBar;
 import aztech.modern_industrialization.machinesv2.components.sync.TemperatureBar;
@@ -79,7 +81,7 @@ public class BoilerMachineBlockEntity extends MachineBlockEntity implements Tick
     protected final ProgressBar.Parameters PROGRESS_BAR;
     protected final TemperatureBar.Parameters TEMPERATURE_BAR;
 
-    protected boolean isActive = false;
+    protected IsActiveComponent isActiveComponent;
 
     public BoilerMachineBlockEntity(BlockEntityType<?> type, boolean bronze) {
         super(type, new MachineGuiParameters.Builder(bronze ? "bronze_boiler" : "steel_boiler", true).backgroundHeight(180).build());
@@ -99,10 +101,28 @@ public class BoilerMachineBlockEntity extends MachineBlockEntity implements Tick
         this.burningTickProgress = 1;
         this.burningTick = 0;
         this.temperatureMax = bronze ? 1100 : 2100;
+        this.isActiveComponent = new IsActiveComponent();
+
         PROGRESS_BAR = new ProgressBar.Parameters(133, 50, "furnace", true);
         TEMPERATURE_BAR = new TemperatureBar.Parameters(42, 75, temperatureMax);
         registerClientComponent(new ProgressBar.Server(PROGRESS_BAR, () -> (float) burningTick / burningTickProgress));
         registerClientComponent(new TemperatureBar.Server(TEMPERATURE_BAR, () -> temperature));
+
+        this.registerComponents(orientation, inventory, isActiveComponent,  new IComponent(){
+
+            @Override
+            public void readNbt(CompoundTag tag) {
+                burningTick = tag.getInt("burningTick");
+                burningTickProgress = tag.getInt("burningTickProgress");
+                temperature = tag.getInt("temperature");
+            }
+            @Override
+            public void writeNbt(CompoundTag tag) {
+                tag.putInt("burningTick", burningTick);
+                tag.putInt("burningTickProgress", burningTickProgress);
+                tag.putInt("temperature", temperature);
+            }
+        });
 
     }
 
@@ -119,7 +139,7 @@ public class BoilerMachineBlockEntity extends MachineBlockEntity implements Tick
     @Override
     protected MachineModelClientData getModelData() {
         MachineModelClientData data = new MachineModelClientData(bronze ? MachineCasings.BRICKED_BRONZE : MachineCasings.BRICKED_STEEL);
-        data.isActive = isActive;
+        data.isActive = isActiveComponent.isActive;
         orientation.writeModelData(data);
         return data;
     }
@@ -129,58 +149,14 @@ public class BoilerMachineBlockEntity extends MachineBlockEntity implements Tick
         orientation.onPlaced(placer, itemStack);
     }
 
-    private void readTag(CompoundTag tag) {
-        isActive = tag.getBoolean("isActive");
-        burningTick = tag.getInt("burningTick");
-        burningTickProgress = tag.getInt("burningTickProgress");
-        temperature = tag.getInt("temperature");
-    }
-
-    private void writeTag(CompoundTag tag) {
-        tag.putBoolean("isActive", isActive);
-        tag.putInt("burningTick", burningTick);
-        tag.putInt("burningTickProgress", burningTickProgress);
-        tag.putInt("temperature", temperature);
-    }
-
-    @Override
-    public void fromClientTag(CompoundTag tag) {
-        orientation.readNbt(tag);
-        isActive = tag.getBoolean("isActive");
-        RenderHelper.forceChunkRemesh((ClientWorld) world, pos);
-    }
-
-    @Override
-    public CompoundTag toClientTag(CompoundTag tag) {
-        orientation.writeNbt(tag);
-        tag.putBoolean("isActive", isActive);
-        return tag;
-    }
-
-    @Override
-    public CompoundTag toTag(CompoundTag tag) {
-        super.toTag(tag);
-        getInventory().writeNbt(tag);
-        writeTag(tag);
-        return tag;
-    }
-
-    @Override
-    public void fromTag(BlockState state, CompoundTag tag) {
-        super.fromTag(state, tag);
-        getInventory().readNbt(tag);
-        orientation.readNbt(tag);
-        readTag(tag);
-    }
-
     @Override
     public void tick() {
         if (world.isClient)
             return;
 
-        boolean wasActive = isActive;
+        boolean wasActive = isActiveComponent.isActive;
 
-        this.isActive = false;
+        isActiveComponent.isActive = false;
         if (burningTick == 0) {
             ConfigurableItemStack stack = inventory.itemStacks.get(0);
             Item fuel = stack.getItemKey().getItem();
@@ -195,11 +171,11 @@ public class BoilerMachineBlockEntity extends MachineBlockEntity implements Tick
         }
 
         if (burningTick > 0) {
-            isActive = true;
+            isActiveComponent.isActive = true;
             --burningTick;
         }
 
-        if (isActive) {
+        if (isActiveComponent.isActive) {
             temperature = Math.min(temperature + 1, temperatureMax);
         } else {
             temperature = Math.max(temperature - 1, 0);
@@ -222,7 +198,7 @@ public class BoilerMachineBlockEntity extends MachineBlockEntity implements Tick
             getInventory().autoExtractFluids(world, pos, direction);
         }
 
-        if (isActive != wasActive) {
+        if (isActiveComponent.isActive != wasActive) {
             sync();
         }
         markDirty();

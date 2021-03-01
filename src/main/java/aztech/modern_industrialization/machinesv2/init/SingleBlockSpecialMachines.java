@@ -60,6 +60,7 @@ public class SingleBlockSpecialMachines {
 
         registerTransformers();
         registerSteamTurbines(32, 128);
+        registerEUStorage();
 
         MachineModels
                 .addTieredMachine(
@@ -102,6 +103,17 @@ public class SingleBlockSpecialMachines {
                             bet -> new EnergyFromFluidMachineBlockEntity(bet, id, tier, 3200, 16000, 32, MIFluids.STEAM, 1),
                             MachineBlockEntity::registerFluidApi, EnergyFromFluidMachineBlockEntity::registerEnergyApi),
                     "steam_turbine", MachineCasings.casingFromCableTier(tier), true, false, false);
+        }
+    }
+
+    private static void registerEUStorage() {
+        for (CableTier tier : CableTier.values()) {
+            String id = tier.name + "_storage_unit";
+            MachineModels
+                    .addTieredMachine(
+                            MachineRegistrationHelper.registerMachine(id, bet -> new StorageMachineBlockEntity(bet, tier, id, 60 * 5 * 20 * tier.eu),
+                                    AbstractStorageMachineBlockEntity::registerEnergyApi),
+                            "", MachineCasings.casingFromCableTier(tier), false, false, false);
         }
     }
 

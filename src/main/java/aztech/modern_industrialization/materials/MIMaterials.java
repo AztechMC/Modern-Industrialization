@@ -86,8 +86,13 @@ public class MIMaterials {
 
         MaterialRegistry.addMaterial(new MaterialBuilder("quartz", GEM,
                 new BakableTargetColoramp(0xf0ebe4, "minecraft:textures/item/quartz.png", "minecraft:textures/item/quartz.png"))
-                        .addRegularParts(CRUSHED_DUST, MIParts.GEM, DUST, TINY_DUST)
-                        .overridePart(ExternalPart.of(MIParts.GEM, "minecraft:quatz", "minecraft:quatz")).addRecipes(StandardRecipes::apply).build());
+                        .addRegularParts(CRUSHED_DUST, MIParts.GEM, DUST, TINY_DUST, ORE)
+                        .overridePart(ExternalPart.of(MIParts.GEM, "minecraft:quatz", "minecraft:quatz"))
+                        .overridePart(ExternalPart.of(ORE, "modern_industrialization:quartz_ore", "modern_industrialization:quartz_ore"))
+                        .addRecipes(StandardRecipes::apply).cancelRecipes("macerator/ore")
+                        .addRecipes(context -> new MIRecipeBuilder(context, "macerator", "ore").addTaggedPartInput(MIParts.ORE, 1)
+                                .addPartOutput(CRUSHED_DUST, 4))
+                        .build());
 
         MaterialRegistry.addMaterial(new MaterialBuilder("diamond", GEM,
                 new BakableTargetColoramp(0x48eeda, "minecraft:textures/item/diamond.png", "minecraft:textures/item/diamond.png"))
@@ -100,9 +105,9 @@ public class MIMaterials {
                 new BakableTargetColoramp(0x3FF385, "minecraft:textures/item/emerald.png", "minecraft:textures/item/emerald.png"))
                         .addRegularParts(ITEM_PURE_NON_METAL).removeRegularParts(BLOCK).addRegularParts(MIParts.GEM)
                         .overridePart(ExternalPart.of(MIParts.GEM, "minecraft:emerald", "minecraft:emerald")).addRecipes(StandardRecipes::apply)
-                        .addRecipes(context -> {
-                            new MIRecipeBuilder(context, "macerator", "dust").addItemInput("minecraft:emerald_ore", 1).addPartOutput(CRUSHED_DUST, 2);
-                        }).build());
+                        .addRecipes(context -> new MIRecipeBuilder(context, "macerator", "dust").addItemInput("minecraft:emerald_ore", 1)
+                                .addPartOutput(CRUSHED_DUST, 2))
+                        .build());
 
         MaterialRegistry.addMaterial(new MaterialBuilder("brick", STONE,
                 new BakableTargetColoramp(0xb75a36, "modern_industrialization:textures/materialsets/common/ingot.png",

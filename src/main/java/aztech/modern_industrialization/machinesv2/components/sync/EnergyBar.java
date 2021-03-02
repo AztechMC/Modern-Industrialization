@@ -117,8 +117,34 @@ public class EnergyBar {
 
             @Override
             public void renderTooltip(MachineScreenHandlers.ClientScreen screen, MatrixStack matrices, int x, int y, int cursorX, int cursorY) {
+
                 if (RenderHelper.isPointWithinRectangle(params.renderX, params.renderY, WIDTH, HEIGHT, cursorX - x, cursorY - y)) {
-                    Text tooltip = new TranslatableText("text.modern_industrialization.energy_bar", eu, maxEu);
+                    Text tooltip;
+                    if (screen.hasShiftDown()) {
+                        tooltip = new TranslatableText("text.modern_industrialization.energy_bar", eu, maxEu);
+                    } else {
+                        if (maxEu > 1e12) {
+                            String eus = String.format("%.2f", ((double) eu) / 1e12);
+                            String maxEus = String.format("%.2f", ((double) maxEu) / 1e12);
+                            tooltip = new TranslatableText("text.modern_industrialization.energy_bar_double", eus, maxEus, "tEU");
+                        } else if (maxEu > 1e9) {
+                            String eus = String.format("%.2f", ((double) eu) / 1e9);
+                            String maxEus = String.format("%.2f", ((double) maxEu) / 1e9);
+                            tooltip = new TranslatableText("text.modern_industrialization.energy_bar_double", eus, maxEus, "gEU");
+
+                        } else if (maxEu > 1e6) {
+                            String eus = String.format("%.2f", ((double) eu) / 1e6);
+                            String maxEus = String.format("%.2f", ((double) maxEu) / 1e6);
+                            tooltip = new TranslatableText("text.modern_industrialization.energy_bar_double", eus, maxEus, "mEU");
+
+                        } else if (maxEu > 1e4) {
+                            String eus = String.format("%.2f", ((double) eu) / 1e3);
+                            String maxEus = String.format("%.2f", ((double) maxEu) / 1e3);
+                            tooltip = new TranslatableText("text.modern_industrialization.energy_bar_double", eus, maxEus, "kEU");
+                        } else {
+                            tooltip = new TranslatableText("text.modern_industrialization.energy_bar", eu, maxEu);
+                        }
+                    }
                     screen.renderTooltip(matrices, Collections.singletonList(tooltip), cursorX, cursorY);
                 }
             }

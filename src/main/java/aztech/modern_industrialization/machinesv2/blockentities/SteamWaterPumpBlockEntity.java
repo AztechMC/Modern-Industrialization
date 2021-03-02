@@ -48,6 +48,7 @@ public class SteamWaterPumpBlockEntity extends AbstractWaterPumpBlockEntity {
                 ConfigurableFluidStack.lockedOutputSlot(capacity, Fluids.WATER));
         SlotPositions fluidPositions = new SlotPositions.Builder().addSlot(21, 30).addSlot(OUTPUT_SLOT_X, OUTPUT_SLOT_Y).build();
         this.inventory = new MIInventory(Collections.emptyList(), fluidStacks, SlotPositions.empty(), fluidPositions);
+        this.registerComponents(inventory);
     }
 
     private final boolean bronze;
@@ -71,7 +72,7 @@ public class SteamWaterPumpBlockEntity extends AbstractWaterPumpBlockEntity {
     @Override
     protected MachineModelClientData getModelData() {
         MachineModelClientData data = new MachineModelClientData(bronze ? MachineCasings.BRONZE : MachineCasings.STEEL);
-        data.isActive = isActive;
+        data.isActive = isActiveComponent.isActive;
         orientation.writeModelData(data);
         return data;
     }

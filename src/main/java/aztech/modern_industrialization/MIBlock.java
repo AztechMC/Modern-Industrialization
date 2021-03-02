@@ -77,5 +77,6 @@ public class MIBlock extends Block {
     // other
     public static final MIBlock NUCLEAR_MACHINE_CASING = new MIBlock("nuclear_machine_casing");
 
-    public static final MIBlock CREATIVE_ENERGY_SOURCE = new MIBlock("creative_energy_source");
+    // public static final MIBlock CREATIVE_ENERGY_SOURCE = new
+    // MIBlock("creative_energy_source");
 }

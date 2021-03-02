@@ -29,8 +29,9 @@ import aztech.modern_industrialization.inventory.MIInventory;
 import aztech.modern_industrialization.inventory.SlotPositions;
 import java.util.ArrayList;
 import java.util.List;
+import net.minecraft.nbt.CompoundTag;
 
-public class MachineInventoryComponent implements CrafterComponent.Inventory {
+public class MachineInventoryComponent implements CrafterComponent.Inventory, IComponent {
     public final int itemInputCount;
     public final int itemOutputCount;
     public final int fluidInputCount;
@@ -74,5 +75,20 @@ public class MachineInventoryComponent implements CrafterComponent.Inventory {
     @Override
     public List<ConfigurableFluidStack> getFluidOutputs() {
         return inventory.fluidStacks.subList(fluidInputCount, fluidInputCount + fluidOutputCount);
+    }
+
+    @Override
+    public void writeNbt(CompoundTag tag) {
+        this.inventory.writeNbt(tag);
+    }
+
+    @Override
+    public void readNbt(CompoundTag tag) {
+        this.inventory.readNbt(tag);
+    }
+
+    @Override
+    public boolean isClientSynced() {
+        return false;
     }
 }

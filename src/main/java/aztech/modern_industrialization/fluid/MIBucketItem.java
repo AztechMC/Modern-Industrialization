@@ -24,39 +24,21 @@
 package aztech.modern_industrialization.fluid;
 
 import aztech.modern_industrialization.util.FluidHelper;
-import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
-import net.minecraft.block.Block;
-import net.minecraft.block.Material;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.Style;
-import net.minecraft.text.TextColor;
-import net.minecraft.text.TranslatableText;
+import net.minecraft.item.BucketItem;
+import net.minecraft.item.ItemStack;
+import net.minecraft.text.*;
 
-/**
- * This is not a registered block, but it allows LBA to get the name of the
- * fluid by calling fluid.getBlockState().getBlock().getTranslationKey()
- */
-public class CraftingFluidBlock extends Block {
-    private final String translationKey;
-    private final int color;
+public class MIBucketItem extends BucketItem {
 
-    public CraftingFluidBlock(String name, int color) {
-        super(FabricBlockSettings.of(Material.WATER));
-        this.translationKey = "block.modern_industrialization." + name;
-        this.color = FluidHelper.getColorMinLuminance(color);
-    }
+    public final int color;
 
-    public int getColor() {
-        return color;
+    public MIBucketItem(CraftingFluid fluid, Settings settings) {
+        super(fluid, settings);
+        this.color = FluidHelper.getColorMinLuminance(fluid.color);
     }
 
     @Override
-    public String getTranslationKey() {
-        return translationKey;
-    }
-
-    @Override
-    public MutableText getName() {
-        return new TranslatableText(this.translationKey).setStyle(Style.EMPTY.withColor(TextColor.fromRgb(color)));
+    public Text getName(ItemStack stack) {
+        return new TranslatableText(this.getTranslationKey(stack)).setStyle(Style.EMPTY.withColor(TextColor.fromRgb(color)));
     }
 }

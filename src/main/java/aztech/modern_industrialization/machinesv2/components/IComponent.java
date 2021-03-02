@@ -21,14 +21,21 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.util;
+package aztech.modern_industrialization.machinesv2.components;
 
-import net.minecraft.text.Style;
-import net.minecraft.text.TextColor;
+import net.minecraft.nbt.CompoundTag;
 
-public class TextHelper {
-    public static final Style GRAY_TEXT = Style.EMPTY.withColor(TextColor.fromRgb(0xa9a9a9)).withItalic(true);
-    public static final Style UPGRADE_TEXT = Style.EMPTY.withColor(TextColor.fromRgb(0xc3ff9c));
-    public static final Style EU_TEXT = Style.EMPTY.withColor(TextColor.fromRgb(0xffde7d));
+public interface IComponent {
 
+    void writeNbt(CompoundTag tag);
+
+    void readNbt(CompoundTag tag);
+
+    default boolean isClientSynced() {
+        return false;
+    }
+
+    default boolean forceRemesh() {
+        return isClientSynced();
+    }
 }

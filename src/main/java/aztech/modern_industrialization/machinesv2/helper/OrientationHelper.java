@@ -21,14 +21,25 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.util;
+package aztech.modern_industrialization.machinesv2.helper;
 
-import net.minecraft.text.Style;
-import net.minecraft.text.TextColor;
+import aztech.modern_industrialization.machinesv2.MachineBlockEntity;
+import aztech.modern_industrialization.machinesv2.components.OrientationComponent;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.Hand;
+import net.minecraft.util.math.Direction;
 
-public class TextHelper {
-    public static final Style GRAY_TEXT = Style.EMPTY.withColor(TextColor.fromRgb(0xa9a9a9)).withItalic(true);
-    public static final Style UPGRADE_TEXT = Style.EMPTY.withColor(TextColor.fromRgb(0xc3ff9c));
-    public static final Style EU_TEXT = Style.EMPTY.withColor(TextColor.fromRgb(0xffde7d));
+public class OrientationHelper {
 
+    public static ActionResult onUse(PlayerEntity player, Hand hand, Direction face, OrientationComponent orientation, MachineBlockEntity be) {
+        if (orientation.onUse(player, hand, face)) {
+            be.markDirty();
+            if (!(be.getWorld() == null) && !be.getWorld().isClient()) {
+                be.sync();
+            }
+            return ActionResult.success(be.getWorld().isClient);
+        }
+        return ActionResult.PASS;
+    }
 }

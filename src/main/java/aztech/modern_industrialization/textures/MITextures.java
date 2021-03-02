@@ -270,7 +270,7 @@ public final class MITextures {
                             copy.setPixelColor(i, j, brick.getPixelColor(i, j));
                         }
                     }
-                    target = TextureHelper.copy(texture);
+                    target = copy;
 
                 }
                 String s = String.format("modern_industrialization:textures/blocks/casings/%s/%s.png", casing, side);

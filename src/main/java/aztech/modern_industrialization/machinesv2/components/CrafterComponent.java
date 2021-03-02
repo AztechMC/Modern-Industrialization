@@ -46,7 +46,7 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
 import net.minecraft.world.World;
 
-public class CrafterComponent {
+public class CrafterComponent implements IComponent {
     public CrafterComponent(Inventory inventory, Behavior behavior) {
         this.inventory = inventory;
         this.behavior = behavior;
@@ -142,6 +142,7 @@ public class CrafterComponent {
         long eu = 0;
         boolean finishedRecipe = false; // whether the recipe finished this tick
         if (activeRecipe != null && (usedEnergy > 0 || recipeStarted)) {
+            recipeMaxEu = getRecipeMaxEu(activeRecipe.eu, recipeEnergy, efficiencyTicks);
             eu = behavior.consumeEu(Math.min(recipeMaxEu, recipeEnergy - usedEnergy), ACT);
             isActive = eu > 0;
             usedEnergy += eu;
@@ -287,6 +288,11 @@ public class CrafterComponent {
         }
         this.efficiencyTicks = tag.getInt("efficiencyTicks");
         this.maxEfficiencyTicks = tag.getInt("maxEfficiencyTicks");
+    }
+
+    @Override
+    public boolean isClientSynced() {
+        return false;
     }
 
     /**

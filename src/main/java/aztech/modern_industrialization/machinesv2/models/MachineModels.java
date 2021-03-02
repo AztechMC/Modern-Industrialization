@@ -45,9 +45,15 @@ public final class MachineModels {
         } else {
             throw new RuntimeException("Invalid tier: " + tier);
         }
-        MachineUnbakedModel model = new MachineUnbakedModel(name, frontOverlay, topOverlay, sideOverlay, defaultCasing).withStandardOverlays();
-        MachineModelProvider.register(new MIIdentifier("block/" + tier + "_" + name), model);
-        MachineModelProvider.register(new MIIdentifier("item/" + tier + "_" + name), model);
+        addTieredMachine(tier + "_" + name, name, defaultCasing, frontOverlay, topOverlay, sideOverlay);
+    }
+
+    public static void addTieredMachine(String id, String overlayFolder, MachineCasingModel defaultCasing, boolean frontOverlay, boolean topOverlay,
+            boolean sideOverlay) {
+        MachineUnbakedModel model = new MachineUnbakedModel(overlayFolder, frontOverlay, topOverlay, sideOverlay, defaultCasing)
+                .withStandardOverlays();
+        MachineModelProvider.register(new MIIdentifier("block/" + id), model);
+        MachineModelProvider.register(new MIIdentifier("item/" + id), model);
     }
 
     public static void addTieredMachineTiers(String name, boolean frontOverlay, boolean topOverlay, boolean sideOverlay, String... tiers) {

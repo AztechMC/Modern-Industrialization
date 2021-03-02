@@ -37,9 +37,7 @@ import aztech.modern_industrialization.machinesv2.gui.MachineGuiParameters;
 import aztech.modern_industrialization.machinesv2.models.MachineCasings;
 import aztech.modern_industrialization.machinesv2.models.MachineModelClientData;
 import aztech.modern_industrialization.util.Simulation;
-import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.nbt.CompoundTag;
 
 public class ElectricCraftingMachineBlockEntity extends AbstractCraftingMachineBlockEntity {
     public ElectricCraftingMachineBlockEntity(BlockEntityType<?> type, MachineRecipeType recipeType, MachineInventoryComponent inventory,
@@ -50,6 +48,7 @@ public class ElectricCraftingMachineBlockEntity extends AbstractCraftingMachineB
         this.insertable = energy.buildInsertable(cableTier -> cableTier == CableTier.LV);
         registerClientComponent(new EnergyBar.Server(energyBarParams, energy::getEu, energy::getCapacity));
         registerClientComponent(new RecipeEfficiencyBar.Server(efficiencyBarParams, crafter));
+        this.registerComponents(energy);
     }
 
     private final EnergyComponent energy;
@@ -64,7 +63,7 @@ public class ElectricCraftingMachineBlockEntity extends AbstractCraftingMachineB
     protected MachineModelClientData getModelData() {
         MachineModelClientData data = new MachineModelClientData(MachineCasings.LV);
         orientation.writeModelData(data);
-        data.isActive = isActive;
+        data.isActive = isActiveComponent.isActive;
         return data;
     }
 
@@ -72,16 +71,4 @@ public class ElectricCraftingMachineBlockEntity extends AbstractCraftingMachineB
         EnergyApi.MOVEABLE.registerForBlockEntities((be, direction) -> ((ElectricCraftingMachineBlockEntity) be).insertable, bet);
     }
 
-    @Override
-    public CompoundTag toTag(CompoundTag tag) {
-        super.toTag(tag);
-        energy.writeNbt(tag);
-        return tag;
-    }
-
-    @Override
-    public void fromTag(BlockState state, CompoundTag tag) {
-        super.fromTag(state, tag);
-        energy.readNbt(tag);
-    }
 }

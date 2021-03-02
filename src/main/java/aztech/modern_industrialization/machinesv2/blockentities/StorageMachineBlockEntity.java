@@ -21,14 +21,14 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.util;
+package aztech.modern_industrialization.machinesv2.blockentities;
 
-import net.minecraft.text.Style;
-import net.minecraft.text.TextColor;
+import aztech.modern_industrialization.api.energy.CableTier;
+import net.minecraft.block.entity.BlockEntityType;
 
-public class TextHelper {
-    public static final Style GRAY_TEXT = Style.EMPTY.withColor(TextColor.fromRgb(0xa9a9a9)).withItalic(true);
-    public static final Style UPGRADE_TEXT = Style.EMPTY.withColor(TextColor.fromRgb(0xc3ff9c));
-    public static final Style EU_TEXT = Style.EMPTY.withColor(TextColor.fromRgb(0xffde7d));
+public class StorageMachineBlockEntity extends AbstractStorageMachineBlockEntity {
 
+    public StorageMachineBlockEntity(BlockEntityType<?> type, CableTier tier, String name, long eu_capacity) {
+        super(type, tier, tier, name, eu_capacity);
+    }
 }

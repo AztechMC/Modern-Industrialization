@@ -21,14 +21,24 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.util;
+package aztech.modern_industrialization.machinesv2.helper;
 
-import net.minecraft.text.Style;
-import net.minecraft.text.TextColor;
+import aztech.modern_industrialization.api.energy.CableTier;
+import aztech.modern_industrialization.api.energy.EnergyApi;
+import aztech.modern_industrialization.api.energy.EnergyInsertable;
+import aztech.modern_industrialization.api.energy.EnergyMoveable;
+import aztech.modern_industrialization.machinesv2.MachineBlockEntity;
+import aztech.modern_industrialization.machinesv2.components.EnergyComponent;
+import aztech.modern_industrialization.machinesv2.components.OrientationComponent;
 
-public class TextHelper {
-    public static final Style GRAY_TEXT = Style.EMPTY.withColor(TextColor.fromRgb(0xa9a9a9)).withItalic(true);
-    public static final Style UPGRADE_TEXT = Style.EMPTY.withColor(TextColor.fromRgb(0xc3ff9c));
-    public static final Style EU_TEXT = Style.EMPTY.withColor(TextColor.fromRgb(0xffde7d));
+public class EnergyHelper {
 
+    public static void autoOuput(MachineBlockEntity machine, OrientationComponent orientation, CableTier output, EnergyComponent energy) {
+        EnergyMoveable insertable = EnergyApi.MOVEABLE.get(machine.getWorld(), machine.getPos().offset(orientation.outputDirection),
+                orientation.outputDirection.getOpposite());
+        if (insertable instanceof EnergyInsertable && ((EnergyInsertable) insertable).canInsert(output)) {
+            energy.insertEnergy((EnergyInsertable) insertable);
+        }
+        machine.markDirty();
+    }
 }

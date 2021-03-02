@@ -24,13 +24,14 @@
 package aztech.modern_industrialization.machinesv2.components;
 
 import aztech.modern_industrialization.api.energy.CableTier;
+import aztech.modern_industrialization.api.energy.EnergyExtractable;
 import aztech.modern_industrialization.api.energy.EnergyInsertable;
 import aztech.modern_industrialization.util.Simulation;
 import com.google.common.base.Preconditions;
 import java.util.function.Predicate;
 import net.minecraft.nbt.CompoundTag;
 
-public class EnergyComponent {
+public class EnergyComponent implements IComponent {
     private long storedEu;
     private final long capacity;
 
@@ -46,12 +47,21 @@ public class EnergyComponent {
         return capacity;
     }
 
+    public long getRemainingCapacity() {
+        return capacity - storedEu;
+    }
+
     public void writeNbt(CompoundTag tag) {
         tag.putLong("storedEu", storedEu);
     }
 
     public void readNbt(CompoundTag tag) {
         storedEu = tag.getLong("storedEu");
+    }
+
+    @Override
+    public boolean isClientSynced() {
+        return false;
     }
 
     public long consumeEu(long max, Simulation simulation) {
@@ -61,6 +71,19 @@ public class EnergyComponent {
             storedEu -= ext;
         }
         return ext;
+    }
+
+    public long insertEu(long max, Simulation simulation) {
+        Preconditions.checkArgument(max >= 0, "May not insert < 0 energy.");
+        long ext = Math.min(max, capacity - storedEu);
+        if (simulation.isActing()) {
+            storedEu += ext;
+        }
+        return ext;
+    }
+
+    public void insertEnergy(EnergyInsertable insertable) {
+        storedEu = insertable.insertEnergy(storedEu);
     }
 
     public EnergyInsertable buildInsertable(Predicate<CableTier> canInsert) {
@@ -80,4 +103,22 @@ public class EnergyComponent {
             }
         };
     }
+
+    public EnergyExtractable buildExtractable(Predicate<CableTier> canExtract) {
+        return new EnergyExtractable() {
+            @Override
+            public long extractEnergy(long amount) {
+                Preconditions.checkArgument(amount >= 0, "May not extract < 0 energy.");
+                long extracted = Math.min(amount, storedEu);
+                storedEu -= extracted;
+                return extracted;
+            }
+
+            @Override
+            public boolean canExtract(CableTier tier) {
+                return canExtract.test(tier);
+            }
+        };
+    }
+
 }

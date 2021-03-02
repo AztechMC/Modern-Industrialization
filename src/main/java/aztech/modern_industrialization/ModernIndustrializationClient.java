@@ -56,6 +56,7 @@ import net.fabricmc.fabric.api.lookup.v1.item.ItemKey;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.fabricmc.loader.DependencyException;
 import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.item.Items;
 import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
@@ -133,6 +134,9 @@ public class ModernIndustrializationClient implements ClientModInitializer {
                     lines.add(new TranslatableText("text.modern_industrialization.eu_cable", new TranslatableText(tier.translationKey),
                             tier.getMaxInsert()).setStyle(TextHelper.EU_TEXT));
                 }
+            }
+            if (stack.getItem() == Items.GUNPOWDER) {
+                lines.add(new TranslatableText("text.modern_industrialization.gunpowder_upgrade").setStyle(TextHelper.GRAY_TEXT));
             }
         }));
     }

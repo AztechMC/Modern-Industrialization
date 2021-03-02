@@ -911,6 +911,7 @@
     "text.modern_industrialization.efficiency_factor": "Overclock: x%s",
     "text.modern_industrialization.efficiency_ticks": "Efficiency: %d / %d",
     "text.modern_industrialization.energy_bar": "%d / %d EU",
+    "text.modern_industrialization.energy_bar_double": "%s / %s %s",
     "text.modern_industrialization.eu_cable": "%s - Max Network : %d EU/t",
     "text.modern_industrialization.eu_in_diesel_generator": "EU per mb : %d",
     "text.modern_industrialization.fluid_auto_extract_off": "Fluid auto-extraction disabled",

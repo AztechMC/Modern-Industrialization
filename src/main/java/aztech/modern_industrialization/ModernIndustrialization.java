@@ -44,6 +44,7 @@ import aztech.modern_industrialization.machines.impl.MachineFactory;
 import aztech.modern_industrialization.machinesv2.MachinePackets;
 import aztech.modern_industrialization.machinesv2.MachineScreenHandlers;
 import aztech.modern_industrialization.machinesv2.init.MIMachineRecipeTypes;
+import aztech.modern_industrialization.machinesv2.init.MultiblockMachines;
 import aztech.modern_industrialization.machinesv2.init.SingleBlockCraftingMachines;
 import aztech.modern_industrialization.machinesv2.init.SingleBlockSpecialMachines;
 import aztech.modern_industrialization.materials.MIMaterials;
@@ -142,6 +143,7 @@ public class ModernIndustrialization implements ModInitializer {
         MIMachineRecipeTypes.init();
         SingleBlockCraftingMachines.init();
         SingleBlockSpecialMachines.init();
+        MultiblockMachines.init();
         // MITags.setup();
         setupItems();
         setupBlocks();

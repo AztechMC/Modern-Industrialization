@@ -9,7 +9,8 @@
     "RecipeManagerAccessor",
     "ReloadableResourceManagerImplMixin",
     "ResourceImplAccessor",
-    "ServerPlayNetworkHandlerAccessor"
+    "ServerPlayNetworkHandlerAccessor",
+    "WorldChunkMixin"
   ],
   "injectors": {
     "defaultRequire": 1

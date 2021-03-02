@@ -28,6 +28,7 @@ import aztech.modern_industrialization.inventory.MIInventory;
 import aztech.modern_industrialization.inventory.SlotPositions;
 import aztech.modern_industrialization.machinesv2.MachineBlockEntity;
 import aztech.modern_industrialization.machinesv2.components.OrientationComponent;
+import aztech.modern_industrialization.machinesv2.components.sync.AutoExtract;
 import aztech.modern_industrialization.machinesv2.gui.MachineGuiParameters;
 import aztech.modern_industrialization.machinesv2.helper.OrientationHelper;
 import aztech.modern_industrialization.machinesv2.models.MachineCasings;
@@ -48,16 +49,19 @@ public class ConfigurableChestMachineBlockEntity extends MachineBlockEntity impl
 
     private final OrientationComponent orientation;
     private final MIInventory inventory;
+    private final AutoExtract.Server autoExtract;
 
     public ConfigurableChestMachineBlockEntity(BlockEntityType<?> type) {
-        super(type, new MachineGuiParameters.Builder("configurable_chest", true).build());
-        orientation = new OrientationComponent(new OrientationComponent.Params(true, false, false));
+        super(type, new MachineGuiParameters.Builder("configurable_chest", true).backgroundHeight(180).build());
+        orientation = new OrientationComponent(new OrientationComponent.Params(true, true, false));
+        autoExtract = new AutoExtract.Server(orientation);
+        registerClientComponent(autoExtract);
 
         List<ConfigurableItemStack> stacks = new ArrayList<>();
-        for (int i = 0; i < 21; i++) {
+        for (int i = 0; i < 27; i++) {
             stacks.add(ConfigurableItemStack.standardIOSlot(true));
         }
-        SlotPositions itemPositions = new SlotPositions.Builder().addSlots(16, 16, 3, 7).build();
+        SlotPositions itemPositions = new SlotPositions.Builder().addSlots(8, 30, 3, 9).build();
         inventory = new MIInventory(stacks, Collections.EMPTY_LIST, itemPositions, SlotPositions.empty());
         this.registerComponents(orientation, inventory);
     }
@@ -86,6 +90,10 @@ public class ConfigurableChestMachineBlockEntity extends MachineBlockEntity impl
 
     @Override
     public void tick() {
-        // TODO Add auto output
+        if(!world.isClient()){
+            if (orientation.extractItems) {
+                inventory.autoExtractItems(world, pos, orientation.outputDirection);
+            }
+        }
     }
 }

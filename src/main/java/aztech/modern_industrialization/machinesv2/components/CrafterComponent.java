@@ -142,6 +142,7 @@ public class CrafterComponent implements IComponent {
         long eu = 0;
         boolean finishedRecipe = false; // whether the recipe finished this tick
         if (activeRecipe != null && (usedEnergy > 0 || recipeStarted)) {
+            recipeMaxEu = getRecipeMaxEu(activeRecipe.eu, recipeEnergy, efficiencyTicks);
             eu = behavior.consumeEu(Math.min(recipeMaxEu, recipeEnergy - usedEnergy), ACT);
             isActive = eu > 0;
             usedEnergy += eu;

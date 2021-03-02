@@ -25,6 +25,7 @@ package aztech.modern_industrialization.machinesv2.blockentities;
 
 import aztech.modern_industrialization.machines.impl.MachineTier;
 import aztech.modern_industrialization.machines.recipe.MachineRecipeType;
+import aztech.modern_industrialization.machinesv2.components.IComponent;
 import aztech.modern_industrialization.machinesv2.components.MachineInventoryComponent;
 import aztech.modern_industrialization.machinesv2.components.sync.ProgressBar;
 import aztech.modern_industrialization.machinesv2.gui.MachineGuiParameters;
@@ -33,11 +34,48 @@ import aztech.modern_industrialization.machinesv2.models.MachineCasings;
 import aztech.modern_industrialization.machinesv2.models.MachineModelClientData;
 import aztech.modern_industrialization.util.Simulation;
 import net.minecraft.block.entity.BlockEntityType;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.particle.ParticleTypes;
+import net.minecraft.sound.SoundCategory;
+import net.minecraft.sound.SoundEvents;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.Hand;
+import net.minecraft.util.math.Direction;
+
+import java.util.Random;
 
 public class SteamCraftingMachineBlockEntity extends AbstractCraftingMachineBlockEntity {
+
+    private int overclockGunpowderTick = 0;
+
     public SteamCraftingMachineBlockEntity(BlockEntityType<?> type, MachineRecipeType recipeType, MachineInventoryComponent inventory,
             MachineGuiParameters guiParams, ProgressBar.Parameters progressBarParams, MachineTier tier) {
         super(type, recipeType, inventory, guiParams, progressBarParams, tier);
+        this.registerComponents(new IComponent(){
+
+            @Override
+            public void writeNbt(CompoundTag tag) {
+                tag.putInt("overclockGunpowderTick", overclockGunpowderTick);
+            }
+
+            @Override
+            public void readNbt(CompoundTag tag) {
+                overclockGunpowderTick = tag.getInt("overclockGunpowderTick");
+            }
+
+            @Override
+            public boolean isClientSynced() {
+                return true;
+            }
+
+            @Override
+            public boolean forceRemesh() {
+                return false;
+            }
+        });
     }
 
     @Override
@@ -52,4 +90,68 @@ public class SteamCraftingMachineBlockEntity extends AbstractCraftingMachineBloc
         data.isActive = isActiveComponent.isActive;
         return data;
     }
+
+    @Override
+    protected ActionResult onUse(PlayerEntity player, Hand hand, Direction face) {
+       ActionResult result = super.onUse(player, hand, face);
+       if(result == ActionResult.PASS){
+           ItemStack stackInHand = player.getStackInHand(hand);
+           if(stackInHand.getItem() == Items.GUNPOWDER && stackInHand.getCount() >= 1){
+               if(!player.isCreative()){
+                   stackInHand.decrement(1);
+               }
+               overclockGunpowderTick = 120*20;
+               markDirty();
+               if (!(getWorld() == null) && !getWorld().isClient()) {
+                   sync();
+               }
+               return ActionResult.success(getWorld().isClient);
+           }
+       }
+       return ActionResult.PASS;
+    }
+
+    @Override
+    public long getMaxRecipeEu() {
+        if(overclockGunpowderTick == 0){
+            return tier.getMaxEu();
+        }else{
+            return tier.getMaxEu()*2;
+        }
+
+    }
+
+    @Override
+    public long getBaseRecipeEu() {
+        if(overclockGunpowderTick == 0){
+            return tier.getBaseEu();
+        }else{
+            return tier.getBaseEu()*2;
+        }
+
+    }
+
+    public void tick(){
+        super.tick();
+        overclockGunpowderTick--;
+        if(overclockGunpowderTick < 0){
+            overclockGunpowderTick = 0;
+        }else if(overclockGunpowderTick > 0){
+            if(getWorld().isClient()) {
+                for (int _ = 0; _ < 3; _++) {
+                    Random random = getWorld().getRandom();
+                    double d = pos.getX() + 0.5D;
+                    double e = pos.getY();
+                    double f = pos.getZ() + 0.5D;
+                    double i = random.nextDouble() * 0.6D - 0.3D;
+                    double k = random.nextDouble() * 0.6D - 0.3D;
+                    world.addParticle(ParticleTypes.SMOKE, d + i, e + 1.05, f + k,
+                            0.15*(random.nextDouble()-0.5), 0.15D, 0.15*(random.nextDouble()-0.5));
+                }
+            }
+        }
+
+    }
+
+
 }

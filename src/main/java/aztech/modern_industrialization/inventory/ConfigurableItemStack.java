@@ -261,7 +261,7 @@ public class ConfigurableItemStack implements StorageView<ItemKey>, Participant<
     }
 
     @Override
-    public long extract(ItemKey itemKey, long longCount, Transaction transaction) {
+    public long extract(ItemKey key, long longCount, Transaction transaction) {
         ItemPreconditions.notEmptyNotNegative(key, longCount);
         if (pipesExtract && key.equals(this.key)) {
             int maxCount = Ints.saturatedCast(longCount);

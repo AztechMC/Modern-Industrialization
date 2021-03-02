@@ -123,6 +123,8 @@ public class MIMaterials {
                                                 .addRecipes(context -> {
                                                     new MIRecipeBuilder(context, "compressor", "coke").addTaggedPartInput("dust", 1)
                                                             .addPartOutput(MIParts.GEM, 1);
+                                                    new MIRecipeBuilder(context, "macerator", "coke").addTaggedPartInput(MIParts.GEM, 1)
+                                                            .addPartOutput(DUST, 1);
                                                 }).addRecipes(StandardRecipes::apply).build());
 
         MaterialRegistry.addMaterial(new MaterialBuilder("copper", SHINY, 0xff6600).addRegularParts(ITEM_ALL).addRegularParts(ORE)

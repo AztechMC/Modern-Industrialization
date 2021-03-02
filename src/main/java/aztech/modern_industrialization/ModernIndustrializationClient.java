@@ -135,7 +135,7 @@ public class ModernIndustrializationClient implements ClientModInitializer {
                             tier.getMaxInsert()).setStyle(TextHelper.EU_TEXT));
                 }
             }
-            if(stack.getItem() == Items.GUNPOWDER){
+            if (stack.getItem() == Items.GUNPOWDER) {
                 lines.add(new TranslatableText("text.modern_industrialization.gunpowder_upgrade").setStyle(TextHelper.GRAY_TEXT));
             }
         }));

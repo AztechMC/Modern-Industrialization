@@ -44,4 +44,23 @@ public class FluidHelper {
         String text = FluidTextHelper.getUnicodeMillibuckets(amount, false) + " / " + capacity / 81;
         return new TranslatableText("text.modern_industrialization.fluid_slot_quantity", text);
     }
+
+    public static int getColorMinLuminance(int color) {
+        int r = (color & 0xFF);
+        int g = (color & 0xFF00) >> 8;
+        int b = (color & 0xFF0000) >> 16;
+        double lum = (0.2126 * r + 0.7152 * g + 0.0722 * b) / 255d;
+        if (lum < 0.3) {
+            if (lum == 0) {
+                return 0x4C4C4C;
+            } else {
+                r = Math.min((int) (r * 0.3 / lum), 255);
+                g = Math.min((int) (g * 0.3 / lum), 255);
+                b = Math.min((int) (b * 0.3 / lum), 255);
+                return r + (g << 8) + (b << 16);
+            }
+        } else {
+            return color;
+        }
+    }
 }

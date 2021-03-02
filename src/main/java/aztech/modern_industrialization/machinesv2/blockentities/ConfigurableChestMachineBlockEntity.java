@@ -90,7 +90,7 @@ public class ConfigurableChestMachineBlockEntity extends MachineBlockEntity impl
 
     @Override
     public void tick() {
-        if(!world.isClient()){
+        if (!world.isClient()) {
             if (orientation.extractItems) {
                 inventory.autoExtractItems(world, pos, orientation.outputDirection);
             }

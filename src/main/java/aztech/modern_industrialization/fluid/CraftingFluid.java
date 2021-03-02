@@ -33,7 +33,6 @@ import net.minecraft.block.BlockState;
 import net.minecraft.client.texture.NativeImage;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.FluidState;
-import net.minecraft.item.BucketItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.Items;
 import net.minecraft.util.math.BlockPos;
@@ -54,11 +53,12 @@ public class CraftingFluid extends Fluid {
     private final CraftingFluidBlock block;
 
     public CraftingFluid(String name, int color, boolean isGas) {
-        bucketItem = new BucketItem(this, new Item.Settings().recipeRemainder(Items.BUCKET).maxCount(1).group(ModernIndustrialization.ITEM_GROUP));
-        this.name = name;
-        this.block = new CraftingFluidBlock(name, color);
         this.color = color;
+        this.name = name;
         this.isGas = isGas;
+        bucketItem = new MIBucketItem(this, new Item.Settings().recipeRemainder(Items.BUCKET).maxCount(1).group(ModernIndustrialization.ITEM_GROUP));
+        this.block = new CraftingFluidBlock(name, color);
+
         MIFluids.FLUIDS.add(this);
     }
 

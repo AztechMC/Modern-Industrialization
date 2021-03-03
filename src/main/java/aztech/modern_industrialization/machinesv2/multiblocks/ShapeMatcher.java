@@ -20,11 +20,13 @@ import static net.minecraft.util.math.Direction.*;
 public class ShapeMatcher implements ChunkEventListener {
     public ShapeMatcher(World world, BlockPos controllerPos, Direction controllerDirection, ShapeTemplate template) {
         this.controllerPos = controllerPos;
+        this.template = template;
         this.simpleMembers = toWorldPos(controllerPos, controllerDirection, template.simpleMembers);
         this.hatchFlags = toWorldPos(controllerPos, controllerDirection, template.hatchFlags);
     }
 
     private final BlockPos controllerPos;
+    private final ShapeTemplate template;
     private final Map<BlockPos, SimpleMember> simpleMembers;
     private final Map<BlockPos, HatchFlags> hatchFlags;
 
@@ -56,13 +58,19 @@ public class ShapeMatcher implements ChunkEventListener {
         return result;
     }
 
+    public void unlinkHatches() {
+        for (HatchBlockEntity hatch : matchedHatches) {
+            hatch.unlink();
+        }
+
+        matchedHatches.clear();
+        matchSuccessful = false;
+        needsRescan = true;
+    }
+
     public void rematchIfNecessary(World world) {
         if (needsRescan) {
-            for (HatchBlockEntity hatch : matchedHatches) {
-                hatch.unlink();
-            }
-
-            matchedHatches.clear();
+            unlinkHatches();
             matchSuccessful = true;
 
             for (Map.Entry<BlockPos, SimpleMember> entry : simpleMembers.entrySet()) {
@@ -79,7 +87,7 @@ public class ShapeMatcher implements ChunkEventListener {
                     if (be instanceof HatchBlockEntity) {
                         HatchBlockEntity hatch = (HatchBlockEntity) be;
                         HatchFlags flags = hatchFlags.get(pos);
-                        if (flags != null && flags.allows(hatch.getHatchType()) && hatch.matchedController == null) {
+                        if (flags != null && flags.allows(hatch.getHatchType()) && !hatch.isMatched()) {
                             matchedHatches.add(hatch);
                             matchedEntry = true;
                         }
@@ -95,7 +103,7 @@ public class ShapeMatcher implements ChunkEventListener {
                 matchedHatches.clear();
             } else {
                 for (HatchBlockEntity hatch : matchedHatches) {
-                    hatch.link(controllerPos);
+                    hatch.link(template.hatchCasing);
                 }
             }
 

@@ -31,6 +31,7 @@ import aztech.modern_industrialization.inventory.ConfigurableFluidStack;
 import aztech.modern_industrialization.inventory.ConfigurableItemStack;
 import aztech.modern_industrialization.machines.recipe.MachineRecipe;
 import aztech.modern_industrialization.machines.recipe.MachineRecipeType;
+import aztech.modern_industrialization.machinesv2.IComponent;
 import aztech.modern_industrialization.util.Simulation;
 import com.google.common.base.Preconditions;
 import java.util.ArrayList;

@@ -43,10 +43,8 @@ import aztech.modern_industrialization.machines.impl.MachineBlock;
 import aztech.modern_industrialization.machines.impl.MachineFactory;
 import aztech.modern_industrialization.machinesv2.MachinePackets;
 import aztech.modern_industrialization.machinesv2.MachineScreenHandlers;
-import aztech.modern_industrialization.machinesv2.init.MIMachineRecipeTypes;
-import aztech.modern_industrialization.machinesv2.init.MultiblockMachines;
-import aztech.modern_industrialization.machinesv2.init.SingleBlockCraftingMachines;
-import aztech.modern_industrialization.machinesv2.init.SingleBlockSpecialMachines;
+import aztech.modern_industrialization.machinesv2.init.*;
+import aztech.modern_industrialization.machinesv2.multiblocks.world.ChunkEventListeners;
 import aztech.modern_industrialization.materials.MIMaterials;
 import aztech.modern_industrialization.pipes.MIPipes;
 import aztech.modern_industrialization.recipe.MIRecipes;
@@ -143,6 +141,7 @@ public class ModernIndustrialization implements ModInitializer {
         MIMachineRecipeTypes.init();
         SingleBlockCraftingMachines.init();
         SingleBlockSpecialMachines.init();
+        MultiblockHatches.init();
         MultiblockMachines.init();
         // MITags.setup();
         setupItems();
@@ -164,6 +163,7 @@ public class ModernIndustrialization implements ModInitializer {
             a.add(MIRecipes.buildRecipesPack());
         });
 
+        ChunkEventListeners.init();
         ServerChunkEvents.CHUNK_UNLOAD.register((world, chunk) -> {
             for (BlockEntity entity : chunk.getBlockEntities().values()) {
                 if (entity instanceof ChunkUnloadBlockEntity) {

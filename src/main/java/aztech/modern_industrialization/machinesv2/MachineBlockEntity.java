@@ -27,7 +27,6 @@ import aztech.modern_industrialization.api.FastBlockEntity;
 import aztech.modern_industrialization.inventory.ConfigurableFluidStack;
 import aztech.modern_industrialization.inventory.ConfigurableItemStack;
 import aztech.modern_industrialization.inventory.MIInventory;
-import aztech.modern_industrialization.machinesv2.components.IComponent;
 import aztech.modern_industrialization.machinesv2.gui.MachineGuiParameters;
 import aztech.modern_industrialization.machinesv2.models.MachineModelClientData;
 import aztech.modern_industrialization.util.NbtHelper;
@@ -150,7 +149,7 @@ public abstract class MachineBlockEntity extends FastBlockEntity
         boolean forceChunkRemesh = false;
         for (IComponent component : icomponents) {
             if (component.isClientSynced()) {
-                component.readNbt(tag);
+                component.readClientNbt(tag);
             }
             if (component.forceRemesh()) {
                 forceChunkRemesh = true;
@@ -166,7 +165,7 @@ public abstract class MachineBlockEntity extends FastBlockEntity
     public final CompoundTag toClientTag(CompoundTag tag) {
         for (IComponent component : icomponents) {
             if (component.isClientSynced()) {
-                component.writeNbt(tag);
+                component.writeClientNbt(tag);
             }
         }
         return tag;

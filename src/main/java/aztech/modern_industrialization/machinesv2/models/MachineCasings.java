@@ -23,7 +23,12 @@
  */
 package aztech.modern_industrialization.machinesv2.models;
 
+import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.api.energy.CableTier;
+import aztech.modern_industrialization.mixin_client.BakedModelManagerAccessor;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.render.model.BakedModel;
+import net.minecraft.client.render.model.BakedModelManager;
 
 public class MachineCasings {
     public static final MachineCasingModel BRONZE = new MachineCasingModel("bronze");
@@ -36,6 +41,7 @@ public class MachineCasings {
     public static final MachineCasingModel HV = new MachineCasingModel("hv");
     public static final MachineCasingModel EV = new MachineCasingModel("ev");
     public static final MachineCasingModel SUPRACONDUCTOR = new MachineCasingModel("supraconductor");
+    public static final MachineCasingModel BRICKS = new MachineCasingModel("bricks");
 
     public static MachineCasingModel casingFromCableTier(CableTier tier) {
         if (tier == CableTier.LV) {
@@ -50,5 +56,15 @@ public class MachineCasings {
             return SUPRACONDUCTOR;
         }
         return null;
+    }
+
+    public static MachineCasingModel get(String folder) {
+        BakedModelManager bmm = MinecraftClient.getInstance().getBakedModelManager();
+        BakedModel bm = ((BakedModelManagerAccessor) bmm).getModels().get(new MIIdentifier("machine_casing/" + folder));
+        if (bm instanceof MachineCasingModel) {
+            return (MachineCasingModel) bm;
+        } else {
+            throw new IllegalArgumentException("Machine casing model \"" + folder + "\" does not exist.");
+        }
     }
 }

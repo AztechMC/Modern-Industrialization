@@ -23,6 +23,7 @@
  */
 package aztech.modern_industrialization.machinesv2.components;
 
+import aztech.modern_industrialization.machinesv2.IComponent;
 import net.minecraft.nbt.CompoundTag;
 
 public class IsActiveComponent implements IComponent {

@@ -96,6 +96,9 @@ class MachineBakedModel implements BakedModel, FabricBakedModel {
 
     private void renderBase(RenderContext renderContext, MachineCasingModel casing, Direction facingDirection, boolean isActive) {
         // Casing
+        if (casing == null) {
+            casing = defaultCasing;
+        }
         renderContext.meshConsumer().accept(casing.getMesh());
         // Machine overlays
         QuadEmitter emitter = renderContext.getEmitter();

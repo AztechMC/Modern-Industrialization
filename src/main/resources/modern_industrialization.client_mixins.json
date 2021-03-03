@@ -4,6 +4,7 @@
   "package": "aztech.modern_industrialization.mixin_client",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
+    "BakedModelManagerAccessor",
     "ClientWorldAccessor"
   ],
   "injectors": {

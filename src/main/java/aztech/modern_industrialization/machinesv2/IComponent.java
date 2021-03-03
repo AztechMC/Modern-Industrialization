@@ -21,15 +21,22 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.machinesv2.components;
+package aztech.modern_industrialization.machinesv2;
 
 import net.minecraft.nbt.CompoundTag;
 
 public interface IComponent {
-
     void writeNbt(CompoundTag tag);
 
     void readNbt(CompoundTag tag);
+
+    default void writeClientNbt(CompoundTag tag) {
+        writeNbt(tag);
+    }
+
+    default void readClientNbt(CompoundTag tag) {
+        readNbt(tag);
+    }
 
     default boolean isClientSynced() {
         return false;
@@ -37,5 +44,26 @@ public interface IComponent {
 
     default boolean forceRemesh() {
         return isClientSynced();
+    }
+
+    interface ClientOnly extends IComponent {
+        @Override
+        default void writeNbt(CompoundTag tag) {
+        }
+
+        @Override
+        default void readNbt(CompoundTag tag) {
+        }
+
+        @Override
+        void writeClientNbt(CompoundTag tag);
+
+        @Override
+        void readClientNbt(CompoundTag tag);
+
+        @Override
+        default boolean isClientSynced() {
+            return true;
+        }
     }
 }

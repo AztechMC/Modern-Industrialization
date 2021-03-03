@@ -29,6 +29,8 @@ import aztech.modern_industrialization.inventory.MIInventory;
 import aztech.modern_industrialization.inventory.SlotPositions;
 import java.util.ArrayList;
 import java.util.List;
+
+import aztech.modern_industrialization.machinesv2.IComponent;
 import net.minecraft.nbt.CompoundTag;
 
 public class MachineInventoryComponent implements CrafterComponent.Inventory, IComponent {

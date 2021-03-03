@@ -24,6 +24,7 @@
 package aztech.modern_industrialization.machinesv2.components;
 
 import aztech.modern_industrialization.ModernIndustrialization;
+import aztech.modern_industrialization.machinesv2.IComponent;
 import aztech.modern_industrialization.machinesv2.models.MachineModelClientData;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;

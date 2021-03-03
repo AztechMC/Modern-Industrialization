@@ -25,7 +25,7 @@ package aztech.modern_industrialization.machinesv2.blockentities;
 
 import aztech.modern_industrialization.machines.impl.MachineTier;
 import aztech.modern_industrialization.machines.recipe.MachineRecipeType;
-import aztech.modern_industrialization.machinesv2.components.IComponent;
+import aztech.modern_industrialization.machinesv2.IComponent;
 import aztech.modern_industrialization.machinesv2.components.MachineInventoryComponent;
 import aztech.modern_industrialization.machinesv2.components.sync.ProgressBar;
 import aztech.modern_industrialization.machinesv2.gui.MachineGuiParameters;
@@ -91,7 +91,7 @@ public class SteamCraftingMachineBlockEntity extends AbstractCraftingMachineBloc
     @Override
     protected ActionResult onUse(PlayerEntity player, Hand hand, Direction face) {
         ActionResult result = super.onUse(player, hand, face);
-        if (result == ActionResult.PASS) {
+        if (!result.isAccepted()) {
             ItemStack stackInHand = player.getStackInHand(hand);
             if (stackInHand.getItem() == Items.GUNPOWDER && stackInHand.getCount() >= 1) {
                 if (!player.isCreative()) {
@@ -99,7 +99,7 @@ public class SteamCraftingMachineBlockEntity extends AbstractCraftingMachineBloc
                 }
                 overclockGunpowderTick += 120 * 20;
                 markDirty();
-                if (!(getWorld() == null) && !getWorld().isClient()) {
+                if (world.isClient()) {
                     sync();
                 }
                 return ActionResult.success(getWorld().isClient);

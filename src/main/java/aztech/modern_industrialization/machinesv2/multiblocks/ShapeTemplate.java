@@ -12,9 +12,18 @@ import java.util.Map;
 public class ShapeTemplate {
     final Map<BlockPos, SimpleMember> simpleMembers = new HashMap<>();
     final Map<BlockPos, HatchFlags> hatchFlags = new HashMap<>();
+    public final String hatchCasing;
+
+    public ShapeTemplate(String hatchCasing) {
+        this.hatchCasing = hatchCasing;
+    }
 
     public static class Builder {
-        private final ShapeTemplate template = new ShapeTemplate();
+        private final ShapeTemplate template;
+
+        public Builder(String hatchCasing) {
+            template = new ShapeTemplate(hatchCasing);
+        }
 
         public Builder add3by3(int y, SimpleMember member, boolean hollow, @Nullable HatchFlags flags) {
             for (int x = -1; x <= 1; x++) {

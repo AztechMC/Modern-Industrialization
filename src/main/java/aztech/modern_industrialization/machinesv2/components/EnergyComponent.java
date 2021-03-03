@@ -26,6 +26,7 @@ package aztech.modern_industrialization.machinesv2.components;
 import aztech.modern_industrialization.api.energy.CableTier;
 import aztech.modern_industrialization.api.energy.EnergyExtractable;
 import aztech.modern_industrialization.api.energy.EnergyInsertable;
+import aztech.modern_industrialization.machinesv2.IComponent;
 import aztech.modern_industrialization.util.Simulation;
 import com.google.common.base.Preconditions;
 import java.util.function.Predicate;

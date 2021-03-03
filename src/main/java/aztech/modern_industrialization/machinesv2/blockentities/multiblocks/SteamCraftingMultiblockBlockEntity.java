@@ -2,7 +2,9 @@ package aztech.modern_industrialization.machinesv2.blockentities.multiblocks;
 
 import aztech.modern_industrialization.inventory.MIInventory;
 import aztech.modern_industrialization.machinesv2.MachineBlockEntity;
+import aztech.modern_industrialization.machinesv2.components.OrientationComponent;
 import aztech.modern_industrialization.machinesv2.gui.MachineGuiParameters;
+import aztech.modern_industrialization.machinesv2.helper.OrientationHelper;
 import aztech.modern_industrialization.machinesv2.models.MachineCasingModel;
 import aztech.modern_industrialization.machinesv2.models.MachineCasings;
 import aztech.modern_industrialization.machinesv2.models.MachineModelClientData;
@@ -24,9 +26,12 @@ public class SteamCraftingMultiblockBlockEntity extends MachineBlockEntity imple
     public SteamCraftingMultiblockBlockEntity(BlockEntityType<?> type, String name, ShapeTemplate shapeTemplate) {
         super(type, new MachineGuiParameters.Builder(name, false).build());
 
+        this.orientation = new OrientationComponent(new OrientationComponent.Params(false, false, false));
         this.shapeTemplate = shapeTemplate;
+        registerComponents(orientation);
     }
 
+    private final OrientationComponent orientation;
     private final ShapeTemplate shapeTemplate;
     @Nullable
     private ShapeMatcher shapeMatcher = null;
@@ -38,34 +43,32 @@ public class SteamCraftingMultiblockBlockEntity extends MachineBlockEntity imple
 
     @Override
     protected ActionResult onUse(PlayerEntity player, Hand hand, Direction face) {
-        return ActionResult.PASS;
+        ActionResult result = OrientationHelper.onUse(player, hand, face, orientation, this);
+        if (result.isAccepted()) {
+            if (shapeMatcher != null) {
+                shapeMatcher.unlinkHatches();
+                shapeMatcher.unregisterListeners(world);
+                shapeMatcher = null;
+            }
+        }
+        return result;
     }
 
     @Override
     protected MachineModelClientData getModelData() {
-        return new MachineModelClientData(MachineCasings.BRONZE);
+        return new MachineModelClientData(null, orientation.facingDirection);
     }
 
     @Override
     public void onPlaced(LivingEntity placer, ItemStack itemStack) {
-
-    }
-
-    @Override
-    public void fromClientTag(CompoundTag tag) {
-
-    }
-
-    @Override
-    public CompoundTag toClientTag(CompoundTag tag) {
-        return tag;
+        orientation.onPlaced(placer, itemStack);
     }
 
     @Override
     public void tick() {
         if (!world.isClient) {
             if (shapeMatcher == null) {
-                shapeMatcher = new ShapeMatcher(world, pos, Direction.NORTH, shapeTemplate);
+                shapeMatcher = new ShapeMatcher(world, pos, orientation.facingDirection, shapeTemplate);
                 shapeMatcher.registerListeners(world);
             }
             shapeMatcher.rematchIfNecessary(world);
@@ -76,6 +79,7 @@ public class SteamCraftingMultiblockBlockEntity extends MachineBlockEntity imple
     public void markRemoved() {
         super.markRemoved();
         if (shapeMatcher != null) {
+            shapeMatcher.unlinkHatches();
             shapeMatcher.unregisterListeners(world);
             shapeMatcher = null;
         }
@@ -84,6 +88,7 @@ public class SteamCraftingMultiblockBlockEntity extends MachineBlockEntity imple
     @Override
     public void onChunkUnload() {
         if (shapeMatcher != null) {
+            shapeMatcher.unlinkHatches();
             shapeMatcher.unregisterListeners(world);
             shapeMatcher = null;
         }

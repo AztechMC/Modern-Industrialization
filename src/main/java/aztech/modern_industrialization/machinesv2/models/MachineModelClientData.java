@@ -24,8 +24,13 @@
 package aztech.modern_industrialization.machinesv2.models;
 
 import net.minecraft.util.math.Direction;
+import org.jetbrains.annotations.Nullable;
 
 public class MachineModelClientData {
+    /**
+     * May be null to use the default casing.
+     */
+    @Nullable
     public final MachineCasingModel casing;
     public Direction frontDirection;
     public boolean isActive = false;
@@ -36,7 +41,12 @@ public class MachineModelClientData {
     public boolean itemAutoExtract = false;
     public boolean fluidAutoExtract = false;
 
-    public MachineModelClientData(MachineCasingModel casing) {
+    public MachineModelClientData(@Nullable MachineCasingModel casing) {
         this.casing = casing;
+    }
+
+    public MachineModelClientData(@Nullable MachineCasingModel casing, Direction frontDirection) {
+        this.casing = casing;
+        this.frontDirection = frontDirection;
     }
 }

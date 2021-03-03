@@ -41,4 +41,8 @@ public class ChunkPosMultiMap<T> {
         }
         return chunkPosSetMap.get(chunkPos);
     }
+
+    public final int size() {
+        return storage.size();
+    }
 }

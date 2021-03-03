@@ -29,6 +29,8 @@ public class WorldChunkMixin {
     @SuppressWarnings("rawtypes")
     @Inject(method = "setBlockState", at = @At("HEAD"))
     private void onSetBlockState(BlockPos pos, BlockState state, boolean moved, CallbackInfoReturnable cir) {
-        ChunkEventListeners.onBlockStateChange(world, this.pos, pos);
+        if (!world.isClient()) {
+            ChunkEventListeners.onBlockStateChange(world, this.pos, pos);
+        }
     }
 }

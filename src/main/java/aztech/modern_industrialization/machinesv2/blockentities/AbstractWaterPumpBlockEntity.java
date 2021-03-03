@@ -25,7 +25,7 @@ package aztech.modern_industrialization.machinesv2.blockentities;
 
 import aztech.modern_industrialization.inventory.ConfigurableFluidStack;
 import aztech.modern_industrialization.machinesv2.MachineBlockEntity;
-import aztech.modern_industrialization.machinesv2.components.IComponent;
+import aztech.modern_industrialization.machinesv2.IComponent;
 import aztech.modern_industrialization.machinesv2.components.IsActiveComponent;
 import aztech.modern_industrialization.machinesv2.components.OrientationComponent;
 import aztech.modern_industrialization.machinesv2.components.sync.ProgressBar;

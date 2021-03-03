@@ -26,6 +26,7 @@ package aztech.modern_industrialization;
 import static aztech.modern_industrialization.ModernIndustrialization.METAL_MATERIAL;
 import static aztech.modern_industrialization.ModernIndustrialization.STONE_MATERIAL;
 
+import aztech.modern_industrialization.material.OreBlock;
 import aztech.modern_industrialization.util.MobSpawning;
 import java.util.SortedMap;
 import java.util.TreeMap;
@@ -68,6 +69,9 @@ public class MIBlock extends Block {
 
     public static final MIBlock BLOCK_FIRE_CLAY_BRICKS = new MIBlock("fire_clay_bricks",
             FabricBlockSettings.of(STONE_MATERIAL).hardness(2.0f).resistance(6.0f).breakByTool(FabricToolTags.PICKAXES, 0).requiresTool());
+
+    public static final MIBlock QUARTZ_ORE = new OreBlock("quartz_ore",
+            FabricBlockSettings.of(STONE_MATERIAL).hardness(3.0f).resistance(3.0f).breakByTool(FabricToolTags.PICKAXES, 1).requiresTool());
 
     // hull
     public static final MIBlock BASIC_MACHINE_HULL = new MIBlock("lv_machine_hull");

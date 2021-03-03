@@ -97,7 +97,7 @@ public class SteamCraftingMachineBlockEntity extends AbstractCraftingMachineBloc
                 if (!player.isCreative()) {
                     stackInHand.decrement(1);
                 }
-                overclockGunpowderTick = 120 * 20;
+                overclockGunpowderTick += 120 * 20;
                 markDirty();
                 if (!(getWorld() == null) && !getWorld().isClient()) {
                     sync();

@@ -75,7 +75,7 @@ public class ElectricWaterPumpBlockEntity extends AbstractWaterPumpBlockEntity {
 
     @Override
     protected MachineModelClientData getModelData() {
-        MachineModelClientData data = new MachineModelClientData(MachineCasings.LV);
+        MachineModelClientData data = new MachineModelClientData();
         data.isActive = isActiveComponent.isActive;
         orientation.writeModelData(data);
         return data;

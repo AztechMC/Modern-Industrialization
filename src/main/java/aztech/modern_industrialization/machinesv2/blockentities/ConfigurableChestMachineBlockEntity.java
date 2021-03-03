@@ -49,21 +49,20 @@ public class ConfigurableChestMachineBlockEntity extends MachineBlockEntity impl
 
     private final OrientationComponent orientation;
     private final MIInventory inventory;
-    private final AutoExtract.Server autoExtract;
 
     public ConfigurableChestMachineBlockEntity(BlockEntityType<?> type) {
         super(type, new MachineGuiParameters.Builder("configurable_chest", true).backgroundHeight(180).build());
         orientation = new OrientationComponent(new OrientationComponent.Params(true, true, false));
-        autoExtract = new AutoExtract.Server(orientation);
-        registerClientComponent(autoExtract);
 
         List<ConfigurableItemStack> stacks = new ArrayList<>();
         for (int i = 0; i < 27; i++) {
             stacks.add(ConfigurableItemStack.standardIOSlot(true));
         }
         SlotPositions itemPositions = new SlotPositions.Builder().addSlots(8, 30, 3, 9).build();
-        inventory = new MIInventory(stacks, Collections.EMPTY_LIST, itemPositions, SlotPositions.empty());
-        this.registerComponents(orientation, inventory);
+        inventory = new MIInventory(stacks, Collections.emptyList(), itemPositions, SlotPositions.empty());
+
+        registerClientComponent(new AutoExtract.Server(orientation));
+        registerComponents(orientation, inventory);
     }
 
     @Override

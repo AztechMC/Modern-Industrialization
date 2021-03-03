@@ -23,27 +23,29 @@
  */
 package aztech.modern_industrialization.machinesv2.models;
 
-import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.api.energy.CableTier;
-import aztech.modern_industrialization.mixin_client.BakedModelManagerAccessor;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.render.model.BakedModel;
-import net.minecraft.client.render.model.BakedModelManager;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.loader.api.FabricLoader;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class MachineCasings {
-    public static final MachineCasingModel BRONZE = new MachineCasingModel("bronze");
-    public static final MachineCasingModel STEEL = new MachineCasingModel("steel");
-    public static final MachineCasingModel BRICKED_BRONZE = new MachineCasingModel("bricked_bronze");
-    public static final MachineCasingModel BRICKED_STEEL = new MachineCasingModel("bricked_steel");
-    public static final MachineCasingModel STEEL_CRATE = new MachineCasingModel("steel_crate");
-    public static final MachineCasingModel LV = new MachineCasingModel("lv");
-    public static final MachineCasingModel MV = new MachineCasingModel("mv");
-    public static final MachineCasingModel HV = new MachineCasingModel("hv");
-    public static final MachineCasingModel EV = new MachineCasingModel("ev");
-    public static final MachineCasingModel SUPRACONDUCTOR = new MachineCasingModel("supraconductor");
-    public static final MachineCasingModel BRICKS = new MachineCasingModel("bricks");
+    static final Map<String, MachineCasing> registeredCasings = new HashMap<>();
 
-    public static MachineCasingModel casingFromCableTier(CableTier tier) {
+    public static final MachineCasing BRICKED_BRONZE = create("bricked_bronze");
+    public static final MachineCasing BRICKED_STEEL = create("bricked_steel");
+    public static final MachineCasing BRICKS = create("bricks");
+    public static final MachineCasing BRONZE = create("bronze");
+    public static final MachineCasing STEEL = create("steel");
+    public static final MachineCasing STEEL_CRATE = create("steel_crate");
+    public static final MachineCasing LV = create("lv");
+    public static final MachineCasing MV = create("mv");
+    public static final MachineCasing HV = create("hv");
+    public static final MachineCasing EV = create("ev");
+    public static final MachineCasing SUPRACONDUCTOR = create("supraconductor");
+
+    public static MachineCasing casingFromCableTier(CableTier tier) {
         if (tier == CableTier.LV) {
             return LV;
         } else if (tier == CableTier.MV) {
@@ -58,13 +60,22 @@ public class MachineCasings {
         return null;
     }
 
-    public static MachineCasingModel get(String folder) {
-        BakedModelManager bmm = MinecraftClient.getInstance().getBakedModelManager();
-        BakedModel bm = ((BakedModelManagerAccessor) bmm).getModels().get(new MIIdentifier("machine_casing/" + folder));
-        if (bm instanceof MachineCasingModel) {
-            return (MachineCasingModel) bm;
+    private static MachineCasing create(String name) {
+        MachineCasing casing = new MachineCasing(name);
+        registeredCasings.put(name, casing);
+        // Load model on the client only
+        if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
+            casing.mcm = new MachineCasingModel(name);
+        }
+        return casing;
+    }
+
+    public static MachineCasing get(String name) {
+        MachineCasing casing = registeredCasings.get(name);
+        if (casing != null) {
+            return casing;
         } else {
-            throw new IllegalArgumentException("Machine casing model \"" + folder + "\" does not exist.");
+            throw new IllegalArgumentException("Machine casing model \"" + name + "\" does not exist.");
         }
     }
 }

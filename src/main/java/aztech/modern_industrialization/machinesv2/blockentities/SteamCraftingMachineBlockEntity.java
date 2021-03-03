@@ -82,7 +82,7 @@ public class SteamCraftingMachineBlockEntity extends AbstractCraftingMachineBloc
 
     @Override
     protected MachineModelClientData getModelData() {
-        MachineModelClientData data = new MachineModelClientData(tier == MachineTier.BRONZE ? MachineCasings.BRONZE : MachineCasings.STEEL);
+        MachineModelClientData data = new MachineModelClientData();
         orientation.writeModelData(data);
         data.isActive = isActiveComponent.isActive;
         return data;

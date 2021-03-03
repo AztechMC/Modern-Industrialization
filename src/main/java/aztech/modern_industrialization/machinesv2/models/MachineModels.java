@@ -35,7 +35,7 @@ public final class MachineModels {
     // The tier is a string to prevent loading client classes on a dedicated server.
     @SuppressWarnings("IfCanBeSwitch")
     public static void addTieredMachine(String tier, String name, boolean frontOverlay, boolean topOverlay, boolean sideOverlay) {
-        MachineCasingModel defaultCasing;
+        MachineCasing defaultCasing;
         if (tier.equals("bronze")) {
             defaultCasing = MachineCasings.BRONZE;
         } else if (tier.equals("steel")) {
@@ -48,9 +48,9 @@ public final class MachineModels {
         addTieredMachine(tier + "_" + name, name, defaultCasing, frontOverlay, topOverlay, sideOverlay);
     }
 
-    public static void addTieredMachine(String id, String overlayFolder, MachineCasingModel defaultCasing, boolean frontOverlay, boolean topOverlay,
+    public static void addTieredMachine(String id, String overlayFolder, MachineCasing defaultCasing, boolean frontOverlay, boolean topOverlay,
             boolean sideOverlay) {
-        MachineUnbakedModel model = new MachineUnbakedModel(overlayFolder, frontOverlay, topOverlay, sideOverlay, defaultCasing)
+        MachineUnbakedModel model = new MachineUnbakedModel(overlayFolder, frontOverlay, topOverlay, sideOverlay, defaultCasing.mcm)
                 .withStandardOverlays();
         MachineModelProvider.register(new MIIdentifier("block/" + id), model);
         MachineModelProvider.register(new MIIdentifier("item/" + id), model);

@@ -1,5 +1,6 @@
 package aztech.modern_industrialization.machinesv2.multiblocks;
 
+import aztech.modern_industrialization.machinesv2.models.MachineCasing;
 import net.minecraft.util.math.BlockPos;
 import org.jetbrains.annotations.Nullable;
 
@@ -12,16 +13,16 @@ import java.util.Map;
 public class ShapeTemplate {
     final Map<BlockPos, SimpleMember> simpleMembers = new HashMap<>();
     final Map<BlockPos, HatchFlags> hatchFlags = new HashMap<>();
-    public final String hatchCasing;
+    public final MachineCasing hatchCasing;
 
-    public ShapeTemplate(String hatchCasing) {
+    public ShapeTemplate(MachineCasing hatchCasing) {
         this.hatchCasing = hatchCasing;
     }
 
     public static class Builder {
         private final ShapeTemplate template;
 
-        public Builder(String hatchCasing) {
+        public Builder(MachineCasing hatchCasing) {
             template = new ShapeTemplate(hatchCasing);
         }
 

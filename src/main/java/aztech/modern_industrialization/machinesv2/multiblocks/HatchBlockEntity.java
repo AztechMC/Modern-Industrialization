@@ -6,7 +6,7 @@ import aztech.modern_industrialization.machinesv2.IComponent;
 import aztech.modern_industrialization.machinesv2.components.OrientationComponent;
 import aztech.modern_industrialization.machinesv2.gui.MachineGuiParameters;
 import aztech.modern_industrialization.machinesv2.helper.OrientationHelper;
-import aztech.modern_industrialization.machinesv2.models.MachineCasingModel;
+import aztech.modern_industrialization.machinesv2.models.MachineCasing;
 import aztech.modern_industrialization.machinesv2.models.MachineCasings;
 import aztech.modern_industrialization.machinesv2.models.MachineModelClientData;
 import net.minecraft.block.entity.BlockEntityType;
@@ -46,7 +46,6 @@ public abstract class HatchBlockEntity extends MachineBlockEntity implements Tic
     private final OrientationComponent orientation;
 
     public abstract HatchType getHatchType();
-    public abstract MachineCasingModel getUnmatchedCasing();
 
     public boolean isMatched() {
         return matchedCasing != null;
@@ -56,8 +55,8 @@ public abstract class HatchBlockEntity extends MachineBlockEntity implements Tic
         matchedCasing = null;
     }
 
-    public void link(String casing) {
-        matchedCasing = casing;
+    public void link(MachineCasing casing) {
+        matchedCasing = casing.name;
     }
 
     @Override
@@ -67,12 +66,9 @@ public abstract class HatchBlockEntity extends MachineBlockEntity implements Tic
 
     @Override
     protected MachineModelClientData getModelData() {
-        MachineCasingModel mcm = isMatched() ? MachineCasings.get(matchedCasing) : getUnmatchedCasing();
-        MachineModelClientData data = new MachineModelClientData(mcm);
-        data.frontDirection = Direction.NORTH; // hatches don't have a front side so it's irrelevant
-        data.outputDirection = orientation.outputDirection;
-        data.itemAutoExtract = orientation.extractItems;
-        data.fluidAutoExtract = orientation.extractFluids;
+        MachineCasing casing = isMatched() ? MachineCasings.get(matchedCasing) : null;
+        MachineModelClientData data = new MachineModelClientData(casing);
+        orientation.writeModelData(data);
         return data;
     }
 

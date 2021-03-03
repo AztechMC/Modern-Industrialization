@@ -61,7 +61,7 @@ public class ElectricCraftingMachineBlockEntity extends AbstractCraftingMachineB
 
     @Override
     protected MachineModelClientData getModelData() {
-        MachineModelClientData data = new MachineModelClientData(MachineCasings.LV);
+        MachineModelClientData data = new MachineModelClientData();
         orientation.writeModelData(data);
         data.isActive = isActiveComponent.isActive;
         return data;

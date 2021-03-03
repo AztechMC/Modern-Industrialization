@@ -5,7 +5,7 @@ import aztech.modern_industrialization.inventory.MIInventory;
 import aztech.modern_industrialization.inventory.SlotPositions;
 import aztech.modern_industrialization.machinesv2.blockentities.hatches.ItemHatch;
 import aztech.modern_industrialization.machinesv2.gui.MachineGuiParameters;
-import aztech.modern_industrialization.machinesv2.models.MachineCasingModel;
+import aztech.modern_industrialization.machinesv2.models.MachineCasing;
 import aztech.modern_industrialization.machinesv2.models.MachineCasings;
 import aztech.modern_industrialization.machinesv2.models.MachineModels;
 import net.fabricmc.api.EnvType;
@@ -23,7 +23,7 @@ public class MultiblockHatches {
         registerItemHatches("turbo", MachineCasings.HV, 3, 3, 71, 21);
     }
 
-    private static void registerItemHatches(String prefix, MachineCasingModel casing, int rows, int columns, int xStart, int yStart) {
+    private static void registerItemHatches(String prefix, MachineCasing casing, int rows, int columns, int xStart, int yStart) {
         for (int iter = 0; iter < 2; ++iter) {
             boolean input = iter == 0;
             String machine = prefix + "_item_" + (input ? "input" : "output") + "_hatch";
@@ -37,7 +37,7 @@ public class MultiblockHatches {
             }
             MIInventory inventory = new MIInventory(itemStacks, Collections.emptyList(),
                     new SlotPositions.Builder().addSlots(xStart, yStart, rows, columns).build(), SlotPositions.empty());
-            MachineRegistrationHelper.registerMachine(machine, bet -> new ItemHatch(bet, new MachineGuiParameters.Builder(machine, true).build(), casing, input, inventory));
+            MachineRegistrationHelper.registerMachine(machine, bet -> new ItemHatch(bet, new MachineGuiParameters.Builder(machine, true).build(), input, inventory));
             if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
                 MachineModels.addTieredMachine(machine, "", casing, false, false, false);
             }

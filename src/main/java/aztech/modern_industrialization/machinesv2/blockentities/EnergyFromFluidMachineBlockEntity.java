@@ -125,7 +125,7 @@ public class EnergyFromFluidMachineBlockEntity extends MachineBlockEntity implem
 
     @Override
     protected MachineModelClientData getModelData() {
-        MachineModelClientData data = new MachineModelClientData(MachineCasings.casingFromCableTier(outputTier));
+        MachineModelClientData data = new MachineModelClientData();
         data.isActive = isActiveComponent.isActive;
         orientation.writeModelData(data);
         return data;

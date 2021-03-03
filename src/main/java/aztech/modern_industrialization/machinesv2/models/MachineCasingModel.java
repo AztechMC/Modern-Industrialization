@@ -46,7 +46,7 @@ import org.jetbrains.annotations.Nullable;
 /**
  * Auto-registers itself when created!
  */
-public class MachineCasingModel implements UnbakedModel, BakedModel {
+class MachineCasingModel implements UnbakedModel, BakedModel {
     private final Identifier id;
     /**
      * <ol>

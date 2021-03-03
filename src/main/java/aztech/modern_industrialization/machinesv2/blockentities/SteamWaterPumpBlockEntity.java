@@ -71,7 +71,7 @@ public class SteamWaterPumpBlockEntity extends AbstractWaterPumpBlockEntity {
 
     @Override
     protected MachineModelClientData getModelData() {
-        MachineModelClientData data = new MachineModelClientData(bronze ? MachineCasings.BRONZE : MachineCasings.STEEL);
+        MachineModelClientData data = new MachineModelClientData();
         data.isActive = isActiveComponent.isActive;
         orientation.writeModelData(data);
         return data;

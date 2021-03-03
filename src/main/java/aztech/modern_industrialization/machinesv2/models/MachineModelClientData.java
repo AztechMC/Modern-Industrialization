@@ -31,7 +31,7 @@ public class MachineModelClientData {
      * May be null to use the default casing.
      */
     @Nullable
-    public final MachineCasingModel casing;
+    public final MachineCasing casing;
     public Direction frontDirection;
     public boolean isActive = false;
     /**
@@ -41,11 +41,15 @@ public class MachineModelClientData {
     public boolean itemAutoExtract = false;
     public boolean fluidAutoExtract = false;
 
-    public MachineModelClientData(@Nullable MachineCasingModel casing) {
+    public MachineModelClientData() {
+        this(null);
+    }
+
+    public MachineModelClientData(@Nullable MachineCasing casing) {
         this.casing = casing;
     }
 
-    public MachineModelClientData(@Nullable MachineCasingModel casing, Direction frontDirection) {
+    public MachineModelClientData(@Nullable MachineCasing casing, Direction frontDirection) {
         this.casing = casing;
         this.frontDirection = frontDirection;
     }

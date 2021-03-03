@@ -75,7 +75,8 @@ class MachineBakedModel implements BakedModel, FabricBakedModel {
             Object attachment = bv.getBlockEntityRenderAttachment(blockPos);
             if (attachment instanceof MachineModelClientData) {
                 MachineModelClientData clientData = (MachineModelClientData) attachment;
-                renderBase(renderContext, clientData.casing, clientData.frontDirection, clientData.isActive);
+                MachineCasingModel casing = clientData.casing == null ? defaultCasing : clientData.casing.mcm;
+                renderBase(renderContext, casing, clientData.frontDirection, clientData.isActive);
                 if (clientData.outputDirection != null) {
                     emitSprite(renderContext.getEmitter(), clientData.outputDirection, sprites[6], 2e-6f);
                     if (clientData.itemAutoExtract) {
@@ -96,9 +97,6 @@ class MachineBakedModel implements BakedModel, FabricBakedModel {
 
     private void renderBase(RenderContext renderContext, MachineCasingModel casing, Direction facingDirection, boolean isActive) {
         // Casing
-        if (casing == null) {
-            casing = defaultCasing;
-        }
         renderContext.meshConsumer().accept(casing.getMesh());
         // Machine overlays
         QuadEmitter emitter = renderContext.getEmitter();

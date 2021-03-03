@@ -35,7 +35,7 @@ import aztech.modern_industrialization.machinesv2.components.sync.EnergyBar;
 import aztech.modern_industrialization.machinesv2.gui.MachineGuiParameters;
 import aztech.modern_industrialization.machinesv2.helper.EnergyHelper;
 import aztech.modern_industrialization.machinesv2.helper.OrientationHelper;
-import aztech.modern_industrialization.machinesv2.models.MachineCasingModel;
+import aztech.modern_industrialization.machinesv2.models.MachineCasing;
 import aztech.modern_industrialization.machinesv2.models.MachineCasings;
 import aztech.modern_industrialization.machinesv2.models.MachineModelClientData;
 import net.minecraft.block.entity.BlockEntityType;
@@ -86,13 +86,13 @@ public abstract class AbstractStorageMachineBlockEntity extends MachineBlockEnti
         return OrientationHelper.onUse(player, hand, face, orientation, this);
     }
 
-    public static MachineCasingModel getCasingFromTier(CableTier from, CableTier to) {
+    public static MachineCasing getCasingFromTier(CableTier from, CableTier to) {
         return MachineCasings.casingFromCableTier(from.eu > to.eu ? from : to);
     }
 
     @Override
     protected MachineModelClientData getModelData() {
-        MachineModelClientData data = new MachineModelClientData(getCasingFromTier(from, to));
+        MachineModelClientData data = new MachineModelClientData(null);
         orientation.writeModelData(data);
         return data;
     }

@@ -130,7 +130,6 @@ public class SteamCraftingMachineBlockEntity extends AbstractCraftingMachineBloc
 
     public void tick() {
         super.tick();
-        System.out.println(overclockGunpowderTick);
         overclockGunpowderTick--;
         if (overclockGunpowderTick < 0) {
             overclockGunpowderTick = 0;

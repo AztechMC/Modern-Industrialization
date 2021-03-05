@@ -1,7 +1,9 @@
 package aztech.modern_industrialization.machinesv2.multiblocks;
 
+import aztech.modern_industrialization.machines.impl.multiblock.HatchType;
 import aztech.modern_industrialization.machinesv2.multiblocks.world.ChunkEventListener;
 import aztech.modern_industrialization.machinesv2.multiblocks.world.ChunkEventListeners;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.util.math.BlockPos;
@@ -58,6 +60,19 @@ public class ShapeMatcher implements ChunkEventListener {
         return result;
     }
 
+    public Set<BlockPos> getPositions() {
+        return new HashSet<>(simpleMembers.keySet());
+    }
+
+    public SimpleMember getSimpleMember(BlockPos pos) {
+        return Objects.requireNonNull(simpleMembers.get(pos));
+    }
+
+    @Nullable
+    public HatchFlags getHatchFlags(BlockPos pos) {
+        return hatchFlags.get(pos);
+    }
+
     public void unlinkHatches() {
         for (HatchBlockEntity hatch : matchedHatches) {
             hatch.unlink();
@@ -68,33 +83,40 @@ public class ShapeMatcher implements ChunkEventListener {
         needsRescan = true;
     }
 
+    /**
+     * Return true if there was a match, and append matched hatches to the list if it's not null.
+     */
+    public boolean matches(BlockPos pos, World world, @Nullable List<HatchBlockEntity> hatches) {
+        SimpleMember simpleMember = simpleMembers.get(pos);
+        if (simpleMember == null) return false;
+
+        BlockState state = world.getBlockState(pos);
+        if (simpleMember.matchesState(state)) return true;
+
+        BlockEntity be = world.getBlockEntity(pos);
+        if (be instanceof HatchBlockEntity) {
+            HatchBlockEntity hatch = (HatchBlockEntity) be;
+            HatchFlags flags = hatchFlags.get(pos);
+            if (flags != null && flags.allows(hatch.getHatchType()) && !hatch.isMatched()) {
+                if (matchedHatches != null) {
+                    matchedHatches.add(hatch);
+                }
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     public void rematchIfNecessary(World world) {
         if (needsRescan) {
             unlinkHatches();
             matchSuccessful = true;
 
-            for (Map.Entry<BlockPos, SimpleMember> entry : simpleMembers.entrySet()) {
+            for (BlockPos pos : simpleMembers.keySet()) {
                 // TODO: check if the chunk is loaded
 
-                BlockPos pos = entry.getKey();
-                BlockState state = world.getBlockState(pos);
-                boolean matchedEntry = false;
-
-                if (entry.getValue().matchesState(state)) {
-                    matchedEntry = true;
-                } else {
-                    BlockEntity be = world.getBlockEntity(pos);
-                    if (be instanceof HatchBlockEntity) {
-                        HatchBlockEntity hatch = (HatchBlockEntity) be;
-                        HatchFlags flags = hatchFlags.get(pos);
-                        if (flags != null && flags.allows(hatch.getHatchType()) && !hatch.isMatched()) {
-                            matchedHatches.add(hatch);
-                            matchedEntry = true;
-                        }
-                    }
-                }
-
-                if (!matchedEntry) {
+                if (!matches(pos, world, matchedHatches)) {
                     matchSuccessful = false;
                 }
             }

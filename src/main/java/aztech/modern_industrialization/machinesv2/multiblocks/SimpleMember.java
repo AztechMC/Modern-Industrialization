@@ -10,7 +10,7 @@ import net.minecraft.util.registry.Registry;
  */
 public interface SimpleMember {
     boolean matchesState(BlockState state);
-    BlockState getPreviewState(BlockState state);
+    BlockState getPreviewState();
 
     static SimpleMember forBlock(Block block) {
         return new SimpleMember() {
@@ -20,7 +20,7 @@ public interface SimpleMember {
             }
 
             @Override
-            public BlockState getPreviewState(BlockState state) {
+            public BlockState getPreviewState() {
                 return block.getDefaultState();
             }
         };

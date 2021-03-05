@@ -28,8 +28,8 @@ public class SteamCraftingMultiblockBlockEntity extends MachineBlockEntity imple
         registerComponents(orientation);
     }
 
-    private final OrientationComponent orientation;
-    private final ShapeTemplate shapeTemplate;
+    public final OrientationComponent orientation;
+    public final ShapeTemplate shapeTemplate;
     @Nullable
     private ShapeMatcher shapeMatcher = null;
 

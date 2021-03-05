@@ -62,18 +62,17 @@ public class SingleBlockSpecialMachines {
         registerSteamTurbines(32, 128);
         registerEUStorage();
 
-        MachineModels
-                .addTieredMachine(
-                        MachineRegistrationHelper.registerMachine("diesel_generator",
-                                bet -> new EnergyFromFluidMachineBlockEntity(bet, "diesel_generator", CableTier.MV, 12000, 32000, 1,
-                                        (Fluid f) -> (FluidFuelRegistry.getEu(f) != 0), FluidFuelRegistry::getEu),
-                                MachineBlockEntity::registerFluidApi, EnergyFromFluidMachineBlockEntity::registerEnergyApi),
+        MachineRegistrationHelper.registerMachine("diesel_generator",
+                bet -> new EnergyFromFluidMachineBlockEntity(bet, "diesel_generator", CableTier.MV, 12000, 32000, 1,
+                        (Fluid f) -> (FluidFuelRegistry.getEu(f) != 0), FluidFuelRegistry::getEu),
+                MachineBlockEntity::registerFluidApi, EnergyFromFluidMachineBlockEntity::registerEnergyApi);
+        MachineModels.addTieredMachine("diesel_generator",
                         "diesel_generator", MachineCasings.MV, false, true, false);
 
-        MachineModels.addTieredMachine(MachineRegistrationHelper.registerMachine("configurable_chest",
-                bet -> new ConfigurableChestMachineBlockEntity(bet), MachineBlockEntity::registerItemApi), "", MachineCasings.STEEL_CRATE, false,
+        MachineRegistrationHelper.registerMachine("configurable_chest",
+                ConfigurableChestMachineBlockEntity::new, MachineBlockEntity::registerItemApi);
+        MachineModels.addTieredMachine("configurable_chest", "", MachineCasings.STEEL_CRATE, false,
                 false, false);
-
     }
 
     private static void registerTransformers() {
@@ -82,14 +81,13 @@ public class SingleBlockSpecialMachines {
             final CableTier low = tiers[i];
             final CableTier up = tiers[i + 1];
 
-            MachineModels.addTieredMachine(
-                    MachineRegistrationHelper.registerMachine(TransformerMachineBlockEntity.getTransformerName(low, up),
-                            bet -> new TransformerMachineBlockEntity(bet, low, up), AbstractStorageMachineBlockEntity::registerEnergyApi),
-                    "", TransformerMachineBlockEntity.getCasingFromTier(low, up), false, false, false);
+            String name = TransformerMachineBlockEntity.getTransformerName(low, up);
+            MachineRegistrationHelper.registerMachine(name, bet -> new TransformerMachineBlockEntity(bet, low, up), AbstractStorageMachineBlockEntity::registerEnergyApi);
+            MachineModels.addTieredMachine(name, "", TransformerMachineBlockEntity.getCasingFromTier(low, up), false, false, false);
 
-            MachineModels.addTieredMachine(
-                    MachineRegistrationHelper.registerMachine(TransformerMachineBlockEntity.getTransformerName(up, low),
-                            bet -> new TransformerMachineBlockEntity(bet, up, low), AbstractStorageMachineBlockEntity::registerEnergyApi),
+            name = TransformerMachineBlockEntity.getTransformerName(up, low);
+            MachineRegistrationHelper.registerMachine(name, bet -> new TransformerMachineBlockEntity(bet, up, low), AbstractStorageMachineBlockEntity::registerEnergyApi);
+            MachineModels.addTieredMachine(name,
                     "", TransformerMachineBlockEntity.getCasingFromTier(up, low), false, false, false);
         }
     }
@@ -98,10 +96,10 @@ public class SingleBlockSpecialMachines {
         for (int i = 0; i < maxConsumption.length; i++) {
             CableTier tier = CableTier.values()[i];
             String id = tier.name + "_steam_turbine";
-            MachineModels.addTieredMachine(
-                    MachineRegistrationHelper.registerMachine(id,
-                            bet -> new EnergyFromFluidMachineBlockEntity(bet, id, tier, 3200, 16000, 32, MIFluids.STEAM, 1),
-                            MachineBlockEntity::registerFluidApi, EnergyFromFluidMachineBlockEntity::registerEnergyApi),
+            MachineRegistrationHelper.registerMachine(id,
+                    bet -> new EnergyFromFluidMachineBlockEntity(bet, id, tier, 3200, 16000, 32, MIFluids.STEAM, 1),
+                    MachineBlockEntity::registerFluidApi, EnergyFromFluidMachineBlockEntity::registerEnergyApi);
+            MachineModels.addTieredMachine(id,
                     "steam_turbine", MachineCasings.casingFromCableTier(tier), true, false, false);
         }
     }
@@ -109,10 +107,9 @@ public class SingleBlockSpecialMachines {
     private static void registerEUStorage() {
         for (CableTier tier : CableTier.values()) {
             String id = tier.name + "_storage_unit";
-            MachineModels
-                    .addTieredMachine(
-                            MachineRegistrationHelper.registerMachine(id, bet -> new StorageMachineBlockEntity(bet, tier, id, 60 * 5 * 20 * tier.eu),
-                                    AbstractStorageMachineBlockEntity::registerEnergyApi),
+            MachineRegistrationHelper.registerMachine(id, bet -> new StorageMachineBlockEntity(bet, tier, id, 60 * 5 * 20 * tier.eu),
+                    AbstractStorageMachineBlockEntity::registerEnergyApi);
+            MachineModels.addTieredMachine(id,
                             "", MachineCasings.casingFromCableTier(tier), false, false, false);
         }
     }

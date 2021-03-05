@@ -92,7 +92,7 @@ public abstract class AbstractStorageMachineBlockEntity extends MachineBlockEnti
 
     @Override
     protected MachineModelClientData getModelData() {
-        MachineModelClientData data = new MachineModelClientData(null);
+        MachineModelClientData data = new MachineModelClientData();
         orientation.writeModelData(data);
         return data;
     }

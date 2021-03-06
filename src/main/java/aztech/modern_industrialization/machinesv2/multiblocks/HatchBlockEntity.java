@@ -1,5 +1,7 @@
 package aztech.modern_industrialization.machinesv2.multiblocks;
 
+import aztech.modern_industrialization.inventory.ConfigurableFluidStack;
+import aztech.modern_industrialization.inventory.ConfigurableItemStack;
 import aztech.modern_industrialization.machines.impl.multiblock.HatchType;
 import aztech.modern_industrialization.machinesv2.MachineBlockEntity;
 import aztech.modern_industrialization.machinesv2.IComponent;
@@ -19,6 +21,7 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.Tickable;
 import net.minecraft.util.math.Direction;
 
+import java.util.List;
 import java.util.Objects;
 
 public abstract class HatchBlockEntity extends MachineBlockEntity implements Tickable {
@@ -47,16 +50,38 @@ public abstract class HatchBlockEntity extends MachineBlockEntity implements Tic
 
     public abstract HatchType getHatchType();
 
+    /**
+     * Return true if this hatch upgrades steam multiblocks to steel tier.
+     */
+    public abstract boolean upgradesToSteel();
+
     public boolean isMatched() {
         return matchedCasing != null;
     }
 
+    // This amazing function is called when the block entity is loaded.
+    @Override
+    public void cancelRemoval() {
+        super.cancelRemoval();
+        clearMachineLock();
+    }
+
     public void unlink() {
         matchedCasing = null;
+        clearMachineLock();
     }
 
     public void link(MachineCasing casing) {
         matchedCasing = casing.name;
+    }
+
+    private void clearMachineLock() {
+        for (ConfigurableItemStack itemStack : getInventory().itemStacks) {
+            itemStack.disableMachineLock();
+        }
+        for (ConfigurableFluidStack fluidStack : getInventory().fluidStacks) {
+            fluidStack.disableMachineLock();
+        }
     }
 
     @Override
@@ -86,5 +111,17 @@ public abstract class HatchBlockEntity extends MachineBlockEntity implements Tic
             lastSyncedMachineCasing = matchedCasing;
             sync();
         }
+    }
+
+    public void appendItemInputs(List<ConfigurableItemStack> list) {
+    }
+
+    public void appendItemOutputs(List<ConfigurableItemStack> list) {
+    }
+
+    public void appendFluidInputs(List<ConfigurableFluidStack> list) {
+    }
+
+    public void appendFluidOutputs(List<ConfigurableFluidStack> list) {
     }
 }

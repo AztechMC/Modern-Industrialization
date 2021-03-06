@@ -180,6 +180,27 @@ public class CrafterComponent implements IComponent {
         return isActive;
     }
 
+    /**
+     * Attempt to re-lock hatches to continue the active recipe.
+     *
+     * @return True if there is no current recipe or if the hatches could be locked for it, false otherwise.
+     */
+    public boolean tryContinueRecipe() {
+        loadDelayedActiveRecipe();
+
+        if (activeRecipe != null) {
+            if (putItemOutputs(activeRecipe, true, false) && putFluidOutputs(activeRecipe, true, false)) {
+                // Relock stacks
+                putItemOutputs(activeRecipe, true, true);
+                putFluidOutputs(activeRecipe, true, true);
+            } else {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     private void loadDelayedActiveRecipe() {
         if (delayedActiveRecipe != null) {
             activeRecipe = behavior.recipeType().getRecipe((ServerWorld) behavior.getWorld(), delayedActiveRecipe);

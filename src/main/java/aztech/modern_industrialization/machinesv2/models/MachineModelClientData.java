@@ -53,4 +53,9 @@ public class MachineModelClientData {
         this.casing = casing;
         this.frontDirection = frontDirection;
     }
+
+    public MachineModelClientData active(boolean isActive) {
+        this.isActive = isActive;
+        return this;
+    }
 }

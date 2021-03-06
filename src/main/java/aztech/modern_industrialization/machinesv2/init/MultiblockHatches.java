@@ -1,8 +1,11 @@
 package aztech.modern_industrialization.machinesv2.init;
 
+import aztech.modern_industrialization.inventory.ConfigurableFluidStack;
 import aztech.modern_industrialization.inventory.ConfigurableItemStack;
 import aztech.modern_industrialization.inventory.MIInventory;
 import aztech.modern_industrialization.inventory.SlotPositions;
+import aztech.modern_industrialization.machinesv2.MachineBlockEntity;
+import aztech.modern_industrialization.machinesv2.blockentities.hatches.FluidHatch;
 import aztech.modern_industrialization.machinesv2.blockentities.hatches.ItemHatch;
 import aztech.modern_industrialization.machinesv2.gui.MachineGuiParameters;
 import aztech.modern_industrialization.machinesv2.models.MachineCasing;
@@ -21,23 +24,51 @@ public class MultiblockHatches {
         registerItemHatches("steel", MachineCasings.STEEL, 2, 1, 80, 30);
         registerItemHatches("advanced", MachineCasings.MV, 2, 2, 80, 21);
         registerItemHatches("turbo", MachineCasings.HV, 3, 3, 71, 21);
+
+        registerFluidHatches("bronze", MachineCasings.BRONZE, 4);
+        registerFluidHatches("steel", MachineCasings.STEEL, 8);
+        registerFluidHatches("advanced", MachineCasings.MV, 16);
+        registerFluidHatches("turbo", MachineCasings.HV, 32);
     }
 
     private static void registerItemHatches(String prefix, MachineCasing casing, int rows, int columns, int xStart, int yStart) {
         for (int iter = 0; iter < 2; ++iter) {
             boolean input = iter == 0;
             String machine = prefix + "_item_" + (input ? "input" : "output") + "_hatch";
-            List<ConfigurableItemStack> itemStacks = new ArrayList<>();
-            for (int i = 0; i < rows*columns; ++i) {
-                if (input) {
-                    itemStacks.add(ConfigurableItemStack.standardInputSlot());
-                } else {
-                    itemStacks.add(ConfigurableItemStack.standardOutputSlot());
+            MachineRegistrationHelper.registerMachine(machine, bet -> {
+                List<ConfigurableItemStack> itemStacks = new ArrayList<>();
+                for (int i = 0; i < rows*columns; ++i) {
+                    if (input) {
+                        itemStacks.add(ConfigurableItemStack.standardInputSlot());
+                    } else {
+                        itemStacks.add(ConfigurableItemStack.standardOutputSlot());
+                    }
                 }
+                MIInventory inventory = new MIInventory(itemStacks, Collections.emptyList(),
+                        new SlotPositions.Builder().addSlots(xStart, yStart, rows, columns).build(), SlotPositions.empty());
+                return new ItemHatch(bet, new MachineGuiParameters.Builder(machine, true).build(), input, !prefix.equals("bronze"), inventory);
+            }, MachineBlockEntity::registerItemApi);
+            if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
+                MachineModels.addTieredMachine(machine, "", casing, false, false, false);
             }
-            MIInventory inventory = new MIInventory(itemStacks, Collections.emptyList(),
-                    new SlotPositions.Builder().addSlots(xStart, yStart, rows, columns).build(), SlotPositions.empty());
-            MachineRegistrationHelper.registerMachine(machine, bet -> new ItemHatch(bet, new MachineGuiParameters.Builder(machine, true).build(), input, inventory));
+        }
+    }
+
+    public static final int FLUID_HATCH_SLOT_X = 80;
+    public static final int FLUID_HATCH_SLOT_Y = 40;
+
+    private static void registerFluidHatches(String prefix, MachineCasing casing, int bucketCapacity) {
+        for (int iter = 0; iter < 2; ++iter) {
+            boolean input = iter == 0;
+            String machine = prefix + "_fluid_" + (input ? "input" : "output") + "_hatch";
+            MachineRegistrationHelper.registerMachine(machine, bet -> {
+                List<ConfigurableFluidStack> fluidStacks = Collections.singletonList(input ?
+                        ConfigurableFluidStack.standardInputSlot(bucketCapacity * 81000)
+                : ConfigurableFluidStack.standardOutputSlot(bucketCapacity * 81000));
+                MIInventory inventory = new MIInventory(Collections.emptyList(), fluidStacks,
+                        SlotPositions.empty(), new SlotPositions.Builder().addSlot(FLUID_HATCH_SLOT_X, FLUID_HATCH_SLOT_Y).build());
+                return new FluidHatch(bet, new MachineGuiParameters.Builder(machine, true).build(), input, !prefix.equals("bronze"), inventory);
+            }, MachineBlockEntity::registerFluidApi);
             if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
                 MachineModels.addTieredMachine(machine, "", casing, false, false, false);
             }

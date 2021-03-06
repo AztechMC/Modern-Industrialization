@@ -67,6 +67,7 @@ import net.devtech.arrp.json.models.JTextures;
 import net.devtech.arrp.json.tags.JTag;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.client.itemgroup.FabricItemGroupBuilder;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerBlockEntityEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerChunkEvents;
 import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
@@ -164,11 +165,9 @@ public class ModernIndustrialization implements ModInitializer {
         });
 
         ChunkEventListeners.init();
-        ServerChunkEvents.CHUNK_UNLOAD.register((world, chunk) -> {
-            for (BlockEntity entity : chunk.getBlockEntities().values()) {
-                if (entity instanceof ChunkUnloadBlockEntity) {
-                    ((ChunkUnloadBlockEntity) entity).onChunkUnload();
-                }
+        ServerBlockEntityEvents.BLOCK_ENTITY_UNLOAD.register((be, world) -> {
+            if (be instanceof ChunkUnloadBlockEntity) {
+                ((ChunkUnloadBlockEntity) be).onChunkUnload();
             }
         });
         PlayerChangeWorldCallback.EVENT.register((player, oldWorld, newWorld) -> MIKeyMap.clear(player));

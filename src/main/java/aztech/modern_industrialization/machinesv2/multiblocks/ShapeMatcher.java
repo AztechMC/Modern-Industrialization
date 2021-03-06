@@ -1,9 +1,8 @@
 package aztech.modern_industrialization.machinesv2.multiblocks;
 
-import aztech.modern_industrialization.machines.impl.multiblock.HatchType;
 import aztech.modern_industrialization.machinesv2.multiblocks.world.ChunkEventListener;
 import aztech.modern_industrialization.machinesv2.multiblocks.world.ChunkEventListeners;
-import net.minecraft.block.Block;
+import com.google.common.base.Preconditions;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.util.math.BlockPos;
@@ -32,7 +31,7 @@ public class ShapeMatcher implements ChunkEventListener {
     private final Map<BlockPos, SimpleMember> simpleMembers;
     private final Map<BlockPos, HatchFlags> hatchFlags;
 
-    private boolean needsRescan = true;
+    private boolean needsRematch = true;
     private boolean matchSuccessful = false;
     private final List<HatchBlockEntity> matchedHatches = new ArrayList<>();
 
@@ -73,6 +72,10 @@ public class ShapeMatcher implements ChunkEventListener {
         return hatchFlags.get(pos);
     }
 
+    public List<HatchBlockEntity> getMatchedHatches() {
+        return Collections.unmodifiableList(matchedHatches);
+    }
+
     public void unlinkHatches() {
         for (HatchBlockEntity hatch : matchedHatches) {
             hatch.unlink();
@@ -80,7 +83,7 @@ public class ShapeMatcher implements ChunkEventListener {
 
         matchedHatches.clear();
         matchSuccessful = false;
-        needsRescan = true;
+        needsRematch = true;
     }
 
     /**
@@ -108,29 +111,36 @@ public class ShapeMatcher implements ChunkEventListener {
         return false;
     }
 
-    public void rematchIfNecessary(World world) {
-        if (needsRescan) {
-            unlinkHatches();
-            matchSuccessful = true;
+    public boolean needsRematch() {
+        return needsRematch;
+    }
 
-            for (BlockPos pos : simpleMembers.keySet()) {
-                // TODO: check if the chunk is loaded
+    public boolean isMatchSuccessful() {
+        return matchSuccessful && !needsRematch;
+    }
 
-                if (!matches(pos, world, matchedHatches)) {
-                    matchSuccessful = false;
-                }
+    public void rematch(World world) {
+        Preconditions.checkArgument(needsRematch);
+        unlinkHatches();
+        matchSuccessful = true;
+
+        for (BlockPos pos : simpleMembers.keySet()) {
+            // TODO: check if the chunk is loaded
+
+            if (!matches(pos, world, matchedHatches)) {
+                matchSuccessful = false;
             }
-
-            if (!matchSuccessful) {
-                matchedHatches.clear();
-            } else {
-                for (HatchBlockEntity hatch : matchedHatches) {
-                    hatch.link(template.hatchCasing);
-                }
-            }
-
-            needsRescan = false;
         }
+
+        if (!matchSuccessful) {
+            matchedHatches.clear();
+        } else {
+            for (HatchBlockEntity hatch : matchedHatches) {
+                hatch.link(template.hatchCasing);
+            }
+        }
+
+        needsRematch = false;
     }
 
     public Set<ChunkPos> getSpannedChunks() {
@@ -156,17 +166,17 @@ public class ShapeMatcher implements ChunkEventListener {
     @Override
     public void onBlockUpdate(BlockPos pos) {
         if (simpleMembers.containsKey(pos)) {
-            needsRescan = true;
+            needsRematch = true;
         }
     }
 
     @Override
     public void onUnload() {
-        needsRescan = true;
+        needsRematch = true;
     }
 
     @Override
     public void onLoad() {
-        needsRescan = true;
+        needsRematch = true;
     }
 }

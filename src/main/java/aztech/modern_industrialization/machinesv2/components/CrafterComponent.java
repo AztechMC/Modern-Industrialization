@@ -183,7 +183,8 @@ public class CrafterComponent implements IComponent {
     /**
      * Attempt to re-lock hatches to continue the active recipe.
      *
-     * @return True if there is no current recipe or if the hatches could be locked for it, false otherwise.
+     * @return True if there is no current recipe or if the hatches could be locked
+     *         for it, false otherwise.
      */
     public boolean tryContinueRecipe() {
         loadDelayedActiveRecipe();

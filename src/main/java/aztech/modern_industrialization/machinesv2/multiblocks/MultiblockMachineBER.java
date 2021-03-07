@@ -1,3 +1,26 @@
+/*
+ * MIT License
+ *
+ * Copyright (c) 2020 Azercoco & Technici4n
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
 package aztech.modern_industrialization.machinesv2.multiblocks;
 
 import aztech.modern_industrialization.ModernIndustrialization;
@@ -24,16 +47,16 @@ public class MultiblockMachineBER extends BlockEntityRenderer<SteamCraftingMulti
     }
 
     @Override
-    public void render(SteamCraftingMultiblockBlockEntity be, float tickDelta, MatrixStack matrices, VertexConsumerProvider vcp, int light, int overlay) {
+    public void render(SteamCraftingMultiblockBlockEntity be, float tickDelta, MatrixStack matrices, VertexConsumerProvider vcp, int light,
+            int overlay) {
         boolean holdingWrench = isHoldingWrench();
         HatchType hatchType = getHeldHatchType();
         if (holdingWrench || hatchType != null) {
-            ShapeMatcher matcher = new ShapeMatcher(be.getWorld(), be.getPos(), be.orientation.facingDirection,be.shapeTemplate);
+            ShapeMatcher matcher = new ShapeMatcher(be.getWorld(), be.getPos(), be.orientation.facingDirection, be.getActiveShape());
 
             for (BlockPos pos : matcher.getPositions()) {
                 matrices.push();
-                matrices.translate(pos.getX() - be.getPos().getX(), pos.getY() - be.getPos().getY(),
-                        pos.getZ() - be.getPos().getZ());
+                matrices.translate(pos.getX() - be.getPos().getX(), pos.getY() - be.getPos().getY(), pos.getZ() - be.getPos().getZ());
 
                 HatchFlags hatchFlag = matcher.getHatchFlags(pos);
                 if (hatchType != null) {
@@ -50,8 +73,8 @@ public class MultiblockMachineBER extends BlockEntityRenderer<SteamCraftingMulti
                             // Draw hologram
                             matrices.translate(0.25, 0.25, 0.25);
                             matrices.scale(0.5f, 0.5f, 0.5f);
-                            MinecraftClient.getInstance().getBlockRenderManager().renderBlockAsEntity(matcher.getSimpleMember(pos).getPreviewState(), matrices, vcp,
-                                    15728880, overlay);
+                            MinecraftClient.getInstance().getBlockRenderManager().renderBlockAsEntity(matcher.getSimpleMember(pos).getPreviewState(),
+                                    matrices, vcp, 15728880, overlay);
                         } else {
                             // Hightlight in red
                             matrices.translate(-0.005, -0.005, -0.005);

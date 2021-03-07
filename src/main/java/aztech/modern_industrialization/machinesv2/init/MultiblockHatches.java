@@ -1,3 +1,26 @@
+/*
+ * MIT License
+ *
+ * Copyright (c) 2020 Azercoco & Technici4n
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
 package aztech.modern_industrialization.machinesv2.init;
 
 import aztech.modern_industrialization.inventory.ConfigurableFluidStack;
@@ -11,12 +34,11 @@ import aztech.modern_industrialization.machinesv2.gui.MachineGuiParameters;
 import aztech.modern_industrialization.machinesv2.models.MachineCasing;
 import aztech.modern_industrialization.machinesv2.models.MachineCasings;
 import aztech.modern_industrialization.machinesv2.models.MachineModels;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.loader.api.FabricLoader;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.loader.api.FabricLoader;
 
 public class MultiblockHatches {
     public static void init() {
@@ -37,7 +59,7 @@ public class MultiblockHatches {
             String machine = prefix + "_item_" + (input ? "input" : "output") + "_hatch";
             MachineRegistrationHelper.registerMachine(machine, bet -> {
                 List<ConfigurableItemStack> itemStacks = new ArrayList<>();
-                for (int i = 0; i < rows*columns; ++i) {
+                for (int i = 0; i < rows * columns; ++i) {
                     if (input) {
                         itemStacks.add(ConfigurableItemStack.standardInputSlot());
                     } else {
@@ -62,11 +84,11 @@ public class MultiblockHatches {
             boolean input = iter == 0;
             String machine = prefix + "_fluid_" + (input ? "input" : "output") + "_hatch";
             MachineRegistrationHelper.registerMachine(machine, bet -> {
-                List<ConfigurableFluidStack> fluidStacks = Collections.singletonList(input ?
-                        ConfigurableFluidStack.standardInputSlot(bucketCapacity * 81000)
-                : ConfigurableFluidStack.standardOutputSlot(bucketCapacity * 81000));
-                MIInventory inventory = new MIInventory(Collections.emptyList(), fluidStacks,
-                        SlotPositions.empty(), new SlotPositions.Builder().addSlot(FLUID_HATCH_SLOT_X, FLUID_HATCH_SLOT_Y).build());
+                List<ConfigurableFluidStack> fluidStacks = Collections
+                        .singletonList(input ? ConfigurableFluidStack.standardInputSlot(bucketCapacity * 81000)
+                                : ConfigurableFluidStack.standardOutputSlot(bucketCapacity * 81000));
+                MIInventory inventory = new MIInventory(Collections.emptyList(), fluidStacks, SlotPositions.empty(),
+                        new SlotPositions.Builder().addSlot(FLUID_HATCH_SLOT_X, FLUID_HATCH_SLOT_Y).build());
                 return new FluidHatch(bet, new MachineGuiParameters.Builder(machine, true).build(), input, !prefix.equals("bronze"), inventory);
             }, MachineBlockEntity::registerFluidApi);
             if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {

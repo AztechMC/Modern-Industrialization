@@ -24,24 +24,26 @@
 package aztech.modern_industrialization.machinesv2.components;
 
 import aztech.modern_industrialization.machinesv2.IComponent;
+import net.fabricmc.fabric.api.block.entity.BlockEntityClientSerializable;
 import net.minecraft.nbt.CompoundTag;
 
-public class IsActiveComponent implements IComponent {
-
+public class IsActiveComponent implements IComponent.ClientOnly {
     public boolean isActive = false;
 
+    public void updateActive(boolean newActive, BlockEntityClientSerializable be) {
+        if (newActive != isActive) {
+            isActive = newActive;
+            be.sync();
+        }
+    }
+
     @Override
-    public void writeNbt(CompoundTag tag) {
+    public void writeClientNbt(CompoundTag tag) {
         tag.putBoolean("isActive", isActive);
     }
 
     @Override
-    public void readNbt(CompoundTag tag) {
+    public void readClientNbt(CompoundTag tag) {
         isActive = tag.getBoolean("isActive");
-    }
-
-    @Override
-    public boolean isClientSynced() {
-        return true;
     }
 }

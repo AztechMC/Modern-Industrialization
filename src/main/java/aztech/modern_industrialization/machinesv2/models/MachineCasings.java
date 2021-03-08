@@ -24,11 +24,10 @@
 package aztech.modern_industrialization.machinesv2.models;
 
 import aztech.modern_industrialization.api.energy.CableTier;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.loader.api.FabricLoader;
-
 import java.util.HashMap;
 import java.util.Map;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.loader.api.FabricLoader;
 
 public class MachineCasings {
     static final Map<String, MachineCasing> registeredCasings = new HashMap<>();

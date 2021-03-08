@@ -23,7 +23,7 @@
  */
 package aztech.modern_industrialization.machinesv2.blockentities.hatches;
 
-import aztech.modern_industrialization.inventory.ConfigurableItemStack;
+import aztech.modern_industrialization.inventory.ConfigurableFluidStack;
 import aztech.modern_industrialization.inventory.MIInventory;
 import aztech.modern_industrialization.machines.impl.multiblock.HatchType;
 import aztech.modern_industrialization.machinesv2.components.OrientationComponent;
@@ -32,9 +32,9 @@ import aztech.modern_industrialization.machinesv2.multiblocks.HatchBlockEntity;
 import java.util.List;
 import net.minecraft.block.entity.BlockEntityType;
 
-public class ItemHatch extends HatchBlockEntity {
-    public ItemHatch(BlockEntityType<?> type, MachineGuiParameters guiParams, boolean input, boolean upgradesToSteel, MIInventory inventory) {
-        super(type, guiParams, new OrientationComponent.Params(true, true, false));
+public class FluidHatch extends HatchBlockEntity {
+    public FluidHatch(BlockEntityType<?> type, MachineGuiParameters guiParams, boolean input, boolean upgradesToSteel, MIInventory inventory) {
+        super(type, guiParams, new OrientationComponent.Params(true, false, true));
 
         this.input = input;
         this.upgradesToSteel = upgradesToSteel;
@@ -47,7 +47,7 @@ public class ItemHatch extends HatchBlockEntity {
 
     @Override
     public HatchType getHatchType() {
-        return input ? HatchType.ITEM_INPUT : HatchType.ITEM_OUTPUT;
+        return input ? HatchType.FLUID_INPUT : HatchType.FLUID_OUTPUT;
     }
 
     @Override
@@ -61,16 +61,16 @@ public class ItemHatch extends HatchBlockEntity {
     }
 
     @Override
-    public void appendItemInputs(List<ConfigurableItemStack> list) {
+    public void appendFluidInputs(List<ConfigurableFluidStack> list) {
         if (input) {
-            list.addAll(inventory.itemStacks);
+            list.addAll(inventory.fluidStacks);
         }
     }
 
     @Override
-    public void appendItemOutputs(List<ConfigurableItemStack> list) {
+    public void appendFluidOutputs(List<ConfigurableFluidStack> list) {
         if (!input) {
-            list.addAll(inventory.itemStacks);
+            list.addAll(inventory.fluidStacks);
         }
     }
 }

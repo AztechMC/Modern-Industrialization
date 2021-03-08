@@ -1,9 +1,34 @@
+/*
+ * MIT License
+ *
+ * Copyright (c) 2020 Azercoco & Technici4n
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
 package aztech.modern_industrialization.machinesv2.multiblocks;
 
-import aztech.modern_industrialization.machines.impl.multiblock.HatchType;
+import static net.minecraft.util.math.Direction.*;
+
 import aztech.modern_industrialization.machinesv2.multiblocks.world.ChunkEventListener;
 import aztech.modern_industrialization.machinesv2.multiblocks.world.ChunkEventListeners;
-import net.minecraft.block.Block;
+import com.google.common.base.Preconditions;
+import java.util.*;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.util.math.BlockPos;
@@ -11,10 +36,6 @@ import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.*;
-
-import static net.minecraft.util.math.Direction.*;
 
 /**
  * Status of a multiblock shape bound to some position and direction.
@@ -32,12 +53,13 @@ public class ShapeMatcher implements ChunkEventListener {
     private final Map<BlockPos, SimpleMember> simpleMembers;
     private final Map<BlockPos, HatchFlags> hatchFlags;
 
-    private boolean needsRescan = true;
+    private boolean needsRematch = true;
     private boolean matchSuccessful = false;
     private final List<HatchBlockEntity> matchedHatches = new ArrayList<>();
 
     /**
-     * Convert a relative position in the shape template to the real position in the world.
+     * Convert a relative position in the shape template to the real position in the
+     * world.
      */
     private static BlockPos toWorldPos(BlockPos controllerPos, Direction controllerDirection, BlockPos templatePos) {
         BlockPos rotatedPos;
@@ -73,6 +95,10 @@ public class ShapeMatcher implements ChunkEventListener {
         return hatchFlags.get(pos);
     }
 
+    public List<HatchBlockEntity> getMatchedHatches() {
+        return Collections.unmodifiableList(matchedHatches);
+    }
+
     public void unlinkHatches() {
         for (HatchBlockEntity hatch : matchedHatches) {
             hatch.unlink();
@@ -80,18 +106,21 @@ public class ShapeMatcher implements ChunkEventListener {
 
         matchedHatches.clear();
         matchSuccessful = false;
-        needsRescan = true;
+        needsRematch = true;
     }
 
     /**
-     * Return true if there was a match, and append matched hatches to the list if it's not null.
+     * Return true if there was a match, and append matched hatches to the list if
+     * it's not null.
      */
     public boolean matches(BlockPos pos, World world, @Nullable List<HatchBlockEntity> hatches) {
         SimpleMember simpleMember = simpleMembers.get(pos);
-        if (simpleMember == null) return false;
+        if (simpleMember == null)
+            return false;
 
         BlockState state = world.getBlockState(pos);
-        if (simpleMember.matchesState(state)) return true;
+        if (simpleMember.matchesState(state))
+            return true;
 
         BlockEntity be = world.getBlockEntity(pos);
         if (be instanceof HatchBlockEntity) {
@@ -108,29 +137,36 @@ public class ShapeMatcher implements ChunkEventListener {
         return false;
     }
 
-    public void rematchIfNecessary(World world) {
-        if (needsRescan) {
-            unlinkHatches();
-            matchSuccessful = true;
+    public boolean needsRematch() {
+        return needsRematch;
+    }
 
-            for (BlockPos pos : simpleMembers.keySet()) {
-                // TODO: check if the chunk is loaded
+    public boolean isMatchSuccessful() {
+        return matchSuccessful && !needsRematch;
+    }
 
-                if (!matches(pos, world, matchedHatches)) {
-                    matchSuccessful = false;
-                }
+    public void rematch(World world) {
+        Preconditions.checkArgument(needsRematch);
+        unlinkHatches();
+        matchSuccessful = true;
+
+        for (BlockPos pos : simpleMembers.keySet()) {
+            // TODO: check if the chunk is loaded
+
+            if (!matches(pos, world, matchedHatches)) {
+                matchSuccessful = false;
             }
-
-            if (!matchSuccessful) {
-                matchedHatches.clear();
-            } else {
-                for (HatchBlockEntity hatch : matchedHatches) {
-                    hatch.link(template.hatchCasing);
-                }
-            }
-
-            needsRescan = false;
         }
+
+        if (!matchSuccessful) {
+            matchedHatches.clear();
+        } else {
+            for (HatchBlockEntity hatch : matchedHatches) {
+                hatch.link(template.hatchCasing);
+            }
+        }
+
+        needsRematch = false;
     }
 
     public Set<ChunkPos> getSpannedChunks() {
@@ -156,17 +192,17 @@ public class ShapeMatcher implements ChunkEventListener {
     @Override
     public void onBlockUpdate(BlockPos pos) {
         if (simpleMembers.containsKey(pos)) {
-            needsRescan = true;
+            needsRematch = true;
         }
     }
 
     @Override
     public void onUnload() {
-        needsRescan = true;
+        needsRematch = true;
     }
 
     @Override
     public void onLoad() {
-        needsRescan = true;
+        needsRematch = true;
     }
 }

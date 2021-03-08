@@ -38,7 +38,7 @@ public class EnergyAttributes {
         EXTRACTABLE = Attributes.create(EnergyExtractable.class);
 
         INSERTABLE.appendBlockAdder(((world, pos, state, to) -> {
-            EnergyIo energyIo = EnergyApi.SIDED.get(world, pos, to.getTargetSide());
+            EnergyIo energyIo = EnergyApi.SIDED.find(world, pos, to.getTargetSide());
             if (energyIo != null) {
                 to.add(new EnergyInsertable() {
                     @Override

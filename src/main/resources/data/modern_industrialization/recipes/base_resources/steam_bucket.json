@@ -1,0 +1,8 @@
+{"type":"minecraft:smelting",
+  "cookingtime":500,
+  "experience":0,
+  "ingredient":{
+    "item":"minecraft:water_bucket"
+  },
+  "result":"modern_industrialization:bucket_steam"
+}

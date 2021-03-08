@@ -26,7 +26,6 @@ package aztech.modern_industrialization.machinesv2.blockentities.multiblocks;
 import aztech.modern_industrialization.machines.recipe.MachineRecipeType;
 import aztech.modern_industrialization.machinesv2.components.CrafterComponent;
 import aztech.modern_industrialization.machinesv2.components.OrientationComponent;
-import aztech.modern_industrialization.machinesv2.gui.MachineGuiParameters;
 import aztech.modern_industrialization.machinesv2.helper.SteamHelper;
 import aztech.modern_industrialization.machinesv2.multiblocks.HatchBlockEntity;
 import aztech.modern_industrialization.machinesv2.multiblocks.ShapeMatcher;
@@ -37,8 +36,7 @@ import net.minecraft.world.World;
 
 public class SteamCraftingMultiblockBlockEntity extends AbstractCraftingMultiblockBlockEntity {
     public SteamCraftingMultiblockBlockEntity(BlockEntityType<?> type, String name, ShapeTemplate shapeTemplate, MachineRecipeType recipeType) {
-        super(type, new MachineGuiParameters.Builder(name, false).build(),
-                new OrientationComponent(new OrientationComponent.Params(false, false, false)), new ShapeTemplate[] { shapeTemplate });
+        super(type, name, new OrientationComponent(new OrientationComponent.Params(false, false, false)), new ShapeTemplate[] { shapeTemplate });
 
         this.recipeType = recipeType;
     }

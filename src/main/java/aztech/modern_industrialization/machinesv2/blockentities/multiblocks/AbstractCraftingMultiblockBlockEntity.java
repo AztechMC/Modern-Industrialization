@@ -28,6 +28,7 @@ import aztech.modern_industrialization.machinesv2.components.CrafterComponent;
 import aztech.modern_industrialization.machinesv2.components.IsActiveComponent;
 import aztech.modern_industrialization.machinesv2.components.MultiblockInventoryComponent;
 import aztech.modern_industrialization.machinesv2.components.OrientationComponent;
+import aztech.modern_industrialization.machinesv2.components.sync.CraftingMultiblockGUI;
 import aztech.modern_industrialization.machinesv2.gui.MachineGuiParameters;
 import aztech.modern_industrialization.machinesv2.models.MachineModelClientData;
 import aztech.modern_industrialization.machinesv2.multiblocks.MultiblockMachineBlockEntity;
@@ -40,14 +41,15 @@ import net.minecraft.util.Tickable;
 import org.jetbrains.annotations.Nullable;
 
 public abstract class AbstractCraftingMultiblockBlockEntity extends MultiblockMachineBlockEntity implements Tickable {
-    public AbstractCraftingMultiblockBlockEntity(BlockEntityType<?> type, MachineGuiParameters guiParams, OrientationComponent orientation,
+    public AbstractCraftingMultiblockBlockEntity(BlockEntityType<?> type, String name, OrientationComponent orientation,
             ShapeTemplate[] shapeTemplates) {
-        super(type, guiParams, orientation);
+        super(type, new MachineGuiParameters.Builder(name, false).backgroundHeight(200).build(), orientation);
 
         this.shapeTemplates = shapeTemplates;
         this.inventory = new MultiblockInventoryComponent();
         this.crafter = new CrafterComponent(inventory, getBehavior());
         this.isActive = new IsActiveComponent();
+        registerClientComponent(new CraftingMultiblockGUI.Server(() -> isShapeValid, crafter::getProgress, crafter));
         registerComponents(crafter, isActive);
     }
 
@@ -61,6 +63,7 @@ public abstract class AbstractCraftingMultiblockBlockEntity extends MultiblockMa
     @Nullable
     private ShapeMatcher shapeMatcher = null;
     private boolean allowNormalOperation = false;
+    private boolean isShapeValid = false;
 
     protected final MultiblockInventoryComponent inventory;
     private final CrafterComponent crafter;
@@ -111,12 +114,14 @@ public abstract class AbstractCraftingMultiblockBlockEntity extends MultiblockMa
         }
         if (shapeMatcher.needsRematch()) {
             allowNormalOperation = false;
+            isShapeValid = false;
             shapeMatcher.rematch(world);
 
             if (shapeMatcher.isMatchSuccessful()) {
                 inventory.rebuild(shapeMatcher);
 
                 onSuccessfulMatch(shapeMatcher);
+                isShapeValid = true;
 
                 // If there was an active recipe, we have to make sure the output fits, and lock
                 // the hatches.

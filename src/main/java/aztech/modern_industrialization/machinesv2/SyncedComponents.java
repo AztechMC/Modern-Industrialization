@@ -34,7 +34,8 @@ public final class SyncedComponents {
     public static final Identifier ENERGY_BAR = new MIIdentifier("energy_bar");
     public static final Identifier PROGRESS_BAR = new MIIdentifier("progress_bar");
     public static final Identifier RECIPE_EFFICIENCY_BAR = new MIIdentifier("recipe_efficiency_bar");
-    public static final Identifier TEMPERATURE_BAR = new MIIdentifier("temperature_bar");;
+    public static final Identifier TEMPERATURE_BAR = new MIIdentifier("temperature_bar");
+    public static final Identifier CRAFTING_MULTIBLOCK_GUI = new MIIdentifier("crafting_multiblock_gui");
 
     public static final class Client {
         private static final Map<Identifier, SyncedComponent.ClientFactory> components = new HashMap<>();
@@ -55,6 +56,7 @@ public final class SyncedComponents {
             register(PROGRESS_BAR, ProgressBar.Client::new);
             register(RECIPE_EFFICIENCY_BAR, RecipeEfficiencyBar.Client::new);
             register(TEMPERATURE_BAR, TemperatureBar.Client::new);
+            register(CRAFTING_MULTIBLOCK_GUI, CraftingMultiblockGUI.Client::new);
         }
     }
 }

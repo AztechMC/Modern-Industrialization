@@ -151,7 +151,7 @@ public class CraftingMultiblockGUI {
 
                 MinecraftClient minecraftClient = MinecraftClient.getInstance();
                 minecraftClient.getTextureManager().bindTexture(texture);
-                helper.drawTexture(matrices, x + 4, y + 16, 0, 0, 166, 80, 166, 80);
+                DrawableHelper.drawTexture(matrices, x + 4, y + 16, 0, 0, 166, 80, 166, 80);
                 TextRenderer textRenderer = minecraftClient.textRenderer;
 
                 textRenderer

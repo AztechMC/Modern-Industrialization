@@ -68,7 +68,7 @@ public abstract class HatchBlockEntity extends MachineBlockEntity implements Tic
 
     private String lastSyncedMachineCasing = null;
     private String matchedCasing = null;
-    private final OrientationComponent orientation;
+    protected final OrientationComponent orientation;
 
     public abstract HatchType getHatchType();
 
@@ -122,7 +122,9 @@ public abstract class HatchBlockEntity extends MachineBlockEntity implements Tic
     @Override
     public void onPlaced(LivingEntity placer, ItemStack itemStack) {
         orientation.onPlaced(placer, itemStack);
-        orientation.outputDirection = orientation.outputDirection.getOpposite();
+        if (orientation.params.hasOutput) {
+            orientation.outputDirection = orientation.outputDirection.getOpposite();
+        }
     }
 
     @Override

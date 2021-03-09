@@ -23,11 +23,13 @@
  */
 package aztech.modern_industrialization.machinesv2.init;
 
+import aztech.modern_industrialization.api.energy.CableTier;
 import aztech.modern_industrialization.inventory.ConfigurableFluidStack;
 import aztech.modern_industrialization.inventory.ConfigurableItemStack;
 import aztech.modern_industrialization.inventory.MIInventory;
 import aztech.modern_industrialization.inventory.SlotPositions;
 import aztech.modern_industrialization.machinesv2.MachineBlockEntity;
+import aztech.modern_industrialization.machinesv2.blockentities.hatches.EnergyHatch;
 import aztech.modern_industrialization.machinesv2.blockentities.hatches.FluidHatch;
 import aztech.modern_industrialization.machinesv2.blockentities.hatches.ItemHatch;
 import aztech.modern_industrialization.machinesv2.gui.MachineGuiParameters;
@@ -51,6 +53,12 @@ public class MultiblockHatches {
         registerFluidHatches("steel", MachineCasings.STEEL, 8);
         registerFluidHatches("advanced", MachineCasings.MV, 16);
         registerFluidHatches("turbo", MachineCasings.HV, 32);
+
+        registerEnergyHatches(CableTier.LV);
+        registerEnergyHatches(CableTier.MV);
+        registerEnergyHatches(CableTier.HV);
+        registerEnergyHatches(CableTier.EV);
+        registerEnergyHatches(CableTier.SUPRACONDUCTOR);
     }
 
     private static void registerItemHatches(String prefix, MachineCasing casing, int rows, int columns, int xStart, int yStart) {
@@ -93,6 +101,17 @@ public class MultiblockHatches {
             }, MachineBlockEntity::registerFluidApi);
             if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
                 MachineModels.addTieredMachine(machine, "", casing, false, false, false);
+            }
+        }
+    }
+
+    private static void registerEnergyHatches(CableTier tier) {
+        for (int iter = 0; iter < 2; ++iter) {
+            boolean input = iter == 0;
+            String machine = tier.name + "_energy_" + (input ? "input" : "output") + "_hatch";
+            MachineRegistrationHelper.registerMachine(machine, bet -> new EnergyHatch(bet, machine, input, tier), EnergyHatch::registerEnergyApi);
+            if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
+                MachineModels.addTieredMachine(machine, "", MachineCasings.casingFromCableTier(tier), false, false, false);
             }
         }
     }

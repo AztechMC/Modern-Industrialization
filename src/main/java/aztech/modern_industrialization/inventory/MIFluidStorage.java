@@ -57,6 +57,7 @@ public class MIFluidStorage implements Storage<Fluid> {
 
                         if (inserted > 0) {
                             tx.enlist(stack);
+                            stack.setFluid(fluid);
                             stack.increment(inserted);
 
                             if (lockSlots) {

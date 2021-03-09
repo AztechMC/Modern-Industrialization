@@ -39,6 +39,8 @@ public class ItemHatch extends HatchBlockEntity {
         this.input = input;
         this.upgradesToSteel = upgradesToSteel;
         this.inventory = inventory;
+
+        registerComponents(inventory);
     }
 
     private final boolean input;

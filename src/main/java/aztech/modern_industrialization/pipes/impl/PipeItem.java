@@ -27,9 +27,11 @@ import aztech.modern_industrialization.pipes.MIPipes;
 import aztech.modern_industrialization.pipes.api.PipeNetworkData;
 import aztech.modern_industrialization.pipes.api.PipeNetworkType;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.ShapeContext;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUsageContext;
 import net.minecraft.sound.BlockSoundGroup;
@@ -100,39 +102,52 @@ public class PipeItem extends Item {
     // Try placing the pipe and registering the new pipe to the entity, returns null
     // if it failed
     private BlockPos tryPlace(ItemUsageContext context) {
-        World world = context.getWorld();
-        // First, try to add a pipe to an existing block
         BlockPos hitPos = context.getBlockPos();
-        BlockEntity entity = world.getBlockEntity(hitPos);
-        if (entity instanceof PipeBlockEntity) {
-            PipeBlockEntity pipeEntity = (PipeBlockEntity) entity;
-            if (pipeEntity.canAddPipe(type)) {
-                // The pipe could be added, it's a success
-                if (!world.isClient) {
-                    pipeEntity.addPipe(type, defaultData);
+        BlockPos adjacentPos = hitPos.offset(context.getSide());
+        if (tryPlaceAt(context, hitPos)) {
+            return hitPos;
+        } else if (tryPlaceAt(context, adjacentPos)) {
+            return adjacentPos;
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * Try adding the pipe to an existing block entity, or replacing the current
+     * state if that was not possible.
+     *
+     * @return True if succeeded, false otherwise.
+     */
+    private boolean tryPlaceAt(ItemUsageContext context, BlockPos pos) {
+        World world = context.getWorld();
+        // If there is a block entity we try to add the pipe.
+        BlockEntity be = world.getBlockEntity(pos);
+        if (be instanceof PipeBlockEntity) {
+            PipeBlockEntity pipeBe = (PipeBlockEntity) be;
+            if (pipeBe.canAddPipe(type)) {
+                if (!world.isClient()) {
+                    pipeBe.addPipe(type, defaultData.clone());
                 }
-                return hitPos;
+                return true;
             }
         }
-        // Place a new block otherwise
-        BlockPos placingPos = context.getBlockPos().offset(context.getSide());
-        if (world.getBlockState(placingPos).isAir()) {
-            world.setBlockState(placingPos, MIPipes.BLOCK_PIPE.getDefaultState(), 11); // TODO: check flags
-            if (!world.isClient) {
-                PipeBlockEntity pipeEntity = (PipeBlockEntity) world.getBlockEntity(placingPos);
-                pipeEntity.addPipe(type, defaultData.clone());
+        // Otherwise we try replacing the target block.
+        if (canPlace(context, pos)) {
+            world.setBlockState(pos, MIPipes.BLOCK_PIPE.getDefaultState(), 3); // neighbor update is handled later
+            if (!world.isClient()) {
+                PipeBlockEntity pipeBe = (PipeBlockEntity) world.getBlockEntity(pos);
+                pipeBe.addPipe(type, defaultData.clone());
             }
-            return placingPos;
-        } else if (world.getBlockState(placingPos).isOf(MIPipes.BLOCK_PIPE)) {
-            // Or try to add to the side of the block
-            PipeBlockEntity pipeEntity = (PipeBlockEntity) world.getBlockEntity(placingPos);
-            if (pipeEntity.canAddPipe(type)) {
-                if (!world.isClient) {
-                    pipeEntity.addPipe(type, defaultData);
-                }
-                return placingPos;
-            }
+            return true;
         }
-        return null;
+        return false;
+    }
+
+    private static boolean canPlace(ItemUsageContext ctx, BlockPos pos) {
+        BlockState state = MIPipes.BLOCK_PIPE.getDefaultState();
+        ShapeContext shapeContext = ctx.getPlayer() == null ? ShapeContext.absent() : ShapeContext.of(ctx.getPlayer());
+        return ctx.getWorld().getBlockState(pos).canReplace(new ItemPlacementContext(ctx)) && state.canPlaceAt(ctx.getWorld(), pos)
+                && ctx.getWorld().canPlace(state, pos, shapeContext);
     }
 }

@@ -1,3 +1,6 @@
+##### 0.3.15
+* Use the now-merged fabric-api-lookup-api-v1.
+
 ##### 0.3.14
 * Fix a tiny issue with the KubeJS integration.
 

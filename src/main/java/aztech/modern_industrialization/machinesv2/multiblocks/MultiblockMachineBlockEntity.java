@@ -67,4 +67,6 @@ public abstract class MultiblockMachineBlockEntity extends MachineBlockEntity im
     public final void onChunkUnload() {
         unlink();
     }
+
+    public abstract ShapeTemplate getActiveShape();
 }

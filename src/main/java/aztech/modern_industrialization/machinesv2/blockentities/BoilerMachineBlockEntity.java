@@ -57,7 +57,7 @@ import net.minecraft.util.math.Direction;
 
 public class BoilerMachineBlockEntity extends MachineBlockEntity implements Tickable {
 
-    private static final int BURN_TIME_MULTIPLIER = 5;
+    public  static final int BURN_TIME_MULTIPLIER = 5;
 
     public static final int WATER_SLOT_X = 50;
     public static final int WATER_SLOT_Y = 32;
@@ -152,16 +152,15 @@ public class BoilerMachineBlockEntity extends MachineBlockEntity implements Tick
         if (world.isClient)
             return;
 
-        boolean wasActive = isActiveComponent.isActive;
+        boolean newActive = false;
 
-        isActiveComponent.isActive = false;
         if (burningTick == 0) {
             ConfigurableItemStack stack = inventory.itemStacks.get(0);
             Item fuel = stack.getItemKey().getItem();
             if (ItemStackHelper.consumeFuel(stack, true)) {
                 Integer fuelTime = FuelRegistryImpl.INSTANCE.get(fuel);
                 if (fuelTime != null && fuelTime > 0) {
-                    burningTickProgress = fuelTime * BURN_TIME_MULTIPLIER / (bronze ? 1 : 2);
+                    burningTickProgress = (fuelTime * BURN_TIME_MULTIPLIER) / (bronze ? 1 : 2);
                     burningTick = burningTickProgress;
                     ItemStackHelper.consumeFuel(stack, false);
                 }
@@ -169,18 +168,18 @@ public class BoilerMachineBlockEntity extends MachineBlockEntity implements Tick
         }
 
         if (burningTick > 0) {
-            isActiveComponent.isActive = true;
+           newActive = true;
             --burningTick;
         }
 
-        if (isActiveComponent.isActive) {
+        if (newActive) {
             temperature = Math.min(temperature + 1, temperatureMax);
         } else {
             temperature = Math.max(temperature - 1, 0);
         }
 
         if (temperature > 100) {
-            int steamProduction = 81 * ((4 * (temperature - 100)) / 1000);
+            int steamProduction = 81 * ((8 * (temperature - 100)) / 1000);
             if (inventory.fluidStacks.get(0).getAmount() > 0) {
                 long remSpace = inventory.fluidStacks.get(1).getRemainingSpace();
                 long waterAvail = inventory.fluidStacks.get(0).getAmount();
@@ -196,9 +195,8 @@ public class BoilerMachineBlockEntity extends MachineBlockEntity implements Tick
             getInventory().autoExtractFluids(world, pos, direction);
         }
 
-        if (isActiveComponent.isActive != wasActive) {
-            sync();
-        }
+        isActiveComponent.updateActive(newActive, this);
+
         markDirty();
     }
 }

@@ -42,13 +42,13 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import org.jetbrains.annotations.Nullable;
 
-public class MultiblockMachineBER extends BlockEntityRenderer<AbstractCraftingMultiblockBlockEntity> {
+public class MultiblockMachineBER extends BlockEntityRenderer<MultiblockMachineBlockEntity> {
     public MultiblockMachineBER(BlockEntityRenderDispatcher dispatcher) {
         super(dispatcher);
     }
 
     @Override
-    public void render(AbstractCraftingMultiblockBlockEntity be, float tickDelta, MatrixStack matrices, VertexConsumerProvider vcp, int light,
+    public void render(MultiblockMachineBlockEntity be, float tickDelta, MatrixStack matrices, VertexConsumerProvider vcp, int light,
             int overlay) {
         boolean holdingWrench = isHoldingWrench();
         HatchType hatchType = getHeldHatchType();

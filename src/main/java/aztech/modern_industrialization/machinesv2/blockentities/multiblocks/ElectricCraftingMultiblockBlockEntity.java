@@ -26,15 +26,19 @@ package aztech.modern_industrialization.machinesv2.blockentities.multiblocks;
 import aztech.modern_industrialization.machines.impl.MachineTier;
 import aztech.modern_industrialization.machines.recipe.MachineRecipeType;
 import aztech.modern_industrialization.machinesv2.components.CrafterComponent;
+import aztech.modern_industrialization.machinesv2.components.EnergyComponent;
 import aztech.modern_industrialization.machinesv2.components.OrientationComponent;
+import aztech.modern_industrialization.machinesv2.multiblocks.HatchBlockEntity;
 import aztech.modern_industrialization.machinesv2.multiblocks.ShapeMatcher;
 import aztech.modern_industrialization.machinesv2.multiblocks.ShapeTemplate;
 import aztech.modern_industrialization.util.Simulation;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.world.World;
 
-public class ElectricCraftingMultiblockBlockEntity extends AbstractCraftingMultiblockBlockEntity {
+import java.util.ArrayList;
+import java.util.List;
 
+public class ElectricCraftingMultiblockBlockEntity extends AbstractCraftingMultiblockBlockEntity {
     public ElectricCraftingMultiblockBlockEntity(BlockEntityType<?> type, String name, ShapeTemplate shapeTemplate, MachineRecipeType recipeType) {
         super(type, name, new OrientationComponent(new OrientationComponent.Params(false, false, false)), new ShapeTemplate[] { shapeTemplate });
         this.recipeType = recipeType;
@@ -45,20 +49,26 @@ public class ElectricCraftingMultiblockBlockEntity extends AbstractCraftingMulti
         return new Behavior();
     }
 
+    private final List<EnergyComponent> energyInputs = new ArrayList<>();
     private final MachineRecipeType recipeType;
 
     @Override
     protected void onSuccessfulMatch(ShapeMatcher shapeMatcher) {
-        /*
-         * for (HatchBlockEntity hatch : shapeMatcher.getMatchedHatches()) { // TODO :
-         * Match Speed }
-         */
+        for (HatchBlockEntity hatch : shapeMatcher.getMatchedHatches()) {
+            hatch.appendEnergyInputs(energyInputs);
+        }
     }
 
     private class Behavior implements CrafterComponent.Behavior {
         @Override
         public long consumeEu(long max, Simulation simulation) {
-            return 0;//
+            long total = 0;
+
+            for (EnergyComponent energyComponent : energyInputs) {
+                total += energyComponent.consumeEu(max - total, simulation);
+            }
+
+            return total;
         }
 
         @Override

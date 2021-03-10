@@ -28,6 +28,7 @@ import aztech.modern_industrialization.inventory.ConfigurableItemStack;
 import aztech.modern_industrialization.machines.impl.multiblock.HatchType;
 import aztech.modern_industrialization.machinesv2.IComponent;
 import aztech.modern_industrialization.machinesv2.MachineBlockEntity;
+import aztech.modern_industrialization.machinesv2.components.EnergyComponent;
 import aztech.modern_industrialization.machinesv2.components.OrientationComponent;
 import aztech.modern_industrialization.machinesv2.gui.MachineGuiParameters;
 import aztech.modern_industrialization.machinesv2.helper.OrientationHelper;
@@ -148,5 +149,8 @@ public abstract class HatchBlockEntity extends MachineBlockEntity implements Tic
     }
 
     public void appendFluidOutputs(List<ConfigurableFluidStack> list) {
+    }
+
+    public void appendEnergyInputs(List<EnergyComponent> list) {
     }
 }

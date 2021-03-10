@@ -25,13 +25,17 @@ package aztech.modern_industrialization.machinesv2.init;
 
 import static aztech.modern_industrialization.machines.impl.multiblock.HatchType.*;
 
+import aztech.modern_industrialization.MIBlock;
+import aztech.modern_industrialization.machinesv2.blockentities.multiblocks.ElectricCraftingMultiblockBlockEntity;
 import aztech.modern_industrialization.machinesv2.blockentities.multiblocks.SteamCraftingMultiblockBlockEntity;
+import aztech.modern_industrialization.machinesv2.models.MachineCasing;
 import aztech.modern_industrialization.machinesv2.models.MachineCasings;
 import aztech.modern_industrialization.machinesv2.models.MachineModels;
 import aztech.modern_industrialization.machinesv2.multiblocks.HatchFlags;
 import aztech.modern_industrialization.machinesv2.multiblocks.MultiblockMachineBER;
 import aztech.modern_industrialization.machinesv2.multiblocks.ShapeTemplate;
 import aztech.modern_industrialization.machinesv2.multiblocks.SimpleMember;
+import aztech.modern_industrialization.materials.MaterialRegistry;
 import net.fabricmc.fabric.api.client.rendereregistry.v1.BlockEntityRendererRegistry;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.entity.BlockEntityType;
@@ -39,19 +43,48 @@ import net.minecraft.block.entity.BlockEntityType;
 @SuppressWarnings("rawtypes")
 public class MultiblockMachines {
     public static BlockEntityType COKE_OVEN;
+    public static BlockEntityType STEAM_BLAST_FURNACE;
+    public static BlockEntityType STEAM_QUARRY;
+    public static BlockEntityType ELECTRIC_BLAST_FURNACE;
+    public static BlockEntityType LARGE_STEAM_BOILER;
+    public static BlockEntityType ELECTRIC_QUARRY;
+    public static BlockEntityType OIL_DRILLING_RIG;
+    public static BlockEntityType VACUUM_FREEZER;
+    public static BlockEntityType DISTILLATION_TOWER;
 
     public static void init() {
         SimpleMember bricks = SimpleMember.forBlock(Blocks.BRICKS);
-        HatchFlags steamCraftingHatches = new HatchFlags.Builder().with(ITEM_INPUT).with(ITEM_OUTPUT).with(FLUID_INPUT).build();
-        ShapeTemplate cokeOvenShape = new ShapeTemplate.Builder(MachineCasings.BRICKS).add3by3(-1, bricks, false, steamCraftingHatches)
-                .add3by3(0, bricks, true, null).add3by3(1, bricks, true, null).build();
+        HatchFlags cokeOvenHatches = new HatchFlags.Builder().with(ITEM_INPUT).with(ITEM_OUTPUT).with(FLUID_INPUT).build();
+        ShapeTemplate cokeOvenShape = new ShapeTemplate.Builder(MachineCasings.BRICKS).add3by3Levels(-1, 1, bricks, cokeOvenHatches).build();
         COKE_OVEN = MachineRegistrationHelper.registerMachine("coke_oven",
                 bet -> new SteamCraftingMultiblockBlockEntity(bet, "coke_oven", cokeOvenShape, MIMachineRecipeTypes.COKE_OVEN));
+
+        SimpleMember fireclayBricks = SimpleMember.forBlock(MIBlock.BLOCK_FIRE_CLAY_BRICKS);
+        HatchFlags sbfHatches = new HatchFlags.Builder().with(ITEM_INPUT, ITEM_OUTPUT, FLUID_INPUT, FLUID_OUTPUT).build();
+        ShapeTemplate sbfShape = new ShapeTemplate.Builder(MachineCasings.FIREBRICKS).add3by3Levels(-1, 2, fireclayBricks, sbfHatches).build();
+        STEAM_BLAST_FURNACE = MachineRegistrationHelper.registerMachine("steam_blast_furnace",
+                bet -> new SteamCraftingMultiblockBlockEntity(bet, "steam_blast_furnace", sbfShape, MIMachineRecipeTypes.BLAST_FURNACE));
+
+        SimpleMember invarCasings = SimpleMember.forBlock(MIBlock.blocks.get("heatproof_machine_casing"));
+        SimpleMember cupronickelCoils = SimpleMember.forBlock(MIBlock.blocks.get("cupronickel_coil"));
+        HatchFlags ebfHatches = new HatchFlags.Builder().with(ITEM_INPUT, ITEM_OUTPUT, FLUID_INPUT, FLUID_OUTPUT, ENERGY_INPUT).build();
+        ShapeTemplate ebfShape = new ShapeTemplate.Builder(MachineCasings.HEATPROOF)
+                .add3by3(0, invarCasings, false, ebfHatches)
+                .add3by3(1, cupronickelCoils, true, null)
+                .add3by3(2, cupronickelCoils, true, null)
+                .add3by3(3, invarCasings, false, ebfHatches)
+                .build();
+        ELECTRIC_BLAST_FURNACE = MachineRegistrationHelper.registerMachine("electric_blast_furnace",
+                bet -> new ElectricCraftingMultiblockBlockEntity(bet, "electric_blast_furnace", ebfShape, MIMachineRecipeTypes.BLAST_FURNACE));
     }
 
     @SuppressWarnings("unchecked")
     public static void clientInit() {
         MachineModels.addTieredMachine("coke_oven", "coke_oven", MachineCasings.BRICKS, true, false, false);
         BlockEntityRendererRegistry.INSTANCE.register(COKE_OVEN, MultiblockMachineBER::new);
+        MachineModels.addTieredMachine("steam_blast_furnace", "steam_blast_furnace", MachineCasings.FIREBRICKS, true, false, false);
+        BlockEntityRendererRegistry.INSTANCE.register(STEAM_BLAST_FURNACE, MultiblockMachineBER::new);
+        MachineModels.addTieredMachine("electric_blast_furnace", "electric_blast_furnace", MachineCasings.HEATPROOF, true, false, false);
+        BlockEntityRendererRegistry.INSTANCE.register(ELECTRIC_BLAST_FURNACE, MultiblockMachineBER::new);
     }
 }

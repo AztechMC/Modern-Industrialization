@@ -48,6 +48,14 @@ public class ShapeTemplate {
             template = new ShapeTemplate(hatchCasing);
         }
 
+        public Builder add3by3Levels(int minY, int maxY, SimpleMember member, @Nullable HatchFlags flags) {
+            for (int y = minY; y <= maxY; ++y) {
+                add3by3(y, member, y != minY, flags);
+            }
+
+            return this;
+        }
+
         public Builder add3by3(int y, SimpleMember member, boolean hollow, @Nullable HatchFlags flags) {
             for (int x = -1; x <= 1; x++) {
                 for (int z = 0; z <= 2; z++) {

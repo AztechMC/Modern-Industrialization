@@ -44,6 +44,14 @@ public class HatchFlags {
             return this;
         }
 
+        public Builder with(HatchType... types) {
+            for (HatchType type : types) {
+                with(type);
+            }
+
+            return this;
+        }
+
         public HatchFlags build() {
             return new HatchFlags(flags);
         }

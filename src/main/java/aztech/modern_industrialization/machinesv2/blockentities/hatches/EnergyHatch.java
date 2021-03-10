@@ -36,6 +36,8 @@ import aztech.modern_industrialization.machinesv2.gui.MachineGuiParameters;
 import aztech.modern_industrialization.machinesv2.multiblocks.HatchBlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
 
+import java.util.List;
+
 public class EnergyHatch extends HatchBlockEntity {
 
     public EnergyHatch(BlockEntityType<?> type, String name, boolean input, CableTier tier) {
@@ -73,6 +75,13 @@ public class EnergyHatch extends HatchBlockEntity {
         return MIInventory.EMPTY;
     }
 
+    @Override
+    public void appendEnergyInputs(List<EnergyComponent> list) {
+        if (input) {
+            list.add(energy);
+        }
+    }
+
     public static void registerEnergyApi(BlockEntityType<?> bet) {
         EnergyApi.MOVEABLE.registerForBlockEntities((be, direction) -> {
             EnergyHatch eh = (EnergyHatch) be;
@@ -87,5 +96,4 @@ public class EnergyHatch extends HatchBlockEntity {
             }
         }, bet);
     }
-
 }

@@ -28,6 +28,8 @@ import net.minecraft.block.BlockState;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
+import java.util.Objects;
+
 /**
  * The representation of a simple logic-less member that is part of a shape,
  * e.g. a casing.
@@ -38,6 +40,8 @@ public interface SimpleMember {
     BlockState getPreviewState();
 
     static SimpleMember forBlock(Block block) {
+        Objects.requireNonNull(block);
+
         return new SimpleMember() {
             @Override
             public boolean matchesState(BlockState state) {

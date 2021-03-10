@@ -26,6 +26,7 @@ package aztech.modern_industrialization.machinesv2.multiblocks;
 import aztech.modern_industrialization.ModernIndustrialization;
 import aztech.modern_industrialization.machines.impl.multiblock.HatchType;
 import aztech.modern_industrialization.machinesv2.MachineBlock;
+import aztech.modern_industrialization.machinesv2.blockentities.multiblocks.AbstractCraftingMultiblockBlockEntity;
 import aztech.modern_industrialization.machinesv2.blockentities.multiblocks.SteamCraftingMultiblockBlockEntity;
 import aztech.modern_industrialization.util.RenderHelper;
 import net.minecraft.block.entity.BlockEntity;
@@ -41,13 +42,13 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import org.jetbrains.annotations.Nullable;
 
-public class MultiblockMachineBER extends BlockEntityRenderer<SteamCraftingMultiblockBlockEntity> {
+public class MultiblockMachineBER extends BlockEntityRenderer<AbstractCraftingMultiblockBlockEntity> {
     public MultiblockMachineBER(BlockEntityRenderDispatcher dispatcher) {
         super(dispatcher);
     }
 
     @Override
-    public void render(SteamCraftingMultiblockBlockEntity be, float tickDelta, MatrixStack matrices, VertexConsumerProvider vcp, int light,
+    public void render(AbstractCraftingMultiblockBlockEntity be, float tickDelta, MatrixStack matrices, VertexConsumerProvider vcp, int light,
             int overlay) {
         boolean holdingWrench = isHoldingWrench();
         HatchType hatchType = getHeldHatchType();

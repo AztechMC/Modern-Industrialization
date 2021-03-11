@@ -71,16 +71,11 @@ public class MultiblockMachineBER extends BlockEntityRenderer<AbstractCraftingMu
                 if (holdingWrench) {
                     if (!matcher.matches(pos, be.getWorld(), null)) {
                         if (be.getWorld().getBlockState(pos).isAir()) {
-                            // Draw hologram
-                            matrices.translate(0.25, 0.25, 0.25);
-                            matrices.scale(0.5f, 0.5f, 0.5f);
-                            MinecraftClient.getInstance().getBlockRenderManager().renderBlockAsEntity(matcher.getSimpleMember(pos).getPreviewState(),
-                                    matrices, vcp, 15728880, overlay);
+                            // Enqueue state preview
+                            MultiblockErrorHighlight.enqueueHighlight(pos, matcher.getSimpleMember(pos).getPreviewState());
                         } else {
-                            // Hightlight in red
-                            matrices.translate(-0.005, -0.005, -0.005);
-                            matrices.scale(1.01f, 1.01f, 1.01f);
-                            RenderHelper.drawOverlay(matrices, vcp, 1, 50f / 256, 50f / 256, 15728880, overlay);
+                            // Enqueue red cube
+                            MultiblockErrorHighlight.enqueueHighlight(pos, null);
                         }
                     }
                 }

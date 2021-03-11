@@ -47,18 +47,18 @@ import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Matrix4f;
 
 public class RenderHelper {
-    private static final BakedQuad[] quads;
+    private static final BakedQuad[] OVERLAY_QUADS;
     private static final float W = 0.05f;
 
     public static void drawOverlay(MatrixStack ms, VertexConsumerProvider vcp, float r, float g, float b, int light, int overlay) {
         VertexConsumer vc = vcp.getBuffer(RenderLayer.getSolid());
-        for (int i = 0; i < quads.length; ++i) {
-            vc.quad(ms.peek(), quads[i], r, g, b, light, overlay);
+        for (BakedQuad overlayQuad : OVERLAY_QUADS) {
+            vc.quad(ms.peek(), overlayQuad, r, g, b, light, overlay);
         }
     }
 
     static {
-        quads = new BakedQuad[24];
+        OVERLAY_QUADS = new BakedQuad[24];
         Renderer r = RendererAccess.INSTANCE.getRenderer();
         RenderMaterial material = r.materialFinder().blendMode(0, BlendMode.SOLID).find();
         for (Direction direction : Direction.values()) {
@@ -66,19 +66,39 @@ public class RenderHelper {
             emitter = r.meshBuilder().getEmitter();
             emitter.square(direction, 0, 0, 1, W, 0);
             emitter.material(material);
-            quads[direction.getId() * 4] = emitter.toBakedQuad(0, null, false);
+            OVERLAY_QUADS[direction.getId() * 4] = emitter.toBakedQuad(0, null, false);
             emitter = r.meshBuilder().getEmitter();
             emitter.square(direction, 0, 1 - W, 1, 1, 0);
             emitter.material(material);
-            quads[direction.getId() * 4 + 1] = emitter.toBakedQuad(0, null, false);
+            OVERLAY_QUADS[direction.getId() * 4 + 1] = emitter.toBakedQuad(0, null, false);
             emitter = r.meshBuilder().getEmitter();
             emitter.square(direction, 0, W, W, 1 - W, 0);
             emitter.material(material);
-            quads[direction.getId() * 4 + 2] = emitter.toBakedQuad(0, null, false);
+            OVERLAY_QUADS[direction.getId() * 4 + 2] = emitter.toBakedQuad(0, null, false);
             emitter = r.meshBuilder().getEmitter();
             emitter.square(direction, 1 - W, W, 1, 1 - W, 0);
             emitter.material(material);
-            quads[direction.getId() * 4 + 3] = emitter.toBakedQuad(0, null, false);
+            OVERLAY_QUADS[direction.getId() * 4 + 3] = emitter.toBakedQuad(0, null, false);
+        }
+    }
+
+    private static final BakedQuad[] CUBE_QUADS;
+
+    public static void drawCube(MatrixStack ms, VertexConsumerProvider vcp, float r, float g, float b, int light, int overlay) {
+        VertexConsumer vc = vcp.getBuffer(RenderLayer.getSolid());
+        for (BakedQuad cubeQuad : CUBE_QUADS) {
+            vc.quad(ms.peek(), cubeQuad, r, g, b, light, overlay);
+        }
+    }
+
+    static {
+        CUBE_QUADS = new BakedQuad[6];
+        Renderer r = RendererAccess.INSTANCE.getRenderer();
+        for (Direction direction : Direction.values()) {
+            QuadEmitter emitter;
+            emitter = r.meshBuilder().getEmitter();
+            emitter.square(direction, 0, 0, 1, 1, 0);
+            CUBE_QUADS[direction.getId()] = emitter.toBakedQuad(0, null, false);
         }
     }
 

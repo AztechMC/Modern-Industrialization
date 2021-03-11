@@ -40,6 +40,7 @@ import aztech.modern_industrialization.machinesv2.MachinePackets;
 import aztech.modern_industrialization.machinesv2.MachineScreenHandlers;
 import aztech.modern_industrialization.machinesv2.init.MultiblockMachines;
 import aztech.modern_industrialization.machinesv2.models.MachineModels;
+import aztech.modern_industrialization.machinesv2.multiblocks.MultiblockErrorHighlight;
 import aztech.modern_industrialization.model.block.ModelProvider;
 import aztech.modern_industrialization.pipes.MIPipes;
 import aztech.modern_industrialization.pipes.MIPipesClient;
@@ -71,6 +72,7 @@ public class ModernIndustrializationClient implements ClientModInitializer {
         MITanks.setupClient();
         MachineModels.init();
         MultiblockMachines.clientInit();
+        MultiblockErrorHighlight.init();
         WorldRenderEvents.BEFORE_BLOCK_OUTLINE.register(new MachineOverlay.Renderer());
         (new MIPipesClient()).onInitializeClient();
         ClientKeyHandler.setup();

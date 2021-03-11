@@ -1,5 +1,5 @@
 plugins {
-    id 'fabric-loom' version '0.5-SNAPSHOT'
+    id 'fabric-loom' version '0.6-SNAPSHOT'
     id 'maven'
     id 'maven-publish'
     id 'com.diffplug.spotless' version '5.10.2'
@@ -62,6 +62,14 @@ repositories {
         url "https://modmaven.dev"
         content {
             includeGroup "appeng"
+        }
+    }
+    maven {
+        url "https://maven.shedaniel.me"
+        content {
+            includeGroup "me.shedaniel.cloth.api"
+            includeGroup "me.sargunvohra.mcmods"
+            includeGroup "me.shedaniel.cloth"
         }
     }
     // for Astromine, KJS and Indrev, and api-provider

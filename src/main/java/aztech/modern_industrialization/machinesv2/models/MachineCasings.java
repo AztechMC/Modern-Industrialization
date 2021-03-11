@@ -30,12 +30,14 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.loader.api.FabricLoader;
 
 public class MachineCasings {
+
     static final Map<String, MachineCasing> registeredCasings = new HashMap<>();
 
     public static final MachineCasing BRICKED_BRONZE = create("bricked_bronze");
     public static final MachineCasing BRICKED_STEEL = create("bricked_steel");
     public static final MachineCasing BRICKS = create("bricks");
     public static final MachineCasing BRONZE = create("bronze");
+    public static final MachineCasing BRONZE_PLATED_BRICKS = create("bronze_plated_bricks");
     public static final MachineCasing FIREBRICKS = create("firebricks");
     public static final MachineCasing HEATPROOF = create("heatproof_machine_casing");
     public static final MachineCasing STEEL = create("steel");

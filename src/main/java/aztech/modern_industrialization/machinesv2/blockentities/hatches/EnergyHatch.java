@@ -34,9 +34,8 @@ import aztech.modern_industrialization.machinesv2.components.OrientationComponen
 import aztech.modern_industrialization.machinesv2.components.sync.EnergyBar;
 import aztech.modern_industrialization.machinesv2.gui.MachineGuiParameters;
 import aztech.modern_industrialization.machinesv2.multiblocks.HatchBlockEntity;
-import net.minecraft.block.entity.BlockEntityType;
-
 import java.util.List;
+import net.minecraft.block.entity.BlockEntityType;
 
 public class EnergyHatch extends HatchBlockEntity {
 

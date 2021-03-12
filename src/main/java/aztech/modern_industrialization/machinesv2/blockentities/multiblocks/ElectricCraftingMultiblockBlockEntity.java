@@ -32,11 +32,10 @@ import aztech.modern_industrialization.machinesv2.multiblocks.HatchBlockEntity;
 import aztech.modern_industrialization.machinesv2.multiblocks.ShapeMatcher;
 import aztech.modern_industrialization.machinesv2.multiblocks.ShapeTemplate;
 import aztech.modern_industrialization.util.Simulation;
-import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.world.World;
-
 import java.util.ArrayList;
 import java.util.List;
+import net.minecraft.block.entity.BlockEntityType;
+import net.minecraft.world.World;
 
 public class ElectricCraftingMultiblockBlockEntity extends AbstractCraftingMultiblockBlockEntity {
     public ElectricCraftingMultiblockBlockEntity(BlockEntityType<?> type, String name, ShapeTemplate shapeTemplate, MachineRecipeType recipeType) {

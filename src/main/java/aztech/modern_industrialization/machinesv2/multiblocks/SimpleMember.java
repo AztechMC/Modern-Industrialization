@@ -23,12 +23,11 @@
  */
 package aztech.modern_industrialization.machinesv2.multiblocks;
 
+import java.util.Objects;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
-
-import java.util.Objects;
 
 /**
  * The representation of a simple logic-less member that is part of a shape,

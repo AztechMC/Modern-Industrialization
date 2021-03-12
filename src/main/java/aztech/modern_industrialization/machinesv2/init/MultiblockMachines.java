@@ -23,6 +23,8 @@
  */
 package aztech.modern_industrialization.machinesv2.init;
 
+import static aztech.modern_industrialization.machines.impl.multiblock.HatchType.*;
+
 import aztech.modern_industrialization.MIBlock;
 import aztech.modern_industrialization.machinesv2.blockentities.multiblocks.ElectricCraftingMultiblockBlockEntity;
 import aztech.modern_industrialization.machinesv2.blockentities.multiblocks.LargeSteamBoilerMultiblockBlockEntity;
@@ -36,8 +38,6 @@ import aztech.modern_industrialization.machinesv2.multiblocks.SimpleMember;
 import net.fabricmc.fabric.api.client.rendereregistry.v1.BlockEntityRendererRegistry;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.entity.BlockEntityType;
-
-import static aztech.modern_industrialization.machines.impl.multiblock.HatchType.*;
 
 @SuppressWarnings("rawtypes")
 public class MultiblockMachines {
@@ -67,11 +67,8 @@ public class MultiblockMachines {
         SimpleMember invarCasings = SimpleMember.forBlock(MIBlock.blocks.get("heatproof_machine_casing"));
         SimpleMember cupronickelCoils = SimpleMember.forBlock(MIBlock.blocks.get("cupronickel_coil"));
         HatchFlags ebfHatches = new HatchFlags.Builder().with(ITEM_INPUT, ITEM_OUTPUT, FLUID_INPUT, FLUID_OUTPUT, ENERGY_INPUT).build();
-        ShapeTemplate ebfShape = new ShapeTemplate.Builder(MachineCasings.HEATPROOF)
-                .add3by3(0, invarCasings, false, ebfHatches)
-                .add3by3(1, cupronickelCoils, true, null)
-                .add3by3(2, cupronickelCoils, true, null)
-                .add3by3(3, invarCasings, false, ebfHatches)
+        ShapeTemplate ebfShape = new ShapeTemplate.Builder(MachineCasings.HEATPROOF).add3by3(0, invarCasings, false, ebfHatches)
+                .add3by3(1, cupronickelCoils, true, null).add3by3(2, cupronickelCoils, true, null).add3by3(3, invarCasings, false, ebfHatches)
                 .build();
         ELECTRIC_BLAST_FURNACE = MachineRegistrationHelper.registerMachine("electric_blast_furnace",
                 bet -> new ElectricCraftingMultiblockBlockEntity(bet, "electric_blast_furnace", ebfShape, MIMachineRecipeTypes.BLAST_FURNACE));
@@ -79,15 +76,11 @@ public class MultiblockMachines {
         SimpleMember bronzePlatedBricks = SimpleMember.forBlock(MIBlock.blocks.get("bronze_plated_bricks"));
         SimpleMember bronzePipe = SimpleMember.forBlock(MIBlock.blocks.get("bronze_machine_casing_pipe"));
         HatchFlags slbHatchFlags = new HatchFlags.Builder().with(ITEM_INPUT, FLUID_INPUT, FLUID_OUTPUT).build();
-        ShapeTemplate largeSteamBoilerShape = new ShapeTemplate.Builder(MachineCasings.HEATPROOF)
-                .add3by3(-1, invarCasings, false, slbHatchFlags)
-                .add3by3(0, bronzePlatedBricks, true, null)
-                .add3by3(1, bronzePlatedBricks, true, null)
-                .add3by3(2, bronzePlatedBricks, false, null)
-                .add(0, 0, 1, bronzePipe, null)
-                .add(0, 1, 1, bronzePipe, null).build();
+        ShapeTemplate largeSteamBoilerShape = new ShapeTemplate.Builder(MachineCasings.HEATPROOF).add3by3(-1, invarCasings, false, slbHatchFlags)
+                .add3by3(0, bronzePlatedBricks, true, null).add3by3(1, bronzePlatedBricks, true, null).add3by3(2, bronzePlatedBricks, false, null)
+                .add(0, 0, 1, bronzePipe, null).add(0, 1, 1, bronzePipe, null).build();
         LARGE_STEAM_BOILER = MachineRegistrationHelper.registerMachine("large_steam_boiler",
-            bet -> new LargeSteamBoilerMultiblockBlockEntity(bet, largeSteamBoilerShape));
+                bet -> new LargeSteamBoilerMultiblockBlockEntity(bet, largeSteamBoilerShape));
 
     }
 

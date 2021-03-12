@@ -132,8 +132,7 @@ public class MIMaterials {
                                                             .addPartOutput(DUST, 1);
                                                 }).addRecipes(StandardRecipes::apply).build());
 
-        MaterialRegistry.addMaterial(new MaterialBuilder("copper", SHINY, 0xff6600).addRegularParts(ITEM_ALL)
-                .addParts(OreMaterialPart.of(30, 9, 128))
+        MaterialRegistry.addMaterial(new MaterialBuilder("copper", SHINY, 0xff6600).addRegularParts(ITEM_ALL).addParts(OreMaterialPart.of(30, 9, 128))
                 .addRegularParts(WIRE).addRegularParts(FINE_WIRE).addParts(PipeMaterialPart.of(PipeType.ITEM))
                 .addParts(PipeMaterialPart.of(PipeType.FLUID)).addParts(CableMaterialPart.of(CableTier.LV))
                 .addRecipes(ForgeHammerRecipes::apply, SmeltingRecipes::apply, StandardRecipes::apply).build());
@@ -193,8 +192,8 @@ public class MIMaterials {
         MaterialRegistry.addMaterial(new MaterialBuilder("antimony", SHINY, 0xDCDCF0).addRegularParts(ITEM_PURE_METAL).addRegularParts(ORE)
                 .addRecipes(StandardRecipes::apply, SmeltingRecipes::apply).build());
 
-        MaterialRegistry.addMaterial(new MaterialBuilder("nickel", METALLIC, 0xFAFAC8).addRegularParts(ITEM_BASE).addParts(OreMaterialPart.of(7, 6, 64))
-                .addParts(PipeMaterialPart.of(PipeType.ITEM)).addParts(PipeMaterialPart.of(PipeType.FLUID))
+        MaterialRegistry.addMaterial(new MaterialBuilder("nickel", METALLIC, 0xFAFAC8).addRegularParts(ITEM_BASE)
+                .addParts(OreMaterialPart.of(7, 6, 64)).addParts(PipeMaterialPart.of(PipeType.ITEM)).addParts(PipeMaterialPart.of(PipeType.FLUID))
                 .addRecipes(StandardRecipes::apply, SmeltingRecipes::apply).build());
 
         MaterialRegistry

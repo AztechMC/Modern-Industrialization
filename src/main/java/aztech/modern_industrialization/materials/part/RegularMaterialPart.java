@@ -27,7 +27,6 @@ import static aztech.modern_industrialization.ModernIndustrialization.METAL_MATE
 import static aztech.modern_industrialization.ModernIndustrialization.STONE_MATERIAL;
 
 import aztech.modern_industrialization.MIBlock;
-import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.MIItem;
 import aztech.modern_industrialization.material.OreBlock;
 import aztech.modern_industrialization.materials.MaterialHelper;
@@ -36,21 +35,10 @@ import aztech.modern_industrialization.textures.TextureManager;
 import aztech.modern_industrialization.textures.coloramp.Coloramp;
 import java.util.Objects;
 import net.devtech.arrp.json.tags.JTag;
-import net.fabricmc.fabric.api.biome.v1.BiomeModifications;
-import net.fabricmc.fabric.api.biome.v1.BiomeSelectors;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
 import net.minecraft.item.Item;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.BuiltinRegistries;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.util.registry.RegistryKey;
-import net.minecraft.world.gen.GenerationStep;
-import net.minecraft.world.gen.decorator.Decorator;
-import net.minecraft.world.gen.decorator.RangeDecoratorConfig;
-import net.minecraft.world.gen.feature.ConfiguredFeature;
-import net.minecraft.world.gen.feature.Feature;
-import net.minecraft.world.gen.feature.OreFeatureConfig;
 
 /**
  * A regular material item part, for example bronze curved plates.

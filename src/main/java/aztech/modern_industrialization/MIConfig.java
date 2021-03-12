@@ -23,13 +23,12 @@
  */
 package aztech.modern_industrialization;
 
+import java.util.ArrayList;
+import java.util.List;
 import me.sargunvohra.mcmods.autoconfig1u.AutoConfig;
 import me.sargunvohra.mcmods.autoconfig1u.ConfigData;
 import me.sargunvohra.mcmods.autoconfig1u.annotation.Config;
 import me.sargunvohra.mcmods.autoconfig1u.serializer.Toml4jConfigSerializer;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Config(name = "modern_industrialization")
 public class MIConfig implements ConfigData {

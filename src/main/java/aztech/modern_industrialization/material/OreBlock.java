@@ -37,16 +37,8 @@ import net.minecraft.world.World;
 
 // An MIBlock that converts a book into the guide book when right clicked
 public class OreBlock extends MIBlock {
-    public final int veinSize;
-    public final int maxYLevel;
-    public final int veinsPerChunk;
-
     public OreBlock(String id, Settings settings) {
-        // TODO: load worldgen config
         super(id, settings);
-        this.veinSize = 10;
-        this.maxYLevel = 64;
-        this.veinsPerChunk = 20;
     }
 
     @Override

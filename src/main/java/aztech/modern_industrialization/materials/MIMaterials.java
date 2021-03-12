@@ -132,7 +132,8 @@ public class MIMaterials {
                                                             .addPartOutput(DUST, 1);
                                                 }).addRecipes(StandardRecipes::apply).build());
 
-        MaterialRegistry.addMaterial(new MaterialBuilder("copper", SHINY, 0xff6600).addRegularParts(ITEM_ALL).addRegularParts(ORE)
+        MaterialRegistry.addMaterial(new MaterialBuilder("copper", SHINY, 0xff6600).addRegularParts(ITEM_ALL)
+                .addParts(OreMaterialPart.of(30, 9, 128))
                 .addRegularParts(WIRE).addRegularParts(FINE_WIRE).addParts(PipeMaterialPart.of(PipeType.ITEM))
                 .addParts(PipeMaterialPart.of(PipeType.FLUID)).addParts(CableMaterialPart.of(CableTier.LV))
                 .addRecipes(ForgeHammerRecipes::apply, SmeltingRecipes::apply, StandardRecipes::apply).build());
@@ -146,7 +147,7 @@ public class MIMaterials {
 
         MaterialRegistry.addMaterial(new MaterialBuilder("tin", DULL,
                 new BakableTargetColoramp(0xc0bcd0, "modern_industrialization:textures/materialsets/common/ingot.png",
-                        "modern_industrialization:textures/template/tin_ingot.png")).addRegularParts(ITEM_ALL).addRegularParts(ORE)
+                        "modern_industrialization:textures/template/tin_ingot.png")).addRegularParts(ITEM_ALL).addParts(OreMaterialPart.of(8, 9, 64))
                                 .addRegularParts(WIRE).addParts(PipeMaterialPart.of(PipeType.ITEM)).addParts(PipeMaterialPart.of(PipeType.FLUID))
                                 .addParts(CableMaterialPart.of(CableTier.LV))
                                 .addRecipes(ForgeHammerRecipes::apply, SmeltingRecipes::apply, StandardRecipes::apply).build());
@@ -157,7 +158,7 @@ public class MIMaterials {
                 .addRecipes(ForgeHammerRecipes::apply, SmeltingRecipes::apply, StandardRecipes::apply).build());
 
         MaterialRegistry.addMaterial(new MaterialBuilder("lignite_coal", STONE, 0x644646).addRegularParts(ITEM_PURE_NON_METAL)
-                .removeRegularParts(BLOCK).addRegularParts(ORE).addRegularParts(MIParts.GEM)
+                .removeRegularParts(BLOCK).addRegularParts(MIParts.GEM).addParts(OreMaterialPart.of(10, 17, 128))
                 .addRecipes(ForgeHammerRecipes::apply, SmeltingRecipes::apply, StandardRecipes::apply).addRecipes(context -> {
                     new MIRecipeBuilder(context, "compressor", "lignite_coal").addTaggedPartInput("dust", 1).addPartOutput(MIParts.GEM, 1);
                     new MIRecipeBuilder(context, "macerator", "dust").addPartInput(MIParts.GEM, 1).addPartOutput(DUST, 1);
@@ -171,9 +172,9 @@ public class MIMaterials {
                 .build());
 
         MaterialRegistry.addMaterial(new MaterialBuilder("bauxite", DULL, 0xC86400).addRegularParts(ITEM_PURE_NON_METAL).removeRegularParts(BLOCK)
-                .addRegularParts(ORE).addRecipes(StandardRecipes::apply).build());
+                .addParts(OreMaterialPart.of(8, 7, 32)).addRecipes(StandardRecipes::apply).build());
 
-        MaterialRegistry.addMaterial(new MaterialBuilder("lead", DULL, 0x3C286E).addRegularParts(ITEM_BASE).addRegularParts(ORE)
+        MaterialRegistry.addMaterial(new MaterialBuilder("lead", DULL, 0x3C286E).addRegularParts(ITEM_BASE).addParts(OreMaterialPart.of(4, 8, 64))
                 .addParts(PipeMaterialPart.of(PipeType.ITEM)).addParts(PipeMaterialPart.of(PipeType.FLUID))
                 .addRecipes(StandardRecipes::apply, SmeltingRecipes::apply).cancelRecipes("macerator/crushed_dust").build());
 
@@ -192,7 +193,7 @@ public class MIMaterials {
         MaterialRegistry.addMaterial(new MaterialBuilder("antimony", SHINY, 0xDCDCF0).addRegularParts(ITEM_PURE_METAL).addRegularParts(ORE)
                 .addRecipes(StandardRecipes::apply, SmeltingRecipes::apply).build());
 
-        MaterialRegistry.addMaterial(new MaterialBuilder("nickel", METALLIC, 0xFAFAC8).addRegularParts(ITEM_BASE).addRegularParts(ORE)
+        MaterialRegistry.addMaterial(new MaterialBuilder("nickel", METALLIC, 0xFAFAC8).addRegularParts(ITEM_BASE).addParts(OreMaterialPart.of(7, 6, 64))
                 .addParts(PipeMaterialPart.of(PipeType.ITEM)).addParts(PipeMaterialPart.of(PipeType.FLUID))
                 .addRecipes(StandardRecipes::apply, SmeltingRecipes::apply).build());
 

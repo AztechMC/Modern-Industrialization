@@ -56,15 +56,14 @@ import net.minecraft.world.gen.feature.OreFeatureConfig;
  * A regular material item part, for example bronze curved plates.
  */
 public class RegularMaterialPart implements MaterialPart {
-    private final String materialName;
+    protected final String materialName;
     private final String part;
     private final String itemPath;
     private final String itemId;
     private final String itemTag;
     private final String materialSet;
     private final Coloramp coloramp;
-    @SuppressWarnings("FieldCanBeLocal")
-    private MIBlock block;
+    protected MIBlock block;
     private Item item;
 
     public RegularMaterialPart(String materialName, String part, String materialSet, Coloramp coloramp) {
@@ -122,18 +121,6 @@ public class RegularMaterialPart implements MaterialPart {
         } else {
             block = null;
             item = MIItem.of(MaterialHelper.overrideItemPath(itemPath));
-        }
-        // ore generator
-        if (MaterialHelper.isOre(part)) {
-            OreBlock ore = (OreBlock) block;
-            ConfiguredFeature<?, ?> oreGenerator = Feature.ORE
-                    .configure(new OreFeatureConfig(OreFeatureConfig.Rules.BASE_STONE_OVERWORLD, block.getDefaultState(), ore.veinSize))
-                    .decorate(Decorator.RANGE.configure(new RangeDecoratorConfig(0, 0, ore.maxYLevel))).spreadHorizontally()
-                    .repeat(ore.veinsPerChunk);
-            Identifier oregenId = new MIIdentifier("ore_generator_" + materialName);
-            Registry.register(BuiltinRegistries.CONFIGURED_FEATURE, oregenId, oreGenerator);
-            RegistryKey<ConfiguredFeature<?, ?>> featureKey = RegistryKey.of(Registry.CONFIGURED_FEATURE_WORLDGEN, oregenId);
-            BiomeModifications.addFeature(BiomeSelectors.foundInOverworld(), GenerationStep.Feature.UNDERGROUND_ORES, featureKey);
         }
         // item tag
         if (MIParts.TAGGED_PARTS.contains(part)) {

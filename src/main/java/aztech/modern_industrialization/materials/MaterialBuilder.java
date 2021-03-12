@@ -131,6 +131,10 @@ public final class MaterialBuilder {
         public String getMaterialName() {
             return materialName;
         }
+
+        public String getMaterialSet() {
+            return materialSet;
+        }
     }
 
     public class RecipeContext {

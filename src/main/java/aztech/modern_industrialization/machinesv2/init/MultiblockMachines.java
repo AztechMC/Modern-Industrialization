@@ -82,6 +82,41 @@ public class MultiblockMachines {
         LARGE_STEAM_BOILER = MachineRegistrationHelper.registerMachine("large_steam_boiler",
                 bet -> new LargeSteamBoilerMultiblockBlockEntity(bet, largeSteamBoilerShape));
 
+        SimpleMember steelCasing = SimpleMember.forBlock(MIBlock.blocks.get("steel_machine_casing"));
+        SimpleMember steelPipe = SimpleMember.forBlock(MIBlock.blocks.get("steel_machine_casing_pipe"));
+        HatchFlags quarryHatchFlags = new HatchFlags.Builder().with(ITEM_INPUT, FLUID_INPUT, ITEM_OUTPUT).build();
+        HatchFlags quarryElectricHatchFlags = new HatchFlags.Builder().with(ITEM_INPUT, ITEM_OUTPUT, ENERGY_INPUT).build();
+
+        ShapeTemplate.Builder quarryShapeBuilder = new ShapeTemplate.Builder(MachineCasings.STEEL).add3by3(0, steelCasing, true, quarryHatchFlags)
+                .add3by3(1, steelCasing, true, quarryHatchFlags);
+
+        ShapeTemplate.Builder quarryElectricShapeBuilder = new ShapeTemplate.Builder(MachineCasings.STEEL)
+                .add3by3(0, steelCasing, true, quarryElectricHatchFlags).add3by3(1, steelCasing, true, quarryElectricHatchFlags);
+
+        for (int y = 2; y <= 4; y++) {
+            quarryShapeBuilder.add(-1, y, 1, steelPipe, null);
+            quarryShapeBuilder.add(1, y, 1, steelPipe, null);
+            quarryElectricShapeBuilder.add(-1, y, 1, steelPipe, null);
+            quarryElectricShapeBuilder.add(1, y, 1, steelPipe, null);
+        }
+        quarryShapeBuilder.add(0, 4, 1, steelCasing, null);
+        quarryElectricShapeBuilder.add(0, 4, 1, steelCasing, null);
+
+        SimpleMember chain = SimpleMember.verticalChain();
+
+        for (int y = 0; y <= 3; y++) {
+            quarryShapeBuilder.add(0, y, 1, chain, null);
+            quarryElectricShapeBuilder.add(0, y, 1, chain, null);
+        }
+
+        ShapeTemplate quarryShape = quarryShapeBuilder.build();
+        ShapeTemplate quarryElectricShape = quarryElectricShapeBuilder.build();
+
+        STEAM_QUARRY = MachineRegistrationHelper.registerMachine("quarry",
+                bet -> new SteamCraftingMultiblockBlockEntity(bet, "quarry", quarryShape, MIMachineRecipeTypes.QUARRY));
+        ELECTRIC_QUARRY = MachineRegistrationHelper.registerMachine("electric_quarry",
+                bet -> new ElectricCraftingMultiblockBlockEntity(bet, "electric_quarry", quarryElectricShape, MIMachineRecipeTypes.QUARRY));
+
     }
 
     @SuppressWarnings("unchecked")
@@ -97,5 +132,11 @@ public class MultiblockMachines {
 
         MachineModels.addTieredMachine("large_steam_boiler", "large_boiler", MachineCasings.BRONZE_PLATED_BRICKS, true, false, false);
         BlockEntityRendererRegistry.INSTANCE.register(LARGE_STEAM_BOILER, MultiblockMachineBER::new);
+
+        MachineModels.addTieredMachine("quarry", "quarry", MachineCasings.STEEL, true, false, false);
+        BlockEntityRendererRegistry.INSTANCE.register(STEAM_QUARRY, MultiblockMachineBER::new);
+
+        MachineModels.addTieredMachine("electric_quarry", "quarry", MachineCasings.STEEL, true, false, false);
+        BlockEntityRendererRegistry.INSTANCE.register(ELECTRIC_QUARRY, MultiblockMachineBER::new);
     }
 }

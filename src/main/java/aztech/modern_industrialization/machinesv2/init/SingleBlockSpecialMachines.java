@@ -95,8 +95,9 @@ public class SingleBlockSpecialMachines {
         for (int i = 0; i < maxConsumption.length; i++) {
             CableTier tier = CableTier.values()[i];
             String id = tier.name + "_steam_turbine";
+            final int eu = maxConsumption[i];
             MachineRegistrationHelper.registerMachine(id,
-                    bet -> new EnergyFromFluidMachineBlockEntity(bet, id, tier, 3200, 16000, 32, MIFluids.STEAM, 1),
+                    bet -> new EnergyFromFluidMachineBlockEntity(bet, id, tier, 3200, 16000, eu, MIFluids.STEAM, 1),
                     MachineBlockEntity::registerFluidApi, EnergyFromFluidMachineBlockEntity::registerEnergyApi);
             MachineModels.addTieredMachine(id, "steam_turbine", MachineCasings.casingFromCableTier(tier), true, false, false);
         }

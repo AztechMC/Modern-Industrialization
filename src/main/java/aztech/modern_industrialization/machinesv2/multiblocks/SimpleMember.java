@@ -26,7 +26,10 @@ package aztech.modern_industrialization.machinesv2.multiblocks;
 import java.util.Objects;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
+import net.minecraft.block.PillarBlock;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.Direction;
 import net.minecraft.util.registry.Registry;
 
 /**
@@ -50,6 +53,20 @@ public interface SimpleMember {
             @Override
             public BlockState getPreviewState() {
                 return block.getDefaultState();
+            }
+        };
+    }
+
+    static SimpleMember verticalChain() {
+        return new SimpleMember() {
+            @Override
+            public boolean matchesState(BlockState state) {
+                return state.isOf(Blocks.CHAIN) && state.get(PillarBlock.AXIS) == Direction.Axis.Y;
+            }
+
+            @Override
+            public BlockState getPreviewState() {
+                return Blocks.CHAIN.getDefaultState().with(PillarBlock.AXIS, Direction.Axis.Y);
             }
         };
     }

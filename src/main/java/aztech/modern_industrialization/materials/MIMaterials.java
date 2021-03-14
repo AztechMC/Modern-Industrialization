@@ -97,8 +97,10 @@ public class MIMaterials {
         MaterialRegistry.addMaterial(new MaterialBuilder("diamond", GEM,
                 new BakableTargetColoramp(0x48eeda, "minecraft:textures/item/diamond.png", "minecraft:textures/item/diamond.png"))
                         .addRegularParts(CRUSHED_DUST, MIParts.GEM, DUST, TINY_DUST)
-                        .addParts(ExternalPart.of("ore", "#c:diamond_ores", "minecraft:diamond_ore"))
+                        .addParts(ExternalPart.of("ore", "minecraft:diamond_ore", "minecraft:diamond_ore"))
                         .overridePart(ExternalPart.of(MIParts.GEM, "minecraft:diamond", "minecraft:diamond")).addRecipes(StandardRecipes::apply)
+                        .addRecipes(
+                                context -> new MIRecipeBuilder(context, "compressor", "dust").addPartInput(DUST, 1).addOutput("minecraft:diamond", 1))
                         .build());
 
         MaterialRegistry.addMaterial(new MaterialBuilder("emerald", SHINY,
@@ -107,6 +109,8 @@ public class MIMaterials {
                         .overridePart(ExternalPart.of(MIParts.GEM, "minecraft:emerald", "minecraft:emerald")).addRecipes(StandardRecipes::apply)
                         .addRecipes(context -> new MIRecipeBuilder(context, "macerator", "dust").addItemInput("minecraft:emerald_ore", 1)
                                 .addPartOutput(CRUSHED_DUST, 2))
+                        .addRecipes(
+                                context -> new MIRecipeBuilder(context, "compressor", "dust").addPartInput(DUST, 1).addOutput("minecraft:emerald", 1))
                         .build());
 
         MaterialRegistry.addMaterial(new MaterialBuilder("brick", STONE,

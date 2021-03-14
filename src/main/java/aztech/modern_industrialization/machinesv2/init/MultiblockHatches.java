@@ -46,8 +46,8 @@ public class MultiblockHatches {
     public static void init() {
         registerItemHatches("bronze", MachineCasings.BRONZE, 1, 1, 80, 40);
         registerItemHatches("steel", MachineCasings.STEEL, 2, 1, 80, 30);
-        registerItemHatches("advanced", MachineCasings.MV, 2, 2, 80, 21);
-        registerItemHatches("turbo", MachineCasings.HV, 3, 3, 71, 21);
+        registerItemHatches("advanced", MachineCasings.MV, 2, 2, 71, 30);
+        registerItemHatches("turbo", MachineCasings.HV, 3, 3, 62, 21);
 
         registerFluidHatches("bronze", MachineCasings.BRONZE, 4);
         registerFluidHatches("steel", MachineCasings.STEEL, 8);

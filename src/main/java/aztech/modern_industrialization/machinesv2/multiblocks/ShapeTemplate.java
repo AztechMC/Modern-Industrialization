@@ -50,7 +50,15 @@ public class ShapeTemplate {
 
         public Builder add3by3Levels(int minY, int maxY, SimpleMember member, @Nullable HatchFlags flags) {
             for (int y = minY; y <= maxY; ++y) {
-                add3by3(y, member, y != minY, flags);
+                add3by3(y, member, y != minY, (y == minY || y == maxY) ? flags : null);
+            }
+
+            return this;
+        }
+
+        public Builder add3by3LevelsRoofed(int minY, int maxY, SimpleMember member, @Nullable HatchFlags flags) {
+            for (int y = minY; y <= maxY; ++y) {
+                add3by3(y, member, y != minY && y != maxY, (y == minY || y == maxY) ? flags : null);
             }
 
             return this;

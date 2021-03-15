@@ -1,0 +1,24 @@
+{
+  "type" : "minecraft:crafting_shaped",
+  "pattern" : [
+    "bbb",
+    "LHL",
+    "bbb"
+  ],
+  "key":
+  {
+    "b" : {
+      "item" : "modern_industrialization:lv_battery"
+    },
+    "H" :{
+      "item" : "modern_industrialization:lv_machine_hull"
+    },
+    "L": {
+      "item" : "modern_industrialization:battery_alloy_large_plate"
+    }
+
+  },
+  "result": {
+    "item": "modern_industrialization:lv_storage_unit"
+  }
+}

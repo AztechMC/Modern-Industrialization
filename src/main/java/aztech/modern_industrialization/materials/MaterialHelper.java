@@ -70,21 +70,25 @@ public class MaterialHelper {
     }
 
     public static String overrideItemPath(String itemPath) {
-        if (itemPath.equals("fire_clay_ingot")) {
+        if (itemPath.startsWith("modern_industrialization:")) {
+            return "modern_industrialization:" + overrideItemPath(itemPath.substring("modern_industrialization:".length()));
+        }
+        switch (itemPath) {
+        case "fire_clay_ingot":
             return "fire_clay_brick";
-        } else if (itemPath.equals("bronze_machine_casing_special")) {
+        case "bronze_machine_casing_special":
             return "bronze_plated_bricks";
-        } else if (itemPath.equals("aluminum_machine_casing")) {
+        case "aluminum_machine_casing":
             return "advanced_machine_casing";
-        } else if (itemPath.equals("aluminum_machine_casing_special")) {
+        case "aluminum_machine_casing_special":
             return "frostproof_machine_casing";
-        } else if (itemPath.equals("invar_machine_casing_special")) {
+        case "invar_machine_casing_special":
             return "heatproof_machine_casing";
-        } else if (itemPath.equals("stainless_steel_machine_casing_special")) {
+        case "stainless_steel_machine_casing_special":
             return "clean_stainless_steel_machine_casing";
-        } else if (itemPath.equals("stainless_steel_machine_casing")) {
+        case "stainless_steel_machine_casing":
             return "turbo_machine_casing";
-        } else if (itemPath.equals("redstone_battery")) {
+        case "redstone_battery":
             return "lv_battery";
         }
         return itemPath;

@@ -44,6 +44,7 @@ public final class MIItem {
         return item;
     }
 
+    public static final Item ITEM_CROWBAR = of(GuideBookItem::new, "crowbar", 1);
     public static final Item ITEM_GUIDE_BOOK = of(GuideBookItem::new, "guidebook", 1);
     public static final Item ITEM_UNCOOKED_STEEL_DUST = of("uncooked_steel_dust");
 

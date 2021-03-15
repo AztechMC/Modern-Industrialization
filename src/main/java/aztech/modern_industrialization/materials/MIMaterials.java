@@ -122,7 +122,7 @@ public class MIMaterials {
         MaterialRegistry.addMaterial(new MaterialBuilder("fire_clay", STONE,
                 new BakableTargetColoramp(0xb75a36, "modern_industrialization:textures/materialsets/common/ingot.png",
                         "modern_industrialization:textures/template/fire_clay_brick.png")).addRegularParts(DUST, INGOT)
-                                .addRecipes(StandardRecipes::apply, SmeltingRecipes::apply).build());
+                                .addRecipes(SmeltingRecipes::apply).build());
 
         MaterialRegistry
                 .addMaterial(
@@ -182,7 +182,7 @@ public class MIMaterials {
                 .addRecipes(StandardRecipes::apply, SmeltingRecipes::apply).cancelRecipes("macerator/crushed_dust").build());
 
         MaterialRegistry.addMaterial(new MaterialBuilder("battery_alloy", DULL, 0x9C7CA0)
-                .addRegularParts(TINY_DUST, DUST, INGOT, DOUBLE_INGOT, PLATE, CURVED_PLATE, NUGGET, BLOCK)
+                .addRegularParts(TINY_DUST, DUST, INGOT, DOUBLE_INGOT, PLATE, CURVED_PLATE, NUGGET, BLOCK, LARGE_PLATE)
                 .addRecipes(StandardRecipes::apply, SmeltingRecipes::apply).build());
 
         MaterialRegistry.addMaterial(new MaterialBuilder("invar", METALLIC, 0xDCDC96).addRegularParts(MACHINE_CASING_SPECIAL)
@@ -234,14 +234,16 @@ public class MIMaterials {
         MaterialRegistry.addMaterial(new MaterialBuilder("chrome", SHINY, 0xFFE6E6).addRegularParts(ITEM_PURE_METAL).addRegularParts(HOT_INGOT)
                 .addRegularParts(PLATE, LARGE_PLATE, DOUBLE_INGOT).addRecipes(StandardRecipes::apply).build());
 
-        MaterialRegistry.addMaterial(
-                new MaterialBuilder("manganese", DULL, 0xC1C1C1).addRegularParts(ITEM_PURE_METAL).addRecipes(StandardRecipes::apply).build());
+        MaterialRegistry.addMaterial(new MaterialBuilder("manganese", DULL, 0xC1C1C1).addRegularParts(ITEM_PURE_METAL)
+                .addRecipes(StandardRecipes::apply).cancelRecipes("macerator/crushed_dust").build());
 
         MaterialRegistry.addMaterial(new MaterialBuilder("fluorite", SHINY, 0xAF69CF).addRegularParts(ITEM_PURE_NON_METAL).removeRegularParts(BLOCK)
                 .addRegularParts(ORE).addRecipes(StandardRecipes::apply).build());
 
         MaterialRegistry.addMaterial(new MaterialBuilder("sodium_fluorosilicate", DULL, 0xD1EDE5).addRegularParts(ITEM_PURE_NON_METAL)
                 .removeRegularParts(BLOCK).addRecipes(StandardRecipes::apply).build());
+
+        MaterialRegistry.addMaterial(new MaterialBuilder("sodium_fluoroberyllate", DULL, 0x77B889).addRegularParts(CRUSHED_DUST).build());
 
         MaterialRegistry.addMaterial(new MaterialBuilder("beryllium_hydroxide", DULL, 0x4E875E).addRegularParts(DUST, TINY_DUST)
                 .addRecipes(StandardRecipes::apply).build());
@@ -292,8 +294,9 @@ public class MIMaterials {
         MaterialRegistry.addMaterial(new MaterialBuilder("mozanite", STONE, 0x96248e).addRegularParts(CRUSHED_DUST, DUST, TINY_DUST, ORE)
                 .addRecipes(StandardRecipes::apply).build());
 
-        MaterialRegistry.addMaterial(new MaterialBuilder("cadmium", DULL, 0x967224).addRegularParts(DUST, TINY_DUST, INGOT, PLATE, ROD, DOUBLE_INGOT)
-                .addRecipes(StandardRecipes::apply, SmeltingRecipes::apply).build());
+        MaterialRegistry
+                .addMaterial(new MaterialBuilder("cadmium", DULL, 0x967224).addRegularParts(DUST, TINY_DUST, INGOT, PLATE, ROD, DOUBLE_INGOT, BATTERY)
+                        .addRecipes(StandardRecipes::apply, SmeltingRecipes::apply).build());
 
         MaterialRegistry.addMaterial(
                 new MaterialBuilder("neodymium", STONE, 0x1d4506).addRegularParts(DUST, TINY_DUST).addRecipes(StandardRecipes::apply).build());

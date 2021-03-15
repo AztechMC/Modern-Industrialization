@@ -79,7 +79,7 @@ public class MultiblockHatches {
                 return new ItemHatch(bet, new MachineGuiParameters.Builder(machine, true).build(), input, !prefix.equals("bronze"), inventory);
             }, MachineBlockEntity::registerItemApi);
             if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
-                MachineModels.addTieredMachine(machine, "", casing, false, false, false);
+                MachineModels.addTieredMachine(machine, "hatch_item", casing, true, false, true);
             }
         }
     }
@@ -100,7 +100,7 @@ public class MultiblockHatches {
                 return new FluidHatch(bet, new MachineGuiParameters.Builder(machine, true).build(), input, !prefix.equals("bronze"), inventory);
             }, MachineBlockEntity::registerFluidApi);
             if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
-                MachineModels.addTieredMachine(machine, "", casing, false, false, false);
+                MachineModels.addTieredMachine(machine, "hatch_fluid", casing, true, false, true);
             }
         }
     }
@@ -111,7 +111,7 @@ public class MultiblockHatches {
             String machine = tier.name + "_energy_" + (input ? "input" : "output") + "_hatch";
             MachineRegistrationHelper.registerMachine(machine, bet -> new EnergyHatch(bet, machine, input, tier), EnergyHatch::registerEnergyApi);
             if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
-                MachineModels.addTieredMachine(machine, "", MachineCasings.casingFromCableTier(tier), false, false, false);
+                MachineModels.addTieredMachine(machine, "hatch_energy", MachineCasings.casingFromCableTier(tier), true, false, true);
             }
         }
     }

@@ -171,7 +171,7 @@ public class MIMaterials {
 
         MaterialRegistry.addMaterial(new MaterialBuilder("aluminum", METALLIC, 0x3fcaff).addRegularParts(ITEM_ALL).addRegularParts(WIRE, FINE_WIRE)
                 .addRegularParts(MACHINE_CASING_SPECIAL, MACHINE_CASING).addParts(PipeMaterialPart.of(PipeType.ITEM))
-                .addParts(PipeMaterialPart.of(PipeType.FLUID)).addParts(CableMaterialPart.of(CableTier.MV)).addRecipes(StandardRecipes::apply)
+                .addParts(PipeMaterialPart.of(PipeType.FLUID)).addParts(CableMaterialPart.of(CableTier.HV)).addRecipes(StandardRecipes::apply)
                 .build());
 
         MaterialRegistry.addMaterial(new MaterialBuilder("bauxite", DULL, 0xC86400).addRegularParts(ITEM_PURE_NON_METAL).removeRegularParts(BLOCK)
@@ -255,7 +255,7 @@ public class MIMaterials {
                 .addRecipes(StandardRecipes::apply).build());
 
         MaterialRegistry.addMaterial(new MaterialBuilder("annealed_copper", SHINY, 0xff924f).addRegularParts(ITEM_PURE_METAL)
-                .removeRegularParts(CRUSHED_DUST).addRegularParts(PLATE, WIRE, DOUBLE_INGOT).addParts(CableMaterialPart.of(CableTier.HV))
+                .removeRegularParts(CRUSHED_DUST).addRegularParts(PLATE, WIRE, DOUBLE_INGOT).addParts(CableMaterialPart.of(CableTier.EV))
                 .addRecipes(StandardRecipes::apply).build());
 
         MaterialRegistry.addMaterial(new MaterialBuilder("uranium", DULL, 0x39e600).addRegularParts(ITEM_PURE_METAL).removeRegularParts(CRUSHED_DUST)
@@ -278,7 +278,7 @@ public class MIMaterials {
                 .addRecipes(StandardRecipes::apply).build());
 
         MaterialRegistry.addMaterial(new MaterialBuilder("platinum", SHINY, 0xffe5ba).addRegularParts(ITEM_PURE_METAL).addRegularParts(ORE)
-                .addRegularParts(PLATE, DOUBLE_INGOT, WIRE, FINE_WIRE).addParts(CableMaterialPart.of(CableTier.HV))
+                .addRegularParts(PLATE, DOUBLE_INGOT, WIRE, FINE_WIRE).addParts(CableMaterialPart.of(CableTier.EV))
                 .addRecipes(StandardRecipes::apply, SmeltingRecipes::apply).cancelRecipes("macerator/ore").build());
 
         MaterialRegistry.addMaterial(new MaterialBuilder("kanthal", METALLIC, 0xcfcb00)

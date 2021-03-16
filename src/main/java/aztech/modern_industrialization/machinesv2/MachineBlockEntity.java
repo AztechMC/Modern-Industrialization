@@ -207,4 +207,8 @@ public abstract class MachineBlockEntity extends FastBlockEntity
     public static void registerFluidApi(BlockEntityType<?> bet) {
         FluidApi.SIDED.registerForBlockEntities((be, direction) -> ((MachineBlockEntity) be).getInventory().fluidStorage, bet);
     }
+
+    public List<ItemStack> dropExtra() {
+        return new ArrayList<>();
+    }
 }

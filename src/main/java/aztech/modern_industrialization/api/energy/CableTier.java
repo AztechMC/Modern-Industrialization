@@ -54,4 +54,13 @@ public enum CableTier {
     public String toString() {
         return name;
     }
+
+    public static final CableTier getTier(String name) {
+        for (CableTier tier : CableTier.values()) {
+            if (tier.name.equals(name)) {
+                return tier;
+            }
+        }
+        return null;
+    }
 }

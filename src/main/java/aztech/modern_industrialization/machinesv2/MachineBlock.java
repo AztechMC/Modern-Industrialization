@@ -28,6 +28,7 @@ import static aztech.modern_industrialization.ModernIndustrialization.METAL_MATE
 import aztech.modern_industrialization.MIBlock;
 import aztech.modern_industrialization.inventory.ConfigurableItemStack;
 import aztech.modern_industrialization.util.MobSpawning;
+import java.util.List;
 import java.util.function.Supplier;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
@@ -91,11 +92,17 @@ public class MachineBlock extends MIBlock implements BlockEntityProvider {
         if (!state.isOf(newState.getBlock())) {
             // Drop items
             BlockEntity be = world.getBlockEntity(pos);
+
             if (be instanceof MachineBlockEntity) {
                 MachineBlockEntity machine = (MachineBlockEntity) be;
+                List<ItemStack> dropExtra = machine.dropExtra();
                 for (ConfigurableItemStack stack : machine.getInventory().itemStacks) {
                     ItemScatterer.spawn(world, pos.getX(), pos.getY(), pos.getZ(), stack.getItemKey().toStack(stack.getCount()));
                     stack.setCount(0);
+                }
+
+                for (ItemStack extra : dropExtra) {
+                    ItemScatterer.spawn(world, pos.getX(), pos.getY(), pos.getZ(), extra);
                 }
             }
         }

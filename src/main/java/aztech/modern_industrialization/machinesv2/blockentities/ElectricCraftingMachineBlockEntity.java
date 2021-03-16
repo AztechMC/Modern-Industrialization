@@ -28,6 +28,7 @@ import aztech.modern_industrialization.api.energy.EnergyApi;
 import aztech.modern_industrialization.api.energy.EnergyInsertable;
 import aztech.modern_industrialization.machines.impl.MachineTier;
 import aztech.modern_industrialization.machines.recipe.MachineRecipeType;
+import aztech.modern_industrialization.machinesv2.components.CasingComponent;
 import aztech.modern_industrialization.machinesv2.components.EnergyComponent;
 import aztech.modern_industrialization.machinesv2.components.MachineInventoryComponent;
 import aztech.modern_industrialization.machinesv2.components.sync.EnergyBar;
@@ -36,20 +37,29 @@ import aztech.modern_industrialization.machinesv2.components.sync.RecipeEfficien
 import aztech.modern_industrialization.machinesv2.gui.MachineGuiParameters;
 import aztech.modern_industrialization.machinesv2.models.MachineModelClientData;
 import aztech.modern_industrialization.util.Simulation;
+import java.util.List;
 import net.minecraft.block.entity.BlockEntityType;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.Hand;
+import net.minecraft.util.math.Direction;
 
 public class ElectricCraftingMachineBlockEntity extends AbstractCraftingMachineBlockEntity {
+
     public ElectricCraftingMachineBlockEntity(BlockEntityType<?> type, MachineRecipeType recipeType, MachineInventoryComponent inventory,
             MachineGuiParameters guiParams, EnergyBar.Parameters energyBarParams, ProgressBar.Parameters progressBarParams,
             RecipeEfficiencyBar.Parameters efficiencyBarParams, MachineTier tier, long euCapacity) {
         super(type, recipeType, inventory, guiParams, progressBarParams, tier);
-        this.energy = new EnergyComponent(euCapacity);
-        this.insertable = energy.buildInsertable(cableTier -> cableTier == CableTier.LV);
+        this.casing = new CasingComponent(CableTier.LV);
+        this.energy = new EnergyComponent(casing::getEuCapacity);
+        this.insertable = energy.buildInsertable(cableTier -> this.casing.canInsertEu(cableTier));
         registerClientComponent(new EnergyBar.Server(energyBarParams, energy::getEu, energy::getCapacity));
         registerClientComponent(new RecipeEfficiencyBar.Server(efficiencyBarParams, crafter));
-        this.registerComponents(energy);
+        this.registerComponents(energy, casing);
     }
 
+    private final CasingComponent casing;
     private final EnergyComponent energy;
     private final EnergyInsertable insertable;
 
@@ -60,7 +70,7 @@ public class ElectricCraftingMachineBlockEntity extends AbstractCraftingMachineB
 
     @Override
     protected MachineModelClientData getModelData() {
-        MachineModelClientData data = new MachineModelClientData();
+        MachineModelClientData data = new MachineModelClientData(casing.getCasing());
         orientation.writeModelData(data);
         data.isActive = isActiveComponent.isActive;
         return data;
@@ -68,6 +78,25 @@ public class ElectricCraftingMachineBlockEntity extends AbstractCraftingMachineB
 
     public static void registerEnergyApi(BlockEntityType<?> bet) {
         EnergyApi.MOVEABLE.registerForBlockEntities((be, direction) -> ((ElectricCraftingMachineBlockEntity) be).insertable, bet);
+    }
+
+    @Override
+    protected ActionResult onUse(PlayerEntity player, Hand hand, Direction face) {
+        ActionResult result = super.onUse(player, hand, face);
+        if (!result.isAccepted()) {
+            return casing.onUse(this, player, hand);
+        }
+        return result;
+    }
+
+    @Override
+    public List<ItemStack> dropExtra() {
+        List<ItemStack> drops = super.dropExtra();
+        ItemStack dropCasing = casing.getDrop();
+        if(dropCasing != null){
+            drops.add(dropCasing);
+        }
+        return drops;
     }
 
 }

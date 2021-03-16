@@ -23,11 +23,9 @@
  */
 package aztech.modern_industrialization.machinesv2.blockentities.multiblocks;
 
+import aztech.modern_industrialization.ModernIndustrialization;
 import aztech.modern_industrialization.inventory.MIInventory;
-import aztech.modern_industrialization.machinesv2.components.CrafterComponent;
-import aztech.modern_industrialization.machinesv2.components.IsActiveComponent;
-import aztech.modern_industrialization.machinesv2.components.MultiblockInventoryComponent;
-import aztech.modern_industrialization.machinesv2.components.OrientationComponent;
+import aztech.modern_industrialization.machinesv2.components.*;
 import aztech.modern_industrialization.machinesv2.components.sync.CraftingMultiblockGui;
 import aztech.modern_industrialization.machinesv2.gui.MachineGuiParameters;
 import aztech.modern_industrialization.machinesv2.models.MachineModelClientData;
@@ -36,8 +34,13 @@ import aztech.modern_industrialization.machinesv2.multiblocks.ShapeMatcher;
 import aztech.modern_industrialization.machinesv2.multiblocks.ShapeTemplate;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.Hand;
 import net.minecraft.util.Tickable;
+import net.minecraft.util.math.Direction;
 import org.jetbrains.annotations.Nullable;
 
 public abstract class AbstractCraftingMultiblockBlockEntity extends MultiblockMachineBlockEntity implements Tickable {
@@ -45,12 +48,12 @@ public abstract class AbstractCraftingMultiblockBlockEntity extends MultiblockMa
             ShapeTemplate[] shapeTemplates) {
         super(type, new MachineGuiParameters.Builder(name, false).backgroundHeight(200).build(), orientation);
 
-        this.shapeTemplates = shapeTemplates;
+        this.activeShape = new ActiveShapeComponent(shapeTemplates);
         this.inventory = new MultiblockInventoryComponent();
         this.crafter = new CrafterComponent(inventory, getBehavior());
         this.isActive = new IsActiveComponent();
         registerClientComponent(new CraftingMultiblockGui.Server(() -> isShapeValid, crafter::getProgress, crafter));
-        registerComponents(crafter, isActive);
+        registerComponents(activeShape, crafter, isActive);
     }
 
     /**
@@ -58,13 +61,12 @@ public abstract class AbstractCraftingMultiblockBlockEntity extends MultiblockMa
      */
     protected abstract CrafterComponent.Behavior getBehavior();
 
-    public final ShapeTemplate[] shapeTemplates;
-    protected int activeShape = 0;
     @Nullable
     private ShapeMatcher shapeMatcher = null;
     private boolean allowNormalOperation = false;
     private boolean isShapeValid = false;
 
+    private final ActiveShapeComponent activeShape;
     protected final MultiblockInventoryComponent inventory;
     private final CrafterComponent crafter;
     private final IsActiveComponent isActive;
@@ -72,7 +74,20 @@ public abstract class AbstractCraftingMultiblockBlockEntity extends MultiblockMa
     protected abstract void onSuccessfulMatch(ShapeMatcher shapeMatcher);
 
     public ShapeTemplate getActiveShape() {
-        return shapeTemplates[activeShape];
+        return activeShape.getActiveShape();
+    }
+
+    @Override
+    protected ActionResult onUse(PlayerEntity player, Hand hand, Direction face) {
+        ActionResult result = activeShape.onUse(player, hand, face);
+        if (result.isAccepted()) {
+            if (!player.getEntityWorld().isClient()) {
+                unlink();
+                sync(false);
+            }
+            return result;
+        }
+        return super.onUse(player, hand, face);
     }
 
     @Override
@@ -114,7 +129,7 @@ public abstract class AbstractCraftingMultiblockBlockEntity extends MultiblockMa
 
     protected final void link() {
         if (shapeMatcher == null) {
-            shapeMatcher = new ShapeMatcher(world, pos, orientation.facingDirection, shapeTemplates[activeShape]);
+            shapeMatcher = new ShapeMatcher(world, pos, orientation.facingDirection, getActiveShape());
             shapeMatcher.registerListeners(world);
         }
         if (shapeMatcher.needsRematch()) {

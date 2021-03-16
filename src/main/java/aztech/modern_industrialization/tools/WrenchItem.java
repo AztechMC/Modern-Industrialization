@@ -25,11 +25,12 @@ package aztech.modern_industrialization.tools;
 
 import aztech.modern_industrialization.ModernIndustrialization;
 import net.minecraft.block.BlockState;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemUsageContext;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.hit.BlockHitResult;
 
-public class WrenchItem extends ToolItem implements MachineOverlayItem {
+public class WrenchItem extends Item implements MachineOverlayItem {
     public WrenchItem(Settings settings) {
         super(settings);
     }

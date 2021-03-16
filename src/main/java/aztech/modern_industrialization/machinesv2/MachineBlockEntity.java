@@ -66,6 +66,11 @@ public abstract class MachineBlockEntity extends FastBlockEntity
     final List<SyncedComponent.Server> syncedComponents = new ArrayList<>();
     private final List<IComponent> icomponents = new ArrayList<>();
     private final MachineGuiParameters guiParams;
+    /**
+     * Server-side: true if the next call to sync() will trigger a remesh.
+     * Client-side: true if fromClientTag() is being called for the first time.
+     */
+    private boolean syncCausesRemesh = true;
 
     public MachineBlockEntity(BlockEntityType<?> type, MachineGuiParameters guiParams) {
         super(type);
@@ -146,15 +151,21 @@ public abstract class MachineBlockEntity extends FastBlockEntity
     }
 
     @Override
+    public void sync() {
+        sync(true);
+    }
+
+    public void sync(boolean forceRemesh) {
+        syncCausesRemesh = syncCausesRemesh || forceRemesh;
+        BlockEntityClientSerializable.super.sync();
+    }
+
+    @Override
     public final void fromClientTag(CompoundTag tag) {
-        boolean forceChunkRemesh = false;
+        boolean forceChunkRemesh = tag.getBoolean("remesh") || syncCausesRemesh;
+        syncCausesRemesh = false;
         for (IComponent component : icomponents) {
-            if (component.isClientSynced()) {
-                component.readClientNbt(tag);
-            }
-            if (component.forceRemesh()) {
-                forceChunkRemesh = true;
-            }
+            component.readClientNbt(tag);
         }
         if (forceChunkRemesh) {
             RenderHelper.forceChunkRemesh((ClientWorld) world, pos);
@@ -164,10 +175,10 @@ public abstract class MachineBlockEntity extends FastBlockEntity
 
     @Override
     public final CompoundTag toClientTag(CompoundTag tag) {
+        tag.putBoolean("remesh", syncCausesRemesh);
+        syncCausesRemesh = false;
         for (IComponent component : icomponents) {
-            if (component.isClientSynced()) {
-                component.writeClientNbt(tag);
-            }
+            component.writeClientNbt(tag);
         }
         return tag;
     }

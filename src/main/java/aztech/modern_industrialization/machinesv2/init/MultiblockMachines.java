@@ -34,6 +34,7 @@ import aztech.modern_industrialization.machines.recipe.MachineRecipe;
 import aztech.modern_industrialization.machines.recipe.MachineRecipeType;
 import aztech.modern_industrialization.machinesv2.MachineScreenHandlers;
 import aztech.modern_industrialization.machinesv2.SyncedComponent;
+import aztech.modern_industrialization.machinesv2.blockentities.multiblocks.DistillationTowerBlockEntity;
 import aztech.modern_industrialization.machinesv2.blockentities.multiblocks.ElectricCraftingMultiblockBlockEntity;
 import aztech.modern_industrialization.machinesv2.blockentities.multiblocks.LargeSteamBoilerMultiblockBlockEntity;
 import aztech.modern_industrialization.machinesv2.blockentities.multiblocks.SteamCraftingMultiblockBlockEntity;
@@ -142,6 +143,8 @@ public class MultiblockMachines {
                 bet -> new ElectricCraftingMultiblockBlockEntity(bet, "vacuum_freezer", vacuumFreezerShape, MIMachineRecipeTypes.VACUUM_FREEZER));
 
         oilDrillingRig();
+
+        DISTILLATION_TOWER = MachineRegistrationHelper.registerMachine("distillation_tower", DistillationTowerBlockEntity::new);
     }
 
     public static void oilDrillingRig() {
@@ -237,6 +240,12 @@ public class MultiblockMachines {
         new Rei("oil_drilling_rig", MIMachineRecipeTypes.OIL_DRILLING_RIG, new ProgressBar.Parameters(77, 33, "arrow"))
                 .items(inputs -> inputs.addSlot(36, 35), outputs -> {})
                 .fluids(inputs -> inputs.addSlot(36, 35), outputs -> outputs.addSlot(122, 35))
+                .register();
+
+        MachineModels.addTieredMachine("distillation_tower", "distillation_tower", MachineCasings.CLEAN_STAINLESS_STEEL, true, false, false);
+        BlockEntityRendererRegistry.INSTANCE.register(DISTILLATION_TOWER, MultiblockMachineBER::new);
+        new Rei("distillation_tower", MIMachineRecipeTypes.DISTILLATION_TOWER, new ProgressBar.Parameters(77, 33, "arrow"))
+                .fluids(inputs -> inputs.addSlot(56, 35), outputs -> outputs.addSlots(102, 35, 1, 8))
                 .register();
     }
 

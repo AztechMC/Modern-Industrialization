@@ -32,7 +32,7 @@ import java.util.ArrayList;
 import java.util.List;
 import net.minecraft.nbt.CompoundTag;
 
-public class MachineInventoryComponent implements CrafterComponent.Inventory, IComponent {
+public class MachineInventoryComponent implements CrafterComponent.Inventory, IComponent.ServerOnly {
     public final int itemInputCount;
     public final int itemOutputCount;
     public final int fluidInputCount;
@@ -86,10 +86,5 @@ public class MachineInventoryComponent implements CrafterComponent.Inventory, IC
     @Override
     public void readNbt(CompoundTag tag) {
         this.inventory.readNbt(tag);
-    }
-
-    @Override
-    public boolean isClientSynced() {
-        return false;
     }
 }

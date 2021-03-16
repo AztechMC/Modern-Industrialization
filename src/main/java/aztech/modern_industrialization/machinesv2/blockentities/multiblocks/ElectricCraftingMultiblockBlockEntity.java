@@ -53,6 +53,7 @@ public class ElectricCraftingMultiblockBlockEntity extends AbstractCraftingMulti
 
     @Override
     protected void onSuccessfulMatch(ShapeMatcher shapeMatcher) {
+        energyInputs.clear();
         for (HatchBlockEntity hatch : shapeMatcher.getMatchedHatches()) {
             hatch.appendEnergyInputs(energyInputs);
         }

@@ -38,14 +38,6 @@ public interface IComponent {
         readNbt(tag);
     }
 
-    default boolean isClientSynced() {
-        return false;
-    }
-
-    default boolean forceRemesh() {
-        return isClientSynced();
-    }
-
     interface ClientOnly extends IComponent {
         @Override
         default void writeNbt(CompoundTag tag) {
@@ -60,10 +52,15 @@ public interface IComponent {
 
         @Override
         void readClientNbt(CompoundTag tag);
+    }
+
+    interface ServerOnly extends IComponent {
+        @Override
+        default void writeClientNbt(CompoundTag tag) {
+        }
 
         @Override
-        default boolean isClientSynced() {
-            return true;
+        default void readClientNbt(CompoundTag tag) {
         }
     }
 }

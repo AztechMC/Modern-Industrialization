@@ -113,7 +113,8 @@ public class ModernIndustrialization implements ModInitializer {
     public static final Tag<Block> WRENCHABLES = TagRegistry.block(new Identifier("fabric:wrenchables"));
 
     // Item
-    public static final Item ITEM_WRENCH = new WrenchItem(new Item.Settings());
+    public static final Item ITEM_SCREWDRIVER = new Item(new Item.Settings().maxCount(1).group(ITEM_GROUP));
+    public static final Item ITEM_WRENCH = new WrenchItem(new Item.Settings().maxCount(1).group(ITEM_GROUP));
     public static final JetpackItem ITEM_JETPACK = new JetpackItem(new Item.Settings().group(ITEM_GROUP));
     public static final DieselToolItem ITEM_DIESEL_CHAINSAW = new DieselToolItem(new Item.Settings().group(ITEM_GROUP));
     public static final DieselToolItem ITEM_DIESEL_DRILL = new DieselToolItem(new Item.Settings().group(ITEM_GROUP));
@@ -179,6 +180,7 @@ public class ModernIndustrialization implements ModInitializer {
             registerItem(entry.getValue(), entry.getKey());
         }
 
+        registerItem(ITEM_SCREWDRIVER, "screwdriver");
         registerItem(ITEM_WRENCH, "wrench");
         registerItem(ITEM_JETPACK, "jetpack");
         registerItem(ITEM_DIESEL_CHAINSAW, "diesel_chainsaw", true);

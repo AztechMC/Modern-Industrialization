@@ -32,7 +32,7 @@ import com.google.common.base.Preconditions;
 import java.util.function.Predicate;
 import net.minecraft.nbt.CompoundTag;
 
-public class EnergyComponent implements IComponent {
+public class EnergyComponent implements IComponent.ServerOnly {
     private long storedEu;
     private final long capacity;
 
@@ -58,11 +58,6 @@ public class EnergyComponent implements IComponent {
 
     public void readNbt(CompoundTag tag) {
         storedEu = tag.getLong("storedEu");
-    }
-
-    @Override
-    public boolean isClientSynced() {
-        return false;
     }
 
     public long consumeEu(long max, Simulation simulation) {

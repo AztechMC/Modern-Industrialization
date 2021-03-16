@@ -115,9 +115,4 @@ public class OrientationComponent implements IComponent {
         }
     }
 
-    @Override
-    public boolean isClientSynced() {
-        return true;
-    }
-
 }

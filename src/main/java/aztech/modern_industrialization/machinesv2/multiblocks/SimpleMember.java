@@ -57,18 +57,24 @@ public interface SimpleMember {
         };
     }
 
-    static SimpleMember verticalChain() {
+    static SimpleMember forBlockState(BlockState state) {
+        Objects.requireNonNull(state);
+
         return new SimpleMember() {
             @Override
-            public boolean matchesState(BlockState state) {
-                return state.isOf(Blocks.CHAIN) && state.get(PillarBlock.AXIS) == Direction.Axis.Y;
+            public boolean matchesState(BlockState state2) {
+                return state == state2;
             }
 
             @Override
             public BlockState getPreviewState() {
-                return Blocks.CHAIN.getDefaultState().with(PillarBlock.AXIS, Direction.Axis.Y);
+                return state;
             }
         };
+    }
+
+    static SimpleMember verticalChain() {
+        return forBlockState(Blocks.CHAIN.getDefaultState().with(PillarBlock.AXIS, Direction.Axis.Y));
     }
 
     static SimpleMember forBlock(Identifier id) {

@@ -47,7 +47,7 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
 import net.minecraft.world.World;
 
-public class CrafterComponent implements IComponent {
+public class CrafterComponent implements IComponent.ServerOnly {
     public CrafterComponent(Inventory inventory, Behavior behavior) {
         this.inventory = inventory;
         this.behavior = behavior;
@@ -77,6 +77,10 @@ public class CrafterComponent implements IComponent {
         long getMaxRecipeEu();
 
         World getWorld();
+
+        default int getMaxFluidOutputs() {
+            return Integer.MAX_VALUE;
+        }
     }
 
     private final Inventory inventory;
@@ -313,11 +317,6 @@ public class CrafterComponent implements IComponent {
         this.maxEfficiencyTicks = tag.getInt("maxEfficiencyTicks");
     }
 
-    @Override
-    public boolean isClientSynced() {
-        return false;
-    }
-
     /**
      * cachedItemCounts must be correct when this function is called, and are
      * guaranteed to be correct after this call
@@ -436,10 +435,6 @@ public class CrafterComponent implements IComponent {
         return ok;
     }
 
-    protected int getMaxFluidOutputs() {
-        return Integer.MAX_VALUE;
-    }
-
     protected boolean putFluidOutputs(MachineRecipe recipe, boolean simulate, boolean toggleLock) {
         List<ConfigurableFluidStack> baseList = inventory.getFluidOutputs();
         List<ConfigurableFluidStack> stacks = simulate ? ConfigurableFluidStack.copyList(baseList) : baseList;
@@ -448,7 +443,7 @@ public class CrafterComponent implements IComponent {
         List<Fluid> lockFluids = new ArrayList<>();
 
         boolean ok = true;
-        for (int i = 0; i < Math.min(recipe.fluidOutputs.size(), getMaxFluidOutputs()); ++i) {
+        for (int i = 0; i < Math.min(recipe.fluidOutputs.size(), behavior.getMaxFluidOutputs()); ++i) {
             MachineRecipe.FluidOutput output = recipe.fluidOutputs.get(i);
             if (output.probability < 1) {
                 if (simulate)

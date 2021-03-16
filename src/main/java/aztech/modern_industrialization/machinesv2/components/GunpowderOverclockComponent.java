@@ -48,16 +48,6 @@ public class GunpowderOverclockComponent implements IComponent {
         overclockGunpowderTick = tag.getInt("overclockGunpowderTick");
     }
 
-    @Override
-    public boolean isClientSynced() {
-        return true;
-    }
-
-    @Override
-    public boolean forceRemesh() {
-        return false;
-    }
-
     public ActionResult onUse(MachineBlockEntity be, PlayerEntity player, Hand hand) {
         ItemStack stackInHand = player.getStackInHand(hand);
         if (stackInHand.getItem() == Items.GUNPOWDER && stackInHand.getCount() >= 1) {

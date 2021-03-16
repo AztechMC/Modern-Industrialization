@@ -30,34 +30,43 @@ import aztech.modern_industrialization.machinesv2.IComponent;
 import aztech.modern_industrialization.util.Simulation;
 import com.google.common.base.Preconditions;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 import net.minecraft.nbt.CompoundTag;
 
 public class EnergyComponent implements IComponent {
     private long storedEu;
-    private final long capacity;
+    private Supplier<Long> capacity;
 
-    public EnergyComponent(long capacity) {
+    public EnergyComponent(Supplier<Long> capacity) {
         this.capacity = capacity;
     }
 
+    public EnergyComponent(long capacity) {
+        this.capacity = () -> capacity;
+    }
+
     public long getEu() {
-        return storedEu;
+        return Math.min(storedEu, capacity.get());
     }
 
     public long getCapacity() {
-        return capacity;
+        return capacity.get();
     }
 
     public long getRemainingCapacity() {
-        return capacity - storedEu;
+        return capacity.get() - getEu();
     }
 
     public void writeNbt(CompoundTag tag) {
-        tag.putLong("storedEu", storedEu);
+        tag.putLong("storedEu", getEu());
     }
 
     public void readNbt(CompoundTag tag) {
-        storedEu = tag.getLong("storedEu");
+        setEu(tag.getLong("storedEu"));
+    }
+
+    private void setEu(long eu) {
+        this.storedEu = Math.min(eu, capacity.get());
     }
 
     @Override
@@ -67,24 +76,24 @@ public class EnergyComponent implements IComponent {
 
     public long consumeEu(long max, Simulation simulation) {
         Preconditions.checkArgument(max >= 0, "May not consume < 0 energy.");
-        long ext = Math.min(max, storedEu);
+        long ext = Math.min(max, getEu());
         if (simulation.isActing()) {
-            storedEu -= ext;
+            setEu(getEu() - ext);
         }
         return ext;
     }
 
     public long insertEu(long max, Simulation simulation) {
         Preconditions.checkArgument(max >= 0, "May not insert < 0 energy.");
-        long ext = Math.min(max, capacity - storedEu);
+        long ext = Math.min(max, capacity.get() - getEu());
         if (simulation.isActing()) {
-            storedEu += ext;
+            setEu(getEu() + ext);
         }
         return ext;
     }
 
     public void insertEnergy(EnergyInsertable insertable) {
-        storedEu = insertable.insertEnergy(storedEu);
+        setEu(insertable.insertEnergy(getEu()));
     }
 
     public EnergyInsertable buildInsertable(Predicate<CableTier> canInsert) {
@@ -92,8 +101,8 @@ public class EnergyComponent implements IComponent {
             @Override
             public long insertEnergy(long amount) {
                 Preconditions.checkArgument(amount >= 0, "May not insert < 0 energy.");
-                long inserted = Math.min(amount, capacity - storedEu);
-                storedEu += inserted;
+                long inserted = Math.min(amount, capacity.get() - getEu());
+                setEu(getEu() + inserted);
                 // TODO: markDirty?
                 return amount - inserted;
             }
@@ -110,8 +119,8 @@ public class EnergyComponent implements IComponent {
             @Override
             public long extractEnergy(long amount) {
                 Preconditions.checkArgument(amount >= 0, "May not extract < 0 energy.");
-                long extracted = Math.min(amount, storedEu);
-                storedEu -= extracted;
+                long extracted = Math.min(amount, getEu());
+                setEu(getEu() - extracted);
                 return extracted;
             }
 

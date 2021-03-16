@@ -105,6 +105,11 @@ public abstract class AbstractCraftingMultiblockBlockEntity extends MultiblockMa
 
             isActive.updateActive(newActive, this);
         }
+        tickExtra();
+    }
+
+    public void tickExtra() {
+
     }
 
     protected final void link() {

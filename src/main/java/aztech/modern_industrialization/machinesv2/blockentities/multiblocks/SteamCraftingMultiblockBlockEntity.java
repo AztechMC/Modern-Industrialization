@@ -25,6 +25,7 @@ package aztech.modern_industrialization.machinesv2.blockentities.multiblocks;
 
 import aztech.modern_industrialization.machines.recipe.MachineRecipeType;
 import aztech.modern_industrialization.machinesv2.components.CrafterComponent;
+import aztech.modern_industrialization.machinesv2.components.GunpowderOverclockComponent;
 import aztech.modern_industrialization.machinesv2.components.OrientationComponent;
 import aztech.modern_industrialization.machinesv2.helper.SteamHelper;
 import aztech.modern_industrialization.machinesv2.multiblocks.HatchBlockEntity;
@@ -32,13 +33,22 @@ import aztech.modern_industrialization.machinesv2.multiblocks.ShapeMatcher;
 import aztech.modern_industrialization.machinesv2.multiblocks.ShapeTemplate;
 import aztech.modern_industrialization.util.Simulation;
 import net.minecraft.block.entity.BlockEntityType;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.Hand;
+import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 
 public class SteamCraftingMultiblockBlockEntity extends AbstractCraftingMultiblockBlockEntity {
+
+    private final GunpowderOverclockComponent gunpowderOverclock;
+
     public SteamCraftingMultiblockBlockEntity(BlockEntityType<?> type, String name, ShapeTemplate shapeTemplate, MachineRecipeType recipeType) {
         super(type, name, new OrientationComponent(new OrientationComponent.Params(false, false, false)), new ShapeTemplate[] { shapeTemplate });
 
         this.recipeType = recipeType;
+        gunpowderOverclock = new GunpowderOverclockComponent();
+        this.registerComponents(gunpowderOverclock);
     }
 
     @Override
@@ -73,7 +83,7 @@ public class SteamCraftingMultiblockBlockEntity extends AbstractCraftingMultiblo
 
         @Override
         public long getBaseRecipeEu() {
-            return steelTier ? 4 : 2;
+            return (steelTier ? 4 : 2) * (gunpowderOverclock.isOverclocked() ? 2 : 1);
         }
 
         @Override
@@ -85,5 +95,18 @@ public class SteamCraftingMultiblockBlockEntity extends AbstractCraftingMultiblo
         public World getWorld() {
             return world;
         }
+    }
+
+    public final void tickExtra() {
+        gunpowderOverclock.tick(this);
+    }
+
+    @Override
+    protected ActionResult onUse(PlayerEntity player, Hand hand, Direction face) {
+        ActionResult result = super.onUse(player, hand, face);
+        if (!result.isAccepted()) {
+            return gunpowderOverclock.onUse(this, player, hand);
+        }
+        return result;
     }
 }

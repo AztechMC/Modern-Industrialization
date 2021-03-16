@@ -23,7 +23,6 @@
  */
 package aztech.modern_industrialization.machinesv2.blockentities.multiblocks;
 
-import aztech.modern_industrialization.ModernIndustrialization;
 import aztech.modern_industrialization.inventory.MIInventory;
 import aztech.modern_industrialization.machinesv2.components.*;
 import aztech.modern_industrialization.machinesv2.components.sync.CraftingMultiblockGui;
@@ -35,7 +34,6 @@ import aztech.modern_industrialization.machinesv2.multiblocks.ShapeTemplate;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;

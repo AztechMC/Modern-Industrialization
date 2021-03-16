@@ -93,7 +93,7 @@ public class ElectricCraftingMachineBlockEntity extends AbstractCraftingMachineB
     public List<ItemStack> dropExtra() {
         List<ItemStack> drops = super.dropExtra();
         ItemStack dropCasing = casing.getDrop();
-        if(dropCasing != null){
+        if (dropCasing != null) {
             drops.add(dropCasing);
         }
         return drops;

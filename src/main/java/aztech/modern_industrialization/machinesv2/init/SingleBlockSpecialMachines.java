@@ -82,12 +82,12 @@ public class SingleBlockSpecialMachines {
             String name = TransformerMachineBlockEntity.getTransformerName(low, up);
             MachineRegistrationHelper.registerMachine(name, bet -> new TransformerMachineBlockEntity(bet, low, up),
                     AbstractStorageMachineBlockEntity::registerEnergyApi);
-            MachineModels.addTieredMachine(name, "", TransformerMachineBlockEntity.getCasingFromTier(low, up), false, false, false);
+            MachineModels.addTieredMachine(name, "transformer", TransformerMachineBlockEntity.getCasingFromTier(low, up), true, true, true);
 
             name = TransformerMachineBlockEntity.getTransformerName(up, low);
             MachineRegistrationHelper.registerMachine(name, bet -> new TransformerMachineBlockEntity(bet, up, low),
                     AbstractStorageMachineBlockEntity::registerEnergyApi);
-            MachineModels.addTieredMachine(name, "", TransformerMachineBlockEntity.getCasingFromTier(up, low), false, false, false);
+            MachineModels.addTieredMachine(name, "transformer", TransformerMachineBlockEntity.getCasingFromTier(up, low), true, true, true);
         }
     }
 
@@ -108,7 +108,7 @@ public class SingleBlockSpecialMachines {
             String id = tier.name + "_storage_unit";
             MachineRegistrationHelper.registerMachine(id, bet -> new StorageMachineBlockEntity(bet, tier, id, 60 * 5 * 20 * tier.eu),
                     AbstractStorageMachineBlockEntity::registerEnergyApi);
-            MachineModels.addTieredMachine(id, "", MachineCasings.casingFromCableTier(tier), false, false, false);
+            MachineModels.addTieredMachine(id, "electric_storage", MachineCasings.casingFromCableTier(tier), true, false, true);
         }
     }
 

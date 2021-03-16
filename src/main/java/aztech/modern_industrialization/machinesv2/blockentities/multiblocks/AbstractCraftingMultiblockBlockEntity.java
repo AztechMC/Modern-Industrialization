@@ -28,7 +28,7 @@ import aztech.modern_industrialization.machinesv2.components.CrafterComponent;
 import aztech.modern_industrialization.machinesv2.components.IsActiveComponent;
 import aztech.modern_industrialization.machinesv2.components.MultiblockInventoryComponent;
 import aztech.modern_industrialization.machinesv2.components.OrientationComponent;
-import aztech.modern_industrialization.machinesv2.components.sync.CraftingMultiblockGUI;
+import aztech.modern_industrialization.machinesv2.components.sync.CraftingMultiblockGui;
 import aztech.modern_industrialization.machinesv2.gui.MachineGuiParameters;
 import aztech.modern_industrialization.machinesv2.models.MachineModelClientData;
 import aztech.modern_industrialization.machinesv2.multiblocks.MultiblockMachineBlockEntity;
@@ -49,7 +49,7 @@ public abstract class AbstractCraftingMultiblockBlockEntity extends MultiblockMa
         this.inventory = new MultiblockInventoryComponent();
         this.crafter = new CrafterComponent(inventory, getBehavior());
         this.isActive = new IsActiveComponent();
-        registerClientComponent(new CraftingMultiblockGUI.Server(() -> isShapeValid, crafter::getProgress, crafter));
+        registerClientComponent(new CraftingMultiblockGui.Server(() -> isShapeValid, crafter::getProgress, crafter));
         registerComponents(crafter, isActive);
     }
 

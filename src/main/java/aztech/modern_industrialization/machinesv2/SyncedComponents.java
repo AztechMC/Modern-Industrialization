@@ -56,7 +56,7 @@ public final class SyncedComponents {
             register(PROGRESS_BAR, ProgressBar.Client::new);
             register(RECIPE_EFFICIENCY_BAR, RecipeEfficiencyBar.Client::new);
             register(TEMPERATURE_BAR, TemperatureBar.Client::new);
-            register(CRAFTING_MULTIBLOCK_GUI, CraftingMultiblockGUI.Client::new);
+            register(CRAFTING_MULTIBLOCK_GUI, CraftingMultiblockGui.Client::new);
         }
     }
 }

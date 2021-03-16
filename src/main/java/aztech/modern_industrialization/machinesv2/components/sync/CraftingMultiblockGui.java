@@ -37,8 +37,7 @@ import net.minecraft.network.PacketByteBuf;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
 
-public class CraftingMultiblockGUI {
-
+public class CraftingMultiblockGui {
     public static class Server implements SyncedComponent.Server<Data> {
 
         private final CrafterComponent crafter;
@@ -110,7 +109,7 @@ public class CraftingMultiblockGUI {
     }
 
     public static class Client implements SyncedComponent.Client {
-        boolean isShapeValid;
+        public boolean isShapeValid;
         boolean hasActiveRecipe;
         float progress;
         int efficiencyTicks;
@@ -151,7 +150,7 @@ public class CraftingMultiblockGUI {
 
                 MinecraftClient minecraftClient = MinecraftClient.getInstance();
                 minecraftClient.getTextureManager().bindTexture(texture);
-                DrawableHelper.drawTexture(matrices, x + 4, y + 16, 0, 0, 166, 80, 166, 80);
+                DrawableHelper.drawTexture(matrices, x + X, y + Y, 0, 0, W, H, W, H);
                 TextRenderer textRenderer = minecraftClient.textRenderer;
 
                 textRenderer
@@ -216,4 +215,8 @@ public class CraftingMultiblockGUI {
         }
     }
 
+    public static final int X = 4;
+    public static final int Y = 16;
+    public static final int W = 166;
+    public static final int H = 80;
 }

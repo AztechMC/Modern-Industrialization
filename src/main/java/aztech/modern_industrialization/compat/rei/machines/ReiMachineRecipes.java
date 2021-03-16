@@ -23,8 +23,12 @@
  */
 package aztech.modern_industrialization.compat.rei.machines;
 
-import java.util.Map;
-import java.util.TreeMap;
+import aztech.modern_industrialization.MIIdentifier;
+import aztech.modern_industrialization.compat.rei.Rectangle;
+import aztech.modern_industrialization.machinesv2.MachineScreenHandlers;
+import java.util.*;
+import java.util.function.Predicate;
+import net.minecraft.util.Identifier;
 
 /**
  * Helper to register stuff for use with the REI plugin. This class will be
@@ -32,6 +36,14 @@ import java.util.TreeMap;
  */
 public class ReiMachineRecipes {
     static final Map<String, MachineCategoryParams> categories = new TreeMap<>();
+    /**
+     * Maps a machine block id to the list of recipe categories.
+     */
+    static final Map<String, List<ClickAreaCategory>> machineToClickAreaCategory = new HashMap<>();
+    /**
+     * Maps a machine block id to the parameters of the click area for the recipe.
+     */
+    static final Map<String, Rectangle> machineToClickArea = new HashMap<>();
 
     public static void registerCategory(String machine, MachineCategoryParams params) {
         if (categories.put(machine, params) != null) {
@@ -45,5 +57,29 @@ public class ReiMachineRecipes {
             throw new NullPointerException("Machine params may not be null for machine " + machine);
         }
         params.workstations.add(item);
+    }
+
+    public static void registerRecipeCategoryForMachine(String machine, String category) {
+        registerRecipeCategoryForMachine(machine, category, screen -> true);
+    }
+
+    public static void registerRecipeCategoryForMachine(String machine, String category,
+            Predicate<MachineScreenHandlers.ClientScreen> screenPredicate) {
+        machineToClickAreaCategory.computeIfAbsent(machine, k -> new ArrayList<>())
+                .add(new ClickAreaCategory(new MIIdentifier(category), screenPredicate));
+    }
+
+    public static void registerMachineClickArea(String machine, Rectangle clickArea) {
+        machineToClickArea.put(machine, clickArea);
+    }
+
+    static class ClickAreaCategory {
+        public final Identifier category;
+        public final Predicate<MachineScreenHandlers.ClientScreen> predicate;
+
+        ClickAreaCategory(Identifier category, Predicate<MachineScreenHandlers.ClientScreen> predicate) {
+            this.category = category;
+            this.predicate = predicate;
+        }
     }
 }

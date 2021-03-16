@@ -24,18 +24,16 @@
 package aztech.modern_industrialization.machinesv2.gui;
 
 import net.minecraft.network.PacketByteBuf;
-import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
 
 public class MachineGuiParameters {
-    public final Text title;
+    public final String blockId;
     public final int playerInventoryX, playerInventoryY;
     public final int backgroundWidth, backgroundHeight;
     public final boolean lockButton;
 
-    private MachineGuiParameters(Text title, int playerInventoryX, int playerInventoryY, int backgroundWidth, int backgroundHeight,
+    private MachineGuiParameters(String blockId, int playerInventoryX, int playerInventoryY, int backgroundWidth, int backgroundHeight,
             boolean lockButton) {
-        this.title = title;
+        this.blockId = blockId;
         this.playerInventoryX = playerInventoryX;
         this.playerInventoryY = playerInventoryY;
         this.backgroundWidth = backgroundWidth;
@@ -44,7 +42,7 @@ public class MachineGuiParameters {
     }
 
     public void write(PacketByteBuf buf) {
-        buf.writeText(title);
+        buf.writeString(blockId);
         buf.writeInt(playerInventoryX);
         buf.writeInt(playerInventoryY);
         buf.writeInt(backgroundWidth);
@@ -53,21 +51,17 @@ public class MachineGuiParameters {
     }
 
     public static MachineGuiParameters read(PacketByteBuf buf) {
-        return new MachineGuiParameters(buf.readText(), buf.readInt(), buf.readInt(), buf.readInt(), buf.readInt(), buf.readBoolean());
+        return new MachineGuiParameters(buf.readString(), buf.readInt(), buf.readInt(), buf.readInt(), buf.readInt(), buf.readBoolean());
     }
 
     public static class Builder {
-        private final Text title;
+        private final String blockId;
         public int playerInventoryX = 8, playerInventoryY = 84;
         private int backgroundSizeX = 176, backgroundSizeY = 166;
         public final boolean lockButton;
 
         public Builder(String blockId, boolean lockButton) {
-            this(new TranslatableText("block.modern_industrialization." + blockId), lockButton);
-        }
-
-        public Builder(Text title, boolean lockButton) {
-            this.title = title;
+            this.blockId = blockId;
             this.lockButton = lockButton;
         }
 
@@ -78,7 +72,7 @@ public class MachineGuiParameters {
         }
 
         public MachineGuiParameters build() {
-            return new MachineGuiParameters(title, playerInventoryX, playerInventoryY, backgroundSizeX, backgroundSizeY, lockButton);
+            return new MachineGuiParameters(blockId, playerInventoryX, playerInventoryY, backgroundSizeX, backgroundSizeY, lockButton);
         }
     }
 }

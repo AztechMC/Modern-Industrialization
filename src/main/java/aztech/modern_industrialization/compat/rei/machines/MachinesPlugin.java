@@ -24,15 +24,19 @@
 package aztech.modern_industrialization.compat.rei.machines;
 
 import aztech.modern_industrialization.MIIdentifier;
+import aztech.modern_industrialization.compat.rei.Rectangle;
 import aztech.modern_industrialization.inventory.ConfigurableFluidStack;
 import aztech.modern_industrialization.inventory.ConfigurableItemStack;
 import aztech.modern_industrialization.machines.recipe.MachineRecipe;
 import aztech.modern_industrialization.machines.recipe.RecipeConversions;
 import aztech.modern_industrialization.machinesv2.MachineScreenHandlers;
 import aztech.modern_industrialization.machinesv2.init.MIMachineRecipeTypes;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Predicate;
+import me.shedaniel.math.Point;
+import me.shedaniel.rei.api.ClickAreaHandler;
 import me.shedaniel.rei.api.EntryStack;
+import me.shedaniel.rei.api.RecipeDisplay;
 import me.shedaniel.rei.api.RecipeHelper;
 import me.shedaniel.rei.api.plugins.REIPluginV0;
 import net.minecraft.fluid.Fluid;
@@ -92,7 +96,7 @@ public class MachinesPlugin implements REIPluginV0 {
                         EntryStack.create(Registry.ITEM.get(new MIIdentifier(workstation))));
             }
         }
-        // TODO: arrow clicking
+        registerClickAreas(recipeHelper);
         // TODO: "+" handler
         recipeHelper.registerFocusedStackProvider(screen -> {
             if (screen instanceof MachineScreenHandlers.ClientScreen) {
@@ -121,5 +125,38 @@ public class MachinesPlugin implements REIPluginV0 {
             }
             return TypedActionResult.pass(EntryStack.empty());
         });
+    }
+
+    private void registerClickAreas(RecipeHelper helper) {
+        helper.registerClickArea(MachineScreenHandlers.ClientScreen.class, context -> {
+            MachineScreenHandlers.Client screenHandler = context.getScreen().getScreenHandler();
+            String blockId = screenHandler.guiParams.blockId;
+            List<ReiMachineRecipes.ClickAreaCategory> categories = ReiMachineRecipes.machineToClickAreaCategory.getOrDefault(blockId,
+                    Collections.emptyList());
+            Rectangle rectangle = ReiMachineRecipes.machineToClickArea.get(blockId);
+            Point point = context.getMousePosition().clone();
+            point.translate(-context.getScreen().x(), -context.getScreen().y());
+            if (categories.size() > 0 && rectangle != null && contains(rectangle, point)) {
+                ClickAreaHandler.Result result = ClickAreaHandler.Result.success();
+                boolean foundSome = false;
+                for (ReiMachineRecipes.ClickAreaCategory cac : categories) {
+                    if (!cac.predicate.test(context.getScreen()))
+                        continue;
+                    List<RecipeDisplay> displays = helper.getAllRecipesFromCategory(helper.getCategory(cac.category));
+                    if (displays.size() > 0) {
+                        result.category(cac.category);
+                        foundSome = true;
+                    }
+                }
+                return foundSome ? result : ClickAreaHandler.Result.fail();
+            } else {
+                return ClickAreaHandler.Result.fail();
+            }
+        });
+    }
+
+    private static boolean contains(Rectangle rectangle, Point mousePosition) {
+        return rectangle.x <= mousePosition.x && mousePosition.x <= rectangle.x + rectangle.w && rectangle.y <= mousePosition.y
+                && mousePosition.y <= rectangle.y + rectangle.h;
     }
 }

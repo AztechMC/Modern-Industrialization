@@ -26,14 +26,18 @@ package aztech.modern_industrialization.machinesv2.init;
 import static aztech.modern_industrialization.machines.impl.multiblock.HatchType.*;
 
 import aztech.modern_industrialization.MIBlock;
+import aztech.modern_industrialization.compat.rei.Rectangle;
 import aztech.modern_industrialization.compat.rei.machines.MachineCategoryParams;
 import aztech.modern_industrialization.compat.rei.machines.ReiMachineRecipes;
 import aztech.modern_industrialization.inventory.SlotPositions;
 import aztech.modern_industrialization.machines.recipe.MachineRecipe;
 import aztech.modern_industrialization.machines.recipe.MachineRecipeType;
+import aztech.modern_industrialization.machinesv2.MachineScreenHandlers;
+import aztech.modern_industrialization.machinesv2.SyncedComponent;
 import aztech.modern_industrialization.machinesv2.blockentities.multiblocks.ElectricCraftingMultiblockBlockEntity;
 import aztech.modern_industrialization.machinesv2.blockentities.multiblocks.LargeSteamBoilerMultiblockBlockEntity;
 import aztech.modern_industrialization.machinesv2.blockentities.multiblocks.SteamCraftingMultiblockBlockEntity;
+import aztech.modern_industrialization.machinesv2.components.sync.CraftingMultiblockGui;
 import aztech.modern_industrialization.machinesv2.components.sync.ProgressBar;
 import aztech.modern_industrialization.machinesv2.models.MachineCasings;
 import aztech.modern_industrialization.machinesv2.models.MachineModels;
@@ -236,6 +240,9 @@ public class MultiblockMachines {
                 .register();
     }
 
+    private static final Rectangle CRAFTING_GUI = new Rectangle(CraftingMultiblockGui.X, CraftingMultiblockGui.Y,
+            CraftingMultiblockGui.W, CraftingMultiblockGui.H);
+
     private static class Rei {
         private final String category;
         private final MachineRecipeType recipeType;
@@ -246,6 +253,17 @@ public class MultiblockMachines {
         private SlotPositions itemOutputs = SlotPositions.empty();
         private SlotPositions fluidInputs = SlotPositions.empty();
         private SlotPositions fluidOutputs = SlotPositions.empty();
+        private static final Predicate<MachineScreenHandlers.ClientScreen> SHAPE_VALID_PREDICATE = screen -> {
+            for (SyncedComponent.Client client : screen.getScreenHandler().components) {
+                if (client instanceof CraftingMultiblockGui.Client) {
+                    CraftingMultiblockGui.Client cmGui = (CraftingMultiblockGui.Client) client;
+                    if (cmGui.isShapeValid) {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        };
 
         Rei(String category, MachineRecipeType recipeType, ProgressBar.Parameters progressBarParams) {
             this.category = category;
@@ -279,9 +297,11 @@ public class MultiblockMachines {
         }
 
         final void register() {
-            ReiMachineRecipes.registerCategory(category, new MachineCategoryParams(itemInputs, itemOutputs, fluidInputs, fluidOutputs, progressBarParams, recipe -> recipe.getType() == recipeType && extraTest.test(recipe)));
+            ReiMachineRecipes.registerCategory(category, new MachineCategoryParams(category, itemInputs, itemOutputs, fluidInputs, fluidOutputs, progressBarParams, recipe -> recipe.getType() == recipeType && extraTest.test(recipe)));
             for (String workstation : workstations) {
                 ReiMachineRecipes.registerWorkstation(category, workstation);
+                ReiMachineRecipes.registerRecipeCategoryForMachine(workstation, category, SHAPE_VALID_PREDICATE);
+                ReiMachineRecipes.registerMachineClickArea(workstation, CRAFTING_GUI);
             }
         }
     }

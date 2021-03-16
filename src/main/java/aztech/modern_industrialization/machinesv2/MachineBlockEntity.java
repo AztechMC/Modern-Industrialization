@@ -50,6 +50,7 @@ import net.minecraft.network.PacketByteBuf;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
+import net.minecraft.text.TranslatableText;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.Identifier;
@@ -99,7 +100,7 @@ public abstract class MachineBlockEntity extends FastBlockEntity
 
     @Override
     public final Text getDisplayName() {
-        return guiParams.title;
+        return new TranslatableText("block.modern_industrialization." + guiParams.blockId);
     }
 
     @Override

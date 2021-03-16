@@ -65,7 +65,7 @@ import net.minecraft.util.math.BlockPos;
 @SuppressWarnings({ "rawtypes", "unchecked" })
 public class MachineScreenHandlers {
     public static abstract class Common extends ConfigurableScreenHandler {
-        protected final MachineGuiParameters guiParams;
+        public final MachineGuiParameters guiParams;
 
         Common(int syncId, PlayerInventory playerInventory, MIInventory inventory, MachineGuiParameters guiParams) {
             super(ModernIndustrialization.SCREEN_HANDLER_MACHINE, syncId, playerInventory, inventory);
@@ -167,7 +167,7 @@ public class MachineScreenHandlers {
     }
 
     public static class Client extends Common {
-        final List<SyncedComponent.Client> components;
+        public final List<SyncedComponent.Client> components;
 
         Client(int syncId, PlayerInventory playerInventory, MIInventory inventory, List<SyncedComponent.Client> components,
                 MachineGuiParameters guiParams) {
@@ -196,6 +196,14 @@ public class MachineScreenHandlers {
             this.backgroundHeight = handler.guiParams.backgroundHeight;
             this.backgroundWidth = handler.guiParams.backgroundWidth;
             this.playerInventoryTitleY = this.backgroundHeight - 94;
+        }
+
+        public int x() {
+            return x;
+        }
+
+        public int y() {
+            return y;
         }
 
         private int nextButtonX;

@@ -26,9 +26,15 @@ package aztech.modern_industrialization.machinesv2.init;
 import static aztech.modern_industrialization.machines.impl.multiblock.HatchType.*;
 
 import aztech.modern_industrialization.MIBlock;
+import aztech.modern_industrialization.compat.rei.machines.MachineCategoryParams;
+import aztech.modern_industrialization.compat.rei.machines.ReiMachineRecipes;
+import aztech.modern_industrialization.inventory.SlotPositions;
+import aztech.modern_industrialization.machines.recipe.MachineRecipe;
+import aztech.modern_industrialization.machines.recipe.MachineRecipeType;
 import aztech.modern_industrialization.machinesv2.blockentities.multiblocks.ElectricCraftingMultiblockBlockEntity;
 import aztech.modern_industrialization.machinesv2.blockentities.multiblocks.LargeSteamBoilerMultiblockBlockEntity;
 import aztech.modern_industrialization.machinesv2.blockentities.multiblocks.SteamCraftingMultiblockBlockEntity;
+import aztech.modern_industrialization.machinesv2.components.sync.ProgressBar;
 import aztech.modern_industrialization.machinesv2.models.MachineCasings;
 import aztech.modern_industrialization.machinesv2.models.MachineModels;
 import aztech.modern_industrialization.machinesv2.multiblocks.HatchFlags;
@@ -38,6 +44,12 @@ import aztech.modern_industrialization.machinesv2.multiblocks.SimpleMember;
 import net.fabricmc.fabric.api.client.rendereregistry.v1.BlockEntityRendererRegistry;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.entity.BlockEntityType;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.function.Consumer;
+import java.util.function.Predicate;
 
 @SuppressWarnings("rawtypes")
 public class MultiblockMachines {
@@ -176,26 +188,101 @@ public class MultiblockMachines {
     public static void clientInit() {
         MachineModels.addTieredMachine("coke_oven", "coke_oven", MachineCasings.BRICKS, true, false, false);
         BlockEntityRendererRegistry.INSTANCE.register(COKE_OVEN, MultiblockMachineBER::new);
+        new Rei("coke_oven", MIMachineRecipeTypes.COKE_OVEN, new ProgressBar.Parameters(77, 33, "arrow"))
+                .items(inputs -> inputs.addSlot(56, 35), outputs -> outputs.addSlot(102, 35))
+                .register();
 
         MachineModels.addTieredMachine("steam_blast_furnace", "steam_blast_furnace", MachineCasings.FIREBRICKS, true, false, false);
         BlockEntityRendererRegistry.INSTANCE.register(STEAM_BLAST_FURNACE, MultiblockMachineBER::new);
+        new Rei("steam_blast_furnace", MIMachineRecipeTypes.BLAST_FURNACE, new ProgressBar.Parameters(77, 33, "arrow"))
+                .items(inputs -> inputs.addSlots(56, 35, 2, 1), outputs -> outputs.addSlots(102, 35, 1, 1))
+                .fluids(fluids -> fluids.addSlots(36, 35, 1, 1), outputs -> outputs.addSlots(122, 35, 1, 1))
+                .workstations("steam_blast_furnace", "electric_blast_furnace").extraTest(recipe -> recipe.eu <= 4)
+                .register();
 
         MachineModels.addTieredMachine("electric_blast_furnace", "electric_blast_furnace", MachineCasings.HEATPROOF, true, false, false);
         BlockEntityRendererRegistry.INSTANCE.register(ELECTRIC_BLAST_FURNACE, MultiblockMachineBER::new);
+        new Rei("electric_blast_furnace", MIMachineRecipeTypes.BLAST_FURNACE, new ProgressBar.Parameters(77, 33, "arrow"))
+                .items(inputs -> inputs.addSlots(56, 35, 2, 1), outputs -> outputs.addSlot(102, 35))
+                .fluids(fluids -> fluids.addSlot(36, 35), outputs -> outputs.addSlot(122, 35))
+                .extraTest(recipe -> recipe.eu > 4)
+                .register();
 
         MachineModels.addTieredMachine("large_steam_boiler", "large_boiler", MachineCasings.BRONZE_PLATED_BRICKS, true, false, false);
         BlockEntityRendererRegistry.INSTANCE.register(LARGE_STEAM_BOILER, MultiblockMachineBER::new);
 
         MachineModels.addTieredMachine("quarry", "quarry", MachineCasings.STEEL, true, false, false);
         BlockEntityRendererRegistry.INSTANCE.register(STEAM_QUARRY, MultiblockMachineBER::new);
+        new Rei("quarry", MIMachineRecipeTypes.QUARRY, new ProgressBar.Parameters(77, 33, "arrow"))
+                .items(inputs -> inputs.addSlot(56, 35), outputs -> outputs.addSlots(102, 35, 4, 4))
+                .workstations("quarry", "electric_quarry")
+                .register();
 
         MachineModels.addTieredMachine("electric_quarry", "quarry", MachineCasings.STEEL, true, false, false);
         BlockEntityRendererRegistry.INSTANCE.register(ELECTRIC_QUARRY, MultiblockMachineBER::new);
 
         MachineModels.addTieredMachine("vacuum_freezer", "vacuum_freezer", MachineCasings.FROSTPROOF, true, false, false);
         BlockEntityRendererRegistry.INSTANCE.register(VACUUM_FREEZER, MultiblockMachineBER::new);
+        new Rei("vacuum_freezer", MIMachineRecipeTypes.VACUUM_FREEZER, new ProgressBar.Parameters(77, 33, "arrow"))
+                .items(inputs -> inputs.addSlots(56, 35, 2, 1), outputs -> outputs.addSlot(102, 35))
+                .fluids(inputs -> inputs.addSlot(36, 35), outputs -> outputs.addSlot(122, 35))
+                .register();
 
         MachineModels.addTieredMachine("oil_drilling_rig", "oil_drilling_rig", MachineCasings.STEEL, true, false, false);
         BlockEntityRendererRegistry.INSTANCE.register(OIL_DRILLING_RIG, MultiblockMachineBER::new);
+        new Rei("oil_drilling_rig", MIMachineRecipeTypes.OIL_DRILLING_RIG, new ProgressBar.Parameters(77, 33, "arrow"))
+                .items(inputs -> inputs.addSlot(36, 35), outputs -> {})
+                .fluids(inputs -> inputs.addSlot(36, 35), outputs -> outputs.addSlot(122, 35))
+                .register();
+    }
+
+    private static class Rei {
+        private final String category;
+        private final MachineRecipeType recipeType;
+        private final ProgressBar.Parameters progressBarParams;
+        private final List<String> workstations;
+        private Predicate<MachineRecipe> extraTest = recipe -> true;
+        private SlotPositions itemInputs = SlotPositions.empty();
+        private SlotPositions itemOutputs = SlotPositions.empty();
+        private SlotPositions fluidInputs = SlotPositions.empty();
+        private SlotPositions fluidOutputs = SlotPositions.empty();
+
+        Rei(String category, MachineRecipeType recipeType, ProgressBar.Parameters progressBarParams) {
+            this.category = category;
+            this.recipeType = recipeType;
+            this.progressBarParams = progressBarParams;
+            this.workstations = new ArrayList<>();
+            workstations.add(category);
+        }
+
+        Rei items(Consumer<SlotPositions.Builder> inputs, Consumer<SlotPositions.Builder> outputs) {
+            itemInputs = new SlotPositions.Builder().buildWithConsumer(inputs);
+            itemOutputs = new SlotPositions.Builder().buildWithConsumer(outputs);
+            return this;
+        }
+
+        Rei fluids(Consumer<SlotPositions.Builder> inputs, Consumer<SlotPositions.Builder> outputs) {
+            fluidInputs = new SlotPositions.Builder().buildWithConsumer(inputs);
+            fluidOutputs = new SlotPositions.Builder().buildWithConsumer(outputs);
+            return this;
+        }
+
+        Rei extraTest(Predicate<MachineRecipe> extraTest) {
+            this.extraTest = extraTest;
+            return this;
+        }
+
+        Rei workstations(String... workstations) {
+            this.workstations.clear();
+            this.workstations.addAll(Arrays.asList(workstations));
+            return this;
+        }
+
+        final void register() {
+            ReiMachineRecipes.registerCategory(category, new MachineCategoryParams(itemInputs, itemOutputs, fluidInputs, fluidOutputs, progressBarParams, recipe -> recipe.getType() == recipeType && extraTest.test(recipe)));
+            for (String workstation : workstations) {
+                ReiMachineRecipes.registerWorkstation(category, workstation);
+            }
+        }
     }
 }

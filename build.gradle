@@ -229,7 +229,7 @@ spotless {
     }
     java {
         targetExclude '**/MIFluids.java', '**/MIMaterials.java', '**/MIOreGenerators.java', '**/MITags.java'
-        targetExclude '**/MIMachineRecipeTypes.java', '**/SingleBlockCraftingMachines.java'
+        targetExclude '**/MIMachineRecipeTypes.java', '**/SingleBlockCraftingMachines.java', '**/MultiblockMachines.java'
 
         importOrder()
 

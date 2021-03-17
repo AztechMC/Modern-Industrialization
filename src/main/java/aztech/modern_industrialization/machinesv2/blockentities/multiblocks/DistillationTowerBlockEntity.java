@@ -23,7 +23,8 @@
  */
 package aztech.modern_industrialization.machinesv2.blockentities.multiblocks;
 
-import aztech.modern_industrialization.MIIdentifier;
+import aztech.modern_industrialization.MIBlock;
+import aztech.modern_industrialization.compat.rei.machines.ReiMachineRecipes;
 import aztech.modern_industrialization.machines.impl.MachineTier;
 import aztech.modern_industrialization.machines.impl.multiblock.HatchType;
 import aztech.modern_industrialization.machines.recipe.MachineRecipeType;
@@ -100,11 +101,17 @@ public class DistillationTowerBlockEntity extends AbstractCraftingMultiblockBloc
         }
     }
 
+    public static void registerReiShapes() {
+        for (ShapeTemplate shapeTemplate : shapeTemplates) {
+            ReiMachineRecipes.registerMultiblockShape("distillation_tower", shapeTemplate);
+        }
+    }
+
     static {
         int maxHeight = 9;
         shapeTemplates = new ShapeTemplate[maxHeight];
 
-        SimpleMember casing = SimpleMember.forBlock(new MIIdentifier("clean_stainless_steel_machine_casing"));
+        SimpleMember casing = SimpleMember.forBlock(MIBlock.blocks.get("clean_stainless_steel_machine_casing"));
         HatchFlags hatchFlags = new HatchFlags.Builder().with(HatchType.ENERGY_INPUT, HatchType.FLUID_INPUT, HatchType.FLUID_OUTPUT).build();
         for (int i = 0; i < maxHeight; ++i) {
             ShapeTemplate.Builder builder = new ShapeTemplate.Builder(MachineCasings.CLEAN_STAINLESS_STEEL);

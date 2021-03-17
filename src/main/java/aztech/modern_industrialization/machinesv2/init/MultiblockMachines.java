@@ -74,12 +74,14 @@ public class MultiblockMachines {
         ShapeTemplate cokeOvenShape = new ShapeTemplate.Builder(MachineCasings.BRICKS).add3by3Levels(-1, 1, bricks, cokeOvenHatches).build();
         COKE_OVEN = MachineRegistrationHelper.registerMachine("coke_oven",
                 bet -> new SteamCraftingMultiblockBlockEntity(bet, "coke_oven", cokeOvenShape, MIMachineRecipeTypes.COKE_OVEN));
+        ReiMachineRecipes.registerMultiblockShape("coke_oven", cokeOvenShape);
 
         SimpleMember fireclayBricks = SimpleMember.forBlock(MIBlock.BLOCK_FIRE_CLAY_BRICKS);
         HatchFlags sbfHatches = new HatchFlags.Builder().with(ITEM_INPUT, ITEM_OUTPUT, FLUID_INPUT, FLUID_OUTPUT).build();
         ShapeTemplate sbfShape = new ShapeTemplate.Builder(MachineCasings.FIREBRICKS).add3by3Levels(-1, 2, fireclayBricks, sbfHatches).build();
         STEAM_BLAST_FURNACE = MachineRegistrationHelper.registerMachine("steam_blast_furnace",
                 bet -> new SteamCraftingMultiblockBlockEntity(bet, "steam_blast_furnace", sbfShape, MIMachineRecipeTypes.BLAST_FURNACE));
+        ReiMachineRecipes.registerMultiblockShape("steam_blast_furnace", sbfShape);
 
         SimpleMember invarCasings = SimpleMember.forBlock(MIBlock.blocks.get("heatproof_machine_casing"));
         SimpleMember cupronickelCoils = SimpleMember.forBlock(MIBlock.blocks.get("cupronickel_coil"));
@@ -89,6 +91,7 @@ public class MultiblockMachines {
                 .build();
         ELECTRIC_BLAST_FURNACE = MachineRegistrationHelper.registerMachine("electric_blast_furnace",
                 bet -> new ElectricCraftingMultiblockBlockEntity(bet, "electric_blast_furnace", ebfShape, MIMachineRecipeTypes.BLAST_FURNACE));
+        ReiMachineRecipes.registerMultiblockShape("electric_blast_furnace", ebfShape);
 
         SimpleMember bronzePlatedBricks = SimpleMember.forBlock(MIBlock.blocks.get("bronze_plated_bricks"));
         SimpleMember bronzePipe = SimpleMember.forBlock(MIBlock.blocks.get("bronze_machine_casing_pipe"));
@@ -98,6 +101,7 @@ public class MultiblockMachines {
                 .add(0, 0, 1, bronzePipe, null).add(0, 1, 1, bronzePipe, null).build();
         LARGE_STEAM_BOILER = MachineRegistrationHelper.registerMachine("large_steam_boiler",
                 bet -> new LargeSteamBoilerMultiblockBlockEntity(bet, largeSteamBoilerShape));
+        ReiMachineRecipes.registerMultiblockShape("large_steam_boiler", largeSteamBoilerShape);
 
         SimpleMember steelCasing = SimpleMember.forBlock(MIBlock.blocks.get("steel_machine_casing"));
         SimpleMember steelPipe = SimpleMember.forBlock(MIBlock.blocks.get("steel_machine_casing_pipe"));
@@ -131,8 +135,10 @@ public class MultiblockMachines {
 
         STEAM_QUARRY = MachineRegistrationHelper.registerMachine("quarry",
                 bet -> new SteamCraftingMultiblockBlockEntity(bet, "quarry", quarryShape, MIMachineRecipeTypes.QUARRY));
+        ReiMachineRecipes.registerMultiblockShape("quarry", quarryShape);
         ELECTRIC_QUARRY = MachineRegistrationHelper.registerMachine("electric_quarry",
                 bet -> new ElectricCraftingMultiblockBlockEntity(bet, "electric_quarry", quarryElectricShape, MIMachineRecipeTypes.QUARRY));
+        ReiMachineRecipes.registerMultiblockShape("electric_quarry", quarryElectricShape);
 
         SimpleMember frostproofMachineCasing = SimpleMember.forBlock(MIBlock.blocks.get("frostproof_machine_casing"));
         HatchFlags vacuumFreezerHatches = new HatchFlags.Builder().with(ITEM_INPUT).with(ITEM_OUTPUT).with(FLUID_INPUT).with(FLUID_OUTPUT)
@@ -141,10 +147,12 @@ public class MultiblockMachines {
                 .add3by3LevelsRoofed(-1, 2, frostproofMachineCasing, vacuumFreezerHatches).build();
         VACUUM_FREEZER = MachineRegistrationHelper.registerMachine("vacuum_freezer",
                 bet -> new ElectricCraftingMultiblockBlockEntity(bet, "vacuum_freezer", vacuumFreezerShape, MIMachineRecipeTypes.VACUUM_FREEZER));
+        ReiMachineRecipes.registerMultiblockShape("vacuum_freezer", vacuumFreezerShape);
 
         oilDrillingRig();
 
         DISTILLATION_TOWER = MachineRegistrationHelper.registerMachine("distillation_tower", DistillationTowerBlockEntity::new);
+        DistillationTowerBlockEntity.registerReiShapes();
     }
 
     public static void oilDrillingRig() {
@@ -187,8 +195,11 @@ public class MultiblockMachines {
         oilDrillingRigShapeBuilder.add(0, 0, 2, steelCasing, hatchFlags);
         oilDrillingRigShapeBuilder.add(1, 0, 2, steelCasing, hatchFlags);
 
+        ShapeTemplate oilDrillingRigShape = oilDrillingRigShapeBuilder.build();
+
         OIL_DRILLING_RIG = MachineRegistrationHelper.registerMachine("oil_drilling_rig", bet -> new ElectricCraftingMultiblockBlockEntity(bet,
-                "oil_drilling_rig", oilDrillingRigShapeBuilder.build(), MIMachineRecipeTypes.OIL_DRILLING_RIG));
+                "oil_drilling_rig", oilDrillingRigShape, MIMachineRecipeTypes.OIL_DRILLING_RIG));
+        ReiMachineRecipes.registerMultiblockShape("oil_drilling_rig", oilDrillingRigShape);
     }
 
     @SuppressWarnings("unchecked")

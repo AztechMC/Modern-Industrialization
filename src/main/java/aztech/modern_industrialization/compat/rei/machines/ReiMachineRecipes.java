@@ -26,9 +26,11 @@ package aztech.modern_industrialization.compat.rei.machines;
 import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.compat.rei.Rectangle;
 import aztech.modern_industrialization.machinesv2.MachineScreenHandlers;
+import aztech.modern_industrialization.machinesv2.multiblocks.ShapeTemplate;
 import java.util.*;
 import java.util.function.Predicate;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.Pair;
 
 /**
  * Helper to register stuff for use with the REI plugin. This class will be
@@ -44,6 +46,10 @@ public class ReiMachineRecipes {
      * Maps a machine block id to the parameters of the click area for the recipe.
      */
     static final Map<String, Rectangle> machineToClickArea = new HashMap<>();
+    /**
+     * List of registered multiblock shape "recipes".
+     */
+    static final List<Pair<String, ShapeTemplate>> multiblockShapes = new ArrayList<>();
 
     public static void registerCategory(String machine, MachineCategoryParams params) {
         if (categories.put(machine, params) != null) {
@@ -71,6 +77,10 @@ public class ReiMachineRecipes {
 
     public static void registerMachineClickArea(String machine, Rectangle clickArea) {
         machineToClickArea.put(machine, clickArea);
+    }
+
+    public static void registerMultiblockShape(String machine, ShapeTemplate shapeTemplate) {
+        multiblockShapes.add(new Pair<>(machine, shapeTemplate));
     }
 
     static class ClickAreaCategory {

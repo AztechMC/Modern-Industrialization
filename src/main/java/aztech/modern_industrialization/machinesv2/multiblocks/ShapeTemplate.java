@@ -33,8 +33,8 @@ import org.jetbrains.annotations.Nullable;
  * An immutable description of a multiblock shape.
  */
 public class ShapeTemplate {
-    final Map<BlockPos, SimpleMember> simpleMembers = new HashMap<>();
-    final Map<BlockPos, HatchFlags> hatchFlags = new HashMap<>();
+    public final Map<BlockPos, SimpleMember> simpleMembers = new HashMap<>();
+    public final Map<BlockPos, HatchFlags> hatchFlags = new HashMap<>();
     public final MachineCasing hatchCasing;
 
     public ShapeTemplate(MachineCasing hatchCasing) {

@@ -31,6 +31,7 @@ import aztech.modern_industrialization.machines.recipe.MachineRecipe;
 import aztech.modern_industrialization.machines.recipe.RecipeConversions;
 import aztech.modern_industrialization.machinesv2.MachineScreenHandlers;
 import aztech.modern_industrialization.machinesv2.init.MIMachineRecipeTypes;
+import aztech.modern_industrialization.machinesv2.multiblocks.ShapeTemplate;
 import java.util.*;
 import java.util.function.Predicate;
 import me.shedaniel.math.Point;
@@ -46,6 +47,7 @@ import net.minecraft.recipe.SmeltingRecipe;
 import net.minecraft.recipe.StonecuttingRecipe;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.Pair;
 import net.minecraft.util.TypedActionResult;
 import net.minecraft.util.registry.Registry;
 
@@ -61,6 +63,7 @@ public class MachinesPlugin implements REIPluginV0 {
             Identifier id = new MIIdentifier(entry.getKey());
             recipeHelper.registerCategory(new MachineRecipeCategory(id, entry.getValue()));
         }
+        recipeHelper.registerCategory(new MultiblockRecipeCategory());
     }
 
     @SuppressWarnings("rawtypes")
@@ -86,6 +89,10 @@ public class MachinesPlugin implements REIPluginV0 {
         recipeHelper.registerRecipes(cuttingMachineId, (Predicate<Recipe>) recipe -> recipe.getType() == RecipeType.STONECUTTING,
                 recipe -> new MachineRecipeDisplay(cuttingMachineId,
                         RecipeConversions.of((StonecuttingRecipe) recipe, MIMachineRecipeTypes.CUTTING_MACHINE)));
+        // multiblock shapes
+        for (Pair<String, ShapeTemplate> entry : ReiMachineRecipes.multiblockShapes) {
+            recipeHelper.registerDisplay(new MultiblockRecipeDisplay(entry.getLeft(), entry.getRight()));
+        }
     }
 
     @Override
@@ -96,6 +103,7 @@ public class MachinesPlugin implements REIPluginV0 {
                         EntryStack.create(Registry.ITEM.get(new MIIdentifier(workstation))));
             }
         }
+        recipeHelper.removeAutoCraftButton(MultiblockRecipeCategory.ID);
         registerClickAreas(recipeHelper);
         // TODO: "+" handler
         recipeHelper.registerFocusedStackProvider(screen -> {

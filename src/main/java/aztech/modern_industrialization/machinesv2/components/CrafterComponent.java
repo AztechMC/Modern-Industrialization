@@ -471,6 +471,9 @@ public class CrafterComponent implements IComponent.ServerOnly {
                         }
                     }
                 }
+                if (tries == 1) {
+                    ok = false;
+                }
             }
         }
 

@@ -64,7 +64,7 @@ public abstract class AbstractCraftingMultiblockBlockEntity extends MultiblockMa
     private boolean allowNormalOperation = false;
     private boolean isShapeValid = false;
 
-    private final ActiveShapeComponent activeShape;
+    protected final ActiveShapeComponent activeShape;
     protected final MultiblockInventoryComponent inventory;
     private final CrafterComponent crafter;
     private final IsActiveComponent isActive;

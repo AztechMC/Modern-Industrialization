@@ -54,6 +54,10 @@ public class ActiveShapeComponent implements IComponent {
         return shapeTemplates[activeShape];
     }
 
+    public int getActiveShapeIndex() {
+        return activeShape;
+    }
+
     @Override
     public void writeNbt(CompoundTag tag) {
         tag.putInt("activeShape", activeShape);

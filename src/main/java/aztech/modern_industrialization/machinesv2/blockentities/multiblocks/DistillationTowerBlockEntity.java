@@ -53,17 +53,12 @@ public class DistillationTowerBlockEntity extends AbstractCraftingMultiblockBloc
     }
 
     private final List<EnergyComponent> energyInputs = new ArrayList<>();
-    private int maxFluidOutputs = 0;
 
     @Override
     protected void onSuccessfulMatch(ShapeMatcher shapeMatcher) {
         energyInputs.clear();
-        maxFluidOutputs = 0;
         for (HatchBlockEntity hatch : shapeMatcher.getMatchedHatches()) {
             hatch.appendEnergyInputs(energyInputs);
-            if (hatch.getHatchType() == HatchType.FLUID_OUTPUT) {
-                maxFluidOutputs++;
-            }
         }
     }
 
@@ -101,7 +96,7 @@ public class DistillationTowerBlockEntity extends AbstractCraftingMultiblockBloc
 
         @Override
         public int getMaxFluidOutputs() {
-            return maxFluidOutputs;
+            return activeShape.getActiveShapeIndex() + 1;
         }
     }
 

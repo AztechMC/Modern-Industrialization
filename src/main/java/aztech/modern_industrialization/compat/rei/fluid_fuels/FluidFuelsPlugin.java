@@ -26,7 +26,6 @@ package aztech.modern_industrialization.compat.rei.fluid_fuels;
 import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.ModernIndustrialization;
 import aztech.modern_industrialization.api.FluidFuelRegistry;
-import aztech.modern_industrialization.machines.MIMachines;
 import java.util.Arrays;
 import java.util.List;
 import me.shedaniel.rei.api.EntryStack;
@@ -35,6 +34,7 @@ import me.shedaniel.rei.api.plugins.REIPluginV0;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.item.Item;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.registry.Registry;
 
 public class FluidFuelsPlugin implements REIPluginV0 {
     static final Identifier CATEGORY = new MIIdentifier("fluid_fuels");
@@ -56,10 +56,14 @@ public class FluidFuelsPlugin implements REIPluginV0 {
         }
     }
 
+    private static Item get(String id) {
+        return Registry.ITEM.get(new MIIdentifier(id));
+    }
+
     @Override
     public void registerOthers(RecipeHelper recipeHelper) {
-        List<Item> workstations = Arrays.asList(MIMachines.DIESEL_GENERATOR.item, MIMachines.LARGE_STEAM_BOILER.item,
-                ModernIndustrialization.ITEM_JETPACK, ModernIndustrialization.ITEM_DIESEL_CHAINSAW, ModernIndustrialization.ITEM_DIESEL_DRILL);
+        List<Item> workstations = Arrays.asList(get("diesel_generator"), get("large_steam_boiler"), ModernIndustrialization.ITEM_JETPACK,
+                ModernIndustrialization.ITEM_DIESEL_CHAINSAW, ModernIndustrialization.ITEM_DIESEL_DRILL);
         for (Item item : workstations) {
             recipeHelper.registerWorkingStations(CATEGORY, EntryStack.create(item));
         }

@@ -51,7 +51,7 @@ public abstract class AbstractCraftingMultiblockBlockEntity extends MultiblockMa
         this.inventory = new MultiblockInventoryComponent();
         this.crafter = new CrafterComponent(inventory, getBehavior());
         this.isActive = new IsActiveComponent();
-        registerClientComponent(new CraftingMultiblockGui.Server(() -> isShapeValid, crafter::getProgress, crafter));
+        registerClientComponent(new CraftingMultiblockGui.Server(() -> shapeValid.shapeValid, crafter::getProgress, crafter));
         registerClientComponent(new ReiSlotLocking.Server(crafter::lockRecipe, () -> allowNormalOperation));
         registerComponents(activeShape, crafter, isActive);
     }
@@ -64,7 +64,6 @@ public abstract class AbstractCraftingMultiblockBlockEntity extends MultiblockMa
     @Nullable
     private ShapeMatcher shapeMatcher = null;
     private boolean allowNormalOperation = false;
-    private boolean isShapeValid = false;
 
     protected final ActiveShapeComponent activeShape;
     protected final MultiblockInventoryComponent inventory;
@@ -134,20 +133,24 @@ public abstract class AbstractCraftingMultiblockBlockEntity extends MultiblockMa
         }
         if (shapeMatcher.needsRematch()) {
             allowNormalOperation = false;
-            isShapeValid = false;
+            shapeValid.shapeValid = false;
             shapeMatcher.rematch(world);
 
             if (shapeMatcher.isMatchSuccessful()) {
                 inventory.rebuild(shapeMatcher);
 
                 onSuccessfulMatch(shapeMatcher);
-                isShapeValid = true;
+                shapeValid.shapeValid = true;
 
                 // If there was an active recipe, we have to make sure the output fits, and lock
                 // the hatches.
                 if (crafter.tryContinueRecipe()) {
                     allowNormalOperation = true;
                 }
+            }
+
+            if (shapeValid.update()) {
+                sync(false);
             }
         }
     }

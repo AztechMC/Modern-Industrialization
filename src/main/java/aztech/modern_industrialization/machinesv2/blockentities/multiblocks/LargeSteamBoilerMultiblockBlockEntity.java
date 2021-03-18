@@ -54,7 +54,6 @@ public class LargeSteamBoilerMultiblockBlockEntity extends MultiblockMachineBloc
 
     private ShapeMatcher shapeMatcher;
     private final ShapeTemplate shapeTemplate;
-    private boolean isShapeValid;
     private final IsActiveComponent isActiveComponent;
 
     private final MultiblockInventoryComponent inventory;
@@ -104,12 +103,16 @@ public class LargeSteamBoilerMultiblockBlockEntity extends MultiblockMachineBloc
             shapeMatcher.registerListeners(world);
         }
         if (shapeMatcher.needsRematch()) {
-            isShapeValid = false;
+            shapeValid.shapeValid = false;
             shapeMatcher.rematch(world);
 
             if (shapeMatcher.isMatchSuccessful()) {
                 inventory.rebuild(shapeMatcher);
-                isShapeValid = true;
+                shapeValid.shapeValid = true;
+            }
+
+            if (shapeValid.update()) {
+                sync(false);
             }
         }
     }
@@ -148,7 +151,7 @@ public class LargeSteamBoilerMultiblockBlockEntity extends MultiblockMachineBloc
         if (!world.isClient) {
             link();
 
-            if (isShapeValid) {
+            if (shapeValid.shapeValid) {
                 boolean empty = false;
                 while (burningTick < 12.5 * 20 & !empty) {
                     empty = true;

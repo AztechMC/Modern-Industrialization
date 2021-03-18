@@ -47,6 +47,10 @@ public class MultiblockMachineBER extends BlockEntityRenderer<MultiblockMachineB
 
     @Override
     public void render(MultiblockMachineBlockEntity be, float tickDelta, MatrixStack matrices, VertexConsumerProvider vcp, int light, int overlay) {
+        // Nothing to render if the shape is valid.
+        if (be.isShapeValid())
+            return;
+
         boolean holdingWrench = isHoldingWrench();
         HatchType hatchType = getHeldHatchType();
         if (holdingWrench || hatchType != null) {

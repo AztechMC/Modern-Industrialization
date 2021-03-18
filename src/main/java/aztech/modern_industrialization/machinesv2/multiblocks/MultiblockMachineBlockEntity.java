@@ -25,6 +25,7 @@ package aztech.modern_industrialization.machinesv2.multiblocks;
 
 import aztech.modern_industrialization.machinesv2.MachineBlockEntity;
 import aztech.modern_industrialization.machinesv2.components.OrientationComponent;
+import aztech.modern_industrialization.machinesv2.components.ShapeValidComponent;
 import aztech.modern_industrialization.machinesv2.gui.MachineGuiParameters;
 import aztech.modern_industrialization.machinesv2.helper.OrientationHelper;
 import aztech.modern_industrialization.util.ChunkUnloadBlockEntity;
@@ -39,10 +40,16 @@ public abstract class MultiblockMachineBlockEntity extends MachineBlockEntity im
         super(type, guiParams);
 
         this.orientation = orientation;
-        registerComponents(orientation);
+        this.shapeValid = new ShapeValidComponent();
+        registerComponents(orientation, shapeValid);
     }
 
     protected final OrientationComponent orientation;
+    protected final ShapeValidComponent shapeValid;
+
+    public boolean isShapeValid() {
+        return shapeValid.shapeValid;
+    }
 
     protected abstract void unlink();
 

@@ -26,10 +26,12 @@ package aztech.modern_industrialization.machinesv2;
 import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.machinesv2.components.OrientationComponent;
 import aztech.modern_industrialization.machinesv2.components.sync.AutoExtract;
+import aztech.modern_industrialization.machinesv2.components.sync.ReiSlotLocking;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.minecraft.screen.ScreenHandler;
 import net.minecraft.util.Identifier;
 
 public class MachinePackets {
@@ -71,6 +73,24 @@ public class MachinePackets {
                     }
                     screenHandler.blockEntity.markDirty();
                     screenHandler.blockEntity.sync();
+                }
+            });
+        };
+        public static final Identifier REI_LOCK_SLOTS = new MIIdentifier("rei_lock_slots");
+        public static final ServerPlayNetworking.PlayChannelHandler ON_REI_LOCK_SLOTS = (ms, player, handler, buf, sender) -> {
+            int syncId = buf.readInt();
+            Identifier recipeId = buf.readIdentifier();
+            ms.execute(() -> {
+                ScreenHandler sh = player.currentScreenHandler;
+                if (sh.syncId == syncId && sh instanceof MachineScreenHandlers.Server) {
+                    MachineScreenHandlers.Server screenHandler = (MachineScreenHandlers.Server) sh;
+                    // Check that locking the slots is allowed in the first place
+                    ReiSlotLocking.Server slotLocking = screenHandler.blockEntity.getComponent(SyncedComponents.REI_SLOT_LOCKING);
+                    if (!slotLocking.allowLocking.get())
+                        return;
+
+                    // Lock
+                    slotLocking.slotLockable.lockSlots(recipeId, player.inventory);
                 }
             });
         };

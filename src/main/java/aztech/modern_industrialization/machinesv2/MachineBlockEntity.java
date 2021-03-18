@@ -98,7 +98,9 @@ public abstract class MachineBlockEntity extends FastBlockEntity
     @SuppressWarnings("unchecked")
     public <S extends SyncedComponent.Server> S getComponent(Identifier componentId) {
         for (SyncedComponent.Server component : syncedComponents) {
-            return (S) component;
+            if (component.getId().equals(componentId)) {
+                return (S) component;
+            }
         }
         throw new RuntimeException("Couldn't find component " + componentId);
     }

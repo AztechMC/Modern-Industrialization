@@ -61,6 +61,7 @@ import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
+import org.jetbrains.annotations.Nullable;
 
 @SuppressWarnings({ "rawtypes", "unchecked" })
 public class MachineScreenHandlers {
@@ -98,7 +99,7 @@ public class MachineScreenHandlers {
     }
 
     static class Server extends Common {
-        protected final MachineBlockEntity blockEntity;
+        public final MachineBlockEntity blockEntity;
         protected final List trackedData;
 
         Server(int syncId, PlayerInventory playerInventory, MachineBlockEntity blockEntity, MachineGuiParameters guiParams) {
@@ -173,6 +174,16 @@ public class MachineScreenHandlers {
                 MachineGuiParameters guiParams) {
             super(syncId, playerInventory, inventory, guiParams);
             this.components = components;
+        }
+
+        @Nullable
+        public <T extends SyncedComponent.Client> T getComponent(Class<T> klass) {
+            for (SyncedComponent.Client component : components) {
+                if (klass.isInstance(component)) {
+                    return (T) component;
+                }
+            }
+            return null;
         }
 
         @Override

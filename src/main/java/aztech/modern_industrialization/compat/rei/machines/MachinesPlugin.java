@@ -105,7 +105,7 @@ public class MachinesPlugin implements REIPluginV0 {
         }
         recipeHelper.removeAutoCraftButton(MultiblockRecipeCategory.ID);
         registerClickAreas(recipeHelper);
-        // TODO: "+" handler
+        recipeHelper.registerAutoCraftingHandler(new SlotLockingHandler(recipeHelper));
         recipeHelper.registerFocusedStackProvider(screen -> {
             if (screen instanceof MachineScreenHandlers.ClientScreen) {
                 Slot slot = ((MachineScreenHandlers.ClientScreen) screen).getFocusedSlot();

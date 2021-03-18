@@ -37,14 +37,17 @@ import com.google.common.base.Preconditions;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.ThreadLocalRandom;
 import net.fabricmc.fabric.api.lookup.v1.item.ItemKey;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
 
 public class CrafterComponent implements IComponent.ServerOnly {
@@ -493,6 +496,94 @@ public class CrafterComponent implements IComponent.ServerOnly {
         for (ConfigurableFluidStack stack : inventory.getFluidOutputs()) {
             if (stack.isMachineLocked())
                 stack.disableMachineLock();
+        }
+    }
+
+    public void lockRecipe(Identifier recipeId, PlayerInventory inventory) {
+        // Find MachineRecipe
+        Optional<MachineRecipe> optionalMachineRecipe = behavior.recipeType().getRecipes((ServerWorld) behavior.getWorld()).stream()
+                .filter(recipe -> recipe.getId().equals(recipeId)).findFirst();
+        if (!optionalMachineRecipe.isPresent())
+            return;
+        MachineRecipe recipe = optionalMachineRecipe.get();
+        // ITEM INPUTS
+        outer: for (MachineRecipe.ItemInput input : recipe.itemInputs) {
+            for (ConfigurableItemStack stack : this.inventory.getItemInputs()) {
+                if (input.matches(new ItemStack(stack.getLockedItem())))
+                    continue outer;
+            }
+            Item targetItem = null;
+            // Find the first match in the player inventory (useful for logs for example)
+            for (int i = 0; i < inventory.size(); i++) {
+                ItemStack playerStack = inventory.getStack(i);
+                if (!playerStack.isEmpty() && input.matches(new ItemStack(playerStack.getItem()))) {
+                    targetItem = playerStack.getItem();
+                    break;
+                }
+            }
+            if (targetItem == null) {
+                // Find the first match that is an item from MI (useful for ingots for example)
+                for (Item item : input.getInputItems()) {
+                    Identifier id = Registry.ITEM.getId(item);
+                    if (id.getNamespace().equals(ModernIndustrialization.MOD_ID)) {
+                        targetItem = item;
+                        break;
+                    }
+                }
+            }
+            if (targetItem == null) {
+                // If there is only one value in the tag, pick that one
+                if (input.getInputItems().size() == 1) {
+                    targetItem = input.getInputItems().get(0);
+                }
+            }
+
+            if (targetItem != null) {
+                for (ConfigurableItemStack stack : this.inventory.getItemInputs()) {
+                    if (stack.playerLock(targetItem)) {
+                        break;
+                    }
+                }
+            }
+        }
+        // ITEM OUTPUTS
+        outer: for (MachineRecipe.ItemOutput output : recipe.itemOutputs) {
+            for (ConfigurableItemStack stack : this.inventory.getItemOutputs()) {
+                if (stack.getLockedItem() == output.item)
+                    continue outer;
+            }
+            for (ConfigurableItemStack stack : this.inventory.getItemOutputs()) {
+                if (stack.playerLock(output.item)) {
+                    break;
+                }
+            }
+        }
+
+        // FLUID INPUTS
+        outer: for (MachineRecipe.FluidInput input : recipe.fluidInputs) {
+            Fluid fluid = input.fluid;
+            for (ConfigurableFluidStack stack : this.inventory.getFluidInputs()) {
+                if (stack.getLockedFluid() == fluid)
+                    continue outer;
+            }
+            for (ConfigurableFluidStack stack : this.inventory.getFluidInputs()) {
+                if (stack.playerLock(fluid)) {
+                    break;
+                }
+            }
+        }
+        // FLUID OUTPUTS
+        outer: for (MachineRecipe.FluidOutput output : recipe.fluidOutputs) {
+            Fluid fluid = output.fluid;
+            for (ConfigurableFluidStack stack : this.inventory.getFluidOutputs()) {
+                if (stack.getLockedFluid() == fluid)
+                    continue outer;
+            }
+            for (ConfigurableFluidStack stack : this.inventory.getFluidOutputs()) {
+                if (stack.playerLock(fluid)) {
+                    break;
+                }
+            }
         }
     }
 }

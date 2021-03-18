@@ -33,6 +33,7 @@ import aztech.modern_industrialization.machinesv2.components.MachineInventoryCom
 import aztech.modern_industrialization.machinesv2.components.OrientationComponent;
 import aztech.modern_industrialization.machinesv2.components.sync.AutoExtract;
 import aztech.modern_industrialization.machinesv2.components.sync.ProgressBar;
+import aztech.modern_industrialization.machinesv2.components.sync.ReiSlotLocking;
 import aztech.modern_industrialization.machinesv2.gui.MachineGuiParameters;
 import aztech.modern_industrialization.machinesv2.helper.OrientationHelper;
 import net.minecraft.block.entity.BlockEntityType;
@@ -57,6 +58,7 @@ public abstract class AbstractCraftingMachineBlockEntity extends MachineBlockEnt
         this.isActiveComponent = new IsActiveComponent();
         registerClientComponent(new AutoExtract.Server(orientation));
         registerClientComponent(new ProgressBar.Server(progressBarParams, crafter::getProgress));
+        registerClientComponent(new ReiSlotLocking.Server(crafter::lockRecipe, () -> true));
         this.registerComponents(crafter, this.inventory, orientation, isActiveComponent);
     }
 

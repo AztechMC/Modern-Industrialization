@@ -47,13 +47,10 @@ public class MultiblockMachineBER extends BlockEntityRenderer<MultiblockMachineB
 
     @Override
     public void render(MultiblockMachineBlockEntity be, float tickDelta, MatrixStack matrices, VertexConsumerProvider vcp, int light, int overlay) {
-        // Nothing to render if the shape is valid.
-        if (be.isShapeValid())
-            return;
-
-        boolean holdingWrench = isHoldingWrench();
+        // Only render if holding a wrench AND if the shape is not valid.
+        boolean drawHighlights = isHoldingWrench() && !be.isShapeValid();
         HatchType hatchType = getHeldHatchType();
-        if (holdingWrench || hatchType != null) {
+        if (drawHighlights || hatchType != null) {
             ShapeMatcher matcher = new ShapeMatcher(be.getWorld(), be.getPos(), be.orientation.facingDirection, be.getActiveShape());
 
             for (BlockPos pos : matcher.getPositions()) {
@@ -69,7 +66,7 @@ public class MultiblockMachineBER extends BlockEntityRenderer<MultiblockMachineB
                         RenderHelper.drawOverlay(matrices, vcp, 111f / 256, 1, 111f / 256, 15728880, overlay);
                     }
                 }
-                if (holdingWrench) {
+                if (drawHighlights) {
                     if (!matcher.matches(pos, be.getWorld(), null)) {
                         if (be.getWorld().getBlockState(pos).isAir()) {
                             // Enqueue state preview

@@ -25,8 +25,8 @@ package aztech.modern_industrialization.blocks.forgehammer;
 
 import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.ModernIndustrialization;
-import aztech.modern_industrialization.machinesv2.recipe.MachineRecipe;
-import aztech.modern_industrialization.machinesv2.recipe.MachineRecipeType;
+import aztech.modern_industrialization.machines.recipe.MachineRecipe;
+import aztech.modern_industrialization.machines.recipe.MachineRecipeType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.Inventory;

@@ -24,9 +24,9 @@
 package aztech.modern_industrialization.compat.rei.machines;
 
 import aztech.modern_industrialization.MIIdentifier;
-import aztech.modern_industrialization.machinesv2.MachinePackets;
-import aztech.modern_industrialization.machinesv2.MachineScreenHandlers;
-import aztech.modern_industrialization.machinesv2.components.sync.ReiSlotLocking;
+import aztech.modern_industrialization.machines.MachinePackets;
+import aztech.modern_industrialization.machines.MachineScreenHandlers;
+import aztech.modern_industrialization.machines.components.sync.ReiSlotLocking;
 import java.util.List;
 import me.shedaniel.rei.api.AutoTransferHandler;
 import me.shedaniel.rei.api.EntryStack;

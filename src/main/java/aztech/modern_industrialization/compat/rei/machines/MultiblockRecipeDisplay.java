@@ -24,8 +24,8 @@
 package aztech.modern_industrialization.compat.rei.machines;
 
 import aztech.modern_industrialization.MIIdentifier;
-import aztech.modern_industrialization.machinesv2.multiblocks.ShapeTemplate;
-import aztech.modern_industrialization.machinesv2.multiblocks.SimpleMember;
+import aztech.modern_industrialization.machines.multiblocks.ShapeTemplate;
+import aztech.modern_industrialization.machines.multiblocks.SimpleMember;
 import java.util.*;
 import me.shedaniel.rei.api.EntryStack;
 import me.shedaniel.rei.api.RecipeDisplay;

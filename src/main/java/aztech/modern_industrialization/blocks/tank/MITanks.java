@@ -31,7 +31,7 @@ import aztech.modern_industrialization.blocks.creativetank.CreativeTankBlock;
 import aztech.modern_industrialization.blocks.creativetank.CreativeTankBlockEntity;
 import aztech.modern_industrialization.blocks.creativetank.CreativeTankItem;
 import aztech.modern_industrialization.blocks.creativetank.CreativeTankRenderer;
-import aztech.modern_industrialization.machinesv2.models.MachineModelProvider;
+import aztech.modern_industrialization.machines.models.MachineModelProvider;
 import aztech.modern_industrialization.util.ResourceUtil;
 import java.util.Arrays;
 import net.fabricmc.fabric.api.client.rendereregistry.v1.BlockEntityRendererRegistry;

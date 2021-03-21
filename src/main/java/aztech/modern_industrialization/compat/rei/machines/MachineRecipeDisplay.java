@@ -23,7 +23,7 @@
  */
 package aztech.modern_industrialization.compat.rei.machines;
 
-import aztech.modern_industrialization.machinesv2.recipe.MachineRecipe;
+import aztech.modern_industrialization.machines.recipe.MachineRecipe;
 import aztech.modern_industrialization.util.FluidTextHelper;
 import java.text.DecimalFormat;
 import java.util.Collections;

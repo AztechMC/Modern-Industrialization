@@ -23,7 +23,7 @@
  */
 package aztech.modern_industrialization.mixin;
 
-import aztech.modern_industrialization.machinesv2.multiblocks.world.ChunkEventListeners;
+import aztech.modern_industrialization.machines.multiblocks.world.ChunkEventListeners;
 import net.minecraft.block.BlockState;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;

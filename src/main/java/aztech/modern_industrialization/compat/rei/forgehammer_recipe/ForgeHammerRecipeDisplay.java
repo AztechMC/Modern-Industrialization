@@ -23,8 +23,8 @@
  */
 package aztech.modern_industrialization.compat.rei.forgehammer_recipe;
 
-import aztech.modern_industrialization.machinesv2.recipe.MachineRecipe;
-import aztech.modern_industrialization.machinesv2.recipe.MachineRecipeType;
+import aztech.modern_industrialization.machines.recipe.MachineRecipe;
+import aztech.modern_industrialization.machines.recipe.MachineRecipeType;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;

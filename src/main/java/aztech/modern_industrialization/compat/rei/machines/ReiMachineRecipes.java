@@ -25,8 +25,8 @@ package aztech.modern_industrialization.compat.rei.machines;
 
 import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.compat.rei.Rectangle;
-import aztech.modern_industrialization.machinesv2.MachineScreenHandlers;
-import aztech.modern_industrialization.machinesv2.multiblocks.ShapeTemplate;
+import aztech.modern_industrialization.machines.MachineScreenHandlers;
+import aztech.modern_industrialization.machines.multiblocks.ShapeTemplate;
 import java.util.*;
 import java.util.function.Predicate;
 import net.minecraft.util.Identifier;

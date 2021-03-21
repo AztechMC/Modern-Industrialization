@@ -23,7 +23,7 @@
  */
 package aztech.modern_industrialization.compat.rei;
 
-import aztech.modern_industrialization.machinesv2.components.sync.ProgressBar;
+import aztech.modern_industrialization.machines.components.sync.ProgressBar;
 
 public class Rectangle {
     public final int x, y, w, h;

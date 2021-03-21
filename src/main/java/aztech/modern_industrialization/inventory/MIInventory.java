@@ -23,7 +23,7 @@
  */
 package aztech.modern_industrialization.inventory;
 
-import aztech.modern_industrialization.machinesv2.IComponent;
+import aztech.modern_industrialization.machines.IComponent;
 import aztech.modern_industrialization.util.NbtHelper;
 import java.util.Collections;
 import java.util.List;

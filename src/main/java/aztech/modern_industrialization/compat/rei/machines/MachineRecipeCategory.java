@@ -25,8 +25,8 @@ package aztech.modern_industrialization.compat.rei.machines;
 
 import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.inventory.SlotPositions;
-import aztech.modern_industrialization.machinesv2.MachineScreenHandlers;
-import aztech.modern_industrialization.machinesv2.components.sync.ProgressBar;
+import aztech.modern_industrialization.machines.MachineScreenHandlers;
+import aztech.modern_industrialization.machines.components.sync.ProgressBar;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;

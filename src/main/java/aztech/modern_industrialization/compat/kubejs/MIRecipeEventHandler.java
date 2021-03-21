@@ -24,8 +24,8 @@
 package aztech.modern_industrialization.compat.kubejs;
 
 import aztech.modern_industrialization.blocks.forgehammer.ForgeHammerScreenHandler;
-import aztech.modern_industrialization.machinesv2.init.MIMachineRecipeTypes;
-import aztech.modern_industrialization.machinesv2.recipe.MachineRecipeType;
+import aztech.modern_industrialization.machines.init.MIMachineRecipeTypes;
+import aztech.modern_industrialization.machines.recipe.MachineRecipeType;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;

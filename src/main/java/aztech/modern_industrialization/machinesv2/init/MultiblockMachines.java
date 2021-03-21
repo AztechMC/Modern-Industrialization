@@ -23,15 +23,15 @@
  */
 package aztech.modern_industrialization.machinesv2.init;
 
-import static aztech.modern_industrialization.machines.impl.multiblock.HatchType.*;
+import static aztech.modern_industrialization.machinesv2.multiblocks.HatchType.*;
 
 import aztech.modern_industrialization.MIBlock;
 import aztech.modern_industrialization.compat.rei.Rectangle;
 import aztech.modern_industrialization.compat.rei.machines.MachineCategoryParams;
 import aztech.modern_industrialization.compat.rei.machines.ReiMachineRecipes;
 import aztech.modern_industrialization.inventory.SlotPositions;
-import aztech.modern_industrialization.machines.recipe.MachineRecipe;
-import aztech.modern_industrialization.machines.recipe.MachineRecipeType;
+import aztech.modern_industrialization.machinesv2.recipe.MachineRecipe;
+import aztech.modern_industrialization.machinesv2.recipe.MachineRecipeType;
 import aztech.modern_industrialization.machinesv2.MachineScreenHandlers;
 import aztech.modern_industrialization.machinesv2.SyncedComponent;
 import aztech.modern_industrialization.machinesv2.blockentities.multiblocks.DistillationTowerBlockEntity;

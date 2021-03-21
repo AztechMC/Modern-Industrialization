@@ -21,36 +21,30 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.machines.recipe;
+package aztech.modern_industrialization.machinesv2.recipe;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import static aztech.modern_industrialization.ModernIndustrialization.MOD_ID;
+
+import java.util.*;
+import net.minecraft.recipe.RecipeType;
+import net.minecraft.recipe.SmeltingRecipe;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
 
-/**
- * A machine recipe type that allows adding proxies
- */
-public abstract class ProxyableMachineRecipeType extends MachineRecipeType {
-    public ProxyableMachineRecipeType(Identifier id) {
+public class FurnaceRecipeProxy extends ProxyableMachineRecipeType {
+    public FurnaceRecipeProxy(Identifier id) {
         super(id);
     }
 
-    private long lastUpdate = 0;
-    private static final long UPDATE_INTERVAL = 20 * 1000;
-    protected List<MachineRecipe> recipeList = new ArrayList<>();
+    protected void fillRecipeList(ServerWorld world) {
+        Map<Identifier, MachineRecipe> recipes = new HashMap<>();
 
-    protected abstract void fillRecipeList(ServerWorld world);
-
-    @Override
-    public Collection<MachineRecipe> getRecipes(ServerWorld world) {
-        long time = System.currentTimeMillis();
-        if (time - lastUpdate > UPDATE_INTERVAL) {
-            lastUpdate = time;
-            recipeList.clear();
-            fillRecipeList(world);
+        for (SmeltingRecipe smeltingRecipe : world.getRecipeManager().listAllOfType(RecipeType.SMELTING)) {
+            MachineRecipe recipe = RecipeConversions.of(smeltingRecipe, this);
+            recipes.put(recipe.id, recipe);
         }
-        return recipeList;
+
+        recipeList = new ArrayList<>(recipes.values());
+        recipeList.sort(Comparator.comparing(r -> r.getId().getNamespace().equals(MOD_ID) ? 0 : 1));
     }
 }

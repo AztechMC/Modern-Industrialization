@@ -23,14 +23,14 @@
  */
 package aztech.modern_industrialization.machinesv2.blockentities;
 
-import aztech.modern_industrialization.machines.impl.MachineTier;
-import aztech.modern_industrialization.machines.recipe.MachineRecipeType;
 import aztech.modern_industrialization.machinesv2.components.GunpowderOverclockComponent;
 import aztech.modern_industrialization.machinesv2.components.MachineInventoryComponent;
 import aztech.modern_industrialization.machinesv2.components.sync.ProgressBar;
 import aztech.modern_industrialization.machinesv2.gui.MachineGuiParameters;
 import aztech.modern_industrialization.machinesv2.helper.SteamHelper;
+import aztech.modern_industrialization.machinesv2.init.MachineTier;
 import aztech.modern_industrialization.machinesv2.models.MachineModelClientData;
+import aztech.modern_industrialization.machinesv2.recipe.MachineRecipeType;
 import aztech.modern_industrialization.util.Simulation;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.entity.player.PlayerEntity;

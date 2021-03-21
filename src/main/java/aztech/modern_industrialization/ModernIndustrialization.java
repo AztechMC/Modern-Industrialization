@@ -39,8 +39,6 @@ import aztech.modern_industrialization.items.armor.ArmorPackets;
 import aztech.modern_industrialization.items.armor.JetpackItem;
 import aztech.modern_industrialization.items.armor.MIKeyMap;
 import aztech.modern_industrialization.items.diesel_tools.DieselToolItem;
-import aztech.modern_industrialization.machines.impl.MachineBlock;
-import aztech.modern_industrialization.machines.impl.MachineFactory;
 import aztech.modern_industrialization.machinesv2.MachinePackets;
 import aztech.modern_industrialization.machinesv2.MachineScreenHandlers;
 import aztech.modern_industrialization.machinesv2.init.*;
@@ -71,6 +69,7 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerBlockEntityEvents;
 import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricMaterialBuilder;
+import net.fabricmc.fabric.api.registry.FuelRegistry;
 import net.fabricmc.fabric.api.screenhandler.v1.ScreenHandlerRegistry;
 import net.fabricmc.fabric.api.tag.TagRegistry;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidApi;
@@ -78,11 +77,7 @@ import net.fabricmc.fabric.api.transfer.v1.item.ItemApi;
 import net.minecraft.block.Block;
 import net.minecraft.block.Material;
 import net.minecraft.block.MaterialColor;
-import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemStack;
+import net.minecraft.item.*;
 import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.tag.Tag;
 import net.minecraft.util.Identifier;
@@ -213,17 +208,6 @@ public class ModernIndustrialization implements ModInitializer {
         EnergyApi.MOVEABLE.registerForBlocks((world, pos, state, direction) -> EnergyApi.CREATIVE_EXTRACTABLE, MITanks.CREATIVE_TANK_BLOCK);
     }
 
-    private void setupMachines() {
-        for (MachineFactory factory : MachineFactory.getFactories()) {
-            factory.block = new MachineBlock(factory);
-            factory.item = new BlockItem(factory.block, new Item.Settings().group(ITEM_GROUP));
-            registerBlock(factory.block, factory.item, factory.getID());
-            factory.blockEntityType = Registry.register(Registry.BLOCK_ENTITY_TYPE, new Identifier(MOD_ID, factory.getID()),
-                    BlockEntityType.Builder.create(factory.blockEntityConstructor, factory.block).build(null));
-            factory.blockEntityConstructor.get().registerApis();
-        }
-    }
-
     public static void registerBlock(Block block, Item item, String id, int flag) {
         Identifier identifier = new MIIdentifier(id);
         Registry.register(Registry.BLOCK, identifier, block);
@@ -282,22 +266,26 @@ public class ModernIndustrialization implements ModInitializer {
         ServerSidePacketRegistry.INSTANCE.register(ArmorPackets.ACTIVATE_JETPACK, ArmorPackets.ON_ACTIVATE_JETPACK);
     }
 
+    private static void addFuel(String id, int burnTicks) {
+        Item item = Registry.ITEM.get(new MIIdentifier(id));
+        if (item == Items.AIR) {
+            throw new IllegalArgumentException("Couldn't find item " + id);
+        }
+        FuelRegistry.INSTANCE.add(item, burnTicks);
+    }
+
     private void setupFuels() {
-        /*
-         * FIXME FuelRegistry.INSTANCE.add(MIItem.ITEM_COKE, 6400);
-         * FuelRegistry.INSTANCE.add(MIItem.ITEM_COKE_DUST, 6400);
-         * FuelRegistry.INSTANCE.add(MIMaterials.coal.getItem("crushed_dust"), 1600);
-         * FuelRegistry.INSTANCE.add(MITags.COAL_DUSTS, 1600);
-         * FuelRegistry.INSTANCE.add(MIMaterials.coal.getItem("dust"), 1600);
-         * FuelRegistry.INSTANCE.add(MIMaterials.coal.getItem("tiny_dust"), 160);
-         * FuelRegistry.INSTANCE.add(MIMaterials.lignite_coal.getItem("lignite_coal"),
-         * 1600);
-         * FuelRegistry.INSTANCE.add(MIMaterials.lignite_coal.getItem("crushed_dust"),
-         * 1600); FuelRegistry.INSTANCE.add(MIMaterials.lignite_coal.getItem("dust"),
-         * 1600);
-         * FuelRegistry.INSTANCE.add(MIMaterials.lignite_coal.getItem("tiny_dust"),
-         * 160); FuelRegistry.INSTANCE.add(MIItem.ITEM_CARBON_DUST, 6400);
-         */
+        addFuel("coke", 6400);
+        addFuel("coal_crushed_dust", 6400);
+        FuelRegistry.INSTANCE.add(TagRegistry.item(new Identifier("c:coal_dusts")), 1600);
+        addFuel("coal_dust", 1600);
+        addFuel("coal_tiny_dust", 160);
+        addFuel("lignite_coal", 160);
+        addFuel("lignite_coal_crushed_dust", 1600);
+        addFuel("lignite_coal_dust", 1600);
+        addFuel("lignite_coal_tiny_dust", 160);
+        addFuel("carbon_dust", 6400);
+        addFuel("carbon_tiny_dust", 640);
 
         FluidFuelRegistry.register(MIFluids.CRUDE_OIL, 8);
         FluidFuelRegistry.register(MIFluids.DIESEL, 200);

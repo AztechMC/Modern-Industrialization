@@ -24,8 +24,6 @@
 package aztech.modern_industrialization.machinesv2.blockentities;
 
 import aztech.modern_industrialization.inventory.MIInventory;
-import aztech.modern_industrialization.machines.impl.MachineTier;
-import aztech.modern_industrialization.machines.recipe.MachineRecipeType;
 import aztech.modern_industrialization.machinesv2.MachineBlockEntity;
 import aztech.modern_industrialization.machinesv2.components.CrafterComponent;
 import aztech.modern_industrialization.machinesv2.components.IsActiveComponent;
@@ -36,6 +34,8 @@ import aztech.modern_industrialization.machinesv2.components.sync.ProgressBar;
 import aztech.modern_industrialization.machinesv2.components.sync.ReiSlotLocking;
 import aztech.modern_industrialization.machinesv2.gui.MachineGuiParameters;
 import aztech.modern_industrialization.machinesv2.helper.OrientationHelper;
+import aztech.modern_industrialization.machinesv2.init.MachineTier;
+import aztech.modern_industrialization.machinesv2.recipe.MachineRecipeType;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;

@@ -32,16 +32,12 @@ import aztech.modern_industrialization.inventory.ConfigurableInventoryPackets;
 import aztech.modern_industrialization.items.armor.ClientKeyHandler;
 import aztech.modern_industrialization.items.armor.HudRenderer;
 import aztech.modern_industrialization.items.armor.JetpackParticleAdder;
-import aztech.modern_industrialization.machines.impl.MachineFactory;
-import aztech.modern_industrialization.machines.impl.MachineModel;
-import aztech.modern_industrialization.machines.impl.multiblock.MultiblockMachineRenderer;
 import aztech.modern_industrialization.machinesv2.MachineOverlay;
 import aztech.modern_industrialization.machinesv2.MachinePackets;
 import aztech.modern_industrialization.machinesv2.MachineScreenHandlers;
 import aztech.modern_industrialization.machinesv2.init.MultiblockMachines;
 import aztech.modern_industrialization.machinesv2.models.MachineModels;
 import aztech.modern_industrialization.machinesv2.multiblocks.MultiblockErrorHighlight;
-import aztech.modern_industrialization.model.block.ModelProvider;
 import aztech.modern_industrialization.pipes.MIPipes;
 import aztech.modern_industrialization.pipes.MIPipesClient;
 import aztech.modern_industrialization.pipes.impl.PipeItem;
@@ -50,7 +46,6 @@ import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.fabricmc.fabric.api.client.rendereregistry.v1.BlockEntityRendererRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.fabricmc.fabric.api.client.screenhandler.v1.ScreenRegistry;
@@ -99,20 +94,6 @@ public class ModernIndustrializationClient implements ClientModInitializer {
         ClientPlayNetworking.registerGlobalReceiver(ConfigurableInventoryPackets.UPDATE_FLUID_SLOT,
                 ConfigurableInventoryPacketHandlers.S2C.UPDATE_FLUID_SLOT);
         ClientPlayNetworking.registerGlobalReceiver(MachinePackets.S2C.COMPONENT_SYNC, MachinePackets.S2C.ON_COMPONENT_SYNC);
-    }
-
-    @SuppressWarnings("unchecked")
-    private void setupMachines() {
-        for (MachineFactory factory : MachineFactory.getFactories()) {
-            MachineModel model = factory.buildModel();
-
-            ModelProvider.modelMap.put(new MIIdentifier("block/" + factory.getID()), model);
-            ModelProvider.modelMap.put(new MIIdentifier("item/" + factory.getID()), model);
-
-            if (factory.isMultiblock()) {
-                BlockEntityRendererRegistry.INSTANCE.register(factory.blockEntityType, MultiblockMachineRenderer::new);
-            }
-        }
     }
 
     private void registerBuiltinResourcePack() {

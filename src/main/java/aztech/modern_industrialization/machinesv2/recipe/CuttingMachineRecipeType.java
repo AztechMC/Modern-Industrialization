@@ -21,12 +21,26 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.machines.impl;
+package aztech.modern_industrialization.machinesv2.recipe;
 
-public enum MachineSlotType {
+import net.minecraft.recipe.RecipeType;
+import net.minecraft.recipe.StonecuttingRecipe;
+import net.minecraft.server.world.ServerWorld;
+import net.minecraft.util.Identifier;
 
-    INPUT_SLOT,
-    LIQUID_INPUT_SLOT,
-    OUTPUT_SLOT,
-    LIQUID_OUTPUT_SLOT;
+public class CuttingMachineRecipeType extends ProxyableMachineRecipeType {
+    public CuttingMachineRecipeType(Identifier id) {
+        super(id);
+    }
+
+    @Override
+    protected void fillRecipeList(ServerWorld world) {
+        // Add all regular cutting machine recipes
+        recipeList.addAll(getManagerRecipes(world));
+        // Add all stone cutter recipes
+        for (StonecuttingRecipe stonecuttingRecipe : world.getRecipeManager().listAllOfType(RecipeType.STONECUTTING)) {
+            MachineRecipe recipe = RecipeConversions.of(stonecuttingRecipe, this);
+            recipeList.add(recipe);
+        }
+    }
 }

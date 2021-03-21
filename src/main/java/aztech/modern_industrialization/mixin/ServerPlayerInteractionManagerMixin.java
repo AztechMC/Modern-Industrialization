@@ -21,25 +21,29 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.machines.impl;
+package aztech.modern_industrialization.mixin;
 
-import aztech.modern_industrialization.inventory.MIInventory;
+import aztech.modern_industrialization.mixin_impl.SteamDrillHooks;
+import net.minecraft.network.packet.c2s.play.PlayerActionC2SPacket;
+import net.minecraft.server.network.ServerPlayerInteractionManager;
+import net.minecraft.util.math.BlockPos;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-public interface MachineInventory {
-    void setItemExtract(boolean extract);
+/**
+ * @reason Similar to {@link PlayerInventoryMixin}.
+ */
+@Mixin(ServerPlayerInteractionManager.class)
+public class ServerPlayerInteractionManagerMixin {
+    @Inject(at = @At("HEAD"), method = "finishMining")
+    private void finishMiningHead(BlockPos pos, PlayerActionC2SPacket.Action action, String reason, CallbackInfo ci) {
+        SteamDrillHooks.set(((ServerPlayerInteractionManager) (Object) this).player);
+    }
 
-    void setFluidExtract(boolean extract);
-
-    boolean getItemExtract();
-
-    boolean getFluidExtract();
-
-    boolean hasOutput();
-
-    MIInventory getInventory();
-
-    // Not called markDirty because it wouldn't get remapped whereas the markDirty
-    // method on the classes this interface is implemented on would get remapped,
-    // causing AbstractMethodErrors at runtime.
-    void markDirty2();
+    @Inject(at = @At("RETURN"), method = "finishMining")
+    private void finishMiningReturn(BlockPos pos, PlayerActionC2SPacket.Action action, String reason, CallbackInfo ci) {
+        SteamDrillHooks.remove();
+    }
 }

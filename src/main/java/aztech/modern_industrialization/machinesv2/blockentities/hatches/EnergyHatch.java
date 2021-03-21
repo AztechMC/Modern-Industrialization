@@ -28,12 +28,12 @@ import aztech.modern_industrialization.api.energy.EnergyApi;
 import aztech.modern_industrialization.api.energy.EnergyExtractable;
 import aztech.modern_industrialization.api.energy.EnergyInsertable;
 import aztech.modern_industrialization.inventory.MIInventory;
-import aztech.modern_industrialization.machines.impl.multiblock.HatchType;
 import aztech.modern_industrialization.machinesv2.components.EnergyComponent;
 import aztech.modern_industrialization.machinesv2.components.OrientationComponent;
 import aztech.modern_industrialization.machinesv2.components.sync.EnergyBar;
 import aztech.modern_industrialization.machinesv2.gui.MachineGuiParameters;
 import aztech.modern_industrialization.machinesv2.multiblocks.HatchBlockEntity;
+import aztech.modern_industrialization.machinesv2.multiblocks.HatchType;
 import java.util.List;
 import net.minecraft.block.entity.BlockEntityType;
 

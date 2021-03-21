@@ -24,6 +24,7 @@
 package aztech.modern_industrialization;
 
 import aztech.modern_industrialization.items.GuideBookItem;
+import aztech.modern_industrialization.items.SteamDrillItem;
 import aztech.modern_industrialization.tools.CrowbarItem;
 import java.util.SortedMap;
 import java.util.TreeMap;
@@ -51,6 +52,7 @@ public final class MIItem {
 
     public static final Item ITEM_CROWBAR = of(CrowbarItem::new, "crowbar", 1);
     public static final Item ITEM_GUIDE_BOOK = of(GuideBookItem::new, "guidebook", 1);
+    public static final Item ITEM_STEAM_DRILL = of(SteamDrillItem::new, "steam_mining_drill", 1);
     public static final Item ITEM_UNCOOKED_STEEL_DUST = of("uncooked_steel_dust");
 
     public static final Item ITEM_LV_MOTOR = of("lv_motor");

@@ -28,7 +28,7 @@ import static aztech.modern_industrialization.ModernIndustrialization.STONE_MATE
 
 import aztech.modern_industrialization.MIBlock;
 import aztech.modern_industrialization.MIItem;
-import aztech.modern_industrialization.material.OreBlock;
+import aztech.modern_industrialization.blocks.OreBlock;
 import aztech.modern_industrialization.materials.MaterialHelper;
 import aztech.modern_industrialization.textures.MITextures;
 import aztech.modern_industrialization.textures.TextureManager;

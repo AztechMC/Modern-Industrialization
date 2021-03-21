@@ -21,25 +21,23 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.machines.special;
+package aztech.modern_industrialization.machinesv2.multiblocks;
 
-import aztech.modern_industrialization.inventory.ConfigurableItemStack;
-import aztech.modern_industrialization.machines.impl.MachineBlockEntity;
-import aztech.modern_industrialization.machines.impl.MachineFactory;
+public enum HatchType {
+    ITEM_INPUT(0),
+    ITEM_OUTPUT(1),
+    FLUID_INPUT(2),
+    FLUID_OUTPUT(3),
+    ENERGY_INPUT(4),
+    ENERGY_OUTPUT(5),;
 
-public class ConfigurableChestBlockEntity extends MachineBlockEntity {
-    public ConfigurableChestBlockEntity(MachineFactory factory) {
-        super(factory);
+    private final int id;
 
-        // Replace the existing slots by slots that allow any pipe I/O.
-        for (int i = 0; i < inventory.itemStacks.size(); ++i) {
-            inventory.itemStacks.set(i, ConfigurableItemStack.standardIOSlot(true));
-        }
+    HatchType(int id) {
+        this.id = id;
     }
 
-    @Override
-    public void tick() {
-        // don't tick
-        autoExtract();
+    public int getId() {
+        return id;
     }
 }

@@ -24,7 +24,8 @@
 package aztech.modern_industrialization.compat.kubejs;
 
 import aztech.modern_industrialization.blocks.forgehammer.ForgeHammerScreenHandler;
-import aztech.modern_industrialization.machines.MIMachines;
+import aztech.modern_industrialization.machinesv2.init.MIMachineRecipeTypes;
+import aztech.modern_industrialization.machinesv2.recipe.MachineRecipeType;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -43,7 +44,9 @@ public class MIRecipeEventHandler implements KubeJSInitializer {
     @Override
     public void onKubeJSInitialization() {
         RegisterRecipeHandlersEvent.EVENT.register(event -> {
-            MIMachines.RECIPE_TYPES.keySet().forEach(t -> event.register(t.getId(), MachineRecipe::new));
+            for (MachineRecipeType mrt : MIMachineRecipeTypes.getRecipeTypes()) {
+                event.register(mrt.getId(), MachineRecipe::new);
+            }
             event.register(ForgeHammerScreenHandler.RECIPE_HAMMER.getId(), MachineRecipe::new);
             event.register(ForgeHammerScreenHandler.RECIPE_SAW.getId(), MachineRecipe::new);
         });

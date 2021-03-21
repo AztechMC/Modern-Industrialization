@@ -756,6 +756,7 @@
     "item.modern_industrialization.stainless_steel_rod": "Stainless Steel Rod",
     "item.modern_industrialization.stainless_steel_rotor": "Stainless Steel Rotor",
     "item.modern_industrialization.stainless_steel_tiny_dust": "Stainless Steel Tiny Dust",
+    "item.modern_industrialization.steam_mining_drill": "Steam Mining Drill",
     "item.modern_industrialization.steel_blade": "Steel Blade",
     "item.modern_industrialization.steel_bolt": "Steel Bolt",
     "item.modern_industrialization.steel_curved_plate": "Steel Curved Plate",
@@ -972,6 +973,7 @@
     "text.modern_industrialization.progress": "Progress : %s",
     "text.modern_industrialization.priority_help": "Pipes will insert into higher priorities first.",
     "text.modern_industrialization.probability": "Probability: %s %%",
+    "text.modern_industrialization.seconds_left": "Seconds left: %s",
     "text.modern_industrialization.shape_error": "Multiblock shape error at (%d, %d, %d): %s",
     "text.modern_industrialization.shape_error_block": "Expected block %s",
     "text.modern_industrialization.shape_error_hatch": "Expected hatch: one of %s",
@@ -992,5 +994,6 @@
     "text.modern_industrialization.tooltip_hammer": "Hammer, Click to switch to saw",
     "text.modern_industrialization.tooltip_saw": "Saw, Click to switch to hammer",
     "text.modern_industrialization.tooltip_speed_upgrade": "Item Pipe Speed Upgrade: +%d items / 3s.",
+    "text.modern_industrialization.water_percent": "Water: %s %%",
     "text.modern_industrialization.whitelist": "Whitelist mode enabled"
 }

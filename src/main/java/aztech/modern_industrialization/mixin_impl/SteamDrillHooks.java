@@ -21,24 +21,26 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.machines.impl.multiblock;
+package aztech.modern_industrialization.mixin_impl;
 
-import static aztech.modern_industrialization.machines.impl.multiblock.HatchType.ENERGY_INPUT;
+import java.util.HashMap;
+import java.util.Map;
+import net.minecraft.entity.player.PlayerEntity;
+import org.jetbrains.annotations.Nullable;
 
-import aztech.modern_industrialization.api.energy.CableTier;
-import aztech.modern_industrialization.machines.impl.MachineFactory;
+public class SteamDrillHooks {
+    private static final Map<Thread, PlayerEntity> currentPlayer = new HashMap<>();
 
-public class EnergyInputHatchBlockEntity extends HatchBlockEntity {
-    public final CableTier tier;
-
-    public EnergyInputHatchBlockEntity(MachineFactory factory, CableTier tier) {
-        super(factory, ENERGY_INPUT);
-        this.tier = tier;
-        this.insertable = buildInsertable(tier);
+    @Nullable
+    public static PlayerEntity getCurrentPlayer() {
+        return currentPlayer.get(Thread.currentThread());
     }
 
-    @Override
-    protected long getMaxStoredEu() {
-        return tier.getMaxInsert() * 10;
+    public static void set(PlayerEntity player) {
+        currentPlayer.put(Thread.currentThread(), player);
+    }
+
+    public static void remove() {
+        currentPlayer.remove(Thread.currentThread());
     }
 }

@@ -27,7 +27,7 @@ import aztech.modern_industrialization.inventory.ConfigurableFluidStack;
 import aztech.modern_industrialization.inventory.ConfigurableItemStack;
 import aztech.modern_industrialization.machines.impl.MachineFactory;
 import aztech.modern_industrialization.machines.impl.multiblock.HatchBlockEntity;
-import aztech.modern_industrialization.machines.impl.multiblock.HatchType;
+import aztech.modern_industrialization.machinesv2.multiblocks.HatchType;
 import aztech.modern_industrialization.machines.impl.multiblock.MultiblockMachineBlockEntity;
 import aztech.modern_industrialization.machines.impl.multiblock.MultiblockShape;
 import java.util.List;

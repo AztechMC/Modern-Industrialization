@@ -21,9 +21,30 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.machines.impl;
+package aztech.modern_industrialization.machinesv2.recipe;
 
-@FunctionalInterface
-public interface BlockEntityFactory {
-    MachineBlockEntity create(MachineFactory factory);
+import static aztech.modern_industrialization.ModernIndustrialization.MOD_ID;
+
+import java.util.*;
+import net.minecraft.recipe.RecipeType;
+import net.minecraft.recipe.SmeltingRecipe;
+import net.minecraft.server.world.ServerWorld;
+import net.minecraft.util.Identifier;
+
+public class FurnaceRecipeProxy extends ProxyableMachineRecipeType {
+    public FurnaceRecipeProxy(Identifier id) {
+        super(id);
+    }
+
+    protected void fillRecipeList(ServerWorld world) {
+        Map<Identifier, MachineRecipe> recipes = new HashMap<>();
+
+        for (SmeltingRecipe smeltingRecipe : world.getRecipeManager().listAllOfType(RecipeType.SMELTING)) {
+            MachineRecipe recipe = RecipeConversions.of(smeltingRecipe, this);
+            recipes.put(recipe.id, recipe);
+        }
+
+        recipeList = new ArrayList<>(recipes.values());
+        recipeList.sort(Comparator.comparing(r -> r.getId().getNamespace().equals(MOD_ID) ? 0 : 1));
+    }
 }

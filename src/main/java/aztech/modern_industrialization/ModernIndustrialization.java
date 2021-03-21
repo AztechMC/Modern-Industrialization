@@ -39,8 +39,6 @@ import aztech.modern_industrialization.items.armor.ArmorPackets;
 import aztech.modern_industrialization.items.armor.JetpackItem;
 import aztech.modern_industrialization.items.armor.MIKeyMap;
 import aztech.modern_industrialization.items.diesel_tools.DieselToolItem;
-import aztech.modern_industrialization.machines.impl.MachineBlock;
-import aztech.modern_industrialization.machines.impl.MachineFactory;
 import aztech.modern_industrialization.machinesv2.MachinePackets;
 import aztech.modern_industrialization.machinesv2.MachineScreenHandlers;
 import aztech.modern_industrialization.machinesv2.init.*;
@@ -78,7 +76,6 @@ import net.fabricmc.fabric.api.transfer.v1.item.ItemApi;
 import net.minecraft.block.Block;
 import net.minecraft.block.Material;
 import net.minecraft.block.MaterialColor;
-import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
@@ -211,17 +208,6 @@ public class ModernIndustrialization implements ModInitializer {
         FluidApi.SIDED.registerForBlocks((world, pos, state, direction) -> TrashCanBlock.trashStorage(), TRASH_CAN);
         FluidApi.ITEM.register((key, ctx) -> TrashCanBlock.trashStorage(), ITEM_TRASH_CAN);
         EnergyApi.MOVEABLE.registerForBlocks((world, pos, state, direction) -> EnergyApi.CREATIVE_EXTRACTABLE, MITanks.CREATIVE_TANK_BLOCK);
-    }
-
-    private void setupMachines() {
-        for (MachineFactory factory : MachineFactory.getFactories()) {
-            factory.block = new MachineBlock(factory);
-            factory.item = new BlockItem(factory.block, new Item.Settings().group(ITEM_GROUP));
-            registerBlock(factory.block, factory.item, factory.getID());
-            factory.blockEntityType = Registry.register(Registry.BLOCK_ENTITY_TYPE, new Identifier(MOD_ID, factory.getID()),
-                    BlockEntityType.Builder.create(factory.blockEntityConstructor, factory.block).build(null));
-            factory.blockEntityConstructor.get().registerApis();
-        }
     }
 
     public static void registerBlock(Block block, Item item, String id, int flag) {

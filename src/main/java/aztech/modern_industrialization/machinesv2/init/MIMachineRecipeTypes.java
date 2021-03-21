@@ -24,14 +24,19 @@
 package aztech.modern_industrialization.machinesv2.init;
 
 import aztech.modern_industrialization.MIIdentifier;
-import aztech.modern_industrialization.machines.recipe.CuttingMachineRecipeType;
-import aztech.modern_industrialization.machines.recipe.FurnaceRecipeProxy;
-import aztech.modern_industrialization.machines.recipe.MachineRecipeType;
+import aztech.modern_industrialization.machinesv2.recipe.CuttingMachineRecipeType;
+import aztech.modern_industrialization.machinesv2.recipe.FurnaceRecipeProxy;
+import aztech.modern_industrialization.machinesv2.recipe.MachineRecipeType;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.function.Function;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
 public class MIMachineRecipeTypes {
+    private static final List<MachineRecipeType> recipeTypes = new ArrayList<>();
     // @formatter:off
     // Single block
     public static final MachineRecipeType ASSEMBLER = create("assembler").withItemInputs().withFluidInputs().withItemOutputs();
@@ -61,6 +66,10 @@ public class MIMachineRecipeTypes {
         // init static
     }
 
+    public static List<MachineRecipeType> getRecipeTypes() {
+        return Collections.unmodifiableList(recipeTypes);
+    }
+
     private static MachineRecipeType create(String name) {
         return create(name, MachineRecipeType::new);
     }
@@ -69,6 +78,7 @@ public class MIMachineRecipeTypes {
         MachineRecipeType type = ctor.apply(new MIIdentifier(name));
         Registry.register(Registry.RECIPE_SERIALIZER, type.getId(), type);
         Registry.register(Registry.RECIPE_TYPE, type.getId(), type);
+        recipeTypes.add(type);
         return type;
     }
 }

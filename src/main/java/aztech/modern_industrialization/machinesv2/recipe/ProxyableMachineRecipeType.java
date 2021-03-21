@@ -21,24 +21,36 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.machines.impl.multiblock;
+package aztech.modern_industrialization.machinesv2.recipe;
 
-import static aztech.modern_industrialization.machines.impl.multiblock.HatchType.ENERGY_INPUT;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import net.minecraft.server.world.ServerWorld;
+import net.minecraft.util.Identifier;
 
-import aztech.modern_industrialization.api.energy.CableTier;
-import aztech.modern_industrialization.machines.impl.MachineFactory;
-
-public class EnergyInputHatchBlockEntity extends HatchBlockEntity {
-    public final CableTier tier;
-
-    public EnergyInputHatchBlockEntity(MachineFactory factory, CableTier tier) {
-        super(factory, ENERGY_INPUT);
-        this.tier = tier;
-        this.insertable = buildInsertable(tier);
+/**
+ * A machine recipe type that allows adding proxies
+ */
+public abstract class ProxyableMachineRecipeType extends MachineRecipeType {
+    public ProxyableMachineRecipeType(Identifier id) {
+        super(id);
     }
 
+    private long lastUpdate = 0;
+    private static final long UPDATE_INTERVAL = 20 * 1000;
+    protected List<MachineRecipe> recipeList = new ArrayList<>();
+
+    protected abstract void fillRecipeList(ServerWorld world);
+
     @Override
-    protected long getMaxStoredEu() {
-        return tier.getMaxInsert() * 10;
+    public Collection<MachineRecipe> getRecipes(ServerWorld world) {
+        long time = System.currentTimeMillis();
+        if (time - lastUpdate > UPDATE_INTERVAL) {
+            lastUpdate = time;
+            recipeList.clear();
+            fillRecipeList(world);
+        }
+        return recipeList;
     }
 }

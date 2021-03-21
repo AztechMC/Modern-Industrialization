@@ -25,10 +25,10 @@ package aztech.modern_industrialization.machinesv2.blockentities.hatches;
 
 import aztech.modern_industrialization.inventory.ConfigurableItemStack;
 import aztech.modern_industrialization.inventory.MIInventory;
-import aztech.modern_industrialization.machines.impl.multiblock.HatchType;
 import aztech.modern_industrialization.machinesv2.components.OrientationComponent;
 import aztech.modern_industrialization.machinesv2.gui.MachineGuiParameters;
 import aztech.modern_industrialization.machinesv2.multiblocks.HatchBlockEntity;
+import aztech.modern_industrialization.machinesv2.multiblocks.HatchType;
 import java.util.List;
 import net.minecraft.block.entity.BlockEntityType;
 

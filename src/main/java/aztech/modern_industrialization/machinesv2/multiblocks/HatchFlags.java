@@ -23,8 +23,6 @@
  */
 package aztech.modern_industrialization.machinesv2.multiblocks;
 
-import aztech.modern_industrialization.machines.impl.multiblock.HatchType;
-
 public class HatchFlags {
     private final int flags;
 

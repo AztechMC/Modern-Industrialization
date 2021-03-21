@@ -21,26 +21,48 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.machines.recipe;
+package aztech.modern_industrialization.machinesv2.init;
 
-import net.minecraft.recipe.RecipeType;
-import net.minecraft.recipe.StonecuttingRecipe;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.Identifier;
+public enum MachineTier {
+    BRONZE("bronze", true, 2, 2),
+    STEEL("steel", true, 4, 4),
+    LV("lv", false, 32, 8),
+    UNLIMITED("unlimited", false, Integer.MAX_VALUE, 8),;
 
-public class CuttingMachineRecipeType extends ProxyableMachineRecipeType {
-    public CuttingMachineRecipeType(Identifier id) {
-        super(id);
+    private final String name;
+    private final boolean steam;
+    private final int maxEu;
+    private final int baseEu;
+
+    MachineTier(String name, boolean steam, int maxEu, int baseEu) {
+        this.name = name;
+        this.steam = steam;
+        this.maxEu = maxEu;
+        this.baseEu = baseEu;
+    }
+
+    public boolean isSteam() {
+        return steam;
+    }
+
+    public boolean isElectric() {
+        return !steam;
+    }
+
+    public int getBaseEu() {
+        return baseEu;
+    }
+
+    public int getMaxEu() {
+        return maxEu;
     }
 
     @Override
-    protected void fillRecipeList(ServerWorld world) {
-        // Add all regular cutting machine recipes
-        recipeList.addAll(getManagerRecipes(world));
-        // Add all stone cutter recipes
-        for (StonecuttingRecipe stonecuttingRecipe : world.getRecipeManager().listAllOfType(RecipeType.STONECUTTING)) {
-            MachineRecipe recipe = RecipeConversions.of(stonecuttingRecipe, this);
-            recipeList.add(recipe);
-        }
+    public String toString() {
+        return name;
+    }
+
+    public int getMaxStoredEu() {
+        return isSteam() ? 0 : getMaxEu() * 100;
     }
 }

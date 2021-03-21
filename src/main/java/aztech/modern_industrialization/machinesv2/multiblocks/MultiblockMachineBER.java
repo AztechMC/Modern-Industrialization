@@ -24,7 +24,6 @@
 package aztech.modern_industrialization.machinesv2.multiblocks;
 
 import aztech.modern_industrialization.ModernIndustrialization;
-import aztech.modern_industrialization.machines.impl.multiblock.HatchType;
 import aztech.modern_industrialization.machinesv2.MachineBlock;
 import aztech.modern_industrialization.util.RenderHelper;
 import net.minecraft.block.entity.BlockEntity;

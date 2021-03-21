@@ -25,7 +25,7 @@ package aztech.modern_industrialization.compat.rei.machines;
 
 import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.inventory.SlotPositions;
-import aztech.modern_industrialization.machines.impl.MachineScreen;
+import aztech.modern_industrialization.machinesv2.MachineScreenHandlers;
 import aztech.modern_industrialization.machinesv2.components.sync.ProgressBar;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -169,7 +169,7 @@ public class MachineRecipeCategory implements RecipeCategory<MachineRecipeDispla
 
     private static Widget createFluidSlotBackground(Point point) {
         return Widgets.createDrawableWidget((helper, matrices, mouseX, mouseY, delta) -> {
-            MinecraftClient.getInstance().getTextureManager().bindTexture(MachineScreen.SLOT_ATLAS);
+            MinecraftClient.getInstance().getTextureManager().bindTexture(MachineScreenHandlers.SLOT_ATLAS);
             helper.drawTexture(matrices, point.x - 1, point.y - 1, 18, 0, 18, 18);
         });
     }

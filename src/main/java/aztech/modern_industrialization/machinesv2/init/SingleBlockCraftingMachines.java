@@ -30,8 +30,7 @@ import aztech.modern_industrialization.compat.rei.machines.ReiMachineRecipes;
 import aztech.modern_industrialization.inventory.ConfigurableFluidStack;
 import aztech.modern_industrialization.inventory.ConfigurableItemStack;
 import aztech.modern_industrialization.inventory.SlotPositions;
-import aztech.modern_industrialization.machines.impl.MachineTier;
-import aztech.modern_industrialization.machines.recipe.MachineRecipeType;
+import aztech.modern_industrialization.machinesv2.recipe.MachineRecipeType;
 import aztech.modern_industrialization.machinesv2.MachineBlockEntity;
 import aztech.modern_industrialization.machinesv2.blockentities.ElectricCraftingMachineBlockEntity;
 import aztech.modern_industrialization.machinesv2.blockentities.SteamCraftingMachineBlockEntity;
@@ -46,7 +45,6 @@ import java.util.List;
 import java.util.function.Consumer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.text.TranslatableText;
 
 /**
  * Registration of all single block crafting machines.

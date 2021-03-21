@@ -23,7 +23,6 @@
  */
 package aztech.modern_industrialization.machinesv2.blockentities.multiblocks;
 
-import aztech.modern_industrialization.machines.recipe.MachineRecipeType;
 import aztech.modern_industrialization.machinesv2.components.CrafterComponent;
 import aztech.modern_industrialization.machinesv2.components.GunpowderOverclockComponent;
 import aztech.modern_industrialization.machinesv2.components.OrientationComponent;
@@ -31,6 +30,7 @@ import aztech.modern_industrialization.machinesv2.helper.SteamHelper;
 import aztech.modern_industrialization.machinesv2.multiblocks.HatchBlockEntity;
 import aztech.modern_industrialization.machinesv2.multiblocks.ShapeMatcher;
 import aztech.modern_industrialization.machinesv2.multiblocks.ShapeTemplate;
+import aztech.modern_industrialization.machinesv2.recipe.MachineRecipeType;
 import aztech.modern_industrialization.util.Simulation;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.entity.player.PlayerEntity;

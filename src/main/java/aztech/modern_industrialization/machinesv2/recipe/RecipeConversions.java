@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.machines.recipe;
+package aztech.modern_industrialization.machinesv2.recipe;
 
 import java.util.Collections;
 import net.minecraft.fluid.Fluids;

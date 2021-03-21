@@ -24,7 +24,7 @@
 package aztech.modern_industrialization.compat.rei.forgehammer_recipe;
 
 import aztech.modern_industrialization.blocks.forgehammer.ForgeHammerScreen;
-import aztech.modern_industrialization.machines.recipe.MachineRecipeType;
+import aztech.modern_industrialization.machinesv2.recipe.MachineRecipeType;
 import java.util.ArrayList;
 import java.util.List;
 import me.shedaniel.math.Point;

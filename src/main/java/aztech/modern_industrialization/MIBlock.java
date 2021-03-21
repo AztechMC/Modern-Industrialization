@@ -26,7 +26,7 @@ package aztech.modern_industrialization;
 import static aztech.modern_industrialization.ModernIndustrialization.METAL_MATERIAL;
 import static aztech.modern_industrialization.ModernIndustrialization.STONE_MATERIAL;
 
-import aztech.modern_industrialization.material.OreBlock;
+import aztech.modern_industrialization.blocks.OreBlock;
 import aztech.modern_industrialization.util.MobSpawning;
 import java.util.SortedMap;
 import java.util.TreeMap;

@@ -56,6 +56,10 @@ public class MachineRecipe implements Recipe<Inventory> {
         this.type = type;
     }
 
+    public long getTotalEu() {
+        return (long) eu * duration;
+    }
+
     @Override
     public boolean isIgnoredInRecipeBook() {
         return true;

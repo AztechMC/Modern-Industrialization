@@ -24,6 +24,7 @@
 package aztech.modern_industrialization;
 
 import aztech.modern_industrialization.items.GuideBookItem;
+import aztech.modern_industrialization.tools.CrowbarItem;
 import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.function.Function;
@@ -36,6 +37,10 @@ public final class MIItem {
         return of(Item::new, id, 64);
     }
 
+    public static Item of(String id, int maxCount) {
+        return of(Item::new, id, maxCount);
+    }
+
     public static Item of(Function<Item.Settings, Item> ctor, String id, int maxCount) {
         Item item = ctor.apply(new Item.Settings().maxCount(maxCount).group(ModernIndustrialization.ITEM_GROUP));
         if (items.put(id, item) != null) {
@@ -44,7 +49,7 @@ public final class MIItem {
         return item;
     }
 
-    public static final Item ITEM_CROWBAR = of(GuideBookItem::new, "crowbar", 1);
+    public static final Item ITEM_CROWBAR = of(CrowbarItem::new, "crowbar", 1);
     public static final Item ITEM_GUIDE_BOOK = of(GuideBookItem::new, "guidebook", 1);
     public static final Item ITEM_UNCOOKED_STEEL_DUST = of("uncooked_steel_dust");
 
@@ -76,6 +81,10 @@ public final class MIItem {
     public static final Item ITEM_AND_GATE = of("and_gate");
     public static final Item ITEM_OR_GATE = of("or_gate");
     public static final Item ITEM_NOT_GATE = of("not_gate");
+
+    public static final Item BASIC_UPGRADE = of("basic_upgrade");
+    public static final Item ADVANCED_UPGRADE = of("advanced_upgrade");
+    public static final Item TURBO_UPGRADE = of("turbo_upgrade");
 
     /*
      * FIXME public static final Item ITEM_DEPLETED_URANIUM_FUEL_ROD = new

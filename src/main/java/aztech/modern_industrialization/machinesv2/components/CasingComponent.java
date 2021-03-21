@@ -96,7 +96,7 @@ public class CasingComponent implements IComponent {
 
     public ActionResult onUse(MachineBlockEntity be, PlayerEntity player, Hand hand) {
         ItemStack stackInHand = player.getStackInHand(hand);
-        if (stackInHand.getItem() == MIItem.ITEM_CROWBAR) {
+        if (stackInHand.getItem() == MIItem.ITEM_CROWBAR && !player.isSneaking()) {
             if (tierCasing != defaultCasing) {
                 dropCasing(be.getWorld(), be.getPos());
                 tierCasing = defaultCasing;
@@ -138,7 +138,7 @@ public class CasingComponent implements IComponent {
         if (tierCasing != defaultCasing) {
             return new ItemStack(blockCasing.inverse().get(tierCasing).asItem(), 1);
         }
-        return null;
+        return ItemStack.EMPTY;
     }
 
     public MachineCasing getCasing() {

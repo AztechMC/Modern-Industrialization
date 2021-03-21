@@ -31,6 +31,7 @@ import aztech.modern_industrialization.machines.recipe.MachineRecipeType;
 import aztech.modern_industrialization.machinesv2.components.CasingComponent;
 import aztech.modern_industrialization.machinesv2.components.EnergyComponent;
 import aztech.modern_industrialization.machinesv2.components.MachineInventoryComponent;
+import aztech.modern_industrialization.machinesv2.components.UpgradeComponent;
 import aztech.modern_industrialization.machinesv2.components.sync.EnergyBar;
 import aztech.modern_industrialization.machinesv2.components.sync.ProgressBar;
 import aztech.modern_industrialization.machinesv2.components.sync.RecipeEfficiencyBar;
@@ -52,14 +53,16 @@ public class ElectricCraftingMachineBlockEntity extends AbstractCraftingMachineB
             RecipeEfficiencyBar.Parameters efficiencyBarParams, MachineTier tier, long euCapacity) {
         super(type, recipeType, inventory, guiParams, progressBarParams, tier);
         this.casing = new CasingComponent(CableTier.LV);
+        this.upgrades = new UpgradeComponent();
         this.energy = new EnergyComponent(casing::getEuCapacity);
         this.insertable = energy.buildInsertable(cableTier -> this.casing.canInsertEu(cableTier));
         registerClientComponent(new EnergyBar.Server(energyBarParams, energy::getEu, energy::getCapacity));
         registerClientComponent(new RecipeEfficiencyBar.Server(efficiencyBarParams, crafter));
-        this.registerComponents(energy, casing);
+        this.registerComponents(energy, casing, upgrades);
     }
 
     private final CasingComponent casing;
+    private final UpgradeComponent upgrades;
     private final EnergyComponent energy;
     private final EnergyInsertable insertable;
 
@@ -84,18 +87,24 @@ public class ElectricCraftingMachineBlockEntity extends AbstractCraftingMachineB
     protected ActionResult onUse(PlayerEntity player, Hand hand, Direction face) {
         ActionResult result = super.onUse(player, hand, face);
         if (!result.isAccepted()) {
-            return casing.onUse(this, player, hand);
+            result = casing.onUse(this, player, hand);
+        }
+        if (!result.isAccepted()) {
+            result = upgrades.onUse(this, player, hand);
         }
         return result;
     }
 
     @Override
+    public long getMaxRecipeEu() {
+        return tier.getMaxEu() + upgrades.getAddMaxEUPerTick();
+    }
+
+    @Override
     public List<ItemStack> dropExtra() {
         List<ItemStack> drops = super.dropExtra();
-        ItemStack dropCasing = casing.getDrop();
-        if (dropCasing != null) {
-            drops.add(dropCasing);
-        }
+        drops.add(casing.getDrop());
+        drops.add(upgrades.getDrop());
         return drops;
     }
 

@@ -99,6 +99,9 @@ public class CrafterComponent implements IComponent.ServerOnly {
     private int efficiencyTicks;
     private int maxEfficiencyTicks;
 
+    private long previousBaseEu = -1;
+    private long previousMaxEu = -1;
+
     public float getProgress() {
         return (float) usedEnergy / recipeEnergy;
     }
@@ -166,6 +169,16 @@ public class CrafterComponent implements IComponent.ServerOnly {
             isActive = false;
         }
 
+        if (activeRecipe != null) {
+            if (previousBaseEu != behavior.getBaseRecipeEu() || previousMaxEu != behavior.getMaxRecipeEu()) {
+                previousBaseEu = behavior.getBaseRecipeEu();
+                previousMaxEu = behavior.getMaxRecipeEu();
+                maxEfficiencyTicks = getRecipeMaxEfficiencyTicks(activeRecipe);
+                efficiencyTicks = Math.min(efficiencyTicks, maxEfficiencyTicks);
+            }
+
+        }
+
         // ADD OR REMOVE EFFICIENCY TICKS
         // If we finished a recipe, we can add an efficiency tick
         if (finishedRecipe) {
@@ -231,11 +244,11 @@ public class CrafterComponent implements IComponent.ServerOnly {
                 // the efficiency has reached 0 (the latter is to recalculate the efficiency for
                 // 0.3.6 worlds without having to break and replace the machines)
                 if (activeRecipe != recipe || efficiencyTicks == 0) {
-                    maxEfficiencyTicks = getRecipeMaxEfficiencyTicks(recipe.eu, (long) recipe.eu * recipe.duration);
+                    maxEfficiencyTicks = getRecipeMaxEfficiencyTicks(recipe);
                 }
                 activeRecipe = recipe;
                 usedEnergy = 0;
-                recipeEnergy = (long) recipe.eu * recipe.duration;
+                recipeEnergy = recipe.getTotalEu();
                 recipeMaxEu = getRecipeMaxEu(recipe.eu, recipeEnergy, efficiencyTicks);
                 return true;
             }
@@ -285,9 +298,9 @@ public class CrafterComponent implements IComponent.ServerOnly {
         return Math.min(totalEu, Math.min((int) Math.floor(baseEu * getEfficiencyOverclock(efficiencyTicks)), behavior.getMaxRecipeEu()));
     }
 
-    private int getRecipeMaxEfficiencyTicks(long eu, long totalEu) {
-        if (efficiencyTicks != 0)
-            throw new RuntimeException("Illegal state");
+    private int getRecipeMaxEfficiencyTicks(MachineRecipe recipe) {
+        long eu = recipe.eu;
+        long totalEu = recipe.getTotalEu();
         for (int ticks = 0; true; ++ticks) {
             if (getRecipeMaxEu(eu, totalEu, ticks) == Math.min(behavior.getMaxRecipeEu(), totalEu))
                 return ticks;
@@ -336,8 +349,7 @@ public class CrafterComponent implements IComponent.ServerOnly {
                 }
             }
             int remainingAmount = input.amount;
-            for (int i = 0; i < stacks.size(); i++) {
-                ConfigurableItemStack stack = stacks.get(i);
+            for (ConfigurableItemStack stack : stacks) {
                 if (stack.getCount() > 0 && input.matches(stack.getItemKey().toStack())) { // TODO: ItemStack creation slow?
                     int taken = Math.min(stack.getCount(), remainingAmount);
                     stack.decrement(taken);

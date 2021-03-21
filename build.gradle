@@ -130,6 +130,13 @@ repositories {
             includeGroup "dev.technici4n"
         }
     }
+    // for reach entity attributes, required by Magna
+    maven {
+        url = "https://maven.jamieswhiteshirt.com/libs-release/"
+        content {
+            includeGroup "com.jamieswhiteshirt"
+        }
+    }
     mavenLocal()
 }
 
@@ -161,6 +168,10 @@ dependencies {
     modImplementation "curse.maven:kubejs-395864:${project.kubejs_file}"
     modImplementation "curse.maven:architectury-fabric-419697:${project.architectury_file}"
     modRuntime "curse.maven:rhino-416294:${project.rhino_file}"
+    include modImplementation("com.github.Draylar:magna:${project.magna_version}") {
+        exclude(group: "io.github.prospector")
+        exclude(group: "me.shedaniel.cloth")
+    }
 
     //modApi "dev.technici4n:FastTransferLib:${project.ftl_version}"
     //include "dev.technici4n:FastTransferLib:${project.ftl_version}"

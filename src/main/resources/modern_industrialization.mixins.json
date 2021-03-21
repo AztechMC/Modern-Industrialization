@@ -6,9 +6,11 @@
   "mixins": [
     "IngredientMixin",
     "ItemStackMixin",
+    "PlayerInventoryMixin",
     "RecipeManagerAccessor",
     "ReloadableResourceManagerImplMixin",
     "ResourceImplAccessor",
+    "ServerPlayerInteractionManagerMixin",
     "ServerPlayNetworkHandlerAccessor",
     "WorldChunkMixin"
   ],

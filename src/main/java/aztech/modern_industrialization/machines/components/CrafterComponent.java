@@ -118,6 +118,10 @@ public class CrafterComponent implements IComponent.ServerOnly {
         return activeRecipe != null;
     }
 
+    public Behavior getBehavior() {
+        return behavior;
+    }
+
     public long getCurrentRecipeEu() {
         Preconditions.checkArgument(hasActiveRecipe());
         return recipeMaxEu;

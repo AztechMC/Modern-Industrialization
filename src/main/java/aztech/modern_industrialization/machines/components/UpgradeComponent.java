@@ -40,7 +40,7 @@ import net.minecraft.util.math.BlockPos;
 public class UpgradeComponent implements IComponent.ServerOnly {
 
     private ItemStack itemStack;
-    private final static Map<Item, Long> upgrades = new IdentityHashMap<>();
+    public final static Map<Item, Long> upgrades = new IdentityHashMap<>();
 
     static {
         upgrades.put(MIItem.BASIC_UPGRADE, 2L);

@@ -1,0 +1,28 @@
+{
+  "type" : "minecraft:crafting_shaped",
+  "pattern" : [
+    "MUM",
+    "UBU",
+    "MPM"
+  ],
+  "key":
+  {
+    "U" : {
+      "item" : "modern_industrialization:basic_upgrade"
+    },
+    "M" : {
+      "item" : "modern_industrialization:large_motor"
+    },
+    "P" : {
+      "item" : "modern_industrialization:large_pump"
+    },
+    "B": {
+      "item" : "modern_industrialization:electronic_circuit_board"
+    }
+  },
+
+  "result": {
+    "item": "modern_industrialization:advanced_upgrade",
+    "count" : 4
+  }
+}

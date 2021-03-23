@@ -55,7 +55,7 @@ public class RecipeEfficiencyBar {
         public Data copyData() {
             if (crafter.hasActiveRecipe()) {
                 return new Data(crafter.getEfficiencyTicks(), crafter.getMaxEfficiencyTicks(), crafter.getCurrentRecipeEu(),
-                        crafter.getBaseRecipeEu());
+                        crafter.getBaseRecipeEu(), crafter.getBehavior().getMaxRecipeEu());
             } else {
                 return new Data();
             }
@@ -67,7 +67,8 @@ public class RecipeEfficiencyBar {
                 return crafter.hasActiveRecipe();
             } else {
                 return crafter.getEfficiencyTicks() != cachedData.efficiencyTicks || crafter.getMaxEfficiencyTicks() != cachedData.maxEfficiencyTicks
-                        || crafter.getCurrentRecipeEu() != cachedData.currentRecipeEu || crafter.getBaseRecipeEu() != cachedData.baseRecipeEu;
+                        || crafter.getCurrentRecipeEu() != cachedData.currentRecipeEu || crafter.getBaseRecipeEu() != cachedData.baseRecipeEu
+                        || crafter.getBehavior().getMaxRecipeEu() != cachedData.maxRecipeEu;
             }
         }
 
@@ -89,6 +90,7 @@ public class RecipeEfficiencyBar {
             } else {
                 buf.writeBoolean(false);
             }
+            buf.writeLong(crafter.getBehavior().getMaxRecipeEu());
         }
 
         @Override
@@ -104,6 +106,7 @@ public class RecipeEfficiencyBar {
         int maxEfficiencyTicks;
         long currentRecipeEu;
         long baseRecipeEu;
+        long maxRecipeEu;
 
         public Client(PacketByteBuf buf) {
             this.params = new Parameters(buf.readInt(), buf.readInt());
@@ -119,6 +122,7 @@ public class RecipeEfficiencyBar {
                 currentRecipeEu = buf.readLong();
                 baseRecipeEu = buf.readLong();
             }
+            maxRecipeEu = buf.readLong();
         }
 
         @Override
@@ -151,9 +155,13 @@ public class RecipeEfficiencyBar {
                         tooltip.add(new TranslatableText("text.modern_industrialization.efficiency_ticks", efficiencyTicks, maxEfficiencyTicks));
                         tooltip.add(new TranslatableText("text.modern_industrialization.efficiency_factor",
                                 factorFormat.format((double) currentRecipeEu / baseRecipeEu)));
+
                     } else {
                         tooltip.add(new TranslatableText("text.modern_industrialization.efficiency_default_message"));
                     }
+
+                    tooltip.add(new TranslatableText("text.modern_industrialization.efficiency_max_overclock", maxRecipeEu));
+
                     screen.renderTooltip(matrices, tooltip, cursorX, cursorY);
                 }
             }
@@ -166,6 +174,7 @@ public class RecipeEfficiencyBar {
         final int maxEfficiencyTicks;
         final long currentRecipeEu;
         final long baseRecipeEu;
+        final long maxRecipeEu;
 
         private Data() {
             this.hasActiveRecipe = false;
@@ -173,14 +182,16 @@ public class RecipeEfficiencyBar {
             this.maxEfficiencyTicks = 0;
             this.currentRecipeEu = 0;
             this.baseRecipeEu = 0;
+            this.maxRecipeEu = 0;
         }
 
-        private Data(int efficiencyTicks, int maxEfficiencyTicks, long currentRecipeEu, long baseRecipeEu) {
+        private Data(int efficiencyTicks, int maxEfficiencyTicks, long currentRecipeEu, long baseRecipeEu, long maxRecipeEu) {
             this.efficiencyTicks = efficiencyTicks;
             this.maxEfficiencyTicks = maxEfficiencyTicks;
             this.hasActiveRecipe = true;
             this.currentRecipeEu = currentRecipeEu;
             this.baseRecipeEu = baseRecipeEu;
+            this.maxRecipeEu = maxRecipeEu;
         }
     }
 

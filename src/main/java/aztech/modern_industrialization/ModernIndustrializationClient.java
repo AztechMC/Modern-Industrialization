@@ -35,6 +35,7 @@ import aztech.modern_industrialization.items.armor.JetpackParticleAdder;
 import aztech.modern_industrialization.machines.MachineOverlay;
 import aztech.modern_industrialization.machines.MachinePackets;
 import aztech.modern_industrialization.machines.MachineScreenHandlers;
+import aztech.modern_industrialization.machines.components.UpgradeComponent;
 import aztech.modern_industrialization.machines.init.MultiblockMachines;
 import aztech.modern_industrialization.machines.models.MachineModels;
 import aztech.modern_industrialization.machines.multiblocks.MultiblockErrorHighlight;
@@ -122,6 +123,10 @@ public class ModernIndustrializationClient implements ClientModInitializer {
             }
             if (stack.getItem() == Items.GUNPOWDER) {
                 lines.add(new TranslatableText("text.modern_industrialization.gunpowder_upgrade").setStyle(TextHelper.GRAY_TEXT));
+            }
+            if (UpgradeComponent.upgrades.containsKey(stack.getItem())) {
+                lines.add(new TranslatableText("text.modern_industrialization.machine_upgrade", UpgradeComponent.upgrades.get(stack.getItem()))
+                        .setStyle(TextHelper.UPGRADE_TEXT));
             }
         }));
     }

@@ -25,6 +25,7 @@ package aztech.modern_industrialization.items;
 
 import aztech.modern_industrialization.mixin_impl.SteamDrillHooks;
 import aztech.modern_industrialization.util.Simulation;
+import aztech.modern_industrialization.util.TextHelper;
 import draylar.magna.api.MagnaTool;
 import java.util.List;
 import net.fabricmc.fabric.api.registry.FuelRegistry;
@@ -122,10 +123,11 @@ public class SteamDrillItem extends Item implements DynamicAttributeTool, MagnaT
     public void appendTooltip(ItemStack stack, @Nullable World world, List<Text> tooltip, TooltipContext context) {
         CompoundTag tag = stack.getTag();
         if (tag != null) {
-            tooltip.add(new TranslatableText("text.modern_industrialization.water_percent", tag.getInt("water") * 100 / FULL_WATER));
+            tooltip.add(new TranslatableText("text.modern_industrialization.water_percent", tag.getInt("water") * 100 / FULL_WATER)
+                    .setStyle(TextHelper.WATER_TEXT));
             int burnTicks = tag.getInt("burnTicks");
             if (burnTicks > 0) {
-                tooltip.add(new TranslatableText("text.modern_industrialization.seconds_left", burnTicks / 20));
+                tooltip.add(new TranslatableText("text.modern_industrialization.seconds_left", burnTicks / 20).setStyle(TextHelper.GRAY_TEXT));
             }
         }
     }

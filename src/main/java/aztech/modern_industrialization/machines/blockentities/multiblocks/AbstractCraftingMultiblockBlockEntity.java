@@ -115,6 +115,8 @@ public abstract class AbstractCraftingMultiblockBlockEntity extends MultiblockMa
                 if (crafter.tickRecipe()) {
                     newActive = true;
                 }
+            } else {
+                crafter.decreaseEfficiencyTicks();
             }
 
             isActive.updateActive(newActive, this);

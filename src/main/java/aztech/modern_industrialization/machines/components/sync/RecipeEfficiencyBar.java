@@ -155,6 +155,7 @@ public class RecipeEfficiencyBar {
                         tooltip.add(new TranslatableText("text.modern_industrialization.efficiency_ticks", efficiencyTicks, maxEfficiencyTicks));
                         tooltip.add(new TranslatableText("text.modern_industrialization.efficiency_factor",
                                 factorFormat.format((double) currentRecipeEu / baseRecipeEu)));
+                        tooltip.add(new TranslatableText("text.modern_industrialization.efficiency_eu", currentRecipeEu));
 
                     } else {
                         tooltip.add(new TranslatableText("text.modern_industrialization.efficiency_default_message"));

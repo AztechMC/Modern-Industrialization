@@ -74,9 +74,10 @@ public class FluidNetworkNode extends PipeNetworkNode {
                             if (data.fluid != Fluids.EMPTY)
                                 throw new RuntimeException("Bad implementation!");
                             if (storageView.amount() > 0) {
-                                data.fluid = storageView.resource();
+                                Fluid fluid = storageView.resource();
                                 try (Transaction nested = tx.openNested()) {
-                                    if (storageView.extract(data.fluid, Long.MAX_VALUE, nested) > 0) {
+                                    if (storageView.extract(fluid, Long.MAX_VALUE, nested) > 0) {
+                                        data.fluid = fluid;
                                         return true;
                                     }
                                 }

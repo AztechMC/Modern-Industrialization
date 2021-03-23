@@ -34,7 +34,7 @@ public class MIParts {
     public static final String BLADE = "blade";
     public static final String BLOCK = "block";
     public static final String BOLT = "bolt";
-    public static final String CABLE = "electricity_pipe";
+    public static final String CABLE = "cable";
     public static final String COIL = "coil";
     public static final String CRUSHED_DUST = "crushed_dust";
     public static final String CURVED_PLATE = "curved_plate";

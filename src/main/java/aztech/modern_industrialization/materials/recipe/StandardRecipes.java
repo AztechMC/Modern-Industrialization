@@ -46,7 +46,7 @@ public final class StandardRecipes {
                 RING);
         new ShapedRecipeBuilder(ctx, ITEM_PIPE, 6, "item_pipe", "ccc", "   ", "ccc").addTaggedPart('c', CURVED_PLATE).exportToMachine("packer");
         new ShapedRecipeBuilder(ctx, FLUID_PIPE, 6, "fluid_pipe", "ccc", "ggg", "ccc").addTaggedPart('c', CURVED_PLATE)
-                .addPart('g', "minecraft:glass_pane").exportToMachine("packer", 3);
+                .addInput('g', "minecraft:glass_pane").exportToMachine("packer", 3);
         new ShapedRecipeBuilder(ctx, CABLE, 3, "cable", "rrr", "www", "rrr").addInput('r', "modern_industrialization:rubber_sheet")
                 .addTaggedPart('w', WIRE).exportToAssembler();
         // MACERATOR
@@ -78,8 +78,6 @@ public final class StandardRecipes {
         addCuttingMachine(ctx, "item_pipe", ITEM_PIPE, RING, 2);
         // PACKER
         new MIRecipeBuilder(ctx, "packer", "double_ingot").addTaggedPartInput(INGOT, 2).addPartOutput(DOUBLE_INGOT, 1);
-        new MIRecipeBuilder(ctx, "packer", "fluid_pipe").addTaggedPartInput(ITEM_PIPE, 2).addItemInput("minecraft:glass_pane", 1)
-                .addPartOutput(FLUID_PIPE, 2);
         new MIRecipeBuilder(ctx, "packer", "dust").addTaggedPartInput(TINY_DUST, 9).addPartOutput(DUST, 1);
         new MIRecipeBuilder(ctx, "packer", "ingot").addTaggedPartInput(NUGGET, 9).addPartOutput(INGOT, 1);
         // WIREMILL

@@ -21,46 +21,36 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.api.energy;
+package aztech.modern_industrialization.mixin_client;
 
-public enum CableTier {
-    LV("lv", 32),
-    MV("mv", 32 * 4),
-    HV("hv", 32 * 4 * 4),
-    EV("ev", 32 * 4 * 4 * 4),
-    SUPRACONDUCTOR("supraconductor", 128000000);
+import aztech.modern_industrialization.MIItem;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.render.item.HeldItemRenderer;
+import net.minecraft.item.ItemStack;
+import org.spongepowered.asm.mixin.Final;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-    public final String name;
-    public final long eu;
+/**
+ * @reason Prevent the steam drill from swinging every tick while the player is
+ *         holding it.
+ */
+@Mixin(HeldItemRenderer.class)
+public class HeldItemRendererMixin {
+    @Shadow
+    private ItemStack mainHand;
+    @Shadow
+    @Final
+    private MinecraftClient client;
 
-    public final String translationKey;
-
-    CableTier(String name, long eu) {
-        this.name = name;
-        this.eu = eu;
-        this.translationKey = "text.modern_industrialization.cable_tier_" + name;
-
-    }
-
-    public long getMaxInsert() {
-        return eu * 8;
-    }
-
-    public long getEu() {
-        return eu;
-    }
-
-    @Override
-    public String toString() {
-        return name;
-    }
-
-    public static final CableTier getTier(String name) {
-        for (CableTier tier : CableTier.values()) {
-            if (tier.name.equals(name)) {
-                return tier;
-            }
+    @Inject(at = @At("HEAD"), method = "updateHeldItems")
+    private void updateHeldItems(CallbackInfo ci) {
+        ItemStack mainHandStack = client.player.getMainHandStack();
+        if (mainHand.getItem() == MIItem.ITEM_STEAM_DRILL && mainHandStack.getItem() == MIItem.ITEM_STEAM_DRILL) {
+            mainHand = mainHandStack;
         }
-        return null;
     }
 }

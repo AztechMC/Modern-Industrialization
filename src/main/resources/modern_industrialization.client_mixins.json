@@ -6,7 +6,8 @@
   "mixins": [
     "BakedModelManagerAccessor",
     "ClientPlayerInteractionManagerMixin",
-    "ClientWorldAccessor"
+    "ClientWorldAccessor",
+    "HeldItemRendererMixin"
   ],
   "injectors": {
     "defaultRequire": 1

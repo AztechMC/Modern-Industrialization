@@ -122,6 +122,10 @@ public class CrafterComponent implements IComponent.ServerOnly {
         return behavior;
     }
 
+    public void decreaseEfficiencyTicks() {
+        efficiencyTicks = Math.max(efficiencyTicks - 1, 0);
+    }
+
     public long getCurrentRecipeEu() {
         Preconditions.checkArgument(hasActiveRecipe());
         return recipeMaxEu;

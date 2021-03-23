@@ -933,6 +933,7 @@
     "text.modern_industrialization.click_to_toggle_whitelist": "Click to enable whitelist mode",
     "text.modern_industrialization.efficiency_default_message": "No active recipe to overclock",
     "text.modern_industrialization.efficiency_max_overclock": "Max Overclock : %d EU/t",
+    "text.modern_industrialization.efficiency_eu" : "Current consumption : %d EU/t",
     "text.modern_industrialization.efficiency_factor": "Overclock : x%s",
     "text.modern_industrialization.efficiency_ticks": "Efficiency : %d / %d",
     "text.modern_industrialization.energy_bar": "%d / %d EU",

@@ -28,6 +28,7 @@ import aztech.modern_industrialization.compat.rei.machines.ReiMachineRecipes;
 import aztech.modern_industrialization.machines.components.CrafterComponent;
 import aztech.modern_industrialization.machines.components.EnergyComponent;
 import aztech.modern_industrialization.machines.components.OrientationComponent;
+import aztech.modern_industrialization.machines.components.UpgradeComponent;
 import aztech.modern_industrialization.machines.init.MIMachineRecipeTypes;
 import aztech.modern_industrialization.machines.init.MachineTier;
 import aztech.modern_industrialization.machines.models.MachineCasings;
@@ -38,6 +39,11 @@ import aztech.modern_industrialization.util.Simulation;
 import java.util.ArrayList;
 import java.util.List;
 import net.minecraft.block.entity.BlockEntityType;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.Hand;
+import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 
 // TODO: should the common part with ElectricCraftingMultiblockBlockEntity be refactored?
@@ -46,6 +52,8 @@ public class DistillationTowerBlockEntity extends AbstractCraftingMultiblockBloc
 
     public DistillationTowerBlockEntity(BlockEntityType<?> type) {
         super(type, "distillation_tower", new OrientationComponent(new OrientationComponent.Params(false, false, false)), shapeTemplates);
+        this.upgrades = new UpgradeComponent();
+        this.registerComponents(upgrades);
     }
 
     @Override
@@ -54,6 +62,7 @@ public class DistillationTowerBlockEntity extends AbstractCraftingMultiblockBloc
     }
 
     private final List<EnergyComponent> energyInputs = new ArrayList<>();
+    private final UpgradeComponent upgrades;
 
     @Override
     protected void onSuccessfulMatch(ShapeMatcher shapeMatcher) {
@@ -61,6 +70,21 @@ public class DistillationTowerBlockEntity extends AbstractCraftingMultiblockBloc
         for (HatchBlockEntity hatch : shapeMatcher.getMatchedHatches()) {
             hatch.appendEnergyInputs(energyInputs);
         }
+    }
+
+    protected ActionResult onUse(PlayerEntity player, Hand hand, Direction face) {
+        ActionResult result = super.onUse(player, hand, face);
+        if (!result.isAccepted()) {
+            result = upgrades.onUse(this, player, hand);
+        }
+        return result;
+    }
+
+    @Override
+    public List<ItemStack> dropExtra() {
+        List<ItemStack> drops = super.dropExtra();
+        drops.add(upgrades.getDrop());
+        return drops;
     }
 
     private class Behavior implements CrafterComponent.Behavior {
@@ -82,12 +106,12 @@ public class DistillationTowerBlockEntity extends AbstractCraftingMultiblockBloc
 
         @Override
         public long getBaseRecipeEu() {
-            return MachineTier.UNLIMITED.getBaseEu();
+            return MachineTier.MULTIBLOCK.getBaseEu();
         }
 
         @Override
         public long getMaxRecipeEu() {
-            return MachineTier.UNLIMITED.getMaxEu();
+            return MachineTier.MULTIBLOCK.getMaxEu() + upgrades.getAddMaxEUPerTick();
         }
 
         @Override

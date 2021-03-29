@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern" : [
+    "H"
+  ],
+  "key": {
+    "H": {
+      "item" : "modern_industrialization:lv_energy_output_hatch"
+    }
+  },
+  "result": {
+    "item": "modern_industrialization:lv_energy_input_hatch",
+    "count": 1
+  }
+}

@@ -48,7 +48,8 @@ public enum MITanks {
     BRONZE("bronze", 4),
     STEEL("steel", 8),
     ALUMINUM("aluminum", 16),
-    STAINLESS_STEEL("stainless_steel", 32);
+    STAINLESS_STEEL("stainless_steel", 32),
+    TITANIUM("titanium", 64);
 
     public static BlockEntityType<TankBlockEntity> BLOCK_ENTITY_TYPE;
     public static BlockEntityType<CreativeTankBlockEntity> CREATIVE_BLOCK_ENTITY_TYPE;

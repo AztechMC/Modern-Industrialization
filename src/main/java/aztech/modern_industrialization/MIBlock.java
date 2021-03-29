@@ -77,6 +77,7 @@ public class MIBlock extends Block {
     public static final MIBlock BASIC_MACHINE_HULL = new MIBlock("lv_machine_hull");
     public static final MIBlock ADVANCED_MACHINE_HULL = new MIBlock("advanced_machine_hull");
     public static final MIBlock TURBO_MACHINE_HULL = new MIBlock("turbo_machine_hull");
+    public static final MIBlock HIGHLY_ADVANCED_MACHINE_HULL = new MIBlock("highly_advanced_machine_hull");
 
     // other
     public static final MIBlock NUCLEAR_MACHINE_CASING = new MIBlock("nuclear_machine_casing");

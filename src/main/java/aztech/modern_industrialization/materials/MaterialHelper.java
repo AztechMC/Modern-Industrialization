@@ -88,6 +88,8 @@ public class MaterialHelper {
             return "clean_stainless_steel_machine_casing";
         case "stainless_steel_machine_casing":
             return "turbo_machine_casing";
+        case "titanium_machine_casing":
+            return "highly_advanced_machine_casing";
         case "redstone_battery":
             return "lv_battery";
         }

@@ -48,11 +48,13 @@ public class MultiblockHatches {
         registerItemHatches("steel", MachineCasings.STEEL, 2, 1, 80, 30);
         registerItemHatches("advanced", MachineCasings.MV, 2, 2, 71, 30);
         registerItemHatches("turbo", MachineCasings.HV, 3, 3, 62, 21);
+        registerItemHatches("highly_advanced", MachineCasings.EV, 3, 5, 44, 18);
 
         registerFluidHatches("bronze", MachineCasings.BRONZE, 4);
         registerFluidHatches("steel", MachineCasings.STEEL, 8);
         registerFluidHatches("advanced", MachineCasings.MV, 16);
         registerFluidHatches("turbo", MachineCasings.HV, 32);
+        registerFluidHatches("highly_advanced", MachineCasings.EV, 64);
 
         registerEnergyHatches(CableTier.LV);
         registerEnergyHatches(CableTier.MV);

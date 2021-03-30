@@ -1,0 +1,34 @@
+{
+  "type": "modern_industrialization:chemical_reactor",
+  "eu": 12,
+  "duration": 400,
+  "item_inputs": [
+    {
+      "item" : "modern_industrialization:silicon_waffer",
+      "amount": 1
+    },
+    {
+      "tag" : "c:antimony_dusts",
+      "amount": 1
+    },
+    {
+      "tag" : "c:aluminum_dusts",
+      "amount": 1
+    }
+  ],
+
+  "fluid_inputs": [
+    {
+      "fluid" : "modern_industrialization:argon",
+      "amount" : 250
+    },
+    {
+      "fluid" : "modern_industrialization:styrene_butadiene",
+      "amount" : 1000
+    }
+  ],
+  "item_outputs": {
+    "item" : "modern_industrialization:random_access_memory",
+    "amount": 2
+  }
+}

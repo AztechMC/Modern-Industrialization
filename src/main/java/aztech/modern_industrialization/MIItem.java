@@ -84,6 +84,15 @@ public final class MIItem {
     public static final Item ITEM_OR_GATE = of("or_gate");
     public static final Item ITEM_NOT_GATE = of("not_gate");
 
+    public static final Item ITEM_PROCESSING_UNIT = of("processing_unit");
+    public static final Item ITEM_PROCESSING_UNIT_BOARD = of("processing_unit_board");
+    public static final Item ITEM_ARITHMETIC_LOGIC_UNIT = of("arithmetic_logic_unit");
+    public static final Item ITEM_RANDOM_ACCESS_MEMORY = of("random_access_memory");
+    public static final Item ITEM_MEMORY_MANAGEMENT_UNIT = of("memory_management_unit");
+
+    public static final Item ITEM_MONOCRYSTALLINE_SILICON = of("monocrystalline_silicon");
+    public static final Item ITEM_SILICON_WAFFER = of("silicon_waffer");
+
     public static final Item BASIC_UPGRADE = of("basic_upgrade");
     public static final Item ADVANCED_UPGRADE = of("advanced_upgrade");
     public static final Item TURBO_UPGRADE = of("turbo_upgrade");

@@ -1,0 +1,17 @@
+{
+  "type": "modern_industrialization:cutting_machine",
+  "eu": 16,
+  "duration": 600,
+  "item_inputs": {
+    "item": "modern_industrialization:monocrystalline_silicon",
+    "amount": 1
+  },
+  "fluid_inputs": {
+    "fluid": "minecraft:water",
+    "amount": 500
+  },
+  "item_outputs": {
+    "item": "modern_industrialization:silicon_waffer",
+    "amount": 32
+  }
+}

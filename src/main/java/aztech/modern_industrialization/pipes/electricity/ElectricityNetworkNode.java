@@ -54,7 +54,7 @@ public class ElectricityNetworkNode extends PipeNetworkNode {
         }
         for (int i = 0; i < connections.size(); ++i) {
             Direction targetDir = connections.get(i).getOpposite();
-            EnergyMoveable moveable = caches.get(i).get(targetDir);
+            EnergyMoveable moveable = caches.get(i).find(targetDir);
             if (moveable instanceof EnergyInsertable)
                 insertables.add((EnergyInsertable) moveable);
             if (moveable instanceof EnergyExtractable)
@@ -130,7 +130,7 @@ public class ElectricityNetworkNode extends PipeNetworkNode {
     }
 
     private boolean canConnect(World world, BlockPos pos, Direction direction) {
-        EnergyMoveable moveable = EnergyApi.MOVEABLE.get(world, pos.offset(direction), direction.getOpposite());
+        EnergyMoveable moveable = EnergyApi.MOVEABLE.find(world, pos.offset(direction), direction.getOpposite());
         CableTier tier = ((ElectricityNetwork) network).tier;
         return moveable instanceof EnergyInsertable && ((EnergyInsertable) moveable).canInsert(tier)
                 || moveable instanceof EnergyExtractable && ((EnergyExtractable) moveable).canExtract(tier);

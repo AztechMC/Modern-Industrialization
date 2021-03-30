@@ -4,7 +4,9 @@
   "package": "aztech.modern_industrialization.mixin",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
+    "BucketItemAccessor",
     "IngredientMixin",
+    "ItemMixin",
     "ItemStackMixin",
     "PlayerInventoryMixin",
     "RecipeManagerAccessor",

@@ -32,11 +32,12 @@ import aztech.modern_industrialization.blocks.creativetank.CreativeTankBlockEnti
 import aztech.modern_industrialization.blocks.creativetank.CreativeTankItem;
 import aztech.modern_industrialization.blocks.creativetank.CreativeTankRenderer;
 import aztech.modern_industrialization.machines.models.MachineModelProvider;
+import aztech.modern_industrialization.transferapi.api.fluid.ItemFluidApi;
 import aztech.modern_industrialization.util.ResourceUtil;
 import java.util.Arrays;
 import net.fabricmc.fabric.api.client.rendereregistry.v1.BlockEntityRendererRegistry;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidApi;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
 import net.minecraft.block.Block;
 import net.minecraft.block.Material;
 import net.minecraft.block.entity.BlockEntityType;
@@ -81,13 +82,14 @@ public enum MITanks {
                 BlockEntityType.Builder.create(CreativeTankBlockEntity::new, CREATIVE_TANK_BLOCK).build(null));
 
         // Fluid API
-        FluidApi.SIDED.registerForBlockEntities((be, direction) -> be instanceof TankBlockEntity ? (TankBlockEntity) be : null, BLOCK_ENTITY_TYPE);
-        FluidApi.SIDED.registerForBlockEntities((be, direction) -> be instanceof CreativeTankBlockEntity ? (CreativeTankBlockEntity) be : null,
+        FluidStorage.SIDED.registerForBlockEntities((be, direction) -> be instanceof TankBlockEntity ? (TankBlockEntity) be : null,
+                BLOCK_ENTITY_TYPE);
+        FluidStorage.SIDED.registerForBlockEntities((be, direction) -> be instanceof CreativeTankBlockEntity ? (CreativeTankBlockEntity) be : null,
                 CREATIVE_BLOCK_ENTITY_TYPE);
         for (MITanks tank : values()) {
             tank.item.registerItemApi();
         }
-        FluidApi.ITEM.register(CreativeTankItem.TankItemStorage::new, CREATIVE_TANK_ITEM);
+        ItemFluidApi.ITEM.registerForItems(CreativeTankItem.TankItemStorage::new, CREATIVE_TANK_ITEM);
     }
 
     public static void setupClient() {

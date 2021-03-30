@@ -23,11 +23,10 @@
  */
 package aztech.modern_industrialization.blocks.creativetank;
 
+import aztech.modern_industrialization.transferapi.api.context.ContainerItemContext;
 import aztech.modern_industrialization.util.FluidHelper;
 import aztech.modern_industrialization.util.NbtHelper;
 import java.util.List;
-import net.fabricmc.fabric.api.lookup.v1.item.ItemKey;
-import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidPreconditions;
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.ExtractionOnlyStorage;
@@ -62,8 +61,7 @@ public class CreativeTankItem extends BlockItem {
     public static class TankItemStorage implements ExtractionOnlyStorage<Fluid>, StorageView<Fluid> {
         private final Fluid fluid;
 
-        public TankItemStorage(ItemKey key, ContainerItemContext ignored) {
-            ItemStack stack = key.toStack();
+        public TankItemStorage(ItemStack stack, ContainerItemContext ignored) {
             this.fluid = CreativeTankItem.getFluid(stack);
         }
 

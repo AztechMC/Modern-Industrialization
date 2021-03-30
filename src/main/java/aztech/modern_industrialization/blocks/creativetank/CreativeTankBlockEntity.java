@@ -25,11 +25,10 @@ package aztech.modern_industrialization.blocks.creativetank;
 
 import aztech.modern_industrialization.api.FastBlockEntity;
 import aztech.modern_industrialization.blocks.tank.MITanks;
+import aztech.modern_industrialization.transferapi.api.context.ContainerItemContext;
+import aztech.modern_industrialization.transferapi.api.fluid.ItemFluidApi;
 import aztech.modern_industrialization.util.NbtHelper;
 import net.fabricmc.fabric.api.block.entity.BlockEntityClientSerializable;
-import net.fabricmc.fabric.api.lookup.v1.item.ItemKey;
-import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidApi;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidPreconditions;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
@@ -84,7 +83,7 @@ public class CreativeTankBlockEntity extends FastBlockEntity
     }
 
     public boolean onPlayerUse(PlayerEntity player) {
-        Storage<Fluid> handIo = FluidApi.ITEM.get(ItemKey.of(player.getMainHandStack()), ContainerItemContext.ofPlayerHand(player, Hand.MAIN_HAND));
+        Storage<Fluid> handIo = ItemFluidApi.ITEM.find(player.getMainHandStack(), ContainerItemContext.ofPlayerHand(player, Hand.MAIN_HAND));
         if (handIo != null) {
             if (isEmpty()) {
                 try (Transaction transaction = Transaction.openOuter()) {

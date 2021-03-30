@@ -23,12 +23,11 @@
  */
 package aztech.modern_industrialization.inventory;
 
+import aztech.modern_industrialization.transferapi.api.context.ContainerItemContext;
+import aztech.modern_industrialization.transferapi.api.fluid.ItemFluidApi;
 import io.netty.buffer.Unpooled;
 import java.util.List;
-import net.fabricmc.fabric.api.lookup.v1.item.ItemKey;
 import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
-import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidApi;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.minecraft.entity.player.PlayerEntity;
@@ -107,7 +106,7 @@ public abstract class ConfigurableScreenHandler extends ScreenHandler {
                 if (lockingMode) {
                     fluidStack.togglePlayerLock();
                 } else {
-                    Storage<Fluid> io = FluidApi.ITEM.get(ItemKey.of(playerEntity.inventory.getCursorStack()),
+                    Storage<Fluid> io = ItemFluidApi.ITEM.find(playerEntity.inventory.getCursorStack(),
                             ContainerItemContext.ofPlayerCursor(playerEntity));
                     if (io != null) {
                         // Extract first

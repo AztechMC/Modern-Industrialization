@@ -23,11 +23,11 @@
  */
 package aztech.modern_industrialization.items;
 
+import aztech.modern_industrialization.transferapi.api.context.ContainerItemContext;
+import aztech.modern_industrialization.transferapi.api.item.ItemKey;
 import aztech.modern_industrialization.util.FluidHelper;
 import aztech.modern_industrialization.util.NbtHelper;
 import java.util.List;
-import net.fabricmc.fabric.api.lookup.v1.item.ItemKey;
-import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidPreconditions;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
@@ -93,9 +93,8 @@ public interface FluidFuelItemHelper {
         private final long capacity;
         private final ContainerItemContext ctx;
 
-        public ItemStorage(long capacity, ItemKey key, ContainerItemContext ctx) {
-            ItemStack stack = key.toStack();
-            this.item = key.getItem();
+        public ItemStorage(long capacity, ItemStack stack, ContainerItemContext ctx) {
+            this.item = stack.getItem();
             this.fluid = FluidFuelItemHelper.getFluid(stack);
             this.amount = getAmount(stack);
             this.capacity = capacity;

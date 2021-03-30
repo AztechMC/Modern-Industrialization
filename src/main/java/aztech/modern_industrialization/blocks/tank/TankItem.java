@@ -23,12 +23,12 @@
  */
 package aztech.modern_industrialization.blocks.tank;
 
+import aztech.modern_industrialization.transferapi.api.context.ContainerItemContext;
+import aztech.modern_industrialization.transferapi.api.fluid.ItemFluidApi;
+import aztech.modern_industrialization.transferapi.api.item.ItemKey;
 import aztech.modern_industrialization.util.FluidHelper;
 import aztech.modern_industrialization.util.NbtHelper;
 import java.util.List;
-import net.fabricmc.fabric.api.lookup.v1.item.ItemKey;
-import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidApi;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidPreconditions;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
@@ -58,7 +58,7 @@ public class TankItem extends BlockItem {
     }
 
     public void registerItemApi() {
-        FluidApi.ITEM.register(TankItemStorage::new, this);
+        ItemFluidApi.ITEM.registerForItems(TankItemStorage::new, this);
     }
 
     public boolean isEmpty(ItemStack stack) {
@@ -112,8 +112,7 @@ public class TankItem extends BlockItem {
         private final long amount;
         private final ContainerItemContext ctx;
 
-        TankItemStorage(ItemKey key, ContainerItemContext ctx) {
-            ItemStack stack = key.toStack();
+        TankItemStorage(ItemStack stack, ContainerItemContext ctx) {
             this.fluid = TankItem.this.getFluid(stack);
             this.amount = getAmount(stack);
             this.ctx = ctx;

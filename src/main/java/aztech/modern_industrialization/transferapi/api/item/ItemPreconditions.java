@@ -21,24 +21,33 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.machines.helper;
+package aztech.modern_industrialization.transferapi.api.item;
 
-import aztech.modern_industrialization.api.energy.CableTier;
-import aztech.modern_industrialization.api.energy.EnergyApi;
-import aztech.modern_industrialization.api.energy.EnergyInsertable;
-import aztech.modern_industrialization.api.energy.EnergyMoveable;
-import aztech.modern_industrialization.machines.MachineBlockEntity;
-import aztech.modern_industrialization.machines.components.EnergyComponent;
-import aztech.modern_industrialization.machines.components.OrientationComponent;
+import com.google.common.base.Preconditions;
+import net.minecraft.item.Item;
+import net.minecraft.item.Items;
 
-public class EnergyHelper {
-
-    public static void autoOuput(MachineBlockEntity machine, OrientationComponent orientation, CableTier output, EnergyComponent energy) {
-        EnergyMoveable insertable = EnergyApi.MOVEABLE.find(machine.getWorld(), machine.getPos().offset(orientation.outputDirection),
-                orientation.outputDirection.getOpposite());
-        if (insertable instanceof EnergyInsertable && ((EnergyInsertable) insertable).canInsert(output)) {
-            energy.insertEnergy((EnergyInsertable) insertable);
+/**
+ * Preconditions for item transfer.
+ */
+public final class ItemPreconditions {
+    public static void notEmpty(ItemKey key) {
+        if (key == null || key.isEmpty()) {
+            throw new IllegalArgumentException("ItemKey may not be empty or null.");
         }
-        machine.markDirty();
+    }
+
+    public static void notEmpty(Item item) {
+        if (item == null || item == Items.AIR) {
+            throw new IllegalArgumentException("Item may not be empty or null.");
+        }
+    }
+
+    public static void notEmptyNotNegative(ItemKey key, long amount) {
+        ItemPreconditions.notEmpty(key);
+        Preconditions.checkArgument(amount >= 0);
+    }
+
+    private ItemPreconditions() {
     }
 }

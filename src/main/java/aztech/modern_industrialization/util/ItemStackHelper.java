@@ -24,7 +24,7 @@
 package aztech.modern_industrialization.util;
 
 import aztech.modern_industrialization.inventory.ConfigurableItemStack;
-import net.fabricmc.fabric.api.lookup.v1.item.ItemKey;
+import aztech.modern_industrialization.transferapi.api.item.ItemKey;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 

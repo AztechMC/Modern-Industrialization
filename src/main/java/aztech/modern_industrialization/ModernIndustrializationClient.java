@@ -50,7 +50,6 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.fabricmc.fabric.api.client.screenhandler.v1.ScreenRegistry;
-import net.fabricmc.fabric.api.lookup.v1.item.ItemKey;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.fabricmc.loader.DependencyException;
 import net.fabricmc.loader.api.FabricLoader;
@@ -107,7 +106,7 @@ public class ModernIndustrializationClient implements ClientModInitializer {
 
     private void setupTooltips() {
         ItemTooltipCallback.EVENT.register(((stack, context, lines) -> {
-            SpeedUpgrade upgrade = SpeedUpgrade.LOOKUP.get(ItemKey.of(stack), null);
+            SpeedUpgrade upgrade = SpeedUpgrade.LOOKUP.find(stack, null);
             if (upgrade != null) {
                 lines.add(new TranslatableText("text.modern_industrialization.tooltip_speed_upgrade", upgrade.value())
                         .setStyle(TextHelper.UPGRADE_TEXT));

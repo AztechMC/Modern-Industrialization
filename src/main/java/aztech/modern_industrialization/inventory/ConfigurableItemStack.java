@@ -23,17 +23,16 @@
  */
 package aztech.modern_industrialization.inventory;
 
+import aztech.modern_industrialization.transferapi.api.item.ItemKey;
+import aztech.modern_industrialization.transferapi.api.item.ItemPreconditions;
 import aztech.modern_industrialization.util.NbtHelper;
 import com.google.common.primitives.Ints;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
-import net.fabricmc.fabric.api.lookup.v1.item.ItemKey;
-import net.fabricmc.fabric.api.transfer.v1.item.ItemPreconditions;
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
-import net.fabricmc.fabric.api.transfer.v1.transaction.Participant;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
-import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionResult;
+import net.fabricmc.fabric.api.transfer.v1.transaction.base.SnapshotParticipant;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -44,8 +43,8 @@ import net.minecraft.screen.slot.Slot;
 /**
  * An item stack that can be configured.
  */
-public class ConfigurableItemStack implements StorageView<ItemKey>, Participant<ItemState> {
-    private ItemKey key = ItemKey.EMPTY;
+public class ConfigurableItemStack extends SnapshotParticipant<ItemState> implements StorageView<ItemKey> {
+    private ItemKey key = ItemKey.empty();
     private int count = 0;
     private Item lockedItem = null;
     private boolean playerLocked = false;
@@ -134,7 +133,7 @@ public class ConfigurableItemStack implements StorageView<ItemKey>, Participant<
     public void setCount(int count) {
         this.count = count;
         if (count == 0) {
-            this.key = ItemKey.EMPTY;
+            this.key = ItemKey.empty();
         }
     }
 
@@ -202,7 +201,7 @@ public class ConfigurableItemStack implements StorageView<ItemKey>, Participant<
     }
 
     public CompoundTag writeToTag(CompoundTag tag) {
-        tag.put("key", key.toTag());
+        tag.put("key", key.toNbt());
         tag.putInt("count", count);
         if (lockedItem != null) {
             NbtHelper.putItem(tag, "lockedItem", lockedItem);
@@ -221,7 +220,7 @@ public class ConfigurableItemStack implements StorageView<ItemKey>, Participant<
     public void readFromTag(CompoundTag tag) {
         // compat
         if (tag.contains("key")) {
-            key = ItemKey.fromTag(tag.getCompound("key"));
+            key = ItemKey.fromNbt(tag.getCompound("key"));
             count = tag.getInt("count");
         } else {
             ItemStack stack = ItemStack.fromTag(tag);
@@ -266,7 +265,7 @@ public class ConfigurableItemStack implements StorageView<ItemKey>, Participant<
         if (pipesExtract && key.equals(this.key)) {
             int maxCount = Ints.saturatedCast(longCount);
             int extracted = Math.min(count, maxCount);
-            transaction.enlist(this);
+            updateSnapshots(transaction);
             decrement(extracted);
             return extracted;
         }
@@ -284,16 +283,19 @@ public class ConfigurableItemStack implements StorageView<ItemKey>, Participant<
     }
 
     @Override
-    public ItemState onEnlist() {
+    public ItemState createSnapshot() {
         return new ItemState(key, count);
     }
 
     @Override
-    public void onClose(ItemState itemState, TransactionResult result) {
-        if (result.wasAborted()) {
-            this.count = itemState.count;
-            this.key = itemState.key;
-        }
+    public void readSnapshot(ItemState itemState) {
+        this.count = itemState.count;
+        this.key = itemState.key;
+    }
+
+    // TODO: remove once fixed in fluid API
+    public void updateSnapshots2(Transaction tx) {
+        updateSnapshots(tx);
     }
 
     public class ConfigurableItemSlot extends Slot {

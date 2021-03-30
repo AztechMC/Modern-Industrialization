@@ -28,11 +28,11 @@ import static aztech.modern_industrialization.pipes.api.PipeEndpointType.*;
 import aztech.modern_industrialization.api.pipes.item.SpeedUpgrade;
 import aztech.modern_industrialization.pipes.api.PipeEndpointType;
 import aztech.modern_industrialization.pipes.api.PipeNetworkNode;
+import aztech.modern_industrialization.transferapi.api.item.ItemApi;
+import aztech.modern_industrialization.transferapi.api.item.ItemKey;
 import aztech.modern_industrialization.util.ItemStackHelper;
 import java.util.*;
-import net.fabricmc.fabric.api.lookup.v1.item.ItemKey;
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
-import net.fabricmc.fabric.api.transfer.v1.item.ItemApi;
 import net.fabricmc.fabric.api.transfer.v1.storage.Movement;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.minecraft.entity.ItemEntity;
@@ -70,7 +70,7 @@ public class ItemNetworkNode extends PipeNetworkNode {
     }
 
     private boolean canConnect(World world, BlockPos pos, Direction direction) {
-        Storage<ItemKey> io = ItemApi.SIDED.get(world, pos.offset(direction), direction.getOpposite());
+        Storage<ItemKey> io = ItemApi.SIDED.find(world, pos.offset(direction), direction.getOpposite());
         return io != null && (io.supportsInsertion() || io.supportsExtraction());
     }
 
@@ -179,7 +179,7 @@ public class ItemNetworkNode extends PipeNetworkNode {
             List<InsertTarget> reachableInputs = null;
             outer: for (ItemConnection connection : connections) { // TODO: optimize!
                 if (connection.canExtract()) {
-                    Storage<ItemKey> source = ItemApi.SIDED.get(world, pos.offset(connection.direction), connection.direction.getOpposite());
+                    Storage<ItemKey> source = ItemApi.SIDED.find(world, pos.offset(connection.direction), connection.direction.getOpposite());
                     if (source != null && source.supportsExtraction()) {
                         long movesLeft = connection.getMoves();
                         if (reachableInputs == null)
@@ -220,7 +220,7 @@ public class ItemNetworkNode extends PipeNetworkNode {
                     ItemNetworkNode node = (ItemNetworkNode) maybeUnloaded;
                     for (ItemConnection connection : node.connections) {
                         if (connection.canInsert()) {
-                            Storage<ItemKey> target = ItemApi.SIDED.get(world, u.offset(connection.direction), connection.direction.getOpposite());
+                            Storage<ItemKey> target = ItemApi.SIDED.find(world, u.offset(connection.direction), connection.direction.getOpposite());
                             if (target != null && target.supportsInsertion()) {
                                 result.add(new InsertTarget(connection, target));
                             }
@@ -305,7 +305,7 @@ public class ItemNetworkNode extends PipeNetworkNode {
         }
 
         private long getMoves() {
-            SpeedUpgrade upgrade = SpeedUpgrade.LOOKUP.get(ItemKey.of(upgradeStack), null);
+            SpeedUpgrade upgrade = SpeedUpgrade.LOOKUP.find(upgradeStack, null);
             return 16 + (upgrade == null ? 0 : upgrade.value() * upgradeStack.getCount());
         }
 

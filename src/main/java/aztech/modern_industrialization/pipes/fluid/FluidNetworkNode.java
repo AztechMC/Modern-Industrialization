@@ -30,7 +30,7 @@ import aztech.modern_industrialization.pipes.api.PipeEndpointType;
 import aztech.modern_industrialization.pipes.api.PipeNetworkNode;
 import aztech.modern_industrialization.util.NbtHelper;
 import java.util.*;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidApi;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.minecraft.fluid.Fluid;
@@ -59,7 +59,7 @@ public class FluidNetworkNode extends PipeNetworkNode {
         }
         for (FluidConnection connection : connections) { // TODO: limit insert and extract rate
             // Insert
-            Storage<Fluid> io = FluidApi.SIDED.get(world, pos.offset(connection.direction), connection.direction.getOpposite());
+            Storage<Fluid> io = FluidStorage.SIDED.find(world, pos.offset(connection.direction), connection.direction.getOpposite());
             if (amount > 0 && connection.canInsert() && io != null && io.supportsInsertion()) {
                 try (Transaction tx = Transaction.openOuter()) {
                     amount -= io.insert(data.fluid, amount, tx);
@@ -124,7 +124,7 @@ public class FluidNetworkNode extends PipeNetworkNode {
     }
 
     private boolean canConnect(World world, BlockPos pos, Direction direction) {
-        Storage<Fluid> io = FluidApi.SIDED.get(world, pos.offset(direction), direction.getOpposite());
+        Storage<Fluid> io = FluidStorage.SIDED.find(world, pos.offset(direction), direction.getOpposite());
         return io != null && (io.supportsInsertion() || io.supportsExtraction());
     }
 

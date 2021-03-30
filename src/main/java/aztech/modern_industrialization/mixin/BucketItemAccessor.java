@@ -21,24 +21,15 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.machines.helper;
+package aztech.modern_industrialization.mixin;
 
-import aztech.modern_industrialization.api.energy.CableTier;
-import aztech.modern_industrialization.api.energy.EnergyApi;
-import aztech.modern_industrialization.api.energy.EnergyInsertable;
-import aztech.modern_industrialization.api.energy.EnergyMoveable;
-import aztech.modern_industrialization.machines.MachineBlockEntity;
-import aztech.modern_industrialization.machines.components.EnergyComponent;
-import aztech.modern_industrialization.machines.components.OrientationComponent;
+import net.minecraft.fluid.Fluid;
+import net.minecraft.item.BucketItem;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.gen.Accessor;
 
-public class EnergyHelper {
-
-    public static void autoOuput(MachineBlockEntity machine, OrientationComponent orientation, CableTier output, EnergyComponent energy) {
-        EnergyMoveable insertable = EnergyApi.MOVEABLE.find(machine.getWorld(), machine.getPos().offset(orientation.outputDirection),
-                orientation.outputDirection.getOpposite());
-        if (insertable instanceof EnergyInsertable && ((EnergyInsertable) insertable).canInsert(output)) {
-            energy.insertEnergy((EnergyInsertable) insertable);
-        }
-        machine.markDirty();
-    }
+@Mixin(BucketItem.class)
+public interface BucketItemAccessor {
+    @Accessor
+    Fluid getFluid();
 }

@@ -28,7 +28,6 @@ import aztech.modern_industrialization.pipes.MIPipes;
 import aztech.modern_industrialization.pipes.impl.PipePackets;
 import aztech.modern_industrialization.util.ItemStackHelper;
 import io.netty.buffer.Unpooled;
-import net.fabricmc.fabric.api.lookup.v1.item.ItemKey;
 import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -194,7 +193,7 @@ public class ItemPipeScreenHandler extends ScreenHandler {
 
         @Override
         public boolean canInsert(ItemStack stack) {
-            return SpeedUpgrade.LOOKUP.get(ItemKey.of(stack), null) != null;
+            return SpeedUpgrade.LOOKUP.find(stack, null) != null;
         }
 
         @Override

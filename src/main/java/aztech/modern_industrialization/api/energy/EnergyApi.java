@@ -28,14 +28,13 @@ package aztech.modern_industrialization.api.energy;
 //import dev.technici4n.fasttransferlib.api.energy.EnergyIo;
 
 import net.fabricmc.fabric.api.lookup.v1.block.BlockApiLookup;
-import net.fabricmc.fabric.api.lookup.v1.block.BlockApiLookupRegistry;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Direction;
 import org.jetbrains.annotations.NotNull;
 
 public class EnergyApi {
-    public static final BlockApiLookup<EnergyMoveable, @NotNull Direction> MOVEABLE = BlockApiLookupRegistry
-            .getLookup(new Identifier("modern_industrialization:energy_moveable"), EnergyMoveable.class, Direction.class);
+    public static final BlockApiLookup<EnergyMoveable, @NotNull Direction> MOVEABLE = BlockApiLookup
+            .get(new Identifier("modern_industrialization:energy_moveable"), EnergyMoveable.class, Direction.class);
 
     public static final EnergyExtractable CREATIVE_EXTRACTABLE = new EnergyExtractable() {
         @Override

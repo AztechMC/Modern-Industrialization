@@ -25,18 +25,16 @@ package aztech.modern_industrialization.blocks.tank;
 
 import aztech.modern_industrialization.api.FastBlockEntity;
 import aztech.modern_industrialization.inventory.FluidState;
+import aztech.modern_industrialization.transferapi.api.context.ContainerItemContext;
+import aztech.modern_industrialization.transferapi.api.fluid.ItemFluidApi;
 import aztech.modern_industrialization.util.NbtHelper;
 import net.fabricmc.fabric.api.block.entity.BlockEntityClientSerializable;
-import net.fabricmc.fabric.api.lookup.v1.item.ItemKey;
-import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidApi;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidPreconditions;
 import net.fabricmc.fabric.api.transfer.v1.storage.Movement;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
-import net.fabricmc.fabric.api.transfer.v1.transaction.Participant;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
-import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionResult;
+import net.fabricmc.fabric.api.transfer.v1.transaction.base.SnapshotParticipant;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.Fluid;
@@ -44,12 +42,12 @@ import net.minecraft.fluid.Fluids;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Hand;
 
-public class TankBlockEntity extends FastBlockEntity
-        implements Storage<Fluid>, StorageView<Fluid>, Participant<FluidState>, BlockEntityClientSerializable {
+public class TankBlockEntity extends FastBlockEntity implements Storage<Fluid>, StorageView<Fluid>, BlockEntityClientSerializable {
     Fluid fluid = Fluids.EMPTY;
     long amount;
     long capacity;
     private int version = 0;
+    private final TankParticipant participant = new TankParticipant();
 
     public TankBlockEntity() {
         super(MITanks.BLOCK_ENTITY_TYPE);
@@ -106,7 +104,7 @@ public class TankBlockEntity extends FastBlockEntity
     }
 
     public boolean onPlayerUse(PlayerEntity player) {
-        Storage<Fluid> handIo = FluidApi.ITEM.get(ItemKey.of(player.getMainHandStack()), ContainerItemContext.ofPlayerHand(player, Hand.MAIN_HAND));
+        Storage<Fluid> handIo = ItemFluidApi.ITEM.find(player.getMainHandStack(), ContainerItemContext.ofPlayerHand(player, Hand.MAIN_HAND));
         if (handIo != null) {
             // move from hand into this tank
             if (Movement.move(handIo, this, f -> true, Integer.MAX_VALUE) > 0)
@@ -129,7 +127,7 @@ public class TankBlockEntity extends FastBlockEntity
         if (this.fluid == Fluids.EMPTY || TankBlockEntity.this.fluid == fluid) {
             long inserted = Math.min(maxAmount, capacity - amount);
             if (inserted > 0) {
-                transaction.enlist(TankBlockEntity.this);
+                participant.updateSnapshots2(transaction);
                 amount += inserted;
                 TankBlockEntity.this.fluid = fluid;
             }
@@ -149,7 +147,7 @@ public class TankBlockEntity extends FastBlockEntity
         if (fluid == TankBlockEntity.this.fluid) {
             long extracted = Math.min(maxAmount, amount);
             if (extracted > 0) {
-                transaction.enlist(TankBlockEntity.this);
+                participant.updateSnapshots2(transaction);
                 amount -= extracted;
                 if (amount == 0) {
                     TankBlockEntity.this.fluid = Fluids.EMPTY;
@@ -183,21 +181,26 @@ public class TankBlockEntity extends FastBlockEntity
         return version;
     }
 
-    @Override
-    public FluidState onEnlist() {
-        return new FluidState(fluid, amount);
-    }
-
-    @Override
-    public void onClose(FluidState state, TransactionResult result) {
-        if (result.wasAborted()) {
-            this.fluid = state.fluid;
-            this.amount = state.amount;
+    private class TankParticipant extends SnapshotParticipant<FluidState> {
+        @Override
+        protected FluidState createSnapshot() {
+            return new FluidState(fluid, amount);
         }
-    }
 
-    @Override
-    public void onFinalCommit() {
-        onChanged();
+        @Override
+        protected void readSnapshot(FluidState snapshot) {
+            fluid = snapshot.fluid;
+            amount = snapshot.amount;
+        }
+
+        @Override
+        protected void onFinalCommit() {
+            onChanged();
+        }
+
+        // TODO: make updateSnapshots public in the transfer API
+        protected final void updateSnapshots2(Transaction transaction) {
+            updateSnapshots(transaction);
+        }
     }
 }

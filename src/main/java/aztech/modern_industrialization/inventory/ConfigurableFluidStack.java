@@ -28,9 +28,8 @@ import java.util.ArrayList;
 import java.util.List;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidPreconditions;
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
-import net.fabricmc.fabric.api.transfer.v1.transaction.Participant;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
-import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionResult;
+import net.fabricmc.fabric.api.transfer.v1.transaction.base.SnapshotParticipant;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.Fluids;
@@ -41,7 +40,7 @@ import net.minecraft.screen.slot.Slot;
 /**
  * A fluid stack that can be configured.
  */
-public class ConfigurableFluidStack implements StorageView<Fluid>, Participant<FluidState> {
+public class ConfigurableFluidStack extends SnapshotParticipant<FluidState> implements StorageView<Fluid> {
     private Fluid fluid = Fluids.EMPTY;
     private long amount = 0;
     private long capacity;
@@ -294,7 +293,7 @@ public class ConfigurableFluidStack implements StorageView<Fluid>, Participant<F
         FluidPreconditions.notEmptyNotNegative(fluid, maxAmount);
         if (pipesExtract && fluid == getFluid()) {
             long extracted = Math.min(maxAmount, amount);
-            transaction.enlist(ConfigurableFluidStack.this);
+            updateSnapshots(transaction);
             decrement(extracted);
             return extracted;
         }
@@ -312,16 +311,19 @@ public class ConfigurableFluidStack implements StorageView<Fluid>, Participant<F
     }
 
     @Override
-    public FluidState onEnlist() {
+    protected FluidState createSnapshot() {
         return new FluidState(fluid, amount);
     }
 
     @Override
-    public void onClose(FluidState fluidState, TransactionResult result) {
-        if (result.wasAborted()) {
-            this.fluid = fluidState.fluid;
-            this.amount = fluidState.amount;
-        }
+    protected void readSnapshot(FluidState snapshot) {
+        this.fluid = snapshot.fluid;
+        this.amount = snapshot.amount;
+    }
+
+    // TODO: remove once fluid API is fixed
+    public void updateSnapshots2(Transaction tx) {
+        updateSnapshots(tx);
     }
 
     public class ConfigurableFluidSlot extends Slot {

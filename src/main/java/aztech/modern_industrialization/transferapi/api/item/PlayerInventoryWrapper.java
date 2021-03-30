@@ -21,24 +21,38 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.machines.helper;
+package aztech.modern_industrialization.transferapi.api.item;
 
-import aztech.modern_industrialization.api.energy.CableTier;
-import aztech.modern_industrialization.api.energy.EnergyApi;
-import aztech.modern_industrialization.api.energy.EnergyInsertable;
-import aztech.modern_industrialization.api.energy.EnergyMoveable;
-import aztech.modern_industrialization.machines.MachineBlockEntity;
-import aztech.modern_industrialization.machines.components.EnergyComponent;
-import aztech.modern_industrialization.machines.components.OrientationComponent;
+import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
+import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
+import org.jetbrains.annotations.ApiStatus;
 
-public class EnergyHelper {
+/**
+ * A wrapper around a PlayerInventory.
+ *
+ * <p>
+ * Do not implement. Obtain an instance through
+ * {@link InventoryWrappers#ofPlayerInventory} instead.
+ */
+@ApiStatus.NonExtendable
+public interface PlayerInventoryWrapper {
+    /**
+     * Return a wrapper around a specific slot of the player inventory.
+     *
+     * <p>
+     * Slots 0 to 35 are for the main inventory, slots 36 to 39 are for the armor,
+     * and slot 40 is the offhand slot.
+     */
+    Storage<ItemKey> slotWrapper(int index);
 
-    public static void autoOuput(MachineBlockEntity machine, OrientationComponent orientation, CableTier output, EnergyComponent energy) {
-        EnergyMoveable insertable = EnergyApi.MOVEABLE.find(machine.getWorld(), machine.getPos().offset(orientation.outputDirection),
-                orientation.outputDirection.getOpposite());
-        if (insertable instanceof EnergyInsertable && ((EnergyInsertable) insertable).canInsert(output)) {
-            energy.insertEnergy((EnergyInsertable) insertable);
-        }
-        machine.markDirty();
-    }
+    /**
+     * Return a wrapper around the cursor slot of the player inventory.
+     */
+    Storage<ItemKey> cursorSlotWrapper();
+
+    /**
+     * Add items to the inventory if possible, and drop any leftover items in the
+     * world.
+     */
+    void offerOrDrop(ItemKey key, long amount, Transaction transaction);
 }

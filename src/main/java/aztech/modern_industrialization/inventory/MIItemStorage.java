@@ -23,11 +23,11 @@
  */
 package aztech.modern_industrialization.inventory;
 
+import aztech.modern_industrialization.transferapi.api.item.ItemKey;
+import aztech.modern_industrialization.transferapi.api.item.ItemPreconditions;
 import com.google.common.primitives.Ints;
 import java.util.List;
 import java.util.function.Predicate;
-import net.fabricmc.fabric.api.lookup.v1.item.ItemKey;
-import net.fabricmc.fabric.api.transfer.v1.item.ItemPreconditions;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 
@@ -60,7 +60,7 @@ public class MIItemStorage implements Storage<ItemKey> {
                         if (inserted > 0) {
                             totalInsert += inserted;
                             count -= inserted;
-                            tx.enlist(stack);
+                            stack.updateSnapshots2(tx);
                             stack.setItemKey(key);
                             stack.increment(inserted);
 

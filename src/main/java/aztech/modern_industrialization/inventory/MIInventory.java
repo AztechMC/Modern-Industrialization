@@ -24,12 +24,12 @@
 package aztech.modern_industrialization.inventory;
 
 import aztech.modern_industrialization.machines.IComponent;
+import aztech.modern_industrialization.transferapi.api.item.ItemApi;
+import aztech.modern_industrialization.transferapi.api.item.ItemKey;
 import aztech.modern_industrialization.util.NbtHelper;
 import java.util.Collections;
 import java.util.List;
-import net.fabricmc.fabric.api.lookup.v1.item.ItemKey;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidApi;
-import net.fabricmc.fabric.api.transfer.v1.item.ItemApi;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
 import net.fabricmc.fabric.api.transfer.v1.storage.Movement;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.minecraft.fluid.Fluid;
@@ -67,7 +67,7 @@ public final class MIInventory implements IComponent {
     }
 
     public void autoExtractItems(World world, BlockPos pos, Direction direction) {
-        Storage<ItemKey> target = ItemApi.SIDED.get(world, pos.offset(direction), direction.getOpposite());
+        Storage<ItemKey> target = ItemApi.SIDED.find(world, pos.offset(direction), direction.getOpposite());
         if (target != null) {
             autoExtractItems(target);
         }
@@ -78,7 +78,7 @@ public final class MIInventory implements IComponent {
     }
 
     public void autoExtractFluids(World world, BlockPos pos, Direction direction) {
-        Storage<Fluid> target = FluidApi.SIDED.get(world, pos.offset(direction), direction.getOpposite());
+        Storage<Fluid> target = FluidStorage.SIDED.find(world, pos.offset(direction), direction.getOpposite());
         if (target != null) {
             Movement.move(fluidStorage, target, f -> true, Integer.MAX_VALUE);
         }

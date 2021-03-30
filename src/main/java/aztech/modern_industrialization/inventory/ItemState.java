@@ -23,7 +23,7 @@
  */
 package aztech.modern_industrialization.inventory;
 
-import net.fabricmc.fabric.api.lookup.v1.item.ItemKey;
+import aztech.modern_industrialization.transferapi.api.item.ItemKey;
 
 public class ItemState {
     public ItemKey key;

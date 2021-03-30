@@ -1,0 +1,34 @@
+{
+  "type": "modern_industrialization:assembler",
+  "eu": 8,
+  "duration": 400,
+  "item_inputs": [
+    {
+      "item" : "modern_industrialization:basic_upgrade",
+      "amount": 4
+    },
+    {
+      "item": "modern_industrialization:large_motor",
+      "amount": 2
+    },
+    {
+      "item" : "modern_industrialization:large_pump",
+      "amount": 1
+    },
+    {
+      "item" : "modern_industrialization:electronic_circuit_board",
+      "amount": 1
+    }
+  ],
+
+  "fluid_inputs": {
+    "fluid" : "modern_industrialization:polyethylene",
+    "amount" : 1000
+  },
+  "item_outputs": [
+    {
+      "item": "modern_industrialization:advanced_upgrade",
+      "amount": 4
+    }
+  ]
+}

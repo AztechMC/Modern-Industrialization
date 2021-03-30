@@ -96,6 +96,7 @@ public final class MIItem {
     public static final Item BASIC_UPGRADE = of("basic_upgrade");
     public static final Item ADVANCED_UPGRADE = of("advanced_upgrade");
     public static final Item TURBO_UPGRADE = of("turbo_upgrade");
+    public static final Item HIGHLY_ADVANCED_UPGRADE = of("highly_advanced_upgrade");
 
     public static final Item ADVANCED_MOTOR = of("advanced_motor");
     public static final Item LARGE_ADVANCED_MOTOR = of("large_advanced_motor");

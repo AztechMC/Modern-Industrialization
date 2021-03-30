@@ -25,7 +25,7 @@ package aztech.modern_industrialization;
 
 import aztech.modern_industrialization.items.GuideBookItem;
 import aztech.modern_industrialization.items.SteamDrillItem;
-import aztech.modern_industrialization.tools.CrowbarItem;
+import aztech.modern_industrialization.items.tools.CrowbarItem;
 import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.function.Function;
@@ -84,9 +84,24 @@ public final class MIItem {
     public static final Item ITEM_OR_GATE = of("or_gate");
     public static final Item ITEM_NOT_GATE = of("not_gate");
 
+    public static final Item ITEM_PROCESSING_UNIT = of("processing_unit");
+    public static final Item ITEM_PROCESSING_UNIT_BOARD = of("processing_unit_board");
+    public static final Item ITEM_ARITHMETIC_LOGIC_UNIT = of("arithmetic_logic_unit");
+    public static final Item ITEM_RANDOM_ACCESS_MEMORY = of("random_access_memory");
+    public static final Item ITEM_MEMORY_MANAGEMENT_UNIT = of("memory_management_unit");
+
+    public static final Item ITEM_MONOCRYSTALLINE_SILICON = of("monocrystalline_silicon");
+    public static final Item ITEM_SILICON_WAFFER = of("silicon_waffer");
+
     public static final Item BASIC_UPGRADE = of("basic_upgrade");
     public static final Item ADVANCED_UPGRADE = of("advanced_upgrade");
     public static final Item TURBO_UPGRADE = of("turbo_upgrade");
+    public static final Item HIGHLY_ADVANCED_UPGRADE = of("highly_advanced_upgrade");
+
+    public static final Item ADVANCED_MOTOR = of("advanced_motor");
+    public static final Item LARGE_ADVANCED_MOTOR = of("large_advanced_motor");
+    public static final Item ADVANCED_PUMP = of("advanced_pump");
+    public static final Item LARGE_ADVANCED_PUMP = of("large_advanced_pump");
 
     /*
      * FIXME public static final Item ITEM_DEPLETED_URANIUM_FUEL_ROD = new

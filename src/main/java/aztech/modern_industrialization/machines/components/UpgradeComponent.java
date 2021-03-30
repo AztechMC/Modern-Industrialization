@@ -46,6 +46,7 @@ public class UpgradeComponent implements IComponent.ServerOnly {
         upgrades.put(MIItem.BASIC_UPGRADE, 2L);
         upgrades.put(MIItem.ADVANCED_UPGRADE, 8L);
         upgrades.put(MIItem.TURBO_UPGRADE, 32L);
+        upgrades.put(MIItem.HIGHLY_ADVANCED_UPGRADE, 128L);
     }
 
     public UpgradeComponent() {

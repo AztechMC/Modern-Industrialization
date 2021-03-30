@@ -80,6 +80,9 @@ public final class StandardRecipes {
         new MIRecipeBuilder(ctx, "packer", "double_ingot").addTaggedPartInput(INGOT, 2).addPartOutput(DOUBLE_INGOT, 1);
         new MIRecipeBuilder(ctx, "packer", "dust").addTaggedPartInput(TINY_DUST, 9).addPartOutput(DUST, 1);
         new MIRecipeBuilder(ctx, "packer", "ingot").addTaggedPartInput(NUGGET, 9).addPartOutput(INGOT, 1);
+        // UNPACKER
+        new MIRecipeBuilder(ctx, "unpacker", "tiny_dust").addTaggedPartInput(DUST, 1).addPartOutput(TINY_DUST, 9);
+        new MIRecipeBuilder(ctx, "unpacker", "nugget").addTaggedPartInput(INGOT, 1).addPartOutput(NUGGET, 9);
         // WIREMILL
         new MIRecipeBuilder(ctx, "wiremill", "wire").addTaggedPartInput(PLATE, 1).addPartOutput(WIRE, 2);
         new MIRecipeBuilder(ctx, "wiremill", "fine_wire").addTaggedPartInput(WIRE, 1).addPartOutput(FINE_WIRE, 4);

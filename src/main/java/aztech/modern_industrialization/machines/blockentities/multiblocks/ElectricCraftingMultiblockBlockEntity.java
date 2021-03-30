@@ -26,6 +26,7 @@ package aztech.modern_industrialization.machines.blockentities.multiblocks;
 import aztech.modern_industrialization.machines.components.CrafterComponent;
 import aztech.modern_industrialization.machines.components.EnergyComponent;
 import aztech.modern_industrialization.machines.components.OrientationComponent;
+import aztech.modern_industrialization.machines.components.UpgradeComponent;
 import aztech.modern_industrialization.machines.init.MachineTier;
 import aztech.modern_industrialization.machines.multiblocks.HatchBlockEntity;
 import aztech.modern_industrialization.machines.multiblocks.ShapeMatcher;
@@ -35,12 +36,19 @@ import aztech.modern_industrialization.util.Simulation;
 import java.util.ArrayList;
 import java.util.List;
 import net.minecraft.block.entity.BlockEntityType;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.Hand;
+import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 
 public class ElectricCraftingMultiblockBlockEntity extends AbstractCraftingMultiblockBlockEntity {
     public ElectricCraftingMultiblockBlockEntity(BlockEntityType<?> type, String name, ShapeTemplate shapeTemplate, MachineRecipeType recipeType) {
         super(type, name, new OrientationComponent(new OrientationComponent.Params(false, false, false)), new ShapeTemplate[] { shapeTemplate });
         this.recipeType = recipeType;
+        this.upgrades = new UpgradeComponent();
+        this.registerComponents(upgrades);
     }
 
     @Override
@@ -50,6 +58,7 @@ public class ElectricCraftingMultiblockBlockEntity extends AbstractCraftingMulti
 
     private final List<EnergyComponent> energyInputs = new ArrayList<>();
     private final MachineRecipeType recipeType;
+    private final UpgradeComponent upgrades;
 
     @Override
     protected void onSuccessfulMatch(ShapeMatcher shapeMatcher) {
@@ -57,6 +66,21 @@ public class ElectricCraftingMultiblockBlockEntity extends AbstractCraftingMulti
         for (HatchBlockEntity hatch : shapeMatcher.getMatchedHatches()) {
             hatch.appendEnergyInputs(energyInputs);
         }
+    }
+
+    protected ActionResult onUse(PlayerEntity player, Hand hand, Direction face) {
+        ActionResult result = super.onUse(player, hand, face);
+        if (!result.isAccepted()) {
+            result = upgrades.onUse(this, player, hand);
+        }
+        return result;
+    }
+
+    @Override
+    public List<ItemStack> dropExtra() {
+        List<ItemStack> drops = super.dropExtra();
+        drops.add(upgrades.getDrop());
+        return drops;
     }
 
     private class Behavior implements CrafterComponent.Behavior {
@@ -78,12 +102,12 @@ public class ElectricCraftingMultiblockBlockEntity extends AbstractCraftingMulti
 
         @Override
         public long getBaseRecipeEu() {
-            return MachineTier.UNLIMITED.getBaseEu();
+            return MachineTier.MULTIBLOCK.getBaseEu();
         }
 
         @Override
         public long getMaxRecipeEu() {
-            return MachineTier.UNLIMITED.getMaxEu();
+            return MachineTier.MULTIBLOCK.getMaxEu() + upgrades.getAddMaxEUPerTick();
         }
 
         @Override
@@ -91,4 +115,5 @@ public class ElectricCraftingMultiblockBlockEntity extends AbstractCraftingMulti
             return world;
         }
     }
+
 }

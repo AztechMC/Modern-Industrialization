@@ -39,6 +39,7 @@ import aztech.modern_industrialization.items.armor.ArmorPackets;
 import aztech.modern_industrialization.items.armor.JetpackItem;
 import aztech.modern_industrialization.items.armor.MIKeyMap;
 import aztech.modern_industrialization.items.diesel_tools.DieselToolItem;
+import aztech.modern_industrialization.items.tools.WrenchItem;
 import aztech.modern_industrialization.machines.MachinePackets;
 import aztech.modern_industrialization.machines.MachineScreenHandlers;
 import aztech.modern_industrialization.machines.init.*;
@@ -46,7 +47,6 @@ import aztech.modern_industrialization.machines.multiblocks.world.ChunkEventList
 import aztech.modern_industrialization.materials.MIMaterials;
 import aztech.modern_industrialization.pipes.MIPipes;
 import aztech.modern_industrialization.recipe.MIRecipes;
-import aztech.modern_industrialization.tools.WrenchItem;
 import aztech.modern_industrialization.transferapi.api.fluid.ItemFluidApi;
 import aztech.modern_industrialization.transferapi.api.item.ItemApi;
 import aztech.modern_industrialization.util.ChunkUnloadBlockEntity;
@@ -188,6 +188,8 @@ public class ModernIndustrialization implements ModInitializer {
 
         SpeedUpgrade.LOOKUP.registerForItems((key, vd) -> () -> 2, MIItem.ITEM_LV_MOTOR);
         SpeedUpgrade.LOOKUP.registerForItems((key, vd) -> () -> 8, MIItem.ITEM_LARGE_MOTOR);
+        SpeedUpgrade.LOOKUP.registerForItems((key, vd) -> () -> 16, MIItem.ADVANCED_MOTOR);
+        SpeedUpgrade.LOOKUP.registerForItems((key, vd) -> () -> 64, MIItem.LARGE_ADVANCED_MOTOR);
 
         RESOURCE_PACK.addTag(new MIIdentifier("items/overlay_sources"), JTag.tag().tag(new Identifier("fabric:wrenches")));
     }

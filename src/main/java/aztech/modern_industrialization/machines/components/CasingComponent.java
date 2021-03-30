@@ -53,6 +53,7 @@ public class CasingComponent implements IComponent {
         blockCasing.put(MIBlock.BASIC_MACHINE_HULL, CableTier.LV);
         blockCasing.put(MIBlock.ADVANCED_MACHINE_HULL, CableTier.MV);
         blockCasing.put(MIBlock.TURBO_MACHINE_HULL, CableTier.HV);
+        blockCasing.put(MIBlock.HIGHLY_ADVANCED_MACHINE_HULL, CableTier.EV);
     }
 
     public CasingComponent(CableTier defaultCasing) {

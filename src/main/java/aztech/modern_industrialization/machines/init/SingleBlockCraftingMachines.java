@@ -131,9 +131,9 @@ public final class SingleBlockCraftingMachines {
                 TIER_STEEL | TIER_ELECTRIC
         );
         registerMachineTiers(
-                "polarizer", MIMachineRecipeTypes.POLARIZER, 1, 1, 0, 0, guiParams -> {},
+                "polarizer", MIMachineRecipeTypes.POLARIZER, 2, 1, 0, 0, guiParams -> {},
                 new ProgressBar.Parameters(77, 30, "magnet"), new RecipeEfficiencyBar.Parameters(38, 62), new EnergyBar.Parameters(18, 30),
-                items -> items.addSlot(56, 32).addSlot(102, 32), fluids -> {},
+                items -> items.addSlots(56, 23, 2, 1).addSlot(102, 32), fluids -> {},
                 true, true, false,
                 TIER_ELECTRIC
         );
@@ -142,6 +142,14 @@ public final class SingleBlockCraftingMachines {
                 new ProgressBar.Parameters(77, 34, "wiremill"), new RecipeEfficiencyBar.Parameters(38, 62), new EnergyBar.Parameters(18, 30),
                 items -> items.addSlot(56, 35).addSlot(102, 35), fluids -> {},
                 true, true, false,
+                TIER_STEEL | TIER_ELECTRIC
+        );
+
+        registerMachineTiers(
+                "unpacker", MIMachineRecipeTypes.UNPACKER, 1, 2, 0, 0, guiParams -> {},
+                new ProgressBar.Parameters(77, 33, "arrow"), new RecipeEfficiencyBar.Parameters(38, 66), new EnergyBar.Parameters(18, 30),
+                items -> items.addSlots(56, 36, 1, 1).addSlots(102, 27, 2, 1), fluids -> {},
+                true, false, false,
                 TIER_STEEL | TIER_ELECTRIC
         );
         // @formatter:on

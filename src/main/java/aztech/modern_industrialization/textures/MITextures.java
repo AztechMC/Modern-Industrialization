@@ -62,7 +62,7 @@ public final class MITextures {
             casingFromTexture(mtm, "lv", mtm.getAssetAsTexture("modern_industrialization:textures/blocks/lv_machine_hull.png"));
             casingFromTexture(mtm, "mv", mtm.getAssetAsTexture("modern_industrialization:textures/blocks/advanced_machine_hull.png"));
             casingFromTexture(mtm, "hv", mtm.getAssetAsTexture("modern_industrialization:textures/blocks/turbo_machine_hull.png"));
-            casingFromTexture(mtm, "ev", mtm.getAssetAsTexture("modern_industrialization:textures/blocks/nitro_machine_hull.png"));
+            casingFromTexture(mtm, "ev", mtm.getAssetAsTexture("modern_industrialization:textures/blocks/highly_advanced_machine_hull.png"));
             casingFromTexture(mtm, "supraconductor", mtm.getAssetAsTexture("modern_industrialization:textures/blocks/ultimate_machine_hull.png"));
             casingFromTexture(mtm, "nuclear", mtm.getAssetAsTexture("modern_industrialization:textures/blocks/nuclear_machine_casing.png"));
 

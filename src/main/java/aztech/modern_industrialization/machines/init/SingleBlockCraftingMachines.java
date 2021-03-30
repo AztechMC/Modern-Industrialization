@@ -144,6 +144,14 @@ public final class SingleBlockCraftingMachines {
                 true, true, false,
                 TIER_STEEL | TIER_ELECTRIC
         );
+
+        registerMachineTiers(
+                "unpacker", MIMachineRecipeTypes.UNPACKER, 1, 2, 0, 0, guiParams -> {},
+                new ProgressBar.Parameters(77, 33, "arrow"), new RecipeEfficiencyBar.Parameters(38, 66), new EnergyBar.Parameters(18, 30),
+                items -> items.addSlots(56, 36, 1, 1).addSlots(102, 27, 2, 1), fluids -> {},
+                true, false, false,
+                TIER_STEEL | TIER_ELECTRIC
+        );
         // @formatter:on
     }
 

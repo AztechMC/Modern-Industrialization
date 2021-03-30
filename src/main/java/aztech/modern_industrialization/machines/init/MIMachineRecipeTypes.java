@@ -50,6 +50,7 @@ public class MIMachineRecipeTypes {
     public static final MachineRecipeType MACERATOR = create("macerator").withItemInputs().withItemOutputs();
     public static final MachineRecipeType MIXER = create("mixer").withItemInputs().withFluidInputs().withItemOutputs().withFluidOutputs();
     public static final MachineRecipeType PACKER = create("packer").withItemInputs().withItemOutputs();
+    public static final MachineRecipeType UNPACKER = create("unpacker").withItemInputs().withItemOutputs();
     public static final MachineRecipeType POLARIZER = create("polarizer").withItemInputs().withItemOutputs();
     public static final MachineRecipeType WIREMILL = create("wiremill").withItemInputs().withItemOutputs();
     // Multi block

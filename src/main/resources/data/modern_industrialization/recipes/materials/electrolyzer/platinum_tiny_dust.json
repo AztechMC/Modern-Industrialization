@@ -1,0 +1,18 @@
+{
+  "type": "modern_industrialization:electrolyzer",
+  "eu": 32,
+  "duration": 600,
+  "item_outputs" : [
+    {"item" :  "modern_industrialization:platinum_tiny_dust",
+    "amount": 3}
+  ],
+  "fluid_inputs" : {
+    "fluid" : "modern_industrialization:purified_platinum_sulfuric_solution",
+    "amount" : 1000
+  },
+  "fluid_outputs" : {
+    "fluid" : "modern_industrialization:sulfuric_acid",
+    "amount": 900
+  }
+
+}

@@ -1,14 +1,13 @@
 {
   "type": "modern_industrialization:blast_furnace",
-  "eu": 64,
-  "duration": 200,
+  "eu": 32,
+  "duration": 400,
   "item_inputs": {
-    "tag": "c:annealed_copper_dusts",
+    "tag": "c:kanthal_dusts",
     "amount": 1
   },
-
   "item_outputs": {
-    "item": "modern_industrialization:annealed_copper_ingot",
+    "item": "modern_industrialization:kanthal_hot_ingot",
     "amount": 1
   }
 }

@@ -31,14 +31,11 @@ import aztech.modern_industrialization.compat.rei.Rectangle;
 import aztech.modern_industrialization.compat.rei.machines.MachineCategoryParams;
 import aztech.modern_industrialization.compat.rei.machines.ReiMachineRecipes;
 import aztech.modern_industrialization.inventory.SlotPositions;
-import aztech.modern_industrialization.machines.blockentities.multiblocks.SteamBoilerMultiblockBlockEntity;
+import aztech.modern_industrialization.machines.blockentities.multiblocks.*;
 import aztech.modern_industrialization.machines.recipe.MachineRecipe;
 import aztech.modern_industrialization.machines.recipe.MachineRecipeType;
 import aztech.modern_industrialization.machines.MachineScreenHandlers;
 import aztech.modern_industrialization.machines.SyncedComponent;
-import aztech.modern_industrialization.machines.blockentities.multiblocks.DistillationTowerBlockEntity;
-import aztech.modern_industrialization.machines.blockentities.multiblocks.ElectricCraftingMultiblockBlockEntity;
-import aztech.modern_industrialization.machines.blockentities.multiblocks.SteamCraftingMultiblockBlockEntity;
 import aztech.modern_industrialization.machines.components.sync.CraftingMultiblockGui;
 import aztech.modern_industrialization.machines.components.sync.ProgressBar;
 import aztech.modern_industrialization.machines.models.MachineCasings;
@@ -88,16 +85,12 @@ public class MultiblockMachines {
                 bet -> new SteamCraftingMultiblockBlockEntity(bet, "steam_blast_furnace", sbfShape, MIMachineRecipeTypes.BLAST_FURNACE));
         ReiMachineRecipes.registerMultiblockShape("steam_blast_furnace", sbfShape);
 
-        SimpleMember invarCasings = SimpleMember.forBlock(MIBlock.blocks.get("heatproof_machine_casing"));
-        SimpleMember cupronickelCoils = SimpleMember.forBlock(MIBlock.blocks.get("cupronickel_coil"));
-        HatchFlags ebfHatches = new HatchFlags.Builder().with(ITEM_INPUT, ITEM_OUTPUT, FLUID_INPUT, FLUID_OUTPUT, ENERGY_INPUT).build();
-        ShapeTemplate ebfShape = new ShapeTemplate.Builder(MachineCasings.HEATPROOF).add3by3(0, invarCasings, false, ebfHatches)
-                .add3by3(1, cupronickelCoils, true, null).add3by3(2, cupronickelCoils, true, null).add3by3(3, invarCasings, false, ebfHatches)
-                .build();
-        ELECTRIC_BLAST_FURNACE = MachineRegistrationHelper.registerMachine("electric_blast_furnace",
-                bet -> new ElectricCraftingMultiblockBlockEntity(bet, "electric_blast_furnace", ebfShape, MIMachineRecipeTypes.BLAST_FURNACE));
-        ReiMachineRecipes.registerMultiblockShape("electric_blast_furnace", ebfShape);
 
+        ELECTRIC_BLAST_FURNACE = MachineRegistrationHelper.registerMachine("electric_blast_furnace",
+                bet -> new ElectricBlastFurnaceBlockEntity(bet));
+        ElectricBlastFurnaceBlockEntity.registerReiShapes();
+
+        SimpleMember invarCasings = SimpleMember.forBlock(MIBlock.blocks.get("heatproof_machine_casing"));
         SimpleMember bronzePlatedBricks = SimpleMember.forBlock(MIBlock.blocks.get("bronze_plated_bricks"));
         SimpleMember bronzePipe = SimpleMember.forBlock(MIBlock.blocks.get("bronze_machine_casing_pipe"));
         HatchFlags slbHatchFlags = new HatchFlags.Builder().with(ITEM_INPUT, FLUID_INPUT, FLUID_OUTPUT).build();

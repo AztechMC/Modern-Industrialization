@@ -293,11 +293,6 @@ public class ConfigurableItemStack extends SnapshotParticipant<ItemState> implem
         this.key = itemState.key;
     }
 
-    // TODO: remove once fixed in fluid API
-    public void updateSnapshots2(Transaction tx) {
-        updateSnapshots(tx);
-    }
-
     public class ConfigurableItemSlot extends Slot {
         private final Predicate<ItemStack> insertPredicate;
         private final Runnable markDirty;

@@ -127,7 +127,7 @@ public class TankBlockEntity extends FastBlockEntity implements Storage<Fluid>, 
         if (this.fluid == Fluids.EMPTY || TankBlockEntity.this.fluid == fluid) {
             long inserted = Math.min(maxAmount, capacity - amount);
             if (inserted > 0) {
-                participant.updateSnapshots2(transaction);
+                participant.updateSnapshots(transaction);
                 amount += inserted;
                 TankBlockEntity.this.fluid = fluid;
             }
@@ -147,7 +147,7 @@ public class TankBlockEntity extends FastBlockEntity implements Storage<Fluid>, 
         if (fluid == TankBlockEntity.this.fluid) {
             long extracted = Math.min(maxAmount, amount);
             if (extracted > 0) {
-                participant.updateSnapshots2(transaction);
+                participant.updateSnapshots(transaction);
                 amount -= extracted;
                 if (amount == 0) {
                     TankBlockEntity.this.fluid = Fluids.EMPTY;
@@ -196,11 +196,6 @@ public class TankBlockEntity extends FastBlockEntity implements Storage<Fluid>, 
         @Override
         protected void onFinalCommit() {
             onChanged();
-        }
-
-        // TODO: make updateSnapshots public in the transfer API
-        protected final void updateSnapshots2(Transaction transaction) {
-            updateSnapshots(transaction);
         }
     }
 }

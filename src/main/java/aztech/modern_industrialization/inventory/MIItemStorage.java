@@ -60,7 +60,7 @@ public class MIItemStorage implements Storage<ItemKey> {
                         if (inserted > 0) {
                             totalInsert += inserted;
                             count -= inserted;
-                            stack.updateSnapshots2(tx);
+                            stack.updateSnapshots(tx);
                             stack.setItemKey(key);
                             stack.increment(inserted);
 

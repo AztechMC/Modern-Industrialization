@@ -321,11 +321,6 @@ public class ConfigurableFluidStack extends SnapshotParticipant<FluidState> impl
         this.amount = snapshot.amount;
     }
 
-    // TODO: remove once fluid API is fixed
-    public void updateSnapshots2(Transaction tx) {
-        updateSnapshots(tx);
-    }
-
     public class ConfigurableFluidSlot extends Slot {
         private final Runnable markDirty;
 

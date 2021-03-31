@@ -56,7 +56,7 @@ public class MIFluidStorage implements Storage<Fluid> {
                         long inserted = Math.min(amount, stack.getRemainingSpace());
 
                         if (inserted > 0) {
-                            stack.updateSnapshots2(tx);
+                            stack.updateSnapshots(tx);
                             stack.setFluid(fluid);
                             stack.increment(inserted);
 

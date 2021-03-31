@@ -23,36 +23,16 @@
  */
 package aztech.modern_industrialization.pipes.fluid;
 
+import aztech.modern_industrialization.pipes.gui.iface.ConnectionTypeInterface;
+import aztech.modern_industrialization.pipes.gui.iface.PriorityInterface;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.util.registry.Registry;
 
-public interface FluidPipeInterface {
+public interface FluidPipeInterface extends ConnectionTypeInterface, PriorityInterface {
     Fluid getNetworkFluid();
 
     void setNetworkFluid(Fluid fluid);
-
-    int getConnectionType();
-
-    void setConnectionType(int type);
-
-    int getPriority();
-
-    /**
-     * Don't call this, always call {@link FluidPipeInterface#incrementPriority}.
-     */
-    void setPriority(int priority);
-
-    default void incrementPriority(int delta) {
-        if (delta == 1 || delta == -1 || delta == 10 || delta == -10) {
-            int p = getPriority() + delta;
-            if (p < -128)
-                p = -128;
-            if (p > 127)
-                p = 127;
-            setPriority(p);
-        }
-    }
 
     static FluidPipeInterface ofBuf(PacketByteBuf buf) {
         Fluid[] networkFluid = new Fluid[] { Registry.FLUID.get(buf.readVarInt()) };

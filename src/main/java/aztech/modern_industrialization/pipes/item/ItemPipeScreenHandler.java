@@ -25,7 +25,7 @@ package aztech.modern_industrialization.pipes.item;
 
 import aztech.modern_industrialization.api.pipes.item.SpeedUpgrade;
 import aztech.modern_industrialization.pipes.MIPipes;
-import aztech.modern_industrialization.pipes.gui.PipeGuiHelper;
+import aztech.modern_industrialization.pipes.gui.PipeScreenHandler;
 import aztech.modern_industrialization.pipes.impl.PipePackets;
 import aztech.modern_industrialization.util.ItemStackHelper;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
@@ -34,12 +34,11 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketByteBuf;
-import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.screen.slot.SlotActionType;
 import net.minecraft.server.network.ServerPlayerEntity;
 
-public class ItemPipeScreenHandler extends ScreenHandler {
+public class ItemPipeScreenHandler extends PipeScreenHandler {
     public static final int HEIGHT = 180;
 
     private final PlayerInventory playerInventory;
@@ -60,15 +59,7 @@ public class ItemPipeScreenHandler extends ScreenHandler {
         this.trackedPriority = pipeInterface.getPriority();
         this.trackedType = pipeInterface.getConnectionType();
 
-        // Player slots
-        for (int i = 0; i < 3; i++) {
-            for (int j = 0; j < 9; j++) {
-                this.addSlot(new Slot(playerInventory, i * 9 + j + 9, 8 + j * 18, PipeGuiHelper.getPlayerInvStart(HEIGHT) + i * 18));
-            }
-        }
-        for (int j = 0; j < 9; j++) {
-            this.addSlot(new Slot(playerInventory, j, 8 + j * 18, PipeGuiHelper.getPlayerInvStart(HEIGHT) + 58));
-        }
+        addPlayerInventorySlots(playerInventory, HEIGHT);
 
         // Filter slots
         for (int i = 0; i < 3; i++) {
@@ -156,6 +147,11 @@ public class ItemPipeScreenHandler extends ScreenHandler {
                 ServerPlayNetworking.send(serverPlayer, PipePackets.SET_ITEM_PRIORITY, buf);
             }
         }
+    }
+
+    @Override
+    protected Object getInterface() {
+        return pipeInterface;
     }
 
     private class FilterSlot extends Slot {

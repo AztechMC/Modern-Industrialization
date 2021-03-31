@@ -24,8 +24,8 @@
 package aztech.modern_industrialization.pipes.item;
 
 import aztech.modern_industrialization.MIIdentifier;
-import aztech.modern_industrialization.pipes.gui.AbstractPipeScreen;
 import aztech.modern_industrialization.pipes.gui.PipeGuiHelper;
+import aztech.modern_industrialization.pipes.gui.PipeScreen;
 import aztech.modern_industrialization.pipes.impl.PipePackets;
 import com.mojang.blaze3d.systems.RenderSystem;
 import io.netty.buffer.Unpooled;
@@ -40,15 +40,9 @@ import net.minecraft.network.PacketByteBuf;
 import net.minecraft.text.*;
 import net.minecraft.util.Identifier;
 
-public class ItemPipeScreen extends AbstractPipeScreen<ItemPipeScreenHandler> {
+public class ItemPipeScreen extends PipeScreen<ItemPipeScreenHandler> {
     private static final Identifier TEXTURE = new MIIdentifier("textures/gui/pipe/item.png");
     private static final Style SECONDARY_INFO = Style.EMPTY.withColor(TextColor.fromRgb(0xa9a9a9)).withItalic(true);
-    private final ButtonWidget.TooltipSupplier priorityTooltip = (button, matrices, mouseX, mouseY) -> {
-        List<Text> lines = new ArrayList<>();
-        lines.add(new TranslatableText("text.modern_industrialization.priority", handler.pipeInterface.getPriority()));
-        lines.add(new TranslatableText("text.modern_industrialization.priority_help").setStyle(SECONDARY_INFO));
-        renderTooltip(matrices, lines, mouseX, mouseY);
-    };
 
     public ItemPipeScreen(ItemPipeScreenHandler handler, PlayerInventory inventory, Text title) {
         super(handler, inventory, title, ItemPipeScreenHandler.HEIGHT);
@@ -84,28 +78,16 @@ public class ItemPipeScreen extends AbstractPipeScreen<ItemPipeScreenHandler> {
             ClientPlayNetworking.send(PipePackets.SET_ITEM_CONNECTION_TYPE, buf);
         }, (button, matrices, mouseX, mouseY) -> {
             List<Text> lines = new ArrayList<>();
-            lines.add(new TranslatableText("text.modern_industrialization.item_connection_tooltip_" + handler.pipeInterface.getConnectionType()));
-            lines.add(new TranslatableText("text.modern_industrialization.item_connection_help").setStyle(SECONDARY_INFO));
+            lines.add(new TranslatableText("text.modern_industrialization.pipe_connection_tooltip_" + handler.pipeInterface.getConnectionType()));
+            lines.add(new TranslatableText("text.modern_industrialization.pipe_connection_help").setStyle(SECONDARY_INFO));
             renderTooltip(matrices, lines, mouseX, mouseY);
         }));
-        addPriorityWidgets(15, 72, handler.pipeInterface::getPriority, delta -> {
-            handler.pipeInterface.incrementPriority(delta);
-            PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
-            buf.writeInt(handler.syncId);
-            buf.writeInt(delta);
-            ClientPlayNetworking.send(PipePackets.INCREMENT_ITEM_PRIORITY, buf);
-        }, priorityTooltip);
+        addPriorityWidgets(15, 72, handler.pipeInterface, "insert");
     }
 
     @Override
     protected Identifier getBackgroundTexture() {
         return TEXTURE;
-    }
-
-    @Override
-    public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
-        super.render(matrices, mouseX, mouseY, delta);
-        super.drawMouseoverTooltip(matrices, mouseX, mouseY);
     }
 
     private class WhitelistButton extends ButtonWidget {
@@ -135,7 +117,7 @@ public class ItemPipeScreen extends AbstractPipeScreen<ItemPipeScreenHandler> {
 
         @Override
         public Text getMessage() {
-            return new TranslatableText("text.modern_industrialization.item_connection_" + handler.pipeInterface.getConnectionType());
+            return new TranslatableText("text.modern_industrialization.pipe_connection_" + handler.pipeInterface.getConnectionType());
         }
     }
 }

@@ -21,23 +21,24 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.pipes.fluid;
+package aztech.modern_industrialization.pipes.gui.iface;
 
-import aztech.modern_industrialization.MIIdentifier;
-import aztech.modern_industrialization.pipes.gui.PipeScreen;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
+public interface PriorityInterface {
+    int getPriority();
 
-public class FluidPipeScreen extends PipeScreen<FluidPipeScreenHandler> {
-    private static final Identifier TEXTURE = new MIIdentifier("textures/gui/pipe/fluid.png");
+    /**
+     * Don't call this, always call {@link #incrementPriority}.
+     */
+    void setPriority(int priority);
 
-    public FluidPipeScreen(FluidPipeScreenHandler handler, PlayerInventory inventory, Text title) {
-        super(handler, inventory, title, FluidPipeScreenHandler.HEIGHT);
-    }
-
-    @Override
-    protected Identifier getBackgroundTexture() {
-        return TEXTURE;
+    default void incrementPriority(int delta) {
+        if (delta == 1 || delta == -1 || delta == 10 || delta == -10) {
+            int p = getPriority() + delta;
+            if (p < -128)
+                p = -128;
+            if (p > 127)
+                p = 127;
+            setPriority(p);
+        }
     }
 }

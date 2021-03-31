@@ -24,6 +24,9 @@
 package aztech.modern_industrialization.pipes.impl;
 
 import aztech.modern_industrialization.MIIdentifier;
+import aztech.modern_industrialization.pipes.gui.PipeScreenHandler;
+import aztech.modern_industrialization.pipes.gui.iface.ConnectionTypeInterface;
+import aztech.modern_industrialization.pipes.gui.iface.PriorityInterface;
 import aztech.modern_industrialization.pipes.item.ItemPipeScreenHandler;
 import aztech.modern_industrialization.util.UnsidedPacketHandler;
 import net.fabricmc.api.EnvType;
@@ -52,7 +55,7 @@ public class PipePackets {
         return () -> {
             ScreenHandler handler = player.currentScreenHandler;
             if (handler.syncId == syncId) {
-                ((ItemPipeScreenHandler) handler).pipeInterface.setConnectionType(type);
+                ((PipeScreenHandler) handler).getInterface(ConnectionTypeInterface.class).setConnectionType(type);
             }
         };
     };
@@ -63,7 +66,7 @@ public class PipePackets {
         ms.execute(() -> {
             ScreenHandler handler = player.currentScreenHandler;
             if (handler.syncId == syncId) {
-                ((ItemPipeScreenHandler) handler).pipeInterface.incrementPriority(priority);
+                ((PipeScreenHandler) handler).getInterface(PriorityInterface.class).incrementPriority(priority);
             }
         });
     };
@@ -75,7 +78,7 @@ public class PipePackets {
         mc.execute(() -> {
             ScreenHandler handler = mc.player.currentScreenHandler;
             if (handler.syncId == syncId) {
-                ((ItemPipeScreenHandler) handler).pipeInterface.setPriority(priority);
+                ((PipeScreenHandler) handler).getInterface(PriorityInterface.class).setPriority(priority);
             }
         });
     };

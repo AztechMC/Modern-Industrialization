@@ -21,23 +21,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.pipes.fluid;
+package aztech.modern_industrialization.pipes.gui.iface;
 
-import aztech.modern_industrialization.MIIdentifier;
-import aztech.modern_industrialization.pipes.gui.PipeScreen;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
+public interface ConnectionTypeInterface {
+    int getConnectionType();
 
-public class FluidPipeScreen extends PipeScreen<FluidPipeScreenHandler> {
-    private static final Identifier TEXTURE = new MIIdentifier("textures/gui/pipe/fluid.png");
-
-    public FluidPipeScreen(FluidPipeScreenHandler handler, PlayerInventory inventory, Text title) {
-        super(handler, inventory, title, FluidPipeScreenHandler.HEIGHT);
-    }
-
-    @Override
-    protected Identifier getBackgroundTexture() {
-        return TEXTURE;
-    }
+    void setConnectionType(int type);
 }

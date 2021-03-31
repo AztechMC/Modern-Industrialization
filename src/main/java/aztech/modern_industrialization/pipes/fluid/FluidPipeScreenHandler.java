@@ -24,16 +24,15 @@
 package aztech.modern_industrialization.pipes.fluid;
 
 import aztech.modern_industrialization.pipes.MIPipes;
-import aztech.modern_industrialization.pipes.gui.PipeGuiHelper;
+import aztech.modern_industrialization.pipes.gui.PipeScreenHandler;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketByteBuf;
-import net.minecraft.screen.ScreenHandler;
-import net.minecraft.screen.slot.Slot;
 
-public class FluidPipeScreenHandler extends ScreenHandler {
+public class FluidPipeScreenHandler extends PipeScreenHandler {
     public static final int HEIGHT = 153;
+    private final FluidPipeInterface iface;
 
     public FluidPipeScreenHandler(int syncId, PlayerInventory playerInventory, PacketByteBuf buf) {
         this(syncId, playerInventory, FluidPipeInterface.ofBuf(buf));
@@ -41,17 +40,9 @@ public class FluidPipeScreenHandler extends ScreenHandler {
 
     public FluidPipeScreenHandler(int syncId, PlayerInventory playerInventory, FluidPipeInterface iface) {
         super(MIPipes.SCREEN_HANDLER_TYPE_FLUID_PIPE, syncId);
+        this.iface = iface;
 
-        // Player slots
-        // FIXME: refactor into a helper shared with the item pipes
-        for (int i = 0; i < 3; i++) {
-            for (int j = 0; j < 9; j++) {
-                this.addSlot(new Slot(playerInventory, i * 9 + j + 9, 8 + j * 18, PipeGuiHelper.getPlayerInvStart(HEIGHT) + i * 18));
-            }
-        }
-        for (int j = 0; j < 9; j++) {
-            this.addSlot(new Slot(playerInventory, j, 8 + j * 18, PipeGuiHelper.getPlayerInvStart(HEIGHT) + 58));
-        }
+        addPlayerInventorySlots(playerInventory, HEIGHT);
     }
 
     @Override
@@ -63,5 +54,10 @@ public class FluidPipeScreenHandler extends ScreenHandler {
     @Override
     public boolean canUse(PlayerEntity player) {
         return true;
+    }
+
+    @Override
+    protected Object getInterface() {
+        return iface;
     }
 }

@@ -23,21 +23,37 @@
  */
 package aztech.modern_industrialization.pipes.gui;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.gui.widget.ButtonWidget;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
+import net.minecraft.util.Identifier;
 
 /**
  * A helper for functionality commonly used by pipe screens.
  */
 public abstract class AbstractPipeScreen<SH extends ScreenHandler> extends HandledScreen<SH> {
-    public AbstractPipeScreen(SH handler, PlayerInventory inventory, Text title) {
+    public AbstractPipeScreen(SH handler, PlayerInventory inventory, Text title, int backgroundHeight) {
         super(handler, inventory, title);
+
+        this.backgroundHeight = backgroundHeight;
+        this.playerInventoryTitleY = this.backgroundHeight - 94;
+    }
+
+    protected abstract Identifier getBackgroundTexture();
+
+    @Override
+    protected void drawBackground(MatrixStack matrices, float delta, int mouseX, int mouseY) {
+        this.renderBackground(matrices);
+        RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
+        this.client.getTextureManager().bindTexture(getBackgroundTexture());
+        this.drawTexture(matrices, this.x, this.y, 0, 0, this.backgroundWidth, this.backgroundHeight);
     }
 
     protected void addPriorityWidgets(int startX, int startY, Supplier<Integer> priorityGetter, Consumer<Integer> incrementPriority,

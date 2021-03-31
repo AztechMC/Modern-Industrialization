@@ -51,10 +51,7 @@ public class ItemPipeScreen extends AbstractPipeScreen<ItemPipeScreenHandler> {
     };
 
     public ItemPipeScreen(ItemPipeScreenHandler handler, PlayerInventory inventory, Text title) {
-        super(handler, inventory, title);
-
-        this.backgroundHeight = 180;
-        this.playerInventoryTitleY = this.backgroundHeight - 94;
+        super(handler, inventory, title, ItemPipeScreenHandler.HEIGHT);
     }
 
     @Override
@@ -101,11 +98,8 @@ public class ItemPipeScreen extends AbstractPipeScreen<ItemPipeScreenHandler> {
     }
 
     @Override
-    protected void drawBackground(MatrixStack matrices, float delta, int mouseX, int mouseY) {
-        this.renderBackground(matrices);
-        RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-        this.client.getTextureManager().bindTexture(TEXTURE);
-        this.drawTexture(matrices, this.x, this.y, 0, 0, this.backgroundWidth, this.backgroundHeight);
+    protected Identifier getBackgroundTexture() {
+        return TEXTURE;
     }
 
     @Override

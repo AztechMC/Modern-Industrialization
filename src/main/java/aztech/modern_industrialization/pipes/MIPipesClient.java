@@ -25,6 +25,7 @@ package aztech.modern_industrialization.pipes;
 
 import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.ModernIndustrialization;
+import aztech.modern_industrialization.pipes.fluid.FluidPipeScreen;
 import aztech.modern_industrialization.pipes.impl.PipeColorProvider;
 import aztech.modern_industrialization.pipes.impl.PipeModelProvider;
 import aztech.modern_industrialization.pipes.impl.PipePackets;
@@ -45,7 +46,8 @@ public class MIPipesClient implements ClientModInitializer {
                 JState.state(new JVariant().put("", new JBlockModel("modern_industrialization:block/pipe"))), new MIIdentifier("pipe"));
         ModelLoadingRegistry.INSTANCE.registerResourceProvider(rm -> new PipeModelProvider());
         ColorProviderRegistry.BLOCK.register(new PipeColorProvider(), MIPipes.BLOCK_PIPE);
-        ScreenRegistry.register(MIPipes.SCREN_HANDLER_TYPE_ITEM_PIPE, ItemPipeScreen::new);
+        ScreenRegistry.register(MIPipes.SCREEN_HANDLER_TYPE_ITEM_PIPE, ItemPipeScreen::new);
+        ScreenRegistry.register(MIPipes.SCREEN_HANDLER_TYPE_FLUID_PIPE, FluidPipeScreen::new);
         registerPackets();
 
         PipeModelProvider.modelNames.addAll(MIPipes.PIPE_MODEL_NAMES);

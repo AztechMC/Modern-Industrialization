@@ -370,6 +370,7 @@ public class ItemNetworkNode extends PipeNetworkNode {
                     public void setConnectionType(int type) {
                         if (0 <= type && type < 3) {
                             ItemConnection.this.type = decodeConnectionType(type);
+                            markDirty.run();
                             sync.run();
                         }
                     }

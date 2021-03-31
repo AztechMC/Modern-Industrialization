@@ -36,12 +36,22 @@ import aztech.modern_industrialization.pipes.api.PipeNetworkNode;
 import aztech.modern_industrialization.transferapi.FluidTransferHelper;
 import aztech.modern_industrialization.util.NbtHelper;
 import java.util.*;
+import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
+import net.fabricmc.fabric.api.util.NbtType;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.PacketByteBuf;
+import net.minecraft.screen.ScreenHandler;
+import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.text.Text;
+import net.minecraft.text.TranslatableText;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
+import org.jetbrains.annotations.Nullable;
 
 // LBA
 public class FluidNetworkNode extends PipeNetworkNode {
@@ -143,7 +153,7 @@ public class FluidNetworkNode extends PipeNetworkNode {
         }
         // Otherwise try to connect
         if (canConnect(world, pos, direction)) {
-            connections.add(new FluidConnection(direction, BLOCK_IN));
+            connections.add(new FluidConnection(direction, BLOCK_IN, 0));
         }
     }
 
@@ -151,7 +161,10 @@ public class FluidNetworkNode extends PipeNetworkNode {
     public CompoundTag toTag(CompoundTag tag) {
         tag.putLong("amount_ftl", amount);
         for (FluidConnection connection : connections) {
-            tag.putByte(connection.direction.toString(), (byte) encodeConnectionType(connection.type));
+            CompoundTag connectionTag = new CompoundTag();
+            connectionTag.putByte("connections", (byte) encodeConnectionType(connection.type));
+            connectionTag.putInt("priority", connection.priority);
+            tag.put(connection.direction.toString(), connectionTag);
         }
         return tag;
     }
@@ -165,7 +178,14 @@ public class FluidNetworkNode extends PipeNetworkNode {
         }
         for (Direction direction : Direction.values()) {
             if (tag.contains(direction.toString())) {
-                connections.add(new FluidConnection(direction, decodeConnectionType(tag.getByte(direction.toString()))));
+                if (tag.getType(direction.toString()) == NbtType.BYTE) {
+                    // Old format (before fluid pipe priorities)
+                    connections.add(new FluidConnection(direction, decodeConnectionType(tag.getByte(direction.toString())), 0));
+                } else {
+                    CompoundTag connectionTag = tag.getCompound(direction.toString());
+                    connections.add(new FluidConnection(direction, decodeConnectionType(connectionTag.getByte("connections")),
+                            connectionTag.getInt("priority")));
+                }
             }
         }
     }
@@ -178,13 +198,25 @@ public class FluidNetworkNode extends PipeNetworkNode {
         return connection == BLOCK_IN ? 0 : connection == BLOCK_IN_OUT ? 1 : 2;
     }
 
-    private static class FluidConnection {
+    @Override
+    public ExtendedScreenHandlerFactory getConnectionGui(Direction guiDirection, Runnable markDirty, Runnable sync) {
+        for (FluidConnection connection : connections) {
+            if (connection.direction == guiDirection) {
+                return connection.new ScreenHandlerFactory(markDirty, sync, getType().getIdentifier().getPath());
+            }
+        }
+        return null;
+    }
+
+    private class FluidConnection {
         private final Direction direction;
         private PipeEndpointType type;
+        private int priority;
 
-        private FluidConnection(Direction direction, PipeEndpointType type) {
+        private FluidConnection(Direction direction, PipeEndpointType type, int priority) {
             this.direction = direction;
             this.type = type;
+            this.priority = priority;
         }
 
         private boolean canInsert() {
@@ -193,6 +225,74 @@ public class FluidNetworkNode extends PipeNetworkNode {
 
         private boolean canExtract() {
             return type == BLOCK_OUT || type == BLOCK_IN_OUT;
+        }
+
+        private class ScreenHandlerFactory implements ExtendedScreenHandlerFactory {
+            private final FluidPipeInterface iface;
+            private final String pipeType;
+
+            private ScreenHandlerFactory(Runnable markDirty, Runnable sync, String pipeType) {
+                this.iface = new FluidPipeInterface() {
+                    @Override
+                    public Fluid getNetworkFluid() {
+                        if (network != null) {
+                            return getFluid();
+                        } else {
+                            return Fluids.EMPTY;
+                        }
+                    }
+
+                    @Override
+                    public void setNetworkFluid(Fluid fluid) {
+                        FluidNetworkData data = (FluidNetworkData) network.data;
+                        if (data.fluid == Fluids.EMPTY) {
+                            data.fluid = fluid;
+                            markDirty.run();
+                        }
+                    }
+
+                    @Override
+                    public int getConnectionType() {
+                        return encodeConnectionType(type);
+                    }
+
+                    @Override
+                    public void setConnectionType(int type) {
+                        if (0 <= type && type < 3) {
+                            FluidConnection.this.type = decodeConnectionType(type);
+                            markDirty.run();
+                            sync.run();
+                        }
+                    }
+
+                    @Override
+                    public int getPriority() {
+                        return priority;
+                    }
+
+                    @Override
+                    public void setPriority(int priority) {
+                        FluidConnection.this.priority = priority;
+                        sync.run();
+                    }
+                };
+                this.pipeType = pipeType;
+            }
+
+            @Override
+            public void writeScreenOpeningData(ServerPlayerEntity player, PacketByteBuf buf) {
+                iface.toBuf(buf);
+            }
+
+            @Override
+            public Text getDisplayName() {
+                return new TranslatableText("item.modern_industrialization.pipe_" + pipeType);
+            }
+
+            @Override
+            public @Nullable ScreenHandler createMenu(int syncId, PlayerInventory inv, PlayerEntity player) {
+                return new FluidPipeScreenHandler(syncId, inv, iface);
+            }
         }
     }
 

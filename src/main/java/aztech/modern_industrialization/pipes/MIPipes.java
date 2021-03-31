@@ -35,6 +35,7 @@ import aztech.modern_industrialization.pipes.electricity.ElectricityNetworkNode;
 import aztech.modern_industrialization.pipes.fluid.FluidNetwork;
 import aztech.modern_industrialization.pipes.fluid.FluidNetworkData;
 import aztech.modern_industrialization.pipes.fluid.FluidNetworkNode;
+import aztech.modern_industrialization.pipes.fluid.FluidPipeScreenHandler;
 import aztech.modern_industrialization.pipes.impl.*;
 import aztech.modern_industrialization.pipes.item.ItemNetwork;
 import aztech.modern_industrialization.pipes.item.ItemNetworkData;
@@ -73,11 +74,15 @@ public class MIPipes implements ModInitializer {
 
     public static final Block BLOCK_PIPE = new PipeBlock(FabricBlockSettings.of(Material.METAL).hardness(4.0f));
     public static BlockEntityType<PipeBlockEntity> BLOCK_ENTITY_TYPE_PIPE;
-    private Map<PipeNetworkType, PipeItem> pipeItems = new HashMap<>();
+    private final Map<PipeNetworkType, PipeItem> pipeItems = new HashMap<>();
 
     public static final Map<PipeItem, CableTier> electricityPipeTier = new HashMap<>();
-    public static final ScreenHandlerType<ItemPipeScreenHandler> SCREN_HANDLER_TYPE_ITEM_PIPE = ScreenHandlerRegistry
+
+    public static final ScreenHandlerType<ItemPipeScreenHandler> SCREEN_HANDLER_TYPE_ITEM_PIPE = ScreenHandlerRegistry
             .registerExtended(new MIIdentifier("item_pipe"), ItemPipeScreenHandler::new);
+    public static final ScreenHandlerType<FluidPipeScreenHandler> SCREEN_HANDLER_TYPE_FLUID_PIPE = ScreenHandlerRegistry
+            .registerExtended(new MIIdentifier("fluid_pipe"), FluidPipeScreenHandler::new);
+
     public static final Set<Identifier> PIPE_MODEL_NAMES = new HashSet<>();
 
     // TODO: move this to MIPipesClient ?
@@ -163,7 +168,7 @@ public class MIPipes implements ModInitializer {
 
     public void registerFluidPipeType(String name, int color, int nodeCapacity) {
         PipeNetworkType type = PipeNetworkType.register(new MIIdentifier("fluid_" + name), (id, data) -> new FluidNetwork(id, data, nodeCapacity),
-                FluidNetworkNode::new, color, false, FLUID_RENDERER);
+                FluidNetworkNode::new, color, true, FLUID_RENDERER);
         PipeItem item = new PipeItem(new Item.Settings().group(ModernIndustrialization.ITEM_GROUP), type, new FluidNetworkData(Fluids.EMPTY));
         pipeItems.put(type, item);
         Registry.register(Registry.ITEM, new MIIdentifier("pipe_fluid_" + name), item);

@@ -25,6 +25,7 @@ package aztech.modern_industrialization.pipes.item;
 
 import aztech.modern_industrialization.api.pipes.item.SpeedUpgrade;
 import aztech.modern_industrialization.pipes.MIPipes;
+import aztech.modern_industrialization.pipes.gui.PipeGuiHelper;
 import aztech.modern_industrialization.pipes.impl.PipePackets;
 import aztech.modern_industrialization.util.ItemStackHelper;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
@@ -39,6 +40,8 @@ import net.minecraft.screen.slot.SlotActionType;
 import net.minecraft.server.network.ServerPlayerEntity;
 
 public class ItemPipeScreenHandler extends ScreenHandler {
+    public static final int HEIGHT = 180;
+
     private final PlayerInventory playerInventory;
     public final ItemPipeInterface pipeInterface;
     private boolean trackedWhitelist;
@@ -50,7 +53,7 @@ public class ItemPipeScreenHandler extends ScreenHandler {
     }
 
     public ItemPipeScreenHandler(int syncId, PlayerInventory playerInventory, ItemPipeInterface pipeInterface) {
-        super(MIPipes.SCREN_HANDLER_TYPE_ITEM_PIPE, syncId);
+        super(MIPipes.SCREEN_HANDLER_TYPE_ITEM_PIPE, syncId);
         this.playerInventory = playerInventory;
         this.pipeInterface = pipeInterface;
         this.trackedWhitelist = pipeInterface.isWhitelist();
@@ -60,11 +63,11 @@ public class ItemPipeScreenHandler extends ScreenHandler {
         // Player slots
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 9; j++) {
-                this.addSlot(new Slot(playerInventory, i * 9 + j + 9, 8 + j * 18, 98 + i * 18));
+                this.addSlot(new Slot(playerInventory, i * 9 + j + 9, 8 + j * 18, PipeGuiHelper.getPlayerInvStart(HEIGHT) + i * 18));
             }
         }
         for (int j = 0; j < 9; j++) {
-            this.addSlot(new Slot(playerInventory, j, 8 + j * 18, 58 + 98));
+            this.addSlot(new Slot(playerInventory, j, 8 + j * 18, PipeGuiHelper.getPlayerInvStart(HEIGHT) + 58));
         }
 
         // Filter slots

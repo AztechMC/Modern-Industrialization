@@ -21,18 +21,23 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.pipes.gui;
+package aztech.modern_industrialization.pipes.fluid;
 
 import aztech.modern_industrialization.MIIdentifier;
+import aztech.modern_industrialization.pipes.gui.AbstractPipeScreen;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
-public class PipeGuiHelper {
-    public static final Identifier BUTTON_TEXTURE = new MIIdentifier("textures/gui/pipe/buttons.png");
+public class FluidPipeScreen extends AbstractPipeScreen<FluidPipeScreenHandler> {
+    private static final Identifier TEXTURE = new MIIdentifier("textures/gui/pipe/fluid.png");
 
-    /**
-     * Return the starting y of the first inventory slots given the GUI height.
-     */
-    public static int getPlayerInvStart(int height) {
-        return height - 82;
+    public FluidPipeScreen(FluidPipeScreenHandler handler, PlayerInventory inventory, Text title) {
+        super(handler, inventory, title, FluidPipeScreenHandler.HEIGHT);
+    }
+
+    @Override
+    protected Identifier getBackgroundTexture() {
+        return TEXTURE;
     }
 }

@@ -43,6 +43,7 @@ import net.minecraft.util.math.MathHelper;
 
 public class ItemPipeScreen extends HandledScreen<ItemPipeScreenHandler> {
     private static final Identifier TEXTURE = new MIIdentifier("textures/gui/pipe/item.png");
+    private static final Identifier BUTTON_TEXTURE = new MIIdentifier("textures/gui/pipe/buttons.png");
     private static final Style SECONDARY_INFO = Style.EMPTY.withColor(TextColor.fromRgb(0xa9a9a9)).withItalic(true);
     private final ButtonWidget.TooltipSupplier priorityTooltip = (button, matrices, mouseX, mouseY) -> {
         List<Text> lines = new ArrayList<>();
@@ -93,10 +94,10 @@ public class ItemPipeScreen extends HandledScreen<ItemPipeScreenHandler> {
             renderTooltip(matrices, lines, mouseX, mouseY);
         }));
         int priorityBeginX = 15;
-        addPriorityButton(priorityBeginX, 72, 20, 188, "--", -10);
-        addPriorityButton(priorityBeginX + 22, 72, 12, 176, "-", -1);
-        addPriorityButton(priorityBeginX + 62, 72, 12, 176, "+", +1);
-        addPriorityButton(priorityBeginX + 76, 72, 20, 188, "++", +10);
+        addPriorityButton(priorityBeginX, 72, 20, 12, "--", -10);
+        addPriorityButton(priorityBeginX + 22, 72, 12, 0, "-", -1);
+        addPriorityButton(priorityBeginX + 62, 72, 12, 0, "+", +1);
+        addPriorityButton(priorityBeginX + 76, 72, 20, 12, "++", +10);
         addButton(new PriorityDisplay(priorityBeginX + 34 + this.x, 72 + this.y, 28, 12, new LiteralText(""), priorityTooltip));
     }
 
@@ -132,8 +133,8 @@ public class ItemPipeScreen extends HandledScreen<ItemPipeScreenHandler> {
         @Override
         public void renderButton(MatrixStack matrices, int mouseX, int mouseY, float delta) {
             MinecraftClient minecraftClient = MinecraftClient.getInstance();
-            minecraftClient.getTextureManager().bindTexture(TEXTURE);
-            int u = handler.pipeInterface.isWhitelist() ? 176 : 196;
+            minecraftClient.getTextureManager().bindTexture(BUTTON_TEXTURE);
+            int u = handler.pipeInterface.isWhitelist() ? 0 : 20;
             int v = this.isHovered() ? 20 : 0;
 
             RenderSystem.enableDepthTest();
@@ -167,7 +168,7 @@ public class ItemPipeScreen extends HandledScreen<ItemPipeScreenHandler> {
         public void renderButton(MatrixStack matrices, int mouseX, int mouseY, float delta) {
             MinecraftClient minecraftClient = MinecraftClient.getInstance();
             TextRenderer textRenderer = minecraftClient.textRenderer;
-            minecraftClient.getTextureManager().bindTexture(TEXTURE);
+            minecraftClient.getTextureManager().bindTexture(BUTTON_TEXTURE);
             int v = this.isHovered() ? 40 + this.height : 40;
             RenderSystem.color4f(1.0F, 1.0F, 1.0F, this.alpha);
             RenderSystem.enableBlend();

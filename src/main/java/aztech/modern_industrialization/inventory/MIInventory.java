@@ -23,16 +23,19 @@
  */
 package aztech.modern_industrialization.inventory;
 
+import alexiil.mc.lib.attributes.SearchOptions;
+import alexiil.mc.lib.attributes.fluid.FluidAttributes;
+import alexiil.mc.lib.attributes.fluid.FluidInsertable;
+import alexiil.mc.lib.attributes.fluid.FluidVolumeUtil;
+import alexiil.mc.lib.attributes.item.ItemAttributes;
+import alexiil.mc.lib.attributes.item.ItemInsertable;
+import alexiil.mc.lib.attributes.item.ItemInvUtil;
 import aztech.modern_industrialization.machines.IComponent;
-import aztech.modern_industrialization.transferapi.api.item.ItemApi;
-import aztech.modern_industrialization.transferapi.api.item.ItemKey;
+import aztech.modern_industrialization.transferapi.impl.compat.WrappedFluidStorage;
+import aztech.modern_industrialization.transferapi.impl.compat.WrappedItemStorage;
 import aztech.modern_industrialization.util.NbtHelper;
 import java.util.Collections;
 import java.util.List;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
-import net.fabricmc.fabric.api.transfer.v1.storage.Movement;
-import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
-import net.minecraft.fluid.Fluid;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
@@ -67,21 +70,15 @@ public final class MIInventory implements IComponent {
     }
 
     public void autoExtractItems(World world, BlockPos pos, Direction direction) {
-        Storage<ItemKey> target = ItemApi.SIDED.find(world, pos.offset(direction), direction.getOpposite());
-        if (target != null) {
-            autoExtractItems(target);
-        }
-    }
-
-    public void autoExtractItems(Storage<ItemKey> target) {
-        Movement.move(itemStorage, target, k -> true, Integer.MAX_VALUE);
+        // LBA
+        ItemInsertable target = ItemAttributes.INSERTABLE.get(world, pos.offset(direction), SearchOptions.inDirection(direction));
+        ItemInvUtil.moveMultiple(new WrappedItemStorage(itemStorage), target);
     }
 
     public void autoExtractFluids(World world, BlockPos pos, Direction direction) {
-        Storage<Fluid> target = FluidStorage.SIDED.find(world, pos.offset(direction), direction.getOpposite());
-        if (target != null) {
-            Movement.move(fluidStorage, target, f -> true, Integer.MAX_VALUE);
-        }
+        // LBA
+        FluidInsertable target = FluidAttributes.INSERTABLE.get(world, pos.offset(direction), SearchOptions.inDirection(direction));
+        FluidVolumeUtil.move(new WrappedFluidStorage(fluidStorage), target);
     }
 
     public void writeNbt(CompoundTag tag) {

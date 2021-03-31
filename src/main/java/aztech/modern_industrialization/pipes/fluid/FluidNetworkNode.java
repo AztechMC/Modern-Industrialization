@@ -25,14 +25,17 @@ package aztech.modern_industrialization.pipes.fluid;
 
 import static aztech.modern_industrialization.pipes.api.PipeEndpointType.*;
 
+import alexiil.mc.lib.attributes.SearchOption;
+import alexiil.mc.lib.attributes.SearchOptions;
+import alexiil.mc.lib.attributes.fluid.FluidAttributes;
+import alexiil.mc.lib.attributes.fluid.FluidExtractable;
+import alexiil.mc.lib.attributes.fluid.FluidInsertable;
 import aztech.modern_industrialization.ModernIndustrialization;
 import aztech.modern_industrialization.pipes.api.PipeEndpointType;
 import aztech.modern_industrialization.pipes.api.PipeNetworkNode;
+import aztech.modern_industrialization.transferapi.FluidTransferHelper;
 import aztech.modern_industrialization.util.NbtHelper;
 import java.util.*;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
-import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
-import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.nbt.CompoundTag;
@@ -40,6 +43,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 
+// LBA
 public class FluidNetworkNode extends PipeNetworkNode {
     long amount = 0;
     private final List<FluidConnection> connections = new ArrayList<>();
@@ -59,39 +63,21 @@ public class FluidNetworkNode extends PipeNetworkNode {
         }
         for (FluidConnection connection : connections) { // TODO: limit insert and extract rate
             // Insert
-            Storage<Fluid> io = FluidStorage.SIDED.find(world, pos.offset(connection.direction), connection.direction.getOpposite());
-            if (amount > 0 && connection.canInsert() && io != null && io.supportsInsertion()) {
-                try (Transaction tx = Transaction.openOuter()) {
-                    amount -= io.insert(data.fluid, amount, tx);
-                    tx.commit();
-                }
+            FluidInsertable insertable = FluidAttributes.INSERTABLE.get(world, pos.offset(connection.direction),
+                    SearchOptions.inDirection(connection.direction));
+            if (amount > 0 && connection.canInsert()) {
+                amount -= FluidTransferHelper.insert(insertable, data.fluid, amount);
             }
-            if (connection.canExtract() && io != null && io.supportsExtraction()) {
+            FluidExtractable extractable = FluidAttributes.EXTRACTABLE.get(world, pos.offset(connection.direction),
+                    SearchOptions.inDirection(connection.direction));
+            if (connection.canExtract()) {
                 // Find the fluid to extract (by simulating if extraction of said fluid is > 0).
                 if (data.fluid == Fluids.EMPTY) {
-                    try (Transaction tx = Transaction.openOuter()) {
-                        io.forEach(storageView -> {
-                            if (data.fluid != Fluids.EMPTY)
-                                throw new RuntimeException("Bad implementation!");
-                            if (storageView.amount() > 0) {
-                                Fluid fluid = storageView.resource();
-                                try (Transaction nested = tx.openNested()) {
-                                    if (storageView.extract(fluid, Long.MAX_VALUE, nested) > 0) {
-                                        data.fluid = fluid;
-                                        return true;
-                                    }
-                                }
-                            }
-                            return false;
-                        }, tx);
-                    }
+                    data.fluid = FluidTransferHelper.findExtractableFluid(extractable);
                 }
                 // Extract current fluid
                 if (data.fluid != Fluids.EMPTY) {
-                    try (Transaction tx = Transaction.openOuter()) {
-                        amount += io.extract(data.fluid, network.nodeCapacity - amount, tx);
-                        tx.commit();
-                    }
+                    amount += FluidTransferHelper.extract(extractable, data.fluid, network.nodeCapacity - amount);
                 }
             }
         }
@@ -124,8 +110,10 @@ public class FluidNetworkNode extends PipeNetworkNode {
     }
 
     private boolean canConnect(World world, BlockPos pos, Direction direction) {
-        Storage<Fluid> io = FluidStorage.SIDED.find(world, pos.offset(direction), direction.getOpposite());
-        return io != null && (io.supportsInsertion() || io.supportsExtraction());
+        BlockPos adjPos = pos.offset(direction);
+        SearchOption<Object> opt = SearchOptions.inDirection(direction);
+        return FluidAttributes.INSERTABLE.getFirstOrNull(world, adjPos, opt) != null
+                || FluidAttributes.EXTRACTABLE.getFirstOrNull(world, adjPos, opt) != null;
     }
 
     @Override

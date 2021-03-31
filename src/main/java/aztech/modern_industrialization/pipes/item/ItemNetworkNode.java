@@ -25,16 +25,19 @@ package aztech.modern_industrialization.pipes.item;
 
 import static aztech.modern_industrialization.pipes.api.PipeEndpointType.*;
 
+import alexiil.mc.lib.attributes.AttributeList;
+import alexiil.mc.lib.attributes.SearchOption;
+import alexiil.mc.lib.attributes.SearchOptions;
+import alexiil.mc.lib.attributes.item.ItemAttributes;
+import alexiil.mc.lib.attributes.item.ItemExtractable;
+import alexiil.mc.lib.attributes.item.ItemInsertable;
+import alexiil.mc.lib.attributes.item.ItemInvUtil;
 import aztech.modern_industrialization.api.pipes.item.SpeedUpgrade;
 import aztech.modern_industrialization.pipes.api.PipeEndpointType;
 import aztech.modern_industrialization.pipes.api.PipeNetworkNode;
-import aztech.modern_industrialization.transferapi.api.item.ItemApi;
-import aztech.modern_industrialization.transferapi.api.item.ItemKey;
 import aztech.modern_industrialization.util.ItemStackHelper;
 import java.util.*;
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
-import net.fabricmc.fabric.api.transfer.v1.storage.Movement;
-import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -49,7 +52,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 
-// TODO: item filters
+// LBA
 public class ItemNetworkNode extends PipeNetworkNode {
     private final List<ItemConnection> connections = new ArrayList<>();
     private int inactiveTicks = 0;
@@ -70,8 +73,10 @@ public class ItemNetworkNode extends PipeNetworkNode {
     }
 
     private boolean canConnect(World world, BlockPos pos, Direction direction) {
-        Storage<ItemKey> io = ItemApi.SIDED.find(world, pos.offset(direction), direction.getOpposite());
-        return io != null && (io.supportsInsertion() || io.supportsExtraction());
+        BlockPos adjPos = pos.offset(direction);
+        SearchOption<Object> opt = SearchOptions.inDirection(direction);
+        return ItemAttributes.INSERTABLE.getFirstOrNull(world, adjPos, opt) != null
+                || ItemAttributes.EXTRACTABLE.getFirstOrNull(world, adjPos, opt) != null;
     }
 
     @Override
@@ -179,20 +184,20 @@ public class ItemNetworkNode extends PipeNetworkNode {
             List<InsertTarget> reachableInputs = null;
             outer: for (ItemConnection connection : connections) { // TODO: optimize!
                 if (connection.canExtract()) {
-                    Storage<ItemKey> source = ItemApi.SIDED.find(world, pos.offset(connection.direction), connection.direction.getOpposite());
-                    if (source != null && source.supportsExtraction()) {
-                        long movesLeft = connection.getMoves();
-                        if (reachableInputs == null)
-                            reachableInputs = getInputs(world, pos);
-                        for (InsertTarget target : reachableInputs) {
-                            if (target.connection.canInsert()) {
-                                long moved = Movement.move(source, target.io,
-                                        k -> connection.canStackMoveThrough(k.toStack()) && target.connection.canStackMoveThrough(k.toStack()),
-                                        movesLeft);
-                                movesLeft -= moved;
-                                if (movesLeft == 0)
-                                    continue outer;
-                            }
+                    ItemExtractable source = ItemAttributes.EXTRACTABLE.get(world, pos.offset(connection.direction),
+                            SearchOptions.inDirection(connection.direction));
+
+                    long movesLeft = connection.getMoves();
+                    if (reachableInputs == null)
+                        reachableInputs = getInputs(world, pos);
+                    for (InsertTarget target : reachableInputs) {
+                        if (target.connection.canInsert()) {
+                            long moved = ItemInvUtil.moveMultiple(source, target.target,
+                                    stack -> connection.canStackMoveThrough(stack) && target.connection.canStackMoveThrough(stack), (int) movesLeft,
+                                    (int) movesLeft).itemsMoved;
+                            movesLeft -= moved;
+                            if (movesLeft == 0)
+                                continue outer;
                         }
                     }
                 }
@@ -220,9 +225,10 @@ public class ItemNetworkNode extends PipeNetworkNode {
                     ItemNetworkNode node = (ItemNetworkNode) maybeUnloaded;
                     for (ItemConnection connection : node.connections) {
                         if (connection.canInsert()) {
-                            Storage<ItemKey> target = ItemApi.SIDED.find(world, u.offset(connection.direction), connection.direction.getOpposite());
-                            if (target != null && target.supportsInsertion()) {
-                                result.add(new InsertTarget(connection, target));
+                            AttributeList<ItemInsertable> target = ItemAttributes.INSERTABLE.getAll(world, u.offset(connection.direction),
+                                    SearchOptions.inDirection(connection.direction));
+                            if (target.hasOfferedAny()) {
+                                result.add(new InsertTarget(connection, target.combine(ItemAttributes.INSERTABLE)));
                             }
                         }
                     }
@@ -252,11 +258,11 @@ public class ItemNetworkNode extends PipeNetworkNode {
 
     private static class InsertTarget {
         private final ItemConnection connection;
-        private final Storage<ItemKey> io;
+        private final ItemInsertable target;
 
-        private InsertTarget(ItemConnection connection, Storage<ItemKey> io) {
+        private InsertTarget(ItemConnection connection, ItemInsertable target) {
             this.connection = connection;
-            this.io = io;
+            this.target = target;
         }
     }
 

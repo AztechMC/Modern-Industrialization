@@ -29,7 +29,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import io.netty.buffer.Unpooled;
 import java.util.ArrayList;
 import java.util.List;
-import net.fabricmc.fabric.api.network.ClientSidePacketRegistry;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
@@ -67,7 +67,7 @@ public class ItemPipeScreen extends HandledScreen<ItemPipeScreenHandler> {
             PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
             buf.writeInt(handler.syncId);
             buf.writeBoolean(newWhitelist);
-            ClientSidePacketRegistry.INSTANCE.sendToServer(PipePackets.SET_ITEM_WHITELIST, buf);
+            ClientPlayNetworking.send(PipePackets.SET_ITEM_WHITELIST, buf);
         }, (button, matrices, mouseX, mouseY) -> {
             List<Text> lines = new ArrayList<>();
             if (handler.pipeInterface.isWhitelist()) {
@@ -85,7 +85,7 @@ public class ItemPipeScreen extends HandledScreen<ItemPipeScreenHandler> {
             PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
             buf.writeInt(handler.syncId);
             buf.writeInt(newType);
-            ClientSidePacketRegistry.INSTANCE.sendToServer(PipePackets.SET_ITEM_CONNECTION_TYPE, buf);
+            ClientPlayNetworking.send(PipePackets.SET_ITEM_CONNECTION_TYPE, buf);
         }, (button, matrices, mouseX, mouseY) -> {
             List<Text> lines = new ArrayList<>();
             lines.add(new TranslatableText("text.modern_industrialization.item_connection_tooltip_" + handler.pipeInterface.getConnectionType()));
@@ -106,7 +106,7 @@ public class ItemPipeScreen extends HandledScreen<ItemPipeScreenHandler> {
             PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
             buf.writeInt(handler.syncId);
             buf.writeInt(delta);
-            ClientSidePacketRegistry.INSTANCE.sendToServer(PipePackets.INCREMENT_ITEM_PRIORITY, buf);
+            ClientPlayNetworking.send(PipePackets.INCREMENT_ITEM_PRIORITY, buf);
         }, priorityTooltip));
     }
 

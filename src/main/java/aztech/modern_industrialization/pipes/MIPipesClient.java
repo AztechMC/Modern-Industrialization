@@ -34,9 +34,9 @@ import net.devtech.arrp.json.blockstate.JState;
 import net.devtech.arrp.json.blockstate.JVariant;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.model.ModelLoadingRegistry;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry;
 import net.fabricmc.fabric.api.client.screenhandler.v1.ScreenRegistry;
-import net.fabricmc.fabric.api.network.ClientSidePacketRegistry;
 
 public class MIPipesClient implements ClientModInitializer {
     @Override
@@ -52,8 +52,8 @@ public class MIPipesClient implements ClientModInitializer {
     }
 
     public void registerPackets() {
-        ClientSidePacketRegistry.INSTANCE.register(PipePackets.SET_ITEM_WHITELIST, PipePackets.ON_SET_ITEM_WHITELIST);
-        ClientSidePacketRegistry.INSTANCE.register(PipePackets.SET_ITEM_CONNECTION_TYPE, PipePackets.ON_SET_ITEM_CONNECTION_TYPE);
-        ClientSidePacketRegistry.INSTANCE.register(PipePackets.SET_ITEM_PRIORITY, PipePackets.ON_SET_ITEM_PRIORITY);
+        ClientPlayNetworking.registerGlobalReceiver(PipePackets.SET_ITEM_WHITELIST, PipePackets.ON_SET_ITEM_WHITELIST::handleS2C);
+        ClientPlayNetworking.registerGlobalReceiver(PipePackets.SET_ITEM_CONNECTION_TYPE, PipePackets.ON_SET_ITEM_CONNECTION_TYPE::handleS2C);
+        ClientPlayNetworking.registerGlobalReceiver(PipePackets.SET_ITEM_PRIORITY, PipePackets.ON_SET_ITEM_PRIORITY);
     }
 }

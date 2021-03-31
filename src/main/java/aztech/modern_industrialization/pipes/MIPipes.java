@@ -49,7 +49,7 @@ import nerdhub.cardinal.components.api.ComponentType;
 import nerdhub.cardinal.components.api.event.WorldComponentCallback;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
-import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.fabricmc.fabric.api.screenhandler.v1.ScreenHandlerRegistry;
 import net.minecraft.block.Block;
@@ -194,8 +194,8 @@ public class MIPipes implements ModInitializer {
     }
 
     public void registerPackets() {
-        ServerSidePacketRegistry.INSTANCE.register(PipePackets.SET_ITEM_WHITELIST, PipePackets.ON_SET_ITEM_WHITELIST);
-        ServerSidePacketRegistry.INSTANCE.register(PipePackets.SET_ITEM_CONNECTION_TYPE, PipePackets.ON_SET_ITEM_CONNECTION_TYPE);
-        ServerSidePacketRegistry.INSTANCE.register(PipePackets.INCREMENT_ITEM_PRIORITY, PipePackets.ON_INCREMENT_ITEM_PRIORITY);
+        ServerPlayNetworking.registerGlobalReceiver(PipePackets.SET_ITEM_WHITELIST, PipePackets.ON_SET_ITEM_WHITELIST::handleC2S);
+        ServerPlayNetworking.registerGlobalReceiver(PipePackets.SET_ITEM_CONNECTION_TYPE, PipePackets.ON_SET_ITEM_CONNECTION_TYPE::handleC2S);
+        ServerPlayNetworking.registerGlobalReceiver(PipePackets.INCREMENT_ITEM_PRIORITY, PipePackets.ON_INCREMENT_ITEM_PRIORITY);
     }
 }

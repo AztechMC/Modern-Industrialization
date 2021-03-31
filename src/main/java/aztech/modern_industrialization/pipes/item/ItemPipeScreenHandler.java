@@ -27,8 +27,8 @@ import aztech.modern_industrialization.api.pipes.item.SpeedUpgrade;
 import aztech.modern_industrialization.pipes.MIPipes;
 import aztech.modern_industrialization.pipes.impl.PipePackets;
 import aztech.modern_industrialization.util.ItemStackHelper;
-import io.netty.buffer.Unpooled;
-import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
+import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
@@ -130,26 +130,27 @@ public class ItemPipeScreenHandler extends ScreenHandler {
     public void sendContentUpdates() {
         super.sendContentUpdates();
         if (playerInventory.player instanceof ServerPlayerEntity) {
+            ServerPlayerEntity serverPlayer = (ServerPlayerEntity) playerInventory.player;
             if (trackedWhitelist != pipeInterface.isWhitelist()) {
                 trackedWhitelist = pipeInterface.isWhitelist();
-                PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
+                PacketByteBuf buf = PacketByteBufs.create();
                 buf.writeInt(syncId);
                 buf.writeBoolean(trackedWhitelist);
-                ServerSidePacketRegistry.INSTANCE.sendToPlayer(playerInventory.player, PipePackets.SET_ITEM_WHITELIST, buf);
+                ServerPlayNetworking.send(serverPlayer, PipePackets.SET_ITEM_WHITELIST, buf);
             }
             if (trackedType != pipeInterface.getConnectionType()) {
                 trackedType = pipeInterface.getConnectionType();
-                PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
+                PacketByteBuf buf = PacketByteBufs.create();
                 buf.writeInt(syncId);
                 buf.writeInt(trackedType);
-                ServerSidePacketRegistry.INSTANCE.sendToPlayer(playerInventory.player, PipePackets.SET_ITEM_CONNECTION_TYPE, buf);
+                ServerPlayNetworking.send(serverPlayer, PipePackets.SET_ITEM_CONNECTION_TYPE, buf);
             }
             if (trackedPriority != pipeInterface.getPriority()) {
                 trackedPriority = pipeInterface.getPriority();
-                PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
+                PacketByteBuf buf = PacketByteBufs.create();
                 buf.writeInt(syncId);
                 buf.writeInt(trackedPriority);
-                ServerSidePacketRegistry.INSTANCE.sendToPlayer(playerInventory.player, PipePackets.SET_ITEM_PRIORITY, buf);
+                ServerPlayNetworking.send(serverPlayer, PipePackets.SET_ITEM_PRIORITY, buf);
             }
         }
     }

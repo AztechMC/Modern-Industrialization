@@ -69,19 +69,7 @@ public class ItemPipeScreen extends PipeScreen<ItemPipeScreenHandler> {
             }
             renderTooltip(matrices, lines, mouseX, mouseY);
         }));
-        addButton(new ConnectionTypeButton(148 + this.x, 22 + this.y, 20, 20, null, widget -> {
-            int newType = (handler.pipeInterface.getConnectionType() + 1) % 3;
-            handler.pipeInterface.setConnectionType(newType);
-            PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
-            buf.writeInt(handler.syncId);
-            buf.writeInt(newType);
-            ClientPlayNetworking.send(PipePackets.SET_ITEM_CONNECTION_TYPE, buf);
-        }, (button, matrices, mouseX, mouseY) -> {
-            List<Text> lines = new ArrayList<>();
-            lines.add(new TranslatableText("text.modern_industrialization.pipe_connection_tooltip_" + handler.pipeInterface.getConnectionType()));
-            lines.add(new TranslatableText("text.modern_industrialization.pipe_connection_help").setStyle(SECONDARY_INFO));
-            renderTooltip(matrices, lines, mouseX, mouseY);
-        }));
+        addConnectionTypeButton(148, 22, handler.pipeInterface);
         addPriorityWidgets(15, 72, handler.pipeInterface, "insert");
     }
 
@@ -107,17 +95,6 @@ public class ItemPipeScreen extends PipeScreen<ItemPipeScreenHandler> {
             if (this.isHovered()) {
                 this.renderToolTip(matrices, mouseX, mouseY);
             }
-        }
-    }
-
-    private class ConnectionTypeButton extends ButtonWidget {
-        public ConnectionTypeButton(int x, int y, int width, int height, Text message, PressAction onPress, TooltipSupplier tooltipSupplier) {
-            super(x, y, width, height, message, onPress, tooltipSupplier);
-        }
-
-        @Override
-        public Text getMessage() {
-            return new TranslatableText("text.modern_industrialization.pipe_connection_" + handler.pipeInterface.getConnectionType());
         }
     }
 }

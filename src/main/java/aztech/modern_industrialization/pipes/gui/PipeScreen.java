@@ -23,6 +23,7 @@
  */
 package aztech.modern_industrialization.pipes.gui;
 
+import aztech.modern_industrialization.pipes.gui.iface.ConnectionTypeInterface;
 import aztech.modern_industrialization.pipes.gui.iface.PriorityInterface;
 import aztech.modern_industrialization.pipes.impl.PipePackets;
 import aztech.modern_industrialization.util.TextHelper;
@@ -46,6 +47,7 @@ import net.minecraft.util.Identifier;
  * A helper for functionality commonly used by pipe screens.
  */
 public abstract class PipeScreen<SH extends ScreenHandler> extends HandledScreen<SH> {
+    @SuppressWarnings("AssignmentToSuperclassField")
     public PipeScreen(SH handler, PlayerInventory inventory, Text title, int backgroundHeight) {
         super(handler, inventory, title);
 
@@ -94,4 +96,21 @@ public abstract class PipeScreen<SH extends ScreenHandler> extends HandledScreen
             ClientPlayNetworking.send(PipePackets.INCREMENT_ITEM_PRIORITY, buf);
         }, priorityTooltip));
     }
+
+    protected void addConnectionTypeButton(int x, int y, ConnectionTypeInterface connectionType) {
+        addButton(new ConnectionTypeButton(x + this.x, y + this.y, widget -> {
+            int newType = (connectionType.getConnectionType() + 1) % 3;
+            connectionType.setConnectionType(newType);
+            PacketByteBuf buf = PacketByteBufs.create();
+            buf.writeInt(handler.syncId);
+            buf.writeInt(newType);
+            ClientPlayNetworking.send(PipePackets.SET_ITEM_CONNECTION_TYPE, buf);
+        }, (button, matrices, mouseX, mouseY) -> {
+            List<Text> lines = new ArrayList<>();
+            lines.add(new TranslatableText("text.modern_industrialization.pipe_connection_tooltip_" + connectionType.getConnectionType()));
+            lines.add(new TranslatableText("text.modern_industrialization.pipe_connection_help").setStyle(TextHelper.GRAY_TEXT));
+            renderTooltip(matrices, lines, mouseX, mouseY);
+        }, connectionType));
+    }
+
 }

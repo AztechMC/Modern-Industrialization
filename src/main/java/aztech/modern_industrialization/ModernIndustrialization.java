@@ -49,6 +49,7 @@ import aztech.modern_industrialization.pipes.MIPipes;
 import aztech.modern_industrialization.recipe.MIRecipes;
 import aztech.modern_industrialization.transferapi.api.fluid.ItemFluidApi;
 import aztech.modern_industrialization.transferapi.api.item.ItemApi;
+import aztech.modern_industrialization.transferapi.impl.compat.TransferLbaCompat;
 import aztech.modern_industrialization.util.ChunkUnloadBlockEntity;
 import java.util.Map;
 import me.shedaniel.cloth.api.common.events.v1.PlayerChangeWorldCallback;
@@ -132,6 +133,7 @@ public class ModernIndustrialization implements ModInitializer {
         // This code runs as soon as Minecraft is in a mod-load-ready state.
         // However, some things (like resources) may still be uninitialized.
         // Proceed with mild caution.
+        TransferLbaCompat.init();
 
         MIMaterials.init();
         MIMachineRecipeTypes.init();

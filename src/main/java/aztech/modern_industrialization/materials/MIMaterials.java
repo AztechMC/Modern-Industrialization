@@ -224,7 +224,7 @@ public class MIMaterials {
                 .addRecipes(StandardRecipes::apply, SmeltingRecipes::apply).build());
 
         MaterialRegistry.addMaterial(new MaterialBuilder("stainless_steel", SHINY, 0xC8C8DC).addRegularParts(ITEM_ALL).addRegularParts(HOT_INGOT)
-                .addRegularParts(MACHINE_CASING_SPECIAL, MACHINE_CASING, ROD_MAGNETIC).removeRegularParts(CRUSHED_DUST)
+                .addRegularParts(MACHINE_CASING_SPECIAL, MACHINE_CASING, MACHINE_CASING_PIPE, ROD_MAGNETIC).removeRegularParts(CRUSHED_DUST)
                 .addParts(PipeMaterialPart.of(PipeType.ITEM)).addParts(PipeMaterialPart.of(PipeType.FLUID)).addRecipes(StandardRecipes::apply)
                 .cancelRecipes("polarizer/rod_magnetic").build());
 

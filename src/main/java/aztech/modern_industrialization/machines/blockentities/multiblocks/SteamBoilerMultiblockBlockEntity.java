@@ -23,7 +23,6 @@
  */
 package aztech.modern_industrialization.machines.blockentities.multiblocks;
 
-import aztech.modern_industrialization.MIFluids;
 import aztech.modern_industrialization.api.FluidFuelRegistry;
 import aztech.modern_industrialization.inventory.ConfigurableFluidStack;
 import aztech.modern_industrialization.inventory.ConfigurableItemStack;
@@ -44,13 +43,13 @@ import aztech.modern_industrialization.util.ItemStackHelper;
 import net.fabricmc.fabric.impl.content.registry.FuelRegistryImpl;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.fluid.Fluids;
+import net.minecraft.fluid.Fluid;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Tickable;
 
-public class LargeSteamBoilerMultiblockBlockEntity extends MultiblockMachineBlockEntity implements Tickable {
+public class SteamBoilerMultiblockBlockEntity extends MultiblockMachineBlockEntity implements Tickable {
 
     private ShapeMatcher shapeMatcher;
     private final ShapeTemplate shapeTemplate;
@@ -62,13 +61,21 @@ public class LargeSteamBoilerMultiblockBlockEntity extends MultiblockMachineBloc
     protected float burningTick, burningTickProgress;
     protected int temperature;
 
-    public static final int SPEED_FACTOR = 16;
+    public final int speedFactor;
+    public final int fluidFactor;
+    public final Fluid consumedFluid;
+    public final Fluid producedFluid;
 
-    public LargeSteamBoilerMultiblockBlockEntity(BlockEntityType<?> type, ShapeTemplate shapeTemplate) {
-        super(type, new MachineGuiParameters.Builder("large_steam_boiler", false).build(),
+    public SteamBoilerMultiblockBlockEntity(BlockEntityType<?> type, ShapeTemplate shapeTemplate, String name, int speedFactor, int fluidFactor,
+            Fluid consumedFluid, Fluid producedFluid) {
+        super(type, new MachineGuiParameters.Builder(name, false).build(),
                 new OrientationComponent(new OrientationComponent.Params(false, false, false)));
 
         isActiveComponent = new IsActiveComponent();
+        this.speedFactor = speedFactor;
+        this.fluidFactor = fluidFactor;
+        this.consumedFluid = consumedFluid;
+        this.producedFluid = producedFluid;
         this.shapeTemplate = shapeTemplate;
         this.inventory = new MultiblockInventoryComponent();
 
@@ -161,7 +168,8 @@ public class LargeSteamBoilerMultiblockBlockEntity extends MultiblockMachineBloc
                         if (ItemStackHelper.consumeFuel(stack, true)) {
                             Integer fuelTime = FuelRegistryImpl.INSTANCE.get(fuel);
                             if (fuelTime != null && fuelTime > 0) {
-                                burningTickProgress = burningTick + (fuelTime * BoilerMachineBlockEntity.BURN_TIME_MULTIPLIER) / (2f * SPEED_FACTOR);
+                                burningTickProgress = burningTick
+                                        + (fuelTime * BoilerMachineBlockEntity.BURN_TIME_MULTIPLIER) / (2f * speedFactor * fluidFactor);
                                 burningTick = burningTickProgress;
                                 empty = false;
                                 ItemStackHelper.consumeFuel(stack, false);
@@ -177,7 +185,7 @@ public class LargeSteamBoilerMultiblockBlockEntity extends MultiblockMachineBloc
                         if (!stack.isEmpty()) {
                             long euPerMb = FluidFuelRegistry.getEu(stack.getFluid());
                             if (euPerMb != 0) {
-                                float burningTickProgressPerMb = euPerMb / (SPEED_FACTOR * 8f);
+                                float burningTickProgressPerMb = euPerMb / (speedFactor * fluidFactor * 8f);
                                 long mbConsumedMax = (long) Math.ceil((12.5 * 20 - burningTick) / burningTickProgressPerMb);
                                 long dropletConsumedMax = Math.min(mbConsumedMax * 81, stack.getAmount());
                                 stack.decrement(dropletConsumedMax);
@@ -201,30 +209,31 @@ public class LargeSteamBoilerMultiblockBlockEntity extends MultiblockMachineBloc
                 }
 
                 if (temperature > 100) {
-                    long steamProduction = 81 * ((SPEED_FACTOR * 8 * (temperature - 100)) / 1000);
-                    long maxWaterExtract = 0;
+                    long steamProduction = 81 * (long) ((speedFactor * 8 * (temperature - 100)) / 1000);
+                    long maxFluidExtract = 0;
 
                     for (ConfigurableFluidStack fluidStack : inventory.getFluidInputs()) {
-                        if (fluidStack.getFluid() == Fluids.WATER) {
-                            maxWaterExtract += fluidStack.getAmount();
+                        if (fluidStack.getFluid() == this.consumedFluid) {
+                            maxFluidExtract += fluidStack.getAmount();
                         }
                     }
 
                     long maxInsertSteam = 0;
 
                     for (ConfigurableFluidStack fluidStack : inventory.getFluidOutputs()) {
-                        if (fluidStack.isValid(MIFluids.STEAM)) {
+                        if (fluidStack.isValid(producedFluid)) {
                             maxInsertSteam += fluidStack.getRemainingSpace();
                         }
                     }
 
-                    long effSteamProduced = Math.min(Math.min(steamProduction, maxWaterExtract), maxInsertSteam);
+                    long effSteamProduced = Math.min(Math.min(steamProduction, maxFluidExtract * 16), maxInsertSteam);
 
-                    long waterExtract = effSteamProduced;
+                    long fluidExtract = (long) Math.ceil(effSteamProduced / 16f);
+
                     for (ConfigurableFluidStack fluidStack : inventory.getFluidInputs()) {
-                        if (fluidStack.getFluid() == Fluids.WATER) {
-                            long decrement = Math.min(fluidStack.getAmount(), waterExtract);
-                            waterExtract -= decrement;
+                        if (fluidStack.getFluid() == this.consumedFluid) {
+                            long decrement = Math.min(fluidStack.getAmount(), fluidExtract);
+                            fluidExtract -= decrement;
                             fluidStack.decrement(decrement);
                         }
                     }
@@ -232,10 +241,10 @@ public class LargeSteamBoilerMultiblockBlockEntity extends MultiblockMachineBloc
                     long steamInsert = effSteamProduced;
 
                     for (ConfigurableFluidStack fluidStack : inventory.getFluidOutputs()) {
-                        if (fluidStack.isValid(MIFluids.STEAM)) {
+                        if (fluidStack.isValid(producedFluid)) {
                             long increment = Math.min(fluidStack.getRemainingSpace(), steamInsert);
                             steamInsert -= increment;
-                            fluidStack.setFluid(MIFluids.STEAM);
+                            fluidStack.setFluid(producedFluid);
                             fluidStack.increment(increment);
 
                         }

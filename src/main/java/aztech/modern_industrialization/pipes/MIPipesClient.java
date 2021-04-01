@@ -55,7 +55,8 @@ public class MIPipesClient implements ClientModInitializer {
 
     public void registerPackets() {
         ClientPlayNetworking.registerGlobalReceiver(PipePackets.SET_ITEM_WHITELIST, PipePackets.ON_SET_ITEM_WHITELIST::handleS2C);
-        ClientPlayNetworking.registerGlobalReceiver(PipePackets.SET_ITEM_CONNECTION_TYPE, PipePackets.ON_SET_ITEM_CONNECTION_TYPE::handleS2C);
-        ClientPlayNetworking.registerGlobalReceiver(PipePackets.SET_ITEM_PRIORITY, PipePackets.ON_SET_ITEM_PRIORITY);
+        ClientPlayNetworking.registerGlobalReceiver(PipePackets.SET_CONNECTION_TYPE, PipePackets.ON_SET_CONNECTION_TYPE::handleS2C);
+        ClientPlayNetworking.registerGlobalReceiver(PipePackets.SET_PRIORITY, PipePackets.ON_SET_PRIORITY);
+        ClientPlayNetworking.registerGlobalReceiver(PipePackets.SET_NETWORK_FLUID, PipePackets.ON_SET_NETWORK_FLUID::handleS2C);
     }
 }

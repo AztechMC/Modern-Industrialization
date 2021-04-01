@@ -24,9 +24,21 @@
 package aztech.modern_industrialization.pipes.fluid;
 
 import aztech.modern_industrialization.MIIdentifier;
+import aztech.modern_industrialization.machines.MachineScreenHandlers;
 import aztech.modern_industrialization.pipes.gui.PipeScreen;
+import aztech.modern_industrialization.util.FluidHelper;
+import aztech.modern_industrialization.util.RenderHelper;
+import aztech.modern_industrialization.util.TextHelper;
+import com.mojang.blaze3d.systems.RenderSystem;
+import java.util.ArrayList;
+import java.util.List;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.widget.ButtonWidget;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.fluid.Fluids;
 import net.minecraft.text.Text;
+import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
 
 public class FluidPipeScreen extends PipeScreen<FluidPipeScreenHandler> {
@@ -37,7 +49,68 @@ public class FluidPipeScreen extends PipeScreen<FluidPipeScreenHandler> {
     }
 
     @Override
+    protected void init() {
+        super.init();
+
+        addNetworkFluidButton();
+        addConnectionTypeButton(148, 22, handler.iface);
+        addPriorityWidgets(33, 42, handler.iface, "transfer");
+    }
+
+    @Override
     protected Identifier getBackgroundTexture() {
         return TEXTURE;
+    }
+
+    private void addNetworkFluidButton() {
+        addButton(new NetworkFluidButton(72 + this.x, 20 + this.y, widget -> {
+            updateNetworkFluid();
+        }, (button, matrices, mouseX, mouseY) -> {
+            List<Text> lines = new ArrayList<>();
+            lines.add(FluidHelper.getFluidName(handler.iface.getNetworkFluid(), false));
+            if (handler.iface.getNetworkFluid() != Fluids.EMPTY) {
+                lines.add(new TranslatableText("text.modern_industrialization.network_fluid_help_clear").setStyle(TextHelper.GRAY_TEXT));
+            } else {
+                lines.add(new TranslatableText("text.modern_industrialization.network_fluid_help_set").setStyle(TextHelper.GRAY_TEXT));
+            }
+            renderTooltip(matrices, lines, mouseX, mouseY);
+        }, handler.iface));
+    }
+
+    private void updateNetworkFluid() {
+
+    }
+
+    private static class NetworkFluidButton extends ButtonWidget {
+        private final FluidPipeInterface iface;
+
+        public NetworkFluidButton(int x, int y, PressAction onPress, TooltipSupplier tooltipSupplier, FluidPipeInterface iface) {
+            super(x, y, 16, 16, null, onPress, tooltipSupplier);
+            this.iface = iface;
+        }
+
+        @Override
+        public void renderButton(MatrixStack matrices, int mouseX, int mouseY, float delta) {
+            // Render fluid slot
+            MinecraftClient mc = MinecraftClient.getInstance();
+            mc.getTextureManager().bindTexture(MachineScreenHandlers.SLOT_ATLAS);
+            drawTexture(matrices, x - 1, y - 1, 18, 0, 18, 18);
+            // Render the fluid itself
+            if (iface.getNetworkFluid() != Fluids.EMPTY) {
+                RenderHelper.drawFluidInGui(matrices, iface.getNetworkFluid(), x, y);
+            }
+            // Render the white hover effect
+            if (isHovered()) {
+                RenderSystem.disableDepthTest();
+                RenderSystem.colorMask(true, true, true, false);
+                this.fillGradient(matrices, x, y, x + 16, y + 16, -2130706433, -2130706433);
+                RenderSystem.colorMask(true, true, true, true);
+                RenderSystem.enableDepthTest();
+            }
+            // Render the tooltip
+            if (isHovered()) {
+                renderToolTip(matrices, mouseX, mouseY);
+            }
+        }
     }
 }

@@ -23,8 +23,6 @@
  */
 package aztech.modern_industrialization.pipes;
 
-import static aztech.modern_industrialization.api.energy.CableTier.*;
-
 import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.ModernIndustrialization;
 import aztech.modern_industrialization.api.energy.CableTier;
@@ -200,7 +198,8 @@ public class MIPipes implements ModInitializer {
 
     public void registerPackets() {
         ServerPlayNetworking.registerGlobalReceiver(PipePackets.SET_ITEM_WHITELIST, PipePackets.ON_SET_ITEM_WHITELIST::handleC2S);
-        ServerPlayNetworking.registerGlobalReceiver(PipePackets.SET_ITEM_CONNECTION_TYPE, PipePackets.ON_SET_ITEM_CONNECTION_TYPE::handleC2S);
-        ServerPlayNetworking.registerGlobalReceiver(PipePackets.INCREMENT_ITEM_PRIORITY, PipePackets.ON_INCREMENT_ITEM_PRIORITY);
+        ServerPlayNetworking.registerGlobalReceiver(PipePackets.SET_CONNECTION_TYPE, PipePackets.ON_SET_CONNECTION_TYPE::handleC2S);
+        ServerPlayNetworking.registerGlobalReceiver(PipePackets.INCREMENT_PRIORITY, PipePackets.ON_INCREMENT_PRIORITY);
+        ServerPlayNetworking.registerGlobalReceiver(PipePackets.SET_NETWORK_FLUID, PipePackets.ON_SET_NETWORK_FLUID::handleC2S);
     }
 }

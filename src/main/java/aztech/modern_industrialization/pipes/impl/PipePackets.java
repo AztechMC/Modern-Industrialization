@@ -24,6 +24,7 @@
 package aztech.modern_industrialization.pipes.impl;
 
 import aztech.modern_industrialization.MIIdentifier;
+import aztech.modern_industrialization.pipes.fluid.FluidPipeScreenHandler;
 import aztech.modern_industrialization.pipes.gui.PipeScreenHandler;
 import aztech.modern_industrialization.pipes.gui.iface.ConnectionTypeInterface;
 import aztech.modern_industrialization.pipes.gui.iface.PriorityInterface;
@@ -33,8 +34,10 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.minecraft.fluid.Fluid;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.registry.Registry;
 
 public class PipePackets {
     public static final Identifier SET_ITEM_WHITELIST = new MIIdentifier("set_item_whitelist");
@@ -48,8 +51,8 @@ public class PipePackets {
             }
         };
     };
-    public static final Identifier SET_ITEM_CONNECTION_TYPE = new MIIdentifier("set_item_connection_type");
-    public static final UnsidedPacketHandler ON_SET_ITEM_CONNECTION_TYPE = (player, buf) -> {
+    public static final Identifier SET_CONNECTION_TYPE = new MIIdentifier("set_connection_type");
+    public static final UnsidedPacketHandler ON_SET_CONNECTION_TYPE = (player, buf) -> {
         int syncId = buf.readInt();
         int type = buf.readInt();
         return () -> {
@@ -59,8 +62,8 @@ public class PipePackets {
             }
         };
     };
-    public static final Identifier INCREMENT_ITEM_PRIORITY = new MIIdentifier("increment_item_priority");
-    public static final ServerPlayNetworking.PlayChannelHandler ON_INCREMENT_ITEM_PRIORITY = (ms, player, h, buf, sender) -> {
+    public static final Identifier INCREMENT_PRIORITY = new MIIdentifier("increment_priority");
+    public static final ServerPlayNetworking.PlayChannelHandler ON_INCREMENT_PRIORITY = (ms, player, h, buf, sender) -> {
         int syncId = buf.readInt();
         int priority = buf.readInt();
         ms.execute(() -> {
@@ -70,9 +73,9 @@ public class PipePackets {
             }
         });
     };
-    public static final Identifier SET_ITEM_PRIORITY = new MIIdentifier("set_item_priority");
+    public static final Identifier SET_PRIORITY = new MIIdentifier("set_priority");
     @Environment(EnvType.CLIENT)
-    public static final ClientPlayNetworking.PlayChannelHandler ON_SET_ITEM_PRIORITY = (mc, h, buf, r) -> {
+    public static final ClientPlayNetworking.PlayChannelHandler ON_SET_PRIORITY = (mc, h, buf, r) -> {
         int syncId = buf.readInt();
         int priority = buf.readInt();
         mc.execute(() -> {
@@ -81,5 +84,16 @@ public class PipePackets {
                 ((PipeScreenHandler) handler).getInterface(PriorityInterface.class).setPriority(priority);
             }
         });
+    };
+    public static final Identifier SET_NETWORK_FLUID = new MIIdentifier("set_network_fluid");
+    public static final UnsidedPacketHandler ON_SET_NETWORK_FLUID = (player, buf) -> {
+        int syncId = buf.readInt();
+        Fluid fluid = Registry.FLUID.get(buf.readVarInt());
+        return () -> {
+            ScreenHandler handler = player.currentScreenHandler;
+            if (handler.syncId == syncId) {
+                ((FluidPipeScreenHandler) handler).iface.setNetworkFluid(fluid);
+            }
+        };
     };
 }

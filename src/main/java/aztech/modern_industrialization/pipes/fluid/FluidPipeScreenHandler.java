@@ -25,14 +25,25 @@ package aztech.modern_industrialization.pipes.fluid;
 
 import aztech.modern_industrialization.pipes.MIPipes;
 import aztech.modern_industrialization.pipes.gui.PipeScreenHandler;
+import aztech.modern_industrialization.pipes.impl.PipePackets;
+import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.fluid.Fluid;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketByteBuf;
+import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.util.registry.Registry;
 
 public class FluidPipeScreenHandler extends PipeScreenHandler {
     public static final int HEIGHT = 153;
-    private final FluidPipeInterface iface;
+
+    public final FluidPipeInterface iface;
+    private final PlayerInventory playerInventory;
+    private Fluid trackedNetworkFluid;
+    private int trackedPriority;
+    private int trackedType;
 
     public FluidPipeScreenHandler(int syncId, PlayerInventory playerInventory, PacketByteBuf buf) {
         this(syncId, playerInventory, FluidPipeInterface.ofBuf(buf));
@@ -41,6 +52,10 @@ public class FluidPipeScreenHandler extends PipeScreenHandler {
     public FluidPipeScreenHandler(int syncId, PlayerInventory playerInventory, FluidPipeInterface iface) {
         super(MIPipes.SCREEN_HANDLER_TYPE_FLUID_PIPE, syncId);
         this.iface = iface;
+        this.playerInventory = playerInventory;
+        this.trackedNetworkFluid = iface.getNetworkFluid();
+        this.trackedPriority = iface.getPriority();
+        this.trackedType = iface.getConnectionType();
 
         addPlayerInventorySlots(playerInventory, HEIGHT);
     }
@@ -49,6 +64,35 @@ public class FluidPipeScreenHandler extends PipeScreenHandler {
     public ItemStack transferSlot(PlayerEntity player, int index) {
         // TODO: Transfer between hotbar and main inventory?
         return ItemStack.EMPTY;
+    }
+
+    @Override
+    public void sendContentUpdates() {
+        super.sendContentUpdates();
+        if (playerInventory.player instanceof ServerPlayerEntity) {
+            ServerPlayerEntity serverPlayer = (ServerPlayerEntity) playerInventory.player;
+            if (trackedNetworkFluid != iface.getNetworkFluid()) {
+                trackedNetworkFluid = iface.getNetworkFluid();
+                PacketByteBuf buf = PacketByteBufs.create();
+                buf.writeInt(syncId);
+                buf.writeVarInt(Registry.FLUID.getRawId(trackedNetworkFluid));
+                ServerPlayNetworking.send(serverPlayer, PipePackets.SET_NETWORK_FLUID, buf);
+            }
+            if (trackedType != iface.getConnectionType()) {
+                trackedType = iface.getConnectionType();
+                PacketByteBuf buf = PacketByteBufs.create();
+                buf.writeInt(syncId);
+                buf.writeInt(trackedType);
+                ServerPlayNetworking.send(serverPlayer, PipePackets.SET_CONNECTION_TYPE, buf);
+            }
+            if (trackedPriority != iface.getPriority()) {
+                trackedPriority = iface.getPriority();
+                PacketByteBuf buf = PacketByteBufs.create();
+                buf.writeInt(syncId);
+                buf.writeInt(trackedPriority);
+                ServerPlayNetworking.send(serverPlayer, PipePackets.SET_PRIORITY, buf);
+            }
+        }
     }
 
     @Override

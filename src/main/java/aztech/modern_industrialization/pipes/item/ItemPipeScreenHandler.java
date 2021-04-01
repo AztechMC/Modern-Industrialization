@@ -137,14 +137,14 @@ public class ItemPipeScreenHandler extends PipeScreenHandler {
                 PacketByteBuf buf = PacketByteBufs.create();
                 buf.writeInt(syncId);
                 buf.writeInt(trackedType);
-                ServerPlayNetworking.send(serverPlayer, PipePackets.SET_ITEM_CONNECTION_TYPE, buf);
+                ServerPlayNetworking.send(serverPlayer, PipePackets.SET_CONNECTION_TYPE, buf);
             }
             if (trackedPriority != pipeInterface.getPriority()) {
                 trackedPriority = pipeInterface.getPriority();
                 PacketByteBuf buf = PacketByteBufs.create();
                 buf.writeInt(syncId);
                 buf.writeInt(trackedPriority);
-                ServerPlayNetworking.send(serverPlayer, PipePackets.SET_ITEM_PRIORITY, buf);
+                ServerPlayNetworking.send(serverPlayer, PipePackets.SET_PRIORITY, buf);
             }
         }
     }

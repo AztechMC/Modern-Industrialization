@@ -74,8 +74,8 @@ public abstract class PipeScreen<SH extends ScreenHandler> extends HandledScreen
     protected void addPriorityWidgets(int startX, int startY, PriorityInterface priority, String tooltipType) {
         ButtonWidget.TooltipSupplier tooltip = (button, matrices, mouseX, mouseY) -> {
             List<Text> lines = new ArrayList<>();
-            lines.add(new TranslatableText("text.modern_industrialization.priority_insert", priority.getPriority()));
-            lines.add(new TranslatableText("text.modern_industrialization.priority_insert_help").setStyle(TextHelper.GRAY_TEXT));
+            lines.add(new TranslatableText("text.modern_industrialization.priority_" + tooltipType, priority.getPriority()));
+            lines.add(new TranslatableText("text.modern_industrialization.priority_" + tooltipType + "_help").setStyle(TextHelper.GRAY_TEXT));
             renderTooltip(matrices, lines, mouseX, mouseY);
         };
         addPriorityButton(startX, startY, 20, 12, "--", -10, priority, tooltip);
@@ -93,7 +93,7 @@ public abstract class PipeScreen<SH extends ScreenHandler> extends HandledScreen
             PacketByteBuf buf = PacketByteBufs.create();
             buf.writeInt(handler.syncId);
             buf.writeInt(delta);
-            ClientPlayNetworking.send(PipePackets.INCREMENT_ITEM_PRIORITY, buf);
+            ClientPlayNetworking.send(PipePackets.INCREMENT_PRIORITY, buf);
         }, priorityTooltip));
     }
 
@@ -104,7 +104,7 @@ public abstract class PipeScreen<SH extends ScreenHandler> extends HandledScreen
             PacketByteBuf buf = PacketByteBufs.create();
             buf.writeInt(handler.syncId);
             buf.writeInt(newType);
-            ClientPlayNetworking.send(PipePackets.SET_ITEM_CONNECTION_TYPE, buf);
+            ClientPlayNetworking.send(PipePackets.SET_CONNECTION_TYPE, buf);
         }, (button, matrices, mouseX, mouseY) -> {
             List<Text> lines = new ArrayList<>();
             lines.add(new TranslatableText("text.modern_industrialization.pipe_connection_tooltip_" + connectionType.getConnectionType()));

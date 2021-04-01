@@ -974,6 +974,8 @@
     "text.modern_industrialization.multiblock_shape_valid": "Shape Valid",
     "text.modern_industrialization.multiblock_status_active": "Status : Active",
     "text.modern_industrialization.multiblock_status_inactive": "Status : Idle",
+    "text.modern_industrialization.network_fluid_help_clear": "Shift-click to clear the network of its fluid.",
+    "text.modern_industrialization.network_fluid_help_set": "Click with a container to set the fluid for the network.",
     "text.modern_industrialization.pipe_connection_0": "IN",
     "text.modern_industrialization.pipe_connection_1": "I/O",
     "text.modern_industrialization.pipe_connection_2": "OUT",

@@ -29,8 +29,11 @@ import alexiil.mc.lib.attributes.fluid.FluidInsertable;
 import alexiil.mc.lib.attributes.fluid.amount.FluidAmount;
 import alexiil.mc.lib.attributes.fluid.volume.FluidKeys;
 import java.math.RoundingMode;
+import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
+import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.Fluids;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Because LBA is annoying to work with.
@@ -61,5 +64,24 @@ public class FluidTransferHelper {
      */
     public static long extract(FluidExtractable extractable, Fluid fluid, long amount) {
         return extractable.extract(key -> key.getRawFluid() == fluid, FluidAmount.of(amount, 81000)).amount().asLong(81000, RoundingMode.DOWN);
+    }
+
+    /**
+     * Find a contained fluid, or EMPTY if there is no fluid or if the storage is
+     * null.
+     */
+    public static Fluid findFluid(@Nullable Storage<Fluid> storage) {
+        if (storage == null) {
+            return Fluids.EMPTY;
+        } else {
+            Fluid[] fluid = new Fluid[] { Fluids.EMPTY };
+            try (Transaction tx = Transaction.openOuter()) {
+                storage.forEach(view -> {
+                    fluid[0] = view.resource();
+                    return true;
+                }, tx);
+            }
+            return fluid[0];
+        }
     }
 }

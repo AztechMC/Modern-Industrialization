@@ -244,9 +244,13 @@ public class FluidNetworkNode extends PipeNetworkNode {
 
                     @Override
                     public void setNetworkFluid(Fluid fluid) {
-                        FluidNetworkData data = (FluidNetworkData) network.data;
-                        if (data.fluid == Fluids.EMPTY) {
-                            data.fluid = fluid;
+                        FluidNetwork network = (FluidNetwork) FluidNetworkNode.this.network;
+                        if (network != null) {
+                            if (fluid == Fluids.EMPTY) {
+                                network.clearFluid();
+                            } else {
+                                network.setFluid(fluid);
+                            }
                             markDirty.run();
                         }
                     }

@@ -27,6 +27,7 @@ import aztech.modern_industrialization.pipes.api.PipeNetwork;
 import aztech.modern_industrialization.pipes.api.PipeNetworkData;
 import aztech.modern_industrialization.pipes.api.PipeNetworkNode;
 import java.util.Map;
+import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -96,5 +97,31 @@ public class FluidNetwork extends PipeNetwork {
             }
         }
         return true;
+    }
+
+    /**
+     * Set this network's fluid if this network has an empty fluid.
+     */
+    protected void setFluid(Fluid fluid) {
+        if (((FluidNetworkData) data).fluid == Fluids.EMPTY) {
+            ((FluidNetworkData) data).fluid = fluid;
+        }
+    }
+
+    /**
+     * Clear this network of all its fluid if possible.
+     */
+    protected void clearFluid() {
+        // Check that every node is loaded.
+        for (PipeNetworkNode node : nodes.values()) {
+            if (node == null) {
+                return;
+            }
+        }
+        // Clear
+        for (PipeNetworkNode node : nodes.values()) {
+            ((FluidNetworkNode) node).amount = 0;
+        }
+        ((FluidNetworkData) data).fluid = Fluids.EMPTY;
     }
 }

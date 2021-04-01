@@ -26,20 +26,31 @@ package aztech.modern_industrialization.pipes.fluid;
 import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.machines.MachineScreenHandlers;
 import aztech.modern_industrialization.pipes.gui.PipeScreen;
+import aztech.modern_industrialization.pipes.impl.PipePackets;
+import aztech.modern_industrialization.transferapi.FluidTransferHelper;
+import aztech.modern_industrialization.transferapi.api.context.ContainerItemContext;
+import aztech.modern_industrialization.transferapi.api.fluid.ItemFluidApi;
 import aztech.modern_industrialization.util.FluidHelper;
+import aztech.modern_industrialization.util.InputHelper;
 import aztech.modern_industrialization.util.RenderHelper;
 import aztech.modern_industrialization.util.TextHelper;
 import com.mojang.blaze3d.systems.RenderSystem;
 import java.util.ArrayList;
 import java.util.List;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.Fluids;
+import net.minecraft.item.ItemStack;
+import net.minecraft.network.PacketByteBuf;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.registry.Registry;
 
 public class FluidPipeScreen extends PipeScreen<FluidPipeScreenHandler> {
     private static final Identifier TEXTURE = new MIIdentifier("textures/gui/pipe/fluid.png");
@@ -78,7 +89,26 @@ public class FluidPipeScreen extends PipeScreen<FluidPipeScreenHandler> {
     }
 
     private void updateNetworkFluid() {
-
+        FluidPipeInterface iface = handler.iface;
+        Fluid targetFluid = null;
+        if (iface.getNetworkFluid() == Fluids.EMPTY) {
+            // Want to set the fluid
+            ItemStack cursorStack = playerInventory.getCursorStack();
+            Fluid fluid = FluidTransferHelper
+                    .findFluid(ItemFluidApi.ITEM.find(cursorStack, ContainerItemContext.ofPlayerCursor(playerInventory.player)));
+            if (fluid != Fluids.EMPTY) {
+                targetFluid = fluid;
+            }
+        } else if (InputHelper.isShiftPressed()) {
+            targetFluid = Fluids.EMPTY;
+        }
+        if (targetFluid != null) {
+            iface.setNetworkFluid(targetFluid);
+            PacketByteBuf buf = PacketByteBufs.create();
+            buf.writeInt(handler.syncId);
+            buf.writeVarInt(Registry.FLUID.getRawId(targetFluid));
+            ClientPlayNetworking.send(PipePackets.SET_NETWORK_FLUID, buf);
+        }
     }
 
     private static class NetworkFluidButton extends ButtonWidget {

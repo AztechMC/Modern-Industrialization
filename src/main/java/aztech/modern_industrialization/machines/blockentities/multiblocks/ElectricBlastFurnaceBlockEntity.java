@@ -23,6 +23,8 @@
  */
 package aztech.modern_industrialization.machines.blockentities.multiblocks;
 
+import static aztech.modern_industrialization.machines.multiblocks.HatchType.*;
+
 import aztech.modern_industrialization.MIBlock;
 import aztech.modern_industrialization.compat.rei.machines.ReiMachineRecipes;
 import aztech.modern_industrialization.machines.components.CrafterComponent;
@@ -33,11 +35,14 @@ import aztech.modern_industrialization.machines.init.MIMachineRecipeTypes;
 import aztech.modern_industrialization.machines.init.MachineTier;
 import aztech.modern_industrialization.machines.models.MachineCasings;
 import aztech.modern_industrialization.machines.multiblocks.*;
-import aztech.modern_industrialization.machines.multiblocks.HatchType;
+import aztech.modern_industrialization.machines.recipe.MachineRecipe;
 import aztech.modern_industrialization.machines.recipe.MachineRecipeType;
 import aztech.modern_industrialization.util.Simulation;
 import java.util.ArrayList;
+import java.util.IdentityHashMap;
 import java.util.List;
+import java.util.Map;
+import net.minecraft.block.Block;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -47,11 +52,12 @@ import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 
 // TODO: should the common part with ElectricCraftingMultiblockBlockEntity be refactored?
-public class DistillationTowerBlockEntity extends AbstractCraftingMultiblockBlockEntity {
+public class ElectricBlastFurnaceBlockEntity extends AbstractCraftingMultiblockBlockEntity {
+
     private static final ShapeTemplate[] shapeTemplates;
 
-    public DistillationTowerBlockEntity(BlockEntityType<?> type) {
-        super(type, "distillation_tower", new OrientationComponent(new OrientationComponent.Params(false, false, false)), shapeTemplates);
+    public ElectricBlastFurnaceBlockEntity(BlockEntityType<?> type) {
+        super(type, "electric_blast_furnace", new OrientationComponent(new OrientationComponent.Params(false, false, false)), shapeTemplates);
         this.upgrades = new UpgradeComponent();
         this.registerComponents(upgrades);
     }
@@ -101,7 +107,12 @@ public class DistillationTowerBlockEntity extends AbstractCraftingMultiblockBloc
 
         @Override
         public MachineRecipeType recipeType() {
-            return MIMachineRecipeTypes.DISTILLATION_TOWER;
+            return MIMachineRecipeTypes.BLAST_FURNACE;
+        }
+
+        public boolean banRecipe(MachineRecipe recipe) {
+            int index = activeShape.getActiveShapeIndex();
+            return (recipe.eu > getMaxRecipeEu()) || (recipe.eu > coilsMaxBaseEU.get(coils.get(index)));
         }
 
         @Override
@@ -119,35 +130,32 @@ public class DistillationTowerBlockEntity extends AbstractCraftingMultiblockBloc
             return world;
         }
 
-        @Override
-        public int getMaxFluidOutputs() {
-            return activeShape.getActiveShapeIndex() + 1;
-        }
     }
 
     public static void registerReiShapes() {
         for (ShapeTemplate shapeTemplate : shapeTemplates) {
-            ReiMachineRecipes.registerMultiblockShape("distillation_tower", shapeTemplate);
+            ReiMachineRecipes.registerMultiblockShape("electric_blast_furnace", shapeTemplate);
         }
     }
 
+    public final static ArrayList<Block> coils = new ArrayList<>();
+    public final static Map<Block, Long> coilsMaxBaseEU = new IdentityHashMap<>();
+
     static {
-        int maxHeight = 9;
-        shapeTemplates = new ShapeTemplate[maxHeight];
+        coils.add(MIBlock.blocks.get("cupronickel_coil"));
+        coils.add(MIBlock.blocks.get("kanthal_coil"));
+        coilsMaxBaseEU.put(coils.get(0), 32L);
+        coilsMaxBaseEU.put(coils.get(1), 128L);
 
-        SimpleMember casing = SimpleMember.forBlock(MIBlock.blocks.get("clean_stainless_steel_machine_casing"));
-        SimpleMember pipe = SimpleMember.forBlock(MIBlock.blocks.get("stainless_steel_machine_casing_pipe"));
-        HatchFlags hatchFlags = new HatchFlags.Builder().with(HatchType.ENERGY_INPUT, HatchType.FLUID_INPUT, HatchType.FLUID_OUTPUT).build();
-        for (int i = 0; i < maxHeight; ++i) {
-            ShapeTemplate.Builder builder = new ShapeTemplate.Builder(MachineCasings.CLEAN_STAINLESS_STEEL);
-            for (int y = 0; y <= i + 1; ++y) {
-                builder.add3by3(y, casing, y != 0, hatchFlags);
-                if (y != 0) {
-                    builder.add(0, y, 1, pipe, null);
+        shapeTemplates = new ShapeTemplate[coils.size()];
 
-                }
-            }
-            shapeTemplates[i] = builder.build();
+        for (int i = 0; i < coils.size(); ++i) {
+            SimpleMember invarCasings = SimpleMember.forBlock(MIBlock.blocks.get("heatproof_machine_casing"));
+            SimpleMember coilsBlocks = SimpleMember.forBlock(coils.get(i));
+            HatchFlags ebfHatches = new HatchFlags.Builder().with(ITEM_INPUT, ITEM_OUTPUT, FLUID_INPUT, FLUID_OUTPUT, ENERGY_INPUT).build();
+            ShapeTemplate ebfShape = new ShapeTemplate.Builder(MachineCasings.HEATPROOF).add3by3(0, invarCasings, false, ebfHatches)
+                    .add3by3(1, coilsBlocks, true, null).add3by3(2, coilsBlocks, true, null).add3by3(3, invarCasings, false, ebfHatches).build();
+            shapeTemplates[i] = ebfShape;
         }
     }
 }

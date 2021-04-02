@@ -1,0 +1,21 @@
+{
+  "type": "modern_industrialization:centrifuge",
+  "eu": 8,
+  "duration": 1200,
+
+
+  "fluid_inputs" : {
+    "fluid" : "modern_industrialization:platinum_sulfuric_solution",
+    "amount": 1000
+  },
+  "fluid_outputs" : {
+    "fluid" : "modern_industrialization:purified_platinum_sulfuric_solution",
+    "amount" : 1000
+  },
+
+  "item_outputs" : {
+    "item" : "modern_industrialization:iridium_tiny_dust",
+    "amount" : 1,
+    "probability" : 0.05
+  }
+}

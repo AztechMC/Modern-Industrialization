@@ -97,7 +97,7 @@ public class AlloyRegister {
         new AlloyBuilder("electrum").addIngredient("gold", 1).addIngredient("silver", 1).Build(pack);
         new AlloyBuilder("stainless_steel").addIngredient("iron", 6).addIngredient("chrome", 1).addIngredient("nickel", 1)
                 .addIngredient("manganese", 1).Build(pack);
-        new AlloyBuilder("kanthal").addIngredient("stainless_steel", 3).addIngredient("chrome", 3).addIngredient("aluminum", 3).Build(pack);
+        new AlloyBuilder("kanthal").addIngredient("stainless_steel", 1).addIngredient("chrome", 1).addIngredient("aluminum", 1).Build(pack);
 
     }
 }

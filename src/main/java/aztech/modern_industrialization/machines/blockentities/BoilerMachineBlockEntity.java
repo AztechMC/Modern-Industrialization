@@ -183,10 +183,10 @@ public class BoilerMachineBlockEntity extends MachineBlockEntity implements Tick
             if (inventory.fluidStacks.get(0).getAmount() > 0) {
                 long remSpace = inventory.fluidStacks.get(1).getRemainingSpace();
                 long waterAvail = inventory.fluidStacks.get(0).getAmount();
-                long actualProduced = Math.min(Math.min(steamProduction, remSpace), waterAvail);
+                long actualProduced = Math.min(Math.min(steamProduction, remSpace), waterAvail * 16);
                 if (actualProduced > 0) {
                     inventory.fluidStacks.get(1).increment(actualProduced);
-                    inventory.fluidStacks.get(0).decrement(actualProduced);
+                    inventory.fluidStacks.get(0).decrement((long) Math.ceil(actualProduced / 16f));
                 }
             }
         }

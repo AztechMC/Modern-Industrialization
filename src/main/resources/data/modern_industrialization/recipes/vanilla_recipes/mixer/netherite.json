@@ -1,0 +1,19 @@
+{
+  "type": "modern_industrialization:mixer",
+  "eu": 16,
+  "duration": 200,
+  "item_inputs": [
+    {
+      "item": "minecraft:netherite_scrap",
+      "amount": 4
+    },
+    {
+      "item": "minecraft:gold_ingot",
+      "amount": 4
+    }
+  ],
+  "item_outputs": {
+    "item": "minecraft:netherite_ingot",
+    "amount": 2
+  }
+}

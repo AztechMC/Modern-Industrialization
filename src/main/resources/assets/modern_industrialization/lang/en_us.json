@@ -1011,5 +1011,6 @@
     "text.modern_industrialization.tooltip_saw": "Saw, Click to switch to hammer",
     "text.modern_industrialization.tooltip_speed_upgrade": "Item Pipe Speed Upgrade: +%d items / 3s.",
     "text.modern_industrialization.water_percent": "Water: %s %%",
-    "text.modern_industrialization.whitelist": "Whitelist mode enabled"
+    "text.modern_industrialization.whitelist": "Whitelist mode enabled",
+    "text.modern_industrialization.ebf_max_eu" : "Allows EBF Recipe up to %d Eu/t"
 }

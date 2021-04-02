@@ -3,7 +3,7 @@
   "eu": 64,
   "duration": 20,
   "item_inputs": {
-    "item": "modern_industrialization:annealed_copper_tiny_dust",
+    "tag": "c:annealed_copper_tiny_dusts",
     "amount": 1
   },
 

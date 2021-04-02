@@ -26,18 +26,16 @@ package aztech.modern_industrialization.machines.init;
 import static aztech.modern_industrialization.machines.multiblocks.HatchType.*;
 
 import aztech.modern_industrialization.MIBlock;
+import aztech.modern_industrialization.MIFluids;
 import aztech.modern_industrialization.compat.rei.Rectangle;
 import aztech.modern_industrialization.compat.rei.machines.MachineCategoryParams;
 import aztech.modern_industrialization.compat.rei.machines.ReiMachineRecipes;
 import aztech.modern_industrialization.inventory.SlotPositions;
+import aztech.modern_industrialization.machines.blockentities.multiblocks.*;
 import aztech.modern_industrialization.machines.recipe.MachineRecipe;
 import aztech.modern_industrialization.machines.recipe.MachineRecipeType;
 import aztech.modern_industrialization.machines.MachineScreenHandlers;
 import aztech.modern_industrialization.machines.SyncedComponent;
-import aztech.modern_industrialization.machines.blockentities.multiblocks.DistillationTowerBlockEntity;
-import aztech.modern_industrialization.machines.blockentities.multiblocks.ElectricCraftingMultiblockBlockEntity;
-import aztech.modern_industrialization.machines.blockentities.multiblocks.LargeSteamBoilerMultiblockBlockEntity;
-import aztech.modern_industrialization.machines.blockentities.multiblocks.SteamCraftingMultiblockBlockEntity;
 import aztech.modern_industrialization.machines.components.sync.CraftingMultiblockGui;
 import aztech.modern_industrialization.machines.components.sync.ProgressBar;
 import aztech.modern_industrialization.machines.models.MachineCasings;
@@ -49,6 +47,7 @@ import aztech.modern_industrialization.machines.multiblocks.SimpleMember;
 import net.fabricmc.fabric.api.client.rendereregistry.v1.BlockEntityRendererRegistry;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.entity.BlockEntityType;
+import net.minecraft.fluid.Fluids;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -63,6 +62,9 @@ public class MultiblockMachines {
     public static BlockEntityType STEAM_QUARRY;
     public static BlockEntityType ELECTRIC_BLAST_FURNACE;
     public static BlockEntityType LARGE_STEAM_BOILER;
+    public static BlockEntityType ADVANCED_LARGE_STEAM_BOILER;
+    public static BlockEntityType HIGH_PRESSURE_LARGE_STEAM_BOILER;
+    public static BlockEntityType HIGH_PRESSURE_ADVANCED_LARGE_STEAM_BOILER;
     public static BlockEntityType ELECTRIC_QUARRY;
     public static BlockEntityType OIL_DRILLING_RIG;
     public static BlockEntityType VACUUM_FREEZER;
@@ -83,25 +85,69 @@ public class MultiblockMachines {
                 bet -> new SteamCraftingMultiblockBlockEntity(bet, "steam_blast_furnace", sbfShape, MIMachineRecipeTypes.BLAST_FURNACE));
         ReiMachineRecipes.registerMultiblockShape("steam_blast_furnace", sbfShape);
 
-        SimpleMember invarCasings = SimpleMember.forBlock(MIBlock.blocks.get("heatproof_machine_casing"));
-        SimpleMember cupronickelCoils = SimpleMember.forBlock(MIBlock.blocks.get("cupronickel_coil"));
-        HatchFlags ebfHatches = new HatchFlags.Builder().with(ITEM_INPUT, ITEM_OUTPUT, FLUID_INPUT, FLUID_OUTPUT, ENERGY_INPUT).build();
-        ShapeTemplate ebfShape = new ShapeTemplate.Builder(MachineCasings.HEATPROOF).add3by3(0, invarCasings, false, ebfHatches)
-                .add3by3(1, cupronickelCoils, true, null).add3by3(2, cupronickelCoils, true, null).add3by3(3, invarCasings, false, ebfHatches)
-                .build();
-        ELECTRIC_BLAST_FURNACE = MachineRegistrationHelper.registerMachine("electric_blast_furnace",
-                bet -> new ElectricCraftingMultiblockBlockEntity(bet, "electric_blast_furnace", ebfShape, MIMachineRecipeTypes.BLAST_FURNACE));
-        ReiMachineRecipes.registerMultiblockShape("electric_blast_furnace", ebfShape);
 
+        ELECTRIC_BLAST_FURNACE = MachineRegistrationHelper.registerMachine("electric_blast_furnace",
+                bet -> new ElectricBlastFurnaceBlockEntity(bet));
+        ElectricBlastFurnaceBlockEntity.registerReiShapes();
+
+        SimpleMember invarCasings = SimpleMember.forBlock(MIBlock.blocks.get("heatproof_machine_casing"));
         SimpleMember bronzePlatedBricks = SimpleMember.forBlock(MIBlock.blocks.get("bronze_plated_bricks"));
         SimpleMember bronzePipe = SimpleMember.forBlock(MIBlock.blocks.get("bronze_machine_casing_pipe"));
         HatchFlags slbHatchFlags = new HatchFlags.Builder().with(ITEM_INPUT, FLUID_INPUT, FLUID_OUTPUT).build();
         ShapeTemplate largeSteamBoilerShape = new ShapeTemplate.Builder(MachineCasings.HEATPROOF).add3by3(-1, invarCasings, false, slbHatchFlags)
                 .add3by3(0, bronzePlatedBricks, true, null).add3by3(1, bronzePlatedBricks, true, null).add3by3(2, bronzePlatedBricks, false, null)
                 .add(0, 0, 1, bronzePipe, null).add(0, 1, 1, bronzePipe, null).build();
+
         LARGE_STEAM_BOILER = MachineRegistrationHelper.registerMachine("large_steam_boiler",
-                bet -> new LargeSteamBoilerMultiblockBlockEntity(bet, largeSteamBoilerShape));
+                bet -> new SteamBoilerMultiblockBlockEntity(bet, largeSteamBoilerShape, "large_steam_boiler",
+                        16, 1, Fluids.WATER, MIFluids.STEAM));
         ReiMachineRecipes.registerMultiblockShape("large_steam_boiler", largeSteamBoilerShape);
+
+
+        ShapeTemplate advancedLargeSteamBoilerShape = new ShapeTemplate.Builder(MachineCasings.HEATPROOF)
+                .add3by3(-2, invarCasings, false, slbHatchFlags)
+                .add3by3(-1, bronzePlatedBricks, true, null)
+                .add3by3(0, bronzePlatedBricks, true, null)
+                .add3by3(1, bronzePlatedBricks, true, null)
+                .add3by3(2, bronzePlatedBricks, false, null)
+                .add(0, -1, 1, bronzePipe, null)
+                .add(0, 0, 1, bronzePipe, null)
+                .add(0, 1, 1, bronzePipe, null).build();
+
+        ADVANCED_LARGE_STEAM_BOILER = MachineRegistrationHelper.registerMachine("advanced_large_steam_boiler",
+                bet -> new SteamBoilerMultiblockBlockEntity(bet, advancedLargeSteamBoilerShape, "advanced_large_steam_boiler",
+                        64, 1, Fluids.WATER, MIFluids.STEAM));
+        ReiMachineRecipes.registerMultiblockShape("advanced_large_steam_boiler", advancedLargeSteamBoilerShape);
+
+        SimpleMember stainlessSteelClean = SimpleMember.forBlock(MIBlock.blocks.get("clean_stainless_steel_machine_casing"));
+        SimpleMember stainlessSteelPipe = SimpleMember.forBlock(MIBlock.blocks.get("stainless_steel_machine_casing_pipe"));
+        ShapeTemplate highPressureLargeSteamBoilerShape = new ShapeTemplate.Builder(MachineCasings.HEATPROOF)
+                .add3by3(-1, invarCasings, false, slbHatchFlags)
+                .add3by3(0, stainlessSteelClean, true, null)
+                .add3by3(1, stainlessSteelClean, true, null)
+                .add3by3(2, stainlessSteelClean, false, null)
+                .add(0, 0, 1, stainlessSteelPipe, null)
+                .add(0, 1, 1, stainlessSteelPipe, null).build();
+
+        HIGH_PRESSURE_LARGE_STEAM_BOILER = MachineRegistrationHelper.registerMachine("high_pressure_large_steam_boiler",
+                bet -> new SteamBoilerMultiblockBlockEntity(bet, highPressureLargeSteamBoilerShape, "high_pressure_large_steam_boiler",
+                        16, 8, MIFluids.HIGH_PRESSURE_WATER, MIFluids.HIGH_PRESSURE_STEAM));
+        ReiMachineRecipes.registerMultiblockShape("high_pressure_large_steam_boiler", highPressureLargeSteamBoilerShape);
+
+        ShapeTemplate highPressureAdvancedLargeSteamBoilerShape = new ShapeTemplate.Builder(MachineCasings.HEATPROOF)
+                .add3by3(-2, invarCasings, false, slbHatchFlags)
+                .add3by3(-1, stainlessSteelClean, true, null)
+                .add3by3(0, stainlessSteelClean, true, null)
+                .add3by3(1, stainlessSteelClean, true, null)
+                .add3by3(2, stainlessSteelClean, false, null)
+                .add(0, -1, 1, stainlessSteelPipe, null)
+                .add(0, 0, 1, stainlessSteelPipe, null)
+                .add(0, 1, 1, stainlessSteelPipe, null).build();
+
+        HIGH_PRESSURE_ADVANCED_LARGE_STEAM_BOILER = MachineRegistrationHelper.registerMachine("high_pressure_advanced_large_steam_boiler",
+                bet -> new SteamBoilerMultiblockBlockEntity(bet, highPressureAdvancedLargeSteamBoilerShape, "high_pressure_advanced_large_steam_boiler",
+                        64, 8, MIFluids.HIGH_PRESSURE_WATER, MIFluids.HIGH_PRESSURE_STEAM));
+        ReiMachineRecipes.registerMultiblockShape("high_pressure_advanced_large_steam_boiler", highPressureAdvancedLargeSteamBoilerShape);
 
         SimpleMember steelCasing = SimpleMember.forBlock(MIBlock.blocks.get("steel_machine_casing"));
         SimpleMember steelPipe = SimpleMember.forBlock(MIBlock.blocks.get("steel_machine_casing_pipe"));
@@ -228,6 +274,16 @@ public class MultiblockMachines {
 
         MachineModels.addTieredMachine("large_steam_boiler", "large_boiler", MachineCasings.BRONZE_PLATED_BRICKS, true, false, false);
         BlockEntityRendererRegistry.INSTANCE.register(LARGE_STEAM_BOILER, MultiblockMachineBER::new);
+
+        MachineModels.addTieredMachine("advanced_large_steam_boiler", "large_boiler", MachineCasings.BRONZE_PLATED_BRICKS, true, false, false);
+        BlockEntityRendererRegistry.INSTANCE.register(ADVANCED_LARGE_STEAM_BOILER, MultiblockMachineBER::new);
+
+        MachineModels.addTieredMachine("high_pressure_large_steam_boiler", "large_boiler", MachineCasings.CLEAN_STAINLESS_STEEL, true, false, false);
+        BlockEntityRendererRegistry.INSTANCE.register(HIGH_PRESSURE_LARGE_STEAM_BOILER, MultiblockMachineBER::new);
+
+        MachineModels.addTieredMachine("high_pressure_advanced_large_steam_boiler", "large_boiler", MachineCasings.CLEAN_STAINLESS_STEEL, true, false, false);
+        BlockEntityRendererRegistry.INSTANCE.register(HIGH_PRESSURE_ADVANCED_LARGE_STEAM_BOILER, MultiblockMachineBER::new);
+
 
         MachineModels.addTieredMachine("quarry", "quarry", MachineCasings.STEEL, true, false, false);
         BlockEntityRendererRegistry.INSTANCE.register(STEAM_QUARRY, MultiblockMachineBER::new);

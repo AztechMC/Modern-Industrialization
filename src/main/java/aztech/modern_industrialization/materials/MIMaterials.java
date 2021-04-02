@@ -224,7 +224,7 @@ public class MIMaterials {
                 .addRecipes(StandardRecipes::apply, SmeltingRecipes::apply).build());
 
         MaterialRegistry.addMaterial(new MaterialBuilder("stainless_steel", SHINY, 0xC8C8DC).addRegularParts(ITEM_ALL).addRegularParts(HOT_INGOT)
-                .addRegularParts(MACHINE_CASING_SPECIAL, MACHINE_CASING, ROD_MAGNETIC).removeRegularParts(CRUSHED_DUST)
+                .addRegularParts(MACHINE_CASING_SPECIAL, MACHINE_CASING, MACHINE_CASING_PIPE, ROD_MAGNETIC).removeRegularParts(CRUSHED_DUST)
                 .addParts(PipeMaterialPart.of(PipeType.ITEM)).addParts(PipeMaterialPart.of(PipeType.FLUID)).addRecipes(StandardRecipes::apply)
                 .cancelRecipes("polarizer/rod_magnetic").build());
 
@@ -258,7 +258,7 @@ public class MIMaterials {
                 .addRecipes(StandardRecipes::apply).build());
 
         MaterialRegistry.addMaterial(new MaterialBuilder("annealed_copper", SHINY, 0xff924f).addRegularParts(ITEM_PURE_METAL)
-                .removeRegularParts(CRUSHED_DUST).addRegularParts(PLATE, WIRE, DOUBLE_INGOT).addParts(CableMaterialPart.of(CableTier.EV))
+                .removeRegularParts(CRUSHED_DUST).addRegularParts(PLATE, WIRE, DOUBLE_INGOT, HOT_INGOT).addParts(CableMaterialPart.of(CableTier.EV))
                 .addRecipes(StandardRecipes::apply).build());
 
         MaterialRegistry.addMaterial(new MaterialBuilder("uranium", DULL, 0x39e600).addRegularParts(ITEM_PURE_METAL).removeRegularParts(CRUSHED_DUST)
@@ -281,12 +281,12 @@ public class MIMaterials {
                 .addRecipes(StandardRecipes::apply).build());
 
         MaterialRegistry.addMaterial(new MaterialBuilder("platinum", SHINY, 0xffe5ba).addRegularParts(ITEM_PURE_METAL).addRegularParts(ORE)
-                .addRegularParts(PLATE, DOUBLE_INGOT, WIRE, FINE_WIRE).addParts(CableMaterialPart.of(CableTier.EV))
-                .addRecipes(StandardRecipes::apply, SmeltingRecipes::apply).cancelRecipes("macerator/ore").build());
+                .addRegularParts(PLATE, DOUBLE_INGOT, WIRE, FINE_WIRE, HOT_INGOT).addParts(CableMaterialPart.of(CableTier.EV))
+                .addRecipes(StandardRecipes::apply).cancelRecipes("macerator/crushed_dust").build());
 
         MaterialRegistry.addMaterial(new MaterialBuilder("kanthal", METALLIC, 0xcfcb00)
-                .addRegularParts(TINY_DUST, DUST, PLATE, INGOT, NUGGET, WIRE, DOUBLE_INGOT, BLOCK, COIL).addParts(CableMaterialPart.of(CableTier.HV))
-                .addRecipes(StandardRecipes::apply).build());
+                .addRegularParts(TINY_DUST, DUST, PLATE, INGOT, NUGGET, WIRE, DOUBLE_INGOT, BLOCK, COIL, HOT_INGOT)
+                .addParts(CableMaterialPart.of(CableTier.HV)).addRecipes(StandardRecipes::apply).build());
 
         MaterialRegistry.addMaterial(new MaterialBuilder("iridium", SHINY, 0xe1e6f5).addRegularParts(ITEM_PURE_METAL).removeRegularParts(CRUSHED_DUST)
                 .addRegularParts(ORE).addRegularParts(MIParts.GEM).addRecipes(StandardRecipes::apply).addRecipes(context -> {

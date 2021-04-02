@@ -11,7 +11,7 @@
     "amount": 250
   },
   "item_outputs": {
-    "item": "modern_industrialization:annealed_copper_ingot",
+    "item": "modern_industrialization:annealed_copper_hot_ingot",
     "amount": 1
   }
 }

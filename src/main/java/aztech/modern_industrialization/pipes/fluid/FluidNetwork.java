@@ -23,10 +23,18 @@
  */
 package aztech.modern_industrialization.pipes.fluid;
 
+import alexiil.mc.lib.attributes.Simulation;
+import alexiil.mc.lib.attributes.fluid.FluidTransferable;
 import aztech.modern_industrialization.pipes.api.PipeNetwork;
 import aztech.modern_industrialization.pipes.api.PipeNetworkData;
 import aztech.modern_industrialization.pipes.api.PipeNetworkNode;
+
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 import java.util.Map;
+
+import aztech.modern_industrialization.transferapi.FluidTransferHelper;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.util.math.BlockPos;
@@ -47,26 +55,70 @@ public class FluidNetwork extends PipeNetwork {
             return;
         ticked = true;
 
-        int totalAmount = 0;
-        int remainingNodes = 0;
-        // Interact with other inventories
+        // Gather targets and hopefully set fluid
+        List<FluidTarget> targets = new ArrayList<>();
+        long networkAmount = 0;
+        int loadedNodeCount = 0;
         for (Map.Entry<BlockPos, PipeNetworkNode> entry : nodes.entrySet()) {
             if (entry.getValue() != null) {
                 FluidNetworkNode fluidNode = (FluidNetworkNode) entry.getValue();
-                fluidNode.interactWithConnections(world, entry.getKey());
-                totalAmount += fluidNode.amount;
-                remainingNodes++;
+                fluidNode.gatherTargetsAndPickFluid(world, entry.getKey(), targets);
+                // Amount goes after the gather...() call because the gather...() call cleans invalid amounts.
+                networkAmount += fluidNode.amount;
+                loadedNodeCount++;
             }
         }
+        long networkCapacity = loadedNodeCount * nodeCapacity;
+        Fluid fluid = ((FluidNetworkData) data).fluid;
+        // If the fluid is EMPTY we stop here
+        if (fluid == Fluids.EMPTY) {
+            return;
+        }
+
+        // Extract from targets into the network
+        networkAmount += transferByPriority(FluidTransferHelper::extract, targets, fluid, networkCapacity - networkAmount);
+        // Insert into the targets from the network
+        networkAmount -= transferByPriority(FluidTransferHelper::insert, targets, fluid, networkAmount);
+
+        // Split fluid evenly across the nodes
         // Rebalance fluid inside the nodes
         for (PipeNetworkNode node : nodes.values()) {
             if (node != null) {
                 FluidNetworkNode fluidNode = (FluidNetworkNode) node;
-                fluidNode.amount = totalAmount / remainingNodes;
-                totalAmount -= fluidNode.amount;
-                remainingNodes--;
+                fluidNode.amount = networkAmount / loadedNodeCount;
+                networkAmount -= fluidNode.amount;
+                loadedNodeCount--;
             }
         }
+    }
+
+    /**
+     * Perform a transfer operation, respecting the priority.
+     * @return The amount that was successfully transferred.
+     */
+    private static long transferByPriority(TransferOperation operation, List<FluidTarget> targets, Fluid fluid, long maxAmount) {
+        // Simulate the transfer for every target
+        for (FluidTarget target : targets) {
+            target.simulationResult = operation.transfer(target.transferable, fluid, maxAmount, Simulation.SIMULATE);
+        }
+        // Sort from low result to high result
+        targets.sort(Comparator.comparing(target -> target.simulationResult));
+        // Actually perform the transfer
+        long transferredAmount = 0;
+        for (int i = 0; i < targets.size(); ++i) {
+            FluidTarget target = targets.get(i);
+            int remainingTargets = targets.size() - i;
+            long remainingAmount = maxAmount - transferredAmount;
+            long targetMaxAmount = remainingAmount / remainingTargets;
+
+            transferredAmount += operation.transfer(target.transferable, fluid, targetMaxAmount, Simulation.ACTION);
+        }
+        return transferredAmount;
+    }
+
+    @FunctionalInterface
+    private interface TransferOperation {
+        long transfer(FluidTransferable transferable, Fluid fluid, long maxAmount, Simulation simulation);
     }
 
     @Override

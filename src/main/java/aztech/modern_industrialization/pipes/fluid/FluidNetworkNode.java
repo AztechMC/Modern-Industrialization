@@ -30,6 +30,7 @@ import alexiil.mc.lib.attributes.SearchOptions;
 import alexiil.mc.lib.attributes.fluid.FluidAttributes;
 import alexiil.mc.lib.attributes.fluid.FluidExtractable;
 import alexiil.mc.lib.attributes.fluid.FluidInsertable;
+import alexiil.mc.lib.attributes.fluid.FluidTransferable;
 import aztech.modern_industrialization.ModernIndustrialization;
 import aztech.modern_industrialization.pipes.api.PipeEndpointType;
 import aztech.modern_industrialization.pipes.api.PipeNetworkNode;
@@ -60,9 +61,13 @@ public class FluidNetworkNode extends PipeNetworkNode {
     private Fluid cachedFluid = Fluids.EMPTY;
     private boolean needsSync = false;
 
-    void interactWithConnections(World world, BlockPos pos) {
+    /**
+     * Add all valid targets to the target list, and pick the fluid for the network if no fluid is set.
+     */
+    void gatherTargetsAndPickFluid(World world, BlockPos pos, List<FluidTarget> targets) {
         FluidNetworkData data = (FluidNetworkData) network.data;
         FluidNetwork network = (FluidNetwork) this.network;
+
         if (amount > network.nodeCapacity) {
             ModernIndustrialization.LOGGER.warn("Fluid amount > nodeCapacity, deleting some fluid!");
             amount = network.nodeCapacity;
@@ -71,26 +76,23 @@ public class FluidNetworkNode extends PipeNetworkNode {
             ModernIndustrialization.LOGGER.warn("Amount > 0 but fluid is empty, deleting some fluid!");
             amount = 0;
         }
-        for (FluidConnection connection : connections) { // TODO: limit insert and extract rate
-            // Insert
-            FluidInsertable insertable = FluidAttributes.INSERTABLE.get(world, pos.offset(connection.direction),
-                    SearchOptions.inDirection(connection.direction));
-            if (amount > 0 && connection.canInsert()) {
-                amount -= FluidTransferHelper.insert(insertable, data.fluid, amount);
+
+        for (FluidConnection connection : connections) {
+            FluidTransferable transferable = getNeighborTransferable(world, pos, connection.direction);
+            if (data.fluid == Fluids.EMPTY) {
+                // Try to set fluid, will return EMPTY if none could be found.
+                data.fluid = FluidTransferHelper.findExtractableFluid(transferable);
             }
-            FluidExtractable extractable = FluidAttributes.EXTRACTABLE.get(world, pos.offset(connection.direction),
-                    SearchOptions.inDirection(connection.direction));
-            if (connection.canExtract()) {
-                // Find the fluid to extract (by simulating if extraction of said fluid is > 0).
-                if (data.fluid == Fluids.EMPTY) {
-                    data.fluid = FluidTransferHelper.findExtractableFluid(extractable);
-                }
-                // Extract current fluid
-                if (data.fluid != Fluids.EMPTY) {
-                    amount += FluidTransferHelper.extract(extractable, data.fluid, network.nodeCapacity - amount);
-                }
-            }
+            targets.add(new FluidTarget(connection.priority, transferable));
         }
+    }
+
+    FluidTransferable getNeighborTransferable(World world, BlockPos pos, Direction direction) {
+        BlockPos neighborPos = pos.offset(direction);
+        SearchOption<Object> opt = SearchOptions.inDirection(direction);
+        FluidInsertable insertable = FluidAttributes.INSERTABLE.get(world, neighborPos, opt);
+        FluidExtractable extractable = FluidAttributes.EXTRACTABLE.get(world, neighborPos, opt);
+        return FluidTransferable.from(insertable, extractable);
     }
 
     @Override

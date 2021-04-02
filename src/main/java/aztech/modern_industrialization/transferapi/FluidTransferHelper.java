@@ -45,7 +45,8 @@ public class FluidTransferHelper {
      */
     public static long insert(FluidInsertable insertable, Fluid fluid, long maxAmount, Simulation simulation) {
         FluidAmount fractionAmount = FluidAmount.of(maxAmount, 81000);
-        long leftover = insertable.attemptInsertion(FluidKeys.get(fluid).withAmount(fractionAmount), simulation).getAmount_F().asLong(81000, RoundingMode.DOWN);
+        long leftover = insertable.attemptInsertion(FluidKeys.get(fluid).withAmount(fractionAmount), simulation).getAmount_F().asLong(81000,
+                RoundingMode.DOWN);
         return maxAmount - leftover;
     }
 
@@ -63,7 +64,8 @@ public class FluidTransferHelper {
      * {@link net.fabricmc.fabric.api.transfer.v1.storage.Storage#extract}.
      */
     public static long extract(FluidExtractable extractable, Fluid fluid, long maxAmount, Simulation simulation) {
-        return extractable.attemptExtraction(key -> key.getRawFluid() == fluid, FluidAmount.of(maxAmount, 81000), simulation).amount().asLong(81000, RoundingMode.DOWN);
+        return extractable.attemptExtraction(key -> key.getRawFluid() == fluid, FluidAmount.of(maxAmount, 81000), simulation).amount().asLong(81000,
+                RoundingMode.DOWN);
     }
 
     /**

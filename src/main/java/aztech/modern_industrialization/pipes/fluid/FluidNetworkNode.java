@@ -31,6 +31,7 @@ import alexiil.mc.lib.attributes.fluid.FluidAttributes;
 import alexiil.mc.lib.attributes.fluid.FluidExtractable;
 import alexiil.mc.lib.attributes.fluid.FluidInsertable;
 import alexiil.mc.lib.attributes.fluid.FluidTransferable;
+import alexiil.mc.lib.attributes.fluid.impl.EmptyFluidTransferable;
 import aztech.modern_industrialization.ModernIndustrialization;
 import aztech.modern_industrialization.pipes.api.PipeEndpointType;
 import aztech.modern_industrialization.pipes.api.PipeNetworkNode;
@@ -62,7 +63,8 @@ public class FluidNetworkNode extends PipeNetworkNode {
     private boolean needsSync = false;
 
     /**
-     * Add all valid targets to the target list, and pick the fluid for the network if no fluid is set.
+     * Add all valid targets to the target list, and pick the fluid for the network
+     * if no fluid is set.
      */
     void gatherTargetsAndPickFluid(World world, BlockPos pos, List<FluidTarget> targets) {
         FluidNetworkData data = (FluidNetworkData) network.data;
@@ -78,7 +80,7 @@ public class FluidNetworkNode extends PipeNetworkNode {
         }
 
         for (FluidConnection connection : connections) {
-            FluidTransferable transferable = getNeighborTransferable(world, pos, connection.direction);
+            FluidTransferable transferable = getNeighborTransferable(world, pos, connection);
             if (data.fluid == Fluids.EMPTY) {
                 // Try to set fluid, will return EMPTY if none could be found.
                 data.fluid = FluidTransferHelper.findExtractableFluid(transferable);
@@ -87,11 +89,12 @@ public class FluidNetworkNode extends PipeNetworkNode {
         }
     }
 
-    FluidTransferable getNeighborTransferable(World world, BlockPos pos, Direction direction) {
-        BlockPos neighborPos = pos.offset(direction);
-        SearchOption<Object> opt = SearchOptions.inDirection(direction);
-        FluidInsertable insertable = FluidAttributes.INSERTABLE.get(world, neighborPos, opt);
-        FluidExtractable extractable = FluidAttributes.EXTRACTABLE.get(world, neighborPos, opt);
+    FluidTransferable getNeighborTransferable(World world, BlockPos pos, FluidConnection connection) {
+        BlockPos neighborPos = pos.offset(connection.direction);
+        SearchOption<Object> opt = SearchOptions.inDirection(connection.direction);
+        FluidInsertable insertable = connection.canInsert() ? FluidAttributes.INSERTABLE.get(world, neighborPos, opt) : EmptyFluidTransferable.NULL;
+        FluidExtractable extractable = connection.canExtract() ? FluidAttributes.EXTRACTABLE.get(world, neighborPos, opt)
+                : EmptyFluidTransferable.NULL;
         return FluidTransferable.from(insertable, extractable);
     }
 

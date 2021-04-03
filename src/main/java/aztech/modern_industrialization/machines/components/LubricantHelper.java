@@ -53,6 +53,7 @@ public class LubricantHelper {
                             tx.commit();
                             return ActionResult.SUCCESS;
                         } else if (extracted > dropPerTick) {
+                            tx.close();
                             long attempt = dropPerTick * (extracted / dropPerTick);
                             try (Transaction txVoid = Transaction.openOuter()) {
                                 long extractedVoid = handIo.extract(MIFluids.LUBRICANT, attempt, txVoid);

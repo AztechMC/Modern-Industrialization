@@ -12,7 +12,8 @@
     },
     {
       "item": "modern_industrialization:silver_crushed_dust",
-      "amount": 1
+      "amount": 2,
+      "probability" : 0.5
     }
 
   ]

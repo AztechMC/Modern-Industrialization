@@ -75,4 +75,5 @@ public class FluidHatch extends HatchBlockEntity {
             list.addAll(inventory.fluidStacks);
         }
     }
+
 }

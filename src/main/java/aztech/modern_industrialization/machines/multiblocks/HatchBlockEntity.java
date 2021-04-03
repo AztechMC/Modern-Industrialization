@@ -152,4 +152,8 @@ public abstract class HatchBlockEntity extends MachineBlockEntity implements Tic
 
     public void appendEnergyInputs(List<EnergyComponent> list) {
     }
+
+    public void appendEnergyOutputs(List<EnergyComponent> list) {
+
+    }
 }

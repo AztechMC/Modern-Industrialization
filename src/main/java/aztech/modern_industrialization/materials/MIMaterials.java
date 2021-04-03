@@ -212,8 +212,9 @@ public class MIMaterials {
         MaterialRegistry.addMaterial(new MaterialBuilder("salt", GEM, 0xc7d6c5).addRegularParts(ITEM_PURE_NON_METAL).removeRegularParts(BLOCK)
                 .addRegularParts(ORE).addRecipes(StandardRecipes::apply).build());
 
-        MaterialRegistry.addMaterial(new MaterialBuilder("titanium", METALLIC, 0xDCA0F0).addRegularParts(ITEM_ALL).addRegularParts(MACHINE_CASING)
-                .removeRegularParts(CRUSHED_DUST).addRecipes(StandardRecipes::apply).build());
+        MaterialRegistry.addMaterial(new MaterialBuilder("titanium", METALLIC, 0xDCA0F0).addRegularParts(ITEM_ALL)
+                .addRegularParts(MACHINE_CASING, MACHINE_CASING_PIPE, MACHINE_CASING_SPECIAL).addParts(PipeMaterialPart.of(PipeType.ITEM))
+                .addParts(PipeMaterialPart.of(PipeType.FLUID)).removeRegularParts(CRUSHED_DUST).addRecipes(StandardRecipes::apply).build());
 
         MaterialRegistry.addMaterial(new MaterialBuilder("electrum", SHINY, 0xFFFF64).addRegularParts(ITEM_BASE).removeRegularParts(CRUSHED_DUST)
                 .addRegularParts(WIRE, FINE_WIRE).addParts(PipeMaterialPart.of(PipeType.ITEM)).addParts(PipeMaterialPart.of(PipeType.FLUID))

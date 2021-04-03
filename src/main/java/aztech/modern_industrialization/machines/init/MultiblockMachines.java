@@ -27,6 +27,7 @@ import static aztech.modern_industrialization.machines.multiblocks.HatchType.*;
 
 import aztech.modern_industrialization.MIBlock;
 import aztech.modern_industrialization.MIFluids;
+import aztech.modern_industrialization.api.FluidFuelRegistry;
 import aztech.modern_industrialization.compat.rei.Rectangle;
 import aztech.modern_industrialization.compat.rei.machines.MachineCategoryParams;
 import aztech.modern_industrialization.compat.rei.machines.ReiMachineRecipes;
@@ -47,6 +48,7 @@ import aztech.modern_industrialization.machines.multiblocks.SimpleMember;
 import net.fabricmc.fabric.api.client.rendereregistry.v1.BlockEntityRendererRegistry;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.entity.BlockEntityType;
+import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.Fluids;
 
 import java.util.ArrayList;
@@ -69,6 +71,11 @@ public class MultiblockMachines {
     public static BlockEntityType OIL_DRILLING_RIG;
     public static BlockEntityType VACUUM_FREEZER;
     public static BlockEntityType DISTILLATION_TOWER;
+    public static BlockEntityType LARGE_DIESEL_GENERATOR;
+    public static BlockEntityType HIGH_PRESSURE_STEAM_TURBINE;
+    public static BlockEntityType HEAT_EXCHANGER;
+    public static BlockEntityType PRESSURIZER;
+    public static BlockEntityType IMPLOSION_COMPRESSOR;
 
     public static void init() {
         SimpleMember bricks = SimpleMember.forBlock(Blocks.BRICKS);
@@ -199,6 +206,35 @@ public class MultiblockMachines {
 
         DISTILLATION_TOWER = MachineRegistrationHelper.registerMachine("distillation_tower", DistillationTowerBlockEntity::new);
         DistillationTowerBlockEntity.registerReiShapes();
+
+
+        SimpleMember titaniumCasing = SimpleMember.forBlock(MIBlock.blocks.get("solid_titanium_machine_casing"));
+        SimpleMember titaniumPipe = SimpleMember.forBlock(MIBlock.blocks.get("titanium_machine_casing_pipe"));
+        HatchFlags fluidInputs = new HatchFlags.Builder().with(FLUID_INPUT).build();
+        HatchFlags energyOutput = new HatchFlags.Builder().with(ENERGY_OUTPUT).build();
+        ShapeTemplate.Builder largeDieselGeneratorShapeBuilder = new ShapeTemplate.Builder(MachineCasings.SOLID_TITANIUM);
+        for(int z = 1; z < 4; z ++){
+            largeDieselGeneratorShapeBuilder.add(0, 0, z, z < 3 ? titaniumPipe : titaniumCasing, z == 3 ? energyOutput : null);
+            for(int x = -1; x < 2; x++){
+                largeDieselGeneratorShapeBuilder.add(x, 1, z, titaniumCasing, null);
+                largeDieselGeneratorShapeBuilder.add(x, -1, z, titaniumCasing, null);
+                if(x != 0){
+                    largeDieselGeneratorShapeBuilder.add(x, 0, z, titaniumCasing, z < 3 ? fluidInputs : null);
+                }
+            }
+        }
+        for(int y = -1; y <= 1; y++){
+            for(int x = -1; x <= 1; x++){
+                if(x != 0 || y != 0){
+                    largeDieselGeneratorShapeBuilder.add(x, y, 0, titaniumPipe, null);
+                }
+            }
+        }
+        ShapeTemplate largeDieselGeneratorShape = largeDieselGeneratorShapeBuilder.build();
+        LARGE_DIESEL_GENERATOR = MachineRegistrationHelper.registerMachine("large_diesel_generator", bet ->
+                new EnergyFromFluidMultiblockBlockEntity(bet, "large_diesel_generator", largeDieselGeneratorShape,
+                        (Fluid f) -> (FluidFuelRegistry.getEu(f) != 0), FluidFuelRegistry::getEu, 8192));
+        ReiMachineRecipes.registerMultiblockShape("large_diesel_generator", largeDieselGeneratorShape);
     }
 
     public static void oilDrillingRig() {
@@ -284,6 +320,9 @@ public class MultiblockMachines {
 
         MachineModels.addTieredMachine("high_pressure_advanced_large_steam_boiler", "large_boiler", MachineCasings.CLEAN_STAINLESS_STEEL, true, false, false);
         BlockEntityRendererRegistry.INSTANCE.register(HIGH_PRESSURE_ADVANCED_LARGE_STEAM_BOILER, MultiblockMachineBER::new);
+
+        MachineModels.addTieredMachine("large_diesel_generator", "smiley", MachineCasings.SOLID_TITANIUM, true, false, false);
+        BlockEntityRendererRegistry.INSTANCE.register(LARGE_DIESEL_GENERATOR, MultiblockMachineBER::new);
 
 
         MachineModels.addTieredMachine("quarry", "quarry", MachineCasings.STEEL, true, false, false);

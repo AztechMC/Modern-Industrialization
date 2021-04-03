@@ -49,6 +49,8 @@ public class MachineCasings {
     public static final MachineCasing HV = create("hv");
     public static final MachineCasing EV = create("ev");
     public static final MachineCasing SUPRACONDUCTOR = create("supraconductor");
+    public static final MachineCasing TITANIUM = create("titanium");
+    public static final MachineCasing SOLID_TITANIUM = create("solid_titanium_machine_casing");
 
     public static MachineCasing casingFromCableTier(CableTier tier) {
         if (tier == CableTier.LV) {

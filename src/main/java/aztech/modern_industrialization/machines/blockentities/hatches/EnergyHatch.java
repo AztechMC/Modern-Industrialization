@@ -81,6 +81,13 @@ public class EnergyHatch extends HatchBlockEntity {
         }
     }
 
+    @Override
+    public void appendEnergyOutputs(List<EnergyComponent> list) {
+        if (!input) {
+            list.add(energy);
+        }
+    }
+
     public static void registerEnergyApi(BlockEntityType<?> bet) {
         EnergyApi.MOVEABLE.registerForBlockEntities((be, direction) -> {
             EnergyHatch eh = (EnergyHatch) be;

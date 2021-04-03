@@ -23,6 +23,8 @@
  */
 package aztech.modern_industrialization.pipes.item;
 
+import aztech.modern_industrialization.pipes.gui.iface.ConnectionTypeInterface;
+import aztech.modern_industrialization.pipes.gui.iface.PriorityInterface;
 import java.util.ArrayList;
 import java.util.List;
 import net.minecraft.item.ItemStack;
@@ -32,7 +34,7 @@ import net.minecraft.network.PacketByteBuf;
  * Player interface to an item pipe, this is used for interacting with the
  * player via the screen handler and the screen.
  */
-public interface ItemPipeInterface {
+public interface ItemPipeInterface extends ConnectionTypeInterface, PriorityInterface {
     int SLOTS = 21;
 
     boolean isWhitelist();
@@ -46,28 +48,6 @@ public interface ItemPipeInterface {
     ItemStack getUpgradeStack();
 
     void setUpgradeStack(ItemStack stack);
-
-    int getConnectionType();
-
-    void setConnectionType(int type);
-
-    int getPriority();
-
-    /**
-     * Don't call this, always call {@link ItemPipeInterface#incrementPriority}.
-     */
-    void setPriority(int priority);
-
-    default void incrementPriority(int delta) {
-        if (delta == 1 || delta == -1 || delta == 10 || delta == -10) {
-            int p = getPriority() + delta;
-            if (p < -128)
-                p = -128;
-            if (p > 127)
-                p = 127;
-            setPriority(p);
-        }
-    }
 
     static ItemPipeInterface ofBuf(PacketByteBuf buf) {
         boolean[] whitelist = new boolean[] { buf.readBoolean() };

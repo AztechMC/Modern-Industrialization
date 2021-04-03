@@ -1,0 +1,3 @@
+accessWidener   v1    named
+
+accessible field net/minecraft/client/gui/screen/ingame/HandledScreen playerInventory Lnet/minecraft/entity/player/PlayerInventory;

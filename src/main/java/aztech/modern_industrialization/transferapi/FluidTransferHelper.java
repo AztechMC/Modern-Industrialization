@@ -29,8 +29,11 @@ import alexiil.mc.lib.attributes.fluid.FluidInsertable;
 import alexiil.mc.lib.attributes.fluid.amount.FluidAmount;
 import alexiil.mc.lib.attributes.fluid.volume.FluidKeys;
 import java.math.RoundingMode;
+import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
+import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.Fluids;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Because LBA is annoying to work with.
@@ -40,10 +43,11 @@ public class FluidTransferHelper {
      * Similar to
      * {@link net.fabricmc.fabric.api.transfer.v1.storage.Storage#insert}.
      */
-    public static long insert(FluidInsertable insertable, Fluid fluid, long amount) {
-        FluidAmount fractionAmount = FluidAmount.of(amount, 81000);
-        long leftover = insertable.insert(FluidKeys.get(fluid).withAmount(fractionAmount)).getAmount_F().asLong(81000, RoundingMode.DOWN);
-        return amount - leftover;
+    public static long insert(FluidInsertable insertable, Fluid fluid, long maxAmount, Simulation simulation) {
+        FluidAmount fractionAmount = FluidAmount.of(maxAmount, 81000);
+        long leftover = insertable.attemptInsertion(FluidKeys.get(fluid).withAmount(fractionAmount), simulation).getAmount_F().asLong(81000,
+                RoundingMode.DOWN);
+        return maxAmount - leftover;
     }
 
     /**
@@ -59,7 +63,27 @@ public class FluidTransferHelper {
      * Similar to
      * {@link net.fabricmc.fabric.api.transfer.v1.storage.Storage#extract}.
      */
-    public static long extract(FluidExtractable extractable, Fluid fluid, long amount) {
-        return extractable.extract(key -> key.getRawFluid() == fluid, FluidAmount.of(amount, 81000)).amount().asLong(81000, RoundingMode.DOWN);
+    public static long extract(FluidExtractable extractable, Fluid fluid, long maxAmount, Simulation simulation) {
+        return extractable.attemptExtraction(key -> key.getRawFluid() == fluid, FluidAmount.of(maxAmount, 81000), simulation).amount().asLong(81000,
+                RoundingMode.DOWN);
+    }
+
+    /**
+     * Find a contained fluid, or EMPTY if there is no fluid or if the storage is
+     * null.
+     */
+    public static Fluid findFluid(@Nullable Storage<Fluid> storage) {
+        if (storage == null) {
+            return Fluids.EMPTY;
+        } else {
+            Fluid[] fluid = new Fluid[] { Fluids.EMPTY };
+            try (Transaction tx = Transaction.openOuter()) {
+                storage.forEach(view -> {
+                    fluid[0] = view.resource();
+                    return true;
+                }, tx);
+            }
+            return fluid[0];
+        }
     }
 }

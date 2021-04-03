@@ -30,18 +30,30 @@ import alexiil.mc.lib.attributes.SearchOptions;
 import alexiil.mc.lib.attributes.fluid.FluidAttributes;
 import alexiil.mc.lib.attributes.fluid.FluidExtractable;
 import alexiil.mc.lib.attributes.fluid.FluidInsertable;
+import alexiil.mc.lib.attributes.fluid.FluidTransferable;
+import alexiil.mc.lib.attributes.fluid.impl.EmptyFluidTransferable;
 import aztech.modern_industrialization.ModernIndustrialization;
 import aztech.modern_industrialization.pipes.api.PipeEndpointType;
 import aztech.modern_industrialization.pipes.api.PipeNetworkNode;
 import aztech.modern_industrialization.transferapi.FluidTransferHelper;
 import aztech.modern_industrialization.util.NbtHelper;
 import java.util.*;
+import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
+import net.fabricmc.fabric.api.util.NbtType;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.PacketByteBuf;
+import net.minecraft.screen.ScreenHandler;
+import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.text.Text;
+import net.minecraft.text.TranslatableText;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
+import org.jetbrains.annotations.Nullable;
 
 // LBA
 public class FluidNetworkNode extends PipeNetworkNode {
@@ -50,9 +62,14 @@ public class FluidNetworkNode extends PipeNetworkNode {
     private Fluid cachedFluid = Fluids.EMPTY;
     private boolean needsSync = false;
 
-    void interactWithConnections(World world, BlockPos pos) {
+    /**
+     * Add all valid targets to the target list, and pick the fluid for the network
+     * if no fluid is set.
+     */
+    void gatherTargetsAndPickFluid(World world, BlockPos pos, List<FluidTarget> targets) {
         FluidNetworkData data = (FluidNetworkData) network.data;
         FluidNetwork network = (FluidNetwork) this.network;
+
         if (amount > network.nodeCapacity) {
             ModernIndustrialization.LOGGER.warn("Fluid amount > nodeCapacity, deleting some fluid!");
             amount = network.nodeCapacity;
@@ -61,26 +78,24 @@ public class FluidNetworkNode extends PipeNetworkNode {
             ModernIndustrialization.LOGGER.warn("Amount > 0 but fluid is empty, deleting some fluid!");
             amount = 0;
         }
-        for (FluidConnection connection : connections) { // TODO: limit insert and extract rate
-            // Insert
-            FluidInsertable insertable = FluidAttributes.INSERTABLE.get(world, pos.offset(connection.direction),
-                    SearchOptions.inDirection(connection.direction));
-            if (amount > 0 && connection.canInsert()) {
-                amount -= FluidTransferHelper.insert(insertable, data.fluid, amount);
+
+        for (FluidConnection connection : connections) {
+            FluidTransferable transferable = getNeighborTransferable(world, pos, connection);
+            if (data.fluid == Fluids.EMPTY) {
+                // Try to set fluid, will return EMPTY if none could be found.
+                data.fluid = FluidTransferHelper.findExtractableFluid(transferable);
             }
-            FluidExtractable extractable = FluidAttributes.EXTRACTABLE.get(world, pos.offset(connection.direction),
-                    SearchOptions.inDirection(connection.direction));
-            if (connection.canExtract()) {
-                // Find the fluid to extract (by simulating if extraction of said fluid is > 0).
-                if (data.fluid == Fluids.EMPTY) {
-                    data.fluid = FluidTransferHelper.findExtractableFluid(extractable);
-                }
-                // Extract current fluid
-                if (data.fluid != Fluids.EMPTY) {
-                    amount += FluidTransferHelper.extract(extractable, data.fluid, network.nodeCapacity - amount);
-                }
-            }
+            targets.add(new FluidTarget(connection.priority, transferable));
         }
+    }
+
+    FluidTransferable getNeighborTransferable(World world, BlockPos pos, FluidConnection connection) {
+        BlockPos neighborPos = pos.offset(connection.direction);
+        SearchOption<Object> opt = SearchOptions.inDirection(connection.direction);
+        FluidInsertable insertable = connection.canInsert() ? FluidAttributes.INSERTABLE.get(world, neighborPos, opt) : EmptyFluidTransferable.NULL;
+        FluidExtractable extractable = connection.canExtract() ? FluidAttributes.EXTRACTABLE.get(world, neighborPos, opt)
+                : EmptyFluidTransferable.NULL;
+        return FluidTransferable.from(insertable, extractable);
     }
 
     @Override
@@ -143,7 +158,7 @@ public class FluidNetworkNode extends PipeNetworkNode {
         }
         // Otherwise try to connect
         if (canConnect(world, pos, direction)) {
-            connections.add(new FluidConnection(direction, BLOCK_IN));
+            connections.add(new FluidConnection(direction, BLOCK_IN, 0));
         }
     }
 
@@ -151,7 +166,10 @@ public class FluidNetworkNode extends PipeNetworkNode {
     public CompoundTag toTag(CompoundTag tag) {
         tag.putLong("amount_ftl", amount);
         for (FluidConnection connection : connections) {
-            tag.putByte(connection.direction.toString(), (byte) encodeConnectionType(connection.type));
+            CompoundTag connectionTag = new CompoundTag();
+            connectionTag.putByte("connections", (byte) encodeConnectionType(connection.type));
+            connectionTag.putInt("priority", connection.priority);
+            tag.put(connection.direction.toString(), connectionTag);
         }
         return tag;
     }
@@ -165,7 +183,14 @@ public class FluidNetworkNode extends PipeNetworkNode {
         }
         for (Direction direction : Direction.values()) {
             if (tag.contains(direction.toString())) {
-                connections.add(new FluidConnection(direction, decodeConnectionType(tag.getByte(direction.toString()))));
+                if (tag.getType(direction.toString()) == NbtType.BYTE) {
+                    // Old format (before fluid pipe priorities)
+                    connections.add(new FluidConnection(direction, decodeConnectionType(tag.getByte(direction.toString())), 0));
+                } else {
+                    CompoundTag connectionTag = tag.getCompound(direction.toString());
+                    connections.add(new FluidConnection(direction, decodeConnectionType(connectionTag.getByte("connections")),
+                            connectionTag.getInt("priority")));
+                }
             }
         }
     }
@@ -178,13 +203,25 @@ public class FluidNetworkNode extends PipeNetworkNode {
         return connection == BLOCK_IN ? 0 : connection == BLOCK_IN_OUT ? 1 : 2;
     }
 
-    private static class FluidConnection {
+    @Override
+    public ExtendedScreenHandlerFactory getConnectionGui(Direction guiDirection, Runnable markDirty, Runnable sync) {
+        for (FluidConnection connection : connections) {
+            if (connection.direction == guiDirection) {
+                return connection.new ScreenHandlerFactory(markDirty, sync, getType().getIdentifier().getPath());
+            }
+        }
+        return null;
+    }
+
+    private class FluidConnection {
         private final Direction direction;
         private PipeEndpointType type;
+        private int priority;
 
-        private FluidConnection(Direction direction, PipeEndpointType type) {
+        private FluidConnection(Direction direction, PipeEndpointType type, int priority) {
             this.direction = direction;
             this.type = type;
+            this.priority = priority;
         }
 
         private boolean canInsert() {
@@ -193,6 +230,78 @@ public class FluidNetworkNode extends PipeNetworkNode {
 
         private boolean canExtract() {
             return type == BLOCK_OUT || type == BLOCK_IN_OUT;
+        }
+
+        private class ScreenHandlerFactory implements ExtendedScreenHandlerFactory {
+            private final FluidPipeInterface iface;
+            private final String pipeType;
+
+            private ScreenHandlerFactory(Runnable markDirty, Runnable sync, String pipeType) {
+                this.iface = new FluidPipeInterface() {
+                    @Override
+                    public Fluid getNetworkFluid() {
+                        if (network != null) {
+                            return getFluid();
+                        } else {
+                            return Fluids.EMPTY;
+                        }
+                    }
+
+                    @Override
+                    public void setNetworkFluid(Fluid fluid) {
+                        FluidNetwork network = (FluidNetwork) FluidNetworkNode.this.network;
+                        if (network != null) {
+                            if (fluid == Fluids.EMPTY) {
+                                network.clearFluid();
+                            } else {
+                                network.setFluid(fluid);
+                            }
+                            markDirty.run();
+                        }
+                    }
+
+                    @Override
+                    public int getConnectionType() {
+                        return encodeConnectionType(type);
+                    }
+
+                    @Override
+                    public void setConnectionType(int type) {
+                        if (0 <= type && type < 3) {
+                            FluidConnection.this.type = decodeConnectionType(type);
+                            markDirty.run();
+                            sync.run();
+                        }
+                    }
+
+                    @Override
+                    public int getPriority() {
+                        return priority;
+                    }
+
+                    @Override
+                    public void setPriority(int priority) {
+                        FluidConnection.this.priority = priority;
+                        sync.run();
+                    }
+                };
+                this.pipeType = pipeType;
+            }
+
+            @Override
+            public void writeScreenOpeningData(ServerPlayerEntity player, PacketByteBuf buf) {
+                iface.toBuf(buf);
+            }
+
+            @Override
+            public Text getDisplayName() {
+                return new TranslatableText("item.modern_industrialization.pipe_" + pipeType);
+            }
+
+            @Override
+            public @Nullable ScreenHandler createMenu(int syncId, PlayerInventory inv, PlayerEntity player) {
+                return new FluidPipeScreenHandler(syncId, inv, iface);
+            }
         }
     }
 

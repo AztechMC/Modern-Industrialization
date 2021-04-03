@@ -25,20 +25,22 @@ package aztech.modern_industrialization.pipes.item;
 
 import aztech.modern_industrialization.api.pipes.item.SpeedUpgrade;
 import aztech.modern_industrialization.pipes.MIPipes;
+import aztech.modern_industrialization.pipes.gui.PipeScreenHandler;
 import aztech.modern_industrialization.pipes.impl.PipePackets;
 import aztech.modern_industrialization.util.ItemStackHelper;
-import io.netty.buffer.Unpooled;
-import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
+import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketByteBuf;
-import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.screen.slot.SlotActionType;
 import net.minecraft.server.network.ServerPlayerEntity;
 
-public class ItemPipeScreenHandler extends ScreenHandler {
+public class ItemPipeScreenHandler extends PipeScreenHandler {
+    public static final int HEIGHT = 180;
+
     private final PlayerInventory playerInventory;
     public final ItemPipeInterface pipeInterface;
     private boolean trackedWhitelist;
@@ -50,22 +52,14 @@ public class ItemPipeScreenHandler extends ScreenHandler {
     }
 
     public ItemPipeScreenHandler(int syncId, PlayerInventory playerInventory, ItemPipeInterface pipeInterface) {
-        super(MIPipes.SCREN_HANDLER_TYPE_ITEM_PIPE, syncId);
+        super(MIPipes.SCREEN_HANDLER_TYPE_ITEM_PIPE, syncId);
         this.playerInventory = playerInventory;
         this.pipeInterface = pipeInterface;
         this.trackedWhitelist = pipeInterface.isWhitelist();
         this.trackedPriority = pipeInterface.getPriority();
         this.trackedType = pipeInterface.getConnectionType();
 
-        // Player slots
-        for (int i = 0; i < 3; i++) {
-            for (int j = 0; j < 9; j++) {
-                this.addSlot(new Slot(playerInventory, i * 9 + j + 9, 8 + j * 18, 98 + i * 18));
-            }
-        }
-        for (int j = 0; j < 9; j++) {
-            this.addSlot(new Slot(playerInventory, j, 8 + j * 18, 58 + 98));
-        }
+        addPlayerInventorySlots(playerInventory, HEIGHT);
 
         // Filter slots
         for (int i = 0; i < 3; i++) {
@@ -130,28 +124,34 @@ public class ItemPipeScreenHandler extends ScreenHandler {
     public void sendContentUpdates() {
         super.sendContentUpdates();
         if (playerInventory.player instanceof ServerPlayerEntity) {
+            ServerPlayerEntity serverPlayer = (ServerPlayerEntity) playerInventory.player;
             if (trackedWhitelist != pipeInterface.isWhitelist()) {
                 trackedWhitelist = pipeInterface.isWhitelist();
-                PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
+                PacketByteBuf buf = PacketByteBufs.create();
                 buf.writeInt(syncId);
                 buf.writeBoolean(trackedWhitelist);
-                ServerSidePacketRegistry.INSTANCE.sendToPlayer(playerInventory.player, PipePackets.SET_ITEM_WHITELIST, buf);
+                ServerPlayNetworking.send(serverPlayer, PipePackets.SET_ITEM_WHITELIST, buf);
             }
             if (trackedType != pipeInterface.getConnectionType()) {
                 trackedType = pipeInterface.getConnectionType();
-                PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
+                PacketByteBuf buf = PacketByteBufs.create();
                 buf.writeInt(syncId);
                 buf.writeInt(trackedType);
-                ServerSidePacketRegistry.INSTANCE.sendToPlayer(playerInventory.player, PipePackets.SET_ITEM_CONNECTION_TYPE, buf);
+                ServerPlayNetworking.send(serverPlayer, PipePackets.SET_CONNECTION_TYPE, buf);
             }
             if (trackedPriority != pipeInterface.getPriority()) {
                 trackedPriority = pipeInterface.getPriority();
-                PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
+                PacketByteBuf buf = PacketByteBufs.create();
                 buf.writeInt(syncId);
                 buf.writeInt(trackedPriority);
-                ServerSidePacketRegistry.INSTANCE.sendToPlayer(playerInventory.player, PipePackets.SET_ITEM_PRIORITY, buf);
+                ServerPlayNetworking.send(serverPlayer, PipePackets.SET_PRIORITY, buf);
             }
         }
+    }
+
+    @Override
+    protected Object getInterface() {
+        return pipeInterface;
     }
 
     private class FilterSlot extends Slot {

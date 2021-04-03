@@ -187,6 +187,10 @@ dependencies {
     //}
 }
 
+minecraft {
+    accessWidener = file("src/main/resources/modern_industrialization.accesswidener")
+}
+
 processResources {
     inputs.property "version", project.version
 

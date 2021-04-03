@@ -6,6 +6,11 @@
     "item" : "minecraft:coal",
     "amount" : 1
   },
+  "fluid_outputs" : {
+      "fluid" : "modern_industrialization:creosote",
+      "amount" : 500,
+      "probability" : 0.5
+  },
   "item_outputs" : {
     "item" : "modern_industrialization:coke",
     "amount" : 1

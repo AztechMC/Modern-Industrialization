@@ -54,7 +54,7 @@ public class MIMachineRecipeTypes {
     public static final MachineRecipeType POLARIZER = create("polarizer").withItemInputs().withItemOutputs();
     public static final MachineRecipeType WIREMILL = create("wiremill").withItemInputs().withItemOutputs();
     // Multi block
-    public static final MachineRecipeType COKE_OVEN = create("coke_oven").withItemInputs().withItemOutputs();
+    public static final MachineRecipeType COKE_OVEN = create("coke_oven").withItemInputs().withItemOutputs().withFluidOutputs();
     public static final MachineRecipeType BLAST_FURNACE = create("blast_furnace").withItemInputs().withItemOutputs().withFluidInputs().withFluidOutputs();
     public static final MachineRecipeType DISTILLATION_TOWER = create("distillation_tower").withFluidInputs().withFluidOutputs();
     public static final MachineRecipeType SINTERING_FURNACE = create("sintering_furnace").withItemInputs().withItemOutputs();

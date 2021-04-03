@@ -67,7 +67,7 @@ public abstract class AbstractCraftingMultiblockBlockEntity extends MultiblockMa
 
     protected final ActiveShapeComponent activeShape;
     protected final MultiblockInventoryComponent inventory;
-    private final CrafterComponent crafter;
+    protected final CrafterComponent crafter;
     private final IsActiveComponent isActive;
 
     protected abstract void onSuccessfulMatch(ShapeMatcher shapeMatcher);

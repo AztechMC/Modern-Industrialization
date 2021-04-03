@@ -23,10 +23,7 @@
  */
 package aztech.modern_industrialization.machines.blockentities.multiblocks;
 
-import aztech.modern_industrialization.machines.components.CrafterComponent;
-import aztech.modern_industrialization.machines.components.EnergyComponent;
-import aztech.modern_industrialization.machines.components.OrientationComponent;
-import aztech.modern_industrialization.machines.components.UpgradeComponent;
+import aztech.modern_industrialization.machines.components.*;
 import aztech.modern_industrialization.machines.init.MachineTier;
 import aztech.modern_industrialization.machines.multiblocks.HatchBlockEntity;
 import aztech.modern_industrialization.machines.multiblocks.ShapeMatcher;
@@ -72,6 +69,9 @@ public class ElectricCraftingMultiblockBlockEntity extends AbstractCraftingMulti
         ActionResult result = super.onUse(player, hand, face);
         if (!result.isAccepted()) {
             result = upgrades.onUse(this, player, hand);
+        }
+        if (!result.isAccepted()) {
+            result = LubricantHelper.onUse(this.crafter, player, hand);
         }
         return result;
     }

@@ -26,10 +26,7 @@ package aztech.modern_industrialization.machines.blockentities;
 import aztech.modern_industrialization.api.energy.CableTier;
 import aztech.modern_industrialization.api.energy.EnergyApi;
 import aztech.modern_industrialization.api.energy.EnergyInsertable;
-import aztech.modern_industrialization.machines.components.CasingComponent;
-import aztech.modern_industrialization.machines.components.EnergyComponent;
-import aztech.modern_industrialization.machines.components.MachineInventoryComponent;
-import aztech.modern_industrialization.machines.components.UpgradeComponent;
+import aztech.modern_industrialization.machines.components.*;
 import aztech.modern_industrialization.machines.components.sync.EnergyBar;
 import aztech.modern_industrialization.machines.components.sync.ProgressBar;
 import aztech.modern_industrialization.machines.components.sync.RecipeEfficiencyBar;
@@ -91,6 +88,9 @@ public class ElectricCraftingMachineBlockEntity extends AbstractCraftingMachineB
         }
         if (!result.isAccepted()) {
             result = upgrades.onUse(this, player, hand);
+        }
+        if (!result.isAccepted()) {
+            result = LubricantHelper.onUse(this.crafter, player, hand);
         }
         return result;
     }

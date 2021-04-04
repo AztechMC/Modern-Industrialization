@@ -38,6 +38,7 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.attribute.EntityAttribute;
 import net.minecraft.entity.attribute.EntityAttributeModifier;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.fluid.Fluid;
 import net.minecraft.item.*;
 import net.minecraft.recipe.Ingredient;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -63,17 +64,9 @@ public class JetpackItem extends ArmorItem implements Wearable, TickableArmor, D
         stack.getOrCreateTag().putBoolean("activated", activated);
     }
 
-    public boolean showParticles(ItemStack stack) {
-        return stack.getTag() != null && stack.getTag().getBoolean("showParticles");
-    }
-
-    public void setParticles(ItemStack stack, boolean showParticles) {
-        stack.getOrCreateTag().putBoolean("showParticles", showParticles);
-    }
-
     @Override
     public boolean shouldAllowFallFlying(ItemStack stack, LivingEntity user) {
-        return true;
+        return isActivated(stack) && FluidFuelItemHelper.getAmount(stack) > 0;
     }
 
     private static ArmorMaterial buildMaterial() {
@@ -122,37 +115,40 @@ public class JetpackItem extends ArmorItem implements Wearable, TickableArmor, D
 
     @Override
     public void tickArmor(ItemStack stack, PlayerEntity player) {
-        boolean showParticles = false;
         if (isActivated(stack)) {
+            Fluid fluid = FluidFuelItemHelper.getFluid(stack);
             long amount = FluidFuelItemHelper.getAmount(stack);
-            if (MIKeyMap.isHoldingUp(player) && amount > 0) {
-                showParticles = true;
-                if (player.isFallFlying()) {
-                    Vec3d playerFacing = player.getRotationVector();
-                    Vec3d playerVelocity = player.getVelocity();
-                    double maxSpeed = Math.sqrt(FluidFuelRegistry.getEu(FluidFuelItemHelper.getFluid(stack))) / 10;
-                    double attenuationFactor = 0.5;
-                    player.setVelocity(playerVelocity.multiply(attenuationFactor).add(playerFacing.multiply(maxSpeed)));
-                } else {
-                    double maxSpeed = Math.sqrt(FluidFuelRegistry.getEu(FluidFuelItemHelper.getFluid(stack))) / 10;
-                    double acceleration = 0.25;
+            if (amount > 0) {
+                // Always consume one mb of fuel
+                FluidFuelItemHelper.decrement(stack);
+                if (MIKeyMap.isHoldingUp(player)) {
+                    // Consume one more mb when pressing space
                     FluidFuelItemHelper.decrement(stack);
-                    Vec3d v = player.getVelocity();
-                    if (v.y < maxSpeed) {
-                        player.setVelocity(v.x, Math.min(maxSpeed, v.y + acceleration), v.z);
-                    }
-                    if (!player.world.isClient()) {
-                        player.fallDistance = 0;
-                        if (player instanceof ServerPlayerEntity) {
-                            ((ServerPlayNetworkHandlerAccessor) ((ServerPlayerEntity) player).networkHandler).setFloatingTicks(0);
+                    if (player.isFallFlying()) {
+                        // Boost forward if fall flying
+                        Vec3d playerFacing = player.getRotationVector();
+                        Vec3d playerVelocity = player.getVelocity();
+                        double maxSpeed = Math.sqrt(FluidFuelRegistry.getEu(fluid)) / 10;
+                        double attenuationFactor = 0.5;
+                        player.setVelocity(playerVelocity.multiply(attenuationFactor).add(playerFacing.multiply(maxSpeed)));
+                    } else {
+                        // Otherwise boost vertically
+                        double maxSpeed = Math.sqrt(FluidFuelRegistry.getEu(fluid)) / 10;
+                        double acceleration = 0.25;
+                        Vec3d v = player.getVelocity();
+                        if (v.y < maxSpeed) {
+                            player.setVelocity(v.x, Math.min(maxSpeed, v.y + acceleration), v.z);
                         }
+                        // Reset fall distance (but not in elytra mode)
+                        if (!player.world.isClient()) {
+                            player.fallDistance = 0;
+                        }
+                    }
+                    if (player instanceof ServerPlayerEntity) {
+                        ((ServerPlayNetworkHandlerAccessor) ((ServerPlayerEntity) player).networkHandler).setFloatingTicks(0);
                     }
                 }
             }
-        }
-
-        if (!player.world.isClient()) {
-            setParticles(stack, showParticles);
         }
     }
 

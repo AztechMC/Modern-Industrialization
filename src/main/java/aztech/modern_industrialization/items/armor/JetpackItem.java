@@ -31,8 +31,10 @@ import com.google.common.collect.Multimap;
 import java.util.List;
 import me.shedaniel.cloth.api.armor.v1.TickableArmor;
 import me.shedaniel.cloth.api.durability.bar.DurabilityBarItem;
+import net.fabricmc.fabric.api.item.v1.fallflying.FabricFallFlyingItem;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.entity.EquipmentSlot;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.attribute.EntityAttribute;
 import net.minecraft.entity.attribute.EntityAttributeModifier;
 import net.minecraft.entity.player.PlayerEntity;
@@ -46,7 +48,7 @@ import net.minecraft.util.Rarity;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
-public class JetpackItem extends ArmorItem implements Wearable, TickableArmor, DurabilityBarItem {
+public class JetpackItem extends ArmorItem implements Wearable, TickableArmor, DurabilityBarItem, FabricFallFlyingItem {
     public static final int CAPACITY = 4 * 81000;
 
     public JetpackItem(Settings settings) {
@@ -67,6 +69,11 @@ public class JetpackItem extends ArmorItem implements Wearable, TickableArmor, D
 
     public void setParticles(ItemStack stack, boolean showParticles) {
         stack.getOrCreateTag().putBoolean("showParticles", showParticles);
+    }
+
+    @Override
+    public boolean shouldAllowFallFlying(ItemStack stack, LivingEntity user) {
+        return true;
     }
 
     private static ArmorMaterial buildMaterial() {
@@ -120,17 +127,25 @@ public class JetpackItem extends ArmorItem implements Wearable, TickableArmor, D
             long amount = FluidFuelItemHelper.getAmount(stack);
             if (MIKeyMap.isHoldingUp(player) && amount > 0) {
                 showParticles = true;
-                double maxSpeed = Math.sqrt(FluidFuelRegistry.getEu(FluidFuelItemHelper.getFluid(stack))) / 10;
-                double acceleration = 0.25;
-                FluidFuelItemHelper.decrement(stack);
-                Vec3d v = player.getVelocity();
-                if (v.y < maxSpeed) {
-                    player.setVelocity(v.x, Math.min(maxSpeed, v.y + acceleration), v.z);
-                }
-                if (!player.world.isClient()) {
-                    player.fallDistance = 0;
-                    if (player instanceof ServerPlayerEntity) {
-                        ((ServerPlayNetworkHandlerAccessor) ((ServerPlayerEntity) player).networkHandler).setFloatingTicks(0);
+                if (player.isFallFlying()) {
+                    Vec3d playerFacing = player.getRotationVector();
+                    Vec3d playerVelocity = player.getVelocity();
+                    double maxSpeed = Math.sqrt(FluidFuelRegistry.getEu(FluidFuelItemHelper.getFluid(stack))) / 10;
+                    double attenuationFactor = 0.5;
+                    player.setVelocity(playerVelocity.multiply(attenuationFactor).add(playerFacing.multiply(maxSpeed)));
+                } else {
+                    double maxSpeed = Math.sqrt(FluidFuelRegistry.getEu(FluidFuelItemHelper.getFluid(stack))) / 10;
+                    double acceleration = 0.25;
+                    FluidFuelItemHelper.decrement(stack);
+                    Vec3d v = player.getVelocity();
+                    if (v.y < maxSpeed) {
+                        player.setVelocity(v.x, Math.min(maxSpeed, v.y + acceleration), v.z);
+                    }
+                    if (!player.world.isClient()) {
+                        player.fallDistance = 0;
+                        if (player instanceof ServerPlayerEntity) {
+                            ((ServerPlayNetworkHandlerAccessor) ((ServerPlayerEntity) player).networkHandler).setFloatingTicks(0);
+                        }
                     }
                 }
             }

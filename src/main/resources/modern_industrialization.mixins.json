@@ -8,6 +8,7 @@
     "IngredientMixin",
     "ItemMixin",
     "ItemStackMixin",
+    "PlayerEntityMixin",
     "PlayerInventoryMixin",
     "RecipeManagerAccessor",
     "ReloadableResourceManagerImplMixin",

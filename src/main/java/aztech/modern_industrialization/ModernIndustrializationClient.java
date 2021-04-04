@@ -55,6 +55,7 @@ import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.fabricmc.loader.DependencyException;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.block.Block;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Items;
 import net.minecraft.screen.ScreenHandlerType;
@@ -74,7 +75,7 @@ public class ModernIndustrializationClient implements ClientModInitializer {
         WorldRenderEvents.BEFORE_BLOCK_OUTLINE.register(new MachineOverlay.Renderer());
         (new MIPipesClient()).onInitializeClient();
         ClientKeyHandler.setup();
-        ClientTickEvents.START_CLIENT_TICK.register(JetpackParticleAdder::addJetpackParticles);
+        WorldRenderEvents.START.register(renderer -> JetpackParticleAdder.addJetpackParticles(MinecraftClient.getInstance()));
         ClientTickEvents.END_CLIENT_TICK.register(ClientKeyHandler::onEndTick);
         HudRenderCallback.EVENT.register(HudRenderer::onRenderHud);
         registerBuiltinResourcePack();

@@ -96,7 +96,9 @@ public class CreativeTankBlockEntity extends FastBlockEntity
                 return !isEmpty();
             } else {
                 try (Transaction tx = Transaction.openOuter()) {
-                    return handIo.insert(fluid, Integer.MAX_VALUE, tx) > 0;
+                    long inserted = handIo.insert(fluid, Integer.MAX_VALUE, tx);
+                    tx.commit();
+                    return inserted > 0;
                 }
             }
         }

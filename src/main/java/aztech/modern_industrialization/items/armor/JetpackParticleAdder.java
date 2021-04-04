@@ -31,6 +31,7 @@ import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.particle.ParticleTypes;
+import net.minecraft.util.math.Vec3d;
 
 public class JetpackParticleAdder {
     public static void addJetpackParticles(MinecraftClient client) {
@@ -41,9 +42,15 @@ public class JetpackParticleAdder {
                     JetpackItem jetpack = (JetpackItem) chest.getItem();
                     if (jetpack.showParticles(chest) && FluidFuelItemHelper.getAmount(chest) > 0) {
                         Random r = ThreadLocalRandom.current();
-                        for (int i = 0; i < 20; ++i) {
-                            client.world.addParticle(ParticleTypes.FLAME, player.getX(), player.getY() + 1.0, player.getZ(), r.nextFloat() - 0.5, -5,
-                                    r.nextFloat() - 0.5);
+                        if (player.isFallFlying()) {
+                            Vec3d velocity = player.getVelocity();
+                            client.world.addParticle(ParticleTypes.FLAME, player.getX(), player.getY(), player.getZ(), -velocity.x, -velocity.y,
+                                    -velocity.z);
+                        } else {
+                            for (int i = 0; i < 20; ++i) {
+                                client.world.addParticle(ParticleTypes.FLAME, player.getX(), player.getY() + 1.0, player.getZ(), r.nextFloat() - 0.5,
+                                        -5, r.nextFloat() - 0.5);
+                            }
                         }
                     }
                 }

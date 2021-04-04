@@ -25,10 +25,13 @@ package aztech.modern_industrialization;
 
 import aztech.modern_industrialization.items.GuideBookItem;
 import aztech.modern_industrialization.items.SteamDrillItem;
+import aztech.modern_industrialization.items.armor.RubberArmorMaterial;
 import aztech.modern_industrialization.items.tools.CrowbarItem;
 import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.function.Function;
+import net.minecraft.entity.EquipmentSlot;
+import net.minecraft.item.ArmorItem;
 import net.minecraft.item.Item;
 
 public final class MIItem {
@@ -54,6 +57,9 @@ public final class MIItem {
     public static final Item ITEM_GUIDE_BOOK = of(GuideBookItem::new, "guidebook", 64);
     public static final Item ITEM_STEAM_DRILL = of(SteamDrillItem::new, "steam_mining_drill", 1);
     public static final Item ITEM_UNCOOKED_STEEL_DUST = of("uncooked_steel_dust");
+
+    public static final Item RUBBER_HELMET = of(s -> new ArmorItem(RubberArmorMaterial.INSTANCE, EquipmentSlot.HEAD, s), "rubber_helmet", 1);
+    public static final Item RUBBER_BOOTS = of(s -> new ArmorItem(RubberArmorMaterial.INSTANCE, EquipmentSlot.FEET, s), "rubber_boots", 1);
 
     public static final Item ITEM_LV_MOTOR = of("lv_motor");
     public static final Item ITEM_LV_PISTON = of("lv_piston");

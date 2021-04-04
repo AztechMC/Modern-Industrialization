@@ -321,9 +321,6 @@ public class MultiblockMachines {
         MachineModels.addTieredMachine("high_pressure_advanced_large_steam_boiler", "large_boiler", MachineCasings.CLEAN_STAINLESS_STEEL, true, false, false);
         BlockEntityRendererRegistry.INSTANCE.register(HIGH_PRESSURE_ADVANCED_LARGE_STEAM_BOILER, MultiblockMachineBER::new);
 
-        MachineModels.addTieredMachine("large_diesel_generator", "smiley", MachineCasings.SOLID_TITANIUM, true, false, false);
-        BlockEntityRendererRegistry.INSTANCE.register(LARGE_DIESEL_GENERATOR, MultiblockMachineBER::new);
-
 
         MachineModels.addTieredMachine("quarry", "quarry", MachineCasings.STEEL, true, false, false);
         BlockEntityRendererRegistry.INSTANCE.register(STEAM_QUARRY, MultiblockMachineBER::new);
@@ -354,6 +351,9 @@ public class MultiblockMachines {
         new Rei("distillation_tower", MIMachineRecipeTypes.DISTILLATION_TOWER, new ProgressBar.Parameters(77, 33, "arrow"))
                 .fluids(inputs -> inputs.addSlot(56, 35), outputs -> outputs.addSlots(102, 35, 1, 8))
                 .register();
+
+        MachineModels.addTieredMachine("large_diesel_generator", "smiley", MachineCasings.SOLID_TITANIUM, true, false, false);
+        BlockEntityRendererRegistry.INSTANCE.register(LARGE_DIESEL_GENERATOR, MultiblockMachineBER::new);
     }
 
     private static final Rectangle CRAFTING_GUI = new Rectangle(CraftingMultiblockGui.X, CraftingMultiblockGui.Y,

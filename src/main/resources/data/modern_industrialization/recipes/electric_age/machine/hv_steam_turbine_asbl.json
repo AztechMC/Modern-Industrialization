@@ -1,0 +1,33 @@
+{
+  "type" : "minecraft:crafting_shaped",
+  "pattern" : [
+    "pCp",
+    "rHr",
+    "mcm"
+  ],
+  "key":
+  {
+    "C": {
+      "item" : "modern_industrialization:digital_circuit"
+    },
+    "m" : {
+      "item" : "modern_industrialization:advanced_motor"
+    },
+    "H" :{
+      "item" : "modern_industrialization:turbo_machine_hull"
+    },
+    "p": {
+      "item" : "modern_industrialization:pipe_fluid_stainless_steel"
+    },
+    "r" : {
+      "item" : "modern_industrialization:stainless_steel_rotor"
+    },
+    "c" : {
+      "item" : "modern_industrialization:pipe_electricity_aluminum"
+    }
+  },
+
+  "result": {
+    "item": "modern_industrialization:hv_steam_turbine"
+  }
+}

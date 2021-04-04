@@ -59,7 +59,7 @@ public class SingleBlockSpecialMachines {
         }
 
         registerTransformers();
-        registerSteamTurbines(32, 128);
+        registerSteamTurbines(32, 128, 512);
         registerEUStorage();
 
         MachineRegistrationHelper.registerMachine("diesel_generator",
@@ -96,8 +96,9 @@ public class SingleBlockSpecialMachines {
             CableTier tier = CableTier.values()[i];
             String id = tier.name + "_steam_turbine";
             final int eu = maxConsumption[i];
+            final int fluidCapacity = 16000 * (1 << i);
             MachineRegistrationHelper.registerMachine(id,
-                    bet -> new EnergyFromFluidMachineBlockEntity(bet, id, tier, 3200, 16000, eu, MIFluids.STEAM, 1),
+                    bet -> new EnergyFromFluidMachineBlockEntity(bet, id, tier, eu * 100, fluidCapacity, eu, MIFluids.STEAM, 1),
                     MachineBlockEntity::registerFluidApi, EnergyFromFluidMachineBlockEntity::registerEnergyApi);
             MachineModels.addTieredMachine(id, "steam_turbine", MachineCasings.casingFromCableTier(tier), true, false, false);
         }

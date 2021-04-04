@@ -45,6 +45,7 @@ public final class MIRecipes {
 
         AssemblerRecipes.yes(pack, manager);
         AlloyRegister.init(pack);
+        HeatExchangerHelper.init(pack);
         return pack;
     }
 }

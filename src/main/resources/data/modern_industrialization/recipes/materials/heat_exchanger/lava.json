@@ -1,0 +1,25 @@
+{
+  "type" : "modern_industrialization:heat_exchanger",
+  "eu" : 2,
+  "duration" : 400,
+  "fluid_inputs" : [
+    {
+      "fluid" : "minecraft:lava",
+      "amount" : 125
+    },
+    {
+      "fluid" : "minecraft:water",
+      "amount" : 8000
+    }
+  ],
+  "fluid_outputs" :
+  {
+    "fluid" : "modern_industrialization:steam",
+    "amount" : 8000
+  },
+  "item_outputs" : {
+    "item" : "minecraft:obsidian",
+    "amount" : 1,
+    "probability" : 0.1
+  }
+}

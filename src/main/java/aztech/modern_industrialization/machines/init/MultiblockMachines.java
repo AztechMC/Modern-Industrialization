@@ -209,7 +209,7 @@ public class MultiblockMachines {
 
         HatchFlags fluidInputs = new HatchFlags.Builder().with(FLUID_INPUT).build();
         HatchFlags energyOutput = new HatchFlags.Builder().with(ENERGY_OUTPUT).build();
-
+        HatchFlags energyInput = new HatchFlags.Builder().with(ENERGY_INPUT).build();
         {
             SimpleMember titaniumCasing = SimpleMember.forBlock(MIBlock.blocks.get("solid_titanium_machine_casing"));
             SimpleMember titaniumPipe = SimpleMember.forBlock(MIBlock.blocks.get("titanium_machine_casing_pipe"));
@@ -273,7 +273,9 @@ public class MultiblockMachines {
                 for(int x = -1; x <=1; x++){
                     for(int y = -1; y <= 1; y++){
                         if(z > 0 && z < 4){
-                            heatExchangerShapeBuilder.add(x, y, z, x == -1 ? invarCasings  : x == 0 ? stainlessSteelPipe : frostproofMachineCasing , null);
+
+                            heatExchangerShapeBuilder.add(x, y, z, x == -1 ? invarCasings  : x == 0 ? stainlessSteelPipe : frostproofMachineCasing ,
+                                    (y == 1 && x == 0 && z == 2) ? energyInput : null);
                         }else{
                             if(z != 0 || x!= 0 || y != 0){
                                 HatchFlags flag = null;
@@ -421,6 +423,10 @@ public class MultiblockMachines {
 
         MachineModels.addTieredMachine("heat_exchanger", "smiley", MachineCasings.STAINLESS_STEEL_PIPE, true, false, false);
         BlockEntityRendererRegistry.INSTANCE.register(HEAT_EXCHANGER, MultiblockMachineBER::new);
+        new Rei("heat_exchanger", MIMachineRecipeTypes.HEAT_EXCHANGER, new ProgressBar.Parameters(77, 42, "arrow"))
+                .items(inputs -> inputs.addSlot(36, 35), outputs -> outputs.addSlot(122, 35))
+                .fluids(inputs -> inputs.addSlots(56, 35, 2, 1), outputs -> outputs.addSlots(102, 35, 2, 1))
+                .register();
     }
 
     private static final Rectangle CRAFTING_GUI = new Rectangle(CraftingMultiblockGui.X, CraftingMultiblockGui.Y,

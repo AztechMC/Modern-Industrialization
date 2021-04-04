@@ -1,0 +1,29 @@
+{
+  "type" : "minecraft:crafting_shaped",
+  "pattern" : [
+    "pcp",
+    "PHP",
+    "prp"
+  ],
+  "key": {
+    "p" : {
+      "item" : "modern_industrialization:large_advanced_pump"
+    },
+    "H" : {
+      "item" : "modern_industrialization:highly_advanced_machine_hull"
+    },
+    "c" : {
+      "item" : "modern_industrialization:processing_unit"
+    },
+    "P":{
+      "item" : "modern_industrialization:stainless_steel_machine_casing_pipe"
+    },
+    "r" : {
+      "item" : "modern_industrialization:titanium_rotor"
+    }
+
+  },
+  "result": {
+    "item": "modern_industrialization:heat_exchanger"
+  }
+}

@@ -40,17 +40,14 @@ public class JetpackParticleAdder {
                 ItemStack chest = player.getEquippedStack(EquipmentSlot.CHEST);
                 if (chest.getItem() instanceof JetpackItem) {
                     JetpackItem jetpack = (JetpackItem) chest.getItem();
-                    if (jetpack.showParticles(chest) && FluidFuelItemHelper.getAmount(chest) > 0) {
+                    if (jetpack.isActivated(chest) && FluidFuelItemHelper.getAmount(chest) > 0) {
                         Random r = ThreadLocalRandom.current();
                         if (player.isFallFlying()) {
                             Vec3d velocity = player.getVelocity();
                             client.world.addParticle(ParticleTypes.FLAME, player.getX(), player.getY(), player.getZ(), -velocity.x, -velocity.y,
                                     -velocity.z);
                         } else {
-                            for (int i = 0; i < 20; ++i) {
-                                client.world.addParticle(ParticleTypes.FLAME, player.getX(), player.getY() + 1.0, player.getZ(), r.nextFloat() - 0.5,
-                                        -5, r.nextFloat() - 0.5);
-                            }
+                            client.world.addParticle(ParticleTypes.FLAME, player.getX(), player.getY() + 1.0, player.getZ(), 0, -1, 0);
                         }
                     }
                 }

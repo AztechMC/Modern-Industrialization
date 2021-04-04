@@ -181,7 +181,7 @@ public final class MITextures {
                 if (part.equals(MIParts.MACHINE_CASING)) {
                     casingFromTexture(mtm, materialName, image);
                     tankFromTexture(mtm, materialName, image);
-                } else if (part.equals(MIParts.MACHINE_CASING_SPECIAL)) {
+                } else if (part.equals(MIParts.MACHINE_CASING_SPECIAL) || part.equals(MIParts.MACHINE_CASING_PIPE)) {
                     casingFromTexture(mtm, itemPath, image);
                 }
 

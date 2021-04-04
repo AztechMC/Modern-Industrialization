@@ -53,7 +53,7 @@ public class EnergyFromFluidMultiblockBlockEntity extends MultiblockMachineBlock
     public EnergyFromFluidMultiblockBlockEntity(BlockEntityType<?> type, String name, ShapeTemplate shapeTemplate, Predicate<Fluid> acceptedFluid,
             ToLongFunction<Fluid> fluidEUperMb, long maxEnergyOutput) {
 
-        super(type, new MachineGuiParameters.Builder(name, false).backgroundHeight(200).build(),
+        super(type, new MachineGuiParameters.Builder(name, false).backgroundHeight(128).build(),
                 new OrientationComponent(new OrientationComponent.Params(false, false, false)));
 
         this.activeShape = new ActiveShapeComponent(new ShapeTemplate[] { shapeTemplate });

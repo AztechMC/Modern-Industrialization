@@ -72,7 +72,7 @@ public class MultiblockMachines {
     public static BlockEntityType VACUUM_FREEZER;
     public static BlockEntityType DISTILLATION_TOWER;
     public static BlockEntityType LARGE_DIESEL_GENERATOR;
-    public static BlockEntityType HIGH_PRESSURE_STEAM_TURBINE;
+    public static BlockEntityType LARGE_STEAM_TURBINE;
     public static BlockEntityType HEAT_EXCHANGER;
     public static BlockEntityType PRESSURIZER;
     public static BlockEntityType IMPLOSION_COMPRESSOR;
@@ -94,7 +94,7 @@ public class MultiblockMachines {
 
 
         ELECTRIC_BLAST_FURNACE = MachineRegistrationHelper.registerMachine("electric_blast_furnace",
-                bet -> new ElectricBlastFurnaceBlockEntity(bet));
+                ElectricBlastFurnaceBlockEntity::new);
         ElectricBlastFurnaceBlockEntity.registerReiShapes();
 
         SimpleMember invarCasings = SimpleMember.forBlock(MIBlock.blocks.get("heatproof_machine_casing"));
@@ -207,34 +207,95 @@ public class MultiblockMachines {
         DISTILLATION_TOWER = MachineRegistrationHelper.registerMachine("distillation_tower", DistillationTowerBlockEntity::new);
         DistillationTowerBlockEntity.registerReiShapes();
 
-
-        SimpleMember titaniumCasing = SimpleMember.forBlock(MIBlock.blocks.get("solid_titanium_machine_casing"));
-        SimpleMember titaniumPipe = SimpleMember.forBlock(MIBlock.blocks.get("titanium_machine_casing_pipe"));
         HatchFlags fluidInputs = new HatchFlags.Builder().with(FLUID_INPUT).build();
         HatchFlags energyOutput = new HatchFlags.Builder().with(ENERGY_OUTPUT).build();
-        ShapeTemplate.Builder largeDieselGeneratorShapeBuilder = new ShapeTemplate.Builder(MachineCasings.SOLID_TITANIUM);
-        for(int z = 1; z < 4; z ++){
-            largeDieselGeneratorShapeBuilder.add(0, 0, z, z < 3 ? titaniumPipe : titaniumCasing, z == 3 ? energyOutput : null);
-            for(int x = -1; x < 2; x++){
-                largeDieselGeneratorShapeBuilder.add(x, 1, z, titaniumCasing, null);
-                largeDieselGeneratorShapeBuilder.add(x, -1, z, titaniumCasing, null);
-                if(x != 0){
-                    largeDieselGeneratorShapeBuilder.add(x, 0, z, titaniumCasing, z < 3 ? fluidInputs : null);
+
+        {
+            SimpleMember titaniumCasing = SimpleMember.forBlock(MIBlock.blocks.get("solid_titanium_machine_casing"));
+            SimpleMember titaniumPipe = SimpleMember.forBlock(MIBlock.blocks.get("titanium_machine_casing_pipe"));
+            ShapeTemplate.Builder largeDieselGeneratorShapeBuilder = new ShapeTemplate.Builder(MachineCasings.SOLID_TITANIUM);
+            for (int z = 1; z < 4; z++) {
+                largeDieselGeneratorShapeBuilder.add(0, 0, z, z < 3 ? titaniumPipe : titaniumCasing, z == 3 ? energyOutput : null);
+                for (int x = -1; x < 2; x++) {
+                    largeDieselGeneratorShapeBuilder.add(x, 1, z, titaniumCasing, null);
+                    largeDieselGeneratorShapeBuilder.add(x, -1, z, titaniumCasing, null);
+                    if (x != 0) {
+                        largeDieselGeneratorShapeBuilder.add(x, 0, z, titaniumCasing, z < 3 ? fluidInputs : null);
+                    }
                 }
             }
-        }
-        for(int y = -1; y <= 1; y++){
-            for(int x = -1; x <= 1; x++){
-                if(x != 0 || y != 0){
-                    largeDieselGeneratorShapeBuilder.add(x, y, 0, titaniumPipe, null);
+            for (int y = -1; y <= 1; y++) {
+                for (int x = -1; x <= 1; x++) {
+                    if (x != 0 || y != 0) {
+                        largeDieselGeneratorShapeBuilder.add(x, y, 0, titaniumPipe, null);
+                    }
                 }
             }
+            ShapeTemplate largeDieselGeneratorShape = largeDieselGeneratorShapeBuilder.build();
+            LARGE_DIESEL_GENERATOR = MachineRegistrationHelper.registerMachine("large_diesel_generator", bet ->
+                    new EnergyFromFluidMultiblockBlockEntity(bet, "large_diesel_generator", largeDieselGeneratorShape,
+                            (Fluid f) -> (FluidFuelRegistry.getEu(f) != 0), FluidFuelRegistry::getEu, 8192));
+            ReiMachineRecipes.registerMultiblockShape("large_diesel_generator", largeDieselGeneratorShape);
         }
-        ShapeTemplate largeDieselGeneratorShape = largeDieselGeneratorShapeBuilder.build();
-        LARGE_DIESEL_GENERATOR = MachineRegistrationHelper.registerMachine("large_diesel_generator", bet ->
-                new EnergyFromFluidMultiblockBlockEntity(bet, "large_diesel_generator", largeDieselGeneratorShape,
-                        (Fluid f) -> (FluidFuelRegistry.getEu(f) != 0), FluidFuelRegistry::getEu, 8192));
-        ReiMachineRecipes.registerMultiblockShape("large_diesel_generator", largeDieselGeneratorShape);
+
+        {
+            ShapeTemplate.Builder largeTurbineBuilder = new ShapeTemplate.Builder(MachineCasings.CLEAN_STAINLESS_STEEL);
+            for (int z = 0; z < 4; z++) {
+                for(int x = -1; x <= 1; x ++){
+                    for(int y = -1; y <= 1; y++){
+                        if(z == 0){
+                            if(x != 0 || y != 0){
+                                largeTurbineBuilder.add(x,y,z, stainlessSteelClean, fluidInputs);
+                            }
+                        }else if(z == 3){
+                            largeTurbineBuilder.add(x,y,z, stainlessSteelClean, (x == 0 && y == 0) ? energyOutput : null);
+                        }else{
+                            largeTurbineBuilder.add(x,y,z, stainlessSteelPipe, null);
+                        }
+
+                    }
+                }
+            }
+            ShapeTemplate largeTurbineShape =  largeTurbineBuilder.build();
+            LARGE_STEAM_TURBINE = MachineRegistrationHelper.registerMachine("large_steam_turbine", bet ->
+                    new EnergyFromFluidMultiblockBlockEntity(bet, "large_steam_turbine", largeTurbineShape,
+                            (Fluid f) -> (f == MIFluids.STEAM || f == MIFluids.HIGH_PRESSURE_STEAM
+                                    || f == MIFluids.HIGH_PRESSURE_HEAVY_WATER_STEAM
+                                    || f == MIFluids.HEAVY_WATER_STEAM),
+                            (Fluid f) -> ( (f == MIFluids.STEAM || f == MIFluids.HEAVY_WATER_STEAM) ? 1 : 8)
+                                    , 4096));
+            ReiMachineRecipes.registerMultiblockShape("large_steam_turbine", largeTurbineShape);
+        }
+
+        {
+            ShapeTemplate.Builder heatExchangerShapeBuilder = new ShapeTemplate.Builder(MachineCasings.STAINLESS_STEEL_PIPE);
+            for(int z = 0; z < 5 ; z++){
+                for(int x = -1; x <=1; x++){
+                    for(int y = -1; y <= 1; y++){
+                        if(z > 0 && z < 4){
+                            heatExchangerShapeBuilder.add(x, y, z, x == -1 ? invarCasings  : x == 0 ? stainlessSteelPipe : frostproofMachineCasing , null);
+                        }else{
+                            if(z != 0 || x!= 0 || y != 0){
+                                HatchFlags flag = null;
+                                if(y == -1 && x == 0) {
+                                    flag = new HatchFlags.Builder().with(z == 0 ? ITEM_INPUT : ITEM_OUTPUT).build();
+                                }else if(y == 0 && x != 0){
+                                    boolean fluidOutput = (x == -1) ^ (z == 0);
+                                    flag = new HatchFlags.Builder().with(fluidOutput ? FLUID_OUTPUT : FLUID_INPUT).build();
+                                }
+
+                                heatExchangerShapeBuilder.add(x, y, z, stainlessSteelPipe, flag);
+                            }
+                        }
+                    }
+                }
+            }
+            ShapeTemplate heatExchangerShape = heatExchangerShapeBuilder.build();
+            HEAT_EXCHANGER = MachineRegistrationHelper.registerMachine("heat_exchanger",
+                    bet -> new ElectricCraftingMultiblockBlockEntity(bet, "heat_exchanger", heatExchangerShape, MIMachineRecipeTypes.HEAT_EXCHANGER));
+            ReiMachineRecipes.registerMultiblockShape("heat_exchanger", heatExchangerShape);
+
+        }
     }
 
     public static void oilDrillingRig() {
@@ -354,6 +415,12 @@ public class MultiblockMachines {
 
         MachineModels.addTieredMachine("large_diesel_generator", "smiley", MachineCasings.SOLID_TITANIUM, true, false, false);
         BlockEntityRendererRegistry.INSTANCE.register(LARGE_DIESEL_GENERATOR, MultiblockMachineBER::new);
+
+        MachineModels.addTieredMachine("large_steam_turbine", "steam_turbine", MachineCasings.CLEAN_STAINLESS_STEEL, true, false, false);
+        BlockEntityRendererRegistry.INSTANCE.register(LARGE_STEAM_TURBINE, MultiblockMachineBER::new);
+
+        MachineModels.addTieredMachine("heat_exchanger", "smiley", MachineCasings.STAINLESS_STEEL_PIPE, true, false, false);
+        BlockEntityRendererRegistry.INSTANCE.register(HEAT_EXCHANGER, MultiblockMachineBER::new);
     }
 
     private static final Rectangle CRAFTING_GUI = new Rectangle(CraftingMultiblockGui.X, CraftingMultiblockGui.Y,

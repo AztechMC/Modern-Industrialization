@@ -1,0 +1,23 @@
+{
+  "type": "modern_industrialization:mixer",
+  "eu": 16,
+  "duration": 200,
+  "item_inputs": [
+    {
+      "item": "minecraft:sand",
+      "amount": 4
+    },
+    {
+      "item": "minecraft:flint",
+      "amount": 3
+    }
+  ],
+  "fluid_inputs":{
+    "fluid" : "modern_industrialization:toluene",
+    "amount" : 250
+  },
+  "item_outputs": {
+    "item": "modern_industrialization:industrial_tnt",
+    "amount": 4
+  }
+}

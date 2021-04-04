@@ -100,7 +100,6 @@ public class MIMaterials {
                         .addParts(ExternalPart.of("ore", "minecraft:diamond_ore", "minecraft:diamond_ore"))
                         .overridePart(ExternalPart.of(MIParts.GEM, "minecraft:diamond", "minecraft:diamond")).addRecipes(StandardRecipes::apply)
                         .addRecipes(context -> {
-                            new MIRecipeBuilder(context, "compressor", "dust").addPartInput(DUST, 1).addOutput("minecraft:diamond", 1);
                             new MIRecipeBuilder(context, "compressor", "plate").addItemInput("minecraft:diamond", 1).addPartOutput(PLATE, 1);
                         }).build());
 
@@ -111,7 +110,6 @@ public class MIMaterials {
                         .addRecipes(context -> new MIRecipeBuilder(context, "macerator", "dust").addItemInput("minecraft:emerald_ore", 1)
                                 .addPartOutput(CRUSHED_DUST, 2))
                         .addRecipes(context -> {
-                            new MIRecipeBuilder(context, "compressor", "dust").addPartInput(DUST, 1).addOutput("minecraft:emerald", 1);
                             new MIRecipeBuilder(context, "compressor", "plate").addItemInput("minecraft:emerald", 1).addPartOutput(PLATE, 1);
                         }).build());
 

@@ -33,8 +33,10 @@ import java.util.TreeMap;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
 import net.minecraft.block.Block;
+import net.minecraft.block.Material;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
+import net.minecraft.sound.BlockSoundGroup;
 
 public class MIBlock extends Block {
     public static SortedMap<String, MIBlock> blocks = new TreeMap<String, MIBlock>();
@@ -81,6 +83,9 @@ public class MIBlock extends Block {
 
     // other
     public static final MIBlock NUCLEAR_MACHINE_CASING = new MIBlock("nuclear_machine_casing");
+
+    public static final MIBlock INDUSTRIAL_TNT = new MIBlock("industrial_tnt",
+            Settings.of(Material.TNT).breakInstantly().sounds(BlockSoundGroup.GRASS));
 
     // public static final MIBlock CREATIVE_ENERGY_SOURCE = new
     // MIBlock("creative_energy_source");

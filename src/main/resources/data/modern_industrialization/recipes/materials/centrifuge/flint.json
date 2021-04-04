@@ -1,0 +1,13 @@
+{
+  "type": "modern_industrialization:centrifuge",
+  "eu": 8,
+  "duration": 300,
+  "item_inputs": {
+    "item": "minecraft:gravel",
+    "amount": 1
+  },
+  "item_outputs": {
+    "item": "minecraft:flint",
+    "amount": 2
+  }
+}

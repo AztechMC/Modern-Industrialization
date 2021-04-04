@@ -110,4 +110,11 @@ public class MaterialHelper {
         ModernIndustrialization.RESOURCE_PACK.addTag(new Identifier(tagId.getNamespace(), "items/" + tagId.getPath()), content);
         TagRegistry.item(tagId);
     }
+
+    public static float getResistance(String itemPath) {
+        if (itemPath.equals("blastproof_casing")) {
+            return 6000.0F;
+        }
+        return 6.0f;
+    }
 }

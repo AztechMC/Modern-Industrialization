@@ -77,6 +77,11 @@ public final class MITextures {
             casingFromTextureBricked(mtm, "bricked_steel", mtm.getAssetAsTexture("modern_industrialization:textures/blocks/steel_machine_casing.png"),
                     mtm.getAssetAsTexture("modern_industrialization:textures/blocks/fire_clay_bricks.png"));
 
+            mtm.addTexture("modern_industrialization:textures/items/mixed_ingot_blastproof.png",
+                    TextureHelper.tripleIngot(mtm.getAssetAsTexture("modern_industrialization:textures/items/stainless_steel_ingot.png"),
+                            mtm.getAssetAsTexture("modern_industrialization:textures/items/titanium_ingot.png"),
+                            mtm.getAssetAsTexture("modern_industrialization:textures/items/tungsten_ingot.png")));
+
             mtm.onEnd();
         } catch (Throwable exception) {
             ModernIndustrialization.LOGGER.error("Failed to generate texture pack.", exception);

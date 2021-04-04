@@ -138,6 +138,39 @@ public class TextureHelper {
         }
     }
 
+    public static NativeImage tripleIngot(NativeImage im1, NativeImage im2, NativeImage im3) {
+        // Copy and shift down
+        NativeImage lowerIngot = new NativeImage(im1.getWidth(), im1.getHeight(), true);
+        lowerIngot.copyFrom(im1);
+        int shiftDown = lowerIngot.getHeight() * 2 / 16;
+        for (int x = 0; x < lowerIngot.getWidth(); ++x) {
+            for (int y = lowerIngot.getHeight(); y-- > 0;) {
+                if (y >= shiftDown) {
+                    lowerIngot.setPixelColor(x, y, lowerIngot.getPixelColor(x, y - shiftDown));
+                } else {
+                    lowerIngot.setPixelColor(x, y, 0);
+                }
+            }
+        }
+        // Copy and shift up
+        NativeImage upperIngot = new NativeImage(im3.getWidth(), im3.getHeight(), true);
+        upperIngot.copyFrom(im3);
+        int shiftUp = upperIngot.getHeight() * 2 / 16;
+        for (int x = 0; x < upperIngot.getWidth(); ++x) {
+            for (int y = 0; y < upperIngot.getHeight(); ++y) {
+                if (y + shiftUp < upperIngot.getHeight()) {
+                    upperIngot.setPixelColor(x, y, upperIngot.getPixelColor(x, y + shiftUp));
+                } else {
+                    upperIngot.setPixelColor(x, y, 0);
+                }
+            }
+        }
+        blend(lowerIngot, im2);
+        blend(lowerIngot, upperIngot);
+        upperIngot.close();
+        return lowerIngot;
+    }
+
     public static void doubleIngot(NativeImage image) {
         // Copy and shift down
         NativeImage lowerIngot = new NativeImage(image.getWidth(), image.getHeight(), true);

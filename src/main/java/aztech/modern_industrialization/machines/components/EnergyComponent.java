@@ -35,7 +35,7 @@ import net.minecraft.nbt.CompoundTag;
 
 public class EnergyComponent implements IComponent.ServerOnly {
     private long storedEu;
-    private Supplier<Long> capacity;
+    private final Supplier<Long> capacity;
 
     public EnergyComponent(Supplier<Long> capacity) {
         this.capacity = capacity;

@@ -51,7 +51,7 @@ public final class MIItem {
     }
 
     public static final Item ITEM_CROWBAR = of(CrowbarItem::new, "crowbar", 1);
-    public static final Item ITEM_GUIDE_BOOK = of(GuideBookItem::new, "guidebook", 1);
+    public static final Item ITEM_GUIDE_BOOK = of(GuideBookItem::new, "guidebook", 64);
     public static final Item ITEM_STEAM_DRILL = of(SteamDrillItem::new, "steam_mining_drill", 1);
     public static final Item ITEM_UNCOOKED_STEEL_DUST = of("uncooked_steel_dust");
 

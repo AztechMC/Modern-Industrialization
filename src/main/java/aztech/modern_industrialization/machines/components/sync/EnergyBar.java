@@ -32,6 +32,7 @@ import java.util.Collections;
 import java.util.function.Supplier;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawableHelper;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.text.Text;
@@ -120,22 +121,22 @@ public class EnergyBar {
 
                 if (RenderHelper.isPointWithinRectangle(params.renderX, params.renderY, WIDTH, HEIGHT, cursorX - x, cursorY - y)) {
                     Text tooltip;
-                    if (screen.hasShiftDown()) {
+                    if (Screen.hasShiftDown()) {
                         tooltip = new TranslatableText("text.modern_industrialization.energy_bar", eu, maxEu);
                     } else {
                         if (maxEu > 1e12) {
                             String eus = String.format("%.2f", ((double) eu) / 1e12);
                             String maxEus = String.format("%.2f", ((double) maxEu) / 1e12);
-                            tooltip = new TranslatableText("text.modern_industrialization.energy_bar_double", eus, maxEus, "tEU");
+                            tooltip = new TranslatableText("text.modern_industrialization.energy_bar_double", eus, maxEus, "TEU");
                         } else if (maxEu > 1e9) {
                             String eus = String.format("%.2f", ((double) eu) / 1e9);
                             String maxEus = String.format("%.2f", ((double) maxEu) / 1e9);
-                            tooltip = new TranslatableText("text.modern_industrialization.energy_bar_double", eus, maxEus, "gEU");
+                            tooltip = new TranslatableText("text.modern_industrialization.energy_bar_double", eus, maxEus, "GEU");
 
                         } else if (maxEu > 1e6) {
                             String eus = String.format("%.2f", ((double) eu) / 1e6);
                             String maxEus = String.format("%.2f", ((double) maxEu) / 1e6);
-                            tooltip = new TranslatableText("text.modern_industrialization.energy_bar_double", eus, maxEus, "mEU");
+                            tooltip = new TranslatableText("text.modern_industrialization.energy_bar_double", eus, maxEus, "MEU");
 
                         } else if (maxEu > 1e4) {
                             String eus = String.format("%.2f", ((double) eu) / 1e3);

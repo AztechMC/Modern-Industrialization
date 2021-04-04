@@ -94,7 +94,8 @@ public class MaterialHelper {
             return "highly_advanced_machine_casing";
         case "redstone_battery":
             return "lv_battery";
-
+        case "blastproof_alloy_machine_casing_special":
+            return "blastproof_casing";
         }
         return itemPath;
     }

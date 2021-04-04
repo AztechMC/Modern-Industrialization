@@ -325,6 +325,23 @@ public class MultiblockMachines {
                     bet -> new ElectricCraftingMultiblockBlockEntity(bet, "pressurizer", pressurizerShape, MIMachineRecipeTypes.PRESSURIZER));
             ReiMachineRecipes.registerMultiblockShape("pressurizer", pressurizerShape);
         }
+
+        {
+            SimpleMember blastProof = SimpleMember.forBlock(MIBlock.blocks.get("blastproof_casing"));
+            ShapeTemplate.Builder implosionCompressorShapeBuilder = new ShapeTemplate.Builder(MachineCasings.TITANIUM);
+            HatchFlags hatchs = new HatchFlags.Builder().with(ITEM_OUTPUT, ITEM_INPUT, ENERGY_INPUT).build();
+            implosionCompressorShapeBuilder.add3by3(0, titaniumCasing, false, hatchs);
+            implosionCompressorShapeBuilder.add3by3(1, blastProof, true, null);
+            implosionCompressorShapeBuilder.add3by3(2, blastProof, true, null);
+            implosionCompressorShapeBuilder.add3by3(3, titaniumCasing, false, null);
+
+            ShapeTemplate implosionCompressorShape = implosionCompressorShapeBuilder.build();
+            IMPLOSION_COMPRESSOR = MachineRegistrationHelper.registerMachine("implosion_compressor",
+                    bet -> new ElectricCraftingMultiblockBlockEntity(bet, "implosion_compressor", implosionCompressorShape, MIMachineRecipeTypes.IMPLOSION_COMPRESSOR));
+            ReiMachineRecipes.registerMultiblockShape("implosion_compressor", implosionCompressorShape);
+
+
+        }
     }
 
     public static void oilDrillingRig() {
@@ -459,6 +476,12 @@ public class MultiblockMachines {
         BlockEntityRendererRegistry.INSTANCE.register(PRESSURIZER, MultiblockMachineBER::new);
         new Rei("pressurizer", MIMachineRecipeTypes.PRESSURIZER, new ProgressBar.Parameters(77, 33, "arrow"))
                 .fluids(inputs -> inputs.addSlot(56, 35), outputs -> outputs.addSlot(102, 35))
+                .register();
+
+        MachineModels.addTieredMachine("implosion_compressor", "compressor", MachineCasings.TITANIUM, true, false, false);
+        BlockEntityRendererRegistry.INSTANCE.register(IMPLOSION_COMPRESSOR, MultiblockMachineBER::new);
+        new Rei("implosion_compressor", MIMachineRecipeTypes.IMPLOSION_COMPRESSOR, new ProgressBar.Parameters(77, 42, "compress"))
+                .items(inputs -> inputs.addSlots(56, 35, 2, 1), outputs -> outputs.addSlot(102, 35))
                 .register();
     }
 

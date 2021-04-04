@@ -316,6 +316,9 @@ public class MIMaterials {
                 .addRegularParts(TINY_DUST, DUST, PLATE, INGOT, NUGGET, LARGE_PLATE, DOUBLE_INGOT, ROD, CRUSHED_DUST, BLOCK, ORE)
                 .addRecipes(StandardRecipes::apply).build());
 
+        MaterialRegistry.addMaterial(new MaterialBuilder("blastproof_alloy", METALLIC, 0x524c3a)
+                .addRegularParts(PLATE, LARGE_PLATE, MACHINE_CASING_SPECIAL).addRecipes(StandardRecipes::apply).build());
+
     }
 
     /**

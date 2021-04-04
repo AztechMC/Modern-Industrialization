@@ -210,9 +210,12 @@ public class MultiblockMachines {
         HatchFlags fluidInputs = new HatchFlags.Builder().with(FLUID_INPUT).build();
         HatchFlags energyOutput = new HatchFlags.Builder().with(ENERGY_OUTPUT).build();
         HatchFlags energyInput = new HatchFlags.Builder().with(ENERGY_INPUT).build();
+
+        SimpleMember titaniumCasing = SimpleMember.forBlock(MIBlock.blocks.get("solid_titanium_machine_casing"));
+        SimpleMember titaniumPipe = SimpleMember.forBlock(MIBlock.blocks.get("titanium_machine_casing_pipe"));
+
         {
-            SimpleMember titaniumCasing = SimpleMember.forBlock(MIBlock.blocks.get("solid_titanium_machine_casing"));
-            SimpleMember titaniumPipe = SimpleMember.forBlock(MIBlock.blocks.get("titanium_machine_casing_pipe"));
+
             ShapeTemplate.Builder largeDieselGeneratorShapeBuilder = new ShapeTemplate.Builder(MachineCasings.SOLID_TITANIUM);
             for (int z = 1; z < 4; z++) {
                 largeDieselGeneratorShapeBuilder.add(0, 0, z, z < 3 ? titaniumPipe : titaniumCasing, z == 3 ? energyOutput : null);
@@ -297,6 +300,30 @@ public class MultiblockMachines {
                     bet -> new ElectricCraftingMultiblockBlockEntity(bet, "heat_exchanger", heatExchangerShape, MIMachineRecipeTypes.HEAT_EXCHANGER));
             ReiMachineRecipes.registerMultiblockShape("heat_exchanger", heatExchangerShape);
 
+        }
+
+        {
+            ShapeTemplate.Builder pressurizeShapeBuilder = new ShapeTemplate.Builder(MachineCasings.TITANIUM);
+            for(int y = -1; y < 3; y++) {
+                SimpleMember member = (y == -1 || y == 2) ? titaniumCasing : titaniumPipe;
+                HatchFlags flag = null;
+                if(y  == -1){
+                    flag = new HatchFlags.Builder().with(ENERGY_INPUT, FLUID_OUTPUT).build();
+                }else if(y == 2){
+                    flag = new HatchFlags.Builder().with(FLUID_INPUT).build();
+                }
+                pressurizeShapeBuilder.add(-1, y, 1, member, flag);
+                pressurizeShapeBuilder.add(0, y, 1, member, flag);
+                pressurizeShapeBuilder.add(1, y, 1, member, flag);
+                pressurizeShapeBuilder.add(0, y, 2, member, flag);
+                if(y != 0){
+                    pressurizeShapeBuilder.add(0, y, 0, member, flag);
+                }
+            }
+            ShapeTemplate pressurizerShape = pressurizeShapeBuilder.build();
+            PRESSURIZER = MachineRegistrationHelper.registerMachine("pressurizer",
+                    bet -> new ElectricCraftingMultiblockBlockEntity(bet, "pressurizer", pressurizerShape, MIMachineRecipeTypes.PRESSURIZER));
+            ReiMachineRecipes.registerMultiblockShape("pressurizer", pressurizerShape);
         }
     }
 
@@ -426,6 +453,12 @@ public class MultiblockMachines {
         new Rei("heat_exchanger", MIMachineRecipeTypes.HEAT_EXCHANGER, new ProgressBar.Parameters(77, 42, "arrow"))
                 .items(inputs -> inputs.addSlot(36, 35), outputs -> outputs.addSlot(122, 35))
                 .fluids(inputs -> inputs.addSlots(56, 35, 2, 1), outputs -> outputs.addSlots(102, 35, 2, 1))
+                .register();
+
+        MachineModels.addTieredMachine("pressurizer", "smiley", MachineCasings.TITANIUM_PIPE, true, false, false);
+        BlockEntityRendererRegistry.INSTANCE.register(PRESSURIZER, MultiblockMachineBER::new);
+        new Rei("pressurizer", MIMachineRecipeTypes.PRESSURIZER, new ProgressBar.Parameters(77, 33, "arrow"))
+                .fluids(inputs -> inputs.addSlot(56, 35), outputs -> outputs.addSlot(102, 35))
                 .register();
     }
 

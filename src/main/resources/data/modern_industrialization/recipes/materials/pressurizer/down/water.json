@@ -1,0 +1,16 @@
+{
+  "type" : "modern_industrialization:pressurizer",
+  "eu" : 2,
+  "duration" : 100,
+
+  "fluid_inputs" : {
+    "fluid" : "modern_industrialization:high_pressure_water",
+    "amount" : 125
+  },
+
+  "fluid_outputs" : {
+    "fluid" : "minecraft:water",
+    "amount" : 1000
+  }
+
+}

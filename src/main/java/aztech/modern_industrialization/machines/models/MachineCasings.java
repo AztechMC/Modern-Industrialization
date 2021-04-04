@@ -51,6 +51,7 @@ public class MachineCasings {
     public static final MachineCasing EV = create("ev");
     public static final MachineCasing SUPRACONDUCTOR = create("supraconductor");
     public static final MachineCasing TITANIUM = create("titanium");
+    public static final MachineCasing TITANIUM_PIPE = create("titanium_machine_casing_pipe");
     public static final MachineCasing SOLID_TITANIUM = create("solid_titanium_machine_casing");
 
     public static MachineCasing casingFromCableTier(CableTier tier) {

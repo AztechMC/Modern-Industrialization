@@ -1,0 +1,29 @@
+{
+  "type" : "minecraft:crafting_shaped",
+  "pattern" : [
+    "pcp",
+    "PHP",
+    "pCp"
+  ],
+  "key": {
+    "p" : {
+      "item" : "modern_industrialization:large_advanced_pump"
+    },
+    "H" : {
+      "item" : "modern_industrialization:highly_advanced_machine_hull"
+    },
+    "c" : {
+      "item" : "modern_industrialization:processing_unit"
+    },
+    "P":{
+      "item" : "modern_industrialization:titanium_machine_casing_pipe"
+    },
+    "C" : {
+      "item" : "modern_industrialization:pipe_electricity_annealed_copper"
+    }
+
+  },
+  "result": {
+    "item": "modern_industrialization:pressurizer"
+  }
+}

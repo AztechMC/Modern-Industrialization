@@ -41,25 +41,28 @@ public class HeatExchangerHelper {
         Fluid[] cold = { Fluids.WATER, MIFluids.HEAVY_WATER, MIFluids.HIGH_PRESSURE_HEAVY_WATER, MIFluids.HIGH_PRESSURE_WATER };
         int[] amount = { 1, 1, 8, 8 };
 
-        int amountBase = 8000;
+        int amountBaseHot = 6400;
+        int amountBaseCold = 400;
 
         for (int i = 0; i < hots.length; i++) {
             for (int j = 0; j < cold.length; j++) {
-                String path = "modern_industrialization/recipes/generated/heat_exchanger/" + fluidToString(hots[i], false) + "_with_"
-                        + fluidToString(cold[j], false) + ".json";
+                if (i != j) {
+                    String path = "modern_industrialization/recipes/generated/heat_exchanger/" + fluidToString(hots[i], false) + "_with_"
+                            + fluidToString(cold[j], false) + ".json";
 
-                ArrayList<HeatExchangerFluidRecipe.FluidIO> inputs = new ArrayList<>();
-                ArrayList<HeatExchangerFluidRecipe.FluidIO> outputs = new ArrayList<>();
+                    ArrayList<HeatExchangerFluidRecipe.FluidIO> inputs = new ArrayList<>();
+                    ArrayList<HeatExchangerFluidRecipe.FluidIO> outputs = new ArrayList<>();
 
-                inputs.add(new HeatExchangerFluidRecipe.FluidIO(fluidToString(hots[i], true), amountBase / amount[i]));
-                inputs.add(new HeatExchangerFluidRecipe.FluidIO(fluidToString(cold[j], true), amountBase / amount[j]));
+                    inputs.add(new HeatExchangerFluidRecipe.FluidIO(fluidToString(hots[i], true), amountBaseHot / amount[i]));
+                    inputs.add(new HeatExchangerFluidRecipe.FluidIO(fluidToString(cold[j], true), amountBaseCold / amount[j]));
 
-                outputs.add(new HeatExchangerFluidRecipe.FluidIO(fluidToString(cold[i], true), amountBase / amount[i]));
-                outputs.add(new HeatExchangerFluidRecipe.FluidIO(fluidToString(hots[j], true), amountBase / amount[j]));
+                    outputs.add(new HeatExchangerFluidRecipe.FluidIO(fluidToString(cold[i], true), amountBaseCold / amount[i]));
+                    outputs.add(new HeatExchangerFluidRecipe.FluidIO(fluidToString(hots[j], true), amountBaseHot / amount[j]));
 
-                HeatExchangerFluidRecipe recipe = new HeatExchangerFluidRecipe(inputs, outputs);
+                    HeatExchangerFluidRecipe recipe = new HeatExchangerFluidRecipe(inputs, outputs);
 
-                pack.addData(path, GSON.toJson(recipe).getBytes());
+                    pack.addData(path, GSON.toJson(recipe).getBytes());
+                }
 
             }
         }
@@ -82,7 +85,7 @@ public class HeatExchangerHelper {
         private final List<FluidIO> fluid_inputs;
         private final List<FluidIO> fluid_outputs;
         private final long eu = 2;
-        private final long duration = 400;
+        private final long duration = 300;
         private final String type = "modern_industrialization:heat_exchanger";
 
         private HeatExchangerFluidRecipe(List<FluidIO> fluid_inputs, List<FluidIO> fluid_outputs) {

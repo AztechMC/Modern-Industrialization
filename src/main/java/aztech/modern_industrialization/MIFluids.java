@@ -105,6 +105,7 @@ public class MIFluids {
     public static final CraftingFluid PURIFIED_PLATINUM_SULFURIC_SOLUTION = new CraftingFluid("purified_platinum_sulfuric_solution", 0xffedc08a);
     public static final CraftingFluid CREOSOTE = new CraftingFluid("creosote", 0xff636050);
     public static final CraftingFluid LIQUID_AIR = new CraftingFluid("liquid_air", 0xff76c7f9);
+    public static final CraftingFluid NITROGEN = new CraftingFluid("nitrogen", 0xff4491a6, true);
 
     public static void setupFluids() {
 

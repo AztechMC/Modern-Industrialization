@@ -1,0 +1,27 @@
+{
+  "type": "modern_industrialization:centrifuge",
+  "eu" : 24,
+  "duration" : 600,
+
+  "fluid_inputs" : {
+    "fluid" : "modern_industrialization:liquid_air",
+    "amount" : 3000
+  },
+
+  "fluid_outputs" : [
+    {
+      "fluid" : "modern_industrialization:oxygen",
+      "amount" : 630
+    },
+
+    {
+      "fluid" : "modern_industrialization:nitrogen",
+      "amount" : 2340
+    },
+    {
+      "fluid" : "modern_industrialization:argon",
+      "amount" : 30
+    }
+  ]
+
+}

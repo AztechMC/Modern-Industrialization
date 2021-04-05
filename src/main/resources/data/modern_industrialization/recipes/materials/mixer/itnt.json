@@ -12,10 +12,17 @@
       "amount": 3
     }
   ],
-  "fluid_inputs":{
-    "fluid" : "modern_industrialization:toluene",
-    "amount" : 250
-  },
+  "fluid_inputs":
+  [
+    {
+      "fluid" : "modern_industrialization:toluene",
+      "amount" : 250
+    },
+    {
+      "fluid" : "modern_industrialization:nitrogen",
+      "amount" : 1000
+    }
+  ],
   "item_outputs": {
     "item": "modern_industrialization:industrial_tnt",
     "amount": 4

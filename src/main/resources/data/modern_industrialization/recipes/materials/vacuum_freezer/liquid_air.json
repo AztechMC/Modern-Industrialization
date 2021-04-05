@@ -1,0 +1,16 @@
+{
+  "type": "modern_industrialization:vacuum_freezer",
+  "eu": 32,
+  "duration" : 200,
+
+  "item_inputs": {
+    "item" : "modern_industrialization:air_intake",
+    "probability": 0
+  },
+
+  "fluid_outputs": {
+    "fluid" : "modern_industrialization:liquid_air",
+    "amount" : 1000
+  }
+
+}

@@ -62,7 +62,7 @@ public class MIMachineRecipeTypes {
     public static final MachineRecipeType OIL_DRILLING_RIG = create("oil_drilling_rig").withItemInputs().withFluidOutputs();
     public static final MachineRecipeType QUARRY = create("quarry").withItemInputs().withItemOutputs();
     public static final MachineRecipeType HEAT_EXCHANGER = create("heat_exchanger").withFluidInputs().withFluidOutputs().withItemOutputs().withItemInputs();
-    public static final MachineRecipeType PRESSURIZER = create("pressurizer").withFluidInputs().withFluidOutputs();
+    public static final MachineRecipeType PRESSURIZER = create("pressurizer").withItemInputs().withFluidInputs().withFluidOutputs();
     public static final MachineRecipeType IMPLOSION_COMPRESSOR = create("implosion_compressor").withItemInputs().withItemOutputs();
     // @formatter:on
 

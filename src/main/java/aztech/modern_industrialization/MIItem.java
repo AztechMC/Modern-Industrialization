@@ -110,6 +110,7 @@ public final class MIItem {
     public static final Item LARGE_ADVANCED_PUMP = of("large_advanced_pump");
 
     public static final Item MIXED_INGOT_BLASTPROOF = of("mixed_ingot_blastproof");
+    public static final Item AIR_INTAKE = of("air_intake", 1);
 
     /*
      * FIXME public static final Item ITEM_DEPLETED_URANIUM_FUEL_ROD = new

@@ -310,7 +310,7 @@ public class MultiblockMachines {
                 if(y  == -1){
                     flag = new HatchFlags.Builder().with(ENERGY_INPUT, FLUID_OUTPUT).build();
                 }else if(y == 2){
-                    flag = new HatchFlags.Builder().with(FLUID_INPUT).build();
+                    flag = new HatchFlags.Builder().with(FLUID_INPUT, ITEM_INPUT).build();
                 }
                 pressurizeShapeBuilder.add(-1, y, 1, member, flag);
                 pressurizeShapeBuilder.add(0, y, 1, member, flag);
@@ -475,6 +475,7 @@ public class MultiblockMachines {
         MachineModels.addTieredMachine("pressurizer", "smiley", MachineCasings.TITANIUM_PIPE, true, false, false);
         BlockEntityRendererRegistry.INSTANCE.register(PRESSURIZER, MultiblockMachineBER::new);
         new Rei("pressurizer", MIMachineRecipeTypes.PRESSURIZER, new ProgressBar.Parameters(77, 33, "arrow"))
+                .items(inputs -> inputs.addSlot(38, 35), outputs -> {})
                 .fluids(inputs -> inputs.addSlot(56, 35), outputs -> outputs.addSlot(102, 35))
                 .register();
 

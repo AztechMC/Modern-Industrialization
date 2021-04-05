@@ -40,7 +40,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
  */
 @Mixin(LivingEntity.class)
 class LivingEntityMixin {
-    @Inject(at = @At(value = "INVOKE", target = "isSleeping()Z", shift = At.Shift.BEFORE, by = 1), method = "damage", cancellable = true)
+    @Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/LivingEntity;isSleeping()Z", shift = At.Shift.BEFORE, by = 1), method = "damage", cancellable = true)
     void injectDamage(DamageSource source, float amount, CallbackInfoReturnable<Boolean> cir) {
         Object tis = this;
         if (tis instanceof ServerPlayerEntity) {

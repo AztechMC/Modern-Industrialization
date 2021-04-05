@@ -102,7 +102,7 @@ public class RenderHelper {
         }
     }
 
-    private static final float TANK_W = 0.01f;
+    private static final float TANK_W = 0.02f;
     public static final int FULL_LIGHT = 0x00F0_00F0;
 
     public static void drawFluidInTank(MatrixStack ms, VertexConsumerProvider vcp, Fluid fluid, float fill) {
@@ -117,24 +117,26 @@ public class RenderHelper {
         float g = ((color >> 8) & 255) / 256f;
         float b = (color & 255) / 256f;
 
+        // Make sure fill is within [TANK_W, 1 - TANK_W]
         fill = Math.min(fill, 1 - TANK_W);
         fill = Math.max(fill, TANK_W);
+        // Top and bottom positions of the fluid inside the tank
+        float topHeight = fill;
+        float bottomHeight = TANK_W;
+        // Render gas from top to bottom
+        if (fluid instanceof CraftingFluid && ((CraftingFluid) fluid).isGas) {
+            topHeight = 1 - TANK_W;
+            bottomHeight = 1 - fill;
+        }
+
         Renderer renderer = RendererAccess.INSTANCE.getRenderer();
         for (Direction direction : Direction.values()) {
             QuadEmitter emitter = renderer.meshBuilder().getEmitter();
 
-            if (fluid instanceof CraftingFluid && ((CraftingFluid) fluid).isGas) {
-                if (direction.getAxis().isVertical()) {
-                    emitter.square(direction, TANK_W, TANK_W, 1 - TANK_W, 1 - TANK_W, direction == Direction.DOWN ? fill : 0.01f);
-                } else {
-                    emitter.square(direction, TANK_W, 1 - TANK_W - fill, 1 - TANK_W, 1 - TANK_W, TANK_W);
-                }
+            if (direction.getAxis().isVertical()) {
+                emitter.square(direction, TANK_W, TANK_W, 1 - TANK_W, 1 - TANK_W, direction == Direction.UP ? 1 - topHeight : bottomHeight);
             } else {
-                if (direction.getAxis().isVertical()) {
-                    emitter.square(direction, TANK_W, TANK_W, 1 - TANK_W, 1 - TANK_W, direction == Direction.UP ? 1 - fill : 0.01f);
-                } else {
-                    emitter.square(direction, TANK_W, TANK_W, 1 - TANK_W, fill, TANK_W);
-                }
+                emitter.square(direction, TANK_W, bottomHeight, 1 - TANK_W, topHeight, TANK_W);
             }
 
             emitter.spriteBake(0, sprite, MutableQuadView.BAKE_LOCK_UV);

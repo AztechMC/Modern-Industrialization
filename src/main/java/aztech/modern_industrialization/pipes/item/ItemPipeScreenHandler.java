@@ -69,7 +69,7 @@ public class ItemPipeScreenHandler extends PipeScreenHandler {
         }
 
         // Upgrade slot
-        this.addSlot(new UpgradeSlot(149, 70));
+        this.addSlot(new UpgradeSlot(150, 70));
     }
 
     @Override

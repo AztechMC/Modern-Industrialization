@@ -1,0 +1,41 @@
+{
+  "type": "modern_industrialization:quarry",
+  "eu": 8,
+  "duration": 600,
+  "item_inputs": {
+    "item": "modern_industrialization:pipe_item_gold",
+    "amount": 1,
+    "probability": 0.35
+  },
+  "item_outputs": [
+    {
+      "item": "minecraft:netherrack",
+      "amount": 64
+    },
+    {
+      "item": "minecraft:blackstone",
+      "amount": 16,
+      "probability": 0.25
+    },
+    {
+      "item": "minecraft:basalt",
+      "amount": 16,
+      "probability": 0.25
+    },
+    {
+      "item": "minecraft:soul_soil",
+      "amount": 20,
+      "probability": 0.1
+    },
+    {
+      "item": "minecraft:magma_block",
+      "amount": 10,
+      "probability": 0.05
+    },
+    {
+      "item": "minecraft:soul_sand",
+      "amount": 20,
+      "probability": 0.25
+    }
+  ]
+}

@@ -43,7 +43,6 @@ public class MIFluids {
     public static final CraftingFluid ACETYLENE = new CraftingFluid("acetylene", 0xff603405, true);
     public static final CraftingFluid ACRYLIC_ACID = new CraftingFluid("acrylic_acid", 0xff1bdeb5);
     public static final CraftingFluid ACRYLIC_GLUE = new CraftingFluid("acrylic_glue", 0xff1bde54);
-    public static final CraftingFluid AIR = new CraftingFluid("air", 0xff76c7f9, true);
     public static final CraftingFluid BENZENE = new CraftingFluid("benzene", 0xfff0d179);
     public static final CraftingFluid BERYLLIUM_CHLORIDE = new CraftingFluid("beryllium_chloride", 0xff85B354);
     public static final CraftingFluid BOOSTED_DIESEL = new CraftingFluid("boosted_diesel", 0xfffd9b0a);
@@ -105,6 +104,7 @@ public class MIFluids {
     public static final CraftingFluid PLATINUM_SULFURIC_SOLUTION = new CraftingFluid("platinum_sulfuric_solution", 0xffe69e75);
     public static final CraftingFluid PURIFIED_PLATINUM_SULFURIC_SOLUTION = new CraftingFluid("purified_platinum_sulfuric_solution", 0xffedc08a);
     public static final CraftingFluid CREOSOTE = new CraftingFluid("creosote", 0xff636050);
+    public static final CraftingFluid LIQUID_AIR = new CraftingFluid("liquid_air", 0xff76c7f9);
 
     public static void setupFluids() {
 

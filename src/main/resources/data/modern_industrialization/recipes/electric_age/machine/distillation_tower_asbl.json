@@ -1,29 +1,25 @@
 {
   "type" : "minecraft:crafting_shaped",
   "pattern" : [
-    "pcp",
-    "PHP",
-    "pCp"
+    "pdp",
+    "CHC",
+    "pdp"
   ],
   "key": {
     "p" : {
       "item" : "modern_industrialization:advanced_pump"
     },
-    "H" : {
+    "H" :{
       "item" : "modern_industrialization:turbo_machine_hull"
     },
-    "c" : {
+    "C" : {
       "item" : "modern_industrialization:digital_circuit"
     },
-    "P":{
-      "item" : "modern_industrialization:titanium_machine_casing_pipe"
-    },
-    "C" : {
-      "item" : "modern_industrialization:pipe_electricity_aluminum"
+    "d": {
+      "item" : "modern_industrialization:lv_distillery"
     }
-
   },
   "result": {
-    "item": "modern_industrialization:pressurizer"
+    "item": "modern_industrialization:distillation_tower"
   }
 }

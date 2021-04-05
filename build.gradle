@@ -270,4 +270,29 @@ spotless {
         endWithNewline()
         licenseHeaderFile 'LICENSE.java'
     }
+    format 'json', {
+        target 'src/**/lang/*.json'
+        addStep(JsonOrderStep.create())
+    }
+}
+
+import com.diffplug.spotless.FormatterStep
+import com.google.gson.Gson
+import com.google.gson.GsonBuilder
+
+final class JsonOrderStep {
+    private JsonOrderStep() {}
+    private static final Gson GSON = new GsonBuilder().setLenient().setPrettyPrinting().create();
+
+    static FormatterStep create() {
+        return FormatterStep.createNeverUpToDate(
+                'jsonOrderStep',
+                { String inputString ->
+                    TreeMap<String, Object> jsonMap = GSON.fromJson(inputString, TreeMap.class);
+                    String sortedJson = GSON.toJson(jsonMap);
+                    String prettyPrinted = sortedJson.replace('  "', '    "').replace('\\u0027', '\'');
+                    return prettyPrinted;
+                },
+        );
+    }
 }

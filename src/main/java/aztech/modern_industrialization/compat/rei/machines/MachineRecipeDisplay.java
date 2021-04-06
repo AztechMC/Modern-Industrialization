@@ -25,6 +25,7 @@ package aztech.modern_industrialization.compat.rei.machines;
 
 import aztech.modern_industrialization.machines.recipe.MachineRecipe;
 import aztech.modern_industrialization.util.FluidTextHelper;
+import aztech.modern_industrialization.util.TextHelper;
 import java.text.DecimalFormat;
 import java.util.Collections;
 import java.util.List;
@@ -58,9 +59,20 @@ public class MachineRecipeDisplay implements RecipeDisplay {
     }
 
     private static Function<EntryStack, List<Text>> getProbabilityTooltip(float probability) {
-        return (stack) -> probability == 1 ? Collections.emptyList()
-                : Collections.singletonList(
-                        new TranslatableText("text.modern_industrialization.probability", PROBABILITY_FORMAT.format(probability * 100)));
+        return stack -> {
+            if (probability == 1) {
+                return Collections.emptyList();
+            } else {
+                TranslatableText text;
+                if (probability == 0) {
+                    text = new TranslatableText("text.modern_industrialization.probability_zero");
+                } else {
+                    text = new TranslatableText("text.modern_industrialization.probability", PROBABILITY_FORMAT.format(probability * 100));
+                }
+                text.setStyle(TextHelper.GRAY_TEXT);
+                return Collections.singletonList(text);
+            }
+        };
     }
 
     private static EntryStack createFluidEntryStack(Fluid fluid, long amount) {

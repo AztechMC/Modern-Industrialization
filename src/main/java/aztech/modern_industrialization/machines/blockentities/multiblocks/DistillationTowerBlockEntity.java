@@ -137,11 +137,12 @@ public class DistillationTowerBlockEntity extends AbstractCraftingMultiblockBloc
 
         SimpleMember casing = SimpleMember.forBlock(MIBlock.blocks.get("clean_stainless_steel_machine_casing"));
         SimpleMember pipe = SimpleMember.forBlock(MIBlock.blocks.get("stainless_steel_machine_casing_pipe"));
-        HatchFlags hatchFlags = new HatchFlags.Builder().with(HatchType.ENERGY_INPUT, HatchType.FLUID_INPUT, HatchType.FLUID_OUTPUT).build();
+        HatchFlags bottom = new HatchFlags.Builder().with(HatchType.ENERGY_INPUT, HatchType.FLUID_INPUT).build();
+        HatchFlags layer = new HatchFlags.Builder().with(HatchType.FLUID_OUTPUT).build();
         for (int i = 0; i < maxHeight; ++i) {
             ShapeTemplate.Builder builder = new ShapeTemplate.Builder(MachineCasings.CLEAN_STAINLESS_STEEL);
             for (int y = 0; y <= i + 1; ++y) {
-                builder.add3by3(y, casing, y != 0, hatchFlags);
+                builder.add3by3(y, casing, y != 0, y == 0 ? bottom : layer);
                 if (y != 0) {
                     builder.add(0, y, 1, pipe, null);
 

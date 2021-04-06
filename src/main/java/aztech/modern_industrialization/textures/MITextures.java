@@ -78,9 +78,14 @@ public final class MITextures {
                     mtm.getAssetAsTexture("modern_industrialization:textures/blocks/fire_clay_bricks.png"));
 
             mtm.addTexture("modern_industrialization:textures/items/mixed_ingot_blastproof.png",
-                    TextureHelper.tripleIngot(mtm.getAssetAsTexture("modern_industrialization:textures/items/stainless_steel_ingot.png"),
+                    TextureHelper.tripleTexture(mtm.getAssetAsTexture("modern_industrialization:textures/items/stainless_steel_ingot.png"),
                             mtm.getAssetAsTexture("modern_industrialization:textures/items/titanium_ingot.png"),
                             mtm.getAssetAsTexture("modern_industrialization:textures/items/tungsten_ingot.png")));
+
+            mtm.addTexture("modern_industrialization:textures/items/mixed_plate_nuclear.png",
+                    TextureHelper.tripleTexture(mtm.getAssetAsTexture("modern_industrialization:textures/items/blastproof_alloy_plate.png"),
+                            mtm.getAssetAsTexture("modern_industrialization:textures/items/beryllium_plate.png"),
+                            mtm.getAssetAsTexture("modern_industrialization:textures/items/blastproof_alloy_plate.png"), 1, 2));
 
             mtm.onEnd();
         } catch (Throwable exception) {
@@ -190,16 +195,14 @@ public final class MITextures {
                     casingFromTexture(mtm, itemPath, image);
                 }
 
+            } else if (part.equals(MIParts.GEM)) {
+                String itemPath = materialName;
+                itemPath = MaterialHelper.overrideItemPath(itemPath);
+                texturePath = String.format("modern_industrialization:textures/items/%s.png", itemPath);
             } else {
-                if (part.equals(MIParts.GEM)) {
-                    String itemPath = materialName;
-                    itemPath = MaterialHelper.overrideItemPath(itemPath);
-                    texturePath = String.format("modern_industrialization:textures/items/%s.png", itemPath);
-                } else {
-                    String itemPath = String.format("%s_%s", materialName, part);
-                    itemPath = MaterialHelper.overrideItemPath(itemPath);
-                    texturePath = String.format("modern_industrialization:textures/items/%s.png", itemPath);
-                }
+                String itemPath = String.format("%s_%s", materialName, part);
+                itemPath = MaterialHelper.overrideItemPath(itemPath);
+                texturePath = String.format("modern_industrialization:textures/items/%s.png", itemPath);
             }
 
             mtm.addTexture(texturePath, image);

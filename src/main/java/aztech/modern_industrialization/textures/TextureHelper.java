@@ -138,11 +138,15 @@ public class TextureHelper {
         }
     }
 
-    public static NativeImage tripleIngot(NativeImage im1, NativeImage im2, NativeImage im3) {
+    public static NativeImage tripleTexture(NativeImage im1, NativeImage im2, NativeImage im3) {
+        return tripleTexture(im1, im2, im3, 2, 2);
+    }
+
+    public static NativeImage tripleTexture(NativeImage im1, NativeImage im2, NativeImage im3, int up, int down) {
         // Copy and shift down
         NativeImage lowerIngot = new NativeImage(im1.getWidth(), im1.getHeight(), true);
         lowerIngot.copyFrom(im1);
-        int shiftDown = lowerIngot.getHeight() * 2 / 16;
+        int shiftDown = lowerIngot.getHeight() * up / 16;
         for (int x = 0; x < lowerIngot.getWidth(); ++x) {
             for (int y = lowerIngot.getHeight(); y-- > 0;) {
                 if (y >= shiftDown) {
@@ -155,7 +159,7 @@ public class TextureHelper {
         // Copy and shift up
         NativeImage upperIngot = new NativeImage(im3.getWidth(), im3.getHeight(), true);
         upperIngot.copyFrom(im3);
-        int shiftUp = upperIngot.getHeight() * 2 / 16;
+        int shiftUp = upperIngot.getHeight() * down / 16;
         for (int x = 0; x < upperIngot.getWidth(); ++x) {
             for (int y = 0; y < upperIngot.getHeight(); ++y) {
                 if (y + shiftUp < upperIngot.getHeight()) {
@@ -232,7 +236,7 @@ public class TextureHelper {
     public static void flip(NativeImage image) {
         int width = image.getWidth();
         int height = image.getHeight();
-        int flipped[][] = new int[width][height];
+        int[][] flipped = new int[width][height];
 
         for (int i = 0; i < width; i++) {
             for (int j = 0; j < height; j++) {

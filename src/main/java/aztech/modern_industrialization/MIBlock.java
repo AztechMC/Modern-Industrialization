@@ -82,11 +82,7 @@ public class MIBlock extends Block {
     public static final MIBlock HIGHLY_ADVANCED_MACHINE_HULL = new MIBlock("highly_advanced_machine_hull");
 
     // other
-    public static final MIBlock NUCLEAR_MACHINE_CASING = new MIBlock("nuclear_machine_casing");
-
     public static final MIBlock INDUSTRIAL_TNT = new MIBlock("industrial_tnt",
             Settings.of(Material.TNT).breakInstantly().sounds(BlockSoundGroup.GRASS));
 
-    // public static final MIBlock CREATIVE_ENERGY_SOURCE = new
-    // MIBlock("creative_energy_source");
 }

@@ -96,6 +96,8 @@ public class MaterialHelper {
             return "lv_battery";
         case "blastproof_alloy_machine_casing_special":
             return "blastproof_casing";
+        case "nuclear_alloy_machine_casing_special":
+            return "nuclear_casing";
         }
         return itemPath;
     }
@@ -113,6 +115,9 @@ public class MaterialHelper {
 
     public static float getResistance(String itemPath) {
         if (itemPath.equals("blastproof_casing")) {
+            return 6000.0F;
+        }
+        if (itemPath.equals("nuclear_casing")) {
             return 6000.0F;
         }
         return 6.0f;

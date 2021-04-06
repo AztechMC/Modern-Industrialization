@@ -50,7 +50,12 @@ public final class MachineModels {
 
     public static void addTieredMachine(String id, String overlayFolder, MachineCasing defaultCasing, boolean frontOverlay, boolean topOverlay,
             boolean sideOverlay) {
-        MachineUnbakedModel model = new MachineUnbakedModel(overlayFolder, frontOverlay, topOverlay, sideOverlay, defaultCasing.mcm)
+        addTieredMachine(id, overlayFolder, defaultCasing, frontOverlay, topOverlay, sideOverlay, true);
+    }
+
+    public static void addTieredMachine(String id, String overlayFolder, MachineCasing defaultCasing, boolean frontOverlay, boolean topOverlay,
+            boolean sideOverlay, boolean hasActive) {
+        MachineUnbakedModel model = new MachineUnbakedModel(overlayFolder, frontOverlay, topOverlay, sideOverlay, hasActive, defaultCasing.mcm)
                 .withStandardOverlays();
         MachineModelProvider.register(new MIIdentifier("block/" + id), model);
         MachineModelProvider.register(new MIIdentifier("item/" + id), model);

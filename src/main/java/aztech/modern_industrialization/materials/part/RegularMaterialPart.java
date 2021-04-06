@@ -112,7 +112,8 @@ public class RegularMaterialPart implements MaterialPart {
             item = MIItem.of(MaterialHelper.overrideItemPath(itemPath));
         }
         // item tag
-        // items whose path are overridden (such as fire clay ingot -> brick) are not added to the tags
+        // items whose path are overridden (such as fire clay ingot -> brick) are not
+        // added to the tags
         if (MIParts.TAGGED_PARTS.contains(part) && MaterialHelper.overrideItemPath(itemPath) == itemPath) {
             MaterialHelper.registerItemTag(MaterialHelper.getPartTag(materialName, part), JTag.tag().add(new Identifier(getItemId())));
         }

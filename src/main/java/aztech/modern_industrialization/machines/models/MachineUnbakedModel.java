@@ -62,24 +62,30 @@ public class MachineUnbakedModel implements UnbakedModel {
     private final SpriteIdentifier[] spriteIds = new SpriteIdentifier[9];
     private final MachineCasingModel defaultCasing;
 
-    public MachineUnbakedModel(String folder, boolean frontOverlay, boolean topOverlay, boolean sideOverlay, MachineCasingModel defaultCasing) {
+    public MachineUnbakedModel(String folder, boolean frontOverlay, boolean topOverlay, boolean sideOverlay, boolean active,
+            MachineCasingModel defaultCasing) {
         if (frontOverlay) {
-            setOverlay(folder, "front", 0);
+            setOverlay(folder, "front", 0, active);
         }
         if (topOverlay) {
-            setOverlay(folder, "top", 2);
+            setOverlay(folder, "top", 2, active);
         }
         if (sideOverlay) {
-            setOverlay(folder, "side", 4);
+            setOverlay(folder, "side", 4, active);
         }
         this.defaultCasing = defaultCasing;
     }
 
-    private void setOverlay(String folder, String side, int id) {
+    private void setOverlay(String folder, String side, int id, boolean active) {
         spriteIds[id] = new SpriteIdentifier(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE,
                 new MIIdentifier("blocks/machines/" + folder + "/overlay_" + side));
-        spriteIds[id + 1] = new SpriteIdentifier(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE,
-                new MIIdentifier("blocks/machines/" + folder + "/overlay_" + side + "_active"));
+        if (active) {
+            spriteIds[id + 1] = new SpriteIdentifier(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE,
+                    new MIIdentifier("blocks/machines/" + folder + "/overlay_" + side + "_active"));
+        } else {
+            spriteIds[id + 1] = new SpriteIdentifier(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE,
+                    new MIIdentifier("blocks/machines/" + folder + "/overlay_" + side));
+        }
     }
 
     public MachineUnbakedModel withStandardOverlays() {

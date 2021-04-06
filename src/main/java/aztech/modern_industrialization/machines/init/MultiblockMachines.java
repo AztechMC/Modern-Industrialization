@@ -459,20 +459,20 @@ public class MultiblockMachines {
                 .fluids(inputs -> inputs.addSlot(56, 35), outputs -> outputs.addSlots(102, 35, 1, 8))
                 .register();
 
-        MachineModels.addTieredMachine("large_diesel_generator", "smiley", MachineCasings.SOLID_TITANIUM, true, false, false);
+        MachineModels.addTieredMachine("large_diesel_generator", "diesel_generator", MachineCasings.SOLID_TITANIUM, true, false, false);
         BlockEntityRendererRegistry.INSTANCE.register(LARGE_DIESEL_GENERATOR, MultiblockMachineBER::new);
 
         MachineModels.addTieredMachine("large_steam_turbine", "steam_turbine", MachineCasings.CLEAN_STAINLESS_STEEL, true, false, false);
         BlockEntityRendererRegistry.INSTANCE.register(LARGE_STEAM_TURBINE, MultiblockMachineBER::new);
 
-        MachineModels.addTieredMachine("heat_exchanger", "smiley", MachineCasings.STAINLESS_STEEL_PIPE, true, false, false);
+        MachineModels.addTieredMachine("heat_exchanger", "heat_exchanger", MachineCasings.STAINLESS_STEEL_PIPE, true, false, false);
         BlockEntityRendererRegistry.INSTANCE.register(HEAT_EXCHANGER, MultiblockMachineBER::new);
         new Rei("heat_exchanger", MIMachineRecipeTypes.HEAT_EXCHANGER, new ProgressBar.Parameters(77, 42, "arrow"))
                 .items(inputs -> inputs.addSlot(36, 35), outputs -> outputs.addSlot(122, 35))
                 .fluids(inputs -> inputs.addSlots(56, 35, 2, 1), outputs -> outputs.addSlots(102, 35, 2, 1))
                 .register();
 
-        MachineModels.addTieredMachine("pressurizer", "smiley", MachineCasings.TITANIUM_PIPE, true, false, false);
+        MachineModels.addTieredMachine("pressurizer", "pressurizer", MachineCasings.TITANIUM_PIPE, true, false, false);
         BlockEntityRendererRegistry.INSTANCE.register(PRESSURIZER, MultiblockMachineBER::new);
         new Rei("pressurizer", MIMachineRecipeTypes.PRESSURIZER, new ProgressBar.Parameters(77, 33, "arrow"))
                 .items(inputs -> inputs.addSlot(38, 35), outputs -> {})

@@ -23,7 +23,6 @@
  */
 package aztech.modern_industrialization.machines.blockentities.multiblocks;
 
-import aztech.modern_industrialization.inventory.ConfigurableFluidStack;
 import aztech.modern_industrialization.inventory.MIInventory;
 import aztech.modern_industrialization.machines.components.*;
 import aztech.modern_industrialization.machines.gui.MachineGuiParameters;
@@ -59,24 +58,20 @@ public class EnergyFromFluidMultiblockBlockEntity extends MultiblockMachineBlock
         this.activeShape = new ActiveShapeComponent(new ShapeTemplate[] { shapeTemplate });
         this.inventory = new MultiblockInventoryComponent();
         this.isActiveComponent = new IsActiveComponent();
-        this.acceptedFluid = acceptedFluid;
-        this.fluidEUperMb = fluidEUperMb;
-        this.maxEnergyOutput = maxEnergyOutput;
+        this.fluidConsumer = new FluidConsumerComponent(maxEnergyOutput, acceptedFluid, fluidEUperMb);
 
-        this.registerComponents(activeShape, isActiveComponent);
+        this.registerComponents(activeShape, isActiveComponent, fluidConsumer);
     }
 
     @Nullable
     private ShapeMatcher shapeMatcher = null;
     private boolean allowNormalOperation = false;
 
-    private final long maxEnergyOutput;
     private final ActiveShapeComponent activeShape;
     private final MultiblockInventoryComponent inventory;
     private final IsActiveComponent isActiveComponent;
-    private final Predicate<Fluid> acceptedFluid;
-    private final ToLongFunction<Fluid> fluidEUperMb;
     private final List<EnergyComponent> energyOutputs = new ArrayList<>();
+    private final FluidConsumerComponent fluidConsumer;
 
     public ShapeTemplate getActiveShape() {
         return activeShape.getActiveShape();
@@ -122,31 +117,10 @@ public class EnergyFromFluidMultiblockBlockEntity extends MultiblockMachineBlock
 
         if (!world.isClient) {
             link();
-
-            boolean newActive = false;
             if (allowNormalOperation) {
-                List<ConfigurableFluidStack> fluidInputs = inventory.getFluidInputs();
-                long maxEuProduced = this.maxEnergyOutput;
-
-                for (ConfigurableFluidStack stack : fluidInputs) {
-                    Fluid fluid = stack.getFluid();
-                    if (acceptedFluid.test(fluid)) {
-                        long fuelEu = fluidEUperMb.applyAsLong(fluid);
-                        long fluidConsumed = Math.min(Math.min(insertEnergy(Long.MAX_VALUE, Simulation.SIMULATE) / fuelEu, stack.getAmount() / 81),
-                                maxEuProduced / fuelEu);
-
-                        if (fluidConsumed > 0) {
-                            stack.decrement(fluidConsumed * 81);
-                            long energyProduced = fluidConsumed * fuelEu;
-                            insertEnergy(energyProduced, Simulation.ACT);
-                            maxEuProduced -= energyProduced;
-                            newActive = true;
-                        }
-
-                    }
-                }
-
-                isActiveComponent.updateActive(newActive, this);
+                long euProduced = fluidConsumer.getEuProduction(inventory.getFluidInputs(), insertEnergy(Long.MAX_VALUE, Simulation.SIMULATE));
+                insertEnergy(euProduced, Simulation.ACT);
+                isActiveComponent.updateActive(euProduced != 0, this);
             }
             markDirty();
         }

@@ -23,11 +23,11 @@
  */
 package aztech.modern_industrialization.api.energy;
 
-//import dev.technici4n.fasttransferlib.api.Simulation;
-
-//import dev.technici4n.fasttransferlib.api.energy.EnergyIo;
+import static dev.technici4n.fasttransferlib.api.Simulation.ACT;
+import static dev.technici4n.fasttransferlib.api.Simulation.SIMULATE;
 
 import aztech.modern_industrialization.util.Simulation;
+import dev.technici4n.fasttransferlib.api.energy.EnergyIo;
 import net.fabricmc.fabric.api.lookup.v1.block.BlockApiLookup;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Direction;
@@ -51,23 +51,22 @@ public class EnergyApi {
 
     static {
         // Compat wrapper for FTL
-        // TODO add back when port to fabric-transfer-api-v1 is complete
-        // WARNING insertable behavior changed!!!!!
-        /*
-         * MOVEABLE.registerFallback((world, pos, state, blockEntity, direction) -> {
-         * EnergyIo io =
-         * dev.technici4n.fasttransferlib.api.energy.EnergyApi.SIDED.get(world, pos,
-         * state, blockEntity, direction);
-         * 
-         * if (io != null) { return new EnergyInsertable() {
-         * 
-         * @Override public long insertEnergy(long amount) { return (long)
-         * Math.floor(amount - io.insert(amount, Simulation.ACT)); }
-         * 
-         * @Override public boolean canInsert(CableTier tier) { return
-         * io.supportsInsertion(); } }; }
-         * 
-         * return null; });
-         */
+        MOVEABLE.registerFallback(((world, pos, state, blockEntity, direction) -> {
+            EnergyIo io = dev.technici4n.fasttransferlib.api.energy.EnergyApi.SIDED.find(world, pos, state, blockEntity, direction);
+            if (io == null) {
+                return null;
+            }
+            return new EnergyInsertable() {
+                @Override
+                public long insertEnergy(long amount, Simulation simulation) {
+                    return amount - (long) Math.floor(io.insert(amount, simulation.isActing() ? ACT : SIMULATE));
+                }
+
+                @Override
+                public boolean canInsert(CableTier tier) {
+                    return io.supportsInsertion();
+                }
+            };
+        }));
     }
 }

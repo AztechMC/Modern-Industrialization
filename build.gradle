@@ -180,8 +180,7 @@ dependencies {
 
     include modImplementation("alexiil.mc.lib:libblockattributes-all:0.8.8")
 
-    //modApi "dev.technici4n:FastTransferLib:${project.ftl_version}"
-    //include "dev.technici4n:FastTransferLib:${project.ftl_version}"
+    include modApi("dev.technici4n:FastTransferLib:${project.ftl_version}")
 
     // Other mods for testing purposes
     //modRuntime "appeng:appliedenergistics2-fabric:${project.appeng_version}"

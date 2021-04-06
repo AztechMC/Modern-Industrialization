@@ -994,6 +994,7 @@
     "text.modern_industrialization.priority_transfer": "Transfer priority: %d",
     "text.modern_industrialization.priority_transfer_help": "Pipes will interact with higher priorities first.",
     "text.modern_industrialization.probability": "Probability: %s %%",
+    "text.modern_industrialization.probability_zero": "Not consumed",
     "text.modern_industrialization.progress": "Progress : %s",
     "text.modern_industrialization.seconds_left": "Seconds left: %s",
     "text.modern_industrialization.shape_error": "Multiblock shape error at (%d, %d, %d): %s",

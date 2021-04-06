@@ -4,7 +4,11 @@
   "duration": 10,
   "item_inputs": [
     {
-      "tag": "c:emerald_dusts",
+      "tag": "c:beryllium_tiny_dusts",
+      "amount": 9
+    },
+    {
+      "tag": "c:stainless_steel_nuggets",
       "amount": 1
     },
     {
@@ -13,7 +17,7 @@
     }
   ],
   "item_outputs": {
-    "item": "minecraft:emerald",
+    "item": "modern_industrialization:beryllium_ingot",
     "amount": 1
   }
 }

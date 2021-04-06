@@ -2,12 +2,26 @@
   "type": "modern_industrialization:electrolyzer",
   "eu": 32,
   "duration": 400,
-  "fluid_inputs": {
-    "fluid": "modern_industrialization:beryllium_chloride",
-    "amount": 1250
+  "item_inputs": {
+    "tag": "c:emerald_dusts",
+    "amount": 23
   },
-  "item_outputs": {
-    "item": "modern_industrialization:beryllium_tiny_dust",
-    "amount": 4
+  "item_outputs": [
+    {
+      "item": "modern_industrialization:beryllium_dust",
+      "amount": 3
+    },
+    {
+      "item": "modern_industrialization:aluminum_dust",
+      "amount": 2
+    },
+    {
+      "item": "modern_industrialization:silicon_dust",
+      "amount": 6
+    }
+  ],
+  "fluid_outputs": {
+    "fluid": "modern_industrialization:oxygen",
+    "amount": 3000
   }
 }

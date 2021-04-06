@@ -41,7 +41,6 @@ public class MIFluids {
     public static final CraftingFluid ACRYLIC_ACID = new CraftingFluid("acrylic_acid", 0xff1bdeb5);
     public static final CraftingFluid ACRYLIC_GLUE = new CraftingFluid("acrylic_glue", 0xff1bde54);
     public static final CraftingFluid BENZENE = new CraftingFluid("benzene", 0xfff0d179);
-    public static final CraftingFluid BERYLLIUM_CHLORIDE = new CraftingFluid("beryllium_chloride", 0xff85B354);
     public static final CraftingFluid BOOSTED_DIESEL = new CraftingFluid("boosted_diesel", 0xfffd9b0a);
     public static final CraftingFluid BUTADIENE = new CraftingFluid("butadiene", 0xffd0bd1a);
     public static final CraftingFluid CAPROLACTAM = new CraftingFluid("caprolactam", 0xff795450);

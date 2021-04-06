@@ -33,8 +33,9 @@ import me.sargunvohra.mcmods.autoconfig1u.serializer.Toml4jConfigSerializer;
 @Config(name = "modern_industrialization")
 public class MIConfig implements ConfigData {
     public boolean generateOres = true;
-
     public List<String> blacklistedOres = new ArrayList<>();
+    public boolean spawnWithGuideBook = true;
+    public boolean respawnWithGuideBook = true;
 
     private transient static boolean registered = false;
 

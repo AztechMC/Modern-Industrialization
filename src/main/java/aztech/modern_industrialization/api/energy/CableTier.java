@@ -42,7 +42,11 @@ public enum CableTier {
 
     }
 
-    public long getMaxInsert() {
+    /**
+     * @return The total EU/t transferred by this tier of network. The same number
+     *         is also the internal storage of every node.
+     */
+    public long getMaxTransfer() {
         return eu * 8;
     }
 

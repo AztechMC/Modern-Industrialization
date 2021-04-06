@@ -26,6 +26,7 @@ package aztech.modern_industrialization.machines.blockentities.hatches;
 import aztech.modern_industrialization.inventory.ConfigurableFluidStack;
 import aztech.modern_industrialization.inventory.MIInventory;
 import aztech.modern_industrialization.machines.components.OrientationComponent;
+import aztech.modern_industrialization.machines.components.sync.AutoExtract;
 import aztech.modern_industrialization.machines.gui.MachineGuiParameters;
 import aztech.modern_industrialization.machines.multiblocks.HatchBlockEntity;
 import aztech.modern_industrialization.machines.multiblocks.HatchType;
@@ -41,6 +42,7 @@ public class FluidHatch extends HatchBlockEntity {
         this.inventory = inventory;
 
         registerComponents(inventory);
+        registerClientComponent(new AutoExtract.Server(orientation, input));
     }
 
     private final boolean input;
@@ -76,4 +78,14 @@ public class FluidHatch extends HatchBlockEntity {
         }
     }
 
+    @Override
+    protected void tickTransfer() {
+        if (orientation.extractFluids) {
+            if (input) {
+                inventory.autoInsertFluids(world, pos, orientation.outputDirection);
+            } else {
+                inventory.autoExtractFluids(world, pos, orientation.outputDirection);
+            }
+        }
+    }
 }

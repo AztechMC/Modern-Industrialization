@@ -410,11 +410,7 @@ public class MultiblockMachines {
 
         MachineModels.addTieredMachine("electric_blast_furnace", "electric_blast_furnace", MachineCasings.HEATPROOF, true, false, false);
         BlockEntityRendererRegistry.INSTANCE.register(ELECTRIC_BLAST_FURNACE, MultiblockMachineBER::new);
-        new Rei("electric_blast_furnace", MIMachineRecipeTypes.BLAST_FURNACE, new ProgressBar.Parameters(77, 33, "arrow"))
-                .items(inputs -> inputs.addSlots(56, 35, 2, 1), outputs -> outputs.addSlot(102, 35))
-                .fluids(fluids -> fluids.addSlot(36, 35), outputs -> outputs.addSlot(122, 35))
-                .extraTest(recipe -> recipe.eu > 4)
-                .register();
+        // note: the REI category is built in the static {} block of ElectricBlastFurnaceBlockEntity.java
 
         MachineModels.addTieredMachine("large_steam_boiler", "large_boiler", MachineCasings.BRONZE_PLATED_BRICKS, true, false, false);
         BlockEntityRendererRegistry.INSTANCE.register(LARGE_STEAM_BOILER, MultiblockMachineBER::new);
@@ -493,7 +489,7 @@ public class MultiblockMachines {
     private static final Rectangle CRAFTING_GUI = new Rectangle(CraftingMultiblockGui.X, CraftingMultiblockGui.Y,
             CraftingMultiblockGui.W, CraftingMultiblockGui.H);
 
-    private static class Rei {
+    public static class Rei {
         private final String category;
         private final MachineRecipeType recipeType;
         private final ProgressBar.Parameters progressBarParams;
@@ -515,7 +511,7 @@ public class MultiblockMachines {
             return false;
         };
 
-        Rei(String category, MachineRecipeType recipeType, ProgressBar.Parameters progressBarParams) {
+        public Rei(String category, MachineRecipeType recipeType, ProgressBar.Parameters progressBarParams) {
             this.category = category;
             this.recipeType = recipeType;
             this.progressBarParams = progressBarParams;
@@ -523,30 +519,30 @@ public class MultiblockMachines {
             workstations.add(category);
         }
 
-        Rei items(Consumer<SlotPositions.Builder> inputs, Consumer<SlotPositions.Builder> outputs) {
+        public Rei items(Consumer<SlotPositions.Builder> inputs, Consumer<SlotPositions.Builder> outputs) {
             itemInputs = new SlotPositions.Builder().buildWithConsumer(inputs);
             itemOutputs = new SlotPositions.Builder().buildWithConsumer(outputs);
             return this;
         }
 
-        Rei fluids(Consumer<SlotPositions.Builder> inputs, Consumer<SlotPositions.Builder> outputs) {
+        public Rei fluids(Consumer<SlotPositions.Builder> inputs, Consumer<SlotPositions.Builder> outputs) {
             fluidInputs = new SlotPositions.Builder().buildWithConsumer(inputs);
             fluidOutputs = new SlotPositions.Builder().buildWithConsumer(outputs);
             return this;
         }
 
-        Rei extraTest(Predicate<MachineRecipe> extraTest) {
+        public Rei extraTest(Predicate<MachineRecipe> extraTest) {
             this.extraTest = extraTest;
             return this;
         }
 
-        Rei workstations(String... workstations) {
+        public Rei workstations(String... workstations) {
             this.workstations.clear();
             this.workstations.addAll(Arrays.asList(workstations));
             return this;
         }
 
-        final void register() {
+        public final void register() {
             ReiMachineRecipes.registerCategory(category, new MachineCategoryParams(category, itemInputs, itemOutputs, fluidInputs, fluidOutputs, progressBarParams, recipe -> recipe.getType() == recipeType && extraTest.test(recipe)));
             for (String workstation : workstations) {
                 ReiMachineRecipes.registerWorkstation(category, workstation);

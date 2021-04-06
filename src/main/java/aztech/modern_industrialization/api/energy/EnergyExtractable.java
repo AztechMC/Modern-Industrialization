@@ -23,6 +23,8 @@
  */
 package aztech.modern_industrialization.api.energy;
 
+import aztech.modern_industrialization.util.Simulation;
+
 public interface EnergyExtractable extends EnergyMoveable {
     /**
      * Attempt to extract an energy packet.
@@ -30,7 +32,7 @@ public interface EnergyExtractable extends EnergyMoveable {
      * @param maxAmount The max amount of EU to extract.
      * @return How much energy was extracted, or 0 if no energy could be extracted.
      */
-    long extractEnergy(long maxAmount);
+    long extractEnergy(long maxAmount, Simulation simulation);
 
     /**
      * Return whether the machine can send energy to a given pipe tier.

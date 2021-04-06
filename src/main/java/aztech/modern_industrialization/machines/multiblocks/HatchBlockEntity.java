@@ -128,14 +128,21 @@ public abstract class HatchBlockEntity extends MachineBlockEntity implements Tic
     }
 
     @Override
-    public void tick() {
-        if (world.isClient())
+    public final void tick() {
+        if (world.isClient()) {
             return;
+        }
 
         if (!Objects.equals(lastSyncedMachineCasing, matchedCasing)) {
             lastSyncedMachineCasing = matchedCasing;
             sync();
         }
+
+        tickTransfer();
+        markDirty();
+    }
+
+    protected void tickTransfer() {
     }
 
     public void appendItemInputs(List<ConfigurableItemStack> list) {

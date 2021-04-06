@@ -49,7 +49,7 @@ public class WrappedFluidStorage implements FluidTransferable {
         if (fluid == null || fluid == Fluids.EMPTY)
             return fluidVolume;
 
-        try (Transaction tx = Transaction.openOuter()) {
+        try (Transaction tx = TransferLbaCompat.openInsertTransaction()) {
             long amount = fluidVolume.getAmount_F().asLong(81000, RoundingMode.DOWN);
             long inserted = fluidStorage.insert(fluid, amount, tx);
 
@@ -67,6 +67,7 @@ public class WrappedFluidStorage implements FluidTransferable {
         try (Transaction tx = Transaction.openOuter()) {
             // Find a suitable fluid to extract
             Fluid[] extractedFluid = new Fluid[] { null };
+            TransferLbaCompat.EXTRACTION_TRANSACTION.set(tx);
             fluidStorage.forEach(view -> {
                 Fluid fluid = view.resource();
                 if (filter.matches(FluidKeys.get(fluid))) {
@@ -79,6 +80,7 @@ public class WrappedFluidStorage implements FluidTransferable {
                 }
                 return false;
             }, tx);
+            TransferLbaCompat.EXTRACTION_TRANSACTION.remove();
             if (extractedFluid[0] == null)
                 return FluidVolumeUtil.EMPTY;
             // Extract it

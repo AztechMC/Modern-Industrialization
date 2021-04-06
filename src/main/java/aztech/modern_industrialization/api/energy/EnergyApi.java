@@ -27,6 +27,7 @@ package aztech.modern_industrialization.api.energy;
 
 //import dev.technici4n.fasttransferlib.api.energy.EnergyIo;
 
+import aztech.modern_industrialization.util.Simulation;
 import net.fabricmc.fabric.api.lookup.v1.block.BlockApiLookup;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Direction;
@@ -38,7 +39,7 @@ public class EnergyApi {
 
     public static final EnergyExtractable CREATIVE_EXTRACTABLE = new EnergyExtractable() {
         @Override
-        public long extractEnergy(long maxAmount) {
+        public long extractEnergy(long maxAmount, Simulation simulation) {
             return maxAmount;
         }
 
@@ -51,6 +52,7 @@ public class EnergyApi {
     static {
         // Compat wrapper for FTL
         // TODO add back when port to fabric-transfer-api-v1 is complete
+        // WARNING insertable behavior changed!!!!!
         /*
          * MOVEABLE.registerFallback((world, pos, state, blockEntity, direction) -> {
          * EnergyIo io =

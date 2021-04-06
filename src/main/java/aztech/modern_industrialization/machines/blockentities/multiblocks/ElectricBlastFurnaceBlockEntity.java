@@ -28,8 +28,10 @@ import static aztech.modern_industrialization.machines.multiblocks.HatchType.*;
 import aztech.modern_industrialization.MIBlock;
 import aztech.modern_industrialization.compat.rei.machines.ReiMachineRecipes;
 import aztech.modern_industrialization.machines.components.*;
+import aztech.modern_industrialization.machines.components.sync.ProgressBar;
 import aztech.modern_industrialization.machines.init.MIMachineRecipeTypes;
 import aztech.modern_industrialization.machines.init.MachineTier;
+import aztech.modern_industrialization.machines.init.MultiblockMachines;
 import aztech.modern_industrialization.machines.models.MachineCasings;
 import aztech.modern_industrialization.machines.multiblocks.*;
 import aztech.modern_industrialization.machines.recipe.MachineRecipe;
@@ -138,17 +140,22 @@ public class ElectricBlastFurnaceBlockEntity extends AbstractCraftingMultiblockB
         }
     }
 
-    public final static ArrayList<Block> coils = new ArrayList<>();
-    public final static Map<Block, Long> coilsMaxBaseEU = new IdentityHashMap<>();
+    public static final ArrayList<String> coilNames = new ArrayList<>();
+    public static final ArrayList<MIBlock> coils = new ArrayList<>();
+    public static final Map<Block, Long> coilsMaxBaseEU = new IdentityHashMap<>();
 
     static {
-        coils.add(MIBlock.blocks.get("cupronickel_coil"));
-        coils.add(MIBlock.blocks.get("kanthal_coil"));
+        coilNames.add("cupronickel_coil");
+        coilNames.add("kanthal_coil");
+        for (String coilName : coilNames) {
+            coils.add(MIBlock.blocks.get(coilName));
+        }
         coilsMaxBaseEU.put(coils.get(0), 32L);
         coilsMaxBaseEU.put(coils.get(1), 128L);
 
         shapeTemplates = new ShapeTemplate[coils.size()];
 
+        // Build shapes
         for (int i = 0; i < coils.size(); ++i) {
             SimpleMember invarCasings = SimpleMember.forBlock(MIBlock.blocks.get("heatproof_machine_casing"));
             SimpleMember coilsBlocks = SimpleMember.forBlock(coils.get(i));
@@ -156,6 +163,22 @@ public class ElectricBlastFurnaceBlockEntity extends AbstractCraftingMultiblockB
             ShapeTemplate ebfShape = new ShapeTemplate.Builder(MachineCasings.HEATPROOF).add3by3(0, invarCasings, false, ebfHatches)
                     .add3by3(1, coilsBlocks, true, null).add3by3(2, coilsBlocks, true, null).add3by3(3, invarCasings, false, ebfHatches).build();
             shapeTemplates[i] = ebfShape;
+        }
+
+        // Register REI categories
+        for (int i = 0; i < coils.size(); ++i) {
+            long previousMax = i == 0 ? 4 : coilsMaxBaseEU.get(coils.get(i - 1));
+            long currentMax = coilsMaxBaseEU.get(coils.get(i));
+            List<String> workstations = new ArrayList<>();
+            workstations.add("electric_blast_furnace");
+            for (int j = i; j < coils.size(); ++j) {
+                workstations.add(coilNames.get(j));
+            }
+            new MultiblockMachines.Rei("electric_blast_furnace_" + i, MIMachineRecipeTypes.BLAST_FURNACE, new ProgressBar.Parameters(77, 33, "arrow"))
+                    .items(inputs -> inputs.addSlots(56, 35, 2, 1), outputs -> outputs.addSlot(102, 35))
+                    .fluids(fluids -> fluids.addSlot(36, 35), outputs -> outputs.addSlot(122, 35))
+                    .extraTest(recipe -> previousMax < recipe.eu && recipe.eu <= currentMax).workstations(workstations.toArray(new String[0]))
+                    .register();
         }
     }
 }

@@ -43,7 +43,7 @@ public class WrappedItemStorage implements ItemTransferable {
         if (itemStack.isEmpty())
             return itemStack;
 
-        try (Transaction tx = Transaction.openOuter()) {
+        try (Transaction tx = TransferLbaCompat.openInsertTransaction()) {
             int inserted = (int) itemKeyStorage.insert(ItemKey.of(itemStack), itemStack.getCount(), tx);
 
             if (simulation.isAction()) {
@@ -61,6 +61,7 @@ public class WrappedItemStorage implements ItemTransferable {
         try (Transaction tx = Transaction.openOuter()) {
             // Find a suitable item key to extract
             ItemKey[] extractedKey = new ItemKey[] { null };
+            TransferLbaCompat.EXTRACTION_TRANSACTION.set(tx);
             itemKeyStorage.forEach(view -> {
                 ItemKey key = view.resource();
                 if (filter.matches(key.toStack())) {
@@ -73,6 +74,7 @@ public class WrappedItemStorage implements ItemTransferable {
                 }
                 return false;
             }, tx);
+            TransferLbaCompat.EXTRACTION_TRANSACTION.remove();
             if (extractedKey[0] == null)
                 return ItemStack.EMPTY;
             // Extract it

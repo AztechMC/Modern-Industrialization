@@ -26,6 +26,7 @@ package aztech.modern_industrialization.machines.blockentities.hatches;
 import aztech.modern_industrialization.inventory.ConfigurableItemStack;
 import aztech.modern_industrialization.inventory.MIInventory;
 import aztech.modern_industrialization.machines.components.OrientationComponent;
+import aztech.modern_industrialization.machines.components.sync.AutoExtract;
 import aztech.modern_industrialization.machines.gui.MachineGuiParameters;
 import aztech.modern_industrialization.machines.multiblocks.HatchBlockEntity;
 import aztech.modern_industrialization.machines.multiblocks.HatchType;
@@ -41,6 +42,7 @@ public class ItemHatch extends HatchBlockEntity {
         this.inventory = inventory;
 
         registerComponents(inventory);
+        registerClientComponent(new AutoExtract.Server(orientation, input));
     }
 
     private final boolean input;
@@ -73,6 +75,17 @@ public class ItemHatch extends HatchBlockEntity {
     public void appendItemOutputs(List<ConfigurableItemStack> list) {
         if (!input) {
             list.addAll(inventory.itemStacks);
+        }
+    }
+
+    @Override
+    protected void tickTransfer() {
+        if (orientation.extractItems) {
+            if (input) {
+                inventory.autoInsertItems(world, pos, orientation.outputDirection);
+            } else {
+                inventory.autoExtractItems(world, pos, orientation.outputDirection);
+            }
         }
     }
 }

@@ -121,7 +121,7 @@ public class ModernIndustrializationClient implements ClientModInitializer {
                 if (MIPipes.electricityPipeTier.containsKey(pipe)) {
                     CableTier tier = MIPipes.electricityPipeTier.get(pipe);
                     lines.add(new TranslatableText("text.modern_industrialization.eu_cable", new TranslatableText(tier.translationKey),
-                            tier.getMaxInsert()).setStyle(TextHelper.EU_TEXT));
+                            tier.getMaxTransfer()).setStyle(TextHelper.EU_TEXT));
                 }
             }
             if (stack.getItem() == Items.GUNPOWDER) {

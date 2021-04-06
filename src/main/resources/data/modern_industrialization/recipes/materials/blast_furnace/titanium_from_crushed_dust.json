@@ -1,0 +1,21 @@
+{
+  "type": "modern_industrialization:blast_furnace",
+  "eu": 32,
+  "duration": 400,
+  "item_inputs": {
+    "item": "modern_industrialization:titanium_crushed_dust",
+    "amount": 4
+  },
+  "fluid_inputs": {
+    "fluid": "modern_industrialization:manganese_sulfuric_solution",
+    "amount": 3000
+  },
+  "item_outputs": {
+    "item": "modern_industrialization:titanium_hot_ingot",
+    "amount": 4
+  },
+  "fluid_outputs": {
+    "fluid": "modern_industrialization:manganese_sulfuric_solution",
+    "amount": 2500
+  }
+}

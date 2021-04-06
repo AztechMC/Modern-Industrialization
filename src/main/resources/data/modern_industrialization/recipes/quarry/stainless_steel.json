@@ -9,6 +9,11 @@
   },
   "item_outputs": [
     {
+      "item": "modern_industrialization:titanium_ore",
+      "amount": 10,
+      "probability": 0.015
+    },
+    {
       "item": "modern_industrialization:tungsten_ore",
       "amount": 5,
       "probability": 0.02

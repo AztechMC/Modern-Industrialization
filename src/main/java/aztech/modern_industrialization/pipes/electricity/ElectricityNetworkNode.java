@@ -142,7 +142,7 @@ public class ElectricityNetworkNode extends PipeNetworkNode {
     }
 
     public long getMaxEu() {
-        return getTier().getMaxInsert();
+        return getTier().getMaxTransfer();
     }
 
     public CableTier getTier() {

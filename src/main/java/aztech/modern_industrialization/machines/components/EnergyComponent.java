@@ -88,18 +88,20 @@ public class EnergyComponent implements IComponent.ServerOnly {
     }
 
     public void insertEnergy(EnergyInsertable insertable) {
-        setEu(insertable.insertEnergy(getEu()));
+        setEu(getEu() - insertable.insertEnergy(getEu(), Simulation.ACT));
     }
 
     public EnergyInsertable buildInsertable(Predicate<CableTier> canInsert) {
         return new EnergyInsertable() {
             @Override
-            public long insertEnergy(long amount) {
+            public long insertEnergy(long amount, Simulation simulation) {
                 Preconditions.checkArgument(amount >= 0, "May not insert < 0 energy.");
                 long inserted = Math.min(amount, capacity.get() - getEu());
-                setEu(getEu() + inserted);
-                // TODO: markDirty?
-                return amount - inserted;
+                if (simulation.isActing()) {
+                    setEu(getEu() + inserted);
+                    // TODO: markDirty?
+                }
+                return inserted;
             }
 
             @Override
@@ -112,10 +114,12 @@ public class EnergyComponent implements IComponent.ServerOnly {
     public EnergyExtractable buildExtractable(Predicate<CableTier> canExtract) {
         return new EnergyExtractable() {
             @Override
-            public long extractEnergy(long amount) {
+            public long extractEnergy(long amount, Simulation simulation) {
                 Preconditions.checkArgument(amount >= 0, "May not extract < 0 energy.");
                 long extracted = Math.min(amount, getEu());
-                setEu(getEu() - extracted);
+                if (simulation.isActing()) {
+                    setEu(getEu() - extracted);
+                }
                 return extracted;
             }
 

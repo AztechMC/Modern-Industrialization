@@ -31,10 +31,15 @@ import java.util.function.ToLongFunction;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.nbt.CompoundTag;
 
+/**
+ * A component that turns fluids into energy.
+ */
 public class FluidConsumerComponent implements IComponent.ServerOnly {
-
     private long euBuffer = 0;
-
+    /**
+     * The maximum EU that can be produced by one production operation, to limit the
+     * maximum conversion rate of the machine.
+     */
     private final long maxEuProduction;
     private final Predicate<Fluid> acceptedFluid;
     private final ToLongFunction<Fluid> fluidEUperMb;
@@ -56,7 +61,6 @@ public class FluidConsumerComponent implements IComponent.ServerOnly {
     }
 
     public long getEuProduction(List<ConfigurableFluidStack> fluidInputs, long maxEnergyInsertable) {
-
         long maxEuProduced = Math.min(maxEnergyInsertable, maxEuProduction);
 
         if (maxEuProduced == 0) {
@@ -74,12 +78,12 @@ public class FluidConsumerComponent implements IComponent.ServerOnly {
             Fluid fluid = stack.getFluid();
             if (acceptedFluid.test(fluid) && stack.getAmount() >= 81) {
                 long fuelEu = fluidEUperMb.applyAsLong(fluid);
-                long mbConsumedMax = Math.min(1 + (maxEuProduced - maxEuProduced) / fuelEu, stack.getAmount() / 81);
+                long mbConsumedMax = Math.min((maxEuProduced - euProduced + fuelEu - 1) / fuelEu, stack.getAmount() / 81);
                 euProduced += mbConsumedMax * fuelEu;
                 stack.decrement(mbConsumedMax * 81);
 
                 if (euProduced >= maxEuProduced) {
-                    euBuffer += (euProduced - maxEuProduced);
+                    euBuffer += euProduced - maxEuProduced;
                     return maxEuProduced;
                 }
             }

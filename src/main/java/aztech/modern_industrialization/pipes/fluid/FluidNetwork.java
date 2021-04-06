@@ -116,7 +116,7 @@ public class FluidNetwork extends PipeNetwork {
      * @return The amount that was successfully transferred.
      */
     private static long transferForBucket(TransferOperation operation, List<FluidTarget> bucket, Fluid fluid, long maxAmount) {
-        // Shuffle the bucket for better average insertion when simulation returns the
+        // Shuffle the bucket for better average transfer when simulation returns the
         // same result every time
         Collections.shuffle(bucket);
         // Simulate the transfer for every target

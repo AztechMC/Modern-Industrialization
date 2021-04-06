@@ -29,9 +29,8 @@ import aztech.modern_industrialization.api.energy.EnergyInsertable;
 import aztech.modern_industrialization.pipes.api.PipeNetwork;
 import aztech.modern_industrialization.pipes.api.PipeNetworkData;
 import aztech.modern_industrialization.pipes.api.PipeNetworkNode;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import aztech.modern_industrialization.util.Simulation;
+import java.util.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -50,41 +49,84 @@ public class ElectricityNetwork extends PipeNetwork {
             return;
         ticked = true;
 
+        // Gather targets
         List<EnergyInsertable> insertables = new ArrayList<>();
         List<EnergyExtractable> extractables = new ArrayList<>();
         long networkAmount = 0;
-        long remainingInsert = 0;
-        int loadedNodes = 0;
+        int loadedNodeCount = 0;
         for (Map.Entry<BlockPos, PipeNetworkNode> entry : nodes.entrySet()) {
             if (entry.getValue() != null) {
                 ElectricityNetworkNode node = (ElectricityNetworkNode) entry.getValue();
                 node.appendAttributes(world, entry.getKey(), insertables, extractables);
                 networkAmount += node.eu;
-                remainingInsert += tier.getMaxInsert() - node.eu;
-                loadedNodes++;
-            }
-        }
-        remainingInsert = Math.min(remainingInsert, tier.getMaxInsert());
-
-        for (EnergyExtractable extractable : extractables) {
-            long ext = extractable.extractEnergy(remainingInsert);
-            remainingInsert -= ext;
-            networkAmount += ext;
-        }
-
-        for (EnergyInsertable insertable : insertables) {
-            if (insertable.canInsert(tier)) {
-                networkAmount = insertable.insertEnergy(networkAmount);
+                loadedNodeCount++;
             }
         }
 
+        // Filter targets
+        insertables.removeIf(insertable -> !insertable.canInsert(tier));
+        extractables.removeIf(extractable -> !extractable.canExtract(tier));
+
+        // Do the transfer
+        long networkCapacity = loadedNodeCount * tier.getMaxTransfer();
+        long extractMaxAmount = Math.min(tier.getMaxTransfer(), networkCapacity - networkAmount);
+        networkAmount += transferForTargets(EnergyExtractable::extractEnergy, extractables, extractMaxAmount);
+        long insertMaxAmount = Math.min(tier.getMaxTransfer(), networkAmount);
+        networkAmount -= transferForTargets(EnergyInsertable::insertEnergy, insertables, insertMaxAmount);
+
+        // Split energy evenly across the nodes
         for (PipeNetworkNode node : nodes.values()) {
             if (node != null) {
                 ElectricityNetworkNode electricityNode = (ElectricityNetworkNode) node;
-                electricityNode.eu = networkAmount / loadedNodes;
+                electricityNode.eu = networkAmount / loadedNodeCount;
                 networkAmount -= electricityNode.eu;
-                --loadedNodes;
+                --loadedNodeCount;
             }
+        }
+    }
+
+    /**
+     * Perform a transfer operation across a list of targets. Will not mutate the
+     * list. Does not check for the network's max transfer rate specifically.
+     */
+    private static <T> long transferForTargets(TransferOperation<T> operation, List<T> targets, long maxAmount) {
+        // Build target list
+        List<EnergyTarget<T>> sortableTargets = new ArrayList<>(targets.size());
+        for (T target : targets) {
+            sortableTargets.add(new EnergyTarget<>(target));
+        }
+        // Shuffle for better transfer on average
+        Collections.shuffle(sortableTargets);
+        // Simulate the transfer for every target
+        for (EnergyTarget<T> target : sortableTargets) {
+            target.simulationResult = operation.transfer(target.target, maxAmount, Simulation.SIMULATE);
+        }
+        // Sort from low to high result
+        sortableTargets.sort(Comparator.comparing(t -> t.simulationResult));
+        // Actually perform the transfer
+        long transferredAmount = 0;
+        for (int i = 0; i < sortableTargets.size(); ++i) {
+            EnergyTarget<T> target = sortableTargets.get(i);
+            int remainingTargets = sortableTargets.size() - i;
+            long remainingAmount = maxAmount - transferredAmount;
+            long targetMaxAmount = remainingAmount / remainingTargets;
+
+            transferredAmount += operation.transfer(target.target, targetMaxAmount, Simulation.ACT);
+        }
+        return transferredAmount;
+    }
+
+    @FunctionalInterface
+    private interface TransferOperation<T> {
+        long transfer(T transferable, long maxAmount, Simulation simulation);
+    }
+
+    private static class EnergyTarget<T> {
+        final T target;
+        long simulationResult;
+
+        EnergyTarget(T target) {
+            this.target = target;
         }
     }
 }

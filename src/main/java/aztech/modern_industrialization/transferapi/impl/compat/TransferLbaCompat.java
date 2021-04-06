@@ -29,6 +29,7 @@ import aztech.modern_industrialization.transferapi.api.item.ItemApi;
 import aztech.modern_industrialization.transferapi.api.item.ItemKey;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
+import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.util.math.Direction;
 
@@ -52,5 +53,21 @@ public class TransferLbaCompat {
                 }
             }
         }));
+    }
+
+    /**
+     * The call to filter.test(...) inside the LBA wrappers might cause a nested
+     * simulation, so we have to be careful and store the transaction during the
+     * extraction operation.
+     */
+    static final ThreadLocal<Transaction> EXTRACTION_TRANSACTION = new ThreadLocal<>();
+
+    static Transaction openInsertTransaction() {
+        Transaction extractionTransaction = EXTRACTION_TRANSACTION.get();
+        if (extractionTransaction != null) {
+            return extractionTransaction.openNested();
+        } else {
+            return Transaction.openOuter();
+        }
     }
 }

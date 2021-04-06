@@ -23,14 +23,16 @@
  */
 package aztech.modern_industrialization.api.energy;
 
+import aztech.modern_industrialization.util.Simulation;
+
 public interface EnergyInsertable extends EnergyMoveable {
     /**
      * Attempt to partially insert energy into the block.
      * 
      * @param amount How much energy to insert.
-     * @return The leftover energy.
+     * @return The inserted energy.
      */
-    long insertEnergy(long amount);
+    long insertEnergy(long amount, Simulation simulation);
 
     /**
      * Return whether the machine can accept energy from a given pipe tier.

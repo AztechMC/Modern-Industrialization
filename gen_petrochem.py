@@ -136,7 +136,8 @@ gen_distillation(15, 200, "1000 steam_cracked_naphtha", [
     "100 ethylbenzene",
 ])
 gen_distillation(10, 200, "1000 shale_oil", [
-    "500 sulfuric_crude_oil",
+    "50 helium",
+    "450 sulfuric_crude_oil",
     "500 sulfuric_naphtha",
 ])
 

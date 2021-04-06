@@ -7,7 +7,7 @@
         "amount": 1000
     },
     "fluid_outputs": {
-        "fluid": "modern_industrialization:helium",
-        "amount": 50
+        "fluid": "modern_industrialization:sulfuric_naphtha",
+        "amount": 500
     }
 }

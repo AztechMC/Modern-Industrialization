@@ -33,9 +33,6 @@ import net.devtech.arrp.json.models.JTextures;
 import net.minecraft.text.*;
 import net.minecraft.util.registry.Registry;
 
-/**
- * This is auto-generated, don't edit by hand!
- */
 public class MIFluids {
 
     public static final ArrayList<CraftingFluid> FLUIDS = new ArrayList<>();

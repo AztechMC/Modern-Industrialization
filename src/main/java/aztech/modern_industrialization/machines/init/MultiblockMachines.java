@@ -431,9 +431,13 @@ public class MultiblockMachines {
 
         MachineModels.addTieredMachine("quarry", "quarry", MachineCasings.STEEL, true, false, false);
         BlockEntityRendererRegistry.INSTANCE.register(STEAM_QUARRY, MultiblockMachineBER::new);
-        new Rei("quarry", MIMachineRecipeTypes.QUARRY, new ProgressBar.Parameters(77, 33, "arrow"))
+        new Rei("steam_quarry", MIMachineRecipeTypes.QUARRY, new ProgressBar.Parameters(77, 33, "arrow"))
                 .items(inputs -> inputs.addSlot(56, 35), outputs -> outputs.addSlots(102, 35, 4, 4))
-                .workstations("quarry", "electric_quarry")
+                .workstations("quarry", "electric_quarry").extraTest(recipe -> recipe.eu <= 4)
+                .register();
+        new Rei("electric_quarry", MIMachineRecipeTypes.QUARRY, new ProgressBar.Parameters(77, 33, "arrow"))
+                .items(inputs -> inputs.addSlot(56, 35), outputs -> outputs.addSlots(102, 35, 4, 4))
+                .workstations("electric_quarry").extraTest(recipe -> recipe.eu > 4)
                 .register();
 
         MachineModels.addTieredMachine("electric_quarry", "quarry", MachineCasings.STEEL, true, false, false);

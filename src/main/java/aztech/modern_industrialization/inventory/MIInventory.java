@@ -25,9 +25,11 @@ package aztech.modern_industrialization.inventory;
 
 import alexiil.mc.lib.attributes.SearchOptions;
 import alexiil.mc.lib.attributes.fluid.FluidAttributes;
+import alexiil.mc.lib.attributes.fluid.FluidExtractable;
 import alexiil.mc.lib.attributes.fluid.FluidInsertable;
 import alexiil.mc.lib.attributes.fluid.FluidVolumeUtil;
 import alexiil.mc.lib.attributes.item.ItemAttributes;
+import alexiil.mc.lib.attributes.item.ItemExtractable;
 import alexiil.mc.lib.attributes.item.ItemInsertable;
 import alexiil.mc.lib.attributes.item.ItemInvUtil;
 import aztech.modern_industrialization.machines.IComponent;
@@ -79,6 +81,18 @@ public final class MIInventory implements IComponent {
         // LBA
         FluidInsertable target = FluidAttributes.INSERTABLE.get(world, pos.offset(direction), SearchOptions.inDirection(direction));
         FluidVolumeUtil.move(new WrappedFluidStorage(fluidStorage), target);
+    }
+
+    public void autoInsertItems(World world, BlockPos pos, Direction direction) {
+        // LBA
+        ItemExtractable target = ItemAttributes.EXTRACTABLE.get(world, pos.offset(direction), SearchOptions.inDirection(direction));
+        ItemInvUtil.moveMultiple(target, new WrappedItemStorage(itemStorage));
+    }
+
+    public void autoInsertFluids(World world, BlockPos pos, Direction direction) {
+        // LBA
+        FluidExtractable target = FluidAttributes.EXTRACTABLE.get(world, pos.offset(direction), SearchOptions.inDirection(direction));
+        FluidVolumeUtil.move(target, new WrappedFluidStorage(fluidStorage));
     }
 
     public void writeNbt(CompoundTag tag) {

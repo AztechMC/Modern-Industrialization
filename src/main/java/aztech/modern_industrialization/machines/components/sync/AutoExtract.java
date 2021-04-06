@@ -41,12 +41,22 @@ import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
 
+/**
+ * Supports both auto-extract and auto-insert. Auto-insert is just a GUI change,
+ * but the logic stays the same.
+ */
 public class AutoExtract {
     public static class Server implements SyncedComponent.Server<Data> {
         private final OrientationComponent orientation;
+        private final boolean displayAsInsert; // true for auto-insert
+
+        public Server(OrientationComponent orientation, boolean displayAsInsert) {
+            this.orientation = orientation;
+            this.displayAsInsert = displayAsInsert;
+        }
 
         public Server(OrientationComponent orientation) {
-            this.orientation = orientation;
+            this(orientation, false);
         }
 
         @Override
@@ -61,6 +71,7 @@ public class AutoExtract {
 
         @Override
         public void writeInitialData(PacketByteBuf buf) {
+            buf.writeBoolean(displayAsInsert);
             buf.writeBoolean(orientation.params.hasExtractItems);
             buf.writeBoolean(orientation.params.hasExtractFluids);
             writeCurrentData(buf);
@@ -83,10 +94,12 @@ public class AutoExtract {
     }
 
     public static class Client implements SyncedComponent.Client {
+        final boolean displayAsInsert;
         final boolean hasExtractItems, hasExtractFluids;
         boolean[] extractStatus = new boolean[2];
 
         public Client(PacketByteBuf buf) {
+            displayAsInsert = buf.readBoolean();
             hasExtractItems = buf.readBoolean();
             hasExtractFluids = buf.readBoolean();
             read(buf);
@@ -118,6 +131,7 @@ public class AutoExtract {
                 int u = isItem ? 20 : 0;
                 String type = isItem ? "item" : "fluid";
                 int index = isItem ? 0 : 1;
+                String insertOrExtract = displayAsInsert ? "insert" : "extract";
                 container.addButton(u, new LiteralText(type + " auto-extract"), syncId -> {
                     boolean newExtract = !extractStatus[index];
                     extractStatus[index] = newExtract;
@@ -129,10 +143,10 @@ public class AutoExtract {
                 }, () -> {
                     List<Text> lines = new ArrayList<>();
                     if (extractStatus[index]) {
-                        lines.add(new TranslatableText("text.modern_industrialization." + type + "_auto_extract_on"));
+                        lines.add(new TranslatableText("text.modern_industrialization." + type + "_auto_" + insertOrExtract + "_on"));
                         lines.add(new TranslatableText("text.modern_industrialization.click_to_disable").setStyle(TextHelper.GRAY_TEXT));
                     } else {
-                        lines.add(new TranslatableText("text.modern_industrialization." + type + "_auto_extract_off"));
+                        lines.add(new TranslatableText("text.modern_industrialization." + type + "_auto_" + insertOrExtract + "_off"));
                         lines.add(new TranslatableText("text.modern_industrialization.click_to_enable").setStyle(TextHelper.GRAY_TEXT));
                     }
                     return lines;

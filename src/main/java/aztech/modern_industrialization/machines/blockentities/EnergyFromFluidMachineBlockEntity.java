@@ -32,6 +32,7 @@ import aztech.modern_industrialization.inventory.MIInventory;
 import aztech.modern_industrialization.inventory.SlotPositions;
 import aztech.modern_industrialization.machines.MachineBlockEntity;
 import aztech.modern_industrialization.machines.components.EnergyComponent;
+import aztech.modern_industrialization.machines.components.FluidConsumerComponent;
 import aztech.modern_industrialization.machines.components.IsActiveComponent;
 import aztech.modern_industrialization.machines.components.OrientationComponent;
 import aztech.modern_industrialization.machines.components.sync.EnergyBar;
@@ -58,24 +59,20 @@ import net.minecraft.util.math.Direction;
 public class EnergyFromFluidMachineBlockEntity extends MachineBlockEntity implements Tickable {
 
     private final CableTier outputTier;
-    private final long fluidConsumption;
     private final EnergyExtractable extractable;
-
-    private final Predicate<Fluid> acceptedFluid;
-    private final ToLongFunction<Fluid> fluidEUperMb;
 
     protected final MIInventory inventory;
     protected EnergyComponent energy;
     protected OrientationComponent orientation;
     protected IsActiveComponent isActiveComponent;
+    protected FluidConsumerComponent fluidConsumer;
 
     private EnergyFromFluidMachineBlockEntity(BlockEntityType<?> type, String name, CableTier outputTier, long energyCapacity, long fluidCapacity,
-            long fluidConsumption, Predicate<Fluid> acceptedFluid, ToLongFunction<Fluid> fluidEUperMb, Fluid locked) {
+            long maxEnergyOutput, Predicate<Fluid> acceptedFluid, ToLongFunction<Fluid> fluidEUperMb, Fluid locked) {
         super(type, new MachineGuiParameters.Builder(name, false).build());
         this.outputTier = outputTier;
         this.energy = new EnergyComponent(energyCapacity);
         this.extractable = energy.buildExtractable((CableTier tier) -> tier == outputTier);
-        this.fluidConsumption = fluidConsumption;
         EnergyBar.Parameters energyBarParams = new EnergyBar.Parameters(76, 39);
         registerClientComponent(new EnergyBar.Server(energyBarParams, energy::getEu, energy::getCapacity));
         this.orientation = new OrientationComponent(new OrientationComponent.Params(true, false, false));
@@ -84,9 +81,6 @@ public class EnergyFromFluidMachineBlockEntity extends MachineBlockEntity implem
         List<ConfigurableItemStack> itemStacks = new ArrayList<>();
         SlotPositions itemPositions = SlotPositions.empty();
 
-        this.acceptedFluid = acceptedFluid;
-        this.fluidEUperMb = fluidEUperMb;
-
         List<ConfigurableFluidStack> fluidStacks;
         if (locked == null) {
             fluidStacks = Collections.singletonList(ConfigurableFluidStack.standardInputSlot(81 * fluidCapacity));
@@ -94,21 +88,22 @@ public class EnergyFromFluidMachineBlockEntity extends MachineBlockEntity implem
             fluidStacks = Collections.singletonList(ConfigurableFluidStack.lockedInputSlot(81 * fluidCapacity, locked));
         }
 
+        fluidConsumer = new FluidConsumerComponent(maxEnergyOutput, acceptedFluid, fluidEUperMb);
         SlotPositions fluidPositions = new SlotPositions.Builder().addSlot(25, 38).build();
         inventory = new MIInventory(itemStacks, fluidStacks, itemPositions, fluidPositions);
 
-        this.registerComponents(energy, orientation, isActiveComponent, inventory);
+        this.registerComponents(energy, orientation, isActiveComponent, inventory, fluidConsumer);
 
     }
 
     public EnergyFromFluidMachineBlockEntity(BlockEntityType<?> type, String name, CableTier outputTier, long energyCapacity, long fluidCapacity,
-            long fluidConsumption, Predicate<Fluid> acceptedFluid, ToLongFunction<Fluid> fluidEUperMb) {
-        this(type, name, outputTier, energyCapacity, fluidCapacity, fluidConsumption, acceptedFluid, fluidEUperMb, null);
+            long maxEnergyOutput, Predicate<Fluid> acceptedFluid, ToLongFunction<Fluid> fluidEUperMb) {
+        this(type, name, outputTier, energyCapacity, fluidCapacity, maxEnergyOutput, acceptedFluid, fluidEUperMb, null);
     }
 
     public EnergyFromFluidMachineBlockEntity(BlockEntityType<?> type, String name, CableTier outputTier, long energyCapacity, long fluidCapacity,
-            long fluidConsumption, Fluid acceptedFluid, long fluidEUperMb) {
-        this(type, name, outputTier, energyCapacity, fluidCapacity, fluidConsumption, (Fluid f) -> (f == acceptedFluid), (Fluid f) -> (fluidEUperMb),
+            long maxEnergyOutput, Fluid acceptedFluid, long fluidEUperMb) {
+        this(type, name, outputTier, energyCapacity, fluidCapacity, maxEnergyOutput, (Fluid f) -> (f == acceptedFluid), (Fluid f) -> (fluidEUperMb),
                 acceptedFluid);
     }
 
@@ -140,29 +135,13 @@ public class EnergyFromFluidMachineBlockEntity extends MachineBlockEntity implem
         if (world == null || world.isClient)
             return;
 
-        boolean wasActive = isActiveComponent.isActive;
         ConfigurableFluidStack stack = inventory.fluidStacks.get(0);
-
-        if (acceptedFluid.test(stack.getFluid())) {
-            long fuelEu = fluidEUperMb.applyAsLong(stack.getFluid());
-            long fluidConsumed = Math.min(Math.min(energy.getRemainingCapacity() / fuelEu, stack.getAmount() / 81), this.fluidConsumption);
-            if (fluidConsumed > 0) {
-                stack.decrement(81 * fluidConsumed);
-                energy.insertEu(fluidConsumed * fuelEu, Simulation.ACT);
-                isActiveComponent.isActive = true;
-            } else {
-                isActiveComponent.isActive = false;
-            }
-
-        } else {
-            isActiveComponent.isActive = false;
-        }
+        long euProduced = fluidConsumer.getEuProduction(Collections.singletonList(stack), energy.getRemainingCapacity());
+        energy.insertEu(euProduced, Simulation.ACT);
+        isActiveComponent.updateActive(0 != euProduced, this);
 
         EnergyHelper.autoOuput(this, orientation, outputTier, energy);
 
-        if (wasActive != isActiveComponent.isActive) {
-            sync();
-        }
         markDirty();
     }
 

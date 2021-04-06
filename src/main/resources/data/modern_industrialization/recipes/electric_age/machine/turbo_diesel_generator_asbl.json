@@ -1,0 +1,19 @@
+{
+  "type" : "minecraft:crafting_shaped",
+  "pattern" : [
+    "PCP",
+    "GHG",
+    "ccc"
+  ],
+  "key" : {
+  "H" : { "item" : "modern_industrialization:turbo_machine_hull"},
+    "P": { "item" : "modern_industrialization:advanced_pump"},
+    "G": { "tag" : "c:stainless_steel_gears"},
+    "c" : {"item" : "modern_industrialization:pipe_electricity_aluminum"},
+    "C" : {"item" : "modern_industrialization:digital_circuit"}
+
+},
+  "result": {
+    "item": "modern_industrialization:turbo_diesel_generator"
+  }
+}

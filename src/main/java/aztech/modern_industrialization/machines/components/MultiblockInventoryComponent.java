@@ -28,6 +28,7 @@ import aztech.modern_industrialization.inventory.ConfigurableItemStack;
 import aztech.modern_industrialization.machines.multiblocks.HatchBlockEntity;
 import aztech.modern_industrialization.machines.multiblocks.ShapeMatcher;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.function.BiConsumer;
 
@@ -38,15 +39,20 @@ public class MultiblockInventoryComponent implements CrafterComponent.Inventory 
     private final List<ConfigurableFluidStack> fluidOutputs = new ArrayList<>();
 
     public void rebuild(ShapeMatcher shapeMatcher) {
-        rebuildList(shapeMatcher, itemInputs, HatchBlockEntity::appendItemInputs);
-        rebuildList(shapeMatcher, itemOutputs, HatchBlockEntity::appendItemOutputs);
-        rebuildList(shapeMatcher, fluidInputs, HatchBlockEntity::appendFluidInputs);
-        rebuildList(shapeMatcher, fluidOutputs, HatchBlockEntity::appendFluidOutputs);
+        // Sort the hatches by height for the distillation tower
+        List<HatchBlockEntity> sortedHatches = new ArrayList<>(shapeMatcher.getMatchedHatches());
+        sortedHatches.sort(Comparator.comparing(h -> h.getPos().getY()));
+        // Accumulate the slots
+        rebuildList(sortedHatches, itemInputs, HatchBlockEntity::appendItemInputs);
+        rebuildList(sortedHatches, itemOutputs, HatchBlockEntity::appendItemOutputs);
+        rebuildList(sortedHatches, fluidInputs, HatchBlockEntity::appendFluidInputs);
+        rebuildList(sortedHatches, fluidOutputs, HatchBlockEntity::appendFluidOutputs);
     }
 
-    private <Stack> void rebuildList(ShapeMatcher shapeMatcher, List<Stack> stacks, BiConsumer<HatchBlockEntity, List<Stack>> appender) {
+    private <Stack> void rebuildList(List<HatchBlockEntity> sortedHatches, List<Stack> stacks, BiConsumer<HatchBlockEntity, List<Stack>> appender) {
         stacks.clear();
-        for (HatchBlockEntity hatch : shapeMatcher.getMatchedHatches()) {
+        // Add all hatch slots
+        for (HatchBlockEntity hatch : sortedHatches) {
             appender.accept(hatch, stacks);
         }
     }

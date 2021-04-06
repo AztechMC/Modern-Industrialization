@@ -949,6 +949,7 @@
     "text.modern_industrialization.efficiency_factor": "Overclock : x%s",
     "text.modern_industrialization.efficiency_max_overclock": "Max Overclock : %d EU/t",
     "text.modern_industrialization.efficiency_ticks": "Efficiency : %d / %d",
+    "text.modern_industrialization.empty_whitelist_warning": "⚠ Empty Filter",
     "text.modern_industrialization.energy_bar": "%d / %d EU",
     "text.modern_industrialization.energy_bar_double": "%s / %s %s",
     "text.modern_industrialization.eu_cable": "%s - Max network transfer : %d EU/t",

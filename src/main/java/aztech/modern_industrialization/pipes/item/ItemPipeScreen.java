@@ -27,6 +27,7 @@ import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.pipes.gui.PipeGuiHelper;
 import aztech.modern_industrialization.pipes.gui.PipeScreen;
 import aztech.modern_industrialization.pipes.impl.PipePackets;
+import aztech.modern_industrialization.util.TextHelper;
 import com.mojang.blaze3d.systems.RenderSystem;
 import io.netty.buffer.Unpooled;
 import java.util.ArrayList;
@@ -71,6 +72,21 @@ public class ItemPipeScreen extends PipeScreen<ItemPipeScreenHandler> {
         }));
         addConnectionTypeButton(148, 22, handler.pipeInterface);
         addPriorityWidgets(15, 72, handler.pipeInterface, "insert");
+    }
+
+    /**
+     * @reason Override the title to add a warning when the slot is empty
+     */
+    @Override
+    protected void drawForeground(MatrixStack matrices, int mouseX, int mouseY) {
+        Text title = this.title;
+        if (handler.pipeInterface.isWhitelist() && handler.pipeInterface.isFilterEmpty()) {
+            title = title.shallowCopy().append(new LiteralText(" "))
+                    .append(new TranslatableText("text.modern_industrialization.empty_whitelist_warning").setStyle(TextHelper.WARNING_TEXT));
+        }
+        this.textRenderer.draw(matrices, title, (float) this.titleX, (float) this.titleY, 0x404040);
+        this.textRenderer.draw(matrices, this.playerInventory.getDisplayName(), (float) this.playerInventoryTitleX,
+                (float) this.playerInventoryTitleY, 0x404040);
     }
 
     @Override

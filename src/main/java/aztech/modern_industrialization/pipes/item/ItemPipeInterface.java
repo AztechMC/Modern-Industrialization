@@ -45,6 +45,15 @@ public interface ItemPipeInterface extends ConnectionTypeInterface, PriorityInte
 
     void setStack(int slot, ItemStack stack);
 
+    default boolean isFilterEmpty() {
+        for (int i = 0; i < SLOTS; ++i) {
+            if (!getStack(i).isEmpty()) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     ItemStack getUpgradeStack();
 
     void setUpgradeStack(ItemStack stack);

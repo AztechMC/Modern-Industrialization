@@ -97,7 +97,7 @@ public class FluidPipeScreenHandler extends PipeScreenHandler {
 
     @Override
     public boolean canUse(PlayerEntity player) {
-        return true;
+        return iface.canUse(player);
     }
 
     @Override

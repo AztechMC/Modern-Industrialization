@@ -27,6 +27,7 @@ import aztech.modern_industrialization.pipes.gui.iface.ConnectionTypeInterface;
 import aztech.modern_industrialization.pipes.gui.iface.PriorityInterface;
 import java.util.ArrayList;
 import java.util.List;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketByteBuf;
 
@@ -57,6 +58,8 @@ public interface ItemPipeInterface extends ConnectionTypeInterface, PriorityInte
     ItemStack getUpgradeStack();
 
     void setUpgradeStack(ItemStack stack);
+
+    boolean canUse(PlayerEntity player);
 
     static ItemPipeInterface ofBuf(PacketByteBuf buf) {
         boolean[] whitelist = new boolean[] { buf.readBoolean() };
@@ -116,6 +119,11 @@ public interface ItemPipeInterface extends ConnectionTypeInterface, PriorityInte
             @Override
             public void setPriority(int priority_) {
                 priority[0] = priority_;
+            }
+
+            @Override
+            public boolean canUse(PlayerEntity player) {
+                return true;
             }
         };
     }

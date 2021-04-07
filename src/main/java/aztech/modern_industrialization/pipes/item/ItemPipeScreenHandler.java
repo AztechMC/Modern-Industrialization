@@ -117,7 +117,7 @@ public class ItemPipeScreenHandler extends PipeScreenHandler {
 
     @Override
     public boolean canUse(PlayerEntity player) {
-        return true;
+        return pipeInterface.canUse(player);
     }
 
     @Override

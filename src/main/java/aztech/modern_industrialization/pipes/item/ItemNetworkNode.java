@@ -35,6 +35,7 @@ import alexiil.mc.lib.attributes.item.ItemInvUtil;
 import aztech.modern_industrialization.api.pipes.item.SpeedUpgrade;
 import aztech.modern_industrialization.pipes.api.PipeEndpointType;
 import aztech.modern_industrialization.pipes.api.PipeNetworkNode;
+import aztech.modern_industrialization.pipes.gui.IPipeScreenHandlerHelper;
 import aztech.modern_industrialization.util.ItemStackHelper;
 import java.util.*;
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
@@ -169,10 +170,10 @@ public class ItemNetworkNode extends PipeNetworkNode {
     }
 
     @Override
-    public ExtendedScreenHandlerFactory getConnectionGui(Direction guiDirection, Runnable markDirty, Runnable sync) {
+    public ExtendedScreenHandlerFactory getConnectionGui(Direction guiDirection, IPipeScreenHandlerHelper helper) {
         for (ItemConnection connection : connections) {
             if (connection.direction == guiDirection) {
-                return connection.new ScreenHandlerFactory(markDirty, sync, getType().getIdentifier().getPath());
+                return connection.new ScreenHandlerFactory(helper, getType().getIdentifier().getPath());
             }
         }
         return null;
@@ -276,7 +277,7 @@ public class ItemNetworkNode extends PipeNetworkNode {
         }
     }
 
-    private static class ItemConnection {
+    private class ItemConnection {
         private final Direction direction;
         private PipeEndpointType type;
         private boolean whitelist = true;
@@ -326,7 +327,7 @@ public class ItemNetworkNode extends PipeNetworkNode {
             private final ItemPipeInterface iface;
             private final String pipeType;
 
-            private ScreenHandlerFactory(Runnable markDirty, Runnable sync, String pipeType) {
+            private ScreenHandlerFactory(IPipeScreenHandlerHelper helper, String pipeType) {
                 this.iface = new ItemPipeInterface() {
                     @Override
                     public boolean isWhitelist() {
@@ -336,7 +337,7 @@ public class ItemNetworkNode extends PipeNetworkNode {
                     @Override
                     public void setWhitelist(boolean whitelist) {
                         ItemConnection.this.whitelist = whitelist;
-                        markDirty.run();
+                        helper.callMarkDirty();
                     }
 
                     @Override
@@ -347,7 +348,7 @@ public class ItemNetworkNode extends PipeNetworkNode {
                     @Override
                     public void setStack(int slot, ItemStack stack) {
                         stacks[slot] = stack;
-                        markDirty.run();
+                        helper.callMarkDirty();
                     }
 
                     @Override
@@ -358,7 +359,7 @@ public class ItemNetworkNode extends PipeNetworkNode {
                     @Override
                     public void setUpgradeStack(ItemStack stack) {
                         upgradeStack = stack;
-                        markDirty.run();
+                        helper.callMarkDirty();
                     }
 
                     @Override
@@ -370,8 +371,8 @@ public class ItemNetworkNode extends PipeNetworkNode {
                     public void setConnectionType(int type) {
                         if (0 <= type && type < 3) {
                             ItemConnection.this.type = decodeConnectionType(type);
-                            markDirty.run();
-                            sync.run();
+                            helper.callMarkDirty();
+                            helper.callSync();
                         }
                     }
 
@@ -383,6 +384,17 @@ public class ItemNetworkNode extends PipeNetworkNode {
                     @Override
                     public void setPriority(int priority) {
                         ItemConnection.this.priority = priority;
+                        helper.callMarkDirty();
+                    }
+
+                    @Override
+                    public boolean canUse(PlayerEntity player) {
+                        // Check that the BE is within distance
+                        if (!helper.isWithinUseDistance(player)) {
+                            return false;
+                        }
+                        // Check that this connection still exists
+                        return helper.doesNodeStillExist(ItemNetworkNode.this) && connections.contains(ItemConnection.this);
                     }
                 };
                 this.pipeType = pipeType;

@@ -35,6 +35,7 @@ import alexiil.mc.lib.attributes.fluid.impl.EmptyFluidTransferable;
 import aztech.modern_industrialization.ModernIndustrialization;
 import aztech.modern_industrialization.pipes.api.PipeEndpointType;
 import aztech.modern_industrialization.pipes.api.PipeNetworkNode;
+import aztech.modern_industrialization.pipes.gui.IPipeScreenHandlerHelper;
 import aztech.modern_industrialization.transferapi.FluidTransferHelper;
 import aztech.modern_industrialization.util.NbtHelper;
 import java.util.*;
@@ -204,10 +205,10 @@ public class FluidNetworkNode extends PipeNetworkNode {
     }
 
     @Override
-    public ExtendedScreenHandlerFactory getConnectionGui(Direction guiDirection, Runnable markDirty, Runnable sync) {
+    public ExtendedScreenHandlerFactory getConnectionGui(Direction guiDirection, IPipeScreenHandlerHelper helper) {
         for (FluidConnection connection : connections) {
             if (connection.direction == guiDirection) {
-                return connection.new ScreenHandlerFactory(markDirty, sync, getType().getIdentifier().getPath());
+                return connection.new ScreenHandlerFactory(helper, getType().getIdentifier().getPath());
             }
         }
         return null;
@@ -236,7 +237,7 @@ public class FluidNetworkNode extends PipeNetworkNode {
             private final FluidPipeInterface iface;
             private final String pipeType;
 
-            private ScreenHandlerFactory(Runnable markDirty, Runnable sync, String pipeType) {
+            private ScreenHandlerFactory(IPipeScreenHandlerHelper helper, String pipeType) {
                 this.iface = new FluidPipeInterface() {
                     @Override
                     public Fluid getNetworkFluid() {
@@ -256,7 +257,7 @@ public class FluidNetworkNode extends PipeNetworkNode {
                             } else {
                                 network.setFluid(fluid);
                             }
-                            markDirty.run();
+                            helper.callMarkDirty();
                         }
                     }
 
@@ -269,8 +270,8 @@ public class FluidNetworkNode extends PipeNetworkNode {
                     public void setConnectionType(int type) {
                         if (0 <= type && type < 3) {
                             FluidConnection.this.type = decodeConnectionType(type);
-                            markDirty.run();
-                            sync.run();
+                            helper.callMarkDirty();
+                            helper.callSync();
                         }
                     }
 
@@ -282,7 +283,17 @@ public class FluidNetworkNode extends PipeNetworkNode {
                     @Override
                     public void setPriority(int priority) {
                         FluidConnection.this.priority = priority;
-                        sync.run();
+                        helper.callMarkDirty();
+                    }
+
+                    @Override
+                    public boolean canUse(PlayerEntity player) {
+                        // Check that the BE is within distance
+                        if (!helper.isWithinUseDistance(player)) {
+                            return false;
+                        }
+                        // Check that this connection still exists
+                        return helper.doesNodeStillExist(FluidNetworkNode.this) && connections.contains(FluidNetworkNode.FluidConnection.this);
                     }
                 };
                 this.pipeType = pipeType;

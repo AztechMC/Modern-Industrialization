@@ -28,6 +28,7 @@ import static net.minecraft.util.math.Direction.NORTH;
 import aztech.modern_industrialization.api.FastBlockEntity;
 import aztech.modern_industrialization.pipes.MIPipes;
 import aztech.modern_industrialization.pipes.api.*;
+import aztech.modern_industrialization.pipes.gui.IPipeScreenHandlerHelper;
 import aztech.modern_industrialization.util.ChunkUnloadBlockEntity;
 import aztech.modern_industrialization.util.NbtHelper;
 import aztech.modern_industrialization.util.RenderHelper;
@@ -38,6 +39,7 @@ import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.ItemEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Identifier;
@@ -52,7 +54,7 @@ import net.minecraft.util.shape.VoxelShapes;
  */
 // TODO: add isClient checks wherever it is necessary
 public class PipeBlockEntity extends FastBlockEntity
-        implements Tickable, BlockEntityClientSerializable, RenderAttachmentBlockEntity, ChunkUnloadBlockEntity {
+        implements IPipeScreenHandlerHelper, Tickable, BlockEntityClientSerializable, RenderAttachmentBlockEntity, ChunkUnloadBlockEntity {
     private static final int MAX_PIPES = 3;
     private static final VoxelShape[][][] SHAPE_CACHE;
     static final VoxelShape DEFAULT_SHAPE;
@@ -63,7 +65,7 @@ public class PipeBlockEntity extends FastBlockEntity
     /**
      * The loaded nodes, server-side only.
      */
-    private SortedSet<PipeNetworkNode> pipes = new TreeSet<>(Comparator.comparing(PipeNetworkNode::getType));
+    private final SortedSet<PipeNetworkNode> pipes = new TreeSet<>(Comparator.comparing(PipeNetworkNode::getType));
     /**
      * The rendered connections, both client-side for rendering and server-side for
      * bounds check.
@@ -76,7 +78,7 @@ public class PipeBlockEntity extends FastBlockEntity
 
     // Because we can't access the PipeNetworksComponent in fromTag because the
     // world is null, we defer the node loading.
-    private List<Pair<PipeNetworkType, PipeNetworkNode>> unloadedPipes = new ArrayList<>();
+    private final List<Pair<PipeNetworkType, PipeNetworkNode>> unloadedPipes = new ArrayList<>();
 
     private void loadPipes() {
         boolean changed = false;
@@ -210,7 +212,7 @@ public class PipeBlockEntity extends FastBlockEntity
     public ExtendedScreenHandlerFactory getGui(PipeNetworkType type, Direction direction) {
         for (PipeNetworkNode pipe : pipes) {
             if (pipe.getType() == type) {
-                return pipe.getConnectionGui(direction, this::markDirty, this::sync);
+                return pipe.getConnectionGui(direction, this);
             }
         }
         return null;
@@ -335,6 +337,31 @@ public class PipeBlockEntity extends FastBlockEntity
             i++;
         }
         return new RenderAttachment(types, renderedConnections, customData);
+    }
+
+    @Override
+    public void callSync() {
+        sync();
+    }
+
+    @Override
+    public void callMarkDirty() {
+        markDirty();
+    }
+
+    @Override
+    public boolean isWithinUseDistance(PlayerEntity player) {
+        if (this.world.getBlockEntity(this.pos) != this) {
+            return false;
+        } else {
+            return player.squaredDistanceTo((double) this.pos.getX() + 0.5D, (double) this.pos.getY() + 0.5D,
+                    (double) this.pos.getZ() + 0.5D) <= 64.0D;
+        }
+    }
+
+    @Override
+    public boolean doesNodeStillExist(PipeNetworkNode node) {
+        return pipes.contains(node);
     }
 
     static class RenderAttachment {

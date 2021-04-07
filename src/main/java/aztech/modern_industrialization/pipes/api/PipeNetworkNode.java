@@ -23,6 +23,7 @@
  */
 package aztech.modern_industrialization.pipes.api;
 
+import aztech.modern_industrialization.pipes.gui.IPipeScreenHandlerHelper;
 import java.util.List;
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
 import net.minecraft.item.ItemStack;
@@ -50,7 +51,7 @@ public abstract class PipeNetworkNode {
      * Get the connection screen handler factory, or null if there is not gui for
      * this connection.
      */
-    public ExtendedScreenHandlerFactory getConnectionGui(Direction direction, Runnable markDirty, Runnable sync) {
+    public ExtendedScreenHandlerFactory getConnectionGui(Direction direction, IPipeScreenHandlerHelper helper) {
         return null;
     }
 

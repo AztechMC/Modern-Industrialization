@@ -25,6 +25,7 @@ package aztech.modern_industrialization.pipes.fluid;
 
 import aztech.modern_industrialization.pipes.gui.iface.ConnectionTypeInterface;
 import aztech.modern_industrialization.pipes.gui.iface.PriorityInterface;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.util.registry.Registry;
@@ -33,6 +34,8 @@ public interface FluidPipeInterface extends ConnectionTypeInterface, PriorityInt
     Fluid getNetworkFluid();
 
     void setNetworkFluid(Fluid fluid);
+
+    boolean canUse(PlayerEntity player);
 
     static FluidPipeInterface ofBuf(PacketByteBuf buf) {
         Fluid[] networkFluid = new Fluid[] { Registry.FLUID.get(buf.readVarInt()) };
@@ -67,6 +70,11 @@ public interface FluidPipeInterface extends ConnectionTypeInterface, PriorityInt
             @Override
             public void setPriority(int p) {
                 priority[0] = p;
+            }
+
+            @Override
+            public boolean canUse(PlayerEntity player) {
+                return true;
             }
         };
     }

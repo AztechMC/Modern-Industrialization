@@ -122,8 +122,8 @@ public abstract class MachineBlockEntity extends FastBlockEntity
         buf.writeInt(inv.itemStacks.size());
         buf.writeInt(inv.fluidStacks.size());
         CompoundTag tag = new CompoundTag();
-        NbtHelper.putList(tag, "items", inv.itemStacks, ConfigurableItemStack::writeToTag);
-        NbtHelper.putList(tag, "fluids", inv.fluidStacks, ConfigurableFluidStack::writeToTag);
+        NbtHelper.putList(tag, "items", inv.itemStacks, ConfigurableItemStack::toNbt);
+        NbtHelper.putList(tag, "fluids", inv.fluidStacks, ConfigurableFluidStack::toNbt);
         buf.writeCompoundTag(tag);
         // Write slot positions
         inv.itemPositions.write(buf);

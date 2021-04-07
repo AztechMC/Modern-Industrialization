@@ -43,7 +43,7 @@ import net.minecraft.screen.slot.Slot;
 /**
  * An item stack that can be configured.
  */
-public class ConfigurableItemStack extends SnapshotParticipant<ItemState> implements StorageView<ItemKey> {
+public class ConfigurableItemStack extends SnapshotParticipant<ItemState> implements StorageView<ItemKey>, IConfigurableSlot {
     private ItemKey key = ItemKey.empty();
     private int count = 0;
     private Item lockedItem = null;
@@ -93,6 +93,11 @@ public class ConfigurableItemStack extends SnapshotParticipant<ItemState> implem
         this.playerExtract = other.playerExtract;
         this.pipesInsert = other.pipesInsert;
         this.pipesExtract = other.pipesExtract;
+    }
+
+    @Override
+    public SlotConfig getConfig() {
+        return new SlotConfig(playerLockable, playerInsert, playerExtract, pipesInsert, pipesExtract);
     }
 
     @Override
@@ -200,7 +205,8 @@ public class ConfigurableItemStack extends SnapshotParticipant<ItemState> implem
         return playerLockable;
     }
 
-    public CompoundTag writeToTag(CompoundTag tag) {
+    public CompoundTag toNbt() {
+        CompoundTag tag = new CompoundTag();
         tag.put("key", key.toNbt());
         tag.putInt("count", count);
         if (lockedItem != null) {
@@ -217,26 +223,28 @@ public class ConfigurableItemStack extends SnapshotParticipant<ItemState> implem
         return tag;
     }
 
-    public void readFromTag(CompoundTag tag) {
+    public static ConfigurableItemStack fromNbt(CompoundTag tag) {
+        ConfigurableItemStack is = new ConfigurableItemStack();
         // compat
         if (tag.contains("key")) {
-            key = ItemKey.fromNbt(tag.getCompound("key"));
-            count = tag.getInt("count");
+            is.key = ItemKey.fromNbt(tag.getCompound("key"));
+            is.count = tag.getInt("count");
         } else {
             ItemStack stack = ItemStack.fromTag(tag);
-            key = ItemKey.of(stack);
-            count = stack.getCount();
+            is.key = ItemKey.of(stack);
+            is.count = stack.getCount();
         }
         if (tag.contains("lockedItem")) {
-            lockedItem = NbtHelper.getItem(tag, "lockedItem");
+            is.lockedItem = NbtHelper.getItem(tag, "lockedItem");
         }
-        machineLocked = tag.getBoolean("machineLocked");
-        playerLocked = tag.getBoolean("playerLocked");
-        playerLockable = tag.getBoolean("playerLockable");
-        playerInsert = tag.getBoolean("playerInsert");
-        playerExtract = tag.getBoolean("playerExtract");
-        pipesInsert = tag.getBoolean("pipesInsert");
-        pipesExtract = tag.getBoolean("pipesExtract");
+        is.machineLocked = tag.getBoolean("machineLocked");
+        is.playerLocked = tag.getBoolean("playerLocked");
+        is.playerLockable = tag.getBoolean("playerLockable");
+        is.playerInsert = tag.getBoolean("playerInsert");
+        is.playerExtract = tag.getBoolean("playerExtract");
+        is.pipesInsert = tag.getBoolean("pipesInsert");
+        is.pipesExtract = tag.getBoolean("pipesExtract");
+        return is;
     }
 
     /**

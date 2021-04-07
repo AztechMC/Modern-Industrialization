@@ -34,7 +34,6 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.ScreenHandlerType;
@@ -75,7 +74,7 @@ public abstract class ConfigurableScreenHandler extends ScreenHandler {
                     PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
                     buf.writeInt(syncId);
                     buf.writeInt(i);
-                    buf.writeCompoundTag(trackedItems.get(i).writeToTag(new CompoundTag()));
+                    buf.writeCompoundTag(trackedItems.get(i).toNbt());
                     ServerSidePacketRegistry.INSTANCE.sendToPlayer(player, ConfigurableInventoryPackets.UPDATE_ITEM_SLOT, buf);
                 }
             }
@@ -85,7 +84,7 @@ public abstract class ConfigurableScreenHandler extends ScreenHandler {
                     PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
                     buf.writeInt(syncId);
                     buf.writeInt(i);
-                    buf.writeCompoundTag(trackedFluids.get(i).writeToTag(new CompoundTag()));
+                    buf.writeCompoundTag(trackedFluids.get(i).toNbt());
                     ServerSidePacketRegistry.INSTANCE.sendToPlayer(player, ConfigurableInventoryPackets.UPDATE_FLUID_SLOT, buf);
                 }
             }

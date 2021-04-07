@@ -40,7 +40,7 @@ import net.minecraft.screen.slot.Slot;
 /**
  * A fluid stack that can be configured.
  */
-public class ConfigurableFluidStack extends SnapshotParticipant<FluidState> implements StorageView<Fluid> {
+public class ConfigurableFluidStack extends SnapshotParticipant<FluidState> implements StorageView<Fluid>, IConfigurableSlot {
     private Fluid fluid = Fluids.EMPTY;
     private long amount = 0;
     private long capacity;
@@ -102,6 +102,11 @@ public class ConfigurableFluidStack extends SnapshotParticipant<FluidState> impl
         this.playerExtract = other.playerExtract;
         this.pipesInsert = other.pipesInsert;
         this.pipesExtract = other.pipesExtract;
+    }
+
+    @Override
+    public SlotConfig getConfig() {
+        return new SlotConfig(playerLockable, playerInsert, playerExtract, pipesInsert, pipesExtract);
     }
 
     @Override
@@ -186,7 +191,8 @@ public class ConfigurableFluidStack extends SnapshotParticipant<FluidState> impl
         return machineLocked;
     }
 
-    public CompoundTag writeToTag(CompoundTag tag) {
+    public CompoundTag toNbt() {
+        CompoundTag tag = new CompoundTag();
         NbtHelper.putFluid(tag, "fluid", fluid);
         tag.putLong("amount_ftl", amount);
         tag.putLong("capacity_ftl", capacity);
@@ -204,28 +210,30 @@ public class ConfigurableFluidStack extends SnapshotParticipant<FluidState> impl
         return tag;
     }
 
-    public void readFromTag(CompoundTag tag) {
-        fluid = NbtHelper.getFluidCompatible(tag, "fluid");
+    public static ConfigurableFluidStack fromNbt(CompoundTag tag) {
+        ConfigurableFluidStack fs = new ConfigurableFluidStack(0);
+        fs.fluid = NbtHelper.getFluidCompatible(tag, "fluid");
         if (tag.contains("amount")) {
-            amount = tag.getInt("amount") * 81;
-            capacity = tag.getInt("capacity") * 81;
+            fs.amount = tag.getInt("amount") * 81;
+            fs.capacity = tag.getInt("capacity") * 81;
         } else {
-            amount = tag.getLong("amount_ftl");
-            capacity = tag.getLong("capacity_ftl");
+            fs.amount = tag.getLong("amount_ftl");
+            fs.capacity = tag.getLong("capacity_ftl");
         }
         if (tag.contains("lockedFluid")) {
-            lockedFluid = NbtHelper.getFluidCompatible(tag, "lockedFluid");
+            fs.lockedFluid = NbtHelper.getFluidCompatible(tag, "lockedFluid");
         }
-        machineLocked = tag.getBoolean("machineLocked");
-        playerLocked = tag.getBoolean("playerLocked");
-        playerLockable = tag.getBoolean("playerLockable");
-        playerInsert = tag.getBoolean("playerInsert");
-        playerExtract = tag.getBoolean("playerExtract");
-        pipesInsert = tag.getBoolean("pipesInsert");
-        pipesExtract = tag.getBoolean("pipesExtract");
-        if (fluid == Fluids.EMPTY) {
-            amount = 0;
+        fs.machineLocked = tag.getBoolean("machineLocked");
+        fs.playerLocked = tag.getBoolean("playerLocked");
+        fs.playerLockable = tag.getBoolean("playerLockable");
+        fs.playerInsert = tag.getBoolean("playerInsert");
+        fs.playerExtract = tag.getBoolean("playerExtract");
+        fs.pipesInsert = tag.getBoolean("pipesInsert");
+        fs.pipesExtract = tag.getBoolean("pipesExtract");
+        if (fs.fluid == Fluids.EMPTY) {
+            fs.amount = 0;
         }
+        return fs;
     }
 
     public void enableMachineLock(Fluid lockedFluid) {

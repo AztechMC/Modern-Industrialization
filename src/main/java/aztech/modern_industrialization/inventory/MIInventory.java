@@ -36,6 +36,7 @@ import aztech.modern_industrialization.machines.IComponent;
 import aztech.modern_industrialization.transferapi.impl.compat.WrappedFluidStorage;
 import aztech.modern_industrialization.transferapi.impl.compat.WrappedItemStorage;
 import aztech.modern_industrialization.util.NbtHelper;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import net.minecraft.nbt.CompoundTag;
@@ -96,29 +97,19 @@ public final class MIInventory implements IComponent {
     }
 
     public void writeNbt(CompoundTag tag) {
-        NbtHelper.putList(tag, "items", itemStacks, ConfigurableItemStack::writeToTag);
-        NbtHelper.putList(tag, "fluids", fluidStacks, ConfigurableFluidStack::writeToTag);
+        NbtHelper.putList(tag, "items", itemStacks, ConfigurableItemStack::toNbt);
+        NbtHelper.putList(tag, "fluids", fluidStacks, ConfigurableFluidStack::toNbt);
     }
 
     public void readNbt(CompoundTag tag) {
-        // This is a failsafe in case the number of slots in a machine changed
-        // When this happens, we destroy all items/fluids, but at least we don't crash
-        // the world.
-        // TODO: find a better solution?
-        List<ConfigurableItemStack> itemStacksCopy = ConfigurableItemStack.copyList(itemStacks);
-        List<ConfigurableFluidStack> fluidStacksCopy = ConfigurableFluidStack.copyList(fluidStacks);
+        List<ConfigurableItemStack> newItemStacks = new ArrayList<>();
+        List<ConfigurableFluidStack> newFluidStacks = new ArrayList<>();
 
-        NbtHelper.getList(tag, "items", itemStacks, ConfigurableItemStack::readFromTag);
-        NbtHelper.getList(tag, "fluids", fluidStacks, ConfigurableFluidStack::readFromTag);
+        NbtHelper.getList(tag, "items", newItemStacks, ConfigurableItemStack::fromNbt);
+        NbtHelper.getList(tag, "fluids", newFluidStacks, ConfigurableFluidStack::fromNbt);
 
-        if (itemStacksCopy.size() != itemStacks.size()) {
-            itemStacks.clear();
-            itemStacks.addAll(itemStacksCopy);
-        }
-        if (fluidStacksCopy.size() != fluidStacks.size()) {
-            fluidStacks.clear();
-            fluidStacks.addAll(fluidStacksCopy);
-        }
+        SlotConfig.readSlotList(itemStacks, newItemStacks);
+        SlotConfig.readSlotList(fluidStacks, newFluidStacks);
     }
 
     static {

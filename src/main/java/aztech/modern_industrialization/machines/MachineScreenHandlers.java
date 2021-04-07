@@ -37,8 +37,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
@@ -143,13 +141,11 @@ public class MachineScreenHandlers {
         // Inventory
         int itemStackCount = buf.readInt();
         int fluidStackCount = buf.readInt();
-        List<ConfigurableItemStack> itemStacks = IntStream.range(0, itemStackCount).mapToObj(i -> new ConfigurableItemStack())
-                .collect(Collectors.toList());
-        List<ConfigurableFluidStack> fluidStacks = IntStream.range(0, fluidStackCount).mapToObj(i -> new ConfigurableFluidStack(0))
-                .collect(Collectors.toList());
+        List<ConfigurableItemStack> itemStacks = new ArrayList<>();
+        List<ConfigurableFluidStack> fluidStacks = new ArrayList<>();
         CompoundTag tag = buf.readCompoundTag();
-        NbtHelper.getList(tag, "items", itemStacks, ConfigurableItemStack::readFromTag);
-        NbtHelper.getList(tag, "fluids", fluidStacks, ConfigurableFluidStack::readFromTag);
+        NbtHelper.getList(tag, "items", itemStacks, ConfigurableItemStack::fromNbt);
+        NbtHelper.getList(tag, "fluids", fluidStacks, ConfigurableFluidStack::fromNbt);
         // Slot positions
         SlotPositions itemPositions = SlotPositions.read(buf);
         SlotPositions fluidPositions = SlotPositions.read(buf);

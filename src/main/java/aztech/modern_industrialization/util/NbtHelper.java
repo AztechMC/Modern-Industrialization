@@ -25,8 +25,8 @@ package aztech.modern_industrialization.util;
 
 import aztech.modern_industrialization.pipes.api.PipeEndpointType;
 import java.util.List;
-import java.util.function.BiConsumer;
-import java.util.function.BiFunction;
+import java.util.function.Function;
+import net.fabricmc.fabric.api.util.NbtType;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.item.Item;
@@ -92,21 +92,20 @@ public class NbtHelper {
         return connections;
     }
 
-    public static <T> void putList(CompoundTag tag, String key, List<T> list, BiFunction<T, CompoundTag, CompoundTag> encoder) {
+    public static <T> void putList(CompoundTag tag, String key, List<T> list, Function<T, CompoundTag> encoder) {
         ListTag listTag = new ListTag();
-        for (int i = 0; i < list.size(); ++i) {
-            CompoundTag elementTag = new CompoundTag();
-            elementTag.putByte("Slot", (byte) i);
-            listTag.add(encoder.apply(list.get(i), elementTag));
+        for (T t : list) {
+            listTag.add(encoder.apply(t));
         }
         tag.put(key, listTag);
     }
 
-    public static <T> void getList(CompoundTag tag, String key, List<T> list, BiConsumer<T, CompoundTag> decoder) {
-        ListTag listTag = tag.getList(key, (new CompoundTag()).getType());
-        for (int i = 0; i < list.size(); ++i) {
+    public static <T> void getList(CompoundTag tag, String key, List<T> list, Function<CompoundTag, T> decoder) {
+        list.clear();
+        ListTag listTag = tag.getList(key, NbtType.COMPOUND);
+        for (int i = 0; i < listTag.size(); ++i) {
             CompoundTag elementTag = listTag.getCompound(i);
-            decoder.accept(list.get(elementTag.getByte("Slot")), elementTag);
+            list.add(decoder.apply(elementTag));
         }
     }
 

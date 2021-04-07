@@ -4,7 +4,7 @@
   "duration": 400,
   "item_inputs": [
     {
-      "item" : "modern_industrialization:silicon_waffer",
+      "item" : "modern_industrialization:silicon_wafer",
       "amount": 1
     },
     {

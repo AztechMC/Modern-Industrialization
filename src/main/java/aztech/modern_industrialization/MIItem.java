@@ -97,7 +97,7 @@ public final class MIItem {
     public static final Item ITEM_MEMORY_MANAGEMENT_UNIT = of("memory_management_unit");
 
     public static final Item ITEM_MONOCRYSTALLINE_SILICON = of("monocrystalline_silicon");
-    public static final Item ITEM_SILICON_WAFFER = of("silicon_waffer");
+    public static final Item ITEM_SILICON_WAFER = of("silicon_wafer");
 
     public static final Item BASIC_UPGRADE = of("basic_upgrade");
     public static final Item ADVANCED_UPGRADE = of("advanced_upgrade");

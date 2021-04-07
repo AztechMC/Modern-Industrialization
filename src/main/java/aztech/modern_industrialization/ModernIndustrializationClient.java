@@ -23,10 +23,13 @@
  */
 package aztech.modern_industrialization;
 
+import static net.fabricmc.fabric.api.client.command.v1.ClientCommandManager.literal;
+
 import aztech.modern_industrialization.api.energy.CableTier;
 import aztech.modern_industrialization.api.pipes.item.SpeedUpgrade;
 import aztech.modern_industrialization.blocks.forgehammer.ForgeHammerScreen;
 import aztech.modern_industrialization.blocks.tank.MITanks;
+import aztech.modern_industrialization.debug.MissingTranslationsCommand;
 import aztech.modern_industrialization.inventory.ConfigurableInventoryPacketHandlers;
 import aztech.modern_industrialization.inventory.ConfigurableInventoryPackets;
 import aztech.modern_industrialization.items.armor.ClientKeyHandler;
@@ -45,6 +48,7 @@ import aztech.modern_industrialization.pipes.MIPipesClient;
 import aztech.modern_industrialization.pipes.impl.PipeItem;
 import aztech.modern_industrialization.util.TextHelper;
 import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.fabric.api.client.command.v1.ClientCommandManager;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
@@ -80,6 +84,7 @@ public class ModernIndustrializationClient implements ClientModInitializer {
         HudRenderCallback.EVENT.register(HudRenderer::onRenderHud);
         registerBuiltinResourcePack();
         setupTooltips();
+        setupClientCommands();
 
         ModernIndustrialization.LOGGER.info("Modern Industrialization client setup done!");
     }
@@ -140,5 +145,10 @@ public class ModernIndustrializationClient implements ClientModInitializer {
             }
 
         }));
+    }
+
+    private void setupClientCommands() {
+        ClientCommandManager.DISPATCHER
+                .register(literal("miclient").then(literal("dump_missing_translations").executes(MissingTranslationsCommand::run)));
     }
 }

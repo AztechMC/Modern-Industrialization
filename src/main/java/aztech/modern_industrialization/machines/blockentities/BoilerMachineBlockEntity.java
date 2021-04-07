@@ -75,14 +75,12 @@ public class BoilerMachineBlockEntity extends MachineBlockEntity implements Tick
     protected int burningTick, burningTickProgress, temperature;
 
     protected final OrientationComponent orientation;
-    protected final ProgressBar.Parameters PROGRESS_BAR;
-    protected final TemperatureBar.Parameters TEMPERATURE_BAR;
 
     protected IsActiveComponent isActiveComponent;
 
     public BoilerMachineBlockEntity(BlockEntityType<?> type, boolean bronze) {
         super(type, new MachineGuiParameters.Builder(bronze ? "bronze_boiler" : "steel_boiler", true).backgroundHeight(180).build());
-        orientation = new OrientationComponent(new OrientationComponent.Params(true, false, false));
+        orientation = new OrientationComponent(new OrientationComponent.Params(false, false, false));
 
         int capacity = 81000 * (bronze ? 2 * MITanks.BRONZE.bucketCapacity : 2 * MITanks.STEEL.bucketCapacity);
 
@@ -100,10 +98,10 @@ public class BoilerMachineBlockEntity extends MachineBlockEntity implements Tick
         this.temperatureMax = bronze ? 1100 : 2100;
         this.isActiveComponent = new IsActiveComponent();
 
-        PROGRESS_BAR = new ProgressBar.Parameters(133, 50, "furnace", true);
-        TEMPERATURE_BAR = new TemperatureBar.Parameters(42, 75, temperatureMax);
-        registerClientComponent(new ProgressBar.Server(PROGRESS_BAR, () -> (float) burningTick / burningTickProgress));
-        registerClientComponent(new TemperatureBar.Server(TEMPERATURE_BAR, () -> temperature));
+        ProgressBar.Parameters progressParams = new ProgressBar.Parameters(133, 50, "furnace", true);
+        TemperatureBar.Parameters temperatureParams = new TemperatureBar.Parameters(42, 75, temperatureMax);
+        registerClientComponent(new ProgressBar.Server(progressParams, () -> (float) burningTick / burningTickProgress));
+        registerClientComponent(new TemperatureBar.Server(temperatureParams, () -> temperature));
 
         this.registerComponents(orientation, inventory, isActiveComponent, new IComponent() {
 

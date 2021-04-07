@@ -56,8 +56,9 @@ public final class MIInventory implements IComponent {
 
     public MIInventory(List<ConfigurableItemStack> itemStacks, List<ConfigurableFluidStack> fluidStacks, SlotPositions itemPositions,
             SlotPositions fluidPositions) {
-        this.itemStacks = itemStacks;
-        this.fluidStacks = fluidStacks;
+        // Must be array lists to allow using .set() in readNbt()
+        this.itemStacks = new ArrayList<>(itemStacks);
+        this.fluidStacks = new ArrayList<>(fluidStacks);
         this.itemStorage = new MIItemStorage(itemStacks);
         this.fluidStorage = new MIFluidStorage(fluidStacks);
         this.itemPositions = itemPositions;

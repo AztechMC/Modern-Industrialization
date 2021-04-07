@@ -29,9 +29,7 @@ import aztech.modern_industrialization.pipes.api.PipeNetworkNode;
 import aztech.modern_industrialization.pipes.api.PipeNetworkType;
 import aztech.modern_industrialization.util.MobSpawning;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
 import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.MinecraftClient;
@@ -137,17 +135,12 @@ public class PipeBlock extends Block implements BlockEntityProvider {
     public List<ItemStack> getDroppedStacks(BlockState state, LootContext.Builder builder) {
         LootContext lootContext = builder.parameter(LootContextParameters.BLOCK_STATE, state).build(LootContextTypes.BLOCK);
         PipeBlockEntity pipeEntity = (PipeBlockEntity) lootContext.get(LootContextParameters.BLOCK_ENTITY);
-        ItemStack tool = lootContext.get(LootContextParameters.TOOL);
-        if (tool != null && FabricToolTags.PICKAXES.contains(tool.getItem())) {
-            List<ItemStack> droppedStacks = new ArrayList<>();
-            for (PipeNetworkNode node : pipeEntity.getNodes()) {
-                droppedStacks.add(new ItemStack(MIPipes.INSTANCE.getPipeItem(node.getType())));
-                node.appendDroppedStacks(droppedStacks);
-            }
-            return droppedStacks;
-        } else {
-            return Collections.emptyList();
+        List<ItemStack> droppedStacks = new ArrayList<>();
+        for (PipeNetworkNode node : pipeEntity.getNodes()) {
+            droppedStacks.add(new ItemStack(MIPipes.INSTANCE.getPipeItem(node.getType())));
+            node.appendDroppedStacks(droppedStacks);
         }
+        return droppedStacks;
     }
 
     @Override

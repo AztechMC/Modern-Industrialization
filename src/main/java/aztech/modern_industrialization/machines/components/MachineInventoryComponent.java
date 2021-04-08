@@ -60,22 +60,22 @@ public class MachineInventoryComponent implements CrafterComponent.Inventory, IC
 
     @Override
     public List<ConfigurableItemStack> getItemInputs() {
-        return inventory.itemStacks.subList(0, itemInputCount);
+        return inventory.getItemStacks().subList(0, itemInputCount);
     }
 
     @Override
     public List<ConfigurableItemStack> getItemOutputs() {
-        return inventory.itemStacks.subList(itemInputCount, itemInputCount + itemOutputCount);
+        return inventory.getItemStacks().subList(itemInputCount, itemInputCount + itemOutputCount);
     }
 
     @Override
     public List<ConfigurableFluidStack> getFluidInputs() {
-        return inventory.fluidStacks.subList(0, fluidInputCount);
+        return inventory.getFluidStacks().subList(0, fluidInputCount);
     }
 
     @Override
     public List<ConfigurableFluidStack> getFluidOutputs() {
-        return inventory.fluidStacks.subList(fluidInputCount, fluidInputCount + fluidOutputCount);
+        return inventory.getFluidStacks().subList(fluidInputCount, fluidInputCount + fluidOutputCount);
     }
 
     @Override

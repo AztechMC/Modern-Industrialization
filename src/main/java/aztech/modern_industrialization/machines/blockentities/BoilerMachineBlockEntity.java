@@ -153,7 +153,7 @@ public class BoilerMachineBlockEntity extends MachineBlockEntity implements Tick
         boolean newActive = false;
 
         if (burningTick == 0) {
-            ConfigurableItemStack stack = inventory.itemStacks.get(0);
+            ConfigurableItemStack stack = inventory.getItemStacks().get(0);
             Item fuel = stack.getItemKey().getItem();
             if (ItemStackHelper.consumeFuel(stack, true)) {
                 Integer fuelTime = FuelRegistryImpl.INSTANCE.get(fuel);
@@ -178,13 +178,15 @@ public class BoilerMachineBlockEntity extends MachineBlockEntity implements Tick
 
         if (temperature > 100) {
             int steamProduction = 81 * ((8 * (temperature - 100)) / 1000);
-            if (inventory.fluidStacks.get(0).getAmount() > 0) {
-                long remSpace = inventory.fluidStacks.get(1).getRemainingSpace();
-                long waterAvail = inventory.fluidStacks.get(0).getAmount();
+            ConfigurableFluidStack waterStack = inventory.getFluidStacks().get(0);
+            ConfigurableFluidStack steamStack = inventory.getFluidStacks().get(1);
+            if (waterStack.getAmount() > 0) {
+                long remSpace = steamStack.getRemainingSpace();
+                long waterAvail = waterStack.getAmount();
                 long actualProduced = Math.min(Math.min(steamProduction, remSpace), waterAvail * 16);
                 if (actualProduced > 0) {
-                    inventory.fluidStacks.get(1).increment(actualProduced);
-                    inventory.fluidStacks.get(0).decrement((long) Math.ceil(actualProduced / 16f));
+                    steamStack.increment(actualProduced);
+                    waterStack.decrement((long) Math.ceil(actualProduced / 16f));
                 }
             }
         }

@@ -47,20 +47,20 @@ import net.minecraft.world.World;
 public final class MIInventory implements IComponent {
     public static final MIInventory EMPTY;
 
-    public final List<ConfigurableItemStack> itemStacks;
-    public final List<ConfigurableFluidStack> fluidStacks;
     public final MIItemStorage itemStorage;
     public final MIFluidStorage fluidStorage;
     public final SlotPositions itemPositions;
     public final SlotPositions fluidPositions;
 
+    /**
+     * Build a new MI inventory. If you need to access the stacks, make sure to
+     * reference them through this inventory and not directly!
+     */
     public MIInventory(List<ConfigurableItemStack> itemStacks, List<ConfigurableFluidStack> fluidStacks, SlotPositions itemPositions,
             SlotPositions fluidPositions) {
         // Must be array lists to allow using .set() in readNbt()
-        this.itemStacks = new ArrayList<>(itemStacks);
-        this.fluidStacks = new ArrayList<>(fluidStacks);
-        this.itemStorage = new MIItemStorage(itemStacks);
-        this.fluidStorage = new MIFluidStorage(fluidStacks);
+        this.itemStorage = new MIItemStorage(new ArrayList<>(itemStacks));
+        this.fluidStorage = new MIFluidStorage(new ArrayList<>(fluidStacks));
         this.itemPositions = itemPositions;
         this.fluidPositions = fluidPositions;
         if (itemPositions.size() != itemStacks.size()) {
@@ -71,6 +71,14 @@ public final class MIInventory implements IComponent {
             throw new IllegalArgumentException(
                     "Mismatched fluid slots and positions. Slot count: " + fluidStacks.size() + ", position count: " + fluidPositions.size());
         }
+    }
+
+    public List<ConfigurableItemStack> getItemStacks() {
+        return itemStorage.stacks;
+    }
+
+    public List<ConfigurableFluidStack> getFluidStacks() {
+        return fluidStorage.stacks;
     }
 
     public void autoExtractItems(World world, BlockPos pos, Direction direction) {
@@ -98,8 +106,8 @@ public final class MIInventory implements IComponent {
     }
 
     public void writeNbt(CompoundTag tag) {
-        NbtHelper.putList(tag, "items", itemStacks, ConfigurableItemStack::toNbt);
-        NbtHelper.putList(tag, "fluids", fluidStacks, ConfigurableFluidStack::toNbt);
+        NbtHelper.putList(tag, "items", itemStorage.stacks, ConfigurableItemStack::toNbt);
+        NbtHelper.putList(tag, "fluids", fluidStorage.stacks, ConfigurableFluidStack::toNbt);
     }
 
     public void readNbt(CompoundTag tag) {
@@ -109,8 +117,8 @@ public final class MIInventory implements IComponent {
         NbtHelper.getList(tag, "items", newItemStacks, ConfigurableItemStack::fromNbt);
         NbtHelper.getList(tag, "fluids", newFluidStacks, ConfigurableFluidStack::fromNbt);
 
-        SlotConfig.readSlotList(itemStacks, newItemStacks);
-        SlotConfig.readSlotList(fluidStacks, newFluidStacks);
+        SlotConfig.readSlotList(itemStorage.stacks, newItemStacks);
+        SlotConfig.readSlotList(fluidStorage.stacks, newFluidStacks);
     }
 
     static {

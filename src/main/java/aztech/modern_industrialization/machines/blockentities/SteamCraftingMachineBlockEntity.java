@@ -51,7 +51,7 @@ public class SteamCraftingMachineBlockEntity extends AbstractCraftingMachineBloc
 
     @Override
     public long consumeEu(long max, Simulation simulation) {
-        return SteamHelper.consumeSteamEu(getInventory().fluidStacks, max, simulation);
+        return SteamHelper.consumeSteamEu(getInventory().getFluidStacks(), max, simulation);
     }
 
     @Override

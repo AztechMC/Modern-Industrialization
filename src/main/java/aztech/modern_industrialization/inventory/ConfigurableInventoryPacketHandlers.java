@@ -39,7 +39,7 @@ public class ConfigurableInventoryPacketHandlers {
                 ScreenHandler sh = mc.player.currentScreenHandler;
                 if (sh.syncId == syncId) {
                     ConfigurableScreenHandler csh = (ConfigurableScreenHandler) sh;
-                    csh.inventory.itemStacks.set(stackId, ConfigurableItemStack.fromNbt(tag));
+                    csh.inventory.getItemStacks().set(stackId, ConfigurableItemStack.fromNbt(tag));
                 }
             });
         };
@@ -52,7 +52,7 @@ public class ConfigurableInventoryPacketHandlers {
                 ScreenHandler sh = mc.player.currentScreenHandler;
                 if (sh.syncId == syncId) {
                     ConfigurableScreenHandler csh = (ConfigurableScreenHandler) sh;
-                    csh.inventory.fluidStacks.set(stackId, ConfigurableFluidStack.fromNbt(tag));
+                    csh.inventory.getFluidStacks().set(stackId, ConfigurableFluidStack.fromNbt(tag));
                 }
             });
         };

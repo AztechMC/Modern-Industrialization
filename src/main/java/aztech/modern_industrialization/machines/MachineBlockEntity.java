@@ -119,11 +119,11 @@ public abstract class MachineBlockEntity extends FastBlockEntity
     public final void writeScreenOpeningData(ServerPlayerEntity player, PacketByteBuf buf) {
         // Write inventory
         MIInventory inv = getInventory();
-        buf.writeInt(inv.itemStacks.size());
-        buf.writeInt(inv.fluidStacks.size());
+        buf.writeInt(inv.getItemStacks().size());
+        buf.writeInt(inv.getFluidStacks().size());
         CompoundTag tag = new CompoundTag();
-        NbtHelper.putList(tag, "items", inv.itemStacks, ConfigurableItemStack::toNbt);
-        NbtHelper.putList(tag, "fluids", inv.fluidStacks, ConfigurableFluidStack::toNbt);
+        NbtHelper.putList(tag, "items", inv.getItemStacks(), ConfigurableItemStack::toNbt);
+        NbtHelper.putList(tag, "fluids", inv.getFluidStacks(), ConfigurableFluidStack::toNbt);
         buf.writeCompoundTag(tag);
         // Write slot positions
         inv.itemPositions.write(buf);

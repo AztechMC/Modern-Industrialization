@@ -59,8 +59,8 @@ public abstract class ConfigurableScreenHandler extends ScreenHandler {
         this.inventory = inventory;
 
         if (playerInventory.player instanceof ServerPlayerEntity) {
-            trackedItems = ConfigurableItemStack.copyList(inventory.itemStacks);
-            trackedFluids = ConfigurableFluidStack.copyList(inventory.fluidStacks);
+            trackedItems = ConfigurableItemStack.copyList(inventory.getItemStacks());
+            trackedFluids = ConfigurableFluidStack.copyList(inventory.getFluidStacks());
         }
     }
 
@@ -69,8 +69,8 @@ public abstract class ConfigurableScreenHandler extends ScreenHandler {
         if (playerInventory.player instanceof ServerPlayerEntity) {
             ServerPlayerEntity player = (ServerPlayerEntity) playerInventory.player;
             for (int i = 0; i < trackedItems.size(); i++) {
-                if (!trackedItems.get(i).equals(inventory.itemStacks.get(i))) {
-                    trackedItems.set(i, new ConfigurableItemStack(inventory.itemStacks.get(i)));
+                if (!trackedItems.get(i).equals(inventory.getItemStacks().get(i))) {
+                    trackedItems.set(i, new ConfigurableItemStack(inventory.getItemStacks().get(i)));
                     PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
                     buf.writeInt(syncId);
                     buf.writeInt(i);
@@ -79,8 +79,8 @@ public abstract class ConfigurableScreenHandler extends ScreenHandler {
                 }
             }
             for (int i = 0; i < trackedFluids.size(); i++) {
-                if (!trackedFluids.get(i).equals(inventory.fluidStacks.get(i))) {
-                    trackedFluids.set(i, new ConfigurableFluidStack(inventory.fluidStacks.get(i)));
+                if (!trackedFluids.get(i).equals(inventory.getFluidStacks().get(i))) {
+                    trackedFluids.set(i, new ConfigurableFluidStack(inventory.getFluidStacks().get(i)));
                     PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
                     buf.writeInt(syncId);
                     buf.writeInt(i);

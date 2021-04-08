@@ -31,7 +31,7 @@ import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.minecraft.fluid.Fluid;
 
 public class MIFluidStorage implements Storage<Fluid> {
-    private final List<ConfigurableFluidStack> stacks;
+    final List<ConfigurableFluidStack> stacks;
 
     public MIFluidStorage(List<ConfigurableFluidStack> stacks) {
         this.stacks = stacks;

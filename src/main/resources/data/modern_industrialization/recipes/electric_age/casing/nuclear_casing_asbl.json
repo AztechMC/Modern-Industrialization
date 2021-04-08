@@ -1,0 +1,16 @@
+{
+  "type" : "minecraft:crafting_shaped",
+  "pattern" : [
+    "AAA",
+    "A A",
+    "AAA"
+  ],
+  "key": {
+    "A" : {
+      "item": "modern_industrialization:nuclear_alloy_large_plate"
+    }
+  },
+  "result": {
+    "item": "modern_industrialization:nuclear_casing"
+  }
+}

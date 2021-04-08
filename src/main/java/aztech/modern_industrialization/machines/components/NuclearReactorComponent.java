@@ -21,27 +21,23 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.nuclear;
+package aztech.modern_industrialization.machines.components;
 
-import aztech.modern_industrialization.MIFluids;
-import net.minecraft.fluid.Fluid;
-import net.minecraft.fluid.Fluids;
+import aztech.modern_industrialization.machines.IComponent;
+import net.minecraft.nbt.CompoundTag;
 
-public enum NuclearFluidCoolant {
+public class NuclearReactorComponent implements IComponent {
 
-    WATER(Fluids.WATER, MIFluids.STEAM, 1, 128, 0.2);
+    public double temperature;
 
-    public final Fluid fluid;
-    public final Fluid fluidResult;
-    public int heatConsumed;
-    public double heatTransfer;
-    public double neutronReflection;
+    @Override
+    public void writeNbt(CompoundTag tag) {
+        tag.putDouble("temperature", temperature);
 
-    NuclearFluidCoolant(Fluid fluid, Fluid fluidResult, int heatConsumed, double heatTransfer, double neutronReflection) {
-        this.fluid = fluid;
-        this.fluidResult = fluidResult;
-        this.heatConsumed = heatConsumed;
-        this.heatTransfer = heatTransfer;
-        this.neutronReflection = neutronReflection;
+    }
+
+    @Override
+    public void readNbt(CompoundTag tag) {
+        temperature = tag.getDouble("temperature");
     }
 }

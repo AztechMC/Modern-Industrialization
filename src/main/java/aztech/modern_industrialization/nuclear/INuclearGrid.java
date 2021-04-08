@@ -23,18 +23,22 @@
  */
 package aztech.modern_industrialization.nuclear;
 
-import net.minecraft.item.ItemStack;
+public interface INuclearGrid {
 
-public interface NuclearReactorComponent {
+    int getSizeX();
 
-    public double getNeutronPulse(ItemStack is);
+    int getSizeY();
 
-    public double getHeatProduction(ItemStack is, double neutronReceived);
+    boolean isOccupied(int x, int y);
 
-    public double getNeutronReflection(ItemStack is, int angle); // 0 = 0°, 1 = 90°, 2 = 180°
+    boolean isFuel(int x, int y);
 
-    public double getHeatTransferMax(ItemStack is);
+    int sendNeutron(int x, int y, int neutron);
 
-    public double getHeatTransferNeighbourFraction(ItemStack is); // the rest of heat is transfered to itself
+    double getFracDiffusedNeutron(int i, int j);
+
+    double getNeutronDiffusionAnisotropy(int x, int y, int dirFrom, int dirTo);
+
+    double getTemperature(int x, int y);
 
 }

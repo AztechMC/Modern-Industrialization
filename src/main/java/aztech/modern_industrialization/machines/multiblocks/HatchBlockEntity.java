@@ -128,7 +128,7 @@ public abstract class HatchBlockEntity extends MachineBlockEntity implements Tic
     }
 
     @Override
-    public final void tick() {
+    public void tick() {
         if (world.isClient()) {
             return;
         }

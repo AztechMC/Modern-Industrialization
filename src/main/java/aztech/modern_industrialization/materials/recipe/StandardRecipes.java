@@ -81,6 +81,9 @@ public final class StandardRecipes {
         new MIRecipeBuilder(ctx, "packer", "double_ingot").addTaggedPartInput(INGOT, 2).addPartOutput(DOUBLE_INGOT, 1);
         new MIRecipeBuilder(ctx, "packer", "dust").addTaggedPartInput(TINY_DUST, 9).addPartOutput(DUST, 1);
         new MIRecipeBuilder(ctx, "packer", "ingot").addTaggedPartInput(NUGGET, 9).addPartOutput(INGOT, 1);
+        new MIRecipeBuilder(ctx, "packer", "fuel_rod_double").addPartInput(FUEL_ROD, 1).addPartInput(FUEL_ROD, 1).addPartOutput(FUEL_ROD_DOUBLE, 1);
+        new MIRecipeBuilder(ctx, "packer", "fuel_rod_quad").addPartInput(FUEL_ROD_DOUBLE, 1).addPartInput(FUEL_ROD_DOUBLE, 1)
+                .addPartOutput(FUEL_ROD_QUAD, 1);
         // UNPACKER
         new MIRecipeBuilder(ctx, "unpacker", "tiny_dust").addTaggedPartInput(DUST, 1).addPartOutput(TINY_DUST, 9);
         new MIRecipeBuilder(ctx, "unpacker", "nugget").addTaggedPartInput(INGOT, 1).addPartOutput(NUGGET, 9);

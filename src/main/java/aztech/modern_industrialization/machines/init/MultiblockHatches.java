@@ -32,7 +32,7 @@ import aztech.modern_industrialization.machines.MachineBlockEntity;
 import aztech.modern_industrialization.machines.blockentities.hatches.EnergyHatch;
 import aztech.modern_industrialization.machines.blockentities.hatches.FluidHatch;
 import aztech.modern_industrialization.machines.blockentities.hatches.ItemHatch;
-import aztech.modern_industrialization.machines.blockentities.hatches.NuclearItemHatch;
+import aztech.modern_industrialization.machines.blockentities.hatches.NuclearHatch;
 import aztech.modern_industrialization.machines.gui.MachineGuiParameters;
 import aztech.modern_industrialization.machines.models.MachineCasing;
 import aztech.modern_industrialization.machines.models.MachineCasings;
@@ -63,9 +63,11 @@ public class MultiblockHatches {
         registerEnergyHatches(CableTier.EV);
         registerEnergyHatches(CableTier.SUPRACONDUCTOR);
 
-        MachineRegistrationHelper.registerMachine("nuclear_item_hatch", bet -> new NuclearItemHatch(bet));
-        MachineModels.addTieredMachine("nuclear_item_hatch", "hatch_item", MachineCasings.NUCLEAR, false, true, true, false);
+        MachineRegistrationHelper.registerMachine("nuclear_item_hatch", bet -> new NuclearHatch(bet, false));
+        MachineModels.addTieredMachine("nuclear_item_hatch", "hatch_nuclear", MachineCasings.NUCLEAR, false, true, false, false);
 
+        MachineRegistrationHelper.registerMachine("nuclear_fluid_hatch", bet -> new NuclearHatch(bet, true));
+        MachineModels.addTieredMachine("nuclear_fluid_hatch", "hatch_nuclear", MachineCasings.NUCLEAR, false, true, false, false);
     }
 
     private static void registerItemHatches(String prefix, MachineCasing casing, int rows, int columns, int xStart, int yStart) {

@@ -21,18 +21,11 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.util;
+package aztech.modern_industrialization.nuclear;
 
-import net.minecraft.text.Style;
-import net.minecraft.text.TextColor;
-import net.minecraft.util.Formatting;
+public interface INeutronBehaviour {
 
-public class TextHelper {
-    public static final Style GRAY_TEXT = Style.EMPTY.withColor(TextColor.fromRgb(0xa9a9a9)).withItalic(true);
-    public static final Style UPGRADE_TEXT = Style.EMPTY.withColor(TextColor.fromRgb(0xc3ff9c));
-    public static final Style EU_TEXT = Style.EMPTY.withColor(TextColor.fromRgb(0xffde7d));
-    public static final Style WATER_TEXT = Style.EMPTY.withColor(TextColor.fromRgb(0x3264ff));
-    public static final Style WARNING_TEXT = Style.EMPTY.withColor(Formatting.RED);
-    public static final Style MAX_TEMP_TEXT = Style.EMPTY.withColor(TextColor.fromRgb(0xd94a1e));
-    public static final Style HEAT_CONDUCTION = Style.EMPTY.withColor(TextColor.fromRgb(0xd9ca48));
+    double getNeutronAbs();
+
+    double getNeutronDiff(int angle); // 0 relfexion 1 = 90° 2 = transmisison
 }

@@ -37,8 +37,15 @@ public interface INuclearGrid {
 
     double getFracDiffusedNeutron(int i, int j);
 
-    double getNeutronDiffusionAnisotropy(int x, int y, int dirFrom, int dirTo);
+    double getNeutronDiffusionAnisotropy(int x, int y, int angle);
 
     double getTemperature(int x, int y);
 
+    boolean ok(int x, int y);
+
+    double getHeatTransferCoeff(int x, int y);
+
+    void setTemperature(int x, int y, double temp);
+
+    void tick(int x, int y);
 }

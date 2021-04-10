@@ -32,19 +32,25 @@ public class NuclearGridHelper {
 
     private static final Random rand = new Random();
 
-    private static final boolean ok(int x, int y, int sizeX, int sizeY) {
-        return x >= 0 && y >= 0 && x < sizeX && y < sizeY;
-    }
-
-    private static final int doubleToInt(double d) {
+    private static int doubleToInt(double d) {
         int floor = (int) Math.floor(d);
         return 1 + rand.nextDouble() < (d - floor) ? 1 : 0;
     }
 
-    public static final void simulateNuclearTick(INuclearGrid nuclearGrid) {
+    private static int getAngle(int from, int to) {
+        if (from == to) {
+            return 2;
+        } else if ((from + 2) % 4 == to) {
+            return 0;
+        }
+        return 1;
 
-        int sizeX = nuclearGrid.getSizeX();
-        int sizeY = nuclearGrid.getSizeY();
+    }
+
+    public static void simulateNuclearTick(INuclearGrid grid) {
+
+        int sizeX = grid.getSizeX();
+        int sizeY = grid.getSizeY();
 
         double[][] neutronsReceived = new double[sizeX][sizeY];
 
@@ -54,26 +60,26 @@ public class NuclearGridHelper {
             double[][] neutronsReceivedNew = new double[sizeX][sizeY];
             for (int i = 0; i < sizeX; i++) {
                 for (int j = 0; j < sizeY; j++) {
-                    if (nuclearGrid.isFuel(i, j)) {
+                    if (grid.ok(i, j) && grid.isFuel(i, j)) {
                         double neutronProduced;
                         if (step == 0) {
-                            neutronProduced = nuclearGrid.sendNeutron(i, j, 1);
+                            neutronProduced = grid.sendNeutron(i, j, 1);
                         } else {
-                            neutronProduced = nuclearGrid.sendNeutron(i, j, doubleToInt(neutronsReceived[i][j]));
+                            neutronProduced = grid.sendNeutron(i, j, doubleToInt(neutronsReceived[i][j]));
                         }
                         if (step < 2) {
                             for (int k = 0; k < 4; k++) {
                                 int i2 = i + dX[k];
                                 int j2 = j + dY[k];
-                                if (ok(i2, j2, sizeX, sizeY)) {
-                                    double neutronDiffused = nuclearGrid.getFracDiffusedNeutron(i2, j2);
+                                if (grid.ok(i2, j2)) {
+                                    double neutronDiffused = grid.getFracDiffusedNeutron(i2, j2);
                                     neutronsReceivedNew[i2][j2] += 0.25 * (1 - neutronDiffused) * neutronProduced;
                                     for (int l = 0; l < 4; l++) {
                                         int i3 = i2 + dX[l];
                                         int j3 = j2 + dY[l];
-                                        if (ok(i3, j3, sizeX, sizeY)) {
+                                        if (grid.ok(i3, j3)) {
                                             neutronsReceivedNew[i3][j3] += 0.25 * 0.25 * neutronDiffused * neutronProduced
-                                                    * nuclearGrid.getNeutronDiffusionAnisotropy(i2, j2, k, l);
+                                                    * grid.getNeutronDiffusionAnisotropy(i2, j2, getAngle(k, l));
                                         }
                                     }
                                 }
@@ -87,20 +93,47 @@ public class NuclearGridHelper {
         }
 
         // HEAT
-        for (int i = 0; i < sizeX; i++) {
-            for (int j = 0; j < sizeY; j++) {
+        double[][] temperatureOut = new double[sizeX][sizeY];
+        double[][] temperatureDelta = new double[sizeX][sizeY];
+        for (int step = 0; step < 3; step++) {
 
-                double temperatureA = nuclearGrid.getTemperature(i, j);
+            for (int i = 0; i < sizeX; i++) {
+                for (int j = 0; j < sizeY; j++) {
+                    if (grid.ok(i, j)) {
 
-                for (int k = 0; k < 4; k++) {
-                    int i2 = i + dX[k];
-                    int j2 = j + dY[k];
-                    if (ok(i2, j2, sizeX, sizeY)) {
-                        double temperatureB = nuclearGrid.getTemperature(i2, j2);
-
+                        double temperatureA = grid.getTemperature(i, j);
+                        if (step == 2) {
+                            grid.setTemperature(i, j, temperatureA + temperatureDelta[i][j]);
+                        } else {
+                            for (int k = 0; k < 4; k++) {
+                                int i2 = i + dX[k];
+                                int j2 = j + dY[k];
+                                if (grid.ok(i2, j2)) {
+                                    double temperatureB = grid.getTemperature(i2, j2);
+                                    double coeffTransfer = 0.5 * (grid.getHeatTransferCoeff(i, j) + grid.getHeatTransferCoeff(i2, j2));
+                                    if (temperatureA > temperatureB) {
+                                        if (step == 0) {
+                                            temperatureOut[i][j] += (temperatureA - temperatureB) * coeffTransfer;
+                                        } else {
+                                            double frac = Math.min(1, temperatureA / temperatureOut[i][j]);
+                                            temperatureDelta[i][j] -= frac * temperatureOut[i][j];
+                                            temperatureDelta[i2][j2] += frac * (temperatureA - temperatureB) * coeffTransfer;
+                                        }
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
+            }
 
+        }
+
+        for (int i = 0; i < sizeX; i++) {
+            for (int j = 0; j < sizeY; j++) {
+                if (grid.ok(i, j)) {
+                    grid.tick(i, j);
+                }
             }
         }
 

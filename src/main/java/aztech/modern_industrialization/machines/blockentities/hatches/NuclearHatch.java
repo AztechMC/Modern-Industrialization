@@ -23,6 +23,7 @@
  */
 package aztech.modern_industrialization.machines.blockentities.hatches;
 
+import aztech.modern_industrialization.inventory.ConfigurableFluidStack;
 import aztech.modern_industrialization.inventory.ConfigurableItemStack;
 import aztech.modern_industrialization.inventory.MIInventory;
 import aztech.modern_industrialization.inventory.SlotPositions;
@@ -37,28 +38,41 @@ import java.util.Collections;
 import java.util.List;
 import net.minecraft.block.entity.BlockEntityType;
 
-public class NuclearItemHatch extends HatchBlockEntity {
+public class NuclearHatch extends HatchBlockEntity {
 
     private final MIInventory inventory;
     public NuclearReactorComponent nuclearReactorComponent = new NuclearReactorComponent();
+    private final boolean isFluid;
 
-    public NuclearItemHatch(BlockEntityType<?> type) {
-        super(type, new MachineGuiParameters.Builder("nuclear_item_hatch", true).build(), new OrientationComponent.Params(false, false, false));
-        List<ConfigurableItemStack> itemStack = new ArrayList<>();
-        itemStack.add(ConfigurableItemStack.standardInputSlot());
-        itemStack.add(ConfigurableItemStack.standardOutputSlot());
-        inventory = new MIInventory(itemStack, Collections.emptyList(), new SlotPositions.Builder().addSlot(68, 35).addSlot(98, 35).build(),
-                SlotPositions.empty());
+    public NuclearHatch(BlockEntityType<?> type, boolean isFluid) {
+        super(type, new MachineGuiParameters.Builder(isFluid ? "nuclear_fluid_hatch" : "nuclear_item_hatch", true).build(),
+                new OrientationComponent.Params(false, false, false));
+
+        this.isFluid = isFluid;
+        SlotPositions slotPos = new SlotPositions.Builder().addSlot(68, 31).addSlots(98, 22, 2, 1).build();
+        if (!isFluid) {
+            List<ConfigurableItemStack> itemStack = new ArrayList<>();
+            itemStack.add(ConfigurableItemStack.standardInputSlot());
+            itemStack.add(ConfigurableItemStack.standardOutputSlot());
+            itemStack.add(ConfigurableItemStack.standardOutputSlot());
+            inventory = new MIInventory(itemStack, Collections.emptyList(), slotPos, SlotPositions.empty());
+        } else {
+            long capacity = 64000 * 81;
+            List<ConfigurableFluidStack> fluidStack = new ArrayList<>();
+            fluidStack.add(ConfigurableFluidStack.standardInputSlot(capacity));
+            fluidStack.add(ConfigurableFluidStack.standardOutputSlot(capacity));
+            fluidStack.add(ConfigurableFluidStack.standardOutputSlot(capacity));
+            inventory = new MIInventory(Collections.emptyList(), fluidStack, SlotPositions.empty(), slotPos);
+        }
 
         registerComponents(inventory, nuclearReactorComponent);
-
-        TemperatureBar.Parameters temperatureParams = new TemperatureBar.Parameters(43, 60, 2500);
+        TemperatureBar.Parameters temperatureParams = new TemperatureBar.Parameters(43, 63, 2500);
         registerClientComponent(new TemperatureBar.Server(temperatureParams, () -> (int) nuclearReactorComponent.temperature));
     }
 
     @Override
     public HatchType getHatchType() {
-        return HatchType.NUCLEAR_ITEM;
+        return isFluid ? HatchType.NUCLEAR_FLUID : HatchType.NUCLEAR_ITEM;
     }
 
     @Override
@@ -74,7 +88,7 @@ public class NuclearItemHatch extends HatchBlockEntity {
     @Override
     public final void tick() {
         super.tick();
-        nuclearReactorComponent.temperature = Math.min(2500, nuclearReactorComponent.temperature + 1);
+        nuclearReactorComponent.temperature = 0;
     }
 
 }

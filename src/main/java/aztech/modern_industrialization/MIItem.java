@@ -113,52 +113,6 @@ public final class MIItem {
     public static final Item MIXED_PLATE_NUCLEAR = of("mixed_plate_nuclear");
     public static final Item AIR_INTAKE = of("air_intake", 1);
 
-    /*
-     * FIXME public static final Item ITEM_DEPLETED_URANIUM_FUEL_ROD = new
-     * MIItem("depleted_uranium_fuel_rod"); public static final Item
-     * ITEM_DEPLETED_URANIUM_FUEL_ROD_DOUBLE = new
-     * MIItem("depleted_uranium_fuel_rod_double"); public static final Item
-     * ITEM_DEPLETED_URANIUM_FUEL_ROD_QUAD = new
-     * MIItem("depleted_uranium_fuel_rod_quad"); public static final Item
-     * ITEM_URANIUM_FUEL_ROD = new NuclearFuel("uranium_fuel_rod", URANIUM, 1,
-     * ITEM_DEPLETED_URANIUM_FUEL_ROD); public static final Item
-     * ITEM_URANIUM_FUEL_ROD_DOUBLE = new NuclearFuel("uranium_fuel_rod_double",
-     * URANIUM, 2, ITEM_DEPLETED_URANIUM_FUEL_ROD_DOUBLE); public static final Item
-     * ITEM_URANIUM_FUEL_ROD_QUAD = new NuclearFuel("uranium_fuel_rod_quad",
-     * URANIUM, 4, ITEM_DEPLETED_URANIUM_FUEL_ROD_QUAD);
-     * 
-     * public static final Item ITEM_CROWBAR = new MIItem("crowbar");
-     * 
-     * public static final Item ITEM_DEPLETED_PLUTONIUM_FUEL_ROD = new
-     * MIItem("depleted_plutonium_fuel_rod"); public static final Item
-     * ITEM_DEPLETED_PLUTONIUM_FUEL_ROD_DOUBLE = new
-     * MIItem("depleted_plutonium_fuel_rod_double"); public static final Item
-     * ITEM_DEPLETED_PLUTONIUM_FUEL_ROD_QUAD = new
-     * MIItem("depleted_plutonium_fuel_rod_quad"); public static final Item
-     * ITEM_PLUTONIUM_FUEL_ROD = new NuclearFuel("plutonium_fuel_rod", PLUTONIUM, 1,
-     * ITEM_DEPLETED_PLUTONIUM_FUEL_ROD); public static final Item
-     * ITEM_PLUTONIUM_FUEL_ROD_DOUBLE = new NuclearFuel("plutonium_fuel_rod_double",
-     * PLUTONIUM, 2, ITEM_DEPLETED_PLUTONIUM_FUEL_ROD_DOUBLE); public static final
-     * Item ITEM_PLUTONIUM_FUEL_ROD_QUAD = new
-     * NuclearFuel("plutonium_fuel_rod_quad", PLUTONIUM, 4,
-     * ITEM_DEPLETED_PLUTONIUM_FUEL_ROD_QUAD);
-     * 
-     * public static final Item ITEM_DEPLETED_MOX_FUEL_ROD = new
-     * MIItem("depleted_mox_fuel_rod"); public static final Item
-     * ITEM_DEPLETED_MOX_FUEL_ROD_DOUBLE = new
-     * MIItem("depleted_mox_fuel_rod_double"); public static final Item
-     * ITEM_DEPLETED_MOX_FUEL_ROD_QUAD = new MIItem("depleted_mox_fuel_rod_quad");
-     * public static final Item ITEM_MOX_FUEL_ROD = new NuclearFuel("mox_fuel_rod",
-     * MOX, 1, ITEM_DEPLETED_MOX_FUEL_ROD); public static final Item
-     * ITEM_MOX_FUEL_ROD_DOUBLE = new NuclearFuel("mox_fuel_rod_double", MOX, 2,
-     * ITEM_DEPLETED_MOX_FUEL_ROD_DOUBLE); public static final Item
-     * ITEM_MOX_FUEL_ROD_QUAD = new NuclearFuel("mox_fuel_rod_quad", MOX, 4,
-     * ITEM_DEPLETED_MOX_FUEL_ROD_QUAD);
-     * 
-     * public static final Item ITEM_SIMPLE_FLUID_COOLANT = new
-     * NuclearCoolant("simple_fluid_coolant", 25000, 1);
-     */
-
     // TO MATERIAL ?
     public static final Item ITEM_POLYETHYLENE_SHEET = of("polyethylene_sheet");
     public static final Item ITEM_POLYVINYL_CHLORIDE_SHEET = of("polyvinyl_chloride_sheet");

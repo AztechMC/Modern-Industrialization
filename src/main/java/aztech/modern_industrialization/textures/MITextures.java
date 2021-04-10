@@ -111,6 +111,11 @@ public final class MITextures {
     }
 
     public static void generateItemPartTexture(TextureManager mtm, String materialName, String materialSet, String part, Coloramp coloramp) {
+        generateItemPartTexture(mtm, materialName, materialSet, part, part, coloramp);
+    }
+
+    public static void generateItemPartTexture(TextureManager mtm, String materialName, String materialSet, String part, String partTemplate,
+            Coloramp coloramp) {
         if (part.equals(MIParts.DOUBLE_INGOT)) {
             mtm.runAtEnd(() -> {
                 try {
@@ -121,7 +126,7 @@ public final class MITextures {
             });
         } else {
             try {
-                generateBlend(mtm, materialName, materialSet, part, coloramp);
+                generateBlend(mtm, materialName, materialSet, part, partTemplate, coloramp);
             } catch (Throwable throwable) {
                 logTextureGenerationError(throwable, materialName, materialSet, part);
             }
@@ -135,6 +140,11 @@ public final class MITextures {
     }
 
     public static void generateBlend(TextureManager mtm, String materialName, String materialSet, String part, Coloramp color) throws IOException {
+        generateBlend(mtm, materialName, materialSet, part, part, color);
+    }
+
+    public static void generateBlend(TextureManager mtm, String materialName, String materialSet, String part, String partTemplate, Coloramp color)
+            throws IOException {
         NativeImage image = null;
         for (String layer : LAYERS) {
             String template;
@@ -144,9 +154,9 @@ public final class MITextures {
             } else if (part.equals(MIParts.HOT_INGOT)) {
                 template = getTemplate("common", "ingot", layer);
             } else {
-                template = getTemplate("common", MaterialHelper.partWithOverlay(part), layer);
+                template = getTemplate("common", MaterialHelper.partWithOverlay(partTemplate), layer);
                 if (!mtm.hasAsset(template)) {
-                    template = getTemplate(materialSet, MaterialHelper.partWithOverlay(part), layer);
+                    template = getTemplate(materialSet, MaterialHelper.partWithOverlay(partTemplate), layer);
                 }
             }
 
@@ -168,7 +178,7 @@ public final class MITextures {
 
         if (image != null) {
 
-            String overlay = MaterialHelper.overlayWithOverlay(part);
+            String overlay = MaterialHelper.overlayWithOverlay(partTemplate);
 
             if (overlay != null) {
                 String overlayTemplate = getTemplate("common", overlay, "");

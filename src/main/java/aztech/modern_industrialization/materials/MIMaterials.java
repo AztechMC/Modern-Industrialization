@@ -99,9 +99,9 @@ public class MIMaterials {
                         .addRegularParts(CRUSHED_DUST, MIParts.GEM, DUST, TINY_DUST, PLATE)
                         .addParts(ExternalPart.of("ore", "minecraft:diamond_ore", "minecraft:diamond_ore"))
                         .overridePart(ExternalPart.of(MIParts.GEM, "minecraft:diamond", "minecraft:diamond")).addRecipes(StandardRecipes::apply)
-                        .addRecipes(context -> {
-                            new MIRecipeBuilder(context, "compressor", "plate").addItemInput("minecraft:diamond", 1).addPartOutput(PLATE, 1);
-                        }).build());
+                        .addRecipes(context -> new MIRecipeBuilder(context, "compressor", "plate").addItemInput("minecraft:diamond", 1)
+                                .addPartOutput(PLATE, 1))
+                        .build());
 
         MaterialRegistry.addMaterial(new MaterialBuilder("emerald", SHINY,
                 new BakableTargetColoramp(0x3FF385, "minecraft:textures/item/emerald.png", "minecraft:textures/item/emerald.png"))
@@ -109,9 +109,9 @@ public class MIMaterials {
                         .overridePart(ExternalPart.of(MIParts.GEM, "minecraft:emerald", "minecraft:emerald")).addRecipes(StandardRecipes::apply)
                         .addRecipes(context -> new MIRecipeBuilder(context, "macerator", "dust").addItemInput("minecraft:emerald_ore", 1)
                                 .addPartOutput(CRUSHED_DUST, 2))
-                        .addRecipes(context -> {
-                            new MIRecipeBuilder(context, "compressor", "plate").addItemInput("minecraft:emerald", 1).addPartOutput(PLATE, 1);
-                        }).build());
+                        .addRecipes(context -> new MIRecipeBuilder(context, "compressor", "plate").addItemInput("minecraft:emerald", 1)
+                                .addPartOutput(PLATE, 1))
+                        .build());
 
         MaterialRegistry.addMaterial(new MaterialBuilder("brick", STONE,
                 new BakableTargetColoramp(0xb75a36, "modern_industrialization:textures/materialsets/common/ingot.png",
@@ -250,24 +250,25 @@ public class MIMaterials {
                 .removeRegularParts(CRUSHED_DUST).addRegularParts(PLATE, WIRE, DOUBLE_INGOT, HOT_INGOT).addParts(CableMaterialPart.of(CableTier.EV))
                 .addRecipes(StandardRecipes::apply).build());
 
-        MaterialRegistry.addMaterial(new MaterialBuilder("uranium", DULL, 0x39e600).addRegularParts(ITEM_PURE_METAL).removeRegularParts(CRUSHED_DUST)
-                .addRegularParts(ORE).addRegularParts(MIParts.GEM).addRecipes(StandardRecipes::apply).addRecipes(context -> {
-                    new MIRecipeBuilder(context, "macerator", "ore").addPartInput(ORE, 1).addPartOutput(MIParts.GEM, 2);
-                    new MIRecipeBuilder(context, "macerator", "uranium").addPartInput(MIParts.GEM, 1).addPartOutput(DUST, 2);
-                }).build());
+        MaterialRegistry.addMaterial(
+                new MaterialBuilder("uranium", DULL, 0x39e600).addParts(FUEL_RODS).addRegularParts(ITEM_PURE_METAL).removeRegularParts(CRUSHED_DUST)
+                        .addRegularParts(ORE).addRegularParts(MIParts.GEM).addRecipes(StandardRecipes::apply).addRecipes(context -> {
+                            new MIRecipeBuilder(context, "macerator", "ore").addPartInput(ORE, 1).addPartOutput(MIParts.GEM, 2);
+                            new MIRecipeBuilder(context, "macerator", "uranium").addPartInput(MIParts.GEM, 1).addPartOutput(DUST, 2);
+                        }).build());
 
-        MaterialRegistry.addMaterial(new MaterialBuilder("uranium_235", SHINY, 0xe60045).addRegularParts(ITEM_PURE_METAL)
+        MaterialRegistry.addMaterial(new MaterialBuilder("uranium_235", SHINY, 0xe60045).addParts(FUEL_RODS).addRegularParts(ITEM_PURE_METAL)
                 .removeRegularParts(CRUSHED_DUST).addRecipes(StandardRecipes::apply).build());
 
-        MaterialRegistry.addMaterial(new MaterialBuilder("uranium_238", DULL, 0x55bd33).addRegularParts(ITEM_PURE_METAL)
+        MaterialRegistry.addMaterial(new MaterialBuilder("uranium_238", DULL, 0x55bd33).addParts(FUEL_RODS).addRegularParts(ITEM_PURE_METAL)
                 .removeRegularParts(CRUSHED_DUST).addRecipes(StandardRecipes::apply).build());
 
-        MaterialRegistry.addMaterial(new MaterialBuilder("plutonium", SHINY, 0xd701e7).addRegularParts(ITEM_PURE_METAL)
+        MaterialRegistry.addMaterial(new MaterialBuilder("plutonium", SHINY, 0xd701e7).addParts(FUEL_RODS).addRegularParts(ITEM_PURE_METAL)
                 // .addRegularParts(ORE) if other mod
                 .removeRegularParts(CRUSHED_DUST).addRecipes(StandardRecipes::apply).build());
 
-        MaterialRegistry.addMaterial(new MaterialBuilder("mox", SHINY, 0x00e7e5).addRegularParts(ITEM_PURE_METAL).removeRegularParts(CRUSHED_DUST)
-                .addRecipes(StandardRecipes::apply).build());
+        MaterialRegistry.addMaterial(new MaterialBuilder("mox", SHINY, 0x00e7e5).addParts(FUEL_RODS).addRegularParts(ITEM_PURE_METAL)
+                .removeRegularParts(CRUSHED_DUST).addRecipes(StandardRecipes::apply).build());
 
         MaterialRegistry.addMaterial(new MaterialBuilder("platinum", SHINY, 0xffe5ba).addRegularParts(ITEM_PURE_METAL).addRegularParts(ORE)
                 .addRegularParts(PLATE, DOUBLE_INGOT, WIRE, FINE_WIRE, HOT_INGOT).addParts(CableMaterialPart.of(CableTier.EV))
@@ -308,7 +309,7 @@ public class MIMaterials {
                 .addRegularParts(PLATE, LARGE_PLATE, MACHINE_CASING_SPECIAL).addRecipes(StandardRecipes::apply).build());
 
         MaterialRegistry.addMaterial(new MaterialBuilder("nuclear_alloy", METALLIC, 0x3d4d32)
-                .addRegularParts(PLATE, LARGE_PLATE, MACHINE_CASING_SPECIAL).addRecipes(StandardRecipes::apply).build());
+                .addRegularParts(PLATE, LARGE_PLATE, MACHINE_CASING_SPECIAL, MACHINE_CASING_PIPE).addRecipes(StandardRecipes::apply).build());
 
     }
 

@@ -21,18 +21,32 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.util;
+package aztech.modern_industrialization.textures.coloramp;
 
-import net.minecraft.text.Style;
-import net.minecraft.text.TextColor;
-import net.minecraft.util.Formatting;
+import aztech.modern_industrialization.textures.TextureHelper;
+import java.awt.*;
 
-public class TextHelper {
-    public static final Style GRAY_TEXT = Style.EMPTY.withColor(TextColor.fromRgb(0xa9a9a9)).withItalic(true);
-    public static final Style UPGRADE_TEXT = Style.EMPTY.withColor(TextColor.fromRgb(0xc3ff9c));
-    public static final Style EU_TEXT = Style.EMPTY.withColor(TextColor.fromRgb(0xffde7d));
-    public static final Style WATER_TEXT = Style.EMPTY.withColor(TextColor.fromRgb(0x3264ff));
-    public static final Style WARNING_TEXT = Style.EMPTY.withColor(Formatting.RED);
-    public static final Style MAX_TEMP_TEXT = Style.EMPTY.withColor(TextColor.fromRgb(0xd94a1e));
-    public static final Style HEAT_CONDUCTION = Style.EMPTY.withColor(TextColor.fromRgb(0xd9ca48));
+public class ColorampDepleted implements Coloramp {
+
+    private final Coloramp coloramp;
+
+    public ColorampDepleted(Coloramp coloramp) {
+        this.coloramp = coloramp;
+    }
+
+    @Override
+    public int getRGB(double luminance) {
+        float[] hsbval = new float[3];
+        int rgb = coloramp.getRGB(luminance);
+        Color.RGBtoHSB(TextureHelper.getRrgb(rgb), TextureHelper.getGrgb(rgb), TextureHelper.getBrgb(rgb), hsbval);
+        return 0xFFFFFF & Color.HSBtoRGB(hsbval[0], 0.2f * hsbval[0], 0.5f * hsbval[2]);
+    }
+
+    @Override
+    public int getMeanRGB() {
+        float[] hsbval = new float[3];
+        int rgb = coloramp.getMeanRGB();
+        Color.RGBtoHSB(TextureHelper.getRrgb(rgb), TextureHelper.getGrgb(rgb), TextureHelper.getBrgb(rgb), hsbval);
+        return 0xFFFFFF & Color.HSBtoRGB(hsbval[0], 0.2f * hsbval[0], 0.5f * hsbval[2]);
+    }
 }

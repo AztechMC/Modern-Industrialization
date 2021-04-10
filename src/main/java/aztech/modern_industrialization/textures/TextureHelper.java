@@ -85,6 +85,12 @@ public class TextureHelper {
         return 0xFFFFFF & Color.HSBtoRGB(hue, hsbval[1], hsbval[2]);
     }
 
+    public static int setSaturation(int rgb, float sat) {
+        float[] hsbval = new float[3];
+        Color.RGBtoHSB(getRrgb(rgb), getGrgb(rgb), getBrgb(rgb), hsbval);
+        return 0xFFFFFF & Color.HSBtoRGB(hsbval[0], sat, hsbval[2]);
+    }
+
     public static int inecreaseBrightness(int rgb, float minBrightness) {
         float[] hsbval = new float[3];
         Color.RGBtoHSB(getRrgb(rgb), getGrgb(rgb), getBrgb(rgb), hsbval);
@@ -257,4 +263,5 @@ public class TextureHelper {
         copy.copyFrom(image);
         return copy;
     }
+
 }

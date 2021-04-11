@@ -27,5 +27,5 @@ public interface INeutronBehaviour {
 
     double getNeutronAbs();
 
-    double getNeutronDiff(int angle); // 0 relfexion 1 = 90° 2 = transmisison
+    double getNeutronDiff(int angle); // 0 relfexion, 1 = 90°, 2 = transmisison
 }

@@ -40,6 +40,10 @@ public class NuclearReactorComponent implements IComponent {
         this.temperature = Math.min(Math.max(temperature, 0), temperatureMax);
     }
 
+    public void increaseTemperature(double temp) {
+        setTemperature(getTemperature() + temp);
+    }
+
     public double getTemperature() {
         return temperature;
     }

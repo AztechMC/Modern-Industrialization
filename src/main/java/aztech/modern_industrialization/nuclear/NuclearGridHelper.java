@@ -58,7 +58,9 @@ public class NuclearGridHelper {
         double[][] temperatureOut = new double[sizeX][sizeY];
         double[][] temperatureDelta = new double[sizeX][sizeY];
         for (int step = 0; step < 3; step++) {
-
+            // step 0: compute temperatureOut = dT * coef
+            // step 1: compute temperatureDelta, clamping as necessary
+            // step 2: set temperature
             for (int i = 0; i < sizeX; i++) {
                 for (int j = 0; j < sizeY; j++) {
                     if (grid.ok(i, j)) {
@@ -68,6 +70,7 @@ public class NuclearGridHelper {
                             grid.setTemperature(i, j, temperatureA + temperatureDelta[i][j]);
                         } else {
                             if (step == 1) {
+                                // clamp to avoid reaching < 0 temperatures
                                 temperatureDelta[i][j] -= Math.min(temperatureA, temperatureOut[i][j]);
                             }
                             for (int k = 0; k < 4; k++) {
@@ -90,7 +93,6 @@ public class NuclearGridHelper {
                     }
                 }
             }
-
         }
 
         // NEUTRONS

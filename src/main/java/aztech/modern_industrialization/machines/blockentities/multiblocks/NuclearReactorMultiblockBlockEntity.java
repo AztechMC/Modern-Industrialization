@@ -54,12 +54,15 @@ import net.minecraft.util.math.Direction;
 public class NuclearReactorMultiblockBlockEntity extends MultiblockMachineBlockEntity implements Tickable {
 
     private static final ShapeTemplate[] shapeTemplates;
+    /**
+     * For every possible shape, contains true if the position is within the bounds
+     * for the shape.
+     */
     private static final boolean[][][] gridLayout;
 
     private final ActiveShapeComponent activeShape;
     private final IsActiveComponent isActive;
     private ShapeMatcher shapeMatcher;
-    private boolean allowNormalOperation;
 
     private INuclearGrid nuclearGrid;
 
@@ -105,14 +108,14 @@ public class NuclearReactorMultiblockBlockEntity extends MultiblockMachineBlockE
     public void tick() {
         if (!world.isClient) {
             link();
-            if (allowNormalOperation) {
+            if (shapeValid.shapeValid) {
                 NuclearGridHelper.simulateNuclearTick(nuclearGrid);
             }
         }
     }
 
     protected void onSuccessfulMatch(ShapeMatcher shapeMatcher) {
-        allowNormalOperation = true;
+        shapeValid.shapeValid = true;
         int size = gridLayout[activeShape.getActiveShapeIndex()].length;
         NuclearHatch[][] hatchesGrid = new NuclearHatch[size][size];
 
@@ -185,8 +188,7 @@ public class NuclearReactorMultiblockBlockEntity extends MultiblockMachineBlockE
                     CompoundTag tag = nuclearFuelStack.getOrCreateTag();
                     int desRem = tag.contains("desRem") ? tag.getInt("desRem") : fuel.desintegrationMax;
                     int des = Math.min(neutron * fuel.desintegrationByNeutron, desRem);
-                    hatchesGrid[x][y].nuclearReactorComponent
-                            .setTemperature(hatchesGrid[x][y].nuclearReactorComponent.getTemperature() + des * fuel.heatByDesintegration);
+                    hatchesGrid[x][y].nuclearReactorComponent.increaseTemperature(des * fuel.heatByDesintegration);
                     tag.putInt("desRem", desRem - des);
                     hatchesGrid[x][y].getInventory().getItemStacks().get(0).setItemKey(ItemKey.of(nuclearFuelStack));
                     return des * fuel.neutronByDesintegration;
@@ -273,8 +275,8 @@ public class NuclearReactorMultiblockBlockEntity extends MultiblockMachineBlockE
             shapeMatcher.registerListeners(world);
         }
         if (shapeMatcher.needsRematch()) {
-            allowNormalOperation = false;
             shapeValid.shapeValid = false;
+            nuclearGrid = null;
             shapeMatcher.rematch(world);
 
             if (shapeMatcher.isMatchSuccessful()) {

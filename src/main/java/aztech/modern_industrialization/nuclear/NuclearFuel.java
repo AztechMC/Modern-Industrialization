@@ -25,6 +25,7 @@ package aztech.modern_industrialization.nuclear;
 
 import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.MIItem;
+import aztech.modern_industrialization.util.TextHelper;
 import java.util.List;
 import me.shedaniel.cloth.api.durability.bar.DurabilityBarItem;
 import net.minecraft.client.item.TooltipContext;
@@ -32,13 +33,13 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.text.Text;
+import net.minecraft.text.TranslatableText;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
 
 public class NuclearFuel extends NuclearComponent implements DurabilityBarItem {
 
-    private final double neutronAmplification;
-    private final double neutronAbs;
+    public final double neutronAmplification;
     public final double heatByDesintegration;
     public final int desintegrationMax;
     public final String depleted;
@@ -57,7 +58,6 @@ public class NuclearFuel extends NuclearComponent implements DurabilityBarItem {
             }
         });
         this.neutronAmplification = neutronAmplification;
-        this.neutronAbs = neutronAbs_;
         this.heatByDesintegration = heatByDesintegration;
         this.desintegrationMax = desintegrationMax;
         this.depleted = depleted;
@@ -76,20 +76,36 @@ public class NuclearFuel extends NuclearComponent implements DurabilityBarItem {
     @Override
     public void appendTooltip(ItemStack stack, World world, List<Text> tooltip, TooltipContext context) {
         super.appendTooltip(stack, world, tooltip, context);
+
+        tooltip.add(new TranslatableText("text.modern_industrialization.rem_desintegration", getRemDes(stack), desintegrationMax)
+                .setStyle(TextHelper.GRAY_TEXT));
+
+    }
+
+    public int getRemDes(ItemStack stack) {
+        CompoundTag tag = stack.getTag();
+        if (tag == null || !tag.contains("desRem")) {
+            return desintegrationMax;
+        }
+        return tag.getInt("desRem");
     }
 
     @Override
     public double getDurabilityBarProgress(ItemStack stack) {
         CompoundTag tag = stack.getTag();
-        if (tag == null || !tag.contains("remDes")) {
-            return 1.0d;
+        if (tag == null || !tag.contains("desRem")) {
+            return 0.0d;
         } else {
-            return (double) tag.getInt("remDes") / 1.0d;
+            return 1.0 - (double) tag.getInt("desRem") / desintegrationMax;
         }
     }
 
     @Override
     public boolean hasDurabilityBar(ItemStack stack) {
+        CompoundTag tag = stack.getTag();
+        if (tag == null || !tag.contains("desRem")) {
+            return false;
+        }
         return true;
     }
 }

@@ -105,6 +105,9 @@ public class NuclearGridHelper {
                         if (step == 2) {
                             grid.setTemperature(i, j, temperatureA + temperatureDelta[i][j]);
                         } else {
+                            if (step == 1) {
+                                temperatureDelta[i][j] -= Math.min(temperatureA, temperatureOut[i][j]);
+                            }
                             for (int k = 0; k < 4; k++) {
                                 int i2 = i + dX[k];
                                 int j2 = j + dY[k];
@@ -116,7 +119,6 @@ public class NuclearGridHelper {
                                             temperatureOut[i][j] += (temperatureA - temperatureB) * coeffTransfer;
                                         } else {
                                             double frac = Math.min(1, temperatureA / temperatureOut[i][j]);
-                                            temperatureDelta[i][j] -= frac * temperatureOut[i][j];
                                             temperatureDelta[i2][j2] += frac * (temperatureA - temperatureB) * coeffTransfer;
                                         }
                                     }

@@ -23,12 +23,10 @@
  */
 package aztech.modern_industrialization.materials.part;
 
-import aztech.modern_industrialization.materials.MaterialBuilder;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.function.Function;
 
 public class MIParts {
 
@@ -78,10 +76,6 @@ public class MIParts {
 
     public static final String[] ITEM_PURE_NON_METAL = new String[] { TINY_DUST, DUST, CRUSHED_DUST, BLOCK };
     public static final String[] ITEM_PURE_METAL = new String[] { INGOT, NUGGET, TINY_DUST, DUST, CRUSHED_DUST, BLOCK };
-
-    public static final Function<MaterialBuilder.PartContext, MaterialPart>[] FUEL_RODS = new Function[] { NuclearFuelMaterialPart.of(1, false),
-            NuclearFuelMaterialPart.of(2, false), NuclearFuelMaterialPart.of(4, false), NuclearFuelMaterialPart.of(1, true),
-            NuclearFuelMaterialPart.of(2, true), NuclearFuelMaterialPart.of(4, true) };
 
     public static final List<String> TAGGED_PARTS_LIST = Arrays.asList(BLOCK, DUST, GEAR, INGOT, NUGGET, ORE, PLATE, TINY_DUST);
     public static final Set<String> TAGGED_PARTS = new HashSet<>(TAGGED_PARTS_LIST);

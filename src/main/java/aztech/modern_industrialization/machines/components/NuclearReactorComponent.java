@@ -28,7 +28,21 @@ import net.minecraft.nbt.CompoundTag;
 
 public class NuclearReactorComponent implements IComponent {
 
-    public double temperature;
+    private double temperature;
+    public final double temperatureMax;
+
+    public NuclearReactorComponent(double temperatureMax) {
+        this.temperatureMax = temperatureMax;
+    }
+
+    public void setTemperature(double temp) {
+        this.temperature = temp;
+        this.temperature = Math.min(Math.max(temperature, 0), temperatureMax);
+    }
+
+    public double getTemperature() {
+        return temperature;
+    }
 
     @Override
     public void writeNbt(CompoundTag tag) {

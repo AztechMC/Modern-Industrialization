@@ -29,11 +29,9 @@ public interface INuclearGrid {
 
     int getSizeY();
 
-    boolean isOccupied(int x, int y);
-
     boolean isFuel(int x, int y);
 
-    int sendNeutron(int x, int y, int neutron);
+    double sendNeutron(int x, int y, int neutron);
 
     double getFracDiffusedNeutron(int i, int j);
 

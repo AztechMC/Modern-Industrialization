@@ -31,6 +31,8 @@ import aztech.modern_industrialization.textures.MITextures;
 import aztech.modern_industrialization.textures.TextureManager;
 import aztech.modern_industrialization.textures.coloramp.Coloramp;
 import aztech.modern_industrialization.textures.coloramp.ColorampDepleted;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
 import net.minecraft.item.Item;
@@ -41,11 +43,11 @@ public class NuclearFuelMaterialPart implements MaterialPart {
     private final String id, partSimple, part, itemPath, materialName;
     private Item item;
     private final Coloramp coloramp;
-    private boolean depleted;
+    private final boolean depleted;
 
     private final NuclearFuelParams params;
 
-    public class NuclearFuelParams {
+    private static class NuclearFuelParams {
         public final int maxTemperature;
         public final double neutronAmpl;
         public final double neutronAbs;
@@ -78,6 +80,22 @@ public class NuclearFuelMaterialPart implements MaterialPart {
         this.materialName = material;
         this.depleted = depleted;
         this.params = params;
+
+    }
+
+    public static Function<MaterialBuilder.PartContext, MaterialPart>[] of(int maxTemperature, double neutronAmpl, double neutronAbs, double beta,
+            double heatByDesintegration, int desintegrationMax) {
+
+        List<Function<MaterialBuilder.PartContext, MaterialPart>> result = new ArrayList<>();
+        result.add((of(SIMPLE, true, null)));
+        result.add((of(DOUBLE, true, null)));
+        result.add(of(QUAD, true, null));
+        for (int i : new int[] { SIMPLE, DOUBLE, QUAD }) {
+            NuclearFuelParams params = new NuclearFuelParams(maxTemperature, neutronAmpl * Math.pow(beta, i - 1),
+                    1 - Math.pow((1.0 - neutronAbs), Math.sqrt(i - 1)), heatByDesintegration, desintegrationMax * i);
+            result.add(of(i, false, params));
+        }
+        return result.toArray(new Function[0]);
 
     }
 

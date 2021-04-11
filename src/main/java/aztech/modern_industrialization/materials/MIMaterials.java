@@ -250,25 +250,28 @@ public class MIMaterials {
                 .removeRegularParts(CRUSHED_DUST).addRegularParts(PLATE, WIRE, DOUBLE_INGOT, HOT_INGOT).addParts(CableMaterialPart.of(CableTier.EV))
                 .addRecipes(StandardRecipes::apply).build());
 
-        MaterialRegistry.addMaterial(
-                new MaterialBuilder("uranium", DULL, 0x39e600).addParts(FUEL_RODS).addRegularParts(ITEM_PURE_METAL).removeRegularParts(CRUSHED_DUST)
-                        .addRegularParts(ORE).addRegularParts(MIParts.GEM).addRecipes(StandardRecipes::apply).addRecipes(context -> {
+        MaterialRegistry
+                .addMaterial(new MaterialBuilder("uranium", DULL, 0x39e600).addParts(NuclearFuelMaterialPart.of(2800, 0.05, 0.5, 1.5, 1, 256000))
+                        .addRegularParts(ITEM_PURE_METAL).removeRegularParts(CRUSHED_DUST).addRegularParts(ORE).addRegularParts(MIParts.GEM)
+                        .addRecipes(StandardRecipes::apply).addRecipes(context -> {
                             new MIRecipeBuilder(context, "macerator", "ore").addPartInput(ORE, 1).addPartOutput(MIParts.GEM, 2);
                             new MIRecipeBuilder(context, "macerator", "uranium").addPartInput(MIParts.GEM, 1).addPartOutput(DUST, 2);
                         }).build());
 
-        MaterialRegistry.addMaterial(new MaterialBuilder("uranium_235", SHINY, 0xe60045).addParts(FUEL_RODS).addRegularParts(ITEM_PURE_METAL)
-                .removeRegularParts(CRUSHED_DUST).addRecipes(StandardRecipes::apply).build());
+        MaterialRegistry.addMaterial(new MaterialBuilder("uranium_235", SHINY, 0xe60045).addRegularParts(ITEM_PURE_METAL)
+                .addParts(NuclearFuelMaterialPart.of(2500, 1.5, 0.25, 1.5, 20, 256000)).removeRegularParts(CRUSHED_DUST)
+                .addRecipes(StandardRecipes::apply).build());
 
-        MaterialRegistry.addMaterial(new MaterialBuilder("uranium_238", DULL, 0x55bd33).addParts(FUEL_RODS).addRegularParts(ITEM_PURE_METAL)
-                .removeRegularParts(CRUSHED_DUST).addRecipes(StandardRecipes::apply).build());
+        MaterialRegistry.addMaterial(new MaterialBuilder("uranium_238", DULL, 0x55bd33).addRegularParts(ITEM_PURE_METAL)
+                .addParts(NuclearFuelMaterialPart.of(3200, 0, 0.55, 1.5, 0, 256000)).removeRegularParts(CRUSHED_DUST)
+                .addRecipes(StandardRecipes::apply).build());
 
-        MaterialRegistry.addMaterial(new MaterialBuilder("plutonium", SHINY, 0xd701e7).addParts(FUEL_RODS).addRegularParts(ITEM_PURE_METAL)
-                // .addRegularParts(ORE) if other mod
-                .removeRegularParts(CRUSHED_DUST).addRecipes(StandardRecipes::apply).build());
+        MaterialRegistry.addMaterial(new MaterialBuilder("plutonium", SHINY, 0xd701e7).addRegularParts(ITEM_PURE_METAL)
+                .addParts(NuclearFuelMaterialPart.of(1700, 2.2, 0.2, 2, 30, 256000)).removeRegularParts(CRUSHED_DUST)
+                .addRecipes(StandardRecipes::apply).build());
 
-        MaterialRegistry.addMaterial(new MaterialBuilder("mox", SHINY, 0x00e7e5).addParts(FUEL_RODS).addRegularParts(ITEM_PURE_METAL)
-                .removeRegularParts(CRUSHED_DUST).addRecipes(StandardRecipes::apply).build());
+        MaterialRegistry.addMaterial(new MaterialBuilder("mox", SHINY, 0x00e7e5).addParts(NuclearFuelMaterialPart.of(2800, 2.2, 0.4, 1.8, 25, 256000))
+                .addParts().addRegularParts(ITEM_PURE_METAL).removeRegularParts(CRUSHED_DUST).addRecipes(StandardRecipes::apply).build());
 
         MaterialRegistry.addMaterial(new MaterialBuilder("platinum", SHINY, 0xffe5ba).addRegularParts(ITEM_PURE_METAL).addRegularParts(ORE)
                 .addRegularParts(PLATE, DOUBLE_INGOT, WIRE, FINE_WIRE, HOT_INGOT).addParts(CableMaterialPart.of(CableTier.EV))

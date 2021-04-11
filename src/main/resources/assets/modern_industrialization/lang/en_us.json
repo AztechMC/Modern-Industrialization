@@ -1044,6 +1044,7 @@
     "text.modern_industrialization.probability": "Probability: %s %%",
     "text.modern_industrialization.probability_zero": "Not consumed",
     "text.modern_industrialization.progress": "Progress : %s",
+    "text.modern_industrialization.rem_desintegration": "%d / %d ",
     "text.modern_industrialization.seconds_left": "Seconds left: %s",
     "text.modern_industrialization.shape_error": "Multiblock shape error at (%d, %d, %d): %s",
     "text.modern_industrialization.shape_error_block": "Expected block %s",

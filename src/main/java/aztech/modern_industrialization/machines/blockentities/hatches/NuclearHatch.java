@@ -40,9 +40,12 @@ import net.minecraft.block.entity.BlockEntityType;
 
 public class NuclearHatch extends HatchBlockEntity {
 
+    private static final int MAX_TEMPERATURE = 3800;
+
     private final MIInventory inventory;
-    public NuclearReactorComponent nuclearReactorComponent = new NuclearReactorComponent();
-    private final boolean isFluid;
+    public final NuclearReactorComponent nuclearReactorComponent = new NuclearReactorComponent(MAX_TEMPERATURE);
+    public final boolean isFluid;
+    public static final double BASE_HEAT_CONDUCTION = 0.01;
 
     public NuclearHatch(BlockEntityType<?> type, boolean isFluid) {
         super(type, new MachineGuiParameters.Builder(isFluid ? "nuclear_fluid_hatch" : "nuclear_item_hatch", true).build(),
@@ -66,8 +69,8 @@ public class NuclearHatch extends HatchBlockEntity {
         }
 
         registerComponents(inventory, nuclearReactorComponent);
-        TemperatureBar.Parameters temperatureParams = new TemperatureBar.Parameters(43, 63, 2500);
-        registerClientComponent(new TemperatureBar.Server(temperatureParams, () -> (int) nuclearReactorComponent.temperature));
+        TemperatureBar.Parameters temperatureParams = new TemperatureBar.Parameters(43, 63, MAX_TEMPERATURE);
+        registerClientComponent(new TemperatureBar.Server(temperatureParams, () -> (int) nuclearReactorComponent.getTemperature()));
     }
 
     @Override
@@ -88,7 +91,6 @@ public class NuclearHatch extends HatchBlockEntity {
     @Override
     public final void tick() {
         super.tick();
-        nuclearReactorComponent.temperature = 0;
     }
 
 }

@@ -67,14 +67,14 @@ public class ItemHatch extends HatchBlockEntity {
     @Override
     public void appendItemInputs(List<ConfigurableItemStack> list) {
         if (input) {
-            list.addAll(inventory.itemStacks);
+            list.addAll(inventory.getItemStacks());
         }
     }
 
     @Override
     public void appendItemOutputs(List<ConfigurableItemStack> list) {
         if (!input) {
-            list.addAll(inventory.itemStacks);
+            list.addAll(inventory.getItemStacks());
         }
     }
 

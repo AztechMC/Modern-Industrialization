@@ -31,6 +31,7 @@ import aztech.modern_industrialization.machines.components.OrientationComponent;
 import aztech.modern_industrialization.machines.components.sync.ProgressBar;
 import aztech.modern_industrialization.machines.gui.MachineGuiParameters;
 import aztech.modern_industrialization.machines.helper.OrientationHelper;
+import java.util.List;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -92,7 +93,8 @@ public abstract class AbstractWaterPumpBlockEntity extends MachineBlockEntity im
     @Override
     public void tick() {
         if (!world.isClient) {
-            ConfigurableFluidStack waterStack = getInventory().fluidStacks.get(getInventory().fluidStacks.size() - 1);
+            List<ConfigurableFluidStack> fluidStacks = getInventory().getFluidStacks();
+            ConfigurableFluidStack waterStack = fluidStacks.get(fluidStacks.size() - 1);
             if (waterStack.getRemainingSpace() < 81000 / 8) {
                 updateActive(false);
             } else {

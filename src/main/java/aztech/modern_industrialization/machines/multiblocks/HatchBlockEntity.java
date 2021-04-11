@@ -98,10 +98,10 @@ public abstract class HatchBlockEntity extends MachineBlockEntity implements Tic
     }
 
     private void clearMachineLock() {
-        for (ConfigurableItemStack itemStack : getInventory().itemStacks) {
+        for (ConfigurableItemStack itemStack : getInventory().getItemStacks()) {
             itemStack.disableMachineLock();
         }
-        for (ConfigurableFluidStack fluidStack : getInventory().fluidStacks) {
+        for (ConfigurableFluidStack fluidStack : getInventory().getFluidStacks()) {
             fluidStack.disableMachineLock();
         }
     }

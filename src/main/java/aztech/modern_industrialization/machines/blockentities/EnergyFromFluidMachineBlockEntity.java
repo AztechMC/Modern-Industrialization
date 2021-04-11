@@ -135,7 +135,7 @@ public class EnergyFromFluidMachineBlockEntity extends MachineBlockEntity implem
         if (world == null || world.isClient)
             return;
 
-        ConfigurableFluidStack stack = inventory.fluidStacks.get(0);
+        ConfigurableFluidStack stack = inventory.getFluidStacks().get(0);
         long euProduced = fluidConsumer.getEuProduction(Collections.singletonList(stack), energy.getRemainingCapacity());
         energy.insertEu(euProduced, Simulation.ACT);
         isActiveComponent.updateActive(0 != euProduced, this);

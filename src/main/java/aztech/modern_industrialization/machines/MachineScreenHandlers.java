@@ -81,14 +81,14 @@ public class MachineScreenHandlers {
             }
 
             // Configurable slots
-            for (int i = 0; i < inventory.itemStacks.size(); ++i) {
-                ConfigurableItemStack stack = inventory.itemStacks.get(i);
+            for (int i = 0; i < inventory.getItemStacks().size(); ++i) {
+                ConfigurableItemStack stack = inventory.getItemStacks().get(i);
                 // FIXME: markDirty and insert predicate
                 this.addSlot(stack.new ConfigurableItemSlot(() -> {
                 }, inventory.itemPositions.getX(i), inventory.itemPositions.getY(i), s -> true));
             }
-            for (int i = 0; i < inventory.fluidStacks.size(); ++i) {
-                ConfigurableFluidStack stack = inventory.fluidStacks.get(i);
+            for (int i = 0; i < inventory.getFluidStacks().size(); ++i) {
+                ConfigurableFluidStack stack = inventory.getFluidStacks().get(i);
                 // FIXME: markDirty
                 this.addSlot(stack.new ConfigurableFluidSlot(() -> {
                 }, inventory.fluidPositions.getX(i), inventory.fluidPositions.getY(i)));

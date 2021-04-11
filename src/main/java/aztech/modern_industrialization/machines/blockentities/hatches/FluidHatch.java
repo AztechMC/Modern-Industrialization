@@ -67,14 +67,14 @@ public class FluidHatch extends HatchBlockEntity {
     @Override
     public void appendFluidInputs(List<ConfigurableFluidStack> list) {
         if (input) {
-            list.addAll(inventory.fluidStacks);
+            list.addAll(inventory.getFluidStacks());
         }
     }
 
     @Override
     public void appendFluidOutputs(List<ConfigurableFluidStack> list) {
         if (!input) {
-            list.addAll(inventory.fluidStacks);
+            list.addAll(inventory.getFluidStacks());
         }
     }
 

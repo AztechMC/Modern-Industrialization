@@ -96,7 +96,7 @@ public class MachineBlock extends MIBlock implements BlockEntityProvider {
             if (be instanceof MachineBlockEntity) {
                 MachineBlockEntity machine = (MachineBlockEntity) be;
                 List<ItemStack> dropExtra = machine.dropExtra();
-                for (ConfigurableItemStack stack : machine.getInventory().itemStacks) {
+                for (ConfigurableItemStack stack : machine.getInventory().getItemStacks()) {
                     ItemScatterer.spawn(world, pos.getX(), pos.getY(), pos.getZ(), stack.getItemKey().toStack(stack.getCount()));
                     stack.setCount(0);
                 }

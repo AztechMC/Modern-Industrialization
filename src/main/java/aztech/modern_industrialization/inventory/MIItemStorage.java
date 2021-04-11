@@ -32,7 +32,7 @@ import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 
 public class MIItemStorage implements Storage<ItemKey> {
-    private final List<ConfigurableItemStack> stacks;
+    final List<ConfigurableItemStack> stacks;
 
     public MIItemStorage(List<ConfigurableItemStack> stacks) {
         this.stacks = stacks;

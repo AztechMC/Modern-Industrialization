@@ -39,13 +39,14 @@ import net.minecraft.world.World;
 
 public class NuclearFuel extends NuclearComponent implements DurabilityBarItem {
 
-    public final double neutronAmplification;
+    public final double neutronByDesintegration;
     public final double heatByDesintegration;
     public final int desintegrationMax;
+    public final int desintegrationByNeutron;
     public final String depleted;
 
-    public NuclearFuel(Settings settings, int maxTemperature, double neutronAmplification, double neutronAbs_, double heatByDesintegration,
-            int desintegrationMax, String depleted) {
+    public NuclearFuel(Settings settings, int maxTemperature, int desintegrationByNeutron, double neutronByDesintegration, double neutronAbs_,
+            double heatByDesintegration, int desintegrationMax, String depleted) {
         super(settings, maxTemperature, 0, new INeutronBehaviour() {
             @Override
             public double getNeutronAbs() {
@@ -57,16 +58,17 @@ public class NuclearFuel extends NuclearComponent implements DurabilityBarItem {
                 return angle == 2 ? 1.0 : 0;
             }
         });
-        this.neutronAmplification = neutronAmplification;
+        this.neutronByDesintegration = neutronByDesintegration;
         this.heatByDesintegration = heatByDesintegration;
         this.desintegrationMax = desintegrationMax;
+        this.desintegrationByNeutron = desintegrationByNeutron;
         this.depleted = depleted;
     }
 
-    public static NuclearFuel of(String id, int maxTemperature, double neutronAmplification, double neutronAbs, double heatByDesintegration,
-            int desintegrationMax, String depleted) {
-        return (NuclearFuel) MIItem.of((Settings settings) -> new NuclearFuel(settings, maxTemperature, neutronAmplification, neutronAbs,
-                heatByDesintegration, desintegrationMax, depleted), id, 1);
+    public static NuclearFuel of(String id, int maxTemperature, int desintegrationByNeutron, double neutronByDesintegration, double neutronAbs,
+            double heatByDesintegration, int desintegrationMax, String depleted) {
+        return (NuclearFuel) MIItem.of((Settings settings) -> new NuclearFuel(settings, maxTemperature, desintegrationByNeutron,
+                neutronByDesintegration, neutronAbs, heatByDesintegration, desintegrationMax, depleted), id, 1);
     }
 
     public Item getDepleted() {
@@ -76,6 +78,13 @@ public class NuclearFuel extends NuclearComponent implements DurabilityBarItem {
     @Override
     public void appendTooltip(ItemStack stack, World world, List<Text> tooltip, TooltipContext context) {
         super.appendTooltip(stack, world, tooltip, context);
+
+        tooltip.add(new TranslatableText("text.modern_industrialization.neutrons_by_desintegration", neutronByDesintegration)
+                .setStyle(TextHelper.NEUTRONS));
+        tooltip.add(new TranslatableText("text.modern_industrialization.desintegrations_by_neutron", desintegrationByNeutron)
+                .setStyle(TextHelper.NEUTRONS));
+        tooltip.add(new TranslatableText("text.modern_industrialization.heat_by_desintegration", heatByDesintegration)
+                .setStyle(TextHelper.HEAT_CONDUCTION));
 
         tooltip.add(new TranslatableText("text.modern_industrialization.rem_desintegration", getRemDes(stack), desintegrationMax)
                 .setStyle(TextHelper.GRAY_TEXT));

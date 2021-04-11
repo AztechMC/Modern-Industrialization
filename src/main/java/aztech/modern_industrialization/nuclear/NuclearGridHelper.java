@@ -34,7 +34,7 @@ public class NuclearGridHelper {
 
     private static int doubleToInt(double d) {
         int floor = (int) Math.floor(d);
-        return 1 + rand.nextDouble() < (d - floor) ? 1 : 0;
+        return floor + (rand.nextDouble() < (d - floor) ? 1 : 0);
     }
 
     private static int getAngle(int from, int to) {
@@ -53,44 +53,6 @@ public class NuclearGridHelper {
         int sizeY = grid.getSizeY();
 
         double[][] neutronsReceived = new double[sizeX][sizeY];
-
-        // NEUTRONS
-
-        for (int step = 0; step < 3; step++) {
-            double[][] neutronsReceivedNew = new double[sizeX][sizeY];
-            for (int i = 0; i < sizeX; i++) {
-                for (int j = 0; j < sizeY; j++) {
-                    if (grid.ok(i, j) && grid.isFuel(i, j)) {
-                        double neutronProduced;
-                        if (step == 0) {
-                            neutronProduced = grid.sendNeutron(i, j, 1);
-                        } else {
-                            neutronProduced = grid.sendNeutron(i, j, doubleToInt(neutronsReceived[i][j]));
-                        }
-                        if (step < 2) {
-                            for (int k = 0; k < 4; k++) {
-                                int i2 = i + dX[k];
-                                int j2 = j + dY[k];
-                                if (grid.ok(i2, j2)) {
-                                    double neutronDiffused = grid.getFracDiffusedNeutron(i2, j2);
-                                    neutronsReceivedNew[i2][j2] += 0.25 * (1 - neutronDiffused) * neutronProduced;
-                                    for (int l = 0; l < 4; l++) {
-                                        int i3 = i2 + dX[l];
-                                        int j3 = j2 + dY[l];
-                                        if (grid.ok(i3, j3)) {
-                                            neutronsReceivedNew[i3][j3] += 0.25 * 0.25 * neutronDiffused * neutronProduced
-                                                    * grid.getNeutronDiffusionAnisotropy(i2, j2, getAngle(k, l));
-                                        }
-                                    }
-                                }
-                            }
-                        }
-
-                    }
-                }
-            }
-            neutronsReceived = neutronsReceivedNew;
-        }
 
         // HEAT
         double[][] temperatureOut = new double[sizeX][sizeY];
@@ -129,6 +91,43 @@ public class NuclearGridHelper {
                 }
             }
 
+        }
+
+        // NEUTRONS
+
+        for (int step = 0; step < 2; step++) {
+            for (int i = 0; i < sizeX; i++) {
+                for (int j = 0; j < sizeY; j++) {
+                    if (grid.ok(i, j) && grid.isFuel(i, j)) {
+                        double neutronProduced;
+                        if (step == 0) {
+                            neutronProduced = grid.sendNeutron(i, j, 1);
+                            for (int k = 0; k < 4; k++) {
+                                int i2 = i + dX[k];
+                                int j2 = j + dY[k];
+                                if (grid.ok(i2, j2)) {
+                                    double neutronDiffused = grid.getFracDiffusedNeutron(i2, j2);
+                                    neutronsReceived[i2][j2] += 0.25 * (1 - neutronDiffused) * neutronProduced;
+                                    for (int l = 0; l < 4; l++) {
+                                        int i3 = i2 + dX[l];
+                                        int j3 = j2 + dY[l];
+                                        if (grid.ok(i3, j3)) {
+                                            neutronsReceived[i3][j3] += 0.25 * 0.25 * neutronDiffused * neutronProduced
+                                                    * grid.getNeutronDiffusionAnisotropy(i2, j2, getAngle(k, l));
+                                        }
+                                    }
+                                }
+                            }
+                        } else {
+                            int neutrons = doubleToInt(neutronsReceived[i][j]);
+                            if (neutrons > 0) {
+                                grid.sendNeutron(i, j, neutrons);
+                            }
+                        }
+
+                    }
+                }
+            }
         }
 
         for (int i = 0; i < sizeX; i++) {

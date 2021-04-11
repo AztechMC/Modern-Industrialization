@@ -145,7 +145,7 @@ public class NuclearReactorMultiblockBlockEntity extends MultiblockMachineBlockE
             public ItemStack getNuclearComponent(int x, int y) {
                 if (hatchesGrid[x][y] != null) {
                     if (!hatchesGrid[x][y].isFluid) {
-                        ItemStack itemStack = hatchesGrid[x][y].getInventory().itemStacks.get(0).getItemKey().toStack();
+                        ItemStack itemStack = hatchesGrid[x][y].getInventory().getItemStacks().get(0).getItemKey().toStack();
                         if (!itemStack.isEmpty() && itemStack.getItem() instanceof NuclearComponent) {
                             return itemStack;
                         }
@@ -184,12 +184,12 @@ public class NuclearReactorMultiblockBlockEntity extends MultiblockMachineBlockE
                     NuclearFuel fuel = (NuclearFuel) nuclearFuelStack.getItem();
                     CompoundTag tag = nuclearFuelStack.getOrCreateTag();
                     int desRem = tag.contains("desRem") ? tag.getInt("desRem") : fuel.desintegrationMax;
-                    int des = Math.min(neutron, desRem);
+                    int des = Math.min(neutron * fuel.desintegrationByNeutron, desRem);
                     hatchesGrid[x][y].nuclearReactorComponent
                             .setTemperature(hatchesGrid[x][y].nuclearReactorComponent.getTemperature() + des * fuel.heatByDesintegration);
                     tag.putInt("desRem", desRem - des);
-                    hatchesGrid[x][y].getInventory().itemStacks.get(0).setItemKey(ItemKey.of(nuclearFuelStack));
-                    return des * fuel.neutronAmplification;
+                    hatchesGrid[x][y].getInventory().getItemStacks().get(0).setItemKey(ItemKey.of(nuclearFuelStack));
+                    return des * fuel.neutronByDesintegration;
 
                 }
 

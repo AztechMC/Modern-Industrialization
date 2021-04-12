@@ -96,7 +96,9 @@ public class PipeBlock extends Block implements BlockEntityProvider, IWrenchable
                             world.spawnEntity(
                                     new ItemEntity(world, hitPos.x, hitPos.y, hitPos.z, new ItemStack(MIPipes.INSTANCE.getPipeItem(partShape.type))));
                             // play break sound
-                            world.playSound(player, blockPos, group.getBreakSound(), SoundCategory.BLOCKS, (group.getVolume() + 1.0F) / 2.0F,
+                            // should be breakSound, but getBreakSound() is client-only, this will be fixed
+                            // properly in 0.4 with an AW
+                            world.playSound(player, blockPos, group.getPlaceSound(), SoundCategory.BLOCKS, (group.getVolume() + 1.0F) / 2.0F,
                                     group.getPitch() * 0.8F);
                             return ActionResult.success(world.isClient);
                         } else {
@@ -179,7 +181,9 @@ public class PipeBlock extends Block implements BlockEntityProvider, IWrenchable
                             if (!world.isClient) {
                                 pipeEntity.removeConnection(partShape.type, partShape.direction);
                             }
-                            sound = group.getBreakSound();
+                            // should be breakSound, but getBreakSound() is client-only, this will be fixed
+                            // properly in 0.4 with an AW
+                            sound = group.getPlaceSound();
                         }
                         world.updateNeighbors(blockPos, null);
                         world.playSound(player, blockPos, sound, SoundCategory.BLOCKS, (group.getVolume() + 1.0F) / 4.0F, group.getPitch() * 0.8F);

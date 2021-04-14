@@ -115,7 +115,7 @@ public class DistillationTowerBlockEntity extends AbstractCraftingMultiblockBloc
         }
 
         @Override
-        public World getWorld() {
+        public World getCrafterWorld() {
             return world;
         }
 

@@ -111,7 +111,7 @@ public class ElectricCraftingMultiblockBlockEntity extends AbstractCraftingMulti
         }
 
         @Override
-        public World getWorld() {
+        public World getCrafterWorld() {
             return world;
         }
     }

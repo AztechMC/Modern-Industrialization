@@ -92,7 +92,7 @@ public class SteamCraftingMultiblockBlockEntity extends AbstractCraftingMultiblo
         }
 
         @Override
-        public World getWorld() {
+        public World getCrafterWorld() {
             return world;
         }
     }

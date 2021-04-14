@@ -44,6 +44,7 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.Tickable;
 import net.minecraft.util.math.Direction;
+import net.minecraft.world.World;
 
 public abstract class AbstractCraftingMachineBlockEntity extends MachineBlockEntity implements CrafterComponent.Behavior, Tickable {
     public AbstractCraftingMachineBlockEntity(BlockEntityType<?> type, MachineRecipeType recipeType, MachineInventoryComponent inventory,
@@ -118,4 +119,8 @@ public abstract class AbstractCraftingMachineBlockEntity extends MachineBlockEnt
         orientation.onPlaced(placer, itemStack);
     }
 
+    @Override
+    public World getCrafterWorld() {
+        return world;
+    }
 }

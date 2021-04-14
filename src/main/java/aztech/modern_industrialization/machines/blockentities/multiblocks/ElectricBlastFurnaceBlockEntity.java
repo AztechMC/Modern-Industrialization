@@ -128,10 +128,9 @@ public class ElectricBlastFurnaceBlockEntity extends AbstractCraftingMultiblockB
         }
 
         @Override
-        public World getWorld() {
+        public World getCrafterWorld() {
             return world;
         }
-
     }
 
     public static void registerReiShapes() {

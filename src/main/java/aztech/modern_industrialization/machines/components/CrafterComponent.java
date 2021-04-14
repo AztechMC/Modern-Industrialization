@@ -79,7 +79,8 @@ public class CrafterComponent implements IComponent.ServerOnly {
 
         long getMaxRecipeEu();
 
-        World getWorld();
+        // can't use getWorld() or the remapping will fail
+        World getCrafterWorld();
 
         default int getMaxFluidOutputs() {
             return Integer.MAX_VALUE;
@@ -145,7 +146,7 @@ public class CrafterComponent implements IComponent.ServerOnly {
      * tick.
      */
     public boolean tickRecipe() {
-        if (behavior.getWorld().isClient()) {
+        if (behavior.getCrafterWorld().isClient()) {
             throw new IllegalStateException("May not call client side.");
         }
         boolean isActive;
@@ -236,7 +237,7 @@ public class CrafterComponent implements IComponent.ServerOnly {
 
     private void loadDelayedActiveRecipe() {
         if (delayedActiveRecipe != null) {
-            activeRecipe = behavior.recipeType().getRecipe((ServerWorld) behavior.getWorld(), delayedActiveRecipe);
+            activeRecipe = behavior.recipeType().getRecipe((ServerWorld) behavior.getCrafterWorld(), delayedActiveRecipe);
             delayedActiveRecipe = null;
             if (activeRecipe == null) { // If a recipe got removed, we need to reset the efficiency and the used energy
                 // to allow the machine to resume processing.
@@ -272,7 +273,7 @@ public class CrafterComponent implements IComponent.ServerOnly {
         if (efficiencyTicks > 0) {
             return Collections.singletonList(activeRecipe);
         } else {
-            ServerWorld serverWorld = (ServerWorld) behavior.getWorld();
+            ServerWorld serverWorld = (ServerWorld) behavior.getCrafterWorld();
             MachineRecipeType recipeType = behavior.recipeType();
             List<MachineRecipe> recipes = new ArrayList<>(recipeType.getFluidOnlyRecipes(serverWorld));
             for (ConfigurableItemStack stack : inventory.getItemInputs()) {
@@ -525,7 +526,7 @@ public class CrafterComponent implements IComponent.ServerOnly {
 
     public void lockRecipe(Identifier recipeId, PlayerInventory inventory) {
         // Find MachineRecipe
-        Optional<MachineRecipe> optionalMachineRecipe = behavior.recipeType().getRecipes((ServerWorld) behavior.getWorld()).stream()
+        Optional<MachineRecipe> optionalMachineRecipe = behavior.recipeType().getRecipes((ServerWorld) behavior.getCrafterWorld()).stream()
                 .filter(recipe -> recipe.getId().equals(recipeId)).findFirst();
         if (!optionalMachineRecipe.isPresent())
             return;

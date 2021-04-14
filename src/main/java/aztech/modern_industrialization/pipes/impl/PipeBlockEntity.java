@@ -221,7 +221,6 @@ public class PipeBlockEntity extends FastBlockEntity
     @Override
     public void markRemoved() {
         loadPipes();
-        // TODO: drop items when necessary, probably not here
         for (PipeNetworkNode pipe : pipes) {
             pipe.getManager().removeNode(pos);
         }
@@ -232,12 +231,16 @@ public class PipeBlockEntity extends FastBlockEntity
 
     @Override
     public CompoundTag toTag(CompoundTag tag) {
-        loadPipes();
         super.toTag(tag);
         int i = 0;
         for (PipeNetworkNode pipe : pipes) {
             tag.putString("pipe_type_" + i, pipe.getType().getIdentifier().toString());
             tag.put("pipe_data_" + i, pipe.toTag(new CompoundTag()));
+            i++;
+        }
+        for (Pair<PipeNetworkType, PipeNetworkNode> entry : unloadedPipes) {
+            tag.putString("pipe_type_" + i, entry.getLeft().getIdentifier().toString());
+            tag.put("pipe_data_" + i, entry.getRight().toTag(new CompoundTag()));
             i++;
         }
         return tag;

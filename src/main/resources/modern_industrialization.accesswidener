@@ -1,3 +1,6 @@
 accessWidener   v1    named
 
 accessible field net/minecraft/client/gui/screen/ingame/HandledScreen playerInventory Lnet/minecraft/entity/player/PlayerInventory;
+
+# the getter is client-only so we access the field directly
+accessible field net/minecraft/sound/BlockSoundGroup breakSound Lnet/minecraft/sound/SoundEvent;

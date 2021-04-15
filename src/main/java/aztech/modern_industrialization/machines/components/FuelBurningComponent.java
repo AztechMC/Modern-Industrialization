@@ -93,7 +93,7 @@ public class FuelBurningComponent implements IComponent {
                 if (ItemStackHelper.consumeFuel(stack, true)) {
                     Integer fuelTime = FuelRegistryImpl.INSTANCE.get(fuel);
                     if (fuelTime != null && fuelTime > 0) {
-                        burningEuBuffer += fuelTime * 40 * burningEuMultiplier;
+                        burningEuBuffer += fuelTime * 20 * burningEuMultiplier;
                         empty = false;
                         ItemStackHelper.consumeFuel(stack, false);
                         break;

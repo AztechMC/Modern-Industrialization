@@ -5,7 +5,7 @@
   "fluid_inputs" : [
     {
       "fluid" : "minecraft:lava",
-      "amount" : 125
+      "amount" : 10
     },
     {
       "fluid" : "minecraft:water",
@@ -20,6 +20,6 @@
   "item_outputs" : {
     "item" : "minecraft:obsidian",
     "amount" : 1,
-    "probability" : 0.1
+    "probability" : 0.01
   }
 }

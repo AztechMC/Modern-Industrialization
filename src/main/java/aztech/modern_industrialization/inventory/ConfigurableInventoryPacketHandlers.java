@@ -27,6 +27,7 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.screen.ScreenHandler;
+import net.minecraft.screen.slot.Slot;
 
 public class ConfigurableInventoryPacketHandlers {
     public static class S2C {
@@ -39,7 +40,22 @@ public class ConfigurableInventoryPacketHandlers {
                 ScreenHandler sh = mc.player.currentScreenHandler;
                 if (sh.syncId == syncId) {
                     ConfigurableScreenHandler csh = (ConfigurableScreenHandler) sh;
-                    csh.inventory.getItemStacks().set(stackId, ConfigurableItemStack.fromNbt(tag));
+                    ConfigurableItemStack oldStack = csh.inventory.getItemStacks().get(stackId);
+                    // update stack
+                    ConfigurableItemStack newStack = ConfigurableItemStack.fromNbt(tag);
+                    csh.inventory.getItemStacks().set(stackId, newStack);
+                    // update slot
+                    for (int i = 0; i < csh.slots.size(); ++i) {
+                        Slot slot = csh.slots.get(i);
+                        if (slot instanceof ConfigurableItemStack.ConfigurableItemSlot) {
+                            ConfigurableItemStack.ConfigurableItemSlot is = (ConfigurableItemStack.ConfigurableItemSlot) slot;
+                            if (is.getConfStack() == oldStack) {
+                                csh.slots.set(i, newStack.new ConfigurableItemSlot(is));
+                                return;
+                            }
+                        }
+                    }
+                    throw new RuntimeException("Could not find slot to replace!");
                 }
             });
         };
@@ -52,7 +68,22 @@ public class ConfigurableInventoryPacketHandlers {
                 ScreenHandler sh = mc.player.currentScreenHandler;
                 if (sh.syncId == syncId) {
                     ConfigurableScreenHandler csh = (ConfigurableScreenHandler) sh;
-                    csh.inventory.getFluidStacks().set(stackId, ConfigurableFluidStack.fromNbt(tag));
+                    ConfigurableFluidStack oldStack = csh.inventory.getFluidStacks().get(stackId);
+                    // update stack
+                    ConfigurableFluidStack newStack = ConfigurableFluidStack.fromNbt(tag);
+                    csh.inventory.getFluidStacks().set(stackId, newStack);
+                    // update slot
+                    for (int i = 0; i < csh.slots.size(); ++i) {
+                        Slot slot = csh.slots.get(i);
+                        if (slot instanceof ConfigurableFluidStack.ConfigurableFluidSlot) {
+                            ConfigurableFluidStack.ConfigurableFluidSlot fs = (ConfigurableFluidStack.ConfigurableFluidSlot) slot;
+                            if (fs.getConfStack() == oldStack) {
+                                csh.slots.set(i, newStack.new ConfigurableFluidSlot(fs));
+                                return;
+                            }
+                        }
+                    }
+                    throw new RuntimeException("Could not find slot to replace!");
                 }
             });
         };

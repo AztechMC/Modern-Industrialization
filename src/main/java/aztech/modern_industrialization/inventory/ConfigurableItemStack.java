@@ -309,6 +309,12 @@ public class ConfigurableItemStack extends SnapshotParticipant<ItemState> implem
         // and set it when `markDirty()` is called.
         private ItemStack cachedReturnedStack = null;
 
+        public ConfigurableItemSlot(ConfigurableItemSlot other) {
+            this(other.markDirty, other.x, other.y, other.insertPredicate);
+
+            this.id = other.id;
+        }
+
         public ConfigurableItemSlot(Runnable markDirty, int x, int y, Predicate<ItemStack> insertPredicate) {
             super(null, 0, x, y);
 

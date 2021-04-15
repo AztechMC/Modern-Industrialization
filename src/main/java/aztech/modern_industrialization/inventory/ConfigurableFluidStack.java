@@ -332,6 +332,12 @@ public class ConfigurableFluidStack extends SnapshotParticipant<FluidState> impl
     public class ConfigurableFluidSlot extends Slot {
         private final Runnable markDirty;
 
+        public ConfigurableFluidSlot(ConfigurableFluidSlot other) {
+            this(other.markDirty, other.x, other.y);
+
+            this.id = other.id;
+        }
+
         public ConfigurableFluidSlot(Runnable markDirty, int x, int y) {
             super(null, -1, x, y);
 

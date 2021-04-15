@@ -27,8 +27,8 @@ import aztech.modern_industrialization.inventory.ConfigurableFluidStack;
 import aztech.modern_industrialization.inventory.ConfigurableItemStack;
 import aztech.modern_industrialization.inventory.MIInventory;
 import aztech.modern_industrialization.inventory.SlotPositions;
-import aztech.modern_industrialization.machines.components.NuclearReactorComponent;
 import aztech.modern_industrialization.machines.components.OrientationComponent;
+import aztech.modern_industrialization.machines.components.TemperatureComponent;
 import aztech.modern_industrialization.machines.components.sync.TemperatureBar;
 import aztech.modern_industrialization.machines.gui.MachineGuiParameters;
 import aztech.modern_industrialization.machines.multiblocks.HatchBlockEntity;
@@ -43,7 +43,7 @@ public class NuclearHatch extends HatchBlockEntity {
     private static final int MAX_TEMPERATURE = 3800;
 
     private final MIInventory inventory;
-    public final NuclearReactorComponent nuclearReactorComponent = new NuclearReactorComponent(MAX_TEMPERATURE);
+    public final TemperatureComponent nuclearReactorComponent = new TemperatureComponent(MAX_TEMPERATURE);
     public final boolean isFluid;
     public static final double BASE_HEAT_CONDUCTION = 0.01;
 

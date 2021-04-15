@@ -120,6 +120,9 @@ public class MaterialHelper {
         if (itemPath.equals("nuclear_casing")) {
             return 6000.0F;
         }
+        if (itemPath.equals("nuclear_alloy_machine_casing_pipe")) {
+            return 6000.0F;
+        }
         return 6.0f;
     }
 }

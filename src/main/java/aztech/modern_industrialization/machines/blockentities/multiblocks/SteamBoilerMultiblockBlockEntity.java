@@ -23,15 +23,8 @@
  */
 package aztech.modern_industrialization.machines.blockentities.multiblocks;
 
-import aztech.modern_industrialization.api.FluidFuelRegistry;
-import aztech.modern_industrialization.inventory.ConfigurableFluidStack;
-import aztech.modern_industrialization.inventory.ConfigurableItemStack;
 import aztech.modern_industrialization.inventory.MIInventory;
-import aztech.modern_industrialization.machines.IComponent;
-import aztech.modern_industrialization.machines.blockentities.BoilerMachineBlockEntity;
-import aztech.modern_industrialization.machines.components.IsActiveComponent;
-import aztech.modern_industrialization.machines.components.MultiblockInventoryComponent;
-import aztech.modern_industrialization.machines.components.OrientationComponent;
+import aztech.modern_industrialization.machines.components.*;
 import aztech.modern_industrialization.machines.components.sync.ProgressBar;
 import aztech.modern_industrialization.machines.components.sync.TemperatureBar;
 import aztech.modern_industrialization.machines.gui.MachineGuiParameters;
@@ -39,14 +32,9 @@ import aztech.modern_industrialization.machines.models.MachineModelClientData;
 import aztech.modern_industrialization.machines.multiblocks.MultiblockMachineBlockEntity;
 import aztech.modern_industrialization.machines.multiblocks.ShapeMatcher;
 import aztech.modern_industrialization.machines.multiblocks.ShapeTemplate;
-import aztech.modern_industrialization.util.ItemStackHelper;
-import net.fabricmc.fabric.impl.content.registry.FuelRegistryImpl;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.fluid.Fluid;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Tickable;
 
 public class SteamBoilerMultiblockBlockEntity extends MultiblockMachineBlockEntity implements Tickable {
@@ -57,50 +45,28 @@ public class SteamBoilerMultiblockBlockEntity extends MultiblockMachineBlockEnti
 
     private final MultiblockInventoryComponent inventory;
 
-    private final int temperatureMax = 2100;
-    protected float burningTick, burningTickProgress;
-    protected int temperature;
+    private final SteamHeaterComponent steamHeater;
+    private final FuelBurningComponent fuelBurning;
 
-    public final int speedFactor;
-    public final int fluidFactor;
-    public final Fluid consumedFluid;
-    public final Fluid producedFluid;
-
-    public SteamBoilerMultiblockBlockEntity(BlockEntityType<?> type, ShapeTemplate shapeTemplate, String name, int speedFactor, int fluidFactor,
-            Fluid consumedFluid, Fluid producedFluid) {
+    public SteamBoilerMultiblockBlockEntity(BlockEntityType<?> type, ShapeTemplate shapeTemplate, String name, long maxEuProduction,
+            boolean highPressure) {
         super(type, new MachineGuiParameters.Builder(name, false).build(),
                 new OrientationComponent(new OrientationComponent.Params(false, false, false)));
 
         isActiveComponent = new IsActiveComponent();
-        this.speedFactor = speedFactor;
-        this.fluidFactor = fluidFactor;
-        this.consumedFluid = consumedFluid;
-        this.producedFluid = producedFluid;
         this.shapeTemplate = shapeTemplate;
         this.inventory = new MultiblockInventoryComponent();
 
         ProgressBar.Parameters PROGRESS_BAR = new ProgressBar.Parameters(82, 20, "furnace", true);
-        TemperatureBar.Parameters TEMPERATURE_BAR = new TemperatureBar.Parameters(42, 55, temperatureMax);
+        TemperatureBar.Parameters TEMPERATURE_BAR = new TemperatureBar.Parameters(42, 55, 2500);
 
-        registerClientComponent(new ProgressBar.Server(PROGRESS_BAR, () -> burningTick / burningTickProgress));
-        registerClientComponent(new TemperatureBar.Server(TEMPERATURE_BAR, () -> temperature));
+        steamHeater = new SteamHeaterComponent(2500, maxEuProduction, maxEuProduction / 32, !highPressure, highPressure);
+        fuelBurning = new FuelBurningComponent(steamHeater, 2);
 
-        this.registerComponents(isActiveComponent, new IComponent() {
+        registerClientComponent(new ProgressBar.Server(PROGRESS_BAR, () -> (float) fuelBurning.getBurningProgress()));
+        registerClientComponent(new TemperatureBar.Server(TEMPERATURE_BAR, () -> (int) steamHeater.getTemperature()));
 
-            @Override
-            public void readNbt(CompoundTag tag) {
-                burningTick = tag.getFloat("burningTick");
-                burningTickProgress = tag.getFloat("burningTickProgress");
-                temperature = tag.getInt("temperature");
-            }
-
-            @Override
-            public void writeNbt(CompoundTag tag) {
-                tag.putFloat("burningTick", burningTick);
-                tag.putFloat("burningTickProgress", burningTickProgress);
-                tag.putInt("temperature", temperature);
-            }
-        });
+        this.registerComponents(isActiveComponent, steamHeater, fuelBurning);
 
     }
 
@@ -159,102 +125,13 @@ public class SteamBoilerMultiblockBlockEntity extends MultiblockMachineBlockEnti
             link();
 
             if (shapeValid.shapeValid) {
-                boolean empty = false;
-                while (burningTick < 12.5 * 20 & !empty) {
-                    empty = true;
-                    for (ConfigurableItemStack stack : inventory.getItemInputs()) {
-                        Item fuel = stack.getItemKey().getItem();
-
-                        if (ItemStackHelper.consumeFuel(stack, true)) {
-                            Integer fuelTime = FuelRegistryImpl.INSTANCE.get(fuel);
-                            if (fuelTime != null && fuelTime > 0) {
-                                burningTickProgress = burningTick
-                                        + (fuelTime * BoilerMachineBlockEntity.BURN_TIME_MULTIPLIER) / (2f * speedFactor * fluidFactor);
-                                burningTick = burningTickProgress;
-                                empty = false;
-                                ItemStackHelper.consumeFuel(stack, false);
-                                break;
-                            }
-                        }
-                    }
-                }
-                empty = false;
-                while (burningTick < 12.5 * 20 & !empty) {
-                    empty = true;
-                    for (ConfigurableFluidStack stack : inventory.getFluidInputs()) {
-                        if (!stack.isEmpty()) {
-                            long euPerMb = FluidFuelRegistry.getEu(stack.getFluid());
-                            if (euPerMb != 0) {
-                                float burningTickProgressPerMb = euPerMb / (speedFactor * fluidFactor * 8f);
-                                long mbConsumedMax = (long) Math.ceil((12.5 * 20 - burningTick) / burningTickProgressPerMb);
-                                long dropletConsumedMax = Math.min(mbConsumedMax * 81, stack.getAmount());
-                                stack.decrement(dropletConsumedMax);
-                                burningTickProgress = burningTick + (dropletConsumedMax * burningTickProgressPerMb / 81f);
-                                burningTick = burningTickProgress;
-                                empty = false;
-                                break;
-                            }
-                        }
-                    }
-
-                }
-
-                boolean newActive = burningTick >= 1;
-                burningTick = Math.max(burningTick - 1, 0);
-
-                if (newActive) {
-                    temperature = Math.min(temperature + 1, temperatureMax);
-                } else {
-                    temperature = Math.max(temperature - 1, 0);
-                }
-
-                if (temperature > 100) {
-                    long steamProduction = 81 * (long) ((speedFactor * 8 * (temperature - 100)) / 1000);
-                    long maxFluidExtract = 0;
-
-                    for (ConfigurableFluidStack fluidStack : inventory.getFluidInputs()) {
-                        if (fluidStack.getFluid() == this.consumedFluid) {
-                            maxFluidExtract += fluidStack.getAmount();
-                        }
-                    }
-
-                    long maxInsertSteam = 0;
-
-                    for (ConfigurableFluidStack fluidStack : inventory.getFluidOutputs()) {
-                        if (fluidStack.isValid(producedFluid)) {
-                            maxInsertSteam += fluidStack.getRemainingSpace();
-                        }
-                    }
-
-                    long effSteamProduced = Math.min(Math.min(steamProduction, maxFluidExtract * 16), maxInsertSteam);
-
-                    long fluidExtract = (long) Math.ceil(effSteamProduced / 16f);
-
-                    for (ConfigurableFluidStack fluidStack : inventory.getFluidInputs()) {
-                        if (fluidStack.getFluid() == this.consumedFluid) {
-                            long decrement = Math.min(fluidStack.getAmount(), fluidExtract);
-                            fluidExtract -= decrement;
-                            fluidStack.decrement(decrement);
-                        }
-                    }
-
-                    long steamInsert = effSteamProduced;
-
-                    for (ConfigurableFluidStack fluidStack : inventory.getFluidOutputs()) {
-                        if (fluidStack.isValid(producedFluid)) {
-                            long increment = Math.min(fluidStack.getRemainingSpace(), steamInsert);
-                            steamInsert -= increment;
-                            fluidStack.setFluid(producedFluid);
-                            fluidStack.increment(increment);
-
-                        }
-                    }
-                }
-
-                isActiveComponent.updateActive(newActive, this);
+                steamHeater.tick(inventory.getFluidInputs(), inventory.getFluidOutputs());
+                fuelBurning.tick(inventory.getItemInputs(), inventory.getFluidInputs());
+                this.isActiveComponent.updateActive(fuelBurning.isBurning(), this);
             } else {
-                this.burningTick = 0;
-                temperature = Math.max(temperature - 1, 0);
+                fuelBurning.disable();
+                steamHeater.decreaseTemperature(1);
+                this.isActiveComponent.updateActive(false, this);
             }
             markDirty();
         }

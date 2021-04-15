@@ -29,35 +29,31 @@ import aztech.modern_industrialization.inventory.ConfigurableFluidStack;
 import aztech.modern_industrialization.inventory.ConfigurableItemStack;
 import aztech.modern_industrialization.inventory.MIInventory;
 import aztech.modern_industrialization.inventory.SlotPositions;
-import aztech.modern_industrialization.machines.IComponent;
 import aztech.modern_industrialization.machines.MachineBlockEntity;
+import aztech.modern_industrialization.machines.components.FuelBurningComponent;
 import aztech.modern_industrialization.machines.components.IsActiveComponent;
 import aztech.modern_industrialization.machines.components.OrientationComponent;
+import aztech.modern_industrialization.machines.components.SteamHeaterComponent;
 import aztech.modern_industrialization.machines.components.sync.ProgressBar;
 import aztech.modern_industrialization.machines.components.sync.TemperatureBar;
 import aztech.modern_industrialization.machines.gui.MachineGuiParameters;
 import aztech.modern_industrialization.machines.helper.OrientationHelper;
 import aztech.modern_industrialization.machines.models.MachineCasings;
 import aztech.modern_industrialization.machines.models.MachineModelClientData;
-import aztech.modern_industrialization.util.ItemStackHelper;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
-import net.fabricmc.fabric.impl.content.registry.FuelRegistryImpl;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.Fluids;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.Tickable;
 import net.minecraft.util.math.Direction;
 
 public class BoilerMachineBlockEntity extends MachineBlockEntity implements Tickable {
-
-    public static final int BURN_TIME_MULTIPLIER = 5;
 
     public static final int WATER_SLOT_X = 50;
     public static final int WATER_SLOT_Y = 32;
@@ -71,9 +67,8 @@ public class BoilerMachineBlockEntity extends MachineBlockEntity implements Tick
     private final MIInventory inventory;
     private final boolean bronze;
 
-    private final int temperatureMax;
-    protected int burningTick, burningTickProgress, temperature;
-
+    private final SteamHeaterComponent steamHeater;
+    private final FuelBurningComponent fuelBurning;
     protected final OrientationComponent orientation;
 
     protected IsActiveComponent isActiveComponent;
@@ -84,7 +79,7 @@ public class BoilerMachineBlockEntity extends MachineBlockEntity implements Tick
 
         int capacity = 81000 * (bronze ? 2 * MITanks.BRONZE.bucketCapacity : 2 * MITanks.STEEL.bucketCapacity);
 
-        List<ConfigurableItemStack> itemStacks = Arrays.asList(ConfigurableItemStack.standardInputSlot());
+        List<ConfigurableItemStack> itemStacks = Collections.singletonList(ConfigurableItemStack.standardInputSlot());
         SlotPositions itemPositions = new SlotPositions.Builder().addSlot(INPUT_SLOT_X, INPUT_SLOT_Y).build();
 
         List<ConfigurableFluidStack> fluidStacks = Arrays.asList(ConfigurableFluidStack.lockedInputSlot(capacity, Fluids.WATER),
@@ -93,32 +88,16 @@ public class BoilerMachineBlockEntity extends MachineBlockEntity implements Tick
         inventory = new MIInventory(itemStacks, fluidStacks, itemPositions, fluidPositions);
 
         this.bronze = bronze;
-        this.burningTickProgress = 1;
-        this.burningTick = 0;
-        this.temperatureMax = bronze ? 1100 : 2100;
+        steamHeater = new SteamHeaterComponent(1500, bronze ? 1 : 2, 2, true, false);
+        fuelBurning = new FuelBurningComponent(steamHeater);
         this.isActiveComponent = new IsActiveComponent();
 
         ProgressBar.Parameters progressParams = new ProgressBar.Parameters(133, 50, "furnace", true);
-        TemperatureBar.Parameters temperatureParams = new TemperatureBar.Parameters(42, 75, temperatureMax);
-        registerClientComponent(new ProgressBar.Server(progressParams, () -> (float) burningTick / burningTickProgress));
-        registerClientComponent(new TemperatureBar.Server(temperatureParams, () -> temperature));
+        TemperatureBar.Parameters temperatureParams = new TemperatureBar.Parameters(42, 75, 1500);
+        registerClientComponent(new ProgressBar.Server(progressParams, () -> (float) fuelBurning.getBurningProgress()));
+        registerClientComponent(new TemperatureBar.Server(temperatureParams, () -> (int) steamHeater.getTemperature()));
 
-        this.registerComponents(orientation, inventory, isActiveComponent, new IComponent() {
-
-            @Override
-            public void readNbt(CompoundTag tag) {
-                burningTick = tag.getInt("burningTick");
-                burningTickProgress = tag.getInt("burningTickProgress");
-                temperature = tag.getInt("temperature");
-            }
-
-            @Override
-            public void writeNbt(CompoundTag tag) {
-                tag.putInt("burningTick", burningTick);
-                tag.putInt("burningTickProgress", burningTickProgress);
-                tag.putInt("temperature", temperature);
-            }
-        });
+        this.registerComponents(orientation, inventory, isActiveComponent, steamHeater, fuelBurning);
 
     }
 
@@ -150,52 +129,14 @@ public class BoilerMachineBlockEntity extends MachineBlockEntity implements Tick
         if (world.isClient)
             return;
 
-        boolean newActive = false;
-
-        if (burningTick == 0) {
-            ConfigurableItemStack stack = inventory.getItemStacks().get(0);
-            Item fuel = stack.getItemKey().getItem();
-            if (ItemStackHelper.consumeFuel(stack, true)) {
-                Integer fuelTime = FuelRegistryImpl.INSTANCE.get(fuel);
-                if (fuelTime != null && fuelTime > 0) {
-                    burningTickProgress = (fuelTime * BURN_TIME_MULTIPLIER) / (bronze ? 1 : 2);
-                    burningTick = burningTickProgress;
-                    ItemStackHelper.consumeFuel(stack, false);
-                }
-            }
-        }
-
-        if (burningTick > 0) {
-            newActive = true;
-            --burningTick;
-        }
-
-        if (newActive) {
-            temperature = Math.min(temperature + 1, temperatureMax);
-        } else {
-            temperature = Math.max(temperature - 1, 0);
-        }
-
-        if (temperature > 100) {
-            int steamProduction = 81 * ((8 * (temperature - 100)) / 1000);
-            ConfigurableFluidStack waterStack = inventory.getFluidStacks().get(0);
-            ConfigurableFluidStack steamStack = inventory.getFluidStacks().get(1);
-            if (waterStack.getAmount() > 0) {
-                long remSpace = steamStack.getRemainingSpace();
-                long waterAvail = waterStack.getAmount();
-                long actualProduced = Math.min(Math.min(steamProduction, remSpace), waterAvail * 16);
-                if (actualProduced > 0) {
-                    steamStack.increment(actualProduced);
-                    waterStack.decrement((long) Math.ceil(actualProduced / 16f));
-                }
-            }
-        }
+        steamHeater.tick(Collections.singletonList(inventory.getFluidStacks().get(0)), Collections.singletonList(inventory.getFluidStacks().get(1)));
+        fuelBurning.tick(Collections.singletonList(inventory.getItemStacks().get(0)), Collections.emptyList());
 
         for (Direction direction : Direction.values()) {
             getInventory().autoExtractFluids(world, pos, direction);
         }
 
-        isActiveComponent.updateActive(newActive, this);
+        isActiveComponent.updateActive(fuelBurning.isBurning(), this);
 
         markDirty();
     }

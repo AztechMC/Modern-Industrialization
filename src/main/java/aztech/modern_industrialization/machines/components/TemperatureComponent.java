@@ -26,12 +26,12 @@ package aztech.modern_industrialization.machines.components;
 import aztech.modern_industrialization.machines.IComponent;
 import net.minecraft.nbt.CompoundTag;
 
-public class NuclearReactorComponent implements IComponent {
+public class TemperatureComponent implements IComponent {
 
     private double temperature;
     public final double temperatureMax;
 
-    public NuclearReactorComponent(double temperatureMax) {
+    public TemperatureComponent(double temperatureMax) {
         this.temperatureMax = temperatureMax;
     }
 
@@ -42,6 +42,10 @@ public class NuclearReactorComponent implements IComponent {
 
     public void increaseTemperature(double temp) {
         setTemperature(getTemperature() + temp);
+    }
+
+    public void decreaseTemperature(double temp) {
+        setTemperature(getTemperature() - temp);
     }
 
     public double getTemperature() {
@@ -56,6 +60,6 @@ public class NuclearReactorComponent implements IComponent {
 
     @Override
     public void readNbt(CompoundTag tag) {
-        temperature = tag.getDouble("temperature");
+        setTemperature(tag.getDouble("temperature"));
     }
 }

@@ -52,16 +52,16 @@ public class NuclearFuelMaterialPart implements MaterialPart {
         public final int desintegrationByNeutron;
         public final double neutronByDesintegration;
         public final double neutronAbs;
-        public final double heatByDesintegration;
+        public final int euByDesintegration;
         public final int desintegrationMax;
 
         public NuclearFuelParams(int maxTemperature, int desintegrationByNeutron, double neutronByDesintegration, double neutronAbs,
-                double heatByDesintegration, int desintegrationMax) {
+                int euByDesintegration, int desintegrationMax) {
             this.maxTemperature = maxTemperature;
             this.desintegrationByNeutron = desintegrationByNeutron;
             this.neutronByDesintegration = neutronByDesintegration;
             this.neutronAbs = neutronAbs;
-            this.heatByDesintegration = heatByDesintegration;
+            this.euByDesintegration = euByDesintegration;
             this.desintegrationMax = desintegrationMax;
         }
     }
@@ -87,7 +87,7 @@ public class NuclearFuelMaterialPart implements MaterialPart {
     }
 
     public static Function<MaterialBuilder.PartContext, MaterialPart>[] of(int maxTemperature, double neutronByDesintegration, double neutronAbs,
-            double heatByDesintegration, int desintegrationMax) {
+            int euByDesintegration, int desintegrationMax) {
 
         List<Function<MaterialBuilder.PartContext, MaterialPart>> result = new ArrayList<>();
         result.add((of(SIMPLE, true, null)));
@@ -96,7 +96,7 @@ public class NuclearFuelMaterialPart implements MaterialPart {
         for (int i : new int[] { SIMPLE, DOUBLE, QUAD }) {
             NuclearFuelParams params = new NuclearFuelParams(maxTemperature,
                     (int) ((1 - Math.pow(neutronByDesintegration, i)) / ((1 - neutronByDesintegration))), neutronByDesintegration,
-                    1 - Math.pow((1.0 - neutronAbs), Math.sqrt(i)), heatByDesintegration, desintegrationMax * i);
+                    1 - Math.pow((1.0 - neutronAbs), Math.sqrt(i)), euByDesintegration, desintegrationMax * i);
             result.add(of(i, false, params));
         }
         return result.toArray(new Function[0]);
@@ -124,8 +124,7 @@ public class NuclearFuelMaterialPart implements MaterialPart {
             item = MIItem.of(MaterialHelper.overrideItemPath(itemPath), 1);
         } else {
             item = NuclearFuel.of(MaterialHelper.overrideItemPath(itemPath), params.maxTemperature, params.desintegrationByNeutron,
-                    params.neutronByDesintegration, params.neutronAbs, params.heatByDesintegration, params.desintegrationMax,
-                    partSimple + "_depleted");
+                    params.neutronByDesintegration, params.neutronAbs, params.euByDesintegration, params.desintegrationMax, partSimple + "_depleted");
         }
 
     }

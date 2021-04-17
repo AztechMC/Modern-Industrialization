@@ -188,7 +188,8 @@ public class NuclearReactorMultiblockBlockEntity extends MultiblockMachineBlockE
                     CompoundTag tag = nuclearFuelStack.getOrCreateTag();
                     int desRem = tag.contains("desRem") ? tag.getInt("desRem") : fuel.desintegrationMax;
                     int des = Math.min(neutron * fuel.desintegrationByNeutron, desRem);
-                    hatchesGrid[x][y].nuclearReactorComponent.increaseTemperature(des * fuel.heatByDesintegration);
+                    hatchesGrid[x][y].nuclearReactorComponent
+                            .increaseTemperature(des * (double) fuel.euByDesintegration / NuclearHatch.EU_PER_DEGREE);
                     tag.putInt("desRem", desRem - des);
                     hatchesGrid[x][y].getInventory().getItemStacks().get(0).setItemKey(ItemKey.of(nuclearFuelStack));
                     return des * fuel.neutronByDesintegration;

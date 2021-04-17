@@ -69,8 +69,9 @@ public class NuclearComponent extends Item {
     @Override
     public void appendTooltip(ItemStack stack, World world, List<Text> tooltip, TooltipContext context) {
         tooltip.add(new TranslatableText("text.modern_industrialization.max_temp", maxTemperature).setStyle(TextHelper.MAX_TEMP_TEXT));
-        tooltip.add(new TranslatableText("text.modern_industrialization.heat_conduction", heatConduction).setStyle(TextHelper.HEAT_CONDUCTION));
-        tooltip.add(new TranslatableText("text.modern_industrialization.neutron_abs", Math.round(100 * neutronBehaviour.getNeutronAbs()))
+        tooltip.add(new TranslatableText("text.modern_industrialization.heat_conduction", String.format("%.2f", heatConduction))
+                .setStyle(TextHelper.HEAT_CONDUCTION));
+        tooltip.add(new TranslatableText("text.modern_industrialization.neutron_abs", String.format("%.2f", 100d * neutronBehaviour.getNeutronAbs()))
                 .setStyle(TextHelper.NEUTRONS));
     }
 }

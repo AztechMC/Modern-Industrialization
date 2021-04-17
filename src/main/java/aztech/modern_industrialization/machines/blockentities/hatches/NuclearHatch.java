@@ -23,27 +23,33 @@
  */
 package aztech.modern_industrialization.machines.blockentities.hatches;
 
+import static net.minecraft.util.math.Direction.UP;
+
 import aztech.modern_industrialization.inventory.ConfigurableFluidStack;
 import aztech.modern_industrialization.inventory.ConfigurableItemStack;
 import aztech.modern_industrialization.inventory.MIInventory;
 import aztech.modern_industrialization.inventory.SlotPositions;
 import aztech.modern_industrialization.machines.components.OrientationComponent;
+import aztech.modern_industrialization.machines.components.SteamHeaterComponent;
 import aztech.modern_industrialization.machines.components.TemperatureComponent;
 import aztech.modern_industrialization.machines.components.sync.TemperatureBar;
 import aztech.modern_industrialization.machines.gui.MachineGuiParameters;
 import aztech.modern_industrialization.machines.multiblocks.HatchBlockEntity;
 import aztech.modern_industrialization.machines.multiblocks.HatchType;
+import aztech.modern_industrialization.transferapi.api.item.ItemApi;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
 import net.minecraft.block.entity.BlockEntityType;
 
 public class NuclearHatch extends HatchBlockEntity {
 
     private static final int MAX_TEMPERATURE = 3800;
+    public static final int EU_PER_DEGREE = 128;
 
     private final MIInventory inventory;
-    public final TemperatureComponent nuclearReactorComponent = new TemperatureComponent(MAX_TEMPERATURE);
+    public final TemperatureComponent nuclearReactorComponent;
     public final boolean isFluid;
     public static final double BASE_HEAT_CONDUCTION = 0.01;
 
@@ -59,6 +65,7 @@ public class NuclearHatch extends HatchBlockEntity {
             itemStack.add(ConfigurableItemStack.standardOutputSlot());
             itemStack.add(ConfigurableItemStack.standardOutputSlot());
             inventory = new MIInventory(itemStack, Collections.emptyList(), slotPos, SlotPositions.empty());
+            nuclearReactorComponent = new TemperatureComponent(MAX_TEMPERATURE);
         } else {
             long capacity = 64000 * 81;
             List<ConfigurableFluidStack> fluidStack = new ArrayList<>();
@@ -66,6 +73,7 @@ public class NuclearHatch extends HatchBlockEntity {
             fluidStack.add(ConfigurableFluidStack.standardOutputSlot(capacity));
             fluidStack.add(ConfigurableFluidStack.standardOutputSlot(capacity));
             inventory = new MIInventory(Collections.emptyList(), fluidStack, SlotPositions.empty(), slotPos);
+            nuclearReactorComponent = new SteamHeaterComponent(MAX_TEMPERATURE, 4096, EU_PER_DEGREE, true, true);
         }
 
         registerComponents(inventory, nuclearReactorComponent);
@@ -91,6 +99,18 @@ public class NuclearHatch extends HatchBlockEntity {
     @Override
     public final void tick() {
         super.tick();
+        if (isFluid) {
+            ((SteamHeaterComponent) nuclearReactorComponent).tick(Collections.singletonList(inventory.getFluidStacks().get(0)),
+                    Collections.singletonList(inventory.getFluidStacks().get(1)));
+        }
+    }
+
+    public static void registerItemApi(BlockEntityType<?> bet) {
+        ItemApi.SIDED.registerForBlockEntities((be, direction) -> direction == UP ? ((NuclearHatch) be).getInventory().itemStorage : null, bet);
+    }
+
+    public static void registerFluidApi(BlockEntityType<?> bet) {
+        FluidStorage.SIDED.registerForBlockEntities((be, direction) -> direction == UP ? ((NuclearHatch) be).getInventory().fluidStorage : null, bet);
     }
 
 }

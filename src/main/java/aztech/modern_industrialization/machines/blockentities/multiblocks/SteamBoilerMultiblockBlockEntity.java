@@ -57,7 +57,7 @@ public class SteamBoilerMultiblockBlockEntity extends MultiblockMachineBlockEnti
         this.shapeTemplate = shapeTemplate;
         this.inventory = new MultiblockInventoryComponent();
 
-        ProgressBar.Parameters PROGRESS_BAR = new ProgressBar.Parameters(82, 20, "furnace", true);
+        ProgressBar.Parameters PROGRESS_BAR = new ProgressBar.Parameters(82, 30, "furnace", true);
         TemperatureBar.Parameters TEMPERATURE_BAR = new TemperatureBar.Parameters(42, 55, 2500);
 
         steamHeater = new SteamHeaterComponent(2500, maxEuProduction, maxEuProduction / 32, !highPressure, highPressure);

@@ -39,6 +39,7 @@ import aztech.modern_industrialization.machines.MachineOverlay;
 import aztech.modern_industrialization.machines.MachinePackets;
 import aztech.modern_industrialization.machines.MachineScreenHandlers;
 import aztech.modern_industrialization.machines.blockentities.multiblocks.ElectricBlastFurnaceBlockEntity;
+import aztech.modern_industrialization.machines.components.FuelBurningComponent;
 import aztech.modern_industrialization.machines.components.UpgradeComponent;
 import aztech.modern_industrialization.machines.init.MultiblockMachines;
 import aztech.modern_industrialization.machines.models.MachineModels;
@@ -56,11 +57,13 @@ import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.fabricmc.fabric.api.client.screenhandler.v1.ScreenRegistry;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
+import net.fabricmc.fabric.impl.content.registry.FuelRegistryImpl;
 import net.fabricmc.loader.DependencyException;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.block.Block;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.item.BlockItem;
+import net.minecraft.item.Item;
 import net.minecraft.item.Items;
 import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.text.TranslatableText;
@@ -121,27 +124,45 @@ public class ModernIndustrializationClient implements ClientModInitializer {
                         .setStyle(TextHelper.UPGRADE_TEXT));
             }
 
-            if (stack.getItem() instanceof PipeItem) {
-                PipeItem pipe = (PipeItem) stack.getItem();
-                if (MIPipes.electricityPipeTier.containsKey(pipe)) {
-                    CableTier tier = MIPipes.electricityPipeTier.get(pipe);
-                    lines.add(new TranslatableText("text.modern_industrialization.eu_cable", new TranslatableText(tier.translationKey),
-                            tier.getMaxTransfer()).setStyle(TextHelper.EU_TEXT));
+            Item item = stack.getItem();
+            if (item != null) {
+
+                if (item instanceof PipeItem) {
+                    PipeItem pipe = (PipeItem) item;
+                    if (MIPipes.electricityPipeTier.containsKey(pipe)) {
+                        CableTier tier = MIPipes.electricityPipeTier.get(pipe);
+                        lines.add(new TranslatableText("text.modern_industrialization.eu_cable", new TranslatableText(tier.translationKey),
+                                tier.getMaxTransfer()).setStyle(TextHelper.EU_TEXT));
+                    }
                 }
-            }
-            if (stack.getItem() == Items.GUNPOWDER) {
-                lines.add(new TranslatableText("text.modern_industrialization.gunpowder_upgrade").setStyle(TextHelper.GRAY_TEXT));
-            }
-            if (UpgradeComponent.upgrades.containsKey(stack.getItem())) {
-                lines.add(new TranslatableText("text.modern_industrialization.machine_upgrade", UpgradeComponent.upgrades.get(stack.getItem()))
-                        .setStyle(TextHelper.UPGRADE_TEXT));
-            }
-            if (stack.getItem() instanceof BlockItem) {
-                Block block = ((BlockItem) stack.getItem()).getBlock();
-                if (ElectricBlastFurnaceBlockEntity.coilsMaxBaseEU.containsKey(block)) {
-                    lines.add(new TranslatableText("text.modern_industrialization.ebf_max_eu",
-                            ElectricBlastFurnaceBlockEntity.coilsMaxBaseEU.get(block)).setStyle(TextHelper.UPGRADE_TEXT));
+                if (item == Items.GUNPOWDER) {
+                    lines.add(new TranslatableText("text.modern_industrialization.gunpowder_upgrade").setStyle(TextHelper.GRAY_TEXT));
                 }
+                if (UpgradeComponent.upgrades.containsKey(item)) {
+                    lines.add(new TranslatableText("text.modern_industrialization.machine_upgrade", UpgradeComponent.upgrades.get(item))
+                            .setStyle(TextHelper.UPGRADE_TEXT));
+                }
+                if (item instanceof BlockItem) {
+                    Block block = ((BlockItem) item).getBlock();
+                    if (ElectricBlastFurnaceBlockEntity.coilsMaxBaseEU.containsKey(block)) {
+                        lines.add(new TranslatableText("text.modern_industrialization.ebf_max_eu",
+                                ElectricBlastFurnaceBlockEntity.coilsMaxBaseEU.get(block)).setStyle(TextHelper.UPGRADE_TEXT));
+                    }
+                }
+
+                if (MinecraftClient.getInstance().world != null) { // WTF
+                    try {
+                        Integer fuelTime = FuelRegistryImpl.INSTANCE.get(item);
+                        if (fuelTime != null && fuelTime > 0) {
+                            long totalEu = fuelTime * FuelBurningComponent.EU_PER_BURN_TICK;
+                            lines.add(new TranslatableText("text.modern_industrialization.base_eu_total_double", TextHelper.getEuString(totalEu),
+                                    TextHelper.getEuUnit(totalEu)).setStyle(TextHelper.GRAY_TEXT));
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+
             }
 
         }));

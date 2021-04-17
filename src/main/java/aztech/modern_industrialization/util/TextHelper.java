@@ -36,4 +36,34 @@ public class TextHelper {
     public static final Style MAX_TEMP_TEXT = Style.EMPTY.withColor(TextColor.fromRgb(0xd94a1e));
     public static final Style HEAT_CONDUCTION = Style.EMPTY.withColor(TextColor.fromRgb(0xd9ca48));
     public static final Style NEUTRONS = Style.EMPTY.withColor(TextColor.fromRgb(0x29a329)).withItalic(true);
+
+    public static String getEuUnit(long eu) {
+        if (eu > 1e12) {
+            return "TEU";
+        } else if (eu > 1e9) {
+            return "GEU";
+        } else if (eu > 1e6) {
+            return "MEU";
+        } else if (eu > 1e4) {
+            return "kEU";
+        } else {
+            return "EU";
+        }
+    }
+
+    public static String getEuString(long eu) {
+        double div = 1;
+        if (eu > 1e12) {
+            div = 1e12;
+        } else if (eu > 1e9) {
+            div = 1e9;
+        } else if (eu > 1e6) {
+            div = 1e6;
+        } else if (eu > 1e4) {
+            div = 1e3;
+        } else {
+            return "" + eu;
+        }
+        return String.format("%.2f", ((double) eu) / div);
+    }
 }

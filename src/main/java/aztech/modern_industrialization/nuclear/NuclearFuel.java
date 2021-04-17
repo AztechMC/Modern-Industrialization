@@ -25,6 +25,7 @@ package aztech.modern_industrialization.nuclear;
 
 import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.MIItem;
+import aztech.modern_industrialization.machines.blockentities.hatches.NuclearHatch;
 import aztech.modern_industrialization.util.TextHelper;
 import java.util.List;
 import me.shedaniel.cloth.api.durability.bar.DurabilityBarItem;
@@ -40,13 +41,13 @@ import net.minecraft.world.World;
 public class NuclearFuel extends NuclearComponent implements DurabilityBarItem {
 
     public final double neutronByDesintegration;
-    public final double heatByDesintegration;
+    public final int euByDesintegration;
     public final int desintegrationMax;
     public final int desintegrationByNeutron;
     public final String depleted;
 
     public NuclearFuel(Settings settings, int maxTemperature, int desintegrationByNeutron, double neutronByDesintegration, double neutronAbs_,
-            double heatByDesintegration, int desintegrationMax, String depleted) {
+            int euByDesintegration, int desintegrationMax, String depleted) {
         super(settings, maxTemperature, 0, new INeutronBehaviour() {
             @Override
             public double getNeutronAbs() {
@@ -59,16 +60,16 @@ public class NuclearFuel extends NuclearComponent implements DurabilityBarItem {
             }
         });
         this.neutronByDesintegration = neutronByDesintegration;
-        this.heatByDesintegration = heatByDesintegration;
+        this.euByDesintegration = euByDesintegration;
         this.desintegrationMax = desintegrationMax;
         this.desintegrationByNeutron = desintegrationByNeutron;
         this.depleted = depleted;
     }
 
     public static NuclearFuel of(String id, int maxTemperature, int desintegrationByNeutron, double neutronByDesintegration, double neutronAbs,
-            double heatByDesintegration, int desintegrationMax, String depleted) {
+            int euByDesintegration, int desintegrationMax, String depleted) {
         return (NuclearFuel) MIItem.of((Settings settings) -> new NuclearFuel(settings, maxTemperature, desintegrationByNeutron,
-                neutronByDesintegration, neutronAbs, heatByDesintegration, desintegrationMax, depleted), id, 1);
+                neutronByDesintegration, neutronAbs, euByDesintegration, desintegrationMax, depleted), id, 1);
     }
 
     public Item getDepleted() {
@@ -79,12 +80,17 @@ public class NuclearFuel extends NuclearComponent implements DurabilityBarItem {
     public void appendTooltip(ItemStack stack, World world, List<Text> tooltip, TooltipContext context) {
         super.appendTooltip(stack, world, tooltip, context);
 
-        tooltip.add(new TranslatableText("text.modern_industrialization.neutrons_by_desintegration", neutronByDesintegration)
+        tooltip.add(new TranslatableText("text.modern_industrialization.neutrons_by_desintegration", String.format("%.2f", neutronByDesintegration))
                 .setStyle(TextHelper.NEUTRONS));
         tooltip.add(new TranslatableText("text.modern_industrialization.desintegrations_by_neutron", desintegrationByNeutron)
                 .setStyle(TextHelper.NEUTRONS));
-        tooltip.add(new TranslatableText("text.modern_industrialization.heat_by_desintegration", heatByDesintegration)
-                .setStyle(TextHelper.HEAT_CONDUCTION));
+        tooltip.add(new TranslatableText("text.modern_industrialization.heat_by_desintegration",
+                String.format("%.2f", (double) euByDesintegration / NuclearHatch.EU_PER_DEGREE)).setStyle(TextHelper.HEAT_CONDUCTION));
+        tooltip.add(new TranslatableText("text.modern_industrialization.eu_by_desintegration", euByDesintegration).setStyle(TextHelper.EU_TEXT));
+
+        long totalEu = euByDesintegration * desintegrationMax;
+        tooltip.add(new TranslatableText("text.modern_industrialization.base_eu_total_double", TextHelper.getEuString(totalEu),
+                TextHelper.getEuUnit(totalEu)).setStyle(TextHelper.EU_TEXT));
 
         tooltip.add(new TranslatableText("text.modern_industrialization.rem_desintegration", getRemDes(stack), desintegrationMax)
                 .setStyle(TextHelper.GRAY_TEXT));
@@ -112,9 +118,6 @@ public class NuclearFuel extends NuclearComponent implements DurabilityBarItem {
     @Override
     public boolean hasDurabilityBar(ItemStack stack) {
         CompoundTag tag = stack.getTag();
-        if (tag == null || !tag.contains("desRem")) {
-            return false;
-        }
-        return true;
+        return tag != null && tag.contains("desRem");
     }
 }

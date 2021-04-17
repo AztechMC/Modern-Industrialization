@@ -40,6 +40,8 @@ public class FuelBurningComponent implements IComponent {
     public final TemperatureComponent temperature;
     private final long burningEuMultiplier;
 
+    public static final int EU_PER_BURN_TICK = 20;
+
     private long burningEuBuffer;
 
     public FuelBurningComponent(TemperatureComponent temperature, long maxEuProduction, long euPerDegree, long burningEuMultiplier) {
@@ -93,7 +95,7 @@ public class FuelBurningComponent implements IComponent {
                 if (ItemStackHelper.consumeFuel(stack, true)) {
                     Integer fuelTime = FuelRegistryImpl.INSTANCE.get(fuel);
                     if (fuelTime != null && fuelTime > 0) {
-                        burningEuBuffer += fuelTime * 20 * burningEuMultiplier;
+                        burningEuBuffer += fuelTime * EU_PER_BURN_TICK * burningEuMultiplier;
                         empty = false;
                         ItemStackHelper.consumeFuel(stack, false);
                         break;

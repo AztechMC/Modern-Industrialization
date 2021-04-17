@@ -63,10 +63,10 @@ public class MultiblockHatches {
         registerEnergyHatches(CableTier.EV);
         registerEnergyHatches(CableTier.SUPRACONDUCTOR);
 
-        MachineRegistrationHelper.registerMachine("nuclear_item_hatch", bet -> new NuclearHatch(bet, false));
+        MachineRegistrationHelper.registerMachine("nuclear_item_hatch", bet -> new NuclearHatch(bet, false), NuclearHatch::registerItemApi);
         MachineModels.addTieredMachine("nuclear_item_hatch", "hatch_nuclear", MachineCasings.NUCLEAR, false, true, false, false);
 
-        MachineRegistrationHelper.registerMachine("nuclear_fluid_hatch", bet -> new NuclearHatch(bet, true));
+        MachineRegistrationHelper.registerMachine("nuclear_fluid_hatch", bet -> new NuclearHatch(bet, true), NuclearHatch::registerFluidApi);
         MachineModels.addTieredMachine("nuclear_fluid_hatch", "hatch_nuclear", MachineCasings.NUCLEAR, false, true, false, false);
     }
 

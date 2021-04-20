@@ -47,6 +47,7 @@ import aztech.modern_industrialization.machines.multiblocks.MultiblockErrorHighl
 import aztech.modern_industrialization.pipes.MIPipes;
 import aztech.modern_industrialization.pipes.MIPipesClient;
 import aztech.modern_industrialization.pipes.impl.PipeItem;
+import aztech.modern_industrialization.proxy.ClientProxy;
 import aztech.modern_industrialization.util.TextHelper;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.command.v1.ClientCommandManager;
@@ -72,6 +73,8 @@ import net.minecraft.util.Identifier;
 public class ModernIndustrializationClient implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
+        ClientProxy.set();
+
         setupScreens();
         MIFluidsRender.setupFluidRenders();
         setupPackets();

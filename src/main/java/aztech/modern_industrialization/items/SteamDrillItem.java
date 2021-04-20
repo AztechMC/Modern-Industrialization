@@ -23,7 +23,7 @@
  */
 package aztech.modern_industrialization.items;
 
-import aztech.modern_industrialization.mixin_impl.SteamDrillHooks;
+import aztech.modern_industrialization.proxy.CommonProxy;
 import aztech.modern_industrialization.util.Simulation;
 import aztech.modern_industrialization.util.TextHelper;
 import draylar.magna.api.MagnaTool;
@@ -31,7 +31,6 @@ import java.util.List;
 import net.fabricmc.fabric.api.registry.FuelRegistry;
 import net.fabricmc.fabric.api.tool.attribute.v1.DynamicAttributeTool;
 import net.minecraft.block.BlockState;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
@@ -153,7 +152,7 @@ public class SteamDrillItem extends Item implements DynamicAttributeTool, MagnaT
     }
 
     private static int consumeFuel(ItemStack stack, @Nullable LivingEntity user, Simulation simulation) {
-        PlayerEntity player = findUser(user);
+        PlayerEntity player = CommonProxy.INSTANCE.findUser(user);
         if (player != null) {
             PlayerInventory inv = player.inventory;
             int drillSlot = -1;
@@ -183,20 +182,5 @@ public class SteamDrillItem extends Item implements DynamicAttributeTool, MagnaT
             }
         }
         return 0;
-    }
-
-    /**
-     * Try to find a suitable user.
-     */
-    @Nullable
-    private static PlayerEntity findUser(@Nullable LivingEntity entity) {
-        if (entity instanceof PlayerEntity) {
-            return (PlayerEntity) entity;
-        }
-        if (Thread.currentThread().getName().equals("Render thread")) {
-            // This is necessary for Magna's overlay
-            return MinecraftClient.getInstance().player;
-        }
-        return SteamDrillHooks.getCurrentPlayer();
     }
 }

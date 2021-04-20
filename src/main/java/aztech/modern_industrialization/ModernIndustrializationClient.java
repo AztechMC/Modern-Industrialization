@@ -35,6 +35,7 @@ import aztech.modern_industrialization.inventory.ConfigurableInventoryPackets;
 import aztech.modern_industrialization.items.armor.ClientKeyHandler;
 import aztech.modern_industrialization.items.armor.HudRenderer;
 import aztech.modern_industrialization.items.armor.JetpackParticleAdder;
+import aztech.modern_industrialization.machines.ClientMachinePackets;
 import aztech.modern_industrialization.machines.MachineOverlay;
 import aztech.modern_industrialization.machines.MachinePackets;
 import aztech.modern_industrialization.machines.MachineScreenHandlers;
@@ -108,7 +109,7 @@ public class ModernIndustrializationClient implements ClientModInitializer {
                 ConfigurableInventoryPacketHandlers.S2C.UPDATE_ITEM_SLOT);
         ClientPlayNetworking.registerGlobalReceiver(ConfigurableInventoryPackets.UPDATE_FLUID_SLOT,
                 ConfigurableInventoryPacketHandlers.S2C.UPDATE_FLUID_SLOT);
-        ClientPlayNetworking.registerGlobalReceiver(MachinePackets.S2C.COMPONENT_SYNC, MachinePackets.S2C.ON_COMPONENT_SYNC);
+        ClientPlayNetworking.registerGlobalReceiver(MachinePackets.S2C.COMPONENT_SYNC, ClientMachinePackets.ON_COMPONENT_SYNC);
     }
 
     private void registerBuiltinResourcePack() {

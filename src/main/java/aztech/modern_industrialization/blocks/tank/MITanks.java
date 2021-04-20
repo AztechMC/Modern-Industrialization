@@ -35,6 +35,8 @@ import aztech.modern_industrialization.machines.models.MachineModelProvider;
 import aztech.modern_industrialization.transferapi.api.fluid.ItemFluidApi;
 import aztech.modern_industrialization.util.ResourceUtil;
 import java.util.Arrays;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.rendereregistry.v1.BlockEntityRendererRegistry;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
@@ -93,6 +95,7 @@ public enum MITanks {
         ItemFluidApi.ITEM.registerForItems(CreativeTankItem.TankItemStorage::new, CREATIVE_TANK_ITEM);
     }
 
+    @Environment(EnvType.CLIENT)
     public static void setupClient() {
         for (MITanks tank : values()) {
             UnbakedModel tankModel = new TankModel(tank.type);

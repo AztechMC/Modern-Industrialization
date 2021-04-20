@@ -51,13 +51,6 @@ public class SingleBlockSpecialMachines {
         MachineRegistrationHelper.registerMachine("lv_water_pump", ElectricWaterPumpBlockEntity::new, MachineBlockEntity::registerFluidApi,
                 ElectricWaterPumpBlockEntity::registerEnergyApi);
 
-        if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
-            MachineModels.addTieredMachineTiers("water_pump", true, true, true, "bronze", "steel", "lv");
-            MachineModels.addTieredMachine("bronze_boiler", "boiler", MachineCasings.BRICKED_BRONZE, true, false, false);
-            MachineModels.addTieredMachine("steel_boiler", "boiler", MachineCasings.BRICKED_STEEL, true, false, false);
-
-        }
-
         registerTransformers();
         registerSteamTurbines(32, 128, 512);
         registerEUStorage();
@@ -66,17 +59,23 @@ public class SingleBlockSpecialMachines {
                 bet -> new EnergyFromFluidMachineBlockEntity(bet, "diesel_generator", CableTier.MV, 12000, 32000, 256,
                         (Fluid f) -> (FluidFuelRegistry.getEu(f) != 0), FluidFuelRegistry::getEu),
                 MachineBlockEntity::registerFluidApi, EnergyFromFluidMachineBlockEntity::registerEnergyApi);
-        MachineModels.addTieredMachine("diesel_generator", "diesel_generator", MachineCasings.MV, true, true, true);
 
         MachineRegistrationHelper.registerMachine("turbo_diesel_generator",
                 bet -> new EnergyFromFluidMachineBlockEntity(bet, "turbo_diesel_generator", CableTier.HV, 60000, 64000, 1024,
                         (Fluid f) -> (FluidFuelRegistry.getEu(f) != 0), FluidFuelRegistry::getEu),
                 MachineBlockEntity::registerFluidApi, EnergyFromFluidMachineBlockEntity::registerEnergyApi);
-        MachineModels.addTieredMachine("turbo_diesel_generator", "diesel_generator", MachineCasings.HV, true, true, true);
 
         MachineRegistrationHelper.registerMachine("configurable_chest", ConfigurableChestMachineBlockEntity::new,
                 MachineBlockEntity::registerItemApi);
-        MachineModels.addTieredMachine("configurable_chest", "", MachineCasings.STEEL_CRATE, false, false, false, false);
+
+        if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
+            MachineModels.addTieredMachineTiers("water_pump", true, true, true, "bronze", "steel", "lv");
+            MachineModels.addTieredMachine("bronze_boiler", "boiler", MachineCasings.BRICKED_BRONZE, true, false, false);
+            MachineModels.addTieredMachine("steel_boiler", "boiler", MachineCasings.BRICKED_STEEL, true, false, false);
+            MachineModels.addTieredMachine("diesel_generator", "diesel_generator", MachineCasings.MV, true, true, true);
+            MachineModels.addTieredMachine("turbo_diesel_generator", "diesel_generator", MachineCasings.HV, true, true, true);
+            MachineModels.addTieredMachine("configurable_chest", "", MachineCasings.STEEL_CRATE, false, false, false, false);
+        }
     }
 
     private static void registerTransformers() {
@@ -85,15 +84,20 @@ public class SingleBlockSpecialMachines {
             final CableTier low = tiers[i];
             final CableTier up = tiers[i + 1];
 
-            String name = TransformerMachineBlockEntity.getTransformerName(low, up);
-            MachineRegistrationHelper.registerMachine(name, bet -> new TransformerMachineBlockEntity(bet, low, up),
+            String lowToUp = TransformerMachineBlockEntity.getTransformerName(low, up);
+            MachineRegistrationHelper.registerMachine(lowToUp, bet -> new TransformerMachineBlockEntity(bet, low, up),
                     AbstractStorageMachineBlockEntity::registerEnergyApi);
-            MachineModels.addTieredMachine(name, "transformer", TransformerMachineBlockEntity.getCasingFromTier(low, up), true, true, true, false);
 
-            name = TransformerMachineBlockEntity.getTransformerName(up, low);
-            MachineRegistrationHelper.registerMachine(name, bet -> new TransformerMachineBlockEntity(bet, up, low),
+            String upToLow = TransformerMachineBlockEntity.getTransformerName(up, low);
+            MachineRegistrationHelper.registerMachine(upToLow, bet -> new TransformerMachineBlockEntity(bet, up, low),
                     AbstractStorageMachineBlockEntity::registerEnergyApi);
-            MachineModels.addTieredMachine(name, "transformer", TransformerMachineBlockEntity.getCasingFromTier(up, low), true, true, true, false);
+
+            if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
+                MachineModels.addTieredMachine(lowToUp, "transformer", TransformerMachineBlockEntity.getCasingFromTier(low, up), true, true, true,
+                        false);
+                MachineModels.addTieredMachine(upToLow, "transformer", TransformerMachineBlockEntity.getCasingFromTier(up, low), true, true, true,
+                        false);
+            }
         }
     }
 
@@ -106,7 +110,10 @@ public class SingleBlockSpecialMachines {
             MachineRegistrationHelper.registerMachine(id,
                     bet -> new EnergyFromFluidMachineBlockEntity(bet, id, tier, eu * 100, fluidCapacity, eu, MIFluids.STEAM, 1),
                     MachineBlockEntity::registerFluidApi, EnergyFromFluidMachineBlockEntity::registerEnergyApi);
-            MachineModels.addTieredMachine(id, "steam_turbine", MachineCasings.casingFromCableTier(tier), true, false, false);
+
+            if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
+                MachineModels.addTieredMachine(id, "steam_turbine", MachineCasings.casingFromCableTier(tier), true, false, false);
+            }
         }
     }
 
@@ -115,7 +122,10 @@ public class SingleBlockSpecialMachines {
             String id = tier.name + "_storage_unit";
             MachineRegistrationHelper.registerMachine(id, bet -> new StorageMachineBlockEntity(bet, tier, id, 60 * 5 * 20 * tier.eu),
                     AbstractStorageMachineBlockEntity::registerEnergyApi);
-            MachineModels.addTieredMachine(id, "electric_storage", MachineCasings.casingFromCableTier(tier), true, false, true, false);
+
+            if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
+                MachineModels.addTieredMachine(id, "electric_storage", MachineCasings.casingFromCableTier(tier), true, false, true, false);
+            }
         }
     }
 

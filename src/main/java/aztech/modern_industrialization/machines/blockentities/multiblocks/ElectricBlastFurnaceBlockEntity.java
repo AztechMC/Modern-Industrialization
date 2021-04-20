@@ -41,6 +41,8 @@ import java.util.ArrayList;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.block.Block;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.entity.player.PlayerEntity;
@@ -173,11 +175,15 @@ public class ElectricBlastFurnaceBlockEntity extends AbstractCraftingMultiblockB
             for (int j = i; j < coils.size(); ++j) {
                 workstations.add(coilNames.get(j));
             }
-            new MultiblockMachines.Rei("electric_blast_furnace_" + i, MIMachineRecipeTypes.BLAST_FURNACE, new ProgressBar.Parameters(77, 33, "arrow"))
-                    .items(inputs -> inputs.addSlots(56, 35, 2, 1), outputs -> outputs.addSlot(102, 35))
-                    .fluids(fluids -> fluids.addSlot(36, 35), outputs -> outputs.addSlot(122, 35))
-                    .extraTest(recipe -> previousMax < recipe.eu && recipe.eu <= currentMax).workstations(workstations.toArray(new String[0]))
-                    .register();
+
+            if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
+                new MultiblockMachines.Rei("electric_blast_furnace_" + i, MIMachineRecipeTypes.BLAST_FURNACE,
+                        new ProgressBar.Parameters(77, 33, "arrow"))
+                                .items(inputs -> inputs.addSlots(56, 35, 2, 1), outputs -> outputs.addSlot(102, 35))
+                                .fluids(fluids -> fluids.addSlot(36, 35), outputs -> outputs.addSlot(122, 35))
+                                .extraTest(recipe -> previousMax < recipe.eu && recipe.eu <= currentMax)
+                                .workstations(workstations.toArray(new String[0])).register();
+            }
         }
     }
 }

@@ -217,7 +217,7 @@ public class ModernIndustrialization implements ModInitializer {
     public static void registerBlock(Block block, Item item, String id, int flag) {
         Identifier identifier = new MIIdentifier(id);
         Registry.register(Registry.BLOCK, identifier, block);
-        if (!Registry.ITEM.containsId(identifier)) {
+        if (!Registry.ITEM.getOrEmpty(identifier).isPresent()) {
             Registry.register(Registry.ITEM, identifier, item);
         }
         if ((flag & FLAG_BLOCK_LOOT) != 0) {

@@ -26,6 +26,7 @@ package aztech.modern_industrialization.pipes;
 import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.ModernIndustrialization;
 import aztech.modern_industrialization.pipes.fluid.FluidPipeScreen;
+import aztech.modern_industrialization.pipes.impl.ClientPipePackets;
 import aztech.modern_industrialization.pipes.impl.PipeColorProvider;
 import aztech.modern_industrialization.pipes.impl.PipeModelProvider;
 import aztech.modern_industrialization.pipes.impl.PipePackets;
@@ -56,7 +57,7 @@ public class MIPipesClient implements ClientModInitializer {
     public void registerPackets() {
         ClientPlayNetworking.registerGlobalReceiver(PipePackets.SET_ITEM_WHITELIST, PipePackets.ON_SET_ITEM_WHITELIST::handleS2C);
         ClientPlayNetworking.registerGlobalReceiver(PipePackets.SET_CONNECTION_TYPE, PipePackets.ON_SET_CONNECTION_TYPE::handleS2C);
-        ClientPlayNetworking.registerGlobalReceiver(PipePackets.SET_PRIORITY, PipePackets.ON_SET_PRIORITY);
+        ClientPlayNetworking.registerGlobalReceiver(PipePackets.SET_PRIORITY, ClientPipePackets.ON_SET_PRIORITY);
         ClientPlayNetworking.registerGlobalReceiver(PipePackets.SET_NETWORK_FLUID, PipePackets.ON_SET_NETWORK_FLUID::handleS2C);
     }
 }

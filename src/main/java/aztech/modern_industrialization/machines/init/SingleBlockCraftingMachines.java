@@ -262,6 +262,8 @@ public final class SingleBlockCraftingMachines {
     }
 
     private static void registerReiTiers(String machine, MachineRecipeType recipeType, MachineCategoryParams categoryParams, int tiers) {
+        if (FabricLoader.getInstance().getEnvironmentType() == EnvType.SERVER) return;
+
         List<MachineCategoryParams> previousCategories = new ArrayList<>();
         int previousMaxEu = 0;
         for (int i = 0; i < 3; ++i) {

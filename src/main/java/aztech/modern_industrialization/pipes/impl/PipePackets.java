@@ -30,9 +30,6 @@ import aztech.modern_industrialization.pipes.gui.iface.ConnectionTypeInterface;
 import aztech.modern_industrialization.pipes.gui.iface.PriorityInterface;
 import aztech.modern_industrialization.pipes.item.ItemPipeScreenHandler;
 import aztech.modern_industrialization.util.UnsidedPacketHandler;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.screen.ScreenHandler;
@@ -74,17 +71,6 @@ public class PipePackets {
         });
     };
     public static final Identifier SET_PRIORITY = new MIIdentifier("set_priority");
-    @Environment(EnvType.CLIENT)
-    public static final ClientPlayNetworking.PlayChannelHandler ON_SET_PRIORITY = (mc, h, buf, r) -> {
-        int syncId = buf.readInt();
-        int priority = buf.readInt();
-        mc.execute(() -> {
-            ScreenHandler handler = mc.player.currentScreenHandler;
-            if (handler.syncId == syncId) {
-                ((PipeScreenHandler) handler).getInterface(PriorityInterface.class).setPriority(priority);
-            }
-        });
-    };
     public static final Identifier SET_NETWORK_FLUID = new MIIdentifier("set_network_fluid");
     public static final UnsidedPacketHandler ON_SET_NETWORK_FLUID = (player, buf) -> {
         int syncId = buf.readInt();

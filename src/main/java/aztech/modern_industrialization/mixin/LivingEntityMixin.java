@@ -61,13 +61,13 @@ class LivingEntityMixin {
         EquipmentSlot es = null;
         if (source == DamageSource.FLY_INTO_WALL) {
             es = EquipmentSlot.HEAD;
-            ItemStack head = inventory.getArmorStack(es.getEntitySlotId());
+            ItemStack head = inventory.armor.get(es.getEntitySlotId());
             if (head.getItem() == MIItem.RUBBER_HELMET) {
                 tankingStack = head;
             }
         } else if (source == DamageSource.FALL) {
             es = EquipmentSlot.FEET;
-            ItemStack head = inventory.getArmorStack(es.getEntitySlotId());
+            ItemStack head = inventory.armor.get(es.getEntitySlotId());
             if (head.getItem() == MIItem.RUBBER_BOOTS) {
                 tankingStack = head;
             }

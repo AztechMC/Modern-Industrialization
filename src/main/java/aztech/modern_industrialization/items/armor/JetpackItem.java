@@ -24,6 +24,7 @@
 package aztech.modern_industrialization.items.armor;
 
 import aztech.modern_industrialization.api.FluidFuelRegistry;
+import aztech.modern_industrialization.api.IElytraItem;
 import aztech.modern_industrialization.items.FluidFuelItemHelper;
 import aztech.modern_industrialization.mixin.ServerPlayNetworkHandlerAccessor;
 import com.google.common.collect.ImmutableMultimap;
@@ -31,7 +32,6 @@ import com.google.common.collect.Multimap;
 import java.util.List;
 import me.shedaniel.cloth.api.armor.v1.TickableArmor;
 import me.shedaniel.cloth.api.durability.bar.DurabilityBarItem;
-import net.fabricmc.fabric.api.item.v1.fallflying.FabricFallFlyingItem;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
@@ -49,7 +49,7 @@ import net.minecraft.util.Rarity;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
-public class JetpackItem extends ArmorItem implements Wearable, TickableArmor, DurabilityBarItem, FabricFallFlyingItem {
+public class JetpackItem extends ArmorItem implements Wearable, TickableArmor, DurabilityBarItem, IElytraItem {
     public static final int CAPACITY = 4 * 81000;
 
     public JetpackItem(Settings settings) {
@@ -65,7 +65,7 @@ public class JetpackItem extends ArmorItem implements Wearable, TickableArmor, D
     }
 
     @Override
-    public boolean shouldAllowFallFlying(ItemStack stack, LivingEntity user) {
+    public boolean allowElytraFlight(ItemStack stack, LivingEntity user) {
         return isActivated(stack) && FluidFuelItemHelper.getAmount(stack) > 0;
     }
 

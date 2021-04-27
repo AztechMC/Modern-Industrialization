@@ -145,8 +145,6 @@ dependencies {
     include modImplementation("net.fabricmc.fabric-api:fabric-transfer-api-v1:0.1.0+7678d00a7d")
     // Experimental API API with item support
     include modImplementation("net.fabricmc.fabric-api:fabric-api-lookup-api-v1:1.2.0+84310a227d")
-    // Custom build with elytra support
-    include modImplementation("net.fabricmc.fabric-api:fabric-item-api-v1:1.2.3+544a0ee57d")
     minecraft "com.mojang:minecraft:${project.minecraft_version}"
     mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
     modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"

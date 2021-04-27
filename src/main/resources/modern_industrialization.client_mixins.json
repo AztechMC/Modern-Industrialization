@@ -5,6 +5,7 @@
   "compatibilityLevel": "JAVA_8",
   "mixins": [
     "BakedModelManagerAccessor",
+    "ClientPlayerEntityMixin",
     "ClientPlayerInteractionManagerMixin",
     "ClientWorldAccessor",
     "HeldItemRendererMixin"

@@ -1,3 +1,6 @@
+##### 0.3.17
+Fix chunk loading/unloading loop with pipes
+
 ##### 0.3.16
 * Stop pipe chunk loading loops
 * Work around a dedicated server crash

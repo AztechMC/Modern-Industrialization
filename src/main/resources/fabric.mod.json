@@ -47,11 +47,14 @@
   "depends": {
     "fabricloader": ">=0.7.4",
     "fabric": ">=0.32",
-    "minecraft": "1.16.x"
+    "minecraft": "1.16.x",
+    "patchouli": "*"
   },
   "recommends": {
-    "roughlyenoughitems": "*",
-    "patchouli": "*"
+    "roughlyenoughitems": "*"
+  },
+  "breaks": {
+    "universalcomponents": "*"
   },
   "custom": {
     "waila:plugins": {

@@ -276,7 +276,6 @@ public class PipeBlockEntity extends FastBlockEntity
 
     @Override
     public void onChunkUnload() {
-        loadPipes();
         for (PipeNetworkNode pipe : pipes) {
             pipe.getManager().nodeUnloaded(pipe, pos);
         }

@@ -61,7 +61,7 @@ public class PipeBlockEntity extends BlockEntity
     /**
      * The loaded nodes, server-side only.
      */
-    private SortedSet<PipeNetworkNode> pipes = new TreeSet<>(Comparator.comparing(PipeNetworkNode::getType));
+    private final SortedSet<PipeNetworkNode> pipes = new TreeSet<>(Comparator.comparing(PipeNetworkNode::getType));
     /**
      * The rendered connections, both client-side for rendering and server-side for
      * bounds check.
@@ -74,7 +74,7 @@ public class PipeBlockEntity extends BlockEntity
 
     // Because we can't access the PipeNetworksComponent in fromTag because the
     // world is null, we defer the node loading.
-    private List<Pair<PipeNetworkType, PipeNetworkNode>> unloadedPipes = new ArrayList<>();
+    private final List<Pair<PipeNetworkType, PipeNetworkNode>> unloadedPipes = new ArrayList<>();
 
     private void loadPipes() {
         boolean changed = false;
@@ -265,7 +265,6 @@ public class PipeBlockEntity extends BlockEntity
 
     @Override
     public void onChunkUnload() {
-        loadPipes();
         for (PipeNetworkNode pipe : pipes) {
             pipe.getManager().nodeUnloaded(pipe, pos);
         }

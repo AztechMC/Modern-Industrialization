@@ -26,8 +26,8 @@ repositories {
     }
     // for Cardinal Components
     maven {
-        name = "Ladysnake Libs"
-        url = "https://dl.bintray.com/ladysnake/libs"
+        name = "Ladysnake Mods"
+        url = "https://ladysnake.jfrog.io/artifactory/mods"
         content {
             includeGroup "io.github.onyxstudios"
             includeGroup "io.github.onyxstudios.Cardinal-Components-API"

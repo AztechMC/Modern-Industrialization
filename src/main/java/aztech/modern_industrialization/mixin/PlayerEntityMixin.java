@@ -42,7 +42,7 @@ abstract class PlayerEntityMixin extends LivingEntity {
         throw new AssertionError();
     }
 
-    @Inject(at = @At(value = "INVOKE", target = "getEquippedStack(Lnet/minecraft/entity/EquipmentSlot;)Lnet/minecraft/item/ItemStack;"), method = "checkFallFlying()Z", require = 1, allow = 1, cancellable = true)
+    @Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/LivingEntity;getEquippedStack(Lnet/minecraft/entity/EquipmentSlot;)Lnet/minecraft/item/ItemStack;"), method = "checkFallFlying()Z", require = 1, allow = 1, cancellable = true)
     void injectInitAi(CallbackInfoReturnable<Boolean> cir) {
         ItemStack stack = this.getEquippedStack(EquipmentSlot.CHEST);
         if (stack.getItem() instanceof IElytraItem) {

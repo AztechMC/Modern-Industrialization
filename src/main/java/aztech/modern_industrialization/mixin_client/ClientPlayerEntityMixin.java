@@ -38,7 +38,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(ClientPlayerEntity.class)
 abstract class ClientPlayerEntityMixin {
-    @Inject(at = @At(value = "INVOKE", target = "getEquippedStack(Lnet/minecraft/entity/EquipmentSlot;)Lnet/minecraft/item/ItemStack;"), method = "tickMovement", slice = @Slice(from = @At(value = "INVOKE", target = "isClimbing()Z"), to = @At(value = "INVOKE", target = "checkFallFlying()Z")), require = 1, allow = 1)
+    @Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/LivingEntity;getEquippedStack(Lnet/minecraft/entity/EquipmentSlot;)Lnet/minecraft/item/ItemStack;"), method = "tickMovement", slice = @Slice(from = @At(value = "INVOKE", target = "Lnet/minecraft/entity/LivingEntity;isClimbing()Z"), to = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/PlayerEntity;checkFallFlying()Z")), require = 1, allow = 1)
     void startElytraFlight(CallbackInfo info) {
         ClientPlayerEntity entity = (ClientPlayerEntity) (Object) this;
         ItemStack stack = entity.getEquippedStack(EquipmentSlot.CHEST);

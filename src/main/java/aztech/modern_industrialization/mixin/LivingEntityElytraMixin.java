@@ -42,7 +42,7 @@ abstract class LivingEntityElytraMixin extends Entity {
         throw new AssertionError();
     }
 
-    @Inject(at = @At(value = "INVOKE", target = "getEquippedStack(Lnet/minecraft/entity/EquipmentSlot;)Lnet/minecraft/item/ItemStack;"), method = "initAi()Z", require = 1, allow = 1, cancellable = true)
+    @Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/LivingEntity;getEquippedStack(Lnet/minecraft/entity/EquipmentSlot;)Lnet/minecraft/item/ItemStack;"), method = "initAi()V", require = 1, allow = 1, cancellable = true)
     void injectInitAi(CallbackInfo info) {
         LivingEntity entity = (LivingEntity) (Object) this;
 

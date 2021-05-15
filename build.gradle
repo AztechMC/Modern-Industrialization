@@ -3,12 +3,11 @@ plugins {
     id 'maven'
     id 'maven-publish'
     id 'com.diffplug.spotless' version '5.10.2'
+    id 'com.matthewprenger.cursegradle' version '1.4.0'
 }
 
 sourceCompatibility = JavaVersion.VERSION_1_8
 targetCompatibility = JavaVersion.VERSION_1_8
-
-version = project.mod_version
 
 repositories {
     // for KJS
@@ -291,5 +290,52 @@ final class JsonOrderStep {
                     return prettyPrinted;
                 },
         );
+    }
+}
+
+version = System.getenv().get("MI_VERSION")
+def releaseChannel = "beta"
+def changelog = "Please visit our github repository for a changelog: https://github.com/AztechMC/Modern-Industrialization/releases."
+if (version.toLowerCase().contains("alpha")) {
+    releaseChannel = "alpha"
+    changelog = "THIS IS AN ALPHA RELEASE, MAKE A BACKUP BEFORE INSTALLING AND FREQUENTLY WHILE PLAYING, AND PLEASE REPORT ANY ISSUE YOU MAY FIND ON OUR ISSUE TRACKER.\n\n" + changelog
+}
+
+// Publishing
+if (System.getenv("CURSEFORGE_API_KEY") && !version.endsWith("-SNAPSHOT")) {
+    curseforge {
+        apiKey = System.getenv().get("CURSEFORGE_API_KEY")
+        project {
+            id = project.curseforge_project
+            releaseType = releaseChannel
+            changelogType = "markdown"
+            delegate.changelog = changelog
+
+            addGameVersion "1.16.2"
+            addGameVersion "1.16.3"
+            addGameVersion "1.16.4"
+            addGameVersion "1.16.5"
+            addGameVersion "Fabric"
+            addGameVersion "Java 8"
+
+            relations {
+                requiredDependency "fabric-api"
+                optionalDependency "wthit"
+                optionalDependency "roughly-enough-items"
+                embeddedLibrary "libblockattributes"
+                embeddedLibrary "cardinal-components"
+                embeddedLibrary "auto-config-updated-api"
+                embeddedLibrary "patchouli-fabric"
+            }
+            mainArtifact(remapJar.archiveFile) {
+                displayName = "Modern Industrialization v${version}"
+            }
+        }
+        options {
+            forgeGradleIntegration = false
+        }
+        afterEvaluate {
+            tasks.getByName("curseforge${project.curseforge_project}").dependsOn remapJar
+        }
     }
 }

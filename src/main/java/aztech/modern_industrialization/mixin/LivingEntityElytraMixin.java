@@ -35,14 +35,14 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-@Mixin(LivingEntity.class)
+@Mixin(value = LivingEntity.class, priority = 900)
 abstract class LivingEntityElytraMixin extends Entity {
     public LivingEntityElytraMixin(EntityType<?> type, World world) {
         super(type, world);
         throw new AssertionError();
     }
 
-    @Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/LivingEntity;getEquippedStack(Lnet/minecraft/entity/EquipmentSlot;)Lnet/minecraft/item/ItemStack;"), method = "initAi()V", require = 1, allow = 1, cancellable = true)
+    @Inject(at = @At(value = "FIELD", target = "Lnet/minecraft/entity/EquipmentSlot;CHEST:Lnet/minecraft/entity/EquipmentSlot;"), method = "initAi()V", require = 1, allow = 1, cancellable = true)
     void injectInitAi(CallbackInfo info) {
         LivingEntity entity = (LivingEntity) (Object) this;
 

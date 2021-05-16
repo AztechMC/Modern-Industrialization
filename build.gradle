@@ -293,7 +293,9 @@ final class JsonOrderStep {
     }
 }
 
-version = System.getenv().get("MI_VERSION")
+if (System.getenv("MI_VERSION")) {
+    version = System.getenv("MI_VERSION")
+}
 def releaseChannel = "beta"
 def changelog = "Please visit our github repository for a changelog: https://github.com/AztechMC/Modern-Industrialization/releases."
 if (version.toLowerCase().contains("alpha")) {

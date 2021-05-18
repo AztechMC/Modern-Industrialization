@@ -9,18 +9,18 @@
     },
     {
       "type": "crafting",
-      "recipe": "modern_industrialization:machine/fireclay/coke_oven",
+      "recipe": "modern_industrialization:steam_age/fireclay/coke_oven",
       "text": "For this first multiblock, you will need the Coke Oven itself of course, 21 Bricks and 3 $(thing)Hatches$(): an item input, an item output and a fluid input."
     },
     {
       "type": "crafting",
-      "recipe": "modern_industrialization:machine/bronze/item_input_hatch_asbl",
-      "recipe2": "modern_industrialization:machine/bronze/item_output_hatch_asbl"
+      "recipe": "modern_industrialization:steam_age/bronze/item_input_hatch_asbl",
+      "recipe2": "modern_industrialization:steam_age/bronze/item_output_hatch_asbl"
     },
     {
       "type": "crafting",
-      "recipe": "modern_industrialization:machine/bronze/fluid_input_hatch_asbl",
-      "recipe2": "modern_industrialization:machine/bronze/fluid_output_hatch_asbl"
+      "recipe": "modern_industrialization:steam_age/bronze/fluid_input_hatch_asbl",
+      "recipe2": "modern_industrialization:steam_age/bronze/fluid_output_hatch_asbl"
     },
     {
       "type": "text",

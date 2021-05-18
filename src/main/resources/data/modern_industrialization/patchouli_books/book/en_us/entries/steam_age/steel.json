@@ -9,7 +9,7 @@
     },
     {
       "type": "crafting",
-      "recipe": "modern_industrialization:machine/fireclay/steam_blast_furnace",
+      "recipe": "modern_industrialization:steam_age/fireclay/steam_blast_furnace",
       "text": "The Blast Furnace's structure is the same as the Coke Oven's, with Bricks replaced by Fire Clay Bricks and one extra hollow layer on top."
     }
   ],

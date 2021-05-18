@@ -17,7 +17,7 @@
     },
     {
       "type": "crafting",
-      "recipe": "modern_industrialization:machine/steel/packer_asbl",
+      "recipe": "modern_industrialization:steam_age/steel/packer_asbl",
       "text": "The Packer, a new machine only available in steel, can perform simple crafts for you. You can now automate double ingots and pipes, for example! Again, check REI."
     },
     {

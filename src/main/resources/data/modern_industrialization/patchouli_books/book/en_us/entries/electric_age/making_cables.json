@@ -9,7 +9,7 @@
     },
     {
       "type": "crafting",
-      "recipe": "modern_industrialization:machine/steel/wiremill_asbl",
+      "recipe": "modern_industrialization:steam_age/steel/wiremill_asbl",
       "text": "For the wires, you will need the Wiremill! Combine these wires with rubber sheets to get cables!"
     }
   ],

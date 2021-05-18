@@ -5,7 +5,7 @@
   "pages": [
     {
       "type": "crafting",
-      "recipe": "modern_industrialization:lv/craft/machine/steam_turbine_asbl",
+      "recipe": "modern_industrialization:electric_age/machine/steam_turbine_asbl",
       "text": "The Steam Turbine uses Steam to produce electricity. It converts every mb of Steam to 1 EU, up to 32 mb converted every tick."
     },
     {
@@ -22,8 +22,8 @@
     },
     {
       "type": "crafting",
-      "recipe": "modern_industrialization:transformers/lv_mv/up_asbl",
-      "recipe2": "modern_industrialization:transformers/lv_mv/down_asbl"
+      "recipe": "modern_industrialization:electric_age/transformer/lv_mv/up_asbl",
+      "recipe2": "modern_industrialization:electric_age/transformer/lv_mv/down_asbl"
     }
   ],
   "sortnum": 102

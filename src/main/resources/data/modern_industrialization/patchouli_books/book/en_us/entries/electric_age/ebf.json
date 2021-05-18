@@ -5,7 +5,7 @@
   "pages": [
     {
       "type": "crafting",
-      "recipe": "modern_industrialization:lv/craft/machine/electric_blast_furnace_asbl",
+      "recipe": "modern_industrialization:electric_age/machine/electric_blast_furnace_asbl",
       "text": "The Electric Blast Furnace is the electric version of the Steam Blast Furnace. It unlocks new recipes and like other multiblock electric machines, its overclock is not bounded. Provided with enough energy, it will reach 1 craft / tick eventually."
     },
     {
@@ -15,12 +15,12 @@
     },
     {
       "type": "crafting",
-      "recipe": "modern_industrialization:lv/craft/energy_input_hatch_asbl",
+      "recipe": "modern_industrialization:electric_age/hatch/lv/energy_input_hatch_asbl",
       "text": "Don't forget to add Energy Input Hatch(es) or the EBF won't have energy! The LV Energy Input Hatch will only connect to LV cables."
     },
     {
       "type": "crafting",
-      "recipe": "modern_industrialization:advanced/energy_input_hatch_asbl",
+      "recipe": "modern_industrialization:electric_age/hatch/advanced/energy_input_hatch_asbl",
       "text": "MV Energy Input Hatches will only connect to MV cables, which can be useful if you need a ton of energy for your EBF! You can't craft them yet, but keep in mind they exist..."
     }
   ],

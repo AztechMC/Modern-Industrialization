@@ -9,12 +9,12 @@
     },
     {
       "type": "crafting",
-      "recipe": "modern_industrialization:lv/craft/machine/polarizer_asbl",
+      "recipe": "modern_industrialization:electric_age/machine/polarizer_asbl",
       "text": "The Polarizer polarizes stuff. It doesn't have many recipes yet, but it is already useful to automate Motors!"
     },
     {
       "type": "crafting",
-      "recipe": "modern_industrialization:lv/craft/machine/assembler_asbl",
+      "recipe": "modern_industrialization:electric_age/machine/assembler_asbl",
       "text": "The first machine you'll want to make a lot of! The Assembler allows you to automate almost all recipes, up to 3 per Assembler if you use slot locking."
     },
     {
@@ -23,7 +23,7 @@
     },
     {
       "type": "crafting",
-      "recipe": "modern_industrialization:lv/craft/machine/configurable_chest_asbl",
+      "recipe": "modern_industrialization:electric_age/machine/configurable_chest_asbl",
       "text": "The Configurable Chest is not a machine, but once you have Analog Circuits, you can craft it!$(br2)It has 21 configurable slots, and auto-extract functionality! Very useful for automation!"
     }
   ],

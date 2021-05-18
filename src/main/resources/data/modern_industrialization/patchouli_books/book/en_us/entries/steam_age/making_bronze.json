@@ -9,8 +9,8 @@
     },
     {
       "type": "crafting",
-      "recipe": "modern_industrialization:bronze/dust",
-      "recipe2": "modern_industrialization:bronze/tiny_dust"
+      "recipe": "modern_industrialization:materials/bronze_dust",
+      "recipe2": "modern_industrialization:materials/bronze_tiny_dust"
     },
     {
       "type": "text",

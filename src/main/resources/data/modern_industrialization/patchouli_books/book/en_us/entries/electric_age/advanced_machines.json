@@ -11,22 +11,22 @@
     },
     {
       "type": "crafting",
-      "recipe": "modern_industrialization:lv/craft/machine/centrifuge_asbl",
+      "recipe": "modern_industrialization:electric_age/machine/centrifuge_asbl",
       "text": "The Centrifuge splits items by spinning them very fast. You can use it to make carbon dust and unlock better recipes for steel and silicon."
     },
     {
       "type": "crafting",
-      "recipe": "modern_industrialization:lv/craft/machine/chemical_reactor_absl",
+      "recipe": "modern_industrialization:electric_age/machine/chemical_reactor_asbl",
       "text": "The Chemical Reactor can make items and fluids react."
     },
     {
       "type": "crafting",
-      "recipe": "modern_industrialization:lv/craft/machine/distillery_asbl",
+      "recipe": "modern_industrialization:electric_age/machine/distillery_asbl",
       "text": "The Distillery will turn various fluids into their lighter parts. That will be very useful for Oil Processing."
     },
     {
       "type": "crafting",
-      "recipe": "modern_industrialization:lv/craft/machine/electrolyzer_asbl",
+      "recipe": "modern_industrialization:electric_age/machine/electrolyzer_asbl",
       "text": "The Electrolyzer can split materials into their different parts using strong electric currents. You can electrolyze bauxite dust to get aluminum dust, which you can then directly smelt into aluminum ingots in the EBF."
     }
   ],

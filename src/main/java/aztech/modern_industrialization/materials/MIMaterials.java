@@ -191,7 +191,7 @@ public class MIMaterials {
 
         MaterialRegistry.addMaterial(new MaterialBuilder("cupronickel", METALLIC, 0xE39681)
                 .addRegularParts(TINY_DUST, DUST, INGOT, DOUBLE_INGOT, PLATE, WIRE, NUGGET, BLOCK, COIL, WIRE_MAGNETIC)
-                .addRecipes(StandardRecipes::apply, SmeltingRecipes::apply).addParts(CableMaterialPart.of(CableTier.MV)).build());
+                .addParts(CableMaterialPart.of(CableTier.MV)).addRecipes(StandardRecipes::apply, SmeltingRecipes::apply).build());
 
         MaterialRegistry.addMaterial(new MaterialBuilder("antimony", SHINY, 0xDCDCF0).addRegularParts(ITEM_PURE_METAL).addRegularParts(ORE)
                 .addRecipes(StandardRecipes::apply, SmeltingRecipes::apply).build());

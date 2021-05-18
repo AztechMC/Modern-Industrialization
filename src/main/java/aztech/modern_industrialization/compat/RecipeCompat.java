@@ -104,6 +104,7 @@ public class RecipeCompat {
             addMiRecipe("macerator", "#c:certus_quartz_crystals", "appliedenergistics2:certus_quartz_dust", 1);
             addMiRecipe("macerator", "#c:certus_quartz_ores", "appliedenergistics2:certus_quartz_dust", 5);
             addMiRecipe("macerator", "appliedenergistics2:fluix_crystal", "appliedenergistics2:fluix_dust", 1);
+            addMiRecipe("macerator", "minecraft:ender_pearl", "appliedenergistics2:ender_dust", 1);
             addMiRecipe("compressor", "appliedenergistics2:certus_quartz_dust", "appliedenergistics2:certus_quartz_crystal", 1);
             addMiRecipe("compressor", "appliedenergistics2:fluix_dust", "appliedenergistics2:fluix_crystal", 1);
             addMiRecipe("electrolyzer", "appliedenergistics2:certus_quartz_crystal", "appliedenergistics2:charged_certus_quartz_crystal", 1, 8, 60);

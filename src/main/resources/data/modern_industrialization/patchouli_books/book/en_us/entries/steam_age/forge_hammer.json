@@ -1,5 +1,5 @@
 {
-  "name": "The Forge Hammer",
+  "name": "Getting Started",
   "category": "modern_industrialization:steam_age",
   "icon": "modern_industrialization:forge_hammer",
   "pages": [
@@ -9,7 +9,17 @@
     },
     {
       "type": "crafting",
-      "recipe": "modern_industrialization:forge_hammer"
+      "recipe": "modern_industrialization:forge_hammer",
+      "text": "Now, you may want to consider making a Steam Mining Drill... Check the next page!"
+    },
+    {
+      "type": "crafting",
+      "recipe": "modern_industrialization:tools/steam_mining_drill",
+      "text": "The Steam Mining Drill can mine 3x3 blocks at the time, perfect for your early game mining needs!"
+    },
+    {
+      "type": "text",
+      "text": "The Steam Mining Drill requires both water and solid fuel (for example coal).$(br2)Right-click a water source to fill it with water, and make sure to always place some fuel next right next to it in your inventory bar. The fuel will be consumed slowly when you mine."
     }
   ],
   "sortnum": 0

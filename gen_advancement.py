@@ -74,6 +74,8 @@ def createAdvancement(item, title, description, parent, item_count=1, frame='tas
 createAdvancement('forge_hammer', 'Is This A Forge Mod?',
                   'Craft a Forge Hammer and begin exploring Modern Industrialization', None, frame='goal')
 
+createAdvancement('steam_mining_drill', 'Getting That 3x3 Going', 'Craft a Steam Mining Drill', 'forge_hammer')
+
 createAdvancement('fire_clay_bricks', 'Almost Steam?',
                   'Craft 3 Fire Clay Bricks', 'forge_hammer', item_count=3)
 
@@ -85,13 +87,13 @@ createAdvancement('bronze_boiler', 'Hot Water',
 
 
 createAdvancement('bronze_compressor', 'An Automatic Forge Mod',
-                  'Craft a Bronze Compressor', 'bronze_boiler')
+                  'Craft a Bronze Compressor', 'forge_hammer')
 
 createAdvancement('bronze_mixer', 'Mixing Without Mixins',
-                  'Craft a Bronze Mixer', 'bronze_boiler')
+                  'Craft a Bronze Mixer', 'forge_hammer')
 
 createAdvancement('bronze_macerator', 'Ore Tripling',
-                  'Craft a Bronze Macerator', 'bronze_boiler')
+                  'Craft a Bronze Macerator', 'forge_hammer')
 
 createAdvancement('coke_oven', 'Coke-A Cola',
                   'Craft a Coke Oven to start Steel Production', 'forge_hammer', frame='goal')

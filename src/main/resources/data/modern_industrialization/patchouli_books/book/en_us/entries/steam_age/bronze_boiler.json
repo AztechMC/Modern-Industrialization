@@ -8,6 +8,11 @@
       "text": "Steam machines need steam to function, and that's exactly what the boiler provides.$(br2)It will slowly use fuel to heat up. When it's hot enough, it will start to produce steam. Don't forget to feed it with water or your fuel will burn for nothing."
     },
     {
+      "type": "smelting",
+      "recipe": "modern_industrialization:vanilla_recipes/steam_bucket",
+      "text": "You can also smelt water buckets into steam buckets. Make your first $(l:modern_industrialization:steam_age/steam_machines)Bronze Compressor$() before the boiler to save a lot on the plates!$(br2)Turn the page for the boiler itself..."
+    },
+    {
       "type": "crafting",
       "recipe": "modern_industrialization:steam_age/bronze/boiler_asbl",
       "text": "It probably looks crazy expensive to you right now, but don't forget that you can double ores. Also, as soon as you will have your first two machines, it will become three times less expensive!"

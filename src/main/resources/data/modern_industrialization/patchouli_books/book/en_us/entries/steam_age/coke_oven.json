@@ -5,7 +5,7 @@
   "pages": [
     {
       "type": "text",
-      "text": "Once you have had enough of the bronze machines, you can start working towards making steel. The ultimate goal is to be able to build the quarry, a multiblock that will dig ores for you!$(br2)The first step is to make coke, by heating coal without oxygen. For that, you will need to build a Coke Oven multiblock."
+      "text": "Once you have had enough of the bronze machines, you can start working toward making steel. The ultimate goal is to be able to build the quarry, a multiblock that will dig ores for you!$(br2)The first step is to make coke, by heating coal without oxygen. For that, you will need to build a Coke Oven multiblock."
     },
     {
       "type": "crafting",
@@ -24,19 +24,23 @@
     },
     {
       "type": "text",
-      "text": "The Coke Oven here is the $(thing)Controller$(). Every multiblock is managed by a controller, but you cannot interact with the controller directly, all input and output goes through hatches. We need a fluid input because the coke oven is powered by steam, we need an item input for the coal and an output for the coke. If we forget one of the hatches, the coke oven will not be able to start!"
+      "text": "The Coke Oven block here has the role of a $(thing)Controller$(). Every multiblock is managed by a controller, but you usually cannot interact with the controller directly: all input and output goes through hatches. We need a fluid input because the coke oven is powered by steam, we need an item input for the coal and an output for the coke.$(br2)If we forget one of the hatches, the coke oven will not be able to start!"
     },
     {
       "type": "text",
-      "text": "The Coke Oven is made of three layers: a 3x3 square with the three hatches, then two hollow 3x3 squares above. In the middle of one of the sides, place the controller.$(br2)Once you have placed the controller, hold a wrench to see the missing blocks, or hold a hatch to see where it can go."
+      "text": "$(l)Hold a Wrench to see the missing blocks and the errors!$() You can also hold a Hatch to know where it can go.$(br2)We need 21 Bricks for this multiblock! Check REI, it says 24 total, but we have 3 hatches so we only need bricks for the 21 remaining blocks!"
+    },
+    {
+      "type": "image",
+      "title": "Coke Oven!",
+      "images": [
+        "modern_industrialization:textures/guidebook/coke_oven.png"
+      ],
+      "text": "There are many ways to place the hatches, this is one of them!"
     },
     {
       "type": "text",
-      "text": "When you have placed all the blocks, make sure the Controller is oriented correctly, and right-click its center with a wrench. You should receive a success message. Otherwise, have a look at the error and fix it.$(br2)Fill the fluid input hatch with steam, put coal in the item input hatch and you're good to go!"
-    },
-    {
-      "type": "text",
-      "text": "Coke will be very useful for steel, but it is also a powerful fuel. It lasts 4 times as long as coal!"
+      "text": "Once the Coke Oven says $(o)Shape Valid$(), fill the fluid input hatch with steam, put coal in the item input hatch and you're good to go!$(br2)Coke will be very useful for steel, but it is also a powerful fuel. It lasts 4 times as long as coal!"
     }
   ],
   "sortnum": 9

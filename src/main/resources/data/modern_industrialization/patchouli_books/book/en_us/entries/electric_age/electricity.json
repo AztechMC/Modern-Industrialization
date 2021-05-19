@@ -10,7 +10,7 @@
     },
     {
       "type": "text",
-      "text": "The Steam Turbine will automatically send electricity to any machine connected directly to its output side. It will only connect to cables placed on its output side. It has the Low Voltage (LV) $(thing)Tier$().$(br2)Every electric cable has a Tier which determines how much EU it can transfer and to which machines it can connect. Copper and Tin are LV, Cupronickel and Electrum are MV, Aluminum is HV."
+      "text": "The Steam Turbine will automatically send electricity to any machine connected directly to its output side. It will only connect to cables placed on its output side. It has the Low Voltage (LV) $(thing)Tier$().$(br2)Every electric cable has a Tier which determines how many EU/t it can transfer and to which machines it can connect. Copper and Tin are LV, Cupronickel and Electrum are MV, and so on..."
     },
     {
       "type": "text",

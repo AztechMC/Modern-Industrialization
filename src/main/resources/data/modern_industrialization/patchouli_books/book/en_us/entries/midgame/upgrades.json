@@ -1,0 +1,25 @@
+{
+  "name": "Upgrades!",
+  "category": "modern_industrialization:midgame",
+  "icon": "modern_industrialization:basic_upgrade",
+  "pages": [
+    {
+      "type": "spotlight",
+      "title": "Overclock Upgrades",
+      "item": "modern_industrialization:basic_upgrade",
+      "text": "You know that regular electric machines have an overclock capped at 32 EU/t, and electric multiblocks have an overclock capped at 128 EU/t?$(br2)Right-click the machine or multiblock with some upgrades in your hand to increase its maximum overclock! Check REI for the exact amounts."
+    },
+    {
+      "type": "crafting",
+      "recipe": "modern_industrialization:tools/crowbar",
+      "text": "Shift right-click a machine with a crowbar to drop the upgrades it contains. Right-click it to remove its upgraded hull and change it back to LV tier. Wait, you can do that? ..."
+    },
+    {
+      "type": "spotlight",
+      "title": "Machine Hull Upgrades",
+      "item": "modern_industrialization:advanced_machine_hull",
+      "text": "Yes you can! Right-click a machine with an Advanced Machine Hull to change it to MV tier: it will now accept MV cable connections only. Right-click with a crowbar to remove the upgrade."
+    }
+  ],
+  "sortnum": 200
+}

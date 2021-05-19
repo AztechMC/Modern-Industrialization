@@ -6,7 +6,12 @@
     {
       "type": "crafting",
       "recipe": "modern_industrialization:armor/jetpack_asbl",
-      "text": "Jetpack go brrr... The more powerful the fuel, the faster the jetpack!$(br2)Don't forget to activate it using the $(o)Toggle Flight$() keybinding!"
+      "text": "Jetpack go brrr... The more powerful the fuel, the faster the jetpack! We recommend Rubber Boots and a Rubber Helmet...$(br2)Don't forget to activate it using the $(o)Toggle Flight$() keybinding!"
+    },
+    {
+      "type": "crafting",
+      "recipe": "modern_industrialization:armor/rubber_helmet_asbl",
+      "recipe2": "modern_industrialization:armor/rubber_boots_asbl"
     },
     {
       "type": "crafting",

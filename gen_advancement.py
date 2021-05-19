@@ -170,7 +170,7 @@ createAdvancement('mv_steam_turbine', 'Better Than Wind Mills',
 createAdvancement('diesel_generator', 'Fast and Furious',
                   'Craft a Diesel Generator', 'lv_distillery')
 
-createAdvancement('jetpack', 'The Most Expensive Jetpack TM',
+createAdvancement('jetpack', 'Ely... We Meant Jetpack!',
                   'Craft a Diesel Jetpack', 'lv_distillery', frame='challenge')
 
 createAdvancement('diesel_chainsaw', 'The Texas Chain Saw Massacre',

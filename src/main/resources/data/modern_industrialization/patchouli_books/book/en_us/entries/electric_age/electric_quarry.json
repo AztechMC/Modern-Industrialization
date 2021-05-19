@@ -1,12 +1,17 @@
 {
-  "name": "Electric Quarry",
+  "name": "Better Multiblocks",
   "category": "modern_industrialization:electric_age",
   "icon": "modern_industrialization:electric_quarry",
   "pages": [
     {
       "type": "crafting",
       "recipe": "modern_industrialization:electric_age/machine/electric_quarry_asbl",
-      "text": "The Electric Quarry is the electric equivalent of the Steam Quarry. Its processing speed is only limited by the energy and items you provide it with!$(br2)Its structure is exactly the same as the Steam Quarry's."
+      "text": "The Electric Quarry is the electric equivalent of the Steam Quarry. Provide it with items and energy, and watch your resources GO BRRR!$(br2)Its structure is exactly the same as the Steam Quarry's."
+    },
+    {
+      "type": "crafting",
+      "recipe": "modern_industrialization:electric_age/machine/advanced_large_steam_boiler_asbl",
+      "text": "A better and bigger Large Steam Boiler! This advanced version can produce up to 1024 mb/t of steam!"
     }
   ],
   "sortnum": 106

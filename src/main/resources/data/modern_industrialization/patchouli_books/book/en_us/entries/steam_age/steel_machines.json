@@ -22,6 +22,11 @@
     },
     {
       "type": "crafting",
+      "recipe": "modern_industrialization:steam_age/steel/unpacker_asbl",
+      "text": "The Unpacker, a new machine only available in steel... Guess what it does. o_O"
+    },
+    {
+      "type": "crafting",
       "recipe": "modern_industrialization:trash_can",
       "text": "With a few steel plates, you can now craft a very useful block!$(br2)The Automatic Trash Can will destroy any item or fluid that is piped into it!"
     }

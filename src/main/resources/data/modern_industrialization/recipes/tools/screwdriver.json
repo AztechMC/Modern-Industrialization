@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "r  ",
+    " pb",
+    " bp"
+  ],
+  "key": {
+    "b": {
+      "item": "modern_industrialization:stainless_steel_bolt"
+    },
+    "p": {
+      "tag": "c:aluminum_plates"
+    },
+    "r": {
+      "item" : "modern_industrialization:stainless_steel_rod"
+    }
+  },
+  "result": {
+    "item": "modern_industrialization:screwdriver"
+  }
+}
+

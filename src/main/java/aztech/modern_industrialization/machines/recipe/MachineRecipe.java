@@ -98,7 +98,7 @@ public class MachineRecipe implements Recipe<Inventory> {
     public ItemStack getOutput() {
         for (ItemOutput o : itemOutputs) {
             if (o.probability == 1) {
-                return new ItemStack(o.item);
+                return new ItemStack(o.item, o.amount);
             }
         }
         return ItemStack.EMPTY;

@@ -21,7 +21,7 @@
     },
     {
       "type": "text",
-      "text": "The different types of pipes don't work exactly the same way.$(br2)Every tick, every fluid pipe will insert/extract from the adjacent blocks, and then remaining drops will be redistributed among all the pipes.$(br2)Item pipes will insert items into higher priorities first, and they will transfer 16 items every few seconds. They can be upgraded with motors."
+      "text": "The different types of pipes don't work exactly the same way.$(br2)Every tick, fluid pipes will try to evenly extract for all connected blocks, and then try to insert that evenly. $(l:modern_industrialization:midgame/fluid_transfer)Read more about their speed here.$()$(br2)Item pipes will insert items into higher priorities first, and they will transfer 16 items every few seconds. $(l)They can be upgraded with motors.$()"
     }
   ],
   "sortnum": 4

@@ -1,0 +1,28 @@
+{
+  "name": "High Pressure!",
+  "category": "modern_industrialization:midgame",
+  "icon": "modern_industrialization:pressurizer",
+  "pages": [
+    {
+      "type": "crafting",
+      "recipe": "modern_industrialization:electric_age/machine/pressurizer_asbl",
+      "text": "The Pressurizer is a new multiblock made of titanium that can turn water into HP (high pressure) water, steam into HP steam, and the other way around."
+    },
+    {
+      "type": "crafting",
+      "recipe": "modern_industrialization:electric_age/machine/high_pressure_large_steam_boiler_asbl",
+      "text": "Once you have access to HP water, you can use a High Pressure Large Steam Boiler to produce HP steam.$(br2)One millibucket of HP steam is worth 8 mb of regular steam, that is 8 EU."
+    },
+    {
+      "type": "crafting",
+      "recipe": "modern_industrialization:electric_age/machine/hv_steam_turbine_asbl",
+      "text": "To turn HP steam into energy, one option is to turn it into regular steam with a Pressurizer, and then feed it to an HV Steam Turbine. Like other HV generators, it will produce 512 EU/t.$(l)The HV turbine will NOT work with HP steam$()."
+    },
+    {
+      "type": "crafting",
+      "recipe": "modern_industrialization:electric_age/machine/large_steam_turbine_asbl",
+      "text": "You can also use a Large Steam Turbine! It will convert both regular steam (1 mb = 1 EU) and HP steam (1 mb = 8 EU) into EU, and will generate up to 4096 EU/t!"
+    }
+  ],
+  "sortnum": 202
+}

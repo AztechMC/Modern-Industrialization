@@ -1,0 +1,16 @@
+{
+  "name": "Fluid Pipe Speed",
+  "category": "modern_industrialization:midgame",
+  "icon": "minecraft:water_bucket",
+  "pages": [
+    {
+      "type": "text",
+      "text": "You might be wondering how you can possibly transfer all these multiple thousands of millibuckets of steam every tick? The answer is: with regular fluid pipes!$(br2)Each fluid pipe has an internal buffer of exactly one bucket (= 1000 millibuckets). When you connect multiple pipes directly, they become linked and share their internal storage."
+    },
+    {
+      "type": "text",
+      "text": "How much fluid is transferred every tick is then bounded by the total capacity of the network. For example, 25 fluid pipes linked together can transfer up to 25000 mb/t of fluid - assuming you can produce that much fluid of course!$(br2)Note that you might be limited by the transfer rates of the tanks/machines the pipes are connected to."
+    }
+  ],
+  "sortnum": 203
+}

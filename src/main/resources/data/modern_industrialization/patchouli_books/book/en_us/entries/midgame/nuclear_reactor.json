@@ -1,0 +1,16 @@
+{
+  "name": "Nuclear Fusion... Or Not?",
+  "category": "modern_industrialization:midgame",
+  "icon": "modern_industrialization:uranium_fuel_rod_quad",
+  "pages": [
+    {
+      "type": "text",
+      "text": "You might have noticed that the Nuclear Reactor is not craftable. That's simply because it's not yet finished! We are working on it, please be patient. :-)$(br2)We hope that you have enjoyed the mod so far."
+    },
+    {
+      "type": "text",
+      "text": "Don't worry, we have planned much more content - we just need time to write it all! If you find bugs or have cool ideas that we could implement, let us know!$(br2)You can find our Discord server on our Curseforge page."
+    }
+  ],
+  "sortnum": 206
+}

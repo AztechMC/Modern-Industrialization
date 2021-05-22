@@ -43,6 +43,11 @@ public class SmeltingRecipeBuilder implements MaterialRecipeBuilder {
         String item;
     }
 
+    public static void smeltAndBlast(MaterialBuilder.RecipeContext context, String inputPart, String outputPart, double experience) {
+        new SmeltingRecipeBuilder(context, inputPart, outputPart, experience, false);
+        new SmeltingRecipeBuilder(context, inputPart, outputPart, experience, true);
+    }
+
     @SuppressWarnings("ConstantConditions")
     public SmeltingRecipeBuilder(MaterialBuilder.RecipeContext context, String inputPart, String outputPart, int cookingtime, double experience,
             boolean blasting) {

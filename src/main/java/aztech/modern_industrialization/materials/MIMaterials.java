@@ -87,12 +87,8 @@ public class MIMaterials {
         MaterialRegistry.addMaterial(new MaterialBuilder("quartz", GEM,
                 new BakableTargetColoramp(0xf0ebe4, "minecraft:textures/item/quartz.png", "minecraft:textures/item/quartz.png"))
                         .addRegularParts(CRUSHED_DUST, MIParts.GEM, DUST, TINY_DUST, ORE)
-                        .overridePart(ExternalPart.of(MIParts.GEM, "minecraft:quatz", "minecraft:quatz"))
-                        .overridePart(ExternalPart.of(ORE, "modern_industrialization:quartz_ore", "modern_industrialization:quartz_ore"))
-                        .addRecipes(StandardRecipes::apply).cancelRecipes("macerator/ore")
-                        .addRecipes(context -> new MIRecipeBuilder(context, "macerator", "ore").addTaggedPartInput(MIParts.ORE, 1)
-                                .addPartOutput(CRUSHED_DUST, 4))
-                        .build());
+                        .overridePart(ExternalPart.of(MIParts.GEM, "minecraft:quartz", "minecraft:quartz")).addRecipes(StandardRecipes::apply)
+                        .cancelRecipes("macerator/ore").addRecipes(ctx -> SmeltingRecipeBuilder.smeltAndBlast(ctx, ORE, MIParts.GEM, 0.2)).build());
 
         MaterialRegistry.addMaterial(new MaterialBuilder("diamond", SHINY,
                 new BakableTargetColoramp(0x48eeda, "minecraft:textures/item/diamond.png", "minecraft:textures/item/diamond.png"))

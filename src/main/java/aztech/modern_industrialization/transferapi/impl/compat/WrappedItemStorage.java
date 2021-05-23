@@ -85,4 +85,9 @@ public class WrappedItemStorage implements ItemTransferable {
             return extractedKey[0].toStack(extracted);
         }
     }
+
+    @Override
+    public String toString() {
+        return "WrappedItemStorage{" + "itemKeyStorage=" + itemKeyStorage + '}';
+    }
 }

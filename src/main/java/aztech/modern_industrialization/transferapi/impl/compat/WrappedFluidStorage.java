@@ -91,4 +91,9 @@ public class WrappedFluidStorage implements FluidTransferable {
             return FluidKeys.get(extractedFluid[0]).withAmount(FluidAmount.of(extracted, 81000));
         }
     }
+
+    @Override
+    public String toString() {
+        return "WrappedFluidStorage{" + "fluidStorage=" + fluidStorage + '}';
+    }
 }

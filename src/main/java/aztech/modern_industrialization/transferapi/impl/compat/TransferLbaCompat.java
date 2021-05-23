@@ -37,7 +37,7 @@ public class TransferLbaCompat {
     public static void init() {
         FluidAttributes.forEachInv(inv -> inv.appendBlockAdder((world, pos, state, to) -> {
             Direction direction = to.getTargetSide();
-            if (direction != null) {
+            if (direction != null && !to.hasOfferedAny()) {
                 Storage<Fluid> fluidStorage = FluidStorage.SIDED.find(world, pos, direction);
                 if (fluidStorage != null) {
                     to.offer(new WrappedFluidStorage(fluidStorage));
@@ -46,7 +46,9 @@ public class TransferLbaCompat {
         }));
         ItemAttributes.forEachInv(inv -> inv.appendBlockAdder((world, pos, state, to) -> {
             Direction direction = to.getTargetSide();
-            if (direction != null) {
+            // Must check hasOfferedAny otherwise both LBA and MI will offer a wrapper for
+            // vanilla Inventories.
+            if (direction != null && !to.hasOfferedAny()) {
                 Storage<ItemKey> fluidStorage = ItemApi.SIDED.find(world, pos, direction);
                 if (fluidStorage != null) {
                     to.offer(new WrappedItemStorage(fluidStorage));

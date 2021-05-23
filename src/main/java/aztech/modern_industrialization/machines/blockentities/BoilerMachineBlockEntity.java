@@ -88,8 +88,8 @@ public class BoilerMachineBlockEntity extends MachineBlockEntity implements Tick
         inventory = new MIInventory(itemStacks, fluidStacks, itemPositions, fluidPositions);
 
         this.bronze = bronze;
-        steamHeater = new SteamHeaterComponent(1500, bronze ? 1 : 2, 2, true, false);
-        fuelBurning = new FuelBurningComponent(steamHeater);
+        steamHeater = new SteamHeaterComponent(1500, bronze ? 8 : 16, 8, true, false);
+        fuelBurning = new FuelBurningComponent(steamHeater, 2);
         this.isActiveComponent = new IsActiveComponent();
 
         ProgressBar.Parameters progressParams = new ProgressBar.Parameters(133, 50, "furnace", true);

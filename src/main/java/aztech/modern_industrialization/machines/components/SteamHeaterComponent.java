@@ -30,8 +30,15 @@ import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.Fluids;
 
 public class SteamHeaterComponent extends TemperatureComponent {
+    private static final int STEAM_TO_WATER = 16;
 
+    /**
+     * mb/t of steam produced at max heat, assuming enough water
+     */
     public final long maxEuProduction;
+    /**
+     * How many eu in one degree of heat.
+     */
     public final long euPerDegree;
 
     public final boolean acceptHighPressure;
@@ -55,60 +62,72 @@ public class SteamHeaterComponent extends TemperatureComponent {
     }
 
     public void tick(List<ConfigurableFluidStack> fluidInputs, List<ConfigurableFluidStack> fluidOutputs) {
-
-        Fluid[] inputs = new Fluid[] { Fluids.WATER, MIFluids.HEAVY_WATER, MIFluids.HIGH_PRESSURE_WATER, MIFluids.HIGH_PRESSURE_HEAVY_WATER };
-
-        Fluid[] outputs = new Fluid[] { MIFluids.STEAM, MIFluids.HEAVY_WATER_STEAM, MIFluids.HIGH_PRESSURE_STEAM,
-                MIFluids.HIGH_PRESSURE_HEAVY_WATER_STEAM };
-
-        int[] factors = new int[] { 1, 1, 8, 8 };
-
-        for (int i = 0; i < 4; i++) {
-            if ((i < 2 && acceptLowPressure) || (i >= 2 && acceptHighPressure)) {
-                if (getTemperature() > 100d) {
-                    long steamProduction = (long) (81 * (getTemperature() - 100d) / (temperatureMax - 100d) * maxEuProduction / factors[i]);
-                    long maxFluidExtract = 0;
-
-                    for (ConfigurableFluidStack fluidStack : fluidInputs) {
-                        if (fluidStack.getFluid() == inputs[i]) {
-                            maxFluidExtract += fluidStack.getAmount();
-                        }
-                    }
-
-                    long maxInsertSteam = 0;
-
-                    for (ConfigurableFluidStack fluidStack : fluidOutputs) {
-                        if (fluidStack.isValid(outputs[i])) {
-                            maxInsertSteam += fluidStack.getRemainingSpace();
-                        }
-                    }
-
-                    long effSteamProduced = Math.min(Math.min(steamProduction, maxFluidExtract * 16), maxInsertSteam);
-                    decreaseTemperature((double) effSteamProduced * factors[i] / (81 * euPerDegree));
-
-                    long fluidExtract = (long) Math.ceil(effSteamProduced / 16f);
-
-                    for (ConfigurableFluidStack fluidStack : fluidInputs) {
-                        if (fluidStack.getFluid() == inputs[i]) {
-                            long decrement = Math.min(fluidStack.getAmount(), fluidExtract);
-                            fluidExtract -= decrement;
-                            fluidStack.decrement(decrement);
-                        }
-                    }
-
-                    long steamInsert = effSteamProduced;
-
-                    for (ConfigurableFluidStack fluidStack : fluidOutputs) {
-                        if (fluidStack.isValid(outputs[i])) {
-                            long increment = Math.min(fluidStack.getRemainingSpace(), steamInsert);
-                            steamInsert -= increment;
-                            fluidStack.setFluid(outputs[i]);
-                            fluidStack.increment(increment);
-                        }
-                    }
-                }
+        if (acceptLowPressure) {
+            if (!tryMakeSteam(fluidInputs, fluidOutputs, Fluids.WATER, MIFluids.STEAM, 1)) {
+                tryMakeSteam(fluidInputs, fluidOutputs, MIFluids.HEAVY_WATER, MIFluids.HEAVY_WATER_STEAM, 1);
             }
         }
+        if (acceptHighPressure) {
+            if (!tryMakeSteam(fluidInputs, fluidOutputs, MIFluids.HIGH_PRESSURE_WATER, MIFluids.HIGH_PRESSURE_STEAM, 8)) {
+                tryMakeSteam(fluidInputs, fluidOutputs, MIFluids.HIGH_PRESSURE_HEAVY_WATER, MIFluids.HIGH_PRESSURE_HEAVY_WATER_STEAM, 8);
+            }
+        }
+    }
 
+    // Return true if any steam was made.
+    private boolean tryMakeSteam(List<ConfigurableFluidStack> fluidInputs, List<ConfigurableFluidStack> fluidOutputs, Fluid water, Fluid steam,
+            int euPerSteamMb) {
+        if (getTemperature() > 100d) {
+            long steamProduction = (long) (81 * (getTemperature() - 100d) / (temperatureMax - 100d) * maxEuProduction / euPerSteamMb);
+
+            // Check how much water and steam are available
+            long availableWater = 0;
+            for (ConfigurableFluidStack fluidStack : fluidInputs) {
+                if (fluidStack.getFluid() == water) {
+                    availableWater += fluidStack.getAmount();
+                }
+            }
+
+            long remainingSpaceForSteam = 0;
+            for (ConfigurableFluidStack fluidStack : fluidOutputs) {
+                if (fluidStack.isValid(steam)) {
+                    remainingSpaceForSteam += fluidStack.getRemainingSpace();
+                }
+            }
+
+            // Compute steam production
+            long effSteamProduced = Math.min(Math.min(steamProduction, availableWater * STEAM_TO_WATER), remainingSpaceForSteam);
+            if (effSteamProduced == 0) {
+                return false;
+            }
+            // Lose temperature accordingly
+            double euProduced = effSteamProduced * euPerSteamMb / 81d;
+            decreaseTemperature(euProduced / euPerDegree);
+
+            // Consume water and produce steam
+            // (always consume at least 1 mb = 81 dp)
+            long remainingWaterToConsume = Math.max((long) Math.ceil((double) effSteamProduced / STEAM_TO_WATER), 81);
+            for (ConfigurableFluidStack fluidStack : fluidInputs) {
+                if (fluidStack.getFluid() == water) {
+                    long decrement = Math.min(fluidStack.getAmount(), remainingWaterToConsume);
+                    remainingWaterToConsume -= decrement;
+                    fluidStack.decrement(decrement);
+                }
+            }
+
+            long remainingSteamToProduce = effSteamProduced;
+            for (ConfigurableFluidStack fluidStack : fluidOutputs) {
+                if (fluidStack.isValid(steam)) {
+                    long increment = Math.min(fluidStack.getRemainingSpace(), remainingSteamToProduce);
+                    remainingSteamToProduce -= increment;
+                    fluidStack.setFluid(steam);
+                    fluidStack.increment(increment);
+                }
+            }
+
+            return true;
+        } else {
+            return false;
+        }
     }
 }

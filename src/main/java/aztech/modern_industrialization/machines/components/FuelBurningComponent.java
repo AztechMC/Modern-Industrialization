@@ -34,14 +34,31 @@ import net.minecraft.item.Item;
 import net.minecraft.nbt.CompoundTag;
 
 public class FuelBurningComponent implements IComponent {
-
+    /**
+     * How many EUs worth of heat can be produced every tick at most.
+     */
     public final long maxEuProduction;
+    /**
+     * How many EUs one degree of heat is worth.
+     */
     public final long euPerDegree;
     public final TemperatureComponent temperature;
+    /**
+     * Multiplier on the efficiency of the boiler, i.e. the number of EUs produced
+     * per burn tick.
+     */
     private final long burningEuMultiplier;
 
+    /**
+     * How many EUs one furnace burn tick is worth. Remembering that 1 furnace
+     * recipe = 2 EU/t for 10 seconds, EU_PER_BURN_TICK/2 is the efficiency
+     * multiplier.
+     */
     public static final int EU_PER_BURN_TICK = 20;
 
+    /**
+     * Buffer of EU that was burnt already, and is awaiting to be turned into heat.
+     */
     private long burningEuBuffer;
 
     public FuelBurningComponent(TemperatureComponent temperature, long maxEuProduction, long euPerDegree, long burningEuMultiplier) {
@@ -76,7 +93,7 @@ public class FuelBurningComponent implements IComponent {
     }
 
     public void tick(List<ConfigurableItemStack> itemInputs, List<ConfigurableFluidStack> fluidInputs) {
-
+        // Turn buffer into heat
         long maxEuInsertion = Math.min(burningEuBuffer, maxEuProduction);
 
         maxEuInsertion = Math.min(maxEuInsertion, (long) Math.floor(euPerDegree * (temperature.temperatureMax - temperature.getTemperature())));
@@ -87,25 +104,25 @@ public class FuelBurningComponent implements IComponent {
             temperature.decreaseTemperature(1);
         }
 
-        boolean empty = false;
-        while (burningEuBuffer == 0 && !empty) {
-            empty = true;
+        // Refill buffer with item fuel
+        outer: while (burningEuBuffer == 0) {
+            // Find first item fuel
             for (ConfigurableItemStack stack : itemInputs) {
                 Item fuel = stack.getItemKey().getItem();
                 if (ItemStackHelper.consumeFuel(stack, true)) {
                     Integer fuelTime = FuelRegistryImpl.INSTANCE.get(fuel);
                     if (fuelTime != null && fuelTime > 0) {
                         burningEuBuffer += fuelTime * EU_PER_BURN_TICK * burningEuMultiplier;
-                        empty = false;
                         ItemStackHelper.consumeFuel(stack, false);
-                        break;
+                        continue outer;
                     }
                 }
             }
+            // Break if not found
+            break;
         }
-        empty = false;
-        while (burningEuBuffer < 5 * 20 * maxEuProduction && !empty) {
-            empty = true;
+        // Refill buffer with fluid fuel
+        outer: while (burningEuBuffer < 5 * 20 * maxEuProduction) {
             for (ConfigurableFluidStack stack : fluidInputs) {
                 if (!stack.isEmpty()) {
                     long euPerMb = FluidFuelRegistry.getEu(stack.getFluid()) * burningEuMultiplier;
@@ -115,15 +132,13 @@ public class FuelBurningComponent implements IComponent {
                         if (mbConsumed > 0) {
                             stack.decrement(mbConsumed * 81);
                             burningEuBuffer += mbConsumed * euPerMb;
-                            empty = false;
-                            break;
+                            continue outer;
                         }
                     }
                 }
             }
-
+            break;
         }
-
     }
 
     @Override

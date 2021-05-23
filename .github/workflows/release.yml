@@ -28,5 +28,5 @@ jobs:
       - name: Upload artifacts
         uses: actions/upload-artifact@v2
         with:
-          name: modern-industrialization
+          name: modern-industrialization ${{ github.event.release.tag_name }}
           path: build/libs

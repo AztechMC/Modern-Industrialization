@@ -6,6 +6,10 @@ plugins {
     id 'com.matthewprenger.cursegradle' version '1.4.0'
 }
 
+version = System.getenv("MI_VERSION")
+        ? System.getenv("MI_VERSION")
+        : "local"
+
 sourceCompatibility = JavaVersion.VERSION_1_8
 targetCompatibility = JavaVersion.VERSION_1_8
 
@@ -293,9 +297,6 @@ final class JsonOrderStep {
     }
 }
 
-if (System.getenv("MI_VERSION")) {
-    version = System.getenv("MI_VERSION")
-}
 def releaseChannel = "beta"
 def changelog = "Please visit our github repository for a changelog: https://github.com/AztechMC/Modern-Industrialization/releases."
 if (version.toLowerCase().contains("alpha")) {

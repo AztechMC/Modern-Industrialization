@@ -26,6 +26,8 @@ package aztech.modern_industrialization.items.diesel_tools;
 import aztech.modern_industrialization.api.DynamicEnchantmentItem;
 import aztech.modern_industrialization.api.FluidFuelRegistry;
 import aztech.modern_industrialization.items.FluidFuelItemHelper;
+import it.unimi.dsi.fastutil.objects.Reference2IntArrayMap;
+import it.unimi.dsi.fastutil.objects.Reference2IntMap;
 import java.util.List;
 import java.util.Map;
 import me.shedaniel.cloth.api.durability.bar.DurabilityBarItem;
@@ -181,15 +183,16 @@ public class DieselToolItem extends Item implements DynamicAttributeTool, Vanish
     }
 
     @Override
-    public int getLevel(Enchantment enchantment, ItemStack stack) {
+    public Reference2IntMap<Enchantment> getEnchantments(ItemStack stack) {
+        Reference2IntMap<Enchantment> map = new Reference2IntArrayMap<>();
         if (FluidFuelItemHelper.getAmount(stack) > 0) {
-            if (enchantment == Enchantments.SILK_TOUCH && !isFortune(stack)) {
-                return enchantment.getMaxLevel();
-            } else if (enchantment == Enchantments.FORTUNE && isFortune(stack)) {
-                return enchantment.getMaxLevel();
+            if (!isFortune(stack)) {
+                map.put(Enchantments.SILK_TOUCH, Enchantments.SILK_TOUCH.getMaxLevel());
+            } else {
+                map.put(Enchantments.FORTUNE, Enchantments.FORTUNE.getMaxLevel());
             }
         }
-        return 0;
+        return map;
     }
 
     private static class StrippingAccess extends AxeItem {

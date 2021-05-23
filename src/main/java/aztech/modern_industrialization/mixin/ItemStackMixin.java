@@ -24,11 +24,13 @@
 package aztech.modern_industrialization.mixin;
 
 import aztech.modern_industrialization.api.DynamicEnchantmentItem;
+import it.unimi.dsi.fastutil.objects.Reference2IntMap;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.util.registry.Registry;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -41,19 +43,40 @@ public abstract class ItemStackMixin {
     @Shadow
     protected abstract Item getItem();
 
-    @Inject(method = "getEnchantments", at = @At("RETURN"))
+    @Inject(method = "getEnchantments", at = @At("RETURN"), cancellable = true)
     private void getEnchantmentsHook(CallbackInfoReturnable<ListTag> cir) {
         if (getItem() instanceof DynamicEnchantmentItem) {
             DynamicEnchantmentItem dyn = (DynamicEnchantmentItem) getItem();
-            for (Enchantment enchantment : Registry.ENCHANTMENT) {
-                int level = dyn.getLevel(enchantment, (ItemStack) (Object) this);
-                if (level > 0) {
+            Reference2IntMap<Enchantment> enchantments = dyn.getEnchantments((ItemStack) (Object) this);
+            ListTag resultCopy = cir.getReturnValue().copy();
+
+            for (Reference2IntMap.Entry<Enchantment> entry : enchantments.reference2IntEntrySet()) {
+                Enchantment enchantment = entry.getKey();
+                int level = entry.getIntValue();
+                String id = Registry.ENCHANTMENT.getId(enchantment).toString();
+
+                boolean replacedAny = false;
+
+                for (Tag subTag : resultCopy) {
+                    if (subTag instanceof CompoundTag) {
+                        CompoundTag compoundTag = (CompoundTag) subTag;
+                        if (compoundTag.getString("id").equals(id)) {
+                            compoundTag.putShort("lvl", (short) level);
+                            replacedAny = true;
+                            break;
+                        }
+                    }
+                }
+
+                if (!replacedAny) {
                     CompoundTag tag = new CompoundTag();
                     tag.putString("id", Registry.ENCHANTMENT.getId(enchantment).toString());
                     tag.putInt("lvl", level);
-                    cir.getReturnValue().add(tag);
+                    resultCopy.add(tag);
                 }
             }
+
+            cir.setReturnValue(resultCopy);
         }
     }
 }

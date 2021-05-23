@@ -23,6 +23,7 @@
  */
 package aztech.modern_industrialization.api;
 
+import it.unimi.dsi.fastutil.objects.Reference2IntMap;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.item.ItemStack;
 
@@ -31,10 +32,7 @@ import net.minecraft.item.ItemStack;
  */
 public interface DynamicEnchantmentItem {
     /**
-     * @param enchantment The enchantment to provide
-     * @param stack       The source stack
-     * @return The enchantment level, or a non-negative integer if no enchantment
-     *         has to be provided
+     * Return current enchantments. Will override those that the stack already has.
      */
-    int getLevel(Enchantment enchantment, ItemStack stack);
+    Reference2IntMap<Enchantment> getEnchantments(ItemStack stack);
 }

@@ -15,13 +15,18 @@
     },
     {
       "type": "crafting",
-      "recipe": "modern_industrialization:electric_age/machine/hv_steam_turbine_asbl",
-      "text": "To turn HP steam into energy, one option is to turn it into regular steam with a Pressurizer, and then feed it to an HV Steam Turbine. Like other HV generators, it will produce 512 EU/t.$(l)The HV turbine will NOT work with HP steam$()."
+      "recipe": "modern_industrialization:electric_age/machine/large_steam_turbine_asbl",
+      "text": "A Large Steam Turbine will accept both regular steam (1 mb = 1 EU) and HP steam (1 mb = 8 EU) into EU, and will generate up to 4096 EU/t! $(l)However it will not give you back (HP) water.$()"
     },
     {
       "type": "crafting",
-      "recipe": "modern_industrialization:electric_age/machine/large_steam_turbine_asbl",
-      "text": "You can also use a Large Steam Turbine! It will convert both regular steam (1 mb = 1 EU) and HP steam (1 mb = 8 EU) into EU, and will generate up to 4096 EU/t!"
+      "recipe": "modern_industrialization:electric_age/machine/heat_exchanger_asbl",
+      "text": "Remember that pressurizing water into HP water costs a lot of energy, but the turbine will not give it back! You can use a Heat Exchanger to recover the HP water for another cycle."
+    },
+    {
+      "type": "crafting",
+      "recipe": "modern_industrialization:electric_age/machine/hv_steam_turbine_asbl",
+      "text": "Another option for small setups is to use an HV steam turbine. Like other HV generators, it will produce 512 EU/t. This one will only accept regular steam."
     }
   ],
   "sortnum": 202

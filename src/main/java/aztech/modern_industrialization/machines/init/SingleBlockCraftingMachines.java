@@ -53,10 +53,10 @@ public final class SingleBlockCraftingMachines {
     public static void init() {
         // @formatter:off // TODO: figure out why this doesn't work and remove the exclude from the build.gradle
         registerMachineTiers(
-                "assembler", MIMachineRecipeTypes.ASSEMBLER, 9, 3, 1, 0,
+                "assembler", MIMachineRecipeTypes.ASSEMBLER, 9, 3, 2, 0,
                 guiParams -> guiParams.backgroundHeight(186),
-                new ProgressBar.Parameters(102, 45, "circuit"), new RecipeEfficiencyBar.Parameters(43, 86), new EnergyBar.Parameters(14, 44),
-                items -> items.addSlots(42, 27, 3, 3).addSlots(129, 27, 3, 1), fluids -> fluids.addSlot(98, 27),
+                new ProgressBar.Parameters(105, 45, "circuit"), new RecipeEfficiencyBar.Parameters(48, 86), new EnergyBar.Parameters(14, 44),
+                items -> items.addSlots(42, 27, 3, 3).addSlots(139, 27, 3, 1), fluids -> fluids.addSlots(98, 27, 1, 2),
                 true, true, false,
                 TIER_ELECTRIC
         );

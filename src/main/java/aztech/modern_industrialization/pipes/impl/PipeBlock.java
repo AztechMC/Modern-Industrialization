@@ -36,6 +36,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.ItemEntity;
+import net.minecraft.entity.ai.pathing.NavigationType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -259,5 +260,10 @@ public class PipeBlock extends Block implements BlockEntityProvider {
             return PipeBlockEntity.DEFAULT_SHAPE; // Because Mojang fucked up
         PipeBlockEntity entity = (PipeBlockEntity) be;
         return entity.currentCollisionShape;
+    }
+
+    @Override
+    public boolean canPathfindThrough(BlockState state, BlockView world, BlockPos pos, NavigationType type) {
+        return false;
     }
 }

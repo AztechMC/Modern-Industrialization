@@ -34,6 +34,7 @@ import aztech.modern_industrialization.materials.part.MIParts;
 import aztech.modern_industrialization.materials.part.MaterialPart;
 import aztech.modern_industrialization.textures.coloramp.BakableTargetColoramp;
 import aztech.modern_industrialization.textures.coloramp.Coloramp;
+import aztech.modern_industrialization.textures.coloramp.DefaultColoramp;
 import java.io.IOException;
 import net.minecraft.client.texture.NativeImage;
 import net.minecraft.resource.ResourceManager;
@@ -56,7 +57,7 @@ public final class MITextures {
             }
 
             for (CraftingFluid fluid : MIFluids.FLUIDS) {
-                fluid.registerTextures(mtm);
+                registerFluidTextures(mtm, fluid);
             }
 
             casingFromTexture(mtm, "lv", mtm.getAssetAsTexture("modern_industrialization:textures/blocks/lv_machine_hull.png"));
@@ -300,4 +301,27 @@ public final class MITextures {
         }
     }
 
+    private static void registerFluidTextures(TextureManager tm, CraftingFluid fluid) {
+        String path = "modern_industrialization:textures/fluid/";
+
+        for (String alt : new String[] { "" }) {
+
+            String bucket = path + String.format("bucket%s.png", alt);
+            String bucket_content = path + String.format("bucket_content%s.png", alt);
+
+            try {
+                NativeImage bucket_image = tm.getAssetAsTexture(bucket);
+                NativeImage bucket_content_image = tm.getAssetAsTexture(bucket_content);
+                TextureHelper.colorize(bucket_content_image, new DefaultColoramp(fluid.color));
+                TextureHelper.blend(bucket_image, bucket_content_image);
+                if (fluid.isGas) {
+                    TextureHelper.flip(bucket_image);
+                }
+                tm.addTexture(String.format("modern_industrialization:textures/items/bucket/%s.png", fluid.name), bucket_image);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+    }
 }

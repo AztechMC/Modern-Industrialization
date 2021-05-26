@@ -25,12 +25,7 @@ package aztech.modern_industrialization.fluid;
 
 import aztech.modern_industrialization.MIFluids;
 import aztech.modern_industrialization.ModernIndustrialization;
-import aztech.modern_industrialization.textures.TextureHelper;
-import aztech.modern_industrialization.textures.TextureManager;
-import aztech.modern_industrialization.textures.coloramp.DefaultColoramp;
-import java.io.IOException;
 import net.minecraft.block.BlockState;
-import net.minecraft.client.texture.NativeImage;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.item.Item;
@@ -119,29 +114,5 @@ public class CraftingFluid extends Fluid {
     @Override
     public VoxelShape getShape(FluidState state, BlockView world, BlockPos pos) {
         return null;
-    }
-
-    public void registerTextures(TextureManager tm) {
-        String path = "modern_industrialization:textures/fluid/";
-
-        for (String alt : new String[] { "" }) {
-
-            String bucket = path + String.format("bucket%s.png", alt);
-            String bucket_content = path + String.format("bucket_content%s.png", alt);
-
-            try {
-                NativeImage bucket_image = tm.getAssetAsTexture(bucket);
-                NativeImage bucket_content_image = tm.getAssetAsTexture(bucket_content);
-                TextureHelper.colorize(bucket_content_image, new DefaultColoramp(color));
-                TextureHelper.blend(bucket_image, bucket_content_image);
-                if (isGas) {
-                    TextureHelper.flip(bucket_image);
-                }
-                tm.addTexture(String.format("modern_industrialization:textures/items/bucket/%s.png", name), bucket_image);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-
     }
 }

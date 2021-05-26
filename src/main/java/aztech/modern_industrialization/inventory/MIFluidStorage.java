@@ -63,9 +63,9 @@ public class MIFluidStorage implements Storage<Fluid> {
                             if (lockSlots) {
                                 stack.enableMachineLock(fluid);
                             }
-
-                            return inserted;
                         }
+
+                        return inserted;
                     }
                 }
             }

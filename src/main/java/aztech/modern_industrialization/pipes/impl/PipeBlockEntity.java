@@ -224,7 +224,7 @@ public class PipeBlockEntity extends FastBlockEntity
         for (PipeNetworkNode pipe : pipes) {
             pipe.getManager().removeNode(pos);
         }
-        pipes.clear();
+        // Don't clear pipes, otherwise they can't be dropped when broken by hand.
 
         super.markRemoved();
     }

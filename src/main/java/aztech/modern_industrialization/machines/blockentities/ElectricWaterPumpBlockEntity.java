@@ -23,7 +23,6 @@
  */
 package aztech.modern_industrialization.machines.blockentities;
 
-import aztech.modern_industrialization.MIFluids;
 import aztech.modern_industrialization.api.energy.CableTier;
 import aztech.modern_industrialization.api.energy.EnergyApi;
 import aztech.modern_industrialization.api.energy.EnergyInsertable;
@@ -37,6 +36,7 @@ import aztech.modern_industrialization.machines.models.MachineModelClientData;
 import aztech.modern_industrialization.util.Simulation;
 import java.util.Collections;
 import net.minecraft.block.entity.BlockEntityType;
+import net.minecraft.fluid.Fluids;
 
 public class ElectricWaterPumpBlockEntity extends AbstractWaterPumpBlockEntity {
     public ElectricWaterPumpBlockEntity(BlockEntityType<?> type) {
@@ -44,7 +44,7 @@ public class ElectricWaterPumpBlockEntity extends AbstractWaterPumpBlockEntity {
 
         long capacity = 81000 * MITanks.BRONZE.bucketCapacity * 4;
         this.inventory = new MIInventory(Collections.emptyList(),
-                Collections.singletonList(ConfigurableFluidStack.lockedOutputSlot(capacity, MIFluids.STEAM)), SlotPositions.empty(),
+                Collections.singletonList(ConfigurableFluidStack.lockedOutputSlot(capacity, Fluids.WATER)), SlotPositions.empty(),
                 new SlotPositions.Builder().addSlot(OUTPUT_SLOT_X, OUTPUT_SLOT_Y).build());
         this.energy = new EnergyComponent(3200);
         this.insertable = energy.buildInsertable(tier -> tier == CableTier.LV);

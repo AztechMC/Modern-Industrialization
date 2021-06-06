@@ -63,8 +63,8 @@ public class RecipeEfficiencyBar {
 
         @Override
         public boolean needsSync(Data cachedData) {
-            if (!cachedData.hasActiveRecipe) {
-                return crafter.hasActiveRecipe();
+            if (!crafter.hasActiveRecipe()) {
+                return cachedData.hasActiveRecipe;
             } else {
                 return crafter.getEfficiencyTicks() != cachedData.efficiencyTicks || crafter.getMaxEfficiencyTicks() != cachedData.maxEfficiencyTicks
                         || crafter.getCurrentRecipeEu() != cachedData.currentRecipeEu || crafter.getBaseRecipeEu() != cachedData.baseRecipeEu

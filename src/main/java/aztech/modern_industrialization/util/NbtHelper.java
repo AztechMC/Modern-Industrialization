@@ -26,6 +26,7 @@ package aztech.modern_industrialization.util;
 import aztech.modern_industrialization.pipes.api.PipeEndpointType;
 import java.util.List;
 import java.util.function.Function;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidKey;
 import net.fabricmc.fabric.api.util.NbtType;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.Fluids;
@@ -40,12 +41,10 @@ import net.minecraft.util.registry.Registry;
 import org.jetbrains.annotations.Nullable;
 
 public class NbtHelper {
-    public static Fluid getFluid(CompoundTag tag, String key) {
-        return tag.contains(key) ? Registry.FLUID.get(new Identifier(tag.getString(key))) : Fluids.EMPTY;
-    }
-
-    public static void putFluid(CompoundTag tag, String key, Fluid fluid) {
-        tag.putString(key, Registry.FLUID.getId(fluid).toString());
+    public static void putFluid(CompoundTag tag, String key, FluidKey fluid) {
+        CompoundTag savedTag = new CompoundTag();
+        savedTag.put("fk", fluid.toNbt());
+        tag.put(key, savedTag);
     }
 
     public static Item getItem(CompoundTag tag, String key) {
@@ -124,16 +123,19 @@ public class NbtHelper {
         }
     }
 
-    public static Fluid getFluidCompatible(CompoundTag tag, String key) {
-        if (tag == null)
-            return Fluids.EMPTY;
+    public static FluidKey getFluidCompatible(CompoundTag tag, String key) {
+        if (tag == null || !tag.contains(key))
+            return FluidKey.empty();
 
-        if (!tag.contains(key))
-            return Fluids.EMPTY;
         if (tag.get(key) instanceof StringTag) {
-            return Registry.FLUID.get(new Identifier(tag.getString(key)));
+            return FluidKey.of(Registry.FLUID.get(new Identifier(tag.getString(key))));
         } else {
-            return readLbaTag(tag.getCompound(key));
+            CompoundTag compound = tag.getCompound(key);
+            if (compound.contains("fk")) {
+                return FluidKey.fromNbt(compound.getCompound("fk"));
+            } else {
+                return FluidKey.of(readLbaTag(tag.getCompound(key)));
+            }
         }
     }
 

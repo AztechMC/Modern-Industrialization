@@ -31,6 +31,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
+import net.fabricmc.fabric.api.transfer.v1.storage.base.ResourceAmount;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.fabricmc.fabric.api.transfer.v1.transaction.base.SnapshotParticipant;
 import net.minecraft.entity.player.PlayerEntity;
@@ -43,7 +44,7 @@ import net.minecraft.screen.slot.Slot;
 /**
  * An item stack that can be configured.
  */
-public class ConfigurableItemStack extends SnapshotParticipant<ItemState> implements StorageView<ItemKey>, IConfigurableSlot {
+public class ConfigurableItemStack extends SnapshotParticipant<ResourceAmount<ItemKey>> implements StorageView<ItemKey>, IConfigurableSlot {
     private ItemKey key = ItemKey.empty();
     private int count = 0;
     private Item lockedItem = null;
@@ -281,6 +282,11 @@ public class ConfigurableItemStack extends SnapshotParticipant<ItemState> implem
     }
 
     @Override
+    public boolean isEmpty() {
+        return resource().isEmpty();
+    }
+
+    @Override
     public ItemKey resource() {
         return key;
     }
@@ -291,14 +297,19 @@ public class ConfigurableItemStack extends SnapshotParticipant<ItemState> implem
     }
 
     @Override
-    public ItemState createSnapshot() {
-        return new ItemState(key, count);
+    public long capacity() {
+        return isEmpty() ? 64 : resource().getItem().getMaxCount();
     }
 
     @Override
-    public void readSnapshot(ItemState itemState) {
-        this.count = itemState.count;
-        this.key = itemState.key;
+    public ResourceAmount<ItemKey> createSnapshot() {
+        return new ResourceAmount<>(key, count);
+    }
+
+    @Override
+    public void readSnapshot(ResourceAmount<ItemKey> ra) {
+        this.count = (int) ra.amount;
+        this.key = ra.resource;
     }
 
     public class ConfigurableItemSlot extends Slot {

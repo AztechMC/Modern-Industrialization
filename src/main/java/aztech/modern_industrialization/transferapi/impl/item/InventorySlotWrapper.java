@@ -25,8 +25,10 @@ package aztech.modern_industrialization.transferapi.impl.item;
 
 import aztech.modern_industrialization.transferapi.api.item.ItemKey;
 import aztech.modern_industrialization.transferapi.api.item.ItemPreconditions;
+import java.util.Iterator;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
+import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleViewIterator;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.fabricmc.fabric.api.transfer.v1.transaction.base.SnapshotParticipant;
 import net.minecraft.inventory.Inventory;
@@ -97,12 +99,8 @@ class InventorySlotWrapper extends SnapshotParticipant<ItemStack> implements Sto
     }
 
     @Override
-    public boolean forEach(Storage.Visitor<ItemKey> visitor, Transaction transaction) {
-        if (!inventory.getStack(slot).isEmpty()) {
-            return visitor.accept(this);
-        }
-
-        return false;
+    public Iterator<StorageView<ItemKey>> iterator(Transaction transaction) {
+        return SingleViewIterator.create(this, transaction);
     }
 
     @Override
@@ -111,8 +109,18 @@ class InventorySlotWrapper extends SnapshotParticipant<ItemStack> implements Sto
     }
 
     @Override
+    public boolean isEmpty() {
+        return inventory.getStack(slot).isEmpty();
+    }
+
+    @Override
     public long amount() {
         return inventory.getStack(slot).getCount();
+    }
+
+    @Override
+    public long capacity() {
+        return inventory.getStack(slot).getMaxCount();
     }
 
     @Override

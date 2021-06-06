@@ -27,10 +27,10 @@ import alexiil.mc.lib.attributes.fluid.FluidAttributes;
 import alexiil.mc.lib.attributes.item.ItemAttributes;
 import aztech.modern_industrialization.transferapi.api.item.ItemApi;
 import aztech.modern_industrialization.transferapi.api.item.ItemKey;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidKey;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidTransfer;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
-import net.minecraft.fluid.Fluid;
 import net.minecraft.util.math.Direction;
 
 public class TransferLbaCompat {
@@ -38,9 +38,15 @@ public class TransferLbaCompat {
         FluidAttributes.forEachInv(inv -> inv.appendBlockAdder((world, pos, state, to) -> {
             Direction direction = to.getTargetSide();
             if (direction != null && !to.hasOfferedAny()) {
-                Storage<Fluid> fluidStorage = FluidStorage.SIDED.find(world, pos, direction);
+                Storage<FluidKey> fluidStorage = FluidTransfer.SIDED.find(world, pos, direction);
                 if (fluidStorage != null) {
-                    to.offer(new WrappedFluidStorage(fluidStorage));
+                    WrappedFluidStorage wrapped = new WrappedFluidStorage(fluidStorage);
+
+                    if (FluidAttributes.GROUPED_INVENTORY_BASED.contains(to.attribute)) {
+                        to.offer(wrapped);
+                    } else {
+                        to.offer(new FixedGroupedFluidInv(wrapped));
+                    }
                 }
             }
         }));
@@ -49,9 +55,15 @@ public class TransferLbaCompat {
             // Must check hasOfferedAny otherwise both LBA and MI will offer a wrapper for
             // vanilla Inventories.
             if (direction != null && !to.hasOfferedAny()) {
-                Storage<ItemKey> fluidStorage = ItemApi.SIDED.find(world, pos, direction);
-                if (fluidStorage != null) {
-                    to.offer(new WrappedItemStorage(fluidStorage));
+                Storage<ItemKey> itemStorage = ItemApi.SIDED.find(world, pos, direction);
+                if (itemStorage != null) {
+                    WrappedItemStorage wrapped = new WrappedItemStorage(itemStorage);
+
+                    if (ItemAttributes.GROUPED_INVENTORY_BASED.contains(to.attribute)) {
+                        to.offer(wrapped);
+                    } else {
+                        to.offer(new FixedGroupedItemInv(wrapped));
+                    }
                 }
             }
         }));
@@ -62,10 +74,10 @@ public class TransferLbaCompat {
      * simulation, so we have to be careful and store the transaction during the
      * extraction operation.
      */
-    static final ThreadLocal<Transaction> EXTRACTION_TRANSACTION = new ThreadLocal<>();
+    static final ThreadLocal<Transaction> OPEN_TRANSACTION = new ThreadLocal<>();
 
-    static Transaction openInsertTransaction() {
-        Transaction extractionTransaction = EXTRACTION_TRANSACTION.get();
+    static Transaction openPossiblyNestedTransaction() {
+        Transaction extractionTransaction = OPEN_TRANSACTION.get();
         if (extractionTransaction != null) {
             return extractionTransaction.openNested();
         } else {

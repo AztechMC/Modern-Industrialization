@@ -30,8 +30,6 @@ import com.mojang.datafixers.util.Pair;
 import java.util.*;
 import java.util.function.Function;
 import java.util.function.Supplier;
-import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandler;
-import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry;
 import net.fabricmc.fabric.api.renderer.v1.Renderer;
 import net.fabricmc.fabric.api.renderer.v1.RendererAccess;
 import net.fabricmc.fabric.api.renderer.v1.material.BlendMode;
@@ -42,6 +40,8 @@ import net.fabricmc.fabric.api.renderer.v1.mesh.MutableQuadView;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
 import net.fabricmc.fabric.api.renderer.v1.model.FabricBakedModel;
 import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
+import net.fabricmc.fabric.api.transfer.v1.client.fluid.FluidKeyRendering;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidKey;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.render.model.*;
 import net.minecraft.client.render.model.json.JsonUnbakedModel;
@@ -50,7 +50,6 @@ import net.minecraft.client.render.model.json.ModelTransformation;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.texture.SpriteAtlasTexture;
 import net.minecraft.client.util.SpriteIdentifier;
-import net.minecraft.fluid.Fluid;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Identifier;
@@ -99,28 +98,25 @@ public class TankModel implements UnbakedModel, FabricBakedModel, BakedModel {
         }
     }
 
-    private void drawFluid(QuadEmitter emitter, float fillFraction, Fluid fluid) {
-        FluidRenderHandler handler = FluidRenderHandlerRegistry.INSTANCE.get(fluid);
-        if (handler != null) {
-            Sprite stillSprite = handler.getFluidSprites(null, null, null)[0];
-            int color = 255 << 24 | handler.getFluidColor(null, null, null);
-            for (Direction direction : Direction.values()) {
-                float topSpace, depth, bottomSpace;
-                if (fluid instanceof CraftingFluid && ((CraftingFluid) fluid).isGas) {
-                    bottomSpace = direction.getAxis().isHorizontal() ? 1 - fillFraction + 0.01f : 0;
-                    depth = direction == Direction.DOWN ? fillFraction : 0;
-                    topSpace = 0;
-                } else {
-                    bottomSpace = 0;
-                    topSpace = direction.getAxis().isHorizontal() ? 1 - fillFraction + 0.01f : 0;
-                    depth = direction == Direction.UP ? 1 - fillFraction : 0;
-                }
-                emitter.material(translucentMaterial);
-                emitter.square(direction, 0, bottomSpace, 1, 1 - topSpace, depth + 0.01f);
-                emitter.spriteBake(0, stillSprite, MutableQuadView.BAKE_LOCK_UV);
-                emitter.spriteColor(0, color, color, color, color);
-                emitter.emit();
+    private void drawFluid(QuadEmitter emitter, float fillFraction, FluidKey fluid) {
+        Sprite stillSprite = FluidKeyRendering.getSprite(fluid);
+        int color = FluidKeyRendering.getColor(fluid);
+        for (Direction direction : Direction.values()) {
+            float topSpace, depth, bottomSpace;
+            if (fluid instanceof CraftingFluid && ((CraftingFluid) fluid).isGas) {
+                bottomSpace = direction.getAxis().isHorizontal() ? 1 - fillFraction + 0.01f : 0;
+                depth = direction == Direction.DOWN ? fillFraction : 0;
+                topSpace = 0;
+            } else {
+                bottomSpace = 0;
+                topSpace = direction.getAxis().isHorizontal() ? 1 - fillFraction + 0.01f : 0;
+                depth = direction == Direction.UP ? 1 - fillFraction : 0;
             }
+            emitter.material(translucentMaterial);
+            emitter.square(direction, 0, bottomSpace, 1, 1 - topSpace, depth + 0.01f);
+            emitter.spriteBake(0, stillSprite, MutableQuadView.BAKE_LOCK_UV);
+            emitter.spriteColor(0, color, color, color, color);
+            emitter.emit();
         }
     }
 

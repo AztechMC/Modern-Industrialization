@@ -33,6 +33,7 @@ import com.google.common.base.Preconditions;
 import java.util.Objects;
 import java.util.function.Function;
 import net.fabricmc.fabric.api.lookup.v1.item.ItemApiLookup;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidKey;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidPreconditions;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.minecraft.fluid.Fluid;
@@ -41,7 +42,7 @@ import net.minecraft.util.Identifier;
 
 // TODO: delegate to static FluidApiImpl functions so that other impl classes can be package private
 public final class ItemFluidApi {
-    public static final ItemApiLookup<Storage<Fluid>, ContainerItemContext> ITEM = ItemApiLookup.get(new Identifier("fabric:fluid_api"),
+    public static final ItemApiLookup<Storage<FluidKey>, ContainerItemContext> ITEM = ItemApiLookup.get(new Identifier("fabric:fluid_api"),
             Storage.asClass(), ContainerItemContext.class);
 
     /**
@@ -56,7 +57,7 @@ public final class ItemFluidApi {
      * @param amount    The amount of fluid in the full item. Must be positive.
      * @param emptyItem The emptied item.
      */
-    public static void registerFullItem(Item fullItem, Fluid fluid, long amount, Item emptyItem) {
+    public static void registerFullItem(Item fullItem, FluidKey fluid, long amount, Item emptyItem) {
         registerFullItem(fullItem, fluid, amount, key -> ItemKey.of(emptyItem, key.copyTag()));
     }
 
@@ -73,7 +74,7 @@ public final class ItemFluidApi {
      * @param keyMapping A function mapping the key of the source item to that of
      *                   the target item.
      */
-    public static void registerFullItem(Item fullItem, Fluid fluid, long amount, Function<ItemKey, ItemKey> keyMapping) {
+    public static void registerFullItem(Item fullItem, FluidKey fluid, long amount, Function<ItemKey, ItemKey> keyMapping) {
         ItemPreconditions.notEmpty(fullItem);
         FluidPreconditions.notEmpty(fluid);
         Preconditions.checkArgument(amount > 0);
@@ -86,7 +87,7 @@ public final class ItemFluidApi {
      */
     // TODO: document params and conflicts
     // TODO: pick parameter order, probably the same for both methods?
-    public static void registerEmptyItem(Item emptyItem, Fluid fluid, long amount, Item fullItem) {
+    public static void registerEmptyItem(Item emptyItem, FluidKey fluid, long amount, Item fullItem) {
         registerEmptyItem(emptyItem, fluid, amount, key -> ItemKey.of(fullItem, key.copyTag()));
     }
 
@@ -95,7 +96,7 @@ public final class ItemFluidApi {
      */
     // TODO: document params and conflicts
     // TODO: pick parameter order, probably the same for both methods?
-    public static void registerEmptyItem(Item emptyItem, Fluid fluid, long amount, Function<ItemKey, ItemKey> keyMapping) {
+    public static void registerEmptyItem(Item emptyItem, FluidKey fluid, long amount, Function<ItemKey, ItemKey> keyMapping) {
         ItemPreconditions.notEmpty(emptyItem);
         FluidPreconditions.notEmpty(fluid);
         Preconditions.checkArgument(amount > 0);
@@ -114,7 +115,7 @@ public final class ItemFluidApi {
      * @param amount    The amount.
      * @param fullItem  The full variant of the container.
      */
-    public static void registerEmptyAndFullItems(Item emptyItem, Fluid fluid, long amount, Item fullItem) {
+    public static void registerEmptyAndFullItems(Item emptyItem, FluidKey fluid, long amount, Item fullItem) {
         registerEmptyItem(emptyItem, fluid, amount, fullItem);
         registerFullItem(fullItem, fluid, amount, emptyItem);
     }

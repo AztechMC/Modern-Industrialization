@@ -29,9 +29,10 @@ import alexiil.mc.lib.attributes.fluid.FluidInsertable;
 import alexiil.mc.lib.attributes.fluid.amount.FluidAmount;
 import alexiil.mc.lib.attributes.fluid.volume.FluidKeys;
 import java.math.RoundingMode;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidKey;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
+import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
-import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.Fluids;
 import org.jetbrains.annotations.Nullable;
 
@@ -43,47 +44,53 @@ public class FluidTransferHelper {
      * Similar to
      * {@link net.fabricmc.fabric.api.transfer.v1.storage.Storage#insert}.
      */
-    public static long insert(FluidInsertable insertable, Fluid fluid, long maxAmount, Simulation simulation) {
+    public static long insert(FluidInsertable insertable, FluidKey fluid, long maxAmount, Simulation simulation) {
+        if (fluid.hasTag())
+            return 0;
+
         FluidAmount fractionAmount = FluidAmount.of(maxAmount, 81000);
-        long leftover = insertable.attemptInsertion(FluidKeys.get(fluid).withAmount(fractionAmount), simulation).getAmount_F().asLong(81000,
-                RoundingMode.DOWN);
+        long leftover = insertable.attemptInsertion(FluidKeys.get(fluid.getFluid()).withAmount(fractionAmount), simulation).getAmount_F()
+                .asLong(81000, RoundingMode.DOWN);
         return maxAmount - leftover;
     }
 
     /**
      * Return an extractable fluid, or EMPTY if none could be found.
      */
-    public static Fluid findExtractableFluid(FluidExtractable extractable) {
-        return extractable
+    public static FluidKey findExtractableFluid(FluidExtractable extractable) {
+        return FluidKey.of(extractable
                 .attemptExtraction(key -> key.getRawFluid() != null && key.getRawFluid() != Fluids.EMPTY, FluidAmount.A_MILLION, Simulation.SIMULATE)
-                .getRawFluid();
+                .getRawFluid());
     }
 
     /**
      * Similar to
      * {@link net.fabricmc.fabric.api.transfer.v1.storage.Storage#extract}.
      */
-    public static long extract(FluidExtractable extractable, Fluid fluid, long maxAmount, Simulation simulation) {
-        return extractable.attemptExtraction(key -> key.getRawFluid() == fluid, FluidAmount.of(maxAmount, 81000), simulation).amount().asLong(81000,
-                RoundingMode.DOWN);
+    public static long extract(FluidExtractable extractable, FluidKey fluid, long maxAmount, Simulation simulation) {
+        if (fluid.hasTag())
+            return 0;
+
+        return extractable.attemptExtraction(key -> key.getRawFluid().equals(fluid.getFluid()), FluidAmount.of(maxAmount, 81000), simulation).amount()
+                .asLong(81000, RoundingMode.DOWN);
     }
 
     /**
      * Find a contained fluid, or EMPTY if there is no fluid or if the storage is
      * null.
      */
-    public static Fluid findFluid(@Nullable Storage<Fluid> storage) {
+    public static FluidKey findFluid(@Nullable Storage<FluidKey> storage) {
         if (storage == null) {
-            return Fluids.EMPTY;
+            return FluidKey.empty();
         } else {
-            Fluid[] fluid = new Fluid[] { Fluids.EMPTY };
+            FluidKey fluid = FluidKey.empty();
             try (Transaction tx = Transaction.openOuter()) {
-                storage.forEach(view -> {
-                    fluid[0] = view.resource();
-                    return true;
-                }, tx);
+                for (StorageView<FluidKey> view : storage.iterable(tx)) {
+                    fluid = view.resource();
+                    break;
+                }
             }
-            return fluid[0];
+            return fluid;
         }
     }
 }

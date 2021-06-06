@@ -28,20 +28,19 @@ import aztech.modern_industrialization.pipes.gui.PipeScreenHandler;
 import aztech.modern_industrialization.pipes.impl.PipePackets;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidKey;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.fluid.Fluid;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.util.registry.Registry;
 
 public class FluidPipeScreenHandler extends PipeScreenHandler {
     public static final int HEIGHT = 153;
 
     public final FluidPipeInterface iface;
     private final PlayerInventory playerInventory;
-    private Fluid trackedNetworkFluid;
+    private FluidKey trackedNetworkFluid;
     private int trackedPriority;
     private int trackedType;
 
@@ -71,11 +70,11 @@ public class FluidPipeScreenHandler extends PipeScreenHandler {
         super.sendContentUpdates();
         if (playerInventory.player instanceof ServerPlayerEntity) {
             ServerPlayerEntity serverPlayer = (ServerPlayerEntity) playerInventory.player;
-            if (trackedNetworkFluid != iface.getNetworkFluid()) {
+            if (!trackedNetworkFluid.equals(iface.getNetworkFluid())) {
                 trackedNetworkFluid = iface.getNetworkFluid();
                 PacketByteBuf buf = PacketByteBufs.create();
                 buf.writeInt(syncId);
-                buf.writeVarInt(Registry.FLUID.getRawId(trackedNetworkFluid));
+                trackedNetworkFluid.toPacket(buf);
                 ServerPlayNetworking.send(serverPlayer, PipePackets.SET_NETWORK_FLUID, buf);
             }
             if (trackedType != iface.getConnectionType()) {

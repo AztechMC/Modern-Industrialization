@@ -24,7 +24,9 @@
 package aztech.modern_industrialization.transferapi.impl.item;
 
 import aztech.modern_industrialization.transferapi.api.item.ItemKey;
+import java.util.Iterator;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
+import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.minecraft.inventory.SidedInventory;
 import net.minecraft.util.math.Direction;
@@ -70,7 +72,7 @@ class SidedInventorySlotWrapper implements Storage<ItemKey> {
     }
 
     @Override
-    public boolean forEach(Visitor<ItemKey> visitor, Transaction transaction) {
-        return slotWrapper.forEach(visitor, transaction);
+    public Iterator<StorageView<ItemKey>> iterator(Transaction transaction) {
+        return slotWrapper.iterator(transaction);
     }
 }

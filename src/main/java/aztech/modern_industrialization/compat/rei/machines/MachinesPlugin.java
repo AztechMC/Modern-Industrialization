@@ -112,12 +112,12 @@ public class MachinesPlugin implements REIPluginV0 {
                 if (slot instanceof ConfigurableFluidStack.ConfigurableFluidSlot) {
                     ConfigurableFluidStack stack = ((ConfigurableFluidStack.ConfigurableFluidSlot) slot).getConfStack();
                     if (stack.getAmount() > 0) {
-                        Fluid fluid = stack.getFluid();
+                        Fluid fluid = stack.getFluid().getFluid();
                         if (fluid != null) {
                             return TypedActionResult.success(EntryStack.create(fluid));
                         }
                     } else if (stack.getLockedFluid() != null) {
-                        Fluid fluid = stack.getLockedFluid();
+                        Fluid fluid = stack.getLockedFluid().getFluid();
                         if (fluid != null) {
                             return TypedActionResult.success(EntryStack.create(fluid));
                         }

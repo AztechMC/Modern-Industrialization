@@ -27,8 +27,6 @@ import aztech.modern_industrialization.pipes.api.PipeEndpointType;
 import aztech.modern_industrialization.pipes.api.PipeRenderer;
 import aztech.modern_industrialization.util.NbtHelper;
 import java.util.function.Function;
-import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandler;
-import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry;
 import net.fabricmc.fabric.api.renderer.v1.Renderer;
 import net.fabricmc.fabric.api.renderer.v1.RendererAccess;
 import net.fabricmc.fabric.api.renderer.v1.material.RenderMaterial;
@@ -36,9 +34,10 @@ import net.fabricmc.fabric.api.renderer.v1.mesh.Mesh;
 import net.fabricmc.fabric.api.renderer.v1.mesh.MeshBuilder;
 import net.fabricmc.fabric.api.renderer.v1.mesh.MutableQuadView;
 import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
+import net.fabricmc.fabric.api.transfer.v1.client.fluid.FluidKeyRendering;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidKey;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.util.SpriteIdentifier;
-import net.minecraft.fluid.Fluid;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.math.Direction;
 
@@ -156,10 +155,9 @@ public class PipeMeshCache implements PipeRenderer {
 
         // Fluid handling logic
         if (customData.contains("fluid")) {
-            Fluid fluid = NbtHelper.getFluid(customData, "fluid");
-            FluidRenderHandler handler = FluidRenderHandlerRegistry.INSTANCE.get(fluid);
-            Sprite still = handler == null ? null : handler.getFluidSprites(null, null, null)[0];
-            int color = handler == null ? -1 : 255 << 24 | handler.getFluidColor(null, null, null);
+            FluidKey fluid = NbtHelper.getFluidCompatible(customData, "fluid");
+            Sprite still = FluidKeyRendering.getSprite(fluid);
+            int color = FluidKeyRendering.getColor(fluid);
             ctx.pushTransform(quad -> {
                 if (quad.tag() == 1) {
                     if (still != null) {

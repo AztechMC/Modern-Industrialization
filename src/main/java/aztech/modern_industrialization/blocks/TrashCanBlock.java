@@ -25,8 +25,11 @@ package aztech.modern_industrialization.blocks;
 
 import aztech.modern_industrialization.util.MobSpawning;
 import com.google.common.base.Preconditions;
+import java.util.Collections;
+import java.util.Iterator;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
+import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.InsertionOnlyStorage;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.minecraft.block.Block;
@@ -56,8 +59,8 @@ public class TrashCanBlock extends Block {
         }
 
         @Override
-        public boolean forEach(Visitor visitor, Transaction transaction) {
-            return false;
+        public Iterator<StorageView> iterator(Transaction transaction) {
+            return Collections.emptyIterator();
         }
 
         @Override

@@ -29,6 +29,7 @@ import aztech.modern_industrialization.transferapi.api.item.ItemKey;
 import aztech.modern_industrialization.transferapi.api.item.PlayerInventoryWrapper;
 import com.google.common.base.Preconditions;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
+import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.Hand;
@@ -57,15 +58,13 @@ public class PlayerEntityContainerItemContext implements ContainerItemContext {
 
     @Override
     public long getCount(Transaction tx) {
-        long[] count = new long[] { 0 };
-        slot.forEach(view -> {
+        long count = 0;
+        for (StorageView<ItemKey> view : slot.iterable(tx)) {
             if (view.resource().equals(boundKey)) {
-                count[0] = view.amount();
+                count = view.amount();
             }
-
-            return true;
-        }, tx);
-        return count[0];
+        }
+        return count;
     }
 
     @Override

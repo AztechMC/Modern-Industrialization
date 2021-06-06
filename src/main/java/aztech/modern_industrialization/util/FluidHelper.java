@@ -25,17 +25,17 @@ package aztech.modern_industrialization.util;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.fluid.Fluid;
-import net.minecraft.fluid.Fluids;
+import net.fabricmc.fabric.api.transfer.v1.client.fluid.FluidKeyRendering;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidKey;
 import net.minecraft.text.*;
 
 public class FluidHelper {
-    public static Text getFluidName(Fluid fluid, boolean grayIfEmpty) {
-        if (fluid == Fluids.EMPTY) {
+    public static Text getFluidName(FluidKey fluid, boolean grayIfEmpty) {
+        if (fluid.isEmpty()) {
             Style style = grayIfEmpty ? Style.EMPTY.withColor(TextColor.fromRgb(0xa9a9a9)).withItalic(true) : Style.EMPTY;
             return new TranslatableText("text.modern_industrialization.fluid_slot_empty").setStyle(style);
         } else {
-            return fluid.getDefaultState().getBlockState().getBlock().getName();
+            return FluidKeyRendering.getName(fluid);
         }
     }
 

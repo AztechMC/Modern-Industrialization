@@ -145,7 +145,7 @@ repositories {
 
 dependencies {
     // Experimental fluid API
-    include modImplementation("net.fabricmc.fabric-api:fabric-transfer-api-v1:0.1.0+7678d00a7d")
+    include modImplementation("net.fabricmc.fabric-api:fabric-transfer-api-v1:0.2.2+3185237c7d")
     // Experimental API API with item support
     include modImplementation("net.fabricmc.fabric-api:fabric-api-lookup-api-v1:1.2.0+84310a227d")
     minecraft "com.mojang:minecraft:${project.minecraft_version}"

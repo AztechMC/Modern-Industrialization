@@ -46,7 +46,6 @@ import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.fluid.Fluids;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -327,7 +326,7 @@ public class MachineScreenHandlers {
                     int j = y + slot.y;
 
                     ConfigurableFluidStack stack = ((ConfigurableFluidStack.ConfigurableFluidSlot) slot).getConfStack();
-                    if (stack.getFluid() != Fluids.EMPTY) {
+                    if (!stack.getFluid().isEmpty()) {
                         RenderHelper.drawFluidInGui(matrices, stack.getFluid(), i, j);
                     }
 

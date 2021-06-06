@@ -26,15 +26,16 @@ package aztech.modern_industrialization.blocks.creativetank;
 import aztech.modern_industrialization.transferapi.api.context.ContainerItemContext;
 import aztech.modern_industrialization.util.FluidHelper;
 import aztech.modern_industrialization.util.NbtHelper;
+import java.util.Iterator;
 import java.util.List;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidKey;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidPreconditions;
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.ExtractionOnlyStorage;
+import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleViewIterator;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.minecraft.block.Block;
 import net.minecraft.client.item.TooltipContext;
-import net.minecraft.fluid.Fluid;
-import net.minecraft.fluid.Fluids;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
@@ -49,7 +50,7 @@ public class CreativeTankItem extends BlockItem {
         return stack.getSubTag("BlockEntityTag") == null;
     }
 
-    public static Fluid getFluid(ItemStack stack) {
+    public static FluidKey getFluid(ItemStack stack) {
         return NbtHelper.getFluidCompatible(stack.getSubTag("BlockEntityTag"), "fluid");
     }
 
@@ -58,35 +59,42 @@ public class CreativeTankItem extends BlockItem {
         tooltip.add(FluidHelper.getFluidName(getFluid(stack), true));
     }
 
-    public static class TankItemStorage implements ExtractionOnlyStorage<Fluid>, StorageView<Fluid> {
-        private final Fluid fluid;
+    public static class TankItemStorage implements ExtractionOnlyStorage<FluidKey>, StorageView<FluidKey> {
+        private final FluidKey fluid;
 
         public TankItemStorage(ItemStack stack, ContainerItemContext ignored) {
             this.fluid = CreativeTankItem.getFluid(stack);
         }
 
         @Override
-        public long extract(Fluid fluid, long maxAmount, Transaction transaction) {
+        public long extract(FluidKey fluid, long maxAmount, Transaction transaction) {
             FluidPreconditions.notEmptyNotNegative(fluid, maxAmount);
             return maxAmount;
         }
 
         @Override
-        public Fluid resource() {
+        public FluidKey resource() {
             return fluid;
         }
 
         @Override
-        public boolean forEach(Visitor<Fluid> visitor, Transaction transaction) {
-            if (fluid != Fluids.EMPTY) {
-                return visitor.accept(this);
-            }
-            return false;
+        public boolean isEmpty() {
+            return resource().isEmpty();
+        }
+
+        @Override
+        public long capacity() {
+            return Integer.MAX_VALUE / 100;
         }
 
         @Override
         public long amount() {
             return Integer.MAX_VALUE;
+        }
+
+        @Override
+        public Iterator<StorageView<FluidKey>> iterator(Transaction transaction) {
+            return SingleViewIterator.create(this, transaction);
         }
     }
 }

@@ -27,6 +27,7 @@ import aztech.modern_industrialization.mixin.BucketItemAccessor;
 import aztech.modern_industrialization.transferapi.api.fluid.ItemFluidApi;
 import net.fabricmc.fabric.api.event.registry.RegistryEntryAddedCallback;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidKey;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.item.BucketItem;
 import net.minecraft.item.Item;
@@ -48,7 +49,7 @@ public class FluidApiImpl {
             Fluid bucketFluid = ((BucketItemAccessor) bucketItem).getFluid();
 
             if (fluid == bucketFluid) {
-                ItemFluidApi.registerEmptyAndFullItems(Items.BUCKET, fluid, FluidConstants.BUCKET, bucketItem);
+                ItemFluidApi.registerEmptyAndFullItems(Items.BUCKET, FluidKey.of(fluid), FluidConstants.BUCKET, bucketItem);
             }
         }
     }

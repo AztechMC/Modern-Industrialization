@@ -32,13 +32,13 @@ import com.google.common.collect.Multimap;
 import java.util.List;
 import me.shedaniel.cloth.api.armor.v1.TickableArmor;
 import me.shedaniel.cloth.api.durability.bar.DurabilityBarItem;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidKey;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.attribute.EntityAttribute;
 import net.minecraft.entity.attribute.EntityAttributeModifier;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.fluid.Fluid;
 import net.minecraft.item.*;
 import net.minecraft.recipe.Ingredient;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -116,7 +116,7 @@ public class JetpackItem extends ArmorItem implements Wearable, TickableArmor, D
     @Override
     public void tickArmor(ItemStack stack, PlayerEntity player) {
         if (isActivated(stack)) {
-            Fluid fluid = FluidFuelItemHelper.getFluid(stack);
+            FluidKey fluid = FluidFuelItemHelper.getFluid(stack);
             long amount = FluidFuelItemHelper.getAmount(stack);
             if (amount > 0) {
                 // Always consume one mb of fuel
@@ -128,12 +128,12 @@ public class JetpackItem extends ArmorItem implements Wearable, TickableArmor, D
                         // Boost forward if fall flying
                         Vec3d playerFacing = player.getRotationVector();
                         Vec3d playerVelocity = player.getVelocity();
-                        double maxSpeed = Math.sqrt(FluidFuelRegistry.getEu(fluid)) / 10;
+                        double maxSpeed = Math.sqrt(FluidFuelRegistry.getEu(fluid.getFluid())) / 10;
                         double attenuationFactor = 0.5;
                         player.setVelocity(playerVelocity.multiply(attenuationFactor).add(playerFacing.multiply(maxSpeed)));
                     } else {
                         // Otherwise boost vertically
-                        double maxSpeed = Math.sqrt(FluidFuelRegistry.getEu(fluid)) / 10;
+                        double maxSpeed = Math.sqrt(FluidFuelRegistry.getEu(fluid.getFluid())) / 10;
                         double acceleration = 0.25;
                         Vec3d v = player.getVelocity();
                         if (v.y < maxSpeed) {

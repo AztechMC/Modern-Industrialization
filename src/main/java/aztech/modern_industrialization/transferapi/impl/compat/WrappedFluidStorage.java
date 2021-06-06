@@ -24,22 +24,26 @@
 package aztech.modern_industrialization.transferapi.impl.compat;
 
 import alexiil.mc.lib.attributes.Simulation;
-import alexiil.mc.lib.attributes.fluid.FluidTransferable;
 import alexiil.mc.lib.attributes.fluid.FluidVolumeUtil;
+import alexiil.mc.lib.attributes.fluid.GroupedFluidInv;
 import alexiil.mc.lib.attributes.fluid.amount.FluidAmount;
 import alexiil.mc.lib.attributes.fluid.filter.FluidFilter;
 import alexiil.mc.lib.attributes.fluid.volume.FluidKeys;
 import alexiil.mc.lib.attributes.fluid.volume.FluidVolume;
 import java.math.RoundingMode;
+import java.util.HashSet;
+import java.util.Set;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidKey;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
+import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.Fluids;
 
-public class WrappedFluidStorage implements FluidTransferable {
-    private final Storage<Fluid> fluidStorage;
+public class WrappedFluidStorage implements GroupedFluidInv {
+    private final Storage<FluidKey> fluidStorage;
 
-    public WrappedFluidStorage(Storage<Fluid> fluidStorage) {
+    public WrappedFluidStorage(Storage<FluidKey> fluidStorage) {
         this.fluidStorage = fluidStorage;
     }
 
@@ -49,9 +53,9 @@ public class WrappedFluidStorage implements FluidTransferable {
         if (fluid == null || fluid == Fluids.EMPTY)
             return fluidVolume;
 
-        try (Transaction tx = TransferLbaCompat.openInsertTransaction()) {
+        try (Transaction tx = TransferLbaCompat.openPossiblyNestedTransaction()) {
             long amount = fluidVolume.getAmount_F().asLong(81000, RoundingMode.DOWN);
-            long inserted = fluidStorage.insert(fluid, amount, tx);
+            long inserted = fluidStorage.insert(FluidKey.of(fluid), amount, tx);
 
             if (simulation.isAction()) {
                 tx.commit();
@@ -66,34 +70,67 @@ public class WrappedFluidStorage implements FluidTransferable {
         long maxAmount = maxFractionAmount.asLong(81000, RoundingMode.DOWN);
         try (Transaction tx = Transaction.openOuter()) {
             // Find a suitable fluid to extract
-            Fluid[] extractedFluid = new Fluid[] { null };
-            TransferLbaCompat.EXTRACTION_TRANSACTION.set(tx);
-            fluidStorage.forEach(view -> {
-                Fluid fluid = view.resource();
-                if (filter.matches(FluidKeys.get(fluid))) {
+            FluidKey extractedFluid = null;
+            TransferLbaCompat.OPEN_TRANSACTION.set(tx);
+            for (StorageView<FluidKey> view : fluidStorage.iterable(tx)) {
+                FluidKey fluid = view.resource();
+                if (!fluid.hasTag() && filter.matches(FluidKeys.get(fluid.getFluid()))) {
                     try (Transaction testTx = tx.openNested()) {
                         if (view.extract(fluid, maxAmount, testTx) > 0) {
-                            extractedFluid[0] = fluid;
-                            return true;
+                            extractedFluid = fluid;
+                            break;
                         }
                     }
                 }
-                return false;
-            }, tx);
-            TransferLbaCompat.EXTRACTION_TRANSACTION.remove();
-            if (extractedFluid[0] == null)
+            }
+            TransferLbaCompat.OPEN_TRANSACTION.remove();
+            if (extractedFluid == null)
                 return FluidVolumeUtil.EMPTY;
             // Extract it
-            long extracted = fluidStorage.extract(extractedFluid[0], maxAmount, tx);
+            long extracted = fluidStorage.extract(extractedFluid, maxAmount, tx);
             if (simulation.isAction()) {
                 tx.commit();
             }
-            return FluidKeys.get(extractedFluid[0]).withAmount(FluidAmount.of(extracted, 81000));
+            return FluidKeys.get(extractedFluid.getFluid()).withAmount(FluidAmount.of(extracted, 81000));
         }
     }
 
     @Override
     public String toString() {
         return "WrappedFluidStorage{" + "fluidStorage=" + fluidStorage + '}';
+    }
+
+    @Override
+    public Set<alexiil.mc.lib.attributes.fluid.volume.FluidKey> getStoredFluids() {
+        Set<alexiil.mc.lib.attributes.fluid.volume.FluidKey> fluidKeys = new HashSet<>();
+        try (Transaction tx = TransferLbaCompat.openPossiblyNestedTransaction()) {
+            for (StorageView<FluidKey> view : fluidStorage.iterable(tx)) {
+                if (!view.resource().isEmpty() && !view.resource().hasTag()) {
+                    fluidKeys.add(FluidKeys.get(view.resource().getFluid()));
+                }
+            }
+        }
+        return fluidKeys;
+    }
+
+    @Override
+    public FluidInvStatistic getStatistics(FluidFilter filter) {
+        long amount = 0;
+        long capacity = 0;
+
+        try (Transaction tx = TransferLbaCompat.openPossiblyNestedTransaction()) {
+            for (StorageView<FluidKey> view : fluidStorage.iterable(tx)) {
+                FluidKey key = view.resource();
+                if (!key.isEmpty() && !key.hasTag()) {
+                    if (filter.matches(FluidKeys.get(key.getFluid()))) {
+                        amount += view.amount();
+                        capacity += view.capacity();
+                    }
+                }
+            }
+        }
+
+        return new FluidInvStatistic(filter, FluidAmount.of(amount, 81000), FluidAmount.of(capacity - amount, 81000),
+                FluidAmount.of(capacity, 81000));
     }
 }

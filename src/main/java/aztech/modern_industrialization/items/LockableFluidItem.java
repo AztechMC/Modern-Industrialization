@@ -23,14 +23,10 @@
  */
 package aztech.modern_industrialization.items;
 
-import aztech.modern_industrialization.util.FluidHelper;
 import java.util.List;
 import net.minecraft.client.item.TooltipContext;
-import net.minecraft.fluid.Fluid;
-import net.minecraft.fluid.Fluids;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
@@ -40,11 +36,13 @@ public interface LockableFluidItem {
 
     default void appendFluidTooltip(ItemStack stack, @Nullable World world, List<Text> tooltip, TooltipContext context) {
         if (isFluidLockable()) {
-            Fluid fluid = FluidFuelItemHelper.getFluid(stack);
-            if (fluid != Fluids.EMPTY) {
-                Text add_tooltip = new TranslatableText("text.modern_industrialization.fluid_lock", FluidHelper.getFluidName(fluid, false));
-                tooltip.add(add_tooltip);
-            }
+            // Fluid fluid = FluidFuelItemHelper.getFluid(stack);
+            // if (fluid != Fluids.EMPTY) {
+            // Text add_tooltip = new
+            // TranslatableText("text.modern_industrialization.fluid_lock",
+            // FluidHelper.getFluidName(fluid, false));
+            // tooltip.add(add_tooltip);
+            // }
         }
     }
 

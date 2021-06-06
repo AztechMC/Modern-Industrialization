@@ -28,17 +28,18 @@ import aztech.modern_industrialization.transferapi.api.fluid.ItemFluidApi;
 import aztech.modern_industrialization.transferapi.api.item.ItemKey;
 import aztech.modern_industrialization.util.FluidHelper;
 import aztech.modern_industrialization.util.NbtHelper;
+import java.util.Iterator;
 import java.util.List;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidKey;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidPreconditions;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
+import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleViewIterator;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.fluid.Fluid;
-import net.minecraft.fluid.Fluids;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
@@ -65,16 +66,16 @@ public class TankItem extends BlockItem {
         return stack.getSubTag("BlockEntityTag") == null;
     }
 
-    public Fluid getFluid(ItemStack stack) {
+    public FluidKey getFluid(ItemStack stack) {
         return NbtHelper.getFluidCompatible(stack.getSubTag("BlockEntityTag"), "fluid");
     }
 
-    private void setFluid(ItemStack stack, Fluid fluid) {
+    private void setFluid(ItemStack stack, FluidKey fluid) {
         NbtHelper.putFluid(stack.getOrCreateSubTag("BlockEntityTag"), "fluid", fluid);
     }
 
     public long getAmount(ItemStack stack) {
-        if (getFluid(stack) == Fluids.EMPTY) {
+        if (getFluid(stack).isEmpty()) {
             return 0;
         }
         CompoundTag tag = stack.getSubTag("BlockEntityTag");
@@ -107,8 +108,8 @@ public class TankItem extends BlockItem {
         return super.postPlacement(pos, world, player, stack, state);
     }
 
-    class TankItemStorage implements Storage<Fluid>, StorageView<Fluid> {
-        private final Fluid fluid;
+    class TankItemStorage implements Storage<FluidKey>, StorageView<FluidKey> {
+        private final FluidKey fluid;
         private final long amount;
         private final ContainerItemContext ctx;
 
@@ -118,7 +119,7 @@ public class TankItem extends BlockItem {
             this.ctx = ctx;
         }
 
-        private boolean updateTank(Fluid fluid, long amount, Transaction tx) {
+        private boolean updateTank(FluidKey fluid, long amount, Transaction tx) {
             ItemStack result = new ItemStack(TankItem.this);
             if (amount > 0) {
                 setFluid(result, fluid);
@@ -135,15 +136,15 @@ public class TankItem extends BlockItem {
         }
 
         @Override
-        public long insert(Fluid fluid, long maxAmount, Transaction transaction) {
+        public long insert(FluidKey fluid, long maxAmount, Transaction transaction) {
             FluidPreconditions.notEmptyNotNegative(fluid, maxAmount);
             if (ctx.getCount(transaction) == 0)
                 return 0;
 
             long inserted = 0;
-            if (TankItemStorage.this.fluid == Fluids.EMPTY) {
+            if (TankItemStorage.this.fluid.isEmpty()) {
                 inserted = Math.min(capacity, maxAmount);
-            } else if (TankItemStorage.this.fluid == fluid) {
+            } else if (TankItemStorage.this.fluid.equals(fluid)) {
                 inserted = Math.min(capacity - amount, maxAmount);
             }
             if (inserted > 0) {
@@ -160,13 +161,13 @@ public class TankItem extends BlockItem {
         }
 
         @Override
-        public long extract(Fluid fluid, long maxAmount, Transaction transaction) {
+        public long extract(FluidKey fluid, long maxAmount, Transaction transaction) {
             FluidPreconditions.notEmptyNotNegative(fluid, maxAmount);
             if (ctx.getCount(transaction) == 0)
                 return 0;
 
             long extracted = 0;
-            if (TankItemStorage.this.fluid == fluid) {
+            if (TankItemStorage.this.fluid.equals(fluid)) {
                 extracted = Math.min(maxAmount, amount);
             }
             if (extracted > 0) {
@@ -178,7 +179,12 @@ public class TankItem extends BlockItem {
         }
 
         @Override
-        public Fluid resource() {
+        public boolean isEmpty() {
+            return resource().isEmpty();
+        }
+
+        @Override
+        public FluidKey resource() {
             return fluid;
         }
 
@@ -188,11 +194,13 @@ public class TankItem extends BlockItem {
         }
 
         @Override
-        public boolean forEach(Visitor<Fluid> visitor, Transaction transaction) {
-            if (fluid != Fluids.EMPTY) {
-                return visitor.accept(this);
-            }
-            return false;
+        public long capacity() {
+            return capacity;
+        }
+
+        @Override
+        public Iterator<StorageView<FluidKey>> iterator(Transaction transaction) {
+            return SingleViewIterator.create(this, transaction);
         }
     }
 }

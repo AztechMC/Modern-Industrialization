@@ -28,11 +28,12 @@ import aztech.modern_industrialization.transferapi.api.fluid.ItemFluidApi;
 import io.netty.buffer.Unpooled;
 import java.util.List;
 import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidKey;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
+import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.fluid.Fluid;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.screen.ScreenHandler;
@@ -105,14 +106,14 @@ public abstract class ConfigurableScreenHandler extends ScreenHandler {
                 if (lockingMode) {
                     fluidStack.togglePlayerLock();
                 } else {
-                    Storage<Fluid> io = ItemFluidApi.ITEM.find(playerEntity.inventory.getCursorStack(),
+                    Storage<FluidKey> io = ItemFluidApi.ITEM.find(playerEntity.inventory.getCursorStack(),
                             ContainerItemContext.ofPlayerCursor(playerEntity));
                     if (io != null) {
                         // Extract first
                         long previousAmount = fluidStack.getAmount();
                         try (Transaction transaction = Transaction.openOuter()) {
-                            io.forEach(view -> {
-                                Fluid fluid = view.resource();
+                            for (StorageView<FluidKey> view : io.iterable(transaction)) {
+                                FluidKey fluid = view.resource();
                                 if (fluidSlot.canInsertFluid(fluid)) {
                                     try (Transaction tx = transaction.openNested()) {
                                         long extracted = view.extract(fluid, fluidStack.getRemainingSpace(), tx);
@@ -123,8 +124,7 @@ public abstract class ConfigurableScreenHandler extends ScreenHandler {
                                         }
                                     }
                                 }
-                                return false;
-                            }, transaction);
+                            }
                             transaction.commit();
                         }
                         if (previousAmount != fluidStack.getAmount()) {
@@ -133,7 +133,7 @@ public abstract class ConfigurableScreenHandler extends ScreenHandler {
                         }
 
                         // Otherwise insert
-                        Fluid fluid = fluidStack.getFluid();
+                        FluidKey fluid = fluidStack.getFluid();
                         if (fluidSlot.canExtractFluid(fluid)) {
                             try (Transaction tx = Transaction.openOuter()) {
                                 fluidStack.decrement(io.insert(fluid, fluidStack.getAmount(), tx));

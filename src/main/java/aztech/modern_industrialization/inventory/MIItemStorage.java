@@ -26,9 +26,11 @@ package aztech.modern_industrialization.inventory;
 import aztech.modern_industrialization.transferapi.api.item.ItemKey;
 import aztech.modern_industrialization.transferapi.api.item.ItemPreconditions;
 import com.google.common.primitives.Ints;
+import java.util.Iterator;
 import java.util.List;
 import java.util.function.Predicate;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
+import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 
 public class MIItemStorage implements Storage<ItemKey> {
@@ -98,15 +100,7 @@ public class MIItemStorage implements Storage<ItemKey> {
     }
 
     @Override
-    public boolean forEach(Visitor<ItemKey> visitor, Transaction transaction) {
-        for (ConfigurableItemStack stack : stacks) {
-            if (stack.getCount() > 0) {
-                if (visitor.accept(stack)) {
-                    return true;
-                }
-            }
-        }
-
-        return false;
+    public Iterator<StorageView<ItemKey>> iterator(Transaction transaction) {
+        return (Iterator) stacks.iterator();
     }
 }

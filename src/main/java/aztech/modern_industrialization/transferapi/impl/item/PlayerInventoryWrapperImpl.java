@@ -27,10 +27,12 @@ import aztech.modern_industrialization.transferapi.api.item.ItemKey;
 import aztech.modern_industrialization.transferapi.api.item.ItemPreconditions;
 import aztech.modern_industrialization.transferapi.api.item.PlayerInventoryWrapper;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.CombinedStorage;
+import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleViewIterator;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.fabricmc.fabric.api.transfer.v1.transaction.base.SnapshotParticipant;
 import net.minecraft.entity.player.PlayerInventory;
@@ -128,17 +130,23 @@ class PlayerInventoryWrapperImpl extends CombinedStorage<ItemKey, InventorySlotW
         }
 
         @Override
-        public boolean forEach(Visitor<ItemKey> visitor, Transaction transaction) {
-            if (!playerInventory.getCursorStack().isEmpty()) {
-                return visitor.accept(this);
-            }
-
-            return false;
+        public Iterator<StorageView<ItemKey>> iterator(Transaction transaction) {
+            return SingleViewIterator.create(this, transaction);
         }
 
         @Override
         public ItemKey resource() {
             return ItemKey.of(playerInventory.getCursorStack());
+        }
+
+        @Override
+        public long capacity() {
+            return playerInventory.getCursorStack().getMaxCount();
+        }
+
+        @Override
+        public boolean isEmpty() {
+            return playerInventory.getCursorStack().isEmpty();
         }
 
         @Override

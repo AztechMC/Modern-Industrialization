@@ -25,21 +25,24 @@ package aztech.modern_industrialization.transferapi.impl.fluid;
 
 import aztech.modern_industrialization.transferapi.api.context.ContainerItemContext;
 import aztech.modern_industrialization.transferapi.api.item.ItemKey;
+import java.util.Iterator;
 import java.util.function.Function;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidKey;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidPreconditions;
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.ExtractionOnlyStorage;
+import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleViewIterator;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
-import net.minecraft.fluid.Fluid;
 
-public class SimpleFluidContainingItem implements ExtractionOnlyStorage<Fluid>, StorageView<Fluid> {
+public class SimpleFluidContainingItem implements ExtractionOnlyStorage<FluidKey>, StorageView<FluidKey> {
     private final ContainerItemContext ctx;
     private final ItemKey sourceKey;
-    private final Fluid fluid;
+    private final FluidKey fluid;
     private final long amount;
     private final Function<ItemKey, ItemKey> keyMapping;
 
-    public SimpleFluidContainingItem(ContainerItemContext ctx, ItemKey sourceKey, Fluid fluid, long amount, Function<ItemKey, ItemKey> keyMapping) {
+    public SimpleFluidContainingItem(ContainerItemContext ctx, ItemKey sourceKey, FluidKey fluid, long amount,
+            Function<ItemKey, ItemKey> keyMapping) {
         this.ctx = ctx;
         this.sourceKey = sourceKey;
         this.fluid = fluid;
@@ -48,7 +51,7 @@ public class SimpleFluidContainingItem implements ExtractionOnlyStorage<Fluid>, 
     }
 
     @Override
-    public Fluid resource() {
+    public FluidKey resource() {
         return fluid;
     }
 
@@ -58,7 +61,17 @@ public class SimpleFluidContainingItem implements ExtractionOnlyStorage<Fluid>, 
     }
 
     @Override
-    public long extract(Fluid resource, long maxAmount, Transaction transaction) {
+    public long capacity() {
+        return amount;
+    }
+
+    @Override
+    public boolean isEmpty() {
+        return resource().isEmpty();
+    }
+
+    @Override
+    public long extract(FluidKey resource, long maxAmount, Transaction transaction) {
         FluidPreconditions.notEmptyNotNegative(resource, maxAmount);
 
         if (maxAmount >= amount && resource == fluid && ctx.getCount(transaction) > 0) {
@@ -71,8 +84,7 @@ public class SimpleFluidContainingItem implements ExtractionOnlyStorage<Fluid>, 
     }
 
     @Override
-    public boolean forEach(Visitor<Fluid> visitor, Transaction transaction) {
-        // note: fluid may not be empty, so no need to check
-        return visitor.accept(this);
+    public Iterator<StorageView<FluidKey>> iterator(Transaction transaction) {
+        return SingleViewIterator.create(this, transaction);
     }
 }

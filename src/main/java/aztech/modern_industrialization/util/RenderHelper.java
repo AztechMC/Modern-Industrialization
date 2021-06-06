@@ -26,14 +26,14 @@ package aztech.modern_industrialization.util;
 import aztech.modern_industrialization.fluid.CraftingFluid;
 import aztech.modern_industrialization.mixin_client.ClientWorldAccessor;
 import com.mojang.blaze3d.systems.RenderSystem;
-import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandler;
-import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry;
 import net.fabricmc.fabric.api.renderer.v1.Renderer;
 import net.fabricmc.fabric.api.renderer.v1.RendererAccess;
 import net.fabricmc.fabric.api.renderer.v1.material.BlendMode;
 import net.fabricmc.fabric.api.renderer.v1.material.RenderMaterial;
 import net.fabricmc.fabric.api.renderer.v1.mesh.MutableQuadView;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
+import net.fabricmc.fabric.api.transfer.v1.client.fluid.FluidKeyRendering;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidKey;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.*;
 import net.minecraft.client.render.model.BakedQuad;
@@ -41,7 +41,6 @@ import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.texture.SpriteAtlasTexture;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.client.world.ClientWorld;
-import net.minecraft.fluid.Fluid;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Matrix4f;
@@ -105,14 +104,10 @@ public class RenderHelper {
     private static final float TANK_W = 0.02f;
     public static final int FULL_LIGHT = 0x00F0_00F0;
 
-    public static void drawFluidInTank(MatrixStack ms, VertexConsumerProvider vcp, Fluid fluid, float fill) {
-        FluidRenderHandler handler = FluidRenderHandlerRegistry.INSTANCE.get(fluid);
-        if (handler == null)
-            return;
-
+    public static void drawFluidInTank(MatrixStack ms, VertexConsumerProvider vcp, FluidKey fluid, float fill) {
         VertexConsumer vc = vcp.getBuffer(RenderLayer.getTranslucent());
-        Sprite sprite = handler.getFluidSprites(null, null, fluid.getDefaultState())[0];
-        int color = handler.getFluidColor(null, null, fluid.getDefaultState());
+        Sprite sprite = FluidKeyRendering.getSprite(fluid);
+        int color = FluidKeyRendering.getColor(fluid);
         float r = ((color >> 16) & 255) / 256f;
         float g = ((color >> 8) & 255) / 256f;
         float b = (color & 255) / 256f;
@@ -145,14 +140,14 @@ public class RenderHelper {
         }
     }
 
-    public static void drawFluidInGui(MatrixStack ms, Fluid fluid, int i, int j) {
-        FluidRenderHandler handler = FluidRenderHandlerRegistry.INSTANCE.get(fluid);
-        if (handler == null)
+    public static void drawFluidInGui(MatrixStack ms, FluidKey fluid, int i, int j) {
+        MinecraftClient.getInstance().getTextureManager().bindTexture(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE);
+        Sprite sprite = FluidKeyRendering.getSprite(fluid);
+        int color = FluidKeyRendering.getColor(fluid);
+
+        if (sprite == null)
             return;
 
-        MinecraftClient.getInstance().getTextureManager().bindTexture(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE);
-        Sprite sprite = handler.getFluidSprites(null, null, fluid.getDefaultState())[0];
-        int color = handler.getFluidColor(null, null, fluid.getDefaultState());
         float r = ((color >> 16) & 255) / 256f;
         float g = ((color >> 8) & 255) / 256f;
         float b = (color & 255) / 256f;

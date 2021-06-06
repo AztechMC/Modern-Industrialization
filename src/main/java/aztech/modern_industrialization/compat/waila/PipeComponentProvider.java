@@ -32,8 +32,7 @@ import java.util.List;
 import mcp.mobius.waila.api.IComponentProvider;
 import mcp.mobius.waila.api.IDataAccessor;
 import mcp.mobius.waila.api.IPluginConfig;
-import net.minecraft.fluid.Fluid;
-import net.minecraft.fluid.Fluids;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidKey;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
@@ -85,10 +84,10 @@ public class PipeComponentProvider implements IComponentProvider {
             Style style = Style.EMPTY.withColor(TextColor.fromRgb(0xa9a9a9)).withItalic(true);
 
             if (tag.contains("fluid")) {
-                Fluid fluid = NbtHelper.getFluid(tag, "fluid");
+                FluidKey fluid = NbtHelper.getFluidCompatible(tag, "fluid");
                 long amount = tag.getLong("amount");
                 int capacity = tag.getInt("capacity");
-                if (fluid == Fluids.EMPTY) {
+                if (fluid.isEmpty()) {
                     tooltip.add(new TranslatableText("text.modern_industrialization.fluid_slot_empty"));
                 } else {
                     tooltip.add(FluidHelper.getFluidName(fluid, true));

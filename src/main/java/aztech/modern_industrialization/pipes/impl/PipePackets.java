@@ -31,10 +31,9 @@ import aztech.modern_industrialization.pipes.gui.iface.PriorityInterface;
 import aztech.modern_industrialization.pipes.item.ItemPipeScreenHandler;
 import aztech.modern_industrialization.util.UnsidedPacketHandler;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
-import net.minecraft.fluid.Fluid;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidKey;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
 
 public class PipePackets {
     public static final Identifier SET_ITEM_WHITELIST = new MIIdentifier("set_item_whitelist");
@@ -74,7 +73,7 @@ public class PipePackets {
     public static final Identifier SET_NETWORK_FLUID = new MIIdentifier("set_network_fluid");
     public static final UnsidedPacketHandler ON_SET_NETWORK_FLUID = (player, buf) -> {
         int syncId = buf.readInt();
-        Fluid fluid = Registry.FLUID.get(buf.readVarInt());
+        FluidKey fluid = FluidKey.fromPacket(buf);
         return () -> {
             ScreenHandler handler = player.currentScreenHandler;
             if (handler.syncId == syncId) {

@@ -40,11 +40,10 @@ import aztech.modern_industrialization.transferapi.FluidTransferHelper;
 import aztech.modern_industrialization.util.NbtHelper;
 import java.util.*;
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidKey;
 import net.fabricmc.fabric.api.util.NbtType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.fluid.Fluid;
-import net.minecraft.fluid.Fluids;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.screen.ScreenHandler;
@@ -60,7 +59,7 @@ import org.jetbrains.annotations.Nullable;
 public class FluidNetworkNode extends PipeNetworkNode {
     long amount = 0;
     private final List<FluidConnection> connections = new ArrayList<>();
-    private Fluid cachedFluid = Fluids.EMPTY;
+    private FluidKey cachedFluid = FluidKey.empty();
     private boolean needsSync = false;
 
     /**
@@ -75,14 +74,14 @@ public class FluidNetworkNode extends PipeNetworkNode {
             ModernIndustrialization.LOGGER.warn("Fluid amount > nodeCapacity, deleting some fluid!");
             amount = network.nodeCapacity;
         }
-        if (amount > 0 && data.fluid == Fluids.EMPTY) {
+        if (amount > 0 && data.fluid.isEmpty()) {
             ModernIndustrialization.LOGGER.warn("Amount > 0 but fluid is empty, deleting some fluid!");
             amount = 0;
         }
 
         for (FluidConnection connection : connections) {
             FluidTransferable transferable = getNeighborTransferable(world, pos, connection);
-            if (data.fluid == Fluids.EMPTY) {
+            if (data.fluid.isEmpty()) {
                 // Try to set fluid, will return EMPTY if none could be found.
                 data.fluid = FluidTransferHelper.findExtractableFluid(transferable);
             }
@@ -240,19 +239,19 @@ public class FluidNetworkNode extends PipeNetworkNode {
             private ScreenHandlerFactory(IPipeScreenHandlerHelper helper, String pipeType) {
                 this.iface = new FluidPipeInterface() {
                     @Override
-                    public Fluid getNetworkFluid() {
+                    public FluidKey getNetworkFluid() {
                         if (network != null) {
                             return getFluid();
                         } else {
-                            return Fluids.EMPTY;
+                            return FluidKey.empty();
                         }
                     }
 
                     @Override
-                    public void setNetworkFluid(Fluid fluid) {
+                    public void setNetworkFluid(FluidKey fluid) {
                         FluidNetwork network = (FluidNetwork) FluidNetworkNode.this.network;
                         if (network != null) {
-                            if (fluid == Fluids.EMPTY) {
+                            if (fluid.isEmpty()) {
                                 network.clearFluid();
                             } else {
                                 network.setFluid(fluid);
@@ -327,8 +326,8 @@ public class FluidNetworkNode extends PipeNetworkNode {
     public void tick(World world, BlockPos pos) {
         super.tick(world, pos);
 
-        Fluid networkFluid = ((FluidNetworkData) network.data).fluid;
-        if (networkFluid != cachedFluid) {
+        FluidKey networkFluid = ((FluidNetworkData) network.data).fluid;
+        if (!networkFluid.equals(cachedFluid)) {
             cachedFluid = networkFluid;
             needsSync = true;
         }
@@ -350,7 +349,7 @@ public class FluidNetworkNode extends PipeNetworkNode {
         return ((FluidNetwork) network).nodeCapacity;
     }
 
-    public Fluid getFluid() {
+    public FluidKey getFluid() {
         return ((FluidNetworkData) network.data).fluid;
     }
 }

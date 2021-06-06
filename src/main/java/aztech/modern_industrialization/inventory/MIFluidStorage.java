@@ -23,14 +23,16 @@
  */
 package aztech.modern_industrialization.inventory;
 
+import java.util.Iterator;
 import java.util.List;
 import java.util.function.Predicate;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidKey;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidPreconditions;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
+import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
-import net.minecraft.fluid.Fluid;
 
-public class MIFluidStorage implements Storage<Fluid> {
+public class MIFluidStorage implements Storage<FluidKey> {
     final List<ConfigurableFluidStack> stacks;
 
     public MIFluidStorage(List<ConfigurableFluidStack> stacks) {
@@ -46,7 +48,7 @@ public class MIFluidStorage implements Storage<Fluid> {
      * @param filter    Return false to skip some ConfigurableFluidStacks.
      * @param lockSlots Whether to lock slots or not.
      */
-    public long insert(Fluid fluid, long amount, Transaction tx, Predicate<ConfigurableFluidStack> filter, boolean lockSlots) {
+    public long insert(FluidKey fluid, long amount, Transaction tx, Predicate<ConfigurableFluidStack> filter, boolean lockSlots) {
         FluidPreconditions.notEmptyNotNegative(fluid, amount);
         for (int iter = 0; iter < 2; ++iter) {
             boolean insertIntoEmptySlots = iter == 1;
@@ -74,7 +76,7 @@ public class MIFluidStorage implements Storage<Fluid> {
     }
 
     @Override
-    public long insert(Fluid fluid, long amount, Transaction tx) {
+    public long insert(FluidKey fluid, long amount, Transaction tx) {
         return insert(fluid, amount, tx, ConfigurableFluidStack::canPipesInsert, false);
     }
 
@@ -84,7 +86,7 @@ public class MIFluidStorage implements Storage<Fluid> {
     }
 
     @Override
-    public long extract(Fluid fluid, long maxAmount, Transaction transaction) {
+    public long extract(FluidKey fluid, long maxAmount, Transaction transaction) {
         FluidPreconditions.notEmptyNotNegative(fluid, maxAmount);
         long amount = 0L;
 
@@ -96,15 +98,7 @@ public class MIFluidStorage implements Storage<Fluid> {
     }
 
     @Override
-    public boolean forEach(Storage.Visitor<Fluid> visitor, Transaction transaction) {
-        for (ConfigurableFluidStack stack : stacks) {
-            if (stack.getAmount() > 0) {
-                if (visitor.accept(stack)) {
-                    return true;
-                }
-            }
-        }
-
-        return false;
+    public Iterator<StorageView<FluidKey>> iterator(Transaction transaction) {
+        return (Iterator) stacks.iterator();
     }
 }

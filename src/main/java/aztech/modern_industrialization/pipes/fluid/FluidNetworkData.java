@@ -25,13 +25,13 @@ package aztech.modern_industrialization.pipes.fluid;
 
 import aztech.modern_industrialization.pipes.api.PipeNetworkData;
 import aztech.modern_industrialization.util.NbtHelper;
-import net.minecraft.fluid.Fluid;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidKey;
 import net.minecraft.nbt.CompoundTag;
 
 public class FluidNetworkData extends PipeNetworkData {
-    Fluid fluid;
+    FluidKey fluid;
 
-    public FluidNetworkData(Fluid fluid) {
+    public FluidNetworkData(FluidKey fluid) {
         this.fluid = fluid;
     }
 

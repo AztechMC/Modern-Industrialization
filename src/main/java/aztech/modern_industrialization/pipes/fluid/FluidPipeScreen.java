@@ -39,18 +39,16 @@ import java.util.ArrayList;
 import java.util.List;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidKey;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.fluid.Fluid;
-import net.minecraft.fluid.Fluids;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
 
 public class FluidPipeScreen extends PipeScreen<FluidPipeScreenHandler> {
     private static final Identifier TEXTURE = new MIIdentifier("textures/gui/pipe/fluid.png");
@@ -74,12 +72,10 @@ public class FluidPipeScreen extends PipeScreen<FluidPipeScreenHandler> {
     }
 
     private void addNetworkFluidButton() {
-        addButton(new NetworkFluidButton(72 + this.x, 20 + this.y, widget -> {
-            updateNetworkFluid();
-        }, (button, matrices, mouseX, mouseY) -> {
+        addButton(new NetworkFluidButton(72 + this.x, 20 + this.y, widget -> updateNetworkFluid(), (button, matrices, mouseX, mouseY) -> {
             List<Text> lines = new ArrayList<>();
             lines.add(FluidHelper.getFluidName(handler.iface.getNetworkFluid(), false));
-            if (handler.iface.getNetworkFluid() != Fluids.EMPTY) {
+            if (!handler.iface.getNetworkFluid().isEmpty()) {
                 lines.add(new TranslatableText("text.modern_industrialization.network_fluid_help_clear").setStyle(TextHelper.GRAY_TEXT));
             } else {
                 lines.add(new TranslatableText("text.modern_industrialization.network_fluid_help_set").setStyle(TextHelper.GRAY_TEXT));
@@ -90,23 +86,23 @@ public class FluidPipeScreen extends PipeScreen<FluidPipeScreenHandler> {
 
     private void updateNetworkFluid() {
         FluidPipeInterface iface = handler.iface;
-        Fluid targetFluid = null;
-        if (iface.getNetworkFluid() == Fluids.EMPTY) {
+        FluidKey targetFluid = null;
+        if (iface.getNetworkFluid().isEmpty()) {
             // Want to set the fluid
             ItemStack cursorStack = playerInventory.getCursorStack();
-            Fluid fluid = FluidTransferHelper
+            FluidKey fluid = FluidTransferHelper
                     .findFluid(ItemFluidApi.ITEM.find(cursorStack, ContainerItemContext.ofPlayerCursor(playerInventory.player)));
-            if (fluid != Fluids.EMPTY) {
+            if (!fluid.isEmpty()) {
                 targetFluid = fluid;
             }
         } else if (InputHelper.isShiftPressed()) {
-            targetFluid = Fluids.EMPTY;
+            targetFluid = FluidKey.empty();
         }
         if (targetFluid != null) {
             iface.setNetworkFluid(targetFluid);
             PacketByteBuf buf = PacketByteBufs.create();
             buf.writeInt(handler.syncId);
-            buf.writeVarInt(Registry.FLUID.getRawId(targetFluid));
+            targetFluid.toPacket(buf);
             ClientPlayNetworking.send(PipePackets.SET_NETWORK_FLUID, buf);
         }
     }
@@ -126,7 +122,7 @@ public class FluidPipeScreen extends PipeScreen<FluidPipeScreenHandler> {
             mc.getTextureManager().bindTexture(MachineScreenHandlers.SLOT_ATLAS);
             drawTexture(matrices, x - 1, y - 1, 18, 0, 18, 18);
             // Render the fluid itself
-            if (iface.getNetworkFluid() != Fluids.EMPTY) {
+            if (!iface.getNetworkFluid().isEmpty()) {
                 RenderHelper.drawFluidInGui(matrices, iface.getNetworkFluid(), x, y);
             }
             // Render the white hover effect

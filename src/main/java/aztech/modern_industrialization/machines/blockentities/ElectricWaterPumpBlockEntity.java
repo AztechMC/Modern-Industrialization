@@ -42,7 +42,7 @@ public class ElectricWaterPumpBlockEntity extends AbstractWaterPumpBlockEntity {
     public ElectricWaterPumpBlockEntity(BlockEntityType<?> type) {
         super(type, "lv_water_pump");
 
-        long capacity = 81000 * MITanks.BRONZE.bucketCapacity * 4;
+        long capacity = 81000 * MITanks.BRONZE.bucketCapacity * 8;
         this.inventory = new MIInventory(Collections.emptyList(),
                 Collections.singletonList(ConfigurableFluidStack.lockedOutputSlot(capacity, Fluids.WATER)), SlotPositions.empty(),
                 new SlotPositions.Builder().addSlot(OUTPUT_SLOT_X, OUTPUT_SLOT_Y).build());

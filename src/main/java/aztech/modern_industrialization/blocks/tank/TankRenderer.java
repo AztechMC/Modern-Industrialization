@@ -28,7 +28,6 @@ import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.block.entity.BlockEntityRenderDispatcher;
 import net.minecraft.client.render.block.entity.BlockEntityRenderer;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.fluid.Fluids;
 
 public class TankRenderer extends BlockEntityRenderer<TankBlockEntity> {
     public TankRenderer(BlockEntityRenderDispatcher dispatcher) {
@@ -38,7 +37,7 @@ public class TankRenderer extends BlockEntityRenderer<TankBlockEntity> {
     @Override
     public void render(TankBlockEntity entity, float tickDelta, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light,
             int overlay) {
-        if (entity.fluid != Fluids.EMPTY && entity.amount > 0) {
+        if (!entity.fluid.isEmpty() && entity.amount > 0) {
             RenderHelper.drawFluidInTank(matrices, vertexConsumers, entity.fluid, (float) entity.amount / entity.capacity);
         }
     }

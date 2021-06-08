@@ -26,6 +26,7 @@ package aztech.modern_industrialization.inventory;
 import aztech.modern_industrialization.util.NbtHelper;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidKey;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidPreconditions;
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
@@ -270,6 +271,10 @@ public class ConfigurableFluidStack extends SnapshotParticipant<ResourceAmount<F
 
     public FluidKey getLockedFluid() {
         return lockedFluid;
+    }
+
+    public boolean isLockedTo(FluidKey fluid) {
+        return Objects.equals(lockedFluid, fluid);
     }
 
     public boolean playerLock(FluidKey fluid) {

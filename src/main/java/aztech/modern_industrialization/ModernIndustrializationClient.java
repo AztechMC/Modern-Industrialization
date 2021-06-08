@@ -129,8 +129,8 @@ public class ModernIndustrializationClient implements ClientModInitializer {
             }
 
             Item item = stack.getItem();
-            if (item != null) {
 
+            if (item != null) {
                 if (item instanceof PipeItem) {
                     PipeItem pipe = (PipeItem) item;
                     if (MIPipes.electricityPipeTier.containsKey(pipe)) {
@@ -154,7 +154,9 @@ public class ModernIndustrializationClient implements ClientModInitializer {
                     }
                 }
 
-                if (MinecraftClient.getInstance().world != null) { // WTF
+                // Apparently tooltips are accessed from the main menu, or something, hence the
+                // != null check
+                if (MinecraftClient.getInstance().world != null && !MIConfig.getConfig().disableFuelTooltips) {
                     try {
                         Integer fuelTime = FuelRegistryImpl.INSTANCE.get(item);
                         if (fuelTime != null && fuelTime > 0) {
@@ -163,7 +165,7 @@ public class ModernIndustrializationClient implements ClientModInitializer {
                                     TextHelper.getEuUnit(totalEu)).setStyle(TextHelper.GRAY_TEXT));
                         }
                     } catch (Exception e) {
-                        e.printStackTrace();
+                        ModernIndustrialization.LOGGER.warn("Could not show MI fuel tooltip.", e);
                     }
                 }
 

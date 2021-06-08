@@ -589,7 +589,7 @@ public class CrafterComponent implements IComponent.ServerOnly {
         outer: for (MachineRecipe.FluidInput input : recipe.fluidInputs) {
             FluidKey fluid = FluidKey.of(input.fluid);
             for (ConfigurableFluidStack stack : this.inventory.getFluidInputs()) {
-                if (stack.getLockedFluid().equals(fluid))
+                if (stack.isLockedTo(fluid))
                     continue outer;
             }
             for (ConfigurableFluidStack stack : this.inventory.getFluidInputs()) {
@@ -602,7 +602,7 @@ public class CrafterComponent implements IComponent.ServerOnly {
         outer: for (MachineRecipe.FluidOutput output : recipe.fluidOutputs) {
             FluidKey fluid = FluidKey.of(output.fluid);
             for (ConfigurableFluidStack stack : this.inventory.getFluidOutputs()) {
-                if (stack.getLockedFluid().equals(fluid))
+                if (stack.isLockedTo(fluid))
                     continue outer;
             }
             for (ConfigurableFluidStack stack : this.inventory.getFluidOutputs()) {

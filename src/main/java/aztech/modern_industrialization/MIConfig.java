@@ -36,6 +36,7 @@ public class MIConfig implements ConfigData {
     public List<String> blacklistedOres = new ArrayList<>();
     public boolean spawnWithGuideBook = true;
     public boolean respawnWithGuideBook = true;
+    public boolean disableFuelTooltips = false;
 
     private transient static boolean registered = false;
 

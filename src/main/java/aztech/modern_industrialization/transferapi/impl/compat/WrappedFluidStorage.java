@@ -74,7 +74,7 @@ public class WrappedFluidStorage implements GroupedFluidInv {
             TransferLbaCompat.OPEN_TRANSACTION.set(tx);
             for (StorageView<FluidKey> view : fluidStorage.iterable(tx)) {
                 FluidKey fluid = view.resource();
-                if (!fluid.hasTag() && filter.matches(FluidKeys.get(fluid.getFluid()))) {
+                if (!view.isEmpty() && !fluid.hasTag() && filter.matches(FluidKeys.get(fluid.getFluid()))) {
                     try (Transaction testTx = tx.openNested()) {
                         if (view.extract(fluid, maxAmount, testTx) > 0) {
                             extractedFluid = fluid;

@@ -38,7 +38,7 @@ import net.fabricmc.fabric.api.transfer.v1.client.fluid.FluidKeyRendering;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidKey;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.util.SpriteIdentifier;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.math.Direction;
 
 public class PipeMeshCache implements PipeRenderer {
@@ -131,7 +131,7 @@ public class PipeMeshCache implements PipeRenderer {
      * @param connections For every logical slot, then for every direction, the
      *                    connection type or null for no connection.
      */
-    public void draw(RenderContext ctx, int logicalSlot, PipeEndpointType[][] connections, CompoundTag customData) {
+    public void draw(RenderContext ctx, int logicalSlot, PipeEndpointType[][] connections, NbtCompound customData) {
         // The render type of the connections (0 for no connection, 1 for straight pipe,
         // 2 for short bend, etc...)
         int[] renderTypes = new int[6];

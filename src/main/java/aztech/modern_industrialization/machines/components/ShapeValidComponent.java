@@ -24,7 +24,7 @@
 package aztech.modern_industrialization.machines.components;
 
 import aztech.modern_industrialization.machines.IComponent;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 
 /**
  * Syncing whether the multiblock shape is currently valid with the clients, to
@@ -46,12 +46,12 @@ public class ShapeValidComponent implements IComponent.ClientOnly {
     }
 
     @Override
-    public void writeClientNbt(CompoundTag tag) {
+    public void writeClientNbt(NbtCompound tag) {
         tag.putBoolean("shapeValid", shapeValid);
     }
 
     @Override
-    public void readClientNbt(CompoundTag tag) {
+    public void readClientNbt(NbtCompound tag) {
         shapeValid = tag.getBoolean("shapeValid");
     }
 }

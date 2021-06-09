@@ -29,6 +29,7 @@ import aztech.modern_industrialization.api.FastBlockEntity;
 import aztech.modern_industrialization.pipes.MIPipes;
 import aztech.modern_industrialization.pipes.api.*;
 import aztech.modern_industrialization.pipes.gui.IPipeScreenHandlerHelper;
+import aztech.modern_industrialization.pipes.impl.PipeBlockEntity.RenderAttachment;
 import aztech.modern_industrialization.util.ChunkUnloadBlockEntity;
 import aztech.modern_industrialization.util.NbtHelper;
 import aztech.modern_industrialization.util.RenderHelper;
@@ -41,7 +42,7 @@ import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Pair;
 import net.minecraft.util.Tickable;
@@ -74,7 +75,7 @@ public class PipeBlockEntity extends FastBlockEntity
     /**
      * Extra rendering data
      */
-    SortedMap<PipeNetworkType, CompoundTag> customData = new TreeMap<>();
+    SortedMap<PipeNetworkType, NbtCompound> customData = new TreeMap<>();
 
     // Because we can't access the PipeNetworksComponent in fromTag because the
     // world is null, we defer the node loading.
@@ -230,25 +231,25 @@ public class PipeBlockEntity extends FastBlockEntity
     }
 
     @Override
-    public CompoundTag toTag(CompoundTag tag) {
-        super.toTag(tag);
+    public NbtCompound writeNbt(NbtCompound tag) {
+        super.writeNbt(tag);
         int i = 0;
         for (PipeNetworkNode pipe : pipes) {
             tag.putString("pipe_type_" + i, pipe.getType().getIdentifier().toString());
-            tag.put("pipe_data_" + i, pipe.toTag(new CompoundTag()));
+            tag.put("pipe_data_" + i, pipe.toTag(new NbtCompound()));
             i++;
         }
         for (Pair<PipeNetworkType, PipeNetworkNode> entry : unloadedPipes) {
             tag.putString("pipe_type_" + i, entry.getLeft().getIdentifier().toString());
-            tag.put("pipe_data_" + i, entry.getRight().toTag(new CompoundTag()));
+            tag.put("pipe_data_" + i, entry.getRight().toTag(new NbtCompound()));
             i++;
         }
         return tag;
     }
 
     @Override
-    public void fromTag(BlockState state, CompoundTag tag) {
-        super.fromTag(state, tag);
+    public void readNbt(BlockState state, NbtCompound tag) {
+        super.readNbt(state, tag);
         pipes.clear();
 
         int i = 0;
@@ -297,12 +298,12 @@ public class PipeBlockEntity extends FastBlockEntity
     }
 
     @Override
-    public void fromClientTag(CompoundTag tag) {
+    public void fromClientTag(NbtCompound tag) {
         connections.clear();
         customData.clear();
-        CompoundTag pipesTag = tag.getCompound("pipes");
+        NbtCompound pipesTag = tag.getCompound("pipes");
         for (String key : pipesTag.getKeys()) {
-            CompoundTag nodeTag = pipesTag.getCompound(key);
+            NbtCompound nodeTag = pipesTag.getCompound(key);
             PipeNetworkType type = PipeNetworkType.get(new Identifier(key));
             connections.put(type, NbtHelper.decodeConnections(nodeTag.getByteArray("connections")));
             customData.put(type, nodeTag.getCompound("custom").copy());
@@ -313,11 +314,11 @@ public class PipeBlockEntity extends FastBlockEntity
     }
 
     @Override
-    public CompoundTag toClientTag(CompoundTag tag) {
+    public NbtCompound toClientTag(NbtCompound tag) {
         loadPipes();
-        CompoundTag pipesTag = new CompoundTag();
+        NbtCompound pipesTag = new NbtCompound();
         for (PipeNetworkNode pipe : pipes) {
-            CompoundTag nodeTag = new CompoundTag();
+            NbtCompound nodeTag = new NbtCompound();
             nodeTag.put("custom", pipe.writeCustomData());
             nodeTag.putByteArray("connections", NbtHelper.encodeConnections(pipe.getConnections(pos)));
             pipesTag.put(pipe.getType().getIdentifier().toString(), nodeTag);
@@ -330,7 +331,7 @@ public class PipeBlockEntity extends FastBlockEntity
     public Object getRenderAttachmentData() {
         PipeNetworkType[] types = new PipeNetworkType[connections.size()];
         PipeEndpointType[][] renderedConnections = new PipeEndpointType[connections.size()][];
-        CompoundTag[] customData = new CompoundTag[connections.size()];
+        NbtCompound[] customData = new NbtCompound[connections.size()];
         int i = 0;
         for (Map.Entry<PipeNetworkType, PipeEndpointType[]> entry : connections.entrySet()) {
             types[i] = entry.getKey();
@@ -369,9 +370,9 @@ public class PipeBlockEntity extends FastBlockEntity
     static class RenderAttachment {
         PipeNetworkType[] types;
         PipeEndpointType[][] renderedConnections;
-        CompoundTag[] customData;
+        NbtCompound[] customData;
 
-        private RenderAttachment(PipeNetworkType[] types, PipeEndpointType[][] renderedConnections, CompoundTag[] customData) {
+        private RenderAttachment(PipeNetworkType[] types, PipeEndpointType[][] renderedConnections, NbtCompound[] customData) {
             this.types = types;
             this.renderedConnections = renderedConnections;
             this.customData = customData;

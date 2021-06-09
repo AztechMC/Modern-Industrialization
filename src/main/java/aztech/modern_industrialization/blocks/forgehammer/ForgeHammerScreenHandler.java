@@ -159,7 +159,7 @@ public class ForgeHammerScreenHandler extends ScreenHandler {
                 if (!this.insertItem(itemStack2, 0, 36, true)) {
                     return ItemStack.EMPTY;
                 }
-                slot.onStackChanged(itemStack2, itemStack);
+                slot.onQuickTransfer(itemStack2, itemStack);
             } else if (index >= 0 && index < 36) { // inventory
                 if (!this.insertItem(itemStack2, 36, 37, false)) {
                     if (index < 27) { // inside inventory

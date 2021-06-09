@@ -26,7 +26,7 @@ package aztech.modern_industrialization.pipes.fluid;
 import aztech.modern_industrialization.pipes.api.PipeNetworkData;
 import aztech.modern_industrialization.util.NbtHelper;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidKey;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 
 public class FluidNetworkData extends PipeNetworkData {
     FluidKey fluid;
@@ -41,12 +41,12 @@ public class FluidNetworkData extends PipeNetworkData {
     }
 
     @Override
-    public void fromTag(CompoundTag tag) {
+    public void fromTag(NbtCompound tag) {
         fluid = NbtHelper.getFluidCompatible(tag, "fluid");
     }
 
     @Override
-    public CompoundTag toTag(CompoundTag tag) {
+    public NbtCompound toTag(NbtCompound tag) {
         NbtHelper.putFluid(tag, "fluid", fluid);
         return tag;
     }

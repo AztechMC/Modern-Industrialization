@@ -40,7 +40,7 @@ import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.Tickable;
@@ -53,14 +53,14 @@ public abstract class HatchBlockEntity extends MachineBlockEntity implements Tic
         this.orientation = new OrientationComponent(orientationParams);
         registerComponents(orientation, new IComponent.ClientOnly() {
             @Override
-            public void writeClientNbt(CompoundTag tag) {
+            public void writeClientNbt(NbtCompound tag) {
                 if (matchedCasing != null) {
                     tag.putString("matchedCasing", matchedCasing);
                 }
             }
 
             @Override
-            public void readClientNbt(CompoundTag tag) {
+            public void readClientNbt(NbtCompound tag) {
                 matchedCasing = tag.contains("matchedCasing") ? tag.getString("matchedCasing") : null;
             }
         });

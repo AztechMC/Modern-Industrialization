@@ -38,7 +38,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.Tickable;
@@ -60,12 +60,12 @@ public abstract class AbstractWaterPumpBlockEntity extends MachineBlockEntity im
         registerClientComponent(new ProgressBar.Server(PROGRESS_BAR, () -> (float) pumpingTicks / OPERATION_TICKS));
         this.registerComponents(orientation, isActiveComponent, new IComponent() {
             @Override
-            public void writeNbt(CompoundTag tag) {
+            public void writeNbt(NbtCompound tag) {
                 tag.putInt("pumpingTicks", pumpingTicks);
             }
 
             @Override
-            public void readNbt(CompoundTag tag) {
+            public void readNbt(NbtCompound tag) {
                 pumpingTicks = tag.getInt("pumpingTicks");
             }
         });

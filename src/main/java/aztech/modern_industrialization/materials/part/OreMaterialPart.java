@@ -73,7 +73,7 @@ public class OreMaterialPart extends RegularMaterialPart {
                     .decorate(Decorator.RANGE.configure(new RangeDecoratorConfig(0, 0, maxYLevel))).spreadHorizontally().repeat(veinsPerChunk);
             Identifier oregenId = new MIIdentifier("ore_generator_" + materialName);
             Registry.register(BuiltinRegistries.CONFIGURED_FEATURE, oregenId, oreGenerator);
-            RegistryKey<ConfiguredFeature<?, ?>> featureKey = RegistryKey.of(Registry.CONFIGURED_FEATURE_WORLDGEN, oregenId);
+            RegistryKey<ConfiguredFeature<?, ?>> featureKey = RegistryKey.of(Registry.CONFIGURED_FEATURE_KEY, oregenId);
             BiomeModifications.addFeature(BiomeSelectors.foundInOverworld(), GenerationStep.Feature.UNDERGROUND_ORES, featureKey);
         }
     }

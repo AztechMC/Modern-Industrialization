@@ -29,7 +29,7 @@ import java.util.Random;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
@@ -39,12 +39,12 @@ public class GunpowderOverclockComponent implements IComponent {
     public int overclockGunpowderTick;
 
     @Override
-    public void writeNbt(CompoundTag tag) {
+    public void writeNbt(NbtCompound tag) {
         tag.putInt("overclockGunpowderTick", overclockGunpowderTick);
     }
 
     @Override
-    public void readNbt(CompoundTag tag) {
+    public void readNbt(NbtCompound tag) {
         overclockGunpowderTick = tag.getInt("overclockGunpowderTick");
     }
 

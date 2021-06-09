@@ -25,7 +25,7 @@ package aztech.modern_industrialization.machines.components;
 
 import aztech.modern_industrialization.machines.IComponent;
 import net.fabricmc.fabric.api.block.entity.BlockEntityClientSerializable;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 
 public class IsActiveComponent implements IComponent.ClientOnly {
     public boolean isActive = false;
@@ -38,12 +38,12 @@ public class IsActiveComponent implements IComponent.ClientOnly {
     }
 
     @Override
-    public void writeClientNbt(CompoundTag tag) {
+    public void writeClientNbt(NbtCompound tag) {
         tag.putBoolean("isActive", isActive);
     }
 
     @Override
-    public void readClientNbt(CompoundTag tag) {
+    public void readClientNbt(NbtCompound tag) {
         isActive = tag.getBoolean("isActive");
     }
 }

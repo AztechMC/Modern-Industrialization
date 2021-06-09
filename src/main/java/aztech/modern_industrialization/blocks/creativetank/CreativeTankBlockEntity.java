@@ -39,7 +39,7 @@ import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleViewIterator;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.Hand;
 
 public class CreativeTankBlockEntity extends FastBlockEntity
@@ -56,12 +56,12 @@ public class CreativeTankBlockEntity extends FastBlockEntity
     }
 
     @Override
-    public void fromClientTag(CompoundTag tag) {
+    public void fromClientTag(NbtCompound tag) {
         fluid = NbtHelper.getFluidCompatible(tag, "fluid");
     }
 
     @Override
-    public CompoundTag toClientTag(CompoundTag tag) {
+    public NbtCompound toClientTag(NbtCompound tag) {
         NbtHelper.putFluid(tag, "fluid", fluid);
         return tag;
     }
@@ -73,15 +73,15 @@ public class CreativeTankBlockEntity extends FastBlockEntity
     }
 
     @Override
-    public CompoundTag toTag(CompoundTag tag) {
+    public NbtCompound writeNbt(NbtCompound tag) {
         toClientTag(tag);
-        return super.toTag(tag);
+        return super.writeNbt(tag);
     }
 
     @Override
-    public void fromTag(BlockState state, CompoundTag tag) {
+    public void readNbt(BlockState state, NbtCompound tag) {
         fromClientTag(tag);
-        super.fromTag(state, tag);
+        super.readNbt(state, tag);
     }
 
     public boolean onPlayerUse(PlayerEntity player) {

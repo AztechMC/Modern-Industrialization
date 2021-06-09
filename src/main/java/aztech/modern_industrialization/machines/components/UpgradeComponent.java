@@ -31,7 +31,7 @@ import java.util.Map;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ItemScatterer;
@@ -55,13 +55,13 @@ public class UpgradeComponent implements IComponent.ServerOnly {
     }
 
     @Override
-    public void writeNbt(CompoundTag tag) {
-        tag.put("upgradesItemStack", itemStack.toTag(new CompoundTag()));
+    public void writeNbt(NbtCompound tag) {
+        tag.put("upgradesItemStack", itemStack.writeNbt(new NbtCompound()));
     }
 
     @Override
-    public void readNbt(CompoundTag tag) {
-        itemStack = ItemStack.fromTag(tag.getCompound("upgradesItemStack"));
+    public void readNbt(NbtCompound tag) {
+        itemStack = ItemStack.fromNbt(tag.getCompound("upgradesItemStack"));
     }
 
     public ActionResult onUse(MachineBlockEntity be, PlayerEntity player, Hand hand) {

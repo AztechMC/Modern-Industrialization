@@ -23,12 +23,12 @@
  */
 package aztech.modern_industrialization.pipes.api;
 
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 
 public abstract class PipeNetworkData {
     public abstract PipeNetworkData clone();
 
-    public abstract void fromTag(CompoundTag tag);
+    public abstract void fromTag(NbtCompound tag);
 
-    public abstract CompoundTag toTag(CompoundTag tag);
+    public abstract NbtCompound toTag(NbtCompound tag);
 }

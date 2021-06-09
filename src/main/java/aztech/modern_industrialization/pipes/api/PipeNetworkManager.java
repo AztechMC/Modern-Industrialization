@@ -26,9 +26,9 @@ package aztech.modern_industrialization.pipes.api;
 import aztech.modern_industrialization.pipes.MIPipes;
 import aztech.modern_industrialization.util.NbtHelper;
 import java.util.*;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.Tag;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtElement;
+import net.minecraft.nbt.NbtList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 
@@ -233,13 +233,13 @@ public class PipeNetworkManager {
         }
     }
 
-    public void fromTag(CompoundTag tag) {
+    public void fromTag(NbtCompound tag) {
         // networks
-        ListTag networksTag = tag.getList("networks", new CompoundTag().getType());
-        for (Tag networkTag : networksTag) {
+        NbtList networksTag = tag.getList("networks", new NbtCompound().getType());
+        for (NbtElement networkTag : networksTag) {
             PipeNetwork network = type.getNetworkCtor().apply(-1, null);
             network.manager = this;
-            network.fromTag((CompoundTag) networkTag);
+            network.fromTag((NbtCompound) networkTag);
             networks.add(network);
         }
 
@@ -262,13 +262,13 @@ public class PipeNetworkManager {
         checkStateCoherence();
     }
 
-    public CompoundTag toTag(CompoundTag tag) {
+    public NbtCompound toTag(NbtCompound tag) {
         // networks
-        List<CompoundTag> networksTags = new ArrayList<>();
+        List<NbtCompound> networksTags = new ArrayList<>();
         for (PipeNetwork network : networks) {
-            networksTags.add(network.toTag(new CompoundTag()));
+            networksTags.add(network.toTag(new NbtCompound()));
         }
-        ListTag networksTag = new ListTag();
+        NbtList networksTag = new NbtList();
         networksTag.addAll(networksTags);
         tag.put("networks", networksTag);
 

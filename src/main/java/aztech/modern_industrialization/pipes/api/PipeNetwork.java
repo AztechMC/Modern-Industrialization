@@ -25,7 +25,7 @@ package aztech.modern_industrialization.pipes.api;
 
 import java.util.HashMap;
 import java.util.Map;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -45,14 +45,14 @@ public abstract class PipeNetwork {
         this.data = data;
     }
 
-    public void fromTag(CompoundTag tag) {
+    public void fromTag(NbtCompound tag) {
         id = tag.getInt("id");
         data.fromTag(tag.getCompound("data"));
     }
 
-    public CompoundTag toTag(CompoundTag tag) {
+    public NbtCompound toTag(NbtCompound tag) {
         tag.putInt("id", id);
-        tag.put("data", data.toTag(new CompoundTag()));
+        tag.put("data", data.toTag(new NbtCompound()));
         return tag;
     }
 

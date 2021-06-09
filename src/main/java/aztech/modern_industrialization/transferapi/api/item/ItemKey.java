@@ -28,7 +28,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemConvertible;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.PacketByteBuf;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
@@ -66,7 +66,7 @@ public interface ItemKey {
     /**
      * Retrieve an ItemKey with an item and an optional tag.
      */
-    static ItemKey of(ItemConvertible item, @Nullable CompoundTag tag) {
+    static ItemKey of(ItemConvertible item, @Nullable NbtCompound tag) {
         return ItemKeyImpl.of(item.asItem(), tag);
     }
 
@@ -89,7 +89,7 @@ public interface ItemKey {
      * <p>
      * Note: True is returned if both tags are {@code null}.
      */
-    boolean tagMatches(@Nullable CompoundTag other);
+    boolean tagMatches(@Nullable NbtCompound other);
 
     /**
      * Return true if this key has a tag, false otherwise.
@@ -109,7 +109,7 @@ public interface ItemKey {
      * Note: use {@link #tagMatches} if you only need to check for tag equality.
      */
     @Nullable
-    CompoundTag copyTag();
+    NbtCompound copyTag();
 
     /**
      * Create a new item stack with count 1 from this key.
@@ -132,14 +132,14 @@ public interface ItemKey {
      * Note: This key is safe to use for persisting data as items are saved using
      * their full Identifier.
      */
-    CompoundTag toNbt();
+    NbtCompound toNbt();
 
     /**
      * Deserialize a key from an NBT compound tag, assuming it was serialized using
      * {@link #toNbt}. If an error occurs during deserialization, it will be logged
      * with the DEBUG level, and an empty key will be returned.
      */
-    static ItemKey fromNbt(CompoundTag nbt) {
+    static ItemKey fromNbt(NbtCompound nbt) {
         return ItemKeyImpl.fromNbt(nbt);
     }
 

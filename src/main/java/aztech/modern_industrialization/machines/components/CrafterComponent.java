@@ -44,7 +44,7 @@ import net.fabricmc.fabric.api.transfer.v1.fluid.FluidKey;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
@@ -320,7 +320,7 @@ public class CrafterComponent implements IComponent.ServerOnly {
         }
     }
 
-    public void writeNbt(CompoundTag tag) {
+    public void writeNbt(NbtCompound tag) {
         tag.putLong("usedEnergy", this.usedEnergy);
         tag.putLong("recipeEnergy", this.recipeEnergy);
         tag.putLong("recipeMaxEu", this.recipeMaxEu);
@@ -333,7 +333,7 @@ public class CrafterComponent implements IComponent.ServerOnly {
         tag.putInt("maxEfficiencyTicks", this.maxEfficiencyTicks);
     }
 
-    public void readNbt(CompoundTag tag) {
+    public void readNbt(NbtCompound tag) {
         this.usedEnergy = tag.getInt("usedEnergy");
         this.recipeEnergy = tag.getInt("recipeEnergy");
         this.recipeMaxEu = tag.getInt("recipeMaxEu");

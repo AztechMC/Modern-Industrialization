@@ -36,7 +36,7 @@ import net.minecraft.block.Block;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ItemScatterer;
@@ -63,12 +63,12 @@ public class CasingComponent implements IComponent {
     }
 
     @Override
-    public void writeNbt(CompoundTag tag) {
+    public void writeNbt(NbtCompound tag) {
         tag.putString("casing", tierCasing.name);
     }
 
     @Override
-    public void readNbt(CompoundTag tag) {
+    public void readNbt(NbtCompound tag) {
         tierCasing = CableTier.getTier(tag.getString("casing"));
         if (tierCasing == null) {
             tierCasing = defaultCasing;
@@ -77,12 +77,12 @@ public class CasingComponent implements IComponent {
     }
 
     @Override
-    public void writeClientNbt(CompoundTag tag) {
+    public void writeClientNbt(NbtCompound tag) {
         tag.putString("casing", tierCasing.name);
     }
 
     @Override
-    public void readClientNbt(CompoundTag tag) {
+    public void readClientNbt(NbtCompound tag) {
         tierCasing = CableTier.getTier(tag.getString("casing"));
         if (tierCasing == null) {
             tierCasing = defaultCasing;

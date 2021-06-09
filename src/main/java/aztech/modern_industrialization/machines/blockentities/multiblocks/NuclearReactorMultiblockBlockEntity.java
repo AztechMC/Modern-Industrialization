@@ -45,7 +45,7 @@ import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.Tickable;
@@ -185,7 +185,7 @@ public class NuclearReactorMultiblockBlockEntity extends MultiblockMachineBlockE
                 ItemStack nuclearFuelStack = getNuclearFuel(x, y);
                 if (nuclearFuelStack != null) {
                     NuclearFuel fuel = (NuclearFuel) nuclearFuelStack.getItem();
-                    CompoundTag tag = nuclearFuelStack.getOrCreateTag();
+                    NbtCompound tag = nuclearFuelStack.getOrCreateTag();
                     int desRem = tag.contains("desRem") ? tag.getInt("desRem") : fuel.desintegrationMax;
                     int des = Math.min(neutron * fuel.desintegrationByNeutron, desRem);
                     hatchesGrid[x][y].nuclearReactorComponent

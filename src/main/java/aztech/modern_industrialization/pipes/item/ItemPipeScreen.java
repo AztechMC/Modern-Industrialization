@@ -95,7 +95,7 @@ public class ItemPipeScreen extends PipeScreen<ItemPipeScreenHandler> {
     }
 
     private class WhitelistButton extends ButtonWidget {
-        public WhitelistButton(int i, int j, ButtonWidget.PressAction onPress, ButtonWidget.TooltipSupplier tooltipSupplier) {
+        public WhitelistButton(int i, int j, PressAction onPress, TooltipSupplier tooltipSupplier) {
             super(i + 148, j + 44, 20, 20, new LiteralText("test!"), onPress, tooltipSupplier);
         }
 

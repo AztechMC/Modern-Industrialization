@@ -31,9 +31,9 @@ import net.fabricmc.fabric.api.util.NbtType;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.item.Item;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.StringTag;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtList;
+import net.minecraft.nbt.NbtString;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
@@ -41,17 +41,17 @@ import net.minecraft.util.registry.Registry;
 import org.jetbrains.annotations.Nullable;
 
 public class NbtHelper {
-    public static void putFluid(CompoundTag tag, String key, FluidKey fluid) {
-        CompoundTag savedTag = new CompoundTag();
+    public static void putFluid(NbtCompound tag, String key, FluidKey fluid) {
+        NbtCompound savedTag = new NbtCompound();
         savedTag.put("fk", fluid.toNbt());
         tag.put(key, savedTag);
     }
 
-    public static Item getItem(CompoundTag tag, String key) {
+    public static Item getItem(NbtCompound tag, String key) {
         return Registry.ITEM.get(new Identifier(tag.getString(key)));
     }
 
-    public static void putItem(CompoundTag tag, String key, Item item) {
+    public static void putItem(NbtCompound tag, String key, Item item) {
         tag.putString(key, Registry.ITEM.getId(item).toString());
     }
 
@@ -91,30 +91,30 @@ public class NbtHelper {
         return connections;
     }
 
-    public static <T> void putList(CompoundTag tag, String key, List<T> list, Function<T, CompoundTag> encoder) {
-        ListTag listTag = new ListTag();
+    public static <T> void putList(NbtCompound tag, String key, List<T> list, Function<T, NbtCompound> encoder) {
+        NbtList listTag = new NbtList();
         for (T t : list) {
             listTag.add(encoder.apply(t));
         }
         tag.put(key, listTag);
     }
 
-    public static <T> void getList(CompoundTag tag, String key, List<T> list, Function<CompoundTag, T> decoder) {
+    public static <T> void getList(NbtCompound tag, String key, List<T> list, Function<NbtCompound, T> decoder) {
         list.clear();
-        ListTag listTag = tag.getList(key, NbtType.COMPOUND);
+        NbtList listTag = tag.getList(key, NbtType.COMPOUND);
         for (int i = 0; i < listTag.size(); ++i) {
-            CompoundTag elementTag = listTag.getCompound(i);
+            NbtCompound elementTag = listTag.getCompound(i);
             list.add(decoder.apply(elementTag));
         }
     }
 
-    public static void putBlockPos(CompoundTag tag, String key, @Nullable BlockPos pos) {
+    public static void putBlockPos(NbtCompound tag, String key, @Nullable BlockPos pos) {
         if (pos != null) {
             tag.putIntArray(key, new int[] { pos.getX(), pos.getY(), pos.getZ() });
         }
     }
 
-    public static BlockPos getBlockPos(CompoundTag tag, String key) {
+    public static BlockPos getBlockPos(NbtCompound tag, String key) {
         if (tag.contains(key)) {
             int[] pos = tag.getIntArray(key);
             return new BlockPos(pos[0], pos[1], pos[2]);
@@ -123,14 +123,14 @@ public class NbtHelper {
         }
     }
 
-    public static FluidKey getFluidCompatible(CompoundTag tag, String key) {
+    public static FluidKey getFluidCompatible(NbtCompound tag, String key) {
         if (tag == null || !tag.contains(key))
             return FluidKey.empty();
 
-        if (tag.get(key) instanceof StringTag) {
+        if (tag.get(key) instanceof NbtString) {
             return FluidKey.of(Registry.FLUID.get(new Identifier(tag.getString(key))));
         } else {
-            CompoundTag compound = tag.getCompound(key);
+            NbtCompound compound = tag.getCompound(key);
             if (compound.contains("fk")) {
                 return FluidKey.fromNbt(compound.getCompound("fk"));
             } else {
@@ -139,7 +139,7 @@ public class NbtHelper {
         }
     }
 
-    private static Fluid readLbaTag(CompoundTag tag) {
+    private static Fluid readLbaTag(NbtCompound tag) {
         if (tag.contains("ObjName") && tag.getString("Registry").equals("f")) {
             return Registry.FLUID.get(new Identifier(tag.getString("ObjName")));
         } else {

@@ -37,7 +37,7 @@ import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleViewIterator;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.text.TextColor;
@@ -47,7 +47,7 @@ import net.minecraft.text.TextColor;
  */
 public interface FluidFuelItemHelper {
     static FluidKey getFluid(ItemStack stack) {
-        CompoundTag tag = stack.getTag();
+        NbtCompound tag = stack.getTag();
         return tag == null ? FluidKey.empty() : NbtHelper.getFluidCompatible(tag, "fluid");
     }
 
@@ -63,7 +63,7 @@ public interface FluidFuelItemHelper {
         if (getFluid(stack).isEmpty()) {
             return 0;
         }
-        CompoundTag tag = stack.getTag();
+        NbtCompound tag = stack.getTag();
         if (tag != null) {
             return tag.contains("amount") ? tag.getInt("amount") * 81 : tag.getLong("amt");
         } else {

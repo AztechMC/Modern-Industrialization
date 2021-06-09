@@ -118,7 +118,7 @@ public class ShapedRecipeJson {
         }
 
         MIRecipeJson assemblerJson = new MIRecipeJson(machine, eu, duration).addOutput(result.item, result.count / division);
-        for (Map.Entry<Character, ShapedRecipeJson.ItemInput> entry : key.entrySet()) {
+        for (Map.Entry<Character, ItemInput> entry : key.entrySet()) {
             int count = 0;
             for (String row : pattern) {
                 for (char c : row.toCharArray()) {
@@ -132,7 +132,7 @@ public class ShapedRecipeJson {
                 throw new IllegalArgumentException("Input must be divisible by division");
             }
 
-            ShapedRecipeJson.ItemInput input = entry.getValue();
+            ItemInput input = entry.getValue();
             if (input.item != null) {
                 assemblerJson.addItemInput(input.item, count / division);
             } else if (input.tag != null) {

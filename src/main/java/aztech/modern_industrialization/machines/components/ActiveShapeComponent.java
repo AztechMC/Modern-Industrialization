@@ -28,7 +28,7 @@ import aztech.modern_industrialization.machines.IComponent;
 import aztech.modern_industrialization.machines.multiblocks.ShapeTemplate;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.Direction;
@@ -59,12 +59,12 @@ public class ActiveShapeComponent implements IComponent {
     }
 
     @Override
-    public void writeNbt(CompoundTag tag) {
+    public void writeNbt(NbtCompound tag) {
         tag.putInt("activeShape", activeShape);
     }
 
     @Override
-    public void readNbt(CompoundTag tag) {
+    public void readNbt(NbtCompound tag) {
         activeShape = tag.getInt("activeShape");
     }
 }

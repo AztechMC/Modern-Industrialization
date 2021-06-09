@@ -79,11 +79,11 @@ public class TemperatureBar {
     }
 
     public static class Client implements SyncedComponent.Client {
-        public final TemperatureBar.Parameters params;
+        public final Parameters params;
         public int temperature;
 
         public Client(PacketByteBuf buf) {
-            this.params = new TemperatureBar.Parameters(buf.readInt(), buf.readInt(), buf.readInt());
+            this.params = new Parameters(buf.readInt(), buf.readInt(), buf.readInt());
             read(buf);
         }
 

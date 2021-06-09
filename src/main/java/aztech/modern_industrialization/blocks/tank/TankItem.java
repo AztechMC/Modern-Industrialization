@@ -23,6 +23,7 @@
  */
 package aztech.modern_industrialization.blocks.tank;
 
+import aztech.modern_industrialization.blocks.tank.TankItem.TankItemStorage;
 import aztech.modern_industrialization.transferapi.api.context.ContainerItemContext;
 import aztech.modern_industrialization.transferapi.api.fluid.ItemFluidApi;
 import aztech.modern_industrialization.transferapi.api.item.ItemKey;
@@ -42,7 +43,7 @@ import net.minecraft.client.item.TooltipContext;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.text.TextColor;
@@ -78,7 +79,7 @@ public class TankItem extends BlockItem {
         if (getFluid(stack).isEmpty()) {
             return 0;
         }
-        CompoundTag tag = stack.getSubTag("BlockEntityTag");
+        NbtCompound tag = stack.getSubTag("BlockEntityTag");
         if (tag == null)
             return 0;
         else if (tag.contains("amount"))

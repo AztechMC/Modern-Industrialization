@@ -31,7 +31,7 @@ import aztech.modern_industrialization.util.ItemStackHelper;
 import java.util.List;
 import net.fabricmc.fabric.impl.content.registry.FuelRegistryImpl;
 import net.minecraft.item.Item;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 
 public class FuelBurningComponent implements IComponent {
     /**
@@ -142,13 +142,13 @@ public class FuelBurningComponent implements IComponent {
     }
 
     @Override
-    public void writeNbt(CompoundTag tag) {
+    public void writeNbt(NbtCompound tag) {
         tag.putLong("burningEuBuffer", burningEuBuffer);
 
     }
 
     @Override
-    public void readNbt(CompoundTag tag) {
+    public void readNbt(NbtCompound tag) {
         burningEuBuffer = tag.getLong("burningEuBuffer");
     }
 }

@@ -32,7 +32,7 @@ import me.shedaniel.cloth.api.durability.bar.DurabilityBarItem;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.registry.Registry;
@@ -98,7 +98,7 @@ public class NuclearFuel extends NuclearComponent implements DurabilityBarItem {
     }
 
     public int getRemDes(ItemStack stack) {
-        CompoundTag tag = stack.getTag();
+        NbtCompound tag = stack.getTag();
         if (tag == null || !tag.contains("desRem")) {
             return desintegrationMax;
         }
@@ -107,7 +107,7 @@ public class NuclearFuel extends NuclearComponent implements DurabilityBarItem {
 
     @Override
     public double getDurabilityBarProgress(ItemStack stack) {
-        CompoundTag tag = stack.getTag();
+        NbtCompound tag = stack.getTag();
         if (tag == null || !tag.contains("desRem")) {
             return 0.0d;
         } else {
@@ -117,7 +117,7 @@ public class NuclearFuel extends NuclearComponent implements DurabilityBarItem {
 
     @Override
     public boolean hasDurabilityBar(ItemStack stack) {
-        CompoundTag tag = stack.getTag();
+        NbtCompound tag = stack.getTag();
         return tag != null && tag.contains("desRem");
     }
 }

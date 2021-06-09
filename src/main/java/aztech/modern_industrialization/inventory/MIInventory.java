@@ -39,7 +39,7 @@ import aztech.modern_industrialization.util.NbtHelper;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
@@ -105,12 +105,12 @@ public final class MIInventory implements IComponent {
         FluidVolumeUtil.move(target, new WrappedFluidStorage(fluidStorage));
     }
 
-    public void writeNbt(CompoundTag tag) {
+    public void writeNbt(NbtCompound tag) {
         NbtHelper.putList(tag, "items", itemStorage.stacks, ConfigurableItemStack::toNbt);
         NbtHelper.putList(tag, "fluids", fluidStorage.stacks, ConfigurableFluidStack::toNbt);
     }
 
-    public void readNbt(CompoundTag tag) {
+    public void readNbt(NbtCompound tag) {
         List<ConfigurableItemStack> newItemStacks = new ArrayList<>();
         List<ConfigurableFluidStack> newFluidStacks = new ArrayList<>();
 

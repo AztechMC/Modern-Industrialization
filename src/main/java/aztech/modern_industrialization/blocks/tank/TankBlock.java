@@ -38,7 +38,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.loot.context.LootContext;
 import net.minecraft.loot.context.LootContextParameters;
 import net.minecraft.loot.context.LootContextTypes;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
@@ -69,8 +69,8 @@ public class TankBlock extends Block implements BlockEntityProvider {
         TankBlockEntity tankEntity = (TankBlockEntity) entity;
         ItemStack stack = new ItemStack(asItem());
         if (!tankEntity.isEmpty()) {
-            CompoundTag tag = new CompoundTag();
-            tag.put("BlockEntityTag", tankEntity.toClientTag(new CompoundTag()));
+            NbtCompound tag = new NbtCompound();
+            tag.put("BlockEntityTag", tankEntity.toClientTag(new NbtCompound()));
             stack.setTag(tag);
         }
         return stack;

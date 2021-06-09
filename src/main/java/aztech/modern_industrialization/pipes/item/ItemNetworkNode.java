@@ -36,6 +36,7 @@ import aztech.modern_industrialization.api.pipes.item.SpeedUpgrade;
 import aztech.modern_industrialization.pipes.api.PipeEndpointType;
 import aztech.modern_industrialization.pipes.api.PipeNetworkNode;
 import aztech.modern_industrialization.pipes.gui.IPipeScreenHandlerHelper;
+import aztech.modern_industrialization.pipes.item.ItemNetworkNode.ItemConnection.ScreenHandlerFactory;
 import aztech.modern_industrialization.util.ItemStackHelper;
 import java.util.*;
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
@@ -43,7 +44,7 @@ import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -126,16 +127,16 @@ public class ItemNetworkNode extends PipeNetworkNode {
     }
 
     @Override
-    public CompoundTag toTag(CompoundTag tag) {
+    public NbtCompound toTag(NbtCompound tag) {
         for (ItemConnection connection : connections) {
-            CompoundTag connectionTag = new CompoundTag();
+            NbtCompound connectionTag = new NbtCompound();
             connectionTag.putByte("connections", (byte) encodeConnectionType(connection.type));
             connectionTag.putBoolean("whitelist", connection.whitelist);
             connectionTag.putInt("priority", connection.priority);
             for (int i = 0; i < ItemPipeInterface.SLOTS; i++) {
-                connectionTag.put(Integer.toString(i), connection.stacks[i].toTag(new CompoundTag()));
+                connectionTag.put(Integer.toString(i), connection.stacks[i].writeNbt(new NbtCompound()));
             }
-            connectionTag.put("upgradeStack", connection.upgradeStack.toTag(new CompoundTag()));
+            connectionTag.put("upgradeStack", connection.upgradeStack.writeNbt(new NbtCompound()));
             tag.put(connection.direction.toString(), connectionTag);
         }
         tag.putInt("inactiveTicks", inactiveTicks);
@@ -143,18 +144,18 @@ public class ItemNetworkNode extends PipeNetworkNode {
     }
 
     @Override
-    public void fromTag(CompoundTag tag) {
+    public void fromTag(NbtCompound tag) {
         for (Direction direction : Direction.values()) {
             if (tag.contains(direction.toString())) {
-                CompoundTag connectionTag = tag.getCompound(direction.toString());
+                NbtCompound connectionTag = tag.getCompound(direction.toString());
                 ItemConnection connection = new ItemConnection(direction, decodeConnectionType(connectionTag.getByte("connections")),
                         connectionTag.getInt("priority"));
                 connection.whitelist = connectionTag.getBoolean("whitelist");
                 for (int i = 0; i < ItemPipeInterface.SLOTS; i++) {
-                    connection.stacks[i] = ItemStack.fromTag(connectionTag.getCompound(Integer.toString(i)));
+                    connection.stacks[i] = ItemStack.fromNbt(connectionTag.getCompound(Integer.toString(i)));
                     connection.stacks[i].setCount(1);
                 }
-                connection.upgradeStack = ItemStack.fromTag(connectionTag.getCompound("upgradeStack"));
+                connection.upgradeStack = ItemStack.fromNbt(connectionTag.getCompound("upgradeStack"));
                 connections.add(connection);
             }
         }

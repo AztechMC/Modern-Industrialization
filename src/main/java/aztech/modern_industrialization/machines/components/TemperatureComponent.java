@@ -24,7 +24,7 @@
 package aztech.modern_industrialization.machines.components;
 
 import aztech.modern_industrialization.machines.IComponent;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 
 public class TemperatureComponent implements IComponent {
 
@@ -53,13 +53,13 @@ public class TemperatureComponent implements IComponent {
     }
 
     @Override
-    public void writeNbt(CompoundTag tag) {
+    public void writeNbt(NbtCompound tag) {
         tag.putDouble("temperature", temperature);
 
     }
 
     @Override
-    public void readNbt(CompoundTag tag) {
+    public void readNbt(NbtCompound tag) {
         setTemperature(tag.getDouble("temperature"));
     }
 }

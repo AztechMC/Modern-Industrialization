@@ -24,7 +24,7 @@
 package aztech.modern_industrialization.pipes.item;
 
 import aztech.modern_industrialization.pipes.api.PipeNetworkData;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 
 // There is no data for item networks, two pipes of the same type can always connect.
 public class ItemNetworkData extends PipeNetworkData {
@@ -34,12 +34,12 @@ public class ItemNetworkData extends PipeNetworkData {
     }
 
     @Override
-    public void fromTag(CompoundTag tag) {
+    public void fromTag(NbtCompound tag) {
 
     }
 
     @Override
-    public CompoundTag toTag(CompoundTag tag) {
+    public NbtCompound toTag(NbtCompound tag) {
         return tag;
     }
 

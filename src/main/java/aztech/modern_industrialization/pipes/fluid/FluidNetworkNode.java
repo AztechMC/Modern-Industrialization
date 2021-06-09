@@ -35,6 +35,7 @@ import alexiil.mc.lib.attributes.fluid.impl.EmptyFluidTransferable;
 import aztech.modern_industrialization.ModernIndustrialization;
 import aztech.modern_industrialization.pipes.api.PipeEndpointType;
 import aztech.modern_industrialization.pipes.api.PipeNetworkNode;
+import aztech.modern_industrialization.pipes.fluid.FluidNetworkNode.FluidConnection.ScreenHandlerFactory;
 import aztech.modern_industrialization.pipes.gui.IPipeScreenHandlerHelper;
 import aztech.modern_industrialization.transferapi.FluidTransferHelper;
 import aztech.modern_industrialization.util.NbtHelper;
@@ -44,7 +45,7 @@ import net.fabricmc.fabric.api.transfer.v1.fluid.FluidKey;
 import net.fabricmc.fabric.api.util.NbtType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -163,10 +164,10 @@ public class FluidNetworkNode extends PipeNetworkNode {
     }
 
     @Override
-    public CompoundTag toTag(CompoundTag tag) {
+    public NbtCompound toTag(NbtCompound tag) {
         tag.putLong("amount_ftl", amount);
         for (FluidConnection connection : connections) {
-            CompoundTag connectionTag = new CompoundTag();
+            NbtCompound connectionTag = new NbtCompound();
             connectionTag.putByte("connections", (byte) encodeConnectionType(connection.type));
             connectionTag.putInt("priority", connection.priority);
             tag.put(connection.direction.toString(), connectionTag);
@@ -175,7 +176,7 @@ public class FluidNetworkNode extends PipeNetworkNode {
     }
 
     @Override
-    public void fromTag(CompoundTag tag) {
+    public void fromTag(NbtCompound tag) {
         if (tag.contains("amount")) {
             amount = tag.getInt("amount") * 81;
         } else {
@@ -187,7 +188,7 @@ public class FluidNetworkNode extends PipeNetworkNode {
                     // Old format (before fluid pipe priorities)
                     connections.add(new FluidConnection(direction, decodeConnectionType(tag.getByte(direction.toString())), 0));
                 } else {
-                    CompoundTag connectionTag = tag.getCompound(direction.toString());
+                    NbtCompound connectionTag = tag.getCompound(direction.toString());
                     connections.add(new FluidConnection(direction, decodeConnectionType(connectionTag.getByte("connections")),
                             connectionTag.getInt("priority")));
                 }
@@ -292,7 +293,7 @@ public class FluidNetworkNode extends PipeNetworkNode {
                             return false;
                         }
                         // Check that this connection still exists
-                        return helper.doesNodeStillExist(FluidNetworkNode.this) && connections.contains(FluidNetworkNode.FluidConnection.this);
+                        return helper.doesNodeStillExist(FluidNetworkNode.this) && connections.contains(FluidConnection.this);
                     }
                 };
                 this.pipeType = pipeType;
@@ -316,8 +317,8 @@ public class FluidNetworkNode extends PipeNetworkNode {
     }
 
     @Override
-    public CompoundTag writeCustomData() {
-        CompoundTag tag = new CompoundTag();
+    public NbtCompound writeCustomData() {
+        NbtCompound tag = new NbtCompound();
         NbtHelper.putFluid(tag, "fluid", ((FluidNetworkData) network.data).fluid);
         return tag;
     }

@@ -28,9 +28,9 @@ import it.unimi.dsi.fastutil.objects.Reference2IntMap;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.Tag;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtElement;
+import net.minecraft.nbt.NbtList;
 import net.minecraft.util.registry.Registry;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -44,11 +44,11 @@ public abstract class ItemStackMixin {
     protected abstract Item getItem();
 
     @Inject(method = "getEnchantments", at = @At("RETURN"), cancellable = true)
-    private void getEnchantmentsHook(CallbackInfoReturnable<ListTag> cir) {
+    private void getEnchantmentsHook(CallbackInfoReturnable<NbtList> cir) {
         if (getItem() instanceof DynamicEnchantmentItem) {
             DynamicEnchantmentItem dyn = (DynamicEnchantmentItem) getItem();
             Reference2IntMap<Enchantment> enchantments = dyn.getEnchantments((ItemStack) (Object) this);
-            ListTag resultCopy = cir.getReturnValue().copy();
+            NbtList resultCopy = cir.getReturnValue().copy();
 
             for (Reference2IntMap.Entry<Enchantment> entry : enchantments.reference2IntEntrySet()) {
                 Enchantment enchantment = entry.getKey();
@@ -57,9 +57,9 @@ public abstract class ItemStackMixin {
 
                 boolean replacedAny = false;
 
-                for (Tag subTag : resultCopy) {
-                    if (subTag instanceof CompoundTag) {
-                        CompoundTag compoundTag = (CompoundTag) subTag;
+                for (NbtElement subTag : resultCopy) {
+                    if (subTag instanceof NbtCompound) {
+                        NbtCompound compoundTag = (NbtCompound) subTag;
                         if (compoundTag.getString("id").equals(id)) {
                             compoundTag.putShort("lvl", (short) level);
                             replacedAny = true;
@@ -69,7 +69,7 @@ public abstract class ItemStackMixin {
                 }
 
                 if (!replacedAny) {
-                    CompoundTag tag = new CompoundTag();
+                    NbtCompound tag = new NbtCompound();
                     tag.putString("id", Registry.ENCHANTMENT.getId(enchantment).toString());
                     tag.putInt("lvl", level);
                     resultCopy.add(tag);

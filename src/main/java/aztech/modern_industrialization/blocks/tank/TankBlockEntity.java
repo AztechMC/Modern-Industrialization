@@ -40,7 +40,7 @@ import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.fabricmc.fabric.api.transfer.v1.transaction.base.SnapshotParticipant;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.Hand;
 
 public class TankBlockEntity extends FastBlockEntity implements Storage<FluidKey>, StorageView<FluidKey>, BlockEntityClientSerializable {
@@ -59,7 +59,7 @@ public class TankBlockEntity extends FastBlockEntity implements Storage<FluidKey
     }
 
     @Override
-    public void fromClientTag(CompoundTag tag) {
+    public void fromClientTag(NbtCompound tag) {
         fluid = NbtHelper.getFluidCompatible(tag, "fluid");
         if (tag.contains("amount")) {
             amount = tag.getInt("amount") * 81;
@@ -74,7 +74,7 @@ public class TankBlockEntity extends FastBlockEntity implements Storage<FluidKey
     }
 
     @Override
-    public CompoundTag toClientTag(CompoundTag tag) {
+    public NbtCompound toClientTag(NbtCompound tag) {
         NbtHelper.putFluid(tag, "fluid", fluid);
         tag.putLong("amt", amount);
         tag.putLong("cap", capacity);
@@ -89,15 +89,15 @@ public class TankBlockEntity extends FastBlockEntity implements Storage<FluidKey
     }
 
     @Override
-    public CompoundTag toTag(CompoundTag tag) {
+    public NbtCompound writeNbt(NbtCompound tag) {
         toClientTag(tag);
-        return super.toTag(tag);
+        return super.writeNbt(tag);
     }
 
     @Override
-    public void fromTag(BlockState state, CompoundTag tag) {
+    public void readNbt(BlockState state, NbtCompound tag) {
         fromClientTag(tag);
-        super.fromTag(state, tag);
+        super.readNbt(state, tag);
     }
 
     public void setCapacity(long capacity) {

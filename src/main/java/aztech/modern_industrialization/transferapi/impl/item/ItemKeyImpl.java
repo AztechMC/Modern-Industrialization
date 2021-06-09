@@ -28,7 +28,7 @@ import java.util.Objects;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
@@ -37,7 +37,7 @@ import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.Nullable;
 
 public class ItemKeyImpl implements ItemKey {
-    public static ItemKey of(Item item, @Nullable CompoundTag tag) {
+    public static ItemKey of(Item item, @Nullable NbtCompound tag) {
         Objects.requireNonNull(item, "Item may not be null.");
 
         // Only tag-less or empty item keys are cached for now.
@@ -51,10 +51,10 @@ public class ItemKeyImpl implements ItemKey {
     private static final Logger LOGGER = LogManager.getLogger("fabric-api-lookup-api-v1/item");
 
     private final Item item;
-    private final @Nullable CompoundTag tag;
+    private final @Nullable NbtCompound tag;
     private final int hashCode;
 
-    public ItemKeyImpl(Item item, CompoundTag tag) {
+    public ItemKeyImpl(Item item, NbtCompound tag) {
         this.item = item;
         this.tag = tag == null ? null : tag.copy(); // defensive copy
         hashCode = Objects.hash(item, tag);
@@ -71,7 +71,7 @@ public class ItemKeyImpl implements ItemKey {
     }
 
     @Override
-    public boolean tagMatches(@Nullable CompoundTag other) {
+    public boolean tagMatches(@Nullable NbtCompound other) {
         return Objects.equals(tag, other);
     }
 
@@ -86,7 +86,7 @@ public class ItemKeyImpl implements ItemKey {
     }
 
     @Override
-    public @Nullable CompoundTag copyTag() {
+    public @Nullable NbtCompound copyTag() {
         return tag == null ? null : tag.copy();
     }
 
@@ -107,8 +107,8 @@ public class ItemKeyImpl implements ItemKey {
     }
 
     @Override
-    public CompoundTag toNbt() {
-        CompoundTag result = new CompoundTag();
+    public NbtCompound toNbt() {
+        NbtCompound result = new NbtCompound();
         result.putString("item", Registry.ITEM.getId(item).toString());
 
         if (tag != null) {
@@ -118,10 +118,10 @@ public class ItemKeyImpl implements ItemKey {
         return result;
     }
 
-    public static ItemKey fromNbt(CompoundTag tag) {
+    public static ItemKey fromNbt(NbtCompound tag) {
         try {
             Item item = Registry.ITEM.get(new Identifier(tag.getString("item")));
-            CompoundTag aTag = tag.contains("tag") ? tag.getCompound("tag") : null;
+            NbtCompound aTag = tag.contains("tag") ? tag.getCompound("tag") : null;
             return of(item, aTag);
         } catch (RuntimeException runtimeException) {
             LOGGER.debug("Tried to load an invalid ItemKey from NBT: {}", tag, runtimeException);
@@ -136,7 +136,7 @@ public class ItemKeyImpl implements ItemKey {
         } else {
             buf.writeBoolean(true);
             buf.writeVarInt(Item.getRawId(item));
-            buf.writeCompoundTag(tag);
+            buf.writeNbt(tag);
         }
     }
 
@@ -145,7 +145,7 @@ public class ItemKeyImpl implements ItemKey {
             return ItemKey.empty();
         } else {
             Item item = Item.byRawId(buf.readVarInt());
-            CompoundTag tag = buf.readCompoundTag();
+            NbtCompound tag = buf.readNbt();
             return of(item, tag);
         }
     }

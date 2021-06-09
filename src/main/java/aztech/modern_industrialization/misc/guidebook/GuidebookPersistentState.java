@@ -26,9 +26,9 @@ package aztech.modern_industrialization.misc.guidebook;
 import java.util.*;
 import net.fabricmc.fabric.api.util.NbtType;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.StringTag;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtList;
+import net.minecraft.nbt.NbtString;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.world.PersistentState;
@@ -51,19 +51,19 @@ public class GuidebookPersistentState extends PersistentState {
     }
 
     @Override
-    public void fromTag(CompoundTag tag) {
+    public void fromNbt(NbtCompound tag) {
         receivedPlayers.clear();
-        ListTag list = tag.getList("receivedPlayers", NbtType.STRING);
+        NbtList list = tag.getList("receivedPlayers", NbtType.STRING);
         for (int i = 0; i < list.size(); ++i) {
             receivedPlayers.add(list.getString(i));
         }
     }
 
     @Override
-    public CompoundTag toTag(CompoundTag tag) {
-        ListTag list = new ListTag();
+    public NbtCompound writeNbt(NbtCompound tag) {
+        NbtList list = new NbtList();
         for (String receivedPlayer : receivedPlayers) {
-            list.add(StringTag.of(receivedPlayer));
+            list.add(NbtString.of(receivedPlayer));
         }
         tag.put("receivedPlayers", list);
         return tag;

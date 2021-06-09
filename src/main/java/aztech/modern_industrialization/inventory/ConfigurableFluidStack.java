@@ -36,7 +36,7 @@ import net.fabricmc.fabric.api.transfer.v1.transaction.base.SnapshotParticipant;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.screen.slot.Slot;
 
 /**
@@ -193,8 +193,8 @@ public class ConfigurableFluidStack extends SnapshotParticipant<ResourceAmount<F
         return machineLocked;
     }
 
-    public CompoundTag toNbt() {
-        CompoundTag tag = new CompoundTag();
+    public NbtCompound toNbt() {
+        NbtCompound tag = new NbtCompound();
         NbtHelper.putFluid(tag, "fluid", fluid);
         tag.putLong("amount_ftl", amount);
         tag.putLong("capacity_ftl", capacity);
@@ -212,7 +212,7 @@ public class ConfigurableFluidStack extends SnapshotParticipant<ResourceAmount<F
         return tag;
     }
 
-    public static ConfigurableFluidStack fromNbt(CompoundTag tag) {
+    public static ConfigurableFluidStack fromNbt(NbtCompound tag) {
         ConfigurableFluidStack fs = new ConfigurableFluidStack(0);
         fs.fluid = NbtHelper.getFluidCompatible(tag, "fluid");
         if (tag.contains("amount")) {

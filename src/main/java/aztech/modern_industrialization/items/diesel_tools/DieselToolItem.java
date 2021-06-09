@@ -43,7 +43,7 @@ import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.*;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.tag.Tag;
@@ -122,7 +122,7 @@ public class DieselToolItem extends Item implements DynamicAttributeTool, Vanish
     }
 
     private static boolean isFortune(ItemStack stack) {
-        CompoundTag tag = stack.getTag();
+        NbtCompound tag = stack.getTag();
         return tag != null && tag.getBoolean("fortune");
     }
 

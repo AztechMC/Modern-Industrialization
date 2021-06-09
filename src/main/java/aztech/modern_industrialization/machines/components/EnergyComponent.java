@@ -31,7 +31,7 @@ import aztech.modern_industrialization.util.Simulation;
 import com.google.common.base.Preconditions;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 
 public class EnergyComponent implements IComponent.ServerOnly {
     private long storedEu;
@@ -57,11 +57,11 @@ public class EnergyComponent implements IComponent.ServerOnly {
         return capacity.get() - getEu();
     }
 
-    public void writeNbt(CompoundTag tag) {
+    public void writeNbt(NbtCompound tag) {
         tag.putLong("storedEu", getEu());
     }
 
-    public void readNbt(CompoundTag tag) {
+    public void readNbt(NbtCompound tag) {
         setEu(tag.getLong("storedEu"));
     }
 

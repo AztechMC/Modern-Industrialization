@@ -33,7 +33,7 @@ import mcp.mobius.waila.api.IComponentProvider;
 import mcp.mobius.waila.api.IDataAccessor;
 import mcp.mobius.waila.api.IPluginConfig;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidKey;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.text.TextColor;
@@ -80,7 +80,7 @@ public class PipeComponentProvider implements IComponentProvider {
     public void appendBody(List<Text> tooltip, IDataAccessor accessor, IPluginConfig config) {
         PipeVoxelShape shape = getHitShape(accessor);
         if (shape != null) {
-            CompoundTag tag = accessor.getServerData().getCompound(shape.type.getIdentifier().toString());
+            NbtCompound tag = accessor.getServerData().getCompound(shape.type.getIdentifier().toString());
             Style style = Style.EMPTY.withColor(TextColor.fromRgb(0xa9a9a9)).withItalic(true);
 
             if (tag.contains("fluid")) {

@@ -40,7 +40,7 @@ import net.minecraft.fluid.FluidState;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.tag.Tag;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
@@ -94,7 +94,7 @@ public class SteamDrillItem extends Item implements DynamicAttributeTool, MagnaT
 
     @Override
     public boolean postMine(ItemStack stack, World world, BlockState state, BlockPos pos, LivingEntity miner) {
-        CompoundTag tag = stack.getTag();
+        NbtCompound tag = stack.getTag();
         if (tag != null && tag.getInt("water") > 0) {
             if (tag.getInt("burnTicks") == 0) {
                 int burnTicks = consumeFuel(stack, miner, Simulation.ACT);
@@ -120,7 +120,7 @@ public class SteamDrillItem extends Item implements DynamicAttributeTool, MagnaT
 
     @Override
     public void appendTooltip(ItemStack stack, @Nullable World world, List<Text> tooltip, TooltipContext context) {
-        CompoundTag tag = stack.getTag();
+        NbtCompound tag = stack.getTag();
         if (tag != null) {
             tooltip.add(new TranslatableText("text.modern_industrialization.water_percent", tag.getInt("water") * 100 / FULL_WATER)
                     .setStyle(TextHelper.WATER_TEXT));
@@ -133,7 +133,7 @@ public class SteamDrillItem extends Item implements DynamicAttributeTool, MagnaT
 
     @Override
     public void inventoryTick(ItemStack stack, World world, Entity entity, int slot, boolean selected) {
-        CompoundTag tag = stack.getTag();
+        NbtCompound tag = stack.getTag();
         if (tag != null) {
             int burnTicks = tag.getInt("burnTicks");
             if (burnTicks > 0) {
@@ -144,7 +144,7 @@ public class SteamDrillItem extends Item implements DynamicAttributeTool, MagnaT
     }
 
     public static boolean canMine(ItemStack stack, @Nullable LivingEntity user) {
-        CompoundTag tag = stack.getTag();
+        NbtCompound tag = stack.getTag();
         if (tag == null || tag.getInt("water") == 0) {
             return false;
         }

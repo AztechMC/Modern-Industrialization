@@ -55,7 +55,7 @@ public class MIFluidsRender {
             }
 
             @Override
-            public void apply(ResourceManager manager) {
+            public void reload(ResourceManager manager) {
                 for (int i = 0; i < 2; ++i) {
                     waterSprites[i] = MinecraftClient.getInstance().getSpriteAtlas(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE).apply(waterSpriteIds[i]);
                 }

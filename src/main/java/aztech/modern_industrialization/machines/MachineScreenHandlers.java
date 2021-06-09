@@ -26,6 +26,8 @@ package aztech.modern_industrialization.machines;
 import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.ModernIndustrialization;
 import aztech.modern_industrialization.inventory.*;
+import aztech.modern_industrialization.inventory.ConfigurableFluidStack.ConfigurableFluidSlot;
+import aztech.modern_industrialization.inventory.ConfigurableItemStack.ConfigurableItemSlot;
 import aztech.modern_industrialization.machines.gui.ClientComponentRenderer;
 import aztech.modern_industrialization.machines.gui.MachineGuiParameters;
 import aztech.modern_industrialization.util.FluidHelper;
@@ -49,7 +51,7 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -142,7 +144,7 @@ public class MachineScreenHandlers {
         int fluidStackCount = buf.readInt();
         List<ConfigurableItemStack> itemStacks = new ArrayList<>();
         List<ConfigurableFluidStack> fluidStacks = new ArrayList<>();
-        CompoundTag tag = buf.readCompoundTag();
+        NbtCompound tag = buf.readNbt();
         NbtHelper.getList(tag, "items", itemStacks, ConfigurableItemStack::fromNbt);
         NbtHelper.getList(tag, "fluids", fluidStacks, ConfigurableFluidStack::fromNbt);
         // Slot positions
@@ -306,11 +308,11 @@ public class MachineScreenHandlers {
                 int px = x + slot.x - 1;
                 int py = y + slot.y - 1;
                 int u;
-                if (slot instanceof ConfigurableFluidStack.ConfigurableFluidSlot) {
-                    ConfigurableFluidStack.ConfigurableFluidSlot fluidSlot = (ConfigurableFluidStack.ConfigurableFluidSlot) slot;
+                if (slot instanceof ConfigurableFluidSlot) {
+                    ConfigurableFluidSlot fluidSlot = (ConfigurableFluidSlot) slot;
                     u = fluidSlot.getConfStack().isPlayerLocked() ? 90 : fluidSlot.getConfStack().isMachineLocked() ? 126 : 18;
-                } else if (slot instanceof ConfigurableItemStack.ConfigurableItemSlot) {
-                    ConfigurableItemStack.ConfigurableItemSlot itemSlot = (ConfigurableItemStack.ConfigurableItemSlot) slot;
+                } else if (slot instanceof ConfigurableItemSlot) {
+                    ConfigurableItemSlot itemSlot = (ConfigurableItemSlot) slot;
                     u = itemSlot.getConfStack().isPlayerLocked() ? 72 : itemSlot.getConfStack().isMachineLocked() ? 108 : 0;
                 } else {
                     continue;
@@ -321,16 +323,16 @@ public class MachineScreenHandlers {
 
         private void renderFluidSlots(MatrixStack matrices, int mouseX, int mouseY) {
             for (Slot slot : handler.slots) {
-                if (slot instanceof ConfigurableFluidStack.ConfigurableFluidSlot) {
+                if (slot instanceof ConfigurableFluidSlot) {
                     int i = x + slot.x;
                     int j = y + slot.y;
 
-                    ConfigurableFluidStack stack = ((ConfigurableFluidStack.ConfigurableFluidSlot) slot).getConfStack();
+                    ConfigurableFluidStack stack = ((ConfigurableFluidSlot) slot).getConfStack();
                     if (!stack.getFluid().isEmpty()) {
                         RenderHelper.drawFluidInGui(matrices, stack.getFluid(), i, j);
                     }
 
-                    if (isPointWithinBounds(slot.x, slot.y, 16, 16, mouseX, mouseY) && slot.doDrawHoveringEffect()) {
+                    if (isPointWithinBounds(slot.x, slot.y, 16, 16, mouseX, mouseY) && slot.isEnabled()) {
                         this.focusedSlot = slot;
                         RenderSystem.disableDepthTest();
                         RenderSystem.colorMask(true, true, true, false);
@@ -344,8 +346,8 @@ public class MachineScreenHandlers {
 
         private void renderLockedItems() {
             for (Slot slot : this.handler.slots) {
-                if (slot instanceof ConfigurableItemStack.ConfigurableItemSlot) {
-                    ConfigurableItemStack.ConfigurableItemSlot itemSlot = (ConfigurableItemStack.ConfigurableItemSlot) slot;
+                if (slot instanceof ConfigurableItemSlot) {
+                    ConfigurableItemSlot itemSlot = (ConfigurableItemSlot) slot;
                     ConfigurableItemStack itemStack = itemSlot.getConfStack();
                     if ((itemStack.isPlayerLocked() || itemStack.isMachineLocked()) && itemStack.getItemKey().isEmpty()) {
                         Item item = itemStack.getLockedItem();
@@ -368,8 +370,8 @@ public class MachineScreenHandlers {
         private void renderConfigurableSlotTooltips(MatrixStack matrices, int mouseX, int mouseY) {
             for (Slot slot : handler.slots) {
                 if (isPointWithinBounds(slot.x, slot.y, 16, 16, mouseX, mouseY)) {
-                    if (slot instanceof ConfigurableFluidStack.ConfigurableFluidSlot) {
-                        ConfigurableFluidStack stack = ((ConfigurableFluidStack.ConfigurableFluidSlot) slot).getConfStack();
+                    if (slot instanceof ConfigurableFluidSlot) {
+                        ConfigurableFluidStack stack = ((ConfigurableFluidSlot) slot).getConfStack();
                         List<Text> tooltip = new ArrayList<>();
                         tooltip.add(FluidHelper.getFluidName(stack.getFluid(), false));
                         tooltip.add(FluidHelper.getFluidAmount(stack.getAmount(), stack.getCapacity()));
@@ -384,8 +386,8 @@ public class MachineScreenHandlers {
                             tooltip.add(new TranslatableText("text.modern_industrialization.fluid_slot_output").setStyle(TextHelper.GRAY_TEXT));
                         }
                         this.renderTooltip(matrices, tooltip, mouseX, mouseY);
-                    } else if (slot instanceof ConfigurableItemStack.ConfigurableItemSlot) {
-                        ConfigurableItemStack stack = ((ConfigurableItemStack.ConfigurableItemSlot) slot).getConfStack();
+                    } else if (slot instanceof ConfigurableItemSlot) {
+                        ConfigurableItemStack stack = ((ConfigurableItemSlot) slot).getConfStack();
                         if (stack.getItemKey().isEmpty() && stack.getLockedItem() != null) {
                             this.renderTooltip(matrices, new ItemStack(stack.getLockedItem()), mouseX, mouseY);
                         }

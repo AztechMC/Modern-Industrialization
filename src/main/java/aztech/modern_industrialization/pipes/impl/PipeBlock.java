@@ -195,7 +195,7 @@ public class PipeBlock extends Block implements BlockEntityProvider {
     }
 
     @Override
-    public VoxelShape getVisualShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
+    public VoxelShape getCameraCollisionShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
         return getCollisionShape(state, world, pos, context);
     }
 

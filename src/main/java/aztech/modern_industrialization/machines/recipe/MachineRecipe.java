@@ -81,7 +81,7 @@ public class MachineRecipe implements Recipe<Inventory> {
     }
 
     @Override
-    public DefaultedList<Ingredient> getPreviewInputs() {
+    public DefaultedList<Ingredient> getIngredients() {
         // This function is implemented for AE2 pattern shift-clicking compat.
         // This is the reason the counts of the ItemStacks in the ingredient are
         // modified.

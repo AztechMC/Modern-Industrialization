@@ -78,8 +78,8 @@ import net.fabricmc.fabric.api.screenhandler.v1.ScreenHandlerRegistry;
 import net.fabricmc.fabric.api.tag.TagRegistry;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidTransfer;
 import net.minecraft.block.Block;
+import net.minecraft.block.MapColor;
 import net.minecraft.block.Material;
-import net.minecraft.block.MaterialColor;
 import net.minecraft.item.*;
 import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.tag.Tag;
@@ -99,8 +99,8 @@ public class ModernIndustrialization implements ModInitializer {
     public static final RuntimeResourcePack RESOURCE_PACK = RuntimeResourcePack.create("modern_industrialization:general");
 
     // Materials
-    public static final Material METAL_MATERIAL = new FabricMaterialBuilder(MaterialColor.IRON).build();
-    public static final Material STONE_MATERIAL = new FabricMaterialBuilder(MaterialColor.STONE).build();
+    public static final Material METAL_MATERIAL = new FabricMaterialBuilder(MapColor.IRON_GRAY).build();
+    public static final Material STONE_MATERIAL = new FabricMaterialBuilder(MapColor.STONE_GRAY).build();
 
     public static final ItemGroup ITEM_GROUP = FabricItemGroupBuilder.build(new Identifier(MOD_ID, "general"),
             () -> new ItemStack(Registry.ITEM.get(new MIIdentifier("forge_hammer"))));

@@ -38,7 +38,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.screen.slot.Slot;
 
 /**
@@ -206,8 +206,8 @@ public class ConfigurableItemStack extends SnapshotParticipant<ResourceAmount<It
         return playerLockable;
     }
 
-    public CompoundTag toNbt() {
-        CompoundTag tag = new CompoundTag();
+    public NbtCompound toNbt() {
+        NbtCompound tag = new NbtCompound();
         tag.put("key", key.toNbt());
         tag.putInt("count", count);
         if (lockedItem != null) {
@@ -224,14 +224,14 @@ public class ConfigurableItemStack extends SnapshotParticipant<ResourceAmount<It
         return tag;
     }
 
-    public static ConfigurableItemStack fromNbt(CompoundTag tag) {
+    public static ConfigurableItemStack fromNbt(NbtCompound tag) {
         ConfigurableItemStack is = new ConfigurableItemStack();
         // compat
         if (tag.contains("key")) {
             is.key = ItemKey.fromNbt(tag.getCompound("key"));
             is.count = tag.getInt("count");
         } else {
-            ItemStack stack = ItemStack.fromTag(tag);
+            ItemStack stack = ItemStack.fromNbt(tag);
             is.key = ItemKey.of(stack);
             is.count = stack.getCount();
         }

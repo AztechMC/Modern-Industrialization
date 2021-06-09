@@ -45,7 +45,7 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -121,10 +121,10 @@ public abstract class MachineBlockEntity extends FastBlockEntity
         MIInventory inv = getInventory();
         buf.writeInt(inv.getItemStacks().size());
         buf.writeInt(inv.getFluidStacks().size());
-        CompoundTag tag = new CompoundTag();
+        NbtCompound tag = new NbtCompound();
         NbtHelper.putList(tag, "items", inv.getItemStacks(), ConfigurableItemStack::toNbt);
         NbtHelper.putList(tag, "fluids", inv.getFluidStacks(), ConfigurableFluidStack::toNbt);
-        buf.writeCompoundTag(tag);
+        buf.writeNbt(tag);
         // Write slot positions
         inv.itemPositions.write(buf);
         inv.fluidPositions.write(buf);
@@ -163,7 +163,7 @@ public abstract class MachineBlockEntity extends FastBlockEntity
     }
 
     @Override
-    public final void fromClientTag(CompoundTag tag) {
+    public final void fromClientTag(NbtCompound tag) {
         boolean forceChunkRemesh = tag.getBoolean("remesh") || syncCausesRemesh;
         syncCausesRemesh = false;
         for (IComponent component : icomponents) {
@@ -176,7 +176,7 @@ public abstract class MachineBlockEntity extends FastBlockEntity
     }
 
     @Override
-    public final CompoundTag toClientTag(CompoundTag tag) {
+    public final NbtCompound toClientTag(NbtCompound tag) {
         tag.putBoolean("remesh", syncCausesRemesh);
         syncCausesRemesh = false;
         for (IComponent component : icomponents) {
@@ -186,8 +186,8 @@ public abstract class MachineBlockEntity extends FastBlockEntity
     }
 
     @Override
-    public final CompoundTag toTag(CompoundTag tag) {
-        super.toTag(tag);
+    public final NbtCompound writeNbt(NbtCompound tag) {
+        super.writeNbt(tag);
         for (IComponent component : icomponents) {
             component.writeNbt(tag);
         }
@@ -195,8 +195,8 @@ public abstract class MachineBlockEntity extends FastBlockEntity
     }
 
     @Override
-    public final void fromTag(BlockState state, CompoundTag tag) {
-        super.fromTag(state, tag);
+    public final void readNbt(BlockState state, NbtCompound tag) {
+        super.readNbt(state, tag);
         for (IComponent component : icomponents) {
             component.readNbt(tag);
         }

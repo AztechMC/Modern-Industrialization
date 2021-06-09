@@ -23,9 +23,11 @@
  */
 package aztech.modern_industrialization.inventory;
 
+import aztech.modern_industrialization.inventory.ConfigurableFluidStack.ConfigurableFluidSlot;
+import aztech.modern_industrialization.inventory.ConfigurableItemStack.ConfigurableItemSlot;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.slot.Slot;
 
@@ -35,7 +37,7 @@ public class ConfigurableInventoryPacketHandlers {
         public static final ClientPlayNetworking.PlayChannelHandler UPDATE_ITEM_SLOT = (mc, handler, buf, sender) -> {
             int syncId = buf.readInt();
             int stackId = buf.readInt();
-            CompoundTag tag = buf.readCompoundTag();
+            NbtCompound tag = buf.readNbt();
             mc.execute(() -> {
                 ScreenHandler sh = mc.player.currentScreenHandler;
                 if (sh.syncId == syncId) {
@@ -47,8 +49,8 @@ public class ConfigurableInventoryPacketHandlers {
                     // update slot
                     for (int i = 0; i < csh.slots.size(); ++i) {
                         Slot slot = csh.slots.get(i);
-                        if (slot instanceof ConfigurableItemStack.ConfigurableItemSlot) {
-                            ConfigurableItemStack.ConfigurableItemSlot is = (ConfigurableItemStack.ConfigurableItemSlot) slot;
+                        if (slot instanceof ConfigurableItemSlot) {
+                            ConfigurableItemSlot is = (ConfigurableItemSlot) slot;
                             if (is.getConfStack() == oldStack) {
                                 csh.slots.set(i, newStack.new ConfigurableItemSlot(is));
                                 return;
@@ -63,7 +65,7 @@ public class ConfigurableInventoryPacketHandlers {
         public static final ClientPlayNetworking.PlayChannelHandler UPDATE_FLUID_SLOT = (mc, handler, buf, sender) -> {
             int syncId = buf.readInt();
             int stackId = buf.readInt();
-            CompoundTag tag = buf.readCompoundTag();
+            NbtCompound tag = buf.readNbt();
             mc.execute(() -> {
                 ScreenHandler sh = mc.player.currentScreenHandler;
                 if (sh.syncId == syncId) {
@@ -75,8 +77,8 @@ public class ConfigurableInventoryPacketHandlers {
                     // update slot
                     for (int i = 0; i < csh.slots.size(); ++i) {
                         Slot slot = csh.slots.get(i);
-                        if (slot instanceof ConfigurableFluidStack.ConfigurableFluidSlot) {
-                            ConfigurableFluidStack.ConfigurableFluidSlot fs = (ConfigurableFluidStack.ConfigurableFluidSlot) slot;
+                        if (slot instanceof ConfigurableFluidSlot) {
+                            ConfigurableFluidSlot fs = (ConfigurableFluidSlot) slot;
                             if (fs.getConfStack() == oldStack) {
                                 csh.slots.set(i, newStack.new ConfigurableFluidSlot(fs));
                                 return;

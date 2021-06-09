@@ -42,7 +42,7 @@ import org.jetbrains.annotations.Nullable;
 public class FluidTransferHelper {
     /**
      * Similar to
-     * {@link net.fabricmc.fabric.api.transfer.v1.storage.Storage#insert}.
+     * {@link Storage#insert}.
      */
     public static long insert(FluidInsertable insertable, FluidKey fluid, long maxAmount, Simulation simulation) {
         if (fluid.hasTag())
@@ -65,7 +65,7 @@ public class FluidTransferHelper {
 
     /**
      * Similar to
-     * {@link net.fabricmc.fabric.api.transfer.v1.storage.Storage#extract}.
+     * {@link Storage#extract}.
      */
     public static long extract(FluidExtractable extractable, FluidKey fluid, long maxAmount, Simulation simulation) {
         if (fluid.hasTag())

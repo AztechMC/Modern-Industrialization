@@ -29,7 +29,7 @@ import aztech.modern_industrialization.machines.models.MachineModelClientData;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.Direction;
 
@@ -47,7 +47,7 @@ public class OrientationComponent implements IComponent {
         }
     }
 
-    public void readNbt(CompoundTag tag) {
+    public void readNbt(NbtCompound tag) {
         facingDirection = Direction.byId(tag.getInt("facingDirection"));
         if (params.hasOutput) {
             outputDirection = Direction.byId(tag.getInt("outputDirection"));
@@ -56,7 +56,7 @@ public class OrientationComponent implements IComponent {
         extractFluids = tag.getBoolean("extractFluids");
     }
 
-    public void writeNbt(CompoundTag tag) {
+    public void writeNbt(NbtCompound tag) {
         tag.putInt("facingDirection", facingDirection.getId());
         if (params.hasOutput) {
             tag.putInt("outputDirection", outputDirection.getId());

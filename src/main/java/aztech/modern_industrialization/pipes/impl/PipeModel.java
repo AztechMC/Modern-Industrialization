@@ -48,7 +48,7 @@ import net.minecraft.client.texture.SpriteAtlasTexture;
 import net.minecraft.client.util.SpriteIdentifier;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
@@ -114,7 +114,7 @@ public class PipeModel implements UnbakedModel, BakedModel, FabricBakedModel {
 
             PipeEndpointType[][] connections = new PipeEndpointType[][] {
                     { null, null, null, null, PipeEndpointType.BLOCK, PipeEndpointType.BLOCK } };
-            renderers.get(type.getRenderer()).draw(renderContext, 0, connections, new CompoundTag());
+            renderers.get(type.getRenderer()).draw(renderContext, 0, connections, new NbtCompound());
 
             renderContext.popTransform();
         }

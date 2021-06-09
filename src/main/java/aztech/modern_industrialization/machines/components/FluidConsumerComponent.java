@@ -29,7 +29,7 @@ import java.util.List;
 import java.util.function.Predicate;
 import java.util.function.ToLongFunction;
 import net.minecraft.fluid.Fluid;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 
 /**
  * A component that turns fluids into energy.
@@ -51,12 +51,12 @@ public class FluidConsumerComponent implements IComponent.ServerOnly {
     }
 
     @Override
-    public void writeNbt(CompoundTag tag) {
+    public void writeNbt(NbtCompound tag) {
         tag.putLong("euBuffer", euBuffer);
     }
 
     @Override
-    public void readNbt(CompoundTag tag) {
+    public void readNbt(NbtCompound tag) {
         euBuffer = tag.getLong("euBuffer");
     }
 

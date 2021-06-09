@@ -75,7 +75,7 @@ public abstract class ConfigurableScreenHandler extends ScreenHandler {
                     PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
                     buf.writeInt(syncId);
                     buf.writeInt(i);
-                    buf.writeCompoundTag(trackedItems.get(i).toNbt());
+                    buf.writeNbt(trackedItems.get(i).toNbt());
                     ServerSidePacketRegistry.INSTANCE.sendToPlayer(player, ConfigurableInventoryPackets.UPDATE_ITEM_SLOT, buf);
                 }
             }
@@ -85,7 +85,7 @@ public abstract class ConfigurableScreenHandler extends ScreenHandler {
                     PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
                     buf.writeInt(syncId);
                     buf.writeInt(i);
-                    buf.writeCompoundTag(trackedFluids.get(i).toNbt());
+                    buf.writeNbt(trackedFluids.get(i).toNbt());
                     ServerSidePacketRegistry.INSTANCE.sendToPlayer(player, ConfigurableInventoryPackets.UPDATE_FLUID_SLOT, buf);
                 }
             }

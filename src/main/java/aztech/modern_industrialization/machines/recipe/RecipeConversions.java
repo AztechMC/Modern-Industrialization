@@ -32,7 +32,7 @@ import net.minecraft.util.Identifier;
 
 public class RecipeConversions {
     public static MachineRecipe of(SmeltingRecipe smeltingRecipe, MachineRecipeType type) {
-        Ingredient ingredient = smeltingRecipe.getPreviewInputs().get(0);
+        Ingredient ingredient = smeltingRecipe.getIngredients().get(0);
         Identifier id = new Identifier(smeltingRecipe.getId().getNamespace(), smeltingRecipe.getId().getPath() + "_exported_mi_furnace");
         MachineRecipe recipe = new MachineRecipe(id, type);
         recipe.eu = 2;
@@ -50,7 +50,7 @@ public class RecipeConversions {
         MachineRecipe recipe = new MachineRecipe(id, type);
         recipe.eu = 2;
         recipe.duration = 200;
-        recipe.itemInputs = Collections.singletonList(new MachineRecipe.ItemInput(stonecuttingRecipe.getPreviewInputs().get(0), 1, 1));
+        recipe.itemInputs = Collections.singletonList(new MachineRecipe.ItemInput(stonecuttingRecipe.getIngredients().get(0), 1, 1));
         recipe.fluidInputs = Collections.singletonList(new MachineRecipe.FluidInput(Fluids.WATER, 81, 1));
         recipe.itemOutputs = Collections
                 .singletonList(new MachineRecipe.ItemOutput(stonecuttingRecipe.getOutput().getItem(), stonecuttingRecipe.getOutput().getCount(), 1));

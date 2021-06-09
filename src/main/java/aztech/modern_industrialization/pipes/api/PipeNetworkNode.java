@@ -27,7 +27,7 @@ import aztech.modern_industrialization.pipes.gui.IPipeScreenHandlerHelper;
 import java.util.List;
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
@@ -55,9 +55,9 @@ public abstract class PipeNetworkNode {
         return null;
     }
 
-    public abstract CompoundTag toTag(CompoundTag tag);
+    public abstract NbtCompound toTag(NbtCompound tag);
 
-    public abstract void fromTag(CompoundTag tag);
+    public abstract void fromTag(NbtCompound tag);
 
     public final PipeNetworkType getType() {
         return network.manager.getType();
@@ -71,8 +71,8 @@ public abstract class PipeNetworkNode {
         network.tick(world);
     }
 
-    public CompoundTag writeCustomData() {
-        return new CompoundTag();
+    public NbtCompound writeCustomData() {
+        return new NbtCompound();
     }
 
     /**

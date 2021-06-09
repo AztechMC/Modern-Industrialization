@@ -28,7 +28,7 @@ import aztech.modern_industrialization.pipes.api.PipeNetworkType;
 import aztech.modern_industrialization.pipes.api.PipeNetworksComponent;
 import java.util.HashMap;
 import java.util.Map;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.Identifier;
 import net.minecraft.world.World;
 
@@ -54,7 +54,7 @@ public class PipeNetworksComponentImpl implements PipeNetworksComponent {
     }
 
     @Override
-    public void fromTag(CompoundTag tag) {
+    public void fromTag(NbtCompound tag) {
         for (Map.Entry<Identifier, PipeNetworkType> entry : PipeNetworkType.getTypes().entrySet()) {
             PipeNetworkManager manager = new PipeNetworkManager(entry.getValue());
             String tagKey = entry.getKey().toString();
@@ -66,9 +66,9 @@ public class PipeNetworksComponentImpl implements PipeNetworksComponent {
     }
 
     @Override
-    public CompoundTag toTag(CompoundTag tag) {
+    public NbtCompound toTag(NbtCompound tag) {
         for (Map.Entry<PipeNetworkType, PipeNetworkManager> entry : managers.entrySet()) {
-            tag.put(entry.getKey().getIdentifier().toString(), entry.getValue().toTag(new CompoundTag()));
+            tag.put(entry.getKey().getIdentifier().toString(), entry.getValue().toTag(new NbtCompound()));
         }
         return tag;
     }

@@ -33,7 +33,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import net.fabricmc.fabric.api.lookup.v1.block.BlockApiCache;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
@@ -116,14 +116,14 @@ public class ElectricityNetworkNode extends PipeNetworkNode {
     }
 
     @Override
-    public CompoundTag toTag(CompoundTag tag) {
+    public NbtCompound toTag(NbtCompound tag) {
         tag.putByte("connections", NbtHelper.encodeDirections(connections));
         tag.putLong("eu", eu);
         return tag;
     }
 
     @Override
-    public void fromTag(CompoundTag tag) {
+    public void fromTag(NbtCompound tag) {
         connections = new ArrayList<>(Arrays.asList(NbtHelper.decodeDirections(tag.getByte("connections"))));
         caches.clear();
         eu = tag.getLong("eu");

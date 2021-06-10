@@ -27,6 +27,7 @@ import aztech.modern_industrialization.pipes.MIPipes;
 import aztech.modern_industrialization.pipes.api.PipeNetworkData;
 import aztech.modern_industrialization.pipes.api.PipeNetworkType;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.block.ShapeContext;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -61,7 +62,7 @@ public class PipeItem extends Item {
             PlayerEntity player = context.getPlayer();
 
             // update adjacent pipes
-            world.updateNeighbors(placingPos, null);
+            world.updateNeighbors(placingPos, Blocks.AIR);
             // remove one from stack
             ItemStack placementStack = context.getStack();
             if (player != null && !player.abilities.creativeMode) {
@@ -86,7 +87,7 @@ public class PipeItem extends Item {
                         pipeEntity.addConnection(type, context.getSide().getOpposite());
                     }
                     // update adjacent pipes
-                    world.updateNeighbors(placingPos, null);
+                    world.updateNeighbors(placingPos, Blocks.AIR);
                     // play placing sound
                     BlockState newState = world.getBlockState(placingPos);
                     BlockSoundGroup group = newState.getSoundGroup();

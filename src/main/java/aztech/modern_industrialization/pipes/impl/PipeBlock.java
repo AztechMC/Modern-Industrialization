@@ -89,7 +89,7 @@ public class PipeBlock extends Block implements BlockEntityProvider {
                                 world.setBlockState(blockPos, Blocks.AIR.getDefaultState());
                             }
                             // update adjacent blocks
-                            world.updateNeighbors(blockPos, null);
+                            world.updateNeighbors(blockPos, Blocks.AIR);
                             // spawn pipe item
                             world.spawnEntity(
                                     new ItemEntity(world, hitPos.x, hitPos.y, hitPos.z, new ItemStack(MIPipes.INSTANCE.getPipeItem(partShape.type))));
@@ -112,7 +112,7 @@ public class PipeBlock extends Block implements BlockEntityProvider {
                                     sound = group.breakSound;
                                 }
                             }
-                            world.updateNeighbors(blockPos, null);
+                            world.updateNeighbors(blockPos, Blocks.AIR);
                             if (sound != null) {
                                 world.playSound(player, blockPos, sound, SoundCategory.BLOCKS, (group.getVolume() + 1.0F) / 4.0F,
                                         group.getPitch() * 0.8F);

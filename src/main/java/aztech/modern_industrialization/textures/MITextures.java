@@ -29,6 +29,7 @@ import aztech.modern_industrialization.ModernIndustrialization;
 import aztech.modern_industrialization.fluid.CraftingFluid;
 import aztech.modern_industrialization.materials.Material;
 import aztech.modern_industrialization.materials.MaterialHelper;
+import aztech.modern_industrialization.materials.MaterialOreSet;
 import aztech.modern_industrialization.materials.MaterialRegistry;
 import aztech.modern_industrialization.materials.part.MIParts;
 import aztech.modern_industrialization.materials.part.MaterialPart;
@@ -115,6 +116,21 @@ public final class MITextures {
         generateItemPartTexture(mtm, materialName, materialSet, part, part, coloramp);
     }
 
+    public static void generateOreTexture(TextureManager mtm, String itemPath, Coloramp coloramp, MaterialOreSet oreSet) {
+        String template = String.format("modern_industrialization:textures/materialsets/ores/%s.png", oreSet.name);
+        try {
+            NativeImage image = mtm.getAssetAsTexture("minecraft:textures/block/stone.png");
+            NativeImage top = mtm.getAssetAsTexture(template);
+            TextureHelper.colorize(top, coloramp);
+            TextureHelper.blend(image, top);
+            top.close();
+            String texturePath = String.format("modern_industrialization:textures/blocks/%s.png", itemPath);
+            mtm.addTexture(texturePath, image);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     public static void generateItemPartTexture(TextureManager mtm, String materialName, String materialSet, String part, String partTemplate,
             Coloramp coloramp) {
         if (part.equals(MIParts.DOUBLE_INGOT)) {
@@ -138,10 +154,6 @@ public final class MITextures {
         ModernIndustrialization.LOGGER.warn(
                 String.format("Failed to generate item part texture for material name %s, material set %s, part %s", materialName, materialSet, part),
                 throwable);
-    }
-
-    public static void generateBlend(TextureManager mtm, String materialName, String materialSet, String part, Coloramp color) throws IOException {
-        generateBlend(mtm, materialName, materialSet, part, part, color);
     }
 
     public static void generateBlend(TextureManager mtm, String materialName, String materialSet, String part, String partTemplate, Coloramp color)
@@ -175,6 +187,7 @@ public final class MITextures {
                     topLayer.close();
                 }
             }
+
         }
 
         if (image != null) {
@@ -304,23 +317,20 @@ public final class MITextures {
     private static void registerFluidTextures(TextureManager tm, CraftingFluid fluid) {
         String path = "modern_industrialization:textures/fluid/";
 
-        for (String alt : new String[] { "" }) {
+        String bucket = path + String.format("bucket.png");
+        String bucket_content = path + String.format("bucket_content.png");
 
-            String bucket = path + String.format("bucket%s.png", alt);
-            String bucket_content = path + String.format("bucket_content%s.png", alt);
-
-            try {
-                NativeImage bucket_image = tm.getAssetAsTexture(bucket);
-                NativeImage bucket_content_image = tm.getAssetAsTexture(bucket_content);
-                TextureHelper.colorize(bucket_content_image, new DefaultColoramp(fluid.color));
-                TextureHelper.blend(bucket_image, bucket_content_image);
-                if (fluid.isGas) {
-                    TextureHelper.flip(bucket_image);
-                }
-                tm.addTexture(String.format("modern_industrialization:textures/items/bucket/%s.png", fluid.name), bucket_image);
-            } catch (IOException e) {
-                e.printStackTrace();
+        try {
+            NativeImage bucket_image = tm.getAssetAsTexture(bucket);
+            NativeImage bucket_content_image = tm.getAssetAsTexture(bucket_content);
+            TextureHelper.colorize(bucket_content_image, new DefaultColoramp(fluid.color));
+            TextureHelper.blend(bucket_image, bucket_content_image);
+            if (fluid.isGas) {
+                TextureHelper.flip(bucket_image);
             }
+            tm.addTexture(String.format("modern_industrialization:textures/items/bucket/%s.png", fluid.name), bucket_image);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
 
     }

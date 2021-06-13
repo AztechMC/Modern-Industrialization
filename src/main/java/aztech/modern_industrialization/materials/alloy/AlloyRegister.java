@@ -76,10 +76,6 @@ public class AlloyRegister {
                 }
             }
 
-            // pack.addData("modern_industrialization/recipes/generated/alloy/"+output+"/dust.json",
-            // GSON.toJson(dusts).getBytes() );
-            // pack.addData("modern_industrialization/recipes/generated/alloy/"+output+"/tiny_dust.json",
-            // GSON.toJson(tinyDusts).getBytes());
             pack.addData("modern_industrialization/recipes/generated/mixer/" + output + "/dust.json",
                     GSON.toJson(dusts.exportToMachine("mixer", 2, 200, 1)).getBytes());
             pack.addData("modern_industrialization/recipes/generated/mixer/" + output + "/tiny_dust.json",

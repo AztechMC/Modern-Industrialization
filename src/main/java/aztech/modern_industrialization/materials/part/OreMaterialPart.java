@@ -38,11 +38,6 @@ import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
 import net.minecraft.util.Identifier;
 
-/**
- * A subclass of {@link RegularMaterialPart} that additionally registers an ore
- * configured feature. Use a regular material part if you don't need the ore to
- * be generated in the world.
- */
 public class OreMaterialPart extends RegularMaterialPart {
     private final MaterialOreSet oreSet;
 

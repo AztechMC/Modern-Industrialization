@@ -42,11 +42,6 @@ import net.minecraft.world.gen.feature.ConfiguredFeature;
 import net.minecraft.world.gen.feature.Feature;
 import net.minecraft.world.gen.feature.OreFeatureConfig;
 
-/**
- * A subclass of {@link RegularMaterialPart} that additionally registers an ore
- * configured feature. Use a regular material part if you don't need the ore to
- * be generated in the world.
- */
 public class OreGenMaterialPart extends OreMaterialPart {
     private final int veinsPerChunk;
     private final int veinSize;

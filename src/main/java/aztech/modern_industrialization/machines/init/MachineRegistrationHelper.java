@@ -24,14 +24,18 @@
 package aztech.modern_industrialization.machines.init;
 
 import aztech.modern_industrialization.MIIdentifier;
+import aztech.modern_industrialization.machines.BEP;
 import aztech.modern_industrialization.machines.MachineBlock;
 import aztech.modern_industrialization.util.ResourceUtil;
+import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
-import java.util.function.Supplier;
+import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
 
 public class MachineRegistrationHelper {
@@ -43,12 +47,13 @@ public class MachineRegistrationHelper {
      * @param extraRegistrators A list of BET consumer used for API registration.
      */
     @SafeVarargs
-    public static BlockEntityType<?> registerMachine(String id, Function<BlockEntityType<?>, BlockEntity> factory,
+    public static BlockEntityType<?> registerMachine(String id, Function<BEP, BlockEntity> factory,
             Consumer<BlockEntityType<?>>... extraRegistrators) {
         BlockEntityType<?>[] bet = new BlockEntityType[1];
-        Supplier<BlockEntity> ctor = () -> factory.apply(bet[0]);
+        BiFunction<BlockPos, BlockState, BlockEntity> ctor = (pos, state) -> factory.apply(new BEP(bet[0], pos, state));
         Block block = new MachineBlock(id, ctor);
-        bet[0] = Registry.register(Registry.BLOCK_ENTITY_TYPE, new MIIdentifier(id), BlockEntityType.Builder.create(ctor, block).build(null));
+        bet[0] = Registry.register(Registry.BLOCK_ENTITY_TYPE, new MIIdentifier(id),
+                FabricBlockEntityTypeBuilder.create(ctor::apply, block).build(null));
         ResourceUtil.appendWrenchable(new MIIdentifier(id));
         for (Consumer<BlockEntityType<?>> extraRegistrator : extraRegistrators) {
             extraRegistrator.accept(bet[0]);

@@ -21,15 +21,15 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.mixin;
+package aztech.modern_industrialization.machines;
 
-import net.minecraft.fluid.Fluid;
-import net.minecraft.item.BucketItem;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.gen.Accessor;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.entity.BlockEntityType;
+import net.minecraft.util.math.BlockPos;
 
-@Mixin(BucketItem.class)
-public interface BucketItemAccessor {
-    @Accessor
-    Fluid getFluid();
+/**
+ * BEP = Block entity parameters, because mojang added too many of them for us
+ * to type them all by hand.
+ */
+public record BEP(BlockEntityType<?> type, BlockPos pos, BlockState state) {
 }

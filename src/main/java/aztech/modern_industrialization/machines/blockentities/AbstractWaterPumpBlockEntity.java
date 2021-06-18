@@ -24,6 +24,7 @@
 package aztech.modern_industrialization.machines.blockentities;
 
 import aztech.modern_industrialization.inventory.ConfigurableFluidStack;
+import aztech.modern_industrialization.machines.BEP;
 import aztech.modern_industrialization.machines.IComponent;
 import aztech.modern_industrialization.machines.MachineBlockEntity;
 import aztech.modern_industrialization.machines.components.IsActiveComponent;
@@ -31,8 +32,8 @@ import aztech.modern_industrialization.machines.components.OrientationComponent;
 import aztech.modern_industrialization.machines.components.sync.ProgressBar;
 import aztech.modern_industrialization.machines.gui.MachineGuiParameters;
 import aztech.modern_industrialization.machines.helper.OrientationHelper;
+import aztech.modern_industrialization.util.Tickable;
 import java.util.List;
-import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.FluidState;
@@ -41,7 +42,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
-import net.minecraft.util.Tickable;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 
@@ -51,8 +51,8 @@ public abstract class AbstractWaterPumpBlockEntity extends MachineBlockEntity im
     private static final ProgressBar.Parameters PROGRESS_BAR = new ProgressBar.Parameters(79, 29, "extract");
     private static final int OPERATION_TICKS = 100;
 
-    public AbstractWaterPumpBlockEntity(BlockEntityType<?> type, String blockName) {
-        super(type, new MachineGuiParameters.Builder(blockName, false).build());
+    public AbstractWaterPumpBlockEntity(BEP bep, String blockName) {
+        super(bep, new MachineGuiParameters.Builder(blockName, false).build());
 
         orientation = new OrientationComponent(new OrientationComponent.Params(true, false, false));
 

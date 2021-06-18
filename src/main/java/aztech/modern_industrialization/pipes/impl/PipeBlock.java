@@ -24,6 +24,7 @@
 package aztech.modern_industrialization.pipes.impl;
 
 import aztech.modern_industrialization.ModernIndustrialization;
+import aztech.modern_industrialization.api.TickableBlock;
 import aztech.modern_industrialization.pipes.MIPipes;
 import aztech.modern_industrialization.pipes.api.PipeNetworkNode;
 import aztech.modern_industrialization.pipes.api.PipeNetworkType;
@@ -57,14 +58,14 @@ import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 
-public class PipeBlock extends Block implements BlockEntityProvider {
+public class PipeBlock extends Block implements TickableBlock {
     public PipeBlock(Settings settings) {
         super(settings.allowsSpawning(MobSpawning.NO_SPAWN).nonOpaque().solidBlock((s, p, w) -> false));
     }
 
     @Override
-    public BlockEntity createBlockEntity(BlockView world) {
-        return new PipeBlockEntity();
+    public BlockEntity createBlockEntity(BlockPos pos, BlockState state) {
+        return new PipeBlockEntity(pos, state);
     }
 
     @Override
@@ -79,7 +80,7 @@ public class PipeBlock extends Block implements BlockEntityProvider {
                 // move slightly towards box center
                 Vec3d dir = box.getCenter().subtract(posInBlock).normalize().multiply(1e-4);
                 if (box.contains(posInBlock.add(dir))) {
-                    if (ModernIndustrialization.WRENCHES.contains(player.inventory.getMainHandStack().getItem())) {
+                    if (ModernIndustrialization.WRENCHES.contains(player.getMainHandStack().getItem())) {
                         if (player != null && player.isSneaking()) {
                             boolean removeBlock = pipeEntity.connections.size() == 1;
                             if (!world.isClient) {

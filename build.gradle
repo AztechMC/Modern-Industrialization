@@ -1,7 +1,7 @@
 plugins {
     id 'fabric-loom' version '0.8-SNAPSHOT'
     id 'maven-publish'
-    id 'com.diffplug.spotless' version '5.10.2'
+    id 'com.diffplug.spotless' version '5.14.0'
     id 'com.matthewprenger.cursegradle' version '1.4.0'
 }
 
@@ -143,10 +143,6 @@ repositories {
 }
 
 dependencies {
-    // Experimental fluid API
-    include modImplementation("net.fabricmc.fabric-api:fabric-transfer-api-v1:0.2.2+3185237c7d")
-    // Experimental API API with item support
-    include modImplementation("net.fabricmc.fabric-api:fabric-api-lookup-api-v1:1.2.0+84310a227d")
     minecraft "com.mojang:minecraft:${project.minecraft_version}"
     mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
     modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
@@ -177,8 +173,6 @@ dependencies {
         exclude(group: "io.github.prospector")
         exclude(group: "me.shedaniel.cloth")
     }
-
-    include modImplementation("alexiil.mc.lib:libblockattributes-all:0.8.8")
 
     include modApi("dev.technici4n:FastTransferLib:${project.ftl_version}")
 
@@ -275,7 +269,8 @@ spotless {
     }
     format 'json', {
         target 'src/**/lang/*.json'
-        addStep(JsonOrderStep.create())
+        // TODO: add back when it doesn't crash due to gradle
+        //addStep(JsonOrderStep.create())
     }
 }
 

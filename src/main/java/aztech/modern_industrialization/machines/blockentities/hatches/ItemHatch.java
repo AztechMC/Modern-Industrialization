@@ -25,17 +25,17 @@ package aztech.modern_industrialization.machines.blockentities.hatches;
 
 import aztech.modern_industrialization.inventory.ConfigurableItemStack;
 import aztech.modern_industrialization.inventory.MIInventory;
+import aztech.modern_industrialization.machines.BEP;
 import aztech.modern_industrialization.machines.components.OrientationComponent;
 import aztech.modern_industrialization.machines.components.sync.AutoExtract;
 import aztech.modern_industrialization.machines.gui.MachineGuiParameters;
 import aztech.modern_industrialization.machines.multiblocks.HatchBlockEntity;
 import aztech.modern_industrialization.machines.multiblocks.HatchType;
 import java.util.List;
-import net.minecraft.block.entity.BlockEntityType;
 
 public class ItemHatch extends HatchBlockEntity {
-    public ItemHatch(BlockEntityType<?> type, MachineGuiParameters guiParams, boolean input, boolean upgradesToSteel, MIInventory inventory) {
-        super(type, guiParams, new OrientationComponent.Params(true, true, false));
+    public ItemHatch(BEP bep, MachineGuiParameters guiParams, boolean input, boolean upgradesToSteel, MIInventory inventory) {
+        super(bep, guiParams, new OrientationComponent.Params(true, true, false));
 
         this.input = input;
         this.upgradesToSteel = upgradesToSteel;

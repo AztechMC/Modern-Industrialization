@@ -24,7 +24,7 @@
 package aztech.modern_industrialization.util;
 
 import aztech.modern_industrialization.inventory.ConfigurableItemStack;
-import aztech.modern_industrialization.transferapi.api.item.ItemKey;
+import dev.technici4n.fasttransferlib.experimental.api.item.ItemKey;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 

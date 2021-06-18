@@ -24,6 +24,7 @@
 package aztech.modern_industrialization.machines.blockentities.multiblocks;
 
 import aztech.modern_industrialization.inventory.MIInventory;
+import aztech.modern_industrialization.machines.BEP;
 import aztech.modern_industrialization.machines.components.*;
 import aztech.modern_industrialization.machines.components.sync.CraftingMultiblockGui;
 import aztech.modern_industrialization.machines.components.sync.ReiSlotLocking;
@@ -32,20 +33,18 @@ import aztech.modern_industrialization.machines.models.MachineModelClientData;
 import aztech.modern_industrialization.machines.multiblocks.MultiblockMachineBlockEntity;
 import aztech.modern_industrialization.machines.multiblocks.ShapeMatcher;
 import aztech.modern_industrialization.machines.multiblocks.ShapeTemplate;
-import net.minecraft.block.entity.BlockEntityType;
+import aztech.modern_industrialization.util.Tickable;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
-import net.minecraft.util.Tickable;
 import net.minecraft.util.math.Direction;
 import org.jetbrains.annotations.Nullable;
 
 public abstract class AbstractCraftingMultiblockBlockEntity extends MultiblockMachineBlockEntity implements Tickable {
-    public AbstractCraftingMultiblockBlockEntity(BlockEntityType<?> type, String name, OrientationComponent orientation,
-            ShapeTemplate[] shapeTemplates) {
-        super(type, new MachineGuiParameters.Builder(name, false).backgroundHeight(200).build(), orientation);
+    public AbstractCraftingMultiblockBlockEntity(BEP bep, String name, OrientationComponent orientation, ShapeTemplate[] shapeTemplates) {
+        super(bep, new MachineGuiParameters.Builder(name, false).backgroundHeight(200).build(), orientation);
 
         this.activeShape = new ActiveShapeComponent(shapeTemplates);
         this.inventory = new MultiblockInventoryComponent();

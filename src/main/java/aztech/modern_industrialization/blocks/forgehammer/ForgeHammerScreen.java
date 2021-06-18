@@ -63,8 +63,8 @@ public class ForgeHammerScreen extends HandledScreen<ForgeHammerScreenHandler> {
     @Override
     protected void drawBackground(MatrixStack matrices, float delta, int mouseX, int mouseY) {
         this.renderBackground(matrices);
-        RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-        this.client.getTextureManager().bindTexture(FORGE_HAMMER_GUI);
+        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+        RenderSystem.setShaderTexture(0, FORGE_HAMMER_GUI);
         this.drawTexture(matrices, this.x, this.y, 0, 0, 176, 166);
 
         if (this.isPointWithinBounds(hammerDrawX - 1, hammerDrawY - 1, hammerSize + 2, hammerSize + 2, mouseX, mouseY)) {

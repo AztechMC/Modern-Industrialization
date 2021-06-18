@@ -35,7 +35,7 @@ public class GuidebookEvents {
             if (MIConfig.getConfig().spawnWithGuideBook) {
                 GuidebookPersistentState state = GuidebookPersistentState.get(player.server);
                 if (!state.hasPlayerReceivedGuidebook(player)) {
-                    if (player.inventory.insertStack(new ItemStack(MIItem.ITEM_GUIDE_BOOK))) {
+                    if (player.getInventory().insertStack(new ItemStack(MIItem.ITEM_GUIDE_BOOK))) {
                         state.addPlayerReceivedGuidebook(player);
                     }
                 }
@@ -44,7 +44,7 @@ public class GuidebookEvents {
 
         ServerPlayerEvents.AFTER_RESPAWN.register((oldPlayer, newPlayer, alive) -> {
             if (MIConfig.getConfig().respawnWithGuideBook) {
-                newPlayer.inventory.insertStack(new ItemStack(MIItem.ITEM_GUIDE_BOOK));
+                newPlayer.getInventory().insertStack(new ItemStack(MIItem.ITEM_GUIDE_BOOK));
             }
         });
     }

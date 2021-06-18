@@ -23,10 +23,10 @@
  */
 package aztech.modern_industrialization.inventory;
 
-import aztech.modern_industrialization.transferapi.api.item.ItemKey;
-import aztech.modern_industrialization.transferapi.api.item.ItemPreconditions;
 import aztech.modern_industrialization.util.NbtHelper;
 import com.google.common.primitives.Ints;
+import dev.technici4n.fasttransferlib.experimental.api.item.ItemKey;
+import dev.technici4n.fasttransferlib.experimental.api.item.ItemPreconditions;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
@@ -308,8 +308,8 @@ public class ConfigurableItemStack extends SnapshotParticipant<ResourceAmount<It
 
     @Override
     public void readSnapshot(ResourceAmount<ItemKey> ra) {
-        this.count = (int) ra.amount;
-        this.key = ra.resource;
+        this.count = (int) ra.amount();
+        this.key = ra.resource();
     }
 
     public class ConfigurableItemSlot extends Slot {

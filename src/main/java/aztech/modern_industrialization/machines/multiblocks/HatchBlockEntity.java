@@ -25,6 +25,7 @@ package aztech.modern_industrialization.machines.multiblocks;
 
 import aztech.modern_industrialization.inventory.ConfigurableFluidStack;
 import aztech.modern_industrialization.inventory.ConfigurableItemStack;
+import aztech.modern_industrialization.machines.BEP;
 import aztech.modern_industrialization.machines.IComponent;
 import aztech.modern_industrialization.machines.MachineBlockEntity;
 import aztech.modern_industrialization.machines.components.EnergyComponent;
@@ -34,21 +35,20 @@ import aztech.modern_industrialization.machines.helper.OrientationHelper;
 import aztech.modern_industrialization.machines.models.MachineCasing;
 import aztech.modern_industrialization.machines.models.MachineCasings;
 import aztech.modern_industrialization.machines.models.MachineModelClientData;
+import aztech.modern_industrialization.util.Tickable;
 import java.util.List;
 import java.util.Objects;
-import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
-import net.minecraft.util.Tickable;
 import net.minecraft.util.math.Direction;
 
 public abstract class HatchBlockEntity extends MachineBlockEntity implements Tickable {
-    public HatchBlockEntity(BlockEntityType<?> type, MachineGuiParameters guiParams, OrientationComponent.Params orientationParams) {
-        super(type, guiParams);
+    public HatchBlockEntity(BEP bep, MachineGuiParameters guiParams, OrientationComponent.Params orientationParams) {
+        super(bep, guiParams);
 
         this.orientation = new OrientationComponent(orientationParams);
         registerComponents(orientation, new IComponent.ClientOnly() {

@@ -30,6 +30,7 @@ import aztech.modern_industrialization.inventory.ConfigurableFluidStack;
 import aztech.modern_industrialization.inventory.ConfigurableItemStack;
 import aztech.modern_industrialization.inventory.MIInventory;
 import aztech.modern_industrialization.inventory.SlotPositions;
+import aztech.modern_industrialization.machines.BEP;
 import aztech.modern_industrialization.machines.MachineBlockEntity;
 import aztech.modern_industrialization.machines.components.EnergyComponent;
 import aztech.modern_industrialization.machines.components.FluidConsumerComponent;
@@ -41,6 +42,7 @@ import aztech.modern_industrialization.machines.helper.EnergyHelper;
 import aztech.modern_industrialization.machines.helper.OrientationHelper;
 import aztech.modern_industrialization.machines.models.MachineModelClientData;
 import aztech.modern_industrialization.util.Simulation;
+import aztech.modern_industrialization.util.Tickable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -53,7 +55,6 @@ import net.minecraft.fluid.Fluid;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
-import net.minecraft.util.Tickable;
 import net.minecraft.util.math.Direction;
 
 public class EnergyFromFluidMachineBlockEntity extends MachineBlockEntity implements Tickable {
@@ -67,9 +68,9 @@ public class EnergyFromFluidMachineBlockEntity extends MachineBlockEntity implem
     protected IsActiveComponent isActiveComponent;
     protected FluidConsumerComponent fluidConsumer;
 
-    private EnergyFromFluidMachineBlockEntity(BlockEntityType<?> type, String name, CableTier outputTier, long energyCapacity, long fluidCapacity,
+    private EnergyFromFluidMachineBlockEntity(BEP bep, String name, CableTier outputTier, long energyCapacity, long fluidCapacity,
             long maxEnergyOutput, Predicate<Fluid> acceptedFluid, ToLongFunction<Fluid> fluidEUperMb, Fluid locked) {
-        super(type, new MachineGuiParameters.Builder(name, false).build());
+        super(bep, new MachineGuiParameters.Builder(name, false).build());
         this.outputTier = outputTier;
         this.energy = new EnergyComponent(energyCapacity);
         this.extractable = energy.buildExtractable((CableTier tier) -> tier == outputTier);
@@ -96,14 +97,14 @@ public class EnergyFromFluidMachineBlockEntity extends MachineBlockEntity implem
 
     }
 
-    public EnergyFromFluidMachineBlockEntity(BlockEntityType<?> type, String name, CableTier outputTier, long energyCapacity, long fluidCapacity,
+    public EnergyFromFluidMachineBlockEntity(BEP bep, String name, CableTier outputTier, long energyCapacity, long fluidCapacity,
             long maxEnergyOutput, Predicate<Fluid> acceptedFluid, ToLongFunction<Fluid> fluidEUperMb) {
-        this(type, name, outputTier, energyCapacity, fluidCapacity, maxEnergyOutput, acceptedFluid, fluidEUperMb, null);
+        this(bep, name, outputTier, energyCapacity, fluidCapacity, maxEnergyOutput, acceptedFluid, fluidEUperMb, null);
     }
 
-    public EnergyFromFluidMachineBlockEntity(BlockEntityType<?> type, String name, CableTier outputTier, long energyCapacity, long fluidCapacity,
+    public EnergyFromFluidMachineBlockEntity(BEP bep, String name, CableTier outputTier, long energyCapacity, long fluidCapacity,
             long maxEnergyOutput, Fluid acceptedFluid, long fluidEUperMb) {
-        this(type, name, outputTier, energyCapacity, fluidCapacity, maxEnergyOutput, (Fluid f) -> (f == acceptedFluid), (Fluid f) -> (fluidEUperMb),
+        this(bep, name, outputTier, energyCapacity, fluidCapacity, maxEnergyOutput, (Fluid f) -> (f == acceptedFluid), (Fluid f) -> (fluidEUperMb),
                 acceptedFluid);
     }
 

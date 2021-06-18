@@ -28,18 +28,18 @@ import aztech.modern_industrialization.blocks.tank.MITanks;
 import aztech.modern_industrialization.inventory.ConfigurableFluidStack;
 import aztech.modern_industrialization.inventory.MIInventory;
 import aztech.modern_industrialization.inventory.SlotPositions;
+import aztech.modern_industrialization.machines.BEP;
 import aztech.modern_industrialization.machines.helper.SteamHelper;
 import aztech.modern_industrialization.machines.models.MachineModelClientData;
 import aztech.modern_industrialization.util.Simulation;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.fluid.Fluids;
 
 public class SteamWaterPumpBlockEntity extends AbstractWaterPumpBlockEntity {
-    public SteamWaterPumpBlockEntity(BlockEntityType<?> type, boolean bronze) {
-        super(type, bronze ? "bronze_water_pump" : "steel_water_pump");
+    public SteamWaterPumpBlockEntity(BEP bep, boolean bronze) {
+        super(bep, bronze ? "bronze_water_pump" : "steel_water_pump");
         this.bronze = bronze;
 
         long capacity = 81000 * (bronze ? 2 * MITanks.BRONZE.bucketCapacity : 2 * MITanks.STEEL.bucketCapacity);

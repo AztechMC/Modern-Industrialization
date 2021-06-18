@@ -27,6 +27,7 @@ import static aztech.modern_industrialization.machines.multiblocks.HatchType.*;
 
 import aztech.modern_industrialization.MIBlock;
 import aztech.modern_industrialization.compat.rei.machines.ReiMachineRecipes;
+import aztech.modern_industrialization.machines.BEP;
 import aztech.modern_industrialization.machines.components.*;
 import aztech.modern_industrialization.machines.components.sync.ProgressBar;
 import aztech.modern_industrialization.machines.init.MIMachineRecipeTypes;
@@ -44,7 +45,6 @@ import java.util.Map;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.block.Block;
-import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
@@ -57,8 +57,8 @@ public class ElectricBlastFurnaceBlockEntity extends AbstractCraftingMultiblockB
 
     private static final ShapeTemplate[] shapeTemplates;
 
-    public ElectricBlastFurnaceBlockEntity(BlockEntityType<?> type) {
-        super(type, "electric_blast_furnace", new OrientationComponent(new OrientationComponent.Params(false, false, false)), shapeTemplates);
+    public ElectricBlastFurnaceBlockEntity(BEP bep) {
+        super(bep, "electric_blast_furnace", new OrientationComponent(new OrientationComponent.Params(false, false, false)), shapeTemplates);
         this.upgrades = new UpgradeComponent();
         this.registerComponents(upgrades);
     }

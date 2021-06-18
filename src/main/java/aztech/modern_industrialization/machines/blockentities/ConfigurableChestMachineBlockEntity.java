@@ -26,6 +26,7 @@ package aztech.modern_industrialization.machines.blockentities;
 import aztech.modern_industrialization.inventory.ConfigurableItemStack;
 import aztech.modern_industrialization.inventory.MIInventory;
 import aztech.modern_industrialization.inventory.SlotPositions;
+import aztech.modern_industrialization.machines.BEP;
 import aztech.modern_industrialization.machines.MachineBlockEntity;
 import aztech.modern_industrialization.machines.components.OrientationComponent;
 import aztech.modern_industrialization.machines.components.sync.AutoExtract;
@@ -33,16 +34,15 @@ import aztech.modern_industrialization.machines.gui.MachineGuiParameters;
 import aztech.modern_industrialization.machines.helper.OrientationHelper;
 import aztech.modern_industrialization.machines.models.MachineCasings;
 import aztech.modern_industrialization.machines.models.MachineModelClientData;
+import aztech.modern_industrialization.util.Tickable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
-import net.minecraft.util.Tickable;
 import net.minecraft.util.math.Direction;
 
 public class ConfigurableChestMachineBlockEntity extends MachineBlockEntity implements Tickable {
@@ -50,8 +50,8 @@ public class ConfigurableChestMachineBlockEntity extends MachineBlockEntity impl
     private final OrientationComponent orientation;
     private final MIInventory inventory;
 
-    public ConfigurableChestMachineBlockEntity(BlockEntityType<?> type) {
-        super(type, new MachineGuiParameters.Builder("configurable_chest", true).backgroundHeight(180).build());
+    public ConfigurableChestMachineBlockEntity(BEP bep) {
+        super(bep, new MachineGuiParameters.Builder("configurable_chest", true).backgroundHeight(180).build());
         orientation = new OrientationComponent(new OrientationComponent.Params(true, true, false));
 
         List<ConfigurableItemStack> stacks = new ArrayList<>();

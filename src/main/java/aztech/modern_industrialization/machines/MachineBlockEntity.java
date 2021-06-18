@@ -29,16 +29,16 @@ import aztech.modern_industrialization.inventory.ConfigurableItemStack;
 import aztech.modern_industrialization.inventory.MIInventory;
 import aztech.modern_industrialization.machines.gui.MachineGuiParameters;
 import aztech.modern_industrialization.machines.models.MachineModelClientData;
-import aztech.modern_industrialization.transferapi.api.item.ItemApi;
 import aztech.modern_industrialization.util.NbtHelper;
 import aztech.modern_industrialization.util.RenderHelper;
+import dev.technici4n.fasttransferlib.experimental.api.item.ItemStorage;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import net.fabricmc.fabric.api.block.entity.BlockEntityClientSerializable;
 import net.fabricmc.fabric.api.rendering.data.v1.RenderAttachmentBlockEntity;
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidTransfer;
-import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.LivingEntity;
@@ -72,8 +72,8 @@ public abstract class MachineBlockEntity extends FastBlockEntity
      */
     private boolean syncCausesRemesh = true;
 
-    public MachineBlockEntity(BlockEntityType<?> type, MachineGuiParameters guiParams) {
-        super(type);
+    public MachineBlockEntity(BEP bep, MachineGuiParameters guiParams) {
+        super(bep.type(), bep.pos(), bep.state());
         this.guiParams = guiParams;
     }
 
@@ -82,9 +82,7 @@ public abstract class MachineBlockEntity extends FastBlockEntity
     }
 
     protected final void registerComponents(IComponent... components) {
-        for (IComponent c : components) {
-            icomponents.add(c);
-        }
+        Collections.addAll(icomponents, components);
     }
 
     /**
@@ -195,15 +193,15 @@ public abstract class MachineBlockEntity extends FastBlockEntity
     }
 
     @Override
-    public final void readNbt(BlockState state, NbtCompound tag) {
-        super.readNbt(state, tag);
+    public final void readNbt(NbtCompound tag) {
+        super.readNbt(tag);
         for (IComponent component : icomponents) {
             component.readNbt(tag);
         }
     }
 
     public static void registerItemApi(BlockEntityType<?> bet) {
-        ItemApi.SIDED.registerForBlockEntities((be, direction) -> ((MachineBlockEntity) be).getInventory().itemStorage, bet);
+        ItemStorage.SIDED.registerForBlockEntities((be, direction) -> ((MachineBlockEntity) be).getInventory().itemStorage, bet);
     }
 
     public static void registerFluidApi(BlockEntityType<?> bet) {

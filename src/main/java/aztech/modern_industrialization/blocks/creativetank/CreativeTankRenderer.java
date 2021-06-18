@@ -25,13 +25,12 @@ package aztech.modern_industrialization.blocks.creativetank;
 
 import aztech.modern_industrialization.util.RenderHelper;
 import net.minecraft.client.render.VertexConsumerProvider;
-import net.minecraft.client.render.block.entity.BlockEntityRenderDispatcher;
 import net.minecraft.client.render.block.entity.BlockEntityRenderer;
+import net.minecraft.client.render.block.entity.BlockEntityRendererFactory;
 import net.minecraft.client.util.math.MatrixStack;
 
-public class CreativeTankRenderer extends BlockEntityRenderer<CreativeTankBlockEntity> {
-    public CreativeTankRenderer(BlockEntityRenderDispatcher dispatcher) {
-        super(dispatcher);
+public class CreativeTankRenderer implements BlockEntityRenderer<CreativeTankBlockEntity> {
+    public CreativeTankRenderer(BlockEntityRendererFactory.Context context) {
     }
 
     @Override

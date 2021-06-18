@@ -28,6 +28,7 @@ import static aztech.modern_industrialization.machines.blockentities.hatches.Nuc
 import aztech.modern_industrialization.MIBlock;
 import aztech.modern_industrialization.compat.rei.machines.ReiMachineRecipes;
 import aztech.modern_industrialization.inventory.MIInventory;
+import aztech.modern_industrialization.machines.BEP;
 import aztech.modern_industrialization.machines.blockentities.hatches.NuclearHatch;
 import aztech.modern_industrialization.machines.components.ActiveShapeComponent;
 import aztech.modern_industrialization.machines.components.IsActiveComponent;
@@ -40,15 +41,14 @@ import aztech.modern_industrialization.nuclear.INuclearGrid;
 import aztech.modern_industrialization.nuclear.NuclearComponent;
 import aztech.modern_industrialization.nuclear.NuclearFuel;
 import aztech.modern_industrialization.nuclear.NuclearGridHelper;
-import aztech.modern_industrialization.transferapi.api.item.ItemKey;
-import net.minecraft.block.entity.BlockEntityType;
+import aztech.modern_industrialization.util.Tickable;
+import dev.technici4n.fasttransferlib.experimental.api.item.ItemKey;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
-import net.minecraft.util.Tickable;
 import net.minecraft.util.math.Direction;
 
 public class NuclearReactorMultiblockBlockEntity extends MultiblockMachineBlockEntity implements Tickable {
@@ -66,8 +66,8 @@ public class NuclearReactorMultiblockBlockEntity extends MultiblockMachineBlockE
 
     private INuclearGrid nuclearGrid;
 
-    public NuclearReactorMultiblockBlockEntity(BlockEntityType<?> type) {
-        super(type, new MachineGuiParameters.Builder("nuclear_reactor", false).backgroundHeight(256).build(),
+    public NuclearReactorMultiblockBlockEntity(BEP bep) {
+        super(bep, new MachineGuiParameters.Builder("nuclear_reactor", false).backgroundHeight(256).build(),
                 new OrientationComponent(new OrientationComponent.Params(false, false, false)));
 
         this.activeShape = new ActiveShapeComponent(shapeTemplates);

@@ -104,11 +104,9 @@ public class ForgeHammerScreenHandler extends ScreenHandler {
             }
 
             @Override
-            public ItemStack onTakeItem(PlayerEntity player, ItemStack stack) {
+            public void onTakeItem(PlayerEntity player, ItemStack stack) {
                 input.getStack(0).decrement(inputCount);
-                ItemStack current = getStack();
                 updateStatus();
-                return current;
             }
         });
     }
@@ -184,9 +182,9 @@ public class ForgeHammerScreenHandler extends ScreenHandler {
                 return ItemStack.EMPTY;
             }
 
-            ItemStack itemStack3 = slot.onTakeItem(player, itemStack2);
+            slot.onTakeItem(player, itemStack2);
             if (index == 37) {
-                player.dropItem(itemStack3, false);
+                player.dropItem(itemStack2, false);
             }
         }
 
@@ -201,7 +199,7 @@ public class ForgeHammerScreenHandler extends ScreenHandler {
     public void close(PlayerEntity player) {
         super.close(player);
         this.context.run((world, blockPos) -> {
-            this.dropInventory(player, world, this.input);
+            this.dropInventory(player, this.input);
         });
     }
 

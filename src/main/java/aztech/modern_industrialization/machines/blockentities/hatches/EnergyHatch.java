@@ -28,6 +28,7 @@ import aztech.modern_industrialization.api.energy.EnergyApi;
 import aztech.modern_industrialization.api.energy.EnergyExtractable;
 import aztech.modern_industrialization.api.energy.EnergyInsertable;
 import aztech.modern_industrialization.inventory.MIInventory;
+import aztech.modern_industrialization.machines.BEP;
 import aztech.modern_industrialization.machines.components.EnergyComponent;
 import aztech.modern_industrialization.machines.components.OrientationComponent;
 import aztech.modern_industrialization.machines.components.sync.EnergyBar;
@@ -39,8 +40,8 @@ import net.minecraft.block.entity.BlockEntityType;
 
 public class EnergyHatch extends HatchBlockEntity {
 
-    public EnergyHatch(BlockEntityType<?> type, String name, boolean input, CableTier tier) {
-        super(type, new MachineGuiParameters.Builder(name, false).build(), new OrientationComponent.Params(!input, false, false));
+    public EnergyHatch(BEP bep, String name, boolean input, CableTier tier) {
+        super(bep, new MachineGuiParameters.Builder(name, false).build(), new OrientationComponent.Params(!input, false, false));
 
         this.input = input;
 

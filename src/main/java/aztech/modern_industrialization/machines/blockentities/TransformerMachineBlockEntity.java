@@ -24,12 +24,12 @@
 package aztech.modern_industrialization.machines.blockentities;
 
 import aztech.modern_industrialization.api.energy.CableTier;
-import net.minecraft.block.entity.BlockEntityType;
+import aztech.modern_industrialization.machines.BEP;
 
 public class TransformerMachineBlockEntity extends AbstractStorageMachineBlockEntity {
 
-    public TransformerMachineBlockEntity(BlockEntityType<?> type, CableTier from, CableTier to) {
-        super(type, from, to, getTransformerName(from, to), 200 * Math.max(from.eu, to.eu));
+    public TransformerMachineBlockEntity(BEP bep, CableTier from, CableTier to) {
+        super(bep, from, to, getTransformerName(from, to), 200 * Math.max(from.eu, to.eu));
     }
 
     public static String getTransformerName(CableTier from, CableTier to) {

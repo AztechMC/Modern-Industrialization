@@ -23,21 +23,21 @@
  */
 package aztech.modern_industrialization.machines.multiblocks;
 
+import aztech.modern_industrialization.machines.BEP;
 import aztech.modern_industrialization.machines.MachineBlockEntity;
 import aztech.modern_industrialization.machines.components.OrientationComponent;
 import aztech.modern_industrialization.machines.components.ShapeValidComponent;
 import aztech.modern_industrialization.machines.gui.MachineGuiParameters;
 import aztech.modern_industrialization.machines.helper.OrientationHelper;
 import aztech.modern_industrialization.util.ChunkUnloadBlockEntity;
-import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.Direction;
 
 public abstract class MultiblockMachineBlockEntity extends MachineBlockEntity implements ChunkUnloadBlockEntity {
-    public MultiblockMachineBlockEntity(BlockEntityType<?> type, MachineGuiParameters guiParams, OrientationComponent orientation) {
-        super(type, guiParams);
+    public MultiblockMachineBlockEntity(BEP bep, MachineGuiParameters guiParams, OrientationComponent orientation) {
+        super(bep, guiParams);
 
         this.orientation = orientation;
         this.shapeValid = new ShapeValidComponent();

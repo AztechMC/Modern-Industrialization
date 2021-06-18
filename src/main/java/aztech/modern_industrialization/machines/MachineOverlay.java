@@ -120,7 +120,7 @@ public class MachineOverlay {
             BlockPos pos = blockHitResult.getBlockPos();
             BlockState state = wrc.world().getBlockState(pos);
             if (state.getBlock() instanceof MachineBlock
-                    && MinecraftClient.getInstance().player.getMainHandStack().getItem().isIn(ModernIndustrialization.OVERLAY_SOURCES)) {
+                    && MinecraftClient.getInstance().player.getMainHandStack().isIn(ModernIndustrialization.OVERLAY_SOURCES)) {
                 wrc.matrixStack().push();
                 Vec3d cameraPos = MinecraftClient.getInstance().gameRenderer.getCamera().getPos();
                 double x = pos.getX() - cameraPos.x;

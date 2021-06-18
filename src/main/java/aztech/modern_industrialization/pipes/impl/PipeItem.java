@@ -64,7 +64,7 @@ public class PipeItem extends Item {
             world.updateNeighbors(placingPos, null);
             // remove one from stack
             ItemStack placementStack = context.getStack();
-            if (player != null && !player.abilities.creativeMode) {
+            if (player != null && !player.getAbilities().creativeMode) {
                 placementStack.decrement(1);
             }
             // play placing sound

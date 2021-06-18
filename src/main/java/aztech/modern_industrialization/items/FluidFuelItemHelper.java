@@ -23,10 +23,10 @@
  */
 package aztech.modern_industrialization.items;
 
-import aztech.modern_industrialization.transferapi.api.context.ContainerItemContext;
-import aztech.modern_industrialization.transferapi.api.item.ItemKey;
 import aztech.modern_industrialization.util.FluidHelper;
 import aztech.modern_industrialization.util.NbtHelper;
+import dev.technici4n.fasttransferlib.experimental.api.context.ContainerItemContext;
+import dev.technici4n.fasttransferlib.experimental.api.item.ItemKey;
 import java.util.Iterator;
 import java.util.List;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidKey;

@@ -29,8 +29,8 @@ import aztech.modern_industrialization.util.RenderHelper;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.VertexConsumerProvider;
-import net.minecraft.client.render.block.entity.BlockEntityRenderDispatcher;
 import net.minecraft.client.render.block.entity.BlockEntityRenderer;
+import net.minecraft.client.render.block.entity.BlockEntityRendererFactory;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItem;
@@ -39,9 +39,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import org.jetbrains.annotations.Nullable;
 
-public class MultiblockMachineBER extends BlockEntityRenderer<MultiblockMachineBlockEntity> {
-    public MultiblockMachineBER(BlockEntityRenderDispatcher dispatcher) {
-        super(dispatcher);
+public class MultiblockMachineBER implements BlockEntityRenderer<MultiblockMachineBlockEntity> {
+    public MultiblockMachineBER(BlockEntityRendererFactory.Context context) {
     }
 
     @Override
@@ -84,8 +83,7 @@ public class MultiblockMachineBER extends BlockEntityRenderer<MultiblockMachineB
 
     private static boolean isHoldingWrench() {
         PlayerEntity player = MinecraftClient.getInstance().player;
-        return player.getMainHandStack().getItem().isIn(ModernIndustrialization.WRENCHES)
-                || player.getOffHandStack().getItem().isIn(ModernIndustrialization.WRENCHES);
+        return player.getMainHandStack().isIn(ModernIndustrialization.WRENCHES) || player.getOffHandStack().isIn(ModernIndustrialization.WRENCHES);
     }
 
     @Nullable
@@ -103,7 +101,7 @@ public class MultiblockMachineBER extends BlockEntityRenderer<MultiblockMachineB
             BlockItem blockItem = (BlockItem) item;
             if (blockItem.getBlock() instanceof MachineBlock) {
                 MachineBlock block = (MachineBlock) blockItem.getBlock();
-                BlockEntity be = block.createBlockEntity(null);
+                BlockEntity be = block.createBlockEntity(new BlockPos(0, 0, 0), block.getDefaultState());
                 if (be instanceof HatchBlockEntity) {
                     HatchBlockEntity hatch = (HatchBlockEntity) be;
                     return hatch.getHatchType();

@@ -241,7 +241,7 @@ public class MachineScreenHandlers {
 
         @Override
         public void addButton(int u, Text message, Consumer<Integer> pressAction, Supplier<List<Text>> tooltipSupplier, Supplier<Boolean> isPressed) {
-            addButton(new MachineButton(buttonX(), buttonY(), u, message, b -> pressAction.accept(handler.syncId),
+            addDrawableChild(new MachineButton(buttonX(), buttonY(), u, message, b -> pressAction.accept(handler.syncId),
                     (button, matrices, mouseX, mouseY) -> {
                         renderTooltip(matrices, tooltipSupplier.get(), mouseX, mouseY);
                     }, isPressed));
@@ -356,7 +356,7 @@ public class MachineScreenHandlers {
                             this.itemRenderer.zOffset = 100.0F;
 
                             RenderSystem.enableDepthTest();
-                            this.itemRenderer.renderInGuiWithOverrides(this.client.player, new ItemStack(item), slot.x + this.x, slot.y + this.y);
+                            this.itemRenderer.renderInGuiWithOverrides(this.client.player, new ItemStack(item), slot.x + this.x, slot.y + this.y, 0);
                             this.itemRenderer.renderGuiItemOverlay(this.textRenderer, new ItemStack(item), slot.x + this.x, slot.y + this.y, "0");
 
                             this.itemRenderer.zOffset = 0.0F;

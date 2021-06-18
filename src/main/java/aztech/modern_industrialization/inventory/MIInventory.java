@@ -23,22 +23,17 @@
  */
 package aztech.modern_industrialization.inventory;
 
-import alexiil.mc.lib.attributes.SearchOptions;
-import alexiil.mc.lib.attributes.fluid.FluidAttributes;
-import alexiil.mc.lib.attributes.fluid.FluidExtractable;
-import alexiil.mc.lib.attributes.fluid.FluidInsertable;
-import alexiil.mc.lib.attributes.fluid.FluidVolumeUtil;
-import alexiil.mc.lib.attributes.item.ItemAttributes;
-import alexiil.mc.lib.attributes.item.ItemExtractable;
-import alexiil.mc.lib.attributes.item.ItemInsertable;
-import alexiil.mc.lib.attributes.item.ItemInvUtil;
 import aztech.modern_industrialization.machines.IComponent;
-import aztech.modern_industrialization.transferapi.impl.compat.WrappedFluidStorage;
-import aztech.modern_industrialization.transferapi.impl.compat.WrappedItemStorage;
 import aztech.modern_industrialization.util.NbtHelper;
+import dev.technici4n.fasttransferlib.experimental.api.item.ItemKey;
+import dev.technici4n.fasttransferlib.experimental.api.item.ItemStorage;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidKey;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidTransfer;
+import net.fabricmc.fabric.api.transfer.v1.storage.Movement;
+import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
@@ -82,27 +77,35 @@ public final class MIInventory implements IComponent {
     }
 
     public void autoExtractItems(World world, BlockPos pos, Direction direction) {
-        // LBA
-        ItemInsertable target = ItemAttributes.INSERTABLE.get(world, pos.offset(direction), SearchOptions.inDirection(direction));
-        ItemInvUtil.moveMultiple(new WrappedItemStorage(itemStorage), target);
+        Storage<ItemKey> target = ItemStorage.SIDED.find(world, pos.offset(direction), direction.getOpposite());
+
+        if (target != null) {
+            Movement.move(itemStorage, target, k -> true, Long.MAX_VALUE, null);
+        }
     }
 
     public void autoExtractFluids(World world, BlockPos pos, Direction direction) {
-        // LBA
-        FluidInsertable target = FluidAttributes.INSERTABLE.get(world, pos.offset(direction), SearchOptions.inDirection(direction));
-        FluidVolumeUtil.move(new WrappedFluidStorage(fluidStorage), target);
+        Storage<FluidKey> target = FluidTransfer.SIDED.find(world, pos.offset(direction), direction.getOpposite());
+
+        if (target != null) {
+            Movement.move(fluidStorage, target, k -> true, Long.MAX_VALUE, null);
+        }
     }
 
     public void autoInsertItems(World world, BlockPos pos, Direction direction) {
-        // LBA
-        ItemExtractable target = ItemAttributes.EXTRACTABLE.get(world, pos.offset(direction), SearchOptions.inDirection(direction));
-        ItemInvUtil.moveMultiple(target, new WrappedItemStorage(itemStorage));
+        Storage<ItemKey> target = ItemStorage.SIDED.find(world, pos.offset(direction), direction.getOpposite());
+
+        if (target != null) {
+            Movement.move(target, itemStorage, k -> true, Long.MAX_VALUE, null);
+        }
     }
 
     public void autoInsertFluids(World world, BlockPos pos, Direction direction) {
-        // LBA
-        FluidExtractable target = FluidAttributes.EXTRACTABLE.get(world, pos.offset(direction), SearchOptions.inDirection(direction));
-        FluidVolumeUtil.move(target, new WrappedFluidStorage(fluidStorage));
+        Storage<FluidKey> target = FluidTransfer.SIDED.find(world, pos.offset(direction), direction.getOpposite());
+
+        if (target != null) {
+            Movement.move(target, fluidStorage, k -> true, Long.MAX_VALUE, null);
+        }
     }
 
     public void writeNbt(NbtCompound tag) {

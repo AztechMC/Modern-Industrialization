@@ -71,7 +71,7 @@ public class MachinePackets {
                         return;
 
                     // Lock
-                    slotLocking.slotLockable.lockSlots(recipeId, player.inventory);
+                    slotLocking.slotLockable.lockSlots(recipeId, player.getInventory());
                 }
             });
         };

@@ -23,56 +23,27 @@
  */
 package aztech.modern_industrialization.transferapi;
 
-import alexiil.mc.lib.attributes.Simulation;
-import alexiil.mc.lib.attributes.fluid.FluidExtractable;
-import alexiil.mc.lib.attributes.fluid.FluidInsertable;
-import alexiil.mc.lib.attributes.fluid.amount.FluidAmount;
-import alexiil.mc.lib.attributes.fluid.volume.FluidKeys;
-import java.math.RoundingMode;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidKey;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
-import net.minecraft.fluid.Fluids;
 import org.jetbrains.annotations.Nullable;
 
-/**
- * Because LBA is annoying to work with.
- */
 public class FluidTransferHelper {
-    /**
-     * Similar to
-     * {@link Storage#insert}.
-     */
-    public static long insert(FluidInsertable insertable, FluidKey fluid, long maxAmount, Simulation simulation) {
-        if (fluid.hasTag())
-            return 0;
-
-        FluidAmount fractionAmount = FluidAmount.of(maxAmount, 81000);
-        long leftover = insertable.attemptInsertion(FluidKeys.get(fluid.getFluid()).withAmount(fractionAmount), simulation).getAmount_F()
-                .asLong(81000, RoundingMode.DOWN);
-        return maxAmount - leftover;
-    }
 
     /**
      * Return an extractable fluid, or EMPTY if none could be found.
      */
-    public static FluidKey findExtractableFluid(FluidExtractable extractable) {
-        return FluidKey.of(extractable
-                .attemptExtraction(key -> key.getRawFluid() != null && key.getRawFluid() != Fluids.EMPTY, FluidAmount.A_MILLION, Simulation.SIMULATE)
-                .getRawFluid());
-    }
-
-    /**
-     * Similar to
-     * {@link Storage#extract}.
-     */
-    public static long extract(FluidExtractable extractable, FluidKey fluid, long maxAmount, Simulation simulation) {
-        if (fluid.hasTag())
-            return 0;
-
-        return extractable.attemptExtraction(key -> key.getRawFluid().equals(fluid.getFluid()), FluidAmount.of(maxAmount, 81000), simulation).amount()
-                .asLong(81000, RoundingMode.DOWN);
+    public static FluidKey findExtractableFluid(Storage<FluidKey> storage) {
+        try (Transaction tx = Transaction.openOuter()) {
+            for (StorageView<FluidKey> view : storage.iterable(tx)) {
+                FluidKey key = view.resource();
+                if (!key.isEmpty() && view.extract(key, Integer.MAX_VALUE, tx) > 0) {
+                    return key;
+                }
+            }
+        }
+        return FluidKey.empty();
     }
 
     /**

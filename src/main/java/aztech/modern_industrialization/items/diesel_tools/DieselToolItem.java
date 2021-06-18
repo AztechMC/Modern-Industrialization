@@ -80,7 +80,7 @@ public class DieselToolItem extends Item implements DynamicAttributeTool, Vanish
 
     @Override
     public float getMiningSpeedMultiplier(Tag<Item> tag, BlockState state, ItemStack stack, @Nullable LivingEntity user) {
-        if (isIn(tag)) {
+        if (tag.contains(this)) {
             return getMiningSpeedMultiplier(stack);
         }
         return 0;
@@ -88,7 +88,7 @@ public class DieselToolItem extends Item implements DynamicAttributeTool, Vanish
 
     @Override
     public int getMiningLevel(Tag<Item> tag, BlockState state, ItemStack stack, @Nullable LivingEntity user) {
-        if (isIn(tag)) {
+        if (tag.contains(this)) {
             return 4; // TODO: higher mining level?
         }
         return 0;
@@ -157,7 +157,7 @@ public class DieselToolItem extends Item implements DynamicAttributeTool, Vanish
         BlockState state = w.getBlockState(pos);
         PlayerEntity player = context.getPlayer();
         if (FluidFuelItemHelper.getAmount(stack) > 0) {
-            if (isIn(FabricToolTags.AXES)) {
+            if (FabricToolTags.AXES.contains(this)) {
                 Block newBlock = StrippingAccess.getStrippedBlocks().get(state.getBlock());
                 if (newBlock != null) {
                     w.playSound(player, pos, SoundEvents.ITEM_AXE_STRIP, SoundCategory.BLOCKS, 1, 1);
@@ -167,7 +167,7 @@ public class DieselToolItem extends Item implements DynamicAttributeTool, Vanish
                     }
                     return ActionResult.success(w.isClient);
                 }
-            } else if (isIn(FabricToolTags.SHOVELS)) {
+            } else if (FabricToolTags.SHOVELS.contains(this)) {
                 BlockState newState = PathingAccess.getPathStates().get(state.getBlock());
                 if (newState != null) {
                     w.playSound(player, pos, SoundEvents.ITEM_SHOVEL_FLATTEN, SoundCategory.BLOCKS, 1, 1);

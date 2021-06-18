@@ -55,7 +55,7 @@ class LivingEntityMixin {
      * Return true if the damage is cancelled.
      */
     private static boolean tryCancelDamage(DamageSource source, float amount, ServerPlayerEntity player) {
-        PlayerInventory inventory = player.inventory;
+        PlayerInventory inventory = player.getInventory();
         // Find a suitable stack that can "tank" the damage
         ItemStack tankingStack = null;
         EquipmentSlot es = null;

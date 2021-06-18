@@ -23,9 +23,9 @@
  */
 package aztech.modern_industrialization.inventory;
 
-import aztech.modern_industrialization.transferapi.api.item.ItemKey;
-import aztech.modern_industrialization.transferapi.api.item.ItemPreconditions;
 import com.google.common.primitives.Ints;
+import dev.technici4n.fasttransferlib.experimental.api.item.ItemKey;
+import dev.technici4n.fasttransferlib.experimental.api.item.ItemPreconditions;
 import java.util.Iterator;
 import java.util.List;
 import java.util.function.Predicate;

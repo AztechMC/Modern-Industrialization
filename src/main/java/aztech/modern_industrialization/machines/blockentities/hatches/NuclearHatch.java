@@ -29,6 +29,7 @@ import aztech.modern_industrialization.inventory.ConfigurableFluidStack;
 import aztech.modern_industrialization.inventory.ConfigurableItemStack;
 import aztech.modern_industrialization.inventory.MIInventory;
 import aztech.modern_industrialization.inventory.SlotPositions;
+import aztech.modern_industrialization.machines.BEP;
 import aztech.modern_industrialization.machines.components.OrientationComponent;
 import aztech.modern_industrialization.machines.components.SteamHeaterComponent;
 import aztech.modern_industrialization.machines.components.TemperatureComponent;
@@ -36,7 +37,7 @@ import aztech.modern_industrialization.machines.components.sync.TemperatureBar;
 import aztech.modern_industrialization.machines.gui.MachineGuiParameters;
 import aztech.modern_industrialization.machines.multiblocks.HatchBlockEntity;
 import aztech.modern_industrialization.machines.multiblocks.HatchType;
-import aztech.modern_industrialization.transferapi.api.item.ItemApi;
+import dev.technici4n.fasttransferlib.experimental.api.item.ItemStorage;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -53,8 +54,8 @@ public class NuclearHatch extends HatchBlockEntity {
     public final boolean isFluid;
     public static final double BASE_HEAT_CONDUCTION = 0.01;
 
-    public NuclearHatch(BlockEntityType<?> type, boolean isFluid) {
-        super(type, new MachineGuiParameters.Builder(isFluid ? "nuclear_fluid_hatch" : "nuclear_item_hatch", true).build(),
+    public NuclearHatch(BEP bep, boolean isFluid) {
+        super(bep, new MachineGuiParameters.Builder(isFluid ? "nuclear_fluid_hatch" : "nuclear_item_hatch", true).build(),
                 new OrientationComponent.Params(false, false, false));
 
         this.isFluid = isFluid;
@@ -106,7 +107,7 @@ public class NuclearHatch extends HatchBlockEntity {
     }
 
     public static void registerItemApi(BlockEntityType<?> bet) {
-        ItemApi.SIDED.registerForBlockEntities((be, direction) -> direction == UP ? ((NuclearHatch) be).getInventory().itemStorage : null, bet);
+        ItemStorage.SIDED.registerForBlockEntities((be, direction) -> direction == UP ? ((NuclearHatch) be).getInventory().itemStorage : null, bet);
     }
 
     public static void registerFluidApi(BlockEntityType<?> bet) {

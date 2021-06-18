@@ -26,13 +26,13 @@ package aztech.modern_industrialization.machines;
 import static aztech.modern_industrialization.ModernIndustrialization.METAL_MATERIAL;
 
 import aztech.modern_industrialization.MIBlock;
+import aztech.modern_industrialization.api.TickableBlock;
 import aztech.modern_industrialization.inventory.ConfigurableItemStack;
 import aztech.modern_industrialization.util.MobSpawning;
 import java.util.List;
-import java.util.function.Supplier;
+import java.util.function.BiFunction;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
-import net.minecraft.block.BlockEntityProvider;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.LivingEntity;
@@ -43,22 +43,21 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.ItemScatterer;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
-public class MachineBlock extends MIBlock implements BlockEntityProvider {
-    private final Supplier<BlockEntity> blockEntityConstructor;
+public class MachineBlock extends MIBlock implements TickableBlock {
+    private final BiFunction<BlockPos, BlockState, BlockEntity> blockEntityConstructor;
 
-    public MachineBlock(String machineId, Supplier<BlockEntity> blockEntityConstructor) {
+    public MachineBlock(String machineId, BiFunction<BlockPos, BlockState, BlockEntity> blockEntityConstructor) {
         super(machineId, FabricBlockSettings.of(METAL_MATERIAL).hardness(4.0f).breakByTool(FabricToolTags.PICKAXES).requiresTool()
                 .allowsSpawning(MobSpawning.NO_SPAWN), false);
         this.blockEntityConstructor = blockEntityConstructor;
     }
 
     @Override
-    public BlockEntity createBlockEntity(BlockView world) {
-        return blockEntityConstructor.get();
+    public BlockEntity createBlockEntity(BlockPos pos, BlockState state) {
+        return blockEntityConstructor.apply(pos, state);
     }
 
     @Override

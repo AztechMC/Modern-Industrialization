@@ -46,10 +46,10 @@ public class MIREIPlugin implements REIPluginV0 {
     public void registerOthers(RecipeHelper recipeHelper) {
         for (Item item : Registry.ITEM) {
             if (item instanceof DieselToolItem) {
-                if (item.isIn(FabricToolTags.AXES)) {
+                if (FabricToolTags.AXES.contains(item)) {
                     recipeHelper.registerWorkingStations(STRIPPING, EntryStack.create(item));
                 }
-                if (item.isIn(FabricToolTags.SHOVELS)) {
+                if (FabricToolTags.SHOVELS.contains(item)) {
                     recipeHelper.registerWorkingStations(PATHING, EntryStack.create(item));
                 }
             }

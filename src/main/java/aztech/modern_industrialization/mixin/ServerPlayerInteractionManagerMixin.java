@@ -25,9 +25,12 @@ package aztech.modern_industrialization.mixin;
 
 import aztech.modern_industrialization.mixin_impl.SteamDrillHooks;
 import net.minecraft.network.packet.c2s.play.PlayerActionC2SPacket;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.network.ServerPlayerInteractionManager;
 import net.minecraft.util.math.BlockPos;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -37,9 +40,13 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
  */
 @Mixin(ServerPlayerInteractionManager.class)
 public class ServerPlayerInteractionManagerMixin {
+    @Shadow
+    @Final
+    private ServerPlayerEntity player;
+
     @Inject(at = @At("HEAD"), method = "finishMining")
     private void finishMiningHead(BlockPos pos, PlayerActionC2SPacket.Action action, String reason, CallbackInfo ci) {
-        SteamDrillHooks.set(((ServerPlayerInteractionManager) (Object) this).player);
+        SteamDrillHooks.set(player);
     }
 
     @Inject(at = @At("RETURN"), method = "finishMining")

@@ -24,6 +24,7 @@
 package aztech.modern_industrialization.machines.blockentities.multiblocks;
 
 import aztech.modern_industrialization.inventory.MIInventory;
+import aztech.modern_industrialization.machines.BEP;
 import aztech.modern_industrialization.machines.components.*;
 import aztech.modern_industrialization.machines.gui.MachineGuiParameters;
 import aztech.modern_industrialization.machines.models.MachineModelClientData;
@@ -32,27 +33,26 @@ import aztech.modern_industrialization.machines.multiblocks.MultiblockMachineBlo
 import aztech.modern_industrialization.machines.multiblocks.ShapeMatcher;
 import aztech.modern_industrialization.machines.multiblocks.ShapeTemplate;
 import aztech.modern_industrialization.util.Simulation;
+import aztech.modern_industrialization.util.Tickable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
 import java.util.function.ToLongFunction;
-import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
-import net.minecraft.util.Tickable;
 import net.minecraft.util.math.Direction;
 import org.jetbrains.annotations.Nullable;
 
 public class EnergyFromFluidMultiblockBlockEntity extends MultiblockMachineBlockEntity implements Tickable {
 
-    public EnergyFromFluidMultiblockBlockEntity(BlockEntityType<?> type, String name, ShapeTemplate shapeTemplate, Predicate<Fluid> acceptedFluid,
+    public EnergyFromFluidMultiblockBlockEntity(BEP bep, String name, ShapeTemplate shapeTemplate, Predicate<Fluid> acceptedFluid,
             ToLongFunction<Fluid> fluidEUperMb, long maxEnergyOutput) {
 
-        super(type, new MachineGuiParameters.Builder(name, false).backgroundHeight(128).build(),
+        super(bep, new MachineGuiParameters.Builder(name, false).backgroundHeight(128).build(),
                 new OrientationComponent(new OrientationComponent.Params(false, false, false)));
 
         this.activeShape = new ActiveShapeComponent(new ShapeTemplate[] { shapeTemplate });

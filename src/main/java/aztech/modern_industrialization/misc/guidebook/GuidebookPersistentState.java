@@ -35,10 +35,14 @@ import net.minecraft.world.PersistentState;
 
 public class GuidebookPersistentState extends PersistentState {
     private static final String NAME = "modern_industrialization_guidebook";
-    private final Set<String> receivedPlayers = new HashSet<>();
+    private final Set<String> receivedPlayers;
+
+    private GuidebookPersistentState(Set<String> receivedPlayers) {
+        this.receivedPlayers = receivedPlayers;
+    }
 
     private GuidebookPersistentState() {
-        super(NAME);
+        this(new HashSet<>());
     }
 
     public boolean hasPlayerReceivedGuidebook(PlayerEntity player) {
@@ -50,13 +54,13 @@ public class GuidebookPersistentState extends PersistentState {
         markDirty();
     }
 
-    @Override
-    public void fromNbt(NbtCompound tag) {
-        receivedPlayers.clear();
+    public static GuidebookPersistentState fromNbt(NbtCompound tag) {
+        Set<String> receivedPlayers = new HashSet<>();
         NbtList list = tag.getList("receivedPlayers", NbtType.STRING);
         for (int i = 0; i < list.size(); ++i) {
             receivedPlayers.add(list.getString(i));
         }
+        return new GuidebookPersistentState(receivedPlayers);
     }
 
     @Override
@@ -71,6 +75,6 @@ public class GuidebookPersistentState extends PersistentState {
 
     public static GuidebookPersistentState get(MinecraftServer server) {
         ServerWorld world = server.getWorld(ServerWorld.OVERWORLD);
-        return world.getPersistentStateManager().getOrCreate(GuidebookPersistentState::new, NAME);
+        return world.getPersistentStateManager().getOrCreate(GuidebookPersistentState::fromNbt, GuidebookPersistentState::new, NAME);
     }
 }

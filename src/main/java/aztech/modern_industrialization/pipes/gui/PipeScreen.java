@@ -60,7 +60,7 @@ public abstract class PipeScreen<SH extends ScreenHandler> extends HandledScreen
     @Override
     protected void drawBackground(MatrixStack matrices, float delta, int mouseX, int mouseY) {
         this.renderBackground(matrices);
-        RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
+        RenderSystem.setShaderColor(1, 1, 1, 1);
         this.client.getTextureManager().bindTexture(getBackgroundTexture());
         this.drawTexture(matrices, this.x, this.y, 0, 0, this.backgroundWidth, this.backgroundHeight);
     }
@@ -82,13 +82,13 @@ public abstract class PipeScreen<SH extends ScreenHandler> extends HandledScreen
         addPriorityButton(startX + 22, startY, 12, 0, "-", -1, priority, tooltip);
         addPriorityButton(startX + 62, startY, 12, 0, "+", +1, priority, tooltip);
         addPriorityButton(startX + 76, startY, 20, 12, "++", +10, priority, tooltip);
-        addButton(new PriorityDisplay(startX + 34 + this.x, startY + this.y, 28, 12, new LiteralText(""), tooltip, priority::getPriority,
+        addDrawableChild(new PriorityDisplay(startX + 34 + this.x, startY + this.y, 28, 12, new LiteralText(""), tooltip, priority::getPriority,
                 textRenderer));
     }
 
     private void addPriorityButton(int x, int y, int width, int u, String text, int delta, PriorityInterface priority,
             ButtonWidget.TooltipSupplier priorityTooltip) {
-        addButton(new PriorityButton(x + this.x, y + this.y, width, u, text, button -> {
+        addDrawableChild(new PriorityButton(x + this.x, y + this.y, width, u, text, button -> {
             priority.incrementPriority(delta);
             PacketByteBuf buf = PacketByteBufs.create();
             buf.writeInt(handler.syncId);
@@ -98,7 +98,7 @@ public abstract class PipeScreen<SH extends ScreenHandler> extends HandledScreen
     }
 
     protected void addConnectionTypeButton(int x, int y, ConnectionTypeInterface connectionType) {
-        addButton(new ConnectionTypeButton(x + this.x, y + this.y, widget -> {
+        addDrawableChild(new ConnectionTypeButton(x + this.x, y + this.y, widget -> {
             int newType = (connectionType.getConnectionType() + 1) % 3;
             connectionType.setConnectionType(newType);
             PacketByteBuf buf = PacketByteBufs.create();

@@ -24,11 +24,11 @@
 package aztech.modern_industrialization.machines.blockentities;
 
 import aztech.modern_industrialization.api.energy.CableTier;
-import net.minecraft.block.entity.BlockEntityType;
+import aztech.modern_industrialization.machines.BEP;
 
 public class StorageMachineBlockEntity extends AbstractStorageMachineBlockEntity {
 
-    public StorageMachineBlockEntity(BlockEntityType<?> type, CableTier tier, String name, long eu_capacity) {
-        super(type, tier, tier, name, eu_capacity);
+    public StorageMachineBlockEntity(BEP bep, CableTier tier, String name, long eu_capacity) {
+        super(bep, tier, tier, name, eu_capacity);
     }
 }

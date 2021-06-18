@@ -23,12 +23,11 @@
  */
 package aztech.modern_industrialization.blocks.tank;
 
-import aztech.modern_industrialization.blocks.tank.TankItem.TankItemStorage;
-import aztech.modern_industrialization.transferapi.api.context.ContainerItemContext;
-import aztech.modern_industrialization.transferapi.api.fluid.ItemFluidApi;
-import aztech.modern_industrialization.transferapi.api.item.ItemKey;
 import aztech.modern_industrialization.util.FluidHelper;
 import aztech.modern_industrialization.util.NbtHelper;
+import dev.technici4n.fasttransferlib.experimental.api.context.ContainerItemContext;
+import dev.technici4n.fasttransferlib.experimental.api.fluid.ItemFluidStorage;
+import dev.technici4n.fasttransferlib.experimental.api.item.ItemKey;
 import java.util.Iterator;
 import java.util.List;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidKey;
@@ -60,7 +59,7 @@ public class TankItem extends BlockItem {
     }
 
     public void registerItemApi() {
-        ItemFluidApi.ITEM.registerForItems(TankItemStorage::new, this);
+        ItemFluidStorage.ITEM.registerForItems(TankItemStorage::new, this);
     }
 
     public boolean isEmpty(ItemStack stack) {

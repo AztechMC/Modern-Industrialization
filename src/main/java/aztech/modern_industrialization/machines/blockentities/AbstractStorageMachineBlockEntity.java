@@ -28,6 +28,7 @@ import aztech.modern_industrialization.api.energy.EnergyApi;
 import aztech.modern_industrialization.api.energy.EnergyExtractable;
 import aztech.modern_industrialization.api.energy.EnergyInsertable;
 import aztech.modern_industrialization.inventory.MIInventory;
+import aztech.modern_industrialization.machines.BEP;
 import aztech.modern_industrialization.machines.MachineBlockEntity;
 import aztech.modern_industrialization.machines.components.EnergyComponent;
 import aztech.modern_industrialization.machines.components.OrientationComponent;
@@ -38,13 +39,13 @@ import aztech.modern_industrialization.machines.helper.OrientationHelper;
 import aztech.modern_industrialization.machines.models.MachineCasing;
 import aztech.modern_industrialization.machines.models.MachineCasings;
 import aztech.modern_industrialization.machines.models.MachineModelClientData;
+import aztech.modern_industrialization.util.Tickable;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
-import net.minecraft.util.Tickable;
 import net.minecraft.util.math.Direction;
 
 public abstract class AbstractStorageMachineBlockEntity extends MachineBlockEntity implements Tickable {
@@ -58,8 +59,8 @@ public abstract class AbstractStorageMachineBlockEntity extends MachineBlockEnti
     protected final long eu_capacity;
     protected final CableTier from, to;
 
-    public AbstractStorageMachineBlockEntity(BlockEntityType<?> type, CableTier from, CableTier to, String name, long eu_capacity) {
-        super(type, new MachineGuiParameters.Builder(name, false).build());
+    public AbstractStorageMachineBlockEntity(BEP bep, CableTier from, CableTier to, String name, long eu_capacity) {
+        super(bep, new MachineGuiParameters.Builder(name, false).build());
 
         this.from = from;
         this.to = to;

@@ -24,8 +24,8 @@
 package aztech.modern_industrialization.machines.components;
 
 import aztech.modern_industrialization.MIFluids;
-import aztech.modern_industrialization.transferapi.api.context.ContainerItemContext;
-import aztech.modern_industrialization.transferapi.api.fluid.ItemFluidApi;
+import dev.technici4n.fasttransferlib.experimental.api.context.ContainerItemContext;
+import dev.technici4n.fasttransferlib.experimental.api.fluid.ItemFluidStorage;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidKey;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
@@ -44,7 +44,7 @@ public class LubricantHelper {
             int maxTick = crafter.getMaxEfficiencyTicks();
             int rem = maxTick - tick;
             if (rem > 0) {
-                Storage<FluidKey> handIo = ItemFluidApi.ITEM.find(player.getStackInHand(hand), ContainerItemContext.ofPlayerHand(player, hand));
+                Storage<FluidKey> handIo = ItemFluidStorage.ITEM.find(player.getStackInHand(hand), ContainerItemContext.ofPlayerHand(player, hand));
                 if (handIo != null) {
                     try (Transaction tx = Transaction.openOuter()) {
                         long extracted = handIo.extract(FluidKey.of(MIFluids.LUBRICANT), rem * dropPerTick, tx);

@@ -30,6 +30,7 @@ import aztech.modern_industrialization.blocks.tank.MITanks;
 import aztech.modern_industrialization.inventory.ConfigurableFluidStack;
 import aztech.modern_industrialization.inventory.MIInventory;
 import aztech.modern_industrialization.inventory.SlotPositions;
+import aztech.modern_industrialization.machines.BEP;
 import aztech.modern_industrialization.machines.components.EnergyComponent;
 import aztech.modern_industrialization.machines.components.sync.EnergyBar;
 import aztech.modern_industrialization.machines.models.MachineModelClientData;
@@ -39,8 +40,8 @@ import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.fluid.Fluids;
 
 public class ElectricWaterPumpBlockEntity extends AbstractWaterPumpBlockEntity {
-    public ElectricWaterPumpBlockEntity(BlockEntityType<?> type) {
-        super(type, "lv_water_pump");
+    public ElectricWaterPumpBlockEntity(BEP bep) {
+        super(bep, "lv_water_pump");
 
         long capacity = 81000 * MITanks.BRONZE.bucketCapacity * 8;
         this.inventory = new MIInventory(Collections.emptyList(),

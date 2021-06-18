@@ -24,6 +24,7 @@
 package aztech.modern_industrialization.machines.blockentities;
 
 import aztech.modern_industrialization.inventory.MIInventory;
+import aztech.modern_industrialization.machines.BEP;
 import aztech.modern_industrialization.machines.MachineBlockEntity;
 import aztech.modern_industrialization.machines.components.CrafterComponent;
 import aztech.modern_industrialization.machines.components.IsActiveComponent;
@@ -36,20 +37,19 @@ import aztech.modern_industrialization.machines.gui.MachineGuiParameters;
 import aztech.modern_industrialization.machines.helper.OrientationHelper;
 import aztech.modern_industrialization.machines.init.MachineTier;
 import aztech.modern_industrialization.machines.recipe.MachineRecipeType;
-import net.minecraft.block.entity.BlockEntityType;
+import aztech.modern_industrialization.util.Tickable;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
-import net.minecraft.util.Tickable;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 
 public abstract class AbstractCraftingMachineBlockEntity extends MachineBlockEntity implements CrafterComponent.Behavior, Tickable {
-    public AbstractCraftingMachineBlockEntity(BlockEntityType<?> type, MachineRecipeType recipeType, MachineInventoryComponent inventory,
+    public AbstractCraftingMachineBlockEntity(BEP bep, MachineRecipeType recipeType, MachineInventoryComponent inventory,
             MachineGuiParameters guiParams, ProgressBar.Parameters progressBarParams, MachineTier tier) {
-        super(type, guiParams);
+        super(bep, guiParams);
         this.inventory = inventory;
         this.crafter = new CrafterComponent(inventory, this);
         this.orientation = new OrientationComponent(

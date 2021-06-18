@@ -23,20 +23,21 @@
  */
 package aztech.modern_industrialization.pipes.fluid;
 
-import alexiil.mc.lib.attributes.fluid.FluidTransferable;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidKey;
+import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 
 /**
  * A target to be used during a transfer operation.
  */
 class FluidTarget {
     final int priority;
-    final FluidTransferable transferable;
+    final Storage<FluidKey> storage;
 
     // A temporary value used to sort fluid targets
     long simulationResult;
 
-    public FluidTarget(int priority, FluidTransferable transferable) {
+    public FluidTarget(int priority, Storage<FluidKey> storage) {
         this.priority = priority;
-        this.transferable = transferable;
+        this.storage = storage;
     }
 }

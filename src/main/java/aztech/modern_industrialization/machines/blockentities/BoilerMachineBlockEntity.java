@@ -29,6 +29,7 @@ import aztech.modern_industrialization.inventory.ConfigurableFluidStack;
 import aztech.modern_industrialization.inventory.ConfigurableItemStack;
 import aztech.modern_industrialization.inventory.MIInventory;
 import aztech.modern_industrialization.inventory.SlotPositions;
+import aztech.modern_industrialization.machines.BEP;
 import aztech.modern_industrialization.machines.MachineBlockEntity;
 import aztech.modern_industrialization.machines.components.FuelBurningComponent;
 import aztech.modern_industrialization.machines.components.IsActiveComponent;
@@ -40,17 +41,16 @@ import aztech.modern_industrialization.machines.gui.MachineGuiParameters;
 import aztech.modern_industrialization.machines.helper.OrientationHelper;
 import aztech.modern_industrialization.machines.models.MachineCasings;
 import aztech.modern_industrialization.machines.models.MachineModelClientData;
+import aztech.modern_industrialization.util.Tickable;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
-import net.minecraft.util.Tickable;
 import net.minecraft.util.math.Direction;
 
 public class BoilerMachineBlockEntity extends MachineBlockEntity implements Tickable {
@@ -73,8 +73,8 @@ public class BoilerMachineBlockEntity extends MachineBlockEntity implements Tick
 
     protected IsActiveComponent isActiveComponent;
 
-    public BoilerMachineBlockEntity(BlockEntityType<?> type, boolean bronze) {
-        super(type, new MachineGuiParameters.Builder(bronze ? "bronze_boiler" : "steel_boiler", true).backgroundHeight(180).build());
+    public BoilerMachineBlockEntity(BEP bep, boolean bronze) {
+        super(bep, new MachineGuiParameters.Builder(bronze ? "bronze_boiler" : "steel_boiler", true).backgroundHeight(180).build());
         orientation = new OrientationComponent(new OrientationComponent.Params(false, false, false));
 
         int capacity = 81000 * (bronze ? 2 * MITanks.BRONZE.bucketCapacity : 2 * MITanks.STEEL.bucketCapacity);

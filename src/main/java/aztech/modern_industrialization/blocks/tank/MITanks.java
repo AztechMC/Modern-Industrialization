@@ -32,13 +32,14 @@ import aztech.modern_industrialization.blocks.creativetank.CreativeTankBlockEnti
 import aztech.modern_industrialization.blocks.creativetank.CreativeTankItem;
 import aztech.modern_industrialization.blocks.creativetank.CreativeTankRenderer;
 import aztech.modern_industrialization.machines.models.MachineModelProvider;
-import aztech.modern_industrialization.transferapi.api.fluid.ItemFluidApi;
 import aztech.modern_industrialization.util.ResourceUtil;
+import dev.technici4n.fasttransferlib.experimental.api.fluid.ItemFluidStorage;
 import java.util.Arrays;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.rendereregistry.v1.BlockEntityRendererRegistry;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
+import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidTransfer;
 import net.minecraft.block.Block;
 import net.minecraft.block.Material;
@@ -80,9 +81,9 @@ public enum MITanks {
             ResourceUtil.appendWrenchable(new MIIdentifier(tankId));
         }
         BLOCK_ENTITY_TYPE = Registry.register(Registry.BLOCK_ENTITY_TYPE, new MIIdentifier("tank"),
-                BlockEntityType.Builder.create(TankBlockEntity::new, getBlocks()).build(null));
+                FabricBlockEntityTypeBuilder.create(TankBlockEntity::new, getBlocks()).build(null));
         CREATIVE_BLOCK_ENTITY_TYPE = Registry.register(Registry.BLOCK_ENTITY_TYPE, new MIIdentifier("creative_tank"),
-                BlockEntityType.Builder.create(CreativeTankBlockEntity::new, CREATIVE_TANK_BLOCK).build(null));
+                FabricBlockEntityTypeBuilder.create(CreativeTankBlockEntity::new, CREATIVE_TANK_BLOCK).build(null));
 
         // Fluid API
         FluidTransfer.SIDED.registerForBlockEntities((be, direction) -> be instanceof TankBlockEntity ? (TankBlockEntity) be : null,
@@ -92,7 +93,7 @@ public enum MITanks {
         for (MITanks tank : values()) {
             tank.item.registerItemApi();
         }
-        ItemFluidApi.ITEM.registerForItems(CreativeTankItem.TankItemStorage::new, CREATIVE_TANK_ITEM);
+        ItemFluidStorage.ITEM.registerForItems(CreativeTankItem.TankItemStorage::new, CREATIVE_TANK_ITEM);
     }
 
     @Environment(EnvType.CLIENT)

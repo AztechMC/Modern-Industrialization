@@ -25,6 +25,7 @@ package aztech.modern_industrialization.machines.blockentities.multiblocks;
 
 import aztech.modern_industrialization.MIBlock;
 import aztech.modern_industrialization.compat.rei.machines.ReiMachineRecipes;
+import aztech.modern_industrialization.machines.BEP;
 import aztech.modern_industrialization.machines.components.*;
 import aztech.modern_industrialization.machines.init.MIMachineRecipeTypes;
 import aztech.modern_industrialization.machines.init.MachineTier;
@@ -34,7 +35,6 @@ import aztech.modern_industrialization.machines.recipe.MachineRecipeType;
 import aztech.modern_industrialization.util.Simulation;
 import java.util.ArrayList;
 import java.util.List;
-import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
@@ -46,8 +46,8 @@ import net.minecraft.world.World;
 public class DistillationTowerBlockEntity extends AbstractCraftingMultiblockBlockEntity {
     private static final ShapeTemplate[] shapeTemplates;
 
-    public DistillationTowerBlockEntity(BlockEntityType<?> type) {
-        super(type, "distillation_tower", new OrientationComponent(new OrientationComponent.Params(false, false, false)), shapeTemplates);
+    public DistillationTowerBlockEntity(BEP bep) {
+        super(bep, "distillation_tower", new OrientationComponent(new OrientationComponent.Params(false, false, false)), shapeTemplates);
         this.upgrades = new UpgradeComponent();
         this.registerComponents(upgrades);
     }

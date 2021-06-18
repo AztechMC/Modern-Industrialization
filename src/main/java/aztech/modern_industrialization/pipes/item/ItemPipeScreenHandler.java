@@ -73,19 +73,19 @@ public class ItemPipeScreenHandler extends PipeScreenHandler {
     }
 
     @Override
-    public ItemStack onSlotClick(int i, int j, SlotActionType actionType, PlayerEntity playerEntity) {
+    public void onSlotClick(int i, int j, SlotActionType actionType, PlayerEntity playerEntity) {
         if (i >= 0) {
             Slot slot = slots.get(i);
             if (slot instanceof FilterSlot) {
                 if (actionType == SlotActionType.PICKUP) {
-                    slot.setStack(playerEntity.inventory.getCursorStack().copy());
+                    slot.setStack(getCursorStack().copy());
                 } else if (actionType == SlotActionType.QUICK_MOVE) {
                     slot.setStack(ItemStack.EMPTY);
                 }
-                return slot.getStack();
+                return;
             }
         }
-        return super.onSlotClick(i, j, actionType, playerEntity);
+        super.onSlotClick(i, j, actionType, playerEntity);
     }
 
     @Override

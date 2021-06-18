@@ -45,7 +45,7 @@ class PriorityButton extends ButtonWidget {
         TextRenderer textRenderer = minecraftClient.textRenderer;
         minecraftClient.getTextureManager().bindTexture(PipeGuiHelper.BUTTON_TEXTURE);
         int v = this.isHovered() ? 40 + this.height : 40;
-        RenderSystem.color4f(1.0F, 1.0F, 1.0F, this.alpha);
+        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, this.alpha);
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
         RenderSystem.enableDepthTest();

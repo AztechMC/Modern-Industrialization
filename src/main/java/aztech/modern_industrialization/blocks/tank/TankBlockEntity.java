@@ -24,9 +24,9 @@
 package aztech.modern_industrialization.blocks.tank;
 
 import aztech.modern_industrialization.api.FastBlockEntity;
-import aztech.modern_industrialization.transferapi.api.context.ContainerItemContext;
-import aztech.modern_industrialization.transferapi.api.fluid.ItemFluidApi;
 import aztech.modern_industrialization.util.NbtHelper;
+import dev.technici4n.fasttransferlib.experimental.api.context.ContainerItemContext;
+import dev.technici4n.fasttransferlib.experimental.api.fluid.ItemFluidStorage;
 import java.util.Iterator;
 import net.fabricmc.fabric.api.block.entity.BlockEntityClientSerializable;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidKey;
@@ -42,6 +42,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.Hand;
+import net.minecraft.util.math.BlockPos;
 
 public class TankBlockEntity extends FastBlockEntity implements Storage<FluidKey>, StorageView<FluidKey>, BlockEntityClientSerializable {
     FluidKey fluid = FluidKey.empty();
@@ -50,8 +51,8 @@ public class TankBlockEntity extends FastBlockEntity implements Storage<FluidKey
     private int version = 0;
     private final TankParticipant participant = new TankParticipant();
 
-    public TankBlockEntity() {
-        super(MITanks.BLOCK_ENTITY_TYPE);
+    public TankBlockEntity(BlockPos pos, BlockState state) {
+        super(MITanks.BLOCK_ENTITY_TYPE, pos, state);
     }
 
     public boolean isEmpty() {
@@ -95,9 +96,9 @@ public class TankBlockEntity extends FastBlockEntity implements Storage<FluidKey
     }
 
     @Override
-    public void readNbt(BlockState state, NbtCompound tag) {
+    public void readNbt(NbtCompound tag) {
         fromClientTag(tag);
-        super.readNbt(state, tag);
+        super.readNbt(tag);
     }
 
     public void setCapacity(long capacity) {
@@ -105,7 +106,7 @@ public class TankBlockEntity extends FastBlockEntity implements Storage<FluidKey
     }
 
     public boolean onPlayerUse(PlayerEntity player) {
-        Storage<FluidKey> handIo = ItemFluidApi.ITEM.find(player.getMainHandStack(), ContainerItemContext.ofPlayerHand(player, Hand.MAIN_HAND));
+        Storage<FluidKey> handIo = ContainerItemContext.ofPlayerHand(player, Hand.MAIN_HAND).find(ItemFluidStorage.ITEM);
         if (handIo != null) {
             // move from hand into this tank
             if (Movement.move(handIo, this, f -> true, Integer.MAX_VALUE, null) > 0)
@@ -192,8 +193,8 @@ public class TankBlockEntity extends FastBlockEntity implements Storage<FluidKey
 
         @Override
         protected void readSnapshot(ResourceAmount<FluidKey> snapshot) {
-            fluid = snapshot.resource;
-            amount = snapshot.amount;
+            fluid = snapshot.resource();
+            amount = snapshot.amount();
         }
 
         @Override

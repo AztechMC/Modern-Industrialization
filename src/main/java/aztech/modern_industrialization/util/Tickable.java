@@ -21,38 +21,8 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.transferapi.api.item;
+package aztech.modern_industrialization.util;
 
-import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
-import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
-import org.jetbrains.annotations.ApiStatus;
-
-/**
- * A wrapper around a PlayerInventory.
- *
- * <p>
- * Do not implement. Obtain an instance through
- * {@link InventoryWrappers#ofPlayerInventory} instead.
- */
-@ApiStatus.NonExtendable
-public interface PlayerInventoryWrapper {
-    /**
-     * Return a wrapper around a specific slot of the player inventory.
-     *
-     * <p>
-     * Slots 0 to 35 are for the main inventory, slots 36 to 39 are for the armor,
-     * and slot 40 is the offhand slot.
-     */
-    Storage<ItemKey> slotWrapper(int index);
-
-    /**
-     * Return a wrapper around the cursor slot of the player inventory.
-     */
-    Storage<ItemKey> cursorSlotWrapper();
-
-    /**
-     * Add items to the inventory if possible, and drop any leftover items in the
-     * world.
-     */
-    void offerOrDrop(ItemKey key, long amount, Transaction transaction);
+public interface Tickable {
+    public void tick();
 }

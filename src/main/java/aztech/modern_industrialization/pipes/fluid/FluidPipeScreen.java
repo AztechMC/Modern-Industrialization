@@ -28,13 +28,13 @@ import aztech.modern_industrialization.machines.MachineScreenHandlers;
 import aztech.modern_industrialization.pipes.gui.PipeScreen;
 import aztech.modern_industrialization.pipes.impl.PipePackets;
 import aztech.modern_industrialization.transferapi.FluidTransferHelper;
-import aztech.modern_industrialization.transferapi.api.context.ContainerItemContext;
-import aztech.modern_industrialization.transferapi.api.fluid.ItemFluidApi;
 import aztech.modern_industrialization.util.FluidHelper;
 import aztech.modern_industrialization.util.InputHelper;
 import aztech.modern_industrialization.util.RenderHelper;
 import aztech.modern_industrialization.util.TextHelper;
 import com.mojang.blaze3d.systems.RenderSystem;
+import dev.technici4n.fasttransferlib.experimental.api.context.ContainerItemContext;
+import dev.technici4n.fasttransferlib.experimental.api.fluid.ItemFluidStorage;
 import java.util.ArrayList;
 import java.util.List;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
@@ -72,7 +72,7 @@ public class FluidPipeScreen extends PipeScreen<FluidPipeScreenHandler> {
     }
 
     private void addNetworkFluidButton() {
-        addButton(new NetworkFluidButton(72 + this.x, 20 + this.y, widget -> updateNetworkFluid(), (button, matrices, mouseX, mouseY) -> {
+        addDrawableChild(new NetworkFluidButton(72 + this.x, 20 + this.y, widget -> updateNetworkFluid(), (button, matrices, mouseX, mouseY) -> {
             List<Text> lines = new ArrayList<>();
             lines.add(FluidHelper.getFluidName(handler.iface.getNetworkFluid(), false));
             if (!handler.iface.getNetworkFluid().isEmpty()) {
@@ -89,9 +89,8 @@ public class FluidPipeScreen extends PipeScreen<FluidPipeScreenHandler> {
         FluidKey targetFluid = null;
         if (iface.getNetworkFluid().isEmpty()) {
             // Want to set the fluid
-            ItemStack cursorStack = playerInventory.getCursorStack();
-            FluidKey fluid = FluidTransferHelper
-                    .findFluid(ItemFluidApi.ITEM.find(cursorStack, ContainerItemContext.ofPlayerCursor(playerInventory.player)));
+            ItemStack cursorStack = handler.getCursorStack();
+            FluidKey fluid = FluidTransferHelper.findFluid(ContainerItemContext.ofPlayerCursor(client.player, handler).find(ItemFluidStorage.ITEM));
             if (!fluid.isEmpty()) {
                 targetFluid = fluid;
             }

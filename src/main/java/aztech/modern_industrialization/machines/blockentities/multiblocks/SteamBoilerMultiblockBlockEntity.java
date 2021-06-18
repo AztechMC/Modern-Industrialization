@@ -24,6 +24,7 @@
 package aztech.modern_industrialization.machines.blockentities.multiblocks;
 
 import aztech.modern_industrialization.inventory.MIInventory;
+import aztech.modern_industrialization.machines.BEP;
 import aztech.modern_industrialization.machines.components.*;
 import aztech.modern_industrialization.machines.components.sync.ProgressBar;
 import aztech.modern_industrialization.machines.components.sync.TemperatureBar;
@@ -32,10 +33,9 @@ import aztech.modern_industrialization.machines.models.MachineModelClientData;
 import aztech.modern_industrialization.machines.multiblocks.MultiblockMachineBlockEntity;
 import aztech.modern_industrialization.machines.multiblocks.ShapeMatcher;
 import aztech.modern_industrialization.machines.multiblocks.ShapeTemplate;
-import net.minecraft.block.entity.BlockEntityType;
+import aztech.modern_industrialization.util.Tickable;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.Tickable;
 
 public class SteamBoilerMultiblockBlockEntity extends MultiblockMachineBlockEntity implements Tickable {
 
@@ -48,9 +48,8 @@ public class SteamBoilerMultiblockBlockEntity extends MultiblockMachineBlockEnti
     private final SteamHeaterComponent steamHeater;
     private final FuelBurningComponent fuelBurning;
 
-    public SteamBoilerMultiblockBlockEntity(BlockEntityType<?> type, ShapeTemplate shapeTemplate, String name, long maxEuProduction,
-            boolean highPressure) {
-        super(type, new MachineGuiParameters.Builder(name, false).build(),
+    public SteamBoilerMultiblockBlockEntity(BEP bep, ShapeTemplate shapeTemplate, String name, long maxEuProduction, boolean highPressure) {
+        super(bep, new MachineGuiParameters.Builder(name, false).build(),
                 new OrientationComponent(new OrientationComponent.Params(false, false, false)));
 
         isActiveComponent = new IsActiveComponent();

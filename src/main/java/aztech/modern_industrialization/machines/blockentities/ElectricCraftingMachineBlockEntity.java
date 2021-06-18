@@ -26,6 +26,7 @@ package aztech.modern_industrialization.machines.blockentities;
 import aztech.modern_industrialization.api.energy.CableTier;
 import aztech.modern_industrialization.api.energy.EnergyApi;
 import aztech.modern_industrialization.api.energy.EnergyInsertable;
+import aztech.modern_industrialization.machines.BEP;
 import aztech.modern_industrialization.machines.components.*;
 import aztech.modern_industrialization.machines.components.sync.EnergyBar;
 import aztech.modern_industrialization.machines.components.sync.ProgressBar;
@@ -45,10 +46,10 @@ import net.minecraft.util.math.Direction;
 
 public class ElectricCraftingMachineBlockEntity extends AbstractCraftingMachineBlockEntity {
 
-    public ElectricCraftingMachineBlockEntity(BlockEntityType<?> type, MachineRecipeType recipeType, MachineInventoryComponent inventory,
+    public ElectricCraftingMachineBlockEntity(BEP bep, MachineRecipeType recipeType, MachineInventoryComponent inventory,
             MachineGuiParameters guiParams, EnergyBar.Parameters energyBarParams, ProgressBar.Parameters progressBarParams,
             RecipeEfficiencyBar.Parameters efficiencyBarParams, MachineTier tier, long euCapacity) {
-        super(type, recipeType, inventory, guiParams, progressBarParams, tier);
+        super(bep, recipeType, inventory, guiParams, progressBarParams, tier);
         this.casing = new CasingComponent(CableTier.LV);
         this.upgrades = new UpgradeComponent();
         this.energy = new EnergyComponent(casing::getEuCapacity);

@@ -23,6 +23,7 @@
  */
 package aztech.modern_industrialization.machines.blockentities;
 
+import aztech.modern_industrialization.machines.BEP;
 import aztech.modern_industrialization.machines.components.GunpowderOverclockComponent;
 import aztech.modern_industrialization.machines.components.MachineInventoryComponent;
 import aztech.modern_industrialization.machines.components.sync.ProgressBar;
@@ -32,7 +33,6 @@ import aztech.modern_industrialization.machines.init.MachineTier;
 import aztech.modern_industrialization.machines.models.MachineModelClientData;
 import aztech.modern_industrialization.machines.recipe.MachineRecipeType;
 import aztech.modern_industrialization.util.Simulation;
-import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
@@ -42,9 +42,9 @@ public class SteamCraftingMachineBlockEntity extends AbstractCraftingMachineBloc
 
     private final GunpowderOverclockComponent gunpowderOverclock;
 
-    public SteamCraftingMachineBlockEntity(BlockEntityType<?> type, MachineRecipeType recipeType, MachineInventoryComponent inventory,
-            MachineGuiParameters guiParams, ProgressBar.Parameters progressBarParams, MachineTier tier) {
-        super(type, recipeType, inventory, guiParams, progressBarParams, tier);
+    public SteamCraftingMachineBlockEntity(BEP bep, MachineRecipeType recipeType, MachineInventoryComponent inventory, MachineGuiParameters guiParams,
+            ProgressBar.Parameters progressBarParams, MachineTier tier) {
+        super(bep, recipeType, inventory, guiParams, progressBarParams, tier);
         gunpowderOverclock = new GunpowderOverclockComponent();
         this.registerComponents(gunpowderOverclock);
     }

@@ -23,8 +23,8 @@
  */
 package aztech.modern_industrialization.inventory;
 
-import aztech.modern_industrialization.transferapi.api.context.ContainerItemContext;
-import aztech.modern_industrialization.transferapi.api.fluid.ItemFluidApi;
+import dev.technici4n.fasttransferlib.experimental.api.context.ContainerItemContext;
+import dev.technici4n.fasttransferlib.experimental.api.fluid.ItemFluidStorage;
 import io.netty.buffer.Unpooled;
 import java.util.List;
 import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
@@ -94,20 +94,19 @@ public abstract class ConfigurableScreenHandler extends ScreenHandler {
     }
 
     @Override
-    public ItemStack onSlotClick(int i, int j, SlotActionType actionType, PlayerEntity playerEntity) {
+    public void onSlotClick(int i, int j, SlotActionType actionType, PlayerEntity playerEntity) {
         if (i >= 0) {
             Slot slot = this.slots.get(i);
             if (slot instanceof ConfigurableFluidStack.ConfigurableFluidSlot) {
                 if (actionType != SlotActionType.PICKUP) {
-                    return ItemStack.EMPTY;
+                    return;
                 }
                 ConfigurableFluidStack.ConfigurableFluidSlot fluidSlot = (ConfigurableFluidStack.ConfigurableFluidSlot) slot;
                 ConfigurableFluidStack fluidStack = fluidSlot.getConfStack();
                 if (lockingMode) {
                     fluidStack.togglePlayerLock();
                 } else {
-                    Storage<FluidKey> io = ItemFluidApi.ITEM.find(playerEntity.inventory.getCursorStack(),
-                            ContainerItemContext.ofPlayerCursor(playerEntity));
+                    Storage<FluidKey> io = ContainerItemContext.ofPlayerCursor(playerEntity, this).find(ItemFluidStorage.ITEM);
                     if (io != null) {
                         // Extract first
                         long previousAmount = fluidStack.getAmount();
@@ -129,7 +128,7 @@ public abstract class ConfigurableScreenHandler extends ScreenHandler {
                         }
                         if (previousAmount != fluidStack.getAmount()) {
                             // TODO: markDirty?
-                            return ItemStack.EMPTY;
+                            return;
                         }
 
                         // Otherwise insert
@@ -139,25 +138,25 @@ public abstract class ConfigurableScreenHandler extends ScreenHandler {
                                 fluidStack.decrement(io.insert(fluid, fluidStack.getAmount(), tx));
                                 tx.commit();
                                 // TODO: markDirty?
-                                return ItemStack.EMPTY;
+                                return;
                             }
                         }
                     }
                 }
-                return fluidSlot.getStack().copy();
+                return;
             } else if (slot instanceof ConfigurableItemStack.ConfigurableItemSlot) {
                 if (lockingMode) {
                     if (actionType != SlotActionType.PICKUP) {
-                        return ItemStack.EMPTY;
+                        return;
                     }
                     ConfigurableItemStack.ConfigurableItemSlot itemSlot = (ConfigurableItemStack.ConfigurableItemSlot) slot;
                     ConfigurableItemStack itemStack = itemSlot.getConfStack();
-                    itemStack.togglePlayerLock(playerInventory.getCursorStack());
-                    return itemStack.getItemKey().toStack(itemStack.getCount()).copy();
+                    itemStack.togglePlayerLock(getCursorStack());
+                    return;
                 }
             }
         }
-        return super.onSlotClick(i, j, actionType, playerEntity);
+        super.onSlotClick(i, j, actionType, playerEntity);
     }
 
     @Override
@@ -217,7 +216,7 @@ public abstract class ConfigurableScreenHandler extends ScreenHandler {
 
                 slot2 = this.slots.get(i);
                 itemStack = slot2.getStack();
-                if (!itemStack.isEmpty() && canStacksCombine(stack, itemStack) && slot2.canInsert(stack)) {
+                if (!itemStack.isEmpty() && ItemStack.canCombine(stack, itemStack) && slot2.canInsert(stack)) {
                     int j = itemStack.getCount() + stack.getCount();
                     if (j <= stack.getMaxCount()) {
                         stack.setCount(0);

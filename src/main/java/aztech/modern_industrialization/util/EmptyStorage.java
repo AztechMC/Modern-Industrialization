@@ -21,45 +21,47 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.transferapi.impl.context;
+package aztech.modern_industrialization.util;
 
-import aztech.modern_industrialization.transferapi.api.context.ContainerItemContext;
-import aztech.modern_industrialization.transferapi.api.item.ItemKey;
-import com.google.common.base.Preconditions;
+import java.util.Iterator;
+import java.util.NoSuchElementException;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
+import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 
-public class StorageContainerItemContext implements ContainerItemContext {
-    private final ItemKey boundKey;
-    private final Storage<ItemKey> storage;
-
-    public StorageContainerItemContext(ItemKey boundKey, Storage<ItemKey> storage) {
-        this.boundKey = boundKey;
-        this.storage = storage;
-    }
-
+public class EmptyStorage<T> implements Storage<T> {
     @Override
-    public long getCount(Transaction tx) {
-        try (Transaction nested = tx.openNested()) {
-            return storage.extract(boundKey, Long.MAX_VALUE, nested);
-        }
-    }
-
-    @Override
-    public boolean transform(long count, ItemKey into, Transaction tx) {
-        Preconditions.checkArgument(count <= getCount(tx));
-
-        try (Transaction nested = tx.openNested()) {
-            if (storage.extract(boundKey, count, nested) != count) {
-                throw new AssertionError("Bad implementation.");
-            }
-
-            if (storage.insert(into, count, nested) == count) {
-                nested.commit();
-                return true;
-            }
-        }
-
+    public boolean supportsInsertion() {
         return false;
+    }
+
+    @Override
+    public long insert(T resource, long maxAmount, Transaction transaction) {
+        return 0;
+    }
+
+    @Override
+    public boolean supportsExtraction() {
+        return false;
+    }
+
+    @Override
+    public long extract(T resource, long maxAmount, Transaction transaction) {
+        return 0;
+    }
+
+    @Override
+    public Iterator<StorageView<T>> iterator(Transaction transaction) {
+        return new Iterator<>() {
+            @Override
+            public boolean hasNext() {
+                return false;
+            }
+
+            @Override
+            public StorageView<T> next() {
+                throw new NoSuchElementException();
+            }
+        };
     }
 }

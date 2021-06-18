@@ -23,8 +23,10 @@
  */
 package aztech.modern_industrialization.api;
 
+import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
+import net.minecraft.util.math.BlockPos;
 
 /**
  * Special BlockEntity that does NOT update comparators when markDirty is
@@ -32,15 +34,14 @@ import net.minecraft.block.entity.BlockEntityType;
  * BlockState, don't use block states with this class!
  */
 public abstract class FastBlockEntity extends BlockEntity {
-    public FastBlockEntity(BlockEntityType<?> type) {
-        super(type);
+    public FastBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
+        super(type, pos, state);
     }
 
     @Override
     public void markDirty() {
         if (this.world != null) {
-            getCachedState(); // update cached state if it never existed
-            this.world.markDirty(this.pos, this);
+            this.world.markDirty(this.pos);
         }
     }
 }

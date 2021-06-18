@@ -337,8 +337,8 @@ public class ConfigurableFluidStack extends SnapshotParticipant<ResourceAmount<F
 
     @Override
     protected void readSnapshot(ResourceAmount<FluidKey> snapshot) {
-        this.fluid = snapshot.resource;
-        this.amount = snapshot.amount;
+        this.fluid = snapshot.resource();
+        this.amount = snapshot.amount();
     }
 
     public class ConfigurableFluidSlot extends Slot {

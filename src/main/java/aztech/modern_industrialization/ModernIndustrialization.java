@@ -48,10 +48,9 @@ import aztech.modern_industrialization.materials.MIMaterials;
 import aztech.modern_industrialization.misc.guidebook.GuidebookEvents;
 import aztech.modern_industrialization.pipes.MIPipes;
 import aztech.modern_industrialization.recipe.MIRecipes;
-import aztech.modern_industrialization.transferapi.api.fluid.ItemFluidApi;
-import aztech.modern_industrialization.transferapi.api.item.ItemApi;
-import aztech.modern_industrialization.transferapi.impl.compat.TransferLbaCompat;
 import aztech.modern_industrialization.util.ChunkUnloadBlockEntity;
+import dev.technici4n.fasttransferlib.experimental.api.fluid.ItemFluidStorage;
+import dev.technici4n.fasttransferlib.experimental.api.item.ItemStorage;
 import java.util.Map;
 import me.shedaniel.cloth.api.common.events.v1.PlayerChangeWorldCallback;
 import me.shedaniel.cloth.api.common.events.v1.PlayerLeaveCallback;
@@ -134,8 +133,6 @@ public class ModernIndustrialization implements ModInitializer {
         // This code runs as soon as Minecraft is in a mod-load-ready state.
         // However, some things (like resources) may still be uninitialized.
         // Proceed with mild caution.
-        TransferLbaCompat.init();
-
         MIMaterials.init();
         MIMachineRecipeTypes.init();
         SingleBlockCraftingMachines.init();
@@ -185,9 +182,9 @@ public class ModernIndustrialization implements ModInitializer {
         registerItem(ITEM_DIESEL_CHAINSAW, "diesel_chainsaw", true);
         registerItem(ITEM_DIESEL_DRILL, "diesel_mining_drill", true);
 
-        ItemFluidApi.ITEM.registerForItems((stack, ctx) -> new FluidFuelItemHelper.ItemStorage(DieselToolItem.CAPACITY, stack, ctx),
+        ItemFluidStorage.ITEM.registerForItems((stack, ctx) -> new FluidFuelItemHelper.ItemStorage(DieselToolItem.CAPACITY, stack, ctx),
                 ITEM_DIESEL_CHAINSAW, ITEM_DIESEL_DRILL);
-        ItemFluidApi.ITEM.registerForItems((stack, ctx) -> new FluidFuelItemHelper.ItemStorage(JetpackItem.CAPACITY, stack, ctx), ITEM_JETPACK);
+        ItemFluidStorage.ITEM.registerForItems((stack, ctx) -> new FluidFuelItemHelper.ItemStorage(JetpackItem.CAPACITY, stack, ctx), ITEM_JETPACK);
 
         SpeedUpgrade.LOOKUP.registerForItems((key, vd) -> () -> 2, MIItem.ITEM_LV_MOTOR);
         SpeedUpgrade.LOOKUP.registerForItems((key, vd) -> () -> 8, MIItem.ITEM_LARGE_MOTOR);
@@ -208,16 +205,16 @@ public class ModernIndustrialization implements ModInitializer {
             registerBlock(entry.getValue(), entry.getValue().blockItem, entry.getKey(), flags);
         }
 
-        ItemApi.SIDED.registerForBlocks((world, pos, state, be, direction) -> TrashCanBlock.trashStorage(), TRASH_CAN);
+        ItemStorage.SIDED.registerForBlocks((world, pos, state, be, direction) -> TrashCanBlock.trashStorage(), TRASH_CAN);
         FluidTransfer.SIDED.registerForBlocks((world, pos, state, be, direction) -> TrashCanBlock.trashStorage(), TRASH_CAN);
-        ItemFluidApi.ITEM.registerForItems((key, ctx) -> TrashCanBlock.trashStorage(), ITEM_TRASH_CAN);
+        ItemFluidStorage.ITEM.registerForItems((key, ctx) -> TrashCanBlock.trashStorage(), ITEM_TRASH_CAN);
         EnergyApi.MOVEABLE.registerForBlocks((world, pos, state, be, direction) -> EnergyApi.CREATIVE_EXTRACTABLE, MITanks.CREATIVE_TANK_BLOCK);
     }
 
     public static void registerBlock(Block block, Item item, String id, int flag) {
         Identifier identifier = new MIIdentifier(id);
         Registry.register(Registry.BLOCK, identifier, block);
-        if (!Registry.ITEM.getOrEmpty(identifier).isPresent()) {
+        if (Registry.ITEM.getOrEmpty(identifier).isEmpty()) {
             Registry.register(Registry.ITEM, identifier, item);
         }
         if ((flag & FLAG_BLOCK_LOOT) != 0) {

@@ -23,18 +23,17 @@
  */
 package aztech.modern_industrialization.pipes.fluid;
 
-import alexiil.mc.lib.attributes.Simulation;
-import alexiil.mc.lib.attributes.fluid.FluidTransferable;
 import aztech.modern_industrialization.pipes.api.PipeNetwork;
 import aztech.modern_industrialization.pipes.api.PipeNetworkData;
 import aztech.modern_industrialization.pipes.api.PipeNetworkNode;
-import aztech.modern_industrialization.transferapi.FluidTransferHelper;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidKey;
+import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
+import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -74,10 +73,14 @@ public class FluidNetwork extends PipeNetwork {
             return;
         }
 
-        // Extract from targets into the network
-        networkAmount += transferByPriority(FluidTransferHelper::extract, targets, fluid, networkCapacity - networkAmount);
-        // Insert into the targets from the network
-        networkAmount -= transferByPriority(FluidTransferHelper::insert, targets, fluid, networkAmount);
+        try (Transaction transaction = Transaction.openOuter()) {
+            // Extract from targets into the network
+            networkAmount += transferByPriority(Storage::extract, targets, fluid, networkCapacity - networkAmount, transaction);
+            // Insert into the targets from the network
+            networkAmount -= transferByPriority(Storage::insert, targets, fluid, networkAmount, transaction);
+
+            transaction.commit();
+        }
 
         // Split fluid evenly across the nodes
         // Rebalance fluid inside the nodes
@@ -97,7 +100,8 @@ public class FluidNetwork extends PipeNetwork {
      *
      * @return The amount that was successfully transferred.
      */
-    private static long transferByPriority(TransferOperation operation, List<FluidTarget> targets, FluidKey fluid, long maxAmount) {
+    private static long transferByPriority(TransferOperation operation, List<FluidTarget> targets, FluidKey fluid, long maxAmount,
+            Transaction transaction) {
         // Sort by decreasing priority
         targets.sort(Comparator.comparing(target -> -target.priority));
         // Transfer for each bucket
@@ -105,7 +109,8 @@ public class FluidNetwork extends PipeNetwork {
         int bucketStart = 0;
         for (int i = 0; i < targets.size(); ++i) {
             if (i == targets.size() - 1 || targets.get(bucketStart).priority != targets.get(i + 1).priority) {
-                transferredAmount += transferForBucket(operation, targets.subList(bucketStart, i + 1), fluid, maxAmount - transferredAmount);
+                transferredAmount += transferForBucket(operation, targets.subList(bucketStart, i + 1), fluid, maxAmount - transferredAmount,
+                        transaction);
                 bucketStart = i + 1;
             }
         }
@@ -118,13 +123,16 @@ public class FluidNetwork extends PipeNetwork {
      * 
      * @return The amount that was successfully transferred.
      */
-    private static long transferForBucket(TransferOperation operation, List<FluidTarget> bucket, FluidKey fluid, long maxAmount) {
+    private static long transferForBucket(TransferOperation operation, List<FluidTarget> bucket, FluidKey fluid, long maxAmount,
+            Transaction transaction) {
         // Shuffle the bucket for better average transfer when simulation returns the
         // same result every time
         Collections.shuffle(bucket);
         // Simulate the transfer for every target
         for (FluidTarget target : bucket) {
-            target.simulationResult = operation.transfer(target.transferable, fluid, maxAmount, Simulation.SIMULATE);
+            try (Transaction nested = transaction.openNested()) {
+                target.simulationResult = operation.transfer(target.storage, fluid, maxAmount, nested);
+            }
         }
         // Sort from low result to high result
         bucket.sort(Comparator.comparing(target -> target.simulationResult));
@@ -136,14 +144,14 @@ public class FluidNetwork extends PipeNetwork {
             long remainingAmount = maxAmount - transferredAmount;
             long targetMaxAmount = remainingAmount / remainingTargets;
 
-            transferredAmount += operation.transfer(target.transferable, fluid, targetMaxAmount, Simulation.ACTION);
+            transferredAmount += operation.transfer(target.storage, fluid, targetMaxAmount, transaction);
         }
         return transferredAmount;
     }
 
     @FunctionalInterface
     private interface TransferOperation {
-        long transfer(FluidTransferable transferable, FluidKey fluid, long maxAmount, Simulation simulation);
+        long transfer(Storage<FluidKey> storage, FluidKey fluid, long maxAmount, Transaction transaction);
     }
 
     @Override

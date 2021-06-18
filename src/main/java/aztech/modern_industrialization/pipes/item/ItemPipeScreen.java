@@ -52,7 +52,7 @@ public class ItemPipeScreen extends PipeScreen<ItemPipeScreenHandler> {
     @Override
     protected void init() {
         super.init();
-        addButton(new WhitelistButton(this.x, this.y, widget -> {
+        addDrawableChild(new WhitelistButton(this.x, this.y, widget -> {
             boolean newWhitelist = !handler.pipeInterface.isWhitelist();
             handler.pipeInterface.setWhitelist(newWhitelist);
             PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
@@ -85,8 +85,7 @@ public class ItemPipeScreen extends PipeScreen<ItemPipeScreenHandler> {
                     .append(new TranslatableText("text.modern_industrialization.empty_whitelist_warning").setStyle(TextHelper.WARNING_TEXT));
         }
         this.textRenderer.draw(matrices, title, (float) this.titleX, (float) this.titleY, 0x404040);
-        this.textRenderer.draw(matrices, this.playerInventory.getDisplayName(), (float) this.playerInventoryTitleX,
-                (float) this.playerInventoryTitleY, 0x404040);
+        this.textRenderer.draw(matrices, this.playerInventoryTitle, (float) this.playerInventoryTitleX, (float) this.playerInventoryTitleY, 0x404040);
     }
 
     @Override

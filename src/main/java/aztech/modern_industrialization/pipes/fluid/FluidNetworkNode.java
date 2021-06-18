@@ -25,23 +25,18 @@ package aztech.modern_industrialization.pipes.fluid;
 
 import static aztech.modern_industrialization.pipes.api.PipeEndpointType.*;
 
-import alexiil.mc.lib.attributes.SearchOption;
-import alexiil.mc.lib.attributes.SearchOptions;
-import alexiil.mc.lib.attributes.fluid.FluidAttributes;
-import alexiil.mc.lib.attributes.fluid.FluidExtractable;
-import alexiil.mc.lib.attributes.fluid.FluidInsertable;
-import alexiil.mc.lib.attributes.fluid.FluidTransferable;
-import alexiil.mc.lib.attributes.fluid.impl.EmptyFluidTransferable;
 import aztech.modern_industrialization.ModernIndustrialization;
 import aztech.modern_industrialization.pipes.api.PipeEndpointType;
 import aztech.modern_industrialization.pipes.api.PipeNetworkNode;
-import aztech.modern_industrialization.pipes.fluid.FluidNetworkNode.FluidConnection.ScreenHandlerFactory;
 import aztech.modern_industrialization.pipes.gui.IPipeScreenHandlerHelper;
 import aztech.modern_industrialization.transferapi.FluidTransferHelper;
+import aztech.modern_industrialization.util.EmptyStorage;
 import aztech.modern_industrialization.util.NbtHelper;
 import java.util.*;
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidKey;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidTransfer;
+import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.fabricmc.fabric.api.util.NbtType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -81,22 +76,23 @@ public class FluidNetworkNode extends PipeNetworkNode {
         }
 
         for (FluidConnection connection : connections) {
-            FluidTransferable transferable = getNeighborTransferable(world, pos, connection);
+            Storage<FluidKey> storage = getNeighborStorage(world, pos, connection);
             if (data.fluid.isEmpty()) {
                 // Try to set fluid, will return EMPTY if none could be found.
-                data.fluid = FluidTransferHelper.findExtractableFluid(transferable);
+                data.fluid = FluidTransferHelper.findExtractableFluid(storage);
             }
-            targets.add(new FluidTarget(connection.priority, transferable));
+            targets.add(new FluidTarget(connection.priority, storage));
         }
     }
 
-    FluidTransferable getNeighborTransferable(World world, BlockPos pos, FluidConnection connection) {
-        BlockPos neighborPos = pos.offset(connection.direction);
-        SearchOption<Object> opt = SearchOptions.inDirection(connection.direction);
-        FluidInsertable insertable = connection.canInsert() ? FluidAttributes.INSERTABLE.get(world, neighborPos, opt) : EmptyFluidTransferable.NULL;
-        FluidExtractable extractable = connection.canExtract() ? FluidAttributes.EXTRACTABLE.get(world, neighborPos, opt)
-                : EmptyFluidTransferable.NULL;
-        return FluidTransferable.from(insertable, extractable);
+    Storage<FluidKey> getNeighborStorage(World world, BlockPos pos, FluidConnection connection) {
+        Storage<FluidKey> storage = FluidTransfer.SIDED.find(world, pos.offset(connection.direction), connection.direction.getOpposite());
+        if (storage != null) {
+            if ((connection.canExtract() && storage.supportsExtraction()) || (connection.canInsert() && storage.supportsInsertion())) {
+                return storage;
+            }
+        }
+        return new EmptyStorage<>();
     }
 
     @Override
@@ -127,9 +123,7 @@ public class FluidNetworkNode extends PipeNetworkNode {
 
     private boolean canConnect(World world, BlockPos pos, Direction direction) {
         BlockPos adjPos = pos.offset(direction);
-        SearchOption<Object> opt = SearchOptions.inDirection(direction);
-        return FluidAttributes.INSERTABLE.getFirstOrNull(world, adjPos, opt) != null
-                || FluidAttributes.EXTRACTABLE.getFirstOrNull(world, adjPos, opt) != null;
+        return FluidTransfer.SIDED.find(world, pos.offset(direction), direction.getOpposite()) != null;
     }
 
     @Override

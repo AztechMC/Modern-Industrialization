@@ -43,10 +43,10 @@ public class OreBlock extends MIBlock {
 
     @Override
     public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
-        ItemStack handStack = player.inventory.getMainHandStack();
+        ItemStack handStack = player.getMainHandStack();
         if (handStack.getItem() == Items.BOOK) {
             handStack.decrement(1);
-            player.inventory.offerOrDrop(world, new ItemStack(MIItem.ITEM_GUIDE_BOOK));
+            player.getInventory().offerOrDrop(new ItemStack(MIItem.ITEM_GUIDE_BOOK));
             return ActionResult.success(world.isClient);
         }
         return super.onUse(state, world, pos, player, hand, hit);

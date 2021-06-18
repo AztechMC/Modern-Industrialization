@@ -29,10 +29,10 @@ import aztech.modern_industrialization.api.FastBlockEntity;
 import aztech.modern_industrialization.pipes.MIPipes;
 import aztech.modern_industrialization.pipes.api.*;
 import aztech.modern_industrialization.pipes.gui.IPipeScreenHandlerHelper;
-import aztech.modern_industrialization.pipes.impl.PipeBlockEntity.RenderAttachment;
 import aztech.modern_industrialization.util.ChunkUnloadBlockEntity;
 import aztech.modern_industrialization.util.NbtHelper;
 import aztech.modern_industrialization.util.RenderHelper;
+import aztech.modern_industrialization.util.Tickable;
 import java.util.*;
 import net.fabricmc.fabric.api.block.entity.BlockEntityClientSerializable;
 import net.fabricmc.fabric.api.rendering.data.v1.RenderAttachmentBlockEntity;
@@ -45,7 +45,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Pair;
-import net.minecraft.util.Tickable;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.util.shape.VoxelShapes;
@@ -95,8 +95,8 @@ public class PipeBlockEntity extends FastBlockEntity
         }
     }
 
-    public PipeBlockEntity() {
-        super(MIPipes.BLOCK_ENTITY_TYPE_PIPE);
+    public PipeBlockEntity(BlockPos pos, BlockState state) {
+        super(MIPipes.BLOCK_ENTITY_TYPE_PIPE, pos, state);
     }
 
     void updateConnections() {
@@ -248,8 +248,8 @@ public class PipeBlockEntity extends FastBlockEntity
     }
 
     @Override
-    public void readNbt(BlockState state, NbtCompound tag) {
-        super.readNbt(state, tag);
+    public void readNbt(NbtCompound tag) {
+        super.readNbt(tag);
         pipes.clear();
 
         int i = 0;

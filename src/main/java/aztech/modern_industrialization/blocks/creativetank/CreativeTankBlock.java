@@ -24,11 +24,11 @@
 package aztech.modern_industrialization.blocks.creativetank;
 
 import aztech.modern_industrialization.ModernIndustrialization;
+import aztech.modern_industrialization.api.TickableBlock;
 import aztech.modern_industrialization.util.MobSpawning;
 import java.util.Arrays;
 import java.util.List;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockEntityProvider;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.entity.BlockEntity;
@@ -46,14 +46,14 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 
-public class CreativeTankBlock extends Block implements BlockEntityProvider {
+public class CreativeTankBlock extends Block implements TickableBlock {
     public CreativeTankBlock(Settings settings) {
         super(settings.nonOpaque().allowsSpawning(MobSpawning.NO_SPAWN));
     }
 
     @Override
-    public BlockEntity createBlockEntity(BlockView world) {
-        return new CreativeTankBlockEntity();
+    public BlockEntity createBlockEntity(BlockPos pos, BlockState state) {
+        return new CreativeTankBlockEntity(pos, state);
     }
 
     public boolean isTranslucent(BlockState state, BlockView world, BlockPos pos) {
@@ -89,7 +89,7 @@ public class CreativeTankBlock extends Block implements BlockEntityProvider {
 
     @Override
     public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
-        if (player.isSneaking() && ModernIndustrialization.WRENCHES.contains(player.inventory.getMainHandStack().getItem())) {
+        if (player.isSneaking() && ModernIndustrialization.WRENCHES.contains(player.getMainHandStack().getItem())) {
             world.spawnEntity(new ItemEntity(world, hit.getPos().x, hit.getPos().y, hit.getPos().z, getStack(world.getBlockEntity(pos))));
             world.setBlockState(pos, Blocks.AIR.getDefaultState());
             // TODO: play sound

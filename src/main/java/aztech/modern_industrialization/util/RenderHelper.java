@@ -154,7 +154,7 @@ public class RenderHelper {
         RenderSystem.disableDepthTest();
 
         BufferBuilder bufferBuilder = Tessellator.getInstance().getBuffer();
-        bufferBuilder.begin(7, VertexFormats.POSITION_COLOR_TEXTURE);
+        bufferBuilder.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR_TEXTURE);
         float x0 = (float) i;
         float y0 = (float) j;
         float x1 = x0 + 16;

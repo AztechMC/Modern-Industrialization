@@ -68,7 +68,7 @@ public class SteamDrillItem extends Item implements DynamicAttributeTool, MagnaT
 
     @Override
     public int getMiningLevel(Tag<Item> tag, BlockState state, ItemStack stack, @Nullable LivingEntity user) {
-        if (isIn(tag) && canMine(stack, user)) {
+        if (tag.contains(this) && canMine(stack, user)) {
             return 2;
         }
         return 0;
@@ -76,7 +76,7 @@ public class SteamDrillItem extends Item implements DynamicAttributeTool, MagnaT
 
     @Override
     public float getMiningSpeedMultiplier(Tag<Item> tag, BlockState state, ItemStack stack, @Nullable LivingEntity user) {
-        if (isIn(tag) && canMine(stack, user)) {
+        if (tag.contains(this) && canMine(stack, user)) {
             return 4.0f;
         }
         return 1.0f;
@@ -154,7 +154,7 @@ public class SteamDrillItem extends Item implements DynamicAttributeTool, MagnaT
     private static int consumeFuel(ItemStack stack, @Nullable LivingEntity user, Simulation simulation) {
         PlayerEntity player = CommonProxy.INSTANCE.findUser(user);
         if (player != null) {
-            PlayerInventory inv = player.inventory;
+            PlayerInventory inv = player.getInventory();
             int drillSlot = -1;
             for (int i = 0; i < 9; ++i) {
                 if (inv.getStack(i) == stack) {

@@ -43,6 +43,7 @@ import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Pair;
 import net.minecraft.util.math.BlockPos;
@@ -82,9 +83,12 @@ public class PipeBlockEntity extends FastBlockEntity
     private final List<Pair<PipeNetworkType, PipeNetworkNode>> unloadedPipes = new ArrayList<>();
 
     private void loadPipes() {
+        if (world.isClient)
+            return;
+
         boolean changed = false;
         for (Pair<PipeNetworkType, PipeNetworkNode> unloaded : unloadedPipes) {
-            MIPipes.PIPE_NETWORKS.get(world).getManager(unloaded.getLeft()).nodeLoaded(unloaded.getRight(), pos);
+            PipeNetworks.get((ServerWorld) world).getManager(unloaded.getLeft()).nodeLoaded(unloaded.getRight(), pos);
             pipes.add(unloaded.getRight());
             unloaded.getRight().updateConnections(world, pos);
             changed = true;
@@ -143,7 +147,7 @@ public class PipeBlockEntity extends FastBlockEntity
             return;
 
         PipeNetworkNode node = type.getNodeCtor().get();
-        PipeNetworkManager manager = MIPipes.PIPE_NETWORKS.get(world).getManager(type);
+        PipeNetworkManager manager = PipeNetworks.get((ServerWorld) world).getManager(type);
         manager.addNode(node, pos, data);
         for (Direction direction : Direction.values()) {
             manager.addLink(pos, direction, false);

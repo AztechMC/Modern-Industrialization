@@ -23,34 +23,25 @@
  */
 package aztech.modern_industrialization.compat.rei;
 
-import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.items.diesel_tools.DieselToolItem;
-import me.shedaniel.rei.api.EntryStack;
-import me.shedaniel.rei.api.RecipeHelper;
-import me.shedaniel.rei.api.plugins.REIPluginV0;
+import me.shedaniel.rei.api.client.plugins.REIClientPlugin;
+import me.shedaniel.rei.api.client.registry.category.CategoryRegistry;
+import me.shedaniel.rei.api.common.util.EntryStacks;
+import me.shedaniel.rei.plugin.common.BuiltinPlugin;
 import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
 import net.minecraft.item.Item;
-import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
-public class MIREIPlugin implements REIPluginV0 {
-    private static final Identifier PATHING = new Identifier("minecraft", "plugins/pathing");
-    private static final Identifier STRIPPING = new Identifier("minecraft", "plugins/stripping");
-
+public class MIREIPlugin implements REIClientPlugin {
     @Override
-    public Identifier getPluginIdentifier() {
-        return new MIIdentifier("plugin");
-    }
-
-    @Override
-    public void registerOthers(RecipeHelper recipeHelper) {
+    public void registerCategories(CategoryRegistry registry) {
         for (Item item : Registry.ITEM) {
             if (item instanceof DieselToolItem) {
                 if (FabricToolTags.AXES.contains(item)) {
-                    recipeHelper.registerWorkingStations(STRIPPING, EntryStack.create(item));
+                    registry.addWorkstations(BuiltinPlugin.STRIPPING, EntryStacks.of(item));
                 }
                 if (FabricToolTags.SHOVELS.contains(item)) {
-                    recipeHelper.registerWorkingStations(PATHING, EntryStack.create(item));
+                    registry.addWorkstations(BuiltinPlugin.PATHING, EntryStacks.of(item));
                 }
             }
         }

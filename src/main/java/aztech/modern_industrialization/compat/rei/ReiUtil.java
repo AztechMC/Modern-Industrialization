@@ -21,9 +21,18 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.compat.modmenu;
+package aztech.modern_industrialization.compat.rei;
 
-import io.github.prospector.modmenu.api.ModMenuApi;
+import aztech.modern_industrialization.machines.recipe.MachineRecipe;
+import me.shedaniel.rei.api.common.entry.EntryIngredient;
+import me.shedaniel.rei.api.common.util.EntryStacks;
+import net.minecraft.item.ItemStack;
 
-public class MIModMenuEntrypoint implements ModMenuApi {
+public class ReiUtil {
+    private ReiUtil() {
+    }
+
+    public static EntryIngredient createInputEntries(MachineRecipe.ItemInput input) {
+        return EntryIngredient.of(input.getInputItems().stream().map(i -> EntryStacks.of(new ItemStack(i, input.amount))).toList());
+    }
 }

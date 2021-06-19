@@ -28,31 +28,26 @@ import aztech.modern_industrialization.machines.MachinePackets;
 import aztech.modern_industrialization.machines.MachineScreenHandlers;
 import aztech.modern_industrialization.machines.components.sync.ReiSlotLocking;
 import java.util.List;
-import me.shedaniel.rei.api.AutoTransferHandler;
-import me.shedaniel.rei.api.EntryStack;
-import me.shedaniel.rei.api.RecipeHelper;
+import me.shedaniel.rei.api.client.registry.transfer.TransferHandler;
+import me.shedaniel.rei.api.common.entry.EntryIngredient;
+import me.shedaniel.rei.api.common.entry.EntryStack;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.util.registry.Registry;
 import org.jetbrains.annotations.NotNull;
 
-public class SlotLockingHandler implements AutoTransferHandler {
-    private final RecipeHelper recipeHelper;
-
-    public SlotLockingHandler(RecipeHelper recipeHelper) {
-        this.recipeHelper = recipeHelper;
-    }
-
+public class SlotLockingHandler implements TransferHandler {
     @Override
     public @NotNull Result handle(@NotNull Context context) {
-        if (!(context.getRecipe() instanceof MachineRecipeDisplay))
+        if (!(context.getDisplay() instanceof MachineRecipeDisplay))
             return Result.createNotApplicable();
-        if (!(context.getContainer() instanceof MachineScreenHandlers.Client))
+        if (!(context.getMenu() instanceof MachineScreenHandlers.Client))
             return Result.createNotApplicable();
-        MachineRecipeDisplay display = (MachineRecipeDisplay) context.getRecipe();
-        MachineScreenHandlers.Client handler = (MachineScreenHandlers.Client) context.getContainer();
+        MachineRecipeDisplay display = (MachineRecipeDisplay) context.getDisplay();
+        MachineScreenHandlers.Client handler = (MachineScreenHandlers.Client) context.getMenu();
         if (!canApply(handler, display))
             return Result.createNotApplicable();
         ReiSlotLocking.Client slotLocking = handler.getComponent(ReiSlotLocking.Client.class);
@@ -70,10 +65,10 @@ public class SlotLockingHandler implements AutoTransferHandler {
     private boolean canApply(MachineScreenHandlers.Client handler, MachineRecipeDisplay display) {
         // Check if the block is in the worktables - it's a hack but it should work. :P
         String blockId = handler.guiParams.blockId;
-        List<List<EntryStack>> workstations = recipeHelper.getWorkingStations(display.getRecipeCategory());
-        for (List<EntryStack> workstationEntries : workstations) {
-            for (EntryStack entry : workstationEntries) {
-                Item item = entry.getItem();
+        List<EntryIngredient> workstations = MachinesPlugin.categoryRegistry.get(display.getCategoryIdentifier()).getWorkstations();
+        for (EntryIngredient workstationEntries : workstations) {
+            for (EntryStack<?> entry : workstationEntries) {
+                Item item = entry.<ItemStack>cast().getValue().getItem();
                 if (Registry.ITEM.getId(item).equals(new MIIdentifier(blockId))) {
                     return true;
                 }

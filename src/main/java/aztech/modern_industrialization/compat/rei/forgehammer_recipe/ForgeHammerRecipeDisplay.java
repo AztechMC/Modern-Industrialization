@@ -23,18 +23,19 @@
  */
 package aztech.modern_industrialization.compat.rei.forgehammer_recipe;
 
+import aztech.modern_industrialization.compat.rei.ReiUtil;
 import aztech.modern_industrialization.machines.recipe.MachineRecipe;
 import aztech.modern_industrialization.machines.recipe.MachineRecipeType;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
-import me.shedaniel.rei.api.EntryStack;
-import me.shedaniel.rei.api.RecipeDisplay;
+import me.shedaniel.rei.api.common.category.CategoryIdentifier;
+import me.shedaniel.rei.api.common.display.Display;
+import me.shedaniel.rei.api.common.entry.EntryIngredient;
+import me.shedaniel.rei.api.common.util.EntryStacks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Identifier;
-import org.jetbrains.annotations.NotNull;
 
-public class ForgeHammerRecipeDisplay implements RecipeDisplay {
+public class ForgeHammerRecipeDisplay implements Display {
     private final MachineRecipe recipe;
     private final Identifier category;
 
@@ -44,23 +45,19 @@ public class ForgeHammerRecipeDisplay implements RecipeDisplay {
     }
 
     @Override
-    public @NotNull List<List<EntryStack>> getInputEntries() {
+    public List<EntryIngredient> getInputEntries() {
         MachineRecipe.ItemInput input = recipe.itemInputs.get(0);
-        return Collections.singletonList(createInputEntries(input));
-    }
-
-    private static List<EntryStack> createInputEntries(MachineRecipe.ItemInput input) {
-        return input.getInputItems().stream().map(i -> EntryStack.create(new ItemStack(i, input.amount))).collect(Collectors.toList());
+        return Collections.singletonList(ReiUtil.createInputEntries(input));
     }
 
     @Override
-    public @NotNull List<List<EntryStack>> getResultingEntries() {
+    public List<EntryIngredient> getOutputEntries() {
         MachineRecipe.ItemOutput output = recipe.itemOutputs.get(0);
-        return Collections.singletonList(Collections.singletonList(EntryStack.create(new ItemStack(output.item, output.amount))));
+        return Collections.singletonList(EntryIngredient.of(EntryStacks.of(new ItemStack(output.item, output.amount))));
     }
 
     @Override
-    public @NotNull Identifier getRecipeCategory() {
-        return category;
+    public CategoryIdentifier<?> getCategoryIdentifier() {
+        return CategoryIdentifier.of(category);
     }
 }

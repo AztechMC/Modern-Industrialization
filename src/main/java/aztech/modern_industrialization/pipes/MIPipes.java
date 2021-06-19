@@ -43,9 +43,6 @@ import aztech.modern_industrialization.util.ResourceUtil;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-import nerdhub.cardinal.components.api.ComponentRegistry;
-import nerdhub.cardinal.components.api.ComponentType;
-import nerdhub.cardinal.components.api.event.WorldComponentCallback;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
@@ -61,15 +58,12 @@ import net.minecraft.client.texture.SpriteAtlasTexture;
 import net.minecraft.client.util.SpriteIdentifier;
 import net.minecraft.item.Item;
 import net.minecraft.screen.ScreenHandlerType;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
-import net.minecraft.world.World;
 
 public class MIPipes implements ModInitializer {
     public static final MIPipes INSTANCE = new MIPipes();
-    public static final ComponentType<PipeNetworksComponent> PIPE_NETWORKS = ComponentRegistry.INSTANCE
-            .registerIfAbsent(new MIIdentifier("pipe_networks"), PipeNetworksComponent.class)
-            .attach(WorldComponentCallback.EVENT, PipeNetworksComponentImpl::new);
 
     public static final Block BLOCK_PIPE = new PipeBlock(FabricBlockSettings.of(Material.METAL).hardness(4.0f));
     public static BlockEntityType<PipeBlockEntity> BLOCK_ENTITY_TYPE_PIPE;
@@ -157,8 +151,8 @@ public class MIPipes implements ModInitializer {
          */
 
         ServerTickEvents.START_SERVER_TICK.register(server -> {
-            for (World world : server.getWorlds()) {
-                PIPE_NETWORKS.get(world).onServerTickStart();
+            for (ServerWorld world : server.getWorlds()) {
+                PipeNetworks.get(world).onServerTickStart();
             }
         });
 

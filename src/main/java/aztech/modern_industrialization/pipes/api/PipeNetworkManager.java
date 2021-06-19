@@ -233,7 +233,7 @@ public class PipeNetworkManager {
         }
     }
 
-    public void fromTag(NbtCompound tag) {
+    public void fromNbt(NbtCompound tag) {
         // networks
         NbtList networksTag = tag.getList("networks", new NbtCompound().getType());
         for (NbtElement networkTag : networksTag) {

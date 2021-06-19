@@ -23,24 +23,27 @@
  */
 package aztech.modern_industrialization.compat.rei.forgehammer_recipe;
 
+import static net.minecraft.client.gui.DrawableHelper.drawTexture;
+
 import aztech.modern_industrialization.blocks.forgehammer.ForgeHammerScreen;
 import aztech.modern_industrialization.machines.recipe.MachineRecipeType;
+import com.mojang.blaze3d.systems.RenderSystem;
 import java.util.ArrayList;
 import java.util.List;
 import me.shedaniel.math.Point;
 import me.shedaniel.math.Rectangle;
-import me.shedaniel.rei.api.EntryStack;
-import me.shedaniel.rei.api.RecipeCategory;
-import me.shedaniel.rei.api.widgets.Widgets;
-import me.shedaniel.rei.gui.widget.Widget;
-import me.shedaniel.rei.impl.RenderingEntry;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.resource.language.I18n;
+import me.shedaniel.rei.api.client.gui.Renderer;
+import me.shedaniel.rei.api.client.gui.widgets.Widget;
+import me.shedaniel.rei.api.client.gui.widgets.Widgets;
+import me.shedaniel.rei.api.client.registry.display.DisplayCategory;
+import me.shedaniel.rei.api.common.category.CategoryIdentifier;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.text.Text;
+import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.NotNull;
 
-public class ForgeHammerRecipeCategory implements RecipeCategory<ForgeHammerRecipeDisplay> {
+public class ForgeHammerRecipeCategory implements DisplayCategory<ForgeHammerRecipeDisplay> {
     private final Identifier id;
     private final boolean isHammer;
 
@@ -50,25 +53,34 @@ public class ForgeHammerRecipeCategory implements RecipeCategory<ForgeHammerReci
     }
 
     @Override
-    public @NotNull Identifier getIdentifier() {
-        return id;
+    public CategoryIdentifier<? extends ForgeHammerRecipeDisplay> getCategoryIdentifier() {
+        return CategoryIdentifier.of(id);
     }
 
     @Override
-    public @NotNull String getCategoryName() {
-        return I18n.translate(id.toString());
-    }
+    public Renderer getIcon() {
+        return new Renderer() {
+            private int z = 2;
 
-    @NotNull
-    @Override
-    public EntryStack getLogo() {
-        return new RenderingEntry() {
             @Override
             public void render(MatrixStack matrices, Rectangle bounds, int mouseX, int mouseY, float delta) {
-                MinecraftClient.getInstance().getTextureManager().bindTexture(ForgeHammerScreen.FORGE_HAMMER_GUI);
-                drawTexture(matrices, bounds.x + 1, bounds.y + 1, 206, isHammer ? 0 : 15, 15, 15);
+                RenderSystem.setShaderTexture(0, ForgeHammerScreen.FORGE_HAMMER_GUI);
+                drawTexture(matrices, bounds.x + 1, bounds.y + 1, z, 206, isHammer ? 0 : 15, 15, 15, 256, 256);
+            }
+
+            public int getZ() {
+                return z;
+            }
+
+            public void setZ(int z) {
+                this.z = z;
             }
         };
+    }
+
+    @Override
+    public Text getTitle() {
+        return new TranslatableText(id.toString());
     }
 
     @Override
@@ -79,7 +91,7 @@ public class ForgeHammerRecipeCategory implements RecipeCategory<ForgeHammerReci
         widgets.add(Widgets.createArrow(new Point(startPoint.x + 27, startPoint.y + 4)));
         widgets.add(Widgets.createResultSlotBackground(new Point(startPoint.x + 61, startPoint.y + 5)));
         widgets.add(Widgets.createSlot(new Point(startPoint.x + 4, startPoint.y + 5)).entries(recipeDisplay.getInputEntries().get(0)).markInput());
-        widgets.add(Widgets.createSlot(new Point(startPoint.x + 61, startPoint.y + 5)).entries(recipeDisplay.getResultingEntries().get(0))
+        widgets.add(Widgets.createSlot(new Point(startPoint.x + 61, startPoint.y + 5)).entries(recipeDisplay.getOutputEntries().get(0))
                 .disableBackground().markInput());
         return widgets;
     }

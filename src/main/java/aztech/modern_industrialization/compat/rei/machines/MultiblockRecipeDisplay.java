@@ -27,18 +27,18 @@ import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.machines.multiblocks.ShapeTemplate;
 import aztech.modern_industrialization.machines.multiblocks.SimpleMember;
 import java.util.*;
-import me.shedaniel.rei.api.EntryStack;
-import me.shedaniel.rei.api.RecipeDisplay;
+import me.shedaniel.rei.api.common.category.CategoryIdentifier;
+import me.shedaniel.rei.api.common.display.Display;
+import me.shedaniel.rei.api.common.entry.EntryIngredient;
+import me.shedaniel.rei.api.common.util.EntryStacks;
 import net.minecraft.block.BlockState;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
-import org.jetbrains.annotations.NotNull;
 
-public class MultiblockRecipeDisplay implements RecipeDisplay {
+public class MultiblockRecipeDisplay implements Display {
     public final String controller;
     public final Shape shape;
 
@@ -48,26 +48,26 @@ public class MultiblockRecipeDisplay implements RecipeDisplay {
     }
 
     @Override
-    public @NotNull List<List<EntryStack>> getInputEntries() {
+    public List<EntryIngredient> getInputEntries() {
         return shape.materials;
     }
 
     @Override
-    public @NotNull List<List<EntryStack>> getResultingEntries() {
+    public List<EntryIngredient> getOutputEntries() {
         return Collections.singletonList(shape.materials.get(0));
     }
 
     @Override
-    public @NotNull Identifier getRecipeCategory() {
-        return MultiblockRecipeCategory.ID;
+    public CategoryIdentifier<?> getCategoryIdentifier() {
+        return CategoryIdentifier.of(MultiblockRecipeCategory.ID);
     }
 
     public static class Shape {
-        public final List<EntryStack> controller;
-        public final List<List<EntryStack>> materials = new ArrayList<>();
+        public final EntryIngredient controller;
+        public final List<EntryIngredient> materials = new ArrayList<>();
 
         public Shape(String controller, ShapeTemplate shape) {
-            this.controller = Collections.singletonList(EntryStack.create(Registry.ITEM.get(new MIIdentifier(controller))));
+            this.controller = EntryIngredient.of(EntryStacks.of(Registry.ITEM.get(new MIIdentifier(controller))));
             this.materials.add(this.controller);
             SortedMap<Item, Integer> materials = new TreeMap<>(Comparator.comparing(Registry.ITEM::getId));
 
@@ -81,7 +81,7 @@ public class MultiblockRecipeDisplay implements RecipeDisplay {
 
             for (Map.Entry<Item, Integer> entry : materials.entrySet()) {
                 ItemStack stack = new ItemStack(entry.getKey(), entry.getValue());
-                this.materials.add(Collections.singletonList(EntryStack.create(stack)));
+                this.materials.add(EntryIngredient.of(EntryStacks.of(stack)));
             }
         }
     }

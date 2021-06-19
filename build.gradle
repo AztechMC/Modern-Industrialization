@@ -27,29 +27,9 @@ repositories {
             includeGroup "net.devtech"
         }
     }
-    // for Cardinal Components
-    maven {
-        name = "Ladysnake Mods"
-        url = "https://ladysnake.jfrog.io/artifactory/mods"
-        content {
-            includeGroup "io.github.onyxstudios"
-            includeGroup "io.github.onyxstudios.Cardinal-Components-API"
-        }
-    }
     // for Patchouli
     maven {
         url 'https://maven.blamejared.com'
-        content {
-            includeGroup "vazkii.patchouli"
-        }
-    }
-    // for LBA
-    maven {
-        name = "BuildCraft"
-        url = "https://mod-buildcraft.com/maven"
-        content {
-            includeGroup "alexiil.mc.lib"
-        }
     }
     // for HWYLA
     maven {
@@ -73,6 +53,7 @@ repositories {
             includeGroup "me.sargunvohra.mcmods"
             includeGroup "me.shedaniel.cloth"
             includeGroup "me.shedaniel"
+            includeGroup "dev.architectury"
         }
     }
     maven {
@@ -151,9 +132,7 @@ dependencies {
     // Dependencies
     modImplementation "net.devtech:arrp:${project.arrp_version}"
     include "net.devtech:arrp:${project.arrp_version}"
-    modImplementation "io.github.onyxstudios:Cardinal-Components-API:${project.cardinal_components_version}"
-    include "io.github.onyxstudios:Cardinal-Components-API:${project.cardinal_components_version}"
-    modImplementation "me.shedaniel:RoughlyEnoughItems:${project.rei_version}"
+    modImplementation "me.shedaniel:RoughlyEnoughItems-fabric:${project.rei_version}"
     modImplementation "vazkii.patchouli:Patchouli:${project.patchouli_version}"
     include "vazkii.patchouli:Patchouli:${project.patchouli_version}"
     modApi "me.shedaniel.cloth.api:cloth-armor-api-v1:${project.cloth_api_version}"
@@ -165,10 +144,10 @@ dependencies {
     modImplementation "mcp.mobius.waila:Hwyla:${project.hwyla_version}"
     modImplementation "me.sargunvohra.mcmods:autoconfig1u:${project.auto_config_version}"
     include "me.sargunvohra.mcmods:autoconfig1u:${project.auto_config_version}"
-    modImplementation "com.terraformersmc:modmenu:${project.mod_menu_version}"
-    modImplementation "curse.maven:kubejs-395864:${project.kubejs_file}"
-    modImplementation "curse.maven:architectury-fabric-419697:${project.architectury_file}"
-    modRuntime "curse.maven:rhino-416294:${project.rhino_file}"
+    modRuntime "com.terraformersmc:modmenu:${project.mod_menu_version}"
+    //modImplementation "curse.maven:kubejs-395864:${project.kubejs_file}"
+    //modImplementation "curse.maven:architectury-fabric-419697:${project.architectury_file}"
+    //modRuntime "curse.maven:rhino-416294:${project.rhino_file}"
     include modImplementation("com.github.Draylar:magna:${project.magna_version}") {
         exclude(group: "io.github.prospector")
         exclude(group: "me.shedaniel.cloth")
@@ -324,7 +303,6 @@ if (System.getenv("CURSEFORGE_API_KEY") && !version.endsWith("-SNAPSHOT")) {
                 optionalDependency "wthit"
                 optionalDependency "roughly-enough-items"
                 embeddedLibrary "libblockattributes"
-                embeddedLibrary "cardinal-components"
                 embeddedLibrary "auto-config-updated-api"
                 embeddedLibrary "patchouli-fabric"
             }

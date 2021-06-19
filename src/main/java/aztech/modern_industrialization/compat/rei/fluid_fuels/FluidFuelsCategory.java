@@ -29,36 +29,36 @@ import java.util.ArrayList;
 import java.util.List;
 import me.shedaniel.math.Point;
 import me.shedaniel.math.Rectangle;
-import me.shedaniel.rei.api.EntryStack;
-import me.shedaniel.rei.api.RecipeCategory;
-import me.shedaniel.rei.api.widgets.Widgets;
-import me.shedaniel.rei.gui.widget.Widget;
-import net.minecraft.client.resource.language.I18n;
+import me.shedaniel.rei.api.client.gui.Renderer;
+import me.shedaniel.rei.api.client.gui.widgets.Widget;
+import me.shedaniel.rei.api.client.gui.widgets.Widgets;
+import me.shedaniel.rei.api.client.registry.display.DisplayCategory;
+import me.shedaniel.rei.api.common.category.CategoryIdentifier;
+import me.shedaniel.rei.api.common.util.EntryStacks;
+import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
-import net.minecraft.util.Identifier;
-import org.jetbrains.annotations.NotNull;
 
-public class FluidFuelsCategory implements RecipeCategory<FluidFuelDisplay> {
+public class FluidFuelsCategory implements DisplayCategory<FluidFuelDisplay> {
     @Override
-    public @NotNull Identifier getIdentifier() {
+    public CategoryIdentifier<? extends FluidFuelDisplay> getCategoryIdentifier() {
         return FluidFuelsPlugin.CATEGORY;
     }
 
     @Override
-    public @NotNull String getCategoryName() {
-        return I18n.translate(FluidFuelsPlugin.CATEGORY.toString());
+    public Renderer getIcon() {
+        return EntryStacks.of(MIFluids.DIESEL.bucketItem);
     }
 
     @Override
-    public @NotNull EntryStack getLogo() {
-        return EntryStack.create(MIFluids.DIESEL.bucketItem);
+    public Text getTitle() {
+        return new TranslatableText(FluidFuelsPlugin.CATEGORY.getIdentifier().toString());
     }
 
     @Override
-    public @NotNull List<Widget> setupDisplay(FluidFuelDisplay recipeDisplay, Rectangle bounds) {
+    public List<Widget> setupDisplay(FluidFuelDisplay recipeDisplay, Rectangle bounds) {
         List<Widget> widgets = new ArrayList<>();
         widgets.add(Widgets.createRecipeBase(bounds));
-        widgets.add(Widgets.createSlot(new Point(bounds.x + 66, bounds.y + 10)).entry(EntryStack.create(recipeDisplay.fluid)));
+        widgets.add(Widgets.createSlot(new Point(bounds.x + 66, bounds.y + 10)).entry(EntryStacks.of(recipeDisplay.fluid)));
         int totalEnergy = FluidFuelRegistry.getEu(recipeDisplay.fluid);
         widgets.add(Widgets.createLabel(new Point(bounds.x + 10, bounds.y + 35),
                 new TranslatableText("text.modern_industrialization.eu_in_diesel_generator", totalEnergy)).leftAligned());

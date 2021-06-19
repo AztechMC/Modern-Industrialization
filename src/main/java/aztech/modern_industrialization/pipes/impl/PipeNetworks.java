@@ -25,28 +25,25 @@ package aztech.modern_industrialization.pipes.impl;
 
 import aztech.modern_industrialization.pipes.api.PipeNetworkManager;
 import aztech.modern_industrialization.pipes.api.PipeNetworkType;
-import aztech.modern_industrialization.pipes.api.PipeNetworksComponent;
 import java.util.HashMap;
 import java.util.Map;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
-import net.minecraft.world.World;
+import net.minecraft.world.PersistentState;
 
-public class PipeNetworksComponentImpl implements PipeNetworksComponent {
-    private Map<PipeNetworkType, PipeNetworkManager> managers = new HashMap<>();
+public class PipeNetworks extends PersistentState {
+    private static final String NAME = "modern_industrialization_pipe_networks";
+    private final Map<PipeNetworkType, PipeNetworkManager> managers;
 
-    public PipeNetworksComponentImpl(World world) {
-        for (PipeNetworkType type : PipeNetworkType.getTypes().values()) {
-            managers.put(type, new PipeNetworkManager(type));
-        }
+    public PipeNetworks(Map<PipeNetworkType, PipeNetworkManager> managers) {
+        this.managers = managers;
     }
 
-    @Override
     public PipeNetworkManager getManager(PipeNetworkType type) {
-        return managers.get(type);
+        return managers.computeIfAbsent(type, PipeNetworkManager::new);
     }
 
-    @Override
     public void onServerTickStart() {
         for (PipeNetworkManager manager : managers.values()) {
             manager.markNetworksAsUnticked();
@@ -54,22 +51,27 @@ public class PipeNetworksComponentImpl implements PipeNetworksComponent {
     }
 
     @Override
-    public void fromTag(NbtCompound tag) {
+    public NbtCompound writeNbt(NbtCompound nbt) {
+        for (Map.Entry<PipeNetworkType, PipeNetworkManager> entry : managers.entrySet()) {
+            nbt.put(entry.getKey().getIdentifier().toString(), entry.getValue().toTag(new NbtCompound()));
+        }
+        return nbt;
+    }
+
+    public static PipeNetworks readNbt(NbtCompound nbt) {
+        Map<PipeNetworkType, PipeNetworkManager> managers = new HashMap<>();
         for (Map.Entry<Identifier, PipeNetworkType> entry : PipeNetworkType.getTypes().entrySet()) {
             PipeNetworkManager manager = new PipeNetworkManager(entry.getValue());
             String tagKey = entry.getKey().toString();
-            if (tag.contains(tagKey)) {
-                manager.fromTag(tag.getCompound(tagKey));
+            if (nbt.contains(tagKey)) {
+                manager.fromNbt(nbt.getCompound(tagKey));
             }
             managers.put(entry.getValue(), manager);
         }
+        return new PipeNetworks(managers);
     }
 
-    @Override
-    public NbtCompound toTag(NbtCompound tag) {
-        for (Map.Entry<PipeNetworkType, PipeNetworkManager> entry : managers.entrySet()) {
-            tag.put(entry.getKey().getIdentifier().toString(), entry.getValue().toTag(new NbtCompound()));
-        }
-        return tag;
+    public static PipeNetworks get(ServerWorld world) {
+        return world.getPersistentStateManager().getOrCreate(PipeNetworks::readNbt, () -> new PipeNetworks(new HashMap<>()), NAME);
     }
 }

@@ -23,34 +23,39 @@
  */
 package aztech.modern_industrialization.compat.rei.machines;
 
+import aztech.modern_industrialization.compat.rei.ReiUtil;
 import aztech.modern_industrialization.machines.recipe.MachineRecipe;
 import aztech.modern_industrialization.util.FluidTextHelper;
 import aztech.modern_industrialization.util.TextHelper;
+import dev.architectury.fluid.FluidStack;
 import java.text.DecimalFormat;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import me.shedaniel.rei.api.EntryStack;
-import me.shedaniel.rei.api.RecipeDisplay;
-import me.shedaniel.rei.api.fractions.Fraction;
-import net.minecraft.client.resource.language.I18n;
+import me.shedaniel.rei.api.client.gui.widgets.Tooltip;
+import me.shedaniel.rei.api.common.category.CategoryIdentifier;
+import me.shedaniel.rei.api.common.display.Display;
+import me.shedaniel.rei.api.common.entry.EntryIngredient;
+import me.shedaniel.rei.api.common.entry.EntryStack;
+import me.shedaniel.rei.api.common.util.EntryStacks;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
-import org.jetbrains.annotations.NotNull;
 
-public class MachineRecipeDisplay implements RecipeDisplay {
+public class MachineRecipeDisplay implements Display {
     final MachineRecipe recipe;
     private final Identifier category;
     private static final DecimalFormat PROBABILITY_FORMAT = new DecimalFormat("#.#");
-    private static final Function<EntryStack, String> FLUID_TOOLTIP = stack -> {
-        long amount = stack.getAccurateAmount().multiply(Fraction.ofWhole(81000)).longValue();
-        return I18n.translate("text.modern_industrialization.fluid_slot_quantity", FluidTextHelper.getUnicodeMillibuckets(amount, false));
+    private static final BiFunction<EntryStack<?>, Tooltip, Tooltip> FLUID_TOOLTIP = (stack, tooltip) -> {
+        long amount = stack.<FluidStack>cast().getValue().getAmount();
+        return Tooltip.create(
+                new TranslatableText("text.modern_industrialization.fluid_slot_quantity", FluidTextHelper.getUnicodeMillibuckets(amount, false)));
     };
 
     public MachineRecipeDisplay(Identifier categoryId, MachineRecipe recipe) {
@@ -58,7 +63,7 @@ public class MachineRecipeDisplay implements RecipeDisplay {
         this.category = categoryId;
     }
 
-    private static Function<EntryStack, List<Text>> getProbabilityTooltip(float probability) {
+    private static Function<EntryStack<?>, List<Text>> getProbabilityTooltip(float probability) {
         return stack -> {
             if (probability == 1) {
                 return Collections.emptyList();
@@ -75,47 +80,48 @@ public class MachineRecipeDisplay implements RecipeDisplay {
         };
     }
 
-    private static EntryStack createFluidEntryStack(Fluid fluid, long amount) {
-        return EntryStack.create(fluid, Fraction.of(amount, 81000)).addSetting(EntryStack.Settings.Fluid.AMOUNT_TOOLTIP, FLUID_TOOLTIP);
+    private static EntryStack<?> createFluidEntryStack(Fluid fluid, long amount) {
+        return EntryStacks.of(fluid, amount).setting(EntryStack.Settings.TOOLTIP_PROCESSOR, FLUID_TOOLTIP);
     }
 
-    public Stream<List<EntryStack>> getItemInputs() {
-        return recipe.itemInputs.stream().map(i -> createInputEntries(i).stream()
-                .map(e -> e.addSetting(EntryStack.Settings.TOOLTIP_APPEND_EXTRA, getProbabilityTooltip(i.probability))).collect(Collectors.toList()));
+    public Stream<EntryIngredient> getItemInputs() {
+        return recipe.itemInputs.stream().map(i -> ReiUtil.createInputEntries(i)
+                .map(e -> e.setting(EntryStack.Settings.TOOLTIP_APPEND_EXTRA, getProbabilityTooltip(i.probability))));
     }
 
-    private static List<EntryStack> createInputEntries(MachineRecipe.ItemInput input) {
-        return input.getInputItems().stream().map(i -> EntryStack.create(new ItemStack(i, input.amount))).collect(Collectors.toList());
-    }
-
-    public Stream<List<EntryStack>> getFluidInputs() {
-        return recipe.fluidInputs.stream().map(i -> Collections.singletonList(
-                createFluidEntryStack(i.fluid, i.amount).addSetting(EntryStack.Settings.TOOLTIP_APPEND_EXTRA, getProbabilityTooltip(i.probability))));
+    public Stream<EntryIngredient> getFluidInputs() {
+        return recipe.fluidInputs.stream().map(i -> EntryIngredient.of(
+                createFluidEntryStack(i.fluid, i.amount).setting(EntryStack.Settings.TOOLTIP_APPEND_EXTRA, getProbabilityTooltip(i.probability))));
     }
 
     @Override
-    public @NotNull List<List<EntryStack>> getInputEntries() {
+    public List<EntryIngredient> getInputEntries() {
         return Stream.concat(getItemInputs(), getFluidInputs()).collect(Collectors.toList());
     }
 
-    public Stream<List<EntryStack>> getItemOutputs() {
-        return recipe.itemOutputs.stream().map(i -> Collections.singletonList(EntryStack.create(new ItemStack(i.item, i.amount))
-                .addSetting(EntryStack.Settings.TOOLTIP_APPEND_EXTRA, getProbabilityTooltip(i.probability))));
+    public Stream<EntryIngredient> getItemOutputs() {
+        return recipe.itemOutputs.stream().map(i -> EntryIngredient.of(EntryStacks.of(new ItemStack(i.item, i.amount))
+                .setting(EntryStack.Settings.TOOLTIP_APPEND_EXTRA, getProbabilityTooltip(i.probability))));
     }
 
-    public Stream<List<EntryStack>> getFluidOutputs() {
-        return recipe.fluidOutputs.stream().map(i -> Collections.singletonList(
-                createFluidEntryStack(i.fluid, i.amount).addSetting(EntryStack.Settings.TOOLTIP_APPEND_EXTRA, getProbabilityTooltip(i.probability))));
+    public Stream<EntryIngredient> getFluidOutputs() {
+        return recipe.fluidOutputs.stream().map(i -> EntryIngredient.of(
+                createFluidEntryStack(i.fluid, i.amount).setting(EntryStack.Settings.TOOLTIP_APPEND_EXTRA, getProbabilityTooltip(i.probability))));
     }
 
     @Override
-    public @NotNull List<List<EntryStack>> getResultingEntries() {
+    public List<EntryIngredient> getOutputEntries() {
         return Stream.concat(getItemOutputs(), getFluidOutputs()).collect(Collectors.toList());
     }
 
     @Override
-    public @NotNull Identifier getRecipeCategory() {
-        return category;
+    public CategoryIdentifier<?> getCategoryIdentifier() {
+        return CategoryIdentifier.of(category);
+    }
+
+    @Override
+    public Optional<Identifier> getDisplayLocation() {
+        return Optional.of(recipe.getId());
     }
 
     public double getSeconds() {
@@ -128,10 +134,5 @@ public class MachineRecipeDisplay implements RecipeDisplay {
 
     public int getTicks() {
         return recipe.duration;
-    }
-
-    @Override
-    public @NotNull Optional<Identifier> getRecipeLocation() {
-        return Optional.of(recipe.getId());
     }
 }

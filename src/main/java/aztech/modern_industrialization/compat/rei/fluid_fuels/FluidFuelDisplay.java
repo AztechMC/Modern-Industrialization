@@ -25,13 +25,13 @@ package aztech.modern_industrialization.compat.rei.fluid_fuels;
 
 import java.util.Collections;
 import java.util.List;
-import me.shedaniel.rei.api.EntryStack;
-import me.shedaniel.rei.api.RecipeDisplay;
+import me.shedaniel.rei.api.common.category.CategoryIdentifier;
+import me.shedaniel.rei.api.common.display.Display;
+import me.shedaniel.rei.api.common.entry.EntryIngredient;
+import me.shedaniel.rei.api.common.util.EntryStacks;
 import net.minecraft.fluid.Fluid;
-import net.minecraft.util.Identifier;
-import org.jetbrains.annotations.NotNull;
 
-class FluidFuelDisplay implements RecipeDisplay {
+class FluidFuelDisplay implements Display {
     final Fluid fluid;
 
     FluidFuelDisplay(Fluid fluid) {
@@ -39,12 +39,17 @@ class FluidFuelDisplay implements RecipeDisplay {
     }
 
     @Override
-    public @NotNull List<List<EntryStack>> getInputEntries() {
-        return Collections.singletonList(Collections.singletonList(EntryStack.create(fluid)));
+    public List<EntryIngredient> getInputEntries() {
+        return Collections.singletonList(EntryIngredient.of(EntryStacks.of(fluid)));
     }
 
     @Override
-    public @NotNull Identifier getRecipeCategory() {
+    public List<EntryIngredient> getOutputEntries() {
+        return Collections.emptyList();
+    }
+
+    @Override
+    public CategoryIdentifier<?> getCategoryIdentifier() {
         return FluidFuelsPlugin.CATEGORY;
     }
 }

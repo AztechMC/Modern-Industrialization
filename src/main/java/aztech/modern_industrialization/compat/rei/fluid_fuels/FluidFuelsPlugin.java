@@ -29,33 +29,38 @@ import aztech.modern_industrialization.api.FluidFuelRegistry;
 import aztech.modern_industrialization.util.TextHelper;
 import java.util.Collections;
 import java.util.List;
-import me.shedaniel.rei.api.EntryStack;
-import me.shedaniel.rei.api.RecipeHelper;
-import me.shedaniel.rei.api.plugins.REIPluginV0;
+import me.shedaniel.rei.api.client.plugins.REIClientPlugin;
+import me.shedaniel.rei.api.client.registry.category.CategoryRegistry;
+import me.shedaniel.rei.api.client.registry.display.DisplayRegistry;
+import me.shedaniel.rei.api.common.category.CategoryIdentifier;
+import me.shedaniel.rei.api.common.entry.EntryStack;
+import me.shedaniel.rei.api.common.util.EntryStacks;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.item.Item;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
-import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
-public class FluidFuelsPlugin implements REIPluginV0 {
-    static final Identifier CATEGORY = new MIIdentifier("fluid_fuels");
+public class FluidFuelsPlugin implements REIClientPlugin {
+    static final CategoryIdentifier<FluidFuelDisplay> CATEGORY = CategoryIdentifier.of(new MIIdentifier("fluid_fuels"));
 
     @Override
-    public Identifier getPluginIdentifier() {
-        return new MIIdentifier("fluid_fuels");
+    public void registerCategories(CategoryRegistry registry) {
+        registry.add(new FluidFuelsCategory());
+
+        addItem(registry, "diesel_generator", "turbo_diesel_generator", "large_diesel_generator");
+        addDoubleEfficiency(registry, "large_steam_boiler", "advanced_large_steam_boiler", "high_pressure_large_steam_boiler",
+                "high_pressure_advanced_large_steam_boiler");
+        addItem(registry, ModernIndustrialization.ITEM_JETPACK, ModernIndustrialization.ITEM_DIESEL_CHAINSAW,
+                ModernIndustrialization.ITEM_DIESEL_DRILL);
+
+        registry.removePlusButton(CATEGORY);
     }
 
     @Override
-    public void registerPluginCategories(RecipeHelper recipeHelper) {
-        recipeHelper.registerCategory(new FluidFuelsCategory());
-    }
-
-    @Override
-    public void registerRecipeDisplays(RecipeHelper recipeHelper) {
+    public void registerDisplays(DisplayRegistry registry) {
         for (Fluid fluid : FluidFuelRegistry.getRegisteredFluids()) {
-            recipeHelper.registerDisplay(new FluidFuelDisplay(fluid));
+            registry.add(new FluidFuelDisplay(fluid));
         }
     }
 
@@ -63,37 +68,25 @@ public class FluidFuelsPlugin implements REIPluginV0 {
         return Registry.ITEM.get(new MIIdentifier(id));
     }
 
-    private void addItem(RecipeHelper recipeHelper, Item... items) {
+    private void addItem(CategoryRegistry registry, Item... items) {
         for (Item item : items) {
-            recipeHelper.registerWorkingStations(CATEGORY, EntryStack.create(item));
+            registry.addWorkstations(CATEGORY, EntryStacks.of(item));
         }
     }
 
-    private void addItem(RecipeHelper recipeHelper, String... idNamespaces) {
+    private void addItem(CategoryRegistry registry, String... idNamespaces) {
         for (String idNamespace : idNamespaces) {
-            recipeHelper.registerWorkingStations(CATEGORY, EntryStack.create(get(idNamespace)));
+            registry.addWorkstations(CATEGORY, EntryStacks.of(get(idNamespace)));
         }
     }
 
     private static final List<Text> DOUBLE_EFFICIENCY = Collections
             .singletonList(new TranslatableText("text.modern_industrialization.double_fluid_fuel_efficiency").setStyle(TextHelper.UPGRADE_TEXT));
 
-    private void addDoubleEfficiency(RecipeHelper recipeHelper, String... idNamespaces) {
+    private void addDoubleEfficiency(CategoryRegistry registry, String... idNamespaces) {
         for (String idNamespace : idNamespaces) {
-            EntryStack entry = EntryStack.create(get(idNamespace));
-            entry.addSetting(EntryStack.Settings.TOOLTIP_APPEND_EXTRA, es -> DOUBLE_EFFICIENCY);
-            recipeHelper.registerWorkingStations(CATEGORY, entry);
+            EntryStack<?> entry = EntryStacks.of(get(idNamespace)).setting(EntryStack.Settings.TOOLTIP_APPEND_EXTRA, es -> DOUBLE_EFFICIENCY);
+            registry.addWorkstations(CATEGORY, entry);
         }
-    }
-
-    @Override
-    public void registerOthers(RecipeHelper recipeHelper) {
-        addItem(recipeHelper, "diesel_generator", "turbo_diesel_generator", "large_diesel_generator");
-        addDoubleEfficiency(recipeHelper, "large_steam_boiler", "advanced_large_steam_boiler", "high_pressure_large_steam_boiler",
-                "high_pressure_advanced_large_steam_boiler");
-        addItem(recipeHelper, ModernIndustrialization.ITEM_JETPACK, ModernIndustrialization.ITEM_DIESEL_CHAINSAW,
-                ModernIndustrialization.ITEM_DIESEL_DRILL);
-
-        recipeHelper.removeAutoCraftButton(CATEGORY);
     }
 }

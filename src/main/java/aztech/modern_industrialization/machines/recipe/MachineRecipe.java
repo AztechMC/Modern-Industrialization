@@ -138,6 +138,10 @@ public class MachineRecipe implements Recipe<Inventory> {
             return Arrays.stream(((IngredientMatchingStacksAccessor) (Object) ingredient).modern_industrialization_getMatchingStacks())
                     .map(ItemStack::getItem).distinct().collect(Collectors.toList());
         }
+
+        public List<ItemStack> getInputStacks() {
+            return Arrays.asList(((IngredientMatchingStacksAccessor) (Object) ingredient).modern_industrialization_getMatchingStacks());
+        }
     }
 
     public static class FluidInput {

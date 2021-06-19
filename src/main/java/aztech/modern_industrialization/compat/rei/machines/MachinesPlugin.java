@@ -32,14 +32,19 @@ import aztech.modern_industrialization.machines.init.MIMachineRecipeTypes;
 import aztech.modern_industrialization.machines.multiblocks.ShapeTemplate;
 import aztech.modern_industrialization.machines.recipe.MachineRecipe;
 import aztech.modern_industrialization.machines.recipe.RecipeConversions;
+import dev.architectury.event.CompoundEventResult;
 import java.util.*;
 import java.util.function.Predicate;
 import me.shedaniel.math.Point;
-import me.shedaniel.rei.api.ClickAreaHandler;
-import me.shedaniel.rei.api.EntryStack;
-import me.shedaniel.rei.api.RecipeDisplay;
-import me.shedaniel.rei.api.RecipeHelper;
-import me.shedaniel.rei.api.plugins.REIPluginV0;
+import me.shedaniel.rei.api.client.plugins.REIClientPlugin;
+import me.shedaniel.rei.api.client.registry.category.CategoryRegistry;
+import me.shedaniel.rei.api.client.registry.display.DisplayRegistry;
+import me.shedaniel.rei.api.client.registry.screen.ClickArea;
+import me.shedaniel.rei.api.client.registry.screen.ScreenRegistry;
+import me.shedaniel.rei.api.client.registry.transfer.TransferHandlerRegistry;
+import me.shedaniel.rei.api.common.category.CategoryIdentifier;
+import me.shedaniel.rei.api.common.display.Display;
+import me.shedaniel.rei.api.common.util.EntryStacks;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.recipe.Recipe;
 import net.minecraft.recipe.RecipeType;
@@ -48,31 +53,39 @@ import net.minecraft.recipe.StonecuttingRecipe;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Pair;
-import net.minecraft.util.TypedActionResult;
 import net.minecraft.util.registry.Registry;
 
-public class MachinesPlugin implements REIPluginV0 {
-    @Override
-    public Identifier getPluginIdentifier() {
-        return new MIIdentifier("machines");
-    }
+public class MachinesPlugin implements REIClientPlugin {
+    static CategoryRegistry categoryRegistry;
+    static DisplayRegistry displayRegistry;
 
     @Override
-    public void registerPluginCategories(RecipeHelper recipeHelper) {
+    public void registerCategories(CategoryRegistry registry) {
+        categoryRegistry = registry;
+
         for (Map.Entry<String, MachineCategoryParams> entry : ReiMachineRecipes.categories.entrySet()) {
             Identifier id = new MIIdentifier(entry.getKey());
-            recipeHelper.registerCategory(new MachineRecipeCategory(id, entry.getValue()));
+            MachineRecipeCategory category = new MachineRecipeCategory(id, entry.getValue());
+            registry.add(category);
+
+            for (String workstation : entry.getValue().workstations) {
+                registry.addWorkstations(category.getCategoryIdentifier(), EntryStacks.of(Registry.ITEM.get(new MIIdentifier(workstation))));
+            }
         }
-        recipeHelper.registerCategory(new MultiblockRecipeCategory());
+
+        MultiblockRecipeCategory multiblockCategory = new MultiblockRecipeCategory();
+        registry.add(multiblockCategory);
+        registry.removePlusButton(multiblockCategory.getCategoryIdentifier());
     }
 
-    @SuppressWarnings("rawtypes")
     @Override
-    public void registerRecipeDisplays(RecipeHelper recipeHelper) {
+    public void registerDisplays(DisplayRegistry registry) {
+        displayRegistry = registry;
+
         // regular recipes
         for (Map.Entry<String, MachineCategoryParams> entry : ReiMachineRecipes.categories.entrySet()) {
             Identifier id = new MIIdentifier(entry.getKey());
-            recipeHelper.registerRecipes(id, (Predicate<Recipe>) recipe -> {
+            registry.registerFiller((Predicate<Recipe<?>>) recipe -> {
                 if (recipe instanceof MachineRecipe) {
                     return entry.getValue().recipePredicate.test((MachineRecipe) recipe);
                 } else {
@@ -82,61 +95,27 @@ public class MachinesPlugin implements REIPluginV0 {
         }
         // furnace recipes
         Identifier furnaceId = new MIIdentifier("bronze_furnace");
-        recipeHelper.registerRecipes(furnaceId, (Predicate<Recipe>) recipe -> recipe.getType() == RecipeType.SMELTING,
+        registry.registerFiller((Predicate<Recipe<?>>) recipe -> recipe.getType() == RecipeType.SMELTING,
                 recipe -> new MachineRecipeDisplay(furnaceId, RecipeConversions.of((SmeltingRecipe) recipe, MIMachineRecipeTypes.FURNACE)));
         // stonecutter recipes
         Identifier cuttingMachineId = new MIIdentifier("bronze_cutting_machine");
-        recipeHelper.registerRecipes(cuttingMachineId, (Predicate<Recipe>) recipe -> recipe.getType() == RecipeType.STONECUTTING,
+        registry.registerFiller((Predicate<Recipe<?>>) recipe -> recipe.getType() == RecipeType.STONECUTTING,
                 recipe -> new MachineRecipeDisplay(cuttingMachineId,
                         RecipeConversions.of((StonecuttingRecipe) recipe, MIMachineRecipeTypes.CUTTING_MACHINE)));
         // multiblock shapes
         for (Pair<String, ShapeTemplate> entry : ReiMachineRecipes.multiblockShapes) {
-            recipeHelper.registerDisplay(new MultiblockRecipeDisplay(entry.getLeft(), entry.getRight()));
+            registry.add(new MultiblockRecipeDisplay(entry.getLeft(), entry.getRight()));
         }
     }
 
     @Override
-    public void registerOthers(RecipeHelper recipeHelper) {
-        for (Map.Entry<String, MachineCategoryParams> entry : ReiMachineRecipes.categories.entrySet()) {
-            for (String workstation : entry.getValue().workstations) {
-                recipeHelper.registerWorkingStations(new MIIdentifier(entry.getKey()),
-                        EntryStack.create(Registry.ITEM.get(new MIIdentifier(workstation))));
-            }
-        }
-        recipeHelper.removeAutoCraftButton(MultiblockRecipeCategory.ID);
-        registerClickAreas(recipeHelper);
-        recipeHelper.registerAutoCraftingHandler(new SlotLockingHandler(recipeHelper));
-        recipeHelper.registerFocusedStackProvider(screen -> {
-            if (screen instanceof MachineScreenHandlers.ClientScreen) {
-                Slot slot = ((MachineScreenHandlers.ClientScreen) screen).getFocusedSlot();
-                if (slot instanceof ConfigurableFluidStack.ConfigurableFluidSlot) {
-                    ConfigurableFluidStack stack = ((ConfigurableFluidStack.ConfigurableFluidSlot) slot).getConfStack();
-                    if (stack.getAmount() > 0) {
-                        Fluid fluid = stack.getFluid().getFluid();
-                        if (fluid != null) {
-                            return TypedActionResult.success(EntryStack.create(fluid));
-                        }
-                    } else if (stack.getLockedFluid() != null) {
-                        Fluid fluid = stack.getLockedFluid().getFluid();
-                        if (fluid != null) {
-                            return TypedActionResult.success(EntryStack.create(fluid));
-                        }
-                    }
-                } else if (slot instanceof ConfigurableItemStack.ConfigurableItemSlot) {
-                    ConfigurableItemStack stack = ((ConfigurableItemStack.ConfigurableItemSlot) slot).getConfStack();
-                    // the normal stack is already handled by REI, we just need to handle the locked
-                    // item!
-                    if (stack.getLockedItem() != null) {
-                        return TypedActionResult.success(EntryStack.create(stack.getLockedItem()));
-                    }
-                }
-            }
-            return TypedActionResult.pass(EntryStack.empty());
-        });
+    public void registerTransferHandlers(TransferHandlerRegistry registry) {
+        registry.register(new SlotLockingHandler());
     }
 
-    private void registerClickAreas(RecipeHelper helper) {
-        helper.registerClickArea(MachineScreenHandlers.ClientScreen.class, context -> {
+    @Override
+    public void registerScreens(ScreenRegistry registry) {
+        registry.registerClickArea(MachineScreenHandlers.ClientScreen.class, context -> {
             MachineScreenHandlers.Client screenHandler = context.getScreen().getScreenHandler();
             String blockId = screenHandler.guiParams.blockId;
             List<ReiMachineRecipes.ClickAreaCategory> categories = ReiMachineRecipes.machineToClickAreaCategory.getOrDefault(blockId,
@@ -145,21 +124,49 @@ public class MachinesPlugin implements REIPluginV0 {
             Point point = context.getMousePosition().clone();
             point.translate(-context.getScreen().x(), -context.getScreen().y());
             if (categories.size() > 0 && rectangle != null && contains(rectangle, point)) {
-                ClickAreaHandler.Result result = ClickAreaHandler.Result.success();
+                ClickArea.Result result = ClickArea.Result.success();
                 boolean foundSome = false;
                 for (ReiMachineRecipes.ClickAreaCategory cac : categories) {
                     if (!cac.predicate.test(context.getScreen()))
                         continue;
-                    List<RecipeDisplay> displays = helper.getAllRecipesFromCategory(helper.getCategory(cac.category));
+                    List<Display> displays = displayRegistry.get(CategoryIdentifier.of(cac.category));
                     if (displays.size() > 0) {
-                        result.category(cac.category);
+                        result.category(CategoryIdentifier.of(cac.category));
                         foundSome = true;
                     }
                 }
-                return foundSome ? result : ClickAreaHandler.Result.fail();
+                return foundSome ? result : ClickArea.Result.fail();
             } else {
-                return ClickAreaHandler.Result.fail();
+                return ClickArea.Result.fail();
             }
+        });
+
+        registry.registerFocusedStack((screen, mouse) -> {
+            if (screen instanceof MachineScreenHandlers.ClientScreen) {
+                Slot slot = ((MachineScreenHandlers.ClientScreen) screen).getFocusedSlot();
+                if (slot instanceof ConfigurableFluidStack.ConfigurableFluidSlot) {
+                    ConfigurableFluidStack stack = ((ConfigurableFluidStack.ConfigurableFluidSlot) slot).getConfStack();
+                    if (stack.getAmount() > 0) {
+                        Fluid fluid = stack.getFluid().getFluid();
+                        if (fluid != null) {
+                            return CompoundEventResult.interruptTrue(EntryStacks.of(fluid));
+                        }
+                    } else if (stack.getLockedFluid() != null) {
+                        Fluid fluid = stack.getLockedFluid().getFluid();
+                        if (fluid != null) {
+                            return CompoundEventResult.interruptTrue(EntryStacks.of(fluid));
+                        }
+                    }
+                } else if (slot instanceof ConfigurableItemStack.ConfigurableItemSlot) {
+                    ConfigurableItemStack stack = ((ConfigurableItemStack.ConfigurableItemSlot) slot).getConfStack();
+                    // the normal stack is already handled by REI, we just need to handle the locked
+                    // item!
+                    if (stack.getLockedItem() != null) {
+                        return CompoundEventResult.interruptTrue(EntryStacks.of(stack.getLockedItem()));
+                    }
+                }
+            }
+            return CompoundEventResult.pass();
         });
     }
 

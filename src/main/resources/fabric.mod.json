@@ -31,9 +31,6 @@
       "aztech.modern_industrialization.compat.rei.forgehammer_recipe.ForgeHammerRecipePlugin",
       "aztech.modern_industrialization.compat.rei.machines.MachinesPlugin"
     ],
-    "modmenu": [
-      "aztech.modern_industrialization.compat.modmenu.MIModMenuEntrypoint"
-    ],
     "kubejs-init": [
       "aztech.modern_industrialization.compat.kubejs.MIRecipeEventHandler"
     ]
@@ -50,7 +47,7 @@
   "depends": {
     "fabricloader": ">=0.7.4",
     "fabric": ">=0.33",
-    "minecraft": "1.16.x",
+    "minecraft": "1.17.x",
     "patchouli": "*"
   },
   "recommends": {

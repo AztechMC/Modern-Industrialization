@@ -26,20 +26,22 @@ package aztech.modern_industrialization.compat.rei.machines;
 import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.ModernIndustrialization;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import me.shedaniel.math.Point;
 import me.shedaniel.math.Rectangle;
-import me.shedaniel.rei.api.EntryStack;
-import me.shedaniel.rei.api.RecipeCategory;
-import me.shedaniel.rei.api.widgets.Slot;
-import me.shedaniel.rei.api.widgets.Widgets;
-import me.shedaniel.rei.gui.widget.Widget;
-import net.minecraft.client.resource.language.I18n;
+import me.shedaniel.rei.api.client.gui.Renderer;
+import me.shedaniel.rei.api.client.gui.widgets.Slot;
+import me.shedaniel.rei.api.client.gui.widgets.Widget;
+import me.shedaniel.rei.api.client.gui.widgets.Widgets;
+import me.shedaniel.rei.api.client.registry.display.DisplayCategory;
+import me.shedaniel.rei.api.common.category.CategoryIdentifier;
+import me.shedaniel.rei.api.common.entry.EntryIngredient;
+import me.shedaniel.rei.api.common.util.EntryStacks;
+import net.minecraft.text.Text;
+import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
-import org.jetbrains.annotations.NotNull;
 
-public class MultiblockRecipeCategory implements RecipeCategory<MultiblockRecipeDisplay> {
+public class MultiblockRecipeCategory implements DisplayCategory<MultiblockRecipeDisplay> {
     public static final Identifier ID = new MIIdentifier("multiblock_shapes");
     private static final int SLOTS = 6;
     private static final int MARGIN = 10;
@@ -47,26 +49,26 @@ public class MultiblockRecipeCategory implements RecipeCategory<MultiblockRecipe
     private static final int W = SLOTS * 20 - 2 + 2 * MARGIN;
 
     @Override
-    public @NotNull Identifier getIdentifier() {
-        return ID;
+    public CategoryIdentifier<? extends MultiblockRecipeDisplay> getCategoryIdentifier() {
+        return CategoryIdentifier.of(ID);
     }
 
     @Override
-    public @NotNull String getCategoryName() {
-        return I18n.translate("rei_categories.modern_industrialization.multiblock_shapes");
+    public Text getTitle() {
+        return new TranslatableText("rei_categories.modern_industrialization.multiblock_shapes");
     }
 
     @Override
-    public @NotNull EntryStack getLogo() {
-        return EntryStack.create(ModernIndustrialization.ITEM_WRENCH);
+    public Renderer getIcon() {
+        return EntryStacks.of(ModernIndustrialization.ITEM_WRENCH);
     }
 
     @Override
-    public @NotNull List<Widget> setupDisplay(MultiblockRecipeDisplay recipeDisplay, Rectangle bounds) {
+    public List<Widget> setupDisplay(MultiblockRecipeDisplay recipeDisplay, Rectangle bounds) {
         List<Widget> widgets = new ArrayList<>();
         widgets.add(Widgets.createRecipeBase(bounds));
         for (int i = 0; i < SLOTS; ++i) {
-            List<EntryStack> slotStack = i < recipeDisplay.shape.materials.size() ? recipeDisplay.shape.materials.get(i) : Collections.emptyList();
+            EntryIngredient slotStack = i < recipeDisplay.shape.materials.size() ? recipeDisplay.shape.materials.get(i) : EntryIngredient.empty();
 
             Slot slot = Widgets.createSlot(new Point(bounds.x + MARGIN + i * 20, bounds.y + MARGIN));
             slot.entries(slotStack);

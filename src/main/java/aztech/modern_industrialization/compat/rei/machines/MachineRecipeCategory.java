@@ -28,25 +28,26 @@ import aztech.modern_industrialization.inventory.SlotPositions;
 import aztech.modern_industrialization.machines.MachineScreenHandlers;
 import aztech.modern_industrialization.machines.components.sync.ProgressBar;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import me.shedaniel.math.Point;
 import me.shedaniel.math.Rectangle;
-import me.shedaniel.rei.api.EntryStack;
-import me.shedaniel.rei.api.RecipeCategory;
-import me.shedaniel.rei.api.widgets.Slot;
-import me.shedaniel.rei.api.widgets.Widgets;
-import me.shedaniel.rei.gui.widget.Widget;
+import me.shedaniel.rei.api.client.gui.Renderer;
+import me.shedaniel.rei.api.client.gui.widgets.Slot;
+import me.shedaniel.rei.api.client.gui.widgets.Widget;
+import me.shedaniel.rei.api.client.gui.widgets.Widgets;
+import me.shedaniel.rei.api.client.registry.display.DisplayCategory;
+import me.shedaniel.rei.api.common.category.CategoryIdentifier;
+import me.shedaniel.rei.api.common.entry.EntryIngredient;
+import me.shedaniel.rei.api.common.util.EntryStacks;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.resource.language.I18n;
+import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
-import org.jetbrains.annotations.NotNull;
 
-public class MachineRecipeCategory implements RecipeCategory<MachineRecipeDisplay> {
+public class MachineRecipeCategory implements DisplayCategory<MachineRecipeDisplay> {
     private final Identifier id;
     private final MachineCategoryParams params;
 
@@ -56,27 +57,27 @@ public class MachineRecipeCategory implements RecipeCategory<MachineRecipeDispla
     }
 
     @Override
-    public @NotNull Identifier getIdentifier() {
-        return id;
+    public CategoryIdentifier<? extends MachineRecipeDisplay> getCategoryIdentifier() {
+        return CategoryIdentifier.of(id);
     }
 
     @Override
-    public @NotNull String getCategoryName() {
-        return I18n.translate("rei_categories.modern_industrialization." + id.getPath());
+    public Text getTitle() {
+        return new TranslatableText("rei_categories.modern_industrialization." + id.getPath());
     }
 
     @Override
-    public @NotNull EntryStack getLogo() {
-        return EntryStack.create(Registry.ITEM.get(new MIIdentifier(params.workstations.get(0))));
+    public Renderer getIcon() {
+        return EntryStacks.of(Registry.ITEM.get(new MIIdentifier(params.workstations.get(0))));
     }
 
     @FunctionalInterface
     private interface SlotDrawer {
-        void drawSlots(Stream<List<EntryStack>> entries, SlotPositions positions, boolean input, boolean fluid);
+        void drawSlots(Stream<EntryIngredient> entries, SlotPositions positions, boolean input, boolean fluid);
     }
 
     @Override
-    public @NotNull List<Widget> setupDisplay(MachineRecipeDisplay recipeDisplay, Rectangle bounds) {
+    public List<Widget> setupDisplay(MachineRecipeDisplay recipeDisplay, Rectangle bounds) {
         List<Widget> widgets = new ArrayList<>();
         widgets.add(Widgets.createRecipeBase(bounds));
 
@@ -97,11 +98,11 @@ public class MachineRecipeCategory implements RecipeCategory<MachineRecipeDispla
 
         // Draw slots
         SlotDrawer drawer = (entryStream, positions, input, fluid) -> {
-            List<List<EntryStack>> entries = entryStream.collect(Collectors.toList());
+            List<EntryIngredient> entries = entryStream.collect(Collectors.toList());
             for (int i = 0; i < positions.size(); ++i) {
-                List<EntryStack> stack = i < entries.size() ? entries.get(i) : Collections.emptyList();
+                EntryIngredient ingredient = i < entries.size() ? entries.get(i) : EntryIngredient.empty();
                 Point point = new Point(xoffset + positions.getX(i), yoffset + positions.getY(i));
-                Slot widget = Widgets.createSlot(point).entries(stack);
+                Slot widget = Widgets.createSlot(point).entries(ingredient);
                 if (input) {
                     widget.markInput();
                 } else {

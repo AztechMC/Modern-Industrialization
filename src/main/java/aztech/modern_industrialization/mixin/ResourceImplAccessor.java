@@ -26,10 +26,12 @@ package aztech.modern_industrialization.mixin;
 import java.io.InputStream;
 import net.minecraft.resource.ResourceImpl;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Mutable;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
 @Mixin(ResourceImpl.class)
 public interface ResourceImplAccessor {
     @Accessor("inputStream")
+    @Mutable
     void setInputStream(InputStream is);
 }

@@ -51,6 +51,7 @@ import net.minecraft.util.Identifier;
 
 public class FluidPipeScreen extends PipeScreen<FluidPipeScreenHandler> {
     private static final Identifier TEXTURE = new MIIdentifier("textures/gui/pipe/fluid.png");
+    private NetworkFluidButton networkFluidButton;
 
     public FluidPipeScreen(FluidPipeScreenHandler handler, PlayerInventory inventory, Text title) {
         super(handler, inventory, title, FluidPipeScreenHandler.HEIGHT);
@@ -71,16 +72,17 @@ public class FluidPipeScreen extends PipeScreen<FluidPipeScreenHandler> {
     }
 
     private void addNetworkFluidButton() {
-        addDrawableChild(new NetworkFluidButton(72 + this.x, 20 + this.y, widget -> updateNetworkFluid(), (button, matrices, mouseX, mouseY) -> {
-            List<Text> lines = new ArrayList<>();
-            lines.add(FluidHelper.getFluidName(handler.iface.getNetworkFluid(), false));
-            if (!handler.iface.getNetworkFluid().isEmpty()) {
-                lines.add(new TranslatableText("text.modern_industrialization.network_fluid_help_clear").setStyle(TextHelper.GRAY_TEXT));
-            } else {
-                lines.add(new TranslatableText("text.modern_industrialization.network_fluid_help_set").setStyle(TextHelper.GRAY_TEXT));
-            }
-            renderTooltip(matrices, lines, mouseX, mouseY);
-        }, handler.iface));
+        networkFluidButton = addDrawableChild(
+                new NetworkFluidButton(72 + this.x, 20 + this.y, widget -> updateNetworkFluid(), (button, matrices, mouseX, mouseY) -> {
+                    List<Text> lines = new ArrayList<>();
+                    lines.add(FluidHelper.getFluidName(handler.iface.getNetworkFluid(), false));
+                    if (!handler.iface.getNetworkFluid().isEmpty()) {
+                        lines.add(new TranslatableText("text.modern_industrialization.network_fluid_help_clear").setStyle(TextHelper.GRAY_TEXT));
+                    } else {
+                        lines.add(new TranslatableText("text.modern_industrialization.network_fluid_help_set").setStyle(TextHelper.GRAY_TEXT));
+                    }
+                    renderTooltip(matrices, lines, mouseX, mouseY);
+                }, handler.iface));
     }
 
     private void updateNetworkFluid() {
@@ -97,12 +99,23 @@ public class FluidPipeScreen extends PipeScreen<FluidPipeScreenHandler> {
             targetFluid = FluidKey.empty();
         }
         if (targetFluid != null) {
-            iface.setNetworkFluid(targetFluid);
-            PacketByteBuf buf = PacketByteBufs.create();
-            buf.writeInt(handler.syncId);
-            targetFluid.toPacket(buf);
-            ClientPlayNetworking.send(PipePackets.SET_NETWORK_FLUID, buf);
+            setNetworkFluid(targetFluid);
         }
+    }
+
+    // These two functions are called by REI
+    public boolean canSetNetworkFluid() {
+        // In theory it should use the position provided by REI, but if it works like
+        // this it's fine.
+        return networkFluidButton.isHovered();
+    }
+
+    public void setNetworkFluid(FluidKey fluidKey) {
+        handler.iface.setNetworkFluid(fluidKey);
+        PacketByteBuf buf = PacketByteBufs.create();
+        buf.writeInt(handler.syncId);
+        fluidKey.toPacket(buf);
+        ClientPlayNetworking.send(PipePackets.SET_NETWORK_FLUID, buf);
     }
 
     private static class NetworkFluidButton extends ButtonWidget {

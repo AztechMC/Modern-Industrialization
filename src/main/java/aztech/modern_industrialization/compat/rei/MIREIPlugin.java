@@ -24,11 +24,20 @@
 package aztech.modern_industrialization.compat.rei;
 
 import aztech.modern_industrialization.items.diesel_tools.DieselToolItem;
+import aztech.modern_industrialization.pipes.fluid.FluidPipeScreen;
+import dev.architectury.fluid.FluidStack;
+import java.util.Optional;
+import me.shedaniel.rei.api.client.gui.drag.DraggableStack;
+import me.shedaniel.rei.api.client.gui.drag.DraggableStackVisitor;
+import me.shedaniel.rei.api.client.gui.drag.DraggingContext;
 import me.shedaniel.rei.api.client.plugins.REIClientPlugin;
 import me.shedaniel.rei.api.client.registry.category.CategoryRegistry;
+import me.shedaniel.rei.api.client.registry.screen.ScreenRegistry;
 import me.shedaniel.rei.api.common.util.EntryStacks;
 import me.shedaniel.rei.plugin.common.BuiltinPlugin;
 import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidKey;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.item.Item;
 import net.minecraft.util.registry.Registry;
 
@@ -45,5 +54,30 @@ public class MIREIPlugin implements REIClientPlugin {
                 }
             }
         }
+    }
+
+    @Override
+    public void registerScreens(ScreenRegistry registry) {
+        registerFluidPipeDragging(registry);
+    }
+
+    private void registerFluidPipeDragging(ScreenRegistry registry) {
+        registry.registerDraggableStackVisitor(new DraggableStackVisitor<FluidPipeScreen>() {
+            @Override
+            public Optional<Acceptor> visitDraggedStack(DraggingContext<FluidPipeScreen> context, DraggableStack stack) {
+                if (context.getScreen().canSetNetworkFluid() && stack.getStack().getValue() instanceof FluidStack) {
+                    return Optional.of(s -> {
+                        FluidStack fs = s.getStack().<FluidStack>cast().getValue();
+                        context.getScreen().setNetworkFluid(FluidKey.of(fs.getFluid(), fs.getTag()));
+                    });
+                }
+                return Optional.empty();
+            }
+
+            @Override
+            public <R extends Screen> boolean isHandingScreen(R screen) {
+                return screen instanceof FluidPipeScreen;
+            }
+        });
     }
 }

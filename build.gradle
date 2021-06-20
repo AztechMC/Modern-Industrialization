@@ -31,12 +31,9 @@ repositories {
     maven {
         url 'https://maven.blamejared.com'
     }
-    // for HWYLA
+    // for WTHIT
     maven {
-        url "https://maven.tehnut.info"
-        content {
-            includeGroup "mcp.mobius.waila"
-        }
+        url 'https://bai.jfrog.io/artifactory/maven'
     }
     // for AE2
     maven {
@@ -141,7 +138,8 @@ dependencies {
     include "me.shedaniel.cloth.api:cloth-armor-api-v1:${project.cloth_api_version}"
     include "me.shedaniel.cloth.api:cloth-common-events-v1:${project.cloth_api_version}"
     include "me.shedaniel.cloth.api:cloth-durability-bar-api-v1:${project.cloth_api_version}"
-    modImplementation "mcp.mobius.waila:Hwyla:${project.hwyla_version}"
+    modImplementation "mcp.mobius.waila:wthit:fabric-${project.wthit_version}"
+    modRuntime "mcp.mobius.waila:wthit:fabric-${project.wthit_version}"
     modImplementation "me.sargunvohra.mcmods:autoconfig1u:${project.auto_config_version}"
     include "me.sargunvohra.mcmods:autoconfig1u:${project.auto_config_version}"
     modRuntime "com.terraformersmc:modmenu:${project.mod_menu_version}"

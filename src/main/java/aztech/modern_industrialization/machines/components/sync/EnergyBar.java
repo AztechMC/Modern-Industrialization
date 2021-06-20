@@ -28,9 +28,9 @@ import aztech.modern_industrialization.machines.SyncedComponent;
 import aztech.modern_industrialization.machines.SyncedComponents;
 import aztech.modern_industrialization.machines.gui.ClientComponentRenderer;
 import aztech.modern_industrialization.util.RenderHelper;
+import com.mojang.blaze3d.systems.RenderSystem;
 import java.util.Collections;
 import java.util.function.Supplier;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.util.math.MatrixStack;
@@ -105,7 +105,7 @@ public class EnergyBar {
 
             @Override
             public void renderBackground(DrawableHelper helper, MatrixStack matrices, int x, int y) {
-                MinecraftClient.getInstance().getTextureManager().bindTexture(MachineScreenHandlers.SLOT_ATLAS);
+                RenderSystem.setShaderTexture(0, MachineScreenHandlers.SLOT_ATLAS);
                 int px = x + params.renderX;
                 int py = y + params.renderY;
                 helper.drawTexture(matrices, px, py, 230, 0, WIDTH, HEIGHT);

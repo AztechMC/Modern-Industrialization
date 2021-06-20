@@ -24,6 +24,7 @@
 package aztech.modern_industrialization.inventory;
 
 import aztech.modern_industrialization.util.NbtHelper;
+import aztech.modern_industrialization.util.UnsupportedOperationInventory;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -351,7 +352,7 @@ public class ConfigurableFluidStack extends SnapshotParticipant<ResourceAmount<F
         }
 
         public ConfigurableFluidSlot(Runnable markDirty, int x, int y) {
-            super(null, -1, x, y);
+            super(new UnsupportedOperationInventory(), -1, x, y);
 
             this.markDirty = markDirty;
         }

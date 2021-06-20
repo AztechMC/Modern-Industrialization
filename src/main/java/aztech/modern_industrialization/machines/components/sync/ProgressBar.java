@@ -27,8 +27,8 @@ import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.machines.SyncedComponent;
 import aztech.modern_industrialization.machines.SyncedComponents;
 import aztech.modern_industrialization.machines.gui.ClientComponentRenderer;
+import com.mojang.blaze3d.systems.RenderSystem;
 import java.util.function.Supplier;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.network.PacketByteBuf;
@@ -103,7 +103,7 @@ public class ProgressBar {
 
     public static class RenderHelper {
         public static void renderProgress(DrawableHelper helper, MatrixStack matrices, int x, int y, Parameters params, float progress) {
-            MinecraftClient.getInstance().getTextureManager().bindTexture(params.getTextureId());
+            RenderSystem.setShaderTexture(0, params.getTextureId());
             // background
             DrawableHelper.drawTexture(matrices, x + params.renderX, y + params.renderY, helper.getZOffset(), 0, 0, 20, 20, 40, 20);
             // foreground

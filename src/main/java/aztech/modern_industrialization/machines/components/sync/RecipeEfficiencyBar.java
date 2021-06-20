@@ -30,10 +30,10 @@ import aztech.modern_industrialization.machines.SyncedComponents;
 import aztech.modern_industrialization.machines.components.CrafterComponent;
 import aztech.modern_industrialization.machines.gui.ClientComponentRenderer;
 import aztech.modern_industrialization.util.RenderHelper;
+import com.mojang.blaze3d.systems.RenderSystem;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.network.PacketByteBuf;
@@ -136,7 +136,7 @@ public class RecipeEfficiencyBar {
         public class Renderer implements ClientComponentRenderer {
             @Override
             public void renderBackground(DrawableHelper helper, MatrixStack matrices, int x, int y) {
-                MinecraftClient.getInstance().getTextureManager().bindTexture(TEXTURE);
+                RenderSystem.setShaderTexture(0, TEXTURE);
                 DrawableHelper.drawTexture(matrices, x + params.renderX - 1, y + params.renderY - 1, helper.getZOffset(), 0, 2, WIDTH + 2, HEIGHT + 2,
                         6, 102);
                 if (hasActiveRecipe) {

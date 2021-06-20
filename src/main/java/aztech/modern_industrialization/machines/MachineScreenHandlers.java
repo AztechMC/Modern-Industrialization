@@ -42,7 +42,6 @@ import java.util.function.Supplier;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.util.math.MatrixStack;
@@ -291,7 +290,7 @@ public class MachineScreenHandlers {
         // drawBackground() is called too late, so it's not used at all.
         // This function is used by our custom render() function when appropriate.
         private void actualDrawBackground(MatrixStack matrices) {
-            this.client.getTextureManager().bindTexture(new MIIdentifier("textures/gui/container/background.png"));
+            RenderSystem.setShaderTexture(0, new MIIdentifier("textures/gui/container/background.png"));
             int bw = handler.guiParams.backgroundWidth;
             int bh = handler.guiParams.backgroundHeight;
             drawTexture(matrices, x, y + 4, 0, 256 - bh + 4, bw, bh - 4);
@@ -303,7 +302,7 @@ public class MachineScreenHandlers {
         }
 
         private void renderConfigurableSlotBackgrounds(MatrixStack matrices) {
-            this.client.getTextureManager().bindTexture(SLOT_ATLAS);
+            RenderSystem.setShaderTexture(0, SLOT_ATLAS);
             for (Slot slot : this.handler.slots) {
                 int px = x + slot.x - 1;
                 int py = y + slot.y - 1;
@@ -418,8 +417,7 @@ public class MachineScreenHandlers {
 
             @Override
             public void renderButton(MatrixStack matrices, int mouseX, int mouseY, float delta) {
-                MinecraftClient minecraftClient = MinecraftClient.getInstance();
-                minecraftClient.getTextureManager().bindTexture(SLOT_ATLAS);
+                RenderSystem.setShaderTexture(0, SLOT_ATLAS);
 
                 int v = 18;
                 if (isPressed.get()) {

@@ -26,6 +26,8 @@ package aztech.modern_industrialization.util;
 import aztech.modern_industrialization.fluid.CraftingFluid;
 import aztech.modern_industrialization.mixin_client.ClientWorldAccessor;
 import com.mojang.blaze3d.systems.RenderSystem;
+import java.nio.ByteBuffer;
+import java.nio.IntBuffer;
 import net.fabricmc.fabric.api.renderer.v1.Renderer;
 import net.fabricmc.fabric.api.renderer.v1.RendererAccess;
 import net.fabricmc.fabric.api.renderer.v1.material.BlendMode;
@@ -34,16 +36,14 @@ import net.fabricmc.fabric.api.renderer.v1.mesh.MutableQuadView;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
 import net.fabricmc.fabric.api.transfer.v1.client.fluid.FluidKeyRendering;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidKey;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.*;
 import net.minecraft.client.render.model.BakedQuad;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.texture.SpriteAtlasTexture;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.client.world.ClientWorld;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.Matrix4f;
+import net.minecraft.util.math.*;
+import org.lwjgl.system.MemoryStack;
 
 public class RenderHelper {
     private static final BakedQuad[] OVERLAY_QUADS;
@@ -141,7 +141,7 @@ public class RenderHelper {
     }
 
     public static void drawFluidInGui(MatrixStack ms, FluidKey fluid, int i, int j) {
-        MinecraftClient.getInstance().getTextureManager().bindTexture(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE);
+        RenderSystem.setShaderTexture(0, SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE);
         Sprite sprite = FluidKeyRendering.getSprite(fluid);
         int color = FluidKeyRendering.getColor(fluid);
 
@@ -153,6 +153,7 @@ public class RenderHelper {
         float b = (color & 255) / 256f;
         RenderSystem.disableDepthTest();
 
+        RenderSystem.setShader(GameRenderer::getPositionColorTexShader);
         BufferBuilder bufferBuilder = Tessellator.getInstance().getBuffer();
         bufferBuilder.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR_TEXTURE);
         float x0 = (float) i;
@@ -188,5 +189,76 @@ public class RenderHelper {
      */
     public static void forceChunkRemesh(ClientWorld world, BlockPos pos) {
         ((ClientWorldAccessor) world).getWorldRenderer().updateBlock(null, pos, null, null, 0);
+    }
+
+    private static final float[] DEFAULT_BRIGHTNESSES = new float[] { 1, 1, 1, 1 };
+
+    /**
+     * {@link VertexConsumer#quad} copy pasted from vanilla and adapted with support
+     * for alpha and less useless allocations.
+     */
+    public static void quadWithAlpha(VertexConsumer consumer, MatrixStack.Entry matrixEntry, BakedQuad quad, float red, float green, float blue,
+            float alpha, int light, int overlay) {
+        boolean useQuadColorData = false;
+        float[] fs = DEFAULT_BRIGHTNESSES;
+        int[] js = quad.getVertexData();
+        Vec3i vec3i = quad.getFace().getVector();
+        Vec3f vec3f = new Vec3f((float) vec3i.getX(), (float) vec3i.getY(), (float) vec3i.getZ());
+        Matrix4f matrix4f = matrixEntry.getModel();
+        vec3f.transform(matrixEntry.getNormal());
+        int j = js.length / 8;
+        MemoryStack memoryStack = MemoryStack.stackPush();
+
+        try {
+            ByteBuffer byteBuffer = memoryStack.malloc(VertexFormats.POSITION_COLOR_TEXTURE_LIGHT_NORMAL.getVertexSize());
+            IntBuffer intBuffer = byteBuffer.asIntBuffer();
+
+            for (int k = 0; k < j; ++k) {
+                intBuffer.clear();
+                intBuffer.put(js, k * 8, 8);
+                float f = byteBuffer.getFloat(0);
+                float g = byteBuffer.getFloat(4);
+                float h = byteBuffer.getFloat(8);
+                float r;
+                float s;
+                float t;
+                float v;
+                float w;
+                if (useQuadColorData) {
+                    float l = (float) (byteBuffer.get(12) & 255) / 255.0F;
+                    v = (float) (byteBuffer.get(13) & 255) / 255.0F;
+                    w = (float) (byteBuffer.get(14) & 255) / 255.0F;
+                    r = l * fs[k] * red;
+                    s = v * fs[k] * green;
+                    t = w * fs[k] * blue;
+                } else {
+                    r = fs[k] * red;
+                    s = fs[k] * green;
+                    t = fs[k] * blue;
+                }
+
+                v = byteBuffer.getFloat(16);
+                w = byteBuffer.getFloat(20);
+                Vector4f vector4f = new Vector4f(f, g, h, 1.0F);
+                vector4f.transform(matrix4f);
+                consumer.vertex(vector4f.getX(), vector4f.getY(), vector4f.getZ(), r, s, t, alpha, v, w, overlay, light, vec3f.getX(), vec3f.getY(),
+                        vec3f.getZ());
+            }
+        } catch (Throwable var33) {
+            if (memoryStack != null) {
+                try {
+                    memoryStack.close();
+                } catch (Throwable var32) {
+                    var33.addSuppressed(var32);
+                }
+            }
+
+            throw var33;
+        }
+
+        if (memoryStack != null) {
+            memoryStack.close();
+        }
+
     }
 }

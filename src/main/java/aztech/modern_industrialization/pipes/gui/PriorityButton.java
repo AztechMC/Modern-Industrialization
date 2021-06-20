@@ -43,7 +43,7 @@ class PriorityButton extends ButtonWidget {
     public void renderButton(MatrixStack matrices, int mouseX, int mouseY, float delta) {
         MinecraftClient minecraftClient = MinecraftClient.getInstance();
         TextRenderer textRenderer = minecraftClient.textRenderer;
-        minecraftClient.getTextureManager().bindTexture(PipeGuiHelper.BUTTON_TEXTURE);
+        RenderSystem.setShaderTexture(0, PipeGuiHelper.BUTTON_TEXTURE);
         int v = this.isHovered() ? 40 + this.height : 40;
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, this.alpha);
         RenderSystem.enableBlend();

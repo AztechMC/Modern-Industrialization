@@ -40,7 +40,6 @@ import java.util.List;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidKey;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerInventory;
@@ -117,8 +116,7 @@ public class FluidPipeScreen extends PipeScreen<FluidPipeScreenHandler> {
         @Override
         public void renderButton(MatrixStack matrices, int mouseX, int mouseY, float delta) {
             // Render fluid slot
-            MinecraftClient mc = MinecraftClient.getInstance();
-            mc.getTextureManager().bindTexture(MachineScreenHandlers.SLOT_ATLAS);
+            RenderSystem.setShaderTexture(0, MachineScreenHandlers.SLOT_ATLAS);
             drawTexture(matrices, x - 1, y - 1, 18, 0, 18, 18);
             // Render the fluid itself
             if (!iface.getNetworkFluid().isEmpty()) {

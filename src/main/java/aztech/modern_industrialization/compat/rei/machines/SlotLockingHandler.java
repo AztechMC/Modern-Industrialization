@@ -28,6 +28,7 @@ import aztech.modern_industrialization.machines.MachinePackets;
 import aztech.modern_industrialization.machines.MachineScreenHandlers;
 import aztech.modern_industrialization.machines.components.sync.ReiSlotLocking;
 import java.util.List;
+import me.shedaniel.rei.api.client.registry.category.CategoryRegistry;
 import me.shedaniel.rei.api.client.registry.transfer.TransferHandler;
 import me.shedaniel.rei.api.common.entry.EntryIngredient;
 import me.shedaniel.rei.api.common.entry.EntryStack;
@@ -65,7 +66,7 @@ public class SlotLockingHandler implements TransferHandler {
     private boolean canApply(MachineScreenHandlers.Client handler, MachineRecipeDisplay display) {
         // Check if the block is in the worktables - it's a hack but it should work. :P
         String blockId = handler.guiParams.blockId;
-        List<EntryIngredient> workstations = MachinesPlugin.categoryRegistry.get(display.getCategoryIdentifier()).getWorkstations();
+        List<EntryIngredient> workstations = CategoryRegistry.getInstance().get(display.getCategoryIdentifier()).getWorkstations();
         for (EntryIngredient workstationEntries : workstations) {
             for (EntryStack<?> entry : workstationEntries) {
                 Item item = entry.<ItemStack>cast().getValue().getItem();

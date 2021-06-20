@@ -33,7 +33,6 @@ import io.netty.buffer.Unpooled;
 import java.util.ArrayList;
 import java.util.List;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerInventory;
@@ -100,8 +99,7 @@ public class ItemPipeScreen extends PipeScreen<ItemPipeScreenHandler> {
 
         @Override
         public void renderButton(MatrixStack matrices, int mouseX, int mouseY, float delta) {
-            MinecraftClient minecraftClient = MinecraftClient.getInstance();
-            minecraftClient.getTextureManager().bindTexture(PipeGuiHelper.BUTTON_TEXTURE);
+            RenderSystem.setShaderTexture(0, PipeGuiHelper.BUTTON_TEXTURE);
             int u = handler.pipeInterface.isWhitelist() ? 0 : 20;
             int v = this.isHovered() ? 20 : 0;
 

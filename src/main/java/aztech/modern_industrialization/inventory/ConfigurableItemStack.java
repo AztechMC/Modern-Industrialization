@@ -24,6 +24,7 @@
 package aztech.modern_industrialization.inventory;
 
 import aztech.modern_industrialization.util.NbtHelper;
+import aztech.modern_industrialization.util.UnsupportedOperationInventory;
 import com.google.common.primitives.Ints;
 import dev.technici4n.fasttransferlib.experimental.api.item.ItemKey;
 import dev.technici4n.fasttransferlib.experimental.api.item.ItemPreconditions;
@@ -327,7 +328,7 @@ public class ConfigurableItemStack extends SnapshotParticipant<ResourceAmount<It
         }
 
         public ConfigurableItemSlot(Runnable markDirty, int x, int y, Predicate<ItemStack> insertPredicate) {
-            super(null, 0, x, y);
+            super(new UnsupportedOperationInventory(), 0, x, y);
 
             this.insertPredicate = insertPredicate;
             this.markDirty = markDirty;

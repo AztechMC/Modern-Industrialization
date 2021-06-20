@@ -28,6 +28,7 @@ import aztech.modern_industrialization.machines.SyncedComponent;
 import aztech.modern_industrialization.machines.SyncedComponents;
 import aztech.modern_industrialization.machines.components.CrafterComponent;
 import aztech.modern_industrialization.machines.gui.ClientComponentRenderer;
+import com.mojang.blaze3d.systems.RenderSystem;
 import java.util.function.Supplier;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
@@ -149,7 +150,7 @@ public class CraftingMultiblockGui {
             public void renderBackground(DrawableHelper helper, MatrixStack matrices, int x, int y) {
 
                 MinecraftClient minecraftClient = MinecraftClient.getInstance();
-                minecraftClient.getTextureManager().bindTexture(texture);
+                RenderSystem.setShaderTexture(0, texture);
                 DrawableHelper.drawTexture(matrices, x + X, y + Y, 0, 0, W, H, W, H);
                 TextRenderer textRenderer = minecraftClient.textRenderer;
 

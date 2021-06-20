@@ -27,6 +27,7 @@ import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.inventory.SlotPositions;
 import aztech.modern_industrialization.machines.MachineScreenHandlers;
 import aztech.modern_industrialization.machines.components.sync.ProgressBar;
+import com.mojang.blaze3d.systems.RenderSystem;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -41,7 +42,6 @@ import me.shedaniel.rei.api.client.registry.display.DisplayCategory;
 import me.shedaniel.rei.api.common.category.CategoryIdentifier;
 import me.shedaniel.rei.api.common.entry.EntryIngredient;
 import me.shedaniel.rei.api.common.util.EntryStacks;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
@@ -170,7 +170,7 @@ public class MachineRecipeCategory implements DisplayCategory<MachineRecipeDispl
 
     private static Widget createFluidSlotBackground(Point point) {
         return Widgets.createDrawableWidget((helper, matrices, mouseX, mouseY, delta) -> {
-            MinecraftClient.getInstance().getTextureManager().bindTexture(MachineScreenHandlers.SLOT_ATLAS);
+            RenderSystem.setShaderTexture(0, MachineScreenHandlers.SLOT_ATLAS);
             helper.drawTexture(matrices, point.x - 1, point.y - 1, 18, 0, 18, 18);
         });
     }

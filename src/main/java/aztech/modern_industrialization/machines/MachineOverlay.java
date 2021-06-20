@@ -25,6 +25,7 @@ package aztech.modern_industrialization.machines;
 
 import aztech.modern_industrialization.ModernIndustrialization;
 import aztech.modern_industrialization.util.GeometryHelper;
+import aztech.modern_industrialization.util.RenderHelper;
 import java.util.ArrayList;
 import java.util.List;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
@@ -145,7 +146,8 @@ public class MachineOverlay {
                         float r = 0;
                         float g = insideQuad ? 1 : 0;
                         float b = insideQuad ? 0 : 1;
-                        vc.quad(wrc.matrixStack().peek(), emitter.toBakedQuad(0, null, false), r, g, b, 0x7fffffff, -2130706433);
+                        RenderHelper.quadWithAlpha(vc, wrc.matrixStack().peek(), emitter.toBakedQuad(0, null, false), r, g, b, 0.5f, 0x7fffffff,
+                                -2130706433);
                     }
                 }
 
@@ -170,6 +172,8 @@ public class MachineOverlay {
 
     private static void vertex(Matrix4f model, VertexConsumer lines, Direction face, double faceX, double faceY) {
         Vec3d coord = GeometryHelper.toWorldCoords(new Vec3d(faceX, faceY, 0), face);
-        lines.vertex(model, (float) coord.x, (float) coord.y, (float) coord.z).color(0f, 0f, 0f, 0.4f).next();
+        // assume normal is not useful, it was added in 1.17 but the shader doesn't seem
+        // to use it.
+        lines.vertex(model, (float) coord.x, (float) coord.y, (float) coord.z).color(0f, 0f, 0f, 0.4f).normal(0, 0, 0).next();
     }
 }

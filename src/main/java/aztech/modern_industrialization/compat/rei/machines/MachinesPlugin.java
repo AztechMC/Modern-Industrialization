@@ -56,13 +56,8 @@ import net.minecraft.util.Pair;
 import net.minecraft.util.registry.Registry;
 
 public class MachinesPlugin implements REIClientPlugin {
-    static CategoryRegistry categoryRegistry;
-    static DisplayRegistry displayRegistry;
-
     @Override
     public void registerCategories(CategoryRegistry registry) {
-        categoryRegistry = registry;
-
         for (Map.Entry<String, MachineCategoryParams> entry : ReiMachineRecipes.categories.entrySet()) {
             Identifier id = new MIIdentifier(entry.getKey());
             MachineRecipeCategory category = new MachineRecipeCategory(id, entry.getValue());
@@ -80,8 +75,6 @@ public class MachinesPlugin implements REIClientPlugin {
 
     @Override
     public void registerDisplays(DisplayRegistry registry) {
-        displayRegistry = registry;
-
         // regular recipes
         for (Map.Entry<String, MachineCategoryParams> entry : ReiMachineRecipes.categories.entrySet()) {
             Identifier id = new MIIdentifier(entry.getKey());
@@ -129,7 +122,7 @@ public class MachinesPlugin implements REIClientPlugin {
                 for (ReiMachineRecipes.ClickAreaCategory cac : categories) {
                     if (!cac.predicate.test(context.getScreen()))
                         continue;
-                    List<Display> displays = displayRegistry.get(CategoryIdentifier.of(cac.category));
+                    List<Display> displays = DisplayRegistry.getInstance().get(CategoryIdentifier.of(cac.category));
                     if (displays.size() > 0) {
                         result.category(CategoryIdentifier.of(cac.category));
                         foundSome = true;

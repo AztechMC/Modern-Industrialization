@@ -61,7 +61,7 @@ public abstract class PipeScreen<SH extends ScreenHandler> extends HandledScreen
     protected void drawBackground(MatrixStack matrices, float delta, int mouseX, int mouseY) {
         this.renderBackground(matrices);
         RenderSystem.setShaderColor(1, 1, 1, 1);
-        this.client.getTextureManager().bindTexture(getBackgroundTexture());
+        RenderSystem.setShaderTexture(0, getBackgroundTexture());
         this.drawTexture(matrices, this.x, this.y, 0, 0, this.backgroundWidth, this.backgroundHeight);
     }
 

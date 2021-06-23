@@ -28,7 +28,6 @@ import aztech.modern_industrialization.MIItem;
 import aztech.modern_industrialization.machines.blockentities.hatches.NuclearHatch;
 import aztech.modern_industrialization.util.TextHelper;
 import java.util.List;
-import me.shedaniel.cloth.api.durability.bar.DurabilityBarItem;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -38,7 +37,7 @@ import net.minecraft.text.TranslatableText;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
 
-public class NuclearFuel extends NuclearComponent implements DurabilityBarItem {
+public class NuclearFuel extends NuclearComponent {
 
     public final double neutronByDesintegration;
     public final int euByDesintegration;
@@ -106,18 +105,21 @@ public class NuclearFuel extends NuclearComponent implements DurabilityBarItem {
     }
 
     @Override
-    public double getDurabilityBarProgress(ItemStack stack) {
-        NbtCompound tag = stack.getTag();
-        if (tag == null || !tag.contains("desRem")) {
-            return 0.0d;
-        } else {
-            return 1.0 - (double) tag.getInt("desRem") / desintegrationMax;
-        }
+    public boolean isItemBarVisible(ItemStack stack) {
+        return true;
     }
 
     @Override
-    public boolean hasDurabilityBar(ItemStack stack) {
+    public int getItemBarStep(ItemStack stack) {
+        return (int) Math.round(getDurabilityBarProgress(stack) * 13);
+    }
+
+    public double getDurabilityBarProgress(ItemStack stack) {
         NbtCompound tag = stack.getTag();
-        return tag != null && tag.contains("desRem");
+        if (tag == null || !tag.contains("desRem")) {
+            return 1.0d;
+        } else {
+            return (double) tag.getInt("desRem") / desintegrationMax;
+        }
     }
 }

@@ -31,7 +31,6 @@ import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
 import java.util.List;
 import me.shedaniel.cloth.api.armor.v1.TickableArmor;
-import me.shedaniel.cloth.api.durability.bar.DurabilityBarItem;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidKey;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.entity.EquipmentSlot;
@@ -49,7 +48,7 @@ import net.minecraft.util.Rarity;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
-public class JetpackItem extends ArmorItem implements Wearable, TickableArmor, DurabilityBarItem, IElytraItem {
+public class JetpackItem extends ArmorItem implements Wearable, TickableArmor, IElytraItem {
     public static final int CAPACITY = 4 * 81000;
 
     public JetpackItem(Settings settings) {
@@ -153,11 +152,19 @@ public class JetpackItem extends ArmorItem implements Wearable, TickableArmor, D
     }
 
     @Override
-    public double getDurabilityBarProgress(ItemStack stack) {
-        return 1.0 - (double) FluidFuelItemHelper.getAmount(stack) / CAPACITY;
+    public boolean isItemBarVisible(ItemStack stack) {
+        return true;
     }
 
     @Override
+    public int getItemBarStep(ItemStack stack) {
+        return (int) Math.round(getDurabilityBarProgress(stack) * 13);
+    }
+
+    public double getDurabilityBarProgress(ItemStack stack) {
+        return (double) FluidFuelItemHelper.getAmount(stack) / CAPACITY;
+    }
+
     public boolean hasDurabilityBar(ItemStack itemStack) {
         return true;
     }

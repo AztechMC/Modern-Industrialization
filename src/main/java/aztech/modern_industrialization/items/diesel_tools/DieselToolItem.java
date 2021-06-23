@@ -30,7 +30,6 @@ import it.unimi.dsi.fastutil.objects.Reference2IntArrayMap;
 import it.unimi.dsi.fastutil.objects.Reference2IntMap;
 import java.util.List;
 import java.util.Map;
-import me.shedaniel.cloth.api.durability.bar.DurabilityBarItem;
 import net.fabricmc.fabric.api.tool.attribute.v1.DynamicAttributeTool;
 import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidKey;
@@ -58,7 +57,7 @@ import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
 // TODO: attack speed and damage
-public class DieselToolItem extends Item implements DynamicAttributeTool, Vanishable, DurabilityBarItem, DynamicEnchantmentItem {
+public class DieselToolItem extends Item implements DynamicAttributeTool, Vanishable, DynamicEnchantmentItem {
     public static final int CAPACITY = 4 * 81000;
 
     public DieselToolItem(Settings settings) {
@@ -112,13 +111,17 @@ public class DieselToolItem extends Item implements DynamicAttributeTool, Vanish
     }
 
     @Override
-    public double getDurabilityBarProgress(ItemStack stack) {
-        return 1.0 - (double) FluidFuelItemHelper.getAmount(stack) / CAPACITY;
+    public boolean isItemBarVisible(ItemStack stack) {
+        return true;
     }
 
     @Override
-    public boolean hasDurabilityBar(ItemStack stack) {
-        return true;
+    public int getItemBarStep(ItemStack stack) {
+        return (int) Math.round(getDurabilityBarProgress(stack) * 13);
+    }
+
+    public double getDurabilityBarProgress(ItemStack stack) {
+        return (double) FluidFuelItemHelper.getAmount(stack) / CAPACITY;
     }
 
     private static boolean isFortune(ItemStack stack) {

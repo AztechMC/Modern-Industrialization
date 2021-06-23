@@ -50,7 +50,7 @@ public abstract class ReloadableResourceManagerImplMixin implements ReloadableRe
     @Shadow
     public abstract void addPack(ResourcePack pack);
 
-    @Inject(method = "reload", at = @At(value = "INVOKE", target = "Lorg/apache/logging/log4j/Logger;isDebugEnabled()Z"))
+    @Inject(method = "reload", at = @At(value = "INVOKE", target = "Lorg/apache/logging/log4j/Logger;isDebugEnabled()Z", remap = false))
     private void onReload(Executor prepareExecutor, Executor applyExecutor, CompletableFuture<Unit> initialStage, List<ResourcePack> packs,
             CallbackInfoReturnable<?> cir) {
         if (this.type == ResourceType.CLIENT_RESOURCES) {

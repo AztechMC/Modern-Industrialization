@@ -52,6 +52,10 @@ public class BakableTargetColoramp implements Coloramp {
         bakableTargetColoramps.add(this);
     }
 
+    public BakableTargetColoramp(int meanRGB, String from) {
+        this(meanRGB, from, from);
+    }
+
     @Override
     public int getRGB(double luminance) {
         if (!isBaked) {

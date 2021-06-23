@@ -39,11 +39,6 @@
       "probability": 0.001
     },
     {
-      "item": "minecraft:ancient_debris",
-      "amount": 3,
-      "probability": 0.005
-    },
-    {
       "item": "modern_industrialization:fluorite_ore",
       "amount": 3,
       "probability": 0.02

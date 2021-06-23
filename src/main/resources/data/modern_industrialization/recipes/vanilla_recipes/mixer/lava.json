@@ -8,10 +8,11 @@
   },
   "fluid_inputs": {
     "fluid": "minecraft:lava",
-    "amount": 1000
+    "amount": 1000,
+    "probability": 0
   },
   "fluid_outputs": {
     "fluid": "minecraft:lava",
-    "amount": 1050
+    "amount": 50
   }
 }

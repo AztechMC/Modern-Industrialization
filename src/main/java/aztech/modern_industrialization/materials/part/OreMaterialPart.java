@@ -23,64 +23,45 @@
  */
 package aztech.modern_industrialization.materials.part;
 
-import aztech.modern_industrialization.MIConfig;
-import aztech.modern_industrialization.MIIdentifier;
+import static aztech.modern_industrialization.ModernIndustrialization.STONE_MATERIAL;
+
+import aztech.modern_industrialization.blocks.OreBlock;
 import aztech.modern_industrialization.materials.MaterialBuilder;
+import aztech.modern_industrialization.materials.MaterialHelper;
+import aztech.modern_industrialization.materials.MaterialOreSet;
+import aztech.modern_industrialization.textures.MITextures;
+import aztech.modern_industrialization.textures.TextureManager;
 import aztech.modern_industrialization.textures.coloramp.Coloramp;
-import java.util.List;
 import java.util.function.Function;
-import net.fabricmc.fabric.api.biome.v1.BiomeModifications;
-import net.fabricmc.fabric.api.biome.v1.BiomeSelectors;
+import net.devtech.arrp.json.tags.JTag;
+import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
+import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.BuiltinRegistries;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.util.registry.RegistryKey;
-import net.minecraft.world.gen.GenerationStep;
-import net.minecraft.world.gen.YOffset;
-import net.minecraft.world.gen.feature.ConfiguredFeature;
-import net.minecraft.world.gen.feature.Feature;
-import net.minecraft.world.gen.feature.OreFeatureConfig;
 
-/**
- * A subclass of {@link RegularMaterialPart} that additionally registers an ore
- * configured feature. Use a regular material part if you don't need the ore to
- * be generated in the world.
- */
 public class OreMaterialPart extends RegularMaterialPart {
-    private final int veinsPerChunk;
-    private final int veinSize;
-    private final int maxYLevel;
+    private final MaterialOreSet oreSet;
 
-    private OreMaterialPart(String materialName, String part, String materialSet, Coloramp coloramp, int veinsPerChunk, int veinSize, int maxYLevel) {
+    protected OreMaterialPart(String materialName, String part, String materialSet, Coloramp coloramp, MaterialOreSet oreSet) {
         super(materialName, part, materialSet, coloramp);
-        this.veinsPerChunk = veinsPerChunk;
-        this.veinSize = veinSize;
-        this.maxYLevel = maxYLevel;
+        this.oreSet = oreSet;
     }
 
-    public static Function<MaterialBuilder.PartContext, MaterialPart> of(int veinsPerChunk, int veinSize, int maxYLevel) {
-        return ctx -> new OreMaterialPart(ctx.getMaterialName(), MIParts.ORE, ctx.getMaterialSet(), ctx.getColoramp(), veinsPerChunk, veinSize,
-                maxYLevel);
+    public static Function<MaterialBuilder.PartContext, MaterialPart> of(MaterialOreSet oreSet) {
+        return ctx -> new OreMaterialPart(ctx.getMaterialName(), MIParts.ORE, ctx.getMaterialSet(), ctx.getColoramp(), oreSet);
     }
 
     @Override
     public void register() {
-        super.register();
-        MIConfig config = MIConfig.getConfig();
-        if (config.generateOres && !config.blacklistedOres.contains(materialName)) {
-            // I have no idea what I'm doing
-            List<OreFeatureConfig.Target> targets = List.of(
-                    OreFeatureConfig.createTarget(OreFeatureConfig.Rules.STONE_ORE_REPLACEABLES, block.getDefaultState()),
-                    OreFeatureConfig.createTarget(OreFeatureConfig.Rules.DEEPSLATE_ORE_REPLACEABLES, block.getDefaultState())
+        block = new OreBlock(MaterialHelper.overrideItemPath(itemPath),
+                FabricBlockSettings.of(STONE_MATERIAL).hardness(3.0f).resistance(3.0f).breakByTool(FabricToolTags.PICKAXES, 1).requiresTool());
+        item = block.blockItem;
 
-            );
-            OreFeatureConfig oreConfig = new OreFeatureConfig(targets, veinSize);
-            ConfiguredFeature<?, ?> oreGenerator = Feature.ORE.configure(oreConfig).uniformRange(YOffset.getBottom(), YOffset.fixed(maxYLevel))
-                    .spreadHorizontally().repeat(veinsPerChunk);
-            Identifier oregenId = new MIIdentifier("ore_generator_" + materialName);
-            Registry.register(BuiltinRegistries.CONFIGURED_FEATURE, oregenId, oreGenerator);
-            RegistryKey<ConfiguredFeature<?, ?>> featureKey = RegistryKey.of(Registry.CONFIGURED_FEATURE_KEY, oregenId);
-            BiomeModifications.addFeature(BiomeSelectors.foundInOverworld(), GenerationStep.Feature.UNDERGROUND_ORES, featureKey);
-        }
+        MaterialHelper.registerItemTag(MaterialHelper.getPartTag(materialName, part), JTag.tag().add(new Identifier(getItemId())));
     }
+
+    @Override
+    public void registerTextures(TextureManager textureManager) {
+        MITextures.generateOreTexture(textureManager, itemPath, coloramp, oreSet);
+    }
+
 }

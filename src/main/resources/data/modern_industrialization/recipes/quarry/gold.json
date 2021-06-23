@@ -36,6 +36,11 @@
       "item": "minecraft:soul_sand",
       "amount": 20,
       "probability": 0.25
+    },
+    {
+      "item": "minecraft:ancient_debris",
+      "amount": 1,
+      "probability": 0.005
     }
   ]
 }

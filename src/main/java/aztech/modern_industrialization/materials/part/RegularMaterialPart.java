@@ -24,11 +24,9 @@
 package aztech.modern_industrialization.materials.part;
 
 import static aztech.modern_industrialization.ModernIndustrialization.METAL_MATERIAL;
-import static aztech.modern_industrialization.ModernIndustrialization.STONE_MATERIAL;
 
 import aztech.modern_industrialization.MIBlock;
 import aztech.modern_industrialization.MIItem;
-import aztech.modern_industrialization.blocks.OreBlock;
 import aztech.modern_industrialization.materials.MaterialHelper;
 import aztech.modern_industrialization.textures.MITextures;
 import aztech.modern_industrialization.textures.TextureManager;
@@ -45,14 +43,14 @@ import net.minecraft.util.Identifier;
  */
 public class RegularMaterialPart implements MaterialPart {
     protected final String materialName;
-    private final String part;
-    private final String itemPath;
-    private final String itemId;
-    private final String itemTag;
-    private final String materialSet;
-    private final Coloramp coloramp;
+    protected final String part;
+    protected final String itemPath;
+    protected final String itemId;
+    protected final String itemTag;
+    protected final String materialSet;
+    protected final Coloramp coloramp;
     protected MIBlock block;
-    private Item item;
+    protected Item item;
 
     public RegularMaterialPart(String materialName, String part, String materialSet, Coloramp coloramp) {
         this.materialName = materialName;
@@ -96,16 +94,17 @@ public class RegularMaterialPart implements MaterialPart {
     @Override
     public void register() {
         // create item and block
+
         if (MaterialHelper.hasBlock(part)) {
-            if (MaterialHelper.isOre(part)) {
-                block = new OreBlock(MaterialHelper.overrideItemPath(itemPath), FabricBlockSettings.of(STONE_MATERIAL).hardness(3.0f).resistance(3.0f)
-                        .breakByTool(FabricToolTags.PICKAXES, 1).requiresTool());
-            } else {
-                block = new MIBlock(MaterialHelper.overrideItemPath(itemPath),
-                        FabricBlockSettings.of(METAL_MATERIAL).hardness(5.0f)
-                                .resistance(MaterialHelper.getResistance(MaterialHelper.overrideItemPath(itemPath)))
-                                .breakByTool(FabricToolTags.PICKAXES, 0).requiresTool());
-            }
+            /*
+             * if(MaterialHelper.isBlock(part) && !(this instanceof BlockMaterialPart)) {
+             * throw new
+             * IllegalArgumentException("Block Part Must be an BlockMaterialPart"); }
+             */
+            block = new MIBlock(MaterialHelper.overrideItemPath(itemPath),
+                    FabricBlockSettings.of(METAL_MATERIAL).hardness(5.0f)
+                            .resistance(MaterialHelper.getResistance(MaterialHelper.overrideItemPath(itemPath)))
+                            .breakByTool(FabricToolTags.PICKAXES, 0).requiresTool());
             item = block.blockItem;
         } else {
             block = null;

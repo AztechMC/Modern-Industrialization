@@ -34,6 +34,7 @@ import java.util.function.BiFunction;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -69,7 +70,7 @@ public class MachineBlock extends MIBlock implements TickableBlock {
             if (be instanceof MachineBlockEntity) {
                 ActionResult beResult = ((MachineBlockEntity) be).onUse(player, hand, MachineOverlay.findHitSide(hit));
                 if (beResult.isAccepted()) {
-                    world.updateNeighbors(pos, null);
+                    world.updateNeighbors(pos, Blocks.AIR);
                     return beResult;
                 } else {
                     player.openHandledScreen((MachineBlockEntity) be);

@@ -38,6 +38,10 @@ public class MaterialHelper {
         return part.equals("ore");
     }
 
+    public static boolean isBlock(String part) {
+        return part.equals("ore");
+    }
+
     public static String getPartTag(String materialName, String part) {
         return "c:" + materialName + "_" + part + "s";
     }

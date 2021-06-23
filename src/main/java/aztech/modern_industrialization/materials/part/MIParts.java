@@ -53,7 +53,9 @@ public class MIParts {
     public static final String MACHINE_CASING_SPECIAL = "machine_casing_special";
     public static final String NUGGET = "nugget";
     public static final String ORE = "ore";
+    public static final String ORE_DEEPLSATE = "ore_deepslate";
     public static final String PLATE = "plate";
+    public static final String RAW_METAL = "raw_metal";
     public static final String RING = "ring";
     public static final String ROD = "rod";
     public static final String ROD_MAGNETIC = "rod_magnetic";
@@ -69,13 +71,13 @@ public class MIParts {
     public static final String P_DOPED_PLATE = "p_doped_plate";
 
     public static final String[] ITEM_BASE = new String[] { CRUSHED_DUST, CURVED_PLATE, DOUBLE_INGOT, DUST, INGOT, LARGE_PLATE, NUGGET, PLATE,
-            TINY_DUST, BLOCK };
+            TINY_DUST };
 
     public static final String[] ITEM_ALL = new String[] { BOLT, BLADE, RING, ROTOR, GEAR, ROD, CRUSHED_DUST, CURVED_PLATE, DOUBLE_INGOT, DUST, INGOT,
-            LARGE_PLATE, NUGGET, PLATE, TINY_DUST, BLOCK };
+            LARGE_PLATE, NUGGET, PLATE, TINY_DUST };
 
-    public static final String[] ITEM_PURE_NON_METAL = new String[] { TINY_DUST, DUST, CRUSHED_DUST, BLOCK };
-    public static final String[] ITEM_PURE_METAL = new String[] { INGOT, NUGGET, TINY_DUST, DUST, CRUSHED_DUST, BLOCK };
+    public static final String[] ITEM_PURE_NON_METAL = new String[] { TINY_DUST, DUST, CRUSHED_DUST };
+    public static final String[] ITEM_PURE_METAL = new String[] { INGOT, NUGGET, TINY_DUST, DUST, CRUSHED_DUST };
 
     public static final List<String> TAGGED_PARTS_LIST = Arrays.asList(BLOCK, DUST, GEAR, INGOT, NUGGET, ORE, PLATE, TINY_DUST);
     public static final Set<String> TAGGED_PARTS = new HashSet<>(TAGGED_PARTS_LIST);

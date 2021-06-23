@@ -26,6 +26,7 @@ package aztech.modern_industrialization.materials;
 import aztech.modern_industrialization.materials.part.MaterialPart;
 import aztech.modern_industrialization.materials.part.RegularMaterialPart;
 import aztech.modern_industrialization.materials.recipe.builder.MaterialRecipeBuilder;
+import aztech.modern_industrialization.materials.set.MaterialSet;
 import aztech.modern_industrialization.textures.coloramp.Coloramp;
 import aztech.modern_industrialization.textures.coloramp.DefaultColoramp;
 import java.util.*;

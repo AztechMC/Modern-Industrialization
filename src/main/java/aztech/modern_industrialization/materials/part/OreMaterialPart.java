@@ -25,43 +25,103 @@ package aztech.modern_industrialization.materials.part;
 
 import static aztech.modern_industrialization.ModernIndustrialization.STONE_MATERIAL;
 
+import aztech.modern_industrialization.MIBlock;
 import aztech.modern_industrialization.blocks.OreBlock;
 import aztech.modern_industrialization.materials.MaterialBuilder;
 import aztech.modern_industrialization.materials.MaterialHelper;
-import aztech.modern_industrialization.materials.MaterialOreSet;
-import aztech.modern_industrialization.textures.MITextures;
+import aztech.modern_industrialization.materials.set.MaterialOreSet;
+import aztech.modern_industrialization.textures.TextureHelper;
 import aztech.modern_industrialization.textures.TextureManager;
 import aztech.modern_industrialization.textures.coloramp.Coloramp;
+import java.io.IOException;
+import java.util.Objects;
 import java.util.function.Function;
 import net.devtech.arrp.json.tags.JTag;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
+import net.minecraft.client.texture.NativeImage;
+import net.minecraft.item.Item;
 import net.minecraft.util.Identifier;
 
-public class OreMaterialPart extends RegularMaterialPart {
-    private final MaterialOreSet oreSet;
+public class OreMaterialPart implements MaterialPart {
 
-    protected OreMaterialPart(String materialName, String part, String materialSet, Coloramp coloramp, MaterialOreSet oreSet) {
-        super(materialName, part, materialSet, coloramp);
+    protected final MaterialOreSet oreSet;
+    protected final boolean deepslate;
+
+    protected final String materialName;
+    protected final String part;
+    protected final String itemPath;
+    protected final String itemId;
+    protected final String itemTag;
+    protected final Coloramp coloramp;
+    protected MIBlock block;
+    protected Item item;
+
+    protected OreMaterialPart(String materialName, Coloramp coloramp, MaterialOreSet oreSet, boolean deepslate) {
+        this.materialName = materialName;
+        this.coloramp = coloramp;
+        this.part = deepslate ? MIParts.ORE : MIParts.ORE_DEEPLSATE;
+        this.itemPath = (deepslate ? "deepslate_" : "") + materialName + "_ore";
+        this.itemId = "modern_industrialization:" + itemPath;
+        this.itemTag = "#c:" + materialName + "_ores";
         this.oreSet = oreSet;
+        this.deepslate = deepslate;
     }
 
-    public static Function<MaterialBuilder.PartContext, MaterialPart> of(MaterialOreSet oreSet) {
-        return ctx -> new OreMaterialPart(ctx.getMaterialName(), MIParts.ORE, ctx.getMaterialSet(), ctx.getColoramp(), oreSet);
+    public static Function<MaterialBuilder.PartContext, MaterialPart>[] of(MaterialOreSet oreSet) {
+        Function<MaterialBuilder.PartContext, MaterialPart>[] array = new Function[2];
+        for (int i = 0; i < 2; i++) {
+            final int j = i;
+            Function<MaterialBuilder.PartContext, MaterialPart> function = ctx -> new OreMaterialPart(ctx.getMaterialName(), ctx.getColoramp(),
+                    oreSet, j == 0);
+            array[i] = function;
+        }
+        return array;
+    }
+
+    @Override
+    public String getPart() {
+        return deepslate ? MIParts.ORE_DEEPLSATE : MIParts.ORE;
+    }
+
+    @Override
+    public String getTaggedItemId() {
+        return itemTag;
+    }
+
+    @Override
+    public String getItemId() {
+        return itemId;
+    }
+
+    @Override
+    public Item getItem() {
+        return Objects.requireNonNull(item);
     }
 
     @Override
     public void register() {
-        block = new OreBlock(MaterialHelper.overrideItemPath(itemPath),
-                FabricBlockSettings.of(STONE_MATERIAL).hardness(3.0f).resistance(3.0f).breakByTool(FabricToolTags.PICKAXES, 1).requiresTool());
+        block = new OreBlock(itemPath, FabricBlockSettings.of(STONE_MATERIAL).hardness(deepslate ? 4.5f : 3.0f).resistance(3.0f)
+                .breakByTool(FabricToolTags.PICKAXES, 1).requiresTool());
         item = block.blockItem;
 
-        MaterialHelper.registerItemTag(MaterialHelper.getPartTag(materialName, part), JTag.tag().add(new Identifier(getItemId())));
+        MaterialHelper.registerItemTag("c:" + materialName + "_ores", JTag.tag().add(new Identifier(getItemId())));
     }
 
     @Override
-    public void registerTextures(TextureManager textureManager) {
-        MITextures.generateOreTexture(textureManager, itemPath, coloramp, oreSet);
+    public void registerTextures(TextureManager mtm) {
+        String template = String.format("modern_industrialization:textures/materialsets/ores/%s.png", oreSet.name);
+        try {
+            NativeImage image = mtm.getAssetAsTexture(String.format("minecraft:textures/block/%s.png", deepslate ? "deepslate" : "stone"));
+            NativeImage top = mtm.getAssetAsTexture(template);
+            TextureHelper.colorize(top, coloramp);
+            TextureHelper.blend(image, top);
+            top.close();
+            String texturePath = String.format("modern_industrialization:textures/blocks/%s.png", itemPath);
+            mtm.addTexture(texturePath, image);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 }

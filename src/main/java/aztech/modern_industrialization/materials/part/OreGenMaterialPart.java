@@ -26,7 +26,7 @@ package aztech.modern_industrialization.materials.part;
 import aztech.modern_industrialization.MIConfig;
 import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.materials.MaterialBuilder;
-import aztech.modern_industrialization.materials.MaterialOreSet;
+import aztech.modern_industrialization.materials.set.MaterialOreSet;
 import aztech.modern_industrialization.textures.coloramp.Coloramp;
 import java.util.List;
 import java.util.function.Function;
@@ -47,17 +47,23 @@ public class OreGenMaterialPart extends OreMaterialPart {
     private final int veinSize;
     private final int maxYLevel;
 
-    private OreGenMaterialPart(String materialName, String part, String materialSet, Coloramp coloramp, MaterialOreSet oreSet, int veinsPerChunk,
-            int veinSize, int maxYLevel) {
-        super(materialName, part, materialSet, coloramp, oreSet);
+    private OreGenMaterialPart(String materialName, Coloramp coloramp, MaterialOreSet oreSet, int veinsPerChunk, int veinSize, int maxYLevel,
+            boolean deepslate) {
+        super(materialName, coloramp, oreSet, deepslate);
         this.veinsPerChunk = veinsPerChunk;
         this.veinSize = veinSize;
         this.maxYLevel = maxYLevel;
     }
 
-    public static Function<MaterialBuilder.PartContext, MaterialPart> of(int veinsPerChunk, int veinSize, int maxYLevel, MaterialOreSet oreSet) {
-        return ctx -> new OreGenMaterialPart(ctx.getMaterialName(), MIParts.ORE, ctx.getMaterialSet(), ctx.getColoramp(), oreSet, veinsPerChunk,
-                veinSize, maxYLevel);
+    public static Function<MaterialBuilder.PartContext, MaterialPart>[] of(int veinsPerChunk, int veinSize, int maxYLevel, MaterialOreSet oreSet) {
+        Function<MaterialBuilder.PartContext, MaterialPart>[] array = new Function[2];
+        for (int i = 0; i < 2; i++) {
+            final int j = i;
+            Function<MaterialBuilder.PartContext, MaterialPart> function = ctx -> new OreGenMaterialPart(ctx.getMaterialName(), ctx.getColoramp(),
+                    oreSet, veinsPerChunk, veinSize, maxYLevel, j == 0);
+            array[i] = function;
+        }
+        return array;
     }
 
     @Override
@@ -66,15 +72,15 @@ public class OreGenMaterialPart extends OreMaterialPart {
         MIConfig config = MIConfig.getConfig();
         if (config.generateOres && !config.blacklistedOres.contains(materialName)) {
             // I have no idea what I'm doing
-            List<OreFeatureConfig.Target> targets = List.of(
-                    OreFeatureConfig.createTarget(OreFeatureConfig.Rules.STONE_ORE_REPLACEABLES, block.getDefaultState()),
-                    OreFeatureConfig.createTarget(OreFeatureConfig.Rules.DEEPSLATE_ORE_REPLACEABLES, block.getDefaultState()));
+            List<OreFeatureConfig.Target> targets = List
+                    .of(deepslate ? OreFeatureConfig.createTarget(OreFeatureConfig.Rules.DEEPSLATE_ORE_REPLACEABLES, block.getDefaultState())
+                            : OreFeatureConfig.createTarget(OreFeatureConfig.Rules.STONE_ORE_REPLACEABLES, block.getDefaultState()));
             OreFeatureConfig oreConfig = new OreFeatureConfig(targets, veinSize);
             ConfiguredFeature<?, ?> oreGenerator = Feature.ORE.configure(oreConfig).uniformRange(YOffset.getBottom(), YOffset.fixed(maxYLevel))
                     .spreadHorizontally().repeat(veinsPerChunk);
-            Identifier oregenId = new MIIdentifier("ore_generator_" + materialName);
-            Registry.register(BuiltinRegistries.CONFIGURED_FEATURE, oregenId, oreGenerator);
-            RegistryKey<ConfiguredFeature<?, ?>> featureKey = RegistryKey.of(Registry.CONFIGURED_FEATURE_KEY, oregenId);
+            Identifier oreGenId = new MIIdentifier((deepslate ? "deepslate_" : "") + "ore_generator_" + materialName);
+            Registry.register(BuiltinRegistries.CONFIGURED_FEATURE, oreGenId, oreGenerator);
+            RegistryKey<ConfiguredFeature<?, ?>> featureKey = RegistryKey.of(Registry.CONFIGURED_FEATURE_KEY, oreGenId);
             BiomeModifications.addFeature(BiomeSelectors.foundInOverworld(), GenerationStep.Feature.UNDERGROUND_ORES, featureKey);
         }
     }

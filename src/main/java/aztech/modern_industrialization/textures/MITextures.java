@@ -29,7 +29,6 @@ import aztech.modern_industrialization.ModernIndustrialization;
 import aztech.modern_industrialization.fluid.CraftingFluid;
 import aztech.modern_industrialization.materials.Material;
 import aztech.modern_industrialization.materials.MaterialHelper;
-import aztech.modern_industrialization.materials.MaterialOreSet;
 import aztech.modern_industrialization.materials.MaterialRegistry;
 import aztech.modern_industrialization.materials.part.MIParts;
 import aztech.modern_industrialization.materials.part.MaterialPart;
@@ -116,16 +115,14 @@ public final class MITextures {
         generateItemPartTexture(mtm, materialName, materialSet, part, part, coloramp);
     }
 
-    public static void generateOreTexture(TextureManager mtm, String itemPath, Coloramp coloramp, MaterialOreSet oreSet) {
-        String template = String.format("modern_industrialization:textures/materialsets/ores/%s.png", oreSet.name);
+    public static void generateCustomTexture(TextureManager mtm, String category, String itemPath, Coloramp coloramp, String set, boolean block) {
+        String template = String.format("modern_industrialization:textures/materialsets/%s/%s.png", category, set);
         try {
-            NativeImage image = mtm.getAssetAsTexture("minecraft:textures/block/stone.png");
-            NativeImage top = mtm.getAssetAsTexture(template);
-            TextureHelper.colorize(top, coloramp);
-            TextureHelper.blend(image, top);
-            top.close();
-            String texturePath = String.format("modern_industrialization:textures/blocks/%s.png", itemPath);
+            NativeImage image = mtm.getAssetAsTexture(template);
+            TextureHelper.colorize(image, coloramp);
+            String texturePath = String.format("modern_industrialization:textures/%s/%s.png", block ? "block" : "item", itemPath);
             mtm.addTexture(texturePath, image);
+            image.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -238,7 +235,7 @@ public final class MITextures {
 
     public static void generateDoubleIngot(TextureManager mtm, String materialName) throws IOException {
         String ingotTexture = String.format("modern_industrialization:textures/items/%s_ingot.png", materialName);
-        if (materialName.equals("gold") || materialName.equals("iron")) {
+        if (materialName.equals("gold") || materialName.equals("iron") || materialName.equals("copper")) {
             ingotTexture = String.format("minecraft:textures/item/%s_ingot.png", materialName);
         }
         NativeImage image = mtm.getAssetAsTexture(ingotTexture);

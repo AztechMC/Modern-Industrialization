@@ -21,21 +21,15 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.materials;
+package aztech.modern_industrialization.materials.set;
 
-public enum MaterialBlockSet {
+public enum MaterialRawSet {
 
     IRON("iron"),
     GOLD("gold"),
-    DIAMOND("diamond"),
-    LAPIS("lapis"),
-    REDSTONE("redstone"),
-    EMERALD("emerald"),
-    COAL("coal"),
-    QUARTZ("quartz"),
-    NETHERITE("netherite");
+    COPPER("copper");
 
-    MaterialBlockSet(String name) {
+    MaterialRawSet(String name) {
         this.name = name;
     }
 

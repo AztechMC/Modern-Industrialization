@@ -28,6 +28,7 @@ import aztech.modern_industrialization.pipes.MIPipes;
 import aztech.modern_industrialization.pipes.gui.PipeScreenHandler;
 import aztech.modern_industrialization.pipes.impl.PipePackets;
 import aztech.modern_industrialization.util.ItemStackHelper;
+import aztech.modern_industrialization.util.UnsupportedOperationInventory;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.entity.player.PlayerEntity;
@@ -93,11 +94,17 @@ public class ItemPipeScreenHandler extends PipeScreenHandler {
         Slot slot = slots.get(index);
         if (slot != null && slot.hasStack()) {
             if (index < 36) {
+                // Try to insert into the upgrade slot.
+                if (insertItem(slot.getStack(), 57, 58, false)) {
+                    return ItemStack.EMPTY;
+                }
+                // Return if the stack is already in the filter.
                 for (int i = 0; i < 21; i++) {
                     if (ItemStackHelper.areEqualIgnoreCount(slots.get(36 + i).getStack(), slot.getStack())) {
                         return ItemStack.EMPTY;
                     }
                 }
+                // Copy the stack into the filter.
                 for (int i = 0; i < 21; i++) {
                     if (pipeInterface.getStack(i).isEmpty()) {
                         slots.get(36 + i).setStack(slot.getStack().copy());
@@ -158,7 +165,7 @@ public class ItemPipeScreenHandler extends PipeScreenHandler {
         private final int index;
 
         public FilterSlot(int index, int x, int y) {
-            super(null, index, x, y);
+            super(new UnsupportedOperationInventory(), index, x, y);
             this.index = index;
         }
 
@@ -188,7 +195,7 @@ public class ItemPipeScreenHandler extends PipeScreenHandler {
 
     private class UpgradeSlot extends Slot {
         public UpgradeSlot(int x, int y) {
-            super(null, -1, x, y);
+            super(new UnsupportedOperationInventory(), -1, x, y);
         }
 
         @Override

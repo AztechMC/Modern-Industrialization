@@ -29,7 +29,7 @@ import net.minecraft.item.ItemStack;
 
 /**
  * Otherwise closing screen handler slots with a null inventory throws an
- * exception.
+ * exception due to copySharedSlots.
  */
 public class UnsupportedOperationInventory implements Inventory {
     @Override

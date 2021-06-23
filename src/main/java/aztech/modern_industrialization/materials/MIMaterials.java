@@ -134,12 +134,16 @@ public class MIMaterials {
                                                 }).addRecipes(StandardRecipes::apply).build());
 
         MaterialRegistry.addMaterial(
-                new MaterialBuilder("copper", SHINY, 0xff6600).addRegularParts(ITEM_ALL).addParts(OreGenMaterialPart.of(30, 9, 128, COPPER))
+                new MaterialBuilder("copper", METALLIC,
+                        new BakableTargetColoramp(0xe77c56,
+                                "modern_industrialization:textures/materialsets/common/ingot.png",
+                        "modern_industrialization:textures/template/copper_ingot.png"))
+                        .addRegularParts(ITEM_ALL).addParts(OreGenMaterialPart.of(30, 9, 128, COPPER))
                         .addRegularParts(WIRE).addRegularParts(FINE_WIRE).addParts(PipeMaterialPart.of(PipeType.ITEM))
                         .addParts(PipeMaterialPart.of(PipeType.FLUID)).addParts(CableMaterialPart.of(CableTier.LV))
                         .addRecipes(ForgeHammerRecipes::apply, SmeltingRecipes::apply, StandardRecipes::apply).build());
 
-        MaterialRegistry.addMaterial(new MaterialBuilder("bronze", METALLIC,
+        MaterialRegistry.addMaterial(new MaterialBuilder("bronze", SHINY,
                 new BakableTargetColoramp(0xffcc00, "modern_industrialization:textures/materialsets/common/ingot.png",
                         "modern_industrialization:textures/template/bronze_ingot.png")).addRegularParts(ITEM_ALL).removeRegularParts(CRUSHED_DUST)
                                 .addParts(PipeMaterialPart.of(PipeType.ITEM)).addParts(PipeMaterialPart.of(PipeType.FLUID))
@@ -154,7 +158,10 @@ public class MIMaterials {
                                 .addParts(CableMaterialPart.of(CableTier.LV))
                                 .addRecipes(ForgeHammerRecipes::apply, SmeltingRecipes::apply, StandardRecipes::apply).build());
 
-        MaterialRegistry.addMaterial(new MaterialBuilder("steel", METALLIC, 0x3f3f3f).addRegularParts(ITEM_ALL).addRegularParts(ROD_MAGNETIC)
+        MaterialRegistry.addMaterial(new MaterialBuilder("steel", METALLIC,
+                new BakableTargetColoramp(0x3f3f3f,
+                        "modern_industrialization:textures/materialsets/common/ingot.png",
+                "modern_industrialization:textures/template/steel_ingot.png")).addRegularParts(ITEM_ALL).addRegularParts(ROD_MAGNETIC)
                 .removeRegularParts(CRUSHED_DUST).addParts(PipeMaterialPart.of(PipeType.ITEM)).addParts(PipeMaterialPart.of(PipeType.FLUID))
                 .addRegularParts(MACHINE_CASING, MACHINE_CASING_PIPE)
                 .addRecipes(ForgeHammerRecipes::apply, SmeltingRecipes::apply, StandardRecipes::apply).build());
@@ -168,7 +175,10 @@ public class MIMaterials {
                     new SmeltingRecipeBuilder(context, ORE, MIParts.GEM, 0.7, false);
                 }).build());
 
-        MaterialRegistry.addMaterial(new MaterialBuilder("aluminum", METALLIC, 0x3fcaff).addRegularParts(ITEM_ALL).addRegularParts(WIRE, FINE_WIRE)
+        MaterialRegistry.addMaterial(new MaterialBuilder("aluminum", METALLIC, new BakableTargetColoramp(0x3fcaff,
+                "modern_industrialization:textures/materialsets/common/ingot.png",
+                "modern_industrialization:textures/template/aluminum_ingot.png") )
+                .addRegularParts(ITEM_ALL).addRegularParts(WIRE, FINE_WIRE)
                 .addRegularParts(MACHINE_CASING_SPECIAL, MACHINE_CASING).addParts(PipeMaterialPart.of(PipeType.ITEM))
                 .addParts(PipeMaterialPart.of(PipeType.FLUID)).addParts(CableMaterialPart.of(CableTier.HV)).addRecipes(StandardRecipes::apply)
                 .build());
@@ -210,7 +220,11 @@ public class MIMaterials {
         MaterialRegistry.addMaterial(new MaterialBuilder("salt", GEM, 0xc7d6c5).addRegularParts(ITEM_PURE_NON_METAL).removeRegularParts(BLOCK)
                 .addParts(OreMaterialPart.of(MaterialOreSet.COAL)).addRecipes(StandardRecipes::apply).build());
 
-        MaterialRegistry.addMaterial(new MaterialBuilder("titanium", METALLIC, 0xDCA0F0).addRegularParts(ITEM_ALL)
+        MaterialRegistry.addMaterial(new MaterialBuilder("titanium", METALLIC,
+                new BakableTargetColoramp(0xDCA0F0,
+                "modern_industrialization:textures/materialsets/common/ingot.png",
+                "modern_industrialization:textures/template/titanium_ingot.png")).
+                addRegularParts(ITEM_ALL)
                 .addRegularParts(HOT_INGOT, MACHINE_CASING, MACHINE_CASING_PIPE, MACHINE_CASING_SPECIAL)
                 .addParts(OreMaterialPart.of(MaterialOreSet.IRON)).addParts(PipeMaterialPart.of(PipeType.ITEM))
                 .addParts(PipeMaterialPart.of(PipeType.FLUID)).addRecipes(StandardRecipes::apply).cancelRecipes("macerator/crushed_dust").build());
@@ -223,7 +237,10 @@ public class MIMaterials {
                 .addRegularParts(N_DOPED_PLATE, P_DOPED_PLATE).addRegularParts(PLATE, DOUBLE_INGOT, BATTERY).removeRegularParts(CRUSHED_DUST)
                 .addRecipes(StandardRecipes::apply, SmeltingRecipes::apply).build());
 
-        MaterialRegistry.addMaterial(new MaterialBuilder("stainless_steel", SHINY, 0xC8C8DC).addRegularParts(ITEM_ALL).addRegularParts(HOT_INGOT)
+        MaterialRegistry.addMaterial(new MaterialBuilder("stainless_steel", SHINY,
+                 new BakableTargetColoramp(0xC8C8DC,
+                "modern_industrialization:textures/materialsets/common/ingot.png",
+                "modern_industrialization:textures/template/stainless_steel_ingot.png")).addRegularParts(ITEM_ALL).addRegularParts(HOT_INGOT)
                 .addRegularParts(MACHINE_CASING_SPECIAL, MACHINE_CASING, MACHINE_CASING_PIPE, ROD_MAGNETIC).removeRegularParts(CRUSHED_DUST)
                 .addParts(PipeMaterialPart.of(PipeType.ITEM)).addParts(PipeMaterialPart.of(PipeType.FLUID)).addRecipes(StandardRecipes::apply)
                 .cancelRecipes("polarizer/rod_magnetic").build());

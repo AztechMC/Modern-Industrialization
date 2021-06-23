@@ -31,6 +31,7 @@ import aztech.modern_industrialization.pipes.api.PipeNetworkNode;
 import aztech.modern_industrialization.pipes.gui.IPipeScreenHandlerHelper;
 import aztech.modern_industrialization.transferapi.FluidTransferHelper;
 import aztech.modern_industrialization.util.EmptyStorage;
+import aztech.modern_industrialization.util.IoStorage;
 import aztech.modern_industrialization.util.NbtHelper;
 import java.util.*;
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
@@ -81,7 +82,7 @@ public class FluidNetworkNode extends PipeNetworkNode {
                 // Try to set fluid, will return EMPTY if none could be found.
                 data.fluid = FluidTransferHelper.findExtractableFluid(storage);
             }
-            targets.add(new FluidTarget(connection.priority, storage));
+            targets.add(new FluidTarget(connection.priority, new IoStorage<>(storage, connection.canInsert(), connection.canExtract())));
         }
     }
 

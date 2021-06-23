@@ -24,47 +24,54 @@
 package aztech.modern_industrialization.util;
 
 import java.util.Iterator;
-import java.util.NoSuchElementException;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 
-public class EmptyStorage<T> implements Storage<T> {
-    public static final EmptyStorage INSTANCE = new EmptyStorage();
-    public static final Iterator EMPTY_ITERATOR = new Iterator<>() {
-        @Override
-        public boolean hasNext() {
-            return false;
-        }
+public class IoStorage<T> implements Storage<T> {
+    private final Storage<T> storage;
+    private final boolean allowInsert, allowExtract;
 
-        @Override
-        public Object next() {
-            throw new NoSuchElementException();
-        }
-    };
+    public IoStorage(Storage<T> storage, boolean allowInsert, boolean allowExtract) {
+        this.storage = storage;
+        this.allowInsert = allowInsert;
+        this.allowExtract = allowExtract;
+    }
 
     @Override
     public boolean supportsInsertion() {
-        return false;
+        return allowInsert;
     }
 
     @Override
     public long insert(T resource, long maxAmount, Transaction transaction) {
-        return 0;
+        if (allowInsert) {
+            return storage.insert(resource, maxAmount, transaction);
+        } else {
+            return 0;
+        }
     }
 
     @Override
     public boolean supportsExtraction() {
-        return false;
+        return allowExtract;
     }
 
     @Override
     public long extract(T resource, long maxAmount, Transaction transaction) {
-        return 0;
+        if (allowExtract) {
+            return storage.extract(resource, maxAmount, transaction);
+        } else {
+            return 0;
+        }
     }
 
     @Override
     public Iterator<StorageView<T>> iterator(Transaction transaction) {
-        return EMPTY_ITERATOR;
+        if (allowExtract) {
+            return storage.iterator(transaction);
+        } else {
+            return EmptyStorage.EMPTY_ITERATOR;
+        }
     }
 }

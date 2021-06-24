@@ -25,7 +25,6 @@ package aztech.modern_industrialization.blocks.tank;
 
 import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.blocks.creativetank.CreativeTankItem;
-import aztech.modern_industrialization.fluid.CraftingFluid;
 import com.mojang.datafixers.util.Pair;
 import java.util.*;
 import java.util.function.Function;
@@ -103,7 +102,7 @@ public class TankModel implements UnbakedModel, FabricBakedModel, BakedModel {
         int color = FluidKeyRendering.getColor(fluid);
         for (Direction direction : Direction.values()) {
             float topSpace, depth, bottomSpace;
-            if (fluid instanceof CraftingFluid && ((CraftingFluid) fluid).isGas) {
+            if (FluidKeyRendering.fillFromTop(fluid)) {
                 bottomSpace = direction.getAxis().isHorizontal() ? 1 - fillFraction + 0.01f : 0;
                 depth = direction == Direction.DOWN ? fillFraction : 0;
                 topSpace = 0;

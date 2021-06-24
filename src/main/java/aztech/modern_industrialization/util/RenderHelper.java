@@ -23,7 +23,6 @@
  */
 package aztech.modern_industrialization.util;
 
-import aztech.modern_industrialization.fluid.CraftingFluid;
 import aztech.modern_industrialization.mixin_client.ClientWorldAccessor;
 import com.mojang.blaze3d.systems.RenderSystem;
 import java.nio.ByteBuffer;
@@ -119,7 +118,7 @@ public class RenderHelper {
         float topHeight = fill;
         float bottomHeight = TANK_W;
         // Render gas from top to bottom
-        if (fluid instanceof CraftingFluid && ((CraftingFluid) fluid).isGas) {
+        if (FluidKeyRendering.fillFromTop(fluid)) {
             topHeight = 1 - TANK_W;
             bottomHeight = 1 - fill;
         }

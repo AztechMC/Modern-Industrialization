@@ -42,6 +42,8 @@ import me.shedaniel.rei.api.common.display.Display;
 import me.shedaniel.rei.api.common.entry.EntryIngredient;
 import me.shedaniel.rei.api.common.entry.EntryStack;
 import me.shedaniel.rei.api.common.util.EntryStacks;
+import net.fabricmc.fabric.api.transfer.v1.client.fluid.FluidKeyRendering;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidKey;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
@@ -53,8 +55,9 @@ public class MachineRecipeDisplay implements Display {
     private final Identifier category;
     private static final DecimalFormat PROBABILITY_FORMAT = new DecimalFormat("#.#");
     private static final BiFunction<EntryStack<?>, Tooltip, Tooltip> FLUID_TOOLTIP = (stack, tooltip) -> {
+        FluidStack fs = stack.castValue();
         long amount = stack.<FluidStack>cast().getValue().getAmount();
-        return Tooltip.create(
+        return Tooltip.create(FluidKeyRendering.getHandlerOrDefault(fs.getFluid()).getName(FluidKey.of(fs.getFluid())),
                 new TranslatableText("text.modern_industrialization.fluid_slot_quantity", FluidTextHelper.getUnicodeMillibuckets(amount, false)));
     };
 

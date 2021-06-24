@@ -78,7 +78,6 @@ public class TankBlockEntity extends FastBlockEntity implements Storage<FluidKey
     public NbtCompound toClientTag(NbtCompound tag) {
         NbtHelper.putFluid(tag, "fluid", fluid);
         tag.putLong("amt", amount);
-        tag.putLong("cap", capacity);
         return tag;
     }
 

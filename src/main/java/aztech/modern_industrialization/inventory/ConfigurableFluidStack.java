@@ -29,7 +29,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidKey;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidPreconditions;
+import net.fabricmc.fabric.api.transfer.v1.storage.StoragePreconditions;
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.ResourceAmount;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
@@ -306,7 +306,7 @@ public class ConfigurableFluidStack extends SnapshotParticipant<ResourceAmount<F
 
     @Override
     public long extract(FluidKey fluid, long maxAmount, Transaction transaction) {
-        FluidPreconditions.notEmptyNotNegative(fluid, maxAmount);
+        StoragePreconditions.notEmptyNotNegative(fluid, maxAmount);
         if (pipesExtract && fluid.equals(this.fluid)) {
             long extracted = Math.min(maxAmount, amount);
             updateSnapshots(transaction);

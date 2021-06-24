@@ -21,47 +21,32 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.transferapi;
+package aztech.modern_industrialization.util;
 
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidKey;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import org.jetbrains.annotations.Nullable;
 
-public class FluidTransferHelper {
+public class StorageUtil2 {
+    @Nullable
+    public static <T> T findExtractableResource(@Nullable Storage<T> storage, @Nullable Transaction transaction) {
+        if (storage == null)
+            return null;
 
-    /**
-     * Return an extractable fluid, or EMPTY if none could be found.
-     */
-    public static FluidKey findExtractableFluid(Storage<FluidKey> storage) {
-        try (Transaction tx = Transaction.openOuter()) {
-            for (StorageView<FluidKey> view : storage.iterable(tx)) {
-                FluidKey key = view.resource();
-                if (!key.isEmpty() && view.extract(key, Integer.MAX_VALUE, tx) > 0) {
-                    return key;
+        try (Transaction nested = transaction == null ? Transaction.openOuter() : transaction.openNested()) {
+            for (StorageView<T> view : storage.iterable(nested)) {
+                // Extract below could change the resource, so we have to query it before
+                // extracting.
+                T resource = view.resource();
+
+                if (!view.isEmpty() && view.extract(resource, Long.MAX_VALUE, nested) > 0) {
+                    // Will abort the extraction.
+                    return view.resource();
                 }
             }
         }
-        return FluidKey.empty();
-    }
 
-    /**
-     * Find a contained fluid, or EMPTY if there is no fluid or if the storage is
-     * null.
-     */
-    public static FluidKey findFluid(@Nullable Storage<FluidKey> storage) {
-        if (storage == null) {
-            return FluidKey.empty();
-        } else {
-            FluidKey fluid = FluidKey.empty();
-            try (Transaction tx = Transaction.openOuter()) {
-                for (StorageView<FluidKey> view : storage.iterable(tx)) {
-                    fluid = view.resource();
-                    break;
-                }
-            }
-            return fluid;
-        }
+        return null;
     }
 }

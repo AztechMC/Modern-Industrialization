@@ -29,7 +29,7 @@ import dev.technici4n.fasttransferlib.experimental.api.context.ContainerItemCont
 import java.util.Iterator;
 import java.util.List;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidKey;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidPreconditions;
+import net.fabricmc.fabric.api.transfer.v1.storage.StoragePreconditions;
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.ExtractionOnlyStorage;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleViewIterator;
@@ -68,7 +68,7 @@ public class CreativeTankItem extends BlockItem {
 
         @Override
         public long extract(FluidKey fluid, long maxAmount, Transaction transaction) {
-            FluidPreconditions.notEmptyNotNegative(fluid, maxAmount);
+            StoragePreconditions.notEmptyNotNegative(fluid, maxAmount);
             return maxAmount;
         }
 

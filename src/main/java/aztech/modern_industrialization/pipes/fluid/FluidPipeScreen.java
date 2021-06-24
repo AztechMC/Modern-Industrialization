@@ -27,7 +27,6 @@ import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.machines.MachineScreenHandlers;
 import aztech.modern_industrialization.pipes.gui.PipeScreen;
 import aztech.modern_industrialization.pipes.impl.PipePackets;
-import aztech.modern_industrialization.transferapi.FluidTransferHelper;
 import aztech.modern_industrialization.util.FluidHelper;
 import aztech.modern_industrialization.util.InputHelper;
 import aztech.modern_industrialization.util.RenderHelper;
@@ -40,6 +39,7 @@ import java.util.List;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidKey;
+import net.fabricmc.fabric.api.transfer.v1.storage.StorageUtil;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerInventory;
@@ -91,7 +91,8 @@ public class FluidPipeScreen extends PipeScreen<FluidPipeScreenHandler> {
         if (iface.getNetworkFluid().isEmpty()) {
             // Want to set the fluid
             ItemStack cursorStack = handler.getCursorStack();
-            FluidKey fluid = FluidTransferHelper.findFluid(ContainerItemContext.ofPlayerCursor(client.player, handler).find(ItemFluidStorage.ITEM));
+            FluidKey fluid = StorageUtil.findStoredResource(ContainerItemContext.ofPlayerCursor(client.player, handler).find(ItemFluidStorage.ITEM),
+                    null);
             if (!fluid.isEmpty()) {
                 targetFluid = fluid;
             }

@@ -3,7 +3,7 @@
   "eu": 8,
   "duration": 200,
   "item_inputs" : [
-    {"item" :  "modern_industrialization:platinum_crushed_dust",
+    {"item" :  "modern_industrialization:raw_platinum",
       "amount": 1}
   ],
   "fluid_inputs" : {

@@ -38,6 +38,7 @@ public class ForgeHammerRecipes {
         addHammer(ctx, LARGE_PLATE, 1, CURVED_PLATE, 3);
         addHammer(ctx, NUGGET, 1, TINY_DUST, 1);
         addHammer(ctx, ORE, 1, CRUSHED_DUST, 2);
+        addHammer(ctx, ORE, 1, RAW_METAL, 2);
         addSaw(ctx, INGOT, ROD);
         addSaw(ctx, ITEM_PIPE, RING);
         addSaw(ctx, LARGE_PLATE, GEAR);

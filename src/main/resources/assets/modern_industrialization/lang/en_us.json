@@ -1123,5 +1123,13 @@
     "item.modern_industrialization.raw_platinum": "Raw Platinum",
     "item.modern_industrialization.raw_silver": "Raw Silver",
     "item.modern_industrialization.raw_tin": "Raw Tin",
-    "item.modern_industrialization.raw_tungsten": "Raw Tungsten"
+    "item.modern_industrialization.raw_tungsten": "Raw Tungsten",
+    "block.modern_industrialization.raw_antimony_block": "Raw Antimony Block",
+    "block.modern_industrialization.raw_lead_block": "Raw Lead Block",
+    "block.modern_industrialization.raw_nickel_block": "Raw Nickel Block",
+    "block.modern_industrialization.raw_platinum_block": "Raw Platinum Block",
+    "block.modern_industrialization.raw_silver_block": "Raw Silver Block",
+    "block.modern_industrialization.raw_tin_block": "Raw Tin Block",
+    "block.modern_industrialization.raw_tungsten_block": "Raw Tungsten Block"
+
 }

@@ -55,6 +55,10 @@ public final class MaterialBuilder {
         this.coloramp = new DefaultColoramp(color);
     }
 
+    public String getMaterialName() {
+        return materialName;
+    }
+
     public MaterialBuilder addRegularParts(String... parts) {
         for (String part : parts) {
             addPart(new RegularMaterialPart(materialName, part, materialSet, coloramp));

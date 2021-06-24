@@ -39,6 +39,7 @@ public final class SmeltingRecipes {
         SmeltingRecipeBuilder.smeltAndBlast(ctx, CRUSHED_DUST, INGOT, 0.7);
         SmeltingRecipeBuilder.smeltAndBlast(ctx, DUST, INGOT, 0.7);
         SmeltingRecipeBuilder.smeltAndBlast(ctx, ORE, INGOT, 0.7);
+        SmeltingRecipeBuilder.smeltAndBlast(ctx, RAW_METAL, INGOT, 0.7);
     }
 
     private SmeltingRecipes() {

@@ -93,7 +93,7 @@ public class FluidPipeScreen extends PipeScreen<FluidPipeScreenHandler> {
             ItemStack cursorStack = handler.getCursorStack();
             FluidKey fluid = StorageUtil.findStoredResource(ContainerItemContext.ofPlayerCursor(client.player, handler).find(ItemFluidStorage.ITEM),
                     null);
-            if (!fluid.isEmpty()) {
+            if (fluid != null && !fluid.isEmpty()) {
                 targetFluid = fluid;
             }
         } else if (InputHelper.isShiftPressed()) {

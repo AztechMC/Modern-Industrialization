@@ -162,7 +162,7 @@ public class MIMaterials {
                 new BakableTargetColoramp(0xffcc00, "modern_industrialization:textures/materialsets/common/ingot.png",
                         "modern_industrialization:textures/template/bronze_ingot.png")).addRegularParts(ITEM_ALL).removeRegularParts(CRUSHED_DUST)
                                 .addParts(PipeMaterialPart.of(PipeType.ITEM)).addParts(BlockMaterialPart.of(MaterialBlockSet.COPPER))
-                                .addParts(PipeMaterialPart.of(PipeType.FLUID))
+                                .addParts(PipeMaterialPart.of(PipeType.FLUID)).addParts(TankMaterialPart.of(4))
                                 .addRegularParts(MACHINE_CASING, MACHINE_CASING_PIPE, MACHINE_CASING_SPECIAL)
                                 .addRecipes(ForgeHammerRecipes::apply, SmeltingRecipes::apply, StandardRecipes::apply).build());
 
@@ -180,6 +180,7 @@ public class MIMaterials {
                         "modern_industrialization:textures/template/steel_ingot.png")).addRegularParts(ITEM_ALL).addRegularParts(ROD_MAGNETIC)
                                 .addParts(PipeMaterialPart.of(PipeType.ITEM)).addParts(BlockMaterialPart.of(MaterialBlockSet.IRON))
                                 .addParts(PipeMaterialPart.of(PipeType.FLUID)).addRegularParts(MACHINE_CASING, MACHINE_CASING_PIPE)
+                                .addParts(TankMaterialPart.of(8))
                                 .addRecipes(ForgeHammerRecipes::apply, SmeltingRecipes::apply, StandardRecipes::apply).build());
 
         MaterialRegistry.addMaterial(new MaterialBuilder("lignite_coal", STONE, 0x644646).addRegularParts(ITEM_PURE_NON_METAL)
@@ -197,7 +198,8 @@ public class MIMaterials {
                         "modern_industrialization:textures/template/aluminum_ingot.png")).addRegularParts(ITEM_ALL).addRegularParts(WIRE, FINE_WIRE)
                                 .addParts(BlockMaterialPart.of(MaterialBlockSet.GOLD)).addRegularParts(MACHINE_CASING_SPECIAL, MACHINE_CASING)
                                 .addParts(PipeMaterialPart.of(PipeType.ITEM)).addParts(PipeMaterialPart.of(PipeType.FLUID))
-                                .addParts(CableMaterialPart.of(CableTier.HV)).addRecipes(StandardRecipes::apply).build());
+                                .addParts(TankMaterialPart.of(16)).addParts(CableMaterialPart.of(CableTier.HV)).addRecipes(StandardRecipes::apply)
+                                .build());
 
         MaterialRegistry.addMaterial(new MaterialBuilder("bauxite", DULL, 0xC86400).addRegularParts(ITEM_PURE_NON_METAL)
                 .addParts(BlockMaterialPart.of(MaterialBlockSet.LAPIS)).addParts(OreGenMaterialPart.of(8, 7, 32, MaterialOreSet.REDSTONE))
@@ -248,7 +250,8 @@ public class MIMaterials {
                                 .addParts(BlockMaterialPart.of(MaterialBlockSet.NETHERITE)).addParts(RawMetalPart.of(MaterialRawSet.COPPER))
                                 .addRegularParts(HOT_INGOT, MACHINE_CASING, MACHINE_CASING_PIPE, MACHINE_CASING_SPECIAL)
                                 .addParts(OreMaterialPart.of(MaterialOreSet.IRON)).addParts(PipeMaterialPart.of(PipeType.ITEM))
-                                .addParts(PipeMaterialPart.of(PipeType.FLUID)).addRecipes(StandardRecipes::apply).build());
+                                .addParts(PipeMaterialPart.of(PipeType.FLUID)).addParts(TankMaterialPart.of(64)).addRecipes(StandardRecipes::apply)
+                                .build());
 
         MaterialRegistry.addMaterial(
                 new MaterialBuilder("electrum", SHINY, 0xFFFF64).addRegularParts(ITEM_BASE).addParts(BlockMaterialPart.of(MaterialBlockSet.GOLD))
@@ -265,7 +268,8 @@ public class MIMaterials {
                                 .addRegularParts(ITEM_ALL).addRegularParts(HOT_INGOT)
                                 .addRegularParts(MACHINE_CASING_SPECIAL, MACHINE_CASING, MACHINE_CASING_PIPE, ROD_MAGNETIC)
                                 .addParts(PipeMaterialPart.of(PipeType.ITEM)).addParts(PipeMaterialPart.of(PipeType.FLUID))
-                                .addRecipes(StandardRecipes::apply).cancelRecipes("polarizer/rod_magnetic").build());
+                                .addParts(TankMaterialPart.of(32)).addRecipes(StandardRecipes::apply).cancelRecipes("polarizer/rod_magnetic")
+                                .build());
 
         MaterialRegistry.addMaterial(
                 new MaterialBuilder("ruby", SHINY, 0xffb3b3).addRegularParts(DUST, TINY_DUST).addRecipes(StandardRecipes::apply).build());

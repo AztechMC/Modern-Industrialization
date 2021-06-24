@@ -26,7 +26,6 @@ package aztech.modern_industrialization.machines.blockentities;
 import aztech.modern_industrialization.api.energy.CableTier;
 import aztech.modern_industrialization.api.energy.EnergyApi;
 import aztech.modern_industrialization.api.energy.EnergyInsertable;
-import aztech.modern_industrialization.blocks.tank.MITanks;
 import aztech.modern_industrialization.inventory.ConfigurableFluidStack;
 import aztech.modern_industrialization.inventory.MIInventory;
 import aztech.modern_industrialization.inventory.SlotPositions;
@@ -43,7 +42,7 @@ public class ElectricWaterPumpBlockEntity extends AbstractWaterPumpBlockEntity {
     public ElectricWaterPumpBlockEntity(BEP bep) {
         super(bep, "lv_water_pump");
 
-        long capacity = 81000 * MITanks.BRONZE.bucketCapacity * 8;
+        long capacity = 81000 * 32;
         this.inventory = new MIInventory(Collections.emptyList(),
                 Collections.singletonList(ConfigurableFluidStack.lockedOutputSlot(capacity, Fluids.WATER)), SlotPositions.empty(),
                 new SlotPositions.Builder().addSlot(OUTPUT_SLOT_X, OUTPUT_SLOT_Y).build());

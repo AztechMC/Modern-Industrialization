@@ -61,6 +61,7 @@ public class MIParts {
     public static final String ROD = "rod";
     public static final String ROD_MAGNETIC = "rod_magnetic";
     public static final String ROTOR = "rotor";
+    public static final String TANK = "tank";
     public static final String TINY_DUST = "tiny_dust";
     public static final String WIRE = "wire";
     public static final String WIRE_MAGNETIC = "wire_magnetic";

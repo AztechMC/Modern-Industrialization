@@ -51,6 +51,8 @@ public final class StandardRecipes {
                 .addInput('g', "minecraft:glass_pane").exportToMachine("packer", 3);
         new ShapedRecipeBuilder(ctx, CABLE, 3, "cable", "rrr", "www", "rrr").addInput('r', "modern_industrialization:rubber_sheet")
                 .addTaggedPart('w', WIRE).exportToAssembler();
+        new ShapedRecipeBuilder(ctx, TANK, 1, "tank", "###", "#G#", "###").addPart('#', LARGE_PLATE).addInput('G', "minecraft:glass")
+                .exportToAssembler();
 
         // MACERATOR
         addMaceratorRecycling(ctx, DOUBLE_INGOT, 18);

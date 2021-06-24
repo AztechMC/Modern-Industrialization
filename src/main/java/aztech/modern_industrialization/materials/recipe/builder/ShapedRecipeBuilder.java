@@ -85,11 +85,9 @@ public class ShapedRecipeBuilder implements MaterialRecipeBuilder {
     }
 
     public ShapedRecipeBuilder exportToMachine(String machine, int eu, int duration, int division) {
-        if (canceled) {
-            return this;
+        if (!canceled) {
+            new MIRecipeBuilder(context, machine, id, json.exportToMachine(machine, eu, duration, division));
         }
-
-        new MIRecipeBuilder(context, machine, id, json.exportToMachine(machine, eu, duration, division));
 
         return this;
     }

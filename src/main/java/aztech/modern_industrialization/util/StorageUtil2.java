@@ -42,7 +42,7 @@ public class StorageUtil2 {
 
                 if (!view.isEmpty() && view.extract(resource, Long.MAX_VALUE, nested) > 0) {
                     // Will abort the extraction.
-                    return view.resource();
+                    return resource;
                 }
             }
         }

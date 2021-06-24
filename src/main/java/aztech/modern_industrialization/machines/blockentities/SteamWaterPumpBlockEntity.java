@@ -24,7 +24,6 @@
 package aztech.modern_industrialization.machines.blockentities;
 
 import aztech.modern_industrialization.MIFluids;
-import aztech.modern_industrialization.blocks.tank.MITanks;
 import aztech.modern_industrialization.inventory.ConfigurableFluidStack;
 import aztech.modern_industrialization.inventory.MIInventory;
 import aztech.modern_industrialization.inventory.SlotPositions;
@@ -42,7 +41,7 @@ public class SteamWaterPumpBlockEntity extends AbstractWaterPumpBlockEntity {
         super(bep, bronze ? "bronze_water_pump" : "steel_water_pump");
         this.bronze = bronze;
 
-        long capacity = 81000 * (bronze ? 2 * MITanks.BRONZE.bucketCapacity : 2 * MITanks.STEEL.bucketCapacity);
+        long capacity = 81000 * (bronze ? 8 : 16);
         List<ConfigurableFluidStack> fluidStacks = Arrays.asList(ConfigurableFluidStack.lockedInputSlot(capacity, MIFluids.STEAM),
                 ConfigurableFluidStack.lockedOutputSlot(capacity, Fluids.WATER));
         SlotPositions fluidPositions = new SlotPositions.Builder().addSlot(21, 30).addSlot(OUTPUT_SLOT_X, OUTPUT_SLOT_Y).build();

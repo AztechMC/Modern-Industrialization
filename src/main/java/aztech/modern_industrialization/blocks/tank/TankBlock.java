@@ -24,11 +24,11 @@
 package aztech.modern_industrialization.blocks.tank;
 
 import aztech.modern_industrialization.ModernIndustrialization;
-import aztech.modern_industrialization.api.TickableBlock;
 import aztech.modern_industrialization.util.MobSpawning;
 import java.util.Arrays;
 import java.util.List;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockEntityProvider;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.entity.BlockEntity;
@@ -46,14 +46,17 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 
-public class TankBlock extends Block implements TickableBlock {
-    public TankBlock(Settings settings) {
+public class TankBlock extends Block implements BlockEntityProvider {
+    public final BlockEntityProvider factory;
+
+    public TankBlock(Settings settings, BlockEntityProvider factory) {
         super(settings.nonOpaque().allowsSpawning(MobSpawning.NO_SPAWN));
+        this.factory = factory;
     }
 
     @Override
     public BlockEntity createBlockEntity(BlockPos pos, BlockState state) {
-        return new TankBlockEntity(pos, state);
+        return factory.createBlockEntity(pos, state);
     }
 
     public boolean isTranslucent(BlockState state, BlockView world, BlockPos pos) {

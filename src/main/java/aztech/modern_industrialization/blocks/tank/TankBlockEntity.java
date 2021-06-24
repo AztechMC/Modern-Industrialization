@@ -39,6 +39,7 @@ import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleViewIterator;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.fabricmc.fabric.api.transfer.v1.transaction.base.SnapshotParticipant;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.Hand;
@@ -47,12 +48,13 @@ import net.minecraft.util.math.BlockPos;
 public class TankBlockEntity extends FastBlockEntity implements Storage<FluidKey>, StorageView<FluidKey>, BlockEntityClientSerializable {
     FluidKey fluid = FluidKey.empty();
     long amount;
-    long capacity;
+    final long capacity;
     private int version = 0;
     private final TankParticipant participant = new TankParticipant();
 
-    public TankBlockEntity(BlockPos pos, BlockState state) {
-        super(MITanks.BLOCK_ENTITY_TYPE, pos, state);
+    public TankBlockEntity(BlockEntityType<?> bet, BlockPos pos, BlockState state, long capacity) {
+        super(bet, pos, state);
+        this.capacity = capacity;
     }
 
     public boolean isEmpty() {
@@ -64,10 +66,8 @@ public class TankBlockEntity extends FastBlockEntity implements Storage<FluidKey
         fluid = NbtHelper.getFluidCompatible(tag, "fluid");
         if (tag.contains("amount")) {
             amount = tag.getInt("amount") * 81;
-            capacity = tag.getInt("capacity") * 81;
         } else {
             amount = tag.getLong("amt");
-            capacity = tag.getLong("cap");
         }
         if (fluid.isEmpty()) {
             amount = 0;
@@ -99,10 +99,6 @@ public class TankBlockEntity extends FastBlockEntity implements Storage<FluidKey
     public void readNbt(NbtCompound tag) {
         fromClientTag(tag);
         super.readNbt(tag);
-    }
-
-    public void setCapacity(long capacity) {
-        this.capacity = capacity;
     }
 
     public boolean onPlayerUse(PlayerEntity player) {

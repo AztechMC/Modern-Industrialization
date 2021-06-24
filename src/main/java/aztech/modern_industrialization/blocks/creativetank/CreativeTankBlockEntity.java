@@ -24,7 +24,7 @@
 package aztech.modern_industrialization.blocks.creativetank;
 
 import aztech.modern_industrialization.api.FastBlockEntity;
-import aztech.modern_industrialization.blocks.tank.MITanks;
+import aztech.modern_industrialization.blocks.tank.CreativeTankSetup;
 import aztech.modern_industrialization.util.NbtHelper;
 import dev.technici4n.fasttransferlib.experimental.api.context.ContainerItemContext;
 import dev.technici4n.fasttransferlib.experimental.api.fluid.ItemFluidStorage;
@@ -48,7 +48,7 @@ public class CreativeTankBlockEntity extends FastBlockEntity
     FluidKey fluid = FluidKey.empty();
 
     public CreativeTankBlockEntity(BlockPos pos, BlockState state) {
-        super(MITanks.CREATIVE_BLOCK_ENTITY_TYPE, pos, state);
+        super(CreativeTankSetup.CREATIVE_BLOCK_ENTITY_TYPE, pos, state);
     }
 
     @Override

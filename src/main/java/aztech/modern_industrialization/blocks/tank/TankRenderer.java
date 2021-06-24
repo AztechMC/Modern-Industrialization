@@ -24,20 +24,21 @@
 package aztech.modern_industrialization.blocks.tank;
 
 import aztech.modern_industrialization.util.RenderHelper;
+import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.block.entity.BlockEntityRenderer;
 import net.minecraft.client.render.block.entity.BlockEntityRendererFactory;
 import net.minecraft.client.util.math.MatrixStack;
 
-public class TankRenderer implements BlockEntityRenderer<TankBlockEntity> {
+public class TankRenderer implements BlockEntityRenderer<BlockEntity> {
     public TankRenderer(BlockEntityRendererFactory.Context context) {
     }
 
     @Override
-    public void render(TankBlockEntity entity, float tickDelta, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light,
-            int overlay) {
-        if (!entity.fluid.isEmpty() && entity.amount > 0) {
-            RenderHelper.drawFluidInTank(matrices, vertexConsumers, entity.fluid, (float) entity.amount / entity.capacity);
+    public void render(BlockEntity entity, float tickDelta, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay) {
+        TankBlockEntity tank = (TankBlockEntity) entity;
+        if (!tank.fluid.isEmpty() && tank.amount > 0) {
+            RenderHelper.drawFluidInTank(matrices, vertexConsumers, tank.fluid, (float) tank.amount / tank.capacity);
         }
     }
 }

@@ -33,6 +33,7 @@ import aztech.modern_industrialization.util.EmptyStorage;
 import aztech.modern_industrialization.util.IoStorage;
 import aztech.modern_industrialization.util.NbtHelper;
 import aztech.modern_industrialization.util.StorageUtil2;
+import com.google.common.base.MoreObjects;
 import java.util.*;
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidKey;
@@ -79,10 +80,8 @@ public class FluidNetworkNode extends PipeNetworkNode {
         for (FluidConnection connection : connections) {
             Storage<FluidKey> storage = getNeighborStorage(world, pos, connection);
             if (data.fluid.isEmpty()) {
-                // Try to set fluid, will return EMPTY if none could be found.
-                data.fluid = StorageUtil2.findExtractableResource(storage, null);
-                if (data.fluid == null)
-                    data.fluid = FluidKey.empty();
+                // Try to set fluid, will return null if none could be found.
+                data.fluid = MoreObjects.firstNonNull(StorageUtil2.findExtractableResource(storage, null), FluidKey.empty());
             }
             targets.add(new FluidTarget(connection.priority, new IoStorage<>(storage, connection.canInsert(), connection.canExtract())));
         }

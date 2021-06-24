@@ -313,11 +313,6 @@
     "block.modern_industrialization.supraconductor_ev_transformer": "Supraconductor to EV Transformer",
     "block.modern_industrialization.supraconductor_storage_unit": "Supraconductor Storage Unit",
     "block.modern_industrialization.synthetic_oil": "Synthetic Oil",
-    "block.modern_industrialization.tank_aluminum": "Aluminum Tank",
-    "block.modern_industrialization.tank_bronze": "Bronze Tank",
-    "block.modern_industrialization.tank_stainless_steel": "Stainless Steel Tank",
-    "block.modern_industrialization.tank_steel": "Steel Tank",
-    "block.modern_industrialization.tank_titanium": "Titanium Tank",
     "block.modern_industrialization.tin_block": "Block of Tin",
     "block.modern_industrialization.tin_ore": "Tin Ore",
     "block.modern_industrialization.titanium_block": "Block of Titanium",
@@ -1130,6 +1125,10 @@
     "block.modern_industrialization.raw_platinum_block": "Raw Platinum Block",
     "block.modern_industrialization.raw_silver_block": "Raw Silver Block",
     "block.modern_industrialization.raw_tin_block": "Raw Tin Block",
-    "block.modern_industrialization.raw_tungsten_block": "Raw Tungsten Block"
-
+    "block.modern_industrialization.raw_tungsten_block": "Raw Tungsten Block",
+    "block.modern_industrialization.bronze_tank": "Bronze Tank",
+    "block.modern_industrialization.steel_tank": "Steel Tank",
+    "block.modern_industrialization.aluminum_tank": "Aluminum Tank",
+    "block.modern_industrialization.titanium_tank": "Titanium Tank",
+    "block.modern_industrialization.stainless_steel_tank": "Stainless Steel Tank"
 }

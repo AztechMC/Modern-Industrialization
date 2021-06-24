@@ -37,9 +37,7 @@ import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleViewIterator;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
 import net.minecraft.client.item.TooltipContext;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
@@ -47,7 +45,6 @@ import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.text.TextColor;
 import net.minecraft.text.TranslatableText;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 public class TankItem extends BlockItem {
@@ -100,12 +97,6 @@ public class TankItem extends BlockItem {
         } else {
             tooltip.add(new TranslatableText("text.modern_industrialization.fluid_slot_empty").setStyle(style));
         }
-    }
-
-    @Override
-    protected boolean postPlacement(BlockPos pos, World world, PlayerEntity player, ItemStack stack, BlockState state) {
-        ((TankBlockEntity) world.getBlockEntity(pos)).setCapacity(capacity);
-        return super.postPlacement(pos, world, player, stack, state);
     }
 
     class TankItemStorage implements Storage<FluidKey>, StorageView<FluidKey> {

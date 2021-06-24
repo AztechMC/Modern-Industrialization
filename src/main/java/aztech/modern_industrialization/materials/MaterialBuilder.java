@@ -32,6 +32,8 @@ import aztech.modern_industrialization.textures.coloramp.DefaultColoramp;
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.loader.api.FabricLoader;
 
 public final class MaterialBuilder {
     private final Map<String, MaterialPart> partsMap = new TreeMap<>();
@@ -124,6 +126,10 @@ public final class MaterialBuilder {
         }
         for (MaterialPart part : partsMap.values()) {
             part.register();
+
+            if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
+                part.registerClient();
+            }
         }
         return new Material(materialName, Collections.unmodifiableMap(partsMap));
     }

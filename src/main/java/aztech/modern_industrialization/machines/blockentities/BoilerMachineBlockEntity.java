@@ -24,7 +24,6 @@
 package aztech.modern_industrialization.machines.blockentities;
 
 import aztech.modern_industrialization.MIFluids;
-import aztech.modern_industrialization.blocks.tank.MITanks;
 import aztech.modern_industrialization.inventory.ConfigurableFluidStack;
 import aztech.modern_industrialization.inventory.ConfigurableItemStack;
 import aztech.modern_industrialization.inventory.MIInventory;
@@ -77,7 +76,7 @@ public class BoilerMachineBlockEntity extends MachineBlockEntity implements Tick
         super(bep, new MachineGuiParameters.Builder(bronze ? "bronze_boiler" : "steel_boiler", true).backgroundHeight(180).build());
         orientation = new OrientationComponent(new OrientationComponent.Params(false, false, false));
 
-        int capacity = 81000 * (bronze ? 2 * MITanks.BRONZE.bucketCapacity : 2 * MITanks.STEEL.bucketCapacity);
+        int capacity = 81000 * (bronze ? 8 : 16);
 
         List<ConfigurableItemStack> itemStacks = Collections.singletonList(ConfigurableItemStack.standardInputSlot());
         SlotPositions itemPositions = new SlotPositions.Builder().addSlot(INPUT_SLOT_X, INPUT_SLOT_Y).build();

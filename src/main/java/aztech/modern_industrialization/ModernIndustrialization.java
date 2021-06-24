@@ -30,7 +30,7 @@ import aztech.modern_industrialization.blocks.TrashCanBlock;
 import aztech.modern_industrialization.blocks.forgehammer.ForgeHammerBlock;
 import aztech.modern_industrialization.blocks.forgehammer.ForgeHammerPacket;
 import aztech.modern_industrialization.blocks.forgehammer.ForgeHammerScreenHandler;
-import aztech.modern_industrialization.blocks.tank.MITanks;
+import aztech.modern_industrialization.blocks.tank.CreativeTankSetup;
 import aztech.modern_industrialization.compat.RecipeCompat;
 import aztech.modern_industrialization.inventory.ConfigurableInventoryPacketHandlers;
 import aztech.modern_industrialization.inventory.ConfigurableInventoryPackets;
@@ -142,7 +142,7 @@ public class ModernIndustrialization implements ModInitializer {
         setupItems();
         setupBlocks();
         MIFluids.setupFluids();
-        MITanks.setup();
+        CreativeTankSetup.setup();
         // SingleBlockCraftingMachines.setupRecipes(); // will also load the static
         // fields.
         ForgeHammerScreenHandler.setupRecipes();
@@ -208,7 +208,8 @@ public class ModernIndustrialization implements ModInitializer {
         ItemStorage.SIDED.registerForBlocks((world, pos, state, be, direction) -> TrashCanBlock.trashStorage(), TRASH_CAN);
         FluidStorage.SIDED.registerForBlocks((world, pos, state, be, direction) -> TrashCanBlock.trashStorage(), TRASH_CAN);
         ItemFluidStorage.ITEM.registerForItems((key, ctx) -> TrashCanBlock.trashStorage(), ITEM_TRASH_CAN);
-        EnergyApi.MOVEABLE.registerForBlocks((world, pos, state, be, direction) -> EnergyApi.CREATIVE_EXTRACTABLE, MITanks.CREATIVE_TANK_BLOCK);
+        EnergyApi.MOVEABLE.registerForBlocks((world, pos, state, be, direction) -> EnergyApi.CREATIVE_EXTRACTABLE,
+                CreativeTankSetup.CREATIVE_TANK_BLOCK);
     }
 
     public static void registerBlock(Block block, Item item, String id, int flag) {

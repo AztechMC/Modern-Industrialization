@@ -33,7 +33,6 @@ import aztech.modern_industrialization.textures.coloramp.Coloramp;
 import aztech.modern_industrialization.textures.coloramp.ColorampDepleted;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.function.Function;
 import net.minecraft.item.Item;
 
@@ -127,11 +126,6 @@ public class NuclearFuelMaterialPart implements MaterialPart {
                     params.neutronByDesintegration, params.neutronAbs, params.euByDesintegration, params.desintegrationMax, partSimple + "_depleted");
         }
 
-    }
-
-    @Override
-    public Item getItem() {
-        return Objects.requireNonNull(item);
     }
 
     @Override

@@ -84,7 +84,7 @@ public class ModernIndustrializationClient implements ClientModInitializer {
         MultiblockMachines.clientInit();
         MultiblockErrorHighlight.init();
         WorldRenderEvents.BLOCK_OUTLINE.register(MachineOverlay::onBlockOutline);
-        (new MIPipesClient()).onInitializeClient();
+        (new MIPipesClient()).setupClient();
         ClientKeyHandler.setup();
         WorldRenderEvents.START.register(renderer -> JetpackParticleAdder.addJetpackParticles(MinecraftClient.getInstance()));
         ClientTickEvents.END_CLIENT_TICK.register(ClientKeyHandler::onEndTick);

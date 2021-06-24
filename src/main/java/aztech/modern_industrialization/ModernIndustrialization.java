@@ -151,7 +151,7 @@ public class ModernIndustrialization implements ModInitializer {
         setupFuels();
         RecipeCompat.loadCompatRecipes();
 
-        MIPipes.INSTANCE.onInitialize();
+        MIPipes.INSTANCE.setup();
 
         RRPCallback.EVENT.register(a -> {
             a.add(RESOURCE_PACK);

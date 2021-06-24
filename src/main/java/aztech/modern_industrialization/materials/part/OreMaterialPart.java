@@ -34,7 +34,6 @@ import aztech.modern_industrialization.textures.TextureManager;
 import aztech.modern_industrialization.textures.coloramp.Coloramp;
 import aztech.modern_industrialization.util.ResourceUtil;
 import java.io.IOException;
-import java.util.Objects;
 import java.util.function.Function;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
@@ -90,11 +89,6 @@ public class OreMaterialPart implements MaterialPart {
     @Override
     public String getItemId() {
         return itemId;
-    }
-
-    @Override
-    public Item getItem() {
-        return Objects.requireNonNull(item);
     }
 
     @Override

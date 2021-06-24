@@ -99,11 +99,6 @@ public class TankMaterialPart implements MaterialPart {
     }
 
     @Override
-    public Item getItem() {
-        return item;
-    }
-
-    @Override
     public void registerTextures(TextureManager textureManager) {
     }
 

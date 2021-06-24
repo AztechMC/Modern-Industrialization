@@ -10,10 +10,10 @@
       "item": "modern_industrialization:advanced_machine_hull"
     },
     "I": {
-      "item": "modern_industrialization:pipe_electricity_tin"
+      "item": "modern_industrialization:tin_cable"
     },
     "O": {
-      "item": "modern_industrialization:pipe_electricity_electrum"
+      "item": "modern_industrialization:electrum_cable"
     }
   },
   "result": {

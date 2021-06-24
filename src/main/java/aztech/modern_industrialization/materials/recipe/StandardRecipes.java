@@ -46,9 +46,6 @@ public final class StandardRecipes {
         new ShapedRecipeBuilder(ctx, LARGE_PLATE, 1, "large_plate", "xx", "xx").addTaggedPart('x', PLATE).exportToMachine("packer");
         new ShapedRecipeBuilder(ctx, ROTOR, 1, "rotor", "bBb", "BRB", "bBb").addTaggedPart('b', BOLT).addTaggedPart('B', BLADE).addTaggedPart('R',
                 RING);
-        new ShapedRecipeBuilder(ctx, ITEM_PIPE, 6, "item_pipe", "ccc", "   ", "ccc").addTaggedPart('c', CURVED_PLATE).exportToMachine("packer");
-        new ShapedRecipeBuilder(ctx, FLUID_PIPE, 6, "fluid_pipe", "ccc", "ggg", "ccc").addTaggedPart('c', CURVED_PLATE)
-                .addInput('g', "minecraft:glass_pane").exportToMachine("packer", 3);
         new ShapedRecipeBuilder(ctx, CABLE, 3, "cable", "rrr", "www", "rrr").addInput('r', "modern_industrialization:rubber_sheet")
                 .addTaggedPart('w', WIRE).exportToAssembler();
         new ShapedRecipeBuilder(ctx, TANK, 1, "tank", "###", "#G#", "###").addPart('#', LARGE_PLATE).addInput('G', "minecraft:glass")
@@ -64,8 +61,6 @@ public final class StandardRecipes {
         addMaceratorRecycling(ctx, RING, 4);
         addMaceratorRecycling(ctx, BOLT, 2);
         addMaceratorRecycling(ctx, ROD, 4);
-        addMaceratorRecycling(ctx, ITEM_PIPE, 9);
-        addMaceratorRecycling(ctx, FLUID_PIPE, 9);
         addMaceratorRecycling(ctx, ROTOR, 27);
         addMaceratorRecycling(ctx, INGOT, 9);
         addMaceratorRecycling(ctx, BLADE, 5);
@@ -83,7 +78,6 @@ public final class StandardRecipes {
         addCuttingMachine(ctx, "double_ingot", DOUBLE_INGOT, ROD, 4);
         addCuttingMachine(ctx, "rod", ROD, BOLT, 2);
         addCuttingMachine(ctx, "large_plate", LARGE_PLATE, GEAR, 2);
-        addCuttingMachine(ctx, "item_pipe", ITEM_PIPE, RING, 2);
         // PACKER
         new MIRecipeBuilder(ctx, "packer", "double_ingot").addTaggedPartInput(INGOT, 2).addPartOutput(DOUBLE_INGOT, 1);
         new MIRecipeBuilder(ctx, "packer", "dust").addTaggedPartInput(TINY_DUST, 9).addPartOutput(DUST, 1);

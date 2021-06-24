@@ -10,10 +10,10 @@
       "item": "modern_industrialization:highly_advanced_machine_hull"
     },
     "I": {
-      "item": "modern_industrialization:pipe_electricity_aluminum"
+      "item": "modern_industrialization:aluminum_cable"
     },
     "O": {
-      "item": "modern_industrialization:pipe_electricity_annealed_copper"
+      "item": "modern_industrialization:annealed_copper_cable"
     }
   },
   "result": {

@@ -80,6 +80,23 @@ public class MissingTranslationsCommand {
                 }
             }
         }
+        for (Map.Entry<String, String> entry : missingTranslations.entrySet()) {
+            String key = entry.getKey();
+            String[] parts = key.split("\\.");
+            String[] toTranslate = parts[2].split("_");
+            StringBuilder translated = new StringBuilder();
+            boolean first = true;
+            for (String toTranslatePart : toTranslate) {
+                if (!first)
+                    translated.append(" ");
+                first = false;
+                // Uppercase first char
+                translated.append(Character.toUpperCase(toTranslatePart.charAt(0)));
+                // Rest is lowercase
+                translated.append(toTranslatePart.substring(1));
+            }
+            entry.setValue(translated.toString());
+        }
         if (missingTranslations.size() > 0) {
             Gson gson = new GsonBuilder().setPrettyPrinting().create();
             ModernIndustrialization.LOGGER.info("Missing MI translations:\n{}", gson.toJson(missingTranslations));

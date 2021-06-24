@@ -34,15 +34,13 @@ import aztech.modern_industrialization.pipes.item.ItemPipeScreen;
 import net.devtech.arrp.json.blockstate.JBlockModel;
 import net.devtech.arrp.json.blockstate.JState;
 import net.devtech.arrp.json.blockstate.JVariant;
-import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.model.ModelLoadingRegistry;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry;
 import net.fabricmc.fabric.api.client.screenhandler.v1.ScreenRegistry;
 
-public class MIPipesClient implements ClientModInitializer {
-    @Override
-    public void onInitializeClient() {
+public class MIPipesClient {
+    public void setupClient() {
         ModernIndustrialization.RESOURCE_PACK.addBlockState(
                 JState.state(new JVariant().put("", new JBlockModel("modern_industrialization:block/pipe"))), new MIIdentifier("pipe"));
         ModelLoadingRegistry.INSTANCE.registerResourceProvider(rm -> new PipeModelProvider());

@@ -31,7 +31,6 @@ import aztech.modern_industrialization.materials.MaterialHelper;
 import aztech.modern_industrialization.textures.MITextures;
 import aztech.modern_industrialization.textures.TextureManager;
 import aztech.modern_industrialization.textures.coloramp.Coloramp;
-import java.util.Objects;
 import net.devtech.arrp.json.tags.JTag;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
@@ -116,11 +115,6 @@ public class RegularMaterialPart implements MaterialPart {
         if (MIParts.TAGGED_PARTS.contains(part) && MaterialHelper.overrideItemPath(itemPath) == itemPath) {
             MaterialHelper.registerItemTag(MaterialHelper.getPartTag(materialName, part), JTag.tag().add(new Identifier(getItemId())));
         }
-    }
-
-    @Override
-    public Item getItem() {
-        return Objects.requireNonNull(item);
     }
 
     @Override

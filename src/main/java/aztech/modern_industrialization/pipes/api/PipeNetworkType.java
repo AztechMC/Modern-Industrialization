@@ -91,6 +91,7 @@ public final class PipeNetworkType implements Comparable<PipeNetworkType> {
 
     public static PipeNetworkType register(Identifier identifier, BiFunction<Integer, PipeNetworkData, PipeNetwork> networkCtor,
             Supplier<PipeNetworkNode> nodeCtor, int color, boolean opensGui, PipeRenderer.Factory renderer) {
+        color |= 0xff000000;
         PipeNetworkType type = new PipeNetworkType(identifier, networkCtor, nodeCtor, color, opensGui, renderer, nextSerialNumber++);
         PipeNetworkType previousType = types.put(identifier, type);
         if (previousType != null) {

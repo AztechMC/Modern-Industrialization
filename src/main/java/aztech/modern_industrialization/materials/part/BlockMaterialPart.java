@@ -33,7 +33,6 @@ import aztech.modern_industrialization.textures.TextureHelper;
 import aztech.modern_industrialization.textures.TextureManager;
 import aztech.modern_industrialization.textures.coloramp.Coloramp;
 import java.io.IOException;
-import java.util.Objects;
 import java.util.function.Function;
 import net.devtech.arrp.json.tags.JTag;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
@@ -79,11 +78,6 @@ public class BlockMaterialPart implements MaterialPart {
     @Override
     public String getItemId() {
         return itemId;
-    }
-
-    @Override
-    public Item getItem() {
-        return Objects.requireNonNull(item);
     }
 
     @Override

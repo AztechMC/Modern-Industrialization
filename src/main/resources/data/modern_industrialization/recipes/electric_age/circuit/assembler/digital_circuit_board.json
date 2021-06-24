@@ -4,7 +4,7 @@
   "duration": 500,
   "item_inputs": [
     {
-      "item": "modern_industrialization:pipe_electricity_aluminum",
+      "item": "modern_industrialization:aluminum_cable",
       "amount": 6
     },
     {

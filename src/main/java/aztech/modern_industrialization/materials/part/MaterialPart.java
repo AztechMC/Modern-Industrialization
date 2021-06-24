@@ -26,7 +26,6 @@ package aztech.modern_industrialization.materials.part;
 import aztech.modern_industrialization.textures.TextureManager;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.item.Item;
 
 public interface MaterialPart {
     /**
@@ -46,11 +45,6 @@ public interface MaterialPart {
     String getItemId();
 
     void register();
-
-    /**
-     * @throws NullPointerException if no item available.
-     */
-    Item getItem();
 
     void registerTextures(TextureManager textureManager);
 

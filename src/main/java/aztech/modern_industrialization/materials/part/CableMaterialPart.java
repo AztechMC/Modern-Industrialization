@@ -26,22 +26,47 @@ package aztech.modern_industrialization.materials.part;
 import aztech.modern_industrialization.api.energy.CableTier;
 import aztech.modern_industrialization.materials.MaterialBuilder;
 import aztech.modern_industrialization.pipes.MIPipes;
+import aztech.modern_industrialization.textures.TextureManager;
 import java.util.function.Function;
 
-public class CableMaterialPart extends PipeMaterialPart {
+public class CableMaterialPart implements MaterialPart {
+    protected final String materialName;
     private final CableTier tier;
+    private final String itemId;
+    protected final int color;
 
     public static Function<MaterialBuilder.PartContext, MaterialPart> of(CableTier tier) {
         return ctx -> new CableMaterialPart(ctx.getMaterialName(), tier, ctx.getColoramp().getMeanRGB());
     }
 
     protected CableMaterialPart(String material, CableTier tier, int color) {
-        super(material, PipeType.CABLE, color);
+        this.materialName = material;
         this.tier = tier;
+        this.itemId = "modern_industrialization:" + material + "_cable";
+        this.color = color;
+    }
+
+    @Override
+    public String getPart() {
+        return MIParts.CABLE;
+    }
+
+    @Override
+    public String getTaggedItemId() {
+        return itemId;
+    }
+
+    @Override
+    public String getItemId() {
+        return itemId;
     }
 
     @Override
     public void register() {
-        MIPipes.INSTANCE.registerElectricityPipeType(materialName, color | 0xff000000, tier);
+        MIPipes.INSTANCE.registerCableType(materialName, color | 0xff000000, tier);
+    }
+
+    @Override
+    public void registerTextures(TextureManager textureManager) {
     }
 }

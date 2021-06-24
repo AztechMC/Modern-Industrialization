@@ -12,7 +12,7 @@
       "tag" : "c:aluminum_plates"
     },
     "e" : {
-      "item" : "modern_industrialization:pipe_electricity_electrum"
+      "item" : "modern_industrialization:electrum_cable"
     },
     "b" :{
       "item" : "modern_industrialization:lv_circuit_board"

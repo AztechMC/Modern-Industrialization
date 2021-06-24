@@ -10,10 +10,10 @@
       "item": "modern_industrialization:turbo_machine_hull"
     },
     "I": {
-      "item": "modern_industrialization:pipe_electricity_aluminum"
+      "item": "modern_industrialization:aluminum_cable"
     },
     "O": {
-      "item": "modern_industrialization:pipe_electricity_electrum"
+      "item": "modern_industrialization:electrum_cable"
     }
   },
   "result": {

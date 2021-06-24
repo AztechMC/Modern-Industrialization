@@ -34,7 +34,6 @@ import aztech.modern_industrialization.textures.TextureHelper;
 import aztech.modern_industrialization.textures.TextureManager;
 import aztech.modern_industrialization.textures.coloramp.Coloramp;
 import java.io.IOException;
-import java.util.Objects;
 import java.util.function.Function;
 import net.devtech.arrp.json.tags.JTag;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
@@ -115,11 +114,6 @@ public class RawMetalPart implements MaterialPart {
             item = MIItem.of(itemPath);
             MaterialHelper.registerItemTag("c:raw_" + materialName + "_ores", JTag.tag().add(new Identifier(getItemId())));
         }
-    }
-
-    @Override
-    public Item getItem() {
-        return Objects.requireNonNull(item);
     }
 
     @Override

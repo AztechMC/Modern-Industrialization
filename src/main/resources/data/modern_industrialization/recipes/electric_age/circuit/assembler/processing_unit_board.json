@@ -4,7 +4,7 @@
   "duration": 1200,
   "item_inputs": [
     {
-      "item": "modern_industrialization:pipe_electricity_annealed_copper",
+      "item": "modern_industrialization:annealed_copper_cable",
       "amount": 8
     },
     {

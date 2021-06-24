@@ -9,7 +9,7 @@
   "H" : { "item" : "modern_industrialization:advanced_machine_hull"},
     "P": { "item" : "modern_industrialization:large_pump"},
     "G": { "tag" : "c:aluminum_gears"},
-    "c" : {"item" : "modern_industrialization:pipe_electricity_electrum"},
+    "c" : {"item" : "modern_industrialization:electrum_cable"},
     "C" : {"item" : "modern_industrialization:electronic_circuit"}
 
 },

@@ -41,12 +41,10 @@ public class MIParts {
     public static final String DOUBLE_INGOT = "double_ingot";
     public static final String DUST = "dust";
     public static final String FINE_WIRE = "fine_wire";
-    public static final String FLUID_PIPE = "fluid_pipe";
     public static final String GEAR = "gear";
     public static final String GEM = "gem";
     public static final String HOT_INGOT = "hot_ingot";
     public static final String INGOT = "ingot";
-    public static final String ITEM_PIPE = "item_pipe";
     public static final String LARGE_PLATE = "large_plate";
     public static final String MACHINE_CASING = "machine_casing";
     public static final String MACHINE_CASING_PIPE = "machine_casing_pipe";

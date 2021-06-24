@@ -30,9 +30,9 @@ import dev.technici4n.fasttransferlib.experimental.api.fluid.ItemFluidStorage;
 import java.util.Iterator;
 import net.fabricmc.fabric.api.block.entity.BlockEntityClientSerializable;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidKey;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidPreconditions;
-import net.fabricmc.fabric.api.transfer.v1.storage.Movement;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
+import net.fabricmc.fabric.api.transfer.v1.storage.StoragePreconditions;
+import net.fabricmc.fabric.api.transfer.v1.storage.StorageUtil;
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.ResourceAmount;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleViewIterator;
@@ -109,10 +109,10 @@ public class TankBlockEntity extends FastBlockEntity implements Storage<FluidKey
         Storage<FluidKey> handIo = ContainerItemContext.ofPlayerHand(player, Hand.MAIN_HAND).find(ItemFluidStorage.ITEM);
         if (handIo != null) {
             // move from hand into this tank
-            if (Movement.move(handIo, this, f -> true, Integer.MAX_VALUE, null) > 0)
+            if (StorageUtil.move(handIo, this, f -> true, Integer.MAX_VALUE, null) > 0)
                 return true;
             // move from this tank into hand
-            if (Movement.move(this, handIo, f -> true, Integer.MAX_VALUE, null) > 0)
+            if (StorageUtil.move(this, handIo, f -> true, Integer.MAX_VALUE, null) > 0)
                 return true;
         }
         return false;
@@ -125,7 +125,7 @@ public class TankBlockEntity extends FastBlockEntity implements Storage<FluidKey
 
     @Override
     public long insert(FluidKey fluid, long maxAmount, Transaction transaction) {
-        FluidPreconditions.notEmptyNotNegative(fluid, maxAmount);
+        StoragePreconditions.notEmptyNotNegative(fluid, maxAmount);
         if (this.fluid.isEmpty() || TankBlockEntity.this.fluid == fluid) {
             long inserted = Math.min(maxAmount, capacity - amount);
             if (inserted > 0) {
@@ -145,7 +145,7 @@ public class TankBlockEntity extends FastBlockEntity implements Storage<FluidKey
 
     @Override
     public long extract(FluidKey fluid, long maxAmount, Transaction transaction) {
-        FluidPreconditions.notEmptyNotNegative(fluid, maxAmount);
+        StoragePreconditions.notEmptyNotNegative(fluid, maxAmount);
         if (fluid.equals(TankBlockEntity.this.fluid)) {
             long extracted = Math.min(maxAmount, amount);
             if (extracted > 0) {

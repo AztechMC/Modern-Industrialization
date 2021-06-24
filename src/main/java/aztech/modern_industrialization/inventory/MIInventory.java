@@ -31,9 +31,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidKey;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidTransfer;
-import net.fabricmc.fabric.api.transfer.v1.storage.Movement;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
+import net.fabricmc.fabric.api.transfer.v1.storage.StorageUtil;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
@@ -80,15 +80,15 @@ public final class MIInventory implements IComponent {
         Storage<ItemKey> target = ItemStorage.SIDED.find(world, pos.offset(direction), direction.getOpposite());
 
         if (target != null) {
-            Movement.move(itemStorage, target, k -> true, Long.MAX_VALUE, null);
+            StorageUtil.move(itemStorage, target, k -> true, Long.MAX_VALUE, null);
         }
     }
 
     public void autoExtractFluids(World world, BlockPos pos, Direction direction) {
-        Storage<FluidKey> target = FluidTransfer.SIDED.find(world, pos.offset(direction), direction.getOpposite());
+        Storage<FluidKey> target = FluidStorage.SIDED.find(world, pos.offset(direction), direction.getOpposite());
 
         if (target != null) {
-            Movement.move(fluidStorage, target, k -> true, Long.MAX_VALUE, null);
+            StorageUtil.move(fluidStorage, target, k -> true, Long.MAX_VALUE, null);
         }
     }
 
@@ -96,15 +96,15 @@ public final class MIInventory implements IComponent {
         Storage<ItemKey> target = ItemStorage.SIDED.find(world, pos.offset(direction), direction.getOpposite());
 
         if (target != null) {
-            Movement.move(target, itemStorage, k -> true, Long.MAX_VALUE, null);
+            StorageUtil.move(target, itemStorage, k -> true, Long.MAX_VALUE, null);
         }
     }
 
     public void autoInsertFluids(World world, BlockPos pos, Direction direction) {
-        Storage<FluidKey> target = FluidTransfer.SIDED.find(world, pos.offset(direction), direction.getOpposite());
+        Storage<FluidKey> target = FluidStorage.SIDED.find(world, pos.offset(direction), direction.getOpposite());
 
         if (target != null) {
-            Movement.move(target, fluidStorage, k -> true, Long.MAX_VALUE, null);
+            StorageUtil.move(target, fluidStorage, k -> true, Long.MAX_VALUE, null);
         }
     }
 

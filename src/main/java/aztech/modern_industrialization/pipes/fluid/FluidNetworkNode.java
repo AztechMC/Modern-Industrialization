@@ -29,14 +29,14 @@ import aztech.modern_industrialization.ModernIndustrialization;
 import aztech.modern_industrialization.pipes.api.PipeEndpointType;
 import aztech.modern_industrialization.pipes.api.PipeNetworkNode;
 import aztech.modern_industrialization.pipes.gui.IPipeScreenHandlerHelper;
-import aztech.modern_industrialization.transferapi.FluidTransferHelper;
 import aztech.modern_industrialization.util.EmptyStorage;
 import aztech.modern_industrialization.util.IoStorage;
 import aztech.modern_industrialization.util.NbtHelper;
+import aztech.modern_industrialization.util.StorageUtil2;
 import java.util.*;
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidKey;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidTransfer;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.fabricmc.fabric.api.util.NbtType;
 import net.minecraft.entity.player.PlayerEntity;
@@ -80,14 +80,16 @@ public class FluidNetworkNode extends PipeNetworkNode {
             Storage<FluidKey> storage = getNeighborStorage(world, pos, connection);
             if (data.fluid.isEmpty()) {
                 // Try to set fluid, will return EMPTY if none could be found.
-                data.fluid = FluidTransferHelper.findExtractableFluid(storage);
+                data.fluid = StorageUtil2.findExtractableResource(storage, null);
+                if (data.fluid == null)
+                    data.fluid = FluidKey.empty();
             }
             targets.add(new FluidTarget(connection.priority, new IoStorage<>(storage, connection.canInsert(), connection.canExtract())));
         }
     }
 
     Storage<FluidKey> getNeighborStorage(World world, BlockPos pos, FluidConnection connection) {
-        Storage<FluidKey> storage = FluidTransfer.SIDED.find(world, pos.offset(connection.direction), connection.direction.getOpposite());
+        Storage<FluidKey> storage = FluidStorage.SIDED.find(world, pos.offset(connection.direction), connection.direction.getOpposite());
         if (storage != null) {
             if ((connection.canExtract() && storage.supportsExtraction()) || (connection.canInsert() && storage.supportsInsertion())) {
                 return storage;
@@ -124,7 +126,7 @@ public class FluidNetworkNode extends PipeNetworkNode {
 
     private boolean canConnect(World world, BlockPos pos, Direction direction) {
         BlockPos adjPos = pos.offset(direction);
-        return FluidTransfer.SIDED.find(world, pos.offset(direction), direction.getOpposite()) != null;
+        return FluidStorage.SIDED.find(world, pos.offset(direction), direction.getOpposite()) != null;
     }
 
     @Override

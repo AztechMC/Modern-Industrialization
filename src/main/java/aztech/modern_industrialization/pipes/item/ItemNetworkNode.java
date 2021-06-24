@@ -33,8 +33,8 @@ import dev.technici4n.fasttransferlib.experimental.api.item.ItemKey;
 import dev.technici4n.fasttransferlib.experimental.api.item.ItemStorage;
 import java.util.*;
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
-import net.fabricmc.fabric.api.transfer.v1.storage.Movement;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
+import net.fabricmc.fabric.api.transfer.v1.storage.StorageUtil;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -186,7 +186,7 @@ public class ItemNetworkNode extends PipeNetworkNode {
                         reachableInputs = getInputs(world, pos);
                     for (InsertTarget target : reachableInputs) {
                         if (target.connection.canInsert()) {
-                            long moved = Movement.move(source, target.target,
+                            long moved = StorageUtil.move(source, target.target,
                                     key -> connection.canStackMoveThrough(key) && target.connection.canStackMoveThrough(key), movesLeft, null);
                             movesLeft -= moved;
                             if (movesLeft == 0)

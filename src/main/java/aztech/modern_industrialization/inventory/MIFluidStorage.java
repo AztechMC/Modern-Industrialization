@@ -27,8 +27,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.function.Predicate;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidKey;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidPreconditions;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
+import net.fabricmc.fabric.api.transfer.v1.storage.StoragePreconditions;
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 
@@ -49,7 +49,7 @@ public class MIFluidStorage implements Storage<FluidKey> {
      * @param lockSlots Whether to lock slots or not.
      */
     public long insert(FluidKey fluid, long amount, Transaction tx, Predicate<ConfigurableFluidStack> filter, boolean lockSlots) {
-        FluidPreconditions.notEmptyNotNegative(fluid, amount);
+        StoragePreconditions.notEmptyNotNegative(fluid, amount);
         for (int iter = 0; iter < 2; ++iter) {
             boolean insertIntoEmptySlots = iter == 1;
             for (ConfigurableFluidStack stack : stacks) {
@@ -87,7 +87,7 @@ public class MIFluidStorage implements Storage<FluidKey> {
 
     @Override
     public long extract(FluidKey fluid, long maxAmount, Transaction transaction) {
-        FluidPreconditions.notEmptyNotNegative(fluid, maxAmount);
+        StoragePreconditions.notEmptyNotNegative(fluid, maxAmount);
         long amount = 0L;
 
         for (int i = 0; i < stacks.size() && amount < maxAmount; ++i) {

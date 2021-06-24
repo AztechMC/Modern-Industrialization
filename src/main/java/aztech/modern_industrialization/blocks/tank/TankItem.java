@@ -31,8 +31,8 @@ import dev.technici4n.fasttransferlib.experimental.api.item.ItemKey;
 import java.util.Iterator;
 import java.util.List;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidKey;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidPreconditions;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
+import net.fabricmc.fabric.api.transfer.v1.storage.StoragePreconditions;
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleViewIterator;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
@@ -137,7 +137,7 @@ public class TankItem extends BlockItem {
 
         @Override
         public long insert(FluidKey fluid, long maxAmount, Transaction transaction) {
-            FluidPreconditions.notEmptyNotNegative(fluid, maxAmount);
+            StoragePreconditions.notEmptyNotNegative(fluid, maxAmount);
             if (ctx.getCount(transaction) == 0)
                 return 0;
 
@@ -162,7 +162,7 @@ public class TankItem extends BlockItem {
 
         @Override
         public long extract(FluidKey fluid, long maxAmount, Transaction transaction) {
-            FluidPreconditions.notEmptyNotNegative(fluid, maxAmount);
+            StoragePreconditions.notEmptyNotNegative(fluid, maxAmount);
             if (ctx.getCount(transaction) == 0)
                 return 0;
 

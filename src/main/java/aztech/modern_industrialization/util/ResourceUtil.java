@@ -56,6 +56,22 @@ public class ResourceUtil {
         ModernIndustrialization.RESOURCE_PACK.addTag(tagId, jtag);
     }
 
+    public static synchronized void appendTagToTag(Identifier tagId, Identifier subtag) {
+        // We use a copy-on-write strategy to update the JTag every time with the added
+        // entry.
+        JTag jtag = tags.computeIfAbsent(tagId, id -> JTag.tag());
+        jtag.tag(subtag);
+        ModernIndustrialization.RESOURCE_PACK.addTag(tagId, jtag);
+    }
+
+    public static synchronized void appendTagToTag(String tagId, String subtag) {
+        appendTagToTag(new Identifier((tagId)), new Identifier(subtag));
+    }
+
+    public static synchronized void appendToTag(String tagId, String elementId) {
+        appendToTag(new Identifier(tagId), new Identifier(elementId));
+    }
+
     public static void appendWrenchable(Identifier blockId) {
         appendToTag(new Identifier("fabric:blocks/wrenchables"), blockId);
     }

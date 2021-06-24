@@ -39,6 +39,7 @@ import aztech.modern_industrialization.materials.set.MaterialBlockSet;
 import aztech.modern_industrialization.materials.set.MaterialOreSet;
 import aztech.modern_industrialization.materials.set.MaterialRawSet;
 import aztech.modern_industrialization.textures.coloramp.BakableTargetColoramp;
+import aztech.modern_industrialization.util.ResourceUtil;
 import net.devtech.arrp.json.tags.JTag;
 import net.minecraft.util.Identifier;
 
@@ -116,21 +117,22 @@ public class MIMaterials {
 
         MaterialRegistry.addMaterial(new MaterialBuilder("diamond", SHINY,
                 new BakableTargetColoramp(0x48eeda, "minecraft:textures/item/diamond.png", "minecraft:textures/item/diamond.png"))
-                        .addRegularParts(CRUSHED_DUST, MIParts.GEM, DUST, TINY_DUST, PLATE)
-                        .addParts(ExternalPart.of("ore", "minecraft:diamond_ore", "minecraft:diamond_ore"))
+                        .addRegularParts(ITEM_PURE_NON_METAL).addRegularParts(MIParts.GEM, PLATE)
                         .overridePart(ExternalPart.of(MIParts.GEM, "minecraft:diamond", "minecraft:diamond")).addRecipes(StandardRecipes::apply)
                         .addRecipes(context -> new MIRecipeBuilder(context, "compressor", "plate").addItemInput("minecraft:diamond", 1)
                                 .addPartOutput(PLATE, 1))
+                        .addRecipes(context -> new MIRecipeBuilder(context, "macerator", "dust").addItemInput("#c:diamond_ores", 1)
+                                .addPartOutput(CRUSHED_DUST, 2))
                         .build());
 
         MaterialRegistry.addMaterial(new MaterialBuilder("emerald", SHINY,
                 new BakableTargetColoramp(0x3FF385, "minecraft:textures/item/emerald.png", "minecraft:textures/item/emerald.png"))
                         .addRegularParts(ITEM_PURE_NON_METAL).addRegularParts(MIParts.GEM, PLATE)
                         .overridePart(ExternalPart.of(MIParts.GEM, "minecraft:emerald", "minecraft:emerald")).addRecipes(StandardRecipes::apply)
-                        .addRecipes(context -> new MIRecipeBuilder(context, "macerator", "dust").addItemInput("minecraft:emerald_ore", 1)
-                                .addPartOutput(CRUSHED_DUST, 2))
                         .addRecipes(context -> new MIRecipeBuilder(context, "compressor", "plate").addItemInput("minecraft:emerald", 1)
                                 .addPartOutput(PLATE, 1))
+                        .addRecipes(context -> new MIRecipeBuilder(context, "macerator", "dust").addItemInput("#c:emerald_ores", 1)
+                                .addPartOutput(CRUSHED_DUST, 2))
                         .build());
 
         MaterialRegistry.addMaterial(new MaterialBuilder("brick", STONE,
@@ -243,11 +245,10 @@ public class MIMaterials {
         MaterialRegistry.addMaterial(new MaterialBuilder("titanium", METALLIC,
                 new BakableTargetColoramp(0xDCA0F0, "modern_industrialization:textures/materialsets/common/ingot.png",
                         "modern_industrialization:textures/template/titanium_ingot.png")).addRegularParts(ITEM_ALL)
-                                .addParts(BlockMaterialPart.of(MaterialBlockSet.NETHERITE))
+                                .addParts(BlockMaterialPart.of(MaterialBlockSet.NETHERITE)).addParts(RawMetalPart.of(MaterialRawSet.COPPER))
                                 .addRegularParts(HOT_INGOT, MACHINE_CASING, MACHINE_CASING_PIPE, MACHINE_CASING_SPECIAL)
                                 .addParts(OreMaterialPart.of(MaterialOreSet.IRON)).addParts(PipeMaterialPart.of(PipeType.ITEM))
-                                .addParts(PipeMaterialPart.of(PipeType.FLUID)).addRecipes(StandardRecipes::apply)
-                                .cancelRecipes("macerator/crushed_dust").build());
+                                .addParts(PipeMaterialPart.of(PipeType.FLUID)).addRecipes(StandardRecipes::apply).build());
 
         MaterialRegistry.addMaterial(
                 new MaterialBuilder("electrum", SHINY, 0xFFFF64).addRegularParts(ITEM_BASE).addParts(BlockMaterialPart.of(MaterialBlockSet.GOLD))
@@ -294,7 +295,7 @@ public class MIMaterials {
         MaterialRegistry.addMaterial(new MaterialBuilder("uranium", DULL, 0x39e600).addParts(NuclearFuelMaterialPart.of(2800, 0.05, 0.5, 1, 256000))
                 .addRegularParts(ITEM_PURE_METAL).addParts(BlockMaterialPart.of(MaterialBlockSet.GOLD)).addParts(OreMaterialPart.of(COPPER))
                 .addRegularParts(MIParts.GEM).addRecipes(StandardRecipes::apply).addRecipes(context -> {
-                    new MIRecipeBuilder(context, "macerator", "ore").addPartInput(ORE, 1).addPartOutput(MIParts.GEM, 2);
+                    new MIRecipeBuilder(context, "macerator", "ore").addTaggedPartInput(ORE, 1).addPartOutput(MIParts.GEM, 2);
                     new MIRecipeBuilder(context, "macerator", "uranium").addPartInput(MIParts.GEM, 1).addPartOutput(DUST, 2);
                 }).build());
 
@@ -328,7 +329,7 @@ public class MIMaterials {
         MaterialRegistry.addMaterial(new MaterialBuilder("iridium", SHINY, 0xe1e6f5).addParts(BlockMaterialPart.of(MaterialBlockSet.DIAMOND))
                 .addRegularParts(ITEM_PURE_METAL).addParts(OreMaterialPart.of(MaterialOreSet.DIAMOND)).addRegularParts(MIParts.GEM)
                 .addRecipes(StandardRecipes::apply).addRecipes(context -> {
-                    new MIRecipeBuilder(context, "macerator", "ore").addPartInput(ORE, 1).addPartOutput(MIParts.GEM, 2);
+                    new MIRecipeBuilder(context, "macerator", "ore").addTaggedPartInput(ORE, 1).addPartOutput(MIParts.GEM, 2);
                     new MIRecipeBuilder(context, "macerator", "iridium").addPartInput(MIParts.GEM, 1).addPartOutput(DUST, 2);
                 }).build());
 
@@ -383,8 +384,8 @@ public class MIMaterials {
         MaterialHelper.registerItemTag("c:gold_blocks", JTag.tag().add(new Identifier("minecraft:gold_block")));
         MaterialHelper.registerItemTag("c:gold_ingots", JTag.tag().add(new Identifier("minecraft:gold_ingot")));
         MaterialHelper.registerItemTag("c:gold_nuggets", JTag.tag().add(new Identifier("minecraft:gold_nugget")));
-        MaterialHelper.registerItemTag("c:gold_ores", JTag.tag().tag(new Identifier("minecraft:gold_ores")));
-        MaterialHelper.registerItemTag("c:gold_ores", JTag.tag().add(new Identifier("minecraft:gilded_blackstone")));
+        ResourceUtil.appendTagToTag("c:items/gold_ores", "minecraft:gold_ores");
+        ResourceUtil.appendToTag("c:items/gold_ores", "minecraft:gilded_blackstone");
         MaterialHelper.registerItemTag("c:raw_gold_ores", JTag.tag().add(new Identifier("minecraft:raw_gold")));
         MaterialHelper.registerItemTag("c:raw_gold_blocks", JTag.tag().add(new Identifier("minecraft:raw_gold_block")));
 
@@ -396,9 +397,11 @@ public class MIMaterials {
 
         MaterialHelper.registerItemTag("c:emerald_ores", JTag.tag().tag(new Identifier("minecraft:emerald_ores")));
 
-        MaterialHelper.registerItemTag("c:diamond_ores", JTag.tag().tag(new Identifier("minecraft:diamond_ores")));
+        ResourceUtil.appendTagToTag("c:items/diamond_ores", "minecraft:diamond_ores");
 
         MaterialHelper.registerItemTag("c:lapis_ores", JTag.tag().tag(new Identifier("minecraft:lapis_ores")));
+
+        ResourceUtil.appendToTag("c:items/quartz_ores", "minecraft:nether_quartz_ore");
 
     }
 }

@@ -28,20 +28,18 @@ import static aztech.modern_industrialization.ModernIndustrialization.STONE_MATE
 import aztech.modern_industrialization.MIBlock;
 import aztech.modern_industrialization.blocks.OreBlock;
 import aztech.modern_industrialization.materials.MaterialBuilder;
-import aztech.modern_industrialization.materials.MaterialHelper;
 import aztech.modern_industrialization.materials.set.MaterialOreSet;
 import aztech.modern_industrialization.textures.TextureHelper;
 import aztech.modern_industrialization.textures.TextureManager;
 import aztech.modern_industrialization.textures.coloramp.Coloramp;
+import aztech.modern_industrialization.util.ResourceUtil;
 import java.io.IOException;
 import java.util.Objects;
 import java.util.function.Function;
-import net.devtech.arrp.json.tags.JTag;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
 import net.minecraft.client.texture.NativeImage;
 import net.minecraft.item.Item;
-import net.minecraft.util.Identifier;
 
 public class OreMaterialPart implements MaterialPart {
 
@@ -105,7 +103,7 @@ public class OreMaterialPart implements MaterialPart {
                 .breakByTool(FabricToolTags.PICKAXES, 1).requiresTool());
         item = block.blockItem;
 
-        MaterialHelper.registerItemTag("c:" + materialName + "_ores", JTag.tag().add(new Identifier(getItemId())));
+        ResourceUtil.appendToTag("c:items/" + materialName + "_ores", getItemId());
     }
 
     @Override

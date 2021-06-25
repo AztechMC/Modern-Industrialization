@@ -94,11 +94,12 @@ public class MIREIPlugin implements REIClientPlugin {
                     ScreenHandler handler = handledScreen.getScreenHandler();
                     Slot slot = ((HandledScreenAccessor) handledScreen).mi_getFocusedSlot();
                     if (slot instanceof ReiDraggable dw) {
+                        int slotId = handler.slots.indexOf(slot);
                         if (ik != null && dw.dragItem(ik, Simulation.SIMULATE)) {
                             return Optional.of(s -> {
                                 PacketByteBuf buf = PacketByteBufs.create();
                                 buf.writeInt(handler.syncId);
-                                buf.writeInt(slot.id);
+                                buf.writeVarInt(slotId);
                                 buf.writeBoolean(true);
                                 ik.toPacket(buf);
                                 ClientPlayNetworking.send(ConfigurableInventoryPackets.DO_SLOT_DRAGGING, buf);
@@ -109,7 +110,7 @@ public class MIREIPlugin implements REIClientPlugin {
                             return Optional.of(s -> {
                                 PacketByteBuf buf = PacketByteBufs.create();
                                 buf.writeInt(handler.syncId);
-                                buf.writeInt(slot.id);
+                                buf.writeVarInt(slotId);
                                 buf.writeBoolean(false);
                                 fk.toPacket(buf);
                                 ClientPlayNetworking.send(ConfigurableInventoryPackets.DO_SLOT_DRAGGING, buf);

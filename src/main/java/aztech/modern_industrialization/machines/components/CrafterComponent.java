@@ -566,7 +566,7 @@ public class CrafterComponent implements IComponent.ServerOnly {
 
             if (targetItem != null) {
                 for (ConfigurableItemStack stack : this.inventory.getItemInputs()) {
-                    if (stack.playerLock(targetItem)) {
+                    if (stack.playerLock(targetItem, ACT)) {
                         break;
                     }
                 }
@@ -579,7 +579,7 @@ public class CrafterComponent implements IComponent.ServerOnly {
                     continue outer;
             }
             for (ConfigurableItemStack stack : this.inventory.getItemOutputs()) {
-                if (stack.playerLock(output.item)) {
+                if (stack.playerLock(output.item, ACT)) {
                     break;
                 }
             }
@@ -593,7 +593,7 @@ public class CrafterComponent implements IComponent.ServerOnly {
                     continue outer;
             }
             for (ConfigurableFluidStack stack : this.inventory.getFluidInputs()) {
-                if (stack.playerLock(fluid)) {
+                if (stack.playerLock(fluid, ACT)) {
                     break;
                 }
             }
@@ -606,7 +606,7 @@ public class CrafterComponent implements IComponent.ServerOnly {
                     continue outer;
             }
             for (ConfigurableFluidStack stack : this.inventory.getFluidOutputs()) {
-                if (stack.playerLock(fluid)) {
+                if (stack.playerLock(fluid, ACT)) {
                     break;
                 }
             }

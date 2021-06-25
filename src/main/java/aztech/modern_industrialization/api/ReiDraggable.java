@@ -21,14 +21,19 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.inventory;
+package aztech.modern_industrialization.api;
 
-import aztech.modern_industrialization.MIIdentifier;
-import net.minecraft.util.Identifier;
+import aztech.modern_industrialization.util.Simulation;
+import dev.technici4n.fasttransferlib.experimental.api.item.ItemKey;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidKey;
 
-public class ConfigurableInventoryPackets {
-    public static final Identifier UPDATE_ITEM_SLOT = new MIIdentifier("update_item_slot");
-    public static final Identifier UPDATE_FLUID_SLOT = new MIIdentifier("update_fluid_slot");
-    public static final Identifier SET_LOCKING_MODE = new MIIdentifier("set_locking_mode");
-    public static final Identifier DO_SLOT_DRAGGING = new MIIdentifier("do_slot_dragging");
+/**
+ * Can be implemented by slots or widgets if they want to support dragging. For
+ * widgets: called client-side only. For slots: called on both sides if the
+ * client accepts the simulation. Return true if dragging is accepted.
+ */
+public interface ReiDraggable {
+    boolean dragFluid(FluidKey fluidKey, Simulation simulation);
+
+    boolean dragItem(ItemKey itemKey, Simulation simulation);
 }

@@ -63,8 +63,7 @@ public class MachinePackets {
             Identifier recipeId = buf.readIdentifier();
             ms.execute(() -> {
                 ScreenHandler sh = player.currentScreenHandler;
-                if (sh.syncId == syncId && sh instanceof MachineScreenHandlers.Server) {
-                    MachineScreenHandlers.Server screenHandler = (MachineScreenHandlers.Server) sh;
+                if (sh.syncId == syncId && sh instanceof MachineScreenHandlers.Server screenHandler) {
                     // Check that locking the slots is allowed in the first place
                     ReiSlotLocking.Server slotLocking = screenHandler.blockEntity.getComponent(SyncedComponents.REI_SLOT_LOCKING);
                     if (!slotLocking.allowLocking.get())

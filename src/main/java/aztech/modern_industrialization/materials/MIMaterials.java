@@ -368,7 +368,7 @@ public class MIMaterials {
         MaterialHelper.registerItemTag("c:iron_nuggets", JTag.tag().add(new Identifier("minecraft:iron_nugget")));
         MaterialHelper.registerItemTag("c:iron_ores", JTag.tag().tag(new Identifier("minecraft:iron_ores")));
         MaterialHelper.registerItemTag("c:raw_iron_ores", JTag.tag().add(new Identifier("minecraft:raw_iron")));
-        MaterialHelper.registerItemTag("c:raw_i ron_blocks", JTag.tag().add(new Identifier("minecraft:raw_iron_block")));
+        MaterialHelper.registerItemTag("c:raw_iron_blocks", JTag.tag().add(new Identifier("minecraft:raw_iron_block")));
 
         MaterialHelper.registerItemTag("c:copper_blocks", JTag.tag().add(new Identifier("minecraft:copper_block")));
         MaterialHelper.registerItemTag("c:copper_blocks", JTag.tag().add(new Identifier("minecraft:waxed_copper_block")));

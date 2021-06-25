@@ -23,8 +23,11 @@
  */
 package aztech.modern_industrialization.inventory;
 
+import aztech.modern_industrialization.api.ReiDraggable;
 import aztech.modern_industrialization.util.NbtHelper;
+import aztech.modern_industrialization.util.Simulation;
 import aztech.modern_industrialization.util.UnsupportedOperationInventory;
+import dev.technici4n.fasttransferlib.experimental.api.item.ItemKey;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -278,11 +281,13 @@ public class ConfigurableFluidStack extends SnapshotParticipant<ResourceAmount<F
         return Objects.equals(lockedFluid, fluid);
     }
 
-    public boolean playerLock(FluidKey fluid) {
+    public boolean playerLock(FluidKey fluid, Simulation simulation) {
         if (lockedFluid == null && (this.fluid.isEmpty() || this.fluid.equals(fluid))) {
-            lockedFluid = fluid;
-            this.fluid = fluid;
-            playerLocked = true;
+            if (simulation.isActing()) {
+                lockedFluid = fluid;
+                this.fluid = fluid;
+                playerLocked = true;
+            }
             return true;
         }
         return false;
@@ -342,7 +347,7 @@ public class ConfigurableFluidStack extends SnapshotParticipant<ResourceAmount<F
         this.amount = snapshot.amount();
     }
 
-    public class ConfigurableFluidSlot extends Slot {
+    public class ConfigurableFluidSlot extends Slot implements ReiDraggable {
         private final Runnable markDirty;
 
         public ConfigurableFluidSlot(ConfigurableFluidSlot other) {
@@ -393,6 +398,16 @@ public class ConfigurableFluidStack extends SnapshotParticipant<ResourceAmount<F
         @Override
         public void markDirty() {
             markDirty.run();
+        }
+
+        @Override
+        public boolean dragFluid(FluidKey fluidKey, Simulation simulation) {
+            return playerLock(fluidKey, simulation);
+        }
+
+        @Override
+        public boolean dragItem(ItemKey itemKey, Simulation simulation) {
+            return false;
         }
     }
 }

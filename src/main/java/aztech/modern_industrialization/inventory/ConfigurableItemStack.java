@@ -23,7 +23,9 @@
  */
 package aztech.modern_industrialization.inventory;
 
+import aztech.modern_industrialization.api.ReiDraggable;
 import aztech.modern_industrialization.util.NbtHelper;
+import aztech.modern_industrialization.util.Simulation;
 import aztech.modern_industrialization.util.UnsupportedOperationInventory;
 import com.google.common.primitives.Ints;
 import dev.technici4n.fasttransferlib.experimental.api.item.ItemKey;
@@ -31,6 +33,7 @@ import dev.technici4n.fasttransferlib.experimental.api.item.ItemPreconditions;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidKey;
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.ResourceAmount;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
@@ -252,10 +255,12 @@ public class ConfigurableItemStack extends SnapshotParticipant<ResourceAmount<It
     /**
      * Try locking the slot to the given item, return true if it succeeded
      */
-    public boolean playerLock(Item item) {
+    public boolean playerLock(Item item, Simulation simulation) {
         if ((key.isEmpty() || key.getItem() == item) && (lockedItem == null || lockedItem == Items.AIR)) {
-            lockedItem = item;
-            playerLocked = true;
+            if (simulation.isActing()) {
+                lockedItem = item;
+                playerLocked = true;
+            }
             return true;
         }
         return false;
@@ -313,7 +318,7 @@ public class ConfigurableItemStack extends SnapshotParticipant<ResourceAmount<It
         this.key = ra.resource();
     }
 
-    public class ConfigurableItemSlot extends Slot {
+    public class ConfigurableItemSlot extends Slot implements ReiDraggable {
         private final Predicate<ItemStack> insertPredicate;
         private final Runnable markDirty;
         // Vanilla MC code modifies the stack returned by `getStack()` directly, but it
@@ -380,6 +385,16 @@ public class ConfigurableItemStack extends SnapshotParticipant<ResourceAmount<It
             cachedReturnedStack = null;
             markDirty.run();
             return stack;
+        }
+
+        @Override
+        public boolean dragFluid(FluidKey fluidKey, Simulation simulation) {
+            return false;
+        }
+
+        @Override
+        public boolean dragItem(ItemKey itemKey, Simulation simulation) {
+            return playerLock(itemKey.getItem(), simulation);
         }
     }
 }

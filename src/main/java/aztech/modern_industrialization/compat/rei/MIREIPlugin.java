@@ -23,9 +23,13 @@
  */
 package aztech.modern_industrialization.compat.rei;
 
+import aztech.modern_industrialization.api.ReiDraggable;
+import aztech.modern_industrialization.inventory.ConfigurableInventoryPackets;
 import aztech.modern_industrialization.items.diesel_tools.DieselToolItem;
-import aztech.modern_industrialization.pipes.fluid.FluidPipeScreen;
+import aztech.modern_industrialization.mixin_client.HandledScreenAccessor;
+import aztech.modern_industrialization.util.Simulation;
 import dev.architectury.fluid.FluidStack;
+import dev.technici4n.fasttransferlib.experimental.api.item.ItemKey;
 import java.util.Optional;
 import me.shedaniel.rei.api.client.gui.drag.DraggableStack;
 import me.shedaniel.rei.api.client.gui.drag.DraggableStackVisitor;
@@ -35,11 +39,20 @@ import me.shedaniel.rei.api.client.registry.category.CategoryRegistry;
 import me.shedaniel.rei.api.client.registry.screen.ScreenRegistry;
 import me.shedaniel.rei.api.common.util.EntryStacks;
 import me.shedaniel.rei.plugin.common.BuiltinPlugin;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidKey;
+import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.network.PacketByteBuf;
+import net.minecraft.screen.ScreenHandler;
+import net.minecraft.screen.slot.Slot;
 import net.minecraft.util.registry.Registry;
+import org.jetbrains.annotations.Nullable;
 
 public class MIREIPlugin implements REIClientPlugin {
     @Override
@@ -58,25 +71,59 @@ public class MIREIPlugin implements REIClientPlugin {
 
     @Override
     public void registerScreens(ScreenRegistry registry) {
-        registerFluidPipeDragging(registry);
+        registerDragging(registry);
     }
 
-    private void registerFluidPipeDragging(ScreenRegistry registry) {
-        registry.registerDraggableStackVisitor(new DraggableStackVisitor<FluidPipeScreen>() {
+    private void registerDragging(ScreenRegistry registry) {
+        registry.registerDraggableStackVisitor(new DraggableStackVisitor<>() {
             @Override
-            public Optional<Acceptor> visitDraggedStack(DraggingContext<FluidPipeScreen> context, DraggableStack stack) {
-                if (context.getScreen().canSetNetworkFluid() && stack.getStack().getValue() instanceof FluidStack) {
-                    return Optional.of(s -> {
-                        FluidStack fs = s.getStack().<FluidStack>cast().getValue();
-                        context.getScreen().setNetworkFluid(FluidKey.of(fs.getFluid(), fs.getTag()));
-                    });
+            public Optional<Acceptor> visitDraggedStack(DraggingContext<Screen> context, DraggableStack stack) {
+                FluidKey fk = stack.getStack().getValue() instanceof FluidStack fs ? FluidKey.of(fs.getFluid(), fs.getTag()) : null;
+                ItemKey ik = stack.getStack().getValue() instanceof ItemStack is ? ItemKey.of(is) : null;
+                @Nullable
+                Element element = context.getScreen().hoveredElement(context.getCurrentPosition().x, context.getCurrentPosition().y).orElse(null);
+                if (element instanceof ReiDraggable dw) {
+                    if (ik != null && dw.dragItem(ik, Simulation.SIMULATE)) {
+                        return Optional.of(s -> dw.dragItem(ik, Simulation.ACT));
+                    }
+                    if (fk != null && dw.dragFluid(fk, Simulation.SIMULATE)) {
+                        return Optional.of(s -> dw.dragFluid(fk, Simulation.ACT));
+                    }
+                }
+                if (context.getScreen() instanceof HandledScreen<?>handledScreen) {
+                    ScreenHandler handler = handledScreen.getScreenHandler();
+                    Slot slot = ((HandledScreenAccessor) handledScreen).mi_getFocusedSlot();
+                    if (slot instanceof ReiDraggable dw) {
+                        if (ik != null && dw.dragItem(ik, Simulation.SIMULATE)) {
+                            return Optional.of(s -> {
+                                PacketByteBuf buf = PacketByteBufs.create();
+                                buf.writeInt(handler.syncId);
+                                buf.writeInt(slot.id);
+                                buf.writeBoolean(true);
+                                ik.toPacket(buf);
+                                ClientPlayNetworking.send(ConfigurableInventoryPackets.DO_SLOT_DRAGGING, buf);
+                                dw.dragItem(ik, Simulation.ACT);
+                            });
+                        }
+                        if (fk != null && dw.dragFluid(fk, Simulation.SIMULATE)) {
+                            return Optional.of(s -> {
+                                PacketByteBuf buf = PacketByteBufs.create();
+                                buf.writeInt(handler.syncId);
+                                buf.writeInt(slot.id);
+                                buf.writeBoolean(false);
+                                fk.toPacket(buf);
+                                ClientPlayNetworking.send(ConfigurableInventoryPackets.DO_SLOT_DRAGGING, buf);
+                                dw.dragFluid(fk, Simulation.ACT);
+                            });
+                        }
+                    }
                 }
                 return Optional.empty();
             }
 
             @Override
             public <R extends Screen> boolean isHandingScreen(R screen) {
-                return screen instanceof FluidPipeScreen;
+                return true;
             }
         });
     }

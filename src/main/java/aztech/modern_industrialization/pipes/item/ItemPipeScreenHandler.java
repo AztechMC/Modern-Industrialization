@@ -23,14 +23,18 @@
  */
 package aztech.modern_industrialization.pipes.item;
 
+import aztech.modern_industrialization.api.ReiDraggable;
 import aztech.modern_industrialization.api.pipes.item.SpeedUpgrade;
 import aztech.modern_industrialization.pipes.MIPipes;
 import aztech.modern_industrialization.pipes.gui.PipeScreenHandler;
 import aztech.modern_industrialization.pipes.impl.PipePackets;
 import aztech.modern_industrialization.util.ItemStackHelper;
+import aztech.modern_industrialization.util.Simulation;
 import aztech.modern_industrialization.util.UnsupportedOperationInventory;
+import dev.technici4n.fasttransferlib.experimental.api.item.ItemKey;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidKey;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
@@ -161,7 +165,7 @@ public class ItemPipeScreenHandler extends PipeScreenHandler {
         return pipeInterface;
     }
 
-    private class FilterSlot extends Slot {
+    private class FilterSlot extends Slot implements ReiDraggable {
         private final int index;
 
         public FilterSlot(int index, int x, int y) {
@@ -190,6 +194,19 @@ public class ItemPipeScreenHandler extends PipeScreenHandler {
                 stack.setCount(1);
             }
             pipeInterface.setStack(index, stack);
+        }
+
+        @Override
+        public boolean dragFluid(FluidKey fluidKey, Simulation simulation) {
+            return false;
+        }
+
+        @Override
+        public boolean dragItem(ItemKey itemKey, Simulation simulation) {
+            if (simulation.isActing()) {
+                setStack(itemKey.toStack());
+            }
+            return true;
         }
     }
 

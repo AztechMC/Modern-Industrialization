@@ -41,14 +41,14 @@ public class ItemStackHelper {
      * @return false if the fuel could not be consumed, true otherwise
      */
     public static boolean consumeFuel(ConfigurableItemStack stack, boolean simulate) {
-        if (stack.getItemKey().isEmpty())
+        if (stack.isEmpty())
             return false;
-        Item item = stack.getItemKey().getItem();
+        Item item = stack.resource().getItem();
         if (item.hasRecipeRemainder()) {
-            if (stack.getCount() == 1 && stack.isValid(item.getRecipeRemainder())) {
+            if (stack.amount() == 1 && stack.isResourceAllowedByLock(item.getRecipeRemainder())) {
                 if (!simulate) {
-                    stack.setCount(1);
-                    stack.setItemKey(ItemKey.of(item.getRecipeRemainder()));
+                    stack.setAmount(1);
+                    stack.setKey(ItemKey.of(item.getRecipeRemainder()));
                 }
                 return true;
             }

@@ -48,7 +48,7 @@ public class ConfigurableInventoryPacketHandlers {
                     ConfigurableScreenHandler csh = (ConfigurableScreenHandler) sh;
                     ConfigurableItemStack oldStack = csh.inventory.getItemStacks().get(stackId);
                     // update stack
-                    ConfigurableItemStack newStack = ConfigurableItemStack.fromNbt(tag);
+                    ConfigurableItemStack newStack = new ConfigurableItemStack(tag);
                     csh.inventory.getItemStacks().set(stackId, newStack);
                     // update slot
                     for (int i = 0; i < csh.slots.size(); ++i) {
@@ -75,7 +75,7 @@ public class ConfigurableInventoryPacketHandlers {
                     ConfigurableScreenHandler csh = (ConfigurableScreenHandler) sh;
                     ConfigurableFluidStack oldStack = csh.inventory.getFluidStacks().get(stackId);
                     // update stack
-                    ConfigurableFluidStack newStack = ConfigurableFluidStack.fromNbt(tag);
+                    ConfigurableFluidStack newStack = new ConfigurableFluidStack(tag);
                     csh.inventory.getFluidStacks().set(stackId, newStack);
                     // update slot
                     for (int i = 0; i < csh.slots.size(); ++i) {

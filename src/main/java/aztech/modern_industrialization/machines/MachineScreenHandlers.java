@@ -144,8 +144,8 @@ public class MachineScreenHandlers {
         List<ConfigurableItemStack> itemStacks = new ArrayList<>();
         List<ConfigurableFluidStack> fluidStacks = new ArrayList<>();
         NbtCompound tag = buf.readNbt();
-        NbtHelper.getList(tag, "items", itemStacks, ConfigurableItemStack::fromNbt);
-        NbtHelper.getList(tag, "fluids", fluidStacks, ConfigurableFluidStack::fromNbt);
+        NbtHelper.getList(tag, "items", itemStacks, ConfigurableItemStack::new);
+        NbtHelper.getList(tag, "fluids", fluidStacks, ConfigurableFluidStack::new);
         // Slot positions
         SlotPositions itemPositions = SlotPositions.read(buf);
         SlotPositions fluidPositions = SlotPositions.read(buf);
@@ -327,8 +327,8 @@ public class MachineScreenHandlers {
                     int j = y + slot.y;
 
                     ConfigurableFluidStack stack = ((ConfigurableFluidSlot) slot).getConfStack();
-                    if (!stack.getFluid().isEmpty()) {
-                        RenderHelper.drawFluidInGui(matrices, stack.getFluid(), i, j);
+                    if (!stack.resource().isEmpty()) {
+                        RenderHelper.drawFluidInGui(matrices, stack.resource(), i, j);
                     }
 
                     if (isPointWithinBounds(slot.x, slot.y, 16, 16, mouseX, mouseY) && slot.isEnabled()) {
@@ -348,8 +348,8 @@ public class MachineScreenHandlers {
                 if (slot instanceof ConfigurableItemSlot) {
                     ConfigurableItemSlot itemSlot = (ConfigurableItemSlot) slot;
                     ConfigurableItemStack itemStack = itemSlot.getConfStack();
-                    if ((itemStack.isPlayerLocked() || itemStack.isMachineLocked()) && itemStack.getItemKey().isEmpty()) {
-                        Item item = itemStack.getLockedItem();
+                    if ((itemStack.isPlayerLocked() || itemStack.isMachineLocked()) && itemStack.resource().isEmpty()) {
+                        Item item = itemStack.getLockedInstance();
                         if (item != Items.AIR) {
                             this.setZOffset(100);
                             this.itemRenderer.zOffset = 100.0F;
@@ -372,8 +372,8 @@ public class MachineScreenHandlers {
                     if (slot instanceof ConfigurableFluidSlot) {
                         ConfigurableFluidStack stack = ((ConfigurableFluidSlot) slot).getConfStack();
                         List<Text> tooltip = new ArrayList<>();
-                        tooltip.add(FluidHelper.getFluidName(stack.getFluid(), false));
-                        tooltip.add(FluidHelper.getFluidAmount(stack.getAmount(), stack.getCapacity()));
+                        tooltip.add(FluidHelper.getFluidName(stack.resource(), false));
+                        tooltip.add(FluidHelper.getFluidAmount(stack.amount(), stack.getCapacity()));
 
                         if (stack.canPlayerInsert()) {
                             if (stack.canPlayerExtract()) {
@@ -387,8 +387,8 @@ public class MachineScreenHandlers {
                         this.renderTooltip(matrices, tooltip, mouseX, mouseY);
                     } else if (slot instanceof ConfigurableItemSlot) {
                         ConfigurableItemStack stack = ((ConfigurableItemSlot) slot).getConfStack();
-                        if (stack.getItemKey().isEmpty() && stack.getLockedItem() != null) {
-                            this.renderTooltip(matrices, new ItemStack(stack.getLockedItem()), mouseX, mouseY);
+                        if (stack.isEmpty() && stack.getLockedInstance() != null) {
+                            this.renderTooltip(matrices, new ItemStack(stack.getLockedInstance()), mouseX, mouseY);
                         }
                     }
                 }

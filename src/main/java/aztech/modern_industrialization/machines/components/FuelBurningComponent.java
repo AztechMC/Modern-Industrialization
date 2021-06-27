@@ -108,7 +108,7 @@ public class FuelBurningComponent implements IComponent {
         outer: while (burningEuBuffer == 0) {
             // Find first item fuel
             for (ConfigurableItemStack stack : itemInputs) {
-                Item fuel = stack.getItemKey().getItem();
+                Item fuel = stack.resource().getItem();
                 if (ItemStackHelper.consumeFuel(stack, true)) {
                     Integer fuelTime = FuelRegistryImpl.INSTANCE.get(fuel);
                     if (fuelTime != null && fuelTime > 0) {
@@ -125,10 +125,10 @@ public class FuelBurningComponent implements IComponent {
         outer: while (burningEuBuffer < 5 * 20 * maxEuProduction) {
             for (ConfigurableFluidStack stack : fluidInputs) {
                 if (!stack.isEmpty()) {
-                    long euPerMb = FluidFuelRegistry.getEu(stack.getFluid().getFluid()) * burningEuMultiplier;
+                    long euPerMb = FluidFuelRegistry.getEu(stack.resource().getFluid()) * burningEuMultiplier;
                     if (euPerMb != 0) {
                         long mbConsumedMax = (5 * 20 * maxEuProduction - burningEuBuffer) / euPerMb;
-                        long mbConsumed = Math.min(mbConsumedMax, stack.getAmount() / 81);
+                        long mbConsumed = Math.min(mbConsumedMax, stack.amount() / 81);
                         if (mbConsumed > 0) {
                             stack.decrement(mbConsumed * 81);
                             burningEuBuffer += mbConsumed * euPerMb;

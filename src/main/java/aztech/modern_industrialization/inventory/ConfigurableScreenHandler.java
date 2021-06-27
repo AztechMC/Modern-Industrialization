@@ -109,7 +109,7 @@ public abstract class ConfigurableScreenHandler extends ScreenHandler {
                     Storage<FluidKey> io = ContainerItemContext.ofPlayerCursor(playerEntity, this).find(ItemFluidStorage.ITEM);
                     if (io != null) {
                         // Extract first
-                        long previousAmount = fluidStack.getAmount();
+                        long previousAmount = fluidStack.amount;
                         try (Transaction transaction = Transaction.openOuter()) {
                             for (StorageView<FluidKey> view : io.iterable(transaction)) {
                                 FluidKey fluid = view.resource();
@@ -119,23 +119,23 @@ public abstract class ConfigurableScreenHandler extends ScreenHandler {
                                         if (extracted > 0) {
                                             tx.commit();
                                             fluidStack.increment(extracted);
-                                            fluidStack.setFluid(fluid);
+                                            fluidStack.setKey(fluid);
                                         }
                                     }
                                 }
                             }
                             transaction.commit();
                         }
-                        if (previousAmount != fluidStack.getAmount()) {
+                        if (previousAmount != fluidStack.amount) {
                             // TODO: markDirty?
                             return;
                         }
 
                         // Otherwise insert
-                        FluidKey fluid = fluidStack.getFluid();
+                        FluidKey fluid = fluidStack.resource();
                         if (fluidSlot.canExtractFluid(fluid)) {
                             try (Transaction tx = Transaction.openOuter()) {
-                                fluidStack.decrement(io.insert(fluid, fluidStack.getAmount(), tx));
+                                fluidStack.decrement(io.insert(fluid, fluidStack.amount(), tx));
                                 tx.commit();
                                 // TODO: markDirty?
                                 return;
@@ -151,7 +151,7 @@ public abstract class ConfigurableScreenHandler extends ScreenHandler {
                     }
                     ConfigurableItemStack.ConfigurableItemSlot itemSlot = (ConfigurableItemStack.ConfigurableItemSlot) slot;
                     ConfigurableItemStack itemStack = itemSlot.getConfStack();
-                    itemStack.togglePlayerLock(getCursorStack());
+                    itemStack.togglePlayerLock(getCursorStack().getItem());
                     return;
                 }
             }

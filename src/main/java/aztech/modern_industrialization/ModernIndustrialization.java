@@ -263,6 +263,8 @@ public class ModernIndustrialization implements ModInitializer {
                 ConfigurableInventoryPacketHandlers.C2S.SET_LOCKING_MODE);
         ServerPlayNetworking.registerGlobalReceiver(ConfigurableInventoryPackets.DO_SLOT_DRAGGING,
                 ConfigurableInventoryPacketHandlers.C2S.DO_SLOT_DRAGGING);
+        ServerPlayNetworking.registerGlobalReceiver(ConfigurableInventoryPackets.ADJUST_SLOT_CAPACITY,
+                ConfigurableInventoryPacketHandlers.C2S.ADJUST_SLOT_CAPACITY);
         ServerPlayNetworking.registerGlobalReceiver(MachinePackets.C2S.SET_AUTO_EXTRACT, MachinePackets.C2S.ON_SET_AUTO_EXTRACT);
         ServerPlayNetworking.registerGlobalReceiver(MachinePackets.C2S.REI_LOCK_SLOTS, MachinePackets.C2S.ON_REI_LOCK_SLOTS);
         ServerSidePacketRegistry.INSTANCE.register(ForgeHammerPacket.SET_HAMMER, ForgeHammerPacket.ON_SET_HAMMER);

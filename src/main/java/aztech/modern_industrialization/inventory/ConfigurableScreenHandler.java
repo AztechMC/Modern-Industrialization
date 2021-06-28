@@ -97,11 +97,10 @@ public abstract class ConfigurableScreenHandler extends ScreenHandler {
     public void onSlotClick(int i, int j, SlotActionType actionType, PlayerEntity playerEntity) {
         if (i >= 0) {
             Slot slot = this.slots.get(i);
-            if (slot instanceof ConfigurableFluidStack.ConfigurableFluidSlot) {
+            if (slot instanceof ConfigurableFluidStack.ConfigurableFluidSlot fluidSlot) {
                 if (actionType != SlotActionType.PICKUP) {
                     return;
                 }
-                ConfigurableFluidStack.ConfigurableFluidSlot fluidSlot = (ConfigurableFluidStack.ConfigurableFluidSlot) slot;
                 ConfigurableFluidStack fluidStack = fluidSlot.getConfStack();
                 if (lockingMode) {
                     fluidStack.togglePlayerLock();
@@ -161,122 +160,64 @@ public abstract class ConfigurableScreenHandler extends ScreenHandler {
 
     @Override
     public ItemStack transferSlot(PlayerEntity player, int slotIndex) {
-        ItemStack stackBefore = ItemStack.EMPTY;
         Slot slot = this.slots.get(slotIndex);
-        if (slot != null && slot.hasStack()) {
-            if (!slot.canTakeItems(player))
-                return stackBefore;
-            ItemStack stack = slot.getStack();
-            stackBefore = stack.copy();
+
+        if (slot != null && slot.hasStack() && slot.canTakeItems(player)) {
             if (slotIndex < PLAYER_SLOTS) { // from player to container inventory
-                if (!this.insertItem(stack, PLAYER_SLOTS, this.slots.size(), false)) {
+                if (!this.insertItem(slot, PLAYER_SLOTS, this.slots.size(), false)) {
                     if (slotIndex < 27) { // inside inventory
-                        if (!this.insertItem(stack, 27, 36, false)) { // toolbar
+                        if (!this.insertItem(slot, 27, 36, false)) { // toolbar
                             return ItemStack.EMPTY;
                         }
-                    } else if (!this.insertItem(stack, 0, 27, false)) {
+                    } else if (!this.insertItem(slot, 0, 27, false)) {
                         return ItemStack.EMPTY;
                     }
                 }
-            } else if (!this.insertItem(stack, 0, PLAYER_SLOTS, true)) { // from container inventory to player
+            } else if (!this.insertItem(slot, 0, PLAYER_SLOTS, true)) { // from container inventory to player
                 return ItemStack.EMPTY;
             }
-
-            if (stack.isEmpty()) {
-                slot.setStack(ItemStack.EMPTY);
-            } else {
-                slot.setStack(stack);
-                slot.markDirty();
-            }
         }
-        return stackBefore;
+
+        return ItemStack.EMPTY;
     }
 
-    // (almost) Copy-paste from ScreenHandler, Mojang forgot to check
-    // slot2.canInsert(stack) at one of the places.
+    @Deprecated
     @Override
     protected boolean insertItem(ItemStack stack, int startIndex, int endIndex, boolean fromLast) {
-        boolean bl = false;
-        int i = startIndex;
-        if (fromLast) {
-            i = endIndex - 1;
-        }
+        throw new UnsupportedOperationException("Don't use this shit, use the one below instead.");
+    }
 
-        Slot slot2;
-        ItemStack itemStack;
-        if (stack.isStackable()) {
-            while (!stack.isEmpty()) {
-                if (fromLast) {
-                    if (i < startIndex) {
-                        break;
-                    }
-                } else if (i >= endIndex) {
-                    break;
-                }
+    // Rewrite of ScreenHandler's buggy, long and shitty logic.
+    /**
+     * @return True if something was inserted.
+     */
+    protected boolean insertItem(Slot sourceSlot, int startIndex, int endIndex, boolean fromLast) {
+        boolean insertedSomething = false;
+        int i = fromLast ? endIndex - 1 : startIndex;
 
-                slot2 = this.slots.get(i);
-                itemStack = slot2.getStack();
-                if (!itemStack.isEmpty() && ItemStack.canCombine(stack, itemStack) && slot2.canInsert(stack)) {
-                    int j = itemStack.getCount() + stack.getCount();
-                    if (j <= stack.getMaxCount()) {
-                        stack.setCount(0);
-                        itemStack.setCount(j);
-                        slot2.markDirty();
-                        bl = true;
-                    } else if (itemStack.getCount() < stack.getMaxCount()) {
-                        stack.decrement(stack.getMaxCount() - itemStack.getCount());
-                        itemStack.setCount(stack.getMaxCount());
-                        slot2.markDirty();
-                        bl = true;
-                    }
-                }
-                slot2.setStack(itemStack);
+        while (0 <= i && i < endIndex && !sourceSlot.getStack().isEmpty()) {
+            Slot targetSlot = getSlot(i);
+            ItemStack sourceStack = sourceSlot.getStack();
+            ItemStack targetStack = targetSlot.getStack();
 
-                if (fromLast) {
-                    --i;
-                } else {
-                    ++i;
+            if (targetSlot.canInsert(sourceStack) && (targetStack.isEmpty() || ItemStack.canCombine(targetStack, sourceStack))) {
+                int maxInsert = targetSlot.getMaxItemCount(sourceStack) - targetStack.getCount();
+                if (maxInsert > 0) {
+                    ItemStack newTargetStack = sourceStack.split(maxInsert);
+                    newTargetStack.increment(targetStack.getCount());
+                    targetSlot.setStack(newTargetStack);
+                    sourceSlot.markDirty();
+                    insertedSomething = true;
                 }
             }
-        }
 
-        if (!stack.isEmpty()) {
             if (fromLast) {
-                i = endIndex - 1;
+                --i;
             } else {
-                i = startIndex;
-            }
-
-            while (true) {
-                if (fromLast) {
-                    if (i < startIndex) {
-                        break;
-                    }
-                } else if (i >= endIndex) {
-                    break;
-                }
-
-                slot2 = this.slots.get(i);
-                if (!slot2.hasStack() && slot2.canInsert(stack)) {
-                    if (stack.getCount() > slot2.getMaxItemCount()) {
-                        slot2.setStack(stack.split(slot2.getMaxItemCount()));
-                    } else {
-                        slot2.setStack(stack.split(stack.getCount()));
-                    }
-
-                    slot2.markDirty();
-                    bl = true;
-                    break;
-                }
-
-                if (fromLast) {
-                    --i;
-                } else {
-                    ++i;
-                }
+                ++i;
             }
         }
 
-        return bl;
+        return insertedSomething;
     }
 }

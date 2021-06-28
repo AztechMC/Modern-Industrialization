@@ -88,7 +88,7 @@ public class PipeComponentProvider implements IComponentProvider {
                 long amount = tag.getLong("amount");
                 int capacity = tag.getInt("capacity");
                 if (fluid.isEmpty()) {
-                    tooltip.add(new TranslatableText("text.modern_industrialization.fluid_slot_empty"));
+                    tooltip.add(new TranslatableText("text.modern_industrialization.empty"));
                 } else {
                     tooltip.add(FluidHelper.getFluidName(fluid, true));
                     tooltip.add(FluidHelper.getFluidAmount(amount, capacity));

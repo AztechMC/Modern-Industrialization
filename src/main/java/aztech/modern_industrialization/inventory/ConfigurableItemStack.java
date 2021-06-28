@@ -43,11 +43,21 @@ import net.minecraft.util.registry.Registry;
  * An item stack that can be configured.
  */
 public class ConfigurableItemStack extends AbstractConfigurableStack<Item, ItemKey> {
+    private int adjustedCapacity = 64;
+
     public ConfigurableItemStack() {
     }
 
     public ConfigurableItemStack(NbtCompound compound) {
         super(compound);
+        this.adjustedCapacity = compound.getInt("adjCap");
+    }
+
+    @Override
+    public NbtCompound toNbt() {
+        NbtCompound nbt = super.toNbt();
+        nbt.putInt("adjCap", this.adjustedCapacity);
+        return nbt;
     }
 
     public static ConfigurableItemStack standardInputSlot() {
@@ -75,6 +85,7 @@ public class ConfigurableItemStack extends AbstractConfigurableStack<Item, ItemK
 
     public ConfigurableItemStack(ConfigurableItemStack other) {
         super(other);
+        this.adjustedCapacity = other.adjustedCapacity;
     }
 
     @Override
@@ -99,12 +110,12 @@ public class ConfigurableItemStack extends AbstractConfigurableStack<Item, ItemK
 
     @Override
     protected long getCapacity() {
-        return key.isEmpty() ? 64 : key.getItem().getMaxCount();
+        return key.isEmpty() ? adjustedCapacity : Math.min(adjustedCapacity, key.getItem().getMaxCount());
     }
 
     @Override
     protected long getRemainingCapacityFor(ItemKey key) {
-        return Math.min(key.getItem().getMaxCount(), 64) - amount;
+        return Math.min(key.getItem().getMaxCount(), adjustedCapacity) - amount;
     }
 
     /**
@@ -120,6 +131,18 @@ public class ConfigurableItemStack extends AbstractConfigurableStack<Item, ItemK
 
     public boolean isValid(ItemStack stack) {
         return isResourceAllowedByLock(stack.getItem());
+    }
+
+    public void adjustCapacity(boolean isIncrease, boolean isShiftDown) {
+        int delta = isShiftDown ? 8 : 1;
+        if (!isIncrease) {
+            delta = -delta;
+        }
+        adjustedCapacity = Math.min(64, Math.max((int) amount, adjustedCapacity + delta));
+    }
+
+    public int getAdjustedCapacity() {
+        return adjustedCapacity;
     }
 
     public class ConfigurableItemSlot extends Slot implements ReiDraggable {
@@ -179,7 +202,7 @@ public class ConfigurableItemStack extends AbstractConfigurableStack<Item, ItemK
 
         @Override
         public int getMaxItemCount() {
-            return 64;
+            return adjustedCapacity;
         }
 
         @Override

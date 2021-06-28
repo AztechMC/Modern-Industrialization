@@ -128,5 +128,21 @@ public class ConfigurableInventoryPacketHandlers {
                 }
             });
         };
+
+        public static final ServerPlayNetworking.PlayChannelHandler ADJUST_SLOT_CAPACITY = (ms, player, handler, buf, sender) -> {
+            int syncId = buf.readInt();
+            int slotId = buf.readVarInt();
+            boolean isIncrease = buf.readBoolean();
+            boolean isShiftDown = buf.readBoolean();
+            ms.execute(() -> {
+                ScreenHandler sh = player.currentScreenHandler;
+                if (sh.syncId == syncId) {
+                    Slot slot = sh.getSlot(slotId);
+                    if (slot instanceof ConfigurableItemSlot confSlot) {
+                        confSlot.getConfStack().adjustCapacity(isIncrease, isShiftDown);
+                    }
+                }
+            });
+        };
     }
 }

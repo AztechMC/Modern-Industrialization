@@ -95,7 +95,7 @@ public class TankItem extends BlockItem {
             tooltip.add(FluidHelper.getFluidName(getFluid(stack), true));
             tooltip.add(FluidHelper.getFluidAmount(getAmount(stack), capacity));
         } else {
-            tooltip.add(new TranslatableText("text.modern_industrialization.fluid_slot_empty").setStyle(style));
+            tooltip.add(new TranslatableText("text.modern_industrialization.empty").setStyle(style));
         }
     }
 

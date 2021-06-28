@@ -31,4 +31,5 @@ public class ConfigurableInventoryPackets {
     public static final Identifier UPDATE_FLUID_SLOT = new MIIdentifier("update_fluid_slot");
     public static final Identifier SET_LOCKING_MODE = new MIIdentifier("set_locking_mode");
     public static final Identifier DO_SLOT_DRAGGING = new MIIdentifier("do_slot_dragging");
+    public static final Identifier ADJUST_SLOT_CAPACITY = new MIIdentifier("adjust_slot_capacity");
 }

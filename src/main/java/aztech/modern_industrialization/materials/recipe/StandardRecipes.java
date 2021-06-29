@@ -34,20 +34,26 @@ import aztech.modern_industrialization.materials.recipe.builder.SmeltingRecipeBu
  * Standard conversion recipes for all materials.
  */
 public final class StandardRecipes {
+
     public static void apply(MaterialBuilder.RecipeContext ctx) {
+
         // CRAFTING
         add3By3Crafting(ctx, "tiny_dust", "dust");
         add3By3Crafting(ctx, "nugget", "ingot");
-        add3By3Crafting(ctx, "ingot", "block");
+        add3By3Crafting(ctx, ctx.getMainPart(), "block");
         add3By3Crafting(ctx, "raw_metal", "raw_metal_block");
 
         new ShapedRecipeBuilder(ctx, BLADE, 4, "blade", "P", "P", "I").addTaggedPart('P', PLATE).addTaggedPart('I', ROD).exportToAssembler();
+
         new ShapedRecipeBuilder(ctx, COIL, 1, "coil", "xxx", "x x", "xxx").addTaggedPart('x', WIRE).exportToAssembler();
         new ShapedRecipeBuilder(ctx, LARGE_PLATE, 1, "large_plate", "xx", "xx").addTaggedPart('x', PLATE).exportToMachine("packer");
+
         new ShapedRecipeBuilder(ctx, ROTOR, 1, "rotor", "bBb", "BRB", "bBb").addTaggedPart('b', BOLT).addTaggedPart('B', BLADE).addTaggedPart('R',
                 RING);
+
         new ShapedRecipeBuilder(ctx, CABLE, 3, "cable", "rrr", "www", "rrr").addInput('r', "modern_industrialization:rubber_sheet")
                 .addTaggedPart('w', WIRE).exportToAssembler();
+
         new ShapedRecipeBuilder(ctx, TANK, 1, "tank", "###", "#G#", "###").addPart('#', LARGE_PLATE).addInput('G', "minecraft:glass")
                 .exportToAssembler();
 
@@ -62,32 +68,25 @@ public final class StandardRecipes {
         addMaceratorRecycling(ctx, BOLT, 2);
         addMaceratorRecycling(ctx, ROD, 4);
         addMaceratorRecycling(ctx, ROTOR, 27);
-        addMaceratorRecycling(ctx, INGOT, 9);
+        addMaceratorRecycling(ctx, ctx.getMainPart(), 9);
         addMaceratorRecycling(ctx, BLADE, 5);
-        new MIRecipeBuilder(ctx, "macerator", "ore_crushed").addTaggedPartInput(ORE, 1).addPartOutput(CRUSHED_DUST, 3);
-        new MIRecipeBuilder(ctx, "macerator", "ore_raw").addTaggedPartInput(ORE, 1).addPartOutput(RAW_METAL, 3);
+
+        new MIRecipeBuilder(ctx, "macerator", "ore_to_crushed").addTaggedPartInput(ORE, 1).addPartOutput(CRUSHED_DUST, 3);
+        new MIRecipeBuilder(ctx, "macerator", "ore_to_raw").addTaggedPartInput(ORE, 1).addPartOutput(RAW_METAL, 3);
 
         new MIRecipeBuilder(ctx, "macerator", "crushed_dust").addTaggedPartInput(CRUSHED_DUST, 2).addPartOutput(DUST, 3);
         new MIRecipeBuilder(ctx, "macerator", "raw_metal").addTaggedPartInput(RAW_METAL, 2).addPartOutput(DUST, 3);
         // COMPRESSOR
-        new MIRecipeBuilder(ctx, "compressor", "main").addTaggedPartInput(INGOT, 1).addPartOutput(PLATE, 1);
+        new MIRecipeBuilder(ctx, "compressor", "main").addTaggedPartInput(ctx.getMainPart(), 1).addPartOutput(PLATE, 1);
         new MIRecipeBuilder(ctx, "compressor", "plate").addTaggedPartInput(PLATE, 1).addPartOutput(CURVED_PLATE, 1);
         new MIRecipeBuilder(ctx, "compressor", "double_ingot").addTaggedPartInput(DOUBLE_INGOT, 1).addPartOutput(PLATE, 2);
         // CUTTING MACHINE
-        addCuttingMachine(ctx, "main", INGOT, ROD, 2);
+        addCuttingMachine(ctx, "main", ctx.getMainPart(), ROD, 2);
         addCuttingMachine(ctx, "double_ingot", DOUBLE_INGOT, ROD, 4);
         addCuttingMachine(ctx, "rod", ROD, BOLT, 2);
         addCuttingMachine(ctx, "large_plate", LARGE_PLATE, GEAR, 2);
         // PACKER
         new MIRecipeBuilder(ctx, "packer", "double_ingot").addTaggedPartInput(INGOT, 2).addPartOutput(DOUBLE_INGOT, 1);
-        new MIRecipeBuilder(ctx, "packer", "dust").addTaggedPartInput(TINY_DUST, 9).addPartOutput(DUST, 1);
-        new MIRecipeBuilder(ctx, "packer", "ingot").addTaggedPartInput(NUGGET, 9).addPartOutput(INGOT, 1);
-        new MIRecipeBuilder(ctx, "packer", "raw_block").addTaggedPartInput(RAW_METAL, 9).addPartOutput(RAW_METAL_BLOCK, 1);
-
-        // UNPACKER
-        new MIRecipeBuilder(ctx, "unpacker", "tiny_dust").addTaggedPartInput(DUST, 1).addPartOutput(TINY_DUST, 9);
-        new MIRecipeBuilder(ctx, "unpacker", "nugget").addTaggedPartInput(INGOT, 1).addPartOutput(NUGGET, 9);
-        new MIRecipeBuilder(ctx, "unpacker", "raw_metal").addTaggedPartInput(RAW_METAL_BLOCK, 1).addPartOutput(RAW_METAL, 9);
         // WIREMILL
         new MIRecipeBuilder(ctx, "wiremill", "wire").addTaggedPartInput(PLATE, 1).addPartOutput(WIRE, 2);
         new MIRecipeBuilder(ctx, "wiremill", "fine_wire").addTaggedPartInput(WIRE, 1).addPartOutput(FINE_WIRE, 4);
@@ -123,6 +122,9 @@ public final class StandardRecipes {
         new ShapedRecipeBuilder(ctx, bigPart, 1, bigPart + "_from_" + smallPart, "yxx", "xxx", "xxx").addPart('y', smallPart).addTaggedPart('x',
                 smallPart);
         new ShapedRecipeBuilder(ctx, smallPart, 9, smallPart + "_from_" + bigPart, "x").addPart('x', bigPart);
+        new MIRecipeBuilder(ctx, "packer", bigPart).addTaggedPartInput(smallPart, 9).addPartOutput(bigPart, 1);
+        new MIRecipeBuilder(ctx, "unpacker", smallPart).addTaggedPartInput(bigPart, 1).addPartOutput(smallPart, 9);
+
     }
 
     private static void addCuttingMachine(MaterialBuilder.RecipeContext ctx, String name, String inputPart, String outputPart, int amount) {
@@ -130,6 +132,4 @@ public final class StandardRecipes {
                 .addFluidInput("minecraft:water", 1);
     }
 
-    private StandardRecipes() {
-    }
 }

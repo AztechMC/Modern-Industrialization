@@ -23,6 +23,7 @@
  */
 package aztech.modern_industrialization.materials;
 
+import aztech.modern_industrialization.materials.part.MIParts;
 import aztech.modern_industrialization.materials.part.MaterialPart;
 import aztech.modern_industrialization.materials.part.RegularMaterialPart;
 import aztech.modern_industrialization.materials.recipe.builder.MaterialRecipeBuilder;
@@ -36,6 +37,7 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.loader.api.FabricLoader;
 
 public final class MaterialBuilder {
+
     private final Map<String, MaterialPart> partsMap = new TreeMap<>();
     private final Map<String, MaterialRecipeBuilder> recipesMap = new HashMap<>();
     private final PartContext partContext = new PartContext();
@@ -43,18 +45,25 @@ public final class MaterialBuilder {
     private final String materialName;
     private final String materialSet;
     private final Coloramp coloramp;
+    private final String mainPart;
 
-    public MaterialBuilder(String materialName, MaterialSet materialSet, Coloramp coloramp) {
+    public MaterialBuilder(String materialName, MaterialSet materialSet, String mainPart, Coloramp coloramp) {
         this.materialName = materialName;
         this.materialSet = materialSet.name;
         this.coloramp = coloramp;
+        this.mainPart = mainPart;
+    }
+
+    public MaterialBuilder(String materialName, MaterialSet materialSet, String mainPart, int color) {
+        this(materialName, materialSet, mainPart, new DefaultColoramp(color));
+    }
+
+    public MaterialBuilder(String materialName, MaterialSet materialSet, Coloramp coloramp) {
+        this(materialName, materialSet, MIParts.INGOT, coloramp);
     }
 
     public MaterialBuilder(String materialName, MaterialSet materialSet, int color) {
-        this.materialName = materialName;
-        this.materialSet = materialSet.name;
-
-        this.coloramp = new DefaultColoramp(color);
+        this(materialName, materialSet, MIParts.INGOT, new DefaultColoramp(color));
     }
 
     public String getMaterialName() {
@@ -113,7 +122,7 @@ public final class MaterialBuilder {
     public MaterialBuilder cancelRecipes(String... recipeIds) {
         for (String recipeId : recipeIds) {
             if (recipesMap.remove(recipeId) == null) {
-                throw new IllegalArgumentException("Recipe does not exist and cannot be cancelled: " + recipeId);
+                throw new IllegalArgumentException("Recipe does not exist and cannot be cancelled: " + recipeId + " for Material : " + materialName);
             }
         }
         return this;
@@ -154,7 +163,8 @@ public final class MaterialBuilder {
                 if (recipesMap.get(builder.getRecipeId()).isCanceled()) {
                     recipesMap.remove(builder.getRecipeId());
                 } else {
-                    throw new IllegalStateException("Duplicate registration of recipe " + builder.getRecipeId());
+                    throw new IllegalStateException(
+                            "Duplicate registration of recipe " + builder.getRecipeId() + " for Material : " + getMaterialName());
                 }
             }
             recipesMap.put(builder.getRecipeId(), builder);
@@ -166,6 +176,10 @@ public final class MaterialBuilder {
 
         public String getMaterialName() {
             return materialName;
+        }
+
+        public String getMainPart() {
+            return mainPart;
         }
     }
 }

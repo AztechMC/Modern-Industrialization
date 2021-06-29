@@ -83,6 +83,10 @@ public class RawMetalPart implements MaterialPart {
         return array;
     }
 
+    public static Function<MaterialBuilder.PartContext, MaterialPart> ofItemOnly(MaterialRawSet set) {
+        return ctx -> new RawMetalPart(ctx.getMaterialName(), ctx.getColoramp(), set, false);
+    }
+
     @Override
     public String getPart() {
         if (isBlock) {

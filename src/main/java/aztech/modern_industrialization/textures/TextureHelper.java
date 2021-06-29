@@ -231,11 +231,11 @@ public class TextureHelper {
     }
 
     // double values are from 0 to 255!!!!!
-    private static int fromArgb(int a, double r, double g, double b) {
+    public static int fromArgb(int a, double r, double g, double b) {
         return fromArgb(a, (int) r, (int) g, (int) b);
     }
 
-    private static int fromArgb(int a, int r, int g, int b) {
+    public static int fromArgb(int a, int r, int g, int b) {
         return (a << 24) | (b << 16) | (g << 8) | r;
     }
 

@@ -52,9 +52,9 @@ public class SmeltingRecipeBuilder implements MaterialRecipeBuilder {
     public SmeltingRecipeBuilder(MaterialBuilder.RecipeContext context, String inputPart, String outputPart, int cookingtime, double experience,
             boolean blasting) {
         if (blasting) {
-            this.recipeId = "smelting/" + inputPart + "_blasting";
+            this.recipeId = "smelting/" + inputPart + "_to_" + outputPart + "_blasting";
         } else {
-            this.recipeId = "smelting/" + inputPart + "_smelting";
+            this.recipeId = "smelting/" + inputPart + "_to_" + outputPart + "_smelting";
         }
 
         this.context = context;

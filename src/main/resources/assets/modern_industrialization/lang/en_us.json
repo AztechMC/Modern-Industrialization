@@ -1136,5 +1136,17 @@
     "item.modern_industrialization.red_fluid_pipe": "Red Fluid Pipe",
     "item.modern_industrialization.red_item_pipe": "Red Item Pipe",
     "item.modern_industrialization.black_fluid_pipe": "Black Fluid Pipe",
-    "item.modern_industrialization.black_item_pipe": "Black Item Pipe"
+    "item.modern_industrialization.black_item_pipe": "Black Item Pipe",
+    "block.modern_industrialization.mozanite_block": "Block of Mozanite",
+    "block.modern_industrialization.neodymium_block": "Block of Neodymium",
+    "block.modern_industrialization.raw_titanium_block": "Block of Raw Titanium ",
+    "block.modern_industrialization.yttrium_block": " Block of Yttrium",
+    "item.modern_industrialization.raw_titanium": "Raw Titanium",
+    "block.modern_industrialization.coke_block": "Block of Coke",
+    "item.modern_industrialization.lapis_crushed_dust": "Lapis Lazuli Crushed Dust",
+    "item.modern_industrialization.lapis_dust": "Lapis Lazuli Dust",
+    "item.modern_industrialization.lapis_plate": "Lapis Lazuli Plate",
+    "item.modern_industrialization.lapis_tiny_dust": "Lapis Lazuli Tiny Dust",
+    "item.modern_industrialization.raw_iridium": "Raw Iridium",
+    "item.modern_industrialization.raw_uranium": "Raw Uranium"
 }

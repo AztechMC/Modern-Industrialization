@@ -35,11 +35,13 @@ import aztech.modern_industrialization.materials.recipe.builder.SmeltingRecipeBu
  */
 public final class SmeltingRecipes {
     public static void apply(MaterialBuilder.RecipeContext ctx) {
+
         SmeltingRecipeBuilder.smeltAndBlast(ctx, TINY_DUST, NUGGET, 0.08);
         SmeltingRecipeBuilder.smeltAndBlast(ctx, CRUSHED_DUST, INGOT, 0.7);
         SmeltingRecipeBuilder.smeltAndBlast(ctx, DUST, INGOT, 0.7);
         SmeltingRecipeBuilder.smeltAndBlast(ctx, ORE, INGOT, 0.7);
         SmeltingRecipeBuilder.smeltAndBlast(ctx, RAW_METAL, INGOT, 0.7);
+        SmeltingRecipeBuilder.smeltAndBlast(ctx, ORE, GEM, 0.7);
     }
 
     private SmeltingRecipes() {

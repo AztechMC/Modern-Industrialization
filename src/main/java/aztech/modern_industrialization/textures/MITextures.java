@@ -115,19 +115,6 @@ public final class MITextures {
         generateItemPartTexture(mtm, materialName, materialSet, part, part, coloramp);
     }
 
-    public static void generateCustomTexture(TextureManager mtm, String category, String itemPath, Coloramp coloramp, String set, boolean block) {
-        String template = String.format("modern_industrialization:textures/materialsets/%s/%s.png", category, set);
-        try {
-            NativeImage image = mtm.getAssetAsTexture(template);
-            TextureHelper.colorize(image, coloramp);
-            String texturePath = String.format("modern_industrialization:textures/%s/%s.png", block ? "block" : "item", itemPath);
-            mtm.addTexture(texturePath, image);
-            image.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
     public static void generateItemPartTexture(TextureManager mtm, String materialName, String materialSet, String part, String partTemplate,
             Coloramp coloramp) {
         if (part.equals(MIParts.DOUBLE_INGOT)) {
@@ -159,9 +146,7 @@ public final class MITextures {
         for (String layer : LAYERS) {
             String template;
 
-            if (part.equals(MIParts.GEM)) {
-                template = getTemplate("specials", materialName, layer);
-            } else if (part.equals(MIParts.HOT_INGOT)) {
+            if (part.equals(MIParts.HOT_INGOT)) {
                 template = getTemplate("common", "ingot", layer);
             } else {
                 template = getTemplate("common", MaterialHelper.partWithOverlay(partTemplate), layer);
@@ -283,7 +268,6 @@ public final class MITextures {
             try {
 
                 NativeImage target;
-
                 if (side.equals("top")) {
                     target = TextureHelper.copy(texture);
                 } else if (side.equals("bottom")) {
@@ -292,7 +276,6 @@ public final class MITextures {
                     if (texture.getWidth() != brick.getWidth() || texture.getHeight() != brick.getHeight()) {
                         throw new IllegalArgumentException("Texture and Brick must have same dimension");
                     }
-
                     NativeImage copy = TextureHelper.copy(texture);
                     for (int i = 0; i < copy.getWidth(); ++i) {
                         for (int j = copy.getHeight() / 2; j < copy.getHeight(); j++) {
@@ -300,7 +283,6 @@ public final class MITextures {
                         }
                     }
                     target = copy;
-
                 }
                 String s = String.format("modern_industrialization:textures/blocks/casings/%s/%s.png", casing, side);
                 tm.addTexture(s, target);
@@ -313,7 +295,6 @@ public final class MITextures {
 
     private static void registerFluidTextures(TextureManager tm, CraftingFluid fluid) {
         String path = "modern_industrialization:textures/fluid/";
-
         String bucket = path + String.format("bucket.png");
         String bucket_content = path + String.format("bucket_content.png");
 

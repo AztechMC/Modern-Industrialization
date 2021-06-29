@@ -78,8 +78,6 @@ public class MaterialHelper {
             return "modern_industrialization:" + overrideItemPath(itemPath.substring("modern_industrialization:".length()));
         }
         switch (itemPath) {
-        case "fire_clay_ingot":
-            return "fire_clay_brick";
         case "bronze_machine_casing_special":
             return "bronze_plated_bricks";
         case "aluminum_machine_casing":

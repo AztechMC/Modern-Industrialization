@@ -27,7 +27,9 @@ public enum MaterialRawSet {
 
     IRON("iron"),
     GOLD("gold"),
-    COPPER("copper");
+    COPPER("copper"),
+    URANIUM("uranium"),
+    IRIDIUM("iridium");
 
     MaterialRawSet(String name) {
         this.name = name;

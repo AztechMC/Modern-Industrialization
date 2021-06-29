@@ -118,12 +118,16 @@ public class BakableTargetColoramp implements Coloramp {
             NativeImage from = textureManager.getAssetAsTexture(this.from);
             NativeImage to = textureManager.getAssetAsTexture(this.target);
 
+            double maxFromLum = 0.0;
+
             for (int i = 0; i < from.getWidth(); i++) {
                 for (int j = 0; j < from.getHeight(); j++) {
                     int argb = from.getPixelColor(i, j);
                     int a = TextureHelper.getA(argb);
                     if (a >= 127) {
-                        fromLum.add(TextureHelper.getLuminance(argb));
+                        double lum = TextureHelper.getLuminance(argb);
+                        maxFromLum = Math.max(lum, maxFromLum);
+                        fromLum.add(lum);
                     }
                 }
             }
@@ -159,17 +163,30 @@ public class BakableTargetColoramp implements Coloramp {
             fromLum.clear();
             fromLum.addAll(fromLum2);
 
+            int rgbMaxLum = 0;
+            double maxToLum = 0.0;
+
             for (int i = 0; i < to.getWidth(); i++) {
                 for (int j = 0; j < to.getHeight(); j++) {
                     int argb = to.getPixelColor(i, j);
                     int a = TextureHelper.getA(argb);
                     if (a >= 127) {
                         toRgb.add(argb);
+                        double lum = TextureHelper.getLuminance(argb);
+                        if (lum > maxToLum) {
+                            maxToLum = lum;
+                            rgbMaxLum = argb;
+                        }
                     }
                 }
             }
+
+            int r = Math.min((int) (1 / maxFromLum * TextureHelper.getR(rgbMaxLum)), 255);
+            int g = Math.min((int) (1 / maxFromLum * TextureHelper.getG(rgbMaxLum)), 255);
+            int b = Math.min((int) (1 / maxFromLum * TextureHelper.getB(rgbMaxLum)), 255);
+
             toRgb.add(0xFF000000);
-            toRgb.add(0xFFFFFFFF);
+            toRgb.add(TextureHelper.fromArgb(255, r, g, b));
 
             Collections.sort(toRgb, Comparator.comparingDouble(TextureHelper::getLuminance));
 

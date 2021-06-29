@@ -23,34 +23,43 @@
  */
 package aztech.modern_industrialization.materials.part;
 
-import aztech.modern_industrialization.textures.TextureManager;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
+import aztech.modern_industrialization.MIItem;
+import aztech.modern_industrialization.materials.MaterialBuilder;
+import java.util.function.Function;
 
-public interface MaterialPart {
-    /**
-     * @return The name of this part, for example "ingot" or "dust".
-     */
-    String getPart();
+public class MIItemPart implements MaterialPart {
 
-    /**
-     * @return The common tag of this material prefixed by # if available, or the id
-     *         otherwise.
-     */
-    String getTaggedItemId();
+    private final String materialPart;
+    private final String path;
+    private final String id;
 
-    /**
-     * @return The id of this part.
-     */
-    String getItemId();
-
-    void register();
-
-    default void registerTextures(TextureManager textureManager) {
-
+    private MIItemPart(String materialPart, String itemId) {
+        this.materialPart = materialPart;
+        this.path = itemId;
+        this.id = "modern_industrialization:" + path;
     }
 
-    @Environment(EnvType.CLIENT)
-    default void registerClient() {
+    public static Function<MaterialBuilder.PartContext, MaterialPart> of(String materialPart, String itemId) {
+        return ctx -> new MIItemPart(materialPart, itemId);
+    }
+
+    @Override
+    public String getPart() {
+        return materialPart;
+    }
+
+    @Override
+    public String getTaggedItemId() {
+        return id;
+    }
+
+    @Override
+    public String getItemId() {
+        return id;
+    }
+
+    @Override
+    public void register() {
+        MIItem.of(path);
     }
 }

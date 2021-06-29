@@ -114,8 +114,16 @@ public class ConfigurableItemStack extends AbstractConfigurableStack<Item, ItemK
     }
 
     @Override
-    protected long getRemainingCapacityFor(ItemKey key) {
+    public long getRemainingCapacityFor(ItemKey key) {
         return Math.min(key.getItem().getMaxCount(), adjustedCapacity) - amount;
+    }
+
+    @Override
+    public void setAmount(long amount) {
+        super.setAmount(amount);
+        if (adjustedCapacity < amount) {
+            adjustedCapacity = (int) amount;
+        }
     }
 
     /**

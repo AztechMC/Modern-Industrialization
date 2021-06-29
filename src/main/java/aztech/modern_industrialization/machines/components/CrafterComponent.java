@@ -431,7 +431,12 @@ public class CrafterComponent implements IComponent.ServerOnly {
                     stackId++;
                     ItemKey key = stack.resource();
                     if (key.getItem() == output.item || key.isEmpty()) {
-                        int ins = Math.min(remainingAmount, output.item.getMaxCount() - (int) stack.amount());
+                        // If simulating, respect the adjusted capacity.
+                        // If putting the output, don't respect the adjusted capacity in case it was
+                        // reduced during the processing.
+                        int remainingCapacity = simulate ? (int) stack.getRemainingCapacityFor(ItemKey.of(output.item))
+                                : output.item.getMaxCount() - (int) stack.amount();
+                        int ins = Math.min(remainingAmount, remainingCapacity);
                         if (key.isEmpty()) {
                             if ((stack.isMachineLocked() || stack.isPlayerLocked() || loopRun == 1) && stack.isValid(new ItemStack(output.item))) {
                                 stack.setAmount(ins);

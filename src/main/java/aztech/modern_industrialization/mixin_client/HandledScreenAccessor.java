@@ -34,4 +34,10 @@ public interface HandledScreenAccessor {
     @Accessor("focusedSlot")
     @Nullable
     Slot mi_getFocusedSlot();
+
+    @Accessor("x")
+    int mi_getX();
+
+    @Accessor("y")
+    int mi_getY();
 }

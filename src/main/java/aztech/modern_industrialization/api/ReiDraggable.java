@@ -26,11 +26,13 @@ package aztech.modern_industrialization.api;
 import aztech.modern_industrialization.util.Simulation;
 import dev.technici4n.fasttransferlib.experimental.api.item.ItemKey;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidKey;
+import net.minecraft.client.gui.widget.ClickableWidget;
 
 /**
- * Can be implemented by slots or widgets if they want to support dragging. For
- * widgets: called client-side only. For slots: called on both sides if the
- * client accepts the simulation. Return true if dragging is accepted.
+ * Can be implemented by slots or {@linkplain ClickableWidget clickable widgets}
+ * if they want to support dragging. For buttons: called client-side only. For
+ * slots: called on both sides if the client accepts the simulation. Return true
+ * if dragging is accepted.
  */
 public interface ReiDraggable {
     boolean dragFluid(FluidKey fluidKey, Simulation simulation);

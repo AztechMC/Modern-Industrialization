@@ -205,7 +205,7 @@ public abstract class AbstractConfigurableStack<T, K extends ResourceKey<T>> ext
      * Try locking the slot to the given instance, return true if it succeeded
      */
     public boolean playerLock(T instance, Simulation simulation) {
-        if ((key.isEmpty() || key.getResource() == instance) && (lockedInstance == null || lockedInstance == getEmptyInstance())) {
+        if (key.isEmpty() || key.getResource() == instance) {
             if (simulation.isActing()) {
                 lockedInstance = instance;
                 playerLocked = true;

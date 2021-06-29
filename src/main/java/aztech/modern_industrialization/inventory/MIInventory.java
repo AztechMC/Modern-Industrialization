@@ -117,8 +117,8 @@ public final class MIInventory implements IComponent {
         List<ConfigurableItemStack> newItemStacks = new ArrayList<>();
         List<ConfigurableFluidStack> newFluidStacks = new ArrayList<>();
 
-        NbtHelper.getList(tag, "items", newItemStacks, ConfigurableItemStack::fromNbt);
-        NbtHelper.getList(tag, "fluids", newFluidStacks, ConfigurableFluidStack::fromNbt);
+        NbtHelper.getList(tag, "items", newItemStacks, ConfigurableItemStack::new);
+        NbtHelper.getList(tag, "fluids", newFluidStacks, ConfigurableFluidStack::new);
 
         SlotConfig.readSlotList(itemStorage.stacks, newItemStacks);
         SlotConfig.readSlotList(fluidStorage.stacks, newFluidStacks);

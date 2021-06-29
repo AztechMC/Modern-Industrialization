@@ -23,41 +23,41 @@
  */
 package aztech.modern_industrialization.inventory;
 
-import aztech.modern_industrialization.util.NbtHelper;
+import aztech.modern_industrialization.api.ReiDraggable;
+import aztech.modern_industrialization.util.Simulation;
 import aztech.modern_industrialization.util.UnsupportedOperationInventory;
-import com.google.common.primitives.Ints;
 import dev.technici4n.fasttransferlib.experimental.api.item.ItemKey;
-import dev.technici4n.fasttransferlib.experimental.api.item.ItemPreconditions;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
-import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
-import net.fabricmc.fabric.api.transfer.v1.storage.base.ResourceAmount;
-import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
-import net.fabricmc.fabric.api.transfer.v1.transaction.base.SnapshotParticipant;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidKey;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.screen.slot.Slot;
+import net.minecraft.util.registry.Registry;
 
 /**
  * An item stack that can be configured.
  */
-public class ConfigurableItemStack extends SnapshotParticipant<ResourceAmount<ItemKey>> implements StorageView<ItemKey>, IConfigurableSlot {
-    private ItemKey key = ItemKey.empty();
-    private int count = 0;
-    private Item lockedItem = null;
-    private boolean playerLocked = false;
-    private boolean machineLocked = false;
-    private boolean playerLockable = true;
-    private boolean playerInsert = false;
-    private boolean playerExtract = true;
-    private boolean pipesInsert = false;
-    private boolean pipesExtract = false;
+public class ConfigurableItemStack extends AbstractConfigurableStack<Item, ItemKey> {
+    private int adjustedCapacity = 64;
 
     public ConfigurableItemStack() {
+    }
+
+    public ConfigurableItemStack(NbtCompound compound) {
+        super(compound);
+        this.adjustedCapacity = compound.getInt("adjCap");
+    }
+
+    @Override
+    public NbtCompound toNbt() {
+        NbtCompound nbt = super.toNbt();
+        nbt.putInt("adjCap", this.adjustedCapacity);
+        return nbt;
     }
 
     public static ConfigurableItemStack standardInputSlot() {
@@ -84,34 +84,46 @@ public class ConfigurableItemStack extends SnapshotParticipant<ResourceAmount<It
     }
 
     public ConfigurableItemStack(ConfigurableItemStack other) {
-        this();
-        this.key = other.key;
-        this.count = other.count;
-        this.lockedItem = other.lockedItem;
-        this.playerLocked = other.playerLocked;
-        this.machineLocked = other.machineLocked;
-        this.playerLockable = other.playerLockable;
-        this.playerInsert = other.playerInsert;
-        this.playerExtract = other.playerExtract;
-        this.pipesInsert = other.pipesInsert;
-        this.pipesExtract = other.pipesExtract;
+        super(other);
+        this.adjustedCapacity = other.adjustedCapacity;
     }
 
     @Override
-    public SlotConfig getConfig() {
-        return new SlotConfig(playerLockable, playerInsert, playerExtract, pipesInsert, pipesExtract);
+    protected ItemKey getEmptyKey() {
+        return ItemKey.empty();
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o)
-            return true;
-        if (o == null || getClass() != o.getClass())
-            return false;
-        ConfigurableItemStack that = (ConfigurableItemStack) o;
-        return playerLocked == that.playerLocked && machineLocked == that.machineLocked && playerLockable == that.playerLockable
-                && playerInsert == that.playerInsert && playerExtract == that.playerExtract && pipesInsert == that.pipesInsert
-                && pipesExtract == that.pipesExtract && lockedItem == that.lockedItem && count == that.count && key.equals(that.key);
+    protected Item getEmptyInstance() {
+        return Items.AIR;
+    }
+
+    @Override
+    protected Registry<Item> getRegistry() {
+        return Registry.ITEM;
+    }
+
+    @Override
+    protected ItemKey readKeyFromNbt(NbtCompound compound) {
+        return ItemKey.fromNbt(compound);
+    }
+
+    @Override
+    protected long getCapacity() {
+        return key.isEmpty() ? adjustedCapacity : Math.min(adjustedCapacity, key.getItem().getMaxCount());
+    }
+
+    @Override
+    public long getRemainingCapacityFor(ItemKey key) {
+        return Math.min(key.getItem().getMaxCount(), adjustedCapacity) - amount;
+    }
+
+    @Override
+    public void setAmount(long amount) {
+        super.setAmount(amount);
+        if (adjustedCapacity < amount) {
+            adjustedCapacity = (int) amount;
+        }
     }
 
     /**
@@ -125,195 +137,23 @@ public class ConfigurableItemStack extends SnapshotParticipant<ResourceAmount<It
         return copy;
     }
 
-    public ItemKey getItemKey() {
-        return key;
-    }
-
-    public int getCount() {
-        return count;
-    }
-
-    public Item getLockedItem() {
-        return lockedItem;
-    }
-
-    public void setCount(int count) {
-        this.count = count;
-        if (count == 0) {
-            this.key = ItemKey.empty();
-        }
-    }
-
-    public void increment(int count) {
-        setCount(this.count + count);
-    }
-
-    public void decrement(int count) {
-        increment(-count);
-    }
-
-    public void setItemKey(ItemKey key) {
-        this.key = key;
-    }
-
     public boolean isValid(ItemStack stack) {
-        return isValid(stack.getItem());
+        return isResourceAllowedByLock(stack.getItem());
     }
 
-    public boolean isValid(Item item) {
-        return lockedItem == null || lockedItem == item;
-    }
-
-    public boolean isPlayerLocked() {
-        return playerLocked;
-    }
-
-    public boolean isMachineLocked() {
-        return machineLocked;
-    }
-
-    public void enableMachineLock(Item lockedItem) {
-        if (this.lockedItem != null && lockedItem != this.lockedItem)
-            throw new RuntimeException("Trying to override locked item");
-        machineLocked = true;
-        this.lockedItem = lockedItem;
-    }
-
-    public void disableMachineLock() {
-        machineLocked = false;
-        onToggleLock();
-    }
-
-    public void togglePlayerLock(ItemStack cursorStack) {
-        if (playerLockable) {
-            if (playerLocked && lockedItem == Items.AIR && !cursorStack.isEmpty()) {
-                lockedItem = cursorStack.getItem();
-            } else {
-                playerLocked = !playerLocked;
-            }
-            onToggleLock();
+    public void adjustCapacity(boolean isIncrease, boolean isShiftDown) {
+        int delta = isShiftDown ? 8 : 1;
+        if (!isIncrease) {
+            delta = -delta;
         }
+        adjustedCapacity = Math.min(64, Math.max((int) amount, adjustedCapacity + delta));
     }
 
-    private void onToggleLock() {
-        if (!machineLocked && !playerLocked) {
-            lockedItem = null;
-        } else if (lockedItem == null) {
-            lockedItem = key.getItem();
-        }
+    public int getAdjustedCapacity() {
+        return adjustedCapacity;
     }
 
-    public boolean canPlayerLock() {
-        return playerLockable;
-    }
-
-    public NbtCompound toNbt() {
-        NbtCompound tag = new NbtCompound();
-        tag.put("key", key.toNbt());
-        tag.putInt("count", count);
-        if (lockedItem != null) {
-            NbtHelper.putItem(tag, "lockedItem", lockedItem);
-        }
-        // TODO: more efficient encoding?
-        tag.putBoolean("machineLocked", machineLocked);
-        tag.putBoolean("playerLocked", playerLocked);
-        tag.putBoolean("playerLockable", playerLockable);
-        tag.putBoolean("playerInsert", playerInsert);
-        tag.putBoolean("playerExtract", playerExtract);
-        tag.putBoolean("pipesInsert", pipesInsert);
-        tag.putBoolean("pipesExtract", pipesExtract);
-        return tag;
-    }
-
-    public static ConfigurableItemStack fromNbt(NbtCompound tag) {
-        ConfigurableItemStack is = new ConfigurableItemStack();
-        // compat
-        if (tag.contains("key")) {
-            is.key = ItemKey.fromNbt(tag.getCompound("key"));
-            is.count = tag.getInt("count");
-        } else {
-            ItemStack stack = ItemStack.fromNbt(tag);
-            is.key = ItemKey.of(stack);
-            is.count = stack.getCount();
-        }
-        if (tag.contains("lockedItem")) {
-            is.lockedItem = NbtHelper.getItem(tag, "lockedItem");
-        }
-        is.machineLocked = tag.getBoolean("machineLocked");
-        is.playerLocked = tag.getBoolean("playerLocked");
-        is.playerLockable = tag.getBoolean("playerLockable");
-        is.playerInsert = tag.getBoolean("playerInsert");
-        is.playerExtract = tag.getBoolean("playerExtract");
-        is.pipesInsert = tag.getBoolean("pipesInsert");
-        is.pipesExtract = tag.getBoolean("pipesExtract");
-        return is;
-    }
-
-    /**
-     * Try locking the slot to the given item, return true if it succeeded
-     */
-    public boolean playerLock(Item item) {
-        if ((key.isEmpty() || key.getItem() == item) && (lockedItem == null || lockedItem == Items.AIR)) {
-            lockedItem = item;
-            playerLocked = true;
-            return true;
-        }
-        return false;
-    }
-
-    public boolean canPipesExtract() {
-        return pipesExtract;
-    }
-
-    public boolean canPipesInsert() {
-        return pipesInsert;
-    }
-
-    @Override
-    public long extract(ItemKey key, long longCount, Transaction transaction) {
-        ItemPreconditions.notEmptyNotNegative(key, longCount);
-        if (pipesExtract && key.equals(this.key)) {
-            int maxCount = Ints.saturatedCast(longCount);
-            int extracted = Math.min(count, maxCount);
-            updateSnapshots(transaction);
-            decrement(extracted);
-            return extracted;
-        }
-        return 0;
-    }
-
-    @Override
-    public boolean isEmpty() {
-        return resource().isEmpty();
-    }
-
-    @Override
-    public ItemKey resource() {
-        return key;
-    }
-
-    @Override
-    public long amount() {
-        return count;
-    }
-
-    @Override
-    public long capacity() {
-        return isEmpty() ? 64 : resource().getItem().getMaxCount();
-    }
-
-    @Override
-    public ResourceAmount<ItemKey> createSnapshot() {
-        return new ResourceAmount<>(key, count);
-    }
-
-    @Override
-    public void readSnapshot(ResourceAmount<ItemKey> ra) {
-        this.count = (int) ra.amount();
-        this.key = ra.resource();
-    }
-
-    public class ConfigurableItemSlot extends Slot {
+    public class ConfigurableItemSlot extends Slot implements ReiDraggable {
         private final Predicate<ItemStack> insertPredicate;
         private final Runnable markDirty;
         // Vanilla MC code modifies the stack returned by `getStack()` directly, but it
@@ -350,13 +190,13 @@ public class ConfigurableItemStack extends SnapshotParticipant<ResourceAmount<It
 
         @Override
         public ItemStack getStack() {
-            return cachedReturnedStack = key.toStack(count);
+            return cachedReturnedStack = key.toStack((int) amount);
         }
 
         @Override
         public void setStack(ItemStack stack) {
             key = ItemKey.of(stack);
-            count = stack.getCount();
+            amount = stack.getCount();
             markDirty.run();
             cachedReturnedStack = stack;
         }
@@ -370,7 +210,7 @@ public class ConfigurableItemStack extends SnapshotParticipant<ResourceAmount<It
 
         @Override
         public int getMaxItemCount() {
-            return 64;
+            return adjustedCapacity;
         }
 
         @Override
@@ -380,6 +220,16 @@ public class ConfigurableItemStack extends SnapshotParticipant<ResourceAmount<It
             cachedReturnedStack = null;
             markDirty.run();
             return stack;
+        }
+
+        @Override
+        public boolean dragFluid(FluidKey fluidKey, Simulation simulation) {
+            return false;
+        }
+
+        @Override
+        public boolean dragItem(ItemKey itemKey, Simulation simulation) {
+            return playerLock(itemKey.getItem(), simulation);
         }
     }
 }

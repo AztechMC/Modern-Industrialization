@@ -30,20 +30,20 @@ import aztech.modern_industrialization.inventory.ConfigurableFluidStack.Configur
 import aztech.modern_industrialization.inventory.ConfigurableItemStack.ConfigurableItemSlot;
 import aztech.modern_industrialization.machines.gui.ClientComponentRenderer;
 import aztech.modern_industrialization.machines.gui.MachineGuiParameters;
-import aztech.modern_industrialization.util.FluidHelper;
-import aztech.modern_industrialization.util.NbtHelper;
-import aztech.modern_industrialization.util.RenderHelper;
-import aztech.modern_industrialization.util.TextHelper;
+import aztech.modern_industrialization.util.*;
 import com.mojang.blaze3d.systems.RenderSystem;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidKey;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.gui.widget.ButtonWidget;
+import net.minecraft.client.item.TooltipData;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -144,8 +144,8 @@ public class MachineScreenHandlers {
         List<ConfigurableItemStack> itemStacks = new ArrayList<>();
         List<ConfigurableFluidStack> fluidStacks = new ArrayList<>();
         NbtCompound tag = buf.readNbt();
-        NbtHelper.getList(tag, "items", itemStacks, ConfigurableItemStack::fromNbt);
-        NbtHelper.getList(tag, "fluids", fluidStacks, ConfigurableFluidStack::fromNbt);
+        NbtHelper.getList(tag, "items", itemStacks, ConfigurableItemStack::new);
+        NbtHelper.getList(tag, "fluids", fluidStacks, ConfigurableFluidStack::new);
         // Slot positions
         SlotPositions itemPositions = SlotPositions.read(buf);
         SlotPositions fluidPositions = SlotPositions.read(buf);
@@ -284,7 +284,6 @@ public class MachineScreenHandlers {
             for (ClientComponentRenderer renderer : renderers) {
                 renderer.renderTooltip(this, matrices, x, y, mouseX, mouseY);
             }
-            drawMouseoverTooltip(matrices, mouseX, mouseY);
         }
 
         // drawBackground() is called too late, so it's not used at all.
@@ -307,11 +306,9 @@ public class MachineScreenHandlers {
                 int px = x + slot.x - 1;
                 int py = y + slot.y - 1;
                 int u;
-                if (slot instanceof ConfigurableFluidSlot) {
-                    ConfigurableFluidSlot fluidSlot = (ConfigurableFluidSlot) slot;
+                if (slot instanceof ConfigurableFluidSlot fluidSlot) {
                     u = fluidSlot.getConfStack().isPlayerLocked() ? 90 : fluidSlot.getConfStack().isMachineLocked() ? 126 : 18;
-                } else if (slot instanceof ConfigurableItemSlot) {
-                    ConfigurableItemSlot itemSlot = (ConfigurableItemSlot) slot;
+                } else if (slot instanceof ConfigurableItemSlot itemSlot) {
                     u = itemSlot.getConfStack().isPlayerLocked() ? 72 : itemSlot.getConfStack().isMachineLocked() ? 108 : 0;
                 } else {
                     continue;
@@ -327,8 +324,9 @@ public class MachineScreenHandlers {
                     int j = y + slot.y;
 
                     ConfigurableFluidStack stack = ((ConfigurableFluidSlot) slot).getConfStack();
-                    if (!stack.getFluid().isEmpty()) {
-                        RenderHelper.drawFluidInGui(matrices, stack.getFluid(), i, j);
+                    FluidKey renderedKey = stack.getLockedInstance() == null ? stack.resource() : FluidKey.of(stack.getLockedInstance());
+                    if (!renderedKey.isEmpty()) {
+                        RenderHelper.drawFluidInGui(matrices, renderedKey, i, j);
                     }
 
                     if (isPointWithinBounds(slot.x, slot.y, 16, 16, mouseX, mouseY) && slot.isEnabled()) {
@@ -345,11 +343,10 @@ public class MachineScreenHandlers {
 
         private void renderLockedItems() {
             for (Slot slot : this.handler.slots) {
-                if (slot instanceof ConfigurableItemSlot) {
-                    ConfigurableItemSlot itemSlot = (ConfigurableItemSlot) slot;
+                if (slot instanceof ConfigurableItemSlot itemSlot) {
                     ConfigurableItemStack itemStack = itemSlot.getConfStack();
-                    if ((itemStack.isPlayerLocked() || itemStack.isMachineLocked()) && itemStack.getItemKey().isEmpty()) {
-                        Item item = itemStack.getLockedItem();
+                    if ((itemStack.isPlayerLocked() || itemStack.isMachineLocked()) && itemStack.resource().isEmpty()) {
+                        Item item = itemStack.getLockedInstance();
                         if (item != Items.AIR) {
                             this.setZOffset(100);
                             this.itemRenderer.zOffset = 100.0F;
@@ -367,36 +364,73 @@ public class MachineScreenHandlers {
         }
 
         private void renderConfigurableSlotTooltips(MatrixStack matrices, int mouseX, int mouseY) {
-            for (Slot slot : handler.slots) {
-                if (isPointWithinBounds(slot.x, slot.y, 16, 16, mouseX, mouseY)) {
-                    if (slot instanceof ConfigurableFluidSlot) {
-                        ConfigurableFluidStack stack = ((ConfigurableFluidSlot) slot).getConfStack();
-                        List<Text> tooltip = new ArrayList<>();
-                        tooltip.add(FluidHelper.getFluidName(stack.getFluid(), false));
-                        tooltip.add(FluidHelper.getFluidAmount(stack.getAmount(), stack.getCapacity()));
+            Slot slot = focusedSlot;
+            if (slot instanceof ConfigurableFluidSlot) {
+                ConfigurableFluidStack stack = ((ConfigurableFluidSlot) slot).getConfStack();
+                List<Text> tooltip = new ArrayList<>();
+                FluidKey renderedKey = stack.isPlayerLocked() ? FluidKey.of(stack.getLockedInstance()) : stack.resource();
+                tooltip.add(FluidHelper.getFluidName(renderedKey, false));
+                tooltip.add(FluidHelper.getFluidAmount(stack.amount(), stack.getCapacity()));
 
-                        if (stack.canPlayerInsert()) {
-                            if (stack.canPlayerExtract()) {
-                                tooltip.add(new TranslatableText("text.modern_industrialization.fluid_slot_IO").setStyle(TextHelper.GRAY_TEXT));
-                            } else {
-                                tooltip.add(new TranslatableText("text.modern_industrialization.fluid_slot_input").setStyle(TextHelper.GRAY_TEXT));
-                            }
-                        } else if (stack.canPlayerExtract()) {
-                            tooltip.add(new TranslatableText("text.modern_industrialization.fluid_slot_output").setStyle(TextHelper.GRAY_TEXT));
-                        }
-                        this.renderTooltip(matrices, tooltip, mouseX, mouseY);
-                    } else if (slot instanceof ConfigurableItemSlot) {
-                        ConfigurableItemStack stack = ((ConfigurableItemSlot) slot).getConfStack();
-                        if (stack.getItemKey().isEmpty() && stack.getLockedItem() != null) {
-                            this.renderTooltip(matrices, new ItemStack(stack.getLockedItem()), mouseX, mouseY);
-                        }
+                if (stack.canPlayerInsert()) {
+                    if (stack.canPlayerExtract()) {
+                        tooltip.add(new TranslatableText("text.modern_industrialization.fluid_slot_IO").setStyle(TextHelper.GRAY_TEXT));
+                    } else {
+                        tooltip.add(new TranslatableText("text.modern_industrialization.fluid_slot_input").setStyle(TextHelper.GRAY_TEXT));
                     }
+                } else if (stack.canPlayerExtract()) {
+                    tooltip.add(new TranslatableText("text.modern_industrialization.fluid_slot_output").setStyle(TextHelper.GRAY_TEXT));
                 }
+                this.renderTooltip(matrices, tooltip, mouseX, mouseY);
+            } else if (slot instanceof ConfigurableItemSlot confSlot) {
+                renderConfigurableItemStackTooltip(matrices, confSlot.getConfStack(), mouseX, mouseY);
+            } else if (slot != null && slot.hasStack()) {
+                // regular tooltip
+                renderTooltip(matrices, slot.getStack(), mouseX, mouseY);
             }
+        }
+
+        private void renderConfigurableItemStackTooltip(MatrixStack matrices, ConfigurableItemStack stack, int mouseX, int mouseY) {
+            ItemStack vanillaStack = stack.isEmpty() ? stack.getLockedInstance() == null ? ItemStack.EMPTY : new ItemStack(stack.getLockedInstance())
+                    : stack.resource().toStack((int) stack.amount());
+            // Regular information
+            List<Text> textTooltip;
+            if (vanillaStack.isEmpty()) {
+                textTooltip = new ArrayList<>();
+                textTooltip.add(new TranslatableText("text.modern_industrialization.empty"));
+            } else {
+                textTooltip = getTooltipFromItem(vanillaStack);
+            }
+            Optional<TooltipData> data = vanillaStack.getTooltipData();
+            // Append capacity
+            textTooltip.add(new TranslatableText("text.modern_industrialization.configurable_slot_capacity", stack.getAdjustedCapacity())
+                    .setStyle(TextHelper.GRAY_TEXT));
+            // Render
+            renderTooltip(matrices, textTooltip, data, mouseX, mouseY);
         }
 
         @Override
         protected void drawBackground(MatrixStack matrices, float delta, int mouseX, int mouseY) {
+        }
+
+        @Override
+        public boolean mouseScrolled(double mouseX, double mouseY, double amount) {
+            if (focusedSlot instanceof ConfigurableItemSlot confSlot) {
+                ConfigurableItemStack stack = confSlot.getConfStack();
+                boolean isIncrease = amount > 0;
+                boolean isShiftDown = InputHelper.isShiftPressed();
+                // Client side update
+                stack.adjustCapacity(isIncrease, isShiftDown);
+                // Server side update
+                PacketByteBuf buf = PacketByteBufs.create();
+                buf.writeInt(handler.syncId);
+                buf.writeVarInt(handler.slots.indexOf(focusedSlot));
+                buf.writeBoolean(isIncrease);
+                buf.writeBoolean(isShiftDown);
+                ClientPlayNetworking.send(ConfigurableInventoryPackets.ADJUST_SLOT_CAPACITY, buf);
+                return true;
+            }
+            return false;
         }
 
         // This is used by the REI plugin to detect fluid slots

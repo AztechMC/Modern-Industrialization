@@ -139,13 +139,13 @@ public class MachinesPlugin implements REIClientPlugin {
                 Slot slot = ((MachineScreenHandlers.ClientScreen) screen).getFocusedSlot();
                 if (slot instanceof ConfigurableFluidStack.ConfigurableFluidSlot) {
                     ConfigurableFluidStack stack = ((ConfigurableFluidStack.ConfigurableFluidSlot) slot).getConfStack();
-                    if (stack.getAmount() > 0) {
-                        Fluid fluid = stack.getFluid().getFluid();
+                    if (stack.amount() > 0) {
+                        Fluid fluid = stack.resource().getFluid();
                         if (fluid != null) {
                             return CompoundEventResult.interruptTrue(EntryStacks.of(fluid));
                         }
-                    } else if (stack.getLockedFluid() != null) {
-                        Fluid fluid = stack.getLockedFluid().getFluid();
+                    } else if (stack.getLockedInstance() != null) {
+                        Fluid fluid = stack.getLockedInstance();
                         if (fluid != null) {
                             return CompoundEventResult.interruptTrue(EntryStacks.of(fluid));
                         }
@@ -154,8 +154,8 @@ public class MachinesPlugin implements REIClientPlugin {
                     ConfigurableItemStack stack = ((ConfigurableItemStack.ConfigurableItemSlot) slot).getConfStack();
                     // the normal stack is already handled by REI, we just need to handle the locked
                     // item!
-                    if (stack.getLockedItem() != null) {
-                        return CompoundEventResult.interruptTrue(EntryStacks.of(stack.getLockedItem()));
+                    if (stack.getLockedInstance() != null) {
+                        return CompoundEventResult.interruptTrue(EntryStacks.of(stack.getLockedInstance()));
                     }
                 }
             }

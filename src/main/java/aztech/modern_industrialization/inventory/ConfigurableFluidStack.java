@@ -23,40 +23,29 @@
  */
 package aztech.modern_industrialization.inventory;
 
-import aztech.modern_industrialization.util.NbtHelper;
+import aztech.modern_industrialization.api.ReiDraggable;
+import aztech.modern_industrialization.util.Simulation;
 import aztech.modern_industrialization.util.UnsupportedOperationInventory;
+import dev.technici4n.fasttransferlib.experimental.api.item.ItemKey;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidKey;
-import net.fabricmc.fabric.api.transfer.v1.storage.StoragePreconditions;
-import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
-import net.fabricmc.fabric.api.transfer.v1.storage.base.ResourceAmount;
-import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
-import net.fabricmc.fabric.api.transfer.v1.transaction.base.SnapshotParticipant;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.Fluid;
+import net.minecraft.fluid.Fluids;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.screen.slot.Slot;
+import net.minecraft.util.registry.Registry;
 
 /**
  * A fluid stack that can be configured.
  */
-public class ConfigurableFluidStack extends SnapshotParticipant<ResourceAmount<FluidKey>> implements StorageView<FluidKey>, IConfigurableSlot {
-    private FluidKey fluid = FluidKey.empty();
-    private long amount = 0;
+public class ConfigurableFluidStack extends AbstractConfigurableStack<Fluid, FluidKey> {
     private long capacity;
-    private FluidKey lockedFluid = null;
-    private boolean playerLocked = false;
-    private boolean machineLocked = false;
-    private boolean playerLockable = true;
-    private boolean playerInsert = false;
-    private boolean playerExtract = true;
-    private boolean pipesInsert = false;
-    private boolean pipesExtract = false;
 
     public ConfigurableFluidStack(long capacity) {
+        super();
         this.capacity = capacity;
     }
 
@@ -75,7 +64,8 @@ public class ConfigurableFluidStack extends SnapshotParticipant<ResourceAmount<F
 
     public static ConfigurableFluidStack lockedInputSlot(long capacity, Fluid fluid) {
         ConfigurableFluidStack stack = new ConfigurableFluidStack(capacity);
-        stack.fluid = stack.lockedFluid = FluidKey.of(fluid);
+        stack.key = FluidKey.of(fluid);
+        stack.lockedInstance = fluid;
         stack.playerInsert = true;
         stack.playerLockable = false;
         stack.playerLocked = true;
@@ -85,7 +75,8 @@ public class ConfigurableFluidStack extends SnapshotParticipant<ResourceAmount<F
 
     public static ConfigurableFluidStack lockedOutputSlot(long capacity, Fluid fluid) {
         ConfigurableFluidStack stack = new ConfigurableFluidStack(capacity);
-        stack.fluid = stack.lockedFluid = FluidKey.of(fluid);
+        stack.key = FluidKey.of(fluid);
+        stack.lockedInstance = fluid;
         stack.playerLockable = false;
         stack.playerLocked = true;
         stack.pipesExtract = true;
@@ -93,23 +84,13 @@ public class ConfigurableFluidStack extends SnapshotParticipant<ResourceAmount<F
     }
 
     public ConfigurableFluidStack(ConfigurableFluidStack other) {
-        this(other.capacity);
-        this.fluid = other.fluid;
-        this.amount = other.amount;
+        super(other);
         this.capacity = other.capacity;
-        this.lockedFluid = other.lockedFluid;
-        this.playerLocked = other.playerLocked;
-        this.machineLocked = other.machineLocked;
-        this.playerLockable = other.playerLockable;
-        this.playerInsert = other.playerInsert;
-        this.playerExtract = other.playerExtract;
-        this.pipesInsert = other.pipesInsert;
-        this.pipesExtract = other.pipesExtract;
     }
 
-    @Override
-    public SlotConfig getConfig() {
-        return new SlotConfig(playerLockable, playerInsert, playerExtract, pipesInsert, pipesExtract);
+    public ConfigurableFluidStack(NbtCompound compound) {
+        super(compound);
+        this.capacity = compound.getLong("capacity");
     }
 
     @Override
@@ -118,10 +99,10 @@ public class ConfigurableFluidStack extends SnapshotParticipant<ResourceAmount<F
             return true;
         if (o == null || getClass() != o.getClass())
             return false;
+        if (!super.equals(o))
+            return false;
         ConfigurableFluidStack that = (ConfigurableFluidStack) o;
-        return amount == that.amount && capacity == that.capacity && playerLocked == that.playerLocked && machineLocked == that.machineLocked
-                && playerLockable == that.playerLockable && playerInsert == that.playerInsert && playerExtract == that.playerExtract
-                && pipesInsert == that.pipesInsert && pipesExtract == that.pipesExtract && fluid == that.fluid && lockedFluid == that.lockedFluid;
+        return capacity == that.capacity;
     }
 
     /**
@@ -135,214 +116,54 @@ public class ConfigurableFluidStack extends SnapshotParticipant<ResourceAmount<F
         return copy;
     }
 
-    public FluidKey getFluid() {
-        return fluid;
+    @Override
+    protected FluidKey getEmptyKey() {
+        return FluidKey.empty();
     }
 
-    public long getAmount() {
-        return amount;
+    @Override
+    protected Fluid getEmptyInstance() {
+        return Fluids.EMPTY;
+    }
+
+    @Override
+    protected Registry<Fluid> getRegistry() {
+        return Registry.FLUID;
+    }
+
+    @Override
+    protected FluidKey readKeyFromNbt(NbtCompound compound) {
+        return FluidKey.fromNbt(compound);
     }
 
     public long getCapacity() {
         return capacity;
     }
 
-    public boolean canPlayerInsert() {
-        return playerInsert;
-    }
-
-    public boolean canPlayerExtract() {
-        return playerExtract;
-    }
-
-    public void setFluid(FluidKey fluid) {
-        this.fluid = fluid;
+    @Override
+    protected long getRemainingCapacityFor(FluidKey key) {
+        return getRemainingSpace();
     }
 
     public void setAmount(long amount) {
-        this.amount = amount;
+        super.setAmount(amount);
         if (amount > capacity)
             throw new IllegalStateException("amount > capacity in the fluid stack");
         if (amount < 0)
             throw new IllegalStateException("amount < 0 in the fluid stack");
-        if (amount == 0 && lockedFluid == null) {
-            fluid = FluidKey.empty();
-        }
-    }
-
-    public void increment(long amount) {
-        setAmount(this.amount + amount);
-    }
-
-    public void decrement(long amount) {
-        increment(-amount);
-    }
-
-    public boolean isValid(FluidKey fluid) {
-        return fluid.equals(this.fluid) || (lockedFluid == null && this.fluid.isEmpty());
     }
 
     public long getRemainingSpace() {
         return capacity - amount;
     }
 
-    public boolean isPlayerLocked() {
-        return playerLocked;
-    }
-
-    public boolean isMachineLocked() {
-        return machineLocked;
-    }
-
     public NbtCompound toNbt() {
-        NbtCompound tag = new NbtCompound();
-        NbtHelper.putFluid(tag, "fluid", fluid);
-        tag.putLong("amount_ftl", amount);
-        tag.putLong("capacity_ftl", capacity);
-        if (lockedFluid != null) {
-            NbtHelper.putFluid(tag, "lockedFluid", lockedFluid);
-        }
-        // TODO: more efficient encoding?
-        tag.putBoolean("machineLocked", machineLocked);
-        tag.putBoolean("playerLocked", playerLocked);
-        tag.putBoolean("playerLockable", playerLockable);
-        tag.putBoolean("playerInsert", playerInsert);
-        tag.putBoolean("playerExtract", playerExtract);
-        tag.putBoolean("pipesInsert", pipesInsert);
-        tag.putBoolean("pipesExtract", pipesExtract);
+        NbtCompound tag = super.toNbt();
+        tag.putLong("capacity", capacity);
         return tag;
     }
 
-    public static ConfigurableFluidStack fromNbt(NbtCompound tag) {
-        ConfigurableFluidStack fs = new ConfigurableFluidStack(0);
-        fs.fluid = NbtHelper.getFluidCompatible(tag, "fluid");
-        if (tag.contains("amount")) {
-            fs.amount = tag.getInt("amount") * 81;
-            fs.capacity = tag.getInt("capacity") * 81;
-        } else {
-            fs.amount = tag.getLong("amount_ftl");
-            fs.capacity = tag.getLong("capacity_ftl");
-        }
-        if (tag.contains("lockedFluid")) {
-            fs.lockedFluid = NbtHelper.getFluidCompatible(tag, "lockedFluid");
-        }
-        fs.machineLocked = tag.getBoolean("machineLocked");
-        fs.playerLocked = tag.getBoolean("playerLocked");
-        fs.playerLockable = tag.getBoolean("playerLockable");
-        fs.playerInsert = tag.getBoolean("playerInsert");
-        fs.playerExtract = tag.getBoolean("playerExtract");
-        fs.pipesInsert = tag.getBoolean("pipesInsert");
-        fs.pipesExtract = tag.getBoolean("pipesExtract");
-        if (fs.fluid.isEmpty()) {
-            fs.amount = 0;
-        }
-        return fs;
-    }
-
-    public void enableMachineLock(FluidKey lockedFluid) {
-        if (this.lockedFluid != null && !lockedFluid.equals(this.lockedFluid))
-            throw new RuntimeException("Trying to override locked fluid");
-        machineLocked = true;
-        this.fluid = lockedFluid;
-        this.lockedFluid = lockedFluid;
-    }
-
-    public void disableMachineLock() {
-        machineLocked = false;
-        onToggleLock();
-    }
-
-    public void togglePlayerLock() {
-        if (playerLockable) {
-            playerLocked = !playerLocked;
-            onToggleLock();
-        }
-    }
-
-    private void onToggleLock() {
-        if (!machineLocked && !playerLocked) {
-            lockedFluid = null;
-            if (amount == 0) {
-                setFluid(FluidKey.empty());
-            }
-        } else if (lockedFluid == null) {
-            lockedFluid = fluid;
-        }
-    }
-
-    public FluidKey getLockedFluid() {
-        return lockedFluid;
-    }
-
-    public boolean isLockedTo(FluidKey fluid) {
-        return Objects.equals(lockedFluid, fluid);
-    }
-
-    public boolean playerLock(FluidKey fluid) {
-        if (lockedFluid == null && (this.fluid.isEmpty() || this.fluid.equals(fluid))) {
-            lockedFluid = fluid;
-            this.fluid = fluid;
-            playerLocked = true;
-            return true;
-        }
-        return false;
-    }
-
-    public boolean isEmpty() {
-        return getFluid().isEmpty();
-    }
-
-    public boolean canPlayerLock() {
-        return playerLockable;
-    }
-
-    public boolean canPipesExtract() {
-        return pipesExtract;
-    }
-
-    public boolean canPipesInsert() {
-        return pipesInsert;
-    }
-
-    @Override
-    public long extract(FluidKey fluid, long maxAmount, Transaction transaction) {
-        StoragePreconditions.notEmptyNotNegative(fluid, maxAmount);
-        if (pipesExtract && fluid.equals(this.fluid)) {
-            long extracted = Math.min(maxAmount, amount);
-            updateSnapshots(transaction);
-            decrement(extracted);
-            return extracted;
-        }
-        return 0;
-    }
-
-    @Override
-    public FluidKey resource() {
-        return fluid;
-    }
-
-    @Override
-    public long amount() {
-        return amount;
-    }
-
-    @Override
-    public long capacity() {
-        return capacity;
-    }
-
-    @Override
-    protected ResourceAmount<FluidKey> createSnapshot() {
-        return new ResourceAmount<>(fluid, amount);
-    }
-
-    @Override
-    protected void readSnapshot(ResourceAmount<FluidKey> snapshot) {
-        this.fluid = snapshot.resource();
-        this.amount = snapshot.amount();
-    }
-
-    public class ConfigurableFluidSlot extends Slot {
+    public class ConfigurableFluidSlot extends Slot implements ReiDraggable {
         private final Runnable markDirty;
 
         public ConfigurableFluidSlot(ConfigurableFluidSlot other) {
@@ -370,7 +191,7 @@ public class ConfigurableFluidStack extends SnapshotParticipant<ResourceAmount<F
         }
 
         public boolean canInsertFluid(FluidKey fluid) {
-            return playerInsert && isValid(fluid);
+            return playerInsert && isResourceAllowedByLock(fluid.getFluid());
         }
 
         public boolean canExtractFluid(FluidKey fluid) {
@@ -393,6 +214,16 @@ public class ConfigurableFluidStack extends SnapshotParticipant<ResourceAmount<F
         @Override
         public void markDirty() {
             markDirty.run();
+        }
+
+        @Override
+        public boolean dragFluid(FluidKey fluidKey, Simulation simulation) {
+            return playerLock(fluidKey.getFluid(), simulation);
+        }
+
+        @Override
+        public boolean dragItem(ItemKey itemKey, Simulation simulation) {
+            return false;
         }
     }
 }

@@ -23,10 +23,17 @@
  */
 package aztech.modern_industrialization.compat.rei;
 
+import aztech.modern_industrialization.api.ReiDraggable;
+import aztech.modern_industrialization.inventory.ConfigurableInventoryPackets;
 import aztech.modern_industrialization.items.diesel_tools.DieselToolItem;
-import aztech.modern_industrialization.pipes.fluid.FluidPipeScreen;
+import aztech.modern_industrialization.mixin_client.HandledScreenAccessor;
+import aztech.modern_industrialization.util.Simulation;
 import dev.architectury.fluid.FluidStack;
-import java.util.Optional;
+import dev.technici4n.fasttransferlib.experimental.api.item.ItemKey;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Stream;
+import me.shedaniel.math.Rectangle;
 import me.shedaniel.rei.api.client.gui.drag.DraggableStack;
 import me.shedaniel.rei.api.client.gui.drag.DraggableStackVisitor;
 import me.shedaniel.rei.api.client.gui.drag.DraggingContext;
@@ -35,11 +42,21 @@ import me.shedaniel.rei.api.client.registry.category.CategoryRegistry;
 import me.shedaniel.rei.api.client.registry.screen.ScreenRegistry;
 import me.shedaniel.rei.api.common.util.EntryStacks;
 import me.shedaniel.rei.plugin.common.BuiltinPlugin;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidKey;
+import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.screen.ingame.HandledScreen;
+import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.network.PacketByteBuf;
+import net.minecraft.screen.ScreenHandler;
+import net.minecraft.screen.slot.Slot;
 import net.minecraft.util.registry.Registry;
+import org.jetbrains.annotations.Nullable;
 
 public class MIREIPlugin implements REIClientPlugin {
     @Override
@@ -58,26 +75,98 @@ public class MIREIPlugin implements REIClientPlugin {
 
     @Override
     public void registerScreens(ScreenRegistry registry) {
-        registerFluidPipeDragging(registry);
+        registerDragging(registry);
     }
 
-    private void registerFluidPipeDragging(ScreenRegistry registry) {
-        registry.registerDraggableStackVisitor(new DraggableStackVisitor<FluidPipeScreen>() {
+    private void registerDragging(ScreenRegistry registry) {
+        registry.registerDraggableStackVisitor(new DraggableStackVisitor<>() {
             @Override
-            public Optional<Acceptor> visitDraggedStack(DraggingContext<FluidPipeScreen> context, DraggableStack stack) {
-                if (context.getScreen().canSetNetworkFluid() && stack.getStack().getValue() instanceof FluidStack) {
-                    return Optional.of(s -> {
-                        FluidStack fs = s.getStack().<FluidStack>cast().getValue();
-                        context.getScreen().setNetworkFluid(FluidKey.of(fs.getFluid(), fs.getTag()));
-                    });
+            public boolean acceptDraggedStack(DraggingContext<Screen> context, DraggableStack stack) {
+                FluidKey fk = stack.getStack().getValue() instanceof FluidStack fs ? FluidKey.of(fs.getFluid(), fs.getTag()) : null;
+                ItemKey ik = stack.getStack().getValue() instanceof ItemStack is ? ItemKey.of(is) : null;
+                @Nullable
+                Element element = context.getScreen().hoveredElement(context.getCurrentPosition().x, context.getCurrentPosition().y).orElse(null);
+                if (element instanceof ReiDraggable dw) {
+                    if (ik != null) {
+                        return dw.dragItem(ik, Simulation.ACT);
+                    }
+                    if (fk != null) {
+                        return dw.dragFluid(fk, Simulation.ACT);
+                    }
                 }
-                return Optional.empty();
+                if (context.getScreen() instanceof HandledScreen<?>handledScreen) {
+                    ScreenHandler handler = handledScreen.getScreenHandler();
+                    Slot slot = ((HandledScreenAccessor) context.getScreen()).mi_getFocusedSlot();
+                    if (slot instanceof ReiDraggable dw) {
+                        int slotId = handler.slots.indexOf(slot);
+                        if (ik != null && dw.dragItem(ik, Simulation.ACT)) {
+                            PacketByteBuf buf = PacketByteBufs.create();
+                            buf.writeInt(handler.syncId);
+                            buf.writeVarInt(slotId);
+                            buf.writeBoolean(true);
+                            ik.toPacket(buf);
+                            ClientPlayNetworking.send(ConfigurableInventoryPackets.DO_SLOT_DRAGGING, buf);
+                            return true;
+                        }
+                        if (fk != null && dw.dragFluid(fk, Simulation.ACT)) {
+                            PacketByteBuf buf = PacketByteBufs.create();
+                            buf.writeInt(handler.syncId);
+                            buf.writeVarInt(slotId);
+                            buf.writeBoolean(false);
+                            fk.toPacket(buf);
+                            ClientPlayNetworking.send(ConfigurableInventoryPackets.DO_SLOT_DRAGGING, buf);
+                            return true;
+                        }
+                    }
+                }
+                return false;
+            }
+
+            @Override
+            public Stream<BoundsProvider> getDraggableAcceptingBounds(DraggingContext<Screen> context, DraggableStack stack) {
+                List<BoundsProvider> bounds = new ArrayList<>();
+                FluidKey fk = stack.getStack().getValue() instanceof FluidStack fs ? FluidKey.of(fs.getFluid(), fs.getTag()) : null;
+                ItemKey ik = stack.getStack().getValue() instanceof ItemStack is ? ItemKey.of(is) : null;
+                for (Element element : context.getScreen().children()) {
+                    if (element instanceof ClickableWidget cw && element instanceof ReiDraggable dw) {
+                        if (ik != null && dw.dragItem(ik, Simulation.SIMULATE)) {
+                            bounds.add(getWidgetBounds(cw));
+                        }
+                        if (fk != null && dw.dragFluid(fk, Simulation.SIMULATE)) {
+                            bounds.add(getWidgetBounds(cw));
+                        }
+                    }
+                }
+                if (context.getScreen() instanceof HandledScreen<?>handledScreen) {
+                    ScreenHandler handler = handledScreen.getScreenHandler();
+                    for (Slot slot : handler.slots) {
+                        if (slot instanceof ReiDraggable dw) {
+                            int slotId = handler.slots.indexOf(slot);
+                            if (ik != null && dw.dragItem(ik, Simulation.SIMULATE)) {
+                                bounds.add(getSlotBounds(slot, handledScreen));
+                            }
+                            if (fk != null && dw.dragFluid(fk, Simulation.SIMULATE)) {
+                                bounds.add(getSlotBounds(slot, handledScreen));
+                            }
+                        }
+                    }
+                }
+                return bounds.stream();
             }
 
             @Override
             public <R extends Screen> boolean isHandingScreen(R screen) {
-                return screen instanceof FluidPipeScreen;
+                return true;
             }
         });
+    }
+
+    private static DraggableStackVisitor.BoundsProvider getWidgetBounds(ClickableWidget cw) {
+        return DraggableStackVisitor.BoundsProvider.ofRectangle(new Rectangle(cw.x, cw.y, cw.getWidth(), cw.getHeight()));
+    }
+
+    private static DraggableStackVisitor.BoundsProvider getSlotBounds(Slot slot, HandledScreen<?> screen) {
+        HandledScreenAccessor acc = (HandledScreenAccessor) screen;
+        return DraggableStackVisitor.BoundsProvider.ofRectangle(new Rectangle(slot.x + acc.mi_getX(), slot.y + acc.mi_getY(), 16, 16));
     }
 }

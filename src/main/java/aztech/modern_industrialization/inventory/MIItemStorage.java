@@ -23,84 +23,12 @@
  */
 package aztech.modern_industrialization.inventory;
 
-import com.google.common.primitives.Ints;
 import dev.technici4n.fasttransferlib.experimental.api.item.ItemKey;
-import dev.technici4n.fasttransferlib.experimental.api.item.ItemPreconditions;
-import java.util.Iterator;
 import java.util.List;
-import java.util.function.Predicate;
-import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
-import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
-import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
+import net.minecraft.item.Item;
 
-public class MIItemStorage implements Storage<ItemKey> {
-    final List<ConfigurableItemStack> stacks;
-
-    public MIItemStorage(List<ConfigurableItemStack> stacks) {
-        this.stacks = stacks;
-    }
-
-    @Override
-    public boolean supportsInsertion() {
-        return true;
-    }
-
-    /**
-     * @param filter    Return false to skip some ConfigurableItemStacks.
-     * @param lockSlots Whether to lock slots or not.
-     */
-    public long insert(ItemKey key, int count, Transaction tx, Predicate<ConfigurableItemStack> filter, boolean lockSlots) {
-        ItemPreconditions.notEmptyNotNegative(key, count);
-        int totalInsert = 0;
-        for (int iter = 0; iter < 2; ++iter) {
-            boolean insertIntoEmptySlots = iter == 1;
-            for (ConfigurableItemStack stack : stacks) {
-                if (filter.test(stack) && stack.isValid(key.getItem())) {
-                    if ((stack.getCount() == 0 && insertIntoEmptySlots) || stack.getItemKey().equals(key)) {
-                        int inserted = Math.min(count, Math.min(key.getItem().getMaxCount(), 64) - stack.getCount());
-
-                        if (inserted > 0) {
-                            totalInsert += inserted;
-                            count -= inserted;
-                            stack.updateSnapshots(tx);
-                            stack.setItemKey(key);
-                            stack.increment(inserted);
-
-                            if (lockSlots) {
-                                stack.enableMachineLock(key.getItem());
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        return totalInsert;
-    }
-
-    @Override
-    public long insert(ItemKey key, long count, Transaction transaction) {
-        return insert(key, Ints.saturatedCast(count), transaction, ConfigurableItemStack::canPipesInsert, false);
-    }
-
-    @Override
-    public boolean supportsExtraction() {
-        return true;
-    }
-
-    @Override
-    public long extract(ItemKey key, long maxAmount, Transaction transaction) {
-        ItemPreconditions.notEmptyNotNegative(key, maxAmount);
-        long amount = 0L;
-
-        for (int i = 0; i < stacks.size() && amount < maxAmount; ++i) {
-            amount += this.stacks.get(i).extract(key, maxAmount - amount, transaction);
-        }
-
-        return amount;
-    }
-
-    @Override
-    public Iterator<StorageView<ItemKey>> iterator(Transaction transaction) {
-        return (Iterator) stacks.iterator();
+public class MIItemStorage extends MIStorage<Item, ItemKey, ConfigurableItemStack> {
+    protected MIItemStorage(List<ConfigurableItemStack> stacks) {
+        super(stacks, false);
     }
 }

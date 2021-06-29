@@ -640,7 +640,7 @@
     "text.modern_industrialization.fluid_auto_insert_on": "已开启自动输入流体",
     "text.modern_industrialization.fluid_lock": "锁定为：%s",
     "text.modern_industrialization.fluid_slot_IO": "流体IO，左击输入或取出",
-    "text.modern_industrialization.fluid_slot_empty": "空",
+    "text.modern_industrialization.empty": "空",
     "text.modern_industrialization.fluid_slot_input": "流体输入，左击输入或输出",
     "text.modern_industrialization.fluid_slot_output": "流体输出, 左击输出",
     "text.modern_industrialization.fluid_slot_quantity": "%s mb",

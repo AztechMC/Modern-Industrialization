@@ -48,6 +48,7 @@ import net.minecraft.screen.ScreenHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
@@ -204,7 +205,7 @@ public class FluidNetworkNode extends PipeNetworkNode {
     public ExtendedScreenHandlerFactory getConnectionGui(Direction guiDirection, IPipeScreenHandlerHelper helper) {
         for (FluidConnection connection : connections) {
             if (connection.direction == guiDirection) {
-                return connection.new ScreenHandlerFactory(helper, getType().getIdentifier().getPath());
+                return connection.new ScreenHandlerFactory(helper, getType().getIdentifier());
             }
         }
         return null;
@@ -231,9 +232,9 @@ public class FluidNetworkNode extends PipeNetworkNode {
 
         private class ScreenHandlerFactory implements ExtendedScreenHandlerFactory {
             private final FluidPipeInterface iface;
-            private final String pipeType;
+            private final Identifier pipeType;
 
-            private ScreenHandlerFactory(IPipeScreenHandlerHelper helper, String pipeType) {
+            private ScreenHandlerFactory(IPipeScreenHandlerHelper helper, Identifier pipeType) {
                 this.iface = new FluidPipeInterface() {
                     @Override
                     public FluidKey getNetworkFluid() {
@@ -301,7 +302,7 @@ public class FluidNetworkNode extends PipeNetworkNode {
 
             @Override
             public Text getDisplayName() {
-                return new TranslatableText("item.modern_industrialization.pipe_" + pipeType);
+                return new TranslatableText("item." + pipeType.getNamespace() + "." + pipeType.getPath());
             }
 
             @Override

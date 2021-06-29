@@ -33,7 +33,7 @@ public class FluidHelper {
     public static Text getFluidName(FluidKey fluid, boolean grayIfEmpty) {
         if (fluid.isEmpty()) {
             Style style = grayIfEmpty ? Style.EMPTY.withColor(TextColor.fromRgb(0xa9a9a9)).withItalic(true) : Style.EMPTY;
-            return new TranslatableText("text.modern_industrialization.fluid_slot_empty").setStyle(style);
+            return new TranslatableText("text.modern_industrialization.empty").setStyle(style);
         } else {
             return FluidKeyRendering.getName(fluid);
         }

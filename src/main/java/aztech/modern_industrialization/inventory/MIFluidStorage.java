@@ -23,82 +23,12 @@
  */
 package aztech.modern_industrialization.inventory;
 
-import java.util.Iterator;
 import java.util.List;
-import java.util.function.Predicate;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidKey;
-import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
-import net.fabricmc.fabric.api.transfer.v1.storage.StoragePreconditions;
-import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
-import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
+import net.minecraft.fluid.Fluid;
 
-public class MIFluidStorage implements Storage<FluidKey> {
-    final List<ConfigurableFluidStack> stacks;
-
+public class MIFluidStorage extends MIStorage<Fluid, FluidKey, ConfigurableFluidStack> {
     public MIFluidStorage(List<ConfigurableFluidStack> stacks) {
-        this.stacks = stacks;
-    }
-
-    @Override
-    public boolean supportsInsertion() {
-        return true;
-    }
-
-    /**
-     * @param filter    Return false to skip some ConfigurableFluidStacks.
-     * @param lockSlots Whether to lock slots or not.
-     */
-    public long insert(FluidKey fluid, long amount, Transaction tx, Predicate<ConfigurableFluidStack> filter, boolean lockSlots) {
-        StoragePreconditions.notEmptyNotNegative(fluid, amount);
-        for (int iter = 0; iter < 2; ++iter) {
-            boolean insertIntoEmptySlots = iter == 1;
-            for (ConfigurableFluidStack stack : stacks) {
-                if (filter.test(stack) && stack.isValid(fluid)) {
-                    if ((stack.getAmount() == 0 && insertIntoEmptySlots) || stack.getFluid() == fluid) {
-                        long inserted = Math.min(amount, stack.getRemainingSpace());
-
-                        if (inserted > 0) {
-                            stack.updateSnapshots(tx);
-                            stack.setFluid(fluid);
-                            stack.increment(inserted);
-
-                            if (lockSlots) {
-                                stack.enableMachineLock(fluid);
-                            }
-                        }
-
-                        return inserted;
-                    }
-                }
-            }
-        }
-        return 0;
-    }
-
-    @Override
-    public long insert(FluidKey fluid, long amount, Transaction tx) {
-        return insert(fluid, amount, tx, ConfigurableFluidStack::canPipesInsert, false);
-    }
-
-    @Override
-    public boolean supportsExtraction() {
-        return true;
-    }
-
-    @Override
-    public long extract(FluidKey fluid, long maxAmount, Transaction transaction) {
-        StoragePreconditions.notEmptyNotNegative(fluid, maxAmount);
-        long amount = 0L;
-
-        for (int i = 0; i < stacks.size() && amount < maxAmount; ++i) {
-            amount += this.stacks.get(i).extract(fluid, maxAmount - amount, transaction);
-        }
-
-        return amount;
-    }
-
-    @Override
-    public Iterator<StorageView<FluidKey>> iterator(Transaction transaction) {
-        return (Iterator) stacks.iterator();
+        super(stacks, true);
     }
 }

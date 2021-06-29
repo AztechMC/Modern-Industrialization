@@ -23,10 +23,14 @@
  */
 package aztech.modern_industrialization.inventory;
 
+import aztech.modern_industrialization.api.ReiDraggable;
 import aztech.modern_industrialization.inventory.ConfigurableFluidStack.ConfigurableFluidSlot;
 import aztech.modern_industrialization.inventory.ConfigurableItemStack.ConfigurableItemSlot;
+import aztech.modern_industrialization.util.Simulation;
+import dev.technici4n.fasttransferlib.experimental.api.item.ItemKey;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidKey;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.slot.Slot;
@@ -44,13 +48,12 @@ public class ConfigurableInventoryPacketHandlers {
                     ConfigurableScreenHandler csh = (ConfigurableScreenHandler) sh;
                     ConfigurableItemStack oldStack = csh.inventory.getItemStacks().get(stackId);
                     // update stack
-                    ConfigurableItemStack newStack = ConfigurableItemStack.fromNbt(tag);
+                    ConfigurableItemStack newStack = new ConfigurableItemStack(tag);
                     csh.inventory.getItemStacks().set(stackId, newStack);
                     // update slot
                     for (int i = 0; i < csh.slots.size(); ++i) {
                         Slot slot = csh.slots.get(i);
-                        if (slot instanceof ConfigurableItemSlot) {
-                            ConfigurableItemSlot is = (ConfigurableItemSlot) slot;
+                        if (slot instanceof ConfigurableItemSlot is) {
                             if (is.getConfStack() == oldStack) {
                                 csh.slots.set(i, newStack.new ConfigurableItemSlot(is));
                                 return;
@@ -72,13 +75,12 @@ public class ConfigurableInventoryPacketHandlers {
                     ConfigurableScreenHandler csh = (ConfigurableScreenHandler) sh;
                     ConfigurableFluidStack oldStack = csh.inventory.getFluidStacks().get(stackId);
                     // update stack
-                    ConfigurableFluidStack newStack = ConfigurableFluidStack.fromNbt(tag);
+                    ConfigurableFluidStack newStack = new ConfigurableFluidStack(tag);
                     csh.inventory.getFluidStacks().set(stackId, newStack);
                     // update slot
                     for (int i = 0; i < csh.slots.size(); ++i) {
                         Slot slot = csh.slots.get(i);
-                        if (slot instanceof ConfigurableFluidSlot) {
-                            ConfigurableFluidSlot fs = (ConfigurableFluidSlot) slot;
+                        if (slot instanceof ConfigurableFluidSlot fs) {
                             if (fs.getConfStack() == oldStack) {
                                 csh.slots.set(i, newStack.new ConfigurableFluidSlot(fs));
                                 return;
@@ -101,6 +103,44 @@ public class ConfigurableInventoryPacketHandlers {
                 if (sh.syncId == syncId) {
                     ConfigurableScreenHandler csh = (ConfigurableScreenHandler) sh;
                     csh.lockingMode = lockingMode;
+                }
+            });
+        };
+
+        // sync id, slot id, boolean: true for itemkey, false for fluidkey, item or
+        // fluid key
+        public static final ServerPlayNetworking.PlayChannelHandler DO_SLOT_DRAGGING = (ms, player, handler, buf, sender) -> {
+            int syncId = buf.readInt();
+            int slotId = buf.readVarInt();
+            boolean isItemKey = buf.readBoolean();
+            ItemKey itemKey = isItemKey ? ItemKey.fromPacket(buf) : null;
+            FluidKey fluidKey = isItemKey ? null : FluidKey.fromPacket(buf);
+            ms.execute(() -> {
+                ScreenHandler sh = player.currentScreenHandler;
+                if (sh.syncId == syncId) {
+                    Slot slot = sh.getSlot(slotId);
+                    ReiDraggable dw = (ReiDraggable) slot;
+                    if (isItemKey) {
+                        dw.dragItem(itemKey, Simulation.ACT);
+                    } else {
+                        dw.dragFluid(fluidKey, Simulation.ACT);
+                    }
+                }
+            });
+        };
+
+        public static final ServerPlayNetworking.PlayChannelHandler ADJUST_SLOT_CAPACITY = (ms, player, handler, buf, sender) -> {
+            int syncId = buf.readInt();
+            int slotId = buf.readVarInt();
+            boolean isIncrease = buf.readBoolean();
+            boolean isShiftDown = buf.readBoolean();
+            ms.execute(() -> {
+                ScreenHandler sh = player.currentScreenHandler;
+                if (sh.syncId == syncId) {
+                    Slot slot = sh.getSlot(slotId);
+                    if (slot instanceof ConfigurableItemSlot confSlot) {
+                        confSlot.getConfStack().adjustCapacity(isIncrease, isShiftDown);
+                    }
                 }
             });
         };

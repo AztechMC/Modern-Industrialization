@@ -24,16 +24,15 @@
 package aztech.modern_industrialization.pipes.fluid;
 
 import aztech.modern_industrialization.MIIdentifier;
+import aztech.modern_industrialization.api.ReiDraggable;
 import aztech.modern_industrialization.machines.MachineScreenHandlers;
 import aztech.modern_industrialization.pipes.gui.PipeScreen;
 import aztech.modern_industrialization.pipes.impl.PipePackets;
-import aztech.modern_industrialization.util.FluidHelper;
-import aztech.modern_industrialization.util.InputHelper;
-import aztech.modern_industrialization.util.RenderHelper;
-import aztech.modern_industrialization.util.TextHelper;
+import aztech.modern_industrialization.util.*;
 import com.mojang.blaze3d.systems.RenderSystem;
 import dev.technici4n.fasttransferlib.experimental.api.context.ContainerItemContext;
 import dev.technici4n.fasttransferlib.experimental.api.fluid.ItemFluidStorage;
+import dev.technici4n.fasttransferlib.experimental.api.item.ItemKey;
 import java.util.ArrayList;
 import java.util.List;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
@@ -51,7 +50,6 @@ import net.minecraft.util.Identifier;
 
 public class FluidPipeScreen extends PipeScreen<FluidPipeScreenHandler> {
     private static final Identifier TEXTURE = new MIIdentifier("textures/gui/pipe/fluid.png");
-    private NetworkFluidButton networkFluidButton;
 
     public FluidPipeScreen(FluidPipeScreenHandler handler, PlayerInventory inventory, Text title) {
         super(handler, inventory, title, FluidPipeScreenHandler.HEIGHT);
@@ -72,17 +70,16 @@ public class FluidPipeScreen extends PipeScreen<FluidPipeScreenHandler> {
     }
 
     private void addNetworkFluidButton() {
-        networkFluidButton = addDrawableChild(
-                new NetworkFluidButton(72 + this.x, 20 + this.y, widget -> updateNetworkFluid(), (button, matrices, mouseX, mouseY) -> {
-                    List<Text> lines = new ArrayList<>();
-                    lines.add(FluidHelper.getFluidName(handler.iface.getNetworkFluid(), false));
-                    if (!handler.iface.getNetworkFluid().isEmpty()) {
-                        lines.add(new TranslatableText("text.modern_industrialization.network_fluid_help_clear").setStyle(TextHelper.GRAY_TEXT));
-                    } else {
-                        lines.add(new TranslatableText("text.modern_industrialization.network_fluid_help_set").setStyle(TextHelper.GRAY_TEXT));
-                    }
-                    renderTooltip(matrices, lines, mouseX, mouseY);
-                }, handler.iface));
+        addDrawableChild(new NetworkFluidButton(72 + this.x, 20 + this.y, widget -> updateNetworkFluid(), (button, matrices, mouseX, mouseY) -> {
+            List<Text> lines = new ArrayList<>();
+            lines.add(FluidHelper.getFluidName(handler.iface.getNetworkFluid(), false));
+            if (!handler.iface.getNetworkFluid().isEmpty()) {
+                lines.add(new TranslatableText("text.modern_industrialization.network_fluid_help_clear").setStyle(TextHelper.GRAY_TEXT));
+            } else {
+                lines.add(new TranslatableText("text.modern_industrialization.network_fluid_help_set").setStyle(TextHelper.GRAY_TEXT));
+            }
+            renderTooltip(matrices, lines, mouseX, mouseY);
+        }, handler.iface));
     }
 
     private void updateNetworkFluid() {
@@ -104,14 +101,7 @@ public class FluidPipeScreen extends PipeScreen<FluidPipeScreenHandler> {
         }
     }
 
-    // These two functions are called by REI
-    public boolean canSetNetworkFluid() {
-        // In theory it should use the position provided by REI, but if it works like
-        // this it's fine.
-        return networkFluidButton.isHovered();
-    }
-
-    public void setNetworkFluid(FluidKey fluidKey) {
+    private void setNetworkFluid(FluidKey fluidKey) {
         handler.iface.setNetworkFluid(fluidKey);
         PacketByteBuf buf = PacketByteBufs.create();
         buf.writeInt(handler.syncId);
@@ -119,7 +109,7 @@ public class FluidPipeScreen extends PipeScreen<FluidPipeScreenHandler> {
         ClientPlayNetworking.send(PipePackets.SET_NETWORK_FLUID, buf);
     }
 
-    private static class NetworkFluidButton extends ButtonWidget {
+    private class NetworkFluidButton extends ButtonWidget implements ReiDraggable {
         private final FluidPipeInterface iface;
 
         public NetworkFluidButton(int x, int y, PressAction onPress, TooltipSupplier tooltipSupplier, FluidPipeInterface iface) {
@@ -148,6 +138,19 @@ public class FluidPipeScreen extends PipeScreen<FluidPipeScreenHandler> {
             if (isHovered()) {
                 renderToolTip(matrices, mouseX, mouseY);
             }
+        }
+
+        @Override
+        public boolean dragFluid(FluidKey fluidKey, Simulation simulation) {
+            if (simulation.isActing()) {
+                setNetworkFluid(fluidKey);
+            }
+            return true;
+        }
+
+        @Override
+        public boolean dragItem(ItemKey itemKey, Simulation simulation) {
+            return false;
         }
     }
 }

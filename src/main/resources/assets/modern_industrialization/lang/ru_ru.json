@@ -562,7 +562,7 @@
     "text.modern_industrialization.fluid_auto_insert_on": "Включена автоматическая вставка жидкости",
     "text.modern_industrialization.fluid_lock": "Заблокировано: %s",
     "text.modern_industrialization.fluid_slot_IO": "Жидкостный ввод/вывод, щелкните левой кнопкой мыши, чтобы вставить или извлечь",
-    "text.modern_industrialization.fluid_slot_empty": "Пустой",
+    "text.modern_industrialization.empty": "Пустой",
     "text.modern_industrialization.fluid_slot_input": "Жидкостный ввод, щелкните левой кнопкой мыши, чтобы вставить или извлечь",
     "text.modern_industrialization.fluid_slot_output": "Выход жидкости, щелкните левой кнопкой мыши для извлечения",
     "text.modern_industrialization.fluid_slot_quantity": "%s mb",

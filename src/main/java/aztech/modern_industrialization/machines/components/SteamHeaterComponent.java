@@ -87,14 +87,14 @@ public class SteamHeaterComponent extends TemperatureComponent {
             // Check how much water and steam are available
             long availableWater = 0;
             for (ConfigurableFluidStack fluidStack : fluidInputs) {
-                if (fluidStack.getFluid().equals(waterKey)) {
-                    availableWater += fluidStack.getAmount();
+                if (fluidStack.resource().equals(waterKey)) {
+                    availableWater += fluidStack.amount();
                 }
             }
 
             long remainingSpaceForSteam = 0;
             for (ConfigurableFluidStack fluidStack : fluidOutputs) {
-                if (fluidStack.isValid(steamKey)) {
+                if (fluidStack.isResourceAllowedByLock(steamKey)) {
                     remainingSpaceForSteam += fluidStack.getRemainingSpace();
                 }
             }
@@ -112,8 +112,8 @@ public class SteamHeaterComponent extends TemperatureComponent {
             // (always consume at least 1 mb = 81 dp)
             long remainingWaterToConsume = Math.max((long) Math.ceil((double) effSteamProduced / STEAM_TO_WATER), 81);
             for (ConfigurableFluidStack fluidStack : fluidInputs) {
-                if (fluidStack.getFluid().equals(waterKey)) {
-                    long decrement = Math.min(fluidStack.getAmount(), remainingWaterToConsume);
+                if (fluidStack.resource().equals(waterKey)) {
+                    long decrement = Math.min(fluidStack.amount(), remainingWaterToConsume);
                     remainingWaterToConsume -= decrement;
                     fluidStack.decrement(decrement);
                 }
@@ -121,10 +121,10 @@ public class SteamHeaterComponent extends TemperatureComponent {
 
             long remainingSteamToProduce = effSteamProduced;
             for (ConfigurableFluidStack fluidStack : fluidOutputs) {
-                if (fluidStack.isValid(steamKey)) {
+                if (fluidStack.isResourceAllowedByLock(steamKey)) {
                     long increment = Math.min(fluidStack.getRemainingSpace(), remainingSteamToProduce);
                     remainingSteamToProduce -= increment;
-                    fluidStack.setFluid(steamKey);
+                    fluidStack.setKey(steamKey);
                     fluidStack.increment(increment);
                 }
             }

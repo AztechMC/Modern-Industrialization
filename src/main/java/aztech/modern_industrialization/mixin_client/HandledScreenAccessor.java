@@ -21,15 +21,23 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.inventory;
+package aztech.modern_industrialization.mixin_client;
 
-import aztech.modern_industrialization.MIIdentifier;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.gui.screen.ingame.HandledScreen;
+import net.minecraft.screen.slot.Slot;
+import org.jetbrains.annotations.Nullable;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.gen.Accessor;
 
-public class ConfigurableInventoryPackets {
-    public static final Identifier UPDATE_ITEM_SLOT = new MIIdentifier("update_item_slot");
-    public static final Identifier UPDATE_FLUID_SLOT = new MIIdentifier("update_fluid_slot");
-    public static final Identifier SET_LOCKING_MODE = new MIIdentifier("set_locking_mode");
-    public static final Identifier DO_SLOT_DRAGGING = new MIIdentifier("do_slot_dragging");
-    public static final Identifier ADJUST_SLOT_CAPACITY = new MIIdentifier("adjust_slot_capacity");
+@Mixin(HandledScreen.class)
+public interface HandledScreenAccessor {
+    @Accessor("focusedSlot")
+    @Nullable
+    Slot mi_getFocusedSlot();
+
+    @Accessor("x")
+    int mi_getX();
+
+    @Accessor("y")
+    int mi_getY();
 }

@@ -17,7 +17,7 @@
       "item" : "modern_industrialization:basic_machine_hull"
     },
     "p": {
-      "item" : "modern_industrialization:pipe_fluid_bronze"
+      "tag" : "modern_industrialization:fluid_pipes"
     },
     "r" : {
       "item" : "modern_industrialization:tin_rotor"

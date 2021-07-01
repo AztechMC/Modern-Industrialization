@@ -1,7 +1,7 @@
 {
   "type" : "minecraft:crafting_shaped",
   "pattern": [
-    "LpL",
+    "LAL",
     "GCG",
     "LPL"
   ],
@@ -9,8 +9,8 @@
     "L": {
       "item": "modern_industrialization:large_motor"
     },
-    "p":{
-      "item": "modern_industrialization:pipe_item_aluminum"
+    "A":{
+      "item": "modern_industrialization:robot_arm"
     },
     "G": {
       "item": "modern_industrialization:electronic_circuit"

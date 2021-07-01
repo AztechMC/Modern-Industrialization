@@ -10,7 +10,7 @@
       "item": "modern_industrialization:steel_large_plate"
     },
     "p":{
-      "item": "modern_industrialization:pipe_item_steel"
+      "tag": "modern_industrialization:item_pipes"
     },
     "G": {
       "tag": "c:steel_gears"

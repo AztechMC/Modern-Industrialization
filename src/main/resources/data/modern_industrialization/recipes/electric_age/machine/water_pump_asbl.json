@@ -8,7 +8,7 @@
   "key":
   {
     "f" : {
-      "item" : "modern_industrialization:pipe_fluid_bronze"
+      "tag" : "modern_industrialization:fluid_pipes"
     },
     "H" :{
       "item" : "modern_industrialization:basic_machine_hull"

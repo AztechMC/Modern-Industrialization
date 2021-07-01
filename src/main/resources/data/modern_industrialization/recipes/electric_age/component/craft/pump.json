@@ -14,7 +14,7 @@
       "item" : "modern_industrialization:tin_rotor"
     },
     "p" :{
-      "item" : "modern_industrialization:pipe_fluid_copper"
+      "tag" : "modern_industrialization:fluid_pipes"
     },
     "b" :{
       "item" : "modern_industrialization:tin_bolt"

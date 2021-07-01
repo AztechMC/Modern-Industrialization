@@ -13,10 +13,10 @@
       "item": "modern_industrialization:steel_machine_casing"
     },
     "p": {
-      "item": "modern_industrialization:pipe_fluid_bronze"
+      "tag": "modern_industrialization:fluid_pipes"
     },
     "P": {
-      "item": "modern_industrialization:pipe_item_bronze"
+      "tag": "modern_industrialization:item_pipes"
     }
   },
   "result": {

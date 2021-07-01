@@ -7,7 +7,7 @@
   ],
   "key": {
     "f": {
-      "item" : "modern_industrialization:pipe_fluid_aluminum"
+      "tag" : "modern_industrialization:fluid_pipes"
     },
     "m" : {
       "item" : "modern_industrialization:large_pump"

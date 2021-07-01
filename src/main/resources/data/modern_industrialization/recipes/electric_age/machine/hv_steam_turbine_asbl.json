@@ -17,7 +17,7 @@
       "item" : "modern_industrialization:turbo_machine_hull"
     },
     "p": {
-      "item" : "modern_industrialization:pipe_fluid_stainless_steel"
+      "tag": "modern_industrialization:fluid_pipes"
     },
     "r" : {
       "item" : "modern_industrialization:stainless_steel_rotor"

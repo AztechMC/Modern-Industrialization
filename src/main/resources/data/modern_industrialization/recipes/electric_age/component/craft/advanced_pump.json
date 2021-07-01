@@ -14,7 +14,7 @@
       "item" : "modern_industrialization:stainless_steel_rotor"
     },
     "p" :{
-      "item" : "modern_industrialization:pipe_fluid_aluminum"
+      "tag" : "modern_industrialization:fluid_pipes"
     },
     "b" :{
       "item" : "modern_industrialization:stainless_steel_bolt"

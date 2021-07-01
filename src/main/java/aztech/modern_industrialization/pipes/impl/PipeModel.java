@@ -52,6 +52,7 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
+import net.minecraft.util.math.Vec3f;
 import net.minecraft.world.BlockRenderView;
 
 /**
@@ -111,11 +112,13 @@ public class PipeModel implements UnbakedModel, BakedModel, FabricBakedModel {
             PipeNetworkType type = ((PipeItem) item).type;
             int color = type.getColor();
             renderContext.pushTransform(getColorTransform(color));
+            renderContext.pushTransform(ITEM_TRANSFORM);
 
             PipeEndpointType[][] connections = new PipeEndpointType[][] {
                     { null, null, null, null, PipeEndpointType.BLOCK, PipeEndpointType.BLOCK } };
             renderers.get(type.getRenderer()).draw(renderContext, 0, connections, new NbtCompound());
 
+            renderContext.popTransform();
             renderContext.popTransform();
         }
     }
@@ -128,6 +131,14 @@ public class PipeModel implements UnbakedModel, BakedModel, FabricBakedModel {
             return true;
         };
     }
+
+    private static final RenderContext.QuadTransform ITEM_TRANSFORM = quad -> {
+        for (int i = 0; i < 4; ++i) {
+            Vec3f pos = quad.copyPos(i, null);
+            quad.pos(i, pos.getX(), pos.getY() * 2 - 0.5f, pos.getZ() * 2 - 0.5f);
+        }
+        return true;
+    };
 
     @Override
     public List<BakedQuad> getQuads(BlockState state, Direction face, Random random) {

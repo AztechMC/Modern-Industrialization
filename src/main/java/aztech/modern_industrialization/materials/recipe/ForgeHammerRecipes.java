@@ -40,7 +40,7 @@ public class ForgeHammerRecipes {
         addHammer(ctx, ORE, 1, CRUSHED_DUST, 2);
         addHammer(ctx, ORE, 1, RAW_METAL, 2);
         addSaw(ctx, INGOT, ROD);
-        addSaw(ctx, LARGE_PLATE, GEAR);
+        // addSaw(ctx, LARGE_PLATE, GEAR);
         addSaw(ctx, ROD, BOLT);
     }
 

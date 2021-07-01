@@ -51,6 +51,11 @@ public final class StandardRecipes {
         new ShapedRecipeBuilder(ctx, ROTOR, 1, "rotor", "bBb", "BRB", "bBb").addTaggedPart('b', BOLT).addTaggedPart('B', BLADE).addTaggedPart('R',
                 RING);
 
+        new ShapedRecipeBuilder(ctx, GEAR, 1, "gear", "PbP", "bRb", "PbP").addTaggedPart('b', BOLT).addTaggedPart('P', PLATE).addTaggedPart('R',
+                RING);
+
+        new ShapedRecipeBuilder(ctx, RING, 2, "ring", "bRb", "R R", "bRb").addTaggedPart('b', BOLT).addTaggedPart('R', ROD);
+
         new ShapedRecipeBuilder(ctx, CABLE, 3, "cable", "rrr", "www", "rrr").addInput('r', "modern_industrialization:rubber_sheet")
                 .addTaggedPart('w', WIRE).exportToAssembler();
 
@@ -80,11 +85,11 @@ public final class StandardRecipes {
         new MIRecipeBuilder(ctx, "compressor", "main").addTaggedPartInput(ctx.getMainPart(), 1).addPartOutput(PLATE, 1);
         new MIRecipeBuilder(ctx, "compressor", "plate").addTaggedPartInput(PLATE, 1).addPartOutput(CURVED_PLATE, 1);
         new MIRecipeBuilder(ctx, "compressor", "double_ingot").addTaggedPartInput(DOUBLE_INGOT, 1).addPartOutput(PLATE, 2);
+        new MIRecipeBuilder(ctx, "compressor", "ring").addTaggedPartInput(ROD, 1).addPartOutput(RING, 1);
         // CUTTING MACHINE
         addCuttingMachine(ctx, "main", ctx.getMainPart(), ROD, 2);
         addCuttingMachine(ctx, "double_ingot", DOUBLE_INGOT, ROD, 4);
         addCuttingMachine(ctx, "rod", ROD, BOLT, 2);
-        addCuttingMachine(ctx, "large_plate", LARGE_PLATE, GEAR, 2);
         // PACKER
         new MIRecipeBuilder(ctx, "packer", "double_ingot").addTaggedPartInput(INGOT, 2).addPartOutput(DOUBLE_INGOT, 1);
         // WIREMILL
@@ -92,6 +97,7 @@ public final class StandardRecipes {
         new MIRecipeBuilder(ctx, "wiremill", "fine_wire").addTaggedPartInput(WIRE, 1).addPartOutput(FINE_WIRE, 4);
         // EXTRA ASSEMBLER
         new MIRecipeBuilder(ctx, "assembler", "rotor").addTaggedPartInput(BLADE, 4).addTaggedPartInput(RING, 1).addPartOutput(ROTOR, 1);
+        new MIRecipeBuilder(ctx, "assembler", "gear").addTaggedPartInput(PLATE, 4).addTaggedPartInput(RING, 1).addPartOutput(GEAR, 2);
 
         new MIRecipeBuilder(ctx, "polarizer", "rod_magnetic", 8, 200).addTaggedPartInput(ROD, 1).addPartOutput(ROD_MAGNETIC, 1);
         new MIRecipeBuilder(ctx, "polarizer", "wire_magnetic", 8, 200).addTaggedPartInput(WIRE, 1).addPartOutput(WIRE_MAGNETIC, 1);

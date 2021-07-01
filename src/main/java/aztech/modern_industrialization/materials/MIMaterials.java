@@ -220,7 +220,7 @@ public class MIMaterials {
 
         MaterialRegistry.addMaterial(
                 new MaterialBuilder("invar", METALLIC, 0xDCDC96).addParts(CasingMaterialPart.of(MACHINE_CASING_SPECIAL, "heatproof_machine_casing"))
-                        .addRegularParts(TINY_DUST, DUST, INGOT, DOUBLE_INGOT, PLATE, LARGE_PLATE, NUGGET, GEAR)
+                        .addRegularParts(TINY_DUST, DUST, INGOT, DOUBLE_INGOT, RING, BOLT, PLATE, LARGE_PLATE, NUGGET, GEAR)
                         .addParts(BlockMaterialPart.of(MaterialBlockSet.IRON)).addRecipes(StandardRecipes::apply, SmeltingRecipes::apply).build());
 
         MaterialRegistry.addMaterial(new MaterialBuilder("cupronickel", METALLIC, 0xE39681)
@@ -292,7 +292,7 @@ public class MIMaterials {
                 .addRecipes(StandardRecipes::apply).build());
 
         MaterialRegistry.addMaterial(new MaterialBuilder("beryllium", SHINY, 0x64B464).addParts(BlockMaterialPart.of(MaterialBlockSet.NETHERITE))
-                .addRegularParts(ITEM_ALL).addRecipes(StandardRecipes::apply).build());
+                .addRegularParts(ITEM_BASE).addRecipes(StandardRecipes::apply).build());
 
         MaterialRegistry.addMaterial(new MaterialBuilder("annealed_copper", SHINY, 0xff924f).addRegularParts(ITEM_PURE_METAL)
                 .addParts(BlockMaterialPart.of(MaterialBlockSet.COPPER)).addRegularParts(PLATE, WIRE, DOUBLE_INGOT, HOT_INGOT)

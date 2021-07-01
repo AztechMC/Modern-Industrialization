@@ -1085,7 +1085,7 @@
     "text.modern_industrialization.fluid_slot_input": "Fluid Input, Left Click to Insert or Extract",
     "text.modern_industrialization.fluid_slot_output": "Fluid Output, Left Click to Extract",
     "text.modern_industrialization.fluid_slot_quantity": "%s mb",
-    "text.modern_industrialization.gunpowder_upgrade": "Modern Industrialization Usage : double Steam Machines speed for 2 minutes",
+    "text.modern_industrialization.gunpowder_upgrade": "MI : double Steam Machines speed for 2 minutes",
     "text.modern_industrialization.heat": "Heat : %s",
     "text.modern_industrialization.heat_by_desintegration": "Heat / Desintegration : %s °C",
     "text.modern_industrialization.heat_conduction": "Heat Conduction %s / C°t ",

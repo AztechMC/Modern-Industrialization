@@ -87,7 +87,7 @@ public class DieselToolItem extends Item implements DynamicAttributeTool, Vanish
 
     @Override
     public int getMiningLevel(Tag<Item> tag, BlockState state, ItemStack stack, @Nullable LivingEntity user) {
-        if (tag.contains(this)) {
+        if (tag.contains(this) && FluidFuelItemHelper.getAmount(stack) > 0) {
             return 4; // TODO: higher mining level?
         }
         return 0;

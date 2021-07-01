@@ -178,7 +178,8 @@ public final class SingleBlockCraftingMachines {
                     prefix + "_" + machine, true);
             guiParams.accept(guiParamsBuilder);
             MachineGuiParameters builtGuiParams = guiParamsBuilder.build();
-            MachineRegistrationHelper.registerMachine(prefix + "_" + machine,
+            String id = prefix + "_" + machine;
+            MachineRegistrationHelper.registerMachine(id,
                     bet -> new SteamCraftingMachineBlockEntity(
                             bet, type, buildComponent(itemInputCount, itemOutputCount, fluidInputCount, fluidOutputCount,
                                     items, fluids, steamBuckets),
@@ -190,7 +191,7 @@ public final class SingleBlockCraftingMachines {
                         MachineBlockEntity.registerFluidApi(bet);
                     });
             if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
-                MachineModels.addTieredMachine(prefix, machine, frontOverlay, topOverlay, sideOverlay);
+                MachineModels.addTieredMachine(prefix, id, machine, frontOverlay, topOverlay, sideOverlay);
             }
         }
         if ((tiers & TIER_ELECTRIC) > 0) {
@@ -217,7 +218,7 @@ public final class SingleBlockCraftingMachines {
                         }
                     });
             if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
-                MachineModels.addTieredMachine("lv", machine, frontOverlay, topOverlay, sideOverlay);
+                MachineModels.addTieredMachine("electric", id, machine, frontOverlay, topOverlay, sideOverlay);
             }
         }
 
@@ -251,7 +252,7 @@ public final class SingleBlockCraftingMachines {
         }
         List<ConfigurableFluidStack> fluidInputStacks = new ArrayList<>();
         if (steamBuckets > 0) {
-            fluidInputStacks.add(ConfigurableFluidStack.lockedInputSlot(81000 * steamBuckets, MIFluids.STEAM));
+            fluidInputStacks.add(ConfigurableFluidStack.lockedInputSlot(81000L * steamBuckets, MIFluids.STEAM));
         }
         for (int i = 0; i < fluidInputCount; ++i) {
             fluidInputStacks.add(ConfigurableFluidStack.standardInputSlot(81000 * bucketCapacity));

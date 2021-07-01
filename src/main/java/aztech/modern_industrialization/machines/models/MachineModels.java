@@ -34,18 +34,18 @@ public final class MachineModels {
 
     // The tier is a string to prevent loading client classes on a dedicated server.
     @SuppressWarnings("IfCanBeSwitch")
-    public static void addTieredMachine(String tier, String name, boolean frontOverlay, boolean topOverlay, boolean sideOverlay) {
+    public static void addTieredMachine(String tier, String id, String machineType, boolean frontOverlay, boolean topOverlay, boolean sideOverlay) {
         MachineCasing defaultCasing;
         if (tier.equals("bronze")) {
             defaultCasing = MachineCasings.BRONZE;
         } else if (tier.equals("steel")) {
             defaultCasing = MachineCasings.STEEL;
-        } else if (tier.equals("lv")) {
+        } else if (tier.equals("electric")) {
             defaultCasing = MachineCasings.LV;
         } else {
             throw new RuntimeException("Invalid tier: " + tier);
         }
-        addTieredMachine(tier + "_" + name, name, defaultCasing, frontOverlay, topOverlay, sideOverlay);
+        addTieredMachine(id, machineType, defaultCasing, frontOverlay, topOverlay, sideOverlay);
     }
 
     public static void addTieredMachine(String id, String overlayFolder, MachineCasing defaultCasing, boolean frontOverlay, boolean topOverlay,
@@ -63,7 +63,7 @@ public final class MachineModels {
 
     public static void addTieredMachineTiers(String name, boolean frontOverlay, boolean topOverlay, boolean sideOverlay, String... tiers) {
         for (String tier : tiers) {
-            addTieredMachine(tier, name, frontOverlay, topOverlay, sideOverlay);
+            addTieredMachine(tier, tier + "_" + name, name, frontOverlay, topOverlay, sideOverlay);
         }
     }
 

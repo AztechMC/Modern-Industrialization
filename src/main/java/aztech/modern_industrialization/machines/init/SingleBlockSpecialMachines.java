@@ -69,7 +69,7 @@ public class SingleBlockSpecialMachines {
                 MachineBlockEntity::registerItemApi);
 
         if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
-            MachineModels.addTieredMachineTiers("water_pump", true, true, true, "bronze", "steel", "lv");
+            MachineModels.addTieredMachineTiers("water_pump", true, true, true, "bronze", "steel", "electric");
             MachineModels.addTieredMachine("bronze_boiler", "boiler", MachineCasings.BRICKED_BRONZE, true, false, false);
             MachineModels.addTieredMachine("steel_boiler", "boiler", MachineCasings.BRICKED_STEEL, true, false, false);
             MachineModels.addTieredMachine("diesel_generator", "diesel_generator", MachineCasings.MV, true, true, true);

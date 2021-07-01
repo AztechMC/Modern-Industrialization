@@ -28,9 +28,7 @@ import aztech.modern_industrialization.MIRuntimeResourcePack;
 import aztech.modern_industrialization.ModernIndustrialization;
 import aztech.modern_industrialization.fluid.CraftingFluid;
 import aztech.modern_industrialization.materials.Material;
-import aztech.modern_industrialization.materials.MaterialHelper;
 import aztech.modern_industrialization.materials.MaterialRegistry;
-import aztech.modern_industrialization.materials.part.MIParts;
 import aztech.modern_industrialization.materials.part.MaterialPart;
 import aztech.modern_industrialization.textures.coloramp.BakableTargetColoramp;
 import aztech.modern_industrialization.textures.coloramp.Coloramp;
@@ -111,109 +109,72 @@ public final class MITextures {
         }
     }
 
-    public static void generateItemPartTexture(TextureManager mtm, String materialName, String materialSet, String part, Coloramp coloramp) {
-        generateItemPartTexture(mtm, materialName, materialSet, part, part, coloramp);
-    }
+    public static void generateItemPartTexture(TextureManager mtm, String partTemplate, String overlay, String materialSet, String path,
+            boolean isBlock, Coloramp coloramp) {
+        try {
+            NativeImage texture = generateTexture(mtm, partTemplate, materialSet, coloramp);
 
-    public static void generateItemPartTexture(TextureManager mtm, String materialName, String materialSet, String part, String partTemplate,
-            Coloramp coloramp) {
-        if (part.equals(MIParts.DOUBLE_INGOT)) {
-            mtm.runAtEnd(() -> {
-                try {
-                    generateDoubleIngot(mtm, materialName);
-                } catch (Throwable throwable) {
-                    logTextureGenerationError(throwable, materialName, materialSet, part);
-                }
-            });
-        } else {
-            try {
-                generateBlend(mtm, materialName, materialSet, part, partTemplate, coloramp);
-            } catch (Throwable throwable) {
-                logTextureGenerationError(throwable, materialName, materialSet, part);
+            if (overlay != null) {
+                String overlayTemplate = getTemplate("common", overlay, "");
+                NativeImage overlayTexture = mtm.getAssetAsTexture(overlayTemplate);
+                TextureHelper.blend(texture, overlayTexture);
+                overlayTexture.close();
             }
+
+            appendTexture(mtm, texture, path, isBlock);
+            texture.close();
+        } catch (Throwable throwable) {
+            logTextureGenerationError(throwable, path, materialSet, partTemplate);
         }
     }
 
-    public static void logTextureGenerationError(Throwable throwable, String materialName, String materialSet, String part) {
+    public static void generateItemPartTexture(TextureManager mtm, String partTemplate, String materialSet, String path, boolean isBlock,
+            Coloramp coloramp) {
+        generateItemPartTexture(mtm, partTemplate, null, materialSet, path, isBlock, coloramp);
+    }
+
+    public static void logTextureGenerationError(Throwable throwable, String path, String materialSet, String part) {
         ModernIndustrialization.LOGGER.warn(
-                String.format("Failed to generate item part texture for material name %s, material set %s, part %s", materialName, materialSet, part),
+                String.format("Failed to generate item part texture for path %s, material set %s, partTemplate %s", path, materialSet, part),
                 throwable);
     }
 
-    public static void generateBlend(TextureManager mtm, String materialName, String materialSet, String part, String partTemplate, Coloramp color)
-            throws IOException {
+    public static NativeImage generateTexture(TextureManager mtm, String partTemplate, String materialSet, Coloramp coloramp) throws IOException {
         NativeImage image = null;
         for (String layer : LAYERS) {
             String template;
-
-            if (part.equals(MIParts.HOT_INGOT)) {
-                template = getTemplate("common", "ingot", layer);
-            } else {
-                template = getTemplate("common", MaterialHelper.partWithOverlay(partTemplate), layer);
-                if (!mtm.hasAsset(template)) {
-                    template = getTemplate(materialSet, MaterialHelper.partWithOverlay(partTemplate), layer);
-                }
+            template = getTemplate(materialSet, partTemplate, layer);
+            if (!mtm.hasAsset(template)) {
+                template = getTemplate("common", partTemplate, layer);
             }
 
             if (mtm.hasAsset(template)) {
                 if (image == null) {
                     image = mtm.getAssetAsTexture(template);
-                    colorizeLayer(image, layer, color);
-                    if (part.equals(MIParts.HOT_INGOT)) {
-                        TextureHelper.increaseBrightness(image, 0.85f);
-                    }
+                    colorizeLayer(image, layer, coloramp);
                 } else {
                     NativeImage topLayer = mtm.getAssetAsTexture(template);
-                    colorizeLayer(topLayer, layer, color);
+                    colorizeLayer(topLayer, layer, coloramp);
                     TextureHelper.blend(image, topLayer);
                     topLayer.close();
                 }
             }
-
         }
+        return image;
+    }
 
-        if (image != null) {
+    public static void appendTexture(TextureManager mtm, NativeImage texture, String path, boolean isBlock) throws IOException {
 
-            String overlay = MaterialHelper.overlayWithOverlay(partTemplate);
-
-            if (overlay != null) {
-                String overlayTemplate = getTemplate("common", overlay, "");
-                if (mtm.hasAsset(overlayTemplate)) {
-                    NativeImage overlayImage = mtm.getAssetAsTexture(overlayTemplate);
-                    TextureHelper.blend(image, overlayImage);
-                    overlayImage.close();
-                } else {
-                    throw new RuntimeException("Could not find the overlay : " + overlay);
-                }
-            }
-
+        if (texture != null) {
             String texturePath;
-            if (MaterialHelper.hasBlock(part)) {
-                String itemPath = String.format("%s_%s", materialName, part);
-                itemPath = MaterialHelper.overrideItemPath(itemPath);
-
-                texturePath = String.format("modern_industrialization:textures/blocks/%s.png", itemPath);
-
-                if (part.equals(MIParts.MACHINE_CASING)) {
-                    casingFromTexture(mtm, materialName, image);
-                    tankFromTexture(mtm, materialName, image);
-                } else if (part.equals(MIParts.MACHINE_CASING_SPECIAL) || part.equals(MIParts.MACHINE_CASING_PIPE)) {
-                    casingFromTexture(mtm, itemPath, image);
-                }
-
-            } else if (part.equals(MIParts.GEM)) {
-                String itemPath = materialName;
-                itemPath = MaterialHelper.overrideItemPath(itemPath);
-                texturePath = String.format("modern_industrialization:textures/items/%s.png", itemPath);
+            if (isBlock) {
+                texturePath = String.format("modern_industrialization:textures/blocks/%s.png", path);
             } else {
-                String itemPath = String.format("%s_%s", materialName, part);
-                itemPath = MaterialHelper.overrideItemPath(itemPath);
-                texturePath = String.format("modern_industrialization:textures/items/%s.png", itemPath);
+                texturePath = String.format("modern_industrialization:textures/items/%s.png", path);
             }
-
-            mtm.addTexture(texturePath, image);
-            image.close();
-        } else if (!part.equals(MIParts.GEM)) {
+            mtm.addTexture(texturePath, texture);
+            texture.close();
+        } else {
             throw new RuntimeException("Could not find any texture!");
         }
     }
@@ -225,13 +186,13 @@ public final class MITextures {
         }
         NativeImage image = mtm.getAssetAsTexture(ingotTexture);
         TextureHelper.doubleIngot(image);
-        String itemPath = MaterialHelper.overrideItemPath(materialName + "_double_ingot");
+        String itemPath = materialName + "_double_ingot";
 
         mtm.addTexture(String.format("modern_industrialization:textures/items/%s.png", itemPath), image);
         image.close();
     }
 
-    private static void casingFromTexture(TextureManager tm, String casing, NativeImage texture) {
+    public static void casingFromTexture(TextureManager tm, String casing, NativeImage texture) {
         for (String side : new String[] { "top", "side", "bottom" }) {
 
             try {
@@ -243,7 +204,7 @@ public final class MITextures {
         }
     }
 
-    private static void tankFromTexture(TextureManager tm, String tank, NativeImage texture) {
+    public static void tankFromTexture(TextureManager tm, String tank, NativeImage texture) {
         try {
             String s = String.format("modern_industrialization:textures/blocks/tanks/%s.png", tank);
             NativeImage creativeTankTexture = tm.getAssetAsTexture("modern_industrialization:textures/blocks/tanks/creative.png");
@@ -263,7 +224,7 @@ public final class MITextures {
 
     }
 
-    private static void casingFromTextureBricked(TextureManager tm, String casing, NativeImage texture, NativeImage brick) {
+    public static void casingFromTextureBricked(TextureManager tm, String casing, NativeImage texture, NativeImage brick) {
         for (String side : new String[] { "top", "side", "bottom" }) {
             try {
 

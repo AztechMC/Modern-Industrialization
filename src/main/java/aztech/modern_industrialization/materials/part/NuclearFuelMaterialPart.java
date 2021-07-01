@@ -25,7 +25,6 @@ package aztech.modern_industrialization.materials.part;
 
 import aztech.modern_industrialization.MIItem;
 import aztech.modern_industrialization.materials.MaterialBuilder;
-import aztech.modern_industrialization.materials.MaterialHelper;
 import aztech.modern_industrialization.nuclear.NuclearFuel;
 import aztech.modern_industrialization.textures.MITextures;
 import aztech.modern_industrialization.textures.TextureManager;
@@ -34,35 +33,21 @@ import aztech.modern_industrialization.textures.coloramp.ColorampDepleted;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
-import net.minecraft.item.Item;
 
 public class NuclearFuelMaterialPart implements MaterialPart {
 
     private static final int SIMPLE = 1, DOUBLE = 2, QUAD = 4;
-    private final String id, partSimple, part, itemPath, materialName;
-    private Item item;
+    private final String id;
+    private final String partSimple;
+    private final String part;
+    private final String itemPath;
     private final Coloramp coloramp;
     private final boolean depleted;
 
     private final NuclearFuelParams params;
 
-    private static class NuclearFuelParams {
-        public final int maxTemperature;
-        public final int desintegrationByNeutron;
-        public final double neutronByDesintegration;
-        public final double neutronAbs;
-        public final int euByDesintegration;
-        public final int desintegrationMax;
-
-        public NuclearFuelParams(int maxTemperature, int desintegrationByNeutron, double neutronByDesintegration, double neutronAbs,
-                int euByDesintegration, int desintegrationMax) {
-            this.maxTemperature = maxTemperature;
-            this.desintegrationByNeutron = desintegrationByNeutron;
-            this.neutronByDesintegration = neutronByDesintegration;
-            this.neutronAbs = neutronAbs;
-            this.euByDesintegration = euByDesintegration;
-            this.desintegrationMax = desintegrationMax;
-        }
+    private record NuclearFuelParams(int maxTemperature, int desintegrationByNeutron, double neutronByDesintegration, double neutronAbs,
+            int euByDesintegration, int desintegrationMax) {
     }
 
     public static Function<MaterialBuilder.PartContext, MaterialPart> of(int quantity, boolean depleted, NuclearFuelParams params) {
@@ -70,7 +55,7 @@ public class NuclearFuelMaterialPart implements MaterialPart {
     }
 
     public NuclearFuelMaterialPart(String material, int quantity, boolean depleted, Coloramp coloramp, NuclearFuelParams params) {
-        partSimple = "fuel_rod" + ((quantity == SIMPLE ? "" : (quantity == DOUBLE ? "_double" : "_quad")));
+        partSimple = (quantity == SIMPLE ? MIParts.FUEL_ROD : (quantity == DOUBLE ? MIParts.FUEL_ROD_DOUBLE : MIParts.FUEL_ROD_QUAD));
         part = partSimple + (depleted ? "_depleted" : "");
         itemPath = material + "_" + part;
         id = "modern_industrialization:" + itemPath;
@@ -79,7 +64,6 @@ public class NuclearFuelMaterialPart implements MaterialPart {
         } else {
             this.coloramp = new ColorampDepleted(coloramp);
         }
-        this.materialName = material;
         this.depleted = depleted;
         this.params = params;
 
@@ -120,20 +104,16 @@ public class NuclearFuelMaterialPart implements MaterialPart {
     @Override
     public void register() {
         if (depleted) {
-            item = MIItem.of(MaterialHelper.overrideItemPath(itemPath), 1);
+            MIItem.of(itemPath, 1);
         } else {
-            item = NuclearFuel.of(MaterialHelper.overrideItemPath(itemPath), params.maxTemperature, params.desintegrationByNeutron,
-                    params.neutronByDesintegration, params.neutronAbs, params.euByDesintegration, params.desintegrationMax, partSimple + "_depleted");
+            NuclearFuel.of(itemPath, params.maxTemperature, params.desintegrationByNeutron, params.neutronByDesintegration, params.neutronAbs,
+                    params.euByDesintegration, params.desintegrationMax, partSimple + "_depleted");
         }
 
     }
 
     @Override
     public void registerTextures(TextureManager textureManager) {
-        if (!depleted) {
-            MITextures.generateItemPartTexture(textureManager, materialName, "common", part, coloramp);
-        } else {
-            MITextures.generateItemPartTexture(textureManager, materialName, "common", part, partSimple, coloramp);
-        }
+        MITextures.generateItemPartTexture(textureManager, partSimple, "common", itemPath, false, coloramp);
     }
 }

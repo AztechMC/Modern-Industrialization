@@ -24,20 +24,11 @@
 package aztech.modern_industrialization.materials.part;
 
 import aztech.modern_industrialization.materials.MaterialBuilder;
-import aztech.modern_industrialization.textures.TextureManager;
 import java.util.function.Function;
 
-public class ExternalPart implements MaterialPart {
-    private final String part, tag, itemId;
-
+public record ExternalPart(String part, String tag, String itemId) implements MaterialPart {
     public static Function<MaterialBuilder.PartContext, MaterialPart> of(String part, String taggedItemId, String itemId) {
         return ctx -> new ExternalPart(part, taggedItemId, itemId);
-    }
-
-    private ExternalPart(String part, String tag, String itemId) {
-        this.part = part;
-        this.tag = tag;
-        this.itemId = itemId;
     }
 
     @Override
@@ -55,11 +46,4 @@ public class ExternalPart implements MaterialPart {
         return itemId;
     }
 
-    @Override
-    public void register() {
-    }
-
-    @Override
-    public void registerTextures(TextureManager textureManager) {
-    }
 }

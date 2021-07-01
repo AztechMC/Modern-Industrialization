@@ -25,7 +25,6 @@ package aztech.modern_industrialization.materials.recipe.builder;
 
 import aztech.modern_industrialization.ModernIndustrialization;
 import aztech.modern_industrialization.materials.MaterialBuilder;
-import aztech.modern_industrialization.materials.MaterialHelper;
 import aztech.modern_industrialization.recipe.json.SmeltingRecipeJson;
 import com.google.gson.Gson;
 import net.minecraft.util.Identifier;
@@ -62,9 +61,8 @@ public class SmeltingRecipeBuilder implements MaterialRecipeBuilder {
             canceled = true;
             this.json = null;
         } else {
-            this.json = new SmeltingRecipeJson(SmeltingRecipeJson.SmeltingRecipeType.ofBlasting(blasting),
-                    MaterialHelper.overrideItemPath(context.getPart(inputPart).getItemId()),
-                    MaterialHelper.overrideItemPath(context.getPart(outputPart).getItemId()), cookingtime, experience);
+            this.json = new SmeltingRecipeJson(SmeltingRecipeJson.SmeltingRecipeType.ofBlasting(blasting), context.getPart(inputPart).getItemId(),
+                    context.getPart(outputPart).getItemId(), cookingtime, experience);
             context.addRecipe(this);
         }
     }

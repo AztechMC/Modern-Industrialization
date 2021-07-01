@@ -31,16 +31,30 @@ import aztech.modern_industrialization.materials.MaterialHelper;
 import aztech.modern_industrialization.textures.MITextures;
 import aztech.modern_industrialization.textures.TextureManager;
 import aztech.modern_industrialization.textures.coloramp.Coloramp;
+import aztech.modern_industrialization.textures.coloramp.HotIngotColoramp;
+import java.util.HashMap;
+import java.util.Map;
 import net.devtech.arrp.json.tags.JTag;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
 import net.minecraft.item.Item;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.Pair;
 
 /**
  * A regular material item part, for example bronze curved plates.
  */
 public class RegularMaterialPart implements MaterialPart {
+
+    private static final Map<String, Pair<String, String>> overlays = new HashMap<>();
+
+    static {
+        overlays.put(MIParts.WIRE_MAGNETIC, new Pair<>("magnetic", "wire"));
+        overlays.put(MIParts.ROD_MAGNETIC, new Pair<>("magnetic", "rod"));
+        overlays.put(MIParts.P_DOPED_PLATE, new Pair<>("p_doped", "plate"));
+        overlays.put(MIParts.N_DOPED_PLATE, new Pair<>("n_doped", "plate"));
+    }
+
     protected final String materialName;
     protected final String part;
     protected final String itemPath;
@@ -48,22 +62,17 @@ public class RegularMaterialPart implements MaterialPart {
     protected final String itemTag;
     protected final String materialSet;
     protected final Coloramp coloramp;
+    private final boolean hasBlock;
     protected MIBlock block;
     protected Item item;
 
     public RegularMaterialPart(String materialName, String part, String materialSet, Coloramp coloramp) {
         this.materialName = materialName;
         this.part = part;
+        hasBlock = MaterialHelper.hasBlock(part);
+        itemPath = materialName + "_" + part;
+        itemId = "modern_industrialization:" + itemPath;
 
-        String path = materialName;
-
-        if (!part.equals(MIParts.GEM)) {
-            path += "_" + part;
-        }
-
-        itemPath = path;
-
-        this.itemId = "modern_industrialization:" + itemPath;
         if (MIParts.TAGGED_PARTS.contains(part)) {
             this.itemTag = "#c:" + materialName + "_" + part + "s";
         } else {
@@ -93,32 +102,40 @@ public class RegularMaterialPart implements MaterialPart {
     @Override
     public void register() {
         // create item and block
-
-        if (MaterialHelper.hasBlock(part)) {
-            /*
-             * if(MaterialHelper.isBlock(part) && !(this instanceof BlockMaterialPart)) {
-             * throw new
-             * IllegalArgumentException("Block Part Must be an BlockMaterialPart"); }
-             */
-            block = new MIBlock(MaterialHelper.overrideItemPath(itemPath),
-                    FabricBlockSettings.of(METAL_MATERIAL).hardness(5.0f)
-                            .resistance(MaterialHelper.getResistance(MaterialHelper.overrideItemPath(itemPath)))
-                            .breakByTool(FabricToolTags.PICKAXES, 0).requiresTool());
+        if (hasBlock) {
+            block = new MIBlock(itemPath,
+                    FabricBlockSettings.of(METAL_MATERIAL).hardness(5.0f).resistance(6.0f).breakByTool(FabricToolTags.PICKAXES, 0).requiresTool());
             item = block.blockItem;
         } else {
             block = null;
-            item = MIItem.of(MaterialHelper.overrideItemPath(itemPath));
+            item = MIItem.of(itemPath);
         }
         // item tag
         // items whose path are overridden (such as fire clay ingot -> brick) are not
         // added to the tags
-        if (MIParts.TAGGED_PARTS.contains(part) && MaterialHelper.overrideItemPath(itemPath) == itemPath) {
+        if (MIParts.TAGGED_PARTS.contains(part)) {
             MaterialHelper.registerItemTag(MaterialHelper.getPartTag(materialName, part), JTag.tag().add(new Identifier(getItemId())));
         }
     }
 
     @Override
-    public void registerTextures(TextureManager textureManager) {
-        MITextures.generateItemPartTexture(textureManager, materialName, materialSet, part, coloramp);
+    public void registerTextures(TextureManager mtm) {
+        if (part.equals(MIParts.DOUBLE_INGOT)) {
+            mtm.runAtEnd(() -> {
+                try {
+                    MITextures.generateDoubleIngot(mtm, materialName);
+                } catch (Throwable throwable) {
+                    MITextures.logTextureGenerationError(throwable, materialName, materialSet, part);
+                }
+            });
+        } else if (part.equals(MIParts.HOT_INGOT)) {
+            MITextures.generateItemPartTexture(mtm, MIParts.INGOT, materialSet, itemPath, hasBlock, new HotIngotColoramp(coloramp, 0.3, 0.3));
+        } else if (overlays.containsKey(part)) {
+            Pair<String, String> overlay_part = overlays.get(part);
+            MITextures.generateItemPartTexture(mtm, overlay_part.getRight(), overlay_part.getLeft(), materialSet, itemPath, hasBlock, coloramp);
+        } else {
+            MITextures.generateItemPartTexture(mtm, part, materialSet, itemPath, hasBlock, coloramp);
+        }
+
     }
 }

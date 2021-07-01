@@ -24,84 +24,24 @@
 package aztech.modern_industrialization.materials;
 
 import aztech.modern_industrialization.ModernIndustrialization;
+import aztech.modern_industrialization.materials.part.MIParts;
 import net.devtech.arrp.json.tags.JTag;
 import net.fabricmc.fabric.api.tag.TagRegistry;
 import net.minecraft.util.Identifier;
 
 public class MaterialHelper {
+
     public static boolean hasBlock(String part) {
-        return part.equals("block") || part.equals("ore") || part.equals("coil") || part.equals("machine_casing")
-                || part.equals("machine_casing_pipe") || part.equals("machine_casing_special");
-    }
-
-    public static boolean isOre(String part) {
-        return part.equals("ore");
-    }
-
-    public static boolean isBlock(String part) {
-        return part.equals("ore");
+        for (String s : MIParts.BLOCKS) {
+            if (s.equals(part)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public static String getPartTag(String materialName, String part) {
         return "c:" + materialName + "_" + part + "s";
-    }
-
-    public static String partWithOverlay(String partWithMabyeOverlay) {
-        int len = partWithMabyeOverlay.length();
-
-        if (partWithMabyeOverlay.endsWith("_magnetic")) {
-            return partWithMabyeOverlay.substring(0, len - 9);
-        } else if (partWithMabyeOverlay.startsWith("n_doped_")) {
-            return partWithMabyeOverlay.substring(8, len);
-        } else if (partWithMabyeOverlay.startsWith("p_doped_")) {
-            return partWithMabyeOverlay.substring(8, len);
-        } else {
-            return partWithMabyeOverlay;
-        }
-    }
-
-    public static String overlayWithOverlay(String partWithMabyeOverlay) {
-
-        if (partWithMabyeOverlay.endsWith("_magnetic")) {
-            return "magnetic";
-        } else if (partWithMabyeOverlay.startsWith("n_doped_")) {
-            return "n_doped";
-        } else if (partWithMabyeOverlay.startsWith("p_doped_")) {
-            return "p_doped";
-        } else {
-            return null;
-        }
-    }
-
-    public static String overrideItemPath(String itemPath) {
-        if (itemPath.startsWith("modern_industrialization:")) {
-            return "modern_industrialization:" + overrideItemPath(itemPath.substring("modern_industrialization:".length()));
-        }
-        switch (itemPath) {
-        case "bronze_machine_casing_special":
-            return "bronze_plated_bricks";
-        case "aluminum_machine_casing":
-            return "advanced_machine_casing";
-        case "aluminum_machine_casing_special":
-            return "frostproof_machine_casing";
-        case "invar_machine_casing_special":
-            return "heatproof_machine_casing";
-        case "stainless_steel_machine_casing_special":
-            return "clean_stainless_steel_machine_casing";
-        case "titanium_machine_casing_special":
-            return "solid_titanium_machine_casing";
-        case "stainless_steel_machine_casing":
-            return "turbo_machine_casing";
-        case "titanium_machine_casing":
-            return "highly_advanced_machine_casing";
-        case "redstone_battery":
-            return "lv_battery";
-        case "blastproof_alloy_machine_casing_special":
-            return "blastproof_casing";
-        case "nuclear_alloy_machine_casing_special":
-            return "nuclear_casing";
-        }
-        return itemPath;
     }
 
     /**
@@ -115,16 +55,4 @@ public class MaterialHelper {
         TagRegistry.item(tagId);
     }
 
-    public static float getResistance(String itemPath) {
-        if (itemPath.equals("blastproof_casing")) {
-            return 6000.0F;
-        }
-        if (itemPath.equals("nuclear_casing")) {
-            return 6000.0F;
-        }
-        if (itemPath.equals("nuclear_alloy_machine_casing_pipe")) {
-            return 6000.0F;
-        }
-        return 6.0f;
-    }
 }

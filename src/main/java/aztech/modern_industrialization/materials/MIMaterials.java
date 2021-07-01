@@ -166,7 +166,7 @@ public class MIMaterials {
 
         MaterialRegistry
                 .addMaterial(new MaterialBuilder("coke", STONE, MIParts.GEM, new BakableTargetColoramp(0x6d6d57, common("dust"), miitem("coke")))
-                        .addRegularParts(MIParts.GEM, DUST).addParts(BlockMaterialPart.of(MaterialBlockSet.COAL))
+                        .addRegularParts(DUST).addParts(MIItemPart.of(GEM, "coke")).addParts(BlockMaterialPart.of(MaterialBlockSet.COAL))
                         .addRecipes(context -> new MIRecipeBuilder(context, "macerator", "coke").addTaggedPartInput(MIParts.GEM, 1)
                                 .addPartOutput(DUST, 1))
                         .addRecipes(StandardRecipes::apply).build());
@@ -174,7 +174,8 @@ public class MIMaterials {
         MaterialRegistry
                 .addMaterial(new MaterialBuilder("bronze", SHINY, new BakableTargetColoramp(0xffcc00, common("ingot"), template("bronze_ingot")))
                         .addRegularParts(ITEM_ALL).removeRegularParts(CRUSHED_DUST).addParts(BlockMaterialPart.of(MaterialBlockSet.COPPER))
-                        .addParts(TankMaterialPart.of(4)).addRegularParts(MACHINE_CASING, MACHINE_CASING_PIPE, MACHINE_CASING_SPECIAL)
+                        .addParts(TankMaterialPart.of(4)).addParts(CasingMaterialPart.of(MACHINE_CASING), CasingMaterialPart.of(MACHINE_CASING_PIPE))
+                        .addParts(CasingMaterialPart.of(MACHINE_CASING_SPECIAL, "bronze_plated_bricks"))
                         .addRecipes(ForgeHammerRecipes::apply, SmeltingRecipes::apply, StandardRecipes::apply).build());
 
         MaterialRegistry.addMaterial(new MaterialBuilder("tin", DULL, new BakableTargetColoramp(0xc0bcd0, common("ingot"), template("tin_ingot")))
@@ -186,7 +187,7 @@ public class MIMaterials {
         MaterialRegistry
                 .addMaterial(new MaterialBuilder("steel", METALLIC, new BakableTargetColoramp(0x3f3f3f, common("ingot"), template("steel_ingot")))
                         .addRegularParts(ITEM_ALL).addRegularParts(ROD_MAGNETIC).addParts(BlockMaterialPart.of(MaterialBlockSet.IRON))
-                        .addRegularParts(MACHINE_CASING, MACHINE_CASING_PIPE).addParts(TankMaterialPart.of(8))
+                        .addParts(CasingMaterialPart.of(MACHINE_CASING), CasingMaterialPart.of(MACHINE_CASING_PIPE)).addParts(TankMaterialPart.of(8))
                         .addRecipes(ForgeHammerRecipes::apply, SmeltingRecipes::apply, StandardRecipes::apply).build());
 
         MaterialRegistry.addMaterial(new MaterialBuilder("lignite_coal", STONE, MIParts.GEM, 0x644646).addRegularParts(ITEM_PURE_NON_METAL)
@@ -200,7 +201,8 @@ public class MIMaterials {
         MaterialRegistry.addMaterial(new MaterialBuilder("aluminum", METALLIC,
                 new BakableTargetColoramp(0x3fcaff, common("ingot"), "modern_industrialization:textures/template/aluminum_ingot.png"))
                         .addRegularParts(ITEM_ALL).addRegularParts(WIRE, FINE_WIRE).addParts(BlockMaterialPart.of(MaterialBlockSet.GOLD))
-                        .addRegularParts(MACHINE_CASING_SPECIAL, MACHINE_CASING).addParts(TankMaterialPart.of(16))
+                        .addParts(CasingMaterialPart.of(MACHINE_CASING, "advanced_machine_casing"))
+                        .addParts(CasingMaterialPart.of(MACHINE_CASING_SPECIAL, "frostproof_machine_casing")).addParts(TankMaterialPart.of(16))
                         .addParts(CableMaterialPart.of(CableTier.HV)).addRecipes(StandardRecipes::apply).build());
 
         MaterialRegistry.addMaterial(new MaterialBuilder("bauxite", DULL, DUST, 0xC86400).addRegularParts(ITEM_PURE_NON_METAL)
@@ -216,9 +218,10 @@ public class MIMaterials {
                 .addRegularParts(TINY_DUST, DUST, INGOT, DOUBLE_INGOT, PLATE, CURVED_PLATE, NUGGET, LARGE_PLATE)
                 .addParts(BlockMaterialPart.of(MaterialBlockSet.IRON)).addRecipes(StandardRecipes::apply, SmeltingRecipes::apply).build());
 
-        MaterialRegistry.addMaterial(new MaterialBuilder("invar", METALLIC, 0xDCDC96).addRegularParts(MACHINE_CASING_SPECIAL)
-                .addRegularParts(TINY_DUST, DUST, INGOT, DOUBLE_INGOT, PLATE, LARGE_PLATE, NUGGET, GEAR)
-                .addParts(BlockMaterialPart.of(MaterialBlockSet.IRON)).addRecipes(StandardRecipes::apply, SmeltingRecipes::apply).build());
+        MaterialRegistry.addMaterial(
+                new MaterialBuilder("invar", METALLIC, 0xDCDC96).addParts(CasingMaterialPart.of(MACHINE_CASING_SPECIAL, "heatproof_machine_casing"))
+                        .addRegularParts(TINY_DUST, DUST, INGOT, DOUBLE_INGOT, PLATE, LARGE_PLATE, NUGGET, GEAR)
+                        .addParts(BlockMaterialPart.of(MaterialBlockSet.IRON)).addRecipes(StandardRecipes::apply, SmeltingRecipes::apply).build());
 
         MaterialRegistry.addMaterial(new MaterialBuilder("cupronickel", METALLIC, 0xE39681)
                 .addRegularParts(TINY_DUST, DUST, INGOT, DOUBLE_INGOT, PLATE, WIRE, NUGGET, COIL, WIRE_MAGNETIC)
@@ -245,11 +248,13 @@ public class MIMaterials {
                 .addParts(BlockMaterialPart.of(MaterialBlockSet.REDSTONE)).addParts(OreMaterialPart.of(MaterialOreSet.COAL))
                 .addRecipes(StandardRecipes::apply).build());
 
-        MaterialRegistry.addMaterial(new MaterialBuilder("titanium", METALLIC,
-                new BakableTargetColoramp(0xDCA0F0, common("ingot"), "modern_industrialization:textures/template/titanium_ingot.png"))
+        MaterialRegistry.addMaterial(
+                new MaterialBuilder("titanium", METALLIC, new BakableTargetColoramp(0xDCA0F0, common("ingot"), template("titanium_ingot")))
                         .addRegularParts(ITEM_ALL).addParts(BlockMaterialPart.of(MaterialBlockSet.NETHERITE))
-                        .addParts(RawMetalPart.of(MaterialRawSet.COPPER))
-                        .addRegularParts(HOT_INGOT, MACHINE_CASING, MACHINE_CASING_PIPE, MACHINE_CASING_SPECIAL)
+                        .addParts(RawMetalPart.of(MaterialRawSet.COPPER)).addRegularParts(HOT_INGOT)
+                        .addParts(CasingMaterialPart.of(MACHINE_CASING, "highly_advanced_machine_casing"))
+                        .addParts(CasingMaterialPart.of(MACHINE_CASING_PIPE))
+                        .addParts(CasingMaterialPart.of(MACHINE_CASING_SPECIAL, "solid_titanium_machine_casing"))
                         .addParts(OreMaterialPart.of(MaterialOreSet.IRON)).addParts(TankMaterialPart.of(64)).addRecipes(StandardRecipes::apply)
                         .build());
 
@@ -261,11 +266,11 @@ public class MIMaterials {
                 .addParts(BlockMaterialPart.of(MaterialBlockSet.IRON)).addRegularParts(N_DOPED_PLATE, P_DOPED_PLATE)
                 .addRegularParts(PLATE, DOUBLE_INGOT, BATTERY).addRecipes(StandardRecipes::apply, SmeltingRecipes::apply).build());
 
-        MaterialRegistry.addMaterial(new MaterialBuilder("stainless_steel", SHINY,
-                new BakableTargetColoramp(0xC8C8DC, common("ingot"), "modern_industrialization:textures/template/stainless_steel_ingot.png"))
+        MaterialRegistry.addMaterial(
+                new MaterialBuilder("stainless_steel", SHINY, new BakableTargetColoramp(0xC8C8DC, common("ingot"), template("stainless_steel_ingot")))
                         .addParts(BlockMaterialPart.of(MaterialBlockSet.IRON)).addRegularParts(ITEM_ALL).addRegularParts(HOT_INGOT)
-                        .addRegularParts(MACHINE_CASING_SPECIAL, MACHINE_CASING, MACHINE_CASING_PIPE, ROD_MAGNETIC)
-
+                        .addParts(CasingMaterialPart.of(MACHINE_CASING, "turbo_machine_casing")).addParts(CasingMaterialPart.of(MACHINE_CASING_PIPE))
+                        .addParts(CasingMaterialPart.of(MACHINE_CASING_SPECIAL, "clean_stainless_steel_machine_casing")).addRegularParts(ROD_MAGNETIC)
                         .addParts(TankMaterialPart.of(32)).addRecipes(StandardRecipes::apply).cancelRecipes("polarizer/rod_magnetic").build());
 
         MaterialRegistry.addMaterial(
@@ -351,11 +356,12 @@ public class MIMaterials {
                 .addParts(BlockMaterialPart.of(MaterialBlockSet.NETHERITE)).addParts(OreMaterialPart.of(MaterialOreSet.IRON))
                 .addRecipes(StandardRecipes::apply).build());
 
-        MaterialRegistry.addMaterial(new MaterialBuilder("blastproof_alloy", METALLIC, 0x524c3a)
-                .addRegularParts(PLATE, LARGE_PLATE, MACHINE_CASING_SPECIAL).addRecipes(StandardRecipes::apply).build());
+        MaterialRegistry.addMaterial(new MaterialBuilder("blastproof_alloy", METALLIC, 0x524c3a).addRegularParts(PLATE, LARGE_PLATE)
+                .addParts(CasingMaterialPart.of(MACHINE_CASING_SPECIAL, "blastproof_casing", 6000f)).addRecipes(StandardRecipes::apply).build());
 
-        MaterialRegistry.addMaterial(new MaterialBuilder("nuclear_alloy", METALLIC, 0x3d4d32)
-                .addRegularParts(PLATE, LARGE_PLATE, MACHINE_CASING_SPECIAL, MACHINE_CASING_PIPE).addRecipes(StandardRecipes::apply).build());
+        MaterialRegistry.addMaterial(new MaterialBuilder("nuclear_alloy", METALLIC, 0x3d4d32).addRegularParts(PLATE, LARGE_PLATE)
+                .addParts(CasingMaterialPart.of(MACHINE_CASING_SPECIAL, "nuclear_casing", 6000f))
+                .addParts(CasingMaterialPart.of(MACHINE_CASING_PIPE, 6000f)).addRecipes(StandardRecipes::apply).build());
 
     }
 

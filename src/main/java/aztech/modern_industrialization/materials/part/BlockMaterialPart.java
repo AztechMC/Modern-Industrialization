@@ -83,9 +83,7 @@ public class BlockMaterialPart implements MaterialPart {
     @Override
     public void register() {
         block = new MIBlock(itemPath,
-                FabricBlockSettings.of(METAL_MATERIAL).hardness(5.0f)
-                        .resistance(MaterialHelper.getResistance(MaterialHelper.overrideItemPath(itemPath))).breakByTool(FabricToolTags.PICKAXES, 0)
-                        .requiresTool());
+                FabricBlockSettings.of(METAL_MATERIAL).hardness(5.0f).resistance(6.0f).breakByTool(FabricToolTags.PICKAXES, 0).requiresTool());
         item = block.blockItem;
 
         MaterialHelper.registerItemTag("c:" + materialName + "_blocks", JTag.tag().add(new Identifier(getItemId())));

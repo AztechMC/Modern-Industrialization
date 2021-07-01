@@ -26,7 +26,6 @@ package aztech.modern_industrialization.materials.part;
 import aztech.modern_industrialization.api.energy.CableTier;
 import aztech.modern_industrialization.materials.MaterialBuilder;
 import aztech.modern_industrialization.pipes.MIPipes;
-import aztech.modern_industrialization.textures.TextureManager;
 import java.util.function.Function;
 
 public class CableMaterialPart implements MaterialPart {
@@ -66,7 +65,4 @@ public class CableMaterialPart implements MaterialPart {
         MIPipes.INSTANCE.registerCableType(materialName, color | 0xff000000, tier);
     }
 
-    @Override
-    public void registerTextures(TextureManager textureManager) {
-    }
 }

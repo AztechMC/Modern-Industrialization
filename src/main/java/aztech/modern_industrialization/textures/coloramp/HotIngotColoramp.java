@@ -21,38 +21,26 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.materials.part;
+package aztech.modern_industrialization.textures.coloramp;
 
-import aztech.modern_industrialization.textures.TextureManager;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
+public class HotIngotColoramp implements Coloramp {
 
-public interface MaterialPart {
-    /**
-     * @return The name of this part, for example "ingot" or "dust".
-     */
-    String getPart();
+    private final Coloramp from;
+    private final double bias, gamma;
 
-    /**
-     * @return The common tag of this material prefixed by # if available, or the id
-     *         otherwise.
-     */
-    String getTaggedItemId();
-
-    /**
-     * @return The id of this part.
-     */
-    String getItemId();
-
-    default void register() {
-
+    public HotIngotColoramp(Coloramp from, double bias, double gamma) {
+        this.from = from;
+        this.bias = bias;
+        this.gamma = gamma;
     }
 
-    default void registerTextures(TextureManager textureManager) {
-
+    @Override
+    public int getRGB(double luminance) {
+        return from.getRGB(Math.min(1.0, bias + Math.pow(luminance, gamma)));
     }
 
-    @Environment(EnvType.CLIENT)
-    default void registerClient() {
+    @Override
+    public int getMeanRGB() {
+        return from.getMeanRGB();
     }
 }

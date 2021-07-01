@@ -7,7 +7,9 @@
                         "count": {
                             "min": 1
                         },
-                        "item": "modern_industrialization:mv_lv_transformer"
+                        "items": [
+                            "modern_industrialization:mv_lv_transformer"
+                        ]
                     }
                 ]
             },

@@ -7,7 +7,9 @@
                         "count": {
                             "min": 1
                         },
-                        "item": "modern_industrialization:oil_drilling_rig"
+                        "items": [
+                            "modern_industrialization:oil_drilling_rig"
+                        ]
                     }
                 ]
             },

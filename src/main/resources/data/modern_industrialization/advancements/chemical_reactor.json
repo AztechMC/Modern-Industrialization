@@ -7,7 +7,9 @@
                         "count": {
                             "min": 1
                         },
-                        "item": "modern_industrialization:electrolyzer"
+                        "items": [
+                            "modern_industrialization:chemical_reactor"
+                        ]
                     }
                 ]
             },
@@ -16,14 +18,14 @@
     },
     "display": {
         "description": {
-            "translate": "advancements.modern_industrialization.electrolyzer.description"
+            "translate": "advancements.modern_industrialization.chemical_reactor.description"
         },
         "frame": "task",
         "icon": {
-            "item": "modern_industrialization:electrolyzer"
+            "item": "modern_industrialization:chemical_reactor"
         },
         "title": {
-            "translate": "advancements.modern_industrialization.electrolyzer"
+            "translate": "advancements.modern_industrialization.chemical_reactor"
         }
     },
     "hidden": false,

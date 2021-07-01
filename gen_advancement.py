@@ -11,7 +11,7 @@ Path(path_output).mkdir(parents=True, exist_ok=True)
 par = {}
 
 def createAdvancement(item, title, description, parent, item_count=1, frame='task'):
-    advancement_tag = 'modern_industrialization:' + item
+    advancement_target = 'modern_industrialization:' + item
     title_json = 'advancements.modern_industrialization.' + item
     description_json = 'advancements.modern_industrialization.' + item + '.description'
 
@@ -34,7 +34,9 @@ def createAdvancement(item, title, description, parent, item_count=1, frame='tas
         "conditions": {
             "items": [
                 {
-                    "item": advancement_tag,
+                    "items": [
+                        advancement_target
+                    ],
                     "count": {
                         "min": item_count
                     }
@@ -85,7 +87,6 @@ createAdvancement('bronze_furnace', 'Twenty Times More Fuel Efficient',
 createAdvancement('bronze_boiler', 'Hot Water',
                   'Craft a Bronze Boiler', 'fire_clay_bricks')
 
-
 createAdvancement('bronze_compressor', 'An Automatic Forge Mod',
                   'Craft a Bronze Compressor', 'forge_hammer')
 
@@ -122,37 +123,37 @@ createAdvancement('resistor', 'The R in RLC',
 createAdvancement('capacitor', 'The C in RLC',
                   'Craft a Capacitor', 'steel_wiremill')
 
-createAdvancement('lv_circuit', 'RLC Circuits',
+createAdvancement('analog_circuit', 'RLC Circuits',
                   'Craft an Analog Circuit and start the Electric Age', 'resistor', frame='goal')
 
 createAdvancement('lv_steam_turbine', 'Better Than Solar Panels',
-                  'Craft a Steam Turbine', 'lv_circuit')
+                  'Craft a Steam Turbine', 'analog_circuit')
 
-createAdvancement('lv_polarizer', 'One Recipe (+1) To Rule Them All',
+createAdvancement('polarizer', 'One Recipe (+1) To Rule Them All',
                   'Craft a Polarizer', 'lv_steam_turbine')
 
 createAdvancement('large_steam_boiler', 'Kiss Your Fuel Goodbye!',
-                  'Craft a Large Steam Boiler', 'lv_circuit')
+                  'Craft a Large Steam Boiler', 'analog_circuit')
 
-createAdvancement('lv_assembler', 'Avengers, Assemble!',
-                  'Craft an Assembler', 'lv_circuit', frame='goal')
+createAdvancement('assembler', 'Avengers, Assemble!',
+                  'Craft an Assembler', 'analog_circuit', frame='goal')
 
 createAdvancement('mv_lv_transformer', 'Optimus Prime!',
-                  'Craft an MV to LV Transformer', 'lv_circuit')
+                  'Craft an MV to LV Transformer', 'analog_circuit')
 
 createAdvancement('electric_blast_furnace', 'Electric Best Friend',
                   'Craft an Electric Blast Furnace to start producing Aluminum', 'lv_steam_turbine', frame='goal')
 
-createAdvancement('lv_centrifuge', 'Actually It\'s The Centripetal Force',
+createAdvancement('centrifuge', 'Actually It\'s The Centripetal Force',
                   'Craft a Centrifuge', 'electric_blast_furnace')
 
-createAdvancement('lv_electrolyzer', 'It\'s Got What Plants Crave',
+createAdvancement('electrolyzer', 'It\'s Got What Plants Crave',
                   'Craft an Electrolyzer', 'electric_blast_furnace')
 
-createAdvancement('lv_chemical_reactor', 'Walter White Approves',
+createAdvancement('chemical_reactor', 'Walter White Approves',
                   'Craft a Chemical Reactor', 'electric_blast_furnace')
 
-createAdvancement('lv_distillery', 'Al Capone Approves',
+createAdvancement('distillery', 'Al Capone Approves',
                   'Craft a Distillery', 'electric_blast_furnace')
 
 createAdvancement('electric_quarry', 'Resources GO BRRRRRR!!!',
@@ -168,13 +169,13 @@ createAdvancement('mv_steam_turbine', 'Better Than Wind Mills',
                   'Craft an Advanced Steam Turbine', 'electric_blast_furnace', frame='goal')
 
 createAdvancement('diesel_generator', 'Fast and Furious',
-                  'Craft a Diesel Generator', 'lv_distillery')
+                  'Craft a Diesel Generator', 'distillery')
 
-createAdvancement('jetpack', 'Ely... We Meant Jetpack!',
-                  'Craft a Diesel Jetpack', 'lv_distillery', frame='challenge')
+createAdvancement('diesel_jetpack', 'Ely... We Meant Jetpack!',
+                  'Craft a Diesel Jetpack', 'distillery', frame='challenge')
 
 createAdvancement('diesel_chainsaw', 'The Texas Chain Saw Massacre',
-                  'Craft a Diesel Chainsaw', 'lv_distillery', frame='challenge')
+                  'Craft a Diesel Chainsaw', 'distillery', frame='challenge')
 
 createAdvancement('diesel_mining_drill', 'Through The Walls Of Ba Sing Se',
-                  'Craft a Diesel Mining Drill', 'lv_distillery', frame='challenge')
+                  'Craft a Diesel Mining Drill', 'distillery', frame='challenge')

@@ -7,7 +7,9 @@
                         "count": {
                             "min": 1
                         },
-                        "item": "modern_industrialization:electric_blast_furnace"
+                        "items": [
+                            "modern_industrialization:electric_blast_furnace"
+                        ]
                     }
                 ]
             },

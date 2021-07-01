@@ -7,7 +7,9 @@
                         "count": {
                             "min": 1
                         },
-                        "item": "modern_industrialization:steel_wiremill"
+                        "items": [
+                            "modern_industrialization:steel_wiremill"
+                        ]
                     }
                 ]
             },

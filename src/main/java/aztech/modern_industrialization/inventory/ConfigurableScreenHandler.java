@@ -132,7 +132,7 @@ public abstract class ConfigurableScreenHandler extends ScreenHandler {
 
                         // Otherwise insert
                         FluidKey fluid = fluidStack.resource();
-                        if (fluidSlot.canExtractFluid(fluid)) {
+                        if (!fluid.isEmpty() && fluidSlot.canExtractFluid(fluid)) {
                             try (Transaction tx = Transaction.openOuter()) {
                                 fluidStack.decrement(io.insert(fluid, fluidStack.amount(), tx));
                                 tx.commit();

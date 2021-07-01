@@ -32,6 +32,7 @@ public final class MIRecipes {
     public static RuntimeResourcePack buildRecipesPack() {
         RuntimeResourcePack pack = RuntimeResourcePack.create("modern_industrialization:recipes");
 
+        DyeRecipes.addRecipes(pack);
         PlankRecipes.yes(pack);
 
         return pack;

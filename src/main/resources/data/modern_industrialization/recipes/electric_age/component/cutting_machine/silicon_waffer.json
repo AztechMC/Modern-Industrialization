@@ -7,7 +7,7 @@
     "amount": 1
   },
   "fluid_inputs": {
-    "fluid": "minecraft:water",
+    "fluid": "modern_industrialization:lubricant",
     "amount": 500
   },
   "item_outputs": {

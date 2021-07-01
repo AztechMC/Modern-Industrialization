@@ -23,8 +23,8 @@
  */
 package aztech.modern_industrialization.machines.recipe;
 
+import aztech.modern_industrialization.MIFluids;
 import java.util.Collections;
-import net.minecraft.fluid.Fluids;
 import net.minecraft.recipe.Ingredient;
 import net.minecraft.recipe.SmeltingRecipe;
 import net.minecraft.recipe.StonecuttingRecipe;
@@ -51,7 +51,7 @@ public class RecipeConversions {
         recipe.eu = 2;
         recipe.duration = 200;
         recipe.itemInputs = Collections.singletonList(new MachineRecipe.ItemInput(stonecuttingRecipe.getIngredients().get(0), 1, 1));
-        recipe.fluidInputs = Collections.singletonList(new MachineRecipe.FluidInput(Fluids.WATER, 81, 1));
+        recipe.fluidInputs = Collections.singletonList(new MachineRecipe.FluidInput(MIFluids.LUBRICANT, 81, 1));
         recipe.itemOutputs = Collections
                 .singletonList(new MachineRecipe.ItemOutput(stonecuttingRecipe.getOutput().getItem(), stonecuttingRecipe.getOutput().getCount(), 1));
         recipe.fluidOutputs = Collections.emptyList();

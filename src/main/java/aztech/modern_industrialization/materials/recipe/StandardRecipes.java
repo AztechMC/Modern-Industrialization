@@ -135,7 +135,7 @@ public final class StandardRecipes {
 
     private static void addCuttingMachine(MaterialBuilder.RecipeContext ctx, String name, String inputPart, String outputPart, int amount) {
         new MIRecipeBuilder(ctx, "cutting_machine", name).addTaggedPartInput(inputPart, 1).addPartOutput(outputPart, amount)
-                .addFluidInput("minecraft:water", 1);
+                .addFluidInput("modern_industrialization:lubricant", 1);
     }
 
 }

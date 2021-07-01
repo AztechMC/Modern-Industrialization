@@ -244,11 +244,11 @@ spotless {
     }
     format 'json', {
         target 'src/**/lang/*.json'
-        // TODO: add back when it doesn't crash due to gradle
-        //addStep(JsonOrderStep.create())
+        addStep(JsonOrderStep.create())
     }
 }
 
+import com.diffplug.spotless.FormatterFunc
 import com.diffplug.spotless.FormatterStep
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
@@ -258,15 +258,26 @@ final class JsonOrderStep {
     private static final Gson GSON = new GsonBuilder().setLenient().setPrettyPrinting().create();
 
     static FormatterStep create() {
-        return FormatterStep.createNeverUpToDate(
+        return FormatterStep.create(
                 'jsonOrderStep',
-                { String inputString ->
-                    TreeMap<String, Object> jsonMap = GSON.fromJson(inputString, TreeMap.class);
-                    String sortedJson = GSON.toJson(jsonMap);
-                    String prettyPrinted = sortedJson.replace('  "', '    "').replace('\\u0027', '\'');
-                    return prettyPrinted;
+                new State(),
+                {
+                    new FormatterFunc() {
+                        String apply(String input) {
+                            TreeMap<String, Object> jsonMap = GSON.fromJson(input, TreeMap.class);
+                            String sortedJson = GSON.toJson(jsonMap);
+                            String prettyPrinted = sortedJson.replace('  "', '    "').replace('\\u0027', '\'');
+                            return prettyPrinted;
+                        }
+                    }
                 },
         );
+    }
+
+    private static final class State implements Serializable {
+        private static final long serialVersionUID = 1L;
+
+        private final int formatVersion = 1;
     }
 }
 

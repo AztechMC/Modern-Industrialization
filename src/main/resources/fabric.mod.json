@@ -48,9 +48,7 @@
     "fabricloader": ">=0.7.4",
     "fabric": ">=0.33",
     "minecraft": "1.17.x",
-    "patchouli": "*"
-  },
-  "recommends": {
+    "patchouli": "*",
     "roughlyenoughitems": "*"
   },
   "breaks": {

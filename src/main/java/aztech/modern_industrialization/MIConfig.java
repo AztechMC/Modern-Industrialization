@@ -37,6 +37,7 @@ public class MIConfig implements ConfigData {
     public boolean spawnWithGuideBook = true;
     public boolean respawnWithGuideBook = true;
     public boolean disableFuelTooltips = false;
+    public boolean disableItemTagTooltips = false;
 
     private transient static boolean registered = false;
 

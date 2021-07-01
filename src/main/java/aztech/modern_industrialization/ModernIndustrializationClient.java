@@ -59,6 +59,7 @@ import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.fabricmc.fabric.api.client.screenhandler.v1.ScreenRegistry;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
+import net.fabricmc.fabric.api.tag.TagRegistry;
 import net.fabricmc.fabric.impl.content.registry.FuelRegistryImpl;
 import net.fabricmc.loader.DependencyException;
 import net.fabricmc.loader.api.FabricLoader;
@@ -68,6 +69,7 @@ import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.Items;
 import net.minecraft.screen.ScreenHandlerType;
+import net.minecraft.tag.Tag;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
 
@@ -168,9 +170,7 @@ public class ModernIndustrializationClient implements ClientModInitializer {
                         ModernIndustrialization.LOGGER.warn("Could not show MI fuel tooltip.", e);
                     }
                 }
-
             }
-
         }));
     }
 

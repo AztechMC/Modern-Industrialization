@@ -48,6 +48,7 @@ import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 import net.fabricmc.fabric.api.screenhandler.v1.ScreenHandlerRegistry;
+import net.fabricmc.fabric.api.tag.TagRegistry;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidKey;
 import net.minecraft.block.Block;
 import net.minecraft.block.Material;
@@ -58,6 +59,7 @@ import net.minecraft.client.util.SpriteIdentifier;
 import net.minecraft.item.Item;
 import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.tag.Tag;
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
@@ -66,6 +68,10 @@ public class MIPipes {
     public static final MIPipes INSTANCE = new MIPipes();
 
     public static final Block BLOCK_PIPE = new PipeBlock(FabricBlockSettings.of(Material.METAL).hardness(4.0f));
+    public static final Identifier ITEM_PIPES_ID = new MIIdentifier("item_pipes");
+    public static final Identifier FLUID_PIPES_ID = new MIIdentifier("fluid_pipes");
+    public static final Tag<Item> ITEM_PIPES = TagRegistry.item(ITEM_PIPES_ID);
+    public static final Tag<Item> FLUID_PIPES = TagRegistry.item(FLUID_PIPES_ID);
     public static BlockEntityType<PipeBlockEntity> BLOCK_ENTITY_TYPE_PIPE;
     private final Map<PipeNetworkType, PipeItem> pipeItems = new HashMap<>();
 
@@ -109,7 +115,7 @@ public class MIPipes {
                 FabricBlockEntityTypeBuilder.create(PipeBlockEntity::new, BLOCK_PIPE).build(null));
         ResourceUtil.appendWrenchable(new MIIdentifier("pipe"));
 
-        for (DyeColor color : DyeColor.values()) {
+        for (PipeColor color : PipeColor.values()) {
             registerFluidPipeType(color);
             registerItemPipeType(color);
         }
@@ -123,24 +129,26 @@ public class MIPipes {
         registerPackets();
     }
 
-    private void registerFluidPipeType(DyeColor color) {
-        String pipeId = color.getName() + "_fluid_pipe";
+    private void registerFluidPipeType(PipeColor color) {
+        String pipeId = color.prefix + "fluid_pipe";
         PipeNetworkType type = PipeNetworkType.register(new MIIdentifier(pipeId), (id, data) -> new FluidNetwork(id, data, 81000),
-                FluidNetworkNode::new, color.getSignColor(), true, FLUID_RENDERER);
+                FluidNetworkNode::new, color.color, true, FLUID_RENDERER);
         PipeItem item = new PipeItem(new Item.Settings().group(ModernIndustrialization.ITEM_GROUP), type, new FluidNetworkData(FluidKey.empty()));
         pipeItems.put(type, item);
         Registry.register(Registry.ITEM, new MIIdentifier(pipeId), item);
         PIPE_MODEL_NAMES.add(new MIIdentifier("item/" + pipeId));
+        ResourceUtil.appendToTag(FLUID_PIPES_ID, new MIIdentifier(pipeId));
     }
 
-    private void registerItemPipeType(DyeColor color) {
-        String pipeId = color.getName() + "_item_pipe";
-        PipeNetworkType type = PipeNetworkType.register(new MIIdentifier(pipeId), ItemNetwork::new, ItemNetworkNode::new, color.getSignColor(), true,
+    private void registerItemPipeType(PipeColor color) {
+        String pipeId = color.prefix + "item_pipe";
+        PipeNetworkType type = PipeNetworkType.register(new MIIdentifier(pipeId), ItemNetwork::new, ItemNetworkNode::new, color.color, true,
                 ITEM_RENDERER);
         PipeItem item = new PipeItem(new Item.Settings().group(ModernIndustrialization.ITEM_GROUP), type, new ItemNetworkData());
         pipeItems.put(type, item);
         Registry.register(Registry.ITEM, new MIIdentifier(pipeId), item);
         PIPE_MODEL_NAMES.add(new MIIdentifier("item/" + pipeId));
+        ResourceUtil.appendToTag(ITEM_PIPES_ID, new MIIdentifier(pipeId));
     }
 
     public void registerCableType(String name, int color, CableTier tier) {

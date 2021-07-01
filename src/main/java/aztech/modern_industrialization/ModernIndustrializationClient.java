@@ -50,6 +50,8 @@ import aztech.modern_industrialization.pipes.MIPipesClient;
 import aztech.modern_industrialization.pipes.impl.PipeItem;
 import aztech.modern_industrialization.proxy.ClientProxy;
 import aztech.modern_industrialization.util.TextHelper;
+import java.util.Collections;
+import java.util.List;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.command.v1.ClientCommandManager;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
@@ -59,7 +61,6 @@ import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.fabricmc.fabric.api.client.screenhandler.v1.ScreenRegistry;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
-import net.fabricmc.fabric.api.tag.TagRegistry;
 import net.fabricmc.fabric.impl.content.registry.FuelRegistryImpl;
 import net.fabricmc.loader.DependencyException;
 import net.fabricmc.loader.api.FabricLoader;
@@ -69,7 +70,8 @@ import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.Items;
 import net.minecraft.screen.ScreenHandlerType;
-import net.minecraft.tag.Tag;
+import net.minecraft.tag.ItemTags;
+import net.minecraft.text.LiteralText;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
 
@@ -168,6 +170,14 @@ public class ModernIndustrializationClient implements ClientModInitializer {
                         }
                     } catch (Exception e) {
                         ModernIndustrialization.LOGGER.warn("Could not show MI fuel tooltip.", e);
+                    }
+                }
+
+                if (context.isAdvanced() && !MIConfig.getConfig().disableItemTagTooltips) {
+                    List<Identifier> ids = (List<Identifier>) ItemTags.getTagGroup().getTagsFor(item);
+                    Collections.sort(ids);
+                    for (Identifier id : ids) {
+                        lines.add(new LiteralText("#" + id).setStyle(TextHelper.GRAY_TEXT));
                     }
                 }
             }

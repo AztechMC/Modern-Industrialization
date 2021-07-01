@@ -60,7 +60,6 @@ import net.minecraft.item.Item;
 import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.tag.Tag;
-import net.minecraft.util.DyeColor;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
@@ -137,7 +136,7 @@ public class MIPipes {
         pipeItems.put(type, item);
         Registry.register(Registry.ITEM, new MIIdentifier(pipeId), item);
         PIPE_MODEL_NAMES.add(new MIIdentifier("item/" + pipeId));
-        ResourceUtil.appendToTag(FLUID_PIPES_ID, new MIIdentifier(pipeId));
+        ResourceUtil.appendToItemTag(FLUID_PIPES_ID, new MIIdentifier(pipeId));
     }
 
     private void registerItemPipeType(PipeColor color) {
@@ -148,7 +147,7 @@ public class MIPipes {
         pipeItems.put(type, item);
         Registry.register(Registry.ITEM, new MIIdentifier(pipeId), item);
         PIPE_MODEL_NAMES.add(new MIIdentifier("item/" + pipeId));
-        ResourceUtil.appendToTag(ITEM_PIPES_ID, new MIIdentifier(pipeId));
+        ResourceUtil.appendToItemTag(ITEM_PIPES_ID, new MIIdentifier(pipeId));
     }
 
     public void registerCableType(String name, int color, CableTier tier) {

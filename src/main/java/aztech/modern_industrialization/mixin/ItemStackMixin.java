@@ -45,8 +45,7 @@ public abstract class ItemStackMixin {
 
     @Inject(method = "getEnchantments", at = @At("RETURN"), cancellable = true)
     private void getEnchantmentsHook(CallbackInfoReturnable<NbtList> cir) {
-        if (getItem() instanceof DynamicEnchantmentItem) {
-            DynamicEnchantmentItem dyn = (DynamicEnchantmentItem) getItem();
+        if (getItem() instanceof DynamicEnchantmentItem dyn) {
             Reference2IntMap<Enchantment> enchantments = dyn.getEnchantments((ItemStack) (Object) this);
             NbtList resultCopy = cir.getReturnValue().copy();
 
@@ -58,8 +57,7 @@ public abstract class ItemStackMixin {
                 boolean replacedAny = false;
 
                 for (NbtElement subTag : resultCopy) {
-                    if (subTag instanceof NbtCompound) {
-                        NbtCompound compoundTag = (NbtCompound) subTag;
+                    if (subTag instanceof NbtCompound compoundTag) {
                         if (compoundTag.getString("id").equals(id)) {
                             compoundTag.putShort("lvl", (short) level);
                             replacedAny = true;

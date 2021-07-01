@@ -23,15 +23,20 @@
  */
 package aztech.modern_industrialization.items;
 
+import aztech.modern_industrialization.api.DynamicEnchantmentItem;
 import aztech.modern_industrialization.proxy.CommonProxy;
 import aztech.modern_industrialization.util.Simulation;
 import aztech.modern_industrialization.util.TextHelper;
 import draylar.magna.api.MagnaTool;
+import it.unimi.dsi.fastutil.objects.Reference2IntMap;
+import it.unimi.dsi.fastutil.objects.Reference2IntOpenHashMap;
 import java.util.List;
 import net.fabricmc.fabric.api.registry.FuelRegistry;
 import net.fabricmc.fabric.api.tool.attribute.v1.DynamicAttributeTool;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.item.TooltipContext;
+import net.minecraft.enchantment.Enchantment;
+import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -59,7 +64,7 @@ import org.jetbrains.annotations.Nullable;
  * fuel was used in a furnace). water: integer, the remaining ticks of water
  * (when full: 18000 ticks i.e. 15 minutes).
  */
-public class SteamDrillItem extends Item implements DynamicAttributeTool, MagnaTool {
+public class SteamDrillItem extends Item implements DynamicAttributeTool, MagnaTool, DynamicEnchantmentItem {
     private static final int FULL_WATER = 18000;
 
     public SteamDrillItem(Settings settings) {
@@ -182,5 +187,12 @@ public class SteamDrillItem extends Item implements DynamicAttributeTool, MagnaT
             }
         }
         return 0;
+    }
+
+    @Override
+    public Reference2IntMap<Enchantment> getEnchantments(ItemStack stack) {
+        Reference2IntMap<Enchantment> map = new Reference2IntOpenHashMap<>();
+        map.put(Enchantments.SILK_TOUCH, 1);
+        return map;
     }
 }

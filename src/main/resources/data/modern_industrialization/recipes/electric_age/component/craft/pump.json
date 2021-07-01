@@ -8,7 +8,7 @@
   "key":
   {
     "m" : {
-      "item" : "modern_industrialization:lv_motor"
+      "item" : "modern_industrialization:motor"
     },
     "r" : {
       "item" : "modern_industrialization:tin_rotor"
@@ -22,6 +22,6 @@
   },
 
   "result": {
-    "item": "modern_industrialization:lv_pump"
+    "item": "modern_industrialization:pump"
   }
 }

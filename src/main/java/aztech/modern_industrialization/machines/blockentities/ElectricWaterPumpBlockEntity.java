@@ -40,7 +40,7 @@ import net.minecraft.fluid.Fluids;
 
 public class ElectricWaterPumpBlockEntity extends AbstractWaterPumpBlockEntity {
     public ElectricWaterPumpBlockEntity(BEP bep) {
-        super(bep, "lv_water_pump");
+        super(bep, "electric_water_pump");
 
         long capacity = 81000 * 32;
         this.inventory = new MIInventory(Collections.emptyList(),

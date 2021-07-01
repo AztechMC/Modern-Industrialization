@@ -42,7 +42,7 @@ public class MachineRegistrationHelper {
     /**
      * Register a machine's block, block entity type and wrenchable tag.
      * 
-     * @param id                Machine block id, for example "lv_macerator"
+     * @param id                Machine block id, for example "electric_macerator"
      * @param factory           The block entity constructor, with a BET parameter.
      * @param extraRegistrators A list of BET consumer used for API registration.
      */

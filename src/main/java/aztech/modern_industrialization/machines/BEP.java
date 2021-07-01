@@ -28,7 +28,7 @@ import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.util.math.BlockPos;
 
 /**
- * BEP = Block entity parameters, because mojang added too many of them for us
+ * BEP = Block entity parameters, because Mojang added too many of them for us
  * to type them all by hand.
  */
 public record BEP(BlockEntityType<?> type, BlockPos pos, BlockState state) {

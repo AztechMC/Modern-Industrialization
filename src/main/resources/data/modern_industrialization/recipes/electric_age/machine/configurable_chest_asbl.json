@@ -11,10 +11,10 @@
       "item" : "modern_industrialization:steel_machine_casing"
     },
     "m" :{
-      "item" : "modern_industrialization:lv_motor"
+      "item" : "modern_industrialization:motor"
     },
     "c": {
-      "item" : "modern_industrialization:lv_circuit"
+      "item" : "modern_industrialization:analog_circuit"
     },
     "h" : {
       "item" : "minecraft:hopper"

@@ -7,7 +7,7 @@
                         "count": {
                             "min": 1
                         },
-                        "item": "modern_industrialization:lv_centrifuge"
+                        "item": "modern_industrialization:centrifuge"
                     }
                 ]
             },
@@ -16,14 +16,14 @@
     },
     "display": {
         "description": {
-            "translate": "advancements.modern_industrialization.lv_centrifuge.description"
+            "translate": "advancements.modern_industrialization.centrifuge.description"
         },
         "frame": "task",
         "icon": {
-            "item": "modern_industrialization:lv_centrifuge"
+            "item": "modern_industrialization:centrifuge"
         },
         "title": {
-            "translate": "advancements.modern_industrialization.lv_centrifuge"
+            "translate": "advancements.modern_industrialization.centrifuge"
         }
     },
     "hidden": false,

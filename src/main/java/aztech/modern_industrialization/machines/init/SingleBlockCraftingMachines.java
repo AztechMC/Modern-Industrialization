@@ -196,11 +196,14 @@ public final class SingleBlockCraftingMachines {
         if ((tiers & TIER_ELECTRIC) > 0) {
             SlotPositions items = new SlotPositions.Builder().buildWithConsumer(itemPositions);
             SlotPositions fluids = new SlotPositions.Builder().buildWithConsumer(fluidPositions);
+
+            String id = tiers == TIER_ELECTRIC ? machine :  "electric_" + machine;
+
             MachineGuiParameters.Builder guiParamsBuilder = new MachineGuiParameters.Builder(
-                    "lv_" + machine, true);
+                    id, true);
             guiParams.accept(guiParamsBuilder);
             MachineGuiParameters builtGuiParams = guiParamsBuilder.build();
-            MachineRegistrationHelper.registerMachine("lv_" + machine,
+            MachineRegistrationHelper.registerMachine(id,
                     bet -> new ElectricCraftingMachineBlockEntity(bet, type,
                             buildComponent(itemInputCount, itemOutputCount, fluidInputCount, fluidOutputCount, items, fluids, 0),
                             builtGuiParams, energyBarParams, progressBarParams, efficiencyBarParams, MachineTier.LV, 3200),
@@ -271,7 +274,7 @@ public final class SingleBlockCraftingMachines {
                 int minEu = previousMaxEu+1;
                 int maxEu = i == 0 ? 2 : i == 1 ? 4 : Integer.MAX_VALUE;
                 previousMaxEu = maxEu;
-                String prefix = i == 0 ? "bronze_" : i == 1 ? "steel_" : "lv_";
+                String prefix = i == 0 ? "bronze_" : i == 1 ? "steel_" : tiers == TIER_ELECTRIC ?  "" : "electric_";
                 String itemId = prefix + machine;
                 MachineCategoryParams category = new MachineCategoryParams(
                         itemId,

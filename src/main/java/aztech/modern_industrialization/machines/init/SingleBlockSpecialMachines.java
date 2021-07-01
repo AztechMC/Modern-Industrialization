@@ -48,7 +48,7 @@ public class SingleBlockSpecialMachines {
                 MachineBlockEntity::registerFluidApi);
         MachineRegistrationHelper.registerMachine("steel_water_pump", bet -> new SteamWaterPumpBlockEntity(bet, false),
                 MachineBlockEntity::registerFluidApi);
-        MachineRegistrationHelper.registerMachine("lv_water_pump", ElectricWaterPumpBlockEntity::new, MachineBlockEntity::registerFluidApi,
+        MachineRegistrationHelper.registerMachine("electric_water_pump", ElectricWaterPumpBlockEntity::new, MachineBlockEntity::registerFluidApi,
                 ElectricWaterPumpBlockEntity::registerEnergyApi);
 
         registerTransformers();

@@ -72,7 +72,7 @@ public class MIBlock extends Block {
             FabricBlockSettings.of(STONE_MATERIAL).hardness(2.0f).resistance(6.0f).breakByTool(FabricToolTags.PICKAXES, 0).requiresTool());
 
     // hull
-    public static final MIBlock BASIC_MACHINE_HULL = new MIBlock("lv_machine_hull");
+    public static final MIBlock BASIC_MACHINE_HULL = new MIBlock("basic_machine_hull");
     public static final MIBlock ADVANCED_MACHINE_HULL = new MIBlock("advanced_machine_hull");
     public static final MIBlock TURBO_MACHINE_HULL = new MIBlock("turbo_machine_hull");
     public static final MIBlock HIGHLY_ADVANCED_MACHINE_HULL = new MIBlock("highly_advanced_machine_hull");

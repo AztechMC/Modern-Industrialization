@@ -11,7 +11,7 @@
       "item" : "modern_industrialization:redstone_battery"
     },
     "H" :{
-      "item" : "modern_industrialization:lv_machine_hull"
+      "item" : "modern_industrialization:basic_machine_hull"
     },
     "L": {
       "item" : "modern_industrialization:battery_alloy_large_plate"

@@ -1,7 +1,7 @@
 {
   "name": "Electric Machines",
   "category": "modern_industrialization:electric_age",
-  "icon": "modern_industrialization:lv_assembler",
+  "icon": "modern_industrialization:assembler",
   "pages": [
     {
       "type": "text",

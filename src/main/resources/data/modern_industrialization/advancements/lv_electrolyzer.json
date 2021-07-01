@@ -7,7 +7,7 @@
                         "count": {
                             "min": 1
                         },
-                        "item": "modern_industrialization:lv_electrolyzer"
+                        "item": "modern_industrialization:electrolyzer"
                     }
                 ]
             },
@@ -16,14 +16,14 @@
     },
     "display": {
         "description": {
-            "translate": "advancements.modern_industrialization.lv_electrolyzer.description"
+            "translate": "advancements.modern_industrialization.electrolyzer.description"
         },
         "frame": "task",
         "icon": {
-            "item": "modern_industrialization:lv_electrolyzer"
+            "item": "modern_industrialization:electrolyzer"
         },
         "title": {
-            "translate": "advancements.modern_industrialization.lv_electrolyzer"
+            "translate": "advancements.modern_industrialization.electrolyzer"
         }
     },
     "hidden": false,

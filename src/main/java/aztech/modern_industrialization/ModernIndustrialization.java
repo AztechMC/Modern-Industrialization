@@ -186,7 +186,7 @@ public class ModernIndustrialization implements ModInitializer {
                 ITEM_DIESEL_CHAINSAW, ITEM_DIESEL_DRILL);
         ItemFluidStorage.ITEM.registerForItems((stack, ctx) -> new FluidFuelItemHelper.ItemStorage(JetpackItem.CAPACITY, stack, ctx), ITEM_JETPACK);
 
-        SpeedUpgrade.LOOKUP.registerForItems((key, vd) -> () -> 2, MIItem.ITEM_LV_MOTOR);
+        SpeedUpgrade.LOOKUP.registerForItems((key, vd) -> () -> 2, MIItem.ITEM_MOTOR);
         SpeedUpgrade.LOOKUP.registerForItems((key, vd) -> () -> 8, MIItem.ITEM_LARGE_MOTOR);
         SpeedUpgrade.LOOKUP.registerForItems((key, vd) -> () -> 16, MIItem.ADVANCED_MOTOR);
         SpeedUpgrade.LOOKUP.registerForItems((key, vd) -> () -> 64, MIItem.LARGE_ADVANCED_MOTOR);
@@ -283,6 +283,7 @@ public class ModernIndustrialization implements ModInitializer {
     private void setupFuels() {
         addFuel("coke", 6400);
         addFuel("coke_dust", 6400);
+        addFuel("coke_block", Short.MAX_VALUE); // F*** YOU VANILLA ! (Should be 6400*9 but it overflows ...)
         addFuel("coal_crushed_dust", 1600);
         FuelRegistry.INSTANCE.add(TagRegistry.item(new Identifier("c:coal_dusts")), 1600);
         addFuel("coal_tiny_dust", 160);

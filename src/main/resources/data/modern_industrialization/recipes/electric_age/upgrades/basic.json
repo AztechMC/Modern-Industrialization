@@ -4,19 +4,19 @@
   "duration": 200,
   "item_inputs": [
     {
-      "item" : "modern_industrialization:lv_conveyor",
+      "item" : "modern_industrialization:conveyor",
       "amount": 2
     },
     {
-      "item": "modern_industrialization:lv_motor",
+      "item": "modern_industrialization:motor",
       "amount":4
     },
     {
-      "item" : "modern_industrialization:lv_robot_arm",
+      "item" : "modern_industrialization:robot_arm",
       "amount": 2
     },
     {
-      "item" : "modern_industrialization:lv_circuit_board",
+      "item" : "modern_industrialization:analog_circuit_board",
       "amount": 1
     }
   ],

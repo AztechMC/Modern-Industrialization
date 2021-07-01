@@ -15,7 +15,7 @@
       "item" : "modern_industrialization:electrum_cable"
     },
     "b" :{
-      "item" : "modern_industrialization:lv_circuit_board"
+      "item" : "modern_industrialization:analog_circuit_board"
     },
     "B" : {
       "item" : "modern_industrialization:redstone_battery"

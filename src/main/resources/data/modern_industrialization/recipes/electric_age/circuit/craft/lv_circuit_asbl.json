@@ -20,11 +20,11 @@
       "item" : "modern_industrialization:capacitor"
     },
     "B": {
-      "item" : "modern_industrialization:lv_circuit_board"
+      "item" : "modern_industrialization:analog_circuit_board"
     }
   },
 
   "result": {
-    "item": "modern_industrialization:lv_circuit"
+    "item": "modern_industrialization:analog_circuit"
   }
 }

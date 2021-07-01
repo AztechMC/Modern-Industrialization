@@ -13,7 +13,7 @@
       "item" : "modern_industrialization:large_pump"
     },
     "H" :{
-      "item" : "modern_industrialization:lv_machine_hull"
+      "item" : "modern_industrialization:basic_machine_hull"
     },
     "g" : {
       "item" : "minecraft:glass"
@@ -26,6 +26,6 @@
     }
   },
   "result": {
-    "item": "modern_industrialization:lv_distillery"
+    "item": "modern_industrialization:distillery"
   }
 }

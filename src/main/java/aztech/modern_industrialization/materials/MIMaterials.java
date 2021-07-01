@@ -198,8 +198,8 @@ public class MIMaterials {
                         .addPartOutput(MIParts.GEM, 1))
                 .build());
 
-        MaterialRegistry.addMaterial(new MaterialBuilder("aluminum", METALLIC,
-                new BakableTargetColoramp(0x3fcaff, common("ingot"), "modern_industrialization:textures/template/aluminum_ingot.png"))
+        MaterialRegistry.addMaterial(
+                new MaterialBuilder("aluminum", METALLIC, new BakableTargetColoramp(0x3fcaff, common("ingot"), template("aluminum_ingot")))
                         .addRegularParts(ITEM_ALL).addRegularParts(WIRE, FINE_WIRE).addParts(BlockMaterialPart.of(MaterialBlockSet.GOLD))
                         .addParts(CasingMaterialPart.of(MACHINE_CASING, "advanced_machine_casing"))
                         .addParts(CasingMaterialPart.of(MACHINE_CASING_SPECIAL, "frostproof_machine_casing")).addParts(TankMaterialPart.of(16))

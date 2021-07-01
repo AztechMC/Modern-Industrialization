@@ -11,23 +11,23 @@
       "item" : "modern_industrialization:invar_rotary_blade"
     },
     "m" : {
-      "item" : "modern_industrialization:lv_motor"
+      "item" : "modern_industrialization:motor"
     },
     "p" : {
-      "item" : "modern_industrialization:lv_piston"
+      "item" : "modern_industrialization:piston"
     },
     "H" :{
-      "item" : "modern_industrialization:lv_machine_hull"
+      "item" : "modern_industrialization:basic_machine_hull"
     },
     "c": {
       "item" : "modern_industrialization:tin_cable"
     },
     "C" : {
-      "item" : "modern_industrialization:lv_circuit"
+      "item" : "modern_industrialization:analog_circuit"
     }
   },
 
   "result": {
-    "item": "modern_industrialization:lv_macerator"
+    "item": "modern_industrialization:electric_macerator"
   }
 }

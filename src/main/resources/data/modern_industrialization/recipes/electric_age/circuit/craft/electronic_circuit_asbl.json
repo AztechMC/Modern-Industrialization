@@ -12,7 +12,7 @@
       "item" : "modern_industrialization:diode"
     },
     "c" : {
-      "item" : "modern_industrialization:lv_circuit"
+      "item" : "modern_industrialization:analog_circuit"
     },
     "t" : {
       "item" : "modern_industrialization:transistor"

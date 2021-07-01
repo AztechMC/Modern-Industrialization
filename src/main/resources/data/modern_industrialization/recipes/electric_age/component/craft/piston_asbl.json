@@ -8,7 +8,7 @@
   "key":
   {
     "m" : {
-      "item" : "modern_industrialization:lv_motor"
+      "item" : "modern_industrialization:motor"
     },
     "r" : {
       "item" : "modern_industrialization:steel_rod"
@@ -25,6 +25,6 @@
   },
 
   "result": {
-    "item": "modern_industrialization:lv_piston"
+    "item": "modern_industrialization:piston"
   }
 }

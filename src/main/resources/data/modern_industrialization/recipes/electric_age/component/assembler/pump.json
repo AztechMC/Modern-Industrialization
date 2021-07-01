@@ -12,13 +12,13 @@
             "amount": 3
         },
         {
-            "item": "modern_industrialization:lv_motor",
+            "item": "modern_industrialization:motor",
             "amount": 1
         }
     ],
     "item_outputs": [
         {
-            "item": "modern_industrialization:lv_pump",
+            "item": "modern_industrialization:pump",
             "amount": 1
         }
     ]

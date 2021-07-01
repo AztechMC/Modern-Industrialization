@@ -11,16 +11,16 @@
       "item" : "modern_industrialization:pipe_fluid_bronze"
     },
     "H" :{
-      "item" : "modern_industrialization:lv_machine_hull"
+      "item" : "modern_industrialization:basic_machine_hull"
     },
     "p": {
       "item" : "modern_industrialization:tin_cable"
     },
     "P" : {
-      "item" : "modern_industrialization:lv_pump"
+      "item" : "modern_industrialization:pump"
     },
     "c": {
-      "item": "modern_industrialization:lv_circuit"
+      "item": "modern_industrialization:analog_circuit"
     },
     "r": {
       "item": "modern_industrialization:tin_rotor"
@@ -28,6 +28,6 @@
   },
 
   "result": {
-    "item": "modern_industrialization:lv_water_pump"
+    "item": "modern_industrialization:electric_water_pump"
   }
 }

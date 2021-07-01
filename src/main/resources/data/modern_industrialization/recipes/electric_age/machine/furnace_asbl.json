@@ -11,17 +11,17 @@
       "item" : "modern_industrialization:cupronickel_wire_magnetic"
     },
     "H" :{
-      "item" : "modern_industrialization:lv_machine_hull"
+      "item" : "modern_industrialization:basic_machine_hull"
     },
     "c": {
       "item" : "modern_industrialization:tin_cable"
     },
     "C" : {
-      "item" : "modern_industrialization:lv_circuit"
+      "item" : "modern_industrialization:analog_circuit"
     }
   },
 
   "result": {
-    "item": "modern_industrialization:lv_furnace"
+    "item": "modern_industrialization:electric_furnace"
   }
 }

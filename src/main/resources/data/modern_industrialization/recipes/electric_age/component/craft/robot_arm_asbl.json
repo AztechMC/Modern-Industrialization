@@ -9,7 +9,7 @@
   "key":
   {
     "m" : {
-      "item" : "modern_industrialization:lv_motor"
+      "item" : "modern_industrialization:motor"
     },
     "r" : {
       "item" : "modern_industrialization:steel_rod"
@@ -18,14 +18,14 @@
       "item" : "modern_industrialization:tin_cable"
     },
     "p" :{
-      "item" : "modern_industrialization:lv_piston"
+      "item" : "modern_industrialization:piston"
     },
     "C" :{
-      "item" : "modern_industrialization:lv_circuit"
+      "item" : "modern_industrialization:analog_circuit"
     }
   },
 
   "result": {
-    "item": "modern_industrialization:lv_robot_arm"
+    "item": "modern_industrialization:robot_arm"
   }
 }

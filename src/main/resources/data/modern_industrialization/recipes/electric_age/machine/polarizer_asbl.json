@@ -11,7 +11,7 @@
       "item" : "modern_industrialization:tin_wire"
     },
     "H" :{
-      "item" : "modern_industrialization:lv_machine_hull"
+      "item" : "modern_industrialization:basic_machine_hull"
     },
     "p": {
       "item" : "modern_industrialization:tin_cable"
@@ -22,6 +22,6 @@
   },
 
   "result": {
-    "item": "modern_industrialization:lv_polarizer"
+    "item": "modern_industrialization:polarizer"
   }
 }

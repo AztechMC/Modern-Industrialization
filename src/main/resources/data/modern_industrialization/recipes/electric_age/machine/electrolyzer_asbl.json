@@ -13,7 +13,7 @@
       "item" : "modern_industrialization:aluminum_rod"
     },
     "H": {
-      "item": "modern_industrialization:lv_machine_hull"
+      "item": "modern_industrialization:basic_machine_hull"
     },
     "C" : {
       "item": "modern_industrialization:electronic_circuit"
@@ -23,6 +23,6 @@
     }
   },
   "result": {
-    "item": "modern_industrialization:lv_electrolyzer"
+    "item": "modern_industrialization:electrolyzer"
   }
 }

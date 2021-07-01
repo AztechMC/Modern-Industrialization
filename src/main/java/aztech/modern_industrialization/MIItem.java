@@ -61,13 +61,13 @@ public final class MIItem {
     public static final Item RUBBER_HELMET = of(s -> new ArmorItem(RubberArmorMaterial.INSTANCE, EquipmentSlot.HEAD, s), "rubber_helmet", 1);
     public static final Item RUBBER_BOOTS = of(s -> new ArmorItem(RubberArmorMaterial.INSTANCE, EquipmentSlot.FEET, s), "rubber_boots", 1);
 
-    public static final Item ITEM_LV_MOTOR = of("lv_motor");
-    public static final Item ITEM_LV_PISTON = of("lv_piston");
-    public static final Item ITEM_LV_CONVEYOR = of("lv_conveyor");
-    public static final Item ITEM_LV_ROBOT_ARM = of("lv_robot_arm");
-    public static final Item ITEM_LV_CIRCUIT = of("lv_circuit");
-    public static final Item ITEM_LV_CIRCUIT_BOARD = of("lv_circuit_board");
-    public static final Item ITEM_LV_PUMP = of("lv_pump");
+    public static final Item ITEM_MOTOR = of("motor");
+    public static final Item ITEM_PISTON = of("piston");
+    public static final Item ITEM_CONVEYOR = of("conveyor");
+    public static final Item ITEM_ROBOT_ARM = of("robot_arm");
+    public static final Item ITEM_CIRCUIT = of("analog_circuit");
+    public static final Item ITEM_CIRCUIT_BOARD = of("analog_circuit_board");
+    public static final Item ITEM_PUMP = of("pump");
     public static final Item ITEM_RESISTOR = of("resistor");
     public static final Item ITEM_CAPACITOR = of("capacitor");
     public static final Item ITEM_INDUCTOR = of("inductor");

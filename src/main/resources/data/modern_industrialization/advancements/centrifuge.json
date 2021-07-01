@@ -7,7 +7,9 @@
                         "count": {
                             "min": 1
                         },
-                        "item": "modern_industrialization:jetpack"
+                        "items": [
+                            "modern_industrialization:centrifuge"
+                        ]
                     }
                 ]
             },
@@ -16,16 +18,16 @@
     },
     "display": {
         "description": {
-            "translate": "advancements.modern_industrialization.jetpack.description"
+            "translate": "advancements.modern_industrialization.centrifuge.description"
         },
-        "frame": "challenge",
+        "frame": "task",
         "icon": {
-            "item": "modern_industrialization:jetpack"
+            "item": "modern_industrialization:centrifuge"
         },
         "title": {
-            "translate": "advancements.modern_industrialization.jetpack"
+            "translate": "advancements.modern_industrialization.centrifuge"
         }
     },
     "hidden": false,
-    "parent": "modern_industrialization:distillery"
+    "parent": "modern_industrialization:electric_blast_furnace"
 }

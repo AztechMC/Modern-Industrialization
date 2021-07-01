@@ -7,7 +7,9 @@
                         "count": {
                             "min": 1
                         },
-                        "item": "modern_industrialization:polarizer"
+                        "items": [
+                            "modern_industrialization:diesel_jetpack"
+                        ]
                     }
                 ]
             },
@@ -16,16 +18,16 @@
     },
     "display": {
         "description": {
-            "translate": "advancements.modern_industrialization.polarizer.description"
+            "translate": "advancements.modern_industrialization.diesel_jetpack.description"
         },
-        "frame": "task",
+        "frame": "challenge",
         "icon": {
-            "item": "modern_industrialization:polarizer"
+            "item": "modern_industrialization:diesel_jetpack"
         },
         "title": {
-            "translate": "advancements.modern_industrialization.polarizer"
+            "translate": "advancements.modern_industrialization.diesel_jetpack"
         }
     },
     "hidden": false,
-    "parent": "modern_industrialization:lv_steam_turbine"
+    "parent": "modern_industrialization:distillery"
 }

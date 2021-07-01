@@ -7,7 +7,9 @@
                         "count": {
                             "min": 3
                         },
-                        "item": "modern_industrialization:fire_clay_bricks"
+                        "items": [
+                            "modern_industrialization:fire_clay_bricks"
+                        ]
                     }
                 ]
             },

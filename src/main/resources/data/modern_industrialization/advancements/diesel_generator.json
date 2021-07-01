@@ -7,7 +7,9 @@
                         "count": {
                             "min": 1
                         },
-                        "item": "modern_industrialization:diesel_generator"
+                        "items": [
+                            "modern_industrialization:diesel_generator"
+                        ]
                     }
                 ]
             },

@@ -112,7 +112,7 @@ public class ModernIndustrialization implements ModInitializer {
     // Item
     public static final Item ITEM_SCREWDRIVER = new Item(new Item.Settings().maxCount(1).group(ITEM_GROUP));
     public static final Item ITEM_WRENCH = new WrenchItem(new Item.Settings().maxCount(1).group(ITEM_GROUP));
-    public static final JetpackItem ITEM_JETPACK = new JetpackItem(new Item.Settings().group(ITEM_GROUP));
+    public static final JetpackItem ITEM_DIESEL_JETPACK = new JetpackItem(new Item.Settings().group(ITEM_GROUP));
     public static final DieselToolItem ITEM_DIESEL_CHAINSAW = new DieselToolItem(new Item.Settings().group(ITEM_GROUP));
     public static final DieselToolItem ITEM_DIESEL_DRILL = new DieselToolItem(new Item.Settings().group(ITEM_GROUP));
 
@@ -178,13 +178,14 @@ public class ModernIndustrialization implements ModInitializer {
 
         registerItem(ITEM_SCREWDRIVER, "screwdriver");
         registerItem(ITEM_WRENCH, "wrench");
-        registerItem(ITEM_JETPACK, "jetpack");
+        registerItem(ITEM_DIESEL_JETPACK, "diesel_jetpack");
         registerItem(ITEM_DIESEL_CHAINSAW, "diesel_chainsaw", true);
         registerItem(ITEM_DIESEL_DRILL, "diesel_mining_drill", true);
 
         ItemFluidStorage.ITEM.registerForItems((stack, ctx) -> new FluidFuelItemHelper.ItemStorage(DieselToolItem.CAPACITY, stack, ctx),
                 ITEM_DIESEL_CHAINSAW, ITEM_DIESEL_DRILL);
-        ItemFluidStorage.ITEM.registerForItems((stack, ctx) -> new FluidFuelItemHelper.ItemStorage(JetpackItem.CAPACITY, stack, ctx), ITEM_JETPACK);
+        ItemFluidStorage.ITEM.registerForItems((stack, ctx) -> new FluidFuelItemHelper.ItemStorage(JetpackItem.CAPACITY, stack, ctx),
+                ITEM_DIESEL_JETPACK);
 
         SpeedUpgrade.LOOKUP.registerForItems((key, vd) -> () -> 2, MIItem.ITEM_MOTOR);
         SpeedUpgrade.LOOKUP.registerForItems((key, vd) -> () -> 8, MIItem.ITEM_LARGE_MOTOR);

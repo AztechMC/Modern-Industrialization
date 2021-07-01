@@ -7,7 +7,9 @@
                         "count": {
                             "min": 1
                         },
-                        "item": "modern_industrialization:chemical_reactor"
+                        "items": [
+                            "modern_industrialization:analog_circuit"
+                        ]
                     }
                 ]
             },
@@ -16,16 +18,16 @@
     },
     "display": {
         "description": {
-            "translate": "advancements.modern_industrialization.chemical_reactor.description"
+            "translate": "advancements.modern_industrialization.analog_circuit.description"
         },
-        "frame": "task",
+        "frame": "goal",
         "icon": {
-            "item": "modern_industrialization:chemical_reactor"
+            "item": "modern_industrialization:analog_circuit"
         },
         "title": {
-            "translate": "advancements.modern_industrialization.chemical_reactor"
+            "translate": "advancements.modern_industrialization.analog_circuit"
         }
     },
     "hidden": false,
-    "parent": "modern_industrialization:electric_blast_furnace"
+    "parent": "modern_industrialization:resistor"
 }

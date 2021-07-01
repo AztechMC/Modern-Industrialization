@@ -7,7 +7,9 @@
                         "count": {
                             "min": 1
                         },
-                        "item": "modern_industrialization:forge_hammer"
+                        "items": [
+                            "modern_industrialization:forge_hammer"
+                        ]
                     }
                 ]
             },

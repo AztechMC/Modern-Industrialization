@@ -97,7 +97,7 @@ public class JetpackItem extends ArmorItem implements Wearable, TickableArmor, I
 
             @Override
             public String getName() {
-                return "modern_industrialization/jetpack";
+                return "modern_industrialization/diesel_jetpack";
             }
 
             @Override

@@ -7,7 +7,9 @@
                         "count": {
                             "min": 1
                         },
-                        "item": "modern_industrialization:centrifuge"
+                        "items": [
+                            "modern_industrialization:distillery"
+                        ]
                     }
                 ]
             },
@@ -16,14 +18,14 @@
     },
     "display": {
         "description": {
-            "translate": "advancements.modern_industrialization.centrifuge.description"
+            "translate": "advancements.modern_industrialization.distillery.description"
         },
         "frame": "task",
         "icon": {
-            "item": "modern_industrialization:centrifuge"
+            "item": "modern_industrialization:distillery"
         },
         "title": {
-            "translate": "advancements.modern_industrialization.centrifuge"
+            "translate": "advancements.modern_industrialization.distillery"
         }
     },
     "hidden": false,

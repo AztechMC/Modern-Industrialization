@@ -7,7 +7,9 @@
                         "count": {
                             "min": 1
                         },
-                        "item": "modern_industrialization:vacuum_freezer"
+                        "items": [
+                            "modern_industrialization:vacuum_freezer"
+                        ]
                     }
                 ]
             },

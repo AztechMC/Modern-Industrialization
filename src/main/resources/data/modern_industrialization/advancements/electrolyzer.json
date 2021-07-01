@@ -7,7 +7,9 @@
                         "count": {
                             "min": 1
                         },
-                        "item": "modern_industrialization:analog_circuit"
+                        "items": [
+                            "modern_industrialization:electrolyzer"
+                        ]
                     }
                 ]
             },
@@ -16,16 +18,16 @@
     },
     "display": {
         "description": {
-            "translate": "advancements.modern_industrialization.analog_circuit.description"
+            "translate": "advancements.modern_industrialization.electrolyzer.description"
         },
-        "frame": "goal",
+        "frame": "task",
         "icon": {
-            "item": "modern_industrialization:analog_circuit"
+            "item": "modern_industrialization:electrolyzer"
         },
         "title": {
-            "translate": "advancements.modern_industrialization.analog_circuit"
+            "translate": "advancements.modern_industrialization.electrolyzer"
         }
     },
     "hidden": false,
-    "parent": "modern_industrialization:resistor"
+    "parent": "modern_industrialization:electric_blast_furnace"
 }

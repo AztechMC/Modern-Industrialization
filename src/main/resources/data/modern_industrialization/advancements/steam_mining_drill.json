@@ -7,7 +7,9 @@
                         "count": {
                             "min": 1
                         },
-                        "item": "modern_industrialization:distillery"
+                        "items": [
+                            "modern_industrialization:steam_mining_drill"
+                        ]
                     }
                 ]
             },
@@ -16,16 +18,16 @@
     },
     "display": {
         "description": {
-            "translate": "advancements.modern_industrialization.distillery.description"
+            "translate": "advancements.modern_industrialization.steam_mining_drill.description"
         },
         "frame": "task",
         "icon": {
-            "item": "modern_industrialization:distillery"
+            "item": "modern_industrialization:steam_mining_drill"
         },
         "title": {
-            "translate": "advancements.modern_industrialization.distillery"
+            "translate": "advancements.modern_industrialization.steam_mining_drill"
         }
     },
     "hidden": false,
-    "parent": "modern_industrialization:electric_blast_furnace"
+    "parent": "modern_industrialization:forge_hammer"
 }

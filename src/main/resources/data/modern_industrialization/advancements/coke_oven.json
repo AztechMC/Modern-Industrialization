@@ -7,7 +7,9 @@
                         "count": {
                             "min": 1
                         },
-                        "item": "modern_industrialization:coke_oven"
+                        "items": [
+                            "modern_industrialization:coke_oven"
+                        ]
                     }
                 ]
             },

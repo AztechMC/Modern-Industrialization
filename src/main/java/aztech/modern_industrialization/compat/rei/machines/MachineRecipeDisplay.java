@@ -29,13 +29,12 @@ import aztech.modern_industrialization.util.FluidTextHelper;
 import aztech.modern_industrialization.util.TextHelper;
 import dev.architectury.fluid.FluidStack;
 import java.text.DecimalFormat;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import javax.annotation.Nullable;
 import me.shedaniel.rei.api.client.gui.widgets.Tooltip;
 import me.shedaniel.rei.api.common.category.CategoryIdentifier;
 import me.shedaniel.rei.api.common.display.Display;
@@ -66,35 +65,50 @@ public class MachineRecipeDisplay implements Display {
         this.category = categoryId;
     }
 
-    private static Function<EntryStack<?>, List<Text>> getProbabilityTooltip(float probability) {
-        return stack -> {
-            if (probability == 1) {
-                return Collections.emptyList();
+    @Nullable
+    private static Text getProbabilityTooltip(float probability) {
+        if (probability == 1) {
+            return null;
+        } else {
+            TranslatableText text;
+            if (probability == 0) {
+                text = new TranslatableText("text.modern_industrialization.probability_zero");
             } else {
-                TranslatableText text;
-                if (probability == 0) {
-                    text = new TranslatableText("text.modern_industrialization.probability_zero");
-                } else {
-                    text = new TranslatableText("text.modern_industrialization.probability", PROBABILITY_FORMAT.format(probability * 100));
-                }
-                text.setStyle(TextHelper.GRAY_TEXT);
-                return Collections.singletonList(text);
+                text = new TranslatableText("text.modern_industrialization.probability", PROBABILITY_FORMAT.format(probability * 100));
             }
-        };
+            text.setStyle(TextHelper.GRAY_TEXT);
+            return text;
+        }
     }
 
-    private static EntryStack<?> createFluidEntryStack(Fluid fluid, long amount) {
-        return EntryStacks.of(fluid, amount).setting(EntryStack.Settings.TOOLTIP_PROCESSOR, FLUID_TOOLTIP);
+    private static Function<EntryStack<?>, List<Text>> getProbabilitySetting(float probability) {
+        @Nullable
+        Text tooltip = getProbabilityTooltip(probability);
+        return es -> tooltip == null ? List.of() : List.of(tooltip);
+    }
+
+    private static EntryStack<?> createFluidEntryStack(Fluid fluid, long amount, float probability) {
+        @Nullable
+        Text probabilityText = getProbabilityTooltip(probability);
+        return EntryStacks.of(fluid, amount).setting(EntryStack.Settings.TOOLTIP_PROCESSOR, (stack, oldTooltip) -> {
+            List<Text> tooltip = new ArrayList<>();
+            tooltip.add(FluidKeyRendering.getName(FluidKey.of(fluid)));
+            tooltip.add(
+                    new TranslatableText("text.modern_industrialization.fluid_slot_quantity", FluidTextHelper.getUnicodeMillibuckets(amount, false)));
+            if (probabilityText != null) {
+                tooltip.add(probabilityText);
+            }
+            return Tooltip.create(tooltip);
+        });
     }
 
     public Stream<EntryIngredient> getItemInputs() {
         return recipe.itemInputs.stream().map(i -> ReiUtil.createInputEntries(i)
-                .map(e -> e.setting(EntryStack.Settings.TOOLTIP_APPEND_EXTRA, getProbabilityTooltip(i.probability))));
+                .map(e -> e.setting(EntryStack.Settings.TOOLTIP_APPEND_EXTRA, getProbabilitySetting(i.probability))));
     }
 
     public Stream<EntryIngredient> getFluidInputs() {
-        return recipe.fluidInputs.stream().map(i -> EntryIngredient.of(
-                createFluidEntryStack(i.fluid, i.amount).setting(EntryStack.Settings.TOOLTIP_APPEND_EXTRA, getProbabilityTooltip(i.probability))));
+        return recipe.fluidInputs.stream().map(i -> EntryIngredient.of(createFluidEntryStack(i.fluid, i.amount, i.probability)));
     }
 
     @Override
@@ -104,12 +118,11 @@ public class MachineRecipeDisplay implements Display {
 
     public Stream<EntryIngredient> getItemOutputs() {
         return recipe.itemOutputs.stream().map(i -> EntryIngredient.of(EntryStacks.of(new ItemStack(i.item, i.amount))
-                .setting(EntryStack.Settings.TOOLTIP_APPEND_EXTRA, getProbabilityTooltip(i.probability))));
+                .setting(EntryStack.Settings.TOOLTIP_APPEND_EXTRA, getProbabilitySetting(i.probability))));
     }
 
     public Stream<EntryIngredient> getFluidOutputs() {
-        return recipe.fluidOutputs.stream().map(i -> EntryIngredient.of(
-                createFluidEntryStack(i.fluid, i.amount).setting(EntryStack.Settings.TOOLTIP_APPEND_EXTRA, getProbabilityTooltip(i.probability))));
+        return recipe.fluidOutputs.stream().map(i -> EntryIngredient.of(createFluidEntryStack(i.fluid, i.amount, i.probability)));
     }
 
     @Override

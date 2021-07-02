@@ -50,6 +50,11 @@ public class DyeRecipes {
     public static void addRecipes(RuntimeResourcePack pack) {
         for (DyeColor color : DyeColor.values()) {
             String pathPrefix = "recipes/generated/dyes/" + color.getName() + "/";
+            // 16 item pipes with dye in the center
+            ShapedRecipeJson itemPipesDirect = new ShapedRecipeJson("modern_industrialization:" + color.getName() + "_item_pipe", 16, "CCC", "GdG",
+                    "CCC").addInput('C', "modern_industrialization:bronze_curved_plate").addInput('G', "#c:steel_gears").addInput('d',
+                    "#c:" + color.getName() + "_dyes");
+            pack.addData(new MIIdentifier(pathPrefix + "craft/item_pipe_direct_asbl.json"), GSON.toJson(itemPipesDirect).getBytes());
             // 8 item pipes
             ShapedRecipeJson eightItemPipes = new ShapedRecipeJson("modern_industrialization:" + color.getName() + "_item_pipe", 8, "ppp", "pdp",
                     "ppp").addInput('d', "#c:" + color.getName() + "_dyes").addInput('p', "#modern_industrialization:item_pipes");
@@ -60,6 +65,11 @@ public class DyeRecipes {
             ShapedRecipeJson oneItemPipe = new ShapedRecipeJson("modern_industrialization:" + color.getName() + "_item_pipe", 1, "pd")
                     .addInput('d', "#c:" + color.getName() + "_dyes").addInput('p', "#modern_industrialization:item_pipes");
             pack.addData(new MIIdentifier(pathPrefix + "craft/item_pipe_1.json"), GSON.toJson(oneItemPipe).getBytes());
+            // 16 fluid pipes with stained glass
+            ShapedRecipeJson fluidPipesStainedGlass = new ShapedRecipeJson("modern_industrialization:" + color.getName() + "_fluid_pipe", 16, "CCC",
+                    "rPr", "CCC").addInput('C', "modern_industrialization:bronze_curved_plate").addInput('r', "modern_industrialization:copper_rotor")
+                    .addInput('P', color.getName() + "_stained_glass_pane");
+            pack.addData(new MIIdentifier(pathPrefix + "craft/fluid_pipe_stained_glass_asbl.json"), GSON.toJson(fluidPipesStainedGlass).getBytes());
             // 8 fluid pipes
             ShapedRecipeJson eightFluidPipes = new ShapedRecipeJson("modern_industrialization:" + color.getName() + "_fluid_pipe", 8, "ppp", "pdp",
                     "ppp").addInput('d', "#c:" + color.getName() + "_dyes").addInput('p', "#modern_industrialization:fluid_pipes");

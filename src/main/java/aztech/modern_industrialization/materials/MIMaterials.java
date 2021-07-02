@@ -209,12 +209,11 @@ public class MIMaterials {
                         .addParts(CableMaterialPart.of(CableTier.HV)).addRecipes(StandardRecipes::apply).build());
 
         MaterialRegistry.addMaterial(new MaterialBuilder("bauxite", DULL, DUST, 0xC86400).addRegularParts(ITEM_PURE_NON_METAL)
-                .addParts(BlockMaterialPart.of(MaterialBlockSet.LAPIS)).addParts(OreGenMaterialPart.of(8, 7, 32, MaterialOreSet.REDSTONE))
+                .addParts(BlockMaterialPart.of(MaterialBlockSet.LAPIS)).addParts(OreMaterialPart.of(MaterialOreSet.REDSTONE))
                 .addRecipes(StandardRecipes::apply).build());
 
         MaterialRegistry.addMaterial(new MaterialBuilder("lead", DULL, 0x3C286E).addRegularParts(ITEM_BASE)
-                .addParts(OreGenMaterialPart.of(4, 8, 64, MaterialOreSet.GOLD)).addParts(RawMetalPart.of(MaterialRawSet.IRON))
-
+                .addParts(OreMaterialPart.of(MaterialOreSet.GOLD)).addParts(RawMetalPart.of(MaterialRawSet.IRON))
                 .addRecipes(StandardRecipes::apply, SmeltingRecipes::apply).cancelRecipes("macerator/raw_metal").build());
 
         MaterialRegistry.addMaterial(new MaterialBuilder("battery_alloy", DULL, 0x9C7CA0)

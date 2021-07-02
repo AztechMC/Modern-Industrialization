@@ -1,11 +1,11 @@
 {
   "type": "modern_industrialization:quarry",
-  "eu": 2,
+  "eu": 4,
   "duration": 600,
   "item_inputs": {
-    "item": "modern_industrialization:pipe_item_copper",
+    "item": "modern_industrialization:copper_drill",
     "amount": 1,
-    "probability": 0.35
+    "probability": 0.05
   },
   "item_outputs": [
     {
@@ -36,6 +36,16 @@
       "item": "minecraft:gravel",
       "amount": 10,
       "probability": 0.5
+    },
+    {
+      "item": "minecraft:cobbled_deepslate",
+      "amount": 16,
+      "probability": 0.25
+    },
+    {
+      "item": "minecraft:tuff",
+      "amount": 16,
+      "probability": 0.25
     }
   ]
 }

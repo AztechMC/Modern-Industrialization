@@ -66,7 +66,6 @@ public class MIFluids {
     public static final CraftingFluid POLYVINYL_CHLORIDE = new CraftingFluid("polyvinyl_chloride", 0xfff6d3ec);
     public static final CraftingFluid PROPENE = new CraftingFluid("propene", 0xff98644c);
     public static final CraftingFluid RAW_SYNTHETIC_OIL = new CraftingFluid("raw_synthetic_oil", 0xff474740);
-    public static final CraftingFluid RAW_RUBBER = new CraftingFluid("raw_rubber", 0xff514a4a);
     public static final CraftingFluid RUBBER = new CraftingFluid("rubber", 0xff1a1a1a);
     public static final CraftingFluid SHALE_OIL = new CraftingFluid("shale_oil", 0xff6e7373, true);
     public static final CraftingFluid SODIUM_HYDROXIDE = new CraftingFluid("sodium_hydroxide", 0xff5071c9);

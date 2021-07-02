@@ -3,9 +3,9 @@
   "eu": 8,
   "duration": 600,
   "item_inputs": {
-    "item": "modern_industrialization:pipe_item_gold",
+    "item": "modern_industrialization:gold_drill",
     "amount": 1,
-    "probability": 0.35
+    "probability": 0.05
   },
   "item_outputs": [
     {

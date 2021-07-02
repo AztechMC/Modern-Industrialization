@@ -3,9 +3,9 @@
   "eu": 32,
   "duration": 600,
   "item_inputs": {
-    "item": "modern_industrialization:pipe_item_stainless_steel",
+    "item": "modern_industrialization:stainless_steel_drill",
     "amount": 1,
-    "probability": 0.3
+    "probability": 0.02
   },
   "item_outputs": [
     {

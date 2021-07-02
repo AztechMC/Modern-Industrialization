@@ -62,6 +62,9 @@ public final class StandardRecipes {
         new ShapedRecipeBuilder(ctx, TANK, 1, "tank", "###", "#G#", "###").addPart('#', LARGE_PLATE).addInput('G', "minecraft:glass")
                 .exportToAssembler();
 
+        new ShapedRecipeBuilder(ctx, DRILL_HEAD, 1, "drill_head", "bcp", "GRc", "bGb").addPart('G', GEAR).addPart('b', BOLT)
+                .addPart('c', CURVED_PLATE).addPart('R', ROD).addPart('p', PLATE);
+
         // MACERATOR
         addMaceratorRecycling(ctx, DOUBLE_INGOT, 18);
         addMaceratorRecycling(ctx, PLATE, 9);
@@ -73,8 +76,11 @@ public final class StandardRecipes {
         addMaceratorRecycling(ctx, BOLT, 2);
         addMaceratorRecycling(ctx, ROD, 4);
         addMaceratorRecycling(ctx, ROTOR, 27);
-        addMaceratorRecycling(ctx, ctx.getMainPart(), 9);
+        if (!ctx.getMainPart().equals(DUST)) {
+            addMaceratorRecycling(ctx, ctx.getMainPart(), 9);
+        }
         addMaceratorRecycling(ctx, BLADE, 5);
+        addMaceratorRecycling(ctx, DRILL_HEAD, 45);
 
         new MIRecipeBuilder(ctx, "macerator", "ore_to_crushed").addTaggedPartInput(ORE, 1).addPartOutput(CRUSHED_DUST, 3);
         new MIRecipeBuilder(ctx, "macerator", "ore_to_raw").addTaggedPartInput(ORE, 1).addPartOutput(RAW_METAL, 3);
@@ -98,6 +104,8 @@ public final class StandardRecipes {
         // EXTRA ASSEMBLER
         new MIRecipeBuilder(ctx, "assembler", "rotor").addTaggedPartInput(BLADE, 4).addTaggedPartInput(RING, 1).addPartOutput(ROTOR, 1);
         new MIRecipeBuilder(ctx, "assembler", "gear").addTaggedPartInput(PLATE, 4).addTaggedPartInput(RING, 1).addPartOutput(GEAR, 2);
+        new MIRecipeBuilder(ctx, "assembler", "drill_head").addTaggedPartInput(PLATE, 1).addTaggedPartInput(CURVED_PLATE, 2)
+                .addTaggedPartInput(ROD, 1).addTaggedPartInput(GEAR, 2).addPartOutput(DRILL_HEAD, 1);
 
         new MIRecipeBuilder(ctx, "polarizer", "rod_magnetic", 8, 200).addTaggedPartInput(ROD, 1).addPartOutput(ROD_MAGNETIC, 1);
         new MIRecipeBuilder(ctx, "polarizer", "wire_magnetic", 8, 200).addTaggedPartInput(WIRE, 1).addPartOutput(WIRE_MAGNETIC, 1);

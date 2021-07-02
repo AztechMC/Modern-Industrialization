@@ -3,9 +3,9 @@
   "eu": 8,
   "duration": 200,
   "item_inputs": {
-    "item": "modern_industrialization:pipe_fluid_aluminum",
+    "item": "modern_industrialization:aluminum_drill",
     "amount": 1,
-    "probability": 0.1
+    "probability": 0.01
   },
   "fluid_outputs": {
     "fluid": "modern_industrialization:crude_oil",

@@ -39,6 +39,8 @@ public class MIParts {
     public static final String CRUSHED_DUST = "crushed_dust";
     public static final String CURVED_PLATE = "curved_plate";
     public static final String DOUBLE_INGOT = "double_ingot";
+    public static final String DRILL_HEAD = "drill_head";
+    public static final String DRILL = "drill";
     public static final String DUST = "dust";
     public static final String FINE_WIRE = "fine_wire";
     public static final String GEAR = "gear";

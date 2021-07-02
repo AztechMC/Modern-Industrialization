@@ -115,7 +115,7 @@ public class MIMaterials {
     private static void addMaterials() {
         MaterialRegistry.addMaterial(
                 addVanillaMetal(true, new MaterialBuilder("gold", SHINY, new BakableTargetColoramp(0xFFE650, common(INGOT), mcitem("gold_ingot")))
-                        .addRegularParts(ITEM_BASE)).build());
+                        .addRegularParts(ITEM_ALL).addRegularParts(DRILL_HEAD, DRILL)).build());
 
         MaterialRegistry.addMaterial(
                 addVanillaMetal(true, new MaterialBuilder("iron", METALLIC, new BakableTargetColoramp(0xC8C8C8, common(INGOT), mcitem("iron_ingot")))
@@ -123,8 +123,9 @@ public class MIMaterials {
 
         MaterialRegistry.addMaterial(addVanillaMetal(false,
                 new MaterialBuilder("copper", METALLIC, new BakableTargetColoramp(0xe77c56, common(INGOT), mcitem("copper_ingot")))
-                        .addRegularParts(ITEM_ALL).addRegularParts(WIRE).addRegularParts(FINE_WIRE).addParts(CableMaterialPart.of(CableTier.LV)))
-                                .cancelRecipes("macerator/ore_to_raw").cancelRecipes("forge_hammer_hammer/raw_metal").build());
+                        .addRegularParts(ITEM_ALL).addRegularParts(WIRE).addRegularParts(FINE_WIRE).addParts(CableMaterialPart.of(CableTier.LV))
+                        .addRegularParts(DRILL_HEAD, DRILL)).cancelRecipes("macerator/ore_to_raw").cancelRecipes("forge_hammer_hammer/raw_metal")
+                                .build());
 
         MaterialRegistry.addMaterial(addVanillaGem(true,
                 new MaterialBuilder("coal", STONE, MIParts.GEM, new BakableTargetColoramp(0x282828, common(PLATE), mcitem("coal")))
@@ -174,7 +175,8 @@ public class MIMaterials {
         MaterialRegistry
                 .addMaterial(new MaterialBuilder("bronze", SHINY, new BakableTargetColoramp(0xffcc00, common("ingot"), template("bronze_ingot")))
                         .addRegularParts(ITEM_ALL).removeRegularParts(CRUSHED_DUST).addParts(BlockMaterialPart.of(MaterialBlockSet.COPPER))
-                        .addParts(TankMaterialPart.of(4)).addParts(CasingMaterialPart.of(MACHINE_CASING), CasingMaterialPart.of(MACHINE_CASING_PIPE))
+                        .addParts(TankMaterialPart.of(4)).addRegularParts(DRILL_HEAD, DRILL)
+                        .addParts(CasingMaterialPart.of(MACHINE_CASING), CasingMaterialPart.of(MACHINE_CASING_PIPE))
                         .addParts(CasingMaterialPart.of(MACHINE_CASING_SPECIAL, "bronze_plated_bricks"))
                         .addRecipes(ForgeHammerRecipes::apply, SmeltingRecipes::apply, StandardRecipes::apply).build());
 
@@ -187,6 +189,7 @@ public class MIMaterials {
         MaterialRegistry
                 .addMaterial(new MaterialBuilder("steel", METALLIC, new BakableTargetColoramp(0x3f3f3f, common("ingot"), template("steel_ingot")))
                         .addRegularParts(ITEM_ALL).addRegularParts(ROD_MAGNETIC).addParts(BlockMaterialPart.of(MaterialBlockSet.IRON))
+                        .addRegularParts(DRILL_HEAD, DRILL)
                         .addParts(CasingMaterialPart.of(MACHINE_CASING), CasingMaterialPart.of(MACHINE_CASING_PIPE)).addParts(TankMaterialPart.of(8))
                         .addRecipes(ForgeHammerRecipes::apply, SmeltingRecipes::apply, StandardRecipes::apply).build());
 
@@ -201,7 +204,7 @@ public class MIMaterials {
         MaterialRegistry.addMaterial(
                 new MaterialBuilder("aluminum", METALLIC, new BakableTargetColoramp(0x3fcaff, common("ingot"), template("aluminum_ingot")))
                         .addRegularParts(ITEM_ALL).addRegularParts(WIRE, FINE_WIRE).addParts(BlockMaterialPart.of(MaterialBlockSet.GOLD))
-                        .addParts(CasingMaterialPart.of(MACHINE_CASING, "advanced_machine_casing"))
+                        .addParts(CasingMaterialPart.of(MACHINE_CASING, "advanced_machine_casing")).addRegularParts(DRILL_HEAD, DRILL)
                         .addParts(CasingMaterialPart.of(MACHINE_CASING_SPECIAL, "frostproof_machine_casing")).addParts(TankMaterialPart.of(16))
                         .addParts(CableMaterialPart.of(CableTier.HV)).addRecipes(StandardRecipes::apply).build());
 
@@ -212,7 +215,7 @@ public class MIMaterials {
         MaterialRegistry.addMaterial(new MaterialBuilder("lead", DULL, 0x3C286E).addRegularParts(ITEM_BASE)
                 .addParts(OreGenMaterialPart.of(4, 8, 64, MaterialOreSet.GOLD)).addParts(RawMetalPart.of(MaterialRawSet.IRON))
 
-                .addRecipes(StandardRecipes::apply, SmeltingRecipes::apply).cancelRecipes("macerator/crushed_dust").build());
+                .addRecipes(StandardRecipes::apply, SmeltingRecipes::apply).cancelRecipes("macerator/raw_metal").build());
 
         MaterialRegistry.addMaterial(new MaterialBuilder("battery_alloy", DULL, 0x9C7CA0)
                 .addRegularParts(TINY_DUST, DUST, INGOT, DOUBLE_INGOT, PLATE, CURVED_PLATE, NUGGET, LARGE_PLATE)
@@ -252,7 +255,7 @@ public class MIMaterials {
                 new MaterialBuilder("titanium", METALLIC, new BakableTargetColoramp(0xDCA0F0, common("ingot"), template("titanium_ingot")))
                         .addRegularParts(ITEM_ALL).addParts(BlockMaterialPart.of(MaterialBlockSet.NETHERITE))
                         .addParts(RawMetalPart.of(MaterialRawSet.COPPER)).addRegularParts(HOT_INGOT)
-                        .addParts(CasingMaterialPart.of(MACHINE_CASING, "highly_advanced_machine_casing"))
+                        .addParts(CasingMaterialPart.of(MACHINE_CASING, "highly_advanced_machine_casing")).addRegularParts(DRILL_HEAD, DRILL)
                         .addParts(CasingMaterialPart.of(MACHINE_CASING_PIPE))
                         .addParts(CasingMaterialPart.of(MACHINE_CASING_SPECIAL, "solid_titanium_machine_casing"))
                         .addParts(OreMaterialPart.of(MaterialOreSet.IRON)).addParts(TankMaterialPart.of(64)).addRecipes(StandardRecipes::apply)
@@ -269,7 +272,8 @@ public class MIMaterials {
         MaterialRegistry.addMaterial(
                 new MaterialBuilder("stainless_steel", SHINY, new BakableTargetColoramp(0xC8C8DC, common("ingot"), template("stainless_steel_ingot")))
                         .addParts(BlockMaterialPart.of(MaterialBlockSet.IRON)).addRegularParts(ITEM_ALL).addRegularParts(HOT_INGOT)
-                        .addParts(CasingMaterialPart.of(MACHINE_CASING, "turbo_machine_casing")).addParts(CasingMaterialPart.of(MACHINE_CASING_PIPE))
+                        .addRegularParts(DRILL_HEAD, DRILL).addParts(CasingMaterialPart.of(MACHINE_CASING, "turbo_machine_casing"))
+                        .addParts(CasingMaterialPart.of(MACHINE_CASING_PIPE))
                         .addParts(CasingMaterialPart.of(MACHINE_CASING_SPECIAL, "clean_stainless_steel_machine_casing")).addRegularParts(ROD_MAGNETIC)
                         .addParts(TankMaterialPart.of(32)).addRecipes(StandardRecipes::apply).cancelRecipes("polarizer/rod_magnetic").build());
 

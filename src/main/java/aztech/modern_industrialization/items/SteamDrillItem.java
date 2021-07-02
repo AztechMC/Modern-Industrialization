@@ -23,8 +23,10 @@
  */
 package aztech.modern_industrialization.items;
 
+import aztech.modern_industrialization.MIConfig;
 import aztech.modern_industrialization.api.DynamicEnchantmentItem;
 import aztech.modern_industrialization.proxy.CommonProxy;
+import aztech.modern_industrialization.util.NbtHelper;
 import aztech.modern_industrialization.util.Simulation;
 import aztech.modern_industrialization.util.TextHelper;
 import draylar.magna.api.MagnaTool;
@@ -131,9 +133,13 @@ public class SteamDrillItem extends Item implements DynamicAttributeTool, MagnaT
                     .setStyle(TextHelper.WATER_TEXT));
             int burnTicks = tag.getInt("burnTicks");
             if (burnTicks > 0) {
-                tooltip.add(new TranslatableText("text.modern_industrialization.seconds_left", burnTicks / 20).setStyle(TextHelper.GRAY_TEXT));
+                tooltip.add(new TranslatableText("text.modern_industrialization.seconds_left",
+                        burnTicks / MIConfig.getConfig().steamDrillFuelUseFactor / 20).setStyle(TextHelper.GRAY_TEXT));
             }
         }
+        tooltip.add(new TranslatableText("text.modern_industrialization.steam_drill_water_help").setStyle(TextHelper.UPGRADE_TEXT));
+        tooltip.add(new TranslatableText("text.modern_industrialization.steam_drill_fuel_help").setStyle(TextHelper.UPGRADE_TEXT));
+        tooltip.add(new TranslatableText("text.modern_industrialization.steam_drill_profit").setStyle(TextHelper.UPGRADE_TEXT));
     }
 
     @Override
@@ -142,8 +148,8 @@ public class SteamDrillItem extends Item implements DynamicAttributeTool, MagnaT
         if (tag != null) {
             int burnTicks = tag.getInt("burnTicks");
             if (burnTicks > 0) {
-                tag.putInt("burnTicks", burnTicks - 1);
-                tag.putInt("water", Math.max(0, tag.getInt("water") - 1));
+                NbtHelper.putNonzeroInt(tag, "burnTicks", Math.max(0, burnTicks - MIConfig.getConfig().steamDrillFuelUseFactor));
+                NbtHelper.putNonzeroInt(tag, "water", Math.max(0, tag.getInt("water") - MIConfig.getConfig().steamDrillWaterUseFactor));
             }
         }
     }

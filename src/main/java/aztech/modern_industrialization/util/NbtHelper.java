@@ -146,4 +146,12 @@ public class NbtHelper {
             return Fluids.EMPTY;
         }
     }
+
+    public static void putNonzeroInt(NbtCompound tag, String key, int i) {
+        if (i == 0) {
+            tag.remove(key);
+        } else {
+            tag.putInt(key, i);
+        }
+    }
 }

@@ -38,6 +38,8 @@ public class MIConfig implements ConfigData {
     public boolean respawnWithGuideBook = true;
     public boolean disableFuelTooltips = false;
     public boolean disableItemTagTooltips = false;
+    public int steamDrillFuelUseFactor = 5;
+    public int steamDrillWaterUseFactor = 5;
 
     private transient static boolean registered = false;
 

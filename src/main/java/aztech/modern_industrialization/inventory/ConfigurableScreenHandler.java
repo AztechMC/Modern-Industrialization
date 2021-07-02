@@ -112,7 +112,7 @@ public abstract class ConfigurableScreenHandler extends ScreenHandler {
                         try (Transaction transaction = Transaction.openOuter()) {
                             for (StorageView<FluidKey> view : io.iterable(transaction)) {
                                 FluidKey fluid = view.resource();
-                                if (fluidSlot.canInsertFluid(fluid)) {
+                                if (!fluid.isEmpty() && fluidSlot.canInsertFluid(fluid)) {
                                     try (Transaction tx = transaction.openNested()) {
                                         long extracted = view.extract(fluid, fluidStack.getRemainingSpace(), tx);
                                         if (extracted > 0) {
@@ -193,28 +193,32 @@ public abstract class ConfigurableScreenHandler extends ScreenHandler {
      */
     protected boolean insertItem(Slot sourceSlot, int startIndex, int endIndex, boolean fromLast) {
         boolean insertedSomething = false;
-        int i = fromLast ? endIndex - 1 : startIndex;
+        for (int iter = 0; iter < 2; ++iter) {
+            boolean allowEmptySlots = iter == 1; // iteration 0 only allows insertion into existing slots
+            int i = fromLast ? endIndex - 1 : startIndex;
 
-        while (0 <= i && i < endIndex && !sourceSlot.getStack().isEmpty()) {
-            Slot targetSlot = getSlot(i);
-            ItemStack sourceStack = sourceSlot.getStack();
-            ItemStack targetStack = targetSlot.getStack();
+            while (0 <= i && i < endIndex && !sourceSlot.getStack().isEmpty()) {
+                Slot targetSlot = getSlot(i);
+                ItemStack sourceStack = sourceSlot.getStack();
+                ItemStack targetStack = targetSlot.getStack();
 
-            if (targetSlot.canInsert(sourceStack) && (targetStack.isEmpty() || ItemStack.canCombine(targetStack, sourceStack))) {
-                int maxInsert = targetSlot.getMaxItemCount(sourceStack) - targetStack.getCount();
-                if (maxInsert > 0) {
-                    ItemStack newTargetStack = sourceStack.split(maxInsert);
-                    newTargetStack.increment(targetStack.getCount());
-                    targetSlot.setStack(newTargetStack);
-                    sourceSlot.markDirty();
-                    insertedSomething = true;
+                if (targetSlot.canInsert(sourceStack)
+                        && ((allowEmptySlots && targetStack.isEmpty()) || ItemStack.canCombine(targetStack, sourceStack))) {
+                    int maxInsert = targetSlot.getMaxItemCount(sourceStack) - targetStack.getCount();
+                    if (maxInsert > 0) {
+                        ItemStack newTargetStack = sourceStack.split(maxInsert);
+                        newTargetStack.increment(targetStack.getCount());
+                        targetSlot.setStack(newTargetStack);
+                        sourceSlot.markDirty();
+                        insertedSomething = true;
+                    }
                 }
-            }
 
-            if (fromLast) {
-                --i;
-            } else {
-                ++i;
+                if (fromLast) {
+                    --i;
+                } else {
+                    ++i;
+                }
             }
         }
 

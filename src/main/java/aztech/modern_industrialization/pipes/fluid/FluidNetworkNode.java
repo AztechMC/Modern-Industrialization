@@ -80,7 +80,7 @@ public class FluidNetworkNode extends PipeNetworkNode {
 
         for (FluidConnection connection : connections) {
             Storage<FluidKey> storage = getNeighborStorage(world, pos, connection);
-            if (data.fluid.isEmpty()) {
+            if (data.fluid.isEmpty() && connection.canExtract()) {
                 // Try to set fluid, will return null if none could be found.
                 data.fluid = MoreObjects.firstNonNull(StorageUtil2.findExtractableResource(storage, null), FluidKey.empty());
             }

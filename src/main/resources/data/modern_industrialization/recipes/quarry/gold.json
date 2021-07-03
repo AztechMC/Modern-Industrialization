@@ -41,6 +41,12 @@
       "item": "minecraft:ancient_debris",
       "amount": 1,
       "probability": 0.005
+    },
+
+    {
+      "item": "minecraft:glowstone",
+      "amount": 12,
+      "probability": 0.05
     }
   ]
 }

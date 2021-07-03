@@ -192,6 +192,15 @@ public class MachineRecipeType implements RecipeType<MachineRecipe>, RecipeSeria
         return x;
     }
 
+    private static int readFluidAmount(JsonObject json, String element) {
+        double amountMb = JsonHelper.getDouble(json, element);
+        int amount = (int) Math.round(amountMb * 81);
+        if (amount < 0) {
+            throw new RuntimeException(element + " should be a positive fluid amount.");
+        }
+        return amount;
+    }
+
     private static float readProbability(JsonObject json, String element) {
         if (JsonHelper.hasPrimitive(json, element)) {
             float x = JsonHelper.getFloat(json, element);
@@ -249,7 +258,7 @@ public class MachineRecipeType implements RecipeType<MachineRecipe>, RecipeSeria
         Fluid fluid = Registry.FLUID.getOrEmpty(id).<RuntimeException>orElseThrow(() -> {
             throw new RuntimeException("Fluid " + id + " does not exist.");
         });
-        int amount = readNonNegativeInt(json, "amount") * 81;
+        int amount = readFluidAmount(json, "amount");
         float probability = readProbability(json, "probability");
         return new MachineRecipe.FluidInput(fluid, amount, probability);
     }
@@ -269,7 +278,7 @@ public class MachineRecipeType implements RecipeType<MachineRecipe>, RecipeSeria
         Fluid fluid = Registry.FLUID.getOrEmpty(id).<RuntimeException>orElseThrow(() -> {
             throw new RuntimeException("Fluid " + id + " does not exist.");
         });
-        int amount = readPositiveInt(json, "amount") * 81;
+        int amount = readFluidAmount(json, "amount");
         float probability = readProbability(json, "probability");
         return new MachineRecipe.FluidOutput(fluid, amount, probability);
     }

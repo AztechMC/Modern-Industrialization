@@ -1,11 +1,11 @@
 {
   "type": "modern_industrialization:quarry",
-  "eu": 2,
+  "eu": 4,
   "duration": 600,
   "item_inputs": {
     "item": "modern_industrialization:bronze_drill",
     "amount": 1,
-    "probability": 0.02
+    "probability": 0.01
   },
   "item_outputs": [
     {

@@ -1,7 +1,7 @@
 {
   "type" : "minecraft:crafting_shaped",
   "pattern" : [
-    "crr",
+    "crH",
     "MPr",
     "tMc"
   ],
@@ -20,6 +20,9 @@
     },
     "c": {
       "item" : "modern_industrialization:electronic_circuit"
+    },
+    "H" : {
+      "item" : "modern_industrialization:aluminum_drill_head"
     }
   },
   "result": {

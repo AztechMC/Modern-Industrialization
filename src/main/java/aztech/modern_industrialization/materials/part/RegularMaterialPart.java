@@ -29,14 +29,17 @@ import aztech.modern_industrialization.MIBlock;
 import aztech.modern_industrialization.MIItem;
 import aztech.modern_industrialization.materials.MaterialHelper;
 import aztech.modern_industrialization.textures.MITextures;
+import aztech.modern_industrialization.textures.TextureHelper;
 import aztech.modern_industrialization.textures.TextureManager;
 import aztech.modern_industrialization.textures.coloramp.Coloramp;
 import aztech.modern_industrialization.textures.coloramp.HotIngotColoramp;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import net.devtech.arrp.json.tags.JTag;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
+import net.minecraft.client.texture.NativeImage;
 import net.minecraft.item.Item;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Pair;
@@ -135,6 +138,23 @@ public class RegularMaterialPart implements MaterialPart {
             MITextures.generateItemPartTexture(mtm, overlay_part.getRight(), overlay_part.getLeft(), materialSet, itemPath, hasBlock, coloramp);
         } else {
             MITextures.generateItemPartTexture(mtm, part, materialSet, itemPath, hasBlock, coloramp);
+
+            if (part.equals(MIParts.DRILL)) {
+                String template = "modern_industrialization:textures/materialsets/common/drill.png";
+                String templateOverlay = "modern_industrialization:textures/materialsets/common/mining_drill_overlay.png";
+                String texturePath = String.format("modern_industrialization:textures/items/%s.png", materialName + "_mining_drill");
+                try {
+                    NativeImage image = mtm.getAssetAsTexture(template);
+                    NativeImage overlay = mtm.getAssetAsTexture(templateOverlay);
+                    TextureHelper.colorize(image, coloramp);
+                    TextureHelper.blend(image, overlay);
+                    mtm.addTexture(texturePath, image);
+                    image.close();
+                    overlay.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
         }
 
     }

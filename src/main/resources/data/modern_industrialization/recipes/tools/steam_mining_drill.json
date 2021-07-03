@@ -1,14 +1,11 @@
 {
   "type" : "minecraft:crafting_shaped",
   "pattern" : [
-    "gdd",
-    "Pfd",
-    "bPg"
+    "fdd",
+    "PDd",
+    "bPf"
   ],
   "key" : {
-    "g" : {
-      "item" : "modern_industrialization:copper_gear"
-    },
     "P": {
       "item" : "modern_industrialization:iron_large_plate"
     },
@@ -20,6 +17,9 @@
     },
     "d": {
       "item" : "minecraft:diamond"
+    },
+    "D" : {
+      "item" : "modern_industrialization:copper_drill_head"
     }
   },
   "result": {

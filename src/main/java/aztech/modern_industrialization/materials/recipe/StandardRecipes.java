@@ -102,10 +102,13 @@ public final class StandardRecipes {
         new MIRecipeBuilder(ctx, "wiremill", "wire").addTaggedPartInput(PLATE, 1).addPartOutput(WIRE, 2);
         new MIRecipeBuilder(ctx, "wiremill", "fine_wire").addTaggedPartInput(WIRE, 1).addPartOutput(FINE_WIRE, 4);
         // EXTRA ASSEMBLER
-        new MIRecipeBuilder(ctx, "assembler", "rotor").addTaggedPartInput(BLADE, 4).addTaggedPartInput(RING, 1).addPartOutput(ROTOR, 1);
-        new MIRecipeBuilder(ctx, "assembler", "gear").addTaggedPartInput(PLATE, 4).addTaggedPartInput(RING, 1).addPartOutput(GEAR, 2);
+        new MIRecipeBuilder(ctx, "assembler", "rotor").addTaggedPartInput(BLADE, 4).addTaggedPartInput(RING, 1)
+                .addFluidInput("modern_industrialization:soldering_alloy", 75).addPartOutput(ROTOR, 1);
+        new MIRecipeBuilder(ctx, "assembler", "gear").addTaggedPartInput(PLATE, 4).addTaggedPartInput(RING, 1)
+                .addFluidInput("modern_industrialization:soldering_alloy", 100).addPartOutput(GEAR, 2);
         new MIRecipeBuilder(ctx, "assembler", "drill_head").addTaggedPartInput(PLATE, 1).addTaggedPartInput(CURVED_PLATE, 2)
-                .addTaggedPartInput(ROD, 1).addTaggedPartInput(GEAR, 2).addPartOutput(DRILL_HEAD, 1);
+                .addTaggedPartInput(ROD, 1).addTaggedPartInput(GEAR, 2).addFluidInput("modern_industrialization:soldering_alloy", 75)
+                .addPartOutput(DRILL_HEAD, 1);
 
         new MIRecipeBuilder(ctx, "polarizer", "rod_magnetic", 8, 200).addTaggedPartInput(ROD, 1).addPartOutput(ROD_MAGNETIC, 1);
         new MIRecipeBuilder(ctx, "polarizer", "wire_magnetic", 8, 200).addTaggedPartInput(WIRE, 1).addPartOutput(WIRE_MAGNETIC, 1);

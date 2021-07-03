@@ -95,6 +95,7 @@ public class AlloyRegister {
                 .addIngredient("manganese", 1).Build(pack);
         new AlloyBuilder("kanthal").addIngredient("stainless_steel", 1).addIngredient("chrome", 1).addIngredient("aluminum", 1).Build(pack);
         new AlloyBuilder("mox").addIngredient("uranium_238", 8).addIngredient("plutonium", 1).Build(pack);
+        new AlloyBuilder("soldering_alloy").addIngredient("tin", 1).addIngredient("lead", 1).Build(pack);
 
     }
 }

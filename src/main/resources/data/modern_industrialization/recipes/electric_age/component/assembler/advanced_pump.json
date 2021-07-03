@@ -16,6 +16,12 @@
             "amount": 1
         }
     ],
+    "fluid_inputs": [
+        {
+            "fluid": "modern_industrialization:soldering_alloy",
+            "amount": 200
+        }
+    ],
     "item_outputs": [
         {
             "item": "modern_industrialization:advanced_pump",

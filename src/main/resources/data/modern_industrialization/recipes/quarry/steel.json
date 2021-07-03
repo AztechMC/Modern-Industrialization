@@ -1,6 +1,6 @@
 {
   "type": "modern_industrialization:quarry",
-  "eu": 8,
+  "eu": 4,
   "duration": 600,
   "item_inputs": {
     "item": "modern_industrialization:steel_drill",

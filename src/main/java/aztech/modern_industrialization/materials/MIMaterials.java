@@ -366,6 +366,9 @@ public class MIMaterials {
                 .addParts(CasingMaterialPart.of(MACHINE_CASING_SPECIAL, "nuclear_casing", 6000f))
                 .addParts(CasingMaterialPart.of(MACHINE_CASING_PIPE, 6000f)).addRecipes(StandardRecipes::apply).build());
 
+        MaterialRegistry.addMaterial(new MaterialBuilder("soldering_alloy", DULL, DUST, 0xffabc4bf).addRegularParts(DUST, TINY_DUST)
+                .addParts(BlockMaterialPart.of(MaterialBlockSet.REDSTONE)).addRecipes(StandardRecipes::apply).build());
+
     }
 
     /**

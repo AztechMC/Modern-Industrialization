@@ -132,7 +132,7 @@ public class RegularMaterialPart implements MaterialPart {
                 }
             });
         } else if (part.equals(MIParts.HOT_INGOT)) {
-            MITextures.generateItemPartTexture(mtm, MIParts.INGOT, materialSet, itemPath, hasBlock, new HotIngotColoramp(coloramp, 0.3, 0.3));
+            MITextures.generateItemPartTexture(mtm, MIParts.INGOT, materialSet, itemPath, hasBlock, new HotIngotColoramp(coloramp, 0.1, 0.3));
         } else if (overlays.containsKey(part)) {
             Pair<String, String> overlay_part = overlays.get(part);
             MITextures.generateItemPartTexture(mtm, overlay_part.getRight(), overlay_part.getLeft(), materialSet, itemPath, hasBlock, coloramp);

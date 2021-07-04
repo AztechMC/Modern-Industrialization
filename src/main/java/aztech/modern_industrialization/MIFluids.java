@@ -66,7 +66,6 @@ public class MIFluids {
     public static final CraftingFluid POLYVINYL_CHLORIDE = new CraftingFluid("polyvinyl_chloride", 0xfff6d3ec);
     public static final CraftingFluid PROPENE = new CraftingFluid("propene", 0xff98644c);
     public static final CraftingFluid RAW_SYNTHETIC_OIL = new CraftingFluid("raw_synthetic_oil", 0xff474740);
-    public static final CraftingFluid RUBBER = new CraftingFluid("rubber", 0xff1a1a1a);
     public static final CraftingFluid SHALE_OIL = new CraftingFluid("shale_oil", 0xff6e7373, true);
     public static final CraftingFluid SODIUM_HYDROXIDE = new CraftingFluid("sodium_hydroxide", 0xff5071c9);
     public static final CraftingFluid STEAM = new CraftingFluid("steam", 0xffeeeeee, true);
@@ -80,6 +79,7 @@ public class MIFluids {
     public static final CraftingFluid SULFURIC_LIGHT_FUEL = new CraftingFluid("sulfuric_light_fuel", 0xfff4dd34);
     public static final CraftingFluid SULFURIC_NAPHTHA = new CraftingFluid("sulfuric_naphtha", 0xffa5975e);
     public static final CraftingFluid SYNTHETIC_OIL = new CraftingFluid("synthetic_oil", 0xff1a1a1a);
+    public static final CraftingFluid SYNTHETIC_RUBBER = new CraftingFluid("synthetic_rubber", 0xff1a1a1a);
     public static final CraftingFluid TOLUENE = new CraftingFluid("toluene", 0xff9ce6ed);
     public static final CraftingFluid VINYL_CHLORIDE = new CraftingFluid("vinyl_chloride", 0xffeda7d9);
     public static final CraftingFluid HELIUM = new CraftingFluid("helium", 0xffe6e485);

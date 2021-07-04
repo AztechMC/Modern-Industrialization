@@ -24,9 +24,7 @@
 package aztech.modern_industrialization;
 
 import aztech.modern_industrialization.items.GuideBookItem;
-import aztech.modern_industrialization.items.SteamDrillItem;
 import aztech.modern_industrialization.items.armor.RubberArmorMaterial;
-import aztech.modern_industrialization.items.tools.CrowbarItem;
 import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.function.Function;
@@ -53,9 +51,7 @@ public final class MIItem {
         return item;
     }
 
-    public static final Item ITEM_CROWBAR = of(CrowbarItem::new, "crowbar", 1);
     public static final Item ITEM_GUIDE_BOOK = of(GuideBookItem::new, "guidebook", 64);
-    public static final Item ITEM_STEAM_DRILL = of(SteamDrillItem::new, "steam_mining_drill", 1);
     public static final Item ITEM_UNCOOKED_STEEL_DUST = of("uncooked_steel_dust");
 
     public static final Item RUBBER_HELMET = of(s -> new ArmorItem(RubberArmorMaterial.INSTANCE, EquipmentSlot.HEAD, s), "rubber_helmet", 1);

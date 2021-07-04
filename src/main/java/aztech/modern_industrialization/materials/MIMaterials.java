@@ -196,7 +196,7 @@ public class MIMaterials {
         MaterialRegistry.addMaterial(new MaterialBuilder("lignite_coal", STONE, MIParts.GEM, 0x644646).addRegularParts(ITEM_PURE_NON_METAL)
                 .addParts(BlockMaterialPart.of(MaterialBlockSet.COAL)).addParts(GemMaterialPart.of())
                 .addParts(OreGenMaterialPart.of(10, 17, 128, MaterialOreSet.COAL))
-                .addRecipes(ForgeHammerRecipes::apply, SmeltingRecipes::apply, StandardRecipes::apply)
+                .addRecipes(ForgeHammerRecipes::apply, SmeltingRecipes::apply, StandardRecipes::apply).cancelRecipes("macerator/crushed_dust")
                 .addRecipes(context -> new MIRecipeBuilder(context, "compressor", "lignite_coal").addTaggedPartInput("dust", 1)
                         .addPartOutput(MIParts.GEM, 1))
                 .build());
@@ -209,11 +209,11 @@ public class MIMaterials {
                         .addParts(CableMaterialPart.of(CableTier.HV)).addRecipes(StandardRecipes::apply).build());
 
         MaterialRegistry.addMaterial(new MaterialBuilder("bauxite", DULL, DUST, 0xC86400).addRegularParts(ITEM_PURE_NON_METAL)
-                .addParts(BlockMaterialPart.of(MaterialBlockSet.LAPIS)).addParts(OreMaterialPart.of(MaterialOreSet.REDSTONE))
+                .addParts(BlockMaterialPart.of(MaterialBlockSet.LAPIS)).addParts(OreGenMaterialPart.of(8, 7, 32, MaterialOreSet.REDSTONE))
                 .addRecipes(StandardRecipes::apply).build());
 
         MaterialRegistry.addMaterial(new MaterialBuilder("lead", DULL, 0x3C286E).addRegularParts(ITEM_BASE)
-                .addParts(OreMaterialPart.of(MaterialOreSet.GOLD)).addParts(RawMetalPart.of(MaterialRawSet.IRON))
+                .addParts(OreGenMaterialPart.of(4, 8, 64, MaterialOreSet.GOLD)).addParts(RawMetalPart.of(MaterialRawSet.IRON))
                 .addRecipes(StandardRecipes::apply, SmeltingRecipes::apply).cancelRecipes("macerator/raw_metal").build());
 
         MaterialRegistry.addMaterial(new MaterialBuilder("battery_alloy", DULL, 0x9C7CA0)
@@ -230,9 +230,10 @@ public class MIMaterials {
                 .addParts(BlockMaterialPart.of(MaterialBlockSet.COPPER)).addParts(CableMaterialPart.of(CableTier.MV))
                 .addRecipes(StandardRecipes::apply, SmeltingRecipes::apply).build());
 
-        MaterialRegistry.addMaterial(new MaterialBuilder("antimony", SHINY, 0xDCDCF0).addRegularParts(ITEM_PURE_METAL)
-                .addParts(RawMetalPart.of(MaterialRawSet.COPPER)).addParts(BlockMaterialPart.of(MaterialBlockSet.IRON))
-                .addParts(OreMaterialPart.of(MaterialOreSet.LAPIS)).addRecipes(StandardRecipes::apply, SmeltingRecipes::apply).build());
+        MaterialRegistry.addMaterial(
+                new MaterialBuilder("antimony", SHINY, 0xDCDCF0).addRegularParts(ITEM_PURE_METAL).addParts(RawMetalPart.of(MaterialRawSet.COPPER))
+                        .addParts(BlockMaterialPart.of(MaterialBlockSet.IRON)).addParts(OreGenMaterialPart.of(4, 6, 64, MaterialOreSet.REDSTONE))
+                        .addRecipes(StandardRecipes::apply, SmeltingRecipes::apply).build());
 
         MaterialRegistry.addMaterial(new MaterialBuilder("nickel", METALLIC, 0xFAFAC8).addRegularParts(ITEM_BASE)
                 .addParts(RawMetalPart.of(MaterialRawSet.IRON)).addParts(BlockMaterialPart.of(MaterialBlockSet.IRON))
@@ -373,6 +374,9 @@ public class MIMaterials {
                 .addParts(CasingMaterialPart.of(MACHINE_CASING_PIPE, 6000f)).addRecipes(StandardRecipes::apply).build());
 
         MaterialRegistry.addMaterial(new MaterialBuilder("soldering_alloy", DULL, DUST, 0xffabc4bf).addRegularParts(DUST, TINY_DUST)
+                .addParts(BlockMaterialPart.of(MaterialBlockSet.REDSTONE)).addRecipes(StandardRecipes::apply).build());
+
+        MaterialRegistry.addMaterial(new MaterialBuilder("sulfur", DULL, DUST, 0xddb614).addRegularParts(DUST, TINY_DUST)
                 .addParts(BlockMaterialPart.of(MaterialBlockSet.REDSTONE)).addRecipes(StandardRecipes::apply).build());
 
     }

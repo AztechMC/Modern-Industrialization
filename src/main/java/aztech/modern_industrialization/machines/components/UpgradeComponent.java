@@ -24,6 +24,7 @@
 package aztech.modern_industrialization.machines.components;
 
 import aztech.modern_industrialization.MIItem;
+import aztech.modern_industrialization.ModernIndustrialization;
 import aztech.modern_industrialization.machines.IComponent;
 import aztech.modern_industrialization.machines.MachineBlockEntity;
 import java.util.IdentityHashMap;
@@ -69,7 +70,7 @@ public class UpgradeComponent implements IComponent.ServerOnly {
         if (stackInHand.isEmpty()) {
             return ActionResult.PASS;
         }
-        if (stackInHand.getItem() == MIItem.ITEM_CROWBAR && player.isSneaking()) {
+        if (stackInHand.getItem() == ModernIndustrialization.ITEM_CROWBAR && player.isSneaking()) {
             BlockPos pos = be.getPos();
             if (!itemStack.isEmpty()) {
                 ItemScatterer.spawn(be.getWorld(), pos.getX(), pos.getY(), pos.getZ(), itemStack);

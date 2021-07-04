@@ -52,6 +52,7 @@ import net.minecraft.tag.Tag;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Hand;
+import net.minecraft.util.Rarity;
 import net.minecraft.util.TypedActionResult;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.HitResult;
@@ -70,7 +71,7 @@ public class SteamDrillItem extends Item implements DynamicAttributeTool, MagnaT
     private static final int FULL_WATER = 18000;
 
     public SteamDrillItem(Settings settings) {
-        super(settings);
+        super(settings.maxCount(1).rarity(Rarity.UNCOMMON));
     }
 
     @Override

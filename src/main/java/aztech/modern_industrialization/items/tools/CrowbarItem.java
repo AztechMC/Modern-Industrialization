@@ -31,7 +31,7 @@ import net.minecraft.util.hit.BlockHitResult;
 
 public class CrowbarItem extends Item {
     public CrowbarItem(Settings settings) {
-        super(settings);
+        super(settings.maxCount(1));
     }
 
     @Override

@@ -35,10 +35,12 @@ import aztech.modern_industrialization.compat.RecipeCompat;
 import aztech.modern_industrialization.inventory.ConfigurableInventoryPacketHandlers;
 import aztech.modern_industrialization.inventory.ConfigurableInventoryPackets;
 import aztech.modern_industrialization.items.FluidFuelItemHelper;
+import aztech.modern_industrialization.items.SteamDrillItem;
 import aztech.modern_industrialization.items.armor.ArmorPackets;
 import aztech.modern_industrialization.items.armor.JetpackItem;
 import aztech.modern_industrialization.items.armor.MIKeyMap;
 import aztech.modern_industrialization.items.diesel_tools.DieselToolItem;
+import aztech.modern_industrialization.items.tools.CrowbarItem;
 import aztech.modern_industrialization.items.tools.WrenchItem;
 import aztech.modern_industrialization.machines.MachinePackets;
 import aztech.modern_industrialization.machines.MachineScreenHandlers;
@@ -115,6 +117,8 @@ public class ModernIndustrialization implements ModInitializer {
     public static final JetpackItem ITEM_DIESEL_JETPACK = new JetpackItem(new Item.Settings().group(ITEM_GROUP));
     public static final DieselToolItem ITEM_DIESEL_CHAINSAW = new DieselToolItem(new Item.Settings().group(ITEM_GROUP));
     public static final DieselToolItem ITEM_DIESEL_DRILL = new DieselToolItem(new Item.Settings().group(ITEM_GROUP));
+    public static final SteamDrillItem ITEM_STEAM_DRILL = new SteamDrillItem(new Item.Settings().group(ITEM_GROUP));
+    public static final Item ITEM_CROWBAR = new CrowbarItem(new Item.Settings().group(ITEM_GROUP));
 
     // Block
     public static final Block FORGE_HAMMER = new ForgeHammerBlock();
@@ -181,6 +185,8 @@ public class ModernIndustrialization implements ModInitializer {
         registerItem(ITEM_DIESEL_JETPACK, "diesel_jetpack");
         registerItem(ITEM_DIESEL_CHAINSAW, "diesel_chainsaw", true);
         registerItem(ITEM_DIESEL_DRILL, "diesel_mining_drill", true);
+        registerItem(ITEM_STEAM_DRILL, "steam_mining_drill", true);
+        registerItem(ITEM_CROWBAR, "crowbar", true);
 
         ItemFluidStorage.ITEM.registerForItems((stack, ctx) -> new FluidFuelItemHelper.ItemStorage(DieselToolItem.CAPACITY, stack, ctx),
                 ITEM_DIESEL_CHAINSAW, ITEM_DIESEL_DRILL);
@@ -289,6 +295,7 @@ public class ModernIndustrialization implements ModInitializer {
         FuelRegistry.INSTANCE.add(TagRegistry.item(new Identifier("c:coal_dusts")), 1600);
         addFuel("coal_tiny_dust", 160);
         addFuel("lignite_coal", 1600);
+        addFuel("lignite_coal_block", 16000);
         addFuel("lignite_coal_crushed_dust", 1600);
         addFuel("lignite_coal_dust", 1600);
         addFuel("lignite_coal_tiny_dust", 160);

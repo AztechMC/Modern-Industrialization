@@ -174,11 +174,7 @@ public class FluidNetworkNode extends PipeNetworkNode {
 
     @Override
     public void fromTag(NbtCompound tag) {
-        if (tag.contains("amount")) {
-            amount = tag.getInt("amount") * 81;
-        } else {
-            amount = tag.getLong("amount_ftl");
-        }
+        amount = tag.getLong("amount_ftl");
         for (Direction direction : Direction.values()) {
             if (tag.contains(direction.toString())) {
                 if (tag.getType(direction.toString()) == NbtType.BYTE) {

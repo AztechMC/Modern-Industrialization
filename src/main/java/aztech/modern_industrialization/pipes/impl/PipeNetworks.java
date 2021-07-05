@@ -72,6 +72,8 @@ public class PipeNetworks extends PersistentState {
     }
 
     public static PipeNetworks get(ServerWorld world) {
-        return world.getPersistentStateManager().getOrCreate(PipeNetworks::readNbt, () -> new PipeNetworks(new HashMap<>()), NAME);
+        PipeNetworks networks = world.getPersistentStateManager().getOrCreate(PipeNetworks::readNbt, () -> new PipeNetworks(new HashMap<>()), NAME);
+        networks.markDirty();
+        return networks;
     }
 }

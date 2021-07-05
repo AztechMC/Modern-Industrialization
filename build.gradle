@@ -250,7 +250,7 @@ import com.google.gson.GsonBuilder
 
 final class JsonOrderStep {
     private JsonOrderStep() {}
-    private static final Gson GSON = new GsonBuilder().setLenient().setPrettyPrinting().create();
+    private static final Gson GSON = new GsonBuilder().disableHtmlEscaping().setLenient().setPrettyPrinting().create();
 
     static FormatterStep create() {
         return FormatterStep.create(

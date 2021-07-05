@@ -54,6 +54,10 @@ public final class MIRecipeJson {
         int amount;
     }
 
+    private static class MIItemOutputProbability extends MIItemOutput {
+        double probability;
+    }
+
     public MIRecipeJson(String type, int eu, int duration) {
         this.type = "modern_industrialization:" + type;
         this.eu = eu;
@@ -92,6 +96,15 @@ public final class MIRecipeJson {
         MIItemOutput output = new MIItemOutput();
         output.item = itemId;
         output.amount = amount;
+        item_outputs.add(output);
+        return this;
+    }
+
+    public MIRecipeJson addOutput(String itemId, int amount, double probability) {
+        MIItemOutputProbability output = new MIItemOutputProbability();
+        output.item = itemId;
+        output.amount = amount;
+        output.probability = probability;
         item_outputs.add(output);
         return this;
     }

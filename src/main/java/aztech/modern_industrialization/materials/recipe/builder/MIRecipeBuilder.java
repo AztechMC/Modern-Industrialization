@@ -112,6 +112,24 @@ public class MIRecipeBuilder implements MaterialRecipeBuilder {
         return this;
     }
 
+    public MIRecipeBuilder addPartOutput(String part, int amount, double probability) {
+        return addPartOutput(context.getPart(part), amount, probability);
+    }
+
+    public MIRecipeBuilder addPartOutput(MaterialPart part, int amount, double probability) {
+        if (part == null) {
+            canceled = true;
+        } else {
+            return addOutput(part.getItemId(), amount, probability);
+        }
+        return this;
+    }
+
+    public MIRecipeBuilder addOutput(String itemId, int amount, double probability) {
+        this.json.addOutput(itemId, amount, probability);
+        return this;
+    }
+
     public boolean isCanceled() {
         return canceled;
     }

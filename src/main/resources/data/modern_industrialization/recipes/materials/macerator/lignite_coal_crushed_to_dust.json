@@ -4,11 +4,16 @@
   "duration": 200,
   "item_inputs": {
     "item": "modern_industrialization:lignite_coal_crushed_dust",
-    "amount": 2
+    "amount": 1
   },
   "item_outputs": [{
       "item": "modern_industrialization:lignite_coal_dust",
-      "amount": 3
+      "amount": 1
+    },
+    {
+      "item": "modern_industrialization:lignite_coal_dust",
+      "amount": 1,
+      "probability" : 0.5
     },
     {
       "item": "modern_industrialization:sulfur_dust",

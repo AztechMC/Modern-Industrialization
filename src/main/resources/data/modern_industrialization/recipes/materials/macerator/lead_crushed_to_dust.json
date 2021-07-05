@@ -4,15 +4,20 @@
   "duration": 200,
   "item_inputs": {
     "tag": "c:raw_lead_ores",
-    "amount": 2
+    "amount": 1
   },
   "item_outputs": [{
       "item": "modern_industrialization:lead_dust",
-      "amount": 3
+      "amount": 1
     },
     {
       "item": "modern_industrialization:raw_silver",
-      "amount": 2,
+      "amount": 1,
+      "probability" : 0.5
+    },
+    {
+      "item": "modern_industrialization:lead_dust",
+      "amount": 1,
       "probability" : 0.5
     }
 

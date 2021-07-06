@@ -9,11 +9,11 @@
   "item_outputs": [
     {
       "item": "modern_industrialization:aluminum_dust",
-      "amount": 2
+      "amount": 4
     },
     {
       "item": "modern_industrialization:titanium_tiny_dust",
-      "amount": 1
+      "amount": 3
     }
   ],
   "fluid_outputs": {

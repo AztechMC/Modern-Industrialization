@@ -68,7 +68,7 @@ public class SteamCraftingMachineBlockEntity extends AbstractCraftingMachineBloc
         if (!result.isAccepted()) {
             return gunpowderOverclock.onUse(this, player, hand);
         }
-        return ActionResult.PASS;
+        return result;
     }
 
     @Override

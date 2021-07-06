@@ -43,7 +43,8 @@ public final class StandardRecipes {
         add3By3Crafting(ctx, ctx.getMainPart(), "block");
         add3By3Crafting(ctx, "raw_metal", "raw_metal_block");
 
-        new ShapedRecipeBuilder(ctx, BLADE, 4, "blade", "P", "P", "I").addTaggedPart('P', CURVED_PLATE).addTaggedPart('I', ROD).exportToAssembler();
+        new ShapedRecipeBuilder(ctx, BLADE, 4, "blade", "P", "P", "I").addTaggedPart('P', CURVED_PLATE).addTaggedPart('I', ROD)
+                .exportToMachine("packer");
 
         new ShapedRecipeBuilder(ctx, COIL, 1, "coil", "xxx", "x x", "xxx").addTaggedPart('x', WIRE).exportToAssembler();
         new ShapedRecipeBuilder(ctx, LARGE_PLATE, 1, "large_plate", "xx", "xx").addTaggedPart('x', PLATE).exportToMachine("packer");
@@ -81,6 +82,7 @@ public final class StandardRecipes {
         }
         addMaceratorRecycling(ctx, BLADE, 5);
         addMaceratorRecycling(ctx, DRILL_HEAD, 7 * 9 + 4);
+        addMaceratorRecycling(ctx, WIRE, 4);
 
         new MIRecipeBuilder(ctx, "macerator", "ore_to_crushed").addTaggedPartInput(ORE, 1).addPartOutput(CRUSHED_DUST, 3);
         new MIRecipeBuilder(ctx, "macerator", "ore_to_raw").addTaggedPartInput(ORE, 1).addPartOutput(RAW_METAL, 3);

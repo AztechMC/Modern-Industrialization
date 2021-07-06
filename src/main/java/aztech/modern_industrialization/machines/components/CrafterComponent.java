@@ -502,8 +502,8 @@ public class CrafterComponent implements IComponent.ServerOnly {
 
                             if (inserted < output.amount)
                                 ok = false;
-                            break outer;
                         }
+                        break outer;
                     }
                 }
                 if (tries == 1) {

@@ -21,6 +21,7 @@
     }
   },
   "result": {
-    "item": "modern_industrialization:configurable_chest"
+    "item": "modern_industrialization:configurable_chest",
+    "count": 4
   }
 }

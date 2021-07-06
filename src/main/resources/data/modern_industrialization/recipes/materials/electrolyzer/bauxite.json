@@ -18,6 +18,7 @@
   ],
   "fluid_outputs": {
     "fluid": "modern_industrialization:oxygen",
-    "amount": 1000
+    "amount": 2000,
+    "probability": 0.5
   }
 }

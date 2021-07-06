@@ -31,7 +31,7 @@
     {
       "item": "minecraft:gold_ore",
       "amount": 5,
-      "probability": 0.01
+      "probability": 0.03
     },
     {
       "item": "minecraft:redstone_ore",

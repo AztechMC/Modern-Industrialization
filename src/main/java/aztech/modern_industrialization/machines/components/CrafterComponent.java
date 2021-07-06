@@ -535,7 +535,7 @@ public class CrafterComponent implements IComponent.ServerOnly {
         // Find MachineRecipe
         Optional<MachineRecipe> optionalMachineRecipe = behavior.recipeType().getRecipes((ServerWorld) behavior.getCrafterWorld()).stream()
                 .filter(recipe -> recipe.getId().equals(recipeId)).findFirst();
-        if (!optionalMachineRecipe.isPresent())
+        if (optionalMachineRecipe.isEmpty())
             return;
         MachineRecipe recipe = optionalMachineRecipe.get();
         // ITEM INPUTS
@@ -572,7 +572,7 @@ public class CrafterComponent implements IComponent.ServerOnly {
 
             if (targetItem != null) {
                 for (ConfigurableItemStack stack : this.inventory.getItemInputs()) {
-                    if (stack.playerLock(targetItem, ACT)) {
+                    if (stack.playerLockNoOverride(targetItem)) {
                         break;
                     }
                 }
@@ -585,7 +585,7 @@ public class CrafterComponent implements IComponent.ServerOnly {
                     continue outer;
             }
             for (ConfigurableItemStack stack : this.inventory.getItemOutputs()) {
-                if (stack.playerLock(output.item, ACT)) {
+                if (stack.playerLockNoOverride(output.item)) {
                     break;
                 }
             }
@@ -598,7 +598,7 @@ public class CrafterComponent implements IComponent.ServerOnly {
                     continue outer;
             }
             for (ConfigurableFluidStack stack : this.inventory.getFluidInputs()) {
-                if (stack.playerLock(input.fluid, ACT)) {
+                if (stack.playerLockNoOverride(input.fluid)) {
                     break;
                 }
             }
@@ -610,7 +610,7 @@ public class CrafterComponent implements IComponent.ServerOnly {
                     continue outer;
             }
             for (ConfigurableFluidStack stack : this.inventory.getFluidOutputs()) {
-                if (stack.playerLock(output.fluid, ACT)) {
+                if (stack.playerLockNoOverride(output.fluid)) {
                     break;
                 }
             }

@@ -201,6 +201,15 @@ public abstract class AbstractConfigurableStack<T, K extends ResourceKey<T>> ext
         return playerLockable;
     }
 
+    public boolean playerLockNoOverride(T instance) {
+        if (key.isEmpty() && lockedInstance == null) {
+            lockedInstance = instance;
+            playerLocked = true;
+            return true;
+        }
+        return false;
+    }
+
     /**
      * Try locking the slot to the given instance, return true if it succeeded
      */

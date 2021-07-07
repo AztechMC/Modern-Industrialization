@@ -499,9 +499,9 @@ public class CrafterComponent implements IComponent.ServerOnly {
                             stack.increment(inserted);
                             locksToToggle.add(j);
                             lockFluids.add(output.fluid);
-
-                            if (inserted < output.amount)
-                                ok = false;
+                        }
+                        if (inserted < output.amount) {
+                            ok = false;
                         }
                         break outer;
                     }

@@ -44,6 +44,14 @@ public final class MIRecipeJson {
         int amount;
     }
 
+    private static class MIItemInputProbability extends MIItemInput {
+        double probability;
+
+        MIItemInputProbability(double probability) {
+            this.probability = probability;
+        }
+    }
+
     private static class MIFluidInput {
         String fluid;
         int amount;
@@ -65,7 +73,11 @@ public final class MIRecipeJson {
     }
 
     public MIRecipeJson addItemInput(String maybeTag, int amount) {
-        MIItemInput input = new MIItemInput();
+        return addItemInput(maybeTag, amount, 1);
+    }
+
+    public MIRecipeJson addItemInput(String maybeTag, int amount, double probability) {
+        MIItemInput input = probability == 1 ? new MIItemInput() : new MIItemInputProbability(probability);
         input.amount = amount;
         if (maybeTag.startsWith("#")) {
             input.tag = maybeTag.substring(1);

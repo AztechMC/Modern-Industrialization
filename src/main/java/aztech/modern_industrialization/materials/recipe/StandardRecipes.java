@@ -58,7 +58,7 @@ public final class StandardRecipes {
         new ShapedRecipeBuilder(ctx, RING, 2, "ring", "bRb", "R R", "bRb").addTaggedPart('b', BOLT).addTaggedPart('R', ROD);
 
         new ShapedRecipeBuilder(ctx, CABLE, 3, "cable", "rrr", "www", "rrr").addInput('r', "modern_industrialization:rubber_sheet")
-                .addTaggedPart('w', WIRE).exportToAssembler();
+                .addTaggedPart('w', WIRE).exportToMachine("packer");
 
         new ShapedRecipeBuilder(ctx, TANK, 1, "tank", "###", "#G#", "###").addPart('#', LARGE_PLATE).addInput('G', "minecraft:glass")
                 .exportToAssembler();

@@ -108,6 +108,14 @@ repositories {
         content {
             includeGroup "net.fabricmc.fabric-api"
             includeGroup "dev.technici4n"
+            includeGroup "dev.latvian.mods"
+        }
+    }
+    maven {
+        url "https://maven.saps.dev/minecraft"
+        content {
+            includeGroup "dev.latvian.mods"
+            includeGroup "dev.ftb.mods"
         }
     }
     // for reach entity attributes, required by Magna
@@ -141,7 +149,7 @@ dependencies {
     modImplementation "me.sargunvohra.mcmods:autoconfig1u:${project.auto_config_version}"
     include "me.sargunvohra.mcmods:autoconfig1u:${project.auto_config_version}"
     modRuntime "com.terraformersmc:modmenu:${project.mod_menu_version}"
-    //modImplementation "curse.maven:kubejs-395864:${project.kubejs_file}"
+    modImplementation "dev.latvian.mods:kubejs-fabric:1605.3.10-build.9999"
     //modImplementation "curse.maven:architectury-fabric-419697:${project.architectury_file}"
     //modRuntime "curse.maven:rhino-416294:${project.rhino_file}"
     include modImplementation("com.github.Draylar:magna:${project.magna_version}") {

@@ -25,15 +25,13 @@ package aztech.modern_industrialization.compat;
 
 import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.ModernIndustrialization;
-import java.util.Arrays;
-import java.util.List;
+import aztech.modern_industrialization.materials.Material;
+import aztech.modern_industrialization.materials.MaterialRegistry;
+import aztech.modern_industrialization.materials.part.MIParts;
 import net.fabricmc.loader.api.FabricLoader;
 
 // TODO: can this cursed class be improved?
 public class RecipeCompat {
-    private static final List<String> CURVED_PLATES = Arrays.asList("aluminum", "battery_alloy", "bronze", "copper", "electrum", "gold", "iron",
-            "lead", "nickel", "silver", "stainless_steel", "steel", "tin", "titanium");
-
     public static void loadCompatRecipes() {
         if (FabricLoader.getInstance().isModLoaded("techreborn")) {
             ModernIndustrialization.LOGGER.info("Tech Reborn is detected, loading compatibility recipes for Modern Industrialization!");
@@ -41,21 +39,16 @@ public class RecipeCompat {
             addMiRecipe("compressor", "techreborn:advanced_alloy_ingot", "techreborn:advanced_alloy_plate", 1);
             addMiRecipe("compressor", "#c:brass_ingots", "techreborn:brass_plate", 1);
             addMiRecipe("compressor", "techreborn:carbon_mesh", "techreborn:carbon_plate", 1);
-            addMiRecipe("compressor", "#c:diamond_dusts", "techreborn:diamond_plate", 1);
-            addMiRecipe("compressor", "techreborn:emerald_dust", "techreborn:emerald_plate", 1);
-            addMiRecipe("compressor", "#c:iridium_ingots", "techreborn:iridium_plate", 1);
             addMiRecipe("compressor", "techreborn:lazurite_dust", "techreborn:lazurite_plate", 1);
             addMiRecipe("compressor", "minecraft:obsidian", "techreborn:obsidian_plate", 9);
             addMiRecipe("compressor", "techreborn:obsidian_dust", "techreborn:obsidian_plate", 1);
             addMiRecipe("compressor", "#c:peridot_dusts", "techreborn:peridot_plate", 1);
             addMiRecipe("compressor", "techreborn:plantball", "techreborn:compressed_plantball", 1);
-            addMiRecipe("compressor", "#c:platinum_ingots", "techreborn:platinum_plate", 1);
             addMiRecipe("compressor", "minecraft:prismarine_crystals", "minecraft:prismarine_shard", 1); // TODO
             addMiRecipe("compressor", "techreborn:red_garnet_dust", "techreborn:red_garnet_plate", 1);
             addMiRecipe("compressor", "minecraft:redstone_block", "techreborn:redstone_plate", 1);
             addMiRecipe("compressor", "#c:ruby_dusts", "techreborn:ruby_plate", 1);
             addMiRecipe("compressor", "#c:sapphire_dusts", "techreborn:sapphire_plate", 1);
-            addMiRecipe("compressor", "#c:tungsten_ingots", "techreborn:tungsten_plate", 1);
             addMiRecipe("compressor", "techreborn:tungstensteel_ingot", "techreborn:tungstensteel_plate", 1);
             addMiRecipe("compressor", "#minecraft:planks", "techreborn:wood_plate", 1);
             addMiRecipe("compressor", "techreborn:yellow_garnet_dust", "techreborn:yellow_garnet_plate", 1);
@@ -69,7 +62,6 @@ public class RecipeCompat {
             addMiRecipe("macerator", "#c:cinnabar_ores", "techreborn:cinnabar_dust", 2);
             addMiRecipe("macerator", "minecraft:clay_ball", "techreborn:clay_dust", 1);
             addMiRecipe("macerator", "minecraft:diorite", "techreborn:diorite_dust", 2);
-            addMiRecipe("macerator", "minecraft:emerald", "techreborn:emerald_dust", 1);
             addMiRecipe("macerator", "minecraft:ender_eye", "techreborn:ender_eye_dust", 2);
             addMiRecipe("macerator", "minecraft:ender_pearl", "techreborn:ender_pearl_dust", 1);
             addMiRecipe("macerator", "minecraft:end_stone", "techreborn:endstone_dust", 2);
@@ -79,22 +71,23 @@ public class RecipeCompat {
             addMiRecipe("macerator", "minecraft:netherrack", "techreborn:netherrack_dust", 1);
             addMiRecipe("macerator", "techreborn:peridot_gem", "techreborn:peridot_dust", 1);
             addMiRecipe("macerator", "#c:peridot_ores", "techreborn:peridot_dust", 2);
-            addMiRecipe("macerator", "#c:platinum_ingots", "techreborn:platinum_dust", 1);
             addMiRecipe("macerator", "#c:pyrite_ores", "techreborn:pyrite_dust", 2);
             addMiRecipe("macerator", "techreborn:red_garnet_gem", "techreborn:red_garnet_dust", 1);
-            addMiRecipe("macerator", "techreborn:ruby_gem", "techreborn:ruby_dust", 1);
-            addMiRecipe("macerator", "#c:ruby_ores", "techreborn:ruby_dust", 2);
+            addMiRecipe("macerator", "techreborn:ruby_gem", "modern_industrialization:ruby_dust", 1);
+            addMiRecipe("macerator", "#c:ruby_ores", "modern_industrialization:ruby_dust", 2);
             addMiRecipe("macerator", "techreborn:sapphire_gem", "techreborn:sapphire_dust", 1);
             addMiRecipe("macerator", "#c:sapphire_ores", "techreborn:sapphire_dust", 2);
             addMiRecipe("macerator", "#c:sodalite_ores", "techreborn:sodalite_dust", 2);
-            addMiRecipe("macerator", "#c:tungsten_ingots", "techreborn:tungsten_dust", 1);
             addMiRecipe("macerator", "techreborn:yellow_garnet_gem", "techreborn:yellow_garnet_dust", 1);
             addMiRecipe("macerator", "#c:zinc_ingots", "techreborn:zinc_dust", 1);
 
-            for (String plate : CURVED_PLATES) {
-                addRecipe("tr_compat/" + plate + "_curved_plates", String.format(
-                        "{\"type\":\"techreborn:compressor\",\"power\":10,\"time\":300,\"ingredients\":[{\"tag\":\"c:%s_plates\"}],\"results\":[{\"item\":\"modern_industrialization:%s_curved_plate\"}]}",
-                        plate, plate).getBytes());
+            for (Material material : MaterialRegistry.getMaterials().values()) {
+                if (material.getParts().containsKey(MIParts.CURVED_PLATE)) {
+                    String plate = material.name;
+                    addRecipe("tr_compat/" + plate + "_curved_plates", String.format(
+                            "{\"type\":\"techreborn:compressor\",\"power\":10,\"time\":300,\"ingredients\":[{\"tag\":\"c:%s_plates\"}],\"results\":[{\"item\":\"modern_industrialization:%s_curved_plate\"}]}",
+                            plate, plate).getBytes());
+                }
             }
         }
 
@@ -129,8 +122,9 @@ public class RecipeCompat {
                     "{\"type\":\"modern_industrialization:quarry\",\"eu\":16,\"duration\":600,\"item_inputs\":{\"item\":\"indrev:cable_mk1\",\"amount\":1,\"probability\":0.6},\"item_outputs\":{\"item\":\"indrev:nikolite_ore\",\"amount\":6,\"probability\":0.03}}"
                             .getBytes());
 
-            for (String plate : CURVED_PLATES) {
-                if (!plate.equals("tin")) {
+            for (Material material : MaterialRegistry.getMaterials().values()) {
+                if (material.getParts().containsKey(MIParts.CURVED_PLATE) && !material.name.equals("tin")) {
+                    String plate = material.name;
                     addRecipe("ir_compat/" + plate + "_curved_plates", String.format(
                             "{\"type\":\"indrev:compress\",\"ingredients\":{\"tag\":\"c:%s_plates\"},\"output\":{\"item\":\"modern_industrialization:%s_curved_plate\",\"count\":1},\"processTime\":300}",
                             plate, plate).getBytes());

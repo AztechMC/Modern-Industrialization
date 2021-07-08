@@ -1034,6 +1034,7 @@
     "itemGroup.modern_industrialization.general": "Modern Industrialization",
     "key.modern_industrialization.activate": "Toggle Flight",
     "modern_industrialization": "Modern Industrialization",
+    "modern_industrialization:fluid_fuels": "Fluid Fuels",
     "modern_industrialization:forge_hammer_hammer": "Hammering",
     "modern_industrialization:forge_hammer_saw": "Sawing",
     "rei_categories.modern_industrialization.assembler": "Assembler",

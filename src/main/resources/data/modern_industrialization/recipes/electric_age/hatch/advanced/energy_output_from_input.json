@@ -1,15 +1,11 @@
 {
   "type": "minecraft:crafting_shaped",
   "pattern" : [
-    "C",
     "H"
   ],
   "key": {
     "H": {
-      "item" : "modern_industrialization:advanced_machine_hull"
-    },
-    "C": {
-      "item" : "modern_industrialization:electrum_cable"
+      "item" : "modern_industrialization:mv_energy_output_hatch"
     }
   },
   "result": {

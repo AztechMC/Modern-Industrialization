@@ -72,11 +72,6 @@ public class MIParts {
     public static final String N_DOPED_PLATE = "n_doped_plate";
     public static final String P_DOPED_PLATE = "p_doped_plate";
 
-    public static final String[] ITEM_BASE = new String[] { CURVED_PLATE, DOUBLE_INGOT, DUST, INGOT, LARGE_PLATE, NUGGET, PLATE, TINY_DUST };
-
-    public static final String[] ITEM_ALL = new String[] { BOLT, BLADE, RING, ROTOR, GEAR, ROD, CURVED_PLATE, DOUBLE_INGOT, DUST, INGOT, LARGE_PLATE,
-            NUGGET, PLATE, TINY_DUST };
-
     public static final String[] ITEM_PURE_NON_METAL = new String[] { TINY_DUST, DUST, CRUSHED_DUST };
     public static final String[] ITEM_PURE_METAL = new String[] { INGOT, NUGGET, TINY_DUST, DUST };
 

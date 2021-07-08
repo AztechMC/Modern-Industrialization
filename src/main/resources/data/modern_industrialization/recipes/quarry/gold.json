@@ -40,12 +40,22 @@
     {
       "item": "minecraft:ancient_debris",
       "amount": 1,
-      "probability": 0.005
+      "probability": 0.01
     },
 
     {
       "item": "minecraft:glowstone",
       "amount": 12,
+      "probability": 0.05
+    },
+    {
+      "item": "minecraft:nether_quartz_ore",
+      "amount": 6,
+      "probability": 0.15
+    },
+    {
+      "item": "minecraft:nether_gold_ore",
+      "amount": 5,
       "probability": 0.05
     }
   ]

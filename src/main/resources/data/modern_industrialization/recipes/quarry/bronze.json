@@ -37,11 +37,6 @@
       "item": "minecraft:redstone_ore",
       "amount": 10,
       "probability": 0.02
-    },
-    {
-      "item": "modern_industrialization:quartz_ore",
-      "amount": 10,
-      "probability": 0.02
     }
   ]
 }

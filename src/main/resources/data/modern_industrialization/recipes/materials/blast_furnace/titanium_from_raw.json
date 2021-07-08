@@ -1,6 +1,6 @@
 {
   "type": "modern_industrialization:blast_furnace",
-  "eu": 32,
+  "eu": 128,
   "duration": 400,
   "item_inputs": {
     "tag": "c:raw_titanium_ores",

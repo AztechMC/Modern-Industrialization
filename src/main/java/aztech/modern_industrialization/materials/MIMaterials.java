@@ -150,7 +150,7 @@ public class MIMaterials {
                         .addParts(ExternalPart.of("block", "#c:redstone_blocks", "minecraft:redstone_block"))
                         .addRecipes(StandardRecipes::apply, SmeltingRecipes::apply).build());
 
-        MaterialRegistry.addMaterial(new MaterialBuilder("quartz", STONE, new BakableTargetColoramp(0xf0ebe4, mcitem("quartz"), mcitem("quartz")))
+        MaterialRegistry.addMaterial(new MaterialBuilder("quartz", STONE, MIParts.GEM, new BakableTargetColoramp(0xf0ebe4, mcitem("quartz"), mcitem("quartz")))
                 .addRegularParts(CRUSHED_DUST, DUST, TINY_DUST).addParts(OreMaterialPart.of(MaterialOreSet.QUARTZ))
                 .addParts(ExternalPart.of(MIParts.GEM, "minecraft:quartz", "minecraft:quartz")).addRecipes(StandardRecipes::apply)
                 .cancelRecipes("macerator/ore_to_crushed").addRecipes(context -> new MIRecipeBuilder(context, "compressor", "quartz")

@@ -47,6 +47,11 @@
       "item": "minecraft:emerald_ore",
       "amount": 4,
       "probability": 0.025
+    },
+    {
+      "item": "modern_industrialization:quartz_ore",
+      "amount": 10,
+      "probability": 0.02
     }
   ]
 }

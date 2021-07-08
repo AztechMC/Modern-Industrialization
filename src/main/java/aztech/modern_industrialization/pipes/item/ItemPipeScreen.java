@@ -106,7 +106,7 @@ public class ItemPipeScreen extends PipeScreen<ItemPipeScreenHandler> {
             RenderSystem.enableDepthTest();
             drawTexture(matrices, this.x, this.y, u, v, this.width, this.height);
             if (this.isHovered()) {
-                this.renderToolTip(matrices, mouseX, mouseY);
+                this.renderTooltip(matrices, mouseX, mouseY);
             }
         }
     }

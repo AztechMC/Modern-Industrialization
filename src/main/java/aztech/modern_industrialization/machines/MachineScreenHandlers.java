@@ -464,7 +464,7 @@ public class MachineScreenHandlers {
                 drawTexture(matrices, x, y, u, v, 20, 20);
                 if (isHovered()) {
                     drawTexture(matrices, x, y, 60, 18, 20, 20);
-                    this.renderToolTip(matrices, mouseX, mouseY);
+                    this.renderTooltip(matrices, mouseX, mouseY);
                 }
             }
         }

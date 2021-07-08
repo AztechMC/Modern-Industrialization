@@ -142,7 +142,7 @@ public class ForgeHammerScreenHandler extends ScreenHandler {
                 }
             }
             this.output.setStack(0, outputStack);
-            serverPlayerEntity.networkHandler.sendPacket(new ScreenHandlerSlotUpdateS2CPacket(syncId, 37, outputStack));
+            serverPlayerEntity.networkHandler.sendPacket(new ScreenHandlerSlotUpdateS2CPacket(syncId, nextRevision(), 37, outputStack));
         }
     }
 

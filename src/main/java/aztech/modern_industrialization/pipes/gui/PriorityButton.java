@@ -54,7 +54,7 @@ class PriorityButton extends ButtonWidget {
         drawCenteredText(matrices, textRenderer, getMessage(), this.x + this.width / 2, this.y + (this.height - 8) / 2,
                 j | MathHelper.ceil(this.alpha * 255.0F) << 24);
         if (this.isHovered()) {
-            this.renderToolTip(matrices, mouseX, mouseY);
+            this.renderTooltip(matrices, mouseX, mouseY);
         }
     }
 }

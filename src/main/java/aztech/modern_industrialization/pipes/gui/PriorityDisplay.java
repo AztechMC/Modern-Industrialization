@@ -55,7 +55,7 @@ class PriorityDisplay extends ButtonWidget {
         textRenderer.draw(matrices, orderedText, (float) (this.x + this.width / 2 - textRenderer.getWidth(orderedText) / 2),
                 (float) (this.y + (this.height - 8) / 2), 4210752);
         if (this.isHovered()) {
-            this.renderToolTip(matrices, mouseX, mouseY);
+            this.renderTooltip(matrices, mouseX, mouseY);
         }
     }
 }

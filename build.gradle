@@ -293,18 +293,14 @@ if (System.getenv("CURSEFORGE_API_KEY") && !version.endsWith("-SNAPSHOT")) {
             changelogType = "markdown"
             delegate.changelog = changelog
 
-            addGameVersion "1.16.2"
-            addGameVersion "1.16.3"
-            addGameVersion "1.16.4"
-            addGameVersion "1.16.5"
+            addGameVersion "1.17.1"
             addGameVersion "Fabric"
-            addGameVersion "Java 8"
+            addGameVersion "Java 16"
 
             relations {
                 requiredDependency "fabric-api"
+                requiredDependency "roughly-enough-items"
                 optionalDependency "wthit"
-                optionalDependency "roughly-enough-items"
-                embeddedLibrary "libblockattributes"
                 embeddedLibrary "auto-config-updated-api"
                 embeddedLibrary "patchouli-fabric"
             }

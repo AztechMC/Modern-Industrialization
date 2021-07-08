@@ -136,7 +136,7 @@ public class FluidPipeScreen extends PipeScreen<FluidPipeScreenHandler> {
             }
             // Render the tooltip
             if (isHovered()) {
-                renderToolTip(matrices, mouseX, mouseY);
+                renderTooltip(matrices, mouseX, mouseY);
             }
         }
 

@@ -29,27 +29,39 @@ import aztech.modern_industrialization.items.FluidFuelItemHelper;
 import aztech.modern_industrialization.mixin.ServerPlayNetworkHandlerAccessor;
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
+import dev.technici4n.fasttransferlib.experimental.api.context.ContainerItemContext;
+import dev.technici4n.fasttransferlib.experimental.api.fluid.ItemFluidStorage;
+import dev.technici4n.fasttransferlib.experimental.api.item.InventoryWrapper;
+import dev.technici4n.fasttransferlib.experimental.api.item.InventoryWrappers;
+import dev.technici4n.fasttransferlib.experimental.api.item.ItemKey;
 import java.util.List;
 import me.shedaniel.cloth.api.armor.v1.TickableArmor;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidKey;
+import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
+import net.fabricmc.fabric.api.transfer.v1.storage.StorageUtil;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.attribute.EntityAttribute;
 import net.minecraft.entity.attribute.EntityAttributeModifier;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.StackReference;
 import net.minecraft.item.*;
 import net.minecraft.recipe.Ingredient;
+import net.minecraft.screen.slot.Slot;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
+import net.minecraft.util.ClickType;
 import net.minecraft.util.Rarity;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+import org.jetbrains.annotations.Nullable;
 
 public class JetpackItem extends ArmorItem implements Wearable, TickableArmor, IElytraItem {
-    public static final int CAPACITY = 4 * 81000;
+    public static final int CAPACITY = 8 * 81000;
 
     public JetpackItem(Settings settings) {
         super(buildMaterial(), EquipmentSlot.CHEST, settings.maxCount(1).rarity(Rarity.UNCOMMON));
@@ -114,7 +126,7 @@ public class JetpackItem extends ArmorItem implements Wearable, TickableArmor, I
 
     @Override
     public void tickArmor(ItemStack stack, PlayerEntity player) {
-        if (isActivated(stack)) {
+        if (isActivated(stack) && !player.isOnGround()) {
             FluidKey fluid = FluidFuelItemHelper.getFluid(stack);
             long amount = FluidFuelItemHelper.getAmount(stack);
             if (amount > 0) {
@@ -177,5 +189,37 @@ public class JetpackItem extends ArmorItem implements Wearable, TickableArmor, I
     @Override
     public Multimap<EntityAttribute, EntityAttributeModifier> getAttributeModifiers(EquipmentSlot slot) {
         return ImmutableMultimap.of();
+    }
+
+    @Override
+    public boolean onClicked(ItemStack stack, ItemStack otherStack, Slot slot, ClickType clickType, PlayerEntity player,
+            StackReference cursorStackReference) {
+        if (clickType == ClickType.RIGHT) {
+            Storage<FluidKey> jetpackStorage = getStackStorage(stack, player);
+            Storage<FluidKey> cursorStorage = ContainerItemContext.ofPlayerCursor(player, player.currentScreenHandler).find(ItemFluidStorage.ITEM);
+
+            return StorageUtil.move(cursorStorage, jetpackStorage, fk -> true, Long.MAX_VALUE, null) > 0;
+        }
+        return false;
+    }
+
+    @Nullable
+    private static Storage<FluidKey> getStackStorage(ItemStack stack, PlayerEntity player) {
+        PlayerInventory inventory = player.getInventory();
+        ContainerItemContext context = null;
+
+        for (int i = 0; i < inventory.size(); ++i) {
+            if (inventory.getStack(i) == stack) {
+                InventoryWrapper wrapper = InventoryWrappers.ofPlayerInventory(inventory);
+                context = ContainerItemContext.ofStorage(ItemKey.of(stack), wrapper.getSlot(i));
+                break;
+            }
+        }
+
+        if (context != null) {
+            return context.find(ItemFluidStorage.ITEM);
+        } else {
+            return null;
+        }
     }
 }

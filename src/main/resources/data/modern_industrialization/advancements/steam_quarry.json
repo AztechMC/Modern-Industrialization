@@ -8,7 +8,7 @@
                             "min": 1
                         },
                         "items": [
-                            "modern_industrialization:quarry"
+                            "modern_industrialization:steam_quarry"
                         ]
                     }
                 ]
@@ -18,14 +18,14 @@
     },
     "display": {
         "description": {
-            "translate": "advancements.modern_industrialization.quarry.description"
+            "translate": "advancements.modern_industrialization.steam_quarry.description"
         },
         "frame": "goal",
         "icon": {
-            "item": "modern_industrialization:quarry"
+            "item": "modern_industrialization:steam_quarry"
         },
         "title": {
-            "translate": "advancements.modern_industrialization.quarry"
+            "translate": "advancements.modern_industrialization.steam_quarry"
         }
     },
     "hidden": false,

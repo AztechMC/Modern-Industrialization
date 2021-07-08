@@ -108,7 +108,7 @@ createAdvancement('steel_machine_casing', 'Cooked Uncooked Steel!',
 createAdvancement('steel_wiremill', 'Neither a Wire nor a Mill',
                   'Craft a Steel Wiremill', 'steel_machine_casing')
 
-createAdvancement('quarry', 'From Minecraft to Craft',
+createAdvancement('steam_quarry', 'From Minecraft to Craft',
                   'Craft a Steam Quarry and say goodbye to mining', 'steel_machine_casing', frame='goal')
 
 createAdvancement('steel_packer', 'To Pack Or Not To Pack',

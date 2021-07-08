@@ -5,17 +5,17 @@
   "pages": [
     {
       "type": "text",
-      "text": "Pipes are used in the recipes of some machines, but they can also be placed in the world. Up to 3 pipes can fit in a single block.$(br2)Pipes of different types or materials will not connect.$(br2)Right-clicking a pipe with a wrench will change the connection type, shift-right-clicking will drop the pipe."
+      "text": "Pipes are used in the recipes of some machines, but they can also be placed in the world. Up to 3 pipes can fit in a single block.$(br2)Pipes of different colors will not connect.$(br2)Right-clicking a pipe with a wrench will change the connection type, shift-right-clicking will drop the pipe."
     },
     {
       "type": "spotlight",
-      "item": "modern_industrialization:pipe_fluid_bronze",
+      "item": "modern_industrialization:fluid_pipe",
       "title": "Fluid Pipes",
       "text": "Fluid pipes can only contain one type of fluid, and by default they won't connect to empty pipes or blocks. You can force a connection by right-clicking the center of the pipe with the wrench, or by right-clicking a block with a pipe in your hand: it will connect, but not consume the item in your hand."
     },
     {
       "type": "spotlight",
-      "item": "modern_industrialization:pipe_item_bronze",
+      "item": "modern_industrialization:item_pipe",
       "title": "Item Pipes",
       "text": "Item pipes will not connect to inventories by default, but again you can force a connection.$(br2)Right-click a connection without holding a wrench and will see a filter. By default, whitelist mode is enabled, so no items will be inserted or extracted directly."
     },

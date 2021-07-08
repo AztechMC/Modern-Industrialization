@@ -186,9 +186,9 @@ public class MultiblockMachines {
         ShapeTemplate quarryShape = quarryShapeBuilder.build();
         ShapeTemplate quarryElectricShape = quarryElectricShapeBuilder.build();
 
-        STEAM_QUARRY = MachineRegistrationHelper.registerMachine("quarry",
-                bet -> new SteamCraftingMultiblockBlockEntity(bet, "quarry", quarryShape, MIMachineRecipeTypes.QUARRY));
-        ReiMachineRecipes.registerMultiblockShape("quarry", quarryShape);
+        STEAM_QUARRY = MachineRegistrationHelper.registerMachine("steam_quarry",
+                bet -> new SteamCraftingMultiblockBlockEntity(bet, "steam_quarry", quarryShape, MIMachineRecipeTypes.QUARRY));
+        ReiMachineRecipes.registerMultiblockShape("steam_quarry", quarryShape);
         ELECTRIC_QUARRY = MachineRegistrationHelper.registerMachine("electric_quarry",
                 bet -> new ElectricCraftingMultiblockBlockEntity(bet, "electric_quarry", quarryElectricShape, MIMachineRecipeTypes.QUARRY));
         ReiMachineRecipes.registerMultiblockShape("electric_quarry", quarryElectricShape);
@@ -430,11 +430,11 @@ public class MultiblockMachines {
         BlockEntityRendererRegistry.INSTANCE.register(HIGH_PRESSURE_ADVANCED_LARGE_STEAM_BOILER, MultiblockMachineBER::new);
 
 
-        MachineModels.addTieredMachine("quarry", "quarry", MachineCasings.STEEL, true, false, false);
+        MachineModels.addTieredMachine("steam_quarry", "quarry", MachineCasings.STEEL, true, false, false);
         BlockEntityRendererRegistry.INSTANCE.register(STEAM_QUARRY, MultiblockMachineBER::new);
         new Rei("steam_quarry", MIMachineRecipeTypes.QUARRY, new ProgressBar.Parameters(77, 33, "arrow"))
                 .items(inputs -> inputs.addSlot(56, 35), outputs -> outputs.addSlots(102, 35, 4, 4))
-                .workstations("quarry", "electric_quarry").extraTest(recipe -> recipe.eu <= 4)
+                .workstations("steam_quarry", "electric_quarry").extraTest(recipe -> recipe.eu <= 4)
                 .register();
         new Rei("electric_quarry", MIMachineRecipeTypes.QUARRY, new ProgressBar.Parameters(77, 33, "arrow"))
                 .items(inputs -> inputs.addSlot(56, 35), outputs -> outputs.addSlots(102, 35, 4, 4))

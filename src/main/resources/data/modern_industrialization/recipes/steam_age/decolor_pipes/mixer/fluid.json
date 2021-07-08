@@ -1,0 +1,15 @@
+{
+  "type": "modern_industrialization:mixer",
+  "eu": 2,
+  "duration": 200,
+  "item_inputs": {
+    "tag": "modern_industrialization:fluid_pipes"
+  },
+  "fluid_inputs": {
+    "fluid": "water",
+    "amount": 125
+  },
+  "item_outputs": {
+    "item": "modern_industrialization:fluid_pipe"
+  }
+}

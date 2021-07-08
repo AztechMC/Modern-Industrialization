@@ -38,10 +38,10 @@ public final class StandardRecipes {
     public static void apply(MaterialBuilder.RecipeContext ctx) {
 
         // CRAFTING
-        add3By3Crafting(ctx, "tiny_dust", "dust");
-        add3By3Crafting(ctx, "nugget", "ingot");
-        add3By3Crafting(ctx, ctx.getMainPart(), "block");
-        add3By3Crafting(ctx, "raw_metal", "raw_metal_block");
+        add3By3Crafting(ctx, "tiny_dust", "dust", true);
+        add3By3Crafting(ctx, "nugget", "ingot", true);
+        add3By3Crafting(ctx, ctx.getMainPart(), "block", false); // Not in packer due to conflicts with double ingots.
+        add3By3Crafting(ctx, "raw_metal", "raw_metal_block", true);
 
         new ShapedRecipeBuilder(ctx, BLADE, 4, "blade", "P", "P", "I").addTaggedPart('P', CURVED_PLATE).addTaggedPart('I', ROD)
                 .exportToMachine("packer");
@@ -137,11 +137,13 @@ public final class StandardRecipes {
     /**
      * Add 3x3 -> 1 and 1 -> 9 crafting recipes.
      */
-    private static void add3By3Crafting(MaterialBuilder.RecipeContext ctx, String smallPart, String bigPart) {
+    private static void add3By3Crafting(MaterialBuilder.RecipeContext ctx, String smallPart, String bigPart, boolean packer) {
         new ShapedRecipeBuilder(ctx, bigPart, 1, bigPart + "_from_" + smallPart, "yxx", "xxx", "xxx").addPart('y', smallPart).addTaggedPart('x',
                 smallPart);
         new ShapedRecipeBuilder(ctx, smallPart, 9, smallPart + "_from_" + bigPart, "x").addPart('x', bigPart);
-        new MIRecipeBuilder(ctx, "packer", bigPart).addTaggedPartInput(smallPart, 9).addPartOutput(bigPart, 1);
+        if (packer) {
+            new MIRecipeBuilder(ctx, "packer", bigPart).addTaggedPartInput(smallPart, 9).addPartOutput(bigPart, 1);
+        }
         new MIRecipeBuilder(ctx, "unpacker", smallPart).addTaggedPartInput(bigPart, 1).addPartOutput(smallPart, 9);
 
     }

@@ -29,6 +29,7 @@ import aztech.modern_industrialization.api.pipes.item.SpeedUpgrade;
 import aztech.modern_industrialization.pipes.api.PipeEndpointType;
 import aztech.modern_industrialization.pipes.api.PipeNetworkNode;
 import aztech.modern_industrialization.pipes.gui.IPipeScreenHandlerHelper;
+import aztech.modern_industrialization.util.StorageUtil2;
 import dev.technici4n.fasttransferlib.experimental.api.item.ItemKey;
 import dev.technici4n.fasttransferlib.experimental.api.item.ItemStorage;
 import java.util.*;
@@ -221,6 +222,7 @@ public class ItemNetworkNode extends PipeNetworkNode {
                         if (connection.canInsert()) {
                             Storage<ItemKey> target = ItemStorage.SIDED.find(world, u.offset(connection.direction),
                                     connection.direction.getOpposite());
+                            target = StorageUtil2.wrapInventory(target);
                             if (target != null && target.supportsInsertion()) {
                                 result.add(new InsertTarget(connection, target));
                             }

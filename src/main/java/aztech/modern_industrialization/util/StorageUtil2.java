@@ -23,8 +23,13 @@
  */
 package aztech.modern_industrialization.util;
 
+import dev.technici4n.fasttransferlib.experimental.api.item.InventoryWrapper;
+import dev.technici4n.fasttransferlib.experimental.api.item.ItemKey;
+import java.util.List;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
+import net.fabricmc.fabric.api.transfer.v1.storage.StoragePreconditions;
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
+import net.fabricmc.fabric.api.transfer.v1.storage.base.CombinedStorage;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import org.jetbrains.annotations.Nullable;
 
@@ -48,5 +53,52 @@ public class StorageUtil2 {
         }
 
         return null;
+    }
+
+    /**
+     * Wrap vanilla inventories so that insertion tries to stack slots first.
+     * Hehehehe. // TODO: update when the item API is updated, really dirty right
+     * now.
+     */
+    @Nullable
+    public static Storage<ItemKey> wrapInventory(@Nullable Storage<ItemKey> foundStorage) {
+        if (foundStorage instanceof InventoryWrapper wrapper) {
+            List<Storage<ItemKey>> slots = ((CombinedStorage<ItemKey, Storage<ItemKey>>) wrapper).parts;
+            return new InventoryStorage(slots);
+        } else {
+            return foundStorage;
+        }
+    }
+
+    private static boolean isEmpty(Storage<ItemKey> storage, Transaction transaction) {
+        for (StorageView<ItemKey> view : storage.iterable(transaction)) {
+            if (view.amount() > 0) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private static class InventoryStorage extends CombinedStorage<ItemKey, Storage<ItemKey>> {
+        public InventoryStorage(List<Storage<ItemKey>> parts) {
+            super(parts);
+        }
+
+        @Override
+        public long insert(ItemKey resource, long maxAmount, Transaction transaction) {
+            StoragePreconditions.notEmptyNotNegative(resource, maxAmount);
+            long amount = 0;
+
+            for (int iter = 0; iter < 2; ++iter) {
+                for (Storage<ItemKey> part : parts) {
+                    if (iter == 1 || !isEmpty(part, transaction)) {
+                        amount += part.insert(resource, maxAmount - amount, transaction);
+                    }
+                }
+            }
+
+            return amount;
+        }
     }
 }

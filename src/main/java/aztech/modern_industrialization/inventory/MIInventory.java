@@ -25,6 +25,7 @@ package aztech.modern_industrialization.inventory;
 
 import aztech.modern_industrialization.machines.IComponent;
 import aztech.modern_industrialization.util.NbtHelper;
+import aztech.modern_industrialization.util.StorageUtil2;
 import dev.technici4n.fasttransferlib.experimental.api.item.ItemKey;
 import dev.technici4n.fasttransferlib.experimental.api.item.ItemStorage;
 import java.util.ArrayList;
@@ -78,6 +79,7 @@ public final class MIInventory implements IComponent {
 
     public void autoExtractItems(World world, BlockPos pos, Direction direction) {
         Storage<ItemKey> target = ItemStorage.SIDED.find(world, pos.offset(direction), direction.getOpposite());
+        target = StorageUtil2.wrapInventory(target);
 
         if (target != null) {
             StorageUtil.move(itemStorage, target, k -> true, Long.MAX_VALUE, null);

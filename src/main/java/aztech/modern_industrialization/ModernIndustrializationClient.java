@@ -41,6 +41,7 @@ import aztech.modern_industrialization.machines.MachinePackets;
 import aztech.modern_industrialization.machines.MachineScreenHandlers;
 import aztech.modern_industrialization.machines.blockentities.multiblocks.ElectricBlastFurnaceBlockEntity;
 import aztech.modern_industrialization.machines.components.FuelBurningComponent;
+import aztech.modern_industrialization.machines.components.LubricantHelper;
 import aztech.modern_industrialization.machines.components.UpgradeComponent;
 import aztech.modern_industrialization.machines.init.MultiblockMachines;
 import aztech.modern_industrialization.machines.models.MachineModels;
@@ -145,6 +146,10 @@ public class ModernIndustrializationClient implements ClientModInitializer {
                 }
                 if (item == Items.GUNPOWDER) {
                     lines.add(new TranslatableText("text.modern_industrialization.gunpowder_upgrade").setStyle(TextHelper.GRAY_TEXT));
+                }
+                if (item == MIFluids.LUBRICANT.bucketItem) {
+                    lines.add(new TranslatableText("text.modern_industrialization.lubricant_tooltip", LubricantHelper.mbPerTick)
+                            .setStyle(TextHelper.GRAY_TEXT));
                 }
                 if (UpgradeComponent.upgrades.containsKey(item)) {
                     lines.add(new TranslatableText("text.modern_industrialization.machine_upgrade", UpgradeComponent.upgrades.get(item))

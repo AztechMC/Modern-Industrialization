@@ -35,7 +35,7 @@ import net.minecraft.util.Hand;
 
 public class LubricantHelper {
 
-    public static final int mbPerTick = 125;
+    public static final int mbPerTick = 25;
     private static final int dropPerTick = mbPerTick * 81;
 
     public static ActionResult onUse(CrafterComponent crafter, PlayerEntity player, Hand hand) {

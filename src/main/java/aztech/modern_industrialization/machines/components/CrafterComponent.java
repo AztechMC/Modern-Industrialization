@@ -27,6 +27,7 @@ import static aztech.modern_industrialization.util.Simulation.ACT;
 import static aztech.modern_industrialization.util.Simulation.SIMULATE;
 
 import aztech.modern_industrialization.ModernIndustrialization;
+import aztech.modern_industrialization.inventory.AbstractConfigurableStack;
 import aztech.modern_industrialization.inventory.ConfigurableFluidStack;
 import aztech.modern_industrialization.inventory.ConfigurableItemStack;
 import aztech.modern_industrialization.machines.IComponent;
@@ -571,11 +572,7 @@ public class CrafterComponent implements IComponent.ServerOnly {
             }
 
             if (targetItem != null) {
-                for (ConfigurableItemStack stack : this.inventory.getItemInputs()) {
-                    if (stack.playerLockNoOverride(targetItem)) {
-                        break;
-                    }
-                }
+                AbstractConfigurableStack.playerLockNoOverride(targetItem, this.inventory.getItemInputs());
             }
         }
         // ITEM OUTPUTS
@@ -584,11 +581,7 @@ public class CrafterComponent implements IComponent.ServerOnly {
                 if (stack.getLockedInstance() == output.item)
                     continue outer;
             }
-            for (ConfigurableItemStack stack : this.inventory.getItemOutputs()) {
-                if (stack.playerLockNoOverride(output.item)) {
-                    break;
-                }
-            }
+            AbstractConfigurableStack.playerLockNoOverride(output.item, this.inventory.getItemOutputs());
         }
 
         // FLUID INPUTS
@@ -597,11 +590,7 @@ public class CrafterComponent implements IComponent.ServerOnly {
                 if (stack.isLockedTo(input.fluid))
                     continue outer;
             }
-            for (ConfigurableFluidStack stack : this.inventory.getFluidInputs()) {
-                if (stack.playerLockNoOverride(input.fluid)) {
-                    break;
-                }
-            }
+            AbstractConfigurableStack.playerLockNoOverride(input.fluid, this.inventory.getFluidInputs());
         }
         // FLUID OUTPUTS
         outer: for (MachineRecipe.FluidOutput output : recipe.fluidOutputs) {
@@ -609,11 +598,7 @@ public class CrafterComponent implements IComponent.ServerOnly {
                 if (stack.isLockedTo(output.fluid))
                     continue outer;
             }
-            for (ConfigurableFluidStack stack : this.inventory.getFluidOutputs()) {
-                if (stack.playerLockNoOverride(output.fluid)) {
-                    break;
-                }
-            }
+            AbstractConfigurableStack.playerLockNoOverride(output.fluid, this.inventory.getFluidOutputs());
         }
     }
 }

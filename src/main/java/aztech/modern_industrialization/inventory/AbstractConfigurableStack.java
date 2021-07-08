@@ -24,6 +24,7 @@
 package aztech.modern_industrialization.inventory;
 
 import aztech.modern_industrialization.util.Simulation;
+import java.util.List;
 import net.fabricmc.fabric.api.transfer.v1.storage.ResourceKey;
 import net.fabricmc.fabric.api.transfer.v1.storage.StoragePreconditions;
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
@@ -201,13 +202,23 @@ public abstract class AbstractConfigurableStack<T, K extends ResourceKey<T>> ext
         return playerLockable;
     }
 
-    public boolean playerLockNoOverride(T instance) {
-        if (key.isEmpty() && lockedInstance == null) {
-            lockedInstance = instance;
-            playerLocked = true;
-            return true;
+    /**
+     * Lock range of stacks (without overriding existing locks).
+     */
+    public static <T, K extends ResourceKey<T>> void playerLockNoOverride(T instance, List<? extends AbstractConfigurableStack<T, K>> stacks) {
+        for (int iter = 0; iter < 2; ++iter) {
+            boolean allowEmptyStacks = iter == 1;
+
+            for (AbstractConfigurableStack<T, K> stack : stacks) {
+                if (stack.lockedInstance == null) {
+                    if (stack.key.isOf(instance) || (stack.isEmpty() && allowEmptyStacks)) {
+                        stack.lockedInstance = instance;
+                        stack.playerLocked = true;
+                        return;
+                    }
+                }
+            }
         }
-        return false;
     }
 
     /**

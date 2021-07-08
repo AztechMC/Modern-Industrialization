@@ -36,6 +36,7 @@ public class TextHelper {
     public static final Style MAX_TEMP_TEXT = Style.EMPTY.withColor(TextColor.fromRgb(0xd94a1e));
     public static final Style HEAT_CONDUCTION = Style.EMPTY.withColor(TextColor.fromRgb(0xd9ca48));
     public static final Style NEUTRONS = Style.EMPTY.withColor(TextColor.fromRgb(0x29a329)).withItalic(true);
+    public static final Style ADJUSTED_CAPACITY = Style.EMPTY.withColor(Formatting.YELLOW).withBold(true);
 
     public static String getEuUnit(long eu) {
         if (eu > 1e12) {

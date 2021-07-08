@@ -403,8 +403,12 @@ public class MachineScreenHandlers {
             }
             Optional<TooltipData> data = vanillaStack.getTooltipData();
             // Append capacity
-            textTooltip.add(new TranslatableText("text.modern_industrialization.configurable_slot_capacity", stack.getAdjustedCapacity())
-                    .setStyle(TextHelper.GRAY_TEXT));
+            LiteralText capacityText = new LiteralText(String.valueOf(stack.getAdjustedCapacity()));
+            if (stack.getAdjustedCapacity() != 64) {
+                capacityText.setStyle(TextHelper.ADJUSTED_CAPACITY);
+            }
+            textTooltip.add(
+                    new TranslatableText("text.modern_industrialization.configurable_slot_capacity", capacityText).setStyle(TextHelper.GRAY_TEXT));
             // Render
             renderTooltip(matrices, textTooltip, data, mouseX, mouseY);
         }

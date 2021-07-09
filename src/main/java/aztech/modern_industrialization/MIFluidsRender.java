@@ -31,9 +31,9 @@ import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandler;
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.fabricmc.fabric.api.resource.SimpleSynchronousResourceReloadListener;
-import net.fabricmc.fabric.api.transfer.v1.client.fluid.FluidKeyRenderHandler;
-import net.fabricmc.fabric.api.transfer.v1.client.fluid.FluidKeyRendering;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidKey;
+import net.fabricmc.fabric.api.transfer.v1.client.fluid.FluidVariantRenderHandler;
+import net.fabricmc.fabric.api.transfer.v1.client.fluid.FluidVariantRendering;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.texture.SpriteAtlasTexture;
@@ -84,9 +84,9 @@ public class MIFluidsRender {
 
             // If the fluid is a gas, make sure it's rendered upside down.
             if (fluid.isGas) {
-                FluidKeyRendering.register(fluid, new FluidKeyRenderHandler() {
+                FluidVariantRendering.register(fluid, new FluidVariantRenderHandler() {
                     @Override
-                    public boolean fillFromTop(FluidKey fluidKey) {
+                    public boolean fillsFromTop(FluidVariant fluidKey) {
                         return true;
                     }
                 });

@@ -37,7 +37,7 @@ public class TankRenderer implements BlockEntityRenderer<BlockEntity> {
     @Override
     public void render(BlockEntity entity, float tickDelta, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay) {
         TankBlockEntity tank = (TankBlockEntity) entity;
-        if (!tank.fluid.isEmpty() && tank.amount > 0) {
+        if (!tank.fluid.isBlank() && tank.amount > 0) {
             RenderHelper.drawFluidInTank(matrices, vertexConsumers, tank.fluid, (float) tank.amount / tank.capacity);
         }
     }

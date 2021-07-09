@@ -28,7 +28,7 @@ import aztech.modern_industrialization.pipes.gui.PipeScreenHandler;
 import aztech.modern_industrialization.pipes.impl.PipePackets;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidKey;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
@@ -40,7 +40,7 @@ public class FluidPipeScreenHandler extends PipeScreenHandler {
 
     public final FluidPipeInterface iface;
     private final PlayerInventory playerInventory;
-    private FluidKey trackedNetworkFluid;
+    private FluidVariant trackedNetworkFluid;
     private int trackedPriority;
     private int trackedType;
 

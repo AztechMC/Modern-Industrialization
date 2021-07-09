@@ -49,7 +49,7 @@ import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 import net.fabricmc.fabric.api.screenhandler.v1.ScreenHandlerRegistry;
 import net.fabricmc.fabric.api.tag.TagRegistry;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidKey;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.minecraft.block.Block;
 import net.minecraft.block.Material;
 import net.minecraft.block.entity.BlockEntityType;
@@ -132,7 +132,7 @@ public class MIPipes {
         String pipeId = color.prefix + "fluid_pipe";
         PipeNetworkType type = PipeNetworkType.register(new MIIdentifier(pipeId), (id, data) -> new FluidNetwork(id, data, 81000),
                 FluidNetworkNode::new, color.color, true, FLUID_RENDERER);
-        PipeItem item = new PipeItem(new Item.Settings().group(ModernIndustrialization.ITEM_GROUP), type, new FluidNetworkData(FluidKey.empty()));
+        PipeItem item = new PipeItem(new Item.Settings().group(ModernIndustrialization.ITEM_GROUP), type, new FluidNetworkData(FluidVariant.blank()));
         pipeItems.put(type, item);
         Registry.register(Registry.ITEM, new MIIdentifier(pipeId), item);
         PIPE_MODEL_NAMES.add(new MIIdentifier("item/" + pipeId));

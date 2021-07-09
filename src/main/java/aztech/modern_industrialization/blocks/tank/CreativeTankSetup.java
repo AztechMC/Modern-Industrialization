@@ -33,7 +33,6 @@ import aztech.modern_industrialization.blocks.creativetank.CreativeTankItem;
 import aztech.modern_industrialization.blocks.creativetank.CreativeTankRenderer;
 import aztech.modern_industrialization.machines.models.MachineModelProvider;
 import aztech.modern_industrialization.util.ResourceUtil;
-import dev.technici4n.fasttransferlib.experimental.api.fluid.ItemFluidStorage;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.rendereregistry.v1.BlockEntityRendererRegistry;
@@ -61,7 +60,7 @@ public class CreativeTankSetup {
         // Fluid API
         FluidStorage.SIDED.registerForBlockEntities((be, direction) -> be instanceof CreativeTankBlockEntity ? (CreativeTankBlockEntity) be : null,
                 CREATIVE_BLOCK_ENTITY_TYPE);
-        ItemFluidStorage.ITEM.registerForItems(CreativeTankItem.TankItemStorage::new, CREATIVE_TANK_ITEM);
+        FluidStorage.ITEM.registerForItems(CreativeTankItem.TankItemStorage::new, CREATIVE_TANK_ITEM);
     }
 
     @Environment(EnvType.CLIENT)

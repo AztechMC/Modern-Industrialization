@@ -25,17 +25,17 @@ package aztech.modern_industrialization.blocks.tank;
 
 import aztech.modern_industrialization.util.FluidHelper;
 import aztech.modern_industrialization.util.NbtHelper;
-import dev.technici4n.fasttransferlib.experimental.api.context.ContainerItemContext;
-import dev.technici4n.fasttransferlib.experimental.api.fluid.ItemFluidStorage;
-import dev.technici4n.fasttransferlib.experimental.api.item.ItemKey;
 import java.util.Iterator;
 import java.util.List;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidKey;
+import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
+import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.fabricmc.fabric.api.transfer.v1.storage.StoragePreconditions;
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleViewIterator;
-import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
+import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
 import net.minecraft.block.Block;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.item.BlockItem;
@@ -56,30 +56,28 @@ public class TankItem extends BlockItem {
     }
 
     public void registerItemApi() {
-        ItemFluidStorage.ITEM.registerForItems(TankItemStorage::new, this);
+        FluidStorage.ITEM.registerForItems(TankItemStorage::new, this);
     }
 
     public boolean isEmpty(ItemStack stack) {
         return stack.getSubTag("BlockEntityTag") == null;
     }
 
-    public FluidKey getFluid(ItemStack stack) {
+    public FluidVariant getFluid(ItemStack stack) {
         return NbtHelper.getFluidCompatible(stack.getSubTag("BlockEntityTag"), "fluid");
     }
 
-    private void setFluid(ItemStack stack, FluidKey fluid) {
+    private void setFluid(ItemStack stack, FluidVariant fluid) {
         NbtHelper.putFluid(stack.getOrCreateSubTag("BlockEntityTag"), "fluid", fluid);
     }
 
     public long getAmount(ItemStack stack) {
-        if (getFluid(stack).isEmpty()) {
+        if (getFluid(stack).isBlank()) {
             return 0;
         }
         NbtCompound tag = stack.getSubTag("BlockEntityTag");
         if (tag == null)
             return 0;
-        else if (tag.contains("amount"))
-            return tag.getInt("amount") * 81;
         else
             return tag.getLong("amt");
     }
@@ -99,26 +97,26 @@ public class TankItem extends BlockItem {
         }
     }
 
-    class TankItemStorage implements Storage<FluidKey>, StorageView<FluidKey> {
-        private final FluidKey fluid;
+    class TankItemStorage implements Storage<FluidVariant>, StorageView<FluidVariant> {
+        private final FluidVariant fluid;
         private final long amount;
         private final ContainerItemContext ctx;
 
         TankItemStorage(ItemStack stack, ContainerItemContext ctx) {
             this.fluid = TankItem.this.getFluid(stack);
-            this.amount = getAmount(stack);
+            this.amount = TankItem.this.getAmount(stack);
             this.ctx = ctx;
         }
 
-        private boolean updateTank(FluidKey fluid, long amount, Transaction tx) {
+        private boolean updateTank(FluidVariant fluid, long amount, TransactionContext tx) {
             ItemStack result = new ItemStack(TankItem.this);
             if (amount > 0) {
                 setFluid(result, fluid);
                 setAmount(result, amount);
             }
-            ItemKey into = ItemKey.of(result);
+            ItemVariant into = ItemVariant.of(result);
 
-            return ctx.transform(1, into, tx);
+            return ctx.transform(into, 1, tx) == 1;
         }
 
         @Override
@@ -127,13 +125,13 @@ public class TankItem extends BlockItem {
         }
 
         @Override
-        public long insert(FluidKey fluid, long maxAmount, Transaction transaction) {
-            StoragePreconditions.notEmptyNotNegative(fluid, maxAmount);
-            if (ctx.getCount(transaction) == 0)
+        public long insert(FluidVariant fluid, long maxAmount, TransactionContext transaction) {
+            StoragePreconditions.notBlankNotNegative(fluid, maxAmount);
+            if (!ctx.getItemVariant().isOf(TankItem.this))
                 return 0;
 
             long inserted = 0;
-            if (TankItemStorage.this.fluid.isEmpty()) {
+            if (TankItemStorage.this.fluid.isBlank()) {
                 inserted = Math.min(capacity, maxAmount);
             } else if (TankItemStorage.this.fluid.equals(fluid)) {
                 inserted = Math.min(capacity - amount, maxAmount);
@@ -152,9 +150,9 @@ public class TankItem extends BlockItem {
         }
 
         @Override
-        public long extract(FluidKey fluid, long maxAmount, Transaction transaction) {
-            StoragePreconditions.notEmptyNotNegative(fluid, maxAmount);
-            if (ctx.getCount(transaction) == 0)
+        public long extract(FluidVariant fluid, long maxAmount, TransactionContext transaction) {
+            StoragePreconditions.notBlankNotNegative(fluid, maxAmount);
+            if (!ctx.getItemVariant().isOf(TankItem.this))
                 return 0;
 
             long extracted = 0;
@@ -170,27 +168,27 @@ public class TankItem extends BlockItem {
         }
 
         @Override
-        public boolean isEmpty() {
-            return resource().isEmpty();
+        public boolean isResourceBlank() {
+            return getResource().isBlank();
         }
 
         @Override
-        public FluidKey resource() {
+        public FluidVariant getResource() {
             return fluid;
         }
 
         @Override
-        public long amount() {
+        public long getAmount() {
             return amount;
         }
 
         @Override
-        public long capacity() {
+        public long getCapacity() {
             return capacity;
         }
 
         @Override
-        public Iterator<StorageView<FluidKey>> iterator(Transaction transaction) {
+        public Iterator<StorageView<FluidVariant>> iterator(TransactionContext transaction) {
             return SingleViewIterator.create(this, transaction);
         }
     }

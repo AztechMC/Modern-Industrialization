@@ -30,10 +30,10 @@ import aztech.modern_industrialization.pipes.api.PipeEndpointType;
 import aztech.modern_industrialization.pipes.api.PipeNetworkNode;
 import aztech.modern_industrialization.pipes.gui.IPipeScreenHandlerHelper;
 import aztech.modern_industrialization.util.StorageUtil2;
-import dev.technici4n.fasttransferlib.experimental.api.item.ItemKey;
-import dev.technici4n.fasttransferlib.experimental.api.item.ItemStorage;
 import java.util.*;
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
+import net.fabricmc.fabric.api.transfer.v1.item.ItemStorage;
+import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageUtil;
 import net.minecraft.entity.ItemEntity;
@@ -181,7 +181,7 @@ public class ItemNetworkNode extends PipeNetworkNode {
             List<InsertTarget> reachableInputs = null;
             outer: for (ItemConnection connection : connections) { // TODO: optimize!
                 if (connection.canExtract()) {
-                    Storage<ItemKey> source = ItemStorage.SIDED.find(world, pos.offset(connection.direction), connection.direction.getOpposite());
+                    Storage<ItemVariant> source = ItemStorage.SIDED.find(world, pos.offset(connection.direction), connection.direction.getOpposite());
 
                     long movesLeft = connection.getMoves();
                     if (reachableInputs == null)
@@ -220,7 +220,7 @@ public class ItemNetworkNode extends PipeNetworkNode {
                     ItemNetworkNode node = (ItemNetworkNode) maybeUnloaded;
                     for (ItemConnection connection : node.connections) {
                         if (connection.canInsert()) {
-                            Storage<ItemKey> target = ItemStorage.SIDED.find(world, u.offset(connection.direction),
+                            Storage<ItemVariant> target = ItemStorage.SIDED.find(world, u.offset(connection.direction),
                                     connection.direction.getOpposite());
                             target = StorageUtil2.wrapInventory(target);
                             if (target != null && target.supportsInsertion()) {
@@ -252,7 +252,7 @@ public class ItemNetworkNode extends PipeNetworkNode {
         return result;
     }
 
-    private record InsertTarget(ItemConnection connection, Storage<ItemKey> target) {
+    private record InsertTarget(ItemConnection connection, Storage<ItemVariant> target) {
     }
 
     @Override
@@ -290,7 +290,7 @@ public class ItemNetworkNode extends PipeNetworkNode {
             return type == BLOCK_OUT || type == BLOCK_IN_OUT;
         }
 
-        private boolean canStackMoveThrough(ItemKey key) {
+        private boolean canStackMoveThrough(ItemVariant key) {
             for (ItemStack filterStack : stacks) {
                 if (key.matches(filterStack)) {
                     return whitelist;

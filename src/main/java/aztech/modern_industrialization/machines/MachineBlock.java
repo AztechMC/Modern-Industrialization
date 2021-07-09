@@ -96,7 +96,7 @@ public class MachineBlock extends MIBlock implements TickableBlock {
             if (be instanceof MachineBlockEntity machine) {
                 List<ItemStack> dropExtra = machine.dropExtra();
                 for (ConfigurableItemStack stack : machine.getInventory().getItemStacks()) {
-                    ItemScatterer.spawn(world, pos.getX(), pos.getY(), pos.getZ(), stack.resource().toStack((int) stack.amount()));
+                    ItemScatterer.spawn(world, pos.getX(), pos.getY(), pos.getZ(), stack.getResource().toStack((int) stack.getAmount()));
                     stack.setAmount(0);
                 }
 

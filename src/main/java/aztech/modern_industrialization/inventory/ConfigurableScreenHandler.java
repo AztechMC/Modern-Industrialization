@@ -23,12 +23,12 @@
  */
 package aztech.modern_industrialization.inventory;
 
-import dev.technici4n.fasttransferlib.experimental.api.context.ContainerItemContext;
-import dev.technici4n.fasttransferlib.experimental.api.fluid.ItemFluidStorage;
 import io.netty.buffer.Unpooled;
 import java.util.List;
 import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidKey;
+import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
@@ -105,14 +105,14 @@ public abstract class ConfigurableScreenHandler extends ScreenHandler {
                 if (lockingMode) {
                     fluidStack.togglePlayerLock();
                 } else {
-                    Storage<FluidKey> io = ContainerItemContext.ofPlayerCursor(playerEntity, this).find(ItemFluidStorage.ITEM);
+                    Storage<FluidVariant> io = ContainerItemContext.ofPlayerCursor(playerEntity, this).find(FluidStorage.ITEM);
                     if (io != null) {
                         // Extract first
                         long previousAmount = fluidStack.amount;
                         try (Transaction transaction = Transaction.openOuter()) {
-                            for (StorageView<FluidKey> view : io.iterable(transaction)) {
-                                FluidKey fluid = view.resource();
-                                if (!fluid.isEmpty() && fluidSlot.canInsertFluid(fluid)) {
+                            for (StorageView<FluidVariant> view : io.iterable(transaction)) {
+                                FluidVariant fluid = view.getResource();
+                                if (!fluid.isBlank() && fluidSlot.canInsertFluid(fluid)) {
                                     try (Transaction tx = transaction.openNested()) {
                                         long extracted = view.extract(fluid, fluidStack.getRemainingSpace(), tx);
                                         if (extracted > 0) {
@@ -131,10 +131,10 @@ public abstract class ConfigurableScreenHandler extends ScreenHandler {
                         }
 
                         // Otherwise insert
-                        FluidKey fluid = fluidStack.resource();
-                        if (!fluid.isEmpty() && fluidSlot.canExtractFluid(fluid)) {
+                        FluidVariant fluid = fluidStack.getResource();
+                        if (!fluid.isBlank() && fluidSlot.canExtractFluid(fluid)) {
                             try (Transaction tx = Transaction.openOuter()) {
-                                fluidStack.decrement(io.insert(fluid, fluidStack.amount(), tx));
+                                fluidStack.decrement(io.insert(fluid, fluidStack.getAmount(), tx));
                                 tx.commit();
                                 // TODO: markDirty?
                                 return;

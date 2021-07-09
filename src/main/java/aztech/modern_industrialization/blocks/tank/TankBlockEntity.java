@@ -25,18 +25,18 @@ package aztech.modern_industrialization.blocks.tank;
 
 import aztech.modern_industrialization.api.FastBlockEntity;
 import aztech.modern_industrialization.util.NbtHelper;
-import dev.technici4n.fasttransferlib.experimental.api.context.ContainerItemContext;
-import dev.technici4n.fasttransferlib.experimental.api.fluid.ItemFluidStorage;
 import java.util.Iterator;
 import net.fabricmc.fabric.api.block.entity.BlockEntityClientSerializable;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidKey;
+import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.fabricmc.fabric.api.transfer.v1.storage.StoragePreconditions;
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageUtil;
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.ResourceAmount;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleViewIterator;
-import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
+import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
 import net.fabricmc.fabric.api.transfer.v1.transaction.base.SnapshotParticipant;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntityType;
@@ -45,11 +45,11 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 
-public class TankBlockEntity extends FastBlockEntity implements Storage<FluidKey>, StorageView<FluidKey>, BlockEntityClientSerializable {
-    FluidKey fluid = FluidKey.empty();
+public class TankBlockEntity extends FastBlockEntity implements Storage<FluidVariant>, StorageView<FluidVariant>, BlockEntityClientSerializable {
+    FluidVariant fluid = FluidVariant.blank();
     long amount;
     final long capacity;
-    private int version = 0;
+    private long version = 0;
     private final TankParticipant participant = new TankParticipant();
 
     public TankBlockEntity(BlockEntityType<?> bet, BlockPos pos, BlockState state, long capacity) {
@@ -69,7 +69,7 @@ public class TankBlockEntity extends FastBlockEntity implements Storage<FluidKey
         } else {
             amount = tag.getLong("amt");
         }
-        if (fluid.isEmpty()) {
+        if (fluid.isBlank()) {
             amount = 0;
         }
     }
@@ -101,7 +101,7 @@ public class TankBlockEntity extends FastBlockEntity implements Storage<FluidKey
     }
 
     public boolean onPlayerUse(PlayerEntity player) {
-        Storage<FluidKey> handIo = ContainerItemContext.ofPlayerHand(player, Hand.MAIN_HAND).find(ItemFluidStorage.ITEM);
+        Storage<FluidVariant> handIo = ContainerItemContext.ofPlayerHand(player, Hand.MAIN_HAND).find(FluidStorage.ITEM);
         if (handIo != null) {
             // move from hand into this tank
             if (StorageUtil.move(handIo, this, f -> true, Integer.MAX_VALUE, null) > 0)
@@ -119,9 +119,9 @@ public class TankBlockEntity extends FastBlockEntity implements Storage<FluidKey
     }
 
     @Override
-    public long insert(FluidKey fluid, long maxAmount, Transaction transaction) {
-        StoragePreconditions.notEmptyNotNegative(fluid, maxAmount);
-        if (this.fluid.isEmpty() || TankBlockEntity.this.fluid == fluid) {
+    public long insert(FluidVariant fluid, long maxAmount, TransactionContext transaction) {
+        StoragePreconditions.notBlankNotNegative(fluid, maxAmount);
+        if (this.fluid.isBlank() || TankBlockEntity.this.fluid == fluid) {
             long inserted = Math.min(maxAmount, capacity - amount);
             if (inserted > 0) {
                 participant.updateSnapshots(transaction);
@@ -139,15 +139,15 @@ public class TankBlockEntity extends FastBlockEntity implements Storage<FluidKey
     }
 
     @Override
-    public long extract(FluidKey fluid, long maxAmount, Transaction transaction) {
-        StoragePreconditions.notEmptyNotNegative(fluid, maxAmount);
+    public long extract(FluidVariant fluid, long maxAmount, TransactionContext transaction) {
+        StoragePreconditions.notBlankNotNegative(fluid, maxAmount);
         if (fluid.equals(TankBlockEntity.this.fluid)) {
             long extracted = Math.min(maxAmount, amount);
             if (extracted > 0) {
                 participant.updateSnapshots(transaction);
                 amount -= extracted;
                 if (amount == 0) {
-                    TankBlockEntity.this.fluid = FluidKey.empty();
+                    TankBlockEntity.this.fluid = FluidVariant.blank();
                 }
             }
             return extracted;
@@ -156,38 +156,43 @@ public class TankBlockEntity extends FastBlockEntity implements Storage<FluidKey
     }
 
     @Override
-    public FluidKey resource() {
+    public FluidVariant getResource() {
         return fluid;
     }
 
     @Override
-    public long amount() {
+    public boolean isResourceBlank() {
+        return getResource().isBlank();
+    }
+
+    @Override
+    public long getAmount() {
         return amount;
     }
 
     @Override
-    public long capacity() {
+    public long getCapacity() {
         return capacity;
     }
 
     @Override
-    public Iterator<StorageView<FluidKey>> iterator(Transaction transaction) {
+    public Iterator<StorageView<FluidVariant>> iterator(TransactionContext transaction) {
         return SingleViewIterator.create(this, transaction);
     }
 
     @Override
-    public int getVersion() {
+    public long getVersion() {
         return version;
     }
 
-    private class TankParticipant extends SnapshotParticipant<ResourceAmount<FluidKey>> {
+    private class TankParticipant extends SnapshotParticipant<ResourceAmount<FluidVariant>> {
         @Override
-        protected ResourceAmount<FluidKey> createSnapshot() {
+        protected ResourceAmount<FluidVariant> createSnapshot() {
             return new ResourceAmount<>(fluid, amount);
         }
 
         @Override
-        protected void readSnapshot(ResourceAmount<FluidKey> snapshot) {
+        protected void readSnapshot(ResourceAmount<FluidVariant> snapshot) {
             fluid = snapshot.resource();
             amount = snapshot.amount();
         }

@@ -24,10 +24,10 @@
 package aztech.modern_industrialization.inventory;
 
 import java.util.List;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidKey;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.minecraft.fluid.Fluid;
 
-public class MIFluidStorage extends MIStorage<Fluid, FluidKey, ConfigurableFluidStack> {
+public class MIFluidStorage extends MIStorage<Fluid, FluidVariant, ConfigurableFluidStack> {
     public MIFluidStorage(List<ConfigurableFluidStack> stacks) {
         super(stacks, true);
     }

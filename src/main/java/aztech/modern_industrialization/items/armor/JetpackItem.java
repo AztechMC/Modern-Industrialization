@@ -29,14 +29,12 @@ import aztech.modern_industrialization.items.FluidFuelItemHelper;
 import aztech.modern_industrialization.mixin.ServerPlayNetworkHandlerAccessor;
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
-import dev.technici4n.fasttransferlib.experimental.api.context.ContainerItemContext;
-import dev.technici4n.fasttransferlib.experimental.api.fluid.ItemFluidStorage;
-import dev.technici4n.fasttransferlib.experimental.api.item.InventoryWrapper;
-import dev.technici4n.fasttransferlib.experimental.api.item.InventoryWrappers;
-import dev.technici4n.fasttransferlib.experimental.api.item.ItemKey;
 import java.util.List;
 import me.shedaniel.cloth.api.armor.v1.TickableArmor;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidKey;
+import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
+import net.fabricmc.fabric.api.transfer.v1.item.InventoryStorage;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageUtil;
 import net.minecraft.client.item.TooltipContext;
@@ -127,7 +125,7 @@ public class JetpackItem extends ArmorItem implements Wearable, TickableArmor, I
     @Override
     public void tickArmor(ItemStack stack, PlayerEntity player) {
         if (isActivated(stack) && !player.isOnGround()) {
-            FluidKey fluid = FluidFuelItemHelper.getFluid(stack);
+            FluidVariant fluid = FluidFuelItemHelper.getFluid(stack);
             long amount = FluidFuelItemHelper.getAmount(stack);
             if (amount > 0) {
                 // Always consume one mb of fuel
@@ -195,8 +193,8 @@ public class JetpackItem extends ArmorItem implements Wearable, TickableArmor, I
     public boolean onClicked(ItemStack stack, ItemStack otherStack, Slot slot, ClickType clickType, PlayerEntity player,
             StackReference cursorStackReference) {
         if (clickType == ClickType.RIGHT) {
-            Storage<FluidKey> jetpackStorage = getStackStorage(stack, player);
-            Storage<FluidKey> cursorStorage = ContainerItemContext.ofPlayerCursor(player, player.currentScreenHandler).find(ItemFluidStorage.ITEM);
+            Storage<FluidVariant> jetpackStorage = getStackStorage(stack, player);
+            Storage<FluidVariant> cursorStorage = ContainerItemContext.ofPlayerCursor(player, player.currentScreenHandler).find(FluidStorage.ITEM);
 
             return StorageUtil.move(cursorStorage, jetpackStorage, fk -> true, Long.MAX_VALUE, null) > 0;
         }
@@ -204,20 +202,20 @@ public class JetpackItem extends ArmorItem implements Wearable, TickableArmor, I
     }
 
     @Nullable
-    private static Storage<FluidKey> getStackStorage(ItemStack stack, PlayerEntity player) {
+    private static Storage<FluidVariant> getStackStorage(ItemStack stack, PlayerEntity player) {
         PlayerInventory inventory = player.getInventory();
         ContainerItemContext context = null;
 
         for (int i = 0; i < inventory.size(); ++i) {
             if (inventory.getStack(i) == stack) {
-                InventoryWrapper wrapper = InventoryWrappers.ofPlayerInventory(inventory);
-                context = ContainerItemContext.ofStorage(ItemKey.of(stack), wrapper.getSlot(i));
+                InventoryStorage wrapper = InventoryStorage.ofPlayer(inventory);
+                context = ContainerItemContext.ofPlayerSlot(player, wrapper.getSlots().get(i));
                 break;
             }
         }
 
         if (context != null) {
-            return context.find(ItemFluidStorage.ITEM);
+            return context.find(FluidStorage.ITEM);
         } else {
             return null;
         }

@@ -42,7 +42,7 @@ import aztech.modern_industrialization.nuclear.NuclearComponent;
 import aztech.modern_industrialization.nuclear.NuclearFuel;
 import aztech.modern_industrialization.nuclear.NuclearGridHelper;
 import aztech.modern_industrialization.util.Tickable;
-import dev.technici4n.fasttransferlib.experimental.api.item.ItemKey;
+import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -148,7 +148,7 @@ public class NuclearReactorMultiblockBlockEntity extends MultiblockMachineBlockE
             public ItemStack getNuclearComponent(int x, int y) {
                 if (hatchesGrid[x][y] != null) {
                     if (!hatchesGrid[x][y].isFluid) {
-                        ItemStack itemStack = hatchesGrid[x][y].getInventory().getItemStacks().get(0).resource().toStack();
+                        ItemStack itemStack = hatchesGrid[x][y].getInventory().getItemStacks().get(0).getResource().toStack();
                         if (!itemStack.isEmpty() && itemStack.getItem() instanceof NuclearComponent) {
                             return itemStack;
                         }
@@ -191,7 +191,7 @@ public class NuclearReactorMultiblockBlockEntity extends MultiblockMachineBlockE
                     hatchesGrid[x][y].nuclearReactorComponent
                             .increaseTemperature(des * (double) fuel.euByDesintegration / NuclearHatch.EU_PER_DEGREE);
                     tag.putInt("desRem", desRem - des);
-                    hatchesGrid[x][y].getInventory().getItemStacks().get(0).setKey(ItemKey.of(nuclearFuelStack));
+                    hatchesGrid[x][y].getInventory().getItemStacks().get(0).setKey(ItemVariant.of(nuclearFuelStack));
                     return des * fuel.neutronByDesintegration;
 
                 }

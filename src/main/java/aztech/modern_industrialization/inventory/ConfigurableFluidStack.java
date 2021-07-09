@@ -26,10 +26,10 @@ package aztech.modern_industrialization.inventory;
 import aztech.modern_industrialization.api.ReiDraggable;
 import aztech.modern_industrialization.util.Simulation;
 import aztech.modern_industrialization.util.UnsupportedOperationInventory;
-import dev.technici4n.fasttransferlib.experimental.api.item.ItemKey;
 import java.util.ArrayList;
 import java.util.List;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidKey;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
+import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.Fluids;
@@ -41,7 +41,7 @@ import net.minecraft.util.registry.Registry;
 /**
  * A fluid stack that can be configured.
  */
-public class ConfigurableFluidStack extends AbstractConfigurableStack<Fluid, FluidKey> {
+public class ConfigurableFluidStack extends AbstractConfigurableStack<Fluid, FluidVariant> {
     private long capacity;
 
     public ConfigurableFluidStack(long capacity) {
@@ -64,7 +64,7 @@ public class ConfigurableFluidStack extends AbstractConfigurableStack<Fluid, Flu
 
     public static ConfigurableFluidStack lockedInputSlot(long capacity, Fluid fluid) {
         ConfigurableFluidStack stack = new ConfigurableFluidStack(capacity);
-        stack.key = FluidKey.of(fluid);
+        stack.key = FluidVariant.of(fluid);
         stack.lockedInstance = fluid;
         stack.playerInsert = true;
         stack.playerLockable = false;
@@ -75,7 +75,7 @@ public class ConfigurableFluidStack extends AbstractConfigurableStack<Fluid, Flu
 
     public static ConfigurableFluidStack lockedOutputSlot(long capacity, Fluid fluid) {
         ConfigurableFluidStack stack = new ConfigurableFluidStack(capacity);
-        stack.key = FluidKey.of(fluid);
+        stack.key = FluidVariant.of(fluid);
         stack.lockedInstance = fluid;
         stack.playerLockable = false;
         stack.playerLocked = true;
@@ -117,8 +117,8 @@ public class ConfigurableFluidStack extends AbstractConfigurableStack<Fluid, Flu
     }
 
     @Override
-    protected FluidKey getEmptyKey() {
-        return FluidKey.empty();
+    protected FluidVariant getBlankVariant() {
+        return FluidVariant.blank();
     }
 
     @Override
@@ -132,8 +132,8 @@ public class ConfigurableFluidStack extends AbstractConfigurableStack<Fluid, Flu
     }
 
     @Override
-    protected FluidKey readKeyFromNbt(NbtCompound compound) {
-        return FluidKey.fromNbt(compound);
+    protected FluidVariant readVariantFromNbt(NbtCompound compound) {
+        return FluidVariant.fromNbt(compound);
     }
 
     public long getCapacity() {
@@ -141,7 +141,7 @@ public class ConfigurableFluidStack extends AbstractConfigurableStack<Fluid, Flu
     }
 
     @Override
-    protected long getRemainingCapacityFor(FluidKey key) {
+    protected long getRemainingCapacityFor(FluidVariant key) {
         return getRemainingSpace();
     }
 
@@ -190,11 +190,11 @@ public class ConfigurableFluidStack extends AbstractConfigurableStack<Fluid, Flu
             return false;
         }
 
-        public boolean canInsertFluid(FluidKey fluid) {
+        public boolean canInsertFluid(FluidVariant fluid) {
             return playerInsert && isResourceAllowedByLock(fluid.getFluid());
         }
 
-        public boolean canExtractFluid(FluidKey fluid) {
+        public boolean canExtractFluid(FluidVariant fluid) {
             return playerExtract;
         }
 
@@ -217,12 +217,12 @@ public class ConfigurableFluidStack extends AbstractConfigurableStack<Fluid, Flu
         }
 
         @Override
-        public boolean dragFluid(FluidKey fluidKey, Simulation simulation) {
+        public boolean dragFluid(FluidVariant fluidKey, Simulation simulation) {
             return playerLock(fluidKey.getFluid(), simulation);
         }
 
         @Override
-        public boolean dragItem(ItemKey itemKey, Simulation simulation) {
+        public boolean dragItem(ItemVariant itemKey, Simulation simulation) {
             return false;
         }
     }

@@ -24,8 +24,8 @@
 package aztech.modern_industrialization.api;
 
 import aztech.modern_industrialization.util.Simulation;
-import dev.technici4n.fasttransferlib.experimental.api.item.ItemKey;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidKey;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
+import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.minecraft.client.gui.widget.ClickableWidget;
 
 /**
@@ -35,7 +35,7 @@ import net.minecraft.client.gui.widget.ClickableWidget;
  * if dragging is accepted.
  */
 public interface ReiDraggable {
-    boolean dragFluid(FluidKey fluidKey, Simulation simulation);
+    boolean dragFluid(FluidVariant fluidKey, Simulation simulation);
 
-    boolean dragItem(ItemKey itemKey, Simulation simulation);
+    boolean dragItem(ItemVariant itemKey, Simulation simulation);
 }

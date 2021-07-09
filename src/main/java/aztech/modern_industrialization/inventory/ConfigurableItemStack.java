@@ -26,11 +26,11 @@ package aztech.modern_industrialization.inventory;
 import aztech.modern_industrialization.api.ReiDraggable;
 import aztech.modern_industrialization.util.Simulation;
 import aztech.modern_industrialization.util.UnsupportedOperationInventory;
-import dev.technici4n.fasttransferlib.experimental.api.item.ItemKey;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidKey;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
+import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -42,7 +42,7 @@ import net.minecraft.util.registry.Registry;
 /**
  * An item stack that can be configured.
  */
-public class ConfigurableItemStack extends AbstractConfigurableStack<Item, ItemKey> {
+public class ConfigurableItemStack extends AbstractConfigurableStack<Item, ItemVariant> {
     private int adjustedCapacity = 64;
 
     public ConfigurableItemStack() {
@@ -89,8 +89,8 @@ public class ConfigurableItemStack extends AbstractConfigurableStack<Item, ItemK
     }
 
     @Override
-    protected ItemKey getEmptyKey() {
-        return ItemKey.empty();
+    protected ItemVariant getBlankVariant() {
+        return ItemVariant.blank();
     }
 
     @Override
@@ -104,17 +104,17 @@ public class ConfigurableItemStack extends AbstractConfigurableStack<Item, ItemK
     }
 
     @Override
-    protected ItemKey readKeyFromNbt(NbtCompound compound) {
-        return ItemKey.fromNbt(compound);
+    protected ItemVariant readVariantFromNbt(NbtCompound compound) {
+        return ItemVariant.fromNbt(compound);
     }
 
     @Override
-    protected long getCapacity() {
-        return key.isEmpty() ? adjustedCapacity : Math.min(adjustedCapacity, key.getItem().getMaxCount());
+    public long getCapacity() {
+        return key.isBlank() ? adjustedCapacity : Math.min(adjustedCapacity, key.getItem().getMaxCount());
     }
 
     @Override
-    public long getRemainingCapacityFor(ItemKey key) {
+    public long getRemainingCapacityFor(ItemVariant key) {
         return Math.min(key.getItem().getMaxCount(), adjustedCapacity) - amount;
     }
 
@@ -195,7 +195,7 @@ public class ConfigurableItemStack extends AbstractConfigurableStack<Item, ItemK
 
         @Override
         public void setStack(ItemStack stack) {
-            key = ItemKey.of(stack);
+            key = ItemVariant.of(stack);
             amount = stack.getCount();
             markDirty.run();
             cachedReturnedStack = stack;
@@ -223,12 +223,12 @@ public class ConfigurableItemStack extends AbstractConfigurableStack<Item, ItemK
         }
 
         @Override
-        public boolean dragFluid(FluidKey fluidKey, Simulation simulation) {
+        public boolean dragFluid(FluidVariant fluidKey, Simulation simulation) {
             return false;
         }
 
         @Override
-        public boolean dragItem(ItemKey itemKey, Simulation simulation) {
+        public boolean dragItem(ItemVariant itemKey, Simulation simulation) {
             return playerLock(itemKey.getItem(), simulation);
         }
     }

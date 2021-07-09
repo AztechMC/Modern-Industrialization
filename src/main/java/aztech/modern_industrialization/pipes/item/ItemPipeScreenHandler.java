@@ -31,10 +31,10 @@ import aztech.modern_industrialization.pipes.impl.PipePackets;
 import aztech.modern_industrialization.util.ItemStackHelper;
 import aztech.modern_industrialization.util.Simulation;
 import aztech.modern_industrialization.util.UnsupportedOperationInventory;
-import dev.technici4n.fasttransferlib.experimental.api.item.ItemKey;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidKey;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
+import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
@@ -197,12 +197,12 @@ public class ItemPipeScreenHandler extends PipeScreenHandler {
         }
 
         @Override
-        public boolean dragFluid(FluidKey fluidKey, Simulation simulation) {
+        public boolean dragFluid(FluidVariant fluidKey, Simulation simulation) {
             return false;
         }
 
         @Override
-        public boolean dragItem(ItemKey itemKey, Simulation simulation) {
+        public boolean dragItem(ItemVariant itemKey, Simulation simulation) {
             if (simulation.isActing()) {
                 setStack(itemKey.toStack());
             }

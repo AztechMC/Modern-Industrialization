@@ -26,13 +26,13 @@ package aztech.modern_industrialization.inventory;
 import java.util.Iterator;
 import java.util.List;
 import java.util.function.Predicate;
-import net.fabricmc.fabric.api.transfer.v1.storage.ResourceKey;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.fabricmc.fabric.api.transfer.v1.storage.StoragePreconditions;
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
-import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
+import net.fabricmc.fabric.api.transfer.v1.storage.TransferVariant;
+import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
 
-public class MIStorage<T, K extends ResourceKey<T>, S extends AbstractConfigurableStack<T, K>> implements Storage<K> {
+public class MIStorage<T, K extends TransferVariant<T>, S extends AbstractConfigurableStack<T, K>> implements Storage<K> {
     final List<S> stacks;
     private final boolean oneSlotPerResource; // true for fluids, false for items
 
@@ -45,15 +45,15 @@ public class MIStorage<T, K extends ResourceKey<T>, S extends AbstractConfigurab
      * @param filter    Return false to skip some configurable stacks.
      * @param lockSlots Whether to lock slots or not.
      */
-    public long insert(K resource, long maxAmount, Transaction tx, Predicate<? super S> filter, boolean lockSlots) {
-        StoragePreconditions.notEmptyNotNegative(resource, maxAmount);
+    public long insert(K resource, long maxAmount, TransactionContext tx, Predicate<? super S> filter, boolean lockSlots) {
+        StoragePreconditions.notBlankNotNegative(resource, maxAmount);
         long totalInserted = 0;
 
         outer: for (int iter = 0; iter < 2; ++iter) {
             boolean insertIntoEmptySlots = iter == 1;
             for (S stack : stacks) {
                 if (filter.test(stack) && stack.isResourceAllowedByLock(resource)) {
-                    if ((stack.amount() == 0 && insertIntoEmptySlots) || stack.resource().equals(resource)) {
+                    if ((stack.getAmount() == 0 && insertIntoEmptySlots) || stack.getResource().equals(resource)) {
                         long inserted = Math.min(maxAmount - totalInserted, stack.getRemainingCapacityFor(resource));
 
                         if (inserted > 0) {
@@ -62,7 +62,7 @@ public class MIStorage<T, K extends ResourceKey<T>, S extends AbstractConfigurab
                             stack.increment(inserted);
 
                             if (lockSlots) {
-                                stack.enableMachineLock(resource.getResource());
+                                stack.enableMachineLock(resource.getObject());
                             }
                         }
 
@@ -80,13 +80,13 @@ public class MIStorage<T, K extends ResourceKey<T>, S extends AbstractConfigurab
     }
 
     @Override
-    public long insert(K resource, long maxAmount, Transaction transaction) {
+    public long insert(K resource, long maxAmount, TransactionContext transaction) {
         return insert(resource, maxAmount, transaction, AbstractConfigurableStack::canPipesInsert, false);
     }
 
     @Override
-    public long extract(K resource, long maxAmount, Transaction transaction) {
-        StoragePreconditions.notEmptyNotNegative(resource, maxAmount);
+    public long extract(K resource, long maxAmount, TransactionContext transaction) {
+        StoragePreconditions.notBlankNotNegative(resource, maxAmount);
         long amount = 0;
 
         for (int i = 0; i < stacks.size() && amount < maxAmount; ++i) {
@@ -98,7 +98,7 @@ public class MIStorage<T, K extends ResourceKey<T>, S extends AbstractConfigurab
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
     @Override
-    public Iterator<StorageView<K>> iterator(Transaction transaction) {
+    public Iterator<StorageView<K>> iterator(TransactionContext transaction) {
         return (Iterator) stacks.iterator();
     }
 }

@@ -34,8 +34,8 @@ import net.fabricmc.fabric.api.renderer.v1.mesh.Mesh;
 import net.fabricmc.fabric.api.renderer.v1.mesh.MeshBuilder;
 import net.fabricmc.fabric.api.renderer.v1.mesh.MutableQuadView;
 import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
-import net.fabricmc.fabric.api.transfer.v1.client.fluid.FluidKeyRendering;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidKey;
+import net.fabricmc.fabric.api.transfer.v1.client.fluid.FluidVariantRendering;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.util.SpriteIdentifier;
 import net.minecraft.nbt.NbtCompound;
@@ -155,9 +155,9 @@ public class PipeMeshCache implements PipeRenderer {
 
         // Fluid handling logic
         if (customData.contains("fluid")) {
-            FluidKey fluid = NbtHelper.getFluidCompatible(customData, "fluid");
-            Sprite still = FluidKeyRendering.getSprite(fluid);
-            int color = FluidKeyRendering.getColor(fluid);
+            FluidVariant fluid = NbtHelper.getFluidCompatible(customData, "fluid");
+            Sprite still = FluidVariantRendering.getSprite(fluid);
+            int color = FluidVariantRendering.getColor(fluid);
             ctx.pushTransform(quad -> {
                 if (quad.tag() == 1) {
                     if (still != null) {

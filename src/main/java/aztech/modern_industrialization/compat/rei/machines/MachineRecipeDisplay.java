@@ -41,8 +41,8 @@ import me.shedaniel.rei.api.common.display.Display;
 import me.shedaniel.rei.api.common.entry.EntryIngredient;
 import me.shedaniel.rei.api.common.entry.EntryStack;
 import me.shedaniel.rei.api.common.util.EntryStacks;
-import net.fabricmc.fabric.api.transfer.v1.client.fluid.FluidKeyRendering;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidKey;
+import net.fabricmc.fabric.api.transfer.v1.client.fluid.FluidVariantRendering;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
@@ -56,7 +56,7 @@ public class MachineRecipeDisplay implements Display {
     private static final BiFunction<EntryStack<?>, Tooltip, Tooltip> FLUID_TOOLTIP = (stack, tooltip) -> {
         FluidStack fs = stack.castValue();
         long amount = stack.<FluidStack>cast().getValue().getAmount();
-        return Tooltip.create(FluidKeyRendering.getHandlerOrDefault(fs.getFluid()).getName(FluidKey.of(fs.getFluid())),
+        return Tooltip.create(FluidVariantRendering.getHandlerOrDefault(fs.getFluid()).getName(FluidVariant.of(fs.getFluid())),
                 new TranslatableText("text.modern_industrialization.fluid_slot_quantity", FluidTextHelper.getUnicodeMillibuckets(amount, false)));
     };
 
@@ -92,7 +92,7 @@ public class MachineRecipeDisplay implements Display {
         Text probabilityText = getProbabilityTooltip(probability);
         return EntryStacks.of(fluid, amount).setting(EntryStack.Settings.TOOLTIP_PROCESSOR, (stack, oldTooltip) -> {
             List<Text> tooltip = new ArrayList<>();
-            tooltip.add(FluidKeyRendering.getName(FluidKey.of(fluid)));
+            tooltip.add(FluidVariantRendering.getName(FluidVariant.of(fluid)));
             tooltip.add(
                     new TranslatableText("text.modern_industrialization.fluid_slot_quantity", FluidTextHelper.getUnicodeMillibuckets(amount, false)));
             if (probabilityText != null) {

@@ -39,8 +39,8 @@ import net.fabricmc.fabric.api.renderer.v1.mesh.MutableQuadView;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
 import net.fabricmc.fabric.api.renderer.v1.model.FabricBakedModel;
 import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
-import net.fabricmc.fabric.api.transfer.v1.client.fluid.FluidKeyRendering;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidKey;
+import net.fabricmc.fabric.api.transfer.v1.client.fluid.FluidVariantRendering;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.render.model.*;
 import net.minecraft.client.render.model.json.JsonUnbakedModel;
@@ -84,8 +84,7 @@ public class TankModel implements UnbakedModel, FabricBakedModel, BakedModel {
         context.meshConsumer().accept(tankMesh);
 
         Item it = stack.getItem();
-        if (it instanceof TankItem) {
-            TankItem item = (TankItem) it;
+        if (it instanceof TankItem item) {
             if (!item.isEmpty(stack)) {
                 float fillFraction = (float) item.getAmount(stack) / item.capacity;
                 drawFluid(context.getEmitter(), fillFraction, item.getFluid(stack));
@@ -97,12 +96,12 @@ public class TankModel implements UnbakedModel, FabricBakedModel, BakedModel {
         }
     }
 
-    private void drawFluid(QuadEmitter emitter, float fillFraction, FluidKey fluid) {
-        Sprite stillSprite = FluidKeyRendering.getSprite(fluid);
-        int color = FluidKeyRendering.getColor(fluid);
+    private void drawFluid(QuadEmitter emitter, float fillFraction, FluidVariant fluid) {
+        Sprite stillSprite = FluidVariantRendering.getSprite(fluid);
+        int color = FluidVariantRendering.getColor(fluid);
         for (Direction direction : Direction.values()) {
             float topSpace, depth, bottomSpace;
-            if (FluidKeyRendering.fillFromTop(fluid)) {
+            if (FluidVariantRendering.fillsFromTop(fluid)) {
                 bottomSpace = direction.getAxis().isHorizontal() ? 1 - fillFraction + 0.01f : 0;
                 depth = direction == Direction.DOWN ? fillFraction : 0;
                 topSpace = 0;

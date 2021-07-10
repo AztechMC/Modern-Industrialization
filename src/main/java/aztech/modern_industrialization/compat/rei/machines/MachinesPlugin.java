@@ -139,8 +139,8 @@ public class MachinesPlugin implements REIClientPlugin {
                 Slot slot = ((MachineScreenHandlers.ClientScreen) screen).getFocusedSlot();
                 if (slot instanceof ConfigurableFluidStack.ConfigurableFluidSlot) {
                     ConfigurableFluidStack stack = ((ConfigurableFluidStack.ConfigurableFluidSlot) slot).getConfStack();
-                    if (stack.amount() > 0) {
-                        Fluid fluid = stack.resource().getFluid();
+                    if (stack.getAmount() > 0) {
+                        Fluid fluid = stack.getResource().getFluid();
                         if (fluid != null) {
                             return CompoundEventResult.interruptTrue(EntryStacks.of(fluid));
                         }

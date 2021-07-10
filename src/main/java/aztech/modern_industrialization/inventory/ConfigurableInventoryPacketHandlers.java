@@ -27,10 +27,10 @@ import aztech.modern_industrialization.api.ReiDraggable;
 import aztech.modern_industrialization.inventory.ConfigurableFluidStack.ConfigurableFluidSlot;
 import aztech.modern_industrialization.inventory.ConfigurableItemStack.ConfigurableItemSlot;
 import aztech.modern_industrialization.util.Simulation;
-import dev.technici4n.fasttransferlib.experimental.api.item.ItemKey;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidKey;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
+import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.slot.Slot;
@@ -113,8 +113,8 @@ public class ConfigurableInventoryPacketHandlers {
             int syncId = buf.readInt();
             int slotId = buf.readVarInt();
             boolean isItemKey = buf.readBoolean();
-            ItemKey itemKey = isItemKey ? ItemKey.fromPacket(buf) : null;
-            FluidKey fluidKey = isItemKey ? null : FluidKey.fromPacket(buf);
+            ItemVariant itemKey = isItemKey ? ItemVariant.fromPacket(buf) : null;
+            FluidVariant fluidKey = isItemKey ? null : FluidVariant.fromPacket(buf);
             ms.execute(() -> {
                 ScreenHandler sh = player.currentScreenHandler;
                 if (sh.syncId == syncId) {

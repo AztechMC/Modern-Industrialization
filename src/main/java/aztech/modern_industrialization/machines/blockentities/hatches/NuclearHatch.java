@@ -37,11 +37,11 @@ import aztech.modern_industrialization.machines.components.sync.TemperatureBar;
 import aztech.modern_industrialization.machines.gui.MachineGuiParameters;
 import aztech.modern_industrialization.machines.multiblocks.HatchBlockEntity;
 import aztech.modern_industrialization.machines.multiblocks.HatchType;
-import dev.technici4n.fasttransferlib.experimental.api.item.ItemStorage;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
+import net.fabricmc.fabric.api.transfer.v1.item.ItemStorage;
 import net.minecraft.block.entity.BlockEntityType;
 
 public class NuclearHatch extends HatchBlockEntity {

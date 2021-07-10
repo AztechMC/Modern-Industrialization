@@ -51,8 +51,6 @@ import aztech.modern_industrialization.misc.guidebook.GuidebookEvents;
 import aztech.modern_industrialization.pipes.MIPipes;
 import aztech.modern_industrialization.recipe.MIRecipes;
 import aztech.modern_industrialization.util.ChunkUnloadBlockEntity;
-import dev.technici4n.fasttransferlib.experimental.api.fluid.ItemFluidStorage;
-import dev.technici4n.fasttransferlib.experimental.api.item.ItemStorage;
 import java.util.Map;
 import me.shedaniel.cloth.api.common.events.v1.PlayerChangeWorldCallback;
 import me.shedaniel.cloth.api.common.events.v1.PlayerLeaveCallback;
@@ -78,6 +76,7 @@ import net.fabricmc.fabric.api.registry.FuelRegistry;
 import net.fabricmc.fabric.api.screenhandler.v1.ScreenHandlerRegistry;
 import net.fabricmc.fabric.api.tag.TagRegistry;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
+import net.fabricmc.fabric.api.transfer.v1.item.ItemStorage;
 import net.minecraft.block.Block;
 import net.minecraft.block.MapColor;
 import net.minecraft.block.Material;
@@ -188,9 +187,9 @@ public class ModernIndustrialization implements ModInitializer {
         registerItem(ITEM_STEAM_DRILL, "steam_mining_drill", true);
         registerItem(ITEM_CROWBAR, "crowbar", true);
 
-        ItemFluidStorage.ITEM.registerForItems((stack, ctx) -> new FluidFuelItemHelper.ItemStorage(DieselToolItem.CAPACITY, stack, ctx),
+        FluidStorage.ITEM.registerForItems((stack, ctx) -> new FluidFuelItemHelper.ItemStorage(DieselToolItem.CAPACITY, stack, ctx),
                 ITEM_DIESEL_CHAINSAW, ITEM_DIESEL_DRILL);
-        ItemFluidStorage.ITEM.registerForItems((stack, ctx) -> new FluidFuelItemHelper.ItemStorage(JetpackItem.CAPACITY, stack, ctx),
+        FluidStorage.ITEM.registerForItems((stack, ctx) -> new FluidFuelItemHelper.ItemStorage(JetpackItem.CAPACITY, stack, ctx),
                 ITEM_DIESEL_JETPACK);
 
         SpeedUpgrade.LOOKUP.registerForItems((key, vd) -> () -> 2, MIItem.ITEM_MOTOR);
@@ -214,7 +213,7 @@ public class ModernIndustrialization implements ModInitializer {
 
         ItemStorage.SIDED.registerForBlocks((world, pos, state, be, direction) -> TrashCanBlock.trashStorage(), TRASH_CAN);
         FluidStorage.SIDED.registerForBlocks((world, pos, state, be, direction) -> TrashCanBlock.trashStorage(), TRASH_CAN);
-        ItemFluidStorage.ITEM.registerForItems((key, ctx) -> TrashCanBlock.trashStorage(), ITEM_TRASH_CAN);
+        FluidStorage.ITEM.registerForItems((key, ctx) -> TrashCanBlock.trashStorage(), ITEM_TRASH_CAN);
         EnergyApi.MOVEABLE.registerForBlocks((world, pos, state, be, direction) -> EnergyApi.CREATIVE_EXTRACTABLE,
                 CreativeTankSetup.CREATIVE_TANK_BLOCK);
     }

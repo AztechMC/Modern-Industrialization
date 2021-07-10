@@ -26,13 +26,13 @@ package aztech.modern_industrialization.inventory;
 import aztech.modern_industrialization.machines.IComponent;
 import aztech.modern_industrialization.util.NbtHelper;
 import aztech.modern_industrialization.util.StorageUtil2;
-import dev.technici4n.fasttransferlib.experimental.api.item.ItemKey;
-import dev.technici4n.fasttransferlib.experimental.api.item.ItemStorage;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidKey;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
+import net.fabricmc.fabric.api.transfer.v1.item.ItemStorage;
+import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageUtil;
 import net.minecraft.nbt.NbtCompound;
@@ -78,7 +78,7 @@ public final class MIInventory implements IComponent {
     }
 
     public void autoExtractItems(World world, BlockPos pos, Direction direction) {
-        Storage<ItemKey> target = ItemStorage.SIDED.find(world, pos.offset(direction), direction.getOpposite());
+        Storage<ItemVariant> target = ItemStorage.SIDED.find(world, pos.offset(direction), direction.getOpposite());
         target = StorageUtil2.wrapInventory(target);
 
         if (target != null) {
@@ -87,7 +87,7 @@ public final class MIInventory implements IComponent {
     }
 
     public void autoExtractFluids(World world, BlockPos pos, Direction direction) {
-        Storage<FluidKey> target = FluidStorage.SIDED.find(world, pos.offset(direction), direction.getOpposite());
+        Storage<FluidVariant> target = FluidStorage.SIDED.find(world, pos.offset(direction), direction.getOpposite());
 
         if (target != null) {
             StorageUtil.move(fluidStorage, target, k -> true, Long.MAX_VALUE, null);
@@ -95,7 +95,7 @@ public final class MIInventory implements IComponent {
     }
 
     public void autoInsertItems(World world, BlockPos pos, Direction direction) {
-        Storage<ItemKey> target = ItemStorage.SIDED.find(world, pos.offset(direction), direction.getOpposite());
+        Storage<ItemVariant> target = ItemStorage.SIDED.find(world, pos.offset(direction), direction.getOpposite());
 
         if (target != null) {
             StorageUtil.move(target, itemStorage, k -> true, Long.MAX_VALUE, null);
@@ -103,7 +103,7 @@ public final class MIInventory implements IComponent {
     }
 
     public void autoInsertFluids(World world, BlockPos pos, Direction direction) {
-        Storage<FluidKey> target = FluidStorage.SIDED.find(world, pos.offset(direction), direction.getOpposite());
+        Storage<FluidVariant> target = FluidStorage.SIDED.find(world, pos.offset(direction), direction.getOpposite());
 
         if (target != null) {
             StorageUtil.move(target, fluidStorage, k -> true, Long.MAX_VALUE, null);

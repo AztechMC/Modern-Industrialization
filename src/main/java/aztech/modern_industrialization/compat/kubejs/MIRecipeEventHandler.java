@@ -112,7 +112,11 @@ public class MIRecipeEventHandler implements KubeJSInitializer {
         private void readItemOutput(JsonElement el, int index) {
             JsonObject obj = el.getAsJsonObject();
             ItemStackJS stack = ItemStackJS.resultFromRecipeJson(obj);
-            stack.setCount(obj.get("amount").getAsInt());
+            if (obj.has("amount")) {
+                stack.setCount(obj.get("amount").getAsInt());
+            } else {
+                stack.setCount(1);
+            }
             outputItems.add(stack);
             itemOutputProbabilities[index] = readProbability(obj);
         }

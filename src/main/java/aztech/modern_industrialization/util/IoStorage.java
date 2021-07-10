@@ -23,10 +23,11 @@
  */
 package aztech.modern_industrialization.util;
 
+import java.util.Collections;
 import java.util.Iterator;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
-import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
+import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
 
 public class IoStorage<T> implements Storage<T> {
     private final Storage<T> storage;
@@ -44,7 +45,7 @@ public class IoStorage<T> implements Storage<T> {
     }
 
     @Override
-    public long insert(T resource, long maxAmount, Transaction transaction) {
+    public long insert(T resource, long maxAmount, TransactionContext transaction) {
         if (allowInsert) {
             return storage.insert(resource, maxAmount, transaction);
         } else {
@@ -58,7 +59,7 @@ public class IoStorage<T> implements Storage<T> {
     }
 
     @Override
-    public long extract(T resource, long maxAmount, Transaction transaction) {
+    public long extract(T resource, long maxAmount, TransactionContext transaction) {
         if (allowExtract) {
             return storage.extract(resource, maxAmount, transaction);
         } else {
@@ -67,11 +68,11 @@ public class IoStorage<T> implements Storage<T> {
     }
 
     @Override
-    public Iterator<StorageView<T>> iterator(Transaction transaction) {
+    public Iterator<StorageView<T>> iterator(TransactionContext transaction) {
         if (allowExtract) {
             return storage.iterator(transaction);
         } else {
-            return EmptyStorage.EMPTY_ITERATOR;
+            return Collections.emptyIterator();
         }
     }
 }

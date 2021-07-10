@@ -31,7 +31,7 @@ import aztech.modern_industrialization.pipes.gui.iface.PriorityInterface;
 import aztech.modern_industrialization.pipes.item.ItemPipeScreenHandler;
 import aztech.modern_industrialization.util.UnsidedPacketHandler;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidKey;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.util.Identifier;
 
@@ -73,7 +73,7 @@ public class PipePackets {
     public static final Identifier SET_NETWORK_FLUID = new MIIdentifier("set_network_fluid");
     public static final UnsidedPacketHandler ON_SET_NETWORK_FLUID = (player, buf) -> {
         int syncId = buf.readInt();
-        FluidKey fluid = FluidKey.fromPacket(buf);
+        FluidVariant fluid = FluidVariant.fromPacket(buf);
         return () -> {
             ScreenHandler handler = player.currentScreenHandler;
             if (handler.syncId == syncId) {

@@ -21,23 +21,34 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.blocks.creativetank;
+package aztech.modern_industrialization.compat.rei;
 
-import aztech.modern_industrialization.util.RenderHelper;
-import net.minecraft.client.render.VertexConsumerProvider;
-import net.minecraft.client.render.block.entity.BlockEntityRenderer;
-import net.minecraft.client.render.block.entity.BlockEntityRendererFactory;
-import net.minecraft.client.util.math.MatrixStack;
+import aztech.modern_industrialization.compat.kubejs.RemoveItemsEntrypoint;
+import java.util.Set;
+import me.shedaniel.rei.api.client.plugins.REIClientPlugin;
+import me.shedaniel.rei.api.client.registry.entry.EntryRegistry;
+import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.registry.Registry;
 
-public class CreativeTankRenderer implements BlockEntityRenderer<CreativeTankBlockEntity> {
-    public CreativeTankRenderer(BlockEntityRendererFactory.Context context) {
+public class KJSRemoveItemsPlugin implements REIClientPlugin {
+    @Override
+    public double getPriority() {
+        return 1e6; // run after other stuff
     }
 
     @Override
-    public void render(CreativeTankBlockEntity entity, float tickDelta, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light,
-            int overlay) {
-        if (!entity.isResourceBlank()) {
-            RenderHelper.drawFluidInTank(matrices, vertexConsumers, entity.fluid, 1);
+    public void registerEntries(EntryRegistry registry) {
+        if (FabricLoader.getInstance().isModLoaded("kubejs")) {
+            Set<String> itemIds = RemoveItemsEntrypoint.getItemsToRemove();
+            registry.removeEntryIf(entryStack -> {
+                if (entryStack.getValue() instanceof ItemStack is) {
+                    if (itemIds.contains(Registry.ITEM.getId(is.getItem()).toString())) {
+                        return true;
+                    }
+                }
+                return false;
+            });
         }
     }
 }

@@ -21,23 +21,29 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.blocks.creativetank;
+package aztech.modern_industrialization.compat.kubejs;
 
-import aztech.modern_industrialization.util.RenderHelper;
-import net.minecraft.client.render.VertexConsumerProvider;
-import net.minecraft.client.render.block.entity.BlockEntityRenderer;
-import net.minecraft.client.render.block.entity.BlockEntityRendererFactory;
-import net.minecraft.client.util.math.MatrixStack;
+import dev.latvian.kubejs.event.EventJS;
+import dev.latvian.kubejs.script.ScriptType;
+import java.util.HashSet;
+import java.util.Set;
 
-public class CreativeTankRenderer implements BlockEntityRenderer<CreativeTankBlockEntity> {
-    public CreativeTankRenderer(BlockEntityRendererFactory.Context context) {
+public class RemoveItemsEntrypoint {
+    public static Set<String> getItemsToRemove() {
+        return MIReiEvent.gatherItemsToRemove();
     }
 
-    @Override
-    public void render(CreativeTankBlockEntity entity, float tickDelta, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light,
-            int overlay) {
-        if (!entity.isResourceBlank()) {
-            RenderHelper.drawFluidInTank(matrices, vertexConsumers, entity.fluid, 1);
+    public static class MIReiEvent extends EventJS {
+        private final Set<String> removeSet = new HashSet<>();
+
+        public void remove(String item) {
+            removeSet.add(item);
+        }
+
+        private static Set<String> gatherItemsToRemove() {
+            MIReiEvent event = new MIReiEvent();
+            event.post(ScriptType.CLIENT, "mi_rei");
+            return event.removeSet;
         }
     }
 }

@@ -23,11 +23,11 @@
  */
 package aztech.modern_industrialization.inventory;
 
-import dev.technici4n.fasttransferlib.experimental.api.item.ItemKey;
 import java.util.List;
+import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.minecraft.item.Item;
 
-public class MIItemStorage extends MIStorage<Item, ItemKey, ConfigurableItemStack> {
+public class MIItemStorage extends MIStorage<Item, ItemVariant, ConfigurableItemStack> {
     protected MIItemStorage(List<ConfigurableItemStack> stacks) {
         super(stacks, false);
     }

@@ -40,7 +40,7 @@ import java.util.function.Supplier;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidKey;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.item.TooltipData;
@@ -324,8 +324,8 @@ public class MachineScreenHandlers {
                     int j = y + slot.y;
 
                     ConfigurableFluidStack stack = ((ConfigurableFluidSlot) slot).getConfStack();
-                    FluidKey renderedKey = stack.getLockedInstance() == null ? stack.resource() : FluidKey.of(stack.getLockedInstance());
-                    if (!renderedKey.isEmpty()) {
+                    FluidVariant renderedKey = stack.getLockedInstance() == null ? stack.getResource() : FluidVariant.of(stack.getLockedInstance());
+                    if (!renderedKey.isBlank()) {
                         RenderHelper.drawFluidInGui(matrices, renderedKey, i, j);
                     }
 
@@ -345,7 +345,7 @@ public class MachineScreenHandlers {
             for (Slot slot : this.handler.slots) {
                 if (slot instanceof ConfigurableItemSlot itemSlot) {
                     ConfigurableItemStack itemStack = itemSlot.getConfStack();
-                    if ((itemStack.isPlayerLocked() || itemStack.isMachineLocked()) && itemStack.resource().isEmpty()) {
+                    if ((itemStack.isPlayerLocked() || itemStack.isMachineLocked()) && itemStack.getResource().isBlank()) {
                         Item item = itemStack.getLockedInstance();
                         if (item != Items.AIR) {
                             this.setZOffset(100);
@@ -368,9 +368,9 @@ public class MachineScreenHandlers {
             if (slot instanceof ConfigurableFluidSlot) {
                 ConfigurableFluidStack stack = ((ConfigurableFluidSlot) slot).getConfStack();
                 List<Text> tooltip = new ArrayList<>();
-                FluidKey renderedKey = stack.isPlayerLocked() ? FluidKey.of(stack.getLockedInstance()) : stack.resource();
+                FluidVariant renderedKey = stack.isPlayerLocked() ? FluidVariant.of(stack.getLockedInstance()) : stack.getResource();
                 tooltip.add(FluidHelper.getFluidName(renderedKey, false));
-                tooltip.add(FluidHelper.getFluidAmount(stack.amount(), stack.getCapacity()));
+                tooltip.add(FluidHelper.getFluidAmount(stack.getAmount(), stack.getCapacity()));
 
                 if (stack.canPlayerInsert()) {
                     if (stack.canPlayerExtract()) {
@@ -392,7 +392,7 @@ public class MachineScreenHandlers {
 
         private void renderConfigurableItemStackTooltip(MatrixStack matrices, ConfigurableItemStack stack, int mouseX, int mouseY) {
             ItemStack vanillaStack = stack.isEmpty() ? stack.getLockedInstance() == null ? ItemStack.EMPTY : new ItemStack(stack.getLockedInstance())
-                    : stack.resource().toStack((int) stack.amount());
+                    : stack.getResource().toStack((int) stack.getAmount());
             // Regular information
             List<Text> textTooltip;
             if (vanillaStack.isEmpty()) {

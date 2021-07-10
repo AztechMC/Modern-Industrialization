@@ -25,19 +25,19 @@ package aztech.modern_industrialization.inventory;
 
 import aztech.modern_industrialization.util.Simulation;
 import java.util.List;
-import net.fabricmc.fabric.api.transfer.v1.storage.ResourceKey;
 import net.fabricmc.fabric.api.transfer.v1.storage.StoragePreconditions;
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
+import net.fabricmc.fabric.api.transfer.v1.storage.TransferVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.ResourceAmount;
-import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
+import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
 import net.fabricmc.fabric.api.transfer.v1.transaction.base.SnapshotParticipant;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
-public abstract class AbstractConfigurableStack<T, K extends ResourceKey<T>> extends SnapshotParticipant<ResourceAmount<K>>
+public abstract class AbstractConfigurableStack<T, K extends TransferVariant<T>> extends SnapshotParticipant<ResourceAmount<K>>
         implements StorageView<K>, IConfigurableSlot {
-    protected K key = getEmptyKey();
+    protected K key = getBlankVariant();
     protected long amount = 0;
     protected T lockedInstance = null;
     protected boolean playerLocked = false;
@@ -65,7 +65,7 @@ public abstract class AbstractConfigurableStack<T, K extends ResourceKey<T>> ext
     }
 
     public AbstractConfigurableStack(NbtCompound tag) {
-        this.key = readKeyFromNbt(tag.getCompound("key"));
+        this.key = readVariantFromNbt(tag.getCompound("key"));
         this.amount = tag.getLong("amount");
         if (tag.contains("locked")) {
             this.lockedInstance = getRegistry().get(new Identifier(tag.getString("locked")));
@@ -81,13 +81,11 @@ public abstract class AbstractConfigurableStack<T, K extends ResourceKey<T>> ext
 
     protected abstract T getEmptyInstance();
 
-    protected abstract K getEmptyKey();
+    protected abstract K getBlankVariant();
 
     protected abstract Registry<T> getRegistry();
 
-    protected abstract K readKeyFromNbt(NbtCompound compound);
-
-    protected abstract long getCapacity();
+    protected abstract K readVariantFromNbt(NbtCompound compound);
 
     protected abstract long getRemainingCapacityFor(K key);
 
@@ -112,7 +110,7 @@ public abstract class AbstractConfigurableStack<T, K extends ResourceKey<T>> ext
     public void setAmount(long amount) {
         this.amount = amount;
         if (amount == 0) {
-            this.key = getEmptyKey();
+            this.key = getBlankVariant();
         }
     }
 
@@ -133,7 +131,7 @@ public abstract class AbstractConfigurableStack<T, K extends ResourceKey<T>> ext
     }
 
     public boolean isResourceAllowedByLock(K key) {
-        return isResourceAllowedByLock(key.getResource());
+        return isResourceAllowedByLock(key.getObject());
     }
 
     public boolean canPlayerInsert() {
@@ -194,7 +192,7 @@ public abstract class AbstractConfigurableStack<T, K extends ResourceKey<T>> ext
         if (!machineLocked && !playerLocked) {
             lockedInstance = null;
         } else if (lockedInstance == null) {
-            lockedInstance = key.getResource();
+            lockedInstance = key.getObject();
         }
     }
 
@@ -205,13 +203,13 @@ public abstract class AbstractConfigurableStack<T, K extends ResourceKey<T>> ext
     /**
      * Lock range of stacks (without overriding existing locks).
      */
-    public static <T, K extends ResourceKey<T>> void playerLockNoOverride(T instance, List<? extends AbstractConfigurableStack<T, K>> stacks) {
+    public static <T, K extends TransferVariant<T>> void playerLockNoOverride(T instance, List<? extends AbstractConfigurableStack<T, K>> stacks) {
         for (int iter = 0; iter < 2; ++iter) {
             boolean allowEmptyStacks = iter == 1;
 
             for (AbstractConfigurableStack<T, K> stack : stacks) {
                 if (stack.lockedInstance == null) {
-                    if (stack.key.isOf(instance) || (stack.isEmpty() && allowEmptyStacks)) {
+                    if (stack.key.isOf(instance) || (stack.isResourceBlank() && allowEmptyStacks)) {
                         stack.lockedInstance = instance;
                         stack.playerLocked = true;
                         return;
@@ -225,7 +223,7 @@ public abstract class AbstractConfigurableStack<T, K extends ResourceKey<T>> ext
      * Try locking the slot to the given instance, return true if it succeeded
      */
     public boolean playerLock(T instance, Simulation simulation) {
-        if (key.isEmpty() || key.getResource() == instance) {
+        if (key.isBlank() || key.getObject() == instance) {
             if (simulation.isActing()) {
                 lockedInstance = instance;
                 playerLocked = true;
@@ -244,8 +242,8 @@ public abstract class AbstractConfigurableStack<T, K extends ResourceKey<T>> ext
     }
 
     @Override
-    public long extract(K key, long maxAmount, Transaction transaction) {
-        StoragePreconditions.notEmptyNotNegative(key, maxAmount);
+    public long extract(K key, long maxAmount, TransactionContext transaction) {
+        StoragePreconditions.notBlankNotNegative(key, maxAmount);
         if (pipesExtract && key.equals(this.key)) {
             long extracted = Math.min(amount, maxAmount);
             updateSnapshots(transaction);
@@ -256,23 +254,22 @@ public abstract class AbstractConfigurableStack<T, K extends ResourceKey<T>> ext
     }
 
     @Override
+    public boolean isResourceBlank() {
+        return key.isBlank();
+    }
+
     public boolean isEmpty() {
-        return resource().isEmpty();
+        return isResourceBlank();
     }
 
     @Override
-    public K resource() {
+    public K getResource() {
         return key;
     }
 
     @Override
-    public long amount() {
+    public long getAmount() {
         return amount;
-    }
-
-    @Override
-    public long capacity() {
-        return getCapacity();
     }
 
     @Override

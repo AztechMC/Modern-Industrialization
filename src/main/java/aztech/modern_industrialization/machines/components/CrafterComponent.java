@@ -35,13 +35,13 @@ import aztech.modern_industrialization.machines.recipe.MachineRecipe;
 import aztech.modern_industrialization.machines.recipe.MachineRecipeType;
 import aztech.modern_industrialization.util.Simulation;
 import com.google.common.base.Preconditions;
-import dev.technici4n.fasttransferlib.experimental.api.item.ItemKey;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ThreadLocalRandom;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidKey;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
+import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.item.Item;
@@ -280,7 +280,7 @@ public class CrafterComponent implements IComponent.ServerOnly {
             List<MachineRecipe> recipes = new ArrayList<>(recipeType.getFluidOnlyRecipes(serverWorld));
             for (ConfigurableItemStack stack : inventory.getItemInputs()) {
                 if (!stack.isEmpty()) {
-                    recipes.addAll(recipeType.getMatchingRecipes(serverWorld, stack.resource().getItem()));
+                    recipes.addAll(recipeType.getMatchingRecipes(serverWorld, stack.getResource().getItem()));
                 }
             }
             return recipes;
@@ -365,8 +365,8 @@ public class CrafterComponent implements IComponent.ServerOnly {
             }
             int remainingAmount = input.amount;
             for (ConfigurableItemStack stack : stacks) {
-                if (stack.amount() > 0 && input.matches(stack.resource().toStack())) { // TODO: ItemStack creation slow?
-                    int taken = Math.min((int) stack.amount(), remainingAmount);
+                if (stack.getAmount() > 0 && input.matches(stack.getResource().toStack())) { // TODO: ItemStack creation slow?
+                    int taken = Math.min((int) stack.getAmount(), remainingAmount);
                     stack.decrement(taken);
                     remainingAmount -= taken;
                     if (remainingAmount == 0)
@@ -393,8 +393,8 @@ public class CrafterComponent implements IComponent.ServerOnly {
             }
             long remainingAmount = input.amount;
             for (ConfigurableFluidStack stack : stacks) {
-                if (stack.resource().equals(FluidKey.of(input.fluid))) {
-                    long taken = Math.min(remainingAmount, stack.amount());
+                if (stack.getResource().equals(FluidVariant.of(input.fluid))) {
+                    long taken = Math.min(remainingAmount, stack.getAmount());
                     stack.decrement(taken);
                     remainingAmount -= taken;
                     if (remainingAmount == 0)
@@ -430,18 +430,18 @@ public class CrafterComponent implements IComponent.ServerOnly {
                 int stackId = 0;
                 for (ConfigurableItemStack stack : stacks) {
                     stackId++;
-                    ItemKey key = stack.resource();
-                    if (key.getItem() == output.item || key.isEmpty()) {
+                    ItemVariant key = stack.getResource();
+                    if (key.getItem() == output.item || key.isBlank()) {
                         // If simulating, respect the adjusted capacity.
                         // If putting the output, don't respect the adjusted capacity in case it was
                         // reduced during the processing.
-                        int remainingCapacity = simulate ? (int) stack.getRemainingCapacityFor(ItemKey.of(output.item))
-                                : output.item.getMaxCount() - (int) stack.amount();
+                        int remainingCapacity = simulate ? (int) stack.getRemainingCapacityFor(ItemVariant.of(output.item))
+                                : output.item.getMaxCount() - (int) stack.getAmount();
                         int ins = Math.min(remainingAmount, remainingCapacity);
-                        if (key.isEmpty()) {
+                        if (key.isBlank()) {
                             if ((stack.isMachineLocked() || stack.isPlayerLocked() || loopRun == 1) && stack.isValid(new ItemStack(output.item))) {
                                 stack.setAmount(ins);
-                                stack.setKey(ItemKey.of(output.item));
+                                stack.setKey(ItemVariant.of(output.item));
                             } else {
                                 ins = 0;
                             }
@@ -492,8 +492,8 @@ public class CrafterComponent implements IComponent.ServerOnly {
             outer: for (int tries = 0; tries < 2; ++tries) {
                 for (int j = 0; j < stacks.size(); j++) {
                     ConfigurableFluidStack stack = stacks.get(j);
-                    FluidKey outputKey = FluidKey.of(output.fluid);
-                    if (stack.isResourceAllowedByLock(outputKey) && (tries == 1 || stack.resource().equals(outputKey))) {
+                    FluidVariant outputKey = FluidVariant.of(output.fluid);
+                    if (stack.isResourceAllowedByLock(outputKey) && (tries == 1 || stack.getResource().equals(outputKey))) {
                         long inserted = Math.min(output.amount, stack.getRemainingSpace());
                         if (inserted > 0) {
                             stack.setKey(outputKey);

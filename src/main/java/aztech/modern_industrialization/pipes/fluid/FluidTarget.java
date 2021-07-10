@@ -23,7 +23,7 @@
  */
 package aztech.modern_industrialization.pipes.fluid;
 
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidKey;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 
 /**
@@ -31,12 +31,12 @@ import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
  */
 class FluidTarget {
     final int priority;
-    final Storage<FluidKey> storage;
+    final Storage<FluidVariant> storage;
 
     // A temporary value used to sort fluid targets
     long simulationResult;
 
-    public FluidTarget(int priority, Storage<FluidKey> storage) {
+    public FluidTarget(int priority, Storage<FluidVariant> storage) {
         this.priority = priority;
         this.storage = storage;
     }

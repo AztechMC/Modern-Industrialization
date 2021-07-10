@@ -29,7 +29,6 @@ import aztech.modern_industrialization.items.diesel_tools.DieselToolItem;
 import aztech.modern_industrialization.mixin_client.HandledScreenAccessor;
 import aztech.modern_industrialization.util.Simulation;
 import dev.architectury.fluid.FluidStack;
-import dev.technici4n.fasttransferlib.experimental.api.item.ItemKey;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
@@ -45,7 +44,8 @@ import me.shedaniel.rei.plugin.common.BuiltinPlugin;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidKey;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
+import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
@@ -82,8 +82,8 @@ public class MIREIPlugin implements REIClientPlugin {
         registry.registerDraggableStackVisitor(new DraggableStackVisitor<>() {
             @Override
             public boolean acceptDraggedStack(DraggingContext<Screen> context, DraggableStack stack) {
-                FluidKey fk = stack.getStack().getValue() instanceof FluidStack fs ? FluidKey.of(fs.getFluid(), fs.getTag()) : null;
-                ItemKey ik = stack.getStack().getValue() instanceof ItemStack is ? ItemKey.of(is) : null;
+                FluidVariant fk = stack.getStack().getValue() instanceof FluidStack fs ? FluidVariant.of(fs.getFluid(), fs.getTag()) : null;
+                ItemVariant ik = stack.getStack().getValue() instanceof ItemStack is ? ItemVariant.of(is) : null;
                 @Nullable
                 Element element = context.getScreen().hoveredElement(context.getCurrentPosition().x, context.getCurrentPosition().y).orElse(null);
                 if (element instanceof ReiDraggable dw) {
@@ -125,8 +125,8 @@ public class MIREIPlugin implements REIClientPlugin {
             @Override
             public Stream<BoundsProvider> getDraggableAcceptingBounds(DraggingContext<Screen> context, DraggableStack stack) {
                 List<BoundsProvider> bounds = new ArrayList<>();
-                FluidKey fk = stack.getStack().getValue() instanceof FluidStack fs ? FluidKey.of(fs.getFluid(), fs.getTag()) : null;
-                ItemKey ik = stack.getStack().getValue() instanceof ItemStack is ? ItemKey.of(is) : null;
+                FluidVariant fk = stack.getStack().getValue() instanceof FluidStack fs ? FluidVariant.of(fs.getFluid(), fs.getTag()) : null;
+                ItemVariant ik = stack.getStack().getValue() instanceof ItemStack is ? ItemVariant.of(is) : null;
                 for (Element element : context.getScreen().children()) {
                     if (element instanceof ClickableWidget cw && element instanceof ReiDraggable dw) {
                         if (ik != null && dw.dragItem(ik, Simulation.SIMULATE)) {

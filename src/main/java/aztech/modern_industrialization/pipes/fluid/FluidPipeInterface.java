@@ -25,29 +25,29 @@ package aztech.modern_industrialization.pipes.fluid;
 
 import aztech.modern_industrialization.pipes.gui.iface.ConnectionTypeInterface;
 import aztech.modern_industrialization.pipes.gui.iface.PriorityInterface;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidKey;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.PacketByteBuf;
 
 public interface FluidPipeInterface extends ConnectionTypeInterface, PriorityInterface {
-    FluidKey getNetworkFluid();
+    FluidVariant getNetworkFluid();
 
-    void setNetworkFluid(FluidKey fluid);
+    void setNetworkFluid(FluidVariant fluid);
 
     boolean canUse(PlayerEntity player);
 
     static FluidPipeInterface ofBuf(PacketByteBuf buf) {
-        FluidKey[] networkFluid = new FluidKey[] { FluidKey.fromPacket(buf) };
+        FluidVariant[] networkFluid = new FluidVariant[] { FluidVariant.fromPacket(buf) };
         int[] type = new int[] { buf.readInt() };
         int[] priority = new int[] { buf.readInt() };
         return new FluidPipeInterface() {
             @Override
-            public FluidKey getNetworkFluid() {
+            public FluidVariant getNetworkFluid() {
                 return networkFluid[0];
             }
 
             @Override
-            public void setNetworkFluid(FluidKey fluid) {
+            public void setNetworkFluid(FluidVariant fluid) {
                 networkFluid[0] = fluid;
             }
 

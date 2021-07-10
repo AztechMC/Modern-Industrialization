@@ -23,76 +23,43 @@
  */
 package aztech.modern_industrialization.util;
 
-import dev.technici4n.fasttransferlib.experimental.api.item.InventoryWrapper;
-import dev.technici4n.fasttransferlib.experimental.api.item.ItemKey;
 import java.util.List;
+import net.fabricmc.fabric.api.transfer.v1.item.InventoryStorage;
+import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.fabricmc.fabric.api.transfer.v1.storage.StoragePreconditions;
-import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.CombinedStorage;
-import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
+import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleSlotStorage;
+import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
 import org.jetbrains.annotations.Nullable;
 
 public class StorageUtil2 {
-    @Nullable
-    public static <T> T findExtractableResource(@Nullable Storage<T> storage, @Nullable Transaction transaction) {
-        if (storage == null)
-            return null;
-
-        try (Transaction nested = transaction == null ? Transaction.openOuter() : transaction.openNested()) {
-            for (StorageView<T> view : storage.iterable(nested)) {
-                // Extract below could change the resource, so we have to query it before
-                // extracting.
-                T resource = view.resource();
-
-                if (!view.isEmpty() && view.extract(resource, Long.MAX_VALUE, nested) > 0) {
-                    // Will abort the extraction.
-                    return resource;
-                }
-            }
-        }
-
-        return null;
-    }
-
     /**
      * Wrap vanilla inventories so that insertion tries to stack slots first.
-     * Hehehehe. // TODO: update when the item API is updated, really dirty right
-     * now.
+     * Hehehehe.
      */
     @Nullable
-    public static Storage<ItemKey> wrapInventory(@Nullable Storage<ItemKey> foundStorage) {
-        if (foundStorage instanceof InventoryWrapper wrapper) {
-            List<Storage<ItemKey>> slots = ((CombinedStorage<ItemKey, Storage<ItemKey>>) wrapper).parts;
-            return new InventoryStorage(slots);
+    public static Storage<ItemVariant> wrapInventory(@Nullable Storage<ItemVariant> foundStorage) {
+        if (foundStorage instanceof InventoryStorage wrapper) {
+            return new SmarterInventoryStorage(wrapper.getSlots());
         } else {
             return foundStorage;
         }
     }
 
-    private static boolean isEmpty(Storage<ItemKey> storage, Transaction transaction) {
-        for (StorageView<ItemKey> view : storage.iterable(transaction)) {
-            if (view.amount() > 0) {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    private static class InventoryStorage extends CombinedStorage<ItemKey, Storage<ItemKey>> {
-        public InventoryStorage(List<Storage<ItemKey>> parts) {
+    private static class SmarterInventoryStorage extends CombinedStorage<ItemVariant, SingleSlotStorage<ItemVariant>> {
+        public SmarterInventoryStorage(List<SingleSlotStorage<ItemVariant>> parts) {
             super(parts);
         }
 
         @Override
-        public long insert(ItemKey resource, long maxAmount, Transaction transaction) {
-            StoragePreconditions.notEmptyNotNegative(resource, maxAmount);
+        public long insert(ItemVariant resource, long maxAmount, TransactionContext transaction) {
+            StoragePreconditions.notBlankNotNegative(resource, maxAmount);
             long amount = 0;
 
             for (int iter = 0; iter < 2; ++iter) {
-                for (Storage<ItemKey> part : parts) {
-                    if (iter == 1 || !isEmpty(part, transaction)) {
+                for (SingleSlotStorage<ItemVariant> part : parts) {
+                    if (iter == 1 || !part.isResourceBlank()) {
                         amount += part.insert(resource, maxAmount - amount, transaction);
                     }
                 }

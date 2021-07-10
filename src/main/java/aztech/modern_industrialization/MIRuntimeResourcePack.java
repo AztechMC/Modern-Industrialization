@@ -51,7 +51,11 @@ public class MIRuntimeResourcePack implements ResourcePack {
     }
 
     public void addData(String path, byte[] asset) {
-        if (resources.put("data/" + path, asset) != null) {
+        addData(path, asset, false);
+    }
+
+    public void addData(String path, byte[] asset, boolean override) {
+        if (resources.put("data/" + path, asset) != null && !override) {
             throw new IllegalStateException("Data already exists in the runtime resource pack: " + path);
         }
     }

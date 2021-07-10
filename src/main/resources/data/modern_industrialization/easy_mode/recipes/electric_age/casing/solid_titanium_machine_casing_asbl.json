@@ -1,0 +1,16 @@
+{
+  "type" : "minecraft:crafting_shaped",
+  "pattern" : [
+    "AAA",
+    "A A",
+    "AAA"
+  ],
+  "key": {
+    "A" : {
+      "tag": "c:titanium_plates"
+    }
+  },
+  "result": {
+    "item": "modern_industrialization:solid_titanium_machine_casing"
+  }
+}

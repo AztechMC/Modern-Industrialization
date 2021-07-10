@@ -30,8 +30,9 @@ import java.util.Map;
 
 public class ShapelessRecipeJson {
 
+    @SuppressWarnings("unused")
     private final String type;
-    private final List<Ingredient> ingredients = new ArrayList<Ingredient>();
+    private final List<Ingredient> ingredients = new ArrayList<>();
     private final Result result;
 
     public ShapelessRecipeJson(String result, int count) {
@@ -74,7 +75,7 @@ public class ShapelessRecipeJson {
             }
         }
         for (String tag : tags.keySet()) {
-            int count = tags.get(tag).intValue();
+            int count = tags.get(tag);
             if (count % division != 0) {
                 throw new IllegalArgumentException("Input must be divisible by division");
             }
@@ -82,7 +83,7 @@ public class ShapelessRecipeJson {
         }
 
         for (String item : items.keySet()) {
-            int count = items.get(item).intValue();
+            int count = items.get(item);
             if (count % division != 0) {
                 throw new IllegalArgumentException("Input must be divisible by division");
             }

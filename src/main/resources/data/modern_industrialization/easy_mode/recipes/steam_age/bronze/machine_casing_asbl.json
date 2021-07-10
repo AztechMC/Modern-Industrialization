@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "PPP",
+    "P P",
+    "PPP"
+  ],
+  "key": {
+    "P": {
+      "tag": "c:bronze_plates"
+    }
+  },
+  "result": {
+    "item": "modern_industrialization:bronze_machine_casing"
+  }
+}

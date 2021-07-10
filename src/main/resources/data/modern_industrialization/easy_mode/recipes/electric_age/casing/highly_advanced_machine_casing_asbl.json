@@ -1,0 +1,22 @@
+{
+  "type" : "minecraft:crafting_shaped",
+  "pattern" : [
+    "ACA",
+    "CHC",
+    "ACA"
+  ],
+  "key": {
+    "A" : {
+      "tag" : "c:titanium_plates"
+    },
+    "C" : {
+      "tag" : "c:chrome_plates"
+    },
+    "H" : {
+      "item" : "modern_industrialization:turbo_machine_hull"
+    }
+  },
+  "result": {
+    "item": "modern_industrialization:highly_advanced_machine_casing"
+  }
+}

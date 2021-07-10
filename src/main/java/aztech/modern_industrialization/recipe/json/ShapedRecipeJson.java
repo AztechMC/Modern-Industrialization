@@ -103,6 +103,7 @@ public class ShapedRecipeJson {
                 for (int i = 0; i < string.length(); ++i) {
                     if (string.charAt(i) == c) {
                         ok = true;
+                        break;
                     }
                 }
             }

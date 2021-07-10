@@ -23,6 +23,7 @@
  */
 package aztech.modern_industrialization.recipe;
 
+import aztech.modern_industrialization.MIConfig;
 import aztech.modern_industrialization.MIRuntimeResourcePack;
 import aztech.modern_industrialization.materials.alloy.AlloyRegister;
 import net.devtech.arrp.api.RuntimeResourcePack;
@@ -47,6 +48,10 @@ public final class MIRecipes {
         AssemblerRecipes.yes(pack, manager);
         AlloyRegister.init(pack);
         HeatExchangerHelper.init(pack);
+
+        if (MIConfig.getConfig().enableEasyMode) {
+            EasyModeRecipes.yes(pack, manager);
+        }
         return pack;
     }
 }

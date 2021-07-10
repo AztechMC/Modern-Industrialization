@@ -1,0 +1,16 @@
+{
+  "type" : "minecraft:crafting_shaped",
+  "pattern" : [
+    "AAA",
+    "A A",
+    "AAA"
+  ],
+  "key": {
+    "A" : {
+      "tag": "c:aluminum_plates"
+    }
+  },
+  "result": {
+    "item": "modern_industrialization:frostproof_machine_casing"
+  }
+}

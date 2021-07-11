@@ -23,25 +23,40 @@
  */
 package aztech.modern_industrialization;
 
+import aztech.modern_industrialization.compat.modmenu.OreConfigEntry;
 import java.util.ArrayList;
 import java.util.List;
-import me.sargunvohra.mcmods.autoconfig1u.AutoConfig;
-import me.sargunvohra.mcmods.autoconfig1u.ConfigData;
-import me.sargunvohra.mcmods.autoconfig1u.annotation.Config;
-import me.sargunvohra.mcmods.autoconfig1u.serializer.Toml4jConfigSerializer;
+import me.shedaniel.autoconfig.AutoConfig;
+import me.shedaniel.autoconfig.ConfigData;
+import me.shedaniel.autoconfig.annotation.Config;
+import me.shedaniel.autoconfig.annotation.ConfigEntry;
+import me.shedaniel.autoconfig.serializer.Toml4jConfigSerializer;
 
-@Config(name = "modern_industrialization")
+@Config(name = MIConfig.NAME)
 public class MIConfig implements ConfigData {
+
+    @ConfigEntry.Gui.Excluded
+    public static final transient String NAME = "modern_industrialization";
+
+    @ConfigEntry.Gui.RequiresRestart
     public boolean generateOres = true;
+
+    @OreConfigEntry
     public List<String> blacklistedOres = new ArrayList<>();
+
     public boolean spawnWithGuideBook = true;
     public boolean respawnWithGuideBook = true;
     public boolean disableFuelTooltips = false;
     public boolean disableItemTagTooltips = false;
     public boolean enableEasyMode = true;
+
+    @ConfigEntry.BoundedDiscrete(min = 0, max = 20)
     public int steamDrillFuelUseFactor = 5;
+
+    @ConfigEntry.BoundedDiscrete(min = 0, max = 20)
     public int steamDrillWaterUseFactor = 5;
 
+    @ConfigEntry.Gui.Excluded
     private transient static boolean registered = false;
 
     public static synchronized MIConfig getConfig() {

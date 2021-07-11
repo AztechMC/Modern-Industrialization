@@ -98,6 +98,11 @@ public class OreMaterialPart implements MaterialPart {
         item = block.blockItem;
 
         ResourceUtil.appendToTag("c:items/" + materialName + "_ores", getItemId());
+
+    }
+
+    public String getTranslationKey() {
+        return item.getTranslationKey();
     }
 
     @Override

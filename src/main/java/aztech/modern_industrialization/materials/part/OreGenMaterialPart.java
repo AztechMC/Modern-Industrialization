@@ -70,6 +70,7 @@ public class OreGenMaterialPart extends OreMaterialPart {
     public void register() {
         super.register();
         MIConfig config = MIConfig.getConfig();
+
         if (config.generateOres && !config.blacklistedOres.contains(materialName)) {
             // I have no idea what I'm doing
             List<OreFeatureConfig.Target> targets = List

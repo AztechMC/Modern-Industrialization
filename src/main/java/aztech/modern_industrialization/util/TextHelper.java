@@ -38,6 +38,9 @@ public class TextHelper {
     public static final Style NEUTRONS = Style.EMPTY.withColor(TextColor.fromRgb(0x29a329)).withItalic(true);
     public static final Style ADJUSTED_CAPACITY = Style.EMPTY.withColor(Formatting.YELLOW).withBold(true);
 
+    public static final Style RED = Style.EMPTY.withColor(Formatting.RED);
+    public static final Style GREEN = Style.EMPTY.withColor(Formatting.GREEN);
+
     public static String getEuUnit(long eu) {
         if (eu > 1e12) {
             return "TEU";

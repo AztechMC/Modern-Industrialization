@@ -34,6 +34,9 @@
     ],
     "kubejs-init": [
       "aztech.modern_industrialization.compat.kubejs.MIRecipeEventHandler"
+    ],
+    "modmenu": [
+      "aztech.modern_industrialization.compat.modmenu.MIMenu"
     ]
   },
   "mixins": [

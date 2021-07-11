@@ -139,29 +139,26 @@ dependencies {
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
     // Dependencies
-    modImplementation "net.devtech:arrp:${project.arrp_version}"
-    include "net.devtech:arrp:${project.arrp_version}"
+    include modImplementation("net.devtech:arrp:${project.arrp_version}")
     modImplementation "me.shedaniel:RoughlyEnoughItems-fabric:${project.rei_version}"
-    modImplementation "vazkii.patchouli:Patchouli:${project.patchouli_version}"
-    include "vazkii.patchouli:Patchouli:${project.patchouli_version}"
-    modApi "me.shedaniel.cloth.api:cloth-armor-api-v1:${project.cloth_api_version}"
-    modApi "me.shedaniel.cloth.api:cloth-common-events-v1:${project.cloth_api_version}"
-    include "me.shedaniel.cloth.api:cloth-armor-api-v1:${project.cloth_api_version}"
-    include "me.shedaniel.cloth.api:cloth-common-events-v1:${project.cloth_api_version}"
-    modImplementation "mcp.mobius.waila:wthit:fabric-${project.wthit_version}"
-    modRuntime "mcp.mobius.waila:wthit:fabric-${project.wthit_version}"
-    modImplementation "me.sargunvohra.mcmods:autoconfig1u:${project.auto_config_version}"
-    include "me.sargunvohra.mcmods:autoconfig1u:${project.auto_config_version}"
-    modRuntime "com.terraformersmc:modmenu:${project.mod_menu_version}"
+    include modImplementation("vazkii.patchouli:Patchouli:${project.patchouli_version}")
+
+    include modApi("me.shedaniel.cloth.api:cloth-armor-api-v1:${project.cloth_api_version}")
+    include modApi("me.shedaniel.cloth.api:cloth-common-events-v1:${project.cloth_api_version}")
+
+    include modImplementation("me.shedaniel.cloth:cloth-config-fabric:${project.cloth_api_version}")
+    modRuntime modImplementation("mcp.mobius.waila:wthit:fabric-${project.wthit_version}")
+
+    modImplementation "com.terraformersmc:modmenu:${project.mod_menu_version}"
     modImplementation "dev.latvian.mods:kubejs-fabric:1605.3.10-build.9999"
-    //modImplementation "curse.maven:architectury-fabric-419697:${project.architectury_file}"
-    //modRuntime "curse.maven:rhino-416294:${project.rhino_file}"
+
     include modImplementation("com.github.Draylar:magna:${project.magna_version}") {
         exclude(group: "io.github.prospector")
         exclude(group: "me.shedaniel.cloth")
     }
 
     include modApi("dev.technici4n:FastTransferLib:${project.ftl_version}")
+
 
     // Other mods for testing purposes
     //modRuntime "appeng:appliedenergistics2-fabric:${project.appeng_version}"

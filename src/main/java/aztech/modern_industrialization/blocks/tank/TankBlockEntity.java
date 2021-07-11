@@ -64,11 +64,8 @@ public class TankBlockEntity extends FastBlockEntity implements Storage<FluidVar
     @Override
     public void fromClientTag(NbtCompound tag) {
         fluid = NbtHelper.getFluidCompatible(tag, "fluid");
-        if (tag.contains("amount")) {
-            amount = tag.getInt("amount") * 81;
-        } else {
-            amount = tag.getLong("amt");
-        }
+        amount = tag.getLong("amt");
+
         if (fluid.isBlank()) {
             amount = 0;
         }
@@ -121,7 +118,7 @@ public class TankBlockEntity extends FastBlockEntity implements Storage<FluidVar
     @Override
     public long insert(FluidVariant fluid, long maxAmount, TransactionContext transaction) {
         StoragePreconditions.notBlankNotNegative(fluid, maxAmount);
-        if (this.fluid.isBlank() || TankBlockEntity.this.fluid == fluid) {
+        if (this.fluid.isBlank() || TankBlockEntity.this.fluid.equals(fluid)) {
             long inserted = Math.min(maxAmount, capacity - amount);
             if (inserted > 0) {
                 participant.updateSnapshots(transaction);

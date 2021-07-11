@@ -121,4 +121,7 @@ public class OreMaterialPart implements MaterialPart {
         }
     }
 
+    public Item getItem() {
+        return item;
+    }
 }

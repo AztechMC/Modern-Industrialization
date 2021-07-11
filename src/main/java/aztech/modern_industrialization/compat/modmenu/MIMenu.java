@@ -29,7 +29,6 @@ import aztech.modern_industrialization.materials.MaterialRegistry;
 import aztech.modern_industrialization.materials.part.MIParts;
 import aztech.modern_industrialization.materials.part.OreGenMaterialPart;
 import aztech.modern_industrialization.materials.part.OreMaterialPart;
-import aztech.modern_industrialization.util.TextHelper;
 import com.terraformersmc.modmenu.api.ConfigScreenFactory;
 import com.terraformersmc.modmenu.api.ModMenuApi;
 import java.lang.reflect.Field;
@@ -39,6 +38,7 @@ import java.util.stream.Collectors;
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.gui.registry.GuiRegistry;
 import me.shedaniel.clothconfig2.api.ConfigEntryBuilder;
+import net.minecraft.item.Item;
 import net.minecraft.text.TranslatableText;
 
 public class MIMenu implements ModMenuApi {
@@ -54,6 +54,10 @@ public class MIMenu implements ModMenuApi {
 
     private static String getOreTranslationKey(Material material) {
         return ((OreMaterialPart) material.getParts().get(MIParts.ORE)).getTranslationKey();
+    }
+
+    private static Item getOreItem(Material material) {
+        return ((OreMaterialPart) material.getParts().get(MIParts.ORE)).getItem();
     }
 
     private static boolean oreInList(List<String> list, Material material) {
@@ -94,22 +98,15 @@ public class MIMenu implements ModMenuApi {
     static {
         GuiRegistry registry = AutoConfig.getGuiRegistry(MIConfig.class);
         registry.registerAnnotationProvider(
-                (i13n, field, config, defaults, registry1) -> Collections
-                        .singletonList(
-                                ENTRY_BUILDER
-                                        .startSubCategory(new TranslatableText("text.modern_industrialization.custom_ore_gen"),
-                                                MaterialRegistry.getMaterials().values().stream().filter(MIMenu::hasOreGen).map(i -> ENTRY_BUILDER
-                                                        .startBooleanToggle(new TranslatableText(getOreTranslationKey(i)),
-                                                                oreNotInList(field, config, i))
-                                                        .setDefaultValue(() -> oreNotInList(field, config, i)).requireRestart()
-                                                        .setSaveConsumer(bool -> setOreInList(field, config, i, !bool))
-                                                        .setYesNoTextSupplier(bool -> bool
-                                                                ? new TranslatableText("text.modern_industrialization.enabled")
-                                                                        .setStyle(TextHelper.GREEN)
-                                                                : new TranslatableText("text.modern_industrialization.disabled")
-                                                                        .setStyle(TextHelper.RED))
-                                                        .build()).collect(Collectors.toList()))
-                                        .build()),
+                (i13n, field, config, defaults,
+                        registry1) -> Collections.singletonList(ENTRY_BUILDER
+                                .startSubCategory(new TranslatableText("text.modern_industrialization.custom_ore_gen"),
+                                        MaterialRegistry.getMaterials().values().stream().filter(MIMenu::hasOreGen)
+                                                .map(i -> new CustomBooleanListEntry(new TranslatableText(getOreTranslationKey(i)),
+                                                        oreNotInList(field, config, i), () -> oreNotInList(field, config, i),
+                                                        bool -> setOreInList(field, config, i, !bool), getOreItem(i)))
+                                                .collect(Collectors.toList()))
+                                .build()),
                 OreConfigEntry.class);
     }
 

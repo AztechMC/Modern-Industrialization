@@ -31,7 +31,7 @@ import java.util.TreeMap;
 public class MaterialRegistry {
     static final Map<String, Material> MATERIALS = new TreeMap<>();
 
-    static void addMaterial(Material material) {
+    public static void addMaterial(Material material) {
         if (MATERIALS.put(material.name, material) != null) {
             throw new IllegalStateException("Duplicate registration of material " + material.name);
         }

@@ -32,7 +32,7 @@ import java.util.List;
 import java.util.function.Predicate;
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.ResourceAmount;
-import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
+import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
 import net.fabricmc.fabric.api.transfer.v1.transaction.base.SnapshotParticipant;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
@@ -269,8 +269,8 @@ public class ConfigurableItemStack extends SnapshotParticipant<ResourceAmount<It
     }
 
     @Override
-    public long extract(ItemKey key, long longCount, Transaction transaction) {
-        ItemPreconditions.notEmptyNotNegative(key, longCount);
+    public long extract(ItemKey key, long longCount, TransactionContext transaction) {
+        ItemPreconditions.notBlankNotNegative(key, longCount);
         if (pipesExtract && key.equals(this.key)) {
             int maxCount = Ints.saturatedCast(longCount);
             int extracted = Math.min(count, maxCount);
@@ -282,23 +282,23 @@ public class ConfigurableItemStack extends SnapshotParticipant<ResourceAmount<It
     }
 
     @Override
-    public boolean isEmpty() {
-        return resource().isEmpty();
+    public boolean isResourceBlank() {
+        return getResource().isEmpty();
     }
 
     @Override
-    public ItemKey resource() {
+    public ItemKey getResource() {
         return key;
     }
 
     @Override
-    public long amount() {
+    public long getAmount() {
         return count;
     }
 
     @Override
-    public long capacity() {
-        return isEmpty() ? 64 : resource().getItem().getMaxCount();
+    public long getCapacity() {
+        return isResourceBlank() ? 64 : getResource().getItem().getMaxCount();
     }
 
     @Override
@@ -308,8 +308,8 @@ public class ConfigurableItemStack extends SnapshotParticipant<ResourceAmount<It
 
     @Override
     public void readSnapshot(ResourceAmount<ItemKey> ra) {
-        this.count = (int) ra.amount;
-        this.key = ra.resource;
+        this.count = (int) ra.amount();
+        this.key = ra.resource();
     }
 
     public class ConfigurableItemSlot extends Slot {

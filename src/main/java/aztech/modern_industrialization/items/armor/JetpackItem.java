@@ -32,7 +32,7 @@ import com.google.common.collect.Multimap;
 import java.util.List;
 import me.shedaniel.cloth.api.armor.v1.TickableArmor;
 import me.shedaniel.cloth.api.durability.bar.DurabilityBarItem;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidKey;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
@@ -116,7 +116,7 @@ public class JetpackItem extends ArmorItem implements Wearable, TickableArmor, D
     @Override
     public void tickArmor(ItemStack stack, PlayerEntity player) {
         if (isActivated(stack)) {
-            FluidKey fluid = FluidFuelItemHelper.getFluid(stack);
+            FluidVariant fluid = FluidFuelItemHelper.getFluid(stack);
             long amount = FluidFuelItemHelper.getAmount(stack);
             if (amount > 0) {
                 // Always consume one mb of fuel

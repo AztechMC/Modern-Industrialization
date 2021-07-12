@@ -40,7 +40,7 @@ import aztech.modern_industrialization.transferapi.api.item.ItemApi;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidTransfer;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
 import net.minecraft.block.entity.BlockEntityType;
 
 public class NuclearHatch extends HatchBlockEntity {
@@ -110,8 +110,7 @@ public class NuclearHatch extends HatchBlockEntity {
     }
 
     public static void registerFluidApi(BlockEntityType<?> bet) {
-        FluidTransfer.SIDED.registerForBlockEntities((be, direction) -> direction == UP ? ((NuclearHatch) be).getInventory().fluidStorage : null,
-                bet);
+        FluidStorage.SIDED.registerForBlockEntities((be, direction) -> direction == UP ? ((NuclearHatch) be).getInventory().fluidStorage : null, bet);
     }
 
 }

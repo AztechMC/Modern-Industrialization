@@ -29,12 +29,13 @@ import aztech.modern_industrialization.util.FluidHelper;
 import aztech.modern_industrialization.util.NbtHelper;
 import java.util.Iterator;
 import java.util.List;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidKey;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidPreconditions;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
+import net.fabricmc.fabric.api.transfer.v1.storage.StoragePreconditions;
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleViewIterator;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
+import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
@@ -46,13 +47,13 @@ import net.minecraft.text.TextColor;
  * Helper class for fluid items that can only contain FluidFuels
  */
 public interface FluidFuelItemHelper {
-    static FluidKey getFluid(ItemStack stack) {
+    static FluidVariant getFluid(ItemStack stack) {
         CompoundTag tag = stack.getTag();
-        return tag == null ? FluidKey.empty() : NbtHelper.getFluidCompatible(tag, "fluid");
+        return tag == null ? FluidVariant.blank() : NbtHelper.getFluidCompatible(tag, "fluid");
     }
 
-    static void setFluid(ItemStack stack, FluidKey fluid) {
-        if (!fluid.isEmpty()) {
+    static void setFluid(ItemStack stack, FluidVariant fluid) {
+        if (!fluid.isBlank()) {
             NbtHelper.putFluid(stack.getOrCreateTag(), "fluid", fluid);
         } else {
             stack.removeSubTag("fluid");
@@ -60,7 +61,7 @@ public interface FluidFuelItemHelper {
     }
 
     static long getAmount(ItemStack stack) {
-        if (getFluid(stack).isEmpty()) {
+        if (getFluid(stack).isBlank()) {
             return 0;
         }
         CompoundTag tag = stack.getTag();
@@ -87,9 +88,9 @@ public interface FluidFuelItemHelper {
         }
     }
 
-    class ItemStorage implements Storage<FluidKey>, StorageView<FluidKey> {
+    class ItemStorage implements Storage<FluidVariant>, StorageView<FluidVariant> {
         private final Item item;
-        private final FluidKey fluid;
+        private final FluidVariant fluid;
         private final long amount;
         private final long capacity;
         private final ContainerItemContext ctx;
@@ -97,12 +98,12 @@ public interface FluidFuelItemHelper {
         public ItemStorage(long capacity, ItemStack stack, ContainerItemContext ctx) {
             this.item = stack.getItem();
             this.fluid = FluidFuelItemHelper.getFluid(stack);
-            this.amount = getAmount(stack);
+            this.amount = FluidFuelItemHelper.getAmount(stack);
             this.capacity = capacity;
             this.ctx = ctx;
         }
 
-        private boolean updateItem(FluidKey fluid, long amount, Transaction tx) {
+        private boolean updateItem(FluidVariant fluid, long amount, TransactionContext tx) {
             ItemStack stack = new ItemStack(item);
             setAmount(stack, amount);
             setFluid(stack, fluid);
@@ -115,13 +116,13 @@ public interface FluidFuelItemHelper {
         }
 
         @Override
-        public long insert(FluidKey fluid, long maxAmount, Transaction tx) {
-            FluidPreconditions.notEmptyNotNegative(fluid, maxAmount);
+        public long insert(FluidVariant fluid, long maxAmount, TransactionContext tx) {
+            StoragePreconditions.notBlankNotNegative(fluid, maxAmount);
             if (ctx.getCount(tx) == 0)
                 return 0;
 
             long inserted = 0;
-            if (ItemStorage.this.fluid.isEmpty()) {
+            if (ItemStorage.this.fluid.isBlank()) {
                 inserted = Math.min(capacity, maxAmount);
             } else if (ItemStorage.this.fluid.equals(fluid)) {
                 inserted = Math.min(capacity - amount, maxAmount);
@@ -143,8 +144,8 @@ public interface FluidFuelItemHelper {
         }
 
         @Override
-        public long extract(FluidKey fluid, long maxAmount, Transaction tx) {
-            FluidPreconditions.notEmptyNotNegative(fluid, maxAmount);
+        public long extract(FluidVariant fluid, long maxAmount, TransactionContext tx) {
+            StoragePreconditions.notBlankNotNegative(fluid, maxAmount);
             if (ctx.getCount(tx) == 0)
                 return 0;
 
@@ -164,36 +165,36 @@ public interface FluidFuelItemHelper {
         }
 
         @Override
-        public boolean isEmpty() {
-            return resource().isEmpty();
+        public boolean isResourceBlank() {
+            return getResource().isBlank();
         }
 
         @Override
-        public FluidKey resource() {
+        public FluidVariant getResource() {
             return fluid;
         }
 
         @Override
-        public long amount() {
+        public long getAmount() {
             return amount;
         }
 
         @Override
-        public long capacity() {
+        public long getCapacity() {
             return capacity;
         }
 
         @Override
-        public Iterator<StorageView<FluidKey>> iterator(Transaction transaction) {
+        public Iterator<StorageView<FluidVariant>> iterator(TransactionContext transaction) {
             return SingleViewIterator.create(this, transaction);
         }
     }
 
     static void appendTooltip(ItemStack stack, List<Text> tooltip, long capacity) {
         Style style = Style.EMPTY.withColor(TextColor.fromRgb(0xa9a9a9)).withItalic(true);
-        FluidKey fluid = getFluid(stack);
+        FluidVariant fluid = getFluid(stack);
         tooltip.add(FluidHelper.getFluidName(fluid, true));
-        if (!fluid.isEmpty()) {
+        if (!fluid.isBlank()) {
             tooltip.add(FluidHelper.getFluidAmount(getAmount(stack), capacity).setStyle(style));
         }
     }

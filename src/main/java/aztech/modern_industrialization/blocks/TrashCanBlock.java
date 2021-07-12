@@ -31,7 +31,7 @@ import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.InsertionOnlyStorage;
-import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
+import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
 import net.minecraft.block.Block;
 import net.minecraft.block.Material;
 import net.minecraft.sound.BlockSoundGroup;
@@ -53,18 +53,18 @@ public class TrashCanBlock extends Block {
     @SuppressWarnings("rawtypes")
     private static class TrashStorage implements InsertionOnlyStorage {
         @Override
-        public long insert(Object o, long maxAmount, Transaction transaction) {
+        public long insert(Object o, long maxAmount, TransactionContext transaction) {
             Preconditions.checkArgument(maxAmount >= 0);
             return maxAmount;
         }
 
         @Override
-        public Iterator<StorageView> iterator(Transaction transaction) {
+        public Iterator<StorageView> iterator(TransactionContext transaction) {
             return Collections.emptyIterator();
         }
 
         @Override
-        public int getVersion() {
+        public long getVersion() {
             return 0;
         }
     }

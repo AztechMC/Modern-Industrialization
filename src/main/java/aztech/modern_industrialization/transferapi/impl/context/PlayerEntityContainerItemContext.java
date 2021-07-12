@@ -30,7 +30,7 @@ import aztech.modern_industrialization.transferapi.api.item.PlayerInventoryWrapp
 import com.google.common.base.Preconditions;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
-import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
+import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.Hand;
 
@@ -57,18 +57,18 @@ public class PlayerEntityContainerItemContext implements ContainerItemContext {
     }
 
     @Override
-    public long getCount(Transaction tx) {
+    public long getCount(TransactionContext tx) {
         long count = 0;
         for (StorageView<ItemKey> view : slot.iterable(tx)) {
-            if (view.resource().equals(boundKey)) {
-                count = view.amount();
+            if (view.getResource().equals(boundKey)) {
+                count = view.getAmount();
             }
         }
         return count;
     }
 
     @Override
-    public boolean transform(long count, ItemKey into, Transaction tx) {
+    public boolean transform(long count, ItemKey into, TransactionContext tx) {
         Preconditions.checkArgument(count <= getCount(tx), "Can't transform items that are not available.");
 
         if (slot.extract(boundKey, count, tx) != count) {

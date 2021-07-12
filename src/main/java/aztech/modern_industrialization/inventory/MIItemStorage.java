@@ -31,7 +31,7 @@ import java.util.List;
 import java.util.function.Predicate;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
-import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
+import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
 
 public class MIItemStorage implements Storage<ItemKey> {
     final List<ConfigurableItemStack> stacks;
@@ -49,8 +49,8 @@ public class MIItemStorage implements Storage<ItemKey> {
      * @param filter    Return false to skip some ConfigurableItemStacks.
      * @param lockSlots Whether to lock slots or not.
      */
-    public long insert(ItemKey key, int count, Transaction tx, Predicate<ConfigurableItemStack> filter, boolean lockSlots) {
-        ItemPreconditions.notEmptyNotNegative(key, count);
+    public long insert(ItemKey key, int count, TransactionContext tx, Predicate<ConfigurableItemStack> filter, boolean lockSlots) {
+        ItemPreconditions.notBlankNotNegative(key, count);
         int totalInsert = 0;
         for (int iter = 0; iter < 2; ++iter) {
             boolean insertIntoEmptySlots = iter == 1;
@@ -78,7 +78,7 @@ public class MIItemStorage implements Storage<ItemKey> {
     }
 
     @Override
-    public long insert(ItemKey key, long count, Transaction transaction) {
+    public long insert(ItemKey key, long count, TransactionContext transaction) {
         return insert(key, Ints.saturatedCast(count), transaction, ConfigurableItemStack::canPipesInsert, false);
     }
 
@@ -88,8 +88,8 @@ public class MIItemStorage implements Storage<ItemKey> {
     }
 
     @Override
-    public long extract(ItemKey key, long maxAmount, Transaction transaction) {
-        ItemPreconditions.notEmptyNotNegative(key, maxAmount);
+    public long extract(ItemKey key, long maxAmount, TransactionContext transaction) {
+        ItemPreconditions.notBlankNotNegative(key, maxAmount);
         long amount = 0L;
 
         for (int i = 0; i < stacks.size() && amount < maxAmount; ++i) {
@@ -100,7 +100,7 @@ public class MIItemStorage implements Storage<ItemKey> {
     }
 
     @Override
-    public Iterator<StorageView<ItemKey>> iterator(Transaction transaction) {
+    public Iterator<StorageView<ItemKey>> iterator(TransactionContext transaction) {
         return (Iterator) stacks.iterator();
     }
 }

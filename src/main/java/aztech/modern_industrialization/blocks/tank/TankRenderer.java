@@ -37,7 +37,7 @@ public class TankRenderer extends BlockEntityRenderer<TankBlockEntity> {
     @Override
     public void render(TankBlockEntity entity, float tickDelta, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light,
             int overlay) {
-        if (!entity.fluid.isEmpty() && entity.amount > 0) {
+        if (!entity.fluid.isBlank() && entity.amount > 0) {
             RenderHelper.drawFluidInTank(matrices, vertexConsumers, entity.fluid, (float) entity.amount / entity.capacity);
         }
     }

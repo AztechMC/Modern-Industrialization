@@ -40,7 +40,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ThreadLocalRandom;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidKey;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -391,7 +391,7 @@ public class CrafterComponent implements IComponent.ServerOnly {
             }
             long remainingAmount = input.amount;
             for (ConfigurableFluidStack stack : stacks) {
-                if (stack.getFluid().equals(FluidKey.of(input.fluid))) {
+                if (stack.getFluid().equals(FluidVariant.of(input.fluid))) {
                     long taken = Math.min(remainingAmount, stack.getAmount());
                     stack.decrement(taken);
                     remainingAmount -= taken;
@@ -468,7 +468,7 @@ public class CrafterComponent implements IComponent.ServerOnly {
         List<ConfigurableFluidStack> stacks = simulate ? ConfigurableFluidStack.copyList(baseList) : baseList;
 
         List<Integer> locksToToggle = new ArrayList<>();
-        List<FluidKey> lockFluids = new ArrayList<>();
+        List<FluidVariant> lockFluids = new ArrayList<>();
 
         boolean ok = true;
         for (int i = 0; i < Math.min(recipe.fluidOutputs.size(), behavior.getMaxFluidOutputs()); ++i) {
@@ -485,7 +485,7 @@ public class CrafterComponent implements IComponent.ServerOnly {
             outer: for (int tries = 0; tries < 2; ++tries) {
                 for (int j = 0; j < stacks.size(); j++) {
                     ConfigurableFluidStack stack = stacks.get(j);
-                    FluidKey outputKey = FluidKey.of(output.fluid);
+                    FluidVariant outputKey = FluidVariant.of(output.fluid);
                     if (stack.isValid(outputKey) && (tries == 1 || stack.getFluid().equals(outputKey))) {
                         long inserted = Math.min(output.amount, stack.getRemainingSpace());
                         if (inserted > 0) {
@@ -587,7 +587,7 @@ public class CrafterComponent implements IComponent.ServerOnly {
 
         // FLUID INPUTS
         outer: for (MachineRecipe.FluidInput input : recipe.fluidInputs) {
-            FluidKey fluid = FluidKey.of(input.fluid);
+            FluidVariant fluid = FluidVariant.of(input.fluid);
             for (ConfigurableFluidStack stack : this.inventory.getFluidInputs()) {
                 if (stack.isLockedTo(fluid))
                     continue outer;
@@ -600,7 +600,7 @@ public class CrafterComponent implements IComponent.ServerOnly {
         }
         // FLUID OUTPUTS
         outer: for (MachineRecipe.FluidOutput output : recipe.fluidOutputs) {
-            FluidKey fluid = FluidKey.of(output.fluid);
+            FluidVariant fluid = FluidVariant.of(output.fluid);
             for (ConfigurableFluidStack stack : this.inventory.getFluidOutputs()) {
                 if (stack.isLockedTo(fluid))
                     continue outer;

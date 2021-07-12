@@ -30,29 +30,34 @@ import aztech.modern_industrialization.transferapi.api.fluid.ItemFluidApi;
 import aztech.modern_industrialization.util.NbtHelper;
 import java.util.Iterator;
 import net.fabricmc.fabric.api.block.entity.BlockEntityClientSerializable;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidKey;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidPreconditions;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
+import net.fabricmc.fabric.api.transfer.v1.storage.StoragePreconditions;
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.ExtractionOnlyStorage;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleViewIterator;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
+import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Hand;
 
 public class CreativeTankBlockEntity extends FastBlockEntity
-        implements ExtractionOnlyStorage<FluidKey>, StorageView<FluidKey>, BlockEntityClientSerializable {
-    FluidKey fluid = FluidKey.empty();
+        implements ExtractionOnlyStorage<FluidVariant>, StorageView<FluidVariant>, BlockEntityClientSerializable {
+    FluidVariant fluid = FluidVariant.blank();
 
     public CreativeTankBlockEntity() {
         super(MITanks.CREATIVE_BLOCK_ENTITY_TYPE);
     }
 
-    @Override
     public boolean isEmpty() {
-        return fluid.isEmpty();
+        return fluid.isBlank();
+    }
+
+    @Override
+    public boolean isResourceBlank() {
+        return fluid.isBlank();
     }
 
     @Override
@@ -85,13 +90,13 @@ public class CreativeTankBlockEntity extends FastBlockEntity
     }
 
     public boolean onPlayerUse(PlayerEntity player) {
-        Storage<FluidKey> handIo = ItemFluidApi.ITEM.find(player.getMainHandStack(), ContainerItemContext.ofPlayerHand(player, Hand.MAIN_HAND));
+        Storage<FluidVariant> handIo = ItemFluidApi.ITEM.find(player.getMainHandStack(), ContainerItemContext.ofPlayerHand(player, Hand.MAIN_HAND));
         if (handIo != null) {
             if (isEmpty()) {
                 try (Transaction transaction = Transaction.openOuter()) {
-                    for (StorageView<FluidKey> view : handIo.iterable(transaction)) {
-                        if (!view.isEmpty()) {
-                            fluid = view.resource();
+                    for (StorageView<FluidVariant> view : handIo.iterable(transaction)) {
+                        if (!view.isResourceBlank()) {
+                            fluid = view.getResource();
                             onChanged();
                             break;
                         }
@@ -110,28 +115,28 @@ public class CreativeTankBlockEntity extends FastBlockEntity
     }
 
     @Override
-    public long extract(FluidKey fluid, long maxAmount, Transaction transaction) {
-        FluidPreconditions.notEmptyNotNegative(fluid, maxAmount);
+    public long extract(FluidVariant fluid, long maxAmount, TransactionContext transaction) {
+        StoragePreconditions.notBlankNotNegative(fluid, maxAmount);
         return maxAmount;
     }
 
     @Override
-    public FluidKey resource() {
+    public FluidVariant getResource() {
         return fluid;
     }
 
     @Override
-    public long capacity() {
+    public long getCapacity() {
         return Integer.MAX_VALUE / 100; // NOTE: this can overflow otherwise, fix this?
     }
 
     @Override
-    public Iterator<StorageView<FluidKey>> iterator(Transaction transaction) {
+    public Iterator<StorageView<FluidVariant>> iterator(TransactionContext transaction) {
         return SingleViewIterator.create(this, transaction);
     }
 
     @Override
-    public long amount() {
+    public long getAmount() {
         return Integer.MAX_VALUE;
     }
 }

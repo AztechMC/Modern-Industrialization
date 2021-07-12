@@ -32,12 +32,12 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.function.Function;
 import net.fabricmc.fabric.api.lookup.v1.item.ItemApiLookup;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidKey;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidPreconditions;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
+import net.fabricmc.fabric.api.transfer.v1.storage.StoragePreconditions;
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.InsertionOnlyStorage;
-import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
+import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
@@ -45,7 +45,7 @@ import org.jetbrains.annotations.Nullable;
 public class EmptyItemsRegistry {
     private static final Map<Item, EmptyItemProvider> PROVIDERS = new IdentityHashMap<>();
 
-    public static synchronized void registerEmptyItem(Item emptyItem, FluidKey fluid, long amount, Function<ItemKey, ItemKey> keyMapping) {
+    public static synchronized void registerEmptyItem(Item emptyItem, FluidVariant fluid, long amount, Function<ItemKey, ItemKey> keyMapping) {
         PROVIDERS.computeIfAbsent(emptyItem, item -> {
             EmptyItemProvider provider = new EmptyItemProvider();
             ItemFluidApi.ITEM.registerForItems(provider, emptyItem);
@@ -54,20 +54,20 @@ public class EmptyItemsRegistry {
         EmptyItemProvider provider = PROVIDERS.get(emptyItem);
 
         // We use a copy-on-write strategy to register the fluid filling if possible
-        Map<FluidKey, FillInfo> copy = new IdentityHashMap<>(provider.acceptedFluids);
+        Map<FluidVariant, FillInfo> copy = new IdentityHashMap<>(provider.acceptedFluids);
         copy.putIfAbsent(fluid, new FillInfo(amount, keyMapping));
         provider.acceptedFluids = copy;
     }
 
-    private static class EmptyItemProvider implements ItemApiLookup.ItemApiProvider<Storage<FluidKey>, ContainerItemContext> {
-        private volatile Map<FluidKey, FillInfo> acceptedFluids = new IdentityHashMap<>();
+    private static class EmptyItemProvider implements ItemApiLookup.ItemApiProvider<Storage<FluidVariant>, ContainerItemContext> {
+        private volatile Map<FluidVariant, FillInfo> acceptedFluids = new IdentityHashMap<>();
 
         @Override
-        public @Nullable Storage<FluidKey> find(ItemStack stack, ContainerItemContext context) {
+        public @Nullable Storage<FluidVariant> find(ItemStack stack, ContainerItemContext context) {
             return new EmptyItemStorage(ItemKey.of(stack), context);
         }
 
-        private class EmptyItemStorage implements InsertionOnlyStorage<FluidKey> {
+        private class EmptyItemStorage implements InsertionOnlyStorage<FluidVariant> {
             private final ItemKey initialKey;
             private final ContainerItemContext ctx;
 
@@ -77,8 +77,8 @@ public class EmptyItemsRegistry {
             }
 
             @Override
-            public long insert(FluidKey fluid, long maxAmount, Transaction transaction) {
-                FluidPreconditions.notEmptyNotNegative(fluid, maxAmount);
+            public long insert(FluidVariant fluid, long maxAmount, TransactionContext transaction) {
+                StoragePreconditions.notBlankNotNegative(fluid, maxAmount);
 
                 if (ctx.getCount(transaction) == 0)
                     return 0;
@@ -96,7 +96,7 @@ public class EmptyItemsRegistry {
             }
 
             @Override
-            public Iterator<StorageView<FluidKey>> iterator(Transaction transaction) {
+            public Iterator<StorageView<FluidVariant>> iterator(TransactionContext transaction) {
                 return Collections.emptyIterator();
             }
         }

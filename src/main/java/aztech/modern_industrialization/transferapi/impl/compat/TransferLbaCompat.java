@@ -27,8 +27,8 @@ import alexiil.mc.lib.attributes.fluid.FluidAttributes;
 import alexiil.mc.lib.attributes.item.ItemAttributes;
 import aztech.modern_industrialization.transferapi.api.item.ItemApi;
 import aztech.modern_industrialization.transferapi.api.item.ItemKey;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidKey;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidTransfer;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.minecraft.util.math.Direction;
@@ -38,7 +38,7 @@ public class TransferLbaCompat {
         FluidAttributes.forEachInv(inv -> inv.appendBlockAdder((world, pos, state, to) -> {
             Direction direction = to.getTargetSide();
             if (direction != null && !to.hasOfferedAny()) {
-                Storage<FluidKey> fluidStorage = FluidTransfer.SIDED.find(world, pos, direction);
+                Storage<FluidVariant> fluidStorage = FluidStorage.SIDED.find(world, pos, direction);
                 if (fluidStorage != null) {
                     WrappedFluidStorage wrapped = new WrappedFluidStorage(fluidStorage);
 

@@ -67,7 +67,7 @@ public class WrappedItemStorage implements GroupedItemInv {
             ItemKey[] extractedKey = new ItemKey[] { null };
             TransferLbaCompat.OPEN_TRANSACTION.set(tx);
             for (StorageView<ItemKey> view : itemKeyStorage.iterable(tx)) {
-                ItemKey key = view.resource();
+                ItemKey key = view.getResource();
                 if (!key.isEmpty() && filter.matches(key.toStack())) {
                     try (Transaction testTx = tx.openNested()) {
                         if (view.extract(key, count, testTx) > 0) {
@@ -99,8 +99,8 @@ public class WrappedItemStorage implements GroupedItemInv {
         Set<ItemStack> stacks = ItemStackCollections.openHashSet();
         try (Transaction tx = TransferLbaCompat.openPossiblyNestedTransaction()) {
             for (StorageView<ItemKey> view : itemKeyStorage.iterable(tx)) {
-                if (!view.resource().isEmpty()) {
-                    stacks.add(view.resource().toStack());
+                if (!view.getResource().isEmpty()) {
+                    stacks.add(view.getResource().toStack());
                 }
             }
         }
@@ -120,9 +120,9 @@ public class WrappedItemStorage implements GroupedItemInv {
 
         try (Transaction tx = TransferLbaCompat.openPossiblyNestedTransaction()) {
             for (StorageView<ItemKey> view : itemKeyStorage.iterable(tx)) {
-                if (!view.resource().isEmpty() && filter.matches(view.resource().toStack())) {
-                    amount += view.amount();
-                    capacity += view.capacity();
+                if (!view.getResource().isEmpty() && filter.matches(view.getResource().toStack())) {
+                    amount += view.getAmount();
+                    capacity += view.getCapacity();
                 }
             }
         }

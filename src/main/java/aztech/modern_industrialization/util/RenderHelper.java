@@ -32,8 +32,8 @@ import net.fabricmc.fabric.api.renderer.v1.material.BlendMode;
 import net.fabricmc.fabric.api.renderer.v1.material.RenderMaterial;
 import net.fabricmc.fabric.api.renderer.v1.mesh.MutableQuadView;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
-import net.fabricmc.fabric.api.transfer.v1.client.fluid.FluidKeyRendering;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidKey;
+import net.fabricmc.fabric.api.transfer.v1.client.fluid.FluidVariantRendering;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.*;
 import net.minecraft.client.render.model.BakedQuad;
@@ -104,10 +104,10 @@ public class RenderHelper {
     private static final float TANK_W = 0.02f;
     public static final int FULL_LIGHT = 0x00F0_00F0;
 
-    public static void drawFluidInTank(MatrixStack ms, VertexConsumerProvider vcp, FluidKey fluid, float fill) {
+    public static void drawFluidInTank(MatrixStack ms, VertexConsumerProvider vcp, FluidVariant fluid, float fill) {
         VertexConsumer vc = vcp.getBuffer(RenderLayer.getTranslucent());
-        Sprite sprite = FluidKeyRendering.getSprite(fluid);
-        int color = FluidKeyRendering.getColor(fluid);
+        Sprite sprite = FluidVariantRendering.getSprite(fluid);
+        int color = FluidVariantRendering.getColor(fluid);
         float r = ((color >> 16) & 255) / 256f;
         float g = ((color >> 8) & 255) / 256f;
         float b = (color & 255) / 256f;
@@ -140,10 +140,10 @@ public class RenderHelper {
         }
     }
 
-    public static void drawFluidInGui(MatrixStack ms, FluidKey fluid, int i, int j) {
+    public static void drawFluidInGui(MatrixStack ms, FluidVariant fluid, int i, int j) {
         MinecraftClient.getInstance().getTextureManager().bindTexture(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE);
-        Sprite sprite = FluidKeyRendering.getSprite(fluid);
-        int color = FluidKeyRendering.getColor(fluid);
+        Sprite sprite = FluidVariantRendering.getSprite(fluid);
+        int color = FluidVariantRendering.getColor(fluid);
 
         if (sprite == null)
             return;

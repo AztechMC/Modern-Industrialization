@@ -33,7 +33,7 @@ import java.util.Map;
 import me.shedaniel.cloth.api.durability.bar.DurabilityBarItem;
 import net.fabricmc.fabric.api.tool.attribute.v1.DynamicAttributeTool;
 import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidKey;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.PillarBlock;
@@ -97,7 +97,7 @@ public class DieselToolItem extends Item implements DynamicAttributeTool, Vanish
     private float getMiningSpeedMultiplier(ItemStack stack) {
         long amount = FluidFuelItemHelper.getAmount(stack);
         if (amount > 0) {
-            FluidKey fluid = FluidFuelItemHelper.getFluid(stack);
+            FluidVariant fluid = FluidFuelItemHelper.getFluid(stack);
             int burnTicks = FluidFuelRegistry.getEu(fluid.getFluid());
             if (burnTicks > 0) {
                 return 1.0f + burnTicks / 4.0f;

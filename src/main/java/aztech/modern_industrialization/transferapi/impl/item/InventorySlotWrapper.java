@@ -29,7 +29,7 @@ import java.util.Iterator;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleViewIterator;
-import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
+import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
 import net.fabricmc.fabric.api.transfer.v1.transaction.base.SnapshotParticipant;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
@@ -52,7 +52,7 @@ class InventorySlotWrapper extends SnapshotParticipant<ItemStack> implements Sto
     }
 
     @Override
-    public long insert(ItemKey key, long maxAmount, Transaction transaction) {
+    public long insert(ItemKey key, long maxAmount, TransactionContext transaction) {
         // TODO: clean this up
         ItemPreconditions.notEmpty(key);
         int count = (int) Math.min(maxAmount, inventory.getMaxCountPerStack());
@@ -84,7 +84,7 @@ class InventorySlotWrapper extends SnapshotParticipant<ItemStack> implements Sto
     }
 
     @Override
-    public long extract(ItemKey key, long maxAmount, Transaction transaction) {
+    public long extract(ItemKey key, long maxAmount, TransactionContext transaction) {
         ItemPreconditions.notEmpty(key);
         ItemStack stack = inventory.getStack(slot);
 
@@ -99,27 +99,27 @@ class InventorySlotWrapper extends SnapshotParticipant<ItemStack> implements Sto
     }
 
     @Override
-    public Iterator<StorageView<ItemKey>> iterator(Transaction transaction) {
+    public Iterator<StorageView<ItemKey>> iterator(TransactionContext transaction) {
         return SingleViewIterator.create(this, transaction);
     }
 
     @Override
-    public ItemKey resource() {
+    public ItemKey getResource() {
         return ItemKey.of(inventory.getStack(slot));
     }
 
     @Override
-    public boolean isEmpty() {
+    public boolean isResourceBlank() {
         return inventory.getStack(slot).isEmpty();
     }
 
     @Override
-    public long amount() {
+    public long getAmount() {
         return inventory.getStack(slot).getCount();
     }
 
     @Override
-    public long capacity() {
+    public long getCapacity() {
         return inventory.getStack(slot).getMaxCount();
     }
 

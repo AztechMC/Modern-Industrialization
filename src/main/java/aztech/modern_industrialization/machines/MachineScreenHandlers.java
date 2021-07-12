@@ -326,7 +326,7 @@ public class MachineScreenHandlers {
                     int j = y + slot.y;
 
                     ConfigurableFluidStack stack = ((ConfigurableFluidStack.ConfigurableFluidSlot) slot).getConfStack();
-                    if (!stack.getFluid().isEmpty()) {
+                    if (!stack.getFluid().isBlank()) {
                         RenderHelper.drawFluidInGui(matrices, stack.getFluid(), i, j);
                     }
 

@@ -28,12 +28,13 @@ import alexiil.mc.lib.attributes.fluid.FluidVolumeUtil;
 import alexiil.mc.lib.attributes.fluid.GroupedFluidInv;
 import alexiil.mc.lib.attributes.fluid.amount.FluidAmount;
 import alexiil.mc.lib.attributes.fluid.filter.FluidFilter;
+import alexiil.mc.lib.attributes.fluid.volume.FluidKey;
 import alexiil.mc.lib.attributes.fluid.volume.FluidKeys;
 import alexiil.mc.lib.attributes.fluid.volume.FluidVolume;
 import java.math.RoundingMode;
 import java.util.HashSet;
 import java.util.Set;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidKey;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
@@ -41,9 +42,9 @@ import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.Fluids;
 
 public class WrappedFluidStorage implements GroupedFluidInv {
-    private final Storage<FluidKey> fluidStorage;
+    private final Storage<FluidVariant> fluidStorage;
 
-    public WrappedFluidStorage(Storage<FluidKey> fluidStorage) {
+    public WrappedFluidStorage(Storage<FluidVariant> fluidStorage) {
         this.fluidStorage = fluidStorage;
     }
 
@@ -55,7 +56,7 @@ public class WrappedFluidStorage implements GroupedFluidInv {
 
         try (Transaction tx = TransferLbaCompat.openPossiblyNestedTransaction()) {
             long amount = fluidVolume.getAmount_F().asLong(81000, RoundingMode.DOWN);
-            long inserted = fluidStorage.insert(FluidKey.of(fluid), amount, tx);
+            long inserted = fluidStorage.insert(FluidVariant.of(fluid), amount, tx);
 
             if (simulation.isAction()) {
                 tx.commit();
@@ -70,11 +71,11 @@ public class WrappedFluidStorage implements GroupedFluidInv {
         long maxAmount = maxFractionAmount.asLong(81000, RoundingMode.DOWN);
         try (Transaction tx = Transaction.openOuter()) {
             // Find a suitable fluid to extract
-            FluidKey extractedFluid = null;
+            FluidVariant extractedFluid = null;
             TransferLbaCompat.OPEN_TRANSACTION.set(tx);
-            for (StorageView<FluidKey> view : fluidStorage.iterable(tx)) {
-                FluidKey fluid = view.resource();
-                if (!view.isEmpty() && !fluid.hasTag() && filter.matches(FluidKeys.get(fluid.getFluid()))) {
+            for (StorageView<FluidVariant> view : fluidStorage.iterable(tx)) {
+                FluidVariant fluid = view.getResource();
+                if (!view.isResourceBlank() && !fluid.hasNbt() && filter.matches(FluidKeys.get(fluid.getFluid()))) {
                     try (Transaction testTx = tx.openNested()) {
                         if (view.extract(fluid, maxAmount, testTx) > 0) {
                             extractedFluid = fluid;
@@ -101,12 +102,12 @@ public class WrappedFluidStorage implements GroupedFluidInv {
     }
 
     @Override
-    public Set<alexiil.mc.lib.attributes.fluid.volume.FluidKey> getStoredFluids() {
-        Set<alexiil.mc.lib.attributes.fluid.volume.FluidKey> fluidKeys = new HashSet<>();
+    public Set<FluidKey> getStoredFluids() {
+        Set<FluidKey> fluidKeys = new HashSet<>();
         try (Transaction tx = TransferLbaCompat.openPossiblyNestedTransaction()) {
-            for (StorageView<FluidKey> view : fluidStorage.iterable(tx)) {
-                if (!view.resource().isEmpty() && !view.resource().hasTag()) {
-                    fluidKeys.add(FluidKeys.get(view.resource().getFluid()));
+            for (StorageView<FluidVariant> view : fluidStorage.iterable(tx)) {
+                if (!view.getResource().isBlank() && !view.getResource().hasNbt()) {
+                    fluidKeys.add(FluidKeys.get(view.getResource().getFluid()));
                 }
             }
         }
@@ -119,12 +120,12 @@ public class WrappedFluidStorage implements GroupedFluidInv {
         long capacity = 0;
 
         try (Transaction tx = TransferLbaCompat.openPossiblyNestedTransaction()) {
-            for (StorageView<FluidKey> view : fluidStorage.iterable(tx)) {
-                FluidKey key = view.resource();
-                if (!key.isEmpty() && !key.hasTag()) {
+            for (StorageView<FluidVariant> view : fluidStorage.iterable(tx)) {
+                FluidVariant key = view.getResource();
+                if (!key.isBlank() && !key.hasNbt()) {
                     if (filter.matches(FluidKeys.get(key.getFluid()))) {
-                        amount += view.amount();
-                        capacity += view.capacity();
+                        amount += view.getAmount();
+                        capacity += view.getCapacity();
                     }
                 }
             }

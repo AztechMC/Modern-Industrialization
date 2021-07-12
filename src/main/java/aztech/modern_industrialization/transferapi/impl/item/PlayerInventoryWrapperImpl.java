@@ -33,7 +33,7 @@ import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.CombinedStorage;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleViewIterator;
-import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
+import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
 import net.fabricmc.fabric.api.transfer.v1.transaction.base.SnapshotParticipant;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
@@ -52,8 +52,8 @@ class PlayerInventoryWrapperImpl extends CombinedStorage<ItemKey, InventorySlotW
     }
 
     @Override
-    public void offerOrDrop(ItemKey resource, long amount, Transaction tx) {
-        ItemPreconditions.notEmptyNotNegative(resource, amount);
+    public void offerOrDrop(ItemKey resource, long amount, TransactionContext tx) {
+        ItemPreconditions.notBlankNotNegative(resource, amount);
 
         for (int iteration = 0; iteration < 2; iteration++) {
             boolean allowEmptySlots = iteration == 1;
@@ -90,8 +90,8 @@ class PlayerInventoryWrapperImpl extends CombinedStorage<ItemKey, InventorySlotW
         }
 
         @Override
-        public long insert(ItemKey itemKey, long maxAmount, Transaction transaction) {
-            ItemPreconditions.notEmptyNotNegative(itemKey, maxAmount);
+        public long insert(ItemKey itemKey, long maxAmount, TransactionContext transaction) {
+            ItemPreconditions.notBlankNotNegative(itemKey, maxAmount);
             ItemStack stack = playerInventory.getCursorStack();
             int inserted = (int) Math.min(maxAmount, Math.min(64, itemKey.getItem().getMaxCount()) - stack.getCount());
 
@@ -115,8 +115,8 @@ class PlayerInventoryWrapperImpl extends CombinedStorage<ItemKey, InventorySlotW
         }
 
         @Override
-        public long extract(ItemKey itemKey, long maxAmount, Transaction transaction) {
-            ItemPreconditions.notEmptyNotNegative(itemKey, maxAmount);
+        public long extract(ItemKey itemKey, long maxAmount, TransactionContext transaction) {
+            ItemPreconditions.notBlankNotNegative(itemKey, maxAmount);
             ItemStack stack = playerInventory.getCursorStack();
 
             if (itemKey.matches(stack)) {
@@ -130,27 +130,27 @@ class PlayerInventoryWrapperImpl extends CombinedStorage<ItemKey, InventorySlotW
         }
 
         @Override
-        public Iterator<StorageView<ItemKey>> iterator(Transaction transaction) {
+        public Iterator<StorageView<ItemKey>> iterator(TransactionContext transaction) {
             return SingleViewIterator.create(this, transaction);
         }
 
         @Override
-        public ItemKey resource() {
+        public ItemKey getResource() {
             return ItemKey.of(playerInventory.getCursorStack());
         }
 
         @Override
-        public long capacity() {
+        public long getCapacity() {
             return playerInventory.getCursorStack().getMaxCount();
         }
 
         @Override
-        public boolean isEmpty() {
+        public boolean isResourceBlank() {
             return playerInventory.getCursorStack().isEmpty();
         }
 
         @Override
-        public long amount() {
+        public long getAmount() {
             return playerInventory.getCursorStack().getCount();
         }
 
@@ -174,7 +174,7 @@ class PlayerInventoryWrapperImpl extends CombinedStorage<ItemKey, InventorySlotW
         final List<ItemKey> droppedKeys = new ArrayList<>();
         final List<Long> droppedCounts = new ArrayList<>();
 
-        void addDrop(ItemKey key, long count, Transaction transaction) {
+        void addDrop(ItemKey key, long count, TransactionContext transaction) {
             updateSnapshots(transaction);
             droppedKeys.add(key);
             droppedCounts.add(count);

@@ -27,7 +27,7 @@ import aztech.modern_industrialization.transferapi.api.item.ItemKey;
 import java.util.Iterator;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
-import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
+import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
 import net.minecraft.inventory.SidedInventory;
 import net.minecraft.util.math.Direction;
 
@@ -49,7 +49,7 @@ class SidedInventorySlotWrapper implements Storage<ItemKey> {
     }
 
     @Override
-    public long insert(ItemKey resource, long maxAmount, Transaction transaction) {
+    public long insert(ItemKey resource, long maxAmount, TransactionContext transaction) {
         if (!sidedInventory.canInsert(slotWrapper.slot, resource.toStack(), direction)) {
             return 0;
         } else {
@@ -63,7 +63,7 @@ class SidedInventorySlotWrapper implements Storage<ItemKey> {
     }
 
     @Override
-    public long extract(ItemKey resource, long maxAmount, Transaction transaction) {
+    public long extract(ItemKey resource, long maxAmount, TransactionContext transaction) {
         if (!sidedInventory.canExtract(slotWrapper.slot, resource.toStack(), direction)) {
             return 0;
         } else {
@@ -72,7 +72,7 @@ class SidedInventorySlotWrapper implements Storage<ItemKey> {
     }
 
     @Override
-    public Iterator<StorageView<ItemKey>> iterator(Transaction transaction) {
+    public Iterator<StorageView<ItemKey>> iterator(TransactionContext transaction) {
         return slotWrapper.iterator(transaction);
     }
 }

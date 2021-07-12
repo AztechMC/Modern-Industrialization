@@ -28,7 +28,7 @@ import aztech.modern_industrialization.transferapi.api.fluid.ItemFluidApi;
 import io.netty.buffer.Unpooled;
 import java.util.List;
 import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidKey;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
@@ -106,14 +106,14 @@ public abstract class ConfigurableScreenHandler extends ScreenHandler {
                 if (lockingMode) {
                     fluidStack.togglePlayerLock();
                 } else {
-                    Storage<FluidKey> io = ItemFluidApi.ITEM.find(playerEntity.inventory.getCursorStack(),
+                    Storage<FluidVariant> io = ItemFluidApi.ITEM.find(playerEntity.inventory.getCursorStack(),
                             ContainerItemContext.ofPlayerCursor(playerEntity));
                     if (io != null) {
                         // Extract first
                         long previousAmount = fluidStack.getAmount();
                         try (Transaction transaction = Transaction.openOuter()) {
-                            for (StorageView<FluidKey> view : io.iterable(transaction)) {
-                                FluidKey fluid = view.resource();
+                            for (StorageView<FluidVariant> view : io.iterable(transaction)) {
+                                FluidVariant fluid = view.getResource();
                                 if (fluidSlot.canInsertFluid(fluid)) {
                                     try (Transaction tx = transaction.openNested()) {
                                         long extracted = view.extract(fluid, fluidStack.getRemainingSpace(), tx);
@@ -133,7 +133,7 @@ public abstract class ConfigurableScreenHandler extends ScreenHandler {
                         }
 
                         // Otherwise insert
-                        FluidKey fluid = fluidStack.getFluid();
+                        FluidVariant fluid = fluidStack.getFluid();
                         if (fluidSlot.canExtractFluid(fluid)) {
                             try (Transaction tx = Transaction.openOuter()) {
                                 fluidStack.decrement(io.insert(fluid, fluidStack.getAmount(), tx));

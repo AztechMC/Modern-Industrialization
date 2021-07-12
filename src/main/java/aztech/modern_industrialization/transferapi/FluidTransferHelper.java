@@ -29,7 +29,7 @@ import alexiil.mc.lib.attributes.fluid.FluidInsertable;
 import alexiil.mc.lib.attributes.fluid.amount.FluidAmount;
 import alexiil.mc.lib.attributes.fluid.volume.FluidKeys;
 import java.math.RoundingMode;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidKey;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
@@ -44,8 +44,8 @@ public class FluidTransferHelper {
      * Similar to
      * {@link net.fabricmc.fabric.api.transfer.v1.storage.Storage#insert}.
      */
-    public static long insert(FluidInsertable insertable, FluidKey fluid, long maxAmount, Simulation simulation) {
-        if (fluid.hasTag())
+    public static long insert(FluidInsertable insertable, FluidVariant fluid, long maxAmount, Simulation simulation) {
+        if (fluid.hasNbt())
             return 0;
 
         FluidAmount fractionAmount = FluidAmount.of(maxAmount, 81000);
@@ -57,8 +57,8 @@ public class FluidTransferHelper {
     /**
      * Return an extractable fluid, or EMPTY if none could be found.
      */
-    public static FluidKey findExtractableFluid(FluidExtractable extractable) {
-        return FluidKey.of(extractable
+    public static FluidVariant findExtractableFluid(FluidExtractable extractable) {
+        return FluidVariant.of(extractable
                 .attemptExtraction(key -> key.getRawFluid() != null && key.getRawFluid() != Fluids.EMPTY, FluidAmount.A_MILLION, Simulation.SIMULATE)
                 .getRawFluid());
     }
@@ -67,8 +67,8 @@ public class FluidTransferHelper {
      * Similar to
      * {@link net.fabricmc.fabric.api.transfer.v1.storage.Storage#extract}.
      */
-    public static long extract(FluidExtractable extractable, FluidKey fluid, long maxAmount, Simulation simulation) {
-        if (fluid.hasTag())
+    public static long extract(FluidExtractable extractable, FluidVariant fluid, long maxAmount, Simulation simulation) {
+        if (fluid.hasNbt())
             return 0;
 
         return extractable.attemptExtraction(key -> key.getRawFluid().equals(fluid.getFluid()), FluidAmount.of(maxAmount, 81000), simulation).amount()
@@ -79,14 +79,14 @@ public class FluidTransferHelper {
      * Find a contained fluid, or EMPTY if there is no fluid or if the storage is
      * null.
      */
-    public static FluidKey findFluid(@Nullable Storage<FluidKey> storage) {
+    public static FluidVariant findFluid(@Nullable Storage<FluidVariant> storage) {
         if (storage == null) {
-            return FluidKey.empty();
+            return FluidVariant.blank();
         } else {
-            FluidKey fluid = FluidKey.empty();
+            FluidVariant fluid = FluidVariant.blank();
             try (Transaction tx = Transaction.openOuter()) {
-                for (StorageView<FluidKey> view : storage.iterable(tx)) {
-                    fluid = view.resource();
+                for (StorageView<FluidVariant> view : storage.iterable(tx)) {
+                    fluid = view.getResource();
                     break;
                 }
             }

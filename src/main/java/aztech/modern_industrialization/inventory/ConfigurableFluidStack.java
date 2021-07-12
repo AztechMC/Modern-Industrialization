@@ -27,11 +27,11 @@ import aztech.modern_industrialization.util.NbtHelper;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidKey;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidPreconditions;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
+import net.fabricmc.fabric.api.transfer.v1.storage.StoragePreconditions;
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.ResourceAmount;
-import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
+import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
 import net.fabricmc.fabric.api.transfer.v1.transaction.base.SnapshotParticipant;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.Fluid;
@@ -42,11 +42,12 @@ import net.minecraft.screen.slot.Slot;
 /**
  * A fluid stack that can be configured.
  */
-public class ConfigurableFluidStack extends SnapshotParticipant<ResourceAmount<FluidKey>> implements StorageView<FluidKey>, IConfigurableSlot {
-    private FluidKey fluid = FluidKey.empty();
+public class ConfigurableFluidStack extends SnapshotParticipant<ResourceAmount<FluidVariant>>
+        implements StorageView<FluidVariant>, IConfigurableSlot {
+    private FluidVariant fluid = FluidVariant.blank();
     private long amount = 0;
     private long capacity;
-    private FluidKey lockedFluid = null;
+    private FluidVariant lockedFluid = null;
     private boolean playerLocked = false;
     private boolean machineLocked = false;
     private boolean playerLockable = true;
@@ -74,7 +75,7 @@ public class ConfigurableFluidStack extends SnapshotParticipant<ResourceAmount<F
 
     public static ConfigurableFluidStack lockedInputSlot(long capacity, Fluid fluid) {
         ConfigurableFluidStack stack = new ConfigurableFluidStack(capacity);
-        stack.fluid = stack.lockedFluid = FluidKey.of(fluid);
+        stack.fluid = stack.lockedFluid = FluidVariant.of(fluid);
         stack.playerInsert = true;
         stack.playerLockable = false;
         stack.playerLocked = true;
@@ -84,7 +85,7 @@ public class ConfigurableFluidStack extends SnapshotParticipant<ResourceAmount<F
 
     public static ConfigurableFluidStack lockedOutputSlot(long capacity, Fluid fluid) {
         ConfigurableFluidStack stack = new ConfigurableFluidStack(capacity);
-        stack.fluid = stack.lockedFluid = FluidKey.of(fluid);
+        stack.fluid = stack.lockedFluid = FluidVariant.of(fluid);
         stack.playerLockable = false;
         stack.playerLocked = true;
         stack.pipesExtract = true;
@@ -134,16 +135,8 @@ public class ConfigurableFluidStack extends SnapshotParticipant<ResourceAmount<F
         return copy;
     }
 
-    public FluidKey getFluid() {
+    public FluidVariant getFluid() {
         return fluid;
-    }
-
-    public long getAmount() {
-        return amount;
-    }
-
-    public long getCapacity() {
-        return capacity;
     }
 
     public boolean canPlayerInsert() {
@@ -154,7 +147,7 @@ public class ConfigurableFluidStack extends SnapshotParticipant<ResourceAmount<F
         return playerExtract;
     }
 
-    public void setFluid(FluidKey fluid) {
+    public void setFluid(FluidVariant fluid) {
         this.fluid = fluid;
     }
 
@@ -165,7 +158,7 @@ public class ConfigurableFluidStack extends SnapshotParticipant<ResourceAmount<F
         if (amount < 0)
             throw new IllegalStateException("amount < 0 in the fluid stack");
         if (amount == 0 && lockedFluid == null) {
-            fluid = FluidKey.empty();
+            fluid = FluidVariant.blank();
         }
     }
 
@@ -177,8 +170,8 @@ public class ConfigurableFluidStack extends SnapshotParticipant<ResourceAmount<F
         increment(-amount);
     }
 
-    public boolean isValid(FluidKey fluid) {
-        return fluid.equals(this.fluid) || (lockedFluid == null && this.fluid.isEmpty());
+    public boolean isValid(FluidVariant fluid) {
+        return fluid.equals(this.fluid) || (lockedFluid == null && this.fluid.isBlank());
     }
 
     public long getRemainingSpace() {
@@ -232,13 +225,13 @@ public class ConfigurableFluidStack extends SnapshotParticipant<ResourceAmount<F
         fs.playerExtract = tag.getBoolean("playerExtract");
         fs.pipesInsert = tag.getBoolean("pipesInsert");
         fs.pipesExtract = tag.getBoolean("pipesExtract");
-        if (fs.fluid.isEmpty()) {
+        if (fs.fluid.isBlank()) {
             fs.amount = 0;
         }
         return fs;
     }
 
-    public void enableMachineLock(FluidKey lockedFluid) {
+    public void enableMachineLock(FluidVariant lockedFluid) {
         if (this.lockedFluid != null && !lockedFluid.equals(this.lockedFluid))
             throw new RuntimeException("Trying to override locked fluid");
         machineLocked = true;
@@ -262,23 +255,23 @@ public class ConfigurableFluidStack extends SnapshotParticipant<ResourceAmount<F
         if (!machineLocked && !playerLocked) {
             lockedFluid = null;
             if (amount == 0) {
-                setFluid(FluidKey.empty());
+                setFluid(FluidVariant.blank());
             }
         } else if (lockedFluid == null) {
             lockedFluid = fluid;
         }
     }
 
-    public FluidKey getLockedFluid() {
+    public FluidVariant getLockedFluid() {
         return lockedFluid;
     }
 
-    public boolean isLockedTo(FluidKey fluid) {
+    public boolean isLockedTo(FluidVariant fluid) {
         return Objects.equals(lockedFluid, fluid);
     }
 
-    public boolean playerLock(FluidKey fluid) {
-        if (lockedFluid == null && (this.fluid.isEmpty() || this.fluid.equals(fluid))) {
+    public boolean playerLock(FluidVariant fluid) {
+        if (lockedFluid == null && (this.fluid.isBlank() || this.fluid.equals(fluid))) {
             lockedFluid = fluid;
             this.fluid = fluid;
             playerLocked = true;
@@ -288,7 +281,7 @@ public class ConfigurableFluidStack extends SnapshotParticipant<ResourceAmount<F
     }
 
     public boolean isEmpty() {
-        return getFluid().isEmpty();
+        return getFluid().isBlank();
     }
 
     public boolean canPlayerLock() {
@@ -304,8 +297,8 @@ public class ConfigurableFluidStack extends SnapshotParticipant<ResourceAmount<F
     }
 
     @Override
-    public long extract(FluidKey fluid, long maxAmount, Transaction transaction) {
-        FluidPreconditions.notEmptyNotNegative(fluid, maxAmount);
+    public long extract(FluidVariant fluid, long maxAmount, TransactionContext transaction) {
+        StoragePreconditions.notBlankNotNegative(fluid, maxAmount);
         if (pipesExtract && fluid.equals(this.fluid)) {
             long extracted = Math.min(maxAmount, amount);
             updateSnapshots(transaction);
@@ -316,29 +309,34 @@ public class ConfigurableFluidStack extends SnapshotParticipant<ResourceAmount<F
     }
 
     @Override
-    public FluidKey resource() {
+    public boolean isResourceBlank() {
+        return getResource().isBlank();
+    }
+
+    @Override
+    public FluidVariant getResource() {
         return fluid;
     }
 
     @Override
-    public long amount() {
+    public long getAmount() {
         return amount;
     }
 
     @Override
-    public long capacity() {
+    public long getCapacity() {
         return capacity;
     }
 
     @Override
-    protected ResourceAmount<FluidKey> createSnapshot() {
+    protected ResourceAmount<FluidVariant> createSnapshot() {
         return new ResourceAmount<>(fluid, amount);
     }
 
     @Override
-    protected void readSnapshot(ResourceAmount<FluidKey> snapshot) {
-        this.fluid = snapshot.resource;
-        this.amount = snapshot.amount;
+    protected void readSnapshot(ResourceAmount<FluidVariant> snapshot) {
+        this.fluid = snapshot.resource();
+        this.amount = snapshot.amount();
     }
 
     public class ConfigurableFluidSlot extends Slot {
@@ -368,11 +366,11 @@ public class ConfigurableFluidStack extends SnapshotParticipant<ResourceAmount<F
             return false;
         }
 
-        public boolean canInsertFluid(FluidKey fluid) {
+        public boolean canInsertFluid(FluidVariant fluid) {
             return playerInsert && isValid(fluid);
         }
 
-        public boolean canExtractFluid(FluidKey fluid) {
+        public boolean canExtractFluid(FluidVariant fluid) {
             return playerExtract;
         }
 

@@ -34,7 +34,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidKey;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -42,7 +42,7 @@ public class FluidNetwork extends PipeNetwork {
     final int nodeCapacity;
 
     public FluidNetwork(int id, PipeNetworkData data, int nodeCapacity) {
-        super(id, data == null ? new FluidNetworkData(FluidKey.empty()) : data);
+        super(id, data == null ? new FluidNetworkData(FluidVariant.blank()) : data);
         this.nodeCapacity = nodeCapacity;
     }
 
@@ -68,9 +68,9 @@ public class FluidNetwork extends PipeNetwork {
             }
         }
         long networkCapacity = loadedNodeCount * nodeCapacity;
-        FluidKey fluid = ((FluidNetworkData) data).fluid;
+        FluidVariant fluid = ((FluidNetworkData) data).fluid;
         // If the fluid is EMPTY we stop here
-        if (fluid.isEmpty()) {
+        if (fluid.isBlank()) {
             return;
         }
 
@@ -97,7 +97,7 @@ public class FluidNetwork extends PipeNetwork {
      *
      * @return The amount that was successfully transferred.
      */
-    private static long transferByPriority(TransferOperation operation, List<FluidTarget> targets, FluidKey fluid, long maxAmount) {
+    private static long transferByPriority(TransferOperation operation, List<FluidTarget> targets, FluidVariant fluid, long maxAmount) {
         // Sort by decreasing priority
         targets.sort(Comparator.comparing(target -> -target.priority));
         // Transfer for each bucket
@@ -118,7 +118,7 @@ public class FluidNetwork extends PipeNetwork {
      * 
      * @return The amount that was successfully transferred.
      */
-    private static long transferForBucket(TransferOperation operation, List<FluidTarget> bucket, FluidKey fluid, long maxAmount) {
+    private static long transferForBucket(TransferOperation operation, List<FluidTarget> bucket, FluidVariant fluid, long maxAmount) {
         // Shuffle the bucket for better average transfer when simulation returns the
         // same result every time
         Collections.shuffle(bucket);
@@ -143,7 +143,7 @@ public class FluidNetwork extends PipeNetwork {
 
     @FunctionalInterface
     private interface TransferOperation {
-        long transfer(FluidTransferable transferable, FluidKey fluid, long maxAmount, Simulation simulation);
+        long transfer(FluidTransferable transferable, FluidVariant fluid, long maxAmount, Simulation simulation);
     }
 
     @Override
@@ -164,7 +164,7 @@ public class FluidNetwork extends PipeNetwork {
     }
 
     private boolean isEmpty(boolean onlyFluid) {
-        if (((FluidNetworkData) data).fluid.isEmpty())
+        if (((FluidNetworkData) data).fluid.isBlank())
             return true;
         if (onlyFluid)
             return false;
@@ -179,8 +179,8 @@ public class FluidNetwork extends PipeNetwork {
     /**
      * Set this network's fluid if this network has an empty fluid.
      */
-    protected void setFluid(FluidKey fluid) {
-        if (((FluidNetworkData) data).fluid.isEmpty()) {
+    protected void setFluid(FluidVariant fluid) {
+        if (((FluidNetworkData) data).fluid.isBlank()) {
             ((FluidNetworkData) data).fluid = fluid;
         }
     }
@@ -199,6 +199,6 @@ public class FluidNetwork extends PipeNetwork {
         for (PipeNetworkNode node : nodes.values()) {
             ((FluidNetworkNode) node).amount = 0;
         }
-        ((FluidNetworkData) data).fluid = FluidKey.empty();
+        ((FluidNetworkData) data).fluid = FluidVariant.blank();
     }
 }

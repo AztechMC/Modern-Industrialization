@@ -26,7 +26,7 @@ package aztech.modern_industrialization.machines.components;
 import aztech.modern_industrialization.MIFluids;
 import aztech.modern_industrialization.inventory.ConfigurableFluidStack;
 import java.util.List;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidKey;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.Fluids;
 
@@ -78,8 +78,8 @@ public class SteamHeaterComponent extends TemperatureComponent {
     // Return true if any steam was made.
     private boolean tryMakeSteam(List<ConfigurableFluidStack> fluidInputs, List<ConfigurableFluidStack> fluidOutputs, Fluid water, Fluid steam,
             int euPerSteamMb) {
-        FluidKey waterKey = FluidKey.of(water);
-        FluidKey steamKey = FluidKey.of(steam);
+        FluidVariant waterKey = FluidVariant.of(water);
+        FluidVariant steamKey = FluidVariant.of(steam);
 
         if (getTemperature() > 100d) {
             long steamProduction = (long) (81 * (getTemperature() - 100d) / (temperatureMax - 100d) * maxEuProduction / euPerSteamMb);

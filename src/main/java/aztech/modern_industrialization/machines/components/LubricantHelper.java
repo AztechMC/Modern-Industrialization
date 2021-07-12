@@ -26,7 +26,7 @@ package aztech.modern_industrialization.machines.components;
 import aztech.modern_industrialization.MIFluids;
 import aztech.modern_industrialization.transferapi.api.context.ContainerItemContext;
 import aztech.modern_industrialization.transferapi.api.fluid.ItemFluidApi;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidKey;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.minecraft.entity.player.PlayerEntity;
@@ -44,10 +44,10 @@ public class LubricantHelper {
             int maxTick = crafter.getMaxEfficiencyTicks();
             int rem = maxTick - tick;
             if (rem > 0) {
-                Storage<FluidKey> handIo = ItemFluidApi.ITEM.find(player.getStackInHand(hand), ContainerItemContext.ofPlayerHand(player, hand));
+                Storage<FluidVariant> handIo = ItemFluidApi.ITEM.find(player.getStackInHand(hand), ContainerItemContext.ofPlayerHand(player, hand));
                 if (handIo != null) {
                     try (Transaction tx = Transaction.openOuter()) {
-                        long extracted = handIo.extract(FluidKey.of(MIFluids.LUBRICANT), rem * dropPerTick, tx);
+                        long extracted = handIo.extract(FluidVariant.of(MIFluids.LUBRICANT), rem * dropPerTick, tx);
                         if (extracted % dropPerTick == 0) {
                             crafter.increaseEfficiencyTicks((int) (extracted / dropPerTick));
                             tx.commit();
@@ -56,7 +56,7 @@ public class LubricantHelper {
                             tx.close();
                             long attempt = dropPerTick * (extracted / dropPerTick);
                             try (Transaction txVoid = Transaction.openOuter()) {
-                                long extractedVoid = handIo.extract(FluidKey.of(MIFluids.LUBRICANT), attempt, txVoid);
+                                long extractedVoid = handIo.extract(FluidVariant.of(MIFluids.LUBRICANT), attempt, txVoid);
                                 if (extractedVoid > 0) {
                                     crafter.increaseEfficiencyTicks((int) (extractedVoid / dropPerTick));
                                     txVoid.commit();

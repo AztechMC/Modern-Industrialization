@@ -24,7 +24,7 @@
 package aztech.modern_industrialization.transferapi.api.item;
 
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
-import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
+import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
 import org.jetbrains.annotations.ApiStatus;
 
 /**
@@ -54,5 +54,5 @@ public interface PlayerInventoryWrapper {
      * Add items to the inventory if possible, and drop any leftover items in the
      * world.
      */
-    void offerOrDrop(ItemKey key, long amount, Transaction transaction);
+    void offerOrDrop(ItemKey key, long amount, TransactionContext transaction);
 }

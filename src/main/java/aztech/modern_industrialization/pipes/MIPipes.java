@@ -51,7 +51,7 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.fabricmc.fabric.api.screenhandler.v1.ScreenHandlerRegistry;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidKey;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.minecraft.block.Block;
 import net.minecraft.block.Material;
 import net.minecraft.block.entity.BlockEntityType;
@@ -167,7 +167,7 @@ public class MIPipes implements ModInitializer {
     public void registerFluidPipeType(String name, int color, int nodeCapacity) {
         PipeNetworkType type = PipeNetworkType.register(new MIIdentifier("fluid_" + name), (id, data) -> new FluidNetwork(id, data, nodeCapacity),
                 FluidNetworkNode::new, color, true, FLUID_RENDERER);
-        PipeItem item = new PipeItem(new Item.Settings().group(ModernIndustrialization.ITEM_GROUP), type, new FluidNetworkData(FluidKey.empty()));
+        PipeItem item = new PipeItem(new Item.Settings().group(ModernIndustrialization.ITEM_GROUP), type, new FluidNetworkData(FluidVariant.blank()));
         pipeItems.put(type, item);
         Registry.register(Registry.ITEM, new MIIdentifier("pipe_fluid_" + name), item);
         PIPE_MODEL_NAMES.add(new MIIdentifier("item/pipe_fluid_" + name));

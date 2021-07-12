@@ -43,7 +43,7 @@ public final class ItemPreconditions {
         }
     }
 
-    public static void notEmptyNotNegative(ItemKey key, long amount) {
+    public static void notBlankNotNegative(ItemKey key, long amount) {
         ItemPreconditions.notEmpty(key);
         Preconditions.checkArgument(amount >= 0);
     }

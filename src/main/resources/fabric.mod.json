@@ -31,9 +31,6 @@
       "aztech.modern_industrialization.compat.rei.forgehammer_recipe.ForgeHammerRecipePlugin",
       "aztech.modern_industrialization.compat.rei.machines.MachinesPlugin"
     ],
-    "modmenu": [
-      "aztech.modern_industrialization.compat.modmenu.MIModMenuEntrypoint"
-    ],
     "kubejs-init": [
       "aztech.modern_industrialization.compat.kubejs.MIRecipeEventHandler"
     ]

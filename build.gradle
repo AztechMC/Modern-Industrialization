@@ -166,7 +166,6 @@ dependencies {
     modImplementation "mcp.mobius.waila:Hwyla:${project.hwyla_version}"
     modImplementation "me.sargunvohra.mcmods:autoconfig1u:${project.auto_config_version}"
     include "me.sargunvohra.mcmods:autoconfig1u:${project.auto_config_version}"
-    modImplementation "com.terraformersmc:modmenu:${project.mod_menu_version}"
     modImplementation "curse.maven:kubejs-395864:${project.kubejs_file}"
     modImplementation "curse.maven:architectury-fabric-419697:${project.architectury_file}"
     modRuntime "curse.maven:rhino-416294:${project.rhino_file}"

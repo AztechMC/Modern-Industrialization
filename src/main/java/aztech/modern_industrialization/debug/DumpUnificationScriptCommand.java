@@ -69,7 +69,7 @@ public class DumpUnificationScriptCommand {
                         for (Item item : itemTag.values()) {
                             Identifier itemId = Registry.ITEM.getId(item);
 
-                            if (!itemId.getNamespace().equals("minecraft") &&!itemId.getNamespace().equals("modern_industrialization")) {
+                            if (!itemId.getNamespace().equals("minecraft") && !itemId.getNamespace().equals("modern_industrialization")) {
                                 if (orePart) {
                                     // Make sure we unify ores to the correct variant.
                                     boolean miDeepslate = partEntry.getKey().equals(MIParts.ORE_DEEPLSATE);

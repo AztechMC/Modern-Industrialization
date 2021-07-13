@@ -52,27 +52,43 @@ public class DumpUnificationScriptCommand {
             Material material = entry.getValue();
             for (Map.Entry<String, MaterialPart> partEntry : material.getParts().entrySet()) {
                 MaterialPart part = partEntry.getValue();
+                boolean orePart = partEntry.getKey().equals(MIParts.ORE) || partEntry.getKey().equals(MIParts.ORE_DEEPLSATE);
+
+                if (orePart && material.name.equals("quartz")) {
+                    // Don't try to unify quartz or it breaks nether quartz.
+                    continue;
+                }
 
                 // if part has tag, and not ore part
-                if (!part.getTaggedItemId().equals(part.getItemId()) && !partEntry.getKey().equals(MIParts.ORE)
-                        && !partEntry.getKey().equals(MIParts.ORE_DEEPLSATE)) {
+                if (!part.getTaggedItemId().equals(part.getItemId())) {
                     boolean foundOtherInTag = false;
 
                     Tag<Item> itemTag = tagGroup.getTag(new Identifier(part.getTaggedItemId().substring(1)));
 
                     if (itemTag != null) {
                         for (Item item : itemTag.values()) {
-                            String itemId = Registry.ITEM.getId(item).toString();
+                            Identifier itemId = Registry.ITEM.getId(item);
 
-                            if (!itemId.equals(part.getItemId()) && !itemId.split(":")[0].equals("minecraft")) {
-                                idToMi.put(itemId, part.getItemId());
+                            if (!itemId.getNamespace().equals("minecraft") && !itemId.getNamespace().equals("modern_industrialization")) {
+                                if (orePart) {
+                                    // Make sure we unify ores to the correct variant.
+                                    boolean miDeepslate = partEntry.getKey().equals(MIParts.ORE_DEEPLSATE);
+                                    boolean otherDeepslate = itemId.toString().contains("deepslate");
+                                    if (miDeepslate != otherDeepslate) {
+                                        continue;
+                                    }
+                                }
+                                idToMi.put(itemId.toString(), part.getItemId());
                                 foundOtherInTag = true;
                             }
                         }
                     }
 
-                    if (foundOtherInTag) {
-                        tagToMi.put(part.getTaggedItemId(), part.getItemId());
+                    if (foundOtherInTag || orePart) { // Ore parts need it for their special input unification.
+                        if (!orePart) {
+                            // Don't unify ore tagged inputs.
+                            tagToMi.put(part.getTaggedItemId(), part.getItemId());
+                        }
                         taggedMiParts.computeIfAbsent(part.getPart(), p -> new LinkedHashMap<>()).put(material.name, part.getItemId());
                     }
                 }
@@ -91,14 +107,23 @@ public class DumpUnificationScriptCommand {
 
         serverScript.append("""
                 events.listen("recipes", function (event) {
-                    // Replace untagged inputs with MI inputs.
+                    // Replace untagged inputs / outputs with MI items.
                     for (var id in idToMi) {
                         event.replaceInput({}, id, idToMi[id]);
                         event.replaceOutput({}, id, idToMi[id]);
                     }
-                    // Replace tagged inputs with MI inputs.
+                    // Replace tagged inputs with MI inputs. (exluding ores)
                     for (var tag in tagToMi) {
                         event.replaceInput({}, tag, tagToMi[tag]);
+                    }
+                    // Replace ore tagged inputs.
+                    for (var material in taggedMiParts["ore"]) {
+                        var oreTag = "#c:" + material + "_ores";
+                        if (material in taggedMiParts["ore_deepslate"]) {
+                            var regularOre = taggedMiParts["ore"][material];
+                            var deepslateOre = taggedMiParts["ore_deepslate"][material];
+                            event.replaceInput({}, oreTag, [regularOre, deepslateOre]);
+                        }
                     }
                     // Remove duplicate recipes
                     function autoremove(partName, recipePattern) {
@@ -106,12 +131,16 @@ public class DumpUnificationScriptCommand {
                             event.remove({ id: recipePattern.replace("{}", material) });
                         }
                     }
+                    // TR recipes
                     autoremove("block", "techreborn:crafting_table/storage_block/{}_storage_block");
                     autoremove("ingot", "techreborn:crafting_table/ingot/{}_ingot_from_block");
                     autoremove("ingot", "techreborn:crafting_table/ingot/{}_ingot_from_storage_block");
                     autoremove("ingot", "techreborn:crafting_table/ingot/{}_ingot_from_nugget");
                     autoremove("nugget", "techreborn:crafting_table/nugget/{}_nugget");
                     autoremove("ingot", "techreborn:smelting/{}_ingot_from_ore");
+                    // Some duplicate MI recipes (not needed usually because we don't tag furnace inputs).
+                    autoremove("ingot", "modern_industrialization:generated/materials/{}/smelting/ore_deepslate_to_ingot_smelting");
+                    autoremove("ingot", "modern_industrialization:generated/materials/{}/smelting/ore_deepslate_to_ingot_blasting");
                 });
                                                 """);
 

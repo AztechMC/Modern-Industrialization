@@ -68,6 +68,15 @@ public class TankModel implements UnbakedModel, FabricBakedModel, BakedModel {
         tankSpriteId = new SpriteIdentifier(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE, new MIIdentifier("blocks/tanks/" + tankType));
     }
 
+    public TankModel(ModelTransformation transformation, SpriteIdentifier tankSpriteId, Sprite tankSprite, RenderMaterial translucentMaterial,
+            Mesh tankMesh) {
+        this.transformation = transformation;
+        this.tankSpriteId = tankSpriteId;
+        this.tankSprite = tankSprite;
+        this.translucentMaterial = translucentMaterial;
+        this.tankMesh = tankMesh;
+    }
+
     @Override
     public boolean isVanillaAdapter() {
         return false;
@@ -190,5 +199,9 @@ public class TankModel implements UnbakedModel, FabricBakedModel, BakedModel {
         }
         tankMesh = builder.build();
         return this;
+    }
+
+    public Mesh getTankMesh() {
+        return tankMesh;
     }
 }

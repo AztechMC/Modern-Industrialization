@@ -21,17 +21,17 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.machines.models;
+package aztech.modern_industrialization.mixin;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
+import net.fabricmc.fabric.impl.client.indigo.renderer.mesh.MeshImpl;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.gen.Invoker;
 
-public class MachineCasing {
-    public final String name;
-    @Environment(EnvType.CLIENT)
-    public MachineCasingModel mcm;
+@Mixin(MeshImpl.class)
+public interface MeshImplAccessor {
 
-    MachineCasing(String name) {
-        this.name = name;
+    @Invoker("<init>")
+    static MeshImpl create(int[] data) {
+        throw new AssertionError();
     }
 }

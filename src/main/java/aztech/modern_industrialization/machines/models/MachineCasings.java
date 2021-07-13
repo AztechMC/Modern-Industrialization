@@ -31,7 +31,7 @@ import net.fabricmc.loader.api.FabricLoader;
 
 public class MachineCasings {
 
-    static final Map<String, MachineCasing> registeredCasings = new HashMap<>();
+    public static final Map<String, MachineCasing> registeredCasings = new HashMap<>();
 
     public static final MachineCasing BRICKED_BRONZE = create("bricked_bronze");
     public static final MachineCasing BRICKED_STEEL = create("bricked_steel");

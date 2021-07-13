@@ -59,6 +59,12 @@ public class PipeMeshCache implements PipeRenderer {
      */
     private final RenderMaterial fluidMaterial;
 
+    public PipeMeshCache(Mesh[][][][] connectionMeshes, Mesh[][] centerMeshes, RenderMaterial fluidMaterial) {
+        this.connectionMeshes = connectionMeshes;
+        this.centerMeshes = centerMeshes;
+        this.fluidMaterial = fluidMaterial;
+    }
+
     /**
      * Create a new `PipeMeshCache`, and populate it.
      * 
@@ -194,5 +200,17 @@ public class PipeMeshCache implements PipeRenderer {
         if (customData.contains("fluid")) {
             ctx.popTransform();
         }
+    }
+
+    public Mesh[][][][] getConnectionMeshes() {
+        return connectionMeshes;
+    }
+
+    public Mesh[][] getCenterMeshes() {
+        return centerMeshes;
+    }
+
+    public RenderMaterial getFluidMaterial() {
+        return fluidMaterial;
     }
 }

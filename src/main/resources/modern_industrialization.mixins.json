@@ -15,7 +15,8 @@
     "ResourceImplAccessor",
     "ServerPlayerInteractionManagerMixin",
     "ServerPlayNetworkHandlerAccessor",
-    "WorldChunkMixin"
+    "WorldChunkMixin",
+    "MeshImplAccessor"
   ],
   "injectors": {
     "defaultRequire": 1

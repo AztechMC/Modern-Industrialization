@@ -224,7 +224,7 @@ public class MIMaterials {
                 .addRecipes(StandardRecipes::apply).build());
 
         MaterialRegistry.addMaterial(new MaterialBuilder("lead", DULL, new BakableTargetColoramp(0x3C286E, common("ingot"), template("lead_ingot")))
-                .addRegularParts(DOUBLE_INGOT, DUST, INGOT, NUGGET, PLATE, TINY_DUST).addParts(OreGenMaterialPart.of(4, 8, 64, MaterialOreSet.GOLD))
+                .addRegularParts(DOUBLE_INGOT, DUST, INGOT, NUGGET, PLATE, TINY_DUST).addParts(OreGenMaterialPart.of(4, 8, 64, MaterialOreSet.IRON))
                 .addParts(RawMetalPart.of(MaterialRawSet.IRON)).addRecipes(StandardRecipes::apply, SmeltingRecipes::apply)
                 .cancelRecipes("macerator/raw_metal").build());
 

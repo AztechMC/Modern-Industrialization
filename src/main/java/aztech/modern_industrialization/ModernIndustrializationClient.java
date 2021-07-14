@@ -29,7 +29,6 @@ import aztech.modern_industrialization.api.energy.CableTier;
 import aztech.modern_industrialization.api.pipes.item.SpeedUpgrade;
 import aztech.modern_industrialization.blocks.forgehammer.ForgeHammerScreen;
 import aztech.modern_industrialization.blocks.tank.CreativeTankSetup;
-import aztech.modern_industrialization.debug.DumpUnificationScriptCommand;
 import aztech.modern_industrialization.debug.MissingTranslationsCommand;
 import aztech.modern_industrialization.inventory.ConfigurableInventoryPacketHandlers;
 import aztech.modern_industrialization.inventory.ConfigurableInventoryPackets;
@@ -193,7 +192,6 @@ public class ModernIndustrializationClient implements ClientModInitializer {
     private void setupClientCommands() {
         ClientCommandManager.DISPATCHER.register(literal("miclient")//
                 .then(literal("dump_missing_translations").executes(MissingTranslationsCommand::run))//
-                .then(literal("dump_unification_script").executes(DumpUnificationScriptCommand::run))//
         );
     }
 }

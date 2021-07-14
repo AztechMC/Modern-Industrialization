@@ -23,6 +23,7 @@
  */
 package aztech.modern_industrialization.materials.part;
 
+import aztech.modern_industrialization.materials.MaterialBuilder;
 import aztech.modern_industrialization.textures.TextureManager;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -44,7 +45,7 @@ public interface MaterialPart {
      */
     String getItemId();
 
-    default void register() {
+    default void register(MaterialBuilder.RegisteringContext context) {
 
     }
 

@@ -59,7 +59,7 @@ public class MIItemPart implements MaterialPart {
     }
 
     @Override
-    public void register() {
+    public void register(MaterialBuilder.RegisteringContext context) {
         MIItem.of(path);
     }
 }

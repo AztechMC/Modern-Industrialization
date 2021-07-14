@@ -81,7 +81,7 @@ public class BlockMaterialPart implements MaterialPart {
     }
 
     @Override
-    public void register() {
+    public void register(MaterialBuilder.RegisteringContext context) {
         block = new MIBlock(itemPath,
                 FabricBlockSettings.of(METAL_MATERIAL).hardness(5.0f).resistance(6.0f).breakByTool(FabricToolTags.PICKAXES, 0).requiresTool());
         item = block.blockItem;

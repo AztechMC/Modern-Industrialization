@@ -61,7 +61,7 @@ public class CableMaterialPart implements MaterialPart {
     }
 
     @Override
-    public void register() {
+    public void register(MaterialBuilder.RegisteringContext context) {
         MIPipes.INSTANCE.registerCableType(materialName, color | 0xff000000, tier);
     }
 

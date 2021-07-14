@@ -108,7 +108,7 @@ public class RawMetalPart implements MaterialPart {
     }
 
     @Override
-    public void register() {
+    public void register(MaterialBuilder.RegisteringContext context) {
         if (isBlock) {
             MIBlock block = new MIBlock(itemPath,
                     FabricBlockSettings.of(STONE_MATERIAL).hardness(5f).resistance(6.0f).breakByTool(FabricToolTags.PICKAXES, 1).requiresTool());

@@ -48,8 +48,8 @@ public class OreGenMaterialPart extends OreMaterialPart {
     private final int maxYLevel;
 
     private OreGenMaterialPart(String materialName, Coloramp coloramp, MaterialOreSet oreSet, int veinsPerChunk, int veinSize, int maxYLevel,
-            boolean deepslate) {
-        super(materialName, coloramp, oreSet, deepslate);
+            boolean deepslate, String mainPart) {
+        super(materialName, coloramp, oreSet, deepslate, mainPart);
         this.veinsPerChunk = veinsPerChunk;
         this.veinSize = veinSize;
         this.maxYLevel = maxYLevel;
@@ -60,15 +60,15 @@ public class OreGenMaterialPart extends OreMaterialPart {
         for (int i = 0; i < 2; i++) {
             final int j = i;
             Function<MaterialBuilder.PartContext, MaterialPart> function = ctx -> new OreGenMaterialPart(ctx.getMaterialName(), ctx.getColoramp(),
-                    oreSet, veinsPerChunk, veinSize, maxYLevel, j == 0);
+                    oreSet, veinsPerChunk, veinSize, maxYLevel, j == 0, ctx.getMainPart());
             array[i] = function;
         }
         return array;
     }
 
     @Override
-    public void register() {
-        super.register();
+    public void register(MaterialBuilder.RegisteringContext context) {
+        super.register(context);
         MIConfig config = MIConfig.getConfig();
 
         if (config.generateOres && !config.blacklistedOres.contains(materialName)) {

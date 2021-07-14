@@ -87,7 +87,7 @@ public class TankMaterialPart implements MaterialPart {
     }
 
     @Override
-    public void register() {
+    public void register(MaterialBuilder.RegisteringContext context) {
         ModernIndustrialization.registerBlock(block, item, idPath, 0);
         ResourceUtil.appendWrenchable(new MIIdentifier(idPath));
         this.blockEntityType = Registry.register(Registry.BLOCK_ENTITY_TYPE, itemId,

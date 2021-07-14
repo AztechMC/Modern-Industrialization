@@ -28,6 +28,7 @@ import com.google.common.base.Preconditions;
 import java.util.Collections;
 import java.util.Iterator;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
+import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.InsertionOnlyStorage;
@@ -38,8 +39,8 @@ import net.minecraft.sound.BlockSoundGroup;
 
 public class TrashCanBlock extends Block {
     public TrashCanBlock() {
-        super(FabricBlockSettings.of(Material.METAL).hardness(6.0f).resistance(1200).sounds(BlockSoundGroup.METAL)
-                .allowsSpawning(MobSpawning.NO_SPAWN));
+        super(FabricBlockSettings.of(Material.METAL).hardness(6.0f).resistance(1200).breakByTool(FabricToolTags.PICKAXES).requiresTool()
+                .sounds(BlockSoundGroup.METAL).allowsSpawning(MobSpawning.NO_SPAWN));
     }
 
     @SuppressWarnings("unchecked")

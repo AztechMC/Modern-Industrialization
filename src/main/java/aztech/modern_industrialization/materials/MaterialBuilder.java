@@ -137,8 +137,11 @@ public final class MaterialBuilder {
     }
 
     public Material build() {
+
+        RegisteringContext context = new RegisteringContext();
+
         for (MaterialPart part : partsMap.values()) {
-            part.register();
+            part.register(context);
             if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
                 part.registerClient();
             }
@@ -168,6 +171,17 @@ public final class MaterialBuilder {
 
         public String getMaterialSet() {
             return materialSet;
+        }
+
+        public String getMainPart() {
+            return mainPart;
+        }
+    }
+
+    public class RegisteringContext {
+
+        public MaterialPart getMaterialPart(String part) {
+            return partsMap.get(part);
         }
     }
 

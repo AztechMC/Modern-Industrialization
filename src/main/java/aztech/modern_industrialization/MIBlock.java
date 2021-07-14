@@ -29,6 +29,10 @@ import static aztech.modern_industrialization.ModernIndustrialization.STONE_MATE
 import aztech.modern_industrialization.util.MobSpawning;
 import java.util.SortedMap;
 import java.util.TreeMap;
+import net.devtech.arrp.json.loot.JCondition;
+import net.devtech.arrp.json.loot.JEntry;
+import net.devtech.arrp.json.loot.JLootTable;
+import net.devtech.arrp.json.loot.JPool;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
 import net.minecraft.block.Block;
@@ -38,25 +42,27 @@ import net.minecraft.item.Item;
 import net.minecraft.sound.BlockSoundGroup;
 
 public class MIBlock extends Block {
-    public static SortedMap<String, MIBlock> blocks = new TreeMap<String, MIBlock>();
+
+    public static SortedMap<String, MIBlock> blocks = new TreeMap<>();
+
     public final Item blockItem;
     public final boolean arrpModel;
     private final String id;
+    private JLootTable lootTables;
 
     public MIBlock(String id, Settings settings, boolean arrpModel) {
         super(settings);
         this.id = id;
         this.arrpModel = arrpModel;
         if (blocks.containsKey(id)) {
-            throw new IllegalArgumentException("Block id already taken : " + id);
+            throw new IllegalArgumentException("Block id already taken : " + this.id);
         } else {
             blocks.put(id, this);
-            blockItem = MIItem.of(itemSettings -> new BlockItem(this, itemSettings), id, 64);
+            blockItem = MIItem.of(itemSettings -> new BlockItem(this, itemSettings), this.id, 64);
         }
-    }
-
-    public String getFullId() {
-        return "modern_industrialization:" + id;
+        this.setLootTables(JLootTable.loot("minecraft:block")
+                .pool(new JPool().rolls(1).entry(new JEntry().type("minecraft:item").name(ModernIndustrialization.MOD_ID + ":" + this.id))
+                        .condition(new JCondition("minecraft:survives_explosion"))));
     }
 
     public MIBlock(String id, Settings settings) {
@@ -81,4 +87,12 @@ public class MIBlock extends Block {
     public static final MIBlock INDUSTRIAL_TNT = new MIBlock("industrial_tnt",
             Settings.of(Material.TNT).breakInstantly().sounds(BlockSoundGroup.GRASS));
 
+    public MIBlock setLootTables(JLootTable lootTables) {
+        this.lootTables = lootTables;
+        return this;
+    }
+
+    public JLootTable getLootTables() {
+        return lootTables;
+    }
 }

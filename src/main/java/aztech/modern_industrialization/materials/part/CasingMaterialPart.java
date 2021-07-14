@@ -88,7 +88,7 @@ public class CasingMaterialPart implements MaterialPart {
     }
 
     @Override
-    public void register() {
+    public void register(MaterialBuilder.RegisteringContext context) {
         new MIBlock(path, FabricBlockSettings.of(METAL_MATERIAL).hardness(5.0f).resistance(blastResistance).breakByTool(FabricToolTags.PICKAXES, 0)
                 .requiresTool());
     }

@@ -2,7 +2,6 @@
   "schemaVersion": 1,
   "id": "modern_industrialization",
   "version": "${version}",
-
   "name": "Modern Industrialization",
   "description": "A modern industrial mod for Minecraft.",
   "authors": [
@@ -13,10 +12,8 @@
     "homepage": "https://github.com/AztechMC/Modern-Industrialization",
     "sources": "https://github.com/AztechMC/Modern-Industrialization"
   },
-
   "license": "MIT",
   "icon": "assets/modern_industrialization/milogo.png",
-
   "environment": "*",
   "entrypoints": {
     "main": [
@@ -47,7 +44,6 @@
     }
   ],
   "accessWidener": "modern_industrialization.accesswidener",
-
   "depends": {
     "fabricloader": ">=0.7.4",
     "fabric": ">=0.33",
@@ -62,6 +58,15 @@
     "waila:plugins": {
       "id": "modern_industrialization:plugin",
       "initializer": "aztech.modern_industrialization.compat.waila.MIWailaPlugin"
-    }
+    },
+    "dashloader:customobject": [
+      "aztech.modern_industrialization.compat.dashloader.DashMachineBakedModel",
+      "aztech.modern_industrialization.compat.dashloader.DashMachineCastingModel",
+      "aztech.modern_industrialization.compat.dashloader.DashPipeModel",
+      "aztech.modern_industrialization.compat.dashloader.DashTankModel"
+    ],
+    "dashloader:customdata": [
+      "aztech.modern_industrialization.compat.dashloader.MachineCastingModelsData"
+    ]
   }
 }

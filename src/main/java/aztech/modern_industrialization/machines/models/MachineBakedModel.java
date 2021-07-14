@@ -44,7 +44,7 @@ import net.minecraft.util.math.Direction;
 import net.minecraft.world.BlockRenderView;
 import org.jetbrains.annotations.Nullable;
 
-class MachineBakedModel implements BakedModel, FabricBakedModel {
+public class MachineBakedModel implements BakedModel, FabricBakedModel {
     private static final Direction[] DIRECTIONS = Direction.values();
 
     private final ModelTransformation blockTransformation;
@@ -53,9 +53,10 @@ class MachineBakedModel implements BakedModel, FabricBakedModel {
      * @see MachineUnbakedModel
      */
     private final Sprite[] sprites;
-    private final MachineCasingModel defaultCasing;
+    private MachineCasingModel defaultCasing;
 
-    MachineBakedModel(ModelTransformation blockTransformation, RenderMaterial cutoutMaterial, Sprite[] sprites, MachineCasingModel defaultCasing) {
+    public MachineBakedModel(ModelTransformation blockTransformation, RenderMaterial cutoutMaterial, Sprite[] sprites,
+            MachineCasingModel defaultCasing) {
         this.blockTransformation = blockTransformation;
         this.cutoutMaterial = cutoutMaterial;
         this.sprites = sprites;
@@ -70,11 +71,9 @@ class MachineBakedModel implements BakedModel, FabricBakedModel {
     @Override
     public void emitBlockQuads(BlockRenderView blockRenderView, BlockState blockState, BlockPos blockPos, Supplier<Random> supplier,
             RenderContext renderContext) {
-        if (blockRenderView instanceof RenderAttachedBlockView) {
-            RenderAttachedBlockView bv = (RenderAttachedBlockView) blockRenderView;
+        if (blockRenderView instanceof RenderAttachedBlockView bv) {
             Object attachment = bv.getBlockEntityRenderAttachment(blockPos);
-            if (attachment instanceof MachineModelClientData) {
-                MachineModelClientData clientData = (MachineModelClientData) attachment;
+            if (attachment instanceof MachineModelClientData clientData) {
                 MachineCasingModel casing = clientData.casing == null ? defaultCasing : clientData.casing.mcm;
                 renderBase(renderContext, casing, clientData.frontDirection, clientData.isActive);
                 if (clientData.outputDirection != null) {
@@ -166,5 +165,17 @@ class MachineBakedModel implements BakedModel, FabricBakedModel {
     @Override
     public ModelOverrideList getOverrides() {
         return ModelOverrideList.EMPTY;
+    }
+
+    public Sprite[] getSprites() {
+        return sprites;
+    }
+
+    public MachineCasingModel getDefaultCasing() {
+        return defaultCasing;
+    }
+
+    public void setDefaultCasing(MachineCasingModel defaultCasing) {
+        this.defaultCasing = defaultCasing;
     }
 }

@@ -69,6 +69,17 @@ public class PipeModel implements UnbakedModel, BakedModel, FabricBakedModel {
     private ModelTransformation modelTransformation;
     private RenderMaterial cutoutMaterial;
 
+    public PipeModel(Sprite particleSprite, Map<PipeRenderer.Factory, PipeRenderer> renderers, ModelTransformation modelTransformation,
+            RenderMaterial cutoutMaterial) {
+        this.particleSprite = particleSprite;
+        this.renderers = renderers;
+        this.modelTransformation = modelTransformation;
+        this.cutoutMaterial = cutoutMaterial;
+    }
+
+    public PipeModel() {
+    }
+
     @Override
     public boolean isVanillaAdapter() {
         return false;
@@ -206,5 +217,13 @@ public class PipeModel implements UnbakedModel, BakedModel, FabricBakedModel {
         cutoutMaterial = RendererAccess.INSTANCE.getRenderer().materialFinder().blendMode(0, BlendMode.CUTOUT).find();
 
         return this;
+    }
+
+    public RenderMaterial getCutoutMaterial() {
+        return cutoutMaterial;
+    }
+
+    public Map<PipeRenderer.Factory, PipeRenderer> getRenderers() {
+        return renderers;
     }
 }

@@ -46,8 +46,8 @@ import org.jetbrains.annotations.Nullable;
 /**
  * Auto-registers itself when created!
  */
-class MachineCasingModel implements UnbakedModel, BakedModel {
-    private final Identifier id;
+public class MachineCasingModel implements UnbakedModel, BakedModel {
+    private Identifier id;
     /**
      * <ol>
      * <li>Top texture</li>
@@ -70,6 +70,12 @@ class MachineCasingModel implements UnbakedModel, BakedModel {
 
         MachineModelProvider.register(id, this);
         MachineModelProvider.loadManually(id);
+    }
+
+    public MachineCasingModel(Identifier id, Mesh mesh, Sprite sideSprite) {
+        this.id = id;
+        this.mesh = mesh;
+        this.sideSprite = sideSprite;
     }
 
     public Identifier getId() {
@@ -115,6 +121,18 @@ class MachineCasingModel implements UnbakedModel, BakedModel {
         }
         this.mesh = meshBuilder.build();
         return this;
+    }
+
+    public void setMesh(Mesh mesh) {
+        this.mesh = mesh;
+    }
+
+    public void setSideSprite(Sprite sideSprite) {
+        this.sideSprite = sideSprite;
+    }
+
+    public void setId(Identifier id) {
+        this.id = id;
     }
 
     @Override

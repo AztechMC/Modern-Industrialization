@@ -167,7 +167,7 @@ dependencies {
 
     include modApi("dev.technici4n:FastTransferLib:${project.ftl_version}")
 
-    modImplementation 'net.oskarstrom:DashLoader:2.1-dev3'
+    modImplementation 'net.oskarstrom:DashLoader:2.1-dev4'
 
     // Other mods for testing purposes
     //modRuntime "appeng:appliedenergistics2-fabric:${project.appeng_version}"

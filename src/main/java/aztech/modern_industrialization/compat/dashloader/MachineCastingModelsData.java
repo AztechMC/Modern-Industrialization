@@ -31,6 +31,7 @@ import java.util.HashMap;
 import java.util.Map;
 import net.oskarstrom.dashloader.DashRegistry;
 import net.oskarstrom.dashloader.api.DataClass;
+import net.oskarstrom.dashloader.model.components.DashMesh;
 
 public class MachineCastingModelsData implements DataClass {
     @Serialize(order = 0)
@@ -46,7 +47,6 @@ public class MachineCastingModelsData implements DataClass {
 
     @Override
     public void reload(DashRegistry registry) {
-        System.out.println("reload");
     }
 
     @Override

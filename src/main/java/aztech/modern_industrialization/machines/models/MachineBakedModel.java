@@ -74,15 +74,7 @@ public class MachineBakedModel implements BakedModel, FabricBakedModel {
         if (blockRenderView instanceof RenderAttachedBlockView bv) {
             Object attachment = bv.getBlockEntityRenderAttachment(blockPos);
             if (attachment instanceof MachineModelClientData clientData) {
-                MachineCasingModel casing;
-                if (clientData.casing == null) {
-                    casing = defaultCasing;
-                    System.out.println("defualt");
-                } else {
-                    casing = clientData.casing.mcm;
-                    System.out.println("client");
-                    System.out.println(clientData.casing.mcm.getMesh());
-                }
+                MachineCasingModel casing = clientData.casing == null ? defaultCasing : clientData.casing.mcm;
                 renderBase(renderContext, casing, clientData.frontDirection, clientData.isActive);
                 if (clientData.outputDirection != null) {
                     emitSprite(renderContext.getEmitter(), clientData.outputDirection, sprites[6], 2e-6f);

@@ -31,6 +31,7 @@ import java.util.Arrays;
 import java.util.List;
 import net.fabricmc.fabric.api.renderer.v1.RendererAccess;
 import net.fabricmc.fabric.api.renderer.v1.mesh.Mesh;
+import net.oskarstrom.dashloader.model.components.DashMesh;
 
 public class DashPipeMeshCache {
 

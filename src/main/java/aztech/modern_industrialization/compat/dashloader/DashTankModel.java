@@ -31,6 +31,7 @@ import net.fabricmc.fabric.api.renderer.v1.material.BlendMode;
 import net.oskarstrom.dashloader.DashRegistry;
 import net.oskarstrom.dashloader.api.annotation.DashObject;
 import net.oskarstrom.dashloader.model.DashModel;
+import net.oskarstrom.dashloader.model.components.DashMesh;
 import net.oskarstrom.dashloader.model.components.DashModelTransformation;
 
 @DashObject(TankModel.class)

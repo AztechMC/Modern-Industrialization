@@ -16,7 +16,7 @@
     "ServerPlayerInteractionManagerMixin",
     "ServerPlayNetworkHandlerAccessor",
     "WorldChunkMixin",
-    "MeshImplAccessor"
+    "net.oskarstrom.dashloader.mixin.MeshImplAccessor"
   ],
   "injectors": {
     "defaultRequire": 1

@@ -71,10 +71,9 @@ public class DashMachineBakedModel implements DashModel {
         for (int i = 0; i < sprites.length; i++) {
             spritesOut[i] = sprites[i] == null ? null : registry.getSprite(sprites[i]);
         }
-        MachineBakedModel machineBakedModel = new MachineBakedModel(blockTransformation.toUndash(),
+        return new MachineBakedModel(blockTransformation.toUndash(),
                 RendererAccess.INSTANCE.getRenderer().materialFinder().blendMode(0, BlendMode.CUTOUT_MIPPED).find(), spritesOut,
                 (MachineCasingModel) registry.getModel(defaultCasingModel));
-        return machineBakedModel;
     }
 
     @Override

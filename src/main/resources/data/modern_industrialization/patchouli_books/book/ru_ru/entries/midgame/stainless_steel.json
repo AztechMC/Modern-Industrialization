@@ -1,0 +1,29 @@
+{
+  "name": "Нержавеющая сталь",
+  "category": "modern_industrialization:midgame",
+  "icon": "modern_industrialization:stainless_steel_dust",
+  "pages": [
+    {
+      "type": "spotlight",
+      "title": "Нержавеющая сталь",
+      "item": "modern_industrialization:stainless_steel_ingot",
+      "text": "Нержавеющая сталь - следующий материал, который вам понадобится в большом количестве. Прочтите, чтобы узнать, почему!$(br2)Переплавив пыль из нержавеющей стали в ЭДП, вы получите горячие слитки, которые вы можете охладить до обычных слитков с помощью вакуумного морозильника."
+    },
+    {
+      "type": "crafting",
+      "recipe": "modern_industrialization:electric_age/machine/vacuum_freezer_asbl",
+      "text": "Вы можете проверить основные материалы с помощью REI, а точную форму - с помощью гаечного ключа!"
+    },
+    {
+      "type": "crafting",
+      "recipe": "modern_industrialization:electric_age/machine/distillation_tower_asbl",
+      "text": "Как только у вас появятся цифровые схемы, обязательно построите дистилляционную башню. Дистиллятор даст вам только одну единицу результата переработки, в то время как башня даст вам ПО ОДНОМУ НА КАЖДЫЙ СЛОЙ! "
+    },
+    {
+      "type": "crafting",
+      "recipe": "modern_industrialization:tools/screwdriver",
+      "text": "Чтобы изменить высоту дистилляционной башни, щелкните по ней правой кнопкой мыши с помощью отвертки. Это относится и к другим мультиблокам с несколькими формами, $(l)таким как ЭДП Фехралевого уровня.$()"
+    }
+  ],
+  "sortnum": 201
+}

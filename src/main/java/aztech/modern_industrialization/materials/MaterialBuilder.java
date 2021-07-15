@@ -39,13 +39,13 @@ import net.fabricmc.loader.api.FabricLoader;
 public final class MaterialBuilder {
 
     private final Map<String, MaterialPart> partsMap = new TreeMap<>();
-    private final Map<String, MaterialRecipeBuilder> recipesMap = new HashMap<>();
     private final PartContext partContext = new PartContext();
-    private final RecipeContext recipeContext = new RecipeContext();
     private final String materialName;
     private final String materialSet;
     private final Coloramp coloramp;
     private final String mainPart;
+
+    private final Queue<RecipeAction> recipesActions = new LinkedList<>();
 
     public MaterialBuilder(String materialName, MaterialSet materialSet, String mainPart, Coloramp coloramp) {
         this.materialName = materialName;
@@ -113,34 +113,51 @@ public final class MaterialBuilder {
 
     @SafeVarargs
     public final MaterialBuilder addRecipes(Consumer<RecipeContext>... consumers) {
-        for (Consumer<RecipeContext> consumer : consumers) {
-            consumer.accept(recipeContext);
-        }
+        recipesActions.add(new RecipeAction() {
+            @Override
+            void apply(RecipeContext recipeContext) {
+                for (Consumer<RecipeContext> consumer : consumers) {
+                    consumer.accept(recipeContext);
+                }
+            }
+        });
         return this;
     }
 
     public MaterialBuilder cancelRecipes(String... recipeIds) {
-        for (String recipeId : recipeIds) {
-            if (recipesMap.remove(recipeId) == null) {
-                throw new IllegalArgumentException("Recipe does not exist and cannot be cancelled: " + recipeId + " for Material : " + materialName);
+        recipesActions.add(new RecipeAction() {
+            @Override
+            void apply(RecipeContext context) {
+                for (String recipeId : recipeIds) {
+                    context.removeRecipe(recipeId);
+                }
             }
-        }
+        });
         return this;
     }
 
-    @SuppressWarnings("deprecation")
     public Material build() {
-        for (MaterialRecipeBuilder builder : recipesMap.values()) {
-            builder.save();
-        }
-        for (MaterialPart part : partsMap.values()) {
-            part.register();
 
+        RegisteringContext context = new RegisteringContext();
+
+        for (MaterialPart part : partsMap.values()) {
+            part.register(context);
             if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
                 part.registerClient();
             }
         }
-        return new Material(materialName, Collections.unmodifiableMap(partsMap));
+        return new Material(materialName, Collections.unmodifiableMap(partsMap), this::buildRecipes);
+    }
+
+    public void buildRecipes() {
+        Map<String, MaterialRecipeBuilder> recipesMap = new HashMap<>();
+        RecipeContext recipeContext = new RecipeContext(recipesMap);
+        for (RecipeAction action : recipesActions) {
+            action.apply(recipeContext);
+        }
+        for (MaterialRecipeBuilder builder : recipesMap.values()) {
+            builder.save();
+        }
     }
 
     public class PartContext {
@@ -155,9 +172,26 @@ public final class MaterialBuilder {
         public String getMaterialSet() {
             return materialSet;
         }
+
+        public String getMainPart() {
+            return mainPart;
+        }
+    }
+
+    public class RegisteringContext {
+
+        public MaterialPart getMaterialPart(String part) {
+            return partsMap.get(part);
+        }
     }
 
     public class RecipeContext {
+        private final Map<String, MaterialRecipeBuilder> recipesMap;
+
+        public RecipeContext(Map<String, MaterialRecipeBuilder> recipesMap) {
+            this.recipesMap = recipesMap;
+        }
+
         public void addRecipe(MaterialRecipeBuilder builder) {
             if (recipesMap.containsKey(builder.getRecipeId())) {
                 if (recipesMap.get(builder.getRecipeId()).isCanceled()) {
@@ -168,6 +202,12 @@ public final class MaterialBuilder {
                 }
             }
             recipesMap.put(builder.getRecipeId(), builder);
+        }
+
+        public void removeRecipe(String recipeId) {
+            if (recipesMap.remove(recipeId) == null) {
+                throw new IllegalArgumentException("Recipe does not exist and cannot be cancelled: " + recipeId + " for Material : " + materialName);
+            }
         }
 
         public MaterialPart getPart(String part) {
@@ -181,5 +221,11 @@ public final class MaterialBuilder {
         public String getMainPart() {
             return mainPart;
         }
+    }
+
+    public abstract class RecipeAction {
+
+        abstract void apply(RecipeContext context);
+
     }
 }

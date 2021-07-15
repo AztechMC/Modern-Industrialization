@@ -21,45 +21,11 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.materials.part;
+package aztech.modern_industrialization.mixin_impl;
 
-import aztech.modern_industrialization.MIItem;
-import aztech.modern_industrialization.materials.MaterialBuilder;
-import java.util.function.Function;
+import java.util.List;
+import me.shedaniel.rei.api.common.entry.EntryIngredient;
 
-public class MIItemPart implements MaterialPart {
-
-    private final String materialPart;
-    private final String path;
-    private final String id;
-
-    private MIItemPart(String materialPart, String itemId) {
-        this.materialPart = materialPart;
-        this.path = itemId;
-        this.id = "modern_industrialization:" + path;
-    }
-
-    public static Function<MaterialBuilder.PartContext, MaterialPart> of(String materialPart, String itemId) {
-        return ctx -> new MIItemPart(materialPart, itemId);
-    }
-
-    @Override
-    public String getPart() {
-        return materialPart;
-    }
-
-    @Override
-    public String getTaggedItemId() {
-        return id;
-    }
-
-    @Override
-    public String getItemId() {
-        return id;
-    }
-
-    @Override
-    public void register(MaterialBuilder.RegisteringContext context) {
-        MIItem.of(path);
-    }
+public interface BasicDisplayExtension {
+    List<EntryIngredient> getActualOutputs();
 }

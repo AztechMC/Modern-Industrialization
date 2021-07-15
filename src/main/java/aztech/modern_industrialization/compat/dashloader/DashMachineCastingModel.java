@@ -21,45 +21,40 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.materials.part;
+package aztech.modern_industrialization.compat.dashloader;
 
-import aztech.modern_industrialization.MIItem;
-import aztech.modern_industrialization.materials.MaterialBuilder;
-import java.util.function.Function;
+import aztech.modern_industrialization.machines.models.MachineCasingModel;
+import aztech.modern_industrialization.machines.models.MachineCasings;
+import io.activej.serializer.annotations.Deserialize;
+import io.activej.serializer.annotations.Serialize;
+import net.oskarstrom.dashloader.DashRegistry;
+import net.oskarstrom.dashloader.api.annotation.DashConstructor;
+import net.oskarstrom.dashloader.api.annotation.DashObject;
+import net.oskarstrom.dashloader.api.enums.ConstructorMode;
+import net.oskarstrom.dashloader.model.DashModel;
 
-public class MIItemPart implements MaterialPart {
+@DashObject(MachineCasingModel.class)
+public class DashMachineCastingModel implements DashModel {
+    @Serialize(order = 0)
+    public final String id;
 
-    private final String materialPart;
-    private final String path;
-    private final String id;
-
-    private MIItemPart(String materialPart, String itemId) {
-        this.materialPart = materialPart;
-        this.path = itemId;
-        this.id = "modern_industrialization:" + path;
+    public DashMachineCastingModel(@Deserialize("id") String id) {
+        this.id = id;
     }
 
-    public static Function<MaterialBuilder.PartContext, MaterialPart> of(String materialPart, String itemId) {
-        return ctx -> new MIItemPart(materialPart, itemId);
-    }
-
-    @Override
-    public String getPart() {
-        return materialPart;
-    }
-
-    @Override
-    public String getTaggedItemId() {
-        return id;
+    @DashConstructor(ConstructorMode.OBJECT)
+    public DashMachineCastingModel(MachineCasingModel machineCasingModel) {
+        id = machineCasingModel.getId().getPath().replaceFirst("machine_casing/", "");
     }
 
     @Override
-    public String getItemId() {
-        return id;
+    public MachineCasingModel toUndash(DashRegistry registry) {
+        return MachineCasings.get(id).mcm;
     }
 
     @Override
-    public void register(MaterialBuilder.RegisteringContext context) {
-        MIItem.of(path);
+    public int getStage() {
+        return 0;
     }
+
 }

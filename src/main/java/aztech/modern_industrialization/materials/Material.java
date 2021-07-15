@@ -34,9 +34,12 @@ public class Material {
     public final String name;
     final Map<String, MaterialPart> parts;
 
-    Material(String name, Map<String, MaterialPart> parts) {
+    public final Runnable registerRecipes;
+
+    Material(String name, Map<String, MaterialPart> parts, Runnable registerRecipes) {
         this.name = name;
         this.parts = parts;
+        this.registerRecipes = registerRecipes;
     }
 
     public Map<String, MaterialPart> getParts() {

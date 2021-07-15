@@ -71,7 +71,7 @@ public class GemMaterialPart implements MaterialPart {
     }
 
     @Override
-    public void register() {
+    public void register(MaterialBuilder.RegisteringContext context) {
         MIItem.of(itemPath);
         MaterialHelper.registerItemTag("c:" + itemPath, JTag.tag().add(new Identifier(getItemId())));
     }

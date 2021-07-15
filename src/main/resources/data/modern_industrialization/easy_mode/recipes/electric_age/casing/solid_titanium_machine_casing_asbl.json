@@ -2,12 +2,15 @@
   "type" : "minecraft:crafting_shaped",
   "pattern" : [
     "AAA",
-    "A A",
+    "AGA",
     "AAA"
   ],
   "key": {
     "A" : {
       "tag": "c:titanium_plates"
+    },
+    "G" : {
+      "tag" : "c:titanium_gears"
     }
   },
   "result": {

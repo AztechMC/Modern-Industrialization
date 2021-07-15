@@ -204,7 +204,7 @@ public class ModernIndustrialization implements ModInitializer {
         registerBlock(FORGE_HAMMER, ITEM_FORGE_HAMMER, "forge_hammer", FLAG_BLOCK_LOOT | FLAG_BLOCK_ITEM_MODEL);
         registerBlock(TRASH_CAN, ITEM_TRASH_CAN, "trash_can", 7);
         for (Map.Entry<String, MIBlock> entry : MIBlock.blocks.entrySet()) {
-            int flags = FLAG_BLOCK_LOOT | FLAG_BLOCK_ITEM_MODEL;
+            int flags = FLAG_BLOCK_ITEM_MODEL | FLAG_BLOCK_LOOT;
             if (entry.getValue().arrpModel) {
                 flags |= FLAG_BLOCK_MODEL;
             }
@@ -225,8 +225,16 @@ public class ModernIndustrialization implements ModInitializer {
             Registry.register(Registry.ITEM, identifier, item);
         }
         if ((flag & FLAG_BLOCK_LOOT) != 0) {
-            registerBlockLoot(id);
+            if (block instanceof MIBlock) {
+                RESOURCE_PACK.addLootTable(new MIIdentifier("blocks/" + id), ((MIBlock) block).getLootTables());
+            } else {
+                RESOURCE_PACK.addLootTable(new MIIdentifier("blocks/" + id),
+                        JLootTable.loot("minecraft:block")
+                                .pool(new JPool().rolls(1).entry(new JEntry().type("minecraft:item").name(ModernIndustrialization.MOD_ID + ":" + id))
+                                        .condition(new JCondition("minecraft:survives_explosion"))));
+            }
         }
+
         // TODO: client side?
         RESOURCE_PACK.addBlockState(JState.state().add(new JVariant().put("", new JBlockModel(MOD_ID + ":block/" + id))), identifier);
 
@@ -257,11 +265,6 @@ public class ModernIndustrialization implements ModInitializer {
 
     public static void registerItem(Item item, String id) {
         registerItem(item, id, false);
-    }
-
-    private static void registerBlockLoot(String id) {
-        RESOURCE_PACK.addLootTable(new MIIdentifier("blocks/" + id), JLootTable.loot("minecraft:block").pool(new JPool().rolls(1)
-                .entry(new JEntry().type("minecraft:item").name(MOD_ID + ":" + id)).condition(new JCondition("minecraft:survives_explosion"))));
     }
 
     private void setupPackets() {

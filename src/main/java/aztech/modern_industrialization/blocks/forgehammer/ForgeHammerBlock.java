@@ -26,6 +26,7 @@ package aztech.modern_industrialization.blocks.forgehammer;
 import aztech.modern_industrialization.ModernIndustrialization;
 import aztech.modern_industrialization.util.MobSpawning;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
+import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Material;
@@ -55,8 +56,8 @@ public class ForgeHammerBlock extends Block {
     private int part_width[] = { 14, 10, 8, 14 };
 
     public ForgeHammerBlock() {
-        super(FabricBlockSettings.of(Material.METAL).hardness(6.0f).resistance(1200).sounds(BlockSoundGroup.ANVIL)
-                .allowsSpawning(MobSpawning.NO_SPAWN));
+        super(FabricBlockSettings.of(Material.METAL).hardness(6.0f).breakByTool(FabricToolTags.PICKAXES).requiresTool().resistance(1200)
+                .sounds(BlockSoundGroup.ANVIL).allowsSpawning(MobSpawning.NO_SPAWN));
         VoxelShape[] parts = new VoxelShape[part_height.length];
         float currentY = 0;
         for (int i = 0; i < part_height.length; i++) {

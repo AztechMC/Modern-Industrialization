@@ -102,7 +102,7 @@ public class NuclearFuelMaterialPart implements MaterialPart {
     }
 
     @Override
-    public void register() {
+    public void register(MaterialBuilder.RegisteringContext context) {
         if (depleted) {
             MIItem.of(itemPath, 1);
         } else {

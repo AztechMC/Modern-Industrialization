@@ -2,12 +2,15 @@
   "type": "minecraft:crafting_shaped",
   "pattern": [
     "PPP",
-    "P P",
+    "PGP",
     "PPP"
   ],
   "key": {
     "P": {
       "tag": "c:bronze_plates"
+    },
+    "G" : {
+      "tag" : "c:bronze_gears"
     }
   },
   "result": {

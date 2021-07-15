@@ -21,45 +21,21 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.materials.part;
+package aztech.modern_industrialization.mixin_client;
 
-import aztech.modern_industrialization.MIItem;
-import aztech.modern_industrialization.materials.MaterialBuilder;
-import java.util.function.Function;
+import aztech.modern_industrialization.mixin_impl.BasicDisplayExtension;
+import java.util.List;
+import me.shedaniel.rei.api.common.entry.EntryIngredient;
+import me.shedaniel.rei.plugin.client.categories.crafting.DefaultCraftingCategory;
+import me.shedaniel.rei.plugin.common.displays.crafting.DefaultCraftingDisplay;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Redirect;
 
-public class MIItemPart implements MaterialPart {
-
-    private final String materialPart;
-    private final String path;
-    private final String id;
-
-    private MIItemPart(String materialPart, String itemId) {
-        this.materialPart = materialPart;
-        this.path = itemId;
-        this.id = "modern_industrialization:" + path;
-    }
-
-    public static Function<MaterialBuilder.PartContext, MaterialPart> of(String materialPart, String itemId) {
-        return ctx -> new MIItemPart(materialPart, itemId);
-    }
-
-    @Override
-    public String getPart() {
-        return materialPart;
-    }
-
-    @Override
-    public String getTaggedItemId() {
-        return id;
-    }
-
-    @Override
-    public String getItemId() {
-        return id;
-    }
-
-    @Override
-    public void register(MaterialBuilder.RegisteringContext context) {
-        MIItem.of(path);
+@Mixin(value = DefaultCraftingCategory.class, remap = false)
+public abstract class ReiDefaultCraftingCategoryMixin {
+    @Redirect(at = @At(value = "INVOKE", target = "Lme/shedaniel/rei/plugin/common/displays/crafting/DefaultCraftingDisplay;getOutputEntries()Ljava/util/List;"), method = "setupDisplay")
+    public List<EntryIngredient> redirectGetOutputEntries(DefaultCraftingDisplay display) {
+        return ((BasicDisplayExtension) display).getActualOutputs();
     }
 }

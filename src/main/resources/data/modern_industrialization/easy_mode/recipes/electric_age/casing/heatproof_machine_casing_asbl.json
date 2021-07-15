@@ -2,12 +2,15 @@
   "type": "minecraft:crafting_shaped",
   "pattern": [
     "PPP",
-    "P P",
+    "PGP",
     "PPP"
   ],
   "key": {
     "P": {
       "tag": "c:invar_plates"
+    },
+    "G" : {
+      "tag" : "c:invar_gears"
     }
   },
   "result": {

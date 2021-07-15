@@ -80,4 +80,8 @@ public class MIParts {
 
     public static final String[] BLOCKS = { ORE, BLOCK, COIL, MACHINE_CASING, MACHINE_CASING_SPECIAL, MACHINE_CASING_PIPE };
 
+    public static String idOfPart(String part, String materialName) {
+        return "modern_industrialization:" + materialName + "_" + part;
+    }
+
 }

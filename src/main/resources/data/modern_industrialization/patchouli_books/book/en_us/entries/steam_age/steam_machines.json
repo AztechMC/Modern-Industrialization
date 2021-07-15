@@ -25,7 +25,7 @@
     {
       "type": "crafting",
       "recipe": "modern_industrialization:steam_age/bronze/cutting_machine_asbl",
-      "text": "The Cutting Machine will give you better ratios for bolts, gears, rings and rods. It uses a bit of lubricant every time. For now, you can only use water, but other lubricants will speed up the processing later."
+      "text": "The Cutting Machine will give you better ratios for bolts, gears, rings and rods. It uses a little bit of lubricant every time."
     },
     {
       "type": "crafting",

@@ -98,13 +98,9 @@ public class TankItem extends BlockItem {
     }
 
     class TankItemStorage implements Storage<FluidVariant>, StorageView<FluidVariant> {
-        private final FluidVariant fluid;
-        private final long amount;
         private final ContainerItemContext ctx;
 
         TankItemStorage(ItemStack stack, ContainerItemContext ctx) {
-            this.fluid = TankItem.this.getFluid(stack);
-            this.amount = TankItem.this.getAmount(stack);
             this.ctx = ctx;
         }
 
@@ -125,19 +121,24 @@ public class TankItem extends BlockItem {
         }
 
         @Override
-        public long insert(FluidVariant fluid, long maxAmount, TransactionContext transaction) {
-            StoragePreconditions.notBlankNotNegative(fluid, maxAmount);
-            if (!ctx.getItemVariant().isOf(TankItem.this))
+        public long insert(FluidVariant insertedFluid, long maxAmount, TransactionContext transaction) {
+            StoragePreconditions.notBlankNotNegative(insertedFluid, maxAmount);
+
+            ItemStack current = ctx.getItemVariant().toStack();
+            if (!current.isOf(TankItem.this))
                 return 0;
 
+            long amount = TankItem.this.getAmount(current);
+            FluidVariant fluid = TankItem.this.getFluid(current);
+
             long inserted = 0;
-            if (TankItemStorage.this.fluid.isBlank()) {
+            if (fluid.isBlank()) {
                 inserted = Math.min(capacity, maxAmount);
-            } else if (TankItemStorage.this.fluid.equals(fluid)) {
+            } else if (fluid.equals(insertedFluid)) {
                 inserted = Math.min(capacity - amount, maxAmount);
             }
             if (inserted > 0) {
-                if (updateTank(fluid, amount + inserted, transaction)) {
+                if (updateTank(insertedFluid, amount + inserted, transaction)) {
                     return inserted;
                 }
             }
@@ -150,13 +151,18 @@ public class TankItem extends BlockItem {
         }
 
         @Override
-        public long extract(FluidVariant fluid, long maxAmount, TransactionContext transaction) {
-            StoragePreconditions.notBlankNotNegative(fluid, maxAmount);
-            if (!ctx.getItemVariant().isOf(TankItem.this))
+        public long extract(FluidVariant extractedFluid, long maxAmount, TransactionContext transaction) {
+            StoragePreconditions.notBlankNotNegative(extractedFluid, maxAmount);
+
+            ItemStack current = ctx.getItemVariant().toStack();
+            if (!current.isOf(TankItem.this))
                 return 0;
 
+            long amount = TankItem.this.getAmount(current);
+            FluidVariant fluid = TankItem.this.getFluid(current);
+
             long extracted = 0;
-            if (TankItemStorage.this.fluid.equals(fluid)) {
+            if (fluid.equals(extractedFluid)) {
                 extracted = Math.min(maxAmount, amount);
             }
             if (extracted > 0) {
@@ -174,12 +180,22 @@ public class TankItem extends BlockItem {
 
         @Override
         public FluidVariant getResource() {
-            return fluid;
+            ItemStack current = ctx.getItemVariant().toStack();
+            if (current.isOf(TankItem.this)) {
+                return TankItem.this.getFluid(current);
+            } else {
+                return FluidVariant.blank();
+            }
         }
 
         @Override
         public long getAmount() {
-            return amount;
+            ItemStack current = ctx.getItemVariant().toStack();
+            if (current.isOf(TankItem.this)) {
+                return TankItem.this.getAmount(current);
+            } else {
+                return 0;
+            }
         }
 
         @Override

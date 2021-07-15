@@ -9,9 +9,7 @@
     "ClientPlayerInteractionManagerMixin",
     "ClientWorldAccessor",
     "HandledScreenAccessor",
-    "HeldItemRendererMixin",
-    "ReiBasicDisplayMixin",
-    "ReiDefaultCraftingCategoryMixin"
+    "HeldItemRendererMixin"
   ],
   "injectors": {
     "defaultRequire": 1

@@ -26,8 +26,7 @@
       "aztech.modern_industrialization.compat.rei.MIREIPlugin",
       "aztech.modern_industrialization.compat.rei.fluid_fuels.FluidFuelsPlugin",
       "aztech.modern_industrialization.compat.rei.forgehammer_recipe.ForgeHammerRecipePlugin",
-      "aztech.modern_industrialization.compat.rei.machines.MachinesPlugin",
-      "aztech.modern_industrialization.compat.rei.KJSRemoveItemsPlugin"
+      "aztech.modern_industrialization.compat.rei.machines.MachinesPlugin"
     ],
     "kubejs-init": [
       "aztech.modern_industrialization.compat.kubejs.MIRecipeEventHandler"

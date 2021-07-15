@@ -1,0 +1,16 @@
+{
+  "name": "Баки",
+  "category": "modern_industrialization:steam_age",
+  "icon": "modern_industrialization:bronze_tank",
+  "pages": [
+    {
+      "type": "text",
+      "text": "В каждом бронзовом баке может храниться по 4 ведра с жидкостью, вы можете использовать их для взаимодействия с механизмами и размещать их в мире.$(br2)При размещении в мире вы можете щелкнуть по ним ПКМ с помощью ведер или других резервуаров, чтобы переносить жидкости.$(br2)Также их можно складывать в один стак, если они имеют одинаковое содержимое. Как здорово!"
+    },
+    {
+      "type": "crafting",
+      "recipe": "modern_industrialization:generated/materials/bronze/craft/tank"
+    }
+  ],
+  "sortnum": 7
+}

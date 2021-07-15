@@ -223,7 +223,7 @@ public class MIMaterials {
                 .addParts(BlockMaterialPart.of(MaterialBlockSet.LAPIS)).addParts(OreGenMaterialPart.of(8, 7, 32, MaterialOreSet.REDSTONE))
                 .addRecipes(StandardRecipes::apply).build());
 
-        MaterialRegistry.addMaterial(new MaterialBuilder("lead", DULL, new BakableTargetColoramp(0x3C286E, common("ingot"), template("lead_ingot")))
+        MaterialRegistry.addMaterial(new MaterialBuilder("lead", DULL, new BakableTargetColoramp(0x6a76bc, common("ingot"), template("lead_ingot")))
                 .addRegularParts(DOUBLE_INGOT, DUST, INGOT, NUGGET, PLATE, TINY_DUST).addParts(OreGenMaterialPart.of(4, 8, 64, MaterialOreSet.IRON))
                 .addParts(RawMetalPart.of(MaterialRawSet.IRON)).addRecipes(StandardRecipes::apply, SmeltingRecipes::apply)
                 .cancelRecipes("macerator/raw_metal").build());
@@ -348,7 +348,7 @@ public class MIMaterials {
         MaterialRegistry
                 .addMaterial(new MaterialBuilder("platinum", SHINY, new BakableTargetColoramp(0xffe5ba, common("ingot"), template("platinum_ingot")))
                         .addParts(BlockMaterialPart.of(MaterialBlockSet.GOLD)).addParts(RawMetalPart.of(MaterialRawSet.GOLD))
-                        .addParts(OreGenMaterialPart.of(4, 8, 32, MaterialOreSet.GOLD)).addRegularParts(ITEM_PURE_METAL)
+                        .addParts(OreGenMaterialPart.of(2, 6, 32, MaterialOreSet.GOLD)).addRegularParts(ITEM_PURE_METAL)
                         .addRegularParts(PLATE, DOUBLE_INGOT, WIRE, FINE_WIRE, HOT_INGOT).addParts(CableMaterialPart.of(CableTier.EV))
                         .addRecipes(StandardRecipes::apply).cancelRecipes("macerator/raw_metal").build());
 

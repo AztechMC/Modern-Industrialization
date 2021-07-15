@@ -140,7 +140,22 @@ public class OreMaterialPart implements MaterialPart {
     public void registerTextures(TextureManager mtm) {
         String template = String.format("modern_industrialization:textures/materialsets/ores/%s.png", oreSet.name);
         try {
-            NativeImage image = mtm.getAssetAsTexture(String.format("minecraft:textures/block/%s.png", deepslate ? "deepslate" : "stone"));
+
+            String from =
+
+                    switch (oreSet) {
+                    case IRON -> deepslate ? "deepslate_iron_ore" : "iron_ore";
+                    case COPPER -> deepslate ? "deepslate_copper_ore" : "copper_ore";
+                    case LAPIS -> deepslate ? "deepslate_lapis_ore" : "lapis_ore";
+                    case REDSTONE -> deepslate ? "deepslate" : "redstone_ore";
+                    case DIAMOND -> deepslate ? "deepslate" : "diamond_ore";
+                    case GOLD -> deepslate ? "deepslate_gold_ore" : "gold_ore";
+                    case EMERALD -> deepslate ? "deepslate_emerald_ore" : "emerald_ore";
+                    case COAL -> deepslate ? "deepslate_coal_ore" : "coal_ore";
+                    default -> deepslate ? "deepslate" : "stone";
+                    };
+
+            NativeImage image = mtm.getAssetAsTexture(String.format("minecraft:textures/block/%s.png", from));
             NativeImage top = mtm.getAssetAsTexture(template);
             TextureHelper.colorize(top, coloramp);
             TextureHelper.blend(image, top);

@@ -493,7 +493,8 @@ public class CrafterComponent implements IComponent.ServerOnly {
                 for (int j = 0; j < stacks.size(); j++) {
                     ConfigurableFluidStack stack = stacks.get(j);
                     FluidVariant outputKey = FluidVariant.of(output.fluid);
-                    if (stack.isResourceAllowedByLock(outputKey) && (tries == 1 || stack.getResource().equals(outputKey))) {
+                    if (stack.isResourceAllowedByLock(outputKey)
+                            && ((tries == 1 && stack.isResourceBlank()) || stack.getResource().equals(outputKey))) {
                         long inserted = Math.min(output.amount, stack.getRemainingSpace());
                         if (inserted > 0) {
                             stack.setKey(outputKey);

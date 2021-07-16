@@ -275,7 +275,7 @@ public class MIMaterials {
                         .addRegularParts(DRILL_HEAD, DRILL).addParts(CasingMaterialPart.of(MACHINE_CASING_PIPE))
                         .addParts(CasingMaterialPart.of(MACHINE_CASING_SPECIAL, "solid_titanium_machine_casing"))
                         .addParts(OreGenMaterialPart.of(3, 6, 20, MaterialOreSet.IRON)).addParts(TankMaterialPart.of(64))
-                        .addRecipes(StandardRecipes::apply).build());
+                        .addRecipes(StandardRecipes::apply).cancelRecipes("macerator/raw_metal").build());
 
         MaterialRegistry
                 .addMaterial(new MaterialBuilder("electrum", SHINY, new BakableTargetColoramp(0xFFFF64, common("ingot"), template("electrum_ingot")))
@@ -382,10 +382,12 @@ public class MIMaterials {
                 .addRegularParts(TINY_DUST, DUST, PLATE, INGOT, NUGGET, WIRE, DOUBLE_INGOT, COIL)
                 .addParts(CableMaterialPart.of(CableTier.SUPRACONDUCTOR)).addRecipes(StandardRecipes::apply).build());
 
-        MaterialRegistry.addMaterial(new MaterialBuilder("tungsten", METALLIC, 0x3b2817).addParts(RawMetalPart.of(MaterialRawSet.COPPER))
-                .addRegularParts(TINY_DUST, DUST, PLATE, INGOT, NUGGET, LARGE_PLATE, DOUBLE_INGOT, ROD)
-                .addParts(BlockMaterialPart.of(MaterialBlockSet.NETHERITE)).addParts(OreGenMaterialPart.of(3, 4, 20, MaterialOreSet.IRON))
-                .addRecipes(StandardRecipes::apply).build());
+        MaterialRegistry.addMaterial(
+                new MaterialBuilder("tungsten", METALLIC, new BakableTargetColoramp(0x8760ad, common("ingot"), template("tungsten_ingot")))
+                        .addParts(RawMetalPart.of(MaterialRawSet.COPPER))
+                        .addRegularParts(TINY_DUST, DUST, PLATE, INGOT, NUGGET, LARGE_PLATE, DOUBLE_INGOT, ROD)
+                        .addParts(BlockMaterialPart.of(MaterialBlockSet.NETHERITE)).addParts(OreGenMaterialPart.of(3, 4, 20, MaterialOreSet.IRON))
+                        .addRecipes(StandardRecipes::apply).build());
 
         MaterialRegistry.addMaterial(new MaterialBuilder("blastproof_alloy", METALLIC, 0x524c3a).addRegularParts(PLATE, LARGE_PLATE)
                 .addParts(CasingMaterialPart.of(MACHINE_CASING_SPECIAL, "blastproof_casing", 6000f)).addRecipes(StandardRecipes::apply).build());

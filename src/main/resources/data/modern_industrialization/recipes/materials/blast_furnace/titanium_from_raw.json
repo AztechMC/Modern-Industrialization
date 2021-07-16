@@ -4,7 +4,7 @@
   "duration": 400,
   "item_inputs": {
     "tag": "c:raw_titanium_ores",
-    "amount": 4
+    "amount": 3
   },
   "fluid_inputs": {
     "fluid": "modern_industrialization:manganese_sulfuric_solution",

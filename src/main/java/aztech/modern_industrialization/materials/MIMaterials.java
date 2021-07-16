@@ -40,6 +40,7 @@ import aztech.modern_industrialization.textures.coloramp.BakableTargetColoramp;
 import aztech.modern_industrialization.util.ResourceUtil;
 import net.devtech.arrp.json.tags.JTag;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.intprovider.UniformIntProvider;
 
 public class MIMaterials {
 
@@ -158,7 +159,8 @@ public class MIMaterials {
 
         MaterialRegistry.addMaterial(
                 new MaterialBuilder("quartz", STONE, MIParts.GEM, new BakableTargetColoramp(0xf0ebe4, mcitem("quartz"), mcitem("quartz")))
-                        .addRegularParts(CRUSHED_DUST, DUST, TINY_DUST).addParts(OreMaterialPart.of(MaterialOreSet.QUARTZ))
+                        .addRegularParts(CRUSHED_DUST, DUST, TINY_DUST)
+                        .addParts(OreMaterialPart.of(MaterialOreSet.QUARTZ, UniformIntProvider.create(2, 5)))
                         .addParts(ExternalPart.of(MIParts.GEM, "minecraft:quartz", "minecraft:quartz")).addRecipes(StandardRecipes::apply)
                         .cancelRecipes("macerator/ore_to_crushed").addRecipes(context -> new MIRecipeBuilder(context, "compressor", "quartz")
                                 .addTaggedPartInput("dust", 1).addOutput("minecraft:quartz", 1))
@@ -204,7 +206,7 @@ public class MIMaterials {
 
         MaterialRegistry.addMaterial(new MaterialBuilder("lignite_coal", STONE, MIParts.GEM, 0x644646).addRegularParts(ITEM_PURE_NON_METAL)
                 .addParts(BlockMaterialPart.of(MaterialBlockSet.COAL)).addParts(GemMaterialPart.of())
-                .addParts(OreGenMaterialPart.of(10, 17, 128, MaterialOreSet.COAL))
+                .addParts(OreGenMaterialPart.of(10, 17, 128, MaterialOreSet.COAL, UniformIntProvider.create(0, 2)))
                 .addRecipes(ForgeHammerRecipes::apply, SmeltingRecipes::apply, StandardRecipes::apply).cancelRecipes("macerator/crushed_dust")
                 .addRecipes(context -> new MIRecipeBuilder(context, "compressor", "lignite_coal").addTaggedPartInput("dust", 1)
                         .addPartOutput(MIParts.GEM, 1))
@@ -220,7 +222,8 @@ public class MIMaterials {
                         .addParts(CableMaterialPart.of(CableTier.HV)).addRecipes(StandardRecipes::apply).build());
 
         MaterialRegistry.addMaterial(new MaterialBuilder("bauxite", DULL, DUST, 0xC86400).addRegularParts(ITEM_PURE_NON_METAL)
-                .addParts(BlockMaterialPart.of(MaterialBlockSet.LAPIS)).addParts(OreGenMaterialPart.of(8, 7, 32, MaterialOreSet.REDSTONE))
+                .addParts(BlockMaterialPart.of(MaterialBlockSet.LAPIS))
+                .addParts(OreGenMaterialPart.of(8, 7, 32, MaterialOreSet.REDSTONE, UniformIntProvider.create(1, 4)))
                 .addRecipes(StandardRecipes::apply).build());
 
         MaterialRegistry.addMaterial(new MaterialBuilder("lead", DULL, new BakableTargetColoramp(0x6a76bc, common("ingot"), template("lead_ingot")))
@@ -263,8 +266,9 @@ public class MIMaterials {
                 .addRecipes(StandardRecipes::apply, SmeltingRecipes::apply).build());
 
         MaterialRegistry.addMaterial(new MaterialBuilder("salt", STONE, DUST, 0xc7d6c5).addRegularParts(ITEM_PURE_NON_METAL)
-                .addParts(BlockMaterialPart.of(MaterialBlockSet.REDSTONE)).addParts(OreGenMaterialPart.of(4, 8, 64, MaterialOreSet.COAL))
-                .addRecipes(StandardRecipes::apply).build());
+                .addParts(BlockMaterialPart.of(MaterialBlockSet.REDSTONE))
+                .addParts(OreGenMaterialPart.of(4, 8, 64, MaterialOreSet.COAL, UniformIntProvider.create(1, 3))).addRecipes(StandardRecipes::apply)
+                .build());
 
         MaterialRegistry.addMaterial(
                 new MaterialBuilder("titanium", METALLIC, new BakableTargetColoramp(0xDCA0F0, common("ingot"), template("titanium_ingot")))
@@ -313,7 +317,8 @@ public class MIMaterials {
                 .cancelRecipes("macerator/crushed_dust").build());
 
         MaterialRegistry.addMaterial(new MaterialBuilder("fluorite", SHINY, DUST, 0xAF69CF).addRegularParts(ITEM_PURE_NON_METAL)
-                .addParts(BlockMaterialPart.of(MaterialBlockSet.REDSTONE)).addParts(OreGenMaterialPart.of(3, 8, 32, MaterialOreSet.REDSTONE))
+                .addParts(BlockMaterialPart.of(MaterialBlockSet.REDSTONE))
+                .addParts(OreGenMaterialPart.of(3, 8, 32, MaterialOreSet.REDSTONE, UniformIntProvider.create(1, 4)))
                 .addRecipes(StandardRecipes::apply).build());
 
         MaterialRegistry.addMaterial(new MaterialBuilder("beryllium", SHINY, 0x64B464).addParts(BlockMaterialPart.of(MaterialBlockSet.NETHERITE))
@@ -365,8 +370,9 @@ public class MIMaterials {
                         .addRecipes(StandardRecipes::apply).build());
 
         MaterialRegistry.addMaterial(new MaterialBuilder("mozanite", STONE, DUST, 0x96248e).addRegularParts(CRUSHED_DUST, DUST, TINY_DUST)
-                .addParts(BlockMaterialPart.of(MaterialBlockSet.REDSTONE)).addParts(OreGenMaterialPart.of(6, 3, 24, MaterialOreSet.LAPIS))
-                .addRecipes(StandardRecipes::apply).build());
+                .addParts(BlockMaterialPart.of(MaterialBlockSet.REDSTONE))
+                .addParts(OreGenMaterialPart.of(6, 3, 24, MaterialOreSet.LAPIS, UniformIntProvider.create(1, 4))).addRecipes(StandardRecipes::apply)
+                .build());
 
         MaterialRegistry
                 .addMaterial(new MaterialBuilder("cadmium", DULL, 0x967224).addRegularParts(DUST, TINY_DUST, INGOT, PLATE, ROD, DOUBLE_INGOT, BATTERY)

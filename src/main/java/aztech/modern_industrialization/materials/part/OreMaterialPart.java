@@ -42,6 +42,7 @@ import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
 import net.minecraft.client.texture.NativeImage;
 import net.minecraft.item.Item;
+import net.minecraft.util.math.intprovider.UniformIntProvider;
 
 public class OreMaterialPart implements MaterialPart {
 
@@ -53,12 +54,14 @@ public class OreMaterialPart implements MaterialPart {
     protected final String itemPath;
     protected final String itemId;
     protected final String itemTag;
+    protected final UniformIntProvider xpDropped;
     protected final Coloramp coloramp;
     protected MIBlock block;
     protected Item item;
     protected String mainPart;
 
-    protected OreMaterialPart(String materialName, Coloramp coloramp, MaterialOreSet oreSet, boolean deepslate, String mainPart) {
+    protected OreMaterialPart(String materialName, Coloramp coloramp, MaterialOreSet oreSet, boolean deepslate, UniformIntProvider xpDropped,
+            String mainPart) {
         this.materialName = materialName;
         this.coloramp = coloramp;
         this.part = deepslate ? MIParts.ORE : MIParts.ORE_DEEPLSATE;
@@ -68,17 +71,22 @@ public class OreMaterialPart implements MaterialPart {
         this.oreSet = oreSet;
         this.deepslate = deepslate;
         this.mainPart = mainPart;
+        this.xpDropped = xpDropped;
     }
 
-    public static Function<MaterialBuilder.PartContext, MaterialPart>[] of(MaterialOreSet oreSet) {
+    public static Function<MaterialBuilder.PartContext, MaterialPart>[] of(MaterialOreSet oreSet, UniformIntProvider xpDropped) {
         Function<MaterialBuilder.PartContext, MaterialPart>[] array = new Function[2];
         for (int i = 0; i < 2; i++) {
             final int j = i;
             Function<MaterialBuilder.PartContext, MaterialPart> function = ctx -> new OreMaterialPart(ctx.getMaterialName(), ctx.getColoramp(),
-                    oreSet, j == 0, ctx.getMainPart());
+                    oreSet, j == 0, xpDropped, ctx.getMainPart());
             array[i] = function;
         }
         return array;
+    }
+
+    public static Function<MaterialBuilder.PartContext, MaterialPart>[] of(MaterialOreSet oreSet) {
+        return of(oreSet, UniformIntProvider.create(0, 0));
     }
 
     @Override
@@ -99,7 +107,7 @@ public class OreMaterialPart implements MaterialPart {
     @Override
     public void register(MaterialBuilder.RegisteringContext context) {
         block = new OreBlock(itemPath, FabricBlockSettings.of(STONE_MATERIAL).hardness(deepslate ? 4.5f : 3.0f).resistance(3.0f)
-                .breakByTool(FabricToolTags.PICKAXES, 1).requiresTool());
+                .breakByTool(FabricToolTags.PICKAXES, 1).requiresTool(), xpDropped);
         item = block.blockItem;
 
         String loot = switch (mainPart) {

@@ -33,6 +33,7 @@ import java.util.function.Function;
 import net.fabricmc.fabric.api.biome.v1.BiomeModifications;
 import net.fabricmc.fabric.api.biome.v1.BiomeSelectors;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.intprovider.UniformIntProvider;
 import net.minecraft.util.registry.BuiltinRegistries;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
@@ -48,22 +49,27 @@ public class OreGenMaterialPart extends OreMaterialPart {
     private final int maxYLevel;
 
     private OreGenMaterialPart(String materialName, Coloramp coloramp, MaterialOreSet oreSet, int veinsPerChunk, int veinSize, int maxYLevel,
-            boolean deepslate, String mainPart) {
-        super(materialName, coloramp, oreSet, deepslate, mainPart);
+            boolean deepslate, UniformIntProvider xpDropped, String mainPart) {
+        super(materialName, coloramp, oreSet, deepslate, xpDropped, mainPart);
         this.veinsPerChunk = veinsPerChunk;
         this.veinSize = veinSize;
         this.maxYLevel = maxYLevel;
     }
 
-    public static Function<MaterialBuilder.PartContext, MaterialPart>[] of(int veinsPerChunk, int veinSize, int maxYLevel, MaterialOreSet oreSet) {
+    public static Function<MaterialBuilder.PartContext, MaterialPart>[] of(int veinsPerChunk, int veinSize, int maxYLevel, MaterialOreSet oreSet,
+            UniformIntProvider xpDropped) {
         Function<MaterialBuilder.PartContext, MaterialPart>[] array = new Function[2];
         for (int i = 0; i < 2; i++) {
             final int j = i;
             Function<MaterialBuilder.PartContext, MaterialPart> function = ctx -> new OreGenMaterialPart(ctx.getMaterialName(), ctx.getColoramp(),
-                    oreSet, veinsPerChunk, veinSize, maxYLevel, j == 0, ctx.getMainPart());
+                    oreSet, veinsPerChunk, veinSize, maxYLevel, j == 0, xpDropped, ctx.getMainPart());
             array[i] = function;
         }
         return array;
+    }
+
+    public static Function<MaterialBuilder.PartContext, MaterialPart>[] of(int veinsPerChunk, int veinSize, int maxYLevel, MaterialOreSet oreSet) {
+        return of(veinsPerChunk, veinSize, maxYLevel, oreSet, UniformIntProvider.create(0, 0));
     }
 
     @Override

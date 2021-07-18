@@ -52,7 +52,6 @@ public class MIFluids {
     public static final CraftingFluid ETHANOL = new CraftingFluid("ethanol", 0xff608936);
     public static final CraftingFluid ETHYLBENZENE = new CraftingFluid("ethylbenzene", 0xffc4fa57);
     public static final CraftingFluid ETHYLENE = new CraftingFluid("ethylene", 0xff287671);
-    public static final CraftingFluid FLUORINE = new CraftingFluid("fluorine", 0xffDBD576, true);
     public static final CraftingFluid HEAVY_FUEL = new CraftingFluid("heavy_fuel", 0xffffdb46);
     public static final CraftingFluid HYDROCHLORIC_ACID = new CraftingFluid("hydrochloric_acid", 0xff9ebd06);
     public static final CraftingFluid HYDROGEN = new CraftingFluid("hydrogen", 0xff1b4acc, true);

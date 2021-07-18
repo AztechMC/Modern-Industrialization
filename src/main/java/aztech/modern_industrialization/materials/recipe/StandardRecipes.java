@@ -47,6 +47,8 @@ public final class StandardRecipes {
         new ShapedRecipeBuilder(ctx, BLADE, 4, "blade", "P", "P", "I").addTaggedPart('P', CURVED_PLATE).addTaggedPart('I', ROD)
                 .exportToMachine("packer");
 
+        new ShapedRecipeBuilder(ctx, ORE, 1, "deeplsate_to_ore", "   ", " x ", "   ").addPart('x', ORE_DEEPLSATE);
+
         new ShapedRecipeBuilder(ctx, COIL, 1, "coil", "xxx", "x x", "xxx").addTaggedPart('x', WIRE).exportToAssembler();
         new ShapedRecipeBuilder(ctx, LARGE_PLATE, 1, "large_plate", "xx", "xx").addTaggedPart('x', PLATE).exportToMachine("packer");
 

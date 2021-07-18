@@ -37,11 +37,6 @@
       "item": "modern_industrialization:iridium_ore",
       "amount": 1,
       "probability": 0.001
-    },
-    {
-      "item": "modern_industrialization:fluorite_ore",
-      "amount": 3,
-      "probability": 0.02
     }
   ]
 }

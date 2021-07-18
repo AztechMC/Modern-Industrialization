@@ -75,6 +75,7 @@ public class MIMaterials {
         MaterialBuilder res = builder.overridePart(ExternalPart.of("ingot", "#c:" + n + "_ingots", "minecraft:" + n + "_ingot"))
                 .addParts(ExternalPart.of("block", "#c:" + n + "_blocks", "minecraft:" + n + "_block"))
                 .addParts(ExternalPart.of("ore", "#c:" + n + "_ores", "minecraft:" + n + "_ore"))
+                .addParts(ExternalPart.of(ORE_DEEPLSATE, "#c:" + n + "_ores", "minecraft:deepslate_" + n + "_ore"))
                 .addParts(ExternalPart.of("raw_metal", "#c:raw_" + n + "_ores", "minecraft:raw_" + n))
                 .addParts(ExternalPart.of("raw_metal_block", "#c:raw_" + n + "_blocks", "minecraft:raw_" + n + "_block"));
 
@@ -101,7 +102,8 @@ public class MIMaterials {
         String n = builder.getMaterialName();
         MaterialBuilder res = builder.addParts(ExternalPart.of("gem", "minecraft:" + gemPath, "minecraft:" + gemPath))
                 .addParts(ExternalPart.of("block", "#c:" + n + "_blocks", "minecraft:" + n + "_block"))
-                .addParts(ExternalPart.of("ore", "#c:" + n + "_ores", "minecraft:" + n + "_ore"));
+                .addParts(ExternalPart.of("ore", "#c:" + n + "_ores", "minecraft:" + n + "_ore"))
+                .addParts(ExternalPart.of(ORE_DEEPLSATE, "#c:" + n + "_ores", "minecraft:deepslate_" + n + "_ore"));
 
         res.addRecipes(SmeltingRecipes::apply, StandardRecipes::apply).cancelRecipes("craft/block_from_gem", "craft/gem_from_block")
                 .cancelRecipes("smelting/ore_to_gem_smelting", "smelting/ore_to_gem_blasting");
@@ -155,7 +157,9 @@ public class MIMaterials {
                         .addRegularParts(TINY_DUST, CRUSHED_DUST, BATTERY)
                         .addParts(ExternalPart.of("dust", "minecraft:redstone", "minecraft:redstone"))
                         .addParts(ExternalPart.of("block", "#c:redstone_blocks", "minecraft:redstone_block"))
-                        .addRecipes(StandardRecipes::apply, SmeltingRecipes::apply).build());
+                        .addParts(ExternalPart.of("ore", "#c:redstone_ores", "minecraft:redstone_ore"))
+                        .addParts(ExternalPart.of(ORE_DEEPLSATE, "#c:redstone_ores", "minecraft:deepslate_redstone_ore"))
+                        .addRecipes(StandardRecipes::apply, SmeltingRecipes::apply).cancelRecipes("macerator/ore_to_crushed").build());
 
         MaterialRegistry.addMaterial(
                 new MaterialBuilder("quartz", STONE, MIParts.GEM, new BakableTargetColoramp(0xf0ebe4, mcitem("quartz"), mcitem("quartz")))
@@ -228,7 +232,7 @@ public class MIMaterials {
 
         MaterialRegistry.addMaterial(new MaterialBuilder("lead", DULL, new BakableTargetColoramp(0x6a76bc, common("ingot"), template("lead_ingot")))
                 .addRegularParts(DOUBLE_INGOT, DUST, INGOT, NUGGET, PLATE, TINY_DUST).addParts(BlockMaterialPart.of(MaterialBlockSet.COPPER))
-                .addParts(OreGenMaterialPart.of(4, 8, 64, MaterialOreSet.IRON)).addParts(RawMetalPart.of(MaterialRawSet.IRON))
+                .addParts(OreGenMaterialPart.of(8, 5, 64, MaterialOreSet.IRON)).addParts(RawMetalPart.of(MaterialRawSet.IRON))
                 .addRecipes(StandardRecipes::apply, SmeltingRecipes::apply).cancelRecipes("macerator/raw_metal").build());
 
         MaterialRegistry.addMaterial(new MaterialBuilder("battery_alloy", DULL, 0x9C7CA0)
@@ -247,7 +251,7 @@ public class MIMaterials {
 
         MaterialRegistry.addMaterial(
                 new MaterialBuilder("antimony", SHINY, 0xDCDCF0).addRegularParts(ITEM_PURE_METAL).addParts(RawMetalPart.of(MaterialRawSet.COPPER))
-                        .addParts(BlockMaterialPart.of(MaterialBlockSet.IRON)).addParts(OreGenMaterialPart.of(4, 6, 64, MaterialOreSet.REDSTONE))
+                        .addParts(BlockMaterialPart.of(MaterialBlockSet.IRON)).addParts(OreGenMaterialPart.of(8, 4, 64, MaterialOreSet.REDSTONE))
                         .addRecipes(StandardRecipes::apply, SmeltingRecipes::apply).build());
 
         MaterialRegistry.addMaterial(new MaterialBuilder("nickel", METALLIC, 0xFAFAC8)
@@ -316,10 +320,14 @@ public class MIMaterials {
                 .addRegularParts(ITEM_PURE_METAL).addRegularParts(CRUSHED_DUST).addRecipes(StandardRecipes::apply)
                 .cancelRecipes("macerator/crushed_dust").build());
 
-        MaterialRegistry.addMaterial(new MaterialBuilder("fluorite", SHINY, DUST, 0xAF69CF).addRegularParts(ITEM_PURE_NON_METAL)
-                .addParts(BlockMaterialPart.of(MaterialBlockSet.REDSTONE))
-                .addParts(OreGenMaterialPart.of(3, 8, 32, MaterialOreSet.REDSTONE, UniformIntProvider.create(1, 4)))
-                .addRecipes(StandardRecipes::apply).build());
+        /*
+         * MaterialRegistry.addMaterial(new MaterialBuilder("fluorite", SHINY, DUST,
+         * 0xAF69CF).addRegularParts(ITEM_PURE_NON_METAL)
+         * .addParts(BlockMaterialPart.of(MaterialBlockSet.REDSTONE))
+         * .addParts(OreGenMaterialPart.of(3, 8, 32, MaterialOreSet.REDSTONE,
+         * UniformIntProvider.create(1, 4)))
+         * .addRecipes(StandardRecipes::apply).build());
+         */
 
         MaterialRegistry.addMaterial(new MaterialBuilder("beryllium", SHINY, 0x64B464).addParts(BlockMaterialPart.of(MaterialBlockSet.NETHERITE))
                 .addRegularParts(DOUBLE_INGOT, DUST, INGOT, NUGGET, PLATE, TINY_DUST).addRecipes(StandardRecipes::apply).build());

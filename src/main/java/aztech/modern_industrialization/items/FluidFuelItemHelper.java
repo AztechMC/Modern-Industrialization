@@ -107,7 +107,7 @@ public interface FluidFuelItemHelper {
             ItemStack stack = new ItemStack(item);
             setAmount(stack, amount);
             setFluid(stack, fluid);
-            return ctx.transform(ItemVariant.of(stack), 1, tx) == 1;
+            return ctx.exchange(ItemVariant.of(stack), 1, tx) == 1;
         }
 
         @Override

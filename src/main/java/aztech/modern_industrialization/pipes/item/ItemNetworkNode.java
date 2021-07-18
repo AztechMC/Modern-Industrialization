@@ -55,19 +55,36 @@ import net.minecraft.world.World;
 public class ItemNetworkNode extends PipeNetworkNode {
     private final List<ItemConnection> connections = new ArrayList<>();
     private int inactiveTicks = 0;
+    private boolean refreshConnections = false;
+    private boolean syncRequired = false;
 
     @Override
     public void updateConnections(World world, BlockPos pos) {
-        // We don't connect by default, so we just have to remove connections that have
-        // become unavailable
-        for (int i = 0; i < connections.size();) {
-            ItemConnection conn = connections.get(i);
-            if (canConnect(world, pos, conn.direction)) {
-                i++;
-            } else {
-                conn.dropUpgrades(world, pos);
-                connections.remove(i);
+        refreshConnections = true;
+    }
+
+    @Override
+    public boolean shouldSync() {
+        return syncRequired;
+    }
+
+    private void refreshConnectionsIfNeeded(World world, BlockPos pos) {
+        if (refreshConnections) {
+            refreshConnections = false;
+            syncRequired = true;
+            // We don't connect by default, so we just have to remove connections that have
+            // become unavailable
+            for (int i = 0; i < connections.size();) {
+                ItemConnection conn = connections.get(i);
+                if (canConnect(world, pos, conn.direction)) {
+                    i++;
+                } else {
+                    conn.dropUpgrades(world, pos);
+                    connections.remove(i);
+                }
             }
+        } else {
+            syncRequired = false;
         }
     }
 
@@ -177,6 +194,8 @@ public class ItemNetworkNode extends PipeNetworkNode {
 
     @Override
     public void tick(World world, BlockPos pos) {
+        refreshConnectionsIfNeeded(world, pos);
+
         if (inactiveTicks == 0) {
             List<InsertTarget> reachableInputs = null;
             outer: for (ItemConnection connection : connections) { // TODO: optimize!

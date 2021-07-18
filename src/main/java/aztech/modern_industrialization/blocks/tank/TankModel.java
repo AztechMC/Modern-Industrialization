@@ -107,7 +107,7 @@ public class TankModel implements UnbakedModel, FabricBakedModel, BakedModel {
 
     private void drawFluid(QuadEmitter emitter, float fillFraction, FluidVariant fluid) {
         Sprite stillSprite = FluidVariantRendering.getSprite(fluid);
-        int color = FluidVariantRendering.getColor(fluid);
+        int color = FluidVariantRendering.getColor(fluid) | 1 << 24; // TODO: put the bitmask in fapi
         for (Direction direction : Direction.values()) {
             float topSpace, depth, bottomSpace;
             if (FluidVariantRendering.fillsFromTop(fluid)) {

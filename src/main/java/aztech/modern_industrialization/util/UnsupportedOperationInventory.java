@@ -34,7 +34,9 @@ import net.minecraft.item.ItemStack;
 public class UnsupportedOperationInventory implements Inventory {
     @Override
     public int size() {
-        throw new UnsupportedOperationException();
+        // Don't crash so mouse wheelie can have a chance at noticing this is a peculiar
+        // slot.
+        return 0;
     }
 
     @Override

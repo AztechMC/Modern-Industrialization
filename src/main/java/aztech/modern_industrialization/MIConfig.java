@@ -24,7 +24,7 @@
 package aztech.modern_industrialization;
 
 import aztech.modern_industrialization.compat.modmenu.OreConfigEntry;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.ConfigData;
@@ -42,7 +42,7 @@ public class MIConfig implements ConfigData {
     public boolean generateOres = true;
 
     @OreConfigEntry
-    public List<String> blacklistedOres = new ArrayList<>();
+    public List<String> blacklistedOres = Arrays.asList("salt", "iridium", "titanium", "tungsten", "uranium", "platinum", "mozanite");
 
     public boolean spawnWithGuideBook = true;
     public boolean respawnWithGuideBook = true;

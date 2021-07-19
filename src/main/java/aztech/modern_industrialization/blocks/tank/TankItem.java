@@ -112,7 +112,7 @@ public class TankItem extends BlockItem {
             }
             ItemVariant into = ItemVariant.of(result);
 
-            return ctx.transform(into, 1, tx) == 1;
+            return ctx.exchange(into, 1, tx) == 1;
         }
 
         @Override

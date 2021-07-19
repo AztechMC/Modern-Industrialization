@@ -35,6 +35,7 @@ import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.item.InventoryStorage;
+import net.fabricmc.fabric.api.transfer.v1.item.PlayerInventoryStorage;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageUtil;
 import net.minecraft.client.item.TooltipContext;
@@ -208,7 +209,7 @@ public class JetpackItem extends ArmorItem implements Wearable, TickableArmor, I
 
         for (int i = 0; i < inventory.size(); ++i) {
             if (inventory.getStack(i) == stack) {
-                InventoryStorage wrapper = InventoryStorage.ofPlayer(inventory);
+                InventoryStorage wrapper = PlayerInventoryStorage.of(inventory);
                 context = ContainerItemContext.ofPlayerSlot(player, wrapper.getSlots().get(i));
                 break;
             }

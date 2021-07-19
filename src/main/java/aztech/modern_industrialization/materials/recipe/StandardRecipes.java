@@ -107,7 +107,10 @@ public final class StandardRecipes {
         addCuttingMachine(ctx, "double_ingot", DOUBLE_INGOT, ROD, 4);
         addCuttingMachine(ctx, "rod", ROD, BOLT, 2);
         // PACKER
-        new MIRecipeBuilder(ctx, "packer", "double_ingot").addTaggedPartInput(INGOT, 2).addPartOutput(DOUBLE_INGOT, 1);
+        new MIRecipeBuilder(ctx, "packer", "block").addTaggedPartInput(ctx.getMainPart(), 9)
+                .addInput("modern_industrialization:packer_block_template", 1, 0.0).addPartOutput(BLOCK, 1);
+        new MIRecipeBuilder(ctx, "packer", "double_ingot").addTaggedPartInput(INGOT, 2)
+                .addInput("modern_industrialization:packer_double_ingot_template", 1, 0.0).addPartOutput(DOUBLE_INGOT, 1);
         // WIREMILL
         new MIRecipeBuilder(ctx, "wiremill", "wire").addTaggedPartInput(PLATE, 1).addPartOutput(WIRE, 2);
         new MIRecipeBuilder(ctx, "wiremill", "fine_wire").addTaggedPartInput(WIRE, 1).addPartOutput(FINE_WIRE, 4);

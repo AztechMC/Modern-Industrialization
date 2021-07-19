@@ -120,4 +120,5 @@ public final class MIRecipeJson {
         item_outputs.add(output);
         return this;
     }
+
 }

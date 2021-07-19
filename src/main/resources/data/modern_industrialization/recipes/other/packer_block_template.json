@@ -1,0 +1,18 @@
+{
+  "type" : "minecraft:crafting_shaped",
+  "pattern" : [
+    "b",
+    "p"
+  ],
+  "key": {
+    "b": {
+      "item": "minecraft:bricks"
+    },
+    "p": {
+      "tag": "c:steel_plates"
+    }
+  },
+  "result": {
+    "item": "modern_industrialization:packer_block_template"
+  }
+}

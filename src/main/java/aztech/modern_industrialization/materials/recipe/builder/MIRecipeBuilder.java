@@ -130,6 +130,11 @@ public class MIRecipeBuilder implements MaterialRecipeBuilder {
         return this;
     }
 
+    public MIRecipeBuilder addInput(String itemId, int amount, double probability) {
+        this.json.addItemInput(itemId, amount, probability);
+        return this;
+    }
+
     public boolean isCanceled() {
         return canceled;
     }
@@ -151,4 +156,5 @@ public class MIRecipeBuilder implements MaterialRecipeBuilder {
             ModernIndustrialization.RESOURCE_PACK.addData(new Identifier(fullId), GSON.toJson(json).getBytes());
         }
     }
+
 }

@@ -112,4 +112,7 @@ public final class MIItem {
     // TO MATERIAL ?
     public static final Item ITEM_POLYETHYLENE_SHEET = of("polyethylene_sheet");
     public static final Item ITEM_POLYVINYL_CHLORIDE_SHEET = of("polyvinyl_chloride_sheet");
+
+    public static final Item ITEM_PACKER_BLOCK_TEMPLATE = of("packer_block_template", 1);
+    public static final Item ITEM_PACKER_DOUBLE_INGOT_TEMPLATE = of("packer_double_ingot_template", 1);
 }

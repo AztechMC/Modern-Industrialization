@@ -37,6 +37,7 @@ public final class MIRecipes {
 
         DyeRecipes.addRecipes(pack);
         PlankRecipes.yes(pack);
+        HatchRecipes.addRecipes(pack);
 
         return pack;
     }

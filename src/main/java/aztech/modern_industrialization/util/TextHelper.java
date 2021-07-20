@@ -36,7 +36,8 @@ public class TextHelper {
     public static final Style MAX_TEMP_TEXT = Style.EMPTY.withColor(TextColor.fromRgb(0xd94a1e));
     public static final Style HEAT_CONDUCTION = Style.EMPTY.withColor(TextColor.fromRgb(0xd9ca48));
     public static final Style NEUTRONS = Style.EMPTY.withColor(TextColor.fromRgb(0x29a329)).withItalic(true);
-    public static final Style ADJUSTED_CAPACITY = Style.EMPTY.withColor(Formatting.YELLOW).withBold(true);
+    public static final Style YELLOW_BOLD = Style.EMPTY.withColor(Formatting.YELLOW).withBold(true);
+    public static final Style YELLOW = Style.EMPTY.withColor(Formatting.YELLOW);
 
     public static final Style RED = Style.EMPTY.withColor(Formatting.RED);
     public static final Style GREEN = Style.EMPTY.withColor(Formatting.GREEN);

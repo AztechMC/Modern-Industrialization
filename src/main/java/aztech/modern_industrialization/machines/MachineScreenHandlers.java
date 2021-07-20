@@ -405,7 +405,7 @@ public class MachineScreenHandlers {
             // Append capacity
             LiteralText capacityText = new LiteralText(String.valueOf(stack.getAdjustedCapacity()));
             if (stack.getAdjustedCapacity() != 64) {
-                capacityText.setStyle(TextHelper.ADJUSTED_CAPACITY);
+                capacityText.setStyle(TextHelper.YELLOW_BOLD);
             }
             textTooltip.add(
                     new TranslatableText("text.modern_industrialization.configurable_slot_capacity", capacityText).setStyle(TextHelper.GRAY_TEXT));

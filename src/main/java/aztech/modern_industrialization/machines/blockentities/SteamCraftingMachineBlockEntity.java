@@ -26,6 +26,7 @@ package aztech.modern_industrialization.machines.blockentities;
 import aztech.modern_industrialization.machines.BEP;
 import aztech.modern_industrialization.machines.components.GunpowderOverclockComponent;
 import aztech.modern_industrialization.machines.components.MachineInventoryComponent;
+import aztech.modern_industrialization.machines.components.sync.GunpowderOverclockGui;
 import aztech.modern_industrialization.machines.components.sync.ProgressBar;
 import aztech.modern_industrialization.machines.gui.MachineGuiParameters;
 import aztech.modern_industrialization.machines.helper.SteamHelper;
@@ -46,6 +47,10 @@ public class SteamCraftingMachineBlockEntity extends AbstractCraftingMachineBloc
             ProgressBar.Parameters progressBarParams, MachineTier tier) {
         super(bep, recipeType, inventory, guiParams, progressBarParams, tier);
         gunpowderOverclock = new GunpowderOverclockComponent();
+
+        GunpowderOverclockGui.Parameters gunpowderOverclockGuiParams = new GunpowderOverclockGui.Parameters(progressBarParams.renderX,
+                progressBarParams.renderY + 20);
+        registerClientComponent(new GunpowderOverclockGui.Server(gunpowderOverclockGuiParams, () -> gunpowderOverclock.overclockGunpowderTick));
         this.registerComponents(gunpowderOverclock);
     }
 

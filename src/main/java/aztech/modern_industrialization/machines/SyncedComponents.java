@@ -36,6 +36,7 @@ public final class SyncedComponents {
     public static final Identifier RECIPE_EFFICIENCY_BAR = new MIIdentifier("recipe_efficiency_bar");
     public static final Identifier TEMPERATURE_BAR = new MIIdentifier("temperature_bar");
     public static final Identifier CRAFTING_MULTIBLOCK_GUI = new MIIdentifier("crafting_multiblock_gui");
+    public static final Identifier GUNPOWDER_OVERCLOCK_GUI = new MIIdentifier("gunpowder_overclock_gui");
     public static final Identifier REI_SLOT_LOCKING = new MIIdentifier("rei_slot_locking");
 
     public static final class Client {
@@ -59,6 +60,7 @@ public final class SyncedComponents {
             register(TEMPERATURE_BAR, TemperatureBar.Client::new);
             register(CRAFTING_MULTIBLOCK_GUI, CraftingMultiblockGui.Client::new);
             register(REI_SLOT_LOCKING, ReiSlotLocking.Client::new);
+            register(GUNPOWDER_OVERCLOCK_GUI, GunpowderOverclockGui.Client::new);
         }
     }
 }

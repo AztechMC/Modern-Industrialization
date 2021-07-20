@@ -69,8 +69,8 @@ public class EnergyFromFluidMachineBlockEntity extends MachineBlockEntity implem
     protected FluidConsumerComponent fluidConsumer;
 
     private EnergyFromFluidMachineBlockEntity(BEP bep, String name, CableTier outputTier, long energyCapacity, long fluidCapacity,
-            long maxEnergyOutput, Predicate<Fluid> acceptedFluid, ToLongFunction<Fluid> fluidEUperMb, Fluid locked) {
-        super(bep, new MachineGuiParameters.Builder(name, false).build());
+            long maxEnergyOutput, Predicate<Fluid> acceptedFluid, ToLongFunction<Fluid> fluidEUperMb, Fluid locked, boolean lockButton) {
+        super(bep, new MachineGuiParameters.Builder(name, lockButton).build());
         this.outputTier = outputTier;
         this.energy = new EnergyComponent(energyCapacity);
         this.extractable = energy.buildExtractable((CableTier tier) -> tier == outputTier);
@@ -99,13 +99,13 @@ public class EnergyFromFluidMachineBlockEntity extends MachineBlockEntity implem
 
     public EnergyFromFluidMachineBlockEntity(BEP bep, String name, CableTier outputTier, long energyCapacity, long fluidCapacity,
             long maxEnergyOutput, Predicate<Fluid> acceptedFluid, ToLongFunction<Fluid> fluidEUperMb) {
-        this(bep, name, outputTier, energyCapacity, fluidCapacity, maxEnergyOutput, acceptedFluid, fluidEUperMb, null);
+        this(bep, name, outputTier, energyCapacity, fluidCapacity, maxEnergyOutput, acceptedFluid, fluidEUperMb, null, true);
     }
 
     public EnergyFromFluidMachineBlockEntity(BEP bep, String name, CableTier outputTier, long energyCapacity, long fluidCapacity,
             long maxEnergyOutput, Fluid acceptedFluid, long fluidEUperMb) {
         this(bep, name, outputTier, energyCapacity, fluidCapacity, maxEnergyOutput, (Fluid f) -> (f == acceptedFluid), (Fluid f) -> (fluidEUperMb),
-                acceptedFluid);
+                acceptedFluid, false);
     }
 
     @Override

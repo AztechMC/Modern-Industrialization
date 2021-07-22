@@ -42,10 +42,17 @@ public class DyeRecipes {
     }
 
     private static void initTags() {
+        Identifier terracottas = new Identifier("c", "terracottas");
+        TagRegistry.item(terracottas);
+        ResourceUtil.appendToItemTag(terracottas, new Identifier("minecraft:terracotta"));
+
         for (DyeColor color : DyeColor.values()) {
             Identifier tagId = new Identifier("c", color.getName() + "_dyes");
             TagRegistry.item(tagId);
             ResourceUtil.appendToItemTag(tagId, new Identifier("minecraft:" + color.getName() + "_dye"));
+            ResourceUtil.appendToItemTag(terracottas, new Identifier("minecraft:" + color.getName() + "_terracotta"));
+            ResourceUtil.appendToItemTag(terracottas, new Identifier("minecraft:" + color.getName() + "_glazed_terracotta"));
+
         }
     }
 

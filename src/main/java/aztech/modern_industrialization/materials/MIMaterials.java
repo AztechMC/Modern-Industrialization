@@ -86,6 +86,7 @@ public class MIMaterials {
                 .cancelRecipes("craft/block_from_ingot", "craft/ingot_from_block")
                 .cancelRecipes("craft/raw_metal_block_from_raw_metal", "craft/raw_metal_from_raw_metal_block")
                 .cancelRecipes("smelting/ore_to_ingot_smelting", "smelting/ore_to_ingot_blasting")
+                .cancelRecipes("smelting/ore_deepslate_to_ingot_smelting", "smelting/ore_deepslate_to_ingot_blasting")
                 .cancelRecipes("smelting/raw_metal_to_ingot_smelting", "smelting/raw_metal_to_ingot_blasting");
         if (nugget) {
             res.cancelRecipes("craft/ingot_from_nugget", "craft/nugget_from_ingot");
@@ -104,9 +105,9 @@ public class MIMaterials {
                 .addParts(ExternalPart.of("block", "#c:" + n + "_blocks", "minecraft:" + n + "_block"))
                 .addParts(ExternalPart.of("ore", "#c:" + n + "_ores", "minecraft:" + n + "_ore"))
                 .addParts(ExternalPart.of(ORE_DEEPLSATE, "#c:" + n + "_ores", "minecraft:deepslate_" + n + "_ore"));
-
         res.addRecipes(SmeltingRecipes::apply, StandardRecipes::apply).cancelRecipes("craft/block_from_gem", "craft/gem_from_block")
-                .cancelRecipes("smelting/ore_to_gem_smelting", "smelting/ore_to_gem_blasting");
+                .cancelRecipes("smelting/ore_to_gem_smelting", "smelting/ore_to_gem_blasting")
+                .cancelRecipes("smelting/ore_deepslate_to_gem_smelting", "smelting/ore_deepslate_to_gem_blasting");
 
         if (compressor) {
             res.addRecipes(
@@ -159,7 +160,8 @@ public class MIMaterials {
                         .addParts(ExternalPart.of("block", "#c:redstone_blocks", "minecraft:redstone_block"))
                         .addParts(ExternalPart.of("ore", "#c:redstone_ores", "minecraft:redstone_ore"))
                         .addParts(ExternalPart.of(ORE_DEEPLSATE, "#c:redstone_ores", "minecraft:deepslate_redstone_ore"))
-                        .addRecipes(StandardRecipes::apply, SmeltingRecipes::apply).cancelRecipes("macerator/ore_to_crushed").build());
+                        .addRecipes(StandardRecipes::apply, SmeltingRecipes::apply).cancelRecipes("macerator/ore_to_crushed")
+                        .cancelRecipes("craft/block_from_dust", "craft/dust_from_block").build());
 
         MaterialRegistry.addMaterial(
                 new MaterialBuilder("quartz", STONE, MIParts.GEM, new BakableTargetColoramp(0xf0ebe4, mcitem("quartz"), mcitem("quartz")))

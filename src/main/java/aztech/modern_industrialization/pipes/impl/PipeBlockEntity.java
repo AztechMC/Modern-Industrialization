@@ -29,7 +29,6 @@ import aztech.modern_industrialization.api.FastBlockEntity;
 import aztech.modern_industrialization.pipes.MIPipes;
 import aztech.modern_industrialization.pipes.api.*;
 import aztech.modern_industrialization.pipes.gui.IPipeScreenHandlerHelper;
-import aztech.modern_industrialization.util.ChunkUnloadBlockEntity;
 import aztech.modern_industrialization.util.NbtHelper;
 import aztech.modern_industrialization.util.RenderHelper;
 import aztech.modern_industrialization.util.Tickable;
@@ -56,7 +55,7 @@ import net.minecraft.util.shape.VoxelShapes;
  */
 // TODO: add isClient checks wherever it is necessary
 public class PipeBlockEntity extends FastBlockEntity
-        implements IPipeScreenHandlerHelper, Tickable, BlockEntityClientSerializable, RenderAttachmentBlockEntity, ChunkUnloadBlockEntity {
+        implements IPipeScreenHandlerHelper, Tickable, BlockEntityClientSerializable, RenderAttachmentBlockEntity {
     private static final int MAX_PIPES = 3;
     private static final VoxelShape[][][] SHAPE_CACHE;
     static final VoxelShape DEFAULT_SHAPE;
@@ -81,6 +80,10 @@ public class PipeBlockEntity extends FastBlockEntity
     // Because we can't access the PipeNetworksComponent in fromTag because the
     // world is null, we defer the node loading.
     private final List<Pair<PipeNetworkType, PipeNetworkNode>> unloadedPipes = new ArrayList<>();
+    /**
+     * Set to true in PipeBlock to tell apart unloads and removals.
+     */
+    boolean stateReplaced = false;
 
     private void loadPipes() {
         if (world.isClient)
@@ -225,11 +228,17 @@ public class PipeBlockEntity extends FastBlockEntity
 
     @Override
     public void markRemoved() {
-        loadPipes();
-        for (PipeNetworkNode pipe : pipes) {
-            pipe.getManager().removeNode(pos);
+        if (stateReplaced) {
+            loadPipes();
+            for (PipeNetworkNode pipe : pipes) {
+                pipe.getManager().removeNode(pos);
+            }
+            // Don't clear pipes, otherwise they can't be dropped when broken by hand.
+        } else {
+            for (PipeNetworkNode pipe : pipes) {
+                pipe.getManager().nodeUnloaded(pipe, pos);
+            }
         }
-        // Don't clear pipes, otherwise they can't be dropped when broken by hand.
 
         super.markRemoved();
     }
@@ -277,13 +286,6 @@ public class PipeBlockEntity extends FastBlockEntity
             }
         }
         markDirty();
-    }
-
-    @Override
-    public void onChunkUnload() {
-        for (PipeNetworkNode pipe : pipes) {
-            pipe.getManager().nodeUnloaded(pipe, pos);
-        }
     }
 
     public void onConnectionsChanged() {

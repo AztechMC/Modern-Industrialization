@@ -267,4 +267,14 @@ public class PipeBlock extends Block implements TickableBlock {
     public boolean canPathfindThrough(BlockState state, BlockView world, BlockPos pos, NavigationType type) {
         return false;
     }
+
+    @Override
+    public void onStateReplaced(BlockState state, World world, BlockPos pos, BlockState newState, boolean moved) {
+        if (!state.isOf(newState.getBlock())) {
+            if (world.getBlockEntity(pos) instanceof PipeBlockEntity pipe) {
+                pipe.stateReplaced = true;
+            }
+            world.removeBlockEntity(pos);
+        }
+    }
 }

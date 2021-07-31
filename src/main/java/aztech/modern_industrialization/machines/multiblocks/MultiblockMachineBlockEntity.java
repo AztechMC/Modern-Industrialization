@@ -29,13 +29,12 @@ import aztech.modern_industrialization.machines.components.OrientationComponent;
 import aztech.modern_industrialization.machines.components.ShapeValidComponent;
 import aztech.modern_industrialization.machines.gui.MachineGuiParameters;
 import aztech.modern_industrialization.machines.helper.OrientationHelper;
-import aztech.modern_industrialization.util.ChunkUnloadBlockEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.Direction;
 
-public abstract class MultiblockMachineBlockEntity extends MachineBlockEntity implements ChunkUnloadBlockEntity {
+public abstract class MultiblockMachineBlockEntity extends MachineBlockEntity {
     public MultiblockMachineBlockEntity(BEP bep, MachineGuiParameters guiParams, OrientationComponent orientation) {
         super(bep, guiParams);
 
@@ -68,11 +67,6 @@ public abstract class MultiblockMachineBlockEntity extends MachineBlockEntity im
         if (!world.isClient) {
             unlink();
         }
-    }
-
-    @Override
-    public final void onChunkUnload() {
-        unlink();
     }
 
     public abstract ShapeTemplate getActiveShape();

@@ -50,7 +50,6 @@ import aztech.modern_industrialization.materials.MIMaterials;
 import aztech.modern_industrialization.misc.guidebook.GuidebookEvents;
 import aztech.modern_industrialization.pipes.MIPipes;
 import aztech.modern_industrialization.recipe.MIRecipes;
-import aztech.modern_industrialization.util.ChunkUnloadBlockEntity;
 import java.util.Map;
 import me.shedaniel.cloth.api.common.events.v1.PlayerChangeWorldCallback;
 import me.shedaniel.cloth.api.common.events.v1.PlayerLeaveCallback;
@@ -68,7 +67,6 @@ import net.devtech.arrp.json.models.JTextures;
 import net.devtech.arrp.json.tags.JTag;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.client.itemgroup.FabricItemGroupBuilder;
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerBlockEntityEvents;
 import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricMaterialBuilder;
@@ -162,11 +160,6 @@ public class ModernIndustrialization implements ModInitializer {
         });
 
         ChunkEventListeners.init();
-        ServerBlockEntityEvents.BLOCK_ENTITY_UNLOAD.register((be, world) -> {
-            if (be instanceof ChunkUnloadBlockEntity) {
-                ((ChunkUnloadBlockEntity) be).onChunkUnload();
-            }
-        });
         PlayerChangeWorldCallback.EVENT.register((player, oldWorld, newWorld) -> MIKeyMap.clear(player));
         PlayerLeaveCallback.EVENT.register(MIKeyMap::clear);
         GuidebookEvents.init();

@@ -26,6 +26,8 @@ package aztech.modern_industrialization.textures;
 import aztech.modern_industrialization.textures.coloramp.Coloramp;
 import aztech.modern_industrialization.textures.coloramp.DefaultColoramp;
 import java.awt.*;
+import java.util.Arrays;
+import java.util.List;
 import java.util.function.BiFunction;
 import net.minecraft.client.texture.NativeImage;
 
@@ -118,17 +120,58 @@ public class TextureHelper {
     }
 
     /**
-     * Blend top on top of source.
+     * Adjust images to the largest one's resolution.
      */
-    public static void blend(NativeImage source, NativeImage top) {
-        if (source.getWidth() != top.getWidth()) {
-            throw new RuntimeException(
-                    "Textures have mismatched widths. Source has width " + source.getWidth() + " and top has width " + top.getWidth());
+    public static void adjustDimensions(List<NativeImage> images) {
+        int maxWidth = 0;
+        int maxHeight = 0;
+
+        for (NativeImage image : images) {
+            maxWidth = Math.max(maxWidth, image.getWidth());
+            maxHeight = Math.max(maxHeight, image.getHeight());
         }
-        if (source.getHeight() != top.getHeight()) {
-            throw new RuntimeException(
-                    "Textures have mismatched heights. Source has height " + source.getHeight() + " and top has height " + top.getHeight());
+
+        for (int imageIndex = 0; imageIndex < images.size(); ++imageIndex) {
+            NativeImage image = images.get(imageIndex);
+
+            if (maxWidth % image.getWidth() != 0 || maxHeight % image.getHeight() != 0) {
+                String error = String.format("Mismatched dimensions, can't adjust. Max: (%d, %d). Current image: (%d, %d).", maxWidth, maxHeight,
+                        image.getWidth(), image.getHeight());
+                throw new IllegalArgumentException(error);
+            }
+
+            int wFactor = maxWidth / image.getWidth();
+            int hFactor = maxHeight / image.getHeight();
+
+            if (wFactor == 1 && hFactor == 1) {
+                // Correct size, nothing to do!
+                continue;
+            }
+
+            // Create a new image.
+            NativeImage newImage = new NativeImage(maxWidth, maxHeight, false);
+
+            for (int i = 0; i < maxWidth; ++i) {
+                for (int j = 0; j < maxHeight; ++j) {
+                    newImage.setPixelColor(i, j, image.getPixelColor(i / wFactor, j / hFactor));
+                }
+            }
+
+            images.set(imageIndex, newImage);
         }
+    }
+
+    /**
+     * Blend top on top of source, return the result.
+     */
+    public static NativeImage blend(NativeImage originalSource, NativeImage originalTop) {
+        // Adjust dimensions
+        List<NativeImage> images = Arrays.asList(originalSource, originalTop);
+        adjustDimensions(images);
+        NativeImage source = images.get(0), top = images.get(1);
+
+        NativeImage output = new NativeImage(source.getWidth(), source.getHeight(), false);
+
         for (int i = 0; i < source.getWidth(); ++i) {
             for (int j = 0; j < source.getHeight(); ++j) {
                 int sourceColor = source.getPixelColor(i, j);
@@ -138,10 +181,12 @@ public class TextureHelper {
                 double alphaOut = alphaTop + alphaSource * (1 - alphaTop);
                 BiFunction<Integer, Integer, Integer> mergeAlpha = (sourceValue,
                         topValue) -> (int) ((topValue * alphaTop + sourceValue * alphaSource * (1 - alphaTop)) / alphaOut);
-                source.setPixelColor(i, j, fromArgb((int) (alphaOut * 255), mergeAlpha.apply(getR(sourceColor), getR(topColor)),
+                output.setPixelColor(i, j, fromArgb((int) (alphaOut * 255), mergeAlpha.apply(getR(sourceColor), getR(topColor)),
                         mergeAlpha.apply(getG(sourceColor), getG(topColor)), mergeAlpha.apply(getB(sourceColor), getB(topColor))));
             }
         }
+
+        return output;
     }
 
     public static NativeImage tripleTexture(NativeImage im1, NativeImage im2, NativeImage im3) {
@@ -175,8 +220,8 @@ public class TextureHelper {
                 }
             }
         }
-        blend(lowerIngot, im2);
-        blend(lowerIngot, upperIngot);
+        lowerIngot = blend(lowerIngot, im2);
+        lowerIngot = blend(lowerIngot, upperIngot);
         upperIngot.close();
         return lowerIngot;
     }
@@ -208,7 +253,7 @@ public class TextureHelper {
                 }
             }
         }
-        blend(lowerIngot, upperIngot);
+        lowerIngot = blend(lowerIngot, upperIngot);
         image.copyFrom(lowerIngot);
         lowerIngot.close();
         upperIngot.close();

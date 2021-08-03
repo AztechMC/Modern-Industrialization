@@ -148,8 +148,7 @@ public class RegularMaterialPart implements MaterialPart {
                     NativeImage image = mtm.getAssetAsTexture(template);
                     NativeImage overlay = mtm.getAssetAsTexture(templateOverlay);
                     TextureHelper.colorize(image, coloramp);
-                    TextureHelper.blend(image, overlay);
-                    mtm.addTexture(texturePath, image);
+                    mtm.addTexture(texturePath, TextureHelper.blend(image, overlay), true);
                     image.close();
                     overlay.close();
                 } catch (IOException e) {

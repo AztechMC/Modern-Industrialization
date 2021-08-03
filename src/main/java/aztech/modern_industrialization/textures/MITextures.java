@@ -88,15 +88,14 @@ public final class MITextures {
 
             NativeImage copperDrill = mtm.getAssetAsTexture("modern_industrialization:textures/items/copper_mining_drill.png");
             NativeImage steamHandler = mtm.getAssetAsTexture("modern_industrialization:textures/items/steam_mining_drill_handler.png");
-            TextureHelper.blend(steamHandler, copperDrill);
-            mtm.addTexture("modern_industrialization:textures/items/steam_mining_drill.png", steamHandler);
+            mtm.addTexture("modern_industrialization:textures/items/steam_mining_drill.png", TextureHelper.blend(steamHandler, copperDrill), true);
             copperDrill.close();
             steamHandler.close();
 
             NativeImage aluminumDrill = mtm.getAssetAsTexture("modern_industrialization:textures/items/aluminum_mining_drill.png");
             NativeImage dieselHandler = mtm.getAssetAsTexture("modern_industrialization:textures/items/diesel_mining_drill_handler.png");
-            TextureHelper.blend(dieselHandler, aluminumDrill);
-            mtm.addTexture("modern_industrialization:textures/items/diesel_mining_drill.png", dieselHandler);
+            mtm.addTexture("modern_industrialization:textures/items/diesel_mining_drill.png", TextureHelper.blend(dieselHandler, aluminumDrill),
+                    true);
             aluminumDrill.close();
             dieselHandler.close();
 
@@ -131,7 +130,9 @@ public final class MITextures {
             if (overlay != null) {
                 String overlayTemplate = getTemplate("common", overlay, "");
                 NativeImage overlayTexture = mtm.getAssetAsTexture(overlayTemplate);
-                TextureHelper.blend(texture, overlayTexture);
+                NativeImage oldTexture = texture;
+                texture = TextureHelper.blend(oldTexture, overlayTexture);
+                oldTexture.close();
                 overlayTexture.close();
             }
 
@@ -169,7 +170,9 @@ public final class MITextures {
                 } else {
                     NativeImage topLayer = mtm.getAssetAsTexture(template);
                     colorizeLayer(topLayer, layer, coloramp);
-                    TextureHelper.blend(image, topLayer);
+                    NativeImage oldImage = image;
+                    image = TextureHelper.blend(oldImage, topLayer);
+                    oldImage.close();
                     topLayer.close();
                 }
             }
@@ -277,7 +280,9 @@ public final class MITextures {
             NativeImage bucket_image = tm.getAssetAsTexture(bucket);
             NativeImage bucket_content_image = tm.getAssetAsTexture(bucket_content);
             TextureHelper.colorize(bucket_content_image, new DefaultColoramp(fluid.color));
-            TextureHelper.blend(bucket_image, bucket_content_image);
+            NativeImage oldBucketImage = bucket_image;
+            bucket_image = TextureHelper.blend(oldBucketImage, bucket_content_image);
+            oldBucketImage.close();
             if (fluid.isGas) {
                 TextureHelper.flip(bucket_image);
             }

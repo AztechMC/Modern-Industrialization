@@ -64,9 +64,16 @@ public class TextureManager {
      * Add texture if it's not already loaded, but doesn't close the image.
      */
     public void addTexture(String textureId, NativeImage image) throws IOException {
+        addTexture(textureId, image, false);
+    }
+
+    public void addTexture(String textureId, NativeImage image, boolean closeImage) throws IOException {
         Identifier id = new Identifier(textureId);
         if (!rm.containsResource(id)) {
             texturePack.addAsset(textureId.replace(':', '/'), image.getBytes());
+        }
+        if (closeImage) {
+            image.close();
         }
     }
 

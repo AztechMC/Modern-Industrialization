@@ -166,10 +166,10 @@ public class OreMaterialPart implements MaterialPart {
             NativeImage image = mtm.getAssetAsTexture(String.format("minecraft:textures/block/%s.png", from));
             NativeImage top = mtm.getAssetAsTexture(template);
             TextureHelper.colorize(top, coloramp);
-            TextureHelper.blend(image, top);
-            top.close();
             String texturePath = String.format("modern_industrialization:textures/blocks/%s.png", itemPath);
-            mtm.addTexture(texturePath, image);
+            mtm.addTexture(texturePath, TextureHelper.blend(image, top), true);
+            top.close();
+            image.close();
         } catch (IOException e) {
             e.printStackTrace();
         }

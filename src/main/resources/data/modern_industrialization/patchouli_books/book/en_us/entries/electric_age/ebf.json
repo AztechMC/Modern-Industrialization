@@ -15,12 +15,12 @@
     },
     {
       "type": "crafting",
-      "recipe": "modern_industrialization:electric_age/hatch/lv/energy_input_hatch_asbl",
+      "recipe": "modern_industrialization:generated/hatches/basic/energy_input_hatch",
       "text": "Don't forget to add Energy Input Hatch(es) or the EBF won't have energy! The LV Energy Input Hatch will only connect to LV cables."
     },
     {
       "type": "crafting",
-      "recipe": "modern_industrialization:electric_age/hatch/advanced/energy_input_hatch_asbl",
+      "recipe": "modern_industrialization:generated/hatches/advanced/energy_input_hatch",
       "text": "MV Energy Input Hatches will only connect to MV cables, which can be useful if you need a ton of energy for your EBF! You can't craft them yet, but keep in mind they exist..."
     }
   ],

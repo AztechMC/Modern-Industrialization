@@ -81,7 +81,7 @@ public class HatchRecipes {
 
                         pack.addData(new MIIdentifier(pathPrefix + casings[i] + "/" + prefixes[j][k] + "_hatch.json"), GSON.toJson(craft).getBytes());
                         pack.addData(
-                                new MIIdentifier(pathPrefix + casings[i] + "/" + prefixes[j][k] + "from_" + (k == 0 ? "output" : "input") + ".json"),
+                                new MIIdentifier(pathPrefix + casings[i] + "/" + prefixes[j][k] + "_from_" + (k == 0 ? "output" : "input") + ".json"),
                                 GSON.toJson(craftFromOther).getBytes());
                         pack.addData(new MIIdentifier(pathPrefix + casings[i] + "/assembler/" + prefixes[j][k] + "_hatch.json"),
                                 GSON.toJson(craftAsbl).getBytes());

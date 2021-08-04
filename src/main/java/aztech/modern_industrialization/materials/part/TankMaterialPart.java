@@ -25,9 +25,10 @@ package aztech.modern_industrialization.materials.part;
 
 import static aztech.modern_industrialization.ModernIndustrialization.ITEM_GROUP;
 
+import aztech.modern_industrialization.MIBlock;
 import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.ModernIndustrialization;
-import aztech.modern_industrialization.blocks.tank.*;
+import aztech.modern_industrialization.blocks.storage.tank.*;
 import aztech.modern_industrialization.machines.models.MachineModelProvider;
 import aztech.modern_industrialization.materials.MaterialBuilder;
 import aztech.modern_industrialization.textures.TextureManager;
@@ -67,8 +68,10 @@ public class TankMaterialPart implements MaterialPart {
         long capacity = FluidConstants.BUCKET * bucketCapacity;
         this.itemId = "modern_industrialization:" + idPath;
         BlockEntityProvider factory = (pos, state) -> new TankBlockEntity(blockEntityType, pos, state, capacity);
-        this.block = new TankBlock(FabricBlockSettings.of(Material.METAL).hardness(4.0f), factory);
-        this.item = new TankItem(block, new Item.Settings().group(ITEM_GROUP), 81000L * bucketCapacity);
+        this.block = new TankBlock(idPath, FabricBlockSettings.of(Material.METAL).hardness(4.0f),
+            (MIBlock block) -> new TankItem(block, new Item.Settings().group(ITEM_GROUP), 81000L * bucketCapacity)
+                , factory);
+        this.item = (TankItem) block.blockItem;
     }
 
     @Override
@@ -88,7 +91,6 @@ public class TankMaterialPart implements MaterialPart {
 
     @Override
     public void register(MaterialBuilder.RegisteringContext context) {
-        ModernIndustrialization.registerBlock(block, item, idPath, 0);
         ResourceUtil.appendWrenchable(new MIIdentifier(idPath));
         this.blockEntityType = Registry.register(Registry.BLOCK_ENTITY_TYPE, itemId,
                 FabricBlockEntityTypeBuilder.create(block.factory::createBlockEntity, block).build(null));

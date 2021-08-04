@@ -23,6 +23,7 @@
  */
 package aztech.modern_industrialization.blocks.forgehammer;
 
+import aztech.modern_industrialization.MIBlock;
 import aztech.modern_industrialization.ModernIndustrialization;
 import aztech.modern_industrialization.util.MobSpawning;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
@@ -49,15 +50,15 @@ import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 
-public class ForgeHammerBlock extends Block {
+public class ForgeHammerBlock extends MIBlock {
 
     private VoxelShape shape;
     private int part_height[] = { 4, 1, 5, 5 };
     private int part_width[] = { 14, 10, 8, 14 };
 
     public ForgeHammerBlock() {
-        super(FabricBlockSettings.of(Material.METAL).hardness(6.0f).breakByTool(FabricToolTags.PICKAXES).requiresTool().resistance(1200)
-                .sounds(BlockSoundGroup.ANVIL).allowsSpawning(MobSpawning.NO_SPAWN));
+        super("forge_hammer", FabricBlockSettings.of(Material.METAL).hardness(6.0f).breakByTool(FabricToolTags.PICKAXES).requiresTool().resistance(1200)
+                .sounds(BlockSoundGroup.ANVIL).allowsSpawning(MobSpawning.NO_SPAWN), MIBlock.FLAG_BLOCK_ITEM_MODEL | MIBlock.FLAG_BLOCK_LOOT);
         VoxelShape[] parts = new VoxelShape[part_height.length];
         float currentY = 0;
         for (int i = 0; i < part_height.length; i++) {
@@ -87,7 +88,7 @@ public class ForgeHammerBlock extends Block {
 
                 @Override
                 public Text getDisplayName() {
-                    return new TranslatableText(ModernIndustrialization.FORGE_HAMMER.getTranslationKey());
+                    return new TranslatableText(MIBlock.FORGE_HAMMER.getTranslationKey());
                 }
             });
             return ActionResult.CONSUME;

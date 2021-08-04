@@ -23,6 +23,7 @@
  */
 package aztech.modern_industrialization.machines.components;
 
+import aztech.modern_industrialization.MIItem;
 import aztech.modern_industrialization.ModernIndustrialization;
 import aztech.modern_industrialization.machines.IComponent;
 import aztech.modern_industrialization.machines.multiblocks.ShapeTemplate;
@@ -43,7 +44,7 @@ public class ActiveShapeComponent implements IComponent {
 
     public ActionResult onUse(PlayerEntity player, Hand hand, Direction face) {
         Item handItem = player.getStackInHand(hand).getItem();
-        if (handItem == ModernIndustrialization.ITEM_SCREWDRIVER && shapeTemplates.length > 1) {
+        if (handItem == MIItem.ITEM_SCREWDRIVER && shapeTemplates.length > 1) {
             activeShape = (activeShape + 1) % shapeTemplates.length;
             return ActionResult.success(player.getEntityWorld().isClient());
         }

@@ -31,6 +31,7 @@ import java.util.Set;
 public class MIParts {
 
     public static final String BATTERY = "battery";
+    public static final String BARREL = "barrel";
     public static final String BLADE = "blade";
     public static final String BLOCK = "block";
     public static final String BOLT = "bolt";

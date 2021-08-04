@@ -23,30 +23,75 @@
  */
 package aztech.modern_industrialization;
 
+import aztech.modern_industrialization.api.pipes.item.SpeedUpgrade;
+import aztech.modern_industrialization.items.FluidFuelItemHelper;
 import aztech.modern_industrialization.items.GuideBookItem;
+import aztech.modern_industrialization.items.SteamDrillItem;
+import aztech.modern_industrialization.items.armor.JetpackItem;
 import aztech.modern_industrialization.items.armor.RubberArmorMaterial;
 import java.util.SortedMap;
+import java.util.SortedSet;
 import java.util.TreeMap;
+import java.util.TreeSet;
+import java.util.function.Consumer;
 import java.util.function.Function;
+
+import aztech.modern_industrialization.items.diesel_tools.DieselToolItem;
+import aztech.modern_industrialization.items.tools.CrowbarItem;
+import aztech.modern_industrialization.items.tools.WrenchItem;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.item.ArmorItem;
 import net.minecraft.item.Item;
 
+@SuppressWarnings("unused")
 public final class MIItem {
+
+
     public static SortedMap<String, Item> items = new TreeMap<>();
+    public static SortedMap<String, Consumer<Item>> registrationEvents = new TreeMap<>();
+    public static SortedSet<String> handhelds = new TreeSet<>();
+
 
     public static Item of(String id) {
         return of(Item::new, id, 64);
+    }
+
+    public static Item of(String id, Consumer<Item> registrationEvent) {
+        return of(Item::new, id, 64, registrationEvent);
     }
 
     public static Item of(String id, int maxCount) {
         return of(Item::new, id, maxCount);
     }
 
+    public static Item of(String id, int maxCount, boolean handheld) {
+        return of(Item::new, id, maxCount, null, handheld);
+    }
+
     public static Item of(Function<Item.Settings, Item> ctor, String id, int maxCount) {
+        return of(ctor, id, maxCount, null);
+    }
+
+    public static  Item of(Function<Item.Settings, Item> ctor, String id, int maxCount, Consumer<Item> registrationEvent){
+        return of(ctor, id, maxCount, registrationEvent, false);
+    }
+
+    public static  Item of(Function<Item.Settings, Item> ctor, String id, int maxCount, boolean handheld){
+        return of(ctor, id, maxCount, null, false);
+    }
+
+
+    public static Item of(Function<Item.Settings, Item> ctor, String id, int maxCount, Consumer<Item> registrationEvent, boolean handheld) {
         Item item = ctor.apply(new Item.Settings().maxCount(maxCount).group(ModernIndustrialization.ITEM_GROUP));
         if (items.put(id, item) != null) {
             throw new IllegalArgumentException("Item id already taken : " + id);
+        }
+        if(registrationEvent != null){
+            registrationEvents.put(id, registrationEvent);
+        }
+        if(handheld){
+            handhelds.add(id);
         }
         return item;
     }
@@ -57,7 +102,7 @@ public final class MIItem {
     public static final Item RUBBER_HELMET = of(s -> new ArmorItem(RubberArmorMaterial.INSTANCE, EquipmentSlot.HEAD, s), "rubber_helmet", 1);
     public static final Item RUBBER_BOOTS = of(s -> new ArmorItem(RubberArmorMaterial.INSTANCE, EquipmentSlot.FEET, s), "rubber_boots", 1);
 
-    public static final Item ITEM_MOTOR = of("motor");
+    public static final Item ITEM_MOTOR = of("motor", (item) -> SpeedUpgrade.LOOKUP.registerForItems((key, vd) -> () -> 2, item));
     public static final Item ITEM_PISTON = of("piston");
     public static final Item ITEM_CONVEYOR = of("conveyor");
     public static final Item ITEM_ROBOT_ARM = of("robot_arm");
@@ -75,7 +120,7 @@ public final class MIItem {
     public static final Item ITEM_DIODE = of("diode");
     public static final Item ITEM_ELECTRONIC_CIRCUIT_BOARD = of("electronic_circuit_board");
     public static final Item ITEM_TRANSISTOR = of("transistor");
-    public static final Item ITEM_LARGE_MOTOR = of("large_motor");
+    public static final Item ITEM_LARGE_MOTOR = of("large_motor", (item) -> SpeedUpgrade.LOOKUP.registerForItems((key, vd) -> () -> 8, item));
 
     public static final Item ITEM_LARGE_PUMP = of("large_pump");
 
@@ -100,8 +145,8 @@ public final class MIItem {
     public static final Item TURBO_UPGRADE = of("turbo_upgrade");
     public static final Item HIGHLY_ADVANCED_UPGRADE = of("highly_advanced_upgrade");
 
-    public static final Item ADVANCED_MOTOR = of("advanced_motor");
-    public static final Item LARGE_ADVANCED_MOTOR = of("large_advanced_motor");
+    public static final Item ADVANCED_MOTOR = of("advanced_motor", (item) -> SpeedUpgrade.LOOKUP.registerForItems((key, vd) -> () -> 32, item));
+    public static final Item LARGE_ADVANCED_MOTOR = of("large_advanced_motor", (item) -> SpeedUpgrade.LOOKUP.registerForItems((key, vd) -> () -> 64, item));
     public static final Item ADVANCED_PUMP = of("advanced_pump");
     public static final Item LARGE_ADVANCED_PUMP = of("large_advanced_pump");
 
@@ -115,4 +160,21 @@ public final class MIItem {
 
     public static final Item ITEM_PACKER_BLOCK_TEMPLATE = of("packer_block_template", 1);
     public static final Item ITEM_PACKER_DOUBLE_INGOT_TEMPLATE = of("packer_double_ingot_template", 1);
+
+
+    public static final Item ITEM_SCREWDRIVER = of("screwdriver", 1, true);
+    public static final Item ITEM_WRENCH = of(WrenchItem::new, "wrench", 1, true);
+    public static final JetpackItem ITEM_DIESEL_JETPACK = (JetpackItem) of(JetpackItem::new, "diesel_jetpack", 1,
+            (item) -> FluidStorage.ITEM.registerForItems((stack, ctx) -> new FluidFuelItemHelper.ItemStorage(JetpackItem.CAPACITY, stack, ctx),
+            item));
+    public static final DieselToolItem ITEM_DIESEL_CHAINSAW = (DieselToolItem) of(DieselToolItem::new, "diesel_chainsaw", 1,
+            (item) -> FluidStorage.ITEM.registerForItems((stack, ctx) -> new FluidFuelItemHelper.ItemStorage(DieselToolItem.CAPACITY, stack, ctx),
+            item), true);
+
+    public static final DieselToolItem ITEM_DIESEL_MINING_DRILL = (DieselToolItem) of(DieselToolItem::new, "diesel_mining_drill", 1,
+            (item) -> FluidStorage.ITEM.registerForItems((stack, ctx) -> new FluidFuelItemHelper.ItemStorage(DieselToolItem.CAPACITY, stack, ctx),
+                    item), true);
+
+    public static final SteamDrillItem ITEM_STEAM_MINING_DRILL = (SteamDrillItem) of(SteamDrillItem::new, "steam_mining_drill", 1, true);
+    public static final Item ITEM_CROWBAR = of(CrowbarItem::new, "crowbar", 1, true);
 }

@@ -70,7 +70,7 @@ public class UpgradeComponent implements IComponent.ServerOnly {
         if (stackInHand.isEmpty()) {
             return ActionResult.PASS;
         }
-        if (stackInHand.getItem() == ModernIndustrialization.ITEM_CROWBAR && player.isSneaking()) {
+        if (stackInHand.getItem() == MIItem.ITEM_CROWBAR && player.isSneaking()) {
             BlockPos pos = be.getPos();
             if (!itemStack.isEmpty()) {
                 ItemScatterer.spawn(be.getWorld(), pos.getX(), pos.getY(), pos.getZ(), itemStack);

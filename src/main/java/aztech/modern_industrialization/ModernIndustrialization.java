@@ -30,7 +30,7 @@ import aztech.modern_industrialization.blocks.TrashCanBlock;
 import aztech.modern_industrialization.blocks.forgehammer.ForgeHammerBlock;
 import aztech.modern_industrialization.blocks.forgehammer.ForgeHammerPacket;
 import aztech.modern_industrialization.blocks.forgehammer.ForgeHammerScreenHandler;
-import aztech.modern_industrialization.blocks.tank.CreativeTankSetup;
+import aztech.modern_industrialization.blocks.storage.tank.CreativeTankSetup;
 import aztech.modern_industrialization.compat.RecipeCompat;
 import aztech.modern_industrialization.inventory.ConfigurableInventoryPacketHandlers;
 import aztech.modern_industrialization.inventory.ConfigurableInventoryPackets;
@@ -88,9 +88,7 @@ import org.apache.logging.log4j.Logger;
 
 public class ModernIndustrialization implements ModInitializer {
 
-    public static final int FLAG_BLOCK_LOOT = 1;
-    public static final int FLAG_BLOCK_MODEL = 1 << 1;
-    public static final int FLAG_BLOCK_ITEM_MODEL = 1 << 2;
+
 
     public static final String MOD_ID = "modern_industrialization";
     public static final Logger LOGGER = LogManager.getLogger("Modern Industrialization");
@@ -108,20 +106,6 @@ public class ModernIndustrialization implements ModInitializer {
     public static final Tag<Item> WRENCHES = TagRegistry.item(new Identifier("fabric:wrenches"));
     public static final Tag<Block> WRENCHABLES = TagRegistry.block(new Identifier("fabric:wrenchables"));
 
-    // Item
-    public static final Item ITEM_SCREWDRIVER = new Item(new Item.Settings().maxCount(1).group(ITEM_GROUP));
-    public static final Item ITEM_WRENCH = new WrenchItem(new Item.Settings().maxCount(1).group(ITEM_GROUP));
-    public static final JetpackItem ITEM_DIESEL_JETPACK = new JetpackItem(new Item.Settings().group(ITEM_GROUP));
-    public static final DieselToolItem ITEM_DIESEL_CHAINSAW = new DieselToolItem(new Item.Settings().group(ITEM_GROUP));
-    public static final DieselToolItem ITEM_DIESEL_DRILL = new DieselToolItem(new Item.Settings().group(ITEM_GROUP));
-    public static final SteamDrillItem ITEM_STEAM_DRILL = new SteamDrillItem(new Item.Settings().group(ITEM_GROUP));
-    public static final Item ITEM_CROWBAR = new CrowbarItem(new Item.Settings().group(ITEM_GROUP));
-
-    // Block
-    public static final Block FORGE_HAMMER = new ForgeHammerBlock();
-    public static final Item ITEM_FORGE_HAMMER = new BlockItem(FORGE_HAMMER, new Item.Settings().group(ITEM_GROUP));
-    public static final TrashCanBlock TRASH_CAN = new TrashCanBlock();
-    public static final BlockItem ITEM_TRASH_CAN = new BlockItem(TRASH_CAN, new Item.Settings().group(ITEM_GROUP));
 
     // ScreenHandlerType
     public static final ScreenHandlerType<MachineScreenHandlers.Common> SCREEN_HANDLER_MACHINE = ScreenHandlerRegistry
@@ -170,95 +154,60 @@ public class ModernIndustrialization implements ModInitializer {
     private void setupItems() {
         for (Map.Entry<String, Item> entry : MIItem.items.entrySet()) {
             registerItem(entry.getValue(), entry.getKey());
+            if(MIItem.registrationEvents.containsKey(entry.getKey())){
+                MIItem.registrationEvents.get(entry.getKey()).accept(entry.getValue());
+            }
         }
-
-        registerItem(ITEM_SCREWDRIVER, "screwdriver");
-        registerItem(ITEM_WRENCH, "wrench");
-        registerItem(ITEM_DIESEL_JETPACK, "diesel_jetpack");
-        registerItem(ITEM_DIESEL_CHAINSAW, "diesel_chainsaw", true);
-        registerItem(ITEM_DIESEL_DRILL, "diesel_mining_drill", true);
-        registerItem(ITEM_STEAM_DRILL, "steam_mining_drill", true);
-        registerItem(ITEM_CROWBAR, "crowbar", true);
-
-        FluidStorage.ITEM.registerForItems((stack, ctx) -> new FluidFuelItemHelper.ItemStorage(DieselToolItem.CAPACITY, stack, ctx),
-                ITEM_DIESEL_CHAINSAW, ITEM_DIESEL_DRILL);
-        FluidStorage.ITEM.registerForItems((stack, ctx) -> new FluidFuelItemHelper.ItemStorage(JetpackItem.CAPACITY, stack, ctx),
-                ITEM_DIESEL_JETPACK);
-
-        SpeedUpgrade.LOOKUP.registerForItems((key, vd) -> () -> 2, MIItem.ITEM_MOTOR);
-        SpeedUpgrade.LOOKUP.registerForItems((key, vd) -> () -> 8, MIItem.ITEM_LARGE_MOTOR);
-        SpeedUpgrade.LOOKUP.registerForItems((key, vd) -> () -> 16, MIItem.ADVANCED_MOTOR);
-        SpeedUpgrade.LOOKUP.registerForItems((key, vd) -> () -> 64, MIItem.LARGE_ADVANCED_MOTOR);
 
         RESOURCE_PACK.addTag(new MIIdentifier("items/overlay_sources"), JTag.tag().tag(new Identifier("fabric:wrenches")));
     }
 
-    private void setupBlocks() {
-        registerBlock(FORGE_HAMMER, ITEM_FORGE_HAMMER, "forge_hammer", FLAG_BLOCK_LOOT | FLAG_BLOCK_ITEM_MODEL);
-        registerBlock(TRASH_CAN, ITEM_TRASH_CAN, "trash_can", 7);
-        for (Map.Entry<String, MIBlock> entry : MIBlock.blocks.entrySet()) {
-            int flags = FLAG_BLOCK_ITEM_MODEL | FLAG_BLOCK_LOOT;
-            if (entry.getValue().arrpModel) {
-                flags |= FLAG_BLOCK_MODEL;
-            }
-            registerBlock(entry.getValue(), entry.getValue().blockItem, entry.getKey(), flags);
-        }
+    public static void registerItem(Item item, String id) {
+        Identifier ID = new MIIdentifier(id);
+        Registry.register(Registry.ITEM, ID, item);
 
-        ItemStorage.SIDED.registerForBlocks((world, pos, state, be, direction) -> TrashCanBlock.trashStorage(), TRASH_CAN);
-        FluidStorage.SIDED.registerForBlocks((world, pos, state, be, direction) -> TrashCanBlock.trashStorage(), TRASH_CAN);
-        FluidStorage.ITEM.registerForItems((key, ctx) -> TrashCanBlock.trashStorage(), ITEM_TRASH_CAN);
+        RESOURCE_PACK.addModel(
+                JModel.model().parent(MIItem.handhelds.contains(id) ? "minecraft:item/handheld" : "minecraft:item/generated")
+                        .textures(new JTextures().layer0(ID.getNamespace() + ":items/" + ID.getPath())),
+                new Identifier(ID.getNamespace() + ":item/" + ID.getPath()));
+    }
+
+
+
+    private void setupBlocks() {
+        for (Map.Entry<String, MIBlock> entry : MIBlock.blocks.entrySet()) {
+            registerBlock(entry.getValue());
+            entry.getValue().onRegister(entry.getValue(), entry.getValue().blockItem);
+        }
         EnergyApi.MOVEABLE.registerForBlocks((world, pos, state, be, direction) -> EnergyApi.CREATIVE_EXTRACTABLE,
                 CreativeTankSetup.CREATIVE_TANK_BLOCK);
     }
 
-    public static void registerBlock(Block block, Item item, String id, int flag) {
-        Identifier identifier = new MIIdentifier(id);
+    public static void registerBlock(MIBlock block) {
+        Identifier identifier = new MIIdentifier(block.id);
         Registry.register(Registry.BLOCK, identifier, block);
+
         if (Registry.ITEM.getOrEmpty(identifier).isEmpty()) {
-            Registry.register(Registry.ITEM, identifier, item);
+            Registry.register(Registry.ITEM, identifier, block.blockItem);
         }
-        if ((flag & FLAG_BLOCK_LOOT) != 0) {
+
+        if ((block.FLAGS & MIBlock.FLAG_BLOCK_LOOT) != 0) {
             if (block instanceof MIBlock) {
-                RESOURCE_PACK.addLootTable(new MIIdentifier("blocks/" + id), ((MIBlock) block).getLootTables());
-            } else {
-                RESOURCE_PACK.addLootTable(new MIIdentifier("blocks/" + id),
-                        JLootTable.loot("minecraft:block")
-                                .pool(new JPool().rolls(1).entry(new JEntry().type("minecraft:item").name(ModernIndustrialization.MOD_ID + ":" + id))
-                                        .condition(new JCondition("minecraft:survives_explosion"))));
+                RESOURCE_PACK.addLootTable(new MIIdentifier("blocks/" + block.id), );
             }
         }
-
         // TODO: client side?
-        RESOURCE_PACK.addBlockState(JState.state().add(new JVariant().put("", new JBlockModel(MOD_ID + ":block/" + id))), identifier);
+        RESOURCE_PACK.addBlockState(block.getBlockState(), identifier);
 
-        if ((flag & FLAG_BLOCK_MODEL) != 0)
-            RESOURCE_PACK.addModel(JModel.model().parent("block/cube_all").textures(new JTextures().var("all", MOD_ID + ":blocks/" + id)),
-                    new MIIdentifier("block/" + id));
+        if ((block.FLAGS & MIBlock.FLAG_BLOCK_MODEL) != 0)
+            RESOURCE_PACK.addModel(block.getBlockModel(),
+                    new MIIdentifier("block/" + block.id));
 
-        if ((flag & FLAG_BLOCK_ITEM_MODEL) != 0)
-            RESOURCE_PACK.addModel(JModel.model().parent(MOD_ID + ":block/" + id), new MIIdentifier("item/" + id));
+        if ((block.FLAGS & MIBlock.FLAG_BLOCK_ITEM_MODEL) != 0)
+            RESOURCE_PACK.addModel(block.getItemModel(), new MIIdentifier("item/" + block.id));
 
     }
 
-    public static void registerBlock(Block block, Item item, String id) {
-        registerBlock(block, item, id, FLAG_BLOCK_LOOT | FLAG_BLOCK_ITEM_MODEL | FLAG_BLOCK_MODEL);
-    }
-
-    public static void registerItem(Item item, String id, boolean handheld) {
-        registerItem(item, new MIIdentifier(id), handheld);
-    }
-
-    public static void registerItem(Item item, Identifier id, boolean handheld) {
-        Registry.register(Registry.ITEM, id, item);
-        RESOURCE_PACK.addModel(
-                JModel.model().parent(handheld ? "minecraft:item/handheld" : "minecraft:item/generated")
-                        .textures(new JTextures().layer0(id.getNamespace() + ":items/" + id.getPath())),
-                new Identifier(id.getNamespace() + ":item/" + id.getPath()));
-    }
-
-    public static void registerItem(Item item, String id) {
-        registerItem(item, id, false);
-    }
 
     private void setupPackets() {
         ServerPlayNetworking.registerGlobalReceiver(ConfigurableInventoryPackets.SET_LOCKING_MODE,

@@ -24,6 +24,7 @@
 package aztech.modern_industrialization.compat.rei.machines;
 
 import aztech.modern_industrialization.MIIdentifier;
+import aztech.modern_industrialization.MIItem;
 import aztech.modern_industrialization.ModernIndustrialization;
 import java.util.ArrayList;
 import java.util.List;
@@ -60,7 +61,7 @@ public class MultiblockRecipeCategory implements DisplayCategory<MultiblockRecip
 
     @Override
     public Renderer getIcon() {
-        return EntryStacks.of(ModernIndustrialization.ITEM_WRENCH);
+        return EntryStacks.of(MIItem.ITEM_WRENCH);
     }
 
     @Override

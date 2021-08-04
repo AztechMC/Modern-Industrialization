@@ -7,7 +7,7 @@
     ],
   "key": {
     "d" : {
-      "item" : "minecraft:diamond"
+      "tag" : "c:diamond_dusts"
     },
     "G": {
       "tag" : "c:invar_gears"

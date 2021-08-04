@@ -24,6 +24,7 @@
 package aztech.modern_industrialization.machines.components;
 
 import aztech.modern_industrialization.MIBlock;
+import aztech.modern_industrialization.MIItem;
 import aztech.modern_industrialization.ModernIndustrialization;
 import aztech.modern_industrialization.api.energy.CableTier;
 import aztech.modern_industrialization.machines.IComponent;
@@ -97,7 +98,7 @@ public class CasingComponent implements IComponent {
 
     public ActionResult onUse(MachineBlockEntity be, PlayerEntity player, Hand hand) {
         ItemStack stackInHand = player.getStackInHand(hand);
-        if (stackInHand.getItem() == ModernIndustrialization.ITEM_CROWBAR && !player.isSneaking()) {
+        if (stackInHand.getItem() == MIItem.ITEM_CROWBAR && !player.isSneaking()) {
             if (tierCasing != defaultCasing) {
                 dropCasing(be.getWorld(), be.getPos());
                 tierCasing = defaultCasing;

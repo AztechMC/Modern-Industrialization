@@ -273,8 +273,8 @@ public final class MITextures {
 
     private static void registerFluidTextures(TextureManager tm, CraftingFluid fluid) {
         String path = "modern_industrialization:textures/fluid/";
-        String bucket = path + String.format("bucket.png");
-        String bucket_content = path + String.format("bucket_content.png");
+        String bucket = path + "bucket.png";
+        String bucket_content = path + "bucket_content.png";
 
         try {
             NativeImage bucket_image = tm.getAssetAsTexture(bucket);

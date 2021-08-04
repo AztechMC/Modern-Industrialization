@@ -23,23 +23,27 @@
  */
 package aztech.modern_industrialization.blocks;
 
+import aztech.modern_industrialization.MIBlock;
 import aztech.modern_industrialization.util.MobSpawning;
 import com.google.common.base.Preconditions;
 import java.util.Collections;
 import java.util.Iterator;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
+import net.fabricmc.fabric.api.transfer.v1.item.ItemStorage;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.InsertionOnlyStorage;
 import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
 import net.minecraft.block.Block;
 import net.minecraft.block.Material;
+import net.minecraft.item.Item;
 import net.minecraft.sound.BlockSoundGroup;
 
-public class TrashCanBlock extends Block {
+public class TrashCanBlock extends MIBlock {
     public TrashCanBlock() {
-        super(FabricBlockSettings.of(Material.METAL).hardness(6.0f).resistance(1200).breakByTool(FabricToolTags.PICKAXES).requiresTool()
+        super("trash_can", FabricBlockSettings.of(Material.METAL).hardness(6.0f).resistance(1200).breakByTool(FabricToolTags.PICKAXES).requiresTool()
                 .sounds(BlockSoundGroup.METAL).allowsSpawning(MobSpawning.NO_SPAWN));
     }
 
@@ -68,5 +72,12 @@ public class TrashCanBlock extends Block {
         public long getVersion() {
             return 0;
         }
+    }
+
+    @Override
+    public void onRegister(Block block, Item blockItem){
+        ItemStorage.SIDED.registerForBlocks((world, pos, state, be, direction) -> TrashCanBlock.trashStorage(), block);
+        FluidStorage.SIDED.registerForBlocks((world, pos, state, be, direction) -> TrashCanBlock.trashStorage(), block);
+        FluidStorage.ITEM.registerForItems((key, ctx) -> TrashCanBlock.trashStorage(), blockItem);
     }
 }

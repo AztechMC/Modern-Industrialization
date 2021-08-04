@@ -16,7 +16,7 @@
     {
       "item": "minecraft:diamond_ore",
       "amount": 6,
-      "probability": 0.005
+      "probability": 0.02
     },
     {
       "item": "minecraft:lapis_ore",

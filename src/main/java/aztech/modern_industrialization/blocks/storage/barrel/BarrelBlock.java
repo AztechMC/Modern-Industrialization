@@ -21,24 +21,24 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.blocks.tank;
+package aztech.modern_industrialization.blocks.storage.barrel;
 
-import aztech.modern_industrialization.util.RenderHelper;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.client.render.VertexConsumerProvider;
-import net.minecraft.client.render.block.entity.BlockEntityRenderer;
-import net.minecraft.client.render.block.entity.BlockEntityRendererFactory;
-import net.minecraft.client.util.math.MatrixStack;
+import aztech.modern_industrialization.MIBlock;
+import aztech.modern_industrialization.ModernIndustrialization;
+import aztech.modern_industrialization.util.MobSpawning;
+import net.devtech.arrp.json.models.JModel;
+import net.devtech.arrp.json.models.JTextures;
+import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
+import net.minecraft.block.Material;
 
-public class TankRenderer implements BlockEntityRenderer<BlockEntity> {
-    public TankRenderer(BlockEntityRendererFactory.Context context) {
-    }
+public class BarrelBlock extends MIBlock {
 
-    @Override
-    public void render(BlockEntity entity, float tickDelta, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay) {
-        TankBlockEntity tank = (TankBlockEntity) entity;
-        if (!tank.fluid.isBlank() && tank.amount > 0) {
-            RenderHelper.drawFluidInTank(matrices, vertexConsumers, tank.fluid, (float) tank.amount / tank.capacity);
-        }
+    public BarrelBlock(String id) {
+        super(id, FabricBlockSettings.of(Material.METAL).hardness(4.0f).nonOpaque().allowsSpawning(MobSpawning.NO_SPAWN));
+
+        this.setBlockModel(JModel.model().parent("block/cube_column")
+                .textures(new JTextures().var("end", ModernIndustrialization.MOD_ID + ":blocks/" + id + "_end").var("side",
+                        ModernIndustrialization.MOD_ID + ":blocks/" + id + "_side")));
+
     }
 }

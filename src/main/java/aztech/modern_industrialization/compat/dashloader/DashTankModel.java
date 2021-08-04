@@ -23,7 +23,7 @@
  */
 package aztech.modern_industrialization.compat.dashloader;
 
-import aztech.modern_industrialization.blocks.tank.TankModel;
+import aztech.modern_industrialization.blocks.storage.tank.TankModel;
 import io.activej.serializer.annotations.Deserialize;
 import io.activej.serializer.annotations.Serialize;
 import net.fabricmc.fabric.api.renderer.v1.RendererAccess;

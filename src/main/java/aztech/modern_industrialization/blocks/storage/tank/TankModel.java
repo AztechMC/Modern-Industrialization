@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.blocks.tank;
+package aztech.modern_industrialization.blocks.storage.tank;
 
 import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.blocks.creativetank.CreativeTankItem;

@@ -28,7 +28,7 @@ import static net.fabricmc.fabric.api.client.command.v1.ClientCommandManager.lit
 import aztech.modern_industrialization.api.energy.CableTier;
 import aztech.modern_industrialization.api.pipes.item.SpeedUpgrade;
 import aztech.modern_industrialization.blocks.forgehammer.ForgeHammerScreen;
-import aztech.modern_industrialization.blocks.tank.CreativeTankSetup;
+import aztech.modern_industrialization.blocks.storage.tank.CreativeTankSetup;
 import aztech.modern_industrialization.debug.MissingTranslationsCommand;
 import aztech.modern_industrialization.inventory.ConfigurableInventoryPacketHandlers;
 import aztech.modern_industrialization.inventory.ConfigurableInventoryPackets;

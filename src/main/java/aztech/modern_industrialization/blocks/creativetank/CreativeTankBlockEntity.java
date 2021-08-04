@@ -24,7 +24,7 @@
 package aztech.modern_industrialization.blocks.creativetank;
 
 import aztech.modern_industrialization.api.FastBlockEntity;
-import aztech.modern_industrialization.blocks.tank.CreativeTankSetup;
+import aztech.modern_industrialization.blocks.storage.tank.CreativeTankSetup;
 import aztech.modern_industrialization.util.NbtHelper;
 import java.util.Iterator;
 import net.fabricmc.fabric.api.block.entity.BlockEntityClientSerializable;

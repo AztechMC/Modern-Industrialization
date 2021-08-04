@@ -66,8 +66,13 @@ public final class StandardRecipes {
         if (MIConfig.getConfig().enableEasyMode) {
             new ShapedRecipeBuilder(ctx, TANK, 1, "tank", "###", "#G#", "###").addPart('#', PLATE).addInput('G', "minecraft:glass")
                     .exportToAssembler();
+            new ShapedRecipeBuilder(ctx, BARREL, 1, "barrel", "###", "#b#", "###").addPart('#', PLATE).addInput('b', "minecraft:barrel")
+                    .exportToAssembler();
         } else {
             new ShapedRecipeBuilder(ctx, TANK, 1, "tank", "###", "#G#", "###").addPart('#', LARGE_PLATE).addInput('G', "minecraft:glass")
+                    .exportToAssembler();
+
+            new ShapedRecipeBuilder(ctx, BARREL, 1, "barrel", "###", "#b#", "###").addPart('#', LARGE_PLATE).addInput('b', "minecraft:barrel")
                     .exportToAssembler();
         }
 

@@ -27,7 +27,7 @@ import static aztech.modern_industrialization.ModernIndustrialization.ITEM_GROUP
 
 import aztech.modern_industrialization.MIBlock;
 import aztech.modern_industrialization.MIIdentifier;
-import aztech.modern_industrialization.blocks.tank.*;
+import aztech.modern_industrialization.blocks.storage.tank.*;
 import aztech.modern_industrialization.machines.models.MachineModelProvider;
 import aztech.modern_industrialization.materials.MaterialBuilder;
 import aztech.modern_industrialization.textures.TextureManager;

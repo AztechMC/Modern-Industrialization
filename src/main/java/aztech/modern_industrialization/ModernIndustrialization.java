@@ -25,23 +25,14 @@ package aztech.modern_industrialization;
 
 import aztech.modern_industrialization.api.FluidFuelRegistry;
 import aztech.modern_industrialization.api.energy.EnergyApi;
-import aztech.modern_industrialization.api.pipes.item.SpeedUpgrade;
-import aztech.modern_industrialization.blocks.TrashCanBlock;
-import aztech.modern_industrialization.blocks.forgehammer.ForgeHammerBlock;
 import aztech.modern_industrialization.blocks.forgehammer.ForgeHammerPacket;
 import aztech.modern_industrialization.blocks.forgehammer.ForgeHammerScreenHandler;
-import aztech.modern_industrialization.blocks.storage.tank.CreativeTankSetup;
+import aztech.modern_industrialization.blocks.tank.CreativeTankSetup;
 import aztech.modern_industrialization.compat.RecipeCompat;
 import aztech.modern_industrialization.inventory.ConfigurableInventoryPacketHandlers;
 import aztech.modern_industrialization.inventory.ConfigurableInventoryPackets;
-import aztech.modern_industrialization.items.FluidFuelItemHelper;
-import aztech.modern_industrialization.items.SteamDrillItem;
 import aztech.modern_industrialization.items.armor.ArmorPackets;
-import aztech.modern_industrialization.items.armor.JetpackItem;
 import aztech.modern_industrialization.items.armor.MIKeyMap;
-import aztech.modern_industrialization.items.diesel_tools.DieselToolItem;
-import aztech.modern_industrialization.items.tools.CrowbarItem;
-import aztech.modern_industrialization.items.tools.WrenchItem;
 import aztech.modern_industrialization.machines.MachinePackets;
 import aztech.modern_industrialization.machines.MachineScreenHandlers;
 import aztech.modern_industrialization.machines.init.*;
@@ -73,12 +64,13 @@ import net.fabricmc.fabric.api.object.builder.v1.block.FabricMaterialBuilder;
 import net.fabricmc.fabric.api.registry.FuelRegistry;
 import net.fabricmc.fabric.api.screenhandler.v1.ScreenHandlerRegistry;
 import net.fabricmc.fabric.api.tag.TagRegistry;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
-import net.fabricmc.fabric.api.transfer.v1.item.ItemStorage;
 import net.minecraft.block.Block;
 import net.minecraft.block.MapColor;
 import net.minecraft.block.Material;
-import net.minecraft.item.*;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemGroup;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.tag.Tag;
 import net.minecraft.util.Identifier;
@@ -87,8 +79,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public class ModernIndustrialization implements ModInitializer {
-
-
 
     public static final String MOD_ID = "modern_industrialization";
     public static final Logger LOGGER = LogManager.getLogger("Modern Industrialization");
@@ -105,7 +95,6 @@ public class ModernIndustrialization implements ModInitializer {
     public static final Tag<Item> OVERLAY_SOURCES = TagRegistry.item(new MIIdentifier("overlay_sources"));
     public static final Tag<Item> WRENCHES = TagRegistry.item(new Identifier("fabric:wrenches"));
     public static final Tag<Block> WRENCHABLES = TagRegistry.block(new Identifier("fabric:wrenchables"));
-
 
     // ScreenHandlerType
     public static final ScreenHandlerType<MachineScreenHandlers.Common> SCREEN_HANDLER_MACHINE = ScreenHandlerRegistry
@@ -154,7 +143,7 @@ public class ModernIndustrialization implements ModInitializer {
     private void setupItems() {
         for (Map.Entry<String, Item> entry : MIItem.items.entrySet()) {
             registerItem(entry.getValue(), entry.getKey());
-            if(MIItem.registrationEvents.containsKey(entry.getKey())){
+            if (MIItem.registrationEvents.containsKey(entry.getKey())) {
                 MIItem.registrationEvents.get(entry.getKey()).accept(entry.getValue());
             }
         }
@@ -172,15 +161,47 @@ public class ModernIndustrialization implements ModInitializer {
                 new Identifier(ID.getNamespace() + ":item/" + ID.getPath()));
     }
 
-
-
     private void setupBlocks() {
         for (Map.Entry<String, MIBlock> entry : MIBlock.blocks.entrySet()) {
             registerBlock(entry.getValue());
             entry.getValue().onRegister(entry.getValue(), entry.getValue().blockItem);
         }
+
         EnergyApi.MOVEABLE.registerForBlocks((world, pos, state, be, direction) -> EnergyApi.CREATIVE_EXTRACTABLE,
                 CreativeTankSetup.CREATIVE_TANK_BLOCK);
+    }
+
+    public static void registerBlock(Block block, Item item, String id, int flag) {
+        Identifier identifier = new MIIdentifier(id);
+        Registry.register(Registry.BLOCK, identifier, block);
+        if (Registry.ITEM.getOrEmpty(identifier).isEmpty()) {
+            Registry.register(Registry.ITEM, identifier, item);
+        }
+        if ((flag & MIBlock.FLAG_BLOCK_LOOT) != 0) {
+            if (block instanceof MIBlock) {
+                RESOURCE_PACK.addLootTable(new MIIdentifier("blocks/" + id), ((MIBlock) block).getLootTables());
+            } else {
+                RESOURCE_PACK.addLootTable(new MIIdentifier("blocks/" + id),
+                        JLootTable.loot("minecraft:block")
+                                .pool(new JPool().rolls(1).entry(new JEntry().type("minecraft:item").name(ModernIndustrialization.MOD_ID + ":" + id))
+                                        .condition(new JCondition("minecraft:survives_explosion"))));
+            }
+        }
+
+        // TODO: client side?
+        RESOURCE_PACK.addBlockState(JState.state().add(new JVariant().put("", new JBlockModel(MOD_ID + ":block/" + id))), identifier);
+
+        if ((flag & MIBlock.FLAG_BLOCK_MODEL) != 0)
+            RESOURCE_PACK.addModel(JModel.model().parent("block/cube_all").textures(new JTextures().var("all", MOD_ID + ":blocks/" + id)),
+                    new MIIdentifier("block/" + id));
+
+        if ((flag & MIBlock.FLAG_BLOCK_ITEM_MODEL) != 0)
+            RESOURCE_PACK.addModel(JModel.model().parent(MOD_ID + ":block/" + id), new MIIdentifier("item/" + id));
+
+    }
+
+    public static void registerBlock(Block block, Item item, String id) {
+        registerBlock(block, item, id, MIBlock.FLAG_BLOCK_LOOT | MIBlock.FLAG_BLOCK_ITEM_MODEL | MIBlock.FLAG_BLOCK_MODEL);
     }
 
     public static void registerBlock(MIBlock block) {
@@ -193,21 +214,19 @@ public class ModernIndustrialization implements ModInitializer {
 
         if ((block.FLAGS & MIBlock.FLAG_BLOCK_LOOT) != 0) {
             if (block instanceof MIBlock) {
-                RESOURCE_PACK.addLootTable(new MIIdentifier("blocks/" + block.id), );
+                RESOURCE_PACK.addLootTable(new MIIdentifier("blocks/" + block.id), block.getLootTables());
             }
         }
         // TODO: client side?
         RESOURCE_PACK.addBlockState(block.getBlockState(), identifier);
 
         if ((block.FLAGS & MIBlock.FLAG_BLOCK_MODEL) != 0)
-            RESOURCE_PACK.addModel(block.getBlockModel(),
-                    new MIIdentifier("block/" + block.id));
+            RESOURCE_PACK.addModel(block.getBlockModel(), new MIIdentifier("block/" + block.id));
 
         if ((block.FLAGS & MIBlock.FLAG_BLOCK_ITEM_MODEL) != 0)
             RESOURCE_PACK.addModel(block.getItemModel(), new MIIdentifier("item/" + block.id));
 
     }
-
 
     private void setupPackets() {
         ServerPlayNetworking.registerGlobalReceiver(ConfigurableInventoryPackets.SET_LOCKING_MODE,

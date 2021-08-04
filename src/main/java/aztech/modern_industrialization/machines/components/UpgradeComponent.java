@@ -24,7 +24,6 @@
 package aztech.modern_industrialization.machines.components;
 
 import aztech.modern_industrialization.MIItem;
-import aztech.modern_industrialization.ModernIndustrialization;
 import aztech.modern_industrialization.machines.IComponent;
 import aztech.modern_industrialization.machines.MachineBlockEntity;
 import java.util.IdentityHashMap;

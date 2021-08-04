@@ -29,16 +29,15 @@ import aztech.modern_industrialization.items.GuideBookItem;
 import aztech.modern_industrialization.items.SteamDrillItem;
 import aztech.modern_industrialization.items.armor.JetpackItem;
 import aztech.modern_industrialization.items.armor.RubberArmorMaterial;
+import aztech.modern_industrialization.items.diesel_tools.DieselToolItem;
+import aztech.modern_industrialization.items.tools.CrowbarItem;
+import aztech.modern_industrialization.items.tools.WrenchItem;
 import java.util.SortedMap;
 import java.util.SortedSet;
 import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.function.Consumer;
 import java.util.function.Function;
-
-import aztech.modern_industrialization.items.diesel_tools.DieselToolItem;
-import aztech.modern_industrialization.items.tools.CrowbarItem;
-import aztech.modern_industrialization.items.tools.WrenchItem;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.item.ArmorItem;
@@ -47,11 +46,9 @@ import net.minecraft.item.Item;
 @SuppressWarnings("unused")
 public final class MIItem {
 
-
     public static SortedMap<String, Item> items = new TreeMap<>();
     public static SortedMap<String, Consumer<Item>> registrationEvents = new TreeMap<>();
     public static SortedSet<String> handhelds = new TreeSet<>();
-
 
     public static Item of(String id) {
         return of(Item::new, id, 64);
@@ -73,24 +70,23 @@ public final class MIItem {
         return of(ctor, id, maxCount, null);
     }
 
-    public static  Item of(Function<Item.Settings, Item> ctor, String id, int maxCount, Consumer<Item> registrationEvent){
+    public static Item of(Function<Item.Settings, Item> ctor, String id, int maxCount, Consumer<Item> registrationEvent) {
         return of(ctor, id, maxCount, registrationEvent, false);
     }
 
-    public static  Item of(Function<Item.Settings, Item> ctor, String id, int maxCount, boolean handheld){
+    public static Item of(Function<Item.Settings, Item> ctor, String id, int maxCount, boolean handheld) {
         return of(ctor, id, maxCount, null, false);
     }
-
 
     public static Item of(Function<Item.Settings, Item> ctor, String id, int maxCount, Consumer<Item> registrationEvent, boolean handheld) {
         Item item = ctor.apply(new Item.Settings().maxCount(maxCount).group(ModernIndustrialization.ITEM_GROUP));
         if (items.put(id, item) != null) {
             throw new IllegalArgumentException("Item id already taken : " + id);
         }
-        if(registrationEvent != null){
+        if (registrationEvent != null) {
             registrationEvents.put(id, registrationEvent);
         }
-        if(handheld){
+        if (handheld) {
             handhelds.add(id);
         }
         return item;
@@ -146,7 +142,8 @@ public final class MIItem {
     public static final Item HIGHLY_ADVANCED_UPGRADE = of("highly_advanced_upgrade");
 
     public static final Item ADVANCED_MOTOR = of("advanced_motor", (item) -> SpeedUpgrade.LOOKUP.registerForItems((key, vd) -> () -> 32, item));
-    public static final Item LARGE_ADVANCED_MOTOR = of("large_advanced_motor", (item) -> SpeedUpgrade.LOOKUP.registerForItems((key, vd) -> () -> 64, item));
+    public static final Item LARGE_ADVANCED_MOTOR = of("large_advanced_motor",
+            (item) -> SpeedUpgrade.LOOKUP.registerForItems((key, vd) -> () -> 64, item));
     public static final Item ADVANCED_PUMP = of("advanced_pump");
     public static final Item LARGE_ADVANCED_PUMP = of("large_advanced_pump");
 
@@ -161,19 +158,19 @@ public final class MIItem {
     public static final Item ITEM_PACKER_BLOCK_TEMPLATE = of("packer_block_template", 1);
     public static final Item ITEM_PACKER_DOUBLE_INGOT_TEMPLATE = of("packer_double_ingot_template", 1);
 
-
     public static final Item ITEM_SCREWDRIVER = of("screwdriver", 1, true);
     public static final Item ITEM_WRENCH = of(WrenchItem::new, "wrench", 1, true);
-    public static final JetpackItem ITEM_DIESEL_JETPACK = (JetpackItem) of(JetpackItem::new, "diesel_jetpack", 1,
-            (item) -> FluidStorage.ITEM.registerForItems((stack, ctx) -> new FluidFuelItemHelper.ItemStorage(JetpackItem.CAPACITY, stack, ctx),
-            item));
+    public static final JetpackItem ITEM_DIESEL_JETPACK = (JetpackItem) of(JetpackItem::new, "diesel_jetpack", 1, (item) -> FluidStorage.ITEM
+            .registerForItems((stack, ctx) -> new FluidFuelItemHelper.ItemStorage(JetpackItem.CAPACITY, stack, ctx), item));
     public static final DieselToolItem ITEM_DIESEL_CHAINSAW = (DieselToolItem) of(DieselToolItem::new, "diesel_chainsaw", 1,
             (item) -> FluidStorage.ITEM.registerForItems((stack, ctx) -> new FluidFuelItemHelper.ItemStorage(DieselToolItem.CAPACITY, stack, ctx),
-            item), true);
+                    item),
+            true);
 
     public static final DieselToolItem ITEM_DIESEL_MINING_DRILL = (DieselToolItem) of(DieselToolItem::new, "diesel_mining_drill", 1,
             (item) -> FluidStorage.ITEM.registerForItems((stack, ctx) -> new FluidFuelItemHelper.ItemStorage(DieselToolItem.CAPACITY, stack, ctx),
-                    item), true);
+                    item),
+            true);
 
     public static final SteamDrillItem ITEM_STEAM_MINING_DRILL = (SteamDrillItem) of(SteamDrillItem::new, "steam_mining_drill", 1, true);
     public static final Item ITEM_CROWBAR = of(CrowbarItem::new, "crowbar", 1, true);

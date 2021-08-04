@@ -23,7 +23,7 @@
  */
 package aztech.modern_industrialization.compat.rei.forgehammer_recipe;
 
-import aztech.modern_industrialization.ModernIndustrialization;
+import aztech.modern_industrialization.MIBlock;
 import aztech.modern_industrialization.blocks.forgehammer.ForgeHammerScreen;
 import aztech.modern_industrialization.blocks.forgehammer.ForgeHammerScreenHandler;
 import aztech.modern_industrialization.machines.recipe.MachineRecipe;
@@ -44,7 +44,7 @@ public class ForgeHammerRecipePlugin implements REIClientPlugin {
     public void registerCategories(CategoryRegistry registry) {
         for (MachineRecipeType type : RECIPE_TYPES) {
             registry.add(new ForgeHammerRecipeCategory(type, type == RECIPE_TYPES[0]));
-            registry.addWorkstations(CategoryIdentifier.of(type.getId()), EntryStacks.of(ModernIndustrialization.ITEM_FORGE_HAMMER));
+            registry.addWorkstations(CategoryIdentifier.of(type.getId()), EntryStacks.of(MIBlock.FORGE_HAMMER.asItem()));
             registry.removePlusButton(CategoryIdentifier.of(type.getId()));
         }
     }

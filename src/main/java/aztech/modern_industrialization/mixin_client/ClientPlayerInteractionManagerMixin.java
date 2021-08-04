@@ -23,7 +23,7 @@
  */
 package aztech.modern_industrialization.mixin_client;
 
-import aztech.modern_industrialization.ModernIndustrialization;
+import aztech.modern_industrialization.MIItem;
 import aztech.modern_industrialization.items.SteamDrillItem;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerInteractionManager;
@@ -57,7 +57,7 @@ public class ClientPlayerInteractionManagerMixin {
     @Inject(at = @At("HEAD"), method = "isCurrentlyBreaking", cancellable = true)
     private void isCurrentlyBreakingSteamDrillInject(BlockPos pos, CallbackInfoReturnable<Boolean> cir) {
         ItemStack handStack = client.player.getMainHandStack();
-        if (handStack.getItem() == ModernIndustrialization.ITEM_STEAM_DRILL && selectedStack.getItem() == ModernIndustrialization.ITEM_STEAM_DRILL
+        if (handStack.getItem() == MIItem.ITEM_STEAM_MINING_DRILL && selectedStack.getItem() == MIItem.ITEM_STEAM_MINING_DRILL
                 && currentBreakingPos.equals(pos)) {
             cir.setReturnValue(SteamDrillItem.canMine(handStack, client.player));
         }

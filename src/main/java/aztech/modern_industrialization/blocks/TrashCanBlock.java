@@ -75,7 +75,7 @@ public class TrashCanBlock extends MIBlock {
     }
 
     @Override
-    public void onRegister(Block block, Item blockItem){
+    public void onRegister(Block block, Item blockItem) {
         ItemStorage.SIDED.registerForBlocks((world, pos, state, be, direction) -> TrashCanBlock.trashStorage(), block);
         FluidStorage.SIDED.registerForBlocks((world, pos, state, be, direction) -> TrashCanBlock.trashStorage(), block);
         FluidStorage.ITEM.registerForItems((key, ctx) -> TrashCanBlock.trashStorage(), blockItem);

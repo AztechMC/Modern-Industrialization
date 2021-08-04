@@ -23,17 +23,18 @@
  */
 package aztech.modern_industrialization.blocks.tank;
 
+import aztech.modern_industrialization.MIBlock;
 import aztech.modern_industrialization.ModernIndustrialization;
 import aztech.modern_industrialization.util.MobSpawning;
 import java.util.Arrays;
 import java.util.List;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockEntityProvider;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
+import java.util.function.Function;
+import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
+import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.loot.context.LootContext;
 import net.minecraft.loot.context.LootContextParameters;
@@ -46,11 +47,12 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 
-public class TankBlock extends Block implements BlockEntityProvider {
+public class TankBlock extends MIBlock implements BlockEntityProvider {
     public final BlockEntityProvider factory;
 
-    public TankBlock(Settings settings, BlockEntityProvider factory) {
-        super(settings.nonOpaque().allowsSpawning(MobSpawning.NO_SPAWN));
+    public TankBlock(String id, Function<MIBlock, BlockItem> blockItemCtor, BlockEntityProvider factory) {
+
+        super(id, FabricBlockSettings.of(Material.METAL).hardness(4.0f).nonOpaque().allowsSpawning(MobSpawning.NO_SPAWN), blockItemCtor, 0);
         this.factory = factory;
     }
 

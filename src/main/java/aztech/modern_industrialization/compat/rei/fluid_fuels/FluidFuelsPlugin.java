@@ -25,7 +25,6 @@ package aztech.modern_industrialization.compat.rei.fluid_fuels;
 
 import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.MIItem;
-import aztech.modern_industrialization.ModernIndustrialization;
 import aztech.modern_industrialization.api.FluidFuelRegistry;
 import aztech.modern_industrialization.util.TextHelper;
 import java.util.Collections;
@@ -52,8 +51,7 @@ public class FluidFuelsPlugin implements REIClientPlugin {
         addItem(registry, "diesel_generator", "turbo_diesel_generator", "large_diesel_generator");
         addDoubleEfficiency(registry, "large_steam_boiler", "advanced_large_steam_boiler", "high_pressure_large_steam_boiler",
                 "high_pressure_advanced_large_steam_boiler");
-        addItem(registry, MIItem.ITEM_DIESEL_JETPACK, MIItem.ITEM_DIESEL_CHAINSAW,
-                MIItem.ITEM_DIESEL_MINING_DRILL);
+        addItem(registry, MIItem.ITEM_DIESEL_JETPACK, MIItem.ITEM_DIESEL_CHAINSAW, MIItem.ITEM_DIESEL_MINING_DRILL);
 
         registry.removePlusButton(CATEGORY);
     }

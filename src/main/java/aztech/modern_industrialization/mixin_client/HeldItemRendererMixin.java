@@ -23,7 +23,7 @@
  */
 package aztech.modern_industrialization.mixin_client;
 
-import aztech.modern_industrialization.ModernIndustrialization;
+import aztech.modern_industrialization.MIItem;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.item.HeldItemRenderer;
 import net.minecraft.item.ItemStack;
@@ -49,7 +49,7 @@ public class HeldItemRendererMixin {
     @Inject(at = @At("HEAD"), method = "updateHeldItems")
     private void updateHeldItems(CallbackInfo ci) {
         ItemStack mainHandStack = client.player.getMainHandStack();
-        if (mainHand.getItem() == ModernIndustrialization.ITEM_STEAM_DRILL && mainHandStack.getItem() == ModernIndustrialization.ITEM_STEAM_DRILL) {
+        if (mainHand.getItem() == MIItem.ITEM_STEAM_MINING_DRILL && mainHandStack.getItem() == MIItem.ITEM_STEAM_MINING_DRILL) {
             mainHand = mainHandStack;
         }
     }

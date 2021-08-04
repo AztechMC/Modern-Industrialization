@@ -25,7 +25,6 @@ package aztech.modern_industrialization.compat.rei.machines;
 
 import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.MIItem;
-import aztech.modern_industrialization.ModernIndustrialization;
 import java.util.ArrayList;
 import java.util.List;
 import me.shedaniel.math.Point;

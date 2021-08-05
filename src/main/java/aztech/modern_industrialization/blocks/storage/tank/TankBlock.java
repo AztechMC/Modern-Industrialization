@@ -48,6 +48,7 @@ import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 
 public class TankBlock extends MIBlock implements BlockEntityProvider {
+
     public final BlockEntityProvider factory;
 
     public TankBlock(String id, Function<MIBlock, BlockItem> blockItemCtor, BlockEntityProvider factory) {

@@ -23,15 +23,26 @@
  */
 package aztech.modern_industrialization.materials.part;
 
+import aztech.modern_industrialization.MIBlock;
+import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.ModernIndustrialization;
 import aztech.modern_industrialization.blocks.storage.barrel.BarrelBlock;
+import aztech.modern_industrialization.blocks.storage.barrel.BarrelBlockEntity;
+import aztech.modern_industrialization.blocks.storage.barrel.BarrelItem;
 import aztech.modern_industrialization.materials.MaterialBuilder;
 import aztech.modern_industrialization.textures.TextureHelper;
 import aztech.modern_industrialization.textures.TextureManager;
 import aztech.modern_industrialization.textures.coloramp.Coloramp;
+import aztech.modern_industrialization.util.ResourceUtil;
 import java.io.IOException;
 import java.util.function.Function;
+import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
+import net.fabricmc.fabric.api.transfer.v1.item.ItemStorage;
+import net.minecraft.block.BlockEntityProvider;
+import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.client.texture.NativeImage;
+import net.minecraft.util.registry.Registry;
 
 public class BarrelMaterialPart implements MaterialPart {
 
@@ -41,6 +52,7 @@ public class BarrelMaterialPart implements MaterialPart {
     private final String idPath;
     private final String itemId;
     private BarrelBlock block;
+    private BlockEntityType<BlockEntity> blockEntityType;
 
     public BarrelMaterialPart(String materialName, Coloramp coloramp, int stackCapacity) {
         this.materialName = materialName;
@@ -48,6 +60,7 @@ public class BarrelMaterialPart implements MaterialPart {
         this.stackCapacity = stackCapacity;
         this.idPath = materialName + "_" + getPart();
         this.itemId = ModernIndustrialization.MOD_ID + ":" + idPath;
+
     }
 
     public static Function<MaterialBuilder.PartContext, MaterialPart> of(int stackCapacity) {
@@ -71,7 +84,16 @@ public class BarrelMaterialPart implements MaterialPart {
 
     @Override
     public void register(MaterialBuilder.RegisteringContext context) {
-        block = new BarrelBlock(idPath);
+        ResourceUtil.appendWrenchable(new MIIdentifier(idPath));
+
+        BlockEntityProvider factory = (pos, state) -> new BarrelBlockEntity(blockEntityType, pos, state, stackCapacity);
+        block = new BarrelBlock(idPath, (MIBlock block) -> new BarrelItem(block, stackCapacity), factory);
+
+        this.blockEntityType = Registry.register(Registry.BLOCK_ENTITY_TYPE, itemId,
+                FabricBlockEntityTypeBuilder.create(block.factory::createBlockEntity, block).build(null));
+
+        ItemStorage.SIDED.registerSelf(blockEntityType);
+
     }
 
     @Override

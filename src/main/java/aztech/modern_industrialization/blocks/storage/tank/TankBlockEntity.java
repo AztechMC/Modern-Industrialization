@@ -46,10 +46,6 @@ public class TankBlockEntity extends AbstractStorageBlockEntity<FluidVariant> {
         this.capacity = capacity;
     }
 
-    public boolean isEmpty() {
-        return amount == 0;
-    }
-
     @Override
     public void fromClientTag(NbtCompound tag) {
         resource = NbtHelper.getFluidCompatible(tag, "fluid");

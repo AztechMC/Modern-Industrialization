@@ -26,19 +26,82 @@ package aztech.modern_industrialization.blocks.storage.barrel;
 import aztech.modern_industrialization.MIBlock;
 import aztech.modern_industrialization.ModernIndustrialization;
 import aztech.modern_industrialization.util.MobSpawning;
+import java.util.Arrays;
+import java.util.List;
+import java.util.function.Function;
 import net.devtech.arrp.json.models.JModel;
 import net.devtech.arrp.json.models.JTextures;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
+import net.minecraft.block.BlockEntityProvider;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.block.Material;
+import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.entity.ItemEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.BlockItem;
+import net.minecraft.item.ItemStack;
+import net.minecraft.loot.context.LootContext;
+import net.minecraft.loot.context.LootContextParameters;
+import net.minecraft.loot.context.LootContextTypes;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.Hand;
+import net.minecraft.util.hit.BlockHitResult;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.BlockView;
+import net.minecraft.world.World;
+import org.jetbrains.annotations.Nullable;
 
-public class BarrelBlock extends MIBlock {
+public class BarrelBlock extends MIBlock implements BlockEntityProvider {
 
-    public BarrelBlock(String id) {
-        super(id, FabricBlockSettings.of(Material.METAL).hardness(4.0f).nonOpaque().allowsSpawning(MobSpawning.NO_SPAWN));
+    public final BlockEntityProvider factory;
+
+    public BarrelBlock(String id, Function<MIBlock, BlockItem> blockItemCtor, BlockEntityProvider factory) {
+        super(id, FabricBlockSettings.of(Material.METAL).hardness(4.0f).nonOpaque().allowsSpawning(MobSpawning.NO_SPAWN), blockItemCtor);
 
         this.setBlockModel(JModel.model().parent("block/cube_column")
                 .textures(new JTextures().var("end", ModernIndustrialization.MOD_ID + ":blocks/" + id + "_end").var("side",
                         ModernIndustrialization.MOD_ID + ":blocks/" + id + "_side")));
 
+        this.factory = factory;
+    }
+
+    @Nullable
+    @Override
+    public BlockEntity createBlockEntity(BlockPos pos, BlockState state) {
+        return factory.createBlockEntity(pos, state);
+    }
+
+    private ItemStack getStack(BlockEntity entity) {
+        BarrelBlockEntity blockEntity = (BarrelBlockEntity) entity;
+        ItemStack stack = new ItemStack(asItem());
+        if (!blockEntity.isEmpty()) {
+            NbtCompound tag = new NbtCompound();
+            tag.put("BlockEntityTag", blockEntity.toClientTag(new NbtCompound()));
+            stack.setTag(tag);
+        }
+        return stack;
+    }
+
+    @Override
+    public List<ItemStack> getDroppedStacks(BlockState state, LootContext.Builder builder) {
+        LootContext lootContext = builder.parameter(LootContextParameters.BLOCK_STATE, state).build(LootContextTypes.BLOCK);
+        return Arrays.asList(getStack(lootContext.get(LootContextParameters.BLOCK_ENTITY)));
+    }
+
+    @Override
+    public ItemStack getPickStack(BlockView world, BlockPos pos, BlockState state) {
+        return getStack(world.getBlockEntity(pos));
+    }
+
+    @Override
+    public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
+        if (player.isSneaking() && ModernIndustrialization.WRENCHES.contains(player.getMainHandStack().getItem())) {
+            world.spawnEntity(new ItemEntity(world, hit.getPos().x, hit.getPos().y, hit.getPos().z, getStack(world.getBlockEntity(pos))));
+            world.setBlockState(pos, Blocks.AIR.getDefaultState());
+            return ActionResult.success(world.isClient);
+        }
+        return ActionResult.PASS;
     }
 }

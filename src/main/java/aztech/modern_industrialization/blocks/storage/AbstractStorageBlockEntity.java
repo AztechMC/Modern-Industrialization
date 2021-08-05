@@ -126,6 +126,10 @@ public abstract class AbstractStorageBlockEntity<T extends TransferVariant> exte
         return amount;
     }
 
+    public boolean isEmpty() {
+        return amount == 0;
+    }
+
     @Override
     public long getVersion() {
         return version;

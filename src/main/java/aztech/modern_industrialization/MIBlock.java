@@ -103,6 +103,10 @@ public class MIBlock extends Block {
         this(id, settings, FLAG_BLOCK_LOOT | FLAG_BLOCK_MODEL | FLAG_BLOCK_ITEM_MODEL);
     }
 
+    public MIBlock(String id, Settings settings, Function<MIBlock, BlockItem> blockItemCtor) {
+        this(id, settings, blockItemCtor, FLAG_BLOCK_LOOT | FLAG_BLOCK_MODEL | FLAG_BLOCK_ITEM_MODEL);
+    }
+
     public MIBlock(String id) {
         this(id, FabricBlockSettings.of(METAL_MATERIAL).hardness(4.0f).breakByTool(FabricToolTags.PICKAXES).requiresTool()
                 .allowsSpawning(MobSpawning.NO_SPAWN));

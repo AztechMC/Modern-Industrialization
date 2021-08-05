@@ -44,26 +44,28 @@ public final class MaterialBuilder {
     private final String materialSet;
     private final Coloramp coloramp;
     private final String mainPart;
+    private final MaterialHardness hardness;
 
     private final Queue<RecipeAction> recipesActions = new LinkedList<>();
 
-    public MaterialBuilder(String materialName, MaterialSet materialSet, String mainPart, Coloramp coloramp) {
+    public MaterialBuilder(String materialName, MaterialSet materialSet, String mainPart, Coloramp coloramp, MaterialHardness hardness) {
         this.materialName = materialName;
         this.materialSet = materialSet.name;
         this.coloramp = coloramp;
         this.mainPart = mainPart;
+        this.hardness = hardness;
     }
 
-    public MaterialBuilder(String materialName, MaterialSet materialSet, String mainPart, int color) {
-        this(materialName, materialSet, mainPart, new DefaultColoramp(color));
+    public MaterialBuilder(String materialName, MaterialSet materialSet, String mainPart, int color, MaterialHardness hardness) {
+        this(materialName, materialSet, mainPart, new DefaultColoramp(color), hardness);
     }
 
-    public MaterialBuilder(String materialName, MaterialSet materialSet, Coloramp coloramp) {
-        this(materialName, materialSet, MIParts.INGOT, coloramp);
+    public MaterialBuilder(String materialName, MaterialSet materialSet, Coloramp coloramp, MaterialHardness hardness) {
+        this(materialName, materialSet, MIParts.INGOT, coloramp, hardness);
     }
 
-    public MaterialBuilder(String materialName, MaterialSet materialSet, int color) {
-        this(materialName, materialSet, MIParts.INGOT, new DefaultColoramp(color));
+    public MaterialBuilder(String materialName, MaterialSet materialSet, int color, MaterialHardness hardness) {
+        this(materialName, materialSet, MIParts.INGOT, new DefaultColoramp(color), hardness);
     }
 
     public String getMaterialName() {
@@ -220,6 +222,10 @@ public final class MaterialBuilder {
 
         public String getMainPart() {
             return mainPart;
+        }
+
+        public MaterialHardness getHardness() {
+            return hardness;
         }
     }
 

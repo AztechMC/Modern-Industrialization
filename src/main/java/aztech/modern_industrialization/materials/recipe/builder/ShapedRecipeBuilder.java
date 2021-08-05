@@ -93,11 +93,7 @@ public class ShapedRecipeBuilder implements MaterialRecipeBuilder {
     }
 
     public ShapedRecipeBuilder exportToMachine(String machine) {
-        return exportToMachine(machine, 2, 200, 1);
-    }
-
-    public ShapedRecipeBuilder exportToMachine(String machine, int division) {
-        return exportToMachine(machine, 2, 200, division);
+        return exportToMachine(machine, 2, (int) (200 * context.getHardness().timeFactor), 1);
     }
 
     public boolean isCanceled() {

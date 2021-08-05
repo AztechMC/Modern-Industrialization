@@ -50,7 +50,7 @@ public class MIRecipeBuilder implements MaterialRecipeBuilder {
     }
 
     public MIRecipeBuilder(MaterialBuilder.RecipeContext context, String type, String recipeSuffix) {
-        this(context, type, recipeSuffix, 2, 200);
+        this(context, type, recipeSuffix, 2, (int) (200 * context.getHardness().timeFactor));
     }
 
     public MIRecipeBuilder addPartInput(String part, int amount) {

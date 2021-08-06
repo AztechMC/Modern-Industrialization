@@ -100,8 +100,10 @@ public final class StandardRecipes {
         new MIRecipeBuilder(ctx, "macerator", "ore_to_crushed").addTaggedPartInput(ORE, 1).addPartOutput(CRUSHED_DUST, 3);
         new MIRecipeBuilder(ctx, "macerator", "ore_to_raw").addTaggedPartInput(ORE, 1).addPartOutput(RAW_METAL, 3);
 
-        new MIRecipeBuilder(ctx, "macerator", "crushed_dust").addTaggedPartInput(CRUSHED_DUST, 1).addPartOutput(DUST, 1).addPartOutput(DUST, 1, 0.5);
-        new MIRecipeBuilder(ctx, "macerator", "raw_metal").addTaggedPartInput(RAW_METAL, 1).addPartOutput(DUST, 1).addPartOutput(DUST, 1, 0.5);
+        new MIRecipeBuilder(ctx, "macerator", "crushed_dust", 2, (int) (100 * ctx.getHardness().timeFactor)).addTaggedPartInput(CRUSHED_DUST, 1)
+                .addPartOutput(DUST, 1).addPartOutput(DUST, 1, 0.5);
+        new MIRecipeBuilder(ctx, "macerator", "raw_metal", 2, (int) (100 * ctx.getHardness().timeFactor)).addTaggedPartInput(RAW_METAL, 1)
+                .addPartOutput(DUST, 1).addPartOutput(DUST, 1, 0.5);
         // COMPRESSOR
         new MIRecipeBuilder(ctx, "compressor", "main").addTaggedPartInput(ctx.getMainPart(), 1).addPartOutput(PLATE, 1);
         new MIRecipeBuilder(ctx, "compressor", "plate").addTaggedPartInput(PLATE, 1).addPartOutput(CURVED_PLATE, 1);

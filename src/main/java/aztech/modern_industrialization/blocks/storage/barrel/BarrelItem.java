@@ -31,6 +31,7 @@ import java.util.Optional;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.StoragePreconditions;
 import net.minecraft.block.Block;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.item.BundleTooltipData;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.client.item.TooltipData;
@@ -126,18 +127,22 @@ public class BarrelItem extends BlockItem {
             long stackNumber = amount / maxCount;
             long rem = amount % maxCount;
 
-            if (stackNumber > 0) {
-                if (rem != 0) {
-                    tooltip.add(new LiteralText(String.format("%d × %d + %d / %d × %d", stackNumber, maxCount, rem, stackCapacity, maxCount))
-                            .setStyle(TextHelper.YELLOW));
-
-                } else {
-                    tooltip.add(new LiteralText(String.format("%d × %d / %d × %d", stackNumber, maxCount, stackCapacity, maxCount))
-                            .setStyle(TextHelper.YELLOW));
-
-                }
+            if (maxCount == 1 || Screen.hasShiftDown()) {
+                tooltip.add(new LiteralText(String.format("%d / %d", amount, stackCapacity * maxCount)).setStyle(TextHelper.YELLOW));
             } else {
-                tooltip.add(new LiteralText(String.format("%d / %d × %d", rem, stackCapacity, maxCount)).setStyle(TextHelper.YELLOW));
+                if (stackNumber > 0) {
+                    if (rem != 0) {
+                        tooltip.add(new LiteralText(String.format("%d × %d + %d / %d × %d", stackNumber, maxCount, rem, stackCapacity, maxCount))
+                                .setStyle(TextHelper.YELLOW));
+
+                    } else {
+                        tooltip.add(new LiteralText(String.format("%d × %d / %d × %d", stackNumber, maxCount, stackCapacity, maxCount))
+                                .setStyle(TextHelper.YELLOW));
+
+                    }
+                } else {
+                    tooltip.add(new LiteralText(String.format("%d / %d × %d", rem, stackCapacity, maxCount)).setStyle(TextHelper.YELLOW));
+                }
             }
         } else {
             tooltip.add(new TranslatableText("text.modern_industrialization.empty").setStyle(style));

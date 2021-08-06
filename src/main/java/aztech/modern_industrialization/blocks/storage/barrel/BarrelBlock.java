@@ -23,6 +23,8 @@
  */
 package aztech.modern_industrialization.blocks.storage.barrel;
 
+import static aztech.modern_industrialization.ModernIndustrialization.METAL_MATERIAL;
+
 import aztech.modern_industrialization.MIBlock;
 import aztech.modern_industrialization.ModernIndustrialization;
 import aztech.modern_industrialization.util.MobSpawning;
@@ -32,10 +34,10 @@ import java.util.function.Function;
 import net.devtech.arrp.json.models.JModel;
 import net.devtech.arrp.json.models.JTextures;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
+import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
 import net.minecraft.block.BlockEntityProvider;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
-import net.minecraft.block.Material;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -58,7 +60,8 @@ public class BarrelBlock extends MIBlock implements BlockEntityProvider {
     public final BlockEntityProvider factory;
 
     public BarrelBlock(String id, Function<MIBlock, BlockItem> blockItemCtor, BlockEntityProvider factory) {
-        super(id, FabricBlockSettings.of(Material.METAL).hardness(4.0f).nonOpaque().allowsSpawning(MobSpawning.NO_SPAWN), blockItemCtor);
+        super(id, FabricBlockSettings.of(METAL_MATERIAL).hardness(4.0f).breakByTool(FabricToolTags.PICKAXES).requiresTool()
+                .allowsSpawning(MobSpawning.NO_SPAWN), blockItemCtor);
 
         this.setBlockModel(JModel.model().parent("block/cube_column")
                 .textures(new JTextures().var("end", ModernIndustrialization.MOD_ID + ":blocks/" + id + "_end").var("side",

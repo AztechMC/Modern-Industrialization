@@ -136,7 +136,8 @@ public class ModernIndustrialization implements ModInitializer {
             a.add(MIRecipes.buildRecipesPack());
         });
 
-        // Temporary hack to have compat with TR machines. They use InventoryProvider to return their sided inventory.
+        // Temporary hack to have compat with TR machines. They use InventoryProvider to
+        // return their sided inventory.
         ItemStorage.SIDED.registerFallback((world, pos, state, be, direction) -> {
             if (state.getBlock() instanceof InventoryProvider inventoryProvider) {
                 SidedInventory first = inventoryProvider.getInventory(state, world, pos);

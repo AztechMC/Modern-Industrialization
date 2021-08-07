@@ -23,7 +23,6 @@
  */
 package aztech.modern_industrialization.util;
 
-import aztech.modern_industrialization.mixin_client.ClientWorldAccessor;
 import com.mojang.blaze3d.systems.RenderSystem;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
@@ -187,7 +186,7 @@ public class RenderHelper {
      * Force chunk remesh.
      */
     public static void forceChunkRemesh(ClientWorld world, BlockPos pos) {
-        ((ClientWorldAccessor) world).getWorldRenderer().updateBlock(null, pos, null, null, 0);
+        world.scheduleBlockRenders(pos.getX(), pos.getY(), pos.getZ());
     }
 
     private static final float[] DEFAULT_BRIGHTNESSES = new float[] { 1, 1, 1, 1 };

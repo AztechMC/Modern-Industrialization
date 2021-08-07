@@ -7,7 +7,6 @@
     "BakedModelManagerAccessor",
     "ClientPlayerEntityMixin",
     "ClientPlayerInteractionManagerMixin",
-    "ClientWorldAccessor",
     "HandledScreenAccessor",
     "HeldItemRendererMixin"
   ],

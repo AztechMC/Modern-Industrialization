@@ -61,6 +61,19 @@ public class TextureManager {
     }
 
     /**
+     * Loads the texture from the lowest priority resource packs first (so we don't
+     * let resource packs override this texture).
+     */
+    public NativeImage getAssetAsTextureLowPrio(String textureId) throws IOException {
+        if (rm.containsResource(new Identifier(textureId))) {
+            Resource texture = rm.getAllResources(new Identifier(textureId)).get(0);
+            return NativeImage.read(new ByteArrayInputStream(ResourceUtil.getBytes(texture)));
+        } else {
+            throw new IOException("Couldn't find texture " + textureId);
+        }
+    }
+
+    /**
      * Add texture if it's not already loaded, but doesn't close the image.
      */
     public void addTexture(String textureId, NativeImage image) throws IOException {

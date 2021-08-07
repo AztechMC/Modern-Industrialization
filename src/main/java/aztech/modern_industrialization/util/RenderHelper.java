@@ -186,7 +186,7 @@ public class RenderHelper {
      * Force chunk remesh.
      */
     public static void forceChunkRemesh(ClientWorld world, BlockPos pos) {
-        world.scheduleBlockRenders(pos.getX(), pos.getY(), pos.getZ());
+        world.updateListeners(pos, null, null, 0);
     }
 
     private static final float[] DEFAULT_BRIGHTNESSES = new float[] { 1, 1, 1, 1 };

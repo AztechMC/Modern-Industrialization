@@ -64,9 +64,13 @@ import net.fabricmc.fabric.api.object.builder.v1.block.FabricMaterialBuilder;
 import net.fabricmc.fabric.api.registry.FuelRegistry;
 import net.fabricmc.fabric.api.screenhandler.v1.ScreenHandlerRegistry;
 import net.fabricmc.fabric.api.tag.TagRegistry;
+import net.fabricmc.fabric.api.transfer.v1.item.InventoryStorage;
+import net.fabricmc.fabric.api.transfer.v1.item.ItemStorage;
 import net.minecraft.block.Block;
+import net.minecraft.block.InventoryProvider;
 import net.minecraft.block.MapColor;
 import net.minecraft.block.Material;
+import net.minecraft.inventory.SidedInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
@@ -130,6 +134,21 @@ public class ModernIndustrialization implements ModInitializer {
         RRPCallback.EVENT.register(a -> {
             a.add(RESOURCE_PACK);
             a.add(MIRecipes.buildRecipesPack());
+        });
+
+        // Temporary hack to have compat with TR machines. They use InventoryProvider to return their sided inventory.
+        ItemStorage.SIDED.registerFallback((world, pos, state, be, direction) -> {
+            if (state.getBlock() instanceof InventoryProvider inventoryProvider) {
+                SidedInventory first = inventoryProvider.getInventory(state, world, pos);
+                SidedInventory second = inventoryProvider.getInventory(state, world, pos);
+
+                // Hopefully we can trust the sided inventory not to change.
+                if (first == second && first != null) {
+                    return InventoryStorage.of(first, direction);
+                }
+            }
+
+            return null;
         });
 
         ChunkEventListeners.init();

@@ -52,7 +52,7 @@ public class MachineBlock extends MIBlock implements TickableBlock {
 
     public MachineBlock(String machineId, BiFunction<BlockPos, BlockState, BlockEntity> blockEntityConstructor) {
         super(machineId, FabricBlockSettings.of(METAL_MATERIAL).hardness(4.0f).breakByTool(FabricToolTags.PICKAXES).requiresTool()
-                .allowsSpawning(MobSpawning.NO_SPAWN), 0);
+                .allowsSpawning(MobSpawning.NO_SPAWN), MIBlock.FLAG_BLOCK_LOOT);
         this.blockEntityConstructor = blockEntityConstructor;
     }
 

@@ -90,11 +90,11 @@ public class DyeRecipes {
                     .addInput('d', "#c:" + color.getName() + "_dyes").addInput('p', "#modern_industrialization:fluid_pipes");
             pack.addData(new MIIdentifier(pathPrefix + "craft/fluid_pipe_1.json"), GSON.toJson(oneFluidPipe).getBytes());
             // generate dyes with synthetic oil
-            MIRecipeJson syntheticOilDye = new MIRecipeJson("mixer", 2, 200).addFluidInput(MIFluids.SYNTHETIC_OIL, 1000)
+            MIRecipeJson syntheticOilDye = new MIRecipeJson("mixer", 2, 200).addFluidInput(MIFluids.SYNTHETIC_OIL, 100)
                     .addItemInput("#c:" + color.getName() + "_dyes", 1, 0).addOutput("minecraft:" + color.getName() + "_dye", 1);
             pack.addData(new MIIdentifier(pathPrefix + "mixer/synthetic_oil.json"), GSON.toJson(syntheticOilDye).getBytes());
             // generate dyes with benzene
-            MIRecipeJson benzeneDye = new MIRecipeJson("mixer", 2, 200).addFluidInput(MIFluids.BENZENE, 250)
+            MIRecipeJson benzeneDye = new MIRecipeJson("mixer", 2, 200).addFluidInput(MIFluids.BENZENE, 25)
                     .addItemInput("#c:" + color.getName() + "_dyes", 1, 0).addOutput("minecraft:" + color.getName() + "_dye", 1);
             pack.addData(new MIIdentifier(pathPrefix + "mixer/benzene.json"), GSON.toJson(benzeneDye).getBytes());
         }

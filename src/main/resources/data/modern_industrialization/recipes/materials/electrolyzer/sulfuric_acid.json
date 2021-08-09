@@ -1,14 +1,14 @@
 {
-  "type": "modern_industrialization:mixer",
-  "eu": 16,
-  "duration": 200,
-  "item_inputs": [
+  "type": "modern_industrialization:electrolyzer",
+  "eu": 32,
+  "duration": 300,
+  "item_outputs": [
     {
-    "tag": "c:sulfur_dusts",
+    "item": "modern_industrialization:sulfur_dust",
     "amount": 1
     }
   ],
-  "fluid_inputs": [
+  "fluid_outputs": [
     {
       "fluid": "modern_industrialization:oxygen",
       "amount": 200
@@ -18,9 +18,11 @@
       "amount": 200
     }
   ],
-  "fluid_outputs": {
+  "fluid_inputs": [
+    {
     "fluid": "modern_industrialization:sulfuric_acid",
     "amount": 500
   }
+    ]
 
 }

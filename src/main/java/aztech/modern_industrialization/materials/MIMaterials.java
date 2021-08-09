@@ -327,9 +327,7 @@ public class MIMaterials {
         MaterialRegistry.addMaterial(
                 new MaterialBuilder("chrome", SHINY, new BakableTargetColoramp(0xFFE6E6, common("ingot"), template("chrome_ingot")), AVERAGE)
                         .addRegularParts(CRUSHED_DUST).addParts(BlockMaterialPart.of(MaterialBlockSet.GOLD)).addRegularParts(ITEM_PURE_METAL)
-                        .addRegularParts(HOT_INGOT)
-                        .addRegularParts(PLATE, LARGE_PLATE, DOUBLE_INGOT)
-                        .addRecipes(StandardRecipes::apply)
+                        .addRegularParts(HOT_INGOT).addRegularParts(PLATE, LARGE_PLATE, DOUBLE_INGOT).addRecipes(StandardRecipes::apply)
                         .cancelRecipes("macerator/crushed_dust").build());
 
         MaterialRegistry.addMaterial(new MaterialBuilder("manganese", DULL, 0xC1C1C1, AVERAGE).addParts(BlockMaterialPart.of(MaterialBlockSet.IRON))

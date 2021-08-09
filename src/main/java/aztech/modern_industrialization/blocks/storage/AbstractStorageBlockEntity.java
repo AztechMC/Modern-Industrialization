@@ -39,7 +39,7 @@ import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.math.BlockPos;
 
-public abstract class AbstractStorageBlockEntity<T extends TransferVariant> extends FastBlockEntity
+public abstract class AbstractStorageBlockEntity<T extends TransferVariant<?>> extends FastBlockEntity
         implements Storage<T>, StorageView<T>, BlockEntityClientSerializable {
 
     protected T resource;

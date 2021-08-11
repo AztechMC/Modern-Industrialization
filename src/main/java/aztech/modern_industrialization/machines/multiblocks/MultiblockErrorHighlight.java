@@ -40,7 +40,7 @@ import org.jetbrains.annotations.Nullable;
 
 public class MultiblockErrorHighlight {
     private static final Map<BlockPos, @Nullable BlockState> highlightQueue = new HashMap<>();
-    private static final VertexConsumerProvider.Immediate immediate;
+    private static final VertexConsumerProvider.Immediate immediate = VertexConsumerProvider.immediate(new BufferBuilder(128));
 
     public static void init() {
         WorldRenderEvents.END.register(MultiblockErrorHighlight::end);
@@ -51,32 +51,30 @@ public class MultiblockErrorHighlight {
     }
 
     private static void end(WorldRenderContext wrc) {
-        RenderSystem.clear(256, MinecraftClient.IS_SYSTEM_MAC);
-        for (Map.Entry<BlockPos, @Nullable BlockState> entry : highlightQueue.entrySet()) {
-            wrc.matrixStack().push();
-            Vec3d cameraPos = MinecraftClient.getInstance().gameRenderer.getCamera().getPos();
-            BlockPos pos = entry.getKey();
-            double x = pos.getX() - cameraPos.x;
-            double y = pos.getY() - cameraPos.y;
-            double z = pos.getZ() - cameraPos.z;
-            wrc.matrixStack().translate(x + 0.25, y + 0.25, z + 0.25);
-            wrc.matrixStack().scale(0.5f, 0.5f, 0.5f);
+        if (highlightQueue.size() > 0) {
+            RenderSystem.clear(256, MinecraftClient.IS_SYSTEM_MAC);
+            for (Map.Entry<BlockPos, @Nullable BlockState> entry : highlightQueue.entrySet()) {
+                wrc.matrixStack().push();
+                Vec3d cameraPos = MinecraftClient.getInstance().gameRenderer.getCamera().getPos();
+                BlockPos pos = entry.getKey();
+                double x = pos.getX() - cameraPos.x;
+                double y = pos.getY() - cameraPos.y;
+                double z = pos.getZ() - cameraPos.z;
+                wrc.matrixStack().translate(x + 0.25, y + 0.25, z + 0.25);
+                wrc.matrixStack().scale(0.5f, 0.5f, 0.5f);
 
-            BlockState state = entry.getValue();
-            if (state == null) {
-                RenderHelper.drawCube(wrc.matrixStack(), immediate, 1, 50f / 256, 50f / 256, 15728880, OverlayTexture.DEFAULT_UV);
-            } else {
-                MinecraftClient.getInstance().getBlockRenderManager().renderBlockAsEntity(state, wrc.matrixStack(), immediate, 15728880,
-                        OverlayTexture.DEFAULT_UV);
+                BlockState state = entry.getValue();
+                if (state == null) {
+                    RenderHelper.drawCube(wrc.matrixStack(), immediate, 1, 50f / 256, 50f / 256, 15728880, OverlayTexture.DEFAULT_UV);
+                } else {
+                    MinecraftClient.getInstance().getBlockRenderManager().renderBlockAsEntity(state, wrc.matrixStack(), immediate, 15728880,
+                            OverlayTexture.DEFAULT_UV);
+                }
+
+                wrc.matrixStack().pop();
             }
-
-            wrc.matrixStack().pop();
+            immediate.draw();
+            highlightQueue.clear();
         }
-        highlightQueue.clear();
-        immediate.draw();
-    }
-
-    static {
-        immediate = VertexConsumerProvider.immediate(new BufferBuilder(128));
     }
 }

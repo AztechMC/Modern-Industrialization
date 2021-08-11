@@ -43,8 +43,8 @@ public abstract class MultiblockMachineBlockEntity extends MachineBlockEntity {
         registerComponents(orientation, shapeValid);
     }
 
-    protected final OrientationComponent orientation;
-    protected final ShapeValidComponent shapeValid;
+    public final OrientationComponent orientation;
+    public final ShapeValidComponent shapeValid;
 
     public boolean isShapeValid() {
         return shapeValid.shapeValid;

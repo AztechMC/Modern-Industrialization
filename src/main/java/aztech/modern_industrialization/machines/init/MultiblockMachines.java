@@ -76,6 +76,7 @@ public class MultiblockMachines {
     public static BlockEntityType PRESSURIZER;
     public static BlockEntityType IMPLOSION_COMPRESSOR;
     public static BlockEntityType NUCLEAR_REACTOR;
+    public static BlockEntityType LARGE_TANK;
 
     public static void init() {
         SimpleMember bricks = SimpleMember.forBlock(Blocks.BRICKS);
@@ -347,6 +348,10 @@ public class MultiblockMachines {
             NUCLEAR_REACTOR = MachineRegistrationHelper.registerMachine("nuclear_reactor", NuclearReactorMultiblockBlockEntity::new);
             NuclearReactorMultiblockBlockEntity.registerReiShapes();
         }
+
+        {
+            LARGE_TANK = MachineRegistrationHelper.registerMachine("large_tank", LargeTankMultiblockBlockEntity::new);
+        }
     }
 
     public static void oilDrillingRig() {
@@ -492,6 +497,11 @@ public class MultiblockMachines {
 
         MachineModels.addTieredMachine("nuclear_reactor", "nuclear_reactor", MachineCasings.NUCLEAR, true, false, false, false);
         BlockEntityRendererRegistry.INSTANCE.register(NUCLEAR_REACTOR, MultiblockMachineBER::new);
+
+        MachineModels.addTieredMachine("large_tank",
+                "large_tank", MachineCasings.STEEL, true, false, false, false);
+        BlockEntityRendererRegistry.INSTANCE.register(LARGE_TANK, MultiblockMachineBER::new);
+
     }
 
     private static final Rectangle CRAFTING_GUI = new Rectangle(CraftingMultiblockGui.X, CraftingMultiblockGui.Y,

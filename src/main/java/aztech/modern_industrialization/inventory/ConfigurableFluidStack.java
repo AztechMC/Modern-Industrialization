@@ -26,6 +26,7 @@ package aztech.modern_industrialization.inventory;
 import aztech.modern_industrialization.api.ReiDraggable;
 import aztech.modern_industrialization.util.Simulation;
 import aztech.modern_industrialization.util.UnsupportedOperationInventory;
+import com.google.common.base.Preconditions;
 import java.util.ArrayList;
 import java.util.List;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
@@ -151,6 +152,13 @@ public class ConfigurableFluidStack extends AbstractConfigurableStack<Fluid, Flu
             throw new IllegalStateException("amount > capacity in the fluid stack");
         if (amount < 0)
             throw new IllegalStateException("amount < 0 in the fluid stack");
+    }
+
+    public void setCapacity(long capacity) {
+        Preconditions.checkArgument(capacity >= 0, "Fluid Capacity must be > 0");
+        this.capacity = capacity;
+        if (amount > capacity)
+            amount = capacity;
     }
 
     public long getRemainingSpace() {

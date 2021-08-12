@@ -61,7 +61,7 @@ public class ShapeMatcher implements ChunkEventListener {
      * Convert a relative position in the shape template to the real position in the
      * world.
      */
-    private static BlockPos toWorldPos(BlockPos controllerPos, Direction controllerDirection, BlockPos templatePos) {
+    public static BlockPos toWorldPos(BlockPos controllerPos, Direction controllerDirection, BlockPos templatePos) {
         BlockPos rotatedPos;
         if (controllerDirection == NORTH)
             rotatedPos = templatePos;

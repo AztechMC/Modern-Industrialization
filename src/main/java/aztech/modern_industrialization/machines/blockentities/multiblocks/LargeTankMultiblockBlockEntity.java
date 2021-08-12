@@ -27,21 +27,23 @@ import aztech.modern_industrialization.MIBlock;
 import aztech.modern_industrialization.inventory.MIInventory;
 import aztech.modern_industrialization.machines.BEP;
 import aztech.modern_industrialization.machines.components.DynamicShapeComponent;
+import aztech.modern_industrialization.machines.components.FluidStorageComponent;
 import aztech.modern_industrialization.machines.components.OrientationComponent;
 import aztech.modern_industrialization.machines.gui.MachineGuiParameters;
 import aztech.modern_industrialization.machines.models.MachineCasings;
 import aztech.modern_industrialization.machines.models.MachineModelClientData;
 import aztech.modern_industrialization.machines.multiblocks.*;
 import aztech.modern_industrialization.util.Tickable;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.minecraft.block.Blocks;
+import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.math.BlockPos;
 
 public class LargeTankMultiblockBlockEntity extends MultiblockMachineBlockEntity
         implements Tickable, DynamicShapeComponent.DynamicShapeComponentBlockEntity {
-
-    private ShapeMatcher shapeMatcher;
-    private DynamicShapeComponent shapeComponent;
 
     private static final ShapeTemplate[] shapeTemplates;
 
@@ -50,6 +52,11 @@ public class LargeTankMultiblockBlockEntity extends MultiblockMachineBlockEntity
         for (int i = 0; i < shapeTemplates.length; i++) {
             shapeTemplates[i] = buildShape(i);
         }
+
+    }
+
+    public static void registerFluidAPI(BlockEntityType<?> bet) {
+        FluidStorage.SIDED.registerForBlockEntities((be, direction) -> ((LargeTankMultiblockBlockEntity) be).fluidStorage.getFluidStorage(), bet);
     }
 
     private static ShapeTemplate buildShape(int index) {
@@ -92,14 +99,20 @@ public class LargeTankMultiblockBlockEntity extends MultiblockMachineBlockEntity
         return templateBuilder.build();
     }
 
+    private ShapeMatcher shapeMatcher;
+    private final DynamicShapeComponent shapeComponent;
+    private final FluidStorageComponent fluidStorage;
+
     public LargeTankMultiblockBlockEntity(BEP bep) {
 
-        super(bep, new MachineGuiParameters.Builder("large_tank", true).build(),
+        super(bep, new MachineGuiParameters.Builder("large_tank", false).backgroundHeight(128).build(),
                 new OrientationComponent(new OrientationComponent.Params(false, false, false)));
 
         shapeComponent = new DynamicShapeComponent(shapeTemplates);
+        fluidStorage = new FluidStorageComponent();
 
         this.registerComponents(shapeComponent);
+        this.registerComponents(fluidStorage);
     }
 
     public MIInventory getInventory() {
@@ -136,6 +149,7 @@ public class LargeTankMultiblockBlockEntity extends MultiblockMachineBlockEntity
         if (!world.isClient) {
             link();
             markDirty();
+            sync(false);
         }
     }
 
@@ -156,6 +170,58 @@ public class LargeTankMultiblockBlockEntity extends MultiblockMachineBlockEntity
 
     @Override
     public void onMatchSuccessful() {
-        int i = shapeComponent.getActiveShapeIndex();
+        int index = shapeComponent.getActiveShapeIndex();
+        int sizeX = 3 + 2 * (index / 25);
+        int sizeY = 3 + (index % 25) / 5;
+        int sizeZ = 3 + (index % 25) % 5;
+        int volume = sizeX * sizeY * sizeZ;
+        long capacity = (long) volume * 64 * 81000; // 64 Bucket / Block
+        fluidStorage.setCapacity(capacity);
     }
+
+    public FluidVariant getFluid() {
+        return fluidStorage.getFluid();
+    }
+
+    public double getFullnessFraction() {
+        return (double) fluidStorage.getAmount() / fluidStorage.getCapacity();
+    }
+
+    public double[] getCornerPosition() {
+
+        int index = shapeComponent.getActiveShapeIndex();
+        int sizeX = 3 + 2 * (index / 25);
+        int sizeY = 3 + (index % 25) / 5;
+        int sizeZ = 3 + (index % 25) % 5;
+
+        BlockPos[] corners = new BlockPos[] { ShapeMatcher.toWorldPos(getPos(), orientation.facingDirection, new BlockPos(-sizeX / 2, 0, 1)),
+                ShapeMatcher.toWorldPos(getPos(), orientation.facingDirection, new BlockPos(sizeX / 2 - 1, 0, 1)),
+                ShapeMatcher.toWorldPos(getPos(), orientation.facingDirection, new BlockPos(sizeX / 2 - 1, 0, sizeZ - 1)),
+                ShapeMatcher.toWorldPos(getPos(), orientation.facingDirection, new BlockPos(-sizeX / 2, 1, sizeZ - 1)),
+
+                ShapeMatcher.toWorldPos(getPos(), orientation.facingDirection, new BlockPos(-sizeX / 2, sizeY - 2, 1)),
+                ShapeMatcher.toWorldPos(getPos(), orientation.facingDirection, new BlockPos(sizeX / 2 - 1, sizeY - 2, 1)),
+                ShapeMatcher.toWorldPos(getPos(), orientation.facingDirection, new BlockPos(sizeX / 2 - 1, sizeY - 2, sizeZ - 1)),
+                ShapeMatcher.toWorldPos(getPos(), orientation.facingDirection, new BlockPos(-sizeX / 2, sizeY - 2, sizeZ - 1)) };
+
+        double[] cornerPosition = new double[6];
+        for (int i = 0; i < 3; i++) {
+            cornerPosition[i] = -Double.MAX_VALUE;
+            cornerPosition[i + 3] = Double.MAX_VALUE;
+        }
+
+        for (int i = 0; i < 8; i++) {
+            cornerPosition[0] = Math.max(corners[i].getX() - this.getPos().getX(), cornerPosition[0]);
+            cornerPosition[1] = Math.max(corners[i].getY() - this.getPos().getY(), cornerPosition[1]);
+            cornerPosition[2] = Math.max(corners[i].getZ() - this.getPos().getZ(), cornerPosition[2]);
+
+            cornerPosition[3] = Math.min(corners[i].getX() - this.getPos().getX(), cornerPosition[3]);
+            cornerPosition[4] = Math.min(corners[i].getY() - this.getPos().getY(), cornerPosition[4]);
+            cornerPosition[5] = Math.min(corners[i].getZ() - this.getPos().getZ(), cornerPosition[5]);
+        }
+
+        return cornerPosition;
+
+    }
+
 }

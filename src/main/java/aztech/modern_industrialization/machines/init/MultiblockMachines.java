@@ -37,10 +37,7 @@ import aztech.modern_industrialization.machines.components.sync.CraftingMultiblo
 import aztech.modern_industrialization.machines.components.sync.ProgressBar;
 import aztech.modern_industrialization.machines.models.MachineCasings;
 import aztech.modern_industrialization.machines.models.MachineModels;
-import aztech.modern_industrialization.machines.multiblocks.HatchFlags;
-import aztech.modern_industrialization.machines.multiblocks.MultiblockMachineBER;
-import aztech.modern_industrialization.machines.multiblocks.ShapeTemplate;
-import aztech.modern_industrialization.machines.multiblocks.SimpleMember;
+import aztech.modern_industrialization.machines.multiblocks.*;
 import aztech.modern_industrialization.machines.recipe.MachineRecipe;
 import aztech.modern_industrialization.machines.recipe.MachineRecipeType;
 import net.fabricmc.fabric.api.client.rendereregistry.v1.BlockEntityRendererRegistry;
@@ -351,6 +348,7 @@ public class MultiblockMachines {
 
         {
             LARGE_TANK = MachineRegistrationHelper.registerMachine("large_tank", LargeTankMultiblockBlockEntity::new);
+            LargeTankMultiblockBlockEntity.registerFluidAPI(LARGE_TANK);
         }
     }
 
@@ -500,7 +498,7 @@ public class MultiblockMachines {
 
         MachineModels.addTieredMachine("large_tank",
                 "large_tank", MachineCasings.STEEL, true, false, false, false);
-        BlockEntityRendererRegistry.INSTANCE.register(LARGE_TANK, MultiblockMachineBER::new);
+        BlockEntityRendererRegistry.INSTANCE.register(LARGE_TANK, MultiblockTankBER::new);
 
     }
 

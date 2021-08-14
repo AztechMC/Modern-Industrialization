@@ -139,6 +139,11 @@ public class RenderHelper {
     }
 
     public static void drawFluidInGui(MatrixStack ms, FluidVariant fluid, int i, int j) {
+        drawFluidInGui(ms, fluid, i, j, 16, 1);
+        RenderSystem.enableDepthTest();
+    }
+
+    public static void drawFluidInGui(MatrixStack ms, FluidVariant fluid, float i, float j, int scale, float fractionUp) {
         RenderSystem.setShaderTexture(0, SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE);
         Sprite sprite = FluidVariantRendering.getSprite(fluid);
         int color = FluidVariantRendering.getColor(fluid);
@@ -154,15 +159,16 @@ public class RenderHelper {
         RenderSystem.setShader(GameRenderer::getPositionColorTexShader);
         BufferBuilder bufferBuilder = Tessellator.getInstance().getBuffer();
         bufferBuilder.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR_TEXTURE);
-        float x0 = (float) i;
-        float y0 = (float) j;
-        float x1 = x0 + 16;
-        float y1 = y0 + 16;
+        float x0 = i;
+        float y0 = j;
+        float x1 = x0 + scale;
+        float y1 = y0 + scale * fractionUp;
         float z = 0.5f;
         float u0 = sprite.getMinU();
-        float v0 = sprite.getMinV();
-        float u1 = sprite.getMaxU();
         float v1 = sprite.getMaxV();
+        float v0 = v1 + (sprite.getMinV() - v1) * fractionUp;
+        float u1 = sprite.getMaxU();
+
         Matrix4f model = ms.peek().getModel();
         bufferBuilder.vertex(model, x0, y1, z).color(r, g, b, 1).texture(u0, v1).next();
         bufferBuilder.vertex(model, x1, y1, z).color(r, g, b, 1).texture(u1, v1).next();

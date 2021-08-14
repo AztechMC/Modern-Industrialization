@@ -23,10 +23,15 @@
  */
 package aztech.modern_industrialization.util;
 
+import java.util.ArrayList;
+import java.util.List;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.transfer.v1.client.fluid.FluidVariantRendering;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.item.TooltipContext;
 import net.minecraft.text.*;
 
 public class FluidHelper {
@@ -39,10 +44,30 @@ public class FluidHelper {
         }
     }
 
+    public static List<Text> getTooltip(FluidVariant fluid, boolean grayIfEmpty) {
+
+        if (fluid.isBlank()) {
+            ArrayList<Text> list = new ArrayList();
+            list.add(getFluidName(fluid, grayIfEmpty));
+            return list;
+        }
+        return FluidVariantRendering.getTooltip(fluid,
+                MinecraftClient.getInstance().options.advancedItemTooltips ? TooltipContext.Default.ADVANCED : TooltipContext.Default.NORMAL);
+    }
+
     @Environment(EnvType.CLIENT)
     public static MutableText getFluidAmount(long amount, long capacity) {
-        String text = FluidTextHelper.getUnicodeMillibuckets(amount, false) + " / " + capacity / 81;
-        return new TranslatableText("text.modern_industrialization.fluid_slot_quantity", text);
+        if (capacity < 81 * 100000 || Screen.hasShiftDown()) {
+            String text = FluidTextHelper.getUnicodeMillibuckets(amount, false) + " / " + capacity / 81;
+            return new TranslatableText("text.modern_industrialization.fluid_slot_quantity_millibuckets", text);
+        } else if (capacity < 81 * 10000000) {
+            String text = String.format("%.3f / %.3f", ((double) amount / 81_000), ((double) capacity / 81_000));
+            return new TranslatableText("text.modern_industrialization.fluid_slot_quantity_buckets", text);
+        } else {
+            String text = String.format("%.3f / %.3f", ((double) amount / 81_000_000), ((double) capacity / 81_000_000));
+            return new TranslatableText("text.modern_industrialization.fluid_slot_quantity_kilobuckets", text);
+        }
+
     }
 
     public static int getColorMinLuminance(int color) {

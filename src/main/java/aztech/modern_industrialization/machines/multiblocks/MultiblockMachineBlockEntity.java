@@ -55,8 +55,9 @@ public abstract class MultiblockMachineBlockEntity extends MachineBlockEntity {
     @Override
     protected ActionResult onUse(PlayerEntity player, Hand hand, Direction face) {
         ActionResult result = OrientationHelper.onUse(player, hand, face, orientation, this);
-        if (result.isAccepted() && world.isClient) {
+        if (result.isAccepted() && !world.isClient) {
             unlink();
+            sync(false);
         }
         return result;
     }

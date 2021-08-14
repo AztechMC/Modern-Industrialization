@@ -56,8 +56,8 @@ public class MachineRecipeDisplay implements Display {
     private static final BiFunction<EntryStack<?>, Tooltip, Tooltip> FLUID_TOOLTIP = (stack, tooltip) -> {
         FluidStack fs = stack.castValue();
         long amount = stack.<FluidStack>cast().getValue().getAmount();
-        return Tooltip.create(FluidVariantRendering.getHandlerOrDefault(fs.getFluid()).getName(FluidVariant.of(fs.getFluid())),
-                new TranslatableText("text.modern_industrialization.fluid_slot_quantity", FluidTextHelper.getUnicodeMillibuckets(amount, false)));
+        return Tooltip.create(FluidVariantRendering.getHandlerOrDefault(fs.getFluid()).getName(FluidVariant.of(fs.getFluid())), new TranslatableText(
+                "text.modern_industrialization.fluid_slot_quantity_millibuckets", FluidTextHelper.getUnicodeMillibuckets(amount, false)));
     };
 
     public MachineRecipeDisplay(Identifier categoryId, MachineRecipe recipe) {
@@ -98,8 +98,8 @@ public class MachineRecipeDisplay implements Display {
         return EntryStacks.of(fluid, amount).setting(EntryStack.Settings.TOOLTIP_PROCESSOR, (stack, oldTooltip) -> {
             List<Text> tooltip = new ArrayList<>();
             tooltip.add(FluidVariantRendering.getName(FluidVariant.of(fluid)));
-            tooltip.add(
-                    new TranslatableText("text.modern_industrialization.fluid_slot_quantity", FluidTextHelper.getUnicodeMillibuckets(amount, false)));
+            tooltip.add(new TranslatableText("text.modern_industrialization.fluid_slot_quantity_millibuckets",
+                    FluidTextHelper.getUnicodeMillibuckets(amount, false)));
             if (probabilityText != null) {
                 tooltip.add(probabilityText);
             }

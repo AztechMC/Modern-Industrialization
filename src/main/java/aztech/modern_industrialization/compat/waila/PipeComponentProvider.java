@@ -87,12 +87,8 @@ public class PipeComponentProvider implements IComponentProvider {
                 FluidVariant fluid = NbtHelper.getFluidCompatible(tag, "fluid");
                 long amount = tag.getLong("amount");
                 int capacity = tag.getInt("capacity");
-                if (fluid.isBlank()) {
-                    tooltip.add(new TranslatableText("text.modern_industrialization.empty"));
-                } else {
-                    tooltip.add(FluidHelper.getFluidName(fluid, true));
-                    tooltip.add(FluidHelper.getFluidAmount(amount, capacity));
-                }
+                tooltip.addAll(FluidHelper.getTooltipForFluidStorage(fluid, amount, capacity));
+
             }
 
             if (tag.contains("eu")) {

@@ -30,13 +30,11 @@ import aztech.modern_industrialization.machines.gui.ClientComponentRenderer;
 import aztech.modern_industrialization.util.FluidHelper;
 import aztech.modern_industrialization.util.RenderHelper;
 import com.mojang.blaze3d.systems.RenderSystem;
-import java.util.List;
 import java.util.function.Supplier;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.network.PacketByteBuf;
-import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
 public class FluidGUIComponent {
@@ -99,38 +97,35 @@ public class FluidGUIComponent {
 
         public class Renderer implements ClientComponentRenderer {
 
-            private static final int posX = 64, posY = 20, scale = 48;
+            private static final int posX = 70, posY = 12;
 
             @Override
             public void renderBackground(DrawableHelper helper, MatrixStack matrices, int x, int y) {
                 FluidVariant fluid = fluidData.fluid;
                 float fracFull = (float) fluidData.amount / fluidData.capacity;
+
                 RenderSystem.setShaderTexture(0, MachineScreenHandlers.SLOT_ATLAS);
-                matrices.push();
-                matrices.translate(x + posX, y + posY - 1, 0);
-                matrices.scale(2, 2, 2);
-                helper.drawTexture(matrices, 0, 0, 85, 38, 25, 25);
-                matrices.pop();
+                helper.drawTexture(matrices, x + posX, y + posY, 92, 38, 46, 62);
 
                 if (!fluid.isBlank()) {
-                    RenderHelper.drawFluidInGui(matrices, fluid, x + posX, y + posY + ((1f - fracFull) * scale), scale, fracFull);
+                    for (int i = 0; i < 2; i++) {
+                        for (int j = 0; j < 3; j++) {
+                            float localFullness = Math.min(Math.max(3 * fracFull - (2 - j), 0), 1);
+                            RenderHelper.drawFluidInGui(matrices, fluid, x + posX + 7 + i * 16, y + posY + 7 + j * 16 + (1 - localFullness) * 16, 16,
+                                    localFullness);
+                        }
+                    }
                 }
-
                 RenderSystem.setShaderTexture(0, MachineScreenHandlers.SLOT_ATLAS);
-                matrices.push();
-                matrices.translate(x + posX, y + posY - 1, 0);
-                matrices.scale(2, 2, 2);
-                helper.drawTexture(matrices, 0, 0, 60, 38, 25, 25);
-                matrices.pop();
+                helper.drawTexture(matrices, x + posX + 7, y + posY + 6, 60, 38, 32, 49);
 
             }
 
             @Override
             public void renderTooltip(MachineScreenHandlers.ClientScreen screen, MatrixStack matrices, int x, int y, int cursorX, int cursorY) {
-                if (RenderHelper.isPointWithinRectangle(posX, posY, 50, 50, cursorX - x, cursorY - y)) {
-                    List<Text> tooltip = FluidHelper.getTooltip(fluidData.fluid, true);
-                    tooltip.add(FluidHelper.getFluidAmount(fluidData.amount, fluidData.capacity));
-                    screen.renderTooltip(matrices, tooltip, cursorX, cursorY);
+                if (RenderHelper.isPointWithinRectangle(posX + 7, posY + 7, 32, 48, cursorX - x, cursorY - y)) {
+                    screen.renderTooltip(matrices, FluidHelper.getTooltipForFluidStorage(fluidData.fluid, fluidData.amount, fluidData.capacity),
+                            cursorX, cursorY);
                 }
             }
         }

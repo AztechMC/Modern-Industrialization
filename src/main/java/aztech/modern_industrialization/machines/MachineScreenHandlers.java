@@ -369,8 +369,7 @@ public class MachineScreenHandlers {
                 ConfigurableFluidStack stack = ((ConfigurableFluidSlot) slot).getConfStack();
                 List<Text> tooltip = new ArrayList<>();
                 FluidVariant renderedKey = stack.isPlayerLocked() ? FluidVariant.of(stack.getLockedInstance()) : stack.getResource();
-                tooltip.add(FluidHelper.getFluidName(renderedKey, false));
-                tooltip.add(FluidHelper.getFluidAmount(stack.getAmount(), stack.getCapacity()));
+                tooltip.addAll(FluidHelper.getTooltipForFluidStorage(renderedKey, stack.getAmount(), stack.getCapacity(), false));
 
                 if (stack.canPlayerInsert()) {
                     if (stack.canPlayerExtract()) {

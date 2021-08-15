@@ -41,10 +41,7 @@ import net.minecraft.client.item.TooltipContext;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.text.Style;
 import net.minecraft.text.Text;
-import net.minecraft.text.TextColor;
-import net.minecraft.text.TranslatableText;
 import net.minecraft.world.World;
 
 public class TankItem extends BlockItem {
@@ -89,12 +86,10 @@ public class TankItem extends BlockItem {
 
     @Override
     public void appendTooltip(ItemStack stack, World world, List<Text> tooltip, TooltipContext context) {
-        Style style = Style.EMPTY.withColor(TextColor.fromRgb(0xa9a9a9)).withItalic(true);
-        if (!isEmpty(stack)) {
-            tooltip.add(FluidHelper.getFluidName(getFluid(stack), true));
-            tooltip.add(FluidHelper.getFluidAmount(getAmount(stack), capacity));
+        if (isEmpty(stack)) {
+            tooltip.addAll(FluidHelper.getTooltipForFluidStorage(FluidVariant.blank(), 0, capacity));
         } else {
-            tooltip.add(new TranslatableText("text.modern_industrialization.empty").setStyle(style));
+            tooltip.addAll(FluidHelper.getTooltipForFluidStorage(getFluid(stack), getAmount(stack), capacity));
         }
     }
 

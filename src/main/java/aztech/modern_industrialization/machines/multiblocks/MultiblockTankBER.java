@@ -39,6 +39,7 @@ import net.minecraft.client.render.block.entity.BlockEntityRendererFactory;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.Direction;
+import net.minecraft.util.math.Vec3i;
 
 public class MultiblockTankBER extends MultiblockMachineBER {
     public MultiblockTankBER(BlockEntityRendererFactory.Context context) {
@@ -61,18 +62,17 @@ public class MultiblockTankBER extends MultiblockMachineBER {
             float g = ((color >> 8) & 255) / 256f;
             float b = (color & 255) / 256f;
 
-            double[] cornerPosition = tankBlockEntity.getCornerPosition();
+            int[] cornerPosition = tankBlockEntity.getCornerPosition();
 
-            float maxX = (float) cornerPosition[0];
-            float maxY = (float) cornerPosition[1];
-            float maxZ = (float) cornerPosition[2];
+            int maxX = cornerPosition[0];
+            int totalMaxY = cornerPosition[1];
+            int maxZ = cornerPosition[2];
 
-            float minX = (float) cornerPosition[3];
-            float minY = (float) cornerPosition[4];
-            float minZ = (float) cornerPosition[5];
+            int minX = cornerPosition[3];
+            int totalMinY = cornerPosition[4];
+            int minZ = cornerPosition[5];
 
             float fullness = (float) tankBlockEntity.getFullnessFraction();
-
             // Top and bottom positions of the fluid inside the tank
             float topHeight = fullness;
             float bottomHeight = 0;
@@ -82,22 +82,74 @@ public class MultiblockTankBER extends MultiblockMachineBER {
                 bottomHeight = 1 - fullness;
             }
 
-            ms.translate(minX, minY, minZ);
-            ms.scale(maxX - minX, maxY - minY, maxZ - minZ);
+            int minY = (int) Math.floor(bottomHeight * (totalMaxY + 1 - totalMinY) + totalMinY);
+            int maxY = (int) Math.floor(topHeight * (totalMaxY + 1 - totalMinY) + totalMinY);
+
+            int[] mins = new int[] { minX, minY, minZ };
+            int[] maxs = new int[] { maxX, maxY, maxZ };
+            Vec3i[] dirs = new Vec3i[] { Direction.EAST.getVector(), Direction.UP.getVector(), Direction.SOUTH.getVector() };
 
             Renderer renderer = RendererAccess.INSTANCE.getRenderer();
+
             for (Direction direction : Direction.values()) {
                 QuadEmitter emitter = renderer.meshBuilder().getEmitter();
+                ms.push();
 
-                if (direction.getAxis().isVertical()) {
-                    emitter.square(direction, 0, 0, 1, 1, direction == Direction.UP ? 1 - topHeight : bottomHeight);
-                } else {
-                    emitter.square(direction, 0, bottomHeight, 1, topHeight, 0);
+                int u_index = direction.getAxis() == Direction.Axis.X ? 2 : 0;
+                int v_index = direction.getAxis() == Direction.Axis.Y ? 2 : 1;
+
+                Vec3i offset_u = dirs[u_index];
+                Vec3i offset_v = dirs[v_index];
+
+                int dirAxis = direction.getAxis() == Direction.Axis.X ? 0 : direction.getAxis() == Direction.Axis.Z ? 2 : 1;
+                int dirWays = direction.getId() % 2;
+                int offset_w = dirWays == 0 ? mins[dirAxis] : maxs[dirAxis];
+
+                Vec3i origin = offset_u.multiply(mins[u_index]).add(offset_v.multiply(mins[v_index])).add(dirs[dirAxis].multiply(offset_w));
+
+                float originX = origin.getX();
+                float originY = origin.getY();
+                float originZ = origin.getZ();
+
+                if (direction == Direction.UP) {
+                    originY = (topHeight * (totalMaxY + 1 - totalMinY)) - 1;
+                } else if (direction == Direction.DOWN) {
+                    originY = (bottomHeight * (totalMaxY + 1 - totalMinY));
                 }
 
-                emitter.spriteBake(0, sprite, MutableQuadView.BAKE_LOCK_UV);
-                emitter.spriteColor(0, -1, -1, -1, -1);
-                vc.quad(ms.peek(), emitter.toBakedQuad(0, sprite, false), r, g, b, RenderHelper.FULL_LIGHT, OverlayTexture.DEFAULT_UV);
+                ms.translate(originX, originY, originZ);
+
+                int max_u = maxs[u_index] - mins[u_index];
+                int max_v = maxs[v_index] - mins[v_index];
+
+                for (int u = 0; u <= max_u; u++) {
+                    ms.push();
+                    for (int v = 0; v <= max_v; v++) {
+
+                        float bottom = 0;
+                        float top = 1;
+
+                        if (!direction.getAxis().isVertical()) {
+                            if (v == 0) {
+                                bottom = (bottomHeight * (totalMaxY + 1 - totalMinY)) % 1.0f;
+                            }
+                            if (v == max_v) {
+                                top = (topHeight * (totalMaxY + 1 - totalMinY)) % 1.0f;
+                            }
+                        }
+
+                        emitter.square(direction, 0, bottom, 1, top, 0);
+                        emitter.spriteBake(0, sprite, MutableQuadView.BAKE_LOCK_UV);
+                        emitter.spriteColor(0, -1, -1, -1, -1);
+                        vc.quad(ms.peek(), emitter.toBakedQuad(0, sprite, false), r, g, b, RenderHelper.FULL_LIGHT, OverlayTexture.DEFAULT_UV);
+
+                        ms.translate(offset_v.getX(), offset_v.getY(), offset_v.getZ());
+                    }
+                    ms.pop();
+                    ms.translate(offset_u.getX(), offset_u.getY(), offset_u.getZ());
+                }
+
+                ms.pop();
             }
 
         }

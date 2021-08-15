@@ -207,7 +207,7 @@ public class LargeTankMultiblockBlockEntity extends MultiblockMachineBlockEntity
         return (double) fluidStorage.getAmount() / fluidStorage.getCapacity();
     }
 
-    public double[] getCornerPosition() {
+    public int[] getCornerPosition() {
 
         int index = shapeComponent.getActiveShapeIndex();
         int sizeX = 3 + 2 * (index / 25);
@@ -217,16 +217,16 @@ public class LargeTankMultiblockBlockEntity extends MultiblockMachineBlockEntity
         BlockPos[] corners = new BlockPos[] { ShapeMatcher.toWorldPos(getPos(), orientation.facingDirection, new BlockPos(-sizeX / 2 + 1, 0, 1)),
                 ShapeMatcher.toWorldPos(getPos(), orientation.facingDirection, new BlockPos(sizeX / 2 - 1, sizeY - 3, sizeZ - 2)), };
 
-        double[] cornerPosition = new double[6];
+        int[] cornerPosition = new int[6];
         for (int i = 0; i < 3; i++) {
-            cornerPosition[i] = -Double.MAX_VALUE;
-            cornerPosition[i + 3] = Double.MAX_VALUE;
+            cornerPosition[i] = Integer.MIN_VALUE;
+            cornerPosition[i + 3] = Integer.MAX_VALUE;
         }
 
         for (int i = 0; i < 2; i++) {
-            cornerPosition[0] = Math.max(corners[i].getX() - this.getPos().getX() + 1, cornerPosition[0]);
-            cornerPosition[1] = Math.max(corners[i].getY() - this.getPos().getY() + 1, cornerPosition[1]);
-            cornerPosition[2] = Math.max(corners[i].getZ() - this.getPos().getZ() + 1, cornerPosition[2]);
+            cornerPosition[0] = Math.max(corners[i].getX() - this.getPos().getX(), cornerPosition[0]);
+            cornerPosition[1] = Math.max(corners[i].getY() - this.getPos().getY(), cornerPosition[1]);
+            cornerPosition[2] = Math.max(corners[i].getZ() - this.getPos().getZ(), cornerPosition[2]);
 
             cornerPosition[3] = Math.min(corners[i].getX() - this.getPos().getX(), cornerPosition[3]);
             cornerPosition[4] = Math.min(corners[i].getY() - this.getPos().getY(), cornerPosition[4]);

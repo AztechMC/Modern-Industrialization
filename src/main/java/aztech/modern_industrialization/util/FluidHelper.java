@@ -35,6 +35,7 @@ import net.minecraft.client.item.TooltipContext;
 import net.minecraft.text.*;
 
 public class FluidHelper {
+
     public static Text getFluidName(FluidVariant fluid, boolean grayIfEmpty) {
         if (fluid.isBlank()) {
             Style style = grayIfEmpty ? Style.EMPTY.withColor(TextColor.fromRgb(0xa9a9a9)).withItalic(true) : Style.EMPTY;
@@ -53,6 +54,16 @@ public class FluidHelper {
         }
         return FluidVariantRendering.getTooltip(fluid,
                 MinecraftClient.getInstance().options.advancedItemTooltips ? TooltipContext.Default.ADVANCED : TooltipContext.Default.NORMAL);
+    }
+
+    public static List<Text> getTooltipForFluidStorage(FluidVariant fluid, long amount, long capacity, boolean grayIfEmpty) {
+        List<Text> tooltip = FluidHelper.getTooltip(fluid, grayIfEmpty);
+        tooltip.add(FluidHelper.getFluidAmount(amount, capacity));
+        return tooltip;
+    }
+
+    public static List<Text> getTooltipForFluidStorage(FluidVariant fluid, long amount, long capacity) {
+        return getTooltipForFluidStorage(fluid, amount, capacity, true);
     }
 
     @Environment(EnvType.CLIENT)

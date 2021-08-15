@@ -47,32 +47,49 @@ public class MIStorage<T, K extends TransferVariant<T>, S extends AbstractConfig
      */
     public long insert(K resource, long maxAmount, TransactionContext tx, Predicate<? super S> filter, boolean lockSlots) {
         StoragePreconditions.notBlankNotNegative(resource, maxAmount);
+        boolean containsResourceAlready = false;
         long totalInserted = 0;
 
         outer: for (int iter = 0; iter < 2; ++iter) {
-            boolean insertIntoEmptySlots = iter == 1;
             for (S stack : stacks) {
-                if (filter.test(stack) && stack.isResourceAllowedByLock(resource)) {
-                    if ((stack.getAmount() == 0 && insertIntoEmptySlots) || stack.getResource().equals(resource)) {
-                        long inserted = Math.min(maxAmount - totalInserted, stack.getRemainingCapacityFor(resource));
+                if (!filter.test(stack))
+                    continue;
+                boolean isSlotEmpty = stack.getAmount() == 0 && stack.getLockedInstance() == null;
+                boolean canInsert;
 
-                        if (inserted > 0) {
-                            stack.updateSnapshots(tx);
-                            stack.setKey(resource);
-                            stack.increment(inserted);
+                if (isSlotEmpty) {
+                    // Always check for the second iteration.
+                    if (oneSlotPerResource) {
+                        // Additionally check that the resource is not contained yet.
+                        canInsert = iter == 1 && !containsResourceAlready;
+                    } else {
+                        canInsert = iter == 1;
+                    }
+                } else if (stack.getAmount() == 0) {
+                    // If the amount is 0, we check if the lock allows it.
+                    canInsert = stack.isResourceAllowedByLock(resource);
+                } else {
+                    // Otherwise we check that the resources match exactly.
+                    canInsert = stack.getResource().equals(resource);
+                }
 
-                            if (lockSlots) {
-                                stack.enableMachineLock(resource.getObject());
-                            }
-                        }
+                if (canInsert) {
+                    long inserted = Math.min(maxAmount - totalInserted, stack.getRemainingCapacityFor(resource));
 
-                        totalInserted += inserted;
+                    if (inserted > 0) {
+                        stack.updateSnapshots(tx);
+                        stack.setKey(resource);
+                        stack.increment(inserted);
 
-                        if (oneSlotPerResource) {
-                            break outer;
+                        if (lockSlots) {
+                            stack.enableMachineLock(resource.getObject());
                         }
                     }
+
+                    totalInserted += inserted;
                 }
+
+                containsResourceAlready = containsResourceAlready || stack.getResource().equals(resource);
             }
         }
 

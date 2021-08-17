@@ -76,7 +76,7 @@ public final class StandardRecipes {
                     .exportToAssembler();
         }
 
-        new ShapedRecipeBuilder(ctx, DRILL_HEAD, 1, "drill_head", "bcp", "GRc", "bGb").addPart('G', GEAR).addPart('b', BOLT)
+        new ShapedRecipeBuilder(ctx, DRILL_HEAD, 1, "drill_head", "bcp", "GRc", "bGb").addTaggedPart('G', GEAR).addPart('b', BOLT)
                 .addPart('c', CURVED_PLATE).addPart('R', ROD).addPart('p', PLATE);
 
         // MACERATOR

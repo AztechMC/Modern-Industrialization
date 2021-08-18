@@ -14,13 +14,13 @@
     },
     {
       "type": "crafting",
-      "recipe": "modern_industrialization:steam_age/bronze/item_input_hatch_asbl",
-      "recipe2": "modern_industrialization:steam_age/bronze/item_output_hatch_asbl"
+      "recipe": "modern_industrialization:generated/hatches/bronze/item_input_hatch",
+      "recipe2": "modern_industrialization:generated/hatches/bronze/item_output_hatch"
     },
     {
       "type": "crafting",
-      "recipe": "modern_industrialization:steam_age/bronze/fluid_input_hatch_asbl",
-      "recipe2": "modern_industrialization:steam_age/bronze/fluid_output_hatch_asbl"
+      "recipe": "modern_industrialization:generated/hatches/bronze/fluid_input_hatch",
+      "recipe2": "modern_industrialization:generated/hatches/bronze/fluid_output_hatch"
     },
     {
       "type": "text",

@@ -15,7 +15,7 @@
     {
       "type": "crafting",
       "recipe": "modern_industrialization:electric_age/machine/diesel_generator_asbl",
-      "text": "Various fuels can be burned in the Diesel Generator, and you can check in REI how many EU each fuel produces. The Diesel Generator will produce up to 128 EU/t and will only connect to MV cables. "
+      "text": "Various fuels can be burned in the Diesel Generator, and you can check in REI how many EU each fuel produces. The Diesel Generator will produce up to 128 EU/t and will only connect to MV cables."
     },
     {
       "type": "text",

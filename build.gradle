@@ -99,7 +99,6 @@ repositories {
         name = "Technici4n"
         url = "https://raw.githubusercontent.com/Technici4n/Technici4n-maven/master/"
         content {
-            includeGroup "net.fabricmc.fabric-api"
             includeGroup "dev.technici4n"
             includeGroup "dev.latvian.mods"
         }
@@ -122,10 +121,6 @@ repositories {
 }
 
 dependencies {
-    // Temporary WIP fabric api fork
-    include modImplementation("net.fabricmc.fabric-api:fabric-api-lookup-api-v1:1.3.0+b246072f13")
-    include modImplementation("net.fabricmc.fabric-api:fabric-transfer-api-v1:1.1.0-pre.06+c35ca56f18")
-
     minecraft "com.mojang:minecraft:${project.minecraft_version}"
     mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
     modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
@@ -153,7 +148,9 @@ dependencies {
 
     include modApi("dev.technici4n:FastTransferLib:${project.ftl_version}")
 
-    modCompileOnly 'net.oskarstrom:DashLoader:2.1-dev4'
+    modCompileOnly('net.oskarstrom:DashLoader:2.1-dev4') {
+        exclude(group: "net.fabricmc.fabric-api")
+    }
 
     // Other mods for testing purposes
     //modRuntime "appeng:appliedenergistics2-fabric:${project.appeng_version}"

@@ -45,7 +45,7 @@
   "accessWidener": "modern_industrialization.accesswidener",
   "depends": {
     "fabricloader": ">=0.7.4",
-    "fabric": ">=0.36",
+    "fabric": ">=0.38",
     "minecraft": "^1.17.1",
     "patchouli": "*",
     "roughlyenoughitems": "*"

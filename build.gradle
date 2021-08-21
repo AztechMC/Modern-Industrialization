@@ -335,4 +335,3 @@ task publishModrinth (type: TaskModrinthUpload){
     addGameVersion "1.17.1"
     addLoader "fabric"
 }
-

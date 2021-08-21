@@ -5,6 +5,8 @@ plugins {
     id 'com.matthewprenger.cursegradle' version '1.4.0'
 }
 
+apply plugin: 'java-library'
+
 version = System.getenv("MI_VERSION")
         ? System.getenv("MI_VERSION")
         : "local"
@@ -81,6 +83,8 @@ repositories {
             /* To build astromine */
             includeGroup "com.github.vini2003"
             includeGroup "com.github.Shnupbups"
+            /* Curse Forge API */
+            includeGroup "com.github.TheRandomLabs"
         }
     }
     // to build indrev
@@ -118,6 +122,7 @@ repositories {
         }
     }
     mavenLocal()
+
 }
 
 dependencies {
@@ -151,6 +156,8 @@ dependencies {
     modCompileOnly('net.oskarstrom:DashLoader:2.1-dev4') {
         exclude(group: "net.fabricmc.fabric-api")
     }
+
+    api "com.github.TheRandomLabs:CurseAPI:master-SNAPSHOT"
 
     // Other mods for testing purposes
     //modRuntime "appeng:appliedenergistics2-fabric:${project.appeng_version}"

@@ -39,6 +39,7 @@ import aztech.modern_industrialization.machines.init.*;
 import aztech.modern_industrialization.machines.multiblocks.world.ChunkEventListeners;
 import aztech.modern_industrialization.materials.MIMaterials;
 import aztech.modern_industrialization.misc.guidebook.GuidebookEvents;
+import aztech.modern_industrialization.misc.version.VersionEvents;
 import aztech.modern_industrialization.pipes.MIPipes;
 import aztech.modern_industrialization.recipe.MIRecipes;
 import java.util.Map;
@@ -156,6 +157,7 @@ public class ModernIndustrialization implements ModInitializer {
         PlayerChangeWorldCallback.EVENT.register((player, oldWorld, newWorld) -> MIKeyMap.clear(player));
         PlayerLeaveCallback.EVENT.register(MIKeyMap::clear);
         GuidebookEvents.init();
+        VersionEvents.init();
 
         LOGGER.info("Modern Industrialization setup done!");
     }

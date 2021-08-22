@@ -22,6 +22,11 @@
     {
       "type": "text",
       "text": "The different types of pipes don't work exactly the same way.$(br2)Every tick, fluid pipes will try to evenly extract for all connected blocks, and then try to insert that evenly. $(l:modern_industrialization:midgame/fluid_transfer)Read more about their speed here.$()$(br2)Item pipes will insert items into higher priorities first, and they will transfer 16 items every few seconds. $(l)They can be upgraded with motors.$()"
+    },
+    {
+      "type": "text",
+      "title": "Note",
+      "text": "The item pipes are on whitelist by default (which mean only the items in the filter will be moved). You need to switch to blacklist (only the items NOT in the filter will be moved) or add the item you want to move to the filter. Be careful that you need to configure both sides of the pipe, otherwise items will not move."
     }
   ],
   "sortnum": 4

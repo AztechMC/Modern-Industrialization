@@ -81,6 +81,7 @@ public class RecipeCompat {
             addMiRecipe("macerator", "techreborn:yellow_garnet_gem", "techreborn:yellow_garnet_dust", 1);
             addMiRecipe("macerator", "#c:zinc_ingots", "techreborn:zinc_dust", 1);
             addMiRecipe("macerator", "#c:silver_ores", "techreborn:raw_silver", 2);
+            addMiRecipe("macerator", "#c:sphalerite_ores", "techreborn:sphalerite_dust", 2);
 
             for (Material material : MaterialRegistry.getMaterials().values()) {
                 if (material.getParts().containsKey(MIParts.CURVED_PLATE)) {
@@ -117,6 +118,7 @@ public class RecipeCompat {
             ModernIndustrialization.LOGGER.info("Industrial Revolution is detected, loading compatibility recipes for Modern Industrialization!");
 
             addMiRecipe("macerator", "indrev:nikolite_ore", "indrev:nikolite_dust", 7);
+            addMiRecipe("macerator", "indrev:deepslate_nikolite_ore", "indrev:nikolite_dust", 7);
             addMiRecipe("macerator", "#c:silver_ores", "indrev:raw_silver", 2);
 
             // quarry recipe for nikolite

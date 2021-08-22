@@ -3,6 +3,7 @@ plugins {
     id 'maven-publish'
     id 'com.diffplug.spotless' version '5.14.0'
     id 'com.matthewprenger.cursegradle' version '1.4.0'
+    id "com.modrinth.minotaur" version "1.2.1"
 }
 
 apply plugin: 'java-library'
@@ -323,4 +324,21 @@ if (System.getenv("CURSEFORGE_API_KEY") && !version.endsWith("-SNAPSHOT")) {
             tasks.getByName("curseforge${project.curseforge_project}").dependsOn remapJar
         }
     }
+}
+
+import com.modrinth.minotaur.TaskModrinthUpload
+
+task publishModrinth (type: TaskModrinthUpload){
+    onlyIf {
+        System.getenv("MODRINTH_API_KEY") && !version.endsWith("-SNAPSHOT")
+    }
+    token = System.getenv("MODRINTH_API_KEY")
+    projectId = project.modrinth_project
+    versionNumber = version
+    versionName = "Modern Industrialization v${version}"
+    delegate.changelog = changelog
+    versionType = releaseChannel.toUpperCase()
+    uploadFile = remapJar.archiveFile
+    addGameVersion "1.17.1"
+    addLoader "fabric"
 }

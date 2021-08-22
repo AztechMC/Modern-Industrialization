@@ -79,7 +79,7 @@ public class VersionEvents {
                             }
                         }
 
-                    } catch (CurseException e) {
+                    } catch(Exception e) {
                         ModernIndustrialization.LOGGER.error(e.getMessage(), e);
                     }
                 } else {

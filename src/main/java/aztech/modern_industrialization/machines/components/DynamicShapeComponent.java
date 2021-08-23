@@ -28,11 +28,18 @@ import aztech.modern_industrialization.machines.multiblocks.MultiblockMachineBlo
 import aztech.modern_industrialization.machines.multiblocks.ShapeMatcher;
 import aztech.modern_industrialization.machines.multiblocks.ShapeTemplate;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.world.World;
 
 public class DynamicShapeComponent implements IComponent {
 
     public final ShapeTemplate[] shapeTemplates;
     private int activeShape = 0;
+    private ShapeMatcher shapeMatcher;
+    /**
+     * Not actually a shape matcher, it's just used to listen to block updates in
+     * the union of all shapes.
+     */
+    private ShapeMatcher unionShapeMatcher;
 
     public DynamicShapeComponent(ShapeTemplate[] shapeTemplates) {
         this.shapeTemplates = shapeTemplates;
@@ -57,10 +64,15 @@ public class DynamicShapeComponent implements IComponent {
     }
 
     public void link(DynamicShapeComponentBlockEntity dynamicShapeBlockEntity) {
-
         MultiblockMachineBlockEntity blockEntity = dynamicShapeBlockEntity.getMultiblockMachineBlockEntity();
 
-        ShapeMatcher currentShapeMatcher = dynamicShapeBlockEntity.getShapeMatcher();
+        if (unionShapeMatcher == null) {
+            unionShapeMatcher = new ShapeMatcher(blockEntity.getWorld(), blockEntity.getPos(), blockEntity.orientation.facingDirection,
+                    ShapeTemplate.computeDummyUnion(shapeTemplates));
+            unionShapeMatcher.registerListeners(blockEntity.getWorld());
+        }
+
+        ShapeMatcher currentShapeMatcher = shapeMatcher;
         ShapeMatcher oldShapeMatcher = currentShapeMatcher;
 
         for (int j = 0; j < shapeTemplates.length; j++) {
@@ -74,7 +86,7 @@ public class DynamicShapeComponent implements IComponent {
                         currentShapeAttempt);
             }
 
-            if (currentShapeMatcher.needsRematch()) {
+            if (currentShapeMatcher.needsRematch() || unionShapeMatcher.needsRematch()) {
                 blockEntity.shapeValid.shapeValid = false;
                 currentShapeMatcher.rematch(blockEntity.getWorld());
 
@@ -82,7 +94,7 @@ public class DynamicShapeComponent implements IComponent {
 
                     if (currentShapeMatcher != oldShapeMatcher) {
                         unlink(dynamicShapeBlockEntity);
-                        dynamicShapeBlockEntity.setShapeMatcher(currentShapeMatcher);
+                        shapeMatcher = currentShapeMatcher;
                         currentShapeMatcher.registerListeners(blockEntity.getWorld());
                     }
 
@@ -117,18 +129,20 @@ public class DynamicShapeComponent implements IComponent {
     }
 
     public void unlink(DynamicShapeComponentBlockEntity dynamicShapeBlockEntity) {
-        if (dynamicShapeBlockEntity.getShapeMatcher() != null) {
-            dynamicShapeBlockEntity.getShapeMatcher().unlinkHatches();
-            dynamicShapeBlockEntity.getShapeMatcher().unregisterListeners(dynamicShapeBlockEntity.getMultiblockMachineBlockEntity().getWorld());
-            dynamicShapeBlockEntity.setShapeMatcher(null);
+        World world = dynamicShapeBlockEntity.getMultiblockMachineBlockEntity().getWorld();
+
+        if (shapeMatcher != null) {
+            shapeMatcher.unlinkHatches();
+            shapeMatcher.unregisterListeners(world);
+            shapeMatcher = null;
+        }
+        if (unionShapeMatcher != null) {
+            unionShapeMatcher.unregisterListeners(world);
+            unionShapeMatcher = null;
         }
     }
 
     public interface DynamicShapeComponentBlockEntity {
-
-        ShapeMatcher getShapeMatcher();
-
-        void setShapeMatcher(ShapeMatcher shapeMatcher);
 
         MultiblockMachineBlockEntity getMultiblockMachineBlockEntity();
 

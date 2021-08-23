@@ -24,8 +24,10 @@
 package aztech.modern_industrialization.machines.multiblocks;
 
 import aztech.modern_industrialization.machines.models.MachineCasing;
+import aztech.modern_industrialization.machines.models.MachineCasings;
 import java.util.HashMap;
 import java.util.Map;
+import net.minecraft.block.Blocks;
 import net.minecraft.util.math.BlockPos;
 import org.jetbrains.annotations.Nullable;
 
@@ -96,5 +98,17 @@ public class ShapeTemplate {
             remove(0, 0, 0);
             return template;
         }
+    }
+
+    public static ShapeTemplate computeDummyUnion(ShapeTemplate[] templates) {
+        Builder builder = new ShapeTemplate.Builder(MachineCasings.BRICKS);
+
+        for (ShapeTemplate template : templates) {
+            for (BlockPos pos : template.simpleMembers.keySet()) {
+                builder.add(pos.getX(), pos.getY(), pos.getZ(), SimpleMember.forBlock(Blocks.BARREL), null);
+            }
+        }
+
+        return builder.build();
     }
 }

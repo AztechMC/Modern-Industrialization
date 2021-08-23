@@ -1,0 +1,17 @@
+{
+  "name": "Large Tank",
+  "category": "modern_industrialization:electric_age",
+  "icon": "modern_industrialization:large_tank",
+  "pages": [
+    {
+      "type": "crafting",
+      "recipe": "modern_industrialization:electric_age/machine/large_tank_asbl",
+      "text": "The Large Tank is a multiblock that allows you to store large amounts of some fluid, for example steam. It can store 64 buckets worth of fluid for every block in the structure (including sides)."
+    },
+    {
+      "type": "text",
+      "text": "You will only see a preview of the smallest shape, but you can add layers on the top, the back and the sides of the tank. The front face must remain horizontally symmetrical.$(br2)Only pipes may access the tank, and only through the controller.$(br2)Don't break the controller or you will lose all of the stored fluid!"
+    }
+  ],
+  "sortnum": 101
+}

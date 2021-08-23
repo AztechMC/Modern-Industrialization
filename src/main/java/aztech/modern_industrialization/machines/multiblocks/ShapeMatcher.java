@@ -27,7 +27,6 @@ import static net.minecraft.util.math.Direction.*;
 
 import aztech.modern_industrialization.machines.multiblocks.world.ChunkEventListener;
 import aztech.modern_industrialization.machines.multiblocks.world.ChunkEventListeners;
-import com.google.common.base.Preconditions;
 import java.util.*;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
@@ -123,8 +122,7 @@ public class ShapeMatcher implements ChunkEventListener {
             return true;
 
         BlockEntity be = world.getBlockEntity(pos);
-        if (be instanceof HatchBlockEntity) {
-            HatchBlockEntity hatch = (HatchBlockEntity) be;
+        if (be instanceof HatchBlockEntity hatch) {
             HatchFlags flags = hatchFlags.get(pos);
             if (flags != null && flags.allows(hatch.getHatchType()) && !hatch.isMatched()) {
                 if (matchedHatches != null) {
@@ -146,7 +144,6 @@ public class ShapeMatcher implements ChunkEventListener {
     }
 
     public void rematch(World world) {
-        Preconditions.checkArgument(needsRematch);
         unlinkHatches();
         matchSuccessful = true;
 

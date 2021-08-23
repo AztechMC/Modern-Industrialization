@@ -35,6 +35,7 @@ import aztech.modern_industrialization.machines.models.MachineCasings;
 import aztech.modern_industrialization.machines.models.MachineModelClientData;
 import aztech.modern_industrialization.machines.multiblocks.*;
 import aztech.modern_industrialization.util.Tickable;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
@@ -109,7 +110,6 @@ public class LargeTankMultiblockBlockEntity extends MultiblockMachineBlockEntity
         return templateBuilder.build();
     }
 
-    private ShapeMatcher shapeMatcher;
     private final DynamicShapeComponent shapeComponent;
     private final FluidStorageComponent fluidStorage;
 
@@ -174,16 +174,6 @@ public class LargeTankMultiblockBlockEntity extends MultiblockMachineBlockEntity
     }
 
     @Override
-    public ShapeMatcher getShapeMatcher() {
-        return shapeMatcher;
-    }
-
-    @Override
-    public void setShapeMatcher(ShapeMatcher shapeMatcher) {
-        this.shapeMatcher = shapeMatcher;
-    }
-
-    @Override
     public MultiblockMachineBlockEntity getMultiblockMachineBlockEntity() {
         return this;
     }
@@ -195,7 +185,7 @@ public class LargeTankMultiblockBlockEntity extends MultiblockMachineBlockEntity
         int sizeY = 3 + (index % 25) / 5;
         int sizeZ = 3 + (index % 25) % 5;
         int volume = sizeX * sizeY * sizeZ;
-        long capacity = (long) volume * 64 * 81000; // 64 Bucket / Block
+        long capacity = (long) volume * 64 * FluidConstants.BUCKET; // 64 Bucket / Block
         fluidStorage.setCapacity(capacity);
     }
 

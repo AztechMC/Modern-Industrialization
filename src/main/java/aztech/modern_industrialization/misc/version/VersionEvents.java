@@ -63,7 +63,6 @@ public class VersionEvents {
                 PriorityQueue<Version> queue = new PriorityQueue<>();
 
                 String response = scanner.useDelimiter("\\A").next();
-                ModernIndustrialization.LOGGER.info(response);
                 JsonParser jsonParser = new JsonParser();
                 JsonObject jo = (JsonObject) jsonParser.parse(response);
 

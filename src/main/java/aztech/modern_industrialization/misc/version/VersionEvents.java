@@ -28,14 +28,15 @@ import aztech.modern_industrialization.ModernIndustrialization;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import java.io.IOException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import me.shedaniel.cloth.api.common.events.v1.PlayerJoinCallback;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.text.ClickEvent;
 import net.minecraft.text.HoverEvent;
 import net.minecraft.text.Style;
@@ -55,51 +56,54 @@ public class VersionEvents {
         }
     }
 
-    private static Version fetchVersion() {
+    private static Version fetchVersion() throws Exception {
+        String mcVersion = FabricLoader.getInstance().getModContainer("minecraft").get().getMetadata().getVersion().getFriendlyString();
+
         URLConnection connection;
-        try {
-            connection = new URL(url).openConnection();
-            try (Scanner scanner = new Scanner(connection.getInputStream())) {
-                PriorityQueue<Version> queue = new PriorityQueue<>();
+        connection = new URL(url).openConnection();
+        try (Scanner scanner = new Scanner(connection.getInputStream())) {
+            PriorityQueue<Version> queue = new PriorityQueue<>();
 
-                String response = scanner.useDelimiter("\\A").next();
-                JsonParser jsonParser = new JsonParser();
-                JsonObject jo = (JsonObject) jsonParser.parse(response);
+            String response = scanner.useDelimiter("\\A").next();
+            JsonParser jsonParser = new JsonParser();
+            JsonObject jo = (JsonObject) jsonParser.parse(response);
 
-                for (JsonElement file : jo.getAsJsonArray("files")) {
-                    JsonObject fileAsJsonObject = (JsonObject) file;
+            for (JsonElement file : jo.getAsJsonArray("files")) {
+                JsonObject fileAsJsonObject = file.getAsJsonObject();
 
-                    String name = fileAsJsonObject.get("display").getAsString();
-                    String url = fileAsJsonObject.get("url").getAsString();
-                    String type = fileAsJsonObject.get("type").getAsString();
-                    String date = fileAsJsonObject.get("uploaded_at").getAsString();
-
-                    if (!type.equals("alpha")) {
-                        queue.add(new Version(name, url, format.parse(date)));
+                boolean matchesCurrentMcVersion = false;
+                for (JsonElement version : fileAsJsonObject.get("versions").getAsJsonArray()) {
+                    if (version.getAsString().equals(mcVersion)) {
+                        matchesCurrentMcVersion = true;
                     }
-
+                }
+                if (!matchesCurrentMcVersion) {
+                    continue;
                 }
 
-                if (!queue.isEmpty()) {
-                    return queue.poll();
-                }
+                String name = fileAsJsonObject.get("display").getAsString();
+                String url = fileAsJsonObject.get("url").getAsString();
+                String type = fileAsJsonObject.get("type").getAsString();
+                String date = fileAsJsonObject.get("uploaded_at").getAsString();
 
-            } catch (Exception e) {
-                ModernIndustrialization.LOGGER.error(e.getMessage(), e);
+                if (!type.equals("alpha")) {
+                    queue.add(new Version(name, url, format.parse(date)));
+                }
             }
 
-        } catch (IOException e) {
-            ModernIndustrialization.LOGGER.error(e.getMessage(), e);
+            if (!queue.isEmpty()) {
+                return queue.poll();
+            }
+
         }
         return null;
-
     }
 
-    public static void init() {
-        PlayerJoinCallback.EVENT.register((connection, player) -> {
-            Optional<ModContainer> currentMod = FabricLoader.getInstance().getModContainer(ModernIndustrialization.MOD_ID);
-            if (MIConfig.getConfig().newVersionMessage) {
-                if (currentMod.isPresent()) {
+    public static void startVersionCheck(ClientPlayerEntity player) {
+        new Thread(() -> {
+            try {
+                Optional<ModContainer> currentMod = FabricLoader.getInstance().getModContainer(ModernIndustrialization.MOD_ID);
+                if (MIConfig.getConfig().newVersionMessage) {
                     ModContainer mod = currentMod.get();
                     String currentVersion = mod.getMetadata().getVersion().getFriendlyString();
                     Version lastVersion = fetchVersion();
@@ -114,15 +118,22 @@ public class VersionEvents {
                                     .withFormatting(Formatting.UNDERLINE).withFormatting(Formatting.GREEN).withHoverEvent(new HoverEvent(
                                             HoverEvent.Action.SHOW_TEXT, new TranslatableText("text.modern_industrialization.click_url")));
 
-                            player.sendMessage(new TranslatableText("text.modern_industrialization.new_version", lastVersionString,
-                                    new TranslatableText("text.modern_industrialization.curse_forge").setStyle(styleClick)), false);
+                            if (MinecraftClient.getInstance().player == player) {
+                                player.sendMessage(new TranslatableText("text.modern_industrialization.new_version", lastVersionString,
+                                        new TranslatableText("text.modern_industrialization.curse_forge").setStyle(styleClick)), false);
+                            }
                         }
                     }
                 }
-
-            } else {
-                throw new IllegalStateException("Modern Industrialization is not loaded but loaded at the same time");
+            } catch (Exception e) {
+                ModernIndustrialization.LOGGER.error("Failed to get release information from Curseforge.", e);
             }
+        }, "Modern Industrialization Update Checker").start();
+    }
+
+    public static void init() {
+        ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> {
+            startVersionCheck(client.player);
         });
     }
 }

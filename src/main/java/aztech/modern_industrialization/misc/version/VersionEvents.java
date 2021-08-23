@@ -25,25 +25,76 @@ package aztech.modern_industrialization.misc.version;
 
 import aztech.modern_industrialization.MIConfig;
 import aztech.modern_industrialization.ModernIndustrialization;
-import com.therandomlabs.curseapi.CurseAPI;
-import com.therandomlabs.curseapi.CurseException;
-import com.therandomlabs.curseapi.file.CurseFile;
-import com.therandomlabs.curseapi.file.CurseFileFilter;
-import com.therandomlabs.curseapi.file.CurseFiles;
-import com.therandomlabs.curseapi.file.CurseReleaseType;
-import java.util.Optional;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import java.io.IOException;
+import java.net.URL;
+import java.net.URLConnection;
+import java.text.SimpleDateFormat;
+import java.util.*;
 import me.shedaniel.cloth.api.common.events.v1.PlayerJoinCallback;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
-import net.fabricmc.loader.api.Version;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.text.*;
+import net.minecraft.text.ClickEvent;
+import net.minecraft.text.HoverEvent;
+import net.minecraft.text.Style;
+import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Formatting;
-import okhttp3.HttpUrl;
+import org.jetbrains.annotations.NotNull;
 
 public class VersionEvents {
 
-    private static final int MI_PROJECT_ID = 405388;
+    private static final String url = "https://api.cfwidget.com/minecraft/mc-mods/modern-industrialization";
+    private static final SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.US);
+
+    private record Version(String name, String url, Date date) implements Comparable<Version> {
+        @Override
+        public int compareTo(@NotNull VersionEvents.Version o) {
+            return o.date.compareTo(date);
+        }
+    }
+
+    private static Version fetchVersion() {
+        URLConnection connection;
+        try {
+            connection = new URL(url).openConnection();
+            try (Scanner scanner = new Scanner(connection.getInputStream())) {
+                PriorityQueue<Version> queue = new PriorityQueue<>();
+
+                String response = scanner.useDelimiter("\\A").next();
+                ModernIndustrialization.LOGGER.info(response);
+                JsonParser jsonParser = new JsonParser();
+                JsonObject jo = (JsonObject) jsonParser.parse(response);
+
+                for (JsonElement file : jo.getAsJsonArray("files")) {
+                    JsonObject fileAsJsonObject = (JsonObject) file;
+
+                    String name = fileAsJsonObject.get("display").getAsString();
+                    String url = fileAsJsonObject.get("url").getAsString();
+                    String type = fileAsJsonObject.get("type").getAsString();
+                    String date = fileAsJsonObject.get("uploaded_at").getAsString();
+
+                    if (!type.equals("alpha")) {
+                        queue.add(new Version(name, url, format.parse(date)));
+                    }
+
+                }
+
+                if (!queue.isEmpty()) {
+                    return queue.poll();
+                }
+
+            } catch (Exception e) {
+                ModernIndustrialization.LOGGER.error(e.getMessage(), e);
+            }
+
+        } catch (IOException e) {
+            ModernIndustrialization.LOGGER.error(e.getMessage(), e);
+        }
+        return null;
+
+    }
 
     public static void init() {
         PlayerJoinCallback.EVENT.register((connection, player) -> {
@@ -51,40 +102,27 @@ public class VersionEvents {
             if (MIConfig.getConfig().newVersionMessage) {
                 if (currentMod.isPresent()) {
                     ModContainer mod = currentMod.get();
-                    Version currentVersion = mod.getMetadata().getVersion();
-                    String version = currentVersion.getFriendlyString();
+                    String currentVersion = mod.getMetadata().getVersion().getFriendlyString();
+                    Version lastVersion = fetchVersion();
 
-                    try {
-                        final Optional<CurseFiles<CurseFile>> optionalFiles = CurseAPI.files(MI_PROJECT_ID);
-                        if (optionalFiles.isPresent()) {
-                            final CurseFiles<CurseFile> files = optionalFiles.get();
-                            new CurseFileFilter().minimumStability(CurseReleaseType.BETA)
-                                    .gameVersionStrings(MinecraftClient.getInstance().getGameVersion()).apply(files);
+                    if (lastVersion != null) {
+                        String lastVersionString = lastVersion.name.replaceFirst("Modern Industrialization v", "").strip();
 
-                            if (!files.isEmpty()) {
-                                CurseFile lastVersion = files.first();
+                        if (!lastVersionString.equals(currentVersion)) {
+                            String url = lastVersion.url;
 
-                                String lastVersionString = lastVersion.displayName().replaceFirst("Modern Industrialization v", "").strip();
+                            Style styleClick = Style.EMPTY.withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, url))
+                                    .withFormatting(Formatting.UNDERLINE).withFormatting(Formatting.GREEN).withHoverEvent(new HoverEvent(
+                                            HoverEvent.Action.SHOW_TEXT, new TranslatableText("text.modern_industrialization.click_url")));
 
-                                if (!lastVersionString.equals(version)) {
-                                    HttpUrl url = lastVersion.url();
-
-                                    Style styleClick = Style.EMPTY.withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, url.toString()))
-                                            .withFormatting(Formatting.UNDERLINE).withFormatting(Formatting.GREEN).withHoverEvent(new HoverEvent(
-                                                    HoverEvent.Action.SHOW_TEXT, new TranslatableText("text.modern_industrialization.click_url")));
-
-                                    player.sendMessage(new TranslatableText("text.modern_industrialization.new_version", lastVersionString,
-                                            new TranslatableText("text.modern_industrialization.curse_forge").setStyle(styleClick)), false);
-                                }
-                            }
+                            player.sendMessage(new TranslatableText("text.modern_industrialization.new_version", lastVersionString,
+                                    new TranslatableText("text.modern_industrialization.curse_forge").setStyle(styleClick)), false);
                         }
-
-                    } catch(Exception e) {
-                        ModernIndustrialization.LOGGER.error(e.getMessage(), e);
                     }
-                } else {
-                    throw new IllegalStateException("Modern Industrialization is not loaded but loaded at the same time");
                 }
+
+            } else {
+                throw new IllegalStateException("Modern Industrialization is not loaded but loaded at the same time");
             }
         });
     }

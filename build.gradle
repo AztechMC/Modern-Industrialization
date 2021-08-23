@@ -158,7 +158,6 @@ dependencies {
         exclude(group: "net.fabricmc.fabric-api")
     }
 
-    include api("com.github.TheRandomLabs:CurseAPI:master-SNAPSHOT")
 
     // Other mods for testing purposes
     //modRuntime "appeng:appliedenergistics2-fabric:${project.appeng_version}"

@@ -29,6 +29,7 @@ import net.fabricmc.fabric.api.renderer.v1.Renderer;
 import net.fabricmc.fabric.api.renderer.v1.RendererAccess;
 import net.fabricmc.fabric.api.renderer.v1.mesh.MutableQuadView;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
+import net.fabricmc.fabric.api.transfer.v1.client.fluid.FluidVariantRenderHandler;
 import net.fabricmc.fabric.api.transfer.v1.client.fluid.FluidVariantRendering;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.minecraft.client.render.OverlayTexture;
@@ -38,6 +39,7 @@ import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.block.entity.BlockEntityRendererFactory;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3i;
 
@@ -55,12 +57,8 @@ public class MultiblockTankBER extends MultiblockMachineBER {
 
             VertexConsumer vc = vcp.getBuffer(RenderLayer.getTranslucent());
 
-            Sprite sprite = FluidVariantRendering.getSprite(fluid);
-            int color = FluidVariantRendering.getColor(fluid);
-
-            float r = ((color >> 16) & 255) / 256f;
-            float g = ((color >> 8) & 255) / 256f;
-            float b = (color & 255) / 256f;
+            FluidVariantRenderHandler handler = FluidVariantRendering.getHandlerOrDefault(fluid.getFluid());
+            Sprite sprite = handler.getSprite(fluid);
 
             int[] cornerPosition = tankBlockEntity.getCornerPosition();
 
@@ -141,6 +139,15 @@ public class MultiblockTankBER extends MultiblockMachineBER {
                         emitter.square(direction, 0, bottom, 1, top, 0);
                         emitter.spriteBake(0, sprite, MutableQuadView.BAKE_LOCK_UV);
                         emitter.spriteColor(0, -1, -1, -1, -1);
+
+                        int color = handler.getColor(fluid, be.getWorld(),
+                                new BlockPos(be.getPos().getX() + originX + offset_u.getX() * u + offset_v.getX() * v,
+                                        be.getPos().getY() + originY + offset_u.getY() * u + offset_v.getY() * v,
+                                        be.getPos().getZ() + originZ + offset_u.getZ() * u + offset_v.getZ() * v));
+                        float r = ((color >> 16) & 255) / 256f;
+                        float g = ((color >> 8) & 255) / 256f;
+                        float b = (color & 255) / 256f;
+
                         vc.quad(ms.peek(), emitter.toBakedQuad(0, sprite, false), r, g, b, RenderHelper.FULL_LIGHT, OverlayTexture.DEFAULT_UV);
 
                         ms.translate(offset_v.getX(), offset_v.getY(), offset_v.getZ());

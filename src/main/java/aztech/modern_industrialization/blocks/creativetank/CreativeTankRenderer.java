@@ -37,7 +37,7 @@ public class CreativeTankRenderer implements BlockEntityRenderer<CreativeTankBlo
     public void render(CreativeTankBlockEntity entity, float tickDelta, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light,
             int overlay) {
         if (!entity.isResourceBlank()) {
-            RenderHelper.drawFluidInTank(matrices, vertexConsumers, entity.fluid, 1);
+            RenderHelper.drawFluidInTank(entity, matrices, vertexConsumers, entity.fluid, 1);
         }
     }
 }

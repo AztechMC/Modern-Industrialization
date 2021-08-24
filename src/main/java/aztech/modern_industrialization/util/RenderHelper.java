@@ -34,6 +34,7 @@ import net.fabricmc.fabric.api.renderer.v1.mesh.MutableQuadView;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
 import net.fabricmc.fabric.api.transfer.v1.client.fluid.FluidVariantRendering;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
+import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.render.*;
 import net.minecraft.client.render.model.BakedQuad;
 import net.minecraft.client.texture.Sprite;
@@ -41,6 +42,7 @@ import net.minecraft.client.texture.SpriteAtlasTexture;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.util.math.*;
+import net.minecraft.world.World;
 import org.lwjgl.system.MemoryStack;
 
 public class RenderHelper {
@@ -102,10 +104,14 @@ public class RenderHelper {
     private static final float TANK_W = 0.02f;
     public static final int FULL_LIGHT = 0x00F0_00F0;
 
-    public static void drawFluidInTank(MatrixStack ms, VertexConsumerProvider vcp, FluidVariant fluid, float fill) {
+    public static void drawFluidInTank(BlockEntity be, MatrixStack ms, VertexConsumerProvider vcp, FluidVariant fluid, float fill) {
+        drawFluidInTank(be.getWorld(), be.getPos(), ms, vcp, fluid, fill);
+    }
+
+    public static void drawFluidInTank(World world, BlockPos pos, MatrixStack ms, VertexConsumerProvider vcp, FluidVariant fluid, float fill) {
         VertexConsumer vc = vcp.getBuffer(RenderLayer.getTranslucent());
         Sprite sprite = FluidVariantRendering.getSprite(fluid);
-        int color = FluidVariantRendering.getColor(fluid);
+        int color = FluidVariantRendering.getColor(fluid, world, pos);
         float r = ((color >> 16) & 255) / 256f;
         float g = ((color >> 8) & 255) / 256f;
         float b = (color & 255) / 256f;

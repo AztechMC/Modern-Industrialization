@@ -39,7 +39,10 @@ import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.util.SpriteIdentifier;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
+import net.minecraft.world.BlockRenderView;
+import org.jetbrains.annotations.Nullable;
 
 public class PipeMeshCache implements PipeRenderer {
     /**
@@ -137,7 +140,8 @@ public class PipeMeshCache implements PipeRenderer {
      * @param connections For every logical slot, then for every direction, the
      *                    connection type or null for no connection.
      */
-    public void draw(RenderContext ctx, int logicalSlot, PipeEndpointType[][] connections, NbtCompound customData) {
+    public void draw(@Nullable BlockRenderView view, @Nullable BlockPos pos, RenderContext ctx, int logicalSlot, PipeEndpointType[][] connections,
+            NbtCompound customData) {
         // The render type of the connections (0 for no connection, 1 for straight pipe,
         // 2 for short bend, etc...)
         int[] renderTypes = new int[6];
@@ -163,7 +167,7 @@ public class PipeMeshCache implements PipeRenderer {
         if (customData.contains("fluid")) {
             FluidVariant fluid = NbtHelper.getFluidCompatible(customData, "fluid");
             Sprite still = FluidVariantRendering.getSprite(fluid);
-            int color = FluidVariantRendering.getColor(fluid);
+            int color = FluidVariantRendering.getColor(fluid, view, pos);
             ctx.pushTransform(quad -> {
                 if (quad.tag() == 1) {
                     if (still != null) {

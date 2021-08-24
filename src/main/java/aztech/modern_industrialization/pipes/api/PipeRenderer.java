@@ -29,6 +29,9 @@ import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.util.SpriteIdentifier;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.BlockRenderView;
+import org.jetbrains.annotations.Nullable;
 
 // TODO: Refactor to split api and impl correctly, and provide building blocks in API if necessary
 public interface PipeRenderer {
@@ -41,7 +44,8 @@ public interface PipeRenderer {
      * @param connections For every logical slot, then for every direction, the
      *                    connection type or null for no connection.
      */
-    void draw(RenderContext ctx, int logicalSlot, PipeEndpointType[][] connections, NbtCompound customData);
+    void draw(@Nullable BlockRenderView view, @Nullable BlockPos pos, RenderContext ctx, int logicalSlot, PipeEndpointType[][] connections,
+            NbtCompound customData);
 
     interface Factory {
         Collection<SpriteIdentifier> getSpriteDependencies();

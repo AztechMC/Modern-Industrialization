@@ -107,7 +107,7 @@ public class PipeModel implements UnbakedModel, BakedModel, FabricBakedModel {
             int color = attachment.types[slot].getColor();
             renderContext.pushTransform(getColorTransform(color));
 
-            renderers.get(attachment.types[slot].getRenderer()).draw(renderContext, slot, attachment.renderedConnections,
+            renderers.get(attachment.types[slot].getRenderer()).draw(blockRenderView, pos, renderContext, slot, attachment.renderedConnections,
                     attachment.customData[slot]);
 
             renderContext.popTransform();
@@ -127,7 +127,7 @@ public class PipeModel implements UnbakedModel, BakedModel, FabricBakedModel {
 
             PipeEndpointType[][] connections = new PipeEndpointType[][] {
                     { null, null, null, null, PipeEndpointType.BLOCK, PipeEndpointType.BLOCK } };
-            renderers.get(type.getRenderer()).draw(renderContext, 0, connections, new NbtCompound());
+            renderers.get(type.getRenderer()).draw(null, null, renderContext, 0, connections, new NbtCompound());
 
             renderContext.popTransform();
             renderContext.popTransform();

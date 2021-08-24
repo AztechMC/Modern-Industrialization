@@ -38,6 +38,7 @@ import aztech.modern_industrialization.machines.MachineScreenHandlers;
 import aztech.modern_industrialization.machines.init.*;
 import aztech.modern_industrialization.machines.multiblocks.world.ChunkEventListeners;
 import aztech.modern_industrialization.materials.MIMaterials;
+import aztech.modern_industrialization.misc.autotest.MIAutoTesting;
 import aztech.modern_industrialization.misc.guidebook.GuidebookEvents;
 import aztech.modern_industrialization.misc.version.VersionEvents;
 import aztech.modern_industrialization.pipes.MIPipes;
@@ -158,6 +159,10 @@ public class ModernIndustrialization implements ModInitializer {
         PlayerLeaveCallback.EVENT.register(MIKeyMap::clear);
         GuidebookEvents.init();
         VersionEvents.init();
+
+        if (System.getProperty("modern_industrialization.autoTest") != null) {
+            MIAutoTesting.init();
+        }
 
         LOGGER.info("Modern Industrialization setup done!");
     }

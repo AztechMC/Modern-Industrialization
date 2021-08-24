@@ -1,5 +1,5 @@
 plugins {
-    id 'fabric-loom' version '0.8-SNAPSHOT'
+    id 'fabric-loom' version '0.9-SNAPSHOT'
     id 'maven-publish'
     id 'com.diffplug.spotless' version '5.14.0'
     id 'com.matthewprenger.cursegradle' version '1.4.0'
@@ -176,6 +176,18 @@ processResources {
 
     filesMatching("fabric.mod.json") {
         expand "version": project.version
+    }
+}
+
+loom {
+    runs {
+        autoTestServer {
+            server()
+            ideConfigGenerated project.rootProject == project
+            name = "Autotest Server"
+            source sourceSets.main
+            vmArg "-Dmodern_industrialization.autoTest"
+        }
     }
 }
 

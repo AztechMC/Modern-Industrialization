@@ -46,6 +46,7 @@ import aztech.modern_industrialization.machines.components.UpgradeComponent;
 import aztech.modern_industrialization.machines.init.MultiblockMachines;
 import aztech.modern_industrialization.machines.models.MachineModels;
 import aztech.modern_industrialization.machines.multiblocks.MultiblockErrorHighlight;
+import aztech.modern_industrialization.misc.version.VersionEvents;
 import aztech.modern_industrialization.pipes.MIPipes;
 import aztech.modern_industrialization.pipes.MIPipesClient;
 import aztech.modern_industrialization.pipes.impl.PipeItem;
@@ -97,6 +98,7 @@ public class ModernIndustrializationClient implements ClientModInitializer {
         registerBuiltinResourcePack();
         setupTooltips();
         setupClientCommands();
+        VersionEvents.init();
 
         ModernIndustrialization.LOGGER.info("Modern Industrialization client setup done!");
     }

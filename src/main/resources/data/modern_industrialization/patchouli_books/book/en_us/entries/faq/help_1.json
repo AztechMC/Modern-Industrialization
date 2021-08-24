@@ -1,0 +1,12 @@
+{
+  "name": "See unseen",
+  "category": "modern_industrialization:faq",
+  "icon": "modern_industrialization:wrench",
+  "pages": [
+    {
+      "type": "text",
+      "text": "$(l)Why in the pipe and machine rendering not working (or why they appear as black and purple squares)?$()$(p)You probably have sodium installed. Sodium is not compatible with MI for now until they implement the Fabric Rendering API (which is WIP)."
+    }
+  ],
+  "sortnum": 301
+}

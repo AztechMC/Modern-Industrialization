@@ -1,0 +1,16 @@
+{
+  "name": "Mario?",
+  "category": "modern_industrialization:faq",
+  "icon": "modern_industrialization:wrench",
+  "pages": [
+    {
+      "type": "text",
+      "text": "$(l)Why is the item pipe not working?$()$(p)The item pipes are on whitelist by default (which mean only the items in the filter will be moved). You need to switch to blacklist (only the items NOT in the filter will be moved) or add the item you want to move to the filter. Be careful that you need to configure both sides of the pipe."
+    },
+    {
+      "type": "text",
+      "text": "$(l)Why can't my pipes connect?$()$(p)MI pipes don't connect by default, you must right-click the block a second time with a pipe in your hand.  Or you can also click the center of the pipe with a wrench on the side you want to connect.$(br)Don't forget to read the $(o)$(l:modern_industrialization:steam_age/pipes)pipes entry of the guide book!$()"
+    }
+  ],
+  "sortnum": 304
+}

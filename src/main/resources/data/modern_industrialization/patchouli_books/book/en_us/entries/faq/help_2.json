@@ -1,0 +1,12 @@
+{
+  "name": "The first law of thermodynamics",
+  "category": "modern_industrialization:faq",
+  "icon": "modern_industrialization:wrench",
+  "pages": [
+    {
+      "type": "text",
+      "text": "$(l)How to power the Steam Quarry/Coke Hove/Steam Blast Furnace?$()$(p)You need steam and a fluid input hatch in which to inject it. 1mb of Steam corresponds to 1 EU."
+    }
+  ],
+  "sortnum": 302
+}

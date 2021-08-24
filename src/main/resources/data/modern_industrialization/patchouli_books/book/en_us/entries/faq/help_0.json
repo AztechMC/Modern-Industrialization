@@ -1,0 +1,16 @@
+{
+  "name": "It's over 9000!",
+  "category": "modern_industrialization:faq",
+  "icon": "modern_industrialization:wrench",
+  "pages": [
+    {
+      "type": "text",
+      "text": "$(l)Why can't the blast furnace process aluminium/silicon? Why can't the Steam Quarry process AE2 recipes?$()$(p)Steam machine and steam multiblock can process recipe up to 2 EU/t (for Bronze) and 4EU/t (for Steel). To process recipes > 4EU/t, you need an electric machine/multiblock"
+    },
+    {
+      "type": "text",
+      "text": "$(l)What is the shape of such a multiblock?$()$(p)After placing the multiblock controller, hold the wrench. It will show which blocks and where they should be placed in order to build the multiblock. You can also hold an hatch, it will show where it can and cannot be placed in the multiblock structure."
+    }
+  ],
+  "sortnum": 300
+}

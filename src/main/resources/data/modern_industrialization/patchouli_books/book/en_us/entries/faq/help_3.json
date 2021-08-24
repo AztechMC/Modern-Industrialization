@@ -1,0 +1,12 @@
+{
+  "name": "Glowing future",
+  "category": "modern_industrialization:faq",
+  "icon": "modern_industrialization:wrench",
+  "pages": [
+    {
+      "type": "text",
+      "text": "$(l)How to craft the nuclear reactor?$()$(p)The nuclear reactor is WIP and will probably changed/deleted in the near future. It is not currently working and thus uncraftable."
+    }
+  ],
+  "sortnum": 303
+}

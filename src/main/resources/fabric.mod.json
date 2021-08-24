@@ -42,7 +42,6 @@
       "environment": "client"
     }
   ],
-  "accessWidener": "modern_industrialization.accesswidener",
   "depends": {
     "fabricloader": ">=0.7.4",
     "fabric": ">=0.38",

@@ -95,7 +95,7 @@ public class PipeBlock extends Block implements TickableBlock {
                             world.spawnEntity(
                                     new ItemEntity(world, hitPos.x, hitPos.y, hitPos.z, new ItemStack(MIPipes.INSTANCE.getPipeItem(partShape.type))));
                             // play break sound
-                            world.playSound(player, blockPos, group.breakSound, SoundCategory.BLOCKS, (group.getVolume() + 1.0F) / 2.0F,
+                            world.playSound(player, blockPos, group.getBreakSound(), SoundCategory.BLOCKS, (group.getVolume() + 1.0F) / 2.0F,
                                     group.getPitch() * 0.8F);
                             return ActionResult.success(world.isClient);
                         } else {
@@ -110,7 +110,7 @@ public class PipeBlock extends Block implements TickableBlock {
                                 if (!world.isClient) {
                                     pipeEntity.removeConnection(partShape.type, partShape.direction);
                                 } else {
-                                    sound = group.breakSound;
+                                    sound = group.getBreakSound();
                                 }
                             }
                             world.updateNeighbors(blockPos, Blocks.AIR);

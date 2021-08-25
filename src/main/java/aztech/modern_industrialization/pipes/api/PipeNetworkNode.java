@@ -35,7 +35,11 @@ import net.minecraft.world.World;
 public abstract class PipeNetworkNode {
     protected PipeNetwork network;
 
-    public abstract void updateConnections(World world, BlockPos pos);
+    public void updateConnections(World world, BlockPos pos) {
+    }
+
+    public void buildInitialConnections(World world, BlockPos pos) {
+    }
 
     /**
      * Get connections. Must return a size 6 array containing the 6 connections in

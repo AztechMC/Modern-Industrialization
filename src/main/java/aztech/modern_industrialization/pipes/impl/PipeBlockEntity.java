@@ -156,7 +156,7 @@ public class PipeBlockEntity extends FastBlockEntity
             manager.addLink(pos, direction, false);
         }
         pipes.add(node);
-        node.updateConnections(world, pos);
+        node.buildInitialConnections(world, pos);
         onConnectionsChanged();
     }
 

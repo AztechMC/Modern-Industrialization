@@ -63,6 +63,15 @@ public class ElectricityNetworkNode extends PipeNetworkNode {
     }
 
     @Override
+    public void buildInitialConnections(World world, BlockPos pos) {
+        for (Direction direction : Direction.values()) {
+            if (canConnect(world, pos, direction)) {
+                connections.add(direction);
+            }
+        }
+    }
+
+    @Override
     public void updateConnections(World world, BlockPos pos) {
         // We don't connect by default, so we just have to remove connections that have
         // become unavailable

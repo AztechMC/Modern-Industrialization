@@ -99,16 +99,9 @@ public class FluidNetworkNode extends PipeNetworkNode {
 
     @Override
     public void updateConnections(World world, BlockPos pos) {
-        // We don't connect by default, so we just have to remove connections that have
-        // become unavailable
-        for (int i = 0; i < connections.size();) {
-            FluidConnection conn = connections.get(i);
-            if (canConnect(world, pos, conn.direction)) {
-                i++;
-            } else {
-                connections.remove(i);
-            }
-        }
+        // Remove the connection to the outside world if a connection to another pipe is
+        // made.
+        connections.removeIf(connection -> network.manager.hasLink(pos, connection.direction));
     }
 
     @Override

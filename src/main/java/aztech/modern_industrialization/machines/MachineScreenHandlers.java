@@ -421,7 +421,7 @@ public class MachineScreenHandlers {
             if (focusedSlot instanceof ConfigurableItemSlot confSlot) {
                 ConfigurableItemStack stack = confSlot.getConfStack();
                 boolean isIncrease = amount > 0;
-                boolean isShiftDown = InputHelper.isShiftPressed();
+                boolean isShiftDown = hasShiftDown();
                 // Client side update
                 stack.adjustCapacity(isIncrease, isShiftDown);
                 // Server side update

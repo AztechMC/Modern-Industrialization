@@ -93,7 +93,7 @@ public class FluidPipeScreen extends PipeScreen<FluidPipeScreenHandler> {
             if (fluid != null && !fluid.isBlank()) {
                 targetFluid = fluid;
             }
-        } else if (InputHelper.isShiftPressed()) {
+        } else if (hasShiftDown()) {
             targetFluid = FluidVariant.blank();
         }
         if (targetFluid != null) {

@@ -23,6 +23,9 @@
  */
 package aztech.modern_industrialization.nuclear;
 
+import static aztech.modern_industrialization.nuclear.NeutronFate.*;
+
+import com.google.common.base.Preconditions;
 import java.util.Random;
 
 public class NuclearGridHelper {
@@ -32,39 +35,95 @@ public class NuclearGridHelper {
 
     private static final Random rand = new Random();
 
-    private static int doubleToInt(double d) {
-        int floor = (int) Math.floor(d);
-        return floor + (rand.nextDouble() < (d - floor) ? 1 : 0);
-    }
+    private static final int MAX_STEP = 100;
 
-    private static int getAngle(int from, int to) {
-        if (from == to) {
-            return 2;
-        } else if ((from + 2) % 4 == to) {
-            return 0;
-        }
-        return 1;
-
-    }
-
-    public static void simulateNuclearTick(INuclearGrid grid) {
+    public static void simulate(INuclearGrid grid) {
 
         int sizeX = grid.getSizeX();
         int sizeY = grid.getSizeY();
 
-        double[][] neutronsReceived = new double[sizeX][sizeY];
+        for (int i = 0; i < sizeX; i++) {
+            for (int j = 0; j < sizeY; j++) {
+                if (grid.ok(i, j) & grid.isFuel(i, j)) {
+
+                    int neutronNumber = grid.neutronProducedFromSimulation(i, j);
+
+                    grid.putHeat(i, j, neutronNumber * grid.getSupplementaryHeatByNeutronGenerated(i, j));
+
+                    if (neutronNumber > 0) {
+
+                        NeutronType type = NeutronType.FAST;
+                        grid.registerNeutronCreation(neutronNumber, type);
+
+                        int dir = rand.nextInt(4);
+                        int step = 0;
+                        int posX = i;
+                        int posY = j;
+
+                        while (step < MAX_STEP) {
+                            step++;
+                            posX += dX[dir];
+                            posY += dY[dir];
+                            if (grid.ok(posX, posY)) {
+
+                                double interactionProba = grid.interactionTotalProbability(posX, posY, type);
+
+                                if (rand.nextDouble() < interactionProba) {
+
+                                    double interactionSelector = rand.nextDouble();
+
+                                    double probaAbsorption = grid.interactionRelativeProbability(posX, posY, type, NeutronInteraction.ABSORPTION);
+                                    double probaScattering = grid.interactionRelativeProbability(posX, posY, type, NeutronInteraction.SCATTERING);
+
+                                    if (interactionSelector <= probaAbsorption) {
+                                        grid.absorbNeutrons(posX, posY, type, neutronNumber);
+
+                                        if (type == NeutronType.FAST) {
+                                            grid.putHeat(posX, posY, neutronNumber * NuclearConstant.EU_FOR_FAST_NEUTRON);
+                                        }
+                                        if (grid.isFuel(posX, posY)) {
+                                            grid.registerNeutronFate(neutronNumber, type, ABSORBED_IN_FUEL);
+                                        } else {
+                                            grid.registerNeutronFate(neutronNumber, type, ABSORBED_NOT_IN_FUEL);
+                                        }
+                                        break;
+                                    } else {
+                                        int newDir;
+                                        do {
+                                            newDir = rand.nextInt(4);
+                                        } while (newDir == dir);
+
+                                        dir = newDir;
+
+                                        if (interactionSelector > probaAbsorption + probaScattering) {
+                                            Preconditions.checkArgument(type == NeutronType.FAST, "Only fast neutrons can slow");
+                                            type = NeutronType.THERMAL;
+                                            grid.putHeat(posX, posY, neutronNumber * NuclearConstant.EU_FOR_FAST_NEUTRON);
+                                        }
+                                    }
+                                }
+
+                            } else {
+                                grid.registerNeutronFate(neutronNumber, type, ESCAPE);
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+        }
 
         // HEAT
         double[][] temperatureOut = new double[sizeX][sizeY];
         double[][] temperatureDelta = new double[sizeX][sizeY];
+
         for (int step = 0; step < 3; step++) {
-            // step 0: compute temperatureOut = dT * coef
+            // step 0: compute temperatureOut = dT * coeff
             // step 1: compute temperatureDelta, clamping as necessary
             // step 2: set temperature
             for (int i = 0; i < sizeX; i++) {
                 for (int j = 0; j < sizeY; j++) {
                     if (grid.ok(i, j)) {
-
                         double temperatureA = grid.getTemperature(i, j);
                         if (step == 2) {
                             grid.setTemperature(i, j, temperatureA + temperatureDelta[i][j]);
@@ -95,48 +154,12 @@ public class NuclearGridHelper {
             }
         }
 
-        // NEUTRONS
-
-        for (int step = 0; step < 2; step++) {
-            for (int i = 0; i < sizeX; i++) {
-                for (int j = 0; j < sizeY; j++) {
-                    if (grid.ok(i, j) && grid.isFuel(i, j)) {
-                        double neutronProduced;
-                        if (step == 0) {
-                            neutronProduced = grid.sendNeutron(i, j, 1);
-                            for (int k = 0; k < 4; k++) {
-                                int i2 = i + dX[k];
-                                int j2 = j + dY[k];
-                                if (grid.ok(i2, j2)) {
-                                    double neutronDiffused = grid.getFracDiffusedNeutron(i2, j2);
-                                    neutronsReceived[i2][j2] += 0.25 * (1 - neutronDiffused) * neutronProduced;
-                                    for (int l = 0; l < 4; l++) {
-                                        int i3 = i2 + dX[l];
-                                        int j3 = j2 + dY[l];
-                                        if (grid.ok(i3, j3)) {
-                                            neutronsReceived[i3][j3] += 0.25 * 0.25 * neutronDiffused * neutronProduced
-                                                    * grid.getNeutronDiffusionAnisotropy(i2, j2, getAngle(k, l));
-                                        }
-                                    }
-                                }
-                            }
-                        } else {
-                            int neutrons = doubleToInt(neutronsReceived[i][j]);
-                            if (neutrons > 0) {
-                                grid.sendNeutron(i, j, neutrons);
-                            }
-                        }
-
-                    }
-                }
-            }
-        }
-
         for (int i = 0; i < sizeX; i++) {
             for (int j = 0; j < sizeY; j++) {
                 if (grid.ok(i, j)) {
-                    grid.tick(i, j);
+                    grid.nuclearTick(i, j);
                 }
+
             }
         }
 

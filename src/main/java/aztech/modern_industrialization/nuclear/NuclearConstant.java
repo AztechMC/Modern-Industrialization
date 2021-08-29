@@ -23,37 +23,11 @@
  */
 package aztech.modern_industrialization.nuclear;
 
-public interface INuclearGrid {
+public class NuclearConstant {
 
-    int getSizeX();
+    public static final int EU_FOR_FAST_NEUTRON = 2048;
+    public static final int DESINTEGRATION_BY_ROD = 256000;
+    public static final double BASE_HEAT_CONDUCTION = 0.01;
+    public static final double BASE_NEUTRON = 0.1;
 
-    int getSizeY();
-
-    boolean isFuel(int x, int y);
-
-    double getTemperature(int x, int y);
-
-    boolean ok(int x, int y);
-
-    double getHeatTransferCoeff(int x, int y);
-
-    void setTemperature(int x, int y, double temp);
-
-    int neutronProducedFromSimulation(int i, int j);
-
-    double interactionTotalProbability(int i, int j, NeutronType type);
-
-    double interactionRelativeProbability(int i, int j, NeutronType type, NeutronInteraction absorption);
-
-    void absorbNeutrons(int i, int j, NeutronType type, int neutronNumber);
-
-    void putHeat(int i, int j, int eu);
-
-    void registerNeutronFate(int neutronNumber, NeutronType type, NeutronFate escape);
-
-    void registerNeutronCreation(int neutronNumber, NeutronType type);
-
-    int getSupplementaryHeatByNeutronGenerated(int i, int j);
-
-    void nuclearTick(int i, int j);
 }

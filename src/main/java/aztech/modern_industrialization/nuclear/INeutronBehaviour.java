@@ -25,7 +25,8 @@ package aztech.modern_industrialization.nuclear;
 
 public interface INeutronBehaviour {
 
-    double getNeutronAbs();
+    double interactionTotalProbability(NeutronType type);
 
-    double getNeutronDiff(int angle); // 0 relfexion, 1 = 90°, 2 = transmisison
+    double interactionRelativeProbability(NeutronType type, NeutronInteraction interaction);
+
 }

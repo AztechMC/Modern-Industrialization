@@ -30,6 +30,7 @@ import aztech.modern_industrialization.inventory.ConfigurableItemStack;
 import aztech.modern_industrialization.inventory.MIInventory;
 import aztech.modern_industrialization.inventory.SlotPositions;
 import aztech.modern_industrialization.machines.BEP;
+import aztech.modern_industrialization.machines.components.NeutronHistoryComponent;
 import aztech.modern_industrialization.machines.components.OrientationComponent;
 import aztech.modern_industrialization.machines.components.SteamHeaterComponent;
 import aztech.modern_industrialization.machines.components.TemperatureComponent;
@@ -50,9 +51,12 @@ public class NuclearHatch extends HatchBlockEntity {
     public static final int EU_PER_DEGREE = 128;
 
     private final MIInventory inventory;
+
+    public final NeutronHistoryComponent neutronHistory;
     public final TemperatureComponent nuclearReactorComponent;
     public final boolean isFluid;
-    public static final double BASE_HEAT_CONDUCTION = 0.01;
+
+    private int neutronReceivedThisTick = 0;
 
     public NuclearHatch(BEP bep, boolean isFluid) {
         super(bep, new MachineGuiParameters.Builder(isFluid ? "nuclear_fluid_hatch" : "nuclear_item_hatch", true).build(),
@@ -60,6 +64,7 @@ public class NuclearHatch extends HatchBlockEntity {
 
         this.isFluid = isFluid;
         SlotPositions slotPos = new SlotPositions.Builder().addSlot(68, 31).addSlots(98, 22, 2, 1).build();
+
         if (!isFluid) {
             List<ConfigurableItemStack> itemStack = new ArrayList<>();
             itemStack.add(ConfigurableItemStack.standardInputSlot());
@@ -77,9 +82,12 @@ public class NuclearHatch extends HatchBlockEntity {
             nuclearReactorComponent = new SteamHeaterComponent(MAX_TEMPERATURE, 4096, EU_PER_DEGREE, true, true);
         }
 
-        registerComponents(inventory, nuclearReactorComponent);
+        neutronHistory = new NeutronHistoryComponent();
+        registerComponents(inventory, nuclearReactorComponent, neutronHistory);
+
         TemperatureBar.Parameters temperatureParams = new TemperatureBar.Parameters(43, 63, MAX_TEMPERATURE);
         registerClientComponent(new TemperatureBar.Server(temperatureParams, () -> (int) nuclearReactorComponent.getTemperature()));
+
     }
 
     @Override
@@ -104,6 +112,16 @@ public class NuclearHatch extends HatchBlockEntity {
             ((SteamHeaterComponent) nuclearReactorComponent).tick(Collections.singletonList(inventory.getFluidStacks().get(0)),
                     Collections.singletonList(inventory.getFluidStacks().get(1)));
         }
+
+    }
+
+    public void nuclearTick() {
+        neutronHistory.tick(neutronReceivedThisTick);
+        neutronReceivedThisTick = 0;
+    }
+
+    public final void receiveNeutron(int neutronNumber) {
+        neutronReceivedThisTick += neutronNumber;
     }
 
     public static void registerItemApi(BlockEntityType<?> bet) {

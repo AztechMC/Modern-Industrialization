@@ -23,37 +23,35 @@
  */
 package aztech.modern_industrialization.nuclear;
 
-public interface INuclearGrid {
+import aztech.modern_industrialization.ModernIndustrialization;
+import net.minecraft.item.Item;
 
-    int getSizeX();
+public class NuclearItem {
 
-    int getSizeY();
+    public static void init() {
+        ModernIndustrialization.LOGGER.info("Setting up Nuclear Items");
+    }
 
-    boolean isFuel(int x, int y);
+    public static final Item NEUTRON_REFLECTOR = NuclearComponent.of("neutron_reflector", 2000, 0, new INeutronBehaviour() {
+        @Override
+        public double interactionTotalProbability(NeutronType type) {
+            if (type == NeutronType.FAST) {
+                return 0.2;
+            } else {
+                return 0.5;
+            }
+        }
 
-    double getTemperature(int x, int y);
-
-    boolean ok(int x, int y);
-
-    double getHeatTransferCoeff(int x, int y);
-
-    void setTemperature(int x, int y, double temp);
-
-    int neutronProducedFromSimulation(int i, int j);
-
-    double interactionTotalProbability(int i, int j, NeutronType type);
-
-    double interactionRelativeProbability(int i, int j, NeutronType type, NeutronInteraction absorption);
-
-    void absorbNeutrons(int i, int j, NeutronType type, int neutronNumber);
-
-    void putHeat(int i, int j, int eu);
-
-    void registerNeutronFate(int neutronNumber, NeutronType type, NeutronFate escape);
-
-    void registerNeutronCreation(int neutronNumber, NeutronType type);
-
-    int getSupplementaryHeatByNeutronGenerated(int i, int j);
-
-    void nuclearTick(int i, int j);
+        @Override
+        public double interactionRelativeProbability(NeutronType type, NeutronInteraction interaction) {
+            if (type == NeutronType.FAST) {
+                if (interaction == NeutronInteraction.SLOWING) {
+                    return 1;
+                }
+            } else if (interaction == NeutronInteraction.SCATTERING) {
+                return 1;
+            }
+            return 0;
+        }
+    });
 }

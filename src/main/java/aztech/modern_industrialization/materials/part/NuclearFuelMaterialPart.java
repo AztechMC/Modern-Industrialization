@@ -23,6 +23,8 @@
  */
 package aztech.modern_industrialization.materials.part;
 
+import static aztech.modern_industrialization.nuclear.NuclearFuel.NuclearFuelParams;
+
 import aztech.modern_industrialization.MIItem;
 import aztech.modern_industrialization.materials.MaterialBuilder;
 import aztech.modern_industrialization.nuclear.NuclearFuel;
@@ -46,11 +48,8 @@ public class NuclearFuelMaterialPart implements MaterialPart {
 
     private final NuclearFuelParams params;
 
-    private record NuclearFuelParams(int maxTemperature, int desintegrationByNeutron, double neutronByDesintegration, double neutronAbs,
-            int euByDesintegration, int desintegrationMax) {
-    }
-
     public static Function<MaterialBuilder.PartContext, MaterialPart> of(int quantity, boolean depleted, NuclearFuelParams params) {
+
         return ctx -> new NuclearFuelMaterialPart(ctx.getMaterialName(), quantity, depleted, ctx.getColoramp(), params);
     }
 
@@ -69,19 +68,21 @@ public class NuclearFuelMaterialPart implements MaterialPart {
 
     }
 
-    public static Function<MaterialBuilder.PartContext, MaterialPart>[] of(int maxTemperature, double neutronByDesintegration, double neutronAbs,
-            int euByDesintegration, int desintegrationMax) {
+    public static Function<MaterialBuilder.PartContext, MaterialPart>[] of(int desintegrationMax, int maxTemperature,
+            double neutronMultiplicationFactor, double directEnergyFactor, double thermalNeutronAbsorption, double fastNeutronAbsorption) {
 
         List<Function<MaterialBuilder.PartContext, MaterialPart>> result = new ArrayList<>();
         result.add((of(SIMPLE, true, null)));
         result.add((of(DOUBLE, true, null)));
         result.add(of(QUAD, true, null));
+
         for (int i : new int[] { SIMPLE, DOUBLE, QUAD }) {
-            NuclearFuelParams params = new NuclearFuelParams(maxTemperature,
-                    (int) ((1 - Math.pow(neutronByDesintegration, i)) / ((1 - neutronByDesintegration))), neutronByDesintegration,
-                    1 - Math.pow((1.0 - neutronAbs), Math.sqrt(i)), euByDesintegration, desintegrationMax * i);
+            NuclearFuelParams params = new NuclearFuelParams(desintegrationMax * i, maxTemperature, neutronMultiplicationFactor, directEnergyFactor,
+                    1 - Math.pow(1 - thermalNeutronAbsorption, Math.sqrt(i)), 1 - Math.pow(1 - fastNeutronAbsorption, Math.sqrt(i)));
+
             result.add(of(i, false, params));
         }
+
         return result.toArray(new Function[0]);
 
     }
@@ -106,8 +107,7 @@ public class NuclearFuelMaterialPart implements MaterialPart {
         if (depleted) {
             MIItem.of(itemPath, 1);
         } else {
-            NuclearFuel.of(itemPath, params.maxTemperature, params.desintegrationByNeutron, params.neutronByDesintegration, params.neutronAbs,
-                    params.euByDesintegration, params.desintegrationMax, partSimple + "_depleted");
+            NuclearFuel.of(itemPath, params, partSimple + "_depleted");
         }
 
     }

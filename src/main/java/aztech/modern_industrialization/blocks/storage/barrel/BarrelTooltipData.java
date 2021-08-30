@@ -21,17 +21,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.mixin_client;
+package aztech.modern_industrialization.blocks.storage.barrel;
 
-import java.util.Map;
-import net.minecraft.client.render.model.BakedModel;
-import net.minecraft.client.render.model.BakedModelManager;
-import net.minecraft.util.Identifier;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.gen.Accessor;
+import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
+import net.minecraft.client.item.TooltipData;
 
-@Mixin(BakedModelManager.class)
-public interface BakedModelManagerAccessor {
-    @Accessor("models")
-    Map<Identifier, BakedModel> getModels();
+public record BarrelTooltipData(ItemVariant variant, long amount) implements TooltipData {
 }

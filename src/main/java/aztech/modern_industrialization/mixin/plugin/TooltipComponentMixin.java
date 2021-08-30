@@ -21,23 +21,11 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.mixin_client;
+package aztech.modern_industrialization.mixin.plugin;
 
-import net.minecraft.client.gui.screen.ingame.HandledScreen;
-import net.minecraft.screen.slot.Slot;
-import org.jetbrains.annotations.Nullable;
+import net.minecraft.client.gui.tooltip.TooltipComponent;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.gen.Accessor;
 
-@Mixin(HandledScreen.class)
-public interface HandledScreenAccessor {
-    @Accessor("focusedSlot")
-    @Nullable
-    Slot mi_getFocusedSlot();
-
-    @Accessor("x")
-    int mi_getX();
-
-    @Accessor("y")
-    int mi_getY();
+@Mixin(TooltipComponent.class)
+public interface TooltipComponentMixin {
 }

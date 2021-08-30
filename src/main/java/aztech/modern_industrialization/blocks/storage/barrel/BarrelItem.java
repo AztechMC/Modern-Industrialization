@@ -32,7 +32,6 @@ import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.StoragePreconditions;
 import net.minecraft.block.Block;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.item.BundleTooltipData;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.client.item.TooltipData;
 import net.minecraft.entity.player.PlayerEntity;
@@ -44,7 +43,6 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.text.*;
 import net.minecraft.util.ClickType;
-import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 
@@ -152,9 +150,7 @@ public class BarrelItem extends BlockItem {
 
     public Optional<TooltipData> getTooltipData(ItemStack stack) {
         if (!isEmpty(stack)) {
-            DefaultedList<ItemStack> defaultedList = DefaultedList.of();
-            defaultedList.add(getItemVariant(stack).toStack(1));
-            return Optional.of(new BundleTooltipData(defaultedList, 64));
+            return Optional.of(new BarrelTooltipData(getItemVariant(stack), getAmount(stack)));
         } else {
             return Optional.empty();
         }

@@ -24,38 +24,76 @@
 package aztech.modern_industrialization.blocks.storage.barrel.client;
 
 import aztech.modern_industrialization.blocks.storage.barrel.BarrelTooltipData;
+import aztech.modern_industrialization.util.TextHelper;
 import net.minecraft.client.font.TextRenderer;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.tooltip.TooltipComponent;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.item.ItemRenderer;
 import net.minecraft.client.texture.TextureManager;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.text.LiteralText;
+import net.minecraft.text.Style;
+import net.minecraft.text.Text;
+import net.minecraft.text.TextColor;
 import net.minecraft.util.math.Matrix4f;
 
-public class BarrelTooltipComponent implements TooltipComponent {
-    private final BarrelTooltipData data;
-
-    public BarrelTooltipComponent(BarrelTooltipData data) {
-        this.data = data;
-    }
+public record BarrelTooltipComponent(BarrelTooltipData data) implements TooltipComponent {
 
     @Override
     public int getHeight() {
-        return 20;
+        return 30;
     }
 
     @Override
     public int getWidth(TextRenderer textRenderer) {
-        return textRenderer.getWidth("EPIC CUSTOM COMPONENT");
+        return Math.max(textRenderer.getWidth(data.variant().toStack().getName()), 20 + textRenderer.getWidth(getItemNumber()));
     }
 
     @Override
     public void drawText(TextRenderer textRenderer, int x, int y, Matrix4f matrix4f, VertexConsumerProvider.Immediate immediate) {
-        textRenderer.draw("EPIC CUSTOM COMPONENT", x, y, -1, true, matrix4f, immediate, false, 0, 15728880);
+
+        Style style = Style.EMPTY.withColor(TextColor.fromRgb(0xa9a9a9)).withItalic(false);
+
+        textRenderer.draw(data.variant().toStack().getName().shallowCopy().setStyle(style), x, y, -1, true, matrix4f, immediate, false, 0, 15728880);
+
+        textRenderer.draw(getItemNumber(), x + 20, y + 15, -1, true, matrix4f, immediate, false, 0, 15728880);
+
+    }
+
+    public Text getItemNumber() {
+        long maxCount = data.variant().getItem().getMaxCount();
+        long stackCapacity = data.capacity() / maxCount;
+        long amount = data.amount();
+        long stackNumber = amount / maxCount;
+        long rem = amount % maxCount;
+
+        Text itemNumber;
+
+        if (maxCount == 1 || Screen.hasShiftDown()) {
+            itemNumber = new LiteralText(String.format("%d / %d", amount, stackCapacity * maxCount)).setStyle(TextHelper.YELLOW);
+        } else {
+            if (stackNumber > 0) {
+                if (rem != 0) {
+                    itemNumber = (new LiteralText(String.format("%d × %d + %d / %d × %d", stackNumber, maxCount, rem, stackCapacity, maxCount))
+                            .setStyle(TextHelper.YELLOW));
+
+                } else {
+                    itemNumber = new LiteralText(String.format("%d × %d / %d × %d", stackNumber, maxCount, stackCapacity, maxCount))
+                            .setStyle(TextHelper.YELLOW);
+
+                }
+            } else {
+                itemNumber = new LiteralText(String.format("%d / %d × %d", rem, stackCapacity, maxCount)).setStyle(TextHelper.YELLOW);
+            }
+        }
+
+        return itemNumber;
     }
 
     @Override
     public void drawItems(TextRenderer textRenderer, int x, int y, MatrixStack matrices, ItemRenderer itemRenderer, int z,
             TextureManager textureManager) {
+        itemRenderer.renderGuiItemIcon(data.variant().toStack(), x, y + 10);
     }
 }

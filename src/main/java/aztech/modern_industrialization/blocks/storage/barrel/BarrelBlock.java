@@ -28,13 +28,19 @@ import static aztech.modern_industrialization.ModernIndustrialization.METAL_MATE
 import aztech.modern_industrialization.MIBlock;
 import aztech.modern_industrialization.ModernIndustrialization;
 import aztech.modern_industrialization.util.MobSpawning;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
 import net.devtech.arrp.json.models.JModel;
 import net.devtech.arrp.json.models.JTextures;
+import net.fabricmc.fabric.api.event.player.AttackBlockCallback;
+import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
+import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
+import net.fabricmc.fabric.api.transfer.v1.item.PlayerInventoryStorage;
+import net.fabricmc.fabric.api.transfer.v1.storage.StorageUtil;
+import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.minecraft.block.BlockEntityProvider;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -90,7 +96,7 @@ public class BarrelBlock extends MIBlock implements BlockEntityProvider {
     @Override
     public List<ItemStack> getDroppedStacks(BlockState state, LootContext.Builder builder) {
         LootContext lootContext = builder.parameter(LootContextParameters.BLOCK_STATE, state).build(LootContextTypes.BLOCK);
-        return Arrays.asList(getStack(lootContext.get(LootContextParameters.BLOCK_ENTITY)));
+        return Collections.singletonList(getStack(lootContext.get(LootContextParameters.BLOCK_ENTITY)));
     }
 
     @Override
@@ -106,5 +112,52 @@ public class BarrelBlock extends MIBlock implements BlockEntityProvider {
             return ActionResult.success(world.isClient);
         }
         return ActionResult.PASS;
+    }
+
+    static {
+
+        UseBlockCallback.EVENT.register((player, world, hand, hitResult) -> {
+
+            BlockEntity blockEntity = world.getBlockEntity(hitResult.getBlockPos());
+            if (blockEntity instanceof BarrelBlockEntity barrel) {
+                if (!player.isSneaking()) {
+                    if (StorageUtil.move(PlayerInventoryStorage.of(player).getSlots().get(player.getInventory().selectedSlot), barrel,
+                            (itemVariant) -> true, Long.MAX_VALUE, null) > 0) {
+                        return ActionResult.success(world.isClient);
+                    }
+
+                } else {
+                    ItemVariant currentInHand = ItemVariant.of(player.getMainHandStack());
+                    if (StorageUtil.move(PlayerInventoryStorage.of(player), barrel, (itemVariant) -> itemVariant.equals(currentInHand),
+                            Long.MAX_VALUE, null) > 0) {
+                        return ActionResult.success(world.isClient);
+                    }
+
+                }
+
+            }
+            return ActionResult.PASS;
+        });
+
+        AttackBlockCallback.EVENT.register((player, world, hand, pos, direction) -> {
+            BlockEntity blockEntity = world.getBlockEntity(pos);
+            if (blockEntity instanceof BarrelBlockEntity barrel) {
+                if (!barrel.isEmpty()) {
+                    try (Transaction transaction = Transaction.openOuter()) {
+                        ItemVariant extractedResource = barrel.getResource();
+
+                        long extracted = barrel.extract(barrel.getResource(), player.isSneaking() ? 1 : barrel.getResource().getItem().getMaxCount(),
+                                transaction);
+
+                        PlayerInventoryStorage.of(player).offerOrDrop(extractedResource, extracted, transaction);
+
+                        transaction.commit();
+                    }
+
+                }
+            }
+            return ActionResult.PASS;
+        });
+
     }
 }

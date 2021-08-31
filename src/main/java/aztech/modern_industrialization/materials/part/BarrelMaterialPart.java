@@ -29,18 +29,24 @@ import aztech.modern_industrialization.ModernIndustrialization;
 import aztech.modern_industrialization.blocks.storage.barrel.BarrelBlock;
 import aztech.modern_industrialization.blocks.storage.barrel.BarrelBlockEntity;
 import aztech.modern_industrialization.blocks.storage.barrel.BarrelItem;
+import aztech.modern_industrialization.blocks.storage.barrel.BarrelRenderer;
 import aztech.modern_industrialization.materials.MaterialBuilder;
 import aztech.modern_industrialization.textures.TextureHelper;
 import aztech.modern_industrialization.textures.TextureManager;
 import aztech.modern_industrialization.textures.coloramp.Coloramp;
 import aztech.modern_industrialization.util.ResourceUtil;
+import aztech.modern_industrialization.util.TextHelper;
 import java.io.IOException;
 import java.util.function.Function;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import net.fabricmc.fabric.api.client.rendereregistry.v1.BlockEntityRendererRegistry;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemStorage;
 import net.minecraft.block.BlockEntityProvider;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
+import net.minecraft.client.render.block.entity.BlockEntityRendererFactory;
 import net.minecraft.client.texture.NativeImage;
 import net.minecraft.util.registry.Registry;
 
@@ -112,5 +118,12 @@ public class BarrelMaterialPart implements MaterialPart {
             }
         }
 
+    }
+
+    @Environment(EnvType.CLIENT)
+    @Override
+    public void registerClient() {
+        BlockEntityRendererRegistry.INSTANCE.register(blockEntityType,
+                (BlockEntityRendererFactory.Context context) -> new BarrelRenderer(TextHelper.getOverlayTextColor(coloramp.getMeanRGB())));
     }
 }

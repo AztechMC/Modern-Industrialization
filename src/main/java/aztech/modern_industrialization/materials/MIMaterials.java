@@ -454,7 +454,7 @@ public class MIMaterials {
         MaterialHelper.registerItemTag("c:raw_copper_ores", JTag.tag().add(new Identifier("minecraft:raw_copper")));
         MaterialHelper.registerItemTag("c:raw_copper_blocks", JTag.tag().add(new Identifier("minecraft:raw_copper_block")));
 
-        JTag goldOres = JTag.tag().tag(new Identifier("minecraft:gold_ores")).add(new Identifier("minecraft:gilded_blackstone"));
+        JTag goldOres = JTag.tag().tag(new Identifier("minecraft:gold_ores")); // .add(new Identifier("minecraft:gilded_blackstone"));
 
         MaterialHelper.registerItemTag("c:gold_blocks", JTag.tag().add(new Identifier("minecraft:gold_block")));
         MaterialHelper.registerItemTag("c:gold_ingots", JTag.tag().add(new Identifier("minecraft:gold_ingot")));

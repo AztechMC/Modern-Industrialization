@@ -26,6 +26,7 @@ package aztech.modern_industrialization.api.energy;
 import static dev.technici4n.fasttransferlib.api.Simulation.ACT;
 import static dev.technici4n.fasttransferlib.api.Simulation.SIMULATE;
 
+import aztech.modern_industrialization.ModernIndustrialization;
 import aztech.modern_industrialization.util.Simulation;
 import dev.technici4n.fasttransferlib.api.energy.EnergyIo;
 import net.fabricmc.fabric.api.lookup.v1.block.BlockApiLookup;
@@ -59,7 +60,16 @@ public class EnergyApi {
             return new EnergyInsertable() {
                 @Override
                 public long insertEnergy(long amount, Simulation simulation) {
-                    return amount - (long) Math.floor(io.insert(amount, simulation.isActing() ? ACT : SIMULATE));
+                    long inserted = amount - (long) Math.floor(io.insert(amount, simulation.isActing() ? ACT : SIMULATE));
+
+                    if (inserted < 0) {
+                        ModernIndustrialization.LOGGER.warn(
+                                String.format("Tried inserting up to %d energy, but broken EnergyIo %s inserted a negative amount of energy %d.%nWorld and position: %s %s.",
+                                        amount, io, inserted, world, pos));
+                        return 0;
+                    } else {
+                        return inserted;
+                    }
                 }
 
                 @Override

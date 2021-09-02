@@ -153,6 +153,7 @@ dependencies {
     }
 
     include modApi("dev.technici4n:FastTransferLib:${project.ftl_version}")
+    include modApi("teamreborn:energy:${project.tr_energy_version}")
 
     modCompileOnly('net.oskarstrom:DashLoader:2.1-dev4') {
         exclude(group: "net.fabricmc.fabric-api")

@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.mixin_client;
+package aztech.modern_industrialization.mixin.client;
 
 import aztech.modern_industrialization.api.IElytraItem;
 import net.minecraft.client.network.ClientPlayerEntity;

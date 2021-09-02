@@ -36,8 +36,7 @@
     ]
   },
   "mixins": [
-    "modern_industrialization.mixins.json",
-    "modern_industrialization.plugin_mixins.json"
+    "modern_industrialization.mixins.json"
   ],
   "depends": {
     "fabricloader": ">=0.7.4",

@@ -131,28 +131,28 @@ class NeutronInteractionCategory implements DisplayCategory<NeutronInteractionDi
                     .noShadow().tooltipLine(new TranslatableText("text.modern_industrialization.absorption_probability").getString()));
 
             if (type == NeutronType.FAST) {
-                double slowFraction = display.nuclearComponent.neutronBehaviour.neutronSlowingProbability();
+                double slowingProba = display.nuclearComponent.neutronBehaviour.neutronSlowingProbability();
 
-                String slowFractionString = String.format("%.1f ", 100 * slowFraction) + "%";
-                String fastFractionString = String.format("%.1f ", 100 * (1 - slowFraction)) + "%";
+                String thermalFractionString = String.format("%.1f ", 100 * slowingProba) + "%";
+                String fastFractionString = String.format("%.1f ", 100 * (1 - slowingProba)) + "%";
 
                 widgets.add(Widgets
                         .createLabel(new Point(centerX + 60, centerY + 20),
-                                new LiteralText(slowFractionString).setStyle(Style.EMPTY.withColor(0xbc1a1a)))
+                                new LiteralText(fastFractionString).setStyle(Style.EMPTY.withColor(0xbc1a1a)))
                         .noShadow().tooltipLine(new TranslatableText("text.modern_industrialization.fast_neutron_fraction").getString()));
 
                 widgets.add(Widgets
                         .createLabel(new Point(centerX + 60, centerY - 10),
-                                new LiteralText(fastFractionString).setStyle(Style.EMPTY.withColor(0x0c27a7)))
+                                new LiteralText(thermalFractionString).setStyle(Style.EMPTY.withColor(0x0c27a7)))
                         .noShadow().tooltipLine(new TranslatableText("text.modern_industrialization.thermal_neutron_fraction").getString()));
 
-                int index = 1 + (int) Math.floor((1 - slowFraction) * 9);
-                if (slowFraction == 0) {
+                int index = 1 + (int) Math.floor((1 - slowingProba) * 9);
+                if (slowingProba == 0) {
                     index = 0;
-                } else if (slowFraction == 1) {
+                } else if (slowingProba == 1) {
                     index = 10;
                 }
-                widgets.add(Widgets.createTexturedWidget(TEXTURE_ATLAS, centerX - 53, centerY - 19, index * 16, 240, 16, 16));
+                widgets.add(Widgets.createTexturedWidget(TEXTURE_ATLAS, centerX + 48, centerY, index * 16, 240, 16, 16));
             }
 
         }

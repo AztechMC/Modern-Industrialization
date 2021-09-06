@@ -33,12 +33,15 @@ import aztech.modern_industrialization.machines.blockentities.hatches.NuclearHat
 import aztech.modern_industrialization.machines.components.ActiveShapeComponent;
 import aztech.modern_industrialization.machines.components.IsActiveComponent;
 import aztech.modern_industrialization.machines.components.OrientationComponent;
+import aztech.modern_industrialization.machines.components.sync.NuclearReactorGui;
 import aztech.modern_industrialization.machines.gui.MachineGuiParameters;
 import aztech.modern_industrialization.machines.models.MachineCasings;
 import aztech.modern_industrialization.machines.models.MachineModelClientData;
 import aztech.modern_industrialization.machines.multiblocks.*;
 import aztech.modern_industrialization.nuclear.*;
 import aztech.modern_industrialization.util.Tickable;
+import java.util.Arrays;
+import java.util.function.Supplier;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -61,6 +64,7 @@ public class NuclearReactorMultiblockBlockEntity extends MultiblockMachineBlockE
     private ShapeMatcher shapeMatcher;
 
     private INuclearGrid nuclearGrid;
+    private Supplier<NuclearReactorGui.Data> dataSupplier;
 
     public NuclearReactorMultiblockBlockEntity(BEP bep) {
         super(bep, new MachineGuiParameters.Builder("nuclear_reactor", false).backgroundHeight(256).build(),
@@ -69,7 +73,16 @@ public class NuclearReactorMultiblockBlockEntity extends MultiblockMachineBlockE
         this.activeShape = new ActiveShapeComponent(shapeTemplates);
         isActive = new IsActiveComponent();
         registerComponents(activeShape, isActive);
+        this.registerClientComponent(new NuclearReactorGui.Server(this::sendData));
 
+    }
+
+    public NuclearReactorGui.Data sendData() {
+        if (shapeValid.shapeValid) {
+            return dataSupplier.get();
+        } else {
+            return new NuclearReactorGui.Data(false, 0, 0, null, null, null);
+        }
     }
 
     @Override
@@ -294,6 +307,31 @@ public class NuclearReactorMultiblockBlockEntity extends MultiblockMachineBlockE
             }
         };
 
+        dataSupplier = () -> {
+
+            double[] temperature = new double[size * size];
+            boolean[] hasHatch = new boolean[size * size];
+            ItemStack[] itemStacksInHatch = new ItemStack[size * size];
+            Arrays.fill(itemStacksInHatch, ItemStack.EMPTY);
+
+            for (int i = 0; i < size; i++) {
+                for (int j = 0; j < size; j++) {
+
+                    if (hatchesGrid[i][size - 1 - j] != null) {
+
+                        int index = NuclearReactorGui.Data.toIndex(i, j, size);
+                        temperature[index] = hatchesGrid[i][size - 1 - j].nuclearReactorComponent.getTemperature();
+                        hasHatch[index] = true;
+
+                        ItemStack itemStack = hatchesGrid[i][size - 1 - j].getInventory().getItemStacks().get(0).getResource().toStack();
+                        if (!itemStack.isEmpty() && itemStack.getItem() instanceof NuclearComponent) {
+                            itemStacksInHatch[index] = itemStack;
+                        }
+                    }
+                }
+            }
+            return new NuclearReactorGui.Data(true, size, size, temperature, hasHatch, itemStacksInHatch);
+        };
     }
 
     @Override

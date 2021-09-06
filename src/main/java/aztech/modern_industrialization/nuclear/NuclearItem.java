@@ -35,7 +35,7 @@ public class NuclearItem {
     public static final Item NEUTRON_REFLECTOR = NuclearComponent.of("neutron_reflector", 2000, 0, new INeutronBehaviour() {
         @Override
         public double neutronSlowingProbability() {
-            return 1;
+            return 0.8;
         }
 
         @Override

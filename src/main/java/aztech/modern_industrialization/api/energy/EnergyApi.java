@@ -26,12 +26,15 @@ package aztech.modern_industrialization.api.energy;
 import static dev.technici4n.fasttransferlib.api.Simulation.ACT;
 import static dev.technici4n.fasttransferlib.api.Simulation.SIMULATE;
 
+import aztech.modern_industrialization.ModernIndustrialization;
 import aztech.modern_industrialization.util.Simulation;
 import dev.technici4n.fasttransferlib.api.energy.EnergyIo;
 import net.fabricmc.fabric.api.lookup.v1.block.BlockApiLookup;
+import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Direction;
 import org.jetbrains.annotations.NotNull;
+import team.reborn.energy.api.EnergyStorage;
 
 public class EnergyApi {
     public static final BlockApiLookup<EnergyMoveable, @NotNull Direction> MOVEABLE = BlockApiLookup
@@ -51,7 +54,7 @@ public class EnergyApi {
 
     static {
         // Compat wrapper for FTL
-        MOVEABLE.registerFallback(((world, pos, state, blockEntity, direction) -> {
+        MOVEABLE.registerFallback((world, pos, state, blockEntity, direction) -> {
             EnergyIo io = dev.technici4n.fasttransferlib.api.energy.EnergyApi.SIDED.find(world, pos, state, blockEntity, direction);
             if (io == null) {
                 return null;
@@ -59,7 +62,16 @@ public class EnergyApi {
             return new EnergyInsertable() {
                 @Override
                 public long insertEnergy(long amount, Simulation simulation) {
-                    return amount - (long) Math.floor(io.insert(amount, simulation.isActing() ? ACT : SIMULATE));
+                    long inserted = amount - (long) Math.floor(io.insert(amount, simulation.isActing() ? ACT : SIMULATE));
+
+                    if (inserted < 0) {
+                        ModernIndustrialization.LOGGER.warn(String.format(
+                                "Tried inserting up to %d energy, but broken EnergyIo %s inserted a negative amount of energy %d.%nWorld and position: %s %s.",
+                                amount, io, inserted, world, pos));
+                        return 0;
+                    } else {
+                        return inserted;
+                    }
                 }
 
                 @Override
@@ -67,6 +79,40 @@ public class EnergyApi {
                     return io.supportsInsertion();
                 }
             };
-        }));
+        });
+
+        // Compat wrapper for TR energy
+        MOVEABLE.registerFallback((world, pos, state, blockEntity, context) -> {
+            EnergyStorage storage = EnergyStorage.SIDED.find(world, pos, state, blockEntity, context);
+
+            if (storage == null || !storage.supportsInsertion()) {
+                return null;
+            }
+            return new EnergyInsertable() {
+                @Override
+                public long insertEnergy(long amount, Simulation simulation) {
+                    long inserted;
+                    try (Transaction tx = Transaction.openOuter()) {
+                        inserted = storage.insert(amount, tx);
+                        if (simulation.isActing())
+                            tx.commit();
+                    }
+
+                    if (inserted < 0) {
+                        ModernIndustrialization.LOGGER.warn(String.format(
+                                "Tried inserting up to %d energy, but broken EnergyStorage %s inserted a negative amount of energy %d.%nWorld and position: %s %s.",
+                                amount, storage, inserted, world, pos));
+                        return 0;
+                    } else {
+                        return inserted;
+                    }
+                }
+
+                @Override
+                public boolean canInsert(CableTier tier) {
+                    return true;
+                }
+            };
+        });
     }
 }

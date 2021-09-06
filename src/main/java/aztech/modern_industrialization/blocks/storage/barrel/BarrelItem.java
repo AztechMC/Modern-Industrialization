@@ -31,8 +31,6 @@ import java.util.Optional;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.StoragePreconditions;
 import net.minecraft.block.Block;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.item.BundleTooltipData;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.client.item.TooltipData;
 import net.minecraft.entity.player.PlayerEntity;
@@ -42,9 +40,11 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.screen.slot.Slot;
-import net.minecraft.text.*;
+import net.minecraft.text.Style;
+import net.minecraft.text.Text;
+import net.minecraft.text.TextColor;
+import net.minecraft.text.TranslatableText;
 import net.minecraft.util.ClickType;
-import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 
@@ -119,32 +119,7 @@ public class BarrelItem extends BlockItem {
     @Override
     public void appendTooltip(ItemStack stack, World world, List<Text> tooltip, TooltipContext context) {
         Style style = Style.EMPTY.withColor(TextColor.fromRgb(0xa9a9a9)).withItalic(false);
-        if (!isEmpty(stack)) {
-
-            long maxCount = getItemVariant(stack).getItem().getMaxCount();
-            long amount = getAmount(stack);
-            tooltip.add(getItemVariant(stack).toStack().getName());
-            long stackNumber = amount / maxCount;
-            long rem = amount % maxCount;
-
-            if (maxCount == 1 || Screen.hasShiftDown()) {
-                tooltip.add(new LiteralText(String.format("%d / %d", amount, stackCapacity * maxCount)).setStyle(TextHelper.YELLOW));
-            } else {
-                if (stackNumber > 0) {
-                    if (rem != 0) {
-                        tooltip.add(new LiteralText(String.format("%d × %d + %d / %d × %d", stackNumber, maxCount, rem, stackCapacity, maxCount))
-                                .setStyle(TextHelper.YELLOW));
-
-                    } else {
-                        tooltip.add(new LiteralText(String.format("%d × %d / %d × %d", stackNumber, maxCount, stackCapacity, maxCount))
-                                .setStyle(TextHelper.YELLOW));
-
-                    }
-                } else {
-                    tooltip.add(new LiteralText(String.format("%d / %d × %d", rem, stackCapacity, maxCount)).setStyle(TextHelper.YELLOW));
-                }
-            }
-        } else {
+        if (isEmpty(stack)) {
             tooltip.add(new TranslatableText("text.modern_industrialization.empty").setStyle(style));
             tooltip.add(new TranslatableText("text.modern_industrialization.barrel_stack", stackCapacity).setStyle(TextHelper.YELLOW));
         }
@@ -152,9 +127,7 @@ public class BarrelItem extends BlockItem {
 
     public Optional<TooltipData> getTooltipData(ItemStack stack) {
         if (!isEmpty(stack)) {
-            DefaultedList<ItemStack> defaultedList = DefaultedList.of();
-            defaultedList.add(getItemVariant(stack).toStack(1));
-            return Optional.of(new BundleTooltipData(defaultedList, 64));
+            return Optional.of(new BarrelTooltipData(getItemVariant(stack), getAmount(stack), getCapacity(stack)));
         } else {
             return Optional.empty();
         }

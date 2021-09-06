@@ -18,6 +18,13 @@
     "ServerPlayNetworkHandlerAccessor",
     "WorldChunkMixin"
   ],
+  "client": [
+    "client.ClientPlayerEntityMixin",
+    "client.ClientPlayerInteractionManagerMixin",
+    "client.HandledScreenAccessor",
+    "client.HeldItemRendererMixin",
+    "client.ScreenMixin"
+  ],
   "injectors": {
     "defaultRequire": 1
   }

@@ -26,7 +26,7 @@ package aztech.modern_industrialization.compat.rei;
 import aztech.modern_industrialization.api.ReiDraggable;
 import aztech.modern_industrialization.inventory.ConfigurableInventoryPackets;
 import aztech.modern_industrialization.items.diesel_tools.DieselToolItem;
-import aztech.modern_industrialization.mixin_client.HandledScreenAccessor;
+import aztech.modern_industrialization.mixin.client.HandledScreenAccessor;
 import aztech.modern_industrialization.util.Simulation;
 import dev.architectury.fluid.FluidStack;
 import java.util.ArrayList;

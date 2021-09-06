@@ -21,23 +21,36 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.mixin_client;
+package aztech.modern_industrialization.mixin.client;
 
-import net.minecraft.client.gui.screen.ingame.HandledScreen;
-import net.minecraft.screen.slot.Slot;
-import org.jetbrains.annotations.Nullable;
+import aztech.modern_industrialization.MIItem;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.render.item.HeldItemRenderer;
+import net.minecraft.item.ItemStack;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.gen.Accessor;
+import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-@Mixin(HandledScreen.class)
-public interface HandledScreenAccessor {
-    @Accessor("focusedSlot")
-    @Nullable
-    Slot mi_getFocusedSlot();
+/**
+ * @reason Prevent the steam drill from swinging every tick while the player is
+ *         holding it.
+ */
+@Mixin(HeldItemRenderer.class)
+public class HeldItemRendererMixin {
+    @Shadow
+    private ItemStack mainHand;
+    @Shadow
+    @Final
+    private MinecraftClient client;
 
-    @Accessor("x")
-    int mi_getX();
-
-    @Accessor("y")
-    int mi_getY();
+    @Inject(at = @At("HEAD"), method = "updateHeldItems")
+    private void updateHeldItems(CallbackInfo ci) {
+        ItemStack mainHandStack = client.player.getMainHandStack();
+        if (mainHand.getItem() == MIItem.ITEM_STEAM_MINING_DRILL && mainHandStack.getItem() == MIItem.ITEM_STEAM_MINING_DRILL) {
+            mainHand = mainHandStack;
+        }
+    }
 }

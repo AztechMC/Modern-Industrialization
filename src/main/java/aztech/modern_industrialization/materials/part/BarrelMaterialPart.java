@@ -25,42 +25,34 @@ package aztech.modern_industrialization.materials.part;
 
 import aztech.modern_industrialization.MIBlock;
 import aztech.modern_industrialization.MIIdentifier;
-import aztech.modern_industrialization.ModernIndustrialization;
 import aztech.modern_industrialization.blocks.storage.barrel.BarrelBlock;
 import aztech.modern_industrialization.blocks.storage.barrel.BarrelBlockEntity;
 import aztech.modern_industrialization.blocks.storage.barrel.BarrelItem;
+import aztech.modern_industrialization.blocks.storage.barrel.BarrelRenderer;
 import aztech.modern_industrialization.materials.MaterialBuilder;
-import aztech.modern_industrialization.textures.TextureHelper;
-import aztech.modern_industrialization.textures.TextureManager;
 import aztech.modern_industrialization.textures.coloramp.Coloramp;
 import aztech.modern_industrialization.util.ResourceUtil;
-import java.io.IOException;
+import aztech.modern_industrialization.util.TextHelper;
 import java.util.function.Function;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import net.fabricmc.fabric.api.client.rendereregistry.v1.BlockEntityRendererRegistry;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemStorage;
 import net.minecraft.block.BlockEntityProvider;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.client.texture.NativeImage;
+import net.minecraft.client.render.block.entity.BlockEntityRendererFactory;
 import net.minecraft.util.registry.Registry;
 
-public class BarrelMaterialPart implements MaterialPart {
+public class BarrelMaterialPart extends BlockColumnMaterialPart {
 
-    private final String materialName;
-    private final Coloramp coloramp;
     private final int stackCapacity;
-    private final String idPath;
-    private final String itemId;
-    private BarrelBlock block;
     private BlockEntityType<BlockEntity> blockEntityType;
 
     public BarrelMaterialPart(String materialName, Coloramp coloramp, int stackCapacity) {
-        this.materialName = materialName;
-        this.coloramp = coloramp;
+        super(MIParts.BARREL, materialName, coloramp);
         this.stackCapacity = stackCapacity;
-        this.idPath = materialName + "_" + getPart();
-        this.itemId = ModernIndustrialization.MOD_ID + ":" + idPath;
-
     }
 
     public static Function<MaterialBuilder.PartContext, MaterialPart> of(int stackCapacity) {
@@ -90,27 +82,16 @@ public class BarrelMaterialPart implements MaterialPart {
         block = new BarrelBlock(idPath, (MIBlock block) -> new BarrelItem(block, stackCapacity), factory);
 
         this.blockEntityType = Registry.register(Registry.BLOCK_ENTITY_TYPE, itemId,
-                FabricBlockEntityTypeBuilder.create(block.factory::createBlockEntity, block).build(null));
+                FabricBlockEntityTypeBuilder.create(((BarrelBlock) block).factory::createBlockEntity, block).build(null));
 
         ItemStorage.SIDED.registerSelf(blockEntityType);
 
     }
 
+    @Environment(EnvType.CLIENT)
     @Override
-    public void registerTextures(TextureManager mtm) {
-        for (String suffix : new String[] { "_end", "_side" }) {
-            String template = String.format("modern_industrialization:textures/materialsets/common/barrel%s.png", suffix);
-            try {
-                NativeImage image = mtm.getAssetAsTexture(template);
-                TextureHelper.colorize(image, coloramp);
-                String texturePath;
-                texturePath = String.format("modern_industrialization:textures/blocks/%s%s.png", idPath, suffix);
-                mtm.addTexture(texturePath, image);
-                image.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-
+    public void registerClient() {
+        BlockEntityRendererRegistry.INSTANCE.register(blockEntityType,
+                (BlockEntityRendererFactory.Context context) -> new BarrelRenderer(TextHelper.getOverlayTextColor(coloramp.getMeanRGB())));
     }
 }

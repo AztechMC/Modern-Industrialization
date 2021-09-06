@@ -23,6 +23,7 @@
  */
 package aztech.modern_industrialization.util;
 
+import aztech.modern_industrialization.textures.TextureHelper;
 import net.minecraft.text.Style;
 import net.minecraft.text.TextColor;
 import net.minecraft.util.Formatting;
@@ -53,6 +54,15 @@ public class TextHelper {
             return "kEU";
         } else {
             return "EU";
+        }
+    }
+
+    public static int getOverlayTextColor(int rgb) {
+        double luminance = TextureHelper.getLuminance(rgb);
+        if (luminance < 0.5) {
+            return 0xFFFFFF;
+        } else {
+            return 0x000000;
         }
     }
 

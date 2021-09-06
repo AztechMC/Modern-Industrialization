@@ -21,36 +21,28 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.mixin_client;
+package aztech.modern_industrialization.mixin.client;
 
-import aztech.modern_industrialization.MIItem;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.render.item.HeldItemRenderer;
-import net.minecraft.item.ItemStack;
-import org.spongepowered.asm.mixin.Final;
+import aztech.modern_industrialization.mixin_impl.MITooltipComponents;
+import java.util.List;
+import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.tooltip.TooltipComponent;
+import net.minecraft.client.item.TooltipData;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-/**
- * @reason Prevent the steam drill from swinging every tick while the player is
- *         holding it.
- */
-@Mixin(HeldItemRenderer.class)
-public class HeldItemRendererMixin {
-    @Shadow
-    private ItemStack mainHand;
-    @Shadow
-    @Final
-    private MinecraftClient client;
+@Mixin(Screen.class)
+public class ScreenMixin {
+    // Synthetic lambda body in renderTooltip
+    @Inject(at = @At("HEAD"), method = "method_32635(Ljava/util/List;Lnet/minecraft/client/item/TooltipData;)V", cancellable = true)
+    private static void injectRenderTooltipLambda(List<TooltipComponent> components, TooltipData data, CallbackInfo ci) {
+        TooltipComponent component = MITooltipComponents.of(data);
 
-    @Inject(at = @At("HEAD"), method = "updateHeldItems")
-    private void updateHeldItems(CallbackInfo ci) {
-        ItemStack mainHandStack = client.player.getMainHandStack();
-        if (mainHand.getItem() == MIItem.ITEM_STEAM_MINING_DRILL && mainHandStack.getItem() == MIItem.ITEM_STEAM_MINING_DRILL) {
-            mainHand = mainHandStack;
+        if (component != null) {
+            components.add(1, component);
+            ci.cancel();
         }
     }
 }

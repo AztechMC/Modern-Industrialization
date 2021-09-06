@@ -79,7 +79,7 @@ public class MIParts {
     public static final List<String> TAGGED_PARTS_LIST = Arrays.asList(BLOCK, DUST, GEAR, INGOT, NUGGET, ORE, PLATE, TINY_DUST);
     public static final Set<String> TAGGED_PARTS = new HashSet<>(TAGGED_PARTS_LIST);
 
-    public static final String[] BLOCKS = { ORE, BLOCK, COIL, MACHINE_CASING, MACHINE_CASING_SPECIAL, MACHINE_CASING_PIPE };
+    public static final String[] BLOCKS = { ORE, BARREL, BLOCK, COIL, MACHINE_CASING, MACHINE_CASING_SPECIAL, MACHINE_CASING_PIPE, RAW_METAL_BLOCK };
 
     public static String idOfPart(String part, String materialName) {
         return "modern_industrialization:" + materialName + "_" + part;

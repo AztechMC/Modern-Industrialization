@@ -257,7 +257,7 @@ public class MIMaterials {
                 .addParts(BlockMaterialPart.of(MaterialBlockSet.IRON)).addRecipes(StandardRecipes::apply, SmeltingRecipes::apply).build());
 
         MaterialRegistry.addMaterial(new MaterialBuilder("cupronickel", METALLIC, 0xE39681, SOFT)
-                .addRegularParts(TINY_DUST, DUST, INGOT, DOUBLE_INGOT, PLATE, WIRE, NUGGET, COIL, WIRE_MAGNETIC)
+                .addRegularParts(TINY_DUST, DUST, INGOT, DOUBLE_INGOT, PLATE, WIRE, NUGGET, WIRE_MAGNETIC).addParts(BlockColumnMaterialPart.of(COIL))
                 .addParts(BlockMaterialPart.of(MaterialBlockSet.COPPER)).addParts(CableMaterialPart.of(CableTier.MV))
                 .addRecipes(StandardRecipes::apply, SmeltingRecipes::apply).build());
 
@@ -382,9 +382,9 @@ public class MIMaterials {
 
         MaterialRegistry.addMaterial(
                 new MaterialBuilder("kanthal", METALLIC, new BakableTargetColoramp(0xcfcb00, common("ingot"), template("kanthal_ingot")), HARD)
-                        .addRegularParts(TINY_DUST, DUST, PLATE, INGOT, NUGGET, WIRE, DOUBLE_INGOT, COIL, HOT_INGOT)
-                        .addParts(BlockMaterialPart.of(MaterialBlockSet.COPPER)).addParts(CableMaterialPart.of(CableTier.HV))
-                        .addRecipes(StandardRecipes::apply).build());
+                        .addRegularParts(TINY_DUST, DUST, PLATE, INGOT, NUGGET, WIRE, DOUBLE_INGOT, HOT_INGOT)
+                        .addParts(BlockColumnMaterialPart.of(COIL)).addParts(BlockMaterialPart.of(MaterialBlockSet.COPPER))
+                        .addParts(CableMaterialPart.of(CableTier.HV)).addRecipes(StandardRecipes::apply).build());
 
         MaterialRegistry.addMaterial(
                 new MaterialBuilder("iridium", SHINY, new BakableTargetColoramp(0xe1e6f5, common("ingot"), template("iridium_ingot")), VERY_HARD)
@@ -410,7 +410,7 @@ public class MIMaterials {
                         .addRegularParts(DUST, TINY_DUST).addRecipes(StandardRecipes::apply).build());
 
         MaterialRegistry.addMaterial(new MaterialBuilder("supraconductor", SHINY, 0xa3d9ff, HARD)
-                .addRegularParts(TINY_DUST, DUST, PLATE, INGOT, NUGGET, WIRE, DOUBLE_INGOT, COIL)
+                .addRegularParts(TINY_DUST, DUST, PLATE, INGOT, NUGGET, WIRE, DOUBLE_INGOT).addParts(BlockColumnMaterialPart.of(COIL))
                 .addParts(CableMaterialPart.of(CableTier.SUPRACONDUCTOR)).addRecipes(StandardRecipes::apply).build());
 
         MaterialRegistry.addMaterial(

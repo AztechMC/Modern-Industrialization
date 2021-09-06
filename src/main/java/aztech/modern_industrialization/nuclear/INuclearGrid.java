@@ -56,4 +56,6 @@ public interface INuclearGrid {
     int getSupplementaryHeatByNeutronGenerated(int i, int j);
 
     void nuclearTick(int i, int j);
+
+    double neutronSlowingProbability(int posX, int posY);
 }

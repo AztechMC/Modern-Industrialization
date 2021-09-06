@@ -25,7 +25,6 @@ package aztech.modern_industrialization.nuclear;
 
 import static aztech.modern_industrialization.nuclear.NeutronFate.*;
 
-import com.google.common.base.Preconditions;
 import java.util.Random;
 
 public class NuclearGridHelper {
@@ -88,15 +87,10 @@ public class NuclearGridHelper {
                                         }
                                         break;
                                     } else {
-                                        int newDir;
-                                        do {
-                                            newDir = rand.nextInt(4);
-                                        } while (newDir == dir);
-
+                                        int newDir = rand.nextInt(4);
                                         dir = newDir;
 
-                                        if (interactionSelector > probaAbsorption + probaScattering) {
-                                            Preconditions.checkArgument(type == NeutronType.FAST, "Only fast neutrons can slow");
+                                        if (rand.nextDouble() < grid.neutronSlowingProbability(posX, posY)) {
                                             type = NeutronType.THERMAL;
                                             grid.putHeat(posX, posY, neutronNumber * NuclearConstant.EU_FOR_FAST_NEUTRON);
                                         }

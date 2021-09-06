@@ -34,6 +34,11 @@ public class NuclearItem {
 
     public static final Item NEUTRON_REFLECTOR = NuclearComponent.of("neutron_reflector", 2000, 0, new INeutronBehaviour() {
         @Override
+        public double neutronSlowingProbability() {
+            return 1;
+        }
+
+        @Override
         public double interactionTotalProbability(NeutronType type) {
             if (type == NeutronType.FAST) {
                 return 0.2;
@@ -45,9 +50,6 @@ public class NuclearItem {
         @Override
         public double interactionRelativeProbability(NeutronType type, NeutronInteraction interaction) {
             if (type == NeutronType.FAST) {
-                if (interaction == NeutronInteraction.SLOWING) {
-                    return 1;
-                }
             } else if (interaction == NeutronInteraction.SCATTERING) {
                 return 1;
             }

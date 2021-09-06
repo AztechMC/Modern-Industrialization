@@ -25,6 +25,8 @@ package aztech.modern_industrialization.nuclear;
 
 public interface INeutronBehaviour {
 
+    double neutronSlowingProbability();
+
     double interactionTotalProbability(NeutronType type);
 
     double interactionRelativeProbability(NeutronType type, NeutronInteraction interaction);

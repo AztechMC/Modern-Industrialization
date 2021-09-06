@@ -283,6 +283,15 @@ public class NuclearReactorMultiblockBlockEntity extends MultiblockMachineBlockE
                     hatchesGrid[x][y].nuclearTick();
                 }
             }
+
+            @Override
+            public double neutronSlowingProbability(int posX, int posY) {
+                ItemStack component = getNuclearComponent(posX, posY);
+                if (component != null) {
+                    return ((NuclearComponent) component.getItem()).neutronBehaviour.neutronSlowingProbability();
+                }
+                return 0;
+            }
         };
 
     }

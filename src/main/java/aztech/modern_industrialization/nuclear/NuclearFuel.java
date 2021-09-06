@@ -68,6 +68,11 @@ public class NuclearFuel extends NuclearComponent {
         super(settings, maxTemperature, 0, new INeutronBehaviour() {
 
             @Override
+            public double neutronSlowingProbability() {
+                return 1;
+            }
+
+            @Override
             public double interactionTotalProbability(NeutronType type) {
                 if (type == NeutronType.THERMAL) {
                     return thermalNeutronAbsorption;
@@ -120,18 +125,6 @@ public class NuclearFuel extends NuclearComponent {
 
         if (Screen.hasShiftDown()) {
 
-            tooltip.add(new TranslatableText("text.modern_industrialization.neutron_multiplication_factor",
-                    String.format("%.1f", neutronMultiplicationFactor)).setStyle(TextHelper.NEUTRONS).append(""));
-
-            tooltip.add(new LiteralText(""));
-
-            tooltip.add(new TranslatableText("text.modern_industrialization.direct_energy_by_desintegration", directEUbyDesintegration)
-                    .setStyle(TextHelper.EU_TEXT));
-
-            tooltip.add(new TranslatableText("text.modern_industrialization.total_energy_by_desintegration", totalEUbyDesintegration)
-                    .setStyle(TextHelper.EU_TEXT));
-
-            tooltip.add(new LiteralText(""));
             tooltip.add(new TranslatableText("text.modern_industrialization.direct_heat_by_desintegration",
                     String.format("%.2f", (double) directEUbyDesintegration / NuclearHatch.EU_PER_DEGREE)).setStyle(TextHelper.HEAT_CONDUCTION));
 
@@ -172,7 +165,7 @@ public class NuclearFuel extends NuclearComponent {
 
     @Override
     public boolean isItemBarVisible(ItemStack stack) {
-        return true;
+        return getRemainingDesintegrations(stack) != desintegrationMax;
     }
 
     @Override

@@ -27,6 +27,5 @@ public enum NeutronInteraction {
 
     SCATTERING,
     ABSORPTION,
-    SLOWING,
 
 }

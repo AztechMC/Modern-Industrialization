@@ -91,7 +91,7 @@ public class BarrelMaterialPart extends BlockColumnMaterialPart {
     @Environment(EnvType.CLIENT)
     @Override
     public void registerClient() {
-        BlockEntityRendererRegistry.INSTANCE.register(blockEntityType,
-                BarrelRenderer.factory(TextHelper.getOverlayTextColor(coloramp.getMeanRGB())));
+    	var factory = BarrelRenderer.factory(TextHelper.getOverlayTextColor(coloramp.getMeanRGB()));
+        BlockEntityRendererRegistry.INSTANCE.register(blockEntityType, factory::apply);
     }
 }

@@ -40,8 +40,12 @@ import net.minecraft.util.math.Vec3f;
 public class BarrelRenderer implements BlockEntityRenderer<BlockEntity> {
 
     private final int textColor;
+    
+    public static Function factory(int textColor) {
+    	return (Object ctx) -> new BarrelRenderer(textColor);
+    }
 
-    public BarrelRenderer(int textColor) {
+    private BarrelRenderer(int textColor) {
         this.textColor = textColor;
     }
 

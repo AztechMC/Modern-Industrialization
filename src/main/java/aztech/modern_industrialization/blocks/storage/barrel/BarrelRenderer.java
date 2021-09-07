@@ -45,7 +45,7 @@ public class BarrelRenderer implements BlockEntityRenderer<BlockEntity> {
     private final int textColor;
     
     public static void register(BlockEntityType<BlockEntity> type, int textColor) {
-    	BlockEntityRendererRegistry.INSTANCE.register(blockEntityType,
+    	BlockEntityRendererRegistry.INSTANCE.register(type,
                 (BlockEntityRendererFactory.Context context) -> new BarrelRenderer(textColor));
     }
 

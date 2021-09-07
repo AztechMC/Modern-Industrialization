@@ -24,6 +24,7 @@
 package aztech.modern_industrialization.blocks.storage.barrel;
 
 import aztech.modern_industrialization.util.RenderHelper;
+import java.util.function.Function;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.MinecraftClient;

@@ -24,13 +24,16 @@
 package aztech.modern_industrialization.blocks.storage.barrel;
 
 import aztech.modern_industrialization.util.RenderHelper;
+import net.fabricmc.fabric.api.client.rendereregistry.v1.BlockEntityRendererRegistry;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.render.OverlayTexture;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.block.entity.BlockEntityRenderer;
+import net.minecraft.client.render.block.entity.BlockEntityRendererFactory;
 import net.minecraft.client.render.model.json.ModelTransformation;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
@@ -41,7 +44,11 @@ public class BarrelRenderer implements BlockEntityRenderer<BlockEntity> {
 
     private final int textColor;
 
-    public BarrelRenderer(int textColor) {
+    public static void register(BlockEntityType<BlockEntity> type, int textColor) {
+        BlockEntityRendererRegistry.INSTANCE.register(type, (BlockEntityRendererFactory.Context context) -> new BarrelRenderer(textColor));
+    }
+
+    private BarrelRenderer(int textColor) {
         this.textColor = textColor;
     }
 

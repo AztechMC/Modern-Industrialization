@@ -36,13 +36,11 @@ import aztech.modern_industrialization.util.TextHelper;
 import java.util.function.Function;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.client.rendereregistry.v1.BlockEntityRendererRegistry;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemStorage;
 import net.minecraft.block.BlockEntityProvider;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.client.render.block.entity.BlockEntityRendererFactory;
 import net.minecraft.util.registry.Registry;
 
 public class BarrelMaterialPart extends BlockColumnMaterialPart {
@@ -91,7 +89,6 @@ public class BarrelMaterialPart extends BlockColumnMaterialPart {
     @Environment(EnvType.CLIENT)
     @Override
     public void registerClient() {
-    	var factory = BarrelRenderer.factory(TextHelper.getOverlayTextColor(coloramp.getMeanRGB()));
-        BlockEntityRendererRegistry.INSTANCE.register(blockEntityType, factory::apply);
+    	BarrelRenderer.register(blockEntityType, TextHelper.getOverlayTextColor(coloramp.getMeanRGB()));
     }
 }

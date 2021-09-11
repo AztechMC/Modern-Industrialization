@@ -29,6 +29,7 @@ import aztech.modern_industrialization.machines.SyncedComponents;
 import aztech.modern_industrialization.machines.gui.ClientComponentRenderer;
 import aztech.modern_industrialization.nuclear.INuclearTileData;
 import com.mojang.blaze3d.systems.RenderSystem;
+import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
 import net.minecraft.client.MinecraftClient;
@@ -37,6 +38,7 @@ import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketByteBuf;
+import net.minecraft.text.LiteralText;
 import net.minecraft.util.Identifier;
 
 public class NuclearReactorGui {
@@ -121,7 +123,8 @@ public class NuclearReactorGui {
 
         public class Renderer implements ClientComponentRenderer {
 
-            int centerX = 88, centerY = 88;
+            final int centerX = 88, centerY = 88;
+            int button_index = 0;
 
             @Override
             public void renderBackground(DrawableHelper helper, MatrixStack matrices, int x, int y) {
@@ -181,7 +184,21 @@ public class NuclearReactorGui {
 
                 }
             }
+
+            @Override
+            public void addButtons(ButtonContainer container) {
+                container.addButton(centerX + 64, 4, 20, 20, new LiteralText(""), (i) -> {
+                    button_index++;
+                }, () -> List.of(new LiteralText("Test Tooltip : " + button_index)), (button, matrices, mouseX, mouseY, delta) -> {
+                    button.renderVanilla(matrices, mouseX, mouseY, delta);
+                    RenderSystem.setShaderTexture(0, MachineScreenHandlers.SLOT_ATLAS);
+                    button.drawTexture(matrices, button.x + 1, button.y + 1, 144, 0, 18, 18);
+                });
+
+            }
+
         }
+
     }
 
     public record Data(boolean valid, int gridSizeX, int gridSizeY, Optional<INuclearTileData>[] tilesData) {

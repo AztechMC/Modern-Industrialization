@@ -75,7 +75,9 @@ public class NuclearGridHelper {
                                 Optional<INuclearTile> maybeSecondTile = grid.getNuclearTile(posX, posY);
 
                                 if (maybeSecondTile.isPresent()) {
+
                                     INuclearTile secondTile = maybeSecondTile.get();
+                                    secondTile.addNeutronsToFlux(neutronNumber, type);
 
                                     if (secondTile.getComponent().isPresent()) {
                                         NuclearComponent component = secondTile.getComponent().get();
@@ -91,7 +93,7 @@ public class NuclearGridHelper {
                                                     NeutronInteraction.SCATTERING);
 
                                             if (interactionSelector <= probaAbsorption) {
-                                                secondTile.absorbNeutrons(neutronNumber);
+                                                secondTile.absorbNeutrons(neutronNumber, type);
 
                                                 if (type == NeutronType.FAST) {
                                                     secondTile.putHeat(neutronNumber * NuclearConstant.EU_FOR_FAST_NEUTRON);

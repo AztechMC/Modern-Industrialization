@@ -55,5 +55,15 @@ public interface ClientComponentRenderer {
          *                        currently pressed.
          */
         void addButton(int u, Text message, Consumer<Integer> pressAction, Supplier<List<Text>> tooltipSupplier, Supplier<Boolean> isPressed);
+
+        void addButton(int posX, int posY, int width, int height, Text message, Consumer<Integer> pressAction, Supplier<List<Text>> tooltipSupplier,
+                CustomButtonRenderer renderer);
+
     }
+
+    @FunctionalInterface
+    interface CustomButtonRenderer {
+        void renderButton(MachineScreenHandlers.ClientScreen.MachineButton button, MatrixStack matrices, int mouseX, int mouseY, float delta);
+    }
+
 }

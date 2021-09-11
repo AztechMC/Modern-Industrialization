@@ -24,6 +24,10 @@
 package aztech.modern_industrialization.nuclear;
 
 public enum NeutronType {
+
     FAST,
     THERMAL,
+    BOTH;
+
+    public static final NeutronType[] TYPES = { FAST, THERMAL, BOTH };
 }

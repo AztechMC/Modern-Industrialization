@@ -146,7 +146,7 @@ class NeutronInteractionCategory implements DisplayCategory<NeutronInteractionDi
                                 new LiteralText(thermalFractionString).setStyle(Style.EMPTY.withColor(0x0c27a7)))
                         .noShadow().tooltipLine(new TranslatableText("text.modern_industrialization.thermal_neutron_fraction").getString()));
 
-                int index = 1 + (int) Math.floor((1 - slowingProba) * 9);
+                int index = 1 + (int) Math.floor((slowingProba) * 9);
                 if (slowingProba == 0) {
                     index = 0;
                 } else if (slowingProba == 1) {

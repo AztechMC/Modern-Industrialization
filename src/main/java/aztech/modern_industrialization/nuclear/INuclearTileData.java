@@ -33,7 +33,9 @@ public interface INuclearTileData {
 
     double getHeatTransferCoeff();
 
-    double getMeanNeutronAbsorption();
+    double getMeanNeutronAbsorption(NeutronType type);
+
+    double getMeanNeutronFlux(NeutronType type);
 
     default Optional<NuclearComponent> getComponent() {
         ItemStack stack = getStack();
@@ -51,7 +53,13 @@ public interface INuclearTileData {
             INuclearTileData tile = maybeData.get();
             buf.writeBoolean(true);
             buf.writeDouble(tile.getTemperature());
-            buf.writeDouble(tile.getMeanNeutronAbsorption());
+
+            buf.writeDouble(tile.getMeanNeutronAbsorption(NeutronType.FAST));
+            buf.writeDouble(tile.getMeanNeutronAbsorption(NeutronType.THERMAL));
+
+            buf.writeDouble(tile.getMeanNeutronFlux(NeutronType.FAST));
+            buf.writeDouble(tile.getMeanNeutronFlux(NeutronType.THERMAL));
+
             buf.writeDouble(tile.getHeatTransferCoeff());
 
             ItemStack stack = tile.getStack();
@@ -71,7 +79,13 @@ public interface INuclearTileData {
         if (isPresent) {
 
             final double temperature = buf.readDouble();
-            final double meanNeutronAbsorption = buf.readDouble();
+
+            final double meanFastNeutronAbsorption = buf.readDouble();
+            final double meanThermalNeutronAbsorption = buf.readDouble();
+
+            final double meanFastNeutronFlux = buf.readDouble();
+            final double meanThermalNeutronFlux = buf.readDouble();
+
             final double heatTransferCoeff = buf.readDouble();
             final ItemStack stack = buf.readItemStack();
 
@@ -88,8 +102,23 @@ public interface INuclearTileData {
                 }
 
                 @Override
-                public double getMeanNeutronAbsorption() {
-                    return meanNeutronAbsorption;
+                public double getMeanNeutronAbsorption(NeutronType type) {
+                    if (type == NeutronType.FAST)
+                        return meanFastNeutronAbsorption;
+                    else if (type == NeutronType.THERMAL)
+                        return meanThermalNeutronAbsorption;
+
+                    return meanThermalNeutronAbsorption + meanFastNeutronAbsorption;
+                }
+
+                @Override
+                public double getMeanNeutronFlux(NeutronType type) {
+                    if (type == NeutronType.FAST)
+                        return meanFastNeutronAbsorption;
+                    else if (type == NeutronType.THERMAL)
+                        return meanThermalNeutronAbsorption;
+
+                    return meanThermalNeutronAbsorption + meanFastNeutronAbsorption;
                 }
 
                 @Override
@@ -109,8 +138,16 @@ public interface INuclearTileData {
         } else if (a.isPresent()) {
             INuclearTileData A = a.get();
             INuclearTileData B = b.get();
+            for (NeutronType type : NeutronType.TYPES) {
+                if (A.getMeanNeutronAbsorption(type) != B.getMeanNeutronAbsorption(type)) {
+                    return false;
+                }
+                if (A.getMeanNeutronFlux(type) != B.getMeanNeutronFlux(type)) {
+                    return false;
+                }
+            }
             return A.getTemperature() == B.getTemperature() && A.getHeatTransferCoeff() == B.getTemperature()
-                    && A.getMeanNeutronAbsorption() == B.getMeanNeutronAbsorption() && ItemStack.areEqual(A.getStack(), B.getStack());
+                    && ItemStack.areEqual(A.getStack(), B.getStack());
         } else {
             return true;
         }

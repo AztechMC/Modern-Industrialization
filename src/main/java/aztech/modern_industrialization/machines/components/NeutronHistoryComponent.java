@@ -24,44 +24,84 @@
 package aztech.modern_industrialization.machines.components;
 
 import aztech.modern_industrialization.machines.IComponent;
+import aztech.modern_industrialization.nuclear.NeutronType;
 import net.minecraft.nbt.NbtCompound;
 
 public class NeutronHistoryComponent implements IComponent {
 
     public static final int TICK_HISTORY_SIZE = 60;
 
-    private int[] neutronReceivedHistory = new int[TICK_HISTORY_SIZE];
+    private int[] fastNeutronReceivedHistory = new int[TICK_HISTORY_SIZE];
+    private int[] thermalNeutronReceivedHistory = new int[TICK_HISTORY_SIZE];
+
+    private int[] fastNeutronFluxHistory = new int[TICK_HISTORY_SIZE];
+    private int[] thermalNeutronFluxHistory = new int[TICK_HISTORY_SIZE];
 
     @Override
     public void writeNbt(NbtCompound tag) {
-        tag.putIntArray("neutronHistory", neutronReceivedHistory);
+        tag.putIntArray("fastNeutronReceivedHistory", fastNeutronReceivedHistory);
+        tag.putIntArray("thermalNeutronReceivedHistory", thermalNeutronReceivedHistory);
+        tag.putIntArray("fastNeutronFluxHistory", fastNeutronFluxHistory);
+        tag.putIntArray("thermalNeutronFluxHistory", thermalNeutronFluxHistory);
     }
 
     @Override
     public void readNbt(NbtCompound tag) {
-        if (tag.contains("neutronReceivedHistory")) {
-            neutronReceivedHistory = tag.getIntArray("neutronReceivedHistory");
+        if (tag.contains("fastNeutronReceivedHistory")) {
+            fastNeutronReceivedHistory = tag.getIntArray("fastNeutronReceivedHistory");
         }
-        if (neutronReceivedHistory.length != TICK_HISTORY_SIZE) {
-            neutronReceivedHistory = new int[TICK_HISTORY_SIZE];
-
+        if (tag.contains("thermalNeutronReceivedHistory")) {
+            thermalNeutronReceivedHistory = tag.getIntArray("thermalNeutronReceivedHistory");
+        }
+        if (tag.contains("fastNeutronFluxHistory")) {
+            fastNeutronFluxHistory = tag.getIntArray("fastNeutronFluxHistory");
+        }
+        if (tag.contains("thermalNeutronFluxHistory")) {
+            thermalNeutronFluxHistory = tag.getIntArray("thermalNeutronFluxHistory");
         }
 
     }
 
-    public double getAverage() {
+    public double getAverageReceived(NeutronType type) {
         double avg = 0;
         for (int i = 0; i < TICK_HISTORY_SIZE; i++) {
-            avg += neutronReceivedHistory[i];
+            if (type == NeutronType.FAST) {
+                avg += fastNeutronReceivedHistory[i];
+            } else if (type == NeutronType.THERMAL) {
+                avg += thermalNeutronFluxHistory[i];
+            } else {
+                avg += (fastNeutronReceivedHistory[i] + thermalNeutronFluxHistory[i]);
+            }
         }
         return avg / TICK_HISTORY_SIZE;
     }
 
-    public void tick(int lastNeutronReceived) {
-        for (int i = 0; i + 1 < TICK_HISTORY_SIZE; i++) {
-            neutronReceivedHistory[i + 1] = neutronReceivedHistory[i];
+    public double getAverageFlux(NeutronType type) {
+        double avg = 0;
+        for (int i = 0; i < TICK_HISTORY_SIZE; i++) {
+            if (type == NeutronType.FAST) {
+                avg += fastNeutronFluxHistory[i];
+            } else if (type == NeutronType.THERMAL) {
+                avg += thermalNeutronFluxHistory[i];
+            } else {
+                avg += (fastNeutronFluxHistory[i] + thermalNeutronFluxHistory[i]);
+            }
         }
-        neutronReceivedHistory[0] = lastNeutronReceived;
+        return avg / TICK_HISTORY_SIZE;
+    }
+
+    public void tick(int fastNeutronReceived, int thermalNeutronReceived, int fastNeutronFlux, int thermalNeutronFlux) {
+        for (int i = 0; i + 1 < TICK_HISTORY_SIZE; i++) {
+            fastNeutronReceivedHistory[i + 1] = fastNeutronReceivedHistory[i];
+            thermalNeutronReceivedHistory[i + 1] = thermalNeutronReceivedHistory[i];
+            fastNeutronFluxHistory[i + 1] = fastNeutronFluxHistory[i];
+            thermalNeutronFluxHistory[i + 1] = thermalNeutronFluxHistory[i];
+        }
+
+        fastNeutronReceivedHistory[0] = fastNeutronReceived;
+        thermalNeutronReceivedHistory[0] = thermalNeutronReceived;
+        fastNeutronFluxHistory[0] = fastNeutronFlux;
+        thermalNeutronFluxHistory[0] = thermalNeutronFlux;
     }
 
 }

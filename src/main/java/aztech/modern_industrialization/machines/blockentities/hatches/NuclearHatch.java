@@ -39,7 +39,9 @@ import aztech.modern_industrialization.machines.gui.MachineGuiParameters;
 import aztech.modern_industrialization.machines.multiblocks.HatchBlockEntity;
 import aztech.modern_industrialization.machines.multiblocks.HatchType;
 import aztech.modern_industrialization.nuclear.INuclearTile;
+import aztech.modern_industrialization.nuclear.NeutronType;
 import aztech.modern_industrialization.nuclear.NuclearConstant;
+import com.google.common.base.Preconditions;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -57,7 +59,10 @@ public class NuclearHatch extends HatchBlockEntity implements INuclearTile {
     public final TemperatureComponent nuclearReactorComponent;
     public final boolean isFluid;
 
-    private int neutronReceivedThisTick = 0;
+    private int fastNeutronAbsorbedThisTick;
+    private int thermalNeutronAbsorbedThisTick;
+    private int fastNeutronInFluxThisTick;
+    private int thermalNeutronInFluxThisTick;
 
     public NuclearHatch(BEP bep, boolean isFluid) {
         super(bep, new MachineGuiParameters.Builder(isFluid ? "nuclear_fluid_hatch" : "nuclear_item_hatch", true).build(),
@@ -131,8 +136,13 @@ public class NuclearHatch extends HatchBlockEntity implements INuclearTile {
     }
 
     @Override
-    public double getMeanNeutronAbsorption() {
-        return neutronHistory.getAverage();
+    public double getMeanNeutronAbsorption(NeutronType type) {
+        return neutronHistory.getAverageReceived(type);
+    }
+
+    @Override
+    public double getMeanNeutronFlux(NeutronType type) {
+        return neutronHistory.getAverageFlux(type);
     }
 
     @Override
@@ -142,7 +152,7 @@ public class NuclearHatch extends HatchBlockEntity implements INuclearTile {
 
     @Override
     public int neutronGenerationTick() {
-        double meanNeutron = neutronHistory.getAverage();
+        double meanNeutron = getMeanNeutronAbsorption(NeutronType.BOTH) + 0.1;
         int neutronsProduced = 0;
         if (getFuel().isPresent()) {
             ItemStack stack = getStack();
@@ -153,12 +163,31 @@ public class NuclearHatch extends HatchBlockEntity implements INuclearTile {
     }
 
     public void nuclearTick() {
-        neutronHistory.tick(neutronReceivedThisTick);
-        neutronReceivedThisTick = 0;
+        neutronHistory.tick(fastNeutronAbsorbedThisTick, thermalNeutronAbsorbedThisTick, fastNeutronInFluxThisTick, thermalNeutronInFluxThisTick);
+        fastNeutronAbsorbedThisTick = 0;
+        thermalNeutronAbsorbedThisTick = 0;
+        fastNeutronInFluxThisTick = 0;
+        thermalNeutronInFluxThisTick = 0;
     }
 
-    public final void absorbNeutrons(int neutronNumber) {
-        neutronReceivedThisTick += neutronNumber;
+    public void absorbNeutrons(int neutronNumber, NeutronType type) {
+        Preconditions.checkArgument(type != NeutronType.BOTH);
+        if (type == NeutronType.FAST) {
+            fastNeutronAbsorbedThisTick += neutronNumber;
+        } else {
+            thermalNeutronAbsorbedThisTick += neutronNumber;
+        }
+
+    }
+
+    public void addNeutronsToFlux(int neutronNumber, NeutronType type) {
+        Preconditions.checkArgument(type != NeutronType.BOTH);
+        if (type == NeutronType.FAST) {
+            fastNeutronInFluxThisTick += neutronNumber;
+        } else {
+            thermalNeutronInFluxThisTick += neutronNumber;
+        }
+
     }
 
     public static void registerItemApi(BlockEntityType<?> bet) {

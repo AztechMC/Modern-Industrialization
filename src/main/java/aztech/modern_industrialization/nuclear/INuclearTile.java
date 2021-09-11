@@ -45,7 +45,9 @@ public interface INuclearTile extends INuclearTileData {
         return Optional.empty();
     }
 
-    void absorbNeutrons(int neutronNumber);
+    void absorbNeutrons(int neutronNumber, NeutronType type);
+
+    void addNeutronsToFlux(int neutronNumber, NeutronType type);
 
     int neutronGenerationTick();
 

@@ -38,17 +38,18 @@ import aztech.modern_industrialization.machines.components.sync.TemperatureBar;
 import aztech.modern_industrialization.machines.gui.MachineGuiParameters;
 import aztech.modern_industrialization.machines.multiblocks.HatchBlockEntity;
 import aztech.modern_industrialization.machines.multiblocks.HatchType;
+import aztech.modern_industrialization.nuclear.INuclearTile;
+import aztech.modern_industrialization.nuclear.NuclearConstant;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemStorage;
+import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.minecraft.block.entity.BlockEntityType;
+import net.minecraft.item.ItemStack;
 
-public class NuclearHatch extends HatchBlockEntity {
-
-    private static final int MAX_TEMPERATURE = 3800;
-    public static final int EU_PER_DEGREE = 128;
+public class NuclearHatch extends HatchBlockEntity implements INuclearTile {
 
     private final MIInventory inventory;
 
@@ -71,7 +72,7 @@ public class NuclearHatch extends HatchBlockEntity {
             itemStack.add(ConfigurableItemStack.standardOutputSlot());
             itemStack.add(ConfigurableItemStack.standardOutputSlot());
             inventory = new MIInventory(itemStack, Collections.emptyList(), slotPos, SlotPositions.empty());
-            nuclearReactorComponent = new TemperatureComponent(MAX_TEMPERATURE);
+            nuclearReactorComponent = new TemperatureComponent(NuclearConstant.MAX_TEMPERATURE);
         } else {
             long capacity = 64000 * 81;
             List<ConfigurableFluidStack> fluidStack = new ArrayList<>();
@@ -79,13 +80,13 @@ public class NuclearHatch extends HatchBlockEntity {
             fluidStack.add(ConfigurableFluidStack.standardOutputSlot(capacity));
             fluidStack.add(ConfigurableFluidStack.standardOutputSlot(capacity));
             inventory = new MIInventory(Collections.emptyList(), fluidStack, SlotPositions.empty(), slotPos);
-            nuclearReactorComponent = new SteamHeaterComponent(MAX_TEMPERATURE, 4096, EU_PER_DEGREE, true, true);
+            nuclearReactorComponent = new SteamHeaterComponent(NuclearConstant.MAX_TEMPERATURE, 4096, NuclearConstant.EU_PER_DEGREE, true, true);
         }
 
         neutronHistory = new NeutronHistoryComponent();
         registerComponents(inventory, nuclearReactorComponent, neutronHistory);
 
-        TemperatureBar.Parameters temperatureParams = new TemperatureBar.Parameters(43, 63, MAX_TEMPERATURE);
+        TemperatureBar.Parameters temperatureParams = new TemperatureBar.Parameters(43, 63, NuclearConstant.MAX_TEMPERATURE);
         registerClientComponent(new TemperatureBar.Server(temperatureParams, () -> (int) nuclearReactorComponent.getTemperature()));
 
     }
@@ -115,12 +116,48 @@ public class NuclearHatch extends HatchBlockEntity {
 
     }
 
+    public ItemStack getStack() {
+        return this.getInventory().getItemStacks().get(0).getResource().toStack();
+    }
+
+    @Override
+    public double getTemperature() {
+        return nuclearReactorComponent.getTemperature();
+    }
+
+    @Override
+    public double getHeatTransferCoeff() {
+        return NuclearConstant.BASE_HEAT_CONDUCTION + (getComponent().isPresent() ? getComponent().get().heatConduction : 0);
+    }
+
+    @Override
+    public double getMeanNeutronAbsorption() {
+        return neutronHistory.getAverage();
+    }
+
+    @Override
+    public void setTemperature(double temp) {
+        nuclearReactorComponent.setTemperature(temp);
+    }
+
+    @Override
+    public int neutronGenerationTick() {
+        double meanNeutron = neutronHistory.getAverage();
+        int neutronsProduced = 0;
+        if (getFuel().isPresent()) {
+            ItemStack stack = getStack();
+            neutronsProduced = getFuel().get().simulateDesintegration(meanNeutron, stack, this.world.getRandom());
+            this.getInventory().getItemStacks().get(0).setKey(ItemVariant.of(stack));
+        }
+        return neutronsProduced;
+    }
+
     public void nuclearTick() {
         neutronHistory.tick(neutronReceivedThisTick);
         neutronReceivedThisTick = 0;
     }
 
-    public final void receiveNeutron(int neutronNumber) {
+    public final void absorbNeutrons(int neutronNumber) {
         neutronReceivedThisTick += neutronNumber;
     }
 

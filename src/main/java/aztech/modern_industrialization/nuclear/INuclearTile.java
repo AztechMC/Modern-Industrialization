@@ -23,13 +23,32 @@
  */
 package aztech.modern_industrialization.nuclear;
 
-public class NuclearConstant {
+import java.util.Optional;
 
-    public static final int EU_FOR_FAST_NEUTRON = 2048;
-    public static final int DESINTEGRATION_BY_ROD = 256000;
-    public static final double BASE_HEAT_CONDUCTION = 0.01;
-    public static final double BASE_NEUTRON = 0.1;
-    public static final int MAX_TEMPERATURE = 3800;
-    public static final int EU_PER_DEGREE = 128;
+public interface INuclearTile extends INuclearTileData {
+
+    void setTemperature(double temp);
+
+    default void putHeat(int eu) {
+        setTemperature(getTemperature() + eu / NuclearConstant.EU_PER_DEGREE);
+    }
+
+    default Optional<NuclearFuel> getFuel() {
+        Optional<NuclearComponent> nuclearComponent = getComponent();
+        if (nuclearComponent.isPresent()) {
+            NuclearComponent component = nuclearComponent.get();
+            if (component instanceof NuclearFuel) {
+                return Optional.of((NuclearFuel) component);
+            }
+        }
+
+        return Optional.empty();
+    }
+
+    void absorbNeutrons(int neutronNumber);
+
+    int neutronGenerationTick();
+
+    void nuclearTick();
 
 }

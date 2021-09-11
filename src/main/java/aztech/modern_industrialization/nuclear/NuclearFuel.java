@@ -25,7 +25,6 @@ package aztech.modern_industrialization.nuclear;
 
 import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.MIItem;
-import aztech.modern_industrialization.machines.blockentities.hatches.NuclearHatch;
 import aztech.modern_industrialization.util.TextHelper;
 import com.google.common.base.Preconditions;
 import java.util.List;
@@ -126,10 +125,10 @@ public class NuclearFuel extends NuclearComponent {
         if (Screen.hasShiftDown()) {
 
             tooltip.add(new TranslatableText("text.modern_industrialization.direct_heat_by_desintegration",
-                    String.format("%.2f", (double) directEUbyDesintegration / NuclearHatch.EU_PER_DEGREE)).setStyle(TextHelper.HEAT_CONDUCTION));
+                    String.format("%.2f", (double) directEUbyDesintegration / NuclearConstant.EU_PER_DEGREE)).setStyle(TextHelper.HEAT_CONDUCTION));
 
             tooltip.add(new TranslatableText("text.modern_industrialization.total_heat_by_desintegration",
-                    String.format("%.2f", (double) totalEUbyDesintegration / NuclearHatch.EU_PER_DEGREE)).setStyle(TextHelper.HEAT_CONDUCTION));
+                    String.format("%.2f", (double) totalEUbyDesintegration / NuclearConstant.EU_PER_DEGREE)).setStyle(TextHelper.HEAT_CONDUCTION));
 
             long totalEu = (long) totalEUbyDesintegration * desintegrationMax;
             tooltip.add(new LiteralText(""));
@@ -158,7 +157,6 @@ public class NuclearFuel extends NuclearComponent {
     }
 
     public double getDurabilityBarProgress(ItemStack stack) {
-        NbtCompound tag = stack.getTag();
         return (double) getRemainingDesintegrations(stack) / desintegrationMax;
 
     }

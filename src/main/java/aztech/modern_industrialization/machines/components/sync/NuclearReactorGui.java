@@ -27,10 +27,12 @@ import aztech.modern_industrialization.machines.MachineScreenHandlers;
 import aztech.modern_industrialization.machines.SyncedComponent;
 import aztech.modern_industrialization.machines.SyncedComponents;
 import aztech.modern_industrialization.machines.gui.ClientComponentRenderer;
+import aztech.modern_industrialization.nuclear.INuclearTileData;
 import com.mojang.blaze3d.systems.RenderSystem;
-import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Supplier;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
@@ -53,13 +55,7 @@ public class NuclearReactorGui {
                 return true;
             } else {
                 for (int i = 0; i < data.gridSizeY * data.gridSizeX; i++) {
-                    if (data.temperature[i] != cachedData.temperature[i]) {
-                        return true;
-                    }
-                    if (data.hasHatch[i] != cachedData.hasHatch[i]) {
-                        return true;
-                    }
-                    if (!ItemStack.areEqual(data.stacksInHatch[i], cachedData.stacksInHatch[i])) {
+                    if (INuclearTileData.areEquals(data.tilesData[i], cachedData.tilesData[i])) {
                         return true;
                     }
                 }
@@ -70,7 +66,6 @@ public class NuclearReactorGui {
         @Override
         public void writeInitialData(PacketByteBuf buf) {
             writeCurrentData(buf);
-
         }
 
         @Override
@@ -80,14 +75,8 @@ public class NuclearReactorGui {
             if (data.valid) {
                 buf.writeInt(data.gridSizeX);
                 buf.writeInt(data.gridSizeY);
-                for (Double temp : data.temperature) {
-                    buf.writeDouble(temp);
-                }
-                for (Boolean hasHatch : data.hasHatch) {
-                    buf.writeBoolean(hasHatch);
-                }
-                for (ItemStack is : data.stacksInHatch) {
-                    buf.writeItemStack(Objects.requireNonNullElse(is, ItemStack.EMPTY));
+                for (Optional<INuclearTileData> tiles : data.tilesData) {
+                    INuclearTileData.write(tiles, buf);
                 }
             }
 
@@ -113,26 +102,15 @@ public class NuclearReactorGui {
             if (valid) {
                 int sizeX = buf.readInt();
                 int sizeY = buf.readInt();
-                double[] temperature = new double[sizeX * sizeY];
-                boolean[] hasHatch = new boolean[sizeX * sizeY];
-                ItemStack[] stack = new ItemStack[sizeX * sizeY];
+                Optional<INuclearTileData>[] tilesData = new Optional[sizeX * sizeY];
 
-                for (int j = 0; j < 3; j++) {
-                    for (int i = 0; i < sizeX * sizeY; i++) {
-
-                        if (j == 0) {
-                            temperature[i] = buf.readDouble();
-                        } else if (j == 1) {
-                            hasHatch[i] = buf.readBoolean();
-                        } else {
-                            stack[i] = buf.readItemStack();
-                        }
-
-                    }
+                for (int i = 0; i < sizeX * sizeY; i++) {
+                    tilesData[i] = INuclearTileData.read(buf);
                 }
-                data = new Data(true, sizeX, sizeY, temperature, hasHatch, stack);
+                data = new Data(true, sizeX, sizeY, tilesData);
+
             } else {
-                data = new Data(false, 0, 0, null, null, null);
+                data = new Data(false, 0, 0, null);
             }
         }
 
@@ -143,19 +121,22 @@ public class NuclearReactorGui {
 
         public class Renderer implements ClientComponentRenderer {
 
+            int centerX = 88, centerY = 88;
+
             @Override
             public void renderBackground(DrawableHelper helper, MatrixStack matrices, int x, int y) {
+
+                TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
+
                 if (data.valid) {
-                    int centerX = 88, centerY = 88;
                     RenderSystem.setShaderTexture(0, MachineScreenHandlers.SLOT_ATLAS);
 
                     for (int i = 0; i < data.gridSizeX; i++) {
                         for (int j = 0; j < data.gridSizeY; j++) {
                             int index = data.toIndex(i, j);
-                            if (data.hasHatch[index]) {
+                            if (data.tilesData[index].isPresent()) {
                                 helper.drawTexture(matrices, x + centerX - data.gridSizeX * 9 + i * 18, y + centerY - data.gridSizeY * 9 + j * 18, 0,
                                         0, 18, 18);
-
                             }
                         }
                     }
@@ -163,24 +144,47 @@ public class NuclearReactorGui {
                     for (int i = 0; i < data.gridSizeX; i++) {
                         for (int j = 0; j < data.gridSizeY; j++) {
                             int index = data.toIndex(i, j);
-                            if (data.hasHatch[index]) {
-                                if (!data.stacksInHatch[index].isEmpty()) {
-                                    if (!data.stacksInHatch[index].isEmpty()) {
-                                        MinecraftClient.getInstance().getItemRenderer().renderInGui(data.stacksInHatch[index],
-                                                x + centerX - data.gridSizeX * 9 + i * 18 + 1, y + centerY - data.gridSizeY * 9 + j * 18 + 1
+                            Optional<INuclearTileData> tile = data.tilesData[index];
+                            if (tile.isPresent()) {
+                                ItemStack stack = tile.get().getStack();
+                                if (!stack.isEmpty()) {
 
-                                        );
-                                    }
+                                    int px = x + centerX - data.gridSizeX * 9 + i * 18 + 1;
+                                    int py = y + centerY - data.gridSizeY * 9 + j * 18 + 1;
+
+                                    MinecraftClient.getInstance().getItemRenderer().renderInGui(stack, px, py);
+                                    MinecraftClient.getInstance().getItemRenderer().renderGuiItemOverlay(textRenderer, stack, px, py);
+
                                 }
                             }
                         }
                     }
                 }
             }
+
+            @Override
+            public void renderTooltip(MachineScreenHandlers.ClientScreen screen, MatrixStack matrices, int x, int y, int cursorX, int cursorY) {
+                int i = (cursorX - (x + centerX - data.gridSizeX * 9)) / 18;
+                int j = (cursorY - (y + centerY - data.gridSizeY * 9)) / 18;
+
+                if (data.valid) {
+                    if (i >= 0 && j >= 0 && i < data.gridSizeX && j < data.gridSizeY) {
+                        int index = data.toIndex(i, j);
+                        Optional<INuclearTileData> tile = data.tilesData[index];
+                        if (tile.isPresent()) {
+                            ItemStack stack = tile.get().getStack();
+                            if (!stack.isEmpty()) {
+                                screen.renderTooltip(matrices, screen.getTooltipFromItem(stack), cursorX, cursorY);
+                            }
+                        }
+                    }
+
+                }
+            }
         }
     }
 
-    public record Data(boolean valid, int gridSizeX, int gridSizeY, double[] temperature, boolean[] hasHatch, ItemStack[] stacksInHatch) {
+    public record Data(boolean valid, int gridSizeX, int gridSizeY, Optional<INuclearTileData>[] tilesData) {
 
         public int toIndex(int x, int y) {
             return toIndex(x, y, gridSizeY);

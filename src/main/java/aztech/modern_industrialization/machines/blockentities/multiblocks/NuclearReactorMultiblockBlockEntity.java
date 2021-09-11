@@ -23,8 +23,6 @@
  */
 package aztech.modern_industrialization.machines.blockentities.multiblocks;
 
-import static aztech.modern_industrialization.nuclear.NuclearConstant.BASE_HEAT_CONDUCTION;
-
 import aztech.modern_industrialization.MIBlock;
 import aztech.modern_industrialization.compat.rei.machines.ReiMachineRecipes;
 import aztech.modern_industrialization.inventory.MIInventory;
@@ -40,9 +38,8 @@ import aztech.modern_industrialization.machines.models.MachineModelClientData;
 import aztech.modern_industrialization.machines.multiblocks.*;
 import aztech.modern_industrialization.nuclear.*;
 import aztech.modern_industrialization.util.Tickable;
-import java.util.Arrays;
+import java.util.Optional;
 import java.util.function.Supplier;
-import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -81,7 +78,7 @@ public class NuclearReactorMultiblockBlockEntity extends MultiblockMachineBlockE
         if (shapeValid.shapeValid) {
             return dataSupplier.get();
         } else {
-            return new NuclearReactorGui.Data(false, 0, 0, null, null, null);
+            return new NuclearReactorGui.Data(false, 0, 0, null);
         }
     }
 
@@ -154,26 +151,6 @@ public class NuclearReactorMultiblockBlockEntity extends MultiblockMachineBlockE
 
         nuclearGrid = new INuclearGrid() {
 
-            public ItemStack getNuclearComponent(int x, int y) {
-                if (hatchesGrid[x][y] != null) {
-                    if (!hatchesGrid[x][y].isFluid) {
-                        ItemStack itemStack = hatchesGrid[x][y].getInventory().getItemStacks().get(0).getResource().toStack();
-                        if (!itemStack.isEmpty() && itemStack.getItem() instanceof NuclearComponent) {
-                            return itemStack;
-                        }
-                    }
-                }
-                return null;
-            }
-
-            public ItemStack getNuclearFuel(int x, int y) {
-                ItemStack component = getNuclearComponent(x, y);
-                if (component != null && component.getItem() instanceof NuclearFuel) {
-                    return component;
-                }
-                return null;
-            }
-
             @Override
             public int getSizeX() {
                 return size;
@@ -185,92 +162,8 @@ public class NuclearReactorMultiblockBlockEntity extends MultiblockMachineBlockE
             }
 
             @Override
-            public boolean isFuel(int x, int y) {
-                return getNuclearFuel(x, y) != null;
-            }
-
-            @Override
-            public double getTemperature(int x, int y) {
-                if (hatchesGrid[x][y] != null) {
-                    return hatchesGrid[x][y].nuclearReactorComponent.getTemperature();
-                }
-                return 0;
-            }
-
-            @Override
-            public boolean ok(int x, int y) {
-                if (x >= 0 && y >= 0 & x < getSizeX() & y < getSizeY()) {
-                    return gridLayout[activeShape.getActiveShapeIndex()][x][y];
-                }
-                return false;
-            }
-
-            @Override
-            public double getHeatTransferCoeff(int x, int y) {
-                if (hatchesGrid[x][y] == null) {
-                    return 0;
-                } else {
-                    ItemStack stack = getNuclearComponent(x, y);
-                    if (stack != null) {
-                        return BASE_HEAT_CONDUCTION + ((NuclearComponent) stack.getItem()).heatConduction;
-                    } else {
-                        return BASE_HEAT_CONDUCTION;
-                    }
-                }
-            }
-
-            @Override
-            public void setTemperature(int x, int y, double temp) {
-                if (hatchesGrid[x][y] != null) {
-                    hatchesGrid[x][y].nuclearReactorComponent.setTemperature(temp);
-                }
-            }
-
-            @Override
-            public int neutronProducedFromSimulation(int x, int y) {
-                ItemStack nuclearFuel = getNuclearComponent(x, y);
-                if (nuclearFuel != null) {
-                    NuclearFuel item = (NuclearFuel) nuclearFuel.getItem();
-                    int value = item.simulateDesintegration(hatchesGrid[x][y].neutronHistory.getAverage() + NuclearConstant.BASE_NEUTRON, nuclearFuel,
-                            getWorld().random);
-
-                    hatchesGrid[x][y].getInventory().getItemStacks().get(0).setKey(ItemVariant.of(nuclearFuel));
-
-                    return value;
-                }
-                return 0;
-            }
-
-            @Override
-            public double interactionTotalProbability(int x, int y, NeutronType type) {
-                ItemStack component = getNuclearComponent(x, y);
-                if (component != null) {
-                    return ((NuclearComponent) component.getItem()).neutronBehaviour.interactionTotalProbability(type);
-                }
-                return 0;
-            }
-
-            @Override
-            public double interactionRelativeProbability(int x, int y, NeutronType type, NeutronInteraction interaction) {
-                ItemStack component = getNuclearComponent(x, y);
-                if (component != null) {
-                    return ((NuclearComponent) component.getItem()).neutronBehaviour.interactionRelativeProbability(type, interaction);
-                }
-                return 0;
-            }
-
-            @Override
-            public void absorbNeutrons(int x, int y, NeutronType type, int neutronNumber) {
-                if (hatchesGrid[x][y] != null) {
-                    hatchesGrid[x][y].receiveNeutron(neutronNumber);
-                }
-            }
-
-            @Override
-            public void putHeat(int x, int y, int eu) {
-                if (hatchesGrid[x][y] != null) {
-                    hatchesGrid[x][y].nuclearReactorComponent.increaseTemperature((double) eu / NuclearHatch.EU_PER_DEGREE);
-                }
+            public Optional<INuclearTile> getNuclearTile(int x, int y) {
+                return Optional.ofNullable(hatchesGrid[x][y]);
             }
 
             @Override
@@ -281,56 +174,21 @@ public class NuclearReactorMultiblockBlockEntity extends MultiblockMachineBlockE
             public void registerNeutronCreation(int neutronNumber, NeutronType type) {
             }
 
-            @Override
-            public int getSupplementaryHeatByNeutronGenerated(int x, int y) {
-                ItemStack nuclearFuel = getNuclearComponent(x, y);
-                if (nuclearFuel != null) {
-                    NuclearFuel item = (NuclearFuel) nuclearFuel.getItem();
-                    return item.directEUbyDesintegration;
-                }
-                return 0;
-            }
-
-            public void nuclearTick(int x, int y) {
-                if (hatchesGrid[x][y] != null) {
-                    hatchesGrid[x][y].nuclearTick();
-                }
-            }
-
-            @Override
-            public double neutronSlowingProbability(int posX, int posY) {
-                ItemStack component = getNuclearComponent(posX, posY);
-                if (component != null) {
-                    return ((NuclearComponent) component.getItem()).neutronBehaviour.neutronSlowingProbability();
-                }
-                return 0;
-            }
         };
 
         dataSupplier = () -> {
-
-            double[] temperature = new double[size * size];
-            boolean[] hasHatch = new boolean[size * size];
-            ItemStack[] itemStacksInHatch = new ItemStack[size * size];
-            Arrays.fill(itemStacksInHatch, ItemStack.EMPTY);
-
+            Optional<INuclearTileData>[] tilesData = new Optional[size * size];
             for (int i = 0; i < size; i++) {
                 for (int j = 0; j < size; j++) {
 
-                    if (hatchesGrid[i][size - 1 - j] != null) {
+                    final int x = size - 1 - i;
+                    final int y = size - 1 - j;
 
-                        int index = NuclearReactorGui.Data.toIndex(i, j, size);
-                        temperature[index] = hatchesGrid[i][size - 1 - j].nuclearReactorComponent.getTemperature();
-                        hasHatch[index] = true;
-
-                        ItemStack itemStack = hatchesGrid[i][size - 1 - j].getInventory().getItemStacks().get(0).getResource().toStack();
-                        if (!itemStack.isEmpty() && itemStack.getItem() instanceof NuclearComponent) {
-                            itemStacksInHatch[index] = itemStack;
-                        }
-                    }
+                    int index = NuclearReactorGui.Data.toIndex(i, j, size);
+                    tilesData[index] = Optional.ofNullable(hatchesGrid[x][y]);
                 }
             }
-            return new NuclearReactorGui.Data(true, size, size, temperature, hasHatch, itemStacksInHatch);
+            return new NuclearReactorGui.Data(true, size, size, tilesData);
         };
     }
 

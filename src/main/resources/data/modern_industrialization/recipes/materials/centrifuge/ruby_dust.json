@@ -19,6 +19,11 @@
     {
       "item": "modern_industrialization:quartz_dust",
       "amount":1
+    },
+    {
+      "item" : "modern_industrialization:neodymium_tiny_dust",
+      "amount": 1,
+      "probability" : 0.5
     }
   ]
 }

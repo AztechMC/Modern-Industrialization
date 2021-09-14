@@ -37,6 +37,8 @@ public interface INuclearTileData {
 
     double getMeanNeutronFlux(NeutronType type);
 
+    double getMeanNeutronGeneration();
+
     default Optional<NuclearComponent> getComponent() {
         ItemStack stack = getStack();
         if (!stack.isEmpty() && stack.getItem() instanceof NuclearComponent) {
@@ -59,6 +61,8 @@ public interface INuclearTileData {
 
             buf.writeDouble(tile.getMeanNeutronFlux(NeutronType.FAST));
             buf.writeDouble(tile.getMeanNeutronFlux(NeutronType.THERMAL));
+
+            buf.writeDouble(tile.getMeanNeutronGeneration());
 
             buf.writeDouble(tile.getHeatTransferCoeff());
 
@@ -85,6 +89,8 @@ public interface INuclearTileData {
 
             final double meanFastNeutronFlux = buf.readDouble();
             final double meanThermalNeutronFlux = buf.readDouble();
+
+            final double meanNeutronGeneration = buf.readDouble();
 
             final double heatTransferCoeff = buf.readDouble();
             final ItemStack stack = buf.readItemStack();
@@ -114,11 +120,16 @@ public interface INuclearTileData {
                 @Override
                 public double getMeanNeutronFlux(NeutronType type) {
                     if (type == NeutronType.FAST)
-                        return meanFastNeutronAbsorption;
+                        return meanFastNeutronFlux;
                     else if (type == NeutronType.THERMAL)
-                        return meanThermalNeutronAbsorption;
+                        return meanThermalNeutronFlux;
 
-                    return meanThermalNeutronAbsorption + meanFastNeutronAbsorption;
+                    return meanFastNeutronFlux + meanThermalNeutronFlux;
+                }
+
+                @Override
+                public double getMeanNeutronGeneration() {
+                    return meanNeutronGeneration;
                 }
 
                 @Override
@@ -147,7 +158,7 @@ public interface INuclearTileData {
                 }
             }
             return A.getTemperature() == B.getTemperature() && A.getHeatTransferCoeff() == B.getTemperature()
-                    && ItemStack.areEqual(A.getStack(), B.getStack());
+                    && ItemStack.areEqual(A.getStack(), B.getStack()) && A.getMeanNeutronGeneration() == B.getMeanNeutronGeneration();
         } else {
             return true;
         }

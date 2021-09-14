@@ -23,11 +23,14 @@
  */
 package aztech.modern_industrialization.machines.components.sync;
 
+import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.machines.MachineScreenHandlers;
 import aztech.modern_industrialization.machines.SyncedComponent;
 import aztech.modern_industrialization.machines.SyncedComponents;
 import aztech.modern_industrialization.machines.gui.ClientComponentRenderer;
 import aztech.modern_industrialization.nuclear.INuclearTileData;
+import aztech.modern_industrialization.nuclear.NeutronType;
+import aztech.modern_industrialization.util.TextHelper;
 import com.mojang.blaze3d.systems.RenderSystem;
 import java.util.List;
 import java.util.Optional;
@@ -39,7 +42,10 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.text.LiteralText;
+import net.minecraft.text.Text;
+import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.registry.Registry;
 
 public class NuclearReactorGui {
 
@@ -124,7 +130,15 @@ public class NuclearReactorGui {
         public class Renderer implements ClientComponentRenderer {
 
             final int centerX = 88, centerY = 88;
-            int button_index = 0;
+            int currentMode = 0;
+
+            ItemStack fuelStack = new ItemStack(Registry.ITEM.get(new MIIdentifier("uranium_fuel_rod")), 1);
+
+            Text[] modeTooltip = new Text[] { new TranslatableText("text.modern_industrialization.nuclear_fuel_mode"),
+                    new TranslatableText("text.modern_industrialization.temperature_mode"),
+                    new TranslatableText("text.modern_industrialization.neutron_absorption_mode"),
+                    new TranslatableText("text.modern_industrialization.neutron_flux_mode"),
+                    new TranslatableText("text.modern_industrialization.neutron_generation_mode") };
 
             @Override
             public void renderBackground(DrawableHelper helper, MatrixStack matrices, int x, int y) {
@@ -175,10 +189,32 @@ public class NuclearReactorGui {
                         int index = data.toIndex(i, j);
                         Optional<INuclearTileData> tile = data.tilesData[index];
                         if (tile.isPresent()) {
-                            ItemStack stack = tile.get().getStack();
-                            if (!stack.isEmpty()) {
-                                screen.renderTooltip(matrices, screen.getTooltipFromItem(stack), cursorX, cursorY);
+                            INuclearTileData tileData = tile.get();
+                            if (currentMode == 0) {
+                                ItemStack stack = tile.get().getStack();
+                                if (!stack.isEmpty()) {
+                                    screen.renderTooltip(matrices, screen.getTooltipFromItem(stack), cursorX, cursorY);
+                                }
+                            } else if (currentMode == 1) {
+                                int temperature = (int) tileData.getTemperature();
+                                screen.renderTooltip(matrices, new TranslatableText("text.modern_industrialization.temperature", temperature),
+                                        cursorX, cursorY);
+                            } else {
+                                double neutronRate;
+
+                                if (currentMode == 2) {
+                                    neutronRate = tileData.getMeanNeutronAbsorption(NeutronType.BOTH);
+                                } else if (currentMode == 3) {
+                                    neutronRate = tileData.getMeanNeutronFlux(NeutronType.BOTH);
+                                } else {
+                                    neutronRate = tileData.getMeanNeutronGeneration();
+                                }
+
+                                String neutronRateString = String.format("%.1f", neutronRate);
+                                screen.renderTooltip(matrices, new TranslatableText("text.modern_industrialization.neutrons_rate", neutronRateString),
+                                        cursorX, cursorY);
                             }
+
                         }
                     }
 
@@ -187,13 +223,21 @@ public class NuclearReactorGui {
 
             @Override
             public void addButtons(ButtonContainer container) {
-                container.addButton(centerX + 64, 4, 20, 20, new LiteralText(""), (i) -> {
-                    button_index++;
-                }, () -> List.of(new LiteralText("Test Tooltip : " + button_index)), (button, matrices, mouseX, mouseY, delta) -> {
-                    button.renderVanilla(matrices, mouseX, mouseY, delta);
-                    RenderSystem.setShaderTexture(0, MachineScreenHandlers.SLOT_ATLAS);
-                    button.drawTexture(matrices, button.x + 1, button.y + 1, 144, 0, 18, 18);
-                });
+                container.addButton(centerX + 64, 4, 20, 20, new LiteralText(""), (i) -> currentMode = (currentMode + 1) % 5,
+                        () -> List.of(modeTooltip[currentMode],
+
+                                new TranslatableText("text.modern_industrialization.click_to_switch", modeTooltip[(currentMode + 1) % 5])
+                                        .setStyle(TextHelper.GRAY_TEXT)),
+                        (screen, button, matrices, mouseX, mouseY, delta) -> {
+                            button.renderVanilla(matrices, mouseX, mouseY, delta);
+                            if (currentMode == 0) {
+                                MinecraftClient.getInstance().getItemRenderer().renderInGui(fuelStack, button.x + 1, button.y + 1);
+
+                            } else {
+                                RenderSystem.setShaderTexture(0, MachineScreenHandlers.SLOT_ATLAS);
+                                screen.drawTexture(matrices, button.x, button.y, 124 + currentMode * 20, 0, 20, 20);
+                            }
+                        });
 
             }
 

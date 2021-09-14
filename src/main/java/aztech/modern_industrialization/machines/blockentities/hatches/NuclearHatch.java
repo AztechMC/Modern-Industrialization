@@ -64,6 +64,8 @@ public class NuclearHatch extends HatchBlockEntity implements INuclearTile {
     private int fastNeutronInFluxThisTick;
     private int thermalNeutronInFluxThisTick;
 
+    private int neutronGeneratedThisTick;
+
     public NuclearHatch(BEP bep, boolean isFluid) {
         super(bep, new MachineGuiParameters.Builder(isFluid ? "nuclear_fluid_hatch" : "nuclear_item_hatch", true).build(),
                 new OrientationComponent.Params(false, false, false));
@@ -146,24 +148,35 @@ public class NuclearHatch extends HatchBlockEntity implements INuclearTile {
     }
 
     @Override
+    public double getMeanNeutronGeneration() {
+        return neutronHistory.getAverageGeneration();
+    }
+
+    @Override
     public void setTemperature(double temp) {
         nuclearReactorComponent.setTemperature(temp);
     }
 
     @Override
     public int neutronGenerationTick() {
-        double meanNeutron = getMeanNeutronAbsorption(NeutronType.BOTH) + 0.1;
+        double meanNeutron = getMeanNeutronAbsorption(NeutronType.BOTH) + NuclearConstant.BASE_NEUTRON;
         int neutronsProduced = 0;
         if (getFuel().isPresent()) {
             ItemStack stack = getStack();
             neutronsProduced = getFuel().get().simulateDesintegration(meanNeutron, stack, this.world.getRandom());
             this.getInventory().getItemStacks().get(0).setKey(ItemVariant.of(stack));
         }
+
+        neutronGeneratedThisTick = neutronsProduced;
+
         return neutronsProduced;
     }
 
     public void nuclearTick() {
-        neutronHistory.tick(fastNeutronAbsorbedThisTick, thermalNeutronAbsorbedThisTick, fastNeutronInFluxThisTick, thermalNeutronInFluxThisTick);
+
+        neutronHistory.tick(fastNeutronAbsorbedThisTick, thermalNeutronAbsorbedThisTick, fastNeutronInFluxThisTick, thermalNeutronInFluxThisTick,
+                neutronGeneratedThisTick);
+
         fastNeutronAbsorbedThisTick = 0;
         thermalNeutronAbsorbedThisTick = 0;
         fastNeutronInFluxThisTick = 0;

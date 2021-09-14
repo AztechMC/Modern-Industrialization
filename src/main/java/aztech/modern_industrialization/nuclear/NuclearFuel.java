@@ -37,6 +37,7 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
 
@@ -51,45 +52,20 @@ public class NuclearFuel extends NuclearComponent {
     public final int totalEUbyDesintegration;
 
     public final static record NuclearFuelParams(int desintegrationMax, int maxTemperature, double neutronMultiplicationFactor,
-            double directEnergyFactor, double thermalNeutronAbsorption, double fastNeutronAbsorption) {
+            double directEnergyFactor) {
     }
 
-    public NuclearFuel(Settings settings, NuclearFuelParams params, String depletedVersionId) {
+    public NuclearFuel(Settings settings, NuclearFuelParams params, INeutronBehaviour neutronBehaviour, String depletedVersionId) {
 
         this(settings, params.desintegrationMax, params.maxTemperature, params.neutronMultiplicationFactor, params.directEnergyFactor,
-                params.thermalNeutronAbsorption, params.fastNeutronAbsorption, depletedVersionId);
+                neutronBehaviour, depletedVersionId);
 
     }
 
-    public NuclearFuel(Settings settings, int desintegrationMax, int maxTemperature, double neutronMultiplicationFactor, double directEnergyFactor,
-            double thermalNeutronAbsorption, double fastNeutronAbsorption, String depletedVersionId) {
+    private NuclearFuel(Settings settings, int desintegrationMax, int maxTemperature, double neutronMultiplicationFactor, double directEnergyFactor,
+            INeutronBehaviour neutronBehaviour, String depletedVersionId) {
 
-        super(settings, maxTemperature, 0, new INeutronBehaviour() {
-
-            @Override
-            public double neutronSlowingProbability() {
-                return 1;
-            }
-
-            @Override
-            public double interactionTotalProbability(NeutronType type) {
-                if (type == NeutronType.THERMAL) {
-                    return thermalNeutronAbsorption;
-                } else if (type == NeutronType.FAST) {
-                    return fastNeutronAbsorption;
-                }
-                return 0.0;
-            }
-
-            @Override
-            public double interactionRelativeProbability(NeutronType type, NeutronInteraction interaction) {
-                if (interaction == NeutronInteraction.ABSORPTION) {
-                    return 1.0;
-                } else {
-                    return 0.0;
-                }
-            }
-        });
+        super(settings, maxTemperature, 0, neutronBehaviour);
 
         this.desintegrationMax = desintegrationMax;
         this.directEnergyFactor = directEnergyFactor;
@@ -101,16 +77,9 @@ public class NuclearFuel extends NuclearComponent {
 
     }
 
-    public static NuclearFuel of(String id, int desintegrationMax, int maxTemperature, double neutronMultiplicationFactor,
-            double energyMultiplicationFactor, double thermalNeutronAbsorption, double fastNeutronAbsorption, String depletedVersionId) {
+    public static NuclearFuel of(String id, NuclearFuelParams params, INeutronBehaviour neutronBehaviour, String depletedVersionId) {
 
-        return (NuclearFuel) MIItem.of((Settings settings) -> new NuclearFuel(settings, desintegrationMax, maxTemperature,
-                neutronMultiplicationFactor, energyMultiplicationFactor, thermalNeutronAbsorption, fastNeutronAbsorption, depletedVersionId), id, 1);
-    }
-
-    public static NuclearFuel of(String id, NuclearFuelParams params, String depletedVersionId) {
-
-        return (NuclearFuel) MIItem.of((Settings settings) -> new NuclearFuel(settings, params, depletedVersionId), id, 1);
+        return (NuclearFuel) MIItem.of((Settings settings) -> new NuclearFuel(settings, params, neutronBehaviour, depletedVersionId), id, 1);
     }
 
     public Item getDepleted() {
@@ -159,6 +128,12 @@ public class NuclearFuel extends NuclearComponent {
     public double getDurabilityBarProgress(ItemStack stack) {
         return (double) getRemainingDesintegrations(stack) / desintegrationMax;
 
+    }
+
+    @Override
+    public int getItemBarColor(ItemStack stack) {
+        float f = (float) getRemainingDesintegrations(stack) / desintegrationMax;
+        return MathHelper.hsvToRgb(f / 3.0F, 1.0F, 1.0F);
     }
 
     @Override

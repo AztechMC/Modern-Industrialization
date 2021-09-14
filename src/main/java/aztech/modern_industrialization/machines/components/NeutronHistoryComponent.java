@@ -37,27 +37,48 @@ public class NeutronHistoryComponent implements IComponent {
     private int[] fastNeutronFluxHistory = new int[TICK_HISTORY_SIZE];
     private int[] thermalNeutronFluxHistory = new int[TICK_HISTORY_SIZE];
 
+    private int[] neutronGenerationHistory = new int[TICK_HISTORY_SIZE];
+
     @Override
     public void writeNbt(NbtCompound tag) {
         tag.putIntArray("fastNeutronReceivedHistory", fastNeutronReceivedHistory);
         tag.putIntArray("thermalNeutronReceivedHistory", thermalNeutronReceivedHistory);
         tag.putIntArray("fastNeutronFluxHistory", fastNeutronFluxHistory);
         tag.putIntArray("thermalNeutronFluxHistory", thermalNeutronFluxHistory);
+        tag.putIntArray("neutronGenerationHistory", neutronGenerationHistory);
     }
 
     @Override
     public void readNbt(NbtCompound tag) {
         if (tag.contains("fastNeutronReceivedHistory")) {
             fastNeutronReceivedHistory = tag.getIntArray("fastNeutronReceivedHistory");
+            if (fastNeutronReceivedHistory.length != TICK_HISTORY_SIZE) {
+                fastNeutronReceivedHistory = new int[TICK_HISTORY_SIZE];
+            }
         }
         if (tag.contains("thermalNeutronReceivedHistory")) {
             thermalNeutronReceivedHistory = tag.getIntArray("thermalNeutronReceivedHistory");
+            if (thermalNeutronReceivedHistory.length != TICK_HISTORY_SIZE) {
+                thermalNeutronReceivedHistory = new int[TICK_HISTORY_SIZE];
+            }
         }
         if (tag.contains("fastNeutronFluxHistory")) {
             fastNeutronFluxHistory = tag.getIntArray("fastNeutronFluxHistory");
+            if (fastNeutronFluxHistory.length != TICK_HISTORY_SIZE) {
+                fastNeutronFluxHistory = new int[TICK_HISTORY_SIZE];
+            }
         }
         if (tag.contains("thermalNeutronFluxHistory")) {
             thermalNeutronFluxHistory = tag.getIntArray("thermalNeutronFluxHistory");
+            if (thermalNeutronFluxHistory.length != TICK_HISTORY_SIZE) {
+                thermalNeutronFluxHistory = new int[TICK_HISTORY_SIZE];
+            }
+        }
+        if (tag.contains("neutronGenerationHistory")) {
+            neutronGenerationHistory = tag.getIntArray("neutronGenerationHistory");
+            if (neutronGenerationHistory.length != TICK_HISTORY_SIZE) {
+                neutronGenerationHistory = new int[TICK_HISTORY_SIZE];
+            }
         }
 
     }
@@ -90,18 +111,28 @@ public class NeutronHistoryComponent implements IComponent {
         return avg / TICK_HISTORY_SIZE;
     }
 
-    public void tick(int fastNeutronReceived, int thermalNeutronReceived, int fastNeutronFlux, int thermalNeutronFlux) {
-        for (int i = 0; i + 1 < TICK_HISTORY_SIZE; i++) {
-            fastNeutronReceivedHistory[i + 1] = fastNeutronReceivedHistory[i];
-            thermalNeutronReceivedHistory[i + 1] = thermalNeutronReceivedHistory[i];
-            fastNeutronFluxHistory[i + 1] = fastNeutronFluxHistory[i];
-            thermalNeutronFluxHistory[i + 1] = thermalNeutronFluxHistory[i];
+    public double getAverageGeneration() {
+        double avg = 0;
+        for (int i = 0; i < TICK_HISTORY_SIZE; i++) {
+            avg += neutronGenerationHistory[i];
+        }
+        return avg / TICK_HISTORY_SIZE;
+    }
+
+    public void tick(int fastNeutronReceived, int thermalNeutronReceived, int fastNeutronFlux, int thermalNeutronFlux, int generatedNeutron) {
+        for (int i = TICK_HISTORY_SIZE - 1; i > 0; i--) {
+            fastNeutronReceivedHistory[i] = fastNeutronReceivedHistory[i - 1];
+            thermalNeutronReceivedHistory[i] = thermalNeutronReceivedHistory[i - 1];
+            fastNeutronFluxHistory[i] = fastNeutronFluxHistory[i - 1];
+            thermalNeutronFluxHistory[i] = thermalNeutronFluxHistory[i - 1];
+            neutronGenerationHistory[i] = neutronGenerationHistory[i - 1];
         }
 
         fastNeutronReceivedHistory[0] = fastNeutronReceived;
         thermalNeutronReceivedHistory[0] = thermalNeutronReceived;
         fastNeutronFluxHistory[0] = fastNeutronFlux;
         thermalNeutronFluxHistory[0] = thermalNeutronFlux;
+        neutronGenerationHistory[0] = generatedNeutron;
     }
 
 }

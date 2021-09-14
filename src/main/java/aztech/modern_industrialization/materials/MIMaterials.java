@@ -353,30 +353,26 @@ public class MIMaterials {
                 .addParts(CableMaterialPart.of(CableTier.EV)).addRecipes(StandardRecipes::apply).build());
 
         MaterialRegistry.addMaterial(new MaterialBuilder("uranium_235", SHINY, 0xe60045, HARD).addParts(BlockMaterialPart.of(MaterialBlockSet.GOLD))
-                .addRegularParts(ITEM_PURE_METAL)
-                .addParts(NuclearFuelMaterialPart.of(NuclearConstant.DESINTEGRATION_BY_ROD, 2500, 2.0, 0.25, 0.05, 0.01))
-                .addRecipes(StandardRecipes::apply).build());
+                .addRegularParts(ITEM_PURE_METAL).addParts(NuclearFuelMaterialPart.of(NuclearConstant.U235)).addRecipes(StandardRecipes::apply)
+                .build());
 
         MaterialRegistry.addMaterial(new MaterialBuilder("uranium_238", DULL, 0x55bd33, SOFT).addParts(BlockMaterialPart.of(MaterialBlockSet.GOLD))
-                .addRegularParts(ITEM_PURE_METAL)
-                .addParts(NuclearFuelMaterialPart.of(NuclearConstant.DESINTEGRATION_BY_ROD, 3000, 1.05, 0.25, 0.01, 0.01))
-                .addRecipes(StandardRecipes::apply).build());
+                .addRegularParts(ITEM_PURE_METAL).addParts(NuclearFuelMaterialPart.of(NuclearConstant.U238)).addRecipes(StandardRecipes::apply)
+                .build());
 
         MaterialRegistry.addMaterial(new MaterialBuilder("uranium", DULL, 0x39e600, AVERAGE)
-                .addParts(NuclearFuelMaterialPart.of(NuclearConstant.DESINTEGRATION_BY_ROD, 2800, 1.1, 0.25, 0.015, 0.01))
-                .addRegularParts(ITEM_PURE_METAL).addParts(BlockMaterialPart.of(MaterialBlockSet.GOLD))
-                .addParts(OreGenMaterialPart.of(2, 5, 32, COPPER)).addParts(RawMetalPart.ofItemOnly(MaterialRawSet.URANIUM))
-                .addRecipes(StandardRecipes::apply).build());
+                .addParts(NuclearFuelMaterialPart.of(NuclearConstant.Uranium)).addRegularParts(ITEM_PURE_METAL)
+                .addParts(BlockMaterialPart.of(MaterialBlockSet.GOLD)).addParts(OreGenMaterialPart.of(2, 5, 32, COPPER))
+                .addParts(RawMetalPart.ofItemOnly(MaterialRawSet.URANIUM)).addRecipes(StandardRecipes::apply).build());
 
         MaterialRegistry.addMaterial(new MaterialBuilder("plutonium", SHINY, 0xd701e7, HARD).addParts(BlockMaterialPart.of(MaterialBlockSet.GOLD))
-                .addRegularParts(ITEM_PURE_METAL)
-                .addParts(NuclearFuelMaterialPart.of(NuclearConstant.DESINTEGRATION_BY_ROD, 1700, 3, 0.1, 0.08, 0.02))
+                .addRegularParts(ITEM_PURE_METAL).addParts(NuclearFuelMaterialPart.of(NuclearConstant.Pu239))
 
                 .addRecipes(StandardRecipes::apply).build());
 
         MaterialRegistry.addMaterial(new MaterialBuilder("mox", SHINY, 0x00e7e5, HARD).addParts(BlockMaterialPart.of(MaterialBlockSet.GOLD))
-                .addParts(NuclearFuelMaterialPart.of(NuclearConstant.DESINTEGRATION_BY_ROD, 2400, 2, 0.2, 0.03, 0.015)).addParts()
-                .addRegularParts(ITEM_PURE_METAL).addRecipes(StandardRecipes::apply).build());
+                .addParts(NuclearFuelMaterialPart.of(NuclearConstant.MOX)).addParts().addRegularParts(ITEM_PURE_METAL)
+                .addRecipes(StandardRecipes::apply).build());
 
         MaterialRegistry.addMaterial(
                 new MaterialBuilder("platinum", SHINY, new BakableTargetColoramp(0xffe5ba, common("ingot"), template("platinum_ingot")), AVERAGE)

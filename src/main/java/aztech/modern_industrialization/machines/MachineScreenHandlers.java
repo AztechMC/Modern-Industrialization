@@ -247,7 +247,7 @@ public class MachineScreenHandlers {
             addDrawableChild(new MachineButton(buttonX(), buttonY(), 20, 20, message, b -> pressAction.accept(handler.syncId),
                     (button, matrices, mouseX, mouseY) -> renderTooltip(matrices, tooltipSupplier.get(), mouseX, mouseY),
 
-                    (button, matrices, mouseX, mouseY, delta) -> {
+                    (screen, button, matrices, mouseX, mouseY, delta) -> {
                         RenderSystem.setShaderTexture(0, SLOT_ATLAS);
                         int v = 18;
                         if (isPressed.get()) {
@@ -466,7 +466,7 @@ public class MachineScreenHandlers {
             return focusedSlot;
         }
 
-        public static class MachineButton extends ButtonWidget {
+        public class MachineButton extends ButtonWidget {
 
             final ClientComponentRenderer.CustomButtonRenderer renderer;
 
@@ -478,7 +478,7 @@ public class MachineScreenHandlers {
 
             @Override
             public void renderButton(MatrixStack matrices, int mouseX, int mouseY, float delta) {
-                renderer.renderButton(this, matrices, mouseX, mouseY, delta);
+                renderer.renderButton(ClientScreen.this, this, matrices, mouseX, mouseY, delta);
             }
 
             public void renderVanilla(MatrixStack matrices, int mouseX, int mouseY, float delta) {

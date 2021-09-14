@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 import net.minecraft.client.gui.DrawableHelper;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
 
@@ -63,7 +64,8 @@ public interface ClientComponentRenderer {
 
     @FunctionalInterface
     interface CustomButtonRenderer {
-        void renderButton(MachineScreenHandlers.ClientScreen.MachineButton button, MatrixStack matrices, int mouseX, int mouseY, float delta);
+        void renderButton(Screen screen, MachineScreenHandlers.ClientScreen.MachineButton button, MatrixStack matrices, int mouseX, int mouseY,
+                float delta);
     }
 
 }

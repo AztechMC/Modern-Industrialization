@@ -47,6 +47,7 @@ import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.item.TooltipData;
+import net.minecraft.client.render.item.ItemRenderer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -373,19 +374,31 @@ public class MachineScreenHandlers {
                     if ((itemStack.isPlayerLocked() || itemStack.isMachineLocked()) && itemStack.getResource().isBlank()) {
                         Item item = itemStack.getLockedInstance();
                         if (item != Items.AIR) {
-                            this.setZOffset(100);
-                            this.itemRenderer.zOffset = 100.0F;
-
-                            RenderSystem.enableDepthTest();
-                            this.itemRenderer.renderInGuiWithOverrides(this.client.player, new ItemStack(item), slot.x + this.x, slot.y + this.y, 0);
-                            this.itemRenderer.renderGuiItemOverlay(this.textRenderer, new ItemStack(item), slot.x + this.x, slot.y + this.y, "0");
-
-                            this.itemRenderer.zOffset = 0.0F;
-                            this.setZOffset(0);
+                            renderItemInGui(new ItemStack(item), slot.x + this.x, slot.y + this.y, "0");
                         }
                     }
                 }
             }
+        }
+
+        public void renderItemInGui(ItemStack itemStack, int x, int y) {
+            renderItemInGui(itemStack, x, y, null);
+        }
+
+        public void renderItemInGui(ItemStack itemStack, int x, int y, String countLabel) {
+            this.setZOffset(100);
+            this.itemRenderer.zOffset = 100.0F;
+
+            RenderSystem.enableDepthTest();
+            this.itemRenderer.renderInGuiWithOverrides(this.client.player, itemStack, x, y, 0);
+            this.itemRenderer.renderGuiItemOverlay(this.textRenderer, itemStack, x, y, countLabel);
+
+            this.itemRenderer.zOffset = 0.0F;
+            this.setZOffset(0);
+        }
+
+        public ItemRenderer getItemRenderer() {
+            return this.itemRenderer;
         }
 
         private void renderConfigurableSlotTooltips(MatrixStack matrices, int mouseX, int mouseY) {

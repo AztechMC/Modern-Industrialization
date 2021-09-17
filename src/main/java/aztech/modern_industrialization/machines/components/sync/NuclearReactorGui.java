@@ -146,32 +146,36 @@ public class NuclearReactorGui {
                 TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
 
                 if (data.valid) {
-                    RenderSystem.setShaderTexture(0, MachineScreenHandlers.SLOT_ATLAS);
-
                     for (int i = 0; i < data.gridSizeX; i++) {
                         for (int j = 0; j < data.gridSizeY; j++) {
                             int index = data.toIndex(i, j);
-                            if (data.tilesData[index].isPresent()) {
-                                helper.drawTexture(matrices, x + centerX - data.gridSizeX * 9 + i * 18, y + centerY - data.gridSizeY * 9 + j * 18, 0,
-                                        0, 18, 18);
-                            }
-                        }
-                    }
-
-                    for (int i = 0; i < data.gridSizeX; i++) {
-                        for (int j = 0; j < data.gridSizeY; j++) {
-                            int index = data.toIndex(i, j);
-                            Optional<INuclearTileData> tile = data.tilesData[index];
+                            Optional<INuclearTileData> tile = data.tilesData()[index];
                             if (tile.isPresent()) {
-                                ItemStack stack = tile.get().getStack();
+                                INuclearTileData tileData = tile.get();
+                                RenderSystem.setShaderTexture(0, MachineScreenHandlers.SLOT_ATLAS);
+                                int px = x + centerX - data.gridSizeX * 9 + i * 18;
+                                int py = y + centerY - data.gridSizeY * 9 + j * 18;
+                                helper.drawTexture(matrices, px, py, 0, 0, 18, 18);
+                                ItemStack stack = tileData.getStack();
                                 if (!stack.isEmpty()) {
-
-                                    int px = x + centerX - data.gridSizeX * 9 + i * 18 + 1;
-                                    int py = y + centerY - data.gridSizeY * 9 + j * 18 + 1;
-
-                                    MinecraftClient.getInstance().getItemRenderer().renderInGui(stack, px, py);
-                                    MinecraftClient.getInstance().getItemRenderer().renderGuiItemOverlay(textRenderer, stack, px, py);
-
+                                    ((MachineScreenHandlers.ClientScreen) helper).renderItemInGui(stack, px + 1, py + 1);
+                                }
+                                if (currentMode != 0) {
+                                    if (currentMode != 1) {
+                                        double neutronRate;
+                                        if (currentMode == 2) {
+                                            neutronRate = tileData.getMeanNeutronAbsorption(NeutronType.BOTH);
+                                        } else if (currentMode == 3) {
+                                            neutronRate = tileData.getMeanNeutronFlux(NeutronType.BOTH);
+                                        } else {
+                                            neutronRate = tileData.getMeanNeutronGeneration();
+                                        }
+                                        RenderSystem.enableDepthTest();
+                                        matrices.translate(0, 0, 256);
+                                        int color = 0x0000c714 | (((int) (255 * 0.7 * opacity(neutronRate))) << 24);
+                                        DrawableHelper.fill(matrices, px, py, px + 18, py + 18, color);
+                                        matrices.translate(0, 0, -256);
+                                    }
                                 }
                             }
                         }
@@ -191,7 +195,7 @@ public class NuclearReactorGui {
                         if (tile.isPresent()) {
                             INuclearTileData tileData = tile.get();
                             if (currentMode == 0) {
-                                ItemStack stack = tile.get().getStack();
+                                ItemStack stack = tileData.getStack();
                                 if (!stack.isEmpty()) {
                                     screen.renderTooltip(matrices, screen.getTooltipFromItem(stack), cursorX, cursorY);
                                 }
@@ -217,7 +221,6 @@ public class NuclearReactorGui {
 
                         }
                     }
-
                 }
             }
 
@@ -230,12 +233,15 @@ public class NuclearReactorGui {
                                         .setStyle(TextHelper.GRAY_TEXT)),
                         (screen, button, matrices, mouseX, mouseY, delta) -> {
                             button.renderVanilla(matrices, mouseX, mouseY, delta);
-                            if (currentMode == 0) {
-                                MinecraftClient.getInstance().getItemRenderer().renderInGui(fuelStack, button.x + 1, button.y + 1);
 
+                            if (currentMode == 0) {
+                                ((MachineScreenHandlers.ClientScreen) screen).renderItemInGui(fuelStack, button.x + 1, button.y + 1);
                             } else {
                                 RenderSystem.setShaderTexture(0, MachineScreenHandlers.SLOT_ATLAS);
                                 screen.drawTexture(matrices, button.x, button.y, 124 + currentMode * 20, 0, 20, 20);
+                            }
+                            if (button.isHovered()) {
+                                button.renderTooltip(matrices, mouseX, mouseY);
                             }
                         });
 
@@ -243,6 +249,13 @@ public class NuclearReactorGui {
 
         }
 
+    }
+
+    final private static double neutronsMax = 1000;
+
+    public static double opacity(double neutronNumber) {
+        neutronNumber = Math.min(neutronNumber, neutronsMax);
+        return Math.pow(neutronNumber, 0.2) / Math.pow(neutronsMax, 0.2);
     }
 
     public record Data(boolean valid, int gridSizeX, int gridSizeY, Optional<INuclearTileData>[] tilesData) {

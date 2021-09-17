@@ -65,18 +65,49 @@ public class NuclearConstant {
         public final double probability;
     }
 
-    public record IsotopeParams(double thermalAbsorption, double fastAbsorption, double scattering, int maxTemp, double neutronsMultiplication,
-            double directEnergyFactor) {
+    public static class IsotopeParams {
+        public final double thermalAbsorption;
+        public final double fastAbsorption;
+        public final double scattering;
+        public final int maxTemp;
+        public final double neutronsMultiplication;
+        public final double directEnergyFactor;
+
+        public IsotopeParams(double thermalAbsorbProba, double fastAbsorbProba, double scatteringProba, int maxTemp, double neutronsMultiplication,
+                double directEnergyFactor) {
+
+            this.maxTemp = maxTemp;
+            this.neutronsMultiplication = neutronsMultiplication;
+            this.directEnergyFactor = directEnergyFactor;
+            this.thermalAbsorption = INeutronBehaviour.crossSectionFromProba(thermalAbsorbProba);
+            this.fastAbsorption = INeutronBehaviour.crossSectionFromProba(fastAbsorbProba);
+            this.scattering = INeutronBehaviour.crossSectionFromProba(scatteringProba);
+        }
 
         public static IsotopeParams mix(IsotopeParams a, IsotopeParams b, double factor) {
 
-            double neutronMultiplicationFactor = factor * a.neutronsMultiplication + (1 - factor) * b.neutronsMultiplication;
+            factor = 1 - factor;
 
-            return new IsotopeParams(factor * a.thermalAbsorption + (1 - factor) * b.thermalAbsorption,
-                    factor * a.fastAbsorption + (1 - factor) * b.fastAbsorption, factor * a.scattering + (1 - factor) * b.scattering,
-                    (int) (factor * a.maxTemp + (1 - factor) * b.maxTemp), neutronMultiplicationFactor,
-                    (factor * a.neutronsMultiplication * a.directEnergyFactor + (1 - factor) * b.neutronsMultiplication * b.directEnergyFactor)
-                            / neutronMultiplicationFactor);
+            double newThermalAbsorptionProba = INeutronBehaviour.probaFromCrossSection(mix(a.thermalAbsorption, b.thermalAbsorption, factor));
+            double newFastAbsorptionProba = INeutronBehaviour.probaFromCrossSection(mix(a.fastAbsorption, b.fastAbsorption, factor));
+            double newScatteringProba = INeutronBehaviour.probaFromCrossSection(mix(a.scattering, b.scattering, factor));
+
+            double newNeutronMultiplicationFactor = mix(a.neutronsMultiplication, b.neutronsMultiplication, factor);
+
+            double totalEnergy = mix(a.neutronsMultiplication * (1 + a.directEnergyFactor), b.neutronsMultiplication * (1 + b.directEnergyFactor),
+                    factor);
+
+            int newMaxTemp = (int) mix(a.maxTemp, b.maxTemp, factor);
+
+            double newDirectEnergyFactor = totalEnergy / (newNeutronMultiplicationFactor) - 1;
+
+            return new IsotopeParams(newThermalAbsorptionProba, newFastAbsorptionProba, newScatteringProba, newMaxTemp,
+                    newNeutronMultiplicationFactor, newDirectEnergyFactor);
+
+        }
+
+        private static double mix(double a, double b, double r) {
+            return r * a + (1 - r) * b;
         }
 
         public IsotopeParams mix(IsotopeParams b, double factor) {
@@ -85,10 +116,15 @@ public class NuclearConstant {
 
     }
 
-    public static final IsotopeParams U235 = new IsotopeParams(1, 0.1, 0.22, 2200, 6, 0.5);
-    public static final IsotopeParams U238 = new IsotopeParams(0, 0.05, 0.32, 2800, 4.5, 0.3);
-    public static final IsotopeParams Uranium = U238.mix(U235, 1.0 / 9);
-    public static final IsotopeParams Pu239 = new IsotopeParams(1.5, 0.2, 0.3, 1700, 8, 0.25);
-    public static final IsotopeParams MOX = U238.mix(Pu239, 2.0 / 9);
+    public static final IsotopeParams U235 = new IsotopeParams(0.5, 0.1, 0.35, 2200, 6, 0.5);
+    public static final IsotopeParams U238 = new IsotopeParams(0, 0.03, 0.30, 2800, 4.5, 0.3);
+    public static final IsotopeParams Pu239 = new IsotopeParams(0.8, 0.2, 0.25, 1700, 8, 0.25);
 
+    public static final IsotopeParams U = U238.mix(U235, 1.0 / 81);
+
+    public static final IsotopeParams LEU = U238.mix(U235, 1.0 / 9);
+    public static final IsotopeParams HEU = U238.mix(U235, 1.0 / 3);
+
+    public static final IsotopeParams LE_MOX = U238.mix(Pu239, 1.0 / 9);
+    public static final IsotopeParams HE_MOX = U238.mix(Pu239, 1.0 / 3);
 }

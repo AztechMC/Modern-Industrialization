@@ -149,7 +149,8 @@ public class NuclearFuel extends NuclearComponent {
     public int simulateDesintegration(double neutronsReceived, ItemStack stack, Random rand) {
         int desintegration = Math.min(randIntFromDouble(neutronsReceived, rand), getRemainingDesintegrations(stack));
 
-        setRemainingDesintegrations(stack, getRemainingDesintegrations(stack) - desintegration);
+        // setRemainingDesintegrations(stack, getRemainingDesintegrations(stack) -
+        // desintegration);
         return randIntFromDouble(desintegration * neutronMultiplicationFactor, rand);
 
     }

@@ -89,9 +89,9 @@ public class NeutronHistoryComponent implements IComponent {
             if (type == NeutronType.FAST) {
                 avg += fastNeutronReceivedHistory[i];
             } else if (type == NeutronType.THERMAL) {
-                avg += thermalNeutronFluxHistory[i];
+                avg += thermalNeutronReceivedHistory[i];
             } else {
-                avg += (fastNeutronReceivedHistory[i] + thermalNeutronFluxHistory[i]);
+                avg += (fastNeutronReceivedHistory[i] + thermalNeutronReceivedHistory[i]);
             }
         }
         return avg / TICK_HISTORY_SIZE;

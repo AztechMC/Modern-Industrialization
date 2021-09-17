@@ -181,6 +181,7 @@ public class NuclearHatch extends HatchBlockEntity implements INuclearTile {
         thermalNeutronAbsorbedThisTick = 0;
         fastNeutronInFluxThisTick = 0;
         thermalNeutronInFluxThisTick = 0;
+        neutronGeneratedThisTick = 0;
     }
 
     public void absorbNeutrons(int neutronNumber, NeutronType type) {

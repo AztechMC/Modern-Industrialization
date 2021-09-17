@@ -54,6 +54,7 @@ public interface INuclearTileData {
         if (maybeData.isPresent()) {
             INuclearTileData tile = maybeData.get();
             buf.writeBoolean(true);
+
             buf.writeDouble(tile.getTemperature());
 
             buf.writeDouble(tile.getMeanNeutronAbsorption(NeutronType.FAST));
@@ -70,6 +71,7 @@ public interface INuclearTileData {
             if (stack == null) {
                 stack = ItemStack.EMPTY;
             }
+
             buf.writeItemStack(stack);
 
         } else {

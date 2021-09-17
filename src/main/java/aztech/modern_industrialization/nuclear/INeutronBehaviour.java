@@ -38,8 +38,8 @@ public interface INeutronBehaviour {
 
         return new INeutronBehaviour() {
 
-            final double thermalProbability = 1 - Math.exp(-(thermalNeutronAbsorptionBarn + thermalNeutronScatteringBarn) * Math.sqrt(size));
-            final double fastProbability = 1 - Math.exp(-(fastNeutronAbsorptionBarn + fastNeutronScatteringBarn) * Math.sqrt(size));
+            final double thermalProbability = probaFromCrossSection((thermalNeutronAbsorptionBarn + thermalNeutronScatteringBarn) * Math.sqrt(size));
+            final double fastProbability = probaFromCrossSection((fastNeutronAbsorptionBarn + fastNeutronScatteringBarn) * Math.sqrt(size));
 
             @Override
             public double neutronSlowingProbability() {
@@ -78,9 +78,17 @@ public interface INeutronBehaviour {
         };
     }
 
+    static double crossSectionFromProba(double proba) {
+        return -Math.log(1 - proba);
+    }
+
+    static double probaFromCrossSection(double crossSection) {
+        return 1 - Math.exp(-crossSection);
+    }
+
     static INeutronBehaviour of(NuclearConstant.ScatteringType scatteringType, NuclearConstant.IsotopeParams params, double size) {
 
-        return of(scatteringType, params.thermalAbsorption(), params.fastAbsorption(), params.scattering(), params.scattering() / 2, size);
+        return of(scatteringType, params.thermalAbsorption, params.fastAbsorption, params.scattering, params.scattering / 2, size);
     }
 
 }

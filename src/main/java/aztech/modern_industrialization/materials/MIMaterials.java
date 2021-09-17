@@ -352,27 +352,35 @@ public class MIMaterials {
                 .addParts(BlockMaterialPart.of(MaterialBlockSet.COPPER)).addRegularParts(PLATE, WIRE, DOUBLE_INGOT, HOT_INGOT)
                 .addParts(CableMaterialPart.of(CableTier.EV)).addRecipes(StandardRecipes::apply).build());
 
-        MaterialRegistry.addMaterial(new MaterialBuilder("uranium_235", SHINY, 0xe60045, HARD).addParts(BlockMaterialPart.of(MaterialBlockSet.GOLD))
-                .addRegularParts(ITEM_PURE_METAL).addParts(NuclearFuelMaterialPart.of(NuclearConstant.U235)).addRecipes(StandardRecipes::apply)
-                .build());
+        MaterialRegistry.addMaterial(new MaterialBuilder("uranium", DULL, 0x39e600, AVERAGE).addParts(NuclearFuelMaterialPart.of(NuclearConstant.U))
+                .addRegularParts(ITEM_PURE_METAL).addParts(BlockMaterialPart.of(MaterialBlockSet.GOLD))
+                .addParts(OreGenMaterialPart.of(2, 5, 32, COPPER)).addParts(RawMetalPart.ofItemOnly(MaterialRawSet.URANIUM))
+                .addRecipes(StandardRecipes::apply).build());
+
+        MaterialRegistry.addMaterial(new MaterialBuilder("uranium_235", SHINY, 0xe60045, VERY_HARD)
+                .addParts(BlockMaterialPart.of(MaterialBlockSet.GOLD)).addRegularParts(ITEM_PURE_METAL).addRecipes(StandardRecipes::apply).build());
 
         MaterialRegistry.addMaterial(new MaterialBuilder("uranium_238", DULL, 0x55bd33, SOFT).addParts(BlockMaterialPart.of(MaterialBlockSet.GOLD))
-                .addRegularParts(ITEM_PURE_METAL).addParts(NuclearFuelMaterialPart.of(NuclearConstant.U238)).addRecipes(StandardRecipes::apply)
-                .build());
+                .addRegularParts(ITEM_PURE_METAL).addRecipes(StandardRecipes::apply).build());
 
-        MaterialRegistry.addMaterial(new MaterialBuilder("uranium", DULL, 0x39e600, AVERAGE)
-                .addParts(NuclearFuelMaterialPart.of(NuclearConstant.Uranium)).addRegularParts(ITEM_PURE_METAL)
-                .addParts(BlockMaterialPart.of(MaterialBlockSet.GOLD)).addParts(OreGenMaterialPart.of(2, 5, 32, COPPER))
-                .addParts(RawMetalPart.ofItemOnly(MaterialRawSet.URANIUM)).addRecipes(StandardRecipes::apply).build());
+        MaterialRegistry.addMaterial(new MaterialBuilder("le_uranium", DULL, 0x70a33c, VERY_HARD)
+                .addParts(NuclearFuelMaterialPart.of(NuclearConstant.LEU)).addParts(BlockMaterialPart.of(MaterialBlockSet.GOLD))
+                .addRegularParts(ITEM_PURE_METAL).addRecipes(StandardRecipes::apply).build());
 
-        MaterialRegistry.addMaterial(new MaterialBuilder("plutonium", SHINY, 0xd701e7, HARD).addParts(BlockMaterialPart.of(MaterialBlockSet.GOLD))
-                .addRegularParts(ITEM_PURE_METAL).addParts(NuclearFuelMaterialPart.of(NuclearConstant.Pu239))
+        MaterialRegistry.addMaterial(new MaterialBuilder("he_uranium", DULL, 0xaae838, VERY_HARD)
+                .addParts(NuclearFuelMaterialPart.of(NuclearConstant.HEU)).addParts(BlockMaterialPart.of(MaterialBlockSet.GOLD))
+                .addRegularParts(ITEM_PURE_METAL).addRecipes(StandardRecipes::apply).build());
 
+        MaterialRegistry.addMaterial(new MaterialBuilder("le_mox", SHINY, 0x00e7e5, VERY_HARD).addParts(BlockMaterialPart.of(MaterialBlockSet.GOLD))
+                .addParts(NuclearFuelMaterialPart.of(NuclearConstant.LE_MOX)).addParts().addRegularParts(ITEM_PURE_METAL)
                 .addRecipes(StandardRecipes::apply).build());
 
-        MaterialRegistry.addMaterial(new MaterialBuilder("mox", SHINY, 0x00e7e5, HARD).addParts(BlockMaterialPart.of(MaterialBlockSet.GOLD))
-                .addParts(NuclearFuelMaterialPart.of(NuclearConstant.MOX)).addParts().addRegularParts(ITEM_PURE_METAL)
+        MaterialRegistry.addMaterial(new MaterialBuilder("he_mox", SHINY, 0xcc87fa, VERY_HARD).addParts(BlockMaterialPart.of(MaterialBlockSet.GOLD))
+                .addParts(NuclearFuelMaterialPart.of(NuclearConstant.HE_MOX)).addParts().addRegularParts(ITEM_PURE_METAL)
                 .addRecipes(StandardRecipes::apply).build());
+
+        MaterialRegistry.addMaterial(new MaterialBuilder("plutonium", SHINY, 0xd701e7, VERY_HARD)
+                .addParts(BlockMaterialPart.of(MaterialBlockSet.GOLD)).addRegularParts(ITEM_PURE_METAL).addRecipes(StandardRecipes::apply).build());
 
         MaterialRegistry.addMaterial(
                 new MaterialBuilder("platinum", SHINY, new BakableTargetColoramp(0xffe5ba, common("ingot"), template("platinum_ingot")), AVERAGE)

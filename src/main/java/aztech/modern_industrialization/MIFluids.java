@@ -81,7 +81,7 @@ public class MIFluids {
     public static final CraftingFluid SYNTHETIC_RUBBER = new CraftingFluid("synthetic_rubber", 0xff1a1a1a);
     public static final CraftingFluid TOLUENE = new CraftingFluid("toluene", 0xff9ce6ed);
     public static final CraftingFluid VINYL_CHLORIDE = new CraftingFluid("vinyl_chloride", 0xffeda7d9);
-    public static final CraftingFluid HELIUM = new CraftingFluid("helium", 0xffe6e485);
+    public static final CraftingFluid HELIUM = new CraftingFluid("helium", 0xffe6e485, true);
     public static final CraftingFluid ARGON = new CraftingFluid("argon", 0xffe339a7, true);
     public static final CraftingFluid HELIUM_3 = new CraftingFluid("helium_3", 0xff83de52, true);
     public static final CraftingFluid DEUTERIUM = new CraftingFluid("deuterium", 0xff941bcc, true);

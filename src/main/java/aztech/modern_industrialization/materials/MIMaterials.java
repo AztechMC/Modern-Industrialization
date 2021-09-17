@@ -235,7 +235,7 @@ public class MIMaterials {
                         .addParts(CasingMaterialPart.of(MACHINE_CASING, "advanced_machine_casing")).addRegularParts(DRILL_HEAD, DRILL)
                         .addParts(CasingMaterialPart.of(MACHINE_CASING_SPECIAL, "frostproof_machine_casing")).addParts(TankMaterialPart.of(16))
                         .addParts(BarrelMaterialPart.of(512)).addParts(CableMaterialPart.of(CableTier.HV)).addRecipes(StandardRecipes::apply)
-                        .build());
+                        .addRecipes(SmeltingRecipes::applyBlastFurnace).build());
 
         MaterialRegistry.addMaterial(new MaterialBuilder("bauxite", DULL, DUST, 0xC86400, SOFT).addRegularParts(ITEM_PURE_NON_METAL)
                 .addParts(BlockMaterialPart.of(MaterialBlockSet.LAPIS))
@@ -296,7 +296,8 @@ public class MIMaterials {
                         .addRegularParts(DRILL_HEAD, DRILL).addParts(CasingMaterialPart.of(MACHINE_CASING_PIPE))
                         .addParts(CasingMaterialPart.of(MACHINE_CASING_SPECIAL, "solid_titanium_machine_casing"))
                         .addParts(OreGenMaterialPart.of(2, 4, 32, MaterialOreSet.IRON)).addParts(TankMaterialPart.of(64))
-                        .addParts(BarrelMaterialPart.of(8192)).addRecipes(StandardRecipes::apply).cancelRecipes("macerator/raw_metal").build());
+                        .addParts(BarrelMaterialPart.of(8192)).addRecipes(StandardRecipes::apply)
+                        .addRecipes((ctx) -> SmeltingRecipes.applyBlastFurnace(ctx, true, 128, 400)).cancelRecipes("macerator/raw_metal").build());
 
         MaterialRegistry.addMaterial(
                 new MaterialBuilder("electrum", SHINY, new BakableTargetColoramp(0xFFFF64, common("ingot"), template("electrum_ingot")), SOFT)
@@ -317,7 +318,7 @@ public class MIMaterials {
                         .addParts(CasingMaterialPart.of(MACHINE_CASING, "turbo_machine_casing")).addParts(CasingMaterialPart.of(MACHINE_CASING_PIPE))
                         .addParts(CasingMaterialPart.of(MACHINE_CASING_SPECIAL, "clean_stainless_steel_machine_casing")).addRegularParts(ROD_MAGNETIC)
                         .addParts(TankMaterialPart.of(32)).addParts(BarrelMaterialPart.of(4096)).addRecipes(StandardRecipes::apply)
-                        .cancelRecipes("polarizer/rod_magnetic").build());
+                        .addRecipes((ctx) -> SmeltingRecipes.applyBlastFurnace(ctx, true, 32, 400)).cancelRecipes("polarizer/rod_magnetic").build());
 
         MaterialRegistry.addMaterial(
                 new MaterialBuilder("ruby", SHINY, 0xd1001f, HARD).addRegularParts(DUST, TINY_DUST).addRecipes(StandardRecipes::apply).build());
@@ -329,7 +330,7 @@ public class MIMaterials {
                 new MaterialBuilder("chrome", SHINY, new BakableTargetColoramp(0xFFE6E6, common("ingot"), template("chrome_ingot")), AVERAGE)
                         .addRegularParts(CRUSHED_DUST).addParts(BlockMaterialPart.of(MaterialBlockSet.GOLD)).addRegularParts(ITEM_PURE_METAL)
                         .addRegularParts(HOT_INGOT).addRegularParts(PLATE, LARGE_PLATE, DOUBLE_INGOT).addRecipes(StandardRecipes::apply)
-                        .cancelRecipes("macerator/crushed_dust").build());
+                        .addRecipes((ctx) -> SmeltingRecipes.applyBlastFurnace(ctx, true, 32, 400)).cancelRecipes("macerator/crushed_dust").build());
 
         MaterialRegistry.addMaterial(new MaterialBuilder("manganese", DULL, 0xC1C1C1, AVERAGE).addParts(BlockMaterialPart.of(MaterialBlockSet.IRON))
                 .addRegularParts(ITEM_PURE_METAL).addRegularParts(CRUSHED_DUST).addRecipes(StandardRecipes::apply)
@@ -350,7 +351,8 @@ public class MIMaterials {
 
         MaterialRegistry.addMaterial(new MaterialBuilder("annealed_copper", SHINY, 0xff924f, SOFT).addRegularParts(ITEM_PURE_METAL)
                 .addParts(BlockMaterialPart.of(MaterialBlockSet.COPPER)).addRegularParts(PLATE, WIRE, DOUBLE_INGOT, HOT_INGOT)
-                .addParts(CableMaterialPart.of(CableTier.EV)).addRecipes(StandardRecipes::apply).build());
+                .addParts(CableMaterialPart.of(CableTier.EV)).addRecipes(StandardRecipes::apply)
+                .addRecipes((ctx) -> SmeltingRecipes.applyBlastFurnace(ctx, false, 64)).build());
 
         MaterialRegistry.addMaterial(new MaterialBuilder("uranium", DULL, 0x39e600, AVERAGE).addParts(NuclearFuelMaterialPart.of(NuclearConstant.U))
                 .addRegularParts(ITEM_PURE_METAL).addParts(BlockMaterialPart.of(MaterialBlockSet.GOLD))
@@ -387,13 +389,15 @@ public class MIMaterials {
                         .addParts(BlockMaterialPart.of(MaterialBlockSet.GOLD)).addParts(RawMetalPart.of(MaterialRawSet.GOLD))
                         .addParts(OreGenMaterialPart.of(2, 4, 32, MaterialOreSet.GOLD)).addRegularParts(ITEM_PURE_METAL)
                         .addRegularParts(PLATE, DOUBLE_INGOT, WIRE, FINE_WIRE, HOT_INGOT).addParts(CableMaterialPart.of(CableTier.EV))
-                        .addRecipes(StandardRecipes::apply).cancelRecipes("macerator/raw_metal").build());
+                        .addRecipes((ctx) -> SmeltingRecipes.applyBlastFurnace(ctx, true, 128, 600)).addRecipes(StandardRecipes::apply)
+                        .cancelRecipes("macerator/raw_metal").build());
 
         MaterialRegistry.addMaterial(
                 new MaterialBuilder("kanthal", METALLIC, new BakableTargetColoramp(0xcfcb00, common("ingot"), template("kanthal_ingot")), HARD)
                         .addRegularParts(TINY_DUST, DUST, PLATE, INGOT, NUGGET, WIRE, DOUBLE_INGOT, HOT_INGOT)
                         .addParts(BlockColumnMaterialPart.of(COIL)).addParts(BlockMaterialPart.of(MaterialBlockSet.COPPER))
-                        .addParts(CableMaterialPart.of(CableTier.HV)).addRecipes(StandardRecipes::apply).build());
+                        .addRecipes((ctx) -> SmeltingRecipes.applyBlastFurnace(ctx, true, 32, 400)).addParts(CableMaterialPart.of(CableTier.HV))
+                        .addRecipes(StandardRecipes::apply).build());
 
         MaterialRegistry.addMaterial(
                 new MaterialBuilder("iridium", SHINY, new BakableTargetColoramp(0xe1e6f5, common("ingot"), template("iridium_ingot")), VERY_HARD)

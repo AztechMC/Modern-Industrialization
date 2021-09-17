@@ -451,7 +451,7 @@ public class MultiblockMachines {
         BlockEntityRendererRegistry.INSTANCE.register(VACUUM_FREEZER, MultiblockMachineBER::new);
         new Rei("vacuum_freezer", MIMachineRecipeTypes.VACUUM_FREEZER, new ProgressBar.Parameters(77, 33, "arrow"))
                 .items(inputs -> inputs.addSlots(56, 35, 2, 1), outputs -> outputs.addSlot(102, 35))
-                .fluids(inputs -> inputs.addSlot(36, 35), outputs -> outputs.addSlot(122, 35))
+                .fluids(inputs -> inputs.addSlots(36, 35, 2, 1), outputs -> outputs.addSlot(122, 35))
                 .register();
 
         MachineModels.addTieredMachine("oil_drilling_rig", "oil_drilling_rig", MachineCasings.STEEL, true, false, false);

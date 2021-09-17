@@ -94,8 +94,13 @@ public class AlloyRegister {
         new AlloyBuilder("stainless_steel").addIngredient("iron", 6).addIngredient("chrome", 1).addIngredient("nickel", 1)
                 .addIngredient("manganese", 1).Build(pack);
         new AlloyBuilder("kanthal").addIngredient("stainless_steel", 1).addIngredient("chrome", 1).addIngredient("aluminum", 1).Build(pack);
-        new AlloyBuilder("mox").addIngredient("uranium_238", 8).addIngredient("plutonium", 1).Build(pack);
         new AlloyBuilder("soldering_alloy").addIngredient("tin", 1).addIngredient("lead", 1).Build(pack);
+
+        new AlloyBuilder("le_uranium").addIngredient("uranium_238", 8).addIngredient("uranium_235", 1).Build(pack);
+        new AlloyBuilder("he_uranium").addIngredient("uranium_238", 6).addIngredient("uranium_235", 3).Build(pack);
+
+        new AlloyBuilder("le_mox").addIngredient("uranium_238", 8).addIngredient("plutonium", 1).Build(pack);
+        new AlloyBuilder("he_mox").addIngredient("uranium_238", 6).addIngredient("plutonium", 3).Build(pack);
 
     }
 }

@@ -11,16 +11,16 @@
   "fluid_outputs" : [
     {
       "fluid" : "modern_industrialization:oxygen",
-      "amount" : 630
+      "amount" : 650
     },
 
     {
       "fluid" : "modern_industrialization:nitrogen",
-      "amount" : 2340
+      "amount" : 2315
     },
     {
       "fluid" : "modern_industrialization:argon",
-      "amount" : 30
+      "amount" : 35
     }
   ]
 

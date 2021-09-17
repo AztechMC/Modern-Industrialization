@@ -19,5 +19,13 @@
         "item": "modern_industrialization:uranium_238_tiny_dust",
         "amount": 80
       }
-    ]
+    ],
+
+  "fluid_outputs": [
+    {
+      "fluid" : "modern_industrialization:helium",
+      "amount": 150,
+      "probability" : 0.5
+    }
+  ]
 }

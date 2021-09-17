@@ -135,6 +135,11 @@ public class MIRecipeBuilder implements MaterialRecipeBuilder {
         return this;
     }
 
+    public MIRecipeBuilder addInput(String itemId, int amount) {
+        this.json.addItemInput(itemId, amount);
+        return this;
+    }
+
     public boolean isCanceled() {
         return canceled;
     }

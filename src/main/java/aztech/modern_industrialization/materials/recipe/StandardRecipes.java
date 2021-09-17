@@ -119,6 +119,11 @@ public final class StandardRecipes {
                 .addInput("modern_industrialization:packer_block_template", 1, 0.0).addPartOutput(BLOCK, 1);
         new MIRecipeBuilder(ctx, "packer", "double_ingot").addTaggedPartInput(INGOT, 2)
                 .addInput("modern_industrialization:packer_double_ingot_template", 1, 0.0).addPartOutput(DOUBLE_INGOT, 1);
+
+        new MIRecipeBuilder(ctx, "packer", "fuel_rod_double").addPartInput(FUEL_ROD, 2).addPartOutput(FUEL_ROD_DOUBLE, 1);
+
+        new MIRecipeBuilder(ctx, "packer", "fuel_rod_quad").addPartInput(FUEL_ROD_DOUBLE, 2).addPartOutput(FUEL_ROD_QUAD, 1);
+
         // WIREMILL
         new MIRecipeBuilder(ctx, "wiremill", "wire").addTaggedPartInput(PLATE, 1).addPartOutput(WIRE, 2);
         new MIRecipeBuilder(ctx, "wiremill", "fine_wire").addTaggedPartInput(WIRE, 1).addPartOutput(FINE_WIRE, 4);
@@ -130,6 +135,11 @@ public final class StandardRecipes {
         new MIRecipeBuilder(ctx, "assembler", "drill_head").addTaggedPartInput(PLATE, 1).addTaggedPartInput(CURVED_PLATE, 2)
                 .addTaggedPartInput(ROD, 1).addTaggedPartInput(GEAR, 2).addFluidInput("modern_industrialization:soldering_alloy", 75)
                 .addPartOutput(DRILL_HEAD, 1);
+
+        new MIRecipeBuilder(ctx, "assembler", "fuel_rod", 16, 200).addInput("modern_industrialization:blastproof_alloy_curved_plate", 2)
+                .addInput("modern_industrialization:cadmium_rod", 1).addInput("modern_industrialization:large_advanced_motor", 1)
+                .addInput("modern_industrialization:robot_arm", 2).addFluidInput("modern_industrialization:soldering_alloy", 500)
+                .addFluidInput("modern_industrialization:helium", 100).addTaggedPartInput(ROD, 2).addPartOutput(FUEL_ROD, 1);
 
         // HEAT EXCHANGER
         new MIRecipeBuilder(ctx, "heat_exchanger", "hot_ingot", 8, 10).addPartInput(HOT_INGOT, 1).addFluidInput(MIFluids.CRYOFLUID.id, 100)

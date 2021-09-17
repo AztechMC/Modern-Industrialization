@@ -355,34 +355,39 @@ public class MIMaterials {
                 .addRecipes((ctx) -> SmeltingRecipes.applyBlastFurnace(ctx, false, 64)).build());
 
         MaterialRegistry.addMaterial(new MaterialBuilder("uranium", DULL, 0x39e600, AVERAGE).addParts(NuclearFuelMaterialPart.of(NuclearConstant.U))
-                .addRegularParts(ITEM_PURE_METAL).addParts(BlockMaterialPart.of(MaterialBlockSet.GOLD))
+                .addRegularParts(ITEM_PURE_METAL).addRegularParts(ROD).addParts(BlockMaterialPart.of(MaterialBlockSet.GOLD))
                 .addParts(OreGenMaterialPart.of(2, 5, 32, COPPER)).addParts(RawMetalPart.ofItemOnly(MaterialRawSet.URANIUM))
-                .addRecipes(StandardRecipes::apply).build());
+                .addRecipes(StandardRecipes::apply).addRecipes((ctx) -> SmeltingRecipes.applyBlastFurnace(ctx, 128)).build());
 
         MaterialRegistry.addMaterial(new MaterialBuilder("uranium_235", SHINY, 0xe60045, VERY_HARD)
-                .addParts(BlockMaterialPart.of(MaterialBlockSet.GOLD)).addRegularParts(ITEM_PURE_METAL).addRecipes(StandardRecipes::apply).build());
+                .addParts(BlockMaterialPart.of(MaterialBlockSet.GOLD)).addRegularParts(ITEM_PURE_METAL).addRecipes(StandardRecipes::apply)
+                .addRecipes((ctx) -> SmeltingRecipes.applyBlastFurnace(ctx, 128)).build());
 
         MaterialRegistry.addMaterial(new MaterialBuilder("uranium_238", DULL, 0x55bd33, SOFT).addParts(BlockMaterialPart.of(MaterialBlockSet.GOLD))
-                .addRegularParts(ITEM_PURE_METAL).addRecipes(StandardRecipes::apply).build());
+                .addRegularParts(ITEM_PURE_METAL).addRecipes(StandardRecipes::apply).addRecipes((ctx) -> SmeltingRecipes.applyBlastFurnace(ctx, 128))
+                .build());
 
-        MaterialRegistry.addMaterial(new MaterialBuilder("le_uranium", DULL, 0x70a33c, VERY_HARD)
-                .addParts(NuclearFuelMaterialPart.of(NuclearConstant.LEU)).addParts(BlockMaterialPart.of(MaterialBlockSet.GOLD))
-                .addRegularParts(ITEM_PURE_METAL).addRecipes(StandardRecipes::apply).build());
+        MaterialRegistry
+                .addMaterial(new MaterialBuilder("le_uranium", DULL, 0x70a33c, VERY_HARD).addParts(NuclearFuelMaterialPart.of(NuclearConstant.LEU))
+                        .addParts(BlockMaterialPart.of(MaterialBlockSet.GOLD)).addRegularParts(ITEM_PURE_METAL).addRegularParts(ROD)
+                        .addRecipes(StandardRecipes::apply).addRecipes((ctx) -> SmeltingRecipes.applyBlastFurnace(ctx, 128)).build());
 
-        MaterialRegistry.addMaterial(new MaterialBuilder("he_uranium", DULL, 0xaae838, VERY_HARD)
-                .addParts(NuclearFuelMaterialPart.of(NuclearConstant.HEU)).addParts(BlockMaterialPart.of(MaterialBlockSet.GOLD))
-                .addRegularParts(ITEM_PURE_METAL).addRecipes(StandardRecipes::apply).build());
+        MaterialRegistry
+                .addMaterial(new MaterialBuilder("he_uranium", DULL, 0xaae838, VERY_HARD).addParts(NuclearFuelMaterialPart.of(NuclearConstant.HEU))
+                        .addParts(BlockMaterialPart.of(MaterialBlockSet.GOLD)).addRegularParts(ITEM_PURE_METAL).addRegularParts(ROD)
+                        .addRecipes(StandardRecipes::apply).addRecipes((ctx) -> SmeltingRecipes.applyBlastFurnace(ctx, 128)).build());
 
         MaterialRegistry.addMaterial(new MaterialBuilder("le_mox", SHINY, 0x00e7e5, VERY_HARD).addParts(BlockMaterialPart.of(MaterialBlockSet.GOLD))
-                .addParts(NuclearFuelMaterialPart.of(NuclearConstant.LE_MOX)).addParts().addRegularParts(ITEM_PURE_METAL)
-                .addRecipes(StandardRecipes::apply).build());
+                .addParts(NuclearFuelMaterialPart.of(NuclearConstant.LE_MOX)).addRegularParts(ITEM_PURE_METAL).addRegularParts(ROD)
+                .addRecipes(StandardRecipes::apply).addRecipes((ctx) -> SmeltingRecipes.applyBlastFurnace(ctx, 128)).build());
 
         MaterialRegistry.addMaterial(new MaterialBuilder("he_mox", SHINY, 0xcc87fa, VERY_HARD).addParts(BlockMaterialPart.of(MaterialBlockSet.GOLD))
-                .addParts(NuclearFuelMaterialPart.of(NuclearConstant.HE_MOX)).addParts().addRegularParts(ITEM_PURE_METAL)
-                .addRecipes(StandardRecipes::apply).build());
+                .addParts(NuclearFuelMaterialPart.of(NuclearConstant.HE_MOX)).addParts().addRegularParts(ITEM_PURE_METAL).addRegularParts(ROD)
+                .addRecipes(StandardRecipes::apply).addRecipes((ctx) -> SmeltingRecipes.applyBlastFurnace(ctx, 128)).build());
 
         MaterialRegistry.addMaterial(new MaterialBuilder("plutonium", SHINY, 0xd701e7, VERY_HARD)
-                .addParts(BlockMaterialPart.of(MaterialBlockSet.GOLD)).addRegularParts(ITEM_PURE_METAL).addRecipes(StandardRecipes::apply).build());
+                .addParts(BlockMaterialPart.of(MaterialBlockSet.GOLD)).addRegularParts(ITEM_PURE_METAL).addRecipes(StandardRecipes::apply)
+                .addRecipes((ctx) -> SmeltingRecipes.applyBlastFurnace(ctx, 128)).build());
 
         MaterialRegistry.addMaterial(
                 new MaterialBuilder("platinum", SHINY, new BakableTargetColoramp(0xffe5ba, common("ingot"), template("platinum_ingot")), AVERAGE)
@@ -433,8 +438,9 @@ public class MIMaterials {
                         .addParts(BlockMaterialPart.of(MaterialBlockSet.NETHERITE)).addParts(OreGenMaterialPart.of(1, 5, 20, MaterialOreSet.IRON))
                         .addRecipes(StandardRecipes::apply).build());
 
-        MaterialRegistry.addMaterial(new MaterialBuilder("blastproof_alloy", METALLIC, 0x524c3a, VERY_HARD).addRegularParts(PLATE, LARGE_PLATE)
-                .addParts(CasingMaterialPart.of(MACHINE_CASING_SPECIAL, "blastproof_casing", 6000f)).addRecipes(StandardRecipes::apply).build());
+        MaterialRegistry.addMaterial(new MaterialBuilder("blastproof_alloy", METALLIC, 0x524c3a, VERY_HARD)
+                .addRegularParts(PLATE, LARGE_PLATE, CURVED_PLATE).addParts(CasingMaterialPart.of(MACHINE_CASING_SPECIAL, "blastproof_casing", 6000f))
+                .addRecipes(StandardRecipes::apply).build());
 
         MaterialRegistry.addMaterial(new MaterialBuilder("nuclear_alloy", METALLIC, 0x3d4d32, VERY_HARD).addRegularParts(PLATE, LARGE_PLATE)
                 .addParts(CasingMaterialPart.of(MACHINE_CASING_SPECIAL, "nuclear_casing", 6000f))

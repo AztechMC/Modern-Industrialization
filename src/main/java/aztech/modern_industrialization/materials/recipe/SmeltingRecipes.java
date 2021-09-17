@@ -52,7 +52,6 @@ public final class SmeltingRecipes {
             new MIRecipeBuilder(ctx, "blast_furnace", "dust", eu, duration).addTaggedPartInput(DUST, 1).addPartOutput(HOT_INGOT, 1);
         } else {
             new MIRecipeBuilder(ctx, "blast_furnace", "dust", eu, duration).addTaggedPartInput(DUST, 1).addPartOutput(INGOT, 1);
-
             new MIRecipeBuilder(ctx, "blast_furnace", "tiny_dust", eu, duration / 10).addTaggedPartInput(TINY_DUST, 1).addPartOutput(NUGGET, 1);
         }
 

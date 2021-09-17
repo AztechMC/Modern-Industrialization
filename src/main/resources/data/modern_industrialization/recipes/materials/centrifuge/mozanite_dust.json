@@ -19,5 +19,13 @@
         "item": "modern_industrialization:cadmium_dust",
         "amount": 3
       }
-    ]
+    ],
+
+  "fluid_outputs": [
+    {
+      "fluid" : "modern_industrialization:helium",
+      "amount": 300,
+      "probability" : 0.5
+    }
+  ]
 }

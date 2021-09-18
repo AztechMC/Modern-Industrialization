@@ -41,7 +41,7 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
 
-public class NuclearFuel extends NuclearComponent {
+public class NuclearFuel extends NuclearComponentItem {
 
     public final double directEnergyFactor;
     public final double neutronMultiplicationFactor;

@@ -24,7 +24,7 @@
 package aztech.modern_industrialization.compat.rei.nuclear;
 
 import aztech.modern_industrialization.MIIdentifier;
-import aztech.modern_industrialization.nuclear.NuclearComponent;
+import aztech.modern_industrialization.nuclear.NuclearComponentItem;
 import aztech.modern_industrialization.nuclear.NuclearFuel;
 import me.shedaniel.rei.api.client.plugins.REIClientPlugin;
 import me.shedaniel.rei.api.client.registry.category.CategoryRegistry;
@@ -46,11 +46,12 @@ public class NeutronInteractionPlugin implements REIClientPlugin {
 
     @Override
     public void registerDisplays(DisplayRegistry registry) {
-        Registry.ITEM.stream().filter(item -> item instanceof NuclearComponent).forEach(item -> {
-            registry.add(new NeutronInteractionDisplay((NuclearComponent) item, NeutronInteractionDisplay.CategoryType.FAST_NEUTRON_INTERACTION));
-            registry.add(new NeutronInteractionDisplay((NuclearComponent) item, NeutronInteractionDisplay.CategoryType.THERMAL_NEUTRON_INTERACTION));
+        Registry.ITEM.stream().filter(item -> item instanceof NuclearComponentItem).forEach(item -> {
+            registry.add(new NeutronInteractionDisplay((NuclearComponentItem) item, NeutronInteractionDisplay.CategoryType.FAST_NEUTRON_INTERACTION));
+            registry.add(
+                    new NeutronInteractionDisplay((NuclearComponentItem) item, NeutronInteractionDisplay.CategoryType.THERMAL_NEUTRON_INTERACTION));
             if (item instanceof NuclearFuel) {
-                registry.add(new NeutronInteractionDisplay((NuclearComponent) item, NeutronInteractionDisplay.CategoryType.FISSION));
+                registry.add(new NeutronInteractionDisplay((NuclearComponentItem) item, NeutronInteractionDisplay.CategoryType.FISSION));
             }
         });
     }

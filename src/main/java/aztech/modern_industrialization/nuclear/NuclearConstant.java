@@ -23,6 +23,10 @@
  */
 package aztech.modern_industrialization.nuclear;
 
+import aztech.modern_industrialization.MIFluids;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
+import net.minecraft.fluid.Fluids;
+
 public class NuclearConstant {
 
     public static final int EU_FOR_FAST_NEUTRON = 2048;
@@ -47,49 +51,44 @@ public class NuclearConstant {
         public final double slowFraction;
     }
 
-    public enum ScatteringProba {
-        ZERO(0),
-        ULTRA_LOW(0.1),
-        LOW(0.25),
-        MEDIUM_LOW(0.35),
-        MEDIUM(0.5),
-        MEDIUM_HIGH(0.65),
-        HIGH(0.75),
-        VERY_HIGH(0.85),
-        ULTRA_HIGH(0.95);
-
-        ScatteringProba(double probability) {
-            this.probability = probability;
-        }
-
-        public final double probability;
-    }
-
     public static class IsotopeParams {
         public final double thermalAbsorption;
         public final double fastAbsorption;
-        public final double scattering;
+        public final double fastScattering;
+        public final double thermalScattering;
+
+        public IsotopeParams(double thermalAbsorbProba, double fastAbsorptionProba, double thermalScatteringProba, double fastScatteringProba) {
+            this.thermalAbsorption = INeutronBehaviour.crossSectionFromProba(thermalAbsorbProba);
+            this.fastAbsorption = INeutronBehaviour.crossSectionFromProba(fastAbsorptionProba);
+            this.thermalScattering = INeutronBehaviour.crossSectionFromProba(thermalScatteringProba);
+            this.fastScattering = INeutronBehaviour.crossSectionFromProba(fastScatteringProba);
+        }
+    }
+
+    public static class IsotopeFuelParams extends IsotopeParams {
+
         public final int maxTemp;
         public final double neutronsMultiplication;
         public final double directEnergyFactor;
 
-        public IsotopeParams(double thermalAbsorbProba, double scatteringProba, int maxTemp, double neutronsMultiplication,
+        public IsotopeFuelParams(double thermalAbsorbProba, double thermalScatterings, int maxTemp, double neutronsMultiplication,
                 double directEnergyFactor) {
+
+            super(thermalAbsorbProba, INeutronBehaviour.reduceCrossProba(thermalAbsorbProba, 0.2), thermalScatterings,
+                    INeutronBehaviour.reduceCrossProba(thermalScatterings, 0.5));
 
             this.maxTemp = maxTemp;
             this.neutronsMultiplication = neutronsMultiplication;
             this.directEnergyFactor = directEnergyFactor;
-            this.thermalAbsorption = INeutronBehaviour.crossSectionFromProba(thermalAbsorbProba);
-            this.fastAbsorption = INeutronBehaviour.crossSectionFromProba(thermalAbsorbProba) / 5;
-            this.scattering = INeutronBehaviour.crossSectionFromProba(scatteringProba);
+
         }
 
-        public static IsotopeParams mix(IsotopeParams a, IsotopeParams b, double factor) {
+        public static IsotopeFuelParams mix(IsotopeFuelParams a, IsotopeFuelParams b, double factor) {
 
             factor = 1 - factor;
 
             double newThermalAbsorptionProba = INeutronBehaviour.probaFromCrossSection(mix(a.thermalAbsorption, b.thermalAbsorption, factor));
-            double newScatteringProba = INeutronBehaviour.probaFromCrossSection(mix(a.scattering, b.scattering, factor));
+            double newScatteringProba = INeutronBehaviour.probaFromCrossSection(mix(a.thermalScattering, b.thermalScattering, factor));
             double newNeutronMultiplicationFactor = mix(a.neutronsMultiplication, b.neutronsMultiplication, factor);
 
             double totalEnergy = mix(a.neutronsMultiplication * (1 + a.directEnergyFactor), b.neutronsMultiplication * (1 + b.directEnergyFactor),
@@ -99,7 +98,7 @@ public class NuclearConstant {
 
             double newDirectEnergyFactor = totalEnergy / (newNeutronMultiplicationFactor) - 1;
 
-            return new IsotopeParams(newThermalAbsorptionProba, newScatteringProba, newMaxTemp, newNeutronMultiplicationFactor,
+            return new IsotopeFuelParams(newThermalAbsorptionProba, newScatteringProba, newMaxTemp, newNeutronMultiplicationFactor,
                     newDirectEnergyFactor);
 
         }
@@ -108,22 +107,39 @@ public class NuclearConstant {
             return r * a + (1 - r) * b;
         }
 
-        public IsotopeParams mix(IsotopeParams b, double factor) {
-            return IsotopeParams.mix(this, b, factor);
+        public IsotopeFuelParams mix(IsotopeFuelParams b, double factor) {
+            return IsotopeFuelParams.mix(this, b, factor);
         }
 
     }
 
-    public static final IsotopeParams U235 = new IsotopeParams(0.5, 0.35, 2200, 6, 0.5);
-    public static final IsotopeParams U238 = new IsotopeParams(0.15, 0.30, 2800, 4, 0.3);
-    public static final IsotopeParams Pu239 = new IsotopeParams(0.9, 0.25, 1700, 8, 0.25);
+    public static final IsotopeFuelParams U235 = new IsotopeFuelParams(0.5, 0.35, 2200, 6, 0.5);
+    public static final IsotopeFuelParams U238 = new IsotopeFuelParams(0.15, 0.30, 2800, 4, 0.3);
+    public static final IsotopeFuelParams Pu239 = new IsotopeFuelParams(0.9, 0.25, 1700, 8, 0.25);
 
-    public static final IsotopeParams U = U238.mix(U235, 1.0 / 81);
+    public static final IsotopeFuelParams U = U238.mix(U235, 1.0 / 81);
 
-    public static final IsotopeParams LEU = U238.mix(U235, 1.0 / 9);
-    public static final IsotopeParams HEU = U238.mix(U235, 1.0 / 3);
+    public static final IsotopeFuelParams LEU = U238.mix(U235, 1.0 / 9);
+    public static final IsotopeFuelParams HEU = U238.mix(U235, 1.0 / 3);
 
-    public static final IsotopeParams LE_MOX = U238.mix(Pu239, 1.0 / 9);
-    public static final IsotopeParams HE_MOX = U238.mix(Pu239, 1.0 / 3);
+    public static final IsotopeFuelParams LE_MOX = U238.mix(Pu239, 1.0 / 9);
+    public static final IsotopeFuelParams HE_MOX = U238.mix(Pu239, 1.0 / 3);
+
+    public static final IsotopeParams HYDROGEN = new IsotopeParams(0.3, 0.15, 0.5, 0.2);
+    public static final IsotopeParams DEUTERIUM = new IsotopeParams(0.02, 0.01, 0.25, 0.15);
+
+    public static INuclearComponent of(FluidVariant fluid) {
+        if (fluid == FluidVariant.of(Fluids.WATER)) {
+            return INuclearComponent.of(BASE_HEAT_CONDUCTION * 5, 1, ScatteringType.ULTRA_LIGHT, HYDROGEN);
+        } else if (fluid == FluidVariant.of(MIFluids.HEAVY_WATER)) {
+            return INuclearComponent.of(BASE_HEAT_CONDUCTION * 6, 1, ScatteringType.LIGHT, DEUTERIUM);
+        } else if (fluid == FluidVariant.of(MIFluids.HIGH_PRESSURE_WATER)) {
+            return INuclearComponent.of(BASE_HEAT_CONDUCTION * 5, 2, ScatteringType.ULTRA_LIGHT, HYDROGEN);
+        } else if (fluid == FluidVariant.of(MIFluids.HIGH_PRESSURE_HEAVY_WATER)) {
+            return INuclearComponent.of(BASE_HEAT_CONDUCTION * 6, 2, ScatteringType.LIGHT, DEUTERIUM);
+        }
+
+        return null;
+    }
 
 }

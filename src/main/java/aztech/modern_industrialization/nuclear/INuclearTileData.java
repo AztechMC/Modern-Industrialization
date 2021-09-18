@@ -39,10 +39,10 @@ public interface INuclearTileData {
 
     double getMeanNeutronGeneration();
 
-    default Optional<NuclearComponent> getComponent() {
+    default Optional<INuclearComponent> getComponent() {
         ItemStack stack = getStack();
-        if (!stack.isEmpty() && stack.getItem() instanceof NuclearComponent) {
-            return Optional.of((NuclearComponent) stack.getItem());
+        if (!stack.isEmpty() && stack.getItem() instanceof INuclearComponent) {
+            return Optional.of((INuclearComponent) stack.getItem());
         }
         return Optional.empty();
     }

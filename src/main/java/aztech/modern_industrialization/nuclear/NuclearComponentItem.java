@@ -35,22 +35,22 @@ import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.world.World;
 
-public class NuclearComponent extends Item {
+public class NuclearComponentItem extends Item implements INuclearComponent {
 
     public final int maxTemperature;
     public final double heatConduction;
     public final INeutronBehaviour neutronBehaviour;
 
-    public NuclearComponent(Settings settings, int maxTemperature, double heatConduction, INeutronBehaviour neutronBehaviour) {
+    public NuclearComponentItem(Settings settings, int maxTemperature, double heatConduction, INeutronBehaviour neutronBehaviour) {
         super(settings);
         this.maxTemperature = maxTemperature;
         this.heatConduction = heatConduction;
         this.neutronBehaviour = neutronBehaviour;
     }
 
-    public static NuclearComponent of(String id, int maxTemperature, double heatConduction, INeutronBehaviour neutronBehaviour) {
-        return (NuclearComponent) MIItem.of((Settings settings) -> new NuclearComponent(settings, maxTemperature, heatConduction, neutronBehaviour),
-                id, 1);
+    public static NuclearComponentItem of(String id, int maxTemperature, double heatConduction, INeutronBehaviour neutronBehaviour) {
+        return (NuclearComponentItem) MIItem
+                .of((Settings settings) -> new NuclearComponentItem(settings, maxTemperature, heatConduction, neutronBehaviour), id, 1);
     }
 
     @Override
@@ -66,12 +66,19 @@ public class NuclearComponent extends Item {
             tooltip.add(new TranslatableText("text.modern_industrialization.maj_to_tooltip").setStyle(TextHelper.YELLOW));
         }
 
-        /*
-         * tooltip.add(new
-         * TranslatableText("text.modern_industrialization.fast_neutron_abs",
-         * String.format("%.2f", 100d * neutronBehaviour.interactionTotalProbability()))
-         * .setStyle(TextHelper.NEUTRONS));
-         * 
-         */
+    }
+
+    public int getMaxTemperature() {
+        return maxTemperature;
+    }
+
+    @Override
+    public double getHeatConduction() {
+        return heatConduction;
+    }
+
+    @Override
+    public INeutronBehaviour getNeutronBehaviour() {
+        return neutronBehaviour;
     }
 }

@@ -87,14 +87,14 @@ public class NuclearGridHelper {
                                         secondTile.addNeutronsToFlux(neutronNumber, type);
 
                                         if (secondTile.getComponent().isPresent()) {
-                                            NuclearComponent component = secondTile.getComponent().get();
-                                            double interactionProba = component.neutronBehaviour.interactionTotalProbability(type);
+                                            INuclearComponent component = secondTile.getComponent().get();
+                                            double interactionProba = component.getNeutronBehaviour().interactionTotalProbability(type);
 
                                             if (rand.nextDouble() < interactionProba) {
 
                                                 double interactionSelector = rand.nextDouble();
 
-                                                double probaAbsorption = component.neutronBehaviour.interactionRelativeProbability(type,
+                                                double probaAbsorption = component.getNeutronBehaviour().interactionRelativeProbability(type,
                                                         NeutronInteraction.ABSORPTION);
 
                                                 if (interactionSelector <= probaAbsorption) {
@@ -112,7 +112,7 @@ public class NuclearGridHelper {
                                                 } else {
                                                     dir = rand.nextInt(4);
 
-                                                    if (rand.nextDouble() < component.neutronBehaviour.neutronSlowingProbability()) {
+                                                    if (rand.nextDouble() < component.getNeutronBehaviour().neutronSlowingProbability()) {
                                                         type = NeutronType.THERMAL;
                                                         secondTile.putHeat(neutronNumber * NuclearConstant.EU_FOR_FAST_NEUTRON);
                                                     }

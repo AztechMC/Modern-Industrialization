@@ -34,14 +34,13 @@ public interface INuclearTile extends INuclearTileData {
     }
 
     default Optional<NuclearFuel> getFuel() {
-        Optional<NuclearComponent> nuclearComponent = getComponent();
+        Optional<INuclearComponent> nuclearComponent = getComponent();
         if (nuclearComponent.isPresent()) {
-            NuclearComponent component = nuclearComponent.get();
+            INuclearComponent component = nuclearComponent.get();
             if (component instanceof NuclearFuel) {
                 return Optional.of((NuclearFuel) component);
             }
         }
-
         return Optional.empty();
     }
 

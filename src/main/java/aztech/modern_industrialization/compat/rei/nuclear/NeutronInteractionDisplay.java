@@ -23,7 +23,7 @@
  */
 package aztech.modern_industrialization.compat.rei.nuclear;
 
-import aztech.modern_industrialization.nuclear.NuclearComponent;
+import aztech.modern_industrialization.nuclear.NuclearComponentItem;
 import java.util.Collections;
 import java.util.List;
 import me.shedaniel.rei.api.common.category.CategoryIdentifier;
@@ -33,10 +33,10 @@ import me.shedaniel.rei.api.common.util.EntryStacks;
 
 class NeutronInteractionDisplay implements Display {
 
-    final NuclearComponent nuclearComponent;
+    final NuclearComponentItem nuclearComponent;
     final CategoryType type;
 
-    NeutronInteractionDisplay(NuclearComponent nuclearComponent, CategoryType type) {
+    NeutronInteractionDisplay(NuclearComponentItem nuclearComponent, CategoryType type) {
         this.nuclearComponent = nuclearComponent;
         this.type = type;
     }

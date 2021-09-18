@@ -103,7 +103,7 @@ public class NuclearFuelMaterialPart implements MaterialPart {
 
     }
 
-    public static Function<MaterialBuilder.PartContext, MaterialPart>[] of(int desintegrationMax, NuclearConstant.IsotopeParams params) {
+    public static Function<MaterialBuilder.PartContext, MaterialPart>[] of(int desintegrationMax, NuclearConstant.IsotopeFuelParams params) {
 
         List<Function<MaterialBuilder.PartContext, MaterialPart>> result = new ArrayList<>();
         result.add(ofDepleted());
@@ -121,7 +121,7 @@ public class NuclearFuelMaterialPart implements MaterialPart {
 
     }
 
-    public static Function<MaterialBuilder.PartContext, MaterialPart>[] of(NuclearConstant.IsotopeParams params) {
+    public static Function<MaterialBuilder.PartContext, MaterialPart>[] of(NuclearConstant.IsotopeFuelParams params) {
         return of(NuclearConstant.DESINTEGRATION_BY_ROD, params);
     }
 

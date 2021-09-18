@@ -88,7 +88,11 @@ public interface INeutronBehaviour {
 
     static INeutronBehaviour of(NuclearConstant.ScatteringType scatteringType, NuclearConstant.IsotopeParams params, double size) {
 
-        return of(scatteringType, params.thermalAbsorption, params.fastAbsorption, params.scattering, params.scattering / 2, size);
+        return of(scatteringType, params.thermalAbsorption, params.fastAbsorption, params.thermalScattering, params.fastScattering, size);
+    }
+
+    static double reduceCrossProba(double proba, double crossSectionFactor) {
+        return probaFromCrossSection(crossSectionFromProba(proba) * crossSectionFactor);
     }
 
 }

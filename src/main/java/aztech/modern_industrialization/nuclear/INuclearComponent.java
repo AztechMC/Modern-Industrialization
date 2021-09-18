@@ -23,37 +23,24 @@
  */
 package aztech.modern_industrialization.nuclear;
 
-import aztech.modern_industrialization.ModernIndustrialization;
-import net.minecraft.item.Item;
+public interface INuclearComponent {
 
-public class NuclearItem {
+    double getHeatConduction();
 
-    public static void init() {
-        ModernIndustrialization.LOGGER.info("Setting up Nuclear Items");
+    INeutronBehaviour getNeutronBehaviour();
+
+    static INuclearComponent of(double heatConduction, double density, NuclearConstant.ScatteringType type, NuclearConstant.IsotopeParams params) {
+        return new INuclearComponent() {
+            @Override
+            public double getHeatConduction() {
+                return heatConduction * density;
+            }
+
+            @Override
+            public INeutronBehaviour getNeutronBehaviour() {
+                return INeutronBehaviour.of(type, params, density);
+            }
+        };
     }
 
-    public static final Item NEUTRON_REFLECTOR = NuclearComponentItem.of("neutron_reflector", 2000, 0, new INeutronBehaviour() {
-        @Override
-        public double neutronSlowingProbability() {
-            return 0.8;
-        }
-
-        @Override
-        public double interactionTotalProbability(NeutronType type) {
-            if (type == NeutronType.FAST) {
-                return 0.2;
-            } else {
-                return 0.5;
-            }
-        }
-
-        @Override
-        public double interactionRelativeProbability(NeutronType type, NeutronInteraction interaction) {
-            if (type == NeutronType.FAST) {
-            } else if (interaction == NeutronInteraction.SCATTERING) {
-                return 1;
-            }
-            return 0;
-        }
-    });
 }

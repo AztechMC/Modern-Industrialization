@@ -97,7 +97,7 @@ public abstract class HatchBlockEntity extends MachineBlockEntity implements Tic
         matchedCasing = casing.name;
     }
 
-    private void clearMachineLock() {
+    protected void clearMachineLock() {
         for (ConfigurableItemStack itemStack : getInventory().getItemStacks()) {
             itemStack.disableMachineLock();
         }

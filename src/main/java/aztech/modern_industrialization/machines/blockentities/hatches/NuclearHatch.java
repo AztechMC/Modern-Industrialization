@@ -25,10 +25,7 @@ package aztech.modern_industrialization.machines.blockentities.hatches;
 
 import static net.minecraft.util.math.Direction.UP;
 
-import aztech.modern_industrialization.inventory.ConfigurableFluidStack;
-import aztech.modern_industrialization.inventory.ConfigurableItemStack;
-import aztech.modern_industrialization.inventory.MIInventory;
-import aztech.modern_industrialization.inventory.SlotPositions;
+import aztech.modern_industrialization.inventory.*;
 import aztech.modern_industrialization.machines.BEP;
 import aztech.modern_industrialization.machines.components.NeutronHistoryComponent;
 import aztech.modern_industrialization.machines.components.OrientationComponent;
@@ -41,6 +38,7 @@ import aztech.modern_industrialization.machines.multiblocks.HatchType;
 import aztech.modern_industrialization.nuclear.INuclearTile;
 import aztech.modern_industrialization.nuclear.NeutronType;
 import aztech.modern_industrialization.nuclear.NuclearConstant;
+import aztech.modern_industrialization.nuclear.NuclearFuel;
 import com.google.common.base.Preconditions;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -48,6 +46,7 @@ import java.util.List;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemStorage;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
+import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.item.ItemStack;
 
@@ -119,6 +118,19 @@ public class NuclearHatch extends HatchBlockEntity implements INuclearTile {
         if (isFluid) {
             ((SteamHeaterComponent) nuclearReactorComponent).tick(Collections.singletonList(inventory.getFluidStacks().get(0)),
                     Collections.singletonList(inventory.getFluidStacks().get(1)));
+        } else {
+
+            this.clearMachineLock();
+            if (getFuel().isPresent()) {
+                ItemStack stack = getStack();
+                NuclearFuel fuel = (NuclearFuel) stack.getItem();
+                try (Transaction tx = Transaction.openOuter()) {
+                    this.inventory.itemStorage.insert(ItemVariant.of(fuel.getDepleted()), fuel.size, tx, AbstractConfigurableStack::canPipesExtract,
+                            true);
+                    tx.abort();
+                }
+            }
+
         }
 
     }
@@ -161,10 +173,32 @@ public class NuclearHatch extends HatchBlockEntity implements INuclearTile {
     public int neutronGenerationTick() {
         double meanNeutron = getMeanNeutronAbsorption(NeutronType.BOTH) + NuclearConstant.BASE_NEUTRON;
         int neutronsProduced = 0;
+
         if (getFuel().isPresent()) {
+
             ItemStack stack = getStack();
             neutronsProduced = getFuel().get().simulateDesintegration(meanNeutron, stack, this.world.getRandom());
-            this.getInventory().getItemStacks().get(0).setKey(ItemVariant.of(stack));
+            NuclearFuel fuel = (NuclearFuel) stack.getItem();
+
+            if (fuel.getRemainingDesintegrations(stack) == 0) {
+                try (Transaction tx = Transaction.openOuter()) {
+                    ConfigurableItemStack fuelStack = this.inventory.getItemStacks().get(0);
+                    long inserted = this.inventory.itemStorage.insert(ItemVariant.of(fuel.getDepleted()), fuel.size, tx,
+                            AbstractConfigurableStack::canPipesExtract, true);
+
+                    fuelStack.updateSnapshots(tx);
+                    fuelStack.setAmount(0);
+                    fuelStack.setKey(ItemVariant.blank());
+
+                    if (inserted == fuel.size) {
+                        tx.commit();
+                    } else {
+                        tx.abort();
+                    }
+                }
+            } else {
+                this.getInventory().getItemStacks().get(0).setKey(ItemVariant.of(stack));
+            }
         }
 
         neutronGeneratedThisTick = neutronsProduced;

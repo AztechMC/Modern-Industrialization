@@ -28,6 +28,7 @@ import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.minecraft.item.Item;
 
 public class MIItemStorage extends MIStorage<Item, ItemVariant, ConfigurableItemStack> {
+
     protected MIItemStorage(List<ConfigurableItemStack> stacks) {
         super(stacks, false);
     }

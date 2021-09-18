@@ -26,7 +26,7 @@ package aztech.modern_industrialization.nuclear;
 public class NuclearConstant {
 
     public static final int EU_FOR_FAST_NEUTRON = 2048;
-    public static final int DESINTEGRATION_BY_ROD = 256000;
+    public static final int DESINTEGRATION_BY_ROD = 8; // TODO : Rechange this
     public static final double BASE_HEAT_CONDUCTION = 0.01;
     public static final double BASE_NEUTRON = 0.1;
     public static final int MAX_TEMPERATURE = 3800;

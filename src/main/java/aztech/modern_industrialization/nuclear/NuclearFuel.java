@@ -48,26 +48,29 @@ public class NuclearFuel extends NuclearComponent {
     public final int desintegrationMax;
     public final String depletedVersionId;
 
+    public final int size;
+
     public final int directEUbyDesintegration;
     public final int totalEUbyDesintegration;
 
     public final static record NuclearFuelParams(int desintegrationMax, int maxTemperature, double neutronMultiplicationFactor,
-            double directEnergyFactor) {
+            double directEnergyFactor, int size) {
     }
 
     public NuclearFuel(Settings settings, NuclearFuelParams params, INeutronBehaviour neutronBehaviour, String depletedVersionId) {
 
         this(settings, params.desintegrationMax, params.maxTemperature, params.neutronMultiplicationFactor, params.directEnergyFactor,
-                neutronBehaviour, depletedVersionId);
+                neutronBehaviour, params.size, depletedVersionId);
 
     }
 
     private NuclearFuel(Settings settings, int desintegrationMax, int maxTemperature, double neutronMultiplicationFactor, double directEnergyFactor,
-            INeutronBehaviour neutronBehaviour, String depletedVersionId) {
+            INeutronBehaviour neutronBehaviour, int size, String depletedVersionId) {
 
         super(settings, maxTemperature, 0, neutronBehaviour);
 
         this.desintegrationMax = desintegrationMax;
+        this.size = size;
         this.directEnergyFactor = directEnergyFactor;
         this.neutronMultiplicationFactor = neutronMultiplicationFactor;
         this.depletedVersionId = depletedVersionId;

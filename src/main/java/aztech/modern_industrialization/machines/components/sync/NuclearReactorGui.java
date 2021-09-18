@@ -251,11 +251,11 @@ public class NuclearReactorGui {
 
     }
 
-    final private static double neutronsMax = 1000;
+    final private static double neutronsMax = 100;
 
     public static double opacity(double neutronNumber) {
         neutronNumber = Math.min(neutronNumber, neutronsMax);
-        return Math.pow(neutronNumber, 0.2) / Math.pow(neutronsMax, 0.2);
+        return Math.log(1 + neutronNumber / 5) / Math.log(1 + neutronsMax / 5);
     }
 
     public record Data(boolean valid, int gridSizeX, int gridSizeY, Optional<INuclearTileData>[] tilesData) {

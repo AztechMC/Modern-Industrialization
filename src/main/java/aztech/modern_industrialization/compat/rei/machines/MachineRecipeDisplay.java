@@ -77,11 +77,7 @@ public class MachineRecipeDisplay implements Display {
                 text = new TranslatableText("text.modern_industrialization.probability", PROBABILITY_FORMAT.format(probability * 100));
             }
 
-            if (probability == 0) {
-                text.setStyle(TextHelper.YELLOW);
-            } else {
-                text.setStyle(TextHelper.GRAY_TEXT);
-            }
+            text.setStyle(TextHelper.YELLOW);
             return text;
         }
     }

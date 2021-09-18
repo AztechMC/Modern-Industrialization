@@ -36,6 +36,7 @@ public class NuclearGridHelper {
     private static final Random rand = new Random();
 
     private static final int MAX_STEP = 100;
+    private static final int MAX_SPLIT = 5;
 
     public static void simulate(INuclearGrid grid) {
 
@@ -53,72 +54,82 @@ public class NuclearGridHelper {
 
                     tile.getFuel().ifPresent(fuel -> {
 
-                        int neutronNumber = tile.neutronGenerationTick();
+                        int neutronNumberPrime = tile.neutronGenerationTick();
 
-                        tile.putHeat(neutronNumber * fuel.directEUbyDesintegration);
+                        tile.putHeat(neutronNumberPrime * fuel.directEUbyDesintegration);
 
-                        if (neutronNumber > 0) {
+                        if (neutronNumberPrime > 0) {
 
-                            NeutronType type = NeutronType.FAST;
-                            grid.registerNeutronCreation(neutronNumber, type);
+                            int split = Math.min(neutronNumberPrime, MAX_SPLIT);
+                            int neutronNumberPerSplit = neutronNumberPrime / split;
 
-                            int dir = rand.nextInt(4);
-                            int step = 0;
-                            int posX = x;
-                            int posY = y;
+                            for (int k = 0; k < split + 1; k++) {
 
-                            while (step < MAX_STEP) {
-                                step++;
-                                posX += dX[dir];
-                                posY += dY[dir];
+                                int neutronNumber = (k < split) ? neutronNumberPerSplit : neutronNumberPrime % neutronNumberPerSplit;
 
-                                Optional<INuclearTile> maybeSecondTile = grid.getNuclearTile(posX, posY);
+                                if (neutronNumber > 0) {
+                                    NeutronType type = NeutronType.FAST;
+                                    grid.registerNeutronCreation(neutronNumber, type);
 
-                                if (maybeSecondTile.isPresent()) {
+                                    int dir = rand.nextInt(4);
+                                    int step = 0;
+                                    int posX = x;
+                                    int posY = y;
 
-                                    INuclearTile secondTile = maybeSecondTile.get();
-                                    secondTile.addNeutronsToFlux(neutronNumber, type);
+                                    while (step < MAX_STEP) {
+                                        step++;
+                                        posX += dX[dir];
+                                        posY += dY[dir];
 
-                                    if (secondTile.getComponent().isPresent()) {
-                                        NuclearComponent component = secondTile.getComponent().get();
-                                        double interactionProba = component.neutronBehaviour.interactionTotalProbability(type);
+                                        Optional<INuclearTile> maybeSecondTile = grid.getNuclearTile(posX, posY);
 
-                                        if (rand.nextDouble() < interactionProba) {
+                                        if (maybeSecondTile.isPresent()) {
 
-                                            double interactionSelector = rand.nextDouble();
+                                            INuclearTile secondTile = maybeSecondTile.get();
+                                            secondTile.addNeutronsToFlux(neutronNumber, type);
 
-                                            double probaAbsorption = component.neutronBehaviour.interactionRelativeProbability(type,
-                                                    NeutronInteraction.ABSORPTION);
-                                            double probaScattering = component.neutronBehaviour.interactionRelativeProbability(type,
-                                                    NeutronInteraction.SCATTERING);
+                                            if (secondTile.getComponent().isPresent()) {
+                                                NuclearComponent component = secondTile.getComponent().get();
+                                                double interactionProba = component.neutronBehaviour.interactionTotalProbability(type);
 
-                                            if (interactionSelector <= probaAbsorption) {
-                                                secondTile.absorbNeutrons(neutronNumber, type);
+                                                if (rand.nextDouble() < interactionProba) {
 
-                                                if (type == NeutronType.FAST) {
-                                                    secondTile.putHeat(neutronNumber * NuclearConstant.EU_FOR_FAST_NEUTRON);
-                                                }
-                                                if (secondTile.getFuel().isPresent()) {
-                                                    grid.registerNeutronFate(neutronNumber, type, ABSORBED_IN_FUEL);
-                                                } else {
-                                                    grid.registerNeutronFate(neutronNumber, type, ABSORBED_NOT_IN_FUEL);
-                                                }
-                                                break;
-                                            } else {
-                                                int newDir = rand.nextInt(4);
-                                                dir = newDir;
+                                                    double interactionSelector = rand.nextDouble();
 
-                                                if (rand.nextDouble() < component.neutronBehaviour.neutronSlowingProbability()) {
-                                                    type = NeutronType.THERMAL;
-                                                    secondTile.putHeat(neutronNumber * NuclearConstant.EU_FOR_FAST_NEUTRON);
+                                                    double probaAbsorption = component.neutronBehaviour.interactionRelativeProbability(type,
+                                                            NeutronInteraction.ABSORPTION);
+                                                    double probaScattering = component.neutronBehaviour.interactionRelativeProbability(type,
+                                                            NeutronInteraction.SCATTERING);
+
+                                                    if (interactionSelector <= probaAbsorption) {
+                                                        secondTile.absorbNeutrons(neutronNumber, type);
+
+                                                        if (type == NeutronType.FAST) {
+                                                            secondTile.putHeat(neutronNumber * NuclearConstant.EU_FOR_FAST_NEUTRON);
+                                                        }
+                                                        if (secondTile.getFuel().isPresent()) {
+                                                            grid.registerNeutronFate(neutronNumber, type, ABSORBED_IN_FUEL);
+                                                        } else {
+                                                            grid.registerNeutronFate(neutronNumber, type, ABSORBED_NOT_IN_FUEL);
+                                                        }
+                                                        break;
+                                                    } else {
+                                                        int newDir = rand.nextInt(4);
+                                                        dir = newDir;
+
+                                                        if (rand.nextDouble() < component.neutronBehaviour.neutronSlowingProbability()) {
+                                                            type = NeutronType.THERMAL;
+                                                            secondTile.putHeat(neutronNumber * NuclearConstant.EU_FOR_FAST_NEUTRON);
+                                                        }
+                                                    }
                                                 }
                                             }
+
+                                        } else {
+                                            grid.registerNeutronFate(neutronNumber, type, ESCAPE);
+                                            break;
                                         }
                                     }
-
-                                } else {
-                                    grid.registerNeutronFate(neutronNumber, type, ESCAPE);
-                                    break;
                                 }
                             }
                         }

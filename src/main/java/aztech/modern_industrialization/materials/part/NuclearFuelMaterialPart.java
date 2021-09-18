@@ -82,7 +82,7 @@ public class NuclearFuelMaterialPart implements MaterialPart {
 
         if (type == Type.DEPLETED) {
             partSimple = MIParts.FUEL_ROD;
-            part = partSimple + "_depleted";
+            part = MIParts.FUEL_ROD_DEPLETED;
         } else {
             partSimple = (type == Type.SIMPLE ? MIParts.FUEL_ROD : (type == Type.DOUBLE ? MIParts.FUEL_ROD_DOUBLE : MIParts.FUEL_ROD_QUAD));
             part = partSimple;

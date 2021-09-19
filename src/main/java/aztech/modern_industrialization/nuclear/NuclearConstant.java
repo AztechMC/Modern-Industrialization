@@ -23,14 +23,10 @@
  */
 package aztech.modern_industrialization.nuclear;
 
-import aztech.modern_industrialization.MIFluids;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
-import net.minecraft.fluid.Fluids;
-
 public class NuclearConstant {
 
     public static final int EU_FOR_FAST_NEUTRON = 2048;
-    public static final int DESINTEGRATION_BY_ROD = 8; // TODO : Rechange this
+    public static final int DESINTEGRATION_BY_ROD = 64000;
     public static final double BASE_HEAT_CONDUCTION = 0.01;
     public static final double BASE_NEUTRON = 0.1;
     public static final int MAX_TEMPERATURE = 3800;
@@ -127,19 +123,5 @@ public class NuclearConstant {
 
     public static final IsotopeParams HYDROGEN = new IsotopeParams(0.3, 0.15, 0.5, 0.2);
     public static final IsotopeParams DEUTERIUM = new IsotopeParams(0.02, 0.01, 0.25, 0.15);
-
-    public static INuclearComponent of(FluidVariant fluid) {
-        if (fluid == FluidVariant.of(Fluids.WATER)) {
-            return INuclearComponent.of(BASE_HEAT_CONDUCTION * 5, 1, ScatteringType.ULTRA_LIGHT, HYDROGEN);
-        } else if (fluid == FluidVariant.of(MIFluids.HEAVY_WATER)) {
-            return INuclearComponent.of(BASE_HEAT_CONDUCTION * 6, 1, ScatteringType.LIGHT, DEUTERIUM);
-        } else if (fluid == FluidVariant.of(MIFluids.HIGH_PRESSURE_WATER)) {
-            return INuclearComponent.of(BASE_HEAT_CONDUCTION * 5, 2, ScatteringType.ULTRA_LIGHT, HYDROGEN);
-        } else if (fluid == FluidVariant.of(MIFluids.HIGH_PRESSURE_HEAVY_WATER)) {
-            return INuclearComponent.of(BASE_HEAT_CONDUCTION * 6, 2, ScatteringType.LIGHT, DEUTERIUM);
-        }
-
-        return null;
-    }
 
 }

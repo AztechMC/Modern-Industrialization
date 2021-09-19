@@ -27,16 +27,20 @@ import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.machines.MachineScreenHandlers;
 import aztech.modern_industrialization.machines.SyncedComponent;
 import aztech.modern_industrialization.machines.SyncedComponents;
+import aztech.modern_industrialization.machines.blockentities.hatches.NuclearHatch;
 import aztech.modern_industrialization.machines.gui.ClientComponentRenderer;
 import aztech.modern_industrialization.nuclear.INuclearTileData;
 import aztech.modern_industrialization.nuclear.NeutronType;
+import aztech.modern_industrialization.util.FluidHelper;
+import aztech.modern_industrialization.util.RenderHelper;
 import aztech.modern_industrialization.util.TextHelper;
 import com.mojang.blaze3d.systems.RenderSystem;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.font.TextRenderer;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
+import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
+import net.fabricmc.fabric.api.transfer.v1.storage.TransferVariant;
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
@@ -143,8 +147,6 @@ public class NuclearReactorGui {
             @Override
             public void renderBackground(DrawableHelper helper, MatrixStack matrices, int x, int y) {
 
-                TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
-
                 if (data.valid) {
                     for (int i = 0; i < data.gridSizeX; i++) {
                         for (int j = 0; j < data.gridSizeY; j++) {
@@ -155,10 +157,23 @@ public class NuclearReactorGui {
                                 RenderSystem.setShaderTexture(0, MachineScreenHandlers.SLOT_ATLAS);
                                 int px = x + centerX - data.gridSizeX * 9 + i * 18;
                                 int py = y + centerY - data.gridSizeY * 9 + j * 18;
-                                helper.drawTexture(matrices, px, py, 0, 0, 18, 18);
-                                ItemStack stack = tileData.getStack();
-                                if (!stack.isEmpty()) {
-                                    ((MachineScreenHandlers.ClientScreen) helper).renderItemInGui(stack, px + 1, py + 1);
+
+                                if (tileData.isFluid()) {
+                                    helper.drawTexture(matrices, px, py, 18, 0, 18, 18);
+                                } else {
+                                    helper.drawTexture(matrices, px, py, 0, 0, 18, 18);
+                                }
+
+                                TransferVariant variant = tile.get().getVariant();
+                                long variantAmount = tile.get().getVariantAmount();
+
+                                if (variantAmount > 0 & !variant.isBlank()) {
+                                    if (variant instanceof ItemVariant itemVariant) {
+                                        ((MachineScreenHandlers.ClientScreen) helper).renderItemInGui(itemVariant.toStack((int) variantAmount),
+                                                px + 1, py + 1);
+                                    } else if (variant instanceof FluidVariant fluidVariant) {
+                                        RenderHelper.drawFluidInGui(matrices, fluidVariant, px + 1, py + 1);
+                                    }
                                 }
                                 if (currentMode != 0) {
                                     if (currentMode != 1) {
@@ -195,10 +210,19 @@ public class NuclearReactorGui {
                         if (tile.isPresent()) {
                             INuclearTileData tileData = tile.get();
                             if (currentMode == 0) {
-                                ItemStack stack = tileData.getStack();
-                                if (!stack.isEmpty()) {
-                                    screen.renderTooltip(matrices, screen.getTooltipFromItem(stack), cursorX, cursorY);
+                                TransferVariant variant = tile.get().getVariant();
+                                long variantAmount = tile.get().getVariantAmount();
+                                if (variantAmount > 0 & !variant.isBlank()) {
+                                    if (variant instanceof ItemVariant itemVariant) {
+                                        screen.renderTooltip(matrices, screen.getTooltipFromItem(itemVariant.toStack((int) variantAmount)), cursorX,
+                                                cursorY);
+                                    } else if (variant instanceof FluidVariant fluidVariant) {
+                                        screen.renderTooltip(matrices,
+                                                FluidHelper.getTooltipForFluidStorage(fluidVariant, variantAmount, NuclearHatch.capacity, false),
+                                                cursorX, cursorY);
+                                    }
                                 }
+
                             } else if (currentMode == 1) {
                                 int temperature = (int) tileData.getTemperature();
                                 screen.renderTooltip(matrices, new TranslatableText("text.modern_industrialization.temperature", temperature),

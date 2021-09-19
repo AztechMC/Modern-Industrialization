@@ -23,6 +23,10 @@
  */
 package aztech.modern_industrialization.nuclear;
 
+import aztech.modern_industrialization.MIFluids;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
+import net.minecraft.fluid.Fluids;
+
 public interface INuclearComponent {
 
     double getHeatConduction();
@@ -41,6 +45,22 @@ public interface INuclearComponent {
                 return INeutronBehaviour.of(type, params, density);
             }
         };
+    }
+
+    public static INuclearComponent of(FluidVariant fluid) {
+        if (fluid == FluidVariant.of(Fluids.WATER)) {
+            return INuclearComponent.of(NuclearConstant.BASE_HEAT_CONDUCTION * 5, 1, NuclearConstant.ScatteringType.ULTRA_LIGHT,
+                    NuclearConstant.HYDROGEN);
+        } else if (fluid == FluidVariant.of(MIFluids.HEAVY_WATER)) {
+            return INuclearComponent.of(NuclearConstant.BASE_HEAT_CONDUCTION * 6, 1, NuclearConstant.ScatteringType.LIGHT, NuclearConstant.DEUTERIUM);
+        } else if (fluid == FluidVariant.of(MIFluids.HIGH_PRESSURE_WATER)) {
+            return INuclearComponent.of(NuclearConstant.BASE_HEAT_CONDUCTION * 5, 2, NuclearConstant.ScatteringType.ULTRA_LIGHT,
+                    NuclearConstant.HYDROGEN);
+        } else if (fluid == FluidVariant.of(MIFluids.HIGH_PRESSURE_HEAVY_WATER)) {
+            return INuclearComponent.of(NuclearConstant.BASE_HEAT_CONDUCTION * 6, 2, NuclearConstant.ScatteringType.LIGHT, NuclearConstant.DEUTERIUM);
+        }
+
+        return null;
     }
 
 }

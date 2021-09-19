@@ -46,6 +46,7 @@ import java.util.List;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemStorage;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
+import net.fabricmc.fabric.api.transfer.v1.storage.TransferVariant;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.item.ItemStack;
@@ -65,6 +66,8 @@ public class NuclearHatch extends HatchBlockEntity implements INuclearTile {
 
     private int neutronGeneratedThisTick;
 
+    public static final long capacity = 64000 * 81;
+
     public NuclearHatch(BEP bep, boolean isFluid) {
         super(bep, new MachineGuiParameters.Builder(isFluid ? "nuclear_fluid_hatch" : "nuclear_item_hatch", true).build(),
                 new OrientationComponent.Params(false, false, false));
@@ -80,7 +83,7 @@ public class NuclearHatch extends HatchBlockEntity implements INuclearTile {
             inventory = new MIInventory(itemStack, Collections.emptyList(), slotPos, SlotPositions.empty());
             nuclearReactorComponent = new TemperatureComponent(NuclearConstant.MAX_TEMPERATURE);
         } else {
-            long capacity = 64000 * 81;
+
             List<ConfigurableFluidStack> fluidStack = new ArrayList<>();
             fluidStack.add(ConfigurableFluidStack.standardInputSlot(capacity));
             fluidStack.add(ConfigurableFluidStack.standardOutputSlot(capacity));
@@ -119,10 +122,9 @@ public class NuclearHatch extends HatchBlockEntity implements INuclearTile {
             ((SteamHeaterComponent) nuclearReactorComponent).tick(Collections.singletonList(inventory.getFluidStacks().get(0)),
                     Collections.singletonList(inventory.getFluidStacks().get(1)));
         } else {
-
             this.clearMachineLock();
             if (getFuel().isPresent()) {
-                ItemStack stack = getStack();
+                ItemStack stack = ((ItemVariant) getVariant()).toStack((int) getVariantAmount());
                 NuclearFuel fuel = (NuclearFuel) stack.getItem();
                 try (Transaction tx = Transaction.openOuter()) {
                     this.inventory.itemStorage.insert(ItemVariant.of(fuel.getDepleted()), fuel.size, tx, AbstractConfigurableStack::canPipesExtract,
@@ -133,10 +135,6 @@ public class NuclearHatch extends HatchBlockEntity implements INuclearTile {
 
         }
 
-    }
-
-    public ItemStack getStack() {
-        return this.getInventory().getItemStacks().get(0).getResource().toStack();
     }
 
     @Override
@@ -165,6 +163,29 @@ public class NuclearHatch extends HatchBlockEntity implements INuclearTile {
     }
 
     @Override
+    public TransferVariant getVariant() {
+        if (isFluid) {
+            return this.inventory.getFluidStacks().get(0).getResource();
+        } else {
+            return this.inventory.getItemStacks().get(0).getResource();
+        }
+    }
+
+    @Override
+    public long getVariantAmount() {
+        if (isFluid) {
+            return this.inventory.getFluidStacks().get(0).getAmount();
+        } else {
+            return this.inventory.getItemStacks().get(0).getAmount();
+        }
+    }
+
+    @Override
+    public boolean isFluid() {
+        return isFluid;
+    }
+
+    @Override
     public void setTemperature(double temp) {
         nuclearReactorComponent.setTemperature(temp);
     }
@@ -175,11 +196,9 @@ public class NuclearHatch extends HatchBlockEntity implements INuclearTile {
         int neutronsProduced = 0;
 
         if (getFuel().isPresent()) {
-
-            ItemStack stack = getStack();
+            ItemStack stack = ((ItemVariant) getVariant()).toStack((int) getVariantAmount());
             neutronsProduced = getFuel().get().simulateDesintegration(meanNeutron, stack, this.world.getRandom());
             NuclearFuel fuel = (NuclearFuel) stack.getItem();
-
             if (fuel.getRemainingDesintegrations(stack) == 0) {
                 try (Transaction tx = Transaction.openOuter()) {
                     ConfigurableItemStack fuelStack = this.inventory.getItemStacks().get(0);

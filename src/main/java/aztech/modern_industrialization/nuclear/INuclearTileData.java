@@ -24,7 +24,9 @@
 package aztech.modern_industrialization.nuclear;
 
 import java.util.Optional;
-import net.minecraft.item.ItemStack;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
+import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
+import net.fabricmc.fabric.api.transfer.v1.storage.TransferVariant;
 import net.minecraft.network.PacketByteBuf;
 
 public interface INuclearTileData {
@@ -39,15 +41,28 @@ public interface INuclearTileData {
 
     double getMeanNeutronGeneration();
 
+    TransferVariant getVariant();
+
+    long getVariantAmount();
+
+    boolean isFluid();
+
     default Optional<INuclearComponent> getComponent() {
-        ItemStack stack = getStack();
-        if (!stack.isEmpty() && stack.getItem() instanceof INuclearComponent) {
-            return Optional.of((INuclearComponent) stack.getItem());
+        TransferVariant variant = getVariant();
+
+        if (variant instanceof ItemVariant resource) {
+            if (!variant.isBlank() && getVariantAmount() > 0 && resource.getItem() instanceof INuclearComponent) {
+                return Optional.of((INuclearComponent) resource.getItem());
+            }
+
+        } else if (variant instanceof FluidVariant resource) {
+            if (!resource.isBlank() && getVariantAmount() > 0) {
+                return Optional.ofNullable(INuclearComponent.of(resource));
+            }
         }
+
         return Optional.empty();
     }
-
-    ItemStack getStack();
 
     static void write(Optional<INuclearTileData> maybeData, PacketByteBuf buf) {
 
@@ -67,12 +82,9 @@ public interface INuclearTileData {
 
             buf.writeDouble(tile.getHeatTransferCoeff());
 
-            ItemStack stack = tile.getStack();
-            if (stack == null) {
-                stack = ItemStack.EMPTY;
-            }
-
-            buf.writeItemStack(stack);
+            buf.writeBoolean(!tile.isFluid());
+            buf.writeNbt(tile.getVariant().toNbt());
+            buf.writeLong(tile.getVariantAmount());
 
         } else {
             buf.writeBoolean(false);
@@ -95,7 +107,10 @@ public interface INuclearTileData {
             final double meanNeutronGeneration = buf.readDouble();
 
             final double heatTransferCoeff = buf.readDouble();
-            final ItemStack stack = buf.readItemStack();
+
+            final boolean isItem = buf.readBoolean();
+            final TransferVariant variant = isItem ? ItemVariant.fromNbt(buf.readNbt()) : FluidVariant.fromNbt(buf.readNbt());
+            final long amount = buf.readLong();
 
             return Optional.of(new INuclearTileData() {
 
@@ -135,9 +150,20 @@ public interface INuclearTileData {
                 }
 
                 @Override
-                public ItemStack getStack() {
-                    return stack;
+                public TransferVariant getVariant() {
+                    return variant;
                 }
+
+                @Override
+                public long getVariantAmount() {
+                    return amount;
+                }
+
+                @Override
+                public boolean isFluid() {
+                    return !isItem;
+                }
+
             });
 
         } else {
@@ -160,7 +186,8 @@ public interface INuclearTileData {
                 }
             }
             return A.getTemperature() == B.getTemperature() && A.getHeatTransferCoeff() == B.getTemperature()
-                    && ItemStack.areEqual(A.getStack(), B.getStack()) && A.getMeanNeutronGeneration() == B.getMeanNeutronGeneration();
+                    && A.getVariantAmount() == B.getVariantAmount() && A.getMeanNeutronGeneration() == B.getMeanNeutronGeneration()
+                    && A.getVariant().equals(B.getVariant());
         } else {
             return true;
         }

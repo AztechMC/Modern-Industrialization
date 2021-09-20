@@ -24,6 +24,7 @@
 package aztech.modern_industrialization.compat.rei.nuclear;
 
 import aztech.modern_industrialization.MIIdentifier;
+import aztech.modern_industrialization.nuclear.INuclearComponent;
 import aztech.modern_industrialization.nuclear.NuclearComponentItem;
 import aztech.modern_industrialization.nuclear.NuclearFuel;
 import me.shedaniel.rei.api.client.plugins.REIClientPlugin;
@@ -31,6 +32,9 @@ import me.shedaniel.rei.api.client.registry.category.CategoryRegistry;
 import me.shedaniel.rei.api.client.registry.display.DisplayRegistry;
 import me.shedaniel.rei.api.common.category.CategoryIdentifier;
 import me.shedaniel.rei.api.common.util.EntryStacks;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
+import net.minecraft.fluid.Fluid;
+import net.minecraft.fluid.Fluids;
 import net.minecraft.util.registry.Registry;
 
 public class NeutronInteractionPlugin implements REIClientPlugin {
@@ -54,5 +58,16 @@ public class NeutronInteractionPlugin implements REIClientPlugin {
                 registry.add(new NeutronInteractionDisplay((NuclearComponentItem) item, NeutronInteractionDisplay.CategoryType.FISSION));
             }
         });
+
+        for (Fluid fluid : Registry.FLUID) {
+            if (!fluid.isStill(fluid.getDefaultState()) && fluid != Fluids.EMPTY) {
+                FluidVariant variant = FluidVariant.of(fluid);
+                INuclearComponent component = INuclearComponent.of(variant);
+                if (component != null) {
+                    registry.add(new NeutronInteractionDisplay(component, NeutronInteractionDisplay.CategoryType.FAST_NEUTRON_INTERACTION));
+                    registry.add(new NeutronInteractionDisplay(component, NeutronInteractionDisplay.CategoryType.THERMAL_NEUTRON_INTERACTION));
+                }
+            }
+        }
     }
 }

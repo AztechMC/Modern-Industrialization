@@ -26,6 +26,8 @@ package aztech.modern_industrialization.nuclear;
 import aztech.modern_industrialization.MIItem;
 import aztech.modern_industrialization.util.TextHelper;
 import java.util.List;
+import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
+import net.fabricmc.fabric.api.transfer.v1.storage.TransferVariant;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.item.Item;
@@ -80,5 +82,10 @@ public class NuclearComponentItem extends Item implements INuclearComponent {
     @Override
     public INeutronBehaviour getNeutronBehaviour() {
         return neutronBehaviour;
+    }
+
+    @Override
+    public TransferVariant getVariant() {
+        return ItemVariant.of(this);
     }
 }

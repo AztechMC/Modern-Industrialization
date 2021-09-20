@@ -40,6 +40,8 @@ import me.shedaniel.rei.api.client.gui.widgets.Widgets;
 import me.shedaniel.rei.api.client.registry.display.DisplayCategory;
 import me.shedaniel.rei.api.common.category.CategoryIdentifier;
 import me.shedaniel.rei.api.common.util.EntryStacks;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
+import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
@@ -76,7 +78,7 @@ class NeutronInteractionCategory implements DisplayCategory<NeutronInteractionDi
             NuclearFuel fuel = (NuclearFuel) display.nuclearComponent;
             int centerX = bounds.x + 52;
 
-            widgets.add(Widgets.createSlot(new Point(centerX, centerY)).entry(EntryStacks.of(display.nuclearComponent)));
+            widgets.add(Widgets.createSlot(new Point(centerX, centerY)).entry(EntryStacks.of(fuel)));
 
             widgets.add(Widgets.createLabel(new Point(centerX + 20, centerY - 30),
                     new TranslatableText("text.modern_industrialization.single_neutron_capture")));
@@ -112,7 +114,11 @@ class NeutronInteractionCategory implements DisplayCategory<NeutronInteractionDi
         } else {
             int centerX = bounds.x + 66;
 
-            widgets.add(Widgets.createSlot(new Point(centerX, centerY)).entry(EntryStacks.of(display.nuclearComponent)));
+            if (display.nuclearComponent.getVariant() instanceof ItemVariant itemVariant) {
+                widgets.add(Widgets.createSlot(new Point(centerX, centerY)).entry(EntryStacks.of(itemVariant.getItem())));
+            } else if (display.nuclearComponent.getVariant() instanceof FluidVariant fluidVariant) {
+                widgets.add(Widgets.createSlot(new Point(centerX, centerY)).entry(EntryStacks.of(fluidVariant.getFluid())));
+            }
 
             Text title;
             NeutronType type;
@@ -128,9 +134,9 @@ class NeutronInteractionCategory implements DisplayCategory<NeutronInteractionDi
                 widgets.add(Widgets.createTexturedWidget(TEXTURE_ATLAS, centerX - 53, centerY - 19, 0, 54, 88, 54));
             }
 
-            double interactionProb = display.nuclearComponent.neutronBehaviour.interactionTotalProbability(type);
-            double scattering = display.nuclearComponent.neutronBehaviour.interactionRelativeProbability(type, NeutronInteraction.SCATTERING);
-            double absorption = display.nuclearComponent.neutronBehaviour.interactionRelativeProbability(type, NeutronInteraction.ABSORPTION);
+            double interactionProb = display.nuclearComponent.getNeutronBehaviour().interactionTotalProbability(type);
+            double scattering = display.nuclearComponent.getNeutronBehaviour().interactionRelativeProbability(type, NeutronInteraction.SCATTERING);
+            double absorption = display.nuclearComponent.getNeutronBehaviour().interactionRelativeProbability(type, NeutronInteraction.ABSORPTION);
 
             widgets.add(Widgets.createLabel(new Point(centerX + 10, centerY - 30), title));
 
@@ -144,7 +150,7 @@ class NeutronInteractionCategory implements DisplayCategory<NeutronInteractionDi
                     .noShadow().tooltipLine(new TranslatableText("text.modern_industrialization.absorption_probability").getString()));
 
             if (type == NeutronType.FAST) {
-                double slowingProba = display.nuclearComponent.neutronBehaviour.neutronSlowingProbability();
+                double slowingProba = display.nuclearComponent.getNeutronBehaviour().neutronSlowingProbability();
 
                 String thermalFractionString = String.format("%.1f ", 100 * slowingProba) + "%";
                 String fastFractionString = String.format("%.1f ", 100 * (1 - slowingProba)) + "%";

@@ -23,27 +23,35 @@
  */
 package aztech.modern_industrialization.compat.rei.nuclear;
 
-import aztech.modern_industrialization.nuclear.NuclearComponentItem;
+import aztech.modern_industrialization.nuclear.INuclearComponent;
 import java.util.Collections;
 import java.util.List;
 import me.shedaniel.rei.api.common.category.CategoryIdentifier;
 import me.shedaniel.rei.api.common.display.Display;
 import me.shedaniel.rei.api.common.entry.EntryIngredient;
 import me.shedaniel.rei.api.common.util.EntryStacks;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
+import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 
 class NeutronInteractionDisplay implements Display {
 
-    final NuclearComponentItem nuclearComponent;
+    final INuclearComponent nuclearComponent;
     final CategoryType type;
 
-    NeutronInteractionDisplay(NuclearComponentItem nuclearComponent, CategoryType type) {
+    NeutronInteractionDisplay(INuclearComponent nuclearComponent, CategoryType type) {
         this.nuclearComponent = nuclearComponent;
         this.type = type;
     }
 
     @Override
     public List<EntryIngredient> getInputEntries() {
-        return Collections.singletonList(EntryIngredient.of(EntryStacks.of(nuclearComponent)));
+        if (nuclearComponent.getVariant() instanceof ItemVariant itemVariant) {
+            return Collections.singletonList(EntryIngredient.of(EntryStacks.of(itemVariant.getItem())));
+        } else if (nuclearComponent.getVariant() instanceof FluidVariant fluidVariant) {
+            return Collections.singletonList(EntryIngredient.of(EntryStacks.of(fluidVariant.getFluid(), 81000)));
+        } else {
+            throw new IllegalStateException("Unreachable");
+        }
     }
 
     @Override

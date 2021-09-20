@@ -25,12 +25,13 @@ package aztech.modern_industrialization.nuclear;
 
 public class NuclearConstant {
 
-    public static final int EU_FOR_FAST_NEUTRON = 2048;
-    public static final int DESINTEGRATION_BY_ROD = 64000;
+    public static final int EU_FOR_FAST_NEUTRON = 64;
+    public static final int DESINTEGRATION_BY_ROD = 1280000;
     public static final double BASE_HEAT_CONDUCTION = 0.01;
     public static final double BASE_NEUTRON = 0.1;
-    public static final int MAX_TEMPERATURE = 3800;
-    public static final int EU_PER_DEGREE = 128;
+    public static final int MAX_TEMPERATURE = 3250;
+    public static final int EU_PER_DEGREE = 512;
+    public static final int MAX_HATCH_EU_PRODUCTION = 4096;
 
     public enum ScatteringType {
         ULTRA_LIGHT(0.05),
@@ -66,16 +67,20 @@ public class NuclearConstant {
         public final int maxTemp;
         public final double neutronsMultiplication;
         public final double directEnergyFactor;
+        public final int tempLimitLow;
+        public final int tempLimitHigh;
 
-        public IsotopeFuelParams(double thermalAbsorbProba, double thermalScatterings, int maxTemp, double neutronsMultiplication,
-                double directEnergyFactor) {
+        public IsotopeFuelParams(double thermalAbsorbProba, double thermalScatterings, int maxTemp, int tempLimitLow, int tempLimitHigh,
+                double neutronsMultiplication, double directEnergyFactor) {
 
-            super(thermalAbsorbProba, INeutronBehaviour.reduceCrossProba(thermalAbsorbProba, 0.2), thermalScatterings,
+            super(thermalAbsorbProba, INeutronBehaviour.reduceCrossProba(thermalAbsorbProba, 0.1), thermalScatterings,
                     INeutronBehaviour.reduceCrossProba(thermalScatterings, 0.5));
 
             this.maxTemp = maxTemp;
             this.neutronsMultiplication = neutronsMultiplication;
             this.directEnergyFactor = directEnergyFactor;
+            this.tempLimitLow = tempLimitLow;
+            this.tempLimitHigh = tempLimitHigh;
 
         }
 
@@ -91,11 +96,13 @@ public class NuclearConstant {
                     factor);
 
             int newMaxTemp = (int) mix(a.maxTemp, b.maxTemp, factor);
+            int newTempLimitLow = (int) mix(a.tempLimitLow, b.tempLimitLow, factor);
+            int newTempLimitHigh = (int) mix(a.tempLimitHigh, b.tempLimitHigh, factor);
 
             double newDirectEnergyFactor = totalEnergy / (newNeutronMultiplicationFactor) - 1;
 
-            return new IsotopeFuelParams(newThermalAbsorptionProba, newScatteringProba, newMaxTemp, newNeutronMultiplicationFactor,
-                    newDirectEnergyFactor);
+            return new IsotopeFuelParams(newThermalAbsorptionProba, newScatteringProba, newMaxTemp, newTempLimitLow, newTempLimitHigh,
+                    newNeutronMultiplicationFactor, newDirectEnergyFactor);
 
         }
 
@@ -109,9 +116,9 @@ public class NuclearConstant {
 
     }
 
-    public static final IsotopeFuelParams U235 = new IsotopeFuelParams(0.5, 0.35, 2200, 6, 0.5);
-    public static final IsotopeFuelParams U238 = new IsotopeFuelParams(0.15, 0.30, 2800, 4, 0.3);
-    public static final IsotopeFuelParams Pu239 = new IsotopeFuelParams(0.9, 0.25, 1700, 8, 0.25);
+    public static final IsotopeFuelParams U235 = new IsotopeFuelParams(0.5, 0.35, 2400, 1900, 2300, 6, 0.5);
+    public static final IsotopeFuelParams U238 = new IsotopeFuelParams(0.15, 0.30, 3200, 2500, 3000, 4, 0.3);
+    public static final IsotopeFuelParams Pu239 = new IsotopeFuelParams(0.9, 0.25, 2100, 1700, 2000, 8, 0.25);
 
     public static final IsotopeFuelParams U = U238.mix(U235, 1.0 / 81);
 

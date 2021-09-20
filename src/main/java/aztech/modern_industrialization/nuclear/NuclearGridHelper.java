@@ -76,8 +76,6 @@ public class NuclearGridHelper {
 
                                 while (step < MAX_STEP) {
                                     step++;
-                                    posX += dX[dir];
-                                    posY += dY[dir];
 
                                     Optional<INuclearTile> maybeSecondTile = grid.getNuclearTile(posX, posY);
 
@@ -124,6 +122,9 @@ public class NuclearGridHelper {
                                         grid.registerNeutronFate(neutronNumber, type, ESCAPE);
                                         break;
                                     }
+
+                                    posX += dX[dir];
+                                    posY += dY[dir];
                                 }
                             }
                         }
@@ -160,7 +161,7 @@ public class NuclearGridHelper {
                                 int i2 = i + dX[k];
                                 int j2 = j + dY[k];
 
-                                Optional<INuclearTile> maybeSecondTile = grid.getNuclearTile(i, j);
+                                Optional<INuclearTile> maybeSecondTile = grid.getNuclearTile(i2, j2);
 
                                 if (maybeSecondTile.isPresent()) {
                                     INuclearTile secondTile = maybeSecondTile.get();
@@ -173,6 +174,12 @@ public class NuclearGridHelper {
                                             double frac = Math.min(1, temperatureA / temperatureOut[i][j]);
                                             temperatureDelta[i2][j2] += frac * (temperatureA - temperatureB) * coeffTransfer;
                                         }
+                                    }
+                                } else {
+                                    double temperatureB = 0;
+                                    double coeffTransfer = 0.5 * (tile.getHeatTransferCoeff());
+                                    if (step == 0) {
+                                        temperatureOut[i][j] += (temperatureA - temperatureB) * coeffTransfer;
                                     }
                                 }
                             }

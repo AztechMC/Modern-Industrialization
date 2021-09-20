@@ -109,8 +109,8 @@ public class NuclearFuelMaterialPart implements MaterialPart {
         result.add(ofDepleted());
 
         for (Type type : Type.NOT_DEPLETED) {
-            NuclearFuelParams fuelParams = new NuclearFuelParams(desintegrationMax * type.size, params.maxTemp, params.neutronsMultiplication,
-                    params.directEnergyFactor, type.size);
+            NuclearFuelParams fuelParams = new NuclearFuelParams(desintegrationMax * type.size, params.maxTemp, params.tempLimitLow,
+                    params.tempLimitHigh, params.neutronsMultiplication, params.directEnergyFactor, type.size);
 
             INeutronBehaviour neutronBehaviour = INeutronBehaviour.of(NuclearConstant.ScatteringType.HEAVY, params, type.size);
 

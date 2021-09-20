@@ -243,14 +243,11 @@ public abstract class AbstractConfigurableStack<T, K extends TransferVariant<T>>
 
     @Override
     public long extract(K key, long maxAmount, TransactionContext transaction) {
-        StoragePreconditions.notBlankNotNegative(key, maxAmount);
-        if (pipesExtract && key.equals(this.key)) {
-            long extracted = Math.min(amount, maxAmount);
-            updateSnapshots(transaction);
-            decrement(extracted);
-            return extracted;
+        if (pipesExtract) {
+            return extractDirect(key, maxAmount, transaction);
+        } else {
+            return 0;
         }
-        return 0;
     }
 
     public long extractDirect(K key, long maxAmount, TransactionContext transaction) {

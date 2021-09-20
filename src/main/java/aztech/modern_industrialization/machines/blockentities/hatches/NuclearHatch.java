@@ -89,7 +89,8 @@ public class NuclearHatch extends HatchBlockEntity implements INuclearTile {
             fluidStack.add(ConfigurableFluidStack.standardOutputSlot(capacity));
             fluidStack.add(ConfigurableFluidStack.standardOutputSlot(capacity));
             inventory = new MIInventory(Collections.emptyList(), fluidStack, SlotPositions.empty(), slotPos);
-            nuclearReactorComponent = new SteamHeaterComponent(NuclearConstant.MAX_TEMPERATURE, 4096, NuclearConstant.EU_PER_DEGREE, true, true);
+            nuclearReactorComponent = new SteamHeaterComponent(NuclearConstant.MAX_TEMPERATURE, NuclearConstant.MAX_HATCH_EU_PRODUCTION,
+                    NuclearConstant.EU_PER_DEGREE, true, true);
         }
 
         neutronHistory = new NeutronHistoryComponent();
@@ -197,7 +198,8 @@ public class NuclearHatch extends HatchBlockEntity implements INuclearTile {
 
         if (getFuel().isPresent()) {
             ItemStack stack = ((ItemVariant) getVariant()).toStack((int) getVariantAmount());
-            neutronsProduced = getFuel().get().simulateDesintegration(meanNeutron, stack, this.world.getRandom());
+            neutronsProduced = getFuel().get().simulateDesintegration(meanNeutron, stack, this.nuclearReactorComponent.getTemperature(),
+                    this.world.getRandom());
             NuclearFuel fuel = (NuclearFuel) stack.getItem();
             if (fuel.getRemainingDesintegrations(stack) == 0) {
                 try (Transaction tx = Transaction.openOuter()) {
@@ -221,12 +223,10 @@ public class NuclearHatch extends HatchBlockEntity implements INuclearTile {
         }
 
         neutronGeneratedThisTick = neutronsProduced;
-
         return neutronsProduced;
     }
 
     public void nuclearTick() {
-
         neutronHistory.tick(fastNeutronAbsorbedThisTick, thermalNeutronAbsorbedThisTick, fastNeutronInFluxThisTick, thermalNeutronInFluxThisTick,
                 neutronGeneratedThisTick);
 

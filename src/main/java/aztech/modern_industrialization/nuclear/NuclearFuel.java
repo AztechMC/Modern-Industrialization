@@ -53,19 +53,22 @@ public class NuclearFuel extends NuclearComponentItem {
     public final int directEUbyDesintegration;
     public final int totalEUbyDesintegration;
 
-    public final static record NuclearFuelParams(int desintegrationMax, int maxTemperature, double neutronMultiplicationFactor,
-            double directEnergyFactor, int size) {
+    public final int tempLimitLow;
+    public final int tempLimitHigh;
+
+    public final static record NuclearFuelParams(int desintegrationMax, int maxTemperature, int tempLimitLow, int tempLimitHigh,
+            double neutronMultiplicationFactor, double directEnergyFactor, int size) {
     }
 
     public NuclearFuel(Settings settings, NuclearFuelParams params, INeutronBehaviour neutronBehaviour, String depletedVersionId) {
 
-        this(settings, params.desintegrationMax, params.maxTemperature, params.neutronMultiplicationFactor, params.directEnergyFactor,
-                neutronBehaviour, params.size, depletedVersionId);
+        this(settings, params.desintegrationMax, params.maxTemperature, params.tempLimitLow, params.tempLimitHigh, params.neutronMultiplicationFactor,
+                params.directEnergyFactor, neutronBehaviour, params.size, depletedVersionId);
 
     }
 
-    private NuclearFuel(Settings settings, int desintegrationMax, int maxTemperature, double neutronMultiplicationFactor, double directEnergyFactor,
-            INeutronBehaviour neutronBehaviour, int size, String depletedVersionId) {
+    private NuclearFuel(Settings settings, int desintegrationMax, int maxTemperature, int tempLimitLow, int tempLimitHigh,
+            double neutronMultiplicationFactor, double directEnergyFactor, INeutronBehaviour neutronBehaviour, int size, String depletedVersionId) {
 
         super(settings, maxTemperature, 0, neutronBehaviour);
 
@@ -74,6 +77,9 @@ public class NuclearFuel extends NuclearComponentItem {
         this.directEnergyFactor = directEnergyFactor;
         this.neutronMultiplicationFactor = neutronMultiplicationFactor;
         this.depletedVersionId = depletedVersionId;
+
+        this.tempLimitLow = tempLimitLow;
+        this.tempLimitHigh = tempLimitHigh;
 
         this.directEUbyDesintegration = (int) (NuclearConstant.EU_FOR_FAST_NEUTRON * directEnergyFactor * neutronMultiplicationFactor);
         this.totalEUbyDesintegration = (int) (NuclearConstant.EU_FOR_FAST_NEUTRON * (1.0 + directEnergyFactor) * neutronMultiplicationFactor);
@@ -149,11 +155,16 @@ public class NuclearFuel extends NuclearComponentItem {
         return (int) Math.round(getDurabilityBarProgress(stack) * 13);
     }
 
-    public int simulateDesintegration(double neutronsReceived, ItemStack stack, Random rand) {
+    public int simulateDesintegration(double neutronsReceived, ItemStack stack, double temperature, Random rand) {
         int desintegration = Math.min(randIntFromDouble(neutronsReceived, rand), getRemainingDesintegrations(stack));
 
+        double factor = 1;
+        if (temperature > tempLimitLow) {
+            factor = Math.max(0, 1 - (temperature - tempLimitLow) / (tempLimitHigh - tempLimitLow));
+        }
+
         setRemainingDesintegrations(stack, getRemainingDesintegrations(stack) - desintegration);
-        return randIntFromDouble(desintegration * neutronMultiplicationFactor, rand);
+        return randIntFromDouble(factor * desintegration * neutronMultiplicationFactor, rand);
 
     }
 

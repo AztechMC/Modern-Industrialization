@@ -29,7 +29,7 @@ import net.minecraft.nbt.NbtCompound;
 
 public class NeutronHistoryComponent implements IComponent {
 
-    public static final int TICK_HISTORY_SIZE = 400;
+    public static final int TICK_HISTORY_SIZE = 100;
 
     private int[] fastNeutronReceivedHistory = new int[TICK_HISTORY_SIZE];
     private int[] thermalNeutronReceivedHistory = new int[TICK_HISTORY_SIZE];

@@ -29,9 +29,9 @@ import aztech.modern_industrialization.util.TextHelper;
 import com.google.common.base.Preconditions;
 import java.util.List;
 import java.util.Random;
+import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.item.TooltipContext;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.text.LiteralText;
@@ -91,8 +91,14 @@ public class NuclearFuel extends NuclearComponentItem {
         return (NuclearFuel) MIItem.of((Settings settings) -> new NuclearFuel(settings, params, neutronBehaviour, depletedVersionId), id, 1);
     }
 
-    public Item getDepleted() {
-        return Registry.ITEM.getOrEmpty(new MIIdentifier(depletedVersionId)).get();
+    @Override
+    public ItemVariant getNeutronProduct() {
+        return ItemVariant.of(Registry.ITEM.getOrEmpty(new MIIdentifier(depletedVersionId)).get());
+    }
+
+    @Override
+    public long getNeutronProductAmount() {
+        return size;
     }
 
     @Override

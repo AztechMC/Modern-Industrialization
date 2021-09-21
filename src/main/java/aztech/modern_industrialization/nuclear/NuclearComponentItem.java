@@ -27,7 +27,6 @@ import aztech.modern_industrialization.MIItem;
 import aztech.modern_industrialization.util.TextHelper;
 import java.util.List;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
-import net.fabricmc.fabric.api.transfer.v1.storage.TransferVariant;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.item.Item;
@@ -37,7 +36,7 @@ import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.world.World;
 
-public class NuclearComponentItem extends Item implements INuclearComponent {
+public class NuclearComponentItem extends Item implements INuclearComponent<ItemVariant> {
 
     public final int maxTemperature;
     public final double heatConduction;
@@ -85,7 +84,7 @@ public class NuclearComponentItem extends Item implements INuclearComponent {
     }
 
     @Override
-    public TransferVariant getVariant() {
+    public ItemVariant getVariant() {
         return ItemVariant.of(this);
     }
 }

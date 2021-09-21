@@ -1,0 +1,19 @@
+{
+  "type": "modern_industrialization:electrolyzer",
+  "eu": 8,
+  "duration": 600,
+  "fluid_inputs": {
+    "fluid": "modern_industrialization:heavy_water",
+    "amount": 3000
+  },
+  "fluid_outputs": [
+    {
+      "fluid": "modern_industrialization:deuterium",
+      "amount": 2000
+    },
+    {
+      "fluid": "modern_industrialization:oxygen",
+      "amount": 1000
+    }
+  ]
+}

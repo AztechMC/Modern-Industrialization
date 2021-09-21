@@ -35,15 +35,11 @@ import aztech.modern_industrialization.machines.components.sync.TemperatureBar;
 import aztech.modern_industrialization.machines.gui.MachineGuiParameters;
 import aztech.modern_industrialization.machines.multiblocks.HatchBlockEntity;
 import aztech.modern_industrialization.machines.multiblocks.HatchType;
-import aztech.modern_industrialization.nuclear.INuclearTile;
-import aztech.modern_industrialization.nuclear.NeutronType;
-import aztech.modern_industrialization.nuclear.NuclearConstant;
-import aztech.modern_industrialization.nuclear.NuclearFuel;
+import aztech.modern_industrialization.nuclear.*;
 import com.google.common.base.Preconditions;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemStorage;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.TransferVariant;
@@ -122,14 +118,18 @@ public class NuclearHatch extends HatchBlockEntity implements INuclearTile {
         if (isFluid) {
             ((SteamHeaterComponent) nuclearReactorComponent).tick(Collections.singletonList(inventory.getFluidStacks().get(0)),
                     Collections.singletonList(inventory.getFluidStacks().get(1)));
+
+            fluidNeutronProductTick(1, true);
+
         } else {
             this.clearMachineLock();
             if (getFuel().isPresent()) {
                 ItemStack stack = ((ItemVariant) getVariant()).toStack((int) getVariantAmount());
                 NuclearFuel fuel = (NuclearFuel) stack.getItem();
                 try (Transaction tx = Transaction.openOuter()) {
-                    this.inventory.itemStorage.insert(ItemVariant.of(fuel.getDepleted()), fuel.size, tx, AbstractConfigurableStack::canPipesExtract,
-                            true);
+
+                    this.inventory.itemStorage.insert(fuel.getNeutronProduct(), fuel.getNeutronProductAmount(), tx,
+                            AbstractConfigurableStack::canPipesExtract, true);
                     tx.abort();
                 }
             }
@@ -204,7 +204,7 @@ public class NuclearHatch extends HatchBlockEntity implements INuclearTile {
             if (fuel.getRemainingDesintegrations(stack) == 0) {
                 try (Transaction tx = Transaction.openOuter()) {
                     ConfigurableItemStack fuelStack = this.inventory.getItemStacks().get(0);
-                    long inserted = this.inventory.itemStorage.insert(ItemVariant.of(fuel.getDepleted()), fuel.size, tx,
+                    long inserted = this.inventory.itemStorage.insert(fuel.getNeutronProduct(), fuel.getNeutronProductAmount(), tx,
                             AbstractConfigurableStack::canPipesExtract, true);
 
                     fuelStack.updateSnapshots(tx);
@@ -226,9 +226,41 @@ public class NuclearHatch extends HatchBlockEntity implements INuclearTile {
         return neutronsProduced;
     }
 
+    private static int randIntFromDouble(double value, Random rand) {
+        return (int) Math.floor(value) + (rand.nextDouble() < (value % 1) ? 1 : 0);
+    }
+
+    public void fluidNeutronProductTick(int neutron, boolean simul) {
+        if (isFluid) {
+            Optional<INuclearComponent> maybeComponent = this.getComponent();
+            if (maybeComponent.isPresent()) {
+
+                INuclearComponent<FluidVariant> component = maybeComponent.get();
+
+                int actualRecipe = randIntFromDouble(neutron * component.getNeutronProductProbability(), this.getWorld().getRandom());
+
+                if (simul || actualRecipe > 0) {
+                    try (Transaction tx = Transaction.openOuter()) {
+                        long extracted = this.inventory.fluidStorage.extractAllSlot(component.getVariant(), actualRecipe, tx,
+                                AbstractConfigurableStack::canPipesInsert);
+                        this.inventory.fluidStorage.insert(component.getNeutronProduct(), extracted * component.getNeutronProductAmount(), tx,
+                                AbstractConfigurableStack::canPipesExtract, true);
+
+                        if (!simul) {
+                            tx.commit();
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     public void nuclearTick() {
+
         neutronHistory.tick(fastNeutronAbsorbedThisTick, thermalNeutronAbsorbedThisTick, fastNeutronInFluxThisTick, thermalNeutronInFluxThisTick,
                 neutronGeneratedThisTick);
+
+        fluidNeutronProductTick(randIntFromDouble(neutronHistory.getAverageReceived(NeutronType.BOTH), this.getWorld().getRandom()), false);
 
         fastNeutronAbsorbedThisTick = 0;
         thermalNeutronAbsorbedThisTick = 0;

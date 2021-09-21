@@ -32,6 +32,7 @@ import me.shedaniel.rei.api.common.entry.EntryIngredient;
 import me.shedaniel.rei.api.common.util.EntryStacks;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
+import net.fabricmc.fabric.api.transfer.v1.storage.TransferVariant;
 
 class NeutronInteractionDisplay implements Display {
 
@@ -56,7 +57,21 @@ class NeutronInteractionDisplay implements Display {
 
     @Override
     public List<EntryIngredient> getOutputEntries() {
-        return Collections.emptyList();
+        if (type == CategoryType.NEUTRON_PRODUCT) {
+
+            TransferVariant output = nuclearComponent.getNeutronProduct();
+            if (output instanceof ItemVariant itemVariant) {
+                return Collections
+                        .singletonList(EntryIngredient.of(EntryStacks.of(itemVariant.getItem(), (int) nuclearComponent.getNeutronProductAmount())));
+            } else if (output instanceof FluidVariant fluidVariant) {
+                return Collections
+                        .singletonList(EntryIngredient.of(EntryStacks.of(fluidVariant.getFluid(), nuclearComponent.getNeutronProductAmount())));
+            } else {
+                throw new IllegalStateException("Unreachable");
+            }
+        } else {
+            return Collections.emptyList();
+        }
     }
 
     @Override
@@ -68,5 +83,6 @@ class NeutronInteractionDisplay implements Display {
         FAST_NEUTRON_INTERACTION,
         THERMAL_NEUTRON_INTERACTION,
         FISSION,
+        NEUTRON_PRODUCT,
     }
 }

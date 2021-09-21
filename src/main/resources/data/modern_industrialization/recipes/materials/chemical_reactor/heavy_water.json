@@ -1,0 +1,21 @@
+{
+  "type": "modern_industrialization:chemical_reactor",
+  "eu": 8,
+  "duration": 200,
+
+  "fluid_inputs": [
+    {
+      "fluid": "modern_industrialization:oxygen",
+      "amount": 1000
+    },
+    {
+      "fluid": "modern_industrialization:deuterium",
+      "amount": 2000
+    }
+  ],
+
+  "fluid_outputs": {
+    "fluid": "modern_industrialization:heavy_water",
+    "amount": 3000
+  }
+}

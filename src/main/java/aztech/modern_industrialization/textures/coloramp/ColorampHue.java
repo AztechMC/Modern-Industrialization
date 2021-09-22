@@ -24,7 +24,6 @@
 package aztech.modern_industrialization.textures.coloramp;
 
 import aztech.modern_industrialization.textures.TextureHelper;
-import java.awt.*;
 
 public class ColorampHue implements Coloramp {
 

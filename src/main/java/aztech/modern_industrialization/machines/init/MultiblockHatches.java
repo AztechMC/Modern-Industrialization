@@ -104,8 +104,8 @@ public class MultiblockHatches {
             String machine = prefix + "_fluid_" + (input ? "input" : "output") + "_hatch";
             MachineRegistrationHelper.registerMachine(machine, bet -> {
                 List<ConfigurableFluidStack> fluidStacks = Collections
-                        .singletonList(input ? ConfigurableFluidStack.standardInputSlot(bucketCapacity * 81000)
-                                : ConfigurableFluidStack.standardOutputSlot(bucketCapacity * 81000));
+                        .singletonList(input ? ConfigurableFluidStack.standardInputSlot(bucketCapacity * 81000L)
+                                : ConfigurableFluidStack.standardOutputSlot(bucketCapacity * 81000L));
                 MIInventory inventory = new MIInventory(Collections.emptyList(), fluidStacks, SlotPositions.empty(),
                         new SlotPositions.Builder().addSlot(FLUID_HATCH_SLOT_X, FLUID_HATCH_SLOT_Y).build());
                 return new FluidHatch(bet, new MachineGuiParameters.Builder(machine, true).build(), input, !prefix.equals("bronze"), inventory);

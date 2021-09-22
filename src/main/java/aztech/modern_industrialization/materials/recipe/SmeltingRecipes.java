@@ -24,7 +24,6 @@
 package aztech.modern_industrialization.materials.recipe;
 
 import static aztech.modern_industrialization.materials.part.MIParts.*;
-import static aztech.modern_industrialization.materials.part.MIParts.INGOT;
 
 import aztech.modern_industrialization.materials.MaterialBuilder;
 import aztech.modern_industrialization.materials.recipe.builder.MIRecipeBuilder;

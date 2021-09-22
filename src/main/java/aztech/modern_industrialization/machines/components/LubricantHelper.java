@@ -47,7 +47,7 @@ public class LubricantHelper {
                 Storage<FluidVariant> handIo = FluidStorage.ITEM.find(player.getStackInHand(hand), ContainerItemContext.ofPlayerHand(player, hand));
                 if (handIo != null) {
                     try (Transaction tx = Transaction.openOuter()) {
-                        long extracted = handIo.extract(FluidVariant.of(MIFluids.LUBRICANT), rem * dropPerTick, tx);
+                        long extracted = handIo.extract(FluidVariant.of(MIFluids.LUBRICANT), (long) rem * dropPerTick, tx);
                         if (extracted % dropPerTick == 0) {
                             crafter.increaseEfficiencyTicks((int) (extracted / dropPerTick));
                             tx.commit();

@@ -105,7 +105,7 @@ public abstract class AbstractWaterPumpBlockEntity extends MachineBlockEntity im
 
                 if (pumpingTicks == OPERATION_TICKS) {
                     waterStack.setKey(FluidVariant.of(Fluids.WATER));
-                    waterStack.increment(Math.min(getWaterMultiplier() * getWaterSourceCount() * 81000 / 8, waterStack.getRemainingSpace()));
+                    waterStack.increment(Math.min((long) getWaterMultiplier() * getWaterSourceCount() * 81000 / 8, waterStack.getRemainingSpace()));
                     pumpingTicks = 0;
                 }
             }

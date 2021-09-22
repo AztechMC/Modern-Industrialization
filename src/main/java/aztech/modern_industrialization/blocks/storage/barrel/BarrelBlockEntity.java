@@ -46,7 +46,7 @@ public class BarrelBlockEntity extends AbstractStorageBlockEntity<ItemVariant> {
 
     @Override
     public long getCapacityForResource(ItemVariant resource) {
-        return stackCapacity * resource.getItem().getMaxCount();
+        return (long) stackCapacity * resource.getItem().getMaxCount();
     }
 
     @Override

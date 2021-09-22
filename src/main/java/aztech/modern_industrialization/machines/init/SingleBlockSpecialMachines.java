@@ -108,7 +108,7 @@ public class SingleBlockSpecialMachines {
             final int eu = maxConsumption[i];
             final int fluidCapacity = 16000 * (1 << i);
             MachineRegistrationHelper.registerMachine(id,
-                    bet -> new EnergyFromFluidMachineBlockEntity(bet, id, tier, eu * 100, fluidCapacity, eu, MIFluids.STEAM, 1),
+                    bet -> new EnergyFromFluidMachineBlockEntity(bet, id, tier, eu * 100L, fluidCapacity, eu, MIFluids.STEAM, 1),
                     MachineBlockEntity::registerFluidApi, EnergyFromFluidMachineBlockEntity::registerEnergyApi);
 
             if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {

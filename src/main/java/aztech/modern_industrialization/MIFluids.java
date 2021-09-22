@@ -30,7 +30,6 @@ import aztech.modern_industrialization.fluid.CraftingFluid;
 import java.util.ArrayList;
 import net.devtech.arrp.json.models.JModel;
 import net.devtech.arrp.json.models.JTextures;
-import net.minecraft.text.*;
 import net.minecraft.util.registry.Registry;
 
 public class MIFluids {

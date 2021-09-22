@@ -24,9 +24,7 @@
 package aztech.modern_industrialization.compat.rei.nuclear;
 
 import aztech.modern_industrialization.MIIdentifier;
-import aztech.modern_industrialization.nuclear.INuclearComponent;
-import aztech.modern_industrialization.nuclear.NuclearComponentItem;
-import aztech.modern_industrialization.nuclear.NuclearFuel;
+import aztech.modern_industrialization.nuclear.*;
 import me.shedaniel.rei.api.client.plugins.REIClientPlugin;
 import me.shedaniel.rei.api.client.registry.category.CategoryRegistry;
 import me.shedaniel.rei.api.client.registry.display.DisplayRegistry;
@@ -40,28 +38,41 @@ import net.minecraft.util.registry.Registry;
 
 public class NeutronInteractionPlugin implements REIClientPlugin {
 
-    static final CategoryIdentifier<NeutronInteractionDisplay> CATEGORY = CategoryIdentifier.of(new MIIdentifier("neutron_interaction"));
+    static final CategoryIdentifier<NeutronInteractionDisplay> NEUTRON_CATEGORY = CategoryIdentifier.of(new MIIdentifier("neutron_interaction"));
+    static final CategoryIdentifier<ThermalInteractionDisplay> THERMAL_CATEGORY = CategoryIdentifier.of(new MIIdentifier("thermal_interaction"));
 
     @Override
     public void registerCategories(CategoryRegistry registry) {
+
         registry.add(new NeutronInteractionCategory());
-        registry.addWorkstations(CATEGORY, EntryStacks.of(Registry.ITEM.get(new MIIdentifier("nuclear_reactor"))));
-        registry.removePlusButton(CATEGORY);
+        registry.addWorkstations(NEUTRON_CATEGORY, EntryStacks.of(Registry.ITEM.get(new MIIdentifier("nuclear_reactor"))));
+        registry.removePlusButton(NEUTRON_CATEGORY);
+
+        registry.add(new ThermalInteractionCategory());
+        registry.addWorkstations(THERMAL_CATEGORY, EntryStacks.of(Registry.ITEM.get(new MIIdentifier("nuclear_reactor"))));
+        registry.removePlusButton(THERMAL_CATEGORY);
     }
 
     @Override
     public void registerDisplays(DisplayRegistry registry) {
+
         Registry.ITEM.stream().filter(item -> item instanceof NuclearComponentItem).forEach(item -> {
-            registry.add(new NeutronInteractionDisplay((NuclearComponentItem) item, NeutronInteractionDisplay.CategoryType.FAST_NEUTRON_INTERACTION));
-            registry.add(
-                    new NeutronInteractionDisplay((NuclearComponentItem) item, NeutronInteractionDisplay.CategoryType.THERMAL_NEUTRON_INTERACTION));
+
+            NuclearComponentItem component = (NuclearComponentItem) item;
+            registry.add(new NeutronInteractionDisplay(component, NeutronInteractionDisplay.CategoryType.FAST_NEUTRON_INTERACTION));
+            registry.add(new ThermalInteractionDisplay(component, ThermalInteractionDisplay.CategoryType.THERMAL_PROPERTIES));
+            registry.add(new NeutronInteractionDisplay(component, NeutronInteractionDisplay.CategoryType.THERMAL_NEUTRON_INTERACTION));
+
             if (item instanceof NuclearFuel) {
-                registry.add(new NeutronInteractionDisplay((NuclearComponentItem) item, NeutronInteractionDisplay.CategoryType.FISSION));
+                registry.add(new NeutronInteractionDisplay(component, NeutronInteractionDisplay.CategoryType.FISSION));
+                registry.add(new ThermalInteractionDisplay(component, ThermalInteractionDisplay.CategoryType.NEUTRON_EFFICIENCY));
             }
-            ItemVariant product = ((NuclearComponentItem) item).getNeutronProduct();
+
+            ItemVariant product = component.getNeutronProduct();
             if (product != null) {
-                registry.add(new NeutronInteractionDisplay((NuclearComponentItem) item, NeutronInteractionDisplay.CategoryType.NEUTRON_PRODUCT));
+                registry.add(new NeutronInteractionDisplay(component, NeutronInteractionDisplay.CategoryType.NEUTRON_PRODUCT));
             }
+
         });
 
         for (Fluid fluid : Registry.FLUID) {
@@ -71,11 +82,32 @@ public class NeutronInteractionPlugin implements REIClientPlugin {
                 if (component != null) {
                     registry.add(new NeutronInteractionDisplay(component, NeutronInteractionDisplay.CategoryType.FAST_NEUTRON_INTERACTION));
                     registry.add(new NeutronInteractionDisplay(component, NeutronInteractionDisplay.CategoryType.THERMAL_NEUTRON_INTERACTION));
+                    registry.add(new ThermalInteractionDisplay(component, ThermalInteractionDisplay.CategoryType.THERMAL_PROPERTIES));
+
                     if (component.getVariant() != null) {
                         registry.add(new NeutronInteractionDisplay(component, NeutronInteractionDisplay.CategoryType.NEUTRON_PRODUCT));
                     }
                 }
             }
+        }
+
+        for (String s : new String[] { "item", "fluid" }) {
+            registry.add(new ThermalInteractionDisplay(new INuclearComponent<ItemVariant>() {
+                @Override
+                public double getHeatConduction() {
+                    return NuclearConstant.BASE_HEAT_CONDUCTION;
+                }
+
+                @Override
+                public INeutronBehaviour getNeutronBehaviour() {
+                    return null;
+                }
+
+                @Override
+                public ItemVariant getVariant() {
+                    return ItemVariant.of(Registry.ITEM.get(new MIIdentifier(String.format("nuclear_%s_hatch", s))));
+                }
+            }, ThermalInteractionDisplay.CategoryType.THERMAL_PROPERTIES));
         }
     }
 }

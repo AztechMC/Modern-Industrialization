@@ -59,7 +59,7 @@ class NeutronInteractionCategory implements DisplayCategory<NeutronInteractionDi
 
     @Override
     public CategoryIdentifier<? extends NeutronInteractionDisplay> getCategoryIdentifier() {
-        return NeutronInteractionPlugin.CATEGORY;
+        return NeutronInteractionPlugin.NEUTRON_CATEGORY;
     }
 
     @Override
@@ -162,17 +162,7 @@ class NeutronInteractionCategory implements DisplayCategory<NeutronInteractionDi
                 .createLabel(new Point(centerX + 20, centerY + 35),
                         new TranslatableText("text.modern_industrialization.neutrons_multiplication",
                                 String.format("%.1f", fuel.neutronMultiplicationFactor)).setStyle(TextHelper.NEUTRONS))
-                .noShadow().tooltipLines(
-                        new TranslatableText("text.modern_industrialization.neutrons_efficiency",
-                                String.format("%.1f", fuel.neutronMultiplicationFactor), String.format("<= %d", fuel.tempLimitLow)).getString(),
-                        new TranslatableText("text.modern_industrialization.neutrons_efficiency",
-                                String.format("%.1f", fuel.neutronMultiplicationFactor * 0.5),
-                                String.format("= %d", (fuel.tempLimitLow + fuel.tempLimitHigh) / 2)).getString(),
-                        new TranslatableText("text.modern_industrialization.neutrons_efficiency",
-                                String.format("%.1f", fuel.neutronMultiplicationFactor * 0.1),
-                                String.format("= %d", (int) (0.1 * fuel.tempLimitLow + 0.9 * fuel.tempLimitHigh))).getString(),
-                        new TranslatableText("text.modern_industrialization.neutrons_efficiency", "0.0", String.format(">= %d", fuel.tempLimitHigh))
-                                .getString()));
+                .noShadow().tooltipLine(new TranslatableText("text.modern_industrialization.neutron_temperature_variation").getString()));
 
         widgets.add(Widgets
                 .createLabel(new Point(centerX - 18, centerY + 23),
@@ -181,6 +171,12 @@ class NeutronInteractionCategory implements DisplayCategory<NeutronInteractionDi
 
         widgets.add(Widgets.createLabel(new Point(centerX + 55, centerY + 23), new LiteralText(String.format("%d EU", fuel.directEUbyDesintegration)))
                 .tooltipLine(new TranslatableText("text.modern_industrialization.direct_energy").getString()));
+
+        widgets.add(Widgets
+                .createLabel(new Point(centerX + 55, centerY - 12),
+                        new LiteralText(String.format("%.2f °C", (double) fuel.directEUbyDesintegration / NuclearConstant.EU_PER_DEGREE)))
+                .tooltipLine(new TranslatableText("text.modern_industrialization.direct_heat_by_desintegration").getString()));
+
         return widgets;
     }
 

@@ -48,6 +48,10 @@ public interface INuclearComponent<T extends TransferVariant> {
         return 1;
     }
 
+    default int getMaxTemperature() {
+        return Integer.MAX_VALUE;
+    }
+
     static INuclearComponent of(FluidVariant variant, double heatConduction, double density, NuclearConstant.ScatteringType type,
             NuclearConstant.IsotopeParams params, FluidVariant neutronProduct, boolean highPressure) {
 

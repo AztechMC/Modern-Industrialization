@@ -30,11 +30,9 @@ import com.google.common.base.Preconditions;
 import java.util.List;
 import java.util.Random;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
-import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.math.MathHelper;
@@ -67,10 +65,14 @@ public class NuclearFuel extends NuclearComponentItem {
 
     }
 
+    private static int clampTemp(int temperature) {
+        return 50 * (int) (temperature / 50d);
+    }
+
     private NuclearFuel(Settings settings, int desintegrationMax, int maxTemperature, int tempLimitLow, int tempLimitHigh,
             double neutronMultiplicationFactor, double directEnergyFactor, INeutronBehaviour neutronBehaviour, int size, String depletedVersionId) {
 
-        super(settings, maxTemperature, 0, neutronBehaviour);
+        super(settings, clampTemp(maxTemperature), 0, neutronBehaviour);
 
         this.desintegrationMax = desintegrationMax;
         this.size = size;
@@ -78,8 +80,8 @@ public class NuclearFuel extends NuclearComponentItem {
         this.neutronMultiplicationFactor = neutronMultiplicationFactor;
         this.depletedVersionId = depletedVersionId;
 
-        this.tempLimitLow = tempLimitLow;
-        this.tempLimitHigh = tempLimitHigh;
+        this.tempLimitLow = clampTemp(tempLimitLow);
+        this.tempLimitHigh = clampTemp(tempLimitHigh);
 
         this.directEUbyDesintegration = (int) (NuclearConstant.EU_FOR_FAST_NEUTRON * directEnergyFactor * neutronMultiplicationFactor);
         this.totalEUbyDesintegration = (int) (NuclearConstant.EU_FOR_FAST_NEUTRON * (1.0 + directEnergyFactor) * neutronMultiplicationFactor);
@@ -106,22 +108,10 @@ public class NuclearFuel extends NuclearComponentItem {
 
         super.appendTooltip(stack, world, tooltip, context);
 
-        if (Screen.hasShiftDown()) {
-
-            tooltip.add(new TranslatableText("text.modern_industrialization.direct_heat_by_desintegration",
-                    String.format("%.2f", (double) directEUbyDesintegration / NuclearConstant.EU_PER_DEGREE)).setStyle(TextHelper.HEAT_CONDUCTION));
-
-            tooltip.add(new TranslatableText("text.modern_industrialization.total_heat_by_desintegration",
-                    String.format("%.2f", (double) totalEUbyDesintegration / NuclearConstant.EU_PER_DEGREE)).setStyle(TextHelper.HEAT_CONDUCTION));
-
-            long totalEu = (long) totalEUbyDesintegration * desintegrationMax;
-            tooltip.add(new LiteralText(""));
-            tooltip.add(new TranslatableText("text.modern_industrialization.base_eu_total_double", TextHelper.getEuString(totalEu),
-                    TextHelper.getEuUnit(totalEu)).setStyle(TextHelper.EU_TEXT));
-
-            tooltip.add(
-                    new TranslatableText("text.modern_industrialization.rem_desintegration", getRemainingDesintegrations(stack), desintegrationMax));
-        }
+        long totalEu = (long) totalEUbyDesintegration * desintegrationMax;
+        tooltip.add(new TranslatableText("text.modern_industrialization.base_eu_total_double", TextHelper.getEuString(totalEu),
+                TextHelper.getEuUnit(totalEu)).setStyle(TextHelper.EU_TEXT));
+        tooltip.add(new TranslatableText("text.modern_industrialization.rem_desintegration", getRemainingDesintegrations(stack), desintegrationMax));
 
     }
 

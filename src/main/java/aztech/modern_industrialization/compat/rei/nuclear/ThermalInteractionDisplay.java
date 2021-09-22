@@ -32,20 +32,20 @@ import me.shedaniel.rei.api.common.entry.EntryIngredient;
 import me.shedaniel.rei.api.common.util.EntryStacks;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
-import net.fabricmc.fabric.api.transfer.v1.storage.TransferVariant;
 
-class NeutronInteractionDisplay implements Display {
+public class ThermalInteractionDisplay implements Display {
 
     final INuclearComponent nuclearComponent;
-    final CategoryType type;
+    final ThermalInteractionDisplay.CategoryType type;
 
-    NeutronInteractionDisplay(INuclearComponent nuclearComponent, CategoryType type) {
+    public ThermalInteractionDisplay(INuclearComponent nuclearComponent, CategoryType type) {
         this.nuclearComponent = nuclearComponent;
         this.type = type;
     }
 
     @Override
     public List<EntryIngredient> getInputEntries() {
+
         if (nuclearComponent.getVariant() instanceof ItemVariant itemVariant) {
             return Collections.singletonList(EntryIngredient.of(EntryStacks.of(itemVariant.getItem())));
         } else if (nuclearComponent.getVariant() instanceof FluidVariant fluidVariant) {
@@ -57,32 +57,16 @@ class NeutronInteractionDisplay implements Display {
 
     @Override
     public List<EntryIngredient> getOutputEntries() {
-        if (type == CategoryType.NEUTRON_PRODUCT) {
-
-            TransferVariant output = nuclearComponent.getNeutronProduct();
-            if (output instanceof ItemVariant itemVariant) {
-                return Collections
-                        .singletonList(EntryIngredient.of(EntryStacks.of(itemVariant.getItem(), (int) nuclearComponent.getNeutronProductAmount())));
-            } else if (output instanceof FluidVariant fluidVariant) {
-                return Collections
-                        .singletonList(EntryIngredient.of(EntryStacks.of(fluidVariant.getFluid(), nuclearComponent.getNeutronProductAmount())));
-            } else {
-                throw new IllegalStateException("Unreachable");
-            }
-        } else {
-            return Collections.emptyList();
-        }
+        return Collections.EMPTY_LIST;
     }
 
     @Override
-    public CategoryIdentifier<NeutronInteractionDisplay> getCategoryIdentifier() {
-        return NeutronInteractionPlugin.NEUTRON_CATEGORY;
+    public CategoryIdentifier<?> getCategoryIdentifier() {
+        return NeutronInteractionPlugin.THERMAL_CATEGORY;
     }
 
-    public static enum CategoryType {
-        FAST_NEUTRON_INTERACTION,
-        THERMAL_NEUTRON_INTERACTION,
-        FISSION,
-        NEUTRON_PRODUCT,
+    public enum CategoryType {
+        NEUTRON_EFFICIENCY,
+        THERMAL_PROPERTIES,
     }
 }

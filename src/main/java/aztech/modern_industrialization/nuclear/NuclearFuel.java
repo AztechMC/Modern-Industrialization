@@ -151,16 +151,19 @@ public class NuclearFuel extends NuclearComponentItem {
         return (int) Math.round(getDurabilityBarProgress(stack) * 13);
     }
 
-    public int simulateDesintegration(double neutronsReceived, ItemStack stack, double temperature, Random rand) {
-        int desintegration = Math.min(randIntFromDouble(neutronsReceived, rand), getRemainingDesintegrations(stack));
-
+    public double efficiencyFactor(double temperature) {
         double factor = 1;
         if (temperature > tempLimitLow) {
             factor = Math.max(0, 1 - (temperature - tempLimitLow) / (tempLimitHigh - tempLimitLow));
         }
+        return factor;
+    }
+
+    public int simulateDesintegration(double neutronsReceived, ItemStack stack, double temperature, Random rand) {
+        int desintegration = Math.min(randIntFromDouble(neutronsReceived, rand), getRemainingDesintegrations(stack));
 
         setRemainingDesintegrations(stack, getRemainingDesintegrations(stack) - desintegration);
-        return randIntFromDouble(factor * desintegration * neutronMultiplicationFactor, rand);
+        return randIntFromDouble(efficiencyFactor(temperature) * desintegration * neutronMultiplicationFactor, rand);
 
     }
 

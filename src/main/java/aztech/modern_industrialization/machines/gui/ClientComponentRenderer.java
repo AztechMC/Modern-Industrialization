@@ -58,7 +58,12 @@ public interface ClientComponentRenderer {
         void addButton(int u, Text message, Consumer<Integer> pressAction, Supplier<List<Text>> tooltipSupplier, Supplier<Boolean> isPressed);
 
         void addButton(int posX, int posY, int width, int height, Text message, Consumer<Integer> pressAction, Supplier<List<Text>> tooltipSupplier,
-                CustomButtonRenderer renderer);
+                CustomButtonRenderer renderer, Supplier<Boolean> isButtonPresent);
+
+        default void addButton(int posX, int posY, int width, int height, Text message, Consumer<Integer> pressAction,
+                Supplier<List<Text>> tooltipSupplier, CustomButtonRenderer renderer) {
+            addButton(posX, posY, width, height, message, pressAction, tooltipSupplier, renderer, () -> true);
+        }
 
     }
 

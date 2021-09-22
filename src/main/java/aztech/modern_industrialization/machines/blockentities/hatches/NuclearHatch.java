@@ -38,6 +38,7 @@ import aztech.modern_industrialization.machines.multiblocks.HatchType;
 import aztech.modern_industrialization.nuclear.*;
 import com.google.common.base.Preconditions;
 import java.util.*;
+import java.util.stream.Collectors;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemStorage;
@@ -115,14 +116,13 @@ public class NuclearHatch extends HatchBlockEntity implements INuclearTile {
     @Override
     public final void tick() {
         super.tick();
+        this.clearMachineLock();
+
         if (isFluid) {
             ((SteamHeaterComponent) nuclearReactorComponent).tick(Collections.singletonList(inventory.getFluidStacks().get(0)),
-                    Collections.singletonList(inventory.getFluidStacks().get(1)));
-
+                    inventory.getFluidStacks().stream().filter(AbstractConfigurableStack::canPipesExtract).collect(Collectors.toList()));
             fluidNeutronProductTick(1, true);
-
         } else {
-            this.clearMachineLock();
             if (getFuel().isPresent()) {
                 ItemStack stack = ((ItemVariant) getVariant()).toStack((int) getVariantAmount());
                 NuclearFuel fuel = (NuclearFuel) stack.getItem();
@@ -238,6 +238,10 @@ public class NuclearHatch extends HatchBlockEntity implements INuclearTile {
                 INuclearComponent<FluidVariant> component = maybeComponent.get();
 
                 int actualRecipe = randIntFromDouble(neutron * component.getNeutronProductProbability(), this.getWorld().getRandom());
+
+                if (simul) {
+                    actualRecipe = neutron;
+                }
 
                 if (simul || actualRecipe > 0) {
                     try (Transaction tx = Transaction.openOuter()) {

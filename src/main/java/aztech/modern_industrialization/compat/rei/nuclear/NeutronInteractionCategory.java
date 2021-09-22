@@ -52,7 +52,7 @@ import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
-class NeutronInteractionCategory implements DisplayCategory<NeutronInteractionDisplay> {
+public class NeutronInteractionCategory implements DisplayCategory<NeutronInteractionDisplay> {
 
     public static final Identifier TEXTURE_ATLAS = new Identifier(ModernIndustrialization.MOD_ID, "textures/gui/rei/texture_atlas.png");
     private static final Identifier PROGRESS_BAR = new MIIdentifier("textures/gui/progress_bar/long_arrow.png");

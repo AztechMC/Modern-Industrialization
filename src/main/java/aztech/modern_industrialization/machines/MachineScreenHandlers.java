@@ -265,10 +265,19 @@ public class MachineScreenHandlers {
 
         @Override
         public void addButton(int posX, int posY, int width, int height, Text message, Consumer<Integer> pressAction,
-                Supplier<List<Text>> tooltipSupplier, ClientComponentRenderer.CustomButtonRenderer renderer) {
+                Supplier<List<Text>> tooltipSupplier, ClientComponentRenderer.CustomButtonRenderer renderer, Supplier<Boolean> isButtonPresent) {
 
-            addDrawableChild(new MachineButton(posX + x, posY + y, width, height, message, b -> pressAction.accept(handler.syncId),
-                    (button, matrices, mouseX, mouseY) -> renderTooltip(matrices, tooltipSupplier.get(), mouseX, mouseY), renderer) {
+            addDrawableChild(new MachineButton(posX + x, posY + y, width, height, message, b -> {
+                if (isButtonPresent.get())
+                    pressAction.accept(handler.syncId);
+            }, (button, matrices, mouseX, mouseY) -> {
+                if (isButtonPresent.get())
+                    renderTooltip(matrices, tooltipSupplier.get(), mouseX, mouseY);
+            }, (screen, button, matrices, mouseX, mouseY, delta) -> {
+                if (isButtonPresent.get()) {
+                    renderer.renderButton(screen, button, matrices, mouseX, mouseY, delta);
+                }
+            }) {
             });
         }
 

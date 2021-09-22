@@ -31,7 +31,7 @@ public class NuclearConstant {
     public static final double BASE_NEUTRON = 0.1;
     public static final int MAX_TEMPERATURE = 3250;
     public static final int EU_PER_DEGREE = 512;
-    public static final int MAX_HATCH_EU_PRODUCTION = 4096;
+    public static final int MAX_HATCH_EU_PRODUCTION = 16384;
 
     public enum ScatteringType {
         ULTRA_LIGHT(0.05),
@@ -128,7 +128,7 @@ public class NuclearConstant {
     public static final IsotopeFuelParams LE_MOX = U238.mix(Pu239, 1.0 / 9);
     public static final IsotopeFuelParams HE_MOX = U238.mix(Pu239, 1.0 / 3);
 
-    public static final IsotopeParams HYDROGEN = new IsotopeParams(0.3, 0.15, 0.5, 0.2);
-    public static final IsotopeParams DEUTERIUM = new IsotopeParams(0.02, 0.01, 0.25, 0.15);
+    public static final IsotopeParams HYDROGEN = new IsotopeParams(0.3, 0.15, 0.25, 0.6);
+    public static final IsotopeParams DEUTERIUM = new IsotopeParams(0.02, 0.01, 0.15, 0.4);
 
 }

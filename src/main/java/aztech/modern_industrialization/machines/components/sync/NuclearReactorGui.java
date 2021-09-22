@@ -23,7 +23,10 @@
  */
 package aztech.modern_industrialization.machines.components.sync;
 
+import static aztech.modern_industrialization.nuclear.NeutronType.*;
+
 import aztech.modern_industrialization.MIIdentifier;
+import aztech.modern_industrialization.compat.rei.nuclear.NeutronInteractionCategory;
 import aztech.modern_industrialization.machines.MachineScreenHandlers;
 import aztech.modern_industrialization.machines.SyncedComponent;
 import aztech.modern_industrialization.machines.SyncedComponents;
@@ -32,10 +35,12 @@ import aztech.modern_industrialization.machines.gui.ClientComponentRenderer;
 import aztech.modern_industrialization.nuclear.INuclearTileData;
 import aztech.modern_industrialization.nuclear.NeutronType;
 import aztech.modern_industrialization.nuclear.NuclearConstant;
+import aztech.modern_industrialization.nuclear.NuclearFuel;
 import aztech.modern_industrialization.util.FluidHelper;
 import aztech.modern_industrialization.util.RenderHelper;
 import aztech.modern_industrialization.util.TextHelper;
 import com.mojang.blaze3d.systems.RenderSystem;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
@@ -136,6 +141,7 @@ public class NuclearReactorGui {
 
             final int centerX = 88, centerY = 88;
             Mode currentMode = Mode.NUCLEAR_FUEL;
+            NeutronType neutronMode = BOTH;
 
             ItemStack fuelStack = new ItemStack(Registry.ITEM.get(new MIIdentifier("uranium_fuel_rod")), 1);
 
@@ -162,6 +168,10 @@ public class NuclearReactorGui {
                     new TranslatableText("text.modern_industrialization.neutron_absorption_mode"),
                     new TranslatableText("text.modern_industrialization.neutron_flux_mode"),
                     new TranslatableText("text.modern_industrialization.neutron_generation_mode") };
+
+            Text[] neutronModeTooltip = new Text[] { new TranslatableText("text.modern_industrialization.fast_neutron"),
+                    new TranslatableText("text.modern_industrialization.thermal_neutron"),
+                    new TranslatableText("text.modern_industrialization.both") };
 
             @Override
             public void renderBackground(DrawableHelper helper, MatrixStack matrices, int x, int y) {
@@ -205,17 +215,23 @@ public class NuclearReactorGui {
                                         u = (int) (299 * tileData.getTemperature() / NuclearConstant.MAX_TEMPERATURE);
                                     } else {
                                         double neutronRate;
+                                        double factor = neutronMode == BOTH ? 2 : 1;
                                         if (currentMode == Mode.NEUTRON_ABSORPTION) {
-                                            neutronRate = 5 * tileData.getMeanNeutronAbsorption(NeutronType.BOTH);
+                                            neutronRate = 5 * tileData.getMeanNeutronAbsorption(neutronMode);
                                         } else if (currentMode == Mode.NEUTRON_FLUX) {
-                                            neutronRate = tileData.getMeanNeutronFlux(NeutronType.BOTH);
+                                            neutronRate = tileData.getMeanNeutronFlux(neutronMode);
                                         } else if (currentMode == Mode.NEUTRON_GENERATION) {
-                                            neutronRate = tileData.getMeanNeutronGeneration();
+                                            if (neutronMode == THERMAL) {
+                                                neutronRate = 0;
+                                            } else {
+                                                neutronRate = tileData.getMeanNeutronGeneration();
+                                                factor = 1;
+                                            }
                                         } else {
                                             neutronRate = 0;
                                         }
                                         v = 0;
-                                        u = (int) (299 * neutronColorScheme(neutronRate));
+                                        u = (int) (299 * neutronColorScheme(factor * neutronRate));
                                     }
 
                                     RenderSystem.setShaderTexture(0, COLORBAR);
@@ -265,21 +281,75 @@ public class NuclearReactorGui {
                                 screen.renderTooltip(matrices, new TranslatableText("text.modern_industrialization.temperature", temperature),
                                         cursorX, cursorY);
                             } else {
-                                double neutronRate;
+                                double neutronRateFast;
+                                double neutronRateThermal;
 
                                 if (currentMode == Mode.NEUTRON_ABSORPTION) {
-                                    neutronRate = tileData.getMeanNeutronAbsorption(NeutronType.BOTH);
+
+                                    neutronRateFast = tileData.getMeanNeutronAbsorption(FAST);
+                                    neutronRateThermal = tileData.getMeanNeutronAbsorption(THERMAL);
+
                                 } else if (currentMode == Mode.NEUTRON_FLUX) {
-                                    neutronRate = tileData.getMeanNeutronFlux(NeutronType.BOTH);
+
+                                    neutronRateFast = tileData.getMeanNeutronFlux(FAST);
+                                    neutronRateThermal = tileData.getMeanNeutronFlux(THERMAL);
+
                                 } else if (currentMode == Mode.NEUTRON_GENERATION) {
-                                    neutronRate = tileData.getMeanNeutronGeneration();
+
+                                    neutronRateFast = tileData.getMeanNeutronGeneration();
+                                    neutronRateThermal = 0;
                                 } else {
-                                    neutronRate = 0;
+                                    neutronRateFast = 0;
+                                    neutronRateThermal = 0;
                                 }
 
+                                double neutronRate = 0;
+
+                                if (neutronMode == BOTH) {
+                                    neutronRate = neutronRateFast + neutronRateThermal;
+                                } else if (neutronMode == FAST) {
+                                    neutronRate = neutronRateFast;
+                                } else if (neutronMode == THERMAL) {
+                                    neutronRate = neutronRateThermal;
+                                }
                                 String neutronRateString = String.format("%.1f", neutronRate);
-                                screen.renderTooltip(matrices, new TranslatableText("text.modern_industrialization.neutrons_rate", neutronRateString),
-                                        cursorX, cursorY);
+                                List<Text> tooltips = new ArrayList<>();
+                                tooltips.add(new TranslatableText("text.modern_industrialization.neutrons_rate", neutronRateString));
+
+                                if (neutronMode == BOTH && neutronRate > 0 && currentMode != Mode.NEUTRON_GENERATION) {
+                                    String neutronRateFastString = String.format("%.1f", neutronRateFast);
+                                    String neutronRateThermalString = String.format("%.1f", neutronRateThermal);
+                                    String neutronRateFastFractionString = String.format(" (%.1f %%)", 100 * neutronRateFast / neutronRate);
+                                    String neutronRateThermalFractionString = String.format(" (%.1f %%)", 100 * neutronRateThermal / neutronRate);
+
+                                    if (neutronRateFast > 0) {
+                                        tooltips.add(
+                                                new LiteralText(
+                                                        new TranslatableText("text.modern_industrialization.fast_neutron").getString() + " : "
+                                                                + new TranslatableText("text.modern_industrialization.neutrons_rate",
+                                                                        neutronRateFastString).getString()
+                                                                + neutronRateFastFractionString).setStyle(TextHelper.GRAY_TEXT));
+                                    }
+                                    if (neutronRateThermal > 0) {
+                                        tooltips.add(new LiteralText(
+                                                new TranslatableText("text.modern_industrialization.thermal_neutron").getString() + " : "
+                                                        + new TranslatableText("text.modern_industrialization.neutrons_rate",
+                                                                neutronRateThermalString).getString()
+                                                        + neutronRateThermalFractionString).setStyle(TextHelper.GRAY_TEXT));
+                                    }
+                                }
+
+                                if (currentMode == Mode.NEUTRON_GENERATION) {
+                                    if (tileData.getComponent().isPresent()) {
+                                        if (tileData.getComponent().get() instanceof NuclearFuel fuel) {
+                                            double efficiencyFactor = fuel.efficiencyFactor(tileData.getTemperature());
+                                            tooltips.add(new TranslatableText("text.modern_industrialization.thermal_efficiency",
+                                                    String.format("%.1f", efficiencyFactor * 100)).setStyle(TextHelper.YELLOW));
+                                        }
+                                    }
+                                }
+
+                                screen.renderTooltip(matrices, tooltips, cursorX, cursorY);
                             }
 
                         }
@@ -287,27 +357,66 @@ public class NuclearReactorGui {
                 }
             }
 
+            private boolean drawButton() {
+                return data.valid;
+            }
+
+            private boolean drawNeutronButton() {
+                return data.valid && (currentMode == Mode.NEUTRON_FLUX || currentMode == Mode.NEUTRON_ABSORPTION);
+            }
+
+            private NeutronType nextNeutronMode() {
+                return NeutronType.TYPES[(neutronMode.index + 1) % NeutronType.TYPES.length];
+            }
+
             @Override
             public void addButtons(ButtonContainer container) {
-                container.addButton(centerX + 64, 4, 20, 20, new LiteralText(""),
-                        (i) -> currentMode = Mode.values()[(currentMode.index + 1) % Mode.values().length],
-                        () -> List.of(modeTooltip[currentMode.index],
 
-                                new TranslatableText("text.modern_industrialization.click_to_switch",
-                                        modeTooltip[(currentMode.index + 1) % Mode.values().length]).setStyle(TextHelper.GRAY_TEXT)),
-                        (screen, button, matrices, mouseX, mouseY, delta) -> {
-                            button.renderVanilla(matrices, mouseX, mouseY, delta);
-                            if (currentMode == Mode.NUCLEAR_FUEL) {
-                                ((MachineScreenHandlers.ClientScreen) screen).renderItemInGui(fuelStack, button.x + 1, button.y + 1);
-                            } else {
-                                RenderSystem.setShaderTexture(0, MachineScreenHandlers.SLOT_ATLAS);
-                                screen.drawTexture(matrices, button.x, button.y, 124 + currentMode.index * 20, 0, 20, 20);
-                            }
-                            if (button.isHovered()) {
-                                button.renderTooltip(matrices, mouseX, mouseY);
-                            }
-                        });
+                if (drawButton()) {
 
+                    container.addButton(centerX + 64, 4, 20, 20, new LiteralText(""),
+                            (i) -> currentMode = Mode.values()[(currentMode.index + 1) % Mode.values().length],
+                            () -> List.of(modeTooltip[currentMode.index],
+
+                                    new TranslatableText("text.modern_industrialization.click_to_switch",
+                                            modeTooltip[(currentMode.index + 1) % Mode.values().length]).setStyle(TextHelper.GRAY_TEXT)),
+                            (screen, button, matrices, mouseX, mouseY, delta) -> {
+                                button.renderVanilla(matrices, mouseX, mouseY, delta);
+                                if (currentMode == Mode.NUCLEAR_FUEL) {
+                                    ((MachineScreenHandlers.ClientScreen) screen).renderItemInGui(fuelStack, button.x + 1, button.y + 1);
+                                } else {
+                                    RenderSystem.setShaderTexture(0, MachineScreenHandlers.SLOT_ATLAS);
+                                    screen.drawTexture(matrices, button.x, button.y, 124 + currentMode.index * 20, 0, 20, 20);
+                                }
+                                if (button.isHovered()) {
+                                    button.renderTooltip(matrices, mouseX, mouseY);
+                                }
+
+                            });
+
+                    container
+                            .addButton(centerX + 64, 150, 20, 20, new LiteralText(""), (i) -> neutronMode = nextNeutronMode(),
+                                    () -> List.of(neutronModeTooltip[neutronMode.index],
+                                            new TranslatableText("text.modern_industrialization.click_to_switch",
+                                                    neutronModeTooltip[nextNeutronMode().index]).setStyle(TextHelper.GRAY_TEXT)),
+                                    (screen, button, matrices, mouseX, mouseY, delta) -> {
+
+                                        button.renderVanilla(matrices, mouseX, mouseY, delta);
+                                        RenderSystem.setShaderTexture(0, NeutronInteractionCategory.TEXTURE_ATLAS);
+
+                                        if (neutronMode == FAST) {
+                                            screen.drawTexture(matrices, button.x + 2, button.y + 2, 0, 240, 16, 16);
+                                        } else if (neutronMode == NeutronType.THERMAL) {
+                                            screen.drawTexture(matrices, button.x + 2, button.y + 2, 160, 240, 16, 16);
+                                        } else if (neutronMode == BOTH) {
+                                            screen.drawTexture(matrices, button.x + 2, button.y + 2, 80, 240, 16, 16);
+                                        }
+
+                                        if (button.isHovered()) {
+                                            button.renderTooltip(matrices, mouseX, mouseY);
+                                        }
+                                    }, this::drawNeutronButton);
+                }
             }
 
         }

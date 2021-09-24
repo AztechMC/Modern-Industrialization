@@ -160,16 +160,14 @@ public final class MIItem {
 
     public static final Item ITEM_SCREWDRIVER = of("screwdriver", 1, true);
     public static final Item ITEM_WRENCH = of(WrenchItem::new, "wrench", 1, true);
-    public static final JetpackItem ITEM_DIESEL_JETPACK = (JetpackItem) of(JetpackItem::new, "diesel_jetpack", 1, (item) -> FluidStorage.ITEM
-            .registerForItems((stack, ctx) -> new FluidFuelItemHelper.ItemStorage(JetpackItem.CAPACITY, stack, ctx), item));
+    public static final JetpackItem ITEM_DIESEL_JETPACK = (JetpackItem) of(JetpackItem::new, "diesel_jetpack", 1,
+            (item) -> FluidStorage.ITEM.registerForItems((stack, ctx) -> new FluidFuelItemHelper.ItemStorage(JetpackItem.CAPACITY, ctx), item));
     public static final DieselToolItem ITEM_DIESEL_CHAINSAW = (DieselToolItem) of(DieselToolItem::new, "diesel_chainsaw", 1,
-            (item) -> FluidStorage.ITEM.registerForItems((stack, ctx) -> new FluidFuelItemHelper.ItemStorage(DieselToolItem.CAPACITY, stack, ctx),
-                    item),
+            (item) -> FluidStorage.ITEM.registerForItems((stack, ctx) -> new FluidFuelItemHelper.ItemStorage(DieselToolItem.CAPACITY, ctx), item),
             true);
 
     public static final DieselToolItem ITEM_DIESEL_MINING_DRILL = (DieselToolItem) of(DieselToolItem::new, "diesel_mining_drill", 1,
-            (item) -> FluidStorage.ITEM.registerForItems((stack, ctx) -> new FluidFuelItemHelper.ItemStorage(DieselToolItem.CAPACITY, stack, ctx),
-                    item),
+            (item) -> FluidStorage.ITEM.registerForItems((stack, ctx) -> new FluidFuelItemHelper.ItemStorage(DieselToolItem.CAPACITY, ctx), item),
             true);
 
     public static final SteamDrillItem ITEM_STEAM_MINING_DRILL = (SteamDrillItem) of(SteamDrillItem::new, "steam_mining_drill", 1, true);

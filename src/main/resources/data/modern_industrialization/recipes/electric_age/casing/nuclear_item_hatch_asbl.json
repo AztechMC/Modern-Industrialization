@@ -11,10 +11,10 @@
     },
 
     "C" : {
-      "item" : "modern_industrialization:turbo_machine_hull"
+      "item" : "modern_industrialization:highly_advanced_item_input_hatch"
     }
   },
   "result": {
-    "item": "modern_industrialization:nuclear_casing"
+    "item": "modern_industrialization:nuclear_item_hatch"
   }
 }

@@ -24,9 +24,9 @@
 package aztech.modern_industrialization.materials.recipe;
 
 import static aztech.modern_industrialization.materials.part.MIParts.*;
-import static aztech.modern_industrialization.materials.part.MIParts.INGOT;
 
 import aztech.modern_industrialization.materials.MaterialBuilder;
+import aztech.modern_industrialization.materials.recipe.builder.MIRecipeBuilder;
 import aztech.modern_industrialization.materials.recipe.builder.SmeltingRecipeBuilder;
 
 /**
@@ -44,6 +44,28 @@ public final class SmeltingRecipes {
         SmeltingRecipeBuilder.smeltAndBlast(ctx, RAW_METAL, INGOT, 0.7);
         SmeltingRecipeBuilder.smeltAndBlast(ctx, ORE, GEM, 0.7);
         SmeltingRecipeBuilder.smeltAndBlast(ctx, ORE_DEEPLSATE, GEM, 0.7);
+    }
+
+    public static void applyBlastFurnace(MaterialBuilder.RecipeContext ctx, boolean hotIngot, int eu, int duration) {
+        if (hotIngot) {
+            new MIRecipeBuilder(ctx, "blast_furnace", "dust", eu, duration).addTaggedPartInput(DUST, 1).addPartOutput(HOT_INGOT, 1);
+        } else {
+            new MIRecipeBuilder(ctx, "blast_furnace", "dust", eu, duration).addTaggedPartInput(DUST, 1).addPartOutput(INGOT, 1);
+            new MIRecipeBuilder(ctx, "blast_furnace", "tiny_dust", eu, duration / 10).addTaggedPartInput(TINY_DUST, 1).addPartOutput(NUGGET, 1);
+        }
+
+    }
+
+    public static void applyBlastFurnace(MaterialBuilder.RecipeContext ctx, boolean hotIngot, int eu) {
+        applyBlastFurnace(ctx, hotIngot, eu, 200);
+    }
+
+    public static void applyBlastFurnace(MaterialBuilder.RecipeContext ctx, int eu) {
+        applyBlastFurnace(ctx, false, eu);
+    }
+
+    public static void applyBlastFurnace(MaterialBuilder.RecipeContext ctx) {
+        applyBlastFurnace(ctx, 32);
     }
 
     private SmeltingRecipes() {

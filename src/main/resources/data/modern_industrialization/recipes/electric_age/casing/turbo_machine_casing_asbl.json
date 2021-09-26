@@ -7,7 +7,7 @@
   ],
   "key": {
     "A" : {
-      "item" : "modern_industrialization:stainless_steel_large_plate"
+      "tag" : "c:stainless_steel_plates"
     },
     "H" : {
       "item" : "modern_industrialization:advanced_machine_hull"

@@ -5,10 +5,14 @@
   "item_inputs" : [
     {
       "item" : "modern_industrialization:blastproof_alloy_plate",
-      "amount" : 2
+      "amount" : 1
     },
     {
       "tag" : "c:beryllium_plates",
+      "amount" : 1
+    },
+    {
+      "tag" : "c:cadmium_plates",
       "amount" : 1
     }
   ],

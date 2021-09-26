@@ -117,7 +117,7 @@ public class FluidGUIComponent {
                     }
                 }
                 RenderSystem.setShaderTexture(0, MachineScreenHandlers.SLOT_ATLAS);
-                helper.drawTexture(matrices, x + posX + 7, y + posY + 6, 60, 38, 32, 49);
+                helper.drawTexture(matrices, x + posX + 7, y + posY + 7, 60, 38, 32, 48);
 
             }
 

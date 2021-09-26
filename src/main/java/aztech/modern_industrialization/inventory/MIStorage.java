@@ -96,21 +96,49 @@ public class MIStorage<T, K extends TransferVariant<T>, S extends AbstractConfig
         return totalInserted;
     }
 
+    public long insertAllSlot(K resource, long maxAmount, TransactionContext tx) {
+        return insert(resource, maxAmount, tx, (slot) -> true, false);
+    }
+
     @Override
     public long insert(K resource, long maxAmount, TransactionContext transaction) {
         return insert(resource, maxAmount, transaction, AbstractConfigurableStack::canPipesInsert, false);
     }
 
-    @Override
-    public long extract(K resource, long maxAmount, TransactionContext transaction) {
+    public long extract(K resource, long maxAmount, TransactionContext transaction, Predicate<? super S> filter) {
         StoragePreconditions.notBlankNotNegative(resource, maxAmount);
         long amount = 0;
-
         for (int i = 0; i < stacks.size() && amount < maxAmount; ++i) {
+            if (!filter.test(stacks.get(i))) {
+                continue;
+            }
             amount += stacks.get(i).extract(resource, maxAmount - amount, transaction);
         }
-
         return amount;
+    }
+
+    @Override
+    public long extract(K resource, long maxAmount, TransactionContext transaction) {
+        return extract(resource, maxAmount, transaction, (slot) -> true);
+    }
+
+    /*
+     * Ignore requirement for slot to have pipeExtract = true
+     */
+    public long extractAllSlot(K resource, long maxAmount, TransactionContext transaction, Predicate<? super S> filter) {
+        StoragePreconditions.notBlankNotNegative(resource, maxAmount);
+        long amount = 0;
+        for (int i = 0; i < stacks.size() && amount < maxAmount; ++i) {
+            if (!filter.test(stacks.get(i))) {
+                continue;
+            }
+            amount += stacks.get(i).extractDirect(resource, maxAmount - amount, transaction);
+        }
+        return amount;
+    }
+
+    public long extractAllSlot(K resource, long maxAmount, TransactionContext transaction) {
+        return extractAllSlot(resource, maxAmount, transaction, (slot) -> true);
     }
 
     @SuppressWarnings({ "unchecked", "rawtypes" })

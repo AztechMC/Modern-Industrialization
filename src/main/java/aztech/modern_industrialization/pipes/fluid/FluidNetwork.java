@@ -67,7 +67,7 @@ public class FluidNetwork extends PipeNetwork {
                 loadedNodeCount++;
             }
         }
-        long networkCapacity = loadedNodeCount * nodeCapacity;
+        long networkCapacity = (long) loadedNodeCount * nodeCapacity;
         FluidVariant fluid = ((FluidNetworkData) data).fluid;
         // If the fluid is EMPTY we stop here
         if (fluid.isBlank()) {

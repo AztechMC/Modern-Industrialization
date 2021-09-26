@@ -25,101 +25,99 @@ package aztech.modern_industrialization.nuclear;
 
 import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.MIItem;
-import aztech.modern_industrialization.machines.blockentities.hatches.NuclearHatch;
 import aztech.modern_industrialization.util.TextHelper;
 import java.util.List;
+import java.util.Random;
+import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.minecraft.client.item.TooltipContext;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NbtCompound;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
 
-public class NuclearFuel extends NuclearComponent {
+public class NuclearFuel extends NuclearAbsorbable {
 
-    public final double neutronByDesintegration;
-    public final int euByDesintegration;
-    public final int desintegrationMax;
-    public final int desintegrationByNeutron;
-    public final String depleted;
+    public final double directEnergyFactor;
+    public final double neutronMultiplicationFactor;
 
-    public NuclearFuel(Settings settings, int maxTemperature, int desintegrationByNeutron, double neutronByDesintegration, double neutronAbs_,
-            int euByDesintegration, int desintegrationMax, String depleted) {
-        super(settings, maxTemperature, 0, new INeutronBehaviour() {
-            @Override
-            public double getNeutronAbs() {
-                return neutronAbs_;
-            }
+    public final String depletedVersionId;
 
-            @Override
-            public double getNeutronDiff(int angle) {
-                return angle == 2 ? 1.0 : 0;
-            }
-        });
-        this.neutronByDesintegration = neutronByDesintegration;
-        this.euByDesintegration = euByDesintegration;
-        this.desintegrationMax = desintegrationMax;
-        this.desintegrationByNeutron = desintegrationByNeutron;
-        this.depleted = depleted;
+    public final int size;
+
+    public final int directEUbyDesintegration;
+    public final int totalEUbyDesintegration;
+
+    public final int tempLimitLow;
+    public final int tempLimitHigh;
+
+    public final static record NuclearFuelParams(int desintegrationMax, int maxTemperature, int tempLimitLow, int tempLimitHigh,
+            double neutronMultiplicationFactor, double directEnergyFactor, int size) {
     }
 
-    public static NuclearFuel of(String id, int maxTemperature, int desintegrationByNeutron, double neutronByDesintegration, double neutronAbs,
-            int euByDesintegration, int desintegrationMax, String depleted) {
-        return (NuclearFuel) MIItem.of((Settings settings) -> new NuclearFuel(settings, maxTemperature, desintegrationByNeutron,
-                neutronByDesintegration, neutronAbs, euByDesintegration, desintegrationMax, depleted), id, 1);
+    public NuclearFuel(Settings settings, NuclearFuelParams params, INeutronBehaviour neutronBehaviour, String depletedVersionId) {
+
+        this(settings, params.desintegrationMax, params.maxTemperature, params.tempLimitLow, params.tempLimitHigh, params.neutronMultiplicationFactor,
+                params.directEnergyFactor, neutronBehaviour, params.size, depletedVersionId);
+
     }
 
-    public Item getDepleted() {
-        return Registry.ITEM.getOrEmpty(new MIIdentifier(depleted)).get();
+    private static int clampTemp(int temperature) {
+        return 50 * (int) (temperature / 50d);
+    }
+
+    private NuclearFuel(Settings settings, int desintegrationMax, int maxTemperature, int tempLimitLow, int tempLimitHigh,
+            double neutronMultiplicationFactor, double directEnergyFactor, INeutronBehaviour neutronBehaviour, int size, String depletedVersionId) {
+
+        super(settings, clampTemp(maxTemperature), 0.8 * NuclearConstant.BASE_HEAT_CONDUCTION, neutronBehaviour, desintegrationMax);
+
+        this.size = size;
+        this.directEnergyFactor = directEnergyFactor;
+        this.neutronMultiplicationFactor = neutronMultiplicationFactor;
+        this.depletedVersionId = depletedVersionId;
+
+        this.tempLimitLow = clampTemp(tempLimitLow);
+        this.tempLimitHigh = clampTemp(tempLimitHigh);
+
+        this.directEUbyDesintegration = (int) (NuclearConstant.EU_FOR_FAST_NEUTRON * directEnergyFactor * neutronMultiplicationFactor);
+        this.totalEUbyDesintegration = (int) (NuclearConstant.EU_FOR_FAST_NEUTRON * (1.0 + directEnergyFactor) * neutronMultiplicationFactor);
+
+    }
+
+    public static NuclearFuel of(String id, NuclearFuelParams params, INeutronBehaviour neutronBehaviour, String depletedVersionId) {
+
+        return (NuclearFuel) MIItem.of((Settings settings) -> new NuclearFuel(settings, params, neutronBehaviour, depletedVersionId), id, 1);
+    }
+
+    @Override
+    public ItemVariant getNeutronProduct() {
+        return ItemVariant.of(Registry.ITEM.getOrEmpty(new MIIdentifier(depletedVersionId)).get());
+    }
+
+    @Override
+    public long getNeutronProductAmount() {
+        return size;
     }
 
     @Override
     public void appendTooltip(ItemStack stack, World world, List<Text> tooltip, TooltipContext context) {
         super.appendTooltip(stack, world, tooltip, context);
-
-        tooltip.add(new TranslatableText("text.modern_industrialization.neutrons_by_desintegration", String.format("%.2f", neutronByDesintegration))
-                .setStyle(TextHelper.NEUTRONS));
-        tooltip.add(new TranslatableText("text.modern_industrialization.desintegrations_by_neutron", desintegrationByNeutron)
-                .setStyle(TextHelper.NEUTRONS));
-        tooltip.add(new TranslatableText("text.modern_industrialization.heat_by_desintegration",
-                String.format("%.2f", (double) euByDesintegration / NuclearHatch.EU_PER_DEGREE)).setStyle(TextHelper.HEAT_CONDUCTION));
-        tooltip.add(new TranslatableText("text.modern_industrialization.eu_by_desintegration", euByDesintegration).setStyle(TextHelper.EU_TEXT));
-
-        long totalEu = euByDesintegration * desintegrationMax;
+        long totalEu = (long) totalEUbyDesintegration * desintegrationMax;
         tooltip.add(new TranslatableText("text.modern_industrialization.base_eu_total_double", TextHelper.getEuString(totalEu),
                 TextHelper.getEuUnit(totalEu)).setStyle(TextHelper.EU_TEXT));
-
-        tooltip.add(new TranslatableText("text.modern_industrialization.rem_desintegration", getRemDes(stack), desintegrationMax)
-                .setStyle(TextHelper.GRAY_TEXT));
-
     }
 
-    public int getRemDes(ItemStack stack) {
-        NbtCompound tag = stack.getTag();
-        if (tag == null || !tag.contains("desRem")) {
-            return desintegrationMax;
+    public double efficiencyFactor(double temperature) {
+        double factor = 1;
+        if (temperature > tempLimitLow) {
+            factor = Math.max(0, 1 - (temperature - tempLimitLow) / (tempLimitHigh - tempLimitLow));
         }
-        return tag.getInt("desRem");
+        return factor;
     }
 
-    @Override
-    public boolean isItemBarVisible(ItemStack stack) {
-        return true;
+    public int simulateDesintegration(double neutronsReceived, ItemStack stack, double temperature, Random rand) {
+        return randIntFromDouble(efficiencyFactor(temperature) * simulateAbsorption(neutronsReceived, stack, rand) * neutronMultiplicationFactor,
+                rand);
     }
 
-    @Override
-    public int getItemBarStep(ItemStack stack) {
-        return (int) Math.round(getDurabilityBarProgress(stack) * 13);
-    }
-
-    public double getDurabilityBarProgress(ItemStack stack) {
-        NbtCompound tag = stack.getTag();
-        if (tag == null || !tag.contains("desRem")) {
-            return 1.0d;
-        } else {
-            return (double) tag.getInt("desRem") / desintegrationMax;
-        }
-    }
 }

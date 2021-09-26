@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 import net.minecraft.client.gui.DrawableHelper;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
 
@@ -55,5 +56,21 @@ public interface ClientComponentRenderer {
          *                        currently pressed.
          */
         void addButton(int u, Text message, Consumer<Integer> pressAction, Supplier<List<Text>> tooltipSupplier, Supplier<Boolean> isPressed);
+
+        void addButton(int posX, int posY, int width, int height, Text message, Consumer<Integer> pressAction, Supplier<List<Text>> tooltipSupplier,
+                CustomButtonRenderer renderer, Supplier<Boolean> isButtonPresent);
+
+        default void addButton(int posX, int posY, int width, int height, Text message, Consumer<Integer> pressAction,
+                Supplier<List<Text>> tooltipSupplier, CustomButtonRenderer renderer) {
+            addButton(posX, posY, width, height, message, pressAction, tooltipSupplier, renderer, () -> true);
+        }
+
     }
+
+    @FunctionalInterface
+    interface CustomButtonRenderer {
+        void renderButton(Screen screen, MachineScreenHandlers.ClientScreen.MachineButton button, MatrixStack matrices, int mouseX, int mouseY,
+                float delta);
+    }
+
 }

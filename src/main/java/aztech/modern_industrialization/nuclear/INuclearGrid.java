@@ -23,27 +23,18 @@
  */
 package aztech.modern_industrialization.nuclear;
 
+import java.util.Optional;
+
 public interface INuclearGrid {
 
     int getSizeX();
 
     int getSizeY();
 
-    boolean isFuel(int x, int y);
+    Optional<INuclearTile> getNuclearTile(int x, int y);
 
-    double sendNeutron(int x, int y, int neutron);
+    void registerNeutronFate(int neutronNumber, NeutronType type, NeutronFate escape);
 
-    double getFracDiffusedNeutron(int i, int j);
+    void registerNeutronCreation(int neutronNumber, NeutronType type);
 
-    double getNeutronDiffusionAnisotropy(int x, int y, int angle);
-
-    double getTemperature(int x, int y);
-
-    boolean ok(int x, int y);
-
-    double getHeatTransferCoeff(int x, int y);
-
-    void setTemperature(int x, int y, double temp);
-
-    void tick(int x, int y);
 }

@@ -82,7 +82,7 @@ public final class MITextures {
                             mtm.getAssetAsTexture("modern_industrialization:textures/items/tungsten_ingot.png")));
 
             mtm.addTexture("modern_industrialization:textures/items/mixed_plate_nuclear.png",
-                    TextureHelper.tripleTexture(mtm.getAssetAsTexture("modern_industrialization:textures/items/blastproof_alloy_plate.png"),
+                    TextureHelper.tripleTexture(mtm.getAssetAsTexture("modern_industrialization:textures/items/cadmium_plate.png"),
                             mtm.getAssetAsTexture("modern_industrialization:textures/items/beryllium_plate.png"),
                             mtm.getAssetAsTexture("modern_industrialization:textures/items/blastproof_alloy_plate.png"), 1, 2));
 

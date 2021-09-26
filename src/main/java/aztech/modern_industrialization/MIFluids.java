@@ -30,7 +30,6 @@ import aztech.modern_industrialization.fluid.CraftingFluid;
 import java.util.ArrayList;
 import net.devtech.arrp.json.models.JModel;
 import net.devtech.arrp.json.models.JTextures;
-import net.minecraft.text.*;
 import net.minecraft.util.registry.Registry;
 
 public class MIFluids {
@@ -81,7 +80,7 @@ public class MIFluids {
     public static final CraftingFluid SYNTHETIC_RUBBER = new CraftingFluid("synthetic_rubber", 0xff1a1a1a);
     public static final CraftingFluid TOLUENE = new CraftingFluid("toluene", 0xff9ce6ed);
     public static final CraftingFluid VINYL_CHLORIDE = new CraftingFluid("vinyl_chloride", 0xffeda7d9);
-    public static final CraftingFluid HELIUM = new CraftingFluid("helium", 0xffe6e485);
+    public static final CraftingFluid HELIUM = new CraftingFluid("helium", 0xffe6e485, true);
     public static final CraftingFluid ARGON = new CraftingFluid("argon", 0xffe339a7, true);
     public static final CraftingFluid HELIUM_3 = new CraftingFluid("helium_3", 0xff83de52, true);
     public static final CraftingFluid DEUTERIUM = new CraftingFluid("deuterium", 0xff941bcc, true);
@@ -100,6 +99,7 @@ public class MIFluids {
     public static final CraftingFluid CREOSOTE = new CraftingFluid("creosote", 0xff636050);
     public static final CraftingFluid LIQUID_AIR = new CraftingFluid("liquid_air", 0xff76c7f9);
     public static final CraftingFluid NITROGEN = new CraftingFluid("nitrogen", 0xff4491a6, true);
+    public static final CraftingFluid CRYOFLUID = new CraftingFluid("cryofluid", 0xff7dd1ff);
 
     public static void setupFluids() {
 

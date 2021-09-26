@@ -110,6 +110,9 @@ public class TemperatureBar {
                         6, 102);
                 int barPixels = (int) ((float) temperature / params.temperatureMax * WIDTH);
                 DrawableHelper.drawTexture(matrices, x + params.renderX, y + params.renderY, helper.getZOffset(), 0, 0, barPixels, HEIGHT, 6, 102);
+                RenderSystem.setShaderTexture(0, MachineScreenHandlers.SLOT_ATLAS);
+                helper.drawTexture(matrices, x + params.renderX - 22, y + params.renderY + HEIGHT / 2 - 10, 144, 0, 20, 20);
+
             }
 
             @Override

@@ -172,4 +172,5 @@ public final class MIItem {
 
     public static final SteamDrillItem ITEM_STEAM_MINING_DRILL = (SteamDrillItem) of(SteamDrillItem::new, "steam_mining_drill", 1, true);
     public static final Item ITEM_CROWBAR = of(CrowbarItem::new, "crowbar", 1, true);
+
 }

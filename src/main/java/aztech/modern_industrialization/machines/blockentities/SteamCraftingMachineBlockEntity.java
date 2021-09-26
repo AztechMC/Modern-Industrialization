@@ -79,7 +79,7 @@ public class SteamCraftingMachineBlockEntity extends AbstractCraftingMachineBloc
     @Override
     public long getMaxRecipeEu() {
         if (gunpowderOverclock.isOverclocked()) {
-            return tier.getMaxEu() * 2;
+            return tier.getMaxEu() * 2L;
         } else {
             return tier.getMaxEu();
         }
@@ -89,7 +89,7 @@ public class SteamCraftingMachineBlockEntity extends AbstractCraftingMachineBloc
     @Override
     public long getBaseRecipeEu() {
         if (gunpowderOverclock.isOverclocked()) {
-            return tier.getBaseEu() * 2;
+            return tier.getBaseEu() * 2L;
         } else {
             return tier.getBaseEu();
         }

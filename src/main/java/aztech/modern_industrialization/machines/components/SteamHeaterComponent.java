@@ -25,12 +25,15 @@ package aztech.modern_industrialization.machines.components;
 
 import aztech.modern_industrialization.MIFluids;
 import aztech.modern_industrialization.inventory.ConfigurableFluidStack;
+import aztech.modern_industrialization.inventory.MIFluidStorage;
 import java.util.List;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
+import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.Fluids;
 
 public class SteamHeaterComponent extends TemperatureComponent {
+
     private static final int STEAM_TO_WATER = 16;
 
     /**
@@ -63,6 +66,7 @@ public class SteamHeaterComponent extends TemperatureComponent {
     }
 
     public void tick(List<ConfigurableFluidStack> fluidInputs, List<ConfigurableFluidStack> fluidOutputs) {
+
         if (acceptLowPressure) {
             if (!tryMakeSteam(fluidInputs, fluidOutputs, Fluids.WATER, MIFluids.STEAM, 1)) {
                 tryMakeSteam(fluidInputs, fluidOutputs, MIFluids.HEAVY_WATER, MIFluids.HEAVY_WATER_STEAM, 1);
@@ -75,63 +79,41 @@ public class SteamHeaterComponent extends TemperatureComponent {
         }
     }
 
-    // Return true if any steam was made.
-    private boolean tryMakeSteam(List<ConfigurableFluidStack> fluidInputs, List<ConfigurableFluidStack> fluidOutputs, Fluid water, Fluid steam,
+    private boolean tryMakeSteam(List<ConfigurableFluidStack> input, List<ConfigurableFluidStack> output, Fluid water, Fluid steam,
             int euPerSteamMb) {
+        return tryMakeSteam(new MIFluidStorage(input), new MIFluidStorage(output), water, steam, euPerSteamMb);
+
+    }
+
+    // Return true if any steam was made.
+    private boolean tryMakeSteam(MIFluidStorage input, MIFluidStorage output, Fluid water, Fluid steam, int euPerSteamMb) {
+
         FluidVariant waterKey = FluidVariant.of(water);
         FluidVariant steamKey = FluidVariant.of(steam);
 
         if (getTemperature() > 100d) {
             long steamProduction = (long) (81 * (getTemperature() - 100d) / (temperatureMax - 100d) * maxEuProduction / euPerSteamMb);
 
-            // Check how much water and steam are available
-            long availableWater = 0;
-            for (ConfigurableFluidStack fluidStack : fluidInputs) {
-                if (fluidStack.getResource().equals(waterKey)) {
-                    availableWater += fluidStack.getAmount();
+            try (Transaction tx = Transaction.openOuter()) {
+                long inserted;
+                try (Transaction simul = Transaction.openNested(tx)) { // insertion Simulation
+                    inserted = output.insertAllSlot(steamKey, steamProduction, simul);
+                }
+                if (inserted > 0) {
+                    long extracted = input.extractAllSlot(waterKey, inserted / STEAM_TO_WATER, tx);
+                    if (extracted > 0) {
+                        if (output.insertAllSlot(steamKey, extracted * STEAM_TO_WATER, tx) == extracted * STEAM_TO_WATER) {
+                            double euProduced = extracted * STEAM_TO_WATER * euPerSteamMb / 81d;
+                            decreaseTemperature(euProduced / euPerDegree);
+                            tx.commit();
+                            return true;
+                        } else {
+                            throw new IllegalStateException("Steam Component : Logic bug: failed to insert");
+                        }
+                    }
                 }
             }
-
-            long remainingSpaceForSteam = 0;
-            for (ConfigurableFluidStack fluidStack : fluidOutputs) {
-                if (fluidStack.isResourceAllowedByLock(steamKey)) {
-                    remainingSpaceForSteam += fluidStack.getRemainingSpace();
-                }
-            }
-
-            // Compute steam production
-            long effSteamProduced = Math.min(Math.min(steamProduction, availableWater * STEAM_TO_WATER), remainingSpaceForSteam);
-            if (effSteamProduced == 0) {
-                return false;
-            }
-            // Lose temperature accordingly
-            double euProduced = effSteamProduced * euPerSteamMb / 81d;
-            decreaseTemperature(euProduced / euPerDegree);
-
-            // Consume water and produce steam
-            // (always consume at least 1 mb = 81 dp)
-            long remainingWaterToConsume = Math.max((long) Math.ceil((double) effSteamProduced / STEAM_TO_WATER), 81);
-            for (ConfigurableFluidStack fluidStack : fluidInputs) {
-                if (fluidStack.getResource().equals(waterKey)) {
-                    long decrement = Math.min(fluidStack.getAmount(), remainingWaterToConsume);
-                    remainingWaterToConsume -= decrement;
-                    fluidStack.decrement(decrement);
-                }
-            }
-
-            long remainingSteamToProduce = effSteamProduced;
-            for (ConfigurableFluidStack fluidStack : fluidOutputs) {
-                if (fluidStack.isResourceAllowedByLock(steamKey)) {
-                    long increment = Math.min(fluidStack.getRemainingSpace(), remainingSteamToProduce);
-                    remainingSteamToProduce -= increment;
-                    fluidStack.setKey(steamKey);
-                    fluidStack.increment(increment);
-                }
-            }
-
-            return true;
-        } else {
-            return false;
         }
+        return false;
     }
 }

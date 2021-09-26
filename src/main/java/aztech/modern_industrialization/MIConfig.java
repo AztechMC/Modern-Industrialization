@@ -48,7 +48,6 @@ public class MIConfig implements ConfigData {
     public boolean respawnWithGuideBook = true;
     public boolean disableFuelTooltips = false;
     public boolean disableItemTagTooltips = false;
-    public boolean enableEasyMode = true;
     public boolean newVersionMessage = true;
 
     @ConfigEntry.BoundedDiscrete(min = 0, max = 20)

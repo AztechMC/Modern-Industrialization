@@ -43,13 +43,16 @@ import net.minecraft.world.WorldView;
 public class CraftingFluid extends Fluid {
     public final Item bucketItem;
     public final String name;
+    public final String id;
     public final int color;
     public final boolean isGas;
     private final CraftingFluidBlock block;
 
     public CraftingFluid(String name, int color, boolean isGas) {
         this.color = color;
+
         this.name = name;
+        this.id = "modern_industrialization:" + name;
         this.isGas = isGas;
         bucketItem = new MIBucketItem(this, new Item.Settings().recipeRemainder(Items.BUCKET).maxCount(1).group(ModernIndustrialization.ITEM_GROUP));
         this.block = new CraftingFluidBlock(name, color);

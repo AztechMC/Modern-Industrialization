@@ -1,0 +1,24 @@
+{
+  "type": "modern_industrialization:centrifuge",
+
+  "eu": 32,
+  "duration": 6000,
+
+  "item_inputs": {
+    "item": "modern_industrialization:he_mox_fuel_rod_depleted",
+    "amount": 1
+  },
+
+  "item_outputs":
+    [
+      {
+        "item": "modern_industrialization:uranium_238_tiny_dust",
+        "amount": 36
+      },
+      {
+        "item": "modern_industrialization:plutonium_tiny_dust",
+        "amount": 36
+      }
+    ]
+
+}

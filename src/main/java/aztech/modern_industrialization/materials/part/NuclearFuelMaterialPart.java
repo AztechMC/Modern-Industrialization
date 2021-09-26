@@ -23,8 +23,12 @@
  */
 package aztech.modern_industrialization.materials.part;
 
+import static aztech.modern_industrialization.nuclear.NuclearFuel.NuclearFuelParams;
+
 import aztech.modern_industrialization.MIItem;
 import aztech.modern_industrialization.materials.MaterialBuilder;
+import aztech.modern_industrialization.nuclear.INeutronBehaviour;
+import aztech.modern_industrialization.nuclear.NuclearConstant;
 import aztech.modern_industrialization.nuclear.NuclearFuel;
 import aztech.modern_industrialization.textures.MITextures;
 import aztech.modern_industrialization.textures.TextureManager;
@@ -36,54 +40,89 @@ import java.util.function.Function;
 
 public class NuclearFuelMaterialPart implements MaterialPart {
 
-    private static final int SIMPLE = 1, DOUBLE = 2, QUAD = 4;
+    public enum Type {
+        DEPLETED(0),
+        SIMPLE(1),
+        DOUBLE(2),
+        QUAD(4);
+
+        public final int size;
+
+        Type(int size) {
+            this.size = size;
+        }
+
+        public static final Type[] NOT_DEPLETED = new Type[] { SIMPLE, DOUBLE, QUAD };
+    }
+
+    private final Type type;
     private final String id;
     private final String partSimple;
     private final String part;
     private final String itemPath;
     private final Coloramp coloramp;
-    private final boolean depleted;
+    private final String material;
 
     private final NuclearFuelParams params;
+    private final INeutronBehaviour neutronBehaviour;
 
-    private record NuclearFuelParams(int maxTemperature, int desintegrationByNeutron, double neutronByDesintegration, double neutronAbs,
-            int euByDesintegration, int desintegrationMax) {
+    public static Function<MaterialBuilder.PartContext, MaterialPart> of(Type type, NuclearFuelParams params, INeutronBehaviour neutronBehaviour) {
+
+        return ctx -> new NuclearFuelMaterialPart(ctx.getMaterialName(), type, ctx.getColoramp(), params, neutronBehaviour);
     }
 
-    public static Function<MaterialBuilder.PartContext, MaterialPart> of(int quantity, boolean depleted, NuclearFuelParams params) {
-        return ctx -> new NuclearFuelMaterialPart(ctx.getMaterialName(), quantity, depleted, ctx.getColoramp(), params);
+    public static Function<MaterialBuilder.PartContext, MaterialPart> ofDepleted() {
+
+        return ctx -> new NuclearFuelMaterialPart(ctx.getMaterialName(), Type.DEPLETED, ctx.getColoramp(), null, null);
     }
 
-    public NuclearFuelMaterialPart(String material, int quantity, boolean depleted, Coloramp coloramp, NuclearFuelParams params) {
-        partSimple = (quantity == SIMPLE ? MIParts.FUEL_ROD : (quantity == DOUBLE ? MIParts.FUEL_ROD_DOUBLE : MIParts.FUEL_ROD_QUAD));
-        part = partSimple + (depleted ? "_depleted" : "");
+    public NuclearFuelMaterialPart(String material, Type type, Coloramp coloramp, NuclearFuelParams params, INeutronBehaviour neutronBehaviour) {
+
+        this.material = material;
+
+        if (type == Type.DEPLETED) {
+            partSimple = MIParts.FUEL_ROD;
+            part = MIParts.FUEL_ROD_DEPLETED;
+        } else {
+            partSimple = (type == Type.SIMPLE ? MIParts.FUEL_ROD : (type == Type.DOUBLE ? MIParts.FUEL_ROD_DOUBLE : MIParts.FUEL_ROD_QUAD));
+            part = partSimple;
+        }
+
         itemPath = material + "_" + part;
         id = "modern_industrialization:" + itemPath;
-        if (!depleted) {
+
+        if (type != Type.DEPLETED) {
             this.coloramp = coloramp;
         } else {
             this.coloramp = new ColorampDepleted(coloramp);
         }
-        this.depleted = depleted;
+
+        this.type = type;
         this.params = params;
+        this.neutronBehaviour = neutronBehaviour;
 
     }
 
-    public static Function<MaterialBuilder.PartContext, MaterialPart>[] of(int maxTemperature, double neutronByDesintegration, double neutronAbs,
-            int euByDesintegration, int desintegrationMax) {
+    public static Function<MaterialBuilder.PartContext, MaterialPart>[] of(int desintegrationMax, NuclearConstant.IsotopeFuelParams params) {
 
         List<Function<MaterialBuilder.PartContext, MaterialPart>> result = new ArrayList<>();
-        result.add((of(SIMPLE, true, null)));
-        result.add((of(DOUBLE, true, null)));
-        result.add(of(QUAD, true, null));
-        for (int i : new int[] { SIMPLE, DOUBLE, QUAD }) {
-            NuclearFuelParams params = new NuclearFuelParams(maxTemperature,
-                    (int) ((1 - Math.pow(neutronByDesintegration, i)) / ((1 - neutronByDesintegration))), neutronByDesintegration,
-                    1 - Math.pow((1.0 - neutronAbs), Math.sqrt(i)), euByDesintegration, desintegrationMax * i);
-            result.add(of(i, false, params));
+        result.add(ofDepleted());
+
+        for (Type type : Type.NOT_DEPLETED) {
+            NuclearFuelParams fuelParams = new NuclearFuelParams(desintegrationMax * type.size, params.maxTemp, params.tempLimitLow,
+                    params.tempLimitHigh, params.neutronsMultiplication, params.directEnergyFactor, type.size);
+
+            INeutronBehaviour neutronBehaviour = INeutronBehaviour.of(NuclearConstant.ScatteringType.HEAVY, params, type.size);
+
+            result.add(of(type, fuelParams, neutronBehaviour));
         }
+
         return result.toArray(new Function[0]);
 
+    }
+
+    public static Function<MaterialBuilder.PartContext, MaterialPart>[] of(NuclearConstant.IsotopeFuelParams params) {
+        return of(NuclearConstant.DESINTEGRATION_BY_ROD, params);
     }
 
     @Override
@@ -103,11 +142,10 @@ public class NuclearFuelMaterialPart implements MaterialPart {
 
     @Override
     public void register(MaterialBuilder.RegisteringContext context) {
-        if (depleted) {
-            MIItem.of(itemPath, 1);
+        if (Type.DEPLETED == type) {
+            MIItem.of(itemPath, 64);
         } else {
-            NuclearFuel.of(itemPath, params.maxTemperature, params.desintegrationByNeutron, params.neutronByDesintegration, params.neutronAbs,
-                    params.euByDesintegration, params.desintegrationMax, partSimple + "_depleted");
+            NuclearFuel.of(itemPath, params, neutronBehaviour, material + "_fuel_rod_depleted");
         }
 
     }

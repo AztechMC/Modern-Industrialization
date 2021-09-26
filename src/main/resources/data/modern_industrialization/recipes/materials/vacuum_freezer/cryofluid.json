@@ -1,0 +1,23 @@
+{
+  "type": "modern_industrialization:vacuum_freezer",
+  "eu": 64,
+  "duration" : 250,
+
+  "fluid_inputs" :
+      [
+        {
+        "fluid" : "modern_industrialization:argon",
+        "amount": 35
+        },
+        {
+          "fluid" : "modern_industrialization:helium",
+          "amount": 15
+        }
+  ],
+
+  "fluid_outputs": {
+    "fluid" : "modern_industrialization:cryofluid",
+    "amount" : 50
+  }
+
+}

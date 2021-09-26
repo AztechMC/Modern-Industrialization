@@ -1,0 +1,15 @@
+{
+  "type": "modern_industrialization:centrifuge",
+  "eu": 32,
+  "duration": 1200,
+  
+  "fluid_inputs" : {
+    "fluid" : "minecraft:water",
+    "amount": 1000
+  },
+
+  "fluid_outputs" : {
+    "fluid" : "modern_industrialization:heavy_water",
+    "amount": 20
+  }
+}

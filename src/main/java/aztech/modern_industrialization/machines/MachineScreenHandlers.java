@@ -30,7 +30,10 @@ import aztech.modern_industrialization.inventory.ConfigurableFluidStack.Configur
 import aztech.modern_industrialization.inventory.ConfigurableItemStack.ConfigurableItemSlot;
 import aztech.modern_industrialization.machines.gui.ClientComponentRenderer;
 import aztech.modern_industrialization.machines.gui.MachineGuiParameters;
-import aztech.modern_industrialization.util.*;
+import aztech.modern_industrialization.util.FluidHelper;
+import aztech.modern_industrialization.util.NbtHelper;
+import aztech.modern_industrialization.util.RenderHelper;
+import aztech.modern_industrialization.util.TextHelper;
 import com.mojang.blaze3d.systems.RenderSystem;
 import java.util.ArrayList;
 import java.util.List;
@@ -44,6 +47,7 @@ import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.item.TooltipData;
+import net.minecraft.client.render.item.ItemRenderer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -61,7 +65,7 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import org.jetbrains.annotations.Nullable;
 
-@SuppressWarnings({ "rawtypes", "unchecked" })
+@SuppressWarnings({ "rawtypes" })
 public class MachineScreenHandlers {
     public static abstract class Common extends ConfigurableScreenHandler {
         public final MachineGuiParameters guiParams;
@@ -240,10 +244,41 @@ public class MachineScreenHandlers {
 
         @Override
         public void addButton(int u, Text message, Consumer<Integer> pressAction, Supplier<List<Text>> tooltipSupplier, Supplier<Boolean> isPressed) {
-            addDrawableChild(new MachineButton(buttonX(), buttonY(), u, message, b -> pressAction.accept(handler.syncId),
-                    (button, matrices, mouseX, mouseY) -> {
-                        renderTooltip(matrices, tooltipSupplier.get(), mouseX, mouseY);
-                    }, isPressed));
+
+            addDrawableChild(new MachineButton(buttonX(), buttonY(), 20, 20, message, b -> pressAction.accept(handler.syncId),
+                    (button, matrices, mouseX, mouseY) -> renderTooltip(matrices, tooltipSupplier.get(), mouseX, mouseY),
+
+                    (screen, button, matrices, mouseX, mouseY, delta) -> {
+                        RenderSystem.setShaderTexture(0, SLOT_ATLAS);
+                        int v = 18;
+                        if (isPressed.get()) {
+                            v += 20;
+                        }
+                        drawTexture(matrices, button.x, button.y, u, v, 20, 20);
+                        if (button.isHovered()) {
+                            drawTexture(matrices, button.x, button.y, 60, 18, 20, 20);
+                            button.renderTooltip(matrices, mouseX, mouseY);
+                        }
+                    }));
+
+        }
+
+        @Override
+        public void addButton(int posX, int posY, int width, int height, Text message, Consumer<Integer> pressAction,
+                Supplier<List<Text>> tooltipSupplier, ClientComponentRenderer.CustomButtonRenderer renderer, Supplier<Boolean> isButtonPresent) {
+
+            addDrawableChild(new MachineButton(posX + x, posY + y, width, height, message, b -> {
+                if (isButtonPresent.get())
+                    pressAction.accept(handler.syncId);
+            }, (button, matrices, mouseX, mouseY) -> {
+                if (isButtonPresent.get())
+                    renderTooltip(matrices, tooltipSupplier.get(), mouseX, mouseY);
+            }, (screen, button, matrices, mouseX, mouseY, delta) -> {
+                if (isButtonPresent.get()) {
+                    renderer.renderButton(screen, button, matrices, mouseX, mouseY, delta);
+                }
+            }) {
+            });
         }
 
         private void addLockButton() {
@@ -348,28 +383,40 @@ public class MachineScreenHandlers {
                     if ((itemStack.isPlayerLocked() || itemStack.isMachineLocked()) && itemStack.getResource().isBlank()) {
                         Item item = itemStack.getLockedInstance();
                         if (item != Items.AIR) {
-                            this.setZOffset(100);
-                            this.itemRenderer.zOffset = 100.0F;
-
-                            RenderSystem.enableDepthTest();
-                            this.itemRenderer.renderInGuiWithOverrides(this.client.player, new ItemStack(item), slot.x + this.x, slot.y + this.y, 0);
-                            this.itemRenderer.renderGuiItemOverlay(this.textRenderer, new ItemStack(item), slot.x + this.x, slot.y + this.y, "0");
-
-                            this.itemRenderer.zOffset = 0.0F;
-                            this.setZOffset(0);
+                            renderItemInGui(new ItemStack(item), slot.x + this.x, slot.y + this.y, "0");
                         }
                     }
                 }
             }
         }
 
+        public void renderItemInGui(ItemStack itemStack, int x, int y) {
+            renderItemInGui(itemStack, x, y, null);
+        }
+
+        public void renderItemInGui(ItemStack itemStack, int x, int y, String countLabel) {
+            this.setZOffset(100);
+            this.itemRenderer.zOffset = 100.0F;
+
+            RenderSystem.enableDepthTest();
+            this.itemRenderer.renderInGuiWithOverrides(this.client.player, itemStack, x, y, 0);
+            this.itemRenderer.renderGuiItemOverlay(this.textRenderer, itemStack, x, y, countLabel);
+
+            this.itemRenderer.zOffset = 0.0F;
+            this.setZOffset(0);
+        }
+
+        public ItemRenderer getItemRenderer() {
+            return this.itemRenderer;
+        }
+
         private void renderConfigurableSlotTooltips(MatrixStack matrices, int mouseX, int mouseY) {
             Slot slot = focusedSlot;
             if (slot instanceof ConfigurableFluidSlot) {
                 ConfigurableFluidStack stack = ((ConfigurableFluidSlot) slot).getConfStack();
-                List<Text> tooltip = new ArrayList<>();
                 FluidVariant renderedKey = stack.isPlayerLocked() ? FluidVariant.of(stack.getLockedInstance()) : stack.getResource();
-                tooltip.addAll(FluidHelper.getTooltipForFluidStorage(renderedKey, stack.getAmount(), stack.getCapacity(), false));
+                List<Text> tooltip = new ArrayList<>(
+                        FluidHelper.getTooltipForFluidStorage(renderedKey, stack.getAmount(), stack.getCapacity(), false));
 
                 if (stack.canPlayerInsert()) {
                     if (stack.canPlayerExtract()) {
@@ -441,30 +488,23 @@ public class MachineScreenHandlers {
             return focusedSlot;
         }
 
-        private static class MachineButton extends ButtonWidget {
-            private final int u;
-            private final Supplier<Boolean> isPressed;
+        public class MachineButton extends ButtonWidget {
 
-            private MachineButton(int x, int y, int u, Text message, PressAction onPress, TooltipSupplier tooltipSupplier,
-                    Supplier<Boolean> isPressed) {
-                super(x, y, 20, 20, message, onPress, tooltipSupplier);
-                this.u = u;
-                this.isPressed = isPressed;
+            final ClientComponentRenderer.CustomButtonRenderer renderer;
+
+            private MachineButton(int x, int y, int width, int height, Text message, PressAction onPress, TooltipSupplier tooltipSupplier,
+                    ClientComponentRenderer.CustomButtonRenderer renderer) {
+                super(x, y, width, height, message, onPress, tooltipSupplier);
+                this.renderer = renderer;
             }
 
             @Override
             public void renderButton(MatrixStack matrices, int mouseX, int mouseY, float delta) {
-                RenderSystem.setShaderTexture(0, SLOT_ATLAS);
+                renderer.renderButton(ClientScreen.this, this, matrices, mouseX, mouseY, delta);
+            }
 
-                int v = 18;
-                if (isPressed.get()) {
-                    v += 20;
-                }
-                drawTexture(matrices, x, y, u, v, 20, 20);
-                if (isHovered()) {
-                    drawTexture(matrices, x, y, 60, 18, 20, 20);
-                    this.renderTooltip(matrices, mouseX, mouseY);
-                }
+            public void renderVanilla(MatrixStack matrices, int mouseX, int mouseY, float delta) {
+                super.renderButton(matrices, mouseX, mouseY, delta);
             }
         }
     }

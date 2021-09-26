@@ -39,6 +39,7 @@ public final class SyncedComponents {
     public static final Identifier GUNPOWDER_OVERCLOCK_GUI = new MIIdentifier("gunpowder_overclock_gui");
     public static final Identifier REI_SLOT_LOCKING = new MIIdentifier("rei_slot_locking");
     public static final Identifier FLUID_STORAGE_GUI = new MIIdentifier("fluid_storage_gui");
+    public static final Identifier NUCLEAR_REACTOR_GUI = new MIIdentifier("nuclear_reactor_gui");
 
     public static final class Client {
         private static final Map<Identifier, SyncedComponent.ClientFactory> components = new HashMap<>();
@@ -63,6 +64,7 @@ public final class SyncedComponents {
             register(REI_SLOT_LOCKING, ReiSlotLocking.Client::new);
             register(GUNPOWDER_OVERCLOCK_GUI, GunpowderOverclockGui.Client::new);
             register(FLUID_STORAGE_GUI, FluidGUIComponent.Client::new);
+            register(NUCLEAR_REACTOR_GUI, NuclearReactorGui.Client::new);
         }
     }
 }

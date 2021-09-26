@@ -25,11 +25,9 @@ package aztech.modern_industrialization.machines.blockentities.hatches;
 
 import static net.minecraft.util.math.Direction.UP;
 
-import aztech.modern_industrialization.inventory.ConfigurableFluidStack;
-import aztech.modern_industrialization.inventory.ConfigurableItemStack;
-import aztech.modern_industrialization.inventory.MIInventory;
-import aztech.modern_industrialization.inventory.SlotPositions;
+import aztech.modern_industrialization.inventory.*;
 import aztech.modern_industrialization.machines.BEP;
+import aztech.modern_industrialization.machines.components.NeutronHistoryComponent;
 import aztech.modern_industrialization.machines.components.OrientationComponent;
 import aztech.modern_industrialization.machines.components.SteamHeaterComponent;
 import aztech.modern_industrialization.machines.components.TemperatureComponent;
@@ -37,22 +35,35 @@ import aztech.modern_industrialization.machines.components.sync.TemperatureBar;
 import aztech.modern_industrialization.machines.gui.MachineGuiParameters;
 import aztech.modern_industrialization.machines.multiblocks.HatchBlockEntity;
 import aztech.modern_industrialization.machines.multiblocks.HatchType;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import aztech.modern_industrialization.nuclear.*;
+import com.google.common.base.Preconditions;
+import java.util.*;
+import java.util.stream.Collectors;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemStorage;
+import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
+import net.fabricmc.fabric.api.transfer.v1.storage.TransferVariant;
+import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.minecraft.block.entity.BlockEntityType;
+import net.minecraft.item.ItemStack;
 
-public class NuclearHatch extends HatchBlockEntity {
-
-    private static final int MAX_TEMPERATURE = 3800;
-    public static final int EU_PER_DEGREE = 128;
+public class NuclearHatch extends HatchBlockEntity implements INuclearTile {
 
     private final MIInventory inventory;
+
+    public final NeutronHistoryComponent neutronHistory;
     public final TemperatureComponent nuclearReactorComponent;
     public final boolean isFluid;
-    public static final double BASE_HEAT_CONDUCTION = 0.01;
+
+    private int fastNeutronAbsorbedThisTick;
+    private int thermalNeutronAbsorbedThisTick;
+    private int fastNeutronInFluxThisTick;
+    private int thermalNeutronInFluxThisTick;
+
+    private int neutronGeneratedThisTick;
+
+    public static final long capacity = 64000 * 81;
 
     public NuclearHatch(BEP bep, boolean isFluid) {
         super(bep, new MachineGuiParameters.Builder(isFluid ? "nuclear_fluid_hatch" : "nuclear_item_hatch", true).build(),
@@ -60,26 +71,31 @@ public class NuclearHatch extends HatchBlockEntity {
 
         this.isFluid = isFluid;
         SlotPositions slotPos = new SlotPositions.Builder().addSlot(68, 31).addSlots(98, 22, 2, 1).build();
+
         if (!isFluid) {
             List<ConfigurableItemStack> itemStack = new ArrayList<>();
             itemStack.add(ConfigurableItemStack.standardInputSlot());
             itemStack.add(ConfigurableItemStack.standardOutputSlot());
             itemStack.add(ConfigurableItemStack.standardOutputSlot());
             inventory = new MIInventory(itemStack, Collections.emptyList(), slotPos, SlotPositions.empty());
-            nuclearReactorComponent = new TemperatureComponent(MAX_TEMPERATURE);
+            nuclearReactorComponent = new TemperatureComponent(NuclearConstant.MAX_TEMPERATURE);
         } else {
-            long capacity = 64000 * 81;
+
             List<ConfigurableFluidStack> fluidStack = new ArrayList<>();
             fluidStack.add(ConfigurableFluidStack.standardInputSlot(capacity));
             fluidStack.add(ConfigurableFluidStack.standardOutputSlot(capacity));
             fluidStack.add(ConfigurableFluidStack.standardOutputSlot(capacity));
             inventory = new MIInventory(Collections.emptyList(), fluidStack, SlotPositions.empty(), slotPos);
-            nuclearReactorComponent = new SteamHeaterComponent(MAX_TEMPERATURE, 4096, EU_PER_DEGREE, true, true);
+            nuclearReactorComponent = new SteamHeaterComponent(NuclearConstant.MAX_TEMPERATURE, NuclearConstant.MAX_HATCH_EU_PRODUCTION,
+                    NuclearConstant.EU_PER_DEGREE, true, true);
         }
 
-        registerComponents(inventory, nuclearReactorComponent);
-        TemperatureBar.Parameters temperatureParams = new TemperatureBar.Parameters(43, 63, MAX_TEMPERATURE);
+        neutronHistory = new NeutronHistoryComponent();
+        registerComponents(inventory, nuclearReactorComponent, neutronHistory);
+
+        TemperatureBar.Parameters temperatureParams = new TemperatureBar.Parameters(43, 63, NuclearConstant.MAX_TEMPERATURE);
         registerClientComponent(new TemperatureBar.Server(temperatureParams, () -> (int) nuclearReactorComponent.getTemperature()));
+
     }
 
     @Override
@@ -100,10 +116,206 @@ public class NuclearHatch extends HatchBlockEntity {
     @Override
     public final void tick() {
         super.tick();
+        this.clearMachineLock();
+
         if (isFluid) {
             ((SteamHeaterComponent) nuclearReactorComponent).tick(Collections.singletonList(inventory.getFluidStacks().get(0)),
-                    Collections.singletonList(inventory.getFluidStacks().get(1)));
+                    inventory.getFluidStacks().stream().filter(AbstractConfigurableStack::canPipesExtract).collect(Collectors.toList()));
+            fluidNeutronProductTick(1, true);
+        } else {
+            ItemVariant itemVariant = (ItemVariant) this.getVariant();
+            if (!itemVariant.isBlank() && itemVariant.getItem() instanceof NuclearAbsorbable abs) {
+                if (abs.getNeutronProduct() != null) {
+                    try (Transaction tx = Transaction.openOuter()) {
+                        this.inventory.itemStorage.insert(abs.getNeutronProduct(), abs.getNeutronProductAmount(), tx,
+                                AbstractConfigurableStack::canPipesExtract, true);
+                        tx.abort();
+                    }
+                }
+            }
         }
+
+    }
+
+    @Override
+    public double getTemperature() {
+        return nuclearReactorComponent.getTemperature();
+    }
+
+    @Override
+    public double getHeatTransferCoeff() {
+        return NuclearConstant.BASE_HEAT_CONDUCTION + (getComponent().isPresent() ? getComponent().get().getHeatConduction() : 0);
+    }
+
+    @Override
+    public double getMeanNeutronAbsorption(NeutronType type) {
+        return neutronHistory.getAverageReceived(type);
+    }
+
+    @Override
+    public double getMeanNeutronFlux(NeutronType type) {
+        return neutronHistory.getAverageFlux(type);
+    }
+
+    @Override
+    public double getMeanNeutronGeneration() {
+        return neutronHistory.getAverageGeneration();
+    }
+
+    @Override
+    public TransferVariant getVariant() {
+        if (isFluid) {
+            return this.inventory.getFluidStacks().get(0).getResource();
+        } else {
+            return this.inventory.getItemStacks().get(0).getResource();
+        }
+    }
+
+    @Override
+    public long getVariantAmount() {
+        if (isFluid) {
+            return this.inventory.getFluidStacks().get(0).getAmount();
+        } else {
+            return this.inventory.getItemStacks().get(0).getAmount();
+        }
+    }
+
+    @Override
+    public boolean isFluid() {
+        return isFluid;
+    }
+
+    @Override
+    public void setTemperature(double temp) {
+        nuclearReactorComponent.setTemperature(temp);
+    }
+
+    @Override
+    public int neutronGenerationTick() {
+        double meanNeutron = getMeanNeutronAbsorption(NeutronType.BOTH) + NuclearConstant.BASE_NEUTRON;
+        int neutronsProduced = 0;
+
+        if (!isFluid) {
+            ItemVariant itemVariant = (ItemVariant) this.getVariant();
+
+            if (!itemVariant.isBlank() && itemVariant.getItem() instanceof NuclearAbsorbable abs) {
+
+                ItemStack stack = itemVariant.toStack((int) getVariantAmount());
+
+                Random rand = this.world.getRandom();
+
+                if (abs instanceof NuclearFuel fuel) {
+                    neutronsProduced = fuel.simulateDesintegration(meanNeutron, stack, this.nuclearReactorComponent.getTemperature(), rand);
+                } else {
+                    abs.simulateAbsorption(meanNeutron, stack, rand);
+                }
+
+                if (abs.getRemainingDesintegrations(stack) == 0) {
+                    try (Transaction tx = Transaction.openOuter()) {
+                        ConfigurableItemStack absStack = this.inventory.getItemStacks().get(0);
+                        long inserted = this.inventory.itemStorage.insert(abs.getNeutronProduct(), abs.getNeutronProductAmount(), tx,
+                                AbstractConfigurableStack::canPipesExtract, true);
+
+                        absStack.updateSnapshots(tx);
+                        absStack.setAmount(0);
+                        absStack.setKey(ItemVariant.blank());
+
+                        if (inserted == abs.getNeutronProductAmount()) {
+                            tx.commit();
+                        } else {
+                            tx.abort();
+                        }
+                    }
+                } else {
+                    this.getInventory().getItemStacks().get(0).setKey(ItemVariant.of(stack));
+                }
+
+            }
+
+            neutronGeneratedThisTick = neutronsProduced;
+            return neutronsProduced;
+        } else {
+            return 0;
+        }
+    }
+
+    private static int randIntFromDouble(double value, Random rand) {
+        return (int) Math.floor(value) + (rand.nextDouble() < (value % 1) ? 1 : 0);
+    }
+
+    public void fluidNeutronProductTick(int neutron, boolean simul) {
+        if (isFluid) {
+            Optional<INuclearComponent> maybeComponent = this.getComponent();
+            if (maybeComponent.isPresent()) {
+
+                INuclearComponent<FluidVariant> component = maybeComponent.get();
+
+                int actualRecipe = randIntFromDouble(neutron * component.getNeutronProductProbability(), this.getWorld().getRandom());
+
+                if (simul) {
+                    actualRecipe = neutron;
+                }
+
+                if (simul || actualRecipe > 0) {
+                    try (Transaction tx = Transaction.openOuter()) {
+                        long extracted = this.inventory.fluidStorage.extractAllSlot(component.getVariant(), actualRecipe, tx,
+                                AbstractConfigurableStack::canPipesInsert);
+                        this.inventory.fluidStorage.insert(component.getNeutronProduct(), extracted * component.getNeutronProductAmount(), tx,
+                                AbstractConfigurableStack::canPipesExtract, true);
+
+                        if (!simul) {
+                            tx.commit();
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private void checkComponentMaxTemperature() {
+        if (!isFluid) {
+            this.getComponent().ifPresent((component) -> {
+                if (component.getMaxTemperature() < this.getTemperature()) {
+                    this.inventory.getItemStacks().get(0).empty();
+                }
+            });
+        }
+    }
+
+    public void nuclearTick() {
+
+        neutronHistory.tick(fastNeutronAbsorbedThisTick, thermalNeutronAbsorbedThisTick, fastNeutronInFluxThisTick, thermalNeutronInFluxThisTick,
+                neutronGeneratedThisTick);
+
+        fluidNeutronProductTick(randIntFromDouble(neutronHistory.getAverageReceived(NeutronType.BOTH), this.getWorld().getRandom()), false);
+        checkComponentMaxTemperature();
+
+        fastNeutronAbsorbedThisTick = 0;
+        thermalNeutronAbsorbedThisTick = 0;
+        fastNeutronInFluxThisTick = 0;
+        thermalNeutronInFluxThisTick = 0;
+        neutronGeneratedThisTick = 0;
+
+    }
+
+    public void absorbNeutrons(int neutronNumber, NeutronType type) {
+        Preconditions.checkArgument(type != NeutronType.BOTH);
+        if (type == NeutronType.FAST) {
+            fastNeutronAbsorbedThisTick += neutronNumber;
+        } else {
+            thermalNeutronAbsorbedThisTick += neutronNumber;
+        }
+
+    }
+
+    public void addNeutronsToFlux(int neutronNumber, NeutronType type) {
+        Preconditions.checkArgument(type != NeutronType.BOTH);
+        if (type == NeutronType.FAST) {
+            fastNeutronInFluxThisTick += neutronNumber;
+        } else {
+            thermalNeutronInFluxThisTick += neutronNumber;
+        }
+
     }
 
     public static void registerItemApi(BlockEntityType<?> bet) {

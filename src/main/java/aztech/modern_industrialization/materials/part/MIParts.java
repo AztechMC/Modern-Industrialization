@@ -66,7 +66,9 @@ public class MIParts {
     public static final String TINY_DUST = "tiny_dust";
     public static final String WIRE = "wire";
     public static final String WIRE_MAGNETIC = "wire_magnetic";
+
     public static final String FUEL_ROD = "fuel_rod";
+    public static final String FUEL_ROD_DEPLETED = "fuel_rod_depleted";
     public static final String FUEL_ROD_DOUBLE = "fuel_rod_double";
     public static final String FUEL_ROD_QUAD = "fuel_rod_quad";
 

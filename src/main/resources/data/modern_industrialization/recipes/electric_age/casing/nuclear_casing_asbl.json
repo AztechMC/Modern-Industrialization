@@ -2,12 +2,16 @@
   "type" : "minecraft:crafting_shaped",
   "pattern" : [
     "AAA",
-    "A A",
+    "ACA",
     "AAA"
   ],
   "key": {
     "A" : {
-      "item": "modern_industrialization:nuclear_alloy_large_plate"
+      "tag": "c:nuclear_alloy_plates"
+    },
+
+    "C" : {
+      "item" : "modern_industrialization:turbo_machine_hull"
     }
   },
   "result": {

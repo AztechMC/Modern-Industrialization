@@ -7,10 +7,10 @@
   ],
   "key": {
     "A" : {
-      "item" : "modern_industrialization:titanium_large_plate"
+      "tag" : "c:titanium_plates"
     },
     "C" : {
-      "item" : "modern_industrialization:chrome_large_plate"
+      "tag" : "c:chrome_plates"
     },
     "H" : {
       "item" : "modern_industrialization:turbo_machine_hull"

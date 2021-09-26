@@ -7,7 +7,7 @@
   ],
   "key": {
     "A" : {
-      "item" : "modern_industrialization:bronze_large_plate"
+      "tag" : "c:bronze_plates"
     },
     "H" : {
       "item" : "modern_industrialization:fire_clay_bricks"

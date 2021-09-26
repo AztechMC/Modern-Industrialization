@@ -2,12 +2,15 @@
   "type" : "minecraft:crafting_shaped",
   "pattern" : [
     "AAA",
-    "A A",
+    "AGA",
     "AAA"
   ],
   "key": {
     "A" : {
-      "item": "modern_industrialization:aluminum_large_plate"
+      "tag": "c:aluminum_plates"
+    },
+    "G" : {
+      "tag" : "c:aluminum_gears"
     }
   },
   "result": {

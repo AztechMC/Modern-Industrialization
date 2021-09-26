@@ -2,12 +2,15 @@
   "type": "minecraft:crafting_shaped",
   "pattern": [
     "PPP",
-    "P P",
+    "PGP",
     "PPP"
   ],
   "key": {
     "P": {
-      "item": "modern_industrialization:bronze_large_plate"
+      "tag": "c:bronze_plates"
+    },
+    "G" : {
+      "tag" : "c:bronze_gears"
     }
   },
   "result": {

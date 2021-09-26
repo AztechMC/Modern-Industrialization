@@ -7,7 +7,7 @@
   ],
   "key": {
     "#": {
-      "item": "modern_industrialization:steel_large_plate"
+      "tag": "c:steel_plates"
     },
     "T": {
       "item": "modern_industrialization:steel_tank"

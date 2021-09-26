@@ -14,7 +14,7 @@
       "item" : "modern_industrialization:basic_machine_hull"
     },
     "L": {
-      "item" : "modern_industrialization:battery_alloy_large_plate"
+      "tag" : "c:battery_alloy_plates"
     }
 
   },

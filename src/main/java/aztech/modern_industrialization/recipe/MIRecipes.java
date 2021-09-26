@@ -23,7 +23,6 @@
  */
 package aztech.modern_industrialization.recipe;
 
-import aztech.modern_industrialization.MIConfig;
 import aztech.modern_industrialization.MIRuntimeResourcePack;
 import aztech.modern_industrialization.materials.Material;
 import aztech.modern_industrialization.materials.MaterialRegistry;
@@ -51,10 +50,6 @@ public final class MIRecipes {
         AssemblerRecipes.yes(pack, manager);
         AlloyRegister.init(pack);
         HeatExchangerHelper.init(pack);
-
-        if (MIConfig.getConfig().enableEasyMode) {
-            EasyModeRecipes.yes(pack, manager);
-        }
 
         for (Material material : MaterialRegistry.getMaterials().values()) {
             material.registerRecipes.run();

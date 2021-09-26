@@ -25,7 +25,6 @@ package aztech.modern_industrialization.materials.recipe;
 
 import static aztech.modern_industrialization.materials.part.MIParts.*;
 
-import aztech.modern_industrialization.MIConfig;
 import aztech.modern_industrialization.MIFluids;
 import aztech.modern_industrialization.materials.MaterialBuilder;
 import aztech.modern_industrialization.materials.recipe.builder.MIRecipeBuilder;
@@ -64,18 +63,10 @@ public final class StandardRecipes {
         new ShapedRecipeBuilder(ctx, CABLE, 3, "cable", "rrr", "www", "rrr").addInput('r', "modern_industrialization:rubber_sheet")
                 .addTaggedPart('w', WIRE).exportToMachine("packer");
 
-        if (MIConfig.getConfig().enableEasyMode) {
-            new ShapedRecipeBuilder(ctx, TANK, 1, "tank", "###", "#G#", "###").addTaggedPart('#', PLATE).addInput('G', "minecraft:glass")
-                    .exportToAssembler();
-            new ShapedRecipeBuilder(ctx, BARREL, 1, "barrel", "###", "#b#", "###").addTaggedPart('#', PLATE).addInput('b', "minecraft:barrel")
-                    .exportToAssembler();
-        } else {
-            new ShapedRecipeBuilder(ctx, TANK, 1, "tank", "###", "#G#", "###").addPart('#', LARGE_PLATE).addInput('G', "minecraft:glass")
-                    .exportToAssembler();
-
-            new ShapedRecipeBuilder(ctx, BARREL, 1, "barrel", "###", "#b#", "###").addPart('#', LARGE_PLATE).addInput('b', "minecraft:barrel")
-                    .exportToAssembler();
-        }
+        new ShapedRecipeBuilder(ctx, TANK, 1, "tank", "###", "#G#", "###").addTaggedPart('#', PLATE).addInput('G', "minecraft:glass")
+                .exportToAssembler();
+        new ShapedRecipeBuilder(ctx, BARREL, 1, "barrel", "###", "#b#", "###").addTaggedPart('#', PLATE).addInput('b', "minecraft:barrel")
+                .exportToAssembler();
 
         new ShapedRecipeBuilder(ctx, DRILL_HEAD, 1, "drill_head", "bcp", "GRc", "bGb").addTaggedPart('G', GEAR).addPart('b', BOLT)
                 .addPart('c', CURVED_PLATE).addPart('R', ROD).addTaggedPart('p', PLATE);

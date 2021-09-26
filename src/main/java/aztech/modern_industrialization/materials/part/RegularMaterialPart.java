@@ -37,6 +37,7 @@ import aztech.modern_industrialization.textures.coloramp.HotIngotColoramp;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Function;
 import net.devtech.arrp.json.tags.JTag;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
@@ -70,7 +71,18 @@ public class RegularMaterialPart implements MaterialPart {
     protected MIBlock block;
     protected Item item;
 
+    private final Function<String, MIBlock> blockBuilder;
+    private final Function<String, Item> itemBuilder;
+
     public RegularMaterialPart(String materialName, String part, String materialSet, Coloramp coloramp) {
+        this(materialName, part, materialSet, coloramp, (itemPath) -> new MIBlock(itemPath,
+                FabricBlockSettings.of(METAL_MATERIAL).hardness(5.0f).resistance(6.0f).breakByTool(FabricToolTags.PICKAXES, 0).requiresTool()),
+                MIItem::of);
+
+    }
+
+    public RegularMaterialPart(String materialName, String part, String materialSet, Coloramp coloramp, Function<String, MIBlock> blockBuilder,
+            Function<String, Item> itemBuilder) {
         this.materialName = materialName;
         this.part = part;
         hasBlock = MaterialHelper.hasBlock(part);
@@ -85,6 +97,8 @@ public class RegularMaterialPart implements MaterialPart {
 
         this.materialSet = materialSet;
         this.coloramp = coloramp;
+        this.blockBuilder = blockBuilder;
+        this.itemBuilder = itemBuilder;
 
     }
 
@@ -103,16 +117,27 @@ public class RegularMaterialPart implements MaterialPart {
         return itemId;
     }
 
+    public static Function<MaterialBuilder.PartContext, MaterialPart> of(String part) {
+        return ctx -> new RegularMaterialPart(ctx.getMaterialName(), part, ctx.getMaterialSet(), ctx.getColoramp());
+    }
+
+    public static Function<MaterialBuilder.PartContext, MaterialPart> ofSpecialItem(String part, Function<String, Item> itemBuilder) {
+        return ctx -> new RegularMaterialPart(ctx.getMaterialName(), part, ctx.getMaterialSet(), ctx.getColoramp(), null, itemBuilder);
+    }
+
+    public static Function<MaterialBuilder.PartContext, MaterialPart> ofSpecialBlock(String part, Function<String, MIBlock> blockBuilder) {
+        return ctx -> new RegularMaterialPart(ctx.getMaterialName(), part, ctx.getMaterialSet(), ctx.getColoramp(), blockBuilder, null);
+    }
+
     @Override
     public void register(MaterialBuilder.RegisteringContext context) {
         // create item and block
         if (hasBlock) {
-            block = new MIBlock(itemPath,
-                    FabricBlockSettings.of(METAL_MATERIAL).hardness(5.0f).resistance(6.0f).breakByTool(FabricToolTags.PICKAXES, 0).requiresTool());
+            block = blockBuilder.apply(itemPath);
             item = block.blockItem;
         } else {
             block = null;
-            item = MIItem.of(itemPath);
+            item = itemBuilder.apply(itemPath);
         }
         // item tag
         // items whose path are overridden (such as fire clay ingot -> brick) are not

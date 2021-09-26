@@ -123,17 +123,16 @@ public class NuclearHatch extends HatchBlockEntity implements INuclearTile {
                     inventory.getFluidStacks().stream().filter(AbstractConfigurableStack::canPipesExtract).collect(Collectors.toList()));
             fluidNeutronProductTick(1, true);
         } else {
-            if (getFuel().isPresent()) {
-                ItemStack stack = ((ItemVariant) getVariant()).toStack((int) getVariantAmount());
-                NuclearFuel fuel = (NuclearFuel) stack.getItem();
-                try (Transaction tx = Transaction.openOuter()) {
-
-                    this.inventory.itemStorage.insert(fuel.getNeutronProduct(), fuel.getNeutronProductAmount(), tx,
-                            AbstractConfigurableStack::canPipesExtract, true);
-                    tx.abort();
+            ItemVariant itemVariant = (ItemVariant) this.getVariant();
+            if (!itemVariant.isBlank() && itemVariant.getItem() instanceof NuclearAbsorbable abs) {
+                if (abs.getNeutronProduct() != null) {
+                    try (Transaction tx = Transaction.openOuter()) {
+                        this.inventory.itemStorage.insert(abs.getNeutronProduct(), abs.getNeutronProductAmount(), tx,
+                                AbstractConfigurableStack::canPipesExtract, true);
+                        tx.abort();
+                    }
                 }
             }
-
         }
 
     }
@@ -196,34 +195,48 @@ public class NuclearHatch extends HatchBlockEntity implements INuclearTile {
         double meanNeutron = getMeanNeutronAbsorption(NeutronType.BOTH) + NuclearConstant.BASE_NEUTRON;
         int neutronsProduced = 0;
 
-        if (getFuel().isPresent()) {
-            ItemStack stack = ((ItemVariant) getVariant()).toStack((int) getVariantAmount());
-            neutronsProduced = getFuel().get().simulateDesintegration(meanNeutron, stack, this.nuclearReactorComponent.getTemperature(),
-                    this.world.getRandom());
-            NuclearFuel fuel = (NuclearFuel) stack.getItem();
-            if (fuel.getRemainingDesintegrations(stack) == 0) {
-                try (Transaction tx = Transaction.openOuter()) {
-                    ConfigurableItemStack fuelStack = this.inventory.getItemStacks().get(0);
-                    long inserted = this.inventory.itemStorage.insert(fuel.getNeutronProduct(), fuel.getNeutronProductAmount(), tx,
-                            AbstractConfigurableStack::canPipesExtract, true);
+        if (!isFluid) {
+            ItemVariant itemVariant = (ItemVariant) this.getVariant();
 
-                    fuelStack.updateSnapshots(tx);
-                    fuelStack.setAmount(0);
-                    fuelStack.setKey(ItemVariant.blank());
+            if (!itemVariant.isBlank() && itemVariant.getItem() instanceof NuclearAbsorbable abs) {
 
-                    if (inserted == fuel.size) {
-                        tx.commit();
-                    } else {
-                        tx.abort();
-                    }
+                ItemStack stack = itemVariant.toStack((int) getVariantAmount());
+
+                Random rand = this.world.getRandom();
+
+                if (abs instanceof NuclearFuel fuel) {
+                    neutronsProduced = fuel.simulateDesintegration(meanNeutron, stack, this.nuclearReactorComponent.getTemperature(), rand);
+                } else {
+                    abs.simulateAbsorption(meanNeutron, stack, rand);
                 }
-            } else {
-                this.getInventory().getItemStacks().get(0).setKey(ItemVariant.of(stack));
-            }
-        }
 
-        neutronGeneratedThisTick = neutronsProduced;
-        return neutronsProduced;
+                if (abs.getRemainingDesintegrations(stack) == 0) {
+                    try (Transaction tx = Transaction.openOuter()) {
+                        ConfigurableItemStack absStack = this.inventory.getItemStacks().get(0);
+                        long inserted = this.inventory.itemStorage.insert(abs.getNeutronProduct(), abs.getNeutronProductAmount(), tx,
+                                AbstractConfigurableStack::canPipesExtract, true);
+
+                        absStack.updateSnapshots(tx);
+                        absStack.setAmount(0);
+                        absStack.setKey(ItemVariant.blank());
+
+                        if (inserted == abs.getNeutronProductAmount()) {
+                            tx.commit();
+                        } else {
+                            tx.abort();
+                        }
+                    }
+                } else {
+                    this.getInventory().getItemStacks().get(0).setKey(ItemVariant.of(stack));
+                }
+
+            }
+
+            neutronGeneratedThisTick = neutronsProduced;
+            return neutronsProduced;
+        } else {
+            return 0;
+        }
     }
 
     private static int randIntFromDouble(double value, Random rand) {
@@ -259,18 +272,30 @@ public class NuclearHatch extends HatchBlockEntity implements INuclearTile {
         }
     }
 
+    private void checkComponentMaxTemperature() {
+        if (!isFluid) {
+            this.getComponent().ifPresent((component) -> {
+                if (component.getMaxTemperature() < this.getTemperature()) {
+                    this.inventory.getItemStacks().get(0).empty();
+                }
+            });
+        }
+    }
+
     public void nuclearTick() {
 
         neutronHistory.tick(fastNeutronAbsorbedThisTick, thermalNeutronAbsorbedThisTick, fastNeutronInFluxThisTick, thermalNeutronInFluxThisTick,
                 neutronGeneratedThisTick);
 
         fluidNeutronProductTick(randIntFromDouble(neutronHistory.getAverageReceived(NeutronType.BOTH), this.getWorld().getRandom()), false);
+        checkComponentMaxTemperature();
 
         fastNeutronAbsorbedThisTick = 0;
         thermalNeutronAbsorbedThisTick = 0;
         fastNeutronInFluxThisTick = 0;
         thermalNeutronInFluxThisTick = 0;
         neutronGeneratedThisTick = 0;
+
     }
 
     public void absorbNeutrons(int neutronNumber, NeutronType type) {

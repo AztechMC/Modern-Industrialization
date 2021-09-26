@@ -131,4 +131,6 @@ public class NuclearConstant {
     public static final IsotopeParams HYDROGEN = new IsotopeParams(0.3, 0.15, 0.25, 0.6);
     public static final IsotopeParams DEUTERIUM = new IsotopeParams(0.02, 0.01, 0.15, 0.4);
 
+    public static final IsotopeParams CADMIUM = new IsotopeParams(0.95, 0.1, 0.1, 0.25);
+    public static final IsotopeParams CARBON = new IsotopeParams(0.01, 0.005, 0.12, 0.35);
 }

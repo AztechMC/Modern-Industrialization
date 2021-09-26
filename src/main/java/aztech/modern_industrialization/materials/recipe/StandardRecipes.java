@@ -140,8 +140,8 @@ public final class StandardRecipes {
 
         new MIRecipeBuilder(ctx, "assembler", "fuel_rod", 16, 200).addInput("modern_industrialization:blastproof_alloy_curved_plate", 2)
                 .addInput("modern_industrialization:large_motor", 1).addInput("modern_industrialization:robot_arm", 2).addTaggedPartInput(ROD, 2)
-                .addInput("modern_industrialization:cadmium_rod", 1).addFluidInput("modern_industrialization:soldering_alloy", 500)
-                .addFluidInput("modern_industrialization:helium", 100).addPartOutput(FUEL_ROD, 1);
+                .addFluidInput("modern_industrialization:soldering_alloy", 500).addFluidInput("modern_industrialization:helium", 100)
+                .addPartOutput(FUEL_ROD, 1);
 
         // HEAT EXCHANGER
         new MIRecipeBuilder(ctx, "heat_exchanger", "hot_ingot", 8, 10).addPartInput(HOT_INGOT, 1).addFluidInput(MIFluids.CRYOFLUID.id, 100)

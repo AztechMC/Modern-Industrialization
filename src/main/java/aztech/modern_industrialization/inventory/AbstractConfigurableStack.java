@@ -114,6 +114,10 @@ public abstract class AbstractConfigurableStack<T, K extends TransferVariant<T>>
         }
     }
 
+    public void empty() {
+        this.setAmount(0);
+    }
+
     public void increment(long amount) {
         setAmount(this.amount + amount);
     }

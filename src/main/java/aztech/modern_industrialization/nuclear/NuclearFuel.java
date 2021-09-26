@@ -26,24 +26,21 @@ package aztech.modern_industrialization.nuclear;
 import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.MIItem;
 import aztech.modern_industrialization.util.TextHelper;
-import com.google.common.base.Preconditions;
 import java.util.List;
 import java.util.Random;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NbtCompound;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
 
-public class NuclearFuel extends NuclearComponentItem {
+public class NuclearFuel extends NuclearAbsorbable {
 
     public final double directEnergyFactor;
     public final double neutronMultiplicationFactor;
-    public final int desintegrationMax;
+
     public final String depletedVersionId;
 
     public final int size;
@@ -72,9 +69,8 @@ public class NuclearFuel extends NuclearComponentItem {
     private NuclearFuel(Settings settings, int desintegrationMax, int maxTemperature, int tempLimitLow, int tempLimitHigh,
             double neutronMultiplicationFactor, double directEnergyFactor, INeutronBehaviour neutronBehaviour, int size, String depletedVersionId) {
 
-        super(settings, clampTemp(maxTemperature), 0, neutronBehaviour);
+        super(settings, clampTemp(maxTemperature), 0.8 * NuclearConstant.BASE_HEAT_CONDUCTION, neutronBehaviour, desintegrationMax);
 
-        this.desintegrationMax = desintegrationMax;
         this.size = size;
         this.directEnergyFactor = directEnergyFactor;
         this.neutronMultiplicationFactor = neutronMultiplicationFactor;
@@ -105,50 +101,10 @@ public class NuclearFuel extends NuclearComponentItem {
 
     @Override
     public void appendTooltip(ItemStack stack, World world, List<Text> tooltip, TooltipContext context) {
-
         super.appendTooltip(stack, world, tooltip, context);
-
         long totalEu = (long) totalEUbyDesintegration * desintegrationMax;
         tooltip.add(new TranslatableText("text.modern_industrialization.base_eu_total_double", TextHelper.getEuString(totalEu),
                 TextHelper.getEuUnit(totalEu)).setStyle(TextHelper.EU_TEXT));
-        tooltip.add(new TranslatableText("text.modern_industrialization.rem_desintegration", getRemainingDesintegrations(stack), desintegrationMax));
-
-    }
-
-    public int getRemainingDesintegrations(ItemStack stack) {
-        NbtCompound tag = stack.getTag();
-        if (tag == null || !tag.contains("desRem")) {
-            return desintegrationMax;
-        }
-        return tag.getInt("desRem");
-    }
-
-    public void setRemainingDesintegrations(ItemStack stack, int value) {
-        Preconditions.checkArgument(value >= 0 & value <= desintegrationMax,
-                String.format("Remaining desintegration %d must be between 0 and max desintegration = %d", value, desintegrationMax));
-        NbtCompound tag = stack.getOrCreateTag();
-        tag.putInt("desRem", value);
-    }
-
-    public double getDurabilityBarProgress(ItemStack stack) {
-        return (double) getRemainingDesintegrations(stack) / desintegrationMax;
-
-    }
-
-    @Override
-    public int getItemBarColor(ItemStack stack) {
-        float f = (float) getRemainingDesintegrations(stack) / desintegrationMax;
-        return MathHelper.hsvToRgb(f / 3.0F, 1.0F, 1.0F);
-    }
-
-    @Override
-    public boolean isItemBarVisible(ItemStack stack) {
-        return getRemainingDesintegrations(stack) != desintegrationMax;
-    }
-
-    @Override
-    public int getItemBarStep(ItemStack stack) {
-        return (int) Math.round(getDurabilityBarProgress(stack) * 13);
     }
 
     public double efficiencyFactor(double temperature) {
@@ -160,15 +116,8 @@ public class NuclearFuel extends NuclearComponentItem {
     }
 
     public int simulateDesintegration(double neutronsReceived, ItemStack stack, double temperature, Random rand) {
-        int desintegration = Math.min(randIntFromDouble(neutronsReceived, rand), getRemainingDesintegrations(stack));
-
-        setRemainingDesintegrations(stack, getRemainingDesintegrations(stack) - desintegration);
-        return randIntFromDouble(efficiencyFactor(temperature) * desintegration * neutronMultiplicationFactor, rand);
-
-    }
-
-    private static int randIntFromDouble(double value, Random rand) {
-        return (int) Math.floor(value) + (rand.nextDouble() < (value % 1) ? 1 : 0);
+        return randIntFromDouble(efficiencyFactor(temperature) * simulateAbsorption(neutronsReceived, stack, rand) * neutronMultiplicationFactor,
+                rand);
     }
 
 }

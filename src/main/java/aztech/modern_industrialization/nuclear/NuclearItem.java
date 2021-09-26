@@ -32,28 +32,9 @@ public class NuclearItem {
         ModernIndustrialization.LOGGER.info("Setting up Nuclear Items");
     }
 
-    public static final Item NEUTRON_REFLECTOR = NuclearComponentItem.of("neutron_reflector", 2000, 0, new INeutronBehaviour() {
-        @Override
-        public double neutronSlowingProbability() {
-            return 0.8;
-        }
+    public static final Item SMALL_HEAT_EXCHANGER = NuclearComponentItem.of("small_heat_exchanger", 2000, 8 * NuclearConstant.BASE_HEAT_CONDUCTION,
+            INeutronBehaviour.NO_INTERACTION);
 
-        @Override
-        public double interactionTotalProbability(NeutronType type) {
-            if (type == NeutronType.FAST) {
-                return 0.2;
-            } else {
-                return 0.5;
-            }
-        }
-
-        @Override
-        public double interactionRelativeProbability(NeutronType type, NeutronInteraction interaction) {
-            if (type == NeutronType.FAST) {
-            } else if (interaction == NeutronInteraction.SCATTERING) {
-                return 1;
-            }
-            return 0;
-        }
-    });
+    public static final Item LARGE_HEAT_EXCHANGER = NuclearComponentItem.of("large_heat_exchanger", 1500, 16 * NuclearConstant.BASE_HEAT_CONDUCTION,
+            INeutronBehaviour.NO_INTERACTION);
 }

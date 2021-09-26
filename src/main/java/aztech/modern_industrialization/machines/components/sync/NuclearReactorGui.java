@@ -32,10 +32,7 @@ import aztech.modern_industrialization.machines.SyncedComponent;
 import aztech.modern_industrialization.machines.SyncedComponents;
 import aztech.modern_industrialization.machines.blockentities.hatches.NuclearHatch;
 import aztech.modern_industrialization.machines.gui.ClientComponentRenderer;
-import aztech.modern_industrialization.nuclear.INuclearTileData;
-import aztech.modern_industrialization.nuclear.NeutronType;
-import aztech.modern_industrialization.nuclear.NuclearConstant;
-import aztech.modern_industrialization.nuclear.NuclearFuel;
+import aztech.modern_industrialization.nuclear.*;
 import aztech.modern_industrialization.util.FluidHelper;
 import aztech.modern_industrialization.util.RenderHelper;
 import aztech.modern_industrialization.util.TextHelper;
@@ -245,6 +242,21 @@ public class NuclearReactorGui {
                                     matrices.translate(-px, -py, 0);
 
                                 }
+
+                                if (currentMode == Mode.TEMPERATURE) {
+                                    if (!variant.isBlank() && variant instanceof ItemVariant itemVariant) {
+                                        if (itemVariant.getItem() instanceof NuclearComponentItem item) {
+                                            if (tileData.getTemperature() + 100 > item.getMaxTemperature()) {
+                                                RenderSystem.setShaderTexture(0, MachineScreenHandlers.SLOT_ATLAS);
+                                                RenderSystem.enableBlend();
+                                                RenderSystem.disableDepthTest();
+                                                if (System.currentTimeMillis() % 1000 > 500) {
+                                                    helper.drawTexture(matrices, px + 1, py + 1, 22, 58, 16, 16);
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
                             }
                         }
                     }
@@ -262,8 +274,8 @@ public class NuclearReactorGui {
                         Optional<INuclearTileData> tile = data.tilesData[index];
                         if (tile.isPresent()) {
                             INuclearTileData tileData = tile.get();
+                            TransferVariant variant = tileData.getVariant();
                             if (currentMode == Mode.NUCLEAR_FUEL) {
-                                TransferVariant variant = tile.get().getVariant();
                                 long variantAmount = tile.get().getVariantAmount();
                                 if (variantAmount > 0 & !variant.isBlank()) {
                                     if (variant instanceof ItemVariant itemVariant) {
@@ -278,8 +290,19 @@ public class NuclearReactorGui {
 
                             } else if (currentMode == Mode.TEMPERATURE) {
                                 int temperature = (int) tileData.getTemperature();
-                                screen.renderTooltip(matrices, new TranslatableText("text.modern_industrialization.temperature", temperature),
-                                        cursorX, cursorY);
+                                List<Text> tooltip = new ArrayList<>();
+
+                                tooltip.add(new TranslatableText("text.modern_industrialization.temperature", temperature));
+
+                                if (!variant.isBlank() && variant instanceof ItemVariant itemVariant) {
+                                    if (itemVariant.getItem() instanceof NuclearComponentItem item) {
+                                        tooltip.add(new TranslatableText("text.modern_industrialization.max_temp", item.getMaxTemperature())
+                                                .setStyle(TextHelper.YELLOW));
+                                    }
+                                }
+
+                                screen.renderTooltip(matrices, tooltip, cursorX, cursorY);
+
                             } else {
                                 double neutronRateFast;
                                 double neutronRateThermal;

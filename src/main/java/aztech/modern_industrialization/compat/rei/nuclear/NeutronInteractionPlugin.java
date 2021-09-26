@@ -59,9 +59,12 @@ public class NeutronInteractionPlugin implements REIClientPlugin {
         Registry.ITEM.stream().filter(item -> item instanceof NuclearComponentItem).forEach(item -> {
 
             NuclearComponentItem component = (NuclearComponentItem) item;
-            registry.add(new NeutronInteractionDisplay(component, NeutronInteractionDisplay.CategoryType.FAST_NEUTRON_INTERACTION));
+            if (component.neutronBehaviour != INeutronBehaviour.NO_INTERACTION) {
+                registry.add(new NeutronInteractionDisplay(component, NeutronInteractionDisplay.CategoryType.FAST_NEUTRON_INTERACTION));
+                registry.add(new NeutronInteractionDisplay(component, NeutronInteractionDisplay.CategoryType.THERMAL_NEUTRON_INTERACTION));
+            }
+
             registry.add(new ThermalInteractionDisplay(component, ThermalInteractionDisplay.CategoryType.THERMAL_PROPERTIES));
-            registry.add(new NeutronInteractionDisplay(component, NeutronInteractionDisplay.CategoryType.THERMAL_NEUTRON_INTERACTION));
 
             if (item instanceof NuclearFuel) {
                 registry.add(new NeutronInteractionDisplay(component, NeutronInteractionDisplay.CategoryType.FISSION));
@@ -101,6 +104,10 @@ public class NeutronInteractionPlugin implements REIClientPlugin {
                 @Override
                 public INeutronBehaviour getNeutronBehaviour() {
                     return null;
+                }
+
+                public int getMaxTemperature() {
+                    return NuclearConstant.MAX_TEMPERATURE;
                 }
 
                 @Override

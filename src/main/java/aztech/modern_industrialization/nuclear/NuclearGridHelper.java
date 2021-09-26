@@ -50,13 +50,17 @@ public class NuclearGridHelper {
                 final int y = j;
 
                 Optional<INuclearTile> maybeTile = grid.getNuclearTile(i, j);
-                maybeTile.ifPresent(tile -> tile.getFuel().ifPresent(fuel -> {
 
+                if (maybeTile.isPresent()) {
+                    INuclearTile tile = maybeTile.get();
+                    Optional<NuclearFuel> maybeFuel = tile.getFuel();
                     int neutronNumberPrime = tile.neutronGenerationTick();
-
-                    tile.putHeat(neutronNumberPrime * fuel.directEUbyDesintegration);
-
                     if (neutronNumberPrime > 0) {
+                        if (maybeFuel.isEmpty()) {
+                            throw new IllegalStateException("Neutron generated without fuel");
+                        }
+                        NuclearFuel fuel = maybeFuel.get();
+                        tile.putHeat(neutronNumberPrime * fuel.directEUbyDesintegration);
 
                         int split = Math.min(neutronNumberPrime, MAX_SPLIT);
                         int neutronNumberPerSplit = neutronNumberPrime / split;
@@ -128,10 +132,12 @@ public class NuclearGridHelper {
                                 }
                             }
                         }
-                    }
 
-                }));
+                    }
+                }
+
             }
+
         }
 
         // HEAT

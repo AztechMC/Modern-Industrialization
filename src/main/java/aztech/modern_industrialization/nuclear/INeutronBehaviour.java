@@ -95,4 +95,22 @@ public interface INeutronBehaviour {
         return probaFromCrossSection(crossSectionFromProba(proba) * crossSectionFactor);
     }
 
+    INeutronBehaviour NO_INTERACTION = new INeutronBehaviour() {
+
+        @Override
+        public double neutronSlowingProbability() {
+            return 0.5;
+        }
+
+        @Override
+        public double interactionTotalProbability(NeutronType type) {
+            return 0;
+        }
+
+        @Override
+        public double interactionRelativeProbability(NeutronType type, NeutronInteraction interaction) {
+            return 0.5;
+        }
+    };
+
 }

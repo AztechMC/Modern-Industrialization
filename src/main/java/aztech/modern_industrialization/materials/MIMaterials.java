@@ -37,6 +37,8 @@ import aztech.modern_industrialization.materials.recipe.builder.MIRecipeBuilder;
 import aztech.modern_industrialization.materials.set.MaterialBlockSet;
 import aztech.modern_industrialization.materials.set.MaterialOreSet;
 import aztech.modern_industrialization.materials.set.MaterialRawSet;
+import aztech.modern_industrialization.nuclear.INeutronBehaviour;
+import aztech.modern_industrialization.nuclear.NuclearAbsorbable;
 import aztech.modern_industrialization.nuclear.NuclearConstant;
 import aztech.modern_industrialization.textures.coloramp.BakableTargetColoramp;
 import aztech.modern_industrialization.util.ResourceUtil;
@@ -107,6 +109,7 @@ public class MIMaterials {
                 .addParts(ExternalPart.of("block", "#c:" + n + "_blocks", "minecraft:" + n + "_block"))
                 .addParts(ExternalPart.of("ore", "#c:" + n + "_ores", "minecraft:" + n + "_ore"))
                 .addParts(ExternalPart.of(ORE_DEEPLSATE, "#c:" + n + "_ores", "minecraft:deepslate_" + n + "_ore"));
+
         res.addRecipes(SmeltingRecipes::apply, StandardRecipes::apply).cancelRecipes("craft/block_from_gem", "craft/gem_from_block")
                 .cancelRecipes("smelting/ore_to_gem_smelting", "smelting/ore_to_gem_blasting")
                 .cancelRecipes("smelting/ore_deepslate_to_gem_smelting", "smelting/ore_deepslate_to_gem_blasting");
@@ -323,8 +326,16 @@ public class MIMaterials {
         MaterialRegistry.addMaterial(
                 new MaterialBuilder("ruby", SHINY, 0xd1001f, HARD).addRegularParts(DUST, TINY_DUST).addRecipes(StandardRecipes::apply).build());
 
-        MaterialRegistry.addMaterial(
-                new MaterialBuilder("carbon", DULL, 0x222222, SOFT).addRegularParts(DUST, TINY_DUST).addRecipes(StandardRecipes::apply).build());
+        MaterialRegistry
+                .addMaterial(new MaterialBuilder("carbon", DULL, 0x444444, SOFT)
+                        .addRegularParts(DUST, TINY_DUST,
+                                PLATE)
+                        .addParts(RegularMaterialPart.ofSpecialItem(LARGE_PLATE,
+                                (itemPath) -> NuclearAbsorbable.of(itemPath, 2500, 2 * NuclearConstant.BASE_HEAT_CONDUCTION,
+                                        INeutronBehaviour.of(NuclearConstant.ScatteringType.MEDIUM, NuclearConstant.CARBON, 2),
+                                        NuclearConstant.DESINTEGRATION_BY_ROD * 2)))
+                        .addRecipes(context -> new MIRecipeBuilder(context, "compressor", "dust").addTaggedPartInput(DUST, 1).addPartOutput(PLATE, 1))
+                        .addRecipes(StandardRecipes::apply).build());
 
         MaterialRegistry.addMaterial(
                 new MaterialBuilder("chrome", SHINY, new BakableTargetColoramp(0xFFE6E6, common("ingot"), template("chrome_ingot")), AVERAGE)
@@ -335,15 +346,6 @@ public class MIMaterials {
         MaterialRegistry.addMaterial(new MaterialBuilder("manganese", DULL, 0xC1C1C1, AVERAGE).addParts(BlockMaterialPart.of(MaterialBlockSet.IRON))
                 .addRegularParts(ITEM_PURE_METAL).addRegularParts(CRUSHED_DUST).addRecipes(StandardRecipes::apply)
                 .cancelRecipes("macerator/crushed_dust").build());
-
-        /*
-         * MaterialRegistry.addMaterial(new MaterialBuilder("fluorite", SHINY, DUST,
-         * 0xAF69CF).addRegularParts(ITEM_PURE_NON_METAL)
-         * .addParts(BlockMaterialPart.of(MaterialBlockSet.REDSTONE))
-         * .addParts(OreGenMaterialPart.of(3, 8, 32, MaterialOreSet.REDSTONE,
-         * UniformIntProvider.create(1, 4)))
-         * .addRecipes(StandardRecipes::apply).build());
-         */
 
         MaterialRegistry
                 .addMaterial(new MaterialBuilder("beryllium", SHINY, 0x64B464, HARD).addParts(BlockMaterialPart.of(MaterialBlockSet.NETHERITE))
@@ -415,9 +417,18 @@ public class MIMaterials {
                 .addParts(OreGenMaterialPart.of(2, 3, 24, MaterialOreSet.LAPIS, UniformIntProvider.create(1, 4))).addRecipes(StandardRecipes::apply)
                 .build());
 
-        MaterialRegistry.addMaterial(
-                new MaterialBuilder("cadmium", DULL, 0x967224, SOFT).addRegularParts(DUST, TINY_DUST, INGOT, PLATE, ROD, DOUBLE_INGOT, BATTERY)
-                        .addRecipes(StandardRecipes::apply, SmeltingRecipes::apply).build());
+        MaterialRegistry
+                .addMaterial(
+                        new MaterialBuilder("cadmium", DULL, 0x967224, SOFT)
+                                .addRegularParts(DUST, TINY_DUST, INGOT, PLATE, ROD, DOUBLE_INGOT, BATTERY)
+                                .addParts(
+                                        RegularMaterialPart
+                                                .ofSpecialItem(FUEL_ROD,
+                                                        (itemPath) -> NuclearAbsorbable.of(itemPath, 1900, 0.5 * NuclearConstant.BASE_HEAT_CONDUCTION,
+                                                                INeutronBehaviour.of(NuclearConstant.ScatteringType.HEAVY, NuclearConstant.CADMIUM,
+                                                                        1),
+                                                                NuclearConstant.DESINTEGRATION_BY_ROD)))
+                                .addRecipes(StandardRecipes::apply, SmeltingRecipes::apply).build());
 
         MaterialRegistry
                 .addMaterial(new MaterialBuilder("neodymium", STONE, DUST, 0x1d4506, SOFT).addParts(BlockMaterialPart.of(MaterialBlockSet.REDSTONE))

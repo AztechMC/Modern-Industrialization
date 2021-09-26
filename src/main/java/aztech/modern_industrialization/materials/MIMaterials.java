@@ -191,8 +191,9 @@ public class MIMaterials {
         MaterialRegistry.addMaterial(
                 new MaterialBuilder("coke", STONE, MIParts.GEM, new BakableTargetColoramp(0x6d6d57, common("dust"), miitem("coke")), SOFT)
                         .addRegularParts(DUST).addParts(MIItemPart.of(GEM, "coke")).addParts(BlockMaterialPart.of(MaterialBlockSet.COAL))
-                        .addRecipes(context -> new MIRecipeBuilder(context, "macerator", "coke").addTaggedPartInput(MIParts.GEM, 1)
-                                .addPartOutput(DUST, 1))
+
+                        .addRecipes(context -> new MIRecipeBuilder(context, "compressor", "dust").addTaggedPartInput(MIParts.DUST, 1)
+                                .addPartOutput(GEM, 1))
                         .addRecipes(StandardRecipes::apply).build());
 
         MaterialRegistry.addMaterial(

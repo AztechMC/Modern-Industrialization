@@ -44,6 +44,8 @@ import java.util.function.Supplier;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.TransferVariant;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
@@ -66,7 +68,8 @@ public class NuclearReactorGui {
         @Override
         public boolean needsSync(Data cachedData) {
             Data data = copyData();
-            if (data.valid != cachedData.valid || data.gridSizeX != cachedData.gridSizeX || data.gridSizeY != cachedData.gridSizeY) {
+            if (data.valid != cachedData.valid || data.gridSizeX != cachedData.gridSizeX || data.gridSizeY != cachedData.gridSizeY
+                    || data.euProduction != cachedData.euProduction || data.euFuelConsumption != cachedData.euFuelConsumption) {
                 return true;
             } else {
                 for (int i = 0; i < data.gridSizeY * data.gridSizeX; i++) {
@@ -93,6 +96,8 @@ public class NuclearReactorGui {
                 for (Optional<INuclearTileData> tiles : data.tilesData) {
                     INuclearTileData.write(tiles, buf);
                 }
+                buf.writeDouble(data.euProduction);
+                buf.writeDouble(data.euFuelConsumption);
             }
 
         }
@@ -122,10 +127,12 @@ public class NuclearReactorGui {
                 for (int i = 0; i < sizeX * sizeY; i++) {
                     tilesData[i] = INuclearTileData.read(buf);
                 }
-                data = new Data(true, sizeX, sizeY, tilesData);
+                double euProduction = buf.readDouble();
+                double euFuelConsumption = buf.readDouble();
+                data = new Data(true, sizeX, sizeY, tilesData, euProduction, euFuelConsumption);
 
             } else {
-                data = new Data(false, 0, 0, null);
+                data = new Data(false, 0, 0, null, 0, 0);
             }
         }
 
@@ -266,6 +273,12 @@ public class NuclearReactorGui {
                             }
                         }
                     }
+
+                    if (data.euFuelConsumption > 0 && currentMode == Mode.EU_GENERATION) {
+                        TextRenderer renderer = MinecraftClient.getInstance().textRenderer;
+                        renderer.draw(matrices, getEfficiencyText(), x + 8, y + 15, 0xFFFFFF);
+                    }
+
                 }
             }
 
@@ -390,6 +403,29 @@ public class NuclearReactorGui {
                         }
                     }
                 }
+
+                if (data.euFuelConsumption > 0 && currentMode == Mode.EU_GENERATION) {
+                    TextRenderer renderer = MinecraftClient.getInstance().textRenderer;
+                    int width = renderer.getWidth(getEfficiencyText().getString());
+                    if (cursorX > x + 8 && cursorX < x + 8 + width && cursorY > y + 15 && cursorY < y + 23) {
+
+                        Text euProduction = new LiteralText(TextHelper.getEuString(data.euProduction) + " " + TextHelper.getEuUnit(data.euProduction))
+                                .setStyle(TextHelper.EU_TEXT);
+                        Text euFuelConsumption = new LiteralText(
+                                TextHelper.getEuString(data.euFuelConsumption) + " " + TextHelper.getEuUnit(data.euFuelConsumption))
+                                        .setStyle(TextHelper.EU_TEXT);
+
+                        Text tooltip = new TranslatableText("text.modern_industrialization.nuclear_fuel_efficiency_tooltip", euProduction,
+                                euFuelConsumption);
+
+                        screen.renderTooltip(matrices, tooltip, cursorX, cursorY);
+                    }
+                }
+            }
+
+            public Text getEfficiencyText() {
+                String eff = String.format("%.1f", 100 * data.euProduction / data.euFuelConsumption);
+                return new TranslatableText("text.modern_industrialization.efficiency_nuclear", eff).setStyle(TextHelper.RED);
             }
 
             private boolean drawButton() {
@@ -468,7 +504,8 @@ public class NuclearReactorGui {
         return Math.log(1 + 10 * neutronNumber) / Math.log(1 + 10 * neutronsMax);
     }
 
-    public record Data(boolean valid, int gridSizeX, int gridSizeY, Optional<INuclearTileData>[] tilesData) {
+    public record Data(boolean valid, int gridSizeX, int gridSizeY, Optional<INuclearTileData>[] tilesData, double euProduction,
+            double euFuelConsumption) {
 
         public int toIndex(int x, int y) {
             return toIndex(x, y, gridSizeY);

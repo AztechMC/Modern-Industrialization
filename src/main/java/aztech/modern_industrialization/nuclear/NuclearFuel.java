@@ -115,9 +115,11 @@ public class NuclearFuel extends NuclearAbsorbable {
         return factor;
     }
 
-    public int simulateDesintegration(double neutronsReceived, ItemStack stack, double temperature, Random rand) {
-        return randIntFromDouble(efficiencyFactor(temperature) * simulateAbsorption(neutronsReceived, stack, rand) * neutronMultiplicationFactor,
-                rand);
+    public int simulateDesintegration(double neutronsReceived, ItemStack stack, double temperature, Random rand, INuclearGrid grid) {
+        int absorption = simulateAbsorption(neutronsReceived, stack, rand);
+        double fuelEuConsumed = absorption * totalEUbyDesintegration;
+        grid.registerEuFuelConsumption(fuelEuConsumed);
+        return randIntFromDouble(efficiencyFactor(temperature) * absorption * neutronMultiplicationFactor, rand);
     }
 
 }

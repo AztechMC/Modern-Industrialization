@@ -37,4 +37,8 @@ public interface INuclearGrid {
 
     void registerNeutronCreation(int neutronNumber, NeutronType type);
 
+    void registerEuFuelConsumption(double eu);
+
+    void registerEuProduction(double eu);
+
 }

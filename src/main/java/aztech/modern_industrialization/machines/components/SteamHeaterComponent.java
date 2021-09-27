@@ -65,28 +65,35 @@ public class SteamHeaterComponent extends TemperatureComponent {
         this.acceptHighPressure = acceptHighPressure;
     }
 
-    public void tick(List<ConfigurableFluidStack> fluidInputs, List<ConfigurableFluidStack> fluidOutputs) {
+    // return eu produced
+    public double tick(List<ConfigurableFluidStack> fluidInputs, List<ConfigurableFluidStack> fluidOutputs) {
 
+        double euProducedLowPressure = 0;
         if (acceptLowPressure) {
-            if (!tryMakeSteam(fluidInputs, fluidOutputs, Fluids.WATER, MIFluids.STEAM, 1)) {
-                tryMakeSteam(fluidInputs, fluidOutputs, MIFluids.HEAVY_WATER, MIFluids.HEAVY_WATER_STEAM, 1);
+            euProducedLowPressure = tryMakeSteam(fluidInputs, fluidOutputs, Fluids.WATER, MIFluids.STEAM, 1);
+            if (euProducedLowPressure == 0) {
+                euProducedLowPressure = tryMakeSteam(fluidInputs, fluidOutputs, MIFluids.HEAVY_WATER, MIFluids.HEAVY_WATER_STEAM, 1);
             }
         }
+
+        double euProducedHighPressure = 0;
         if (acceptHighPressure) {
-            if (!tryMakeSteam(fluidInputs, fluidOutputs, MIFluids.HIGH_PRESSURE_WATER, MIFluids.HIGH_PRESSURE_STEAM, 8)) {
-                tryMakeSteam(fluidInputs, fluidOutputs, MIFluids.HIGH_PRESSURE_HEAVY_WATER, MIFluids.HIGH_PRESSURE_HEAVY_WATER_STEAM, 8);
+            euProducedHighPressure = tryMakeSteam(fluidInputs, fluidOutputs, MIFluids.HIGH_PRESSURE_WATER, MIFluids.HIGH_PRESSURE_STEAM, 8);
+            if (euProducedHighPressure == 0) {
+                euProducedHighPressure = tryMakeSteam(fluidInputs, fluidOutputs, MIFluids.HIGH_PRESSURE_HEAVY_WATER,
+                        MIFluids.HIGH_PRESSURE_HEAVY_WATER_STEAM, 8);
             }
         }
+        return euProducedLowPressure + euProducedHighPressure;
     }
 
-    private boolean tryMakeSteam(List<ConfigurableFluidStack> input, List<ConfigurableFluidStack> output, Fluid water, Fluid steam,
-            int euPerSteamMb) {
+    private double tryMakeSteam(List<ConfigurableFluidStack> input, List<ConfigurableFluidStack> output, Fluid water, Fluid steam, int euPerSteamMb) {
         return tryMakeSteam(new MIFluidStorage(input), new MIFluidStorage(output), water, steam, euPerSteamMb);
 
     }
 
     // Return true if any steam was made.
-    private boolean tryMakeSteam(MIFluidStorage input, MIFluidStorage output, Fluid water, Fluid steam, int euPerSteamMb) {
+    private double tryMakeSteam(MIFluidStorage input, MIFluidStorage output, Fluid water, Fluid steam, int euPerSteamMb) {
 
         FluidVariant waterKey = FluidVariant.of(water);
         FluidVariant steamKey = FluidVariant.of(steam);
@@ -106,7 +113,7 @@ public class SteamHeaterComponent extends TemperatureComponent {
                             double euProduced = extracted * STEAM_TO_WATER * euPerSteamMb / 81d;
                             decreaseTemperature(euProduced / euPerDegree);
                             tx.commit();
-                            return true;
+                            return euProduced;
                         } else {
                             throw new IllegalStateException("Steam Component : Logic bug: failed to insert");
                         }
@@ -114,6 +121,6 @@ public class SteamHeaterComponent extends TemperatureComponent {
                 }
             }
         }
-        return false;
+        return 0;
     }
 }

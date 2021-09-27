@@ -43,7 +43,7 @@ public class TextHelper {
     public static final Style RED = Style.EMPTY.withColor(Formatting.RED);
     public static final Style GREEN = Style.EMPTY.withColor(Formatting.GREEN);
 
-    public static String getEuUnit(long eu) {
+    public static String getEuUnit(double eu) {
         if (eu > 1e12) {
             return "TEU";
         } else if (eu > 1e9) {
@@ -67,6 +67,22 @@ public class TextHelper {
     }
 
     public static String getEuString(long eu) {
+        double div = 1;
+        if (eu > 1e12) {
+            div = 1e12;
+        } else if (eu > 1e9) {
+            div = 1e9;
+        } else if (eu > 1e6) {
+            div = 1e6;
+        } else if (eu > 1e4) {
+            div = 1e3;
+        } else {
+            return "" + eu;
+        }
+        return String.format("%.2f", ((double) eu) / div);
+    }
+
+    public static String getEuString(double eu) {
         double div = 1;
         if (eu > 1e12) {
             div = 1e12;

@@ -111,8 +111,6 @@ public class NuclearHatch extends HatchBlockEntity implements INuclearTile {
         this.clearMachineLock();
 
         if (isFluid) {
-            ((SteamHeaterComponent) nuclearReactorComponent).tick(Collections.singletonList(inventory.getFluidStacks().get(0)),
-                    inventory.getFluidStacks().stream().filter(AbstractConfigurableStack::canPipesExtract).collect(Collectors.toList()));
             fluidNeutronProductTick(1, true);
         } else {
             ItemVariant itemVariant = (ItemVariant) this.getVariant();
@@ -195,7 +193,7 @@ public class NuclearHatch extends HatchBlockEntity implements INuclearTile {
     }
 
     @Override
-    public int neutronGenerationTick() {
+    public int neutronGenerationTick(INuclearGrid grid) {
         double meanNeutron = getMeanNeutronAbsorption(NeutronType.BOTH) + NuclearConstant.BASE_NEUTRON;
         int neutronsProduced = 0;
 
@@ -209,7 +207,7 @@ public class NuclearHatch extends HatchBlockEntity implements INuclearTile {
                 Random rand = this.world.getRandom();
 
                 if (abs instanceof NuclearFuel fuel) {
-                    neutronsProduced = fuel.simulateDesintegration(meanNeutron, stack, this.nuclearReactorComponent.getTemperature(), rand);
+                    neutronsProduced = fuel.simulateDesintegration(meanNeutron, stack, this.nuclearReactorComponent.getTemperature(), rand, grid);
                 } else {
                     abs.simulateAbsorption(meanNeutron, stack, rand);
                 }
@@ -286,9 +284,16 @@ public class NuclearHatch extends HatchBlockEntity implements INuclearTile {
         }
     }
 
-    public void nuclearTick() {
+    public void nuclearTick(INuclearGrid grid) {
         neutronHistory.tick();
         fluidNeutronProductTick(randIntFromDouble(neutronHistory.getAverageReceived(NeutronType.BOTH), this.getWorld().getRandom()), false);
+
+        if (isFluid) {
+            double euProduced = ((SteamHeaterComponent) nuclearReactorComponent).tick(Collections.singletonList(inventory.getFluidStacks().get(0)),
+                    inventory.getFluidStacks().stream().filter(AbstractConfigurableStack::canPipesExtract).collect(Collectors.toList()));
+            grid.registerEuProduction(euProduced);
+        }
+
         checkComponentMaxTemperature();
     }
 

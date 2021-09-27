@@ -26,58 +26,13 @@ package aztech.modern_industrialization.machines.components;
 import static aztech.modern_industrialization.nuclear.NeutronType.FAST;
 import static aztech.modern_industrialization.nuclear.NeutronType.THERMAL;
 
-import aztech.modern_industrialization.machines.IComponent;
 import aztech.modern_industrialization.nuclear.NeutronType;
-import java.util.HashMap;
-import java.util.Map;
-import net.minecraft.nbt.NbtCompound;
 
-public class NeutronHistoryComponent implements IComponent {
-
-    public static final int TICK_HISTORY_SIZE = 100;
-
-    private final Map<String, int[]> histories = new HashMap<>();
-    private final Map<String, Integer> updatingValue = new HashMap<>();
-
-    public static final String[] KEYS = { "fastNeutronReceived", "fastNeutronFlux", "thermalNeutronReceived", "thermalNeutronFlux",
-            "neutronGeneration", "euGeneration" };
+public class NeutronHistoryComponent extends IntegerHistoryComponent {
 
     public NeutronHistoryComponent() {
-        for (String key : KEYS) {
-            histories.put(key, new int[TICK_HISTORY_SIZE]);
-            updatingValue.put(key, 0);
-        }
-    }
-
-    @Override
-    public void writeNbt(NbtCompound tag) {
-        for (String key : KEYS) {
-            tag.putIntArray(key, histories.get(key));
-        }
-    }
-
-    @Override
-    public void readNbt(NbtCompound tag) {
-        for (String key : KEYS) {
-            if (tag.contains(key)) {
-                int[] array = tag.getIntArray(key);
-                if (array.length == TICK_HISTORY_SIZE) {
-                    histories.put(key, array);
-                    continue;
-                }
-            }
-            histories.put(key, new int[TICK_HISTORY_SIZE]);
-        }
-    }
-
-    public double getAverage(String key) {
-        double avg = 0;
-        int[] values = histories.get(key);
-        for (int value : values) {
-            avg += value;
-        }
-        return avg / TICK_HISTORY_SIZE;
-
+        super(new String[] { "fastNeutronReceived", "fastNeutronFlux", "thermalNeutronReceived", "thermalNeutronFlux", "neutronGeneration",
+                "euGeneration" }, 100);
     }
 
     public double getAverageReceived(NeutronType type) {
@@ -110,25 +65,6 @@ public class NeutronHistoryComponent implements IComponent {
 
     public double getAverageEuGeneration() {
         return getAverage("euGeneration");
-    }
-
-    public void tick() {
-        for (String key : KEYS) {
-            int[] valuesArray = histories.get(key);
-            int[] newValues = new int[TICK_HISTORY_SIZE];
-            System.arraycopy(valuesArray, 0, newValues, 1, TICK_HISTORY_SIZE - 1);
-            newValues[0] = updatingValue.get(key);
-            histories.put(key, newValues);
-            updatingValue.put(key, 0);
-        }
-    }
-
-    public void addValue(String key, int delta) {
-        if (!updatingValue.containsKey(key)) {
-            throw new IllegalArgumentException("No key found for : " + key);
-        } else {
-            updatingValue.put(key, updatingValue.get(key) + delta);
-        }
     }
 
 }

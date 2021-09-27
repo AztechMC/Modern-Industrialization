@@ -46,8 +46,8 @@ public interface INuclearTile extends INuclearTileData {
 
     void addNeutronsToFlux(int neutronNumber, NeutronType type);
 
-    int neutronGenerationTick();
+    int neutronGenerationTick(INuclearGrid grid);
 
-    void nuclearTick();
+    void nuclearTick(INuclearGrid grid);
 
 }

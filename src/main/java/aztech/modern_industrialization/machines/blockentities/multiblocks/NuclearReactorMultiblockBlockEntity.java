@@ -29,6 +29,7 @@ import aztech.modern_industrialization.inventory.MIInventory;
 import aztech.modern_industrialization.machines.BEP;
 import aztech.modern_industrialization.machines.blockentities.hatches.NuclearHatch;
 import aztech.modern_industrialization.machines.components.ActiveShapeComponent;
+import aztech.modern_industrialization.machines.components.IntegerHistoryComponent;
 import aztech.modern_industrialization.machines.components.IsActiveComponent;
 import aztech.modern_industrialization.machines.components.OrientationComponent;
 import aztech.modern_industrialization.machines.components.sync.NuclearReactorGui;
@@ -58,6 +59,7 @@ public class NuclearReactorMultiblockBlockEntity extends MultiblockMachineBlockE
 
     private final ActiveShapeComponent activeShape;
     private final IsActiveComponent isActive;
+    private final IntegerHistoryComponent efficiencyHistory;
     private ShapeMatcher shapeMatcher;
 
     private INuclearGrid nuclearGrid;
@@ -68,8 +70,9 @@ public class NuclearReactorMultiblockBlockEntity extends MultiblockMachineBlockE
                 new OrientationComponent(new OrientationComponent.Params(false, false, false)));
 
         this.activeShape = new ActiveShapeComponent(shapeTemplates);
+        efficiencyHistory = new IntegerHistoryComponent(new String[] { "euProduction", "euFuelConsumption" }, 300);
         isActive = new IsActiveComponent();
-        registerComponents(activeShape, isActive);
+        registerComponents(activeShape, isActive, efficiencyHistory);
         this.registerClientComponent(new NuclearReactorGui.Server(this::sendData));
 
     }
@@ -78,7 +81,7 @@ public class NuclearReactorMultiblockBlockEntity extends MultiblockMachineBlockE
         if (shapeValid.shapeValid) {
             return dataSupplier.get();
         } else {
-            return new NuclearReactorGui.Data(false, 0, 0, null);
+            return new NuclearReactorGui.Data(false, 0, 0, null, 0, 0);
         }
     }
 
@@ -116,6 +119,9 @@ public class NuclearReactorMultiblockBlockEntity extends MultiblockMachineBlockE
             link();
             if (shapeValid.shapeValid) {
                 NuclearGridHelper.simulate(nuclearGrid);
+                efficiencyHistory.tick();
+            } else {
+                efficiencyHistory.clear();
             }
         }
     }
@@ -174,6 +180,18 @@ public class NuclearReactorMultiblockBlockEntity extends MultiblockMachineBlockE
             public void registerNeutronCreation(int neutronNumber, NeutronType type) {
             }
 
+            @Override
+            public void registerEuFuelConsumption(double eu) {
+                efficiencyHistory.addValue("euFuelConsumption", (int) eu);
+
+            }
+
+            @Override
+            public void registerEuProduction(double eu) {
+                efficiencyHistory.addValue("euProduction", (int) eu);
+
+            }
+
         };
 
         dataSupplier = () -> {
@@ -188,7 +206,8 @@ public class NuclearReactorMultiblockBlockEntity extends MultiblockMachineBlockE
                     tilesData[index] = Optional.ofNullable(hatchesGrid[x][y]);
                 }
             }
-            return new NuclearReactorGui.Data(true, size, size, tilesData);
+            return new NuclearReactorGui.Data(true, size, size, tilesData, efficiencyHistory.getAverage("euProduction"),
+                    efficiencyHistory.getAverage("euFuelConsumption"));
         };
     }
 

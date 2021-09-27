@@ -54,7 +54,7 @@ public class NuclearGridHelper {
                 if (maybeTile.isPresent()) {
                     INuclearTile tile = maybeTile.get();
                     Optional<NuclearFuel> maybeFuel = tile.getFuel();
-                    int neutronNumberPrime = tile.neutronGenerationTick();
+                    int neutronNumberPrime = tile.neutronGenerationTick(grid);
                     if (neutronNumberPrime > 0) {
                         if (maybeFuel.isEmpty()) {
                             throw new IllegalStateException("Neutron generated without fuel");
@@ -198,7 +198,10 @@ public class NuclearGridHelper {
         for (int i = 0; i < sizeX; i++) {
             for (int j = 0; j < sizeY; j++) {
                 Optional<INuclearTile> maybeTile = grid.getNuclearTile(i, j);
-                maybeTile.ifPresent(INuclearTile::nuclearTick);
+                if (maybeTile.isPresent()) {
+                    INuclearTile tile = maybeTile.get();
+                    tile.nuclearTick(grid);
+                }
             }
         }
 

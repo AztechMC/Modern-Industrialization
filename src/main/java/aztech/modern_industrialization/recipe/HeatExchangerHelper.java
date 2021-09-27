@@ -41,8 +41,8 @@ public class HeatExchangerHelper {
         Fluid[] cold = { Fluids.WATER, MIFluids.HEAVY_WATER, MIFluids.HIGH_PRESSURE_HEAVY_WATER, MIFluids.HIGH_PRESSURE_WATER };
         int[] amount = { 1, 1, 8, 8 };
 
-        int amountBaseHot = 6400;
-        int amountBaseCold = 400;
+        int amountBaseHot = 16000;
+        int amountBaseCold = 1000;
 
         for (int i = 0; i < hots.length; i++) {
             for (int j = 0; j < cold.length; j++) {

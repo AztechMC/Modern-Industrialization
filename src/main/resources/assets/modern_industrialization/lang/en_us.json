@@ -1166,6 +1166,7 @@
     "text.modern_industrialization.energy_bar_double": "%s / %s %s",
     "text.modern_industrialization.eu_by_desintegration": "%d EU / Desintegration",
     "text.modern_industrialization.eu_cable": "%s - Max network transfer : %d EU/t",
+    "text.modern_industrialization.eu_generation_mode": "EU Generation",
     "text.modern_industrialization.eu_in_diesel_generator": "EU per mb : %d",
     "text.modern_industrialization.fast_neutron": "Fast Neutron",
     "text.modern_industrialization.fast_neutron_energy": "Fast Neutron Energy",

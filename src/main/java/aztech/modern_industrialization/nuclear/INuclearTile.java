@@ -29,9 +29,7 @@ public interface INuclearTile extends INuclearTileData {
 
     void setTemperature(double temp);
 
-    default void putHeat(int eu) {
-        setTemperature(getTemperature() + ((double) eu) / NuclearConstant.EU_PER_DEGREE);
-    }
+    void putHeat(int eu);
 
     default Optional<NuclearFuel> getFuel() {
         Optional<INuclearComponent> nuclearComponent = getComponent();

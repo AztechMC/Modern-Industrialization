@@ -25,13 +25,13 @@ package aztech.modern_industrialization.nuclear;
 
 public class NuclearConstant {
 
-    public static final int EU_FOR_FAST_NEUTRON = 64;
-    public static final int DESINTEGRATION_BY_ROD = 1280000;
+    public static final int EU_FOR_FAST_NEUTRON = 8;
+    public static final int DESINTEGRATION_BY_ROD = 10240000;
     public static final double BASE_HEAT_CONDUCTION = 0.01;
     public static final double BASE_NEUTRON = 0.1;
     public static final int MAX_TEMPERATURE = 3250;
-    public static final int EU_PER_DEGREE = 512;
-    public static final int MAX_HATCH_EU_PRODUCTION = 16384;
+    public static final int EU_PER_DEGREE = 64;
+    public static final int MAX_HATCH_EU_PRODUCTION = 8192;
 
     public enum ScatteringType {
         ULTRA_LIGHT(0.05),
@@ -131,6 +131,6 @@ public class NuclearConstant {
     public static final IsotopeParams HYDROGEN = new IsotopeParams(0.3, 0.15, 0.25, 0.6);
     public static final IsotopeParams DEUTERIUM = new IsotopeParams(0.02, 0.01, 0.15, 0.4);
 
-    public static final IsotopeParams CADMIUM = new IsotopeParams(0.95, 0.1, 0.1, 0.25);
+    public static final IsotopeParams CADMIUM = new IsotopeParams(0.95, 0.8, 0.1, 0.25);
     public static final IsotopeParams CARBON = new IsotopeParams(0.01, 0.005, 0.12, 0.35);
 }

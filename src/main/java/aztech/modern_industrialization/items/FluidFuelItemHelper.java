@@ -23,20 +23,14 @@
  */
 package aztech.modern_industrialization.items;
 
+import aztech.modern_industrialization.api.FluidFuelRegistry;
 import aztech.modern_industrialization.util.FluidHelper;
 import aztech.modern_industrialization.util.NbtHelper;
-import java.util.Iterator;
 import java.util.List;
 import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
-import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
-import net.fabricmc.fabric.api.transfer.v1.storage.StoragePreconditions;
-import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
-import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleViewIterator;
-import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
-import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
-import net.minecraft.item.Item;
+import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleVariantItemStorage;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.text.Style;
@@ -88,105 +82,45 @@ public interface FluidFuelItemHelper {
         }
     }
 
-    class ItemStorage implements Storage<FluidVariant>, StorageView<FluidVariant> {
-        private final Item item;
-        private final FluidVariant fluid;
-        private final long amount;
+    class ItemStorage extends SingleVariantItemStorage<FluidVariant> {
         private final long capacity;
-        private final ContainerItemContext ctx;
 
-        public ItemStorage(long capacity, ItemStack stack, ContainerItemContext ctx) {
-            this.item = stack.getItem();
-            this.fluid = FluidFuelItemHelper.getFluid(stack);
-            this.amount = FluidFuelItemHelper.getAmount(stack);
+        public ItemStorage(long capacity, ContainerItemContext ctx) {
+            super(ctx);
             this.capacity = capacity;
-            this.ctx = ctx;
-        }
-
-        private boolean updateItem(FluidVariant fluid, long amount, Transaction tx) {
-            ItemStack stack = new ItemStack(item);
-            setAmount(stack, amount);
-            setFluid(stack, fluid);
-            return ctx.exchange(ItemVariant.of(stack), 1, tx) == 1;
         }
 
         @Override
-        public boolean supportsInsertion() {
-            return true;
+        protected FluidVariant getBlankResource() {
+            return FluidVariant.blank();
         }
 
         @Override
-        public long insert(FluidVariant fluid, long maxAmount, TransactionContext tx) {
-            StoragePreconditions.notBlankNotNegative(fluid, maxAmount);
-            if (!ctx.getItemVariant().isOf(item))
-                return 0;
-
-            long inserted = 0;
-            if (ItemStorage.this.fluid.isBlank()) {
-                inserted = Math.min(capacity, maxAmount);
-            } else if (ItemStorage.this.fluid.equals(fluid)) {
-                inserted = Math.min(capacity - amount, maxAmount);
-            }
-            if (inserted > 0) {
-                try (Transaction nested = tx.openNested()) {
-                    if (updateItem(fluid, amount + inserted, nested)) {
-                        nested.commit();
-                        return inserted;
-                    }
-                }
-            }
-            return 0;
+        protected FluidVariant getResource(ItemVariant currentVariant) {
+            return getFluid(currentVariant.toStack());
         }
 
         @Override
-        public boolean supportsExtraction() {
-            return true;
+        protected long getAmount(ItemVariant currentVariant) {
+            return FluidFuelItemHelper.getAmount(currentVariant.toStack());
         }
 
         @Override
-        public long extract(FluidVariant fluid, long maxAmount, TransactionContext tx) {
-            StoragePreconditions.notBlankNotNegative(fluid, maxAmount);
-            if (!ctx.getItemVariant().isOf(item))
-                return 0;
-
-            long extracted = 0;
-            if (ItemStorage.this.fluid.equals(fluid)) {
-                extracted = Math.min(maxAmount, amount);
-            }
-            if (extracted > 0) {
-                try (Transaction nested = tx.openNested()) {
-                    if (!updateItem(fluid, amount - extracted, nested)) {
-                        nested.commit();
-                        return extracted;
-                    }
-                }
-            }
-            return 0;
-        }
-
-        @Override
-        public boolean isResourceBlank() {
-            return getResource().isBlank();
-        }
-
-        @Override
-        public FluidVariant getResource() {
-            return fluid;
-        }
-
-        @Override
-        public long getAmount() {
-            return amount;
-        }
-
-        @Override
-        public long getCapacity() {
+        protected long getCapacity(FluidVariant variant) {
             return capacity;
         }
 
         @Override
-        public Iterator<StorageView<FluidVariant>> iterator(TransactionContext transaction) {
-            return SingleViewIterator.create(this, transaction);
+        protected ItemVariant getUpdatedVariant(ItemVariant currentVariant, FluidVariant newResource, long newAmount) {
+            ItemStack stack = currentVariant.toStack();
+            setFluid(stack, newResource);
+            setAmount(stack, newAmount);
+            return ItemVariant.of(stack);
+        }
+
+        @Override
+        protected boolean canInsert(FluidVariant resource) {
+            return FluidFuelRegistry.getEu(resource.getFluid()) > 0;
         }
     }
 

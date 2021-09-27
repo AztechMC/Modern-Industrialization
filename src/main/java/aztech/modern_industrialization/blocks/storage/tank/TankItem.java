@@ -25,17 +25,12 @@ package aztech.modern_industrialization.blocks.storage.tank;
 
 import aztech.modern_industrialization.util.FluidHelper;
 import aztech.modern_industrialization.util.NbtHelper;
-import java.util.Iterator;
 import java.util.List;
 import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
-import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
-import net.fabricmc.fabric.api.transfer.v1.storage.StoragePreconditions;
-import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
-import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleViewIterator;
-import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
+import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleVariantItemStorage;
 import net.minecraft.block.Block;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.item.BlockItem;
@@ -93,115 +88,40 @@ public class TankItem extends BlockItem {
         }
     }
 
-    class TankItemStorage implements Storage<FluidVariant>, StorageView<FluidVariant> {
-        private final ContainerItemContext ctx;
-
-        TankItemStorage(ItemStack stack, ContainerItemContext ctx) {
-            this.ctx = ctx;
-        }
-
-        private boolean updateTank(FluidVariant fluid, long amount, TransactionContext tx) {
-            ItemStack result = new ItemStack(TankItem.this);
-            if (amount > 0) {
-                setFluid(result, fluid);
-                setAmount(result, amount);
-            }
-            ItemVariant into = ItemVariant.of(result);
-
-            return ctx.exchange(into, 1, tx) == 1;
+    class TankItemStorage extends SingleVariantItemStorage<FluidVariant> {
+        public TankItemStorage(ItemStack stack, ContainerItemContext context) {
+            super(context);
         }
 
         @Override
-        public boolean supportsInsertion() {
-            return true;
+        protected FluidVariant getBlankResource() {
+            return FluidVariant.blank();
         }
 
         @Override
-        public long insert(FluidVariant insertedFluid, long maxAmount, TransactionContext transaction) {
-            StoragePreconditions.notBlankNotNegative(insertedFluid, maxAmount);
-
-            ItemStack current = ctx.getItemVariant().toStack();
-            if (!current.isOf(TankItem.this))
-                return 0;
-
-            long amount = TankItem.this.getAmount(current);
-            FluidVariant fluid = TankItem.this.getFluid(current);
-
-            long inserted = 0;
-            if (fluid.isBlank()) {
-                inserted = Math.min(capacity, maxAmount);
-            } else if (fluid.equals(insertedFluid)) {
-                inserted = Math.min(capacity - amount, maxAmount);
-            }
-            if (inserted > 0) {
-                if (updateTank(insertedFluid, amount + inserted, transaction)) {
-                    return inserted;
-                }
-            }
-            return 0;
+        protected FluidVariant getResource(ItemVariant currentVariant) {
+            return getFluid(currentVariant.toStack());
         }
 
         @Override
-        public boolean supportsExtraction() {
-            return true;
+        protected long getAmount(ItemVariant currentVariant) {
+            return TankItem.this.getAmount(currentVariant.toStack());
         }
 
         @Override
-        public long extract(FluidVariant extractedFluid, long maxAmount, TransactionContext transaction) {
-            StoragePreconditions.notBlankNotNegative(extractedFluid, maxAmount);
-
-            ItemStack current = ctx.getItemVariant().toStack();
-            if (!current.isOf(TankItem.this))
-                return 0;
-
-            long amount = TankItem.this.getAmount(current);
-            FluidVariant fluid = TankItem.this.getFluid(current);
-
-            long extracted = 0;
-            if (fluid.equals(extractedFluid)) {
-                extracted = Math.min(maxAmount, amount);
-            }
-            if (extracted > 0) {
-                if (updateTank(fluid, amount - extracted, transaction)) {
-                    return extracted;
-                }
-            }
-            return 0;
-        }
-
-        @Override
-        public boolean isResourceBlank() {
-            return getResource().isBlank();
-        }
-
-        @Override
-        public FluidVariant getResource() {
-            ItemStack current = ctx.getItemVariant().toStack();
-            if (current.isOf(TankItem.this)) {
-                return TankItem.this.getFluid(current);
-            } else {
-                return FluidVariant.blank();
-            }
-        }
-
-        @Override
-        public long getAmount() {
-            ItemStack current = ctx.getItemVariant().toStack();
-            if (current.isOf(TankItem.this)) {
-                return TankItem.this.getAmount(current);
-            } else {
-                return 0;
-            }
-        }
-
-        @Override
-        public long getCapacity() {
+        protected long getCapacity(FluidVariant variant) {
             return capacity;
         }
 
         @Override
-        public Iterator<StorageView<FluidVariant>> iterator(TransactionContext transaction) {
-            return SingleViewIterator.create(this, transaction);
+        protected ItemVariant getUpdatedVariant(ItemVariant currentVariant, FluidVariant newResource, long newAmount) {
+            // TODO: Note that any enchantment or custom name is nuked, fix this?
+            ItemStack stack = new ItemStack(currentVariant.getItem());
+            if (!newResource.isBlank() && newAmount > 0) {
+                setFluid(stack, newResource);
+                setAmount(stack, newAmount);
+            }
+            return ItemVariant.of(stack);
         }
     }
 }

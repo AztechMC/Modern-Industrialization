@@ -150,7 +150,8 @@ public class NuclearReactorGui {
                 TEMPERATURE(1),
                 NEUTRON_ABSORPTION(2),
                 NEUTRON_FLUX(3),
-                NEUTRON_GENERATION(4);
+                NEUTRON_GENERATION(4),
+                EU_GENERATION(5);
 
                 final int index;
 
@@ -164,7 +165,8 @@ public class NuclearReactorGui {
                     new TranslatableText("text.modern_industrialization.temperature_mode"),
                     new TranslatableText("text.modern_industrialization.neutron_absorption_mode"),
                     new TranslatableText("text.modern_industrialization.neutron_flux_mode"),
-                    new TranslatableText("text.modern_industrialization.neutron_generation_mode") };
+                    new TranslatableText("text.modern_industrialization.neutron_generation_mode"),
+                    new TranslatableText("text.modern_industrialization.eu_generation_mode") };
 
             Text[] neutronModeTooltip = new Text[] { new TranslatableText("text.modern_industrialization.fast_neutron"),
                     new TranslatableText("text.modern_industrialization.thermal_neutron"),
@@ -210,6 +212,10 @@ public class NuclearReactorGui {
                                     if (currentMode == Mode.TEMPERATURE) {
                                         v = 30;
                                         u = (int) (299 * tileData.getTemperature() / NuclearConstant.MAX_TEMPERATURE);
+                                    } else if (currentMode == Mode.EU_GENERATION) {
+                                        v = 30;
+                                        u = (int) (299
+                                                * Math.min(1.0, tileData.getMeanEuGeneration() / (2 * NuclearConstant.MAX_HATCH_EU_PRODUCTION)));
                                     } else {
                                         double neutronRate;
                                         double factor = neutronMode == BOTH ? 2 : 1;
@@ -303,7 +309,13 @@ public class NuclearReactorGui {
 
                                 screen.renderTooltip(matrices, tooltip, cursorX, cursorY);
 
-                            } else {
+                            } else if (currentMode == Mode.EU_GENERATION) {
+                                double euGeneration = tileData.getMeanEuGeneration();
+                                screen.renderTooltip(matrices, new TranslatableText("text.modern_industrialization.base_eu_t", (int) euGeneration)
+                                        .setStyle(TextHelper.EU_TEXT), cursorX, cursorY);
+                            }
+
+                            else {
                                 double neutronRateFast;
                                 double neutronRateThermal;
 
@@ -407,6 +419,9 @@ public class NuclearReactorGui {
                                 button.renderVanilla(matrices, mouseX, mouseY, delta);
                                 if (currentMode == Mode.NUCLEAR_FUEL) {
                                     ((MachineScreenHandlers.ClientScreen) screen).renderItemInGui(fuelStack, button.x + 1, button.y + 1);
+                                } else if (currentMode == Mode.EU_GENERATION) {
+                                    RenderSystem.setShaderTexture(0, MachineScreenHandlers.SLOT_ATLAS);
+                                    screen.drawTexture(matrices, button.x + 4, button.y + 2, 243, 1, 13, 17);
                                 } else {
                                     RenderSystem.setShaderTexture(0, MachineScreenHandlers.SLOT_ATLAS);
                                     screen.drawTexture(matrices, button.x, button.y, 124 + currentMode.index * 20, 0, 20, 20);
@@ -446,7 +461,7 @@ public class NuclearReactorGui {
 
     }
 
-    final private static double neutronsMax = 1000;
+    final private static double neutronsMax = 8192;
 
     public static double neutronColorScheme(double neutronNumber) {
         neutronNumber = Math.min(neutronNumber, neutronsMax);

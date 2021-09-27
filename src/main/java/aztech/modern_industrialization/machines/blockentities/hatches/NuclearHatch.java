@@ -55,14 +55,6 @@ public class NuclearHatch extends HatchBlockEntity implements INuclearTile {
     public final NeutronHistoryComponent neutronHistory;
     public final TemperatureComponent nuclearReactorComponent;
     public final boolean isFluid;
-
-    private int fastNeutronAbsorbedThisTick;
-    private int thermalNeutronAbsorbedThisTick;
-    private int fastNeutronInFluxThisTick;
-    private int thermalNeutronInFluxThisTick;
-
-    private int neutronGeneratedThisTick;
-
     public static final long capacity = 64000 * 81;
 
     public NuclearHatch(BEP bep, boolean isFluid) {
@@ -163,6 +155,11 @@ public class NuclearHatch extends HatchBlockEntity implements INuclearTile {
     }
 
     @Override
+    public double getMeanEuGeneration() {
+        return neutronHistory.getAverageEuGeneration();
+    }
+
+    @Override
     public TransferVariant getVariant() {
         if (isFluid) {
             return this.inventory.getFluidStacks().get(0).getResource();
@@ -188,6 +185,13 @@ public class NuclearHatch extends HatchBlockEntity implements INuclearTile {
     @Override
     public void setTemperature(double temp) {
         nuclearReactorComponent.setTemperature(temp);
+    }
+
+    @Override
+    public void putHeat(int eu) {
+        Preconditions.checkArgument(eu >= 0);
+        setTemperature(getTemperature() + (double) eu / NuclearConstant.EU_PER_DEGREE);
+        neutronHistory.addValue("euGeneration", eu);
     }
 
     @Override
@@ -232,7 +236,7 @@ public class NuclearHatch extends HatchBlockEntity implements INuclearTile {
 
             }
 
-            neutronGeneratedThisTick = neutronsProduced;
+            neutronHistory.addValue("neutronGeneration", neutronsProduced);
             return neutronsProduced;
         } else {
             return 0;
@@ -283,27 +287,17 @@ public class NuclearHatch extends HatchBlockEntity implements INuclearTile {
     }
 
     public void nuclearTick() {
-
-        neutronHistory.tick(fastNeutronAbsorbedThisTick, thermalNeutronAbsorbedThisTick, fastNeutronInFluxThisTick, thermalNeutronInFluxThisTick,
-                neutronGeneratedThisTick);
-
+        neutronHistory.tick();
         fluidNeutronProductTick(randIntFromDouble(neutronHistory.getAverageReceived(NeutronType.BOTH), this.getWorld().getRandom()), false);
         checkComponentMaxTemperature();
-
-        fastNeutronAbsorbedThisTick = 0;
-        thermalNeutronAbsorbedThisTick = 0;
-        fastNeutronInFluxThisTick = 0;
-        thermalNeutronInFluxThisTick = 0;
-        neutronGeneratedThisTick = 0;
-
     }
 
     public void absorbNeutrons(int neutronNumber, NeutronType type) {
         Preconditions.checkArgument(type != NeutronType.BOTH);
         if (type == NeutronType.FAST) {
-            fastNeutronAbsorbedThisTick += neutronNumber;
+            neutronHistory.addValue("fastNeutronReceived", neutronNumber);
         } else {
-            thermalNeutronAbsorbedThisTick += neutronNumber;
+            neutronHistory.addValue("thermalNeutronReceived", neutronNumber);
         }
 
     }
@@ -311,11 +305,10 @@ public class NuclearHatch extends HatchBlockEntity implements INuclearTile {
     public void addNeutronsToFlux(int neutronNumber, NeutronType type) {
         Preconditions.checkArgument(type != NeutronType.BOTH);
         if (type == NeutronType.FAST) {
-            fastNeutronInFluxThisTick += neutronNumber;
+            neutronHistory.addValue("fastNeutronFlux", neutronNumber);
         } else {
-            thermalNeutronInFluxThisTick += neutronNumber;
+            neutronHistory.addValue("thermalNeutronFlux", neutronNumber);
         }
-
     }
 
     public static void registerItemApi(BlockEntityType<?> bet) {

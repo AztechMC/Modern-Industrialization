@@ -235,7 +235,7 @@ public class MultiblockMachines {
             ShapeTemplate largeDieselGeneratorShape = largeDieselGeneratorShapeBuilder.build();
             LARGE_DIESEL_GENERATOR = MachineRegistrationHelper.registerMachine("large_diesel_generator", bet ->
                     new EnergyFromFluidMultiblockBlockEntity(bet, "large_diesel_generator", largeDieselGeneratorShape,
-                            (Fluid f) -> (FluidFuelRegistry.getEu(f) != 0), FluidFuelRegistry::getEu, 8192));
+                            (Fluid f) -> (FluidFuelRegistry.getEu(f) != 0), FluidFuelRegistry::getEu, 16384));
             ReiMachineRecipes.registerMultiblockShape("large_diesel_generator", largeDieselGeneratorShape);
         }
 
@@ -264,7 +264,7 @@ public class MultiblockMachines {
                                     || f == MIFluids.HIGH_PRESSURE_HEAVY_WATER_STEAM
                                     || f == MIFluids.HEAVY_WATER_STEAM),
                             (Fluid f) -> ( (f == MIFluids.STEAM || f == MIFluids.HEAVY_WATER_STEAM) ? 1 : 8)
-                                    , 4096));
+                                    , 16384));
             ReiMachineRecipes.registerMultiblockShape("large_steam_turbine", largeTurbineShape);
         }
 

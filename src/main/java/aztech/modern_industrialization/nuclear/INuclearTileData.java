@@ -41,6 +41,8 @@ public interface INuclearTileData {
 
     double getMeanNeutronGeneration();
 
+    double getMeanEuGeneration();
+
     TransferVariant getVariant();
 
     long getVariantAmount();
@@ -81,6 +83,7 @@ public interface INuclearTileData {
             buf.writeDouble(tile.getMeanNeutronGeneration());
 
             buf.writeDouble(tile.getHeatTransferCoeff());
+            buf.writeDouble(tile.getMeanEuGeneration());
 
             buf.writeBoolean(!tile.isFluid());
             buf.writeNbt(tile.getVariant().toNbt());
@@ -107,6 +110,7 @@ public interface INuclearTileData {
             final double meanNeutronGeneration = buf.readDouble();
 
             final double heatTransferCoeff = buf.readDouble();
+            final double euGeneration = buf.readDouble();
 
             final boolean isItem = buf.readBoolean();
             final TransferVariant variant = isItem ? ItemVariant.fromNbt(buf.readNbt()) : FluidVariant.fromNbt(buf.readNbt());
@@ -150,6 +154,11 @@ public interface INuclearTileData {
                 }
 
                 @Override
+                public double getMeanEuGeneration() {
+                    return euGeneration;
+                }
+
+                @Override
                 public TransferVariant getVariant() {
                     return variant;
                 }
@@ -187,7 +196,7 @@ public interface INuclearTileData {
             }
             return A.getTemperature() == B.getTemperature() && A.getHeatTransferCoeff() == B.getTemperature()
                     && A.getVariantAmount() == B.getVariantAmount() && A.getMeanNeutronGeneration() == B.getMeanNeutronGeneration()
-                    && A.getVariant().equals(B.getVariant());
+                    && A.getVariant().equals(B.getVariant()) && A.getMeanEuGeneration() == B.getMeanEuGeneration();
         } else {
             return true;
         }

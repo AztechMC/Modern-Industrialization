@@ -23,116 +23,112 @@
  */
 package aztech.modern_industrialization.machines.components;
 
+import static aztech.modern_industrialization.nuclear.NeutronType.FAST;
+import static aztech.modern_industrialization.nuclear.NeutronType.THERMAL;
+
 import aztech.modern_industrialization.machines.IComponent;
 import aztech.modern_industrialization.nuclear.NeutronType;
+import java.util.HashMap;
+import java.util.Map;
 import net.minecraft.nbt.NbtCompound;
 
 public class NeutronHistoryComponent implements IComponent {
 
     public static final int TICK_HISTORY_SIZE = 100;
 
-    private int[] fastNeutronReceivedHistory = new int[TICK_HISTORY_SIZE];
-    private int[] thermalNeutronReceivedHistory = new int[TICK_HISTORY_SIZE];
+    private final Map<String, int[]> histories = new HashMap<>();
+    private final Map<String, Integer> updatingValue = new HashMap<>();
 
-    private int[] fastNeutronFluxHistory = new int[TICK_HISTORY_SIZE];
-    private int[] thermalNeutronFluxHistory = new int[TICK_HISTORY_SIZE];
+    public static final String[] KEYS = { "fastNeutronReceived", "fastNeutronFlux", "thermalNeutronReceived", "thermalNeutronFlux",
+            "neutronGeneration", "euGeneration" };
 
-    private int[] neutronGenerationHistory = new int[TICK_HISTORY_SIZE];
+    public NeutronHistoryComponent() {
+        for (String key : KEYS) {
+            histories.put(key, new int[TICK_HISTORY_SIZE]);
+            updatingValue.put(key, 0);
+        }
+    }
 
     @Override
     public void writeNbt(NbtCompound tag) {
-        tag.putIntArray("fastNeutronReceivedHistory", fastNeutronReceivedHistory);
-        tag.putIntArray("thermalNeutronReceivedHistory", thermalNeutronReceivedHistory);
-        tag.putIntArray("fastNeutronFluxHistory", fastNeutronFluxHistory);
-        tag.putIntArray("thermalNeutronFluxHistory", thermalNeutronFluxHistory);
-        tag.putIntArray("neutronGenerationHistory", neutronGenerationHistory);
+        for (String key : KEYS) {
+            tag.putIntArray(key, histories.get(key));
+        }
     }
 
     @Override
     public void readNbt(NbtCompound tag) {
-        if (tag.contains("fastNeutronReceivedHistory")) {
-            fastNeutronReceivedHistory = tag.getIntArray("fastNeutronReceivedHistory");
-            if (fastNeutronReceivedHistory.length != TICK_HISTORY_SIZE) {
-                fastNeutronReceivedHistory = new int[TICK_HISTORY_SIZE];
+        for (String key : KEYS) {
+            if (tag.contains(key)) {
+                int[] array = tag.getIntArray(key);
+                if (array.length == TICK_HISTORY_SIZE) {
+                    histories.put(key, array);
+                    continue;
+                }
             }
+            histories.put(key, new int[TICK_HISTORY_SIZE]);
         }
-        if (tag.contains("thermalNeutronReceivedHistory")) {
-            thermalNeutronReceivedHistory = tag.getIntArray("thermalNeutronReceivedHistory");
-            if (thermalNeutronReceivedHistory.length != TICK_HISTORY_SIZE) {
-                thermalNeutronReceivedHistory = new int[TICK_HISTORY_SIZE];
-            }
+    }
+
+    public double getAverage(String key) {
+        double avg = 0;
+        int[] values = histories.get(key);
+        for (int value : values) {
+            avg += value;
         }
-        if (tag.contains("fastNeutronFluxHistory")) {
-            fastNeutronFluxHistory = tag.getIntArray("fastNeutronFluxHistory");
-            if (fastNeutronFluxHistory.length != TICK_HISTORY_SIZE) {
-                fastNeutronFluxHistory = new int[TICK_HISTORY_SIZE];
-            }
-        }
-        if (tag.contains("thermalNeutronFluxHistory")) {
-            thermalNeutronFluxHistory = tag.getIntArray("thermalNeutronFluxHistory");
-            if (thermalNeutronFluxHistory.length != TICK_HISTORY_SIZE) {
-                thermalNeutronFluxHistory = new int[TICK_HISTORY_SIZE];
-            }
-        }
-        if (tag.contains("neutronGenerationHistory")) {
-            neutronGenerationHistory = tag.getIntArray("neutronGenerationHistory");
-            if (neutronGenerationHistory.length != TICK_HISTORY_SIZE) {
-                neutronGenerationHistory = new int[TICK_HISTORY_SIZE];
-            }
-        }
+        return avg / TICK_HISTORY_SIZE;
 
     }
 
     public double getAverageReceived(NeutronType type) {
-        double avg = 0;
-        for (int i = 0; i < TICK_HISTORY_SIZE; i++) {
-            if (type == NeutronType.FAST) {
-                avg += fastNeutronReceivedHistory[i];
-            } else if (type == NeutronType.THERMAL) {
-                avg += thermalNeutronReceivedHistory[i];
-            } else {
-                avg += (fastNeutronReceivedHistory[i] + thermalNeutronReceivedHistory[i]);
-            }
+        if (type == FAST) {
+            return getAverage("fastNeutronReceived");
+        } else if (type == THERMAL) {
+            return getAverage("thermalNeutronReceived");
+        } else if (type == NeutronType.BOTH) {
+            return getAverageReceived(FAST) + getAverageReceived(THERMAL);
+        } else {
+            return 0;
         }
-        return avg / TICK_HISTORY_SIZE;
     }
 
     public double getAverageFlux(NeutronType type) {
-        double avg = 0;
-        for (int i = 0; i < TICK_HISTORY_SIZE; i++) {
-            if (type == NeutronType.FAST) {
-                avg += fastNeutronFluxHistory[i];
-            } else if (type == NeutronType.THERMAL) {
-                avg += thermalNeutronFluxHistory[i];
-            } else {
-                avg += (fastNeutronFluxHistory[i] + thermalNeutronFluxHistory[i]);
-            }
+        if (type == FAST) {
+            return getAverage("fastNeutronFlux");
+        } else if (type == THERMAL) {
+            return getAverage("thermalNeutronFlux");
+        } else if (type == NeutronType.BOTH) {
+            return getAverageFlux(FAST) + getAverageFlux(THERMAL);
+        } else {
+            return 0;
         }
-        return avg / TICK_HISTORY_SIZE;
     }
 
     public double getAverageGeneration() {
-        double avg = 0;
-        for (int i = 0; i < TICK_HISTORY_SIZE; i++) {
-            avg += neutronGenerationHistory[i];
-        }
-        return avg / TICK_HISTORY_SIZE;
+        return getAverage("neutronGeneration");
     }
 
-    public void tick(int fastNeutronReceived, int thermalNeutronReceived, int fastNeutronFlux, int thermalNeutronFlux, int generatedNeutron) {
-        for (int i = TICK_HISTORY_SIZE - 1; i > 0; i--) {
-            fastNeutronReceivedHistory[i] = fastNeutronReceivedHistory[i - 1];
-            thermalNeutronReceivedHistory[i] = thermalNeutronReceivedHistory[i - 1];
-            fastNeutronFluxHistory[i] = fastNeutronFluxHistory[i - 1];
-            thermalNeutronFluxHistory[i] = thermalNeutronFluxHistory[i - 1];
-            neutronGenerationHistory[i] = neutronGenerationHistory[i - 1];
-        }
+    public double getAverageEuGeneration() {
+        return getAverage("euGeneration");
+    }
 
-        fastNeutronReceivedHistory[0] = fastNeutronReceived;
-        thermalNeutronReceivedHistory[0] = thermalNeutronReceived;
-        fastNeutronFluxHistory[0] = fastNeutronFlux;
-        thermalNeutronFluxHistory[0] = thermalNeutronFlux;
-        neutronGenerationHistory[0] = generatedNeutron;
+    public void tick() {
+        for (String key : KEYS) {
+            int[] valuesArray = histories.get(key);
+            int[] newValues = new int[TICK_HISTORY_SIZE];
+            System.arraycopy(valuesArray, 0, newValues, 1, TICK_HISTORY_SIZE - 1);
+            newValues[0] = updatingValue.get(key);
+            histories.put(key, newValues);
+            updatingValue.put(key, 0);
+        }
+    }
+
+    public void addValue(String key, int delta) {
+        if (!updatingValue.containsKey(key)) {
+            throw new IllegalArgumentException("No key found for : " + key);
+        } else {
+            updatingValue.put(key, updatingValue.get(key) + delta);
+        }
     }
 
 }

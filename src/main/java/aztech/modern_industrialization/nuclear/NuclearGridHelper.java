@@ -36,7 +36,7 @@ public class NuclearGridHelper {
     private static final Random rand = new Random();
 
     private static final int MAX_STEP = 100;
-    private static final int MAX_SPLIT = 5;
+    private static final int MAX_SPLIT = 30;
 
     public static void simulate(INuclearGrid grid) {
 

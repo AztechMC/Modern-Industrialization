@@ -276,7 +276,7 @@ public class NuclearReactorGui {
 
                     if (data.euFuelConsumption > 0 && currentMode == Mode.EU_GENERATION) {
                         TextRenderer renderer = MinecraftClient.getInstance().textRenderer;
-                        renderer.draw(matrices, getEfficiencyText(), x + 8, y + 15, 0xFFFFFF);
+                        renderer.draw(matrices, getEfficiencyText(), x + 8, y + 16, 0xFFFFFF);
                     }
 
                 }
@@ -407,7 +407,7 @@ public class NuclearReactorGui {
                 if (data.euFuelConsumption > 0 && currentMode == Mode.EU_GENERATION) {
                     TextRenderer renderer = MinecraftClient.getInstance().textRenderer;
                     int width = renderer.getWidth(getEfficiencyText().getString());
-                    if (cursorX > x + 8 && cursorX < x + 8 + width && cursorY > y + 15 && cursorY < y + 23) {
+                    if (cursorX > x + 8 && cursorX < x + 8 + width && cursorY >= y + 15 && cursorY < y + 24) {
 
                         Text euProduction = new LiteralText(TextHelper.getEuString(data.euProduction) + " " + TextHelper.getEuUnit(data.euProduction))
                                 .setStyle(TextHelper.EU_TEXT);

@@ -92,9 +92,7 @@ public class TextHelper {
             div = 1e6;
         } else if (eu > 1e4) {
             div = 1e3;
-        } else {
-            return "" + eu;
         }
-        return String.format("%.2f", ((double) eu) / div);
+        return String.format("%.1f", eu / div);
     }
 }

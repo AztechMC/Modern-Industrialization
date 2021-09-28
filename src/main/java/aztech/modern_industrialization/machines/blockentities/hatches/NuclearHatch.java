@@ -186,10 +186,10 @@ public class NuclearHatch extends HatchBlockEntity implements INuclearTile {
     }
 
     @Override
-    public void putHeat(int eu) {
+    public void putHeat(double eu) {
         Preconditions.checkArgument(eu >= 0);
-        setTemperature(getTemperature() + (double) eu / NuclearConstant.EU_PER_DEGREE);
-        neutronHistory.addValue("euGeneration", eu);
+        setTemperature(getTemperature() + eu / NuclearConstant.EU_PER_DEGREE);
+        neutronHistory.addValue("euGeneration", (int) eu);
     }
 
     @Override

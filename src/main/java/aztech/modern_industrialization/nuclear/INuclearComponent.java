@@ -92,10 +92,10 @@ public interface INuclearComponent<T extends TransferVariant> {
             return INuclearComponent.of(fluid, NuclearConstant.BASE_HEAT_CONDUCTION * 6, 1, NuclearConstant.ScatteringType.LIGHT,
                     NuclearConstant.DEUTERIUM, FluidVariant.of(MIFluids.TRITIUM), false);
         } else if (fluid.equals(FluidVariant.of(MIFluids.HIGH_PRESSURE_WATER))) {
-            return INuclearComponent.of(fluid, NuclearConstant.BASE_HEAT_CONDUCTION * 5, 2, NuclearConstant.ScatteringType.ULTRA_LIGHT,
+            return INuclearComponent.of(fluid, NuclearConstant.BASE_HEAT_CONDUCTION * 5, 4, NuclearConstant.ScatteringType.ULTRA_LIGHT,
                     NuclearConstant.HYDROGEN, FluidVariant.of(MIFluids.DEUTERIUM), true);
         } else if (fluid.equals(FluidVariant.of(MIFluids.HIGH_PRESSURE_HEAVY_WATER))) {
-            return INuclearComponent.of(fluid, NuclearConstant.BASE_HEAT_CONDUCTION * 6, 2, NuclearConstant.ScatteringType.LIGHT,
+            return INuclearComponent.of(fluid, NuclearConstant.BASE_HEAT_CONDUCTION * 6, 4, NuclearConstant.ScatteringType.LIGHT,
                     NuclearConstant.DEUTERIUM, FluidVariant.of(MIFluids.TRITIUM), true);
         }
         return null;

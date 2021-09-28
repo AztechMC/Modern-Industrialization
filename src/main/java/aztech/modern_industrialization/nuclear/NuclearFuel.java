@@ -63,7 +63,7 @@ public class NuclearFuel extends NuclearAbsorbable {
     }
 
     private static int clampTemp(int temperature) {
-        return 50 * (int) (temperature / 50d);
+        return 25 * (int) (temperature / 25d);
     }
 
     private NuclearFuel(Settings settings, int desintegrationMax, int maxTemperature, int tempLimitLow, int tempLimitHigh,

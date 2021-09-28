@@ -55,19 +55,21 @@ public class NuclearGridHelper {
                     INuclearTile tile = maybeTile.get();
                     Optional<NuclearFuel> maybeFuel = tile.getFuel();
                     int neutronNumberPrime = tile.neutronGenerationTick(grid);
+
                     if (neutronNumberPrime > 0) {
                         if (maybeFuel.isEmpty()) {
                             throw new IllegalStateException("Neutron generated without fuel");
                         }
                         NuclearFuel fuel = maybeFuel.get();
-                        tile.putHeat(neutronNumberPrime * fuel.directEUbyDesintegration);
+
+                        tile.putHeat(neutronNumberPrime * fuel.directEUbyDesintegration / fuel.neutronMultiplicationFactor);
 
                         int split = Math.min(neutronNumberPrime, MAX_SPLIT);
                         int neutronNumberPerSplit = neutronNumberPrime / split;
 
                         for (int k = 0; k < split + 1; k++) {
 
-                            int neutronNumber = (k < split) ? neutronNumberPerSplit : neutronNumberPrime % neutronNumberPerSplit;
+                            int neutronNumber = (k < split) ? neutronNumberPerSplit : neutronNumberPrime % split;
 
                             if (neutronNumber > 0) {
                                 NeutronType type = NeutronType.FAST;
@@ -105,16 +107,19 @@ public class NuclearGridHelper {
                                                     if (type == NeutronType.FAST) {
                                                         secondTile.putHeat(neutronNumber * NuclearConstant.EU_FOR_FAST_NEUTRON);
                                                     }
+
                                                     if (secondTile.getFuel().isPresent()) {
                                                         grid.registerNeutronFate(neutronNumber, type, ABSORBED_IN_FUEL);
                                                     } else {
                                                         grid.registerNeutronFate(neutronNumber, type, ABSORBED_NOT_IN_FUEL);
                                                     }
+
                                                     break;
                                                 } else {
                                                     dir = rand.nextInt(4);
 
-                                                    if (rand.nextDouble() < component.getNeutronBehaviour().neutronSlowingProbability()) {
+                                                    if (type == NeutronType.FAST
+                                                            && rand.nextDouble() < component.getNeutronBehaviour().neutronSlowingProbability()) {
                                                         type = NeutronType.THERMAL;
                                                         secondTile.putHeat(neutronNumber * NuclearConstant.EU_FOR_FAST_NEUTRON);
                                                     }

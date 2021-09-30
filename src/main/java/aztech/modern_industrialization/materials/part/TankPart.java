@@ -29,7 +29,10 @@ import aztech.modern_industrialization.MIBlock;
 import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.blocks.storage.tank.*;
 import aztech.modern_industrialization.machines.models.MachineModelProvider;
+import aztech.modern_industrialization.materials.MaterialBuilder;
 import aztech.modern_industrialization.util.ResourceUtil;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.rendereregistry.v1.BlockEntityRendererRegistry;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants;
@@ -68,10 +71,16 @@ public class TankPart extends UnbuildablePart<Integer> {
             item.registerItemApi();
 
         }).withClientRegister((registeringContext, partContext, part, itemPath, itemId, itemTag) -> {
-            UnbakedModel tankModel = new TankModel(partContext.getMaterialName());
-            MachineModelProvider.register(new MIIdentifier("block/" + itemPath), tankModel);
-            MachineModelProvider.register(new MIIdentifier("item/" + itemPath), tankModel);
-            BlockEntityRendererRegistry.INSTANCE.register(refs[0], TankRenderer::new);
+            registerClient(partContext, itemPath, refs[0]);
         });
     }
+
+    @Environment(EnvType.CLIENT)
+    static void registerClient(MaterialBuilder.PartContext partContext, String itemPath, BlockEntityType<BlockEntity> blockEntityType) {
+        UnbakedModel tankModel = new TankModel(partContext.getMaterialName());
+        MachineModelProvider.register(new MIIdentifier("block/" + itemPath), tankModel);
+        MachineModelProvider.register(new MIIdentifier("item/" + itemPath), tankModel);
+        BlockEntityRendererRegistry.INSTANCE.register(blockEntityType, TankRenderer::new);
+    }
+
 }

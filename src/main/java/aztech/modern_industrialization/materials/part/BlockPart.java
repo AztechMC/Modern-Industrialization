@@ -23,36 +23,30 @@
  */
 package aztech.modern_industrialization.materials.part;
 
-import aztech.modern_industrialization.MIItem;
-import aztech.modern_industrialization.materials.MaterialBuilder;
+import aztech.modern_industrialization.materials.set.MaterialBlockSet;
+import aztech.modern_industrialization.textures.TextureHelper;
+import java.io.IOException;
+import net.minecraft.client.texture.NativeImage;
 
-public class MIItemPart {
+public class BlockPart extends UnbuildablePart<MaterialBlockSet> {
 
-    public static MaterialPart of(Part part, String itemPath) {
-
-        String itemId = "modern_industrialization:" + itemPath;
-
-        return new MaterialPart() {
-            @Override
-            public Part getPart() {
-                return part;
-            }
-
-            @Override
-            public String getTaggedItemId() {
-                return itemId;
-            }
-
-            @Override
-            public String getItemId() {
-                return itemId;
-            }
-
-            @Override
-            public void register(MaterialBuilder.RegisteringContext context) {
-                MIItem.of(itemPath);
-            }
-        };
+    public BlockPart() {
+        super("block");
     }
 
+    @Override
+    public BuildablePart of(MaterialBlockSet set) {
+        return new RegularPart(this.key).asBlock().withTextureRegister((mtm, partContext, part, itemPath) -> {
+            String template = String.format("modern_industrialization:textures/materialsets/blocks/%s.png", set.name);
+            try {
+                NativeImage image = mtm.getAssetAsTexture(template);
+                TextureHelper.colorize(image, partContext.getColoramp());
+                String texturePath = String.format("modern_industrialization:textures/blocks/%s.png", itemPath);
+                mtm.addTexture(texturePath, image);
+                image.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
+    }
 }

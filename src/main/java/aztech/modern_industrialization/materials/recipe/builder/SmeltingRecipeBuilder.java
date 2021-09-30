@@ -25,6 +25,7 @@ package aztech.modern_industrialization.materials.recipe.builder;
 
 import aztech.modern_industrialization.ModernIndustrialization;
 import aztech.modern_industrialization.materials.MaterialBuilder;
+import aztech.modern_industrialization.materials.part.Part;
 import aztech.modern_industrialization.recipe.json.SmeltingRecipeJson;
 import com.google.gson.Gson;
 import net.minecraft.util.Identifier;
@@ -42,18 +43,17 @@ public class SmeltingRecipeBuilder implements MaterialRecipeBuilder {
         String item;
     }
 
-    public static void smeltAndBlast(MaterialBuilder.RecipeContext context, String inputPart, String outputPart, double experience) {
+    public static void smeltAndBlast(MaterialBuilder.RecipeContext context, Part inputPart, Part outputPart, double experience) {
         new SmeltingRecipeBuilder(context, inputPart, outputPart, experience, false);
         new SmeltingRecipeBuilder(context, inputPart, outputPart, experience, true);
     }
 
-    @SuppressWarnings("ConstantConditions")
-    public SmeltingRecipeBuilder(MaterialBuilder.RecipeContext context, String inputPart, String outputPart, int cookingtime, double experience,
+    public SmeltingRecipeBuilder(MaterialBuilder.RecipeContext context, Part inputPart, Part outputPart, int cookingtime, double experience,
             boolean blasting) {
         if (blasting) {
-            this.recipeId = "smelting/" + inputPart + "_to_" + outputPart + "_blasting";
+            this.recipeId = "smelting/" + inputPart.key + "_to_" + outputPart.key + "_blasting";
         } else {
-            this.recipeId = "smelting/" + inputPart + "_to_" + outputPart + "_smelting";
+            this.recipeId = "smelting/" + inputPart.key + "_to_" + outputPart.key + "_smelting";
         }
 
         this.context = context;
@@ -67,7 +67,7 @@ public class SmeltingRecipeBuilder implements MaterialRecipeBuilder {
         }
     }
 
-    public SmeltingRecipeBuilder(MaterialBuilder.RecipeContext context, String partInput, String partOutput, double experience, boolean blasting) {
+    public SmeltingRecipeBuilder(MaterialBuilder.RecipeContext context, Part partInput, Part partOutput, double experience, boolean blasting) {
         this(context, partInput, partOutput, blasting ? 100 : 200, experience, blasting);
     }
 

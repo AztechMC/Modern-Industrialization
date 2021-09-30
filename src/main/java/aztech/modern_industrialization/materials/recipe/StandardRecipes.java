@@ -27,6 +27,7 @@ import static aztech.modern_industrialization.materials.part.MIParts.*;
 
 import aztech.modern_industrialization.MIFluids;
 import aztech.modern_industrialization.materials.MaterialBuilder;
+import aztech.modern_industrialization.materials.part.Part;
 import aztech.modern_industrialization.materials.recipe.builder.MIRecipeBuilder;
 import aztech.modern_industrialization.materials.recipe.builder.ShapedRecipeBuilder;
 import aztech.modern_industrialization.materials.recipe.builder.SmeltingRecipeBuilder;
@@ -39,10 +40,10 @@ public final class StandardRecipes {
     public static void apply(MaterialBuilder.RecipeContext ctx) {
 
         // CRAFTING
-        add3By3Crafting(ctx, "tiny_dust", "dust", true);
-        add3By3Crafting(ctx, "nugget", "ingot", true);
-        add3By3Crafting(ctx, ctx.getMainPart(), "block", false); // Not in packer due to conflicts with double ingots.
-        add3By3Crafting(ctx, "raw_metal", "raw_metal_block", true);
+        add3By3Crafting(ctx, TINY_DUST, DUST, true);
+        add3By3Crafting(ctx, NUGGET, INGOT, true);
+        add3By3Crafting(ctx, ctx.getMainPart(), BLOCK, false); // Not in packer due to conflicts with double ingots.
+        add3By3Crafting(ctx, RAW_METAL, RAW_METAL_BLOCK, true);
 
         new ShapedRecipeBuilder(ctx, BLADE, 4, "blade", "P", "P", "I").addTaggedPart('P', CURVED_PLATE).addTaggedPart('I', ROD)
                 .exportToMachine("packer");
@@ -150,7 +151,7 @@ public final class StandardRecipes {
     /**
      * Add a recycling recipe in the macerator.
      */
-    private static void addMaceratorRecycling(MaterialBuilder.RecipeContext ctx, String partInput, int tinyDustOutput) {
+    private static void addMaceratorRecycling(MaterialBuilder.RecipeContext ctx, Part partInput, int tinyDustOutput) {
         MIRecipeBuilder builder = new MIRecipeBuilder(ctx, "macerator", partInput);
         builder.addTaggedPartInput(partInput, 1);
         if (tinyDustOutput % 9 == 0) {
@@ -163,7 +164,7 @@ public final class StandardRecipes {
     /**
      * Add 3x3 -> 1 and 1 -> 9 crafting recipes.
      */
-    private static void add3By3Crafting(MaterialBuilder.RecipeContext ctx, String smallPart, String bigPart, boolean packer) {
+    private static void add3By3Crafting(MaterialBuilder.RecipeContext ctx, Part smallPart, Part bigPart, boolean packer) {
         new ShapedRecipeBuilder(ctx, bigPart, 1, bigPart + "_from_" + smallPart, "yxx", "xxx", "xxx").addPart('y', smallPart).addTaggedPart('x',
                 smallPart);
         new ShapedRecipeBuilder(ctx, smallPart, 9, smallPart + "_from_" + bigPart, "x").addPart('x', bigPart);
@@ -174,7 +175,7 @@ public final class StandardRecipes {
 
     }
 
-    private static void addCuttingMachine(MaterialBuilder.RecipeContext ctx, String name, String inputPart, String outputPart, int amount) {
+    private static void addCuttingMachine(MaterialBuilder.RecipeContext ctx, String name, Part inputPart, Part outputPart, int amount) {
         new MIRecipeBuilder(ctx, "cutting_machine", name).addTaggedPartInput(inputPart, 1).addPartOutput(outputPart, amount)
                 .addFluidInput("modern_industrialization:lubricant", 1);
     }

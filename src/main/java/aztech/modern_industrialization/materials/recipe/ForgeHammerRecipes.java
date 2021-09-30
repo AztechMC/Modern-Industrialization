@@ -26,6 +26,7 @@ package aztech.modern_industrialization.materials.recipe;
 import static aztech.modern_industrialization.materials.part.MIParts.*;
 
 import aztech.modern_industrialization.materials.MaterialBuilder;
+import aztech.modern_industrialization.materials.part.Part;
 import aztech.modern_industrialization.materials.recipe.builder.MIRecipeBuilder;
 
 /**
@@ -44,16 +45,15 @@ public class ForgeHammerRecipes {
         addSaw(ctx, ROD, BOLT);
     }
 
-    private static void addHammer(MaterialBuilder.RecipeContext ctx, String inputPart, int inputCount, String outputPart, int outputCount) {
+    private static void addHammer(MaterialBuilder.RecipeContext ctx, Part inputPart, int inputCount, Part outputPart, int outputCount) {
         addRecipe("forge_hammer_hammer", ctx, inputPart, inputCount, outputPart, outputCount);
     }
 
-    private static void addSaw(MaterialBuilder.RecipeContext ctx, String inputPart, String outputPart) {
+    private static void addSaw(MaterialBuilder.RecipeContext ctx, Part inputPart, Part outputPart) {
         addRecipe("forge_hammer_saw", ctx, inputPart, 1, outputPart, 1);
     }
 
-    private static void addRecipe(String type, MaterialBuilder.RecipeContext ctx, String inputPart, int inputCount, String outputPart,
-            int outputCount) {
+    private static void addRecipe(String type, MaterialBuilder.RecipeContext ctx, Part inputPart, int inputCount, Part outputPart, int outputCount) {
         new MIRecipeBuilder(ctx, type, outputPart).addTaggedPartInput(inputPart, inputCount).addPartOutput(outputPart, outputCount);
     }
 

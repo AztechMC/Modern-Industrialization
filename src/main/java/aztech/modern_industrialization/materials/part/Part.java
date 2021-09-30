@@ -23,46 +23,28 @@
  */
 package aztech.modern_industrialization.materials.part;
 
-import aztech.modern_industrialization.api.energy.CableTier;
-import aztech.modern_industrialization.materials.MaterialBuilder;
-import aztech.modern_industrialization.pipes.MIPipes;
-import java.util.function.Function;
+/*
+Key to be type safe in the material builder
 
-public class CableMaterialPart implements MaterialPart {
-    protected final String materialName;
-    private final CableTier tier;
-    private final String itemId;
-    protected final int color;
+ */
+public class Part {
 
-    public static Function<MaterialBuilder.PartContext, MaterialPart> of(CableTier tier) {
-        return ctx -> new CableMaterialPart(ctx.getMaterialName(), tier, ctx.getColoramp().getMeanRGB());
-    }
+    public final String key;
 
-    protected CableMaterialPart(String material, CableTier tier, int color) {
-        this.materialName = material;
-        this.tier = tier;
-        this.itemId = "modern_industrialization:" + material + "_cable";
-        this.color = color;
+    public Part(String key) {
+        this.key = key;
     }
 
     @Override
-    public String getPart() {
-        return MIParts.CABLE;
+    public boolean equals(Object o) {
+        if (o instanceof Part part) {
+            return part.key.equals(key);
+        }
+        return false;
     }
 
     @Override
-    public String getTaggedItemId() {
-        return itemId;
+    public String toString() {
+        return key;
     }
-
-    @Override
-    public String getItemId() {
-        return itemId;
-    }
-
-    @Override
-    public void register(MaterialBuilder.RegisteringContext context) {
-        MIPipes.INSTANCE.registerCableType(materialName, color | 0xff000000, tier);
-    }
-
 }

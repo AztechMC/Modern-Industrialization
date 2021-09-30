@@ -27,8 +27,7 @@ import aztech.modern_industrialization.MIConfig;
 import aztech.modern_industrialization.materials.Material;
 import aztech.modern_industrialization.materials.MaterialRegistry;
 import aztech.modern_industrialization.materials.part.MIParts;
-import aztech.modern_industrialization.materials.part.OreGenMaterialPart;
-import aztech.modern_industrialization.materials.part.OreMaterialPart;
+import aztech.modern_industrialization.materials.part.OrePart;
 import com.terraformersmc.modmenu.api.ConfigScreenFactory;
 import com.terraformersmc.modmenu.api.ModMenuApi;
 import java.lang.reflect.Field;
@@ -40,24 +39,23 @@ import me.shedaniel.autoconfig.gui.registry.GuiRegistry;
 import me.shedaniel.clothconfig2.api.ConfigEntryBuilder;
 import net.minecraft.item.Item;
 import net.minecraft.text.TranslatableText;
+import net.minecraft.util.Identifier;
+import net.minecraft.util.registry.Registry;
 
 public class MIMenu implements ModMenuApi {
 
     private static final ConfigEntryBuilder ENTRY_BUILDER = ConfigEntryBuilder.create();
 
     private static boolean hasOreGen(Material material) {
-        if (material.getParts().containsKey(MIParts.ORE)) {
-            return (material.getParts().get(MIParts.ORE) instanceof OreGenMaterialPart);
-        }
-        return false;
+        return OrePart.GENERATED_MATERIALS.contains(material.name);
     }
 
     private static String getOreTranslationKey(Material material) {
-        return ((OreMaterialPart) material.getParts().get(MIParts.ORE)).getTranslationKey();
+        return getOreItem(material).getTranslationKey();
     }
 
     private static Item getOreItem(Material material) {
-        return ((OreMaterialPart) material.getParts().get(MIParts.ORE)).getItem();
+        return Registry.ITEM.get(new Identifier(material.getParts().get(MIParts.ORE.key).getItemId()));
     }
 
     private static boolean oreInList(List<String> list, Material material) {

@@ -23,36 +23,13 @@
  */
 package aztech.modern_industrialization.materials.part;
 
-import aztech.modern_industrialization.MIItem;
 import aztech.modern_industrialization.materials.MaterialBuilder;
 
-public class MIItemPart {
+public abstract class BuildablePart extends Part {
 
-    public static MaterialPart of(Part part, String itemPath) {
-
-        String itemId = "modern_industrialization:" + itemPath;
-
-        return new MaterialPart() {
-            @Override
-            public Part getPart() {
-                return part;
-            }
-
-            @Override
-            public String getTaggedItemId() {
-                return itemId;
-            }
-
-            @Override
-            public String getItemId() {
-                return itemId;
-            }
-
-            @Override
-            public void register(MaterialBuilder.RegisteringContext context) {
-                MIItem.of(itemPath);
-            }
-        };
+    public BuildablePart(String key) {
+        super(key);
     }
 
+    public abstract MaterialPart build(MaterialBuilder.PartContext ctx);
 }

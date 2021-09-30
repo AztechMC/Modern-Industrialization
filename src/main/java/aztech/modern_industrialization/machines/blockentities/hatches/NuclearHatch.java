@@ -215,17 +215,21 @@ public class NuclearHatch extends HatchBlockEntity implements INuclearTile {
                 if (abs.getRemainingDesintegrations(stack) == 0) {
                     try (Transaction tx = Transaction.openOuter()) {
                         ConfigurableItemStack absStack = this.inventory.getItemStacks().get(0);
-                        long inserted = this.inventory.itemStorage.insert(abs.getNeutronProduct(), abs.getNeutronProductAmount(), tx,
-                                AbstractConfigurableStack::canPipesExtract, true);
-
                         absStack.updateSnapshots(tx);
                         absStack.setAmount(0);
                         absStack.setKey(ItemVariant.blank());
 
-                        if (inserted == abs.getNeutronProductAmount()) {
-                            tx.commit();
+                        if (abs.getNeutronProduct() != null) {
+                            long inserted = this.inventory.itemStorage.insert(abs.getNeutronProduct(), abs.getNeutronProductAmount(), tx,
+                                    AbstractConfigurableStack::canPipesExtract, true);
+
+                            if (inserted == abs.getNeutronProductAmount()) {
+                                tx.commit();
+                            } else {
+                                tx.abort();
+                            }
                         } else {
-                            tx.abort();
+                            tx.commit();
                         }
                     }
                 } else {

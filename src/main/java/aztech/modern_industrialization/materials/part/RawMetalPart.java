@@ -23,119 +23,57 @@
  */
 package aztech.modern_industrialization.materials.part;
 
-import static aztech.modern_industrialization.ModernIndustrialization.STONE_MATERIAL;
-
-import aztech.modern_industrialization.MIBlock;
-import aztech.modern_industrialization.MIItem;
-import aztech.modern_industrialization.materials.MaterialBuilder;
-import aztech.modern_industrialization.materials.MaterialHelper;
 import aztech.modern_industrialization.materials.set.MaterialRawSet;
 import aztech.modern_industrialization.textures.TextureHelper;
-import aztech.modern_industrialization.textures.TextureManager;
-import aztech.modern_industrialization.textures.coloramp.Coloramp;
 import java.io.IOException;
-import java.util.function.Function;
-import net.devtech.arrp.json.tags.JTag;
-import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
-import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
+import java.util.Arrays;
+import java.util.List;
 import net.minecraft.client.texture.NativeImage;
-import net.minecraft.item.Item;
-import net.minecraft.util.Identifier;
 
-public class RawMetalPart implements MaterialPart {
+public class RawMetalPart extends UnbuildablePart<MaterialRawSet> {
 
-    private final String materialName;
-    private final String itemPath;
-    private final String itemId;
-    private final String itemTag;
-    private final Coloramp coloramp;
-    private final MaterialRawSet set;
-    private Item item;
+    public final boolean isBlock;
 
-    private final boolean isBlock;
-
-    public RawMetalPart(String materialName, Coloramp coloramp, MaterialRawSet set, boolean isBlock) {
+    public RawMetalPart(boolean isBlock) {
+        super(isBlock ? "raw_metal_block" : "raw_metal");
         this.isBlock = isBlock;
-        this.coloramp = coloramp;
-        this.materialName = materialName;
-        this.set = set;
-
-        if (!isBlock) {
-            this.itemPath = "raw_" + materialName;
-            this.itemTag = "#c:raw_" + materialName + "_ores";
-        } else {
-            this.itemPath = "raw_" + materialName + "_block";
-            this.itemTag = "#c:raw_" + materialName + "_blocks";
-        }
-
-        this.itemId = "modern_industrialization:" + itemPath;
-    }
-
-    @SuppressWarnings("unchecked")
-    public static Function<MaterialBuilder.PartContext, MaterialPart>[] of(MaterialRawSet set) {
-        Function<MaterialBuilder.PartContext, MaterialPart>[] array = new Function[2];
-        for (int i = 0; i < 2; i++) {
-            final boolean isBlock = i == 0;
-            Function<MaterialBuilder.PartContext, MaterialPart> function = ctx -> new RawMetalPart(ctx.getMaterialName(), ctx.getColoramp(), set,
-                    isBlock);
-            array[i] = function;
-        }
-        return array;
-    }
-
-    public static Function<MaterialBuilder.PartContext, MaterialPart> ofItemOnly(MaterialRawSet set) {
-        return ctx -> new RawMetalPart(ctx.getMaterialName(), ctx.getColoramp(), set, false);
     }
 
     @Override
-    public String getPart() {
+    public BuildablePart of(MaterialRawSet set) {
+        RegularPart part = new RegularPart(key);
+
         if (isBlock) {
-            return MIParts.RAW_METAL_BLOCK;
-        } else {
-            return MIParts.RAW_METAL;
+            part = part.asBlock(5, 6, 1);
         }
 
-    }
-
-    @Override
-    public String getTaggedItemId() {
-        return itemTag;
-    }
-
-    @Override
-    public String getItemId() {
-        return itemId;
-    }
-
-    @Override
-    public void register(MaterialBuilder.RegisteringContext context) {
-        if (isBlock) {
-            MIBlock block = new MIBlock(itemPath,
-                    FabricBlockSettings.of(STONE_MATERIAL).hardness(5f).resistance(6.0f).breakByTool(FabricToolTags.PICKAXES, 1).requiresTool());
-            item = block.blockItem;
-            MaterialHelper.registerItemTag("c:raw_" + materialName + "_blocks", JTag.tag().add(new Identifier(getItemId())));
-        } else {
-            item = MIItem.of(itemPath);
-            MaterialHelper.registerItemTag("c:raw_" + materialName + "_ores", JTag.tag().add(new Identifier(getItemId())));
-        }
-    }
-
-    @Override
-    public void registerTextures(TextureManager mtm) {
-        String template = String.format("modern_industrialization:textures/materialsets/raw/%s.png", set.name + (isBlock ? "_block" : ""));
-        try {
-            NativeImage image = mtm.getAssetAsTexture(template);
-            TextureHelper.colorize(image, coloramp);
-            String texturePath;
-            if (isBlock) {
-                texturePath = String.format("modern_industrialization:textures/blocks/%s.png", itemPath);
-            } else {
-                texturePath = String.format("modern_industrialization:textures/items/%s.png", itemPath);
+        part = part.withTextureRegister((mtm, partContext, part1, itemPath) -> {
+            String template = String.format("modern_industrialization:textures/materialsets/raw/%s.png", set.name + (isBlock ? "_block" : ""));
+            try {
+                NativeImage image = mtm.getAssetAsTexture(template);
+                TextureHelper.colorize(image, partContext.getColoramp());
+                String texturePath;
+                if (isBlock) {
+                    texturePath = String.format("modern_industrialization:textures/blocks/%s.png", itemPath);
+                } else {
+                    texturePath = String.format("modern_industrialization:textures/items/%s.png", itemPath);
+                }
+                mtm.addTexture(texturePath, image);
+                image.close();
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-            mtm.addTexture(texturePath, image);
-            image.close();
-        } catch (IOException e) {
-            e.printStackTrace();
+        });
+
+        if (isBlock) {
+            return part.withCustomFormattablePath("raw_%s_block", "raw_%s_blocks");
+        } else {
+            return part.withCustomFormattablePath("raw_%s", "raw_%s_ores");
         }
+
+    }
+
+    public List<BuildablePart> ofAll(MaterialRawSet set) {
+        return Arrays.asList(MIParts.RAW_METAL.of(set), MIParts.RAW_METAL_BLOCK.of(set));
     }
 }

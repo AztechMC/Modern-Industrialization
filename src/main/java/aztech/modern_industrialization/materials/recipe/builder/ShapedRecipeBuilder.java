@@ -25,6 +25,7 @@ package aztech.modern_industrialization.materials.recipe.builder;
 
 import aztech.modern_industrialization.ModernIndustrialization;
 import aztech.modern_industrialization.materials.MaterialBuilder;
+import aztech.modern_industrialization.materials.part.Part;
 import aztech.modern_industrialization.recipe.json.ShapedRecipeJson;
 import com.google.gson.Gson;
 import net.minecraft.util.Identifier;
@@ -38,7 +39,7 @@ public class ShapedRecipeBuilder implements MaterialRecipeBuilder {
     private final String id;
     private final ShapedRecipeJson json;
 
-    public ShapedRecipeBuilder(MaterialBuilder.RecipeContext context, String result, int count, String id, String... pattern) {
+    public ShapedRecipeBuilder(MaterialBuilder.RecipeContext context, Part result, int count, String id, String... pattern) {
         this.recipeId = "craft/" + id;
         this.context = context;
         this.id = id;
@@ -51,7 +52,7 @@ public class ShapedRecipeBuilder implements MaterialRecipeBuilder {
         context.addRecipe(this);
     }
 
-    public ShapedRecipeBuilder addPart(char key, String part) {
+    public ShapedRecipeBuilder addPart(char key, Part part) {
         if (context.getPart(part) != null) {
             addInput(key, context.getPart(part).getItemId());
         } else {
@@ -60,7 +61,7 @@ public class ShapedRecipeBuilder implements MaterialRecipeBuilder {
         return this;
     }
 
-    public ShapedRecipeBuilder addTaggedPart(char key, String part) {
+    public ShapedRecipeBuilder addTaggedPart(char key, Part part) {
         if (context.getPart(part) != null) {
             addInput(key, context.getPart(part).getTaggedItemId());
         } else {

@@ -84,7 +84,7 @@ public class RecipeCompat {
             addMiRecipe("macerator", "#c:sphalerite_ores", "techreborn:sphalerite_dust", 2);
 
             for (Material material : MaterialRegistry.getMaterials().values()) {
-                if (material.getParts().containsKey(MIParts.CURVED_PLATE)) {
+                if (material.getParts().containsKey(MIParts.CURVED_PLATE.key)) {
                     String plate = material.name;
                     addRecipe("tr_compat/" + plate + "_curved_plates", String.format(
                             "{\"type\":\"techreborn:compressor\",\"power\":10,\"time\":300,\"ingredients\":[{\"tag\":\"c:%s_plates\"}],\"results\":[{\"item\":\"modern_industrialization:%s_curved_plate\"}]}",
@@ -127,7 +127,7 @@ public class RecipeCompat {
                             .getBytes());
 
             for (Material material : MaterialRegistry.getMaterials().values()) {
-                if (material.getParts().containsKey(MIParts.CURVED_PLATE) && !material.name.equals("tin")) {
+                if (material.getParts().containsKey(MIParts.CURVED_PLATE.key) && !material.name.equals("tin")) {
                     String plate = material.name;
                     addRecipe("ir_compat/" + plate + "_curved_plates", String.format(
                             "{\"type\":\"indrev:compress\",\"ingredients\":{\"tag\":\"c:%s_plates\"},\"output\":{\"item\":\"modern_industrialization:%s_curved_plate\",\"count\":1},\"processTime\":300}",

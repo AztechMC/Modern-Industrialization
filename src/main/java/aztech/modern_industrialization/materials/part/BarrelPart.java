@@ -29,13 +29,8 @@ import aztech.modern_industrialization.blocks.storage.barrel.BarrelBlock;
 import aztech.modern_industrialization.blocks.storage.barrel.BarrelBlockEntity;
 import aztech.modern_industrialization.blocks.storage.barrel.BarrelItem;
 import aztech.modern_industrialization.blocks.storage.barrel.BarrelRenderer;
-import aztech.modern_industrialization.materials.MaterialBuilder;
-import aztech.modern_industrialization.textures.coloramp.Coloramp;
 import aztech.modern_industrialization.util.ResourceUtil;
 import aztech.modern_industrialization.util.TextHelper;
-import java.util.function.Function;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemStorage;
 import net.minecraft.block.BlockEntityProvider;
@@ -43,52 +38,29 @@ import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.util.registry.Registry;
 
-public class BarrelMaterialPart extends BlockColumnMaterialPart {
+public class BarrelPart extends UnbuildablePart<Integer> {
 
-    private final int stackCapacity;
-    private BlockEntityType<BlockEntity> blockEntityType;
-
-    public BarrelMaterialPart(String materialName, Coloramp coloramp, int stackCapacity) {
-        super(MIParts.BARREL, materialName, coloramp);
-        this.stackCapacity = stackCapacity;
-    }
-
-    public static Function<MaterialBuilder.PartContext, MaterialPart> of(int stackCapacity) {
-        return ctx -> new BarrelMaterialPart(ctx.getMaterialName(), ctx.getColoramp(), stackCapacity);
+    public BarrelPart() {
+        super("barrel");
     }
 
     @Override
-    public String getPart() {
-        return MIParts.BARREL;
+    public BuildablePart of(Integer stackCapacity) {
+
+        BlockEntityType<BlockEntity>[] refs = new BlockEntityType[1]; // evil hack
+
+        return new RegularPart(key).asColumnBlock().withRegister((registeringContext, partContext, part, itemPath, itemId, itemTag) -> {
+            ResourceUtil.appendWrenchable(new MIIdentifier(itemPath));
+
+            BlockEntityProvider factory = (pos, state) -> new BarrelBlockEntity(refs[0], pos, state, stackCapacity);
+            BarrelBlock block = new BarrelBlock(itemPath, (MIBlock b) -> new BarrelItem(b, stackCapacity), factory);
+
+            refs[0] = Registry.register(Registry.BLOCK_ENTITY_TYPE, itemId,
+                    FabricBlockEntityTypeBuilder.create(block.factory::createBlockEntity, block).build(null));
+
+            ItemStorage.SIDED.registerSelf(refs[0]);
+        }).withClientRegister((registeringContext, partContext, part, itemPath, itemId, itemTag) -> BarrelRenderer.register(refs[0],
+                TextHelper.getOverlayTextColor(partContext.getColoramp().getMeanRGB())));
     }
 
-    @Override
-    public String getTaggedItemId() {
-        return itemId;
-    }
-
-    @Override
-    public String getItemId() {
-        return itemId;
-    }
-
-    @Override
-    public void register(MaterialBuilder.RegisteringContext context) {
-        ResourceUtil.appendWrenchable(new MIIdentifier(idPath));
-
-        BlockEntityProvider factory = (pos, state) -> new BarrelBlockEntity(blockEntityType, pos, state, stackCapacity);
-        block = new BarrelBlock(idPath, (MIBlock block) -> new BarrelItem(block, stackCapacity), factory);
-
-        this.blockEntityType = Registry.register(Registry.BLOCK_ENTITY_TYPE, itemId,
-                FabricBlockEntityTypeBuilder.create(((BarrelBlock) block).factory::createBlockEntity, block).build(null));
-
-        ItemStorage.SIDED.registerSelf(blockEntityType);
-
-    }
-
-    @Environment(EnvType.CLIENT)
-    @Override
-    public void registerClient() {
-        BarrelRenderer.register(blockEntityType, TextHelper.getOverlayTextColor(coloramp.getMeanRGB()));
-    }
 }

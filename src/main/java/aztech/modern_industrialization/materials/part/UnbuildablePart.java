@@ -23,36 +23,45 @@
  */
 package aztech.modern_industrialization.materials.part;
 
-import aztech.modern_industrialization.MIItem;
-import aztech.modern_industrialization.materials.MaterialBuilder;
+import java.util.Collections;
+import java.util.List;
 
-public class MIItemPart {
+abstract class UnbuildablePart<T> extends Part {
 
-    public static MaterialPart of(Part part, String itemPath) {
-
-        String itemId = "modern_industrialization:" + itemPath;
-
-        return new MaterialPart() {
-            @Override
-            public Part getPart() {
-                return part;
-            }
-
-            @Override
-            public String getTaggedItemId() {
-                return itemId;
-            }
-
-            @Override
-            public String getItemId() {
-                return itemId;
-            }
-
-            @Override
-            public void register(MaterialBuilder.RegisteringContext context) {
-                MIItem.of(itemPath);
-            }
-        };
+    public UnbuildablePart(String key) {
+        super(key);
     }
 
+    public abstract BuildablePart of(T materialParams);
+
+    public List<BuildablePart> ofAll(T materialParams) {
+        return Collections.singletonList(of(materialParams));
+    }
+
+}
+
+abstract class UnbuildablePartWithDefaultParams<T> extends UnbuildablePart<T> {
+
+    public UnbuildablePartWithDefaultParams(String key) {
+        super(key);
+    }
+
+    public abstract T getDefaultParams();
+
+    public BuildablePart ofDefault() {
+        return of(getDefaultParams());
+    }
+}
+
+abstract class UnbuildablePartWithSomeDefaultParams<T, K> extends UnbuildablePart<T> {
+
+    public UnbuildablePartWithSomeDefaultParams(String key) {
+        super(key);
+    }
+
+    public abstract T getDefaultParams(K otherParams);
+
+    public BuildablePart ofDefault(K otherParams) {
+        return of(getDefaultParams(otherParams));
+    }
 }

@@ -23,36 +23,20 @@
  */
 package aztech.modern_industrialization.materials.part;
 
-import aztech.modern_industrialization.MIItem;
-import aztech.modern_industrialization.materials.MaterialBuilder;
+import aztech.modern_industrialization.api.energy.CableTier;
+import aztech.modern_industrialization.pipes.MIPipes;
 
-public class MIItemPart {
+public class CablePart extends UnbuildablePart<CableTier> {
 
-    public static MaterialPart of(Part part, String itemPath) {
+    public CablePart() {
+        super("cable");
+    }
 
-        String itemId = "modern_industrialization:" + itemPath;
-
-        return new MaterialPart() {
-            @Override
-            public Part getPart() {
-                return part;
-            }
-
-            @Override
-            public String getTaggedItemId() {
-                return itemId;
-            }
-
-            @Override
-            public String getItemId() {
-                return itemId;
-            }
-
-            @Override
-            public void register(MaterialBuilder.RegisteringContext context) {
-                MIItem.of(itemPath);
-            }
-        };
+    @Override
+    public BuildablePart of(CableTier tier) {
+        return new RegularPart(this.key).withoutTextureRegister()
+                .withRegister((registeringContext, partContext, part, itemPath, itemId, itemTag) -> MIPipes.INSTANCE
+                        .registerCableType(partContext.getMaterialName(), partContext.getColoramp().getMeanRGB() | 0xff000000, tier));
     }
 
 }

@@ -44,7 +44,7 @@ import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
 import net.minecraft.client.texture.NativeImage;
 import net.minecraft.util.Identifier;
 
-public class RegularPart extends BuildablePart {
+public class RegularPart extends Part implements BuildablePart {
 
     private final Register register;
     private final Register clientRegister;
@@ -212,27 +212,25 @@ public class RegularPart extends BuildablePart {
 
     }
 
+    @Override
+    public Part getPart() {
+        return this;
+    }
+
     public BuildablePart withCustomPath(String itemPath, String itemTag) {
-        return new BuildablePart(this.key) {
-            @Override
-            public MaterialPart build(MaterialBuilder.PartContext ctx) {
-                return RegularPart.build(itemPath, idFromPath(itemPath), itemTag, ctx, this, RegularPart.this.register,
-                        RegularPart.this.clientRegister, RegularPart.this.textureRegister);
-            }
-        };
+        return BuildablePart.of(this, ctx -> build(itemPath, idFromPath(itemPath), itemTag, ctx, RegularPart.this, RegularPart.this.register,
+                RegularPart.this.clientRegister, RegularPart.this.textureRegister));
     }
 
     public BuildablePart withCustomFormattablePath(String itemPath, String itemTag) {
-        return new BuildablePart(this.key) {
-            @Override
-            public MaterialPart build(MaterialBuilder.PartContext ctx) {
-                String path = String.format(itemPath, ctx.getMaterialName());
-                String tag = "#c:" + String.format(itemTag, ctx.getMaterialName());
+        return BuildablePart.of(this, ctx -> {
+            String path = String.format(itemPath, ctx.getMaterialName());
+            String tag = "#c:" + String.format(itemTag, ctx.getMaterialName());
 
-                return RegularPart.build(path, idFromPath(path), tag, ctx, this, RegularPart.this.register, RegularPart.this.clientRegister,
-                        RegularPart.this.textureRegister);
-            }
-        };
+            return build(path, idFromPath(path), tag, ctx, RegularPart.this, RegularPart.this.register, RegularPart.this.clientRegister,
+                    RegularPart.this.textureRegister);
+        });
+
     }
 
     public BuildablePart withCustomFormattablePath(String itemPath) {

@@ -25,7 +25,7 @@ package aztech.modern_industrialization.materials.part;
 
 import static aztech.modern_industrialization.materials.part.NuclearFuelPart.Type.*;
 
-import aztech.modern_industrialization.materials.MaterialHelper;
+import aztech.modern_industrialization.materials.GemPart;
 import aztech.modern_industrialization.textures.MITextures;
 import aztech.modern_industrialization.textures.TextureHelper;
 import aztech.modern_industrialization.textures.coloramp.HotIngotColoramp;
@@ -34,9 +34,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import net.devtech.arrp.json.tags.JTag;
 import net.minecraft.client.texture.NativeImage;
-import net.minecraft.util.Identifier;
 
 public class MIParts {
 
@@ -79,20 +77,8 @@ public class MIParts {
     public static final RegularPart DUST = new RegularPart("dust");
     public static final RegularPart FINE_WIRE = new RegularPart("fine_wire");
     public static final RegularPart GEAR = new RegularPart("gear");
-    public static final BuildablePart GEM = new RegularPart("gem").appendRegister((registeringContext, partContext, part, itemPath, itemId,
-            itemTag) -> MaterialHelper.registerItemTag("c:" + itemPath, JTag.tag().add(new Identifier(itemId))))
-            .withTextureRegister((mtm, partContext, part, itemPath) -> {
-                String template = String.format("modern_industrialization:textures/materialsets/gems/%s.png", partContext.getMaterialName());
-                try {
-                    NativeImage image = mtm.getAssetAsTexture(template);
-                    TextureHelper.colorize(image, partContext.getColoramp());
-                    String texturePath = String.format("modern_industrialization:textures/items/%s.png", itemPath);
-                    mtm.addTexture(texturePath, image);
-                    image.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }).withCustomFormattablePath("%s", "%s");
+    public static final GemPart GEM = new GemPart();
+
     public static final RegularPart HOT_INGOT = new RegularPart("hot_ingot")
             .withTextureRegister((mtm, partContext, part, itemPath) -> MITextures.generateItemPartTexture(mtm, MIParts.INGOT.key,
                     partContext.getMaterialSet(), itemPath, false, new HotIngotColoramp(partContext.getColoramp(), 0.1, 0.5)));

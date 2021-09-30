@@ -39,29 +39,3 @@ abstract class UnbuildablePart<T> extends Part {
     }
 
 }
-
-abstract class UnbuildablePartWithDefaultParams<T> extends UnbuildablePart<T> {
-
-    public UnbuildablePartWithDefaultParams(String key) {
-        super(key);
-    }
-
-    public abstract T getDefaultParams();
-
-    public BuildablePart ofDefault() {
-        return of(getDefaultParams());
-    }
-}
-
-abstract class UnbuildablePartWithSomeDefaultParams<T, K> extends UnbuildablePart<T> {
-
-    public UnbuildablePartWithSomeDefaultParams(String key) {
-        super(key);
-    }
-
-    public abstract T getDefaultParams(K otherParams);
-
-    public BuildablePart ofDefault(K otherParams) {
-        return of(getDefaultParams(otherParams));
-    }
-}

@@ -25,11 +25,28 @@ package aztech.modern_industrialization.materials.part;
 
 import aztech.modern_industrialization.materials.MaterialBuilder;
 
-public abstract class BuildablePart extends Part {
+public interface BuildablePart extends MaterialPartBuilder {
 
-    public BuildablePart(String key) {
-        super(key);
+    Part getPart();
+
+    static BuildablePart of(Part part, MaterialPartBuilder builder) {
+        return new BuildablePart() {
+            @Override
+            public Part getPart() {
+                return part;
+            }
+
+            @Override
+            public MaterialPart build(MaterialBuilder.PartContext ctx) {
+                return builder.build(ctx);
+            }
+        };
     }
 
-    public abstract MaterialPart build(MaterialBuilder.PartContext ctx);
+}
+
+@FunctionalInterface
+interface MaterialPartBuilder {
+
+    MaterialPart build(MaterialBuilder.PartContext ctx);
 }

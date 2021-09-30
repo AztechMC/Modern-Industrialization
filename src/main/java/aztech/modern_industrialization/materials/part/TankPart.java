@@ -48,7 +48,7 @@ public class TankPart extends UnbuildablePart<Integer> {
     }
 
     @Override
-    public BuildablePart of(Integer bucketCapacity) {
+    public MaterialPartBuilder builder(Integer bucketCapacity) {
 
         BlockEntityType<BlockEntity>[] refs = new BlockEntityType[1]; // evil hack
         long capacity = FluidConstants.BUCKET * bucketCapacity;

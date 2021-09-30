@@ -23,58 +23,56 @@
  */
 package aztech.modern_industrialization.materials.part;
 
+import aztech.modern_industrialization.materials.MaterialBuilder;
 import aztech.modern_industrialization.textures.MITextures;
 import net.minecraft.client.texture.NativeImage;
 
-public class CasingPart extends UnbuildablePartWithSomeDefaultParams<CasingPart.SpecialCasingPartParams, String> {
-
-    public record SpecialCasingPartParams(float resistance, String itemPath) {
-    };
+public class CasingPart extends Part implements BuildablePart {
 
     public CasingPart(String key) {
         super(key);
     }
 
     @Override
-    public SpecialCasingPartParams getDefaultParams(String itemPath) {
-        return new SpecialCasingPartParams(6, itemPath);
+    public Part getPart() {
+        return this;
     }
 
-    @Override
-    public BuildablePart of(SpecialCasingPartParams materialParams) {
-        RegularPart regPart = new RegularPart(this.key).asBlock(5, materialParams.resistance, 1)
-                .withTextureRegister((mtm, partContext, part, itemPath) -> {
-                    try {
-                        NativeImage image = MITextures.generateTexture(mtm, part.key, partContext.getMaterialSet(), partContext.getColoramp());
-                        if (part.equals(MIParts.MACHINE_CASING)) {
-                            MITextures.casingFromTexture(mtm, partContext.getMaterialName(), image);
-                            MITextures.tankFromTexture(mtm, partContext.getMaterialName(), image);
-                        } else if (part.equals(MIParts.MACHINE_CASING_PIPE) || part.equals(MIParts.MACHINE_CASING_SPECIAL)) {
-                            MITextures.casingFromTexture(mtm, itemPath, image);
-                        }
-                        MITextures.appendTexture(mtm, image, itemPath, true);
-                        image.close();
+    public BuildablePart of(String path, float resistance) {
+        RegularPart regPart = new RegularPart(this.key).asBlock(5, resistance, 1).withTextureRegister((mtm, partContext, part, itemPath) -> {
+            try {
+                NativeImage image = MITextures.generateTexture(mtm, part.key, partContext.getMaterialSet(), partContext.getColoramp());
 
-                    } catch (Throwable throwable) {
-                        MITextures.logTextureGenerationError(throwable, itemPath, partContext.getMaterialSet(), part.key);
-                    }
-                });
-        if (materialParams.itemPath != null) {
-            return regPart.withCustomPath(materialParams.itemPath, materialParams.itemPath);
+                if (part.equals(MIParts.MACHINE_CASING)) {
+                    MITextures.casingFromTexture(mtm, partContext.getMaterialName(), image);
+                    MITextures.tankFromTexture(mtm, partContext.getMaterialName(), image);
+                } else {
+                    MITextures.casingFromTexture(mtm, itemPath, image);
+                }
+                MITextures.appendTexture(mtm, image, itemPath, true);
+                image.close();
+
+            } catch (Throwable throwable) {
+                MITextures.logTextureGenerationError(throwable, itemPath, partContext.getMaterialSet(), part.key);
+            }
+        });
+        if (path != null) {
+            return regPart.withCustomPath(path, path);
         }
         return regPart;
     }
 
-    public BuildablePart ofDefault() {
-        return of(new SpecialCasingPartParams(6, null));
+    @Override
+    public MaterialPart build(MaterialBuilder.PartContext ctx) {
+        return of(null, 6f).build(ctx);
     }
 
-    public BuildablePart of(float resistance, String itemPath) {
-        return of(new SpecialCasingPartParams(resistance, itemPath));
+    public BuildablePart of(String path) {
+        return of(path, 6f);
     }
 
     public BuildablePart of(float resistance) {
-        return of(new SpecialCasingPartParams(resistance, null));
+        return of(null, resistance);
     }
 
 }

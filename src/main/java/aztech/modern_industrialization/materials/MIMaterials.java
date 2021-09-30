@@ -195,8 +195,8 @@ public class MIMaterials {
                 new MaterialBuilder("bronze", SHINY, new BakableTargetColoramp(0xffcc00, common("ingot"), template("bronze_ingot")), SOFT)
                         .addParts(BOLT, BLADE, RING, ROTOR, GEAR, ROD, CURVED_PLATE, DOUBLE_INGOT, DUST, INGOT, LARGE_PLATE, NUGGET, PLATE, TINY_DUST)
                         .removeParts(CRUSHED_DUST).addParts(BLOCK.of(MaterialBlockSet.COPPER)).addParts(TANK.of(4)).addParts(DRILL_HEAD, DRILL)
-                        .addParts(BARREL.of(32)).addParts(MACHINE_CASING.ofDefault(), MACHINE_CASING_PIPE.ofDefault())
-                        .addParts(MACHINE_CASING_SPECIAL.ofDefault("bronze_plated_bricks"))
+                        .addParts(BARREL.of(32)).addParts(MACHINE_CASING, MACHINE_CASING_PIPE)
+                        .addParts(MACHINE_CASING_SPECIAL.of("bronze_plated_bricks"))
                         .addRecipes(ForgeHammerRecipes::apply, SmeltingRecipes::apply, StandardRecipes::apply).build());
 
         MaterialRegistry
@@ -210,7 +210,7 @@ public class MIMaterials {
                 new MaterialBuilder("steel", METALLIC, new BakableTargetColoramp(0x3f3f3f, common("ingot"), template("steel_ingot")), AVERAGE)
                         .addParts(BOLT, RING, ROD, GEAR, CURVED_PLATE, DOUBLE_INGOT, DUST, INGOT, LARGE_PLATE, NUGGET, PLATE, TINY_DUST)
                         .addParts(ROD_MAGNETIC).addParts(BLOCK.of(MaterialBlockSet.IRON)).addParts(DRILL_HEAD, DRILL)
-                        .addParts(MACHINE_CASING.ofDefault(), MACHINE_CASING_PIPE.ofDefault()).addParts(TANK.of(8)).addParts(BARREL.of(128))
+                        .addParts(MACHINE_CASING, MACHINE_CASING_PIPE).addParts(TANK.of(8)).addParts(BARREL.of(128))
                         .addRecipes(ForgeHammerRecipes::apply, SmeltingRecipes::apply, StandardRecipes::apply).build());
 
         MaterialRegistry.addMaterial(new MaterialBuilder("lignite_coal", STONE, GEM, 0x644646, SOFT).addParts(ITEM_PURE_NON_METAL)
@@ -223,8 +223,8 @@ public class MIMaterials {
         MaterialRegistry.addMaterial(
                 new MaterialBuilder("aluminum", METALLIC, new BakableTargetColoramp(0x3fcaff, common("ingot"), template("aluminum_ingot")), AVERAGE)
                         .addParts(BOLT, BLADE, RING, ROTOR, GEAR, ROD, CURVED_PLATE, DOUBLE_INGOT, DUST, INGOT, LARGE_PLATE, NUGGET, PLATE, TINY_DUST)
-                        .addParts(WIRE).addParts(BLOCK.of(MaterialBlockSet.GOLD)).addParts(MACHINE_CASING.ofDefault("advanced_machine_casing"))
-                        .addParts(DRILL_HEAD, DRILL).addParts(MACHINE_CASING_SPECIAL.ofDefault("frostproof_machine_casing")).addParts(TANK.of(16))
+                        .addParts(WIRE).addParts(BLOCK.of(MaterialBlockSet.GOLD)).addParts(MACHINE_CASING.of("advanced_machine_casing"))
+                        .addParts(DRILL_HEAD, DRILL).addParts(MACHINE_CASING_SPECIAL.of("frostproof_machine_casing")).addParts(TANK.of(16))
                         .addParts(BARREL.of(512)).addParts(CABLE.of(CableTier.HV)).addRecipes(StandardRecipes::apply)
                         .addRecipes(SmeltingRecipes::applyBlastFurnace).build());
 
@@ -242,8 +242,8 @@ public class MIMaterials {
                 .addParts(TINY_DUST, DUST, INGOT, DOUBLE_INGOT, PLATE, CURVED_PLATE, NUGGET, LARGE_PLATE).addParts(BLOCK.of(MaterialBlockSet.IRON))
                 .addRecipes(StandardRecipes::apply, SmeltingRecipes::apply).build());
 
-        MaterialRegistry.addMaterial(
-                new MaterialBuilder("invar", METALLIC, 0xDCDC96, AVERAGE).addParts(MACHINE_CASING_SPECIAL.ofDefault("heatproof_machine_casing"))
+        MaterialRegistry
+                .addMaterial(new MaterialBuilder("invar", METALLIC, 0xDCDC96, AVERAGE).addParts(MACHINE_CASING_SPECIAL.of("heatproof_machine_casing"))
                         .addParts(TINY_DUST, DUST, INGOT, ROD, DOUBLE_INGOT, RING, BOLT, PLATE, LARGE_PLATE, NUGGET, GEAR)
                         .addParts(BLOCK.of(MaterialBlockSet.IRON)).addRecipes(StandardRecipes::apply, SmeltingRecipes::apply).build());
 
@@ -279,11 +279,10 @@ public class MIMaterials {
                 new MaterialBuilder("titanium", METALLIC, new BakableTargetColoramp(0xDCA0F0, common("ingot"), template("titanium_ingot")), HARD)
                         .addParts(BOLT, BLADE, RING, ROTOR, GEAR, ROD, CURVED_PLATE, DOUBLE_INGOT, DUST, INGOT, LARGE_PLATE, NUGGET, PLATE, TINY_DUST)
                         .addParts(BLOCK.of(MaterialBlockSet.NETHERITE)).addParts(RAW_METAL.ofAll(MaterialRawSet.COPPER)).addParts(HOT_INGOT)
-                        .addParts(MACHINE_CASING.ofDefault("highly_advanced_machine_casing")).addParts(DRILL_HEAD, DRILL)
-                        .addParts(MACHINE_CASING_PIPE.ofDefault()).addParts(MACHINE_CASING_SPECIAL.ofDefault("solid_titanium_machine_casing"))
-                        .addParts(ORE.ofAll(2, 4, 32, MaterialOreSet.IRON)).addParts(TANK.of(64)).addParts(BARREL.of(8192))
-                        .addRecipes(StandardRecipes::apply).addRecipes((ctx) -> SmeltingRecipes.applyBlastFurnace(ctx, true, 128, 400))
-                        .cancelRecipes("macerator/raw_metal").build());
+                        .addParts(MACHINE_CASING.of("highly_advanced_machine_casing")).addParts(DRILL_HEAD, DRILL).addParts(MACHINE_CASING_PIPE)
+                        .addParts(MACHINE_CASING_SPECIAL.of("solid_titanium_machine_casing")).addParts(ORE.ofAll(2, 4, 32, MaterialOreSet.IRON))
+                        .addParts(TANK.of(64)).addParts(BARREL.of(8192)).addRecipes(StandardRecipes::apply)
+                        .addRecipes((ctx) -> SmeltingRecipes.applyBlastFurnace(ctx, true, 128, 400)).cancelRecipes("macerator/raw_metal").build());
 
         MaterialRegistry.addMaterial(
                 new MaterialBuilder("electrum", SHINY, new BakableTargetColoramp(0xFFFF64, common("ingot"), template("electrum_ingot")), SOFT)
@@ -299,8 +298,8 @@ public class MIMaterials {
                 new BakableTargetColoramp(0xC8C8DC, common("ingot"), template("stainless_steel_ingot")), HARD)
                         .addParts(BLOCK.of(MaterialBlockSet.IRON))
                         .addParts(BOLT, BLADE, RING, ROTOR, GEAR, ROD, CURVED_PLATE, DOUBLE_INGOT, DUST, INGOT, LARGE_PLATE, NUGGET, PLATE, TINY_DUST)
-                        .addParts(HOT_INGOT).addParts(DRILL_HEAD, DRILL).addParts(MACHINE_CASING.ofDefault("turbo_machine_casing"))
-                        .addParts(MACHINE_CASING_PIPE.ofDefault()).addParts(MACHINE_CASING_SPECIAL.ofDefault("clean_stainless_steel_machine_casing"))
+                        .addParts(HOT_INGOT).addParts(DRILL_HEAD, DRILL).addParts(MACHINE_CASING.of("turbo_machine_casing"))
+                        .addParts(MACHINE_CASING_PIPE).addParts(MACHINE_CASING_SPECIAL.of("clean_stainless_steel_machine_casing"))
                         .addParts(ROD_MAGNETIC).addParts(TANK.of(32)).addParts(BARREL.of(4096)).addRecipes(StandardRecipes::apply)
                         .addRecipes((ctx) -> SmeltingRecipes.applyBlastFurnace(ctx, true, 32, 400)).cancelRecipes("polarizer/rod_magnetic").build());
 
@@ -426,10 +425,10 @@ public class MIMaterials {
                         .addRecipes(StandardRecipes::apply).build());
 
         MaterialRegistry.addMaterial(new MaterialBuilder("blastproof_alloy", METALLIC, 0x524c3a, VERY_HARD).addParts(PLATE, LARGE_PLATE, CURVED_PLATE)
-                .addParts(MACHINE_CASING_SPECIAL.of(6000f, "blastproof_casing")).addRecipes(StandardRecipes::apply).build());
+                .addParts(MACHINE_CASING_SPECIAL.of("blastproof_casing", 6000f)).addRecipes(StandardRecipes::apply).build());
 
         MaterialRegistry.addMaterial(new MaterialBuilder("nuclear_alloy", METALLIC, 0x3d4d32, VERY_HARD).addParts(PLATE, LARGE_PLATE)
-                .addParts(MACHINE_CASING_SPECIAL.of(6000f, "nuclear_casing")).addParts(MACHINE_CASING_PIPE.of(6000f))
+                .addParts(MACHINE_CASING_SPECIAL.of("nuclear_casing", 6000f)).addParts(MACHINE_CASING_PIPE.of(6000f))
                 .addRecipes(StandardRecipes::apply).build());
 
         MaterialRegistry.addMaterial(new MaterialBuilder("soldering_alloy", DULL, DUST, 0xffabc4bf, SOFT).addParts(DUST, TINY_DUST)

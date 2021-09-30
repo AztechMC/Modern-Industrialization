@@ -25,8 +25,6 @@ package aztech.modern_industrialization.materials.part;
 
 import aztech.modern_industrialization.materials.MaterialBuilder;
 import aztech.modern_industrialization.textures.TextureManager;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 
 /**
  * Stores a single combination material/part Register it and generate the
@@ -57,7 +55,6 @@ public interface MaterialPart {
 
     }
 
-    @Environment(EnvType.CLIENT)
     default void registerClient() {
     }
 }

@@ -35,7 +35,6 @@ import aztech.modern_industrialization.util.ResourceUtil;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -101,14 +100,6 @@ public class OrePart extends UnbuildablePart<OrePartParams> {
 
     public BuildablePart of(UniformIntProvider xpProvider, MaterialOreSet set) {
         return of(new OrePartParams(xpProvider, set));
-    }
-
-    public List<BuildablePart> ofAll(int veinsPerChunk, int veinSize, int maxYLevel, MaterialOreSet set) {
-        return ofAll(new OrePartParams(UniformIntProvider.create(0, 2), set, veinsPerChunk, veinSize, maxYLevel));
-    }
-
-    public List<BuildablePart> ofAll(UniformIntProvider xpProvider, int veinsPerChunk, int veinSize, int maxYLevel, MaterialOreSet set) {
-        return ofAll(new OrePartParams(xpProvider, set, veinsPerChunk, veinSize, maxYLevel));
     }
 
     public OrePart(boolean deepslate) {
@@ -205,6 +196,6 @@ public class OrePart extends UnbuildablePart<OrePartParams> {
     }
 
     public List<BuildablePart> ofAll(OrePartParams params) {
-        return Arrays.asList(MIParts.ORE_DEEPLSATE.of(params), MIParts.ORE.of(params));
+        return List.of(MIParts.ORE_DEEPLSATE.of(params), MIParts.ORE.of(params));
     }
 }

@@ -26,8 +26,6 @@ package aztech.modern_industrialization.materials.part;
 import aztech.modern_industrialization.materials.set.MaterialRawSet;
 import aztech.modern_industrialization.textures.TextureHelper;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
 import net.minecraft.client.texture.NativeImage;
 
 public class RawMetalPart extends UnbuildablePart<MaterialRawSet> {
@@ -71,9 +69,5 @@ public class RawMetalPart extends UnbuildablePart<MaterialRawSet> {
             return part.withCustomFormattablePath("raw_%s", "raw_%s_ores");
         }
 
-    }
-
-    public List<BuildablePart> ofAll(MaterialRawSet set) {
-        return Arrays.asList(MIParts.RAW_METAL.of(set), MIParts.RAW_METAL_BLOCK.of(set));
     }
 }

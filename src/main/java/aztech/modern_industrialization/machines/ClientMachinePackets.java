@@ -27,8 +27,8 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 
+@Environment(EnvType.CLIENT)
 public class ClientMachinePackets {
-    @Environment(EnvType.CLIENT)
     public static final ClientPlayNetworking.PlayChannelHandler ON_COMPONENT_SYNC = (mc, handler, buf, sender) -> {
         int syncId = buf.readInt();
         int componentIndex = buf.readInt();

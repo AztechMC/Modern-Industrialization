@@ -30,18 +30,12 @@ import aztech.modern_industrialization.ModernIndustrialization;
 import aztech.modern_industrialization.blocks.creativetank.CreativeTankBlock;
 import aztech.modern_industrialization.blocks.creativetank.CreativeTankBlockEntity;
 import aztech.modern_industrialization.blocks.creativetank.CreativeTankItem;
-import aztech.modern_industrialization.blocks.creativetank.CreativeTankRenderer;
-import aztech.modern_industrialization.machines.models.MachineModelProvider;
 import aztech.modern_industrialization.util.ResourceUtil;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.client.rendereregistry.v1.BlockEntityRendererRegistry;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
 import net.minecraft.block.Material;
 import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.client.render.model.UnbakedModel;
 import net.minecraft.item.Item;
 import net.minecraft.util.registry.Registry;
 
@@ -61,14 +55,5 @@ public class CreativeTankSetup {
         FluidStorage.SIDED.registerForBlockEntities((be, direction) -> be instanceof CreativeTankBlockEntity ? (CreativeTankBlockEntity) be : null,
                 CREATIVE_BLOCK_ENTITY_TYPE);
         FluidStorage.ITEM.registerForItems(CreativeTankItem.TankItemStorage::new, CREATIVE_TANK_ITEM);
-    }
-
-    @Environment(EnvType.CLIENT)
-    public static void setupClient() {
-        UnbakedModel creativeTankModel = new TankModel("creative");
-        MachineModelProvider.register(new MIIdentifier("block/creative_tank"), creativeTankModel);
-        MachineModelProvider.register(new MIIdentifier("item/creative_tank"), creativeTankModel);
-
-        BlockEntityRendererRegistry.INSTANCE.register(CREATIVE_BLOCK_ENTITY_TYPE, CreativeTankRenderer::new);
     }
 }

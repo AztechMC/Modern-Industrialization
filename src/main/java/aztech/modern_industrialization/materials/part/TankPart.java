@@ -28,21 +28,17 @@ import static aztech.modern_industrialization.ModernIndustrialization.ITEM_GROUP
 import aztech.modern_industrialization.MIBlock;
 import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.blocks.storage.tank.*;
-import aztech.modern_industrialization.machines.models.MachineModelProvider;
-import aztech.modern_industrialization.materials.MaterialBuilder;
+import aztech.modern_industrialization.proxy.CommonProxy;
 import aztech.modern_industrialization.util.ResourceUtil;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.client.rendereregistry.v1.BlockEntityRendererRegistry;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
 import net.minecraft.block.BlockEntityProvider;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.client.render.model.UnbakedModel;
 import net.minecraft.item.Item;
 import net.minecraft.util.registry.Registry;
+import org.apache.commons.lang3.mutable.MutableObject;
 
 public class TankPart extends UnbuildablePart<Integer> {
 
@@ -52,35 +48,23 @@ public class TankPart extends UnbuildablePart<Integer> {
 
     @Override
     public BuildablePart of(Integer bucketCapacity) {
-
-        BlockEntityType<BlockEntity>[] refs = new BlockEntityType[1]; // evil hack
+        MutableObject<BlockEntityType<BlockEntity>> bet = new MutableObject<>();
         long capacity = FluidConstants.BUCKET * bucketCapacity;
 
         return new RegularPart(key).withoutTextureRegister().withRegister((registeringContext, partContext, part, itemPath, itemId, itemTag) -> {
-
-            BlockEntityProvider factory = (pos, state) -> new TankBlockEntity(refs[0], pos, state, capacity);
+            BlockEntityProvider factory = (pos, state) -> new TankBlockEntity(bet.getValue(), pos, state, capacity);
             TankBlock block = new TankBlock(itemPath, (MIBlock b) -> new TankItem(b, new Item.Settings().group(ITEM_GROUP), capacity), factory);
             TankItem item = (TankItem) block.blockItem;
 
             ResourceUtil.appendWrenchable(new MIIdentifier(itemPath));
-            refs[0] = Registry.register(Registry.BLOCK_ENTITY_TYPE, itemId,
-                    FabricBlockEntityTypeBuilder.create(block.factory::createBlockEntity, block).build(null));
+            bet.setValue(Registry.register(Registry.BLOCK_ENTITY_TYPE, itemId,
+                    FabricBlockEntityTypeBuilder.create(block.factory::createBlockEntity, block).build(null)));
 
             // Fluid API
-            FluidStorage.SIDED.registerSelf(refs[0]);
+            FluidStorage.SIDED.registerSelf(bet.getValue());
             item.registerItemApi();
-
         }).withClientRegister((registeringContext, partContext, part, itemPath, itemId, itemTag) -> {
-            registerClient(partContext, itemPath, refs[0]);
+            CommonProxy.INSTANCE.registerPartTankClient(partContext, itemPath, bet.getValue());
         });
     }
-
-    @Environment(EnvType.CLIENT)
-    static void registerClient(MaterialBuilder.PartContext partContext, String itemPath, BlockEntityType<BlockEntity> blockEntityType) {
-        UnbakedModel tankModel = new TankModel(partContext.getMaterialName());
-        MachineModelProvider.register(new MIIdentifier("block/" + itemPath), tankModel);
-        MachineModelProvider.register(new MIIdentifier("item/" + itemPath), tankModel);
-        BlockEntityRendererRegistry.INSTANCE.register(blockEntityType, TankRenderer::new);
-    }
-
 }

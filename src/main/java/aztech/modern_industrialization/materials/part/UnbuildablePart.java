@@ -23,9 +23,6 @@
  */
 package aztech.modern_industrialization.materials.part;
 
-import java.util.Collections;
-import java.util.List;
-
 abstract class UnbuildablePart<T> extends Part {
 
     public UnbuildablePart(String key) {
@@ -33,9 +30,4 @@ abstract class UnbuildablePart<T> extends Part {
     }
 
     public abstract BuildablePart of(T materialParams);
-
-    public List<BuildablePart> ofAll(T materialParams) {
-        return Collections.singletonList(of(materialParams));
-    }
-
 }

@@ -31,7 +31,6 @@ import aztech.modern_industrialization.nuclear.NuclearConstant;
 import aztech.modern_industrialization.nuclear.NuclearFuel;
 import aztech.modern_industrialization.textures.MITextures;
 import aztech.modern_industrialization.textures.coloramp.ColorampDepleted;
-import java.util.Arrays;
 import java.util.List;
 
 public class NuclearFuelPart extends UnbuildablePart<NuclearConstant.IsotopeFuelParams> {
@@ -78,7 +77,7 @@ public class NuclearFuelPart extends UnbuildablePart<NuclearConstant.IsotopeFuel
     }
 
     public List<BuildablePart> ofAll(NuclearConstant.IsotopeFuelParams params) {
-        return Arrays.asList(MIParts.FUEL_ROD.of(params), MIParts.FUEL_ROD_DOUBLE.of(params), MIParts.FUEL_ROD_QUAD.of(params),
+        return List.of(MIParts.FUEL_ROD.of(params), MIParts.FUEL_ROD_DOUBLE.of(params), MIParts.FUEL_ROD_QUAD.of(params),
                 MIParts.FUEL_ROD_DEPLETED.of(params));
     }
 }

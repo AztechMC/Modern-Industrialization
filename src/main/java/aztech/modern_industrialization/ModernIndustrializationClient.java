@@ -28,7 +28,7 @@ import static net.fabricmc.fabric.api.client.command.v1.ClientCommandManager.lit
 import aztech.modern_industrialization.api.energy.CableTier;
 import aztech.modern_industrialization.api.pipes.item.SpeedUpgrade;
 import aztech.modern_industrialization.blocks.forgehammer.ForgeHammerScreen;
-import aztech.modern_industrialization.blocks.storage.tank.CreativeTankSetup;
+import aztech.modern_industrialization.blocks.storage.tank.CreativeTankClientSetup;
 import aztech.modern_industrialization.debug.MissingTranslationsCommand;
 import aztech.modern_industrialization.inventory.ConfigurableInventoryPacketHandlers;
 import aztech.modern_industrialization.inventory.ConfigurableInventoryPackets;
@@ -50,7 +50,6 @@ import aztech.modern_industrialization.misc.version.VersionEvents;
 import aztech.modern_industrialization.pipes.MIPipes;
 import aztech.modern_industrialization.pipes.MIPipesClient;
 import aztech.modern_industrialization.pipes.impl.PipeItem;
-import aztech.modern_industrialization.proxy.ClientProxy;
 import aztech.modern_industrialization.util.TextHelper;
 import java.util.Collections;
 import java.util.List;
@@ -80,12 +79,10 @@ import net.minecraft.util.Identifier;
 public class ModernIndustrializationClient implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
-        ClientProxy.set();
-
         setupScreens();
         MIFluidsRender.setupFluidRenders();
         setupPackets();
-        CreativeTankSetup.setupClient();
+        CreativeTankClientSetup.setupClient();
         MachineModels.init();
         MultiblockMachines.clientInit();
         MultiblockErrorHighlight.init();

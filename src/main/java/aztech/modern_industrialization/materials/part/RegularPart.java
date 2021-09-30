@@ -37,8 +37,6 @@ import java.io.IOException;
 import net.devtech.arrp.json.models.JModel;
 import net.devtech.arrp.json.models.JTextures;
 import net.devtech.arrp.json.tags.JTag;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
 import net.minecraft.client.texture.NativeImage;
@@ -178,7 +176,6 @@ public class RegularPart extends Part implements BuildablePart {
 
             }
 
-            @Environment(EnvType.CLIENT)
             public void registerClient() {
                 clientRegister.register(null, partContext, part, itemPath, itemId, itemTag);
             }

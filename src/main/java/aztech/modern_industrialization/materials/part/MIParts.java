@@ -23,68 +23,104 @@
  */
 package aztech.modern_industrialization.materials.part;
 
+import static aztech.modern_industrialization.materials.part.NuclearFuelPart.Type.*;
+
+import aztech.modern_industrialization.materials.GemPart;
+import aztech.modern_industrialization.textures.MITextures;
+import aztech.modern_industrialization.textures.TextureHelper;
+import aztech.modern_industrialization.textures.coloramp.HotIngotColoramp;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import net.minecraft.client.texture.NativeImage;
 
 public class MIParts {
 
-    public static final String BATTERY = "battery";
-    public static final String BARREL = "barrel";
-    public static final String BLADE = "blade";
-    public static final String BLOCK = "block";
-    public static final String BOLT = "bolt";
-    public static final String CABLE = "cable";
-    public static final String COIL = "coil";
-    public static final String CRUSHED_DUST = "crushed_dust";
-    public static final String CURVED_PLATE = "curved_plate";
-    public static final String DOUBLE_INGOT = "double_ingot";
-    public static final String DRILL_HEAD = "drill_head";
-    public static final String DRILL = "drill";
-    public static final String DUST = "dust";
-    public static final String FINE_WIRE = "fine_wire";
-    public static final String GEAR = "gear";
-    public static final String GEM = "gem";
-    public static final String HOT_INGOT = "hot_ingot";
-    public static final String INGOT = "ingot";
-    public static final String LARGE_PLATE = "large_plate";
-    public static final String MACHINE_CASING = "machine_casing";
-    public static final String MACHINE_CASING_PIPE = "machine_casing_pipe";
-    public static final String MACHINE_CASING_SPECIAL = "machine_casing_special";
-    public static final String NUGGET = "nugget";
-    public static final String ORE = "ore";
-    public static final String ORE_DEEPLSATE = "ore_deepslate";
-    public static final String PLATE = "plate";
-    public static final String RAW_METAL = "raw_metal";
-    public static final String RAW_METAL_BLOCK = "raw_metal_block";
-    public static final String RING = "ring";
-    public static final String ROD = "rod";
-    public static final String ROD_MAGNETIC = "rod_magnetic";
-    public static final String ROTOR = "rotor";
-    public static final String TANK = "tank";
-    public static final String TINY_DUST = "tiny_dust";
-    public static final String WIRE = "wire";
-    public static final String WIRE_MAGNETIC = "wire_magnetic";
+    public static final RegularPart BATTERY = new RegularPart("battery");
+    public static final BarrelPart BARREL = new BarrelPart();
+    public static final RegularPart BLADE = new RegularPart("blade");
+    public static final BlockPart BLOCK = new BlockPart();
+    public static final RegularPart BOLT = new RegularPart("bolt");
+    public static final CablePart CABLE = new CablePart();
+    public static final RegularPart COIL = new RegularPart("coil").asColumnBlock();
+    public static final RegularPart CRUSHED_DUST = new RegularPart("crushed_dust");
+    public static final RegularPart CURVED_PLATE = new RegularPart("curved_plate");
+    public static final RegularPart DOUBLE_INGOT = new RegularPart("double_ingot")
+            .withTextureRegister((mtm, partContext, part, itemPath) -> mtm.runAtEnd(() -> {
+                try {
+                    MITextures.generateDoubleIngot(mtm, partContext.getMaterialName());
+                } catch (Throwable throwable) {
+                    MITextures.logTextureGenerationError(throwable, partContext.getMaterialName(), partContext.getMaterialSet(), part.key);
+                }
+            }));
 
-    public static final String FUEL_ROD = "fuel_rod";
-    public static final String FUEL_ROD_DEPLETED = "fuel_rod_depleted";
-    public static final String FUEL_ROD_DOUBLE = "fuel_rod_double";
-    public static final String FUEL_ROD_QUAD = "fuel_rod_quad";
+    public static final RegularPart DRILL_HEAD = new RegularPart("drill_head");
 
-    public static final String N_DOPED_PLATE = "n_doped_plate";
-    public static final String P_DOPED_PLATE = "p_doped_plate";
+    public static final RegularPart DRILL = new RegularPart("drill").appendTextureRegister((mtm, partContext, part, itemPath) -> {
+        String template = "modern_industrialization:textures/materialsets/common/drill.png";
+        String templateOverlay = "modern_industrialization:textures/materialsets/common/mining_drill_overlay.png";
+        String texturePath = String.format("modern_industrialization:textures/items/%s.png", partContext.getMaterialName() + "_mining_drill");
+        try {
+            NativeImage image = mtm.getAssetAsTexture(template);
+            NativeImage overlay = mtm.getAssetAsTexture(templateOverlay);
+            TextureHelper.colorize(image, partContext.getColoramp());
+            mtm.addTexture(texturePath, TextureHelper.blend(image, overlay), true);
+            image.close();
+            overlay.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    });
 
-    public static final String[] ITEM_PURE_NON_METAL = new String[] { TINY_DUST, DUST, CRUSHED_DUST };
-    public static final String[] ITEM_PURE_METAL = new String[] { INGOT, NUGGET, TINY_DUST, DUST };
+    public static final RegularPart DUST = new RegularPart("dust");
+    public static final RegularPart FINE_WIRE = new RegularPart("fine_wire");
+    public static final RegularPart GEAR = new RegularPart("gear");
+    public static final GemPart GEM = new GemPart();
 
-    public static final List<String> TAGGED_PARTS_LIST = Arrays.asList(BLOCK, DUST, GEAR, INGOT, NUGGET, ORE, PLATE, TINY_DUST);
-    public static final Set<String> TAGGED_PARTS = new HashSet<>(TAGGED_PARTS_LIST);
+    public static final RegularPart HOT_INGOT = new RegularPart("hot_ingot")
+            .withTextureRegister((mtm, partContext, part, itemPath) -> MITextures.generateItemPartTexture(mtm, MIParts.INGOT.key,
+                    partContext.getMaterialSet(), itemPath, false, new HotIngotColoramp(partContext.getColoramp(), 0.1, 0.5)));
+    public static final RegularPart INGOT = new RegularPart("ingot");
+    public static final RegularPart LARGE_PLATE = new RegularPart("large_plate");
+    public static final CasingPart MACHINE_CASING = new CasingPart("machine_casing");
+    public static final CasingPart MACHINE_CASING_PIPE = new CasingPart("machine_casing_pipe");
+    public static final CasingPart MACHINE_CASING_SPECIAL = new CasingPart("machine_casing_special");
+    public static final RegularPart NUGGET = new RegularPart("nugget");
+    public static final OrePart ORE = new OrePart(false);
+    public static final OrePart ORE_DEEPLSATE = new OrePart(true);
+    public static final RegularPart PLATE = new RegularPart("plate");
+    public static final RawMetalPart RAW_METAL = new RawMetalPart(false);
+    public static final RawMetalPart RAW_METAL_BLOCK = new RawMetalPart(true);
+    public static final RegularPart RING = new RegularPart("ring");
+    public static final RegularPart ROD = new RegularPart("rod");
+    public static final RegularPart ROD_MAGNETIC = new RegularPart("rod_magnetic").withOverlay(ROD, "magnetic");
+    public static final RegularPart ROTOR = new RegularPart("rotor");
+    public static final TankPart TANK = new TankPart();
+    public static final RegularPart TINY_DUST = new RegularPart("tiny_dust");
+    public static final RegularPart WIRE = new RegularPart("wire");
+    public static final RegularPart WIRE_MAGNETIC = new RegularPart("wire_magnetic").withOverlay(WIRE, "magnetic");
 
-    public static final String[] BLOCKS = { ORE, BARREL, BLOCK, COIL, MACHINE_CASING, MACHINE_CASING_SPECIAL, MACHINE_CASING_PIPE, RAW_METAL_BLOCK };
+    public static final NuclearFuelPart FUEL_ROD = new NuclearFuelPart(SIMPLE);
+    public static final NuclearFuelPart FUEL_ROD_DEPLETED = new NuclearFuelPart(DEPLETED);
+    public static final NuclearFuelPart FUEL_ROD_DOUBLE = new NuclearFuelPart(DOUBLE);
+    public static final NuclearFuelPart FUEL_ROD_QUAD = new NuclearFuelPart(QUAD);
 
-    public static String idOfPart(String part, String materialName) {
-        return "modern_industrialization:" + materialName + "_" + part;
+    public static final RegularPart N_DOPED_PLATE = new RegularPart("n_doped_plate").withOverlay(PLATE, "n_doped");
+    public static final RegularPart P_DOPED_PLATE = new RegularPart("p_doped_plate").withOverlay(PLATE, "p_doped");
+
+    public static final BuildablePart[] ITEM_PURE_NON_METAL = new BuildablePart[] { TINY_DUST, DUST, CRUSHED_DUST };
+    public static final BuildablePart[] ITEM_PURE_METAL = new BuildablePart[] { INGOT, NUGGET, TINY_DUST, DUST };
+
+    public static final List<Part> TAGGED_PARTS_LIST = Arrays.asList(BLOCK, DUST, GEAR, INGOT, NUGGET, ORE, PLATE, TINY_DUST, RAW_METAL,
+            RAW_METAL_BLOCK);
+    public static final Set<Part> TAGGED_PARTS = new HashSet<>(TAGGED_PARTS_LIST);
+
+    public static final Part[] BLOCKS = { ORE, BARREL, BLOCK, COIL, MACHINE_CASING, MACHINE_CASING_SPECIAL, MACHINE_CASING_PIPE, RAW_METAL_BLOCK };
+
+    public static String idOfPart(Part part, String materialName) {
+        return "modern_industrialization:" + materialName + "_" + part.key;
     }
 
 }

@@ -23,9 +23,18 @@
  */
 package aztech.modern_industrialization.proxy;
 
+import aztech.modern_industrialization.MIIdentifier;
+import aztech.modern_industrialization.blocks.storage.tank.TankModel;
+import aztech.modern_industrialization.blocks.storage.tank.TankRenderer;
+import aztech.modern_industrialization.machines.models.MachineModelProvider;
+import aztech.modern_industrialization.materials.MaterialBuilder;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.fabricmc.fabric.api.client.rendereregistry.v1.BlockEntityRendererRegistry;
+import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.render.model.UnbakedModel;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import org.jetbrains.annotations.Nullable;
@@ -41,7 +50,11 @@ public class ClientProxy extends CommonProxy {
         return super.findUser(entity);
     }
 
-    public static void set() {
-        CommonProxy.INSTANCE = new ClientProxy();
+    @Override
+    public void registerPartTankClient(MaterialBuilder.PartContext partContext, String itemPath, BlockEntityType<BlockEntity> blockEntityType) {
+        UnbakedModel tankModel = new TankModel(partContext.getMaterialName());
+        MachineModelProvider.register(new MIIdentifier("block/" + itemPath), tankModel);
+        MachineModelProvider.register(new MIIdentifier("item/" + itemPath), tankModel);
+        BlockEntityRendererRegistry.INSTANCE.register(blockEntityType, TankRenderer::new);
     }
 }

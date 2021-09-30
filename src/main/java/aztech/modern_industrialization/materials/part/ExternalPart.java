@@ -23,27 +23,26 @@
  */
 package aztech.modern_industrialization.materials.part;
 
-import aztech.modern_industrialization.materials.MaterialBuilder;
-import java.util.function.Function;
+public record ExternalPart() {
 
-public record ExternalPart(String part, String tag, String itemId) implements MaterialPart {
-    public static Function<MaterialBuilder.PartContext, MaterialPart> of(String part, String taggedItemId, String itemId) {
-        return ctx -> new ExternalPart(part, taggedItemId, itemId);
-    }
+    public static MaterialPart of(Part part, String taggedItemId, String itemId) {
+        return new MaterialPart() {
 
-    @Override
-    public String getPart() {
-        return part;
-    }
+            @Override
+            public Part getPart() {
+                return part;
+            }
 
-    @Override
-    public String getTaggedItemId() {
-        return tag;
-    }
+            @Override
+            public String getTaggedItemId() {
+                return taggedItemId;
+            }
 
-    @Override
-    public String getItemId() {
-        return itemId;
+            @Override
+            public String getItemId() {
+                return itemId;
+            }
+        };
     }
 
 }

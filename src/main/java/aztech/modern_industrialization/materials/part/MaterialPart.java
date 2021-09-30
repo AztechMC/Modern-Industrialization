@@ -25,14 +25,16 @@ package aztech.modern_industrialization.materials.part;
 
 import aztech.modern_industrialization.materials.MaterialBuilder;
 import aztech.modern_industrialization.textures.TextureManager;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 
+/**
+ * Stores a single combination material/part Register it and generate the
+ * associated texture
+ **/
 public interface MaterialPart {
     /**
      * @return The name of this part, for example "ingot" or "dust".
      */
-    String getPart();
+    Part getPart();
 
     /**
      * @return The common tag of this material prefixed by # if available, or the id
@@ -53,7 +55,6 @@ public interface MaterialPart {
 
     }
 
-    @Environment(EnvType.CLIENT)
     default void registerClient() {
     }
 }

@@ -25,41 +25,34 @@ package aztech.modern_industrialization.materials.part;
 
 import aztech.modern_industrialization.MIItem;
 import aztech.modern_industrialization.materials.MaterialBuilder;
-import java.util.function.Function;
 
-public class MIItemPart implements MaterialPart {
+public class MIItemPart {
 
-    private final String materialPart;
-    private final String path;
-    private final String id;
+    public static MaterialPart of(Part part, String itemPath) {
 
-    private MIItemPart(String materialPart, String itemId) {
-        this.materialPart = materialPart;
-        this.path = itemId;
-        this.id = "modern_industrialization:" + path;
+        String itemId = "modern_industrialization:" + itemPath;
+
+        return new MaterialPart() {
+            @Override
+            public Part getPart() {
+                return part;
+            }
+
+            @Override
+            public String getTaggedItemId() {
+                return itemId;
+            }
+
+            @Override
+            public String getItemId() {
+                return itemId;
+            }
+
+            @Override
+            public void register(MaterialBuilder.RegisteringContext context) {
+                MIItem.of(itemPath);
+            }
+        };
     }
 
-    public static Function<MaterialBuilder.PartContext, MaterialPart> of(String materialPart, String itemId) {
-        return ctx -> new MIItemPart(materialPart, itemId);
-    }
-
-    @Override
-    public String getPart() {
-        return materialPart;
-    }
-
-    @Override
-    public String getTaggedItemId() {
-        return id;
-    }
-
-    @Override
-    public String getItemId() {
-        return id;
-    }
-
-    @Override
-    public void register(MaterialBuilder.RegisteringContext context) {
-        MIItem.of(path);
-    }
 }

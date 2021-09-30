@@ -23,16 +23,16 @@
  */
 package aztech.modern_industrialization.materials;
 
+import aztech.modern_industrialization.materials.part.BuildablePart;
 import aztech.modern_industrialization.materials.part.MIParts;
 import aztech.modern_industrialization.materials.part.MaterialPart;
-import aztech.modern_industrialization.materials.part.RegularMaterialPart;
+import aztech.modern_industrialization.materials.part.Part;
 import aztech.modern_industrialization.materials.recipe.builder.MaterialRecipeBuilder;
 import aztech.modern_industrialization.materials.set.MaterialSet;
 import aztech.modern_industrialization.textures.coloramp.Coloramp;
 import aztech.modern_industrialization.textures.coloramp.DefaultColoramp;
 import java.util.*;
 import java.util.function.Consumer;
-import java.util.function.Function;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.loader.api.FabricLoader;
 
@@ -43,12 +43,12 @@ public final class MaterialBuilder {
     private final String materialName;
     private final String materialSet;
     private final Coloramp coloramp;
-    private final String mainPart;
+    private final Part mainPart;
     private final MaterialHardness hardness;
 
     private final Queue<RecipeAction> recipesActions = new LinkedList<>();
 
-    public MaterialBuilder(String materialName, MaterialSet materialSet, String mainPart, Coloramp coloramp, MaterialHardness hardness) {
+    public MaterialBuilder(String materialName, MaterialSet materialSet, Part mainPart, Coloramp coloramp, MaterialHardness hardness) {
         this.materialName = materialName;
         this.materialSet = materialSet.name;
         this.coloramp = coloramp;
@@ -56,7 +56,7 @@ public final class MaterialBuilder {
         this.hardness = hardness;
     }
 
-    public MaterialBuilder(String materialName, MaterialSet materialSet, String mainPart, int color, MaterialHardness hardness) {
+    public MaterialBuilder(String materialName, MaterialSet materialSet, Part mainPart, int color, MaterialHardness hardness) {
         this(materialName, materialSet, mainPart, new DefaultColoramp(color), hardness);
     }
 
@@ -72,42 +72,46 @@ public final class MaterialBuilder {
         return materialName;
     }
 
-    public MaterialBuilder addRegularParts(String... parts) {
-        for (String part : parts) {
-            addPart(new RegularMaterialPart(materialName, part, materialSet, coloramp));
+    public MaterialBuilder addParts(BuildablePart... parts) {
+        for (BuildablePart part : parts) {
+            addPart(part.build(partContext));
         }
         return this;
     }
 
-    public MaterialBuilder removeRegularParts(String... parts) {
-        for (String part : parts) {
+    public MaterialBuilder addParts(List<BuildablePart> parts) {
+        for (BuildablePart part : parts) {
+            addPart(part.build(partContext));
+        }
+        return this;
+    }
+
+    public MaterialBuilder addParts(MaterialPart... parts) {
+        for (MaterialPart part : parts) {
+            addPart(part);
+        }
+        return this;
+    }
+
+    public MaterialBuilder removeParts(Part... parts) {
+        for (Part part : parts) {
             removePart(part);
         }
         return this;
     }
 
-    @SafeVarargs
-    public final MaterialBuilder addParts(Function<PartContext, MaterialPart>... partFunctions) {
-        for (Function<PartContext, MaterialPart> partFunction : partFunctions) {
-            addPart(partFunction.apply(partContext));
-        }
-        return this;
-    }
-
     private void addPart(MaterialPart part) {
-        if (partsMap.put(part.getPart(), part) != null) {
+        if (partsMap.put(part.getPart().key, part) != null) {
             throw new IllegalStateException("Part " + part.getItemId() + " is already registered for this material!");
         }
     }
 
-    private void removePart(String part) {
-
-        partsMap.remove(part);
+    private void removePart(Part part) {
+        partsMap.remove(part.key);
     }
 
-    public MaterialBuilder overridePart(Function<PartContext, MaterialPart> partFunction) {
-        MaterialPart part = partFunction.apply(partContext);
-        if (partsMap.put(part.getPart(), part) == null) {
+    public MaterialBuilder overridePart(MaterialPart part) {
+        if (partsMap.put(part.getPart().key, part) == null) {
             throw new IllegalStateException("Part " + part.getItemId() + " was not already registered for this material!");
         }
         return this;
@@ -175,15 +179,15 @@ public final class MaterialBuilder {
             return materialSet;
         }
 
-        public String getMainPart() {
+        public Part getMainPart() {
             return mainPart;
         }
     }
 
     public class RegisteringContext {
 
-        public MaterialPart getMaterialPart(String part) {
-            return partsMap.get(part);
+        public MaterialPart getMaterialPart(Part part) {
+            return partsMap.get(part.key);
         }
     }
 
@@ -212,15 +216,15 @@ public final class MaterialBuilder {
             }
         }
 
-        public MaterialPart getPart(String part) {
-            return partsMap.get(part);
+        public MaterialPart getPart(Part part) {
+            return partsMap.get(part.key);
         }
 
         public String getMaterialName() {
             return materialName;
         }
 
-        public String getMainPart() {
+        public Part getMainPart() {
             return mainPart;
         }
 

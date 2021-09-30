@@ -21,25 +21,23 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.pipes.impl;
+package aztech.modern_industrialization.blocks.storage.tank;
 
-import aztech.modern_industrialization.pipes.gui.PipeScreenHandler;
-import aztech.modern_industrialization.pipes.gui.iface.PriorityInterface;
+import aztech.modern_industrialization.MIIdentifier;
+import aztech.modern_industrialization.blocks.creativetank.CreativeTankRenderer;
+import aztech.modern_industrialization.machines.models.MachineModelProvider;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.minecraft.screen.ScreenHandler;
+import net.fabricmc.fabric.api.client.rendereregistry.v1.BlockEntityRendererRegistry;
+import net.minecraft.client.render.model.UnbakedModel;
 
 @Environment(EnvType.CLIENT)
-public class ClientPipePackets {
-    public static final ClientPlayNetworking.PlayChannelHandler ON_SET_PRIORITY = (mc, h, buf, r) -> {
-        int syncId = buf.readInt();
-        int priority = buf.readInt();
-        mc.execute(() -> {
-            ScreenHandler handler = mc.player.currentScreenHandler;
-            if (handler.syncId == syncId) {
-                ((PipeScreenHandler) handler).getInterface(PriorityInterface.class).setPriority(priority);
-            }
-        });
-    };
+public class CreativeTankClientSetup {
+    public static void setupClient() {
+        UnbakedModel creativeTankModel = new TankModel("creative");
+        MachineModelProvider.register(new MIIdentifier("block/creative_tank"), creativeTankModel);
+        MachineModelProvider.register(new MIIdentifier("item/creative_tank"), creativeTankModel);
+
+        BlockEntityRendererRegistry.INSTANCE.register(CreativeTankSetup.CREATIVE_BLOCK_ENTITY_TYPE, CreativeTankRenderer::new);
+    }
 }

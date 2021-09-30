@@ -23,13 +23,31 @@
  */
 package aztech.modern_industrialization.proxy;
 
+import aztech.modern_industrialization.materials.MaterialBuilder;
 import aztech.modern_industrialization.mixin_impl.SteamDrillHooks;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import org.jetbrains.annotations.Nullable;
 
 public class CommonProxy {
-    public static CommonProxy INSTANCE = new CommonProxy();
+    public static CommonProxy INSTANCE = instantiateProxy();
+
+    private static CommonProxy instantiateProxy() {
+        if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
+            try {
+                Class<?> clientProxy = Class.forName("aztech.modern_industrialization.proxy.ClientProxy");
+                return (CommonProxy) clientProxy.getConstructor().newInstance();
+            } catch (Exception e) {
+                throw new RuntimeException("Failed to create Modern Industrialization ClientProxy.", e);
+            }
+        } else {
+            return new CommonProxy();
+        }
+    }
 
     /**
      * Try to find a suitable user.
@@ -40,5 +58,8 @@ public class CommonProxy {
             return (PlayerEntity) entity;
         }
         return SteamDrillHooks.getCurrentPlayer();
+    }
+
+    public void registerPartTankClient(MaterialBuilder.PartContext partContext, String itemPath, BlockEntityType<BlockEntity> blockEntityType) {
     }
 }

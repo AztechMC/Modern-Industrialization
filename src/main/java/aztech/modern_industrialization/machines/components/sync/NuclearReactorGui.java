@@ -276,7 +276,9 @@ public class NuclearReactorGui {
 
                     if (data.euFuelConsumption > 0 && currentMode == Mode.EU_GENERATION) {
                         TextRenderer renderer = MinecraftClient.getInstance().textRenderer;
+                        matrices.translate(0, 0, 256);
                         renderer.draw(matrices, getEfficiencyText(), x + 8, y + 16, 0xFFFFFF);
+                        matrices.translate(0, 0, -256);
                     }
 
                 }
@@ -321,11 +323,13 @@ public class NuclearReactorGui {
                                 }
 
                                 screen.renderTooltip(matrices, tooltip, cursorX, cursorY);
+                                return;
 
                             } else if (currentMode == Mode.EU_GENERATION) {
                                 double euGeneration = tileData.getMeanEuGeneration();
                                 screen.renderTooltip(matrices, new TranslatableText("text.modern_industrialization.base_eu_t", (int) euGeneration)
                                         .setStyle(TextHelper.EU_TEXT), cursorX, cursorY);
+                                return;
                             }
 
                             else {
@@ -398,6 +402,7 @@ public class NuclearReactorGui {
                                 }
 
                                 screen.renderTooltip(matrices, tooltips, cursorX, cursorY);
+                                return;
                             }
 
                         }
@@ -419,6 +424,7 @@ public class NuclearReactorGui {
                                 euFuelConsumption);
 
                         screen.renderTooltip(matrices, tooltip, cursorX, cursorY);
+                        return;
                     }
                 }
             }

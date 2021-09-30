@@ -26,6 +26,7 @@ package aztech.modern_industrialization.materials.recipe.builder;
 import aztech.modern_industrialization.ModernIndustrialization;
 import aztech.modern_industrialization.materials.MaterialBuilder;
 import aztech.modern_industrialization.materials.part.MaterialPart;
+import aztech.modern_industrialization.materials.part.Part;
 import aztech.modern_industrialization.recipe.json.MIRecipeJson;
 import com.google.gson.Gson;
 import net.minecraft.util.Identifier;
@@ -53,11 +54,15 @@ public class MIRecipeBuilder implements MaterialRecipeBuilder {
         this(context, type, recipeSuffix, 2, (int) (200 * context.getHardness().timeFactor));
     }
 
-    public MIRecipeBuilder addPartInput(String part, int amount) {
+    public MIRecipeBuilder(MaterialBuilder.RecipeContext context, String type, Part recipeSuffix) {
+        this(context, type, recipeSuffix.key);
+    }
+
+    public MIRecipeBuilder addPartInput(Part part, int amount) {
         return addPartInput(context.getPart(part), amount);
     }
 
-    public MIRecipeBuilder addTaggedPartInput(String part, int amount) {
+    public MIRecipeBuilder addTaggedPartInput(Part part, int amount) {
         return addTaggedPartInput(context.getPart(part), amount);
     }
 
@@ -94,7 +99,7 @@ public class MIRecipeBuilder implements MaterialRecipeBuilder {
         return this;
     }
 
-    public MIRecipeBuilder addPartOutput(String part, int amount) {
+    public MIRecipeBuilder addPartOutput(Part part, int amount) {
         return addPartOutput(context.getPart(part), amount);
     }
 
@@ -112,7 +117,7 @@ public class MIRecipeBuilder implements MaterialRecipeBuilder {
         return this;
     }
 
-    public MIRecipeBuilder addPartOutput(String part, int amount, double probability) {
+    public MIRecipeBuilder addPartOutput(Part part, int amount, double probability) {
         return addPartOutput(context.getPart(part), amount, probability);
     }
 

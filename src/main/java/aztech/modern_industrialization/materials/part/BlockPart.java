@@ -21,25 +21,32 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.pipes.impl;
+package aztech.modern_industrialization.materials.part;
 
-import aztech.modern_industrialization.pipes.gui.PipeScreenHandler;
-import aztech.modern_industrialization.pipes.gui.iface.PriorityInterface;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.minecraft.screen.ScreenHandler;
+import aztech.modern_industrialization.materials.set.MaterialBlockSet;
+import aztech.modern_industrialization.textures.TextureHelper;
+import java.io.IOException;
+import net.minecraft.client.texture.NativeImage;
 
-@Environment(EnvType.CLIENT)
-public class ClientPipePackets {
-    public static final ClientPlayNetworking.PlayChannelHandler ON_SET_PRIORITY = (mc, h, buf, r) -> {
-        int syncId = buf.readInt();
-        int priority = buf.readInt();
-        mc.execute(() -> {
-            ScreenHandler handler = mc.player.currentScreenHandler;
-            if (handler.syncId == syncId) {
-                ((PipeScreenHandler) handler).getInterface(PriorityInterface.class).setPriority(priority);
+public class BlockPart extends UnbuildablePart<MaterialBlockSet> {
+
+    public BlockPart() {
+        super("block");
+    }
+
+    @Override
+    public BuildablePart of(MaterialBlockSet set) {
+        return new RegularPart(this.key).asBlock().withTextureRegister((mtm, partContext, part, itemPath) -> {
+            String template = String.format("modern_industrialization:textures/materialsets/blocks/%s.png", set.name);
+            try {
+                NativeImage image = mtm.getAssetAsTexture(template);
+                TextureHelper.colorize(image, partContext.getColoramp());
+                String texturePath = String.format("modern_industrialization:textures/blocks/%s.png", itemPath);
+                mtm.addTexture(texturePath, image);
+                image.close();
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         });
-    };
+    }
 }

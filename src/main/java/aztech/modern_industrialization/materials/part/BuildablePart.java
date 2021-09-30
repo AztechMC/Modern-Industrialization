@@ -21,25 +21,32 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.pipes.impl;
+package aztech.modern_industrialization.materials.part;
 
-import aztech.modern_industrialization.pipes.gui.PipeScreenHandler;
-import aztech.modern_industrialization.pipes.gui.iface.PriorityInterface;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.minecraft.screen.ScreenHandler;
+import aztech.modern_industrialization.materials.MaterialBuilder;
 
-@Environment(EnvType.CLIENT)
-public class ClientPipePackets {
-    public static final ClientPlayNetworking.PlayChannelHandler ON_SET_PRIORITY = (mc, h, buf, r) -> {
-        int syncId = buf.readInt();
-        int priority = buf.readInt();
-        mc.execute(() -> {
-            ScreenHandler handler = mc.player.currentScreenHandler;
-            if (handler.syncId == syncId) {
-                ((PipeScreenHandler) handler).getInterface(PriorityInterface.class).setPriority(priority);
+public interface BuildablePart extends MaterialPartBuilder {
+
+    Part getPart();
+
+    static BuildablePart of(Part part, MaterialPartBuilder builder) {
+        return new BuildablePart() {
+            @Override
+            public Part getPart() {
+                return part;
             }
-        });
-    };
+
+            @Override
+            public MaterialPart build(MaterialBuilder.PartContext ctx) {
+                return builder.build(ctx);
+            }
+        };
+    }
+
+}
+
+@FunctionalInterface
+interface MaterialPartBuilder {
+
+    MaterialPart build(MaterialBuilder.PartContext ctx);
 }

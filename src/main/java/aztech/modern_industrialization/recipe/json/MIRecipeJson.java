@@ -36,6 +36,7 @@ public final class MIRecipeJson {
     private final int duration;
     private final List<MIItemInput> item_inputs = new ArrayList<>();
     private final List<MIFluidInput> fluid_inputs = new ArrayList<>();
+    private final List<MIFluidOutput> fluid_outputs = new ArrayList<>();
     private final List<MIItemOutput> item_outputs = new ArrayList<>();
 
     private static class MIItemInput {
@@ -53,6 +54,11 @@ public final class MIRecipeJson {
     }
 
     private static class MIFluidInput {
+        String fluid;
+        int amount;
+    }
+
+    private static class MIFluidOutput {
         String fluid;
         int amount;
     }
@@ -93,6 +99,14 @@ public final class MIRecipeJson {
         input.fluid = fluid;
         input.amount = amount;
         fluid_inputs.add(input);
+        return this;
+    }
+
+    public MIRecipeJson addFluidOutput(String fluid, int amount) {
+        MIFluidOutput output = new MIFluidOutput();
+        output.fluid = fluid;
+        output.amount = amount;
+        fluid_outputs.add(output);
         return this;
     }
 

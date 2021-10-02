@@ -99,6 +99,11 @@ public class MIRecipeBuilder implements MaterialRecipeBuilder {
         return this;
     }
 
+    public MIRecipeBuilder addFluidOutput(String fluid, int amount) {
+        json.addFluidOutput(fluid, amount);
+        return this;
+    }
+
     public MIRecipeBuilder addPartOutput(Part part, int amount) {
         return addPartOutput(context.getPart(part), amount);
     }

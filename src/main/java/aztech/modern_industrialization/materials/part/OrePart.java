@@ -150,6 +150,7 @@ public class OrePart extends UnbuildablePart<OrePartParams> {
                 GENERATED_MATERIALS.add(partContext.getMaterialName());
                 if (config.generateOres && !config.blacklistedOres.contains(partContext.getMaterialName())) {
                     // I have no idea what I'm doing
+
                     List<OreFeatureConfig.Target> targets = List
                             .of(deepslate ? OreFeatureConfig.createTarget(OreFeatureConfig.Rules.DEEPSLATE_ORE_REPLACEABLES, block.getDefaultState())
                                     : OreFeatureConfig.createTarget(OreFeatureConfig.Rules.STONE_ORE_REPLACEABLES, block.getDefaultState()));
@@ -158,9 +159,7 @@ public class OrePart extends UnbuildablePart<OrePartParams> {
                             .uniformRange(YOffset.getBottom(), YOffset.fixed(oreParams.maxYLevel)).spreadHorizontally()
                             .repeat(oreParams.veinsPerChunk);
                     Identifier oreGenId = new MIIdentifier((deepslate ? "deepslate_" : "") + "ore_generator_" + partContext.getMaterialName());
-                    Registry.register(BuiltinRegistries.CONFIGURED_FEATURE, oreGenId, oreGenerator);
-                    RegistryKey<ConfiguredFeature<?, ?>> featureKey = RegistryKey.of(Registry.CONFIGURED_FEATURE_KEY, oreGenId);
-                    BiomeModifications.addFeature(BiomeSelectors.foundInOverworld(), GenerationStep.Feature.UNDERGROUND_ORES, featureKey);
+                    addOreGen(oreGenId, oreGenerator);
                 }
             }
 
@@ -193,6 +192,12 @@ public class OrePart extends UnbuildablePart<OrePartParams> {
                 e.printStackTrace();
             }
         }).withCustomFormattablePath((deepslate ? "deepslate_" : "") + "%s_ore", "%s_ores");
+    }
+
+    public static void addOreGen(Identifier oreGenId, ConfiguredFeature<?, ?> oreGenerator) {
+        Registry.register(BuiltinRegistries.CONFIGURED_FEATURE, oreGenId, oreGenerator);
+        RegistryKey<ConfiguredFeature<?, ?>> featureKey = RegistryKey.of(Registry.CONFIGURED_FEATURE_KEY, oreGenId);
+        BiomeModifications.addFeature(BiomeSelectors.foundInOverworld(), GenerationStep.Feature.UNDERGROUND_ORES, featureKey);
     }
 
     public List<BuildablePart> ofAll(OrePartParams params) {

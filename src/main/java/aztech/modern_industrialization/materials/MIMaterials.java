@@ -28,6 +28,8 @@ import static aztech.modern_industrialization.materials.part.MIParts.*;
 import static aztech.modern_industrialization.materials.set.MaterialOreSet.COPPER;
 import static aztech.modern_industrialization.materials.set.MaterialSet.*;
 
+import aztech.modern_industrialization.MIConfig;
+import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.api.energy.CableTier;
 import aztech.modern_industrialization.materials.part.*;
 import aztech.modern_industrialization.materials.recipe.ForgeHammerRecipes;
@@ -42,9 +44,18 @@ import aztech.modern_industrialization.nuclear.NuclearAbsorbable;
 import aztech.modern_industrialization.nuclear.NuclearConstant;
 import aztech.modern_industrialization.textures.coloramp.BakableTargetColoramp;
 import aztech.modern_industrialization.util.ResourceUtil;
+import com.google.common.base.Preconditions;
+import java.util.List;
 import net.devtech.arrp.json.tags.JTag;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.intprovider.UniformIntProvider;
+import net.minecraft.util.registry.Registry;
+import net.minecraft.world.gen.YOffset;
+import net.minecraft.world.gen.feature.ConfiguredFeature;
+import net.minecraft.world.gen.feature.Feature;
+import net.minecraft.world.gen.feature.OreFeatureConfig;
 
 public class MIMaterials {
 
@@ -141,7 +152,33 @@ public class MIMaterials {
                 new MaterialBuilder("copper", METALLIC, new BakableTargetColoramp(0xe77c56, common(INGOT), mcitem("copper_ingot")), SOFT)
                         .addParts(BOLT, BLADE, RING, ROTOR, GEAR, ROD, CURVED_PLATE, DOUBLE_INGOT, DUST, INGOT, LARGE_PLATE, NUGGET, PLATE, TINY_DUST)
                         .addParts(WIRE).addParts(FINE_WIRE).addParts(CABLE.of(CableTier.LV)).addParts(DRILL_HEAD, DRILL))
-                                .cancelRecipes("macerator/ore_to_raw").cancelRecipes("forge_hammer_hammer/raw_metal").build());
+                                .cancelRecipes("macerator/ore_to_raw").cancelRecipes("forge_hammer_hammer/raw_metal").build(context -> {
+
+                                    int factor = MIConfig.getConfig().copperSurgenerationFactor - 1;
+                                    Preconditions.checkArgument(factor >= 0);
+
+                                    if (factor > 0) {
+                                        for (int i = 0; i < 2; i++) {
+                                            boolean deepslate = i == 0;
+
+                                            Block block = Registry.BLOCK
+                                                    .get(new Identifier(context.getMaterialPart(deepslate ? ORE_DEEPLSATE : ORE).getItemId()));
+                                            BlockState defaultState = block.getDefaultState();
+
+                                            List<OreFeatureConfig.Target> targets = List.of(deepslate
+                                                    ? OreFeatureConfig.createTarget(OreFeatureConfig.Rules.DEEPSLATE_ORE_REPLACEABLES, defaultState)
+                                                    : OreFeatureConfig.createTarget(OreFeatureConfig.Rules.STONE_ORE_REPLACEABLES, defaultState));
+
+                                            OreFeatureConfig oreConfig = new OreFeatureConfig(targets, 10);
+                                            ConfiguredFeature<?, ?> oreGenerator = Feature.ORE.configure(oreConfig)
+                                                    .triangleRange(YOffset.fixed(0), YOffset.fixed(96)).spreadHorizontally().repeat(6 * factor);
+
+                                            OrePart.addOreGen(new MIIdentifier((deepslate ? "deepslate_" : "") + "copper_surgenerator"),
+                                                    oreGenerator);
+                                        }
+                                    }
+
+                                }));
 
         MaterialRegistry.addMaterial(
                 addVanillaGem(true, new MaterialBuilder("coal", STONE, GEM, new BakableTargetColoramp(0x282828, common(PLATE), mcitem("coal")), SOFT)

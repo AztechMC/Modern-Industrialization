@@ -142,16 +142,19 @@ public final class MaterialBuilder {
         return this;
     }
 
-    public Material build() {
-
+    public final Material build(RegisteringEvent... events) {
         RegisteringContext context = new RegisteringContext();
-
         for (MaterialPart part : partsMap.values()) {
             part.register(context);
             if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
                 part.registerClient();
             }
         }
+
+        for (RegisteringEvent event : events) {
+            event.onRegister(context);
+        }
+
         return new Material(materialName, Collections.unmodifiableMap(partsMap), this::buildRecipes);
     }
 
@@ -237,5 +240,11 @@ public final class MaterialBuilder {
 
         abstract void apply(RecipeContext context);
 
+    }
+
+    @FunctionalInterface
+    public interface RegisteringEvent {
+
+        void onRegister(RegisteringContext context);
     }
 }

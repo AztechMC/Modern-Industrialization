@@ -198,4 +198,13 @@ public class OrePart extends UnbuildablePart<OrePartParams> {
     public List<BuildablePart> ofAll(OrePartParams params) {
         return List.of(MIParts.ORE_DEEPLSATE.of(params), MIParts.ORE.of(params));
     }
+
+    public List<BuildablePart> ofAll(UniformIntProvider xpProvider, int veinsPerChunk, int veinSize, int maxYLevel, MaterialOreSet set) {
+        return ofAll(new OrePartParams(xpProvider, set, veinsPerChunk, veinSize, maxYLevel));
+    }
+
+    public List<BuildablePart> ofAll(int veinsPerChunk, int veinSize, int maxYLevel, MaterialOreSet set) {
+        return ofAll(new OrePartParams(UniformIntProvider.create(0, 2), set, veinsPerChunk, veinSize, maxYLevel));
+    }
+
 }

@@ -77,9 +77,9 @@ public class AlloyRegister {
             }
 
             pack.addData("modern_industrialization/recipes/generated/mixer/" + output + "/dust.json",
-                    GSON.toJson(dusts.exportToMachine("mixer", 2, 200, 1)).getBytes());
+                    GSON.toJson(dusts.exportToMachine("mixer", 2, 100, 1)).getBytes());
             pack.addData("modern_industrialization/recipes/generated/mixer/" + output + "/tiny_dust.json",
-                    GSON.toJson(tinyDusts.exportToMachine("mixer", 2, 20, 1)).getBytes());
+                    GSON.toJson(tinyDusts.exportToMachine("mixer", 2, 10, 1)).getBytes());
 
         }
 

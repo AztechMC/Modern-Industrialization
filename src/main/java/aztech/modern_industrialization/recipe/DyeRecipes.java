@@ -69,7 +69,7 @@ public class DyeRecipes {
                     "ppp").addInput('d', "#c:" + color.getName() + "_dyes").addInput('p', "#modern_industrialization:item_pipes");
             pack.addData(new MIIdentifier(pathPrefix + "craft/item_pipe_8.json"), GSON.toJson(eightItemPipes).getBytes());
             pack.addData(new MIIdentifier(pathPrefix + "mixer/item_pipe_8.json"),
-                    GSON.toJson(eightItemPipes.exportToMachine("mixer", 2, 200, 1)).getBytes());
+                    GSON.toJson(eightItemPipes.exportToMachine("mixer", 2, 100, 1)).getBytes());
             // 1 item pipe
             ShapedRecipeJson oneItemPipe = new ShapedRecipeJson("modern_industrialization:" + color.getName() + "_item_pipe", 1, "pd")
                     .addInput('d', "#c:" + color.getName() + "_dyes").addInput('p', "#modern_industrialization:item_pipes");
@@ -84,7 +84,7 @@ public class DyeRecipes {
                     "ppp").addInput('d', "#c:" + color.getName() + "_dyes").addInput('p', "#modern_industrialization:fluid_pipes");
             pack.addData(new MIIdentifier(pathPrefix + "craft/fluid_pipe_8.json"), GSON.toJson(eightFluidPipes).getBytes());
             pack.addData(new MIIdentifier(pathPrefix + "mixer/fluid_pipe_8.json"),
-                    GSON.toJson(eightFluidPipes.exportToMachine("mixer", 2, 200, 1)).getBytes());
+                    GSON.toJson(eightFluidPipes.exportToMachine("mixer", 2, 100, 1)).getBytes());
             // 1 fluid pipe
             ShapedRecipeJson oneFluidPipe = new ShapedRecipeJson("modern_industrialization:" + color.getName() + "_fluid_pipe", 1, "pd")
                     .addInput('d', "#c:" + color.getName() + "_dyes").addInput('p', "#modern_industrialization:fluid_pipes");

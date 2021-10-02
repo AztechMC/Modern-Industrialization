@@ -29,6 +29,7 @@ import aztech.modern_industrialization.proxy.CommonProxy;
 import aztech.modern_industrialization.util.NbtHelper;
 import aztech.modern_industrialization.util.Simulation;
 import aztech.modern_industrialization.util.TextHelper;
+import draylar.magna.Magna;
 import draylar.magna.api.MagnaTool;
 import it.unimi.dsi.fastutil.objects.Reference2IntMap;
 import it.unimi.dsi.fastutil.objects.Reference2IntOpenHashMap;
@@ -84,10 +85,18 @@ public class SteamDrillItem extends Item implements DynamicAttributeTool, MagnaT
 
     @Override
     public float getMiningSpeedMultiplier(Tag<Item> tag, BlockState state, ItemStack stack, @Nullable LivingEntity user) {
+
+        float speed = 1.0f;
         if (tag.contains(this) && canMine(stack, user)) {
-            return 4.0f;
+            speed = 4.0f;
         }
-        return 1.0f;
+
+        PlayerEntity player = CommonProxy.INSTANCE.findUser(user);
+
+        if (Magna.CONFIG.breakSingleBlockWhenSneaking && player != null && player.isSneaking()) {
+            speed *= 4f;
+        }
+        return speed;
     }
 
     @Override

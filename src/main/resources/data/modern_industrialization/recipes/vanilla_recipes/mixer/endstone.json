@@ -1,6 +1,6 @@
 {
   "type": "modern_industrialization:mixer",
-  "eu": 2,
+  "eu": 8,
   "duration": 200,
   "item_inputs": {
     "item": "minecraft:end_stone",

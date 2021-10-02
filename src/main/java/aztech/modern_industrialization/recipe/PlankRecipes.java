@@ -44,7 +44,7 @@ public final class PlankRecipes {
     }
 
     private static void genPlanks(RuntimeResourcePack pack, String prefix, String suffix) {
-        MIRecipeJson json = new MIRecipeJson("cutting_machine", 2, 200).addFluidInput(MIFluids.LUBRICANT, 1)
+        MIRecipeJson json = new MIRecipeJson("cutting_machine", 2, 100).addFluidInput(MIFluids.LUBRICANT, 1)
                 .addItemInput("#minecraft:" + prefix + "_" + suffix, 1).addOutput("minecraft:" + prefix + "_planks", 4);
         pack.addData(new MIIdentifier("recipes/generated/planks/" + prefix + ".json"), GSON.toJson(json).getBytes());
     }

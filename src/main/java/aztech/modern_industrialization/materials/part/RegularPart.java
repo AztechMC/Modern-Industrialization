@@ -69,8 +69,10 @@ public class RegularPart extends Part implements BuildablePart {
         // item tag
         // items whose path are overridden (such as fire clay ingot -> brick) are not
         // added to the tags
-        if (MIParts.TAGGED_PARTS.contains(part)) {
-            MaterialHelper.registerItemTag(itemTag.replaceFirst("#", ""), JTag.tag().add(new Identifier(itemId)));
+        for (Part partTagged : MIParts.TAGGED_PARTS) {
+            if (partTagged.equals(part)) {
+                MaterialHelper.registerItemTag(itemTag.replaceFirst("#", ""), JTag.tag().add(new Identifier(itemId)));
+            }
         }
     }
 

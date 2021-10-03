@@ -1,16 +1,73 @@
 {
-  "name": "Nuclear Fusion... Or Not?",
+  "name": "The Nuclear Reactor",
   "category": "modern_industrialization:midgame",
   "icon": "modern_industrialization:uranium_fuel_rod_quad",
   "pages": [
     {
-      "type": "text",
-      "text": "You might have noticed that the Nuclear Reactor is not craftable. That's simply because it's not yet finished! We are working on it, please be patient. :-)$(br2)We hope that you have enjoyed the mod so far."
+      "type": "crafting",
+      "recipe": "modern_industrialization:electric_age/machine/nuclear_reactor_asbl",
+      "text" : "The Nuclear Reactor is a large multiblock whose purpose is to massively generate energy by consuming nuclear fuel. It can produce hundreds of times more EU than the oil. It comes in several sizes from small to large."
     },
+
+    {
+      "type": "crafting",
+      "recipe": "modern_industrialization:electric_age/casing/nuclear_casing_asbl",
+      "text": "Its main component is the Nuclear Casing which is made with Nuclear Alloy : a mix of cadmium, beryllium and blastproof alloy."
+    },
+
+    {
+      "type": "crafting",
+      "recipe": "modern_industrialization:electric_age/casing/nuclear_item_hatch_asbl",
+      "text": "The upper part of the structure is made of either a Nuclear Item or Fluid Hatch (or a simple casing). Those are used as both the reactor inputs and outputs."
+    },
+
+
+    {
+      "type": "crafting",
+      "recipe": "modern_industrialization:electric_age/casing/nuclear_fluid_hatch_asbl",
+      "text": "Each hatch has one input (either item or fluid) and two outputs. The input slots will form a grid, displayed in the reactor GUI (accessible by right-clicking on the controller)."
+    },
+
     {
       "type": "text",
-      "text": "Don't worry, we have planned much more content - we just need time to write it all! If you find bugs or have cool ideas that we could implement, let us know!$(br2)You can find our Discord server on our Curseforge page."
+      "text": "Each hatch has a temperature and stores heat which can be dissipated in several ways. The heat will naturally move to an adjacent hatch or to outside if the hatch is on the edge (the heat is then lost). This process speed is equal to the hatches content's heat transfer coefficient (shown in REI) times the temperature difference. The heat can also be extracted in a fluid hatch by producing steam. A temperature beyond an item maximum temperature will destroy it."
+    },
+
+    {
+      "type": "text",
+      "text": "The nuclear reactor core element are neutrons. Those are produced by the nuclear fuel. They are two type of neutrons, fast and thermal : fast carry energy while thermal do not. Neutrons move in straight line until encountering an element or exiting the reactor (for fast neutrons, their energy is then lost. The flux (number) of neutrons is shown in the reactor GUI."
+    },
+
+    {
+      "type": "text",
+      "text": "When a neutron encounter a non-empty hatch, two things could happen : the neutron is absorbed or scattered. A scattered neutron will randomly change direction. If the scattered neutron is fast, it has a chance of slowing down, becoming a thermal one. This transfers the energy from the neutron to the hatch in the form of heat. An absorbed neutron stops its course and also transfers its energy if it was a fast neutron."
+    },
+
+    {
+      "type": "text",
+      "text" : "The number of absorbed neutron in a single hatch can also be shown in the GUI. The probability for each processes is shown in REI. Those will strongly depend on the hatch content and the neutron type (fast or thermal). Nuclear fuel absorb thermal neutrons far better."
+    },
+
+    {
+      "type": "text",
+      "text" : "When a neutron, either fast or thermal, is absorbed in nuclear fuel, this will generate more neutrons. Those are always fast neutrons and have random direction. Their generation is accompanied by the direct release of energy in the form of additional heat in the hatch."
+    },
+
+    {
+      "type": "text",
+      "text": "Nevertheless, above a certain threshold, the number of generated neutrons will decrease with the temperature until reaching zero meaning some potential energy is lost but this ensures the reactor stability. The number of generated neutron (and effective efficiency), the direct energy and temperature threshold are in REI."
+    },
+
+    {
+      "type": "text",
+      "text": "Each nuclear component has maximum number of absorptions. When reached, the item is either destroyed or transformed into a depleted version. This is particularly useful for nuclear fuel because some part of the U238 is transformed into Plutonium in the depleted version, meaning it   can be reused in future fuel"
+    },
+
+    {
+      "type": "text",
+      "text": "The same thing happens for fluid but continuously after each neutron absorption. This can be used to mass produce useful isotope like            deuterium and tritium. In both cases, the outcome is shown in REI."
     }
+
   ],
   "sortnum": 206
 }

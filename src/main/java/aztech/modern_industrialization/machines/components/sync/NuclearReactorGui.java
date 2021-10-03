@@ -281,6 +281,12 @@ public class NuclearReactorGui {
                         matrices.translate(0, 0, -256);
                     }
 
+                } else {
+                    TextRenderer renderer = MinecraftClient.getInstance().textRenderer;
+                    Text text = new TranslatableText("text.modern_industrialization.multiblock_shape_invalid")
+                            .setStyle(TextHelper.RED.withBold(true));
+                    int width = renderer.getWidth(text);
+                    renderer.draw(matrices, text, x + centerX - width / 2f, y + centerY, 0xFFFFFF);
                 }
             }
 

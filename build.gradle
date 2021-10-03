@@ -104,7 +104,7 @@ repositories {
         name = "Technici4n"
         url = "https://raw.githubusercontent.com/Technici4n/Technici4n-maven/master/"
         content {
-            includeGroup "net.fabricmc.fabric-api"
+            //includeGroup "net.fabricmc.fabric-api"
             includeGroup "dev.technici4n"
             includeGroup "dev.latvian.mods"
         }
@@ -128,16 +128,15 @@ repositories {
 }
 
 dependencies {
-    // Why does this keep happening? :(
-    include modImplementation("net.fabricmc.fabric-api:fabric-transfer-api-v1:1.3.1+b619975d18")
-
     minecraft "com.mojang:minecraft:${project.minecraft_version}"
     mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
     modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
     // Dependencies
-    include modImplementation("net.devtech:arrp:${project.arrp_version}")
+    include modImplementation("net.devtech:arrp:${project.arrp_version}") {
+        exclude(group: "net.fabricmc")
+    }
     modImplementation "me.shedaniel:RoughlyEnoughItems-fabric:${project.rei_version}"
     include modImplementation("vazkii.patchouli:Patchouli:${project.patchouli_version}")
 

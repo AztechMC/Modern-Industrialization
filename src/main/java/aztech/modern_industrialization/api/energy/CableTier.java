@@ -26,8 +26,8 @@ package aztech.modern_industrialization.api.energy;
 public enum CableTier {
     LV("lv", 32),
     MV("mv", 32 * 4),
-    HV("hv", 32 * 4 * 4),
-    EV("ev", 32 * 4 * 4 * 4),
+    HV("hv", 32 * 4 * 8),
+    EV("ev", 32 * 4 * 8 * 8),
     SUPRACONDUCTOR("supraconductor", 128000000);
 
     public final String name;

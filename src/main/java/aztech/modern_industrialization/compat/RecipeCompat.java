@@ -96,7 +96,7 @@ public class RecipeCompat {
         if (FabricLoader.getInstance().isModLoaded("appliedenergistics2")) {
             ModernIndustrialization.LOGGER.info("Applied Energistics 2 is detected, loading compatibility recipes for Modern Industrialization!");
 
-            addMiRecipe("macerator", "#c:certus_quartz_crystals", "appliedenergistics2:certus_quartz_dust", 1);
+            addMiRecipe("macerator", "#c:certus_quartz", "appliedenergistics2:certus_quartz_dust", 1);
             addMiRecipe("macerator", "#c:certus_quartz_ores", "appliedenergistics2:certus_quartz_dust", 5);
             addMiRecipe("macerator", "appliedenergistics2:fluix_crystal", "appliedenergistics2:fluix_dust", 1);
             addMiRecipe("macerator", "minecraft:ender_pearl", "appliedenergistics2:ender_dust", 1);

@@ -57,7 +57,6 @@ public class MIMachineRecipeTypes {
     public static final MachineRecipeType COKE_OVEN = create("coke_oven").withItemInputs().withItemOutputs().withFluidOutputs();
     public static final MachineRecipeType BLAST_FURNACE = create("blast_furnace").withItemInputs().withItemOutputs().withFluidInputs().withFluidOutputs();
     public static final MachineRecipeType DISTILLATION_TOWER = create("distillation_tower").withFluidInputs().withFluidOutputs();
-    public static final MachineRecipeType SINTERING_FURNACE = create("sintering_furnace").withItemInputs().withItemOutputs();
     public static final MachineRecipeType VACUUM_FREEZER = create("vacuum_freezer").withItemInputs().withItemOutputs().withFluidInputs().withFluidOutputs();
     public static final MachineRecipeType OIL_DRILLING_RIG = create("oil_drilling_rig").withItemInputs().withFluidOutputs();
     public static final MachineRecipeType QUARRY = create("quarry").withItemInputs().withItemOutputs();

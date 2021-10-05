@@ -199,7 +199,8 @@ public class ConfigurableFluidStack extends AbstractConfigurableStack<Fluid, Flu
         }
 
         public boolean canInsertFluid(FluidVariant fluid) {
-            return playerInsert && isResourceAllowedByLock(fluid.getFluid());
+            FluidVariant storedFluid = getConfStack().getResource();
+            return playerInsert && isResourceAllowedByLock(fluid.getFluid()) && (storedFluid.isBlank() || storedFluid.equals(fluid));
         }
 
         public boolean canExtractFluid(FluidVariant fluid) {

@@ -110,7 +110,7 @@ public class RecipeCompat {
                             .getBytes());
             // quarry recipe for certus quartz
             addRecipe("quarry_ae2",
-                    "{\"type\":\"modern_industrialization:quarry\",\"eu\":16,\"duration\":600,\"item_inputs\":{\"item\":\"appliedenergistics2:fluix_glass_cable\",\"amount\":1,\"probability\":0.2},\"item_outputs\":[{\"item\":\"appliedenergistics2:quartz_ore\",\"amount\":8,\"probability\":0.02},{\"item\":\"appliedenergistics2:charged_quartz_ore\",\"amount\":4,\"probability\":0.01}]}"
+                    "{\"type\":\"modern_industrialization:quarry\",\"eu\":16,\"duration\":600,\"item_inputs\":{\"item\":\"appliedenergistics2:fluix_glass_cable\",\"amount\":1,\"probability\":0.2},\"item_outputs\":[{\"item\":\"appliedenergistics2:quartz_ore\",\"amount\":8,\"probability\":0.02}]}"
                             .getBytes());
         }
 

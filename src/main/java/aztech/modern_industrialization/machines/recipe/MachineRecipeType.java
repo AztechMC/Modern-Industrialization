@@ -150,17 +150,17 @@ public class MachineRecipeType implements RecipeType<MachineRecipe>, RecipeSeria
 
     private void validateRecipe(MachineRecipe recipe) {
         if (!allowItemInput && recipe.itemInputs.size() > 0)
-            throw new RuntimeException("Item inputs are not allowed.");
+            throw new IllegalArgumentException("Item inputs are not allowed.");
         if (!allowFluidInput && recipe.fluidInputs.size() > 0)
-            throw new RuntimeException("Fluid inputs are not allowed.");
+            throw new IllegalArgumentException("Fluid inputs are not allowed.");
         if (!allowItemOutput && recipe.itemOutputs.size() > 0)
-            throw new RuntimeException("Item outputs are not allowed.");
+            throw new IllegalArgumentException("Item outputs are not allowed.");
         if (!allowFluidOutput && recipe.fluidOutputs.size() > 0)
-            throw new RuntimeException("Fluid outputs are not allowed.");
+            throw new IllegalArgumentException("Fluid outputs are not allowed.");
         if (recipe.itemInputs.size() + recipe.fluidInputs.size() == 0)
-            throw new RuntimeException("Must have at least one fluid or item input.");
+            throw new IllegalArgumentException("Must have at least one fluid or item input.");
         if (recipe.itemOutputs.size() + recipe.fluidOutputs.size() == 0)
-            throw new RuntimeException("Must have at least one fluid or item output.");
+            throw new IllegalArgumentException("Must have at least one fluid or item output.");
     }
 
     @Override
@@ -181,14 +181,14 @@ public class MachineRecipeType implements RecipeType<MachineRecipe>, RecipeSeria
     private static int readPositiveInt(JsonObject json, String element) {
         int x = JsonHelper.getInt(json, element);
         if (x <= 0)
-            throw new RuntimeException(element + " should be a positive integer.");
+            throw new IllegalArgumentException(element + " should be a positive integer.");
         return x;
     }
 
     private static int readNonNegativeInt(JsonObject json, String element) {
         int x = JsonHelper.getInt(json, element);
         if (x < 0)
-            throw new RuntimeException(element + " should be a positive integer.");
+            throw new IllegalArgumentException(element + " should be a positive integer.");
         return x;
     }
 
@@ -196,7 +196,7 @@ public class MachineRecipeType implements RecipeType<MachineRecipe>, RecipeSeria
         double amountMb = JsonHelper.getDouble(json, element);
         int amount = (int) Math.round(amountMb * 81);
         if (amount < 0) {
-            throw new RuntimeException(element + " should be a positive fluid amount.");
+            throw new IllegalArgumentException(element + " should be a positive fluid amount.");
         }
         return amount;
     }
@@ -205,7 +205,7 @@ public class MachineRecipeType implements RecipeType<MachineRecipe>, RecipeSeria
         if (JsonHelper.hasPrimitive(json, element)) {
             float x = JsonHelper.getFloat(json, element);
             if (x < 0 || x > 1)
-                throw new RuntimeException(element + " should be a float between 0 and 1.");
+                throw new IllegalArgumentException(element + " should be a float between 0 and 1.");
             return x;
         } else {
             return 1;
@@ -255,8 +255,8 @@ public class MachineRecipeType implements RecipeType<MachineRecipe>, RecipeSeria
 
     private static MachineRecipe.FluidInput readFluidInput(JsonObject json) {
         Identifier id = readIdentifier(json, "fluid");
-        Fluid fluid = Registry.FLUID.getOrEmpty(id).<RuntimeException>orElseThrow(() -> {
-            throw new RuntimeException("Fluid " + id + " does not exist.");
+        Fluid fluid = Registry.FLUID.getOrEmpty(id).orElseThrow(() -> {
+            throw new IllegalArgumentException("Fluid " + id + " does not exist.");
         });
         int amount = readFluidAmount(json, "amount");
         float probability = readProbability(json, "probability");
@@ -265,8 +265,8 @@ public class MachineRecipeType implements RecipeType<MachineRecipe>, RecipeSeria
 
     private static MachineRecipe.ItemOutput readItemOutput(JsonObject json) {
         Identifier id = readIdentifier(json, "item");
-        Item item = Registry.ITEM.getOrEmpty(id).<RuntimeException>orElseThrow(() -> {
-            throw new RuntimeException("Item " + id + " does not exist.");
+        Item item = Registry.ITEM.getOrEmpty(id).orElseThrow(() -> {
+            throw new IllegalArgumentException("Item " + id + " does not exist.");
         });
         int amount = 1;
         if (json.has("amount")) {
@@ -278,8 +278,8 @@ public class MachineRecipeType implements RecipeType<MachineRecipe>, RecipeSeria
 
     private static MachineRecipe.FluidOutput readFluidOutput(JsonObject json) {
         Identifier id = readIdentifier(json, "fluid");
-        Fluid fluid = Registry.FLUID.getOrEmpty(id).<RuntimeException>orElseThrow(() -> {
-            throw new RuntimeException("Fluid " + id + " does not exist.");
+        Fluid fluid = Registry.FLUID.getOrEmpty(id).orElseThrow(() -> {
+            throw new IllegalArgumentException("Fluid " + id + " does not exist.");
         });
         int amount = readFluidAmount(json, "amount");
         float probability = readProbability(json, "probability");

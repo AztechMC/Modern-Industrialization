@@ -148,7 +148,7 @@ dependencies {
     modRuntime modImplementation("mcp.mobius.waila:wthit:fabric-${project.wthit_version}")
 
     modImplementation "com.terraformersmc:modmenu:${project.mod_menu_version}"
-    modImplementation "dev.latvian.mods:kubejs-fabric:1605.3.10-build.9999"
+    modImplementation "dev.latvian.mods:kubejs-fabric:1701.3.10-build.9999"
 
     include modImplementation("com.github.Draylar:magna:${project.magna_version}") {
         exclude(group: "io.github.prospector")

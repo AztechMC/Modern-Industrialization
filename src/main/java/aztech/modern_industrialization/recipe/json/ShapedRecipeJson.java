@@ -27,7 +27,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @SuppressWarnings({ "FieldCanBeLocal", "MismatchedQueryAndUpdateOfCollection", "UnusedDeclaration" })
-public class ShapedRecipeJson {
+public class ShapedRecipeJson implements RecipeJson {
     public final String type = "minecraft:crafting_shaped";
     public final String[] pattern;
     public final Map<Character, ItemInput> key = new HashMap<>();

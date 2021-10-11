@@ -28,7 +28,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class ShapelessRecipeJson {
+public class ShapelessRecipeJson implements RecipeJson {
 
     @SuppressWarnings("unused")
     private final String type;

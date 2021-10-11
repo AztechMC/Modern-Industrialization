@@ -28,7 +28,10 @@ import aztech.modern_industrialization.ModernIndustrialization;
 import aztech.modern_industrialization.materials.Material;
 import aztech.modern_industrialization.materials.MaterialRegistry;
 import aztech.modern_industrialization.materials.part.MIParts;
+import aztech.modern_industrialization.recipe.json.MIRecipeJson;
+import aztech.modern_industrialization.recipe.json.RecipeJson;
 import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.fluid.Fluids;
 
 // TODO: can this cursed class be improved?
 public class RecipeCompat {
@@ -96,22 +99,25 @@ public class RecipeCompat {
         if (FabricLoader.getInstance().isModLoaded("appliedenergistics2")) {
             ModernIndustrialization.LOGGER.info("Applied Energistics 2 is detected, loading compatibility recipes for Modern Industrialization!");
 
-            addMiRecipe("macerator", "#c:certus_quartz", "appliedenergistics2:certus_quartz_dust", 1);
-            addMiRecipe("macerator", "#c:certus_quartz_ores", "appliedenergistics2:certus_quartz_dust", 5);
-            addMiRecipe("macerator", "appliedenergistics2:fluix_crystal", "appliedenergistics2:fluix_dust", 1);
-            addMiRecipe("macerator", "minecraft:ender_pearl", "appliedenergistics2:ender_dust", 1);
-            addMiRecipe("compressor", "appliedenergistics2:certus_quartz_dust", "appliedenergistics2:certus_quartz_crystal", 1);
-            addMiRecipe("compressor", "appliedenergistics2:fluix_dust", "appliedenergistics2:fluix_crystal", 1);
             addMiRecipe("electrolyzer", "appliedenergistics2:certus_quartz_crystal", "appliedenergistics2:charged_certus_quartz_crystal", 1, 8, 60);
-
-            // mixer recipe for fluid crystals
-            addRecipe("mixer/fluix_crystal",
-                    "{\"type\":\"modern_industrialization:mixer\",\"eu\":8,\"duration\":100,\"item_inputs\":[{\"item\":\"minecraft:quartz\"},{\"item\":\"appliedenergistics2:charged_certus_quartz_crystal\"},{\"item\":\"minecraft:redstone\"}],\"fluid_inputs\":{\"fluid\":\"minecraft:water\",\"amount\":1000,\"probability\":0},\"item_outputs\":{\"item\":\"appliedenergistics2:fluix_crystal\",\"amount\":2}}"
-                            .getBytes());
-            // quarry recipe for certus quartz
-            addRecipe("quarry_ae2",
-                    "{\"type\":\"modern_industrialization:quarry\",\"eu\":16,\"duration\":600,\"item_inputs\":{\"item\":\"appliedenergistics2:fluix_glass_cable\",\"amount\":1,\"probability\":0.2},\"item_outputs\":[{\"item\":\"appliedenergistics2:quartz_ore\",\"amount\":8,\"probability\":0.02}]}"
-                            .getBytes());
+            addRecipe("macerator/certus_ore", new MIRecipeJson("macerator", 2, 200)//
+                    .addItemInput("#c:certus_quartz_ores", 1)//
+                    .addOutput("appliedenergistics2:certus_quartz_dust", 5)//
+                    .addOutput("appliedenergistics2:certus_quartz_crystal", 1, 0.1)//
+            );
+            addCrystalMaceration("certus", "#c:certus_quartz", "appliedenergistics2:certus_quartz_dust");
+            addCrystalMaceration("fluix", "appliedenergistics2:fluix_crystal", "appliedenergistics2:fluix_dust");
+            addRecipe("mixer/fluix", new MIRecipeJson("mixer", 8, 100)//
+                    .addItemInput("minecraft:quartz", 1)//
+                    .addItemInput("appliedenergistics2:charged_certus_quartz_crystal", 1)//
+                    .addItemInput("minecraft:redstone", 1)//
+                    .addFluidInput(Fluids.WATER, 1000, 0)//
+                    .addOutput("appliedenergistics2:fluix_dust", 2)//
+            );
+            addRecipe("quarry_ae2", new MIRecipeJson("quarry", 16, 600)//
+                    .addItemInput("appliedenergistics2:fluix_glass_cable", 1, 0.2)//
+                    .addOutput("appliedenergistics2:quartz_ore", 8, 0.02)//
+            );
         }
 
         if (FabricLoader.getInstance().isModLoaded("indrev")) {
@@ -137,24 +143,21 @@ public class RecipeCompat {
         }
     }
 
+    private static void addCrystalMaceration(String name, String crystal, String dust) {
+        addRecipe("macerator/" + name, new MIRecipeJson("macerator", 2, 100).addItemInput(crystal, 2).addOutput(dust, 1));
+    }
+
     private static void addMiRecipe(String machine, String input, String output, int outputAmount) {
         addMiRecipe(machine, input, output, outputAmount, 2, 200);
     }
 
     private static void addMiRecipe(String machine, String input, String output, int outputAmount, int eu, int duration) {
-        String recipeInput;
-        if (input.startsWith("#")) {
-            input = input.substring(1);
-            recipeInput = String.format("{'amount': 1, 'tag': '%s'}", input);
-        } else {
-            recipeInput = String.format("{'amount': 1, 'item': '%s'}", input);
-        }
-        String recipeOutput = String.format("{'amount': %d, 'item': '%s'}", outputAmount, output);
-        String recipe = String.format(
-                "{" + "'type': 'modern_industrialization:%s'," + "'eu': %d," + "'duration': %d," + "'item_inputs': %s," + "'item_outputs': %s" + "}",
-                machine, eu, duration, recipeInput, recipeOutput).replace('\'', '"');
-        String id = "compat_" + machine + "_" + input.replace(':', '_') + "_to_" + output.replace(':', '_');
-        addRecipe(id, recipe.getBytes());
+        String id = "compat_" + machine + "_" + input.replace(':', '_').replace('#', '_') + "_to_" + output.replace(':', '_');
+        addRecipe(id, new MIRecipeJson(machine, eu, duration).addItemInput(input, 1).addOutput(output, outputAmount));
+    }
+
+    private static void addRecipe(String id, RecipeJson json) {
+        addRecipe(id, json.toBytes());
     }
 
     private static void addRecipe(String id, byte[] data) {

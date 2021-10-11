@@ -23,33 +23,19 @@
  */
 package aztech.modern_industrialization.recipe.json;
 
-@SuppressWarnings({ "FieldCanBeLocal", "MismatchedQueryAndUpdateOfCollection", "UnusedDeclaration" })
-public class SmeltingRecipeJson implements RecipeJson {
-    private final String type;
-    private final int cookingtime;
-    private final double experience;
-    private final Ingredient ingredient;
-    private final String result;
+import com.google.gson.Gson;
 
-    public enum SmeltingRecipeType {
-        SMELTING,
-        BLASTING;
+/**
+ * Marker interface for objects that can be written to JSON recipes with GSON.
+ */
+public interface RecipeJson {
+    Gson GSON = new Gson();
 
-        public static SmeltingRecipeType ofBlasting(boolean blasting) {
-            return blasting ? BLASTING : SMELTING;
-        }
+    default String toJson() {
+        return GSON.toJson(this);
     }
 
-    public static class Ingredient {
-        String item;
-    }
-
-    public SmeltingRecipeJson(SmeltingRecipeType type, String inputItem, String outputItem, int cookingtime, double experience) {
-        this.type = type == SmeltingRecipeType.SMELTING ? "minecraft:smelting" : "minecraft:blasting";
-        this.cookingtime = cookingtime;
-        this.experience = experience;
-        this.ingredient = new Ingredient();
-        ingredient.item = inputItem;
-        result = outputItem;
+    default byte[] toBytes() {
+        return toJson().getBytes();
     }
 }

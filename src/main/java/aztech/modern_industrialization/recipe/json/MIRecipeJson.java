@@ -30,7 +30,7 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
 @SuppressWarnings({ "FieldCanBeLocal", "unused", "MismatchedQueryAndUpdateOfCollection" })
-public final class MIRecipeJson {
+public final class MIRecipeJson implements RecipeJson {
     private final String type;
     private final int eu;
     private final int duration;
@@ -56,6 +56,14 @@ public final class MIRecipeJson {
     private static class MIFluidInput {
         String fluid;
         int amount;
+    }
+
+    private static class MIFluidInputProbability extends MIFluidInput {
+        double probability;
+
+        MIFluidInputProbability(double probability) {
+            this.probability = probability;
+        }
     }
 
     private static class MIFluidOutput {
@@ -102,6 +110,14 @@ public final class MIRecipeJson {
         return this;
     }
 
+    public MIRecipeJson addFluidInput(String fluid, int amount, double probability) {
+        MIFluidInput input = new MIFluidInputProbability(probability);
+        input.fluid = fluid;
+        input.amount = amount;
+        fluid_inputs.add(input);
+        return this;
+    }
+
     public MIRecipeJson addFluidOutput(String fluid, int amount) {
         MIFluidOutput output = new MIFluidOutput();
         output.fluid = fluid;
@@ -116,6 +132,14 @@ public final class MIRecipeJson {
             throw new RuntimeException("Could not find id for fluid " + fluid);
         }
         return addFluidInput(id.toString(), amount);
+    }
+
+    public MIRecipeJson addFluidInput(Fluid fluid, int amount, double probability) {
+        Identifier id = Registry.FLUID.getId(fluid);
+        if (id.equals(Registry.FLUID.getDefaultId())) {
+            throw new RuntimeException("Could not find id for fluid " + fluid);
+        }
+        return addFluidInput(id.toString(), amount, probability);
     }
 
     public MIRecipeJson addOutput(String itemId, int amount) {

@@ -48,6 +48,7 @@ public class VersionEvents {
 
     private static final String url = "https://api.cfwidget.com/minecraft/mc-mods/modern-industrialization";
     private static final SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.US);
+    private static final String alphaPostfix = "alpha";
 
     private record Version(String name, String url, Date date) implements Comparable<Version> {
         @Override
@@ -56,7 +57,7 @@ public class VersionEvents {
         }
     }
 
-    private static Version fetchVersion() throws Exception {
+    private static Version fetchVersion(boolean isIncludeAlphaVersion) throws Exception {
         String mcVersion = FabricLoader.getInstance().getModContainer("minecraft").get().getMetadata().getVersion().getFriendlyString();
 
         URLConnection connection;
@@ -86,7 +87,7 @@ public class VersionEvents {
                 String type = fileAsJsonObject.get("type").getAsString();
                 String date = fileAsJsonObject.get("uploaded_at").getAsString();
 
-                if (!type.equals("alpha")) {
+                if (isIncludeAlphaVersion || !type.equals(alphaPostfix)) {
                     queue.add(new Version(name, url, format.parse(date)));
                 }
             }
@@ -106,7 +107,7 @@ public class VersionEvents {
                 if (MIConfig.getConfig().newVersionMessage) {
                     ModContainer mod = currentMod.get();
                     String currentVersion = mod.getMetadata().getVersion().getFriendlyString();
-                    Version lastVersion = fetchVersion();
+                    Version lastVersion = fetchVersion(currentVersion.contains(alphaPostfix));
 
                     if (lastVersion != null) {
                         String lastVersionString = lastVersion.name.replaceFirst("Modern Industrialization v", "").strip();

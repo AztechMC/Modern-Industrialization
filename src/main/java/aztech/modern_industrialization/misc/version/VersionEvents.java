@@ -57,7 +57,7 @@ public class VersionEvents {
         }
     }
 
-    private static Version fetchVersion(Boolean isIncludeAlphaVersion) throws Exception {
+    private static Version fetchVersion(boolean isIncludeAlphaVersion) throws Exception {
         String mcVersion = FabricLoader.getInstance().getModContainer("minecraft").get().getMetadata().getVersion().getFriendlyString();
 
         URLConnection connection;

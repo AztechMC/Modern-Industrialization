@@ -44,6 +44,11 @@ public class Part {
     }
 
     @Override
+    public int hashCode() {
+        return key.hashCode();
+    }
+
+    @Override
     public String toString() {
         return key;
     }

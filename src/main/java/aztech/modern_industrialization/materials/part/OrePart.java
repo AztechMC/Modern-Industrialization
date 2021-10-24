@@ -114,13 +114,21 @@ public class OrePart extends UnbuildablePart<OrePartParams> {
                     .breakByTool(FabricToolTags.PICKAXES, 1).requiresTool(), oreParams.xpDropped);
 
             Part mainPart = partContext.getMainPart();
-            String loot = "";
+            String loot;
             if (mainPart.equals(MIParts.INGOT)) {
                 loot = registeringContext.getMaterialPart(MIParts.RAW_METAL).getItemId();
             } else if (mainPart.equals(MIParts.DUST)) {
                 loot = registeringContext.getMaterialPart(MIParts.DUST).getItemId();
             } else if (mainPart.equals(MIParts.GEM)) {
                 loot = registeringContext.getMaterialPart(MIParts.GEM).getItemId();
+            } else {
+                throw new UnsupportedOperationException("Could not find matching main part.");
+            }
+
+            // Sanity check: Ensure that ores don't drop xp, iff the main part is an ingot
+            // (i.e. the drop is raw ore).
+            if (mainPart.equals(MIParts.INGOT) != (oreParams.xpDropped.getMax() == 0)) {
+                throw new IllegalArgumentException("Mismatch between raw ore and xp drops for material: " + partContext.getMaterialName());
             }
 
             block.setLootTables(JLootTable.loot("minecraft:block")
@@ -209,7 +217,7 @@ public class OrePart extends UnbuildablePart<OrePartParams> {
     }
 
     public List<BuildablePart> ofAll(int veinsPerChunk, int veinSize, int maxYLevel, MaterialOreSet set) {
-        return ofAll(new OrePartParams(UniformIntProvider.create(0, 2), set, veinsPerChunk, veinSize, maxYLevel));
+        return ofAll(new OrePartParams(UniformIntProvider.create(0, 0), set, veinsPerChunk, veinSize, maxYLevel));
     }
 
 }

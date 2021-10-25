@@ -30,7 +30,6 @@ import aztech.modern_industrialization.compat.rei.machines.ReiMachineRecipes;
 import aztech.modern_industrialization.inventory.ConfigurableFluidStack;
 import aztech.modern_industrialization.inventory.ConfigurableItemStack;
 import aztech.modern_industrialization.inventory.SlotPositions;
-import aztech.modern_industrialization.machines.recipe.MachineRecipeType;
 import aztech.modern_industrialization.machines.MachineBlockEntity;
 import aztech.modern_industrialization.machines.blockentities.ElectricCraftingMachineBlockEntity;
 import aztech.modern_industrialization.machines.blockentities.SteamCraftingMachineBlockEntity;
@@ -40,6 +39,7 @@ import aztech.modern_industrialization.machines.components.sync.ProgressBar;
 import aztech.modern_industrialization.machines.components.sync.RecipeEfficiencyBar;
 import aztech.modern_industrialization.machines.gui.MachineGuiParameters;
 import aztech.modern_industrialization.machines.models.MachineModels;
+import aztech.modern_industrialization.machines.recipe.MachineRecipeType;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
@@ -51,7 +51,7 @@ import net.fabricmc.loader.api.FabricLoader;
  */
 public final class SingleBlockCraftingMachines {
     public static void init() {
-        // @formatter:off // TODO: figure out why this doesn't work and remove the exclude from the build.gradle
+        // @formatter:off
         registerMachineTiers(
                 "assembler", MIMachineRecipeTypes.ASSEMBLER, 9, 3, 2, 0,
                 guiParams -> guiParams.backgroundHeight(186),
@@ -174,15 +174,13 @@ public final class SingleBlockCraftingMachines {
             MachineTier tier = i == 0 ? MachineTier.BRONZE : MachineTier.STEEL;
             String prefix = i == 0 ? "bronze" : "steel";
             int steamBuckets = i == 0 ? 2 : 4;
-            MachineGuiParameters.Builder guiParamsBuilder = new MachineGuiParameters.Builder(
-                    prefix + "_" + machine, true);
+            MachineGuiParameters.Builder guiParamsBuilder = new MachineGuiParameters.Builder(prefix + "_" + machine, true);
             guiParams.accept(guiParamsBuilder);
             MachineGuiParameters builtGuiParams = guiParamsBuilder.build();
             String id = prefix + "_" + machine;
             MachineRegistrationHelper.registerMachine(id,
-                    bet -> new SteamCraftingMachineBlockEntity(
-                            bet, type, buildComponent(itemInputCount, itemOutputCount, fluidInputCount, fluidOutputCount,
-                                    items, fluids, steamBuckets),
+                    bet -> new SteamCraftingMachineBlockEntity(bet, type,
+                            buildComponent(itemInputCount, itemOutputCount, fluidInputCount, fluidOutputCount, items, fluids, steamBuckets),
                             builtGuiParams, progressBarParams, tier),
                     bet -> {
                         if (itemInputCount + itemOutputCount > 0) {
@@ -198,16 +196,15 @@ public final class SingleBlockCraftingMachines {
             SlotPositions items = new SlotPositions.Builder().buildWithConsumer(itemPositions);
             SlotPositions fluids = new SlotPositions.Builder().buildWithConsumer(fluidPositions);
 
-            String id = tiers == TIER_ELECTRIC ? machine :  "electric_" + machine;
+            String id = tiers == TIER_ELECTRIC ? machine : "electric_" + machine;
 
-            MachineGuiParameters.Builder guiParamsBuilder = new MachineGuiParameters.Builder(
-                    id, true);
+            MachineGuiParameters.Builder guiParamsBuilder = new MachineGuiParameters.Builder(id, true);
             guiParams.accept(guiParamsBuilder);
             MachineGuiParameters builtGuiParams = guiParamsBuilder.build();
             MachineRegistrationHelper.registerMachine(id,
                     bet -> new ElectricCraftingMachineBlockEntity(bet, type,
-                            buildComponent(itemInputCount, itemOutputCount, fluidInputCount, fluidOutputCount, items, fluids, 0),
-                            builtGuiParams, energyBarParams, progressBarParams, efficiencyBarParams, MachineTier.LV, 3200),
+                            buildComponent(itemInputCount, itemOutputCount, fluidInputCount, fluidOutputCount, items, fluids, 0), builtGuiParams,
+                            energyBarParams, progressBarParams, efficiencyBarParams, MachineTier.LV, 3200),
                     bet -> {
                         ElectricCraftingMachineBlockEntity.registerEnergyApi(bet);
                         if (itemInputCount + itemOutputCount > 0) {
@@ -224,12 +221,11 @@ public final class SingleBlockCraftingMachines {
 
         SlotPositions items = new SlotPositions.Builder().buildWithConsumer(itemPositions);
         SlotPositions fluids = new SlotPositions.Builder().buildWithConsumer(fluidPositions);
-        registerReiTiers(machine, type, new MachineCategoryParams(
-                null,
-                items.sublist(0, itemInputCount), items.sublist(itemInputCount, itemInputCount + itemOutputCount),
-                fluids.sublist(0, fluidInputCount), fluids.sublist(fluidInputCount, fluidInputCount + fluidOutputCount),
-                progressBarParams, null
-        ), tiers);
+        registerReiTiers(machine, type,
+                new MachineCategoryParams(null, items.sublist(0, itemInputCount), items.sublist(itemInputCount, itemInputCount + itemOutputCount),
+                        fluids.sublist(0, fluidInputCount), fluids.sublist(fluidInputCount, fluidInputCount + fluidOutputCount), progressBarParams,
+                        null),
+                tiers);
     }
 
     private static final int TIER_BRONZE = 1, TIER_STEEL = 2, TIER_ELECTRIC = 4;
@@ -266,22 +262,20 @@ public final class SingleBlockCraftingMachines {
     }
 
     private static void registerReiTiers(String machine, MachineRecipeType recipeType, MachineCategoryParams categoryParams, int tiers) {
-        if (FabricLoader.getInstance().getEnvironmentType() == EnvType.SERVER) return;
+        if (FabricLoader.getInstance().getEnvironmentType() == EnvType.SERVER)
+            return;
 
         List<MachineCategoryParams> previousCategories = new ArrayList<>();
         int previousMaxEu = 0;
         for (int i = 0; i < 3; ++i) {
             if (((tiers >> i) & 1) > 0) {
-                int minEu = previousMaxEu+1;
+                int minEu = previousMaxEu + 1;
                 int maxEu = i == 0 ? 2 : i == 1 ? 4 : Integer.MAX_VALUE;
                 previousMaxEu = maxEu;
-                String prefix = i == 0 ? "bronze_" : i == 1 ? "steel_" : tiers == TIER_ELECTRIC ?  "" : "electric_";
+                String prefix = i == 0 ? "bronze_" : i == 1 ? "steel_" : tiers == TIER_ELECTRIC ? "" : "electric_";
                 String itemId = prefix + machine;
-                MachineCategoryParams category = new MachineCategoryParams(
-                        itemId,
-                        categoryParams.itemInputs, categoryParams.itemOutputs,
-                        categoryParams.fluidInputs, categoryParams.fluidOutputs,
-                        categoryParams.progressBarParams,
+                MachineCategoryParams category = new MachineCategoryParams(itemId, categoryParams.itemInputs, categoryParams.itemOutputs,
+                        categoryParams.fluidInputs, categoryParams.fluidOutputs, categoryParams.progressBarParams,
                         recipe -> recipe.getType() == recipeType && minEu <= recipe.eu && recipe.eu <= maxEu);
                 ReiMachineRecipes.registerCategory(itemId, category);
                 ReiMachineRecipes.registerMachineClickArea(itemId, new Rectangle(categoryParams.progressBarParams));

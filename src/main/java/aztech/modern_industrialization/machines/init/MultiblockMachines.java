@@ -23,6 +23,8 @@
  */
 package aztech.modern_industrialization.machines.init;
 
+import static aztech.modern_industrialization.machines.multiblocks.HatchType.*;
+
 import aztech.modern_industrialization.MIBlock;
 import aztech.modern_industrialization.MIFluids;
 import aztech.modern_industrialization.api.FluidFuelRegistry;
@@ -40,19 +42,17 @@ import aztech.modern_industrialization.machines.models.MachineModels;
 import aztech.modern_industrialization.machines.multiblocks.*;
 import aztech.modern_industrialization.machines.recipe.MachineRecipe;
 import aztech.modern_industrialization.machines.recipe.MachineRecipeType;
-import net.fabricmc.fabric.api.client.rendereregistry.v1.BlockEntityRendererRegistry;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.fluid.Fluid;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
+import net.fabricmc.fabric.api.client.rendereregistry.v1.BlockEntityRendererRegistry;
+import net.minecraft.block.Blocks;
+import net.minecraft.block.entity.BlockEntityType;
+import net.minecraft.fluid.Fluid;
 
-import static aztech.modern_industrialization.machines.multiblocks.HatchType.*;
-
+// @formatter:off
 @SuppressWarnings("rawtypes")
 public class MultiblockMachines {
     public static BlockEntityType COKE_OVEN;

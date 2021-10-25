@@ -57,6 +57,7 @@ import net.minecraft.world.gen.feature.ConfiguredFeature;
 import net.minecraft.world.gen.feature.Feature;
 import net.minecraft.world.gen.feature.OreFeatureConfig;
 
+// @formatter:off
 public class MIMaterials {
 
     public static void init() {

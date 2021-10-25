@@ -27,7 +27,6 @@ import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.machines.recipe.CuttingMachineRecipeType;
 import aztech.modern_industrialization.machines.recipe.FurnaceRecipeProxy;
 import aztech.modern_industrialization.machines.recipe.MachineRecipeType;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;

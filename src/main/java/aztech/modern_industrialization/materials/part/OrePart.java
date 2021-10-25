@@ -44,6 +44,7 @@ import net.fabricmc.fabric.api.biome.v1.BiomeSelectors;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
 import net.minecraft.client.texture.NativeImage;
+import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.intprovider.UniformIntProvider;
 import net.minecraft.util.registry.BuiltinRegistries;
@@ -111,7 +112,8 @@ public class OrePart extends UnbuildablePart<OrePartParams> {
     public BuildablePart of(OrePartParams oreParams) {
         return new RegularPart(key).withRegister((registeringContext, partContext, part, itemPath, itemId, itemTag) -> {
             MIBlock block = new OreBlock(itemPath, FabricBlockSettings.of(STONE_MATERIAL).hardness(deepslate ? 4.5f : 3.0f).resistance(3.0f)
-                    .breakByTool(FabricToolTags.PICKAXES, 1).requiresTool(), oreParams.xpDropped);
+                    .sounds(deepslate ? BlockSoundGroup.DEEPSLATE : BlockSoundGroup.STONE).breakByTool(FabricToolTags.PICKAXES, 1).requiresTool(),
+                    oreParams.xpDropped);
 
             Part mainPart = partContext.getMainPart();
             String loot;

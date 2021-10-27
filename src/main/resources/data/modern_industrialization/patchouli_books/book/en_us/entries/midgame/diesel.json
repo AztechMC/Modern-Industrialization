@@ -11,7 +11,7 @@
     {
       "type": "crafting",
       "recipe": "modern_industrialization:electric_age/machine/large_diesel_generator_asbl",
-      "text": "Once you have access to processing units and highly advanced machine hulls, considering making a few Large Diesel Generators. Each of these bad boys will turn fuel into EU, up to 8192 EU/t!"
+      "text": "Once you have access to processing units and highly advanced machine hulls, considering making a few Large Diesel Generators. Each of these bad boys will turn fuel into EU, up to 16384 EU/t!"
     }
   ],
   "sortnum": 204

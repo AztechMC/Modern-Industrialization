@@ -16,7 +16,7 @@
     {
       "type": "crafting",
       "recipe": "modern_industrialization:electric_age/machine/large_steam_turbine_asbl",
-      "text": "A Large Steam Turbine will accept both regular steam (1 mb = 1 EU) and HP steam (1 mb = 8 EU) into EU, and will generate up to 4096 EU/t! $(l)However it will not give you back regular nor HP water.$()"
+      "text": "A Large Steam Turbine will accept both regular steam (1 mb = 1 EU) and HP steam (1 mb = 8 EU) into EU, and will generate up to 16384 EU/t! $(l)However it will not give you back regular nor HP water.$()"
     },
     {
       "type": "crafting",

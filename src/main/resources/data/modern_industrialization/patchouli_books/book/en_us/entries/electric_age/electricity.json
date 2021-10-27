@@ -14,7 +14,7 @@
     },
     {
       "type": "text",
-      "text": "Cable networks have limitations on the amount of energy they will pull into the network: at most 256 EU/t for LV cables, 1024 EU/t for MV cables and 4096 EU/t for HV cables. Because there is no output limit for the network and because cables have a small internal storage, an LV network can provide more than 256 EU/t for a short amount of time.$(br2)Note however that single block electric machines will only connect to LV cables!"
+      "text": "Cable networks have limitations on the amount of energy they will pull into the network: at most 256 EU/t for LV cables, 1024 EU/t for MV cables and 8192 EU/t for HV cables. Because there is no output limit for the network and because cables have a small internal storage, an LV network can provide more than 256 EU/t for a short amount of time.$(br2)Note however that single block electric machines will only connect to LV cables!"
     },
     {
       "type": "text",

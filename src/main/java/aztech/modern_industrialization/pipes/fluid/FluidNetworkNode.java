@@ -30,6 +30,7 @@ import aztech.modern_industrialization.pipes.api.PipeEndpointType;
 import aztech.modern_industrialization.pipes.api.PipeNetworkNode;
 import aztech.modern_industrialization.pipes.gui.IPipeScreenHandlerHelper;
 import aztech.modern_industrialization.util.IoStorage;
+import aztech.modern_industrialization.util.MIBlockApiCache;
 import aztech.modern_industrialization.util.NbtHelper;
 import com.google.common.base.MoreObjects;
 import java.util.*;
@@ -45,6 +46,7 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
@@ -87,8 +89,11 @@ public class FluidNetworkNode extends PipeNetworkNode {
         }
     }
 
-    Storage<FluidVariant> getNeighborStorage(World world, BlockPos pos, FluidConnection connection) {
-        Storage<FluidVariant> storage = FluidStorage.SIDED.find(world, pos.offset(connection.direction), connection.direction.getOpposite());
+    private Storage<FluidVariant> getNeighborStorage(World world, BlockPos pos, FluidConnection connection) {
+        if (connection.cache == null) {
+            connection.cache = MIBlockApiCache.create(FluidStorage.SIDED, (ServerWorld) world, pos.offset(connection.direction));
+        }
+        Storage<FluidVariant> storage = connection.cache.find(connection.direction.getOpposite());
         if (storage != null) {
             if ((connection.canExtract() && storage.supportsExtraction()) || (connection.canInsert() && storage.supportsInsertion())) {
                 return storage;
@@ -203,6 +208,7 @@ public class FluidNetworkNode extends PipeNetworkNode {
         private final Direction direction;
         private PipeEndpointType type;
         private int priority;
+        private MIBlockApiCache<Storage<FluidVariant>, Direction> cache;
 
         private FluidConnection(Direction direction, PipeEndpointType type, int priority) {
             this.direction = direction;

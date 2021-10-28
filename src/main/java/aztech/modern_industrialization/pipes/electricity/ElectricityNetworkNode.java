@@ -28,11 +28,11 @@ import static aztech.modern_industrialization.pipes.api.PipeEndpointType.*;
 import aztech.modern_industrialization.api.energy.*;
 import aztech.modern_industrialization.pipes.api.PipeEndpointType;
 import aztech.modern_industrialization.pipes.api.PipeNetworkNode;
+import aztech.modern_industrialization.util.MIBlockApiCache;
 import aztech.modern_industrialization.util.NbtHelper;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import net.fabricmc.fabric.api.lookup.v1.block.BlockApiCache;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
@@ -42,14 +42,14 @@ import org.jetbrains.annotations.NotNull;
 
 public class ElectricityNetworkNode extends PipeNetworkNode {
     private List<Direction> connections = new ArrayList<>();
-    private final List<BlockApiCache<EnergyMoveable, @NotNull Direction>> caches = new ArrayList<>();
+    private final List<MIBlockApiCache<EnergyMoveable, @NotNull Direction>> caches = new ArrayList<>();
     long eu = 0;
 
     public void appendAttributes(World world, BlockPos pos, List<EnergyInsertable> insertables, List<EnergyExtractable> extractables) {
         if (caches.size() != connections.size()) {
             caches.clear();
             for (Direction direction : connections) {
-                caches.add(BlockApiCache.create(EnergyApi.MOVEABLE, (ServerWorld) world, pos.offset(direction)));
+                caches.add(MIBlockApiCache.create(EnergyApi.MOVEABLE, (ServerWorld) world, pos.offset(direction)));
             }
         }
         for (int i = 0; i < connections.size(); ++i) {

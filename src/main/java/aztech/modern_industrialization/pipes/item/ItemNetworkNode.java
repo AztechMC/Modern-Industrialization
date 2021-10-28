@@ -29,6 +29,7 @@ import aztech.modern_industrialization.api.pipes.item.SpeedUpgrade;
 import aztech.modern_industrialization.pipes.api.PipeEndpointType;
 import aztech.modern_industrialization.pipes.api.PipeNetworkNode;
 import aztech.modern_industrialization.pipes.gui.IPipeScreenHandlerHelper;
+import aztech.modern_industrialization.util.MIBlockApiCache;
 import aztech.modern_industrialization.util.StorageUtil2;
 import java.util.*;
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
@@ -44,6 +45,7 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
@@ -177,7 +179,7 @@ public class ItemNetworkNode extends PipeNetworkNode {
 
                     long movesLeft = connection.getMoves();
                     if (reachableInputs == null)
-                        reachableInputs = getInputs(world, pos);
+                        reachableInputs = getInputs(world);
                     for (InsertTarget target : reachableInputs) {
                         if (target.connection.canInsert()) {
                             long moved = StorageUtil.move(source, target.target,
@@ -195,34 +197,26 @@ public class ItemNetworkNode extends PipeNetworkNode {
     }
 
     /**
-     * Run a bfs to find all connections in which to insert that are loaded and
-     * reachable from the given startPos.
+     * Find all connections in which to insert that are loaded.
      */
-    public List<InsertTarget> getInputs(World world, BlockPos startPos) {
+    public List<InsertTarget> getInputs(World world) {
         List<InsertTarget> result = new ArrayList<>();
 
-        Queue<BlockPos> queue = new ArrayDeque<>();
-        Set<BlockPos> visited = new HashSet<>();
-        queue.add(startPos);
-        while (!queue.isEmpty()) {
-            BlockPos u = queue.remove();
-            if (visited.add(u)) {
-                PipeNetworkNode maybeUnloaded = network.nodes.get(u);
-                if (maybeUnloaded != null) {
-                    ItemNetworkNode node = (ItemNetworkNode) maybeUnloaded;
-                    for (ItemConnection connection : node.connections) {
-                        if (connection.canInsert()) {
-                            Storage<ItemVariant> target = ItemStorage.SIDED.find(world, u.offset(connection.direction),
-                                    connection.direction.getOpposite());
-                            target = StorageUtil2.wrapInventory(target);
-                            if (target != null && target.supportsInsertion()) {
-                                result.add(new InsertTarget(connection, target));
-                            }
+        for (Map.Entry<BlockPos, PipeNetworkNode> entry : network.nodes.entrySet()) {
+            if (entry.getValue() != null) {
+                ItemNetworkNode node = (ItemNetworkNode) entry.getValue();
+                for (ItemConnection connection : node.connections) {
+                    if (connection.canInsert()) {
+                        if (connection.cache == null) {
+                            connection.cache = MIBlockApiCache.create(ItemStorage.SIDED, (ServerWorld) world,
+                                    entry.getKey().offset(connection.direction));
+                        }
+                        Storage<ItemVariant> target = connection.cache.find(connection.direction.getOpposite());
+                        target = StorageUtil2.wrapInventory(target);
+                        if (target != null && target.supportsInsertion()) {
+                            result.add(new InsertTarget(connection, target));
                         }
                     }
-                }
-                for (Direction direction : network.manager.getNodeLinks(u)) {
-                    queue.add(u.offset(direction));
                 }
             }
         }
@@ -264,6 +258,7 @@ public class ItemNetworkNode extends PipeNetworkNode {
         private int priority;
         private final ItemStack[] stacks = new ItemStack[ItemPipeInterface.SLOTS];
         private ItemStack upgradeStack = ItemStack.EMPTY;
+        private MIBlockApiCache<Storage<ItemVariant>, Direction> cache = null;
 
         private ItemConnection(Direction direction, PipeEndpointType type, int priority) {
             this.direction = direction;

@@ -23,11 +23,238 @@
  */
 package aztech.modern_industrialization.pipes.item;
 
+import aztech.modern_industrialization.api.WhitelistedItemStorage;
 import aztech.modern_industrialization.pipes.api.PipeNetwork;
 import aztech.modern_industrialization.pipes.api.PipeNetworkData;
+import aztech.modern_industrialization.pipes.api.PipeNetworkNode;
+import aztech.modern_industrialization.util.MIBlockApiCache;
+import aztech.modern_industrialization.util.StorageUtil2;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
+import java.util.*;
+import java.util.concurrent.ThreadLocalRandom;
+import net.fabricmc.fabric.api.transfer.v1.item.ItemStorage;
+import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
+import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
+import net.fabricmc.fabric.api.transfer.v1.storage.StoragePreconditions;
+import net.fabricmc.fabric.api.transfer.v1.storage.StorageUtil;
+import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
+import net.fabricmc.fabric.api.transfer.v1.storage.base.CombinedStorage;
+import net.fabricmc.fabric.api.transfer.v1.storage.base.InsertionOnlyStorage;
+import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
+import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
+import net.minecraft.item.Item;
+import net.minecraft.server.world.ServerWorld;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 
 public class ItemNetwork extends PipeNetwork {
     public ItemNetwork(int id, PipeNetworkData data) {
         super(id, data == null ? new ItemNetworkData() : data);
+    }
+
+    @Override
+    public void tick(World world) {
+        // Only tick once
+        if (ticked)
+            return;
+        ticked = true;
+
+        Storage<ItemVariant> insertTargets = null;
+
+        try (Transaction tx = Transaction.openOuter()) {
+            for (Map.Entry<BlockPos, PipeNetworkNode> entry : nodes.entrySet()) {
+                if (entry.getValue() != null) {
+                    BlockPos pos = entry.getKey();
+                    ItemNetworkNode itemNode = (ItemNetworkNode) entry.getValue();
+                    if (itemNode.inactiveTicks == 0) {
+                        for (ItemNetworkNode.ItemConnection connection : itemNode.connections) {
+                            if (connection.canExtract()) {
+                                Storage<ItemVariant> source = ItemStorage.SIDED.find(world, pos.offset(connection.direction),
+                                        connection.direction.getOpposite());
+
+                                if (insertTargets == null) {
+                                    insertTargets = getAggregateInsertTarget(world);
+                                }
+
+                                StorageUtil.move(source, insertTargets, connection::canStackMoveThrough, connection.getMoves(), tx);
+                            }
+                        }
+                        itemNode.inactiveTicks = 60;
+                    }
+                    itemNode.inactiveTicks--;
+                }
+            }
+
+            tx.commit();
+        }
+    }
+
+    /**
+     * Find all connections in which to insert that are loaded.
+     */
+    public Storage<ItemVariant> getAggregateInsertTarget(World world) {
+        Int2ObjectMap<PriorityBucket> priorityBuckets = new Int2ObjectOpenHashMap<>();
+
+        for (Map.Entry<BlockPos, PipeNetworkNode> entry : nodes.entrySet()) {
+            if (entry.getValue() != null) {
+                ItemNetworkNode node = (ItemNetworkNode) entry.getValue();
+                for (ItemNetworkNode.ItemConnection connection : node.connections) {
+                    if (connection.canInsert()) {
+                        if (connection.cache == null) {
+                            connection.cache = MIBlockApiCache.create(ItemStorage.SIDED, (ServerWorld) world,
+                                    entry.getKey().offset(connection.direction));
+                        }
+                        Storage<ItemVariant> target = connection.cache.find(connection.direction.getOpposite());
+                        if (target != null && target.supportsInsertion()) {
+                            PriorityBucket bucket = priorityBuckets.computeIfAbsent(connection.priority, PriorityBucket::new);
+                            InsertTarget it = new InsertTarget(connection, StorageUtil2.wrapInventory(target));
+
+                            if (connection.whitelist || (target instanceof WhitelistedItemStorage wis && wis.currentlyWhitelisted())) {
+                                bucket.whitelist.add(it);
+                            } else {
+                                bucket.blacklist.add(it);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        PriorityBucket[] sortedBuckets = priorityBuckets.values().toArray(new PriorityBucket[0]);
+        // Now we sort by priority, high to low
+        Arrays.sort(sortedBuckets, Comparator.comparingInt(pb -> -pb.priority));
+
+        List<Storage<ItemVariant>> targets = new ArrayList<>();
+        Random random = ThreadLocalRandom.current();
+
+        for (PriorityBucket pb : sortedBuckets) {
+            int whitelistSize = pb.whitelist.size();
+            int blacklistSize = pb.blacklist.size();
+            if (whitelistSize > 0) {
+                Collections.shuffle(pb.whitelist);
+                targets.add(new WhitelistAggregate(pb.whitelist));
+            }
+            if (blacklistSize > 0) {
+                Collections.shuffle(pb.blacklist);
+                targets.add(new BlacklistAggregate(pb.blacklist));
+            }
+
+            // Ensure equal chance to receive items on average.
+            if (whitelistSize > 0 && blacklistSize > 0) {
+                int tot = whitelistSize + blacklistSize;
+
+                if (random.nextDouble() >= (double) whitelistSize / (whitelistSize + blacklistSize)) {
+                    Collections.swap(targets, targets.size() - 2, targets.size() - 1);
+                }
+            }
+        }
+
+        return new CombinedStorage<>(targets);
+    }
+
+    private static class PriorityBucket {
+        private final int priority;
+        private final List<InsertTarget> whitelist = new ArrayList<>();
+        private final List<InsertTarget> blacklist = new ArrayList<>();
+
+        private PriorityBucket(int priority) {
+            this.priority = priority;
+        }
+    }
+
+    private static class WhitelistAggregate implements InsertionOnlyStorage<ItemVariant> {
+        // Used when the inserted item doesn't have NBT
+        private final Map<Item, List<Storage<ItemVariant>>> map = new IdentityHashMap<>();
+        // Used when the inserted item has NBT.
+        private final List<InsertTarget> targets;
+
+        WhitelistAggregate(List<InsertTarget> targets) {
+            this.targets = targets;
+            for (InsertTarget target : targets) {
+                if (target.connection.whitelist) {
+                    ItemNetworkNode.ItemConnection conn = target.connection;
+                    for (ItemVariant variant : conn.stacksCache) {
+                        if (!variant.hasNbt()) {
+                            map.computeIfAbsent(variant.getItem(), v -> new ArrayList<>()).add(target.target);
+                        }
+                    }
+                } else if (target.target instanceof WhitelistedItemStorage wis) {
+                    for (Item item : wis.getWhitelistedItems()) {
+                        map.computeIfAbsent(item, v -> new ArrayList<>()).add(target.target);
+                    }
+                } else {
+                    throw new IllegalStateException("Internal item pipe error! Should never happen!");
+                }
+            }
+        }
+
+        @Override
+        public long insert(ItemVariant resource, long maxAmount, TransactionContext transaction) {
+            if (resource.hasNbt()) {
+                return insertTargets(targets, resource, maxAmount, transaction);
+            }
+
+            StoragePreconditions.notBlankNotNegative(resource, maxAmount);
+            long totalInserted = 0;
+
+            List<Storage<ItemVariant>> targets = map.get(resource.getItem());
+            if (targets != null) {
+                for (Storage<ItemVariant> target : targets) {
+                    long inserted = target.insert(resource, maxAmount, transaction);
+                    maxAmount -= inserted;
+                    totalInserted += inserted;
+                    if (maxAmount == 0) {
+                        break;
+                    }
+                }
+            }
+
+            return totalInserted;
+        }
+
+        @Override
+        public Iterator<StorageView<ItemVariant>> iterator(TransactionContext transaction) {
+            return Collections.emptyIterator();
+        }
+    }
+
+    private static class BlacklistAggregate implements InsertionOnlyStorage<ItemVariant> {
+        private final List<InsertTarget> targets;
+
+        private BlacklistAggregate(List<InsertTarget> targets) {
+            this.targets = targets;
+        }
+
+        @Override
+        public long insert(ItemVariant resource, long maxAmount, TransactionContext transaction) {
+            return insertTargets(targets, resource, maxAmount, transaction);
+        }
+
+        @Override
+        public Iterator<StorageView<ItemVariant>> iterator(TransactionContext transaction) {
+            return Collections.emptyIterator();
+        }
+    }
+
+    private static long insertTargets(List<InsertTarget> targets, ItemVariant resource, long maxAmount, TransactionContext transaction) {
+        StoragePreconditions.notBlankNotNegative(resource, maxAmount);
+        long totalInserted = 0;
+
+        for (InsertTarget target : targets) {
+            if (target.connection.canStackMoveThrough(resource)) {
+                long inserted = target.target.insert(resource, maxAmount, transaction);
+                maxAmount -= inserted;
+                totalInserted += inserted;
+                if (maxAmount == 0) {
+                    break;
+                }
+            }
+        }
+
+        return totalInserted;
+    }
+
+    private record InsertTarget(ItemNetworkNode.ItemConnection connection, Storage<ItemVariant> target) {
     }
 }

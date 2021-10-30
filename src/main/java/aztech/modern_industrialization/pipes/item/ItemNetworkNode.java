@@ -30,13 +30,11 @@ import aztech.modern_industrialization.pipes.api.PipeEndpointType;
 import aztech.modern_industrialization.pipes.api.PipeNetworkNode;
 import aztech.modern_industrialization.pipes.gui.IPipeScreenHandlerHelper;
 import aztech.modern_industrialization.util.MIBlockApiCache;
-import aztech.modern_industrialization.util.StorageUtil2;
 import java.util.*;
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemStorage;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
-import net.fabricmc.fabric.api.transfer.v1.storage.StorageUtil;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -45,7 +43,6 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
@@ -55,8 +52,8 @@ import net.minecraft.world.World;
 
 // LBA
 public class ItemNetworkNode extends PipeNetworkNode {
-    private final List<ItemConnection> connections = new ArrayList<>();
-    private int inactiveTicks = 0;
+    final List<ItemConnection> connections = new ArrayList<>();
+    int inactiveTicks = 0;
 
     @Override
     public void updateConnections(World world, BlockPos pos) {
@@ -144,6 +141,7 @@ public class ItemNetworkNode extends PipeNetworkNode {
                     connection.stacks[i] = ItemStack.fromNbt(connectionTag.getCompound(Integer.toString(i)));
                     connection.stacks[i].setCount(1);
                 }
+                connection.refreshStacksCache();
                 connection.upgradeStack = ItemStack.fromNbt(connectionTag.getCompound("upgradeStack"));
                 connections.add(connection);
             }
@@ -170,78 +168,6 @@ public class ItemNetworkNode extends PipeNetworkNode {
     }
 
     @Override
-    public void tick(World world, BlockPos pos) {
-        if (inactiveTicks == 0) {
-            List<InsertTarget> reachableInputs = null;
-            outer: for (ItemConnection connection : connections) { // TODO: optimize!
-                if (connection.canExtract()) {
-                    Storage<ItemVariant> source = ItemStorage.SIDED.find(world, pos.offset(connection.direction), connection.direction.getOpposite());
-
-                    long movesLeft = connection.getMoves();
-                    if (reachableInputs == null)
-                        reachableInputs = getInputs(world);
-                    for (InsertTarget target : reachableInputs) {
-                        if (target.connection.canInsert()) {
-                            long moved = StorageUtil.move(source, target.target,
-                                    key -> connection.canStackMoveThrough(key) && target.connection.canStackMoveThrough(key), movesLeft, null);
-                            movesLeft -= moved;
-                            if (movesLeft == 0)
-                                continue outer;
-                        }
-                    }
-                }
-            }
-            inactiveTicks = 60;
-        }
-        --inactiveTicks;
-    }
-
-    /**
-     * Find all connections in which to insert that are loaded.
-     */
-    public List<InsertTarget> getInputs(World world) {
-        List<InsertTarget> result = new ArrayList<>();
-
-        for (Map.Entry<BlockPos, PipeNetworkNode> entry : network.nodes.entrySet()) {
-            if (entry.getValue() != null) {
-                ItemNetworkNode node = (ItemNetworkNode) entry.getValue();
-                for (ItemConnection connection : node.connections) {
-                    if (connection.canInsert()) {
-                        if (connection.cache == null) {
-                            connection.cache = MIBlockApiCache.create(ItemStorage.SIDED, (ServerWorld) world,
-                                    entry.getKey().offset(connection.direction));
-                        }
-                        Storage<ItemVariant> target = connection.cache.find(connection.direction.getOpposite());
-                        target = StorageUtil2.wrapInventory(target);
-                        if (target != null && target.supportsInsertion()) {
-                            result.add(new InsertTarget(connection, target));
-                        }
-                    }
-                }
-            }
-        }
-
-        // Now we sort by priority, high to low
-        result.sort(Comparator.comparing(target -> -target.connection.priority));
-        // We randomly shuffle for connections with the same priority
-        int prevPriority = Integer.MIN_VALUE;
-        int st = 0;
-        for (int i = 0; i < result.size() + 1; ++i) {
-            int p = i == result.size() ? Integer.MAX_VALUE : result.get(i).connection.priority;
-            if (p != prevPriority) {
-                Collections.shuffle(result.subList(st, i));
-                prevPriority = p;
-                st = i;
-            }
-        }
-
-        return result;
-    }
-
-    private record InsertTarget(ItemConnection connection, Storage<ItemVariant> target) {
-    }
-
-    @Override
     public void appendDroppedStacks(List<ItemStack> droppedStacks) {
         for (ItemConnection conn : connections) {
             if (!conn.upgradeStack.isEmpty()) {
@@ -251,14 +177,15 @@ public class ItemNetworkNode extends PipeNetworkNode {
         }
     }
 
-    private class ItemConnection {
-        private final Direction direction;
+    class ItemConnection {
+        final Direction direction;
         private PipeEndpointType type;
-        private boolean whitelist = true;
-        private int priority;
+        boolean whitelist = true;
+        int priority;
         private final ItemStack[] stacks = new ItemStack[ItemPipeInterface.SLOTS];
+        final Set<ItemVariant> stacksCache = new HashSet<>();
         private ItemStack upgradeStack = ItemStack.EMPTY;
-        private MIBlockApiCache<Storage<ItemVariant>, Direction> cache = null;
+        MIBlockApiCache<Storage<ItemVariant>, Direction> cache = null;
 
         private ItemConnection(Direction direction, PipeEndpointType type, int priority) {
             this.direction = direction;
@@ -269,24 +196,28 @@ public class ItemNetworkNode extends PipeNetworkNode {
             }
         }
 
-        private boolean canInsert() {
+        private void refreshStacksCache() {
+            stacksCache.clear();
+            for (ItemStack stack : stacks) {
+                if (!stack.isEmpty()) {
+                    stacksCache.add(ItemVariant.of(stack));
+                }
+            }
+        }
+
+        boolean canInsert() {
             return type == BLOCK_IN || type == BLOCK_IN_OUT;
         }
 
-        private boolean canExtract() {
+        boolean canExtract() {
             return type == BLOCK_OUT || type == BLOCK_IN_OUT;
         }
 
-        private boolean canStackMoveThrough(ItemVariant key) {
-            for (ItemStack filterStack : stacks) {
-                if (key.matches(filterStack)) {
-                    return whitelist;
-                }
-            }
-            return !whitelist;
+        boolean canStackMoveThrough(ItemVariant key) {
+            return stacksCache.contains(key) == whitelist;
         }
 
-        private long getMoves() {
+        long getMoves() {
             SpeedUpgrade upgrade = SpeedUpgrade.LOOKUP.find(upgradeStack, null);
             return 16 + (upgrade == null ? 0 : upgrade.value() * upgradeStack.getCount());
         }
@@ -323,6 +254,7 @@ public class ItemNetworkNode extends PipeNetworkNode {
                     @Override
                     public void setStack(int slot, ItemStack stack) {
                         stacks[slot] = stack;
+                        refreshStacksCache();
                         helper.callMarkDirty();
                     }
 

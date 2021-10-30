@@ -41,7 +41,7 @@ public class MIItemStorage extends MIStorage<Item, ItemVariant, ConfigurableItem
     public boolean currentlyWhitelisted() {
         // Only whitelisted if nothing is locked.
         for (ConfigurableItemStack stack : stacks) {
-            if (stack.getLockedInstance() == null) {
+            if (stack.pipesInsert && stack.getLockedInstance() == null) {
                 cachedWhitelist = null; // Save some memory.
                 return false;
             }
@@ -56,7 +56,7 @@ public class MIItemStorage extends MIStorage<Item, ItemVariant, ConfigurableItem
         }
         cachedWhitelist.clear();
         for (ConfigurableItemStack stack : stacks) {
-            if (stack.getLockedInstance() != Items.AIR) {
+            if (stack.pipesInsert && stack.getLockedInstance() != Items.AIR) {
                 cachedWhitelist.add(stack.getLockedInstance());
             }
         }

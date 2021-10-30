@@ -31,6 +31,7 @@ import aztech.modern_industrialization.util.MIBlockApiCache;
 import aztech.modern_industrialization.util.StorageUtil2;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ReferenceOpenHashSet;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemStorage;
@@ -49,6 +50,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 public class ItemNetwork extends PipeNetwork {
+    private static final ReferenceOpenHashSet<Item> WHITELIST_CACHED_SET = new ReferenceOpenHashSet<>();
+
     public ItemNetwork(int id, PipeNetworkData data) {
         super(id, data == null ? new ItemNetworkData() : data);
     }
@@ -180,7 +183,9 @@ public class ItemNetwork extends PipeNetwork {
                         }
                     }
                 } else if (target.target instanceof WhitelistedItemStorage wis) {
-                    for (Item item : wis.getWhitelistedItems()) {
+                    WHITELIST_CACHED_SET.clear();
+                    wis.getWhitelistedItems(WHITELIST_CACHED_SET);
+                    for (Item item : WHITELIST_CACHED_SET) {
                         map.computeIfAbsent(item, v -> new ArrayList<>()).add(target.target);
                     }
                 } else {

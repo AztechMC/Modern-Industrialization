@@ -24,15 +24,13 @@
 package aztech.modern_industrialization.inventory;
 
 import aztech.modern_industrialization.api.WhitelistedItemStorage;
-import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.minecraft.item.Item;
 import net.minecraft.item.Items;
 
 public class MIItemStorage extends MIStorage<Item, ItemVariant, ConfigurableItemStack> implements WhitelistedItemStorage {
-    private HashSet<Item> cachedWhitelist = null;
-
     protected MIItemStorage(List<ConfigurableItemStack> stacks) {
         super(stacks, false);
     }
@@ -42,7 +40,6 @@ public class MIItemStorage extends MIStorage<Item, ItemVariant, ConfigurableItem
         // Only whitelisted if nothing is locked.
         for (ConfigurableItemStack stack : stacks) {
             if (stack.pipesInsert && stack.getLockedInstance() == null) {
-                cachedWhitelist = null; // Save some memory.
                 return false;
             }
         }
@@ -50,16 +47,11 @@ public class MIItemStorage extends MIStorage<Item, ItemVariant, ConfigurableItem
     }
 
     @Override
-    public HashSet<Item> getWhitelistedItems() {
-        if (cachedWhitelist == null) {
-            cachedWhitelist = new HashSet<>();
-        }
-        cachedWhitelist.clear();
+    public void getWhitelistedItems(Set<Item> whitelist) {
         for (ConfigurableItemStack stack : stacks) {
             if (stack.pipesInsert && stack.getLockedInstance() != Items.AIR) {
-                cachedWhitelist.add(stack.getLockedInstance());
+                whitelist.add(stack.getLockedInstance());
             }
         }
-        return cachedWhitelist;
     }
 }

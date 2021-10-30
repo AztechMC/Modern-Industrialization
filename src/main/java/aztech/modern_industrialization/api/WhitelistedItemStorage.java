@@ -23,11 +23,14 @@
  */
 package aztech.modern_industrialization.api;
 
-import java.util.HashSet;
+import java.util.Set;
 import net.minecraft.item.Item;
 
 public interface WhitelistedItemStorage {
     boolean currentlyWhitelisted();
 
-    HashSet<Item> getWhitelistedItems();
+    /**
+     * Write whitelisted items to the set.
+     */
+    void getWhitelistedItems(Set<Item> item);
 }

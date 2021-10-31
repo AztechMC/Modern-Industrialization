@@ -24,16 +24,16 @@
 package aztech.modern_industrialization.machines.components;
 
 import aztech.modern_industrialization.machines.IComponent;
-import net.fabricmc.fabric.api.block.entity.BlockEntityClientSerializable;
+import aztech.modern_industrialization.machines.MachineBlockEntity;
 import net.minecraft.nbt.NbtCompound;
 
 public class IsActiveComponent implements IComponent.ClientOnly {
     public boolean isActive = false;
 
-    public void updateActive(boolean newActive, BlockEntityClientSerializable be) {
+    public void updateActive(boolean newActive, MachineBlockEntity be) {
         if (newActive != isActive) {
             isActive = newActive;
-            be.sync();
+            be.sync(false);
         }
     }
 

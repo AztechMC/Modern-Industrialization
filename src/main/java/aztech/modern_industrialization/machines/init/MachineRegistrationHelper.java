@@ -26,11 +26,14 @@ package aztech.modern_industrialization.machines.init;
 import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.machines.BEP;
 import aztech.modern_industrialization.machines.MachineBlock;
+import aztech.modern_industrialization.machines.models.MachineModels;
 import aztech.modern_industrialization.util.ResourceUtil;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import net.fabricmc.api.EnvType;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
@@ -58,6 +61,11 @@ public class MachineRegistrationHelper {
         for (Consumer<BlockEntityType<?>> extraRegistrator : extraRegistrators) {
             extraRegistrator.accept(bet[0]);
         }
+
+        if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
+            MachineModels.addMachineBer(bet[0], id);
+        }
+
         return bet[0];
     }
 

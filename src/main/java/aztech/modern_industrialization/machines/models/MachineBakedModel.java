@@ -48,7 +48,7 @@ public class MachineBakedModel implements BakedModel, FabricBakedModel {
     private static final Direction[] DIRECTIONS = Direction.values();
 
     private final ModelTransformation blockTransformation;
-    private final RenderMaterial cutoutMaterial;
+    public final RenderMaterial cutoutMaterial;
     /**
      * @see MachineUnbakedModel
      */
@@ -75,14 +75,14 @@ public class MachineBakedModel implements BakedModel, FabricBakedModel {
             Object attachment = bv.getBlockEntityRenderAttachment(blockPos);
             if (attachment instanceof MachineModelClientData clientData) {
                 MachineCasingModel casing = clientData.casing == null ? defaultCasing : clientData.casing.mcm;
-                renderBase(renderContext, casing, clientData.frontDirection, clientData.isActive);
+                renderBase(renderContext, casing, clientData.frontDirection);
                 if (clientData.outputDirection != null) {
-                    emitSprite(renderContext.getEmitter(), clientData.outputDirection, sprites[6], 2e-6f);
+                    emitSprite(renderContext.getEmitter(), clientData.outputDirection, sprites[6], 3e-4f);
                     if (clientData.itemAutoExtract) {
-                        emitSprite(renderContext.getEmitter(), clientData.outputDirection, sprites[7], 2e-6f);
+                        emitSprite(renderContext.getEmitter(), clientData.outputDirection, sprites[7], 3e-4f);
                     }
                     if (clientData.fluidAutoExtract) {
-                        emitSprite(renderContext.getEmitter(), clientData.outputDirection, sprites[8], 2e-6f);
+                        emitSprite(renderContext.getEmitter(), clientData.outputDirection, sprites[8], 3e-4f);
                     }
                 }
             }
@@ -91,40 +91,52 @@ public class MachineBakedModel implements BakedModel, FabricBakedModel {
 
     @Override
     public void emitItemQuads(ItemStack itemStack, Supplier<Random> supplier, RenderContext renderContext) {
-        renderBase(renderContext, defaultCasing, Direction.NORTH, false);
+        renderBase(renderContext, defaultCasing, Direction.NORTH);
     }
 
-    private void renderBase(RenderContext renderContext, MachineCasingModel casing, Direction facingDirection, boolean isActive) {
+    private void renderBase(RenderContext renderContext, MachineCasingModel casing, Direction facingDirection) {
         // Casing
         renderContext.meshConsumer().accept(casing.getMesh());
         // Machine overlays
         QuadEmitter emitter = renderContext.getEmitter();
         for (Direction d : DIRECTIONS) {
-            int spriteId = -2;
-            if (d == facingDirection) {
-                spriteId = 0;
-            } else if (d == Direction.UP) {
-                spriteId = 2;
-            } else if (d.getAxis().isHorizontal()) {
-                spriteId = 4;
-            }
-            if (isActive) {
-                spriteId++;
-            }
-            if (spriteId >= 0) {
-                emitSprite(emitter, d, sprites[spriteId], 1e-6f);
+            Sprite sprite = getSprite(d, facingDirection, false);
+            if (sprite != null) {
+                emitSprite(emitter, d, sprite, 1e-6f);
             }
         }
     }
 
-    private void emitSprite(QuadEmitter emitter, Direction d, @Nullable Sprite sprite, float depth) {
-        if (sprite != null) {
-            emitter.material(cutoutMaterial);
-            emitter.square(d, 0, 0, 1, 1, -depth);
-            emitter.spriteBake(0, sprite, MutableQuadView.BAKE_LOCK_UV);
-            emitter.spriteColor(0, -1, -1, -1, -1);
-            emitter.emit();
+    /**
+     * Returns null if nothing should be rendered.
+     */
+    @Nullable
+    public Sprite getSprite(Direction side, Direction facingDirection, boolean isActive) {
+        int spriteId = -2;
+        if (side == facingDirection) {
+            spriteId = 0;
+        } else if (side == Direction.UP) {
+            spriteId = 2;
+        } else if (side.getAxis().isHorizontal()) {
+            spriteId = 4;
         }
+        if (isActive) {
+            spriteId++;
+        }
+        if (spriteId >= 0) {
+            return sprites[spriteId];
+        } else {
+            return null;
+        }
+    }
+
+    private void emitSprite(QuadEmitter emitter, Direction d, Sprite sprite, float depth) {
+        emitter.material(cutoutMaterial);
+        emitter.square(d, 0, 0, 1, 1, -depth);
+        emitter.cullFace(d);
+        emitter.spriteBake(0, sprite, MutableQuadView.BAKE_LOCK_UV);
+        emitter.spriteColor(0, -1, -1, -1, -1);
+        emitter.emit();
     }
 
     @Override

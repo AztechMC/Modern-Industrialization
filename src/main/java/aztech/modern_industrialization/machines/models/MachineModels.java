@@ -24,7 +24,10 @@
 package aztech.modern_industrialization.machines.models;
 
 import aztech.modern_industrialization.MIIdentifier;
+import aztech.modern_industrialization.machines.MachineBlockEntityRenderer;
 import net.fabricmc.fabric.api.client.model.ModelLoadingRegistry;
+import net.fabricmc.fabric.api.client.rendering.v1.BlockEntityRendererRegistry;
+import net.minecraft.block.entity.BlockEntityType;
 
 public final class MachineModels {
     public static void init() {
@@ -65,6 +68,11 @@ public final class MachineModels {
         for (String tier : tiers) {
             addTieredMachine(tier, tier + "_" + name, name, frontOverlay, topOverlay, sideOverlay);
         }
+    }
+
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    public static void addMachineBer(BlockEntityType bet, String id) {
+        BlockEntityRendererRegistry.register(bet, c -> new MachineBlockEntityRenderer(c));
     }
 
     private MachineModels() {

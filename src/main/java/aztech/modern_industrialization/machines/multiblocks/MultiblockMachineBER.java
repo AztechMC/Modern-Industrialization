@@ -25,11 +25,11 @@ package aztech.modern_industrialization.machines.multiblocks;
 
 import aztech.modern_industrialization.ModernIndustrialization;
 import aztech.modern_industrialization.machines.MachineBlock;
+import aztech.modern_industrialization.machines.MachineBlockEntityRenderer;
 import aztech.modern_industrialization.util.RenderHelper;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.VertexConsumerProvider;
-import net.minecraft.client.render.block.entity.BlockEntityRenderer;
 import net.minecraft.client.render.block.entity.BlockEntityRendererFactory;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerEntity;
@@ -39,8 +39,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import org.jetbrains.annotations.Nullable;
 
-public class MultiblockMachineBER implements BlockEntityRenderer<MultiblockMachineBlockEntity> {
-    public MultiblockMachineBER(BlockEntityRendererFactory.Context context) {
+public class MultiblockMachineBER extends MachineBlockEntityRenderer<MultiblockMachineBlockEntity> {
+    public MultiblockMachineBER(BlockEntityRendererFactory.Context ctx) {
+        super(ctx);
     }
 
     @Override

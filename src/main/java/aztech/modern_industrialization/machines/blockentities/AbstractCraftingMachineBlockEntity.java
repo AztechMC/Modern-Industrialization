@@ -90,10 +90,7 @@ public abstract class AbstractCraftingMachineBlockEntity extends MachineBlockEnt
     public void tick() {
         if (!world.isClient) {
             boolean newActive = crafter.tickRecipe();
-            if (newActive != isActiveComponent.isActive) {
-                isActiveComponent.isActive = newActive;
-                sync();
-            }
+            isActiveComponent.updateActive(newActive, this);
             if (orientation.extractItems) {
                 inventory.inventory.autoExtractItems(world, pos, orientation.outputDirection);
             }

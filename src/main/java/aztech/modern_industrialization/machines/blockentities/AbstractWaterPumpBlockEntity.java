@@ -115,10 +115,7 @@ public abstract class AbstractWaterPumpBlockEntity extends MachineBlockEntity im
     }
 
     private void updateActive(boolean newActive) {
-        if (isActiveComponent.isActive != newActive) {
-            isActiveComponent.isActive = newActive;
-            sync();
-        }
+        isActiveComponent.updateActive(newActive, this);
     }
 
     private static final int[] DX = new int[] { -1, 0, 1, 1, 1, 0, -1, -1 };

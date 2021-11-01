@@ -190,7 +190,7 @@ public class SteamDrillItem extends Item implements DynamicAttributeTool, MagnaT
                     continue;
                 ItemStack adjStack = inv.getStack(adjSlot);
                 Integer burnTicks = FuelRegistry.INSTANCE.get(adjStack.getItem());
-                if (burnTicks != null && burnTicks > 0) {
+                if (burnTicks != null && burnTicks > 0 && isFuelAllowed(adjStack)) {
                     if (simulation.isActing()) {
                         Item adjItem = adjStack.getItem();
                         adjStack.decrement(1);
@@ -203,6 +203,10 @@ public class SteamDrillItem extends Item implements DynamicAttributeTool, MagnaT
             }
         }
         return 0;
+    }
+
+    private static boolean isFuelAllowed(ItemStack fuelStack) {
+        return !fuelStack.isDamageable();
     }
 
     @Override

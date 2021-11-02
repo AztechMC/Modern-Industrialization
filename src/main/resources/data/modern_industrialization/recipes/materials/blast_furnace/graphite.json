@@ -1,0 +1,17 @@
+{
+	"type": "modern_industrialization:blast_furnace",
+	"eu": 8,
+	"duration": 100,
+
+	"item_inputs":[
+		{
+			"item": "modern_industrialization:carbon_tiny_dust",
+			"amount": 9
+		}
+	],
+
+	"item_outputs": {
+		"item": "modern_industrialization:graphite_ingot",
+		"amount": 1
+	}
+}

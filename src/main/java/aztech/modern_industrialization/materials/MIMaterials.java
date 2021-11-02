@@ -474,7 +474,11 @@ public class MIMaterials {
 
         MaterialRegistry.addMaterial(new MaterialBuilder("sulfur", DULL, DUST, 0xddb614, SOFT).addParts(DUST, TINY_DUST)
                 .addParts(BLOCK.of(MaterialBlockSet.REDSTONE)).addRecipes(StandardRecipes::apply).build());
-
+    
+        MaterialRegistry.addMaterial(
+                new MaterialBuilder("graphite", DULL, new BakableTargetColoramp(0x131313, common("ingot"), template("graphite_ingot")), SOFT)
+                        .addParts(BOLT, ROD, DOUBLE_INGOT, INGOT, LARGE_PLATE, NUGGET, PLATE)
+                        .addParts(BLOCK.of(MaterialBlockSet.LAPIS)).addRecipes(StandardRecipes::apply).build());
     }
 
     /**

@@ -6,6 +6,11 @@
 		"item": "modern_industrialization:bronze_macerator",
 		"amount": 1
 	},
+	"fluid_inputs":
+		{
+			"fluid": "modern_industrialization:oxygen",
+			"amount": 444
+		},
 	"item_outputs": [{
 		"item": "minecraft:copper_ingot",
 		"amount": 16

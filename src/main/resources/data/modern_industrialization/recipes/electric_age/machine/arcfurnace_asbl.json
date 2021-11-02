@@ -1,0 +1,27 @@
+{
+	"type" : "minecraft:crafting_shaped",
+	"pattern" : [
+		"ccc",
+		"CHC",
+		"GGG"
+	],
+	"key":
+	{
+		"G" : {
+			"item" : "modern_industrialization:graphite_plate"
+		},
+		"H" :{
+			"item" : "modern_industrialization:basic_machine_hull"
+		},
+		"c": {
+			"item" : "modern_industrialization:annealed_copper_wire"
+		},
+		"C" : {
+			"item" : "modern_industrialization:analog_circuit"
+		}
+	},
+
+	"result": {
+		"item": "modern_industrialization:arcfurnace"
+	}
+}

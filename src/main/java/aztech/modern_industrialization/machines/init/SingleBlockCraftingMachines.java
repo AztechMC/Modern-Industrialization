@@ -153,10 +153,10 @@ public final class SingleBlockCraftingMachines {
                 TIER_STEEL | TIER_ELECTRIC
         );
         registerMachineTiers(
-                "arcfurnace", MIMachineRecipeTypes.ARCFURNACE, 1, 8, 0, 0, guiParams -> {},
+                "arcfurnace", MIMachineRecipeTypes.ARCFURNACE, 1, 8, 1, 0, guiParams -> {},
                 new ProgressBar.Parameters(77-16, 33, "arrow"), new RecipeEfficiencyBar.Parameters(38, 66), DEFAULT_ENERGY_BAR,
-                items -> items.addSlot(56-16, 35).addSlots(102-16, 27, 2, 4), fluids -> {},
-                true, true, false,
+                items -> items.addSlot(56-16, 47-20).addSlots(102-16, 27, 2, 4), fluids -> fluids.addSlot(56-16, 47-2),
+                true, true, true,
                 TIER_ELECTRIC
         );
         // @formatter:on

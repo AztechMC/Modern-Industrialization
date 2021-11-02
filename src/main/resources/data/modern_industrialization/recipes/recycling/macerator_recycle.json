@@ -1,7 +1,7 @@
 {
-	"type": "modern_industrialization:arcfurnace",
-	"eu": 12,
-	"duration": 100,
+	"type": "modern_industrialization:arc_furnace",
+	"eu": 28,
+	"duration": 1200,
 	"item_inputs": {
 		"item": "modern_industrialization:bronze_macerator",
 		"amount": 1

@@ -1,0 +1,25 @@
+{
+	"type": "modern_industrialization:arcfurnace",
+	"eu": 12,
+	"duration": 100,
+	"item_inputs": {
+		"item": "modern_industrialization:bronze_macerator",
+		"amount": 1
+	},
+	"item_outputs": [{
+		"item": "minecraft:copper_ingot",
+		"amount": 16
+	},{
+		"item": "modern_industrialization:bronze_ingot",
+		"amount": 13
+	},{
+		"item": "modern_industrialization:bronze_nugget",
+		"amount": 8
+	},{
+		"item": "modern_industrialization:copper_nugget",
+		"amount": 3
+	},{
+		"item": "modern_industrialization:diamond_tiny_dust",
+		"amount": 18
+	}]
+}

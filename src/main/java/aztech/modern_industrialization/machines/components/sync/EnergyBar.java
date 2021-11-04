@@ -23,6 +23,9 @@
  */
 package aztech.modern_industrialization.machines.components.sync;
 
+import static aztech.modern_industrialization.machines.components.sync.EnergyBar.Client.Renderer.HEIGHT;
+import static aztech.modern_industrialization.machines.components.sync.EnergyBar.Client.Renderer.WIDTH;
+
 import aztech.modern_industrialization.machines.MachineScreenHandlers;
 import aztech.modern_industrialization.machines.SyncedComponent;
 import aztech.modern_industrialization.machines.SyncedComponents;
@@ -100,25 +103,25 @@ public class EnergyBar {
         }
 
         public class Renderer implements ClientComponentRenderer {
-            private static final int WIDTH = 13;
-            private static final int HEIGHT = 18;
+            public static final int WIDTH = 13;
+            public static final int HEIGHT = 18;
 
-            @Override
-            public void renderBackground(DrawableHelper helper, MatrixStack matrices, int x, int y) {
+            public static void renderEnergy(DrawableHelper helper, MatrixStack matrices, int px, int py, float fill) {
                 RenderSystem.setShaderTexture(0, MachineScreenHandlers.SLOT_ATLAS);
-                int px = x + params.renderX;
-                int py = y + params.renderY;
                 helper.drawTexture(matrices, px, py, 230, 0, WIDTH, HEIGHT);
-                float fill = (float) eu / maxEu;
-                int fillPixels = (int) (fill * HEIGHT);
+                int fillPixels = (int) (fill * HEIGHT * 0.9 + HEIGHT * 0.1);
                 if (fill > 0.95)
                     fillPixels = HEIGHT;
                 helper.drawTexture(matrices, px, py + HEIGHT - fillPixels, 243, HEIGHT - fillPixels, WIDTH, fillPixels);
             }
 
             @Override
-            public void renderTooltip(MachineScreenHandlers.ClientScreen screen, MatrixStack matrices, int x, int y, int cursorX, int cursorY) {
+            public void renderBackground(DrawableHelper helper, MatrixStack matrices, int x, int y) {
+                renderEnergy(helper, matrices, x + params.renderX, y + params.renderY, (float) eu / maxEu);
+            }
 
+            @Override
+            public void renderTooltip(MachineScreenHandlers.ClientScreen screen, MatrixStack matrices, int x, int y, int cursorX, int cursorY) {
                 if (RenderHelper.isPointWithinRectangle(params.renderX, params.renderY, WIDTH, HEIGHT, cursorX - x, cursorY - y)) {
                     Text tooltip;
                     if (Screen.hasShiftDown()) {

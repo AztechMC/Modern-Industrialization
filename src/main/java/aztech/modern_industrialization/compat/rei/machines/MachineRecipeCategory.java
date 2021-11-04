@@ -26,22 +26,28 @@ package aztech.modern_industrialization.compat.rei.machines;
 import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.inventory.SlotPositions;
 import aztech.modern_industrialization.machines.MachineScreenHandlers;
+import aztech.modern_industrialization.machines.components.sync.EnergyBar;
 import aztech.modern_industrialization.machines.components.sync.ProgressBar;
 import com.mojang.blaze3d.systems.RenderSystem;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import me.shedaniel.math.Point;
 import me.shedaniel.math.Rectangle;
+import me.shedaniel.rei.api.client.REIRuntime;
 import me.shedaniel.rei.api.client.gui.Renderer;
 import me.shedaniel.rei.api.client.gui.widgets.Slot;
+import me.shedaniel.rei.api.client.gui.widgets.Tooltip;
 import me.shedaniel.rei.api.client.gui.widgets.Widget;
 import me.shedaniel.rei.api.client.gui.widgets.Widgets;
 import me.shedaniel.rei.api.client.registry.display.DisplayCategory;
 import me.shedaniel.rei.api.common.category.CategoryIdentifier;
 import me.shedaniel.rei.api.common.entry.EntryIngredient;
 import me.shedaniel.rei.api.common.util.EntryStacks;
+import net.minecraft.client.gui.Element;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
@@ -91,10 +97,8 @@ public class MachineRecipeCategory implements DisplayCategory<MachineRecipeDispl
                 Y = Math.max(Y, positions.getY(i) + 16);
             }
         }
-        int oldY = Y;
-        Y += 42;
         int xoffset = bounds.x + (bounds.width - X + x) / 2 - x;
-        int yoffset = bounds.y + (bounds.height - Y + y) / 2 - y;
+        int yoffset = bounds.y + 17 - y;
 
         // Draw slots
         SlotDrawer drawer = (entryStream, positions, input, fluid) -> {
@@ -127,15 +131,40 @@ public class MachineRecipeCategory implements DisplayCategory<MachineRecipeDispl
                     (float) (System.currentTimeMillis() / recipeMillis % 1.0));
         }));
 
-        // Draw labels
-        widgets.add(Widgets.createLabel(new Point(bounds.x + 5, yoffset + oldY + 3),
-                new TranslatableText("text.modern_industrialization.base_eu_t", recipeDisplay.getEu())).leftAligned());
-        widgets.add(Widgets.createLabel(new Point(bounds.x + 5, yoffset + oldY + 16),
-                new TranslatableText("text.modern_industrialization.base_duration_seconds", recipeDisplay.getSeconds())).leftAligned());
+        Text totalEuTooltip = new TranslatableText("text.modern_industrialization.base_eu_total", recipeDisplay.getTicks() * recipeDisplay.getEu());
+
+        // Draw filled energy bar
+        widgets.add(Widgets.createDrawableWidget((helper, matrices, mouseX, mouseY, delta) -> {
+            matrices.push();
+            matrices.translate(bounds.x + 5, bounds.y + 5, 0);
+            matrices.scale(0.5f, 0.5f, 0.5f);
+            EnergyBar.Client.Renderer.renderEnergy(helper, matrices, 0, 0, 1);
+            matrices.pop();
+        }));
+        // Draw EU/t and seconds
         widgets.add(Widgets
-                .createLabel(new Point(bounds.x + 5, yoffset + oldY + 29),
-                        new TranslatableText("text.modern_industrialization.base_eu_total", recipeDisplay.getTicks() * recipeDisplay.getEu()))
-                .leftAligned());
+                .createLabel(new Point(bounds.x + 15, bounds.y + 5),
+                        new TranslatableText("text.modern_industrialization.base_eu_t", recipeDisplay.getEu()))
+                .leftAligned().noShadow().color(0xFF404040, 0xFFBBBBBB));
+        widgets.add(Widgets
+                .createLabel(new Point(bounds.getMaxX() - 5, bounds.y + 5),
+                        new TranslatableText("text.modern_industrialization.base_duration_seconds", recipeDisplay.getSeconds()))
+                .rightAligned().noShadow().color(0xFF404040, 0xFFBBBBBB));
+        // Total EU tooltip
+        Rectangle tooltipZone = new Rectangle(bounds.x + 2, bounds.y + 5, bounds.width - 10, 15);
+        widgets.add(new Widget() {
+            @Override
+            public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
+                if (tooltipZone.contains(mouseX, mouseY)) {
+                    REIRuntime.getInstance().queueTooltip(Tooltip.create(totalEuTooltip));
+                }
+            }
+
+            @Override
+            public List<? extends Element> children() {
+                return Collections.emptyList();
+            }
+        });
 
         return widgets;
     }
@@ -150,9 +179,8 @@ public class MachineRecipeCategory implements DisplayCategory<MachineRecipeDispl
             }
         }
 
-        // Room for EU text below
-        Y += 42;
-        return Y - y + 15;
+        // Room for text above
+        return Y - y + 25;
     }
 
     @Override
@@ -165,7 +193,7 @@ public class MachineRecipeCategory implements DisplayCategory<MachineRecipeDispl
             }
         }
 
-        return Math.max(X - x + 15, 150);
+        return Math.max(X - x + 15, 120);
     }
 
     private static Widget createFluidSlotBackground(Point point) {

@@ -58,10 +58,17 @@ public class FluidFuelsCategory implements DisplayCategory<FluidFuelDisplay> {
     public List<Widget> setupDisplay(FluidFuelDisplay recipeDisplay, Rectangle bounds) {
         List<Widget> widgets = new ArrayList<>();
         widgets.add(Widgets.createRecipeBase(bounds));
-        widgets.add(Widgets.createSlot(new Point(bounds.x + 66, bounds.y + 10)).entry(EntryStacks.of(recipeDisplay.fluid)));
+        widgets.add(Widgets.createSlot(new Point(bounds.x + 15, bounds.y + 10)).entry(EntryStacks.of(recipeDisplay.fluid)));
         int totalEnergy = FluidFuelRegistry.getEu(recipeDisplay.fluid);
-        widgets.add(Widgets.createLabel(new Point(bounds.x + 10, bounds.y + 35),
-                new TranslatableText("text.modern_industrialization.eu_in_diesel_generator", totalEnergy)).leftAligned());
+        widgets.add(Widgets
+                .createLabel(new Point(bounds.x + 50, bounds.y + 14),
+                        new TranslatableText("text.modern_industrialization.eu_in_diesel_generator", totalEnergy))
+                .leftAligned().noShadow().color(0xFF404040, 0xFFBBBBBB));
         return widgets;
+    }
+
+    @Override
+    public int getDisplayHeight() {
+        return 35;
     }
 }

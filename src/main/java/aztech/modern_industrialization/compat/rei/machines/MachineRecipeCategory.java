@@ -36,7 +36,6 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import me.shedaniel.math.Point;
 import me.shedaniel.math.Rectangle;
-import me.shedaniel.rei.api.client.REIRuntime;
 import me.shedaniel.rei.api.client.gui.Renderer;
 import me.shedaniel.rei.api.client.gui.widgets.Slot;
 import me.shedaniel.rei.api.client.gui.widgets.Tooltip;
@@ -156,7 +155,7 @@ public class MachineRecipeCategory implements DisplayCategory<MachineRecipeDispl
             @Override
             public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
                 if (tooltipZone.contains(mouseX, mouseY)) {
-                    REIRuntime.getInstance().queueTooltip(Tooltip.create(totalEuTooltip));
+                    Tooltip.create(totalEuTooltip).queue();
                 }
             }
 

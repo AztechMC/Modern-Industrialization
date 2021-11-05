@@ -52,6 +52,8 @@ import net.minecraft.world.World;
 public class ItemNetwork extends PipeNetwork {
     private static final ReferenceOpenHashSet<Item> WHITELIST_CACHED_SET = new ReferenceOpenHashSet<>();
 
+    private int inactiveTicks = 0;
+
     public ItemNetwork(int id, PipeNetworkData data) {
         super(id, data == null ? new ItemNetworkData() : data);
     }
@@ -62,41 +64,58 @@ public class ItemNetwork extends PipeNetwork {
         if (ticked)
             return;
         ticked = true;
+        if (inactiveTicks == 0) {
+            doNetworkTransfer(world);
+            inactiveTicks = 60;
+        }
+        --inactiveTicks;
+    }
 
-        Storage<ItemVariant> insertTargets = null;
+    private void doNetworkTransfer(World world) {
+        List<ExtractionTarget> extractionTargets = new ArrayList<>();
+        for (Map.Entry<BlockPos, PipeNetworkNode> entry : nodes.entrySet()) {
+            if (entry.getValue() != null) {
+                BlockPos pos = entry.getKey();
+                ItemNetworkNode itemNode = (ItemNetworkNode) entry.getValue();
+                for (ItemNetworkNode.ItemConnection connection : itemNode.connections) {
+                    if (connection.canExtract()) {
+                        Storage<ItemVariant> source = ItemStorage.SIDED.find(world, pos.offset(connection.direction),
+                                connection.direction.getOpposite());
 
-        try (Transaction tx = Transaction.openOuter()) {
-            for (Map.Entry<BlockPos, PipeNetworkNode> entry : nodes.entrySet()) {
-                if (entry.getValue() != null) {
-                    BlockPos pos = entry.getKey();
-                    ItemNetworkNode itemNode = (ItemNetworkNode) entry.getValue();
-                    if (itemNode.inactiveTicks == 0) {
-                        for (ItemNetworkNode.ItemConnection connection : itemNode.connections) {
-                            if (connection.canExtract()) {
-                                Storage<ItemVariant> source = ItemStorage.SIDED.find(world, pos.offset(connection.direction),
-                                        connection.direction.getOpposite());
-
-                                if (insertTargets == null) {
-                                    insertTargets = getAggregateInsertTarget(world);
-                                }
-
-                                StorageUtil.move(source, insertTargets, connection::canStackMoveThrough, connection.getMoves(), tx);
-                            }
+                        if (source != null) {
+                            extractionTargets.add(new ExtractionTarget(connection, source));
                         }
-                        itemNode.inactiveTicks = 60;
                     }
-                    itemNode.inactiveTicks--;
                 }
             }
+        }
+        // Lower priority extracts first.
+        extractionTargets.sort(Comparator.comparing(et -> et.connection.priority));
 
+        // Do the actual transfer.
+        Storage<ItemVariant> insertTargets = getAggregateInsertTarget(world);
+        try (Transaction tx = Transaction.openOuter()) {
+            for (ExtractionTarget target : extractionTargets) {
+                StorageUtil.move(target.storage, insertTargets, target.connection::canStackMoveThrough, target.connection.getMoves(), tx);
+            }
             tx.commit();
+        }
+    }
+
+    private static class ExtractionTarget {
+        private final ItemNetworkNode.ItemConnection connection;
+        private final Storage<ItemVariant> storage;
+
+        private ExtractionTarget(ItemNetworkNode.ItemConnection connection, Storage<ItemVariant> storage) {
+            this.connection = connection;
+            this.storage = storage;
         }
     }
 
     /**
      * Find all connections in which to insert that are loaded.
      */
-    public Storage<ItemVariant> getAggregateInsertTarget(World world) {
+    private Storage<ItemVariant> getAggregateInsertTarget(World world) {
         Int2ObjectMap<PriorityBucket> priorityBuckets = new Int2ObjectOpenHashMap<>();
 
         for (Map.Entry<BlockPos, PipeNetworkNode> entry : nodes.entrySet()) {

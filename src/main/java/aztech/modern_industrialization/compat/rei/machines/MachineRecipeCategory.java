@@ -150,7 +150,7 @@ public class MachineRecipeCategory implements DisplayCategory<MachineRecipeDispl
                         new TranslatableText("text.modern_industrialization.base_duration_seconds", recipeDisplay.getSeconds()))
                 .rightAligned().noShadow().color(0xFF404040, 0xFFBBBBBB));
         // Total EU tooltip
-        Rectangle tooltipZone = new Rectangle(bounds.x + 2, bounds.y + 5, bounds.width - 10, 15);
+        Rectangle tooltipZone = new Rectangle(bounds.x + 2, bounds.y + 5, bounds.width - 10, 12);
         widgets.add(new Widget() {
             @Override
             public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {

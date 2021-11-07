@@ -29,6 +29,7 @@ import aztech.modern_industrialization.util.UnsupportedOperationInventory;
 import com.google.common.base.Preconditions;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.minecraft.entity.player.PlayerEntity;
@@ -104,6 +105,11 @@ public class ConfigurableFluidStack extends AbstractConfigurableStack<Fluid, Flu
             return false;
         ConfigurableFluidStack that = (ConfigurableFluidStack) o;
         return capacity == that.capacity;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), capacity);
     }
 
     /**

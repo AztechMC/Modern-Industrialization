@@ -66,6 +66,17 @@ public class CrafterComponent implements IComponent.ServerOnly {
         List<ConfigurableFluidStack> getFluidInputs();
 
         List<ConfigurableFluidStack> getFluidOutputs();
+
+        // TODO: this hash is expensive to compute, maybe we could do proper change
+        // detection
+        default int hash() {
+            int hash = 1;
+            hash = 31 * hash + getItemInputs().hashCode();
+            hash = 31 * hash + getItemOutputs().hashCode();
+            hash = 31 * hash + getFluidInputs().hashCode();
+            hash = 31 * hash + getFluidOutputs().hashCode();
+            return hash;
+        }
     }
 
     public interface Behavior {
@@ -104,6 +115,9 @@ public class CrafterComponent implements IComponent.ServerOnly {
 
     private long previousBaseEu = -1;
     private long previousMaxEu = -1;
+
+    private int lastInvHash = 0;
+    private int lastForcedTick = 0;
 
     public float getProgress() {
         return (float) usedEnergy / recipeEnergy;
@@ -162,6 +176,10 @@ public class CrafterComponent implements IComponent.ServerOnly {
             if (behavior.consumeEu(1, SIMULATE) == 1) {
                 recipeStarted = updateActiveRecipe();
             }
+        }
+
+        if (activeRecipe != null) {
+            lastForcedTick = 0;
         }
 
         // PROCESS RECIPE TICK
@@ -275,6 +293,18 @@ public class CrafterComponent implements IComponent.ServerOnly {
         if (efficiencyTicks > 0) {
             return Collections.singletonList(activeRecipe);
         } else {
+            int currentHash = inventory.hash();
+            if (currentHash == lastInvHash) {
+                if (lastForcedTick == 0) {
+                    lastForcedTick = 100;
+                } else {
+                    --lastForcedTick;
+                    return Collections.emptyList();
+                }
+            } else {
+                lastInvHash = currentHash;
+            }
+
             ServerWorld serverWorld = (ServerWorld) behavior.getCrafterWorld();
             MachineRecipeType recipeType = behavior.recipeType();
             List<MachineRecipe> recipes = new ArrayList<>(recipeType.getFluidOnlyRecipes(serverWorld));

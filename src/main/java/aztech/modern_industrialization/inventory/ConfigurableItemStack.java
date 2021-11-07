@@ -28,6 +28,7 @@ import aztech.modern_industrialization.util.Simulation;
 import aztech.modern_industrialization.util.UnsupportedOperationInventory;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Predicate;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
@@ -86,6 +87,23 @@ public class ConfigurableItemStack extends AbstractConfigurableStack<Item, ItemV
     public ConfigurableItemStack(ConfigurableItemStack other) {
         super(other);
         this.adjustedCapacity = other.adjustedCapacity;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
+        if (!super.equals(o))
+            return false;
+        ConfigurableItemStack that = (ConfigurableItemStack) o;
+        return adjustedCapacity == that.adjustedCapacity;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), adjustedCapacity);
     }
 
     @Override

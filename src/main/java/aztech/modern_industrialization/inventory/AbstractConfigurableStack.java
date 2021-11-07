@@ -25,6 +25,7 @@ package aztech.modern_industrialization.inventory;
 
 import aztech.modern_industrialization.util.Simulation;
 import java.util.List;
+import java.util.Objects;
 import net.fabricmc.fabric.api.transfer.v1.storage.StoragePreconditions;
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
 import net.fabricmc.fabric.api.transfer.v1.storage.TransferVariant;
@@ -105,6 +106,12 @@ public abstract class AbstractConfigurableStack<T, K extends TransferVariant<T>>
                 && playerLockable == that.playerLockable && playerInsert == that.playerInsert && playerExtract == that.playerExtract
                 && pipesInsert == that.pipesInsert && pipesExtract == that.pipesExtract && key.equals(that.key)
                 && lockedInstance == that.lockedInstance;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(key, amount, lockedInstance, playerLocked, machineLocked, playerLockable, playerInsert, playerExtract, pipesInsert,
+                pipesExtract);
     }
 
     public void setAmount(long amount) {

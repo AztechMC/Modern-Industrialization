@@ -23,15 +23,17 @@
  */
 package aztech.modern_industrialization.util;
 
+import aztech.modern_industrialization.api.ICacheableApiHost;
+import aztech.modern_industrialization.mixin.BlockApiCacheAccessor;
 import net.fabricmc.fabric.api.lookup.v1.block.BlockApiCache;
 import net.fabricmc.fabric.api.lookup.v1.block.BlockApiLookup;
+import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
 import org.jetbrains.annotations.Nullable;
 
 /**
- * Version of {@link BlockApiCache} that will only query APIs if the target
- * chunk is ticking.
+ * Version of {@link BlockApiCache} that allows BEs to opt into strong caching.
  */
 // TODO: consider PR'ing this to fabric
 public class MIBlockApiCache<A, C> {
@@ -39,21 +41,32 @@ public class MIBlockApiCache<A, C> {
         return new MIBlockApiCache<>(lookup, world, pos);
     }
 
+    private final BlockApiLookup<A, C> lookup;
     private final BlockApiCache<A, C> cache;
-    private final ServerWorld world;
-    private final BlockPos pos;
+    @Nullable
+    private A cachedApi = null;
+
+    private final Runnable invalidateCallback = () -> cachedApi = null;
 
     private MIBlockApiCache(BlockApiLookup<A, C> lookup, ServerWorld world, BlockPos pos) {
+        this.lookup = lookup;
         this.cache = BlockApiCache.create(lookup, world, pos);
-        this.world = world;
-        this.pos = pos;
     }
 
     @Nullable
     public A find(C context) {
-        if (world.method_37117(pos)) {
-            return cache.find(context);
+        if (cachedApi != null) {
+            return cachedApi;
         }
-        return null;
+        A foundApi = cache.find(context);
+        if (foundApi != null) {
+            BlockEntity be = ((BlockApiCacheAccessor) cache).getCachedBlockEntity();
+            if (be instanceof ICacheableApiHost cacheHost) {
+                if (cacheHost.canCache(lookup, foundApi, invalidateCallback)) {
+                    cachedApi = foundApi;
+                }
+            }
+        }
+        return foundApi;
     }
 }

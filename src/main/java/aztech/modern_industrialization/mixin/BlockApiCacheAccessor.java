@@ -21,24 +21,17 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.api;
+package aztech.modern_industrialization.mixin;
 
-import aztech.modern_industrialization.util.Tickable;
-import net.minecraft.block.BlockEntityProvider;
-import net.minecraft.block.BlockState;
+import net.fabricmc.fabric.impl.lookup.block.BlockApiCacheImpl;
 import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.block.entity.BlockEntityTicker;
-import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.gen.Accessor;
 
-public interface TickableBlock extends BlockEntityProvider {
-    @Override
-    default @Nullable <T extends BlockEntity> BlockEntityTicker<T> getTicker(World world, BlockState state, BlockEntityType<T> type) {
-        return (w, p, s, be) -> {
-            if (be instanceof Tickable) {
-                ((Tickable) be).tick();
-            }
-        };
-    }
+@Mixin(value = BlockApiCacheImpl.class, remap = false)
+public interface BlockApiCacheAccessor {
+    @Accessor
+    @Nullable
+    BlockEntity getCachedBlockEntity();
 }

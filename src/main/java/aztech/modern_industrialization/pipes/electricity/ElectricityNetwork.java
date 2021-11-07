@@ -28,11 +28,9 @@ import aztech.modern_industrialization.api.energy.EnergyExtractable;
 import aztech.modern_industrialization.api.energy.EnergyInsertable;
 import aztech.modern_industrialization.pipes.api.PipeNetwork;
 import aztech.modern_industrialization.pipes.api.PipeNetworkData;
-import aztech.modern_industrialization.pipes.api.PipeNetworkNode;
 import aztech.modern_industrialization.util.Simulation;
 import java.util.*;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.server.world.ServerWorld;
 
 public class ElectricityNetwork extends PipeNetwork {
     final CableTier tier;
@@ -43,24 +41,17 @@ public class ElectricityNetwork extends PipeNetwork {
     }
 
     @Override
-    public void tick(World world) {
-        // Only tick once
-        if (ticked)
-            return;
-        ticked = true;
-
+    public void tick(ServerWorld world) {
         // Gather targets
         List<EnergyInsertable> insertables = new ArrayList<>();
         List<EnergyExtractable> extractables = new ArrayList<>();
         long networkAmount = 0;
         int loadedNodeCount = 0;
-        for (Map.Entry<BlockPos, PipeNetworkNode> entry : nodes.entrySet()) {
-            if (entry.getValue() != null) {
-                ElectricityNetworkNode node = (ElectricityNetworkNode) entry.getValue();
-                node.appendAttributes(world, entry.getKey(), insertables, extractables);
-                networkAmount += node.eu;
-                loadedNodeCount++;
-            }
+        for (var entry : iterateTickingNodes()) {
+            ElectricityNetworkNode node = (ElectricityNetworkNode) entry.getNode();
+            node.appendAttributes(world, entry.getPos(), insertables, extractables);
+            networkAmount += node.eu;
+            loadedNodeCount++;
         }
 
         // Filter targets
@@ -75,13 +66,11 @@ public class ElectricityNetwork extends PipeNetwork {
         networkAmount -= transferForTargets(EnergyInsertable::insertEnergy, insertables, insertMaxAmount);
 
         // Split energy evenly across the nodes
-        for (PipeNetworkNode node : nodes.values()) {
-            if (node != null) {
-                ElectricityNetworkNode electricityNode = (ElectricityNetworkNode) node;
-                electricityNode.eu = networkAmount / loadedNodeCount;
-                networkAmount -= electricityNode.eu;
-                --loadedNodeCount;
-            }
+        for (var entry : iterateTickingNodes()) {
+            ElectricityNetworkNode electricityNode = (ElectricityNetworkNode) entry.getNode();
+            electricityNode.eu = networkAmount / loadedNodeCount;
+            networkAmount -= electricityNode.eu;
+            --loadedNodeCount;
         }
     }
 

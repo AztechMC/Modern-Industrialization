@@ -31,7 +31,6 @@ import aztech.modern_industrialization.pipes.api.*;
 import aztech.modern_industrialization.pipes.gui.IPipeScreenHandlerHelper;
 import aztech.modern_industrialization.util.NbtHelper;
 import aztech.modern_industrialization.util.RenderHelper;
-import aztech.modern_industrialization.util.Tickable;
 import java.util.*;
 import net.fabricmc.fabric.api.block.entity.BlockEntityClientSerializable;
 import net.fabricmc.fabric.api.rendering.data.v1.RenderAttachmentBlockEntity;
@@ -54,8 +53,7 @@ import net.minecraft.util.shape.VoxelShapes;
  * The BlockEntity for a pipe.
  */
 // TODO: add isClient checks wherever it is necessary
-public class PipeBlockEntity extends FastBlockEntity
-        implements IPipeScreenHandlerHelper, Tickable, BlockEntityClientSerializable, RenderAttachmentBlockEntity {
+public class PipeBlockEntity extends FastBlockEntity implements IPipeScreenHandlerHelper, BlockEntityClientSerializable, RenderAttachmentBlockEntity {
     private static final int MAX_PIPES = 3;
     private static final VoxelShape[][][] SHAPE_CACHE;
     static final VoxelShape DEFAULT_SHAPE;
@@ -85,7 +83,7 @@ public class PipeBlockEntity extends FastBlockEntity
      */
     boolean stateReplaced = false;
 
-    private void loadPipes() {
+    public void loadPipes() {
         if (world.isClient)
             return;
 
@@ -277,15 +275,8 @@ public class PipeBlockEntity extends FastBlockEntity
     }
 
     @Override
-    public void tick() {
-        loadPipes();
-        for (PipeNetworkNode pipe : pipes) {
-            pipe.tick(world, pos);
-            if (pipe.shouldSync()) {
-                sync();
-            }
-        }
-        markDirty();
+    public void cancelRemoval() {
+        PipeNetworks.scheduleLoadPipe(world, this);
     }
 
     public void onConnectionsChanged() {

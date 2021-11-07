@@ -45,11 +45,11 @@ public class ElectricityNetworkNode extends PipeNetworkNode {
     private final List<MIBlockApiCache<EnergyMoveable, @NotNull Direction>> caches = new ArrayList<>();
     long eu = 0;
 
-    public void appendAttributes(World world, BlockPos pos, List<EnergyInsertable> insertables, List<EnergyExtractable> extractables) {
+    public void appendAttributes(ServerWorld world, BlockPos pos, List<EnergyInsertable> insertables, List<EnergyExtractable> extractables) {
         if (caches.size() != connections.size()) {
             caches.clear();
             for (Direction direction : connections) {
-                caches.add(MIBlockApiCache.create(EnergyApi.MOVEABLE, (ServerWorld) world, pos.offset(direction)));
+                caches.add(MIBlockApiCache.create(EnergyApi.MOVEABLE, world, pos.offset(direction)));
             }
         }
         for (int i = 0; i < connections.size(); ++i) {

@@ -24,7 +24,6 @@
 package aztech.modern_industrialization.pipes.impl;
 
 import aztech.modern_industrialization.ModernIndustrialization;
-import aztech.modern_industrialization.api.TickableBlock;
 import aztech.modern_industrialization.pipes.MIPipes;
 import aztech.modern_industrialization.pipes.api.PipeNetworkNode;
 import aztech.modern_industrialization.pipes.api.PipeNetworkType;
@@ -58,7 +57,7 @@ import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 
-public class PipeBlock extends Block implements TickableBlock {
+public class PipeBlock extends Block implements BlockEntityProvider {
     public PipeBlock(Settings settings) {
         super(settings.allowsSpawning(MobSpawning.NO_SPAWN).nonOpaque().solidBlock((s, p, w) -> false));
     }

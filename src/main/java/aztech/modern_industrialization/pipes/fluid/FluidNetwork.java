@@ -30,13 +30,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.server.world.ServerWorld;
 
 public class FluidNetwork extends PipeNetwork {
     final int nodeCapacity;
@@ -47,51 +45,44 @@ public class FluidNetwork extends PipeNetwork {
     }
 
     @Override
-    public void tick(World world) {
-        // Only tick once
-        if (ticked)
-            return;
-        ticked = true;
-
+    public void tick(ServerWorld world) {
         // Gather targets and hopefully set fluid
         List<FluidTarget> targets = new ArrayList<>();
         long networkAmount = 0;
         int loadedNodeCount = 0;
-        for (Map.Entry<BlockPos, PipeNetworkNode> entry : nodes.entrySet()) {
-            if (entry.getValue() != null) {
-                FluidNetworkNode fluidNode = (FluidNetworkNode) entry.getValue();
-                fluidNode.gatherTargetsAndPickFluid(world, entry.getKey(), targets);
-                // Amount goes after the gather...() call because the gather...() call cleans
-                // invalid amounts.
-                networkAmount += fluidNode.amount;
-                loadedNodeCount++;
-            }
+        for (var entry : iterateTickingNodes()) {
+            FluidNetworkNode fluidNode = (FluidNetworkNode) entry.getNode();
+            fluidNode.gatherTargetsAndPickFluid(world, entry.getPos(), targets);
+            // Amount goes after the gather...() call because the gather...() call cleans
+            // invalid amounts.
+            networkAmount += fluidNode.amount;
+            loadedNodeCount++;
         }
         long networkCapacity = (long) loadedNodeCount * nodeCapacity;
         FluidVariant fluid = ((FluidNetworkData) data).fluid;
-        // If the fluid is EMPTY we stop here
-        if (fluid.isBlank()) {
-            return;
-        }
 
-        try (Transaction transaction = Transaction.openOuter()) {
-            // Extract from targets into the network
-            networkAmount += transferByPriority(Storage::extract, targets, fluid, networkCapacity - networkAmount, transaction);
-            // Insert into the targets from the network
-            networkAmount -= transferByPriority(Storage::insert, targets, fluid, networkAmount, transaction);
+        if (!fluid.isBlank()) {
+            try (Transaction transaction = Transaction.openOuter()) {
+                // Extract from targets into the network
+                networkAmount += transferByPriority(Storage::extract, targets, fluid, networkCapacity - networkAmount, transaction);
+                // Insert into the targets from the network
+                networkAmount -= transferByPriority(Storage::insert, targets, fluid, networkAmount, transaction);
 
-            transaction.commit();
-        }
+                transaction.commit();
+            }
 
-        // Split fluid evenly across the nodes
-        // Rebalance fluid inside the nodes
-        for (PipeNetworkNode node : nodes.values()) {
-            if (node != null) {
-                FluidNetworkNode fluidNode = (FluidNetworkNode) node;
+            // Split fluid evenly across the nodes
+            // Rebalance fluid inside the nodes
+            for (var entry : iterateTickingNodes()) {
+                FluidNetworkNode fluidNode = (FluidNetworkNode) entry.getNode();
                 fluidNode.amount = networkAmount / loadedNodeCount;
                 networkAmount -= fluidNode.amount;
                 loadedNodeCount--;
             }
+        }
+
+        for (var entry : iterateTickingNodes()) {
+            ((FluidNetworkNode) entry.getNode()).afterTick(world, entry.getPos());
         }
     }
 
@@ -177,7 +168,7 @@ public class FluidNetwork extends PipeNetwork {
             return true;
         if (onlyFluid)
             return false;
-        for (PipeNetworkNode node : nodes.values()) {
+        for (PipeNetworkNode node : getRawNodeMap().values()) {
             if (node == null || ((FluidNetworkNode) node).amount != 0) {
                 return false;
             }
@@ -199,13 +190,13 @@ public class FluidNetwork extends PipeNetwork {
      */
     protected void clearFluid() {
         // Check that every node is loaded.
-        for (PipeNetworkNode node : nodes.values()) {
+        for (PipeNetworkNode node : getRawNodeMap().values()) {
             if (node == null) {
                 return;
             }
         }
         // Clear
-        for (PipeNetworkNode node : nodes.values()) {
+        for (PipeNetworkNode node : getRawNodeMap().values()) {
             ((FluidNetworkNode) node).amount = 0;
         }
         ((FluidNetworkData) data).fluid = FluidVariant.blank();

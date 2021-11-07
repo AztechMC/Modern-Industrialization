@@ -71,19 +71,8 @@ public abstract class PipeNetworkNode {
         return network.manager;
     }
 
-    public void tick(World world, BlockPos pos) {
-        network.tick(world);
-    }
-
     public NbtCompound writeCustomData() {
         return new NbtCompound();
-    }
-
-    /**
-     * Return whether the network node should be synced.
-     */
-    public boolean shouldSync() {
-        return false;
     }
 
     public void appendDroppedStacks(List<ItemStack> droppedStacks) {

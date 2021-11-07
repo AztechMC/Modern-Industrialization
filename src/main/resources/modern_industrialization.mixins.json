@@ -4,6 +4,7 @@
   "package": "aztech.modern_industrialization.mixin",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
+    "BlockApiCacheAccessor",
     "BlockMixin",
     "IngredientMixin",
     "ItemStackMixin",

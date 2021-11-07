@@ -25,16 +25,20 @@ package aztech.modern_industrialization.pipes.impl;
 
 import aztech.modern_industrialization.pipes.api.PipeNetworkManager;
 import aztech.modern_industrialization.pipes.api.PipeNetworkType;
-import java.util.HashMap;
-import java.util.Map;
+import aztech.modern_industrialization.util.WorldHelper;
+import java.util.*;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.PersistentState;
+import net.minecraft.world.World;
 
 public class PipeNetworks extends PersistentState {
     private static final String NAME = "modern_industrialization_pipe_networks";
     private final Map<PipeNetworkType, PipeNetworkManager> managers;
+    private final Map<Long, List<Runnable>> loadPipesByChunk = new HashMap<>();
 
     public PipeNetworks(Map<PipeNetworkType, PipeNetworkManager> managers) {
         this.managers = managers;
@@ -42,12 +46,6 @@ public class PipeNetworks extends PersistentState {
 
     public PipeNetworkManager getManager(PipeNetworkType type) {
         return managers.computeIfAbsent(type, PipeNetworkManager::new);
-    }
-
-    public void onServerTickStart() {
-        for (PipeNetworkManager manager : managers.values()) {
-            manager.markNetworksAsUnticked();
-        }
     }
 
     @Override
@@ -75,5 +73,37 @@ public class PipeNetworks extends PersistentState {
         PipeNetworks networks = world.getPersistentStateManager().getOrCreate(PipeNetworks::readNbt, () -> new PipeNetworks(new HashMap<>()), NAME);
         networks.markDirty();
         return networks;
+    }
+
+    public static void scheduleLoadPipe(World world, PipeBlockEntity pipe) {
+        if (world instanceof ServerWorld sw) {
+            if (!sw.getServer().isOnThread()) {
+                throw new IllegalStateException("Can only load pipe on server from the server thread.");
+            }
+
+            PipeNetworks.get(sw).loadPipesByChunk.computeIfAbsent(ChunkPos.method_37232(pipe.getPos()), chunk -> new ArrayList<>())
+                    .add(pipe::loadPipes);
+        }
+    }
+
+    static {
+        ServerTickEvents.END_WORLD_TICK.register(world -> {
+            PipeNetworks networks = PipeNetworks.get(world);
+
+            // Load pipes
+            var it = networks.loadPipesByChunk.entrySet().iterator();
+            while (it.hasNext()) {
+                Map.Entry<Long, List<Runnable>> chunkEntry = it.next();
+                if (WorldHelper.isChunkTicking(world, chunkEntry.getKey())) {
+                    chunkEntry.getValue().forEach(Runnable::run);
+                    it.remove();
+                }
+            }
+
+            // Tick networks
+            for (PipeNetworkManager manager : networks.managers.values()) {
+                manager.tickNetworks(world);
+            }
+        });
     }
 }

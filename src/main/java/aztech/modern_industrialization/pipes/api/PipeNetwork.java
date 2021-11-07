@@ -23,11 +23,13 @@
  */
 package aztech.modern_industrialization.pipes.api;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
+import java.util.function.BiConsumer;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.util.math.ChunkPos;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * A pipe network. It is very important that you create a new empty data object
@@ -37,8 +39,10 @@ public abstract class PipeNetwork {
     protected int id;
     public PipeNetworkManager manager;
     public PipeNetworkData data;
-    public Map<BlockPos, PipeNetworkNode> nodes = new HashMap<>();
-    public boolean ticked = false;
+    private final Map<BlockPos, PipeNetworkNode> nodes = new HashMap<>();
+    private final Map<Long, Map<BlockPos, PipeNetworkNode>> nodesByChunk = new HashMap<>();
+    private final List<PosNode> tickingNodesCache = new ArrayList<>();
+    boolean tickingCacheValid = false;
 
     public PipeNetwork(int id, PipeNetworkData data) {
         this.id = id;
@@ -56,8 +60,7 @@ public abstract class PipeNetwork {
         return tag;
     }
 
-    public void tick(World world) {
-
+    public void tick(ServerWorld world) {
     }
 
     /**
@@ -70,5 +73,72 @@ public abstract class PipeNetwork {
      */
     public PipeNetworkData merge(PipeNetwork other) {
         return null;
+    }
+
+    @Nullable
+    public PipeNetworkNode getNode(BlockPos pos) {
+        return this.nodes.get(pos);
+    }
+
+    public void setNode(BlockPos pos, @Nullable PipeNetworkNode node) {
+        this.nodes.put(pos.toImmutable(), node);
+
+        this.nodesByChunk.computeIfAbsent(ChunkPos.method_37232(pos), p -> new HashMap<>()).put(pos.toImmutable(), node);
+    }
+
+    public void removeNode(BlockPos pos) {
+        this.nodes.remove(pos);
+
+        long chunk = ChunkPos.method_37232(pos);
+        Map<BlockPos, PipeNetworkNode> map = nodesByChunk.get(chunk);
+        map.remove(pos);
+        if (map.size() == 0) {
+            nodesByChunk.remove(chunk);
+        }
+    }
+
+    public Map<BlockPos, PipeNetworkNode> getRawNodeMap() {
+        return Collections.unmodifiableMap(this.nodes);
+    }
+
+    protected Collection<PosNode> iterateTickingNodes() {
+        if (!tickingCacheValid) {
+            tickingNodesCache.clear();
+            for (var chunkEntry : this.nodesByChunk.entrySet()) {
+                if (manager.tickingChunks.contains(chunkEntry.getKey())) {
+                    for (var entry : chunkEntry.getValue().entrySet()) {
+                        tickingNodesCache.add(new PosNode(entry.getKey(), entry.getValue()));
+                    }
+                }
+            }
+            tickingCacheValid = true;
+        }
+        return tickingNodesCache;
+    }
+
+    protected void forEachTickingNode(BiConsumer<BlockPos, PipeNetworkNode> consumer) {
+        for (var chunkEntry : this.nodesByChunk.entrySet()) {
+            if (manager.tickingChunks.contains(chunkEntry.getKey())) {
+                chunkEntry.getValue().forEach(consumer);
+            }
+        }
+    }
+
+    protected static class PosNode {
+        private final BlockPos pos;
+        private final PipeNetworkNode node;
+
+        public PosNode(BlockPos pos, PipeNetworkNode node) {
+            this.pos = pos;
+            this.node = node;
+        }
+
+        public BlockPos getPos() {
+            return pos;
+        }
+
+        public PipeNetworkNode getNode() {
+            return node;
+        }
     }
 }

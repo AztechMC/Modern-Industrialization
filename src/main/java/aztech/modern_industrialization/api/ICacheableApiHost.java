@@ -23,22 +23,12 @@
  */
 package aztech.modern_industrialization.api;
 
-import aztech.modern_industrialization.util.Tickable;
-import net.minecraft.block.BlockEntityProvider;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.block.entity.BlockEntityTicker;
-import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.world.World;
-import org.jetbrains.annotations.Nullable;
+import net.fabricmc.fabric.api.lookup.v1.block.BlockApiLookup;
 
-public interface TickableBlock extends BlockEntityProvider {
-    @Override
-    default @Nullable <T extends BlockEntity> BlockEntityTicker<T> getTicker(World world, BlockState state, BlockEntityType<T> type) {
-        return (w, p, s, be) -> {
-            if (be instanceof Tickable) {
-                ((Tickable) be).tick();
-            }
-        };
-    }
+public interface ICacheableApiHost {
+    /**
+     * Return true if the host allows caching the API, in which case it will notify
+     * the callback when the API changes.
+     */
+    <A, C> boolean canCache(BlockApiLookup<A, C> lookup, A apiInstance, Runnable invalidateCallback);
 }

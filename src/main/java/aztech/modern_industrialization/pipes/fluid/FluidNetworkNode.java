@@ -60,13 +60,12 @@ public class FluidNetworkNode extends PipeNetworkNode {
     long amount = 0;
     private final List<FluidConnection> connections = new ArrayList<>();
     private FluidVariant cachedFluid = FluidVariant.blank();
-    private boolean needsSync = false;
 
     /**
      * Add all valid targets to the target list, and pick the fluid for the network
      * if no fluid is set.
      */
-    void gatherTargetsAndPickFluid(World world, BlockPos pos, List<FluidTarget> targets) {
+    void gatherTargetsAndPickFluid(ServerWorld world, BlockPos pos, List<FluidTarget> targets) {
         FluidNetworkData data = (FluidNetworkData) network.data;
         FluidNetwork network = (FluidNetwork) this.network;
 
@@ -89,9 +88,9 @@ public class FluidNetworkNode extends PipeNetworkNode {
         }
     }
 
-    private Storage<FluidVariant> getNeighborStorage(World world, BlockPos pos, FluidConnection connection) {
+    private Storage<FluidVariant> getNeighborStorage(ServerWorld world, BlockPos pos, FluidConnection connection) {
         if (connection.cache == null) {
-            connection.cache = MIBlockApiCache.create(FluidStorage.SIDED, (ServerWorld) world, pos.offset(connection.direction));
+            connection.cache = MIBlockApiCache.create(FluidStorage.SIDED, world, pos.offset(connection.direction));
         }
         Storage<FluidVariant> storage = connection.cache.find(connection.direction.getOpposite());
         if (storage != null) {
@@ -313,22 +312,13 @@ public class FluidNetworkNode extends PipeNetworkNode {
         return tag;
     }
 
-    @Override
-    public void tick(World world, BlockPos pos) {
-        super.tick(world, pos);
-
+    public void afterTick(ServerWorld world, BlockPos pos) {
         FluidVariant networkFluid = ((FluidNetworkData) network.data).fluid;
         if (!networkFluid.equals(cachedFluid)) {
             cachedFluid = networkFluid;
-            needsSync = true;
+            // Equivalent to calling sync()
+            world.getChunkManager().markForUpdate(pos);
         }
-    }
-
-    @Override
-    public boolean shouldSync() {
-        boolean sync = needsSync;
-        needsSync = false;
-        return sync;
     }
 
     // Used in the Waila plugin

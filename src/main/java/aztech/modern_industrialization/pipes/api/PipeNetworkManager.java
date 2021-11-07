@@ -25,22 +25,89 @@ package aztech.modern_industrialization.pipes.api;
 
 import aztech.modern_industrialization.pipes.MIPipes;
 import aztech.modern_industrialization.util.NbtHelper;
+import aztech.modern_industrialization.util.WorldHelper;
+import com.google.common.base.Preconditions;
+import it.unimi.dsi.fastutil.longs.*;
 import java.util.*;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
 import net.minecraft.nbt.NbtList;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.Direction;
+import org.jetbrains.annotations.Nullable;
 
 public class PipeNetworkManager {
-    private Map<BlockPos, PipeNetwork> networkByBlock = new HashMap<>();
-    private Map<BlockPos, Set<Direction>> links = new HashMap<>(); // TODO: (de)serialize
-    private Set<PipeNetwork> networks = new HashSet<>();
+    private final Map<BlockPos, PipeNetwork> networkByBlock = new HashMap<>();
+    private final Map<BlockPos, Set<Direction>> links = new HashMap<>();
+    private final Set<PipeNetwork> networks = new HashSet<>();
     private int nextNetworkId = 0;
-    private PipeNetworkType type;
+    private final PipeNetworkType type;
+
+    private final Map<Long, Set<BlockPos>> spannedChunks = new HashMap<>();
+    protected LongSet tickingChunks = new LongOpenHashSet();
+    protected LongSet lastTickingChunks = new LongOpenHashSet();
 
     public PipeNetworkManager(PipeNetworkType type) {
         this.type = type;
+    }
+
+    /**
+     * Tick networks
+     */
+    public void tickNetworks(ServerWorld world) {
+        // Mark ticking chunks
+        updateTickingChunks(world);
+
+        // Actual ticking
+        for (PipeNetwork network : networks) {
+            network.tick(world);
+        }
+
+        // Mark spanned chunks as dirty.
+        for (long chunk : spannedChunks.keySet()) {
+            int chunkX = ChunkPos.getPackedX(chunk);
+            int chunkZ = ChunkPos.getPackedZ(chunk);
+            if (world.isChunkLoaded(chunkX, chunkZ)) {
+                world.getChunk(chunkX, chunkZ).markDirty();
+            } else {
+                throw new UnsupportedOperationException("Internal MI pipe bug: spanned chunk was not loaded anymore.");
+            }
+        }
+    }
+
+    private void updateTickingChunks(ServerWorld world) {
+        var tmp = tickingChunks;
+        tickingChunks = lastTickingChunks;
+        lastTickingChunks = tmp;
+        Preconditions.checkState(tickingChunks.isEmpty(), "Internal pipe network error.");
+
+        for (Map.Entry<Long, Set<BlockPos>> entry : spannedChunks.entrySet()) {
+            long chunk = entry.getKey();
+            if (WorldHelper.isChunkTicking(world, chunk)) {
+                tickingChunks.add(chunk);
+
+                if (!lastTickingChunks.remove(chunk)) {
+                    // New ticking chunk
+                    notifyTickingChanged(entry.getValue());
+                }
+            }
+        }
+        // Chunk that isn't ticking anymore
+        for (Long notTickingChunk : lastTickingChunks) {
+            notifyTickingChanged(spannedChunks.get(notTickingChunk));
+        }
+        lastTickingChunks.clear();
+    }
+
+    private void notifyTickingChanged(@Nullable Set<BlockPos> positionsInChunk) {
+        if (positionsInChunk != null) {
+            for (BlockPos pos : positionsInChunk) {
+                PipeNetwork network = networkByBlock.get(pos);
+                network.tickingCacheValid = false;
+            }
+        }
     }
 
     /**
@@ -66,14 +133,14 @@ public class PipeNetworkManager {
             if (!network.data.equals(otherNetwork.data)) {
                 network.data = network.merge(otherNetwork);
             }
-            for (Map.Entry<BlockPos, PipeNetworkNode> entry : otherNetwork.nodes.entrySet()) {
+            for (Map.Entry<BlockPos, PipeNetworkNode> entry : otherNetwork.getRawNodeMap().entrySet()) {
                 PipeNetworkNode node = entry.getValue();
                 BlockPos nodePos = entry.getKey();
                 if (node != null) {
                     node.network = network;
                 }
                 networkByBlock.put(nodePos, network);
-                network.nodes.put(nodePos, node);
+                network.setNode(nodePos, node);
             }
             networks.remove(otherNetwork);
         }
@@ -95,7 +162,7 @@ public class PipeNetworkManager {
 
         // Run a DFS to mark all disconnected nodes.
         PipeNetwork network = networkByBlock.get(pos);
-        Map<BlockPos, PipeNetworkNode> unvisitedNodes = new HashMap<>(network.nodes);
+        Map<BlockPos, PipeNetworkNode> unvisitedNodes = new HashMap<>(network.getRawNodeMap());
 
         class Dfs {
             private void dfs(BlockPos currentPos) {
@@ -126,8 +193,8 @@ public class PipeNetworkManager {
                     node.network = newNetwork;
                 }
                 networkByBlock.put(nodePos, newNetwork);
-                newNetwork.nodes.put(nodePos, node);
-                network.nodes.remove(nodePos);
+                newNetwork.setNode(nodePos, node);
+                network.removeNode(nodePos);
             }
         }
         checkStateCoherence();
@@ -162,7 +229,8 @@ public class PipeNetworkManager {
             node.network = network;
         }
         networkByBlock.put(pos.toImmutable(), network);
-        network.nodes.put(pos.toImmutable(), node);
+        incrementSpanned(pos);
+        network.setNode(pos, node);
         links.put(pos.toImmutable(), new HashSet<>());
         checkStateCoherence();
     }
@@ -176,6 +244,7 @@ public class PipeNetworkManager {
         }
 
         PipeNetwork network = networkByBlock.remove(pos);
+        decrementSpanned(pos);
         networks.remove(network);
         links.remove(pos);
         checkStateCoherence();
@@ -198,8 +267,9 @@ public class PipeNetworkManager {
             }
         } else {
             node.network = network;
-            network.nodes.put(pos.toImmutable(), node);
+            network.setNode(pos, node);
         }
+        incrementSpanned(pos);
         checkStateCoherence();
     }
 
@@ -208,7 +278,8 @@ public class PipeNetworkManager {
      * network.
      */
     public void nodeUnloaded(PipeNetworkNode node, BlockPos pos) {
-        node.network.nodes.put(pos.toImmutable(), null);
+        node.network.setNode(pos, null);
+        decrementSpanned(pos);
         checkStateCoherence();
     }
 
@@ -224,12 +295,16 @@ public class PipeNetworkManager {
         return network;
     }
 
-    /**
-     * Mark the networks as unticked.
-     */
-    public void markNetworksAsUnticked() {
-        for (PipeNetwork network : networks) {
-            network.ticked = false;
+    private void incrementSpanned(BlockPos pos) {
+        spannedChunks.computeIfAbsent(ChunkPos.method_37232(pos), p -> new HashSet<>()).add(pos.toImmutable());
+    }
+
+    private void decrementSpanned(BlockPos pos) {
+        long chunkPos = ChunkPos.method_37232(pos);
+        Set<BlockPos> set = spannedChunks.get(chunkPos);
+        set.remove(pos);
+        if (set.size() == 0) {
+            spannedChunks.remove(chunkPos);
         }
     }
 
@@ -253,8 +328,8 @@ public class PipeNetworkManager {
             PipeNetwork network = networkIds.get(data[5 * i + 3]);
             BlockPos pos = new BlockPos(data[5 * i], data[5 * i + 1], data[5 * i + 2]);
             networkByBlock.put(pos, network);
-            network.nodes.put(pos, null);
-            links.put(pos, new HashSet<Direction>(Arrays.asList(NbtHelper.decodeDirections((byte) data[5 * i + 4]))));
+            network.setNode(pos, null);
+            links.put(pos, new HashSet<>(Arrays.asList(NbtHelper.decodeDirections((byte) data[5 * i + 4]))));
         }
 
         // nextNetworkId
@@ -306,14 +381,14 @@ public class PipeNetworkManager {
         customAssert(networkByBlock.keySet().equals(links.keySet()));
         for (Map.Entry<BlockPos, PipeNetwork> entry : networkByBlock.entrySet()) {
             customAssert(networks.contains(entry.getValue()));
-            PipeNetworkNode node = entry.getValue().nodes.get(entry.getKey());
+            PipeNetworkNode node = entry.getValue().getNode(entry.getKey());
             customAssert(node == null || node.network == entry.getValue());
         }
         for (Map.Entry<BlockPos, Set<Direction>> entry : links.entrySet()) {
             customAssert(entry.getValue() != null);
         }
         for (PipeNetwork network : networks) {
-            for (Map.Entry<BlockPos, PipeNetworkNode> entry : network.nodes.entrySet()) {
+            for (Map.Entry<BlockPos, PipeNetworkNode> entry : network.getRawNodeMap().entrySet()) {
                 customAssert(entry.getValue() == null || entry.getValue().network == network);
                 customAssert(networkByBlock.get(entry.getKey()) == network);
             }

@@ -21,24 +21,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.api;
+package aztech.modern_industrialization.util;
 
-import aztech.modern_industrialization.util.Tickable;
-import net.minecraft.block.BlockEntityProvider;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.block.entity.BlockEntityTicker;
-import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.world.World;
-import org.jetbrains.annotations.Nullable;
+import net.minecraft.server.world.ServerWorld;
 
-public interface TickableBlock extends BlockEntityProvider {
-    @Override
-    default @Nullable <T extends BlockEntity> BlockEntityTicker<T> getTicker(World world, BlockState state, BlockEntityType<T> type) {
-        return (w, p, s, be) -> {
-            if (be instanceof Tickable) {
-                ((Tickable) be).tick();
-            }
-        };
+public class WorldHelper {
+    public static boolean isChunkTicking(ServerWorld world, long packedChunkPos) {
+        return world.getChunkManager().isTickingFutureReady(packedChunkPos) && world.method_37116(packedChunkPos);
     }
 }

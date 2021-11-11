@@ -24,8 +24,7 @@
     "client.ClientPlayerEntityMixin",
     "client.ClientPlayerInteractionManagerMixin",
     "client.HandledScreenAccessor",
-    "client.HeldItemRendererMixin",
-    "client.ScreenMixin"
+    "client.HeldItemRendererMixin"
   ],
   "injectors": {
     "defaultRequire": 1

@@ -23,7 +23,6 @@
  */
 package aztech.modern_industrialization.items;
 
-import aztech.modern_industrialization.MIConfig;
 import aztech.modern_industrialization.api.DynamicEnchantmentItem;
 import aztech.modern_industrialization.proxy.CommonProxy;
 import aztech.modern_industrialization.util.NbtHelper;
@@ -141,8 +140,7 @@ public class SteamDrillItem extends Item implements DynamicAttributeTool, MagnaT
 
             int waterLevel = tag.getInt("water") * 100 / FULL_WATER;
 
-            tooltip.add(new TranslatableText("text.modern_industrialization.water_percent", waterLevel)
-                    .setStyle(TextHelper.WATER_TEXT));
+            tooltip.add(new TranslatableText("text.modern_industrialization.water_percent", waterLevel).setStyle(TextHelper.WATER_TEXT));
 
             int barWater = (int) Math.ceil(waterLevel / 5d);
             int barVoid = 20 - barWater;
@@ -152,8 +150,7 @@ public class SteamDrillItem extends Item implements DynamicAttributeTool, MagnaT
 
             int burnTicks = tag.getInt("burnTicks");
             if (burnTicks > 0) {
-                tooltip.add(new TranslatableText("text.modern_industrialization.seconds_left",
-                        burnTicks / 100).setStyle(TextHelper.GRAY_TEXT));
+                tooltip.add(new TranslatableText("text.modern_industrialization.seconds_left", burnTicks / 100).setStyle(TextHelper.GRAY_TEXT));
             }
         }
         tooltip.add(new TranslatableText("text.modern_industrialization.steam_drill_water_help").setStyle(TextHelper.UPGRADE_TEXT));

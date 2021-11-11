@@ -41,7 +41,7 @@
   ],
   "depends": {
     "fabricloader": ">=0.7.4",
-    "fabric": ">=0.40",
+    "fabric": ">=0.42",
     "minecraft": "^1.17.1",
     "patchouli": "*",
     "roughlyenoughitems": "*"

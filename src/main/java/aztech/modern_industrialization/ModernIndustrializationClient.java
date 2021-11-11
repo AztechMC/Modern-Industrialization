@@ -28,6 +28,8 @@ import static net.fabricmc.fabric.api.client.command.v1.ClientCommandManager.lit
 import aztech.modern_industrialization.api.energy.CableTier;
 import aztech.modern_industrialization.api.pipes.item.SpeedUpgrade;
 import aztech.modern_industrialization.blocks.forgehammer.ForgeHammerScreen;
+import aztech.modern_industrialization.blocks.storage.barrel.BarrelTooltipData;
+import aztech.modern_industrialization.blocks.storage.barrel.client.BarrelTooltipComponent;
 import aztech.modern_industrialization.blocks.storage.tank.CreativeTankClientSetup;
 import aztech.modern_industrialization.debug.MissingTranslationsCommand;
 import aztech.modern_industrialization.inventory.ConfigurableInventoryPacketHandlers;
@@ -60,6 +62,7 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
+import net.fabricmc.fabric.api.client.rendering.v1.TooltipComponentCallback;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.fabricmc.fabric.api.client.screenhandler.v1.ScreenRegistry;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
@@ -188,6 +191,13 @@ public class ModernIndustrializationClient implements ClientModInitializer {
                 }
             }
         }));
+
+        TooltipComponentCallback.EVENT.register(data -> {
+            if (data instanceof BarrelTooltipData barrelData) {
+                return new BarrelTooltipComponent(barrelData);
+            }
+            return null;
+        });
     }
 
     private void setupClientCommands() {

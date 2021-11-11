@@ -50,8 +50,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.tag.Tag;
-import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
+import net.minecraft.text.*;
 import net.minecraft.util.Hand;
 import net.minecraft.util.Rarity;
 import net.minecraft.util.TypedActionResult;
@@ -139,12 +138,22 @@ public class SteamDrillItem extends Item implements DynamicAttributeTool, MagnaT
     public void appendTooltip(ItemStack stack, @Nullable World world, List<Text> tooltip, TooltipContext context) {
         NbtCompound tag = stack.getTag();
         if (tag != null) {
-            tooltip.add(new TranslatableText("text.modern_industrialization.water_percent", tag.getInt("water") * 100 / FULL_WATER)
+
+            int waterLevel = tag.getInt("water") * 100 / FULL_WATER;
+
+            tooltip.add(new TranslatableText("text.modern_industrialization.water_percent", waterLevel)
                     .setStyle(TextHelper.WATER_TEXT));
+
+            int barWater = (int) Math.ceil(waterLevel / 5d);
+            int barVoid = 20 - barWater;
+
+            tooltip.add(new LiteralText("|".repeat(barWater)).setStyle(TextHelper.WATER_TEXT)
+                    .append(new LiteralText("|".repeat(barVoid)).setStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x6b6b6b)))));
+
             int burnTicks = tag.getInt("burnTicks");
             if (burnTicks > 0) {
                 tooltip.add(new TranslatableText("text.modern_industrialization.seconds_left",
-                        burnTicks / MIConfig.getConfig().steamDrillFuelUseFactor / 20).setStyle(TextHelper.GRAY_TEXT));
+                        burnTicks / 100).setStyle(TextHelper.GRAY_TEXT));
             }
         }
         tooltip.add(new TranslatableText("text.modern_industrialization.steam_drill_water_help").setStyle(TextHelper.UPGRADE_TEXT));
@@ -158,8 +167,8 @@ public class SteamDrillItem extends Item implements DynamicAttributeTool, MagnaT
         if (tag != null) {
             int burnTicks = tag.getInt("burnTicks");
             if (burnTicks > 0) {
-                NbtHelper.putNonzeroInt(tag, "burnTicks", Math.max(0, burnTicks - MIConfig.getConfig().steamDrillFuelUseFactor));
-                NbtHelper.putNonzeroInt(tag, "water", Math.max(0, tag.getInt("water") - MIConfig.getConfig().steamDrillWaterUseFactor));
+                NbtHelper.putNonzeroInt(tag, "burnTicks", Math.max(0, burnTicks - 5));
+                NbtHelper.putNonzeroInt(tag, "water", Math.max(0, tag.getInt("water") - 5));
             }
         }
     }

@@ -55,12 +55,6 @@ public class MIConfig implements ConfigData {
     public boolean newVersionMessage = true;
     public boolean colorWaterLava = true;
 
-    @ConfigEntry.BoundedDiscrete(min = 0, max = 20)
-    public int steamDrillFuelUseFactor = 5;
-
-    @ConfigEntry.BoundedDiscrete(min = 0, max = 20)
-    public int steamDrillWaterUseFactor = 5;
-
     @ConfigEntry.Gui.Excluded
     private transient static boolean registered = false;
 

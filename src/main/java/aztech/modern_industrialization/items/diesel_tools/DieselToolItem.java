@@ -25,7 +25,10 @@ package aztech.modern_industrialization.items.diesel_tools;
 
 import aztech.modern_industrialization.api.DynamicEnchantmentItem;
 import aztech.modern_industrialization.api.FluidFuelRegistry;
+import aztech.modern_industrialization.fluid.CraftingFluid;
 import aztech.modern_industrialization.items.FluidFuelItemHelper;
+import aztech.modern_industrialization.items.ItemHelper;
+import com.google.common.collect.Multimap;
 import it.unimi.dsi.fastutil.objects.Reference2IntArrayMap;
 import it.unimi.dsi.fastutil.objects.Reference2IntMap;
 import java.util.List;
@@ -39,8 +42,12 @@ import net.minecraft.block.PillarBlock;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.Enchantments;
+import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.attribute.EntityAttribute;
+import net.minecraft.entity.attribute.EntityAttributeModifier;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.fluid.Fluid;
 import net.minecraft.item.*;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.sound.SoundCategory;
@@ -59,9 +66,11 @@ import org.jetbrains.annotations.Nullable;
 // TODO: attack speed and damage
 public class DieselToolItem extends Item implements DynamicAttributeTool, Vanishable, DynamicEnchantmentItem {
     public static final int CAPACITY = 4 * 81000;
+    private final double damage;
 
-    public DieselToolItem(Settings settings) {
+    public DieselToolItem(Settings settings, double damage) {
         super(settings.maxCount(1).rarity(Rarity.UNCOMMON));
+        this.damage = damage;
     }
 
     @Override
@@ -71,10 +80,16 @@ public class DieselToolItem extends Item implements DynamicAttributeTool, Vanish
 
     @Override
     public boolean postMine(ItemStack stack, World world, BlockState state, BlockPos pos, LivingEntity miner) {
-        if (!world.isClient && state.getHardness(world, pos) != 0.0f) {
+        if (state.getHardness(world, pos) != 0.0f) {
             FluidFuelItemHelper.decrement(stack);
         }
-        return super.postMine(stack, world, state, pos, miner);
+        return true;
+    }
+
+    @Override
+    public boolean postHit(ItemStack stack, LivingEntity target, LivingEntity attacker) {
+        FluidFuelItemHelper.decrement(stack);
+        return true;
     }
 
     @Override
@@ -106,6 +121,14 @@ public class DieselToolItem extends Item implements DynamicAttributeTool, Vanish
     }
 
     @Override
+    public Multimap<EntityAttribute, EntityAttributeModifier> getDynamicModifiers(EquipmentSlot slot, ItemStack stack, @Nullable LivingEntity user) {
+        if (slot == EquipmentSlot.MAINHAND && FluidFuelItemHelper.getAmount(stack) > 0) {
+            return ItemHelper.createToolModifiers(damage * FluidFuelRegistry.getEu(FluidFuelItemHelper.getFluid(stack).getFluid()) / 300);
+        }
+        return EMPTY;
+    }
+
+    @Override
     public void appendTooltip(ItemStack stack, World world, List<Text> tooltip, TooltipContext context) {
         FluidFuelItemHelper.appendTooltip(stack, tooltip, CAPACITY);
     }
@@ -118,6 +141,17 @@ public class DieselToolItem extends Item implements DynamicAttributeTool, Vanish
     @Override
     public int getItemBarStep(ItemStack stack) {
         return (int) Math.round(getDurabilityBarProgress(stack) * 13);
+    }
+
+    @Override
+    public int getItemBarColor(ItemStack stack) {
+        Fluid fluid = FluidFuelItemHelper.getFluid(stack).getFluid();
+
+        if (fluid instanceof CraftingFluid cf) {
+            return cf.color;
+        } else {
+            return 0;
+        }
     }
 
     public double getDurabilityBarProgress(ItemStack stack) {

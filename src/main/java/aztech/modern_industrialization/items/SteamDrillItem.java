@@ -28,6 +28,7 @@ import aztech.modern_industrialization.proxy.CommonProxy;
 import aztech.modern_industrialization.util.NbtHelper;
 import aztech.modern_industrialization.util.Simulation;
 import aztech.modern_industrialization.util.TextHelper;
+import com.google.common.collect.Multimap;
 import draylar.magna.Magna;
 import draylar.magna.api.MagnaTool;
 import it.unimi.dsi.fastutil.objects.Reference2IntMap;
@@ -40,7 +41,10 @@ import net.minecraft.client.item.TooltipContext;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.attribute.EntityAttribute;
+import net.minecraft.entity.attribute.EntityAttributeModifier;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.fluid.FluidState;
@@ -48,6 +52,7 @@ import net.minecraft.fluid.Fluids;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtNull;
 import net.minecraft.tag.Tag;
 import net.minecraft.text.*;
 import net.minecraft.util.Hand;
@@ -75,7 +80,7 @@ public class SteamDrillItem extends Item implements DynamicAttributeTool, MagnaT
 
     @Override
     public int getMiningLevel(Tag<Item> tag, BlockState state, ItemStack stack, @Nullable LivingEntity user) {
-        if (tag.contains(this) && canMine(stack, user)) {
+        if (tag.contains(this) && canUse(stack, user)) {
             return 2;
         }
         return 0;
@@ -85,7 +90,7 @@ public class SteamDrillItem extends Item implements DynamicAttributeTool, MagnaT
     public float getMiningSpeedMultiplier(Tag<Item> tag, BlockState state, ItemStack stack, @Nullable LivingEntity user) {
 
         float speed = 1.0f;
-        if (tag.contains(this) && canMine(stack, user)) {
+        if (tag.contains(this) && canUse(stack, user)) {
             speed = 4.0f;
         }
 
@@ -95,6 +100,14 @@ public class SteamDrillItem extends Item implements DynamicAttributeTool, MagnaT
             speed *= 4f;
         }
         return speed;
+    }
+
+    @Override
+    public Multimap<EntityAttribute, EntityAttributeModifier> getDynamicModifiers(EquipmentSlot slot, ItemStack stack, @Nullable LivingEntity user) {
+        if (slot == EquipmentSlot.MAINHAND && canUse(stack, user)) {
+            return ItemHelper.createToolModifiers(5);
+        }
+        return EMPTY;
     }
 
     @Override
@@ -109,14 +122,24 @@ public class SteamDrillItem extends Item implements DynamicAttributeTool, MagnaT
 
     @Override
     public boolean postMine(ItemStack stack, World world, BlockState state, BlockPos pos, LivingEntity miner) {
+        useFuel(stack, miner);
+        return true;
+    }
+
+    @Override
+    public boolean postHit(ItemStack stack, LivingEntity target, LivingEntity attacker) {
+        useFuel(stack, attacker);
+        return true;
+    }
+
+    private static void useFuel(ItemStack stack, LivingEntity user) {
         NbtCompound tag = stack.getTag();
         if (tag != null && tag.getInt("water") > 0) {
             if (tag.getInt("burnTicks") == 0) {
-                int burnTicks = consumeFuel(stack, miner, Simulation.ACT);
+                int burnTicks = consumeFuel(stack, user, Simulation.ACT);
                 tag.putInt("burnTicks", burnTicks);
             }
         }
-        return true;
     }
 
     @Override
@@ -160,17 +183,22 @@ public class SteamDrillItem extends Item implements DynamicAttributeTool, MagnaT
 
     @Override
     public void inventoryTick(ItemStack stack, World world, Entity entity, int slot, boolean selected) {
-        NbtCompound tag = stack.getTag();
-        if (tag != null) {
-            int burnTicks = tag.getInt("burnTicks");
-            if (burnTicks > 0) {
-                NbtHelper.putNonzeroInt(tag, "burnTicks", Math.max(0, burnTicks - 5));
-                NbtHelper.putNonzeroInt(tag, "water", Math.max(0, tag.getInt("water") - 5));
-            }
+        NbtCompound tag = stack.getOrCreateTag();
+        int burnTicks = tag.getInt("burnTicks");
+        if (burnTicks > 0) {
+            NbtHelper.putNonzeroInt(tag, "burnTicks", Math.max(0, burnTicks - 5));
+            NbtHelper.putNonzeroInt(tag, "water", Math.max(0, tag.getInt("water") - 5));
+        }
+        // Flip NBT every tick to ensure that the attribute modifiers get updated if the
+        // fuel next to the drill changes.
+        if (tag.contains("flip")) {
+            tag.remove("flip");
+        } else {
+            tag.put("flip", NbtNull.INSTANCE);
         }
     }
 
-    public static boolean canMine(ItemStack stack, @Nullable LivingEntity user) {
+    public static boolean canUse(ItemStack stack, @Nullable LivingEntity user) {
         NbtCompound tag = stack.getTag();
         if (tag == null || tag.getInt("water") == 0) {
             return false;

@@ -59,7 +59,7 @@ public class ClientPlayerInteractionManagerMixin {
         ItemStack handStack = client.player.getMainHandStack();
         if (handStack.getItem() == MIItem.ITEM_STEAM_MINING_DRILL && selectedStack.getItem() == MIItem.ITEM_STEAM_MINING_DRILL
                 && currentBreakingPos.equals(pos)) {
-            cir.setReturnValue(SteamDrillItem.canMine(handStack, client.player));
+            cir.setReturnValue(SteamDrillItem.canUse(handStack, client.player));
         }
     }
 }

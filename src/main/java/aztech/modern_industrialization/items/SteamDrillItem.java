@@ -23,21 +23,31 @@
  */
 package aztech.modern_industrialization.items;
 
+import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.api.DynamicEnchantmentItem;
 import aztech.modern_industrialization.proxy.CommonProxy;
 import aztech.modern_industrialization.util.NbtHelper;
 import aztech.modern_industrialization.util.Simulation;
 import aztech.modern_industrialization.util.TextHelper;
 import com.google.common.collect.Multimap;
+import com.mojang.blaze3d.systems.RenderSystem;
 import draylar.magna.Magna;
 import draylar.magna.api.MagnaTool;
 import it.unimi.dsi.fastutil.objects.Reference2IntMap;
 import it.unimi.dsi.fastutil.objects.Reference2IntOpenHashMap;
 import java.util.List;
+import java.util.Optional;
 import net.fabricmc.fabric.api.registry.FuelRegistry;
 import net.fabricmc.fabric.api.tool.attribute.v1.DynamicAttributeTool;
 import net.minecraft.block.BlockState;
-import net.minecraft.client.item.TooltipContext;
+import net.minecraft.client.font.TextRenderer;
+import net.minecraft.client.gui.DrawableHelper;
+import net.minecraft.client.gui.tooltip.TooltipComponent;
+import net.minecraft.client.item.TooltipData;
+import net.minecraft.client.render.VertexConsumerProvider;
+import net.minecraft.client.render.item.ItemRenderer;
+import net.minecraft.client.texture.TextureManager;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.Entity;
@@ -56,11 +66,13 @@ import net.minecraft.nbt.NbtNull;
 import net.minecraft.tag.Tag;
 import net.minecraft.text.*;
 import net.minecraft.util.Hand;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.Rarity;
 import net.minecraft.util.TypedActionResult;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Matrix4f;
 import net.minecraft.world.RaycastContext;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
@@ -157,31 +169,6 @@ public class SteamDrillItem extends Item implements DynamicAttributeTool, MagnaT
     }
 
     @Override
-    public void appendTooltip(ItemStack stack, @Nullable World world, List<Text> tooltip, TooltipContext context) {
-        NbtCompound tag = stack.getTag();
-        if (tag != null) {
-
-            int waterLevel = tag.getInt("water") * 100 / FULL_WATER;
-
-            tooltip.add(new TranslatableText("text.modern_industrialization.water_percent", waterLevel).setStyle(TextHelper.WATER_TEXT));
-
-            int barWater = (int) Math.ceil(waterLevel / 5d);
-            int barVoid = 20 - barWater;
-
-            tooltip.add(new LiteralText("|".repeat(barWater)).setStyle(TextHelper.WATER_TEXT)
-                    .append(new LiteralText("|".repeat(barVoid)).setStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x6b6b6b)))));
-
-            int burnTicks = tag.getInt("burnTicks");
-            if (burnTicks > 0) {
-                tooltip.add(new TranslatableText("text.modern_industrialization.seconds_left", burnTicks / 100).setStyle(TextHelper.GRAY_TEXT));
-            }
-        }
-        tooltip.add(new TranslatableText("text.modern_industrialization.steam_drill_water_help").setStyle(TextHelper.UPGRADE_TEXT));
-        tooltip.add(new TranslatableText("text.modern_industrialization.steam_drill_fuel_help").setStyle(TextHelper.UPGRADE_TEXT));
-        tooltip.add(new TranslatableText("text.modern_industrialization.steam_drill_profit").setStyle(TextHelper.UPGRADE_TEXT));
-    }
-
-    @Override
     public void inventoryTick(ItemStack stack, World world, Entity entity, int slot, boolean selected) {
         NbtCompound tag = stack.getOrCreateTag();
         int burnTicks = tag.getInt("burnTicks");
@@ -248,5 +235,86 @@ public class SteamDrillItem extends Item implements DynamicAttributeTool, MagnaT
         Reference2IntMap<Enchantment> map = new Reference2IntOpenHashMap<>();
         map.put(Enchantments.SILK_TOUCH, 1);
         return map;
+    }
+
+    public Optional<TooltipData> getTooltipData(ItemStack stack) {
+        NbtCompound tag = stack.getTag();
+        if (tag != null) {
+            return Optional.of(new SteamDrillTooltipData(tag.getInt("water") * 100 / FULL_WATER, tag.getInt("burnTicks")));
+        } else {
+            return Optional.of(new SteamDrillTooltipData(0, 0));
+        }
+
+    }
+
+    public record SteamDrillTooltipData(int waterLevel, int burnTicks) implements TooltipData {
+    }
+
+    public static class SteamDrillTooltipComponent implements TooltipComponent {
+
+        final List<Text> text;
+        final SteamDrillTooltipData data;
+
+        public SteamDrillTooltipComponent(SteamDrillTooltipData data) {
+            this.data = data;
+            Text waterText = new TranslatableText("text.modern_industrialization.water_percent", data.waterLevel).setStyle(TextHelper.WATER_TEXT);
+            int barWater = (int) Math.ceil(data.waterLevel / 5d);
+            int barVoid = 20 - barWater;
+
+            Text waterBar = new LiteralText("|".repeat(barWater)).setStyle(TextHelper.WATER_TEXT)
+                    .append(new LiteralText("|".repeat(barVoid)).setStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x6b6b6b))));
+
+            Text burnTicks = new TranslatableText("text.modern_industrialization.seconds_left", data.burnTicks / 100).setStyle(TextHelper.GRAY_TEXT);
+
+            Text line1 = new TranslatableText("text.modern_industrialization.steam_drill_water_help").setStyle(TextHelper.UPGRADE_TEXT);
+            Text line2 = new TranslatableText("text.modern_industrialization.steam_drill_fuel_help").setStyle(TextHelper.UPGRADE_TEXT);
+            Text line3 = new TranslatableText("text.modern_industrialization.steam_drill_profit").setStyle(TextHelper.UPGRADE_TEXT);
+
+            if (data.burnTicks > 0) {
+                text = List.of(waterText, waterBar, burnTicks, line1, line2, line3);
+            } else {
+                text = List.of(waterText, waterBar, line1, line2, line3);
+            }
+
+        }
+
+        @Override
+        public int getHeight() {
+            return text.size() * 10;
+        }
+
+        @Override
+        public int getWidth(TextRenderer textRenderer) {
+            int max = 0;
+            for (Text line : text) {
+                max = Math.max(max, 5 + textRenderer.getWidth(line));
+            }
+            return max;
+        }
+
+        @Override
+        public void drawText(TextRenderer textRenderer, int x, int y, Matrix4f matrix4f, VertexConsumerProvider.Immediate immediate) {
+            int i = 0;
+            for (Text line : text) {
+                textRenderer.draw(line, x, y + i * 10, -1, true, matrix4f, immediate, false, 0, 15728880);
+                i++;
+            }
+
+        }
+
+        private static final Identifier texturePath = new MIIdentifier("textures/gui/progress_bar/furnace.png");
+
+        @Override
+        public void drawItems(TextRenderer textRenderer, int x, int y, MatrixStack matrices, ItemRenderer itemRenderer, int z,
+                TextureManager textureManager) {
+
+            if (data.burnTicks > 0) {
+                RenderSystem.setShaderTexture(0, texturePath);
+                int cx = 2 + Math.max(Math.max(textRenderer.getWidth(text.get(0)), textRenderer.getWidth(text.get(1))),
+                        textRenderer.getWidth(text.get(2)));
+                DrawableHelper.drawTexture(matrices, x + cx, y + 10, 0, 20, 20, 20, 20, 40);
+            }
+        }
+
     }
 }

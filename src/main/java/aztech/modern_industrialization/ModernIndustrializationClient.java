@@ -34,6 +34,7 @@ import aztech.modern_industrialization.blocks.storage.tank.CreativeTankClientSet
 import aztech.modern_industrialization.debug.MissingTranslationsCommand;
 import aztech.modern_industrialization.inventory.ConfigurableInventoryPacketHandlers;
 import aztech.modern_industrialization.inventory.ConfigurableInventoryPackets;
+import aztech.modern_industrialization.items.SteamDrillItem;
 import aztech.modern_industrialization.items.armor.ClientKeyHandler;
 import aztech.modern_industrialization.items.armor.HudRenderer;
 import aztech.modern_industrialization.items.armor.JetpackParticleAdder;
@@ -195,6 +196,8 @@ public class ModernIndustrializationClient implements ClientModInitializer {
         TooltipComponentCallback.EVENT.register(data -> {
             if (data instanceof BarrelTooltipData barrelData) {
                 return new BarrelTooltipComponent(barrelData);
+            } else if (data instanceof SteamDrillItem.SteamDrillTooltipData steamDrillData) {
+                return new SteamDrillItem.SteamDrillTooltipComponent(steamDrillData);
             }
             return null;
         });

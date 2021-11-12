@@ -67,7 +67,7 @@ public class DynamicShapeComponent implements IComponent {
         MultiblockMachineBlockEntity blockEntity = dynamicShapeBlockEntity.getMultiblockMachineBlockEntity();
 
         if (unionShapeMatcher == null) {
-            unionShapeMatcher = new ShapeMatcher(blockEntity.getWorld(), blockEntity.getPos(), blockEntity.orientation.facingDirection,
+            unionShapeMatcher = new ShapeMatcher(blockEntity.getWorld(), blockEntity.getPos(), blockEntity.getOrientation().facingDirection,
                     ShapeTemplate.computeDummyUnion(shapeTemplates));
             unionShapeMatcher.registerListeners(blockEntity.getWorld());
         }
@@ -82,7 +82,7 @@ public class DynamicShapeComponent implements IComponent {
             ShapeTemplate currentShapeAttempt = shapeTemplates[shapeIndex];
 
             if (j != 0 || currentShapeMatcher == null) {
-                currentShapeMatcher = new ShapeMatcher(blockEntity.getWorld(), blockEntity.getPos(), blockEntity.orientation.facingDirection,
+                currentShapeMatcher = new ShapeMatcher(blockEntity.getWorld(), blockEntity.getPos(), blockEntity.getOrientation().facingDirection,
                         currentShapeAttempt);
             }
 

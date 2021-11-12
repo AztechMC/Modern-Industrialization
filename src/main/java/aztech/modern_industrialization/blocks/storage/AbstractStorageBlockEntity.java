@@ -24,6 +24,7 @@
 package aztech.modern_industrialization.blocks.storage;
 
 import aztech.modern_industrialization.api.FastBlockEntity;
+import aztech.modern_industrialization.api.WrenchableBlockEntity;
 import java.util.Iterator;
 import net.fabricmc.fabric.api.block.entity.BlockEntityClientSerializable;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
@@ -35,12 +36,17 @@ import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleViewIterator;
 import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
 import net.fabricmc.fabric.api.transfer.v1.transaction.base.SnapshotParticipant;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.block.entity.BlockEntityType;
+import net.minecraft.entity.ItemEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.util.Hand;
+import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 
 public abstract class AbstractStorageBlockEntity<T extends TransferVariant<?>> extends FastBlockEntity
-        implements Storage<T>, StorageView<T>, BlockEntityClientSerializable {
+        implements Storage<T>, StorageView<T>, BlockEntityClientSerializable, WrenchableBlockEntity {
 
     protected T resource;
     protected long amount;
@@ -70,6 +76,17 @@ public abstract class AbstractStorageBlockEntity<T extends TransferVariant<?>> e
     public void readNbt(NbtCompound tag) {
         fromClientTag(tag);
         super.readNbt(tag);
+    }
+
+    @Override
+    public boolean useWrench(PlayerEntity player, Hand hand, BlockHitResult hit) {
+        if (player.isSneaking()) {
+            var block = (AbstractStorageBlock) getCachedState().getBlock();
+            world.spawnEntity(new ItemEntity(world, hit.getPos().x, hit.getPos().y, hit.getPos().z, block.getStack(this)));
+            world.setBlockState(pos, Blocks.AIR.getDefaultState());
+            return true;
+        }
+        return false;
     }
 
     @Override

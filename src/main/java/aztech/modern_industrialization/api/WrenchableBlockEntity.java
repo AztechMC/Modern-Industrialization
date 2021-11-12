@@ -21,27 +21,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.items.tools;
+package aztech.modern_industrialization.api;
 
-import aztech.modern_industrialization.ModernIndustrialization;
-import net.minecraft.block.BlockState;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemUsageContext;
-import net.minecraft.util.ActionResult;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
 
-public class WrenchItem extends Item {
-    public WrenchItem(Settings settings) {
-        super(settings);
-    }
-
-    @Override
-    public ActionResult useOnBlock(ItemUsageContext context) {
-        BlockState state = context.getWorld().getBlockState(context.getBlockPos());
-        if (state.isIn(ModernIndustrialization.WRENCHABLES)) {
-            return state.onUse(context.getWorld(), context.getPlayer(), context.getHand(),
-                    new BlockHitResult(context.getHitPos(), context.getSide(), context.getBlockPos(), context.hitsInsideBlock()));
-        }
-        return super.useOnBlock(context);
-    }
+public interface WrenchableBlockEntity {
+    boolean useWrench(PlayerEntity player, Hand hand, BlockHitResult hitResult);
 }

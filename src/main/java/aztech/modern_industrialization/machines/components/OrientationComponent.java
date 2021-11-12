@@ -23,7 +23,6 @@
  */
 package aztech.modern_industrialization.machines.components;
 
-import aztech.modern_industrialization.ModernIndustrialization;
 import aztech.modern_industrialization.machines.IComponent;
 import aztech.modern_industrialization.machines.models.MachineModelClientData;
 import net.minecraft.entity.LivingEntity;
@@ -77,20 +76,18 @@ public class OrientationComponent implements IComponent {
     /**
      * Try to rotate the machine, and return true if something was rotated.
      */
-    public boolean onUse(PlayerEntity player, Hand hand, Direction face) {
-        if (player.getStackInHand(hand).isIn(ModernIndustrialization.WRENCHES)) {
-            if (player.isSneaking()) {
-                if (params.hasOutput) {
-                    outputDirection = face;
-                    return true;
-                }
-            } else {
-                if (face.getAxis().isHorizontal()) {
-                    facingDirection = face;
-                }
-                // We consume the event to prevent the GUI from opening.
+    public boolean useWrench(PlayerEntity player, Hand hand, Direction face) {
+        if (player.isSneaking()) {
+            if (params.hasOutput) {
+                outputDirection = face;
                 return true;
             }
+        } else {
+            if (face.getAxis().isHorizontal()) {
+                facingDirection = face;
+            }
+            // We consume the event to prevent the GUI from opening.
+            return true;
         }
         return false;
     }

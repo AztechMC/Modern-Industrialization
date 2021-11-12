@@ -21,25 +21,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.machines.helper;
+package aztech.modern_industrialization.api;
 
-import aztech.modern_industrialization.machines.MachineBlockEntity;
-import aztech.modern_industrialization.machines.components.OrientationComponent;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
-import net.minecraft.util.math.Direction;
+import net.minecraft.util.hit.BlockHitResult;
 
-public class OrientationHelper {
-
-    public static ActionResult onUse(PlayerEntity player, Hand hand, Direction face, OrientationComponent orientation, MachineBlockEntity be) {
-        if (orientation.onUse(player, hand, face)) {
-            be.markDirty();
-            if (!(be.getWorld() == null) && !be.getWorld().isClient()) {
-                be.sync();
-            }
-            return ActionResult.success(be.getWorld().isClient);
-        }
-        return ActionResult.PASS;
-    }
+public interface ScrewdriverableBlockEntity {
+    boolean useScrewdriver(PlayerEntity player, Hand hand, BlockHitResult hitResult);
 }

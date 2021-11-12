@@ -24,6 +24,7 @@
 package aztech.modern_industrialization.machines.blockentities.multiblocks;
 
 import aztech.modern_industrialization.MIBlock;
+import aztech.modern_industrialization.api.ScrewdriverableBlockEntity;
 import aztech.modern_industrialization.compat.rei.machines.ReiMachineRecipes;
 import aztech.modern_industrialization.inventory.MIInventory;
 import aztech.modern_industrialization.machines.BEP;
@@ -44,11 +45,11 @@ import java.util.function.Supplier;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
+import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.Direction;
 
-public class NuclearReactorMultiblockBlockEntity extends MultiblockMachineBlockEntity implements Tickable {
+public class NuclearReactorMultiblockBlockEntity extends MultiblockMachineBlockEntity implements Tickable, ScrewdriverableBlockEntity {
 
     private static final ShapeTemplate[] shapeTemplates;
     /**
@@ -67,7 +68,7 @@ public class NuclearReactorMultiblockBlockEntity extends MultiblockMachineBlockE
 
     public NuclearReactorMultiblockBlockEntity(BEP bep) {
         super(bep, new MachineGuiParameters.Builder("nuclear_reactor", false).backgroundHeight(256).build(),
-                new OrientationComponent(new OrientationComponent.Params(false, false, false)));
+                new OrientationComponent.Params(false, false, false));
 
         this.activeShape = new ActiveShapeComponent(shapeTemplates);
         efficiencyHistory = new IntegerHistoryComponent(new String[] { "euProduction", "euFuelConsumption" }, 300);
@@ -86,16 +87,8 @@ public class NuclearReactorMultiblockBlockEntity extends MultiblockMachineBlockE
     }
 
     @Override
-    protected ActionResult onUse(PlayerEntity player, Hand hand, Direction face) {
-        ActionResult result = activeShape.onUse(player, hand, face);
-        if (result.isAccepted()) {
-            if (!player.getEntityWorld().isClient()) {
-                unlink();
-                sync(false);
-            }
-            return result;
-        }
-        return super.onUse(player, hand, face);
+    public boolean useScrewdriver(PlayerEntity player, Hand hand, BlockHitResult hitResult) {
+        return useScrewdriver(activeShape, player, hand, hitResult);
     }
 
     @Override

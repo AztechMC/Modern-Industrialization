@@ -24,6 +24,8 @@
 package aztech.modern_industrialization;
 
 import aztech.modern_industrialization.api.FluidFuelRegistry;
+import aztech.modern_industrialization.api.ScrewdriverableBlockEntity;
+import aztech.modern_industrialization.api.WrenchableBlockEntity;
 import aztech.modern_industrialization.api.energy.EnergyApi;
 import aztech.modern_industrialization.blocks.forgehammer.ForgeHammerPacket;
 import aztech.modern_industrialization.blocks.forgehammer.ForgeHammerScreenHandler;
@@ -57,24 +59,27 @@ import net.devtech.arrp.json.loot.JLootTable;
 import net.devtech.arrp.json.loot.JPool;
 import net.devtech.arrp.json.models.JModel;
 import net.devtech.arrp.json.models.JTextures;
-import net.devtech.arrp.json.tags.JTag;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.client.itemgroup.FabricItemGroupBuilder;
+import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricMaterialBuilder;
 import net.fabricmc.fabric.api.registry.FuelRegistry;
 import net.fabricmc.fabric.api.screenhandler.v1.ScreenHandlerRegistry;
+import net.fabricmc.fabric.api.tag.TagFactory;
 import net.fabricmc.fabric.api.tag.TagRegistry;
 import net.minecraft.block.Block;
 import net.minecraft.block.MapColor;
 import net.minecraft.block.Material;
+import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.tag.Tag;
+import net.minecraft.util.ActionResult;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import org.apache.logging.log4j.LogManager;
@@ -94,9 +99,8 @@ public class ModernIndustrialization implements ModInitializer {
             () -> new ItemStack(Registry.ITEM.get(new MIIdentifier("forge_hammer"))));
 
     // Tags
-    public static final Tag<Item> OVERLAY_SOURCES = TagRegistry.item(new MIIdentifier("overlay_sources"));
-    public static final Tag<Item> WRENCHES = TagRegistry.item(new Identifier("fabric:wrenches"));
-    public static final Tag<Block> WRENCHABLES = TagRegistry.block(new Identifier("fabric:wrenchables"));
+    public static final Tag<Item> SCREWDRIVERS = TagFactory.ITEM.create(new Identifier("c:screwdrivers"));
+    public static final Tag<Item> WRENCHES = TagFactory.ITEM.create(new Identifier("c:wrenches"));
 
     // ScreenHandlerType
     public static final ScreenHandlerType<MachineScreenHandlers.Common> SCREEN_HANDLER_MACHINE = ScreenHandlerRegistry
@@ -127,6 +131,7 @@ public class ModernIndustrialization implements ModInitializer {
         setupPackets();
         setupFuels();
         RecipeCompat.loadCompatRecipes();
+        setupWrench();
 
         MIPipes.INSTANCE.setup();
 
@@ -154,8 +159,6 @@ public class ModernIndustrialization implements ModInitializer {
                 MIItem.registrationEvents.get(entry.getKey()).accept(entry.getValue());
             }
         }
-
-        RESOURCE_PACK.addTag(new MIIdentifier("items/overlay_sources"), JTag.tag().tag(new Identifier("fabric:wrenches")));
     }
 
     public static void registerItem(Item item, String id) {
@@ -280,5 +283,31 @@ public class ModernIndustrialization implements ModInitializer {
         FluidFuelRegistry.register(MIFluids.NAPHTHA, 40);
         FluidFuelRegistry.register(MIFluids.SYNTHETIC_OIL, 8);
         FluidFuelRegistry.register(MIFluids.BOOSTED_DIESEL, 400);
+    }
+
+    private void setupWrench() {
+        UseBlockCallback.EVENT.register((player, world, hand, hitResult) -> {
+            if (player.isSpectator() || !world.canPlayerModifyAt(player, hitResult.getBlockPos())) {
+                return ActionResult.PASS;
+            }
+
+            boolean isWrench = player.getStackInHand(hand).isIn(WRENCHES);
+            boolean isScrewdriver = player.getStackInHand(hand).isIn(SCREWDRIVERS);
+            if (isWrench || isScrewdriver) {
+                BlockEntity entity = world.getBlockEntity(hitResult.getBlockPos());
+                if (isWrench && entity instanceof WrenchableBlockEntity wrenchable) {
+                    if (wrenchable.useWrench(player, hand, hitResult)) {
+                        return ActionResult.success(world.isClient());
+                    }
+                }
+                if (isScrewdriver && entity instanceof ScrewdriverableBlockEntity screwdriverable) {
+                    if (screwdriverable.useScrewdriver(player, hand, hitResult)) {
+                        return ActionResult.success(world.isClient());
+                    }
+                }
+            }
+
+            return ActionResult.PASS;
+        });
     }
 }

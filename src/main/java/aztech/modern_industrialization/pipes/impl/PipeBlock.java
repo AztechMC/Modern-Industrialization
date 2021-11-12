@@ -23,7 +23,6 @@
  */
 package aztech.modern_industrialization.pipes.impl;
 
-import aztech.modern_industrialization.ModernIndustrialization;
 import aztech.modern_industrialization.pipes.MIPipes;
 import aztech.modern_industrialization.pipes.api.PipeNetworkNode;
 import aztech.modern_industrialization.pipes.api.PipeNetworkType;
@@ -56,6 +55,7 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
+import org.jetbrains.annotations.Nullable;
 
 public class PipeBlock extends Block implements BlockEntityProvider {
     public PipeBlock(Settings settings) {
@@ -67,66 +67,84 @@ public class PipeBlock extends Block implements BlockEntityProvider {
         return new PipeBlockEntity(pos, state);
     }
 
-    @Override
-    public ActionResult onUse(BlockState state, World world, BlockPos blockPos, PlayerEntity player, Hand hand, BlockHitResult hit) {
-        PipeBlockEntity pipeEntity = (PipeBlockEntity) world.getBlockEntity(blockPos);
-        BlockSoundGroup group = world.getBlockState(blockPos).getSoundGroup();
-
+    @Nullable
+    private static PipeVoxelShape getHitPart(PipeBlockEntity pipe, BlockHitResult hit) {
         Vec3d hitPos = hit.getPos();
-        for (PipeVoxelShape partShape : pipeEntity.getPartShapes()) {
-            Vec3d posInBlock = hitPos.subtract(blockPos.getX(), blockPos.getY(), blockPos.getZ());
+        BlockPos pos = pipe.getPos();
+        for (PipeVoxelShape partShape : pipe.getPartShapes()) {
+            Vec3d posInBlock = hitPos.subtract(pos.getX(), pos.getY(), pos.getZ());
             for (Box box : partShape.shape.getBoundingBoxes()) {
                 // move slightly towards box center
                 Vec3d dir = box.getCenter().subtract(posInBlock).normalize().multiply(1e-4);
                 if (box.contains(posInBlock.add(dir))) {
-                    if (ModernIndustrialization.WRENCHES.contains(player.getMainHandStack().getItem())) {
-                        if (player != null && player.isSneaking()) {
-                            boolean removeBlock = pipeEntity.connections.size() == 1;
-                            if (!world.isClient) {
-                                pipeEntity.removePipeAndDropContainedItems(partShape.type);
-                            }
-                            if (removeBlock) {
-                                world.setBlockState(blockPos, Blocks.AIR.getDefaultState());
-                            }
-                            // update adjacent blocks
-                            world.updateNeighbors(blockPos, Blocks.AIR);
-                            // spawn pipe item
-                            world.spawnEntity(
-                                    new ItemEntity(world, hitPos.x, hitPos.y, hitPos.z, new ItemStack(MIPipes.INSTANCE.getPipeItem(partShape.type))));
-                            // play break sound
-                            world.playSound(player, blockPos, group.getBreakSound(), SoundCategory.BLOCKS, (group.getVolume() + 1.0F) / 2.0F,
-                                    group.getPitch() * 0.8F);
-                            return ActionResult.success(world.isClient);
-                        } else {
-                            SoundEvent sound = null;
-                            if (partShape.direction == null) {
-                                if (!world.isClient) {
-                                    pipeEntity.addConnection(partShape.type, hit.getSide());
-                                } else {
-                                    sound = group.getPlaceSound();
-                                }
-                            } else {
-                                if (!world.isClient) {
-                                    pipeEntity.removeConnection(partShape.type, partShape.direction);
-                                } else {
-                                    sound = group.getBreakSound();
-                                }
-                            }
-                            world.updateNeighbors(blockPos, Blocks.AIR);
-                            if (sound != null) {
-                                world.playSound(player, blockPos, sound, SoundCategory.BLOCKS, (group.getVolume() + 1.0F) / 4.0F,
-                                        group.getPitch() * 0.8F);
-                            }
-                            return ActionResult.success(world.isClient);
-                        }
-                    } else if (partShape.opensGui) {
-                        if (!world.isClient) {
-                            player.openHandledScreen(pipeEntity.getGui(partShape.type, partShape.direction));
-                        }
-                        return ActionResult.success(world.isClient);
-                    }
+                    return partShape;
                 }
             }
+        }
+
+        return null;
+    }
+
+    static boolean useWrench(PipeBlockEntity pipe, PlayerEntity player, Hand hand, BlockHitResult hit) {
+        PipeVoxelShape partShape = getHitPart(pipe, hit);
+        if (partShape == null) {
+            return false;
+        }
+
+        BlockSoundGroup group = pipe.getCachedState().getSoundGroup();
+        var blockPos = pipe.getPos();
+        var world = pipe.getWorld();
+        Vec3d hitPos = hit.getPos();
+
+        if (player != null && player.isSneaking()) {
+            boolean removeBlock = pipe.connections.size() == 1;
+            if (!world.isClient) {
+                pipe.removePipeAndDropContainedItems(partShape.type);
+            }
+            if (removeBlock) {
+                world.setBlockState(blockPos, Blocks.AIR.getDefaultState());
+            }
+            // update adjacent blocks
+            world.updateNeighbors(blockPos, Blocks.AIR);
+            // spawn pipe item
+            world.spawnEntity(new ItemEntity(world, hitPos.x, hitPos.y, hitPos.z, new ItemStack(MIPipes.INSTANCE.getPipeItem(partShape.type))));
+            // play break sound
+            world.playSound(player, blockPos, group.getBreakSound(), SoundCategory.BLOCKS, (group.getVolume() + 1.0F) / 2.0F,
+                    group.getPitch() * 0.8F);
+        } else {
+            SoundEvent sound = null;
+            if (partShape.direction == null) {
+                if (!world.isClient) {
+                    pipe.addConnection(partShape.type, hit.getSide());
+                } else {
+                    sound = group.getPlaceSound();
+                }
+            } else {
+                if (!world.isClient) {
+                    pipe.removeConnection(partShape.type, partShape.direction);
+                } else {
+                    sound = group.getBreakSound();
+                }
+            }
+            world.updateNeighbors(blockPos, Blocks.AIR);
+            if (sound != null) {
+                world.playSound(player, blockPos, sound, SoundCategory.BLOCKS, (group.getVolume() + 1.0F) / 4.0F, group.getPitch() * 0.8F);
+            }
+        }
+
+        return true;
+    }
+
+    @Override
+    public ActionResult onUse(BlockState state, World world, BlockPos blockPos, PlayerEntity player, Hand hand, BlockHitResult hit) {
+        PipeBlockEntity pipeEntity = (PipeBlockEntity) world.getBlockEntity(blockPos);
+
+        PipeVoxelShape partShape = getHitPart(pipeEntity, hit);
+        if (partShape != null && partShape.opensGui) {
+            if (!world.isClient) {
+                player.openHandledScreen(pipeEntity.getGui(partShape.type, partShape.direction));
+            }
+            return ActionResult.success(world.isClient);
         }
 
         return ActionResult.PASS;

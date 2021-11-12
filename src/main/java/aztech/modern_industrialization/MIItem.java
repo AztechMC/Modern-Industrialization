@@ -31,7 +31,6 @@ import aztech.modern_industrialization.items.armor.JetpackItem;
 import aztech.modern_industrialization.items.armor.RubberArmorMaterial;
 import aztech.modern_industrialization.items.diesel_tools.DieselToolItem;
 import aztech.modern_industrialization.items.tools.CrowbarItem;
-import aztech.modern_industrialization.items.tools.WrenchItem;
 import java.util.SortedMap;
 import java.util.SortedSet;
 import java.util.TreeMap;
@@ -159,7 +158,7 @@ public final class MIItem {
     public static final Item ITEM_PACKER_DOUBLE_INGOT_TEMPLATE = of("packer_double_ingot_template", 1);
 
     public static final Item ITEM_SCREWDRIVER = of("screwdriver", 1, true);
-    public static final Item ITEM_WRENCH = of(WrenchItem::new, "wrench", 1, true);
+    public static final Item ITEM_WRENCH = of("wrench", 1, true);
     public static final JetpackItem ITEM_DIESEL_JETPACK = (JetpackItem) of(JetpackItem::new, "diesel_jetpack", 1,
             (item) -> FluidStorage.ITEM.registerForItems((stack, ctx) -> new FluidFuelItemHelper.ItemStorage(JetpackItem.CAPACITY, ctx), item));
     public static final DieselToolItem ITEM_DIESEL_CHAINSAW = (DieselToolItem) of(s -> new DieselToolItem(s, 12), "diesel_chainsaw", 1,

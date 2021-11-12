@@ -21,53 +21,38 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.blocks.creativetank;
+package aztech.modern_industrialization.blocks.storage;
 
-import aztech.modern_industrialization.api.TickableBlock;
-import aztech.modern_industrialization.util.MobSpawning;
+import aztech.modern_industrialization.MIBlock;
 import java.util.Arrays;
 import java.util.List;
-import net.minecraft.block.Block;
+import java.util.function.Function;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.loot.context.LootContext;
 import net.minecraft.loot.context.LootContextParameters;
 import net.minecraft.loot.context.LootContextTypes;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
-import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.BlockView;
-import net.minecraft.world.World;
 
-public class CreativeTankBlock extends Block implements TickableBlock {
-    public CreativeTankBlock(Settings settings) {
-        super(settings.nonOpaque().allowsSpawning(MobSpawning.NO_SPAWN));
+public class AbstractStorageBlock extends MIBlock {
+    public AbstractStorageBlock(String id, Settings settings, Function<MIBlock, BlockItem> blockItemCtor, int registrationFlag) {
+        super(id, settings, blockItemCtor, registrationFlag);
     }
 
-    @Override
-    public BlockEntity createBlockEntity(BlockPos pos, BlockState state) {
-        return new CreativeTankBlockEntity(pos, state);
+    public AbstractStorageBlock(String id, Settings settings, Function<MIBlock, BlockItem> blockItemCtor) {
+        super(id, settings, blockItemCtor);
     }
 
-    public boolean isTranslucent(BlockState state, BlockView world, BlockPos pos) {
-        return true;
-    }
-
-    @Override
-    public int getOpacity(BlockState state, BlockView world, BlockPos pos) {
-        return 0;
-    }
-
-    ItemStack getStack(BlockEntity entity) {
-        CreativeTankBlockEntity tankEntity = (CreativeTankBlockEntity) entity;
+    protected ItemStack getStack(BlockEntity entity) {
+        var storageBlockEntity = (AbstractStorageBlockEntity<?>) entity;
         ItemStack stack = new ItemStack(asItem());
-        if (!tankEntity.isResourceBlank()) {
+        if (!storageBlockEntity.isEmpty()) {
             NbtCompound tag = new NbtCompound();
-            tag.put("BlockEntityTag", tankEntity.toClientTag(new NbtCompound()));
+            tag.put("BlockEntityTag", storageBlockEntity.toClientTag(new NbtCompound()));
             stack.setTag(tag);
         }
         return stack;
@@ -82,13 +67,5 @@ public class CreativeTankBlock extends Block implements TickableBlock {
     @Override
     public ItemStack getPickStack(BlockView world, BlockPos pos, BlockState state) {
         return getStack(world.getBlockEntity(pos));
-    }
-
-    @Override
-    public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
-        if (((CreativeTankBlockEntity) world.getBlockEntity(pos)).onPlayerUse(player)) {
-            return ActionResult.success(world.isClient);
-        }
-        return ActionResult.PASS;
     }
 }

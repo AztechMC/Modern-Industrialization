@@ -75,8 +75,4 @@ public class ResourceUtil {
     public static synchronized void appendToTag(String tagId, String elementId) {
         appendToTag(new Identifier(tagId), new Identifier(elementId));
     }
-
-    public static void appendWrenchable(Identifier blockId) {
-        appendToTag(new Identifier("fabric:blocks/wrenchables"), blockId);
-    }
 }

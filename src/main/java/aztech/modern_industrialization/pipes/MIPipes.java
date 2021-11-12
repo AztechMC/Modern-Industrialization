@@ -110,7 +110,6 @@ public class MIPipes {
         Registry.register(Registry.BLOCK, new MIIdentifier("pipe"), BLOCK_PIPE);
         BLOCK_ENTITY_TYPE_PIPE = Registry.register(Registry.BLOCK_ENTITY_TYPE, new MIIdentifier("pipe"),
                 FabricBlockEntityTypeBuilder.create(PipeBlockEntity::new, BLOCK_PIPE).build(null));
-        ResourceUtil.appendWrenchable(new MIIdentifier("pipe"));
 
         for (PipeColor color : PipeColor.values()) {
             registerFluidPipeType(color);

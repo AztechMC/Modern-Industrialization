@@ -42,7 +42,7 @@ import net.minecraft.world.World;
 
 public class ElectricCraftingMultiblockBlockEntity extends AbstractCraftingMultiblockBlockEntity {
     public ElectricCraftingMultiblockBlockEntity(BEP bep, String name, ShapeTemplate shapeTemplate, MachineRecipeType recipeType) {
-        super(bep, name, new OrientationComponent(new OrientationComponent.Params(false, false, false)), new ShapeTemplate[] { shapeTemplate });
+        super(bep, name, new OrientationComponent.Params(false, false, false), new ShapeTemplate[] { shapeTemplate });
         this.recipeType = recipeType;
         this.upgrades = new UpgradeComponent();
         this.registerComponents(upgrades);

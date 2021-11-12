@@ -47,7 +47,7 @@ public class DistillationTowerBlockEntity extends AbstractCraftingMultiblockBloc
     private static final ShapeTemplate[] shapeTemplates;
 
     public DistillationTowerBlockEntity(BEP bep) {
-        super(bep, "distillation_tower", new OrientationComponent(new OrientationComponent.Params(false, false, false)), shapeTemplates);
+        super(bep, "distillation_tower", new OrientationComponent.Params(false, false, false), shapeTemplates);
         this.upgrades = new UpgradeComponent();
         this.registerComponents(upgrades);
     }

@@ -24,6 +24,7 @@
 package aztech.modern_industrialization.blocks.creativetank;
 
 import aztech.modern_industrialization.api.FastBlockEntity;
+import aztech.modern_industrialization.api.WrenchableBlockEntity;
 import aztech.modern_industrialization.blocks.storage.tank.CreativeTankSetup;
 import aztech.modern_industrialization.util.NbtHelper;
 import java.util.Iterator;
@@ -39,13 +40,16 @@ import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleViewIterator;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
+import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.Hand;
+import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 
 public class CreativeTankBlockEntity extends FastBlockEntity
-        implements ExtractionOnlyStorage<FluidVariant>, StorageView<FluidVariant>, BlockEntityClientSerializable {
+        implements ExtractionOnlyStorage<FluidVariant>, StorageView<FluidVariant>, BlockEntityClientSerializable, WrenchableBlockEntity {
     FluidVariant fluid = FluidVariant.blank();
 
     public CreativeTankBlockEntity(BlockPos pos, BlockState state) {
@@ -135,5 +139,17 @@ public class CreativeTankBlockEntity extends FastBlockEntity
     @Override
     public long getAmount() {
         return Long.MAX_VALUE;
+    }
+
+    @Override
+    public boolean useWrench(PlayerEntity player, Hand hand, BlockHitResult hit) {
+        if (player.isSneaking()) {
+            CreativeTankBlock tank = (CreativeTankBlock) getCachedState().getBlock();
+            world.spawnEntity(new ItemEntity(world, hit.getPos().x, hit.getPos().y, hit.getPos().z, tank.getStack(world.getBlockEntity(pos))));
+            world.setBlockState(pos, Blocks.AIR.getDefaultState());
+            // TODO: play sound
+            return true;
+        }
+        return false;
     }
 }

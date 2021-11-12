@@ -25,9 +25,11 @@ package aztech.modern_industrialization.machines;
 
 import aztech.modern_industrialization.api.FastBlockEntity;
 import aztech.modern_industrialization.api.ICacheableApiHost;
+import aztech.modern_industrialization.api.WrenchableBlockEntity;
 import aztech.modern_industrialization.inventory.ConfigurableFluidStack;
 import aztech.modern_industrialization.inventory.ConfigurableItemStack;
 import aztech.modern_industrialization.inventory.MIInventory;
+import aztech.modern_industrialization.machines.components.OrientationComponent;
 import aztech.modern_industrialization.machines.gui.MachineGuiParameters;
 import aztech.modern_industrialization.machines.models.MachineModelClientData;
 import aztech.modern_industrialization.util.NbtHelper;
@@ -58,6 +60,7 @@ import net.minecraft.text.TranslatableText;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.Direction;
 
 /**
@@ -65,8 +68,8 @@ import net.minecraft.util.math.Direction;
  * inventory.
  */
 @SuppressWarnings("rawtypes")
-public abstract class MachineBlockEntity extends FastBlockEntity
-        implements ExtendedScreenHandlerFactory, RenderAttachmentBlockEntity, BlockEntityClientSerializable, ICacheableApiHost {
+public abstract class MachineBlockEntity extends FastBlockEntity implements ExtendedScreenHandlerFactory, RenderAttachmentBlockEntity,
+        BlockEntityClientSerializable, ICacheableApiHost, WrenchableBlockEntity {
     final List<SyncedComponent.Server> syncedComponents = new ArrayList<>();
     private final List<IComponent> icomponents = new ArrayList<>();
     private final MachineGuiParameters guiParams;
@@ -77,9 +80,18 @@ public abstract class MachineBlockEntity extends FastBlockEntity
     private boolean syncCausesRemesh = true;
     private final Set<Runnable> cacheInvalidateCallbacks = new ReferenceOpenHashSet<>();
 
-    public MachineBlockEntity(BEP bep, MachineGuiParameters guiParams) {
+    /**
+     * Every machine has an orientation component: this is the only one that is
+     * here, the others are in subclasses.
+     */
+    protected final OrientationComponent orientation;
+
+    public MachineBlockEntity(BEP bep, MachineGuiParameters guiParams, OrientationComponent.Params orientationParams) {
         super(bep.type(), bep.pos(), bep.state());
         this.guiParams = guiParams;
+        this.orientation = new OrientationComponent(orientationParams);
+
+        registerComponents(orientation);
     }
 
     protected final void registerClientComponent(SyncedComponent.Server component) {
@@ -144,11 +156,25 @@ public abstract class MachineBlockEntity extends FastBlockEntity
     /**
      * @param face The face that was targeted, taking the overlay into account.
      */
-    protected abstract ActionResult onUse(PlayerEntity player, Hand hand, Direction face);
+    protected ActionResult onUse(PlayerEntity player, Hand hand, Direction face) {
+        return ActionResult.PASS;
+    }
 
     protected abstract MachineModelClientData getModelData();
 
     public abstract void onPlaced(LivingEntity placer, ItemStack itemStack);
+
+    @Override
+    public boolean useWrench(PlayerEntity player, Hand hand, BlockHitResult hitResult) {
+        if (orientation.useWrench(player, hand, MachineOverlay.findHitSide(hitResult))) {
+            markDirty();
+            if (!getWorld().isClient()) {
+                sync();
+            }
+            return true;
+        }
+        return false;
+    }
 
     @Override
     public final Object getRenderAttachmentData() {

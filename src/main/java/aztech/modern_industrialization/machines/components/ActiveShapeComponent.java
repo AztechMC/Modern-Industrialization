@@ -23,13 +23,10 @@
  */
 package aztech.modern_industrialization.machines.components;
 
-import aztech.modern_industrialization.MIItem;
 import aztech.modern_industrialization.machines.IComponent;
 import aztech.modern_industrialization.machines.multiblocks.ShapeTemplate;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.Direction;
 
@@ -41,13 +38,12 @@ public class ActiveShapeComponent implements IComponent {
         this.shapeTemplates = shapeTemplates;
     }
 
-    public ActionResult onUse(PlayerEntity player, Hand hand, Direction face) {
-        Item handItem = player.getStackInHand(hand).getItem();
-        if (handItem == MIItem.ITEM_SCREWDRIVER && shapeTemplates.length > 1) {
+    public boolean useScrewdriver(PlayerEntity player, Hand hand, Direction face) {
+        if (shapeTemplates.length > 1) {
             activeShape = (activeShape + 1) % shapeTemplates.length;
-            return ActionResult.success(player.getEntityWorld().isClient());
+            return true;
         }
-        return ActionResult.PASS;
+        return false;
     }
 
     public ShapeTemplate getActiveShape() {

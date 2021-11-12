@@ -31,7 +31,6 @@ import aztech.modern_industrialization.machines.MachineBlockEntity;
 import aztech.modern_industrialization.machines.components.OrientationComponent;
 import aztech.modern_industrialization.machines.components.sync.AutoExtract;
 import aztech.modern_industrialization.machines.gui.MachineGuiParameters;
-import aztech.modern_industrialization.machines.helper.OrientationHelper;
 import aztech.modern_industrialization.machines.models.MachineCasings;
 import aztech.modern_industrialization.machines.models.MachineModelClientData;
 import aztech.modern_industrialization.util.Tickable;
@@ -39,20 +38,15 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.Direction;
 
 public class ConfigurableChestMachineBlockEntity extends MachineBlockEntity implements Tickable {
 
-    private final OrientationComponent orientation;
     private final MIInventory inventory;
 
     public ConfigurableChestMachineBlockEntity(BEP bep) {
-        super(bep, new MachineGuiParameters.Builder("configurable_chest", true).backgroundHeight(180).build());
-        orientation = new OrientationComponent(new OrientationComponent.Params(true, true, false));
+        super(bep, new MachineGuiParameters.Builder("configurable_chest", true).backgroundHeight(180).build(),
+                new OrientationComponent.Params(true, true, false));
 
         List<ConfigurableItemStack> stacks = new ArrayList<>();
         for (int i = 0; i < 27; i++) {
@@ -62,17 +56,12 @@ public class ConfigurableChestMachineBlockEntity extends MachineBlockEntity impl
         inventory = new MIInventory(stacks, Collections.emptyList(), itemPositions, SlotPositions.empty());
 
         registerClientComponent(new AutoExtract.Server(orientation));
-        registerComponents(orientation, inventory);
+        registerComponents(inventory);
     }
 
     @Override
     public MIInventory getInventory() {
         return inventory;
-    }
-
-    @Override
-    protected ActionResult onUse(PlayerEntity player, Hand hand, Direction face) {
-        return OrientationHelper.onUse(player, hand, face, orientation, this);
     }
 
     @Override

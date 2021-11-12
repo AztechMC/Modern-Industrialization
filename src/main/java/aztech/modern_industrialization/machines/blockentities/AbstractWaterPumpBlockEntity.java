@@ -31,20 +31,15 @@ import aztech.modern_industrialization.machines.components.IsActiveComponent;
 import aztech.modern_industrialization.machines.components.OrientationComponent;
 import aztech.modern_industrialization.machines.components.sync.ProgressBar;
 import aztech.modern_industrialization.machines.gui.MachineGuiParameters;
-import aztech.modern_industrialization.machines.helper.OrientationHelper;
 import aztech.modern_industrialization.util.Tickable;
 import java.util.List;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
 
 public abstract class AbstractWaterPumpBlockEntity extends MachineBlockEntity implements Tickable {
     protected static final int OUTPUT_SLOT_X = 110;
@@ -53,13 +48,11 @@ public abstract class AbstractWaterPumpBlockEntity extends MachineBlockEntity im
     private static final int OPERATION_TICKS = 100;
 
     public AbstractWaterPumpBlockEntity(BEP bep, String blockName) {
-        super(bep, new MachineGuiParameters.Builder(blockName, false).build());
-
-        orientation = new OrientationComponent(new OrientationComponent.Params(true, false, false));
+        super(bep, new MachineGuiParameters.Builder(blockName, false).build(), new OrientationComponent.Params(true, false, false));
 
         isActiveComponent = new IsActiveComponent();
         registerClientComponent(new ProgressBar.Server(PROGRESS_BAR, () -> (float) pumpingTicks / OPERATION_TICKS));
-        this.registerComponents(orientation, isActiveComponent, new IComponent() {
+        this.registerComponents(isActiveComponent, new IComponent() {
             @Override
             public void writeNbt(NbtCompound tag) {
                 tag.putInt("pumpingTicks", pumpingTicks);
@@ -77,14 +70,8 @@ public abstract class AbstractWaterPumpBlockEntity extends MachineBlockEntity im
 
     abstract protected int getWaterMultiplier();
 
-    protected final OrientationComponent orientation;
     protected int pumpingTicks = 0; // number of ticks spent pumping this iteration
     protected IsActiveComponent isActiveComponent;
-
-    @Override
-    protected ActionResult onUse(PlayerEntity player, Hand hand, Direction face) {
-        return OrientationHelper.onUse(player, hand, face, orientation, this);
-    }
 
     @Override
     public void onPlaced(LivingEntity placer, ItemStack itemStack) {

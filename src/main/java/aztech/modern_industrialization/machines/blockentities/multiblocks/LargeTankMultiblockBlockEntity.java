@@ -117,8 +117,7 @@ public class LargeTankMultiblockBlockEntity extends MultiblockMachineBlockEntity
 
     public LargeTankMultiblockBlockEntity(BEP bep) {
 
-        super(bep, new MachineGuiParameters.Builder("large_tank", false).build(),
-                new OrientationComponent(new OrientationComponent.Params(false, false, false)));
+        super(bep, new MachineGuiParameters.Builder("large_tank", false).build(), new OrientationComponent.Params(false, false, false));
 
         shapeComponent = new DynamicShapeComponent(shapeTemplates);
         fluidStorage = new FluidStorageComponent();

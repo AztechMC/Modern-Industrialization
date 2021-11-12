@@ -30,7 +30,6 @@ import aztech.modern_industrialization.ModernIndustrialization;
 import aztech.modern_industrialization.blocks.creativetank.CreativeTankBlock;
 import aztech.modern_industrialization.blocks.creativetank.CreativeTankBlockEntity;
 import aztech.modern_industrialization.blocks.creativetank.CreativeTankItem;
-import aztech.modern_industrialization.util.ResourceUtil;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
@@ -47,7 +46,6 @@ public class CreativeTankSetup {
 
     public static void setup() {
         ModernIndustrialization.registerBlock(CREATIVE_TANK_BLOCK, CREATIVE_TANK_ITEM, "creative_tank");
-        ResourceUtil.appendWrenchable(new MIIdentifier("creative_tank"));
         CREATIVE_BLOCK_ENTITY_TYPE = Registry.register(Registry.BLOCK_ENTITY_TYPE, new MIIdentifier("creative_tank"),
                 FabricBlockEntityTypeBuilder.create(CreativeTankBlockEntity::new, CREATIVE_TANK_BLOCK).build(null));
 

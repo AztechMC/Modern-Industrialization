@@ -27,7 +27,6 @@ import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.machines.BEP;
 import aztech.modern_industrialization.machines.MachineBlock;
 import aztech.modern_industrialization.machines.models.MachineModels;
-import aztech.modern_industrialization.util.ResourceUtil;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -57,7 +56,6 @@ public class MachineRegistrationHelper {
         Block block = new MachineBlock(id, ctor);
         bet[0] = Registry.register(Registry.BLOCK_ENTITY_TYPE, new MIIdentifier(id),
                 FabricBlockEntityTypeBuilder.create(ctor::apply, block).build(null));
-        ResourceUtil.appendWrenchable(new MIIdentifier(id));
         for (Consumer<BlockEntityType<?>> extraRegistrator : extraRegistrators) {
             extraRegistrator.accept(bet[0]);
         }

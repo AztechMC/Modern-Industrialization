@@ -58,7 +58,7 @@ public class ElectricBlastFurnaceBlockEntity extends AbstractCraftingMultiblockB
     private static final ShapeTemplate[] shapeTemplates;
 
     public ElectricBlastFurnaceBlockEntity(BEP bep) {
-        super(bep, "electric_blast_furnace", new OrientationComponent(new OrientationComponent.Params(false, false, false)), shapeTemplates);
+        super(bep, "electric_blast_furnace", new OrientationComponent.Params(false, false, false), shapeTemplates);
         this.upgrades = new UpgradeComponent();
         this.registerComponents(upgrades);
     }

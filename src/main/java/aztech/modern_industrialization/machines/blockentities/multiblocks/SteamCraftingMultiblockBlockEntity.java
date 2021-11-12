@@ -44,7 +44,7 @@ public class SteamCraftingMultiblockBlockEntity extends AbstractCraftingMultiblo
     private final GunpowderOverclockComponent gunpowderOverclock;
 
     public SteamCraftingMultiblockBlockEntity(BEP bep, String name, ShapeTemplate shapeTemplate, MachineRecipeType recipeType) {
-        super(bep, name, new OrientationComponent(new OrientationComponent.Params(false, false, false)), new ShapeTemplate[] { shapeTemplate });
+        super(bep, name, new OrientationComponent.Params(false, false, false), new ShapeTemplate[] { shapeTemplate });
 
         this.recipeType = recipeType;
         gunpowderOverclock = new GunpowderOverclockComponent();

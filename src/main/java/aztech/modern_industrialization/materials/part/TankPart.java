@@ -26,10 +26,8 @@ package aztech.modern_industrialization.materials.part;
 import static aztech.modern_industrialization.ModernIndustrialization.ITEM_GROUP;
 
 import aztech.modern_industrialization.MIBlock;
-import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.blocks.storage.tank.*;
 import aztech.modern_industrialization.proxy.CommonProxy;
-import aztech.modern_industrialization.util.ResourceUtil;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
@@ -56,7 +54,6 @@ public class TankPart extends UnbuildablePart<Integer> {
             TankBlock block = new TankBlock(itemPath, (MIBlock b) -> new TankItem(b, new Item.Settings().group(ITEM_GROUP), capacity), factory);
             TankItem item = (TankItem) block.blockItem;
 
-            ResourceUtil.appendWrenchable(new MIIdentifier(itemPath));
             bet.setValue(Registry.register(Registry.BLOCK_ENTITY_TYPE, itemId,
                     FabricBlockEntityTypeBuilder.create(block.factory::createBlockEntity, block).build(null)));
 

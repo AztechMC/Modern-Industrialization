@@ -25,25 +25,22 @@ package aztech.modern_industrialization.machines.multiblocks;
 
 import aztech.modern_industrialization.machines.BEP;
 import aztech.modern_industrialization.machines.MachineBlockEntity;
+import aztech.modern_industrialization.machines.MachineOverlay;
+import aztech.modern_industrialization.machines.components.ActiveShapeComponent;
 import aztech.modern_industrialization.machines.components.OrientationComponent;
 import aztech.modern_industrialization.machines.components.ShapeValidComponent;
 import aztech.modern_industrialization.machines.gui.MachineGuiParameters;
-import aztech.modern_industrialization.machines.helper.OrientationHelper;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
-import net.minecraft.util.math.Direction;
+import net.minecraft.util.hit.BlockHitResult;
 
 public abstract class MultiblockMachineBlockEntity extends MachineBlockEntity {
-    public MultiblockMachineBlockEntity(BEP bep, MachineGuiParameters guiParams, OrientationComponent orientation) {
-        super(bep, guiParams);
-
-        this.orientation = orientation;
+    public MultiblockMachineBlockEntity(BEP bep, MachineGuiParameters guiParams, OrientationComponent.Params orientationParams) {
+        super(bep, guiParams, orientationParams);
         this.shapeValid = new ShapeValidComponent();
-        registerComponents(orientation, shapeValid);
+        registerComponents(shapeValid);
     }
 
-    public final OrientationComponent orientation;
     public final ShapeValidComponent shapeValid;
 
     public boolean isShapeValid() {
@@ -53,13 +50,14 @@ public abstract class MultiblockMachineBlockEntity extends MachineBlockEntity {
     protected abstract void unlink();
 
     @Override
-    protected ActionResult onUse(PlayerEntity player, Hand hand, Direction face) {
-        ActionResult result = OrientationHelper.onUse(player, hand, face, orientation, this);
-        if (result.isAccepted() && !world.isClient) {
-            unlink();
-            sync(false);
+    public boolean useWrench(PlayerEntity player, Hand hand, BlockHitResult hitResult) {
+        if (super.useWrench(player, hand, hitResult)) {
+            if (!world.isClient) {
+                unlink();
+            }
+            return true;
         }
-        return result;
+        return false;
     }
 
     @Override
@@ -71,4 +69,22 @@ public abstract class MultiblockMachineBlockEntity extends MachineBlockEntity {
     }
 
     public abstract ShapeTemplate getActiveShape();
+
+    /**
+     * Helper method for subclasses that want standard screwdriver handling.
+     */
+    protected boolean useScrewdriver(ActiveShapeComponent activeShape, PlayerEntity player, Hand hand, BlockHitResult hitResult) {
+        if (activeShape.useScrewdriver(player, hand, MachineOverlay.findHitSide(hitResult))) {
+            if (!player.getEntityWorld().isClient()) {
+                unlink();
+                sync(false);
+            }
+            return true;
+        }
+        return false;
+    }
+
+    public OrientationComponent getOrientation() {
+        return orientation;
+    }
 }

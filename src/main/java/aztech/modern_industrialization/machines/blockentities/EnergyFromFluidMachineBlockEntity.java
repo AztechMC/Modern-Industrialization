@@ -39,7 +39,6 @@ import aztech.modern_industrialization.machines.components.OrientationComponent;
 import aztech.modern_industrialization.machines.components.sync.EnergyBar;
 import aztech.modern_industrialization.machines.gui.MachineGuiParameters;
 import aztech.modern_industrialization.machines.helper.EnergyHelper;
-import aztech.modern_industrialization.machines.helper.OrientationHelper;
 import aztech.modern_industrialization.machines.models.MachineModelClientData;
 import aztech.modern_industrialization.util.Simulation;
 import aztech.modern_industrialization.util.Tickable;
@@ -50,12 +49,8 @@ import java.util.function.Predicate;
 import java.util.function.ToLongFunction;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.Direction;
 
 public class EnergyFromFluidMachineBlockEntity extends MachineBlockEntity implements Tickable {
 
@@ -64,19 +59,17 @@ public class EnergyFromFluidMachineBlockEntity extends MachineBlockEntity implem
 
     protected final MIInventory inventory;
     protected EnergyComponent energy;
-    protected OrientationComponent orientation;
     protected IsActiveComponent isActiveComponent;
     protected FluidConsumerComponent fluidConsumer;
 
     private EnergyFromFluidMachineBlockEntity(BEP bep, String name, CableTier outputTier, long energyCapacity, long fluidCapacity,
             long maxEnergyOutput, Predicate<Fluid> acceptedFluid, ToLongFunction<Fluid> fluidEUperMb, Fluid locked, boolean lockButton) {
-        super(bep, new MachineGuiParameters.Builder(name, lockButton).build());
+        super(bep, new MachineGuiParameters.Builder(name, lockButton).build(), new OrientationComponent.Params(true, false, false));
         this.outputTier = outputTier;
         this.energy = new EnergyComponent(energyCapacity);
         this.extractable = energy.buildExtractable((CableTier tier) -> tier == outputTier);
         EnergyBar.Parameters energyBarParams = new EnergyBar.Parameters(76, 39);
         registerClientComponent(new EnergyBar.Server(energyBarParams, energy::getEu, energy::getCapacity));
-        this.orientation = new OrientationComponent(new OrientationComponent.Params(true, false, false));
         this.isActiveComponent = new IsActiveComponent();
 
         List<ConfigurableItemStack> itemStacks = new ArrayList<>();
@@ -93,7 +86,7 @@ public class EnergyFromFluidMachineBlockEntity extends MachineBlockEntity implem
         SlotPositions fluidPositions = new SlotPositions.Builder().addSlot(25, 38).build();
         inventory = new MIInventory(itemStacks, fluidStacks, itemPositions, fluidPositions);
 
-        this.registerComponents(energy, orientation, isActiveComponent, inventory, fluidConsumer);
+        this.registerComponents(energy, isActiveComponent, inventory, fluidConsumer);
 
     }
 
@@ -111,11 +104,6 @@ public class EnergyFromFluidMachineBlockEntity extends MachineBlockEntity implem
     @Override
     public MIInventory getInventory() {
         return inventory;
-    }
-
-    @Override
-    protected ActionResult onUse(PlayerEntity player, Hand hand, Direction face) {
-        return OrientationHelper.onUse(player, hand, face, orientation, this);
     }
 
     @Override

@@ -23,6 +23,7 @@
  */
 package aztech.modern_industrialization.machines.blockentities.multiblocks;
 
+import aztech.modern_industrialization.api.ScrewdriverableBlockEntity;
 import aztech.modern_industrialization.inventory.MIInventory;
 import aztech.modern_industrialization.machines.BEP;
 import aztech.modern_industrialization.machines.components.*;
@@ -37,14 +38,14 @@ import aztech.modern_industrialization.util.Tickable;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
-import net.minecraft.util.math.Direction;
+import net.minecraft.util.hit.BlockHitResult;
 import org.jetbrains.annotations.Nullable;
 
-public abstract class AbstractCraftingMultiblockBlockEntity extends MultiblockMachineBlockEntity implements Tickable {
-    public AbstractCraftingMultiblockBlockEntity(BEP bep, String name, OrientationComponent orientation, ShapeTemplate[] shapeTemplates) {
-        super(bep, new MachineGuiParameters.Builder(name, false).backgroundHeight(200).build(), orientation);
+public abstract class AbstractCraftingMultiblockBlockEntity extends MultiblockMachineBlockEntity implements Tickable, ScrewdriverableBlockEntity {
+    public AbstractCraftingMultiblockBlockEntity(BEP bep, String name, OrientationComponent.Params orientationParams,
+            ShapeTemplate[] shapeTemplates) {
+        super(bep, new MachineGuiParameters.Builder(name, false).backgroundHeight(200).build(), orientationParams);
 
         this.activeShape = new ActiveShapeComponent(shapeTemplates);
         this.inventory = new MultiblockInventoryComponent();
@@ -76,16 +77,8 @@ public abstract class AbstractCraftingMultiblockBlockEntity extends MultiblockMa
     }
 
     @Override
-    protected ActionResult onUse(PlayerEntity player, Hand hand, Direction face) {
-        ActionResult result = activeShape.onUse(player, hand, face);
-        if (result.isAccepted()) {
-            if (!player.getEntityWorld().isClient()) {
-                unlink();
-                sync(false);
-            }
-            return result;
-        }
-        return super.onUse(player, hand, face);
+    public boolean useScrewdriver(PlayerEntity player, Hand hand, BlockHitResult hitResult) {
+        return useScrewdriver(activeShape, player, hand, hitResult);
     }
 
     @Override

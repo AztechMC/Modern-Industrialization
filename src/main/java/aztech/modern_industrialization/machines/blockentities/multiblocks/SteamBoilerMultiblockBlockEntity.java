@@ -49,8 +49,7 @@ public class SteamBoilerMultiblockBlockEntity extends MultiblockMachineBlockEnti
     private final FuelBurningComponent fuelBurning;
 
     public SteamBoilerMultiblockBlockEntity(BEP bep, ShapeTemplate shapeTemplate, String name, long maxEuProduction, boolean highPressure) {
-        super(bep, new MachineGuiParameters.Builder(name, false).build(),
-                new OrientationComponent(new OrientationComponent.Params(false, false, false)));
+        super(bep, new MachineGuiParameters.Builder(name, false).build(), new OrientationComponent.Params(false, false, false));
 
         isActiveComponent = new IsActiveComponent();
         this.shapeTemplate = shapeTemplate;

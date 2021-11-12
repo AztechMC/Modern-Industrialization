@@ -23,7 +23,6 @@
  */
 package aztech.modern_industrialization.machines.recipe;
 
-import aztech.modern_industrialization.mixin_impl.IngredientMatchingStacksAccessor;
 import aztech.modern_industrialization.util.DefaultedListWrapper;
 import java.util.Arrays;
 import java.util.List;
@@ -87,7 +86,7 @@ public class MachineRecipe implements Recipe<Inventory> {
         // modified.
         // (They should never be used somewhere else anyway)
         return new DefaultedListWrapper<>(itemInputs.stream().filter(i -> i.probability == 1).map(i -> {
-            for (ItemStack stack : ((IngredientMatchingStacksAccessor) (Object) i.ingredient).modern_industrialization_getMatchingStacks()) {
+            for (ItemStack stack : i.ingredient.getMatchingStacksClient()) {
                 stack.setCount(i.amount);
             }
             return i.ingredient;
@@ -135,12 +134,11 @@ public class MachineRecipe implements Recipe<Inventory> {
         }
 
         public List<Item> getInputItems() {
-            return Arrays.stream(((IngredientMatchingStacksAccessor) (Object) ingredient).modern_industrialization_getMatchingStacks())
-                    .map(ItemStack::getItem).distinct().collect(Collectors.toList());
+            return Arrays.stream(ingredient.getMatchingStacksClient()).map(ItemStack::getItem).distinct().collect(Collectors.toList());
         }
 
         public List<ItemStack> getInputStacks() {
-            return Arrays.asList(((IngredientMatchingStacksAccessor) (Object) ingredient).modern_industrialization_getMatchingStacks());
+            return Arrays.asList(ingredient.getMatchingStacksClient());
         }
     }
 

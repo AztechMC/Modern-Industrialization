@@ -6,7 +6,6 @@
   "mixins": [
     "BlockApiCacheAccessor",
     "BlockMixin",
-    "IngredientMixin",
     "ItemStackMixin",
     "LivingEntityElytraMixin",
     "LivingEntityMixin",

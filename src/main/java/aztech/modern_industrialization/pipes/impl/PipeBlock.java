@@ -25,7 +25,6 @@ package aztech.modern_industrialization.pipes.impl;
 
 import aztech.modern_industrialization.pipes.MIPipes;
 import aztech.modern_industrialization.pipes.api.PipeNetworkNode;
-import aztech.modern_industrialization.pipes.api.PipeNetworkType;
 import aztech.modern_industrialization.util.MobSpawning;
 import java.util.ArrayList;
 import java.util.List;
@@ -33,7 +32,6 @@ import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
-import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.ai.pathing.NavigationType;
 import net.minecraft.entity.player.PlayerEntity;
@@ -48,7 +46,6 @@ import net.minecraft.sound.SoundEvent;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
@@ -67,22 +64,59 @@ public class PipeBlock extends Block implements BlockEntityProvider {
         return new PipeBlockEntity(pos, state);
     }
 
+    private static boolean isPartHit(VoxelShape shape, BlockHitResult hit) {
+        var pos = hit.getBlockPos();
+        Vec3d posInBlock = hit.getPos().subtract(pos.getX(), pos.getY(), pos.getZ());
+        for (Box box : shape.getBoundingBoxes()) {
+            // move slightly towards box center
+            Vec3d dir = box.getCenter().subtract(posInBlock).normalize().multiply(1e-4);
+            if (box.contains(posInBlock.add(dir))) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     @Nullable
     private static PipeVoxelShape getHitPart(PipeBlockEntity pipe, BlockHitResult hit) {
-        Vec3d hitPos = hit.getPos();
-        BlockPos pos = pipe.getPos();
         for (PipeVoxelShape partShape : pipe.getPartShapes()) {
-            Vec3d posInBlock = hitPos.subtract(pos.getX(), pos.getY(), pos.getZ());
-            for (Box box : partShape.shape.getBoundingBoxes()) {
-                // move slightly towards box center
-                Vec3d dir = box.getCenter().subtract(posInBlock).normalize().multiply(1e-4);
-                if (box.contains(posInBlock.add(dir))) {
-                    return partShape;
+            if (isPartHit(partShape.shape, hit)) {
+                return partShape;
+            }
+        }
+        return null;
+    }
+
+    @Nullable
+    private static PipeVoxelShape getTargetedPart(BlockView blockView, BlockPos pos) {
+        if (!(blockView instanceof World world) || !world.isClient()) {
+            return null;
+        }
+        PipeVoxelShape currentBest = null;
+        // Not fond of the use of client-side classes...
+        if (world.getBlockEntity(pos) instanceof PipeBlockEntity pipe) {
+            double smallestDistance = 10000;
+
+            for (PipeVoxelShape pipePartShape : pipe.getPartShapes()) {
+                VoxelShape partShape = pipePartShape.shape;
+                float tickDelta = MinecraftClient.getInstance().getTickDelta();
+                ClientPlayerEntity player = MinecraftClient.getInstance().player;
+                Vec3d vec3d = player.getCameraPosVec(tickDelta);
+                Vec3d vec3d2 = player.getRotationVec(tickDelta);
+                double maxDistance = MinecraftClient.getInstance().interactionManager.getReachDistance();
+                Vec3d vec3d3 = vec3d.add(vec3d2.x * maxDistance, vec3d2.y * maxDistance, vec3d2.z * maxDistance);
+                BlockHitResult hit = partShape.raycast(vec3d, vec3d3, pos);
+                if (hit != null && isPartHit(partShape, hit)) {
+                    double dist = hit.getPos().distanceTo(vec3d);
+
+                    if (dist < smallestDistance) {
+                        smallestDistance = dist;
+                        currentBest = pipePartShape;
+                    }
                 }
             }
         }
-
-        return null;
+        return currentBest;
     }
 
     static boolean useWrench(PipeBlockEntity pipe, PlayerEntity player, Hand hand, BlockHitResult hit) {
@@ -164,34 +198,8 @@ public class PipeBlock extends Block implements BlockEntityProvider {
 
     @Override
     public ItemStack getPickStack(BlockView world, BlockPos pos, BlockState state) {
-        PipeBlockEntity entity = (PipeBlockEntity) world.getBlockEntity(pos);
-        PipeNetworkType[] itemType = new PipeNetworkType[] { null };
-        if (entity != null) {
-            double[] smallestDistance = new double[] { 10000 };
-            VoxelShape[] closestShape = new VoxelShape[] { null };
-
-            // TODO: don't copy/paste?
-            for (PipeVoxelShape pipePartShape : entity.getPartShapes()) {
-                VoxelShape partShape = pipePartShape.shape;
-                assert (world instanceof ClientWorld);
-                float tickDelta = 0; // TODO: fix this
-                ClientPlayerEntity player = MinecraftClient.getInstance().player;
-                Vec3d vec3d = player.getCameraPosVec(tickDelta);
-                Vec3d vec3d2 = player.getRotationVec(tickDelta);
-                double maxDistance = MinecraftClient.getInstance().interactionManager.getReachDistance();
-                Vec3d vec3d3 = vec3d.add(vec3d2.x * maxDistance, vec3d2.y * maxDistance, vec3d2.z * maxDistance);
-                BlockHitResult hit = partShape.raycast(vec3d, vec3d3, pos);
-                if (hit != null && hit.getType() == HitResult.Type.BLOCK) {
-                    double dist = hit.getPos().distanceTo(vec3d);
-                    if (dist < smallestDistance[0]) {
-                        smallestDistance[0] = dist;
-                        closestShape[0] = partShape;
-                        itemType[0] = pipePartShape.type;
-                    }
-                }
-            }
-        }
-        return new ItemStack(itemType[0] == null ? Items.AIR : MIPipes.INSTANCE.getPipeItem(itemType[0]));
+        var targetedPart = getTargetedPart(world, pos);
+        return new ItemStack(targetedPart == null ? Items.AIR : MIPipes.INSTANCE.getPipeItem(targetedPart.type));
     }
 
     @Override
@@ -219,41 +227,8 @@ public class PipeBlock extends Block implements BlockEntityProvider {
 
     @Override
     public VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
-        if (world instanceof World && ((World) world).isClient) {
-            PipeBlockEntity entity = (PipeBlockEntity) world.getBlockEntity(pos);
-            if (entity != null) {
-                double[] smallestDistance = new double[] { 10000 };
-                VoxelShape[] closestShape = new VoxelShape[] { null };
-
-                for (PipeVoxelShape pipePartShape : entity.getPartShapes()) {
-                    VoxelShape partShape = pipePartShape.shape;
-                    assert (world instanceof ClientWorld);
-                    float tickDelta = 0; // TODO: fix this
-                    ClientPlayerEntity player = MinecraftClient.getInstance().player;
-                    Vec3d vec3d = player.getCameraPosVec(tickDelta);
-                    Vec3d vec3d2 = player.getRotationVec(tickDelta);
-                    double maxDistance = MinecraftClient.getInstance().interactionManager.getReachDistance();
-                    Vec3d vec3d3 = vec3d.add(vec3d2.x * maxDistance, vec3d2.y * maxDistance, vec3d2.z * maxDistance);
-                    BlockHitResult hit = partShape.raycast(vec3d, vec3d3, pos);
-                    if (hit != null && hit.getType() == HitResult.Type.BLOCK) {
-                        double dist = hit.getPos().distanceTo(vec3d);
-                        if (dist < smallestDistance[0]) {
-                            smallestDistance[0] = dist;
-                            closestShape[0] = partShape;
-                        }
-                    }
-                }
-
-                if (closestShape[0] != null) {
-                    return closestShape[0];
-                }
-            }
-
-            return PipeBlockEntity.DEFAULT_SHAPE;
-        } else {
-            // LBA compat
-            return getCollisionShape(state, world, pos, context);
-        }
+        var targetedPart = getTargetedPart(world, pos);
+        return targetedPart != null ? targetedPart.shape : PipeBlockEntity.DEFAULT_SHAPE;
     }
 
     @Override
@@ -274,9 +249,8 @@ public class PipeBlock extends Block implements BlockEntityProvider {
     @Override
     public VoxelShape getCollisionShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
         BlockEntity be = world.getBlockEntity(pos);
-        if (!(be instanceof PipeBlockEntity))
+        if (!(be instanceof PipeBlockEntity entity))
             return PipeBlockEntity.DEFAULT_SHAPE; // Because Mojang fucked up
-        PipeBlockEntity entity = (PipeBlockEntity) be;
         return entity.currentCollisionShape;
     }
 

@@ -34,6 +34,7 @@ import aztech.modern_industrialization.compat.RecipeCompat;
 import aztech.modern_industrialization.inventory.ConfigurableInventoryPacketHandlers;
 import aztech.modern_industrialization.inventory.ConfigurableInventoryPackets;
 import aztech.modern_industrialization.items.armor.ArmorPackets;
+import aztech.modern_industrialization.items.armor.MIArmorEffects;
 import aztech.modern_industrialization.items.armor.MIKeyMap;
 import aztech.modern_industrialization.machines.MachinePackets;
 import aztech.modern_industrialization.machines.MachineScreenHandlers;
@@ -114,6 +115,7 @@ public class ModernIndustrialization implements ModInitializer {
         // However, some things (like resources) may still be uninitialized.
         // Proceed with mild caution.
         MIMaterials.init();
+        MITags.init();
         MIMachineRecipeTypes.init();
         SingleBlockCraftingMachines.init();
         SingleBlockSpecialMachines.init();
@@ -130,6 +132,7 @@ public class ModernIndustrialization implements ModInitializer {
         // setupMachines();
         setupPackets();
         setupFuels();
+        MIArmorEffects.init();
         RecipeCompat.loadCompatRecipes();
         setupWrench();
 
@@ -249,7 +252,7 @@ public class ModernIndustrialization implements ModInitializer {
         ServerPlayNetworking.registerGlobalReceiver(MachinePackets.C2S.REI_LOCK_SLOTS, MachinePackets.C2S.ON_REI_LOCK_SLOTS);
         ServerSidePacketRegistry.INSTANCE.register(ForgeHammerPacket.SET_HAMMER, ForgeHammerPacket.ON_SET_HAMMER);
         ServerSidePacketRegistry.INSTANCE.register(ArmorPackets.UPDATE_KEYS, ArmorPackets.ON_UPDATE_KEYS);
-        ServerSidePacketRegistry.INSTANCE.register(ArmorPackets.ACTIVATE_JETPACK, ArmorPackets.ON_ACTIVATE_JETPACK);
+        ServerSidePacketRegistry.INSTANCE.register(ArmorPackets.ACTIVATE_CHEST, ArmorPackets.ON_ACTIVATE_CHEST);
     }
 
     private static void addFuel(String id, int burnTicks) {
@@ -275,14 +278,18 @@ public class ModernIndustrialization implements ModInitializer {
         addFuel("carbon_dust", 6400);
         addFuel("carbon_tiny_dust", 640);
 
+        FluidFuelRegistry.register(MIFluids.HYDROGEN, 1);
+        FluidFuelRegistry.register(MIFluids.DEUTERIUM, 1);
+        FluidFuelRegistry.register(MIFluids.TRITIUM, 1);
         FluidFuelRegistry.register(MIFluids.CRUDE_OIL, 8);
-        FluidFuelRegistry.register(MIFluids.DIESEL, 200);
-        FluidFuelRegistry.register(MIFluids.HEAVY_FUEL, 120);
-        FluidFuelRegistry.register(MIFluids.LIGHT_FUEL, 80);
-        FluidFuelRegistry.register(MIFluids.CREOSOTE, 80);
-        FluidFuelRegistry.register(MIFluids.NAPHTHA, 40);
         FluidFuelRegistry.register(MIFluids.SYNTHETIC_OIL, 8);
+        FluidFuelRegistry.register(MIFluids.NAPHTHA, 40);
+        FluidFuelRegistry.register(MIFluids.CREOSOTE, 80);
+        FluidFuelRegistry.register(MIFluids.LIGHT_FUEL, 80);
+        FluidFuelRegistry.register(MIFluids.HEAVY_FUEL, 120);
+        FluidFuelRegistry.register(MIFluids.DIESEL, 200);
         FluidFuelRegistry.register(MIFluids.BOOSTED_DIESEL, 400);
+
     }
 
     private void setupWrench() {

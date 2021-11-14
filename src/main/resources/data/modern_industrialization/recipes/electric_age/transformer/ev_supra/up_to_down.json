@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "X"
+  ],
+  "key": {
+    "X": {
+      "item": "modern_industrialization:ev_supraconductor_transformer"
+    }
+  },
+  "result": {
+    "item": "modern_industrialization:supraconductor_ev_transformer"
+  }
+}

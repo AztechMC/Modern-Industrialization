@@ -25,6 +25,7 @@ package aztech.modern_industrialization.blocks;
 
 import aztech.modern_industrialization.MIBlock;
 import aztech.modern_industrialization.MIItem;
+import aztech.modern_industrialization.materials.part.OrePart;
 import net.minecraft.block.BlockState;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.enchantment.Enchantments;
@@ -36,17 +37,16 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.intprovider.UniformIntProvider;
 import net.minecraft.world.World;
 
 // An MIBlock that converts a book into the guide book when right clicked
 public class OreBlock extends MIBlock {
 
-    private final UniformIntProvider experienceDropped;
+    public final OrePart.OrePartParams params;
 
-    public OreBlock(String id, Settings settings, UniformIntProvider experienceDropped) {
+    public OreBlock(String id, Settings settings, OrePart.OrePartParams params) {
         super(id, settings);
-        this.experienceDropped = experienceDropped;
+        this.params = params;
     }
 
     @Override
@@ -64,7 +64,7 @@ public class OreBlock extends MIBlock {
     public void onStacksDropped(BlockState state, ServerWorld world, BlockPos pos, ItemStack stack) {
         super.onStacksDropped(state, world, pos, stack);
         if (EnchantmentHelper.getLevel(Enchantments.SILK_TOUCH, stack) == 0) {
-            int i = this.experienceDropped.get(world.random);
+            int i = this.params.xpDropped.get(world.random);
             if (i > 0) {
                 this.dropExperience(world, pos, i);
             }

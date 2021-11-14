@@ -1,0 +1,27 @@
+{
+  "type" : "minecraft:crafting_shaped",
+  "pattern" : [
+    "cac",
+    "BrB",
+    "BrB"
+  ],
+  "key":
+  {
+    "a" : {
+      "tag" : "c:battery_alloy_plates"
+    },
+    "c" : {
+      "item" : "modern_industrialization:supraconductor_cable"
+    },
+    "B" : {
+      "item" : "modern_industrialization:battery_alloy_curved_plate"
+    },
+    "r" :{
+      "tag" : "c:plutonium_dusts"
+    }
+  },
+
+  "result": {
+    "item": "modern_industrialization:plutonium_battery"
+  }
+}

@@ -49,6 +49,7 @@ public class MultiblockMachineBER extends MachineBlockEntityRenderer<MultiblockM
         super.render(be, tickDelta, matrices, vcp, light, overlay);
 
         // Only render if holding a wrench AND if the shape is not valid.
+        super.render(be, tickDelta, matrices, vcp, light, overlay);
         boolean drawHighlights = isHoldingWrench() && !be.isShapeValid();
         HatchType hatchType = getHeldHatchType();
         if (drawHighlights || hatchType != null) {

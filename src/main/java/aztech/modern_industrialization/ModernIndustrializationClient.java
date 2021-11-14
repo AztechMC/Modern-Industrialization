@@ -27,6 +27,7 @@ import static net.fabricmc.fabric.api.client.command.v1.ClientCommandManager.lit
 
 import aztech.modern_industrialization.api.energy.CableTier;
 import aztech.modern_industrialization.api.pipes.item.SpeedUpgrade;
+import aztech.modern_industrialization.blocks.OreBlock;
 import aztech.modern_industrialization.blocks.forgehammer.ForgeHammerScreen;
 import aztech.modern_industrialization.blocks.storage.barrel.BarrelTooltipData;
 import aztech.modern_industrialization.blocks.storage.barrel.client.BarrelTooltipComponent;
@@ -78,6 +79,8 @@ import net.minecraft.item.Items;
 import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.tag.ItemTags;
 import net.minecraft.text.LiteralText;
+import net.minecraft.text.Style;
+import net.minecraft.text.TextColor;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
 
@@ -165,6 +168,18 @@ public class ModernIndustrializationClient implements ClientModInitializer {
                     if (ElectricBlastFurnaceBlockEntity.coilsMaxBaseEU.containsKey(block)) {
                         lines.add(new TranslatableText("text.modern_industrialization.ebf_max_eu",
                                 ElectricBlastFurnaceBlockEntity.coilsMaxBaseEU.get(block)).setStyle(TextHelper.UPGRADE_TEXT));
+                    } else if (block instanceof OreBlock oreBlock) {
+                        if (oreBlock.params.generate) {
+
+                            Style gray = Style.EMPTY.withColor(TextColor.fromRgb(0x707070)).withItalic(true);
+
+                            lines.add(new TranslatableText("text.modern_industrialization.ore_generation_tooltip_y", oreBlock.params.maxYLevel)
+                                    .setStyle(gray));
+                            lines.add(new TranslatableText("text.modern_industrialization.ore_generation_tooltip_vein_frequency",
+                                    oreBlock.params.veinsPerChunk).setStyle(gray));
+                            lines.add(new TranslatableText("text.modern_industrialization.ore_generation_tooltip_vein_size", oreBlock.params.veinSize)
+                                    .setStyle(gray));
+                        }
                     }
                 }
 

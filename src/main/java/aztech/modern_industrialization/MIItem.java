@@ -27,20 +27,25 @@ import aztech.modern_industrialization.api.pipes.item.SpeedUpgrade;
 import aztech.modern_industrialization.items.FluidFuelItemHelper;
 import aztech.modern_industrialization.items.GuideBookItem;
 import aztech.modern_industrialization.items.SteamDrillItem;
+import aztech.modern_industrialization.items.armor.GraviChestPlateItem;
 import aztech.modern_industrialization.items.armor.JetpackItem;
+import aztech.modern_industrialization.items.armor.QuantumArmorItem;
 import aztech.modern_industrialization.items.armor.RubberArmorMaterial;
 import aztech.modern_industrialization.items.diesel_tools.DieselToolItem;
 import aztech.modern_industrialization.items.tools.CrowbarItem;
+import aztech.modern_industrialization.items.tools.QuantumSword;
 import java.util.SortedMap;
 import java.util.SortedSet;
 import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.item.ArmorItem;
 import net.minecraft.item.Item;
+import net.minecraft.util.Rarity;
 
 @SuppressWarnings("unused")
 public final class MIItem {
@@ -51,6 +56,14 @@ public final class MIItem {
 
     public static Item of(String id) {
         return of(Item::new, id, 64);
+    }
+
+    public static Item of(String id, Rarity rarity) {
+        return of(Item::new, id, 64, null, false, rarity);
+    }
+
+    public static Item of(String id, int maxCount, Rarity rarity) {
+        return of(Item::new, id, maxCount, null, false, rarity);
     }
 
     public static Item of(String id, Consumer<Item> registrationEvent) {
@@ -65,20 +78,26 @@ public final class MIItem {
         return of(Item::new, id, maxCount, null, handheld);
     }
 
-    public static Item of(Function<Item.Settings, Item> ctor, String id, int maxCount) {
+    public static <T extends Item> T of(Function<? super FabricItemSettings, T> ctor, String id, int maxCount) {
         return of(ctor, id, maxCount, null);
     }
 
-    public static Item of(Function<Item.Settings, Item> ctor, String id, int maxCount, Consumer<Item> registrationEvent) {
+    public static <T extends Item> T of(Function<? super FabricItemSettings, T> ctor, String id, int maxCount, Consumer<Item> registrationEvent) {
         return of(ctor, id, maxCount, registrationEvent, false);
     }
 
-    public static Item of(Function<Item.Settings, Item> ctor, String id, int maxCount, boolean handheld) {
+    public static <T extends Item> T of(Function<? super FabricItemSettings, T> ctor, String id, int maxCount, boolean handheld) {
         return of(ctor, id, maxCount, null, false);
     }
 
-    public static Item of(Function<Item.Settings, Item> ctor, String id, int maxCount, Consumer<Item> registrationEvent, boolean handheld) {
-        Item item = ctor.apply(new Item.Settings().maxCount(maxCount).group(ModernIndustrialization.ITEM_GROUP));
+    public static <T extends Item> T of(Function<? super FabricItemSettings, T> ctor, String id, int maxCount, Consumer<Item> registrationEvent,
+            boolean handheld) {
+        return of(ctor, id, maxCount, registrationEvent, handheld, Rarity.COMMON);
+    }
+
+    public static <T extends Item> T of(Function<? super FabricItemSettings, T> ctor, String id, int maxCount, Consumer<Item> registrationEvent,
+            boolean handheld, Rarity rarity) {
+        T item = ctor.apply(new FabricItemSettings().maxCount(maxCount).group(ModernIndustrialization.ITEM_GROUP).rarity(rarity));
         if (items.put(id, item) != null) {
             throw new IllegalArgumentException("Item id already taken : " + id);
         }
@@ -132,13 +151,18 @@ public final class MIItem {
     public static final Item ITEM_RANDOM_ACCESS_MEMORY = of("random_access_memory");
     public static final Item ITEM_MEMORY_MANAGEMENT_UNIT = of("memory_management_unit");
 
+    public static final Item ITEM_QUANTUM_CIRCUIT_BOARD = of("quantum_circuit_board", Rarity.RARE);
+    public static final Item ITEM_QUANTUM_CIRCUIT = of("quantum_circuit", Rarity.RARE);
+    public static final Item ITEM_QBIT = of("qbit", Rarity.RARE);
+
     public static final Item ITEM_MONOCRYSTALLINE_SILICON = of("monocrystalline_silicon");
     public static final Item ITEM_SILICON_WAFER = of("silicon_wafer");
 
     public static final Item BASIC_UPGRADE = of("basic_upgrade");
     public static final Item ADVANCED_UPGRADE = of("advanced_upgrade");
-    public static final Item TURBO_UPGRADE = of("turbo_upgrade");
-    public static final Item HIGHLY_ADVANCED_UPGRADE = of("highly_advanced_upgrade");
+    public static final Item TURBO_UPGRADE = of("turbo_upgrade", Rarity.UNCOMMON);
+    public static final Item HIGHLY_ADVANCED_UPGRADE = of("highly_advanced_upgrade", Rarity.RARE);
+    public static final Item QUANTUM_UPGRADE = of("quantum_upgrade", 1, Rarity.EPIC);
 
     public static final Item ADVANCED_MOTOR = of("advanced_motor", (item) -> SpeedUpgrade.LOOKUP.registerForItems((key, vd) -> () -> 32, item));
     public static final Item LARGE_ADVANCED_MOTOR = of("large_advanced_motor",
@@ -147,29 +171,39 @@ public final class MIItem {
     public static final Item LARGE_ADVANCED_PUMP = of("large_advanced_pump");
 
     public static final Item MIXED_INGOT_BLASTPROOF = of("mixed_ingot_blastproof");
+    public static final Item MIXED_INGOT_IRIDIUM = of("mixed_ingot_iridium");
+
     public static final Item MIXED_PLATE_NUCLEAR = of("mixed_plate_nuclear");
+
     public static final Item AIR_INTAKE = of("air_intake", 1);
 
-    // TO MATERIAL ?
-    public static final Item ITEM_POLYETHYLENE_SHEET = of("polyethylene_sheet");
-    public static final Item ITEM_POLYVINYL_CHLORIDE_SHEET = of("polyvinyl_chloride_sheet");
-
-    public static final Item ITEM_PACKER_BLOCK_TEMPLATE = of("packer_block_template", 1);
-    public static final Item ITEM_PACKER_DOUBLE_INGOT_TEMPLATE = of("packer_double_ingot_template", 1);
+    public static final Item ITEM_PACKER_BLOCK_TEMPLATE = of("packer_block_template", 1, Rarity.RARE);
+    public static final Item ITEM_PACKER_DOUBLE_INGOT_TEMPLATE = of("packer_double_ingot_template", 1, Rarity.RARE);
 
     public static final Item ITEM_SCREWDRIVER = of("screwdriver", 1, true);
     public static final Item ITEM_WRENCH = of("wrench", 1, true);
-    public static final JetpackItem ITEM_DIESEL_JETPACK = (JetpackItem) of(JetpackItem::new, "diesel_jetpack", 1,
+    public static final JetpackItem ITEM_DIESEL_JETPACK = of(JetpackItem::new, "diesel_jetpack", 1,
             (item) -> FluidStorage.ITEM.registerForItems((stack, ctx) -> new FluidFuelItemHelper.ItemStorage(JetpackItem.CAPACITY, ctx), item));
-    public static final DieselToolItem ITEM_DIESEL_CHAINSAW = (DieselToolItem) of(s -> new DieselToolItem(s, 12), "diesel_chainsaw", 1,
+    public static final DieselToolItem ITEM_DIESEL_CHAINSAW = of(s -> new DieselToolItem(s, 12), "diesel_chainsaw", 1,
             (item) -> FluidStorage.ITEM.registerForItems((stack, ctx) -> new FluidFuelItemHelper.ItemStorage(DieselToolItem.CAPACITY, ctx), item),
             true);
 
-    public static final DieselToolItem ITEM_DIESEL_MINING_DRILL = (DieselToolItem) of(s -> new DieselToolItem(s, 7), "diesel_mining_drill", 1,
+    public static final DieselToolItem ITEM_DIESEL_MINING_DRILL = of(s -> new DieselToolItem(s, 7), "diesel_mining_drill", 1,
             (item) -> FluidStorage.ITEM.registerForItems((stack, ctx) -> new FluidFuelItemHelper.ItemStorage(DieselToolItem.CAPACITY, ctx), item),
             true);
 
-    public static final SteamDrillItem ITEM_STEAM_MINING_DRILL = (SteamDrillItem) of(SteamDrillItem::new, "steam_mining_drill", 1, true);
+    public static final SteamDrillItem ITEM_STEAM_MINING_DRILL = of(SteamDrillItem::new, "steam_mining_drill", 1, true);
     public static final Item ITEM_CROWBAR = of(CrowbarItem::new, "crowbar", 1, true);
 
+    public static final Item COOLING_CELL = of("cooling_cell");
+
+    public static final GraviChestPlateItem GRAVI_CHEST_PLATE = of(GraviChestPlateItem::new, "gravichestplate", 1);
+    public static final QuantumArmorItem QUANTUM_BOOTS = of(s -> new QuantumArmorItem(EquipmentSlot.FEET, s), "quantum_boots", 1);
+    public static final QuantumArmorItem QUANTUM_LEGGINGS = of(s -> new QuantumArmorItem(EquipmentSlot.LEGS, s), "quantum_leggings", 1);
+    public static final QuantumArmorItem QUANTUM_CHESTPLATE = of(s -> new QuantumArmorItem(EquipmentSlot.CHEST, s), "quantum_chestplate", 1);
+    public static final QuantumArmorItem QUANTUM_HELMET = of(s -> new QuantumArmorItem(EquipmentSlot.HEAD, s), "quantum_helmet", 1);
+    public static final QuantumSword QUANTUM_SWORD = of(QuantumSword::new, "quantum_sword", 1);
+
+    public static final Item ULTRADENSE_METAL_BALL = of("ultradense_metal_ball");
+    public static final Item SINGULARITY = of("singularity", Rarity.EPIC);
 }

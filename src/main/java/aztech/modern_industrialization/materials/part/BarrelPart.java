@@ -36,14 +36,18 @@ import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.util.registry.Registry;
 
-public class BarrelPart extends UnbuildablePart<Integer> {
+public class BarrelPart extends UnbuildablePart<Long> {
 
     public BarrelPart() {
         super("barrel");
     }
 
+    public RegularPart of(int stackCapacity) {
+        return of((long) stackCapacity);
+    }
+
     @Override
-    public BuildablePart of(Integer stackCapacity) {
+    public RegularPart of(Long stackCapacity) {
 
         BlockEntityType<BlockEntity>[] refs = new BlockEntityType[1]; // evil hack
 

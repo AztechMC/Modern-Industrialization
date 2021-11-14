@@ -84,7 +84,7 @@ public class CreativeTankItem extends BlockItem {
 
         @Override
         public long getCapacity() {
-            return Integer.MAX_VALUE / 100;
+            return Long.MAX_VALUE / 100;
         }
 
         @Override

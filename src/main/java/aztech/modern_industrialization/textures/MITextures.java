@@ -62,7 +62,7 @@ public final class MITextures {
             casingFromTexture(mtm, "mv", mtm.getAssetAsTexture("modern_industrialization:textures/blocks/advanced_machine_hull.png"));
             casingFromTexture(mtm, "hv", mtm.getAssetAsTexture("modern_industrialization:textures/blocks/turbo_machine_hull.png"));
             casingFromTexture(mtm, "ev", mtm.getAssetAsTexture("modern_industrialization:textures/blocks/highly_advanced_machine_hull.png"));
-            casingFromTexture(mtm, "supraconductor", mtm.getAssetAsTexture("modern_industrialization:textures/blocks/ultimate_machine_hull.png"));
+            casingFromTexture(mtm, "supraconductor", mtm.getAssetAsTexture("modern_industrialization:textures/blocks/quantum_machine_hull.png"));
             casingFromTexture(mtm, "nuclear", mtm.getAssetAsTexture("modern_industrialization:textures/blocks/nuclear_machine_casing.png"));
 
             casingFromTexture(mtm, "firebricks", mtm.getAssetAsTexture("modern_industrialization:textures/blocks/fire_clay_bricks.png"));
@@ -85,6 +85,11 @@ public final class MITextures {
                     TextureHelper.tripleTexture(mtm.getAssetAsTexture("modern_industrialization:textures/items/cadmium_plate.png"),
                             mtm.getAssetAsTexture("modern_industrialization:textures/items/beryllium_plate.png"),
                             mtm.getAssetAsTexture("modern_industrialization:textures/items/blastproof_alloy_plate.png"), 1, 2));
+
+            mtm.addTexture("modern_industrialization:textures/items/mixed_ingot_iridium.png",
+                    TextureHelper.tripleTexture(mtm.getAssetAsTexture("modern_industrialization:textures/items/blastproof_alloy_ingot.png"),
+                            mtm.getAssetAsTexture("modern_industrialization:textures/items/iridium_ingot.png"),
+                            mtm.getAssetAsTexture("modern_industrialization:textures/items/blastproof_alloy_ingot.png")));
 
             NativeImage copperDrill = mtm.getAssetAsTexture("modern_industrialization:textures/items/copper_mining_drill.png");
             NativeImage steamHandler = mtm.getAssetAsTexture("modern_industrialization:textures/items/steam_mining_drill_handler.png");

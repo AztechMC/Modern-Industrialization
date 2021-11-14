@@ -27,11 +27,10 @@ import static aztech.modern_industrialization.ModernIndustrialization.METAL_MATE
 
 import aztech.modern_industrialization.MIBlock;
 import aztech.modern_industrialization.ModernIndustrialization;
-import aztech.modern_industrialization.blocks.storage.AbstractStorageBlock;
 import aztech.modern_industrialization.util.MobSpawning;
+import java.util.Collections;
+import java.util.List;
 import java.util.function.Function;
-import net.devtech.arrp.json.models.JModel;
-import net.devtech.arrp.json.models.JTextures;
 import net.fabricmc.fabric.api.event.player.AttackBlockCallback;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
@@ -42,13 +41,25 @@ import net.fabricmc.fabric.api.transfer.v1.storage.StorageUtil;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.minecraft.block.BlockEntityProvider;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.entity.ItemEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItem;
+import net.minecraft.item.ItemStack;
+import net.minecraft.loot.context.LootContext;
+import net.minecraft.loot.context.LootContextParameters;
+import net.minecraft.loot.context.LootContextTypes;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.ActionResult;
+import net.minecraft.util.Hand;
+import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.BlockView;
+import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
-public class BarrelBlock extends AbstractStorageBlock implements BlockEntityProvider {
+public class BarrelBlock extends MIBlock implements BlockEntityProvider {
 
     public final BlockEntityProvider factory;
 
@@ -56,11 +67,9 @@ public class BarrelBlock extends AbstractStorageBlock implements BlockEntityProv
         super(id, FabricBlockSettings.of(METAL_MATERIAL).hardness(4.0f).breakByTool(FabricToolTags.PICKAXES).requiresTool()
                 .allowsSpawning(MobSpawning.NO_SPAWN), blockItemCtor);
 
-        this.setBlockModel(JModel.model().parent("block/cube_column")
-                .textures(new JTextures().var("end", ModernIndustrialization.MOD_ID + ":blocks/" + id + "_end").var("side",
-                        ModernIndustrialization.MOD_ID + ":blocks/" + id + "_side")));
-
+        this.asColumn();
         this.factory = factory;
+        ResourceUtil.appendToItemTag(new MIIdentifier("barrels"), new MIIdentifier(id));
     }
 
     @Nullable
@@ -69,7 +78,40 @@ public class BarrelBlock extends AbstractStorageBlock implements BlockEntityProv
         return factory.createBlockEntity(pos, state);
     }
 
+    private ItemStack getStack(BlockEntity entity) {
+        BarrelBlockEntity blockEntity = (BarrelBlockEntity) entity;
+        ItemStack stack = new ItemStack(asItem());
+        if (!blockEntity.isEmpty()) {
+            NbtCompound tag = new NbtCompound();
+            tag.put("BlockEntityTag", blockEntity.toClientTag(new NbtCompound()));
+            stack.setTag(tag);
+        }
+        return stack;
+    }
+
+    @Override
+    public List<ItemStack> getDroppedStacks(BlockState state, LootContext.Builder builder) {
+        LootContext lootContext = builder.parameter(LootContextParameters.BLOCK_STATE, state).build(LootContextTypes.BLOCK);
+        return Collections.singletonList(getStack(lootContext.get(LootContextParameters.BLOCK_ENTITY)));
+    }
+
+    @Override
+    public ItemStack getPickStack(BlockView world, BlockPos pos, BlockState state) {
+        return getStack(world.getBlockEntity(pos));
+    }
+
+    @Override
+    public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
+        if (player.isSneaking() && ModernIndustrialization.WRENCHES.contains(player.getMainHandStack().getItem())) {
+            world.spawnEntity(new ItemEntity(world, hit.getPos().x, hit.getPos().y, hit.getPos().z, getStack(world.getBlockEntity(pos))));
+            world.setBlockState(pos, Blocks.AIR.getDefaultState());
+            return ActionResult.success(world.isClient);
+        }
+        return ActionResult.PASS;
+    }
+
     static {
+
         UseBlockCallback.EVENT.register((player, world, hand, hitResult) -> {
 
             BlockEntity blockEntity = world.getBlockEntity(hitResult.getBlockPos());

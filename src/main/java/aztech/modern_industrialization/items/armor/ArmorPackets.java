@@ -38,17 +38,16 @@ public class ArmorPackets {
             MIKeyMap.update(context.getPlayer(), up);
         });
     };
-    public static final Identifier ACTIVATE_JETPACK = new MIIdentifier("activate_jetpack");
-    public static final PacketConsumer ON_ACTIVATE_JETPACK = (context, buffer) -> {
+    public static final Identifier ACTIVATE_CHEST = new MIIdentifier("activate_chest");
+    public static final PacketConsumer ON_ACTIVATE_CHEST = (context, buffer) -> {
         boolean activated = buffer.readBoolean();
-        context.getTaskQueue().execute(() -> activateJetpack(context.getPlayer(), activated));
+        context.getTaskQueue().execute(() -> activateChest(context.getPlayer(), activated));
     };
 
-    static void activateJetpack(PlayerEntity player, boolean activated) {
+    static void activateChest(PlayerEntity player, boolean activated) {
         ItemStack chest = player.getEquippedStack(EquipmentSlot.CHEST);
-        if (chest.getItem() instanceof JetpackItem) {
-            JetpackItem jetpack = (JetpackItem) chest.getItem();
-            jetpack.setActivated(chest, activated);
+        if (chest.getItem() instanceof ActivatableChestItem activatable) {
+            activatable.setActivated(chest, activated);
         }
     }
 }

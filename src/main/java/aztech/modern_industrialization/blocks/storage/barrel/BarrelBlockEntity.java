@@ -32,9 +32,9 @@ import net.minecraft.util.math.BlockPos;
 
 public class BarrelBlockEntity extends AbstractStorageBlockEntity<ItemVariant> {
 
-    private final int stackCapacity;
+    private final long stackCapacity;
 
-    public BarrelBlockEntity(BlockEntityType type, BlockPos pos, BlockState state, int stackCapacity) {
+    public BarrelBlockEntity(BlockEntityType type, BlockPos pos, BlockState state, long stackCapacity) {
         super(type, pos, state);
         this.stackCapacity = stackCapacity;
     }
@@ -46,7 +46,7 @@ public class BarrelBlockEntity extends AbstractStorageBlockEntity<ItemVariant> {
 
     @Override
     public long getCapacityForResource(ItemVariant resource) {
-        return (long) stackCapacity * resource.getItem().getMaxCount();
+        return stackCapacity * resource.getItem().getMaxCount();
     }
 
     @Override

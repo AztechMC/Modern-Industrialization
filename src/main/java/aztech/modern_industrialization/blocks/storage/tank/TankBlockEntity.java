@@ -66,10 +66,10 @@ public class TankBlockEntity extends AbstractStorageBlockEntity<FluidVariant> {
         Storage<FluidVariant> handIo = ContainerItemContext.ofPlayerHand(player, Hand.MAIN_HAND).find(FluidStorage.ITEM);
         if (handIo != null) {
             // move from hand into this tank
-            if (StorageUtil.move(handIo, this, f -> true, Integer.MAX_VALUE, null) > 0)
+            if (StorageUtil.move(handIo, this, f -> true, Long.MAX_VALUE, null) > 0)
                 return true;
             // move from this tank into hand
-            if (StorageUtil.move(this, handIo, f -> true, Integer.MAX_VALUE, null) > 0)
+            if (StorageUtil.move(this, handIo, f -> true, Long.MAX_VALUE, null) > 0)
                 return true;
         }
         return false;

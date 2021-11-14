@@ -1,0 +1,39 @@
+{
+  "type": "modern_industrialization:assembler",
+  "eu": 32,
+  "duration": 600,
+  "item_inputs": [
+    {
+      "item": "modern_industrialization:industrial_tnt",
+      "amount": 6
+    },
+    {
+      "item": "modern_industrialization:plutonium_ingot",
+      "amount": 4
+    },
+    {
+      "item": "modern_industrialization:processing_unit",
+      "amount": 2
+    },
+    {
+      "item": "modern_industrialization:nuclear_alloy_plate",
+      "amount": 4
+    }
+  ],
+  "fluid_inputs": [
+    {
+      "fluid": "modern_industrialization:tritium",
+      "amount": 50
+    },
+    {
+      "fluid": "modern_industrialization:deuterium",
+      "amount": 100
+    }
+  ],
+  "item_outputs": [
+    {
+      "item": "modern_industrialization:nuke",
+      "amount": 2
+    }
+  ]
+}

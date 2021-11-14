@@ -28,6 +28,7 @@ import aztech.modern_industrialization.api.FluidFuelRegistry;
 import aztech.modern_industrialization.api.energy.CableTier;
 import aztech.modern_industrialization.machines.MachineBlockEntity;
 import aztech.modern_industrialization.machines.blockentities.*;
+import aztech.modern_industrialization.machines.models.MachineCasing;
 import aztech.modern_industrialization.machines.models.MachineCasings;
 import aztech.modern_industrialization.machines.models.MachineModels;
 import net.fabricmc.api.EnvType;
@@ -68,6 +69,9 @@ public class SingleBlockSpecialMachines {
         MachineRegistrationHelper.registerMachine("configurable_chest", ConfigurableChestMachineBlockEntity::new,
                 MachineBlockEntity::registerItemApi);
 
+        MachineRegistrationHelper.registerMachine("replicator", ReplicatorMachineBlockEntity::new, MachineBlockEntity::registerFluidApi,
+                MachineBlockEntity::registerItemApi);
+
         if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
             MachineModels.addTieredMachineTiers("water_pump", true, true, true, "bronze", "steel", "electric");
             MachineModels.addTieredMachine("bronze_boiler", "boiler", MachineCasings.BRICKED_BRONZE, true, false, false);
@@ -75,6 +79,8 @@ public class SingleBlockSpecialMachines {
             MachineModels.addTieredMachine("diesel_generator", "diesel_generator", MachineCasings.MV, true, true, true);
             MachineModels.addTieredMachine("turbo_diesel_generator", "diesel_generator", MachineCasings.HV, true, true, true);
             MachineModels.addTieredMachine("configurable_chest", "", MachineCasings.STEEL_CRATE, false, false, false, false);
+            MachineModels.addTieredMachine("replicator", "replicator", MachineCasings.SUPRACONDUCTOR, true, false, true, true);
+
         }
     }
 
@@ -93,12 +99,14 @@ public class SingleBlockSpecialMachines {
                     AbstractStorageMachineBlockEntity::registerEnergyApi);
 
             if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
-                MachineModels.addTieredMachine(lowToUp, "transformer", TransformerMachineBlockEntity.getCasingFromTier(low, up), true, true, true,
-                        false);
-                MachineModels.addTieredMachine(upToLow, "transformer", TransformerMachineBlockEntity.getCasingFromTier(up, low), true, true, true,
-                        false);
+                MachineModels.addTieredMachine(lowToUp, "transformer", getTransformerCasingFromTier(low, up), true, true, true, false);
+                MachineModels.addTieredMachine(upToLow, "transformer", getTransformerCasingFromTier(up, low), true, true, true, false);
             }
         }
+    }
+
+    public static MachineCasing getTransformerCasingFromTier(CableTier from, CableTier to) {
+        return MachineCasings.casingFromCableTier(from.eu > to.eu ? to : from);
     }
 
     private static void registerSteamTurbines(int... maxConsumption) {

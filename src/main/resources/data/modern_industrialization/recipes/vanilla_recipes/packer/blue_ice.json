@@ -1,0 +1,17 @@
+{
+  "type": "modern_industrialization:packer",
+  "eu": 2,
+  "duration": 100,
+  "item_inputs": [
+    {
+      "item": "minecraft:packed_ice",
+      "amount": 9
+    }
+  ],
+  "item_outputs": [
+    {
+      "item": "minecraft:blue_ice",
+      "amount": 1
+    }
+  ]
+}

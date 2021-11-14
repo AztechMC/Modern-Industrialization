@@ -1,0 +1,21 @@
+{
+  "type": "modern_industrialization:assembler",
+  "eu": 8,
+  "duration": 200,
+  "item_inputs": [
+    {
+      "tag": "minecraft:planks",
+      "amount": 6
+    },
+    {
+      "tag": "minecraft:wooden_slabs",
+      "amount": 2
+    }
+  ],
+  "item_outputs": [
+    {
+      "item": "minecraft:barrel",
+      "amount": 2
+    }
+  ]
+}

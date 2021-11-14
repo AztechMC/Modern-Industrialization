@@ -1,0 +1,17 @@
+{
+  "type": "modern_industrialization:packer",
+  "eu": 2,
+  "duration": 100,
+  "item_inputs": [
+    {
+      "item": "minecraft:wheat",
+      "amount": 9
+    }
+  ],
+  "item_outputs": [
+    {
+      "item": "minecraft:hay_block",
+      "amount": 1
+    }
+  ]
+}

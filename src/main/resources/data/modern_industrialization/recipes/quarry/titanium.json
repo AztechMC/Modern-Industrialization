@@ -1,0 +1,22 @@
+{
+  "type": "modern_industrialization:quarry",
+  "eu": 128,
+  "duration": 600,
+  "item_inputs": {
+    "item": "modern_industrialization:titanium_drill",
+    "amount": 1,
+    "probability": 0.01
+  },
+  "item_outputs": [
+    {
+      "item": "modern_industrialization:uranium_ore",
+      "amount": 10,
+      "probability": 0.02
+    },
+    {
+      "item": "modern_industrialization:iridium_ore",
+      "amount": 5,
+      "probability": 0.01
+    }
+  ]
+}

@@ -59,19 +59,11 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
-public class JetpackItem extends ArmorItem implements Wearable, TickableArmor, IElytraItem {
+public class JetpackItem extends ArmorItem implements Wearable, TickableArmor, IElytraItem, ActivatableChestItem {
     public static final int CAPACITY = 8 * 81000;
 
     public JetpackItem(Settings settings) {
         super(buildMaterial(), EquipmentSlot.CHEST, settings.maxCount(1).rarity(Rarity.UNCOMMON));
-    }
-
-    public boolean isActivated(ItemStack stack) {
-        return stack.getTag() != null && stack.getTag().getBoolean("activated");
-    }
-
-    public void setActivated(ItemStack stack, boolean activated) {
-        stack.getOrCreateTag().putBoolean("activated", activated);
     }
 
     @Override

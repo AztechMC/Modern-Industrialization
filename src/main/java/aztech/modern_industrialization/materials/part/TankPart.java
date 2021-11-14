@@ -38,14 +38,18 @@ import net.minecraft.item.Item;
 import net.minecraft.util.registry.Registry;
 import org.apache.commons.lang3.mutable.MutableObject;
 
-public class TankPart extends UnbuildablePart<Integer> {
+public class TankPart extends UnbuildablePart<Long> {
 
     public TankPart() {
         super("tank");
     }
 
+    public RegularPart of(int bucketCapacity) {
+        return of((long) bucketCapacity);
+    }
+
     @Override
-    public BuildablePart of(Integer bucketCapacity) {
+    public RegularPart of(Long bucketCapacity) {
         MutableObject<BlockEntityType<BlockEntity>> bet = new MutableObject<>();
         long capacity = FluidConstants.BUCKET * bucketCapacity;
 

@@ -60,6 +60,10 @@ public class ResourceUtil {
         appendToTag(new Identifier(tagId.getNamespace(), "items/" + tagId.getPath()), elementId);
     }
 
+    public static synchronized void appendTagToItemTag(Identifier tagId, Identifier subtag) {
+        appendTagToTag(new Identifier(tagId.getNamespace(), "items/" + tagId.getPath()), subtag);
+    }
+
     public static synchronized void appendTagToTag(Identifier tagId, Identifier subtag) {
         // We use a copy-on-write strategy to update the JTag every time with the added
         // entry.

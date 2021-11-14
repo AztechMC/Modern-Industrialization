@@ -102,5 +102,8 @@ public class AlloyRegister {
         new AlloyBuilder("le_mox").addIngredient("uranium_238", 8).addIngredient("plutonium", 1).Build(pack);
         new AlloyBuilder("he_mox").addIngredient("uranium_238", 6).addIngredient("plutonium", 3).Build(pack);
 
+        new AlloyBuilder("supraconductor").addIngredient("iridium", 1).addIngredient("annealed_copper", 3).addIngredient("yttrium", 3)
+                .addIngredient("neodymium", 2).Build(pack);
+
     }
 }

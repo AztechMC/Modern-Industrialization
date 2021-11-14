@@ -1,0 +1,26 @@
+{
+  "type": "modern_industrialization:assembler",
+  "eu": 32,
+  "duration": 600,
+  "item_inputs": [
+    {
+      "item": "modern_industrialization:supraconductor_wire",
+      "amount": 3
+    },
+    {
+      "item": "modern_industrialization:cooling_cell",
+      "amount": 2
+    }
+  ],
+
+  "fluid_inputs" : {
+    "fluid" : "modern_industrialization:polyvinyl_chloride",
+    "amount": 1000
+  },
+  "item_outputs": [
+    {
+      "item": "modern_industrialization:supraconductor_cable",
+      "amount": 6
+    }
+  ]
+}

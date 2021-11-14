@@ -1,0 +1,34 @@
+{
+  "type": "modern_industrialization:assembler",
+  "eu": 32,
+  "duration": 1000,
+  "item_inputs": [
+    {
+      "item" : "modern_industrialization:highly_advanced_upgrade",
+      "amount": 32
+    },
+    {
+      "item": "modern_industrialization:quantum_circuit",
+      "amount": 8
+    },
+    {
+      "item" : "modern_industrialization:singularity",
+      "amount": 1
+    },
+    {
+      "item" : "modern_industrialization:quantum_circuit_board",
+      "amount": 1
+    }
+  ],
+
+  "fluid_inputs": {
+    "fluid" : "modern_industrialization:uu_matter",
+    "amount" : 50
+  },
+  "item_outputs": [
+    {
+      "item": "modern_industrialization:quantum_upgrade",
+      "amount": 1
+    }
+  ]
+}

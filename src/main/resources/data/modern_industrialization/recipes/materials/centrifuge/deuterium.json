@@ -2,14 +2,18 @@
   "type": "modern_industrialization:centrifuge",
   "eu": 32,
   "duration": 1200,
-  
-  "fluid_inputs" : {
-    "fluid" : "modern_industrialization:hydrogen",
+  "fluid_inputs": {
+    "fluid": "modern_industrialization:hydrogen",
     "amount": 1000
   },
-
-  "fluid_outputs" : {
-    "fluid" : "modern_industrialization:deuterium",
-    "amount": 20
-  }
+  "fluid_outputs": [
+    {
+      "fluid": "modern_industrialization:deuterium",
+      "amount": 20
+    },
+    {
+      "fluid": "modern_industrialization:tritium",
+      "amount": 1
+    }
+  ]
 }

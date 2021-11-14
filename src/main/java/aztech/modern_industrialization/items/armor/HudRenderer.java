@@ -41,14 +41,21 @@ public class HudRenderer {
         MinecraftClient mc = MinecraftClient.getInstance();
         if (mc.player != null) {
             ItemStack chest = mc.player.getEquippedStack(EquipmentSlot.CHEST);
-            if (chest.getItem() instanceof JetpackItem) {
-                JetpackItem jetpack = (JetpackItem) chest.getItem();
+            if (chest.getItem() instanceof JetpackItem jetpack) {
                 boolean active = jetpack.isActivated(chest);
                 Text activeText = new TranslatableText("text.modern_industrialization.jetpack_" + active)
                         .setStyle(Style.EMPTY.withColor(active ? Formatting.GREEN : Formatting.RED));
                 mc.textRenderer.drawWithShadow(matrices, activeText, 4, 4, 16383998);
                 Text fillText = new TranslatableText("text.modern_industrialization.jetpack_fill",
                         FluidFuelItemHelper.getAmount(chest) * 100 / JetpackItem.CAPACITY);
+                mc.textRenderer.drawWithShadow(matrices, fillText, 4, 14, 16383998);
+            } else if (chest.getItem() instanceof GraviChestPlateItem gsp) {
+                boolean active = gsp.isActivated(chest);
+                Text activeText = new TranslatableText("text.modern_industrialization.gravichestplate_" + active)
+                        .setStyle(Style.EMPTY.withColor(active ? Formatting.GREEN : Formatting.RED));
+                mc.textRenderer.drawWithShadow(matrices, activeText, 4, 4, 16383998);
+                Text fillText = new TranslatableText("text.modern_industrialization.energy_fill",
+                        gsp.getEnergy(chest) * 100 / GraviChestPlateItem.ENERGY_CAPACITY);
                 mc.textRenderer.drawWithShadow(matrices, fillText, 4, 14, 16383998);
             }
         }

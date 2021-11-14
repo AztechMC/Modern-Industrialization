@@ -56,36 +56,7 @@ import net.minecraft.world.gen.feature.ConfiguredFeature;
 import net.minecraft.world.gen.feature.Feature;
 import net.minecraft.world.gen.feature.OreFeatureConfig;
 
-class OrePartParams {
-
-    public final UniformIntProvider xpDropped;
-    public final MaterialOreSet set;
-    public final boolean generate;
-
-    public final int veinsPerChunk;
-    public final int veinSize;
-    public final int maxYLevel;
-
-    private OrePartParams(UniformIntProvider xpDropped, MaterialOreSet set, boolean generate, int veinsPerChunk, int veinSize, int maxYLevel) {
-        this.xpDropped = xpDropped;
-        this.set = set;
-        this.generate = generate;
-
-        this.veinsPerChunk = veinsPerChunk;
-        this.veinSize = veinSize;
-        this.maxYLevel = maxYLevel;
-    }
-
-    public OrePartParams(UniformIntProvider xpDropped, MaterialOreSet set) {
-        this(xpDropped, set, false, 0, 0, 0);
-    }
-
-    public OrePartParams(UniformIntProvider xpDropped, MaterialOreSet set, int veinsPerChunk, int veinSize, int maxYLevel) {
-        this(xpDropped, set, true, veinsPerChunk, veinSize, maxYLevel);
-    }
-}
-
-public class OrePart extends UnbuildablePart<OrePartParams> {
+public class OrePart extends UnbuildablePart<OrePart.OrePartParams> {
 
     public final boolean deepslate;
 
@@ -113,7 +84,7 @@ public class OrePart extends UnbuildablePart<OrePartParams> {
         return new RegularPart(key).withRegister((registeringContext, partContext, part, itemPath, itemId, itemTag) -> {
             MIBlock block = new OreBlock(itemPath, FabricBlockSettings.of(STONE_MATERIAL).hardness(deepslate ? 4.5f : 3.0f).resistance(3.0f)
                     .sounds(deepslate ? BlockSoundGroup.DEEPSLATE : BlockSoundGroup.STONE).breakByTool(FabricToolTags.PICKAXES, 1).requiresTool(),
-                    oreParams.xpDropped);
+                    oreParams);
 
             Part mainPart = partContext.getMainPart();
             String loot;
@@ -220,6 +191,35 @@ public class OrePart extends UnbuildablePart<OrePartParams> {
 
     public List<BuildablePart> ofAll(int veinsPerChunk, int veinSize, int maxYLevel, MaterialOreSet set) {
         return ofAll(new OrePartParams(UniformIntProvider.create(0, 0), set, veinsPerChunk, veinSize, maxYLevel));
+    }
+
+    public static class OrePartParams {
+
+        public final UniformIntProvider xpDropped;
+        public final MaterialOreSet set;
+        public final boolean generate;
+
+        public final int veinsPerChunk;
+        public final int veinSize;
+        public final int maxYLevel;
+
+        private OrePartParams(UniformIntProvider xpDropped, MaterialOreSet set, boolean generate, int veinsPerChunk, int veinSize, int maxYLevel) {
+            this.xpDropped = xpDropped;
+            this.set = set;
+            this.generate = generate;
+
+            this.veinsPerChunk = veinsPerChunk;
+            this.veinSize = veinSize;
+            this.maxYLevel = maxYLevel;
+        }
+
+        public OrePartParams(UniformIntProvider xpDropped, MaterialOreSet set) {
+            this(xpDropped, set, false, 0, 0, 0);
+        }
+
+        public OrePartParams(UniformIntProvider xpDropped, MaterialOreSet set, int veinsPerChunk, int veinSize, int maxYLevel) {
+            this(xpDropped, set, true, veinsPerChunk, veinSize, maxYLevel);
+        }
     }
 
 }

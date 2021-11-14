@@ -31,7 +31,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.Items;
 
 public class MIItemStorage extends MIStorage<Item, ItemVariant, ConfigurableItemStack> implements WhitelistedItemStorage {
-    protected MIItemStorage(List<ConfigurableItemStack> stacks) {
+    public MIItemStorage(List<ConfigurableItemStack> stacks) {
         super(stacks, false);
     }
 

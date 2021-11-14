@@ -23,13 +23,13 @@
  */
 package aztech.modern_industrialization.mixin;
 
-import aztech.modern_industrialization.MIItem;
+import aztech.modern_industrialization.items.armor.MIArmorEffects;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageSource;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.server.network.ServerPlayerEntity;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -43,9 +43,8 @@ class LivingEntityMixin {
     @Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/LivingEntity;isSleeping()Z", shift = At.Shift.BEFORE, by = 1), method = "damage", cancellable = true)
     void injectDamage(DamageSource source, float amount, CallbackInfoReturnable<Boolean> cir) {
         Object tis = this;
-        if (tis instanceof ServerPlayerEntity) {
-            ServerPlayerEntity player = (ServerPlayerEntity) tis;
-            if (tryCancelDamage(source, amount, player)) {
+        if (tis instanceof PlayerEntity player) {
+            if (MIArmorEffects.hasFullQuantum(player) || tryCancelDamage(source, amount, player)) {
                 cir.setReturnValue(false);
             }
         }
@@ -54,7 +53,7 @@ class LivingEntityMixin {
     /**
      * Return true if the damage is cancelled.
      */
-    private static boolean tryCancelDamage(DamageSource source, float amount, ServerPlayerEntity player) {
+    private static boolean tryCancelDamage(DamageSource source, float amount, PlayerEntity player) {
         PlayerInventory inventory = player.getInventory();
         // Find a suitable stack that can "tank" the damage
         ItemStack tankingStack = null;
@@ -62,13 +61,13 @@ class LivingEntityMixin {
         if (source == DamageSource.FLY_INTO_WALL) {
             es = EquipmentSlot.HEAD;
             ItemStack head = inventory.armor.get(es.getEntitySlotId());
-            if (head.getItem() == MIItem.RUBBER_HELMET) {
+            if (MIArmorEffects.canTankFlyIntoWall(head)) {
                 tankingStack = head;
             }
         } else if (source == DamageSource.FALL) {
             es = EquipmentSlot.FEET;
             ItemStack head = inventory.armor.get(es.getEntitySlotId());
-            if (head.getItem() == MIItem.RUBBER_BOOTS) {
+            if (MIArmorEffects.canTankFall(head)) {
                 tankingStack = head;
             }
         }

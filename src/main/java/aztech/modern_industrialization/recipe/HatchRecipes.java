@@ -36,10 +36,10 @@ public class HatchRecipes {
 
     public static void addRecipes(RuntimeResourcePack pack) {
 
-        String[] casings = { "bronze", "steel", "basic", "advanced", "turbo", "highly_advanced" };
-        String[] tanks = { "bronze", "steel", "", "aluminum", "stainless_steel", "titanium" };
-        String[] cables = { "", "", "tin", "electrum", "aluminum", "platinum" };
-        String[] voltage = { "", "", "lv", "mv", "hv", "ev" };
+        String[] casings = { "bronze", "steel", "basic", "advanced", "turbo", "highly_advanced", "quantum" };
+        String[] tanks = { "bronze", "steel", "", "aluminum", "stainless_steel", "titanium", "" };
+        String[] cables = { "", "", "tin", "electrum", "aluminum", "platinum", "supraconductor" };
+        String[] voltage = { "", "", "lv", "mv", "hv", "ev", "supraconductor" };
 
         for (int i = 0; i < casings.length; i++) {
 
@@ -64,7 +64,7 @@ public class HatchRecipes {
 
             for (int j = 0; j < ABs.length; j++) {
 
-                if ((j != 2) && !casings[i].equals("basic") || (j == 2 && !cables[i].equals(""))) {
+                if (((j != 2) && !casings[i].equals("basic") && !casings[i].equals("quantum")) || (j == 2 && !cables[i].equals(""))) {
 
                     String[] AB = ABs[j];
                     String other = others[j];

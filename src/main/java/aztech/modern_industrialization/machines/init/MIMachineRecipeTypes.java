@@ -62,6 +62,7 @@ public class MIMachineRecipeTypes {
     public static final MachineRecipeType HEAT_EXCHANGER = create("heat_exchanger").withFluidInputs().withFluidOutputs().withItemOutputs().withItemInputs();
     public static final MachineRecipeType PRESSURIZER = create("pressurizer").withItemInputs().withFluidInputs().withFluidOutputs();
     public static final MachineRecipeType IMPLOSION_COMPRESSOR = create("implosion_compressor").withItemInputs().withItemOutputs();
+    public static final MachineRecipeType FUSION_REACTOR = create("fusion_reactor").withFluidInputs().withFluidOutputs();
     // @formatter:on
 
     public static void init() {

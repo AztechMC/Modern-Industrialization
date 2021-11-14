@@ -38,10 +38,12 @@ public class NuclearGridHelper {
     private static final int MAX_STEP = 100;
     private static final int MAX_SPLIT = 30;
 
-    public static void simulate(INuclearGrid grid) {
+    public static boolean simulate(INuclearGrid grid) {
 
         int sizeX = grid.getSizeX();
         int sizeY = grid.getSizeY();
+
+        boolean hasFuel = false;
 
         for (int i = 0; i < sizeX; i++) {
             for (int j = 0; j < sizeY; j++) {
@@ -60,6 +62,7 @@ public class NuclearGridHelper {
                         if (maybeFuel.isEmpty()) {
                             throw new IllegalStateException("Neutron generated without fuel");
                         }
+                        hasFuel = true;
                         NuclearFuel fuel = maybeFuel.get();
 
                         tile.putHeat(neutronNumberPrime * fuel.directEUbyDesintegration / fuel.neutronMultiplicationFactor);
@@ -209,6 +212,8 @@ public class NuclearGridHelper {
                 }
             }
         }
+
+        return hasFuel;
 
     }
 

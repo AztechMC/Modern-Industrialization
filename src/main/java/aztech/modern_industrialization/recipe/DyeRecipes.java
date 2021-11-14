@@ -37,14 +37,17 @@ import net.minecraft.util.Identifier;
 public class DyeRecipes {
     private static final Gson GSON = new Gson();
 
-    static {
-        initTags();
-    }
+    public static void initTags() {
 
-    private static void initTags() {
         Identifier terracottas = new Identifier("c", "terracottas");
-        TagRegistry.item(terracottas);
+        Identifier glass = new Identifier("c", "glass");
+        Identifier glassPane = new Identifier("c", "glass_pane");
+        Identifier shulkerBox = new Identifier("c", "shulker_box");
+
         ResourceUtil.appendToItemTag(terracottas, new Identifier("minecraft:terracotta"));
+        ResourceUtil.appendToItemTag(glass, new Identifier("minecraft:glass"));
+        ResourceUtil.appendToItemTag(glassPane, new Identifier("minecraft:glass_pane"));
+        ResourceUtil.appendToItemTag(shulkerBox, new Identifier("minecraft:shulker_box"));
 
         for (DyeColor color : DyeColor.values()) {
             Identifier tagId = new Identifier("c", color.getName() + "_dyes");
@@ -53,6 +56,9 @@ public class DyeRecipes {
             ResourceUtil.appendToItemTag(terracottas, new Identifier("minecraft:" + color.getName() + "_terracotta"));
             ResourceUtil.appendToItemTag(terracottas, new Identifier("minecraft:" + color.getName() + "_glazed_terracotta"));
 
+            ResourceUtil.appendToItemTag(glass, new Identifier("minecraft:" + color.getName() + "_stained_glass"));
+            ResourceUtil.appendToItemTag(glassPane, new Identifier("minecraft:" + color.getName() + "_stained_glass_pane"));
+            ResourceUtil.appendToItemTag(shulkerBox, new Identifier("minecraft:" + color.getName() + "_shulker_box"));
         }
     }
 
@@ -97,6 +103,60 @@ public class DyeRecipes {
             MIRecipeJson benzeneDye = new MIRecipeJson("mixer", 2, 200).addFluidInput(MIFluids.BENZENE, 25)
                     .addItemInput("#c:" + color.getName() + "_dyes", 1, 0).addOutput("minecraft:" + color.getName() + "_dye", 1);
             pack.addData(new MIIdentifier(pathPrefix + "mixer/benzene.json"), GSON.toJson(benzeneDye).getBytes());
+
+            // wool
+            MIRecipeJson wool = new MIRecipeJson("mixer", 2, 100).addItemInput("#c:" + color.getName() + "_dyes", 1)
+                    .addItemInput("#minecraft:wool", 8).addOutput("minecraft:" + color.getName() + "_wool", 8);
+            pack.addData(new MIIdentifier(pathPrefix + "mixer/wool.json"), GSON.toJson(wool).getBytes());
+
+            // glass
+            MIRecipeJson glass = new MIRecipeJson("mixer", 2, 100).addItemInput("#c:" + color.getName() + "_dyes", 1).addItemInput("#c:glass", 8)
+                    .addOutput("minecraft:" + color.getName() + "_stained_glass", 8);
+            pack.addData(new MIIdentifier(pathPrefix + "mixer/glass.json"), GSON.toJson(glass).getBytes());
+
+            // glassPane
+            MIRecipeJson glassPane = new MIRecipeJson("mixer", 2, 100).addItemInput("#c:" + color.getName() + "_dyes", 1)
+                    .addItemInput("#c:glass_pane", 8).addOutput("minecraft:" + color.getName() + "_stained_glass_pane", 8);
+            pack.addData(new MIIdentifier(pathPrefix + "mixer/glass_pane.json"), GSON.toJson(glassPane).getBytes());
+
+            // shulker Box
+            MIRecipeJson shulkerBox = new MIRecipeJson("mixer", 2, 100).addItemInput("#c:" + color.getName() + "_dyes", 1)
+                    .addItemInput("#c:shulker_box", 1).addOutput("minecraft:" + color.getName() + "_shulker_box", 1);
+            pack.addData(new MIIdentifier(pathPrefix + "mixer/shulker_box.json"), GSON.toJson(shulkerBox).getBytes());
+
+            // bed
+            MIRecipeJson bed = new MIRecipeJson("mixer", 2, 100).addItemInput("#c:" + color.getName() + "_dyes", 1).addItemInput("#minecraft:beds", 1)
+                    .addOutput("minecraft:" + color.getName() + "_bed", 1);
+            pack.addData(new MIIdentifier(pathPrefix + "mixer/bed.json"), GSON.toJson(bed).getBytes());
+
+            // candle
+            MIRecipeJson candle = new MIRecipeJson("mixer", 2, 100).addItemInput("#c:" + color.getName() + "_dyes", 1)
+                    .addItemInput("#minecraft:candles", 1).addOutput("minecraft:" + color.getName() + "_candle", 1);
+            pack.addData(new MIIdentifier(pathPrefix + "mixer/candle.json"), GSON.toJson(candle).getBytes());
+
+            // carpet
+            MIRecipeJson carpet = new MIRecipeJson("mixer", 2, 100).addItemInput("#c:" + color.getName() + "_dyes", 1)
+                    .addItemInput("#minecraft:carpets", 8).addOutput("minecraft:" + color.getName() + "_carpet", 8);
+            pack.addData(new MIIdentifier(pathPrefix + "mixer/carpet.json"), GSON.toJson(carpet).getBytes());
+
+            // terracotta
+            MIRecipeJson terracotta = new MIRecipeJson("mixer", 2, 100).addItemInput("#c:" + color.getName() + "_dyes", 1)
+                    .addItemInput("#c:terracottas", 8).addOutput("minecraft:" + color.getName() + "_terracotta", 8);
+            pack.addData(new MIIdentifier(pathPrefix + "mixer/terracotta.json"), GSON.toJson(terracotta).getBytes());
+
+            // glass pane cutting
+            MIRecipeJson glassPaneCutting = new MIRecipeJson("cutting_machine", 2, 100).addFluidInput(MIFluids.LUBRICANT, 1)
+                    .addItemInput("minecraft:" + color.getName() + "_stained_glass", 6)
+                    .addOutput("minecraft:" + color.getName() + "_stained_glass_pane", 16);
+
+            pack.addData(new MIIdentifier(pathPrefix + "cutting_machine/glass_pane.json"), GSON.toJson(glassPaneCutting).getBytes());
+
+            // carpet cutting
+            MIRecipeJson carpetCutting = new MIRecipeJson("cutting_machine", 2, 100).addFluidInput(MIFluids.LUBRICANT, 1)
+                    .addItemInput("minecraft:" + color.getName() + "_wool", 1).addOutput("minecraft:" + color.getName() + "_carpet", 4);
+
+            pack.addData(new MIIdentifier(pathPrefix + "cutting_machine/carpet.json"), GSON.toJson(carpetCutting).getBytes());
+
         }
     }
 }

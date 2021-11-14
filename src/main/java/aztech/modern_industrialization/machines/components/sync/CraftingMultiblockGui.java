@@ -28,6 +28,7 @@ import aztech.modern_industrialization.machines.SyncedComponent;
 import aztech.modern_industrialization.machines.SyncedComponents;
 import aztech.modern_industrialization.machines.components.CrafterComponent;
 import aztech.modern_industrialization.machines.gui.ClientComponentRenderer;
+import aztech.modern_industrialization.util.TextHelper;
 import com.mojang.blaze3d.systems.RenderSystem;
 import java.util.function.Supplier;
 import net.minecraft.client.MinecraftClient;
@@ -171,10 +172,11 @@ public class CraftingMultiblockGui {
                                 new TranslatableText("text.modern_industrialization.efficiency_ticks", efficiencyTicks, maxEfficiencyTicks), x + 9,
                                 y + 56, 0xFFFFFF);
 
-                        textRenderer.draw(matrices, new TranslatableText("text.modern_industrialization.base_eu_recipe", baseRecipeEu), x + 9, y + 67,
-                                0xFFFFFF);
-                        textRenderer.draw(matrices, new TranslatableText("text.modern_industrialization.current_eu_recipe", currentRecipeEu), x + 9,
-                                y + 78, 0xFFFFFF);
+                        textRenderer.draw(matrices, new TranslatableText("text.modern_industrialization.base_eu_recipe",
+                                TextHelper.getEuString(baseRecipeEu), TextHelper.getEuUnit(baseRecipeEu)), x + 9, y + 67, 0xFFFFFF);
+
+                        textRenderer.draw(matrices, new TranslatableText("text.modern_industrialization.current_eu_recipe",
+                                TextHelper.getEuString(currentRecipeEu), TextHelper.getEuUnit(currentRecipeEu)), x + 9, y + 78, 0xFFFFFF);
                     }
                 }
             }

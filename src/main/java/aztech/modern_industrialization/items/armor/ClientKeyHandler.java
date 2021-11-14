@@ -60,14 +60,13 @@ public class ClientKeyHandler {
             return;
 
         ItemStack chest = client.player.getEquippedStack(EquipmentSlot.CHEST);
-        if (chest.getItem() instanceof JetpackItem) {
-            JetpackItem jetpack = (JetpackItem) chest.getItem();
+        if (chest.getItem() instanceof ActivatableChestItem activatable) {
             while (keyActivate.wasPressed()) {
-                boolean activated = !jetpack.isActivated(chest);
-                ArmorPackets.activateJetpack(client.player, activated);
+                boolean activated = !activatable.isActivated(chest);
+                ArmorPackets.activateChest(client.player, activated);
                 PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
                 buf.writeBoolean(activated);
-                ClientSidePacketRegistry.INSTANCE.sendToServer(ArmorPackets.ACTIVATE_JETPACK, buf);
+                ClientSidePacketRegistry.INSTANCE.sendToServer(ArmorPackets.ACTIVATE_CHEST, buf);
             }
         }
     }

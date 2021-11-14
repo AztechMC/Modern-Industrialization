@@ -123,6 +123,15 @@ repositories {
             includeGroup "com.jamieswhiteshirt"
         }
     }
+    // for PlayerAbilityLib
+    maven {
+        name = 'Ladysnake Mods'
+        url = 'https://ladysnake.jfrog.io/artifactory/mods'
+        content {
+            includeGroup 'io.github.ladysnake'
+            includeGroupByRegex 'io\\.github\\.onyxstudios.*'
+        }
+    }
     mavenLocal()
 
 }
@@ -157,6 +166,8 @@ dependencies {
 
     include modApi("dev.technici4n:FastTransferLib:${project.ftl_version}")
     include modApi("teamreborn:energy:${project.tr_energy_version}")
+
+    include modImplementation("io.github.ladysnake:PlayerAbilityLib:${project.pal_version}")
 
     modCompileOnly('net.oskarstrom:DashLoader:2.1-dev4') {
         exclude(group: "net.fabricmc.fabric-api")

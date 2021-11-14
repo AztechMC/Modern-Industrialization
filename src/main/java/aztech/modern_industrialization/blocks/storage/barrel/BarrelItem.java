@@ -51,9 +51,9 @@ import net.minecraft.world.World;
 public class BarrelItem extends BlockItem {
 
     private static final int ITEM_BAR_COLOR = MathHelper.packRgb(0.4F, 0.4F, 1.0F);
-    public final int stackCapacity;
+    public final long stackCapacity;
 
-    public BarrelItem(Block block, int stackCapacity) {
+    public BarrelItem(Block block, long stackCapacity) {
         super(block, new Item.Settings().maxCount(1).group(ModernIndustrialization.ITEM_GROUP));
         this.stackCapacity = stackCapacity;
     }
@@ -80,7 +80,7 @@ public class BarrelItem extends BlockItem {
         if (this.isEmpty(stackBarrel) || this.getItemVariant(stackBarrel).equals(inserted)) {
             long maxInsert;
             if (isEmpty(stackBarrel)) {
-                maxInsert = (long) stackCapacity * inserted.getItem().getMaxCount();
+                maxInsert = stackCapacity * inserted.getItem().getMaxCount();
             } else {
                 maxInsert = getCapacity(stackBarrel) - getAmount(stackBarrel);
             }
@@ -134,7 +134,7 @@ public class BarrelItem extends BlockItem {
     }
 
     public long getCapacity(ItemStack stack) {
-        return (long) stackCapacity * getItemVariant(stack).getItem().getMaxCount();
+        return stackCapacity * getItemVariant(stack).getItem().getMaxCount();
 
     }
 

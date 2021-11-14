@@ -111,9 +111,10 @@ public class NuclearReactorMultiblockBlockEntity extends MultiblockMachineBlockE
         if (!world.isClient) {
             link();
             if (shapeValid.shapeValid) {
-                NuclearGridHelper.simulate(nuclearGrid);
+                isActive.updateActive(NuclearGridHelper.simulate(nuclearGrid), this);
                 efficiencyHistory.tick();
             } else {
+                isActive.updateActive(false, this);
                 efficiencyHistory.clear();
             }
         }

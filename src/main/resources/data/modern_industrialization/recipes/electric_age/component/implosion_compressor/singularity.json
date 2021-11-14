@@ -1,0 +1,19 @@
+{
+  "type": "modern_industrialization:implosion_compressor",
+  "eu": 1,
+  "duration": 10,
+  "item_inputs": [
+    {
+      "item": "modern_industrialization:ultradense_metal_ball",
+      "amount": 1
+    },
+    {
+      "item": "modern_industrialization:nuke",
+      "amount": 64
+    }
+  ],
+  "item_outputs": {
+    "item": "modern_industrialization:singularity",
+    "amount": 1
+  }
+}

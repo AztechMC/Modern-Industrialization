@@ -1,0 +1,17 @@
+{
+  "type": "modern_industrialization:packer",
+  "eu": 2,
+  "duration": 200,
+  "item_inputs": [
+    {
+      "item": "minecraft:netherite_ingot",
+      "amount": 9
+    }
+  ],
+  "item_outputs": [
+    {
+      "item": "minecraft:netherite_block",
+      "amount": 1
+    }
+  ]
+}

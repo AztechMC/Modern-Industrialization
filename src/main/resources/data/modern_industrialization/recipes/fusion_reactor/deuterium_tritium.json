@@ -1,0 +1,25 @@
+{
+  "type": "modern_industrialization:fusion_reactor",
+  "eu": 128000,
+  "duration": 900,
+  "fluid_inputs": [
+    {
+      "fluid": "modern_industrialization:deuterium",
+      "amount": 1000
+    },
+    {
+      "fluid": "modern_industrialization:tritium",
+      "amount": 1000
+    }
+  ],
+  "fluid_outputs": [
+    {
+      "fluid": "modern_industrialization:helium_plasma",
+      "amount": 1000
+    },
+    {
+      "fluid" : "modern_industrialization:hydrogen",
+      "amount": 1000
+    }
+  ]
+}

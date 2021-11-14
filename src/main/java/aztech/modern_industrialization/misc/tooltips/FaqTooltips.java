@@ -55,6 +55,7 @@ public class FaqTooltips {
 
     static {
         add(new MIIdentifier("forge_hammer"), "forge_hammer", 2);
+        add(new MIIdentifier("stainless_steel_dust"), "stainless_steel_dust", 1);
 
         ItemTooltipCallback.EVENT.register((stack, context, lines) -> {
             Identifier itemId = Registry.ITEM.getId(stack.getItem());

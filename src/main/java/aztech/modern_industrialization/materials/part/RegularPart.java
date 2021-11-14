@@ -27,15 +27,12 @@ import static aztech.modern_industrialization.ModernIndustrialization.METAL_MATE
 
 import aztech.modern_industrialization.MIBlock;
 import aztech.modern_industrialization.MIItem;
-import aztech.modern_industrialization.ModernIndustrialization;
 import aztech.modern_industrialization.materials.MaterialBuilder;
 import aztech.modern_industrialization.materials.MaterialHelper;
 import aztech.modern_industrialization.textures.MITextures;
 import aztech.modern_industrialization.textures.TextureHelper;
 import aztech.modern_industrialization.textures.TextureManager;
 import java.io.IOException;
-import net.devtech.arrp.json.models.JModel;
-import net.devtech.arrp.json.models.JTextures;
 import net.devtech.arrp.json.tags.JTag;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
@@ -89,10 +86,7 @@ public class RegularPart extends Part implements BuildablePart {
         return new RegularPart(key, (registeringContext, partContext, part, itemPath, itemId, itemTag) -> {
             MIBlock block = new MIBlock(itemPath,
                     FabricBlockSettings.of(METAL_MATERIAL).hardness(5.0f).resistance(6.0f).breakByTool(FabricToolTags.PICKAXES, 0).requiresTool());
-            block.setBlockModel(JModel.model().parent("block/cube_column")
-                    .textures(new JTextures().var("end", ModernIndustrialization.MOD_ID + ":blocks/" + itemPath + "_end").var("side",
-                            ModernIndustrialization.MOD_ID + ":blocks/" + itemPath + "_side")));
-
+            block.asColumn();
         }, clientRegister, (mtm, partContext, part, itemPath) -> {
             for (String suffix : new String[] { "_end", "_side" }) {
                 String template = String.format("modern_industrialization:textures/materialsets/common/%s%s.png", part, suffix);
@@ -219,6 +213,10 @@ public class RegularPart extends Part implements BuildablePart {
     public BuildablePart withCustomPath(String itemPath, String itemTag) {
         return BuildablePart.of(this, ctx -> build(itemPath, idFromPath(itemPath), itemTag, ctx, RegularPart.this, RegularPart.this.register,
                 RegularPart.this.clientRegister, RegularPart.this.textureRegister));
+    }
+
+    public BuildablePart withCustomPath(String itemPath) {
+        return withCustomPath(itemPath, itemPath);
     }
 
     public BuildablePart withCustomFormattablePath(String itemPath, String itemTag) {

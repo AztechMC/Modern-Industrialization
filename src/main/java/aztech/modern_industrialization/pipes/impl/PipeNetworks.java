@@ -81,8 +81,7 @@ public class PipeNetworks extends PersistentState {
                 throw new IllegalStateException("Can only load pipe on server from the server thread.");
             }
 
-            PipeNetworks.get(sw).loadPipesByChunk.computeIfAbsent(ChunkPos.method_37232(pipe.getPos()), chunk -> new ArrayList<>())
-                    .add(pipe::loadPipes);
+            PipeNetworks.get(sw).loadPipesByChunk.computeIfAbsent(ChunkPos.toLong(pipe.getPos()), chunk -> new ArrayList<>()).add(pipe::loadPipes);
         }
     }
 

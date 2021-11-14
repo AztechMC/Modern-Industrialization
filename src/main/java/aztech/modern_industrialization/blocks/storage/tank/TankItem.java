@@ -53,22 +53,22 @@ public class TankItem extends BlockItem {
     }
 
     public boolean isEmpty(ItemStack stack) {
-        return stack.getSubTag("BlockEntityTag") == null;
+        return stack.getSubNbt("BlockEntityTag") == null;
     }
 
     public FluidVariant getFluid(ItemStack stack) {
-        return NbtHelper.getFluidCompatible(stack.getSubTag("BlockEntityTag"), "fluid");
+        return NbtHelper.getFluidCompatible(stack.getSubNbt("BlockEntityTag"), "fluid");
     }
 
     private void setFluid(ItemStack stack, FluidVariant fluid) {
-        NbtHelper.putFluid(stack.getOrCreateSubTag("BlockEntityTag"), "fluid", fluid);
+        NbtHelper.putFluid(stack.getOrCreateSubNbt("BlockEntityTag"), "fluid", fluid);
     }
 
     public long getAmount(ItemStack stack) {
         if (getFluid(stack).isBlank()) {
             return 0;
         }
-        NbtCompound tag = stack.getSubTag("BlockEntityTag");
+        NbtCompound tag = stack.getSubNbt("BlockEntityTag");
         if (tag == null)
             return 0;
         else
@@ -76,7 +76,7 @@ public class TankItem extends BlockItem {
     }
 
     private void setAmount(ItemStack stack, long amount) {
-        stack.getOrCreateSubTag("BlockEntityTag").putLong("amt", amount);
+        stack.getOrCreateSubNbt("BlockEntityTag").putLong("amt", amount);
     }
 
     @Override

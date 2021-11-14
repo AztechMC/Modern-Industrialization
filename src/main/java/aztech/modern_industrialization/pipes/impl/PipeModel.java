@@ -177,7 +177,7 @@ public class PipeModel implements UnbakedModel, BakedModel, FabricBakedModel {
     }
 
     @Override
-    public Sprite getSprite() {
+    public Sprite getParticleSprite() {
         return particleSprite;
     }
 

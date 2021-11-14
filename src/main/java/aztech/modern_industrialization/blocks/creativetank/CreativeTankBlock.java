@@ -68,7 +68,7 @@ public class CreativeTankBlock extends Block implements TickableBlock {
         if (!tankEntity.isResourceBlank()) {
             NbtCompound tag = new NbtCompound();
             tag.put("BlockEntityTag", tankEntity.toClientTag(new NbtCompound()));
-            stack.setTag(tag);
+            stack.setNbt(tag);
         }
         return stack;
     }

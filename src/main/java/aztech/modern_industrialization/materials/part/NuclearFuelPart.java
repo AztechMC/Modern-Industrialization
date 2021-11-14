@@ -23,12 +23,11 @@
  */
 package aztech.modern_industrialization.materials.part;
 
-import static aztech.modern_industrialization.nuclear.NuclearFuel.NuclearFuelParams;
-
 import aztech.modern_industrialization.MIItem;
 import aztech.modern_industrialization.nuclear.INeutronBehaviour;
 import aztech.modern_industrialization.nuclear.NuclearConstant;
 import aztech.modern_industrialization.nuclear.NuclearFuel;
+import aztech.modern_industrialization.nuclear.NuclearFuel.NuclearFuelParams;
 import aztech.modern_industrialization.textures.MITextures;
 import aztech.modern_industrialization.textures.coloramp.ColorampDepleted;
 import java.util.List;

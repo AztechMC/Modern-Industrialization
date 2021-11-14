@@ -86,7 +86,7 @@ public class MachineRecipe implements Recipe<Inventory> {
         // modified.
         // (They should never be used somewhere else anyway)
         return new DefaultedListWrapper<>(itemInputs.stream().filter(i -> i.probability == 1).map(i -> {
-            for (ItemStack stack : i.ingredient.getMatchingStacksClient()) {
+            for (ItemStack stack : i.ingredient.getMatchingStacks()) {
                 stack.setCount(i.amount);
             }
             return i.ingredient;
@@ -134,11 +134,11 @@ public class MachineRecipe implements Recipe<Inventory> {
         }
 
         public List<Item> getInputItems() {
-            return Arrays.stream(ingredient.getMatchingStacksClient()).map(ItemStack::getItem).distinct().collect(Collectors.toList());
+            return Arrays.stream(ingredient.getMatchingStacks()).map(ItemStack::getItem).distinct().collect(Collectors.toList());
         }
 
         public List<ItemStack> getInputStacks() {
-            return Arrays.asList(ingredient.getMatchingStacksClient());
+            return Arrays.asList(ingredient.getMatchingStacks());
         }
     }
 

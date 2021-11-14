@@ -145,7 +145,7 @@ public class SteamDrillItem extends Item implements DynamicAttributeTool, MagnaT
     }
 
     private static void useFuel(ItemStack stack, LivingEntity user) {
-        NbtCompound tag = stack.getTag();
+        NbtCompound tag = stack.getNbt();
         if (tag != null && tag.getInt("water") > 0) {
             if (tag.getInt("burnTicks") == 0) {
                 int burnTicks = consumeFuel(stack, user, Simulation.ACT);
@@ -162,7 +162,7 @@ public class SteamDrillItem extends Item implements DynamicAttributeTool, MagnaT
             return TypedActionResult.pass(itemStack);
         FluidState fluidState = world.getFluidState(hitResult.getBlockPos());
         if (fluidState.getFluid() == Fluids.WATER || fluidState.getFluid() == Fluids.FLOWING_WATER) {
-            itemStack.getOrCreateTag().putInt("water", FULL_WATER);
+            itemStack.getOrCreateNbt().putInt("water", FULL_WATER);
             return TypedActionResult.success(itemStack, world.isClient());
         }
         return super.use(world, user, hand);
@@ -170,7 +170,7 @@ public class SteamDrillItem extends Item implements DynamicAttributeTool, MagnaT
 
     @Override
     public void inventoryTick(ItemStack stack, World world, Entity entity, int slot, boolean selected) {
-        NbtCompound tag = stack.getOrCreateTag();
+        NbtCompound tag = stack.getOrCreateNbt();
         int burnTicks = tag.getInt("burnTicks");
         if (burnTicks > 0) {
             NbtHelper.putNonzeroInt(tag, "burnTicks", Math.max(0, burnTicks - 5));
@@ -186,7 +186,7 @@ public class SteamDrillItem extends Item implements DynamicAttributeTool, MagnaT
     }
 
     public static boolean canUse(ItemStack stack, @Nullable LivingEntity user) {
-        NbtCompound tag = stack.getTag();
+        NbtCompound tag = stack.getNbt();
         if (tag == null || tag.getInt("water") == 0) {
             return false;
         }
@@ -238,7 +238,7 @@ public class SteamDrillItem extends Item implements DynamicAttributeTool, MagnaT
     }
 
     public Optional<TooltipData> getTooltipData(ItemStack stack) {
-        NbtCompound tag = stack.getTag();
+        NbtCompound tag = stack.getNbt();
         if (tag != null) {
             return Optional.of(new SteamDrillTooltipData(tag.getInt("water") * 100 / FULL_WATER, tag.getInt("burnTicks")));
         } else {

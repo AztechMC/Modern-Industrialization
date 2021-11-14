@@ -153,7 +153,7 @@ public class TankModel implements UnbakedModel, FabricBakedModel, BakedModel {
     }
 
     @Override
-    public Sprite getSprite() {
+    public Sprite getParticleSprite() {
         return tankSprite;
     }
 

@@ -95,14 +95,14 @@ public class GraviChestPlateItem extends ArmorItem implements Wearable, Tickable
     }
 
     public long getEnergy(ItemStack stack) {
-        return stack.hasTag() ? stack.getTag().getLong("energy") : 0;
+        return stack.hasNbt() ? stack.getNbt().getLong("energy") : 0;
     }
 
     public void setEnergy(ItemStack stack, long energy) {
         if (energy == 0) {
-            stack.removeSubTag("energy");
+            stack.removeSubNbt("energy");
         } else {
-            stack.getOrCreateTag().putLong("energy", energy);
+            stack.getOrCreateNbt().putLong("energy", energy);
         }
     }
 

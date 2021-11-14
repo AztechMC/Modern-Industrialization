@@ -161,7 +161,7 @@ public class MachineCasingModel implements UnbakedModel, BakedModel {
     }
 
     @Override
-    public Sprite getSprite() {
+    public Sprite getParticleSprite() {
         return null;
     }
 

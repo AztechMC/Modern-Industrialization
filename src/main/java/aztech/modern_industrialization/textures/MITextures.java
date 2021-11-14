@@ -236,7 +236,7 @@ public final class MITextures {
             }
             for (int i = 1; i < tankTexture.getWidth() - 1; i++) {
                 for (int j = 1; j < tankTexture.getHeight() - 1; j++) {
-                    tankTexture.setPixelColor(i, j, creativeTankTexture.getPixelColor(i, j));
+                    tankTexture.setColor(i, j, creativeTankTexture.getColor(i, j));
                 }
             }
             tm.addTexture(s, tankTexture);
@@ -262,7 +262,7 @@ public final class MITextures {
                     NativeImage copy = TextureHelper.copy(texture);
                     for (int i = 0; i < copy.getWidth(); ++i) {
                         for (int j = copy.getHeight() / 2; j < copy.getHeight(); j++) {
-                            copy.setPixelColor(i, j, brick.getPixelColor(i, j));
+                            copy.setColor(i, j, brick.getColor(i, j));
                         }
                     }
                     target = copy;

@@ -47,11 +47,11 @@ public class CreativeTankItem extends BlockItem {
     }
 
     public static boolean isEmpty(ItemStack stack) {
-        return stack.getSubTag("BlockEntityTag") == null;
+        return stack.getSubNbt("BlockEntityTag") == null;
     }
 
     public static FluidVariant getFluid(ItemStack stack) {
-        return NbtHelper.getFluidCompatible(stack.getSubTag("BlockEntityTag"), "fluid");
+        return NbtHelper.getFluidCompatible(stack.getSubNbt("BlockEntityTag"), "fluid");
     }
 
     @Override

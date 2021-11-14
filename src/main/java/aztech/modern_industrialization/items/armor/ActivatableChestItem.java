@@ -27,10 +27,10 @@ import net.minecraft.item.ItemStack;
 
 public interface ActivatableChestItem {
     default boolean isActivated(ItemStack stack) {
-        return stack.getTag() != null && stack.getTag().getBoolean("activated");
+        return stack.getNbt() != null && stack.getNbt().getBoolean("activated");
     }
 
     default void setActivated(ItemStack stack, boolean activated) {
-        stack.getOrCreateTag().putBoolean("activated", activated);
+        stack.getOrCreateNbt().putBoolean("activated", activated);
     }
 }

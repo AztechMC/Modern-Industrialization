@@ -49,7 +49,7 @@ public class NuclearAbsorbable extends NuclearComponentItem {
     public void setRemainingDesintegrations(ItemStack stack, int value) {
         Preconditions.checkArgument(value >= 0 & value <= desintegrationMax,
                 String.format("Remaining desintegration %d must be between 0 and max desintegration = %d", value, desintegrationMax));
-        NbtCompound tag = stack.getOrCreateTag();
+        NbtCompound tag = stack.getOrCreateNbt();
         tag.putInt("desRem", value);
     }
 
@@ -89,7 +89,7 @@ public class NuclearAbsorbable extends NuclearComponentItem {
     }
 
     public int getRemainingDesintegrations(ItemStack stack) {
-        NbtCompound tag = stack.getTag();
+        NbtCompound tag = stack.getNbt();
         if (tag == null || !tag.contains("desRem")) {
             return desintegrationMax;
         }

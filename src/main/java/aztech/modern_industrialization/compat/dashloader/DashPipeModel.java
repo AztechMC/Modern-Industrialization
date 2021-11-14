@@ -58,7 +58,7 @@ public class DashPipeModel implements DashModel {
     }
 
     public DashPipeModel(PipeModel pipeModel, DashRegistry registry) {
-        particleSprite = registry.createSpritePointer(pipeModel.getSprite());
+        particleSprite = registry.createSpritePointer(pipeModel.getParticleSprite());
         renderers = new PairMap<>();
         pipeModel.getRenderers().forEach((factory, pipeRenderer) -> {
             Identifier factoryIdentifier = null;

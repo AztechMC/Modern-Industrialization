@@ -83,13 +83,13 @@ public abstract class PipeNetwork {
     public void setNode(BlockPos pos, @Nullable PipeNetworkNode node) {
         this.nodes.put(pos.toImmutable(), node);
 
-        this.nodesByChunk.computeIfAbsent(ChunkPos.method_37232(pos), p -> new HashMap<>()).put(pos.toImmutable(), node);
+        this.nodesByChunk.computeIfAbsent(ChunkPos.toLong(pos), p -> new HashMap<>()).put(pos.toImmutable(), node);
     }
 
     public void removeNode(BlockPos pos) {
         this.nodes.remove(pos);
 
-        long chunk = ChunkPos.method_37232(pos);
+        long chunk = ChunkPos.toLong(pos);
         Map<BlockPos, PipeNetworkNode> map = nodesByChunk.get(chunk);
         map.remove(pos);
         if (map.size() == 0) {

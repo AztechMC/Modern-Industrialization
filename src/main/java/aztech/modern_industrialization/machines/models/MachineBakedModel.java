@@ -165,7 +165,7 @@ public class MachineBakedModel implements BakedModel, FabricBakedModel {
     }
 
     @Override
-    public Sprite getSprite() {
+    public Sprite getParticleSprite() {
         return defaultCasing.getSideSprite();
     }
 

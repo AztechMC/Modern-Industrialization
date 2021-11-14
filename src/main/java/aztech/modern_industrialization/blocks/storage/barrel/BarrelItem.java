@@ -59,19 +59,19 @@ public class BarrelItem extends BlockItem {
     }
 
     public boolean isEmpty(ItemStack stack) {
-        return stack.getSubTag("BlockEntityTag") == null;
+        return stack.getSubNbt("BlockEntityTag") == null;
     }
 
     public ItemVariant getItemVariant(ItemStack stack) {
         if (isEmpty(stack)) {
             return ItemVariant.blank();
         } else {
-            return ItemVariant.fromNbt(stack.getSubTag("BlockEntityTag").getCompound("item"));
+            return ItemVariant.fromNbt(stack.getSubNbt("BlockEntityTag").getCompound("item"));
         }
     }
 
     private void setItemVariant(ItemStack stack, ItemVariant item) {
-        stack.getOrCreateSubTag("BlockEntityTag").put("item", item.toNbt());
+        stack.getOrCreateSubNbt("BlockEntityTag").put("item", item.toNbt());
     }
 
     public long insert(ItemStack stackBarrel, ItemVariant inserted, long maxAmount) {
@@ -100,7 +100,7 @@ public class BarrelItem extends BlockItem {
         if (getItemVariant(stack).isBlank()) {
             return 0;
         }
-        NbtCompound tag = stack.getSubTag("BlockEntityTag");
+        NbtCompound tag = stack.getSubNbt("BlockEntityTag");
         if (tag == null)
             return 0;
         else
@@ -110,9 +110,9 @@ public class BarrelItem extends BlockItem {
     private void setAmount(ItemStack stack, long amount) {
         Preconditions.checkArgument(amount >= 0, "Can not set a barrel item to a negative amount");
 
-        stack.getOrCreateSubTag("BlockEntityTag").putLong("amt", amount);
+        stack.getOrCreateSubNbt("BlockEntityTag").putLong("amt", amount);
         if (amount == 0) {
-            stack.removeSubTag("BlockEntityTag");
+            stack.removeSubNbt("BlockEntityTag");
         }
     }
 

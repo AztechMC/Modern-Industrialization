@@ -159,15 +159,15 @@ public class DieselToolItem extends Item implements DynamicAttributeTool, Vanish
     }
 
     private static boolean isFortune(ItemStack stack) {
-        NbtCompound tag = stack.getTag();
+        NbtCompound tag = stack.getNbt();
         return tag != null && tag.getBoolean("fortune");
     }
 
     private static void setFortune(ItemStack stack, boolean fortune) {
         if (fortune) {
-            stack.getOrCreateTag().putBoolean("fortune", true);
+            stack.getOrCreateNbt().putBoolean("fortune", true);
         } else {
-            stack.removeSubTag("fortune");
+            stack.removeSubNbt("fortune");
         }
     }
 

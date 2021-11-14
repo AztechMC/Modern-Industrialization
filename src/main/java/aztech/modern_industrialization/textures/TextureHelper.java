@@ -36,13 +36,13 @@ public class TextureHelper {
     public static void colorize(NativeImage image, Coloramp colorramp) {
         for (int i = 0; i < image.getWidth(); ++i) {
             for (int j = 0; j < image.getHeight(); ++j) {
-                int color = image.getPixelColor(i, j);
+                int color = image.getColor(i, j);
                 double l = getLuminance(color);
                 int rgb = colorramp.getRGB(l);
                 int r = getRrgb(rgb);
                 int g = getGrgb(rgb);
                 int b = getBrgb(rgb);
-                image.setPixelColor(i, j, fromArgb(getA(color), r, g, b));
+                image.setColor(i, j, fromArgb(getA(color), r, g, b));
             }
         }
     }
@@ -50,7 +50,7 @@ public class TextureHelper {
     public static void increaseBrightness(NativeImage image, float minBrightness) {
         for (int i = 0; i < image.getWidth(); ++i) {
             for (int j = 0; j < image.getHeight(); ++j) {
-                int color = image.getPixelColor(i, j);
+                int color = image.getColor(i, j);
                 double l = getLuminance(color);
                 int r = getR(color);
                 int g = getG(color);
@@ -61,7 +61,7 @@ public class TextureHelper {
                 g = getGrgb(rgb);
                 b = getBrgb(rgb);
 
-                image.setPixelColor(i, j, fromArgb(getA(color), r, g, b));
+                image.setColor(i, j, fromArgb(getA(color), r, g, b));
             }
         }
     }
@@ -153,7 +153,7 @@ public class TextureHelper {
 
             for (int i = 0; i < maxWidth; ++i) {
                 for (int j = 0; j < maxHeight; ++j) {
-                    newImage.setPixelColor(i, j, image.getPixelColor(i / wFactor, j / hFactor));
+                    newImage.setColor(i, j, image.getColor(i / wFactor, j / hFactor));
                 }
             }
 
@@ -174,14 +174,14 @@ public class TextureHelper {
 
         for (int i = 0; i < source.getWidth(); ++i) {
             for (int j = 0; j < source.getHeight(); ++j) {
-                int sourceColor = source.getPixelColor(i, j);
-                int topColor = top.getPixelColor(i, j);
+                int sourceColor = source.getColor(i, j);
+                int topColor = top.getColor(i, j);
                 double alphaSource = getA(sourceColor) / 255.0;
                 double alphaTop = getA(topColor) / 255.0;
                 double alphaOut = alphaTop + alphaSource * (1 - alphaTop);
                 BiFunction<Integer, Integer, Integer> mergeAlpha = (sourceValue,
                         topValue) -> (int) ((topValue * alphaTop + sourceValue * alphaSource * (1 - alphaTop)) / alphaOut);
-                output.setPixelColor(i, j, fromArgb((int) (alphaOut * 255), mergeAlpha.apply(getR(sourceColor), getR(topColor)),
+                output.setColor(i, j, fromArgb((int) (alphaOut * 255), mergeAlpha.apply(getR(sourceColor), getR(topColor)),
                         mergeAlpha.apply(getG(sourceColor), getG(topColor)), mergeAlpha.apply(getB(sourceColor), getB(topColor))));
             }
         }
@@ -201,9 +201,9 @@ public class TextureHelper {
         for (int x = 0; x < lowerIngot.getWidth(); ++x) {
             for (int y = lowerIngot.getHeight(); y-- > 0;) {
                 if (y >= shiftDown) {
-                    lowerIngot.setPixelColor(x, y, lowerIngot.getPixelColor(x, y - shiftDown));
+                    lowerIngot.setColor(x, y, lowerIngot.getColor(x, y - shiftDown));
                 } else {
-                    lowerIngot.setPixelColor(x, y, 0);
+                    lowerIngot.setColor(x, y, 0);
                 }
             }
         }
@@ -214,9 +214,9 @@ public class TextureHelper {
         for (int x = 0; x < upperIngot.getWidth(); ++x) {
             for (int y = 0; y < upperIngot.getHeight(); ++y) {
                 if (y + shiftUp < upperIngot.getHeight()) {
-                    upperIngot.setPixelColor(x, y, upperIngot.getPixelColor(x, y + shiftUp));
+                    upperIngot.setColor(x, y, upperIngot.getColor(x, y + shiftUp));
                 } else {
-                    upperIngot.setPixelColor(x, y, 0);
+                    upperIngot.setColor(x, y, 0);
                 }
             }
         }
@@ -234,9 +234,9 @@ public class TextureHelper {
         for (int x = 0; x < lowerIngot.getWidth(); ++x) {
             for (int y = lowerIngot.getHeight(); y-- > 0;) {
                 if (y >= shiftDown) {
-                    lowerIngot.setPixelColor(x, y, lowerIngot.getPixelColor(x, y - shiftDown));
+                    lowerIngot.setColor(x, y, lowerIngot.getColor(x, y - shiftDown));
                 } else {
-                    lowerIngot.setPixelColor(x, y, 0);
+                    lowerIngot.setColor(x, y, 0);
                 }
             }
         }
@@ -247,9 +247,9 @@ public class TextureHelper {
         for (int x = 0; x < upperIngot.getWidth(); ++x) {
             for (int y = 0; y < upperIngot.getHeight(); ++y) {
                 if (y + shiftUp < upperIngot.getHeight()) {
-                    upperIngot.setPixelColor(x, y, upperIngot.getPixelColor(x, y + shiftUp));
+                    upperIngot.setColor(x, y, upperIngot.getColor(x, y + shiftUp));
                 } else {
-                    upperIngot.setPixelColor(x, y, 0);
+                    upperIngot.setColor(x, y, 0);
                 }
             }
         }
@@ -291,13 +291,13 @@ public class TextureHelper {
 
         for (int i = 0; i < width; i++) {
             for (int j = 0; j < height; j++) {
-                flipped[i][height - j - 1] = image.getPixelColor(i, j);
+                flipped[i][height - j - 1] = image.getColor(i, j);
             }
         }
 
         for (int i = 0; i < width; i++) {
             for (int j = 0; j < height; j++) {
-                image.setPixelColor(i, j, flipped[i][j]);
+                image.setColor(i, j, flipped[i][j]);
             }
         }
 

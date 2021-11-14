@@ -122,7 +122,7 @@ public class BakableTargetColoramp implements Coloramp {
 
             for (int i = 0; i < from.getWidth(); i++) {
                 for (int j = 0; j < from.getHeight(); j++) {
-                    int argb = from.getPixelColor(i, j);
+                    int argb = from.getColor(i, j);
                     int a = TextureHelper.getA(argb);
                     if (a >= 127) {
                         double lum = TextureHelper.getLuminance(argb);
@@ -168,7 +168,7 @@ public class BakableTargetColoramp implements Coloramp {
 
             for (int i = 0; i < to.getWidth(); i++) {
                 for (int j = 0; j < to.getHeight(); j++) {
-                    int argb = to.getPixelColor(i, j);
+                    int argb = to.getColor(i, j);
                     int a = TextureHelper.getA(argb);
                     if (a >= 127) {
                         toRgb.add(argb);

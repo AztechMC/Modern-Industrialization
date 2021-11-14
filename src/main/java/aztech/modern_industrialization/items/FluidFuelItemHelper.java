@@ -42,15 +42,15 @@ import net.minecraft.text.TextColor;
  */
 public interface FluidFuelItemHelper {
     static FluidVariant getFluid(ItemStack stack) {
-        NbtCompound tag = stack.getTag();
+        NbtCompound tag = stack.getNbt();
         return tag == null ? FluidVariant.blank() : NbtHelper.getFluidCompatible(tag, "fluid");
     }
 
     static void setFluid(ItemStack stack, FluidVariant fluid) {
         if (!fluid.isBlank()) {
-            NbtHelper.putFluid(stack.getOrCreateTag(), "fluid", fluid);
+            NbtHelper.putFluid(stack.getOrCreateNbt(), "fluid", fluid);
         } else {
-            stack.removeSubTag("fluid");
+            stack.removeSubNbt("fluid");
         }
     }
 
@@ -58,7 +58,7 @@ public interface FluidFuelItemHelper {
         if (getFluid(stack).isBlank()) {
             return 0;
         }
-        NbtCompound tag = stack.getTag();
+        NbtCompound tag = stack.getNbt();
         if (tag != null) {
             return tag.getLong("amt");
         } else {
@@ -68,10 +68,10 @@ public interface FluidFuelItemHelper {
 
     static void setAmount(ItemStack stack, long amount) {
         if (amount != 0) {
-            stack.getOrCreateTag().putLong("amt", amount);
+            stack.getOrCreateNbt().putLong("amt", amount);
         } else {
-            stack.removeSubTag("amt");
-            stack.removeSubTag("fluid");
+            stack.removeSubNbt("amt");
+            stack.removeSubNbt("fluid");
         }
     }
 

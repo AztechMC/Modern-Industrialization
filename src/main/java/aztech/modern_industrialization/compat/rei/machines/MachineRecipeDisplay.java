@@ -25,7 +25,7 @@ package aztech.modern_industrialization.compat.rei.machines;
 
 import aztech.modern_industrialization.compat.rei.ReiUtil;
 import aztech.modern_industrialization.machines.recipe.MachineRecipe;
-import aztech.modern_industrialization.util.FluidTextHelper;
+import aztech.modern_industrialization.util.FluidHelper;
 import dev.architectury.fluid.FluidStack;
 import java.util.*;
 import java.util.function.BiFunction;
@@ -38,7 +38,6 @@ import me.shedaniel.rei.api.common.entry.EntryIngredient;
 import me.shedaniel.rei.api.common.entry.EntryStack;
 import net.fabricmc.fabric.api.transfer.v1.client.fluid.FluidVariantRendering;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
-import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
 
 public class MachineRecipeDisplay implements Display {
@@ -48,8 +47,8 @@ public class MachineRecipeDisplay implements Display {
     private static final BiFunction<EntryStack<?>, Tooltip, Tooltip> FLUID_TOOLTIP = (stack, tooltip) -> {
         FluidStack fs = stack.castValue();
         long amount = stack.<FluidStack>cast().getValue().getAmount();
-        return Tooltip.create(FluidVariantRendering.getHandlerOrDefault(fs.getFluid()).getName(FluidVariant.of(fs.getFluid())), new TranslatableText(
-                "text.modern_industrialization.fluid_slot_quantity_millibuckets", FluidTextHelper.getUnicodeMillibuckets(amount, false)));
+        return Tooltip.create(FluidVariantRendering.getHandlerOrDefault(fs.getFluid()).getName(FluidVariant.of(fs.getFluid())),
+                FluidHelper.getFluidAmount(amount));
     };
 
     public MachineRecipeDisplay(Identifier categoryId, MachineRecipe recipe) {

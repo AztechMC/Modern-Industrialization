@@ -24,7 +24,7 @@
 package aztech.modern_industrialization.compat.rei;
 
 import aztech.modern_industrialization.machines.recipe.MachineRecipe;
-import aztech.modern_industrialization.util.FluidTextHelper;
+import aztech.modern_industrialization.util.FluidHelper;
 import aztech.modern_industrialization.util.TextHelper;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -64,8 +64,7 @@ public class ReiUtil {
         return EntryStacks.of(fluid, amount).setting(EntryStack.Settings.TOOLTIP_PROCESSOR, (stack, oldTooltip) -> {
             List<Text> tooltip = new ArrayList<>();
             tooltip.add(FluidVariantRendering.getName(FluidVariant.of(fluid)));
-            tooltip.add(new TranslatableText("text.modern_industrialization.fluid_slot_quantity_millibuckets",
-                    FluidTextHelper.getUnicodeMillibuckets(amount, false)));
+            tooltip.add(FluidHelper.getFluidAmount(amount));
             if (probabilityText != null) {
                 tooltip.add(probabilityText);
             }

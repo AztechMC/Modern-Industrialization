@@ -28,6 +28,7 @@ import java.util.List;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.transfer.v1.client.fluid.FluidVariantRendering;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
@@ -68,17 +69,26 @@ public class FluidHelper {
 
     @Environment(EnvType.CLIENT)
     public static MutableText getFluidAmount(long amount, long capacity) {
-        if (capacity < 81 * 100000 || Screen.hasShiftDown()) {
+        if (capacity < 100 * FluidConstants.BUCKET || Screen.hasShiftDown()) {
             String text = FluidTextHelper.getUnicodeMillibuckets(amount, false) + " / " + capacity / 81;
-            return new TranslatableText("text.modern_industrialization.fluid_slot_quantity_millibuckets", text);
-        } else if (capacity < 81 * 10000000) {
-            String text = String.format("%.3f / %.3f", ((double) amount / 81_000), ((double) capacity / 81_000));
-            return new TranslatableText("text.modern_industrialization.fluid_slot_quantity_buckets", text);
+            return new LiteralText(text + " mB");
         } else {
-            String text = String.format("%.3f / %.3f", ((double) amount / 81_000_000), ((double) capacity / 81_000_000));
-            return new TranslatableText("text.modern_industrialization.fluid_slot_quantity_kilobuckets", text);
+            RessourceTextHelper.MaxedAmount maxedAmount = RessourceTextHelper.getMaxedAmount(amount / FluidConstants.BUCKET,
+                    capacity / FluidConstants.BUCKET);
+            return new LiteralText(maxedAmount.digit() + " / " + maxedAmount.maxDigit() + " " + maxedAmount.unit() + "B");
         }
 
+    }
+
+    @Environment(EnvType.CLIENT)
+    public static MutableText getFluidAmount(long amount) {
+        if (amount < 100 * FluidConstants.BUCKET || Screen.hasShiftDown()) {
+            String text = FluidTextHelper.getUnicodeMillibuckets(amount, false);
+            return new LiteralText(text + " mB");
+        } else {
+            RessourceTextHelper.Amount amountUnit = RessourceTextHelper.getAmount(amount / FluidConstants.BUCKET);
+            return new LiteralText(amountUnit.digit() + " " + amountUnit.unit() + "B");
+        }
     }
 
     public static int getColorMinLuminance(int color) {

@@ -29,7 +29,6 @@ import static aztech.modern_industrialization.materials.set.MaterialOreSet.COPPE
 import static aztech.modern_industrialization.materials.set.MaterialSet.*;
 
 import aztech.modern_industrialization.MIConfig;
-import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.api.energy.CableTier;
 import aztech.modern_industrialization.materials.part.*;
 import aztech.modern_industrialization.materials.recipe.ForgeHammerRecipes;
@@ -45,17 +44,9 @@ import aztech.modern_industrialization.nuclear.NuclearConstant;
 import aztech.modern_industrialization.textures.coloramp.BakableTargetColoramp;
 import aztech.modern_industrialization.util.ResourceUtil;
 import com.google.common.base.Preconditions;
-import java.util.List;
 import net.devtech.arrp.json.tags.JTag;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.intprovider.UniformIntProvider;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.world.gen.YOffset;
-import net.minecraft.world.gen.feature.ConfiguredFeature;
-import net.minecraft.world.gen.feature.Feature;
-import net.minecraft.world.gen.feature.OreFeatureConfig;
 
 // @formatter:off
 public class MIMaterials {

@@ -26,7 +26,6 @@ package aztech.modern_industrialization.blocks.storage;
 import aztech.modern_industrialization.api.FastBlockEntity;
 import aztech.modern_industrialization.api.WrenchableBlockEntity;
 import java.util.Iterator;
-import net.fabricmc.fabric.api.block.entity.BlockEntityClientSerializable;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.fabricmc.fabric.api.transfer.v1.storage.StoragePreconditions;
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
@@ -41,12 +40,16 @@ import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.network.Packet;
+import net.minecraft.network.listener.ClientPlayPacketListener;
+import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
+import org.jetbrains.annotations.Nullable;
 
 public abstract class AbstractStorageBlockEntity<T extends TransferVariant<?>> extends FastBlockEntity
-        implements Storage<T>, StorageView<T>, BlockEntityClientSerializable, WrenchableBlockEntity {
+        implements Storage<T>, StorageView<T>, WrenchableBlockEntity {
 
     protected T resource;
     protected long amount;
@@ -66,16 +69,15 @@ public abstract class AbstractStorageBlockEntity<T extends TransferVariant<?>> e
             sync();
     }
 
+    @Nullable
     @Override
-    public void writeNbt(NbtCompound tag) {
-        toClientTag(tag);
-        super.writeNbt(tag);
+    public Packet<ClientPlayPacketListener> toUpdatePacket() {
+        return BlockEntityUpdateS2CPacket.create(this);
     }
 
     @Override
-    public void readNbt(NbtCompound tag) {
-        fromClientTag(tag);
-        super.readNbt(tag);
+    public NbtCompound toInitialChunkDataNbt() {
+        return toNbt();
     }
 
     @Override

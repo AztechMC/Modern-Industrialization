@@ -39,20 +39,22 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
-import net.fabricmc.fabric.api.block.entity.BlockEntityClientSerializable;
 import net.fabricmc.fabric.api.lookup.v1.block.BlockApiLookup;
 import net.fabricmc.fabric.api.rendering.data.v1.RenderAttachmentBlockEntity;
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemStorage;
 import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtNull;
+import net.minecraft.network.Packet;
 import net.minecraft.network.PacketByteBuf;
+import net.minecraft.network.listener.ClientPlayPacketListener;
+import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
@@ -62,14 +64,15 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.Direction;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * The base block entity for the machine system. Contains components, and an
  * inventory.
  */
 @SuppressWarnings("rawtypes")
-public abstract class MachineBlockEntity extends FastBlockEntity implements ExtendedScreenHandlerFactory, RenderAttachmentBlockEntity,
-        BlockEntityClientSerializable, ICacheableApiHost, WrenchableBlockEntity {
+public abstract class MachineBlockEntity extends FastBlockEntity
+        implements ExtendedScreenHandlerFactory, RenderAttachmentBlockEntity, ICacheableApiHost, WrenchableBlockEntity {
     final List<SyncedComponent.Server> syncedComponents = new ArrayList<>();
     private final List<IComponent> icomponents = new ArrayList<>();
     private final MachineGuiParameters guiParams;
@@ -188,24 +191,12 @@ public abstract class MachineBlockEntity extends FastBlockEntity implements Exte
 
     public void sync(boolean forceRemesh) {
         syncCausesRemesh = syncCausesRemesh || forceRemesh;
-        BlockEntityClientSerializable.super.sync();
+        super.sync();
     }
 
     @Override
-    public final void fromClientTag(NbtCompound tag) {
-        boolean forceChunkRemesh = tag.getBoolean("remesh") || syncCausesRemesh;
-        syncCausesRemesh = false;
-        for (IComponent component : icomponents) {
-            component.readClientNbt(tag);
-        }
-        if (forceChunkRemesh) {
-            RenderHelper.forceChunkRemesh((ClientWorld) world, pos);
-        }
-
-    }
-
-    @Override
-    public final NbtCompound toClientTag(NbtCompound tag) {
+    public NbtCompound toInitialChunkDataNbt() {
+        NbtCompound tag = new NbtCompound();
         tag.putBoolean("remesh", syncCausesRemesh);
         syncCausesRemesh = false;
         for (IComponent component : icomponents) {
@@ -216,18 +207,34 @@ public abstract class MachineBlockEntity extends FastBlockEntity implements Exte
 
     @Override
     public final void writeNbt(NbtCompound tag) {
-        super.writeNbt(tag);
         for (IComponent component : icomponents) {
             component.writeNbt(tag);
         }
+        tag.put("s", NbtNull.INSTANCE); // mark server-side
     }
 
     @Override
     public final void readNbt(NbtCompound tag) {
-        super.readNbt(tag);
-        for (IComponent component : icomponents) {
-            component.readNbt(tag);
+        if (tag.contains("s")) {
+            for (IComponent component : icomponents) {
+                component.readNbt(tag);
+            }
+        } else {
+            boolean forceChunkRemesh = tag.getBoolean("remesh") || syncCausesRemesh;
+            syncCausesRemesh = false;
+            for (IComponent component : icomponents) {
+                component.readClientNbt(tag);
+            }
+            if (forceChunkRemesh) {
+                RenderHelper.forceChunkRemesh(world, pos);
+            }
         }
+    }
+
+    @Nullable
+    @Override
+    public Packet<ClientPlayPacketListener> toUpdatePacket() {
+        return BlockEntityUpdateS2CPacket.create(this);
     }
 
     @Override

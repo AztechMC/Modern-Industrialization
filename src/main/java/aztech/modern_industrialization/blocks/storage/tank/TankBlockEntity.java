@@ -47,7 +47,7 @@ public class TankBlockEntity extends AbstractStorageBlockEntity<FluidVariant> {
     }
 
     @Override
-    public void fromClientTag(NbtCompound tag) {
+    public void readNbt(NbtCompound tag) {
         resource = NbtHelper.getFluidCompatible(tag, "fluid");
         amount = tag.getLong("amt");
         if (resource.isBlank()) {
@@ -56,10 +56,9 @@ public class TankBlockEntity extends AbstractStorageBlockEntity<FluidVariant> {
     }
 
     @Override
-    public NbtCompound toClientTag(NbtCompound tag) {
+    public void writeNbt(NbtCompound tag) {
         NbtHelper.putFluid(tag, "fluid", getResource());
         tag.putLong("amt", amount);
-        return tag;
     }
 
     public boolean onPlayerUse(PlayerEntity player) {

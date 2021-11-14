@@ -52,7 +52,7 @@ public class AbstractStorageBlock extends MIBlock {
         ItemStack stack = new ItemStack(asItem());
         if (!storageBlockEntity.isEmpty()) {
             NbtCompound tag = new NbtCompound();
-            tag.put("BlockEntityTag", storageBlockEntity.toClientTag(new NbtCompound()));
+            tag.put("BlockEntityTag", storageBlockEntity.toNbt());
             stack.setNbt(tag);
         }
         return stack;

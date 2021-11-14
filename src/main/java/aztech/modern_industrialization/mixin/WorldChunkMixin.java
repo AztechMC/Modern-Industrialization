@@ -27,8 +27,16 @@ import aztech.modern_industrialization.machines.multiblocks.world.ChunkEventList
 import net.minecraft.block.BlockState;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
+import net.minecraft.util.registry.Registry;
+import net.minecraft.world.HeightLimitView;
 import net.minecraft.world.World;
+import net.minecraft.world.biome.Biome;
+import net.minecraft.world.chunk.Chunk;
+import net.minecraft.world.chunk.ChunkSection;
+import net.minecraft.world.chunk.UpgradeData;
 import net.minecraft.world.chunk.WorldChunk;
+import net.minecraft.world.gen.chunk.Blender;
+import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -37,14 +45,16 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(WorldChunk.class)
-public class WorldChunkMixin {
-    @Shadow
-    @Final
-    private World world;
+public abstract class WorldChunkMixin extends Chunk {
+    public WorldChunkMixin(ChunkPos pos, UpgradeData upgradeData, HeightLimitView heightLimitView, Registry<Biome> biome, long inhabitedTime,
+            @Nullable ChunkSection[] sectionArrayInitializer, @Nullable Blender blendingData) {
+        super(pos, upgradeData, heightLimitView, biome, inhabitedTime, sectionArrayInitializer, blendingData);
+        throw new AssertionError();
+    }
 
     @Shadow
     @Final
-    private ChunkPos pos;
+    private World world;
 
     @SuppressWarnings("rawtypes")
     @Inject(method = "setBlockState", at = @At("HEAD"))

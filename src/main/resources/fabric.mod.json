@@ -1,4 +1,5 @@
 {
+  "__comment": "TODO 1.18 add back REI and patchouli deps",
   "schemaVersion": 1,
   "id": "modern_industrialization",
   "version": "${version}",
@@ -42,9 +43,7 @@
   "depends": {
     "fabricloader": ">=0.7.4",
     "fabric": ">=0.42",
-    "minecraft": "^1.17.1",
-    "patchouli": "*",
-    "roughlyenoughitems": "*"
+    "minecraft": "^1.17.1"
   },
   "breaks": {
     "universalcomponents": "*"

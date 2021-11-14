@@ -33,15 +33,17 @@ import aztech.modern_industrialization.pipes.gui.IPipeScreenHandlerHelper;
 import aztech.modern_industrialization.util.NbtHelper;
 import aztech.modern_industrialization.util.RenderHelper;
 import java.util.*;
-import net.fabricmc.fabric.api.block.entity.BlockEntityClientSerializable;
 import net.fabricmc.fabric.api.rendering.data.v1.RenderAttachmentBlockEntity;
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
 import net.minecraft.block.BlockState;
-import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtNull;
+import net.minecraft.network.Packet;
+import net.minecraft.network.listener.ClientPlayPacketListener;
+import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Hand;
 import net.minecraft.util.Identifier;
@@ -51,12 +53,12 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.util.shape.VoxelShapes;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * The BlockEntity for a pipe.
  */
-public class PipeBlockEntity extends FastBlockEntity
-        implements IPipeScreenHandlerHelper, BlockEntityClientSerializable, RenderAttachmentBlockEntity, WrenchableBlockEntity {
+public class PipeBlockEntity extends FastBlockEntity implements IPipeScreenHandlerHelper, RenderAttachmentBlockEntity, WrenchableBlockEntity {
     private static final int MAX_PIPES = 3;
     private static final VoxelShape[][][] SHAPE_CACHE;
     static final VoxelShape DEFAULT_SHAPE;
@@ -246,7 +248,6 @@ public class PipeBlockEntity extends FastBlockEntity
 
     @Override
     public void writeNbt(NbtCompound tag) {
-        super.writeNbt(tag);
         int i = 0;
         for (PipeNetworkNode pipe : pipes) {
             tag.putString("pipe_type_" + i, pipe.getType().getIdentifier().toString());
@@ -258,21 +259,36 @@ public class PipeBlockEntity extends FastBlockEntity
             tag.put("pipe_data_" + i, entry.getRight().toTag(new NbtCompound()));
             i++;
         }
+        tag.put("s", NbtNull.INSTANCE); // mark server data
     }
 
     @Override
     public void readNbt(NbtCompound tag) {
-        super.readNbt(tag);
-        pipes.clear();
+        if (tag.contains("s")) {
+            pipes.clear();
 
-        int i = 0;
-        while (tag.contains("pipe_type_" + i)) {
-            Identifier typeId = new Identifier(tag.getString("pipe_type_" + i));
-            PipeNetworkType type = PipeNetworkType.get(typeId);
-            PipeNetworkNode node = type.getNodeCtor().get();
-            node.fromTag(tag.getCompound("pipe_data_" + i));
-            unloadedPipes.add(new Pair<>(type, node));
-            i++;
+            int i = 0;
+            while (tag.contains("pipe_type_" + i)) {
+                Identifier typeId = new Identifier(tag.getString("pipe_type_" + i));
+                PipeNetworkType type = PipeNetworkType.get(typeId);
+                PipeNetworkNode node = type.getNodeCtor().get();
+                node.fromTag(tag.getCompound("pipe_data_" + i));
+                unloadedPipes.add(new Pair<>(type, node));
+                i++;
+            }
+        } else {
+            connections.clear();
+            customData.clear();
+            NbtCompound pipesTag = tag.getCompound("pipes");
+            for (String key : pipesTag.getKeys()) {
+                NbtCompound nodeTag = pipesTag.getCompound(key);
+                PipeNetworkType type = PipeNetworkType.get(new Identifier(key));
+                connections.put(type, NbtHelper.decodeConnections(nodeTag.getByteArray("connections")));
+                customData.put(type, nodeTag.getCompound("custom").copy());
+            }
+            rebuildCollisionShape();
+
+            RenderHelper.forceChunkRemesh(world, pos);
         }
     }
 
@@ -297,23 +313,8 @@ public class PipeBlockEntity extends FastBlockEntity
     }
 
     @Override
-    public void fromClientTag(NbtCompound tag) {
-        connections.clear();
-        customData.clear();
-        NbtCompound pipesTag = tag.getCompound("pipes");
-        for (String key : pipesTag.getKeys()) {
-            NbtCompound nodeTag = pipesTag.getCompound(key);
-            PipeNetworkType type = PipeNetworkType.get(new Identifier(key));
-            connections.put(type, NbtHelper.decodeConnections(nodeTag.getByteArray("connections")));
-            customData.put(type, nodeTag.getCompound("custom").copy());
-        }
-        rebuildCollisionShape();
-
-        RenderHelper.forceChunkRemesh(world, pos);
-    }
-
-    @Override
-    public NbtCompound toClientTag(NbtCompound tag) {
+    public NbtCompound toInitialChunkDataNbt() {
+        NbtCompound tag = new NbtCompound();
         loadPipes();
         NbtCompound pipesTag = new NbtCompound();
         for (PipeNetworkNode pipe : pipes) {
@@ -324,6 +325,12 @@ public class PipeBlockEntity extends FastBlockEntity
         }
         tag.put("pipes", pipesTag);
         return tag;
+    }
+
+    @Nullable
+    @Override
+    public Packet<ClientPlayPacketListener> toUpdatePacket() {
+        return BlockEntityUpdateS2CPacket.create(this);
     }
 
     @Override

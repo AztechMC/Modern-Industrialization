@@ -50,7 +50,7 @@ public class BarrelBlockEntity extends AbstractStorageBlockEntity<ItemVariant> {
     }
 
     @Override
-    public void fromClientTag(NbtCompound tag) {
+    public void readNbt(NbtCompound tag) {
         resource = ItemVariant.fromNbt(tag.getCompound("item"));
         amount = tag.getLong("amt");
         if (resource.isBlank()) {
@@ -59,10 +59,8 @@ public class BarrelBlockEntity extends AbstractStorageBlockEntity<ItemVariant> {
     }
 
     @Override
-    public NbtCompound toClientTag(NbtCompound tag) {
+    public void writeNbt(NbtCompound tag) {
         tag.put("item", resource.toNbt());
         tag.putLong("amt", amount);
-        return tag;
     }
-
 }

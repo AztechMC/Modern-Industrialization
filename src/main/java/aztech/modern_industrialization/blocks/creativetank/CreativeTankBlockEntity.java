@@ -28,7 +28,6 @@ import aztech.modern_industrialization.api.WrenchableBlockEntity;
 import aztech.modern_industrialization.blocks.storage.tank.CreativeTankSetup;
 import aztech.modern_industrialization.util.NbtHelper;
 import java.util.Iterator;
-import net.fabricmc.fabric.api.block.entity.BlockEntityClientSerializable;
 import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
@@ -44,12 +43,16 @@ import net.minecraft.block.Blocks;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.network.Packet;
+import net.minecraft.network.listener.ClientPlayPacketListener;
+import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
+import org.jetbrains.annotations.Nullable;
 
 public class CreativeTankBlockEntity extends FastBlockEntity
-        implements ExtractionOnlyStorage<FluidVariant>, StorageView<FluidVariant>, BlockEntityClientSerializable, WrenchableBlockEntity {
+        implements ExtractionOnlyStorage<FluidVariant>, StorageView<FluidVariant>, WrenchableBlockEntity {
     FluidVariant fluid = FluidVariant.blank();
 
     public CreativeTankBlockEntity(BlockPos pos, BlockState state) {
@@ -61,17 +64,6 @@ public class CreativeTankBlockEntity extends FastBlockEntity
         return fluid.isBlank();
     }
 
-    @Override
-    public void fromClientTag(NbtCompound tag) {
-        fluid = NbtHelper.getFluidCompatible(tag, "fluid");
-    }
-
-    @Override
-    public NbtCompound toClientTag(NbtCompound tag) {
-        NbtHelper.putFluid(tag, "fluid", fluid);
-        return tag;
-    }
-
     public void onChanged() {
         markDirty();
         if (!world.isClient)
@@ -80,14 +72,23 @@ public class CreativeTankBlockEntity extends FastBlockEntity
 
     @Override
     public void writeNbt(NbtCompound tag) {
-        toClientTag(tag);
-        super.writeNbt(tag);
+        NbtHelper.putFluid(tag, "fluid", fluid);
     }
 
     @Override
     public void readNbt(NbtCompound tag) {
-        fromClientTag(tag);
-        super.readNbt(tag);
+        fluid = NbtHelper.getFluidCompatible(tag, "fluid");
+    }
+
+    @Nullable
+    @Override
+    public Packet<ClientPlayPacketListener> toUpdatePacket() {
+        return BlockEntityUpdateS2CPacket.create(this);
+    }
+
+    @Override
+    public NbtCompound toInitialChunkDataNbt() {
+        return toNbt();
     }
 
     public boolean onPlayerUse(PlayerEntity player) {

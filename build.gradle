@@ -145,42 +145,55 @@ dependencies {
 
     // Dependencies
     include modImplementation("net.devtech:arrp:${project.arrp_version}") {
-        exclude(group: "net.fabricmc")
+        exclude(group: "net.fabricmc.fabric-api")
     }
-    modImplementation "me.shedaniel:RoughlyEnoughItems-fabric:${project.rei_version}"
-    include modImplementation("vazkii.patchouli:Patchouli:${project.patchouli_version}")
 
-    include modApi("me.shedaniel.cloth.api:cloth-armor-api-v1:${project.cloth_api_version}")
-    include modApi("me.shedaniel.cloth.api:cloth-common-events-v1:${project.cloth_api_version}")
+    /* TODO 1.18 impl */ modCompileOnly("me.shedaniel:RoughlyEnoughItems-fabric:${project.rei_version}") {
+        exclude(group: "net.fabricmc.fabric-api")
+    }
+    include /* TODO 1.18 impl */ modCompileOnly("vazkii.patchouli:Patchouli:${project.patchouli_version}") {
+        exclude(group: "net.fabricmc.fabric-api")
+    }
 
-    include modImplementation("me.shedaniel.cloth:cloth-config-fabric:${project.cloth_config_version}")
+    include modApi("me.shedaniel.cloth.api:cloth-armor-api-v1:${project.cloth_api_version}") {
+        exclude(group: "net.fabricmc.fabric-api")
+    }
+    include modApi("me.shedaniel.cloth.api:cloth-common-events-v1:${project.cloth_api_version}") {
+        exclude(group: "net.fabricmc.fabric-api")
+    }
 
-    modRuntimeOnly modImplementation("mcp.mobius.waila:wthit:fabric-${project.wthit_version}")
+    include /* TODO 1.18 impl */ modCompileOnly("me.shedaniel.cloth:cloth-config-fabric:${project.cloth_config_version}") {
+        exclude(group: "net.fabricmc.fabric-api")
+    }
 
-    modImplementation "com.terraformersmc:modmenu:${project.mod_menu_version}"
-    modImplementation "dev.latvian.mods:kubejs-fabric:1701.3.10-build.9999"
+    modRuntimeOnly modImplementation("mcp.mobius.waila:wthit:fabric-${project.wthit_version}") {
+        exclude(group: "net.fabricmc.fabric-api")
+    }
 
-    include modImplementation("com.github.Draylar:magna:${project.magna_version}") {
+    /* TODO 1.18 impl */ modCompileOnly("com.terraformersmc:modmenu:${project.mod_menu_version}") {
+        exclude(group: "net.fabricmc.fabric-api")
+    }
+    /* TODO 1.18 impl */ modCompileOnly("dev.latvian.mods:kubejs-fabric:1701.3.10-build.9999") {
+        exclude(group: "net.fabricmc.fabric-api")
+    }
+
+    include /* TODO 1.18 impl */ modCompileOnly("com.github.Draylar:magna:${project.magna_version}") {
         exclude(group: "io.github.prospector")
         exclude(group: "me.shedaniel.cloth")
+        exclude(group: "net.fabricmc.fabric-api")
     }
 
-    include modApi("dev.technici4n:FastTransferLib:${project.ftl_version}")
-    include modApi("teamreborn:energy:${project.tr_energy_version}")
+    include modApi("teamreborn:energy:${project.tr_energy_version}") {
+        exclude(group: "net.fabricmc.fabric-api")
+    }
 
-    include modImplementation("io.github.ladysnake:PlayerAbilityLib:${project.pal_version}")
+    include modImplementation("io.github.ladysnake:PlayerAbilityLib:${project.pal_version}") {
+        exclude(group: "net.fabricmc.fabric-api")
+    }
 
     modCompileOnly('net.oskarstrom:DashLoader:2.1-dev4') {
         exclude(group: "net.fabricmc.fabric-api")
     }
-
-
-    // Other mods for testing purposes
-    //modRuntime "appeng:appliedenergistics2-fabric:${project.appeng_version}"
-    //modRuntime "com.github.Mixinors.Astromine:astromine:${project.astromine_commit}"
-    //modRuntime ("com.github.GabrielOlvH:Industrial-Revolution:${project.indrev_commit}") {
-    //    exclude group: "teamreborn", module: "energy"
-    //}
 }
 
 processResources {

@@ -153,7 +153,7 @@ public class MachineOverlay {
 
                 // Extra lines
                 VertexConsumer lines = wrc.consumers().getBuffer(RenderLayer.getLines());
-                Matrix4f model = wrc.matrixStack().peek().getModel();
+                Matrix4f model = wrc.matrixStack().peek().getPositionMatrix();
                 Direction face = blockHitResult.getSide();
                 vertex(model, lines, face, ZONES[1], ZONES[0]);
                 vertex(model, lines, face, ZONES[1], ZONES[3]);

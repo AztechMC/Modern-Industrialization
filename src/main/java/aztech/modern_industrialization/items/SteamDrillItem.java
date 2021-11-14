@@ -305,8 +305,7 @@ public class SteamDrillItem extends Item implements DynamicAttributeTool, MagnaT
         private static final Identifier texturePath = new MIIdentifier("textures/gui/progress_bar/furnace.png");
 
         @Override
-        public void drawItems(TextRenderer textRenderer, int x, int y, MatrixStack matrices, ItemRenderer itemRenderer, int z,
-                TextureManager textureManager) {
+        public void drawItems(TextRenderer textRenderer, int x, int y, MatrixStack matrices, ItemRenderer itemRenderer, int z) {
 
             if (data.burnTicks > 0) {
                 RenderSystem.setShaderTexture(0, texturePath);

@@ -74,8 +74,8 @@ public class BarrelRenderer implements BlockEntityRenderer<BlockEntity> {
                     matrices.scale(0.5F, 0.5F, 0.5F);
                     matrices.translate(0, 1.3, 1.01);
 
-                    matrices.method_34425(Matrix4f.scale(1, 1, 0.01f));
-                    matrices.peek().getNormal().multiply(Vec3f.NEGATIVE_X.getDegreesQuaternion(45f));
+                    matrices.multiplyPositionMatrix(Matrix4f.scale(1, 1, 0.01f));
+                    matrices.peek().getNormalMatrix().multiply(Vec3f.NEGATIVE_X.getDegreesQuaternion(45f));
 
                     MinecraftClient.getInstance().getItemRenderer().renderItem(toRender, ModelTransformation.Mode.GUI, RenderHelper.FULL_LIGHT,
                             OverlayTexture.DEFAULT_UV, matrices, vertexConsumers, 0);
@@ -92,7 +92,7 @@ public class BarrelRenderer implements BlockEntityRenderer<BlockEntity> {
                     float xPosition;
                     String count = String.valueOf(amount);
                     xPosition = (float) (-textRenderer.getWidth(count) / 2);
-                    textRenderer.draw(count, xPosition, -4f + 40, textColor, false, matrices.peek().getModel(), vertexConsumers, false, 0,
+                    textRenderer.draw(count, xPosition, -4f + 40, textColor, false, matrices.peek().getPositionMatrix(), vertexConsumers, false, 0,
                             RenderHelper.FULL_LIGHT);
 
                     matrices.pop();

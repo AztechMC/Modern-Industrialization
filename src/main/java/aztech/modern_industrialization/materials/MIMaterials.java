@@ -162,20 +162,21 @@ public class MIMaterials {
                                         for (int i = 0; i < 2; i++) {
                                             boolean deepslate = i == 0;
 
-                                            Block block = Registry.BLOCK
-                                                    .get(new Identifier(context.getMaterialPart(deepslate ? ORE_DEEPLSATE : ORE).getItemId()));
-                                            BlockState defaultState = block.getDefaultState();
-
-                                            List<OreFeatureConfig.Target> targets = List.of(deepslate
-                                                    ? OreFeatureConfig.createTarget(OreFeatureConfig.Rules.DEEPSLATE_ORE_REPLACEABLES, defaultState)
-                                                    : OreFeatureConfig.createTarget(OreFeatureConfig.Rules.STONE_ORE_REPLACEABLES, defaultState));
-
-                                            OreFeatureConfig oreConfig = new OreFeatureConfig(targets, 10);
-                                            ConfiguredFeature<?, ?> oreGenerator = Feature.ORE.configure(oreConfig)
-                                                    .triangleRange(YOffset.fixed(0), YOffset.fixed(96)).spreadHorizontally().repeat(6 * factor);
-
-                                            OrePart.addOreGen(new MIIdentifier((deepslate ? "deepslate_" : "") + "copper_surgenerator"),
-                                                    oreGenerator);
+                                            // TODO 1.18
+//                                            Block block = Registry.BLOCK
+//                                                    .get(new Identifier(context.getMaterialPart(deepslate ? ORE_DEEPLSATE : ORE).getItemId()));
+//                                            BlockState defaultState = block.getDefaultState();
+//
+//                                            List<OreFeatureConfig.Target> targets = List.of(deepslate
+//                                                    ? OreFeatureConfig.createTarget(OreFeatureConfig.Rules.DEEPSLATE_ORE_REPLACEABLES, defaultState)
+//                                                    : OreFeatureConfig.createTarget(OreFeatureConfig.Rules.STONE_ORE_REPLACEABLES, defaultState));
+//
+//                                            OreFeatureConfig oreConfig = new OreFeatureConfig(targets, 10);
+//                                            ConfiguredFeature<?, ?> oreGenerator = Feature.ORE.configure(oreConfig)
+//                                                    .triangleRange(YOffset.fixed(0), YOffset.fixed(96)).spreadHorizontally().repeat(6 * factor);
+//
+//                                            OrePart.addOreGen(new MIIdentifier((deepslate ? "deepslate_" : "") + "copper_surgenerator"),
+//                                                    oreGenerator);
                                         }
                                     }
 

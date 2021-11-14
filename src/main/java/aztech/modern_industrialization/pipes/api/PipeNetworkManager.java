@@ -70,7 +70,7 @@ public class PipeNetworkManager {
             int chunkX = ChunkPos.getPackedX(chunk);
             int chunkZ = ChunkPos.getPackedZ(chunk);
             if (world.isChunkLoaded(chunkX, chunkZ)) {
-                world.getChunk(chunkX, chunkZ).markDirty();
+                world.getChunk(chunkX, chunkZ).setShouldSave(true);
             } else {
                 throw new UnsupportedOperationException("Internal MI pipe bug: spanned chunk was not loaded anymore.");
             }

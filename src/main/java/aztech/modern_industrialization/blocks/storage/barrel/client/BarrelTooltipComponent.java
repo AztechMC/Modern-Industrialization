@@ -92,8 +92,7 @@ public record BarrelTooltipComponent(BarrelTooltipData data) implements TooltipC
     }
 
     @Override
-    public void drawItems(TextRenderer textRenderer, int x, int y, MatrixStack matrices, ItemRenderer itemRenderer, int z,
-            TextureManager textureManager) {
+    public void drawItems(TextRenderer textRenderer, int x, int y, MatrixStack matrices, ItemRenderer itemRenderer, int z) {
         itemRenderer.renderGuiItemIcon(data.variant().toStack(), x, y + 10);
     }
 }

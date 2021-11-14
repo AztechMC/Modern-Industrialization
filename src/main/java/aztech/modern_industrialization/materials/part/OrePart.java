@@ -130,17 +130,17 @@ public class OrePart extends UnbuildablePart<OrePart.OrePartParams> {
             if (oreParams.generate) {
                 GENERATED_MATERIALS.add(partContext.getMaterialName());
                 if (config.generateOres && !config.blacklistedOres.contains(partContext.getMaterialName())) {
-                    // I have no idea what I'm doing
+                    // TODO 1.18
 
-                    List<OreFeatureConfig.Target> targets = List
-                            .of(deepslate ? OreFeatureConfig.createTarget(OreFeatureConfig.Rules.DEEPSLATE_ORE_REPLACEABLES, block.getDefaultState())
-                                    : OreFeatureConfig.createTarget(OreFeatureConfig.Rules.STONE_ORE_REPLACEABLES, block.getDefaultState()));
-                    OreFeatureConfig oreConfig = new OreFeatureConfig(targets, oreParams.veinSize);
-                    ConfiguredFeature<?, ?> oreGenerator = Feature.ORE.configure(oreConfig)
-                            .uniformRange(YOffset.getBottom(), YOffset.fixed(oreParams.maxYLevel)).spreadHorizontally()
-                            .repeat(oreParams.veinsPerChunk);
-                    Identifier oreGenId = new MIIdentifier((deepslate ? "deepslate_" : "") + "ore_generator_" + partContext.getMaterialName());
-                    addOreGen(oreGenId, oreGenerator);
+//                    List<OreFeatureConfig.Target> targets = List
+//                            .of(deepslate ? OreFeatureConfig.createTarget(OreFeatureConfig.Rules.DEEPSLATE_ORE_REPLACEABLES, block.getDefaultState())
+//                                    : OreFeatureConfig.createTarget(OreFeatureConfig.Rules.STONE_ORE_REPLACEABLES, block.getDefaultState()));
+//                    OreFeatureConfig oreConfig = new OreFeatureConfig(targets, oreParams.veinSize);
+//                    ConfiguredFeature<?, ?> oreGenerator = Feature.ORE.configure(oreConfig)
+//                            .uniformRange(YOffset.getBottom(), YOffset.fixed(oreParams.maxYLevel)).spreadHorizontally()
+//                            .repeat(oreParams.veinsPerChunk);
+//                    Identifier oreGenId = new MIIdentifier((deepslate ? "deepslate_" : "") + "ore_generator_" + partContext.getMaterialName());
+//                    addOreGen(oreGenId, oreGenerator);
                 }
             }
 

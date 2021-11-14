@@ -79,9 +79,9 @@ public class CreativeTankBlockEntity extends FastBlockEntity
     }
 
     @Override
-    public NbtCompound writeNbt(NbtCompound tag) {
+    public void writeNbt(NbtCompound tag) {
         toClientTag(tag);
-        return super.writeNbt(tag);
+        super.writeNbt(tag);
     }
 
     @Override

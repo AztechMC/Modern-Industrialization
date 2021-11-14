@@ -175,7 +175,7 @@ public class RenderHelper {
         float v0 = v1 + (sprite.getMinV() - v1) * fractionUp;
         float u1 = sprite.getMaxU();
 
-        Matrix4f model = ms.peek().getModel();
+        Matrix4f model = ms.peek().getPositionMatrix();
         bufferBuilder.vertex(model, x0, y1, z).color(r, g, b, 1).texture(u0, v1).next();
         bufferBuilder.vertex(model, x1, y1, z).color(r, g, b, 1).texture(u1, v1).next();
         bufferBuilder.vertex(model, x1, y0, z).color(r, g, b, 1).texture(u1, v0).next();
@@ -197,7 +197,7 @@ public class RenderHelper {
     /**
      * Force chunk remesh.
      */
-    public static void forceChunkRemesh(ClientWorld world, BlockPos pos) {
+    public static void forceChunkRemesh(World world, BlockPos pos) {
         world.updateListeners(pos, null, null, 0);
     }
 
@@ -214,8 +214,8 @@ public class RenderHelper {
         int[] js = quad.getVertexData();
         Vec3i vec3i = quad.getFace().getVector();
         Vec3f vec3f = new Vec3f((float) vec3i.getX(), (float) vec3i.getY(), (float) vec3i.getZ());
-        Matrix4f matrix4f = matrixEntry.getModel();
-        vec3f.transform(matrixEntry.getNormal());
+        Matrix4f matrix4f = matrixEntry.getPositionMatrix();
+        vec3f.transform(matrixEntry.getNormalMatrix());
         int j = js.length / 8;
         MemoryStack memoryStack = MemoryStack.stackPush();
 
@@ -273,7 +273,7 @@ public class RenderHelper {
     }
 
     public static void fill(MatrixStack matrices, int x1, int y1, int x2, int y2, int color) {
-        fill(matrices.peek().getModel(), x1, y1, x2, y2, color);
+        fill(matrices.peek().getPositionMatrix(), x1, y1, x2, y2, color);
     }
 
     private static void fill(Matrix4f matrix, int x1, int y1, int x2, int y2, int color) {

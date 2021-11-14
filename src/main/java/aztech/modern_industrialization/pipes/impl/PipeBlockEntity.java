@@ -55,7 +55,6 @@ import net.minecraft.util.shape.VoxelShapes;
 /**
  * The BlockEntity for a pipe.
  */
-// TODO: add isClient checks wherever it is necessary
 public class PipeBlockEntity extends FastBlockEntity
         implements IPipeScreenHandlerHelper, BlockEntityClientSerializable, RenderAttachmentBlockEntity, WrenchableBlockEntity {
     private static final int MAX_PIPES = 3;
@@ -246,7 +245,7 @@ public class PipeBlockEntity extends FastBlockEntity
     }
 
     @Override
-    public NbtCompound writeNbt(NbtCompound tag) {
+    public void writeNbt(NbtCompound tag) {
         super.writeNbt(tag);
         int i = 0;
         for (PipeNetworkNode pipe : pipes) {
@@ -259,7 +258,6 @@ public class PipeBlockEntity extends FastBlockEntity
             tag.put("pipe_data_" + i, entry.getRight().toTag(new NbtCompound()));
             i++;
         }
-        return tag;
     }
 
     @Override
@@ -311,7 +309,7 @@ public class PipeBlockEntity extends FastBlockEntity
         }
         rebuildCollisionShape();
 
-        RenderHelper.forceChunkRemesh((ClientWorld) world, pos);
+        RenderHelper.forceChunkRemesh(world, pos);
     }
 
     @Override

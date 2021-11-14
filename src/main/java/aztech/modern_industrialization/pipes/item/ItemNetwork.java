@@ -26,7 +26,6 @@ package aztech.modern_industrialization.pipes.item;
 import aztech.modern_industrialization.api.WhitelistedItemStorage;
 import aztech.modern_industrialization.pipes.api.PipeNetwork;
 import aztech.modern_industrialization.pipes.api.PipeNetworkData;
-import aztech.modern_industrialization.pipes.item.ItemNetwork.InsertTarget;
 import aztech.modern_industrialization.util.MIBlockApiCache;
 import aztech.modern_industrialization.util.StorageUtil2;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;

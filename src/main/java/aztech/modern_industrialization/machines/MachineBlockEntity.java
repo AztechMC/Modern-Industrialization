@@ -215,12 +215,11 @@ public abstract class MachineBlockEntity extends FastBlockEntity implements Exte
     }
 
     @Override
-    public final NbtCompound writeNbt(NbtCompound tag) {
+    public final void writeNbt(NbtCompound tag) {
         super.writeNbt(tag);
         for (IComponent component : icomponents) {
             component.writeNbt(tag);
         }
-        return tag;
     }
 
     @Override

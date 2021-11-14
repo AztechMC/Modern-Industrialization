@@ -27,6 +27,6 @@ import net.minecraft.server.world.ServerWorld;
 
 public class WorldHelper {
     public static boolean isChunkTicking(ServerWorld world, long packedChunkPos) {
-        return world.getChunkManager().isTickingFutureReady(packedChunkPos) && world.method_37116(packedChunkPos);
+        return world.getChunkManager().isTickingFutureReady(packedChunkPos) && world.isChunkLoaded(packedChunkPos);
     }
 }

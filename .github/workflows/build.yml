@@ -11,10 +11,10 @@ jobs:
       name: Setup variables
       run: echo ::set-output name=commit_hash::${GITHUB_SHA:0:7}
     - uses: actions/checkout@v2
-    - name: Set up JDK 16
+    - name: Set up JDK 17
       uses: actions/setup-java@v1
       with:
-        java-version: 16
+        java-version: 17
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
     - name: Use gradle cache for faster builds

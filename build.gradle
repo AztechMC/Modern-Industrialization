@@ -58,7 +58,7 @@ repositories {
         }
     }
     maven {
-        url "https://maven.quiltmc.org" // alternative to terraformers' shitty maven
+        url "https://maven.terraformersmc.com"
         content {
             includeGroup "com.terraformersmc"
         }
@@ -71,22 +71,15 @@ repositories {
             includeGroup "net.oskarstrom"
         }
     }
-    // for Astromine, KJS and Indrev, and api-provider
     maven {
         name 'Jitpack for MI'
         url 'https://jitpack.io'
         content {
             includeGroup "com.github.KubeJS-Mods"
-            includeGroup "com.github.Mixinors.Astromine"
             includeGroup "com.github.GabrielOlvH"
-            includeGroup "com.github.Technici4n"
-            /* To build indrev */
+            /* For Magna */
             includeGroup "com.github.Draylar"
-            /* To build astromine */
-            includeGroup "com.github.vini2003"
-            includeGroup "com.github.Shnupbups"
-            /* Curse Forge API */
-            includeGroup "com.github.TheRandomLabs"
+            includeGroup "com.github.Draylar.omega-config"
         }
     }
     // to build indrev
@@ -162,7 +155,7 @@ dependencies {
         exclude(group: "net.fabricmc.fabric-api")
     }
 
-    include /* TODO 1.18 impl */ modCompileOnly("me.shedaniel.cloth:cloth-config-fabric:${project.cloth_config_version}") {
+    include modImplementation("me.shedaniel.cloth:cloth-config-fabric:${project.cloth_config_version}") {
         exclude(group: "net.fabricmc.fabric-api")
     }
 
@@ -170,14 +163,14 @@ dependencies {
         exclude(group: "net.fabricmc.fabric-api")
     }
 
-    /* TODO 1.18 impl */ modCompileOnly("com.terraformersmc:modmenu:${project.mod_menu_version}") {
+    modImplementation("com.terraformersmc:modmenu:${project.mod_menu_version}") {
         exclude(group: "net.fabricmc.fabric-api")
     }
     /* TODO 1.18 impl */ modCompileOnly("dev.latvian.mods:kubejs-fabric:1701.3.10-build.9999") {
         exclude(group: "net.fabricmc.fabric-api")
     }
 
-    include /* TODO 1.18 impl */ modCompileOnly("com.github.Draylar:magna:${project.magna_version}") {
+    include modImplementation("com.github.Draylar:magna:${project.magna_version}") {
         exclude(group: "io.github.prospector")
         exclude(group: "me.shedaniel.cloth")
         exclude(group: "net.fabricmc.fabric-api")

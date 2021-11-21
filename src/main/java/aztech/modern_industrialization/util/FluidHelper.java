@@ -73,8 +73,8 @@ public class FluidHelper {
             String text = FluidTextHelper.getUnicodeMillibuckets(amount, false) + " / " + capacity / 81;
             return new LiteralText(text + " mB");
         } else {
-            RessourceTextHelper.MaxedAmount maxedAmount = RessourceTextHelper.getMaxedAmount(amount / FluidConstants.BUCKET,
-                    capacity / FluidConstants.BUCKET);
+            RessourceTextHelper.MaxedAmount maxedAmount = RessourceTextHelper.getMaxedAmount((double) amount / FluidConstants.BUCKET,
+                    (double) capacity / FluidConstants.BUCKET);
             return new LiteralText(maxedAmount.digit() + " / " + maxedAmount.maxDigit() + " " + maxedAmount.unit() + "B");
         }
 
@@ -86,7 +86,7 @@ public class FluidHelper {
             String text = FluidTextHelper.getUnicodeMillibuckets(amount, false);
             return new LiteralText(text + " mB");
         } else {
-            RessourceTextHelper.Amount amountUnit = RessourceTextHelper.getAmount(amount / FluidConstants.BUCKET);
+            RessourceTextHelper.Amount amountUnit = RessourceTextHelper.getAmount((double) amount / FluidConstants.BUCKET);
             return new LiteralText(amountUnit.digit() + " " + amountUnit.unit() + "B");
         }
     }

@@ -26,7 +26,6 @@ package aztech.modern_industrialization.api;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
 
@@ -53,11 +52,5 @@ public abstract class FastBlockEntity extends BlockEntity {
         }
 
         serverWorld.getChunkManager().markForUpdate(this.getPos());
-    }
-
-    public NbtCompound toNbt() {
-        NbtCompound tag = new NbtCompound();
-        writeNbt(tag);
-        return tag;
     }
 }

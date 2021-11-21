@@ -88,7 +88,7 @@ public class CreativeTankBlockEntity extends FastBlockEntity
 
     @Override
     public NbtCompound toInitialChunkDataNbt() {
-        return toNbt();
+        return createNbt();
     }
 
     public boolean onPlayerUse(PlayerEntity player) {

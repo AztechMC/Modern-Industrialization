@@ -35,6 +35,7 @@ import java.util.stream.Stream;
 import me.shedaniel.math.Rectangle;
 import me.shedaniel.rei.api.client.gui.drag.DraggableStack;
 import me.shedaniel.rei.api.client.gui.drag.DraggableStackVisitor;
+import me.shedaniel.rei.api.client.gui.drag.DraggedAcceptorResult;
 import me.shedaniel.rei.api.client.gui.drag.DraggingContext;
 import me.shedaniel.rei.api.client.plugins.REIClientPlugin;
 import me.shedaniel.rei.api.client.registry.category.CategoryRegistry;
@@ -81,7 +82,11 @@ public class MIREIPlugin implements REIClientPlugin {
     private void registerDragging(ScreenRegistry registry) {
         registry.registerDraggableStackVisitor(new DraggableStackVisitor<>() {
             @Override
-            public boolean acceptDraggedStack(DraggingContext<Screen> context, DraggableStack stack) {
+            public DraggedAcceptorResult acceptDraggedStack(DraggingContext<Screen> context, DraggableStack stack) {
+                return acceptsStack(context, stack) ? DraggedAcceptorResult.ACCEPTED : DraggedAcceptorResult.PASS;
+            }
+
+            private boolean acceptsStack(DraggingContext<Screen> context, DraggableStack stack) {
                 FluidVariant fk = stack.getStack().getValue() instanceof FluidStack fs ? FluidVariant.of(fs.getFluid(), fs.getTag()) : null;
                 ItemVariant ik = stack.getStack().getValue() instanceof ItemStack is ? ItemVariant.of(is) : null;
                 @Nullable

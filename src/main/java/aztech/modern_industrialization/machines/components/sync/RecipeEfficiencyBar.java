@@ -138,11 +138,11 @@ public class RecipeEfficiencyBar {
             public void renderBackground(DrawableHelper helper, MatrixStack matrices, int x, int y) {
                 RenderSystem.setShaderTexture(0, TEXTURE);
                 DrawableHelper.drawTexture(matrices, x + params.renderX - 1, y + params.renderY - 1, helper.getZOffset(), 0, 2, WIDTH + 2, HEIGHT + 2,
-                        6, 102);
+                        102, 6);
                 if (hasActiveRecipe) {
                     int barPixels = (int) ((float) efficiencyTicks / maxEfficiencyTicks * WIDTH);
-                    DrawableHelper.drawTexture(matrices, x + params.renderX, y + params.renderY, helper.getZOffset(), 0, 0, barPixels, HEIGHT, 6,
-                            102);
+                    DrawableHelper.drawTexture(matrices, x + params.renderX, y + params.renderY, helper.getZOffset(), 0, 0, barPixels, HEIGHT, 102,
+                            6);
                 }
             }
 

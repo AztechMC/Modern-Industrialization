@@ -77,7 +77,7 @@ public abstract class AbstractStorageBlockEntity<T extends TransferVariant<?>> e
 
     @Override
     public NbtCompound toInitialChunkDataNbt() {
-        return toNbt();
+        return createNbt();
     }
 
     @Override

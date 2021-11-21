@@ -26,11 +26,13 @@ package aztech.modern_industrialization.items;
 import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.util.TextHelper;
 import java.util.List;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Hand;
@@ -46,8 +48,12 @@ public class GuideBookItem extends Item {
     @Override
     public TypedActionResult<ItemStack> use(World world, PlayerEntity user, Hand hand) {
         if (!world.isClient && user instanceof ServerPlayerEntity) {
-            PatchouliAPI.get().openBookGUI((ServerPlayerEntity) user, new MIIdentifier("book"));
-            return TypedActionResult.success(user.getStackInHand(hand));
+            if (FabricLoader.getInstance().isModLoaded("patchouli")) { // a bit borderline...
+                PatchouliAPI.get().openBookGUI((ServerPlayerEntity) user, new MIIdentifier("book"));
+                return TypedActionResult.success(user.getStackInHand(hand));
+            } else {
+                user.sendMessage(new LiteralText("Patchouli is not loaded, can't open guide book!"), true);
+            }
         }
         return TypedActionResult.consume(user.getStackInHand(hand));
     }

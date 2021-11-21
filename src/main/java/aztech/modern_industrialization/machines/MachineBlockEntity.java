@@ -50,7 +50,6 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtNull;
 import net.minecraft.network.Packet;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.listener.ClientPlayPacketListener;
@@ -77,8 +76,7 @@ public abstract class MachineBlockEntity extends FastBlockEntity
     private final List<IComponent> icomponents = new ArrayList<>();
     private final MachineGuiParameters guiParams;
     /**
-     * Server-side: true if the next call to sync() will trigger a remesh.
-     * Client-side: true if fromClientTag() is being called for the first time.
+     * Server-side only: true if the next call to sync() will trigger a remesh.
      */
     private boolean syncCausesRemesh = true;
     private final Set<Runnable> cacheInvalidateCallbacks = new ReferenceOpenHashSet<>();
@@ -210,18 +208,16 @@ public abstract class MachineBlockEntity extends FastBlockEntity
         for (IComponent component : icomponents) {
             component.writeNbt(tag);
         }
-        tag.put("s", NbtNull.INSTANCE); // mark server-side
     }
 
     @Override
     public final void readNbt(NbtCompound tag) {
-        if (tag.contains("s")) {
+        if (!tag.contains("remesh")) {
             for (IComponent component : icomponents) {
                 component.readNbt(tag);
             }
         } else {
-            boolean forceChunkRemesh = tag.getBoolean("remesh") || syncCausesRemesh;
-            syncCausesRemesh = false;
+            boolean forceChunkRemesh = tag.getBoolean("remesh");
             for (IComponent component : icomponents) {
                 component.readClientNbt(tag);
             }

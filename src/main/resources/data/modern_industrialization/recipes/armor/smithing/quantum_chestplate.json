@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:smithing",
+  "base": {
+    "item": "minecraft:netherite_chestplate"
+  },
+  "addition": {
+    "item": "modern_industrialization:quantum_upgrade"
+  },
+  "result": {
+    "item": "modern_industrialization:quantum_chestplate"
+  }
+}

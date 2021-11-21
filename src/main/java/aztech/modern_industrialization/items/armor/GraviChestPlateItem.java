@@ -79,7 +79,7 @@ public class GraviChestPlateItem extends ArmorItem implements Wearable, Tickable
 
             @Override
             public String getName() {
-                return "modern_industrialization/gravi_chest_plate";
+                return "modern_industrialization/gravichestplate";
             }
 
             @Override

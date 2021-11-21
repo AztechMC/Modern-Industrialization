@@ -101,7 +101,7 @@ public class MIFluids {
     public static final CraftingFluid LIQUID_AIR = new CraftingFluid("liquid_air", 0xff76c7f9);
     public static final CraftingFluid NITROGEN = new CraftingFluid("nitrogen", 0xff4491a6, true);
     public static final CraftingFluid CRYOFLUID = new CraftingFluid("cryofluid", 0xff3cc0e8);
-    public static final CraftingFluid HELIUM_PLASMA = new CraftingFluid("helium_plasma", 0xfffff85e, true); // 1 MEU / mb
+    public static final CraftingFluid HELIUM_PLASMA = new CraftingFluid("helium_plasma", 0xfffff85e, true); // 100 MEU / b
     public static final CraftingFluid UU_MATER = new CraftingFluid("uu_matter", 0xffff00bf, false);
 
     public static void setupFluids() {

@@ -1,7 +1,7 @@
 {
   "type": "modern_industrialization:electrolyzer",
   "eu": 40,
-  "duration": 25000,
+  "duration": 2500,
   "item_inputs": [
     {
       "item": "modern_industrialization:singularity",

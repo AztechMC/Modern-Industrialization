@@ -87,7 +87,7 @@ public final class MIItem {
     }
 
     public static <T extends Item> T of(Function<? super FabricItemSettings, T> ctor, String id, int maxCount, boolean handheld) {
-        return of(ctor, id, maxCount, null, false);
+        return of(ctor, id, maxCount, null, handheld);
     }
 
     public static <T extends Item> T of(Function<? super FabricItemSettings, T> ctor, String id, int maxCount, Consumer<Item> registrationEvent,
@@ -202,7 +202,7 @@ public final class MIItem {
     public static final QuantumArmorItem QUANTUM_LEGGINGS = of(s -> new QuantumArmorItem(EquipmentSlot.LEGS, s), "quantum_leggings", 1);
     public static final QuantumArmorItem QUANTUM_CHESTPLATE = of(s -> new QuantumArmorItem(EquipmentSlot.CHEST, s), "quantum_chestplate", 1);
     public static final QuantumArmorItem QUANTUM_HELMET = of(s -> new QuantumArmorItem(EquipmentSlot.HEAD, s), "quantum_helmet", 1);
-    public static final QuantumSword QUANTUM_SWORD = of(QuantumSword::new, "quantum_sword", 1);
+    public static final QuantumSword QUANTUM_SWORD = of(QuantumSword::new, "quantum_sword", 1, true);
 
     public static final Item ULTRADENSE_METAL_BALL = of("ultradense_metal_ball");
     public static final Item SINGULARITY = of("singularity", Rarity.EPIC);

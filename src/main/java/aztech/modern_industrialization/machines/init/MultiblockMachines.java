@@ -521,8 +521,8 @@ public class MultiblockMachines {
         PLASMA_TURBINE = MachineRegistrationHelper.registerMachine("plasma_turbine", bet ->
                 new EnergyFromFluidMultiblockBlockEntity(bet, "plasma_turbine", plasmaTurbineShape,
                         (fluid) -> (fluid == MIFluids.HELIUM_PLASMA),
-                        (heliumPlasma) -> 10000000,
-                        1 << 24));
+                        (heliumPlasma) -> 100000,
+                        1 << 20));
         ReiMachineRecipes.registerMultiblockShape("plasma_turbine", plasmaTurbineShape);
     }
 

@@ -1,6 +1,6 @@
 {
   "type": "modern_industrialization:fusion_reactor",
-  "eu": 128000,
+  "eu": 16000,
   "duration": 900,
   "fluid_inputs": [
     {

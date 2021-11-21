@@ -35,8 +35,8 @@ public class RessourceTextHelper {
     public static final long[] nums = new long[] { 1000L, 1000_000L, 1000_000_000L, 1000_000_000_000L, 1000_000_000_000_000L,
             1000_000_000_000_000_000L };
 
-    public static String getAmount(long amount, long num) {
-        double fract = (double) amount / num;
+    public static String getAmount(double amount, long num) {
+        double fract = amount / num;
         if (fract < 10) {
             return String.format("%.3f", fract);
         } else if (fract < 100) {
@@ -45,6 +45,30 @@ public class RessourceTextHelper {
             return String.format("%.1f", fract);
         }
 
+    }
+
+    public static Amount getAmount(double amount) {
+        if (amount < 10000) {
+            return new Amount(getAmount(amount, 1), "");
+        } else {
+            int i = 0;
+            while (amount / nums[i] >= 1000) {
+                i++;
+            }
+            return new Amount(getAmount(amount, nums[i]), units[i]);
+        }
+    }
+
+    public static MaxedAmount getMaxedAmount(double amount, double max) {
+        if (max < 10000) {
+            return new MaxedAmount(getAmount(amount, 1), getAmount(max, 1), "");
+        } else {
+            int i = 0;
+            while (max / nums[i] >= 1000) {
+                i++;
+            }
+            return new MaxedAmount(getAmount(amount, nums[i]), getAmount(max, nums[i]), units[i]);
+        }
     }
 
     public static Amount getAmount(long amount) {

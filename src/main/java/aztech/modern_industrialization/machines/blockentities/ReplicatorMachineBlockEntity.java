@@ -151,13 +151,13 @@ public class ReplicatorMachineBlockEntity extends MachineBlockEntity implements 
                 long uuMatterExtraced;
 
                 try (Transaction simul = Transaction.openNested(tx)) {
-                    uuMatterExtraced = fluidStorage.extractAllSlot(FluidVariant.of(MIFluids.UU_MATER), FluidConstants.BUCKET, simul);
+                    uuMatterExtraced = fluidStorage.extractAllSlot(FluidVariant.of(MIFluids.UU_MATER), FluidConstants.BUCKET / 10, simul);
                 }
 
-                if (inserted == 1 && uuMatterExtraced == FluidConstants.BUCKET) {
+                if (inserted == 1 && uuMatterExtraced == FluidConstants.BUCKET / 10) {
                     if (!simulate) {
                         itemStorage.insertAllSlot(itemVariant, 1, tx);
-                        fluidStorage.extractAllSlot(FluidVariant.of(MIFluids.UU_MATER), FluidConstants.BUCKET, tx);
+                        fluidStorage.extractAllSlot(FluidVariant.of(MIFluids.UU_MATER), FluidConstants.BUCKET / 10, tx);
                         tx.commit();
                     }
                     return true;

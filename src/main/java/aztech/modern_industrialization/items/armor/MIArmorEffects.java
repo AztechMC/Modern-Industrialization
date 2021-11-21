@@ -29,6 +29,7 @@ import aztech.modern_industrialization.mixin_impl.PlayerTickEvent;
 import io.github.ladysnake.pal.AbilitySource;
 import io.github.ladysnake.pal.Pal;
 import io.github.ladysnake.pal.VanillaAbilities;
+import java.util.concurrent.ThreadLocalRandom;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -37,17 +38,14 @@ public class MIArmorEffects {
     private MIArmorEffects() {
     }
 
-    public static boolean hasFullQuantum(PlayerEntity player) {
+    public static boolean quantumArmorPreventsDamage(PlayerEntity player) {
+        int parts = 0;
         for (QuantumArmorItem item : QuantumArmorItem.ITEMS) {
-            if (player.getEquippedStack(item.getSlotType()).getItem() != item) {
-                return false;
+            if (player.getEquippedStack(item.getSlotType()).getItem() == item) {
+                parts++;
             }
         }
-        return true;
-    }
-
-    public static boolean cancelAllDamage(PlayerEntity player) {
-        return hasFullQuantum(player);
+        return ThreadLocalRandom.current().nextDouble() < parts / 4d;
     }
 
     public static boolean allowFlight(PlayerEntity player) {

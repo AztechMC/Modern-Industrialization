@@ -20,17 +20,17 @@
       "amount": 16
     },
     {
-      "item": "modern_industrialization:large_advanced_motor",
+      "item": "modern_industrialization:large_advanced_pump",
       "amount": 8
     },
     {
-      "item": "modern_industrialization:titanium_barrel",
+      "item": "modern_industrialization:titanium_tank",
       "amount": 1
     }
   ],
   "item_outputs": [
     {
-      "item": "modern_industrialization:quantum_barrel",
+      "item": "modern_industrialization:quantum_tank",
       "amount": 1
     }
   ]

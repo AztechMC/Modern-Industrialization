@@ -1,0 +1,17 @@
+{
+  "name": "GraviChestPlate",
+  "category": "modern_industrialization:endgame",
+  "icon": "modern_industrialization:gravichestplate",
+  "pages": [
+    {
+      "type": "spotlight",
+      "item": "modern_industrialization:gravichestplate",
+      "text": "The GraviChestPlate uses advanced superconductor technology to invert the gravitational field around the player wearing it.$(br2)It uses EU, and can be charged by right-clicking a block that can output energy."
+    },
+    {
+      "type": "text",
+      "text": "Note that the current GSP technology grants fly and prevents fall damage, but it does not protected against other kinds of damage.$(br2)The Modern Industrialization engineers are trying to find a solution, but R&D is taking longer than expected."
+    }
+  ],
+  "sortnum": 300
+}

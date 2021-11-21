@@ -1,0 +1,18 @@
+{
+  "name": "FUUUUUSION",
+  "category": "modern_industrialization:endgame",
+  "icon": "modern_industrialization:fusion_reactor",
+  "pages": [
+    {
+      "type": "crafting",
+      "recipe": "modern_industrialization:electric_age/machine/fusion_reactor_asbl",
+      "text": "The Fusion Reactor is the ultimate energy source! It can combine Deuterium, Tritium, and/or Helium-3 into Helium Plasma, the most powerful fuel in the game!"
+    },
+    {
+      "type": "crafting",
+      "recipe": "modern_industrialization:electric_age/machine/plasma_turbine_asbl",
+      "text": "The Plasma Turbine can turn Helium Plasma into EU, at the rate of 10 MEU per millibucket. Its maximum production rate is roughly 16.7 MEU/t."
+    }
+  ],
+  "sortnum": 302
+}

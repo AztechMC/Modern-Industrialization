@@ -23,10 +23,18 @@
  */
 package aztech.modern_industrialization.items.tools;
 
+import java.util.List;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
+import net.minecraft.client.item.TooltipContext;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.text.LiteralText;
+import net.minecraft.text.Text;
+import net.minecraft.text.TranslatableText;
+import net.minecraft.util.Formatting;
+import net.minecraft.world.World;
+import org.jetbrains.annotations.Nullable;
 
 public class QuantumSword extends Item {
     public QuantumSword(FabricItemSettings settings) {
@@ -41,5 +49,14 @@ public class QuantumSword extends Item {
         // advancement
         // TODO: same for phantoms
         return true;
+    }
+
+    @Override
+    public void appendTooltip(ItemStack stack, @Nullable World world, List<Text> list, TooltipContext context) {
+        list.add(LiteralText.EMPTY);
+        list.add(new TranslatableText("item.modifiers.mainhand").formatted(Formatting.GRAY));
+        String infinity = "\u221e";
+        list.add(new TranslatableText("attribute.modifier.plus.0", infinity, new TranslatableText("attribute.name.generic.attack_damage"))
+                .formatted(Formatting.BLUE));
     }
 }

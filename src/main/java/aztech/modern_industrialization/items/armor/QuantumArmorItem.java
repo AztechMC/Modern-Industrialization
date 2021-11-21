@@ -23,16 +23,28 @@
  */
 package aztech.modern_industrialization.items.armor;
 
+import com.google.common.collect.ImmutableMultimap;
+import com.google.common.collect.Multimap;
 import java.util.ArrayList;
 import java.util.List;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
+import net.minecraft.client.item.TooltipContext;
 import net.minecraft.entity.EquipmentSlot;
+import net.minecraft.entity.attribute.EntityAttribute;
+import net.minecraft.entity.attribute.EntityAttributeModifier;
 import net.minecraft.item.ArmorItem;
 import net.minecraft.item.ArmorMaterial;
+import net.minecraft.item.ItemStack;
 import net.minecraft.item.Wearable;
 import net.minecraft.recipe.Ingredient;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
+import net.minecraft.text.LiteralText;
+import net.minecraft.text.Text;
+import net.minecraft.text.TranslatableText;
+import net.minecraft.util.Formatting;
+import net.minecraft.world.World;
+import org.jetbrains.annotations.Nullable;
 
 public class QuantumArmorItem extends ArmorItem implements Wearable {
     public static final List<QuantumArmorItem> ITEMS = new ArrayList<>();
@@ -83,5 +95,19 @@ public class QuantumArmorItem extends ArmorItem implements Wearable {
         // Can't be damaged!
         super(MATERIAL, slot, settings.customDamage((is, amt, e, cb) -> 0));
         ITEMS.add(this);
+    }
+
+    @Override
+    public Multimap<EntityAttribute, EntityAttributeModifier> getAttributeModifiers(EquipmentSlot slot) {
+        return ImmutableMultimap.of();
+    }
+
+    @Override
+    public void appendTooltip(ItemStack stack, @Nullable World world, List<Text> list, TooltipContext context) {
+        list.add(LiteralText.EMPTY);
+        list.add(new TranslatableText("item.modifiers." + getSlotType().getName()).formatted(Formatting.GRAY));
+        String oneQuarterInfinity = " \u00B9\u2044\u2084 |\u221E> + \u00B3\u2044\u2084 |0>";
+        list.add(new TranslatableText("attribute.modifier.plus.0", oneQuarterInfinity, new TranslatableText("attribute.name.generic.armor"))
+                .formatted(Formatting.BLUE));
     }
 }

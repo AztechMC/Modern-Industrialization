@@ -44,7 +44,7 @@ class LivingEntityMixin {
     void injectDamage(DamageSource source, float amount, CallbackInfoReturnable<Boolean> cir) {
         Object tis = this;
         if (tis instanceof PlayerEntity player) {
-            if (MIArmorEffects.hasFullQuantum(player) || tryCancelDamage(source, amount, player)) {
+            if (MIArmorEffects.quantumArmorPreventsDamage(player) || tryCancelDamage(source, amount, player)) {
                 cir.setReturnValue(false);
             }
         }

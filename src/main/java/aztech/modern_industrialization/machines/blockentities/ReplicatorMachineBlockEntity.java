@@ -41,9 +41,12 @@ import aztech.modern_industrialization.util.Tickable;
 import java.util.Collections;
 import java.util.List;
 import net.fabricmc.fabric.api.tag.TagRegistry;
+import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
+import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.Item;
@@ -66,7 +69,6 @@ public class ReplicatorMachineBlockEntity extends MachineBlockEntity implements 
         blacklisted = TagRegistry.item(blacklist);
 
         ResourceUtil.appendToItemTag(blacklist, new Identifier("minecraft", "bundle"));
-        ResourceUtil.appendToItemTag(blacklist, new MIIdentifier("bucket_uu_matter"));
 
         ResourceUtil.appendTagToItemTag(blacklist, new Identifier("c", "shulker_box"));
         ResourceUtil.appendTagToItemTag(blacklist, new MIIdentifier("tanks"));
@@ -133,31 +135,31 @@ public class ReplicatorMachineBlockEntity extends MachineBlockEntity implements 
         ItemVariant itemVariant = inventoryComponent.getItemInputs().get(0).getResource();
 
         if (!itemVariant.isBlank()) {
-
+            // check blacklist
             if (blacklisted.contains(itemVariant.getItem())) {
                 return false;
+            }
+            // check that the item doesn't contain uu matter
+            Storage<FluidVariant> fluidItem = ContainerItemContext.withInitial(itemVariant, 1).find(FluidStorage.ITEM);
+            if (fluidItem != null) {
+                try (Transaction tx = Transaction.openOuter()) {
+                    for (var view : fluidItem.iterable(tx)) {
+                        if (view.getResource().isOf(MIFluids.UU_MATER)) {
+                            return false;
+                        }
+                    }
+                }
             }
 
             try (Transaction tx = Transaction.openOuter()) {
                 MIItemStorage itemStorage = new MIItemStorage(inventoryComponent.getItemOutputs());
                 MIFluidStorage fluidStorage = new MIFluidStorage(inventoryComponent.getFluidInputs());
 
-                long inserted;
-
-                try (Transaction simul = Transaction.openNested(tx)) {
-                    inserted = itemStorage.insertAllSlot(itemVariant, 1, simul);
-                }
-
-                long uuMatterExtraced;
-
-                try (Transaction simul = Transaction.openNested(tx)) {
-                    uuMatterExtraced = fluidStorage.extractAllSlot(FluidVariant.of(MIFluids.UU_MATER), FluidConstants.BUCKET / 10, simul);
-                }
+                long inserted = itemStorage.insertAllSlot(itemVariant, 1, tx);
+                long uuMatterExtraced = fluidStorage.extractAllSlot(FluidVariant.of(MIFluids.UU_MATER), FluidConstants.BUCKET / 10, tx);
 
                 if (inserted == 1 && uuMatterExtraced == FluidConstants.BUCKET / 10) {
                     if (!simulate) {
-                        itemStorage.insertAllSlot(itemVariant, 1, tx);
-                        fluidStorage.extractAllSlot(FluidVariant.of(MIFluids.UU_MATER), FluidConstants.BUCKET / 10, tx);
                         tx.commit();
                     }
                     return true;

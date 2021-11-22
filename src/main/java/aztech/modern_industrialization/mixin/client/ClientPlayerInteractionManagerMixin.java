@@ -24,7 +24,6 @@
 package aztech.modern_industrialization.mixin.client;
 
 import aztech.modern_industrialization.MIItem;
-import aztech.modern_industrialization.items.SteamDrillItem;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerInteractionManager;
 import net.minecraft.item.ItemStack;
@@ -59,7 +58,7 @@ public class ClientPlayerInteractionManagerMixin {
         ItemStack handStack = client.player.getMainHandStack();
         if (handStack.getItem() == MIItem.ITEM_STEAM_MINING_DRILL && selectedStack.getItem() == MIItem.ITEM_STEAM_MINING_DRILL
                 && currentBreakingPos.equals(pos)) {
-            cir.setReturnValue(SteamDrillItem.canUse(handStack, client.player));
+            cir.setReturnValue(MIItem.ITEM_STEAM_MINING_DRILL.canUse(handStack));
         }
     }
 }

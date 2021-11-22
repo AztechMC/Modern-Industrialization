@@ -1262,7 +1262,7 @@
     "text.modern_industrialization.shape_error_vertical_chain": "Expected vertical Chain",
     "text.modern_industrialization.shape_valid": "Multiblock shape is correct",
     "text.modern_industrialization.single_neutron_capture": "Single Neutron Capture",
-    "text.modern_industrialization.steam_drill_fuel_help": "2) Place fuel next to it in your inventory.",
+    "text.modern_industrialization.steam_drill_fuel_help": "2) Place fuel inside the drill (right click).",
     "text.modern_industrialization.steam_drill_profit": "3) Enjoy 3x3 Silk Touch.",
     "text.modern_industrialization.steam_drill_water_help": "1) Right click water to fill.",
     "text.modern_industrialization.temperature": "Temperature : %d °C",

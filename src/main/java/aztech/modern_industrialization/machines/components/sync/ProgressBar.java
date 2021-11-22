@@ -103,20 +103,22 @@ public class ProgressBar {
 
     public static class RenderHelper {
         public static void renderProgress(DrawableHelper helper, MatrixStack matrices, int x, int y, Parameters params, float progress) {
+            renderProgress(helper.getZOffset(), matrices, x, y, params, progress);
+        }
+
+        public static void renderProgress(int zoffset, MatrixStack matrices, int x, int y, Parameters params, float progress) {
             RenderSystem.setShaderTexture(0, params.getTextureId());
             // background
-            DrawableHelper.drawTexture(matrices, x + params.renderX, y + params.renderY, helper.getZOffset(), 0, 0, 20, 20, 20, 40);
+            DrawableHelper.drawTexture(matrices, x + params.renderX, y + params.renderY, zoffset, 0, 0, 20, 20, 20, 40);
             // foreground
             int foregroundPixels = (int) (progress * 20);
             if (foregroundPixels > 0) {
                 if (!params.isVertical) {
-                    DrawableHelper.drawTexture(matrices, x + params.renderX, y + params.renderY, helper.getZOffset(), 0, 20, foregroundPixels, 20, 20,
-                            40);
+                    DrawableHelper.drawTexture(matrices, x + params.renderX, y + params.renderY, zoffset, 0, 20, foregroundPixels, 20, 20, 40);
                 } else {
-                    DrawableHelper.drawTexture(matrices, x + params.renderX, y + params.renderY + 20 - foregroundPixels, helper.getZOffset(), 0,
+                    DrawableHelper.drawTexture(matrices, x + params.renderX, y + params.renderY + 20 - foregroundPixels, zoffset, 0,
                             40 - foregroundPixels, 20, foregroundPixels, 20, 40);
                 }
-
             }
         }
     }

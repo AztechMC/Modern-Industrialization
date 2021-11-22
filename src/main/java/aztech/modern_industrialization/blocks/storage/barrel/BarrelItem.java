@@ -24,12 +24,10 @@
 package aztech.modern_industrialization.blocks.storage.barrel;
 
 import aztech.modern_industrialization.ModernIndustrialization;
+import aztech.modern_industrialization.items.ItemContainingItemHelper;
 import aztech.modern_industrialization.util.TextHelper;
-import com.google.common.base.Preconditions;
 import java.util.List;
 import java.util.Optional;
-import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
-import net.fabricmc.fabric.api.transfer.v1.storage.StoragePreconditions;
 import net.minecraft.block.Block;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.client.item.TooltipData;
@@ -38,7 +36,6 @@ import net.minecraft.inventory.StackReference;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NbtCompound;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
@@ -48,7 +45,7 @@ import net.minecraft.util.ClickType;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 
-public class BarrelItem extends BlockItem {
+public class BarrelItem extends BlockItem implements ItemContainingItemHelper {
 
     private static final int ITEM_BAR_COLOR = MathHelper.packRgb(0.4F, 0.4F, 1.0F);
     public final long stackCapacity;
@@ -58,62 +55,9 @@ public class BarrelItem extends BlockItem {
         this.stackCapacity = stackCapacity;
     }
 
-    public boolean isEmpty(ItemStack stack) {
-        return stack.getSubNbt("BlockEntityTag") == null;
-    }
-
-    public ItemVariant getItemVariant(ItemStack stack) {
-        if (isEmpty(stack)) {
-            return ItemVariant.blank();
-        } else {
-            return ItemVariant.fromNbt(stack.getSubNbt("BlockEntityTag").getCompound("item"));
-        }
-    }
-
-    private void setItemVariant(ItemStack stack, ItemVariant item) {
-        stack.getOrCreateSubNbt("BlockEntityTag").put("item", item.toNbt());
-    }
-
-    public long insert(ItemStack stackBarrel, ItemVariant inserted, long maxAmount) {
-        StoragePreconditions.notBlankNotNegative(inserted, maxAmount);
-
-        if (this.isEmpty(stackBarrel) || this.getItemVariant(stackBarrel).equals(inserted)) {
-            long maxInsert;
-            if (isEmpty(stackBarrel)) {
-                maxInsert = stackCapacity * inserted.getItem().getMaxCount();
-            } else {
-                maxInsert = getCapacity(stackBarrel) - getAmount(stackBarrel);
-            }
-
-            long insertedAmount = Math.min(maxAmount, maxInsert);
-
-            if (insertedAmount > 0) {
-                setAmount(stackBarrel, getAmount(stackBarrel) + insertedAmount);
-                setItemVariant(stackBarrel, inserted);
-            }
-            return insertedAmount;
-        }
-        return 0;
-    }
-
-    public long getAmount(ItemStack stack) {
-        if (getItemVariant(stack).isBlank()) {
-            return 0;
-        }
-        NbtCompound tag = stack.getSubNbt("BlockEntityTag");
-        if (tag == null)
-            return 0;
-        else
-            return tag.getLong("amt");
-    }
-
-    private void setAmount(ItemStack stack, long amount) {
-        Preconditions.checkArgument(amount >= 0, "Can not set a barrel item to a negative amount");
-
-        stack.getOrCreateSubNbt("BlockEntityTag").putLong("amt", amount);
-        if (amount == 0) {
-            stack.removeSubNbt("BlockEntityTag");
-        }
+    @Override
+    public long getStackCapacity() {
+        return stackCapacity;
     }
 
     @Override
@@ -127,15 +71,10 @@ public class BarrelItem extends BlockItem {
 
     public Optional<TooltipData> getTooltipData(ItemStack stack) {
         if (!isEmpty(stack)) {
-            return Optional.of(new BarrelTooltipData(getItemVariant(stack), getAmount(stack), getCapacity(stack)));
+            return Optional.of(new BarrelTooltipData(getItemVariant(stack), getAmount(stack), getCurrentCapacity(stack)));
         } else {
             return Optional.empty();
         }
-    }
-
-    public long getCapacity(ItemStack stack) {
-        return stackCapacity * getItemVariant(stack).getItem().getMaxCount();
-
     }
 
     public boolean isItemBarVisible(ItemStack stack) {
@@ -143,40 +82,21 @@ public class BarrelItem extends BlockItem {
     }
 
     public int getItemBarStep(ItemStack stack) {
-        return (int) Math.min(1 + (12 * getAmount(stack)) / getCapacity(stack), 13);
+        return (int) Math.min(1 + (12 * getAmount(stack)) / getCurrentCapacity(stack), 13);
     }
 
     public int getItemBarColor(ItemStack stack) {
         return ITEM_BAR_COLOR;
     }
 
+    @Override
     public boolean onStackClicked(ItemStack stackBarrel, Slot slot, ClickType clickType, PlayerEntity player) {
-        if (clickType != ClickType.RIGHT) {
-            return false;
-        } else {
-            ItemStack itemStack = slot.getStack();
-            if (itemStack.isEmpty() && !isEmpty(stackBarrel)) {
-                long amount = Math.min(getAmount(stackBarrel), getItemVariant(stackBarrel).getItem().getMaxCount());
-                ItemStack newStack = getItemVariant(stackBarrel).toStack((int) (amount));
-                slot.setStack(newStack);
-                setAmount(stackBarrel, getAmount(stackBarrel) - amount);
-            } else if (!itemStack.isEmpty() && itemStack.getItem().canBeNested()) {
-                itemStack.decrement((int) insert(stackBarrel, ItemVariant.of(itemStack), itemStack.getCount()));
-            }
-            return true;
-        }
+        return handleOnStackClicked(stackBarrel, slot, clickType, player);
     }
 
-    public boolean onClicked(ItemStack stackBarrel, ItemStack itemStack, Slot slot, ClickType clickType, PlayerEntity player,
+    @Override
+    public boolean onClicked(ItemStack stack, ItemStack otherStack, Slot slot, ClickType clickType, PlayerEntity player,
             StackReference cursorStackReference) {
-        if (clickType == ClickType.RIGHT && slot.canTakePartial(player)) {
-            if (!itemStack.isEmpty()) {
-                itemStack.decrement((int) insert(stackBarrel, ItemVariant.of(itemStack), itemStack.getCount()));
-            }
-            return true;
-        } else {
-            return false;
-        }
+        return handleOnClicked(stack, otherStack, slot, clickType, player, cursorStackReference);
     }
-
 }

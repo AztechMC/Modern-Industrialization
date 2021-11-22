@@ -177,6 +177,7 @@ public class SteamDrillItem extends Item implements DynamicAttributeTool, MagnaT
         }
         // Flip NBT every tick to ensure that the attribute modifiers get updated if the
         // fuel next to the drill changes.
+        // TODO: delete this when the drill directly accepts items with right click.
         if (tag.contains("flip")) {
             tag.remove("flip");
         } else {

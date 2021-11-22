@@ -40,7 +40,6 @@ import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtNull;
 import net.minecraft.network.Packet;
 import net.minecraft.network.listener.ClientPlayPacketListener;
 import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket;
@@ -259,12 +258,11 @@ public class PipeBlockEntity extends FastBlockEntity implements IPipeScreenHandl
             tag.put("pipe_data_" + i, entry.getRight().toTag(new NbtCompound()));
             i++;
         }
-        tag.put("s", NbtNull.INSTANCE); // mark server data
     }
 
     @Override
     public void readNbt(NbtCompound tag) {
-        if (tag.contains("s")) {
+        if (!tag.contains("pipes")) {
             pipes.clear();
 
             int i = 0;

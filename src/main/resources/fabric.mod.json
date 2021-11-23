@@ -35,6 +35,9 @@
     ],
     "modmenu": [
       "aztech.modern_industrialization.compat.modmenu.MIMenu"
+    ],
+    "fabric-datagen": [
+      "aztech.modern_industrialization.datagen.MIDatagenEntrypoint"
     ]
   },
   "mixins": [

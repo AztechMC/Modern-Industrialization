@@ -1,0 +1,17 @@
+{
+  "eu": 10,
+  "duration": 200,
+  "fluid_inputs": [
+    {
+      "fluid": "modern_industrialization:shale_oil",
+      "amount": 1000.0
+    }
+  ],
+  "fluid_outputs": [
+    {
+      "fluid": "modern_industrialization:sulfuric_naphtha",
+      "amount": 500.0
+    }
+  ],
+  "type": "modern_industrialization:distillery"
+}

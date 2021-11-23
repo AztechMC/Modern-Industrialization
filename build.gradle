@@ -98,7 +98,7 @@ repositories {
         name = "Technici4n"
         url = "https://raw.githubusercontent.com/Technici4n/Technici4n-maven/master/"
         content {
-            //includeGroup "net.fabricmc.fabric-api"
+            includeGroup "net.fabricmc.fabric-api"
             includeGroup "dev.technici4n"
             includeGroup "dev.latvian.mods"
         }
@@ -131,6 +131,11 @@ repositories {
 }
 
 dependencies {
+    // TODO remove
+    include modImplementation("net.fabricmc.fabric-api:fabric-data-generation-api-v1:0.0.1+f8f4a6586d") {
+        exclude(group: "net.fabricmc.fabric-api")
+    }
+
     minecraft "com.mojang:minecraft:${project.minecraft_version}"
     mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
     modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
@@ -201,10 +206,29 @@ loom {
     runs {
         autoTestServer {
             server()
-            ideConfigGenerated project.rootProject == project
             name = "Autotest Server"
-            source sourceSets.main
             vmArg "-Dmodern_industrialization.autoTest"
+
+            ideConfigGenerated = true
+            source sourceSets.main
+        }
+        datagenClient {
+            client()
+            name "Data Generation"
+            vmArg "-Dfabric-api.datagen"
+            vmArg "-Dfabric-api.datagen.output-dir=${file("src/generated/resources")}"
+
+            ideConfigGenerated = true
+            runDir "build/datagen"
+            source sourceSets.main
+        }
+    }
+}
+
+sourceSets {
+    main {
+        resources {
+            srcDir "src/generated/resources"
         }
     }
 }

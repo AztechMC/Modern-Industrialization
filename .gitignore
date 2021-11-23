@@ -32,3 +32,7 @@ run/
 # datagen script
 
 __pycache__/
+
+# datagen cache
+
+src/generated/resources/.cache/

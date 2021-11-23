@@ -1,0 +1,112 @@
+/*
+ * MIT License
+ *
+ * Copyright (c) 2020 Azercoco & Technici4n
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+package aztech.modern_industrialization.datagen.recipe;
+
+import static aztech.modern_industrialization.MIFluids.*;
+
+import aztech.modern_industrialization.MIIdentifier;
+import aztech.modern_industrialization.datagen.recipe.factory.MachineRecipeFactory;
+import aztech.modern_industrialization.fluid.CraftingFluid;
+import aztech.modern_industrialization.machines.init.MIMachineRecipeTypes;
+import com.google.common.base.Preconditions;
+import java.util.function.Consumer;
+import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
+import net.minecraft.data.server.recipe.RecipeJsonProvider;
+import net.minecraft.fluid.Fluid;
+import net.minecraft.util.registry.Registry;
+
+public class PetrochemRecipesProvider extends MIRecipesProvider {
+    public PetrochemRecipesProvider(FabricDataGenerator dataGenerator) {
+        super(dataGenerator);
+    }
+
+    @Override
+    protected void generateRecipes(Consumer<RecipeJsonProvider> consumer) {
+        generateDistillation(consumer, 12, 200, f(CRUDE_OIL, 1000),
+                f(SULFURIC_LIGHT_FUEL, 500),
+                f(SULFURIC_HEAVY_FUEL, 200),
+                f(SULFURIC_NAPHTHA, 300));
+        generateDistillation(consumer, 15, 200, f(STEAM_CRACKED_NAPHTHA, 1000),
+                f(METHANE, 150),
+                f(ACETYLENE, 50),
+                f(ETHYLENE, 250),
+                f(PROPENE, 75),
+                f(BUTADIENE, 125),
+                f(BENZENE, 150),
+                f(TOLUENE, 100),
+                f(ETHYLBENZENE, 100));
+        generateDistillation(consumer, 10, 200, f(SHALE_OIL, 1000),
+                f(HELIUM, 50),
+                f(SULFURIC_CRUDE_OIL, 450),
+                f(SULFURIC_NAPHTHA, 500));
+        generateSulfuricPurification(consumer, CRUDE_OIL);
+        generateSulfuricPurification(consumer, HEAVY_FUEL);
+        generateSulfuricPurification(consumer, LIGHT_FUEL);
+        generateSulfuricPurification(consumer, NAPHTHA);
+    }
+
+    /**
+     * Generate both the full distillation tower recipe, and each distillery recipe.
+     */
+    private void generateDistillation(Consumer<RecipeJsonProvider> consumer, int eu, int duration, FluidEntry input, FluidEntry... outputs) {
+        String basePath = "petrochem/distillation/" + Registry.FLUID.getId(input.fluid).getPath() + "_";
+
+        // Full recipe
+        var full = MachineRecipeFactory.create(MIMachineRecipeTypes.DISTILLATION_TOWER, eu * outputs.length, duration);
+        full.fluidInput(input.fluid, input.amount);
+        for (var output : outputs) {
+            full.fluidOutput(output.fluid, output.amount);
+        }
+        full.offerTo(consumer, basePath + "full");
+
+        // Partial recipes
+        for (int i = 0; i < outputs.length; ++i) {
+            var output = outputs[i];
+            MachineRecipeFactory.create(MIMachineRecipeTypes.DISTILLERY, eu, duration)
+                    .fluidInput(input.fluid, input.amount).fluidOutput(output.fluid, output.amount)
+                    .offerTo(consumer, basePath + i);
+        }
+    }
+
+    /**
+     * Generate the sulfuric -> purified fluid chemical reactor recipe.
+     */
+    private void generateSulfuricPurification(Consumer<RecipeJsonProvider> consumer, Fluid purifiedFluid) {
+        String baseName = Registry.FLUID.getId(purifiedFluid).getPath();
+        Fluid sulfuricFluid = Registry.FLUID.get(new MIIdentifier("sulfuric_" + baseName));
+        Preconditions.checkArgument(sulfuricFluid instanceof CraftingFluid);
+
+        MachineRecipeFactory.create(MIMachineRecipeTypes.CHEMICAL_REACTOR, 16, 400)
+                .fluidInput(sulfuricFluid, 12000).fluidInput(HYDROGEN, 2000)
+                .fluidOutput(purifiedFluid, 12000).fluidOutput(SULFURIC_ACID, 2000)
+                .offerTo(consumer, "petrochem/sulfuric_purification/" + baseName);
+    }
+
+    private static FluidEntry f(Fluid fluid, double amount) {
+        return new FluidEntry(fluid, amount);
+    }
+
+    private record FluidEntry(Fluid fluid, double amount) {
+    }
+}

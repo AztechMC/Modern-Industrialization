@@ -1,0 +1,17 @@
+{
+  "eu": 15,
+  "duration": 200,
+  "fluid_inputs": [
+    {
+      "fluid": "modern_industrialization:steam_cracked_naphtha",
+      "amount": 1000.0
+    }
+  ],
+  "fluid_outputs": [
+    {
+      "fluid": "modern_industrialization:ethylene",
+      "amount": 250.0
+    }
+  ],
+  "type": "modern_industrialization:distillery"
+}

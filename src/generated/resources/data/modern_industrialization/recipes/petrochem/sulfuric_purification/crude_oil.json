@@ -1,0 +1,25 @@
+{
+  "eu": 16,
+  "duration": 400,
+  "fluid_inputs": [
+    {
+      "fluid": "modern_industrialization:sulfuric_crude_oil",
+      "amount": 12000.0
+    },
+    {
+      "fluid": "modern_industrialization:hydrogen",
+      "amount": 2000.0
+    }
+  ],
+  "fluid_outputs": [
+    {
+      "fluid": "modern_industrialization:crude_oil",
+      "amount": 12000.0
+    },
+    {
+      "fluid": "modern_industrialization:sulfuric_acid",
+      "amount": 2000.0
+    }
+  ],
+  "type": "modern_industrialization:chemical_reactor"
+}

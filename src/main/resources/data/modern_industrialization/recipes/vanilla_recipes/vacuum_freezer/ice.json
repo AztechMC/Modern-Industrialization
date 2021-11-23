@@ -1,0 +1,13 @@
+{
+  "type": "modern_industrialization:vacuum_freezer",
+  "eu": 16,
+  "duration": 200,
+  "fluid_inputs": {
+    "fluid": "minecraft:water",
+    "amount": 1000
+  },
+  "item_outputs": {
+    "item": "minecraft:ice",
+    "amount": 1
+  }
+}

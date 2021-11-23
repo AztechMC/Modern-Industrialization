@@ -25,11 +25,11 @@ package aztech.modern_industrialization.items.armor;
 
 import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.MIItem;
-import aztech.modern_industrialization.mixin_impl.PlayerTickEvent;
 import io.github.ladysnake.pal.AbilitySource;
 import io.github.ladysnake.pal.Pal;
 import io.github.ladysnake.pal.VanillaAbilities;
 import java.util.concurrent.ThreadLocalRandom;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -71,16 +71,14 @@ public class MIArmorEffects {
     public static final AbilitySource SRC = Pal.getAbilitySource(new MIIdentifier("modernindustrialization"));
 
     public static void init() {
-        PlayerTickEvent.EVENT.register(player -> {
-            if (player.world.isClient())
-                return;
-
-            if (allowFlight(player)) {
-                SRC.grantTo(player, VanillaAbilities.ALLOW_FLYING);
-            } else {
-                SRC.revokeFrom(player, VanillaAbilities.ALLOW_FLYING);
+        ServerTickEvents.START_WORLD_TICK.register(world -> {
+            for (var player : world.getPlayers()) {
+                if (allowFlight(player)) {
+                    SRC.grantTo(player, VanillaAbilities.ALLOW_FLYING);
+                } else {
+                    SRC.revokeFrom(player, VanillaAbilities.ALLOW_FLYING);
+                }
             }
-
         });
     }
 }

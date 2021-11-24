@@ -129,7 +129,7 @@ public class TankModel implements UnbakedModel, FabricBakedModel, BakedModel {
 
     @Override
     public List<BakedQuad> getQuads(BlockState state, Direction face, Random random) {
-        return null;
+        return Collections.emptyList();
     }
 
     @Override

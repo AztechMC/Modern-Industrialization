@@ -137,7 +137,7 @@ public class MachineCasingModel implements UnbakedModel, BakedModel {
 
     @Override
     public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction face, Random random) {
-        return null;
+        return Collections.emptyList();
     }
 
     @Override

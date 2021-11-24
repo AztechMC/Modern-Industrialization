@@ -23,10 +23,9 @@
  */
 package aztech.modern_industrialization.blocks.forgehammer;
 
-import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.ModernIndustrialization;
+import aztech.modern_industrialization.machines.init.MIMachineRecipeTypes;
 import aztech.modern_industrialization.machines.recipe.MachineRecipe;
-import aztech.modern_industrialization.machines.recipe.MachineRecipeType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.Inventory;
@@ -38,27 +37,11 @@ import net.minecraft.screen.ScreenHandlerContext;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
 
 public class ForgeHammerScreenHandler extends ScreenHandler {
 
-    // TODO : create custom recipe json
-    public static final MachineRecipeType RECIPE_HAMMER = new MachineRecipeType(new MIIdentifier("forge_hammer_hammer")).withItemInputs()
-            .withItemOutputs();
-    public static final MachineRecipeType RECIPE_SAW = new MachineRecipeType(new MIIdentifier("forge_hammer_saw")).withItemInputs().withItemOutputs();
     private int inputCount;
-
-    public static void setupRecipes() {
-        registerRecipe("forge_hammer_hammer", RECIPE_HAMMER);
-        registerRecipe("forge_hammer_saw", RECIPE_SAW);
-
-    }
-
-    private static void registerRecipe(String name, MachineRecipeType type) {
-        Registry.register(Registry.RECIPE_TYPE, new MIIdentifier(name), type);
-        Registry.register(Registry.RECIPE_SERIALIZER, new MIIdentifier(name), type);
-    }
 
     private final Inventory output = new SimpleInventory(1) {
         public void markDirty() {
@@ -131,7 +114,8 @@ public class ForgeHammerScreenHandler extends ScreenHandler {
             if (!input.getStack(0).isEmpty()) {
 
                 // absolutely nothing could go wrong
-                for (MachineRecipe recipe : (isHammer ? RECIPE_HAMMER : RECIPE_SAW).getRecipes((ServerWorld) world)) {
+                for (MachineRecipe recipe : (isHammer ? MIMachineRecipeTypes.FORGE_HAMMER_HAMMER : MIMachineRecipeTypes.FORGE_HAMMER_SAW)
+                        .getRecipes((ServerWorld) world)) {
                     MachineRecipe.ItemInput recipeInput = recipe.itemInputs.get(0);
                     if (recipeInput.matches(input.getStack(0)) && recipeInput.amount <= input.getStack(0).getCount()) {
                         MachineRecipe.ItemOutput output = recipe.itemOutputs.get(0);

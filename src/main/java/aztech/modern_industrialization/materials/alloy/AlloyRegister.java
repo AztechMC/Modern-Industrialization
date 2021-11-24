@@ -24,6 +24,7 @@
 package aztech.modern_industrialization.materials.alloy;
 
 import aztech.modern_industrialization.MIRuntimeResourcePack;
+import aztech.modern_industrialization.machines.init.MIMachineRecipeTypes;
 import aztech.modern_industrialization.recipe.json.ShapelessRecipeJson;
 import com.google.gson.Gson;
 import java.util.ArrayList;
@@ -77,9 +78,9 @@ public class AlloyRegister {
             }
 
             pack.addData("modern_industrialization/recipes/generated/mixer/" + output + "/dust.json",
-                    GSON.toJson(dusts.exportToMachine("mixer", 2, 100, 1)).getBytes());
+                    GSON.toJson(dusts.exportToMachine(MIMachineRecipeTypes.MIXER, 2, 100, 1)).getBytes());
             pack.addData("modern_industrialization/recipes/generated/mixer/" + output + "/tiny_dust.json",
-                    GSON.toJson(tinyDusts.exportToMachine("mixer", 2, 10, 1)).getBytes());
+                    GSON.toJson(tinyDusts.exportToMachine(MIMachineRecipeTypes.MIXER, 2, 10, 1)).getBytes());
 
         }
 

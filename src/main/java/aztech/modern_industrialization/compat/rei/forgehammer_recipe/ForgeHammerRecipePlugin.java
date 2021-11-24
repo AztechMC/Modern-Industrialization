@@ -25,7 +25,7 @@ package aztech.modern_industrialization.compat.rei.forgehammer_recipe;
 
 import aztech.modern_industrialization.MIBlock;
 import aztech.modern_industrialization.blocks.forgehammer.ForgeHammerScreen;
-import aztech.modern_industrialization.blocks.forgehammer.ForgeHammerScreenHandler;
+import aztech.modern_industrialization.machines.init.MIMachineRecipeTypes;
 import aztech.modern_industrialization.machines.recipe.MachineRecipe;
 import aztech.modern_industrialization.machines.recipe.MachineRecipeType;
 import me.shedaniel.math.Rectangle;
@@ -37,8 +37,8 @@ import me.shedaniel.rei.api.common.category.CategoryIdentifier;
 import me.shedaniel.rei.api.common.util.EntryStacks;
 
 public class ForgeHammerRecipePlugin implements REIClientPlugin {
-    private MachineRecipeType[] RECIPE_TYPES = new MachineRecipeType[] { ForgeHammerScreenHandler.RECIPE_HAMMER,
-            ForgeHammerScreenHandler.RECIPE_SAW };
+    private MachineRecipeType[] RECIPE_TYPES = new MachineRecipeType[] { MIMachineRecipeTypes.FORGE_HAMMER_HAMMER,
+            MIMachineRecipeTypes.FORGE_HAMMER_SAW };
 
     @Override
     public void registerCategories(CategoryRegistry registry) {

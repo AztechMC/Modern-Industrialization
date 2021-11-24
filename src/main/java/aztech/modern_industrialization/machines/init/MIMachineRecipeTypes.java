@@ -46,23 +46,27 @@ public class MIMachineRecipeTypes {
     public static final MachineRecipeType DISTILLERY = create("distillery").withFluidInputs().withFluidOutputs();
     public static final MachineRecipeType ELECTROLYZER = create("electrolyzer").withItemInputs().withFluidInputs().withItemOutputs().withFluidOutputs();
     public static final MachineRecipeType FURNACE = create("furnace", FurnaceRecipeProxy::new);
+    public static final MachineRecipeType FORGE_HAMMER_HAMMER = create("forge_hammer_hammer").withItemInputs().withItemOutputs();
+    public static final MachineRecipeType FORGE_HAMMER_SAW = create("forge_hammer_saw").withItemInputs().withItemOutputs();
     public static final MachineRecipeType MACERATOR = create("macerator").withItemInputs().withItemOutputs();
     public static final MachineRecipeType MIXER = create("mixer").withItemInputs().withFluidInputs().withItemOutputs().withFluidOutputs();
     public static final MachineRecipeType PACKER = create("packer").withItemInputs().withItemOutputs();
-    public static final MachineRecipeType UNPACKER = create("unpacker").withItemInputs().withItemOutputs();
     public static final MachineRecipeType POLARIZER = create("polarizer").withItemInputs().withItemOutputs();
+    public static final MachineRecipeType UNPACKER = create("unpacker").withItemInputs().withItemOutputs();
     public static final MachineRecipeType WIREMILL = create("wiremill").withItemInputs().withItemOutputs();
     // Multi block
-    public static final MachineRecipeType COKE_OVEN = create("coke_oven").withItemInputs().withItemOutputs().withFluidOutputs();
     public static final MachineRecipeType BLAST_FURNACE = create("blast_furnace").withItemInputs().withItemOutputs().withFluidInputs().withFluidOutputs();
+    public static final MachineRecipeType COKE_OVEN = create("coke_oven").withItemInputs().withItemOutputs().withFluidOutputs();
     public static final MachineRecipeType DISTILLATION_TOWER = create("distillation_tower").withFluidInputs().withFluidOutputs();
-    public static final MachineRecipeType VACUUM_FREEZER = create("vacuum_freezer").withItemInputs().withItemOutputs().withFluidInputs().withFluidOutputs();
-    public static final MachineRecipeType OIL_DRILLING_RIG = create("oil_drilling_rig").withItemInputs().withFluidOutputs();
-    public static final MachineRecipeType QUARRY = create("quarry").withItemInputs().withItemOutputs();
-    public static final MachineRecipeType HEAT_EXCHANGER = create("heat_exchanger").withFluidInputs().withFluidOutputs().withItemOutputs().withItemInputs();
-    public static final MachineRecipeType PRESSURIZER = create("pressurizer").withItemInputs().withFluidInputs().withFluidOutputs();
-    public static final MachineRecipeType IMPLOSION_COMPRESSOR = create("implosion_compressor").withItemInputs().withItemOutputs();
     public static final MachineRecipeType FUSION_REACTOR = create("fusion_reactor").withFluidInputs().withFluidOutputs();
+    public static final MachineRecipeType HEAT_EXCHANGER = create("heat_exchanger").withFluidInputs().withFluidOutputs().withItemOutputs().withItemInputs();
+    public static final MachineRecipeType IMPLOSION_COMPRESSOR = create("implosion_compressor").withItemInputs().withItemOutputs();
+    public static final MachineRecipeType OIL_DRILLING_RIG = create("oil_drilling_rig").withItemInputs().withFluidOutputs();
+    public static final MachineRecipeType PRESSURIZER = create("pressurizer").withItemInputs().withFluidInputs().withFluidOutputs();
+    public static final MachineRecipeType QUARRY = create("quarry").withItemInputs().withItemOutputs();
+    public static final MachineRecipeType VACUUM_FREEZER = create("vacuum_freezer").withItemInputs().withItemOutputs().withFluidInputs().withFluidOutputs();
+
+
     // @formatter:on
 
     public static void init() {

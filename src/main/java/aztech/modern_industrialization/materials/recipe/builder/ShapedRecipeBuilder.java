@@ -24,6 +24,8 @@
 package aztech.modern_industrialization.materials.recipe.builder;
 
 import aztech.modern_industrialization.ModernIndustrialization;
+import aztech.modern_industrialization.machines.init.MIMachineRecipeTypes;
+import aztech.modern_industrialization.machines.recipe.MachineRecipeType;
 import aztech.modern_industrialization.materials.MaterialBuilder;
 import aztech.modern_industrialization.materials.part.Part;
 import aztech.modern_industrialization.recipe.json.ShapedRecipeJson;
@@ -78,14 +80,14 @@ public class ShapedRecipeBuilder implements MaterialRecipeBuilder {
     }
 
     public ShapedRecipeBuilder exportToAssembler(int eu, int duration) {
-        return exportToMachine("assembler", eu, duration, 1);
+        return exportToMachine(MIMachineRecipeTypes.ASSEMBLER, eu, duration, 1);
     }
 
     public ShapedRecipeBuilder exportToAssembler() {
         return exportToAssembler(8, 200);
     }
 
-    public ShapedRecipeBuilder exportToMachine(String machine, int eu, int duration, int division) {
+    public ShapedRecipeBuilder exportToMachine(MachineRecipeType machine, int eu, int duration, int division) {
         if (!canceled) {
             new MIRecipeBuilder(context, machine, id, json.exportToMachine(machine, eu, duration, division));
         }
@@ -93,7 +95,7 @@ public class ShapedRecipeBuilder implements MaterialRecipeBuilder {
         return this;
     }
 
-    public ShapedRecipeBuilder exportToMachine(String machine) {
+    public ShapedRecipeBuilder exportToMachine(MachineRecipeType machine) {
         return exportToMachine(machine, 2, (int) (200 * context.getHardness().timeFactor), 1);
     }
 

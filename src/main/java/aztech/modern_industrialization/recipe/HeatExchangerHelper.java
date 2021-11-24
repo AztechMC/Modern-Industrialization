@@ -26,9 +26,9 @@ package aztech.modern_industrialization.recipe;
 import aztech.modern_industrialization.MIFluids;
 import aztech.modern_industrialization.MIRuntimeResourcePack;
 import aztech.modern_industrialization.fluid.CraftingFluid;
+import aztech.modern_industrialization.machines.init.MIMachineRecipeTypes;
+import aztech.modern_industrialization.recipe.json.MIRecipeJson;
 import com.google.gson.Gson;
-import java.util.ArrayList;
-import java.util.List;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.Fluids;
 
@@ -47,21 +47,19 @@ public class HeatExchangerHelper {
         for (int i = 0; i < hots.length; i++) {
             for (int j = 0; j < cold.length; j++) {
                 if (i != j) {
+
+                    MIRecipeJson recipe = MIRecipeJson.create(MIMachineRecipeTypes.HEAT_EXCHANGER, 2, 300);
+
                     String path = "modern_industrialization/recipes/generated/heat_exchanger/" + fluidToString(hots[i], false) + "_with_"
                             + fluidToString(cold[j], false) + ".json";
 
-                    ArrayList<HeatExchangerFluidRecipe.FluidIO> inputs = new ArrayList<>();
-                    ArrayList<HeatExchangerFluidRecipe.FluidIO> outputs = new ArrayList<>();
+                    recipe.addFluidInput(fluidToString(hots[i], true), amountBaseHot / amount[i]);
+                    recipe.addFluidInput(fluidToString(cold[j], true), amountBaseCold / amount[j]);
 
-                    inputs.add(new HeatExchangerFluidRecipe.FluidIO(fluidToString(hots[i], true), amountBaseHot / amount[i]));
-                    inputs.add(new HeatExchangerFluidRecipe.FluidIO(fluidToString(cold[j], true), amountBaseCold / amount[j]));
+                    recipe.addFluidOutput(fluidToString(cold[i], true), amountBaseCold / amount[i]);
+                    recipe.addFluidOutput(fluidToString(hots[j], true), amountBaseHot / amount[j]);
 
-                    outputs.add(new HeatExchangerFluidRecipe.FluidIO(fluidToString(cold[i], true), amountBaseCold / amount[i]));
-                    outputs.add(new HeatExchangerFluidRecipe.FluidIO(fluidToString(hots[j], true), amountBaseHot / amount[j]));
-
-                    HeatExchangerFluidRecipe recipe = new HeatExchangerFluidRecipe(inputs, outputs);
-
-                    pack.addData(path, GSON.toJson(recipe).getBytes());
+                    pack.addData(path, recipe.toBytes());
                 }
 
             }
@@ -80,28 +78,4 @@ public class HeatExchangerHelper {
         }
     }
 
-    private static class HeatExchangerFluidRecipe {
-
-        private final List<FluidIO> fluid_inputs;
-        private final List<FluidIO> fluid_outputs;
-        private final long eu = 2;
-        private final long duration = 300;
-        private final String type = "modern_industrialization:heat_exchanger";
-
-        private HeatExchangerFluidRecipe(List<FluidIO> fluid_inputs, List<FluidIO> fluid_outputs) {
-            this.fluid_inputs = fluid_inputs;
-            this.fluid_outputs = fluid_outputs;
-        }
-
-        public static class FluidIO {
-            final String fluid;
-            final int amount;
-
-            private FluidIO(String fluid, int amount) {
-                this.fluid = fluid;
-                this.amount = amount;
-            }
-        }
-
-    }
 }

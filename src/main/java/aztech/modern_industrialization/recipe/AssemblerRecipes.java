@@ -25,6 +25,7 @@ package aztech.modern_industrialization.recipe;
 
 import aztech.modern_industrialization.MIRuntimeResourcePack;
 import aztech.modern_industrialization.ModernIndustrialization;
+import aztech.modern_industrialization.machines.init.MIMachineRecipeTypes;
 import aztech.modern_industrialization.recipe.json.MIRecipeJson;
 import aztech.modern_industrialization.recipe.json.ShapedRecipeJson;
 import aztech.modern_industrialization.util.ResourceUtil;
@@ -73,7 +74,7 @@ public final class AssemblerRecipes {
         if (json.result.count == 0) {
             json.result.count = 1;
         }
-        MIRecipeJson assemblerJson = json.exportToMachine("assembler", 8, 200, 1);
+        MIRecipeJson assemblerJson = json.exportToMachine(MIMachineRecipeTypes.ASSEMBLER, 8, 200, 1);
         String outputSuffix = recipeId.getPath().substring("recipes/".length());
         pack.addData("modern_industrialization/recipes/generated/assembler/" + outputSuffix, GSON.toJson(assemblerJson).getBytes(), override);
     }

@@ -1,17 +1,17 @@
 {
+  "type": "modern_industrialization:distillery",
   "eu": 10,
   "duration": 200,
   "fluid_inputs": [
     {
       "fluid": "modern_industrialization:shale_oil",
-      "amount": 1000.0
+      "amount": 1000
     }
   ],
   "fluid_outputs": [
     {
       "fluid": "modern_industrialization:helium",
-      "amount": 50.0
+      "amount": 50
     }
-  ],
-  "type": "modern_industrialization:distillery"
+  ]
 }

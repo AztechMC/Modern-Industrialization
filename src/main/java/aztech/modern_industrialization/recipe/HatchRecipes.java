@@ -24,6 +24,7 @@
 package aztech.modern_industrialization.recipe;
 
 import aztech.modern_industrialization.MIIdentifier;
+import aztech.modern_industrialization.machines.init.MIMachineRecipeTypes;
 import aztech.modern_industrialization.recipe.json.MIRecipeJson;
 import aztech.modern_industrialization.recipe.json.ShapedRecipeJson;
 import com.google.gson.Gson;
@@ -73,9 +74,10 @@ public class HatchRecipes {
                         ShapedRecipeJson craft = new ShapedRecipeJson(AB[k], 1, "U", "V").addInput('U', k == 0 ? other : casing).addInput('V',
                                 k == 1 ? other : casing);
 
-                        MIRecipeJson craftAsbl = craft.exportToMachine("assembler", 8, 200, 1);
+                        MIRecipeJson craftAsbl = craft.exportToMachine(MIMachineRecipeTypes.ASSEMBLER, 8, 200, 1);
 
-                        MIRecipeJson unpacker = new MIRecipeJson("unpacker", 2, 200).addOutput(casing, 1).addOutput(other, 1).addItemInput(AB[k], 1);
+                        MIRecipeJson unpacker = MIRecipeJson.create(MIMachineRecipeTypes.UNPACKER, 2, 200).addItemOutput(casing, 1)
+                                .addItemOutput(other, 1).addItemInput(AB[k], 1);
 
                         ShapedRecipeJson craftFromOther = new ShapedRecipeJson(AB[k], 1, "U").addInput('U', AB[(k + 1) % 2]);
 

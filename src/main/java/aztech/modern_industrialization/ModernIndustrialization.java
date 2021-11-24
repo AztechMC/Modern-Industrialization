@@ -126,10 +126,7 @@ public class ModernIndustrialization implements ModInitializer {
         setupBlocks();
         MIFluids.setupFluids();
         CreativeTankSetup.setup();
-        // SingleBlockCraftingMachines.setupRecipes(); // will also load the static
         // fields.
-        ForgeHammerScreenHandler.setupRecipes();
-        // setupMachines();
         setupPackets();
         setupFuels();
         MIArmorEffects.init();

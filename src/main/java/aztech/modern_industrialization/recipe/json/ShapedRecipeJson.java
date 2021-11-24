@@ -23,6 +23,7 @@
  */
 package aztech.modern_industrialization.recipe.json;
 
+import aztech.modern_industrialization.machines.recipe.MachineRecipeType;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -113,12 +114,12 @@ public class ShapedRecipeJson implements RecipeJson {
         }
     }
 
-    public MIRecipeJson exportToMachine(String machine, int eu, int duration, int division) {
+    public MIRecipeJson exportToMachine(MachineRecipeType machine, int eu, int duration, int division) {
         if (result.count % division != 0) {
             throw new IllegalArgumentException("Output must be divisible by division");
         }
 
-        MIRecipeJson assemblerJson = new MIRecipeJson(machine, eu, duration).addOutput(result.item, result.count / division);
+        MIRecipeJson assemblerJson = MIRecipeJson.create(machine, eu, duration).addItemOutput(result.item, result.count / division);
         for (Map.Entry<Character, ItemInput> entry : key.entrySet()) {
             int count = 0;
             for (String row : pattern) {

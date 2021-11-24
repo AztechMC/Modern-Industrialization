@@ -24,6 +24,7 @@
 package aztech.modern_industrialization.recipe.json;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 
 /**
  * Marker interface for objects that can be written to JSON recipes with GSON.
@@ -33,6 +34,10 @@ public interface RecipeJson {
 
     default String toJson() {
         return GSON.toJson(this);
+    }
+
+    default JsonObject toJsonObject() {
+        return GSON.toJsonTree(this).getAsJsonObject();
     }
 
     default byte[] toBytes() {

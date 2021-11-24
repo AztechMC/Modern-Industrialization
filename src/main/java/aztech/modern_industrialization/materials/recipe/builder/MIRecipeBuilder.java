@@ -24,6 +24,7 @@
 package aztech.modern_industrialization.materials.recipe.builder;
 
 import aztech.modern_industrialization.ModernIndustrialization;
+import aztech.modern_industrialization.machines.recipe.MachineRecipeType;
 import aztech.modern_industrialization.materials.MaterialBuilder;
 import aztech.modern_industrialization.materials.part.MaterialPart;
 import aztech.modern_industrialization.materials.part.Part;
@@ -39,22 +40,22 @@ public class MIRecipeBuilder implements MaterialRecipeBuilder {
     private boolean canceled = false;
     private final MIRecipeJson json;
 
-    public MIRecipeBuilder(MaterialBuilder.RecipeContext context, String type, String recipeSuffix, int eu, int duration) {
-        this(context, type, recipeSuffix, new MIRecipeJson(type, eu, duration));
+    public MIRecipeBuilder(MaterialBuilder.RecipeContext context, MachineRecipeType type, String recipeSuffix, int eu, int duration) {
+        this(context, type, recipeSuffix, MIRecipeJson.create(type, eu, duration));
     }
 
-    public MIRecipeBuilder(MaterialBuilder.RecipeContext context, String type, String recipeSuffix, MIRecipeJson json) {
+    public MIRecipeBuilder(MaterialBuilder.RecipeContext context, MachineRecipeType type, String recipeSuffix, MIRecipeJson json) {
         this.recipeId = type + "/" + recipeSuffix;
         this.context = context;
         this.json = json;
         context.addRecipe(this);
     }
 
-    public MIRecipeBuilder(MaterialBuilder.RecipeContext context, String type, String recipeSuffix) {
+    public MIRecipeBuilder(MaterialBuilder.RecipeContext context, MachineRecipeType type, String recipeSuffix) {
         this(context, type, recipeSuffix, 2, (int) (200 * context.getHardness().timeFactor));
     }
 
-    public MIRecipeBuilder(MaterialBuilder.RecipeContext context, String type, Part recipeSuffix) {
+    public MIRecipeBuilder(MaterialBuilder.RecipeContext context, MachineRecipeType type, Part recipeSuffix) {
         this(context, type, recipeSuffix.key);
     }
 
@@ -118,7 +119,7 @@ public class MIRecipeBuilder implements MaterialRecipeBuilder {
     }
 
     public MIRecipeBuilder addOutput(String itemId, int amount) {
-        this.json.addOutput(itemId, amount);
+        this.json.addItemOutput(itemId, amount);
         return this;
     }
 
@@ -136,7 +137,7 @@ public class MIRecipeBuilder implements MaterialRecipeBuilder {
     }
 
     public MIRecipeBuilder addOutput(String itemId, int amount, double probability) {
-        this.json.addOutput(itemId, amount, probability);
+        this.json.addItemOutput(itemId, amount, probability);
         return this;
     }
 

@@ -26,9 +26,9 @@ package aztech.modern_industrialization.datagen.recipe;
 import static aztech.modern_industrialization.MIFluids.*;
 
 import aztech.modern_industrialization.MIIdentifier;
-import aztech.modern_industrialization.datagen.recipe.factory.MachineRecipeFactory;
 import aztech.modern_industrialization.fluid.CraftingFluid;
 import aztech.modern_industrialization.machines.init.MIMachineRecipeTypes;
+import aztech.modern_industrialization.recipe.json.MIRecipeJson;
 import com.google.common.base.Preconditions;
 import java.util.function.Consumer;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
@@ -73,18 +73,18 @@ public class PetrochemRecipesProvider extends MIRecipesProvider {
         String basePath = "petrochem/distillation/" + Registry.FLUID.getId(input.fluid).getPath() + "_";
 
         // Full recipe
-        var full = MachineRecipeFactory.create(MIMachineRecipeTypes.DISTILLATION_TOWER, eu * outputs.length, duration);
-        full.fluidInput(input.fluid, input.amount);
+        var full = MIRecipeJson.create(MIMachineRecipeTypes.DISTILLATION_TOWER, eu * outputs.length, duration);
+        full.addFluidInput(input.fluid, input.amount);
         for (var output : outputs) {
-            full.fluidOutput(output.fluid, output.amount);
+            full.addFluidOutput(output.fluid, output.amount);
         }
         full.offerTo(consumer, basePath + "full");
 
         // Partial recipes
         for (int i = 0; i < outputs.length; ++i) {
             var output = outputs[i];
-            MachineRecipeFactory.create(MIMachineRecipeTypes.DISTILLERY, eu, duration)
-                    .fluidInput(input.fluid, input.amount).fluidOutput(output.fluid, output.amount)
+            MIRecipeJson.create(MIMachineRecipeTypes.DISTILLERY, eu, duration)
+                    .addFluidInput(input.fluid, input.amount).addFluidOutput(output.fluid, output.amount)
                     .offerTo(consumer, basePath + i);
         }
     }
@@ -97,16 +97,16 @@ public class PetrochemRecipesProvider extends MIRecipesProvider {
         Fluid sulfuricFluid = Registry.FLUID.get(new MIIdentifier("sulfuric_" + baseName));
         Preconditions.checkArgument(sulfuricFluid instanceof CraftingFluid);
 
-        MachineRecipeFactory.create(MIMachineRecipeTypes.CHEMICAL_REACTOR, 16, 400)
-                .fluidInput(sulfuricFluid, 12000).fluidInput(HYDROGEN, 2000)
-                .fluidOutput(purifiedFluid, 12000).fluidOutput(SULFURIC_ACID, 2000)
+        MIRecipeJson.create(MIMachineRecipeTypes.CHEMICAL_REACTOR, 16, 400)
+                .addFluidInput(sulfuricFluid, 12000).addFluidInput(HYDROGEN, 2000)
+                .addFluidOutput(purifiedFluid, 12000).addFluidOutput(SULFURIC_ACID, 2000)
                 .offerTo(consumer, "petrochem/sulfuric_purification/" + baseName);
     }
 
-    private static FluidEntry f(Fluid fluid, double amount) {
+    private static FluidEntry f(Fluid fluid, int amount) {
         return new FluidEntry(fluid, amount);
     }
 
-    private record FluidEntry(Fluid fluid, double amount) {
+    private record FluidEntry(Fluid fluid, int amount) {
     }
 }

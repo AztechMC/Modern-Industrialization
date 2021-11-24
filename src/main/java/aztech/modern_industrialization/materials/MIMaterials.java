@@ -30,6 +30,7 @@ import static aztech.modern_industrialization.materials.set.MaterialSet.*;
 
 import aztech.modern_industrialization.MIConfig;
 import aztech.modern_industrialization.api.energy.CableTier;
+import aztech.modern_industrialization.machines.init.MIMachineRecipeTypes;
 import aztech.modern_industrialization.materials.part.*;
 import aztech.modern_industrialization.materials.recipe.ForgeHammerRecipes;
 import aztech.modern_industrialization.materials.recipe.SmeltingRecipes;
@@ -122,7 +123,7 @@ public class MIMaterials {
                 .cancelRecipes("smelting/ore_deepslate_to_gem_smelting", "smelting/ore_deepslate_to_gem_blasting");
 
         if (compressor) {
-            res.addRecipes(context -> new MIRecipeBuilder(context, "compressor", n).addTaggedPartInput(DUST, 1).addOutput("minecraft:" + gemPath, 1));
+            res.addRecipes(context -> new MIRecipeBuilder(context, MIMachineRecipeTypes.COMPRESSOR, n).addTaggedPartInput(DUST, 1).addOutput("minecraft:" + gemPath, 1));
         }
         return res;
     }
@@ -202,7 +203,7 @@ public class MIMaterials {
                 .addMaterial(new MaterialBuilder("quartz", STONE, GEM, new BakableTargetColoramp(0xf0ebe4, mcitem("quartz"), mcitem("quartz")), SOFT)
                         .addParts(CRUSHED_DUST, DUST, TINY_DUST).addParts(ORE.of(UniformIntProvider.create(2, 5), MaterialOreSet.QUARTZ))
                         .addParts(ExternalPart.of(GEM, "minecraft:quartz", "minecraft:quartz")).addRecipes(StandardRecipes::apply)
-                        .cancelRecipes("macerator/ore_to_crushed").addRecipes(context -> new MIRecipeBuilder(context, "compressor", "quartz")
+                        .cancelRecipes("macerator/ore_to_crushed").addRecipes(context -> new MIRecipeBuilder(context, MIMachineRecipeTypes.COMPRESSOR, "quartz")
                                 .addTaggedPartInput(DUST, 1).addOutput("minecraft:quartz", 1))
                         .build());
 
@@ -218,7 +219,7 @@ public class MIMaterials {
                 .addMaterial(new MaterialBuilder("coke", STONE, GEM, new BakableTargetColoramp(0x6d6d57, common("dust"), miitem("coke")), SOFT)
                         .addParts(DUST).addParts(MIItemPart.of(GEM, "coke")).addParts(BLOCK.of(MaterialBlockSet.COAL))
 
-                        .addRecipes(context -> new MIRecipeBuilder(context, "compressor", "dust").addTaggedPartInput(DUST, 1).addPartOutput(GEM, 1))
+                        .addRecipes(context -> new MIRecipeBuilder(context, MIMachineRecipeTypes.COMPRESSOR, "dust").addTaggedPartInput(DUST, 1).addPartOutput(GEM, 1))
                         .addRecipes(StandardRecipes::apply).build());
 
         MaterialRegistry.addMaterial(
@@ -247,7 +248,7 @@ public class MIMaterials {
                 .addParts(BLOCK.of(MaterialBlockSet.COAL)).addParts(GEM)
                 .addParts(ORE.ofAll(UniformIntProvider.create(0, 2), 10, 17, 128, MaterialOreSet.COAL))
                 .addRecipes(ForgeHammerRecipes::apply, SmeltingRecipes::apply, StandardRecipes::apply).cancelRecipes("macerator/crushed_dust")
-                .addRecipes(context -> new MIRecipeBuilder(context, "compressor", "lignite_coal").addTaggedPartInput(DUST, 1).addPartOutput(GEM, 1))
+                .addRecipes(context -> new MIRecipeBuilder(context, MIMachineRecipeTypes.COMPRESSOR, "lignite_coal").addTaggedPartInput(DUST, 1).addPartOutput(GEM, 1))
                 .build());
 
         MaterialRegistry.addMaterial(
@@ -346,7 +347,7 @@ public class MIMaterials {
                                                                 INeutronBehaviour.of(NuclearConstant.ScatteringType.MEDIUM, NuclearConstant.CARBON,
                                                                         2),
                                                                 NuclearConstant.DESINTEGRATION_BY_ROD * 2)))
-                                .addRecipes(context -> new MIRecipeBuilder(context, "compressor", "dust").addTaggedPartInput(DUST, 1)
+                                .addRecipes(context -> new MIRecipeBuilder(context, MIMachineRecipeTypes.COMPRESSOR, "dust").addTaggedPartInput(DUST, 1)
                                         .addPartOutput(PLATE, 1))
                                 .addRecipes(StandardRecipes::apply).build());
 

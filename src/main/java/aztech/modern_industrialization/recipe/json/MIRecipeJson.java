@@ -23,21 +23,95 @@
  */
 package aztech.modern_industrialization.recipe.json;
 
+import aztech.modern_industrialization.machines.recipe.MachineRecipeType;
+import com.google.gson.JsonObject;
+import com.google.gson.annotations.SerializedName;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
+import net.minecraft.data.server.recipe.RecipeJsonProvider;
 import net.minecraft.fluid.Fluid;
+import net.minecraft.item.Item;
+import net.minecraft.recipe.RecipeSerializer;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
+import org.jetbrains.annotations.Nullable;
 
 @SuppressWarnings({ "FieldCanBeLocal", "unused", "MismatchedQueryAndUpdateOfCollection" })
-public final class MIRecipeJson implements RecipeJson {
+public class MIRecipeJson implements RecipeJson {
+
+    private transient final MachineRecipeType machineRecipeType;
+
+    private MIRecipeJson(MachineRecipeType machineRecipeType, int eu, int duration) {
+        this.type = Registry.RECIPE_SERIALIZER.getId(machineRecipeType).toString();
+        this.eu = eu;
+        this.duration = duration;
+        this.machineRecipeType = machineRecipeType;
+
+    }
+
+    public static MIRecipeJson create(MachineRecipeType machineRecipeType, int eu, int duration) {
+        return new MIRecipeJson(machineRecipeType, eu, duration);
+    }
+
+    public void offerTo(Consumer<RecipeJsonProvider> exporter, String recipeId) {
+        // note that FabricRecipesProvider will set the namespace to that of the mod anyway.
+        exporter.accept(new MIRecipeJsonProvider(new Identifier(recipeId)));
+    }
+
+    private class MIRecipeJsonProvider implements RecipeJsonProvider {
+        private final Identifier recipeId;
+
+        private MIRecipeJsonProvider(Identifier recipeId) {
+            this.recipeId = recipeId;
+        }
+
+        @Override
+        public void serialize(JsonObject json) {
+            throw new UnsupportedOperationException("We override toJson()");
+        }
+
+        @Override
+        public JsonObject toJson() {
+            return MIRecipeJson.this.toJsonObject();
+        }
+
+        @Override
+        public Identifier getRecipeId() {
+            return recipeId;
+        }
+
+        @Override
+        public RecipeSerializer<?> getSerializer() {
+            return machineRecipeType;
+        }
+
+        @Nullable
+        @Override
+        public JsonObject toAdvancementJson() {
+            return null;
+        }
+
+        @Nullable
+        @Override
+        public Identifier getAdvancementId() {
+            return null;
+        }
+    }
+
     private final String type;
     private final int eu;
     private final int duration;
-    private final List<MIItemInput> item_inputs = new ArrayList<>();
-    private final List<MIFluidInput> fluid_inputs = new ArrayList<>();
-    private final List<MIFluidOutput> fluid_outputs = new ArrayList<>();
-    private final List<MIItemOutput> item_outputs = new ArrayList<>();
+
+    @SerializedName("fluid_inputs")
+    private List<MIFluidInput> fluidInputs;
+    @SerializedName("fluid_outputs")
+    private List<MIFluidOutput> fluidOutputs;
+
+    @SerializedName("item_inputs")
+    private List<MIItemInput> itemInputs;
+    @SerializedName("item_outputs")
+    private List<MIItemOutput> itemOutputs;
 
     private static class MIItemInput {
         String item;
@@ -66,28 +140,43 @@ public final class MIRecipeJson implements RecipeJson {
         }
     }
 
-    private static class MIFluidOutput {
-        String fluid;
-        int amount;
-    }
-
     private static class MIItemOutput {
         String item;
         int amount;
     }
 
     private static class MIItemOutputProbability extends MIItemOutput {
+
         double probability;
+
+        MIItemOutputProbability(double probability) {
+            this.probability = probability;
+        }
     }
 
-    public MIRecipeJson(String type, int eu, int duration) {
-        this.type = "modern_industrialization:" + type;
-        this.eu = eu;
-        this.duration = duration;
+    private static class MIFluidOutput {
+        String fluid;
+        int amount;
+    }
+
+    private static class MIFluidOutputProbability extends MIFluidOutput {
+        double probability;
+
+        MIFluidOutputProbability(double probability) {
+            this.probability = probability;
+        }
     }
 
     public MIRecipeJson addItemInput(String maybeTag, int amount) {
         return addItemInput(maybeTag, amount, 1);
+    }
+
+    public MIRecipeJson addItemInput(Item item, int amount, double probability) {
+        return addItemInput(Registry.ITEM.getId(item).toString(), amount, probability);
+    }
+
+    public MIRecipeJson addItemInput(Item item, int amount) {
+        return addItemInput(item, amount, 1);
     }
 
     public MIRecipeJson addItemInput(String maybeTag, int amount, double probability) {
@@ -98,40 +187,56 @@ public final class MIRecipeJson implements RecipeJson {
         } else {
             input.item = maybeTag;
         }
-        item_inputs.add(input);
+        if (itemInputs == null) {
+            itemInputs = new ArrayList<>();
+        }
+        itemInputs.add(input);
         return this;
+    }
+
+    public MIRecipeJson addItemOutput(String itemId, int amount) {
+        return addItemOutput(itemId, amount, 1);
+    }
+
+    public MIRecipeJson addItemOutput(String itemId, int amount, double probability) {
+        MIItemOutput output = new MIItemOutputProbability(probability);
+        if (probability == 1) {
+            output = new MIItemOutput();
+        }
+        output.item = itemId;
+        output.amount = amount;
+        if (itemOutputs == null) {
+            itemOutputs = new ArrayList<>();
+        }
+        itemOutputs.add(output);
+        return this;
+    }
+
+    public MIRecipeJson addItemOutput(Item item, int amount, double probability) {
+        return addItemOutput(Registry.ITEM.getId(item).toString(), amount, probability);
+    }
+
+    public MIRecipeJson addItemOutput(Item item, int amount) {
+        return addItemOutput(item, amount, 1);
     }
 
     public MIRecipeJson addFluidInput(String fluid, int amount) {
-        MIFluidInput input = new MIFluidInput();
-        input.fluid = fluid;
-        input.amount = amount;
-        fluid_inputs.add(input);
-        return this;
+        return addFluidInput(fluid, amount, 1);
     }
 
     public MIRecipeJson addFluidInput(String fluid, int amount, double probability) {
+
         MIFluidInput input = new MIFluidInputProbability(probability);
+        if (probability == 1) {
+            input = new MIFluidInput();
+        }
         input.fluid = fluid;
         input.amount = amount;
-        fluid_inputs.add(input);
-        return this;
-    }
-
-    public MIRecipeJson addFluidOutput(String fluid, int amount) {
-        MIFluidOutput output = new MIFluidOutput();
-        output.fluid = fluid;
-        output.amount = amount;
-        fluid_outputs.add(output);
-        return this;
-    }
-
-    public MIRecipeJson addFluidInput(Fluid fluid, int amount) {
-        Identifier id = Registry.FLUID.getId(fluid);
-        if (id.equals(Registry.FLUID.getDefaultId())) {
-            throw new RuntimeException("Could not find id for fluid " + fluid);
+        if (fluidInputs == null) {
+            fluidInputs = new ArrayList<>();
         }
-        return addFluidInput(id.toString(), amount);
+        fluidInputs.add(input);
+        return this;
     }
 
     public MIRecipeJson addFluidInput(Fluid fluid, int amount, double probability) {
@@ -142,21 +247,34 @@ public final class MIRecipeJson implements RecipeJson {
         return addFluidInput(id.toString(), amount, probability);
     }
 
-    public MIRecipeJson addOutput(String itemId, int amount) {
-        MIItemOutput output = new MIItemOutput();
-        output.item = itemId;
+    public MIRecipeJson addFluidInput(Fluid fluid, int amount) {
+        return addFluidInput(fluid, amount, 1);
+    }
+
+    public MIRecipeJson addFluidOutput(String fluid, int amount) {
+        return addFluidOutput(fluid, amount, 1);
+    }
+
+    public MIRecipeJson addFluidOutput(String fluid, int amount, double probability) {
+        MIFluidOutput output = new MIFluidOutputProbability(probability);
+        if (probability == 1) {
+            output = new MIFluidOutput();
+        }
+        output.fluid = fluid;
         output.amount = amount;
-        item_outputs.add(output);
+        if (fluidOutputs == null) {
+            fluidOutputs = new ArrayList<>();
+        }
+        fluidOutputs.add(output);
         return this;
     }
 
-    public MIRecipeJson addOutput(String itemId, int amount, double probability) {
-        MIItemOutputProbability output = new MIItemOutputProbability();
-        output.item = itemId;
-        output.amount = amount;
-        output.probability = probability;
-        item_outputs.add(output);
-        return this;
+    public MIRecipeJson addFluidOutput(Fluid fluid, int amount) {
+        return addFluidOutput(fluid, amount, 1);
+    }
+
+    public MIRecipeJson addFluidOutput(Fluid fluid, int amount, double probability) {
+        return addFluidOutput(Registry.FLUID.getId(fluid).toString(), amount, probability);
     }
 
 }

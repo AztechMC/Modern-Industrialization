@@ -25,6 +25,7 @@ package aztech.modern_industrialization.recipe;
 
 import aztech.modern_industrialization.MIFluids;
 import aztech.modern_industrialization.MIIdentifier;
+import aztech.modern_industrialization.machines.init.MIMachineRecipeTypes;
 import aztech.modern_industrialization.recipe.json.MIRecipeJson;
 import aztech.modern_industrialization.recipe.json.ShapedRecipeJson;
 import aztech.modern_industrialization.util.ResourceUtil;
@@ -75,7 +76,7 @@ public class DyeRecipes {
                     "ppp").addInput('d', "#c:" + color.getName() + "_dyes").addInput('p', "#modern_industrialization:item_pipes");
             pack.addData(new MIIdentifier(pathPrefix + "craft/item_pipe_8.json"), GSON.toJson(eightItemPipes).getBytes());
             pack.addData(new MIIdentifier(pathPrefix + "mixer/item_pipe_8.json"),
-                    GSON.toJson(eightItemPipes.exportToMachine("mixer", 2, 100, 1)).getBytes());
+                    GSON.toJson(eightItemPipes.exportToMachine(MIMachineRecipeTypes.MIXER, 2, 100, 1)).getBytes());
             // 1 item pipe
             ShapedRecipeJson oneItemPipe = new ShapedRecipeJson("modern_industrialization:" + color.getName() + "_item_pipe", 1, "pd")
                     .addInput('d', "#c:" + color.getName() + "_dyes").addInput('p', "#modern_industrialization:item_pipes");
@@ -90,70 +91,72 @@ public class DyeRecipes {
                     "ppp").addInput('d', "#c:" + color.getName() + "_dyes").addInput('p', "#modern_industrialization:fluid_pipes");
             pack.addData(new MIIdentifier(pathPrefix + "craft/fluid_pipe_8.json"), GSON.toJson(eightFluidPipes).getBytes());
             pack.addData(new MIIdentifier(pathPrefix + "mixer/fluid_pipe_8.json"),
-                    GSON.toJson(eightFluidPipes.exportToMachine("mixer", 2, 100, 1)).getBytes());
+                    GSON.toJson(eightFluidPipes.exportToMachine(MIMachineRecipeTypes.MIXER, 2, 100, 1)).getBytes());
             // 1 fluid pipe
             ShapedRecipeJson oneFluidPipe = new ShapedRecipeJson("modern_industrialization:" + color.getName() + "_fluid_pipe", 1, "pd")
                     .addInput('d', "#c:" + color.getName() + "_dyes").addInput('p', "#modern_industrialization:fluid_pipes");
             pack.addData(new MIIdentifier(pathPrefix + "craft/fluid_pipe_1.json"), GSON.toJson(oneFluidPipe).getBytes());
             // generate dyes with synthetic oil
-            MIRecipeJson syntheticOilDye = new MIRecipeJson("mixer", 2, 200).addFluidInput(MIFluids.SYNTHETIC_OIL, 100)
-                    .addItemInput("#c:" + color.getName() + "_dyes", 1, 0).addOutput("minecraft:" + color.getName() + "_dye", 1);
+            MIRecipeJson syntheticOilDye = MIRecipeJson.create(MIMachineRecipeTypes.MIXER, 2, 200).addFluidInput(MIFluids.SYNTHETIC_OIL, 100)
+                    .addItemInput("#c:" + color.getName() + "_dyes", 1, 0).addItemOutput("minecraft:" + color.getName() + "_dye", 1);
             pack.addData(new MIIdentifier(pathPrefix + "mixer/synthetic_oil.json"), GSON.toJson(syntheticOilDye).getBytes());
             // generate dyes with benzene
-            MIRecipeJson benzeneDye = new MIRecipeJson("mixer", 2, 200).addFluidInput(MIFluids.BENZENE, 25)
-                    .addItemInput("#c:" + color.getName() + "_dyes", 1, 0).addOutput("minecraft:" + color.getName() + "_dye", 1);
+            MIRecipeJson benzeneDye = MIRecipeJson.create(MIMachineRecipeTypes.MIXER, 2, 200).addFluidInput(MIFluids.BENZENE, 25)
+                    .addItemInput("#c:" + color.getName() + "_dyes", 1, 0).addItemOutput("minecraft:" + color.getName() + "_dye", 1);
             pack.addData(new MIIdentifier(pathPrefix + "mixer/benzene.json"), GSON.toJson(benzeneDye).getBytes());
 
             // wool
-            MIRecipeJson wool = new MIRecipeJson("mixer", 2, 100).addItemInput("#c:" + color.getName() + "_dyes", 1)
-                    .addItemInput("#minecraft:wool", 8).addOutput("minecraft:" + color.getName() + "_wool", 8);
+            MIRecipeJson wool = MIRecipeJson.create(MIMachineRecipeTypes.MIXER, 2, 100).addItemInput("#c:" + color.getName() + "_dyes", 1)
+                    .addItemInput("#minecraft:wool", 8).addItemOutput("minecraft:" + color.getName() + "_wool", 8);
             pack.addData(new MIIdentifier(pathPrefix + "mixer/wool.json"), GSON.toJson(wool).getBytes());
 
             // glass
-            MIRecipeJson glass = new MIRecipeJson("mixer", 2, 100).addItemInput("#c:" + color.getName() + "_dyes", 1).addItemInput("#c:glass", 8)
-                    .addOutput("minecraft:" + color.getName() + "_stained_glass", 8);
+            MIRecipeJson glass = MIRecipeJson.create(MIMachineRecipeTypes.MIXER, 2, 100).addItemInput("#c:" + color.getName() + "_dyes", 1)
+                    .addItemInput("#c:glass", 8)
+                    .addItemOutput("minecraft:" + color.getName() + "_stained_glass", 8);
             pack.addData(new MIIdentifier(pathPrefix + "mixer/glass.json"), GSON.toJson(glass).getBytes());
 
             // glassPane
-            MIRecipeJson glassPane = new MIRecipeJson("mixer", 2, 100).addItemInput("#c:" + color.getName() + "_dyes", 1)
-                    .addItemInput("#c:glass_pane", 8).addOutput("minecraft:" + color.getName() + "_stained_glass_pane", 8);
+            MIRecipeJson glassPane = MIRecipeJson.create(MIMachineRecipeTypes.MIXER, 2, 100).addItemInput("#c:" + color.getName() + "_dyes", 1)
+                    .addItemInput("#c:glass_pane", 8).addItemOutput("minecraft:" + color.getName() + "_stained_glass_pane", 8);
             pack.addData(new MIIdentifier(pathPrefix + "mixer/glass_pane.json"), GSON.toJson(glassPane).getBytes());
 
             // shulker Box
-            MIRecipeJson shulkerBox = new MIRecipeJson("mixer", 2, 100).addItemInput("#c:" + color.getName() + "_dyes", 1)
-                    .addItemInput("#c:shulker_box", 1).addOutput("minecraft:" + color.getName() + "_shulker_box", 1);
+            MIRecipeJson shulkerBox = MIRecipeJson.create(MIMachineRecipeTypes.MIXER, 2, 100).addItemInput("#c:" + color.getName() + "_dyes", 1)
+                    .addItemInput("#c:shulker_box", 1).addItemOutput("minecraft:" + color.getName() + "_shulker_box", 1);
             pack.addData(new MIIdentifier(pathPrefix + "mixer/shulker_box.json"), GSON.toJson(shulkerBox).getBytes());
 
             // bed
-            MIRecipeJson bed = new MIRecipeJson("mixer", 2, 100).addItemInput("#c:" + color.getName() + "_dyes", 1).addItemInput("#minecraft:beds", 1)
-                    .addOutput("minecraft:" + color.getName() + "_bed", 1);
+            MIRecipeJson bed = MIRecipeJson.create(MIMachineRecipeTypes.MIXER, 2, 100).addItemInput("#c:" + color.getName() + "_dyes", 1)
+                    .addItemInput("#minecraft:beds", 1)
+                    .addItemOutput("minecraft:" + color.getName() + "_bed", 1);
             pack.addData(new MIIdentifier(pathPrefix + "mixer/bed.json"), GSON.toJson(bed).getBytes());
 
             // candle
-            MIRecipeJson candle = new MIRecipeJson("mixer", 2, 100).addItemInput("#c:" + color.getName() + "_dyes", 1)
-                    .addItemInput("#minecraft:candles", 1).addOutput("minecraft:" + color.getName() + "_candle", 1);
+            MIRecipeJson candle = MIRecipeJson.create(MIMachineRecipeTypes.MIXER, 2, 100).addItemInput("#c:" + color.getName() + "_dyes", 1)
+                    .addItemInput("#minecraft:candles", 1).addItemOutput("minecraft:" + color.getName() + "_candle", 1);
             pack.addData(new MIIdentifier(pathPrefix + "mixer/candle.json"), GSON.toJson(candle).getBytes());
 
             // carpet
-            MIRecipeJson carpet = new MIRecipeJson("mixer", 2, 100).addItemInput("#c:" + color.getName() + "_dyes", 1)
-                    .addItemInput("#minecraft:carpets", 8).addOutput("minecraft:" + color.getName() + "_carpet", 8);
+            MIRecipeJson carpet = MIRecipeJson.create(MIMachineRecipeTypes.MIXER, 2, 100).addItemInput("#c:" + color.getName() + "_dyes", 1)
+                    .addItemInput("#minecraft:carpets", 8).addItemOutput("minecraft:" + color.getName() + "_carpet", 8);
             pack.addData(new MIIdentifier(pathPrefix + "mixer/carpet.json"), GSON.toJson(carpet).getBytes());
 
             // terracotta
-            MIRecipeJson terracotta = new MIRecipeJson("mixer", 2, 100).addItemInput("#c:" + color.getName() + "_dyes", 1)
-                    .addItemInput("#c:terracottas", 8).addOutput("minecraft:" + color.getName() + "_terracotta", 8);
+            MIRecipeJson terracotta = MIRecipeJson.create(MIMachineRecipeTypes.MIXER, 2, 100).addItemInput("#c:" + color.getName() + "_dyes", 1)
+                    .addItemInput("#c:terracottas", 8).addItemOutput("minecraft:" + color.getName() + "_terracotta", 8);
             pack.addData(new MIIdentifier(pathPrefix + "mixer/terracotta.json"), GSON.toJson(terracotta).getBytes());
 
             // glass pane cutting
-            MIRecipeJson glassPaneCutting = new MIRecipeJson("cutting_machine", 2, 100).addFluidInput(MIFluids.LUBRICANT, 1)
+            MIRecipeJson glassPaneCutting = MIRecipeJson.create(MIMachineRecipeTypes.CUTTING_MACHINE, 2, 100).addFluidInput(MIFluids.LUBRICANT, 1)
                     .addItemInput("minecraft:" + color.getName() + "_stained_glass", 6)
-                    .addOutput("minecraft:" + color.getName() + "_stained_glass_pane", 16);
+                    .addItemOutput("minecraft:" + color.getName() + "_stained_glass_pane", 16);
 
             pack.addData(new MIIdentifier(pathPrefix + "cutting_machine/glass_pane.json"), GSON.toJson(glassPaneCutting).getBytes());
 
             // carpet cutting
-            MIRecipeJson carpetCutting = new MIRecipeJson("cutting_machine", 2, 100).addFluidInput(MIFluids.LUBRICANT, 1)
-                    .addItemInput("minecraft:" + color.getName() + "_wool", 1).addOutput("minecraft:" + color.getName() + "_carpet", 4);
+            MIRecipeJson carpetCutting = MIRecipeJson.create(MIMachineRecipeTypes.CUTTING_MACHINE, 2, 100).addFluidInput(MIFluids.LUBRICANT, 1)
+                    .addItemInput("minecraft:" + color.getName() + "_wool", 1).addItemOutput("minecraft:" + color.getName() + "_carpet", 4);
 
             pack.addData(new MIIdentifier(pathPrefix + "cutting_machine/carpet.json"), GSON.toJson(carpetCutting).getBytes());
 

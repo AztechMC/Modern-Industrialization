@@ -23,6 +23,7 @@
  */
 package aztech.modern_industrialization.machines.models;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 import java.util.function.Supplier;
@@ -141,7 +142,7 @@ public class MachineBakedModel implements BakedModel, FabricBakedModel {
 
     @Override
     public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction face, Random random) {
-        return null;
+        return Collections.emptyList();
     }
 
     @Override

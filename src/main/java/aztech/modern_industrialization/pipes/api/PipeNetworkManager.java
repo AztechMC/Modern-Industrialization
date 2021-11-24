@@ -144,6 +144,7 @@ public class PipeNetworkManager {
             }
             networks.remove(otherNetwork);
         }
+        network.tickingCacheValid = false;
         checkStateCoherence();
     }
 
@@ -163,6 +164,7 @@ public class PipeNetworkManager {
         // Run a DFS to mark all disconnected nodes.
         PipeNetwork network = networkByBlock.get(pos);
         Map<BlockPos, PipeNetworkNode> unvisitedNodes = new HashMap<>(network.getRawNodeMap());
+        network.tickingCacheValid = false;
 
         class Dfs {
             private void dfs(BlockPos currentPos) {

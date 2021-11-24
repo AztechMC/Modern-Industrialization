@@ -62,7 +62,6 @@ import net.minecraft.fluid.Fluids;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtNull;
 import net.minecraft.tag.Tag;
 import net.minecraft.text.*;
 import net.minecraft.util.Hand;
@@ -178,11 +177,7 @@ public class SteamDrillItem extends Item implements DynamicAttributeTool, MagnaT
         }
         // Flip NBT every tick to ensure that the attribute modifiers get updated if the
         // fuel next to the drill changes.
-        if (tag.contains("flip")) {
-            tag.remove("flip");
-        } else {
-            tag.put("flip", NbtNull.INSTANCE);
-        }
+        tag.putBoolean("flip", !tag.getBoolean("flip"));
     }
 
     public static boolean canUse(ItemStack stack, @Nullable LivingEntity user) {

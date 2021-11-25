@@ -87,7 +87,7 @@ public class SmeltingRecipeBuilder implements MaterialRecipeBuilder {
 
     public void save(Consumer<RecipeJsonProvider> consumer) {
         if (!canceled) {
-            String fullId = "materials/" + context.getMaterialName() + "/" + recipeId + ".json";
+            String fullId = "materials/" + context.getMaterialName() + "/" + recipeId;
             json.offerTo(consumer, fullId);
         }
     }

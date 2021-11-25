@@ -168,7 +168,7 @@ public class MIRecipeBuilder implements MaterialRecipeBuilder {
     @Override
     public void save(Consumer<RecipeJsonProvider> consumer) {
         if (!canceled) {
-            String fullId = "materials/" + context.getMaterialName() + "/" + recipeId + ".json";
+            String fullId = "materials/" + context.getMaterialName() + "/" + recipeId;
             json.offerTo(consumer, fullId);
         }
     }

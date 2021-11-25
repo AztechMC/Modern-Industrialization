@@ -117,7 +117,7 @@ public class ShapedRecipeBuilder implements MaterialRecipeBuilder {
     public void save(Consumer<RecipeJsonProvider> consumer) {
         if (!canceled) {
             json.validate();
-            String fullId = "materials/" + context.getMaterialName() + "/" + recipeId + ".json";
+            String fullId = "materials/" + context.getMaterialName() + "/" + recipeId;
             json.offerTo(consumer, fullId);
         }
     }

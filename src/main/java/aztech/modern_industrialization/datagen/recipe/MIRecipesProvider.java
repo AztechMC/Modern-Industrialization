@@ -36,4 +36,9 @@ public abstract class MIRecipesProvider extends FabricRecipesProvider {
     protected static Identifier id(String path) {
         return new MIIdentifier(path);
     }
+
+    @Override
+    public String getName() {
+        return this.getClass().getSimpleName();
+    }
 }

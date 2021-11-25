@@ -21,10 +21,8 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.recipe;
+package aztech.modern_industrialization.datagen.recipe;
 
-import aztech.modern_industrialization.MIRuntimeResourcePack;
-import aztech.modern_industrialization.ModernIndustrialization;
 import aztech.modern_industrialization.machines.init.MIMachineRecipeTypes;
 import aztech.modern_industrialization.recipe.json.MIRecipeJson;
 import aztech.modern_industrialization.recipe.json.ShapedRecipeJson;
@@ -32,20 +30,37 @@ import aztech.modern_industrialization.util.ResourceUtil;
 import com.google.gson.Gson;
 import java.nio.charset.StandardCharsets;
 import java.util.Collection;
-import net.minecraft.resource.ResourceManager;
+import java.util.function.Consumer;
+import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
+import net.minecraft.data.server.recipe.RecipeJsonProvider;
+import net.minecraft.resource.DirectoryResourcePack;
+import net.minecraft.resource.ReloadableResourceManagerImpl;
+import net.minecraft.resource.ResourceType;
 import net.minecraft.util.Identifier;
 
-public final class AssemblerRecipes {
+public class AssemblerRecipesProvider extends MIRecipesProvider {
     private static final Gson GSON = new Gson();
 
-    public static void yes(MIRuntimeResourcePack pack, ResourceManager manager) {
+    private final FabricDataGenerator dataGenerator;
+
+    public AssemblerRecipesProvider(FabricDataGenerator dataGenerator) {
+        super(dataGenerator);
+        this.dataGenerator = dataGenerator;
+    }
+
+    @Override
+    protected void generateRecipes(Consumer<RecipeJsonProvider> consumer) {
+        var nonGeneratedResources = dataGenerator.getOutput().resolve("../../main/resources").normalize();
+        var manager = new ReloadableResourceManagerImpl(ResourceType.SERVER_DATA);
+        manager.addPack(new DirectoryResourcePack(nonGeneratedResources.toFile()));
+
         Collection<Identifier> possibleTargets = manager.findResources("recipes", path -> path.endsWith(".json"));
         for (Identifier pathId : possibleTargets) {
             if (shouldConvertToAssembler(pathId)) {
                 try {
-                    convertToAssembler(pack, pathId, ResourceUtil.getBytes(manager.getResource(pathId)));
+                    convertToAssembler(consumer, pathId, ResourceUtil.getBytes(manager.getResource(pathId)));
                 } catch (Exception exception) {
-                    ModernIndustrialization.LOGGER.warn("Failed to convert asbl recipe {}. Error: {}", pathId, exception);
+                    throw new RuntimeException("Failed to convert asbl recipe %s. Error: %s".formatted(pathId, exception), exception);
                 }
             }
         }
@@ -64,21 +79,14 @@ public final class AssemblerRecipes {
         return false;
     }
 
-    public static void convertToAssembler(MIRuntimeResourcePack pack, Identifier recipeId, byte[] recipe) {
-        convertToAssembler(pack, recipeId, recipe, false);
-    }
-
-    public static void convertToAssembler(MIRuntimeResourcePack pack, Identifier recipeId, byte[] recipe, boolean override) {
+    public static void convertToAssembler(Consumer<RecipeJsonProvider> consumer, Identifier recipeId, byte[] recipe) {
         String recipeString = new String(recipe, StandardCharsets.UTF_8);
         ShapedRecipeJson json = GSON.fromJson(recipeString, ShapedRecipeJson.class);
         if (json.result.count == 0) {
             json.result.count = 1;
         }
         MIRecipeJson assemblerJson = json.exportToMachine(MIMachineRecipeTypes.ASSEMBLER, 8, 200, 1);
-        String outputSuffix = recipeId.getPath().substring("recipes/".length());
-        pack.addData("modern_industrialization/recipes/generated/assembler/" + outputSuffix, GSON.toJson(assemblerJson).getBytes(), override);
-    }
-
-    private AssemblerRecipes() {
+        String outputSuffix = recipeId.getPath().substring("recipes/".length(), recipeId.getPath().length() - ".json".length());
+        assemblerJson.offerTo(consumer, "assembler_generated/" + outputSuffix);
     }
 }

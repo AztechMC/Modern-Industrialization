@@ -24,7 +24,6 @@
 package aztech.modern_industrialization.mixin;
 
 import aztech.modern_industrialization.ModernIndustrialization;
-import aztech.modern_industrialization.recipe.MIRecipes;
 import aztech.modern_industrialization.textures.MITextures;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -60,12 +59,6 @@ public abstract class ReloadableResourceManagerImplMixin implements ReloadableRe
             long millis2 = System.currentTimeMillis();
             ModernIndustrialization.LOGGER.info("Injecting generated texture resource pack. Took " + (millis2 - millis1) + " ms to build.");
             addPack(pack);
-        } else if (this.type == ResourceType.SERVER_DATA) {
-            ModernIndustrialization.LOGGER.info("Creating generated recipes pack.");
-            long millis1 = System.currentTimeMillis();
-            addPack(MIRecipes.buildGeneratedRecipesPack(this));
-            long millis2 = System.currentTimeMillis();
-            ModernIndustrialization.LOGGER.info("Injecting generated recipes pack. Took " + (millis2 - millis1) + " ms to build.");
         }
     }
 }

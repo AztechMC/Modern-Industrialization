@@ -1,8 +1,0 @@
-{
-  "default_overlays": {
-    "front": "modern_industrialization:blocks/machines/large_tank/overlay_front",
-    "output": "modern_industrialization:blocks/overlays/output",
-    "item_auto": "modern_industrialization:blocks/overlays/item_auto",
-    "fluid_auto": "modern_industrialization:blocks/overlays/fluid_auto"
-  }
-}

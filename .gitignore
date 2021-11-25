@@ -33,6 +33,6 @@ run/
 
 __pycache__/
 
-# datagen cache
+# datagen
 
-src/generated/resources/.cache/
+src/generated/

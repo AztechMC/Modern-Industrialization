@@ -21,21 +21,24 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.materials.recipe.builder;
+package aztech.modern_industrialization.datagen.recipe;
 
+import aztech.modern_industrialization.materials.Material;
+import aztech.modern_industrialization.materials.MaterialRegistry;
 import java.util.function.Consumer;
+import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.minecraft.data.server.recipe.RecipeJsonProvider;
 
-public interface MaterialRecipeBuilder {
-    String getRecipeId();
+public class MaterialRecipesProvider extends MIRecipesProvider {
 
-    void cancel();
+    public MaterialRecipesProvider(FabricDataGenerator dataGenerator) {
+        super(dataGenerator);
+    }
 
-    boolean isCanceled();
-
-    /**
-     * @deprecated don't call, let the MaterialBuilder do it
-     */
-    @Deprecated
-    void save(Consumer<RecipeJsonProvider> consumer);
+    @Override
+    protected void generateRecipes(Consumer<RecipeJsonProvider> consumer) {
+        for (Material material : MaterialRegistry.getMaterials().values()) {
+            material.registerRecipes.accept(consumer);
+        }
+    }
 }

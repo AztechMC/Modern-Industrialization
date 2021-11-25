@@ -24,8 +24,6 @@
 package aztech.modern_industrialization.recipe;
 
 import aztech.modern_industrialization.MIRuntimeResourcePack;
-import aztech.modern_industrialization.materials.Material;
-import aztech.modern_industrialization.materials.MaterialRegistry;
 import net.devtech.arrp.api.RuntimeResourcePack;
 import net.minecraft.resource.ResourceManager;
 
@@ -46,9 +44,6 @@ public final class MIRecipes {
 
         AssemblerRecipes.yes(pack, manager);
 
-        for (Material material : MaterialRegistry.getMaterials().values()) {
-            material.registerRecipes.run();
-        }
         return pack;
     }
 }

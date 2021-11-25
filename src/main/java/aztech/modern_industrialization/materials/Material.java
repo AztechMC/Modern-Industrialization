@@ -26,6 +26,8 @@ package aztech.modern_industrialization.materials;
 import aztech.modern_industrialization.materials.part.MaterialPart;
 import java.util.Collections;
 import java.util.Map;
+import java.util.function.Consumer;
+import net.minecraft.data.server.recipe.RecipeJsonProvider;
 
 /**
  * A read-only material. Build with {@link MaterialBuilder}.
@@ -34,9 +36,9 @@ public class Material {
     public final String name;
     final Map<String, MaterialPart> parts;
 
-    public final Runnable registerRecipes;
+    public final Consumer<Consumer<RecipeJsonProvider>> registerRecipes;
 
-    Material(String name, Map<String, MaterialPart> parts, Runnable registerRecipes) {
+    Material(String name, Map<String, MaterialPart> parts, Consumer<Consumer<RecipeJsonProvider>> registerRecipes) {
         this.name = name;
         this.parts = parts;
         this.registerRecipes = registerRecipes;

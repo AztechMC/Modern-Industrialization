@@ -23,14 +23,14 @@
  */
 package aztech.modern_industrialization.materials.recipe.builder;
 
-import aztech.modern_industrialization.ModernIndustrialization;
 import aztech.modern_industrialization.machines.init.MIMachineRecipeTypes;
 import aztech.modern_industrialization.machines.recipe.MachineRecipeType;
 import aztech.modern_industrialization.materials.MaterialBuilder;
 import aztech.modern_industrialization.materials.part.Part;
 import aztech.modern_industrialization.recipe.json.ShapedRecipeJson;
 import com.google.gson.Gson;
-import net.minecraft.util.Identifier;
+import java.util.function.Consumer;
+import net.minecraft.data.server.recipe.RecipeJsonProvider;
 
 public class ShapedRecipeBuilder implements MaterialRecipeBuilder {
     private static final Gson GSON = new Gson();
@@ -114,12 +114,11 @@ public class ShapedRecipeBuilder implements MaterialRecipeBuilder {
     }
 
     @Override
-    public void save() {
+    public void save(Consumer<RecipeJsonProvider> consumer) {
         if (!canceled) {
             json.validate();
-            String fullId = "modern_industrialization:recipes/generated/materials/" + context.getMaterialName() + "/" + recipeId + ".json";
-            String json = GSON.toJson(this.json);
-            ModernIndustrialization.RESOURCE_PACK.addData(new Identifier(fullId), json.getBytes());
+            String fullId = "materials/" + context.getMaterialName() + "/" + recipeId + ".json";
+            json.offerTo(consumer, fullId);
         }
     }
 }

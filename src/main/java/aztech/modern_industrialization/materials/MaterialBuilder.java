@@ -35,6 +35,7 @@ import java.util.*;
 import java.util.function.Consumer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.data.server.recipe.RecipeJsonProvider;
 
 public final class MaterialBuilder {
 
@@ -158,14 +159,14 @@ public final class MaterialBuilder {
         return new Material(materialName, Collections.unmodifiableMap(partsMap), this::buildRecipes);
     }
 
-    public void buildRecipes() {
+    public void buildRecipes(Consumer<RecipeJsonProvider> consumer) {
         Map<String, MaterialRecipeBuilder> recipesMap = new HashMap<>();
         RecipeContext recipeContext = new RecipeContext(recipesMap);
         for (RecipeAction action : recipesActions) {
             action.apply(recipeContext);
         }
         for (MaterialRecipeBuilder builder : recipesMap.values()) {
-            builder.save();
+            builder.save(consumer);
         }
     }
 

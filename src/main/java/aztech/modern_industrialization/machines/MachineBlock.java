@@ -28,8 +28,11 @@ import static aztech.modern_industrialization.ModernIndustrialization.METAL_MATE
 import aztech.modern_industrialization.MIBlock;
 import aztech.modern_industrialization.api.TickableBlock;
 import aztech.modern_industrialization.inventory.ConfigurableItemStack;
+import aztech.modern_industrialization.machines.models.MachineCasing;
 import aztech.modern_industrialization.util.MobSpawning;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.function.BiFunction;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
@@ -49,6 +52,12 @@ import org.jetbrains.annotations.Nullable;
 
 public class MachineBlock extends MIBlock implements TickableBlock {
     private final BiFunction<BlockPos, BlockState, BlockEntity> blockEntityConstructor;
+
+    /**
+     * Used by the model loading code to identify machine models.
+     * TODO: refactor
+     */
+    public static final Map<String, MachineCasing> REGISTERED_MACHINES = new HashMap<>();
 
     public MachineBlock(String machineId, BiFunction<BlockPos, BlockState, BlockEntity> blockEntityConstructor) {
         super(machineId, FabricBlockSettings.of(METAL_MATERIAL).hardness(4.0f).breakByTool(FabricToolTags.PICKAXES).requiresTool()

@@ -1,0 +1,11 @@
+{
+  "default_overlays": {
+    "front": "modern_industrialization:blocks/machines/replicator/overlay_front",
+    "front_active": "modern_industrialization:blocks/machines/replicator/overlay_front_active",
+    "side": "modern_industrialization:blocks/machines/replicator/overlay_side",
+    "side_active": "modern_industrialization:blocks/machines/replicator/overlay_side_active",
+    "output": "modern_industrialization:blocks/overlays/output",
+    "item_auto": "modern_industrialization:blocks/overlays/item_auto",
+    "fluid_auto": "modern_industrialization:blocks/overlays/fluid_auto"
+  }
+}

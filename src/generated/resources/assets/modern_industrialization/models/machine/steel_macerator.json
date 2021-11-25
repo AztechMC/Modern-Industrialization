@@ -1,0 +1,11 @@
+{
+  "default_overlays": {
+    "top": "modern_industrialization:blocks/machines/macerator/overlay_top",
+    "top_active": "modern_industrialization:blocks/machines/macerator/overlay_top_active",
+    "front": "modern_industrialization:blocks/machines/macerator/overlay_front",
+    "front_active": "modern_industrialization:blocks/machines/macerator/overlay_front_active",
+    "output": "modern_industrialization:blocks/overlays/output",
+    "item_auto": "modern_industrialization:blocks/overlays/item_auto",
+    "fluid_auto": "modern_industrialization:blocks/overlays/fluid_auto"
+  }
+}

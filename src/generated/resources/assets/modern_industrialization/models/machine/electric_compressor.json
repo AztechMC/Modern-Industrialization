@@ -1,0 +1,13 @@
+{
+  "default_overlays": {
+    "top": "modern_industrialization:blocks/machines/compressor/overlay_top",
+    "top_active": "modern_industrialization:blocks/machines/compressor/overlay_top_active",
+    "front": "modern_industrialization:blocks/machines/compressor/overlay_front",
+    "front_active": "modern_industrialization:blocks/machines/compressor/overlay_front_active",
+    "side": "modern_industrialization:blocks/machines/compressor/overlay_side",
+    "side_active": "modern_industrialization:blocks/machines/compressor/overlay_side_active",
+    "output": "modern_industrialization:blocks/overlays/output",
+    "item_auto": "modern_industrialization:blocks/overlays/item_auto",
+    "fluid_auto": "modern_industrialization:blocks/overlays/fluid_auto"
+  }
+}

@@ -148,6 +148,10 @@ public class MachineRecipeType implements RecipeType<MachineRecipe>, RecipeSeria
         return id;
     }
 
+    public String getPath() {
+        return id.getPath();
+    }
+
     private void validateRecipe(MachineRecipe recipe) {
         if (!allowItemInput && recipe.itemInputs.size() > 0)
             throw new IllegalArgumentException("Item inputs are not allowed.");

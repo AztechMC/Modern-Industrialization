@@ -23,7 +23,8 @@
  */
 package aztech.modern_industrialization.machines.models;
 
-import aztech.modern_industrialization.MIIdentifier;
+import aztech.modern_industrialization.datagen.model.MachineModelsProvider;
+import aztech.modern_industrialization.machines.MachineBlock;
 import aztech.modern_industrialization.machines.MachineBlockEntityRenderer;
 import net.fabricmc.fabric.api.client.model.ModelLoadingRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.BlockEntityRendererRegistry;
@@ -58,10 +59,13 @@ public final class MachineModels {
 
     public static void addTieredMachine(String id, String overlayFolder, MachineCasing defaultCasing, boolean frontOverlay, boolean topOverlay,
             boolean sideOverlay, boolean hasActive) {
-        MachineUnbakedModel model = new MachineUnbakedModel(overlayFolder, frontOverlay, topOverlay, sideOverlay, hasActive, defaultCasing.mcm)
-                .withStandardOverlays();
-        MachineModelProvider.register(new MIIdentifier("block/" + id), model);
-        MachineModelProvider.register(new MIIdentifier("item/" + id), model);
+        // MachineUnbakedModel model = new MachineUnbakedModel(overlayFolder, frontOverlay, topOverlay, sideOverlay, hasActive, defaultCasing.mcm)
+        // .withStandardOverlays();
+        // MachineModelProvider.register(new MIIdentifier("block/" + id), model);
+        // MachineModelProvider.register(new MIIdentifier("item/" + id), model);
+        // TODO: refactor this
+        MachineBlock.REGISTERED_MACHINES.put(id, defaultCasing);
+        MachineModelsProvider.register(id, overlayFolder, frontOverlay, topOverlay, sideOverlay, hasActive);
     }
 
     public static void addTieredMachineTiers(String name, boolean frontOverlay, boolean topOverlay, boolean sideOverlay, String... tiers) {

@@ -1,0 +1,7 @@
+{
+  "default_overlays": {
+    "output": "modern_industrialization:blocks/overlays/output",
+    "item_auto": "modern_industrialization:blocks/overlays/item_auto",
+    "fluid_auto": "modern_industrialization:blocks/overlays/fluid_auto"
+  }
+}

@@ -21,10 +21,13 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.machines.models;
+package aztech.modern_industrialization.client.model;
 
+import aztech.modern_industrialization.machines.models.MachineCasing;
+import aztech.modern_industrialization.machines.models.MachineModelClientData;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.function.Supplier;
 import net.fabricmc.fabric.api.renderer.v1.material.RenderMaterial;
@@ -50,18 +53,17 @@ public class MachineBakedModel implements BakedModel, FabricBakedModel {
 
     private final ModelTransformation blockTransformation;
     public final RenderMaterial cutoutMaterial;
-    /**
-     * @see MachineUnbakedModel
-     */
-    private final Sprite[] sprites;
-    private MachineCasingModel defaultCasing;
+    private final MachineCasing baseCasing;
+    private final Sprite[] defaultOverlays;
+    private final Map<String, Sprite[]> tieredOverlays;
 
-    public MachineBakedModel(ModelTransformation blockTransformation, RenderMaterial cutoutMaterial, Sprite[] sprites,
-            MachineCasingModel defaultCasing) {
+    MachineBakedModel(ModelTransformation blockTransformation, RenderMaterial cutoutMaterial, MachineCasing baseCasing, Sprite[] defaultOverlays,
+            Map<String, Sprite[]> tieredOverlays) {
         this.blockTransformation = blockTransformation;
         this.cutoutMaterial = cutoutMaterial;
-        this.sprites = sprites;
-        this.defaultCasing = defaultCasing;
+        this.baseCasing = baseCasing;
+        this.defaultOverlays = defaultOverlays;
+        this.tieredOverlays = tieredOverlays;
     }
 
     @Override
@@ -75,15 +77,15 @@ public class MachineBakedModel implements BakedModel, FabricBakedModel {
         if (blockRenderView instanceof RenderAttachedBlockView bv) {
             Object attachment = bv.getBlockEntityRenderAttachment(blockPos);
             if (attachment instanceof MachineModelClientData clientData) {
-                MachineCasingModel casing = clientData.casing == null ? defaultCasing : clientData.casing.mcm;
-                renderBase(renderContext, casing, clientData.frontDirection);
+                MachineCasing casing = clientData.casing == null ? baseCasing : clientData.casing;
+                var sprites = renderBase(renderContext, casing, clientData.frontDirection);
                 if (clientData.outputDirection != null) {
-                    emitSprite(renderContext.getEmitter(), clientData.outputDirection, sprites[6], 3e-4f);
+                    emitSprite(renderContext.getEmitter(), clientData.outputDirection, sprites[12], 3e-4f);
                     if (clientData.itemAutoExtract) {
-                        emitSprite(renderContext.getEmitter(), clientData.outputDirection, sprites[7], 3e-4f);
+                        emitSprite(renderContext.getEmitter(), clientData.outputDirection, sprites[13], 3e-4f);
                     }
                     if (clientData.fluidAutoExtract) {
-                        emitSprite(renderContext.getEmitter(), clientData.outputDirection, sprites[8], 3e-4f);
+                        emitSprite(renderContext.getEmitter(), clientData.outputDirection, sprites[14], 3e-4f);
                     }
                 }
             }
@@ -92,52 +94,59 @@ public class MachineBakedModel implements BakedModel, FabricBakedModel {
 
     @Override
     public void emitItemQuads(ItemStack itemStack, Supplier<Random> supplier, RenderContext renderContext) {
-        renderBase(renderContext, defaultCasing, Direction.NORTH);
+        renderBase(renderContext, baseCasing, Direction.NORTH);
     }
 
-    private void renderBase(RenderContext renderContext, MachineCasingModel casing, Direction facingDirection) {
+    private Sprite[] renderBase(RenderContext renderContext, MachineCasing casing, Direction facingDirection) {
         // Casing
-        renderContext.meshConsumer().accept(casing.getMesh());
+        renderContext.meshConsumer().accept(casing.mcm.getMesh());
         // Machine overlays
+        var sprites = getSprites(casing);
         QuadEmitter emitter = renderContext.getEmitter();
         for (Direction d : DIRECTIONS) {
-            Sprite sprite = getSprite(d, facingDirection, false);
+            Sprite sprite = getSprite(sprites, d, facingDirection, false);
             if (sprite != null) {
                 emitSprite(emitter, d, sprite, 1e-6f);
             }
         }
+        return sprites;
+    }
+
+    public Sprite[] getSprites(@Nullable MachineCasing casing) {
+        if (casing == null) {
+            return defaultOverlays;
+        }
+        return tieredOverlays.getOrDefault(casing.name, defaultOverlays);
     }
 
     /**
      * Returns null if nothing should be rendered.
      */
     @Nullable
-    public Sprite getSprite(Direction side, Direction facingDirection, boolean isActive) {
-        int spriteId = -2;
-        if (side == facingDirection) {
+    public static Sprite getSprite(Sprite[] sprites, Direction side, Direction facingDirection, boolean isActive) {
+        int spriteId;
+        if (side == Direction.UP) {
             spriteId = 0;
-        } else if (side == Direction.UP) {
+        } else if (side == Direction.DOWN) {
             spriteId = 2;
-        } else if (side.getAxis().isHorizontal()) {
-            spriteId = 4;
+        } else {
+            spriteId = (facingDirection.getHorizontal() - side.getHorizontal() + 4) % 4 * 2 + 4;
         }
         if (isActive) {
             spriteId++;
         }
-        if (spriteId >= 0) {
-            return sprites[spriteId];
-        } else {
-            return null;
-        }
+        return sprites[spriteId];
     }
 
     private void emitSprite(QuadEmitter emitter, Direction d, Sprite sprite, float depth) {
-        emitter.material(cutoutMaterial);
-        emitter.square(d, 0, 0, 1, 1, -depth);
-        emitter.cullFace(d);
-        emitter.spriteBake(0, sprite, MutableQuadView.BAKE_LOCK_UV);
-        emitter.spriteColor(0, -1, -1, -1, -1);
-        emitter.emit();
+        if (sprite != null) {
+            emitter.material(cutoutMaterial);
+            emitter.square(d, 0, 0, 1, 1, -depth);
+            emitter.cullFace(d);
+            emitter.spriteBake(0, sprite, MutableQuadView.BAKE_LOCK_UV);
+            emitter.spriteColor(0, -1, -1, -1, -1);
+            emitter.emit();
+        }
     }
 
     @Override
@@ -167,7 +176,7 @@ public class MachineBakedModel implements BakedModel, FabricBakedModel {
 
     @Override
     public Sprite getParticleSprite() {
-        return defaultCasing.getSideSprite();
+        return baseCasing.mcm.getSideSprite();
     }
 
     @Override
@@ -178,17 +187,5 @@ public class MachineBakedModel implements BakedModel, FabricBakedModel {
     @Override
     public ModelOverrideList getOverrides() {
         return ModelOverrideList.EMPTY;
-    }
-
-    public Sprite[] getSprites() {
-        return sprites;
-    }
-
-    public MachineCasingModel getDefaultCasing() {
-        return defaultCasing;
-    }
-
-    public void setDefaultCasing(MachineCasingModel defaultCasing) {
-        this.defaultCasing = defaultCasing;
     }
 }

@@ -45,7 +45,7 @@ public class MIRecipeBuilder implements MaterialRecipeBuilder {
     }
 
     public MIRecipeBuilder(MaterialBuilder.RecipeContext context, MachineRecipeType type, String recipeSuffix, MIRecipeJson json) {
-        this.recipeId = type + "/" + recipeSuffix;
+        this.recipeId = type.getPath() + "/" + recipeSuffix;
         this.context = context;
         this.json = json;
         context.addRecipe(this);

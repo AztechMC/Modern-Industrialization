@@ -32,6 +32,7 @@ import aztech.modern_industrialization.blocks.forgehammer.ForgeHammerScreen;
 import aztech.modern_industrialization.blocks.storage.barrel.BarrelTooltipData;
 import aztech.modern_industrialization.blocks.storage.barrel.client.BarrelTooltipComponent;
 import aztech.modern_industrialization.blocks.storage.tank.CreativeTankClientSetup;
+import aztech.modern_industrialization.client.model.MachineModelLoader;
 import aztech.modern_industrialization.debug.MissingTranslationsCommand;
 import aztech.modern_industrialization.inventory.ConfigurableInventoryPacketHandlers;
 import aztech.modern_industrialization.inventory.ConfigurableInventoryPackets;
@@ -92,6 +93,7 @@ public class ModernIndustrializationClient implements ClientModInitializer {
         setupPackets();
         CreativeTankClientSetup.setupClient();
         MachineModels.init();
+        MachineModelLoader.init();
         MultiblockMachines.clientInit();
         MultiblockErrorHighlight.init();
         WorldRenderEvents.BLOCK_OUTLINE.register(MachineOverlay::onBlockOutline);

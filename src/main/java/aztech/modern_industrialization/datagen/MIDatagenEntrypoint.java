@@ -24,6 +24,7 @@
 package aztech.modern_industrialization.datagen;
 
 import aztech.modern_industrialization.ModernIndustrialization;
+import aztech.modern_industrialization.datagen.model.MachineModelsProvider;
 import aztech.modern_industrialization.datagen.recipe.PetrochemRecipesProvider;
 import aztech.modern_industrialization.datagen.recipe.PlankRecipesProvider;
 import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint;
@@ -33,8 +34,12 @@ public class MIDatagenEntrypoint implements DataGeneratorEntrypoint {
     @Override
     public void onInitializeDataGenerator(FabricDataGenerator dataGenerator) {
         ModernIndustrialization.LOGGER.info("Starting Modern Industrialization Datagen");
+
         dataGenerator.addProvider(PetrochemRecipesProvider::new);
         dataGenerator.addProvider(PlankRecipesProvider::new);
+
+        dataGenerator.addProvider(MachineModelsProvider::new);
+
         ModernIndustrialization.LOGGER.info("Modern Industrialization Datagen done");
     }
 }

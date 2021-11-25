@@ -1,0 +1,9 @@
+{
+  "default_overlays": {
+    "front": "modern_industrialization:blocks/machines/packer/overlay_front",
+    "front_active": "modern_industrialization:blocks/machines/packer/overlay_front_active",
+    "output": "modern_industrialization:blocks/overlays/output",
+    "item_auto": "modern_industrialization:blocks/overlays/item_auto",
+    "fluid_auto": "modern_industrialization:blocks/overlays/fluid_auto"
+  }
+}

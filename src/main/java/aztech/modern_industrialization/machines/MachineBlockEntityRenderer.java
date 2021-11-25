@@ -23,8 +23,10 @@
  */
 package aztech.modern_industrialization.machines;
 
-import aztech.modern_industrialization.machines.models.MachineBakedModel;
+import aztech.modern_industrialization.client.model.MachineBakedModel;
+import aztech.modern_industrialization.machines.models.MachineCasing;
 import aztech.modern_industrialization.machines.models.MachineModelClientData;
+import java.util.IdentityHashMap;
 import net.fabricmc.fabric.api.renderer.v1.Renderer;
 import net.fabricmc.fabric.api.renderer.v1.RendererAccess;
 import net.fabricmc.fabric.api.renderer.v1.mesh.MutableQuadView;
@@ -47,8 +49,8 @@ public class MachineBlockEntityRenderer<T extends MachineBlockEntity> implements
     private final BlockModels blockModels;
     private BlockState lastBlockState = null;
     private MachineBakedModel model = null;
-    private final BakedQuad[] cachedQuads = new BakedQuad[12];
-    private final boolean[] isQuadCached = new boolean[12];
+    private final IdentityHashMap<MachineCasing, Object[]> quadCache = new IdentityHashMap<>();
+    private static final Object NO_QUAD = new Object();
 
     public MachineBlockEntityRenderer(BlockEntityRendererFactory.Context ctx) {
         this.blockModels = ctx.getRenderManager().getModels();
@@ -56,13 +58,16 @@ public class MachineBlockEntityRenderer<T extends MachineBlockEntity> implements
 
     @Nullable
     private BakedQuad getCachedQuad(MachineModelClientData data, Direction d) {
-        int cachedQuadIndex = d.ordinal() * 2 + (data.isActive ? 1 : 0);
+        var facing = data.frontDirection;
+        int cachedQuadIndex = facing.ordinal() * 6 + d.ordinal();
+        var casing = data.casing;
+        var cachedQuads = quadCache.computeIfAbsent(casing, c -> new Object[36]);
 
-        if (!isQuadCached[cachedQuadIndex]) {
+        if (cachedQuads[cachedQuadIndex] == null) {
             Renderer renderer = RendererAccess.INSTANCE.getRenderer();
             QuadEmitter emitter = renderer.meshBuilder().getEmitter();
 
-            Sprite sprite = model.getSprite(d, data.frontDirection, data.isActive);
+            Sprite sprite = MachineBakedModel.getSprite(model.getSprites(casing), d, facing, true);
             if (sprite != null) {
                 emitter.material(model.cutoutMaterial);
                 emitter.square(d, 0, 0, 1, 1, -2e-4f); // non-active face is -1e-6f, so we override it.
@@ -71,12 +76,12 @@ public class MachineBlockEntityRenderer<T extends MachineBlockEntity> implements
                 emitter.spriteColor(0, -1, -1, -1, -1);
                 cachedQuads[cachedQuadIndex] = emitter.toBakedQuad(0, sprite, false);
             } else {
-                cachedQuads[cachedQuadIndex] = null;
+                cachedQuads[cachedQuadIndex] = NO_QUAD;
             }
-            isQuadCached[cachedQuadIndex] = true;
         }
 
-        return cachedQuads[cachedQuadIndex];
+        var quad = cachedQuads[cachedQuadIndex];
+        return quad == NO_QUAD ? null : (BakedQuad) quad;
     }
 
     @Override
@@ -92,8 +97,6 @@ public class MachineBlockEntityRenderer<T extends MachineBlockEntity> implements
 
         MachineModelClientData data = entity.getModelData();
         if (data.isActive) {
-            Direction facingDirection = data.frontDirection;
-
             VertexConsumer vc = vcp.getBuffer(RenderLayer.getCutout());
 
             for (Direction d : Direction.values()) {

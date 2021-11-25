@@ -86,7 +86,7 @@ public class AssemblerRecipesProvider extends MIRecipesProvider {
             json.result.count = 1;
         }
         MIRecipeJson assemblerJson = json.exportToMachine(MIMachineRecipeTypes.ASSEMBLER, 8, 200, 1);
-        String outputSuffix = recipeId.getPath().substring("recipes/".length(), recipeId.getPath().length() - ".json".length());
+        String outputSuffix = recipeId.getPath().substring("recipes/".length(), recipeId.getPath().length() - "_asbl.json".length());
         assemblerJson.offerTo(consumer, "assembler_generated/" + outputSuffix);
     }
 }

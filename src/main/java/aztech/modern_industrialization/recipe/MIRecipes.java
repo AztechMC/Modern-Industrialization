@@ -26,7 +26,6 @@ package aztech.modern_industrialization.recipe;
 import aztech.modern_industrialization.MIRuntimeResourcePack;
 import aztech.modern_industrialization.materials.Material;
 import aztech.modern_industrialization.materials.MaterialRegistry;
-import aztech.modern_industrialization.materials.alloy.AlloyRegister;
 import net.devtech.arrp.api.RuntimeResourcePack;
 import net.minecraft.resource.ResourceManager;
 
@@ -46,7 +45,6 @@ public final class MIRecipes {
         MIRuntimeResourcePack pack = new MIRuntimeResourcePack("MI Generated recipes");
 
         AssemblerRecipes.yes(pack, manager);
-        AlloyRegister.init(pack);
 
         for (Material material : MaterialRegistry.getMaterials().values()) {
             material.registerRecipes.run();

@@ -67,6 +67,10 @@ public class ShapelessRecipeJson implements RecipeJson {
         int count;
     }
 
+    public MIRecipeJson exportToMachine(MachineRecipeType machine, int eu, int duration) {
+        return exportToMachine(machine, eu, duration, 1);
+    }
+
     public MIRecipeJson exportToMachine(MachineRecipeType machine, int eu, int duration, int division) {
         if (result.count % division != 0) {
             throw new IllegalArgumentException("Output must be divisible by division");

@@ -23,14 +23,43 @@
  */
 package aztech.modern_industrialization.materials.alloy;
 
-import aztech.modern_industrialization.MIRuntimeResourcePack;
+import aztech.modern_industrialization.datagen.recipe.MIRecipesProvider;
 import aztech.modern_industrialization.machines.init.MIMachineRecipeTypes;
 import aztech.modern_industrialization.recipe.json.ShapelessRecipeJson;
 import com.google.gson.Gson;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
+import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
+import net.minecraft.data.server.recipe.RecipeJsonProvider;
 
-public class AlloyRegister {
+public class AlloyRegister extends MIRecipesProvider {
+
+    public AlloyRegister(FabricDataGenerator dataGenerator) {
+        super(dataGenerator);
+    }
+
+    @Override
+    protected void generateRecipes(Consumer<RecipeJsonProvider> consumer) {
+        new AlloyBuilder("bronze").addIngredient("tin", 1).addIngredient("copper", 3).Build(consumer);
+        new AlloyBuilder("battery_alloy").addIngredient("lead", 1).addIngredient("antimony", 1).Build(consumer);
+        new AlloyBuilder("cupronickel").addIngredient("copper", 1).addIngredient("nickel", 1).Build(consumer);
+        new AlloyBuilder("invar").addIngredient("iron", 2).addIngredient("nickel", 1).Build(consumer);
+        new AlloyBuilder("electrum").addIngredient("gold", 1).addIngredient("silver", 1).Build(consumer);
+        new AlloyBuilder("stainless_steel").addIngredient("iron", 6).addIngredient("chrome", 1).addIngredient("nickel", 1)
+                .addIngredient("manganese", 1).Build(consumer);
+        new AlloyBuilder("kanthal").addIngredient("stainless_steel", 1).addIngredient("chrome", 1).addIngredient("aluminum", 1).Build(consumer);
+        new AlloyBuilder("soldering_alloy").addIngredient("tin", 1).addIngredient("lead", 1).Build(consumer);
+
+        new AlloyBuilder("le_uranium").addIngredient("uranium_238", 8).addIngredient("uranium_235", 1).Build(consumer);
+        new AlloyBuilder("he_uranium").addIngredient("uranium_238", 6).addIngredient("uranium_235", 3).Build(consumer);
+
+        new AlloyBuilder("le_mox").addIngredient("uranium_238", 8).addIngredient("plutonium", 1).Build(consumer);
+        new AlloyBuilder("he_mox").addIngredient("uranium_238", 6).addIngredient("plutonium", 3).Build(consumer);
+
+        new AlloyBuilder("supraconductor").addIngredient("iridium", 1).addIngredient("annealed_copper", 3).addIngredient("yttrium", 3)
+                .addIngredient("neodymium", 2).Build(consumer);
+    }
 
     public static class AlloyBuilder {
 
@@ -61,7 +90,7 @@ public class AlloyRegister {
             return this;
         }
 
-        public void Build(MIRuntimeResourcePack pack) {
+        public void Build(Consumer<RecipeJsonProvider> consumer) {
             ShapelessRecipeJson dusts = new ShapelessRecipeJson("modern_industrialization:" + output + "_dust", totalAmount);
             ShapelessRecipeJson tinyDusts = new ShapelessRecipeJson("modern_industrialization:" + output + "_tiny_dust", totalAmount);
 
@@ -77,34 +106,11 @@ public class AlloyRegister {
                 }
             }
 
-            pack.addData("modern_industrialization/recipes/generated/mixer/" + output + "/dust.json",
-                    GSON.toJson(dusts.exportToMachine(MIMachineRecipeTypes.MIXER, 2, 100, 1)).getBytes());
-            pack.addData("modern_industrialization/recipes/generated/mixer/" + output + "/tiny_dust.json",
-                    GSON.toJson(tinyDusts.exportToMachine(MIMachineRecipeTypes.MIXER, 2, 10, 1)).getBytes());
+            dusts.exportToMachine(MIMachineRecipeTypes.MIXER, 2, 100).offerTo(consumer, "alloy/mixer/" + output + "/dust");
+            tinyDusts.exportToMachine(MIMachineRecipeTypes.MIXER, 2, 100).offerTo(consumer, "alloy/mixer/" + output + "/tiny_dust");
 
         }
 
     }
 
-    public static void init(MIRuntimeResourcePack pack) {
-        new AlloyBuilder("bronze").addIngredient("tin", 1).addIngredient("copper", 3).Build(pack);
-        new AlloyBuilder("battery_alloy").addIngredient("lead", 1).addIngredient("antimony", 1).Build(pack);
-        new AlloyBuilder("cupronickel").addIngredient("copper", 1).addIngredient("nickel", 1).Build(pack);
-        new AlloyBuilder("invar").addIngredient("iron", 2).addIngredient("nickel", 1).Build(pack);
-        new AlloyBuilder("electrum").addIngredient("gold", 1).addIngredient("silver", 1).Build(pack);
-        new AlloyBuilder("stainless_steel").addIngredient("iron", 6).addIngredient("chrome", 1).addIngredient("nickel", 1)
-                .addIngredient("manganese", 1).Build(pack);
-        new AlloyBuilder("kanthal").addIngredient("stainless_steel", 1).addIngredient("chrome", 1).addIngredient("aluminum", 1).Build(pack);
-        new AlloyBuilder("soldering_alloy").addIngredient("tin", 1).addIngredient("lead", 1).Build(pack);
-
-        new AlloyBuilder("le_uranium").addIngredient("uranium_238", 8).addIngredient("uranium_235", 1).Build(pack);
-        new AlloyBuilder("he_uranium").addIngredient("uranium_238", 6).addIngredient("uranium_235", 3).Build(pack);
-
-        new AlloyBuilder("le_mox").addIngredient("uranium_238", 8).addIngredient("plutonium", 1).Build(pack);
-        new AlloyBuilder("he_mox").addIngredient("uranium_238", 6).addIngredient("plutonium", 3).Build(pack);
-
-        new AlloyBuilder("supraconductor").addIngredient("iridium", 1).addIngredient("annealed_copper", 3).addIngredient("yttrium", 3)
-                .addIngredient("neodymium", 2).Build(pack);
-
-    }
 }

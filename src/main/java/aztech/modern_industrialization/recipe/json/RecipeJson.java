@@ -25,9 +25,8 @@ package aztech.modern_industrialization.recipe.json;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import net.minecraft.data.server.recipe.RecipeJsonProvider;
-
 import java.util.function.Consumer;
+import net.minecraft.data.server.recipe.RecipeJsonProvider;
 
 /**
  * Marker interface for objects that can be written to JSON recipes with GSON.

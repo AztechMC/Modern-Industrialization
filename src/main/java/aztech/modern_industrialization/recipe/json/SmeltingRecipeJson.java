@@ -23,11 +23,10 @@
  */
 package aztech.modern_industrialization.recipe.json;
 
+import java.util.function.Consumer;
 import net.minecraft.data.server.recipe.RecipeJsonProvider;
 import net.minecraft.recipe.RecipeSerializer;
 import net.minecraft.util.Identifier;
-
-import java.util.function.Consumer;
 
 @SuppressWarnings({ "FieldCanBeLocal", "MismatchedQueryAndUpdateOfCollection", "UnusedDeclaration" })
 public class SmeltingRecipeJson implements RecipeJson {

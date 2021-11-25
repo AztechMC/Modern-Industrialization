@@ -24,17 +24,14 @@
 package aztech.modern_industrialization.recipe.json;
 
 import aztech.modern_industrialization.machines.recipe.MachineRecipeType;
-import com.google.gson.JsonObject;
-import net.minecraft.data.server.recipe.RecipeJsonProvider;
-import net.minecraft.recipe.RecipeSerializer;
-import net.minecraft.util.Identifier;
-import org.jetbrains.annotations.Nullable;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
+import net.minecraft.data.server.recipe.RecipeJsonProvider;
+import net.minecraft.recipe.RecipeSerializer;
+import net.minecraft.util.Identifier;
 
 public class ShapelessRecipeJson implements RecipeJson {
 

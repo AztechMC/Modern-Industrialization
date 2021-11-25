@@ -24,7 +24,6 @@
 package aztech.modern_industrialization.recipe.json;
 
 import aztech.modern_industrialization.machines.recipe.MachineRecipeType;
-import com.google.gson.JsonObject;
 import com.google.gson.annotations.SerializedName;
 import java.util.ArrayList;
 import java.util.List;
@@ -32,10 +31,8 @@ import java.util.function.Consumer;
 import net.minecraft.data.server.recipe.RecipeJsonProvider;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.item.Item;
-import net.minecraft.recipe.RecipeSerializer;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
-import org.jetbrains.annotations.Nullable;
 
 @SuppressWarnings({ "FieldCanBeLocal", "unused", "MismatchedQueryAndUpdateOfCollection" })
 public class MIRecipeJson implements RecipeJson {
@@ -56,9 +53,8 @@ public class MIRecipeJson implements RecipeJson {
 
     public void offerTo(Consumer<RecipeJsonProvider> exporter, String recipeId) {
         // note that FabricRecipesProvider will set the namespace to that of the mod anyway.
-        exporter.accept(new JsonProvider(machineRecipeType ,new Identifier(recipeId), this));
+        exporter.accept(new JsonProvider(machineRecipeType, new Identifier(recipeId), this));
     }
-
 
     private final String type;
     private final int eu;

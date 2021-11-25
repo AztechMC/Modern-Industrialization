@@ -23,6 +23,7 @@
  */
 package aztech.modern_industrialization.recipe.json;
 
+import aztech.modern_industrialization.machines.init.MIMachineRecipeTypes;
 import aztech.modern_industrialization.machines.recipe.MachineRecipeType;
 import java.util.HashMap;
 import java.util.Map;
@@ -121,6 +122,10 @@ public class ShapedRecipeJson implements RecipeJson {
                 throw new IllegalArgumentException("Key mapping '" + c + "' is not used in the pattern.");
             }
         }
+    }
+
+    public MIRecipeJson exportToAssembler() {
+        return exportToMachine(MIMachineRecipeTypes.ASSEMBLER, 8, 200, 1);
     }
 
     public MIRecipeJson exportToMachine(MachineRecipeType machine, int eu, int duration, int division) {

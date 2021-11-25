@@ -21,9 +21,8 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.materials.alloy;
+package aztech.modern_industrialization.datagen.recipe;
 
-import aztech.modern_industrialization.datagen.recipe.MIRecipesProvider;
 import aztech.modern_industrialization.machines.init.MIMachineRecipeTypes;
 import aztech.modern_industrialization.recipe.json.ShapelessRecipeJson;
 import com.google.gson.Gson;
@@ -33,9 +32,8 @@ import java.util.function.Consumer;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.minecraft.data.server.recipe.RecipeJsonProvider;
 
-public class AlloyRegister extends MIRecipesProvider {
-
-    public AlloyRegister(FabricDataGenerator dataGenerator) {
+public class AlloyRecipesProvider extends MIRecipesProvider {
+    public AlloyRecipesProvider(FabricDataGenerator dataGenerator) {
         super(dataGenerator);
     }
 

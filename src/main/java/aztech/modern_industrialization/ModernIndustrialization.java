@@ -45,7 +45,6 @@ import aztech.modern_industrialization.misc.autotest.MIAutoTesting;
 import aztech.modern_industrialization.misc.guidebook.GuidebookEvents;
 import aztech.modern_industrialization.nuclear.NuclearItem;
 import aztech.modern_industrialization.pipes.MIPipes;
-import aztech.modern_industrialization.recipe.MIRecipes;
 import java.util.Map;
 import me.shedaniel.cloth.api.common.events.v1.PlayerChangeWorldCallback;
 import me.shedaniel.cloth.api.common.events.v1.PlayerLeaveCallback;
@@ -137,7 +136,6 @@ public class ModernIndustrialization implements ModInitializer {
 
         RRPCallback.EVENT.register(a -> {
             a.add(RESOURCE_PACK);
-            a.add(MIRecipes.buildRecipesPack());
         });
 
         ChunkEventListeners.init();

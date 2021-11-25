@@ -24,13 +24,38 @@
 package aztech.modern_industrialization;
 
 import aztech.modern_industrialization.machines.blockentities.ReplicatorMachineBlockEntity;
-import aztech.modern_industrialization.recipe.DyeRecipes;
+import aztech.modern_industrialization.util.ResourceUtil;
+import net.fabricmc.fabric.api.tag.TagRegistry;
+import net.minecraft.util.DyeColor;
+import net.minecraft.util.Identifier;
 
 public class MITags {
-
-    public static final void init() {
-        DyeRecipes.initTags();
+    public static void init() {
+        dyeTags();
         ReplicatorMachineBlockEntity.initTag();
     }
 
+    private static void dyeTags() {
+        Identifier terracottas = new Identifier("c", "terracottas");
+        Identifier glass = new Identifier("c", "glass");
+        Identifier glassPane = new Identifier("c", "glass_pane");
+        Identifier shulkerBox = new Identifier("c", "shulker_box");
+
+        ResourceUtil.appendToItemTag(terracottas, new Identifier("minecraft:terracotta"));
+        ResourceUtil.appendToItemTag(glass, new Identifier("minecraft:glass"));
+        ResourceUtil.appendToItemTag(glassPane, new Identifier("minecraft:glass_pane"));
+        ResourceUtil.appendToItemTag(shulkerBox, new Identifier("minecraft:shulker_box"));
+
+        for (DyeColor color : DyeColor.values()) {
+            Identifier tagId = new Identifier("c", color.getName() + "_dyes");
+            TagRegistry.item(tagId);
+            ResourceUtil.appendToItemTag(tagId, new Identifier("minecraft:" + color.getName() + "_dye"));
+            ResourceUtil.appendToItemTag(terracottas, new Identifier("minecraft:" + color.getName() + "_terracotta"));
+            ResourceUtil.appendToItemTag(terracottas, new Identifier("minecraft:" + color.getName() + "_glazed_terracotta"));
+
+            ResourceUtil.appendToItemTag(glass, new Identifier("minecraft:" + color.getName() + "_stained_glass"));
+            ResourceUtil.appendToItemTag(glassPane, new Identifier("minecraft:" + color.getName() + "_stained_glass_pane"));
+            ResourceUtil.appendToItemTag(shulkerBox, new Identifier("minecraft:" + color.getName() + "_shulker_box"));
+        }
+    }
 }

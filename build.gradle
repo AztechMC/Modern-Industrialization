@@ -227,6 +227,10 @@ loom {
 
 sourceSets {
     main {
+        java {
+            srcDir "src/main"
+            exclude "**/compat/dashloader/**"
+        }
         resources {
             srcDir "src/generated/resources"
         }

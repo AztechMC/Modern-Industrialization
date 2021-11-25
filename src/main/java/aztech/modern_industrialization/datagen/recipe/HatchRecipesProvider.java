@@ -21,21 +21,25 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.recipe;
+package aztech.modern_industrialization.datagen.recipe;
 
-import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.machines.init.MIMachineRecipeTypes;
 import aztech.modern_industrialization.recipe.json.MIRecipeJson;
 import aztech.modern_industrialization.recipe.json.ShapedRecipeJson;
-import com.google.gson.Gson;
-import net.devtech.arrp.api.RuntimeResourcePack;
+import java.util.function.Consumer;
+import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
+import net.minecraft.data.server.recipe.RecipeJsonProvider;
 
-public class HatchRecipes {
+public class HatchRecipesProvider extends MIRecipesProvider {
 
-    private static final Gson GSON = new Gson();
-    private static final String pathPrefix = "recipes/generated/hatches/";
+    private static final String pathPrefix = "/hatches/";
 
-    public static void addRecipes(RuntimeResourcePack pack) {
+    public HatchRecipesProvider(FabricDataGenerator dataGenerator) {
+        super(dataGenerator);
+    }
+
+    @Override
+    protected void generateRecipes(Consumer<RecipeJsonProvider> consumer) {
 
         String[] casings = { "bronze", "steel", "basic", "advanced", "turbo", "highly_advanced", "quantum" };
         String[] tanks = { "bronze", "steel", "", "aluminum", "stainless_steel", "titanium", "" };
@@ -81,15 +85,11 @@ public class HatchRecipes {
 
                         ShapedRecipeJson craftFromOther = new ShapedRecipeJson(AB[k], 1, "U").addInput('U', AB[(k + 1) % 2]);
 
-                        pack.addData(new MIIdentifier(pathPrefix + casings[i] + "/" + prefixes[j][k] + "_hatch.json"), GSON.toJson(craft).getBytes());
-                        pack.addData(
-                                new MIIdentifier(pathPrefix + casings[i] + "/" + prefixes[j][k] + "_from_" + (k == 0 ? "output" : "input") + ".json"),
-                                GSON.toJson(craftFromOther).getBytes());
-                        pack.addData(new MIIdentifier(pathPrefix + casings[i] + "/assembler/" + prefixes[j][k] + "_hatch.json"),
-                                GSON.toJson(craftAsbl).getBytes());
+                        craft.offerTo(consumer, pathPrefix + casings[i] + "/" + prefixes[j][k] + "_hatch");
+                        craftFromOther.offerTo(consumer, pathPrefix + casings[i] + "/" + prefixes[j][k] + "_from_" + (k == 0 ? "output" : "input"));
+                        craftAsbl.offerTo(consumer, pathPrefix + casings[i] + "/assembler/" + prefixes[j][k] + "_hatch");
+                        unpacker.offerTo(consumer, pathPrefix + casings[i] + "/unpacker/" + prefixes[j][k] + "_hatch");
 
-                        pack.addData(new MIIdentifier(pathPrefix + casings[i] + "/unpacker/" + prefixes[j][k] + "_hatch.json"),
-                                GSON.toJson(unpacker).getBytes());
                     }
 
                 }

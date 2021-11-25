@@ -32,10 +32,9 @@ import net.minecraft.resource.ResourceManager;
 
 public final class MIRecipes {
     public static RuntimeResourcePack buildRecipesPack() {
-        RuntimeResourcePack pack = RuntimeResourcePack.create("modern_industrialization:recipes");
 
+        RuntimeResourcePack pack = RuntimeResourcePack.create("modern_industrialization:recipes");
         DyeRecipes.addRecipes(pack);
-        HatchRecipes.addRecipes(pack);
 
         return pack;
     }

@@ -21,50 +21,22 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.recipe;
+package aztech.modern_industrialization.datagen.recipe;
 
 import aztech.modern_industrialization.MIFluids;
-import aztech.modern_industrialization.MIRuntimeResourcePack;
 import aztech.modern_industrialization.fluid.CraftingFluid;
 import aztech.modern_industrialization.machines.init.MIMachineRecipeTypes;
 import aztech.modern_industrialization.recipe.json.MIRecipeJson;
-import com.google.gson.Gson;
+import java.util.function.Consumer;
+import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
+import net.minecraft.data.server.recipe.RecipeJsonProvider;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.Fluids;
 
-public class HeatExchangerHelper {
+public class HeatExchangerRecipesProvider extends MIRecipesProvider {
 
-    private static final Gson GSON = new Gson();
-
-    public static void init(MIRuntimeResourcePack pack) {
-        Fluid[] hots = { MIFluids.STEAM, MIFluids.HEAVY_WATER_STEAM, MIFluids.HIGH_PRESSURE_HEAVY_WATER_STEAM, MIFluids.HIGH_PRESSURE_STEAM };
-        Fluid[] cold = { Fluids.WATER, MIFluids.HEAVY_WATER, MIFluids.HIGH_PRESSURE_HEAVY_WATER, MIFluids.HIGH_PRESSURE_WATER };
-        int[] amount = { 1, 1, 8, 8 };
-
-        int amountBaseHot = 16000;
-        int amountBaseCold = 1000;
-
-        for (int i = 0; i < hots.length; i++) {
-            for (int j = 0; j < cold.length; j++) {
-                if (i != j) {
-
-                    MIRecipeJson recipe = MIRecipeJson.create(MIMachineRecipeTypes.HEAT_EXCHANGER, 2, 300);
-
-                    String path = "modern_industrialization/recipes/generated/heat_exchanger/" + fluidToString(hots[i], false) + "_with_"
-                            + fluidToString(cold[j], false) + ".json";
-
-                    recipe.addFluidInput(fluidToString(hots[i], true), amountBaseHot / amount[i]);
-                    recipe.addFluidInput(fluidToString(cold[j], true), amountBaseCold / amount[j]);
-
-                    recipe.addFluidOutput(fluidToString(cold[i], true), amountBaseCold / amount[i]);
-                    recipe.addFluidOutput(fluidToString(hots[j], true), amountBaseHot / amount[j]);
-
-                    pack.addData(path, recipe.toBytes());
-                }
-
-            }
-        }
-
+    public HeatExchangerRecipesProvider(FabricDataGenerator dataGenerator) {
+        super(dataGenerator);
     }
 
     private static String fluidToString(Fluid f, boolean id) {
@@ -78,4 +50,35 @@ public class HeatExchangerHelper {
         }
     }
 
+    @Override
+    protected void generateRecipes(Consumer<RecipeJsonProvider> consumer) {
+        Fluid[] hots = { MIFluids.STEAM, MIFluids.HEAVY_WATER_STEAM, MIFluids.HIGH_PRESSURE_HEAVY_WATER_STEAM, MIFluids.HIGH_PRESSURE_STEAM };
+        Fluid[] cold = { Fluids.WATER, MIFluids.HEAVY_WATER, MIFluids.HIGH_PRESSURE_HEAVY_WATER, MIFluids.HIGH_PRESSURE_WATER };
+        int[] amount = { 1, 1, 8, 8 };
+
+        int amountBaseHot = 16000;
+        int amountBaseCold = 1000;
+
+        for (int i = 0; i < hots.length; i++) {
+            for (int j = 0; j < cold.length; j++) {
+                if (i != j) {
+
+                    MIRecipeJson recipe = MIRecipeJson.create(MIMachineRecipeTypes.HEAT_EXCHANGER, 2, 300);
+
+                    String path = "heat_exchanger/" + fluidToString(hots[i], false) + "_with_"
+                            + fluidToString(cold[j], false);
+
+                    recipe.addFluidInput(fluidToString(hots[i], true), amountBaseHot / amount[i]);
+                    recipe.addFluidInput(fluidToString(cold[j], true), amountBaseCold / amount[j]);
+
+                    recipe.addFluidOutput(fluidToString(cold[i], true), amountBaseCold / amount[i]);
+                    recipe.addFluidOutput(fluidToString(hots[j], true), amountBaseHot / amount[j]);
+
+                    recipe.offerTo(consumer, path);
+                }
+
+            }
+        }
+
+    }
 }

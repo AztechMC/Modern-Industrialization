@@ -48,7 +48,6 @@ public final class MIRecipes {
 
         AssemblerRecipes.yes(pack, manager);
         AlloyRegister.init(pack);
-        HeatExchangerHelper.init(pack);
 
         for (Material material : MaterialRegistry.getMaterials().values()) {
             material.registerRecipes.run();

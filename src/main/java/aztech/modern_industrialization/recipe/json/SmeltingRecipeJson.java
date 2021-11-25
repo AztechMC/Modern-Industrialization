@@ -23,13 +23,22 @@
  */
 package aztech.modern_industrialization.recipe.json;
 
+import net.minecraft.data.server.recipe.RecipeJsonProvider;
+import net.minecraft.recipe.RecipeSerializer;
+import net.minecraft.util.Identifier;
+
+import java.util.function.Consumer;
+
 @SuppressWarnings({ "FieldCanBeLocal", "MismatchedQueryAndUpdateOfCollection", "UnusedDeclaration" })
 public class SmeltingRecipeJson implements RecipeJson {
+
     private final String type;
     private final int cookingtime;
     private final double experience;
     private final Ingredient ingredient;
     private final String result;
+
+    private final transient SmeltingRecipeType smeltingRecipeType;
 
     public enum SmeltingRecipeType {
         SMELTING,
@@ -44,12 +53,19 @@ public class SmeltingRecipeJson implements RecipeJson {
         String item;
     }
 
-    public SmeltingRecipeJson(SmeltingRecipeType type, String inputItem, String outputItem, int cookingtime, double experience) {
-        this.type = type == SmeltingRecipeType.SMELTING ? "minecraft:smelting" : "minecraft:blasting";
+    public SmeltingRecipeJson(SmeltingRecipeType smeltingRecipeType, String inputItem, String outputItem, int cookingtime, double experience) {
+        this.type = smeltingRecipeType == SmeltingRecipeType.SMELTING ? "minecraft:smelting" : "minecraft:blasting";
+        this.smeltingRecipeType = smeltingRecipeType;
         this.cookingtime = cookingtime;
         this.experience = experience;
         this.ingredient = new Ingredient();
         ingredient.item = inputItem;
         result = outputItem;
+    }
+
+    @Override
+    public void offerTo(Consumer<RecipeJsonProvider> exporter, String recipeId) {
+        exporter.accept(new JsonProvider(smeltingRecipeType == SmeltingRecipeType.SMELTING ? RecipeSerializer.SMELTING : RecipeSerializer.BLASTING,
+                new Identifier(recipeId), this));
     }
 }

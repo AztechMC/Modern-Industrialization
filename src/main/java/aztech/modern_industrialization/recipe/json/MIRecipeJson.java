@@ -56,48 +56,9 @@ public class MIRecipeJson implements RecipeJson {
 
     public void offerTo(Consumer<RecipeJsonProvider> exporter, String recipeId) {
         // note that FabricRecipesProvider will set the namespace to that of the mod anyway.
-        exporter.accept(new MIRecipeJsonProvider(new Identifier(recipeId)));
+        exporter.accept(new JsonProvider(machineRecipeType ,new Identifier(recipeId), this));
     }
 
-    private class MIRecipeJsonProvider implements RecipeJsonProvider {
-        private final Identifier recipeId;
-
-        private MIRecipeJsonProvider(Identifier recipeId) {
-            this.recipeId = recipeId;
-        }
-
-        @Override
-        public void serialize(JsonObject json) {
-            throw new UnsupportedOperationException("We override toJson()");
-        }
-
-        @Override
-        public JsonObject toJson() {
-            return MIRecipeJson.this.toJsonObject();
-        }
-
-        @Override
-        public Identifier getRecipeId() {
-            return recipeId;
-        }
-
-        @Override
-        public RecipeSerializer<?> getSerializer() {
-            return machineRecipeType;
-        }
-
-        @Nullable
-        @Override
-        public JsonObject toAdvancementJson() {
-            return null;
-        }
-
-        @Nullable
-        @Override
-        public Identifier getAdvancementId() {
-            return null;
-        }
-    }
 
     private final String type;
     private final int eu;

@@ -155,7 +155,7 @@ public class OrePart extends UnbuildablePart<OrePart.OrePartParams> {
                 default -> deepslate ? "deepslate" : "stone";
                 };
 
-                NativeImage image = mtm.getAssetAsTextureLowPrio(String.format("minecraft:textures/block/%s.png", from));
+                NativeImage image = mtm.getAssetAsTexture(String.format("minecraft:textures/block/%s.png", from));
                 NativeImage top = mtm.getAssetAsTexture(template);
                 TextureHelper.colorize(top, partContext.getColoramp());
                 String texturePath = String.format("modern_industrialization:textures/blocks/%s.png", itemPath);

@@ -23,51 +23,34 @@
  */
 package aztech.modern_industrialization.textures;
 
-import aztech.modern_industrialization.MIRuntimeResourcePack;
-import aztech.modern_industrialization.util.ResourceUtil;
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.BiConsumer;
 import net.minecraft.client.texture.NativeImage;
 import net.minecraft.resource.Resource;
 import net.minecraft.resource.ResourceManager;
-import net.minecraft.resource.ResourceType;
 import net.minecraft.util.Identifier;
 
 public class TextureManager {
     private final ResourceManager rm;
-    private final MIRuntimeResourcePack texturePack;
+    private final BiConsumer<NativeImage, String> textureWriter;
     private final List<Runnable> endRunnables = new ArrayList<>();
 
-    public TextureManager(ResourceManager rm, MIRuntimeResourcePack texturePack) {
+    public TextureManager(ResourceManager rm, BiConsumer<NativeImage, String> textureWriter) {
         this.rm = rm;
-        this.texturePack = texturePack;
+        this.textureWriter = textureWriter;
     }
 
     public boolean hasAsset(String asset) {
-        return rm.containsResource(new Identifier(asset)) || texturePack.contains(ResourceType.CLIENT_RESOURCES, new Identifier(asset));
+        return rm.containsResource(new Identifier(asset));
     }
 
     public NativeImage getAssetAsTexture(String textureId) throws IOException {
         if (rm.containsResource(new Identifier(textureId))) {
-            Resource texture = rm.getResource(new Identifier(textureId));
-            return NativeImage.read(new ByteArrayInputStream(ResourceUtil.getBytes(texture)));
-        } else if (texturePack.contains(ResourceType.CLIENT_RESOURCES, new Identifier(textureId))) {
-            return NativeImage.read(texturePack.open(ResourceType.CLIENT_RESOURCES, new Identifier(textureId)));
-        } else {
-            throw new IOException("Couldn't find texture " + textureId);
-        }
-    }
-
-    /**
-     * Loads the texture from the lowest priority resource packs first (so we don't
-     * let resource packs override this texture).
-     */
-    public NativeImage getAssetAsTextureLowPrio(String textureId) throws IOException {
-        if (rm.containsResource(new Identifier(textureId))) {
-            Resource texture = rm.getAllResources(new Identifier(textureId)).get(0);
-            return NativeImage.read(new ByteArrayInputStream(ResourceUtil.getBytes(texture)));
+            try (Resource texture = rm.getResource(new Identifier(textureId))) {
+                return NativeImage.read(texture.getInputStream());
+            }
         } else {
             throw new IOException("Couldn't find texture " + textureId);
         }
@@ -81,10 +64,7 @@ public class TextureManager {
     }
 
     public void addTexture(String textureId, NativeImage image, boolean closeImage) throws IOException {
-        Identifier id = new Identifier(textureId);
-        if (!rm.containsResource(id)) {
-            texturePack.addAsset(textureId.replace(':', '/'), image.getBytes());
-        }
+        textureWriter.accept(image, textureId);
         if (closeImage) {
             image.close();
         }

@@ -24,24 +24,11 @@
 package aztech.modern_industrialization.util;
 
 import aztech.modern_industrialization.ModernIndustrialization;
-import aztech.modern_industrialization.mixin.ResourceImplAccessor;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.HashMap;
 import net.devtech.arrp.json.tags.JTag;
-import net.minecraft.resource.Resource;
 import net.minecraft.util.Identifier;
-import org.apache.commons.io.IOUtils;
 
 public class ResourceUtil {
-    public static byte[] getBytes(Resource resource) throws IOException {
-        InputStream is = resource.getInputStream();
-        byte[] textureBytes = IOUtils.toByteArray(is);
-        ((ResourceImplAccessor) resource).setInputStream(new ByteArrayInputStream(textureBytes));
-        return textureBytes;
-    }
-
     private static final HashMap<Identifier, JTag> tags = new HashMap<>();
 
     /**

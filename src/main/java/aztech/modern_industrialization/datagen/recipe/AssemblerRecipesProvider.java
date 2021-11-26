@@ -25,7 +25,6 @@ package aztech.modern_industrialization.datagen.recipe;
 
 import aztech.modern_industrialization.recipe.json.MIRecipeJson;
 import aztech.modern_industrialization.recipe.json.ShapedRecipeJson;
-import aztech.modern_industrialization.util.ResourceUtil;
 import com.google.gson.Gson;
 import java.nio.charset.StandardCharsets;
 import java.util.Collection;
@@ -36,6 +35,7 @@ import net.minecraft.resource.DirectoryResourcePack;
 import net.minecraft.resource.ReloadableResourceManagerImpl;
 import net.minecraft.resource.ResourceType;
 import net.minecraft.util.Identifier;
+import org.apache.commons.io.IOUtils;
 
 public class AssemblerRecipesProvider extends MIRecipesProvider {
     private static final Gson GSON = new Gson();
@@ -49,15 +49,15 @@ public class AssemblerRecipesProvider extends MIRecipesProvider {
 
     @Override
     protected void generateRecipes(Consumer<RecipeJsonProvider> consumer) {
-        var nonGeneratedResources = dataGenerator.getOutput().resolve("../../main/resources").normalize();
+        var nonGeneratedResources = dataGenerator.getOutput().resolve("../../main/resources");
         var manager = new ReloadableResourceManagerImpl(ResourceType.SERVER_DATA);
         manager.addPack(new DirectoryResourcePack(nonGeneratedResources.toFile()));
 
         Collection<Identifier> possibleTargets = manager.findResources("recipes", path -> path.endsWith(".json"));
         for (Identifier pathId : possibleTargets) {
             if (shouldConvertToAssembler(pathId)) {
-                try {
-                    convertToAssembler(consumer, pathId, ResourceUtil.getBytes(manager.getResource(pathId)));
+                try (var resource = manager.getResource(pathId)) {
+                    convertToAssembler(consumer, pathId, IOUtils.toByteArray(resource.getInputStream()));
                 } catch (Exception exception) {
                     throw new RuntimeException("Failed to convert asbl recipe %s. Error: %s".formatted(pathId, exception), exception);
                 }

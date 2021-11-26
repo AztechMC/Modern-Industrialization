@@ -2,3 +2,6 @@ accessWidener   v1  named
 
 # Used by the jetpack to prevent players from getting kicked
 accessible    field    net/minecraft/server/network/ServerPlayNetworkHandler    floatingTicks    I
+
+# Used by datagen to instantiate the client builtin resource pack
+accessible    field    net/minecraft/client/resource/ClientBuiltinResourcePackProvider    DEFAULT_PACK_METADATA    Lnet/minecraft/resource/metadata/PackResourceMetadata;

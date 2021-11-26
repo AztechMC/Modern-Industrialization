@@ -24,7 +24,6 @@
 package aztech.modern_industrialization.textures;
 
 import aztech.modern_industrialization.MIFluids;
-import aztech.modern_industrialization.MIRuntimeResourcePack;
 import aztech.modern_industrialization.ModernIndustrialization;
 import aztech.modern_industrialization.fluid.CraftingFluid;
 import aztech.modern_industrialization.materials.Material;
@@ -34,14 +33,14 @@ import aztech.modern_industrialization.textures.coloramp.BakableTargetColoramp;
 import aztech.modern_industrialization.textures.coloramp.Coloramp;
 import aztech.modern_industrialization.textures.coloramp.DefaultColoramp;
 import java.io.IOException;
+import java.util.function.BiConsumer;
 import net.minecraft.client.texture.NativeImage;
 import net.minecraft.resource.ResourceManager;
 
 public final class MITextures {
 
-    public static MIRuntimeResourcePack buildResourcePack(ResourceManager manager) {
-        MIRuntimeResourcePack pack = new MIRuntimeResourcePack("MI Generated textures");
-        TextureManager mtm = new TextureManager(manager, pack);
+    public static void offerTextures(BiConsumer<NativeImage, String> textureWriter, ResourceManager manager) {
+        TextureManager mtm = new TextureManager(manager, textureWriter);
 
         for (BakableTargetColoramp coloramp : BakableTargetColoramp.bakableTargetColoramps) {
             coloramp.baked(mtm);
@@ -109,7 +108,6 @@ public final class MITextures {
             ModernIndustrialization.LOGGER.error("Failed to generate texture pack.", exception);
         }
         ModernIndustrialization.LOGGER.info("I used the png to destroy the png.");
-        return pack;
     }
 
     private static String getTemplate(String materialSet, String part, String suffix) {

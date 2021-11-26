@@ -21,14 +21,31 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.mixin;
+package aztech.modern_industrialization.client.screen;
 
-import net.minecraft.server.network.ServerPlayNetworkHandler;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.gen.Accessor;
+import net.minecraft.client.gui.screen.ingame.HandledScreen;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.screen.ScreenHandler;
+import net.minecraft.screen.slot.Slot;
+import net.minecraft.text.Text;
 
-@Mixin(ServerPlayNetworkHandler.class)
-public interface ServerPlayNetworkHandlerAccessor {
-    @Accessor
-    void setFloatingTicks(int floatingTicks);
+/**
+ * Base class for MI screen handlers, grants access to a few protected fields to the REI plugin.
+ */
+public abstract class MIHandledScreen<T extends ScreenHandler> extends HandledScreen<T> {
+    public MIHandledScreen(T handler, PlayerInventory inventory, Text title) {
+        super(handler, inventory, title);
+    }
+
+    public Slot getFocusedSlot() {
+        return focusedSlot;
+    }
+
+    public int getX() {
+        return x;
+    }
+
+    public int getY() {
+        return y;
+    }
 }

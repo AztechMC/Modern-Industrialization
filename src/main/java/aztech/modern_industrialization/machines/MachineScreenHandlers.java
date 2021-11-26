@@ -25,6 +25,7 @@ package aztech.modern_industrialization.machines;
 
 import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.ModernIndustrialization;
+import aztech.modern_industrialization.client.screen.MIHandledScreen;
 import aztech.modern_industrialization.inventory.*;
 import aztech.modern_industrialization.inventory.ConfigurableFluidStack.ConfigurableFluidSlot;
 import aztech.modern_industrialization.inventory.ConfigurableItemStack.ConfigurableItemSlot;
@@ -44,7 +45,6 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
-import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.item.TooltipData;
 import net.minecraft.client.render.item.ItemRenderer;
@@ -194,7 +194,7 @@ public class MachineScreenHandlers {
 
     public static final Identifier SLOT_ATLAS = new Identifier(ModernIndustrialization.MOD_ID, "textures/gui/container/slot_atlas.png");
 
-    public static class ClientScreen extends HandledScreen<Client> implements ClientComponentRenderer.ButtonContainer {
+    public static class ClientScreen extends MIHandledScreen<Client> implements ClientComponentRenderer.ButtonContainer {
         private final List<ClientComponentRenderer> renderers = new ArrayList<>();
 
         public ClientScreen(Client handler, PlayerInventory inventory, Text title) {

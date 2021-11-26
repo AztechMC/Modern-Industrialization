@@ -23,7 +23,6 @@
  */
 package aztech.modern_industrialization.machines.recipe;
 
-import aztech.modern_industrialization.mixin.RecipeManagerAccessor;
 import com.google.gson.*;
 import java.util.*;
 import java.util.function.BiConsumer;
@@ -49,10 +48,8 @@ public class MachineRecipeType implements RecipeType<MachineRecipe>, RecipeSeria
     /**
      * Never modify or store the result!
      */
-    @SuppressWarnings({ "unchecked", "rawtypes" })
     protected Collection<MachineRecipe> getManagerRecipes(ServerWorld world) {
-        return (Collection<MachineRecipe>) (Collection) ((RecipeManagerAccessor) world.getRecipeManager()).modern_industrialization_getAllOfType(this)
-                .values();
+        return world.getRecipeManager().listAllOfType(this);
     }
 
     public Collection<MachineRecipe> getRecipes(ServerWorld world) {

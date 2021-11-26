@@ -24,9 +24,9 @@
 package aztech.modern_industrialization.compat.rei;
 
 import aztech.modern_industrialization.api.ReiDraggable;
+import aztech.modern_industrialization.client.screen.MIHandledScreen;
 import aztech.modern_industrialization.inventory.ConfigurableInventoryPackets;
 import aztech.modern_industrialization.items.diesel_tools.DieselToolItem;
-import aztech.modern_industrialization.mixin.client.HandledScreenAccessor;
 import aztech.modern_industrialization.util.Simulation;
 import dev.architectury.fluid.FluidStack;
 import java.util.ArrayList;
@@ -49,7 +49,6 @@ import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -99,9 +98,9 @@ public class MIREIPlugin implements REIClientPlugin {
                         return dw.dragFluid(fk, Simulation.ACT);
                     }
                 }
-                if (context.getScreen() instanceof HandledScreen<?>handledScreen) {
+                if (context.getScreen() instanceof MIHandledScreen<?>handledScreen) {
                     ScreenHandler handler = handledScreen.getScreenHandler();
-                    Slot slot = ((HandledScreenAccessor) context.getScreen()).mi_getFocusedSlot();
+                    Slot slot = handledScreen.getFocusedSlot();
                     if (slot instanceof ReiDraggable dw) {
                         int slotId = handler.slots.indexOf(slot);
                         if (ik != null && dw.dragItem(ik, Simulation.ACT)) {
@@ -142,11 +141,10 @@ public class MIREIPlugin implements REIClientPlugin {
                         }
                     }
                 }
-                if (context.getScreen() instanceof HandledScreen<?>handledScreen) {
+                if (context.getScreen() instanceof MIHandledScreen<?>handledScreen) {
                     ScreenHandler handler = handledScreen.getScreenHandler();
                     for (Slot slot : handler.slots) {
                         if (slot instanceof ReiDraggable dw) {
-                            int slotId = handler.slots.indexOf(slot);
                             if (ik != null && dw.dragItem(ik, Simulation.SIMULATE)) {
                                 bounds.add(getSlotBounds(slot, handledScreen));
                             }
@@ -161,7 +159,7 @@ public class MIREIPlugin implements REIClientPlugin {
 
             @Override
             public <R extends Screen> boolean isHandingScreen(R screen) {
-                return true;
+                return screen instanceof MIHandledScreen;
             }
         });
     }
@@ -170,8 +168,7 @@ public class MIREIPlugin implements REIClientPlugin {
         return DraggableStackVisitor.BoundsProvider.ofRectangle(new Rectangle(cw.x, cw.y, cw.getWidth(), cw.getHeight()));
     }
 
-    private static DraggableStackVisitor.BoundsProvider getSlotBounds(Slot slot, HandledScreen<?> screen) {
-        HandledScreenAccessor acc = (HandledScreenAccessor) screen;
-        return DraggableStackVisitor.BoundsProvider.ofRectangle(new Rectangle(slot.x + acc.mi_getX(), slot.y + acc.mi_getY(), 16, 16));
+    private static DraggableStackVisitor.BoundsProvider getSlotBounds(Slot slot, MIHandledScreen<?> screen) {
+        return DraggableStackVisitor.BoundsProvider.ofRectangle(new Rectangle(slot.x + screen.getX(), slot.y + screen.getY(), 16, 16));
     }
 }

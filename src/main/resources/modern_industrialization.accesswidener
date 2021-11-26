@@ -1,0 +1,4 @@
+accessWidener   v1  named
+
+# Used by the jetpack to prevent players from getting kicked
+accessible    field    net/minecraft/server/network/ServerPlayNetworkHandler    floatingTicks    I

@@ -25,7 +25,6 @@ package aztech.modern_industrialization.items.armor;
 
 import aztech.modern_industrialization.api.FluidFuelRegistry;
 import aztech.modern_industrialization.items.FluidFuelItemHelper;
-import aztech.modern_industrialization.mixin.ServerPlayNetworkHandlerAccessor;
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
 import java.util.List;
@@ -146,8 +145,8 @@ public class JetpackItem extends ArmorItem implements Wearable, TickableArmor, F
                             player.fallDistance = 0;
                         }
                     }
-                    if (player instanceof ServerPlayerEntity) {
-                        ((ServerPlayNetworkHandlerAccessor) ((ServerPlayerEntity) player).networkHandler).setFloatingTicks(0);
+                    if (player instanceof ServerPlayerEntity serverPlayer) {
+                        serverPlayer.networkHandler.floatingTicks = 0;
                     }
                 }
             }

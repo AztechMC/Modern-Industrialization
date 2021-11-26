@@ -10,16 +10,13 @@
     "LivingEntityMixin",
     "PlayerEntitySteamDrillMixin",
     "PlayerInventoryMixin",
-    "RecipeManagerAccessor",
     "ReloadableResourceManagerImplMixin",
     "ResourceImplAccessor",
     "ServerPlayerInteractionManagerMixin",
-    "ServerPlayNetworkHandlerAccessor",
     "WorldChunkMixin"
   ],
   "client": [
     "client.ClientPlayerInteractionManagerMixin",
-    "client.HandledScreenAccessor",
     "client.HeldItemRendererMixin"
   ],
   "injectors": {

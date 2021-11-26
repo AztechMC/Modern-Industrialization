@@ -23,6 +23,7 @@
  */
 package aztech.modern_industrialization.pipes.gui;
 
+import aztech.modern_industrialization.client.screen.MIHandledScreen;
 import aztech.modern_industrialization.pipes.gui.iface.ConnectionTypeInterface;
 import aztech.modern_industrialization.pipes.gui.iface.PriorityInterface;
 import aztech.modern_industrialization.pipes.impl.PipePackets;
@@ -32,7 +33,6 @@ import java.util.ArrayList;
 import java.util.List;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
-import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerInventory;
@@ -46,7 +46,7 @@ import net.minecraft.util.Identifier;
 /**
  * A helper for functionality commonly used by pipe screens.
  */
-public abstract class PipeScreen<SH extends ScreenHandler> extends HandledScreen<SH> {
+public abstract class PipeScreen<SH extends ScreenHandler> extends MIHandledScreen<SH> {
     @SuppressWarnings("AssignmentToSuperclassField")
     public PipeScreen(SH handler, PlayerInventory inventory, Text title, int backgroundHeight) {
         super(handler, inventory, title);

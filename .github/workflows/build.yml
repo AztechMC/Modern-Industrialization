@@ -22,8 +22,10 @@ jobs:
       with:
         path: ~/.gradle/caches
         key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
+    - name: Validate AW
+      run: ./gradlew validateAccessWidener
     - name: Generate assets
-      run: ./gradlew runData --no-daemon
+      run: ./gradlew runData
     - name: Build with Gradle
       run: ./gradlew build
       env:

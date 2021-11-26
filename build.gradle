@@ -203,6 +203,7 @@ processResources {
 }
 
 loom {
+    accessWidenerPath = file("src/main/resources/modern_industrialization.accesswidener")
     runs {
         autoTestServer {
             server()

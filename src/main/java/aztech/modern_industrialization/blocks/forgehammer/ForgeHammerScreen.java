@@ -24,10 +24,10 @@
 package aztech.modern_industrialization.blocks.forgehammer;
 
 import aztech.modern_industrialization.ModernIndustrialization;
+import aztech.modern_industrialization.client.screen.MIHandledScreen;
 import com.mojang.blaze3d.systems.RenderSystem;
 import io.netty.buffer.Unpooled;
 import net.fabricmc.fabric.api.network.ClientSidePacketRegistry;
-import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.network.PacketByteBuf;
@@ -37,7 +37,7 @@ import net.minecraft.text.TextColor;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
 
-public class ForgeHammerScreen extends HandledScreen<ForgeHammerScreenHandler> {
+public class ForgeHammerScreen extends MIHandledScreen<ForgeHammerScreenHandler> {
 
     public static final Identifier FORGE_HAMMER_GUI = new Identifier(ModernIndustrialization.MOD_ID, "textures/gui/container/forge_hammer.png");
     private static final Style style = Style.EMPTY.withColor(TextColor.fromRgb(0xa9a9a9)).withItalic(true);

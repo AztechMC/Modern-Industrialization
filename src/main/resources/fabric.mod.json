@@ -16,6 +16,7 @@
   "license": "MIT",
   "icon": "assets/modern_industrialization/milogo.png",
   "environment": "*",
+  "accessWidener": "modern_industrialization.accesswidener",
   "entrypoints": {
     "main": [
       "aztech.modern_industrialization.ModernIndustrialization"

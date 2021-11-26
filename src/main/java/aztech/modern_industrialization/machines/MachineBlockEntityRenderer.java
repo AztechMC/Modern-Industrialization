@@ -47,8 +47,8 @@ public class MachineBlockEntityRenderer<T extends MachineBlockEntity> implements
     private final BlockModels blockModels;
     private BlockState lastBlockState = null;
     private MachineBakedModel model = null;
-    private final BakedQuad[] cachedQuads = new BakedQuad[12];
-    private final boolean[] isQuadCached = new boolean[12];
+    private final BakedQuad[] cachedQuads = new BakedQuad[36];
+    private final boolean[] isQuadCached = new boolean[36];
 
     public MachineBlockEntityRenderer(BlockEntityRendererFactory.Context ctx) {
         this.blockModels = ctx.getRenderManager().getModels();
@@ -56,13 +56,13 @@ public class MachineBlockEntityRenderer<T extends MachineBlockEntity> implements
 
     @Nullable
     private BakedQuad getCachedQuad(MachineModelClientData data, Direction d) {
-        int cachedQuadIndex = d.ordinal() * 2 + (data.isActive ? 1 : 0);
+        int cachedQuadIndex = data.frontDirection.ordinal() * 6 + d.ordinal();
 
         if (!isQuadCached[cachedQuadIndex]) {
             Renderer renderer = RendererAccess.INSTANCE.getRenderer();
             QuadEmitter emitter = renderer.meshBuilder().getEmitter();
 
-            Sprite sprite = model.getSprite(d, data.frontDirection, data.isActive);
+            Sprite sprite = model.getSprite(d, data.frontDirection, true);
             if (sprite != null) {
                 emitter.material(model.cutoutMaterial);
                 emitter.square(d, 0, 0, 1, 1, -2e-4f); // non-active face is -1e-6f, so we override it.

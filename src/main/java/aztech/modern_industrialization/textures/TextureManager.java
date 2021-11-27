@@ -64,7 +64,10 @@ public class TextureManager {
     }
 
     public void addTexture(String textureId, NativeImage image, boolean closeImage) throws IOException {
-        textureWriter.accept(image, textureId);
+        Identifier id = new Identifier(textureId);
+        if (!rm.containsResource(id)) { // Allow textures to be manually overridden.
+            textureWriter.accept(image, textureId);
+        }
         if (closeImage) {
             image.close();
         }

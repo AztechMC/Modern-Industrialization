@@ -27,6 +27,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
@@ -50,11 +51,15 @@ public class MachineModelsProvider implements DataProvider {
 
     @Override
     public void run(DataCache cache) throws IOException {
-        Path path = gen.getOutput();
+        Path outputPath = gen.getOutput();
+        Path nonGeneratedPath = gen.getOutput().resolve("../../main/resources");
 
         for (var entry : PROPS.entrySet()) {
-            DataProvider.writeToPath(GSON, cache, entry.getValue().toMachineJson(),
-                    path.resolve("assets").resolve(gen.getModId()).resolve("models/machine/" + entry.getKey() + ".json"));
+            var modelPath = "assets/%s/models/machine/%s.json".formatted(gen.getModId(), entry.getKey());
+            if (!Files.exists(nonGeneratedPath.resolve(modelPath))) {
+                // Only generate the model json if it doesn't exist in the non-generated assets.
+                DataProvider.writeToPath(GSON, cache, entry.getValue().toMachineJson(), outputPath.resolve(modelPath));
+            }
         }
     }
 

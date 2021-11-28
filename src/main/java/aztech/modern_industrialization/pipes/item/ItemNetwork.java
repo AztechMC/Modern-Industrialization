@@ -85,10 +85,17 @@ public class ItemNetwork extends PipeNetwork {
         extractionTargets.sort(Comparator.comparing(et -> et.connection.priority));
 
         // Do the actual transfer.
-        Storage<ItemVariant> insertTargets = getAggregateInsertTarget(world);
+        var insertTargets = getAggregatedInsertTargets(world);
+        var insertStorage = new CombinedStorage<>(insertTargets);
         try (Transaction tx = Transaction.openOuter()) {
             for (ExtractionTarget target : extractionTargets) {
-                StorageUtil.move(target.storage, insertTargets, target.connection::canStackMoveThrough, target.connection.getMoves(), tx);
+                // Lower priority extracts first, and pipes can only move items to things that have >= priorities.
+                // So we can just pop insert targets at the end of the list if they have a priority smaller than the current extraction target.
+                while (insertTargets.size() > 0 && target.connection.priority > insertTargets.get(insertTargets.size() - 1).getPriority()) {
+                    insertTargets.remove(insertTargets.size() - 1);
+                }
+
+                StorageUtil.move(target.storage, insertStorage, target.connection::canStackMoveThrough, target.connection.getMoves(), tx);
             }
             tx.commit();
         }
@@ -107,7 +114,7 @@ public class ItemNetwork extends PipeNetwork {
     /**
      * Find all connections in which to insert that are loaded.
      */
-    private Storage<ItemVariant> getAggregateInsertTarget(ServerWorld world) {
+    private List<Aggregate> getAggregatedInsertTargets(ServerWorld world) {
         Int2ObjectMap<PriorityBucket> priorityBuckets = new Int2ObjectOpenHashMap<>();
 
         for (var entry : iterateTickingNodes()) {
@@ -136,7 +143,7 @@ public class ItemNetwork extends PipeNetwork {
         // Now we sort by priority, high to low
         Arrays.sort(sortedBuckets, Comparator.comparingInt(pb -> -pb.priority));
 
-        List<Storage<ItemVariant>> targets = new ArrayList<>();
+        List<Aggregate> targets = new ArrayList<>();
         Random random = ThreadLocalRandom.current();
 
         for (PriorityBucket pb : sortedBuckets) {
@@ -144,24 +151,22 @@ public class ItemNetwork extends PipeNetwork {
             int blacklistSize = pb.blacklist.size();
             if (whitelistSize > 0) {
                 Collections.shuffle(pb.whitelist);
-                targets.add(new WhitelistAggregate(pb.whitelist));
+                targets.add(new WhitelistAggregate(pb.priority, pb.whitelist));
             }
             if (blacklistSize > 0) {
                 Collections.shuffle(pb.blacklist);
-                targets.add(new BlacklistAggregate(pb.blacklist));
+                targets.add(new BlacklistAggregate(pb.priority, pb.blacklist));
             }
 
             // Ensure equal chance to receive items on average.
             if (whitelistSize > 0 && blacklistSize > 0) {
-                int tot = whitelistSize + blacklistSize;
-
                 if (random.nextDouble() >= (double) whitelistSize / (whitelistSize + blacklistSize)) {
                     Collections.swap(targets, targets.size() - 2, targets.size() - 1);
                 }
             }
         }
 
-        return new CombinedStorage<>(targets);
+        return targets;
     }
 
     private static class PriorityBucket {
@@ -174,13 +179,24 @@ public class ItemNetwork extends PipeNetwork {
         }
     }
 
-    private static class WhitelistAggregate implements InsertionOnlyStorage<ItemVariant> {
+    private interface Aggregate extends InsertionOnlyStorage<ItemVariant> {
+        int getPriority();
+
+        @Override
+        default Iterator<StorageView<ItemVariant>> iterator(TransactionContext transaction) {
+            return Collections.emptyIterator();
+        }
+    }
+
+    private static class WhitelistAggregate implements Aggregate {
+        private final int priority;
         // Used when the inserted item doesn't have NBT
         private final Map<Item, List<Storage<ItemVariant>>> map = new IdentityHashMap<>();
         // Used when the inserted item has NBT.
         private final List<InsertTarget> targets;
 
-        WhitelistAggregate(List<InsertTarget> targets) {
+        WhitelistAggregate(int priority, List<InsertTarget> targets) {
+            this.priority = priority;
             this.targets = targets;
             for (InsertTarget target : targets) {
                 if (target.connection.whitelist) {
@@ -227,15 +243,17 @@ public class ItemNetwork extends PipeNetwork {
         }
 
         @Override
-        public Iterator<StorageView<ItemVariant>> iterator(TransactionContext transaction) {
-            return Collections.emptyIterator();
+        public int getPriority() {
+            return priority;
         }
     }
 
-    private static class BlacklistAggregate implements InsertionOnlyStorage<ItemVariant> {
+    private static class BlacklistAggregate implements Aggregate {
+        private final int priority;
         private final List<InsertTarget> targets;
 
-        private BlacklistAggregate(List<InsertTarget> targets) {
+        private BlacklistAggregate(int priority, List<InsertTarget> targets) {
+            this.priority = priority;
             this.targets = targets;
         }
 
@@ -245,8 +263,8 @@ public class ItemNetwork extends PipeNetwork {
         }
 
         @Override
-        public Iterator<StorageView<ItemVariant>> iterator(TransactionContext transaction) {
-            return Collections.emptyIterator();
+        public int getPriority() {
+            return priority;
         }
     }
 

@@ -54,10 +54,11 @@ public class TexturesProvider implements DataProvider {
         // Delete output folder first, because textures won't be generated if they already exist,
         // leading to the DataCache clearing the textures when it deletes unused paths from the cache.
         // Code from https://stackoverflow.com/questions/35988192/java-nio-most-concise-recursive-directory-delete
-        try (Stream<Path> walk = Files.walk(dataGenerator.getOutput().resolve("assets/modern_industrialization/textures"))) {
-            walk.sorted(Comparator.reverseOrder())
-                    .map(Path::toFile)
-                    .forEach(File::delete);
+        var textureDir = dataGenerator.getOutput().resolve("assets/modern_industrialization/textures");
+        if (Files.exists(textureDir)) {
+            try (Stream<Path> walk = Files.walk(textureDir)) {
+                walk.sorted(Comparator.reverseOrder()).map(Path::toFile).forEach(File::delete);
+            }
         }
 
         var generatedResources = dataGenerator.getOutput();

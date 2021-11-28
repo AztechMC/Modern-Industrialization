@@ -1,0 +1,12 @@
+{
+  "default_overlays": {
+    "front": "modern_industrialization:blocks/machines/unpacker/overlay_front",
+    "front_active": "modern_industrialization:blocks/machines/unpacker/overlay_front_active",
+    "right": "modern_industrialization:blocks/machines/unpacker/overlay_right",
+    "right_active": "modern_industrialization:blocks/machines/unpacker/overlay_right_active",
+    "left": "modern_industrialization:blocks/machines/unpacker/overlay_left",
+    "output": "modern_industrialization:blocks/overlays/output",
+    "item_auto": "modern_industrialization:blocks/overlays/item_auto",
+    "fluid_auto": "modern_industrialization:blocks/overlays/fluid_auto"
+  }
+}

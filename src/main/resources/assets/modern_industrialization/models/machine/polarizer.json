@@ -1,0 +1,42 @@
+{
+  "default_overlays": {
+    "top": "modern_industrialization:blocks/machines/polarizer/overlay_top",
+    "front": "modern_industrialization:blocks/machines/polarizer/overlay_front",
+    "front_active": "modern_industrialization:blocks/machines/polarizer/overlay_front_active",
+    "right": "modern_industrialization:blocks/machines/polarizer/overlay_right",
+    "right_active": "modern_industrialization:blocks/machines/polarizer/overlay_right_active",
+    "output": "modern_industrialization:blocks/overlays/output",
+    "item_auto": "modern_industrialization:blocks/overlays/item_auto",
+    "fluid_auto": "modern_industrialization:blocks/overlays/fluid_auto"
+  },
+  "tiered_overlays": {
+    "mv": {
+      "top": "modern_industrialization:blocks/machines/polarizer/mv_overlay_top",
+      "front": "modern_industrialization:blocks/machines/polarizer/mv_overlay_front",
+      "front_active": "modern_industrialization:blocks/machines/polarizer/mv_overlay_front_active",
+      "right": "modern_industrialization:blocks/machines/polarizer/mv_overlay_right",
+      "right_active": "modern_industrialization:blocks/machines/polarizer/mv_overlay_right_active"
+    },
+    "hv": {
+      "top": "modern_industrialization:blocks/machines/polarizer/hv_overlay_top",
+      "front": "modern_industrialization:blocks/machines/polarizer/hv_overlay_front",
+      "front_active": "modern_industrialization:blocks/machines/polarizer/hv_overlay_front_active",
+      "right": "modern_industrialization:blocks/machines/polarizer/hv_overlay_right",
+      "right_active": "modern_industrialization:blocks/machines/polarizer/hv_overlay_right_active"
+    },
+    "ev": {
+      "top": "modern_industrialization:blocks/machines/polarizer/ev_overlay_top",
+      "front": "modern_industrialization:blocks/machines/polarizer/ev_overlay_front",
+      "front_active": "modern_industrialization:blocks/machines/polarizer/ev_overlay_front_active",
+      "right": "modern_industrialization:blocks/machines/polarizer/ev_overlay_right",
+      "right_active": "modern_industrialization:blocks/machines/polarizer/ev_overlay_right_active"
+    },
+    "superconductor": {
+      "top": "modern_industrialization:blocks/machines/polarizer/super_overlay_top",
+      "front": "modern_industrialization:blocks/machines/polarizer/super_overlay_front",
+      "front_active": "modern_industrialization:blocks/machines/polarizer/super_overlay_front_active",
+      "right": "modern_industrialization:blocks/machines/polarizer/super_overlay_right",
+      "right_active": "modern_industrialization:blocks/machines/polarizer/super_overlay_right_active"
+    }
+  }
+}

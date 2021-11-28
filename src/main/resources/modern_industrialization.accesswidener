@@ -1,5 +1,8 @@
 accessWidener   v1  named
 
+# Used by the barrel interaction code to set the delay after a barrel attack
+accessible field net/minecraft/client/network/ClientPlayerInteractionManager blockBreakingCooldown I
+
 # Used by the jetpack to prevent players from getting kicked
 accessible    field    net/minecraft/server/network/ServerPlayNetworkHandler    floatingTicks    I
 

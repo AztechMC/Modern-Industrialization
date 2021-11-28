@@ -26,13 +26,13 @@ package aztech.modern_industrialization.pipes.item;
 import aztech.modern_industrialization.api.WhitelistedItemStorage;
 import aztech.modern_industrialization.pipes.api.PipeNetwork;
 import aztech.modern_industrialization.pipes.api.PipeNetworkData;
-import aztech.modern_industrialization.util.MIBlockApiCache;
 import aztech.modern_industrialization.util.StorageUtil2;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ReferenceOpenHashSet;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
+import net.fabricmc.fabric.api.lookup.v1.block.BlockApiCache;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemStorage;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
@@ -115,7 +115,7 @@ public class ItemNetwork extends PipeNetwork {
             for (ItemNetworkNode.ItemConnection connection : node.connections) {
                 if (connection.canInsert()) {
                     if (connection.cache == null) {
-                        connection.cache = MIBlockApiCache.create(ItemStorage.SIDED, world, entry.getPos().offset(connection.direction));
+                        connection.cache = BlockApiCache.create(ItemStorage.SIDED, world, entry.getPos().offset(connection.direction));
                     }
                     Storage<ItemVariant> target = connection.cache.find(connection.direction.getOpposite());
                     if (target != null && target.supportsInsertion()) {

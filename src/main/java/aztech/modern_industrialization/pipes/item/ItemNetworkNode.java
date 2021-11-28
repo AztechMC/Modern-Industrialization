@@ -29,8 +29,8 @@ import aztech.modern_industrialization.api.pipes.item.SpeedUpgrade;
 import aztech.modern_industrialization.pipes.api.PipeEndpointType;
 import aztech.modern_industrialization.pipes.api.PipeNetworkNode;
 import aztech.modern_industrialization.pipes.gui.IPipeScreenHandlerHelper;
-import aztech.modern_industrialization.util.MIBlockApiCache;
 import java.util.*;
+import net.fabricmc.fabric.api.lookup.v1.block.BlockApiCache;
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemStorage;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
@@ -185,7 +185,7 @@ public class ItemNetworkNode extends PipeNetworkNode {
         private final ItemStack[] stacks = new ItemStack[ItemPipeInterface.SLOTS];
         final Set<ItemVariant> stacksCache = new HashSet<>();
         private ItemStack upgradeStack = ItemStack.EMPTY;
-        MIBlockApiCache<Storage<ItemVariant>, Direction> cache = null;
+        BlockApiCache<Storage<ItemVariant>, Direction> cache = null;
 
         private ItemConnection(Direction direction, PipeEndpointType type, int priority) {
             this.direction = direction;

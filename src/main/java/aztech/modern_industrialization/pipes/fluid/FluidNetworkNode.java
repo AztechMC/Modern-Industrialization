@@ -30,10 +30,10 @@ import aztech.modern_industrialization.pipes.api.PipeEndpointType;
 import aztech.modern_industrialization.pipes.api.PipeNetworkNode;
 import aztech.modern_industrialization.pipes.gui.IPipeScreenHandlerHelper;
 import aztech.modern_industrialization.util.IoStorage;
-import aztech.modern_industrialization.util.MIBlockApiCache;
 import aztech.modern_industrialization.util.NbtHelper;
 import com.google.common.base.MoreObjects;
 import java.util.*;
+import net.fabricmc.fabric.api.lookup.v1.block.BlockApiCache;
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
@@ -90,7 +90,7 @@ public class FluidNetworkNode extends PipeNetworkNode {
 
     private Storage<FluidVariant> getNeighborStorage(ServerWorld world, BlockPos pos, FluidConnection connection) {
         if (connection.cache == null) {
-            connection.cache = MIBlockApiCache.create(FluidStorage.SIDED, world, pos.offset(connection.direction));
+            connection.cache = BlockApiCache.create(FluidStorage.SIDED, world, pos.offset(connection.direction));
         }
         Storage<FluidVariant> storage = connection.cache.find(connection.direction.getOpposite());
         if (storage != null) {
@@ -207,7 +207,7 @@ public class FluidNetworkNode extends PipeNetworkNode {
         private final Direction direction;
         private PipeEndpointType type;
         private int priority;
-        private MIBlockApiCache<Storage<FluidVariant>, Direction> cache;
+        private BlockApiCache<Storage<FluidVariant>, Direction> cache;
 
         private FluidConnection(Direction direction, PipeEndpointType type, int priority) {
             this.direction = direction;

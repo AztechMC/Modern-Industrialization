@@ -32,7 +32,6 @@ import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
 
@@ -103,8 +102,7 @@ public class NuclearFuel extends NuclearAbsorbable {
     public void appendTooltip(ItemStack stack, World world, List<Text> tooltip, TooltipContext context) {
         super.appendTooltip(stack, world, tooltip, context);
         long totalEu = (long) totalEUbyDesintegration * desintegrationMax;
-        tooltip.add(new TranslatableText("text.modern_industrialization.base_eu_total_double", TextHelper.getEuString(totalEu),
-                TextHelper.getEuUnit(totalEu)).setStyle(TextHelper.EU_TEXT));
+        tooltip.add(TextHelper.getEuStorageTooltip(totalEu));
     }
 
     public double efficiencyFactor(double temperature) {

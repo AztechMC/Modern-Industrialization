@@ -44,10 +44,6 @@ public class MIConfig implements ConfigData {
     @OreConfigEntry
     public List<String> blacklistedOres = Collections.emptyList();
 
-    @ConfigEntry.BoundedDiscrete(min = 1, max = 10)
-    @ConfigEntry.Gui.RequiresRestart
-    public int copperSurgenerationFactor = 4;
-
     public boolean spawnWithGuideBook = true;
     public boolean respawnWithGuideBook = true;
     public boolean disableFuelTooltips = false;

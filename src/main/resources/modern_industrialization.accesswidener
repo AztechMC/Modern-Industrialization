@@ -5,3 +5,7 @@ accessible    field    net/minecraft/server/network/ServerPlayNetworkHandler    
 
 # Used by datagen to instantiate the client builtin resource pack
 accessible    field    net/minecraft/client/resource/ClientBuiltinResourcePackProvider    DEFAULT_PACK_METADATA    Lnet/minecraft/resource/metadata/PackResourceMetadata;
+
+# Use for Ore registration
+
+accessible method net/minecraft/world/gen/feature/OrePlacedFeatures modifiersWithCount (ILnet/minecraft/world/gen/decorator/PlacementModifier;)Ljava/util/List;

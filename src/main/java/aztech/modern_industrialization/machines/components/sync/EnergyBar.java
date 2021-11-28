@@ -31,7 +31,7 @@ import aztech.modern_industrialization.machines.SyncedComponent;
 import aztech.modern_industrialization.machines.SyncedComponents;
 import aztech.modern_industrialization.machines.gui.ClientComponentRenderer;
 import aztech.modern_industrialization.util.RenderHelper;
-import aztech.modern_industrialization.util.RessourceTextHelper;
+import aztech.modern_industrialization.util.TextHelper;
 import com.mojang.blaze3d.systems.RenderSystem;
 import java.util.Collections;
 import java.util.function.Supplier;
@@ -128,7 +128,7 @@ public class EnergyBar {
                     if (Screen.hasShiftDown()) {
                         tooltip = new TranslatableText("text.modern_industrialization.energy_bar", eu, maxEu, "");
                     } else {
-                        RessourceTextHelper.MaxedAmount maxedAmount = RessourceTextHelper.getMaxedAmount(eu, maxEu);
+                        TextHelper.MaxedAmount maxedAmount = TextHelper.getMaxedAmount(eu, maxEu);
                         tooltip = new TranslatableText("text.modern_industrialization.energy_bar", maxedAmount.digit(), maxedAmount.maxDigit(),
                                 maxedAmount.unit());
                     }

@@ -61,7 +61,7 @@ public class MultiblockHatches {
         registerEnergyHatches(CableTier.MV);
         registerEnergyHatches(CableTier.HV);
         registerEnergyHatches(CableTier.EV);
-        registerEnergyHatches(CableTier.SUPRACONDUCTOR);
+        registerEnergyHatches(CableTier.SUPERCONDUCTOR);
 
         MachineRegistrationHelper.registerMachine("nuclear_item_hatch", bet -> new NuclearHatch(bet, false), NuclearHatch::registerItemApi);
         MachineRegistrationHelper.registerMachine("nuclear_fluid_hatch", bet -> new NuclearHatch(bet, true), NuclearHatch::registerFluidApi);

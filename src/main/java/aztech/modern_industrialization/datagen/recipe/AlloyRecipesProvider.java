@@ -55,7 +55,7 @@ public class AlloyRecipesProvider extends MIRecipesProvider {
         new AlloyBuilder("le_mox").addIngredient("uranium_238", 8).addIngredient("plutonium", 1).Build(consumer);
         new AlloyBuilder("he_mox").addIngredient("uranium_238", 6).addIngredient("plutonium", 3).Build(consumer);
 
-        new AlloyBuilder("supraconductor").addIngredient("iridium", 1).addIngredient("annealed_copper", 3).addIngredient("yttrium", 3)
+        new AlloyBuilder("superconductor").addIngredient("iridium", 1).addIngredient("annealed_copper", 3).addIngredient("yttrium", 3)
                 .addIngredient("neodymium", 2).Build(consumer);
     }
 

@@ -10,13 +10,13 @@
       "item": "modern_industrialization:highly_advanced_machine_hull"
     },
     "I": {
-      "item": "modern_industrialization:supraconductor_cable"
+      "item": "modern_industrialization:superconductor_cable"
     },
     "O": {
       "item": "modern_industrialization:annealed_copper_cable"
     }
   },
   "result": {
-    "item": "modern_industrialization:supraconductor_ev_transformer"
+    "item": "modern_industrialization:superconductor_ev_transformer"
   }
 }

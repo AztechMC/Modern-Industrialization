@@ -79,7 +79,7 @@ public class SingleBlockSpecialMachines {
             MachineModels.addTieredMachine("diesel_generator", "diesel_generator", MachineCasings.MV, true, true, true);
             MachineModels.addTieredMachine("turbo_diesel_generator", "diesel_generator", MachineCasings.HV, true, true, true);
             MachineModels.addTieredMachine("configurable_chest", "", MachineCasings.STEEL_CRATE, false, false, false, false);
-            MachineModels.addTieredMachine("replicator", "replicator", MachineCasings.SUPRACONDUCTOR, true, false, true, true);
+            MachineModels.addTieredMachine("replicator", "replicator", MachineCasings.SUPERCONDUCTOR, true, false, true, true);
 
         }
     }

@@ -4,7 +4,7 @@
   "duration": 600,
   "item_inputs": [
     {
-      "item": "modern_industrialization:supraconductor_wire",
+      "item": "modern_industrialization:superconductor_wire",
       "amount": 3
     },
     {
@@ -19,7 +19,7 @@
   },
   "item_outputs": [
     {
-      "item": "modern_industrialization:supraconductor_cable",
+      "item": "modern_industrialization:superconductor_cable",
       "amount": 6
     }
   ]

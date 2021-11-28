@@ -5,10 +5,10 @@
   ],
   "key": {
     "X": {
-      "item": "modern_industrialization:ev_supraconductor_transformer"
+      "item": "modern_industrialization:ev_superconductor_transformer"
     }
   },
   "result": {
-    "item": "modern_industrialization:supraconductor_ev_transformer"
+    "item": "modern_industrialization:superconductor_ev_transformer"
   }
 }

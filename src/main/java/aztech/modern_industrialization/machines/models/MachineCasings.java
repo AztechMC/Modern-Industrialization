@@ -49,7 +49,7 @@ public class MachineCasings {
     public static final MachineCasing MV = create("mv");
     public static final MachineCasing HV = create("hv");
     public static final MachineCasing EV = create("ev");
-    public static final MachineCasing SUPRACONDUCTOR = create("supraconductor");
+    public static final MachineCasing SUPERCONDUCTOR = create("superconductor");
     public static final MachineCasing TITANIUM = create("titanium");
     public static final MachineCasing TITANIUM_PIPE = create("titanium_machine_casing_pipe");
     public static final MachineCasing SOLID_TITANIUM = create("solid_titanium_machine_casing");
@@ -66,8 +66,8 @@ public class MachineCasings {
             return HV;
         } else if (tier == CableTier.EV) {
             return EV;
-        } else if (tier == CableTier.SUPRACONDUCTOR) {
-            return SUPRACONDUCTOR;
+        } else if (tier == CableTier.SUPERCONDUCTOR) {
+            return SUPERCONDUCTOR;
         }
         return null;
     }

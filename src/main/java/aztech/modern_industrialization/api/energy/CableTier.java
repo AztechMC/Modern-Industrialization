@@ -28,7 +28,7 @@ public enum CableTier {
     MV("mv", 32 * 4),
     HV("hv", 32 * 4 * 8),
     EV("ev", 32 * 4 * 8 * 8),
-    SUPRACONDUCTOR("supraconductor", 128000000);
+    SUPERCONDUCTOR("superconductor", 128000000);
 
     public final String name;
     public final long eu;

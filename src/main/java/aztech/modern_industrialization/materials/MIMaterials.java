@@ -460,9 +460,9 @@ public class MIMaterials {
                 .addParts(DUST, TINY_DUST).addRecipes(StandardRecipes::apply).build());
 
         MaterialRegistry.addMaterial(
-                new MaterialBuilder("supraconductor", SHINY, new BakableTargetColoramp(0x86e3ec, common("ingot"), template("supraconductor_ingot")),
+                new MaterialBuilder("superconductor", SHINY, new BakableTargetColoramp(0x86e3ec, common("ingot"), template("superconductor_ingot")),
                         HARD).addParts(TINY_DUST, DUST, PLATE, INGOT, NUGGET, WIRE, DOUBLE_INGOT, HOT_INGOT).addParts(COIL)
-                                .addParts(CABLE.of(CableTier.SUPRACONDUCTOR)).addRecipes(StandardRecipes::apply)
+                                .addParts(CABLE.of(CableTier.SUPERCONDUCTOR)).addRecipes(StandardRecipes::apply)
                                 .cancelRecipes("craft/cable", "packer/cable").build());
 
         MaterialRegistry.addMaterial(

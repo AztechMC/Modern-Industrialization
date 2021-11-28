@@ -3,7 +3,7 @@
   "eu": 8,
   "duration": 200,
   "item_inputs" : [
-    {"item" :  "modern_industrialization:chrome_crushed_dust",
+    {"item" :  "modern_industrialization:chromium_crushed_dust",
       "amount": 1}
   ],
   "fluid_inputs" : {
@@ -11,7 +11,7 @@
     "amount": 9000
   },
   "fluid_outputs" : {
-    "fluid" : "modern_industrialization:chrome_hydrochloric_solution",
+    "fluid" : "modern_industrialization:chromium_hydrochloric_solution",
     "amount" : 9000
   }
 }

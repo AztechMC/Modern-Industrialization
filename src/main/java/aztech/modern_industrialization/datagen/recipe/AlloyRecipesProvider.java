@@ -44,9 +44,9 @@ public class AlloyRecipesProvider extends MIRecipesProvider {
         new AlloyBuilder("cupronickel").addIngredient("copper", 1).addIngredient("nickel", 1).Build(consumer);
         new AlloyBuilder("invar").addIngredient("iron", 2).addIngredient("nickel", 1).Build(consumer);
         new AlloyBuilder("electrum").addIngredient("gold", 1).addIngredient("silver", 1).Build(consumer);
-        new AlloyBuilder("stainless_steel").addIngredient("iron", 6).addIngredient("chrome", 1).addIngredient("nickel", 1)
+        new AlloyBuilder("stainless_steel").addIngredient("iron", 6).addIngredient("chromium", 1).addIngredient("nickel", 1)
                 .addIngredient("manganese", 1).Build(consumer);
-        new AlloyBuilder("kanthal").addIngredient("stainless_steel", 1).addIngredient("chrome", 1).addIngredient("aluminum", 1).Build(consumer);
+        new AlloyBuilder("kanthal").addIngredient("stainless_steel", 1).addIngredient("chromium", 1).addIngredient("aluminum", 1).Build(consumer);
         new AlloyBuilder("soldering_alloy").addIngredient("tin", 1).addIngredient("lead", 1).Build(consumer);
 
         new AlloyBuilder("le_uranium").addIngredient("uranium_238", 8).addIngredient("uranium_235", 1).Build(consumer);

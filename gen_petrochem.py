@@ -14,7 +14,7 @@ def gen_polymerization(input, output):
     out_dir = path_output + "polymerization/"
     Path(out_dir).mkdir(parents=True, exist_ok=True)
 
-    names = ["lead", "chrome"]
+    names = ["lead", "chromium"]
     in_counts = [4, 1]
     out_counts = [300, 700]
     probabilities = [1.0, 0.5]

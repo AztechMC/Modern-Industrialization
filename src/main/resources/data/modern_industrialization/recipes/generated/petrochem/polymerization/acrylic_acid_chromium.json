@@ -9,7 +9,7 @@
         }
     ],
     "item_inputs": {
-        "tag": "c:chrome_tiny_dusts",
+        "tag": "c:chromium_tiny_dusts",
         "amount": 1
     },
     "fluid_outputs": [

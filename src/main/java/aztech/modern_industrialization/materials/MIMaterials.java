@@ -352,7 +352,7 @@ public class MIMaterials {
                                 .addRecipes(StandardRecipes::apply).build());
 
         MaterialRegistry.addMaterial(
-                new MaterialBuilder("chrome", SHINY, new BakableTargetColoramp(0xFFE6E6, common("ingot"), template("chrome_ingot")), AVERAGE)
+                new MaterialBuilder("chromium", SHINY, new BakableTargetColoramp(0xFFE6E6, common("ingot"), template("chromium_ingot")), AVERAGE)
                         .addParts(CRUSHED_DUST).addParts(BLOCK.of(MaterialBlockSet.GOLD)).addParts(ITEM_PURE_METAL).addParts(HOT_INGOT)
                         .addParts(PLATE, LARGE_PLATE, DOUBLE_INGOT).addRecipes(StandardRecipes::apply)
                         .addRecipes((ctx) -> SmeltingRecipes.applyBlastFurnace(ctx, true, 32, 400)).cancelRecipes("macerator/crushed_dust").build());

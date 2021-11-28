@@ -45,7 +45,7 @@ public class MIFluids {
     public static final CraftingFluid BUTADIENE = new CraftingFluid("butadiene", 0xffd0bd1a);
     public static final CraftingFluid CAPROLACTAM = new CraftingFluid("caprolactam", 0xff795450);
     public static final CraftingFluid CHLORINE = new CraftingFluid("chlorine", 0xffb7c114, true);
-    public static final CraftingFluid CHROME_HYDROCHLORIC_SOLUTION = new CraftingFluid("chrome_hydrochloric_solution", 0xfffabe73);
+    public static final CraftingFluid CHROMIUM_HYDROCHLORIC_SOLUTION = new CraftingFluid("chromium_hydrochloric_solution", 0xfffabe73);
     public static final CraftingFluid CRUDE_OIL = new CraftingFluid("crude_oil", 0xff3e3838);
     public static final CraftingFluid DIESEL = new CraftingFluid("diesel", 0xffe9bf2d);
     public static final CraftingFluid DIETHYL_ETHER = new CraftingFluid("diethyl_ether", 0xff8ec837);

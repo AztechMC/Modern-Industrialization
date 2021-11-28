@@ -24,7 +24,6 @@
 package aztech.modern_industrialization.machines;
 
 import aztech.modern_industrialization.api.FastBlockEntity;
-import aztech.modern_industrialization.api.ICacheableApiHost;
 import aztech.modern_industrialization.api.WrenchableBlockEntity;
 import aztech.modern_industrialization.inventory.ConfigurableFluidStack;
 import aztech.modern_industrialization.inventory.ConfigurableItemStack;
@@ -34,12 +33,9 @@ import aztech.modern_industrialization.machines.gui.MachineGuiParameters;
 import aztech.modern_industrialization.machines.models.MachineModelClientData;
 import aztech.modern_industrialization.util.NbtHelper;
 import aztech.modern_industrialization.util.RenderHelper;
-import it.unimi.dsi.fastutil.objects.ReferenceOpenHashSet;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Set;
-import net.fabricmc.fabric.api.lookup.v1.block.BlockApiLookup;
 import net.fabricmc.fabric.api.rendering.data.v1.RenderAttachmentBlockEntity;
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
@@ -71,7 +67,7 @@ import org.jetbrains.annotations.Nullable;
  */
 @SuppressWarnings("rawtypes")
 public abstract class MachineBlockEntity extends FastBlockEntity
-        implements ExtendedScreenHandlerFactory, RenderAttachmentBlockEntity, ICacheableApiHost, WrenchableBlockEntity {
+        implements ExtendedScreenHandlerFactory, RenderAttachmentBlockEntity, WrenchableBlockEntity {
     final List<SyncedComponent.Server> syncedComponents = new ArrayList<>();
     private final List<IComponent> icomponents = new ArrayList<>();
     private final MachineGuiParameters guiParams;
@@ -79,7 +75,6 @@ public abstract class MachineBlockEntity extends FastBlockEntity
      * Server-side only: true if the next call to sync() will trigger a remesh.
      */
     private boolean syncCausesRemesh = true;
-    private final Set<Runnable> cacheInvalidateCallbacks = new ReferenceOpenHashSet<>();
 
     /**
      * Every machine has an orientation component: this is the only one that is
@@ -231,26 +226,6 @@ public abstract class MachineBlockEntity extends FastBlockEntity
     @Override
     public Packet<ClientPlayPacketListener> toUpdatePacket() {
         return BlockEntityUpdateS2CPacket.create(this);
-    }
-
-    @Override
-    public void markRemoved() {
-        super.markRemoved();
-        invalidateCache();
-    }
-
-    protected void invalidateCache() {
-        this.cacheInvalidateCallbacks.forEach(Runnable::run);
-        this.cacheInvalidateCallbacks.clear();
-    }
-
-    @Override
-    public <A, C> boolean canCache(BlockApiLookup<A, C> lookup, A apiInstance, Runnable invalidateCallback) {
-        if (lookup == ItemStorage.SIDED || lookup == FluidStorage.SIDED) {
-            this.cacheInvalidateCallbacks.add(invalidateCallback);
-            return true;
-        }
-        return false;
     }
 
     public static void registerItemApi(BlockEntityType<?> bet) {

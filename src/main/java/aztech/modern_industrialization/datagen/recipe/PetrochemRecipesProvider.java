@@ -64,6 +64,11 @@ public class PetrochemRecipesProvider extends MIRecipesProvider {
         generateSulfuricPurification(consumer, HEAVY_FUEL);
         generateSulfuricPurification(consumer, LIGHT_FUEL);
         generateSulfuricPurification(consumer, NAPHTHA);
+        generatePolymerization(consumer, ETHYLENE, POLYETHYLENE);
+        generatePolymerization(consumer, VINYL_CHLORIDE, POLYVINYL_CHLORIDE);
+        generatePolymerization(consumer, CAPROLACTAM, NYLON);
+        generatePolymerization(consumer, ACRYLIC_ACID, ACRYLIC_GLUE);
+        generatePolymerization(consumer, STYRENE_BUTADIENE, STYRENE_BUTADIENE_RUBBER);
     }
 
     /**
@@ -103,10 +108,38 @@ public class PetrochemRecipesProvider extends MIRecipesProvider {
                 .offerTo(consumer, "petrochem/sulfuric_purification/" + baseName);
     }
 
+    private void generatePolymerization(Consumer<RecipeJsonProvider> consumer, Fluid input, Fluid output) {
+        String baseNameInput = Registry.FLUID.getId(input).getPath();
+
+        for (var kind : PolymerizationKind.values()) {
+            MIRecipeJson.create(MIMachineRecipeTypes.CHEMICAL_REACTOR, 12, 700)
+                    .addItemInput("#c:" + kind.catalystMaterial + "_tiny_dusts", kind.inputTinyDust)
+                    .addFluidInput(input, 500)
+                    .addFluidOutput(output, kind.outputMillis)
+                    .offerTo(consumer, "petrochem/polymerization/" + baseNameInput + "_" + kind.name().toLowerCase());
+        }
+    }
+
     private static FluidEntry f(Fluid fluid, int amount) {
         return new FluidEntry(fluid, amount);
     }
 
     private record FluidEntry(Fluid fluid, int amount) {
+    }
+
+    private enum PolymerizationKind {
+        LEAD("lead", 4, 300),
+        CHROMIUM("chromium", 1, 700),
+        ;
+
+        private final String catalystMaterial;
+        private final int inputTinyDust;
+        private final int outputMillis;
+
+        PolymerizationKind(String catalystMaterial, int inputTinyDust, int outputMillis) {
+            this.catalystMaterial = catalystMaterial;
+            this.inputTinyDust = inputTinyDust;
+            this.outputMillis = outputMillis;
+        }
     }
 }

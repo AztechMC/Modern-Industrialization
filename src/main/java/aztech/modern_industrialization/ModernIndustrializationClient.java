@@ -80,8 +80,6 @@ import net.minecraft.item.Items;
 import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.tag.ItemTags;
 import net.minecraft.text.LiteralText;
-import net.minecraft.text.Style;
-import net.minecraft.text.TextColor;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
 
@@ -150,8 +148,9 @@ public class ModernIndustrializationClient implements ClientModInitializer {
                     PipeItem pipe = (PipeItem) item;
                     if (MIPipes.electricityPipeTier.containsKey(pipe)) {
                         CableTier tier = MIPipes.electricityPipeTier.get(pipe);
-                        lines.add(new TranslatableText("text.modern_industrialization.eu_cable", new TranslatableText(tier.translationKey),
-                                tier.getMaxTransfer()).setStyle(TextHelper.EU_TEXT));
+                        lines.add(
+                                new TranslatableText("text.modern_industrialization.eu_cable", new TranslatableText(tier.translationKey),
+                                        TextHelper.getEuTextTick(tier.getMaxTransfer(), true)));
                     }
                 }
                 if (item == Items.GUNPOWDER) {
@@ -173,14 +172,15 @@ public class ModernIndustrializationClient implements ClientModInitializer {
                     } else if (block instanceof OreBlock oreBlock) {
                         if (oreBlock.params.generate) {
 
-                            Style gray = Style.EMPTY.withColor(TextColor.fromRgb(0x707070)).withItalic(true);
+                            lines.add(TextHelper
+                                    .formatWithNumber("text.modern_industrialization.ore_generation_tooltip_y", -64, oreBlock.params.maxYLevel)
+                                    .setStyle(TextHelper.GRAY_TEXT_NOT_ITALIC));
+                            lines.add(TextHelper.formatWithNumber("text.modern_industrialization.ore_generation_tooltip_vein_frequency",
+                                    oreBlock.params.veinsPerChunk).setStyle(TextHelper.GRAY_TEXT_NOT_ITALIC));
+                            lines.add(TextHelper
+                                    .formatWithNumber("text.modern_industrialization.ore_generation_tooltip_vein_size", oreBlock.params.veinSize)
+                                    .setStyle(TextHelper.GRAY_TEXT_NOT_ITALIC));
 
-                            lines.add(new TranslatableText("text.modern_industrialization.ore_generation_tooltip_y", oreBlock.params.maxYLevel)
-                                    .setStyle(gray));
-                            lines.add(new TranslatableText("text.modern_industrialization.ore_generation_tooltip_vein_frequency",
-                                    oreBlock.params.veinsPerChunk).setStyle(gray));
-                            lines.add(new TranslatableText("text.modern_industrialization.ore_generation_tooltip_vein_size", oreBlock.params.veinSize)
-                                    .setStyle(gray));
                         }
                     }
                 }
@@ -191,9 +191,9 @@ public class ModernIndustrializationClient implements ClientModInitializer {
                     try {
                         Integer fuelTime = FuelRegistryImpl.INSTANCE.get(item);
                         if (fuelTime != null && fuelTime > 0) {
+
                             long totalEu = fuelTime * FuelBurningComponent.EU_PER_BURN_TICK;
-                            lines.add(new TranslatableText("text.modern_industrialization.base_eu_total_double", TextHelper.getEuString(totalEu),
-                                    TextHelper.getEuUnit(totalEu)).setStyle(TextHelper.GRAY_TEXT));
+                            lines.add(TextHelper.getEuStorageTooltip(totalEu));
                         }
                     } catch (Exception e) {
                         ModernIndustrialization.LOGGER.warn("Could not show MI fuel tooltip.", e);

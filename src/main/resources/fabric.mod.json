@@ -1,5 +1,4 @@
 {
-  "__comment": "TODO 1.18 add back REI and patchouli deps",
   "schemaVersion": 1,
   "id": "modern_industrialization",
   "version": "${version}",
@@ -47,7 +46,8 @@
   "depends": {
     "fabricloader": ">=0.7.4",
     "fabric": ">=0.43",
-    "minecraft": "1.18.x"
+    "minecraft": "1.18.x",
+    "roughlyenoughitems": "*"
   },
   "breaks": {
     "universalcomponents": "*"
@@ -56,15 +56,6 @@
     "waila:plugins": {
       "id": "modern_industrialization:plugin",
       "initializer": "aztech.modern_industrialization.compat.waila.MIWailaPlugin"
-    },
-    "dashloader:customobject": [
-      "aztech.modern_industrialization.compat.dashloader.DashMachineBakedModel",
-      "aztech.modern_industrialization.compat.dashloader.DashMachineCastingModel",
-      "aztech.modern_industrialization.compat.dashloader.DashPipeModel",
-      "aztech.modern_industrialization.compat.dashloader.DashTankModel"
-    ],
-    "dashloader:customdata": [
-      "aztech.modern_industrialization.compat.dashloader.MachineCastingModelsData"
-    ]
+    }
   }
 }

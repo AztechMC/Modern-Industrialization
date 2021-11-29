@@ -131,8 +131,8 @@ repositories {
 }
 
 dependencies {
-    // TODO remove
-    include modImplementation("net.fabricmc.fabric-api:fabric-data-generation-api-v1:0.0.1+f8f4a6586d") {
+    // TODO remove when fabric PR is merged
+    modImplementation("net.fabricmc.fabric-api:fabric-data-generation-api-v1:0.0.1+f8f4a6586d") {
         exclude(group: "net.fabricmc.fabric-api")
     }
 
@@ -351,9 +351,9 @@ if (System.getenv("CURSEFORGE_API_KEY") && !version.endsWith("-SNAPSHOT")) {
             changelogType = "markdown"
             delegate.changelog = changelog
 
-            addGameVersion "1.17.1"
+            addGameVersion "1.18-Snapshot"
             addGameVersion "Fabric"
-            addGameVersion "Java 16"
+            addGameVersion "Java 17"
 
             relations {
                 requiredDependency "fabric-api"
@@ -388,6 +388,6 @@ task publishModrinth (type: TaskModrinthUpload){
     delegate.changelog = changelog
     versionType = releaseChannel.toUpperCase()
     uploadFile = remapJar.archiveFile
-    addGameVersion "1.17.1"
+    addGameVersion "1.18-rc3"
     addLoader "fabric"
 }

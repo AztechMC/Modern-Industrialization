@@ -24,6 +24,7 @@
 package aztech.modern_industrialization.datagen;
 
 import aztech.modern_industrialization.ModernIndustrialization;
+import aztech.modern_industrialization.datagen.advancement.MIAdvancementsProvider;
 import aztech.modern_industrialization.datagen.model.MachineModelsProvider;
 import aztech.modern_industrialization.datagen.recipe.*;
 import aztech.modern_industrialization.datagen.recipe.AlloyRecipesProvider;
@@ -44,6 +45,8 @@ public class MIDatagenEntrypoint implements DataGeneratorEntrypoint {
         dataGenerator.addProvider(MaterialRecipesProvider::new);
         dataGenerator.addProvider(DyeRecipesProvider::new);
         dataGenerator.addProvider(AssemblerRecipesProvider::new);
+
+        dataGenerator.addProvider(MIAdvancementsProvider::new);
 
         dataGenerator.addProvider(MachineModelsProvider::new);
 

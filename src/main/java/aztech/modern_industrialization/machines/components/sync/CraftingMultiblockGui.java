@@ -173,10 +173,10 @@ public class CraftingMultiblockGui {
                                 y + 56, 0xFFFFFF);
 
                         textRenderer.draw(matrices, new TranslatableText("text.modern_industrialization.base_eu_recipe",
-                                TextHelper.getEuString(baseRecipeEu), TextHelper.getEuUnit(baseRecipeEu)), x + 9, y + 67, 0xFFFFFF);
+                                TextHelper.getEuTextTick(baseRecipeEu)), x + 9, y + 67, 0xFFFFFF);
 
                         textRenderer.draw(matrices, new TranslatableText("text.modern_industrialization.current_eu_recipe",
-                                TextHelper.getEuString(currentRecipeEu), TextHelper.getEuUnit(currentRecipeEu)), x + 9, y + 78, 0xFFFFFF);
+                                TextHelper.getEuTextTick(currentRecipeEu)), x + 9, y + 78, 0xFFFFFF);
                     }
                 }
             }

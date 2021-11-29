@@ -27,10 +27,12 @@ import static aztech.modern_industrialization.ModernIndustrialization.STONE_MATE
 
 import aztech.modern_industrialization.MIBlock;
 import aztech.modern_industrialization.MIConfig;
+import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.blocks.OreBlock;
 import aztech.modern_industrialization.materials.set.MaterialOreSet;
 import aztech.modern_industrialization.textures.TextureHelper;
 import aztech.modern_industrialization.util.ResourceUtil;
+import com.google.common.collect.ImmutableList;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import java.io.IOException;
@@ -38,6 +40,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import net.devtech.arrp.json.loot.*;
+import net.fabricmc.fabric.api.biome.v1.BiomeModifications;
+import net.fabricmc.fabric.api.biome.v1.BiomeSelectors;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
 import net.minecraft.client.texture.NativeImage;
@@ -47,7 +51,10 @@ import net.minecraft.util.math.intprovider.UniformIntProvider;
 import net.minecraft.util.registry.BuiltinRegistries;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
-import net.minecraft.world.gen.feature.ConfiguredFeature;
+import net.minecraft.world.gen.GenerationStep;
+import net.minecraft.world.gen.YOffset;
+import net.minecraft.world.gen.decorator.HeightRangePlacementModifier;
+import net.minecraft.world.gen.feature.*;
 
 public class OrePart extends UnbuildablePart<OrePart.OrePartParams> {
 
@@ -125,15 +132,26 @@ public class OrePart extends UnbuildablePart<OrePart.OrePartParams> {
                 if (config.generateOres && !config.blacklistedOres.contains(partContext.getMaterialName())) {
                     // TODO 1.18
 
-//                    List<OreFeatureConfig.Target> targets = List
-//                            .of(deepslate ? OreFeatureConfig.createTarget(OreFeatureConfig.Rules.DEEPSLATE_ORE_REPLACEABLES, block.getDefaultState())
-//                                    : OreFeatureConfig.createTarget(OreFeatureConfig.Rules.STONE_ORE_REPLACEABLES, block.getDefaultState()));
-//                    OreFeatureConfig oreConfig = new OreFeatureConfig(targets, oreParams.veinSize);
-//                    ConfiguredFeature<?, ?> oreGenerator = Feature.ORE.configure(oreConfig)
-//                            .uniformRange(YOffset.getBottom(), YOffset.fixed(oreParams.maxYLevel)).spreadHorizontally()
-//                            .repeat(oreParams.veinsPerChunk);
-//                    Identifier oreGenId = new MIIdentifier((deepslate ? "deepslate_" : "") + "ore_generator_" + partContext.getMaterialName());
-//                    addOreGen(oreGenId, oreGenerator);
+                    Identifier oreGenId = new MIIdentifier((deepslate ? "deepslate_" : "") + "ore_generator_" + partContext.getMaterialName());
+
+                    var target = ImmutableList.of(OreFeatureConfig.createTarget(
+                            deepslate ? OreConfiguredFeatures.DEEPSLATE_ORE_REPLACEABLES : OreConfiguredFeatures.STONE_ORE_REPLACEABLES,
+                            block.getDefaultState()));
+
+                    var configuredOreGen = Registry.register(
+                            BuiltinRegistries.CONFIGURED_FEATURE, oreGenId, Feature.ORE.configure(new OreFeatureConfig(target, oreParams.veinSize)));
+
+                    Registry.register(
+                            BuiltinRegistries.PLACED_FEATURE,
+                            oreGenId,
+                            configuredOreGen.withPlacement(
+                                    OrePlacedFeatures.modifiersWithCount(
+                                            oreParams.veinsPerChunk,
+                                            HeightRangePlacementModifier.uniform(YOffset.getBottom(), YOffset.fixed(oreParams.maxYLevel)))));
+
+                    var featureKey = RegistryKey.of(Registry.PLACED_FEATURE_KEY, oreGenId);
+                    BiomeModifications.addFeature(BiomeSelectors.foundInOverworld(), GenerationStep.Feature.UNDERGROUND_ORES, featureKey);
+
                 }
             }
 
@@ -166,13 +184,6 @@ public class OrePart extends UnbuildablePart<OrePart.OrePartParams> {
                 e.printStackTrace();
             }
         }).withCustomFormattablePath((deepslate ? "deepslate_" : "") + "%s_ore", "%s_ores");
-    }
-
-    public static void addOreGen(Identifier oreGenId, ConfiguredFeature<?, ?> oreGenerator) {
-        Registry.register(BuiltinRegistries.CONFIGURED_FEATURE, oreGenId, oreGenerator);
-        RegistryKey<ConfiguredFeature<?, ?>> featureKey = RegistryKey.of(Registry.CONFIGURED_FEATURE_KEY, oreGenId);
-        // TODO 1.18
-//        BiomeModifications.addFeature(BiomeSelectors.foundInOverworld(), GenerationStep.Feature.UNDERGROUND_ORES, featureKey);
     }
 
     public List<BuildablePart> ofAll(OrePartParams params) {

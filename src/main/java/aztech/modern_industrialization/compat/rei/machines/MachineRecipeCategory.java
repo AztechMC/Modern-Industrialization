@@ -28,6 +28,7 @@ import aztech.modern_industrialization.inventory.SlotPositions;
 import aztech.modern_industrialization.machines.MachineScreenHandlers;
 import aztech.modern_industrialization.machines.components.sync.EnergyBar;
 import aztech.modern_industrialization.machines.components.sync.ProgressBar;
+import aztech.modern_industrialization.util.TextHelper;
 import com.mojang.blaze3d.systems.RenderSystem;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -130,7 +131,8 @@ public class MachineRecipeCategory implements DisplayCategory<MachineRecipeDispl
                     (float) (System.currentTimeMillis() / recipeMillis % 1.0));
         }));
 
-        Text totalEuTooltip = new TranslatableText("text.modern_industrialization.base_eu_total", recipeDisplay.getTicks() * recipeDisplay.getEu());
+        Text totalEuTooltip = new TranslatableText("text.modern_industrialization.base_eu_total",
+                TextHelper.getEuText(recipeDisplay.getTicks() * recipeDisplay.getEu()));
 
         // Draw filled energy bar
         widgets.add(Widgets.createDrawableWidget((helper, matrices, mouseX, mouseY, delta) -> {
@@ -143,7 +145,7 @@ public class MachineRecipeCategory implements DisplayCategory<MachineRecipeDispl
         // Draw EU/t and seconds
         widgets.add(Widgets
                 .createLabel(new Point(bounds.x + 15, bounds.y + 5),
-                        new TranslatableText("text.modern_industrialization.base_eu_t", recipeDisplay.getEu()))
+                        TextHelper.getEuTextTick(recipeDisplay.getEu()))
                 .leftAligned().noShadow().color(0xFF404040, 0xFFBBBBBB));
         widgets.add(Widgets
                 .createLabel(new Point(bounds.getMaxX() - 5, bounds.y + 5),

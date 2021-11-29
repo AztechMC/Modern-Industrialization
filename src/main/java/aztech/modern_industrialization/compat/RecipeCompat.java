@@ -98,28 +98,28 @@ public class RecipeCompat {
             }
         }
 
-        if (FabricLoader.getInstance().isModLoaded("appliedenergistics2")) {
+        if (FabricLoader.getInstance().isModLoaded("ae2")) {
             ModernIndustrialization.LOGGER.info("Applied Energistics 2 is detected, loading compatibility recipes for Modern Industrialization!");
 
-            addMiRecipe(MIMachineRecipeTypes.ELECTROLYZER, "appliedenergistics2:certus_quartz_crystal",
-                    "appliedenergistics2:charged_certus_quartz_crystal", 1, 8, 60);
+            addMiRecipe(MIMachineRecipeTypes.ELECTROLYZER, "ae2:certus_quartz_crystal",
+                    "ae2:charged_certus_quartz_crystal", 1, 8, 60);
             addRecipe("macerator/certus_ore", MIRecipeJson.create(MIMachineRecipeTypes.MACERATOR, 2, 200)//
                     .addItemInput("#c:certus_quartz_ores", 1)//
-                    .addItemOutput("appliedenergistics2:certus_quartz_dust", 5)//
-                    .addItemOutput("appliedenergistics2:certus_quartz_crystal", 1, 0.1)//
+                    .addItemOutput("ae2:certus_quartz_dust", 5)//
+                    .addItemOutput("ae2:certus_quartz_crystal", 1, 0.1)//
             );
-            addCrystalMaceration("certus", "#c:certus_quartz", "appliedenergistics2:certus_quartz_dust");
-            addCrystalMaceration("fluix", "appliedenergistics2:fluix_crystal", "appliedenergistics2:fluix_dust");
+            addCrystalMaceration("certus", "#c:certus_quartz", "ae2:certus_quartz_dust");
+            addCrystalMaceration("fluix", "ae2:fluix_crystal", "ae2:fluix_dust");
             addRecipe("mixer/fluix", MIRecipeJson.create(MIMachineRecipeTypes.MIXER, 8, 100)//
                     .addItemInput("minecraft:quartz", 1)//
-                    .addItemInput("appliedenergistics2:charged_certus_quartz_crystal", 1)//
+                    .addItemInput("ae2:charged_certus_quartz_crystal", 1)//
                     .addItemInput("minecraft:redstone", 1)//
                     .addFluidInput(Fluids.WATER, 1000, 0)//
-                    .addItemOutput("appliedenergistics2:fluix_dust", 2)//
+                    .addItemOutput("ae2:fluix_dust", 2)//
             );
             addRecipe("quarry_ae2", MIRecipeJson.create(MIMachineRecipeTypes.QUARRY, 16, 600)//
-                    .addItemInput("appliedenergistics2:fluix_glass_cable", 1, 0.2)//
-                    .addItemOutput("appliedenergistics2:quartz_ore", 8, 0.02)//
+                    .addItemInput("ae2:fluix_glass_cable", 1, 0.2)//
+                    .addItemOutput("ae2:quartz_ore", 8, 0.02)//
             );
         }
 
@@ -155,7 +155,7 @@ public class RecipeCompat {
     }
 
     private static void addMiRecipe(MachineRecipeType machine, String input, String output, int outputAmount, int eu, int duration) {
-        String id = "compat_" + machine + "_" + input.replace(':', '_').replace('#', '_') + "_to_" + output.replace(':', '_');
+        String id = "compat_" + machine.getPath() + "_" + input.replace(':', '_').replace('#', '_') + "_to_" + output.replace(':', '_');
         addRecipe(id, MIRecipeJson.create(machine, eu, duration).addItemInput(input, 1).addItemOutput(output, outputAmount));
     }
 

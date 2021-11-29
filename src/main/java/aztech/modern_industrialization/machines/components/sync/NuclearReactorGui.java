@@ -333,8 +333,7 @@ public class NuclearReactorGui {
 
                             } else if (currentMode == Mode.EU_GENERATION) {
                                 double euGeneration = tileData.getMeanEuGeneration();
-                                screen.renderTooltip(matrices, new TranslatableText("text.modern_industrialization.base_eu_t", (int) euGeneration)
-                                        .setStyle(TextHelper.EU_TEXT), cursorX, cursorY);
+                                screen.renderTooltip(matrices, TextHelper.getEuTextTick(euGeneration, true), cursorX, cursorY);
                                 return;
                             }
 
@@ -420,11 +419,8 @@ public class NuclearReactorGui {
                     int width = renderer.getWidth(getEfficiencyText().getString());
                     if (cursorX > x + 8 && cursorX < x + 8 + width && cursorY >= y + 15 && cursorY < y + 24) {
 
-                        Text euProduction = new LiteralText(TextHelper.getEuString(data.euProduction) + " " + TextHelper.getEuUnit(data.euProduction))
-                                .setStyle(TextHelper.EU_TEXT);
-                        Text euFuelConsumption = new LiteralText(
-                                TextHelper.getEuString(data.euFuelConsumption) + " " + TextHelper.getEuUnit(data.euFuelConsumption))
-                                        .setStyle(TextHelper.EU_TEXT);
+                        Text euProduction = TextHelper.getEuTextTick(data.euProduction, true);
+                        Text euFuelConsumption = TextHelper.getEuTextTick(data.euFuelConsumption, true);
 
                         Text tooltip = new TranslatableText("text.modern_industrialization.nuclear_fuel_efficiency_tooltip", euProduction,
                                 euFuelConsumption);

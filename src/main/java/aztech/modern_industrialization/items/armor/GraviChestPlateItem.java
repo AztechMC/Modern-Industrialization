@@ -37,7 +37,6 @@ import net.minecraft.item.*;
 import net.minecraft.recipe.Ingredient;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
-import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Rarity;
@@ -134,8 +133,7 @@ public class GraviChestPlateItem extends ArmorItem implements Wearable, Tickable
 
     @Override
     public void appendTooltip(ItemStack stack, @Nullable World world, List<Text> tooltip, TooltipContext context) {
-        tooltip.add(
-                new LiteralText(TextHelper.formatEu(getEnergy(stack)) + " / " + TextHelper.formatEu(ENERGY_CAPACITY)).setStyle(TextHelper.GRAY_TEXT));
+        tooltip.add(TextHelper.getEuTextMaxed(getEnergy(stack), ENERGY_CAPACITY, true));
     }
 
     @Override

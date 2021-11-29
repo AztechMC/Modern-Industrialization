@@ -27,7 +27,10 @@ import aztech.modern_industrialization.textures.MITextures;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Comparator;
 import java.util.Objects;
+import java.util.stream.Stream;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.minecraft.client.resource.ClientBuiltinResourcePackProvider;
 import net.minecraft.client.resource.DefaultClientResourcePack;
@@ -48,6 +51,16 @@ public class TexturesProvider implements DataProvider {
 
     @Override
     public void run(DataCache cache) throws IOException {
+        // Delete output folder first, because textures won't be generated if they already exist,
+        // leading to the DataCache clearing the textures when it deletes unused paths from the cache.
+        // Code from https://stackoverflow.com/questions/35988192/java-nio-most-concise-recursive-directory-delete
+        var textureDir = dataGenerator.getOutput().resolve("assets/modern_industrialization/textures");
+        if (Files.exists(textureDir)) {
+            try (Stream<Path> walk = Files.walk(textureDir)) {
+                walk.sorted(Comparator.reverseOrder()).map(Path::toFile).forEach(File::delete);
+            }
+        }
+
         var generatedResources = dataGenerator.getOutput();
         var nonGeneratedResources = dataGenerator.getOutput().resolve("../../main/resources");
         var manager = new ReloadableResourceManagerImpl(ResourceType.CLIENT_RESOURCES);

@@ -42,6 +42,7 @@ import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.minecraft.block.BlockEntityProvider;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.item.BlockItem;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.math.BlockPos;
@@ -67,33 +68,26 @@ public class BarrelBlock extends AbstractStorageBlock implements BlockEntityProv
     }
 
     static {
-
         UseBlockCallback.EVENT.register((player, world, hand, hitResult) -> {
-
-            BlockEntity blockEntity = world.getBlockEntity(hitResult.getBlockPos());
-            if (blockEntity instanceof BarrelBlockEntity barrel) {
+            if (world.getBlockEntity(hitResult.getBlockPos()) instanceof BarrelBlockEntity barrel && hitResult.getSide().getAxis().isHorizontal()) {
                 if (!player.isSneaking()) {
                     if (StorageUtil.move(PlayerInventoryStorage.of(player).getSlots().get(player.getInventory().selectedSlot), barrel,
                             (itemVariant) -> true, Long.MAX_VALUE, null) > 0) {
                         return ActionResult.success(world.isClient);
                     }
-
                 } else {
                     ItemVariant currentInHand = ItemVariant.of(player.getMainHandStack());
                     if (StorageUtil.move(PlayerInventoryStorage.of(player), barrel, (itemVariant) -> itemVariant.equals(currentInHand),
                             Long.MAX_VALUE, null) > 0) {
                         return ActionResult.success(world.isClient);
                     }
-
                 }
-
             }
             return ActionResult.PASS;
         });
 
         AttackBlockCallback.EVENT.register((player, world, hand, pos, direction) -> {
-            BlockEntity blockEntity = world.getBlockEntity(pos);
-            if (blockEntity instanceof BarrelBlockEntity barrel) {
+            if (world.getBlockEntity(pos) instanceof BarrelBlockEntity barrel && direction.getAxis().isHorizontal()) {
                 if (!barrel.isEmpty()) {
                     try (Transaction transaction = Transaction.openOuter()) {
                         ItemVariant extractedResource = barrel.getResource();
@@ -104,12 +98,18 @@ public class BarrelBlock extends AbstractStorageBlock implements BlockEntityProv
                         PlayerInventoryStorage.of(player).offerOrDrop(extractedResource, extracted, transaction);
 
                         transaction.commit();
+                        updateDestroyDelay();
                     }
-
+                    // TODO: fabric bug: if the event returns something else than PASS, no packet is sent to the server
+                    // return ActionResult.success(world.isClient);
                 }
             }
             return ActionResult.PASS;
         });
+    }
 
+    private static void updateDestroyDelay() {
+        // Add a 5 tick delay like vanilla.
+        MinecraftClient.getInstance().interactionManager.blockBreakingCooldown = 5;
     }
 }

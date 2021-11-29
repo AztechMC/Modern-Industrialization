@@ -56,7 +56,6 @@ import org.jetbrains.annotations.Nullable;
 
 public class MachineUnbakedModel implements UnbakedModel {
     private static final Identifier BASE_BLOCK_MODEL = new Identifier("minecraft:block/block");
-    private static final int OVERLAY_COUNT = 2 * 6 + 3; // active and inactive per side + output/item export/fluid export.
     private static final Gson GSON = new GsonBuilder().registerTypeAdapter(Identifier.class, new Identifier.Serializer()).create();
 
     public static MachineUnbakedModel deserialize(MachineCasing baseCasing, Resource jsonModel) {
@@ -139,6 +138,22 @@ public class MachineUnbakedModel implements UnbakedModel {
         private Identifier right_active;
         private Identifier back;
         private Identifier back_active;
+        private Identifier top_s;
+        private Identifier top_s_active;
+        private Identifier top_w;
+        private Identifier top_w_active;
+        private Identifier top_n;
+        private Identifier top_n_active;
+        private Identifier top_e;
+        private Identifier top_e_active;
+        private Identifier bottom_s;
+        private Identifier bottom_s_active;
+        private Identifier bottom_w;
+        private Identifier bottom_w_active;
+        private Identifier bottom_n;
+        private Identifier bottom_n_active;
+        private Identifier bottom_e;
+        private Identifier bottom_e_active;
         private Identifier output;
         private Identifier item_auto;
         private Identifier fluid_auto;
@@ -164,15 +179,11 @@ public class MachineUnbakedModel implements UnbakedModel {
 
         /**
          * Order is as follows:
-         * Active and inactive: top, bottom, front, left, back, right.
+         * Active and inactive: front, left, back, right, top S/W/N/E, bottom S/W/N/E,
          * output, item auto, fluid auto
          */
         private SpriteIdentifier[] toSpriteIds() {
             return new SpriteIdentifier[] {
-                    select(top),
-                    select(top_active, top),
-                    select(bottom),
-                    select(bottom_active, bottom),
                     select(front, side),
                     select(front_active, front, side_active, side),
                     select(left, side),
@@ -181,6 +192,22 @@ public class MachineUnbakedModel implements UnbakedModel {
                     select(back_active, back, side_active, side),
                     select(right, side),
                     select(right_active, right, side_active, side),
+                    select(top_s, top),
+                    select(top_s_active, top_s, top_active, top),
+                    select(top_w, top),
+                    select(top_w_active, top_w, top_active, top),
+                    select(top_n, top),
+                    select(top_n_active, top_n, top_active, top),
+                    select(top_e, top),
+                    select(top_e_active, top_e, top_active, top),
+                    select(bottom_s, bottom),
+                    select(bottom_s_active, bottom_s, bottom_active, bottom),
+                    select(bottom_w, bottom),
+                    select(bottom_w_active, bottom_w, bottom_active, bottom),
+                    select(bottom_n, bottom),
+                    select(bottom_n_active, bottom_n, bottom_active, bottom),
+                    select(bottom_e, bottom),
+                    select(bottom_e_active, bottom_e, bottom_active, bottom),
                     select(output),
                     select(item_auto),
                     select(fluid_auto),

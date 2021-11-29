@@ -80,12 +80,12 @@ public class MachineBakedModel implements BakedModel, FabricBakedModel {
                 MachineCasing casing = clientData.casing == null ? baseCasing : clientData.casing;
                 var sprites = renderBase(renderContext, casing, clientData.frontDirection);
                 if (clientData.outputDirection != null) {
-                    emitSprite(renderContext.getEmitter(), clientData.outputDirection, sprites[12], 3e-4f);
+                    emitSprite(renderContext.getEmitter(), clientData.outputDirection, sprites[24], 3e-4f);
                     if (clientData.itemAutoExtract) {
-                        emitSprite(renderContext.getEmitter(), clientData.outputDirection, sprites[13], 3e-4f);
+                        emitSprite(renderContext.getEmitter(), clientData.outputDirection, sprites[25], 3e-4f);
                     }
                     if (clientData.fluidAutoExtract) {
-                        emitSprite(renderContext.getEmitter(), clientData.outputDirection, sprites[14], 3e-4f);
+                        emitSprite(renderContext.getEmitter(), clientData.outputDirection, sprites[26], 3e-4f);
                     }
                 }
             }
@@ -125,12 +125,14 @@ public class MachineBakedModel implements BakedModel, FabricBakedModel {
     @Nullable
     public static Sprite getSprite(Sprite[] sprites, Direction side, Direction facingDirection, boolean isActive) {
         int spriteId;
-        if (side == Direction.UP) {
-            spriteId = 0;
-        } else if (side == Direction.DOWN) {
-            spriteId = 2;
+        if (side.getAxis().isHorizontal()) {
+            spriteId = (facingDirection.getHorizontal() - side.getHorizontal() + 4) % 4 * 2;
         } else {
-            spriteId = (facingDirection.getHorizontal() - side.getHorizontal() + 4) % 4 * 2 + 4;
+            spriteId = (facingDirection.getHorizontal() + 4) * 2;
+
+            if (side == Direction.DOWN) {
+                spriteId += 8;
+            }
         }
         if (isActive) {
             spriteId++;

@@ -15,12 +15,16 @@ Example JSON:
     // Top overlays
     "top": "<id of top overlay texture to use when the machine is inactive>",
     "top_active": "<id of top overlay texture to use when the machine is active>", // omit to use "top" when the machine is active
-    // Side overlays
-    "side": "...",
-    "side_active": "...",
     // Bottom overlays
     "bottom": "...",
     "bottom_active": "...",
+    // Optionally you can override a top texture or bottom depending on the orientation of the machine.
+    "top_s": "<id of the top overlay texture to use when the machine is pointing toward south>",
+    "top_s_active": "<id of the top overlay texture to use when the machine is pointing toward south and active>",
+    // top_w, top_n, top_e, bottom_s, bottom_w, bottom_n and bottom_e are also supported.
+    // Side overlays
+    "side": "...",
+    "side_active": "...",
     // You can then override each side specifically if you want, otherwise "side" will be used if it is present:
     "front": "...",
     "front_active": "...",

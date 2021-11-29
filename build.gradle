@@ -149,7 +149,7 @@ dependencies {
     modImplementation("me.shedaniel:RoughlyEnoughItems-fabric:${project.rei_version}") {
         exclude(group: "net.fabricmc.fabric-api")
     }
-    include /* TODO 1.18 impl */ modCompileOnly("vazkii.patchouli:Patchouli:${project.patchouli_version}") {
+    include modImplementation("vazkii.patchouli:Patchouli:${project.patchouli_version}") {
         exclude(group: "net.fabricmc.fabric-api")
     }
 

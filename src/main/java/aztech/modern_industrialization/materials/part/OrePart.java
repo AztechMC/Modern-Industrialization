@@ -35,10 +35,12 @@ import aztech.modern_industrialization.util.ResourceUtil;
 import com.google.common.collect.ImmutableList;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
+
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
 import net.devtech.arrp.json.loot.*;
 import net.fabricmc.fabric.api.biome.v1.BiomeModifications;
 import net.fabricmc.fabric.api.biome.v1.BiomeSelectors;
@@ -74,6 +76,10 @@ public class OrePart extends UnbuildablePart<OrePart.OrePartParams> {
         return of(new OrePartParams(xpProvider, set));
     }
 
+    public BuildablePart of(MaterialOreSet set) {
+        return of(new OrePartParams(UniformIntProvider.create(0, 0), set));
+    }
+
     public OrePart(boolean deepslate) {
         super(deepslate ? "ore_deepslate" : "ore");
         this.deepslate = deepslate;
@@ -84,7 +90,7 @@ public class OrePart extends UnbuildablePart<OrePart.OrePartParams> {
         return new RegularPart(key).withRegister((registeringContext, partContext, part, itemPath, itemId, itemTag) -> {
             MIBlock block = new OreBlock(itemPath, FabricBlockSettings.of(STONE_MATERIAL).hardness(deepslate ? 4.5f : 3.0f).resistance(3.0f)
                     .sounds(deepslate ? BlockSoundGroup.DEEPSLATE : BlockSoundGroup.STONE).breakByTool(FabricToolTags.PICKAXES, 1).requiresTool(),
-                    oreParams);
+                    oreParams, partContext.getMaterialName());
 
             Part mainPart = partContext.getMainPart();
             String loot;
@@ -162,16 +168,16 @@ public class OrePart extends UnbuildablePart<OrePart.OrePartParams> {
                 String from =
 
                         switch (oreParams.set) {
-                case IRON -> deepslate ? "deepslate_iron_ore" : "iron_ore";
-                case COPPER -> deepslate ? "deepslate_copper_ore" : "copper_ore";
-                case LAPIS -> deepslate ? "deepslate_lapis_ore" : "lapis_ore";
-                case REDSTONE -> deepslate ? "deepslate" : "redstone_ore";
-                case DIAMOND -> deepslate ? "deepslate" : "diamond_ore";
-                case GOLD -> deepslate ? "deepslate_gold_ore" : "gold_ore";
-                case EMERALD -> deepslate ? "deepslate_emerald_ore" : "emerald_ore";
-                case COAL -> deepslate ? "deepslate_coal_ore" : "coal_ore";
-                default -> deepslate ? "deepslate" : "stone";
-                };
+                            case IRON -> deepslate ? "deepslate_iron_ore" : "iron_ore";
+                            case COPPER -> deepslate ? "deepslate_copper_ore" : "copper_ore";
+                            case LAPIS -> deepslate ? "deepslate_lapis_ore" : "lapis_ore";
+                            case REDSTONE -> deepslate ? "deepslate" : "redstone_ore";
+                            case DIAMOND -> deepslate ? "deepslate" : "diamond_ore";
+                            case GOLD -> deepslate ? "deepslate_gold_ore" : "gold_ore";
+                            case EMERALD -> deepslate ? "deepslate_emerald_ore" : "emerald_ore";
+                            case COAL -> deepslate ? "deepslate_coal_ore" : "coal_ore";
+                            default -> deepslate ? "deepslate" : "stone";
+                        };
 
                 NativeImage image = mtm.getAssetAsTexture(String.format("minecraft:textures/block/%s.png", from));
                 NativeImage top = mtm.getAssetAsTexture(template);

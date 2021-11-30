@@ -28,12 +28,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Consumer;
-import net.minecraft.data.server.recipe.RecipeJsonProvider;
-import net.minecraft.recipe.RecipeSerializer;
-import net.minecraft.util.Identifier;
 
-public class ShapelessRecipeJson implements RecipeJson {
+public class ShapelessRecipeJson extends RecipeJson<ShapelessRecipeJson> {
 
     @SuppressWarnings("unused")
     private final String type;
@@ -49,11 +45,6 @@ public class ShapelessRecipeJson implements RecipeJson {
 
     public void addIngredient(Ingredient ingredient) {
         this.ingredients.add(ingredient);
-    }
-
-    @Override
-    public void offerTo(Consumer<RecipeJsonProvider> exporter, String recipeId) {
-        exporter.accept(new JsonProvider(RecipeSerializer.SHAPELESS, new Identifier(recipeId), this));
     }
 
     public static class Ingredient {

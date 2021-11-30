@@ -30,7 +30,6 @@ import aztech.modern_industrialization.api.energy.EnergyApi;
 import aztech.modern_industrialization.blocks.forgehammer.ForgeHammerPacket;
 import aztech.modern_industrialization.blocks.forgehammer.ForgeHammerScreenHandler;
 import aztech.modern_industrialization.blocks.storage.tank.CreativeTankSetup;
-import aztech.modern_industrialization.compat.RecipeCompat;
 import aztech.modern_industrialization.inventory.ConfigurableInventoryPacketHandlers;
 import aztech.modern_industrialization.inventory.ConfigurableInventoryPackets;
 import aztech.modern_industrialization.items.armor.ArmorPackets;
@@ -129,7 +128,6 @@ public class ModernIndustrialization implements ModInitializer {
         setupPackets();
         setupFuels();
         MIArmorEffects.init();
-        RecipeCompat.loadCompatRecipes();
         setupWrench();
 
         MIPipes.INSTANCE.setup();

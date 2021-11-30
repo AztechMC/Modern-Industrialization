@@ -31,12 +31,10 @@ import org.jetbrains.annotations.Nullable;
 
 public class JsonProvider implements RecipeJsonProvider {
 
-    private final RecipeSerializer<?> serializer;
     private final Identifier recipeId;
     private final RecipeJson recipe;
 
-    public JsonProvider(RecipeSerializer<?> serializer, Identifier recipeId, RecipeJson recipe) {
-        this.serializer = serializer;
+    public JsonProvider(Identifier recipeId, RecipeJson recipe) {
         this.recipeId = recipeId;
         this.recipe = recipe;
     }
@@ -58,7 +56,7 @@ public class JsonProvider implements RecipeJsonProvider {
 
     @Override
     public RecipeSerializer<?> getSerializer() {
-        return serializer;
+        throw new UnsupportedOperationException("We override toJson()");
     }
 
     @Nullable

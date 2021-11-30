@@ -21,43 +21,30 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.recipe.json;
+package aztech.modern_industrialization.recipe.json.compat;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
-import com.google.gson.annotations.SerializedName;
-import java.util.function.Consumer;
-import net.minecraft.data.server.recipe.RecipeJsonProvider;
-import net.minecraft.util.Identifier;
+import aztech.modern_industrialization.recipe.json.RecipeJson;
 
-/**
- * Base class for objects that can be written to JSON recipes with GSON.
- */
-public class RecipeJson<T extends RecipeJson<T>> {
-    public static Gson GSON = new Gson();
+@SuppressWarnings({ "unused", "FieldCanBeLocal" })
+public class IRCompressRecipeJson extends RecipeJson<IRCompressRecipeJson> {
+    private final String type = "indrev:compress";
+    private final int processTime = 300;
+    private final TagIngredient[] ingredients;
+    private final ItemResult[] results;
 
-    @SerializedName("mi:requires_mod")
-    private String requiredMod;
-
-    public T requiresMod(String modid) {
-        this.requiredMod = modid;
-        return (T) this;
+    public IRCompressRecipeJson(String inputTag, String outputItem) {
+        this.ingredients = new TagIngredient[] { new TagIngredient() };
+        this.ingredients[0].tag = inputTag;
+        this.results = new ItemResult[] { new ItemResult() };
+        this.results[0].item = outputItem;
     }
 
-    public final String toJson() {
-        return GSON.toJson(this);
+    private static class TagIngredient {
+        private String tag;
     }
 
-    public final JsonObject toJsonObject() {
-        return GSON.toJsonTree(this).getAsJsonObject();
-    }
-
-    public final byte[] toBytes() {
-        return toJson().getBytes();
-    }
-
-    public final void offerTo(Consumer<RecipeJsonProvider> exporter, String recipeId) {
-        // note that FabricRecipesProvider will set the namespace to that of the mod anyway.
-        exporter.accept(new JsonProvider(new Identifier(recipeId), this));
+    private static class ItemResult {
+        private String item;
+        private final int count = 1;
     }
 }

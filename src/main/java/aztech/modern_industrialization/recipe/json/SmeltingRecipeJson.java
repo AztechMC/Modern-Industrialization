@@ -23,13 +23,8 @@
  */
 package aztech.modern_industrialization.recipe.json;
 
-import java.util.function.Consumer;
-import net.minecraft.data.server.recipe.RecipeJsonProvider;
-import net.minecraft.recipe.RecipeSerializer;
-import net.minecraft.util.Identifier;
-
 @SuppressWarnings({ "FieldCanBeLocal", "MismatchedQueryAndUpdateOfCollection", "UnusedDeclaration" })
-public class SmeltingRecipeJson implements RecipeJson {
+public class SmeltingRecipeJson extends RecipeJson<SmeltingRecipeJson> {
 
     private final String type;
     private final int cookingtime;
@@ -60,11 +55,5 @@ public class SmeltingRecipeJson implements RecipeJson {
         this.ingredient = new Ingredient();
         ingredient.item = inputItem;
         result = outputItem;
-    }
-
-    @Override
-    public void offerTo(Consumer<RecipeJsonProvider> exporter, String recipeId) {
-        exporter.accept(new JsonProvider(smeltingRecipeType == SmeltingRecipeType.SMELTING ? RecipeSerializer.SMELTING : RecipeSerializer.BLASTING,
-                new Identifier(recipeId), this));
     }
 }

@@ -27,15 +27,13 @@ import aztech.modern_industrialization.machines.recipe.MachineRecipeType;
 import com.google.gson.annotations.SerializedName;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Consumer;
-import net.minecraft.data.server.recipe.RecipeJsonProvider;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.item.Item;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
 @SuppressWarnings({ "FieldCanBeLocal", "unused", "MismatchedQueryAndUpdateOfCollection" })
-public class MIRecipeJson implements RecipeJson {
+public class MIRecipeJson extends RecipeJson<MIRecipeJson> {
 
     private transient final MachineRecipeType machineRecipeType;
 
@@ -49,11 +47,6 @@ public class MIRecipeJson implements RecipeJson {
 
     public static MIRecipeJson create(MachineRecipeType machineRecipeType, int eu, int duration) {
         return new MIRecipeJson(machineRecipeType, eu, duration);
-    }
-
-    public void offerTo(Consumer<RecipeJsonProvider> exporter, String recipeId) {
-        // note that FabricRecipesProvider will set the namespace to that of the mod anyway.
-        exporter.accept(new JsonProvider(machineRecipeType, new Identifier(recipeId), this));
     }
 
     private final String type;
@@ -233,5 +226,4 @@ public class MIRecipeJson implements RecipeJson {
     public MIRecipeJson addFluidOutput(Fluid fluid, int amount, double probability) {
         return addFluidOutput(Registry.FLUID.getId(fluid).toString(), amount, probability);
     }
-
 }

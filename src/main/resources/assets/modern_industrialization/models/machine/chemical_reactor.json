@@ -7,6 +7,9 @@
     "left": "modern_industrialization:blocks/machines/chemical_reactor/overlay_left",
     "left_active": "modern_industrialization:blocks/machines/chemical_reactor/overlay_left_active",
     "top": "modern_industrialization:blocks/machines/chemical_reactor/overlay_top",
+    "top_e": "modern_industrialization:blocks/machines/chemical_reactor/overlay_top_e",
+    "top_s": "modern_industrialization:blocks/machines/chemical_reactor/overlay_top_s",
+    "top_w": "modern_industrialization:blocks/machines/chemical_reactor/overlay_top_w",
     "output": "modern_industrialization:blocks/overlays/output",
     "item_auto": "modern_industrialization:blocks/overlays/item_auto",
     "fluid_auto": "modern_industrialization:blocks/overlays/fluid_auto"

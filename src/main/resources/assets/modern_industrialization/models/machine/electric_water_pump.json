@@ -1,6 +1,9 @@
 {
   "default_overlays": {
     "top": "modern_industrialization:blocks/machines/water_pump/overlay_top",
+    "top_e": "modern_industrialization:blocks/machines/water_pump/overlay_top_e",
+    "top_s": "modern_industrialization:blocks/machines/water_pump/overlay_top_s",
+    "top_w": "modern_industrialization:blocks/machines/water_pump/overlay_top_w",
     "front": "modern_industrialization:blocks/machines/water_pump/overlay_front",
     "right": "modern_industrialization:blocks/machines/water_pump/overlay_side",
     "right_active": "modern_industrialization:blocks/machines/water_pump/overlay_side_active",

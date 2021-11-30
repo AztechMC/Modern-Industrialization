@@ -24,5 +24,5 @@
 package aztech.modern_industrialization.util;
 
 public interface Tickable {
-    public void tick();
+    void tick();
 }

@@ -27,6 +27,9 @@ import static aztech.modern_industrialization.ModernIndustrialization.METAL_MATE
 import static aztech.modern_industrialization.ModernIndustrialization.STONE_MATERIAL;
 
 import aztech.modern_industrialization.blocks.TrashCanBlock;
+import aztech.modern_industrialization.blocks.creativestorageunit.CreativeStorageUnitBlock;
+import aztech.modern_industrialization.blocks.creativetank.CreativeTankBlock;
+import aztech.modern_industrialization.blocks.creativetank.CreativeTankItem;
 import aztech.modern_industrialization.blocks.forgehammer.ForgeHammerBlock;
 import aztech.modern_industrialization.util.MobSpawning;
 import java.util.SortedMap;
@@ -43,6 +46,7 @@ import net.devtech.arrp.json.models.JModel;
 import net.devtech.arrp.json.models.JTextures;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
 import net.minecraft.block.Block;
 import net.minecraft.block.Material;
 import net.minecraft.item.BlockItem;
@@ -138,6 +142,14 @@ public class MIBlock extends Block {
 
     public static final Block FORGE_HAMMER = new ForgeHammerBlock();
     public static final TrashCanBlock TRASH_CAN = new TrashCanBlock();
+
+    public static final CreativeTankBlock CREATIVE_TANK_BLOCK = new CreativeTankBlock();
+    public static final CreativeStorageUnitBlock CREATIVE_STORAGE_UNIT = new CreativeStorageUnitBlock();
+
+    static {
+        // Extra setup
+        FluidStorage.ITEM.registerForItems(CreativeTankItem.TankItemStorage::new, CREATIVE_TANK_BLOCK.blockItem);
+    }
 
     public MIBlock setLootTables(JLootTable lootTables) {
         this.lootTables = lootTables;

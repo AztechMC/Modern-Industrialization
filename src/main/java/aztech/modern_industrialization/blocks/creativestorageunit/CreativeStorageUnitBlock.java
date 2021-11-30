@@ -21,24 +21,24 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.blocks.storage.tank;
+package aztech.modern_industrialization.blocks.creativestorageunit;
 
-import aztech.modern_industrialization.MIBlockEntityTypes;
-import aztech.modern_industrialization.MIIdentifier;
-import aztech.modern_industrialization.blocks.creativetank.CreativeTankRenderer;
-import aztech.modern_industrialization.machines.models.MachineModelProvider;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.client.rendereregistry.v1.BlockEntityRendererRegistry;
-import net.minecraft.client.render.model.UnbakedModel;
+import aztech.modern_industrialization.MIBlock;
+import aztech.modern_industrialization.api.TickableBlock;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Material;
+import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.util.math.BlockPos;
+import org.jetbrains.annotations.Nullable;
 
-@Environment(EnvType.CLIENT)
-public class CreativeTankClientSetup {
-    public static void setupClient() {
-        UnbakedModel creativeTankModel = new TankModel("creative");
-        MachineModelProvider.register(new MIIdentifier("block/creative_tank"), creativeTankModel);
-        MachineModelProvider.register(new MIIdentifier("item/creative_tank"), creativeTankModel);
+public class CreativeStorageUnitBlock extends MIBlock implements TickableBlock {
+    public CreativeStorageUnitBlock() {
+        super("creative_storage_unit", Settings.of(Material.METAL));
+    }
 
-        BlockEntityRendererRegistry.INSTANCE.register(MIBlockEntityTypes.CREATIVE_TANK, CreativeTankRenderer::new);
+    @Nullable
+    @Override
+    public BlockEntity createBlockEntity(BlockPos pos, BlockState state) {
+        return new CreativeStorageUnitBlockEntity(pos, state);
     }
 }

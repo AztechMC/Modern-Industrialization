@@ -54,6 +54,7 @@ public class MIConfig implements ConfigData {
     public boolean disableItemTagTooltips = false;
     public boolean newVersionMessage = true;
     public boolean colorWaterLava = true;
+    public boolean enableDebugCommands = false;
 
     @ConfigEntry.Gui.Excluded
     private transient static boolean registered = false;

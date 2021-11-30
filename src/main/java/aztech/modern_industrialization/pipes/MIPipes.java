@@ -117,6 +117,7 @@ public class MIPipes {
         }
 
         registerPackets();
+        MIPipesCommands.init();
     }
 
     private void registerFluidPipeType(PipeColor color) {

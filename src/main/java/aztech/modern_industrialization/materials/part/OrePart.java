@@ -35,12 +35,10 @@ import aztech.modern_industrialization.util.ResourceUtil;
 import com.google.common.collect.ImmutableList;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
-
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
 import net.devtech.arrp.json.loot.*;
 import net.fabricmc.fabric.api.biome.v1.BiomeModifications;
 import net.fabricmc.fabric.api.biome.v1.BiomeSelectors;
@@ -168,16 +166,16 @@ public class OrePart extends UnbuildablePart<OrePart.OrePartParams> {
                 String from =
 
                         switch (oreParams.set) {
-                            case IRON -> deepslate ? "deepslate_iron_ore" : "iron_ore";
-                            case COPPER -> deepslate ? "deepslate_copper_ore" : "copper_ore";
-                            case LAPIS -> deepslate ? "deepslate_lapis_ore" : "lapis_ore";
-                            case REDSTONE -> deepslate ? "deepslate" : "redstone_ore";
-                            case DIAMOND -> deepslate ? "deepslate" : "diamond_ore";
-                            case GOLD -> deepslate ? "deepslate_gold_ore" : "gold_ore";
-                            case EMERALD -> deepslate ? "deepslate_emerald_ore" : "emerald_ore";
-                            case COAL -> deepslate ? "deepslate_coal_ore" : "coal_ore";
-                            default -> deepslate ? "deepslate" : "stone";
-                        };
+                case IRON -> deepslate ? "deepslate_iron_ore" : "iron_ore";
+                case COPPER -> deepslate ? "deepslate_copper_ore" : "copper_ore";
+                case LAPIS -> deepslate ? "deepslate_lapis_ore" : "lapis_ore";
+                case REDSTONE -> deepslate ? "deepslate" : "redstone_ore";
+                case DIAMOND -> deepslate ? "deepslate" : "diamond_ore";
+                case GOLD -> deepslate ? "deepslate_gold_ore" : "gold_ore";
+                case EMERALD -> deepslate ? "deepslate_emerald_ore" : "emerald_ore";
+                case COAL -> deepslate ? "deepslate_coal_ore" : "coal_ore";
+                default -> deepslate ? "deepslate" : "stone";
+                };
 
                 NativeImage image = mtm.getAssetAsTexture(String.format("minecraft:textures/block/%s.png", from));
                 NativeImage top = mtm.getAssetAsTexture(template);

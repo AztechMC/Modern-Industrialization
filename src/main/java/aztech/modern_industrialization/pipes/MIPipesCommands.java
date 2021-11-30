@@ -53,8 +53,12 @@ public class MIPipesCommands {
     // @formatter:off
     public static void init() {
         CommandRegistrationCallback.EVENT.register((dispatcher, dedicated) -> {
+            if (!MIConfig.getConfig().enableDebugCommands) {
+                return;
+            }
+
             dispatcher.register(literal("mi")
-                    .requires(source -> source.hasPermissionLevel(4) && MIConfig.getConfig().enableDebugCommands)
+                    .requires(source -> source.hasPermissionLevel(4))
                     .then(literal("pipes")
                             .then(argument("pos", blockPos())
                                     .then(literal("clear")

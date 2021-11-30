@@ -170,16 +170,20 @@ public class ModernIndustrializationClient implements ClientModInitializer {
                         lines.add(new TranslatableText("text.modern_industrialization.ebf_max_eu",
                                 ElectricBlastFurnaceBlockEntity.coilsMaxBaseEU.get(block)).setStyle(TextHelper.UPGRADE_TEXT));
                     } else if (block instanceof OreBlock oreBlock) {
-                        if (oreBlock.params.generate) {
+                        if (oreBlock.params.generate ) {
 
-                            lines.add(TextHelper
-                                    .formatWithNumber("text.modern_industrialization.ore_generation_tooltip_y", -64, oreBlock.params.maxYLevel)
-                                    .setStyle(TextHelper.GRAY_TEXT_NOT_ITALIC));
-                            lines.add(TextHelper.formatWithNumber("text.modern_industrialization.ore_generation_tooltip_vein_frequency",
-                                    oreBlock.params.veinsPerChunk).setStyle(TextHelper.GRAY_TEXT_NOT_ITALIC));
-                            lines.add(TextHelper
-                                    .formatWithNumber("text.modern_industrialization.ore_generation_tooltip_vein_size", oreBlock.params.veinSize)
-                                    .setStyle(TextHelper.GRAY_TEXT_NOT_ITALIC));
+                            MIConfig config = MIConfig.getConfig();
+
+                            if(config.generateOres && !config.blacklistedOres.contains(oreBlock.materialName)){
+                                lines.add(TextHelper
+                                        .formatWithNumber("text.modern_industrialization.ore_generation_tooltip_y", -64, oreBlock.params.maxYLevel)
+                                        .setStyle(TextHelper.GRAY_TEXT_NOT_ITALIC));
+                                lines.add(TextHelper.formatWithNumber("text.modern_industrialization.ore_generation_tooltip_vein_frequency",
+                                        oreBlock.params.veinsPerChunk).setStyle(TextHelper.GRAY_TEXT_NOT_ITALIC));
+                                lines.add(TextHelper
+                                        .formatWithNumber("text.modern_industrialization.ore_generation_tooltip_vein_size", oreBlock.params.veinSize)
+                                        .setStyle(TextHelper.GRAY_TEXT_NOT_ITALIC));
+                            }
 
                         }
                     }

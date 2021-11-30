@@ -1,0 +1,21 @@
+{
+  "type": "modern_industrialization:mixer",
+  "eu": 2,
+  "duration": 100,
+  "item_inputs": [
+    {
+      "tag": "minecraft:sand",
+      "amount": 4
+    },
+    {
+      "item": "minecraft:gunpowder",
+      "amount": 5
+    }
+  ],
+  "item_outputs": [
+    {
+      "item": "minecraft:tnt",
+      "amount": 2
+    }
+  ]
+}

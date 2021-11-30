@@ -43,10 +43,12 @@ import net.minecraft.world.World;
 public class OreBlock extends MIBlock {
 
     public final OrePart.OrePartParams params;
+    public final String materialName;
 
-    public OreBlock(String id, Settings settings, OrePart.OrePartParams params) {
+    public OreBlock(String id, Settings settings, OrePart.OrePartParams params, String materialName) {
         super(id, settings);
         this.params = params;
+        this.materialName = materialName;
     }
 
     @Override

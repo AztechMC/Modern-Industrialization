@@ -9,7 +9,7 @@
     },
     {
       "type": "crafting",
-      "recipe": "modern_industrialization:generated/materials/bronze/craft/tank",
+      "recipe": "modern_industrialization:materials/bronze/craft/tank",
       "text": "When placed in the world, you can right-click them with buckets or other tanks to transfer fluids.$(br2)Also, you can stack them if they have the same contents. How nifty!"
     },
     {
@@ -18,7 +18,7 @@
     },
     {
       "type": "crafting",
-      "recipe": "modern_industrialization:generated/materials/bronze/craft/barrel",
+      "recipe": "modern_industrialization:materials/bronze/craft/barrel",
       "text": "You can't interact with barrels that are placed directly, but pipes and machines can just fine."
     }
   ],

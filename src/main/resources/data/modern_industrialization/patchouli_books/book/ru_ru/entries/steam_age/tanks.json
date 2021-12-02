@@ -9,7 +9,7 @@
     },
     {
       "type": "crafting",
-      "recipe": "modern_industrialization:generated/materials/bronze/craft/tank",
+      "recipe": "modern_industrialization:materials/bronze/craft/tank",
 	  "text": "Когда бак размещен в мире, нажатие ПКМ с ведром или другим баком приведёт к переносу жидкости.$(br2)Также их можно складывать в один стак, если они имеют одинаковое содержимое. Как здорово!"
     },
     {
@@ -18,7 +18,7 @@
     },
     {
       "type": "crafting",
-      "recipe": "modern_industrialization:generated/materials/bronze/craft/barrel",
+      "recipe": "modern_industrialization:materials/bronze/craft/barrel",
       "text": "Вы не можете взаимодейстовать напрямую с бочками, однако трубы и машины - вполне могут."
     }
   ],

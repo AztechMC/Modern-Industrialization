@@ -352,7 +352,7 @@ if (System.getenv("CURSEFORGE_API_KEY") && !version.endsWith("-SNAPSHOT")) {
             changelogType = "markdown"
             delegate.changelog = changelog
 
-            addGameVersion "1.18-Snapshot"
+            addGameVersion "1.18"
             addGameVersion "Fabric"
             addGameVersion "Java 17"
 
@@ -389,6 +389,6 @@ task publishModrinth (type: TaskModrinthUpload){
     delegate.changelog = changelog
     versionType = releaseChannel.toUpperCase()
     uploadFile = remapJar.archiveFile
-    addGameVersion "1.18-rc3"
+    addGameVersion "1.18"
     addLoader "fabric"
 }

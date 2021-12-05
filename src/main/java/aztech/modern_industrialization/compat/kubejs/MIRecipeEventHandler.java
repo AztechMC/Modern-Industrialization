@@ -46,8 +46,6 @@ public class MIRecipeEventHandler implements KubeJSInitializer {
             for (MachineRecipeType mrt : MIMachineRecipeTypes.getRecipeTypes()) {
                 event.register(mrt.getId(), MachineRecipe::new);
             }
-            event.register(MIMachineRecipeTypes.FORGE_HAMMER_HAMMER.getId(), MachineRecipe::new);
-            event.register(MIMachineRecipeTypes.FORGE_HAMMER_SAW.getId(), MachineRecipe::new);
         });
     }
 

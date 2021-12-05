@@ -26,79 +26,122 @@ package aztech.modern_industrialization.blocks.forgehammer;
 import aztech.modern_industrialization.ModernIndustrialization;
 import aztech.modern_industrialization.client.screen.MIHandledScreen;
 import com.mojang.blaze3d.systems.RenderSystem;
-import io.netty.buffer.Unpooled;
-import net.fabricmc.fabric.api.network.ClientSidePacketRegistry;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.render.GameRenderer;
+import net.minecraft.client.sound.PositionedSoundInstance;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.text.Style;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
-import net.minecraft.text.TextColor;
-import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
 
 public class ForgeHammerScreen extends MIHandledScreen<ForgeHammerScreenHandler> {
 
     public static final Identifier FORGE_HAMMER_GUI = new Identifier(ModernIndustrialization.MOD_ID, "textures/gui/container/forge_hammer.png");
-    private static final Style style = Style.EMPTY.withColor(TextColor.fromRgb(0xa9a9a9)).withItalic(true);
 
-    private final int hammerSize = 30;
-    private final int hammerX = 176;
-    private final int hammerDrawX = 80;
-    private final int hammerDrawY = 10;
+    private static final int X_OFFSET = 61, Y_OFFSET = 14;
 
-    private Text tooltipHammer;
-    private Text tooltipSaw;
-
-    private ForgeHammerScreenHandler handler;
+    private final ForgeHammerScreenHandler handler;
 
     public ForgeHammerScreen(ForgeHammerScreenHandler handler, PlayerInventory inventory, Text title) {
         super(handler, inventory, title);
         this.handler = handler;
-
-        this.tooltipHammer = new TranslatableText("text.modern_industrialization.tooltip_hammer").setStyle(style);
-        this.tooltipSaw = new TranslatableText("text.modern_industrialization.tooltip_saw").setStyle(style);
     }
 
     @Override
-    protected void drawBackground(MatrixStack matrices, float delta, int mouseX, int mouseY) {
-        this.renderBackground(matrices);
-        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-        RenderSystem.setShaderTexture(0, FORGE_HAMMER_GUI);
-        this.drawTexture(matrices, this.x, this.y, 0, 0, 176, 166);
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        int i = this.x + X_OFFSET;
+        int j = this.y + Y_OFFSET + 2;
 
-        if (this.isPointWithinBounds(hammerDrawX - 1, hammerDrawY - 1, hammerSize + 2, hammerSize + 2, mouseX, mouseY)) {
-            this.drawTexture(matrices, this.x + hammerDrawX - 1, this.y + hammerDrawY - 1, hammerX, 2 * hammerSize, hammerSize + 2, hammerSize + 2);
+        int x1 = (int) Math.floor((mouseX - i) / 16d);
+        int y1 = (int) Math.floor((mouseY - j) / 18d);
+
+        if (x1 >= 0 && x1 <= 3 && y1 >= 0 && y1 <= 2) {
+            int id = x1 + y1 * 4;
+            if (id < handler.getAvailableRecipeCount()) {
+                MinecraftClient.getInstance().getSoundManager().play(PositionedSoundInstance.master(SoundEvents.UI_STONECUTTER_SELECT_RECIPE, 1.0F));
+                this.client.interactionManager.clickButton(handler.syncId, id);
+                return true;
+            }
         }
 
-        if (this.handler.isHammer()) {
-            this.drawTexture(matrices, this.x + hammerDrawX, this.y + hammerDrawY, hammerX, 0, hammerSize, hammerSize);
-        } else {
-            this.drawTexture(matrices, this.x + hammerDrawX, this.y + hammerDrawY, hammerX, hammerSize, hammerSize, hammerSize);
-        }
-
-        if (this.isPointWithinBounds(hammerDrawX - 1, hammerDrawY - 1, hammerSize + 2, hammerSize + 2, mouseX, mouseY)) {
-            renderTooltip(matrices, this.handler.isHammer() ? tooltipHammer : tooltipSaw, mouseX, mouseY);
-        }
+        return super.mouseClicked(mouseX, mouseY, button);
 
     }
 
     @Override
     public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
         super.render(matrices, mouseX, mouseY, delta);
-        super.drawMouseoverTooltip(matrices, mouseX, mouseY);
+        this.drawMouseoverTooltip(matrices, mouseX, mouseY);
     }
 
-    @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        if (this.isPointWithinBounds(hammerDrawX - 1, hammerDrawY - 1, hammerSize + 1, hammerSize + 1, mouseX, mouseY)) {
-            boolean newHammer = !handler.isHammer();
-            handler.setHammer(newHammer);
-            PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
-            buf.writeInt(handler.syncId);
-            buf.writeBoolean(newHammer);
-            ClientSidePacketRegistry.INSTANCE.sendToServer(ForgeHammerPacket.SET_HAMMER, buf);
+    protected void drawBackground(MatrixStack matrices, float delta, int mouseX, int mouseY) {
+        this.renderBackground(matrices);
+        RenderSystem.setShader(GameRenderer::getPositionTexShader);
+        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+        RenderSystem.setShaderTexture(0, FORGE_HAMMER_GUI);
+        this.drawTexture(matrices, this.x, this.y, 0, 0, this.backgroundWidth, this.backgroundHeight);
+        int l = this.x + X_OFFSET;
+        int m = this.y + Y_OFFSET;
+        this.renderRecipeBackground(matrices, mouseX, mouseY, l, m);
+        this.renderRecipeIcons(l, m);
+    }
+
+    private void renderRecipeIcons(int x, int y) {
+        for (int i = 0; i < handler.getAvailableRecipeCount(); ++i) {
+
+            int k = x + i % 4 * 16;
+            int l = i / 4;
+            int m = y + l * 18 + 2;
+
+            Item item = handler.getAvailableRecipes().get(i).itemOutputs.get(0).item;
+            int amount = handler.getAvailableRecipes().get(i).itemOutputs.get(0).amount;
+
+            ItemStack stack = new ItemStack(item, amount);
+
+            this.client.getItemRenderer().renderInGuiWithOverrides(stack, k, m);
         }
-        return super.mouseClicked(mouseX, mouseY, button);
+
+    }
+
+    private void renderRecipeBackground(MatrixStack matrices, int mouseX, int mouseY, int x, int y) {
+        for (int i = 0; i < handler.getAvailableRecipeCount(); ++i) {
+
+            int k = x + i % 4 * 16;
+            int l = i / 4;
+            int m = y + l * 18 + 2;
+            int n = this.backgroundHeight;
+
+            if (i == handler.getSelectedRecipe()) {
+                n += 18;
+            } else if (mouseX >= k && mouseY >= m && mouseX < k + 16 && mouseY < m + 18) {
+                n += 36;
+            }
+
+            this.drawTexture(matrices, k, m - 1, 0, n, 16, 18);
+        }
+
+    }
+
+    protected void drawMouseoverTooltip(MatrixStack matrices, int x, int y) {
+        super.drawMouseoverTooltip(matrices, x, y);
+        int x1 = this.x + X_OFFSET;
+        int y1 = this.y + Y_OFFSET;
+
+        for (int l = 0; l < handler.getAvailableRecipeCount(); ++l) {
+            int n = x1 + l % 4 * 16;
+            int o = y1 + l / 4 * 18 + 2;
+            if (x >= n && x < n + 16 && y >= o && y < o + 18) {
+
+                Item item = handler.getAvailableRecipes().get(l).itemOutputs.get(0).item;
+                int amount = handler.getAvailableRecipes().get(l).itemOutputs.get(0).amount;
+                ItemStack stack = new ItemStack(item, amount);
+
+                this.renderTooltip(matrices, stack, x, y);
+            }
+        }
+
     }
 }

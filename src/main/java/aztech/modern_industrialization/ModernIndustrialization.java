@@ -26,7 +26,6 @@ package aztech.modern_industrialization;
 import aztech.modern_industrialization.api.FluidFuelRegistry;
 import aztech.modern_industrialization.api.ScrewdriverableBlockEntity;
 import aztech.modern_industrialization.api.WrenchableBlockEntity;
-import aztech.modern_industrialization.blocks.forgehammer.ForgeHammerPacket;
 import aztech.modern_industrialization.blocks.forgehammer.ForgeHammerScreenHandler;
 import aztech.modern_industrialization.inventory.ConfigurableInventoryPacketHandlers;
 import aztech.modern_industrialization.inventory.ConfigurableInventoryPackets;
@@ -238,7 +237,6 @@ public class ModernIndustrialization implements ModInitializer {
                 ConfigurableInventoryPacketHandlers.C2S.ADJUST_SLOT_CAPACITY);
         ServerPlayNetworking.registerGlobalReceiver(MachinePackets.C2S.SET_AUTO_EXTRACT, MachinePackets.C2S.ON_SET_AUTO_EXTRACT);
         ServerPlayNetworking.registerGlobalReceiver(MachinePackets.C2S.REI_LOCK_SLOTS, MachinePackets.C2S.ON_REI_LOCK_SLOTS);
-        ServerSidePacketRegistry.INSTANCE.register(ForgeHammerPacket.SET_HAMMER, ForgeHammerPacket.ON_SET_HAMMER);
         ServerSidePacketRegistry.INSTANCE.register(ArmorPackets.UPDATE_KEYS, ArmorPackets.ON_UPDATE_KEYS);
         ServerSidePacketRegistry.INSTANCE.register(ArmorPackets.ACTIVATE_CHEST, ArmorPackets.ON_ACTIVATE_CHEST);
     }

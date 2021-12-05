@@ -143,7 +143,8 @@ public class MIMaterials {
                 new MaterialBuilder("copper", METALLIC, new BakableTargetColoramp(0xe77c56, common(INGOT), mcitem("copper_ingot")), SOFT)
                         .addParts(BOLT, BLADE, RING, ROTOR, GEAR, ROD, CURVED_PLATE, DOUBLE_INGOT, DUST, INGOT, LARGE_PLATE, NUGGET, PLATE, TINY_DUST)
                         .addParts(WIRE).addParts(FINE_WIRE).addParts(CABLE.of(CableTier.LV)).addParts(DRILL_HEAD, DRILL))
-                .cancelRecipes("macerator/ore_to_raw").cancelRecipes("forge_hammer_hammer/raw_metal").build());
+                .cancelRecipes("macerator/ore_to_raw", "forge_hammer/ore_to_raw_metal",
+                        "forge_hammer/ore_to_raw_metal_with_tool", "forge_hammer/ore_to_dust_with_tool").build());
 
         MaterialRegistry.addMaterial(
                 addVanillaGem(true, new MaterialBuilder("coal", STONE, GEM, new BakableTargetColoramp(0x282828, common(PLATE), mcitem("coal")), SOFT)

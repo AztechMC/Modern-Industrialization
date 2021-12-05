@@ -23,42 +23,41 @@
  */
 package aztech.modern_industrialization.compat.rei.forgehammer_recipe;
 
-import aztech.modern_industrialization.MIBlock;
-import aztech.modern_industrialization.blocks.forgehammer.ForgeHammerScreen;
-import aztech.modern_industrialization.machines.init.MIMachineRecipeTypes;
-import aztech.modern_industrialization.machines.recipe.MachineRecipe;
-import aztech.modern_industrialization.machines.recipe.MachineRecipeType;
-import me.shedaniel.math.Rectangle;
 import me.shedaniel.rei.api.client.plugins.REIClientPlugin;
 import me.shedaniel.rei.api.client.registry.category.CategoryRegistry;
 import me.shedaniel.rei.api.client.registry.display.DisplayRegistry;
 import me.shedaniel.rei.api.client.registry.screen.ScreenRegistry;
-import me.shedaniel.rei.api.common.category.CategoryIdentifier;
-import me.shedaniel.rei.api.common.util.EntryStacks;
 
 public class ForgeHammerRecipePlugin implements REIClientPlugin {
-    private MachineRecipeType[] RECIPE_TYPES = new MachineRecipeType[] { MIMachineRecipeTypes.FORGE_HAMMER_HAMMER,
-            MIMachineRecipeTypes.FORGE_HAMMER_SAW };
 
     @Override
     public void registerCategories(CategoryRegistry registry) {
-        for (MachineRecipeType type : RECIPE_TYPES) {
-            registry.add(new ForgeHammerRecipeCategory(type, type == RECIPE_TYPES[0]));
-            registry.addWorkstations(CategoryIdentifier.of(type.getId()), EntryStacks.of(MIBlock.FORGE_HAMMER.asItem()));
-            registry.removePlusButton(CategoryIdentifier.of(type.getId()));
-        }
+        /*
+         * for (MachineRecipeType type : RECIPE_TYPES) {
+         * registry.add(new ForgeHammerRecipeCategory(type, type == RECIPE_TYPES[0]));
+         * registry.addWorkstations(CategoryIdentifier.of(type.getId()), EntryStacks.of(MIBlock.FORGE_HAMMER.asItem()));
+         * registry.removePlusButton(CategoryIdentifier.of(type.getId()));
+         * }
+         * 
+         */
     }
 
     @Override
     public void registerDisplays(DisplayRegistry registry) {
-        for (MachineRecipeType type : RECIPE_TYPES) {
-            registry.registerFiller(MachineRecipe.class, recipe -> recipe.getType() == type, recipe -> new ForgeHammerRecipeDisplay(type, recipe));
-        }
+        /*
+         * for (MachineRecipeType type : RECIPE_TYPES) {
+         * registry.registerFiller(MachineRecipe.class, recipe -> recipe.getType() == type, recipe -> new ForgeHammerRecipeDisplay(type, recipe));
+         * }
+         */
+
     }
 
     @Override
     public void registerScreens(ScreenRegistry registry) {
-        registry.registerContainerClickArea(new Rectangle(71, 48, 53, 15), ForgeHammerScreen.class, CategoryIdentifier.of(RECIPE_TYPES[0].getId()),
-                CategoryIdentifier.of(RECIPE_TYPES[1].getId()));
+        /*
+         * registry.registerContainerClickArea(new Rectangle(71, 48, 53, 15), ForgeHammerScreen.class, CategoryIdentifier.of(RECIPE_TYPES[0].getId()),
+         * CategoryIdentifier.of(RECIPE_TYPES[1].getId()));
+         */
+
     }
 }

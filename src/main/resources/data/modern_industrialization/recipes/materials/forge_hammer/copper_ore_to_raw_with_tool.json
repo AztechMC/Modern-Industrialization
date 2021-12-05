@@ -1,6 +1,6 @@
 {
   "type": "modern_industrialization:forge_hammer",
-  "eu": 0,
+  "eu": 20,
   "duration": 0,
   "item_inputs": {
     "tag": "c:copper_ores",
@@ -8,6 +8,6 @@
   },
   "item_outputs": {
     "item": "minecraft:raw_copper",
-    "amount": 5
+    "amount": 8
   }
 }

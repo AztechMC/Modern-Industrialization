@@ -1281,5 +1281,9 @@
     "text.modern_industrialization.tool_switched_silk_touch": "Silk Touch Mode enabled!",
     "text.modern_industrialization.tooltip_speed_upgrade": "Item Pipe Speed Upgrade: +%d items / 3s.",
     "text.modern_industrialization.water_percent": "Water: %s %%",
-    "text.modern_industrialization.whitelist": "Whitelist mode enabled"
+    "text.modern_industrialization.whitelist": "Whitelist mode enabled",
+    "item.modern_industrialization.diamond_hammer": "Diamond Hammer",
+    "item.modern_industrialization.iron_hammer": "Iron Hammer",
+    "item.modern_industrialization.netherite_hammer": "Netherite Hammer",
+    "item.modern_industrialization.steel_hammer": "Steel Hammer"
 }

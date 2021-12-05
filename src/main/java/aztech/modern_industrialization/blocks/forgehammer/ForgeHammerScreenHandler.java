@@ -226,7 +226,9 @@ public class ForgeHammerScreenHandler extends ScreenHandler {
             }
             if (tool.getStack().getDamage() >= tool.getStack().getMaxDamage()) {
                 tool.setStack(ItemStack.EMPTY);
-                MinecraftClient.getInstance().getSoundManager().play(PositionedSoundInstance.master(SoundEvents.ENTITY_ITEM_BREAK, 1.0F));
+                if (world.isClient()) {
+                    MinecraftClient.getInstance().getSoundManager().play(PositionedSoundInstance.master(SoundEvents.ENTITY_ITEM_BREAK, 1.0F));
+                }
             }
 
         } else if (current.eu > 0) {

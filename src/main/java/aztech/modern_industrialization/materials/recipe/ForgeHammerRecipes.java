@@ -36,32 +36,39 @@ import aztech.modern_industrialization.materials.recipe.builder.MIRecipeBuilder;
 public class ForgeHammerRecipes {
     public static void apply(MaterialBuilder.RecipeContext ctx) {
 
-        addRecipe(ctx, DOUBLE_INGOT, 1, PLATE, 1);
-
         addRecipe(ctx, INGOT, 1, DUST, 1);
 
         addRecipe(ctx, INGOT, 2, DOUBLE_INGOT, 1);
 
         addRecipe(ctx, INGOT, 1, PLATE, 1, 20);
-        addRecipe(ctx, PLATE, 1, CURVED_PLATE, 1, 20);
-
         addRecipe(ctx, INGOT, 2, PLATE, 1);
         addRecipe(ctx, INGOT, 2, CURVED_PLATE, 1);
         addRecipe(ctx, INGOT, 1, CURVED_PLATE, 1, 40);
-
         addRecipe(ctx, INGOT, 1, ROD, 1);
-        addRecipe(ctx, INGOT, 1, BOLT, 2);
-        addRecipe(ctx, INGOT, 1, RING, 1);
-
         addRecipe(ctx, INGOT, 1, ROD, 2, 20);
+        addRecipe(ctx, INGOT, 1, RING, 1);
         addRecipe(ctx, INGOT, 1, RING, 2, 60);
-
+        addRecipe(ctx, INGOT, 1, BOLT, 2);
         addRecipe(ctx, INGOT, 1, BOLT, 4, 60);
+
+        addRecipe(ctx, DOUBLE_INGOT, 1, PLATE, 2, 20);
+        addRecipe(ctx, DOUBLE_INGOT, 1, PLATE, 1);
+        addRecipe(ctx, DOUBLE_INGOT, 1, CURVED_PLATE, 1);
+        addRecipe(ctx, DOUBLE_INGOT, 1, CURVED_PLATE, 2, 60);
+        addRecipe(ctx, DOUBLE_INGOT, 1, ROD, 2);
+        addRecipe(ctx, DOUBLE_INGOT, 1, ROD, 4, 20);
+        addRecipe(ctx, DOUBLE_INGOT, 1, RING, 2);
+        addRecipe(ctx, DOUBLE_INGOT, 1, RING, 4, 100);
+        addRecipe(ctx, DOUBLE_INGOT, 1, BOLT, 4);
+        addRecipe(ctx, DOUBLE_INGOT, 1, BOLT, 8, 100);
+
+        addRecipe(ctx, PLATE, 1, CURVED_PLATE, 1, 20);
+
         addRecipe(ctx, ROD, 1, BOLT, 2, 20);
+        addRecipe(ctx, ROD, 1, RING, 1, 20);
 
         addRecipe(ctx, ORE, 1, CRUSHED_DUST, 2);
         addRecipe(ctx, ORE, 1, CRUSHED_DUST, 3, 20);
-
         addRecipe(ctx, ORE, 1, RAW_METAL, 2);
         addRecipe(ctx, ORE, 1, RAW_METAL, 3, 20);
 

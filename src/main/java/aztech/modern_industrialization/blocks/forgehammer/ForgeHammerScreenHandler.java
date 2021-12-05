@@ -29,8 +29,6 @@ import aztech.modern_industrialization.machines.init.MIMachineRecipeTypes;
 import aztech.modern_industrialization.machines.recipe.MachineRecipe;
 import java.util.*;
 import net.fabricmc.fabric.api.tag.TagFactory;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.sound.PositionedSoundInstance;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.Inventory;
@@ -42,6 +40,7 @@ import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.ScreenHandlerContext;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
@@ -226,9 +225,10 @@ public class ForgeHammerScreenHandler extends ScreenHandler {
             }
             if (tool.getStack().getDamage() >= tool.getStack().getMaxDamage()) {
                 tool.setStack(ItemStack.EMPTY);
-                if (world.isClient()) {
-                    MinecraftClient.getInstance().getSoundManager().play(PositionedSoundInstance.master(SoundEvents.ENTITY_ITEM_BREAK, 1.0F));
-                }
+
+                context.run((world, pos) -> {
+                    world.playSound(null, pos, SoundEvents.ENTITY_ITEM_BREAK, SoundCategory.BLOCKS, 1.0F, 1.0F);
+                });
             }
 
         } else if (current.eu > 0) {

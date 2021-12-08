@@ -77,6 +77,10 @@ public class PipeNetworkManager {
         }
     }
 
+    public boolean hasNode(BlockPos pos) {
+        return networkByBlock.containsKey(pos);
+    }
+
     private void updateTickingChunks(ServerWorld world) {
         var tmp = tickingChunks;
         tickingChunks = lastTickingChunks;

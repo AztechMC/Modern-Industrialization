@@ -23,6 +23,8 @@
  */
 package aztech.modern_industrialization.blocks.creativetank;
 
+import aztech.modern_industrialization.MIBlock;
+import aztech.modern_industrialization.ModernIndustrialization;
 import aztech.modern_industrialization.util.FluidHelper;
 import aztech.modern_industrialization.util.NbtHelper;
 import java.util.Iterator;
@@ -34,7 +36,6 @@ import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.ExtractionOnlyStorage;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleViewIterator;
 import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
-import net.minecraft.block.Block;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
@@ -42,8 +43,8 @@ import net.minecraft.text.Text;
 import net.minecraft.world.World;
 
 public class CreativeTankItem extends BlockItem {
-    public CreativeTankItem(Block block, Settings settings) {
-        super(block, settings);
+    public CreativeTankItem(MIBlock block) {
+        super(block, new Settings().group(ModernIndustrialization.ITEM_GROUP));
     }
 
     public static boolean isEmpty(ItemStack stack) {

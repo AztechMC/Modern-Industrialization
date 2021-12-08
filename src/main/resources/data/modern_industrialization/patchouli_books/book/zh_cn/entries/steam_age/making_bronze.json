@@ -18,7 +18,7 @@
     },
     {
       "type": "smelting",
-      "recipe": "modern_industrialization:generated/materials/bronze/smelting/dust_smelting"
+      "recipe": "modern_industrialization:materials/bronze/smelting/dust_smelting"
     }
   ],
   "sortnum": 1

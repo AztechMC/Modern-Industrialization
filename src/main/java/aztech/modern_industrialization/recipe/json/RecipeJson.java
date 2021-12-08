@@ -25,26 +25,39 @@ package aztech.modern_industrialization.recipe.json;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.google.gson.annotations.SerializedName;
 import java.util.function.Consumer;
 import net.minecraft.data.server.recipe.RecipeJsonProvider;
+import net.minecraft.util.Identifier;
 
 /**
- * Marker interface for objects that can be written to JSON recipes with GSON.
+ * Base class for objects that can be written to JSON recipes with GSON.
  */
-public interface RecipeJson {
-    Gson GSON = new Gson();
+public class RecipeJson<T extends RecipeJson<T>> {
+    public static Gson GSON = new Gson();
 
-    default String toJson() {
+    @SerializedName("mi:requires_mod")
+    private String requiredMod;
+
+    public T requiresMod(String modid) {
+        this.requiredMod = modid;
+        return (T) this;
+    }
+
+    public final String toJson() {
         return GSON.toJson(this);
     }
 
-    default JsonObject toJsonObject() {
+    public final JsonObject toJsonObject() {
         return GSON.toJsonTree(this).getAsJsonObject();
     }
 
-    default byte[] toBytes() {
+    public final byte[] toBytes() {
         return toJson().getBytes();
     }
 
-    void offerTo(Consumer<RecipeJsonProvider> exporter, String recipeId);
+    public final void offerTo(Consumer<RecipeJsonProvider> exporter, String recipeId) {
+        // note that FabricRecipesProvider will set the namespace to that of the mod anyway.
+        exporter.accept(new JsonProvider(new Identifier(recipeId), this));
+    }
 }

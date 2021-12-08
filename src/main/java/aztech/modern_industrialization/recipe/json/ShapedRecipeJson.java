@@ -27,22 +27,13 @@ import aztech.modern_industrialization.machines.init.MIMachineRecipeTypes;
 import aztech.modern_industrialization.machines.recipe.MachineRecipeType;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.Consumer;
-import net.minecraft.data.server.recipe.RecipeJsonProvider;
-import net.minecraft.recipe.RecipeSerializer;
-import net.minecraft.util.Identifier;
 
 @SuppressWarnings({ "FieldCanBeLocal", "MismatchedQueryAndUpdateOfCollection", "UnusedDeclaration" })
-public class ShapedRecipeJson implements RecipeJson {
+public class ShapedRecipeJson extends RecipeJson<ShapedRecipeJson> {
     public final String type = "minecraft:crafting_shaped";
     public final String[] pattern;
     public final Map<Character, ItemInput> key = new HashMap<>();
     public final Result result;
-
-    @Override
-    public void offerTo(Consumer<RecipeJsonProvider> exporter, String recipeId) {
-        exporter.accept(new JsonProvider(RecipeSerializer.SHAPED, new Identifier(recipeId), this));
-    }
 
     public static class ItemInput {
         public final String item;

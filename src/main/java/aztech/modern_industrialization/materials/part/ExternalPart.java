@@ -45,4 +45,24 @@ public record ExternalPart() {
         };
     }
 
+    public static MaterialPart of(Part part, String itemId) {
+        return new MaterialPart() {
+
+            @Override
+            public Part getPart() {
+                return part;
+            }
+
+            @Override
+            public String getTaggedItemId() {
+                return itemId;
+            }
+
+            @Override
+            public String getItemId() {
+                return itemId;
+            }
+        };
+    }
+
 }

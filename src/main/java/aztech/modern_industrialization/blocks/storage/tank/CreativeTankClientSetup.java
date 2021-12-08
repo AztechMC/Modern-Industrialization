@@ -23,6 +23,7 @@
  */
 package aztech.modern_industrialization.blocks.storage.tank;
 
+import aztech.modern_industrialization.MIBlockEntityTypes;
 import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.blocks.creativetank.CreativeTankRenderer;
 import aztech.modern_industrialization.machines.models.MachineModelProvider;
@@ -38,6 +39,6 @@ public class CreativeTankClientSetup {
         MachineModelProvider.register(new MIIdentifier("block/creative_tank"), creativeTankModel);
         MachineModelProvider.register(new MIIdentifier("item/creative_tank"), creativeTankModel);
 
-        BlockEntityRendererRegistry.INSTANCE.register(CreativeTankSetup.CREATIVE_BLOCK_ENTITY_TYPE, CreativeTankRenderer::new);
+        BlockEntityRendererRegistry.INSTANCE.register(MIBlockEntityTypes.CREATIVE_TANK, CreativeTankRenderer::new);
     }
 }

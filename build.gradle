@@ -171,7 +171,8 @@ dependencies {
     modImplementation("com.terraformersmc:modmenu:${project.mod_menu_version}") {
         exclude(group: "net.fabricmc.fabric-api")
     }
-    /* TODO 1.18 impl */ modCompileOnly("dev.latvian.mods:kubejs-fabric:1701.3.10-build.9999") {
+
+    modImplementation("dev.latvian.mods:kubejs-fabric:1800.4.0-build.189") {
         exclude(group: "net.fabricmc.fabric-api")
     }
 
@@ -351,7 +352,7 @@ if (System.getenv("CURSEFORGE_API_KEY") && !version.endsWith("-SNAPSHOT")) {
             changelogType = "markdown"
             delegate.changelog = changelog
 
-            addGameVersion "1.18-Snapshot"
+            addGameVersion "1.18"
             addGameVersion "Fabric"
             addGameVersion "Java 17"
 
@@ -388,6 +389,6 @@ task publishModrinth (type: TaskModrinthUpload){
     delegate.changelog = changelog
     versionType = releaseChannel.toUpperCase()
     uploadFile = remapJar.archiveFile
-    addGameVersion "1.18-rc3"
+    addGameVersion "1.18"
     addLoader "fabric"
 }

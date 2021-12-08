@@ -23,12 +23,13 @@
  */
 package aztech.modern_industrialization.blocks.creativetank;
 
+import aztech.modern_industrialization.MIBlock;
 import aztech.modern_industrialization.api.TickableBlock;
 import aztech.modern_industrialization.util.MobSpawning;
 import java.util.Arrays;
 import java.util.List;
-import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.Material;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -43,9 +44,9 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 
-public class CreativeTankBlock extends Block implements TickableBlock {
-    public CreativeTankBlock(Settings settings) {
-        super(settings.nonOpaque().allowsSpawning(MobSpawning.NO_SPAWN));
+public class CreativeTankBlock extends MIBlock implements TickableBlock {
+    public CreativeTankBlock() {
+        super("creative_tank", Settings.of(Material.METAL).nonOpaque().allowsSpawning(MobSpawning.NO_SPAWN).hardness(4.0f), CreativeTankItem::new);
     }
 
     @Override

@@ -25,6 +25,7 @@ package aztech.modern_industrialization;
 
 import aztech.modern_industrialization.api.pipes.item.SpeedUpgrade;
 import aztech.modern_industrialization.items.FluidFuelItemHelper;
+import aztech.modern_industrialization.items.ForgeTool;
 import aztech.modern_industrialization.items.GuideBookItem;
 import aztech.modern_industrialization.items.SteamDrillItem;
 import aztech.modern_industrialization.items.armor.GraviChestPlateItem;
@@ -45,6 +46,7 @@ import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.item.ArmorItem;
 import net.minecraft.item.Item;
+import net.minecraft.item.ToolMaterials;
 import net.minecraft.util.Rarity;
 
 @SuppressWarnings("unused")
@@ -109,6 +111,8 @@ public final class MIItem {
         }
         return item;
     }
+
+    public static final Item STEEL_UPGRADE = of("steel_upgrade");
 
     public static final Item ITEM_GUIDE_BOOK = of(GuideBookItem::new, "guidebook", 64);
     public static final Item ITEM_UNCOOKED_STEEL_DUST = of("uncooked_steel_dust");
@@ -206,4 +210,10 @@ public final class MIItem {
 
     public static final Item ULTRADENSE_METAL_BALL = of("ultradense_metal_ball");
     public static final Item SINGULARITY = of("singularity", Rarity.EPIC);
+
+    public static final ForgeTool IRON_HAMMER = new ForgeTool(ToolMaterials.IRON, "iron_hammer");
+    public static final ForgeTool STEEL_HAMMER = new ForgeTool(ForgeTool.STEEL, "steel_hammer");
+    public static final ForgeTool DIAMOND_HAMMER = new ForgeTool(ToolMaterials.DIAMOND, "diamond_hammer");
+    public static final ForgeTool NETHERITE_HAMMER = new ForgeTool(ToolMaterials.NETHERITE, "netherite_hammer");
+
 }

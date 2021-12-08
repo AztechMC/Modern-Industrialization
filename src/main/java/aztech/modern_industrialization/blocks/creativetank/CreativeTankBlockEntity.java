@@ -23,9 +23,9 @@
  */
 package aztech.modern_industrialization.blocks.creativetank;
 
+import aztech.modern_industrialization.MIBlockEntityTypes;
 import aztech.modern_industrialization.api.FastBlockEntity;
 import aztech.modern_industrialization.api.WrenchableBlockEntity;
-import aztech.modern_industrialization.blocks.storage.tank.CreativeTankSetup;
 import aztech.modern_industrialization.util.NbtHelper;
 import java.util.Iterator;
 import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext;
@@ -56,7 +56,7 @@ public class CreativeTankBlockEntity extends FastBlockEntity
     FluidVariant fluid = FluidVariant.blank();
 
     public CreativeTankBlockEntity(BlockPos pos, BlockState state) {
-        super(CreativeTankSetup.CREATIVE_BLOCK_ENTITY_TYPE, pos, state);
+        super(MIBlockEntityTypes.CREATIVE_TANK, pos, state);
     }
 
     @Override

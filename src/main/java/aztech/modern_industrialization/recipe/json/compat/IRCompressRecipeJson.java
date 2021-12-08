@@ -21,24 +21,30 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.blocks.forgehammer;
+package aztech.modern_industrialization.recipe.json.compat;
 
-import aztech.modern_industrialization.MIIdentifier;
-import net.fabricmc.fabric.api.network.PacketConsumer;
-import net.minecraft.screen.ScreenHandler;
-import net.minecraft.util.Identifier;
+import aztech.modern_industrialization.recipe.json.RecipeJson;
 
-public class ForgeHammerPacket {
+@SuppressWarnings({ "unused", "FieldCanBeLocal" })
+public class IRCompressRecipeJson extends RecipeJson<IRCompressRecipeJson> {
+    private final String type = "indrev:compress";
+    private final int processTime = 300;
+    private final TagIngredient[] ingredients;
+    private final ItemResult[] results;
 
-    public static final Identifier SET_HAMMER = new MIIdentifier("set_hammer");
-    public static final PacketConsumer ON_SET_HAMMER = (context, data) -> {
-        int syncId = data.readInt();
-        boolean hammer = data.readBoolean();
-        context.getTaskQueue().execute(() -> {
-            ScreenHandler handler = context.getPlayer().currentScreenHandler;
-            if (handler.syncId == syncId) {
-                ((ForgeHammerScreenHandler) handler).setHammer(hammer);
-            }
-        });
-    };
+    public IRCompressRecipeJson(String inputTag, String outputItem) {
+        this.ingredients = new TagIngredient[] { new TagIngredient() };
+        this.ingredients[0].tag = inputTag;
+        this.results = new ItemResult[] { new ItemResult() };
+        this.results[0].item = outputItem;
+    }
+
+    private static class TagIngredient {
+        private String tag;
+    }
+
+    private static class ItemResult {
+        private String item;
+        private final int count = 1;
+    }
 }

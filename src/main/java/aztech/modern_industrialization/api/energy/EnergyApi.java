@@ -29,11 +29,10 @@ import net.fabricmc.fabric.api.lookup.v1.block.BlockApiLookup;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Direction;
-import org.jetbrains.annotations.NotNull;
 import team.reborn.energy.api.EnergyStorage;
 
 public class EnergyApi {
-    public static final BlockApiLookup<EnergyMoveable, @NotNull Direction> MOVEABLE = BlockApiLookup
+    public static final BlockApiLookup<EnergyMoveable, Direction> MOVEABLE = BlockApiLookup
             .get(new Identifier("modern_industrialization:energy_moveable"), EnergyMoveable.class, Direction.class);
 
     public static final EnergyExtractable CREATIVE_EXTRACTABLE = new EnergyExtractable() {

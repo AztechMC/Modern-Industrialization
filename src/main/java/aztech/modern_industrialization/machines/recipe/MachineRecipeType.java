@@ -23,6 +23,7 @@
  */
 package aztech.modern_industrialization.machines.recipe;
 
+import aztech.modern_industrialization.machines.init.MIMachineRecipeTypes;
 import com.google.gson.*;
 import java.util.*;
 import java.util.function.BiConsumer;
@@ -38,6 +39,7 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.JsonHelper;
 import net.minecraft.util.registry.Registry;
+import net.minecraft.world.World;
 
 public class MachineRecipeType implements RecipeType<MachineRecipe>, RecipeSerializer<MachineRecipe> {
 
@@ -48,15 +50,15 @@ public class MachineRecipeType implements RecipeType<MachineRecipe>, RecipeSeria
     /**
      * Never modify or store the result!
      */
-    protected Collection<MachineRecipe> getManagerRecipes(ServerWorld world) {
+    protected Collection<MachineRecipe> getManagerRecipes(World world) {
         return world.getRecipeManager().listAllOfType(this);
     }
 
-    public Collection<MachineRecipe> getRecipes(ServerWorld world) {
+    public Collection<MachineRecipe> getRecipes(World world) {
         return getManagerRecipes(world);
     }
 
-    public MachineRecipe getRecipe(ServerWorld world, Identifier id) {
+    public MachineRecipe getRecipe(World world, Identifier id) {
         return getRecipes(world).stream().filter(r -> r.getId().equals(id)).findFirst().orElse(null);
     }
 
@@ -167,8 +169,15 @@ public class MachineRecipeType implements RecipeType<MachineRecipe>, RecipeSeria
     @Override
     public MachineRecipe read(Identifier id, JsonObject json) {
         MachineRecipe recipe = new MachineRecipe(id, this);
-        recipe.eu = readPositiveInt(json, "eu");
-        recipe.duration = readPositiveInt(json, "duration");
+
+        if (this.id.equals(MIMachineRecipeTypes.FORGE_HAMMER.id)) {
+            recipe.eu = readNonNegativeInt(json, "eu");
+            recipe.duration = readNonNegativeInt(json, "duration");
+        } else {
+            recipe.eu = readPositiveInt(json, "eu");
+            recipe.duration = readPositiveInt(json, "duration");
+        }
+
         recipe.itemInputs = readArray(json, "item_inputs", MachineRecipeType::readItemInput);
         recipe.fluidInputs = readArray(json, "fluid_inputs", MachineRecipeType::readFluidInput);
         recipe.itemOutputs = readArray(json, "item_outputs", MachineRecipeType::readItemOutput);

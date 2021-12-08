@@ -79,6 +79,8 @@ public class MIParts {
     public static final RegularPart GEAR = new RegularPart("gear");
     public static final GemPart GEM = new GemPart();
 
+    public static final RegularPart HAMMER = new RegularPart("hammer");
+
     public static final RegularPart HOT_INGOT = new RegularPart("hot_ingot")
             .withTextureRegister((mtm, partContext, part, itemPath) -> MITextures.generateItemPartTexture(mtm, MIParts.INGOT.key,
                     partContext.getMaterialSet(), itemPath, false, new HotIngotColoramp(partContext.getColoramp(), 0.1, 0.5)));

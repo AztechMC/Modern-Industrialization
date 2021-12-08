@@ -21,29 +21,35 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.compat.kubejs;
+package aztech.modern_industrialization.recipe.json;
 
-import dev.latvian.kubejs.event.EventJS;
-import dev.latvian.kubejs.script.ScriptType;
-import java.util.HashSet;
-import java.util.Set;
+import net.minecraft.item.Item;
+import net.minecraft.util.registry.Registry;
 
-public class RemoveItemsEntrypoint {
-    public static Set<String> getItemsToRemove() {
-        return MIReiEvent.gatherItemsToRemove();
+@SuppressWarnings({ "FieldCanBeLocal", "MismatchedQueryAndUpdateOfCollection", "UnusedDeclaration" })
+public class SmithingRecipeJson extends RecipeJson<SmithingRecipeJson> {
+
+    private final String type;
+    private final Ingredient base;
+    private final Ingredient addition;
+    private final Ingredient result;
+
+    public static class Ingredient {
+        String item;
+
+        public Ingredient(String item) {
+            this.item = item;
+        }
     }
 
-    public static class MIReiEvent extends EventJS {
-        private final Set<String> removeSet = new HashSet<>();
+    public SmithingRecipeJson(String base, String addition, String result) {
+        this.type = "minecraft:smithing";
+        this.base = new Ingredient(base);
+        this.addition = new Ingredient(addition);
+        this.result = new Ingredient(result);
+    }
 
-        public void remove(String item) {
-            removeSet.add(item);
-        }
-
-        private static Set<String> gatherItemsToRemove() {
-            MIReiEvent event = new MIReiEvent();
-            event.post(ScriptType.CLIENT, "mi_rei");
-            return event.removeSet;
-        }
+    public SmithingRecipeJson(Item base, Item addition, Item result) {
+        this(Registry.ITEM.getId(base).toString(), Registry.ITEM.getId(addition).toString(), Registry.ITEM.getId(result).toString());
     }
 }

@@ -19,7 +19,7 @@
     },
     {
       "type": "text",
-      "text": "The Steam Mining Drill requires both water and solid fuel (for example coal).$(br2)Right-click a water source to fill it with water, and make sure to always place some fuel next right next to it in your inventory bar. The fuel will be consumed slowly when you mine."
+      "text": "The Steam Mining Drill requires both water and solid fuel (for example coal).$(br2)Right-click a water source to fill it with water, and make sure to always place some fuel next in your drill by right-clicking the fuel items on it in your inventory. The fuel will be consumed slowly when you mine."
     }
   ],
   "sortnum": 0

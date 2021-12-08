@@ -26,7 +26,6 @@ package aztech.modern_industrialization.materials.recipe;
 import static aztech.modern_industrialization.materials.part.MIParts.*;
 
 import aztech.modern_industrialization.machines.init.MIMachineRecipeTypes;
-import aztech.modern_industrialization.machines.recipe.MachineRecipeType;
 import aztech.modern_industrialization.materials.MaterialBuilder;
 import aztech.modern_industrialization.materials.part.Part;
 import aztech.modern_industrialization.materials.recipe.builder.MIRecipeBuilder;
@@ -36,30 +35,58 @@ import aztech.modern_industrialization.materials.recipe.builder.MIRecipeBuilder;
  */
 public class ForgeHammerRecipes {
     public static void apply(MaterialBuilder.RecipeContext ctx) {
-        addHammer(ctx, DOUBLE_INGOT, 1, PLATE, 1);
-        addHammer(ctx, INGOT, 2, DOUBLE_INGOT, 1);
-        addHammer(ctx, LARGE_PLATE, 1, CURVED_PLATE, 3);
-        addHammer(ctx, NUGGET, 1, TINY_DUST, 1);
-        addHammer(ctx, ORE, 1, CRUSHED_DUST, 2);
-        addHammer(ctx, ORE, 1, RAW_METAL, 2);
-        addSaw(ctx, INGOT, ROD);
-        // addSaw(ctx, LARGE_PLATE, GEAR);
-        addSaw(ctx, ROD, BOLT);
+
+        addRecipe(ctx, INGOT, 1, DUST, 1);
+
+        addRecipe(ctx, INGOT, 2, DOUBLE_INGOT, 1);
+
+        addRecipe(ctx, INGOT, 1, PLATE, 1, 20);
+        addRecipe(ctx, INGOT, 2, PLATE, 1);
+        addRecipe(ctx, INGOT, 2, CURVED_PLATE, 1);
+        addRecipe(ctx, INGOT, 1, CURVED_PLATE, 1, 40);
+        addRecipe(ctx, INGOT, 1, ROD, 1);
+        addRecipe(ctx, INGOT, 1, ROD, 2, 20);
+        addRecipe(ctx, INGOT, 1, RING, 1);
+        addRecipe(ctx, INGOT, 1, RING, 2, 60);
+        addRecipe(ctx, INGOT, 1, BOLT, 2);
+        addRecipe(ctx, INGOT, 1, BOLT, 4, 60);
+
+        addRecipe(ctx, DOUBLE_INGOT, 1, PLATE, 2, 20);
+        addRecipe(ctx, DOUBLE_INGOT, 1, PLATE, 1);
+        addRecipe(ctx, DOUBLE_INGOT, 1, CURVED_PLATE, 1);
+        addRecipe(ctx, DOUBLE_INGOT, 1, CURVED_PLATE, 2, 60);
+        addRecipe(ctx, DOUBLE_INGOT, 1, ROD, 2);
+        addRecipe(ctx, DOUBLE_INGOT, 1, ROD, 4, 20);
+        addRecipe(ctx, DOUBLE_INGOT, 1, RING, 2);
+        addRecipe(ctx, DOUBLE_INGOT, 1, RING, 4, 100);
+        addRecipe(ctx, DOUBLE_INGOT, 1, BOLT, 4);
+        addRecipe(ctx, DOUBLE_INGOT, 1, BOLT, 8, 100);
+
+        addRecipe(ctx, PLATE, 1, CURVED_PLATE, 1, 20);
+
+        addRecipe(ctx, ROD, 1, BOLT, 2, 20);
+        addRecipe(ctx, ROD, 1, RING, 1, 20);
+
+        addRecipe(ctx, ORE, 1, CRUSHED_DUST, 2);
+        addRecipe(ctx, ORE, 1, CRUSHED_DUST, 3, 20);
+        addRecipe(ctx, ORE, 1, RAW_METAL, 2);
+        addRecipe(ctx, ORE, 1, RAW_METAL, 3, 20);
+
+        addRecipe(ctx, ORE, 1, DUST, 4, 50);
     }
 
-    private static void addHammer(MaterialBuilder.RecipeContext ctx, Part inputPart, int inputCount, Part outputPart, int outputCount) {
-        addRecipe(MIMachineRecipeTypes.FORGE_HAMMER_HAMMER, ctx, inputPart, inputCount, outputPart, outputCount);
+    private static void addRecipe(MaterialBuilder.RecipeContext ctx, Part inputPart, int inputCount, Part outputPart,
+            int outputCount, int cost) {
+
+        String recipeName = inputPart.key + "_to_" + outputPart.key + ((cost == 0) ? "" : "_with_tool");
+
+        new MIRecipeBuilder(ctx, MIMachineRecipeTypes.FORGE_HAMMER, recipeName, (int) ((cost) * ctx.getHardness().timeFactor),
+                0).addTaggedPartInput(inputPart, inputCount).addPartOutput(outputPart, outputCount);
     }
 
-    private static void addSaw(MaterialBuilder.RecipeContext ctx, Part inputPart, Part outputPart) {
-        addRecipe(MIMachineRecipeTypes.FORGE_HAMMER_SAW, ctx, inputPart, 1, outputPart, 1);
-    }
-
-    private static void addRecipe(MachineRecipeType type, MaterialBuilder.RecipeContext ctx, Part inputPart, int inputCount, Part outputPart,
+    private static void addRecipe(MaterialBuilder.RecipeContext ctx, Part inputPart, int inputCount, Part outputPart,
             int outputCount) {
-        new MIRecipeBuilder(ctx, type, outputPart).addTaggedPartInput(inputPart, inputCount).addPartOutput(outputPart, outputCount);
+        addRecipe(ctx, inputPart, inputCount, outputPart, outputCount, 0);
     }
 
-    private ForgeHammerRecipes() {
-    }
 }

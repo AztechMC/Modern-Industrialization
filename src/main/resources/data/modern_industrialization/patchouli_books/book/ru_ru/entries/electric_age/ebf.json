@@ -10,17 +10,17 @@
     },
     {
       "type": "crafting",
-      "recipe": "modern_industrialization:generated/materials/cupronickel/craft/coil",
+      "recipe": "modern_industrialization:materials/cupronickel/craft/coil",
       "text": "ЭДП состоит из одного слоя жаростойких обшивок машин, двух полых слоев купроникелевых катушек и еще одного слоя жаростойких обшивок машин. Контроллер должен располагаться на нижнем слое, а люки - на верхнем или нижнем слое."
     },
     {
       "type": "crafting",
-      "recipe": "modern_industrialization:generated/hatches/basic/energy_input_hatch",
+      "recipe": "modern_industrialization:hatches/basic/energy_input_hatch",
       "text": "Не забудьте добавить люки ввода энергии, иначе у ЭДП не будет энергии! Люк ввода энергии низкого напряжения будет подключаться только к кабелям низкого напряжения."
     },
     {
       "type": "crafting",
-      "recipe": "modern_industrialization:generated/hatches/advanced/energy_input_hatch",
+      "recipe": "modern_industrialization:hatches/advanced/energy_input_hatch",
       "text": "Люки ввода энергии среднего напряжения подключаются только к кабелям среднего напряжения, что может быть полезно, если вам требуется тонна энергии для вашей ЭДП! Вы пока не сможете создать их, но имейте в виду, что они существуют..."
     }
   ],

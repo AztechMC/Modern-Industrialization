@@ -24,30 +24,41 @@
 package aztech.modern_industrialization.compat.rei.forgehammer_recipe;
 
 import aztech.modern_industrialization.compat.rei.ReiUtil;
+import aztech.modern_industrialization.items.ForgeTool;
 import aztech.modern_industrialization.machines.recipe.MachineRecipe;
-import aztech.modern_industrialization.machines.recipe.MachineRecipeType;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import me.shedaniel.rei.api.common.category.CategoryIdentifier;
 import me.shedaniel.rei.api.common.display.Display;
 import me.shedaniel.rei.api.common.entry.EntryIngredient;
+import me.shedaniel.rei.api.common.util.EntryIngredients;
 import me.shedaniel.rei.api.common.util.EntryStacks;
+import net.fabricmc.fabric.api.tag.TagFactory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.Identifier;
+import net.minecraft.recipe.Ingredient;
 
 public class ForgeHammerRecipeDisplay implements Display {
-    private final MachineRecipe recipe;
-    private final Identifier category;
 
-    public ForgeHammerRecipeDisplay(MachineRecipeType type, MachineRecipe recipe) {
+    public final MachineRecipe recipe;
+
+    public ForgeHammerRecipeDisplay(MachineRecipe recipe) {
         this.recipe = recipe;
-        this.category = type.getId();
     }
 
     @Override
     public List<EntryIngredient> getInputEntries() {
+
         MachineRecipe.ItemInput input = recipe.itemInputs.get(0);
-        return Collections.singletonList(ReiUtil.createInputEntries(input));
+        List<EntryIngredient> inputs = new ArrayList<>();
+        inputs.add(ReiUtil.createInputEntries(input));
+
+        if (recipe.eu > 0) {
+            EntryIngredient tools = EntryIngredients.ofIngredient(Ingredient.fromTag(
+                    TagFactory.ITEM.create(ForgeTool.TAG)));
+            inputs.add(tools);
+        }
+        return inputs;
     }
 
     @Override
@@ -58,6 +69,6 @@ public class ForgeHammerRecipeDisplay implements Display {
 
     @Override
     public CategoryIdentifier<?> getCategoryIdentifier() {
-        return CategoryIdentifier.of(category);
+        return (ForgeHammerRecipePlugin.CATEGORY);
     }
 }

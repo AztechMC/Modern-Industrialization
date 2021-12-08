@@ -28,6 +28,7 @@ import static aztech.modern_industrialization.materials.part.MIParts.*;
 import static aztech.modern_industrialization.materials.set.MaterialOreSet.COPPER;
 import static aztech.modern_industrialization.materials.set.MaterialSet.*;
 
+import aztech.modern_industrialization.MIItem;
 import aztech.modern_industrialization.api.energy.CableTier;
 import aztech.modern_industrialization.machines.init.MIMachineRecipeTypes;
 import aztech.modern_industrialization.materials.part.*;
@@ -136,14 +137,16 @@ public class MIMaterials {
                 .addMaterial(
                         addVanillaMetal(true,
                                 new MaterialBuilder("iron", METALLIC, new BakableTargetColoramp(0xC8C8C8, common(INGOT), mcitem("iron_ingot")),
-                                        AVERAGE).addParts(BOLT, RING, GEAR, ROD, DOUBLE_INGOT, DUST, INGOT, LARGE_PLATE, NUGGET, PLATE, TINY_DUST))
+                                        AVERAGE).addParts(BOLT, RING, GEAR, ROD, DOUBLE_INGOT, DUST, INGOT, LARGE_PLATE, NUGGET, PLATE, TINY_DUST)
+                                        .addParts(ExternalPart.of(HAMMER, MIItem.IRON_HAMMER.getPath())))
                                 .build());
 
         MaterialRegistry.addMaterial(addVanillaMetal(false,
                 new MaterialBuilder("copper", METALLIC, new BakableTargetColoramp(0xe77c56, common(INGOT), mcitem("copper_ingot")), SOFT)
                         .addParts(BOLT, BLADE, RING, ROTOR, GEAR, ROD, CURVED_PLATE, DOUBLE_INGOT, DUST, INGOT, LARGE_PLATE, NUGGET, PLATE, TINY_DUST)
                         .addParts(WIRE).addParts(FINE_WIRE).addParts(CABLE.of(CableTier.LV)).addParts(DRILL_HEAD, DRILL))
-                .cancelRecipes("macerator/ore_to_raw").cancelRecipes("forge_hammer_hammer/raw_metal").build());
+                .cancelRecipes("macerator/ore_to_raw", "forge_hammer/ore_to_raw_metal",
+                        "forge_hammer/ore_to_raw_metal_with_tool", "forge_hammer/ore_to_dust_with_tool").build());
 
         MaterialRegistry.addMaterial(
                 addVanillaGem(true, new MaterialBuilder("coal", STONE, GEM, new BakableTargetColoramp(0x282828, common(PLATE), mcitem("coal")), SOFT)
@@ -151,7 +154,7 @@ public class MIMaterials {
 
         MaterialRegistry.addMaterial(addVanillaGem(false,
                 new MaterialBuilder("diamond", SHINY, GEM, new BakableTargetColoramp(0x48eeda, mcitem("diamond"), mcitem("diamond")), VERY_HARD)
-                        .addParts(ITEM_PURE_NON_METAL).addParts(PLATE)).build());
+                        .addParts(ITEM_PURE_NON_METAL).addParts(PLATE).addParts(ExternalPart.of(HAMMER, MIItem.DIAMOND_HAMMER.getPath()))).build());
 
         MaterialRegistry.addMaterial(addVanillaGem(false,
                 new MaterialBuilder("emerald", SHINY, GEM, new BakableTargetColoramp(0x3FF385, mcitem("emerald"), mcitem("emerald")), VERY_HARD)
@@ -213,6 +216,7 @@ public class MIMaterials {
                         .addParts(BOLT, RING, ROD, GEAR, CURVED_PLATE, DOUBLE_INGOT, DUST, INGOT, LARGE_PLATE, NUGGET, PLATE, TINY_DUST)
                         .addParts(ROD_MAGNETIC).addParts(BLOCK.of(MaterialBlockSet.IRON)).addParts(DRILL_HEAD, DRILL)
                         .addParts(MACHINE_CASING, MACHINE_CASING_PIPE).addParts(TANK.of(8)).addParts(BARREL.of(128))
+                        .addParts(ExternalPart.of(HAMMER, MIItem.STEEL_HAMMER.getPath()))
                         .addRecipes(ForgeHammerRecipes::apply, SmeltingRecipes::apply, StandardRecipes::apply).build());
 
         MaterialRegistry.addMaterial(new MaterialBuilder("lignite_coal", STONE, GEM, 0x644646, SOFT).addParts(ITEM_PURE_NON_METAL)

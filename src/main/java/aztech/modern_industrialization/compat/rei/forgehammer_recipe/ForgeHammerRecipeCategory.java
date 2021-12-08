@@ -23,11 +23,9 @@
  */
 package aztech.modern_industrialization.compat.rei.forgehammer_recipe;
 
-import static net.minecraft.client.gui.DrawableHelper.drawTexture;
-
+import aztech.modern_industrialization.MIBlock;
+import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.blocks.forgehammer.ForgeHammerScreen;
-import aztech.modern_industrialization.machines.recipe.MachineRecipeType;
-import com.mojang.blaze3d.systems.RenderSystem;
 import java.util.ArrayList;
 import java.util.List;
 import me.shedaniel.math.Point;
@@ -37,20 +35,15 @@ import me.shedaniel.rei.api.client.gui.widgets.Widget;
 import me.shedaniel.rei.api.client.gui.widgets.Widgets;
 import me.shedaniel.rei.api.client.registry.display.DisplayCategory;
 import me.shedaniel.rei.api.common.category.CategoryIdentifier;
-import net.minecraft.client.util.math.MatrixStack;
+import me.shedaniel.rei.api.common.util.EntryStacks;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.NotNull;
 
 public class ForgeHammerRecipeCategory implements DisplayCategory<ForgeHammerRecipeDisplay> {
-    private final Identifier id;
-    private final boolean isHammer;
 
-    public ForgeHammerRecipeCategory(MachineRecipeType type, boolean isHammer) {
-        this.id = type.getId();
-        this.isHammer = isHammer;
-    }
+    private static final Identifier id = new MIIdentifier("forge_hammer");
 
     @Override
     public CategoryIdentifier<? extends ForgeHammerRecipeDisplay> getCategoryIdentifier() {
@@ -59,23 +52,7 @@ public class ForgeHammerRecipeCategory implements DisplayCategory<ForgeHammerRec
 
     @Override
     public Renderer getIcon() {
-        return new Renderer() {
-            private int z = 2;
-
-            @Override
-            public void render(MatrixStack matrices, Rectangle bounds, int mouseX, int mouseY, float delta) {
-                RenderSystem.setShaderTexture(0, ForgeHammerScreen.FORGE_HAMMER_GUI);
-                drawTexture(matrices, bounds.x + 1, bounds.y + 1, z, 206, isHammer ? 0 : 15, 15, 15, 256, 256);
-            }
-
-            public int getZ() {
-                return z;
-            }
-
-            public void setZ(int z) {
-                this.z = z;
-            }
-        };
+        return EntryStacks.of(MIBlock.FORGE_HAMMER.asItem());
     }
 
     @Override
@@ -85,14 +62,39 @@ public class ForgeHammerRecipeCategory implements DisplayCategory<ForgeHammerRec
 
     @Override
     public @NotNull List<Widget> setupDisplay(ForgeHammerRecipeDisplay recipeDisplay, Rectangle bounds) {
-        Point startPoint = new Point(bounds.getCenterX() - 41, bounds.getCenterY() - 13);
+        Point startPoint = new Point(bounds.getCenterX() - 25, bounds.getCenterY() - 18);
         List<Widget> widgets = new ArrayList<>();
+
         widgets.add(Widgets.createRecipeBase(bounds));
         widgets.add(Widgets.createArrow(new Point(startPoint.x + 27, startPoint.y + 4)));
-        widgets.add(Widgets.createResultSlotBackground(new Point(startPoint.x + 61, startPoint.y + 5)));
-        widgets.add(Widgets.createSlot(new Point(startPoint.x + 4, startPoint.y + 5)).entries(recipeDisplay.getInputEntries().get(0)).markInput());
-        widgets.add(Widgets.createSlot(new Point(startPoint.x + 61, startPoint.y + 5)).entries(recipeDisplay.getOutputEntries().get(0))
-                .disableBackground().markInput());
+
+        widgets.add(Widgets.createTexturedWidget(ForgeHammerScreen.FORGE_HAMMER_GUI,
+                startPoint.x - 25, startPoint.y + 4, 7, 32, 18, 18));
+
+        Text text;
+
+        if (recipeDisplay.recipe.eu > 0) {
+            widgets.add(Widgets.createSlot(new Point(startPoint.x - 24, startPoint.y + 5)).disableBackground()
+                    .entries(recipeDisplay.getInputEntries().get(1)).markInput());
+            widgets.add(
+                    Widgets.createSlot(new Point(startPoint.x + 4, startPoint.y + 5)).entries(recipeDisplay.getInputEntries().get(0)).markInput());
+            text = new TranslatableText("text.modern_industrialization.durability_cost", recipeDisplay.recipe.eu);
+        } else {
+            widgets.add(
+                    Widgets.createSlot(new Point(startPoint.x + 4, startPoint.y + 5)).entries(recipeDisplay.getInputEntries().get(0)).markInput());
+            text = new TranslatableText("text.modern_industrialization.no_tool_required");
+        }
+
+        widgets.add(Widgets
+                .createLabel(new Point(startPoint.x - 24, bounds.y + 28), text)
+                .leftAligned().noShadow().color(0xFF404040, 0xFFBBBBBB));
+
+        widgets.add(Widgets.createSlot(new Point(startPoint.x + 61, startPoint.y + 5)).entries(recipeDisplay.getOutputEntries().get(0)).markOutput());
         return widgets;
+    }
+
+    @Override
+    public int getDisplayHeight() {
+        return 40;
     }
 }

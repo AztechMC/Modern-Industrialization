@@ -60,6 +60,9 @@ public abstract class PipeNetwork {
         return tag;
     }
 
+    /**
+     * <b>Only access nodes that are ticking, for example with {@link #iterateTickingNodes}!</b>
+     */
     public void tick(ServerWorld world) {
     }
 

@@ -66,17 +66,17 @@ public class PipeNetworkManager {
             network.tick(world);
         }
 
-        // Mark spanned chunks as dirty.
-        for (long chunkPos : spannedChunks.keySet()) {
+        // Mark pipes in ticking chunks as dirty.
+        for (long chunkPos : tickingChunks) {
             int chunkX = ChunkPos.getPackedX(chunkPos);
             int chunkZ = ChunkPos.getPackedZ(chunkPos);
             var chunk = world.getChunk(chunkX, chunkZ, ChunkStatus.FULL, false);
             if (chunk != null) {
                 chunk.setShouldSave(true);
             } else {
-                // This is not supposed to happen, but it does on AOF5, so let's print as much info as we can
+                // This is not supposed to happen.
                 var sb = new StringBuilder();
-                sb.append("MI pipes issue: spanned chunk was not loaded anymore. Probably another mod. Please report this.\n");
+                sb.append("MI pipes issue: ticking spanned chunk was not loaded anymore. Please report this.\n");
                 sb.append(" - Pipe type: ").append(type.getIdentifier()).append("\n");
                 sb.append(" - Chunk: %d,%d\n".formatted(chunkX, chunkZ));
                 sb.append(" - Blocks in chunk:\n");

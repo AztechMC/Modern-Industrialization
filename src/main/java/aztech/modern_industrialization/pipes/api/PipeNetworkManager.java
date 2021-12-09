@@ -290,6 +290,7 @@ public class PipeNetworkManager {
         } else {
             node.network = network;
             network.setNode(pos, node);
+            network.tickingCacheValid = false;
         }
         incrementSpanned(pos);
         checkStateCoherence();
@@ -301,6 +302,7 @@ public class PipeNetworkManager {
      */
     public void nodeUnloaded(PipeNetworkNode node, BlockPos pos) {
         node.network.setNode(pos, null);
+        node.network.tickingCacheValid = false;
         decrementSpanned(pos);
         checkStateCoherence();
     }

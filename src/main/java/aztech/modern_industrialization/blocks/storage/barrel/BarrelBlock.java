@@ -98,10 +98,11 @@ public class BarrelBlock extends AbstractStorageBlock implements BlockEntityProv
                         PlayerInventoryStorage.of(player).offerOrDrop(extractedResource, extracted, transaction);
 
                         transaction.commit();
-                        updateDestroyDelay();
+                        if (world.isClient()) {
+                            updateDestroyDelay();
+                        }
                     }
-                    // TODO: fabric bug: if the event returns something else than PASS, no packet is sent to the server
-                    // return ActionResult.success(world.isClient);
+                    return ActionResult.success(world.isClient);
                 }
             }
             return ActionResult.PASS;

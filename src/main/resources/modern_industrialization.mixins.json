@@ -13,10 +13,6 @@
     "ServerPlayerInteractionManagerMixin",
     "WorldChunkMixin"
   ],
-  "client": [
-    "client.ClientPlayerInteractionManagerMixin",
-    "client.HeldItemRendererMixin"
-  ],
   "injectors": {
     "defaultRequire": 1
   }

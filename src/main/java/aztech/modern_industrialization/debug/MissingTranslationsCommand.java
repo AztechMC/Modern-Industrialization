@@ -30,9 +30,7 @@ import com.mojang.brigadier.context.CommandContext;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import net.fabricmc.fabric.api.client.command.v1.FabricClientCommandSource;
-import net.minecraft.advancement.Advancement;
 import net.minecraft.block.Block;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.item.Item;
@@ -82,41 +80,23 @@ public class MissingTranslationsCommand {
                 }
             }
         }
-
         for (Map.Entry<String, String> entry : missingTranslations.entrySet()) {
-
-            entry.setValue(fit(entry.getKey()));
-        }
-
-        for (Advancement advancement : MinecraftClient.getInstance().getNetworkHandler().getAdvancementHandler().getManager().getAdvancements()) {
-
-            if (advancement.getId().getNamespace().equals("modern_industrialization")) {
-                String key = "advancements.modern_industrialization." + advancement.getId().getPath();
-                String keyDescription = "advancements.modern_industrialization." + advancement.getId().getPath() + ".description";
-
-                if (!I18n.hasTranslation(key)) {
-                    missingTranslations.put(key, "XXX");
-                }
-
-                if (!I18n.hasTranslation(keyDescription)) {
-                    String[] toTranslate = advancement.getId().getPath().split("_");
-                    StringBuilder translated = new StringBuilder();
-                    boolean first = true;
-                    for (String toTranslatePart : toTranslate) {
-                        if (!first)
-                            translated.append(" ");
-                        first = false;
-                        // Uppercase first char
-                        translated.append(Character.toUpperCase(toTranslatePart.charAt(0)));
-                        // Rest is lowercase
-                        translated.append(toTranslatePart.substring(1));
-                    }
-
-                    missingTranslations.put(keyDescription, "Craft a " + translated);
-                }
+            String key = entry.getKey();
+            String[] parts = key.split("\\.");
+            String[] toTranslate = parts[2].split("_");
+            StringBuilder translated = new StringBuilder();
+            boolean first = true;
+            for (String toTranslatePart : toTranslate) {
+                if (!first)
+                    translated.append(" ");
+                first = false;
+                // Uppercase first char
+                translated.append(Character.toUpperCase(toTranslatePart.charAt(0)));
+                // Rest is lowercase
+                translated.append(toTranslatePart.substring(1));
             }
+            entry.setValue(translated.toString());
         }
-
         if (missingTranslations.size() > 0) {
             Gson gson = new GsonBuilder().setPrettyPrinting().create();
             ModernIndustrialization.LOGGER.info("Missing MI translations:\n{}", gson.toJson(missingTranslations));
@@ -124,22 +104,5 @@ public class MissingTranslationsCommand {
         } else {
             return false;
         }
-    }
-
-    public static String fit(String key) {
-        String[] parts = key.split("\\.");
-        String[] toTranslate = parts[2].split("_");
-        StringBuilder translated = new StringBuilder();
-        boolean first = true;
-        for (String toTranslatePart : toTranslate) {
-            if (!first)
-                translated.append(" ");
-            first = false;
-            // Uppercase first char
-            translated.append(Character.toUpperCase(toTranslatePart.charAt(0)));
-            // Rest is lowercase
-            translated.append(toTranslatePart.substring(1));
-        }
-        return translated.toString();
     }
 }

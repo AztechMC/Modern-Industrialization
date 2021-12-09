@@ -46,7 +46,6 @@ public class MIDatagenEntrypoint implements DataGeneratorEntrypoint {
         dataGenerator.addProvider(DyeRecipesProvider::new);
         dataGenerator.addProvider(AssemblerRecipesProvider::new);
         dataGenerator.addProvider(CompatRecipesProvider::new);
-        dataGenerator.addProvider(SteelUpgradeProvider::new);
 
         dataGenerator.addProvider(MIAdvancementsProvider::new);
 

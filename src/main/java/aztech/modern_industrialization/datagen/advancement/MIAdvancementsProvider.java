@@ -66,71 +66,18 @@ public class MIAdvancementsProvider extends FabricAdvancementsProvider {
         var assembler = createBasic(consumer, "assembler", analogCircuit, AdvancementFrame.GOAL);
         var mvLvTransformer = createBasic(consumer, "mv_lv_transformer", analogCircuit);
         var electricBlastFurnace = createBasic(consumer, "electric_blast_furnace", lvSteamTurbine, AdvancementFrame.GOAL);
-        var electronicCircuit = createBasic(consumer, "electronic_circuit", electricBlastFurnace);
-        var centrifuge = createBasic(consumer, "centrifuge", electronicCircuit);
-        var electrolyzer = createBasic(consumer, "electrolyzer", electronicCircuit);
-        var chemicalReactor = createBasic(consumer, "chemical_reactor", electronicCircuit);
-        var distillery = createBasic(consumer, "distillery", electronicCircuit);
-        var electricQuarry = createBasic(consumer, "electric_quarry", electronicCircuit, AdvancementFrame.CHALLENGE);
-        var oilDrillingRig = createBasic(consumer, "oil_drilling_rig", electronicCircuit, AdvancementFrame.GOAL);
-        var vacuumFreezer = createBasic(consumer, "vacuum_freezer", electronicCircuit, AdvancementFrame.GOAL);
-        var mvSteamTurbine = createBasic(consumer, "mv_steam_turbine", electronicCircuit, AdvancementFrame.GOAL);
+        var centrifuge = createBasic(consumer, "centrifuge", electricBlastFurnace);
+        var electrolyzer = createBasic(consumer, "electrolyzer", electricBlastFurnace);
+        var chemicalReactor = createBasic(consumer, "chemical_reactor", electricBlastFurnace);
+        var distillery = createBasic(consumer, "distillery", electricBlastFurnace);
+        var electricQuarry = createBasic(consumer, "electric_quarry", electricBlastFurnace, AdvancementFrame.CHALLENGE);
+        var oilDrillingRig = createBasic(consumer, "oil_drilling_rig", electricBlastFurnace, AdvancementFrame.GOAL);
+        var vacuumFreezer = createBasic(consumer, "vacuum_freezer", electricBlastFurnace, AdvancementFrame.GOAL);
+        var mvSteamTurbine = createBasic(consumer, "mv_steam_turbine", electricBlastFurnace, AdvancementFrame.GOAL);
         var dieselGenerator = createBasic(consumer, "diesel_generator", distillery);
         var dieselJetpack = createBasic(consumer, "diesel_jetpack", distillery, AdvancementFrame.CHALLENGE);
         var dieselChainsaw = createBasic(consumer, "diesel_chainsaw", distillery, AdvancementFrame.CHALLENGE);
         var dieselMiningDrill = createBasic(consumer, "diesel_mining_drill", distillery, AdvancementFrame.CHALLENGE);
-
-        var digitalCircuit = createBasic(consumer, "digital_circuit", distillery);
-
-        var turboDieselGenerator = createBasic(consumer, "turbo_diesel_generator", dieselGenerator);
-        var largeDieselGenerator = createBasic(consumer, "large_diesel_generator", turboDieselGenerator);
-        var hvSteamTurbine = createBasic(consumer, "hv_steam_turbine", mvSteamTurbine);
-        var largeSteamTurbine = createBasic(consumer, "large_steam_turbine", hvSteamTurbine);
-
-        var distillationTower = createBasic(consumer, "distillation_tower", digitalCircuit, AdvancementFrame.GOAL);
-
-        var crowbar = createBasic(consumer, "crowbar", steelMachineCasing);
-
-        var heatExchanger = createBasic(consumer, "heat_exchanger", digitalCircuit);
-
-        var stainlessSteel = createBasic(consumer, "stainless_steel_ingot", vacuumFreezer, AdvancementFrame.GOAL);
-        var screwdriver = createBasic(consumer, "screwdriver", stainlessSteel);
-        var kanthalCoil = createBasic(consumer, "kanthal_coil", screwdriver);
-        var processingUnit = createBasic(consumer, "processing_unit", kanthalCoil);
-
-        var titaniumIngot = createBasic(consumer, "titanium_ingot", kanthalCoil);
-        var blastProofAlloyPlate = createBasic(consumer, "blastproof_alloy_plate", titaniumIngot);
-        var implosionCompressor = createBasic(consumer, "implosion_compressor", blastProofAlloyPlate, AdvancementFrame.GOAL);
-        var pressurizer = createBasic(consumer, "pressurizer", titaniumIngot);
-        var rawIridium = createBasic(consumer, "raw_iridium", titaniumIngot);
-
-        var superconductorCable = createBasic(consumer, "superconductor_cable", rawIridium, AdvancementFrame.GOAL);
-        var gravichestplate = createBasic(consumer, "gravichestplate", superconductorCable, AdvancementFrame.CHALLENGE);
-
-        var nuclearReactor = createBasic(consumer, "nuclear_reactor", implosionCompressor, AdvancementFrame.CHALLENGE);
-
-        var nuke = createBasic(consumer, "nuke", nuclearReactor);
-        var singularity = createBasic(consumer, "singularity", nuke);
-
-        var mixedIngotIridium = createBasic(consumer, "mixed_ingot_iridium", implosionCompressor);
-        var quantumCircuit = createBasic(consumer, "quantum_circuit", mixedIngotIridium, AdvancementFrame.GOAL);
-        var fusionReactor = createBasic(consumer, "fusion_reactor", quantumCircuit, AdvancementFrame.CHALLENGE);
-        var plasmaTurbine = createBasic(consumer, "plasma_turbine", fusionReactor);
-
-        var basicUpgrade = createBasic(consumer, "basic_upgrade", analogCircuit, AdvancementFrame.GOAL);
-        var advancedUpgrade = createBasic(consumer, "advanced_upgrade", electronicCircuit);
-        var turboUpgrade = createBasic(consumer, "turbo_upgrade", digitalCircuit);
-        var highlyAdvancedUpgrade = createBasic(consumer, "highly_advanced_upgrade", processingUnit);
-
-        var quantumUpgrade = createBasic(consumer, "quantum_upgrade", quantumCircuit, AdvancementFrame.GOAL);
-
-        var replicator = createBasic(consumer, "replicator", quantumUpgrade, AdvancementFrame.CHALLENGE);
-
-        var uuMatter = createBasic(consumer, "bucket_uu_matter", singularity, AdvancementFrame.GOAL);
-
-        var quantumSword = createBasic(consumer, "quantum_sword", quantumUpgrade, AdvancementFrame.CHALLENGE);
-        var quantumChestplate = createBasic(consumer, "quantum_chestplate", quantumUpgrade, AdvancementFrame.CHALLENGE);
-
     }
 
     private static Advancement createBasic(Consumer<Advancement> consumer, String item, @Nullable Advancement parent) {

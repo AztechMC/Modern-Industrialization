@@ -112,8 +112,6 @@ public final class MIItem {
         return item;
     }
 
-    public static final Item STEEL_UPGRADE = of("steel_upgrade");
-
     public static final Item ITEM_GUIDE_BOOK = of(GuideBookItem::new, "guidebook", 64);
     public static final Item ITEM_UNCOOKED_STEEL_DUST = of("uncooked_steel_dust");
 

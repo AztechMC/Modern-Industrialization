@@ -30,9 +30,6 @@
       "aztech.modern_industrialization.compat.rei.machines.MachinesPlugin",
       "aztech.modern_industrialization.compat.rei.nuclear.NeutronInteractionPlugin"
     ],
-    "kubejs-init": [
-      "aztech.modern_industrialization.compat.kubejs.MIRecipeEventHandler"
-    ],
     "modmenu": [
       "aztech.modern_industrialization.compat.modmenu.MIMenu"
     ],

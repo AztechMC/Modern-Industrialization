@@ -144,6 +144,7 @@ public final class MaterialBuilder {
     }
 
     public final Material build(RegisteringEvent... events) {
+        this.addParts(MIParts.SINGULARITY);
         RegisteringContext context = new RegisteringContext();
         for (MaterialPart part : partsMap.values()) {
             part.register(context);

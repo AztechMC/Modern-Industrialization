@@ -99,6 +99,7 @@ public class MIParts {
     public static final RegularPart ROD = new RegularPart("rod");
     public static final RegularPart ROD_MAGNETIC = new RegularPart("rod_magnetic").withOverlay(ROD, "magnetic");
     public static final RegularPart ROTOR = new RegularPart("rotor");
+    public static final RegularPart SINGULARITY = new RegularPart("singularity");
     public static final TankPart TANK = new TankPart();
     public static final RegularPart TINY_DUST = new RegularPart("tiny_dust");
     public static final RegularPart WIRE = new RegularPart("wire");

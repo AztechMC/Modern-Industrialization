@@ -4,7 +4,7 @@
   "duration": 200,
   "item_inputs": [
     {
-      "tag": "minecraft:cobblestone",
+      "tag": "minecraft:stone_crafting_materials",
       "amount": 8
     }
   ],

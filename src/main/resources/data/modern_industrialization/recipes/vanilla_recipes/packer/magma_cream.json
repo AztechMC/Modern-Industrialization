@@ -1,0 +1,21 @@
+{
+  "type": "modern_industrialization:packer",
+  "eu": 2,
+  "duration": 100,
+  "item_inputs": [
+    {
+      "item": "minecraft:blaze_powder",
+      "amount": 1
+    },
+    {
+      "item": "minecraft:slime_ball",
+      "amount": 1
+    }
+  ],
+  "item_outputs": [
+    {
+      "item": "minecraft:magma_cream",
+      "amount": 2
+    }
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "ppp",
+    "pfp",
+    "sss"
+  ],
+  "key": {
+    "c": {
+      "item": "minecraft:chest"
+    },
+    "p": {
+      "tag": "c:steel_plates"
+    },
+    "s": {
+      "tag": "minecraft:smooth_stone"
+    }
+  },
+  "result": {
+    "item": "minecraft:blast_furnace",
+    "count": 2
+  }
+}

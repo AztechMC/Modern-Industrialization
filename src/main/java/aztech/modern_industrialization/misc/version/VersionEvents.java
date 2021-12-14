@@ -66,8 +66,7 @@ public class VersionEvents {
             PriorityQueue<Version> queue = new PriorityQueue<>();
 
             String response = scanner.useDelimiter("\\A").next();
-            JsonParser jsonParser = new JsonParser();
-            JsonObject jo = (JsonObject) jsonParser.parse(response);
+            JsonObject jo = (JsonObject) JsonParser.parseString(response);
 
             for (JsonElement file : jo.getAsJsonArray("files")) {
                 JsonObject fileAsJsonObject = file.getAsJsonObject();
@@ -119,10 +118,12 @@ public class VersionEvents {
                                     .withFormatting(Formatting.UNDERLINE).withFormatting(Formatting.GREEN).withHoverEvent(new HoverEvent(
                                             HoverEvent.Action.SHOW_TEXT, new TranslatableText("text.modern_industrialization.click_url")));
 
-                            if (MinecraftClient.getInstance().player == player) {
-                                player.sendMessage(new TranslatableText("text.modern_industrialization.new_version", lastVersionString,
-                                        new TranslatableText("text.modern_industrialization.curse_forge").setStyle(styleClick)), false);
-                            }
+                            MinecraftClient.getInstance().execute(() -> {
+                                if (MinecraftClient.getInstance().player == player) {
+                                    player.sendMessage(new TranslatableText("text.modern_industrialization.new_version", lastVersionString,
+                                            new TranslatableText("text.modern_industrialization.curse_forge").setStyle(styleClick)), false);
+                                }
+                            });
                         }
                     }
                 }

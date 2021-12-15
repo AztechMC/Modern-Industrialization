@@ -5,11 +5,7 @@
     "item_inputs": [
         {
             "item": "minecraft:stick",
-            "amount": 1
-        },
-        {
-            "item": "minecraft:stone_slab",
-            "amount": 2
+            "amount": 3
         },
         {
             "item": "modern_industrialization:bronze_plate",

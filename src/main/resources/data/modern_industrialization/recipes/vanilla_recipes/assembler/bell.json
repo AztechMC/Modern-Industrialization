@@ -1,0 +1,35 @@
+{
+    "type": "modern_industrialization:assembler",
+    "eu": 8,
+    "duration": 200,
+    "item_inputs": [
+        {
+            "item": "minecraft:stick",
+            "amount": 1
+        },
+        {
+            "item": "minecraft:stone_slab",
+            "amount": 2
+        },
+        {
+            "item": "modern_industrialization:bronze_plate",
+            "amount": 1
+        },
+        {
+            "item": "modern_industrialization:bronze_curved_plate",
+            "amount": 2
+        }
+    ],
+    "fluid_inputs": [
+        {
+            "fluid": "modern_industrialization:creosote",
+            "amount": 100
+        }
+    ],
+    "item_outputs": [
+        {
+            "item": "minecraft:bell",
+            "amount": 2
+        }
+    ]
+}

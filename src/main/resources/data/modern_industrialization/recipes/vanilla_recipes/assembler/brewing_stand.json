@@ -1,0 +1,21 @@
+{
+    "type": "modern_industrialization:assembler",
+    "eu": 8,
+    "duration": 200,
+    "item_inputs": [
+        {
+            "item": "minecraft:blaze_rod",
+            "amount": 1
+        },
+        {
+            "tag": "minecraft:stone_tool_materials",
+            "amount": 3
+        }
+    ],
+    "item_outputs": [
+        {
+            "item": "minecraft:brewing_stand",
+            "amount": 2
+        }
+    ]
+}

@@ -13,13 +13,13 @@
     },
     {
       "tag": "c:salt_dusts",
-      "amount": 2
+      "amount": 4
     }
   ],
   "fluid_inputs": [
     {
       "fluid": "minecraft:water",
-      "amount": 8000
+      "amount": 9000
     }
   ],
   "item_outputs": [
@@ -38,7 +38,7 @@
   ],
   "fluid_outputs": {
     "item": "minecraft:water",
-    "amount": 4000
+    "amount": 6000
   }
 }
 

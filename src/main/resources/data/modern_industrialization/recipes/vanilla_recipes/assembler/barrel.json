@@ -12,6 +12,12 @@
       "amount": 2
     }
   ],
+  "fluid_inputs": [
+        {
+            "fluid": "modern_industrialization:creosote",
+            "amount": 100
+        }
+  ],
   "item_outputs": [
     {
       "item": "minecraft:barrel",

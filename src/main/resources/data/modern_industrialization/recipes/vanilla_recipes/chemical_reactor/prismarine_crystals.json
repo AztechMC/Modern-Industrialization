@@ -18,12 +18,16 @@
   ],
   "fluid_inputs": [
     {
-      "fluid": "minecraft:water",
-      "amount": 2000
+      "fluid": "modern_industrialization:hydrogen",
+      "amount": 4000
     },
     {
       "fluid": "modern_industrialization:sodium_hydroxide",
-      "amount": 6000
+      "amount": 4000
+    },
+    {
+      "fluid": "modern_industrialization:chlorine",
+      "amount": 250
     }
   ],
   "item_outputs": {

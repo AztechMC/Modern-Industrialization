@@ -1,0 +1,28 @@
+{
+    "type": "modern_industrialization:assembler",
+    "eu": 8,
+    "duration": 200,
+    "item_inputs": [
+        {
+            "item": "minecraft:flint",
+            "amount": 2
+        },
+        {
+            "tag": "minecraft:planks",
+            "amount": 4
+        }
+    ],
+
+    "fluid_inputs": [
+        {
+            "fluid": "modern_industrialization:creosote",
+            "amount": 100
+        }
+    ],
+    "item_outputs": [
+        {
+            "item": "minecraft:fletching_table",
+            "amount": 2
+        }
+    ]
+}

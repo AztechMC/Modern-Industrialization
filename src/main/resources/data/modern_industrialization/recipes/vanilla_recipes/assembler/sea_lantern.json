@@ -1,0 +1,21 @@
+{
+  "type": "modern_industrialization:assembler",
+  "eu": 8,
+  "duration": 200,
+  "item_inputs": [
+    {
+      "tag": "minecraft:prismarine_crystals",
+      "amount": 5
+    },
+    {
+      "tag": "minecraft:prismarine_shard",
+      "amount": 4
+    }
+  ],
+  "item_outputs": [
+    {
+      "item": "minecraft:sea_lantern",
+      "amount": 2
+    }
+  ]
+}

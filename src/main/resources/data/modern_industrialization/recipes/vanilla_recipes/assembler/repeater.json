@@ -1,0 +1,25 @@
+{
+  "type": "modern_industrialization:assembler",
+  "eu": 8,
+  "duration": 200,
+  "item_inputs": [
+    {
+      "item": "minecraft:stone",
+      "amount": 3
+    },
+    {
+      "item": "minecraft:redstone_torch",
+      "amount": 2
+    },
+    {
+      "item": "minecraft:redstone",
+      "amount": 1
+    }
+  ],
+  "item_outputs": [
+    {
+      "item": "minecraft:repeater",
+      "amount": 2
+    }
+  ]
+}

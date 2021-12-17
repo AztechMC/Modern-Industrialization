@@ -4,11 +4,11 @@
   "duration": 200,
   "item_inputs": [
     {
-      "tag": "minecraft:cobblestone",
+      "item": "minecraft:cobblestone",
       "amount": 7
     },
     {
-      "tag": "minecraft:redstone",
+      "item": "minecraft:redstone",
       "amount": 1
     }
   ],

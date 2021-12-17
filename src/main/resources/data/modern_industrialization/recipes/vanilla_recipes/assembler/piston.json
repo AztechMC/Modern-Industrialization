@@ -1,0 +1,29 @@
+{
+  "type": "modern_industrialization:assembler",
+  "eu": 8,
+  "duration": 200,
+  "item_inputs": [
+    {
+      "item": "minecraft:cobblestone",
+      "amount": 4
+    },
+    {
+      "tag": "minecraft:planks",
+      "amount": 3
+    },
+    {
+      "item": "minecraft:redstone",
+      "amount": 1
+    },
+    {
+      "item": "modern_industrialization:steel_rod",
+      "amount": 1
+    }
+  ],
+  "item_outputs": [
+    {
+      "item": "minecraft:piston",
+      "amount": 2
+    }
+  ]
+}

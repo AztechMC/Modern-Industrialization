@@ -38,6 +38,7 @@ import it.unimi.dsi.fastutil.objects.Reference2IntMap;
 import it.unimi.dsi.fastutil.objects.Reference2IntOpenHashMap;
 import java.util.List;
 import java.util.Optional;
+import net.fabricmc.fabric.api.item.v1.FabricItem;
 import net.fabricmc.fabric.api.registry.FuelRegistry;
 import net.fabricmc.fabric.api.tool.attribute.v1.DynamicAttributeTool;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
@@ -83,11 +84,21 @@ import org.jetbrains.annotations.Nullable;
  * fuel was used in a furnace). water: integer, the remaining ticks of water
  * (when full: 18000 ticks i.e. 15 minutes).
  */
-public class SteamDrillItem extends Item implements DynamicAttributeTool, MagnaTool, DynamicEnchantmentItem, ItemContainingItemHelper {
+public class SteamDrillItem extends Item implements DynamicAttributeTool, MagnaTool, DynamicEnchantmentItem, ItemContainingItemHelper, FabricItem {
     private static final int FULL_WATER = 18000;
 
     public SteamDrillItem(Settings settings) {
         super(settings.maxCount(1).rarity(Rarity.UNCOMMON));
+    }
+
+    @Override
+    public boolean allowNbtUpdateAnimation(PlayerEntity player, Hand hand, ItemStack oldStack, ItemStack newStack) {
+        return false;
+    }
+
+    @Override
+    public boolean allowContinuingBlockBreaking(PlayerEntity player, ItemStack oldStack, ItemStack newStack) {
+        return canUse(newStack);
     }
 
     @Override

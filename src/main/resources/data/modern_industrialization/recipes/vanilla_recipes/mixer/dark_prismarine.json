@@ -1,0 +1,19 @@
+{
+  "type": "modern_industrialization:mixer",
+  "eu": 2,
+  "duration": 100,
+  "item_inputs": [
+    {
+      "item": "minecraft:prismarine",
+      "amount": 8
+	},
+    {
+      "item": "minecraft:black_dye",
+      "amount": 1
+	}
+  ],
+  "item_outputs": {
+    "item": "minecraft:dark_prismarine",
+    "amount": 8
+  }
+}

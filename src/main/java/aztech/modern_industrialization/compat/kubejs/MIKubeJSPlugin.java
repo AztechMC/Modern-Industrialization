@@ -28,7 +28,7 @@ import aztech.modern_industrialization.machines.recipe.MachineRecipeType;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import dev.latvian.mods.kubejs.KubeJSInitializer;
+import dev.latvian.mods.kubejs.KubeJSPlugin;
 import dev.latvian.mods.kubejs.item.ItemStackJS;
 import dev.latvian.mods.kubejs.item.ingredient.IngredientJS;
 import dev.latvian.mods.kubejs.item.ingredient.IngredientStackJS;
@@ -39,14 +39,12 @@ import dev.latvian.mods.kubejs.util.ListJS;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.NotNull;
 
-public class MIRecipeEventHandler implements KubeJSInitializer {
+public class MIKubeJSPlugin extends KubeJSPlugin {
     @Override
-    public void onKubeJSInitialization() {
-        RegisterRecipeHandlersEvent.EVENT.register(event -> {
-            for (MachineRecipeType mrt : MIMachineRecipeTypes.getRecipeTypes()) {
-                event.register(mrt.getId(), MachineRecipe::new);
-            }
-        });
+    public void addRecipes(RegisterRecipeHandlersEvent event) {
+        for (MachineRecipeType mrt : MIMachineRecipeTypes.getRecipeTypes()) {
+            event.register(mrt.getId(), MachineRecipe::new);
+        }
     }
 
     private static class MachineRecipe extends RecipeJS {

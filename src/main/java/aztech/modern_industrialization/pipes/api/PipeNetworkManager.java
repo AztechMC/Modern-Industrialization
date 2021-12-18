@@ -36,6 +36,7 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.Direction;
+import net.minecraft.world.chunk.ChunkStatus;
 import org.jetbrains.annotations.Nullable;
 
 public class PipeNetworkManager {
@@ -65,14 +66,29 @@ public class PipeNetworkManager {
             network.tick(world);
         }
 
-        // Mark spanned chunks as dirty.
-        for (long chunk : spannedChunks.keySet()) {
-            int chunkX = ChunkPos.getPackedX(chunk);
-            int chunkZ = ChunkPos.getPackedZ(chunk);
-            if (world.isChunkLoaded(chunkX, chunkZ)) {
-                world.getChunk(chunkX, chunkZ).setShouldSave(true);
+        // Mark pipes in ticking chunks as dirty.
+        for (long chunkPos : tickingChunks) {
+            int chunkX = ChunkPos.getPackedX(chunkPos);
+            int chunkZ = ChunkPos.getPackedZ(chunkPos);
+            var chunk = world.getChunk(chunkX, chunkZ, ChunkStatus.FULL, false);
+            if (chunk != null) {
+                chunk.setShouldSave(true);
             } else {
-                throw new UnsupportedOperationException("Internal MI pipe bug: spanned chunk was not loaded anymore.");
+                // This is not supposed to happen.
+                var sb = new StringBuilder();
+                sb.append("MI pipes issue: ticking spanned chunk was not loaded anymore. Please report this.\n");
+                sb.append(" - Pipe type: ").append(type.getIdentifier()).append("\n");
+                sb.append(" - Chunk: %d,%d\n".formatted(chunkX, chunkZ));
+                sb.append(" - Blocks in chunk:\n");
+                for (var it = spannedChunks.get(chunkPos).stream().sorted().iterator(); it.hasNext();) {
+                    var pos = it.next();
+                    sb.append("   - Pos: %d %d %d\n".formatted(pos.getX(), pos.getY(), pos.getZ()));
+                    var network = networkByBlock.get(pos);
+                    var node = network == null ? "none" : network.getNode(pos) == null ? "not loaded" : "loaded";
+                    sb.append("   - Has network (should be true): %s\n".formatted(network != null));
+                    sb.append("   - Node status (should be loaded): %s\n".formatted(node));
+                }
+                throw new UnsupportedOperationException(sb.toString());
             }
         }
     }
@@ -274,6 +290,7 @@ public class PipeNetworkManager {
         } else {
             node.network = network;
             network.setNode(pos, node);
+            network.tickingCacheValid = false;
         }
         incrementSpanned(pos);
         checkStateCoherence();
@@ -285,6 +302,7 @@ public class PipeNetworkManager {
      */
     public void nodeUnloaded(PipeNetworkNode node, BlockPos pos) {
         node.network.setNode(pos, null);
+        node.network.tickingCacheValid = false;
         decrementSpanned(pos);
         checkStateCoherence();
     }

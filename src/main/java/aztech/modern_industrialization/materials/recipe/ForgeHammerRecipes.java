@@ -37,6 +37,7 @@ public class ForgeHammerRecipes {
     public static void apply(MaterialBuilder.RecipeContext ctx) {
 
         addRecipe(ctx, INGOT, 1, DUST, 1);
+        addRecipe(ctx, NUGGET, 1, TINY_DUST, 1);
 
         addRecipe(ctx, INGOT, 2, DOUBLE_INGOT, 1);
 
@@ -73,6 +74,9 @@ public class ForgeHammerRecipes {
         addRecipe(ctx, ORE, 1, RAW_METAL, 3, 20);
 
         addRecipe(ctx, ORE, 1, DUST, 4, 50);
+
+        addRecipe(ctx, RAW_METAL, 3, DUST, 4, 30);
+        addRecipe(ctx, CRUSHED_DUST, 3, DUST, 4, 30);
     }
 
     private static void addRecipe(MaterialBuilder.RecipeContext ctx, Part inputPart, int inputCount, Part outputPart,

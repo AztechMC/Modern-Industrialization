@@ -4,7 +4,7 @@ plugins {
     id 'com.diffplug.spotless' version '5.14.0'
     id 'com.matthewprenger.cursegradle' version '1.4.0'
     id "com.modrinth.minotaur" version "1.2.1"
-    id 'io.github.juuxel.loom-quiltflower-mini' version '1.1.0'
+    id 'io.github.juuxel.loom-quiltflower-mini' version '1.2.1'
 }
 
 apply plugin: 'java-library'
@@ -172,7 +172,7 @@ dependencies {
         exclude(group: "net.fabricmc.fabric-api")
     }
 
-    modImplementation("dev.latvian.mods:kubejs-fabric:1800.4.0-build.189") {
+    modImplementation("dev.latvian.mods:kubejs-fabric:1800.4.0-build.235") {
         exclude(group: "net.fabricmc.fabric-api")
     }
 
@@ -335,11 +335,14 @@ final class JsonOrderStep {
     }
 }
 
-def releaseChannel = "beta"
+def releaseChannel = "release"
 def changelog = "Please visit our github repository for a changelog: https://github.com/AztechMC/Modern-Industrialization/releases."
 if (version.toLowerCase().contains("alpha")) {
     releaseChannel = "alpha"
     changelog = "THIS IS AN ALPHA RELEASE, MAKE A BACKUP BEFORE INSTALLING AND FREQUENTLY WHILE PLAYING, AND PLEASE REPORT ANY ISSUE YOU MAY FIND ON OUR ISSUE TRACKER.\n\n" + changelog
+} else if (version.toLowerCase().contains("beta")) {
+    releaseChannel = "beta"
+    changelog = "This is a beta release. It is expected to be mostly stable, but in any case please report any issue you may find.\n\n" + changelog
 }
 
 // Publishing
@@ -353,6 +356,7 @@ if (System.getenv("CURSEFORGE_API_KEY") && !version.endsWith("-SNAPSHOT")) {
             delegate.changelog = changelog
 
             addGameVersion "1.18"
+            addGameVersion "1.18.1"
             addGameVersion "Fabric"
             addGameVersion "Java 17"
 
@@ -390,5 +394,6 @@ task publishModrinth (type: TaskModrinthUpload){
     versionType = releaseChannel.toUpperCase()
     uploadFile = remapJar.archiveFile
     addGameVersion "1.18"
+    addGameVersion "1.18.1"
     addLoader "fabric"
 }

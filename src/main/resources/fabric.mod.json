@@ -30,9 +30,6 @@
       "aztech.modern_industrialization.compat.rei.machines.MachinesPlugin",
       "aztech.modern_industrialization.compat.rei.nuclear.NeutronInteractionPlugin"
     ],
-    "kubejs-init": [
-      "aztech.modern_industrialization.compat.kubejs.MIRecipeEventHandler"
-    ],
     "modmenu": [
       "aztech.modern_industrialization.compat.modmenu.MIMenu"
     ],
@@ -45,7 +42,7 @@
   ],
   "depends": {
     "fabricloader": ">=0.7.4",
-    "fabric": ">=0.43",
+    "fabric": ">=0.44",
     "minecraft": "1.18.x",
     "roughlyenoughitems": "*"
   },

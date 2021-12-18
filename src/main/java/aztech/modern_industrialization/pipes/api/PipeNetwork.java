@@ -24,7 +24,6 @@
 package aztech.modern_industrialization.pipes.api;
 
 import java.util.*;
-import java.util.function.BiConsumer;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
@@ -60,6 +59,9 @@ public abstract class PipeNetwork {
         return tag;
     }
 
+    /**
+     * <b>Only access nodes that are ticking, for example with {@link #iterateTickingNodes}!</b>
+     */
     public void tick(ServerWorld world) {
     }
 
@@ -107,21 +109,18 @@ public abstract class PipeNetwork {
             for (var chunkEntry : this.nodesByChunk.entrySet()) {
                 if (manager.tickingChunks.contains(chunkEntry.getKey())) {
                     for (var entry : chunkEntry.getValue().entrySet()) {
-                        tickingNodesCache.add(new PosNode(entry.getKey(), entry.getValue()));
+                        var node = entry.getValue();
+                        // no idea how the chunk can be ticking and the node null,
+                        // but it happens on the aof5 public server apparently...
+                        if (node != null) {
+                            tickingNodesCache.add(new PosNode(entry.getKey(), node));
+                        }
                     }
                 }
             }
             tickingCacheValid = true;
         }
         return tickingNodesCache;
-    }
-
-    protected void forEachTickingNode(BiConsumer<BlockPos, PipeNetworkNode> consumer) {
-        for (var chunkEntry : this.nodesByChunk.entrySet()) {
-            if (manager.tickingChunks.contains(chunkEntry.getKey())) {
-                chunkEntry.getValue().forEach(consumer);
-            }
-        }
     }
 
     protected static class PosNode {

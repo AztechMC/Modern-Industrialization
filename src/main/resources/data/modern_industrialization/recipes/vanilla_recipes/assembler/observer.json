@@ -1,0 +1,25 @@
+{
+  "type": "modern_industrialization:assembler",
+  "eu": 8,
+  "duration": 200,
+  "item_inputs": [
+    {
+      "item": "minecraft:cobblestone",
+      "amount": 6
+    },
+    {
+      "item": "minecraft:redstone",
+      "amount": 2
+    },
+    {
+      "item": "minecraft:quartz",
+      "amount": 1
+    }
+  ],
+  "item_outputs": [
+    {
+      "item": "minecraft:observer",
+      "amount": 2
+    }
+  ]
+}

@@ -4,7 +4,7 @@
   "duration": 100,
   "item_inputs": [
     {
-      "item": "modern_industrialization:oak_slab",
+      "item": "minecraft:oak_slab",
       "amount": 1
     },
     {

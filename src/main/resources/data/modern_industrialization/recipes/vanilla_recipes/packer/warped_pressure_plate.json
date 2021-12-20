@@ -4,7 +4,7 @@
   "duration": 100,
   "item_inputs": [
     {
-      "item": "modern_industrialization:warped_slab",
+      "item": "minecraft:warped_slab",
       "amount": 1
     },
     {

@@ -1,0 +1,21 @@
+{
+  "type": "modern_industrialization:packer",
+  "eu": 2,
+  "duration": 100,
+  "item_inputs": [
+    {
+      "item": "minecraft:acacia_planks",
+      "amount": 1
+    },
+    {
+      "item": "minecraft:redstone",
+      "amount": 1
+    }
+  ],
+  "item_outputs": [
+    {
+      "item": "minecraft:acacia_button",
+      "amount": 4
+    }
+  ]
+}

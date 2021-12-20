@@ -4,7 +4,7 @@
   "duration": 100,
   "item_inputs": [
     {
-      "item": "minecraft:polished_blackstone_planks",
+      "item": "minecraft:polished_blackstone",
       "amount": 1
     },
     {

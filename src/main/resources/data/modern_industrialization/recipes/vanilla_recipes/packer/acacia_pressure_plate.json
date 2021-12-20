@@ -4,7 +4,7 @@
   "duration": 100,
   "item_inputs": [
     {
-      "item": "modern_industrialization:acacia_slab",
+      "item": "minecraft:acacia_slab",
       "amount": 1
     },
     {

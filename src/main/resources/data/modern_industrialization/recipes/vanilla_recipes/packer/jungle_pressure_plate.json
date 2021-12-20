@@ -4,7 +4,7 @@
   "duration": 100,
   "item_inputs": [
     {
-      "item": "modern_industrialization:jungle_slab",
+      "item": "minecraft:jungle_slab",
       "amount": 1
     },
     {

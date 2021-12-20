@@ -4,7 +4,7 @@
   "duration": 100,
   "item_inputs": [
     {
-      "item": "modern_industrialization:spruce_slab",
+      "item": "minecraft:spruce_slab",
       "amount": 1
     },
     {

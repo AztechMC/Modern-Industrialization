@@ -4,7 +4,7 @@
   "duration": 100,
   "item_inputs": [
     {
-      "item": "modern_industrialization:crimson_slab",
+      "item": "minecraft:crimson_slab",
       "amount": 1
     },
     {

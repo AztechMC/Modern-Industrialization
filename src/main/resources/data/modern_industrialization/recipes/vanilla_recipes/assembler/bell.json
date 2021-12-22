@@ -12,6 +12,10 @@
             "amount": 1
         },
         {
+            "item": "modern_industrialization:bronze_bolt",
+            "amount": 1
+        },
+        {
             "item": "modern_industrialization:bronze_curved_plate",
             "amount": 4
         }

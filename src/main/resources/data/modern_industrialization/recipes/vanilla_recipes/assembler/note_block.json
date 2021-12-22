@@ -8,11 +8,15 @@
       "amount": 6
     },
     {
-      "item": "modern_industrialization:iron_bolt",
-      "amount": 2
+      "item": "modern_industrialization:rubber_sheet",
+      "amount": 1
     },
     {
-      "item": "modern_industrialization:iron_ring",
+      "tag": "c:redstone_dusts",
+      "amount": 1
+    },
+    {
+      "item": "modern_industrialization:copper_fine_wire",
       "amount": 1
     }
   ],
@@ -24,7 +28,7 @@
   ],
   "item_outputs": [
     {
-      "item": "minecraft:chest",
+      "item": "minecraft:note_block",
       "amount": 2
     }
   ]

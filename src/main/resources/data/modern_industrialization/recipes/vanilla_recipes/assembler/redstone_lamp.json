@@ -1,0 +1,21 @@
+{
+  "type": "modern_industrialization:assembler",
+  "eu": 8,
+  "duration": 200,
+  "item_inputs": [
+    {
+      "tag": "c:redstone_dusts",
+      "amount": 4
+    },
+    {
+      "item": "minecraft:glowstone",
+      "amount": 1
+    }
+  ],
+  "item_outputs": [
+    {
+      "item": "minecraft:redstone_lamp",
+      "amount": 2
+    }
+  ]
+}

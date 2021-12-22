@@ -48,37 +48,37 @@ public final class OxidationRecipesProvider extends MIRecipesProvider {
 
 
     private static void genOxidation(Consumer<RecipeJsonProvider> consumer, String item) {
-        MIRecipeJson json = MIRecipeJson.create(MIMachineRecipeTypes.CHEMICAL_REACTOR, 4, 400).addFluidInput(MIFluids.OXYGEN, 100)
+        MIRecipeJson exposed = MIRecipeJson.create(MIMachineRecipeTypes.CHEMICAL_REACTOR, 4, 400).addFluidInput(MIFluids.OXYGEN, 100)
                 .addItemInput("minecraft:" + item, 1).addItemOutput("minecraft:exposed" + "_" + item, 1);
 
-        json.offerTo(consumer, "chemical_reactor/exposed/" + item);
+        exposed.offerTo(consumer, "chemical_reactor/exposed/" + item);
 
-        MIRecipeJson slab = MIRecipeJson.create(MIMachineRecipeTypes.CHEMICAL_REACTOR, 4, 400).addFluidInput(MIFluids.OXYGEN, 100)
+        MIRecipeJson weathered = MIRecipeJson.create(MIMachineRecipeTypes.CHEMICAL_REACTOR, 4, 400).addFluidInput(MIFluids.OXYGEN, 100)
                 .addItemInput("minecraft:exposed" + "_" + item, 1).addItemOutput("minecraft:weathered" + "_" + item, 1);
 
-        slab.offerTo(consumer, "chemical_reactor/weathered/" + item);
+        weathered.offerTo(consumer, "chemical_reactor/weathered/" + item);
 
         MIRecipeJson slab = MIRecipeJson.create(MIMachineRecipeTypes.CHEMICAL_REACTOR, 4, 400).addFluidInput(MIFluids.OXYGEN, 100)
                 .addItemInput("minecraft:weathered" + "_" + item, 1).addItemOutput("minecraft:oxidized" + "_" + item, 1);
 
-        slab.offerTo(consumer, "chemical_reactor/oxidized/" + item);
+        oxidized.offerTo(consumer, "chemical_reactor/oxidized/" + item);
     }
 
     private static void genOxidationCopperBlock(Consumer<RecipeJsonProvider> consumer, String item) {
-        MIRecipeJson json = MIRecipeJson.create(MIMachineRecipeTypes.CHEMICAL_REACTOR, 4, 400).addFluidInput(MIFluids.OXYGEN, 100)
+        MIRecipeJson exposed = MIRecipeJson.create(MIMachineRecipeTypes.CHEMICAL_REACTOR, 4, 400).addFluidInput(MIFluids.OXYGEN, 100)
                 .addItemInput("minecraft:" + item + "_block", 1).addItemOutput("minecraft:exposed" + "_" + item, 1);
 
-        json.offerTo(consumer, "chemical_reactor/exposed/" + item);
+        exposed.offerTo(consumer, "chemical_reactor/exposed/" + item);
 
-        MIRecipeJson slab = MIRecipeJson.create(MIMachineRecipeTypes.CHEMICAL_REACTOR, 4, 400).addFluidInput(MIFluids.OXYGEN, 100)
+        MIRecipeJson weathered = MIRecipeJson.create(MIMachineRecipeTypes.CHEMICAL_REACTOR, 4, 400).addFluidInput(MIFluids.OXYGEN, 100)
                 .addItemInput("minecraft:exposed" + "_" + item, 1).addItemOutput("minecraft:weathered" + "_" + item, 1);
 
-        slab.offerTo(consumer, "chemical_reactor/weathered/" + item);
+        weathered.offerTo(consumer, "chemical_reactor/weathered/" + item);
 
-        MIRecipeJson slab = MIRecipeJson.create(MIMachineRecipeTypes.CHEMICAL_REACTOR, 4, 400).addFluidInput(MIFluids.OXYGEN, 100)
+        MIRecipeJson oxidized = MIRecipeJson.create(MIMachineRecipeTypes.CHEMICAL_REACTOR, 4, 400).addFluidInput(MIFluids.OXYGEN, 100)
                 .addItemInput("minecraft:weathered" + "_" + item, 1).addItemOutput("minecraft:oxidized" + "_" + item, 1);
 
-        slab.offerTo(consumer, "chemical_reactor/oxidized/" + item);
+        oxidized.offerTo(consumer, "chemical_reactor/oxidized/" + item);
     }
 
 }

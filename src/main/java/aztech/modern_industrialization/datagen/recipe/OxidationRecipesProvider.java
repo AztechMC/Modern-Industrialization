@@ -41,9 +41,6 @@ public final class OxidationRecipesProvider extends MIRecipesProvider {
         genOxidation(consumer, "cut_copper");
         genOxidation(consumer, "cut_copper_slab");
         genOxidation(consumer, "cut_copper_stairs");
-
-        //Gotta love how this one item just randomly has _block at the end, while literally everything else doesn't
-        genOxidationCopperBlock(consumer, "copper");
     }
 
 
@@ -59,23 +56,6 @@ public final class OxidationRecipesProvider extends MIRecipesProvider {
         weathered.offerTo(consumer, "chemical_reactor/weathered/" + item);
 
         MIRecipeJson slab = MIRecipeJson.create(MIMachineRecipeTypes.CHEMICAL_REACTOR, 4, 400).addFluidInput(MIFluids.OXYGEN, 100)
-                .addItemInput("minecraft:weathered" + "_" + item, 1).addItemOutput("minecraft:oxidized" + "_" + item, 1);
-
-        oxidized.offerTo(consumer, "chemical_reactor/oxidized/" + item);
-    }
-
-    private static void genOxidationCopperBlock(Consumer<RecipeJsonProvider> consumer, String item) {
-        MIRecipeJson exposed = MIRecipeJson.create(MIMachineRecipeTypes.CHEMICAL_REACTOR, 4, 400).addFluidInput(MIFluids.OXYGEN, 100)
-                .addItemInput("minecraft:" + item + "_block", 1).addItemOutput("minecraft:exposed" + "_" + item, 1);
-
-        exposed.offerTo(consumer, "chemical_reactor/exposed/" + item);
-
-        MIRecipeJson weathered = MIRecipeJson.create(MIMachineRecipeTypes.CHEMICAL_REACTOR, 4, 400).addFluidInput(MIFluids.OXYGEN, 100)
-                .addItemInput("minecraft:exposed" + "_" + item, 1).addItemOutput("minecraft:weathered" + "_" + item, 1);
-
-        weathered.offerTo(consumer, "chemical_reactor/weathered/" + item);
-
-        MIRecipeJson oxidized = MIRecipeJson.create(MIMachineRecipeTypes.CHEMICAL_REACTOR, 4, 400).addFluidInput(MIFluids.OXYGEN, 100)
                 .addItemInput("minecraft:weathered" + "_" + item, 1).addItemOutput("minecraft:oxidized" + "_" + item, 1);
 
         oxidized.offerTo(consumer, "chemical_reactor/oxidized/" + item);

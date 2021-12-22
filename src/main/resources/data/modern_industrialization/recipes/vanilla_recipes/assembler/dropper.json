@@ -5,7 +5,11 @@
   "item_inputs": [
     {
       "item": "minecraft:cobblestone",
-      "amount": 7
+      "amount": 6
+    },
+    {
+      "item": "modern_industrialization:iron_ring",
+      "amount": 1
     },
     {
       "item": "minecraft:redstone",

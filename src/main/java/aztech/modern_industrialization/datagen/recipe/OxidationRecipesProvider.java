@@ -43,12 +43,11 @@ public final class OxidationRecipesProvider extends MIRecipesProvider {
         genOxidation(consumer, "cut_copper_stairs");
     }
 
-
     private static void genOxidation(Consumer<RecipeJsonProvider> consumer, String item) {
-        MIRecipeJson json = MIRecipeJson.create(MIMachineRecipeTypes.CHEMICAL_REACTOR, 4, 400).addFluidInput(MIFluids.OXYGEN, 100)
+        MIRecipeJson exposed = MIRecipeJson.create(MIMachineRecipeTypes.CHEMICAL_REACTOR, 4, 400).addFluidInput(MIFluids.OXYGEN, 100)
                 .addItemInput("minecraft:" + item, 1).addItemOutput("minecraft:exposed_" + item, 1);
 
-        json.offerTo(consumer, "chemical_reactor/exposed/" + item);
+        exposed.offerTo(consumer, "chemical_reactor/exposed/" + item);
 
         MIRecipeJson weathered = MIRecipeJson.create(MIMachineRecipeTypes.CHEMICAL_REACTOR, 4, 400).addFluidInput(MIFluids.OXYGEN, 100)
                 .addItemInput("minecraft:exposed_" + item, 1).addItemOutput("minecraft:weathered_" + item, 1);

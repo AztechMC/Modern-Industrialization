@@ -18,7 +18,7 @@
     ],
     "fluid_inputs": [
         {
-            "fluid": "modern_industrialization:solder",
+            "fluid": "modern_industrialization:soldering_alloy",
             "amount": 100
         }
     ],

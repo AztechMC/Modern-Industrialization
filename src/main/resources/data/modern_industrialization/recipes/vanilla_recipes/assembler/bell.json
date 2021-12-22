@@ -4,8 +4,8 @@
     "duration": 200,
     "item_inputs": [
         {
-            "item": "minecraft:stick",
-            "amount": 3
+            "item": "modern_industrialization:bronze_ring",
+            "amount": 1
         },
         {
             "item": "modern_industrialization:bronze_plate",
@@ -18,7 +18,7 @@
     ],
     "fluid_inputs": [
         {
-            "fluid": "modern_industrialization:creosote",
+            "fluid": "modern_industrialization:solder",
             "amount": 100
         }
     ],

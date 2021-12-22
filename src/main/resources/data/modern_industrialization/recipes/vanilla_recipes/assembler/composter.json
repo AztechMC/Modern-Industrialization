@@ -1,23 +1,27 @@
 {
-    "type": "modern_industrialization:assembler",
-    "eu": 8,
-    "duration": 200,
-    "item_inputs": [
-        {
-            "tag": "minecraft:wooden_slabs",
-            "amount": 7
-        }
-    ],
-    "fluid_inputs": [
-        {
-            "fluid": "modern_industrialization:creosote",
-            "amount": 100
-        }
-    ],
-    "item_outputs": [
-        {
-            "item": "minecraft:composter",
-            "amount": 2
-        }
-    ]
+  "type": "modern_industrialization:assembler",
+  "eu": 8,
+  "duration": 200,
+  "item_inputs": [
+    {
+      "tag": "minecraft:wooden_slabs",
+      "amount": 7
+    },
+    {
+      "item": "minecraft:wheat_seeds",
+      "amount": 1
+    }
+  ],
+  "fluid_inputs": [
+    {
+      "fluid": "modern_industrialization:creosote",
+      "amount": 100
+    }
+  ],
+  "item_outputs": [
+    {
+      "item": "minecraft:composter",
+      "amount": 2
+    }
+  ]
 }

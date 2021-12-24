@@ -13,7 +13,7 @@
     }
   ],
   "item_outputs": {
-    "item": "minecart:furnace_minecart",
+    "item": "minecraft:furnace_minecart",
     "amount": 1
   }
 }

@@ -13,7 +13,7 @@
     }
   ],
   "item_outputs": {
-    "item": "minecart:hopper_minecart",
+    "item": "minecraft:hopper_minecart",
     "amount": 1
   }
 }

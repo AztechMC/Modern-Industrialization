@@ -13,7 +13,7 @@
     }
   ],
   "item_outputs": {
-    "item": "minecart:chest_minecart",
+    "item": "minecraft:chest_minecart",
     "amount": 1
   }
 }

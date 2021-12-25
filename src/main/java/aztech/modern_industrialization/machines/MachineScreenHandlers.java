@@ -306,6 +306,7 @@ public class MachineScreenHandlers {
         public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
             // Shadow around the GUI
             renderBackground(matrices);
+            RenderSystem.enableBlend();
             // Background
             actualDrawBackground(matrices);
             renderConfigurableSlotBackgrounds(matrices);

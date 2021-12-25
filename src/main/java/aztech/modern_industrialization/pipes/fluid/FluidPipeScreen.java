@@ -61,7 +61,7 @@ public class FluidPipeScreen extends PipeScreen<FluidPipeScreenHandler> {
 
         addNetworkFluidButton();
         addConnectionTypeButton(148, 22, handler.iface);
-        addPriorityWidgets(33, 42, handler.iface, "transfer");
+        addPriorityWidgets(33, 42, handler.iface, "transfer", 0);
     }
 
     @Override

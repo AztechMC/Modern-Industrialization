@@ -82,7 +82,7 @@ public class ItemNetwork extends PipeNetwork {
             }
         }
         // Lower priority extracts first.
-        extractionTargets.sort(Comparator.comparing(et -> et.connection.priority));
+        extractionTargets.sort(Comparator.comparing(et -> et.connection.extractPriority));
 
         // Do the actual transfer.
         var insertTargets = getAggregatedInsertTargets(world);
@@ -91,7 +91,7 @@ public class ItemNetwork extends PipeNetwork {
             for (ExtractionTarget target : extractionTargets) {
                 // Lower priority extracts first, and pipes can only move items to things that have >= priorities.
                 // So we can just pop insert targets at the end of the list if they have a priority smaller than the current extraction target.
-                while (insertTargets.size() > 0 && target.connection.priority > insertTargets.get(insertTargets.size() - 1).getPriority()) {
+                while (insertTargets.size() > 0 && target.connection.extractPriority > insertTargets.get(insertTargets.size() - 1).getPriority()) {
                     insertTargets.remove(insertTargets.size() - 1);
                 }
 
@@ -126,7 +126,7 @@ public class ItemNetwork extends PipeNetwork {
                     }
                     Storage<ItemVariant> target = connection.cache.find(connection.direction.getOpposite());
                     if (target != null && target.supportsInsertion()) {
-                        PriorityBucket bucket = priorityBuckets.computeIfAbsent(connection.priority, PriorityBucket::new);
+                        PriorityBucket bucket = priorityBuckets.computeIfAbsent(connection.insertPriority, PriorityBucket::new);
                         InsertTarget it = new InsertTarget(connection, StorageUtil2.wrapInventory(target));
 
                         if (connection.whitelist || (target instanceof WhitelistedItemStorage wis && wis.currentlyWhitelisted())) {

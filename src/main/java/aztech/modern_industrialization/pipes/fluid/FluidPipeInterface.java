@@ -62,12 +62,12 @@ public interface FluidPipeInterface extends ConnectionTypeInterface, PriorityInt
             }
 
             @Override
-            public int getPriority() {
+            public int getPriority(int channel) {
                 return priority[0];
             }
 
             @Override
-            public void setPriority(int p) {
+            public void setPriority(int channel, int p) {
                 priority[0] = p;
             }
 
@@ -81,6 +81,6 @@ public interface FluidPipeInterface extends ConnectionTypeInterface, PriorityInt
     default void toBuf(PacketByteBuf buf) {
         getNetworkFluid().toPacket(buf);
         buf.writeInt(getConnectionType());
-        buf.writeInt(getPriority());
+        buf.writeInt(getPriority(0));
     }
 }

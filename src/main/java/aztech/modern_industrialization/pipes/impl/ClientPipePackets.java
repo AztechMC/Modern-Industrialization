@@ -34,11 +34,12 @@ import net.minecraft.screen.ScreenHandler;
 public class ClientPipePackets {
     public static final ClientPlayNetworking.PlayChannelHandler ON_SET_PRIORITY = (mc, h, buf, r) -> {
         int syncId = buf.readInt();
+        int channel = buf.readInt();
         int priority = buf.readInt();
         mc.execute(() -> {
             ScreenHandler handler = mc.player.currentScreenHandler;
             if (handler.syncId == syncId) {
-                ((PipeScreenHandler) handler).getInterface(PriorityInterface.class).setPriority(priority);
+                ((PipeScreenHandler) handler).getInterface(PriorityInterface.class).setPriority(channel, priority);
             }
         });
     };

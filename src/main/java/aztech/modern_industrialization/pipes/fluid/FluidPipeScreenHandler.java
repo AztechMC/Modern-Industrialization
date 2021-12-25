@@ -53,7 +53,7 @@ public class FluidPipeScreenHandler extends PipeScreenHandler {
         this.iface = iface;
         this.playerInventory = playerInventory;
         this.trackedNetworkFluid = iface.getNetworkFluid();
-        this.trackedPriority = iface.getPriority();
+        this.trackedPriority = iface.getPriority(0);
         this.trackedType = iface.getConnectionType();
 
         addPlayerInventorySlots(playerInventory, HEIGHT);
@@ -84,10 +84,11 @@ public class FluidPipeScreenHandler extends PipeScreenHandler {
                 buf.writeInt(trackedType);
                 ServerPlayNetworking.send(serverPlayer, PipePackets.SET_CONNECTION_TYPE, buf);
             }
-            if (trackedPriority != iface.getPriority()) {
-                trackedPriority = iface.getPriority();
+            if (trackedPriority != iface.getPriority(0)) {
+                trackedPriority = iface.getPriority(0);
                 PacketByteBuf buf = PacketByteBufs.create();
                 buf.writeInt(syncId);
+                buf.writeInt(0);
                 buf.writeInt(trackedPriority);
                 ServerPlayNetworking.send(serverPlayer, PipePackets.SET_PRIORITY, buf);
             }

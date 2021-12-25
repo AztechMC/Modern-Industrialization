@@ -108,7 +108,7 @@ public class ItemNetworkNode extends PipeNetworkNode {
         }
         // Otherwise try to connect
         if (canConnect(world, pos, direction)) {
-            connections.add(new ItemConnection(direction, BLOCK_IN, 0));
+            connections.add(new ItemConnection(direction, BLOCK_IN, 0, 0));
         }
     }
 
@@ -118,7 +118,8 @@ public class ItemNetworkNode extends PipeNetworkNode {
             NbtCompound connectionTag = new NbtCompound();
             connectionTag.putByte("connections", (byte) encodeConnectionType(connection.type));
             connectionTag.putBoolean("whitelist", connection.whitelist);
-            connectionTag.putInt("priority", connection.priority);
+            connectionTag.putInt("insertPriority", connection.insertPriority);
+            connectionTag.putInt("extractPriority", connection.extractPriority);
             for (int i = 0; i < ItemPipeInterface.SLOTS; i++) {
                 connectionTag.put(Integer.toString(i), connection.stacks[i].writeNbt(new NbtCompound()));
             }
@@ -134,8 +135,14 @@ public class ItemNetworkNode extends PipeNetworkNode {
         for (Direction direction : Direction.values()) {
             if (tag.contains(direction.toString())) {
                 NbtCompound connectionTag = tag.getCompound(direction.toString());
+                int insertPriority = connectionTag.getInt("insertPriority");
+                int extractPriority = connectionTag.getInt("extractPriority");
+                if (connectionTag.contains("priority")) {
+                    // TODO: remove in 1.19, compat for old priorities
+                    insertPriority = extractPriority = connectionTag.getInt("priority");
+                }
                 ItemConnection connection = new ItemConnection(direction, decodeConnectionType(connectionTag.getByte("connections")),
-                        connectionTag.getInt("priority"));
+                        insertPriority, extractPriority);
                 connection.whitelist = connectionTag.getBoolean("whitelist");
                 for (int i = 0; i < ItemPipeInterface.SLOTS; i++) {
                     connection.stacks[i] = ItemStack.fromNbt(connectionTag.getCompound(Integer.toString(i)));
@@ -181,16 +188,17 @@ public class ItemNetworkNode extends PipeNetworkNode {
         final Direction direction;
         private PipeEndpointType type;
         boolean whitelist = true;
-        int priority;
+        int insertPriority, extractPriority;
         private final ItemStack[] stacks = new ItemStack[ItemPipeInterface.SLOTS];
         final Set<ItemVariant> stacksCache = new HashSet<>();
         private ItemStack upgradeStack = ItemStack.EMPTY;
         BlockApiCache<Storage<ItemVariant>, Direction> cache = null;
 
-        private ItemConnection(Direction direction, PipeEndpointType type, int priority) {
+        private ItemConnection(Direction direction, PipeEndpointType type, int insertPriority, int extractPriority) {
             this.direction = direction;
             this.type = type;
-            this.priority = priority;
+            this.insertPriority = insertPriority;
+            this.extractPriority = extractPriority;
             for (int i = 0; i < ItemPipeInterface.SLOTS; i++) {
                 stacks[i] = ItemStack.EMPTY;
             }
@@ -284,13 +292,17 @@ public class ItemNetworkNode extends PipeNetworkNode {
                     }
 
                     @Override
-                    public int getPriority() {
-                        return priority;
+                    public int getPriority(int channel) {
+                        return channel == 0 ? insertPriority : extractPriority;
                     }
 
                     @Override
-                    public void setPriority(int priority) {
-                        ItemConnection.this.priority = priority;
+                    public void setPriority(int channel, int priority) {
+                        if (channel == 0) {
+                            ItemConnection.this.insertPriority = priority;
+                        } else {
+                            ItemConnection.this.extractPriority = priority;
+                        }
                         helper.callMarkDirty();
                     }
 

@@ -64,7 +64,7 @@ public interface ItemPipeInterface extends ConnectionTypeInterface, PriorityInte
     static ItemPipeInterface ofBuf(PacketByteBuf buf) {
         boolean[] whitelist = new boolean[] { buf.readBoolean() };
         int[] type = new int[] { buf.readInt() };
-        int[] priority = new int[] { buf.readInt() };
+        int[] priority = new int[] { buf.readInt(), buf.readInt() };
         List<ItemStack> stacks = new ArrayList<>(SLOTS);
         for (int i = 0; i < SLOTS; ++i)
             stacks.add(buf.readItemStack());
@@ -112,13 +112,13 @@ public interface ItemPipeInterface extends ConnectionTypeInterface, PriorityInte
             }
 
             @Override
-            public int getPriority() {
-                return priority[0];
+            public int getPriority(int channel) {
+                return priority[channel];
             }
 
             @Override
-            public void setPriority(int priority_) {
-                priority[0] = priority_;
+            public void setPriority(int channel, int priority_) {
+                priority[channel] = priority_;
             }
 
             @Override
@@ -131,7 +131,8 @@ public interface ItemPipeInterface extends ConnectionTypeInterface, PriorityInte
     default void toBuf(PacketByteBuf buf) {
         buf.writeBoolean(isWhitelist());
         buf.writeInt(getConnectionType());
-        buf.writeInt(getPriority());
+        buf.writeInt(getPriority(0));
+        buf.writeInt(getPriority(1));
         for (int i = 0; i < SLOTS; ++i)
             buf.writeItemStack(getStack(i));
         buf.writeItemStack(getUpgradeStack());

@@ -61,11 +61,12 @@ public class PipePackets {
     public static final Identifier INCREMENT_PRIORITY = new MIIdentifier("increment_priority");
     public static final ServerPlayNetworking.PlayChannelHandler ON_INCREMENT_PRIORITY = (ms, player, h, buf, sender) -> {
         int syncId = buf.readInt();
+        int channel = buf.readInt();
         int priority = buf.readInt();
         ms.execute(() -> {
             ScreenHandler handler = player.currentScreenHandler;
             if (handler.syncId == syncId) {
-                ((PipeScreenHandler) handler).getInterface(PriorityInterface.class).incrementPriority(priority);
+                ((PipeScreenHandler) handler).getInterface(PriorityInterface.class).incrementPriority(channel, priority);
             }
         });
     };

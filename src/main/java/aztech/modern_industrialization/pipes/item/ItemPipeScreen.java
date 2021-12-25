@@ -70,7 +70,8 @@ public class ItemPipeScreen extends PipeScreen<ItemPipeScreenHandler> {
             renderTooltip(matrices, lines, mouseX, mouseY);
         }));
         addConnectionTypeButton(148, 22, handler.pipeInterface);
-        addPriorityWidgets(15, 72, handler.pipeInterface, "insert");
+        addPriorityWidgets(35, 72, handler.pipeInterface, "insert", 0);
+        addPriorityWidgets(35, 86, handler.pipeInterface, "extract", 1);
     }
 
     /**

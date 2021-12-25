@@ -44,12 +44,13 @@ import net.minecraft.screen.slot.SlotActionType;
 import net.minecraft.server.network.ServerPlayerEntity;
 
 public class ItemPipeScreenHandler extends PipeScreenHandler {
-    public static final int HEIGHT = 180;
+    public static final int HEIGHT = 196;
 
     private final PlayerInventory playerInventory;
     public final ItemPipeInterface pipeInterface;
     private boolean trackedWhitelist;
-    private int trackedPriority;
+    private int trackedPriority0;
+    private int trackedPriority1;
     private int trackedType;
 
     public ItemPipeScreenHandler(int syncId, PlayerInventory playerInventory, PacketByteBuf buf) {
@@ -61,7 +62,8 @@ public class ItemPipeScreenHandler extends PipeScreenHandler {
         this.playerInventory = playerInventory;
         this.pipeInterface = pipeInterface;
         this.trackedWhitelist = pipeInterface.isWhitelist();
-        this.trackedPriority = pipeInterface.getPriority();
+        this.trackedPriority0 = pipeInterface.getPriority(0);
+        this.trackedPriority1 = pipeInterface.getPriority(1);
         this.trackedType = pipeInterface.getConnectionType();
 
         addPlayerInventorySlots(playerInventory, HEIGHT);
@@ -150,11 +152,20 @@ public class ItemPipeScreenHandler extends PipeScreenHandler {
                 buf.writeInt(trackedType);
                 ServerPlayNetworking.send(serverPlayer, PipePackets.SET_CONNECTION_TYPE, buf);
             }
-            if (trackedPriority != pipeInterface.getPriority()) {
-                trackedPriority = pipeInterface.getPriority();
+            if (trackedPriority0 != pipeInterface.getPriority(0)) {
+                trackedPriority0 = pipeInterface.getPriority(0);
                 PacketByteBuf buf = PacketByteBufs.create();
                 buf.writeInt(syncId);
-                buf.writeInt(trackedPriority);
+                buf.writeInt(0);
+                buf.writeInt(trackedPriority0);
+                ServerPlayNetworking.send(serverPlayer, PipePackets.SET_PRIORITY, buf);
+            }
+            if (trackedPriority1 != pipeInterface.getPriority(1)) {
+                trackedPriority1 = pipeInterface.getPriority(1);
+                PacketByteBuf buf = PacketByteBufs.create();
+                buf.writeInt(syncId);
+                buf.writeInt(1);
+                buf.writeInt(trackedPriority1);
                 ServerPlayNetworking.send(serverPlayer, PipePackets.SET_PRIORITY, buf);
             }
         }

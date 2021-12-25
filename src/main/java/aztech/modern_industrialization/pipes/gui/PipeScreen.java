@@ -71,27 +71,29 @@ public abstract class PipeScreen<SH extends ScreenHandler> extends MIHandledScre
         super.drawMouseoverTooltip(matrices, mouseX, mouseY);
     }
 
-    protected void addPriorityWidgets(int startX, int startY, PriorityInterface priority, String tooltipType) {
+    protected void addPriorityWidgets(int startX, int startY, PriorityInterface priority, String tooltipType, int channel) {
         ButtonWidget.TooltipSupplier tooltip = (button, matrices, mouseX, mouseY) -> {
             List<Text> lines = new ArrayList<>();
-            lines.add(new TranslatableText("text.modern_industrialization.priority_" + tooltipType, priority.getPriority()));
+            lines.add(new TranslatableText("text.modern_industrialization.priority_" + tooltipType, priority.getPriority(channel)));
             lines.add(new TranslatableText("text.modern_industrialization.priority_" + tooltipType + "_help").setStyle(TextHelper.GRAY_TEXT));
             renderTooltip(matrices, lines, mouseX, mouseY);
         };
-        addPriorityButton(startX, startY, 20, 12, "--", -10, priority, tooltip);
-        addPriorityButton(startX + 22, startY, 12, 0, "-", -1, priority, tooltip);
-        addPriorityButton(startX + 62, startY, 12, 0, "+", +1, priority, tooltip);
-        addPriorityButton(startX + 76, startY, 20, 12, "++", +10, priority, tooltip);
-        addDrawableChild(new PriorityDisplay(startX + 34 + this.x, startY + this.y, 28, 12, new LiteralText(""), tooltip, priority::getPriority,
-                textRenderer));
+        addPriorityButton(startX, startY, 20, 12, "--", -10, priority, channel, tooltip);
+        addPriorityButton(startX + 22, startY, 12, 0, "-", -1, priority, channel, tooltip);
+        addPriorityButton(startX + 62, startY, 12, 0, "+", +1, priority, channel, tooltip);
+        addPriorityButton(startX + 76, startY, 20, 12, "++", +10, priority, channel, tooltip);
+        addDrawableChild(
+                new PriorityDisplay(startX + 34 + this.x, startY + this.y, 28, 12, new LiteralText(""), tooltip, () -> priority.getPriority(channel),
+                        textRenderer));
     }
 
     private void addPriorityButton(int x, int y, int width, int u, String text, int delta, PriorityInterface priority,
-            ButtonWidget.TooltipSupplier priorityTooltip) {
+            int channel, ButtonWidget.TooltipSupplier priorityTooltip) {
         addDrawableChild(new PriorityButton(x + this.x, y + this.y, width, u, text, button -> {
-            priority.incrementPriority(delta);
+            priority.incrementPriority(channel, delta);
             PacketByteBuf buf = PacketByteBufs.create();
             buf.writeInt(handler.syncId);
+            buf.writeInt(channel);
             buf.writeInt(delta);
             ClientPlayNetworking.send(PipePackets.INCREMENT_PRIORITY, buf);
         }, priorityTooltip));

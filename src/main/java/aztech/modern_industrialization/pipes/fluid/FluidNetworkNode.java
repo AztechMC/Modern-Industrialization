@@ -265,12 +265,12 @@ public class FluidNetworkNode extends PipeNetworkNode {
                     }
 
                     @Override
-                    public int getPriority() {
+                    public int getPriority(int channel) {
                         return priority;
                     }
 
                     @Override
-                    public void setPriority(int priority) {
+                    public void setPriority(int channel, int priority) {
                         FluidConnection.this.priority = priority;
                         helper.callMarkDirty();
                     }

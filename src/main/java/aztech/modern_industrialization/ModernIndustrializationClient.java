@@ -69,16 +69,16 @@ import net.fabricmc.fabric.api.client.rendering.v1.TooltipComponentCallback;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.fabricmc.fabric.api.client.screenhandler.v1.ScreenRegistry;
 import net.fabricmc.fabric.impl.content.registry.FuelRegistryImpl;
-import net.minecraft.block.Block;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.Item;
-import net.minecraft.item.Items;
-import net.minecraft.screen.ScreenHandlerType;
-import net.minecraft.tag.ItemTags;
-import net.minecraft.text.LiteralText;
-import net.minecraft.text.TranslatableText;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.Minecraft;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.ItemTags;
+import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.block.Block;
 
 public class ModernIndustrializationClient implements ClientModInitializer {
     @Override
@@ -94,7 +94,7 @@ public class ModernIndustrializationClient implements ClientModInitializer {
         WorldRenderEvents.BLOCK_OUTLINE.register(MachineOverlay::onBlockOutline);
         (new MIPipesClient()).setupClient();
         ClientKeyHandler.setup();
-        WorldRenderEvents.START.register(renderer -> JetpackParticleAdder.addJetpackParticles(MinecraftClient.getInstance()));
+        WorldRenderEvents.START.register(renderer -> JetpackParticleAdder.addJetpackParticles(Minecraft.getInstance()));
         ClientTickEvents.END_CLIENT_TICK.register(ClientKeyHandler::onEndTick);
         HudRenderCallback.EVENT.register(HudRenderer::onRenderHud);
         setupTooltips();
@@ -108,7 +108,7 @@ public class ModernIndustrializationClient implements ClientModInitializer {
     @SuppressWarnings({ "unchecked", "RedundantCast", "rawtypes" })
     private void setupScreens() {
         ScreenRegistry.register(
-                (ScreenHandlerType<? extends MachineScreenHandlers.Client>) (ScreenHandlerType) ModernIndustrialization.SCREEN_HANDLER_MACHINE,
+                (MenuType<? extends MachineScreenHandlers.Client>) (MenuType) ModernIndustrialization.SCREEN_HANDLER_MACHINE,
                 MachineScreenHandlers.ClientScreen::new);
         ScreenRegistry.register(ModernIndustrialization.SCREEN_HANDLER_FORGE_HAMMER, ForgeHammerScreen::new);
     }
@@ -125,7 +125,7 @@ public class ModernIndustrializationClient implements ClientModInitializer {
         ItemTooltipCallback.EVENT.register(((stack, context, lines) -> {
             SpeedUpgrade upgrade = SpeedUpgrade.LOOKUP.find(stack, null);
             if (upgrade != null) {
-                lines.add(new TranslatableText("text.modern_industrialization.tooltip_speed_upgrade", upgrade.value())
+                lines.add(new TranslatableComponent("text.modern_industrialization.tooltip_speed_upgrade", upgrade.value())
                         .setStyle(TextHelper.UPGRADE_TEXT));
             }
 
@@ -137,25 +137,25 @@ public class ModernIndustrializationClient implements ClientModInitializer {
                     if (MIPipes.electricityPipeTier.containsKey(pipe)) {
                         CableTier tier = MIPipes.electricityPipeTier.get(pipe);
                         lines.add(
-                                new TranslatableText("text.modern_industrialization.eu_cable", new TranslatableText(tier.translationKey),
+                                new TranslatableComponent("text.modern_industrialization.eu_cable", new TranslatableComponent(tier.translationKey),
                                         TextHelper.getEuTextTick(tier.getMaxTransfer(), true)));
                     }
                 }
                 if (item == Items.GUNPOWDER) {
-                    lines.add(new TranslatableText("text.modern_industrialization.gunpowder_upgrade").setStyle(TextHelper.GRAY_TEXT));
+                    lines.add(new TranslatableComponent("text.modern_industrialization.gunpowder_upgrade").setStyle(TextHelper.GRAY_TEXT));
                 }
                 if (item == MIFluids.LUBRICANT.bucketItem) {
-                    lines.add(new TranslatableText("text.modern_industrialization.lubricant_tooltip", LubricantHelper.mbPerTick)
+                    lines.add(new TranslatableComponent("text.modern_industrialization.lubricant_tooltip", LubricantHelper.mbPerTick)
                             .setStyle(TextHelper.GRAY_TEXT));
                 }
                 if (UpgradeComponent.upgrades.containsKey(item)) {
-                    lines.add(new TranslatableText("text.modern_industrialization.machine_upgrade", UpgradeComponent.upgrades.get(item))
+                    lines.add(new TranslatableComponent("text.modern_industrialization.machine_upgrade", UpgradeComponent.upgrades.get(item))
                             .setStyle(TextHelper.UPGRADE_TEXT));
                 }
                 if (item instanceof BlockItem) {
                     Block block = ((BlockItem) item).getBlock();
                     if (ElectricBlastFurnaceBlockEntity.coilsMaxBaseEU.containsKey(block)) {
-                        lines.add(new TranslatableText("text.modern_industrialization.ebf_max_eu",
+                        lines.add(new TranslatableComponent("text.modern_industrialization.ebf_max_eu",
                                 ElectricBlastFurnaceBlockEntity.coilsMaxBaseEU.get(block)).setStyle(TextHelper.UPGRADE_TEXT));
                     } else if (block instanceof OreBlock oreBlock) {
                         if (oreBlock.params.generate) {
@@ -179,7 +179,7 @@ public class ModernIndustrializationClient implements ClientModInitializer {
 
                 // Apparently tooltips are accessed from the main menu, or something, hence the
                 // != null check
-                if (MinecraftClient.getInstance().world != null && !MIConfig.getConfig().disableFuelTooltips) {
+                if (Minecraft.getInstance().level != null && !MIConfig.getConfig().disableFuelTooltips) {
                     try {
                         Integer fuelTime = FuelRegistryImpl.INSTANCE.get(item);
                         if (fuelTime != null && fuelTime > 0) {
@@ -193,10 +193,10 @@ public class ModernIndustrializationClient implements ClientModInitializer {
                 }
 
                 if (context.isAdvanced() && !MIConfig.getConfig().disableItemTagTooltips) {
-                    List<Identifier> ids = (List<Identifier>) ItemTags.getTagGroup().getTagsFor(item);
+                    List<ResourceLocation> ids = (List<ResourceLocation>) ItemTags.getAllTags().getMatchingTags(item);
                     Collections.sort(ids);
-                    for (Identifier id : ids) {
-                        lines.add(new LiteralText("#" + id).setStyle(TextHelper.GRAY_TEXT));
+                    for (ResourceLocation id : ids) {
+                        lines.add(new TextComponent("#" + id).setStyle(TextHelper.GRAY_TEXT));
                     }
                 }
             }

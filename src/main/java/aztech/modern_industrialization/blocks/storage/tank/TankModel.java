@@ -41,34 +41,38 @@ import net.fabricmc.fabric.api.renderer.v1.model.FabricBakedModel;
 import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
 import net.fabricmc.fabric.api.transfer.v1.client.fluid.FluidVariantRendering;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
-import net.minecraft.block.BlockState;
-import net.minecraft.client.render.model.*;
-import net.minecraft.client.render.model.json.JsonUnbakedModel;
-import net.minecraft.client.render.model.json.ModelOverrideList;
-import net.minecraft.client.render.model.json.ModelTransformation;
-import net.minecraft.client.texture.Sprite;
-import net.minecraft.client.texture.SpriteAtlasTexture;
-import net.minecraft.client.util.SpriteIdentifier;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.world.BlockRenderView;
+import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.renderer.block.model.BlockModel;
+import net.minecraft.client.renderer.block.model.ItemOverrides;
+import net.minecraft.client.renderer.block.model.ItemTransforms;
+import net.minecraft.client.renderer.texture.TextureAtlas;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.client.resources.model.Material;
+import net.minecraft.client.resources.model.ModelBakery;
+import net.minecraft.client.resources.model.ModelState;
+import net.minecraft.client.resources.model.UnbakedModel;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.BlockAndTintGetter;
+import net.minecraft.world.level.block.state.BlockState;
 
 public class TankModel implements UnbakedModel, FabricBakedModel, BakedModel {
-    private static final Identifier BASE_BLOCK_MODEL = new Identifier("minecraft:block/block");
-    ModelTransformation transformation;
-    private final SpriteIdentifier tankSpriteId;
-    private Sprite tankSprite;
+    private static final ResourceLocation BASE_BLOCK_MODEL = new ResourceLocation("minecraft:block/block");
+    ItemTransforms transformation;
+    private final Material tankSpriteId;
+    private TextureAtlasSprite tankSprite;
     private RenderMaterial translucentMaterial;
     private Mesh tankMesh;
 
     public TankModel(String tankType) {
-        tankSpriteId = new SpriteIdentifier(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE, new MIIdentifier("blocks/tanks/" + tankType));
+        tankSpriteId = new Material(TextureAtlas.LOCATION_BLOCKS, new MIIdentifier("blocks/tanks/" + tankType));
     }
 
-    public TankModel(ModelTransformation transformation, SpriteIdentifier tankSpriteId, Sprite tankSprite, RenderMaterial translucentMaterial,
+    public TankModel(ItemTransforms transformation, Material tankSpriteId, TextureAtlasSprite tankSprite, RenderMaterial translucentMaterial,
             Mesh tankMesh) {
         this.transformation = transformation;
         this.tankSpriteId = tankSpriteId;
@@ -83,7 +87,7 @@ public class TankModel implements UnbakedModel, FabricBakedModel, BakedModel {
     }
 
     @Override
-    public void emitBlockQuads(BlockRenderView blockView, BlockState state, BlockPos pos, Supplier<Random> randomSupplier, RenderContext context) {
+    public void emitBlockQuads(BlockAndTintGetter blockView, BlockState state, BlockPos pos, Supplier<Random> randomSupplier, RenderContext context) {
         // Base mesh
         context.meshConsumer().accept(tankMesh);
     }
@@ -106,7 +110,7 @@ public class TankModel implements UnbakedModel, FabricBakedModel, BakedModel {
     }
 
     private void drawFluid(QuadEmitter emitter, float fillFraction, FluidVariant fluid) {
-        Sprite stillSprite = FluidVariantRendering.getSprite(fluid);
+        TextureAtlasSprite stillSprite = FluidVariantRendering.getSprite(fluid);
         int color = FluidVariantRendering.getColor(fluid) | 255 << 24;
         for (Direction direction : Direction.values()) {
             float topSpace, depth, bottomSpace;
@@ -138,50 +142,50 @@ public class TankModel implements UnbakedModel, FabricBakedModel, BakedModel {
     }
 
     @Override
-    public boolean hasDepth() {
+    public boolean isGui3d() {
         return false;
     }
 
     @Override
-    public boolean isSideLit() {
+    public boolean usesBlockLight() {
         return true;
     }
 
     @Override
-    public boolean isBuiltin() {
+    public boolean isCustomRenderer() {
         return false;
     }
 
     @Override
-    public Sprite getParticleSprite() {
+    public TextureAtlasSprite getParticleIcon() {
         return tankSprite;
     }
 
     @Override
-    public ModelTransformation getTransformation() {
+    public ItemTransforms getTransforms() {
         return transformation;
     }
 
     @Override
-    public ModelOverrideList getOverrides() {
-        return ModelOverrideList.EMPTY;
+    public ItemOverrides getOverrides() {
+        return ItemOverrides.EMPTY;
     }
 
     @Override
-    public Collection<Identifier> getModelDependencies() {
+    public Collection<ResourceLocation> getDependencies() {
         return Arrays.asList(BASE_BLOCK_MODEL);
     }
 
     @Override
-    public Collection<SpriteIdentifier> getTextureDependencies(Function<Identifier, UnbakedModel> unbakedModelGetter,
+    public Collection<Material> getMaterials(Function<ResourceLocation, UnbakedModel> unbakedModelGetter,
             Set<Pair<String, String>> unresolvedTextureReferences) {
         return Arrays.asList(tankSpriteId);
     }
 
     @Override
-    public BakedModel bake(ModelLoader loader, Function<SpriteIdentifier, Sprite> textureGetter, ModelBakeSettings rotationContainer,
-            Identifier modelId) {
-        transformation = ((JsonUnbakedModel) loader.getOrLoadModel(BASE_BLOCK_MODEL)).getTransformations();
+    public BakedModel bake(ModelBakery loader, Function<Material, TextureAtlasSprite> textureGetter, ModelState rotationContainer,
+            ResourceLocation modelId) {
+        transformation = ((BlockModel) loader.getModel(BASE_BLOCK_MODEL)).getTransforms();
         tankSprite = textureGetter.apply(tankSpriteId);
 
         Renderer renderer = RendererAccess.INSTANCE.getRenderer();

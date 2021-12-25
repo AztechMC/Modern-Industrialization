@@ -30,6 +30,7 @@ import aztech.modern_industrialization.machines.components.sync.EnergyBar;
 import aztech.modern_industrialization.machines.components.sync.ProgressBar;
 import aztech.modern_industrialization.util.TextHelper;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -46,18 +47,17 @@ import me.shedaniel.rei.api.client.registry.display.DisplayCategory;
 import me.shedaniel.rei.api.common.category.CategoryIdentifier;
 import me.shedaniel.rei.api.common.entry.EntryIngredient;
 import me.shedaniel.rei.api.common.util.EntryStacks;
-import net.minecraft.client.gui.Element;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
+import net.minecraft.client.gui.components.events.GuiEventListener;
+import net.minecraft.core.Registry;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.resources.ResourceLocation;
 
 public class MachineRecipeCategory implements DisplayCategory<MachineRecipeDisplay> {
-    private final Identifier id;
+    private final ResourceLocation id;
     private final MachineCategoryParams params;
 
-    public MachineRecipeCategory(Identifier id, MachineCategoryParams params) {
+    public MachineRecipeCategory(ResourceLocation id, MachineCategoryParams params) {
         this.id = id;
         this.params = params;
     }
@@ -68,8 +68,8 @@ public class MachineRecipeCategory implements DisplayCategory<MachineRecipeDispl
     }
 
     @Override
-    public Text getTitle() {
-        return new TranslatableText("rei_categories.modern_industrialization." + id.getPath());
+    public Component getTitle() {
+        return new TranslatableComponent("rei_categories.modern_industrialization." + id.getPath());
     }
 
     @Override
@@ -131,16 +131,16 @@ public class MachineRecipeCategory implements DisplayCategory<MachineRecipeDispl
                     (float) (System.currentTimeMillis() / recipeMillis % 1.0));
         }));
 
-        Text totalEuTooltip = new TranslatableText("text.modern_industrialization.base_eu_total",
+        Component totalEuTooltip = new TranslatableComponent("text.modern_industrialization.base_eu_total",
                 TextHelper.getEuText(recipeDisplay.getTicks() * recipeDisplay.getEu()));
 
         // Draw filled energy bar
         widgets.add(Widgets.createDrawableWidget((helper, matrices, mouseX, mouseY, delta) -> {
-            matrices.push();
+            matrices.pushPose();
             matrices.translate(bounds.x + 5, bounds.y + 5, 0);
             matrices.scale(0.5f, 0.5f, 0.5f);
             EnergyBar.Client.Renderer.renderEnergy(helper, matrices, 0, 0, 1);
-            matrices.pop();
+            matrices.popPose();
         }));
         // Draw EU/t and seconds
         widgets.add(Widgets
@@ -149,20 +149,20 @@ public class MachineRecipeCategory implements DisplayCategory<MachineRecipeDispl
                 .leftAligned().noShadow().color(0xFF404040, 0xFFBBBBBB));
         widgets.add(Widgets
                 .createLabel(new Point(bounds.getMaxX() - 5, bounds.y + 5),
-                        new TranslatableText("text.modern_industrialization.base_duration_seconds", recipeDisplay.getSeconds()))
+                        new TranslatableComponent("text.modern_industrialization.base_duration_seconds", recipeDisplay.getSeconds()))
                 .rightAligned().noShadow().color(0xFF404040, 0xFFBBBBBB));
         // Total EU tooltip
         Rectangle tooltipZone = new Rectangle(bounds.x + 2, bounds.y + 5, bounds.width - 10, 12);
         widgets.add(new Widget() {
             @Override
-            public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
+            public void render(PoseStack matrices, int mouseX, int mouseY, float delta) {
                 if (tooltipZone.contains(mouseX, mouseY)) {
                     Tooltip.create(totalEuTooltip).queue();
                 }
             }
 
             @Override
-            public List<? extends Element> children() {
+            public List<? extends GuiEventListener> children() {
                 return Collections.emptyList();
             }
         });
@@ -200,7 +200,7 @@ public class MachineRecipeCategory implements DisplayCategory<MachineRecipeDispl
     private static Widget createFluidSlotBackground(Point point) {
         return Widgets.createDrawableWidget((helper, matrices, mouseX, mouseY, delta) -> {
             RenderSystem.setShaderTexture(0, MachineScreenHandlers.SLOT_ATLAS);
-            helper.drawTexture(matrices, point.x - 1, point.y - 1, 18, 0, 18, 18);
+            helper.blit(matrices, point.x - 1, point.y - 1, 18, 0, 18, 18);
         });
     }
 }

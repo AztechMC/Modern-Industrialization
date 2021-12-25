@@ -25,27 +25,27 @@ package aztech.modern_industrialization.machines.recipe;
 
 import aztech.modern_industrialization.MIFluids;
 import java.util.Collections;
-import net.minecraft.recipe.Ingredient;
-import net.minecraft.recipe.SmeltingRecipe;
-import net.minecraft.recipe.StonecuttingRecipe;
-import net.minecraft.util.Identifier;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.SmeltingRecipe;
+import net.minecraft.world.item.crafting.StonecutterRecipe;
 
 public class RecipeConversions {
     public static MachineRecipe of(SmeltingRecipe smeltingRecipe, MachineRecipeType type) {
         Ingredient ingredient = smeltingRecipe.getIngredients().get(0);
-        Identifier id = new Identifier(smeltingRecipe.getId().getNamespace(), smeltingRecipe.getId().getPath() + "_exported_mi_furnace");
+        ResourceLocation id = new ResourceLocation(smeltingRecipe.getId().getNamespace(), smeltingRecipe.getId().getPath() + "_exported_mi_furnace");
         MachineRecipe recipe = new MachineRecipe(id, type);
         recipe.eu = 2;
-        recipe.duration = smeltingRecipe.getCookTime();
+        recipe.duration = smeltingRecipe.getCookingTime();
         recipe.itemInputs = Collections.singletonList(new MachineRecipe.ItemInput(ingredient, 1, 1));
         recipe.fluidInputs = Collections.emptyList();
-        recipe.itemOutputs = Collections.singletonList(new MachineRecipe.ItemOutput(smeltingRecipe.getOutput().getItem(), 1, 1));
+        recipe.itemOutputs = Collections.singletonList(new MachineRecipe.ItemOutput(smeltingRecipe.getResultItem().getItem(), 1, 1));
         recipe.fluidOutputs = Collections.emptyList();
         return recipe;
     }
 
-    public static MachineRecipe of(StonecuttingRecipe stonecuttingRecipe, MachineRecipeType type) {
-        Identifier id = new Identifier(stonecuttingRecipe.getId().getNamespace(),
+    public static MachineRecipe of(StonecutterRecipe stonecuttingRecipe, MachineRecipeType type) {
+        ResourceLocation id = new ResourceLocation(stonecuttingRecipe.getId().getNamespace(),
                 stonecuttingRecipe.getId().getPath() + "_exported_mi_cutting_machine");
         MachineRecipe recipe = new MachineRecipe(id, type);
         recipe.eu = 2;
@@ -53,7 +53,8 @@ public class RecipeConversions {
         recipe.itemInputs = Collections.singletonList(new MachineRecipe.ItemInput(stonecuttingRecipe.getIngredients().get(0), 1, 1));
         recipe.fluidInputs = Collections.singletonList(new MachineRecipe.FluidInput(MIFluids.LUBRICANT, 81, 1));
         recipe.itemOutputs = Collections
-                .singletonList(new MachineRecipe.ItemOutput(stonecuttingRecipe.getOutput().getItem(), stonecuttingRecipe.getOutput().getCount(), 1));
+                .singletonList(
+                        new MachineRecipe.ItemOutput(stonecuttingRecipe.getResultItem().getItem(), stonecuttingRecipe.getResultItem().getCount(), 1));
         recipe.fluidOutputs = Collections.emptyList();
         return recipe;
     }

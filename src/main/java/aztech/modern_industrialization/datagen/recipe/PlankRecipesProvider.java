@@ -28,7 +28,7 @@ import aztech.modern_industrialization.machines.init.MIMachineRecipeTypes;
 import aztech.modern_industrialization.recipe.json.MIRecipeJson;
 import java.util.function.Consumer;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
-import net.minecraft.data.server.recipe.RecipeJsonProvider;
+import net.minecraft.data.recipes.FinishedRecipe;
 
 public final class PlankRecipesProvider extends MIRecipesProvider {
 
@@ -37,7 +37,7 @@ public final class PlankRecipesProvider extends MIRecipesProvider {
     }
 
     @Override
-    protected void generateRecipes(Consumer<RecipeJsonProvider> consumer) {
+    protected void generateRecipes(Consumer<FinishedRecipe> consumer) {
         genPlanks(consumer, "oak", "logs");
         genPlanks(consumer, "spruce", "logs");
         genPlanks(consumer, "birch", "logs");
@@ -48,7 +48,7 @@ public final class PlankRecipesProvider extends MIRecipesProvider {
         genPlanks(consumer, "warped", "stems");
     }
 
-    private static void genPlanks(Consumer<RecipeJsonProvider> consumer, String prefix, String suffix) {
+    private static void genPlanks(Consumer<FinishedRecipe> consumer, String prefix, String suffix) {
         MIRecipeJson json = MIRecipeJson.create(MIMachineRecipeTypes.CUTTING_MACHINE, 2, 100).addFluidInput(MIFluids.LUBRICANT, 1)
                 .addItemInput("#minecraft:" + prefix + "_" + suffix, 1).addItemOutput("minecraft:" + prefix + "_planks", 4);
 

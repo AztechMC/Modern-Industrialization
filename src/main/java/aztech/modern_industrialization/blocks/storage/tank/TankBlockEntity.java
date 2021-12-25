@@ -30,12 +30,12 @@ import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageUtil;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
 
 public class TankBlockEntity extends AbstractStorageBlockEntity<FluidVariant> {
 
@@ -47,7 +47,7 @@ public class TankBlockEntity extends AbstractStorageBlockEntity<FluidVariant> {
     }
 
     @Override
-    public void readNbt(NbtCompound tag) {
+    public void load(CompoundTag tag) {
         resource = NbtHelper.getFluidCompatible(tag, "fluid");
         amount = tag.getLong("amt");
         if (resource.isBlank()) {
@@ -56,13 +56,13 @@ public class TankBlockEntity extends AbstractStorageBlockEntity<FluidVariant> {
     }
 
     @Override
-    public void writeNbt(NbtCompound tag) {
+    public void saveAdditional(CompoundTag tag) {
         NbtHelper.putFluid(tag, "fluid", getResource());
         tag.putLong("amt", amount);
     }
 
-    public boolean onPlayerUse(PlayerEntity player) {
-        Storage<FluidVariant> handIo = ContainerItemContext.ofPlayerHand(player, Hand.MAIN_HAND).find(FluidStorage.ITEM);
+    public boolean onPlayerUse(Player player) {
+        Storage<FluidVariant> handIo = ContainerItemContext.ofPlayerHand(player, InteractionHand.MAIN_HAND).find(FluidStorage.ITEM);
         if (handIo != null) {
             // move from hand into this tank
             if (StorageUtil.move(handIo, this, f -> true, Long.MAX_VALUE, null) > 0)

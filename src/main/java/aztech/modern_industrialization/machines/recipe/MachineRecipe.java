@@ -27,20 +27,20 @@ import aztech.modern_industrialization.util.DefaultedListWrapper;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
-import net.minecraft.fluid.Fluid;
-import net.minecraft.inventory.Inventory;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.recipe.Ingredient;
-import net.minecraft.recipe.Recipe;
-import net.minecraft.recipe.RecipeSerializer;
-import net.minecraft.recipe.RecipeType;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.collection.DefaultedList;
-import net.minecraft.world.World;
+import net.minecraft.core.NonNullList;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.Container;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.material.Fluid;
 
-public class MachineRecipe implements Recipe<Inventory> {
-    final Identifier id;
+public class MachineRecipe implements Recipe<Container> {
+    final ResourceLocation id;
     final MachineRecipeType type;
 
     public int eu;
@@ -50,7 +50,7 @@ public class MachineRecipe implements Recipe<Inventory> {
     public List<ItemOutput> itemOutputs;
     public List<FluidOutput> fluidOutputs;
 
-    MachineRecipe(Identifier id, MachineRecipeType type) {
+    MachineRecipe(ResourceLocation id, MachineRecipeType type) {
         this.id = id;
         this.type = type;
     }
@@ -60,33 +60,33 @@ public class MachineRecipe implements Recipe<Inventory> {
     }
 
     @Override
-    public boolean isIgnoredInRecipeBook() {
+    public boolean isSpecial() {
         return true;
     }
 
     @Override
-    public boolean matches(Inventory inv, World world) {
+    public boolean matches(Container inv, Level world) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public ItemStack craft(Inventory inv) {
+    public ItemStack assemble(Container inv) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public boolean fits(int width, int height) {
+    public boolean canCraftInDimensions(int width, int height) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public DefaultedList<Ingredient> getIngredients() {
+    public NonNullList<Ingredient> getIngredients() {
         // This function is implemented for AE2 pattern shift-clicking compat.
         // This is the reason the counts of the ItemStacks in the ingredient are
         // modified.
         // (They should never be used somewhere else anyway)
         return new DefaultedListWrapper<>(itemInputs.stream().filter(i -> i.probability == 1).map(i -> {
-            for (ItemStack stack : i.ingredient.getMatchingStacks()) {
+            for (ItemStack stack : i.ingredient.getItems()) {
                 stack.setCount(i.amount);
             }
             return i.ingredient;
@@ -94,7 +94,7 @@ public class MachineRecipe implements Recipe<Inventory> {
     }
 
     @Override
-    public ItemStack getOutput() {
+    public ItemStack getResultItem() {
         for (ItemOutput o : itemOutputs) {
             if (o.probability == 1) {
                 return new ItemStack(o.item, o.amount);
@@ -104,7 +104,7 @@ public class MachineRecipe implements Recipe<Inventory> {
     }
 
     @Override
-    public Identifier getId() {
+    public ResourceLocation getId() {
         return id;
     }
 
@@ -134,11 +134,11 @@ public class MachineRecipe implements Recipe<Inventory> {
         }
 
         public List<Item> getInputItems() {
-            return Arrays.stream(ingredient.getMatchingStacks()).map(ItemStack::getItem).distinct().collect(Collectors.toList());
+            return Arrays.stream(ingredient.getItems()).map(ItemStack::getItem).distinct().collect(Collectors.toList());
         }
 
         public List<ItemStack> getInputStacks() {
-            return Arrays.asList(ingredient.getMatchingStacks());
+            return Arrays.asList(ingredient.getItems());
         }
     }
 

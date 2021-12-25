@@ -34,10 +34,10 @@ import me.shedaniel.rei.api.common.entry.EntryIngredient;
 import me.shedaniel.rei.api.common.entry.EntryStack;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.util.registry.Registry;
+import net.minecraft.core.Registry;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 public class SlotLockingHandler implements TransferHandler {
@@ -55,9 +55,9 @@ public class SlotLockingHandler implements TransferHandler {
         if (slotLocking == null || !slotLocking.isLockingAllowed())
             return Result.createNotApplicable();
         if (context.isActuallyCrafting()) {
-            PacketByteBuf buf = PacketByteBufs.create();
-            buf.writeInt(handler.syncId);
-            buf.writeIdentifier(display.recipe.getId());
+            FriendlyByteBuf buf = PacketByteBufs.create();
+            buf.writeInt(handler.containerId);
+            buf.writeResourceLocation(display.recipe.getId());
             ClientPlayNetworking.send(MachinePackets.C2S.REI_LOCK_SLOTS, buf);
         }
         return Result.createSuccessful().blocksFurtherHandling();
@@ -70,7 +70,7 @@ public class SlotLockingHandler implements TransferHandler {
         for (EntryIngredient workstationEntries : workstations) {
             for (EntryStack<?> entry : workstationEntries) {
                 Item item = entry.<ItemStack>cast().getValue().getItem();
-                if (Registry.ITEM.getId(item).equals(new MIIdentifier(blockId))) {
+                if (Registry.ITEM.getKey(item).equals(new MIIdentifier(blockId))) {
                     return true;
                 }
             }

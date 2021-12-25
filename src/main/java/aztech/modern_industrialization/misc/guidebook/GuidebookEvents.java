@@ -27,7 +27,7 @@ import aztech.modern_industrialization.MIConfig;
 import aztech.modern_industrialization.MIItem;
 import me.shedaniel.cloth.api.common.events.v1.PlayerJoinCallback;
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.ItemStack;
 
 public class GuidebookEvents {
     public static void init() {
@@ -35,7 +35,7 @@ public class GuidebookEvents {
             if (MIConfig.getConfig().spawnWithGuideBook) {
                 GuidebookPersistentState state = GuidebookPersistentState.get(player.server);
                 if (!state.hasPlayerReceivedGuidebook(player)) {
-                    if (player.getInventory().insertStack(new ItemStack(MIItem.ITEM_GUIDE_BOOK))) {
+                    if (player.getInventory().add(new ItemStack(MIItem.ITEM_GUIDE_BOOK))) {
                         state.addPlayerReceivedGuidebook(player);
                     }
                 }
@@ -44,7 +44,7 @@ public class GuidebookEvents {
 
         ServerPlayerEvents.AFTER_RESPAWN.register((oldPlayer, newPlayer, alive) -> {
             if (MIConfig.getConfig().respawnWithGuideBook) {
-                newPlayer.getInventory().insertStack(new ItemStack(MIItem.ITEM_GUIDE_BOOK));
+                newPlayer.getInventory().add(new ItemStack(MIItem.ITEM_GUIDE_BOOK));
             }
         });
     }

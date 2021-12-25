@@ -29,17 +29,17 @@ import aztech.modern_industrialization.machines.SyncedComponents;
 import aztech.modern_industrialization.machines.components.OrientationComponent;
 import aztech.modern_industrialization.machines.gui.ClientComponentRenderer;
 import aztech.modern_industrialization.util.TextHelper;
+import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.ArrayList;
 import java.util.List;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
-import net.minecraft.client.gui.DrawableHelper;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.text.LiteralText;
-import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.gui.GuiComponent;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.resources.ResourceLocation;
 
 /**
  * Supports both auto-extract and auto-insert. Auto-insert is just a GUI change,
@@ -70,7 +70,7 @@ public class AutoExtract {
         }
 
         @Override
-        public void writeInitialData(PacketByteBuf buf) {
+        public void writeInitialData(FriendlyByteBuf buf) {
             buf.writeBoolean(displayAsInsert);
             buf.writeBoolean(orientation.params.hasExtractItems);
             buf.writeBoolean(orientation.params.hasExtractFluids);
@@ -78,13 +78,13 @@ public class AutoExtract {
         }
 
         @Override
-        public void writeCurrentData(PacketByteBuf buf) {
+        public void writeCurrentData(FriendlyByteBuf buf) {
             buf.writeBoolean(orientation.extractItems);
             buf.writeBoolean(orientation.extractFluids);
         }
 
         @Override
-        public Identifier getId() {
+        public ResourceLocation getId() {
             return SyncedComponents.AUTO_EXTRACT;
         }
 
@@ -98,7 +98,7 @@ public class AutoExtract {
         final boolean hasExtractItems, hasExtractFluids;
         boolean[] extractStatus = new boolean[2];
 
-        public Client(PacketByteBuf buf) {
+        public Client(FriendlyByteBuf buf) {
             displayAsInsert = buf.readBoolean();
             hasExtractItems = buf.readBoolean();
             hasExtractFluids = buf.readBoolean();
@@ -106,7 +106,7 @@ public class AutoExtract {
         }
 
         @Override
-        public void read(PacketByteBuf buf) {
+        public void read(FriendlyByteBuf buf) {
             extractStatus[0] = buf.readBoolean();
             extractStatus[1] = buf.readBoolean();
         }
@@ -132,29 +132,29 @@ public class AutoExtract {
                 String type = isItem ? "item" : "fluid";
                 int index = isItem ? 0 : 1;
                 String insertOrExtract = displayAsInsert ? "insert" : "extract";
-                container.addButton(u, new LiteralText(type + " auto-extract"), syncId -> {
+                container.addButton(u, new TextComponent(type + " auto-extract"), syncId -> {
                     boolean newExtract = !extractStatus[index];
                     extractStatus[index] = newExtract;
-                    PacketByteBuf buf = PacketByteBufs.create();
+                    FriendlyByteBuf buf = PacketByteBufs.create();
                     buf.writeInt(syncId);
                     buf.writeBoolean(isItem);
                     buf.writeBoolean(newExtract);
                     ClientPlayNetworking.send(MachinePackets.C2S.SET_AUTO_EXTRACT, buf);
                 }, () -> {
-                    List<Text> lines = new ArrayList<>();
+                    List<Component> lines = new ArrayList<>();
                     if (extractStatus[index]) {
-                        lines.add(new TranslatableText("text.modern_industrialization." + type + "_auto_" + insertOrExtract + "_on"));
-                        lines.add(new TranslatableText("text.modern_industrialization.click_to_disable").setStyle(TextHelper.GRAY_TEXT));
+                        lines.add(new TranslatableComponent("text.modern_industrialization." + type + "_auto_" + insertOrExtract + "_on"));
+                        lines.add(new TranslatableComponent("text.modern_industrialization.click_to_disable").setStyle(TextHelper.GRAY_TEXT));
                     } else {
-                        lines.add(new TranslatableText("text.modern_industrialization." + type + "_auto_" + insertOrExtract + "_off"));
-                        lines.add(new TranslatableText("text.modern_industrialization.click_to_enable").setStyle(TextHelper.GRAY_TEXT));
+                        lines.add(new TranslatableComponent("text.modern_industrialization." + type + "_auto_" + insertOrExtract + "_off"));
+                        lines.add(new TranslatableComponent("text.modern_industrialization.click_to_enable").setStyle(TextHelper.GRAY_TEXT));
                     }
                     return lines;
                 }, () -> extractStatus[index]);
             }
 
             @Override
-            public void renderBackground(DrawableHelper helper, MatrixStack matrices, int x, int y) {
+            public void renderBackground(GuiComponent helper, PoseStack matrices, int x, int y) {
             }
         }
     }

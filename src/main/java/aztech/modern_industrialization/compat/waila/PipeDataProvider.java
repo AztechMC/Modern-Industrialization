@@ -29,18 +29,18 @@ import aztech.modern_industrialization.pipes.fluid.FluidNetworkNode;
 import aztech.modern_industrialization.pipes.impl.PipeBlockEntity;
 import aztech.modern_industrialization.util.NbtHelper;
 import mcp.mobius.waila.api.IServerDataProvider;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.world.World;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
 
 public class PipeDataProvider implements IServerDataProvider<BlockEntity> {
     @Override
-    public void appendServerData(NbtCompound data, ServerPlayerEntity player, World world, BlockEntity be) {
+    public void appendServerData(CompoundTag data, ServerPlayer player, Level world, BlockEntity be) {
         PipeBlockEntity pipe = (PipeBlockEntity) be;
 
         for (PipeNetworkNode node : pipe.getNodes()) {
-            NbtCompound pipeData = new NbtCompound();
+            CompoundTag pipeData = new CompoundTag();
 
             if (node instanceof FluidNetworkNode) {
                 FluidNetworkNode fluidNode = (FluidNetworkNode) node;

@@ -30,45 +30,49 @@ import aztech.modern_industrialization.util.TextHelper;
 import io.github.ladysnake.pal.VanillaAbilities;
 import java.util.List;
 import me.shedaniel.cloth.api.armor.v1.TickableArmor;
-import net.minecraft.client.item.TooltipContext;
-import net.minecraft.entity.EquipmentSlot;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.*;
-import net.minecraft.recipe.Ingredient;
-import net.minecraft.sound.SoundEvent;
-import net.minecraft.sound.SoundEvents;
-import net.minecraft.text.Text;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Rarity;
-import net.minecraft.util.math.Direction;
-import net.minecraft.world.World;
+import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ArmorItem;
+import net.minecraft.world.item.ArmorMaterial;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Rarity;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.Wearable;
+import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
 
 public class GraviChestPlateItem extends ArmorItem implements Wearable, TickableArmor, ActivatableChestItem {
-    public GraviChestPlateItem(Settings settings) {
-        super(buildMaterial(), EquipmentSlot.CHEST, settings.maxCount(1).rarity(Rarity.EPIC));
+    public GraviChestPlateItem(Properties settings) {
+        super(buildMaterial(), EquipmentSlot.CHEST, settings.stacksTo(1).rarity(Rarity.EPIC));
     }
 
     private static ArmorMaterial buildMaterial() {
         return new ArmorMaterial() {
             @Override
-            public int getDurability(EquipmentSlot slot) {
+            public int getDurabilityForSlot(EquipmentSlot slot) {
                 return 0;
             }
 
             @Override
-            public int getProtectionAmount(EquipmentSlot slot) {
+            public int getDefenseForSlot(EquipmentSlot slot) {
                 return 0;
             }
 
             @Override
-            public int getEnchantability() {
+            public int getEnchantmentValue() {
                 return 0;
             }
 
             @Override
             public SoundEvent getEquipSound() {
-                return SoundEvents.ITEM_ARMOR_EQUIP_GENERIC;
+                return SoundEvents.ARMOR_EQUIP_GENERIC;
             }
 
             @Override
@@ -94,14 +98,14 @@ public class GraviChestPlateItem extends ArmorItem implements Wearable, Tickable
     }
 
     public long getEnergy(ItemStack stack) {
-        return stack.hasNbt() ? stack.getNbt().getLong("energy") : 0;
+        return stack.hasTag() ? stack.getTag().getLong("energy") : 0;
     }
 
     public void setEnergy(ItemStack stack, long energy) {
         if (energy == 0) {
-            stack.removeSubNbt("energy");
+            stack.removeTagKey("energy");
         } else {
-            stack.getOrCreateNbt().putLong("energy", energy);
+            stack.getOrCreateTag().putLong("energy", energy);
         }
     }
 
@@ -109,8 +113,8 @@ public class GraviChestPlateItem extends ArmorItem implements Wearable, Tickable
     public static final long ENERGY_CAPACITY = 1 << 24;
 
     @Override
-    public void tickArmor(ItemStack stack, PlayerEntity player) {
-        if (player.world.isClient())
+    public void tickArmor(ItemStack stack, Player player) {
+        if (player.level.isClientSide())
             return;
         if (MIArmorEffects.SRC.grants(player, VanillaAbilities.ALLOW_FLYING) && player.getAbilities().flying) {
             setEnergy(stack, Math.max(0, getEnergy(stack) - FLIGHT_COST));
@@ -118,31 +122,32 @@ public class GraviChestPlateItem extends ArmorItem implements Wearable, Tickable
     }
 
     @Override
-    public ActionResult useOnBlock(ItemUsageContext context) {
+    public InteractionResult useOn(UseOnContext context) {
         boolean didSomething = false;
         for (Direction direction : Direction.values()) {
-            if (EnergyApi.MOVEABLE.find(context.getWorld(), context.getBlockPos(), context.getSide()) instanceof EnergyExtractable extractable) {
-                ItemStack stack = context.getStack();
+            if (EnergyApi.MOVEABLE.find(context.getLevel(), context.getClickedPos(),
+                    context.getClickedFace()) instanceof EnergyExtractable extractable) {
+                ItemStack stack = context.getItemInHand();
                 long extracted = extractable.extractEnergy(ENERGY_CAPACITY - getEnergy(stack), Simulation.ACT);
                 setEnergy(stack, getEnergy(stack) + extracted);
                 didSomething = true;
             }
         }
-        return didSomething ? ActionResult.success(context.getWorld().isClient()) : ActionResult.PASS;
+        return didSomething ? InteractionResult.sidedSuccess(context.getLevel().isClientSide()) : InteractionResult.PASS;
     }
 
     @Override
-    public void appendTooltip(ItemStack stack, @Nullable World world, List<Text> tooltip, TooltipContext context) {
+    public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> tooltip, TooltipFlag context) {
         tooltip.add(TextHelper.getEuTextMaxed(getEnergy(stack), ENERGY_CAPACITY, true));
     }
 
     @Override
-    public boolean isItemBarVisible(ItemStack stack) {
+    public boolean isBarVisible(ItemStack stack) {
         return true;
     }
 
     @Override
-    public int getItemBarStep(ItemStack stack) {
+    public int getBarWidth(ItemStack stack) {
         return (int) Math.round(getEnergy(stack) / (double) ENERGY_CAPACITY * 13);
     }
 }

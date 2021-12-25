@@ -26,14 +26,14 @@ package aztech.modern_industrialization.machines.recipe;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import net.minecraft.util.Identifier;
-import net.minecraft.world.World;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.Level;
 
 /**
  * A machine recipe type that allows adding proxies
  */
 public abstract class ProxyableMachineRecipeType extends MachineRecipeType {
-    public ProxyableMachineRecipeType(Identifier id) {
+    public ProxyableMachineRecipeType(ResourceLocation id) {
         super(id);
     }
 
@@ -41,10 +41,10 @@ public abstract class ProxyableMachineRecipeType extends MachineRecipeType {
     private static final long UPDATE_INTERVAL = 20 * 1000;
     protected List<MachineRecipe> recipeList = new ArrayList<>();
 
-    protected abstract void fillRecipeList(World world);
+    protected abstract void fillRecipeList(Level world);
 
     @Override
-    public Collection<MachineRecipe> getRecipes(World world) {
+    public Collection<MachineRecipe> getRecipes(Level world) {
         long time = System.currentTimeMillis();
         if (time - lastUpdate > UPDATE_INTERVAL) {
             lastUpdate = time;

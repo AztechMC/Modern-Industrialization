@@ -27,10 +27,10 @@ import aztech.modern_industrialization.machines.recipe.MachineRecipeType;
 import com.google.gson.annotations.SerializedName;
 import java.util.ArrayList;
 import java.util.List;
-import net.minecraft.fluid.Fluid;
-import net.minecraft.item.Item;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
+import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.level.material.Fluid;
 
 @SuppressWarnings({ "FieldCanBeLocal", "unused", "MismatchedQueryAndUpdateOfCollection" })
 public class MIRecipeJson extends RecipeJson<MIRecipeJson> {
@@ -38,7 +38,7 @@ public class MIRecipeJson extends RecipeJson<MIRecipeJson> {
     private transient final MachineRecipeType machineRecipeType;
 
     private MIRecipeJson(MachineRecipeType machineRecipeType, int eu, int duration) {
-        this.type = Registry.RECIPE_SERIALIZER.getId(machineRecipeType).toString();
+        this.type = Registry.RECIPE_SERIALIZER.getKey(machineRecipeType).toString();
         this.eu = eu;
         this.duration = duration;
         this.machineRecipeType = machineRecipeType;
@@ -122,7 +122,7 @@ public class MIRecipeJson extends RecipeJson<MIRecipeJson> {
     }
 
     public MIRecipeJson addItemInput(Item item, int amount, double probability) {
-        return addItemInput(Registry.ITEM.getId(item).toString(), amount, probability);
+        return addItemInput(Registry.ITEM.getKey(item).toString(), amount, probability);
     }
 
     public MIRecipeJson addItemInput(Item item, int amount) {
@@ -163,7 +163,7 @@ public class MIRecipeJson extends RecipeJson<MIRecipeJson> {
     }
 
     public MIRecipeJson addItemOutput(Item item, int amount, double probability) {
-        return addItemOutput(Registry.ITEM.getId(item).toString(), amount, probability);
+        return addItemOutput(Registry.ITEM.getKey(item).toString(), amount, probability);
     }
 
     public MIRecipeJson addItemOutput(Item item, int amount) {
@@ -190,8 +190,8 @@ public class MIRecipeJson extends RecipeJson<MIRecipeJson> {
     }
 
     public MIRecipeJson addFluidInput(Fluid fluid, int amount, double probability) {
-        Identifier id = Registry.FLUID.getId(fluid);
-        if (id.equals(Registry.FLUID.getDefaultId())) {
+        ResourceLocation id = Registry.FLUID.getKey(fluid);
+        if (id.equals(Registry.FLUID.getDefaultKey())) {
             throw new RuntimeException("Could not find id for fluid " + fluid);
         }
         return addFluidInput(id.toString(), amount, probability);
@@ -224,6 +224,6 @@ public class MIRecipeJson extends RecipeJson<MIRecipeJson> {
     }
 
     public MIRecipeJson addFluidOutput(Fluid fluid, int amount, double probability) {
-        return addFluidOutput(Registry.FLUID.getId(fluid).toString(), amount, probability);
+        return addFluidOutput(Registry.FLUID.getKey(fluid).toString(), amount, probability);
     }
 }

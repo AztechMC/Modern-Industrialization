@@ -32,8 +32,8 @@ import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
-import net.minecraft.data.DataCache;
 import net.minecraft.data.DataProvider;
+import net.minecraft.data.HashCache;
 
 public class MachineModelsProvider implements DataProvider {
     private static final Map<String, MachineModelProperties> PROPS = new HashMap<>();
@@ -50,15 +50,15 @@ public class MachineModelsProvider implements DataProvider {
     }
 
     @Override
-    public void run(DataCache cache) throws IOException {
-        Path outputPath = gen.getOutput();
-        Path nonGeneratedPath = gen.getOutput().resolve("../../main/resources");
+    public void run(HashCache cache) throws IOException {
+        Path outputPath = gen.getOutputFolder();
+        Path nonGeneratedPath = gen.getOutputFolder().resolve("../../main/resources");
 
         for (var entry : PROPS.entrySet()) {
             var modelPath = "assets/%s/models/machine/%s.json".formatted(gen.getModId(), entry.getKey());
             if (!Files.exists(nonGeneratedPath.resolve(modelPath))) {
                 // Only generate the model json if it doesn't exist in the non-generated assets.
-                DataProvider.writeToPath(GSON, cache, entry.getValue().toMachineJson(), outputPath.resolve(modelPath));
+                DataProvider.save(GSON, cache, entry.getValue().toMachineJson(), outputPath.resolve(modelPath));
             }
         }
     }

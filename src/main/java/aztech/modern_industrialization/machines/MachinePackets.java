@@ -28,23 +28,23 @@ import aztech.modern_industrialization.machines.components.OrientationComponent;
 import aztech.modern_industrialization.machines.components.sync.AutoExtract;
 import aztech.modern_industrialization.machines.components.sync.ReiSlotLocking;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
-import net.minecraft.screen.ScreenHandler;
-import net.minecraft.util.Identifier;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.inventory.AbstractContainerMenu;
 
 public class MachinePackets {
     public static class S2C {
-        public static final Identifier COMPONENT_SYNC = new MIIdentifier("machine_component_sync");
+        public static final ResourceLocation COMPONENT_SYNC = new MIIdentifier("machine_component_sync");
     }
 
     public static class C2S {
-        public static final Identifier SET_AUTO_EXTRACT = new MIIdentifier("set_auto_extract");
+        public static final ResourceLocation SET_AUTO_EXTRACT = new MIIdentifier("set_auto_extract");
         public static final ServerPlayNetworking.PlayChannelHandler ON_SET_AUTO_EXTRACT = (ms, player, handler, buf, sender) -> {
             int syncId = buf.readInt();
             boolean isItem = buf.readBoolean();
             boolean isExtract = buf.readBoolean();
             ms.execute(() -> {
-                if (player.currentScreenHandler.syncId == syncId) {
-                    MachineScreenHandlers.Server screenHandler = (MachineScreenHandlers.Server) player.currentScreenHandler;
+                if (player.containerMenu.containerId == syncId) {
+                    MachineScreenHandlers.Server screenHandler = (MachineScreenHandlers.Server) player.containerMenu;
                     AutoExtract.Server autoExtract = screenHandler.blockEntity.getComponent(SyncedComponents.AUTO_EXTRACT);
                     OrientationComponent orientation = autoExtract.getOrientation();
                     if (isItem) {
@@ -52,18 +52,18 @@ public class MachinePackets {
                     } else {
                         orientation.extractFluids = isExtract;
                     }
-                    screenHandler.blockEntity.markDirty();
+                    screenHandler.blockEntity.setChanged();
                     screenHandler.blockEntity.sync();
                 }
             });
         };
-        public static final Identifier REI_LOCK_SLOTS = new MIIdentifier("rei_lock_slots");
+        public static final ResourceLocation REI_LOCK_SLOTS = new MIIdentifier("rei_lock_slots");
         public static final ServerPlayNetworking.PlayChannelHandler ON_REI_LOCK_SLOTS = (ms, player, handler, buf, sender) -> {
             int syncId = buf.readInt();
-            Identifier recipeId = buf.readIdentifier();
+            ResourceLocation recipeId = buf.readResourceLocation();
             ms.execute(() -> {
-                ScreenHandler sh = player.currentScreenHandler;
-                if (sh.syncId == syncId && sh instanceof MachineScreenHandlers.Server screenHandler) {
+                AbstractContainerMenu sh = player.containerMenu;
+                if (sh.containerId == syncId && sh instanceof MachineScreenHandlers.Server screenHandler) {
                     // Check that locking the slots is allowed in the first place
                     ReiSlotLocking.Server slotLocking = screenHandler.blockEntity.getComponent(SyncedComponents.REI_SLOT_LOCKING);
                     if (!slotLocking.allowLocking.get())

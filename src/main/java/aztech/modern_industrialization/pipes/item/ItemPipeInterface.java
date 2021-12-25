@@ -27,9 +27,9 @@ import aztech.modern_industrialization.pipes.gui.iface.ConnectionTypeInterface;
 import aztech.modern_industrialization.pipes.gui.iface.PriorityInterface;
 import java.util.ArrayList;
 import java.util.List;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketByteBuf;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 
 /**
  * Player interface to an item pipe, this is used for interacting with the
@@ -59,16 +59,16 @@ public interface ItemPipeInterface extends ConnectionTypeInterface, PriorityInte
 
     void setUpgradeStack(ItemStack stack);
 
-    boolean canUse(PlayerEntity player);
+    boolean canUse(Player player);
 
-    static ItemPipeInterface ofBuf(PacketByteBuf buf) {
+    static ItemPipeInterface ofBuf(FriendlyByteBuf buf) {
         boolean[] whitelist = new boolean[] { buf.readBoolean() };
         int[] type = new int[] { buf.readInt() };
         int[] priority = new int[] { buf.readInt(), buf.readInt() };
         List<ItemStack> stacks = new ArrayList<>(SLOTS);
         for (int i = 0; i < SLOTS; ++i)
-            stacks.add(buf.readItemStack());
-        ItemStack[] upgradeStack = new ItemStack[] { buf.readItemStack() };
+            stacks.add(buf.readItem());
+        ItemStack[] upgradeStack = new ItemStack[] { buf.readItem() };
 
         return new ItemPipeInterface() {
             @Override
@@ -122,19 +122,19 @@ public interface ItemPipeInterface extends ConnectionTypeInterface, PriorityInte
             }
 
             @Override
-            public boolean canUse(PlayerEntity player) {
+            public boolean canUse(Player player) {
                 return true;
             }
         };
     }
 
-    default void toBuf(PacketByteBuf buf) {
+    default void toBuf(FriendlyByteBuf buf) {
         buf.writeBoolean(isWhitelist());
         buf.writeInt(getConnectionType());
         buf.writeInt(getPriority(0));
         buf.writeInt(getPriority(1));
         for (int i = 0; i < SLOTS; ++i)
-            buf.writeItemStack(getStack(i));
-        buf.writeItemStack(getUpgradeStack());
+            buf.writeItem(getStack(i));
+        buf.writeItem(getUpgradeStack());
     }
 }

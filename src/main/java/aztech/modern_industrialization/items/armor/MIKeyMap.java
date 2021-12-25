@@ -25,21 +25,21 @@ package aztech.modern_industrialization.items.armor;
 
 import java.util.HashMap;
 import java.util.Map;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.world.entity.player.Player;
 
 public class MIKeyMap {
-    private static final Map<PlayerEntity, Boolean> HOLDING_UP = new HashMap<>();
+    private static final Map<Player, Boolean> HOLDING_UP = new HashMap<>();
 
-    static boolean isHoldingUp(PlayerEntity player) {
+    static boolean isHoldingUp(Player player) {
         return HOLDING_UP.getOrDefault(player, false);
     }
 
-    static void update(PlayerEntity player, boolean up) {
+    static void update(Player player, boolean up) {
         HOLDING_UP.put(player, up);
     }
 
     // TODO: call this on leave and dimension change
-    public static void clear(PlayerEntity player) {
+    public static void clear(Player player) {
         HOLDING_UP.remove(player);
     }
 }

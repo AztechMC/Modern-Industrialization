@@ -28,8 +28,8 @@ import aztech.modern_industrialization.machines.IComponent;
 import java.util.List;
 import java.util.function.Predicate;
 import java.util.function.ToLongFunction;
-import net.minecraft.fluid.Fluid;
-import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.material.Fluid;
 
 /**
  * A component that turns fluids into energy.
@@ -51,12 +51,12 @@ public class FluidConsumerComponent implements IComponent.ServerOnly {
     }
 
     @Override
-    public void writeNbt(NbtCompound tag) {
+    public void writeNbt(CompoundTag tag) {
         tag.putLong("euBuffer", euBuffer);
     }
 
     @Override
-    public void readNbt(NbtCompound tag) {
+    public void readNbt(CompoundTag tag) {
         euBuffer = tag.getLong("euBuffer");
     }
 

@@ -29,11 +29,11 @@ import aztech.modern_industrialization.util.TextHelper;
 import java.util.List;
 import java.util.Random;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
-import net.minecraft.client.item.TooltipContext;
-import net.minecraft.item.ItemStack;
-import net.minecraft.text.Text;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.world.World;
+import net.minecraft.core.Registry;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.level.Level;
 
 public class NuclearFuel extends NuclearAbsorbable {
 
@@ -54,7 +54,7 @@ public class NuclearFuel extends NuclearAbsorbable {
             double neutronMultiplicationFactor, double directEnergyFactor, int size) {
     }
 
-    public NuclearFuel(Settings settings, NuclearFuelParams params, INeutronBehaviour neutronBehaviour, String depletedVersionId) {
+    public NuclearFuel(Properties settings, NuclearFuelParams params, INeutronBehaviour neutronBehaviour, String depletedVersionId) {
 
         this(settings, params.desintegrationMax, params.maxTemperature, params.tempLimitLow, params.tempLimitHigh, params.neutronMultiplicationFactor,
                 params.directEnergyFactor, neutronBehaviour, params.size, depletedVersionId);
@@ -65,7 +65,7 @@ public class NuclearFuel extends NuclearAbsorbable {
         return 25 * (int) (temperature / 25d);
     }
 
-    private NuclearFuel(Settings settings, int desintegrationMax, int maxTemperature, int tempLimitLow, int tempLimitHigh,
+    private NuclearFuel(Properties settings, int desintegrationMax, int maxTemperature, int tempLimitLow, int tempLimitHigh,
             double neutronMultiplicationFactor, double directEnergyFactor, INeutronBehaviour neutronBehaviour, int size, String depletedVersionId) {
 
         super(settings, clampTemp(maxTemperature), 0.8 * NuclearConstant.BASE_HEAT_CONDUCTION, neutronBehaviour, desintegrationMax);
@@ -85,12 +85,12 @@ public class NuclearFuel extends NuclearAbsorbable {
 
     public static NuclearFuel of(String id, NuclearFuelParams params, INeutronBehaviour neutronBehaviour, String depletedVersionId) {
 
-        return (NuclearFuel) MIItem.of((Settings settings) -> new NuclearFuel(settings, params, neutronBehaviour, depletedVersionId), id, 1);
+        return (NuclearFuel) MIItem.of((Properties settings) -> new NuclearFuel(settings, params, neutronBehaviour, depletedVersionId), id, 1);
     }
 
     @Override
     public ItemVariant getNeutronProduct() {
-        return ItemVariant.of(Registry.ITEM.getOrEmpty(new MIIdentifier(depletedVersionId)).get());
+        return ItemVariant.of(Registry.ITEM.getOptional(new MIIdentifier(depletedVersionId)).get());
     }
 
     @Override
@@ -99,8 +99,8 @@ public class NuclearFuel extends NuclearAbsorbable {
     }
 
     @Override
-    public void appendTooltip(ItemStack stack, World world, List<Text> tooltip, TooltipContext context) {
-        super.appendTooltip(stack, world, tooltip, context);
+    public void appendHoverText(ItemStack stack, Level world, List<Component> tooltip, TooltipFlag context) {
+        super.appendHoverText(stack, world, tooltip, context);
         long totalEu = (long) totalEUbyDesintegration * desintegrationMax;
         tooltip.add(TextHelper.getEuStorageTooltip(totalEu));
     }

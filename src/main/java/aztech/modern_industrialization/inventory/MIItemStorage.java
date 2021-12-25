@@ -27,8 +27,8 @@ import aztech.modern_industrialization.api.WhitelistedItemStorage;
 import java.util.List;
 import java.util.Set;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
-import net.minecraft.item.Item;
-import net.minecraft.item.Items;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Items;
 
 public class MIItemStorage extends MIStorage<Item, ItemVariant, ConfigurableItemStack> implements WhitelistedItemStorage {
     public MIItemStorage(List<ConfigurableItemStack> stacks) {

@@ -24,20 +24,20 @@
 package aztech.modern_industrialization.pipes.gui;
 
 import aztech.modern_industrialization.pipes.gui.iface.ConnectionTypeInterface;
-import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 
-class ConnectionTypeButton extends ButtonWidget {
+class ConnectionTypeButton extends Button {
     private final ConnectionTypeInterface connectionType;
 
-    public ConnectionTypeButton(int x, int y, PressAction onPress, TooltipSupplier tooltipSupplier, ConnectionTypeInterface connectionType) {
+    public ConnectionTypeButton(int x, int y, OnPress onPress, OnTooltip tooltipSupplier, ConnectionTypeInterface connectionType) {
         super(x, y, 20, 20, null, onPress, tooltipSupplier);
         this.connectionType = connectionType;
     }
 
     @Override
-    public Text getMessage() {
-        return new TranslatableText("text.modern_industrialization.pipe_connection_" + connectionType.getConnectionType());
+    public Component getMessage() {
+        return new TranslatableComponent("text.modern_industrialization.pipe_connection_" + connectionType.getConnectionType());
     }
 }

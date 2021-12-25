@@ -23,20 +23,20 @@
  */
 package aztech.modern_industrialization.pipes.gui;
 
+import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.function.Supplier;
-import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.text.LiteralText;
-import net.minecraft.text.OrderedText;
-import net.minecraft.text.Text;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.util.FormattedCharSequence;
 
-class PriorityDisplay extends ButtonWidget {
+class PriorityDisplay extends Button {
     private final Supplier<Integer> priorityGetter;
-    private final TextRenderer textRenderer;
+    private final Font textRenderer;
 
-    public PriorityDisplay(int x, int y, int width, int height, Text message, TooltipSupplier tooltipSupplier, Supplier<Integer> priorityGetter,
-            TextRenderer textRenderer) {
+    public PriorityDisplay(int x, int y, int width, int height, Component message, OnTooltip tooltipSupplier, Supplier<Integer> priorityGetter,
+            Font textRenderer) {
         super(x, y, width, height, message, button -> {
         }, tooltipSupplier);
         this.priorityGetter = priorityGetter;
@@ -45,17 +45,17 @@ class PriorityDisplay extends ButtonWidget {
     }
 
     @Override
-    public Text getMessage() {
-        return new LiteralText(Integer.toString(priorityGetter.get()));
+    public Component getMessage() {
+        return new TextComponent(Integer.toString(priorityGetter.get()));
     }
 
     @Override
-    public void renderButton(MatrixStack matrices, int mouseX, int mouseY, float delta) {
-        OrderedText orderedText = getMessage().asOrderedText();
-        textRenderer.draw(matrices, orderedText, (float) (this.x + this.width / 2 - textRenderer.getWidth(orderedText) / 2),
+    public void renderButton(PoseStack matrices, int mouseX, int mouseY, float delta) {
+        FormattedCharSequence orderedText = getMessage().getVisualOrderText();
+        textRenderer.draw(matrices, orderedText, (float) (this.x + this.width / 2 - textRenderer.width(orderedText) / 2),
                 (float) (this.y + (this.height - 8) / 2), 4210752);
-        if (this.isHovered()) {
-            this.renderTooltip(matrices, mouseX, mouseY);
+        if (this.isHoveredOrFocused()) {
+            this.renderToolTip(matrices, mouseX, mouseY);
         }
     }
 }

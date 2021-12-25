@@ -24,13 +24,13 @@
 package aztech.modern_industrialization.machines.multiblocks;
 
 import java.util.Objects;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.PillarBlock;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.Direction;
-import net.minecraft.util.registry.Registry;
+import net.minecraft.core.Direction;
+import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.RotatedPillarBlock;
+import net.minecraft.world.level.block.state.BlockState;
 
 /**
  * The representation of a simple logic-less member that is part of a shape,
@@ -47,12 +47,12 @@ public interface SimpleMember {
         return new SimpleMember() {
             @Override
             public boolean matchesState(BlockState state) {
-                return state.isOf(block);
+                return state.is(block);
             }
 
             @Override
             public BlockState getPreviewState() {
-                return block.getDefaultState();
+                return block.defaultBlockState();
             }
         };
     }
@@ -74,10 +74,10 @@ public interface SimpleMember {
     }
 
     static SimpleMember verticalChain() {
-        return forBlockState(Blocks.CHAIN.getDefaultState().with(PillarBlock.AXIS, Direction.Axis.Y));
+        return forBlockState(Blocks.CHAIN.defaultBlockState().setValue(RotatedPillarBlock.AXIS, Direction.Axis.Y));
     }
 
-    static SimpleMember forBlock(Identifier id) {
+    static SimpleMember forBlock(ResourceLocation id) {
         return forBlock(Registry.BLOCK.get(id));
     }
 }

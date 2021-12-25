@@ -23,12 +23,12 @@
  */
 package aztech.modern_industrialization.api;
 
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.item.ElytraItem;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.ElytraItem;
+import net.minecraft.world.item.ItemStack;
 
 public interface IElytraItem {
     default boolean allowElytraFlight(ItemStack stack, LivingEntity user) {
-        return ElytraItem.isUsable(stack);
+        return ElytraItem.isFlyEnabled(stack);
     }
 }

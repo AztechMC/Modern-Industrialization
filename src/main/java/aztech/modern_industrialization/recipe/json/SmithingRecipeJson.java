@@ -23,8 +23,8 @@
  */
 package aztech.modern_industrialization.recipe.json;
 
-import net.minecraft.item.Item;
-import net.minecraft.util.registry.Registry;
+import net.minecraft.core.Registry;
+import net.minecraft.world.item.Item;
 
 @SuppressWarnings({ "FieldCanBeLocal", "MismatchedQueryAndUpdateOfCollection", "UnusedDeclaration" })
 public class SmithingRecipeJson extends RecipeJson<SmithingRecipeJson> {
@@ -50,6 +50,6 @@ public class SmithingRecipeJson extends RecipeJson<SmithingRecipeJson> {
     }
 
     public SmithingRecipeJson(Item base, Item addition, Item result) {
-        this(Registry.ITEM.getId(base).toString(), Registry.ITEM.getId(addition).toString(), Registry.ITEM.getId(result).toString());
+        this(Registry.ITEM.getKey(base).toString(), Registry.ITEM.getKey(addition).toString(), Registry.ITEM.getKey(result).toString());
     }
 }

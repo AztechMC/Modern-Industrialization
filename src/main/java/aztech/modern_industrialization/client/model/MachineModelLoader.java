@@ -31,9 +31,9 @@ import net.fabricmc.fabric.api.client.model.ModelLoadingRegistry;
 import net.fabricmc.fabric.api.client.model.ModelProviderContext;
 import net.fabricmc.fabric.api.client.model.ModelProviderException;
 import net.fabricmc.fabric.api.client.model.ModelVariantProvider;
-import net.minecraft.client.render.model.UnbakedModel;
-import net.minecraft.client.util.ModelIdentifier;
-import net.minecraft.resource.ResourceManager;
+import net.minecraft.client.resources.model.ModelResourceLocation;
+import net.minecraft.client.resources.model.UnbakedModel;
+import net.minecraft.server.packs.resources.ResourceManager;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -52,7 +52,7 @@ public class MachineModelLoader implements ModelVariantProvider {
 
     @Override
     @Nullable
-    public UnbakedModel loadModelVariant(ModelIdentifier modelIdentifier, ModelProviderContext context) throws ModelProviderException {
+    public UnbakedModel loadModelVariant(ModelResourceLocation modelIdentifier, ModelProviderContext context) throws ModelProviderException {
         if (!modelIdentifier.getNamespace().equals(ModernIndustrialization.MOD_ID)) {
             return null;
         }

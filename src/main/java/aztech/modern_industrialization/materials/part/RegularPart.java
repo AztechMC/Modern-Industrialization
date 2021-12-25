@@ -32,12 +32,12 @@ import aztech.modern_industrialization.materials.MaterialHelper;
 import aztech.modern_industrialization.textures.MITextures;
 import aztech.modern_industrialization.textures.TextureHelper;
 import aztech.modern_industrialization.textures.TextureManager;
+import com.mojang.blaze3d.platform.NativeImage;
 import java.io.IOException;
 import net.devtech.arrp.json.tags.JTag;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
-import net.minecraft.client.texture.NativeImage;
-import net.minecraft.util.Identifier;
+import net.minecraft.resources.ResourceLocation;
 
 public class RegularPart extends Part implements BuildablePart {
 
@@ -68,15 +68,17 @@ public class RegularPart extends Part implements BuildablePart {
         // added to the tags
         for (Part partTagged : MIParts.TAGGED_PARTS) {
             if (partTagged.equals(part)) {
-                MaterialHelper.registerItemTag(itemTag.replaceFirst("#", ""), JTag.tag().add(new Identifier(itemId)));
+                MaterialHelper.registerItemTag(itemTag.replaceFirst("#", ""), JTag.tag().add(new ResourceLocation(itemId)));
             }
         }
     }
 
     public RegularPart asBlock(float hardness, float resistance, int miningLevel) {
         return new RegularPart(key, (registeringContext, partContext, part, itemPath, itemId, itemTag) -> {
-            new MIBlock(itemPath, FabricBlockSettings.of(METAL_MATERIAL).hardness(hardness).resistance(resistance)
-                    .breakByTool(FabricToolTags.PICKAXES, miningLevel).requiresTool());
+            new MIBlock(itemPath,
+                    FabricBlockSettings.of(METAL_MATERIAL).breakByTool(FabricToolTags.PICKAXES, miningLevel).destroyTime(hardness)
+                            .explosionResistance(resistance)
+                            .requiresCorrectToolForDrops());
             setupTag(part, itemId, itemTag);
         }, clientRegister, (mtm, partContext, part, itemPath) -> MITextures.generateItemPartTexture(mtm, part.key, partContext.getMaterialSet(),
                 itemPath, true, partContext.getColoramp()));
@@ -85,7 +87,8 @@ public class RegularPart extends Part implements BuildablePart {
     public RegularPart asColumnBlock() {
         return new RegularPart(key, (registeringContext, partContext, part, itemPath, itemId, itemTag) -> {
             MIBlock block = new MIBlock(itemPath,
-                    FabricBlockSettings.of(METAL_MATERIAL).hardness(5.0f).resistance(6.0f).breakByTool(FabricToolTags.PICKAXES, 0).requiresTool());
+                    FabricBlockSettings.of(METAL_MATERIAL).breakByTool(FabricToolTags.PICKAXES, 0).destroyTime(5.0f).explosionResistance(6.0f)
+                            .requiresCorrectToolForDrops());
             block.asColumn();
         }, clientRegister, (mtm, partContext, part, itemPath) -> {
             for (String suffix : new String[] { "_end", "_side" }) {

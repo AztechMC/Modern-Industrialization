@@ -38,17 +38,17 @@ import net.fabricmc.fabric.api.transfer.v1.storage.base.ExtractionOnlyStorage;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleViewIterator;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.entity.ItemEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.network.Packet;
-import net.minecraft.network.listener.ClientPlayPacketListener;
-import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket;
-import net.minecraft.util.Hand;
-import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.Nullable;
 
 public class CreativeTankBlockEntity extends FastBlockEntity
@@ -65,34 +65,34 @@ public class CreativeTankBlockEntity extends FastBlockEntity
     }
 
     public void onChanged() {
-        markDirty();
-        if (!world.isClient)
+        setChanged();
+        if (!level.isClientSide)
             sync();
     }
 
     @Override
-    public void writeNbt(NbtCompound tag) {
+    public void saveAdditional(CompoundTag tag) {
         NbtHelper.putFluid(tag, "fluid", fluid);
     }
 
     @Override
-    public void readNbt(NbtCompound tag) {
+    public void load(CompoundTag tag) {
         fluid = NbtHelper.getFluidCompatible(tag, "fluid");
     }
 
     @Nullable
     @Override
-    public Packet<ClientPlayPacketListener> toUpdatePacket() {
-        return BlockEntityUpdateS2CPacket.create(this);
+    public Packet<ClientGamePacketListener> getUpdatePacket() {
+        return ClientboundBlockEntityDataPacket.create(this);
     }
 
     @Override
-    public NbtCompound toInitialChunkDataNbt() {
-        return createNbt();
+    public CompoundTag getUpdateTag() {
+        return saveWithoutMetadata();
     }
 
-    public boolean onPlayerUse(PlayerEntity player) {
-        Storage<FluidVariant> handIo = ContainerItemContext.ofPlayerHand(player, Hand.MAIN_HAND).find(FluidStorage.ITEM);
+    public boolean onPlayerUse(Player player) {
+        Storage<FluidVariant> handIo = ContainerItemContext.ofPlayerHand(player, InteractionHand.MAIN_HAND).find(FluidStorage.ITEM);
         if (handIo != null) {
             if (isResourceBlank()) {
                 try (Transaction transaction = Transaction.openOuter()) {
@@ -143,11 +143,12 @@ public class CreativeTankBlockEntity extends FastBlockEntity
     }
 
     @Override
-    public boolean useWrench(PlayerEntity player, Hand hand, BlockHitResult hit) {
-        if (player.isSneaking()) {
-            CreativeTankBlock tank = (CreativeTankBlock) getCachedState().getBlock();
-            world.spawnEntity(new ItemEntity(world, hit.getPos().x, hit.getPos().y, hit.getPos().z, tank.getStack(world.getBlockEntity(pos))));
-            world.setBlockState(pos, Blocks.AIR.getDefaultState());
+    public boolean useWrench(Player player, InteractionHand hand, BlockHitResult hit) {
+        if (player.isShiftKeyDown()) {
+            CreativeTankBlock tank = (CreativeTankBlock) getBlockState().getBlock();
+            level.addFreshEntity(new ItemEntity(level, hit.getLocation().x, hit.getLocation().y, hit.getLocation().z,
+                    tank.getStack(level.getBlockEntity(worldPosition))));
+            level.setBlockAndUpdate(worldPosition, Blocks.AIR.defaultBlockState());
             // TODO: play sound
             return true;
         }

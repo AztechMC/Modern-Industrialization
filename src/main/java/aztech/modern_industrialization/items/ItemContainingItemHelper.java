@@ -26,34 +26,34 @@ package aztech.modern_industrialization.items;
 import com.google.common.base.Preconditions;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.StoragePreconditions;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.StackReference;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.screen.slot.Slot;
-import net.minecraft.util.ClickType;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.entity.SlotAccess;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.ClickAction;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
 
 public interface ItemContainingItemHelper {
     long getStackCapacity();
 
     default boolean canDirectInsert(ItemStack stack) {
-        return stack.getItem().canBeNested();
+        return stack.getItem().canFitInsideContainerItems();
     }
 
     default boolean isEmpty(ItemStack stack) {
-        return stack.getSubNbt("BlockEntityTag") == null;
+        return stack.getTagElement("BlockEntityTag") == null;
     }
 
     default ItemVariant getItemVariant(ItemStack stack) {
         if (isEmpty(stack)) {
             return ItemVariant.blank();
         } else {
-            return ItemVariant.fromNbt(stack.getSubNbt("BlockEntityTag").getCompound("item"));
+            return ItemVariant.fromNbt(stack.getTagElement("BlockEntityTag").getCompound("item"));
         }
     }
 
     private void setItemVariant(ItemStack stack, ItemVariant item) {
-        stack.getOrCreateSubNbt("BlockEntityTag").put("item", item.toNbt());
+        stack.getOrCreateTagElement("BlockEntityTag").put("item", item.toNbt());
     }
 
     default long insert(ItemStack stackBarrel, ItemVariant inserted, long maxAmount) {
@@ -76,7 +76,7 @@ public interface ItemContainingItemHelper {
         if (getItemVariant(stack).isBlank()) {
             return 0;
         }
-        NbtCompound tag = stack.getSubNbt("BlockEntityTag");
+        CompoundTag tag = stack.getTagElement("BlockEntityTag");
         if (tag == null)
             return 0;
         else
@@ -86,42 +86,42 @@ public interface ItemContainingItemHelper {
     default void setAmount(ItemStack stack, long amount) {
         Preconditions.checkArgument(amount >= 0, "Can not set a barrel item to a negative amount");
 
-        stack.getOrCreateSubNbt("BlockEntityTag").putLong("amt", amount);
+        stack.getOrCreateTagElement("BlockEntityTag").putLong("amt", amount);
         if (amount == 0) {
-            stack.removeSubNbt("BlockEntityTag");
+            stack.removeTagKey("BlockEntityTag");
         }
     }
 
     default long getCapacity(ItemVariant variant) {
-        return getStackCapacity() * variant.getItem().getMaxCount();
+        return getStackCapacity() * variant.getItem().getMaxStackSize();
     }
 
     default long getCurrentCapacity(ItemStack barrelStack) {
-        return getStackCapacity() * getItemVariant(barrelStack).getItem().getMaxCount();
+        return getStackCapacity() * getItemVariant(barrelStack).getItem().getMaxStackSize();
     }
 
-    default boolean handleOnStackClicked(ItemStack stackBarrel, Slot slot, ClickType clickType, PlayerEntity player) {
-        if (clickType != ClickType.RIGHT) {
+    default boolean handleOnStackClicked(ItemStack stackBarrel, Slot slot, ClickAction clickType, Player player) {
+        if (clickType != ClickAction.SECONDARY) {
             return false;
         } else {
-            ItemStack itemStack = slot.getStack();
+            ItemStack itemStack = slot.getItem();
             if (itemStack.isEmpty() && !isEmpty(stackBarrel)) {
-                long amount = Math.min(getAmount(stackBarrel), getItemVariant(stackBarrel).getItem().getMaxCount());
+                long amount = Math.min(getAmount(stackBarrel), getItemVariant(stackBarrel).getItem().getMaxStackSize());
                 ItemStack newStack = getItemVariant(stackBarrel).toStack((int) (amount));
-                slot.setStack(newStack);
+                slot.set(newStack);
                 setAmount(stackBarrel, getAmount(stackBarrel) - amount);
             } else if (!itemStack.isEmpty() && canDirectInsert(itemStack)) {
-                itemStack.decrement((int) insert(stackBarrel, ItemVariant.of(itemStack), itemStack.getCount()));
+                itemStack.shrink((int) insert(stackBarrel, ItemVariant.of(itemStack), itemStack.getCount()));
             }
             return true;
         }
     }
 
-    default boolean handleOnClicked(ItemStack stackBarrel, ItemStack itemStack, Slot slot, ClickType clickType, PlayerEntity player,
-            StackReference cursorStackReference) {
-        if (clickType == ClickType.RIGHT && slot.canTakePartial(player)) {
+    default boolean handleOnClicked(ItemStack stackBarrel, ItemStack itemStack, Slot slot, ClickAction clickType, Player player,
+            SlotAccess cursorStackReference) {
+        if (clickType == ClickAction.SECONDARY && slot.allowModification(player)) {
             if (!itemStack.isEmpty() && canDirectInsert(itemStack)) {
-                itemStack.decrement((int) insert(stackBarrel, ItemVariant.of(itemStack), itemStack.getCount()));
+                itemStack.shrink((int) insert(stackBarrel, ItemVariant.of(itemStack), itemStack.getCount()));
             }
             return true;
         } else {

@@ -30,11 +30,11 @@ import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.function.Consumer;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
-import net.minecraft.data.server.recipe.RecipeJsonProvider;
-import net.minecraft.resource.DirectoryResourcePack;
-import net.minecraft.resource.ReloadableResourceManagerImpl;
-import net.minecraft.resource.ResourceType;
-import net.minecraft.util.Identifier;
+import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.packs.FolderPackResources;
+import net.minecraft.server.packs.PackType;
+import net.minecraft.server.packs.resources.SimpleReloadableResourceManager;
 import org.apache.commons.io.IOUtils;
 
 public class AssemblerRecipesProvider extends MIRecipesProvider {
@@ -48,13 +48,13 @@ public class AssemblerRecipesProvider extends MIRecipesProvider {
     }
 
     @Override
-    protected void generateRecipes(Consumer<RecipeJsonProvider> consumer) {
-        var nonGeneratedResources = dataGenerator.getOutput().resolve("../../main/resources");
-        var manager = new ReloadableResourceManagerImpl(ResourceType.SERVER_DATA);
-        manager.addPack(new DirectoryResourcePack(nonGeneratedResources.toFile()));
+    protected void generateRecipes(Consumer<FinishedRecipe> consumer) {
+        var nonGeneratedResources = dataGenerator.getOutputFolder().resolve("../../main/resources");
+        var manager = new SimpleReloadableResourceManager(PackType.SERVER_DATA);
+        manager.add(new FolderPackResources(nonGeneratedResources.toFile()));
 
-        Collection<Identifier> possibleTargets = manager.findResources("recipes", path -> path.endsWith(".json"));
-        for (Identifier pathId : possibleTargets) {
+        Collection<ResourceLocation> possibleTargets = manager.listResources("recipes", path -> path.endsWith(".json"));
+        for (ResourceLocation pathId : possibleTargets) {
             if (shouldConvertToAssembler(pathId)) {
                 try (var resource = manager.getResource(pathId)) {
                     convertToAssembler(consumer, pathId, IOUtils.toByteArray(resource.getInputStream()));
@@ -65,7 +65,7 @@ public class AssemblerRecipesProvider extends MIRecipesProvider {
         }
     }
 
-    public static boolean shouldConvertToAssembler(Identifier pathId) {
+    public static boolean shouldConvertToAssembler(ResourceLocation pathId) {
         if (pathId.getNamespace().equals("modern_industrialization")) {
             String path = pathId.toString();
             String postfix = path.substring(path.length() - 10, path.length() - 5);
@@ -78,7 +78,7 @@ public class AssemblerRecipesProvider extends MIRecipesProvider {
         return false;
     }
 
-    public static void convertToAssembler(Consumer<RecipeJsonProvider> consumer, Identifier recipeId, byte[] recipe) {
+    public static void convertToAssembler(Consumer<FinishedRecipe> consumer, ResourceLocation recipeId, byte[] recipe) {
         String recipeString = new String(recipe, StandardCharsets.UTF_8);
         ShapedRecipeJson json = GSON.fromJson(recipeString, ShapedRecipeJson.class);
         if (json.result.count == 0) {

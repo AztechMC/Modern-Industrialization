@@ -31,12 +31,12 @@ import me.shedaniel.rei.api.common.category.CategoryIdentifier;
 import me.shedaniel.rei.api.common.display.Display;
 import me.shedaniel.rei.api.common.entry.EntryIngredient;
 import me.shedaniel.rei.api.common.util.EntryStacks;
-import net.minecraft.block.BlockState;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.registry.Registry;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Registry;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.block.state.BlockState;
 
 public class MultiblockRecipeDisplay implements Display {
     public final String controller;
@@ -69,7 +69,7 @@ public class MultiblockRecipeDisplay implements Display {
         public Shape(String controller, ShapeTemplate shape) {
             this.controller = EntryIngredient.of(EntryStacks.of(Registry.ITEM.get(new MIIdentifier(controller))));
             this.materials.add(this.controller);
-            SortedMap<Item, Integer> materials = new TreeMap<>(Comparator.comparing(Registry.ITEM::getId));
+            SortedMap<Item, Integer> materials = new TreeMap<>(Comparator.comparing(Registry.ITEM::getKey));
 
             for (Map.Entry<BlockPos, SimpleMember> entry : shape.simpleMembers.entrySet()) {
                 BlockState state = entry.getValue().getPreviewState();

@@ -23,7 +23,7 @@
  */
 package aztech.modern_industrialization.machines.blockentities.hatches;
 
-import static net.minecraft.util.math.Direction.UP;
+import static net.minecraft.core.Direction.UP;
 
 import aztech.modern_industrialization.inventory.*;
 import aztech.modern_industrialization.machines.BEP;
@@ -45,8 +45,8 @@ import net.fabricmc.fabric.api.transfer.v1.item.ItemStorage;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.TransferVariant;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
-import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 
 public class NuclearHatch extends HatchBlockEntity implements INuclearTile {
 
@@ -204,7 +204,7 @@ public class NuclearHatch extends HatchBlockEntity implements INuclearTile {
 
                 ItemStack stack = itemVariant.toStack((int) getVariantAmount());
 
-                Random rand = this.world.getRandom();
+                Random rand = this.level.getRandom();
 
                 if (abs instanceof NuclearFuel fuel) {
                     neutronsProduced = fuel.simulateDesintegration(meanNeutron, stack, this.nuclearReactorComponent.getTemperature(), rand, grid);
@@ -256,7 +256,7 @@ public class NuclearHatch extends HatchBlockEntity implements INuclearTile {
 
                 INuclearComponent<FluidVariant> component = maybeComponent.get();
 
-                int actualRecipe = randIntFromDouble(neutron * component.getNeutronProductProbability(), this.getWorld().getRandom());
+                int actualRecipe = randIntFromDouble(neutron * component.getNeutronProductProbability(), this.getLevel().getRandom());
 
                 if (simul) {
                     actualRecipe = neutron;
@@ -290,7 +290,7 @@ public class NuclearHatch extends HatchBlockEntity implements INuclearTile {
 
     public void nuclearTick(INuclearGrid grid) {
         neutronHistory.tick();
-        fluidNeutronProductTick(randIntFromDouble(neutronHistory.getAverageReceived(NeutronType.BOTH), this.getWorld().getRandom()), false);
+        fluidNeutronProductTick(randIntFromDouble(neutronHistory.getAverageReceived(NeutronType.BOTH), this.getLevel().getRandom()), false);
 
         if (isFluid) {
             double euProduced = ((SteamHeaterComponent) nuclearReactorComponent).tick(Collections.singletonList(inventory.getFluidStacks().get(0)),

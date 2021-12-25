@@ -30,12 +30,12 @@ import aztech.modern_industrialization.machines.gui.ClientComponentRenderer;
 import aztech.modern_industrialization.util.FluidHelper;
 import aztech.modern_industrialization.util.RenderHelper;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.function.Supplier;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
-import net.minecraft.client.gui.DrawableHelper;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.gui.GuiComponent;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
 
 public class FluidGUIComponent {
 
@@ -59,12 +59,12 @@ public class FluidGUIComponent {
         }
 
         @Override
-        public void writeInitialData(PacketByteBuf buf) {
+        public void writeInitialData(FriendlyByteBuf buf) {
             writeCurrentData(buf);
         }
 
         @Override
-        public void writeCurrentData(PacketByteBuf buf) {
+        public void writeCurrentData(FriendlyByteBuf buf) {
             Data fluidData = fluidDataSupplier.get();
             fluidData.fluid.toPacket(buf);
             buf.writeLong(fluidData.amount);
@@ -72,7 +72,7 @@ public class FluidGUIComponent {
         }
 
         @Override
-        public Identifier getId() {
+        public ResourceLocation getId() {
             return SyncedComponents.FLUID_STORAGE_GUI;
         }
     }
@@ -81,12 +81,12 @@ public class FluidGUIComponent {
 
         Data fluidData;
 
-        public Client(PacketByteBuf buf) {
+        public Client(FriendlyByteBuf buf) {
             read(buf);
         }
 
         @Override
-        public void read(PacketByteBuf buf) {
+        public void read(FriendlyByteBuf buf) {
             fluidData = new Data(FluidVariant.fromPacket(buf), buf.readLong(), buf.readLong());
         }
 
@@ -100,12 +100,12 @@ public class FluidGUIComponent {
             private static final int posX = 70, posY = 12;
 
             @Override
-            public void renderBackground(DrawableHelper helper, MatrixStack matrices, int x, int y) {
+            public void renderBackground(GuiComponent helper, PoseStack matrices, int x, int y) {
                 FluidVariant fluid = fluidData.fluid;
                 float fracFull = (float) fluidData.amount / fluidData.capacity;
 
                 RenderSystem.setShaderTexture(0, MachineScreenHandlers.SLOT_ATLAS);
-                helper.drawTexture(matrices, x + posX, y + posY, 92, 38, 46, 62);
+                helper.blit(matrices, x + posX, y + posY, 92, 38, 46, 62);
 
                 if (!fluid.isBlank()) {
                     for (int i = 0; i < 2; i++) {
@@ -117,14 +117,15 @@ public class FluidGUIComponent {
                     }
                 }
                 RenderSystem.setShaderTexture(0, MachineScreenHandlers.SLOT_ATLAS);
-                helper.drawTexture(matrices, x + posX + 7, y + posY + 7, 60, 38, 32, 48);
+                helper.blit(matrices, x + posX + 7, y + posY + 7, 60, 38, 32, 48);
 
             }
 
             @Override
-            public void renderTooltip(MachineScreenHandlers.ClientScreen screen, MatrixStack matrices, int x, int y, int cursorX, int cursorY) {
+            public void renderTooltip(MachineScreenHandlers.ClientScreen screen, PoseStack matrices, int x, int y, int cursorX, int cursorY) {
                 if (RenderHelper.isPointWithinRectangle(posX + 7, posY + 7, 32, 48, cursorX - x, cursorY - y)) {
-                    screen.renderTooltip(matrices, FluidHelper.getTooltipForFluidStorage(fluidData.fluid, fluidData.amount, fluidData.capacity),
+                    screen.renderComponentTooltip(matrices,
+                            FluidHelper.getTooltipForFluidStorage(fluidData.fluid, fluidData.amount, fluidData.capacity),
                             cursorX, cursorY);
                 }
             }

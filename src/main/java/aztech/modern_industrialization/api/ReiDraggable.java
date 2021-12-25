@@ -26,10 +26,10 @@ package aztech.modern_industrialization.api;
 import aztech.modern_industrialization.util.Simulation;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
-import net.minecraft.client.gui.widget.ClickableWidget;
+import net.minecraft.client.gui.components.AbstractWidget;
 
 /**
- * Can be implemented by slots or {@linkplain ClickableWidget clickable widgets}
+ * Can be implemented by slots or {@linkplain AbstractWidget clickable widgets}
  * if they want to support dragging. For buttons: called client-side only. For
  * slots: called on both sides if the client accepts the simulation. Return true
  * if dragging is accepted.

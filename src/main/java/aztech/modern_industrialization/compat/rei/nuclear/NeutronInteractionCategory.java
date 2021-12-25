@@ -44,18 +44,18 @@ import me.shedaniel.rei.api.common.category.CategoryIdentifier;
 import me.shedaniel.rei.api.common.util.EntryStacks;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
-import net.minecraft.client.gui.DrawableHelper;
-import net.minecraft.text.LiteralText;
-import net.minecraft.text.Style;
-import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
+import net.minecraft.client.gui.GuiComponent;
+import net.minecraft.core.Registry;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.Style;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.resources.ResourceLocation;
 
 public class NeutronInteractionCategory implements DisplayCategory<NeutronInteractionDisplay> {
 
-    public static final Identifier TEXTURE_ATLAS = new Identifier(ModernIndustrialization.MOD_ID, "textures/gui/rei/texture_atlas.png");
-    private static final Identifier PROGRESS_BAR = new MIIdentifier("textures/gui/progress_bar/long_arrow.png");
+    public static final ResourceLocation TEXTURE_ATLAS = new ResourceLocation(ModernIndustrialization.MOD_ID, "textures/gui/rei/texture_atlas.png");
+    private static final ResourceLocation PROGRESS_BAR = new MIIdentifier("textures/gui/progress_bar/long_arrow.png");
 
     @Override
     public CategoryIdentifier<? extends NeutronInteractionDisplay> getCategoryIdentifier() {
@@ -68,8 +68,8 @@ public class NeutronInteractionCategory implements DisplayCategory<NeutronIntera
     }
 
     @Override
-    public Text getTitle() {
-        return new TranslatableText("text.modern_industrialization.neutron_interaction");
+    public Component getTitle() {
+        return new TranslatableComponent("text.modern_industrialization.neutron_interaction");
     }
 
     public List<Widget> displayNeutronScattering(NeutronInteractionDisplay display, Rectangle bounds) {
@@ -85,17 +85,17 @@ public class NeutronInteractionCategory implements DisplayCategory<NeutronIntera
             widgets.add(Widgets.createSlot(new Point(centerX, centerY)).entry(ReiUtil.createFluidEntryStack(fluidVariant.getFluid())));
         }
 
-        Text title;
+        Component title;
         NeutronType type;
 
         if (display.type == NeutronInteractionDisplay.CategoryType.FAST_NEUTRON_INTERACTION) {
             type = NeutronType.FAST;
-            title = new TranslatableText("text.modern_industrialization.fast_neutron");
+            title = new TranslatableComponent("text.modern_industrialization.fast_neutron");
 
             widgets.add(Widgets.createTexturedWidget(TEXTURE_ATLAS, centerX - 53, centerY - 19, 0, 0, 88, 54));
         } else {
             type = NeutronType.THERMAL;
-            title = new TranslatableText("text.modern_industrialization.thermal_neutron");
+            title = new TranslatableComponent("text.modern_industrialization.thermal_neutron");
             widgets.add(Widgets.createTexturedWidget(TEXTURE_ATLAS, centerX - 53, centerY - 19, 0, 54, 88, 54));
         }
 
@@ -108,11 +108,11 @@ public class NeutronInteractionCategory implements DisplayCategory<NeutronIntera
         String scatteringString = String.format("%.1f ", 100 * interactionProb * scattering) + "%";
         String absorptionString = String.format("%.1f ", 100 * interactionProb * absorption) + "%";
 
-        widgets.add(Widgets.createLabel(new Point(centerX - 20, centerY - 15), new LiteralText(scatteringString))
-                .tooltipLine(new TranslatableText("text.modern_industrialization.scattering_probability").getString()));
+        widgets.add(Widgets.createLabel(new Point(centerX - 20, centerY - 15), new TextComponent(scatteringString))
+                .tooltipLine(new TranslatableComponent("text.modern_industrialization.scattering_probability").getString()));
 
-        widgets.add(Widgets.createLabel(new Point(centerX + 30, centerY + 35), new LiteralText(absorptionString).setStyle(TextHelper.NEUTRONS))
-                .noShadow().tooltipLine(new TranslatableText("text.modern_industrialization.absorption_probability").getString()));
+        widgets.add(Widgets.createLabel(new Point(centerX + 30, centerY + 35), new TextComponent(absorptionString).setStyle(TextHelper.NEUTRONS))
+                .noShadow().tooltipLine(new TranslatableComponent("text.modern_industrialization.absorption_probability").getString()));
 
         if (type == NeutronType.FAST) {
             double slowingProba = display.nuclearComponent.getNeutronBehaviour().neutronSlowingProbability();
@@ -121,13 +121,14 @@ public class NeutronInteractionCategory implements DisplayCategory<NeutronIntera
             String fastFractionString = String.format("%.1f ", 100 * (1 - slowingProba)) + "%";
 
             widgets.add(Widgets
-                    .createLabel(new Point(centerX + 60, centerY + 20), new LiteralText(fastFractionString).setStyle(Style.EMPTY.withColor(0xbc1a1a)))
-                    .noShadow().tooltipLine(new TranslatableText("text.modern_industrialization.fast_neutron_fraction").getString()));
+                    .createLabel(new Point(centerX + 60, centerY + 20),
+                            new TextComponent(fastFractionString).setStyle(Style.EMPTY.withColor(0xbc1a1a)))
+                    .noShadow().tooltipLine(new TranslatableComponent("text.modern_industrialization.fast_neutron_fraction").getString()));
 
             widgets.add(Widgets
                     .createLabel(new Point(centerX + 60, centerY - 10),
-                            new LiteralText(thermalFractionString).setStyle(Style.EMPTY.withColor(0x0c27a7)))
-                    .noShadow().tooltipLine(new TranslatableText("text.modern_industrialization.thermal_neutron_fraction").getString()));
+                            new TextComponent(thermalFractionString).setStyle(Style.EMPTY.withColor(0x0c27a7)))
+                    .noShadow().tooltipLine(new TranslatableComponent("text.modern_industrialization.thermal_neutron_fraction").getString()));
 
             int index = 1 + (int) Math.floor((slowingProba) * 9);
             if (slowingProba == 0) {
@@ -153,29 +154,30 @@ public class NeutronInteractionCategory implements DisplayCategory<NeutronIntera
         widgets.add(Widgets.createSlot(new Point(centerX, centerY)).entry(EntryStacks.of(fuel)));
 
         widgets.add(Widgets.createLabel(new Point(centerX + 20, centerY - 30),
-                new TranslatableText("text.modern_industrialization.single_neutron_capture")));
+                new TranslatableComponent("text.modern_industrialization.single_neutron_capture")));
         widgets.add(Widgets.createTexturedWidget(TEXTURE_ATLAS, centerX - 28, centerY - 7, 0, 109, 92, 31)
 
         );
 
         widgets.add(Widgets
                 .createLabel(new Point(centerX + 20, centerY + 35),
-                        new TranslatableText("text.modern_industrialization.neutrons_multiplication",
+                        new TranslatableComponent("text.modern_industrialization.neutrons_multiplication",
                                 String.format("%.1f", fuel.neutronMultiplicationFactor)).setStyle(TextHelper.NEUTRONS))
-                .noShadow().tooltipLine(new TranslatableText("text.modern_industrialization.neutron_temperature_variation").getString()));
+                .noShadow().tooltipLine(new TranslatableComponent("text.modern_industrialization.neutron_temperature_variation").getString()));
 
         widgets.add(Widgets
                 .createLabel(new Point(centerX - 18, centerY + 23),
-                        new LiteralText(String.format("%d EU", NuclearConstant.EU_FOR_FAST_NEUTRON)).setStyle(TextHelper.NEUTRONS))
-                .noShadow().tooltipLine(new TranslatableText("text.modern_industrialization.fast_neutron_energy").getString()));
+                        new TextComponent(String.format("%d EU", NuclearConstant.EU_FOR_FAST_NEUTRON)).setStyle(TextHelper.NEUTRONS))
+                .noShadow().tooltipLine(new TranslatableComponent("text.modern_industrialization.fast_neutron_energy").getString()));
 
-        widgets.add(Widgets.createLabel(new Point(centerX + 55, centerY + 23), new LiteralText(String.format("%d EU", fuel.directEUbyDesintegration)))
-                .tooltipLine(new TranslatableText("text.modern_industrialization.direct_energy").getString()));
+        widgets.add(
+                Widgets.createLabel(new Point(centerX + 55, centerY + 23), new TextComponent(String.format("%d EU", fuel.directEUbyDesintegration)))
+                        .tooltipLine(new TranslatableComponent("text.modern_industrialization.direct_energy").getString()));
 
         widgets.add(Widgets
                 .createLabel(new Point(centerX + 55, centerY - 12),
-                        new LiteralText(String.format("%.2f °C", (double) fuel.directEUbyDesintegration / NuclearConstant.EU_PER_DEGREE)))
-                .tooltipLine(new TranslatableText("text.modern_industrialization.direct_heat_by_desintegration").getString()));
+                        new TextComponent(String.format("%.2f °C", (double) fuel.directEUbyDesintegration / NuclearConstant.EU_PER_DEGREE)))
+                .tooltipLine(new TranslatableComponent("text.modern_industrialization.direct_heat_by_desintegration").getString()));
 
         return widgets;
     }
@@ -211,7 +213,7 @@ public class NeutronInteractionCategory implements DisplayCategory<NeutronIntera
                     .entry(ReiUtil.createFluidEntryStack(product.getFluid(), amount, probability)));
         }
 
-        Text title = new TranslatableText("text.modern_industrialization.neutron_absorption");
+        Component title = new TranslatableComponent("text.modern_industrialization.neutron_absorption");
         widgets.add(Widgets.createLabel(new Point(centerX + 10, centerY - 30), title));
 
         widgets.add(Widgets.createDrawableWidget((helper, matrices, mouseX, mouseY, delta) -> {
@@ -219,17 +221,17 @@ public class NeutronInteractionCategory implements DisplayCategory<NeutronIntera
             int posX = centerX - 12;
             int posY = centerY - 2;
 
-            DrawableHelper.drawTexture(matrices, posX, posY, helper.getZOffset(), 0, 0, 40, 20, 40, 40);
+            GuiComponent.blit(matrices, posX, posY, helper.getBlitOffset(), 0, 0, 40, 20, 40, 40);
 
-            DrawableHelper.drawTexture(matrices, posX, posY, helper.getZOffset(), 0, 20, (int) (40 * (System.currentTimeMillis() % 3000) / 3000d), 20,
+            GuiComponent.blit(matrices, posX, posY, helper.getBlitOffset(), 0, 20, (int) (40 * (System.currentTimeMillis() % 3000) / 3000d), 20,
                     40, 40);
         }));
 
-        Text neutronNumberText;
+        Component neutronNumberText;
         if (neutronNumber > 1) {
-            neutronNumberText = new TranslatableText("text.modern_industrialization.neutrons", neutronNumber);
+            neutronNumberText = new TranslatableComponent("text.modern_industrialization.neutrons", neutronNumber);
         } else {
-            neutronNumberText = new TranslatableText("text.modern_industrialization.neutron", neutronNumber);
+            neutronNumberText = new TranslatableComponent("text.modern_industrialization.neutron", neutronNumber);
         }
 
         widgets.add(Widgets.createLabel(new Point(centerX + 10, centerY + 20), neutronNumberText));

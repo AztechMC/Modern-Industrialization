@@ -24,10 +24,10 @@
 package aztech.modern_industrialization.pipes.api;
 
 import java.util.*;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.ChunkPos;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.ChunkPos;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -48,21 +48,21 @@ public abstract class PipeNetwork {
         this.data = data;
     }
 
-    public void fromTag(NbtCompound tag) {
+    public void fromTag(CompoundTag tag) {
         id = tag.getInt("id");
         data.fromTag(tag.getCompound("data"));
     }
 
-    public NbtCompound toTag(NbtCompound tag) {
+    public CompoundTag toTag(CompoundTag tag) {
         tag.putInt("id", id);
-        tag.put("data", data.toTag(new NbtCompound()));
+        tag.put("data", data.toTag(new CompoundTag()));
         return tag;
     }
 
     /**
      * <b>Only access nodes that are ticking, for example with {@link #iterateTickingNodes}!</b>
      */
-    public void tick(ServerWorld world) {
+    public void tick(ServerLevel world) {
     }
 
     /**
@@ -83,15 +83,15 @@ public abstract class PipeNetwork {
     }
 
     public void setNode(BlockPos pos, @Nullable PipeNetworkNode node) {
-        this.nodes.put(pos.toImmutable(), node);
+        this.nodes.put(pos.immutable(), node);
 
-        this.nodesByChunk.computeIfAbsent(ChunkPos.toLong(pos), p -> new HashMap<>()).put(pos.toImmutable(), node);
+        this.nodesByChunk.computeIfAbsent(ChunkPos.asLong(pos), p -> new HashMap<>()).put(pos.immutable(), node);
     }
 
     public void removeNode(BlockPos pos) {
         this.nodes.remove(pos);
 
-        long chunk = ChunkPos.toLong(pos);
+        long chunk = ChunkPos.asLong(pos);
         Map<BlockPos, PipeNetworkNode> map = nodesByChunk.get(chunk);
         map.remove(pos);
         if (map.size() == 0) {

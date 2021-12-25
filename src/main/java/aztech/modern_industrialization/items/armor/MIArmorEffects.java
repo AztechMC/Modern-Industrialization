@@ -30,26 +30,26 @@ import io.github.ladysnake.pal.Pal;
 import io.github.ladysnake.pal.VanillaAbilities;
 import java.util.concurrent.ThreadLocalRandom;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
-import net.minecraft.entity.EquipmentSlot;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 
 public class MIArmorEffects {
     private MIArmorEffects() {
     }
 
-    public static boolean quantumArmorPreventsDamage(PlayerEntity player) {
+    public static boolean quantumArmorPreventsDamage(Player player) {
         int parts = 0;
         for (QuantumArmorItem item : QuantumArmorItem.ITEMS) {
-            if (player.getEquippedStack(item.getSlotType()).getItem() == item) {
+            if (player.getItemBySlot(item.getSlot()).getItem() == item) {
                 parts++;
             }
         }
         return ThreadLocalRandom.current().nextDouble() < parts / 4d;
     }
 
-    public static boolean allowFlight(PlayerEntity player) {
-        ItemStack chest = player.getEquippedStack(EquipmentSlot.CHEST);
+    public static boolean allowFlight(Player player) {
+        ItemStack chest = player.getItemBySlot(EquipmentSlot.CHEST);
 
         if (chest.getItem() instanceof GraviChestPlateItem gsp && gsp.isActivated(chest) && gsp.getEnergy(chest) > 0) {
             return true;
@@ -72,7 +72,7 @@ public class MIArmorEffects {
 
     public static void init() {
         ServerTickEvents.START_WORLD_TICK.register(world -> {
-            for (var player : world.getPlayers()) {
+            for (var player : world.players()) {
                 if (allowFlight(player)) {
                     SRC.grantTo(player, VanillaAbilities.ALLOW_FLYING);
                 } else {

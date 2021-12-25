@@ -24,21 +24,21 @@
 package aztech.modern_industrialization.mixin;
 
 import aztech.modern_industrialization.mixin_impl.SteamDrillHooks;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.block.state.BlockState;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-@Mixin(PlayerEntity.class)
+@Mixin(Player.class)
 public class PlayerEntitySteamDrillMixin {
-    @Inject(at = @At("HEAD"), method = "canHarvest")
+    @Inject(at = @At("HEAD"), method = "hasCorrectToolForDrops")
     public void canHarvestHead(BlockState state, CallbackInfoReturnable<Boolean> cir) {
-        SteamDrillHooks.set((PlayerEntity) (Object) this);
+        SteamDrillHooks.set((Player) (Object) this);
     }
 
-    @Inject(at = @At("RETURN"), method = "canHarvest")
+    @Inject(at = @At("RETURN"), method = "hasCorrectToolForDrops")
     public void canHarvestReturn(BlockState state, CallbackInfoReturnable<Boolean> cir) {
         SteamDrillHooks.remove();
     }

@@ -31,26 +31,26 @@ import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleVariantItemStorage;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.text.Style;
-import net.minecraft.text.Text;
-import net.minecraft.text.TextColor;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.Style;
+import net.minecraft.network.chat.TextColor;
+import net.minecraft.world.item.ItemStack;
 
 /**
  * Helper class for fluid items that can only contain FluidFuels
  */
 public interface FluidFuelItemHelper {
     static FluidVariant getFluid(ItemStack stack) {
-        NbtCompound tag = stack.getNbt();
+        CompoundTag tag = stack.getTag();
         return tag == null ? FluidVariant.blank() : NbtHelper.getFluidCompatible(tag, "fluid");
     }
 
     static void setFluid(ItemStack stack, FluidVariant fluid) {
         if (!fluid.isBlank()) {
-            NbtHelper.putFluid(stack.getOrCreateNbt(), "fluid", fluid);
+            NbtHelper.putFluid(stack.getOrCreateTag(), "fluid", fluid);
         } else {
-            stack.removeSubNbt("fluid");
+            stack.removeTagKey("fluid");
         }
     }
 
@@ -58,7 +58,7 @@ public interface FluidFuelItemHelper {
         if (getFluid(stack).isBlank()) {
             return 0;
         }
-        NbtCompound tag = stack.getNbt();
+        CompoundTag tag = stack.getTag();
         if (tag != null) {
             return tag.getLong("amt");
         } else {
@@ -68,10 +68,10 @@ public interface FluidFuelItemHelper {
 
     static void setAmount(ItemStack stack, long amount) {
         if (amount != 0) {
-            stack.getOrCreateNbt().putLong("amt", amount);
+            stack.getOrCreateTag().putLong("amt", amount);
         } else {
-            stack.removeSubNbt("amt");
-            stack.removeSubNbt("fluid");
+            stack.removeTagKey("amt");
+            stack.removeTagKey("fluid");
         }
     }
 
@@ -124,7 +124,7 @@ public interface FluidFuelItemHelper {
         }
     }
 
-    static void appendTooltip(ItemStack stack, List<Text> tooltip, long capacity) {
+    static void appendTooltip(ItemStack stack, List<Component> tooltip, long capacity) {
         Style style = Style.EMPTY.withColor(TextColor.fromRgb(0xa9a9a9)).withItalic(true);
         FluidVariant fluid = getFluid(stack);
         tooltip.add(FluidHelper.getFluidName(fluid, true));

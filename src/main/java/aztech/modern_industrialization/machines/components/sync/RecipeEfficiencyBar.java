@@ -31,15 +31,15 @@ import aztech.modern_industrialization.machines.components.CrafterComponent;
 import aztech.modern_industrialization.machines.gui.ClientComponentRenderer;
 import aztech.modern_industrialization.util.RenderHelper;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
-import net.minecraft.client.gui.DrawableHelper;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.gui.GuiComponent;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.resources.ResourceLocation;
 
 public class RecipeEfficiencyBar {
     public static class Server implements SyncedComponent.Server<Data> {
@@ -73,14 +73,14 @@ public class RecipeEfficiencyBar {
         }
 
         @Override
-        public void writeInitialData(PacketByteBuf buf) {
+        public void writeInitialData(FriendlyByteBuf buf) {
             buf.writeInt(params.renderX);
             buf.writeInt(params.renderY);
             writeCurrentData(buf);
         }
 
         @Override
-        public void writeCurrentData(PacketByteBuf buf) {
+        public void writeCurrentData(FriendlyByteBuf buf) {
             if (crafter.hasActiveRecipe()) {
                 buf.writeBoolean(true);
                 buf.writeInt(crafter.getEfficiencyTicks());
@@ -94,7 +94,7 @@ public class RecipeEfficiencyBar {
         }
 
         @Override
-        public Identifier getId() {
+        public ResourceLocation getId() {
             return SyncedComponents.RECIPE_EFFICIENCY_BAR;
         }
     }
@@ -108,13 +108,13 @@ public class RecipeEfficiencyBar {
         long baseRecipeEu;
         long maxRecipeEu;
 
-        public Client(PacketByteBuf buf) {
+        public Client(FriendlyByteBuf buf) {
             this.params = new Parameters(buf.readInt(), buf.readInt());
             read(buf);
         }
 
         @Override
-        public void read(PacketByteBuf buf) {
+        public void read(FriendlyByteBuf buf) {
             hasActiveRecipe = buf.readBoolean();
             if (hasActiveRecipe) {
                 efficiencyTicks = buf.readInt();
@@ -130,40 +130,40 @@ public class RecipeEfficiencyBar {
             return new Renderer();
         }
 
-        private static final Identifier TEXTURE = new MIIdentifier("textures/gui/efficiency_bar.png");
+        private static final ResourceLocation TEXTURE = new MIIdentifier("textures/gui/efficiency_bar.png");
         private static final int WIDTH = 100, HEIGHT = 2;
 
         public class Renderer implements ClientComponentRenderer {
             @Override
-            public void renderBackground(DrawableHelper helper, MatrixStack matrices, int x, int y) {
+            public void renderBackground(GuiComponent helper, PoseStack matrices, int x, int y) {
                 RenderSystem.setShaderTexture(0, TEXTURE);
-                DrawableHelper.drawTexture(matrices, x + params.renderX - 1, y + params.renderY - 1, helper.getZOffset(), 0, 2, WIDTH + 2, HEIGHT + 2,
+                GuiComponent.blit(matrices, x + params.renderX - 1, y + params.renderY - 1, helper.getBlitOffset(), 0, 2, WIDTH + 2, HEIGHT + 2,
                         102, 6);
                 if (hasActiveRecipe) {
                     int barPixels = (int) ((float) efficiencyTicks / maxEfficiencyTicks * WIDTH);
-                    DrawableHelper.drawTexture(matrices, x + params.renderX, y + params.renderY, helper.getZOffset(), 0, 0, barPixels, HEIGHT, 102,
+                    GuiComponent.blit(matrices, x + params.renderX, y + params.renderY, helper.getBlitOffset(), 0, 0, barPixels, HEIGHT, 102,
                             6);
                 }
             }
 
             @Override
-            public void renderTooltip(MachineScreenHandlers.ClientScreen screen, MatrixStack matrices, int x, int y, int cursorX, int cursorY) {
+            public void renderTooltip(MachineScreenHandlers.ClientScreen screen, PoseStack matrices, int x, int y, int cursorX, int cursorY) {
                 if (RenderHelper.isPointWithinRectangle(params.renderX, params.renderY, WIDTH, HEIGHT, cursorX - x, cursorY - y)) {
-                    List<Text> tooltip = new ArrayList<>();
+                    List<Component> tooltip = new ArrayList<>();
                     if (hasActiveRecipe) {
                         DecimalFormat factorFormat = new DecimalFormat("#.#");
-                        tooltip.add(new TranslatableText("text.modern_industrialization.efficiency_ticks", efficiencyTicks, maxEfficiencyTicks));
-                        tooltip.add(new TranslatableText("text.modern_industrialization.efficiency_factor",
+                        tooltip.add(new TranslatableComponent("text.modern_industrialization.efficiency_ticks", efficiencyTicks, maxEfficiencyTicks));
+                        tooltip.add(new TranslatableComponent("text.modern_industrialization.efficiency_factor",
                                 factorFormat.format((double) currentRecipeEu / baseRecipeEu)));
-                        tooltip.add(new TranslatableText("text.modern_industrialization.efficiency_eu", currentRecipeEu));
+                        tooltip.add(new TranslatableComponent("text.modern_industrialization.efficiency_eu", currentRecipeEu));
 
                     } else {
-                        tooltip.add(new TranslatableText("text.modern_industrialization.efficiency_default_message"));
+                        tooltip.add(new TranslatableComponent("text.modern_industrialization.efficiency_default_message"));
                     }
 
-                    tooltip.add(new TranslatableText("text.modern_industrialization.efficiency_max_overclock", maxRecipeEu));
+                    tooltip.add(new TranslatableComponent("text.modern_industrialization.efficiency_max_overclock", maxRecipeEu));
 
-                    screen.renderTooltip(matrices, tooltip, cursorX, cursorY);
+                    screen.renderComponentTooltip(matrices, tooltip, cursorX, cursorY);
                 }
             }
         }

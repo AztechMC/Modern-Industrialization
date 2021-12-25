@@ -25,19 +25,19 @@ package aztech.modern_industrialization.blocks.storage.barrel.client;
 
 import aztech.modern_industrialization.blocks.storage.barrel.BarrelTooltipData;
 import aztech.modern_industrialization.util.TextHelper;
-import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.tooltip.TooltipComponent;
-import net.minecraft.client.render.VertexConsumerProvider;
-import net.minecraft.client.render.item.ItemRenderer;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.text.LiteralText;
-import net.minecraft.text.Style;
-import net.minecraft.text.Text;
-import net.minecraft.text.TextColor;
-import net.minecraft.util.math.Matrix4f;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Matrix4f;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.entity.ItemRenderer;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.Style;
+import net.minecraft.network.chat.TextColor;
+import net.minecraft.network.chat.TextComponent;
 
-public record BarrelTooltipComponent(BarrelTooltipData data) implements TooltipComponent {
+public record BarrelTooltipComponent(BarrelTooltipData data) implements ClientTooltipComponent {
 
     @Override
     public int getHeight() {
@@ -45,45 +45,46 @@ public record BarrelTooltipComponent(BarrelTooltipData data) implements TooltipC
     }
 
     @Override
-    public int getWidth(TextRenderer textRenderer) {
-        return Math.max(textRenderer.getWidth(data.variant().toStack().getName()), 20 + textRenderer.getWidth(getItemNumber()));
+    public int getWidth(Font textRenderer) {
+        return Math.max(textRenderer.width(data.variant().toStack().getHoverName()), 20 + textRenderer.width(getItemNumber()));
     }
 
     @Override
-    public void drawText(TextRenderer textRenderer, int x, int y, Matrix4f matrix4f, VertexConsumerProvider.Immediate immediate) {
+    public void renderText(Font textRenderer, int x, int y, Matrix4f matrix4f, MultiBufferSource.BufferSource immediate) {
 
         Style style = Style.EMPTY.withColor(TextColor.fromRgb(0xa9a9a9)).withItalic(false);
 
-        textRenderer.draw(data.variant().toStack().getName().shallowCopy().setStyle(style), x, y, -1, true, matrix4f, immediate, false, 0, 15728880);
+        textRenderer.drawInBatch(data.variant().toStack().getHoverName().copy().setStyle(style), x, y, -1, true, matrix4f, immediate, false, 0,
+                15728880);
 
-        textRenderer.draw(getItemNumber(), x + 20, y + 15, -1, true, matrix4f, immediate, false, 0, 15728880);
+        textRenderer.drawInBatch(getItemNumber(), x + 20, y + 15, -1, true, matrix4f, immediate, false, 0, 15728880);
 
     }
 
-    public Text getItemNumber() {
-        long maxCount = data.variant().getItem().getMaxCount();
+    public Component getItemNumber() {
+        long maxCount = data.variant().getItem().getMaxStackSize();
         long stackCapacity = data.capacity() / maxCount;
         long amount = data.amount();
         long stackNumber = amount / maxCount;
         long rem = amount % maxCount;
 
-        Text itemNumber;
+        Component itemNumber;
 
         if (maxCount == 1 || Screen.hasShiftDown()) {
-            itemNumber = new LiteralText(String.format("%d / %d", amount, stackCapacity * maxCount)).setStyle(TextHelper.YELLOW);
+            itemNumber = new TextComponent(String.format("%d / %d", amount, stackCapacity * maxCount)).setStyle(TextHelper.YELLOW);
         } else {
             if (stackNumber > 0) {
                 if (rem != 0) {
-                    itemNumber = (new LiteralText(String.format("%d × %d + %d / %d × %d", stackNumber, maxCount, rem, stackCapacity, maxCount))
-                            .setStyle(TextHelper.YELLOW));
+                    itemNumber = new TextComponent(String.format("%d × %d + %d / %d × %d", stackNumber, maxCount, rem, stackCapacity, maxCount))
+                            .setStyle(TextHelper.YELLOW);
 
                 } else {
-                    itemNumber = new LiteralText(String.format("%d × %d / %d × %d", stackNumber, maxCount, stackCapacity, maxCount))
+                    itemNumber = new TextComponent(String.format("%d × %d / %d × %d", stackNumber, maxCount, stackCapacity, maxCount))
                             .setStyle(TextHelper.YELLOW);
 
                 }
             } else {
-                itemNumber = new LiteralText(String.format("%d / %d × %d", rem, stackCapacity, maxCount)).setStyle(TextHelper.YELLOW);
+                itemNumber = new TextComponent(String.format("%d / %d × %d", rem, stackCapacity, maxCount)).setStyle(TextHelper.YELLOW);
             }
         }
 
@@ -91,7 +92,7 @@ public record BarrelTooltipComponent(BarrelTooltipData data) implements TooltipC
     }
 
     @Override
-    public void drawItems(TextRenderer textRenderer, int x, int y, MatrixStack matrices, ItemRenderer itemRenderer, int z) {
-        itemRenderer.renderGuiItemIcon(data.variant().toStack(), x, y + 10);
+    public void renderImage(Font textRenderer, int x, int y, PoseStack matrices, ItemRenderer itemRenderer, int z) {
+        itemRenderer.renderGuiItem(data.variant().toStack(), x, y + 10);
     }
 }

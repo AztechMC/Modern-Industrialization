@@ -23,7 +23,7 @@
  */
 package aztech.modern_industrialization.machines.gui;
 
-import net.minecraft.network.PacketByteBuf;
+import net.minecraft.network.FriendlyByteBuf;
 
 public class MachineGuiParameters {
     public final String blockId;
@@ -41,8 +41,8 @@ public class MachineGuiParameters {
         this.lockButton = lockButton;
     }
 
-    public void write(PacketByteBuf buf) {
-        buf.writeString(blockId);
+    public void write(FriendlyByteBuf buf) {
+        buf.writeUtf(blockId);
         buf.writeInt(playerInventoryX);
         buf.writeInt(playerInventoryY);
         buf.writeInt(backgroundWidth);
@@ -50,8 +50,8 @@ public class MachineGuiParameters {
         buf.writeBoolean(lockButton);
     }
 
-    public static MachineGuiParameters read(PacketByteBuf buf) {
-        return new MachineGuiParameters(buf.readString(), buf.readInt(), buf.readInt(), buf.readInt(), buf.readInt(), buf.readBoolean());
+    public static MachineGuiParameters read(FriendlyByteBuf buf) {
+        return new MachineGuiParameters(buf.readUtf(), buf.readInt(), buf.readInt(), buf.readInt(), buf.readInt(), buf.readBoolean());
     }
 
     public static class Builder {

@@ -32,22 +32,26 @@ import net.fabricmc.fabric.api.renderer.v1.mesh.Mesh;
 import net.fabricmc.fabric.api.renderer.v1.mesh.MeshBuilder;
 import net.fabricmc.fabric.api.renderer.v1.mesh.MutableQuadView;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
-import net.minecraft.block.BlockState;
-import net.minecraft.client.render.model.*;
-import net.minecraft.client.render.model.json.ModelOverrideList;
-import net.minecraft.client.render.model.json.ModelTransformation;
-import net.minecraft.client.texture.Sprite;
-import net.minecraft.client.texture.SpriteAtlasTexture;
-import net.minecraft.client.util.SpriteIdentifier;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.Direction;
+import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.renderer.block.model.ItemOverrides;
+import net.minecraft.client.renderer.block.model.ItemTransforms;
+import net.minecraft.client.renderer.texture.TextureAtlas;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.client.resources.model.Material;
+import net.minecraft.client.resources.model.ModelBakery;
+import net.minecraft.client.resources.model.ModelState;
+import net.minecraft.client.resources.model.UnbakedModel;
+import net.minecraft.core.Direction;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
 
 /**
  * Auto-registers itself when created!
  */
 public class MachineCasingModel implements UnbakedModel, BakedModel {
-    private Identifier id;
+    private ResourceLocation id;
     /**
      * <ol>
      * <li>Top texture</li>
@@ -55,16 +59,16 @@ public class MachineCasingModel implements UnbakedModel, BakedModel {
      * <li>Bottom texture</li>
      * </ol>
      */
-    private final SpriteIdentifier[] spriteIds = new SpriteIdentifier[3];
+    private final Material[] spriteIds = new Material[3];
     private static final String[] SIDES = new String[] { "top", "side", "bottom" };
 
     private Mesh mesh;
-    private Sprite sideSprite;
+    private TextureAtlasSprite sideSprite;
 
     public MachineCasingModel(String folder) {
         this.id = new MIIdentifier("machine_casing/" + folder);
         for (int i = 0; i < 3; ++i) {
-            spriteIds[i] = new SpriteIdentifier(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE,
+            spriteIds[i] = new Material(TextureAtlas.LOCATION_BLOCKS,
                     new MIIdentifier("blocks/casings/" + folder + "/" + SIDES[i]));
         }
 
@@ -72,13 +76,13 @@ public class MachineCasingModel implements UnbakedModel, BakedModel {
         MachineModelProvider.loadManually(id);
     }
 
-    public MachineCasingModel(Identifier id, Mesh mesh, Sprite sideSprite) {
+    public MachineCasingModel(ResourceLocation id, Mesh mesh, TextureAtlasSprite sideSprite) {
         this.id = id;
         this.mesh = mesh;
         this.sideSprite = sideSprite;
     }
 
-    public Identifier getId() {
+    public ResourceLocation getId() {
         return id;
     }
 
@@ -86,26 +90,26 @@ public class MachineCasingModel implements UnbakedModel, BakedModel {
         return mesh;
     }
 
-    public Sprite getSideSprite() {
+    public TextureAtlasSprite getSideSprite() {
         return sideSprite;
     }
 
     @Override
-    public Collection<Identifier> getModelDependencies() {
+    public Collection<ResourceLocation> getDependencies() {
         return Collections.emptyList();
     }
 
     @Override
-    public Collection<SpriteIdentifier> getTextureDependencies(Function<Identifier, UnbakedModel> unbakedModelGetter,
+    public Collection<Material> getMaterials(Function<ResourceLocation, UnbakedModel> unbakedModelGetter,
             Set<Pair<String, String>> unresolvedTextureReferences) {
         return Arrays.asList(spriteIds);
     }
 
     @SuppressWarnings("ConstantConditions")
     @Override
-    public @Nullable BakedModel bake(ModelLoader loader, Function<SpriteIdentifier, Sprite> textureGetter, ModelBakeSettings rotationContainer,
-            Identifier modelId) {
-        Sprite[] sprites = new Sprite[3];
+    public @Nullable BakedModel bake(ModelBakery loader, Function<Material, TextureAtlasSprite> textureGetter, ModelState rotationContainer,
+            ResourceLocation modelId) {
+        TextureAtlasSprite[] sprites = new TextureAtlasSprite[3];
         for (int i = 0; i < 3; ++i) {
             sprites[i] = textureGetter.apply(spriteIds[i]);
         }
@@ -127,11 +131,11 @@ public class MachineCasingModel implements UnbakedModel, BakedModel {
         this.mesh = mesh;
     }
 
-    public void setSideSprite(Sprite sideSprite) {
+    public void setSideSprite(TextureAtlasSprite sideSprite) {
         this.sideSprite = sideSprite;
     }
 
-    public void setId(Identifier id) {
+    public void setId(ResourceLocation id) {
         this.id = id;
     }
 
@@ -146,32 +150,32 @@ public class MachineCasingModel implements UnbakedModel, BakedModel {
     }
 
     @Override
-    public boolean hasDepth() {
+    public boolean isGui3d() {
         return false;
     }
 
     @Override
-    public boolean isSideLit() {
+    public boolean usesBlockLight() {
         return false;
     }
 
     @Override
-    public boolean isBuiltin() {
+    public boolean isCustomRenderer() {
         return false;
     }
 
     @Override
-    public Sprite getParticleSprite() {
+    public TextureAtlasSprite getParticleIcon() {
         return null;
     }
 
     @Override
-    public ModelTransformation getTransformation() {
+    public ItemTransforms getTransforms() {
         return null;
     }
 
     @Override
-    public ModelOverrideList getOverrides() {
+    public ItemOverrides getOverrides() {
         return null;
     }
 }

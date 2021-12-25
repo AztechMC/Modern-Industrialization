@@ -30,7 +30,7 @@ import aztech.modern_industrialization.fluid.CraftingFluid;
 import java.util.ArrayList;
 import net.devtech.arrp.json.models.JModel;
 import net.devtech.arrp.json.models.JTextures;
-import net.minecraft.util.registry.Registry;
+import net.minecraft.core.Registry;
 
 // @formatter:off
 public class MIFluids {
@@ -117,7 +117,7 @@ public class MIFluids {
     private static void registerFluid(CraftingFluid fluid) {
         String id = fluid.name;
         Registry.register(Registry.FLUID, new MIIdentifier(id), fluid);
-        Registry.register(Registry.ITEM, new MIIdentifier("bucket_" + id), fluid.getBucketItem());
+        Registry.register(Registry.ITEM, new MIIdentifier("bucket_" + id), fluid.getBucket());
         RESOURCE_PACK.addModel(JModel.model().parent("minecraft:item/generated").textures(new JTextures().layer0(MOD_ID + ":items/bucket/" + id)),
                 new MIIdentifier("item/bucket_" + id));
     }

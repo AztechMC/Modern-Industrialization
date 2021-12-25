@@ -27,7 +27,7 @@ import java.util.Optional;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.TransferVariant;
-import net.minecraft.network.PacketByteBuf;
+import net.minecraft.network.FriendlyByteBuf;
 
 public interface INuclearTileData {
 
@@ -66,7 +66,7 @@ public interface INuclearTileData {
         return Optional.empty();
     }
 
-    static void write(Optional<INuclearTileData> maybeData, PacketByteBuf buf) {
+    static void write(Optional<INuclearTileData> maybeData, FriendlyByteBuf buf) {
 
         if (maybeData.isPresent()) {
             INuclearTileData tile = maybeData.get();
@@ -95,7 +95,7 @@ public interface INuclearTileData {
 
     }
 
-    static Optional<INuclearTileData> read(PacketByteBuf buf) {
+    static Optional<INuclearTileData> read(FriendlyByteBuf buf) {
         boolean isPresent = buf.readBoolean();
         if (isPresent) {
 

@@ -28,38 +28,39 @@ import aztech.modern_industrialization.api.TickableBlock;
 import aztech.modern_industrialization.util.MobSpawning;
 import java.util.Arrays;
 import java.util.List;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Material;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.loot.context.LootContext;
-import net.minecraft.loot.context.LootContextParameters;
-import net.minecraft.loot.context.LootContextTypes;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
-import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.BlockView;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.Material;
+import net.minecraft.world.level.storage.loot.LootContext;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
+import net.minecraft.world.phys.BlockHitResult;
 
 public class CreativeTankBlock extends MIBlock implements TickableBlock {
     public CreativeTankBlock() {
-        super("creative_tank", Settings.of(Material.METAL).nonOpaque().allowsSpawning(MobSpawning.NO_SPAWN).hardness(4.0f), CreativeTankItem::new);
+        super("creative_tank", Properties.of(Material.METAL).noOcclusion().isValidSpawn(MobSpawning.NO_SPAWN).destroyTime(4.0f),
+                CreativeTankItem::new);
     }
 
     @Override
-    public BlockEntity createBlockEntity(BlockPos pos, BlockState state) {
+    public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
         return new CreativeTankBlockEntity(pos, state);
     }
 
-    public boolean isTranslucent(BlockState state, BlockView world, BlockPos pos) {
+    public boolean propagatesSkylightDown(BlockState state, BlockGetter world, BlockPos pos) {
         return true;
     }
 
     @Override
-    public int getOpacity(BlockState state, BlockView world, BlockPos pos) {
+    public int getLightBlock(BlockState state, BlockGetter world, BlockPos pos) {
         return 0;
     }
 
@@ -67,29 +68,29 @@ public class CreativeTankBlock extends MIBlock implements TickableBlock {
         CreativeTankBlockEntity tankEntity = (CreativeTankBlockEntity) entity;
         ItemStack stack = new ItemStack(asItem());
         if (!tankEntity.isResourceBlank()) {
-            NbtCompound tag = new NbtCompound();
-            tag.put("BlockEntityTag", tankEntity.createNbt());
-            stack.setNbt(tag);
+            CompoundTag tag = new CompoundTag();
+            tag.put("BlockEntityTag", tankEntity.saveWithoutMetadata());
+            stack.setTag(tag);
         }
         return stack;
     }
 
     @Override
-    public List<ItemStack> getDroppedStacks(BlockState state, LootContext.Builder builder) {
-        LootContext lootContext = builder.parameter(LootContextParameters.BLOCK_STATE, state).build(LootContextTypes.BLOCK);
-        return Arrays.asList(getStack(lootContext.get(LootContextParameters.BLOCK_ENTITY)));
+    public List<ItemStack> getDrops(BlockState state, LootContext.Builder builder) {
+        LootContext lootContext = builder.withParameter(LootContextParams.BLOCK_STATE, state).create(LootContextParamSets.BLOCK);
+        return Arrays.asList(getStack(lootContext.getParamOrNull(LootContextParams.BLOCK_ENTITY)));
     }
 
     @Override
-    public ItemStack getPickStack(BlockView world, BlockPos pos, BlockState state) {
+    public ItemStack getCloneItemStack(BlockGetter world, BlockPos pos, BlockState state) {
         return getStack(world.getBlockEntity(pos));
     }
 
     @Override
-    public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
+    public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
         if (((CreativeTankBlockEntity) world.getBlockEntity(pos)).onPlayerUse(player)) {
-            return ActionResult.success(world.isClient);
+            return InteractionResult.sidedSuccess(world.isClientSide);
         }
-        return ActionResult.PASS;
+        return InteractionResult.PASS;
     }
 }

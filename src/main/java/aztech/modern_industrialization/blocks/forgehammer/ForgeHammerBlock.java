@@ -27,26 +27,26 @@ import aztech.modern_industrialization.MIBlock;
 import aztech.modern_industrialization.util.MobSpawning;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Material;
-import net.minecraft.block.ShapeContext;
-import net.minecraft.entity.ai.pathing.NavigationType;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.screen.NamedScreenHandlerFactory;
-import net.minecraft.screen.ScreenHandler;
-import net.minecraft.screen.ScreenHandlerContext;
-import net.minecraft.sound.BlockSoundGroup;
-import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
-import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.shape.VoxelShape;
-import net.minecraft.util.shape.VoxelShapes;
-import net.minecraft.world.BlockView;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.MenuProvider;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.ContainerLevelAccess;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.Material;
+import net.minecraft.world.level.pathfinder.PathComputationType;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
 
 public class ForgeHammerBlock extends MIBlock {
 
@@ -55,52 +55,53 @@ public class ForgeHammerBlock extends MIBlock {
     private int part_width[] = { 14, 10, 8, 14 };
 
     public ForgeHammerBlock() {
-        super("forge_hammer", FabricBlockSettings.of(Material.METAL).hardness(6.0f).breakByTool(FabricToolTags.PICKAXES).requiresTool()
-                .resistance(1200).sounds(BlockSoundGroup.ANVIL).allowsSpawning(MobSpawning.NO_SPAWN),
+        super("forge_hammer",
+                FabricBlockSettings.of(Material.METAL).breakByTool(FabricToolTags.PICKAXES).destroyTime(6.0f).requiresCorrectToolForDrops()
+                        .explosionResistance(1200).sound(SoundType.ANVIL).isValidSpawn(MobSpawning.NO_SPAWN),
                 MIBlock.FLAG_BLOCK_ITEM_MODEL | MIBlock.FLAG_BLOCK_LOOT);
         VoxelShape[] parts = new VoxelShape[part_height.length];
         float currentY = 0;
         for (int i = 0; i < part_height.length; i++) {
             float o = (16 - part_width[i]) / 32.0f;
             float e = o + part_width[i] / 16.0f;
-            parts[i] = VoxelShapes.cuboid(o, currentY, o, e, currentY + part_height[i] / 16.0f, e);
+            parts[i] = Shapes.box(o, currentY, o, e, currentY + part_height[i] / 16.0f, e);
             currentY += part_height[i] / 16.0f;
         }
         shape = parts[0];
         for (int i = 1; i < part_height.length; i++) {
-            shape = VoxelShapes.union(shape, parts[i]);
+            shape = Shapes.or(shape, parts[i]);
         }
 
     }
 
     @Override
-    public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
-        if (world.isClient) {
-            return ActionResult.SUCCESS;
+    public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+        if (world.isClientSide) {
+            return InteractionResult.SUCCESS;
         } else {
-            player.openHandledScreen(new NamedScreenHandlerFactory() {
+            player.openMenu(new MenuProvider() {
 
                 @Override
-                public ScreenHandler createMenu(int syncId, PlayerInventory inv, PlayerEntity player) {
-                    return new ForgeHammerScreenHandler(syncId, inv, ScreenHandlerContext.create(world, pos));
+                public AbstractContainerMenu createMenu(int syncId, Inventory inv, Player player) {
+                    return new ForgeHammerScreenHandler(syncId, inv, ContainerLevelAccess.create(world, pos));
                 }
 
                 @Override
-                public Text getDisplayName() {
-                    return new TranslatableText(MIBlock.FORGE_HAMMER.getTranslationKey());
+                public Component getDisplayName() {
+                    return new TranslatableComponent(MIBlock.FORGE_HAMMER.getDescriptionId());
                 }
             });
-            return ActionResult.CONSUME;
+            return InteractionResult.CONSUME;
         }
     }
 
     @Override
-    public VoxelShape getOutlineShape(BlockState state, BlockView view, BlockPos pos, ShapeContext context) {
+    public VoxelShape getShape(BlockState state, BlockGetter view, BlockPos pos, CollisionContext context) {
         return shape;
     }
 
     @Override
-    public boolean canPathfindThrough(BlockState state, BlockView world, BlockPos pos, NavigationType type) {
+    public boolean isPathfindable(BlockState state, BlockGetter world, BlockPos pos, PathComputationType type) {
         return false;
     }
 }

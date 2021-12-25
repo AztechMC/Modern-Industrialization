@@ -28,14 +28,14 @@ import aztech.modern_industrialization.machines.IComponent;
 import aztech.modern_industrialization.machines.MachineBlockEntity;
 import java.util.IdentityHashMap;
 import java.util.Map;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
-import net.minecraft.util.ItemScatterer;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.Containers;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 
 public class UpgradeComponent implements IComponent.ServerOnly {
 
@@ -56,30 +56,30 @@ public class UpgradeComponent implements IComponent.ServerOnly {
     }
 
     @Override
-    public void writeNbt(NbtCompound tag) {
-        tag.put("upgradesItemStack", itemStack.writeNbt(new NbtCompound()));
+    public void writeNbt(CompoundTag tag) {
+        tag.put("upgradesItemStack", itemStack.save(new CompoundTag()));
     }
 
     @Override
-    public void readNbt(NbtCompound tag) {
-        itemStack = ItemStack.fromNbt(tag.getCompound("upgradesItemStack"));
+    public void readNbt(CompoundTag tag) {
+        itemStack = ItemStack.of(tag.getCompound("upgradesItemStack"));
     }
 
-    public ActionResult onUse(MachineBlockEntity be, PlayerEntity player, Hand hand) {
-        ItemStack stackInHand = player.getStackInHand(hand);
+    public InteractionResult onUse(MachineBlockEntity be, Player player, InteractionHand hand) {
+        ItemStack stackInHand = player.getItemInHand(hand);
         if (stackInHand.isEmpty()) {
-            return ActionResult.PASS;
+            return InteractionResult.PASS;
         }
-        if (stackInHand.getItem() == MIItem.ITEM_CROWBAR && player.isSneaking()) {
-            BlockPos pos = be.getPos();
+        if (stackInHand.getItem() == MIItem.ITEM_CROWBAR && player.isShiftKeyDown()) {
+            BlockPos pos = be.getBlockPos();
             if (!itemStack.isEmpty()) {
-                ItemScatterer.spawn(be.getWorld(), pos.getX(), pos.getY(), pos.getZ(), itemStack);
-                be.markDirty();
-                if (!be.getWorld().isClient()) {
+                Containers.dropItemStack(be.getLevel(), pos.getX(), pos.getY(), pos.getZ(), itemStack);
+                be.setChanged();
+                if (!be.getLevel().isClientSide()) {
                     be.sync();
 
                 }
-                return ActionResult.success(be.getWorld().isClient);
+                return InteractionResult.sidedSuccess(be.getLevel().isClientSide);
             }
 
         } else {
@@ -93,26 +93,26 @@ public class UpgradeComponent implements IComponent.ServerOnly {
                     changed = true;
 
                 } else if (stackInHand.getItem() == itemStack.getItem()) {
-                    int maxAdded = Math.min(stackInHand.getCount(), itemStack.getMaxCount() - itemStack.getCount());
+                    int maxAdded = Math.min(stackInHand.getCount(), itemStack.getMaxStackSize() - itemStack.getCount());
                     changed = maxAdded > 0;
-                    itemStack.increment(maxAdded);
+                    itemStack.grow(maxAdded);
                     if (!player.isCreative()) {
-                        stackInHand.decrement(maxAdded);
+                        stackInHand.shrink(maxAdded);
                     }
                 }
                 if (changed) {
-                    be.markDirty();
-                    if (!be.getWorld().isClient()) {
+                    be.setChanged();
+                    if (!be.getLevel().isClientSide()) {
                         be.sync();
 
                     }
-                    return ActionResult.success(be.getWorld().isClient);
+                    return InteractionResult.sidedSuccess(be.getLevel().isClientSide);
                 }
 
             }
         }
 
-        return ActionResult.PASS;
+        return InteractionResult.PASS;
     }
 
     public long getAddMaxEUPerTick() {

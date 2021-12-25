@@ -24,13 +24,13 @@
 package aztech.modern_industrialization.machines.gui;
 
 import aztech.modern_industrialization.machines.MachineScreenHandlers;
+import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
-import net.minecraft.client.gui.DrawableHelper;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.text.Text;
+import net.minecraft.client.gui.GuiComponent;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.network.chat.Component;
 
 /**
  * Renderer for the shared data of a client component on the machine screen.
@@ -39,9 +39,9 @@ public interface ClientComponentRenderer {
     default void addButtons(ButtonContainer container) {
     }
 
-    void renderBackground(DrawableHelper helper, MatrixStack matrices, int x, int y);
+    void renderBackground(GuiComponent helper, PoseStack matrices, int x, int y);
 
-    default void renderTooltip(MachineScreenHandlers.ClientScreen screen, MatrixStack matrices, int x, int y, int cursorX, int cursorY) {
+    default void renderTooltip(MachineScreenHandlers.ClientScreen screen, PoseStack matrices, int x, int y, int cursorX, int cursorY) {
     }
 
     interface ButtonContainer {
@@ -55,13 +55,15 @@ public interface ClientComponentRenderer {
          * @param isPressed       A function that returns true if the button is
          *                        currently pressed.
          */
-        void addButton(int u, Text message, Consumer<Integer> pressAction, Supplier<List<Text>> tooltipSupplier, Supplier<Boolean> isPressed);
+        void addButton(int u, Component message, Consumer<Integer> pressAction, Supplier<List<Component>> tooltipSupplier,
+                Supplier<Boolean> isPressed);
 
-        void addButton(int posX, int posY, int width, int height, Text message, Consumer<Integer> pressAction, Supplier<List<Text>> tooltipSupplier,
+        void addButton(int posX, int posY, int width, int height, Component message, Consumer<Integer> pressAction,
+                Supplier<List<Component>> tooltipSupplier,
                 CustomButtonRenderer renderer, Supplier<Boolean> isButtonPresent);
 
-        default void addButton(int posX, int posY, int width, int height, Text message, Consumer<Integer> pressAction,
-                Supplier<List<Text>> tooltipSupplier, CustomButtonRenderer renderer) {
+        default void addButton(int posX, int posY, int width, int height, Component message, Consumer<Integer> pressAction,
+                Supplier<List<Component>> tooltipSupplier, CustomButtonRenderer renderer) {
             addButton(posX, posY, width, height, message, pressAction, tooltipSupplier, renderer, () -> true);
         }
 
@@ -69,7 +71,7 @@ public interface ClientComponentRenderer {
 
     @FunctionalInterface
     interface CustomButtonRenderer {
-        void renderButton(Screen screen, MachineScreenHandlers.ClientScreen.MachineButton button, MatrixStack matrices, int mouseX, int mouseY,
+        void renderButton(Screen screen, MachineScreenHandlers.ClientScreen.MachineButton button, PoseStack matrices, int mouseX, int mouseY,
                 float delta);
     }
 

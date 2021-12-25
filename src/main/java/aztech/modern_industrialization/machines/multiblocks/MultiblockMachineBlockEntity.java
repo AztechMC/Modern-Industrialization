@@ -30,9 +30,9 @@ import aztech.modern_industrialization.machines.components.ActiveShapeComponent;
 import aztech.modern_industrialization.machines.components.OrientationComponent;
 import aztech.modern_industrialization.machines.components.ShapeValidComponent;
 import aztech.modern_industrialization.machines.gui.MachineGuiParameters;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.Hand;
-import net.minecraft.util.hit.BlockHitResult;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.phys.BlockHitResult;
 
 public abstract class MultiblockMachineBlockEntity extends MachineBlockEntity {
     public MultiblockMachineBlockEntity(BEP bep, MachineGuiParameters guiParams, OrientationComponent.Params orientationParams) {
@@ -50,9 +50,9 @@ public abstract class MultiblockMachineBlockEntity extends MachineBlockEntity {
     protected abstract void unlink();
 
     @Override
-    public boolean useWrench(PlayerEntity player, Hand hand, BlockHitResult hitResult) {
+    public boolean useWrench(Player player, InteractionHand hand, BlockHitResult hitResult) {
         if (super.useWrench(player, hand, hitResult)) {
-            if (!world.isClient) {
+            if (!level.isClientSide) {
                 unlink();
             }
             return true;
@@ -61,9 +61,9 @@ public abstract class MultiblockMachineBlockEntity extends MachineBlockEntity {
     }
 
     @Override
-    public final void markRemoved() {
-        super.markRemoved();
-        if (!world.isClient) {
+    public final void setRemoved() {
+        super.setRemoved();
+        if (!level.isClientSide) {
             unlink();
         }
     }
@@ -73,9 +73,9 @@ public abstract class MultiblockMachineBlockEntity extends MachineBlockEntity {
     /**
      * Helper method for subclasses that want standard screwdriver handling.
      */
-    protected boolean useScrewdriver(ActiveShapeComponent activeShape, PlayerEntity player, Hand hand, BlockHitResult hitResult) {
+    protected boolean useScrewdriver(ActiveShapeComponent activeShape, Player player, InteractionHand hand, BlockHitResult hitResult) {
         if (activeShape.useScrewdriver(player, hand, MachineOverlay.findHitSide(hitResult))) {
-            if (!player.getEntityWorld().isClient()) {
+            if (!player.getCommandSenderWorld().isClientSide()) {
                 unlink();
                 sync(false);
             }

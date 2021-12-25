@@ -40,19 +40,19 @@ import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageUtil;
 import net.fabricmc.fabric.api.util.NbtType;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.screen.ScreenHandler;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
 
 // LBA
@@ -65,7 +65,7 @@ public class FluidNetworkNode extends PipeNetworkNode {
      * Add all valid targets to the target list, and pick the fluid for the network
      * if no fluid is set.
      */
-    void gatherTargetsAndPickFluid(ServerWorld world, BlockPos pos, List<FluidTarget> targets) {
+    void gatherTargetsAndPickFluid(ServerLevel world, BlockPos pos, List<FluidTarget> targets) {
         FluidNetworkData data = (FluidNetworkData) network.data;
         FluidNetwork network = (FluidNetwork) this.network;
 
@@ -88,9 +88,9 @@ public class FluidNetworkNode extends PipeNetworkNode {
         }
     }
 
-    private Storage<FluidVariant> getNeighborStorage(ServerWorld world, BlockPos pos, FluidConnection connection) {
+    private Storage<FluidVariant> getNeighborStorage(ServerLevel world, BlockPos pos, FluidConnection connection) {
         if (connection.cache == null) {
-            connection.cache = BlockApiCache.create(FluidStorage.SIDED, world, pos.offset(connection.direction));
+            connection.cache = BlockApiCache.create(FluidStorage.SIDED, world, pos.relative(connection.direction));
         }
         Storage<FluidVariant> storage = connection.cache.find(connection.direction.getOpposite());
         if (storage != null) {
@@ -102,7 +102,7 @@ public class FluidNetworkNode extends PipeNetworkNode {
     }
 
     @Override
-    public void updateConnections(World world, BlockPos pos) {
+    public void updateConnections(Level world, BlockPos pos) {
         // Remove the connection to the outside world if a connection to another pipe is
         // made.
         connections.removeIf(connection -> network.manager.hasLink(pos, connection.direction));
@@ -112,21 +112,21 @@ public class FluidNetworkNode extends PipeNetworkNode {
     public PipeEndpointType[] getConnections(BlockPos pos) {
         PipeEndpointType[] connections = new PipeEndpointType[6];
         for (Direction direction : network.manager.getNodeLinks(pos)) {
-            connections[direction.getId()] = PipeEndpointType.PIPE;
+            connections[direction.get3DDataValue()] = PipeEndpointType.PIPE;
         }
         for (FluidConnection connection : this.connections) {
-            connections[connection.direction.getId()] = connection.type;
+            connections[connection.direction.get3DDataValue()] = connection.type;
         }
         return connections;
     }
 
-    private boolean canConnect(World world, BlockPos pos, Direction direction) {
-        BlockPos adjPos = pos.offset(direction);
-        return FluidStorage.SIDED.find(world, pos.offset(direction), direction.getOpposite()) != null;
+    private boolean canConnect(Level world, BlockPos pos, Direction direction) {
+        BlockPos adjPos = pos.relative(direction);
+        return FluidStorage.SIDED.find(world, pos.relative(direction), direction.getOpposite()) != null;
     }
 
     @Override
-    public void removeConnection(World world, BlockPos pos, Direction direction) {
+    public void removeConnection(Level world, BlockPos pos, Direction direction) {
         // Cycle if it exists
         for (int i = 0; i < connections.size(); i++) {
             FluidConnection conn = connections.get(i);
@@ -143,7 +143,7 @@ public class FluidNetworkNode extends PipeNetworkNode {
     }
 
     @Override
-    public void addConnection(World world, BlockPos pos, Direction direction) {
+    public void addConnection(Level world, BlockPos pos, Direction direction) {
         // Refuse if it already exists
         for (FluidConnection connection : connections) {
             if (connection.direction == direction) {
@@ -157,10 +157,10 @@ public class FluidNetworkNode extends PipeNetworkNode {
     }
 
     @Override
-    public NbtCompound toTag(NbtCompound tag) {
+    public CompoundTag toTag(CompoundTag tag) {
         tag.putLong("amount_ftl", amount);
         for (FluidConnection connection : connections) {
-            NbtCompound connectionTag = new NbtCompound();
+            CompoundTag connectionTag = new CompoundTag();
             connectionTag.putByte("connections", (byte) encodeConnectionType(connection.type));
             connectionTag.putInt("priority", connection.priority);
             tag.put(connection.direction.toString(), connectionTag);
@@ -169,15 +169,15 @@ public class FluidNetworkNode extends PipeNetworkNode {
     }
 
     @Override
-    public void fromTag(NbtCompound tag) {
+    public void fromTag(CompoundTag tag) {
         amount = tag.getLong("amount_ftl");
         for (Direction direction : Direction.values()) {
             if (tag.contains(direction.toString())) {
-                if (tag.getType(direction.toString()) == NbtType.BYTE) {
+                if (tag.getTagType(direction.toString()) == NbtType.BYTE) {
                     // Old format (before fluid pipe priorities)
                     connections.add(new FluidConnection(direction, decodeConnectionType(tag.getByte(direction.toString())), 0));
                 } else {
-                    NbtCompound connectionTag = tag.getCompound(direction.toString());
+                    CompoundTag connectionTag = tag.getCompound(direction.toString());
                     connections.add(new FluidConnection(direction, decodeConnectionType(connectionTag.getByte("connections")),
                             connectionTag.getInt("priority")));
                 }
@@ -225,9 +225,9 @@ public class FluidNetworkNode extends PipeNetworkNode {
 
         private class ScreenHandlerFactory implements ExtendedScreenHandlerFactory {
             private final FluidPipeInterface iface;
-            private final Identifier pipeType;
+            private final ResourceLocation pipeType;
 
-            private ScreenHandlerFactory(IPipeScreenHandlerHelper helper, Identifier pipeType) {
+            private ScreenHandlerFactory(IPipeScreenHandlerHelper helper, ResourceLocation pipeType) {
                 this.iface = new FluidPipeInterface() {
                     @Override
                     public FluidVariant getNetworkFluid() {
@@ -276,7 +276,7 @@ public class FluidNetworkNode extends PipeNetworkNode {
                     }
 
                     @Override
-                    public boolean canUse(PlayerEntity player) {
+                    public boolean canUse(Player player) {
                         // Check that the BE is within distance
                         if (!helper.isWithinUseDistance(player)) {
                             return false;
@@ -289,35 +289,35 @@ public class FluidNetworkNode extends PipeNetworkNode {
             }
 
             @Override
-            public void writeScreenOpeningData(ServerPlayerEntity player, PacketByteBuf buf) {
+            public void writeScreenOpeningData(ServerPlayer player, FriendlyByteBuf buf) {
                 iface.toBuf(buf);
             }
 
             @Override
-            public Text getDisplayName() {
-                return new TranslatableText("item." + pipeType.getNamespace() + "." + pipeType.getPath());
+            public Component getDisplayName() {
+                return new TranslatableComponent("item." + pipeType.getNamespace() + "." + pipeType.getPath());
             }
 
             @Override
-            public @Nullable ScreenHandler createMenu(int syncId, PlayerInventory inv, PlayerEntity player) {
+            public @Nullable AbstractContainerMenu createMenu(int syncId, Inventory inv, Player player) {
                 return new FluidPipeScreenHandler(syncId, inv, iface);
             }
         }
     }
 
     @Override
-    public NbtCompound writeCustomData() {
-        NbtCompound tag = new NbtCompound();
+    public CompoundTag writeCustomData() {
+        CompoundTag tag = new CompoundTag();
         NbtHelper.putFluid(tag, "fluid", ((FluidNetworkData) network.data).fluid);
         return tag;
     }
 
-    public void afterTick(ServerWorld world, BlockPos pos) {
+    public void afterTick(ServerLevel world, BlockPos pos) {
         FluidVariant networkFluid = ((FluidNetworkData) network.data).fluid;
         if (!networkFluid.equals(cachedFluid)) {
             cachedFluid = networkFluid;
             // Equivalent to calling sync()
-            world.getChunkManager().markForUpdate(pos);
+            world.getChunkSource().blockChanged(pos);
         }
     }
 

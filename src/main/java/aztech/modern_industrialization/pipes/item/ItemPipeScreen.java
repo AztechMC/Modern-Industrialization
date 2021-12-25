@@ -29,85 +29,89 @@ import aztech.modern_industrialization.pipes.gui.PipeScreen;
 import aztech.modern_industrialization.pipes.impl.PipePackets;
 import aztech.modern_industrialization.util.TextHelper;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
 import io.netty.buffer.Unpooled;
 import java.util.ArrayList;
 import java.util.List;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.text.*;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.Style;
+import net.minecraft.network.chat.TextColor;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Inventory;
 
 public class ItemPipeScreen extends PipeScreen<ItemPipeScreenHandler> {
-    private static final Identifier TEXTURE = new MIIdentifier("textures/gui/pipe/item.png");
+    private static final ResourceLocation TEXTURE = new MIIdentifier("textures/gui/pipe/item.png");
     private static final Style SECONDARY_INFO = Style.EMPTY.withColor(TextColor.fromRgb(0xa9a9a9)).withItalic(true);
 
-    public ItemPipeScreen(ItemPipeScreenHandler handler, PlayerInventory inventory, Text title) {
+    public ItemPipeScreen(ItemPipeScreenHandler handler, Inventory inventory, Component title) {
         super(handler, inventory, title, ItemPipeScreenHandler.HEIGHT);
     }
 
     @Override
     protected void init() {
         super.init();
-        addDrawableChild(new WhitelistButton(this.x, this.y, widget -> {
-            boolean newWhitelist = !handler.pipeInterface.isWhitelist();
-            handler.pipeInterface.setWhitelist(newWhitelist);
-            PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
-            buf.writeInt(handler.syncId);
+        addRenderableWidget(new WhitelistButton(this.leftPos, this.topPos, widget -> {
+            boolean newWhitelist = !menu.pipeInterface.isWhitelist();
+            menu.pipeInterface.setWhitelist(newWhitelist);
+            FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.buffer());
+            buf.writeInt(menu.containerId);
             buf.writeBoolean(newWhitelist);
             ClientPlayNetworking.send(PipePackets.SET_ITEM_WHITELIST, buf);
         }, (button, matrices, mouseX, mouseY) -> {
-            List<Text> lines = new ArrayList<>();
-            if (handler.pipeInterface.isWhitelist()) {
-                lines.add(new TranslatableText("text.modern_industrialization.whitelist"));
-                lines.add(new TranslatableText("text.modern_industrialization.click_to_toggle_blacklist").setStyle(SECONDARY_INFO));
+            List<Component> lines = new ArrayList<>();
+            if (menu.pipeInterface.isWhitelist()) {
+                lines.add(new TranslatableComponent("text.modern_industrialization.whitelist"));
+                lines.add(new TranslatableComponent("text.modern_industrialization.click_to_toggle_blacklist").setStyle(SECONDARY_INFO));
             } else {
-                lines.add(new TranslatableText("text.modern_industrialization.blacklist"));
-                lines.add(new TranslatableText("text.modern_industrialization.click_to_toggle_whitelist").setStyle(SECONDARY_INFO));
+                lines.add(new TranslatableComponent("text.modern_industrialization.blacklist"));
+                lines.add(new TranslatableComponent("text.modern_industrialization.click_to_toggle_whitelist").setStyle(SECONDARY_INFO));
             }
-            renderTooltip(matrices, lines, mouseX, mouseY);
+            renderComponentTooltip(matrices, lines, mouseX, mouseY);
         }));
-        addConnectionTypeButton(148, 22, handler.pipeInterface);
-        addPriorityWidgets(35, 72, handler.pipeInterface, "insert", 0);
-        addPriorityWidgets(35, 86, handler.pipeInterface, "extract", 1);
+        addConnectionTypeButton(148, 22, menu.pipeInterface);
+        addPriorityWidgets(35, 72, menu.pipeInterface, "insert", 0);
+        addPriorityWidgets(35, 86, menu.pipeInterface, "extract", 1);
     }
 
     /**
      * @reason Override the title to add a warning when the slot is empty
      */
     @Override
-    protected void drawForeground(MatrixStack matrices, int mouseX, int mouseY) {
-        Text title = this.title;
-        if (handler.pipeInterface.isWhitelist() && handler.pipeInterface.isFilterEmpty()) {
-            title = title.shallowCopy().append(new LiteralText(" "))
-                    .append(new TranslatableText("text.modern_industrialization.empty_whitelist_warning").setStyle(TextHelper.WARNING_TEXT));
+    protected void renderLabels(PoseStack matrices, int mouseX, int mouseY) {
+        Component title = this.title;
+        if (menu.pipeInterface.isWhitelist() && menu.pipeInterface.isFilterEmpty()) {
+            title = title.copy().append(new TextComponent(" "))
+                    .append(new TranslatableComponent("text.modern_industrialization.empty_whitelist_warning").setStyle(TextHelper.WARNING_TEXT));
         }
-        this.textRenderer.draw(matrices, title, (float) this.titleX, (float) this.titleY, 0x404040);
-        this.textRenderer.draw(matrices, this.playerInventoryTitle, (float) this.playerInventoryTitleX, (float) this.playerInventoryTitleY, 0x404040);
+        this.font.draw(matrices, title, (float) this.titleLabelX, (float) this.titleLabelY, 0x404040);
+        this.font.draw(matrices, this.playerInventoryTitle, (float) this.inventoryLabelX, (float) this.inventoryLabelY, 0x404040);
     }
 
     @Override
-    protected Identifier getBackgroundTexture() {
+    protected ResourceLocation getBackgroundTexture() {
         return TEXTURE;
     }
 
-    private class WhitelistButton extends ButtonWidget {
-        public WhitelistButton(int i, int j, PressAction onPress, TooltipSupplier tooltipSupplier) {
-            super(i + 148, j + 44, 20, 20, new LiteralText("test!"), onPress, tooltipSupplier);
+    private class WhitelistButton extends Button {
+        public WhitelistButton(int i, int j, OnPress onPress, OnTooltip tooltipSupplier) {
+            super(i + 148, j + 44, 20, 20, new TextComponent("test!"), onPress, tooltipSupplier);
         }
 
         @Override
-        public void renderButton(MatrixStack matrices, int mouseX, int mouseY, float delta) {
+        public void renderButton(PoseStack matrices, int mouseX, int mouseY, float delta) {
             RenderSystem.setShaderTexture(0, PipeGuiHelper.BUTTON_TEXTURE);
-            int u = handler.pipeInterface.isWhitelist() ? 0 : 20;
-            int v = this.isHovered() ? 20 : 0;
+            int u = menu.pipeInterface.isWhitelist() ? 0 : 20;
+            int v = this.isHoveredOrFocused() ? 20 : 0;
 
             RenderSystem.enableDepthTest();
-            drawTexture(matrices, this.x, this.y, u, v, this.width, this.height);
-            if (this.isHovered()) {
-                this.renderTooltip(matrices, mouseX, mouseY);
+            blit(matrices, this.x, this.y, u, v, this.width, this.height);
+            if (this.isHoveredOrFocused()) {
+                this.renderToolTip(matrices, mouseX, mouseY);
             }
         }
     }

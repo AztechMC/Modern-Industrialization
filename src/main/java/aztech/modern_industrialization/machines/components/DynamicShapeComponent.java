@@ -27,8 +27,8 @@ import aztech.modern_industrialization.machines.IComponent;
 import aztech.modern_industrialization.machines.multiblocks.MultiblockMachineBlockEntity;
 import aztech.modern_industrialization.machines.multiblocks.ShapeMatcher;
 import aztech.modern_industrialization.machines.multiblocks.ShapeTemplate;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.world.World;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.Level;
 
 public class DynamicShapeComponent implements IComponent {
 
@@ -50,12 +50,12 @@ public class DynamicShapeComponent implements IComponent {
     }
 
     @Override
-    public void writeNbt(NbtCompound tag) {
+    public void writeNbt(CompoundTag tag) {
         tag.putInt("activeShape", activeShape);
     }
 
     @Override
-    public void readNbt(NbtCompound tag) {
+    public void readNbt(CompoundTag tag) {
         activeShape = tag.getInt("activeShape");
     }
 
@@ -67,9 +67,9 @@ public class DynamicShapeComponent implements IComponent {
         MultiblockMachineBlockEntity blockEntity = dynamicShapeBlockEntity.getMultiblockMachineBlockEntity();
 
         if (unionShapeMatcher == null) {
-            unionShapeMatcher = new ShapeMatcher(blockEntity.getWorld(), blockEntity.getPos(), blockEntity.getOrientation().facingDirection,
+            unionShapeMatcher = new ShapeMatcher(blockEntity.getLevel(), blockEntity.getBlockPos(), blockEntity.getOrientation().facingDirection,
                     ShapeTemplate.computeDummyUnion(shapeTemplates));
-            unionShapeMatcher.registerListeners(blockEntity.getWorld());
+            unionShapeMatcher.registerListeners(blockEntity.getLevel());
         }
 
         ShapeMatcher currentShapeMatcher = shapeMatcher;
@@ -82,20 +82,21 @@ public class DynamicShapeComponent implements IComponent {
             ShapeTemplate currentShapeAttempt = shapeTemplates[shapeIndex];
 
             if (j != 0 || currentShapeMatcher == null) {
-                currentShapeMatcher = new ShapeMatcher(blockEntity.getWorld(), blockEntity.getPos(), blockEntity.getOrientation().facingDirection,
+                currentShapeMatcher = new ShapeMatcher(blockEntity.getLevel(), blockEntity.getBlockPos(),
+                        blockEntity.getOrientation().facingDirection,
                         currentShapeAttempt);
             }
 
             if (currentShapeMatcher.needsRematch() || unionShapeMatcher.needsRematch()) {
                 blockEntity.shapeValid.shapeValid = false;
-                currentShapeMatcher.rematch(blockEntity.getWorld());
+                currentShapeMatcher.rematch(blockEntity.getLevel());
 
                 if (currentShapeMatcher.isMatchSuccessful()) {
 
                     if (currentShapeMatcher != oldShapeMatcher) {
                         unlink(dynamicShapeBlockEntity);
                         shapeMatcher = currentShapeMatcher;
-                        currentShapeMatcher.registerListeners(blockEntity.getWorld());
+                        currentShapeMatcher.registerListeners(blockEntity.getLevel());
                     }
 
                     blockEntity.shapeValid.shapeValid = true;
@@ -129,7 +130,7 @@ public class DynamicShapeComponent implements IComponent {
     }
 
     public void unlink(DynamicShapeComponentBlockEntity dynamicShapeBlockEntity) {
-        World world = dynamicShapeBlockEntity.getMultiblockMachineBlockEntity().getWorld();
+        Level world = dynamicShapeBlockEntity.getMultiblockMachineBlockEntity().getLevel();
 
         if (shapeMatcher != null) {
             shapeMatcher.unlinkHatches();

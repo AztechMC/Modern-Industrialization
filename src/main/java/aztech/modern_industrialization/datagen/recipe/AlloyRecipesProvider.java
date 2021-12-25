@@ -30,7 +30,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
-import net.minecraft.data.server.recipe.RecipeJsonProvider;
+import net.minecraft.data.recipes.FinishedRecipe;
 
 public class AlloyRecipesProvider extends MIRecipesProvider {
     public AlloyRecipesProvider(FabricDataGenerator dataGenerator) {
@@ -38,7 +38,7 @@ public class AlloyRecipesProvider extends MIRecipesProvider {
     }
 
     @Override
-    protected void generateRecipes(Consumer<RecipeJsonProvider> consumer) {
+    protected void generateRecipes(Consumer<FinishedRecipe> consumer) {
         new AlloyBuilder("bronze").addIngredient("tin", 1).addIngredient("copper", 3).Build(consumer);
         new AlloyBuilder("battery_alloy").addIngredient("lead", 1).addIngredient("antimony", 1).Build(consumer);
         new AlloyBuilder("cupronickel").addIngredient("copper", 1).addIngredient("nickel", 1).Build(consumer);
@@ -88,7 +88,7 @@ public class AlloyRecipesProvider extends MIRecipesProvider {
             return this;
         }
 
-        public void Build(Consumer<RecipeJsonProvider> consumer) {
+        public void Build(Consumer<FinishedRecipe> consumer) {
             ShapelessRecipeJson dusts = new ShapelessRecipeJson("modern_industrialization:" + output + "_dust", totalAmount);
             ShapelessRecipeJson tinyDusts = new ShapelessRecipeJson("modern_industrialization:" + output + "_tiny_dust", totalAmount);
 

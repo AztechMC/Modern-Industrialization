@@ -30,7 +30,7 @@ import aztech.modern_industrialization.inventory.SlotPositions;
 import aztech.modern_industrialization.machines.IComponent;
 import java.util.ArrayList;
 import java.util.List;
-import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.CompoundTag;
 
 public class MachineInventoryComponent implements CrafterComponent.Inventory, IComponent.ServerOnly {
     public final int itemInputCount;
@@ -79,12 +79,12 @@ public class MachineInventoryComponent implements CrafterComponent.Inventory, IC
     }
 
     @Override
-    public void writeNbt(NbtCompound tag) {
+    public void writeNbt(CompoundTag tag) {
         this.inventory.writeNbt(tag);
     }
 
     @Override
-    public void readNbt(NbtCompound tag) {
+    public void readNbt(CompoundTag tag) {
         this.inventory.readNbt(tag);
     }
 }

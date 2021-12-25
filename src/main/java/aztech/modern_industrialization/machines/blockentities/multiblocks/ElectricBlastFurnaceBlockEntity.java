@@ -44,13 +44,13 @@ import java.util.List;
 import java.util.Map;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.block.Block;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.Direction;
-import net.minecraft.world.World;
+import net.minecraft.core.Direction;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 
 // TODO: should the common part with ElectricCraftingMultiblockBlockEntity be refactored?
 public class ElectricBlastFurnaceBlockEntity extends AbstractCraftingMultiblockBlockEntity {
@@ -79,12 +79,12 @@ public class ElectricBlastFurnaceBlockEntity extends AbstractCraftingMultiblockB
         }
     }
 
-    protected ActionResult onUse(PlayerEntity player, Hand hand, Direction face) {
-        ActionResult result = super.onUse(player, hand, face);
-        if (!result.isAccepted()) {
+    protected InteractionResult onUse(Player player, InteractionHand hand, Direction face) {
+        InteractionResult result = super.onUse(player, hand, face);
+        if (!result.consumesAction()) {
             result = upgrades.onUse(this, player, hand);
         }
-        if (!result.isAccepted()) {
+        if (!result.consumesAction()) {
             result = LubricantHelper.onUse(this.crafter, player, hand);
         }
         return result;
@@ -130,8 +130,8 @@ public class ElectricBlastFurnaceBlockEntity extends AbstractCraftingMultiblockB
         }
 
         @Override
-        public World getCrafterWorld() {
-            return world;
+        public Level getCrafterWorld() {
+            return level;
         }
     }
 

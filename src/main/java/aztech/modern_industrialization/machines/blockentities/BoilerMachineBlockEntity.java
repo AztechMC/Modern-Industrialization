@@ -43,10 +43,10 @@ import aztech.modern_industrialization.util.Tickable;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.fluid.Fluids;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.Direction;
+import net.minecraft.core.Direction;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.material.Fluids;
 
 public class BoilerMachineBlockEntity extends MachineBlockEntity implements Tickable {
 
@@ -115,18 +115,18 @@ public class BoilerMachineBlockEntity extends MachineBlockEntity implements Tick
 
     @Override
     public void tick() {
-        if (world.isClient)
+        if (level.isClientSide)
             return;
 
         steamHeater.tick(Collections.singletonList(inventory.getFluidStacks().get(0)), Collections.singletonList(inventory.getFluidStacks().get(1)));
         fuelBurning.tick(Collections.singletonList(inventory.getItemStacks().get(0)), Collections.emptyList());
 
         for (Direction direction : Direction.values()) {
-            getInventory().autoExtractFluids(world, pos, direction);
+            getInventory().autoExtractFluids(level, worldPosition, direction);
         }
 
         isActiveComponent.updateActive(fuelBurning.isBurning(), this);
 
-        markDirty();
+        setChanged();
     }
 }

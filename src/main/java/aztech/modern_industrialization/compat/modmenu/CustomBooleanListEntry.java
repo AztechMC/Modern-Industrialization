@@ -24,37 +24,37 @@
 package aztech.modern_industrialization.compat.modmenu;
 
 import aztech.modern_industrialization.util.TextHelper;
+import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 import me.shedaniel.clothconfig2.gui.entries.BooleanListEntry;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.render.item.ItemRenderer;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.entity.ItemRenderer;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 
 public class CustomBooleanListEntry extends BooleanListEntry {
 
     private final Item item;
 
-    public CustomBooleanListEntry(Text fieldName, boolean value, Supplier<Boolean> defaultValue, Consumer<Boolean> saveConsumer, Item item) {
-        super(fieldName, value, new TranslatableText("text.cloth-config.reset_value"), defaultValue, saveConsumer, null, true);
+    public CustomBooleanListEntry(Component fieldName, boolean value, Supplier<Boolean> defaultValue, Consumer<Boolean> saveConsumer, Item item) {
+        super(fieldName, value, new TranslatableComponent("text.cloth-config.reset_value"), defaultValue, saveConsumer, null, true);
         this.item = item;
     }
 
-    public Text getYesNoText(boolean bool) {
-        return bool ? new TranslatableText("text.modern_industrialization.enabled").setStyle(TextHelper.GREEN)
-                : new TranslatableText("text.modern_industrialization.disabled").setStyle(TextHelper.RED);
+    public Component getYesNoText(boolean bool) {
+        return bool ? new TranslatableComponent("text.modern_industrialization.enabled").setStyle(TextHelper.GREEN)
+                : new TranslatableComponent("text.modern_industrialization.disabled").setStyle(TextHelper.RED);
     }
 
-    public void render(MatrixStack matrices, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean isHovered,
+    public void render(PoseStack matrices, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean isHovered,
             float delta) {
         super.render(matrices, index, y, x, entryWidth, entryHeight, mouseX, mouseY, isHovered, delta);
-        ItemRenderer itemRenderer = MinecraftClient.getInstance().getItemRenderer();
+        ItemRenderer itemRenderer = Minecraft.getInstance().getItemRenderer();
         ItemStack stack = new ItemStack(item);
-        itemRenderer.renderInGui(stack, x - 20, y + 2);
+        itemRenderer.renderAndDecorateFakeItem(stack, x - 20, y + 2);
 
     }
 }

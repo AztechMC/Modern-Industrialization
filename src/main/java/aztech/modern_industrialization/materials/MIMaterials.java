@@ -45,8 +45,8 @@ import aztech.modern_industrialization.nuclear.NuclearConstant;
 import aztech.modern_industrialization.textures.coloramp.BakableTargetColoramp;
 import aztech.modern_industrialization.util.ResourceUtil;
 import net.devtech.arrp.json.tags.JTag;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.intprovider.UniformIntProvider;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.valueproviders.UniformInt;
 
 // @formatter:off
 public class MIMaterials {
@@ -175,7 +175,7 @@ public class MIMaterials {
 
         MaterialRegistry
                 .addMaterial(new MaterialBuilder("quartz", STONE, GEM, new BakableTargetColoramp(0xf0ebe4, mcitem("quartz"), mcitem("quartz")), SOFT)
-                        .addParts(CRUSHED_DUST, DUST, TINY_DUST).addParts(ORE.of(UniformIntProvider.create(2, 5), MaterialOreSet.QUARTZ))
+                        .addParts(CRUSHED_DUST, DUST, TINY_DUST).addParts(ORE.of(UniformInt.of(2, 5), MaterialOreSet.QUARTZ))
                         .addParts(ExternalPart.of(GEM, "minecraft:quartz", "minecraft:quartz")).addRecipes(StandardRecipes::apply)
                         .cancelRecipes("macerator/ore_to_crushed").addRecipes(context -> new MIRecipeBuilder(context, MIMachineRecipeTypes.COMPRESSOR, "quartz")
                                 .addTaggedPartInput(DUST, 1).addOutput("minecraft:quartz", 1))
@@ -221,7 +221,7 @@ public class MIMaterials {
 
         MaterialRegistry.addMaterial(new MaterialBuilder("lignite_coal", STONE, GEM, 0x644646, SOFT).addParts(ITEM_PURE_NON_METAL)
                 .addParts(BLOCK.of(MaterialBlockSet.COAL)).addParts(GEM)
-                .addParts(ORE.ofAll(UniformIntProvider.create(0, 2), 25, 17, 256, MaterialOreSet.COAL))
+                .addParts(ORE.ofAll(UniformInt.of(0, 2), 25, 17, 256, MaterialOreSet.COAL))
                 .addRecipes(ForgeHammerRecipes::apply, SmeltingRecipes::apply, StandardRecipes::apply).cancelRecipes("macerator/crushed_dust")
                 .addRecipes(context -> new MIRecipeBuilder(context, MIMachineRecipeTypes.COMPRESSOR, "lignite_coal").addTaggedPartInput(DUST, 1).addPartOutput(GEM, 1))
                 .build());
@@ -235,7 +235,7 @@ public class MIMaterials {
                         .addRecipes(SmeltingRecipes::applyBlastFurnace).build());
 
         MaterialRegistry.addMaterial(new MaterialBuilder("bauxite", DULL, DUST, 0xC86400, SOFT).addParts(ITEM_PURE_NON_METAL)
-                .addParts(BLOCK.of(MaterialBlockSet.LAPIS)).addParts(ORE.ofAll(UniformIntProvider.create(1, 4), 24, 7, 32, MaterialOreSet.REDSTONE))
+                .addParts(BLOCK.of(MaterialBlockSet.LAPIS)).addParts(ORE.ofAll(UniformInt.of(1, 4), 24, 7, 32, MaterialOreSet.REDSTONE))
                 .addRecipes(StandardRecipes::apply).build());
 
         MaterialRegistry
@@ -278,7 +278,7 @@ public class MIMaterials {
                         .addParts(BATTERY).removeParts(CRUSHED_DUST).addRecipes(StandardRecipes::apply, SmeltingRecipes::apply).build());
 
         MaterialRegistry.addMaterial(new MaterialBuilder("salt", STONE, DUST, 0xc7d6c5, SOFT).addParts(ITEM_PURE_NON_METAL)
-                .addParts(BLOCK.of(MaterialBlockSet.REDSTONE)).addParts(ORE.ofAll(UniformIntProvider.create(1, 3), 6, 6, 64, MaterialOreSet.COAL))
+                .addParts(BLOCK.of(MaterialBlockSet.REDSTONE)).addParts(ORE.ofAll(UniformInt.of(1, 3), 6, 6, 64, MaterialOreSet.COAL))
                 .addRecipes(StandardRecipes::apply).build());
 
         MaterialRegistry.addMaterial(
@@ -410,7 +410,7 @@ public class MIMaterials {
                         .cancelRecipes("assembler/barrel").build());
 
         MaterialRegistry.addMaterial(new MaterialBuilder("mozanite", STONE, DUST, 0x96248e, SOFT).addParts(CRUSHED_DUST, DUST, TINY_DUST)
-                .addParts(BLOCK.of(MaterialBlockSet.REDSTONE)).addParts(ORE.ofAll(UniformIntProvider.create(1, 4), 2, 3, 24, MaterialOreSet.LAPIS))
+                .addParts(BLOCK.of(MaterialBlockSet.REDSTONE)).addParts(ORE.ofAll(UniformInt.of(1, 4), 2, 3, 24, MaterialOreSet.LAPIS))
                 .addRecipes(StandardRecipes::apply).build());
 
         MaterialRegistry
@@ -467,45 +467,45 @@ public class MIMaterials {
      * Add material tags for special parts, like vanilla stuff
      */
     private static void addExtraTags() {
-        MaterialHelper.registerItemTag("c:iron_blocks", JTag.tag().add(new Identifier("minecraft:iron_block")));
-        MaterialHelper.registerItemTag("c:iron_ingots", JTag.tag().add(new Identifier("minecraft:iron_ingot")));
-        MaterialHelper.registerItemTag("c:iron_nuggets", JTag.tag().add(new Identifier("minecraft:iron_nugget")));
-        MaterialHelper.registerItemTag("c:iron_ores", JTag.tag().tag(new Identifier("minecraft:iron_ores")));
-        MaterialHelper.registerItemTag("c:raw_iron_ores", JTag.tag().add(new Identifier("minecraft:raw_iron")));
-        MaterialHelper.registerItemTag("c:raw_iron_blocks", JTag.tag().add(new Identifier("minecraft:raw_iron_block")));
+        MaterialHelper.registerItemTag("c:iron_blocks", JTag.tag().add(new ResourceLocation("minecraft:iron_block")));
+        MaterialHelper.registerItemTag("c:iron_ingots", JTag.tag().add(new ResourceLocation("minecraft:iron_ingot")));
+        MaterialHelper.registerItemTag("c:iron_nuggets", JTag.tag().add(new ResourceLocation("minecraft:iron_nugget")));
+        MaterialHelper.registerItemTag("c:iron_ores", JTag.tag().tag(new ResourceLocation("minecraft:iron_ores")));
+        MaterialHelper.registerItemTag("c:raw_iron_ores", JTag.tag().add(new ResourceLocation("minecraft:raw_iron")));
+        MaterialHelper.registerItemTag("c:raw_iron_blocks", JTag.tag().add(new ResourceLocation("minecraft:raw_iron_block")));
 
-        JTag copperBlocks = JTag.tag().add(new Identifier("minecraft:copper_block")).add(new Identifier("minecraft:waxed_copper_block"));
+        JTag copperBlocks = JTag.tag().add(new ResourceLocation("minecraft:copper_block")).add(new ResourceLocation("minecraft:waxed_copper_block"));
 
         MaterialHelper.registerItemTag("c:copper_blocks", copperBlocks);
-        MaterialHelper.registerItemTag("c:copper_ingots", JTag.tag().add(new Identifier("minecraft:copper_ingot")));
-        MaterialHelper.registerItemTag("c:copper_ores", JTag.tag().tag(new Identifier("minecraft:copper_ores")));
-        MaterialHelper.registerItemTag("c:raw_copper_ores", JTag.tag().add(new Identifier("minecraft:raw_copper")));
-        MaterialHelper.registerItemTag("c:raw_copper_blocks", JTag.tag().add(new Identifier("minecraft:raw_copper_block")));
+        MaterialHelper.registerItemTag("c:copper_ingots", JTag.tag().add(new ResourceLocation("minecraft:copper_ingot")));
+        MaterialHelper.registerItemTag("c:copper_ores", JTag.tag().tag(new ResourceLocation("minecraft:copper_ores")));
+        MaterialHelper.registerItemTag("c:raw_copper_ores", JTag.tag().add(new ResourceLocation("minecraft:raw_copper")));
+        MaterialHelper.registerItemTag("c:raw_copper_blocks", JTag.tag().add(new ResourceLocation("minecraft:raw_copper_block")));
 
-        JTag goldOres = JTag.tag().tag(new Identifier("minecraft:gold_ores")); // .add(new Identifier("minecraft:gilded_blackstone"));
+        JTag goldOres = JTag.tag().tag(new ResourceLocation("minecraft:gold_ores")); // .add(new Identifier("minecraft:gilded_blackstone"));
 
-        MaterialHelper.registerItemTag("c:gold_blocks", JTag.tag().add(new Identifier("minecraft:gold_block")));
-        MaterialHelper.registerItemTag("c:gold_ingots", JTag.tag().add(new Identifier("minecraft:gold_ingot")));
-        MaterialHelper.registerItemTag("c:gold_nuggets", JTag.tag().add(new Identifier("minecraft:gold_nugget")));
+        MaterialHelper.registerItemTag("c:gold_blocks", JTag.tag().add(new ResourceLocation("minecraft:gold_block")));
+        MaterialHelper.registerItemTag("c:gold_ingots", JTag.tag().add(new ResourceLocation("minecraft:gold_ingot")));
+        MaterialHelper.registerItemTag("c:gold_nuggets", JTag.tag().add(new ResourceLocation("minecraft:gold_nugget")));
         MaterialHelper.registerItemTag("c:gold_ores", goldOres);
-        MaterialHelper.registerItemTag("c:raw_gold_ores", JTag.tag().add(new Identifier("minecraft:raw_gold")));
-        MaterialHelper.registerItemTag("c:raw_gold_blocks", JTag.tag().add(new Identifier("minecraft:raw_gold_block")));
+        MaterialHelper.registerItemTag("c:raw_gold_ores", JTag.tag().add(new ResourceLocation("minecraft:raw_gold")));
+        MaterialHelper.registerItemTag("c:raw_gold_blocks", JTag.tag().add(new ResourceLocation("minecraft:raw_gold_block")));
 
-        MaterialHelper.registerItemTag("c:coal_ores", JTag.tag().add(new Identifier("minecraft:deepslate_coal_ore")));
-        MaterialHelper.registerItemTag("c:coal_blocks", JTag.tag().add(new Identifier("minecraft:coal_block")));
-        MaterialHelper.registerItemTag("c:coal_ores", JTag.tag().tag(new Identifier("minecraft:coal_ores")));
+        MaterialHelper.registerItemTag("c:coal_ores", JTag.tag().add(new ResourceLocation("minecraft:deepslate_coal_ore")));
+        MaterialHelper.registerItemTag("c:coal_blocks", JTag.tag().add(new ResourceLocation("minecraft:coal_block")));
+        MaterialHelper.registerItemTag("c:coal_ores", JTag.tag().tag(new ResourceLocation("minecraft:coal_ores")));
 
-        MaterialHelper.registerItemTag("c:redstone_ores", JTag.tag().tag(new Identifier("minecraft:redstone_ores")));
-        MaterialHelper.registerItemTag("c:redstone_blocks", JTag.tag().add(new Identifier("minecraft:redstone_block")));
+        MaterialHelper.registerItemTag("c:redstone_ores", JTag.tag().tag(new ResourceLocation("minecraft:redstone_ores")));
+        MaterialHelper.registerItemTag("c:redstone_blocks", JTag.tag().add(new ResourceLocation("minecraft:redstone_block")));
 
-        MaterialHelper.registerItemTag("c:emerald_ores", JTag.tag().tag(new Identifier("minecraft:emerald_ores")));
-        MaterialHelper.registerItemTag("c:emerald_blocks", JTag.tag().add(new Identifier("minecraft:emerald_block")));
+        MaterialHelper.registerItemTag("c:emerald_ores", JTag.tag().tag(new ResourceLocation("minecraft:emerald_ores")));
+        MaterialHelper.registerItemTag("c:emerald_blocks", JTag.tag().add(new ResourceLocation("minecraft:emerald_block")));
 
-        MaterialHelper.registerItemTag("c:diamond_ores", JTag.tag().tag(new Identifier("minecraft:diamond_ores")));
-        MaterialHelper.registerItemTag("c:diamond_blocks", JTag.tag().add(new Identifier("minecraft:diamond_block")));
+        MaterialHelper.registerItemTag("c:diamond_ores", JTag.tag().tag(new ResourceLocation("minecraft:diamond_ores")));
+        MaterialHelper.registerItemTag("c:diamond_blocks", JTag.tag().add(new ResourceLocation("minecraft:diamond_block")));
 
-        MaterialHelper.registerItemTag("c:lapis_ores", JTag.tag().tag(new Identifier("minecraft:lapis_ores")));
-        MaterialHelper.registerItemTag("c:lapis_blocks", JTag.tag().add(new Identifier("minecraft:lapis_block")));
+        MaterialHelper.registerItemTag("c:lapis_ores", JTag.tag().tag(new ResourceLocation("minecraft:lapis_ores")));
+        MaterialHelper.registerItemTag("c:lapis_blocks", JTag.tag().add(new ResourceLocation("minecraft:lapis_block")));
 
         ResourceUtil.appendToTag("c:items/quartz_ores", "minecraft:nether_quartz_ore");
 

@@ -43,9 +43,9 @@ import net.fabricmc.fabric.api.transfer.v1.storage.base.CombinedStorage;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.InsertionOnlyStorage;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
-import net.minecraft.item.Item;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.item.Item;
 
 public class ItemNetwork extends PipeNetwork {
     private static final ReferenceOpenHashSet<Item> WHITELIST_CACHED_SET = new ReferenceOpenHashSet<>();
@@ -57,7 +57,7 @@ public class ItemNetwork extends PipeNetwork {
     }
 
     @Override
-    public void tick(ServerWorld world) {
+    public void tick(ServerLevel world) {
         // Only tick once
         if (inactiveTicks == 0) {
             doNetworkTransfer(world);
@@ -66,14 +66,15 @@ public class ItemNetwork extends PipeNetwork {
         --inactiveTicks;
     }
 
-    private void doNetworkTransfer(ServerWorld world) {
+    private void doNetworkTransfer(ServerLevel world) {
         List<ExtractionTarget> extractionTargets = new ArrayList<>();
         for (var entry : iterateTickingNodes()) {
             BlockPos pos = entry.getPos();
             ItemNetworkNode itemNode = (ItemNetworkNode) entry.getNode();
             for (ItemNetworkNode.ItemConnection connection : itemNode.connections) {
                 if (connection.canExtract()) {
-                    Storage<ItemVariant> source = ItemStorage.SIDED.find(world, pos.offset(connection.direction), connection.direction.getOpposite());
+                    Storage<ItemVariant> source = ItemStorage.SIDED.find(world, pos.relative(connection.direction),
+                            connection.direction.getOpposite());
 
                     if (source != null) {
                         extractionTargets.add(new ExtractionTarget(connection, source));
@@ -114,7 +115,7 @@ public class ItemNetwork extends PipeNetwork {
     /**
      * Find all connections in which to insert that are loaded.
      */
-    private List<Aggregate> getAggregatedInsertTargets(ServerWorld world) {
+    private List<Aggregate> getAggregatedInsertTargets(ServerLevel world) {
         Int2ObjectMap<PriorityBucket> priorityBuckets = new Int2ObjectOpenHashMap<>();
 
         for (var entry : iterateTickingNodes()) {
@@ -122,7 +123,7 @@ public class ItemNetwork extends PipeNetwork {
             for (ItemNetworkNode.ItemConnection connection : node.connections) {
                 if (connection.canInsert()) {
                     if (connection.cache == null) {
-                        connection.cache = BlockApiCache.create(ItemStorage.SIDED, world, entry.getPos().offset(connection.direction));
+                        connection.cache = BlockApiCache.create(ItemStorage.SIDED, world, entry.getPos().relative(connection.direction));
                     }
                     Storage<ItemVariant> target = connection.cache.find(connection.direction.getOpposite());
                     if (target != null && target.supportsInsertion()) {

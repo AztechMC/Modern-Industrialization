@@ -30,22 +30,22 @@ import com.mojang.brigadier.context.CommandContext;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import net.fabricmc.fabric.api.client.command.v1.FabricClientCommandSource;
-import net.minecraft.advancement.Advancement;
-import net.minecraft.block.Block;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.resource.language.I18n;
-import net.minecraft.fluid.Fluid;
-import net.minecraft.item.Item;
-import net.minecraft.text.LiteralText;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
+import net.minecraft.advancements.Advancement;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.resources.language.I18n;
+import net.minecraft.core.Registry;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.material.Fluid;
 
 public class MissingTranslationsCommand {
     public static int run(CommandContext<FabricClientCommandSource> context) {
         if (dumpTranslations()) {
-            context.getSource().sendFeedback(new LiteralText("Successfully dumped missing translations!"));
+            context.getSource().sendFeedback(new TextComponent("Successfully dumped missing translations!"));
         } else {
-            context.getSource().sendFeedback(new LiteralText("No missing translations!"));
+            context.getSource().sendFeedback(new TextComponent("No missing translations!"));
         }
         return 1;
     }
@@ -56,28 +56,28 @@ public class MissingTranslationsCommand {
     private static boolean dumpTranslations() {
         Map<String, String> missingTranslations = new LinkedHashMap<>();
         for (Block block : Registry.BLOCK) {
-            Identifier id = Registry.BLOCK.getId(block);
+            ResourceLocation id = Registry.BLOCK.getKey(block);
             if (id.getNamespace().equals("modern_industrialization")) {
-                String key = block.getTranslationKey();
-                if (!I18n.hasTranslation(key)) {
+                String key = block.getDescriptionId();
+                if (!I18n.exists(key)) {
                     missingTranslations.put(key, "XXX");
                 }
             }
         }
         for (Item item : Registry.ITEM) {
-            Identifier id = Registry.ITEM.getId(item);
+            ResourceLocation id = Registry.ITEM.getKey(item);
             if (id.getNamespace().equals("modern_industrialization")) {
-                String key = item.getTranslationKey();
-                if (!I18n.hasTranslation(key)) {
+                String key = item.getDescriptionId();
+                if (!I18n.exists(key)) {
                     missingTranslations.put(key, "XXX");
                 }
             }
         }
         for (Fluid fluid : Registry.FLUID) {
-            Identifier id = Registry.FLUID.getId(fluid);
+            ResourceLocation id = Registry.FLUID.getKey(fluid);
             if (id.getNamespace().equals("modern_industrialization")) {
-                String key = fluid.getDefaultState().getBlockState().getBlock().getTranslationKey();
-                if (!I18n.hasTranslation(key)) {
+                String key = fluid.defaultFluidState().createLegacyBlock().getBlock().getDescriptionId();
+                if (!I18n.exists(key)) {
                     missingTranslations.put(key, "XXX");
                 }
             }
@@ -88,17 +88,17 @@ public class MissingTranslationsCommand {
             entry.setValue(fit(entry.getKey()));
         }
 
-        for (Advancement advancement : MinecraftClient.getInstance().getNetworkHandler().getAdvancementHandler().getManager().getAdvancements()) {
+        for (Advancement advancement : Minecraft.getInstance().getConnection().getAdvancements().getAdvancements().getAllAdvancements()) {
 
             if (advancement.getId().getNamespace().equals("modern_industrialization")) {
                 String key = "advancements.modern_industrialization." + advancement.getId().getPath();
                 String keyDescription = "advancements.modern_industrialization." + advancement.getId().getPath() + ".description";
 
-                if (!I18n.hasTranslation(key)) {
+                if (!I18n.exists(key)) {
                     missingTranslations.put(key, "XXX");
                 }
 
-                if (!I18n.hasTranslation(keyDescription)) {
+                if (!I18n.exists(keyDescription)) {
                     String[] toTranslate = advancement.getId().getPath().split("_");
                     StringBuilder translated = new StringBuilder();
                     boolean first = true;

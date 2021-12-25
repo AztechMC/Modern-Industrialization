@@ -31,19 +31,19 @@ import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleVariantItemStorage;
-import net.minecraft.block.Block;
-import net.minecraft.client.item.TooltipContext;
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.text.Text;
-import net.minecraft.world.World;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 
 public class TankItem extends BlockItem {
 
     public final long capacity;
 
-    public TankItem(Block block, Settings settings, long capacity) {
+    public TankItem(Block block, Properties settings, long capacity) {
         super(block, settings);
         this.capacity = capacity;
     }
@@ -53,22 +53,22 @@ public class TankItem extends BlockItem {
     }
 
     public boolean isEmpty(ItemStack stack) {
-        return stack.getSubNbt("BlockEntityTag") == null;
+        return stack.getTagElement("BlockEntityTag") == null;
     }
 
     public FluidVariant getFluid(ItemStack stack) {
-        return NbtHelper.getFluidCompatible(stack.getSubNbt("BlockEntityTag"), "fluid");
+        return NbtHelper.getFluidCompatible(stack.getTagElement("BlockEntityTag"), "fluid");
     }
 
     private void setFluid(ItemStack stack, FluidVariant fluid) {
-        NbtHelper.putFluid(stack.getOrCreateSubNbt("BlockEntityTag"), "fluid", fluid);
+        NbtHelper.putFluid(stack.getOrCreateTagElement("BlockEntityTag"), "fluid", fluid);
     }
 
     public long getAmount(ItemStack stack) {
         if (getFluid(stack).isBlank()) {
             return 0;
         }
-        NbtCompound tag = stack.getSubNbt("BlockEntityTag");
+        CompoundTag tag = stack.getTagElement("BlockEntityTag");
         if (tag == null)
             return 0;
         else
@@ -76,11 +76,11 @@ public class TankItem extends BlockItem {
     }
 
     private void setAmount(ItemStack stack, long amount) {
-        stack.getOrCreateSubNbt("BlockEntityTag").putLong("amt", amount);
+        stack.getOrCreateTagElement("BlockEntityTag").putLong("amt", amount);
     }
 
     @Override
-    public void appendTooltip(ItemStack stack, World world, List<Text> tooltip, TooltipContext context) {
+    public void appendHoverText(ItemStack stack, Level world, List<Component> tooltip, TooltipFlag context) {
         if (isEmpty(stack)) {
             tooltip.addAll(FluidHelper.getTooltipForFluidStorage(FluidVariant.blank(), 0, capacity));
         } else {

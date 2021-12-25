@@ -24,21 +24,24 @@
 package aztech.modern_industrialization.fluid;
 
 import aztech.modern_industrialization.util.FluidHelper;
-import net.minecraft.item.BucketItem;
-import net.minecraft.item.ItemStack;
-import net.minecraft.text.*;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.Style;
+import net.minecraft.network.chat.TextColor;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.world.item.BucketItem;
+import net.minecraft.world.item.ItemStack;
 
 public class MIBucketItem extends BucketItem {
 
     public final int color;
 
-    public MIBucketItem(CraftingFluid fluid, Settings settings) {
+    public MIBucketItem(CraftingFluid fluid, Properties settings) {
         super(fluid, settings);
         this.color = FluidHelper.getColorMinLuminance(fluid.color);
     }
 
     @Override
-    public Text getName(ItemStack stack) {
-        return new TranslatableText(this.getTranslationKey(stack)).setStyle(Style.EMPTY.withColor(TextColor.fromRgb(color)));
+    public Component getName(ItemStack stack) {
+        return new TranslatableComponent(this.getDescriptionId(stack)).setStyle(Style.EMPTY.withColor(TextColor.fromRgb(color)));
     }
 }

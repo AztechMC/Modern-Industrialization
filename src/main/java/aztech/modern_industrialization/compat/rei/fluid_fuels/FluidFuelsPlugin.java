@@ -35,11 +35,11 @@ import me.shedaniel.rei.api.client.registry.display.DisplayRegistry;
 import me.shedaniel.rei.api.common.category.CategoryIdentifier;
 import me.shedaniel.rei.api.common.entry.EntryStack;
 import me.shedaniel.rei.api.common.util.EntryStacks;
-import net.minecraft.fluid.Fluid;
-import net.minecraft.item.Item;
-import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
-import net.minecraft.util.registry.Registry;
+import net.minecraft.core.Registry;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.level.material.Fluid;
 
 public class FluidFuelsPlugin implements REIClientPlugin {
     static final CategoryIdentifier<FluidFuelDisplay> CATEGORY = CategoryIdentifier.of(new MIIdentifier("fluid_fuels"));
@@ -79,8 +79,8 @@ public class FluidFuelsPlugin implements REIClientPlugin {
         }
     }
 
-    private static final List<Text> DOUBLE_EFFICIENCY = Collections
-            .singletonList(new TranslatableText("text.modern_industrialization.double_fluid_fuel_efficiency").setStyle(TextHelper.UPGRADE_TEXT));
+    private static final List<Component> DOUBLE_EFFICIENCY = Collections
+            .singletonList(new TranslatableComponent("text.modern_industrialization.double_fluid_fuel_efficiency").setStyle(TextHelper.UPGRADE_TEXT));
 
     private void addDoubleEfficiency(CategoryRegistry registry, String... idNamespaces) {
         for (String idNamespace : idNamespaces) {

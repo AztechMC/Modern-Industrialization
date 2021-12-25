@@ -37,9 +37,9 @@ import aztech.modern_industrialization.machines.models.MachineModelClientData;
 import aztech.modern_industrialization.util.Tickable;
 import java.util.List;
 import java.util.Objects;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.ItemStack;
 
 public abstract class HatchBlockEntity extends MachineBlockEntity implements Tickable {
     public HatchBlockEntity(BEP bep, MachineGuiParameters guiParams, OrientationComponent.Params orientationParams) {
@@ -47,14 +47,14 @@ public abstract class HatchBlockEntity extends MachineBlockEntity implements Tic
 
         registerComponents(new IComponent.ClientOnly() {
             @Override
-            public void writeClientNbt(NbtCompound tag) {
+            public void writeClientNbt(CompoundTag tag) {
                 if (matchedCasing != null) {
                     tag.putString("matchedCasing", matchedCasing);
                 }
             }
 
             @Override
-            public void readClientNbt(NbtCompound tag) {
+            public void readClientNbt(CompoundTag tag) {
                 matchedCasing = tag.contains("matchedCasing") ? tag.getString("matchedCasing") : null;
             }
         });
@@ -76,8 +76,8 @@ public abstract class HatchBlockEntity extends MachineBlockEntity implements Tic
 
     // This amazing function is called when the block entity is loaded.
     @Override
-    public void cancelRemoval() {
-        super.cancelRemoval();
+    public void clearRemoved() {
+        super.clearRemoved();
         clearMachineLock();
     }
 
@@ -117,7 +117,7 @@ public abstract class HatchBlockEntity extends MachineBlockEntity implements Tic
 
     @Override
     public void tick() {
-        if (world.isClient()) {
+        if (level.isClientSide()) {
             return;
         }
 
@@ -127,7 +127,7 @@ public abstract class HatchBlockEntity extends MachineBlockEntity implements Tic
         }
 
         tickTransfer();
-        markDirty();
+        setChanged();
     }
 
     protected void tickTransfer() {

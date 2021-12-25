@@ -27,11 +27,11 @@ import aztech.modern_industrialization.ModernIndustrialization;
 import com.google.gson.JsonElement;
 import java.util.Map;
 import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.recipe.RecipeManager;
-import net.minecraft.resource.ResourceManager;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.JsonHelper;
-import net.minecraft.util.profiler.Profiler;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.util.GsonHelper;
+import net.minecraft.util.profiling.ProfilerFiller;
+import net.minecraft.world.item.crafting.RecipeManager;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -40,14 +40,14 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(RecipeManager.class)
 public class RecipeManagerMixin {
     @Inject(at = @At("HEAD"), method = "apply")
-    protected void apply(Map<Identifier, JsonElement> map, ResourceManager resourceManager, Profiler profiler, CallbackInfo ci) {
+    protected void apply(Map<ResourceLocation, JsonElement> map, ResourceManager resourceManager, ProfilerFiller profiler, CallbackInfo ci) {
         profiler.push("MI conditional recipes");
         for (var it = map.entrySet().iterator(); it.hasNext();) {
             var entry = it.next();
             if (entry.getKey().getNamespace().equals(ModernIndustrialization.MOD_ID)) {
                 try {
                     var obj = entry.getValue().getAsJsonObject();
-                    var requiredMod = JsonHelper.getString(obj, "mi:requires_mod", "modern_industrialization");
+                    var requiredMod = GsonHelper.getAsString(obj, "mi:requires_mod", "modern_industrialization");
                     if (!FabricLoader.getInstance().isModLoaded(requiredMod)) {
                         it.remove();
                     }

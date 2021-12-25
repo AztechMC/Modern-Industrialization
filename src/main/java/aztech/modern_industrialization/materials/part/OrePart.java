@@ -35,6 +35,7 @@ import aztech.modern_industrialization.util.ResourceUtil;
 import com.google.common.collect.ImmutableList;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
+import com.mojang.blaze3d.platform.NativeImage;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.List;
@@ -44,17 +45,19 @@ import net.fabricmc.fabric.api.biome.v1.BiomeModifications;
 import net.fabricmc.fabric.api.biome.v1.BiomeSelectors;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
-import net.minecraft.client.texture.NativeImage;
-import net.minecraft.sound.BlockSoundGroup;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.intprovider.UniformIntProvider;
-import net.minecraft.util.registry.BuiltinRegistries;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.util.registry.RegistryKey;
-import net.minecraft.world.gen.GenerationStep;
-import net.minecraft.world.gen.YOffset;
-import net.minecraft.world.gen.decorator.HeightRangePlacementModifier;
-import net.minecraft.world.gen.feature.*;
+import net.minecraft.core.Registry;
+import net.minecraft.data.BuiltinRegistries;
+import net.minecraft.data.worldgen.features.OreFeatures;
+import net.minecraft.data.worldgen.placement.OrePlacements;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.valueproviders.UniformInt;
+import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.levelgen.GenerationStep;
+import net.minecraft.world.level.levelgen.VerticalAnchor;
+import net.minecraft.world.level.levelgen.feature.Feature;
+import net.minecraft.world.level.levelgen.feature.configurations.OreConfiguration;
+import net.minecraft.world.level.levelgen.placement.HeightRangePlacement;
 
 public class OrePart extends UnbuildablePart<OrePart.OrePartParams> {
 
@@ -63,19 +66,19 @@ public class OrePart extends UnbuildablePart<OrePart.OrePartParams> {
     public final static Set<String> GENERATED_MATERIALS = new HashSet<>();
 
     public BuildablePart of(int veinsPerChunk, int veinSize, int maxYLevel, MaterialOreSet set) {
-        return of(new OrePartParams(UniformIntProvider.create(0, 2), set, veinsPerChunk, veinSize, maxYLevel));
+        return of(new OrePartParams(UniformInt.of(0, 2), set, veinsPerChunk, veinSize, maxYLevel));
     }
 
-    public BuildablePart of(UniformIntProvider xpProvider, int veinsPerChunk, int veinSize, int maxYLevel, MaterialOreSet set) {
+    public BuildablePart of(UniformInt xpProvider, int veinsPerChunk, int veinSize, int maxYLevel, MaterialOreSet set) {
         return of(new OrePartParams(xpProvider, set, veinsPerChunk, veinSize, maxYLevel));
     }
 
-    public BuildablePart of(UniformIntProvider xpProvider, MaterialOreSet set) {
+    public BuildablePart of(UniformInt xpProvider, MaterialOreSet set) {
         return of(new OrePartParams(xpProvider, set));
     }
 
     public BuildablePart of(MaterialOreSet set) {
-        return of(new OrePartParams(UniformIntProvider.create(0, 0), set));
+        return of(new OrePartParams(UniformInt.of(0, 0), set));
     }
 
     public OrePart(boolean deepslate) {
@@ -86,8 +89,9 @@ public class OrePart extends UnbuildablePart<OrePart.OrePartParams> {
     @Override
     public BuildablePart of(OrePartParams oreParams) {
         return new RegularPart(key).withRegister((registeringContext, partContext, part, itemPath, itemId, itemTag) -> {
-            MIBlock block = new OreBlock(itemPath, FabricBlockSettings.of(STONE_MATERIAL).hardness(deepslate ? 4.5f : 3.0f).resistance(3.0f)
-                    .sounds(deepslate ? BlockSoundGroup.DEEPSLATE : BlockSoundGroup.STONE).breakByTool(FabricToolTags.PICKAXES, 1).requiresTool(),
+            MIBlock block = new OreBlock(itemPath, FabricBlockSettings.of(STONE_MATERIAL).breakByTool(FabricToolTags.PICKAXES, 1)
+                    .destroyTime(deepslate ? 4.5f : 3.0f).explosionResistance(3.0f)
+                    .sound(deepslate ? SoundType.DEEPSLATE : SoundType.STONE).requiresCorrectToolForDrops(),
                     oreParams, partContext.getMaterialName());
 
             Part mainPart = partContext.getMainPart();
@@ -104,7 +108,7 @@ public class OrePart extends UnbuildablePart<OrePart.OrePartParams> {
 
             // Sanity check: Ensure that ores don't drop xp, iff the main part is an ingot
             // (i.e. the drop is raw ore).
-            if (mainPart.equals(MIParts.INGOT) != (oreParams.xpDropped.getMax() == 0)) {
+            if (mainPart.equals(MIParts.INGOT) != (oreParams.xpDropped.getMaxValue() == 0)) {
                 throw new IllegalArgumentException("Mismatch between raw ore and xp drops for material: " + partContext.getMaterialName());
             }
 
@@ -136,25 +140,25 @@ public class OrePart extends UnbuildablePart<OrePart.OrePartParams> {
                 if (config.generateOres && !config.blacklistedOres.contains(partContext.getMaterialName())) {
                     // TODO 1.18
 
-                    Identifier oreGenId = new MIIdentifier((deepslate ? "deepslate_" : "") + "ore_generator_" + partContext.getMaterialName());
+                    ResourceLocation oreGenId = new MIIdentifier((deepslate ? "deepslate_" : "") + "ore_generator_" + partContext.getMaterialName());
 
-                    var target = ImmutableList.of(OreFeatureConfig.createTarget(
-                            deepslate ? OreConfiguredFeatures.DEEPSLATE_ORE_REPLACEABLES : OreConfiguredFeatures.STONE_ORE_REPLACEABLES,
-                            block.getDefaultState()));
+                    var target = ImmutableList.of(OreConfiguration.target(
+                            deepslate ? OreFeatures.DEEPSLATE_ORE_REPLACEABLES : OreFeatures.STONE_ORE_REPLACEABLES,
+                            block.defaultBlockState()));
 
                     var configuredOreGen = Registry.register(
-                            BuiltinRegistries.CONFIGURED_FEATURE, oreGenId, Feature.ORE.configure(new OreFeatureConfig(target, oreParams.veinSize)));
+                            BuiltinRegistries.CONFIGURED_FEATURE, oreGenId, Feature.ORE.configured(new OreConfiguration(target, oreParams.veinSize)));
 
                     Registry.register(
                             BuiltinRegistries.PLACED_FEATURE,
                             oreGenId,
-                            configuredOreGen.withPlacement(
-                                    OrePlacedFeatures.modifiersWithCount(
+                            configuredOreGen.placed(
+                                    OrePlacements.commonOrePlacement(
                                             oreParams.veinsPerChunk,
-                                            HeightRangePlacementModifier.uniform(YOffset.getBottom(), YOffset.fixed(oreParams.maxYLevel)))));
+                                            HeightRangePlacement.uniform(VerticalAnchor.bottom(), VerticalAnchor.absolute(oreParams.maxYLevel)))));
 
-                    var featureKey = RegistryKey.of(Registry.PLACED_FEATURE_KEY, oreGenId);
-                    BiomeModifications.addFeature(BiomeSelectors.foundInOverworld(), GenerationStep.Feature.UNDERGROUND_ORES, featureKey);
+                    var featureKey = ResourceKey.create(Registry.PLACED_FEATURE_REGISTRY, oreGenId);
+                    BiomeModifications.addFeature(BiomeSelectors.foundInOverworld(), GenerationStep.Decoration.UNDERGROUND_ORES, featureKey);
 
                 }
             }
@@ -194,17 +198,17 @@ public class OrePart extends UnbuildablePart<OrePart.OrePartParams> {
         return List.of(MIParts.ORE_DEEPLSATE.of(params), MIParts.ORE.of(params));
     }
 
-    public List<BuildablePart> ofAll(UniformIntProvider xpProvider, int veinsPerChunk, int veinSize, int maxYLevel, MaterialOreSet set) {
+    public List<BuildablePart> ofAll(UniformInt xpProvider, int veinsPerChunk, int veinSize, int maxYLevel, MaterialOreSet set) {
         return ofAll(new OrePartParams(xpProvider, set, veinsPerChunk, veinSize, maxYLevel));
     }
 
     public List<BuildablePart> ofAll(int veinsPerChunk, int veinSize, int maxYLevel, MaterialOreSet set) {
-        return ofAll(new OrePartParams(UniformIntProvider.create(0, 0), set, veinsPerChunk, veinSize, maxYLevel));
+        return ofAll(new OrePartParams(UniformInt.of(0, 0), set, veinsPerChunk, veinSize, maxYLevel));
     }
 
     public static class OrePartParams {
 
-        public final UniformIntProvider xpDropped;
+        public final UniformInt xpDropped;
         public final MaterialOreSet set;
         public final boolean generate;
 
@@ -212,7 +216,7 @@ public class OrePart extends UnbuildablePart<OrePart.OrePartParams> {
         public final int veinSize;
         public final int maxYLevel;
 
-        private OrePartParams(UniformIntProvider xpDropped, MaterialOreSet set, boolean generate, int veinsPerChunk, int veinSize, int maxYLevel) {
+        private OrePartParams(UniformInt xpDropped, MaterialOreSet set, boolean generate, int veinsPerChunk, int veinSize, int maxYLevel) {
             this.xpDropped = xpDropped;
             this.set = set;
             this.generate = generate;
@@ -222,11 +226,11 @@ public class OrePart extends UnbuildablePart<OrePart.OrePartParams> {
             this.maxYLevel = maxYLevel;
         }
 
-        public OrePartParams(UniformIntProvider xpDropped, MaterialOreSet set) {
+        public OrePartParams(UniformInt xpDropped, MaterialOreSet set) {
             this(xpDropped, set, false, 0, 0, 0);
         }
 
-        public OrePartParams(UniformIntProvider xpDropped, MaterialOreSet set, int veinsPerChunk, int veinSize, int maxYLevel) {
+        public OrePartParams(UniformInt xpDropped, MaterialOreSet set, int veinsPerChunk, int veinSize, int maxYLevel) {
             this(xpDropped, set, true, veinsPerChunk, veinSize, maxYLevel);
         }
     }

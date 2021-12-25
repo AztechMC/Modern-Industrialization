@@ -33,11 +33,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import net.fabricmc.fabric.api.lookup.v1.block.BlockApiCache;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
 public class ElectricityNetworkNode extends PipeNetworkNode {
@@ -45,11 +45,11 @@ public class ElectricityNetworkNode extends PipeNetworkNode {
     private final List<BlockApiCache<EnergyMoveable, @NotNull Direction>> caches = new ArrayList<>();
     long eu = 0;
 
-    public void appendAttributes(ServerWorld world, BlockPos pos, List<EnergyInsertable> insertables, List<EnergyExtractable> extractables) {
+    public void appendAttributes(ServerLevel world, BlockPos pos, List<EnergyInsertable> insertables, List<EnergyExtractable> extractables) {
         if (caches.size() != connections.size()) {
             caches.clear();
             for (Direction direction : connections) {
-                caches.add(BlockApiCache.create(EnergyApi.MOVEABLE, world, pos.offset(direction)));
+                caches.add(BlockApiCache.create(EnergyApi.MOVEABLE, world, pos.relative(direction)));
             }
         }
         for (int i = 0; i < connections.size(); ++i) {
@@ -63,7 +63,7 @@ public class ElectricityNetworkNode extends PipeNetworkNode {
     }
 
     @Override
-    public void buildInitialConnections(World world, BlockPos pos) {
+    public void buildInitialConnections(Level world, BlockPos pos) {
         for (Direction direction : Direction.values()) {
             if (canConnect(world, pos, direction)) {
                 connections.add(direction);
@@ -72,7 +72,7 @@ public class ElectricityNetworkNode extends PipeNetworkNode {
     }
 
     @Override
-    public void updateConnections(World world, BlockPos pos) {
+    public void updateConnections(Level world, BlockPos pos) {
         // We don't connect by default, so we just have to remove connections that have
         // become unavailable
         for (int i = 0; i < connections.size();) {
@@ -89,16 +89,16 @@ public class ElectricityNetworkNode extends PipeNetworkNode {
     public PipeEndpointType[] getConnections(BlockPos pos) {
         PipeEndpointType[] connections = new PipeEndpointType[6];
         for (Direction direction : network.manager.getNodeLinks(pos)) {
-            connections[direction.getId()] = PIPE;
+            connections[direction.get3DDataValue()] = PIPE;
         }
         for (Direction connection : this.connections) {
-            connections[connection.getId()] = BLOCK;
+            connections[connection.get3DDataValue()] = BLOCK;
         }
         return connections;
     }
 
     @Override
-    public void removeConnection(World world, BlockPos pos, Direction direction) {
+    public void removeConnection(Level world, BlockPos pos, Direction direction) {
         // Remove if it exists
         for (int i = 0; i < connections.size(); i++) {
             if (connections.get(i) == direction) {
@@ -110,7 +110,7 @@ public class ElectricityNetworkNode extends PipeNetworkNode {
     }
 
     @Override
-    public void addConnection(World world, BlockPos pos, Direction direction) {
+    public void addConnection(Level world, BlockPos pos, Direction direction) {
         // Refuse if it already exists
         for (Direction connection : connections) {
             if (connection == direction) {
@@ -125,21 +125,21 @@ public class ElectricityNetworkNode extends PipeNetworkNode {
     }
 
     @Override
-    public NbtCompound toTag(NbtCompound tag) {
+    public CompoundTag toTag(CompoundTag tag) {
         tag.putByte("connections", NbtHelper.encodeDirections(connections));
         tag.putLong("eu", eu);
         return tag;
     }
 
     @Override
-    public void fromTag(NbtCompound tag) {
+    public void fromTag(CompoundTag tag) {
         connections = new ArrayList<>(Arrays.asList(NbtHelper.decodeDirections(tag.getByte("connections"))));
         caches.clear();
         eu = tag.getLong("eu");
     }
 
-    private boolean canConnect(World world, BlockPos pos, Direction direction) {
-        EnergyMoveable moveable = EnergyApi.MOVEABLE.find(world, pos.offset(direction), direction.getOpposite());
+    private boolean canConnect(Level world, BlockPos pos, Direction direction) {
+        EnergyMoveable moveable = EnergyApi.MOVEABLE.find(world, pos.relative(direction), direction.getOpposite());
         CableTier tier = ((ElectricityNetwork) network).tier;
         return moveable instanceof EnergyInsertable && ((EnergyInsertable) moveable).canInsert(tier)
                 || moveable instanceof EnergyExtractable && ((EnergyExtractable) moveable).canExtract(tier);

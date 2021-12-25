@@ -82,9 +82,9 @@ public class ItemHatch extends HatchBlockEntity {
     protected void tickTransfer() {
         if (orientation.extractItems) {
             if (input) {
-                inventory.autoInsertItems(world, pos, orientation.outputDirection);
+                inventory.autoInsertItems(level, worldPosition, orientation.outputDirection);
             } else {
-                inventory.autoExtractItems(world, pos, orientation.outputDirection);
+                inventory.autoExtractItems(level, worldPosition, orientation.outputDirection);
             }
         }
     }

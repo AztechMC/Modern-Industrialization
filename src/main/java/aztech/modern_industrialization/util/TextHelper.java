@@ -27,8 +27,13 @@ import aztech.modern_industrialization.textures.TextureHelper;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
-import net.minecraft.text.*;
-import net.minecraft.util.Formatting;
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.Style;
+import net.minecraft.network.chat.TextColor;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
 
 public class TextHelper {
     public static final Style GRAY_TEXT = Style.EMPTY.withColor(TextColor.fromRgb(0xa9a9a9)).withItalic(true);
@@ -36,17 +41,17 @@ public class TextHelper {
     public static final Style UPGRADE_TEXT = Style.EMPTY.withColor(TextColor.fromRgb(0xc3ff9c));
     public static final Style NUMBER_TEXT = Style.EMPTY.withColor(TextColor.fromRgb(0xffde7d)).withItalic(false);
     public static final Style WATER_TEXT = Style.EMPTY.withColor(TextColor.fromRgb(0x3264ff));
-    public static final Style WARNING_TEXT = Style.EMPTY.withColor(Formatting.RED);
+    public static final Style WARNING_TEXT = Style.EMPTY.withColor(ChatFormatting.RED);
     public static final Style MAX_TEMP_TEXT = Style.EMPTY.withColor(TextColor.fromRgb(0xd94a1e));
     public static final Style HEAT_CONDUCTION = Style.EMPTY.withColor(TextColor.fromRgb(0x0073ba));
     public static final Style NEUTRONS = Style.EMPTY.withColor(TextColor.fromRgb(0x29a329));
-    public static final Style YELLOW_BOLD = Style.EMPTY.withColor(Formatting.YELLOW).withBold(true);
-    public static final Style YELLOW = Style.EMPTY.withColor(Formatting.YELLOW);
+    public static final Style YELLOW_BOLD = Style.EMPTY.withColor(ChatFormatting.YELLOW).withBold(true);
+    public static final Style YELLOW = Style.EMPTY.withColor(ChatFormatting.YELLOW);
     public static final Style FAQ_HEADER_TOOLTIP = Style.EMPTY.withColor(TextColor.fromRgb(0xf5c42d)).withBold(true);
     public static final Style FAQ_TOOLTIP = Style.EMPTY.withColor(TextColor.fromRgb(0xf7d25e)).withItalic(true);
 
-    public static final Style RED = Style.EMPTY.withColor(Formatting.RED);
-    public static final Style GREEN = Style.EMPTY.withColor(Formatting.GREEN);
+    public static final Style RED = Style.EMPTY.withColor(ChatFormatting.RED);
+    public static final Style GREEN = Style.EMPTY.withColor(ChatFormatting.GREEN);
 
     public static int getOverlayTextColor(int rgb) {
         double luminance = TextureHelper.getLuminance(rgb);
@@ -127,75 +132,76 @@ public class TextHelper {
         }
     }
 
-    public static MutableText getEuTextMaxed(long eu, long max) {
+    public static MutableComponent getEuTextMaxed(long eu, long max) {
         var amount = getMaxedAmount(eu, max);
-        return new TranslatableText("text.modern_industrialization.eu_maxed", amount.digit(), amount.maxDigit(), amount.unit());
+        return new TranslatableComponent("text.modern_industrialization.eu_maxed", amount.digit(), amount.maxDigit(), amount.unit());
     }
 
-    public static MutableText getEuText(double eu) {
+    public static MutableComponent getEuText(double eu) {
         var amount = getAmount(eu);
-        return new TranslatableText("text.modern_industrialization.eu", amount.digit(),
+        return new TranslatableComponent("text.modern_industrialization.eu", amount.digit(),
                 amount.unit());
     }
 
-    public static MutableText getEuTextTick(double eu) {
+    public static MutableComponent getEuTextTick(double eu) {
         var amount = getAmount(eu);
-        return new TranslatableText("text.modern_industrialization.eu_t", amount.digit(),
+        return new TranslatableComponent("text.modern_industrialization.eu_t", amount.digit(),
                 amount.unit());
     }
 
-    public static MutableText getEuText(long eu) {
+    public static MutableComponent getEuText(long eu) {
         var amount = getAmount(eu);
-        return new TranslatableText("text.modern_industrialization.eu", amount.digit(),
+        return new TranslatableComponent("text.modern_industrialization.eu", amount.digit(),
                 amount.unit());
     }
 
-    public static MutableText getEuTextTick(long eu) {
+    public static MutableComponent getEuTextTick(long eu) {
         var amount = getAmount(eu);
-        return new TranslatableText("text.modern_industrialization.eu_t", amount.digit(),
+        return new TranslatableComponent("text.modern_industrialization.eu_t", amount.digit(),
                 amount.unit());
     }
 
-    public static Text getEuText(long eu, boolean style) {
-        MutableText text = getEuText(eu);
+    public static Component getEuText(long eu, boolean style) {
+        MutableComponent text = getEuText(eu);
         if (style) {
             text.setStyle(TextHelper.NUMBER_TEXT);
         }
         return text;
     }
 
-    public static Text getEuTextTick(long eu, boolean style) {
-        MutableText text = getEuTextTick(eu);
+    public static Component getEuTextTick(long eu, boolean style) {
+        MutableComponent text = getEuTextTick(eu);
         if (style) {
             text.setStyle(TextHelper.NUMBER_TEXT);
         }
         return text;
     }
 
-    public static Text getEuTextTick(double eu, boolean style) {
-        MutableText text = getEuTextTick(eu);
+    public static Component getEuTextTick(double eu, boolean style) {
+        MutableComponent text = getEuTextTick(eu);
         if (style) {
             text.setStyle(TextHelper.NUMBER_TEXT);
         }
         return text;
     }
 
-    public static MutableText getEuTextMaxed(long eu, long max, boolean style) {
-        MutableText text = getEuTextMaxed(eu, max);
+    public static MutableComponent getEuTextMaxed(long eu, long max, boolean style) {
+        MutableComponent text = getEuTextMaxed(eu, max);
         if (style) {
             text.setStyle(TextHelper.NUMBER_TEXT);
         }
         return text;
     }
 
-    public static MutableText formatWithNumber(String translationKey, long... numbers) {
-        List<Text> numberText = Arrays.stream(numbers).mapToObj(n -> new LiteralText("" + n).setStyle(TextHelper.NUMBER_TEXT))
+    public static MutableComponent formatWithNumber(String translationKey, long... numbers) {
+        List<Component> numberText = Arrays.stream(numbers).mapToObj(n -> new TextComponent("" + n).setStyle(TextHelper.NUMBER_TEXT))
                 .collect(Collectors.toList());
-        return new TranslatableText(translationKey, numberText.toArray());
+        return new TranslatableComponent(translationKey, numberText.toArray());
     }
 
-    public static Text getEuStorageTooltip(long totalEu) {
-        return new TranslatableText("text.modern_industrialization.base_eu_total_stored", getEuText(totalEu, true)).setStyle(TextHelper.GRAY_TEXT);
+    public static Component getEuStorageTooltip(long totalEu) {
+        return new TranslatableComponent("text.modern_industrialization.base_eu_total_stored", getEuText(totalEu, true))
+                .setStyle(TextHelper.GRAY_TEXT);
     }
 
 }

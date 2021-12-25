@@ -29,15 +29,15 @@ import aztech.modern_industrialization.machines.SyncedComponents;
 import aztech.modern_industrialization.machines.gui.ClientComponentRenderer;
 import aztech.modern_industrialization.util.RenderHelper;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
-import net.minecraft.client.gui.DrawableHelper;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.gui.GuiComponent;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.resources.ResourceLocation;
 
 public class GunpowderOverclockGui {
 
@@ -62,19 +62,19 @@ public class GunpowderOverclockGui {
         }
 
         @Override
-        public void writeInitialData(PacketByteBuf buf) {
+        public void writeInitialData(FriendlyByteBuf buf) {
             buf.writeInt(params.renderX);
             buf.writeInt(params.renderY);
             writeCurrentData(buf);
         }
 
         @Override
-        public void writeCurrentData(PacketByteBuf buf) {
+        public void writeCurrentData(FriendlyByteBuf buf) {
             buf.writeInt(remTickSupplier.get());
         }
 
         @Override
-        public Identifier getId() {
+        public ResourceLocation getId() {
             return SyncedComponents.GUNPOWDER_OVERCLOCK_GUI;
         }
     }
@@ -83,13 +83,13 @@ public class GunpowderOverclockGui {
         final Parameters params;
         int remTick;
 
-        public Client(PacketByteBuf buf) {
+        public Client(FriendlyByteBuf buf) {
             this.params = new Parameters(buf.readInt(), buf.readInt());
             read(buf);
         }
 
         @Override
-        public void read(PacketByteBuf buf) {
+        public void read(FriendlyByteBuf buf) {
             remTick = buf.readInt();
         }
 
@@ -101,20 +101,20 @@ public class GunpowderOverclockGui {
         public class Renderer implements ClientComponentRenderer {
 
             @Override
-            public void renderBackground(DrawableHelper helper, MatrixStack matrices, int x, int y) {
+            public void renderBackground(GuiComponent helper, PoseStack matrices, int x, int y) {
                 if (remTick > 0) {
                     RenderSystem.setShaderTexture(0, MachineScreenHandlers.SLOT_ATLAS);
                     int px = x + params.renderX;
                     int py = y + params.renderY;
-                    helper.drawTexture(matrices, px, py, 0, 58, 20, 20);
+                    helper.blit(matrices, px, py, 0, 58, 20, 20);
                 }
             }
 
             @Override
-            public void renderTooltip(MachineScreenHandlers.ClientScreen screen, MatrixStack matrices, int x, int y, int cursorX, int cursorY) {
+            public void renderTooltip(MachineScreenHandlers.ClientScreen screen, PoseStack matrices, int x, int y, int cursorX, int cursorY) {
                 if (remTick > 0) {
                     if (RenderHelper.isPointWithinRectangle(params.renderX, params.renderY, 20, 20, cursorX - x, cursorY - y)) {
-                        List<Text> tooltip = new ArrayList<>();
+                        List<Component> tooltip = new ArrayList<>();
 
                         int seconds = remTick / 20;
                         int hours = seconds / 3600;
@@ -128,8 +128,8 @@ public class GunpowderOverclockGui {
                             time = String.format("%d:%02d", minutes, seconds % 60);
                         }
 
-                        tooltip.add(new TranslatableText("text.modern_industrialization.gunpowder_time", time));
-                        screen.renderTooltip(matrices, tooltip, cursorX, cursorY);
+                        tooltip.add(new TranslatableComponent("text.modern_industrialization.gunpowder_time", time));
+                        screen.renderComponentTooltip(matrices, tooltip, cursorX, cursorY);
                     }
                 }
             }

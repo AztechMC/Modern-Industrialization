@@ -25,8 +25,8 @@ package aztech.modern_industrialization.materials.part;
 
 import aztech.modern_industrialization.materials.set.MaterialBlockSet;
 import aztech.modern_industrialization.textures.TextureHelper;
+import com.mojang.blaze3d.platform.NativeImage;
 import java.io.IOException;
-import net.minecraft.client.texture.NativeImage;
 
 public class BlockPart extends UnbuildablePart<MaterialBlockSet> {
 

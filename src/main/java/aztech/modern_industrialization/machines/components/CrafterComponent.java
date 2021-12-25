@@ -42,15 +42,14 @@ import java.util.Optional;
 import java.util.concurrent.ThreadLocalRandom;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.fluid.Fluid;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.world.World;
+import net.minecraft.core.Registry;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.material.Fluid;
 
 public class CrafterComponent implements IComponent.ServerOnly {
     public CrafterComponent(Inventory inventory, Behavior behavior) {
@@ -93,7 +92,7 @@ public class CrafterComponent implements IComponent.ServerOnly {
         long getMaxRecipeEu();
 
         // can't use getWorld() or the remapping will fail
-        World getCrafterWorld();
+        Level getCrafterWorld();
 
         default int getMaxFluidOutputs() {
             return Integer.MAX_VALUE;
@@ -104,7 +103,7 @@ public class CrafterComponent implements IComponent.ServerOnly {
     private final Behavior behavior;
 
     private MachineRecipe activeRecipe = null;
-    private Identifier delayedActiveRecipe;
+    private ResourceLocation delayedActiveRecipe;
 
     private long usedEnergy;
     private long recipeEnergy;
@@ -162,7 +161,7 @@ public class CrafterComponent implements IComponent.ServerOnly {
      * tick.
      */
     public boolean tickRecipe() {
-        if (behavior.getCrafterWorld().isClient()) {
+        if (behavior.getCrafterWorld().isClientSide()) {
             throw new IllegalStateException("May not call client side.");
         }
         boolean isActive;
@@ -257,7 +256,7 @@ public class CrafterComponent implements IComponent.ServerOnly {
 
     private void loadDelayedActiveRecipe() {
         if (delayedActiveRecipe != null) {
-            activeRecipe = behavior.recipeType().getRecipe((ServerWorld) behavior.getCrafterWorld(), delayedActiveRecipe);
+            activeRecipe = behavior.recipeType().getRecipe((ServerLevel) behavior.getCrafterWorld(), delayedActiveRecipe);
             delayedActiveRecipe = null;
             if (activeRecipe == null) { // If a recipe got removed, we need to reset the efficiency and the used energy
                 // to allow the machine to resume processing.
@@ -305,7 +304,7 @@ public class CrafterComponent implements IComponent.ServerOnly {
                 lastInvHash = currentHash;
             }
 
-            ServerWorld serverWorld = (ServerWorld) behavior.getCrafterWorld();
+            ServerLevel serverWorld = (ServerLevel) behavior.getCrafterWorld();
             MachineRecipeType recipeType = behavior.recipeType();
             List<MachineRecipe> recipes = new ArrayList<>(recipeType.getFluidOnlyRecipes(serverWorld));
             for (ConfigurableItemStack stack : inventory.getItemInputs()) {
@@ -352,7 +351,7 @@ public class CrafterComponent implements IComponent.ServerOnly {
         }
     }
 
-    public void writeNbt(NbtCompound tag) {
+    public void writeNbt(CompoundTag tag) {
         tag.putLong("usedEnergy", this.usedEnergy);
         tag.putLong("recipeEnergy", this.recipeEnergy);
         tag.putLong("recipeMaxEu", this.recipeMaxEu);
@@ -365,11 +364,11 @@ public class CrafterComponent implements IComponent.ServerOnly {
         tag.putInt("maxEfficiencyTicks", this.maxEfficiencyTicks);
     }
 
-    public void readNbt(NbtCompound tag) {
+    public void readNbt(CompoundTag tag) {
         this.usedEnergy = tag.getInt("usedEnergy");
         this.recipeEnergy = tag.getInt("recipeEnergy");
         this.recipeMaxEu = tag.getInt("recipeMaxEu");
-        this.delayedActiveRecipe = tag.contains("activeRecipe") ? new Identifier(tag.getString("activeRecipe")) : null;
+        this.delayedActiveRecipe = tag.contains("activeRecipe") ? new ResourceLocation(tag.getString("activeRecipe")) : null;
         if (delayedActiveRecipe == null && usedEnergy > 0) {
             usedEnergy = 0;
             ModernIndustrialization.LOGGER.error("Had to set the usedEnergy of CrafterComponent to 0, but that should never happen!");
@@ -466,7 +465,7 @@ public class CrafterComponent implements IComponent.ServerOnly {
                         // If putting the output, don't respect the adjusted capacity in case it was
                         // reduced during the processing.
                         int remainingCapacity = simulate ? (int) stack.getRemainingCapacityFor(ItemVariant.of(output.item))
-                                : output.item.getMaxCount() - (int) stack.getAmount();
+                                : output.item.getMaxStackSize() - (int) stack.getAmount();
                         int ins = Math.min(remainingAmount, remainingCapacity);
                         if (key.isBlank()) {
                             if ((stack.isMachineLocked() || stack.isPlayerLocked() || loopRun == 1) && stack.isValid(new ItemStack(output.item))) {
@@ -563,9 +562,9 @@ public class CrafterComponent implements IComponent.ServerOnly {
         }
     }
 
-    public void lockRecipe(Identifier recipeId, PlayerInventory inventory) {
+    public void lockRecipe(ResourceLocation recipeId, net.minecraft.world.entity.player.Inventory inventory) {
         // Find MachineRecipe
-        Optional<MachineRecipe> optionalMachineRecipe = behavior.recipeType().getRecipes((ServerWorld) behavior.getCrafterWorld()).stream()
+        Optional<MachineRecipe> optionalMachineRecipe = behavior.recipeType().getRecipes((ServerLevel) behavior.getCrafterWorld()).stream()
                 .filter(recipe -> recipe.getId().equals(recipeId)).findFirst();
         if (optionalMachineRecipe.isEmpty())
             return;
@@ -578,8 +577,8 @@ public class CrafterComponent implements IComponent.ServerOnly {
             }
             Item targetItem = null;
             // Find the first match in the player inventory (useful for logs for example)
-            for (int i = 0; i < inventory.size(); i++) {
-                ItemStack playerStack = inventory.getStack(i);
+            for (int i = 0; i < inventory.getContainerSize(); i++) {
+                ItemStack playerStack = inventory.getItem(i);
                 if (!playerStack.isEmpty() && input.matches(new ItemStack(playerStack.getItem()))) {
                     targetItem = playerStack.getItem();
                     break;
@@ -588,7 +587,7 @@ public class CrafterComponent implements IComponent.ServerOnly {
             if (targetItem == null) {
                 // Find the first match that is an item from MI (useful for ingots for example)
                 for (Item item : input.getInputItems()) {
-                    Identifier id = Registry.ITEM.getId(item);
+                    ResourceLocation id = Registry.ITEM.getKey(item);
                     if (id.getNamespace().equals(ModernIndustrialization.MOD_ID)) {
                         targetItem = item;
                         break;

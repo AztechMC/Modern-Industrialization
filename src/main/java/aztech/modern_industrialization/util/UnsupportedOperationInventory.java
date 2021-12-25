@@ -23,17 +23,17 @@
  */
 package aztech.modern_industrialization.util;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.Inventory;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.Container;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 
 /**
  * Otherwise closing screen handler slots with a null inventory throws an
  * exception due to copySharedSlots.
  */
-public class UnsupportedOperationInventory implements Inventory {
+public class UnsupportedOperationInventory implements Container {
     @Override
-    public int size() {
+    public int getContainerSize() {
         // Don't crash so mouse wheelie can have a chance at noticing this is a peculiar
         // slot.
         return 0;
@@ -45,37 +45,37 @@ public class UnsupportedOperationInventory implements Inventory {
     }
 
     @Override
-    public ItemStack getStack(int slot) {
+    public ItemStack getItem(int slot) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public ItemStack removeStack(int slot, int amount) {
+    public ItemStack removeItem(int slot, int amount) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public ItemStack removeStack(int slot) {
+    public ItemStack removeItemNoUpdate(int slot) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public void setStack(int slot, ItemStack stack) {
+    public void setItem(int slot, ItemStack stack) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public void markDirty() {
+    public void setChanged() {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public boolean canPlayerUse(PlayerEntity player) {
+    public boolean stillValid(Player player) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public void clear() {
+    public void clearContent() {
         throw new UnsupportedOperationException();
     }
 }

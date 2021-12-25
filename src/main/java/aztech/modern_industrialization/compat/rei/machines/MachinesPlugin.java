@@ -45,21 +45,21 @@ import me.shedaniel.rei.api.client.registry.transfer.TransferHandlerRegistry;
 import me.shedaniel.rei.api.common.category.CategoryIdentifier;
 import me.shedaniel.rei.api.common.display.Display;
 import me.shedaniel.rei.api.common.util.EntryStacks;
-import net.minecraft.fluid.Fluid;
-import net.minecraft.recipe.Recipe;
-import net.minecraft.recipe.RecipeType;
-import net.minecraft.recipe.SmeltingRecipe;
-import net.minecraft.recipe.StonecuttingRecipe;
-import net.minecraft.screen.slot.Slot;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.Pair;
-import net.minecraft.util.registry.Registry;
+import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Tuple;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.item.crafting.SmeltingRecipe;
+import net.minecraft.world.item.crafting.StonecutterRecipe;
+import net.minecraft.world.level.material.Fluid;
 
 public class MachinesPlugin implements REIClientPlugin {
     @Override
     public void registerCategories(CategoryRegistry registry) {
         for (Map.Entry<String, MachineCategoryParams> entry : ReiMachineRecipes.categories.entrySet()) {
-            Identifier id = new MIIdentifier(entry.getKey());
+            ResourceLocation id = new MIIdentifier(entry.getKey());
             MachineRecipeCategory category = new MachineRecipeCategory(id, entry.getValue());
             registry.add(category);
 
@@ -77,7 +77,7 @@ public class MachinesPlugin implements REIClientPlugin {
     public void registerDisplays(DisplayRegistry registry) {
         // regular recipes
         for (Map.Entry<String, MachineCategoryParams> entry : ReiMachineRecipes.categories.entrySet()) {
-            Identifier id = new MIIdentifier(entry.getKey());
+            ResourceLocation id = new MIIdentifier(entry.getKey());
             registry.registerFiller((Predicate<Recipe<?>>) recipe -> {
                 if (recipe instanceof MachineRecipe) {
                     return entry.getValue().recipePredicate.test((MachineRecipe) recipe);
@@ -87,17 +87,17 @@ public class MachinesPlugin implements REIClientPlugin {
             }, recipe -> new MachineRecipeDisplay(id, (MachineRecipe) recipe));
         }
         // furnace recipes
-        Identifier furnaceId = new MIIdentifier("bronze_furnace");
+        ResourceLocation furnaceId = new MIIdentifier("bronze_furnace");
         registry.registerFiller((Predicate<Recipe<?>>) recipe -> recipe.getType() == RecipeType.SMELTING,
                 recipe -> new MachineRecipeDisplay(furnaceId, RecipeConversions.of((SmeltingRecipe) recipe, MIMachineRecipeTypes.FURNACE)));
         // stonecutter recipes
-        Identifier cuttingMachineId = new MIIdentifier("bronze_cutting_machine");
+        ResourceLocation cuttingMachineId = new MIIdentifier("bronze_cutting_machine");
         registry.registerFiller((Predicate<Recipe<?>>) recipe -> recipe.getType() == RecipeType.STONECUTTING,
                 recipe -> new MachineRecipeDisplay(cuttingMachineId,
-                        RecipeConversions.of((StonecuttingRecipe) recipe, MIMachineRecipeTypes.CUTTING_MACHINE)));
+                        RecipeConversions.of((StonecutterRecipe) recipe, MIMachineRecipeTypes.CUTTING_MACHINE)));
         // multiblock shapes
-        for (Pair<String, ShapeTemplate> entry : ReiMachineRecipes.multiblockShapes) {
-            registry.add(new MultiblockRecipeDisplay(entry.getLeft(), entry.getRight()));
+        for (Tuple<String, ShapeTemplate> entry : ReiMachineRecipes.multiblockShapes) {
+            registry.add(new MultiblockRecipeDisplay(entry.getA(), entry.getB()));
         }
     }
 
@@ -109,7 +109,7 @@ public class MachinesPlugin implements REIClientPlugin {
     @Override
     public void registerScreens(ScreenRegistry registry) {
         registry.registerClickArea(MachineScreenHandlers.ClientScreen.class, context -> {
-            MachineScreenHandlers.Client screenHandler = context.getScreen().getScreenHandler();
+            MachineScreenHandlers.Client screenHandler = context.getScreen().getMenu();
             String blockId = screenHandler.guiParams.blockId;
             List<ReiMachineRecipes.ClickAreaCategory> categories = ReiMachineRecipes.machineToClickAreaCategory.getOrDefault(blockId,
                     Collections.emptyList());

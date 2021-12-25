@@ -23,11 +23,11 @@
  */
 package aztech.modern_industrialization.pipes.impl;
 
-import static net.minecraft.util.math.Direction.*;
+import static net.minecraft.core.Direction.*;
 
 import aztech.modern_industrialization.pipes.api.PipeEndpointType;
-import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.core.Direction;
+import net.minecraft.world.phys.Vec3;
 
 /**
  * A class that can build pipe model parts using a simple interface.
@@ -46,19 +46,19 @@ abstract class PipePartBuilder {
      * slots.
      */
     protected static final float FIRST_POS = (1.0f - 5 * SIDE - 4 * SPACING) / 2;
-    Vec3d pos;
-    Vec3d facing;
-    Vec3d right;
+    Vec3 pos;
+    Vec3 facing;
+    Vec3 right;
 
     PipePartBuilder(int slotPos, Direction direction) {
-        this.facing = Vec3d.of(direction.getVector());
+        this.facing = Vec3.atLowerCornerOf(direction.getNormal());
         // initial position + half pipe + slotPos * width
         float position = (1.0f - 3 * SIDE - 2 * SPACING) / 2.0f + SIDE / 2.0f + slotPos * (SIDE + SPACING);
-        this.pos = new Vec3d(position, position, position);
+        this.pos = new Vec3(position, position, position);
         // Find a suitable right direction (both right and up must face inside of the
         // block).
         for (Direction d : Direction.values()) {
-            this.right = Vec3d.of(d.getVector());
+            this.right = Vec3.atLowerCornerOf(d.getNormal());
             if (isTowardsInside(this.right) && isTowardsInside(up()))
                 break;
         }
@@ -69,15 +69,15 @@ abstract class PipePartBuilder {
     /**
      * Find out whether the axis direction is far from the sides of the block.
      */
-    protected boolean isTowardsInside(Vec3d direction) {
+    protected boolean isTowardsInside(Vec3 direction) {
         return distanceToSide(direction) > 0.5f - 1e-6;
     }
 
     /**
      * Get the distance along some axis direction to the nearest block side.
      */
-    protected float distanceToSide(Vec3d direction) {
-        float p = (float) direction.dotProduct(pos);
+    protected float distanceToSide(Vec3 direction) {
+        float p = (float) direction.dot(pos);
         if (p > 0) {
             return 1 - p;
         } else {
@@ -101,21 +101,21 @@ abstract class PipePartBuilder {
      * Move forward.
      */
     void moveForward(float amount) {
-        this.pos = this.pos.add(this.facing.multiply(amount));
+        this.pos = this.pos.add(this.facing.scale(amount));
     }
 
     /**
      * Get up vector.
      */
-    Vec3d up() {
-        return right.crossProduct(facing);
+    Vec3 up() {
+        return right.cross(facing);
     }
 
     /**
      * Rotate clockwise around the facing axis.
      */
     protected void rotateCw() {
-        right = up().multiply(-1);
+        right = up().scale(-1);
     }
 
     /**
@@ -230,16 +230,16 @@ abstract class PipePartBuilder {
      * Get the type of a connection.
      */
     static int getRenderType(int logicalSlot, Direction direction, PipeEndpointType[][] connections) {
-        if (connections[logicalSlot][direction.getId()] == null) {
+        if (connections[logicalSlot][direction.get3DDataValue()] == null) {
             // no connection
             return 0;
-        } else if (connections[logicalSlot][direction.getId()] != PipeEndpointType.PIPE) {
+        } else if (connections[logicalSlot][direction.get3DDataValue()] != PipeEndpointType.PIPE) {
             // straight line when connecting to a block
             return 1;
         } else {
             int connSlot = 0;
             for (int i = 0; i < logicalSlot; i++) {
-                if (connections[i][direction.getId()] != null) {
+                if (connections[i][direction.get3DDataValue()] != null) {
                     connSlot++;
                 }
             }

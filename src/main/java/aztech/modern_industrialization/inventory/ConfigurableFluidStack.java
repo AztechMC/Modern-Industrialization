@@ -32,13 +32,13 @@ import java.util.List;
 import java.util.Objects;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.fluid.Fluid;
-import net.minecraft.fluid.Fluids;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.screen.slot.Slot;
-import net.minecraft.util.registry.Registry;
+import net.minecraft.core.Registry;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.level.material.Fluids;
 
 /**
  * A fluid stack that can be configured.
@@ -90,7 +90,7 @@ public class ConfigurableFluidStack extends AbstractConfigurableStack<Fluid, Flu
         this.capacity = other.capacity;
     }
 
-    public ConfigurableFluidStack(NbtCompound compound) {
+    public ConfigurableFluidStack(CompoundTag compound) {
         super(compound);
         this.capacity = compound.getLong("capacity");
     }
@@ -139,7 +139,7 @@ public class ConfigurableFluidStack extends AbstractConfigurableStack<Fluid, Flu
     }
 
     @Override
-    protected FluidVariant readVariantFromNbt(NbtCompound compound) {
+    protected FluidVariant readVariantFromNbt(CompoundTag compound) {
         return FluidVariant.fromNbt(compound);
     }
 
@@ -171,8 +171,8 @@ public class ConfigurableFluidStack extends AbstractConfigurableStack<Fluid, Flu
         return capacity - amount;
     }
 
-    public NbtCompound toNbt() {
-        NbtCompound tag = super.toNbt();
+    public CompoundTag toNbt() {
+        CompoundTag tag = super.toNbt();
         tag.putLong("capacity", capacity);
         return tag;
     }
@@ -183,7 +183,7 @@ public class ConfigurableFluidStack extends AbstractConfigurableStack<Fluid, Flu
         public ConfigurableFluidSlot(ConfigurableFluidSlot other) {
             this(other.markDirty, other.x, other.y);
 
-            this.id = other.id;
+            this.index = other.index;
         }
 
         public ConfigurableFluidSlot(Runnable markDirty, int x, int y) {
@@ -194,13 +194,13 @@ public class ConfigurableFluidStack extends AbstractConfigurableStack<Fluid, Flu
 
         // We don't allow item insertion obviously.
         @Override
-        public boolean canInsert(ItemStack stack) {
+        public boolean mayPlace(ItemStack stack) {
             return false;
         }
 
         // No extraction either.
         @Override
-        public boolean canTakeItems(PlayerEntity playerEntity) {
+        public boolean mayPickup(Player playerEntity) {
             return false;
         }
 
@@ -218,16 +218,16 @@ public class ConfigurableFluidStack extends AbstractConfigurableStack<Fluid, Flu
         }
 
         @Override
-        public ItemStack getStack() {
+        public ItemStack getItem() {
             return ItemStack.EMPTY;
         }
 
         @Override
-        public void setStack(ItemStack stack) {
+        public void set(ItemStack stack) {
         }
 
         @Override
-        public void markDirty() {
+        public void setChanged() {
             markDirty.run();
         }
 

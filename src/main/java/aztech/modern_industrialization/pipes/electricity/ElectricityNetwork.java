@@ -30,7 +30,7 @@ import aztech.modern_industrialization.pipes.api.PipeNetwork;
 import aztech.modern_industrialization.pipes.api.PipeNetworkData;
 import aztech.modern_industrialization.util.Simulation;
 import java.util.*;
-import net.minecraft.server.world.ServerWorld;
+import net.minecraft.server.level.ServerLevel;
 
 public class ElectricityNetwork extends PipeNetwork {
     final CableTier tier;
@@ -41,7 +41,7 @@ public class ElectricityNetwork extends PipeNetwork {
     }
 
     @Override
-    public void tick(ServerWorld world) {
+    public void tick(ServerLevel world) {
         // Gather targets
         List<EnergyInsertable> insertables = new ArrayList<>();
         List<EnergyExtractable> extractables = new ArrayList<>();

@@ -30,6 +30,7 @@ import aztech.modern_industrialization.pipes.gui.PipeScreen;
 import aztech.modern_industrialization.pipes.impl.PipePackets;
 import aztech.modern_industrialization.util.*;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.ArrayList;
 import java.util.List;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
@@ -39,19 +40,18 @@ import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageUtil;
-import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.item.ItemStack;
 
 public class FluidPipeScreen extends PipeScreen<FluidPipeScreenHandler> {
-    private static final Identifier TEXTURE = new MIIdentifier("textures/gui/pipe/fluid.png");
+    private static final ResourceLocation TEXTURE = new MIIdentifier("textures/gui/pipe/fluid.png");
 
-    public FluidPipeScreen(FluidPipeScreenHandler handler, PlayerInventory inventory, Text title) {
+    public FluidPipeScreen(FluidPipeScreenHandler handler, Inventory inventory, Component title) {
         super(handler, inventory, title, FluidPipeScreenHandler.HEIGHT);
     }
 
@@ -60,35 +60,36 @@ public class FluidPipeScreen extends PipeScreen<FluidPipeScreenHandler> {
         super.init();
 
         addNetworkFluidButton();
-        addConnectionTypeButton(148, 22, handler.iface);
-        addPriorityWidgets(33, 42, handler.iface, "transfer", 0);
+        addConnectionTypeButton(148, 22, menu.iface);
+        addPriorityWidgets(33, 42, menu.iface, "transfer", 0);
     }
 
     @Override
-    protected Identifier getBackgroundTexture() {
+    protected ResourceLocation getBackgroundTexture() {
         return TEXTURE;
     }
 
     private void addNetworkFluidButton() {
-        addDrawableChild(new NetworkFluidButton(72 + this.x, 20 + this.y, widget -> updateNetworkFluid(), (button, matrices, mouseX, mouseY) -> {
-            List<Text> lines = new ArrayList<>();
-            lines.add(FluidHelper.getFluidName(handler.iface.getNetworkFluid(), false));
-            if (!handler.iface.getNetworkFluid().isBlank()) {
-                lines.add(new TranslatableText("text.modern_industrialization.network_fluid_help_clear").setStyle(TextHelper.GRAY_TEXT));
-            } else {
-                lines.add(new TranslatableText("text.modern_industrialization.network_fluid_help_set").setStyle(TextHelper.GRAY_TEXT));
-            }
-            renderTooltip(matrices, lines, mouseX, mouseY);
-        }, handler.iface));
+        addRenderableWidget(
+                new NetworkFluidButton(72 + this.leftPos, 20 + this.topPos, widget -> updateNetworkFluid(), (button, matrices, mouseX, mouseY) -> {
+                    List<Component> lines = new ArrayList<>();
+                    lines.add(FluidHelper.getFluidName(menu.iface.getNetworkFluid(), false));
+                    if (!menu.iface.getNetworkFluid().isBlank()) {
+                        lines.add(new TranslatableComponent("text.modern_industrialization.network_fluid_help_clear").setStyle(TextHelper.GRAY_TEXT));
+                    } else {
+                        lines.add(new TranslatableComponent("text.modern_industrialization.network_fluid_help_set").setStyle(TextHelper.GRAY_TEXT));
+                    }
+                    renderComponentTooltip(matrices, lines, mouseX, mouseY);
+                }, menu.iface));
     }
 
     private void updateNetworkFluid() {
-        FluidPipeInterface iface = handler.iface;
+        FluidPipeInterface iface = menu.iface;
         FluidVariant targetFluid = null;
         if (iface.getNetworkFluid().isBlank()) {
             // Want to set the fluid
-            ItemStack cursorStack = handler.getCursorStack();
-            FluidVariant fluid = StorageUtil.findStoredResource(ContainerItemContext.ofPlayerCursor(client.player, handler).find(FluidStorage.ITEM),
+            ItemStack cursorStack = menu.getCarried();
+            FluidVariant fluid = StorageUtil.findStoredResource(ContainerItemContext.ofPlayerCursor(minecraft.player, menu).find(FluidStorage.ITEM),
                     null);
             if (fluid != null && !fluid.isBlank()) {
                 targetFluid = fluid;
@@ -102,32 +103,32 @@ public class FluidPipeScreen extends PipeScreen<FluidPipeScreenHandler> {
     }
 
     private void setNetworkFluid(FluidVariant fluidKey) {
-        handler.iface.setNetworkFluid(fluidKey);
-        PacketByteBuf buf = PacketByteBufs.create();
-        buf.writeInt(handler.syncId);
+        menu.iface.setNetworkFluid(fluidKey);
+        FriendlyByteBuf buf = PacketByteBufs.create();
+        buf.writeInt(menu.containerId);
         fluidKey.toPacket(buf);
         ClientPlayNetworking.send(PipePackets.SET_NETWORK_FLUID, buf);
     }
 
-    private class NetworkFluidButton extends ButtonWidget implements ReiDraggable {
+    private class NetworkFluidButton extends Button implements ReiDraggable {
         private final FluidPipeInterface iface;
 
-        public NetworkFluidButton(int x, int y, PressAction onPress, TooltipSupplier tooltipSupplier, FluidPipeInterface iface) {
+        public NetworkFluidButton(int x, int y, OnPress onPress, OnTooltip tooltipSupplier, FluidPipeInterface iface) {
             super(x, y, 16, 16, null, onPress, tooltipSupplier);
             this.iface = iface;
         }
 
         @Override
-        public void renderButton(MatrixStack matrices, int mouseX, int mouseY, float delta) {
+        public void renderButton(PoseStack matrices, int mouseX, int mouseY, float delta) {
             // Render fluid slot
             RenderSystem.setShaderTexture(0, MachineScreenHandlers.SLOT_ATLAS);
-            drawTexture(matrices, x - 1, y - 1, 18, 0, 18, 18);
+            blit(matrices, x - 1, y - 1, 18, 0, 18, 18);
             // Render the fluid itself
             if (!iface.getNetworkFluid().isBlank()) {
                 RenderHelper.drawFluidInGui(matrices, iface.getNetworkFluid(), x, y);
             }
             // Render the white hover effect
-            if (isHovered()) {
+            if (isHoveredOrFocused()) {
                 RenderSystem.disableDepthTest();
                 RenderSystem.colorMask(true, true, true, false);
                 this.fillGradient(matrices, x, y, x + 16, y + 16, -2130706433, -2130706433);
@@ -135,8 +136,8 @@ public class FluidPipeScreen extends PipeScreen<FluidPipeScreenHandler> {
                 RenderSystem.enableDepthTest();
             }
             // Render the tooltip
-            if (isHovered()) {
-                renderTooltip(matrices, mouseX, mouseY);
+            if (isHoveredOrFocused()) {
+                renderToolTip(matrices, mouseX, mouseY);
             }
         }
 

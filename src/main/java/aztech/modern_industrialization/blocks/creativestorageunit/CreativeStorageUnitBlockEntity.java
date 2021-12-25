@@ -31,10 +31,10 @@ import aztech.modern_industrialization.api.energy.EnergyMoveable;
 import aztech.modern_industrialization.util.Simulation;
 import aztech.modern_industrialization.util.Tickable;
 import net.fabricmc.fabric.api.lookup.v1.block.BlockApiCache;
-import net.minecraft.block.BlockState;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.block.state.BlockState;
 
 public class CreativeStorageUnitBlockEntity extends FastBlockEntity implements Tickable {
     @SuppressWarnings("unchecked")
@@ -46,12 +46,12 @@ public class CreativeStorageUnitBlockEntity extends FastBlockEntity implements T
 
     @Override
     public void tick() {
-        if (!world.isClient) {
-            var serverWorld = (ServerWorld) world;
+        if (!level.isClientSide) {
+            var serverWorld = (ServerLevel) level;
 
             for (Direction direction : Direction.values()) {
                 if (caches[direction.ordinal()] == null) {
-                    caches[direction.ordinal()] = BlockApiCache.create(EnergyApi.MOVEABLE, serverWorld, pos.offset(direction));
+                    caches[direction.ordinal()] = BlockApiCache.create(EnergyApi.MOVEABLE, serverWorld, worldPosition.relative(direction));
                 }
 
                 if (caches[direction.ordinal()].find(direction.getOpposite()) instanceof EnergyInsertable insertable) {

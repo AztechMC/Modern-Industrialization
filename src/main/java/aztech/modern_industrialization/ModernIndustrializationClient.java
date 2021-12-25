@@ -68,10 +68,7 @@ import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.fabricmc.fabric.api.client.rendering.v1.TooltipComponentCallback;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.fabricmc.fabric.api.client.screenhandler.v1.ScreenRegistry;
-import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.fabricmc.fabric.impl.content.registry.FuelRegistryImpl;
-import net.fabricmc.loader.DependencyException;
-import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.block.Block;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.item.BlockItem;
@@ -100,7 +97,6 @@ public class ModernIndustrializationClient implements ClientModInitializer {
         WorldRenderEvents.START.register(renderer -> JetpackParticleAdder.addJetpackParticles(MinecraftClient.getInstance()));
         ClientTickEvents.END_CLIENT_TICK.register(ClientKeyHandler::onEndTick);
         HudRenderCallback.EVENT.register(HudRenderer::onRenderHud);
-        registerBuiltinResourcePack();
         setupTooltips();
         setupClientCommands();
         VersionEvents.init();
@@ -123,14 +119,6 @@ public class ModernIndustrializationClient implements ClientModInitializer {
         ClientPlayNetworking.registerGlobalReceiver(ConfigurableInventoryPackets.UPDATE_FLUID_SLOT,
                 ConfigurableInventoryPacketHandlers.S2C.UPDATE_FLUID_SLOT);
         ClientPlayNetworking.registerGlobalReceiver(MachinePackets.S2C.COMPONENT_SYNC, ClientMachinePackets.ON_COMPONENT_SYNC);
-    }
-
-    private void registerBuiltinResourcePack() {
-        if (!ResourceManagerHelper.registerBuiltinResourcePack(new Identifier(ModernIndustrialization.MOD_ID, "alternate"), "alternate",
-                FabricLoader.getInstance().getModContainer(ModernIndustrialization.MOD_ID).orElseThrow(DependencyException::new), false)) {
-            ModernIndustrialization.LOGGER
-                    .warn("Modern Industrialization's Alternate Builtin Resource Pack couldn't be registered! This is probably bad!");
-        }
     }
 
     private void setupTooltips() {

@@ -9,18 +9,18 @@
     },
     {
       "type": "crafting",
-      "recipe": "modern_industrialization:machine/fireclay/coke_oven",
+      "recipe": "modern_industrialization:steam_age/fireclay/coke_oven",
       "text": "对于第一个多方块结构，你需要一个焦炉，21个砖块和3个$(thing)仓$()：物流输入、物流输出和流体输入仓。"
     },
     {
       "type": "crafting",
-      "recipe": "modern_industrialization:machine/bronze/item_input_hatch",
-      "recipe2": "modern_industrialization:machine/bronze/item_output_hatch"
+      "recipe": "modern_industrialization:hatches/bronze/item_input_hatch",
+      "recipe2": "modern_industrialization:hatches/bronze/item_output_hatch"
     },
     {
       "type": "crafting",
-      "recipe": "modern_industrialization:machine/bronze/fluid_input_hatch",
-      "recipe2": "modern_industrialization:machine/bronze/fluid_output_hatch"
+      "recipe": "modern_industrialization:hatches/bronze/fluid_input_hatch",
+      "recipe2": "modern_industrialization:hatches/bronze/fluid_output_hatch"
     },
     {
       "type": "text",

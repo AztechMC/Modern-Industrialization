@@ -9,13 +9,13 @@
     },
     {
       "type": "spotlight",
-      "item": "modern_industrialization:pipe_fluid_bronze",
+      "item": "modern_industrialization:fluid_pipe",
       "title": "流体管道",
       "text": "流体管道只能运输一种流体，默认流体管道不会连接到空导管或方块。你可以用扳手右击导管中心来使其强制连接，或手持管道右击一个方块——该方法不会消耗你手里的管道。"
     },
     {
       "type": "spotlight",
-      "item": "modern_industrialization:pipe_item_bronze",
+      "item": "modern_industrialization:item_pipe",
       "title": "物流管道",
       "text": "物流管道默认不会连接到库存中，但你也可以强制连接。$(br2)右击连接处可查看过滤器。默认开启白名单模式，因此不会直接输送物品。"
     },

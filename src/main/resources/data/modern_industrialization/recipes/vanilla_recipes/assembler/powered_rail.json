@@ -12,7 +12,7 @@
       "amount": 1
     },
     {
-      "tag": "c:redstone_dusts",
+      "item": "minecraft:redstone_dust",
       "amount": 1
     }
   ],

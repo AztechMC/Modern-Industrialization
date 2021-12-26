@@ -4,11 +4,11 @@
   "duration": 200,
   "item_inputs": [
     {
-      "tag": "minecraft:prismarine_crystals",
+      "item": "minecraft:prismarine_crystals",
       "amount": 5
     },
     {
-      "tag": "minecraft:prismarine_shard",
+      "item": "minecraft:prismarine_shard",
       "amount": 4
     }
   ],

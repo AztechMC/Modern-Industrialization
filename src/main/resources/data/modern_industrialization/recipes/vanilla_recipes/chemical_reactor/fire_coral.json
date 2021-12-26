@@ -37,7 +37,7 @@
     }
   ],
   "fluid_outputs": {
-    "item": "minecraft:water",
+    "fluid": "minecraft:water",
     "amount": 6000
   }
 }

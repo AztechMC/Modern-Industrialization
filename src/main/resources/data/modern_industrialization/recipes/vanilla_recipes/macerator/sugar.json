@@ -3,7 +3,7 @@
   "eu": 2,
   "duration": 100,
   "item_inputs": {
-    "item": "minecraft:sugarcane",
+    "item": "minecraft:sugar_cane",
     "amount": 1
   },
   "item_outputs": {

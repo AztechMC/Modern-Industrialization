@@ -1,15 +1,30 @@
 {
-  "name": "锻造台",
+  "name": "入门",
   "category": "modern_industrialization:steam_age",
   "icon": "modern_industrialization:forge_hammer",
   "pages": [
     {
       "type": "text",
-      "text": "在制作青铜前，我们需要一个锻造台。锻造台可以锤炼或锯开物品。$(br2)你可以放入铁、铜和锡矿石，之后你会获得2个矿物碎粉。每个矿物碎粉可熔炼为一块锭。"
+      "text": "在制作青铜之前，我们需要制作一个锻造锤。 它用于基本处理步骤。$(br2)您可以将铁矿石、铜矿石和锡矿石放入锻造锤中，每个矿石将获得 2 个原矿石。 您可以使用锤子增加此比率。 每一种原矿都可以熔炼成锭。 "
     },
     {
       "type": "crafting",
-      "recipe": "modern_industrialization:forge_hammer"
+      "recipe": "modern_industrialization:materials/iron/craft/hammer",
+      "text": "锤子增加了锻造锤子的比例并解锁了更多的配方，但代价是一些耐用性。"
+    },
+    {
+      "type": "crafting",
+      "recipe": "modern_industrialization:forge_hammer",
+      "text": "现在，您可能需要考虑制作蒸汽采矿钻机来直接获取矿石，而无需使用精准采集镐。"
+    },
+    {
+      "type": "crafting",
+      "recipe": "modern_industrialization:tools/steam_mining_drill",
+      "text": "蒸汽矿机一次可以挖3x3块，非常适合你早期的游戏挖矿需求！ 它还具有丝绸般的触感，与锻造锤结合得很好。"
+    },
+    {
+      "type": "text",
+      "text": "蒸汽采矿钻机需要水和固体燃料（例如煤）。$(br2)右键单击水源以将其注满水，并确保始终通过右键单击库存中的燃料项目在钻头中放置一些燃料。 当你开采时，燃料会慢慢消耗。"
     }
   ],
   "sortnum": 0

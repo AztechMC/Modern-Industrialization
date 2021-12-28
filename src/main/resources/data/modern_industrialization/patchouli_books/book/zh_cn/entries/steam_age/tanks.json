@@ -1,15 +1,25 @@
 {
-  "name": "储罐",
+  "name": "高炉的结构与焦炉的结构相同，只是用粘土砖代替了砖块，并在顶部增加了一层空心层。",
   "category": "modern_industrialization:steam_age",
   "icon": "modern_industrialization:bronze_tank",
   "pages": [
     {
       "type": "text",
-      "text": "青铜储罐可以存储4桶流体，可用于与机器交互，也可以直接放置。$(br2)放置后你可以用桶或其它储罐右击已放置的储罐来转移流体。$(br2)有相同储存物的储罐可以堆叠。"
+      "text": "青铜罐每个可以存储 4 桶流体，您可以使用它们与机器交互，并且可以将它们放置在世界中。$(br2)青铜桶可用于存储和移动 32 叠一件物品。 查看下一页了解更多信息！"
     },
     {
       "type": "crafting",
-      "recipe": "modern_industrialization:materials/bronze/craft/tank"
+      "recipe": "modern_industrialization:materials/bronze/craft/tank",
+      "text": "青铜桶可用于存储和移动 32 叠一件物品。 查看下一页了解更多信息！$(br2)此外，如果它们具有相同的内容，您可以堆叠它们。 多么漂亮！"
+    },
+    {
+      "type": "text",
+      "text": "如果你打破一个桶，它会保留它存储的内容，你会得到一个可以与之交互的项目。$(br2)左键单击带有物品的桶项目以将其插入桶中。$(br2)左键单击空槽上的桶项目以从中提取一些项目。"
+    },
+    {
+      "type": "crafting",
+      "recipe": "modern_industrialization:materials/bronze/craft/barrel",
+      "text": "您无法与直接放置的桶进行交互，但管道和机器可以正常工作。"
     }
   ],
   "sortnum": 7

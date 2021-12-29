@@ -30,14 +30,14 @@ import aztech.modern_industrialization.machines.components.CrafterComponent;
 import aztech.modern_industrialization.machines.gui.ClientComponentRenderer;
 import aztech.modern_industrialization.util.TextHelper;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.function.Supplier;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.gui.DrawableHelper;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.text.TranslatableText;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiComponent;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.resources.ResourceLocation;
 
 public class CraftingMultiblockGui {
     public static class Server implements SyncedComponent.Server<Data> {
@@ -80,12 +80,12 @@ public class CraftingMultiblockGui {
         }
 
         @Override
-        public void writeInitialData(PacketByteBuf buf) {
+        public void writeInitialData(FriendlyByteBuf buf) {
             writeCurrentData(buf);
         }
 
         @Override
-        public void writeCurrentData(PacketByteBuf buf) {
+        public void writeCurrentData(FriendlyByteBuf buf) {
             if (isShapeValid.get()) {
                 buf.writeBoolean(true);
                 if (crafter.hasActiveRecipe()) {
@@ -105,7 +105,7 @@ public class CraftingMultiblockGui {
         }
 
         @Override
-        public Identifier getId() {
+        public ResourceLocation getId() {
             return SyncedComponents.CRAFTING_MULTIBLOCK_GUI;
         }
     }
@@ -119,12 +119,12 @@ public class CraftingMultiblockGui {
         long currentRecipeEu;
         long baseRecipeEu;
 
-        public Client(PacketByteBuf buf) {
+        public Client(FriendlyByteBuf buf) {
             read(buf);
         }
 
         @Override
-        public void read(PacketByteBuf buf) {
+        public void read(FriendlyByteBuf buf) {
             isShapeValid = buf.readBoolean();
             if (isShapeValid) {
                 hasActiveRecipe = buf.readBoolean();
@@ -148,34 +148,36 @@ public class CraftingMultiblockGui {
             private final MIIdentifier texture = new MIIdentifier("textures/gui/container/multiblock_info.png");
 
             @Override
-            public void renderBackground(DrawableHelper helper, MatrixStack matrices, int x, int y) {
+            public void renderBackground(GuiComponent helper, PoseStack matrices, int x, int y) {
 
-                MinecraftClient minecraftClient = MinecraftClient.getInstance();
+                Minecraft minecraftClient = Minecraft.getInstance();
                 RenderSystem.setShaderTexture(0, texture);
-                DrawableHelper.drawTexture(matrices, x + X, y + Y, 0, 0, W, H, W, H);
-                TextRenderer textRenderer = minecraftClient.textRenderer;
+                GuiComponent.blit(matrices, x + X, y + Y, 0, 0, W, H, W, H);
+                Font textRenderer = minecraftClient.font;
 
                 textRenderer
                         .draw(matrices,
-                                new TranslatableText(isShapeValid ? "text.modern_industrialization.multiblock_shape_valid"
+                                new TranslatableComponent(isShapeValid ? "text.modern_industrialization.multiblock_shape_valid"
                                         : "text.modern_industrialization.multiblock_shape_invalid"),
                                 x + 9, y + 23, isShapeValid ? 0xFFFFFF : 0xFF0000);
                 if (isShapeValid) {
-                    textRenderer.draw(matrices, new TranslatableText(hasActiveRecipe ? "text.modern_industrialization.multiblock_status_active"
+                    textRenderer.draw(matrices, new TranslatableComponent(hasActiveRecipe ? "text.modern_industrialization.multiblock_status_active"
                             : "text.modern_industrialization.multiblock_status_inactive"), x + 9, y + 34, 0xFFFFFF);
                     if (hasActiveRecipe) {
                         textRenderer.draw(matrices,
-                                new TranslatableText("text.modern_industrialization.progress", String.format("%.1f", progress * 100) + " %"), x + 9,
+                                new TranslatableComponent("text.modern_industrialization.progress", String.format("%.1f", progress * 100) + " %"),
+                                x + 9,
                                 y + 45, 0xFFFFFF);
 
                         textRenderer.draw(matrices,
-                                new TranslatableText("text.modern_industrialization.efficiency_ticks", efficiencyTicks, maxEfficiencyTicks), x + 9,
+                                new TranslatableComponent("text.modern_industrialization.efficiency_ticks", efficiencyTicks, maxEfficiencyTicks),
+                                x + 9,
                                 y + 56, 0xFFFFFF);
 
-                        textRenderer.draw(matrices, new TranslatableText("text.modern_industrialization.base_eu_recipe",
+                        textRenderer.draw(matrices, new TranslatableComponent("text.modern_industrialization.base_eu_recipe",
                                 TextHelper.getEuTextTick(baseRecipeEu)), x + 9, y + 67, 0xFFFFFF);
 
-                        textRenderer.draw(matrices, new TranslatableText("text.modern_industrialization.current_eu_recipe",
+                        textRenderer.draw(matrices, new TranslatableComponent("text.modern_industrialization.current_eu_recipe",
                                 TextHelper.getEuTextTick(currentRecipeEu)), x + 9, y + 78, 0xFFFFFF);
                     }
                 }

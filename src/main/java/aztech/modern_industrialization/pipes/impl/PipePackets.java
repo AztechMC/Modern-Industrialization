@@ -32,51 +32,52 @@ import aztech.modern_industrialization.pipes.item.ItemPipeScreenHandler;
 import aztech.modern_industrialization.util.UnsidedPacketHandler;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
-import net.minecraft.screen.ScreenHandler;
-import net.minecraft.util.Identifier;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.inventory.AbstractContainerMenu;
 
 public class PipePackets {
-    public static final Identifier SET_ITEM_WHITELIST = new MIIdentifier("set_item_whitelist");
+    public static final ResourceLocation SET_ITEM_WHITELIST = new MIIdentifier("set_item_whitelist");
     public static final UnsidedPacketHandler ON_SET_ITEM_WHITELIST = (player, buf) -> {
         int syncId = buf.readInt();
         boolean whitelist = buf.readBoolean();
         return () -> {
-            ScreenHandler handler = player.currentScreenHandler;
-            if (handler.syncId == syncId) {
+            AbstractContainerMenu handler = player.containerMenu;
+            if (handler.containerId == syncId) {
                 ((ItemPipeScreenHandler) handler).pipeInterface.setWhitelist(whitelist);
             }
         };
     };
-    public static final Identifier SET_CONNECTION_TYPE = new MIIdentifier("set_connection_type");
+    public static final ResourceLocation SET_CONNECTION_TYPE = new MIIdentifier("set_connection_type");
     public static final UnsidedPacketHandler ON_SET_CONNECTION_TYPE = (player, buf) -> {
         int syncId = buf.readInt();
         int type = buf.readInt();
         return () -> {
-            ScreenHandler handler = player.currentScreenHandler;
-            if (handler.syncId == syncId) {
+            AbstractContainerMenu handler = player.containerMenu;
+            if (handler.containerId == syncId) {
                 ((PipeScreenHandler) handler).getInterface(ConnectionTypeInterface.class).setConnectionType(type);
             }
         };
     };
-    public static final Identifier INCREMENT_PRIORITY = new MIIdentifier("increment_priority");
+    public static final ResourceLocation INCREMENT_PRIORITY = new MIIdentifier("increment_priority");
     public static final ServerPlayNetworking.PlayChannelHandler ON_INCREMENT_PRIORITY = (ms, player, h, buf, sender) -> {
         int syncId = buf.readInt();
+        int channel = buf.readInt();
         int priority = buf.readInt();
         ms.execute(() -> {
-            ScreenHandler handler = player.currentScreenHandler;
-            if (handler.syncId == syncId) {
-                ((PipeScreenHandler) handler).getInterface(PriorityInterface.class).incrementPriority(priority);
+            AbstractContainerMenu handler = player.containerMenu;
+            if (handler.containerId == syncId) {
+                ((PipeScreenHandler) handler).getInterface(PriorityInterface.class).incrementPriority(channel, priority);
             }
         });
     };
-    public static final Identifier SET_PRIORITY = new MIIdentifier("set_priority");
-    public static final Identifier SET_NETWORK_FLUID = new MIIdentifier("set_network_fluid");
+    public static final ResourceLocation SET_PRIORITY = new MIIdentifier("set_priority");
+    public static final ResourceLocation SET_NETWORK_FLUID = new MIIdentifier("set_network_fluid");
     public static final UnsidedPacketHandler ON_SET_NETWORK_FLUID = (player, buf) -> {
         int syncId = buf.readInt();
         FluidVariant fluid = FluidVariant.fromPacket(buf);
         return () -> {
-            ScreenHandler handler = player.currentScreenHandler;
-            if (handler.syncId == syncId) {
+            AbstractContainerMenu handler = player.containerMenu;
+            if (handler.containerId == syncId) {
                 ((FluidPipeScreenHandler) handler).iface.setNetworkFluid(fluid);
             }
         };

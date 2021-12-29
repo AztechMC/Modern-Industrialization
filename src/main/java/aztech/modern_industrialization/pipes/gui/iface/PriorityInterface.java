@@ -24,21 +24,21 @@
 package aztech.modern_industrialization.pipes.gui.iface;
 
 public interface PriorityInterface {
-    int getPriority();
+    int getPriority(int channel);
 
     /**
      * Don't call this, always call {@link #incrementPriority}.
      */
-    void setPriority(int priority);
+    void setPriority(int channel, int priority);
 
-    default void incrementPriority(int delta) {
+    default void incrementPriority(int channel, int delta) {
         if (delta == 1 || delta == -1 || delta == 10 || delta == -10) {
-            int p = getPriority() + delta;
+            int p = getPriority(channel) + delta;
             if (p < -128)
                 p = -128;
             if (p > 127)
                 p = 127;
-            setPriority(p);
+            setPriority(channel, p);
         }
     }
 }

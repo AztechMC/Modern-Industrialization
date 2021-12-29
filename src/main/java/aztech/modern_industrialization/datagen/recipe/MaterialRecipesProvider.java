@@ -27,7 +27,7 @@ import aztech.modern_industrialization.materials.Material;
 import aztech.modern_industrialization.materials.MaterialRegistry;
 import java.util.function.Consumer;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
-import net.minecraft.data.server.recipe.RecipeJsonProvider;
+import net.minecraft.data.recipes.FinishedRecipe;
 
 public class MaterialRecipesProvider extends MIRecipesProvider {
 
@@ -36,7 +36,7 @@ public class MaterialRecipesProvider extends MIRecipesProvider {
     }
 
     @Override
-    protected void generateRecipes(Consumer<RecipeJsonProvider> consumer) {
+    protected void generateRecipes(Consumer<FinishedRecipe> consumer) {
         for (Material material : MaterialRegistry.getMaterials().values()) {
             material.registerRecipes.accept(consumer);
         }

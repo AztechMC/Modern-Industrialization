@@ -30,16 +30,16 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.IntStream;
 import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.text.LiteralText;
-import net.minecraft.text.TranslatableText;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.core.Registry;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.resources.ResourceLocation;
 
 public class FaqTooltips {
-    private static final Map<Identifier, String[]> TOOLTIPS = new HashMap<>();
+    private static final Map<ResourceLocation, String[]> TOOLTIPS = new HashMap<>();
 
-    private static void add(Identifier id, String tooltipId, int lineCount) {
+    private static void add(ResourceLocation id, String tooltipId, int lineCount) {
         Preconditions.checkArgument(lineCount > 0);
 
         String[] lines = IntStream.range(0, lineCount).mapToObj(l -> tooltipId + "_" + l).toArray(String[]::new);
@@ -58,20 +58,21 @@ public class FaqTooltips {
         add(new MIIdentifier("stainless_steel_dust"), "stainless_steel_dust", 1);
 
         ItemTooltipCallback.EVENT.register((stack, context, lines) -> {
-            Identifier itemId = Registry.ITEM.getId(stack.getItem());
+            ResourceLocation itemId = Registry.ITEM.getKey(stack.getItem());
             String[] tooltipLines = TOOLTIPS.get(itemId);
 
             if (tooltipLines != null) {
-                lines.add(new LiteralText(""));
+                lines.add(new TextComponent(""));
                 if (Screen.hasShiftDown()) {
-                    lines.add(new TranslatableText("text.modern_industrialization.additional_tips").setStyle(TextHelper.FAQ_HEADER_TOOLTIP));
+                    lines.add(new TranslatableComponent("text.modern_industrialization.additional_tips").setStyle(TextHelper.FAQ_HEADER_TOOLTIP));
                     for (String line : tooltipLines) {
-                        TranslatableText text = new TranslatableText("item_tooltip.modern_industrialization." + line);
+                        TranslatableComponent text = new TranslatableComponent("item_tooltip.modern_industrialization." + line);
                         text.setStyle(TextHelper.FAQ_TOOLTIP);
                         lines.add(text);
                     }
                 } else {
-                    lines.add(new TranslatableText("text.modern_industrialization.additional_tips_shift").setStyle(TextHelper.FAQ_HEADER_TOOLTIP));
+                    lines.add(
+                            new TranslatableComponent("text.modern_industrialization.additional_tips_shift").setStyle(TextHelper.FAQ_HEADER_TOOLTIP));
                 }
             }
         });

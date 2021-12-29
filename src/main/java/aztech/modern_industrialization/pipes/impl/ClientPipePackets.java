@@ -28,17 +28,18 @@ import aztech.modern_industrialization.pipes.gui.iface.PriorityInterface;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.minecraft.screen.ScreenHandler;
+import net.minecraft.world.inventory.AbstractContainerMenu;
 
 @Environment(EnvType.CLIENT)
 public class ClientPipePackets {
     public static final ClientPlayNetworking.PlayChannelHandler ON_SET_PRIORITY = (mc, h, buf, r) -> {
         int syncId = buf.readInt();
+        int channel = buf.readInt();
         int priority = buf.readInt();
         mc.execute(() -> {
-            ScreenHandler handler = mc.player.currentScreenHandler;
-            if (handler.syncId == syncId) {
-                ((PipeScreenHandler) handler).getInterface(PriorityInterface.class).setPriority(priority);
+            AbstractContainerMenu handler = mc.player.containerMenu;
+            if (handler.containerId == syncId) {
+                ((PipeScreenHandler) handler).getInterface(PriorityInterface.class).setPriority(channel, priority);
             }
         });
     };

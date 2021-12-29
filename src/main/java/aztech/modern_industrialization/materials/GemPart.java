@@ -25,10 +25,10 @@ package aztech.modern_industrialization.materials;
 
 import aztech.modern_industrialization.materials.part.*;
 import aztech.modern_industrialization.textures.TextureHelper;
+import com.mojang.blaze3d.platform.NativeImage;
 import java.io.IOException;
 import net.devtech.arrp.json.tags.JTag;
-import net.minecraft.client.texture.NativeImage;
-import net.minecraft.util.Identifier;
+import net.minecraft.resources.ResourceLocation;
 
 public class GemPart extends Part implements BuildablePart {
 
@@ -44,7 +44,8 @@ public class GemPart extends Part implements BuildablePart {
     @Override
     public MaterialPart build(MaterialBuilder.PartContext ctx) {
         return new RegularPart("gem").appendRegister((registeringContext, partContext, part, itemPath, itemId, itemTag) -> MaterialHelper
-                .registerItemTag("c:" + itemPath, JTag.tag().add(new Identifier(itemId)))).withTextureRegister((mtm, partContext, part, itemPath) -> {
+                .registerItemTag("c:" + itemPath, JTag.tag().add(new ResourceLocation(itemId))))
+                .withTextureRegister((mtm, partContext, part, itemPath) -> {
                     String template = String.format("modern_industrialization:textures/materialsets/gems/%s.png", partContext.getMaterialName());
                     try {
                         NativeImage image = mtm.getAssetAsTexture(template);

@@ -29,13 +29,13 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.BiFunction;
 import java.util.function.Supplier;
-import net.minecraft.util.Identifier;
+import net.minecraft.resources.ResourceLocation;
 
 /**
  * A pipe network type.
  */
 public final class PipeNetworkType implements Comparable<PipeNetworkType> {
-    private final Identifier identifier;
+    private final ResourceLocation identifier;
     private final BiFunction<Integer, PipeNetworkData, PipeNetwork> networkCtor;
     private final Supplier<PipeNetworkNode> nodeCtor;
     /**
@@ -46,11 +46,12 @@ public final class PipeNetworkType implements Comparable<PipeNetworkType> {
     private final boolean opensGui;
     private final PipeRenderer.Factory renderer;
 
-    private static Map<Identifier, PipeNetworkType> types = new HashMap<>();
+    private static Map<ResourceLocation, PipeNetworkType> types = new HashMap<>();
     private static Set<PipeRenderer.Factory> pipeRenderers = new HashSet<>();
     private static int nextSerialNumber = 0;
 
-    private PipeNetworkType(Identifier identifier, BiFunction<Integer, PipeNetworkData, PipeNetwork> networkCtor, Supplier<PipeNetworkNode> nodeCtor,
+    private PipeNetworkType(ResourceLocation identifier, BiFunction<Integer, PipeNetworkData, PipeNetwork> networkCtor,
+            Supplier<PipeNetworkNode> nodeCtor,
             int color, boolean opensGui, PipeRenderer.Factory renderer, int serialNumber) {
         this.identifier = identifier;
         this.networkCtor = networkCtor;
@@ -61,7 +62,7 @@ public final class PipeNetworkType implements Comparable<PipeNetworkType> {
         this.serialNumber = serialNumber;
     }
 
-    public Identifier getIdentifier() {
+    public ResourceLocation getIdentifier() {
         return identifier;
     }
 
@@ -81,15 +82,15 @@ public final class PipeNetworkType implements Comparable<PipeNetworkType> {
         return opensGui;
     }
 
-    public static PipeNetworkType get(Identifier identifier) {
+    public static PipeNetworkType get(ResourceLocation identifier) {
         return types.get(identifier);
     }
 
-    public static Map<Identifier, PipeNetworkType> getTypes() {
+    public static Map<ResourceLocation, PipeNetworkType> getTypes() {
         return new HashMap<>(types);
     }
 
-    public static PipeNetworkType register(Identifier identifier, BiFunction<Integer, PipeNetworkData, PipeNetwork> networkCtor,
+    public static PipeNetworkType register(ResourceLocation identifier, BiFunction<Integer, PipeNetworkData, PipeNetwork> networkCtor,
             Supplier<PipeNetworkNode> nodeCtor, int color, boolean opensGui, PipeRenderer.Factory renderer) {
         color |= 0xff000000;
         PipeNetworkType type = new PipeNetworkType(identifier, networkCtor, nodeCtor, color, opensGui, renderer, nextSerialNumber++);

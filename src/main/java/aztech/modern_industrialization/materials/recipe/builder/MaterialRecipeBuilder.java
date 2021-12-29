@@ -24,7 +24,7 @@
 package aztech.modern_industrialization.materials.recipe.builder;
 
 import java.util.function.Consumer;
-import net.minecraft.data.server.recipe.RecipeJsonProvider;
+import net.minecraft.data.recipes.FinishedRecipe;
 
 public interface MaterialRecipeBuilder {
     String getRecipeId();
@@ -37,5 +37,5 @@ public interface MaterialRecipeBuilder {
      * @deprecated don't call, let the MaterialBuilder do it
      */
     @Deprecated
-    void save(Consumer<RecipeJsonProvider> consumer);
+    void save(Consumer<FinishedRecipe> consumer);
 }

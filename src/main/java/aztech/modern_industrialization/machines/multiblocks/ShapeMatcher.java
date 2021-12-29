@@ -23,24 +23,24 @@
  */
 package aztech.modern_industrialization.machines.multiblocks;
 
-import static net.minecraft.util.math.Direction.*;
+import static net.minecraft.core.Direction.*;
 
 import aztech.modern_industrialization.machines.multiblocks.world.ChunkEventListener;
 import aztech.modern_industrialization.machines.multiblocks.world.ChunkEventListeners;
 import java.util.*;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.ChunkPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
 
 /**
  * Status of a multiblock shape bound to some position and direction.
  */
 public class ShapeMatcher implements ChunkEventListener {
-    public ShapeMatcher(World world, BlockPos controllerPos, Direction controllerDirection, ShapeTemplate template) {
+    public ShapeMatcher(Level world, BlockPos controllerPos, Direction controllerDirection, ShapeTemplate template) {
         this.controllerPos = controllerPos;
         this.template = template;
         this.simpleMembers = toWorldPos(controllerPos, controllerDirection, template.simpleMembers);
@@ -70,7 +70,7 @@ public class ShapeMatcher implements ChunkEventListener {
             rotatedPos = new BlockPos(-templatePos.getZ(), templatePos.getY(), templatePos.getX());
         else
             rotatedPos = new BlockPos(templatePos.getZ(), templatePos.getY(), -templatePos.getX());
-        return rotatedPos.add(controllerPos);
+        return rotatedPos.offset(controllerPos);
     }
 
     private static <V> Map<BlockPos, V> toWorldPos(BlockPos controllerPos, Direction controllerDirection, Map<BlockPos, V> templateMap) {
@@ -112,7 +112,7 @@ public class ShapeMatcher implements ChunkEventListener {
      * Return true if there was a match, and append matched hatches to the list if
      * it's not null.
      */
-    public boolean matches(BlockPos pos, World world, @Nullable List<HatchBlockEntity> hatches) {
+    public boolean matches(BlockPos pos, Level world, @Nullable List<HatchBlockEntity> hatches) {
         SimpleMember simpleMember = simpleMembers.get(pos);
         if (simpleMember == null)
             return false;
@@ -143,7 +143,7 @@ public class ShapeMatcher implements ChunkEventListener {
         return matchSuccessful && !needsRematch;
     }
 
-    public void rematch(World world) {
+    public void rematch(Level world) {
         unlinkHatches();
         matchSuccessful = true;
 
@@ -174,13 +174,13 @@ public class ShapeMatcher implements ChunkEventListener {
         return spannedChunks;
     }
 
-    public void registerListeners(World world) {
+    public void registerListeners(Level world) {
         for (ChunkPos chunkPos : getSpannedChunks()) {
             ChunkEventListeners.listeners.add(world, chunkPos, this);
         }
     }
 
-    public void unregisterListeners(World world) {
+    public void unregisterListeners(Level world) {
         for (ChunkPos chunkPos : getSpannedChunks()) {
             ChunkEventListeners.listeners.remove(world, chunkPos, this);
         }

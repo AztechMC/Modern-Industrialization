@@ -37,9 +37,9 @@ import aztech.modern_industrialization.machines.gui.MachineGuiParameters;
 import aztech.modern_industrialization.machines.init.MachineTier;
 import aztech.modern_industrialization.machines.recipe.MachineRecipeType;
 import aztech.modern_industrialization.util.Tickable;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.world.World;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 
 public abstract class AbstractCraftingMachineBlockEntity extends MachineBlockEntity implements CrafterComponent.Behavior, Tickable {
     public AbstractCraftingMachineBlockEntity(BEP bep, MachineRecipeType recipeType, MachineInventoryComponent inventory,
@@ -80,16 +80,16 @@ public abstract class AbstractCraftingMachineBlockEntity extends MachineBlockEnt
 
     @Override
     public void tick() {
-        if (!world.isClient) {
+        if (!level.isClientSide) {
             boolean newActive = crafter.tickRecipe();
             isActiveComponent.updateActive(newActive, this);
             if (orientation.extractItems) {
-                inventory.inventory.autoExtractItems(world, pos, orientation.outputDirection);
+                inventory.inventory.autoExtractItems(level, worldPosition, orientation.outputDirection);
             }
             if (orientation.extractFluids) {
-                inventory.inventory.autoExtractFluids(world, pos, orientation.outputDirection);
+                inventory.inventory.autoExtractFluids(level, worldPosition, orientation.outputDirection);
             }
-            markDirty();
+            setChanged();
         }
     }
 
@@ -104,7 +104,7 @@ public abstract class AbstractCraftingMachineBlockEntity extends MachineBlockEnt
     }
 
     @Override
-    public World getCrafterWorld() {
-        return world;
+    public Level getCrafterWorld() {
+        return level;
     }
 }

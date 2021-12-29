@@ -27,10 +27,10 @@ import aztech.modern_industrialization.ModernIndustrialization;
 import java.util.Set;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerChunkEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
+import net.minecraft.core.BlockPos;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.ChunkPos;
-import net.minecraft.world.World;
+import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.level.Level;
 
 public class ChunkEventListeners {
     public static ChunkPosMultiMap<ChunkEventListener> listeners = new ChunkPosMultiMap<>();
@@ -61,10 +61,10 @@ public class ChunkEventListeners {
         });
     }
 
-    public static void onBlockStateChange(World world, ChunkPos chunkPos, BlockPos pos) {
+    public static void onBlockStateChange(Level world, ChunkPos chunkPos, BlockPos pos) {
         // We skip block state changes that happen outside of the server thread.
         // Hopefully that won't cause problems.
-        if (server.isOnThread()) {
+        if (server.isSameThread()) {
             Set<ChunkEventListener> cels = listeners.get(world, chunkPos);
             if (cels != null) {
                 for (ChunkEventListener cel : cels) {
@@ -75,7 +75,7 @@ public class ChunkEventListeners {
     }
 
     private static void ensureServerThread() {
-        if (!server.isOnThread()) {
+        if (!server.isSameThread()) {
             throw new RuntimeException("Thread is not server thread!");
         }
     }

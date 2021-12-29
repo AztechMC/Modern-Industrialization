@@ -25,20 +25,20 @@ package aztech.modern_industrialization.blocks.creativestorageunit;
 
 import aztech.modern_industrialization.MIBlock;
 import aztech.modern_industrialization.api.TickableBlock;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Material;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.Material;
 import org.jetbrains.annotations.Nullable;
 
 public class CreativeStorageUnitBlock extends MIBlock implements TickableBlock {
     public CreativeStorageUnitBlock() {
-        super("creative_storage_unit", Settings.of(Material.METAL));
+        super("creative_storage_unit", Properties.of(Material.METAL));
     }
 
     @Nullable
     @Override
-    public BlockEntity createBlockEntity(BlockPos pos, BlockState state) {
+    public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
         return new CreativeStorageUnitBlockEntity(pos, state);
     }
 }

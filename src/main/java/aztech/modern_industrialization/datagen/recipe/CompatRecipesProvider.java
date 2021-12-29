@@ -34,11 +34,11 @@ import aztech.modern_industrialization.recipe.json.compat.IRCompressRecipeJson;
 import aztech.modern_industrialization.recipe.json.compat.TRCompressorRecipeJson;
 import java.util.function.Consumer;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
-import net.minecraft.data.server.recipe.RecipeJsonProvider;
-import net.minecraft.fluid.Fluids;
+import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.world.level.material.Fluids;
 
 public class CompatRecipesProvider extends MIRecipesProvider {
-    private Consumer<RecipeJsonProvider> consumer;
+    private Consumer<FinishedRecipe> consumer;
     private String currentCompatModid;
 
     public CompatRecipesProvider(FabricDataGenerator dataGenerator) {
@@ -46,7 +46,7 @@ public class CompatRecipesProvider extends MIRecipesProvider {
     }
 
     @Override
-    protected void generateRecipes(Consumer<RecipeJsonProvider> consumer) {
+    protected void generateRecipes(Consumer<FinishedRecipe> consumer) {
         this.consumer = consumer;
 
         this.currentCompatModid = "techreborn";

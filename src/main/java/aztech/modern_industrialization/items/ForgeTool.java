@@ -29,17 +29,18 @@ import aztech.modern_industrialization.ModernIndustrialization;
 import aztech.modern_industrialization.util.ResourceUtil;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.fabricmc.fabric.api.tag.TagFactory;
-import net.minecraft.item.*;
-import net.minecraft.recipe.Ingredient;
-import net.minecraft.util.Identifier;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Tier;
+import net.minecraft.world.item.TieredItem;
+import net.minecraft.world.item.crafting.Ingredient;
 
-public class ForgeTool extends ToolItem {
+public class ForgeTool extends TieredItem {
 
     public final String id;
     public static final MIIdentifier TAG = new MIIdentifier("forge_hammer_tools");
 
-    public ForgeTool(ToolMaterial material, String id) {
-        super(material, new FabricItemSettings().maxCount(1).group(ModernIndustrialization.ITEM_GROUP));
+    public ForgeTool(Tier material, String id) {
+        super(material, new FabricItemSettings().stacksTo(1).tab(ModernIndustrialization.ITEM_GROUP));
         this.id = id;
         MIItem.items.put(id, this);
         MIItem.handhelds.add(id);
@@ -50,38 +51,38 @@ public class ForgeTool extends ToolItem {
         return "modern_industrialization:" + id;
     }
 
-    public static ToolMaterial STEEL = new ToolMaterial() {
+    public static Tier STEEL = new Tier() {
 
-        private static Identifier TAG = new Identifier("c:steel_ingots");
+        private static ResourceLocation TAG = new ResourceLocation("c:steel_ingots");
 
         @Override
-        public int getDurability() {
+        public int getUses() {
             return 650;
         }
 
         @Override
-        public float getMiningSpeedMultiplier() {
+        public float getSpeed() {
             return 7.0F;
         }
 
         @Override
-        public float getAttackDamage() {
+        public float getAttackDamageBonus() {
             return 2.5F;
         }
 
         @Override
-        public int getMiningLevel() {
+        public int getLevel() {
             return 2;
         }
 
         @Override
-        public int getEnchantability() {
+        public int getEnchantmentValue() {
             return 16;
         }
 
         @Override
         public Ingredient getRepairIngredient() {
-            return Ingredient.fromTag(TagFactory.ITEM.create(TAG));
+            return Ingredient.of(TagFactory.ITEM.create(TAG));
         }
     };
 }

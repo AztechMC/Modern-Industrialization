@@ -25,10 +25,10 @@ package aztech.modern_industrialization.machines.components;
 
 import aztech.modern_industrialization.machines.IComponent;
 import aztech.modern_industrialization.machines.multiblocks.ShapeTemplate;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.Direction;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.player.Player;
 
 public class ActiveShapeComponent implements IComponent {
     public final ShapeTemplate[] shapeTemplates;
@@ -38,7 +38,7 @@ public class ActiveShapeComponent implements IComponent {
         this.shapeTemplates = shapeTemplates;
     }
 
-    public boolean useScrewdriver(PlayerEntity player, Hand hand, Direction face) {
+    public boolean useScrewdriver(Player player, InteractionHand hand, Direction face) {
         if (shapeTemplates.length > 1) {
             activeShape = (activeShape + 1) % shapeTemplates.length;
             return true;
@@ -55,12 +55,12 @@ public class ActiveShapeComponent implements IComponent {
     }
 
     @Override
-    public void writeNbt(NbtCompound tag) {
+    public void writeNbt(CompoundTag tag) {
         tag.putInt("activeShape", activeShape);
     }
 
     @Override
-    public void readNbt(NbtCompound tag) {
+    public void readNbt(CompoundTag tag) {
         activeShape = tag.getInt("activeShape");
     }
 }

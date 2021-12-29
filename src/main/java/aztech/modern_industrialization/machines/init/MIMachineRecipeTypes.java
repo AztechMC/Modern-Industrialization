@@ -31,8 +31,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
+import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceLocation;
 
 public class MIMachineRecipeTypes {
     private static final List<MachineRecipeType> recipeTypes = new ArrayList<>();
@@ -80,7 +80,7 @@ public class MIMachineRecipeTypes {
         return create(name, MachineRecipeType::new);
     }
 
-    private static MachineRecipeType create(String name, Function<Identifier, MachineRecipeType> ctor) {
+    private static MachineRecipeType create(String name, Function<ResourceLocation, MachineRecipeType> ctor) {
         MachineRecipeType type = ctor.apply(new MIIdentifier(name));
         Registry.register(Registry.RECIPE_SERIALIZER, type.getId(), type);
         Registry.register(Registry.RECIPE_TYPE, type.getId(), type);

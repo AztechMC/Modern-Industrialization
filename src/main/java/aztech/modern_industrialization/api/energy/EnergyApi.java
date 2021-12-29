@@ -27,13 +27,13 @@ import aztech.modern_industrialization.ModernIndustrialization;
 import aztech.modern_industrialization.util.Simulation;
 import net.fabricmc.fabric.api.lookup.v1.block.BlockApiLookup;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.Direction;
+import net.minecraft.core.Direction;
+import net.minecraft.resources.ResourceLocation;
 import team.reborn.energy.api.EnergyStorage;
 
 public class EnergyApi {
     public static final BlockApiLookup<EnergyMoveable, Direction> MOVEABLE = BlockApiLookup
-            .get(new Identifier("modern_industrialization:energy_moveable"), EnergyMoveable.class, Direction.class);
+            .get(new ResourceLocation("modern_industrialization:energy_moveable"), EnergyMoveable.class, Direction.class);
 
     public static final EnergyExtractable CREATIVE_EXTRACTABLE = new EnergyExtractable() {
         @Override

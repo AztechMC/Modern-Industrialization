@@ -24,17 +24,17 @@
 package aztech.modern_industrialization.items;
 
 import java.util.List;
-import net.minecraft.client.item.TooltipContext;
-import net.minecraft.item.ItemStack;
-import net.minecraft.text.Text;
-import net.minecraft.world.World;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
 
 public interface LockableFluidItem {
 
     boolean isFluidLockable();
 
-    default void appendFluidTooltip(ItemStack stack, @Nullable World world, List<Text> tooltip, TooltipContext context) {
+    default void appendFluidTooltip(ItemStack stack, @Nullable Level world, List<Component> tooltip, TooltipFlag context) {
         if (isFluidLockable()) {
             // Fluid fluid = FluidFuelItemHelper.getFluid(stack);
             // if (fluid != Fluids.EMPTY) {

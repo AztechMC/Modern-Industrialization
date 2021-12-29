@@ -38,7 +38,7 @@ public class MIAutoTesting {
 
             if (ticks == 40) {
                 MixinEnvironment.getCurrentEnvironment().audit();
-                server.stop(false);
+                server.halt(false);
             }
         });
     }

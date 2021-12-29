@@ -23,7 +23,7 @@
  */
 package aztech.modern_industrialization.pipes.impl;
 
-import static net.minecraft.util.math.Direction.NORTH;
+import static net.minecraft.core.Direction.NORTH;
 
 import aztech.modern_industrialization.api.FastBlockEntity;
 import aztech.modern_industrialization.api.WrenchableBlockEntity;
@@ -35,23 +35,23 @@ import aztech.modern_industrialization.util.RenderHelper;
 import java.util.*;
 import net.fabricmc.fabric.api.rendering.data.v1.RenderAttachmentBlockEntity;
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.ItemEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.network.Packet;
-import net.minecraft.network.listener.ClientPlayPacketListener;
-import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.Hand;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.Pair;
-import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.util.shape.VoxelShape;
-import net.minecraft.util.shape.VoxelShapes;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.Tuple;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -64,7 +64,7 @@ public class PipeBlockEntity extends FastBlockEntity implements IPipeScreenHandl
     /**
      * The current collision shape, i.e. the union of the shapes of the pipe parts.
      */
-    VoxelShape currentCollisionShape = VoxelShapes.empty();
+    VoxelShape currentCollisionShape = Shapes.empty();
     /**
      * The loaded nodes, server-side only.
      */
@@ -77,25 +77,25 @@ public class PipeBlockEntity extends FastBlockEntity implements IPipeScreenHandl
     /**
      * Extra rendering data
      */
-    SortedMap<PipeNetworkType, NbtCompound> customData = new TreeMap<>();
+    SortedMap<PipeNetworkType, CompoundTag> customData = new TreeMap<>();
 
     // Because we can't access the PipeNetworksComponent in fromTag because the
     // world is null, we defer the node loading.
-    private final List<Pair<PipeNetworkType, PipeNetworkNode>> unloadedPipes = new ArrayList<>();
+    private final List<Tuple<PipeNetworkType, PipeNetworkNode>> unloadedPipes = new ArrayList<>();
     /**
      * Set to true in PipeBlock to tell apart unloads and removals.
      */
     boolean stateReplaced = false;
 
     public void loadPipes() {
-        if (world.isClient)
+        if (level.isClientSide)
             return;
 
         boolean changed = false;
-        for (Pair<PipeNetworkType, PipeNetworkNode> unloaded : unloadedPipes) {
-            PipeNetworks.get((ServerWorld) world).getManager(unloaded.getLeft()).nodeLoaded(unloaded.getRight(), pos);
-            pipes.add(unloaded.getRight());
-            unloaded.getRight().updateConnections(world, pos);
+        for (Tuple<PipeNetworkType, PipeNetworkNode> unloaded : unloadedPipes) {
+            PipeNetworks.get((ServerLevel) level).getManager(unloaded.getA()).nodeLoaded(unloaded.getB(), worldPosition);
+            pipes.add(unloaded.getB());
+            unloaded.getB().updateConnections(level, worldPosition);
             changed = true;
         }
         unloadedPipes.clear();
@@ -111,7 +111,7 @@ public class PipeBlockEntity extends FastBlockEntity implements IPipeScreenHandl
     void updateConnections() {
         loadPipes();
         for (PipeNetworkNode pipe : pipes) {
-            pipe.updateConnections(world, pos);
+            pipe.updateConnections(level, worldPosition);
         }
         onConnectionsChanged();
     }
@@ -129,7 +129,7 @@ public class PipeBlockEntity extends FastBlockEntity implements IPipeScreenHandl
      */
     boolean canAddPipe(PipeNetworkType type) {
         loadPipes();
-        if (world.isClient) {
+        if (level.isClientSide) {
             return connections.size() < MAX_PIPES && !connections.containsKey(type);
         } else {
             if (pipes.size() == MAX_PIPES)
@@ -152,13 +152,13 @@ public class PipeBlockEntity extends FastBlockEntity implements IPipeScreenHandl
             return;
 
         PipeNetworkNode node = type.getNodeCtor().get();
-        PipeNetworkManager manager = PipeNetworks.get((ServerWorld) world).getManager(type);
-        manager.addNode(node, pos, data);
+        PipeNetworkManager manager = PipeNetworks.get((ServerLevel) level).getManager(type);
+        manager.addNode(node, worldPosition, data);
         for (Direction direction : Direction.values()) {
-            manager.addLink(pos, direction, false);
+            manager.addLink(worldPosition, direction, false);
         }
         pipes.add(node);
-        node.buildInitialConnections(world, pos);
+        node.buildInitialConnections(level, worldPosition);
         onConnectionsChanged();
     }
 
@@ -177,17 +177,17 @@ public class PipeBlockEntity extends FastBlockEntity implements IPipeScreenHandl
             }
         }
         if (removedPipe == null) {
-            throw new IllegalArgumentException("Can't remove type " + type.getIdentifier() + " from BlockEntity at pos " + pos);
+            throw new IllegalArgumentException("Can't remove type " + type.getIdentifier() + " from BlockEntity at pos " + worldPosition);
         }
         pipes.remove(removedPipe);
-        removedPipe.getManager().removeNode(pos);
+        removedPipe.getManager().removeNode(worldPosition);
         onConnectionsChanged();
 
         // Drop items
         List<ItemStack> droppedStacks = new ArrayList<>();
         removedPipe.appendDroppedStacks(droppedStacks);
         for (ItemStack droppedStack : droppedStacks) {
-            world.spawnEntity(new ItemEntity(world, pos.getX(), pos.getY(), pos.getZ(), droppedStack));
+            level.addFreshEntity(new ItemEntity(level, worldPosition.getX(), worldPosition.getY(), worldPosition.getZ(), droppedStack));
         }
     }
 
@@ -197,8 +197,8 @@ public class PipeBlockEntity extends FastBlockEntity implements IPipeScreenHandl
     public void removeConnection(PipeNetworkType type, Direction direction) {
         for (PipeNetworkNode pipe : pipes) {
             if (pipe.getType() == type) {
-                pipe.removeConnection(world, pos, direction);
-                pipe.getManager().removeLink(pos, direction);
+                pipe.removeConnection(level, worldPosition, direction);
+                pipe.getManager().removeLink(worldPosition, direction);
                 onConnectionsChanged();
                 return;
             }
@@ -211,8 +211,8 @@ public class PipeBlockEntity extends FastBlockEntity implements IPipeScreenHandl
     public void addConnection(PipeNetworkType type, Direction direction) {
         for (PipeNetworkNode pipe : pipes) {
             if (pipe.getType() == type) {
-                pipe.addConnection(world, pos, direction);
-                pipe.getManager().addLink(pos, direction, true);
+                pipe.addConnection(level, worldPosition, direction);
+                pipe.getManager().addLink(worldPosition, direction, true);
                 onConnectionsChanged();
                 return;
             }
@@ -229,70 +229,70 @@ public class PipeBlockEntity extends FastBlockEntity implements IPipeScreenHandl
     }
 
     @Override
-    public void markRemoved() {
+    public void setRemoved() {
         if (stateReplaced) {
             loadPipes();
             for (PipeNetworkNode pipe : pipes) {
-                pipe.getManager().removeNode(pos);
+                pipe.getManager().removeNode(worldPosition);
             }
             // Don't clear pipes, otherwise they can't be dropped when broken by hand.
         } else {
             for (PipeNetworkNode pipe : pipes) {
-                pipe.getManager().nodeUnloaded(pipe, pos);
+                pipe.getManager().nodeUnloaded(pipe, worldPosition);
             }
         }
 
-        super.markRemoved();
+        super.setRemoved();
     }
 
     @Override
-    public void writeNbt(NbtCompound tag) {
+    public void saveAdditional(CompoundTag tag) {
         int i = 0;
         for (PipeNetworkNode pipe : pipes) {
             tag.putString("pipe_type_" + i, pipe.getType().getIdentifier().toString());
-            tag.put("pipe_data_" + i, pipe.toTag(new NbtCompound()));
+            tag.put("pipe_data_" + i, pipe.toTag(new CompoundTag()));
             i++;
         }
-        for (Pair<PipeNetworkType, PipeNetworkNode> entry : unloadedPipes) {
-            tag.putString("pipe_type_" + i, entry.getLeft().getIdentifier().toString());
-            tag.put("pipe_data_" + i, entry.getRight().toTag(new NbtCompound()));
+        for (Tuple<PipeNetworkType, PipeNetworkNode> entry : unloadedPipes) {
+            tag.putString("pipe_type_" + i, entry.getA().getIdentifier().toString());
+            tag.put("pipe_data_" + i, entry.getB().toTag(new CompoundTag()));
             i++;
         }
     }
 
     @Override
-    public void readNbt(NbtCompound tag) {
+    public void load(CompoundTag tag) {
         if (!tag.contains("pipes")) {
             pipes.clear();
 
             int i = 0;
             while (tag.contains("pipe_type_" + i)) {
-                Identifier typeId = new Identifier(tag.getString("pipe_type_" + i));
+                ResourceLocation typeId = new ResourceLocation(tag.getString("pipe_type_" + i));
                 PipeNetworkType type = PipeNetworkType.get(typeId);
                 PipeNetworkNode node = type.getNodeCtor().get();
                 node.fromTag(tag.getCompound("pipe_data_" + i));
-                unloadedPipes.add(new Pair<>(type, node));
+                unloadedPipes.add(new Tuple<>(type, node));
                 i++;
             }
         } else {
             connections.clear();
             customData.clear();
-            NbtCompound pipesTag = tag.getCompound("pipes");
-            for (String key : pipesTag.getKeys()) {
-                NbtCompound nodeTag = pipesTag.getCompound(key);
-                PipeNetworkType type = PipeNetworkType.get(new Identifier(key));
+            CompoundTag pipesTag = tag.getCompound("pipes");
+            for (String key : pipesTag.getAllKeys()) {
+                CompoundTag nodeTag = pipesTag.getCompound(key);
+                PipeNetworkType type = PipeNetworkType.get(new ResourceLocation(key));
                 connections.put(type, NbtHelper.decodeConnections(nodeTag.getByteArray("connections")));
                 customData.put(type, nodeTag.getCompound("custom").copy());
             }
             rebuildCollisionShape();
 
-            RenderHelper.forceChunkRemesh(world, pos);
+            RenderHelper.forceChunkRemesh(level, worldPosition);
         }
     }
 
     @Override
-    public void cancelRemoval() {
-        PipeNetworks.scheduleLoadPipe(world, this);
+    public void clearRemoved() {
+        PipeNetworks.scheduleLoadPipe(level, this);
     }
 
     public void onConnectionsChanged() {
@@ -300,25 +300,25 @@ public class PipeBlockEntity extends FastBlockEntity implements IPipeScreenHandl
         Map<PipeNetworkType, PipeEndpointType[]> oldRendererConnections = connections;
         connections = new TreeMap<>();
         for (PipeNetworkNode pipe : pipes) {
-            connections.put(pipe.getType(), pipe.getConnections(pos));
+            connections.put(pipe.getType(), pipe.getConnections(worldPosition));
         }
         // Then send the update to the client if there was a change.
         if (!connections.equals(oldRendererConnections)) {
             rebuildCollisionShape();
             sync();
         }
-        markDirty();
+        setChanged();
     }
 
     @Override
-    public NbtCompound toInitialChunkDataNbt() {
-        NbtCompound tag = new NbtCompound();
+    public CompoundTag getUpdateTag() {
+        CompoundTag tag = new CompoundTag();
         loadPipes();
-        NbtCompound pipesTag = new NbtCompound();
+        CompoundTag pipesTag = new CompoundTag();
         for (PipeNetworkNode pipe : pipes) {
-            NbtCompound nodeTag = new NbtCompound();
+            CompoundTag nodeTag = new CompoundTag();
             nodeTag.put("custom", pipe.writeCustomData());
-            nodeTag.putByteArray("connections", NbtHelper.encodeConnections(pipe.getConnections(pos)));
+            nodeTag.putByteArray("connections", NbtHelper.encodeConnections(pipe.getConnections(worldPosition)));
             pipesTag.put(pipe.getType().getIdentifier().toString(), nodeTag);
         }
         tag.put("pipes", pipesTag);
@@ -327,15 +327,15 @@ public class PipeBlockEntity extends FastBlockEntity implements IPipeScreenHandl
 
     @Nullable
     @Override
-    public Packet<ClientPlayPacketListener> toUpdatePacket() {
-        return BlockEntityUpdateS2CPacket.create(this);
+    public Packet<ClientGamePacketListener> getUpdatePacket() {
+        return ClientboundBlockEntityDataPacket.create(this);
     }
 
     @Override
     public Object getRenderAttachmentData() {
         PipeNetworkType[] types = new PipeNetworkType[connections.size()];
         PipeEndpointType[][] renderedConnections = new PipeEndpointType[connections.size()][];
-        NbtCompound[] customData = new NbtCompound[connections.size()];
+        CompoundTag[] customData = new CompoundTag[connections.size()];
         int i = 0;
         for (Map.Entry<PipeNetworkType, PipeEndpointType[]> entry : connections.entrySet()) {
             types[i] = entry.getKey();
@@ -353,16 +353,16 @@ public class PipeBlockEntity extends FastBlockEntity implements IPipeScreenHandl
 
     @Override
     public void callMarkDirty() {
-        markDirty();
+        setChanged();
     }
 
     @Override
-    public boolean isWithinUseDistance(PlayerEntity player) {
-        if (this.world.getBlockEntity(this.pos) != this) {
+    public boolean isWithinUseDistance(Player player) {
+        if (this.level.getBlockEntity(this.worldPosition) != this) {
             return false;
         } else {
-            return player.squaredDistanceTo((double) this.pos.getX() + 0.5D, (double) this.pos.getY() + 0.5D,
-                    (double) this.pos.getZ() + 0.5D) <= 64.0D;
+            return player.distanceToSqr((double) this.worldPosition.getX() + 0.5D, (double) this.worldPosition.getY() + 0.5D,
+                    (double) this.worldPosition.getZ() + 0.5D) <= 64.0D;
         }
     }
 
@@ -372,16 +372,16 @@ public class PipeBlockEntity extends FastBlockEntity implements IPipeScreenHandl
     }
 
     @Override
-    public boolean useWrench(PlayerEntity player, Hand hand, BlockHitResult hitResult) {
+    public boolean useWrench(Player player, InteractionHand hand, BlockHitResult hitResult) {
         return PipeBlock.useWrench(this, player, hand, hitResult);
     }
 
     static class RenderAttachment {
         PipeNetworkType[] types;
         PipeEndpointType[][] renderedConnections;
-        NbtCompound[] customData;
+        CompoundTag[] customData;
 
-        private RenderAttachment(PipeNetworkType[] types, PipeEndpointType[][] renderedConnections, NbtCompound[] customData) {
+        private RenderAttachment(PipeNetworkType[] types, PipeEndpointType[][] renderedConnections, CompoundTag[] customData) {
             this.types = types;
             this.renderedConnections = renderedConnections;
             this.customData = customData;
@@ -404,15 +404,15 @@ public class PipeBlockEntity extends FastBlockEntity implements IPipeScreenHandl
         }
         for (slot = 0; slot < renderedConnections.length; ++slot) {
             // Center connector
-            shapes.add(new PipeVoxelShape(SHAPE_CACHE[slot][NORTH.getId()][0], types[slot], null, false));
+            shapes.add(new PipeVoxelShape(SHAPE_CACHE[slot][NORTH.get3DDataValue()][0], types[slot], null, false));
 
             // Side connectors
             for (Direction direction : Direction.values()) {
                 int connectionType = PipePartBuilder.getRenderType(slot, direction, renderedConnections);
                 if (connectionType != 0) {
-                    PipeEndpointType connType = renderedConnections[slot][direction.getId()];
+                    PipeEndpointType connType = renderedConnections[slot][direction.get3DDataValue()];
                     boolean opensGui = connType != null && connType != PipeEndpointType.PIPE && types[slot].opensGui();
-                    shapes.add(new PipeVoxelShape(SHAPE_CACHE[slot][direction.getId()][connectionType], types[slot], direction, opensGui));
+                    shapes.add(new PipeVoxelShape(SHAPE_CACHE[slot][direction.get3DDataValue()][connectionType], types[slot], direction, opensGui));
                 }
             }
         }
@@ -421,7 +421,7 @@ public class PipeBlockEntity extends FastBlockEntity implements IPipeScreenHandl
     }
 
     private void rebuildCollisionShape() {
-        currentCollisionShape = getPartShapes().stream().map(vs -> vs.shape).reduce(VoxelShapes.empty(), VoxelShapes::union);
+        currentCollisionShape = getPartShapes().stream().map(vs -> vs.shape).reduce(Shapes.empty(), Shapes::or);
     }
 
     static {
@@ -442,7 +442,7 @@ public class PipeBlockEntity extends FastBlockEntity implements IPipeScreenHandl
                         psb.farShortBend(false, false);
                     else
                         psb.longBend(false, false);
-                    SHAPE_CACHE[slot][direction.getId()][connectionType] = psb.getShape();
+                    SHAPE_CACHE[slot][direction.get3DDataValue()][connectionType] = psb.getShape();
                 }
             }
         }

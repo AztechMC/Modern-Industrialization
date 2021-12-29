@@ -24,50 +24,50 @@
 package aztech.modern_industrialization.recipe.json;
 
 import com.google.gson.JsonObject;
-import net.minecraft.data.server.recipe.RecipeJsonProvider;
-import net.minecraft.recipe.RecipeSerializer;
-import net.minecraft.util.Identifier;
+import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.crafting.RecipeSerializer;
 import org.jetbrains.annotations.Nullable;
 
-public class JsonProvider implements RecipeJsonProvider {
+public class JsonProvider implements FinishedRecipe {
 
-    private final Identifier recipeId;
+    private final ResourceLocation recipeId;
     private final RecipeJson recipe;
 
-    public JsonProvider(Identifier recipeId, RecipeJson recipe) {
+    public JsonProvider(ResourceLocation recipeId, RecipeJson recipe) {
         this.recipeId = recipeId;
         this.recipe = recipe;
     }
 
     @Override
-    public void serialize(JsonObject json) {
+    public void serializeRecipeData(JsonObject json) {
         throw new UnsupportedOperationException("We override toJson()");
     }
 
     @Override
-    public JsonObject toJson() {
+    public JsonObject serializeRecipe() {
         return recipe.toJsonObject();
     }
 
     @Override
-    public Identifier getRecipeId() {
+    public ResourceLocation getId() {
         return recipeId;
     }
 
     @Override
-    public RecipeSerializer<?> getSerializer() {
+    public RecipeSerializer<?> getType() {
         throw new UnsupportedOperationException("We override toJson()");
     }
 
     @Nullable
     @Override
-    public JsonObject toAdvancementJson() {
+    public JsonObject serializeAdvancement() {
         return null;
     }
 
     @Nullable
     @Override
-    public Identifier getAdvancementId() {
+    public ResourceLocation getAdvancementId() {
         return null;
     }
 }

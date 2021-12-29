@@ -24,9 +24,9 @@
 package aztech.modern_industrialization.util;
 
 import java.util.List;
-import net.minecraft.util.collection.DefaultedList;
+import net.minecraft.core.NonNullList;
 
-public class DefaultedListWrapper<T> extends DefaultedList<T> {
+public class DefaultedListWrapper<T> extends NonNullList<T> {
     public DefaultedListWrapper(List<T> actualList) {
         super(actualList, null);
     }

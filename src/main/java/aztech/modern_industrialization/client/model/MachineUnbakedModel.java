@@ -41,22 +41,22 @@ import java.util.Set;
 import java.util.function.Function;
 import net.fabricmc.fabric.api.renderer.v1.RendererAccess;
 import net.fabricmc.fabric.api.renderer.v1.material.BlendMode;
-import net.minecraft.client.render.model.BakedModel;
-import net.minecraft.client.render.model.ModelBakeSettings;
-import net.minecraft.client.render.model.ModelLoader;
-import net.minecraft.client.render.model.UnbakedModel;
-import net.minecraft.client.render.model.json.JsonUnbakedModel;
-import net.minecraft.client.texture.Sprite;
-import net.minecraft.client.util.SpriteIdentifier;
-import net.minecraft.resource.Resource;
-import net.minecraft.screen.PlayerScreenHandler;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.JsonHelper;
+import net.minecraft.client.renderer.block.model.BlockModel;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.client.resources.model.Material;
+import net.minecraft.client.resources.model.ModelBakery;
+import net.minecraft.client.resources.model.ModelState;
+import net.minecraft.client.resources.model.UnbakedModel;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.packs.resources.Resource;
+import net.minecraft.util.GsonHelper;
+import net.minecraft.world.inventory.InventoryMenu;
 import org.jetbrains.annotations.Nullable;
 
 public class MachineUnbakedModel implements UnbakedModel {
-    private static final Identifier BASE_BLOCK_MODEL = new Identifier("minecraft:block/block");
-    private static final Gson GSON = new GsonBuilder().registerTypeAdapter(Identifier.class, new Identifier.Serializer()).create();
+    private static final ResourceLocation BASE_BLOCK_MODEL = new ResourceLocation("minecraft:block/block");
+    private static final Gson GSON = new GsonBuilder().registerTypeAdapter(ResourceLocation.class, new ResourceLocation.Serializer()).create();
 
     public static MachineUnbakedModel deserialize(MachineCasing baseCasing, Resource jsonModel) {
         var stream = new InputStreamReader(jsonModel.getInputStream(), StandardCharsets.UTF_8);
@@ -65,29 +65,29 @@ public class MachineUnbakedModel implements UnbakedModel {
     }
 
     private final MachineCasing baseCasing;
-    private final SpriteIdentifier[] defaultOverlays;
-    private final Map<String, SpriteIdentifier[]> tieredOverlays = new HashMap<>();
+    private final Material[] defaultOverlays;
+    private final Map<String, Material[]> tieredOverlays = new HashMap<>();
 
     private MachineUnbakedModel(MachineCasing baseCasing, JsonObject obj) {
         this.baseCasing = baseCasing;
 
-        var defaultOverlaysJson = OverlaysJson.parse(JsonHelper.getObject(obj, "default_overlays"), null);
+        var defaultOverlaysJson = OverlaysJson.parse(GsonHelper.getAsJsonObject(obj, "default_overlays"), null);
         this.defaultOverlays = defaultOverlaysJson.toSpriteIds();
 
-        var tieredOverlays = JsonHelper.getObject(obj, "tiered_overlays", new JsonObject());
+        var tieredOverlays = GsonHelper.getAsJsonObject(obj, "tiered_overlays", new JsonObject());
         for (var casingTier : tieredOverlays.keySet()) {
-            var casingOverlaysJson = OverlaysJson.parse(JsonHelper.getObject(tieredOverlays, casingTier), defaultOverlaysJson);
+            var casingOverlaysJson = OverlaysJson.parse(GsonHelper.getAsJsonObject(tieredOverlays, casingTier), defaultOverlaysJson);
             this.tieredOverlays.put(casingTier, casingOverlaysJson.toSpriteIds());
         }
     }
 
     @Override
-    public Collection<Identifier> getModelDependencies() {
+    public Collection<ResourceLocation> getDependencies() {
         return List.of(BASE_BLOCK_MODEL);
     }
 
     @Override
-    public Collection<SpriteIdentifier> getTextureDependencies(Function<Identifier, UnbakedModel> unbakedModelGetter,
+    public Collection<Material> getMaterials(Function<ResourceLocation, UnbakedModel> unbakedModelGetter,
             Set<Pair<String, String>> unresolvedTextureReferences) {
         var set = new HashSet<>(Arrays.asList(defaultOverlays));
         for (var tierSprites : tieredOverlays.values()) {
@@ -99,21 +99,21 @@ public class MachineUnbakedModel implements UnbakedModel {
 
     @Nullable
     @Override
-    public BakedModel bake(ModelLoader loader, Function<SpriteIdentifier, Sprite> textureGetter, ModelBakeSettings rotationContainer,
-            Identifier modelId) {
-        var blockTransformation = ((JsonUnbakedModel) loader.getOrLoadModel(BASE_BLOCK_MODEL)).getTransformations();
+    public BakedModel bake(ModelBakery loader, Function<Material, TextureAtlasSprite> textureGetter, ModelState rotationContainer,
+            ResourceLocation modelId) {
+        var blockTransformation = ((BlockModel) loader.getModel(BASE_BLOCK_MODEL)).getTransforms();
         var cutoutMaterial = RendererAccess.INSTANCE.getRenderer().materialFinder().blendMode(0, BlendMode.CUTOUT_MIPPED).find();
 
         var defaultOverlays = loadSprites(textureGetter, this.defaultOverlays);
-        var tieredOverlays = new HashMap<String, Sprite[]>();
+        var tieredOverlays = new HashMap<String, TextureAtlasSprite[]>();
         for (var entry : this.tieredOverlays.entrySet()) {
             tieredOverlays.put(entry.getKey(), loadSprites(textureGetter, entry.getValue()));
         }
         return new MachineBakedModel(blockTransformation, cutoutMaterial, baseCasing, defaultOverlays, tieredOverlays);
     }
 
-    private static Sprite[] loadSprites(Function<SpriteIdentifier, Sprite> textureGetter, SpriteIdentifier[] ids) {
-        var sprites = new Sprite[ids.length];
+    private static TextureAtlasSprite[] loadSprites(Function<Material, TextureAtlasSprite> textureGetter, Material[] ids) {
+        var sprites = new TextureAtlasSprite[ids.length];
         for (int i = 0; i < ids.length; ++i) {
             if (ids[i] != null) {
                 sprites[i] = textureGetter.apply(ids[i]);
@@ -124,39 +124,39 @@ public class MachineUnbakedModel implements UnbakedModel {
 
     private static class OverlaysJson {
         // All fields are nullable.
-        private Identifier top;
-        private Identifier top_active;
-        private Identifier side;
-        private Identifier side_active;
-        private Identifier bottom;
-        private Identifier bottom_active;
-        private Identifier front;
-        private Identifier front_active;
-        private Identifier left;
-        private Identifier left_active;
-        private Identifier right;
-        private Identifier right_active;
-        private Identifier back;
-        private Identifier back_active;
-        private Identifier top_s;
-        private Identifier top_s_active;
-        private Identifier top_w;
-        private Identifier top_w_active;
-        private Identifier top_n;
-        private Identifier top_n_active;
-        private Identifier top_e;
-        private Identifier top_e_active;
-        private Identifier bottom_s;
-        private Identifier bottom_s_active;
-        private Identifier bottom_w;
-        private Identifier bottom_w_active;
-        private Identifier bottom_n;
-        private Identifier bottom_n_active;
-        private Identifier bottom_e;
-        private Identifier bottom_e_active;
-        private Identifier output;
-        private Identifier item_auto;
-        private Identifier fluid_auto;
+        private ResourceLocation top;
+        private ResourceLocation top_active;
+        private ResourceLocation side;
+        private ResourceLocation side_active;
+        private ResourceLocation bottom;
+        private ResourceLocation bottom_active;
+        private ResourceLocation front;
+        private ResourceLocation front_active;
+        private ResourceLocation left;
+        private ResourceLocation left_active;
+        private ResourceLocation right;
+        private ResourceLocation right_active;
+        private ResourceLocation back;
+        private ResourceLocation back_active;
+        private ResourceLocation top_s;
+        private ResourceLocation top_s_active;
+        private ResourceLocation top_w;
+        private ResourceLocation top_w_active;
+        private ResourceLocation top_n;
+        private ResourceLocation top_n_active;
+        private ResourceLocation top_e;
+        private ResourceLocation top_e_active;
+        private ResourceLocation bottom_s;
+        private ResourceLocation bottom_s_active;
+        private ResourceLocation bottom_w;
+        private ResourceLocation bottom_w_active;
+        private ResourceLocation bottom_n;
+        private ResourceLocation bottom_n_active;
+        private ResourceLocation bottom_e;
+        private ResourceLocation bottom_e_active;
+        private ResourceLocation output;
+        private ResourceLocation item_auto;
+        private ResourceLocation fluid_auto;
 
         private static OverlaysJson parse(JsonObject json, @Nullable OverlaysJson defaultOverlay) {
             var overlays = GSON.fromJson(json, OverlaysJson.class);
@@ -182,8 +182,8 @@ public class MachineUnbakedModel implements UnbakedModel {
          * Active and inactive: front, left, back, right, top S/W/N/E, bottom S/W/N/E,
          * output, item auto, fluid auto
          */
-        private SpriteIdentifier[] toSpriteIds() {
-            return new SpriteIdentifier[] {
+        private Material[] toSpriteIds() {
+            return new Material[] {
                     select(front, side),
                     select(front_active, front, side_active, side),
                     select(left, side),
@@ -218,10 +218,10 @@ public class MachineUnbakedModel implements UnbakedModel {
          * Select first non-null id, and convert it to a sprite id.
          */
         @Nullable
-        private static SpriteIdentifier select(@Nullable Identifier... candidates) {
+        private static Material select(@Nullable ResourceLocation... candidates) {
             for (var id : candidates) {
                 if (id != null) {
-                    return new SpriteIdentifier(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE, id);
+                    return new Material(InventoryMenu.BLOCK_ATLAS, id);
                 }
             }
             return null;

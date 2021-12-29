@@ -35,6 +35,7 @@ jobs:
         mkdir run && echo "eula=true" >> run/eula.txt
         ./gradlew runAutoTestServer --stacktrace
         ! grep -q FATAL run/logs/latest.log
+        ! grep -q JsonSyntaxException run/logs/latest.log
     - name: Upload artifacts
       uses: actions/upload-artifact@v2
       with:

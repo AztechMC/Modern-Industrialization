@@ -25,12 +25,12 @@ package aztech.modern_industrialization.machines.components;
 
 import aztech.modern_industrialization.machines.IComponent;
 import aztech.modern_industrialization.machines.models.MachineModelClientData;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.Direction;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 
 public class OrientationComponent implements IComponent {
     public Direction facingDirection = Direction.NORTH;
@@ -46,19 +46,19 @@ public class OrientationComponent implements IComponent {
         }
     }
 
-    public void readNbt(NbtCompound tag) {
-        facingDirection = Direction.byId(tag.getInt("facingDirection"));
+    public void readNbt(CompoundTag tag) {
+        facingDirection = Direction.from3DDataValue(tag.getInt("facingDirection"));
         if (params.hasOutput) {
-            outputDirection = Direction.byId(tag.getInt("outputDirection"));
+            outputDirection = Direction.from3DDataValue(tag.getInt("outputDirection"));
         }
         extractItems = tag.getBoolean("extractItems");
         extractFluids = tag.getBoolean("extractFluids");
     }
 
-    public void writeNbt(NbtCompound tag) {
-        tag.putInt("facingDirection", facingDirection.getId());
+    public void writeNbt(CompoundTag tag) {
+        tag.putInt("facingDirection", facingDirection.get3DDataValue());
         if (params.hasOutput) {
-            tag.putInt("outputDirection", outputDirection.getId());
+            tag.putInt("outputDirection", outputDirection.get3DDataValue());
             tag.putBoolean("extractItems", extractItems);
             tag.putBoolean("extractFluids", extractFluids);
         }
@@ -76,8 +76,8 @@ public class OrientationComponent implements IComponent {
     /**
      * Try to rotate the machine, and return true if something was rotated.
      */
-    public boolean useWrench(PlayerEntity player, Hand hand, Direction face) {
-        if (player.isSneaking()) {
+    public boolean useWrench(Player player, InteractionHand hand, Direction face) {
+        if (player.isShiftKeyDown()) {
             if (params.hasOutput) {
                 outputDirection = face;
                 return true;
@@ -93,7 +93,7 @@ public class OrientationComponent implements IComponent {
     }
 
     public void onPlaced(LivingEntity placer, ItemStack itemStack) {
-        Direction dir = placer.getHorizontalFacing();
+        Direction dir = placer.getDirection();
         facingDirection = dir.getOpposite();
         if (params.hasOutput) {
             outputDirection = dir;

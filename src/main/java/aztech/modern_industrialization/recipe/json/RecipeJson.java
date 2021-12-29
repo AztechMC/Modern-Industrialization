@@ -27,8 +27,8 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.annotations.SerializedName;
 import java.util.function.Consumer;
-import net.minecraft.data.server.recipe.RecipeJsonProvider;
-import net.minecraft.util.Identifier;
+import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.resources.ResourceLocation;
 
 /**
  * Base class for objects that can be written to JSON recipes with GSON.
@@ -56,8 +56,8 @@ public class RecipeJson<T extends RecipeJson<T>> {
         return toJson().getBytes();
     }
 
-    public final void offerTo(Consumer<RecipeJsonProvider> exporter, String recipeId) {
+    public final void offerTo(Consumer<FinishedRecipe> exporter, String recipeId) {
         // note that FabricRecipesProvider will set the namespace to that of the mod anyway.
-        exporter.accept(new JsonProvider(new Identifier(recipeId), this));
+        exporter.accept(new JsonProvider(new ResourceLocation(recipeId), this));
     }
 }

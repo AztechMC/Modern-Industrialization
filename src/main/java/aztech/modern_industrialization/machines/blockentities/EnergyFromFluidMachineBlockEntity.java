@@ -47,10 +47,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.function.Predicate;
 import java.util.function.ToLongFunction;
-import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.fluid.Fluid;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.material.Fluid;
 
 public class EnergyFromFluidMachineBlockEntity extends MachineBlockEntity implements Tickable {
 
@@ -121,7 +121,7 @@ public class EnergyFromFluidMachineBlockEntity extends MachineBlockEntity implem
 
     @Override
     public void tick() {
-        if (world == null || world.isClient)
+        if (level == null || level.isClientSide)
             return;
 
         ConfigurableFluidStack stack = inventory.getFluidStacks().get(0);
@@ -131,7 +131,7 @@ public class EnergyFromFluidMachineBlockEntity extends MachineBlockEntity implem
 
         EnergyHelper.autoOuput(this, orientation, outputTier, energy);
 
-        markDirty();
+        setChanged();
     }
 
     public static void registerEnergyApi(BlockEntityType<?> bet) {

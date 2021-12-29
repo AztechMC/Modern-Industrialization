@@ -28,19 +28,19 @@ import aztech.modern_industrialization.util.TextHelper;
 import com.google.common.base.Preconditions;
 import java.util.List;
 import java.util.Random;
-import net.minecraft.client.item.TooltipContext;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.world.World;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.util.Mth;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.level.Level;
 
 public class NuclearAbsorbable extends NuclearComponentItem {
 
     public final int desintegrationMax;
 
-    public NuclearAbsorbable(Settings settings, int maxTemperature, double heatConduction, INeutronBehaviour neutronBehaviour,
+    public NuclearAbsorbable(Properties settings, int maxTemperature, double heatConduction, INeutronBehaviour neutronBehaviour,
             int desintegrationMax) {
         super(settings, maxTemperature, heatConduction, neutronBehaviour);
         this.desintegrationMax = desintegrationMax;
@@ -49,20 +49,20 @@ public class NuclearAbsorbable extends NuclearComponentItem {
     public void setRemainingDesintegrations(ItemStack stack, int value) {
         Preconditions.checkArgument(value >= 0 & value <= desintegrationMax,
                 String.format("Remaining desintegration %d must be between 0 and max desintegration = %d", value, desintegrationMax));
-        NbtCompound tag = stack.getOrCreateNbt();
+        CompoundTag tag = stack.getOrCreateTag();
         tag.putInt("desRem", value);
     }
 
     public static NuclearComponentItem of(String id, int maxTemperature, double heatConduction, INeutronBehaviour neutronBehaviour,
             int desintegrationMax) {
         return (NuclearComponentItem) MIItem.of(
-                (Settings settings) -> new NuclearAbsorbable(settings, maxTemperature, heatConduction, neutronBehaviour, desintegrationMax), id, 1);
+                (Properties settings) -> new NuclearAbsorbable(settings, maxTemperature, heatConduction, neutronBehaviour, desintegrationMax), id, 1);
     }
 
     @Override
-    public void appendTooltip(ItemStack stack, World world, List<Text> tooltip, TooltipContext context) {
-        super.appendTooltip(stack, world, tooltip, context);
-        tooltip.add(new TranslatableText("text.modern_industrialization.rem_absorption", getRemainingDesintegrations(stack), desintegrationMax)
+    public void appendHoverText(ItemStack stack, Level world, List<Component> tooltip, TooltipFlag context) {
+        super.appendHoverText(stack, world, tooltip, context);
+        tooltip.add(new TranslatableComponent("text.modern_industrialization.rem_absorption", getRemainingDesintegrations(stack), desintegrationMax)
                 .setStyle(TextHelper.GRAY_TEXT));
 
     }
@@ -73,23 +73,23 @@ public class NuclearAbsorbable extends NuclearComponentItem {
     }
 
     @Override
-    public int getItemBarColor(ItemStack stack) {
+    public int getBarColor(ItemStack stack) {
         float f = (float) getRemainingDesintegrations(stack) / desintegrationMax;
-        return MathHelper.hsvToRgb(f / 3.0F, 1.0F, 1.0F);
+        return Mth.hsvToRgb(f / 3.0F, 1.0F, 1.0F);
     }
 
     @Override
-    public boolean isItemBarVisible(ItemStack stack) {
+    public boolean isBarVisible(ItemStack stack) {
         return getRemainingDesintegrations(stack) != desintegrationMax;
     }
 
     @Override
-    public int getItemBarStep(ItemStack stack) {
+    public int getBarWidth(ItemStack stack) {
         return (int) Math.round(getDurabilityBarProgress(stack) * 13);
     }
 
     public int getRemainingDesintegrations(ItemStack stack) {
-        NbtCompound tag = stack.getNbt();
+        CompoundTag tag = stack.getTag();
         if (tag == null || !tag.contains("desRem")) {
             return desintegrationMax;
         }

@@ -24,39 +24,39 @@
 package aztech.modern_industrialization.items.armor;
 
 import aztech.modern_industrialization.MIIdentifier;
-import net.minecraft.entity.EquipmentSlot;
-import net.minecraft.item.ArmorMaterial;
-import net.minecraft.recipe.Ingredient;
-import net.minecraft.sound.SoundEvent;
-import net.minecraft.sound.SoundEvents;
-import net.minecraft.util.registry.Registry;
+import net.minecraft.core.Registry;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.ArmorMaterial;
+import net.minecraft.world.item.crafting.Ingredient;
 
 public enum RubberArmorMaterial implements ArmorMaterial {
     INSTANCE;
 
     @Override
-    public int getDurability(EquipmentSlot slot) {
+    public int getDurabilityForSlot(EquipmentSlot slot) {
         return 400;
     }
 
     @Override
-    public int getProtectionAmount(EquipmentSlot slot) {
+    public int getDefenseForSlot(EquipmentSlot slot) {
         return 1;
     }
 
     @Override
-    public int getEnchantability() {
+    public int getEnchantmentValue() {
         return 10;
     }
 
     @Override
     public SoundEvent getEquipSound() {
-        return SoundEvents.ITEM_ARMOR_EQUIP_GENERIC;
+        return SoundEvents.ARMOR_EQUIP_GENERIC;
     }
 
     @Override
     public Ingredient getRepairIngredient() {
-        return Ingredient.ofItems(Registry.ITEM.get(new MIIdentifier("rubber_sheet")));
+        return Ingredient.of(Registry.ITEM.get(new MIIdentifier("rubber_sheet")));
     }
 
     @Override

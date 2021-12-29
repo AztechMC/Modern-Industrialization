@@ -35,8 +35,8 @@ public class ClientMachinePackets {
         buf.retain();
         mc.execute(() -> {
             try {
-                if (mc.player.currentScreenHandler.syncId == syncId) {
-                    MachineScreenHandlers.Client screenHandler = (MachineScreenHandlers.Client) mc.player.currentScreenHandler;
+                if (mc.player.containerMenu.containerId == syncId) {
+                    MachineScreenHandlers.Client screenHandler = (MachineScreenHandlers.Client) mc.player.containerMenu;
                     screenHandler.components.get(componentIndex).read(buf);
                 }
             } finally {

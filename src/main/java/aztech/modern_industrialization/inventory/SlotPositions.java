@@ -26,7 +26,7 @@ package aztech.modern_industrialization.inventory;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.function.Consumer;
-import net.minecraft.network.PacketByteBuf;
+import net.minecraft.network.FriendlyByteBuf;
 
 public class SlotPositions {
     private final int[] x, y;
@@ -48,18 +48,18 @@ public class SlotPositions {
         return x.length;
     }
 
-    public void write(PacketByteBuf buf) {
-        buf.writeIntArray(x);
-        buf.writeIntArray(y);
+    public void write(FriendlyByteBuf buf) {
+        buf.writeVarIntArray(x);
+        buf.writeVarIntArray(y);
     }
 
     public SlotPositions sublist(int start, int end) {
         return new SlotPositions(Arrays.copyOfRange(x, start, end), Arrays.copyOfRange(y, start, end));
     }
 
-    public static SlotPositions read(PacketByteBuf buf) {
-        int[] x = buf.readIntArray();
-        int[] y = buf.readIntArray();
+    public static SlotPositions read(FriendlyByteBuf buf) {
+        int[] x = buf.readVarIntArray();
+        int[] y = buf.readVarIntArray();
         return new SlotPositions(x, y);
     }
 

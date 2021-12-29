@@ -35,33 +35,35 @@ import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.screen.slot.Slot;
-import net.minecraft.screen.slot.SlotActionType;
-import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.ClickType;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
 
 public class ItemPipeScreenHandler extends PipeScreenHandler {
-    public static final int HEIGHT = 180;
+    public static final int HEIGHT = 196;
 
-    private final PlayerInventory playerInventory;
+    private final Inventory playerInventory;
     public final ItemPipeInterface pipeInterface;
     private boolean trackedWhitelist;
-    private int trackedPriority;
+    private int trackedPriority0;
+    private int trackedPriority1;
     private int trackedType;
 
-    public ItemPipeScreenHandler(int syncId, PlayerInventory playerInventory, PacketByteBuf buf) {
+    public ItemPipeScreenHandler(int syncId, Inventory playerInventory, FriendlyByteBuf buf) {
         this(syncId, playerInventory, ItemPipeInterface.ofBuf(buf));
     }
 
-    public ItemPipeScreenHandler(int syncId, PlayerInventory playerInventory, ItemPipeInterface pipeInterface) {
+    public ItemPipeScreenHandler(int syncId, Inventory playerInventory, ItemPipeInterface pipeInterface) {
         super(MIPipes.SCREEN_HANDLER_TYPE_ITEM_PIPE, syncId);
         this.playerInventory = playerInventory;
         this.pipeInterface = pipeInterface;
         this.trackedWhitelist = pipeInterface.isWhitelist();
-        this.trackedPriority = pipeInterface.getPriority();
+        this.trackedPriority0 = pipeInterface.getPriority(0);
+        this.trackedPriority1 = pipeInterface.getPriority(1);
         this.trackedType = pipeInterface.getConnectionType();
 
         addPlayerInventorySlots(playerInventory, HEIGHT);
@@ -78,45 +80,45 @@ public class ItemPipeScreenHandler extends PipeScreenHandler {
     }
 
     @Override
-    public void onSlotClick(int i, int j, SlotActionType actionType, PlayerEntity playerEntity) {
+    public void clicked(int i, int j, ClickType actionType, Player playerEntity) {
         if (i >= 0) {
             Slot slot = slots.get(i);
             if (slot instanceof FilterSlot) {
-                if (actionType == SlotActionType.PICKUP) {
-                    slot.setStack(getCursorStack().copy());
-                } else if (actionType == SlotActionType.QUICK_MOVE) {
-                    slot.setStack(ItemStack.EMPTY);
+                if (actionType == ClickType.PICKUP) {
+                    slot.set(getCarried().copy());
+                } else if (actionType == ClickType.QUICK_MOVE) {
+                    slot.set(ItemStack.EMPTY);
                 }
                 return;
             }
         }
-        super.onSlotClick(i, j, actionType, playerEntity);
+        super.clicked(i, j, actionType, playerEntity);
     }
 
     @Override
-    public ItemStack transferSlot(PlayerEntity player, int index) {
+    public ItemStack quickMoveStack(Player player, int index) {
         Slot slot = slots.get(index);
-        if (slot != null && slot.hasStack()) {
+        if (slot != null && slot.hasItem()) {
             if (index < 36) {
                 // Try to insert into the upgrade slot.
-                if (insertItem(slot.getStack(), 57, 58, false)) {
+                if (moveItemStackTo(slot.getItem(), 57, 58, false)) {
                     return ItemStack.EMPTY;
                 }
                 // Return if the stack is already in the filter.
                 for (int i = 0; i < 21; i++) {
-                    if (ItemStackHelper.areEqualIgnoreCount(slots.get(36 + i).getStack(), slot.getStack())) {
+                    if (ItemStackHelper.areEqualIgnoreCount(slots.get(36 + i).getItem(), slot.getItem())) {
                         return ItemStack.EMPTY;
                     }
                 }
                 // Copy the stack into the filter.
                 for (int i = 0; i < 21; i++) {
                     if (pipeInterface.getStack(i).isEmpty()) {
-                        slots.get(36 + i).setStack(slot.getStack().copy());
+                        slots.get(36 + i).set(slot.getItem().copy());
                         break;
                     }
                 }
             } else if (index == 57) { // upgrade slot
-                if (!insertItem(slot.getStack(), 0, 36, false)) {
+                if (!moveItemStackTo(slot.getItem(), 0, 36, false)) {
                     return ItemStack.EMPTY;
                 }
             } else {
@@ -127,34 +129,43 @@ public class ItemPipeScreenHandler extends PipeScreenHandler {
     }
 
     @Override
-    public boolean canUse(PlayerEntity player) {
+    public boolean stillValid(Player player) {
         return pipeInterface.canUse(player);
     }
 
     @Override
-    public void sendContentUpdates() {
-        super.sendContentUpdates();
-        if (playerInventory.player instanceof ServerPlayerEntity) {
-            ServerPlayerEntity serverPlayer = (ServerPlayerEntity) playerInventory.player;
+    public void broadcastChanges() {
+        super.broadcastChanges();
+        if (playerInventory.player instanceof ServerPlayer) {
+            ServerPlayer serverPlayer = (ServerPlayer) playerInventory.player;
             if (trackedWhitelist != pipeInterface.isWhitelist()) {
                 trackedWhitelist = pipeInterface.isWhitelist();
-                PacketByteBuf buf = PacketByteBufs.create();
-                buf.writeInt(syncId);
+                FriendlyByteBuf buf = PacketByteBufs.create();
+                buf.writeInt(containerId);
                 buf.writeBoolean(trackedWhitelist);
                 ServerPlayNetworking.send(serverPlayer, PipePackets.SET_ITEM_WHITELIST, buf);
             }
             if (trackedType != pipeInterface.getConnectionType()) {
                 trackedType = pipeInterface.getConnectionType();
-                PacketByteBuf buf = PacketByteBufs.create();
-                buf.writeInt(syncId);
+                FriendlyByteBuf buf = PacketByteBufs.create();
+                buf.writeInt(containerId);
                 buf.writeInt(trackedType);
                 ServerPlayNetworking.send(serverPlayer, PipePackets.SET_CONNECTION_TYPE, buf);
             }
-            if (trackedPriority != pipeInterface.getPriority()) {
-                trackedPriority = pipeInterface.getPriority();
-                PacketByteBuf buf = PacketByteBufs.create();
-                buf.writeInt(syncId);
-                buf.writeInt(trackedPriority);
+            if (trackedPriority0 != pipeInterface.getPriority(0)) {
+                trackedPriority0 = pipeInterface.getPriority(0);
+                FriendlyByteBuf buf = PacketByteBufs.create();
+                buf.writeInt(containerId);
+                buf.writeInt(0);
+                buf.writeInt(trackedPriority0);
+                ServerPlayNetworking.send(serverPlayer, PipePackets.SET_PRIORITY, buf);
+            }
+            if (trackedPriority1 != pipeInterface.getPriority(1)) {
+                trackedPriority1 = pipeInterface.getPriority(1);
+                FriendlyByteBuf buf = PacketByteBufs.create();
+                buf.writeInt(containerId);
+                buf.writeInt(1);
+                buf.writeInt(trackedPriority1);
                 ServerPlayNetworking.send(serverPlayer, PipePackets.SET_PRIORITY, buf);
             }
         }
@@ -174,22 +185,22 @@ public class ItemPipeScreenHandler extends PipeScreenHandler {
         }
 
         @Override
-        public boolean canInsert(ItemStack stack) {
+        public boolean mayPlace(ItemStack stack) {
             return false;
         }
 
         @Override
-        public boolean canTakeItems(PlayerEntity playerEntity) {
+        public boolean mayPickup(Player playerEntity) {
             return false;
         }
 
         @Override
-        public ItemStack getStack() {
+        public ItemStack getItem() {
             return pipeInterface.getStack(index);
         }
 
         @Override
-        public void setStack(ItemStack stack) {
+        public void set(ItemStack stack) {
             if (!stack.isEmpty()) {
                 stack.setCount(1);
             }
@@ -204,7 +215,7 @@ public class ItemPipeScreenHandler extends PipeScreenHandler {
         @Override
         public boolean dragItem(ItemVariant itemKey, Simulation simulation) {
             if (simulation.isActing()) {
-                setStack(itemKey.toStack());
+                set(itemKey.toStack());
             }
             return true;
         }
@@ -216,31 +227,31 @@ public class ItemPipeScreenHandler extends PipeScreenHandler {
         }
 
         @Override
-        public boolean canInsert(ItemStack stack) {
+        public boolean mayPlace(ItemStack stack) {
             return SpeedUpgrade.LOOKUP.find(stack, null) != null;
         }
 
         @Override
-        public ItemStack getStack() {
+        public ItemStack getItem() {
             return pipeInterface.getUpgradeStack();
         }
 
         @Override
-        public void setStack(ItemStack stack) {
+        public void set(ItemStack stack) {
             pipeInterface.setUpgradeStack(stack);
         }
 
         @Override
-        public void markDirty() {
+        public void setChanged() {
         }
 
         @Override
-        public int getMaxItemCount(ItemStack stack) {
+        public int getMaxStackSize(ItemStack stack) {
             return 64;
         }
 
         @Override
-        public ItemStack takeStack(int amount) {
+        public ItemStack remove(int amount) {
             return pipeInterface.getUpgradeStack().split(amount);
         }
     }

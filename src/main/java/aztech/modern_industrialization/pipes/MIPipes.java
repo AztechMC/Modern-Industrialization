@@ -49,24 +49,23 @@ import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityT
 import net.fabricmc.fabric.api.screenhandler.v1.ScreenHandlerRegistry;
 import net.fabricmc.fabric.api.tag.TagRegistry;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
-import net.minecraft.block.Block;
-import net.minecraft.block.Material;
-import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.client.texture.Sprite;
-import net.minecraft.client.texture.SpriteAtlasTexture;
-import net.minecraft.client.util.SpriteIdentifier;
-import net.minecraft.item.Item;
-import net.minecraft.screen.ScreenHandlerType;
-import net.minecraft.tag.Tag;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
+import net.minecraft.client.renderer.texture.TextureAtlas;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.Tag;
+import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.material.Material;
 
 public class MIPipes {
     public static final MIPipes INSTANCE = new MIPipes();
 
-    public static final Block BLOCK_PIPE = new PipeBlock(FabricBlockSettings.of(Material.METAL).hardness(4.0f));
-    public static final Identifier ITEM_PIPES_ID = new MIIdentifier("item_pipes");
-    public static final Identifier FLUID_PIPES_ID = new MIIdentifier("fluid_pipes");
+    public static final Block BLOCK_PIPE = new PipeBlock(FabricBlockSettings.of(Material.METAL).destroyTime(4.0f));
+    public static final ResourceLocation ITEM_PIPES_ID = new MIIdentifier("item_pipes");
+    public static final ResourceLocation FLUID_PIPES_ID = new MIIdentifier("fluid_pipes");
     public static final Tag<Item> ITEM_PIPES = TagRegistry.item(ITEM_PIPES_ID);
     public static final Tag<Item> FLUID_PIPES = TagRegistry.item(FLUID_PIPES_ID);
     public static BlockEntityType<PipeBlockEntity> BLOCK_ENTITY_TYPE_PIPE;
@@ -74,27 +73,29 @@ public class MIPipes {
 
     public static final Map<PipeItem, CableTier> electricityPipeTier = new HashMap<>();
 
-    public static final ScreenHandlerType<ItemPipeScreenHandler> SCREEN_HANDLER_TYPE_ITEM_PIPE = ScreenHandlerRegistry
+    public static final MenuType<ItemPipeScreenHandler> SCREEN_HANDLER_TYPE_ITEM_PIPE = ScreenHandlerRegistry
             .registerExtended(new MIIdentifier("item_pipe"), ItemPipeScreenHandler::new);
-    public static final ScreenHandlerType<FluidPipeScreenHandler> SCREEN_HANDLER_TYPE_FLUID_PIPE = ScreenHandlerRegistry
+    public static final MenuType<FluidPipeScreenHandler> SCREEN_HANDLER_TYPE_FLUID_PIPE = ScreenHandlerRegistry
             .registerExtended(new MIIdentifier("fluid_pipe"), FluidPipeScreenHandler::new);
 
-    public static final Set<Identifier> PIPE_MODEL_NAMES = new HashSet<>();
+    public static final Set<ResourceLocation> PIPE_MODEL_NAMES = new HashSet<>();
 
     // TODO: move this to MIPipesClient ?
     private static PipeRenderer.Factory makeRenderer(List<String> sprites, boolean innerQuads) {
         return new PipeRenderer.Factory() {
             @Override
-            public Collection<SpriteIdentifier> getSpriteDependencies() {
-                return sprites.stream().map(n -> new SpriteIdentifier(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE, new MIIdentifier("blocks/pipes/" + n)))
+            public Collection<net.minecraft.client.resources.model.Material> getSpriteDependencies() {
+                return sprites.stream().map(
+                        n -> new net.minecraft.client.resources.model.Material(TextureAtlas.LOCATION_BLOCKS, new MIIdentifier("blocks/pipes/" + n)))
                         .collect(Collectors.toList());
             }
 
             @Override
-            public PipeRenderer create(Function<SpriteIdentifier, Sprite> textureGetter) {
-                SpriteIdentifier[] ids = sprites.stream()
-                        .map(n -> new SpriteIdentifier(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE, new MIIdentifier("blocks/pipes/" + n)))
-                        .toArray(SpriteIdentifier[]::new);
+            public PipeRenderer create(Function<net.minecraft.client.resources.model.Material, TextureAtlasSprite> textureGetter) {
+                net.minecraft.client.resources.model.Material[] ids = sprites.stream()
+                        .map(n -> new net.minecraft.client.resources.model.Material(TextureAtlas.LOCATION_BLOCKS,
+                                new MIIdentifier("blocks/pipes/" + n)))
+                        .toArray(net.minecraft.client.resources.model.Material[]::new);
                 return new PipeMeshCache(textureGetter, ids, innerQuads);
             }
         };
@@ -124,7 +125,7 @@ public class MIPipes {
         String pipeId = color.prefix + "fluid_pipe";
         PipeNetworkType type = PipeNetworkType.register(new MIIdentifier(pipeId), (id, data) -> new FluidNetwork(id, data, 81000),
                 FluidNetworkNode::new, color.color, true, FLUID_RENDERER);
-        PipeItem item = new PipeItem(new Item.Settings().group(ModernIndustrialization.ITEM_GROUP), type, new FluidNetworkData(FluidVariant.blank()));
+        PipeItem item = new PipeItem(new Item.Properties().tab(ModernIndustrialization.ITEM_GROUP), type, new FluidNetworkData(FluidVariant.blank()));
         pipeItems.put(type, item);
         Registry.register(Registry.ITEM, new MIIdentifier(pipeId), item);
         PIPE_MODEL_NAMES.add(new MIIdentifier("item/" + pipeId));
@@ -135,7 +136,7 @@ public class MIPipes {
         String pipeId = color.prefix + "item_pipe";
         PipeNetworkType type = PipeNetworkType.register(new MIIdentifier(pipeId), ItemNetwork::new, ItemNetworkNode::new, color.color, true,
                 ITEM_RENDERER);
-        PipeItem item = new PipeItem(new Item.Settings().group(ModernIndustrialization.ITEM_GROUP), type, new ItemNetworkData());
+        PipeItem item = new PipeItem(new Item.Properties().tab(ModernIndustrialization.ITEM_GROUP), type, new ItemNetworkData());
         pipeItems.put(type, item);
         Registry.register(Registry.ITEM, new MIIdentifier(pipeId), item);
         PIPE_MODEL_NAMES.add(new MIIdentifier("item/" + pipeId));
@@ -146,7 +147,7 @@ public class MIPipes {
         String cableId = name + "_cable";
         PipeNetworkType type = PipeNetworkType.register(new MIIdentifier(cableId), (id, data) -> new ElectricityNetwork(id, data, tier),
                 ElectricityNetworkNode::new, color, false, ELECTRICITY_RENDERER);
-        PipeItem item = new PipeItem(new Item.Settings().group(ModernIndustrialization.ITEM_GROUP), type, new ElectricityNetworkData());
+        PipeItem item = new PipeItem(new Item.Properties().tab(ModernIndustrialization.ITEM_GROUP), type, new ElectricityNetworkData());
         pipeItems.put(type, item);
         electricityPipeTier.put(item, tier);
         Registry.register(Registry.ITEM, new MIIdentifier(cableId), item);

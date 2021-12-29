@@ -29,15 +29,15 @@ import aztech.modern_industrialization.machines.SyncedComponent;
 import aztech.modern_industrialization.machines.SyncedComponents;
 import aztech.modern_industrialization.machines.gui.ClientComponentRenderer;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
-import net.minecraft.client.gui.DrawableHelper;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.gui.GuiComponent;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.resources.ResourceLocation;
 
 public class TemperatureBar {
     public static class Server implements SyncedComponent.Server<Integer> {
@@ -60,7 +60,7 @@ public class TemperatureBar {
         }
 
         @Override
-        public void writeInitialData(PacketByteBuf buf) {
+        public void writeInitialData(FriendlyByteBuf buf) {
             buf.writeInt(params.renderX);
             buf.writeInt(params.renderY);
             buf.writeInt(params.temperatureMax);
@@ -68,12 +68,12 @@ public class TemperatureBar {
         }
 
         @Override
-        public void writeCurrentData(PacketByteBuf buf) {
+        public void writeCurrentData(FriendlyByteBuf buf) {
             buf.writeInt(temperatureSupplier.get());
         }
 
         @Override
-        public Identifier getId() {
+        public ResourceLocation getId() {
             return SyncedComponents.TEMPERATURE_BAR;
         }
     }
@@ -82,13 +82,13 @@ public class TemperatureBar {
         public final Parameters params;
         public int temperature;
 
-        public Client(PacketByteBuf buf) {
+        public Client(FriendlyByteBuf buf) {
             this.params = new Parameters(buf.readInt(), buf.readInt(), buf.readInt());
             read(buf);
         }
 
         @Override
-        public void read(PacketByteBuf buf) {
+        public void read(FriendlyByteBuf buf) {
             this.temperature = buf.readInt();
         }
 
@@ -103,25 +103,25 @@ public class TemperatureBar {
             private final int WIDTH = 100, HEIGHT = 2;
 
             @Override
-            public void renderBackground(DrawableHelper helper, MatrixStack matrices, int x, int y) {
+            public void renderBackground(GuiComponent helper, PoseStack matrices, int x, int y) {
                 RenderSystem.setShaderTexture(0, TEXTURE);
                 // background
-                DrawableHelper.drawTexture(matrices, x + params.renderX - 1, y + params.renderY - 1, helper.getZOffset(), 0, 2, WIDTH + 2, HEIGHT + 2,
+                GuiComponent.blit(matrices, x + params.renderX - 1, y + params.renderY - 1, helper.getBlitOffset(), 0, 2, WIDTH + 2, HEIGHT + 2,
                         102, 6);
                 int barPixels = (int) ((float) temperature / params.temperatureMax * WIDTH);
-                DrawableHelper.drawTexture(matrices, x + params.renderX, y + params.renderY, helper.getZOffset(), 0, 0, barPixels, HEIGHT, 102, 6);
+                GuiComponent.blit(matrices, x + params.renderX, y + params.renderY, helper.getBlitOffset(), 0, 0, barPixels, HEIGHT, 102, 6);
                 RenderSystem.setShaderTexture(0, MachineScreenHandlers.SLOT_ATLAS);
-                helper.drawTexture(matrices, x + params.renderX - 22, y + params.renderY + HEIGHT / 2 - 10, 144, 0, 20, 20);
+                helper.blit(matrices, x + params.renderX - 22, y + params.renderY + HEIGHT / 2 - 10, 144, 0, 20, 20);
 
             }
 
             @Override
-            public void renderTooltip(MachineScreenHandlers.ClientScreen screen, MatrixStack matrices, int x, int y, int cursorX, int cursorY) {
+            public void renderTooltip(MachineScreenHandlers.ClientScreen screen, PoseStack matrices, int x, int y, int cursorX, int cursorY) {
                 if (aztech.modern_industrialization.util.RenderHelper.isPointWithinRectangle(params.renderX, params.renderY, WIDTH, HEIGHT,
                         cursorX - x, cursorY - y)) {
-                    List<Text> tooltip = new ArrayList<>();
-                    tooltip.add(new TranslatableText("text.modern_industrialization.temperature", temperature));
-                    screen.renderTooltip(matrices, tooltip, cursorX, cursorY);
+                    List<Component> tooltip = new ArrayList<>();
+                    tooltip.add(new TranslatableComponent("text.modern_industrialization.temperature", temperature));
+                    screen.renderComponentTooltip(matrices, tooltip, cursorX, cursorY);
                 }
             }
         }

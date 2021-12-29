@@ -23,7 +23,7 @@
  */
 package aztech.modern_industrialization.compat.rei.nuclear;
 
-import static net.minecraft.client.gui.DrawableHelper.drawTexture;
+import static net.minecraft.client.gui.GuiComponent.blit;
 
 import aztech.modern_industrialization.compat.rei.ReiUtil;
 import aztech.modern_industrialization.machines.MachineScreenHandlers;
@@ -31,6 +31,7 @@ import aztech.modern_industrialization.nuclear.INuclearComponent;
 import aztech.modern_industrialization.nuclear.NuclearFuel;
 import aztech.modern_industrialization.util.TextHelper;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.ArrayList;
 import java.util.List;
 import me.shedaniel.math.Point;
@@ -43,10 +44,9 @@ import me.shedaniel.rei.api.common.category.CategoryIdentifier;
 import me.shedaniel.rei.api.common.util.EntryStacks;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.text.LiteralText;
-import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
 
 public class ThermalInteractionCategory implements DisplayCategory<ThermalInteractionDisplay> {
 
@@ -56,9 +56,9 @@ public class ThermalInteractionCategory implements DisplayCategory<ThermalIntera
             private int z = 2;
 
             @Override
-            public void render(MatrixStack matrices, Rectangle bounds, int mouseX, int mouseY, float delta) {
+            public void render(PoseStack matrices, Rectangle bounds, int mouseX, int mouseY, float delta) {
                 RenderSystem.setShaderTexture(0, MachineScreenHandlers.SLOT_ATLAS);
-                drawTexture(matrices, bounds.x - 1, bounds.y - 1, z, 145, 1, 18, 18, 256, 256);
+                blit(matrices, bounds.x - 1, bounds.y - 1, z, 145, 1, 18, 18, 256, 256);
             }
 
             public int getZ() {
@@ -92,29 +92,29 @@ public class ThermalInteractionCategory implements DisplayCategory<ThermalIntera
         int px3 = bounds.x + bounds.getWidth() - 20;
         int px2 = (px1 + px3) / 2;
 
-        widgets.add(Widgets.createLabel(new Point(px1, py), new LiteralText("0°C")));
+        widgets.add(Widgets.createLabel(new Point(px1, py), new TextComponent("0°C")));
 
-        widgets.add(Widgets.createLabel(new Point(px2, py), new LiteralText(String.format("%d°C", nuclearComponent.tempLimitLow))));
+        widgets.add(Widgets.createLabel(new Point(px2, py), new TextComponent(String.format("%d°C", nuclearComponent.tempLimitLow))));
 
-        widgets.add(Widgets.createLabel(new Point(px3 - 8, py), new LiteralText(String.format("%d°C", nuclearComponent.tempLimitHigh))));
+        widgets.add(Widgets.createLabel(new Point(px3 - 8, py), new TextComponent(String.format("%d°C", nuclearComponent.tempLimitHigh))));
 
         widgets.add(Widgets.createDrawableWidget((helper, matrices, mouseX, mouseY, delta) -> {
             RenderSystem.setShaderTexture(0, MachineScreenHandlers.SLOT_ATLAS);
             for (int i = 1; i < area.getWidth() / 2; i++) {
-                helper.drawTexture(matrices, area.x + i, area.y + 4, 0, 255, 1, 1);
+                helper.blit(matrices, area.x + i, area.y + 4, 0, 255, 1, 1);
             }
             for (int i = area.getWidth() / 2; i < area.getWidth() - 1; i++) {
                 double f = (i - area.getWidth() / 2d) / (area.getWidth() - area.getWidth() / 2d);
                 int y = (int) ((1 - f) * (area.y + 4) + f * (area.y + area.height - 14));
-                helper.drawTexture(matrices, area.x + i, y, 0, 255, 1, 1);
+                helper.blit(matrices, area.x + i, y, 0, 255, 1, 1);
             }
         }));
 
         widgets.add(Widgets
-                .createLabel(new Point(px1 - 2, area.y + 2), new LiteralText(String.format("%.1f", nuclearComponent.neutronMultiplicationFactor)))
+                .createLabel(new Point(px1 - 2, area.y + 2), new TextComponent(String.format("%.1f", nuclearComponent.neutronMultiplicationFactor)))
                 .noShadow());
 
-        widgets.add(Widgets.createLabel(new Point(px3 + 6, py - 10), new LiteralText("0")).noShadow());
+        widgets.add(Widgets.createLabel(new Point(px3 + 6, py - 10), new TextComponent("0")).noShadow());
 
         return widgets;
     }
@@ -136,7 +136,7 @@ public class ThermalInteractionCategory implements DisplayCategory<ThermalIntera
             widgets.add(Widgets.createSlot(pos).entry(ReiUtil.createFluidEntryStack(fluidVariant.getFluid())));
         }
 
-        Text title = new TranslatableText("text.modern_industrialization." + titleKey);
+        Component title = new TranslatableComponent("text.modern_industrialization." + titleKey);
         Point posTitle = new Point(centerX, bounds.y + 8);
         widgets.add(Widgets.createLabel(posTitle, title));
         return widgets;
@@ -148,7 +148,7 @@ public class ThermalInteractionCategory implements DisplayCategory<ThermalIntera
         int centerX = bounds.x + bounds.width / 2;
         int centerY = bounds.y + bounds.height / 2;
 
-        Text heatConduction = new TranslatableText("text.modern_industrialization.heat_conduction",
+        Component heatConduction = new TranslatableComponent("text.modern_industrialization.heat_conduction",
                 String.format("%.2f", nuclearComponent.getHeatConduction())).setStyle(TextHelper.HEAT_CONDUCTION);
 
         widgets.add(Widgets.createLabel(new Point(centerX, centerY), heatConduction).noShadow());
@@ -156,7 +156,8 @@ public class ThermalInteractionCategory implements DisplayCategory<ThermalIntera
         int maxTemperature = nuclearComponent.getMaxTemperature();
 
         if (maxTemperature != Integer.MAX_VALUE) {
-            Text maxTemp = new TranslatableText("text.modern_industrialization.max_temp", maxTemperature).setStyle(TextHelper.MAX_TEMP_TEXT);
+            Component maxTemp = new TranslatableComponent("text.modern_industrialization.max_temp", maxTemperature)
+                    .setStyle(TextHelper.MAX_TEMP_TEXT);
             widgets.add(Widgets.createLabel(new Point(centerX, centerY + 12), maxTemp).noShadow());
         }
 
@@ -164,8 +165,8 @@ public class ThermalInteractionCategory implements DisplayCategory<ThermalIntera
     }
 
     @Override
-    public Text getTitle() {
-        return new TranslatableText("text.modern_industrialization.thermal_interaction");
+    public Component getTitle() {
+        return new TranslatableComponent("text.modern_industrialization.thermal_interaction");
     }
 
     @Override

@@ -25,27 +25,27 @@ package aztech.modern_industrialization.items.armor;
 
 import aztech.modern_industrialization.MIIdentifier;
 import net.fabricmc.fabric.api.network.PacketConsumer;
-import net.minecraft.entity.EquipmentSlot;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.Identifier;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 
 public class ArmorPackets {
-    public static final Identifier UPDATE_KEYS = new MIIdentifier("update_keys");
+    public static final ResourceLocation UPDATE_KEYS = new MIIdentifier("update_keys");
     public static final PacketConsumer ON_UPDATE_KEYS = (context, buffer) -> {
         boolean up = buffer.readBoolean();
         context.getTaskQueue().execute(() -> {
             MIKeyMap.update(context.getPlayer(), up);
         });
     };
-    public static final Identifier ACTIVATE_CHEST = new MIIdentifier("activate_chest");
+    public static final ResourceLocation ACTIVATE_CHEST = new MIIdentifier("activate_chest");
     public static final PacketConsumer ON_ACTIVATE_CHEST = (context, buffer) -> {
         boolean activated = buffer.readBoolean();
         context.getTaskQueue().execute(() -> activateChest(context.getPlayer(), activated));
     };
 
-    static void activateChest(PlayerEntity player, boolean activated) {
-        ItemStack chest = player.getEquippedStack(EquipmentSlot.CHEST);
+    static void activateChest(Player player, boolean activated) {
+        ItemStack chest = player.getItemBySlot(EquipmentSlot.CHEST);
         if (chest.getItem() instanceof ActivatableChestItem activatable) {
             activatable.setActivated(chest, activated);
         }

@@ -35,11 +35,11 @@ import aztech.modern_industrialization.machines.multiblocks.MultiblockMachineBlo
 import aztech.modern_industrialization.machines.multiblocks.ShapeMatcher;
 import aztech.modern_industrialization.machines.multiblocks.ShapeTemplate;
 import aztech.modern_industrialization.util.Tickable;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.Hand;
-import net.minecraft.util.hit.BlockHitResult;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.Nullable;
 
 public abstract class AbstractCraftingMultiblockBlockEntity extends MultiblockMachineBlockEntity implements Tickable, ScrewdriverableBlockEntity {
@@ -77,7 +77,7 @@ public abstract class AbstractCraftingMultiblockBlockEntity extends MultiblockMa
     }
 
     @Override
-    public boolean useScrewdriver(PlayerEntity player, Hand hand, BlockHitResult hitResult) {
+    public boolean useScrewdriver(Player player, InteractionHand hand, BlockHitResult hitResult) {
         return useScrewdriver(activeShape, player, hand, hitResult);
     }
 
@@ -98,7 +98,7 @@ public abstract class AbstractCraftingMultiblockBlockEntity extends MultiblockMa
 
     @Override
     public final void tick() {
-        if (!world.isClient) {
+        if (!level.isClientSide) {
             link();
 
             boolean newActive = false;
@@ -122,13 +122,13 @@ public abstract class AbstractCraftingMultiblockBlockEntity extends MultiblockMa
 
     protected final void link() {
         if (shapeMatcher == null) {
-            shapeMatcher = new ShapeMatcher(world, pos, orientation.facingDirection, getActiveShape());
-            shapeMatcher.registerListeners(world);
+            shapeMatcher = new ShapeMatcher(level, worldPosition, orientation.facingDirection, getActiveShape());
+            shapeMatcher.registerListeners(level);
         }
         if (shapeMatcher.needsRematch()) {
             allowNormalOperation = false;
             shapeValid.shapeValid = false;
-            shapeMatcher.rematch(world);
+            shapeMatcher.rematch(level);
 
             if (shapeMatcher.isMatchSuccessful()) {
                 inventory.rebuild(shapeMatcher);
@@ -153,7 +153,7 @@ public abstract class AbstractCraftingMultiblockBlockEntity extends MultiblockMa
     protected final void unlink() {
         if (shapeMatcher != null) {
             shapeMatcher.unlinkHatches();
-            shapeMatcher.unregisterListeners(world);
+            shapeMatcher.unregisterListeners(level);
             shapeMatcher = null;
         }
     }

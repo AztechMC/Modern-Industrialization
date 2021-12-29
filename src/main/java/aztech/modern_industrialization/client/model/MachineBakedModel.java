@@ -36,29 +36,30 @@ import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
 import net.fabricmc.fabric.api.renderer.v1.model.FabricBakedModel;
 import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
 import net.fabricmc.fabric.api.rendering.data.v1.RenderAttachedBlockView;
-import net.minecraft.block.BlockState;
-import net.minecraft.client.render.model.BakedModel;
-import net.minecraft.client.render.model.BakedQuad;
-import net.minecraft.client.render.model.json.ModelOverrideList;
-import net.minecraft.client.render.model.json.ModelTransformation;
-import net.minecraft.client.texture.Sprite;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.world.BlockRenderView;
+import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.renderer.block.model.ItemOverrides;
+import net.minecraft.client.renderer.block.model.ItemTransforms;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.BlockAndTintGetter;
+import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
 
 public class MachineBakedModel implements BakedModel, FabricBakedModel {
     private static final Direction[] DIRECTIONS = Direction.values();
 
-    private final ModelTransformation blockTransformation;
+    private final ItemTransforms blockTransformation;
     public final RenderMaterial cutoutMaterial;
     private final MachineCasing baseCasing;
-    private final Sprite[] defaultOverlays;
-    private final Map<String, Sprite[]> tieredOverlays;
+    private final TextureAtlasSprite[] defaultOverlays;
+    private final Map<String, TextureAtlasSprite[]> tieredOverlays;
 
-    MachineBakedModel(ModelTransformation blockTransformation, RenderMaterial cutoutMaterial, MachineCasing baseCasing, Sprite[] defaultOverlays,
-            Map<String, Sprite[]> tieredOverlays) {
+    MachineBakedModel(ItemTransforms blockTransformation, RenderMaterial cutoutMaterial, MachineCasing baseCasing,
+            TextureAtlasSprite[] defaultOverlays,
+            Map<String, TextureAtlasSprite[]> tieredOverlays) {
         this.blockTransformation = blockTransformation;
         this.cutoutMaterial = cutoutMaterial;
         this.baseCasing = baseCasing;
@@ -72,7 +73,7 @@ public class MachineBakedModel implements BakedModel, FabricBakedModel {
     }
 
     @Override
-    public void emitBlockQuads(BlockRenderView blockRenderView, BlockState blockState, BlockPos blockPos, Supplier<Random> supplier,
+    public void emitBlockQuads(BlockAndTintGetter blockRenderView, BlockState blockState, BlockPos blockPos, Supplier<Random> supplier,
             RenderContext renderContext) {
         if (blockRenderView instanceof RenderAttachedBlockView bv) {
             Object attachment = bv.getBlockEntityRenderAttachment(blockPos);
@@ -97,14 +98,14 @@ public class MachineBakedModel implements BakedModel, FabricBakedModel {
         renderBase(renderContext, baseCasing, Direction.NORTH);
     }
 
-    private Sprite[] renderBase(RenderContext renderContext, MachineCasing casing, Direction facingDirection) {
+    private TextureAtlasSprite[] renderBase(RenderContext renderContext, MachineCasing casing, Direction facingDirection) {
         // Casing
         renderContext.meshConsumer().accept(casing.mcm.getMesh());
         // Machine overlays
         var sprites = getSprites(casing);
         QuadEmitter emitter = renderContext.getEmitter();
         for (Direction d : DIRECTIONS) {
-            Sprite sprite = getSprite(sprites, d, facingDirection, false);
+            TextureAtlasSprite sprite = getSprite(sprites, d, facingDirection, false);
             if (sprite != null) {
                 emitSprite(emitter, d, sprite, 1e-6f);
             }
@@ -112,7 +113,7 @@ public class MachineBakedModel implements BakedModel, FabricBakedModel {
         return sprites;
     }
 
-    public Sprite[] getSprites(@Nullable MachineCasing casing) {
+    public TextureAtlasSprite[] getSprites(@Nullable MachineCasing casing) {
         if (casing == null) {
             return defaultOverlays;
         }
@@ -123,12 +124,12 @@ public class MachineBakedModel implements BakedModel, FabricBakedModel {
      * Returns null if nothing should be rendered.
      */
     @Nullable
-    public static Sprite getSprite(Sprite[] sprites, Direction side, Direction facingDirection, boolean isActive) {
+    public static TextureAtlasSprite getSprite(TextureAtlasSprite[] sprites, Direction side, Direction facingDirection, boolean isActive) {
         int spriteId;
         if (side.getAxis().isHorizontal()) {
-            spriteId = (facingDirection.getHorizontal() - side.getHorizontal() + 4) % 4 * 2;
+            spriteId = (facingDirection.get2DDataValue() - side.get2DDataValue() + 4) % 4 * 2;
         } else {
-            spriteId = (facingDirection.getHorizontal() + 4) * 2;
+            spriteId = (facingDirection.get2DDataValue() + 4) * 2;
 
             if (side == Direction.DOWN) {
                 spriteId += 8;
@@ -140,7 +141,7 @@ public class MachineBakedModel implements BakedModel, FabricBakedModel {
         return sprites[spriteId];
     }
 
-    private void emitSprite(QuadEmitter emitter, Direction d, Sprite sprite, float depth) {
+    private void emitSprite(QuadEmitter emitter, Direction d, TextureAtlasSprite sprite, float depth) {
         if (sprite != null) {
             emitter.material(cutoutMaterial);
             emitter.square(d, 0, 0, 1, 1, -depth);
@@ -162,32 +163,32 @@ public class MachineBakedModel implements BakedModel, FabricBakedModel {
     }
 
     @Override
-    public boolean hasDepth() {
+    public boolean isGui3d() {
         return false;
     }
 
     @Override
-    public boolean isSideLit() {
+    public boolean usesBlockLight() {
         return true;
     }
 
     @Override
-    public boolean isBuiltin() {
+    public boolean isCustomRenderer() {
         return false;
     }
 
     @Override
-    public Sprite getParticleSprite() {
+    public TextureAtlasSprite getParticleIcon() {
         return baseCasing.mcm.getSideSprite();
     }
 
     @Override
-    public ModelTransformation getTransformation() {
+    public ItemTransforms getTransforms() {
         return blockTransformation;
     }
 
     @Override
-    public ModelOverrideList getOverrides() {
-        return ModelOverrideList.EMPTY;
+    public ItemOverrides getOverrides() {
+        return ItemOverrides.EMPTY;
     }
 }

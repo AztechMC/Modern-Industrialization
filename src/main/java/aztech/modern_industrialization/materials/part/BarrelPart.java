@@ -31,10 +31,10 @@ import aztech.modern_industrialization.blocks.storage.barrel.BarrelRenderer;
 import aztech.modern_industrialization.util.TextHelper;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemStorage;
-import net.minecraft.block.BlockEntityProvider;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.util.registry.Registry;
+import net.minecraft.core.Registry;
+import net.minecraft.world.level.block.EntityBlock;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 
 public class BarrelPart extends UnbuildablePart<Long> {
 
@@ -52,11 +52,11 @@ public class BarrelPart extends UnbuildablePart<Long> {
         BlockEntityType<BlockEntity>[] refs = new BlockEntityType[1]; // evil hack
 
         return new RegularPart(key).asColumnBlock().withRegister((registeringContext, partContext, part, itemPath, itemId, itemTag) -> {
-            BlockEntityProvider factory = (pos, state) -> new BarrelBlockEntity(refs[0], pos, state, stackCapacity);
+            EntityBlock factory = (pos, state) -> new BarrelBlockEntity(refs[0], pos, state, stackCapacity);
             BarrelBlock block = new BarrelBlock(itemPath, (MIBlock b) -> new BarrelItem(b, stackCapacity), factory);
 
             refs[0] = Registry.register(Registry.BLOCK_ENTITY_TYPE, itemId,
-                    FabricBlockEntityTypeBuilder.create(block.factory::createBlockEntity, block).build(null));
+                    FabricBlockEntityTypeBuilder.create(block.factory::newBlockEntity, block).build(null));
 
             ItemStorage.SIDED.registerSelf(refs[0]);
         }).withClientRegister((registeringContext, partContext, part, itemPath, itemId, itemTag) -> BarrelRenderer.register(refs[0],

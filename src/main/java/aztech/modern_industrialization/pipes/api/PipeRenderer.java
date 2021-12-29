@@ -26,11 +26,11 @@ package aztech.modern_industrialization.pipes.api;
 import java.util.Collection;
 import java.util.function.Function;
 import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
-import net.minecraft.client.texture.Sprite;
-import net.minecraft.client.util.SpriteIdentifier;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.BlockRenderView;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.resources.model.Material;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.BlockAndTintGetter;
 import org.jetbrains.annotations.Nullable;
 
 // TODO: Refactor to split api and impl correctly, and provide building blocks in API if necessary
@@ -44,12 +44,12 @@ public interface PipeRenderer {
      * @param connections For every logical slot, then for every direction, the
      *                    connection type or null for no connection.
      */
-    void draw(@Nullable BlockRenderView view, @Nullable BlockPos pos, RenderContext ctx, int logicalSlot, PipeEndpointType[][] connections,
-            NbtCompound customData);
+    void draw(@Nullable BlockAndTintGetter view, @Nullable BlockPos pos, RenderContext ctx, int logicalSlot, PipeEndpointType[][] connections,
+            CompoundTag customData);
 
     interface Factory {
-        Collection<SpriteIdentifier> getSpriteDependencies();
+        Collection<Material> getSpriteDependencies();
 
-        PipeRenderer create(Function<SpriteIdentifier, Sprite> textureGetter);
+        PipeRenderer create(Function<Material, TextureAtlasSprite> textureGetter);
     }
 }

@@ -43,11 +43,11 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
-import net.minecraft.entity.EquipmentSlot;
-import net.minecraft.item.ArmorItem;
-import net.minecraft.item.Item;
-import net.minecraft.item.ToolMaterials;
-import net.minecraft.util.Rarity;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.ArmorItem;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Rarity;
+import net.minecraft.world.item.Tiers;
 
 @SuppressWarnings("unused")
 public final class MIItem {
@@ -99,7 +99,7 @@ public final class MIItem {
 
     public static <T extends Item> T of(Function<? super FabricItemSettings, T> ctor, String id, int maxCount, Consumer<Item> registrationEvent,
             boolean handheld, Rarity rarity) {
-        T item = ctor.apply(new FabricItemSettings().maxCount(maxCount).group(ModernIndustrialization.ITEM_GROUP).rarity(rarity));
+        T item = ctor.apply((FabricItemSettings) new FabricItemSettings().stacksTo(maxCount).tab(ModernIndustrialization.ITEM_GROUP).rarity(rarity));
         if (items.put(id, item) != null) {
             throw new IllegalArgumentException("Item id already taken : " + id);
         }
@@ -211,9 +211,9 @@ public final class MIItem {
     public static final Item ULTRADENSE_METAL_BALL = of("ultradense_metal_ball");
     public static final Item SINGULARITY = of("singularity", Rarity.EPIC);
 
-    public static final ForgeTool IRON_HAMMER = new ForgeTool(ToolMaterials.IRON, "iron_hammer");
+    public static final ForgeTool IRON_HAMMER = new ForgeTool(Tiers.IRON, "iron_hammer");
     public static final ForgeTool STEEL_HAMMER = new ForgeTool(ForgeTool.STEEL, "steel_hammer");
-    public static final ForgeTool DIAMOND_HAMMER = new ForgeTool(ToolMaterials.DIAMOND, "diamond_hammer");
-    public static final ForgeTool NETHERITE_HAMMER = new ForgeTool(ToolMaterials.NETHERITE, "netherite_hammer");
+    public static final ForgeTool DIAMOND_HAMMER = new ForgeTool(Tiers.DIAMOND, "diamond_hammer");
+    public static final ForgeTool NETHERITE_HAMMER = new ForgeTool(Tiers.NETHERITE, "netherite_hammer");
 
 }

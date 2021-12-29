@@ -30,8 +30,8 @@ import aztech.modern_industrialization.machines.MachineScreenHandlers;
 import aztech.modern_industrialization.machines.multiblocks.ShapeTemplate;
 import java.util.*;
 import java.util.function.Predicate;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.Pair;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Tuple;
 
 /**
  * Helper to register stuff for use with the REI plugin. This class will be
@@ -50,7 +50,7 @@ public class ReiMachineRecipes {
     /**
      * List of registered multiblock shape "recipes".
      */
-    static final List<Pair<String, ShapeTemplate>> multiblockShapes = new ArrayList<>();
+    static final List<Tuple<String, ShapeTemplate>> multiblockShapes = new ArrayList<>();
 
     public static void registerCategory(String machine, MachineCategoryParams params) {
         if (categories.put(machine, params) != null) {
@@ -81,14 +81,14 @@ public class ReiMachineRecipes {
     }
 
     public static void registerMultiblockShape(String machine, ShapeTemplate shapeTemplate) {
-        multiblockShapes.add(new Pair<>(machine, shapeTemplate));
+        multiblockShapes.add(new Tuple<>(machine, shapeTemplate));
     }
 
     static class ClickAreaCategory {
-        public final Identifier category;
+        public final ResourceLocation category;
         public final Predicate<MachineScreenHandlers.ClientScreen> predicate;
 
-        ClickAreaCategory(Identifier category, Predicate<MachineScreenHandlers.ClientScreen> predicate) {
+        ClickAreaCategory(ResourceLocation category, Predicate<MachineScreenHandlers.ClientScreen> predicate) {
             this.category = category;
             this.predicate = predicate;
         }

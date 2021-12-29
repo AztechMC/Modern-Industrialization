@@ -24,11 +24,11 @@
 package aztech.modern_industrialization.mixin;
 
 import aztech.modern_industrialization.MIConfig;
-import net.minecraft.block.Block;
-import net.minecraft.block.Blocks;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.Style;
-import net.minecraft.util.Formatting;
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.Style;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -40,14 +40,14 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(Block.class)
 public class BlockMixin {
     @Inject(at = @At("RETURN"), method = "getName")
-    public void changeFluidColor(CallbackInfoReturnable<MutableText> cir) {
+    public void changeFluidColor(CallbackInfoReturnable<MutableComponent> cir) {
         if (MIConfig.getConfig().colorWaterLava) {
             Block self = Block.class.cast(this);
 
             if (self == Blocks.WATER) {
-                cir.getReturnValue().setStyle(Style.EMPTY.withColor(Formatting.BLUE));
+                cir.getReturnValue().setStyle(Style.EMPTY.withColor(ChatFormatting.BLUE));
             } else if (self == Blocks.LAVA) {
-                cir.getReturnValue().setStyle(Style.EMPTY.withColor(Formatting.RED));
+                cir.getReturnValue().setStyle(Style.EMPTY.withColor(ChatFormatting.RED));
             }
         }
     }

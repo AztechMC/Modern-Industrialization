@@ -26,43 +26,43 @@ package aztech.modern_industrialization.machines.components;
 import aztech.modern_industrialization.machines.IComponent;
 import aztech.modern_industrialization.machines.MachineBlockEntity;
 import java.util.Random;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.particle.ParticleTypes;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 
 public class GunpowderOverclockComponent implements IComponent {
 
     public int overclockGunpowderTick;
 
     @Override
-    public void writeNbt(NbtCompound tag) {
+    public void writeNbt(CompoundTag tag) {
         tag.putInt("overclockGunpowderTick", overclockGunpowderTick);
     }
 
     @Override
-    public void readNbt(NbtCompound tag) {
+    public void readNbt(CompoundTag tag) {
         overclockGunpowderTick = tag.getInt("overclockGunpowderTick");
     }
 
-    public ActionResult onUse(MachineBlockEntity be, PlayerEntity player, Hand hand) {
-        ItemStack stackInHand = player.getStackInHand(hand);
+    public InteractionResult onUse(MachineBlockEntity be, Player player, InteractionHand hand) {
+        ItemStack stackInHand = player.getItemInHand(hand);
         if (stackInHand.getItem() == Items.GUNPOWDER && stackInHand.getCount() >= 1) {
             if (!player.isCreative()) {
-                stackInHand.decrement(1);
+                stackInHand.shrink(1);
             }
             overclockGunpowderTick += 120 * 20;
-            be.markDirty();
-            if (!be.getWorld().isClient()) {
+            be.setChanged();
+            if (!be.getLevel().isClientSide()) {
                 be.sync();
             }
-            return ActionResult.success(be.getWorld().isClient);
+            return InteractionResult.sidedSuccess(be.getLevel().isClientSide);
 
         }
-        return ActionResult.PASS;
+        return InteractionResult.PASS;
     }
 
     public boolean isOverclocked() {
@@ -74,15 +74,15 @@ public class GunpowderOverclockComponent implements IComponent {
         if (overclockGunpowderTick < 0) {
             overclockGunpowderTick = 0;
         } else if (overclockGunpowderTick > 0) {
-            if (be.getWorld().isClient()) {
+            if (be.getLevel().isClientSide()) {
                 for (int iter = 0; iter < 3; iter++) {
-                    Random random = be.getWorld().getRandom();
-                    double d = be.getPos().getX() + 0.5D;
-                    double e = be.getPos().getY();
-                    double f = be.getPos().getZ() + 0.5D;
+                    Random random = be.getLevel().getRandom();
+                    double d = be.getBlockPos().getX() + 0.5D;
+                    double e = be.getBlockPos().getY();
+                    double f = be.getBlockPos().getZ() + 0.5D;
                     double i = random.nextDouble() * 0.6D - 0.3D;
                     double k = random.nextDouble() * 0.6D - 0.3D;
-                    be.getWorld().addParticle(ParticleTypes.SMOKE, d + i, e + 1.05, f + k, 0.15 * (random.nextDouble() - 0.5), 0.15D,
+                    be.getLevel().addParticle(ParticleTypes.SMOKE, d + i, e + 1.05, f + k, 0.15 * (random.nextDouble() - 0.5), 0.15D,
                             0.15 * (random.nextDouble() - 0.5));
                 }
             }

@@ -26,19 +26,19 @@ package aztech.modern_industrialization.pipes.api;
 import aztech.modern_industrialization.pipes.gui.IPipeScreenHandlerHelper;
 import java.util.List;
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 
 public abstract class PipeNetworkNode {
     protected PipeNetwork network;
 
-    public void updateConnections(World world, BlockPos pos) {
+    public void updateConnections(Level world, BlockPos pos) {
     }
 
-    public void buildInitialConnections(World world, BlockPos pos) {
+    public void buildInitialConnections(Level world, BlockPos pos) {
     }
 
     /**
@@ -47,9 +47,9 @@ public abstract class PipeNetworkNode {
      */
     public abstract PipeEndpointType[] getConnections(BlockPos pos);
 
-    public abstract void removeConnection(World world, BlockPos pos, Direction direction);
+    public abstract void removeConnection(Level world, BlockPos pos, Direction direction);
 
-    public abstract void addConnection(World world, BlockPos pos, Direction direction);
+    public abstract void addConnection(Level world, BlockPos pos, Direction direction);
 
     /**
      * Get the connection screen handler factory, or null if there is not gui for
@@ -59,9 +59,9 @@ public abstract class PipeNetworkNode {
         return null;
     }
 
-    public abstract NbtCompound toTag(NbtCompound tag);
+    public abstract CompoundTag toTag(CompoundTag tag);
 
-    public abstract void fromTag(NbtCompound tag);
+    public abstract void fromTag(CompoundTag tag);
 
     public final PipeNetworkType getType() {
         return network.manager.getType();
@@ -71,8 +71,8 @@ public abstract class PipeNetworkNode {
         return network.manager;
     }
 
-    public NbtCompound writeCustomData() {
-        return new NbtCompound();
+    public CompoundTag writeCustomData() {
+        return new CompoundTag();
     }
 
     public void appendDroppedStacks(List<ItemStack> droppedStacks) {

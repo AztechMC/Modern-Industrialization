@@ -27,28 +27,28 @@ import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.machines.components.sync.*;
 import java.util.HashMap;
 import java.util.Map;
-import net.minecraft.util.Identifier;
+import net.minecraft.resources.ResourceLocation;
 
 public final class SyncedComponents {
-    public static final Identifier AUTO_EXTRACT = new MIIdentifier("auto_extract");
-    public static final Identifier ENERGY_BAR = new MIIdentifier("energy_bar");
-    public static final Identifier PROGRESS_BAR = new MIIdentifier("progress_bar");
-    public static final Identifier RECIPE_EFFICIENCY_BAR = new MIIdentifier("recipe_efficiency_bar");
-    public static final Identifier TEMPERATURE_BAR = new MIIdentifier("temperature_bar");
-    public static final Identifier CRAFTING_MULTIBLOCK_GUI = new MIIdentifier("crafting_multiblock_gui");
-    public static final Identifier GUNPOWDER_OVERCLOCK_GUI = new MIIdentifier("gunpowder_overclock_gui");
-    public static final Identifier REI_SLOT_LOCKING = new MIIdentifier("rei_slot_locking");
-    public static final Identifier FLUID_STORAGE_GUI = new MIIdentifier("fluid_storage_gui");
-    public static final Identifier NUCLEAR_REACTOR_GUI = new MIIdentifier("nuclear_reactor_gui");
+    public static final ResourceLocation AUTO_EXTRACT = new MIIdentifier("auto_extract");
+    public static final ResourceLocation ENERGY_BAR = new MIIdentifier("energy_bar");
+    public static final ResourceLocation PROGRESS_BAR = new MIIdentifier("progress_bar");
+    public static final ResourceLocation RECIPE_EFFICIENCY_BAR = new MIIdentifier("recipe_efficiency_bar");
+    public static final ResourceLocation TEMPERATURE_BAR = new MIIdentifier("temperature_bar");
+    public static final ResourceLocation CRAFTING_MULTIBLOCK_GUI = new MIIdentifier("crafting_multiblock_gui");
+    public static final ResourceLocation GUNPOWDER_OVERCLOCK_GUI = new MIIdentifier("gunpowder_overclock_gui");
+    public static final ResourceLocation REI_SLOT_LOCKING = new MIIdentifier("rei_slot_locking");
+    public static final ResourceLocation FLUID_STORAGE_GUI = new MIIdentifier("fluid_storage_gui");
+    public static final ResourceLocation NUCLEAR_REACTOR_GUI = new MIIdentifier("nuclear_reactor_gui");
 
     public static final class Client {
-        private static final Map<Identifier, SyncedComponent.ClientFactory> components = new HashMap<>();
+        private static final Map<ResourceLocation, SyncedComponent.ClientFactory> components = new HashMap<>();
 
-        public static SyncedComponent.ClientFactory get(Identifier identifier) {
+        public static SyncedComponent.ClientFactory get(ResourceLocation identifier) {
             return components.get(identifier);
         }
 
-        public static void register(Identifier id, SyncedComponent.ClientFactory clientFactory) {
+        public static void register(ResourceLocation id, SyncedComponent.ClientFactory clientFactory) {
             if (components.put(id, clientFactory) != null) {
                 throw new RuntimeException("Duplicate registration of component identifier.");
             }

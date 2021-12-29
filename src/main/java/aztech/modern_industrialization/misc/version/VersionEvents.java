@@ -35,13 +35,13 @@ import java.util.*;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.network.ClientPlayerEntity;
-import net.minecraft.text.ClickEvent;
-import net.minecraft.text.HoverEvent;
-import net.minecraft.text.Style;
-import net.minecraft.text.TranslatableText;
-import net.minecraft.util.Formatting;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.network.chat.ClickEvent;
+import net.minecraft.network.chat.HoverEvent;
+import net.minecraft.network.chat.Style;
+import net.minecraft.network.chat.TranslatableComponent;
 import org.jetbrains.annotations.NotNull;
 
 public class VersionEvents {
@@ -99,7 +99,7 @@ public class VersionEvents {
         return null;
     }
 
-    public static void startVersionCheck(ClientPlayerEntity player) {
+    public static void startVersionCheck(LocalPlayer player) {
         new Thread(() -> {
             try {
                 Optional<ModContainer> currentMod = FabricLoader.getInstance().getModContainer(ModernIndustrialization.MOD_ID);
@@ -115,13 +115,15 @@ public class VersionEvents {
                             String url = lastVersion.url;
 
                             Style styleClick = Style.EMPTY.withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, url))
-                                    .withFormatting(Formatting.UNDERLINE).withFormatting(Formatting.GREEN).withHoverEvent(new HoverEvent(
-                                            HoverEvent.Action.SHOW_TEXT, new TranslatableText("text.modern_industrialization.click_url")));
+                                    .applyFormat(ChatFormatting.UNDERLINE).applyFormat(ChatFormatting.GREEN).withHoverEvent(new HoverEvent(
+                                            HoverEvent.Action.SHOW_TEXT, new TranslatableComponent("text.modern_industrialization.click_url")));
 
-                            MinecraftClient.getInstance().execute(() -> {
-                                if (MinecraftClient.getInstance().player == player) {
-                                    player.sendMessage(new TranslatableText("text.modern_industrialization.new_version", lastVersionString,
-                                            new TranslatableText("text.modern_industrialization.curse_forge").setStyle(styleClick)), false);
+                            Minecraft.getInstance().execute(() -> {
+                                if (Minecraft.getInstance().player == player) {
+                                    player.displayClientMessage(
+                                            new TranslatableComponent("text.modern_industrialization.new_version", lastVersionString,
+                                                    new TranslatableComponent("text.modern_industrialization.curse_forge").setStyle(styleClick)),
+                                            false);
                                 }
                             });
                         }

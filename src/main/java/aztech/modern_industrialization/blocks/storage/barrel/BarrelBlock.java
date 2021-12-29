@@ -39,22 +39,22 @@ import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.fabricmc.fabric.api.transfer.v1.item.PlayerInventoryStorage;
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageUtil;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
-import net.minecraft.block.BlockEntityProvider;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.item.BlockItem;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.client.Minecraft;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.level.block.EntityBlock;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
 
-public class BarrelBlock extends AbstractStorageBlock implements BlockEntityProvider {
+public class BarrelBlock extends AbstractStorageBlock implements EntityBlock {
 
-    public final BlockEntityProvider factory;
+    public final EntityBlock factory;
 
-    public BarrelBlock(String id, Function<MIBlock, BlockItem> blockItemCtor, BlockEntityProvider factory) {
-        super(id, FabricBlockSettings.of(METAL_MATERIAL).hardness(4.0f).breakByTool(FabricToolTags.PICKAXES).requiresTool()
-                .allowsSpawning(MobSpawning.NO_SPAWN), blockItemCtor);
+    public BarrelBlock(String id, Function<MIBlock, BlockItem> blockItemCtor, EntityBlock factory) {
+        super(id, FabricBlockSettings.of(METAL_MATERIAL).breakByTool(FabricToolTags.PICKAXES).destroyTime(4.0f).requiresCorrectToolForDrops()
+                .isValidSpawn(MobSpawning.NO_SPAWN), blockItemCtor);
 
         this.asColumn();
         this.factory = factory;
@@ -63,27 +63,28 @@ public class BarrelBlock extends AbstractStorageBlock implements BlockEntityProv
 
     @Nullable
     @Override
-    public BlockEntity createBlockEntity(BlockPos pos, BlockState state) {
-        return factory.createBlockEntity(pos, state);
+    public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
+        return factory.newBlockEntity(pos, state);
     }
 
     static {
         UseBlockCallback.EVENT.register((player, world, hand, hitResult) -> {
-            if (world.getBlockEntity(hitResult.getBlockPos()) instanceof BarrelBlockEntity barrel && hitResult.getSide().getAxis().isHorizontal()) {
-                if (!player.isSneaking()) {
-                    if (StorageUtil.move(PlayerInventoryStorage.of(player).getSlots().get(player.getInventory().selectedSlot), barrel,
+            if (world.getBlockEntity(hitResult.getBlockPos()) instanceof BarrelBlockEntity barrel
+                    && hitResult.getDirection().getAxis().isHorizontal()) {
+                if (!player.isShiftKeyDown()) {
+                    if (StorageUtil.move(PlayerInventoryStorage.of(player).getSlots().get(player.getInventory().selected), barrel,
                             (itemVariant) -> true, Long.MAX_VALUE, null) > 0) {
-                        return ActionResult.success(world.isClient);
+                        return InteractionResult.sidedSuccess(world.isClientSide);
                     }
                 } else {
-                    ItemVariant currentInHand = ItemVariant.of(player.getMainHandStack());
+                    ItemVariant currentInHand = ItemVariant.of(player.getMainHandItem());
                     if (StorageUtil.move(PlayerInventoryStorage.of(player), barrel, (itemVariant) -> itemVariant.equals(currentInHand),
                             Long.MAX_VALUE, null) > 0) {
-                        return ActionResult.success(world.isClient);
+                        return InteractionResult.sidedSuccess(world.isClientSide);
                     }
                 }
             }
-            return ActionResult.PASS;
+            return InteractionResult.PASS;
         });
 
         AttackBlockCallback.EVENT.register((player, world, hand, pos, direction) -> {
@@ -92,25 +93,26 @@ public class BarrelBlock extends AbstractStorageBlock implements BlockEntityProv
                     try (Transaction transaction = Transaction.openOuter()) {
                         ItemVariant extractedResource = barrel.getResource();
 
-                        long extracted = barrel.extract(barrel.getResource(), player.isSneaking() ? 1 : barrel.getResource().getItem().getMaxCount(),
+                        long extracted = barrel.extract(barrel.getResource(),
+                                player.isShiftKeyDown() ? 1 : barrel.getResource().getItem().getMaxStackSize(),
                                 transaction);
 
                         PlayerInventoryStorage.of(player).offerOrDrop(extractedResource, extracted, transaction);
 
                         transaction.commit();
-                        if (world.isClient()) {
+                        if (world.isClientSide()) {
                             updateDestroyDelay();
                         }
                     }
-                    return ActionResult.success(world.isClient);
+                    return InteractionResult.sidedSuccess(world.isClientSide);
                 }
             }
-            return ActionResult.PASS;
+            return InteractionResult.PASS;
         });
     }
 
     private static void updateDestroyDelay() {
         // Add a 5 tick delay like vanilla.
-        MinecraftClient.getInstance().interactionManager.blockBreakingCooldown = 5;
+        Minecraft.getInstance().gameMode.destroyDelay = 5;
     }
 }

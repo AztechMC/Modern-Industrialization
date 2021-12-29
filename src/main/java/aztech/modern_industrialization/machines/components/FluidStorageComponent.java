@@ -27,7 +27,7 @@ import aztech.modern_industrialization.machines.IComponent;
 import com.google.common.base.Preconditions;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleVariantStorage;
-import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.CompoundTag;
 
 public class FluidStorageComponent implements IComponent {
 
@@ -68,14 +68,14 @@ public class FluidStorageComponent implements IComponent {
     }
 
     @Override
-    public void writeNbt(NbtCompound tag) {
+    public void writeNbt(CompoundTag tag) {
         tag.put("fluid", singleStorageVariant.variant.toNbt());
         tag.putLong("amount", singleStorageVariant.amount);
         tag.putLong("capacity", capacity);
     }
 
     @Override
-    public void readNbt(NbtCompound tag) {
+    public void readNbt(CompoundTag tag) {
         singleStorageVariant.variant = FluidVariant.fromNbt(tag.getCompound("fluid"));
         singleStorageVariant.amount = tag.getLong("amount");
         capacity = tag.getLong("capacity");

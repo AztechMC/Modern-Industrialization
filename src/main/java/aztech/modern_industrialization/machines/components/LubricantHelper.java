@@ -29,29 +29,29 @@ import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
 
 public class LubricantHelper {
 
     public static final int mbPerTick = 25;
     private static final int dropPerTick = mbPerTick * 81;
 
-    public static ActionResult onUse(CrafterComponent crafter, PlayerEntity player, Hand hand) {
+    public static InteractionResult onUse(CrafterComponent crafter, Player player, InteractionHand hand) {
         if (crafter.hasActiveRecipe()) {
             int tick = crafter.getEfficiencyTicks();
             int maxTick = crafter.getMaxEfficiencyTicks();
             int rem = maxTick - tick;
             if (rem > 0) {
-                Storage<FluidVariant> handIo = FluidStorage.ITEM.find(player.getStackInHand(hand), ContainerItemContext.ofPlayerHand(player, hand));
+                Storage<FluidVariant> handIo = FluidStorage.ITEM.find(player.getItemInHand(hand), ContainerItemContext.ofPlayerHand(player, hand));
                 if (handIo != null) {
                     try (Transaction tx = Transaction.openOuter()) {
                         long extracted = handIo.extract(FluidVariant.of(MIFluids.LUBRICANT), (long) rem * dropPerTick, tx);
                         if (extracted % dropPerTick == 0) {
                             crafter.increaseEfficiencyTicks((int) (extracted / dropPerTick));
                             tx.commit();
-                            return ActionResult.SUCCESS;
+                            return InteractionResult.SUCCESS;
                         } else if (extracted > dropPerTick) {
                             tx.close();
                             long attempt = dropPerTick * (extracted / dropPerTick);
@@ -60,7 +60,7 @@ public class LubricantHelper {
                                 if (extractedVoid > 0) {
                                     crafter.increaseEfficiencyTicks((int) (extractedVoid / dropPerTick));
                                     txVoid.commit();
-                                    return ActionResult.SUCCESS;
+                                    return InteractionResult.SUCCESS;
                                 }
                             }
                         }
@@ -68,6 +68,6 @@ public class LubricantHelper {
                 }
             }
         }
-        return ActionResult.PASS;
+        return InteractionResult.PASS;
     }
 }

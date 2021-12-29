@@ -27,10 +27,10 @@ import aztech.modern_industrialization.materials.MaterialBuilder;
 import aztech.modern_industrialization.mixin_impl.SteamDrillHooks;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import org.jetbrains.annotations.Nullable;
 
 public class CommonProxy {
@@ -53,9 +53,9 @@ public class CommonProxy {
      * Try to find a suitable user.
      */
     @Nullable
-    public PlayerEntity findUser(@Nullable LivingEntity entity) {
-        if (entity instanceof PlayerEntity) {
-            return (PlayerEntity) entity;
+    public Player findUser(@Nullable LivingEntity entity) {
+        if (entity instanceof Player) {
+            return (Player) entity;
         }
         return SteamDrillHooks.getCurrentPlayer();
     }

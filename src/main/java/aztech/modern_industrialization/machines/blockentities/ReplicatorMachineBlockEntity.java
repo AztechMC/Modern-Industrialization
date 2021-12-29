@@ -48,12 +48,12 @@ import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.tag.Tag;
-import net.minecraft.util.Identifier;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.Tag;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 
 public class ReplicatorMachineBlockEntity extends MachineBlockEntity implements Tickable {
 
@@ -65,12 +65,12 @@ public class ReplicatorMachineBlockEntity extends MachineBlockEntity implements 
     private static Tag<Item> blacklisted;
 
     public static void initTag() {
-        Identifier blacklist = new MIIdentifier("replicator_blacklist");
+        ResourceLocation blacklist = new MIIdentifier("replicator_blacklist");
         blacklisted = TagRegistry.item(blacklist);
 
-        ResourceUtil.appendToItemTag(blacklist, new Identifier("minecraft", "bundle"));
+        ResourceUtil.appendToItemTag(blacklist, new ResourceLocation("minecraft", "bundle"));
 
-        ResourceUtil.appendTagToItemTag(blacklist, new Identifier("c", "shulker_box"));
+        ResourceUtil.appendTagToItemTag(blacklist, new ResourceLocation("c", "shulker_box"));
         ResourceUtil.appendTagToItemTag(blacklist, new MIIdentifier("tanks"));
         ResourceUtil.appendTagToItemTag(blacklist, new MIIdentifier("barrels"));
 
@@ -97,12 +97,12 @@ public class ReplicatorMachineBlockEntity extends MachineBlockEntity implements 
 
         this.registerComponents(isActiveComponent, inventoryComponent, new IComponent() {
             @Override
-            public void writeNbt(NbtCompound tag) {
+            public void writeNbt(CompoundTag tag) {
                 tag.putInt("progressTick", progressTick);
             }
 
             @Override
-            public void readNbt(NbtCompound tag) {
+            public void readNbt(CompoundTag tag) {
                 progressTick = tag.getInt("progressTick");
             }
         });
@@ -172,7 +172,7 @@ public class ReplicatorMachineBlockEntity extends MachineBlockEntity implements 
 
     @Override
     public void tick() {
-        if (!world.isClient) {
+        if (!level.isClientSide) {
 
             if (replicationStep(true)) {
                 progressTick++;
@@ -187,10 +187,10 @@ public class ReplicatorMachineBlockEntity extends MachineBlockEntity implements 
             }
 
             if (orientation.extractItems) {
-                inventoryComponent.inventory.autoExtractItems(world, pos, orientation.outputDirection);
+                inventoryComponent.inventory.autoExtractItems(level, worldPosition, orientation.outputDirection);
             }
 
-            markDirty();
+            setChanged();
         }
     }
 }

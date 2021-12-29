@@ -24,6 +24,7 @@
 package aztech.modern_industrialization.datagen.texture;
 
 import aztech.modern_industrialization.textures.MITextures;
+import com.mojang.blaze3d.platform.NativeImage;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -32,15 +33,14 @@ import java.util.Comparator;
 import java.util.Objects;
 import java.util.stream.Stream;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
-import net.minecraft.client.resource.ClientBuiltinResourcePackProvider;
-import net.minecraft.client.resource.DefaultClientResourcePack;
-import net.minecraft.client.resource.ResourceIndex;
-import net.minecraft.client.texture.NativeImage;
-import net.minecraft.data.DataCache;
+import net.minecraft.client.resources.AssetIndex;
+import net.minecraft.client.resources.ClientPackSource;
+import net.minecraft.client.resources.DefaultClientPackResources;
 import net.minecraft.data.DataProvider;
-import net.minecraft.resource.DirectoryResourcePack;
-import net.minecraft.resource.ReloadableResourceManagerImpl;
-import net.minecraft.resource.ResourceType;
+import net.minecraft.data.HashCache;
+import net.minecraft.server.packs.FolderPackResources;
+import net.minecraft.server.packs.PackType;
+import net.minecraft.server.packs.resources.SimpleReloadableResourceManager;
 
 public class TexturesProvider implements DataProvider {
     private final FabricDataGenerator dataGenerator;
@@ -50,36 +50,36 @@ public class TexturesProvider implements DataProvider {
     }
 
     @Override
-    public void run(DataCache cache) throws IOException {
+    public void run(HashCache cache) throws IOException {
         // Delete output folder first, because textures won't be generated if they already exist,
         // leading to the DataCache clearing the textures when it deletes unused paths from the cache.
         // Code from https://stackoverflow.com/questions/35988192/java-nio-most-concise-recursive-directory-delete
-        var textureDir = dataGenerator.getOutput().resolve("assets/modern_industrialization/textures");
+        var textureDir = dataGenerator.getOutputFolder().resolve("assets/modern_industrialization/textures");
         if (Files.exists(textureDir)) {
             try (Stream<Path> walk = Files.walk(textureDir)) {
                 walk.sorted(Comparator.reverseOrder()).map(Path::toFile).forEach(File::delete);
             }
         }
 
-        var generatedResources = dataGenerator.getOutput();
-        var nonGeneratedResources = dataGenerator.getOutput().resolve("../../main/resources");
-        var manager = new ReloadableResourceManagerImpl(ResourceType.CLIENT_RESOURCES);
-        manager.addPack(new DefaultClientResourcePack(ClientBuiltinResourcePackProvider.DEFAULT_PACK_METADATA, new ResourceIndex(new File(""), "")));
-        manager.addPack(new DirectoryResourcePack(nonGeneratedResources.toFile()));
-        manager.addPack(new DirectoryResourcePack(generatedResources.toFile()));
+        var generatedResources = dataGenerator.getOutputFolder();
+        var nonGeneratedResources = dataGenerator.getOutputFolder().resolve("../../main/resources");
+        var manager = new SimpleReloadableResourceManager(PackType.CLIENT_RESOURCES);
+        manager.add(new DefaultClientPackResources(ClientPackSource.BUILT_IN, new AssetIndex(new File(""), "")));
+        manager.add(new FolderPackResources(nonGeneratedResources.toFile()));
+        manager.add(new FolderPackResources(generatedResources.toFile()));
 
         MITextures.offerTextures((image, textureId) -> writeTexture(cache, image, textureId), manager);
     }
 
-    private void writeTexture(DataCache cache, NativeImage image, String textureId) {
+    private void writeTexture(HashCache cache, NativeImage image, String textureId) {
         try {
-            var path = dataGenerator.getOutput().resolve("assets").resolve(textureId.replace(':', '/'));
-            var sha = SHA1.hashBytes(image.getBytes()).toString();
-            if (!Objects.equals(cache.getOldSha1(path), sha) || !Files.exists(path)) {
+            var path = dataGenerator.getOutputFolder().resolve("assets").resolve(textureId.replace(':', '/'));
+            var sha = SHA1.hashBytes(image.asByteArray()).toString();
+            if (!Objects.equals(cache.getHash(path), sha) || !Files.exists(path)) {
                 Files.createDirectories(path.getParent());
-                image.writeTo(path);
+                image.writeToFile(path);
             }
-            cache.updateSha1(path, sha);
+            cache.putNew(path, sha);
         } catch (IOException ex) {
             throw new RuntimeException("Failed to write texture " + textureId, ex);
         }

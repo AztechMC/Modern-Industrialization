@@ -28,9 +28,9 @@ import static aztech.modern_industrialization.materials.part.MIParts.RAW_METAL_B
 
 import aztech.modern_industrialization.materials.set.MaterialRawSet;
 import aztech.modern_industrialization.textures.TextureHelper;
+import com.mojang.blaze3d.platform.NativeImage;
 import java.io.IOException;
 import java.util.List;
-import net.minecraft.client.texture.NativeImage;
 
 public class RawMetalPart extends UnbuildablePart<MaterialRawSet> {
 

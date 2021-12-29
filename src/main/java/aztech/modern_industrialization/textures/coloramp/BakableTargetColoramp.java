@@ -25,11 +25,11 @@ package aztech.modern_industrialization.textures.coloramp;
 
 import aztech.modern_industrialization.textures.TextureHelper;
 import aztech.modern_industrialization.textures.TextureManager;
+import com.mojang.blaze3d.platform.NativeImage;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import net.minecraft.client.texture.NativeImage;
 
 public class BakableTargetColoramp implements Coloramp {
 
@@ -122,7 +122,7 @@ public class BakableTargetColoramp implements Coloramp {
 
             for (int i = 0; i < from.getWidth(); i++) {
                 for (int j = 0; j < from.getHeight(); j++) {
-                    int argb = from.getColor(i, j);
+                    int argb = from.getPixelRGBA(i, j);
                     int a = TextureHelper.getA(argb);
                     if (a >= 127) {
                         double lum = TextureHelper.getLuminance(argb);
@@ -168,7 +168,7 @@ public class BakableTargetColoramp implements Coloramp {
 
             for (int i = 0; i < to.getWidth(); i++) {
                 for (int j = 0; j < to.getHeight(); j++) {
-                    int argb = to.getColor(i, j);
+                    int argb = to.getPixelRGBA(i, j);
                     int a = TextureHelper.getA(argb);
                     if (a >= 127) {
                         toRgb.add(argb);

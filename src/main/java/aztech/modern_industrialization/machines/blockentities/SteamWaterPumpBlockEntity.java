@@ -34,7 +34,7 @@ import aztech.modern_industrialization.util.Simulation;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import net.minecraft.fluid.Fluids;
+import net.minecraft.world.level.material.Fluids;
 
 public class SteamWaterPumpBlockEntity extends AbstractWaterPumpBlockEntity {
     public SteamWaterPumpBlockEntity(BEP bep, boolean bronze) {

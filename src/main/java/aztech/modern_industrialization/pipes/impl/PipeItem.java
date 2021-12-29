@@ -26,85 +26,85 @@ package aztech.modern_industrialization.pipes.impl;
 import aztech.modern_industrialization.pipes.MIPipes;
 import aztech.modern_industrialization.pipes.api.PipeNetworkData;
 import aztech.modern_industrialization.pipes.api.PipeNetworkType;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.ShapeContext;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemPlacementContext;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemUsageContext;
-import net.minecraft.sound.BlockSoundGroup;
-import net.minecraft.sound.SoundCategory;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.shapes.CollisionContext;
 
 public class PipeItem extends Item {
     final PipeNetworkType type;
     public final PipeNetworkData defaultData;
 
-    public PipeItem(Settings settings, PipeNetworkType type, PipeNetworkData defaultData) {
+    public PipeItem(Properties settings, PipeNetworkType type, PipeNetworkData defaultData) {
         super(settings);
         this.type = type;
         this.defaultData = defaultData;
     }
 
     @Override
-    public ActionResult useOnBlock(ItemUsageContext context) {
+    public InteractionResult useOn(UseOnContext context) {
         // TODO: Check BlockItem code and implement all checks.
         // TODO: Check advancement criteria.
 
         BlockPos placingPos = tryPlace(context);
         if (placingPos != null) {
-            World world = context.getWorld();
-            PlayerEntity player = context.getPlayer();
+            Level world = context.getLevel();
+            Player player = context.getPlayer();
 
             // update adjacent pipes
-            world.updateNeighbors(placingPos, Blocks.AIR);
+            world.blockUpdated(placingPos, Blocks.AIR);
             // remove one from stack
-            ItemStack placementStack = context.getStack();
-            if (player != null && !player.getAbilities().creativeMode) {
-                placementStack.decrement(1);
+            ItemStack placementStack = context.getItemInHand();
+            if (player != null && !player.getAbilities().instabuild) {
+                placementStack.shrink(1);
             }
             // play placing sound
             BlockState newState = world.getBlockState(placingPos);
-            BlockSoundGroup group = newState.getSoundGroup();
-            world.playSound(player, placingPos, group.getPlaceSound(), SoundCategory.BLOCKS, (group.getVolume() + 1.0F) / 2.0F,
+            SoundType group = newState.getSoundType();
+            world.playSound(player, placingPos, group.getPlaceSound(), SoundSource.BLOCKS, (group.getVolume() + 1.0F) / 2.0F,
                     group.getPitch() * 0.8F);
 
-            return ActionResult.success(world.isClient);
+            return InteractionResult.sidedSuccess(world.isClientSide);
         } else {
             // if we couldn't place a pipe, we try to add a connection instead
-            placingPos = context.getBlockPos().offset(context.getSide());
-            World world = context.getWorld();
+            placingPos = context.getClickedPos().relative(context.getClickedFace());
+            Level world = context.getLevel();
             BlockEntity entity = world.getBlockEntity(placingPos);
             if (entity instanceof PipeBlockEntity) {
                 PipeBlockEntity pipeEntity = (PipeBlockEntity) entity;
                 if (pipeEntity.connections.containsKey(type)) {
-                    if (!world.isClient) {
-                        pipeEntity.addConnection(type, context.getSide().getOpposite());
+                    if (!world.isClientSide) {
+                        pipeEntity.addConnection(type, context.getClickedFace().getOpposite());
                     }
                     // update adjacent pipes
-                    world.updateNeighbors(placingPos, Blocks.AIR);
+                    world.blockUpdated(placingPos, Blocks.AIR);
                     // play placing sound
                     BlockState newState = world.getBlockState(placingPos);
-                    BlockSoundGroup group = newState.getSoundGroup();
-                    world.playSound(context.getPlayer(), placingPos, group.getPlaceSound(), SoundCategory.BLOCKS, (group.getVolume() + 1.0F) / 2.0F,
+                    SoundType group = newState.getSoundType();
+                    world.playSound(context.getPlayer(), placingPos, group.getPlaceSound(), SoundSource.BLOCKS, (group.getVolume() + 1.0F) / 2.0F,
                             group.getPitch() * 0.8F);
-                    return ActionResult.success(world.isClient);
+                    return InteractionResult.sidedSuccess(world.isClientSide);
                 }
             }
         }
-        return super.useOnBlock(context);
+        return super.useOn(context);
     }
 
     // Try placing the pipe and registering the new pipe to the entity, returns null
     // if it failed
-    private BlockPos tryPlace(ItemUsageContext context) {
-        BlockPos hitPos = context.getBlockPos();
-        BlockPos adjacentPos = hitPos.offset(context.getSide());
+    private BlockPos tryPlace(UseOnContext context) {
+        BlockPos hitPos = context.getClickedPos();
+        BlockPos adjacentPos = hitPos.relative(context.getClickedFace());
         if (tryPlaceAt(context, hitPos)) {
             return hitPos;
         } else if (tryPlaceAt(context, adjacentPos)) {
@@ -120,14 +120,14 @@ public class PipeItem extends Item {
      *
      * @return True if succeeded, false otherwise.
      */
-    private boolean tryPlaceAt(ItemUsageContext context, BlockPos pos) {
-        World world = context.getWorld();
+    private boolean tryPlaceAt(UseOnContext context, BlockPos pos) {
+        Level world = context.getLevel();
         // If there is a block entity we try to add the pipe.
         BlockEntity be = world.getBlockEntity(pos);
         if (be instanceof PipeBlockEntity) {
             PipeBlockEntity pipeBe = (PipeBlockEntity) be;
             if (pipeBe.canAddPipe(type)) {
-                if (!world.isClient()) {
+                if (!world.isClientSide()) {
                     pipeBe.addPipe(type, defaultData.clone());
                 }
                 return true;
@@ -135,8 +135,8 @@ public class PipeItem extends Item {
         }
         // Otherwise we try replacing the target block.
         if (canPlace(context, pos)) {
-            world.setBlockState(pos, MIPipes.BLOCK_PIPE.getDefaultState(), 3); // neighbor update is handled later
-            if (!world.isClient()) {
+            world.setBlock(pos, MIPipes.BLOCK_PIPE.defaultBlockState(), 3); // neighbor update is handled later
+            if (!world.isClientSide()) {
                 PipeBlockEntity pipeBe = (PipeBlockEntity) world.getBlockEntity(pos);
                 pipeBe.addPipe(type, defaultData.clone());
             }
@@ -145,10 +145,10 @@ public class PipeItem extends Item {
         return false;
     }
 
-    private static boolean canPlace(ItemUsageContext ctx, BlockPos pos) {
-        BlockState state = MIPipes.BLOCK_PIPE.getDefaultState();
-        ShapeContext shapeContext = ctx.getPlayer() == null ? ShapeContext.absent() : ShapeContext.of(ctx.getPlayer());
-        return ctx.getWorld().getBlockState(pos).canReplace(new ItemPlacementContext(ctx)) && state.canPlaceAt(ctx.getWorld(), pos)
-                && ctx.getWorld().canPlace(state, pos, shapeContext);
+    private static boolean canPlace(UseOnContext ctx, BlockPos pos) {
+        BlockState state = MIPipes.BLOCK_PIPE.defaultBlockState();
+        CollisionContext shapeContext = ctx.getPlayer() == null ? CollisionContext.empty() : CollisionContext.of(ctx.getPlayer());
+        return ctx.getLevel().getBlockState(pos).canBeReplaced(new BlockPlaceContext(ctx)) && state.canSurvive(ctx.getLevel(), pos)
+                && ctx.getLevel().isUnobstructed(state, pos, shapeContext);
     }
 }

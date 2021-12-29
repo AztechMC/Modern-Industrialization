@@ -27,23 +27,23 @@ import aztech.modern_industrialization.MIBlock;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.ItemStack;
-import net.minecraft.loot.context.LootContext;
-import net.minecraft.loot.context.LootContextParameters;
-import net.minecraft.loot.context.LootContextTypes;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.BlockView;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.loot.LootContext;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 
 public class AbstractStorageBlock extends MIBlock {
-    public AbstractStorageBlock(String id, Settings settings, Function<MIBlock, BlockItem> blockItemCtor, int registrationFlag) {
+    public AbstractStorageBlock(String id, Properties settings, Function<MIBlock, BlockItem> blockItemCtor, int registrationFlag) {
         super(id, settings, blockItemCtor, registrationFlag);
     }
 
-    public AbstractStorageBlock(String id, Settings settings, Function<MIBlock, BlockItem> blockItemCtor) {
+    public AbstractStorageBlock(String id, Properties settings, Function<MIBlock, BlockItem> blockItemCtor) {
         super(id, settings, blockItemCtor);
     }
 
@@ -51,21 +51,21 @@ public class AbstractStorageBlock extends MIBlock {
         var storageBlockEntity = (AbstractStorageBlockEntity<?>) entity;
         ItemStack stack = new ItemStack(asItem());
         if (!storageBlockEntity.isEmpty()) {
-            NbtCompound tag = new NbtCompound();
-            tag.put("BlockEntityTag", storageBlockEntity.createNbt());
-            stack.setNbt(tag);
+            CompoundTag tag = new CompoundTag();
+            tag.put("BlockEntityTag", storageBlockEntity.saveWithoutMetadata());
+            stack.setTag(tag);
         }
         return stack;
     }
 
     @Override
-    public List<ItemStack> getDroppedStacks(BlockState state, LootContext.Builder builder) {
-        LootContext lootContext = builder.parameter(LootContextParameters.BLOCK_STATE, state).build(LootContextTypes.BLOCK);
-        return Arrays.asList(getStack(lootContext.get(LootContextParameters.BLOCK_ENTITY)));
+    public List<ItemStack> getDrops(BlockState state, LootContext.Builder builder) {
+        LootContext lootContext = builder.withParameter(LootContextParams.BLOCK_STATE, state).create(LootContextParamSets.BLOCK);
+        return Arrays.asList(getStack(lootContext.getParamOrNull(LootContextParams.BLOCK_ENTITY)));
     }
 
     @Override
-    public ItemStack getPickStack(BlockView world, BlockPos pos, BlockState state) {
+    public ItemStack getCloneItemStack(BlockGetter world, BlockPos pos, BlockState state) {
         return getStack(world.getBlockEntity(pos));
     }
 }

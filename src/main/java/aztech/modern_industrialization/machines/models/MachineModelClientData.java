@@ -23,7 +23,7 @@
  */
 package aztech.modern_industrialization.machines.models;
 
-import net.minecraft.util.math.Direction;
+import net.minecraft.core.Direction;
 import org.jetbrains.annotations.Nullable;
 
 public class MachineModelClientData {

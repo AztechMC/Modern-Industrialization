@@ -28,48 +28,52 @@ import aztech.modern_industrialization.pipes.api.PipeNetworkNode;
 import aztech.modern_industrialization.util.MobSpawning;
 import java.util.ArrayList;
 import java.util.List;
-import net.minecraft.block.*;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.network.ClientPlayerEntity;
-import net.minecraft.entity.ItemEntity;
-import net.minecraft.entity.ai.pathing.NavigationType;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.loot.context.LootContext;
-import net.minecraft.loot.context.LootContextParameters;
-import net.minecraft.loot.context.LootContextTypes;
-import net.minecraft.sound.BlockSoundGroup;
-import net.minecraft.sound.SoundCategory;
-import net.minecraft.sound.SoundEvent;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
-import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Box;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.shape.VoxelShape;
-import net.minecraft.world.BlockView;
-import net.minecraft.world.World;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.core.BlockPos;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.EntityBlock;
+import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.pathfinder.PathComputationType;
+import net.minecraft.world.level.storage.loot.LootContext;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.Nullable;
 
-public class PipeBlock extends Block implements BlockEntityProvider {
-    public PipeBlock(Settings settings) {
-        super(settings.allowsSpawning(MobSpawning.NO_SPAWN).nonOpaque().solidBlock((s, p, w) -> false));
+public class PipeBlock extends Block implements EntityBlock {
+    public PipeBlock(Properties settings) {
+        super(settings.isValidSpawn(MobSpawning.NO_SPAWN).noOcclusion().isRedstoneConductor((s, p, w) -> false));
     }
 
     @Override
-    public BlockEntity createBlockEntity(BlockPos pos, BlockState state) {
+    public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
         return new PipeBlockEntity(pos, state);
     }
 
     private static boolean isPartHit(VoxelShape shape, BlockHitResult hit) {
         var pos = hit.getBlockPos();
-        Vec3d posInBlock = hit.getPos().subtract(pos.getX(), pos.getY(), pos.getZ());
-        for (Box box : shape.getBoundingBoxes()) {
+        Vec3 posInBlock = hit.getLocation().subtract(pos.getX(), pos.getY(), pos.getZ());
+        for (AABB box : shape.toAabbs()) {
             // move slightly towards box center
-            Vec3d dir = box.getCenter().subtract(posInBlock).normalize().multiply(1e-4);
+            Vec3 dir = box.getCenter().subtract(posInBlock).normalize().scale(1e-4);
             if (box.contains(posInBlock.add(dir))) {
                 return true;
             }
@@ -88,8 +92,8 @@ public class PipeBlock extends Block implements BlockEntityProvider {
     }
 
     @Nullable
-    private static PipeVoxelShape getTargetedPart(BlockView blockView, BlockPos pos) {
-        if (!(blockView instanceof World world) || !world.isClient()) {
+    private static PipeVoxelShape getTargetedPart(BlockGetter blockView, BlockPos pos) {
+        if (!(blockView instanceof Level world) || !world.isClientSide()) {
             return null;
         }
         PipeVoxelShape currentBest = null;
@@ -99,15 +103,15 @@ public class PipeBlock extends Block implements BlockEntityProvider {
 
             for (PipeVoxelShape pipePartShape : pipe.getPartShapes()) {
                 VoxelShape partShape = pipePartShape.shape;
-                float tickDelta = MinecraftClient.getInstance().getTickDelta();
-                ClientPlayerEntity player = MinecraftClient.getInstance().player;
-                Vec3d vec3d = player.getCameraPosVec(tickDelta);
-                Vec3d vec3d2 = player.getRotationVec(tickDelta);
-                double maxDistance = MinecraftClient.getInstance().interactionManager.getReachDistance();
-                Vec3d vec3d3 = vec3d.add(vec3d2.x * maxDistance, vec3d2.y * maxDistance, vec3d2.z * maxDistance);
-                BlockHitResult hit = partShape.raycast(vec3d, vec3d3, pos);
+                float tickDelta = Minecraft.getInstance().getFrameTime();
+                LocalPlayer player = Minecraft.getInstance().player;
+                Vec3 vec3d = player.getEyePosition(tickDelta);
+                Vec3 vec3d2 = player.getViewVector(tickDelta);
+                double maxDistance = Minecraft.getInstance().gameMode.getPickRange();
+                Vec3 vec3d3 = vec3d.add(vec3d2.x * maxDistance, vec3d2.y * maxDistance, vec3d2.z * maxDistance);
+                BlockHitResult hit = partShape.clip(vec3d, vec3d3, pos);
                 if (hit != null && isPartHit(partShape, hit)) {
-                    double dist = hit.getPos().distanceTo(vec3d);
+                    double dist = hit.getLocation().distanceTo(vec3d);
 
                     if (dist < smallestDistance) {
                         smallestDistance = dist;
@@ -119,50 +123,50 @@ public class PipeBlock extends Block implements BlockEntityProvider {
         return currentBest;
     }
 
-    static boolean useWrench(PipeBlockEntity pipe, PlayerEntity player, Hand hand, BlockHitResult hit) {
+    static boolean useWrench(PipeBlockEntity pipe, Player player, InteractionHand hand, BlockHitResult hit) {
         PipeVoxelShape partShape = getHitPart(pipe, hit);
         if (partShape == null) {
             return false;
         }
 
-        BlockSoundGroup group = pipe.getCachedState().getSoundGroup();
-        var blockPos = pipe.getPos();
-        var world = pipe.getWorld();
-        Vec3d hitPos = hit.getPos();
+        SoundType group = pipe.getBlockState().getSoundType();
+        var blockPos = pipe.getBlockPos();
+        var world = pipe.getLevel();
+        Vec3 hitPos = hit.getLocation();
 
-        if (player != null && player.isSneaking()) {
+        if (player != null && player.isShiftKeyDown()) {
             boolean removeBlock = pipe.connections.size() == 1;
-            if (!world.isClient) {
+            if (!world.isClientSide) {
                 pipe.removePipeAndDropContainedItems(partShape.type);
             }
             if (removeBlock) {
-                world.setBlockState(blockPos, Blocks.AIR.getDefaultState());
+                world.setBlockAndUpdate(blockPos, Blocks.AIR.defaultBlockState());
             }
             // update adjacent blocks
-            world.updateNeighbors(blockPos, Blocks.AIR);
+            world.blockUpdated(blockPos, Blocks.AIR);
             // spawn pipe item
-            world.spawnEntity(new ItemEntity(world, hitPos.x, hitPos.y, hitPos.z, new ItemStack(MIPipes.INSTANCE.getPipeItem(partShape.type))));
+            world.addFreshEntity(new ItemEntity(world, hitPos.x, hitPos.y, hitPos.z, new ItemStack(MIPipes.INSTANCE.getPipeItem(partShape.type))));
             // play break sound
-            world.playSound(player, blockPos, group.getBreakSound(), SoundCategory.BLOCKS, (group.getVolume() + 1.0F) / 2.0F,
+            world.playSound(player, blockPos, group.getBreakSound(), SoundSource.BLOCKS, (group.getVolume() + 1.0F) / 2.0F,
                     group.getPitch() * 0.8F);
         } else {
             SoundEvent sound = null;
             if (partShape.direction == null) {
-                if (!world.isClient) {
-                    pipe.addConnection(partShape.type, hit.getSide());
+                if (!world.isClientSide) {
+                    pipe.addConnection(partShape.type, hit.getDirection());
                 } else {
                     sound = group.getPlaceSound();
                 }
             } else {
-                if (!world.isClient) {
+                if (!world.isClientSide) {
                     pipe.removeConnection(partShape.type, partShape.direction);
                 } else {
                     sound = group.getBreakSound();
                 }
             }
-            world.updateNeighbors(blockPos, Blocks.AIR);
+            world.blockUpdated(blockPos, Blocks.AIR);
             if (sound != null) {
-                world.playSound(player, blockPos, sound, SoundCategory.BLOCKS, (group.getVolume() + 1.0F) / 4.0F, group.getPitch() * 0.8F);
+                world.playSound(player, blockPos, sound, SoundSource.BLOCKS, (group.getVolume() + 1.0F) / 4.0F, group.getPitch() * 0.8F);
             }
         }
 
@@ -170,24 +174,24 @@ public class PipeBlock extends Block implements BlockEntityProvider {
     }
 
     @Override
-    public ActionResult onUse(BlockState state, World world, BlockPos blockPos, PlayerEntity player, Hand hand, BlockHitResult hit) {
+    public InteractionResult use(BlockState state, Level world, BlockPos blockPos, Player player, InteractionHand hand, BlockHitResult hit) {
         PipeBlockEntity pipeEntity = (PipeBlockEntity) world.getBlockEntity(blockPos);
 
         PipeVoxelShape partShape = getHitPart(pipeEntity, hit);
         if (partShape != null && partShape.opensGui) {
-            if (!world.isClient) {
-                player.openHandledScreen(pipeEntity.getGui(partShape.type, partShape.direction));
+            if (!world.isClientSide) {
+                player.openMenu(pipeEntity.getGui(partShape.type, partShape.direction));
             }
-            return ActionResult.success(world.isClient);
+            return InteractionResult.sidedSuccess(world.isClientSide);
         }
 
-        return ActionResult.PASS;
+        return InteractionResult.PASS;
     }
 
     @Override
-    public List<ItemStack> getDroppedStacks(BlockState state, LootContext.Builder builder) {
-        LootContext lootContext = builder.parameter(LootContextParameters.BLOCK_STATE, state).build(LootContextTypes.BLOCK);
-        PipeBlockEntity pipeEntity = (PipeBlockEntity) lootContext.get(LootContextParameters.BLOCK_ENTITY);
+    public List<ItemStack> getDrops(BlockState state, LootContext.Builder builder) {
+        LootContext lootContext = builder.withParameter(LootContextParams.BLOCK_STATE, state).create(LootContextParamSets.BLOCK);
+        PipeBlockEntity pipeEntity = (PipeBlockEntity) lootContext.getParamOrNull(LootContextParams.BLOCK_ENTITY);
         List<ItemStack> droppedStacks = new ArrayList<>();
         for (PipeNetworkNode node : pipeEntity.getNodes()) {
             droppedStacks.add(new ItemStack(MIPipes.INSTANCE.getPipeItem(node.getType())));
@@ -197,57 +201,57 @@ public class PipeBlock extends Block implements BlockEntityProvider {
     }
 
     @Override
-    public ItemStack getPickStack(BlockView world, BlockPos pos, BlockState state) {
+    public ItemStack getCloneItemStack(BlockGetter world, BlockPos pos, BlockState state) {
         var targetedPart = getTargetedPart(world, pos);
         return new ItemStack(targetedPart == null ? Items.AIR : MIPipes.INSTANCE.getPipeItem(targetedPart.type));
     }
 
     @Override
-    public void neighborUpdate(BlockState state, World world, BlockPos pos, Block block, BlockPos fromPos, boolean notify) {
-        if (!world.isClient) {
+    public void neighborChanged(BlockState state, Level world, BlockPos pos, Block block, BlockPos fromPos, boolean notify) {
+        if (!world.isClientSide) {
             ((PipeBlockEntity) world.getBlockEntity(pos)).updateConnections();
         }
-        super.neighborUpdate(state, world, pos, block, fromPos, notify);
+        super.neighborChanged(state, world, pos, block, fromPos, notify);
     }
 
     @Override
-    public int getOpacity(BlockState state, BlockView world, BlockPos pos) {
+    public int getLightBlock(BlockState state, BlockGetter world, BlockPos pos) {
         return 0;
     }
 
     @Override
-    public boolean hasDynamicBounds() {
+    public boolean hasDynamicShape() {
         return true;
     }
 
     @Override
-    public VoxelShape getCameraCollisionShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
+    public VoxelShape getVisualShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext context) {
         return getCollisionShape(state, world, pos, context);
     }
 
     @Override
-    public VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
+    public VoxelShape getShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext context) {
         var targetedPart = getTargetedPart(world, pos);
         return targetedPart != null ? targetedPart.shape : PipeBlockEntity.DEFAULT_SHAPE;
     }
 
     @Override
-    public VoxelShape getRaycastShape(BlockState state, BlockView world, BlockPos pos) {
+    public VoxelShape getInteractionShape(BlockState state, BlockGetter world, BlockPos pos) {
         return getCollisionShape(state, world, pos, null);
     }
 
     @Override
-    public VoxelShape getCullingShape(BlockState state, BlockView world, BlockPos pos) {
+    public VoxelShape getOcclusionShape(BlockState state, BlockGetter world, BlockPos pos) {
         return getCollisionShape(state, world, pos, null);
     }
 
     @Override
-    public VoxelShape getSidesShape(BlockState state, BlockView world, BlockPos pos) {
+    public VoxelShape getBlockSupportShape(BlockState state, BlockGetter world, BlockPos pos) {
         return getCollisionShape(state, world, pos, null);
     }
 
     @Override
-    public VoxelShape getCollisionShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
+    public VoxelShape getCollisionShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext context) {
         BlockEntity be = world.getBlockEntity(pos);
         if (!(be instanceof PipeBlockEntity entity))
             return PipeBlockEntity.DEFAULT_SHAPE; // Because Mojang fucked up
@@ -255,13 +259,13 @@ public class PipeBlock extends Block implements BlockEntityProvider {
     }
 
     @Override
-    public boolean canPathfindThrough(BlockState state, BlockView world, BlockPos pos, NavigationType type) {
+    public boolean isPathfindable(BlockState state, BlockGetter world, BlockPos pos, PathComputationType type) {
         return false;
     }
 
     @Override
-    public void onStateReplaced(BlockState state, World world, BlockPos pos, BlockState newState, boolean moved) {
-        if (!state.isOf(newState.getBlock())) {
+    public void onRemove(BlockState state, Level world, BlockPos pos, BlockState newState, boolean moved) {
+        if (!state.is(newState.getBlock())) {
             if (world.getBlockEntity(pos) instanceof PipeBlockEntity pipe) {
                 pipe.stateReplaced = true;
             }

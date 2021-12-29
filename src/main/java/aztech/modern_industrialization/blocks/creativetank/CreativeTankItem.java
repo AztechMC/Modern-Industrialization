@@ -36,27 +36,27 @@ import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.ExtractionOnlyStorage;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleViewIterator;
 import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
-import net.minecraft.client.item.TooltipContext;
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.ItemStack;
-import net.minecraft.text.Text;
-import net.minecraft.world.World;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.level.Level;
 
 public class CreativeTankItem extends BlockItem {
     public CreativeTankItem(MIBlock block) {
-        super(block, new Settings().group(ModernIndustrialization.ITEM_GROUP));
+        super(block, new Properties().tab(ModernIndustrialization.ITEM_GROUP));
     }
 
     public static boolean isEmpty(ItemStack stack) {
-        return stack.getSubNbt("BlockEntityTag") == null;
+        return stack.getTagElement("BlockEntityTag") == null;
     }
 
     public static FluidVariant getFluid(ItemStack stack) {
-        return NbtHelper.getFluidCompatible(stack.getSubNbt("BlockEntityTag"), "fluid");
+        return NbtHelper.getFluidCompatible(stack.getTagElement("BlockEntityTag"), "fluid");
     }
 
     @Override
-    public void appendTooltip(ItemStack stack, World world, List<Text> tooltip, TooltipContext context) {
+    public void appendHoverText(ItemStack stack, Level world, List<Component> tooltip, TooltipFlag context) {
         tooltip.add(FluidHelper.getFluidName(getFluid(stack), true));
     }
 

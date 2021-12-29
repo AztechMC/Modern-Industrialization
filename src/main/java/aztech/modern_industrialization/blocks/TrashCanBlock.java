@@ -36,15 +36,17 @@ import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.InsertionOnlyStorage;
 import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
-import net.minecraft.block.Block;
-import net.minecraft.block.Material;
-import net.minecraft.item.Item;
-import net.minecraft.sound.BlockSoundGroup;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.material.Material;
 
 public class TrashCanBlock extends MIBlock {
     public TrashCanBlock() {
-        super("trash_can", FabricBlockSettings.of(Material.METAL).hardness(6.0f).resistance(1200).breakByTool(FabricToolTags.PICKAXES).requiresTool()
-                .sounds(BlockSoundGroup.METAL).allowsSpawning(MobSpawning.NO_SPAWN));
+        super("trash_can",
+                FabricBlockSettings.of(Material.METAL).breakByTool(FabricToolTags.PICKAXES).destroyTime(6.0f).explosionResistance(1200)
+                        .requiresCorrectToolForDrops()
+                        .sound(SoundType.METAL).isValidSpawn(MobSpawning.NO_SPAWN));
     }
 
     @SuppressWarnings("unchecked")

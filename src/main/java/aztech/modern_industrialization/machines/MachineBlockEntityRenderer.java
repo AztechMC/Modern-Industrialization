@@ -26,34 +26,38 @@ package aztech.modern_industrialization.machines;
 import aztech.modern_industrialization.client.model.MachineBakedModel;
 import aztech.modern_industrialization.machines.models.MachineCasing;
 import aztech.modern_industrialization.machines.models.MachineModelClientData;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import java.util.IdentityHashMap;
 import net.fabricmc.fabric.api.renderer.v1.Renderer;
 import net.fabricmc.fabric.api.renderer.v1.RendererAccess;
 import net.fabricmc.fabric.api.renderer.v1.mesh.MutableQuadView;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
-import net.minecraft.block.BlockState;
-import net.minecraft.client.render.*;
-import net.minecraft.client.render.block.BlockModels;
-import net.minecraft.client.render.block.entity.BlockEntityRenderer;
-import net.minecraft.client.render.block.entity.BlockEntityRendererFactory;
-import net.minecraft.client.render.model.BakedQuad;
-import net.minecraft.client.texture.Sprite;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.util.math.Direction;
+import net.minecraft.client.renderer.LevelRenderer;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.block.BlockModelShaper;
+import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.core.Direction;
+import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
 
 /**
  * Renders an overlay if the machine is active.
  */
 public class MachineBlockEntityRenderer<T extends MachineBlockEntity> implements BlockEntityRenderer<T> {
-    private final BlockModels blockModels;
+    private final BlockModelShaper blockModels;
     private BlockState lastBlockState = null;
     private MachineBakedModel model = null;
     private final IdentityHashMap<MachineCasing, Object[]> quadCache = new IdentityHashMap<>();
     private static final Object NO_QUAD = new Object();
 
-    public MachineBlockEntityRenderer(BlockEntityRendererFactory.Context ctx) {
-        this.blockModels = ctx.getRenderManager().getModels();
+    public MachineBlockEntityRenderer(BlockEntityRendererProvider.Context ctx) {
+        this.blockModels = ctx.getBlockRenderDispatcher().getBlockModelShaper();
     }
 
     @Nullable
@@ -67,7 +71,7 @@ public class MachineBlockEntityRenderer<T extends MachineBlockEntity> implements
             Renderer renderer = RendererAccess.INSTANCE.getRenderer();
             QuadEmitter emitter = renderer.meshBuilder().getEmitter();
 
-            Sprite sprite = MachineBakedModel.getSprite(model.getSprites(casing), d, facing, true);
+            TextureAtlasSprite sprite = MachineBakedModel.getSprite(model.getSprites(casing), d, facing, true);
             if (sprite != null) {
                 emitter.material(model.cutoutMaterial);
                 emitter.square(d, 0, 0, 1, 1, -2e-4f); // non-active face is -1e-6f, so we override it.
@@ -85,11 +89,11 @@ public class MachineBlockEntityRenderer<T extends MachineBlockEntity> implements
     }
 
     @Override
-    public void render(T entity, float tickDelta, MatrixStack matrices, VertexConsumerProvider vcp, int light, int overlay) {
-        BlockState state = entity.getCachedState();
+    public void render(T entity, float tickDelta, PoseStack matrices, MultiBufferSource vcp, int light, int overlay) {
+        BlockState state = entity.getBlockState();
         if (lastBlockState == null) {
             lastBlockState = state;
-            model = (MachineBakedModel) blockModels.getModel(state);
+            model = (MachineBakedModel) blockModels.getBlockModel(state);
         } else if (lastBlockState != state) {
             // Sanity check.
             throw new IllegalStateException("Tried to use the same machine BER with two block states: " + state + " and " + lastBlockState);
@@ -97,20 +101,20 @@ public class MachineBlockEntityRenderer<T extends MachineBlockEntity> implements
 
         MachineModelClientData data = entity.getModelData();
         if (data.isActive) {
-            VertexConsumer vc = vcp.getBuffer(RenderLayer.getCutout());
+            VertexConsumer vc = vcp.getBuffer(RenderType.cutout());
 
             for (Direction d : Direction.values()) {
                 BakedQuad quad = getCachedQuad(data, d);
                 if (quad != null) {
-                    int faceLight = WorldRenderer.getLightmapCoordinates(entity.getWorld(), entity.getCachedState(), entity.getPos().offset(d));
-                    vc.quad(matrices.peek(), quad, 1.0f, 1.0f, 1.0f, faceLight, OverlayTexture.DEFAULT_UV);
+                    int faceLight = LevelRenderer.getLightColor(entity.getLevel(), entity.getBlockState(), entity.getBlockPos().relative(d));
+                    vc.putBulkData(matrices.last(), quad, 1.0f, 1.0f, 1.0f, faceLight, OverlayTexture.NO_OVERLAY);
                 }
             }
         }
     }
 
     @Override
-    public int getRenderDistance() {
+    public int getViewDistance() {
         return 256;
     }
 }

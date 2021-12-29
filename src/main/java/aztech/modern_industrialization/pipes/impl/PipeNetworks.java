@@ -28,14 +28,14 @@ import aztech.modern_industrialization.pipes.api.PipeNetworkType;
 import aztech.modern_industrialization.util.WorldHelper;
 import java.util.*;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.ChunkPos;
-import net.minecraft.world.PersistentState;
-import net.minecraft.world.World;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.saveddata.SavedData;
 
-public class PipeNetworks extends PersistentState {
+public class PipeNetworks extends SavedData {
     private static final String NAME = "modern_industrialization_pipe_networks";
     private final Map<PipeNetworkType, PipeNetworkManager> managers;
     private final Map<Long, List<Runnable>> loadPipesByChunk = new HashMap<>();
@@ -49,16 +49,16 @@ public class PipeNetworks extends PersistentState {
     }
 
     @Override
-    public NbtCompound writeNbt(NbtCompound nbt) {
+    public CompoundTag save(CompoundTag nbt) {
         for (Map.Entry<PipeNetworkType, PipeNetworkManager> entry : managers.entrySet()) {
-            nbt.put(entry.getKey().getIdentifier().toString(), entry.getValue().toTag(new NbtCompound()));
+            nbt.put(entry.getKey().getIdentifier().toString(), entry.getValue().toTag(new CompoundTag()));
         }
         return nbt;
     }
 
-    public static PipeNetworks readNbt(NbtCompound nbt) {
+    public static PipeNetworks readNbt(CompoundTag nbt) {
         Map<PipeNetworkType, PipeNetworkManager> managers = new HashMap<>();
-        for (Map.Entry<Identifier, PipeNetworkType> entry : PipeNetworkType.getTypes().entrySet()) {
+        for (Map.Entry<ResourceLocation, PipeNetworkType> entry : PipeNetworkType.getTypes().entrySet()) {
             PipeNetworkManager manager = new PipeNetworkManager(entry.getValue());
             String tagKey = entry.getKey().toString();
             if (nbt.contains(tagKey)) {
@@ -69,19 +69,20 @@ public class PipeNetworks extends PersistentState {
         return new PipeNetworks(managers);
     }
 
-    public static PipeNetworks get(ServerWorld world) {
-        PipeNetworks networks = world.getPersistentStateManager().getOrCreate(PipeNetworks::readNbt, () -> new PipeNetworks(new HashMap<>()), NAME);
-        networks.markDirty();
+    public static PipeNetworks get(ServerLevel world) {
+        PipeNetworks networks = world.getDataStorage().computeIfAbsent(PipeNetworks::readNbt, () -> new PipeNetworks(new HashMap<>()), NAME);
+        networks.setDirty();
         return networks;
     }
 
-    public static void scheduleLoadPipe(World world, PipeBlockEntity pipe) {
-        if (world instanceof ServerWorld sw) {
-            if (!sw.getServer().isOnThread()) {
+    public static void scheduleLoadPipe(Level world, PipeBlockEntity pipe) {
+        if (world instanceof ServerLevel sw) {
+            if (!sw.getServer().isSameThread()) {
                 throw new IllegalStateException("Can only load pipe on server from the server thread.");
             }
 
-            PipeNetworks.get(sw).loadPipesByChunk.computeIfAbsent(ChunkPos.toLong(pipe.getPos()), chunk -> new ArrayList<>()).add(pipe::loadPipes);
+            PipeNetworks.get(sw).loadPipesByChunk.computeIfAbsent(ChunkPos.asLong(pipe.getBlockPos()), chunk -> new ArrayList<>())
+                    .add(pipe::loadPipes);
         }
     }
 

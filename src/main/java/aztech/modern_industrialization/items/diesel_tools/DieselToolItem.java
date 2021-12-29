@@ -36,31 +36,37 @@ import java.util.Map;
 import net.fabricmc.fabric.api.tool.attribute.v1.DynamicAttributeTool;
 import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.PillarBlock;
-import net.minecraft.client.item.TooltipContext;
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.enchantment.Enchantments;
-import net.minecraft.entity.EquipmentSlot;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.attribute.EntityAttribute;
-import net.minecraft.entity.attribute.EntityAttributeModifier;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.fluid.Fluid;
-import net.minecraft.item.*;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.sound.SoundCategory;
-import net.minecraft.sound.SoundEvents;
-import net.minecraft.tag.Tag;
-import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
-import net.minecraft.util.Rarity;
-import net.minecraft.util.TypedActionResult;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.tags.Tag;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.Attribute;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.AxeItem;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Rarity;
+import net.minecraft.world.item.ShovelItem;
+import net.minecraft.world.item.Tier;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.Vanishable;
+import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.Enchantments;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.RotatedPillarBlock;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.Fluid;
 import org.jetbrains.annotations.Nullable;
 
 // TODO: attack speed and damage
@@ -68,8 +74,8 @@ public class DieselToolItem extends Item implements DynamicAttributeTool, Vanish
     public static final int CAPACITY = 4 * 81000;
     private final double damage;
 
-    public DieselToolItem(Settings settings, double damage) {
-        super(settings.maxCount(1).rarity(Rarity.UNCOMMON));
+    public DieselToolItem(Properties settings, double damage) {
+        super(settings.stacksTo(1).rarity(Rarity.UNCOMMON));
         this.damage = damage;
     }
 
@@ -79,15 +85,15 @@ public class DieselToolItem extends Item implements DynamicAttributeTool, Vanish
     }
 
     @Override
-    public boolean postMine(ItemStack stack, World world, BlockState state, BlockPos pos, LivingEntity miner) {
-        if (state.getHardness(world, pos) != 0.0f) {
+    public boolean mineBlock(ItemStack stack, Level world, BlockState state, BlockPos pos, LivingEntity miner) {
+        if (state.getDestroySpeed(world, pos) != 0.0f) {
             FluidFuelItemHelper.decrement(stack);
         }
         return true;
     }
 
     @Override
-    public boolean postHit(ItemStack stack, LivingEntity target, LivingEntity attacker) {
+    public boolean hurtEnemy(ItemStack stack, LivingEntity target, LivingEntity attacker) {
         FluidFuelItemHelper.decrement(stack);
         return true;
     }
@@ -121,7 +127,7 @@ public class DieselToolItem extends Item implements DynamicAttributeTool, Vanish
     }
 
     @Override
-    public Multimap<EntityAttribute, EntityAttributeModifier> getDynamicModifiers(EquipmentSlot slot, ItemStack stack, @Nullable LivingEntity user) {
+    public Multimap<Attribute, AttributeModifier> getDynamicModifiers(EquipmentSlot slot, ItemStack stack, @Nullable LivingEntity user) {
         if (slot == EquipmentSlot.MAINHAND && FluidFuelItemHelper.getAmount(stack) > 0) {
             return ItemHelper.createToolModifiers(damage * FluidFuelRegistry.getEu(FluidFuelItemHelper.getFluid(stack).getFluid()) / 300);
         }
@@ -129,22 +135,22 @@ public class DieselToolItem extends Item implements DynamicAttributeTool, Vanish
     }
 
     @Override
-    public void appendTooltip(ItemStack stack, World world, List<Text> tooltip, TooltipContext context) {
+    public void appendHoverText(ItemStack stack, Level world, List<Component> tooltip, TooltipFlag context) {
         FluidFuelItemHelper.appendTooltip(stack, tooltip, CAPACITY);
     }
 
     @Override
-    public boolean isItemBarVisible(ItemStack stack) {
+    public boolean isBarVisible(ItemStack stack) {
         return true;
     }
 
     @Override
-    public int getItemBarStep(ItemStack stack) {
+    public int getBarWidth(ItemStack stack) {
         return (int) Math.round(getDurabilityBarProgress(stack) * 13);
     }
 
     @Override
-    public int getItemBarColor(ItemStack stack) {
+    public int getBarColor(ItemStack stack) {
         Fluid fluid = FluidFuelItemHelper.getFluid(stack).getFluid();
 
         if (fluid instanceof CraftingFluid cf) {
@@ -159,64 +165,65 @@ public class DieselToolItem extends Item implements DynamicAttributeTool, Vanish
     }
 
     private static boolean isFortune(ItemStack stack) {
-        NbtCompound tag = stack.getNbt();
+        CompoundTag tag = stack.getTag();
         return tag != null && tag.getBoolean("fortune");
     }
 
     private static void setFortune(ItemStack stack, boolean fortune) {
         if (fortune) {
-            stack.getOrCreateNbt().putBoolean("fortune", true);
+            stack.getOrCreateTag().putBoolean("fortune", true);
         } else {
-            stack.removeSubNbt("fortune");
+            stack.removeTagKey("fortune");
         }
     }
 
     @Override
-    public TypedActionResult<ItemStack> use(World world, PlayerEntity user, Hand hand) {
+    public InteractionResultHolder<ItemStack> use(Level world, Player user, InteractionHand hand) {
         // Toggle between silk touch and fortune
-        if (hand == Hand.MAIN_HAND && user.isSneaking()) {
-            ItemStack stack = user.getStackInHand(hand);
+        if (hand == InteractionHand.MAIN_HAND && user.isShiftKeyDown()) {
+            ItemStack stack = user.getItemInHand(hand);
             setFortune(stack, !isFortune(stack));
-            if (!world.isClient) {
-                user.sendMessage(new TranslatableText("text.modern_industrialization.tool_switched_" + (isFortune(stack) ? "fortune" : "silk_touch")),
+            if (!world.isClientSide) {
+                user.displayClientMessage(
+                        new TranslatableComponent("text.modern_industrialization.tool_switched_" + (isFortune(stack) ? "fortune" : "silk_touch")),
                         false);
             }
-            return TypedActionResult.success(stack, world.isClient);
+            return InteractionResultHolder.sidedSuccess(stack, world.isClientSide);
         }
         return super.use(world, user, hand);
     }
 
     @Override
-    public ActionResult useOnBlock(ItemUsageContext context) {
-        ItemStack stack = context.getStack();
-        World w = context.getWorld();
-        BlockPos pos = context.getBlockPos();
+    public InteractionResult useOn(UseOnContext context) {
+        ItemStack stack = context.getItemInHand();
+        Level w = context.getLevel();
+        BlockPos pos = context.getClickedPos();
         BlockState state = w.getBlockState(pos);
-        PlayerEntity player = context.getPlayer();
+        Player player = context.getPlayer();
         if (FluidFuelItemHelper.getAmount(stack) > 0) {
             if (FabricToolTags.AXES.contains(this)) {
                 Block newBlock = StrippingAccess.getStrippedBlocks().get(state.getBlock());
                 if (newBlock != null) {
-                    w.playSound(player, pos, SoundEvents.ITEM_AXE_STRIP, SoundCategory.BLOCKS, 1, 1);
-                    if (!w.isClient) {
-                        w.setBlockState(pos, newBlock.getDefaultState().with(PillarBlock.AXIS, state.get(PillarBlock.AXIS)), 11);
+                    w.playSound(player, pos, SoundEvents.AXE_STRIP, SoundSource.BLOCKS, 1, 1);
+                    if (!w.isClientSide) {
+                        w.setBlock(pos, newBlock.defaultBlockState().setValue(RotatedPillarBlock.AXIS, state.getValue(RotatedPillarBlock.AXIS)), 11);
                         FluidFuelItemHelper.decrement(stack);
                     }
-                    return ActionResult.success(w.isClient);
+                    return InteractionResult.sidedSuccess(w.isClientSide);
                 }
             } else if (FabricToolTags.SHOVELS.contains(this)) {
                 BlockState newState = PathingAccess.getPathStates().get(state.getBlock());
                 if (newState != null) {
-                    w.playSound(player, pos, SoundEvents.ITEM_SHOVEL_FLATTEN, SoundCategory.BLOCKS, 1, 1);
-                    if (!w.isClient) {
-                        w.setBlockState(pos, newState, 11);
+                    w.playSound(player, pos, SoundEvents.SHOVEL_FLATTEN, SoundSource.BLOCKS, 1, 1);
+                    if (!w.isClientSide) {
+                        w.setBlock(pos, newState, 11);
                         FluidFuelItemHelper.decrement(stack);
                     }
-                    return ActionResult.success(w.isClient);
+                    return InteractionResult.sidedSuccess(w.isClientSide);
                 }
             }
         }
-        return super.useOnBlock(context);
+        return super.useOn(context);
     }
 
     @Override
@@ -226,29 +233,29 @@ public class DieselToolItem extends Item implements DynamicAttributeTool, Vanish
             if (!isFortune(stack)) {
                 map.put(Enchantments.SILK_TOUCH, Enchantments.SILK_TOUCH.getMaxLevel());
             } else {
-                map.put(Enchantments.FORTUNE, Enchantments.FORTUNE.getMaxLevel());
+                map.put(Enchantments.BLOCK_FORTUNE, Enchantments.BLOCK_FORTUNE.getMaxLevel());
             }
         }
         return map;
     }
 
     private static class StrippingAccess extends AxeItem {
-        private StrippingAccess(ToolMaterial material, float attackDamage, float attackSpeed, Settings settings) {
+        private StrippingAccess(Tier material, float attackDamage, float attackSpeed, Properties settings) {
             super(material, attackDamage, attackSpeed, settings);
         }
 
         public static Map<Block, Block> getStrippedBlocks() {
-            return STRIPPED_BLOCKS;
+            return STRIPPABLES;
         }
     }
 
     private static class PathingAccess extends ShovelItem {
-        private PathingAccess(ToolMaterial material, float attackDamage, float attackSpeed, Settings settings) {
+        private PathingAccess(Tier material, float attackDamage, float attackSpeed, Properties settings) {
             super(material, attackDamage, attackSpeed, settings);
         }
 
         public static Map<Block, BlockState> getPathStates() {
-            return PATH_STATES;
+            return FLATTENABLES;
         }
     }
 }

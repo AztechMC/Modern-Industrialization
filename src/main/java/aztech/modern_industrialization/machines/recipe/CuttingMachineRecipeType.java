@@ -23,22 +23,22 @@
  */
 package aztech.modern_industrialization.machines.recipe;
 
-import net.minecraft.recipe.RecipeType;
-import net.minecraft.recipe.StonecuttingRecipe;
-import net.minecraft.util.Identifier;
-import net.minecraft.world.World;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.item.crafting.StonecutterRecipe;
+import net.minecraft.world.level.Level;
 
 public class CuttingMachineRecipeType extends ProxyableMachineRecipeType {
-    public CuttingMachineRecipeType(Identifier id) {
+    public CuttingMachineRecipeType(ResourceLocation id) {
         super(id);
     }
 
     @Override
-    protected void fillRecipeList(World world) {
+    protected void fillRecipeList(Level world) {
         // Add all regular cutting machine recipes
         recipeList.addAll(getManagerRecipes(world));
         // Add all stone cutter recipes
-        for (StonecuttingRecipe stonecuttingRecipe : world.getRecipeManager().listAllOfType(RecipeType.STONECUTTING)) {
+        for (StonecutterRecipe stonecuttingRecipe : world.getRecipeManager().getAllRecipesFor(RecipeType.STONECUTTING)) {
             MachineRecipe recipe = RecipeConversions.of(stonecuttingRecipe, this);
             recipeList.add(recipe);
         }

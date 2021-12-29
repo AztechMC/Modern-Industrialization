@@ -34,11 +34,11 @@ import aztech.modern_industrialization.machines.components.OrientationComponent;
 public class EnergyHelper {
 
     public static void autoOuput(MachineBlockEntity machine, OrientationComponent orientation, CableTier output, EnergyComponent energy) {
-        EnergyMoveable insertable = EnergyApi.MOVEABLE.find(machine.getWorld(), machine.getPos().offset(orientation.outputDirection),
+        EnergyMoveable insertable = EnergyApi.MOVEABLE.find(machine.getLevel(), machine.getBlockPos().relative(orientation.outputDirection),
                 orientation.outputDirection.getOpposite());
         if (insertable instanceof EnergyInsertable && ((EnergyInsertable) insertable).canInsert(output)) {
             energy.insertEnergy((EnergyInsertable) insertable);
         }
-        machine.markDirty();
+        machine.setChanged();
     }
 }

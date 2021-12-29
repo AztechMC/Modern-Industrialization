@@ -24,7 +24,7 @@
 package aztech.modern_industrialization.blocks.storage.barrel;
 
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
-import net.minecraft.client.item.TooltipData;
+import net.minecraft.world.inventory.tooltip.TooltipComponent;
 
-public record BarrelTooltipData(ItemVariant variant, long amount, long capacity) implements TooltipData {
+public record BarrelTooltipData(ItemVariant variant, long amount, long capacity) implements TooltipComponent {
 }

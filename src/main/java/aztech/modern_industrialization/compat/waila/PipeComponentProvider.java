@@ -33,15 +33,15 @@ import mcp.mobius.waila.api.IComponentProvider;
 import mcp.mobius.waila.api.IDataAccessor;
 import mcp.mobius.waila.api.IPluginConfig;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.text.Style;
-import net.minecraft.text.Text;
-import net.minecraft.text.TextColor;
-import net.minecraft.text.TranslatableText;
-import net.minecraft.util.Formatting;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Box;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.ChatFormatting;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.Style;
+import net.minecraft.network.chat.TextColor;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -51,13 +51,13 @@ import org.jetbrains.annotations.Nullable;
 public class PipeComponentProvider implements IComponentProvider {
     private @Nullable PipeVoxelShape getHitShape(IDataAccessor accessor) {
         PipeBlockEntity pipe = (PipeBlockEntity) accessor.getBlockEntity();
-        Vec3d hitPos = accessor.getHitResult().getPos();
+        Vec3 hitPos = accessor.getHitResult().getLocation();
         BlockPos blockPos = accessor.getPosition();
         for (PipeVoxelShape partShape : pipe.getPartShapes()) {
-            Vec3d posInBlock = hitPos.subtract(blockPos.getX(), blockPos.getY(), blockPos.getZ());
-            for (Box box : partShape.shape.getBoundingBoxes()) {
+            Vec3 posInBlock = hitPos.subtract(blockPos.getX(), blockPos.getY(), blockPos.getZ());
+            for (AABB box : partShape.shape.toAabbs()) {
                 // move slightly towards box center
-                Vec3d dir = box.getCenter().subtract(posInBlock).normalize().multiply(1e-4);
+                Vec3 dir = box.getCenter().subtract(posInBlock).normalize().scale(1e-4);
                 if (box.contains(posInBlock.add(dir))) {
                     return partShape;
                 }
@@ -67,20 +67,20 @@ public class PipeComponentProvider implements IComponentProvider {
     }
 
     @Override
-    public void appendHead(List<Text> tooltip, IDataAccessor accessor, IPluginConfig config) {
+    public void appendHead(List<Component> tooltip, IDataAccessor accessor, IPluginConfig config) {
         PipeVoxelShape shape = getHitShape(accessor);
         if (shape != null) {
-            Text text = new TranslatableText(MIPipes.INSTANCE.getPipeItem(shape.type).getTranslationKey())
-                    .setStyle(Style.EMPTY.withColor(Formatting.WHITE));
+            Component text = new TranslatableComponent(MIPipes.INSTANCE.getPipeItem(shape.type).getDescriptionId())
+                    .setStyle(Style.EMPTY.withColor(ChatFormatting.WHITE));
             tooltip.set(0, text);
         }
     }
 
     @Override
-    public void appendBody(List<Text> tooltip, IDataAccessor accessor, IPluginConfig config) {
+    public void appendBody(List<Component> tooltip, IDataAccessor accessor, IPluginConfig config) {
         PipeVoxelShape shape = getHitShape(accessor);
         if (shape != null) {
-            NbtCompound tag = accessor.getServerData().getCompound(shape.type.getIdentifier().toString());
+            CompoundTag tag = accessor.getServerData().getCompound(shape.type.getIdentifier().toString());
             Style style = Style.EMPTY.withColor(TextColor.fromRgb(0xa9a9a9)).withItalic(true);
 
             if (tag.contains("fluid")) {
@@ -95,8 +95,8 @@ public class PipeComponentProvider implements IComponentProvider {
                 long eu = tag.getLong("eu");
                 long maxEu = tag.getLong("maxEu");
                 String tier = tag.getString("tier");
-                tooltip.add(new TranslatableText("text.modern_industrialization.cable_tier_" + tier));
-                tooltip.add(new TranslatableText("text.modern_industrialization.energy_bar", eu, maxEu).setStyle(style));
+                tooltip.add(new TranslatableComponent("text.modern_industrialization.cable_tier_" + tier));
+                tooltip.add(new TranslatableComponent("text.modern_industrialization.energy_bar", eu, maxEu).setStyle(style));
             }
         }
     }

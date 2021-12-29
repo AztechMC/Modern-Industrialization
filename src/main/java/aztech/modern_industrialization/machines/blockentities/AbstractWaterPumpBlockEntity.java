@@ -34,12 +34,12 @@ import aztech.modern_industrialization.machines.gui.MachineGuiParameters;
 import aztech.modern_industrialization.util.Tickable;
 import java.util.List;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.fluid.FluidState;
-import net.minecraft.fluid.Fluids;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.material.FluidState;
+import net.minecraft.world.level.material.Fluids;
 
 public abstract class AbstractWaterPumpBlockEntity extends MachineBlockEntity implements Tickable {
     protected static final int OUTPUT_SLOT_X = 110;
@@ -54,12 +54,12 @@ public abstract class AbstractWaterPumpBlockEntity extends MachineBlockEntity im
         registerClientComponent(new ProgressBar.Server(PROGRESS_BAR, () -> (float) pumpingTicks / OPERATION_TICKS));
         this.registerComponents(isActiveComponent, new IComponent() {
             @Override
-            public void writeNbt(NbtCompound tag) {
+            public void writeNbt(CompoundTag tag) {
                 tag.putInt("pumpingTicks", pumpingTicks);
             }
 
             @Override
-            public void readNbt(NbtCompound tag) {
+            public void readNbt(CompoundTag tag) {
                 pumpingTicks = tag.getInt("pumpingTicks");
             }
         });
@@ -80,7 +80,7 @@ public abstract class AbstractWaterPumpBlockEntity extends MachineBlockEntity im
 
     @Override
     public void tick() {
-        if (!world.isClient) {
+        if (!level.isClientSide) {
             List<ConfigurableFluidStack> fluidStacks = getInventory().getFluidStacks();
             ConfigurableFluidStack waterStack = fluidStacks.get(fluidStacks.size() - 1);
             if (waterStack.getRemainingSpace() < 81000 / 8) {
@@ -96,8 +96,8 @@ public abstract class AbstractWaterPumpBlockEntity extends MachineBlockEntity im
                     pumpingTicks = 0;
                 }
             }
-            getInventory().autoExtractFluids(world, pos, orientation.outputDirection);
-            markDirty();
+            getInventory().autoExtractFluids(level, worldPosition, orientation.outputDirection);
+            setChanged();
         }
     }
 
@@ -112,9 +112,9 @@ public abstract class AbstractWaterPumpBlockEntity extends MachineBlockEntity im
     private int getWaterSourceCount() {
         boolean[] adjWater = new boolean[] { false, false, false, false, false, false, false, false };
         for (int i = 0; i < 8; ++i) {
-            BlockPos adjPos = pos.add(DX[i], 0, DZ[i]);
-            FluidState adjState = world.getFluidState(adjPos);
-            if (adjState.isStill() && adjState.getFluid() == Fluids.WATER) {
+            BlockPos adjPos = worldPosition.offset(DX[i], 0, DZ[i]);
+            FluidState adjState = level.getFluidState(adjPos);
+            if (adjState.isSource() && adjState.getType() == Fluids.WATER) {
                 adjWater[i] = true;
             }
         }

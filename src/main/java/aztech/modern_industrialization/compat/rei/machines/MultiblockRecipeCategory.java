@@ -37,12 +37,12 @@ import me.shedaniel.rei.api.client.registry.display.DisplayCategory;
 import me.shedaniel.rei.api.common.category.CategoryIdentifier;
 import me.shedaniel.rei.api.common.entry.EntryIngredient;
 import me.shedaniel.rei.api.common.util.EntryStacks;
-import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
-import net.minecraft.util.Identifier;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.resources.ResourceLocation;
 
 public class MultiblockRecipeCategory implements DisplayCategory<MultiblockRecipeDisplay> {
-    public static final Identifier ID = new MIIdentifier("multiblock_shapes");
+    public static final ResourceLocation ID = new MIIdentifier("multiblock_shapes");
     private static final int SLOTS = 6;
     private static final int MARGIN = 10;
     private static final int H = 18 + 2 * MARGIN;
@@ -54,8 +54,8 @@ public class MultiblockRecipeCategory implements DisplayCategory<MultiblockRecip
     }
 
     @Override
-    public Text getTitle() {
-        return new TranslatableText("rei_categories.modern_industrialization.multiblock_shapes");
+    public Component getTitle() {
+        return new TranslatableComponent("rei_categories.modern_industrialization.multiblock_shapes");
     }
 
     @Override

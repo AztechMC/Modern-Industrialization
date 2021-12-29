@@ -31,9 +31,9 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.screen.ScreenHandler;
-import net.minecraft.screen.slot.Slot;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.Slot;
 
 public class ConfigurableInventoryPacketHandlers {
     public static class S2C {
@@ -41,10 +41,10 @@ public class ConfigurableInventoryPacketHandlers {
         public static final ClientPlayNetworking.PlayChannelHandler UPDATE_ITEM_SLOT = (mc, handler, buf, sender) -> {
             int syncId = buf.readInt();
             int stackId = buf.readInt();
-            NbtCompound tag = buf.readNbt();
+            CompoundTag tag = buf.readNbt();
             mc.execute(() -> {
-                ScreenHandler sh = mc.player.currentScreenHandler;
-                if (sh.syncId == syncId) {
+                AbstractContainerMenu sh = mc.player.containerMenu;
+                if (sh.containerId == syncId) {
                     ConfigurableScreenHandler csh = (ConfigurableScreenHandler) sh;
                     ConfigurableItemStack oldStack = csh.inventory.getItemStacks().get(stackId);
                     // update stack
@@ -68,10 +68,10 @@ public class ConfigurableInventoryPacketHandlers {
         public static final ClientPlayNetworking.PlayChannelHandler UPDATE_FLUID_SLOT = (mc, handler, buf, sender) -> {
             int syncId = buf.readInt();
             int stackId = buf.readInt();
-            NbtCompound tag = buf.readNbt();
+            CompoundTag tag = buf.readNbt();
             mc.execute(() -> {
-                ScreenHandler sh = mc.player.currentScreenHandler;
-                if (sh.syncId == syncId) {
+                AbstractContainerMenu sh = mc.player.containerMenu;
+                if (sh.containerId == syncId) {
                     ConfigurableScreenHandler csh = (ConfigurableScreenHandler) sh;
                     ConfigurableFluidStack oldStack = csh.inventory.getFluidStacks().get(stackId);
                     // update stack
@@ -99,8 +99,8 @@ public class ConfigurableInventoryPacketHandlers {
             int syncId = buf.readInt();
             boolean lockingMode = buf.readBoolean();
             ms.execute(() -> {
-                ScreenHandler sh = player.currentScreenHandler;
-                if (sh.syncId == syncId) {
+                AbstractContainerMenu sh = player.containerMenu;
+                if (sh.containerId == syncId) {
                     ConfigurableScreenHandler csh = (ConfigurableScreenHandler) sh;
                     csh.lockingMode = lockingMode;
                 }
@@ -116,8 +116,8 @@ public class ConfigurableInventoryPacketHandlers {
             ItemVariant itemKey = isItemKey ? ItemVariant.fromPacket(buf) : null;
             FluidVariant fluidKey = isItemKey ? null : FluidVariant.fromPacket(buf);
             ms.execute(() -> {
-                ScreenHandler sh = player.currentScreenHandler;
-                if (sh.syncId == syncId) {
+                AbstractContainerMenu sh = player.containerMenu;
+                if (sh.containerId == syncId) {
                     Slot slot = sh.getSlot(slotId);
                     ReiDraggable dw = (ReiDraggable) slot;
                     if (isItemKey) {
@@ -135,8 +135,8 @@ public class ConfigurableInventoryPacketHandlers {
             boolean isIncrease = buf.readBoolean();
             boolean isShiftDown = buf.readBoolean();
             ms.execute(() -> {
-                ScreenHandler sh = player.currentScreenHandler;
-                if (sh.syncId == syncId) {
+                AbstractContainerMenu sh = player.containerMenu;
+                if (sh.containerId == syncId) {
                     Slot slot = sh.getSlot(slotId);
                     if (slot instanceof ConfigurableItemSlot confSlot) {
                         confSlot.getConfStack().adjustCapacity(isIncrease, isShiftDown);

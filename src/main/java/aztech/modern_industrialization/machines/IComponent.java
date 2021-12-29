@@ -23,44 +23,44 @@
  */
 package aztech.modern_industrialization.machines;
 
-import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.CompoundTag;
 
 public interface IComponent {
-    void writeNbt(NbtCompound tag);
+    void writeNbt(CompoundTag tag);
 
-    void readNbt(NbtCompound tag);
+    void readNbt(CompoundTag tag);
 
-    default void writeClientNbt(NbtCompound tag) {
+    default void writeClientNbt(CompoundTag tag) {
         writeNbt(tag);
     }
 
-    default void readClientNbt(NbtCompound tag) {
+    default void readClientNbt(CompoundTag tag) {
         readNbt(tag);
     }
 
     interface ClientOnly extends IComponent {
         @Override
-        default void writeNbt(NbtCompound tag) {
+        default void writeNbt(CompoundTag tag) {
         }
 
         @Override
-        default void readNbt(NbtCompound tag) {
+        default void readNbt(CompoundTag tag) {
         }
 
         @Override
-        void writeClientNbt(NbtCompound tag);
+        void writeClientNbt(CompoundTag tag);
 
         @Override
-        void readClientNbt(NbtCompound tag);
+        void readClientNbt(CompoundTag tag);
     }
 
     interface ServerOnly extends IComponent {
         @Override
-        default void writeClientNbt(NbtCompound tag) {
+        default void writeClientNbt(CompoundTag tag) {
         }
 
         @Override
-        default void readClientNbt(NbtCompound tag) {
+        default void readClientNbt(CompoundTag tag) {
         }
     }
 }

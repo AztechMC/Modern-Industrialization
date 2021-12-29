@@ -30,7 +30,7 @@ import io.activej.serializer.annotations.Serialize;
 import io.activej.serializer.annotations.SerializeNullable;
 import net.fabricmc.fabric.api.renderer.v1.RendererAccess;
 import net.fabricmc.fabric.api.renderer.v1.material.BlendMode;
-import net.minecraft.client.texture.Sprite;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.oskarstrom.dashloader.DashRegistry;
 import net.oskarstrom.dashloader.api.annotation.DashObject;
 import net.oskarstrom.dashloader.model.DashModel;
@@ -57,7 +57,7 @@ public class DashMachineBakedModel implements DashModel {
 
     public DashMachineBakedModel(MachineBakedModel machineBakedModel, DashRegistry registry) {
         blockTransformation = new DashModelTransformation(machineBakedModel.getTransformation());
-        final Sprite[] sprites = machineBakedModel.getSprites();
+        final TextureAtlasSprite[] sprites = machineBakedModel.getSprites();
         this.sprites = new Integer[sprites.length];
         for (int i = 0; i < sprites.length; i++) {
             this.sprites[i] = sprites[i] == null ? null : registry.createSpritePointer(sprites[i]);
@@ -67,7 +67,7 @@ public class DashMachineBakedModel implements DashModel {
 
     @Override
     public MachineBakedModel toUndash(DashRegistry registry) {
-        Sprite[] spritesOut = new Sprite[sprites.length];
+        TextureAtlasSprite[] spritesOut = new TextureAtlasSprite[sprites.length];
         for (int i = 0; i < sprites.length; i++) {
             spritesOut[i] = sprites[i] == null ? null : registry.getSprite(sprites[i]);
         }

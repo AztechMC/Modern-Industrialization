@@ -9,7 +9,7 @@
     },
     {
       "type": "crafting",
-      "recipe": "modern_industrialization:machine/bronze/boiler",
+      "recipe": "modern_industrialization:steam_age/bronze/boiler_asbl",
       "text": "虽然锅炉的造价高昂，但别忘了你可以获得双倍的矿石。而且，一旦你有了头两台机器，它的造价就会降低三倍！"
     }
   ],

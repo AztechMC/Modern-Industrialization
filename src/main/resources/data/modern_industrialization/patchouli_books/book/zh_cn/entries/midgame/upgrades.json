@@ -1,0 +1,25 @@
+{
+  "name": "升级！",
+  "category": "modern_industrialization:midgame",
+  "icon": "modern_industrialization:basic_upgrade",
+  "pages": [
+    {
+      "type": "spotlight",
+      "title": "超频升级",
+      "item": "modern_industrialization:basic_upgrade",
+      "text": "您知道普通电机的超频上限为 32 EU/t，而电动多块机的超频上限为 128 EU/t？$(br2)右键单击机器或多块，并在您手中进行一些升级以增加其最大超频！ 检查 REI 以了解确切金额。"
+    },
+    {
+      "type": "crafting",
+      "recipe": "modern_industrialization:tools/crowbar",
+      "text": "潜行+右键单击带有撬棍的机器以删除其包含的升级。右键单击它以移除其升级后的船体并将其更改回 LV 层。等等，你能做到吗？ ..."
+    },
+    {
+      "type": "spotlight",
+      "title": "机壳升级",
+      "item": "modern_industrialization:advanced_machine_hull",
+      "text": "是的你可以！ 右键单击具有高级机器外壳的机器将其更改为中压 (MV) 层：它现在将仅接受中压 (MV) 电缆连接。用撬棍右键单击以删除升级。"
+    }
+  ],
+  "sortnum": 200
+}

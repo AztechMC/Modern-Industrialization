@@ -1,11 +1,11 @@
 {
-  "name": "你的第一块钢",
+  "name": "你的第一钢",
   "category": "modern_industrialization:steam_age",
   "icon": "modern_industrialization:steel_ingot",
   "pages": [
     {
       "type": "text",
-      "text": "你可以将焦炭研磨为焦炭粉，将其与铁合成可获得生钢粉。使用搅拌机可以获得更多产物。现在你需要蒸汽高炉来将其转换为钢。$(br2)和焦炉一样，你需要控制器、29块耐火粘土砖和3个仓。"
+      "text": "您可以将焦炭浸渍以获得焦炭粉，您可以将其与铁结合以获得生钢粉。当然，使用混合器会给你一个更好的比例。现在，您需要一台蒸汽高炉将其变成钢。$(br2)制作控制器、29 个火粘土砖和与可乐炉相同的三个舱口。"
     },
     {
       "type": "crafting",

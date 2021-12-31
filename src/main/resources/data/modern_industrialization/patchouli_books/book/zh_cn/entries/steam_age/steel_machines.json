@@ -1,24 +1,40 @@
 {
-  "name": "大炼钢",
+  "name": "升级为钢铁",
   "category": "modern_industrialization:steam_age",
   "icon": "modern_industrialization:steel_boiler",
   "pages": [
     {
       "type": "text",
-      "text": "现在你有钢了，你可以将你的青铜机器升级为钢机器了。钢机器的处理效率为 4 EU/t，只要能量占用不超过4 EU/t，钢机器的处理速度就是青铜机器的两倍。基本上，其速度是青铜机器的两倍，而且它还可以解锁新的配方。"
+      "text": "现在你有了钢铁，如果你愿意，你可以升级你的青铜机器。钢铁机器可以处理高达 4 EU/t 的配方，只要能源使用不超过 4 EU/t，它们就会以两倍的速度处理配方。基本上，它们的速度是青铜机器的两倍，并且还可以解锁新的配方。"
+    },
+    {
+      "type": "crafting",
+      "recipe": "modern_industrialization:steam_age/steel/steel_upgrade_asbl",
+      "text":  "要升级青铜机器，请制作钢铁升级并将其应用到锻造台中。"
+    },
+
+    {
+      "type": "text",
+      "text": "钢质舱口比青铜舱口的容量更大，并且至少有一个钢质舱口的多方块将升级为钢质舱口。这意味着，如果其能源使用量不超过 4 EU/t，它将以两倍的速度运行。$(br2)钢制锅炉产生的蒸汽量是青铜制锅炉的两倍，即高达 16 EU/t，而钢制水泵的产水量是青铜制锅炉的两倍，最多可达 2 桶/5 秒。"
     },
     {
       "type": "text",
-      "text": "钢制仓比青铜仓容量更大，多方块结构至少要有一个仓升级为钢。只要能量占用不超过4 EU/t，钢机器的处理速度就是青铜机器的两倍。$(br2)钢锅炉的产能是青铜锅炉的两倍，处理效率最高为 16 EU/t，钢水泵可产出青铜水泵两倍的产物，效率为 2桶/5秒 。"
-    },
-    {
-      "type": "text",
-      "text": "钢储罐可以存储8桶流体。$(br2)钢管道和其它材质的管道一样，你可以在一格方块内将钢管道和其它材质的管道混合使用。$(br2)你可以用REI查看所有的配方！"
+      "text": "钢罐最多可存放 8 个桶。$(br2)钢管等效于其他类型的管道，但您可以将它们与同一块上的其他类型的管道组合在一起，因此如果您确实需要另一个不同的管网，它们可能会很有用。$(br2)您可以在 REI 中查看所有食谱！"
     },
     {
       "type": "crafting",
       "recipe": "modern_industrialization:steam_age/steel/packer_asbl",
       "text": "打包机是用钢打造的新机器，可以帮你自动合成简易物品。你可以自动合成双层锭、管道等物品，详见REI。"
+    },
+    {
+      "type": "crafting",
+      "recipe": "modern_industrialization:steam_age/steel/unpacker_asbl",
+      "text": "拆箱机，一种只能用钢制成的新机器……猜猜它是做什么的。o_o"
+    },
+    {
+      "type": "crafting",
+      "recipe": "modern_industrialization:trash_can",
+      "text": "用几块钢板，你现在可以制作一个非常有用的方块！$(br2)自动垃圾桶会摧毁任何通过管道输送的物品或液体！"
     }
   ],
   "sortnum": 11

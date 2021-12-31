@@ -1,11 +1,11 @@
 {
-  "name": "你的第一块青铜！",
+  "name": "你的第一个铜！",
   "category": "modern_industrialization:steam_age",
   "icon": "modern_industrialization:bronze_dust",
   "pages": [
     {
       "type": "text",
-      "text": "首先你需要用锻造台锤炼铜和锡粒为小堆矿粉。$(br2)用（小堆）铜和锡粉可制作（小堆）青铜粉。$(br2)请记住9个小堆矿粉等于1个矿粉。"
+      "text": "首先，您需要通过在锻锤中锤击铜和锡锭（金块）来制造铜和锡（微小）粉尘。然后，您可以将铜粉和锡（微小）粉混合制成青铜（微小）粉。这个过程在 $(l:modern_industrialization:steam_age/steam_machines)混合器$()中更有效。$(br2)永远记住，9个微小的尘埃就是1个尘埃。"
     },
     {
       "type": "crafting",
@@ -13,11 +13,9 @@
       "recipe2": "modern_industrialization:materials/bronze_tiny_dust"
     },
     {
-      "type": "text",
-      "text": "Smelting bronze dust will give you a bronze ingot."
-    },
-    {
-      "type": "smelting", "recipe":"modern_industrialization:materials/bronze/smelting/dust_to_ingot_smelting"
+      "type": "smelting",
+      "recipe": "modern_industrialization:materials/bronze/smelting/dust_to_ingot_smelting",
+      "text": "熔炼青铜粉会给你一个青铜锭。"
     }
   ],
   "sortnum": 1

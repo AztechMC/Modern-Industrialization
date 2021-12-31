@@ -1,7 +1,7 @@
 {
   "name": "储罐",
   "category": "modern_industrialization:steam_age",
-  "icon": "modern_industrialization:tank_bronze",
+  "icon": "modern_industrialization:bronze_tank",
   "pages": [
     {
       "type": "text",
@@ -9,7 +9,7 @@
     },
     {
       "type": "crafting",
-      "recipe": "modern_industrialization:tank/tank_bronze"
+      "recipe": "modern_industrialization:materials/bronze/craft/tank"
     }
   ],
   "sortnum": 7

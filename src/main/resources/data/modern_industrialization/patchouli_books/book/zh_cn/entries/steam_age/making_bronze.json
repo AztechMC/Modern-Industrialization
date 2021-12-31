@@ -9,16 +9,15 @@
     },
     {
       "type": "crafting",
-      "recipe": "modern_industrialization:bronze/dust",
-      "recipe2": "modern_industrialization:bronze/small_dust"
+      "recipe": "modern_industrialization:materials/bronze_dust",
+      "recipe2": "modern_industrialization:materials/bronze_tiny_dust"
     },
     {
       "type": "text",
       "text": "Smelting bronze dust will give you a bronze ingot."
     },
     {
-      "type": "smelting",
-      "recipe": "modern_industrialization:materials/bronze/smelting/dust_smelting"
+      "type": "smelting", "recipe":"modern_industrialization:materials/bronze/smelting/dust_to_ingot_smelting"
     }
   ],
   "sortnum": 1

@@ -9,7 +9,7 @@
     },
     {
       "type": "crafting",
-      "recipe": "modern_industrialization:machine/fireclay/steam_blast_furnace",
+      "recipe": "modern_industrialization:steam_age/fireclay/steam_blast_furnace",
       "text": "高炉结构和焦炉相似，不过用的是耐火粘土砖，多了一层空心耐火粘土砖。"
     }
   ],

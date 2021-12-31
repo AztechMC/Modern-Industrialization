@@ -10,7 +10,7 @@
     {
       "type": "crafting",
       "recipe": "modern_industrialization:steam_age/fireclay/coke_oven",
-      "text": "对于第一个多方块，您当然需要可乐炉本身、21 个砖块和 3 个 $(thing)舱口$()：一个物品输入、一个物品输出和一个流体输入。"
+      "text": "对于第一个多方块结构，你需要一个焦炉，21个砖块和3个$(thing)仓$()：物流输入、物流输出和流体输入仓。"
     },
     {
       "type": "crafting",

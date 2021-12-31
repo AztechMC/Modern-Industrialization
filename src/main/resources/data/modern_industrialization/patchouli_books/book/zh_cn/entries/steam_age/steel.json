@@ -10,7 +10,7 @@
     {
       "type": "crafting",
       "recipe": "modern_industrialization:steam_age/fireclay/steam_blast_furnace",
-      "text": "高炉的结构与焦炉的结构相同，只是用粘土砖代替了砖块，并在顶部增加了一层空心层。"
+      "text": "高炉结构和焦炉相似，不过用的是耐火粘土砖，多了一层空心耐火粘土砖。"
     }
   ],
   "sortnum": 10

@@ -15,7 +15,7 @@
     {
       "type": "smelting",
       "recipe": "modern_industrialization:materials/bronze/smelting/dust_to_ingot_smelting",
-      "text": "熔炼青铜粉会给你一个铜锭。"
+      "text": "熔炼青铜粉会给你一个青铜锭。"
     }
   ],
   "sortnum": 1

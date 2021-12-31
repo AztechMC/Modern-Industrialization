@@ -24,7 +24,7 @@
     {
       "type": "crafting",
       "recipe": "modern_industrialization:steam_age/steel/packer_asbl",
-      "text": "打包机是一种只有钢制的新机器，可以为您执行简单的工艺。 例如，您现在可以自动化双锭和管道！ 再次检查 REI。"
+      "text": "打包机是用钢打造的新机器，可以帮你自动合成简易物品。你可以自动合成双层锭、管道等物品，详见REI。"
     },
     {
       "type": "crafting",

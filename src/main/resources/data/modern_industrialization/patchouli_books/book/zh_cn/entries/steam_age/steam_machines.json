@@ -10,27 +10,27 @@
     {
       "type": "crafting",
       "recipe": "modern_industrialization:steam_age/bronze/compressor_asbl",
-      "text": "压缩机将以 1:1 的比例将锭变成板。 它还可以将每个双锭变成2个板。 这可能是您想要建造的第一台机器！"
+      "text": "压缩机可以以1:1的比率将锭压成板，也可以将双层锭压成2块板。这也许是你想造的第一台机器！"
     },
     {
       "type": "crafting",
       "recipe": "modern_industrialization:steam_age/bronze/mixer_asbl",
-      "text": "混合器将帮助您混合灰尘，为您提供更好的青铜、耐火粘土和后来未煮过的钢的比例。 它还可以创建圆石和粘土。"
+      "text": "搅拌机可以搅拌矿粉，让你以更高的比率获得青铜、耐火粘土和生钢。它也可以产出圆石和粘土。"
     },
     {
       "type": "crafting",
       "recipe": "modern_industrialization:steam_age/bronze/macerator_asbl",
-      "text": "浸渍机会将 3 个粉碎的粉尘/原矿变成 4.5 个粉尘。 矿石半四倍的胜利！ 它还可以通过将各种材料变成灰尘来回收利用。"
+      "text": "研磨机可将2块矿物碎粉研磨为3个矿粉。 相当于三倍的矿石产出！它也可以将所有类型的材料转化为矿粉。"
     },
     {
       "type": "crafting",
       "recipe": "modern_industrialization:steam_age/bronze/cutting_machine_asbl",
-      "text": "切割机将为您提供更好的螺栓、齿轮、环和杆的比率。 它每次都使用一点润滑剂。"
+      "text": "板材切割机可以让你以跟高的比率获得螺栓、齿轮、环和杆。它每次都会消耗一些润滑剂。现在你可以暂时用水当作润滑剂，其它润滑剂可以加快机器的运行效率。"
     },
     {
       "type": "crafting",
       "recipe": "modern_industrialization:steam_age/bronze/furnace_asbl",
-      "text": "熔炉是……嗯……一个熔炉。 它与普通熔炉一样慢，但由于蒸汽非常高效，因此使用的燃料少 20 倍。"
+      "text": "这个熔炉……就是个……普通的熔炉。它和普通的熔炉一样慢，但它消耗的燃料是普通熔炉的二十分之一。"
     },
     {
       "type": "text",
@@ -39,7 +39,7 @@
     {
       "type": "crafting",
       "recipe": "modern_industrialization:tools/wrench",
-      "text": "使用扳手，您可以通过右键单击来旋转任何机器。 您可以在按住 Shift 键并单击的同时通过潜行来旋转输出侧。$(br2)请注意，用扳手打破机器不会使其掉落。 为此使用镐！"
+      "text": "你可以用扳手右击任何机器来使其转向。潜行+右击可以旋转输出端。$(br2)请注意用扳手破坏机器不会获得掉落物，请用镐子拆除机器！"
     }
   ],
   "sortnum": 3

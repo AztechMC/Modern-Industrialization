@@ -15,12 +15,13 @@
     {
       "type": "crafting",
       "recipe": "modern_industrialization:steam_age/bronze/boiler_asbl",
-      "text": "现在对你来说它可能看起来很贵，但不要忘记你可以用锻造锤将矿石增加三倍。 此外，一旦您拥有前两台机器，它的价格就会便宜两倍多！"
+      "text": "虽然锅炉的造价高昂，但别忘了你可以获得双倍的矿石。而且，一旦你有了头两台机器，它的造价就会降低三倍！"
     },
     {
       "type": "crafting",
       "recipe": "modern_industrialization:materials/fire_clay_dust",
       "text": "要制作耐火粘土砖，您需要烹饪耐火粘土粉尘，而为了制作这些，您将需要砖粉尘。 要制作一些，请将砖块放入锻造锤中。 蒸汽机或锤子可以提高过程效率。"
+
     }
   ],
   "sortnum": 2

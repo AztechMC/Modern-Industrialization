@@ -47,6 +47,7 @@
     "roughlyenoughitems": "*"
   },
   "breaks": {
+    "optifabric": "*",
     "universalcomponents": "*"
   },
   "custom": {

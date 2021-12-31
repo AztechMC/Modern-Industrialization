@@ -5,7 +5,7 @@
   "pages": [
     {
       "type": "text",
-      "text": "首先，您需要通过在锻锤中锤击铜和锡锭（金块）来制造铜和锡（微小）粉尘。 然后，您可以将铜粉和锡（微小）粉混合制成青铜（微小）粉。 这个过程在 $(l:modern_industrialization:steam_age/steam_machines)混合器$()中更有效。$(br2)永远记住，9个微小的尘埃就是1个尘埃。"
+      "text": "首先，您需要通过在锻锤中锤击铜和锡锭（金块）来制造铜和锡（微小）粉尘。然后，您可以将铜粉和锡（微小）粉混合制成青铜（微小）粉。这个过程在 $(l:modern_industrialization:steam_age/steam_machines)混合器$()中更有效。$(br2)永远记住，9个微小的尘埃就是1个尘埃。"
     },
     {
       "type": "crafting",

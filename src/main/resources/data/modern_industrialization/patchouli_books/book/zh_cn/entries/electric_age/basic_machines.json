@@ -10,7 +10,7 @@
     {
       "type": "crafting",
       "recipe": "modern_industrialization:electric_age/machine/polarizer_asbl",
-      "text": "偏振器使东西偏振。 它还没有很多配方，但它已经对自动化电机很有用！"
+      "text": "偏振器使东西偏振。它还没有很多配方，但它已经对自动化电机很有用！"
     },
     {
       "type": "crafting",

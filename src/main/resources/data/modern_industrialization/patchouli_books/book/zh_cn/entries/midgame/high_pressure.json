@@ -26,7 +26,7 @@
     {
       "type": "crafting",
       "recipe": "modern_industrialization:electric_age/machine/hv_steam_turbine_asbl",
-      "text": "小型装置的另一种选择是使用高压蒸汽轮机。 与其他高压发电机一样，它将产生 512 EU/t。 这个只接受普通蒸汽。"
+      "text": "小型装置的另一种选择是使用高压蒸汽轮机。与其他高压发电机一样，它将产生 512 EU/t。这个只接受普通蒸汽。"
     }
   ],
   "sortnum": 202

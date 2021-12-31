@@ -16,7 +16,7 @@
     {
       "type": "crafting",
       "recipe": "modern_industrialization:tools/diesel_mining_drill",
-      "text": "这个矿机终于可以取代你的镐和铲子了。 用强大的燃料填充它以获得最佳速度！$(br2)使用 Shift 右键单击在丝绸触摸和财富 III 之间切换。"
+      "text": "这个矿机终于可以取代你的镐和铲子了。用强大的燃料填充它以获得最佳速度！$(br2)使用潜行+右击单击在丝绸触摸和财富 III 之间切换。"
     },
     {
       "type": "crafting",

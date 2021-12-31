@@ -6,12 +6,12 @@
     {
       "type": "crafting",
       "recipe": "modern_industrialization:electric_age/machine/electric_blast_furnace_asbl",
-      "text": "电高炉是蒸汽高炉的电动版本。 它可以解锁新配方，并且与其他多块电机一样，默认情况下其超频限制为 128 EU/t。"
+      "text": "电高炉是蒸汽高炉的电动版本。它可以解锁新配方，并且与其他多块电机一样，默认情况下其超频限制为 128 EU/t。"
     },
     {
       "type": "crafting",
       "recipe": "modern_industrialization:materials/cupronickel/craft/coil",
-      "text": "EBF由一层耐热机壳、两层空心白铜线圈和另一层耐热机壳制成。 控制器必须在底层，在顶层或底层有阴影。"
+      "text": "EBF由一层耐热机壳、两层空心白铜线圈和另一层耐热机壳制成。控制器必须在底层，在顶层或底层有阴影。"
     },
     {
       "type": "crafting",

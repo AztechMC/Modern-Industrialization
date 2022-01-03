@@ -25,12 +25,12 @@ package aztech.modern_industrialization.fluid;
 
 import aztech.modern_industrialization.util.FluidHelper;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
-import net.minecraft.block.Block;
-import net.minecraft.block.Material;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.Style;
-import net.minecraft.text.TextColor;
-import net.minecraft.text.TranslatableText;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.Style;
+import net.minecraft.network.chat.TextColor;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.material.Material;
 
 /**
  * This is not a registered block, but it allows LBA to get the name of the
@@ -51,12 +51,12 @@ public class CraftingFluidBlock extends Block {
     }
 
     @Override
-    public String getTranslationKey() {
+    public String getDescriptionId() {
         return translationKey;
     }
 
     @Override
-    public MutableText getName() {
-        return new TranslatableText(this.translationKey).setStyle(Style.EMPTY.withColor(TextColor.fromRgb(color)));
+    public MutableComponent getName() {
+        return new TranslatableComponent(this.translationKey).setStyle(Style.EMPTY.withColor(TextColor.fromRgb(color)));
     }
 }

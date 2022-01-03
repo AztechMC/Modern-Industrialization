@@ -32,9 +32,9 @@ import net.fabricmc.fabric.api.transfer.v1.storage.TransferVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.ResourceAmount;
 import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
 import net.fabricmc.fabric.api.transfer.v1.transaction.base.SnapshotParticipant;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
+import net.minecraft.core.Registry;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
 
 public abstract class AbstractConfigurableStack<T, K extends TransferVariant<T>> extends SnapshotParticipant<ResourceAmount<K>>
         implements StorageView<K>, IConfigurableSlot {
@@ -65,11 +65,11 @@ public abstract class AbstractConfigurableStack<T, K extends TransferVariant<T>>
         this.pipesExtract = other.pipesExtract;
     }
 
-    public AbstractConfigurableStack(NbtCompound tag) {
+    public AbstractConfigurableStack(CompoundTag tag) {
         this.key = readVariantFromNbt(tag.getCompound("key"));
         this.amount = tag.getLong("amount");
         if (tag.contains("locked")) {
-            this.lockedInstance = getRegistry().get(new Identifier(tag.getString("locked")));
+            this.lockedInstance = getRegistry().get(new ResourceLocation(tag.getString("locked")));
         }
         this.machineLocked = tag.getBoolean("machineLocked");
         this.playerLocked = tag.getBoolean("playerLocked");
@@ -86,7 +86,7 @@ public abstract class AbstractConfigurableStack<T, K extends TransferVariant<T>>
 
     protected abstract Registry<T> getRegistry();
 
-    protected abstract K readVariantFromNbt(NbtCompound compound);
+    protected abstract K readVariantFromNbt(CompoundTag compound);
 
     protected abstract long getRemainingCapacityFor(K key);
 
@@ -302,12 +302,12 @@ public abstract class AbstractConfigurableStack<T, K extends TransferVariant<T>>
         this.key = ra.resource();
     }
 
-    public NbtCompound toNbt() {
-        NbtCompound tag = new NbtCompound();
+    public CompoundTag toNbt() {
+        CompoundTag tag = new CompoundTag();
         tag.put("key", key.toNbt());
         tag.putLong("amount", amount);
         if (lockedInstance != null) {
-            tag.putString("locked", getRegistry().getId(lockedInstance).toString());
+            tag.putString("locked", getRegistry().getKey(lockedInstance).toString());
         }
         // TODO: more efficient encoding?
         tag.putBoolean("machineLocked", machineLocked);

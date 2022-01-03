@@ -37,11 +37,11 @@ import me.shedaniel.rei.api.common.entry.EntryStack;
 import me.shedaniel.rei.api.common.util.EntryStacks;
 import net.fabricmc.fabric.api.transfer.v1.client.fluid.FluidVariantRendering;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
-import net.minecraft.fluid.Fluid;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.material.Fluid;
 
 public class ReiUtil {
 
@@ -60,9 +60,9 @@ public class ReiUtil {
 
     public static EntryStack<?> createFluidEntryStack(Fluid fluid, long amount, float probability) {
         @Nullable
-        Text probabilityText = getProbabilityTooltip(probability);
+        Component probabilityText = getProbabilityTooltip(probability);
         return EntryStacks.of(fluid, amount).setting(EntryStack.Settings.TOOLTIP_PROCESSOR, (stack, oldTooltip) -> {
-            List<Text> tooltip = new ArrayList<>();
+            List<Component> tooltip = new ArrayList<>();
             tooltip.add(FluidVariantRendering.getName(FluidVariant.of(fluid)));
             tooltip.add(FluidHelper.getFluidAmount(amount));
             if (probabilityText != null) {
@@ -73,15 +73,15 @@ public class ReiUtil {
     }
 
     @Nullable
-    public static Text getProbabilityTooltip(float probability) {
+    public static Component getProbabilityTooltip(float probability) {
         if (probability == 1) {
             return null;
         } else {
-            TranslatableText text;
+            TranslatableComponent text;
             if (probability == 0) {
-                text = new TranslatableText("text.modern_industrialization.probability_zero");
+                text = new TranslatableComponent("text.modern_industrialization.probability_zero");
             } else {
-                text = new TranslatableText("text.modern_industrialization.probability", PROBABILITY_FORMAT.format(probability * 100));
+                text = new TranslatableComponent("text.modern_industrialization.probability", PROBABILITY_FORMAT.format(probability * 100));
             }
 
             text.setStyle(TextHelper.YELLOW);
@@ -89,15 +89,15 @@ public class ReiUtil {
         }
     }
 
-    public static Function<EntryStack<?>, List<Text>> getProbabilitySetting(float probability) {
+    public static Function<EntryStack<?>, List<Component>> getProbabilitySetting(float probability) {
         @Nullable
-        Text tooltip = getProbabilityTooltip(probability);
+        Component tooltip = getProbabilityTooltip(probability);
         return es -> tooltip == null ? List.of() : List.of(tooltip);
     }
 
     public static EntryStack<?> createFluidEntryStack(Fluid fluid) {
         return EntryStacks.of(fluid, 81000).setting(EntryStack.Settings.TOOLTIP_PROCESSOR, (stack, oldTooltip) -> {
-            List<Text> tooltip = new ArrayList<>();
+            List<Component> tooltip = new ArrayList<>();
             tooltip.add(FluidVariantRendering.getName(FluidVariant.of(fluid)));
             return Tooltip.create(tooltip);
         });

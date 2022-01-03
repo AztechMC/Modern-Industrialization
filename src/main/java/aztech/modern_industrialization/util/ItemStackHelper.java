@@ -25,12 +25,12 @@ package aztech.modern_industrialization.util;
 
 import aztech.modern_industrialization.inventory.ConfigurableItemStack;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 
 public class ItemStackHelper {
     public static boolean areEqualIgnoreCount(ItemStack s1, ItemStack s2) {
-        return ItemStack.areItemsEqual(s1, s2) && ItemStack.areNbtEqual(s1, s2);
+        return ItemStack.isSameIgnoreDurability(s1, s2) && ItemStack.tagMatches(s1, s2);
     }
 
     /**
@@ -44,11 +44,11 @@ public class ItemStackHelper {
         if (stack.isResourceBlank())
             return false;
         Item item = stack.getResource().getItem();
-        if (item.hasRecipeRemainder()) {
-            if (stack.getAmount() == 1 && stack.isResourceAllowedByLock(item.getRecipeRemainder())) {
+        if (item.hasCraftingRemainingItem()) {
+            if (stack.getAmount() == 1 && stack.isResourceAllowedByLock(item.getCraftingRemainingItem())) {
                 if (!simulate) {
                     stack.setAmount(1);
-                    stack.setKey(ItemVariant.of(item.getRecipeRemainder()));
+                    stack.setKey(ItemVariant.of(item.getCraftingRemainingItem()));
                 }
                 return true;
             }

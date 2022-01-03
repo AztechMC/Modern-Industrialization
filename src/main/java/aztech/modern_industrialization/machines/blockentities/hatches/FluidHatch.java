@@ -82,9 +82,9 @@ public class FluidHatch extends HatchBlockEntity {
     protected void tickTransfer() {
         if (orientation.extractFluids) {
             if (input) {
-                inventory.autoInsertFluids(world, pos, orientation.outputDirection);
+                inventory.autoInsertFluids(level, worldPosition, orientation.outputDirection);
             } else {
-                inventory.autoExtractFluids(world, pos, orientation.outputDirection);
+                inventory.autoExtractFluids(level, worldPosition, orientation.outputDirection);
             }
         }
     }

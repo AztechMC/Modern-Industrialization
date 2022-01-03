@@ -32,13 +32,13 @@ import java.util.Objects;
 import java.util.function.Predicate;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.screen.slot.Slot;
-import net.minecraft.util.registry.Registry;
+import net.minecraft.core.Registry;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 
 /**
  * An item stack that can be configured.
@@ -49,14 +49,14 @@ public class ConfigurableItemStack extends AbstractConfigurableStack<Item, ItemV
     public ConfigurableItemStack() {
     }
 
-    public ConfigurableItemStack(NbtCompound compound) {
+    public ConfigurableItemStack(CompoundTag compound) {
         super(compound);
         this.adjustedCapacity = compound.getInt("adjCap");
     }
 
     @Override
-    public NbtCompound toNbt() {
-        NbtCompound nbt = super.toNbt();
+    public CompoundTag toNbt() {
+        CompoundTag nbt = super.toNbt();
         nbt.putInt("adjCap", this.adjustedCapacity);
         return nbt;
     }
@@ -122,18 +122,18 @@ public class ConfigurableItemStack extends AbstractConfigurableStack<Item, ItemV
     }
 
     @Override
-    protected ItemVariant readVariantFromNbt(NbtCompound compound) {
+    protected ItemVariant readVariantFromNbt(CompoundTag compound) {
         return ItemVariant.fromNbt(compound);
     }
 
     @Override
     public long getCapacity() {
-        return key.isBlank() ? adjustedCapacity : Math.min(adjustedCapacity, key.getItem().getMaxCount());
+        return key.isBlank() ? adjustedCapacity : Math.min(adjustedCapacity, key.getItem().getMaxStackSize());
     }
 
     @Override
     public long getRemainingCapacityFor(ItemVariant key) {
-        return Math.min(key.getItem().getMaxCount(), adjustedCapacity) - amount;
+        return Math.min(key.getItem().getMaxStackSize(), adjustedCapacity) - amount;
     }
 
     @Override
@@ -182,7 +182,7 @@ public class ConfigurableItemStack extends AbstractConfigurableStack<Item, ItemV
         public ConfigurableItemSlot(ConfigurableItemSlot other) {
             this(other.markDirty, other.x, other.y, other.insertPredicate);
 
-            this.id = other.id;
+            this.index = other.index;
         }
 
         public ConfigurableItemSlot(Runnable markDirty, int x, int y, Predicate<ItemStack> insertPredicate) {
@@ -193,12 +193,12 @@ public class ConfigurableItemStack extends AbstractConfigurableStack<Item, ItemV
         }
 
         @Override
-        public boolean canInsert(ItemStack stack) {
+        public boolean mayPlace(ItemStack stack) {
             return playerInsert && ConfigurableItemStack.this.isValid(stack) && insertPredicate.test(stack);
         }
 
         @Override
-        public boolean canTakeItems(PlayerEntity playerEntity) {
+        public boolean mayPickup(Player playerEntity) {
             return playerExtract;
         }
 
@@ -207,12 +207,12 @@ public class ConfigurableItemStack extends AbstractConfigurableStack<Item, ItemV
         }
 
         @Override
-        public ItemStack getStack() {
+        public ItemStack getItem() {
             return cachedReturnedStack = key.toStack((int) amount);
         }
 
         @Override
-        public void setStack(ItemStack stack) {
+        public void set(ItemStack stack) {
             key = ItemVariant.of(stack);
             amount = stack.getCount();
             markDirty.run();
@@ -220,19 +220,19 @@ public class ConfigurableItemStack extends AbstractConfigurableStack<Item, ItemV
         }
 
         @Override
-        public void markDirty() {
+        public void setChanged() {
             if (cachedReturnedStack != null) {
-                setStack(cachedReturnedStack);
+                set(cachedReturnedStack);
             }
         }
 
         @Override
-        public int getMaxItemCount() {
+        public int getMaxStackSize() {
             return adjustedCapacity;
         }
 
         @Override
-        public ItemStack takeStack(int amount) {
+        public ItemStack remove(int amount) {
             ItemStack stack = key.toStack(amount);
             decrement(amount);
             cachedReturnedStack = null;

@@ -28,37 +28,37 @@ import java.util.List;
 import java.util.function.Function;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.util.NbtType;
-import net.minecraft.fluid.Fluid;
-import net.minecraft.fluid.Fluids;
-import net.minecraft.item.Item;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtList;
-import net.minecraft.nbt.NbtString;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.util.registry.Registry;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.Registry;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.StringTag;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.level.material.Fluids;
 import org.jetbrains.annotations.Nullable;
 
 public class NbtHelper {
-    public static void putFluid(NbtCompound tag, String key, FluidVariant fluid) {
-        NbtCompound savedTag = new NbtCompound();
+    public static void putFluid(CompoundTag tag, String key, FluidVariant fluid) {
+        CompoundTag savedTag = new CompoundTag();
         savedTag.put("fk", fluid.toNbt());
         tag.put(key, savedTag);
     }
 
-    public static Item getItem(NbtCompound tag, String key) {
-        return Registry.ITEM.get(new Identifier(tag.getString(key)));
+    public static Item getItem(CompoundTag tag, String key) {
+        return Registry.ITEM.get(new ResourceLocation(tag.getString(key)));
     }
 
-    public static void putItem(NbtCompound tag, String key, Item item) {
-        tag.putString(key, Registry.ITEM.getId(item).toString());
+    public static void putItem(CompoundTag tag, String key, Item item) {
+        tag.putString(key, Registry.ITEM.getKey(item).toString());
     }
 
     public static byte encodeDirections(Iterable<Direction> directions) {
         byte mask = 0;
         for (Direction direction : directions) {
-            mask |= 1 << direction.getId();
+            mask |= 1 << direction.get3DDataValue();
         }
         return mask;
     }
@@ -68,7 +68,7 @@ public class NbtHelper {
         int j = 0;
         for (int i = 0; i < 6; ++i) {
             if ((mask & (1 << i)) != 0) {
-                directions[j++] = Direction.byId(i);
+                directions[j++] = Direction.from3DDataValue(i);
             }
         }
         return directions;
@@ -91,30 +91,30 @@ public class NbtHelper {
         return connections;
     }
 
-    public static <T> void putList(NbtCompound tag, String key, List<T> list, Function<T, NbtCompound> encoder) {
-        NbtList listTag = new NbtList();
+    public static <T> void putList(CompoundTag tag, String key, List<T> list, Function<T, CompoundTag> encoder) {
+        ListTag listTag = new ListTag();
         for (T t : list) {
             listTag.add(encoder.apply(t));
         }
         tag.put(key, listTag);
     }
 
-    public static <T> void getList(NbtCompound tag, String key, List<T> list, Function<NbtCompound, T> decoder) {
+    public static <T> void getList(CompoundTag tag, String key, List<T> list, Function<CompoundTag, T> decoder) {
         list.clear();
-        NbtList listTag = tag.getList(key, NbtType.COMPOUND);
+        ListTag listTag = tag.getList(key, NbtType.COMPOUND);
         for (int i = 0; i < listTag.size(); ++i) {
-            NbtCompound elementTag = listTag.getCompound(i);
+            CompoundTag elementTag = listTag.getCompound(i);
             list.add(decoder.apply(elementTag));
         }
     }
 
-    public static void putBlockPos(NbtCompound tag, String key, @Nullable BlockPos pos) {
+    public static void putBlockPos(CompoundTag tag, String key, @Nullable BlockPos pos) {
         if (pos != null) {
             tag.putIntArray(key, new int[] { pos.getX(), pos.getY(), pos.getZ() });
         }
     }
 
-    public static BlockPos getBlockPos(NbtCompound tag, String key) {
+    public static BlockPos getBlockPos(CompoundTag tag, String key) {
         if (tag.contains(key)) {
             int[] pos = tag.getIntArray(key);
             return new BlockPos(pos[0], pos[1], pos[2]);
@@ -123,14 +123,14 @@ public class NbtHelper {
         }
     }
 
-    public static FluidVariant getFluidCompatible(NbtCompound tag, String key) {
+    public static FluidVariant getFluidCompatible(CompoundTag tag, String key) {
         if (tag == null || !tag.contains(key))
             return FluidVariant.blank();
 
-        if (tag.get(key) instanceof NbtString) {
-            return FluidVariant.of(Registry.FLUID.get(new Identifier(tag.getString(key))));
+        if (tag.get(key) instanceof StringTag) {
+            return FluidVariant.of(Registry.FLUID.get(new ResourceLocation(tag.getString(key))));
         } else {
-            NbtCompound compound = tag.getCompound(key);
+            CompoundTag compound = tag.getCompound(key);
             if (compound.contains("fk")) {
                 return FluidVariant.fromNbt(compound.getCompound("fk"));
             } else {
@@ -139,15 +139,15 @@ public class NbtHelper {
         }
     }
 
-    private static Fluid readLbaTag(NbtCompound tag) {
+    private static Fluid readLbaTag(CompoundTag tag) {
         if (tag.contains("ObjName") && tag.getString("Registry").equals("f")) {
-            return Registry.FLUID.get(new Identifier(tag.getString("ObjName")));
+            return Registry.FLUID.get(new ResourceLocation(tag.getString("ObjName")));
         } else {
             return Fluids.EMPTY;
         }
     }
 
-    public static void putNonzeroInt(NbtCompound tag, String key, int i) {
+    public static void putNonzeroInt(CompoundTag tag, String key, int i) {
         if (i == 0) {
             tag.remove(key);
         } else {

@@ -39,11 +39,11 @@ import net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 
 public class LargeTankMultiblockBlockEntity extends MultiblockMachineBlockEntity
         implements Tickable, DynamicShapeComponent.DynamicShapeComponentBlockEntity {
@@ -162,9 +162,9 @@ public class LargeTankMultiblockBlockEntity extends MultiblockMachineBlockEntity
 
     @Override
     public void tick() {
-        if (!world.isClient) {
+        if (!level.isClientSide) {
             link();
-            markDirty();
+            setChanged();
             if (!this.getFluidData().equals(oldFluidData)) {
                 oldFluidData = this.getFluidData();
                 sync(false);
@@ -203,8 +203,8 @@ public class LargeTankMultiblockBlockEntity extends MultiblockMachineBlockEntity
         int sizeY = 3 + (index % 25) / 5;
         int sizeZ = 3 + (index % 25) % 5;
 
-        BlockPos[] corners = new BlockPos[] { ShapeMatcher.toWorldPos(getPos(), orientation.facingDirection, new BlockPos(-sizeX / 2 + 1, 0, 1)),
-                ShapeMatcher.toWorldPos(getPos(), orientation.facingDirection, new BlockPos(sizeX / 2 - 1, sizeY - 3, sizeZ - 2)), };
+        BlockPos[] corners = new BlockPos[] { ShapeMatcher.toWorldPos(getBlockPos(), orientation.facingDirection, new BlockPos(-sizeX / 2 + 1, 0, 1)),
+                ShapeMatcher.toWorldPos(getBlockPos(), orientation.facingDirection, new BlockPos(sizeX / 2 - 1, sizeY - 3, sizeZ - 2)), };
 
         int[] cornerPosition = new int[6];
         for (int i = 0; i < 3; i++) {
@@ -213,13 +213,13 @@ public class LargeTankMultiblockBlockEntity extends MultiblockMachineBlockEntity
         }
 
         for (int i = 0; i < 2; i++) {
-            cornerPosition[0] = Math.max(corners[i].getX() - this.getPos().getX(), cornerPosition[0]);
-            cornerPosition[1] = Math.max(corners[i].getY() - this.getPos().getY(), cornerPosition[1]);
-            cornerPosition[2] = Math.max(corners[i].getZ() - this.getPos().getZ(), cornerPosition[2]);
+            cornerPosition[0] = Math.max(corners[i].getX() - this.getBlockPos().getX(), cornerPosition[0]);
+            cornerPosition[1] = Math.max(corners[i].getY() - this.getBlockPos().getY(), cornerPosition[1]);
+            cornerPosition[2] = Math.max(corners[i].getZ() - this.getBlockPos().getZ(), cornerPosition[2]);
 
-            cornerPosition[3] = Math.min(corners[i].getX() - this.getPos().getX(), cornerPosition[3]);
-            cornerPosition[4] = Math.min(corners[i].getY() - this.getPos().getY(), cornerPosition[4]);
-            cornerPosition[5] = Math.min(corners[i].getZ() - this.getPos().getZ(), cornerPosition[5]);
+            cornerPosition[3] = Math.min(corners[i].getX() - this.getBlockPos().getX(), cornerPosition[3]);
+            cornerPosition[4] = Math.min(corners[i].getY() - this.getBlockPos().getY(), cornerPosition[4]);
+            cornerPosition[5] = Math.min(corners[i].getZ() - this.getBlockPos().getZ(), cornerPosition[5]);
         }
 
         return cornerPosition;

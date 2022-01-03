@@ -25,7 +25,7 @@ package aztech.modern_industrialization.materials.part;
 
 import aztech.modern_industrialization.materials.MaterialBuilder;
 import aztech.modern_industrialization.textures.MITextures;
-import net.minecraft.client.texture.NativeImage;
+import com.mojang.blaze3d.platform.NativeImage;
 
 public class CasingPart extends Part implements BuildablePart {
 

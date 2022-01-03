@@ -24,28 +24,28 @@
 package aztech.modern_industrialization.blocks.storage.barrel;
 
 import aztech.modern_industrialization.util.RenderHelper;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Matrix4f;
+import com.mojang.math.Vector3f;
 import net.fabricmc.fabric.api.client.rendereregistry.v1.BlockEntityRendererRegistry;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.render.OverlayTexture;
-import net.minecraft.client.render.VertexConsumerProvider;
-import net.minecraft.client.render.block.entity.BlockEntityRenderer;
-import net.minecraft.client.render.block.entity.BlockEntityRendererFactory;
-import net.minecraft.client.render.model.json.ModelTransformation;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.Matrix4f;
-import net.minecraft.util.math.Vec3f;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.block.model.ItemTransforms;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 
 public class BarrelRenderer implements BlockEntityRenderer<BlockEntity> {
 
     private final int textColor;
 
     public static void register(BlockEntityType<BlockEntity> type, int textColor) {
-        BlockEntityRendererRegistry.INSTANCE.register(type, (BlockEntityRendererFactory.Context context) -> new BarrelRenderer(textColor));
+        BlockEntityRendererRegistry.INSTANCE.register(type, (BlockEntityRendererProvider.Context context) -> new BarrelRenderer(textColor));
     }
 
     private BarrelRenderer(int textColor) {
@@ -53,7 +53,7 @@ public class BarrelRenderer implements BlockEntityRenderer<BlockEntity> {
     }
 
     @Override
-    public void render(BlockEntity entity, float tickDelta, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay) {
+    public void render(BlockEntity entity, float tickDelta, PoseStack matrices, MultiBufferSource vertexConsumers, int light, int overlay) {
 
         BarrelBlockEntity barrelBlockEntity = (BarrelBlockEntity) entity;
 
@@ -68,34 +68,34 @@ public class BarrelRenderer implements BlockEntityRenderer<BlockEntity> {
 
                     // Thanks TechReborn for rendering code
 
-                    matrices.push();
+                    matrices.pushPose();
                     matrices.translate(0.5, 0, 0.5);
-                    matrices.multiply(Vec3f.POSITIVE_Y.getDegreesQuaternion(i * 90F));
+                    matrices.mulPose(Vector3f.YP.rotationDegrees(i * 90F));
                     matrices.scale(0.5F, 0.5F, 0.5F);
                     matrices.translate(0, 1.3, 1.01);
 
-                    matrices.multiplyPositionMatrix(Matrix4f.scale(1, 1, 0.01f));
-                    matrices.peek().getNormalMatrix().multiply(Vec3f.NEGATIVE_X.getDegreesQuaternion(45f));
+                    matrices.mulPoseMatrix(Matrix4f.createScaleMatrix(1, 1, 0.01f));
+                    matrices.last().normal().mul(Vector3f.XN.rotationDegrees(45f));
 
-                    MinecraftClient.getInstance().getItemRenderer().renderItem(toRender, ModelTransformation.Mode.GUI, RenderHelper.FULL_LIGHT,
-                            OverlayTexture.DEFAULT_UV, matrices, vertexConsumers, 0);
+                    Minecraft.getInstance().getItemRenderer().renderStatic(toRender, ItemTransforms.TransformType.GUI, RenderHelper.FULL_LIGHT,
+                            OverlayTexture.NO_OVERLAY, matrices, vertexConsumers, 0);
 
-                    matrices.pop();
+                    matrices.popPose();
 
-                    matrices.push();
-                    TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
+                    matrices.pushPose();
+                    Font textRenderer = Minecraft.getInstance().font;
                     matrices.translate(0.5, 0.5, 0.5);
-                    matrices.multiply(Vec3f.POSITIVE_Y.getDegreesQuaternion(i * 90F));
+                    matrices.mulPose(Vector3f.YP.rotationDegrees(i * 90F));
                     matrices.translate(0, 0.2, -0.505);
                     matrices.scale(-0.01f, -0.01F, -0.01f);
 
                     float xPosition;
                     String count = String.valueOf(amount);
-                    xPosition = (float) (-textRenderer.getWidth(count) / 2);
-                    textRenderer.draw(count, xPosition, -4f + 40, textColor, false, matrices.peek().getPositionMatrix(), vertexConsumers, false, 0,
+                    xPosition = (float) (-textRenderer.width(count) / 2);
+                    textRenderer.drawInBatch(count, xPosition, -4f + 40, textColor, false, matrices.last().pose(), vertexConsumers, false, 0,
                             RenderHelper.FULL_LIGHT);
 
-                    matrices.pop();
+                    matrices.popPose();
                 }
             }
 

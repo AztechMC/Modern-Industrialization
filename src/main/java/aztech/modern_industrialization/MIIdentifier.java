@@ -23,12 +23,12 @@
  */
 package aztech.modern_industrialization;
 
-import net.minecraft.util.Identifier;
+import net.minecraft.resources.ResourceLocation;
 
 /**
  * An Identifier with the MI namespace.
  */
-public class MIIdentifier extends Identifier {
+public class MIIdentifier extends ResourceLocation {
     public MIIdentifier(String path) {
         super(ModernIndustrialization.MOD_ID, path);
     }

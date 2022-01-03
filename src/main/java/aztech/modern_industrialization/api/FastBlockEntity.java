@@ -23,11 +23,11 @@
  */
 package aztech.modern_industrialization.api;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
 
 /**
  * Special BlockEntity that does NOT update comparators when markDirty is
@@ -40,17 +40,17 @@ public abstract class FastBlockEntity extends BlockEntity {
     }
 
     @Override
-    public void markDirty() {
-        if (this.world != null) {
-            this.world.markDirty(this.pos);
+    public void setChanged() {
+        if (this.level != null) {
+            this.level.blockEntityChanged(this.worldPosition);
         }
     }
 
     public void sync() {
-        if (!(world instanceof ServerWorld serverWorld)) {
+        if (!(level instanceof ServerLevel serverWorld)) {
             throw new IllegalStateException("Cannot call sync() on the logical client! Did you check world.isClient first?");
         }
 
-        serverWorld.getChunkManager().markForUpdate(this.getPos());
+        serverWorld.getChunkSource().blockChanged(this.getBlockPos());
     }
 }

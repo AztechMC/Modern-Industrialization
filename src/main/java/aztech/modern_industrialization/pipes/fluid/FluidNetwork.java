@@ -34,7 +34,7 @@ import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
-import net.minecraft.server.world.ServerWorld;
+import net.minecraft.server.level.ServerLevel;
 
 public class FluidNetwork extends PipeNetwork {
     final int nodeCapacity;
@@ -45,7 +45,7 @@ public class FluidNetwork extends PipeNetwork {
     }
 
     @Override
-    public void tick(ServerWorld world) {
+    public void tick(ServerLevel world) {
         // Gather targets and hopefully set fluid
         List<FluidTarget> targets = new ArrayList<>();
         long networkAmount = 0;

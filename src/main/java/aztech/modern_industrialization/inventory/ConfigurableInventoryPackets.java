@@ -24,12 +24,12 @@
 package aztech.modern_industrialization.inventory;
 
 import aztech.modern_industrialization.MIIdentifier;
-import net.minecraft.util.Identifier;
+import net.minecraft.resources.ResourceLocation;
 
 public class ConfigurableInventoryPackets {
-    public static final Identifier UPDATE_ITEM_SLOT = new MIIdentifier("update_item_slot");
-    public static final Identifier UPDATE_FLUID_SLOT = new MIIdentifier("update_fluid_slot");
-    public static final Identifier SET_LOCKING_MODE = new MIIdentifier("set_locking_mode");
-    public static final Identifier DO_SLOT_DRAGGING = new MIIdentifier("do_slot_dragging");
-    public static final Identifier ADJUST_SLOT_CAPACITY = new MIIdentifier("adjust_slot_capacity");
+    public static final ResourceLocation UPDATE_ITEM_SLOT = new MIIdentifier("update_item_slot");
+    public static final ResourceLocation UPDATE_FLUID_SLOT = new MIIdentifier("update_fluid_slot");
+    public static final ResourceLocation SET_LOCKING_MODE = new MIIdentifier("set_locking_mode");
+    public static final ResourceLocation DO_SLOT_DRAGGING = new MIIdentifier("do_slot_dragging");
+    public static final ResourceLocation ADJUST_SLOT_CAPACITY = new MIIdentifier("adjust_slot_capacity");
 }

@@ -23,21 +23,21 @@
  */
 package aztech.modern_industrialization.items.tools;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemUsageContext;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.hit.BlockHitResult;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.BlockHitResult;
 
 public class CrowbarItem extends Item {
-    public CrowbarItem(Settings settings) {
-        super(settings.maxCount(1));
+    public CrowbarItem(Properties settings) {
+        super(settings.stacksTo(1));
     }
 
     @Override
-    public ActionResult useOnBlock(ItemUsageContext context) {
-        BlockState state = context.getWorld().getBlockState(context.getBlockPos());
-        return state.onUse(context.getWorld(), context.getPlayer(), context.getHand(),
-                new BlockHitResult(context.getHitPos(), context.getSide(), context.getBlockPos(), context.hitsInsideBlock()));
+    public InteractionResult useOn(UseOnContext context) {
+        BlockState state = context.getLevel().getBlockState(context.getClickedPos());
+        return state.use(context.getLevel(), context.getPlayer(), context.getHand(),
+                new BlockHitResult(context.getClickLocation(), context.getClickedFace(), context.getClickedPos(), context.isInside()));
     }
 }

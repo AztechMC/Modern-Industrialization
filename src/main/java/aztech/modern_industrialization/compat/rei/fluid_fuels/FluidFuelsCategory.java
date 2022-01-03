@@ -35,8 +35,8 @@ import me.shedaniel.rei.api.client.gui.widgets.Widgets;
 import me.shedaniel.rei.api.client.registry.display.DisplayCategory;
 import me.shedaniel.rei.api.common.category.CategoryIdentifier;
 import me.shedaniel.rei.api.common.util.EntryStacks;
-import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 
 public class FluidFuelsCategory implements DisplayCategory<FluidFuelDisplay> {
     @Override
@@ -50,8 +50,8 @@ public class FluidFuelsCategory implements DisplayCategory<FluidFuelDisplay> {
     }
 
     @Override
-    public Text getTitle() {
-        return new TranslatableText(FluidFuelsPlugin.CATEGORY.getIdentifier().toString());
+    public Component getTitle() {
+        return new TranslatableComponent(FluidFuelsPlugin.CATEGORY.getIdentifier().toString());
     }
 
     @Override
@@ -62,7 +62,7 @@ public class FluidFuelsCategory implements DisplayCategory<FluidFuelDisplay> {
         int totalEnergy = FluidFuelRegistry.getEu(recipeDisplay.fluid);
         widgets.add(Widgets
                 .createLabel(new Point(bounds.x + 50, bounds.y + 14),
-                        new TranslatableText("text.modern_industrialization.eu_in_diesel_generator", totalEnergy))
+                        new TranslatableComponent("text.modern_industrialization.eu_in_diesel_generator", totalEnergy))
                 .leftAligned().noShadow().color(0xFF404040, 0xFFBBBBBB));
         return widgets;
     }

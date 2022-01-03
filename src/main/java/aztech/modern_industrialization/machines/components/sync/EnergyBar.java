@@ -33,15 +33,15 @@ import aztech.modern_industrialization.machines.gui.ClientComponentRenderer;
 import aztech.modern_industrialization.util.RenderHelper;
 import aztech.modern_industrialization.util.TextHelper;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.Collections;
 import java.util.function.Supplier;
-import net.minecraft.client.gui.DrawableHelper;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.gui.GuiComponent;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.resources.ResourceLocation;
 
 public class EnergyBar {
     public static class Server implements SyncedComponent.Server<Data> {
@@ -65,20 +65,20 @@ public class EnergyBar {
         }
 
         @Override
-        public void writeInitialData(PacketByteBuf buf) {
+        public void writeInitialData(FriendlyByteBuf buf) {
             buf.writeInt(params.renderX);
             buf.writeInt(params.renderY);
             writeCurrentData(buf);
         }
 
         @Override
-        public void writeCurrentData(PacketByteBuf buf) {
+        public void writeCurrentData(FriendlyByteBuf buf) {
             buf.writeLong(euSupplier.get());
             buf.writeLong(maxEuSupplier.get());
         }
 
         @Override
-        public Identifier getId() {
+        public ResourceLocation getId() {
             return SyncedComponents.ENERGY_BAR;
         }
     }
@@ -87,13 +87,13 @@ public class EnergyBar {
         final Parameters params;
         long eu, maxEu;
 
-        public Client(PacketByteBuf buf) {
+        public Client(FriendlyByteBuf buf) {
             this.params = new Parameters(buf.readInt(), buf.readInt());
             read(buf);
         }
 
         @Override
-        public void read(PacketByteBuf buf) {
+        public void read(FriendlyByteBuf buf) {
             eu = buf.readLong();
             maxEu = buf.readLong();
         }
@@ -107,32 +107,32 @@ public class EnergyBar {
             public static final int WIDTH = 13;
             public static final int HEIGHT = 18;
 
-            public static void renderEnergy(DrawableHelper helper, MatrixStack matrices, int px, int py, float fill) {
+            public static void renderEnergy(GuiComponent helper, PoseStack matrices, int px, int py, float fill) {
                 RenderSystem.setShaderTexture(0, MachineScreenHandlers.SLOT_ATLAS);
-                helper.drawTexture(matrices, px, py, 230, 0, WIDTH, HEIGHT);
+                helper.blit(matrices, px, py, 230, 0, WIDTH, HEIGHT);
                 int fillPixels = (int) (fill * HEIGHT * 0.9 + HEIGHT * 0.1);
                 if (fill > 0.95)
                     fillPixels = HEIGHT;
-                helper.drawTexture(matrices, px, py + HEIGHT - fillPixels, 243, HEIGHT - fillPixels, WIDTH, fillPixels);
+                helper.blit(matrices, px, py + HEIGHT - fillPixels, 243, HEIGHT - fillPixels, WIDTH, fillPixels);
             }
 
             @Override
-            public void renderBackground(DrawableHelper helper, MatrixStack matrices, int x, int y) {
+            public void renderBackground(GuiComponent helper, PoseStack matrices, int x, int y) {
                 renderEnergy(helper, matrices, x + params.renderX, y + params.renderY, (float) eu / maxEu);
             }
 
             @Override
-            public void renderTooltip(MachineScreenHandlers.ClientScreen screen, MatrixStack matrices, int x, int y, int cursorX, int cursorY) {
+            public void renderTooltip(MachineScreenHandlers.ClientScreen screen, PoseStack matrices, int x, int y, int cursorX, int cursorY) {
                 if (RenderHelper.isPointWithinRectangle(params.renderX, params.renderY, WIDTH, HEIGHT, cursorX - x, cursorY - y)) {
-                    Text tooltip;
+                    Component tooltip;
                     if (Screen.hasShiftDown()) {
-                        tooltip = new TranslatableText("text.modern_industrialization.energy_bar", eu, maxEu, "");
+                        tooltip = new TranslatableComponent("text.modern_industrialization.energy_bar", eu, maxEu, "");
                     } else {
                         TextHelper.MaxedAmount maxedAmount = TextHelper.getMaxedAmount(eu, maxEu);
-                        tooltip = new TranslatableText("text.modern_industrialization.energy_bar", maxedAmount.digit(), maxedAmount.maxDigit(),
+                        tooltip = new TranslatableComponent("text.modern_industrialization.energy_bar", maxedAmount.digit(), maxedAmount.maxDigit(),
                                 maxedAmount.unit());
                     }
-                    screen.renderTooltip(matrices, Collections.singletonList(tooltip), cursorX, cursorY);
+                    screen.renderComponentTooltip(matrices, Collections.singletonList(tooltip), cursorX, cursorY);
                 }
             }
         }

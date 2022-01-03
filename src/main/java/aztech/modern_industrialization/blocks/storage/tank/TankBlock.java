@@ -30,46 +30,48 @@ import aztech.modern_industrialization.util.MobSpawning;
 import aztech.modern_industrialization.util.ResourceUtil;
 import java.util.function.Function;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
-import net.minecraft.block.*;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.BlockItem;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
-import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.BlockView;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.EntityBlock;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.Material;
+import net.minecraft.world.phys.BlockHitResult;
 
-public class TankBlock extends AbstractStorageBlock implements BlockEntityProvider {
+public class TankBlock extends AbstractStorageBlock implements EntityBlock {
 
-    public final BlockEntityProvider factory;
+    public final EntityBlock factory;
 
-    public TankBlock(String id, Function<MIBlock, BlockItem> blockItemCtor, BlockEntityProvider factory) {
-        super(id, FabricBlockSettings.of(Material.METAL).hardness(4.0f).nonOpaque().allowsSpawning(MobSpawning.NO_SPAWN), blockItemCtor, 0);
+    public TankBlock(String id, Function<MIBlock, BlockItem> blockItemCtor, EntityBlock factory) {
+        super(id, FabricBlockSettings.of(Material.METAL).destroyTime(4.0f).noOcclusion().isValidSpawn(MobSpawning.NO_SPAWN), blockItemCtor, 0);
         this.factory = factory;
         ResourceUtil.appendToItemTag(new MIIdentifier("tanks"), new MIIdentifier(id));
     }
 
     @Override
-    public BlockEntity createBlockEntity(BlockPos pos, BlockState state) {
-        return factory.createBlockEntity(pos, state);
+    public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
+        return factory.newBlockEntity(pos, state);
     }
 
-    public boolean isTranslucent(BlockState state, BlockView world, BlockPos pos) {
+    public boolean propagatesSkylightDown(BlockState state, BlockGetter world, BlockPos pos) {
         return true;
     }
 
     @Override
-    public int getOpacity(BlockState state, BlockView world, BlockPos pos) {
+    public int getLightBlock(BlockState state, BlockGetter world, BlockPos pos) {
         return 0;
     }
 
     @Override
-    public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
+    public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
         if (((TankBlockEntity) world.getBlockEntity(pos)).onPlayerUse(player)) {
-            return ActionResult.success(world.isClient);
+            return InteractionResult.sidedSuccess(world.isClientSide);
         }
-        return ActionResult.PASS;
+        return InteractionResult.PASS;
     }
 }

@@ -25,18 +25,18 @@ package aztech.modern_industrialization.api;
 
 import aztech.modern_industrialization.pipes.MIPipes;
 import aztech.modern_industrialization.util.Tickable;
-import net.minecraft.block.BlockEntityProvider;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.block.entity.BlockEntityTicker;
-import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.world.World;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.EntityBlock;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityTicker;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
 
-public interface TickableBlock extends BlockEntityProvider {
+public interface TickableBlock extends EntityBlock {
     @Override
-    default @Nullable <T extends BlockEntity> BlockEntityTicker<T> getTicker(World world, BlockState state, BlockEntityType<T> type) {
-        if (world.isClient() && state.isOf(MIPipes.BLOCK_PIPE)) {
+    default @Nullable <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level world, BlockState state, BlockEntityType<T> type) {
+        if (world.isClientSide() && state.is(MIPipes.BLOCK_PIPE)) {
             // Pipes don't tick on the client.
             return null;
         }

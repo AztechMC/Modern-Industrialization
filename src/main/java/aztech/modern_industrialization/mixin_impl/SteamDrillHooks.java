@@ -25,18 +25,18 @@ package aztech.modern_industrialization.mixin_impl;
 
 import java.util.HashMap;
 import java.util.Map;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.world.entity.player.Player;
 import org.jetbrains.annotations.Nullable;
 
 public class SteamDrillHooks {
-    private static final Map<Thread, PlayerEntity> currentPlayer = new HashMap<>();
+    private static final Map<Thread, Player> currentPlayer = new HashMap<>();
 
     @Nullable
-    public static PlayerEntity getCurrentPlayer() {
+    public static Player getCurrentPlayer() {
         return currentPlayer.get(Thread.currentThread());
     }
 
-    public static void set(PlayerEntity player) {
+    public static void set(Player player) {
         currentPlayer.put(Thread.currentThread(), player);
     }
 

@@ -32,10 +32,10 @@ import aztech.modern_industrialization.materials.part.MaterialPart;
 import aztech.modern_industrialization.textures.coloramp.BakableTargetColoramp;
 import aztech.modern_industrialization.textures.coloramp.Coloramp;
 import aztech.modern_industrialization.textures.coloramp.DefaultColoramp;
+import com.mojang.blaze3d.platform.NativeImage;
 import java.io.IOException;
 import java.util.function.BiConsumer;
-import net.minecraft.client.texture.NativeImage;
-import net.minecraft.resource.ResourceManager;
+import net.minecraft.server.packs.resources.ResourceManager;
 
 public final class MITextures {
 
@@ -234,7 +234,7 @@ public final class MITextures {
             }
             for (int i = 1; i < tankTexture.getWidth() - 1; i++) {
                 for (int j = 1; j < tankTexture.getHeight() - 1; j++) {
-                    tankTexture.setColor(i, j, creativeTankTexture.getColor(i, j));
+                    tankTexture.setPixelRGBA(i, j, creativeTankTexture.getPixelRGBA(i, j));
                 }
             }
             tm.addTexture(s, tankTexture);
@@ -260,7 +260,7 @@ public final class MITextures {
                     NativeImage copy = TextureHelper.copy(texture);
                     for (int i = 0; i < copy.getWidth(); ++i) {
                         for (int j = copy.getHeight() / 2; j < copy.getHeight(); j++) {
-                            copy.setColor(i, j, brick.getColor(i, j));
+                            copy.setPixelRGBA(i, j, brick.getPixelRGBA(i, j));
                         }
                     }
                     target = copy;

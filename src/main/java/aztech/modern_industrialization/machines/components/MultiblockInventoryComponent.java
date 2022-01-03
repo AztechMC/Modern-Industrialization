@@ -41,7 +41,7 @@ public class MultiblockInventoryComponent implements CrafterComponent.Inventory 
     public void rebuild(ShapeMatcher shapeMatcher) {
         // Sort the hatches by height for the distillation tower
         List<HatchBlockEntity> sortedHatches = new ArrayList<>(shapeMatcher.getMatchedHatches());
-        sortedHatches.sort(Comparator.comparing(h -> h.getPos().getY()));
+        sortedHatches.sort(Comparator.comparing(h -> h.getBlockPos().getY()));
         // Accumulate the slots
         rebuildList(sortedHatches, itemInputs, HatchBlockEntity::appendItemInputs);
         rebuildList(sortedHatches, itemOutputs, HatchBlockEntity::appendItemOutputs);

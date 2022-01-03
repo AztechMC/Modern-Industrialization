@@ -36,14 +36,14 @@ import me.shedaniel.rei.api.client.gui.widgets.Widgets;
 import me.shedaniel.rei.api.client.registry.display.DisplayCategory;
 import me.shedaniel.rei.api.common.category.CategoryIdentifier;
 import me.shedaniel.rei.api.common.util.EntryStacks;
-import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
-import net.minecraft.util.Identifier;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 
 public class ForgeHammerRecipeCategory implements DisplayCategory<ForgeHammerRecipeDisplay> {
 
-    private static final Identifier id = new MIIdentifier("forge_hammer");
+    private static final ResourceLocation id = new MIIdentifier("forge_hammer");
 
     @Override
     public CategoryIdentifier<? extends ForgeHammerRecipeDisplay> getCategoryIdentifier() {
@@ -56,8 +56,8 @@ public class ForgeHammerRecipeCategory implements DisplayCategory<ForgeHammerRec
     }
 
     @Override
-    public Text getTitle() {
-        return new TranslatableText(id.toString());
+    public Component getTitle() {
+        return new TranslatableComponent(id.toString());
     }
 
     @Override
@@ -71,18 +71,18 @@ public class ForgeHammerRecipeCategory implements DisplayCategory<ForgeHammerRec
         widgets.add(Widgets.createTexturedWidget(ForgeHammerScreen.FORGE_HAMMER_GUI,
                 startPoint.x - 25, startPoint.y + 4, 7, 32, 18, 18));
 
-        Text text;
+        Component text;
 
         if (recipeDisplay.recipe.eu > 0) {
             widgets.add(Widgets.createSlot(new Point(startPoint.x - 24, startPoint.y + 5)).disableBackground()
                     .entries(recipeDisplay.getInputEntries().get(1)).markInput());
             widgets.add(
                     Widgets.createSlot(new Point(startPoint.x + 4, startPoint.y + 5)).entries(recipeDisplay.getInputEntries().get(0)).markInput());
-            text = new TranslatableText("text.modern_industrialization.durability_cost", recipeDisplay.recipe.eu);
+            text = new TranslatableComponent("text.modern_industrialization.durability_cost", recipeDisplay.recipe.eu);
         } else {
             widgets.add(
                     Widgets.createSlot(new Point(startPoint.x + 4, startPoint.y + 5)).entries(recipeDisplay.getInputEntries().get(0)).markInput());
-            text = new TranslatableText("text.modern_industrialization.no_tool_required");
+            text = new TranslatableComponent("text.modern_industrialization.no_tool_required");
         }
 
         widgets.add(Widgets

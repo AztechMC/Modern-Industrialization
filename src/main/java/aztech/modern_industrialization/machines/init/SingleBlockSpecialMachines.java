@@ -33,7 +33,7 @@ import aztech.modern_industrialization.machines.models.MachineCasings;
 import aztech.modern_industrialization.machines.models.MachineModels;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.fluid.Fluid;
+import net.minecraft.world.level.material.Fluid;
 
 public class SingleBlockSpecialMachines {
 

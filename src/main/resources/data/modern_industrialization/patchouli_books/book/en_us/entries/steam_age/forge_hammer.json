@@ -20,11 +20,7 @@
     {
       "type": "crafting",
       "recipe": "modern_industrialization:tools/steam_mining_drill",
-<<<<<<< Updated upstream
-      "text": "The Steam Mining Drill can mine 3x3 blocks at the time, perfect for your early game mining needs! It also has Silk Touch wich marries well with the Forge Hammer."
-=======
-      "text": "The Steam Mining Drill can mine 3x3 blocks at the time, perfect for your early game mining needs!$(br2)It also has Silk Touch."
->>>>>>> Stashed changes
+      "text": "The Steam Mining Drill can mine 3x3 blocks at the time, perfect for your early game mining needs! It also has Silk Touch which combines well with the Forge Hammer."
     },
     {
       "type": "text",

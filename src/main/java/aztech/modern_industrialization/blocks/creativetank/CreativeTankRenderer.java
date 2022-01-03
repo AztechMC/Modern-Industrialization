@@ -24,17 +24,17 @@
 package aztech.modern_industrialization.blocks.creativetank;
 
 import aztech.modern_industrialization.util.RenderHelper;
-import net.minecraft.client.render.VertexConsumerProvider;
-import net.minecraft.client.render.block.entity.BlockEntityRenderer;
-import net.minecraft.client.render.block.entity.BlockEntityRendererFactory;
-import net.minecraft.client.util.math.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 
 public class CreativeTankRenderer implements BlockEntityRenderer<CreativeTankBlockEntity> {
-    public CreativeTankRenderer(BlockEntityRendererFactory.Context context) {
+    public CreativeTankRenderer(BlockEntityRendererProvider.Context context) {
     }
 
     @Override
-    public void render(CreativeTankBlockEntity entity, float tickDelta, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light,
+    public void render(CreativeTankBlockEntity entity, float tickDelta, PoseStack matrices, MultiBufferSource vertexConsumers, int light,
             int overlay) {
         if (!entity.isResourceBlank()) {
             RenderHelper.drawFluidInTank(entity, matrices, vertexConsumers, entity.fluid, 1);

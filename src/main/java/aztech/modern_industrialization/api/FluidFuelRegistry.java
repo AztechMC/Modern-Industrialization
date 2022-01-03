@@ -24,8 +24,8 @@
 package aztech.modern_industrialization.api;
 
 import java.util.*;
-import net.minecraft.fluid.Fluid;
-import net.minecraft.fluid.Fluids;
+import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.level.material.Fluids;
 
 public class FluidFuelRegistry {
     private static final Map<Fluid, Integer> fluidEus = new HashMap<>();

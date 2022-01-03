@@ -25,6 +25,8 @@ package aztech.modern_industrialization.machines.multiblocks;
 
 import aztech.modern_industrialization.machines.blockentities.multiblocks.LargeTankMultiblockBlockEntity;
 import aztech.modern_industrialization.util.RenderHelper;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.fabricmc.fabric.api.renderer.v1.Renderer;
 import net.fabricmc.fabric.api.renderer.v1.RendererAccess;
 import net.fabricmc.fabric.api.renderer.v1.mesh.MutableQuadView;
@@ -32,33 +34,31 @@ import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
 import net.fabricmc.fabric.api.transfer.v1.client.fluid.FluidVariantRenderHandler;
 import net.fabricmc.fabric.api.transfer.v1.client.fluid.FluidVariantRendering;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
-import net.minecraft.client.render.OverlayTexture;
-import net.minecraft.client.render.RenderLayer;
-import net.minecraft.client.render.VertexConsumer;
-import net.minecraft.client.render.VertexConsumerProvider;
-import net.minecraft.client.render.block.entity.BlockEntityRendererFactory;
-import net.minecraft.client.texture.Sprite;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.Vec3i;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.Vec3i;
 
 public class MultiblockTankBER extends MultiblockMachineBER {
-    public MultiblockTankBER(BlockEntityRendererFactory.Context context) {
+    public MultiblockTankBER(BlockEntityRendererProvider.Context context) {
         super(context);
     }
 
     @Override
-    public void render(MultiblockMachineBlockEntity be, float tickDelta, MatrixStack ms, VertexConsumerProvider vcp, int light, int overlay) {
+    public void render(MultiblockMachineBlockEntity be, float tickDelta, PoseStack ms, MultiBufferSource vcp, int light, int overlay) {
         super.render(be, tickDelta, ms, vcp, light, overlay);
         LargeTankMultiblockBlockEntity tankBlockEntity = (LargeTankMultiblockBlockEntity) be;
         FluidVariant fluid = tankBlockEntity.getFluid();
         if (tankBlockEntity.shapeValid.shapeValid && !fluid.isBlank() && tankBlockEntity.getFullnessFraction() > 0) {
 
-            VertexConsumer vc = vcp.getBuffer(RenderLayer.getTranslucent());
+            VertexConsumer vc = vcp.getBuffer(RenderType.translucent());
 
             FluidVariantRenderHandler handler = FluidVariantRendering.getHandlerOrDefault(fluid.getFluid());
-            Sprite sprite = handler.getSprite(fluid);
+            TextureAtlasSprite sprite = handler.getSprite(fluid);
 
             int[] cornerPosition = tankBlockEntity.getCornerPosition();
 
@@ -85,13 +85,13 @@ public class MultiblockTankBER extends MultiblockMachineBER {
 
             int[] mins = new int[] { minX, minY, minZ };
             int[] maxs = new int[] { maxX, maxY, maxZ };
-            Vec3i[] dirs = new Vec3i[] { Direction.EAST.getVector(), Direction.UP.getVector(), Direction.SOUTH.getVector() };
+            Vec3i[] dirs = new Vec3i[] { Direction.EAST.getNormal(), Direction.UP.getNormal(), Direction.SOUTH.getNormal() };
 
             Renderer renderer = RendererAccess.INSTANCE.getRenderer();
 
             for (Direction direction : Direction.values()) {
                 QuadEmitter emitter = renderer.meshBuilder().getEmitter();
-                ms.push();
+                ms.pushPose();
 
                 int u_index = direction.getAxis() == Direction.Axis.X ? 2 : 0;
                 int v_index = direction.getAxis() == Direction.Axis.Y ? 2 : 1;
@@ -100,10 +100,10 @@ public class MultiblockTankBER extends MultiblockMachineBER {
                 Vec3i offset_v = dirs[v_index];
 
                 int dirAxis = direction.getAxis() == Direction.Axis.X ? 0 : direction.getAxis() == Direction.Axis.Z ? 2 : 1;
-                int dirWays = direction.getId() % 2;
+                int dirWays = direction.get3DDataValue() % 2;
                 int offset_w = dirWays == 0 ? mins[dirAxis] : maxs[dirAxis];
 
-                Vec3i origin = offset_u.multiply(mins[u_index]).add(offset_v.multiply(mins[v_index])).add(dirs[dirAxis].multiply(offset_w));
+                Vec3i origin = offset_u.multiply(mins[u_index]).offset(offset_v.multiply(mins[v_index])).offset(dirs[dirAxis].multiply(offset_w));
 
                 float originX = origin.getX();
                 float originY = origin.getY();
@@ -121,7 +121,7 @@ public class MultiblockTankBER extends MultiblockMachineBER {
                 int max_v = maxs[v_index] - mins[v_index];
 
                 for (int u = 0; u <= max_u; u++) {
-                    ms.push();
+                    ms.pushPose();
                     for (int v = 0; v <= max_v; v++) {
 
                         float bottom = 0;
@@ -140,23 +140,23 @@ public class MultiblockTankBER extends MultiblockMachineBER {
                         emitter.spriteBake(0, sprite, MutableQuadView.BAKE_LOCK_UV);
                         emitter.spriteColor(0, -1, -1, -1, -1);
 
-                        int color = handler.getColor(fluid, be.getWorld(),
-                                new BlockPos(be.getPos().getX() + originX + offset_u.getX() * u + offset_v.getX() * v,
-                                        be.getPos().getY() + originY + offset_u.getY() * u + offset_v.getY() * v,
-                                        be.getPos().getZ() + originZ + offset_u.getZ() * u + offset_v.getZ() * v));
+                        int color = handler.getColor(fluid, be.getLevel(),
+                                new BlockPos(be.getBlockPos().getX() + originX + offset_u.getX() * u + offset_v.getX() * v,
+                                        be.getBlockPos().getY() + originY + offset_u.getY() * u + offset_v.getY() * v,
+                                        be.getBlockPos().getZ() + originZ + offset_u.getZ() * u + offset_v.getZ() * v));
                         float r = ((color >> 16) & 255) / 256f;
                         float g = ((color >> 8) & 255) / 256f;
                         float b = (color & 255) / 256f;
 
-                        vc.quad(ms.peek(), emitter.toBakedQuad(0, sprite, false), r, g, b, RenderHelper.FULL_LIGHT, OverlayTexture.DEFAULT_UV);
+                        vc.putBulkData(ms.last(), emitter.toBakedQuad(0, sprite, false), r, g, b, RenderHelper.FULL_LIGHT, OverlayTexture.NO_OVERLAY);
 
                         ms.translate(offset_v.getX(), offset_v.getY(), offset_v.getZ());
                     }
-                    ms.pop();
+                    ms.popPose();
                     ms.translate(offset_u.getX(), offset_u.getY(), offset_u.getZ());
                 }
 
-                ms.pop();
+                ms.popPose();
             }
 
         }

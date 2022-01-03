@@ -37,8 +37,8 @@ import aztech.modern_industrialization.util.Tickable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.ItemStack;
 
 public class ConfigurableChestMachineBlockEntity extends MachineBlockEntity implements Tickable {
 
@@ -78,9 +78,9 @@ public class ConfigurableChestMachineBlockEntity extends MachineBlockEntity impl
 
     @Override
     public void tick() {
-        if (!world.isClient()) {
+        if (!level.isClientSide()) {
             if (orientation.extractItems) {
-                inventory.autoExtractItems(world, pos, orientation.outputDirection);
+                inventory.autoExtractItems(level, worldPosition, orientation.outputDirection);
             }
         }
     }

@@ -29,14 +29,14 @@ import aztech.modern_industrialization.util.WorldHelper;
 import com.google.common.base.Preconditions;
 import it.unimi.dsi.fastutil.longs.*;
 import java.util.*;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtElement;
-import net.minecraft.nbt.NbtList;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.ChunkPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.world.chunk.ChunkStatus;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.level.chunk.ChunkStatus;
 import org.jetbrains.annotations.Nullable;
 
 public class PipeNetworkManager {
@@ -57,7 +57,7 @@ public class PipeNetworkManager {
     /**
      * Tick networks
      */
-    public void tickNetworks(ServerWorld world) {
+    public void tickNetworks(ServerLevel world) {
         // Mark ticking chunks
         updateTickingChunks(world);
 
@@ -68,11 +68,11 @@ public class PipeNetworkManager {
 
         // Mark pipes in ticking chunks as dirty.
         for (long chunkPos : tickingChunks) {
-            int chunkX = ChunkPos.getPackedX(chunkPos);
-            int chunkZ = ChunkPos.getPackedZ(chunkPos);
+            int chunkX = ChunkPos.getX(chunkPos);
+            int chunkZ = ChunkPos.getZ(chunkPos);
             var chunk = world.getChunk(chunkX, chunkZ, ChunkStatus.FULL, false);
             if (chunk != null) {
-                chunk.setShouldSave(true);
+                chunk.setUnsaved(true);
             } else {
                 // This is not supposed to happen.
                 var sb = new StringBuilder();
@@ -97,7 +97,7 @@ public class PipeNetworkManager {
         return networkByBlock.containsKey(pos);
     }
 
-    private void updateTickingChunks(ServerWorld world) {
+    private void updateTickingChunks(ServerLevel world) {
         var tmp = tickingChunks;
         tickingChunks = lastTickingChunks;
         lastTickingChunks = tmp;
@@ -141,7 +141,7 @@ public class PipeNetworkManager {
             return;
 
         // Add links
-        BlockPos otherPos = pos.offset(direction);
+        BlockPos otherPos = pos.relative(direction);
         links.get(pos).add(direction);
         links.get(otherPos).add(direction.getOpposite());
 
@@ -177,7 +177,7 @@ public class PipeNetworkManager {
             return;
 
         // Remove links
-        BlockPos otherPos = pos.offset(direction);
+        BlockPos otherPos = pos.relative(direction);
         links.get(pos).remove(direction);
         links.get(otherPos).remove(direction.getOpposite());
 
@@ -195,7 +195,7 @@ public class PipeNetworkManager {
                 }
                 unvisitedNodes.remove(currentPos);
                 for (Direction direction : links.get(currentPos)) {
-                    dfs(currentPos.offset(direction));
+                    dfs(currentPos.relative(direction));
                 }
             }
         }
@@ -233,7 +233,7 @@ public class PipeNetworkManager {
      * Check if a link would be possible. A node must exist at pos.
      */
     public boolean canLink(BlockPos pos, Direction direction, boolean forceLink) {
-        BlockPos otherPos = pos.offset(direction);
+        BlockPos otherPos = pos.relative(direction);
         PipeNetwork network = networkByBlock.get(pos);
         PipeNetwork otherNetwork = networkByBlock.get(otherPos);
         return otherNetwork != null && (network.data.equals(otherNetwork.data) || forceLink && network.merge(otherNetwork) != null);
@@ -250,10 +250,10 @@ public class PipeNetworkManager {
         if (node != null) {
             node.network = network;
         }
-        networkByBlock.put(pos.toImmutable(), network);
+        networkByBlock.put(pos.immutable(), network);
         incrementSpanned(pos);
         network.setNode(pos, node);
-        links.put(pos.toImmutable(), new HashSet<>());
+        links.put(pos.immutable(), new HashSet<>());
         checkStateCoherence();
     }
 
@@ -320,11 +320,11 @@ public class PipeNetworkManager {
     }
 
     private void incrementSpanned(BlockPos pos) {
-        spannedChunks.computeIfAbsent(ChunkPos.toLong(pos), p -> new HashSet<>()).add(pos.toImmutable());
+        spannedChunks.computeIfAbsent(ChunkPos.asLong(pos), p -> new HashSet<>()).add(pos.immutable());
     }
 
     private void decrementSpanned(BlockPos pos) {
-        long chunkPos = ChunkPos.toLong(pos);
+        long chunkPos = ChunkPos.asLong(pos);
         Set<BlockPos> set = spannedChunks.get(chunkPos);
         set.remove(pos);
         if (set.size() == 0) {
@@ -332,13 +332,13 @@ public class PipeNetworkManager {
         }
     }
 
-    public void fromNbt(NbtCompound tag) {
+    public void fromNbt(CompoundTag tag) {
         // networks
-        NbtList networksTag = tag.getList("networks", new NbtCompound().getType());
-        for (NbtElement networkTag : networksTag) {
+        ListTag networksTag = tag.getList("networks", new CompoundTag().getId());
+        for (Tag networkTag : networksTag) {
             PipeNetwork network = type.getNetworkCtor().apply(-1, null);
             network.manager = this;
-            network.fromTag((NbtCompound) networkTag);
+            network.fromTag((CompoundTag) networkTag);
             networks.add(network);
         }
 
@@ -361,13 +361,13 @@ public class PipeNetworkManager {
         checkStateCoherence();
     }
 
-    public NbtCompound toTag(NbtCompound tag) {
+    public CompoundTag toTag(CompoundTag tag) {
         // networks
-        List<NbtCompound> networksTags = new ArrayList<>();
+        List<CompoundTag> networksTags = new ArrayList<>();
         for (PipeNetwork network : networks) {
-            networksTags.add(network.toTag(new NbtCompound()));
+            networksTags.add(network.toTag(new CompoundTag()));
         }
-        NbtList networksTag = new NbtList();
+        ListTag networksTag = new ListTag();
         networksTag.addAll(networksTags);
         tag.put("networks", networksTag);
 

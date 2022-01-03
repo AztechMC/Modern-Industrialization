@@ -30,64 +30,69 @@ import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.transfer.v1.client.fluid.FluidVariantRendering;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.item.TooltipContext;
-import net.minecraft.text.*;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.Style;
+import net.minecraft.network.chat.TextColor;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.world.item.TooltipFlag;
 
 public class FluidHelper {
 
-    public static Text getFluidName(FluidVariant fluid, boolean grayIfEmpty) {
+    public static Component getFluidName(FluidVariant fluid, boolean grayIfEmpty) {
         if (fluid.isBlank()) {
             Style style = grayIfEmpty ? Style.EMPTY.withColor(TextColor.fromRgb(0xa9a9a9)).withItalic(true) : Style.EMPTY;
-            return new TranslatableText("text.modern_industrialization.empty").setStyle(style);
+            return new TranslatableComponent("text.modern_industrialization.empty").setStyle(style);
         } else {
             return FluidVariantRendering.getName(fluid);
         }
     }
 
-    public static List<Text> getTooltip(FluidVariant fluid, boolean grayIfEmpty) {
+    public static List<Component> getTooltip(FluidVariant fluid, boolean grayIfEmpty) {
 
         if (fluid.isBlank()) {
-            ArrayList<Text> list = new ArrayList();
+            ArrayList<Component> list = new ArrayList();
             list.add(getFluidName(fluid, grayIfEmpty));
             return list;
         }
         return FluidVariantRendering.getTooltip(fluid,
-                MinecraftClient.getInstance().options.advancedItemTooltips ? TooltipContext.Default.ADVANCED : TooltipContext.Default.NORMAL);
+                Minecraft.getInstance().options.advancedItemTooltips ? TooltipFlag.Default.ADVANCED : TooltipFlag.Default.NORMAL);
     }
 
-    public static List<Text> getTooltipForFluidStorage(FluidVariant fluid, long amount, long capacity, boolean grayIfEmpty) {
-        List<Text> tooltip = FluidHelper.getTooltip(fluid, grayIfEmpty);
+    public static List<Component> getTooltipForFluidStorage(FluidVariant fluid, long amount, long capacity, boolean grayIfEmpty) {
+        List<Component> tooltip = FluidHelper.getTooltip(fluid, grayIfEmpty);
         tooltip.add(FluidHelper.getFluidAmount(amount, capacity));
         return tooltip;
     }
 
-    public static List<Text> getTooltipForFluidStorage(FluidVariant fluid, long amount, long capacity) {
+    public static List<Component> getTooltipForFluidStorage(FluidVariant fluid, long amount, long capacity) {
         return getTooltipForFluidStorage(fluid, amount, capacity, true);
     }
 
     @Environment(EnvType.CLIENT)
-    public static MutableText getFluidAmount(long amount, long capacity) {
+    public static MutableComponent getFluidAmount(long amount, long capacity) {
         if (capacity < 100 * FluidConstants.BUCKET || Screen.hasShiftDown()) {
             String text = FluidTextHelper.getUnicodeMillibuckets(amount, false) + " / " + capacity / 81;
-            return new LiteralText(text + " mB");
+            return new TextComponent(text + " mB");
         } else {
             var maxedAmount = TextHelper.getMaxedAmount((double) amount / FluidConstants.BUCKET,
                     (double) capacity / FluidConstants.BUCKET);
-            return new LiteralText(maxedAmount.digit() + " / " + maxedAmount.maxDigit() + " " + maxedAmount.unit() + "B");
+            return new TextComponent(maxedAmount.digit() + " / " + maxedAmount.maxDigit() + " " + maxedAmount.unit() + "B");
         }
 
     }
 
     @Environment(EnvType.CLIENT)
-    public static MutableText getFluidAmount(long amount) {
+    public static MutableComponent getFluidAmount(long amount) {
         if (amount < 100 * FluidConstants.BUCKET || Screen.hasShiftDown()) {
             String text = FluidTextHelper.getUnicodeMillibuckets(amount, false);
-            return new LiteralText(text + " mB");
+            return new TextComponent(text + " mB");
         } else {
             var amountUnit = TextHelper.getAmount((double) amount / FluidConstants.BUCKET);
-            return new LiteralText(amountUnit.digit() + " " + amountUnit.unit() + "B");
+            return new TextComponent(amountUnit.digit() + " " + amountUnit.unit() + "B");
         }
     }
 

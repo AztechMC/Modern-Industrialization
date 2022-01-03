@@ -38,11 +38,11 @@ import me.shedaniel.rei.api.common.entry.EntryIngredient;
 import me.shedaniel.rei.api.common.entry.EntryStack;
 import net.fabricmc.fabric.api.transfer.v1.client.fluid.FluidVariantRendering;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
-import net.minecraft.util.Identifier;
+import net.minecraft.resources.ResourceLocation;
 
 public class MachineRecipeDisplay implements Display {
     final MachineRecipe recipe;
-    private final Identifier category;
+    private final ResourceLocation category;
 
     private static final BiFunction<EntryStack<?>, Tooltip, Tooltip> FLUID_TOOLTIP = (stack, tooltip) -> {
         FluidStack fs = stack.castValue();
@@ -51,7 +51,7 @@ public class MachineRecipeDisplay implements Display {
                 FluidHelper.getFluidAmount(amount));
     };
 
-    public MachineRecipeDisplay(Identifier categoryId, MachineRecipe recipe) {
+    public MachineRecipeDisplay(ResourceLocation categoryId, MachineRecipe recipe) {
         this.recipe = recipe;
         this.category = categoryId;
     }
@@ -89,7 +89,7 @@ public class MachineRecipeDisplay implements Display {
     }
 
     @Override
-    public Optional<Identifier> getDisplayLocation() {
+    public Optional<ResourceLocation> getDisplayLocation() {
         return Optional.of(recipe.getId());
     }
 

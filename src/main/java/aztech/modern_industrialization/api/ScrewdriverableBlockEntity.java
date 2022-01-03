@@ -23,10 +23,10 @@
  */
 package aztech.modern_industrialization.api;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.Hand;
-import net.minecraft.util.hit.BlockHitResult;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.phys.BlockHitResult;
 
 public interface ScrewdriverableBlockEntity {
-    boolean useScrewdriver(PlayerEntity player, Hand hand, BlockHitResult hitResult);
+    boolean useScrewdriver(Player player, InteractionHand hand, BlockHitResult hitResult);
 }

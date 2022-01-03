@@ -36,12 +36,12 @@ import net.fabricmc.fabric.api.renderer.v1.mesh.MutableQuadView;
 import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
 import net.fabricmc.fabric.api.transfer.v1.client.fluid.FluidVariantRendering;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
-import net.minecraft.client.texture.Sprite;
-import net.minecraft.client.util.SpriteIdentifier;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.world.BlockRenderView;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.resources.model.Material;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.BlockAndTintGetter;
 import org.jetbrains.annotations.Nullable;
 
 public class PipeMeshCache implements PipeRenderer {
@@ -73,14 +73,14 @@ public class PipeMeshCache implements PipeRenderer {
      * 
      * @param innerQuads Whether to add inner quads, e.g. for fluid rendering.
      */
-    public PipeMeshCache(Function<SpriteIdentifier, Sprite> textureGetter, SpriteIdentifier[] spriteIds, boolean innerQuads) {
+    public PipeMeshCache(Function<Material, TextureAtlasSprite> textureGetter, Material[] spriteIds, boolean innerQuads) {
         connectionMeshes = new Mesh[spriteIds.length][3][6][8];
         centerMeshes = new Mesh[3][1 << 6];
 
         // Build the connection cache
         Renderer renderer = RendererAccess.INSTANCE.getRenderer();
         for (int i = 0; i < spriteIds.length; ++i) {
-            Sprite sprite = textureGetter.apply(spriteIds[i]);
+            TextureAtlasSprite sprite = textureGetter.apply(spriteIds[i]);
             for (int logicalSlot = 0; logicalSlot < 3; ++logicalSlot) {
                 for (Direction direction : Direction.values()) {
                     for (int j = 0; j < 8; ++j) {
@@ -104,14 +104,14 @@ public class PipeMeshCache implements PipeRenderer {
                         } else {
                             pmb.longBend(reduced, end);
                         }
-                        connectionMeshes[i][logicalSlot][direction.getId()][j] = meshBuilder.build();
+                        connectionMeshes[i][logicalSlot][direction.get3DDataValue()][j] = meshBuilder.build();
                     }
                 }
             }
         }
 
         // Build the center cache
-        Sprite sprite = textureGetter.apply(spriteIds[0]);
+        TextureAtlasSprite sprite = textureGetter.apply(spriteIds[0]);
         for (int logicalSlot = 0; logicalSlot < 3; ++logicalSlot) {
             for (int mask = 0; mask < (1 << 6); ++mask) {
                 MeshBuilder meshBuilder = renderer.meshBuilder();
@@ -140,8 +140,8 @@ public class PipeMeshCache implements PipeRenderer {
      * @param connections For every logical slot, then for every direction, the
      *                    connection type or null for no connection.
      */
-    public void draw(@Nullable BlockRenderView view, @Nullable BlockPos pos, RenderContext ctx, int logicalSlot, PipeEndpointType[][] connections,
-            NbtCompound customData) {
+    public void draw(@Nullable BlockAndTintGetter view, @Nullable BlockPos pos, RenderContext ctx, int logicalSlot, PipeEndpointType[][] connections,
+            CompoundTag customData) {
         // The render type of the connections (0 for no connection, 1 for straight pipe,
         // 2 for short bend, etc...)
         int[] renderTypes = new int[6];
@@ -154,19 +154,19 @@ public class PipeMeshCache implements PipeRenderer {
 
         // Compute these variables
         for (Direction direction : Direction.values()) {
-            int i = direction.getId();
+            int i = direction.get3DDataValue();
             renderTypes[i] = PipePartBuilder.getRenderType(logicalSlot, direction, connections);
             if (renderTypes[i] != 0) {
                 initialDirections[i] = PipePartBuilder.getInitialDirection(logicalSlot, direction, renderTypes[i]);
-                connectionsInDirection[initialDirections[i].getId()]++;
-                directionsMask |= 1 << initialDirections[i].getId();
+                connectionsInDirection[initialDirections[i].get3DDataValue()]++;
+                directionsMask |= 1 << initialDirections[i].get3DDataValue();
             }
         }
 
         // Fluid handling logic
         if (customData.contains("fluid")) {
             FluidVariant fluid = NbtHelper.getFluidCompatible(customData, "fluid");
-            Sprite still = FluidVariantRendering.getSprite(fluid);
+            TextureAtlasSprite still = FluidVariantRendering.getSprite(fluid);
             int color = FluidVariantRendering.getColor(fluid, view, pos);
             ctx.pushTransform(quad -> {
                 if (quad.tag() == 1) {
@@ -189,7 +189,7 @@ public class PipeMeshCache implements PipeRenderer {
             PipeEndpointType endpointType = connections[logicalSlot][i];
             if (endpointType != null) {
                 int renderType = renderTypes[i] - 1;
-                if (connectionsInDirection[initialDirections[i].getId()] > 1) {
+                if (connectionsInDirection[initialDirections[i].get3DDataValue()] > 1) {
                     renderType += 4; // Conflict handling
                 }
                 Mesh mesh = connectionMeshes[endpointType.getId()][logicalSlot][i][renderType];

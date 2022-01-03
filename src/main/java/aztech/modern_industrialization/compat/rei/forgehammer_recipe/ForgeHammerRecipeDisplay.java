@@ -35,8 +35,8 @@ import me.shedaniel.rei.api.common.entry.EntryIngredient;
 import me.shedaniel.rei.api.common.util.EntryIngredients;
 import me.shedaniel.rei.api.common.util.EntryStacks;
 import net.fabricmc.fabric.api.tag.TagFactory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.recipe.Ingredient;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
 
 public class ForgeHammerRecipeDisplay implements Display {
 
@@ -54,7 +54,7 @@ public class ForgeHammerRecipeDisplay implements Display {
         inputs.add(ReiUtil.createInputEntries(input));
 
         if (recipe.eu > 0) {
-            EntryIngredient tools = EntryIngredients.ofIngredient(Ingredient.fromTag(
+            EntryIngredient tools = EntryIngredients.ofIngredient(Ingredient.of(
                     TagFactory.ITEM.create(ForgeTool.TAG)));
             inputs.add(tools);
         }

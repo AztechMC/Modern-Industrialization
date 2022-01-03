@@ -29,9 +29,9 @@ import aztech.modern_industrialization.recipe.json.MIRecipeJson;
 import aztech.modern_industrialization.recipe.json.SmithingRecipeJson;
 import java.util.function.Consumer;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
-import net.minecraft.data.server.recipe.RecipeJsonProvider;
-import net.minecraft.item.Item;
-import net.minecraft.util.registry.Registry;
+import net.minecraft.core.Registry;
+import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.world.item.Item;
 
 public class SteelUpgradeProvider extends MIRecipesProvider {
 
@@ -42,7 +42,7 @@ public class SteelUpgradeProvider extends MIRecipesProvider {
     }
 
     @Override
-    protected void generateRecipes(Consumer<RecipeJsonProvider> consumer) {
+    protected void generateRecipes(Consumer<FinishedRecipe> consumer) {
 
         Item upgrade = Registry.ITEM.get(new MIIdentifier("steel_upgrade"));
 

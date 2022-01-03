@@ -1,0 +1,18 @@
+{
+  "name": "更好的柴油",
+  "category": "modern_industrialization:midgame",
+  "icon": "modern_industrialization:turbo_diesel_generator",
+  "pages": [
+    {
+      "type": "crafting",
+      "recipe": "modern_industrialization:electric_age/machine/turbo_diesel_generator_asbl",
+      "text": "请记住，您可以使用涡轮柴油发电机进行兼容 HV 发电。正如您所料，它的产量高达 512 EU/t。请记住，您可以使用 REI 找到每种燃料中存储的能量。"
+    },
+    {
+      "type": "crafting",
+      "recipe": "modern_industrialization:electric_age/machine/large_diesel_generator_asbl",
+      "text": "一旦您可以使用处理单元和高度先进的机器外壳，就可以考虑制造一些大型柴油发电机。这些坏男孩中的每一个都会将燃料转化为 EU，高达 16384 EU/t！"
+    }
+  ],
+  "sortnum": 204
+}

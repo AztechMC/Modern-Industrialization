@@ -23,12 +23,12 @@
  */
 package aztech.modern_industrialization.pipes;
 
-import static net.minecraft.command.argument.BlockPosArgumentType.blockPos;
-import static net.minecraft.command.argument.BlockPosArgumentType.getLoadedBlockPos;
-import static net.minecraft.command.argument.IdentifierArgumentType.getIdentifier;
-import static net.minecraft.command.argument.IdentifierArgumentType.identifier;
-import static net.minecraft.server.command.CommandManager.argument;
-import static net.minecraft.server.command.CommandManager.literal;
+import static net.minecraft.commands.Commands.argument;
+import static net.minecraft.commands.Commands.literal;
+import static net.minecraft.commands.arguments.ResourceLocationArgument.getId;
+import static net.minecraft.commands.arguments.ResourceLocationArgument.id;
+import static net.minecraft.commands.arguments.coordinates.BlockPosArgument.blockPos;
+import static net.minecraft.commands.arguments.coordinates.BlockPosArgument.getLoadedBlockPos;
 
 import aztech.modern_industrialization.MIConfig;
 import aztech.modern_industrialization.pipes.api.PipeNetworkType;
@@ -38,16 +38,16 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import com.mojang.brigadier.suggestion.SuggestionProvider;
 import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
-import net.minecraft.block.Blocks;
-import net.minecraft.command.CommandSource;
-import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.text.LiteralText;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.SharedSuggestionProvider;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.block.Blocks;
 
 public class MIPipesCommands {
-    private static final SuggestionProvider<ServerCommandSource> SUGGESTION_PROVIDER = (context, builder) -> {
-        return CommandSource.suggestIdentifiers(PipeNetworkType.getTypes().keySet().stream(), builder);
+    private static final SuggestionProvider<CommandSourceStack> SUGGESTION_PROVIDER = (context, builder) -> {
+        return SharedSuggestionProvider.suggestResource(PipeNetworkType.getTypes().keySet().stream(), builder);
     };
 
     // @formatter:off
@@ -58,7 +58,7 @@ public class MIPipesCommands {
             }
 
             dispatcher.register(literal("mi")
-                    .requires(source -> source.hasPermissionLevel(4))
+                    .requires(source -> source.hasPermission(4))
                     .then(literal("pipes")
                             .then(argument("pos", blockPos())
                                     .then(literal("clear")
@@ -67,9 +67,9 @@ public class MIPipesCommands {
                                             })
                                     )
                                     .then(literal("add_ghost")
-                                            .then(argument("pipe_type", identifier()).suggests(SUGGESTION_PROVIDER)
+                                            .then(argument("pipe_type", id()).suggests(SUGGESTION_PROVIDER)
                                                     .executes(ctx -> {
-                                                        return addGhostPipe(ctx.getSource(), getLoadedBlockPos(ctx, "pos"), getIdentifier(ctx, "pipe_type"));
+                                                        return addGhostPipe(ctx.getSource(), getLoadedBlockPos(ctx, "pos"), getId(ctx, "pipe_type"));
                                                     })
                                             )
                                     )
@@ -80,38 +80,38 @@ public class MIPipesCommands {
     }
     // @formatter:on
 
-    private static int clearPipes(ServerCommandSource src, BlockPos pos) {
+    private static int clearPipes(CommandSourceStack src, BlockPos pos) {
         // Clear pipe block first (if possible, hopefully yes)
-        if (src.getWorld().getBlockState(pos).isOf(MIPipes.BLOCK_PIPE)) {
-            src.getWorld().setBlockState(pos, Blocks.AIR.getDefaultState());
+        if (src.getLevel().getBlockState(pos).is(MIPipes.BLOCK_PIPE)) {
+            src.getLevel().setBlockAndUpdate(pos, Blocks.AIR.defaultBlockState());
         }
 
-        var networks = PipeNetworks.get(src.getWorld());
+        var networks = PipeNetworks.get(src.getLevel());
         for (var type : PipeNetworkType.getTypes().values()) {
             var manager = networks.getManager(type);
             if (manager.hasNode(pos)) {
                 manager.removeNode(pos);
-                src.sendFeedback(new LiteralText("Successfully removed pipe of type %s at position %s.".formatted(type.getIdentifier(), pos)), true);
+                src.sendSuccess(new TextComponent("Successfully removed pipe of type %s at position %s.".formatted(type.getIdentifier(), pos)), true);
             }
         }
 
         return Command.SINGLE_SUCCESS;
     }
 
-    private static int addGhostPipe(ServerCommandSource src, BlockPos pos, Identifier pipeType) throws CommandSyntaxException {
+    private static int addGhostPipe(CommandSourceStack src, BlockPos pos, ResourceLocation pipeType) throws CommandSyntaxException {
         PipeNetworkType type = PipeNetworkType.get(pipeType);
         if (type == null) {
-            throw new SimpleCommandExceptionType(new LiteralText("Unknown pipe network type: " + pipeType)).create();
+            throw new SimpleCommandExceptionType(new TextComponent("Unknown pipe network type: " + pipeType)).create();
         }
 
-        var networks = PipeNetworks.get(src.getWorld());
+        var networks = PipeNetworks.get(src.getLevel());
         var manager = networks.getManager(type);
         if (!manager.hasNode(pos)) {
             manager.addNode(type.getNodeCtor().get(), pos, MIPipes.INSTANCE.getPipeItem(type).defaultData);
-            src.sendFeedback(new LiteralText("Successfully added pipe of type %s at position %s.".formatted(type.getIdentifier(), pos)), true);
+            src.sendSuccess(new TextComponent("Successfully added pipe of type %s at position %s.".formatted(type.getIdentifier(), pos)), true);
         } else {
-            src.sendFeedback(
-                    new LiteralText("Failed to add pipe of type %s at position %s as it already existed.".formatted(type.getIdentifier(), pos)),
+            src.sendSuccess(
+                    new TextComponent("Failed to add pipe of type %s at position %s as it already existed.".formatted(type.getIdentifier(), pos)),
                     true);
         }
 

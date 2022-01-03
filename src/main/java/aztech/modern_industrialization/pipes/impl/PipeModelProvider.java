@@ -28,15 +28,15 @@ import java.util.HashSet;
 import java.util.Set;
 import net.fabricmc.fabric.api.client.model.ModelProviderContext;
 import net.fabricmc.fabric.api.client.model.ModelResourceProvider;
-import net.minecraft.client.render.model.UnbakedModel;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.resources.model.UnbakedModel;
+import net.minecraft.resources.ResourceLocation;
 
 public class PipeModelProvider implements ModelResourceProvider {
     private static final PipeModel PIPE_MODEL = new PipeModel();
-    public static Set<Identifier> modelNames = new HashSet<>();
+    public static Set<ResourceLocation> modelNames = new HashSet<>();
 
     @Override
-    public UnbakedModel loadModelResource(Identifier identifier, ModelProviderContext modelProviderContext) {
+    public UnbakedModel loadModelResource(ResourceLocation identifier, ModelProviderContext modelProviderContext) {
         return modelNames.contains(identifier) ? PIPE_MODEL : null;
     }
 

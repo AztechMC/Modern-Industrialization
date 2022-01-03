@@ -23,29 +23,30 @@
  */
 package aztech.modern_industrialization.machines.multiblocks;
 
+import aztech.modern_industrialization.MIConfig;
 import aztech.modern_industrialization.ModernIndustrialization;
 import aztech.modern_industrialization.machines.MachineBlock;
 import aztech.modern_industrialization.machines.MachineBlockEntityRenderer;
 import aztech.modern_industrialization.util.RenderHelper;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.render.VertexConsumerProvider;
-import net.minecraft.client.render.block.entity.BlockEntityRendererFactory;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.BlockPos;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import org.jetbrains.annotations.Nullable;
 
 public class MultiblockMachineBER extends MachineBlockEntityRenderer<MultiblockMachineBlockEntity> {
-    public MultiblockMachineBER(BlockEntityRendererFactory.Context ctx) {
+    public MultiblockMachineBER(BlockEntityRendererProvider.Context ctx) {
         super(ctx);
     }
 
     @Override
-    public void render(MultiblockMachineBlockEntity be, float tickDelta, MatrixStack matrices, VertexConsumerProvider vcp, int light, int overlay) {
+    public void render(MultiblockMachineBlockEntity be, float tickDelta, PoseStack matrices, MultiBufferSource vcp, int light, int overlay) {
         super.render(be, tickDelta, matrices, vcp, light, overlay);
 
         // Only render if holding a wrench AND if the shape is not valid.
@@ -53,15 +54,15 @@ public class MultiblockMachineBER extends MachineBlockEntityRenderer<MultiblockM
         boolean drawHighlights = isHoldingWrench() && !be.isShapeValid();
         HatchType hatchType = getHeldHatchType();
         if (drawHighlights || hatchType != null) {
-            ShapeMatcher matcher = new ShapeMatcher(be.getWorld(), be.getPos(), be.getOrientation().facingDirection, be.getActiveShape());
+            ShapeMatcher matcher = new ShapeMatcher(be.getLevel(), be.getBlockPos(), be.getOrientation().facingDirection, be.getActiveShape());
 
             for (BlockPos pos : matcher.getPositions()) {
-                matrices.push();
-                matrices.translate(pos.getX() - be.getPos().getX(), pos.getY() - be.getPos().getY(), pos.getZ() - be.getPos().getZ());
+                matrices.pushPose();
+                matrices.translate(pos.getX() - be.getBlockPos().getX(), pos.getY() - be.getBlockPos().getY(), pos.getZ() - be.getBlockPos().getZ());
 
                 HatchFlags hatchFlag = matcher.getHatchFlags(pos);
                 if (hatchType != null) {
-                    if (hatchFlag != null && hatchFlag.allows(hatchType)) {
+                    if (MIConfig.getConfig().enableHatchPlacementOverlay && hatchFlag != null && hatchFlag.allows(hatchType)) {
                         // Highlight placeable hatches in green
                         matrices.translate(-0.005, -0.005, -0.005);
                         matrices.scale(1.01f, 1.01f, 1.01f);
@@ -69,8 +70,8 @@ public class MultiblockMachineBER extends MachineBlockEntityRenderer<MultiblockM
                     }
                 }
                 if (drawHighlights) {
-                    if (!matcher.matches(pos, be.getWorld(), null)) {
-                        if (be.getWorld().getBlockState(pos).isAir()) {
+                    if (!matcher.matches(pos, be.getLevel(), null)) {
+                        if (be.getLevel().getBlockState(pos).isAir()) {
                             // Enqueue state preview
                             MultiblockErrorHighlight.enqueueHighlight(pos, matcher.getSimpleMember(pos).getPreviewState());
                         } else {
@@ -80,21 +81,21 @@ public class MultiblockMachineBER extends MachineBlockEntityRenderer<MultiblockM
                     }
                 }
 
-                matrices.pop();
+                matrices.popPose();
             }
         }
     }
 
     private static boolean isHoldingWrench() {
-        PlayerEntity player = MinecraftClient.getInstance().player;
-        return player.getMainHandStack().isIn(ModernIndustrialization.WRENCHES) || player.getOffHandStack().isIn(ModernIndustrialization.WRENCHES);
+        Player player = Minecraft.getInstance().player;
+        return player.getMainHandItem().is(ModernIndustrialization.WRENCHES) || player.getOffhandItem().is(ModernIndustrialization.WRENCHES);
     }
 
     @Nullable
     private static HatchType getHeldHatchType() {
-        PlayerEntity player = MinecraftClient.getInstance().player;
-        HatchType mainHand = getHatchType(player.getMainHandStack());
-        HatchType offHand = getHatchType(player.getOffHandStack());
+        Player player = Minecraft.getInstance().player;
+        HatchType mainHand = getHatchType(player.getMainHandItem());
+        HatchType offHand = getHatchType(player.getOffhandItem());
         return mainHand == null ? offHand : mainHand;
     }
 
@@ -105,7 +106,7 @@ public class MultiblockMachineBER extends MachineBlockEntityRenderer<MultiblockM
             BlockItem blockItem = (BlockItem) item;
             if (blockItem.getBlock() instanceof MachineBlock) {
                 MachineBlock block = (MachineBlock) blockItem.getBlock();
-                BlockEntity be = block.createBlockEntity(new BlockPos(0, 0, 0), block.getDefaultState());
+                BlockEntity be = block.newBlockEntity(new BlockPos(0, 0, 0), block.defaultBlockState());
                 if (be instanceof HatchBlockEntity) {
                     HatchBlockEntity hatch = (HatchBlockEntity) be;
                     return hatch.getHatchType();

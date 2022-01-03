@@ -52,8 +52,8 @@ public class DashTankModel implements DashModel {
     }
 
     public DashTankModel(TankModel model, DashRegistry registry) {
-        transformation = new DashModelTransformation(model.getTransformation());
-        tankSprite = registry.createSpritePointer(model.getParticleSprite());
+        transformation = new DashModelTransformation(model.getTransforms());
+        tankSprite = registry.createSpritePointer(model.getParticleIcon());
         tankMesh = new DashMesh(model.getTankMesh());
     }
 

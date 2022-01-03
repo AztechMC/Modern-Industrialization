@@ -26,16 +26,16 @@ package aztech.modern_industrialization.util;
 import aztech.modern_industrialization.ModernIndustrialization;
 import java.util.HashMap;
 import net.devtech.arrp.json.tags.JTag;
-import net.minecraft.util.Identifier;
+import net.minecraft.resources.ResourceLocation;
 
 public class ResourceUtil {
-    private static final HashMap<Identifier, JTag> tags = new HashMap<>();
+    private static final HashMap<ResourceLocation, JTag> tags = new HashMap<>();
 
     /**
      * Append a value to a tag. Will only work if all calls go through this
      * function.
      */
-    public static synchronized void appendToTag(Identifier tagId, Identifier elementId) {
+    public static synchronized void appendToTag(ResourceLocation tagId, ResourceLocation elementId) {
         // We use a copy-on-write strategy to update the JTag every time with the added
         // entry.
         JTag jtag = tags.computeIfAbsent(tagId, id -> JTag.tag());
@@ -43,15 +43,15 @@ public class ResourceUtil {
         ModernIndustrialization.RESOURCE_PACK.addTag(tagId, jtag);
     }
 
-    public static void appendToItemTag(Identifier tagId, Identifier elementId) {
-        appendToTag(new Identifier(tagId.getNamespace(), "items/" + tagId.getPath()), elementId);
+    public static void appendToItemTag(ResourceLocation tagId, ResourceLocation elementId) {
+        appendToTag(new ResourceLocation(tagId.getNamespace(), "items/" + tagId.getPath()), elementId);
     }
 
-    public static synchronized void appendTagToItemTag(Identifier tagId, Identifier subtag) {
-        appendTagToTag(new Identifier(tagId.getNamespace(), "items/" + tagId.getPath()), subtag);
+    public static synchronized void appendTagToItemTag(ResourceLocation tagId, ResourceLocation subtag) {
+        appendTagToTag(new ResourceLocation(tagId.getNamespace(), "items/" + tagId.getPath()), subtag);
     }
 
-    public static synchronized void appendTagToTag(Identifier tagId, Identifier subtag) {
+    public static synchronized void appendTagToTag(ResourceLocation tagId, ResourceLocation subtag) {
         // We use a copy-on-write strategy to update the JTag every time with the added
         // entry.
         JTag jtag = tags.computeIfAbsent(tagId, id -> JTag.tag());
@@ -60,10 +60,10 @@ public class ResourceUtil {
     }
 
     public static synchronized void appendTagToTag(String tagId, String subtag) {
-        appendTagToTag(new Identifier((tagId)), new Identifier(subtag));
+        appendTagToTag(new ResourceLocation((tagId)), new ResourceLocation(subtag));
     }
 
     public static synchronized void appendToTag(String tagId, String elementId) {
-        appendToTag(new Identifier(tagId), new Identifier(elementId));
+        appendToTag(new ResourceLocation(tagId), new ResourceLocation(elementId));
     }
 }

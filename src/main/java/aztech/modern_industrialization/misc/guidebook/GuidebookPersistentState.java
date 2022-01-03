@@ -25,15 +25,15 @@ package aztech.modern_industrialization.misc.guidebook;
 
 import java.util.*;
 import net.fabricmc.fabric.api.util.NbtType;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtList;
-import net.minecraft.nbt.NbtString;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.StringTag;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.world.PersistentState;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.saveddata.SavedData;
 
-public class GuidebookPersistentState extends PersistentState {
+public class GuidebookPersistentState extends SavedData {
     private static final String NAME = "modern_industrialization_guidebook";
     private final Set<String> receivedPlayers;
 
@@ -45,18 +45,18 @@ public class GuidebookPersistentState extends PersistentState {
         this(new HashSet<>());
     }
 
-    public boolean hasPlayerReceivedGuidebook(PlayerEntity player) {
-        return receivedPlayers.contains(player.getUuidAsString());
+    public boolean hasPlayerReceivedGuidebook(Player player) {
+        return receivedPlayers.contains(player.getStringUUID());
     }
 
-    public void addPlayerReceivedGuidebook(PlayerEntity player) {
-        receivedPlayers.add(player.getUuidAsString());
-        markDirty();
+    public void addPlayerReceivedGuidebook(Player player) {
+        receivedPlayers.add(player.getStringUUID());
+        setDirty();
     }
 
-    public static GuidebookPersistentState fromNbt(NbtCompound tag) {
+    public static GuidebookPersistentState fromNbt(CompoundTag tag) {
         Set<String> receivedPlayers = new HashSet<>();
-        NbtList list = tag.getList("receivedPlayers", NbtType.STRING);
+        ListTag list = tag.getList("receivedPlayers", NbtType.STRING);
         for (int i = 0; i < list.size(); ++i) {
             receivedPlayers.add(list.getString(i));
         }
@@ -64,17 +64,17 @@ public class GuidebookPersistentState extends PersistentState {
     }
 
     @Override
-    public NbtCompound writeNbt(NbtCompound tag) {
-        NbtList list = new NbtList();
+    public CompoundTag save(CompoundTag tag) {
+        ListTag list = new ListTag();
         for (String receivedPlayer : receivedPlayers) {
-            list.add(NbtString.of(receivedPlayer));
+            list.add(StringTag.valueOf(receivedPlayer));
         }
         tag.put("receivedPlayers", list);
         return tag;
     }
 
     public static GuidebookPersistentState get(MinecraftServer server) {
-        ServerWorld world = server.getWorld(ServerWorld.OVERWORLD);
-        return world.getPersistentStateManager().getOrCreate(GuidebookPersistentState::fromNbt, GuidebookPersistentState::new, NAME);
+        ServerLevel world = server.getLevel(ServerLevel.OVERWORLD);
+        return world.getDataStorage().computeIfAbsent(GuidebookPersistentState::fromNbt, GuidebookPersistentState::new, NAME);
     }
 }

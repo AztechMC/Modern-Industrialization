@@ -33,7 +33,7 @@ import java.util.HashMap;
 import java.util.Map;
 import net.fabricmc.fabric.api.renderer.v1.RendererAccess;
 import net.fabricmc.fabric.api.renderer.v1.material.BlendMode;
-import net.minecraft.util.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.oskarstrom.dashloader.DashRegistry;
 import net.oskarstrom.dashloader.api.annotation.DashObject;
 import net.oskarstrom.dashloader.data.serialization.PairMap;
@@ -58,11 +58,11 @@ public class DashPipeModel implements DashModel {
     }
 
     public DashPipeModel(PipeModel pipeModel, DashRegistry registry) {
-        particleSprite = registry.createSpritePointer(pipeModel.getParticleSprite());
+        particleSprite = registry.createSpritePointer(pipeModel.getParticleIcon());
         renderers = new PairMap<>();
         pipeModel.getRenderers().forEach((factory, pipeRenderer) -> {
-            Identifier factoryIdentifier = null;
-            for (Map.Entry<Identifier, PipeNetworkType> entry : PipeNetworkType.getTypes().entrySet()) {
+            ResourceLocation factoryIdentifier = null;
+            for (Map.Entry<ResourceLocation, PipeNetworkType> entry : PipeNetworkType.getTypes().entrySet()) {
                 if (factory == entry.getValue().getRenderer()) {
                     factoryIdentifier = entry.getKey();
                     break;
@@ -70,13 +70,13 @@ public class DashPipeModel implements DashModel {
             }
             renderers.put(registry.createIdentifierPointer(factoryIdentifier), new DashPipeMeshCache((PipeMeshCache) pipeRenderer));
         });
-        modelTransformation = new DashModelTransformation(pipeModel.getTransformation());
+        modelTransformation = new DashModelTransformation(pipeModel.getTransforms());
     }
 
     @Override
     public PipeModel toUndash(DashRegistry registry) {
         Map<PipeRenderer.Factory, PipeRenderer> renderersOut = new HashMap<>();
-        final Map<Identifier, PipeNetworkType> types = PipeNetworkType.getTypes();
+        final Map<ResourceLocation, PipeNetworkType> types = PipeNetworkType.getTypes();
         renderers.forEach((identifierPointer, dashPipeMeshCache) -> {
             renderersOut.put(types.get(registry.getIdentifier(identifierPointer)).getRenderer(), dashPipeMeshCache.toUndash());
         });

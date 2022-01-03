@@ -24,7 +24,7 @@
 package aztech.modern_industrialization.api;
 
 import java.util.Set;
-import net.minecraft.item.Item;
+import net.minecraft.world.item.Item;
 
 public interface WhitelistedItemStorage {
     boolean currentlyWhitelisted();

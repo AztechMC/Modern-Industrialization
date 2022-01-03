@@ -40,25 +40,25 @@ import net.fabricmc.fabric.api.rendering.data.v1.RenderAttachmentBlockEntity;
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemStorage;
-import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.network.Packet;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.network.listener.ClientPlayPacketListener;
-import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket;
-import net.minecraft.screen.ScreenHandler;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.util.math.Direction;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -107,7 +107,7 @@ public abstract class MachineBlockEntity extends FastBlockEntity
      * @throws RuntimeException if the component doesn't exist.
      */
     @SuppressWarnings("unchecked")
-    public <S extends SyncedComponent.Server> S getComponent(Identifier componentId) {
+    public <S extends SyncedComponent.Server> S getComponent(ResourceLocation componentId) {
         for (SyncedComponent.Server component : syncedComponents) {
             if (component.getId().equals(componentId)) {
                 return (S) component;
@@ -117,22 +117,22 @@ public abstract class MachineBlockEntity extends FastBlockEntity
     }
 
     @Override
-    public final Text getDisplayName() {
-        return new TranslatableText("block.modern_industrialization." + guiParams.blockId);
+    public final Component getDisplayName() {
+        return new TranslatableComponent("block.modern_industrialization." + guiParams.blockId);
     }
 
     @Override
-    public final ScreenHandler createMenu(int syncId, PlayerInventory inv, PlayerEntity player) {
+    public final AbstractContainerMenu createMenu(int syncId, Inventory inv, Player player) {
         return new MachineScreenHandlers.Server(syncId, inv, this, guiParams);
     }
 
     @Override
-    public final void writeScreenOpeningData(ServerPlayerEntity player, PacketByteBuf buf) {
+    public final void writeScreenOpeningData(ServerPlayer player, FriendlyByteBuf buf) {
         // Write inventory
         MIInventory inv = getInventory();
         buf.writeInt(inv.getItemStacks().size());
         buf.writeInt(inv.getFluidStacks().size());
-        NbtCompound tag = new NbtCompound();
+        CompoundTag tag = new CompoundTag();
         NbtHelper.putList(tag, "items", inv.getItemStacks(), ConfigurableItemStack::toNbt);
         NbtHelper.putList(tag, "fluids", inv.getFluidStacks(), ConfigurableFluidStack::toNbt);
         buf.writeNbt(tag);
@@ -142,7 +142,7 @@ public abstract class MachineBlockEntity extends FastBlockEntity
         buf.writeInt(syncedComponents.size());
         // Write components
         for (SyncedComponent.Server component : syncedComponents) {
-            buf.writeIdentifier(component.getId());
+            buf.writeResourceLocation(component.getId());
             component.writeInitialData(buf);
         }
         // Write GUI params
@@ -152,8 +152,8 @@ public abstract class MachineBlockEntity extends FastBlockEntity
     /**
      * @param face The face that was targeted, taking the overlay into account.
      */
-    protected ActionResult onUse(PlayerEntity player, Hand hand, Direction face) {
-        return ActionResult.PASS;
+    protected InteractionResult onUse(Player player, InteractionHand hand, Direction face) {
+        return InteractionResult.PASS;
     }
 
     protected abstract MachineModelClientData getModelData();
@@ -161,10 +161,10 @@ public abstract class MachineBlockEntity extends FastBlockEntity
     public abstract void onPlaced(LivingEntity placer, ItemStack itemStack);
 
     @Override
-    public boolean useWrench(PlayerEntity player, Hand hand, BlockHitResult hitResult) {
+    public boolean useWrench(Player player, InteractionHand hand, BlockHitResult hitResult) {
         if (orientation.useWrench(player, hand, MachineOverlay.findHitSide(hitResult))) {
-            markDirty();
-            if (!getWorld().isClient()) {
+            setChanged();
+            if (!getLevel().isClientSide()) {
                 sync();
             }
             return true;
@@ -188,8 +188,8 @@ public abstract class MachineBlockEntity extends FastBlockEntity
     }
 
     @Override
-    public NbtCompound toInitialChunkDataNbt() {
-        NbtCompound tag = new NbtCompound();
+    public CompoundTag getUpdateTag() {
+        CompoundTag tag = new CompoundTag();
         tag.putBoolean("remesh", syncCausesRemesh);
         syncCausesRemesh = false;
         for (IComponent component : icomponents) {
@@ -199,14 +199,14 @@ public abstract class MachineBlockEntity extends FastBlockEntity
     }
 
     @Override
-    public final void writeNbt(NbtCompound tag) {
+    public final void saveAdditional(CompoundTag tag) {
         for (IComponent component : icomponents) {
             component.writeNbt(tag);
         }
     }
 
     @Override
-    public final void readNbt(NbtCompound tag) {
+    public final void load(CompoundTag tag) {
         if (!tag.contains("remesh")) {
             for (IComponent component : icomponents) {
                 component.readNbt(tag);
@@ -217,15 +217,15 @@ public abstract class MachineBlockEntity extends FastBlockEntity
                 component.readClientNbt(tag);
             }
             if (forceChunkRemesh) {
-                RenderHelper.forceChunkRemesh(world, pos);
+                RenderHelper.forceChunkRemesh(level, worldPosition);
             }
         }
     }
 
     @Nullable
     @Override
-    public Packet<ClientPlayPacketListener> toUpdatePacket() {
-        return BlockEntityUpdateS2CPacket.create(this);
+    public Packet<ClientGamePacketListener> getUpdatePacket() {
+        return ClientboundBlockEntityDataPacket.create(this);
     }
 
     public static void registerItemApi(BlockEntityType<?> bet) {

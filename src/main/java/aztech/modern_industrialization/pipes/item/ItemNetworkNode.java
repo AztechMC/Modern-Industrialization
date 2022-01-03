@@ -35,20 +35,20 @@ import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemStorage;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
-import net.minecraft.entity.ItemEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.screen.ScreenHandler;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 
 // LBA
 public class ItemNetworkNode extends PipeNetworkNode {
@@ -56,31 +56,31 @@ public class ItemNetworkNode extends PipeNetworkNode {
     int inactiveTicks = 0;
 
     @Override
-    public void updateConnections(World world, BlockPos pos) {
+    public void updateConnections(Level world, BlockPos pos) {
         // Remove the connection to the outside world if a connection to another pipe is
         // made.
         connections.removeIf(connection -> network.manager.hasLink(pos, connection.direction));
     }
 
-    private boolean canConnect(World world, BlockPos pos, Direction direction) {
-        BlockPos adjPos = pos.offset(direction);
-        return ItemStorage.SIDED.find(world, pos.offset(direction), direction.getOpposite()) != null;
+    private boolean canConnect(Level world, BlockPos pos, Direction direction) {
+        BlockPos adjPos = pos.relative(direction);
+        return ItemStorage.SIDED.find(world, pos.relative(direction), direction.getOpposite()) != null;
     }
 
     @Override
     public PipeEndpointType[] getConnections(BlockPos pos) {
         PipeEndpointType[] connections = new PipeEndpointType[6];
         for (Direction direction : network.manager.getNodeLinks(pos)) {
-            connections[direction.getId()] = PIPE;
+            connections[direction.get3DDataValue()] = PIPE;
         }
         for (ItemConnection connection : this.connections) {
-            connections[connection.direction.getId()] = connection.type;
+            connections[connection.direction.get3DDataValue()] = connection.type;
         }
         return connections;
     }
 
     @Override
-    public void removeConnection(World world, BlockPos pos, Direction direction) {
+    public void removeConnection(Level world, BlockPos pos, Direction direction) {
         // Cycle if it exists
         for (int i = 0; i < connections.size(); i++) {
             ItemConnection conn = connections.get(i);
@@ -99,7 +99,7 @@ public class ItemNetworkNode extends PipeNetworkNode {
     }
 
     @Override
-    public void addConnection(World world, BlockPos pos, Direction direction) {
+    public void addConnection(Level world, BlockPos pos, Direction direction) {
         // Refuse if it already exists
         for (ItemConnection connection : connections) {
             if (connection.direction == direction) {
@@ -108,21 +108,22 @@ public class ItemNetworkNode extends PipeNetworkNode {
         }
         // Otherwise try to connect
         if (canConnect(world, pos, direction)) {
-            connections.add(new ItemConnection(direction, BLOCK_IN, 0));
+            connections.add(new ItemConnection(direction, BLOCK_IN, 0, 0));
         }
     }
 
     @Override
-    public NbtCompound toTag(NbtCompound tag) {
+    public CompoundTag toTag(CompoundTag tag) {
         for (ItemConnection connection : connections) {
-            NbtCompound connectionTag = new NbtCompound();
+            CompoundTag connectionTag = new CompoundTag();
             connectionTag.putByte("connections", (byte) encodeConnectionType(connection.type));
             connectionTag.putBoolean("whitelist", connection.whitelist);
-            connectionTag.putInt("priority", connection.priority);
+            connectionTag.putInt("insertPriority", connection.insertPriority);
+            connectionTag.putInt("extractPriority", connection.extractPriority);
             for (int i = 0; i < ItemPipeInterface.SLOTS; i++) {
-                connectionTag.put(Integer.toString(i), connection.stacks[i].writeNbt(new NbtCompound()));
+                connectionTag.put(Integer.toString(i), connection.stacks[i].save(new CompoundTag()));
             }
-            connectionTag.put("upgradeStack", connection.upgradeStack.writeNbt(new NbtCompound()));
+            connectionTag.put("upgradeStack", connection.upgradeStack.save(new CompoundTag()));
             tag.put(connection.direction.toString(), connectionTag);
         }
         tag.putInt("inactiveTicks", inactiveTicks);
@@ -130,19 +131,25 @@ public class ItemNetworkNode extends PipeNetworkNode {
     }
 
     @Override
-    public void fromTag(NbtCompound tag) {
+    public void fromTag(CompoundTag tag) {
         for (Direction direction : Direction.values()) {
             if (tag.contains(direction.toString())) {
-                NbtCompound connectionTag = tag.getCompound(direction.toString());
+                CompoundTag connectionTag = tag.getCompound(direction.toString());
+                int insertPriority = connectionTag.getInt("insertPriority");
+                int extractPriority = connectionTag.getInt("extractPriority");
+                if (connectionTag.contains("priority")) {
+                    // TODO: remove in 1.19, compat for old priorities
+                    insertPriority = extractPriority = connectionTag.getInt("priority");
+                }
                 ItemConnection connection = new ItemConnection(direction, decodeConnectionType(connectionTag.getByte("connections")),
-                        connectionTag.getInt("priority"));
+                        insertPriority, extractPriority);
                 connection.whitelist = connectionTag.getBoolean("whitelist");
                 for (int i = 0; i < ItemPipeInterface.SLOTS; i++) {
-                    connection.stacks[i] = ItemStack.fromNbt(connectionTag.getCompound(Integer.toString(i)));
+                    connection.stacks[i] = ItemStack.of(connectionTag.getCompound(Integer.toString(i)));
                     connection.stacks[i].setCount(1);
                 }
                 connection.refreshStacksCache();
-                connection.upgradeStack = ItemStack.fromNbt(connectionTag.getCompound("upgradeStack"));
+                connection.upgradeStack = ItemStack.of(connectionTag.getCompound("upgradeStack"));
                 connections.add(connection);
             }
         }
@@ -181,16 +188,17 @@ public class ItemNetworkNode extends PipeNetworkNode {
         final Direction direction;
         private PipeEndpointType type;
         boolean whitelist = true;
-        int priority;
+        int insertPriority, extractPriority;
         private final ItemStack[] stacks = new ItemStack[ItemPipeInterface.SLOTS];
         final Set<ItemVariant> stacksCache = new HashSet<>();
         private ItemStack upgradeStack = ItemStack.EMPTY;
         BlockApiCache<Storage<ItemVariant>, Direction> cache = null;
 
-        private ItemConnection(Direction direction, PipeEndpointType type, int priority) {
+        private ItemConnection(Direction direction, PipeEndpointType type, int insertPriority, int extractPriority) {
             this.direction = direction;
             this.type = type;
-            this.priority = priority;
+            this.insertPriority = insertPriority;
+            this.extractPriority = extractPriority;
             for (int i = 0; i < ItemPipeInterface.SLOTS; i++) {
                 stacks[i] = ItemStack.EMPTY;
             }
@@ -222,18 +230,18 @@ public class ItemNetworkNode extends PipeNetworkNode {
             return 16 + (upgrade == null ? 0 : upgrade.value() * upgradeStack.getCount());
         }
 
-        private void dropUpgrades(World world, BlockPos pos) {
+        private void dropUpgrades(Level world, BlockPos pos) {
             if (!upgradeStack.isEmpty()) {
-                world.spawnEntity(new ItemEntity(world, pos.getX(), pos.getY(), pos.getZ(), upgradeStack));
+                world.addFreshEntity(new ItemEntity(world, pos.getX(), pos.getY(), pos.getZ(), upgradeStack));
                 upgradeStack = ItemStack.EMPTY;
             }
         }
 
         private class ScreenHandlerFactory implements ExtendedScreenHandlerFactory {
             private final ItemPipeInterface iface;
-            private final Identifier pipeType;
+            private final ResourceLocation pipeType;
 
-            private ScreenHandlerFactory(IPipeScreenHandlerHelper helper, Identifier pipeType) {
+            private ScreenHandlerFactory(IPipeScreenHandlerHelper helper, ResourceLocation pipeType) {
                 this.iface = new ItemPipeInterface() {
                     @Override
                     public boolean isWhitelist() {
@@ -284,18 +292,22 @@ public class ItemNetworkNode extends PipeNetworkNode {
                     }
 
                     @Override
-                    public int getPriority() {
-                        return priority;
+                    public int getPriority(int channel) {
+                        return channel == 0 ? insertPriority : extractPriority;
                     }
 
                     @Override
-                    public void setPriority(int priority) {
-                        ItemConnection.this.priority = priority;
+                    public void setPriority(int channel, int priority) {
+                        if (channel == 0) {
+                            ItemConnection.this.insertPriority = priority;
+                        } else {
+                            ItemConnection.this.extractPriority = priority;
+                        }
                         helper.callMarkDirty();
                     }
 
                     @Override
-                    public boolean canUse(PlayerEntity player) {
+                    public boolean canUse(Player player) {
                         // Check that the BE is within distance
                         if (!helper.isWithinUseDistance(player)) {
                             return false;
@@ -308,17 +320,17 @@ public class ItemNetworkNode extends PipeNetworkNode {
             }
 
             @Override
-            public Text getDisplayName() {
-                return new TranslatableText("item." + pipeType.getNamespace() + "." + pipeType.getPath());
+            public Component getDisplayName() {
+                return new TranslatableComponent("item." + pipeType.getNamespace() + "." + pipeType.getPath());
             }
 
             @Override
-            public ScreenHandler createMenu(int syncId, PlayerInventory inv, PlayerEntity player) {
+            public AbstractContainerMenu createMenu(int syncId, Inventory inv, Player player) {
                 return new ItemPipeScreenHandler(syncId, inv, iface);
             }
 
             @Override
-            public void writeScreenOpeningData(ServerPlayerEntity serverPlayerEntity, PacketByteBuf packetByteBuf) {
+            public void writeScreenOpeningData(ServerPlayer serverPlayerEntity, FriendlyByteBuf packetByteBuf) {
                 iface.toBuf(packetByteBuf);
             }
         }

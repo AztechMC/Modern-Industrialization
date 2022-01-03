@@ -29,48 +29,48 @@ import aztech.modern_industrialization.machines.init.MIMachineRecipeTypes;
 import aztech.modern_industrialization.machines.recipe.MachineRecipe;
 import java.util.*;
 import net.fabricmc.fabric.api.tag.TagFactory;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.Inventory;
-import net.minecraft.inventory.SimpleInventory;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.screen.Property;
-import net.minecraft.screen.ScreenHandler;
-import net.minecraft.screen.ScreenHandlerContext;
-import net.minecraft.screen.slot.Slot;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.sound.SoundCategory;
-import net.minecraft.sound.SoundEvents;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.world.World;
+import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.Container;
+import net.minecraft.world.SimpleContainer;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.ContainerLevelAccess;
+import net.minecraft.world.inventory.DataSlot;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 
-public class ForgeHammerScreenHandler extends ScreenHandler {
+public class ForgeHammerScreenHandler extends AbstractContainerMenu {
 
-    private final Property selectedRecipe;
+    private final DataSlot selectedRecipe;
     private final List<MachineRecipe> availableRecipes;
 
     private final Slot output;
 
     private final Slot tool;
     private final Slot input;
-    private final ScreenHandlerContext context;
-    private final World world;
-    private final PlayerEntity player;
+    private final ContainerLevelAccess context;
+    private final Level world;
+    private final Player player;
 
     private ItemStack inputStackCache = ItemStack.EMPTY, toolStackCache = ItemStack.EMPTY;
 
-    public ForgeHammerScreenHandler(int syncId, PlayerInventory playerInventory) {
-        this(syncId, playerInventory, ScreenHandlerContext.EMPTY);
+    public ForgeHammerScreenHandler(int syncId, Inventory playerInventory) {
+        this(syncId, playerInventory, ContainerLevelAccess.NULL);
     }
 
-    public ForgeHammerScreenHandler(int syncId, PlayerInventory playerInventory, ScreenHandlerContext context) {
+    public ForgeHammerScreenHandler(int syncId, Inventory playerInventory, ContainerLevelAccess context) {
         super(ModernIndustrialization.SCREEN_HANDLER_FORGE_HAMMER, syncId);
         this.context = context;
-        this.selectedRecipe = Property.create();
+        this.selectedRecipe = DataSlot.standalone();
         this.availableRecipes = new ArrayList<>();
-        this.world = playerInventory.player.world;
+        this.world = playerInventory.player.level;
         this.player = playerInventory.player;
 
         for (int i = 0; i < 3; i++) {
@@ -83,37 +83,37 @@ public class ForgeHammerScreenHandler extends ScreenHandler {
             this.addSlot(new Slot(playerInventory, j, 8 + j * 18, 58 + 84));
         }
 
-        this.input = new Slot(new SimpleInventory(1) {
-            public void markDirty() {
-                super.markDirty();
-                ForgeHammerScreenHandler.this.onContentChanged(this);
+        this.input = new Slot(new SimpleContainer(1) {
+            public void setChanged() {
+                super.setChanged();
+                ForgeHammerScreenHandler.this.slotsChanged(this);
             }
         }, 0, 34, 33);
 
-        this.tool = new Slot(new SimpleInventory(1) {
-            public void markDirty() {
-                super.markDirty();
-                ForgeHammerScreenHandler.this.onContentChanged(this);
+        this.tool = new Slot(new SimpleContainer(1) {
+            public void setChanged() {
+                super.setChanged();
+                ForgeHammerScreenHandler.this.slotsChanged(this);
             }
         }, 0, 8, 33) {
 
-            public boolean canInsert(ItemStack stack) {
+            public boolean mayPlace(ItemStack stack) {
                 return TagFactory.ITEM.create(ForgeTool.TAG).contains(stack.getItem());
             }
         };
 
-        this.output = new Slot(new SimpleInventory(1) {
-            public void markDirty() {
-                super.markDirty();
-                ForgeHammerScreenHandler.this.onContentChanged(this);
+        this.output = new Slot(new SimpleContainer(1) {
+            public void setChanged() {
+                super.setChanged();
+                ForgeHammerScreenHandler.this.slotsChanged(this);
             }
         }, 0, 143, 32) {
-            public boolean canInsert(ItemStack stack) {
+            public boolean mayPlace(ItemStack stack) {
                 return false;
             }
 
             @Override
-            public void onTakeItem(PlayerEntity player, ItemStack stack) {
+            public void onTake(Player player, ItemStack stack) {
                 ForgeHammerScreenHandler.this.onCraft();
             }
         };
@@ -121,7 +121,7 @@ public class ForgeHammerScreenHandler extends ScreenHandler {
         this.addSlot(input);
         this.addSlot(tool);
         this.addSlot(output);
-        this.addProperty(selectedRecipe);
+        this.addDataSlot(selectedRecipe);
     }
 
     public int getSelectedRecipe() {
@@ -140,37 +140,37 @@ public class ForgeHammerScreenHandler extends ScreenHandler {
         return id >= 0 && id < this.availableRecipes.size();
     }
 
-    public void onContentChanged(Inventory inventory) {
-        if (!ItemStack.areEqual(this.inputStackCache, input.getStack()) || !ItemStack.areEqual(this.toolStackCache, tool.getStack())) {
+    public void slotsChanged(Container inventory) {
+        if (!ItemStack.matches(this.inputStackCache, input.getItem()) || !ItemStack.matches(this.toolStackCache, tool.getItem())) {
             updateStatus();
         }
 
-        super.onContentChanged(inventory);
+        super.slotsChanged(inventory);
 
     }
 
     public void updateStatus() {
 
-        this.inputStackCache = input.getStack().copy();
-        this.toolStackCache = tool.getStack().copy();
+        this.inputStackCache = input.getItem().copy();
+        this.toolStackCache = tool.getItem().copy();
 
         MachineRecipe old = isInBounds(selectedRecipe.get()) ? availableRecipes.get(selectedRecipe.get()) : null;
 
         this.availableRecipes.clear();
         this.selectedRecipe.set(-1);
-        this.output.setStack(ItemStack.EMPTY);
+        this.output.set(ItemStack.EMPTY);
 
-        if (!input.getStack().isEmpty()) {
+        if (!input.getItem().isEmpty()) {
 
-            Map<Identifier, MachineRecipe> recipeMap = new HashMap<>();
+            Map<ResourceLocation, MachineRecipe> recipeMap = new HashMap<>();
 
             for (MachineRecipe recipe : MIMachineRecipeTypes.FORGE_HAMMER.getRecipes(this.world)) {
 
                 MachineRecipe.ItemInput recipeInput = recipe.itemInputs.get(0);
 
-                if (recipeInput.matches(input.getStack()) && recipeInput.amount <= input.getStack().getCount()) {
-                    Identifier idOutput = Registry.ITEM.getId(recipe.itemOutputs.get(0).item);
-                    if ((recipe.eu != 0) && (!tool.getStack().isEmpty())) {
+                if (recipeInput.matches(input.getItem()) && recipeInput.amount <= input.getItem().getCount()) {
+                    ResourceLocation idOutput = Registry.ITEM.getKey(recipe.itemOutputs.get(0).item);
+                    if ((recipe.eu != 0) && (!tool.getItem().isEmpty())) {
                         recipeMap.put(idOutput, recipe);
                     } else if (recipe.eu == 0 && !recipeMap.containsKey(idOutput)) {
                         recipeMap.put(idOutput, recipe);
@@ -195,19 +195,19 @@ public class ForgeHammerScreenHandler extends ScreenHandler {
     void populateResult() {
         if (!this.availableRecipes.isEmpty() && this.isInBounds(this.selectedRecipe.get())) {
             MachineRecipe current = this.availableRecipes.get(getSelectedRecipe());
-            if (current.eu == 0 || (!tool.getStack().isEmpty() && tool.getStack().getDamage() < tool.getStack().getMaxDamage())) {
-                this.output.setStack(current.getOutput());
+            if (current.eu == 0 || (!tool.getItem().isEmpty() && tool.getItem().getDamageValue() < tool.getItem().getMaxDamage())) {
+                this.output.set(current.getResultItem());
             } else {
-                this.output.setStack(ItemStack.EMPTY);
+                this.output.set(ItemStack.EMPTY);
             }
         } else {
-            this.output.setStack(ItemStack.EMPTY);
+            this.output.set(ItemStack.EMPTY);
         }
 
-        this.sendContentUpdates();
+        this.broadcastChanges();
     }
 
-    public boolean onButtonClick(PlayerEntity player, int id) {
+    public boolean clickMenuButton(Player player, int id) {
         if (this.isInBounds(id)) {
             this.selectedRecipe.set(id);
             this.populateResult();
@@ -218,16 +218,16 @@ public class ForgeHammerScreenHandler extends ScreenHandler {
     private void onCraft() {
 
         MachineRecipe current = this.availableRecipes.get(this.selectedRecipe.get());
-        this.input.getStack().decrement(current.itemInputs.get(0).amount);
-        if (!tool.getStack().isEmpty()) {
-            if (!world.isClient()) {
-                tool.getStack().damage(current.eu, world.getRandom(), (ServerPlayerEntity) this.player);
+        this.input.getItem().shrink(current.itemInputs.get(0).amount);
+        if (!tool.getItem().isEmpty()) {
+            if (!world.isClientSide()) {
+                tool.getItem().hurt(current.eu, world.getRandom(), (ServerPlayer) this.player);
             }
-            if (tool.getStack().getDamage() >= tool.getStack().getMaxDamage()) {
-                tool.setStack(ItemStack.EMPTY);
+            if (tool.getItem().getDamageValue() >= tool.getItem().getMaxDamage()) {
+                tool.set(ItemStack.EMPTY);
 
-                context.run((world, pos) -> {
-                    world.playSound(null, pos, SoundEvents.ENTITY_ITEM_BREAK, SoundCategory.BLOCKS, 1.0F, 1.0F);
+                context.execute((world, pos) -> {
+                    world.playSound(null, pos, SoundEvents.ITEM_BREAK, SoundSource.BLOCKS, 1.0F, 1.0F);
                 });
             }
 
@@ -239,29 +239,29 @@ public class ForgeHammerScreenHandler extends ScreenHandler {
     }
 
     @Override
-    public ItemStack transferSlot(PlayerEntity player, int index) {
+    public ItemStack quickMoveStack(Player player, int index) {
 
         ItemStack itemStack = ItemStack.EMPTY;
         Slot slot = this.slots.get(index);
-        if (slot != null && slot.hasStack()) {
-            ItemStack itemStack2 = slot.getStack();
+        if (slot != null && slot.hasItem()) {
+            ItemStack itemStack2 = slot.getItem();
             Item item = itemStack2.getItem();
             itemStack = itemStack2.copy();
             if (index == 38) {
-                item.onCraft(itemStack2, player.world, player);
-                if (!this.insertItem(itemStack2, 0, 36, true)) {
+                item.onCraftedBy(itemStack2, player.level, player);
+                if (!this.moveItemStackTo(itemStack2, 0, 36, true)) {
                     return ItemStack.EMPTY;
                 }
 
-                slot.onQuickTransfer(itemStack2, itemStack);
+                slot.onQuickCraft(itemStack2, itemStack);
             } else if (index == 37 || index == 36) {
-                if (!this.insertItem(itemStack2, 0, 36, false)) {
+                if (!this.moveItemStackTo(itemStack2, 0, 36, false)) {
                     return ItemStack.EMPTY;
                 }
             } else if (index < 36) {
-                if (!this.insertItem(itemStack2, 36, 38, true)) {
+                if (!this.moveItemStackTo(itemStack2, 36, 38, true)) {
                     if (index < 27) {
-                        if (!this.insertItem(itemStack2, 27, 36, false)) {
+                        if (!this.moveItemStackTo(itemStack2, 27, 36, false)) {
                             return ItemStack.EMPTY;
                         }
                     } else {
@@ -271,31 +271,31 @@ public class ForgeHammerScreenHandler extends ScreenHandler {
             }
 
             if (itemStack2.isEmpty()) {
-                slot.setStack(ItemStack.EMPTY);
+                slot.set(ItemStack.EMPTY);
             }
 
-            slot.markDirty();
+            slot.setChanged();
             if (itemStack2.getCount() == itemStack.getCount()) {
                 return ItemStack.EMPTY;
             }
 
-            slot.onTakeItem(player, itemStack2);
-            this.sendContentUpdates();
+            slot.onTake(player, itemStack2);
+            this.broadcastChanges();
         }
 
         return itemStack;
     }
 
     @Override
-    public boolean canUse(PlayerEntity player) {
+    public boolean stillValid(Player player) {
         return true;
     }
 
-    public void close(PlayerEntity player) {
-        super.close(player);
-        this.context.run((world, blockPos) -> {
-            this.dropInventory(player, this.input.inventory);
-            this.dropInventory(player, this.tool.inventory);
+    public void removed(Player player) {
+        super.removed(player);
+        this.context.execute((world, blockPos) -> {
+            this.clearContainer(player, this.input.container);
+            this.clearContainer(player, this.tool.container);
         });
     }
 

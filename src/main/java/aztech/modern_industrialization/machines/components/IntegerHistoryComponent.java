@@ -26,7 +26,7 @@ package aztech.modern_industrialization.machines.components;
 import aztech.modern_industrialization.machines.IComponent;
 import java.util.HashMap;
 import java.util.Map;
-import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.CompoundTag;
 
 public class IntegerHistoryComponent implements IComponent {
 
@@ -43,14 +43,14 @@ public class IntegerHistoryComponent implements IComponent {
     }
 
     @Override
-    public void writeNbt(NbtCompound tag) {
+    public void writeNbt(CompoundTag tag) {
         for (String key : KEYS) {
             tag.putIntArray(key, histories.get(key));
         }
     }
 
     @Override
-    public void readNbt(NbtCompound tag) {
+    public void readNbt(CompoundTag tag) {
         for (String key : KEYS) {
             if (tag.contains(key)) {
                 int[] array = tag.getIntArray(key);

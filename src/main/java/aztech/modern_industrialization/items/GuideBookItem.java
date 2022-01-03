@@ -27,39 +27,39 @@ import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.util.TextHelper;
 import java.util.List;
 import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.client.item.TooltipContext;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.text.LiteralText;
-import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
-import net.minecraft.util.Hand;
-import net.minecraft.util.TypedActionResult;
-import net.minecraft.world.World;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.level.Level;
 import vazkii.patchouli.api.PatchouliAPI;
 
 public class GuideBookItem extends Item {
-    public GuideBookItem(Settings settings) {
+    public GuideBookItem(Properties settings) {
         super(settings);
     }
 
     @Override
-    public TypedActionResult<ItemStack> use(World world, PlayerEntity user, Hand hand) {
-        if (!world.isClient && user instanceof ServerPlayerEntity) {
+    public InteractionResultHolder<ItemStack> use(Level world, Player user, InteractionHand hand) {
+        if (!world.isClientSide && user instanceof ServerPlayer) {
             if (FabricLoader.getInstance().isModLoaded("patchouli")) { // a bit borderline...
-                PatchouliAPI.get().openBookGUI((ServerPlayerEntity) user, new MIIdentifier("book"));
-                return TypedActionResult.success(user.getStackInHand(hand));
+                PatchouliAPI.get().openBookGUI((ServerPlayer) user, new MIIdentifier("book"));
+                return InteractionResultHolder.success(user.getItemInHand(hand));
             } else {
-                user.sendMessage(new LiteralText("Patchouli is not loaded, can't open guide book!"), true);
+                user.displayClientMessage(new TextComponent("Patchouli is not loaded, can't open guide book!"), true);
             }
         }
-        return TypedActionResult.consume(user.getStackInHand(hand));
+        return InteractionResultHolder.consume(user.getItemInHand(hand));
     }
 
     @Override
-    public void appendTooltip(ItemStack stack, World world, List<Text> tooltip, TooltipContext context) {
-        tooltip.add(new TranslatableText("book.modern_industrialization.subtitle").setStyle(TextHelper.GRAY_TEXT));
+    public void appendHoverText(ItemStack stack, Level world, List<Component> tooltip, TooltipFlag context) {
+        tooltip.add(new TranslatableComponent("book.modern_industrialization.subtitle").setStyle(TextHelper.GRAY_TEXT));
     }
 }

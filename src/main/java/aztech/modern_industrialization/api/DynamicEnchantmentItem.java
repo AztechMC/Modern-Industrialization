@@ -24,8 +24,8 @@
 package aztech.modern_industrialization.api;
 
 import it.unimi.dsi.fastutil.objects.Reference2IntMap;
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.Enchantment;
 
 /**
  * An item that can provide enchantments dynamically.

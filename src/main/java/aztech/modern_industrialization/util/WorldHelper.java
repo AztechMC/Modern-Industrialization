@@ -23,10 +23,10 @@
  */
 package aztech.modern_industrialization.util;
 
-import net.minecraft.server.world.ServerWorld;
+import net.minecraft.server.level.ServerLevel;
 
 public class WorldHelper {
-    public static boolean isChunkTicking(ServerWorld world, long packedChunkPos) {
-        return world.getChunkManager().isTickingFutureReady(packedChunkPos) && world.isChunkLoaded(packedChunkPos);
+    public static boolean isChunkTicking(ServerLevel world, long packedChunkPos) {
+        return world.getChunkSource().isPositionTicking(packedChunkPos) && world.areEntitiesLoaded(packedChunkPos);
     }
 }

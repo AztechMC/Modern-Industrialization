@@ -24,39 +24,39 @@
 package aztech.modern_industrialization.items.armor;
 
 import aztech.modern_industrialization.items.FluidFuelItemHelper;
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.entity.EquipmentSlot;
-import net.minecraft.item.ItemStack;
-import net.minecraft.text.Style;
-import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
-import net.minecraft.util.Formatting;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.Style;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.ItemStack;
 
 @Environment(EnvType.CLIENT)
 public class HudRenderer {
-    public static void onRenderHud(MatrixStack matrices, float delta) {
-        MinecraftClient mc = MinecraftClient.getInstance();
+    public static void onRenderHud(PoseStack matrices, float delta) {
+        Minecraft mc = Minecraft.getInstance();
         if (mc.player != null) {
-            ItemStack chest = mc.player.getEquippedStack(EquipmentSlot.CHEST);
+            ItemStack chest = mc.player.getItemBySlot(EquipmentSlot.CHEST);
             if (chest.getItem() instanceof JetpackItem jetpack) {
                 boolean active = jetpack.isActivated(chest);
-                Text activeText = new TranslatableText("text.modern_industrialization.jetpack_" + active)
-                        .setStyle(Style.EMPTY.withColor(active ? Formatting.GREEN : Formatting.RED));
-                mc.textRenderer.drawWithShadow(matrices, activeText, 4, 4, 16383998);
-                Text fillText = new TranslatableText("text.modern_industrialization.jetpack_fill",
+                Component activeText = new TranslatableComponent("text.modern_industrialization.jetpack_" + active)
+                        .setStyle(Style.EMPTY.withColor(active ? ChatFormatting.GREEN : ChatFormatting.RED));
+                mc.font.drawShadow(matrices, activeText, 4, 4, 16383998);
+                Component fillText = new TranslatableComponent("text.modern_industrialization.jetpack_fill",
                         FluidFuelItemHelper.getAmount(chest) * 100 / JetpackItem.CAPACITY);
-                mc.textRenderer.drawWithShadow(matrices, fillText, 4, 14, 16383998);
+                mc.font.drawShadow(matrices, fillText, 4, 14, 16383998);
             } else if (chest.getItem() instanceof GraviChestPlateItem gsp) {
                 boolean active = gsp.isActivated(chest);
-                Text activeText = new TranslatableText("text.modern_industrialization.gravichestplate_" + active)
-                        .setStyle(Style.EMPTY.withColor(active ? Formatting.GREEN : Formatting.RED));
-                mc.textRenderer.drawWithShadow(matrices, activeText, 4, 4, 16383998);
-                Text fillText = new TranslatableText("text.modern_industrialization.energy_fill",
+                Component activeText = new TranslatableComponent("text.modern_industrialization.gravichestplate_" + active)
+                        .setStyle(Style.EMPTY.withColor(active ? ChatFormatting.GREEN : ChatFormatting.RED));
+                mc.font.drawShadow(matrices, activeText, 4, 4, 16383998);
+                Component fillText = new TranslatableComponent("text.modern_industrialization.energy_fill",
                         gsp.getEnergy(chest) * 100 / GraviChestPlateItem.ENERGY_CAPACITY);
-                mc.textRenderer.drawWithShadow(matrices, fillText, 4, 14, 16383998);
+                mc.font.drawShadow(matrices, fillText, 4, 14, 16383998);
             }
         }
     }

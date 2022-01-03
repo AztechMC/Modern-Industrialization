@@ -1,0 +1,18 @@
+{
+  "name": "E = mc²",
+  "category": "modern_industrialization:endgame",
+  "icon": "modern_industrialization:bucket_uu_matter",
+  "pages": [
+    {
+      "type": "spotlight",
+      "item": "modern_industrialization:bucket_uu_matter",
+      "text": "通过合适的电解装置和奇点，大量能量可以通过量子霍金辐射转化为普遍可用的物质，也称为 UU 物质，宇宙的结构。"
+    },
+    {
+      "type": "spotlight",
+      "item": "modern_industrialization:replicator",
+      "text": "拥有 100 mB 的 UU Matter，复制器可以复制（几乎）游戏中的任何项目！$(br2)恭喜，它现在是你的世界。感谢您玩现代工业化。"
+    }
+  ],
+  "sortnum": 303
+}

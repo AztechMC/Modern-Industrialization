@@ -26,18 +26,18 @@ package aztech.modern_industrialization.blocks;
 import aztech.modern_industrialization.MIBlock;
 import aztech.modern_industrialization.MIItem;
 import aztech.modern_industrialization.materials.part.OrePart;
-import net.minecraft.block.BlockState;
-import net.minecraft.enchantment.EnchantmentHelper;
-import net.minecraft.enchantment.Enchantments;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
-import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraft.world.item.enchantment.Enchantments;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.BlockHitResult;
 
 // An MIBlock that converts a book into the guide book when right clicked
 public class OreBlock extends MIBlock {
@@ -45,30 +45,30 @@ public class OreBlock extends MIBlock {
     public final OrePart.OrePartParams params;
     public final String materialName;
 
-    public OreBlock(String id, Settings settings, OrePart.OrePartParams params, String materialName) {
+    public OreBlock(String id, Properties settings, OrePart.OrePartParams params, String materialName) {
         super(id, settings);
         this.params = params;
         this.materialName = materialName;
     }
 
     @Override
-    public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
-        ItemStack handStack = player.getMainHandStack();
+    public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+        ItemStack handStack = player.getMainHandItem();
         if (handStack.getItem() == Items.BOOK) {
-            handStack.decrement(1);
-            player.getInventory().offerOrDrop(new ItemStack(MIItem.ITEM_GUIDE_BOOK));
-            return ActionResult.success(world.isClient);
+            handStack.shrink(1);
+            player.getInventory().placeItemBackInInventory(new ItemStack(MIItem.ITEM_GUIDE_BOOK));
+            return InteractionResult.sidedSuccess(world.isClientSide);
         }
-        return super.onUse(state, world, pos, player, hand, hit);
+        return super.use(state, world, pos, player, hand, hit);
     }
 
     @Override
-    public void onStacksDropped(BlockState state, ServerWorld world, BlockPos pos, ItemStack stack) {
-        super.onStacksDropped(state, world, pos, stack);
-        if (EnchantmentHelper.getLevel(Enchantments.SILK_TOUCH, stack) == 0) {
-            int i = this.params.xpDropped.get(world.random);
+    public void spawnAfterBreak(BlockState state, ServerLevel world, BlockPos pos, ItemStack stack) {
+        super.spawnAfterBreak(state, world, pos, stack);
+        if (EnchantmentHelper.getItemEnchantmentLevel(Enchantments.SILK_TOUCH, stack) == 0) {
+            int i = this.params.xpDropped.sample(world.random);
             if (i > 0) {
-                this.dropExperience(world, pos, i);
+                this.popExperience(world, pos, i);
             }
         }
 

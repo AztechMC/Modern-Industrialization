@@ -30,7 +30,7 @@ import aztech.modern_industrialization.machines.models.MachineModelProvider;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.rendereregistry.v1.BlockEntityRendererRegistry;
-import net.minecraft.client.render.model.UnbakedModel;
+import net.minecraft.client.resources.model.UnbakedModel;
 
 @Environment(EnvType.CLIENT)
 public class CreativeTankClientSetup {

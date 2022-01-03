@@ -26,8 +26,8 @@ package aztech.modern_industrialization;
 import aztech.modern_industrialization.machines.blockentities.ReplicatorMachineBlockEntity;
 import aztech.modern_industrialization.util.ResourceUtil;
 import net.fabricmc.fabric.api.tag.TagRegistry;
-import net.minecraft.util.DyeColor;
-import net.minecraft.util.Identifier;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.DyeColor;
 
 public class MITags {
     public static void init() {
@@ -36,26 +36,26 @@ public class MITags {
     }
 
     private static void dyeTags() {
-        Identifier terracottas = new Identifier("c", "terracottas");
-        Identifier glass = new Identifier("c", "glass");
-        Identifier glassPane = new Identifier("c", "glass_pane");
-        Identifier shulkerBox = new Identifier("c", "shulker_box");
+        ResourceLocation terracottas = new ResourceLocation("c", "terracottas");
+        ResourceLocation glass = new ResourceLocation("c", "glass");
+        ResourceLocation glassPane = new ResourceLocation("c", "glass_pane");
+        ResourceLocation shulkerBox = new ResourceLocation("c", "shulker_box");
 
-        ResourceUtil.appendToItemTag(terracottas, new Identifier("minecraft:terracotta"));
-        ResourceUtil.appendToItemTag(glass, new Identifier("minecraft:glass"));
-        ResourceUtil.appendToItemTag(glassPane, new Identifier("minecraft:glass_pane"));
-        ResourceUtil.appendToItemTag(shulkerBox, new Identifier("minecraft:shulker_box"));
+        ResourceUtil.appendToItemTag(terracottas, new ResourceLocation("minecraft:terracotta"));
+        ResourceUtil.appendToItemTag(glass, new ResourceLocation("minecraft:glass"));
+        ResourceUtil.appendToItemTag(glassPane, new ResourceLocation("minecraft:glass_pane"));
+        ResourceUtil.appendToItemTag(shulkerBox, new ResourceLocation("minecraft:shulker_box"));
 
         for (DyeColor color : DyeColor.values()) {
-            Identifier tagId = new Identifier("c", color.getName() + "_dyes");
+            ResourceLocation tagId = new ResourceLocation("c", color.getName() + "_dyes");
             TagRegistry.item(tagId);
-            ResourceUtil.appendToItemTag(tagId, new Identifier("minecraft:" + color.getName() + "_dye"));
-            ResourceUtil.appendToItemTag(terracottas, new Identifier("minecraft:" + color.getName() + "_terracotta"));
-            ResourceUtil.appendToItemTag(terracottas, new Identifier("minecraft:" + color.getName() + "_glazed_terracotta"));
+            ResourceUtil.appendToItemTag(tagId, new ResourceLocation("minecraft:" + color.getName() + "_dye"));
+            ResourceUtil.appendToItemTag(terracottas, new ResourceLocation("minecraft:" + color.getName() + "_terracotta"));
+            ResourceUtil.appendToItemTag(terracottas, new ResourceLocation("minecraft:" + color.getName() + "_glazed_terracotta"));
 
-            ResourceUtil.appendToItemTag(glass, new Identifier("minecraft:" + color.getName() + "_stained_glass"));
-            ResourceUtil.appendToItemTag(glassPane, new Identifier("minecraft:" + color.getName() + "_stained_glass_pane"));
-            ResourceUtil.appendToItemTag(shulkerBox, new Identifier("minecraft:" + color.getName() + "_shulker_box"));
+            ResourceUtil.appendToItemTag(glass, new ResourceLocation("minecraft:" + color.getName() + "_stained_glass"));
+            ResourceUtil.appendToItemTag(glassPane, new ResourceLocation("minecraft:" + color.getName() + "_stained_glass_pane"));
+            ResourceUtil.appendToItemTag(shulkerBox, new ResourceLocation("minecraft:" + color.getName() + "_shulker_box"));
         }
     }
 }

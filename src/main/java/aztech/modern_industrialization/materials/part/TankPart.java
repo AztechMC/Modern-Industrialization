@@ -31,11 +31,11 @@ import aztech.modern_industrialization.proxy.CommonProxy;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
-import net.minecraft.block.BlockEntityProvider;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.item.Item;
-import net.minecraft.util.registry.Registry;
+import net.minecraft.core.Registry;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.level.block.EntityBlock;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import org.apache.commons.lang3.mutable.MutableObject;
 
 public class TankPart extends UnbuildablePart<Long> {
@@ -54,12 +54,12 @@ public class TankPart extends UnbuildablePart<Long> {
         long capacity = FluidConstants.BUCKET * bucketCapacity;
 
         return new RegularPart(key).withoutTextureRegister().withRegister((registeringContext, partContext, part, itemPath, itemId, itemTag) -> {
-            BlockEntityProvider factory = (pos, state) -> new TankBlockEntity(bet.getValue(), pos, state, capacity);
-            TankBlock block = new TankBlock(itemPath, (MIBlock b) -> new TankItem(b, new Item.Settings().group(ITEM_GROUP), capacity), factory);
+            EntityBlock factory = (pos, state) -> new TankBlockEntity(bet.getValue(), pos, state, capacity);
+            TankBlock block = new TankBlock(itemPath, (MIBlock b) -> new TankItem(b, new Item.Properties().tab(ITEM_GROUP), capacity), factory);
             TankItem item = (TankItem) block.blockItem;
 
             bet.setValue(Registry.register(Registry.BLOCK_ENTITY_TYPE, itemId,
-                    FabricBlockEntityTypeBuilder.create(block.factory::createBlockEntity, block).build(null)));
+                    FabricBlockEntityTypeBuilder.create(block.factory::newBlockEntity, block).build(null)));
 
             // Fluid API
             FluidStorage.SIDED.registerSelf(bet.getValue());

@@ -36,18 +36,18 @@ import java.util.Map;
 import java.util.function.BiFunction;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
-import net.minecraft.util.ItemScatterer;
-import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.Containers;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.Nullable;
 
 public class MachineBlock extends MIBlock implements TickableBlock {
@@ -60,60 +60,60 @@ public class MachineBlock extends MIBlock implements TickableBlock {
     public static final Map<String, MachineCasing> REGISTERED_MACHINES = new HashMap<>();
 
     public MachineBlock(String machineId, BiFunction<BlockPos, BlockState, BlockEntity> blockEntityConstructor) {
-        super(machineId, FabricBlockSettings.of(METAL_MATERIAL).hardness(4.0f).breakByTool(FabricToolTags.PICKAXES).requiresTool()
-                .allowsSpawning(MobSpawning.NO_SPAWN), MIBlock.FLAG_BLOCK_LOOT);
+        super(machineId, FabricBlockSettings.of(METAL_MATERIAL).breakByTool(FabricToolTags.PICKAXES).destroyTime(4.0f).requiresCorrectToolForDrops()
+                .isValidSpawn(MobSpawning.NO_SPAWN), MIBlock.FLAG_BLOCK_LOOT);
         this.blockEntityConstructor = blockEntityConstructor;
     }
 
     @Override
-    public BlockEntity createBlockEntity(BlockPos pos, BlockState state) {
+    public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
         return blockEntityConstructor.apply(pos, state);
     }
 
     @Override
-    public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
-        if (world.isClient) {
-            return ActionResult.SUCCESS;
+    public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+        if (world.isClientSide) {
+            return InteractionResult.SUCCESS;
         } else {
             BlockEntity be = world.getBlockEntity(pos);
             if (be instanceof MachineBlockEntity) {
-                ActionResult beResult = ((MachineBlockEntity) be).onUse(player, hand, MachineOverlay.findHitSide(hit));
-                if (beResult.isAccepted()) {
-                    world.updateNeighbors(pos, Blocks.AIR);
+                InteractionResult beResult = ((MachineBlockEntity) be).onUse(player, hand, MachineOverlay.findHitSide(hit));
+                if (beResult.consumesAction()) {
+                    world.blockUpdated(pos, Blocks.AIR);
                     return beResult;
                 } else {
-                    player.openHandledScreen((MachineBlockEntity) be);
+                    player.openMenu((MachineBlockEntity) be);
                 }
             }
-            return ActionResult.CONSUME;
+            return InteractionResult.CONSUME;
         }
     }
 
     @SuppressWarnings("ConstantConditions")
     @Override
-    public void onPlaced(World world, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack itemStack) {
+    public void setPlacedBy(Level world, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack itemStack) {
         BlockEntity be = world.getBlockEntity(pos);
         ((MachineBlockEntity) be).onPlaced(placer, itemStack);
     }
 
     @Override
-    public void onStateReplaced(BlockState state, World world, BlockPos pos, BlockState newState, boolean moved) {
-        if (!state.isOf(newState.getBlock())) {
+    public void onRemove(BlockState state, Level world, BlockPos pos, BlockState newState, boolean moved) {
+        if (!state.is(newState.getBlock())) {
             // Drop items
             BlockEntity be = world.getBlockEntity(pos);
 
             if (be instanceof MachineBlockEntity machine) {
                 List<ItemStack> dropExtra = machine.dropExtra();
                 for (ConfigurableItemStack stack : machine.getInventory().getItemStacks()) {
-                    ItemScatterer.spawn(world, pos.getX(), pos.getY(), pos.getZ(), stack.getResource().toStack((int) stack.getAmount()));
+                    Containers.dropItemStack(world, pos.getX(), pos.getY(), pos.getZ(), stack.getResource().toStack((int) stack.getAmount()));
                     stack.setAmount(0);
                 }
 
                 for (ItemStack extra : dropExtra) {
-                    ItemScatterer.spawn(world, pos.getX(), pos.getY(), pos.getZ(), extra);
+                    Containers.dropItemStack(world, pos.getX(), pos.getY(), pos.getZ(), extra);
                 }
             }
         }
-        super.onStateReplaced(state, world, pos, newState, moved);
+        super.onRemove(state, world, pos, newState, moved);
     }
 }

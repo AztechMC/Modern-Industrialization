@@ -25,10 +25,10 @@ package aztech.modern_industrialization.blocks.storage.barrel;
 
 import aztech.modern_industrialization.blocks.storage.AbstractStorageBlockEntity;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
 
 public class BarrelBlockEntity extends AbstractStorageBlockEntity<ItemVariant> {
 
@@ -46,11 +46,11 @@ public class BarrelBlockEntity extends AbstractStorageBlockEntity<ItemVariant> {
 
     @Override
     public long getCapacityForResource(ItemVariant resource) {
-        return stackCapacity * resource.getItem().getMaxCount();
+        return stackCapacity * resource.getItem().getMaxStackSize();
     }
 
     @Override
-    public void readNbt(NbtCompound tag) {
+    public void load(CompoundTag tag) {
         resource = ItemVariant.fromNbt(tag.getCompound("item"));
         amount = tag.getLong("amt");
         if (resource.isBlank()) {
@@ -59,7 +59,7 @@ public class BarrelBlockEntity extends AbstractStorageBlockEntity<ItemVariant> {
     }
 
     @Override
-    public void writeNbt(NbtCompound tag) {
+    public void saveAdditional(CompoundTag tag) {
         tag.put("item", resource.toNbt());
         tag.putLong("amt", amount);
     }

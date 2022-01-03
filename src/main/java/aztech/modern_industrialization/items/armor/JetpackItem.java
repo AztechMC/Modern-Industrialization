@@ -37,32 +37,35 @@ import net.fabricmc.fabric.api.transfer.v1.item.InventoryStorage;
 import net.fabricmc.fabric.api.transfer.v1.item.PlayerInventoryStorage;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageUtil;
-import net.minecraft.client.item.TooltipContext;
-import net.minecraft.entity.EquipmentSlot;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.attribute.EntityAttribute;
-import net.minecraft.entity.attribute.EntityAttributeModifier;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.StackReference;
-import net.minecraft.item.*;
-import net.minecraft.recipe.Ingredient;
-import net.minecraft.screen.slot.Slot;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.sound.SoundEvent;
-import net.minecraft.sound.SoundEvents;
-import net.minecraft.text.Text;
-import net.minecraft.util.ClickType;
-import net.minecraft.util.Rarity;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.World;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.SlotAccess;
+import net.minecraft.world.entity.ai.attributes.Attribute;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.ClickAction;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ArmorItem;
+import net.minecraft.world.item.ArmorMaterial;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Rarity;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.Wearable;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 
 public class JetpackItem extends ArmorItem implements Wearable, TickableArmor, FabricElytraItem, ActivatableChestItem {
     public static final int CAPACITY = 8 * 81000;
 
-    public JetpackItem(Settings settings) {
-        super(buildMaterial(), EquipmentSlot.CHEST, settings.maxCount(1).rarity(Rarity.UNCOMMON));
+    public JetpackItem(Properties settings) {
+        super(buildMaterial(), EquipmentSlot.CHEST, settings.stacksTo(1).rarity(Rarity.UNCOMMON));
     }
 
     @Override
@@ -73,23 +76,23 @@ public class JetpackItem extends ArmorItem implements Wearable, TickableArmor, F
     private static ArmorMaterial buildMaterial() {
         return new ArmorMaterial() {
             @Override
-            public int getDurability(EquipmentSlot slot) {
+            public int getDurabilityForSlot(EquipmentSlot slot) {
                 return 0;
             }
 
             @Override
-            public int getProtectionAmount(EquipmentSlot slot) {
+            public int getDefenseForSlot(EquipmentSlot slot) {
                 return 0;
             }
 
             @Override
-            public int getEnchantability() {
+            public int getEnchantmentValue() {
                 return 0;
             }
 
             @Override
             public SoundEvent getEquipSound() {
-                return SoundEvents.ITEM_ARMOR_EQUIP_GENERIC;
+                return SoundEvents.ARMOR_EQUIP_GENERIC;
             }
 
             @Override
@@ -115,7 +118,7 @@ public class JetpackItem extends ArmorItem implements Wearable, TickableArmor, F
     }
 
     @Override
-    public void tickArmor(ItemStack stack, PlayerEntity player) {
+    public void tickArmor(ItemStack stack, Player player) {
         if (isActivated(stack) && !player.isOnGround()) {
             FluidVariant fluid = FluidFuelItemHelper.getFluid(stack);
             long amount = FluidFuelItemHelper.getAmount(stack);
@@ -127,26 +130,26 @@ public class JetpackItem extends ArmorItem implements Wearable, TickableArmor, F
                     FluidFuelItemHelper.decrement(stack);
                     if (player.isFallFlying()) {
                         // Boost forward if fall flying
-                        Vec3d playerFacing = player.getRotationVector();
-                        Vec3d playerVelocity = player.getVelocity();
+                        Vec3 playerFacing = player.getLookAngle();
+                        Vec3 playerVelocity = player.getDeltaMovement();
                         double maxSpeed = Math.sqrt(FluidFuelRegistry.getEu(fluid.getFluid())) / 10;
                         double attenuationFactor = 0.5;
-                        player.setVelocity(playerVelocity.multiply(attenuationFactor).add(playerFacing.multiply(maxSpeed)));
+                        player.setDeltaMovement(playerVelocity.scale(attenuationFactor).add(playerFacing.scale(maxSpeed)));
                     } else {
                         // Otherwise boost vertically
                         double maxSpeed = Math.sqrt(FluidFuelRegistry.getEu(fluid.getFluid())) / 10;
                         double acceleration = 0.25;
-                        Vec3d v = player.getVelocity();
+                        Vec3 v = player.getDeltaMovement();
                         if (v.y < maxSpeed) {
-                            player.setVelocity(v.x, Math.min(maxSpeed, v.y + acceleration), v.z);
+                            player.setDeltaMovement(v.x, Math.min(maxSpeed, v.y + acceleration), v.z);
                         }
                         // Reset fall distance (but not in elytra mode)
-                        if (!player.world.isClient()) {
+                        if (!player.level.isClientSide()) {
                             player.fallDistance = 0;
                         }
                     }
-                    if (player instanceof ServerPlayerEntity serverPlayer) {
-                        serverPlayer.networkHandler.floatingTicks = 0;
+                    if (player instanceof ServerPlayer serverPlayer) {
+                        serverPlayer.connection.aboveGroundTickCount = 0;
                     }
                 }
             }
@@ -154,12 +157,12 @@ public class JetpackItem extends ArmorItem implements Wearable, TickableArmor, F
     }
 
     @Override
-    public boolean isItemBarVisible(ItemStack stack) {
+    public boolean isBarVisible(ItemStack stack) {
         return true;
     }
 
     @Override
-    public int getItemBarStep(ItemStack stack) {
+    public int getBarWidth(ItemStack stack) {
         return (int) Math.round(getDurabilityBarProgress(stack) * 13);
     }
 
@@ -172,21 +175,21 @@ public class JetpackItem extends ArmorItem implements Wearable, TickableArmor, F
     }
 
     @Override
-    public void appendTooltip(ItemStack stack, World world, List<Text> tooltip, TooltipContext context) {
+    public void appendHoverText(ItemStack stack, Level world, List<Component> tooltip, TooltipFlag context) {
         FluidFuelItemHelper.appendTooltip(stack, tooltip, CAPACITY);
     }
 
     @Override
-    public Multimap<EntityAttribute, EntityAttributeModifier> getAttributeModifiers(EquipmentSlot slot) {
+    public Multimap<Attribute, AttributeModifier> getDefaultAttributeModifiers(EquipmentSlot slot) {
         return ImmutableMultimap.of();
     }
 
     @Override
-    public boolean onClicked(ItemStack stack, ItemStack otherStack, Slot slot, ClickType clickType, PlayerEntity player,
-            StackReference cursorStackReference) {
-        if (clickType == ClickType.RIGHT) {
+    public boolean overrideOtherStackedOnMe(ItemStack stack, ItemStack otherStack, Slot slot, ClickAction clickType, Player player,
+            SlotAccess cursorStackReference) {
+        if (clickType == ClickAction.SECONDARY) {
             Storage<FluidVariant> jetpackStorage = getStackStorage(stack, player);
-            Storage<FluidVariant> cursorStorage = ContainerItemContext.ofPlayerCursor(player, player.currentScreenHandler).find(FluidStorage.ITEM);
+            Storage<FluidVariant> cursorStorage = ContainerItemContext.ofPlayerCursor(player, player.containerMenu).find(FluidStorage.ITEM);
 
             return StorageUtil.move(cursorStorage, jetpackStorage, fk -> true, Long.MAX_VALUE, null) > 0;
         }
@@ -194,12 +197,12 @@ public class JetpackItem extends ArmorItem implements Wearable, TickableArmor, F
     }
 
     @Nullable
-    private static Storage<FluidVariant> getStackStorage(ItemStack stack, PlayerEntity player) {
-        PlayerInventory inventory = player.getInventory();
+    private static Storage<FluidVariant> getStackStorage(ItemStack stack, Player player) {
+        Inventory inventory = player.getInventory();
         ContainerItemContext context = null;
 
-        for (int i = 0; i < inventory.size(); ++i) {
-            if (inventory.getStack(i) == stack) {
+        for (int i = 0; i < inventory.getContainerSize(); ++i) {
+            if (inventory.getItem(i) == stack) {
                 InventoryStorage wrapper = PlayerInventoryStorage.of(inventory);
                 context = ContainerItemContext.ofPlayerSlot(player, wrapper.getSlots().get(i));
                 break;

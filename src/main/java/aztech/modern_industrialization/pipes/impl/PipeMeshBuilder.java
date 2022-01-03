@@ -23,25 +23,25 @@
  */
 package aztech.modern_industrialization.pipes.impl;
 
-import static net.minecraft.util.math.Direction.*;
+import static net.minecraft.core.Direction.*;
 
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
-import net.minecraft.client.texture.Sprite;
-import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.core.Direction;
+import net.minecraft.world.phys.Vec3;
 
 public class PipeMeshBuilder extends PipePartBuilder {
     protected final QuadEmitter emitter;
-    private final Sprite sprite;
+    private final TextureAtlasSprite sprite;
     private final float spriteSizeU;
     private final float spriteSizeV;
 
-    PipeMeshBuilder(QuadEmitter emitter, int slotPos, Direction direction, Sprite sprite) {
+    PipeMeshBuilder(QuadEmitter emitter, int slotPos, Direction direction, TextureAtlasSprite sprite) {
         super(slotPos, direction);
         this.emitter = emitter;
         this.sprite = sprite;
-        this.spriteSizeU = sprite.getMaxU() - sprite.getMinU();
-        this.spriteSizeV = sprite.getMaxV() - sprite.getMinV();
+        this.spriteSizeU = sprite.getU1() - sprite.getU0();
+        this.spriteSizeV = sprite.getV1() - sprite.getV0();
     }
 
     /**
@@ -109,12 +109,12 @@ public class PipeMeshBuilder extends PipePartBuilder {
      * Add a quad with four corners and the facing direction. It is important that 1
      * and 4 be opposite corners! UVs are actually (u, v, whatever)
      */
-    private void quad(Vec3d facing, Vec3d[] corners, Vec3d[] uvs) {
+    private void quad(Vec3 facing, Vec3[] corners, Vec3[] uvs) {
         if (corners.length != 4 || uvs.length != 4)
             throw new RuntimeException("This is a bug, please report!");
-        Vec3d c1 = corners[0];
-        Vec3d c4 = corners[3];
-        Direction direction = Direction.getFacing(facing.x, facing.y, facing.z);
+        Vec3 c1 = corners[0];
+        Vec3 c4 = corners[3];
+        Direction direction = Direction.getNearest(facing.x, facing.y, facing.z);
         double x = Math.min(c1.x, c4.x), y = Math.min(c1.y, c4.y), z = Math.min(c1.z, c4.z);
         double X = Math.max(c1.x, c4.x), Y = Math.max(c1.y, c4.y), Z = Math.max(c1.z, c4.z);
         if (direction == UP)
@@ -132,11 +132,11 @@ public class PipeMeshBuilder extends PipePartBuilder {
 
         // Map the uvs onto the quad
         for (int i = 0; i < 4; ++i) {
-            Vec3d vertexPos = new Vec3d(emitter.copyPos(i, null));
+            Vec3 vertexPos = new Vec3(emitter.copyPos(i, null));
             for (int j = 0; j < 4; ++j) {
-                if (vertexPos.subtract(corners[j]).lengthSquared() < 1e-6) {
-                    float realU = sprite.getMinU() + spriteSizeU * (float) uvs[j].getX();
-                    float realV = sprite.getMinV() + spriteSizeV * (float) uvs[j].getY();
+                if (vertexPos.subtract(corners[j]).lengthSqr() < 1e-6) {
+                    float realU = sprite.getU0() + spriteSizeU * (float) uvs[j].x();
+                    float realV = sprite.getV0() + spriteSizeV * (float) uvs[j].y();
                     emitter.sprite(i, 0, realU, realV);
                 }
             }
@@ -163,31 +163,31 @@ public class PipeMeshBuilder extends PipePartBuilder {
             if (intent != Intent.STRAIGHT && i == 0)
                 length -= SIDE;
             double u = cols[i];
-            Vec3d up = up();
-            Vec3d base = pos.add(up.multiply(SIDE / 2));
-            quad(up, new Vec3d[] { base.add(right.multiply(SIDE / 2)), base.subtract(right.multiply(SIDE / 2)),
-                    base.add(right.multiply(SIDE / 2)).add(facing.multiply(length)),
-                    base.subtract(right.multiply(SIDE / 2)).add(facing.multiply(length)), },
-                    new Vec3d[] { new Vec3d(u + COL_WIDTH, length, 0), new Vec3d(u, length, 0), new Vec3d(u + COL_WIDTH, 0, 0),
-                            new Vec3d(u, 0, 0), });
+            Vec3 up = up();
+            Vec3 base = pos.add(up.scale(SIDE / 2));
+            quad(up, new Vec3[] { base.add(right.scale(SIDE / 2)), base.subtract(right.scale(SIDE / 2)),
+                    base.add(right.scale(SIDE / 2)).add(facing.scale(length)),
+                    base.subtract(right.scale(SIDE / 2)).add(facing.scale(length)), },
+                    new Vec3[] { new Vec3(u + COL_WIDTH, length, 0), new Vec3(u, length, 0), new Vec3(u + COL_WIDTH, 0, 0),
+                            new Vec3(u, 0, 0), });
             rotateCw();
             if (intent != Intent.STRAIGHT && i == 0)
                 length += SIDE;
         }
         // End
         if (end) {
-            Vec3d up = up();
-            Vec3d base = pos.add(facing.multiply(length));
+            Vec3 up = up();
+            Vec3 base = pos.add(facing.scale(length));
             quad(facing,
-                    new Vec3d[] { base.subtract(up.multiply(SIDE / 2)).subtract(right.multiply(SIDE / 2)),
-                            base.subtract(up.multiply(SIDE / 2)).add(right.multiply(SIDE / 2)),
-                            base.add(up.multiply(SIDE / 2)).subtract(right.multiply(SIDE / 2)),
-                            base.add(up.multiply(SIDE / 2)).add(right.multiply(SIDE / 2)), },
+                    new Vec3[] { base.subtract(up.scale(SIDE / 2)).subtract(right.scale(SIDE / 2)),
+                            base.subtract(up.scale(SIDE / 2)).add(right.scale(SIDE / 2)),
+                            base.add(up.scale(SIDE / 2)).subtract(right.scale(SIDE / 2)),
+                            base.add(up.scale(SIDE / 2)).add(right.scale(SIDE / 2)), },
                     intent == Intent.STRAIGHT
-                            ? new Vec3d[] { new Vec3d(4 * COL_WIDTH, 0, 0), new Vec3d(3 * COL_WIDTH, 0, 0), new Vec3d(4 * COL_WIDTH, COL_WIDTH, 0),
-                                    new Vec3d(3 * COL_WIDTH, COL_WIDTH, 0), }
-                            : new Vec3d[] { new Vec3d(COL_WIDTH, 1, 0), new Vec3d(0, 1, 0), new Vec3d(COL_WIDTH, 1 - COL_WIDTH, 0),
-                                    new Vec3d(0, 1 - COL_WIDTH, 0), });
+                            ? new Vec3[] { new Vec3(4 * COL_WIDTH, 0, 0), new Vec3(3 * COL_WIDTH, 0, 0), new Vec3(4 * COL_WIDTH, COL_WIDTH, 0),
+                                    new Vec3(3 * COL_WIDTH, COL_WIDTH, 0), }
+                            : new Vec3[] { new Vec3(COL_WIDTH, 1, 0), new Vec3(0, 1, 0), new Vec3(COL_WIDTH, 1 - COL_WIDTH, 0),
+                                    new Vec3(0, 1 - COL_WIDTH, 0), });
         }
     }
 
@@ -203,15 +203,15 @@ public class PipeMeshBuilder extends PipePartBuilder {
      * @param directions: a bitset with the directions
      */
     void noConnection(int directions) {
-        if ((directions & (1 << Direction.getFacing(facing.x, facing.y, facing.z).getId())) > 0) {
+        if ((directions & (1 << Direction.getNearest(facing.x, facing.y, facing.z).get3DDataValue())) > 0) {
             return; // don't render when there is already a connection in this direction
         }
         // Get the 4 connections as '0's and '1's
         int[] sidesDirections = new int[4];
         for (int i = 0; i < 4; ++i) {
-            Vec3d up = up();
-            Direction sideDir = Direction.getFacing(up.x, up.y, up.z);
-            sidesDirections[i] = (directions >> sideDir.getId()) & 1;
+            Vec3 up = up();
+            Direction sideDir = Direction.getNearest(up.x, up.y, up.z);
+            sidesDirections[i] = (directions >> sideDir.get3DDataValue()) & 1;
             rotateCw();
         }
         // Try to match every pattern
@@ -224,15 +224,15 @@ public class PipeMeshBuilder extends PipePartBuilder {
                     }
                 }
                 // Render the connection
-                Vec3d up = up();
-                Vec3d[] vertices = new Vec3d[] { pos.add(right.multiply(SIDE / 2)).subtract(up.multiply(SIDE / 2)),
-                        pos.add(right.multiply(SIDE / 2)).add(up.multiply(SIDE / 2)),
-                        pos.subtract(right.multiply(SIDE / 2)).subtract(up.multiply(SIDE / 2)),
-                        pos.subtract(right.multiply(SIDE / 2)).add(up.multiply(SIDE / 2)), };
+                Vec3 up = up();
+                Vec3[] vertices = new Vec3[] { pos.add(right.scale(SIDE / 2)).subtract(up.scale(SIDE / 2)),
+                        pos.add(right.scale(SIDE / 2)).add(up.scale(SIDE / 2)),
+                        pos.subtract(right.scale(SIDE / 2)).subtract(up.scale(SIDE / 2)),
+                        pos.subtract(right.scale(SIDE / 2)).add(up.scale(SIDE / 2)), };
                 double u = CENTER_UVS[i][0];
                 double v = CENTER_UVS[i][1];
-                Vec3d[] uvs = new Vec3d[] { new Vec3d(u, v + COL_WIDTH, 0), new Vec3d(u, v, 0), new Vec3d(u + COL_WIDTH, v + COL_WIDTH, 0),
-                        new Vec3d(u + COL_WIDTH, v, 0), };
+                Vec3[] uvs = new Vec3[] { new Vec3(u, v + COL_WIDTH, 0), new Vec3(u, v, 0), new Vec3(u + COL_WIDTH, v + COL_WIDTH, 0),
+                        new Vec3(u + COL_WIDTH, v, 0), };
                 for (int k = 0; k < j; ++k) {
                     rotate(vertices);
                 }
@@ -242,8 +242,8 @@ public class PipeMeshBuilder extends PipePartBuilder {
         }
     }
 
-    private void rotate(Vec3d[] arr) {
-        Vec3d tmp = arr[0];
+    private void rotate(Vec3[] arr) {
+        Vec3 tmp = arr[0];
         arr[0] = arr[2];
         arr[2] = arr[3];
         arr[3] = arr[1];
@@ -251,7 +251,7 @@ public class PipeMeshBuilder extends PipePartBuilder {
     }
 
     public static class InnerQuads extends PipeMeshBuilder {
-        InnerQuads(QuadEmitter emitter, int slotPos, Direction direction, Sprite sprite) {
+        InnerQuads(QuadEmitter emitter, int slotPos, Direction direction, TextureAtlasSprite sprite) {
             super(emitter, slotPos, direction, sprite);
         }
 

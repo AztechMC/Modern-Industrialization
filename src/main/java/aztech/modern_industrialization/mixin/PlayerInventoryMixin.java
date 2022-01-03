@@ -25,8 +25,8 @@ package aztech.modern_industrialization.mixin;
 
 import aztech.modern_industrialization.items.SteamDrillItem;
 import aztech.modern_industrialization.mixin_impl.SteamDrillHooks;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.level.block.state.BlockState;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -39,14 +39,14 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
  *         inject its regular hook, and we can add our RETURN hook before the
  *         early return as well.
  */
-@Mixin(value = PlayerInventory.class, priority = 100)
+@Mixin(value = Inventory.class, priority = 100)
 public class PlayerInventoryMixin {
-    @Inject(at = @At("HEAD"), method = "getBlockBreakingSpeed")
+    @Inject(at = @At("HEAD"), method = "getDestroySpeed")
     private void getBlockBreakingSpeedHead(BlockState block, CallbackInfoReturnable<Float> cir) {
-        SteamDrillHooks.set(((PlayerInventory) (Object) this).player);
+        SteamDrillHooks.set(((Inventory) (Object) this).player);
     }
 
-    @Inject(at = @At("RETURN"), method = "getBlockBreakingSpeed")
+    @Inject(at = @At("RETURN"), method = "getDestroySpeed")
     private void getBlockBreakingSpeedReturn(BlockState block, CallbackInfoReturnable<Float> cir) {
         SteamDrillHooks.remove();
     }

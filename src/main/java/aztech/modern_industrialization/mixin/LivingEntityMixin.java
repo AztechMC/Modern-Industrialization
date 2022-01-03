@@ -24,12 +24,12 @@
 package aztech.modern_industrialization.mixin;
 
 import aztech.modern_industrialization.items.armor.MIArmorEffects;
-import net.minecraft.entity.EquipmentSlot;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.damage.DamageSource;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -40,10 +40,10 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
  */
 @Mixin(LivingEntity.class)
 class LivingEntityMixin {
-    @Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/LivingEntity;isSleeping()Z", shift = At.Shift.BEFORE, by = 1), method = "damage", cancellable = true)
+    @Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;isSleeping()Z", shift = At.Shift.BEFORE, by = 1), method = "hurt", cancellable = true)
     void injectDamage(DamageSource source, float amount, CallbackInfoReturnable<Boolean> cir) {
         Object tis = this;
-        if (tis instanceof PlayerEntity player) {
+        if (tis instanceof Player player) {
             if (MIArmorEffects.quantumArmorPreventsDamage(player) || tryCancelDamage(source, amount, player)) {
                 cir.setReturnValue(false);
             }
@@ -53,20 +53,20 @@ class LivingEntityMixin {
     /**
      * Return true if the damage is cancelled.
      */
-    private static boolean tryCancelDamage(DamageSource source, float amount, PlayerEntity player) {
-        PlayerInventory inventory = player.getInventory();
+    private static boolean tryCancelDamage(DamageSource source, float amount, Player player) {
+        Inventory inventory = player.getInventory();
         // Find a suitable stack that can "tank" the damage
         ItemStack tankingStack = null;
         EquipmentSlot es = null;
         if (source == DamageSource.FLY_INTO_WALL) {
             es = EquipmentSlot.HEAD;
-            ItemStack head = inventory.armor.get(es.getEntitySlotId());
+            ItemStack head = inventory.armor.get(es.getIndex());
             if (MIArmorEffects.canTankFlyIntoWall(head)) {
                 tankingStack = head;
             }
         } else if (source == DamageSource.FALL) {
             es = EquipmentSlot.FEET;
-            ItemStack head = inventory.armor.get(es.getEntitySlotId());
+            ItemStack head = inventory.armor.get(es.getIndex());
             if (MIArmorEffects.canTankFall(head)) {
                 tankingStack = head;
             }
@@ -75,7 +75,7 @@ class LivingEntityMixin {
         if (tankingStack != null) {
             int intAmount = (int) Math.ceil(amount);
             final EquipmentSlot equipmentSlot = es;
-            tankingStack.damage(intAmount, player, p -> player.sendEquipmentBreakStatus(equipmentSlot));
+            tankingStack.hurtAndBreak(intAmount, player, p -> player.broadcastBreakEvent(equipmentSlot));
             return true;
         }
         return false;

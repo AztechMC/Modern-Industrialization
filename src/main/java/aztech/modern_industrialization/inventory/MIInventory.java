@@ -35,10 +35,10 @@ import net.fabricmc.fabric.api.transfer.v1.item.ItemStorage;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageUtil;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.Level;
 
 public final class MIInventory implements IComponent {
     public static final MIInventory EMPTY;
@@ -77,8 +77,8 @@ public final class MIInventory implements IComponent {
         return fluidStorage.stacks;
     }
 
-    public void autoExtractItems(World world, BlockPos pos, Direction direction) {
-        Storage<ItemVariant> target = ItemStorage.SIDED.find(world, pos.offset(direction), direction.getOpposite());
+    public void autoExtractItems(Level world, BlockPos pos, Direction direction) {
+        Storage<ItemVariant> target = ItemStorage.SIDED.find(world, pos.relative(direction), direction.getOpposite());
         target = StorageUtil2.wrapInventory(target);
 
         if (target != null) {
@@ -86,36 +86,36 @@ public final class MIInventory implements IComponent {
         }
     }
 
-    public void autoExtractFluids(World world, BlockPos pos, Direction direction) {
-        Storage<FluidVariant> target = FluidStorage.SIDED.find(world, pos.offset(direction), direction.getOpposite());
+    public void autoExtractFluids(Level world, BlockPos pos, Direction direction) {
+        Storage<FluidVariant> target = FluidStorage.SIDED.find(world, pos.relative(direction), direction.getOpposite());
 
         if (target != null) {
             StorageUtil.move(fluidStorage, target, k -> true, Long.MAX_VALUE, null);
         }
     }
 
-    public void autoInsertItems(World world, BlockPos pos, Direction direction) {
-        Storage<ItemVariant> target = ItemStorage.SIDED.find(world, pos.offset(direction), direction.getOpposite());
+    public void autoInsertItems(Level world, BlockPos pos, Direction direction) {
+        Storage<ItemVariant> target = ItemStorage.SIDED.find(world, pos.relative(direction), direction.getOpposite());
 
         if (target != null) {
             StorageUtil.move(target, itemStorage, k -> true, Long.MAX_VALUE, null);
         }
     }
 
-    public void autoInsertFluids(World world, BlockPos pos, Direction direction) {
-        Storage<FluidVariant> target = FluidStorage.SIDED.find(world, pos.offset(direction), direction.getOpposite());
+    public void autoInsertFluids(Level world, BlockPos pos, Direction direction) {
+        Storage<FluidVariant> target = FluidStorage.SIDED.find(world, pos.relative(direction), direction.getOpposite());
 
         if (target != null) {
             StorageUtil.move(target, fluidStorage, k -> true, Long.MAX_VALUE, null);
         }
     }
 
-    public void writeNbt(NbtCompound tag) {
+    public void writeNbt(CompoundTag tag) {
         NbtHelper.putList(tag, "items", itemStorage.stacks, ConfigurableItemStack::toNbt);
         NbtHelper.putList(tag, "fluids", fluidStorage.stacks, ConfigurableFluidStack::toNbt);
     }
 
-    public void readNbt(NbtCompound tag) {
+    public void readNbt(CompoundTag tag) {
         List<ConfigurableItemStack> newItemStacks = new ArrayList<>();
         List<ConfigurableFluidStack> newFluidStacks = new ArrayList<>();
 

@@ -29,12 +29,12 @@ import aztech.modern_industrialization.materials.GemPart;
 import aztech.modern_industrialization.textures.MITextures;
 import aztech.modern_industrialization.textures.TextureHelper;
 import aztech.modern_industrialization.textures.coloramp.HotIngotColoramp;
+import com.mojang.blaze3d.platform.NativeImage;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import net.minecraft.client.texture.NativeImage;
 
 public class MIParts {
 

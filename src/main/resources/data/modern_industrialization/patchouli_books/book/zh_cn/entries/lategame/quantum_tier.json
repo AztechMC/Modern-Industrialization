@@ -1,0 +1,38 @@
+{
+  "name": "量子层",
+  "category": "modern_industrialization:endgame",
+  "icon": "modern_industrialization:quantum_upgrade",
+  "pages": [
+    {
+      "type": "spotlight",
+      "item": "modern_industrialization:singularity",
+      "text": "当科学家试图在他们的实验室中建造一个微型黑洞时会发生什么？$(br2)奇点就是答案：这个极其强大的物质球具有非常有用的量子物理学应用，具有适当的稳定材料。"
+    },
+    {
+      "type": "spotlight",
+      "item": "modern_industrialization:quantum_upgrade",
+      "text": "量子升级是有史以来最强大的机器升级。自己看看吧。"
+    },
+    {
+      "type": "spotlight",
+      "item": "modern_industrialization:quantum_sword",
+      "text": "量子剑使用薛定谔方程的原始力量立即蒸发你用它击中的任何敌人（或朋友！）。"
+    },
+    {
+      "type": "spotlight",
+      "item": "modern_industrialization:quantum_chestplate",
+      "text": "通过海森堡不确定性原理的引力效应，全套量子装甲使您免疫所有伤害并赋予您创造性的飞行能力。每一件新的盔甲都会增加 25% 抵消受到的任何伤害的可能性。 "
+    },
+    {
+      "type": "spotlight",
+      "item": "modern_industrialization:quantum_barrel",
+      "text": "量子桶是终极桶层：它可以容纳 2,147,483,647 叠单件物品！"
+    },
+    {
+      "type": "spotlight",
+      "item": "modern_industrialization:quantum_tank",
+      "text": "量子罐是最强大的罐层：它可以容纳 2,147,483,647 桶单一流体！"
+    }
+  ],
+  "sortnum": 301
+}

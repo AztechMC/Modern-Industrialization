@@ -47,11 +47,11 @@ import net.devtech.arrp.json.models.JTextures;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
-import net.minecraft.block.Block;
-import net.minecraft.block.Material;
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.Item;
-import net.minecraft.sound.BlockSoundGroup;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.material.Material;
 
 public class MIBlock extends Block {
 
@@ -71,11 +71,11 @@ public class MIBlock extends Block {
     public static final int FLAG_BLOCK_MODEL = 1 << 1;
     public static final int FLAG_BLOCK_ITEM_MODEL = 1 << 2;
 
-    public MIBlock(String id, Settings settings, int registrationFlag) {
+    public MIBlock(String id, Properties settings, int registrationFlag) {
         this(id, settings, null, registrationFlag);
     }
 
-    public MIBlock(String id, Settings settings, Function<MIBlock, BlockItem> blockItemCtor, int registrationFlag) {
+    public MIBlock(String id, Properties settings, Function<MIBlock, BlockItem> blockItemCtor, int registrationFlag) {
         super(settings);
         this.id = id;
 
@@ -103,22 +103,23 @@ public class MIBlock extends Block {
         this.FLAGS = registrationFlag;
     }
 
-    public MIBlock(String id, Settings settings) {
+    public MIBlock(String id, Properties settings) {
         this(id, settings, FLAG_BLOCK_LOOT | FLAG_BLOCK_MODEL | FLAG_BLOCK_ITEM_MODEL);
     }
 
-    public MIBlock(String id, Settings settings, Function<MIBlock, BlockItem> blockItemCtor) {
+    public MIBlock(String id, Properties settings, Function<MIBlock, BlockItem> blockItemCtor) {
         this(id, settings, blockItemCtor, FLAG_BLOCK_LOOT | FLAG_BLOCK_MODEL | FLAG_BLOCK_ITEM_MODEL);
     }
 
     public MIBlock(String id) {
-        this(id, FabricBlockSettings.of(METAL_MATERIAL).hardness(4.0f).breakByTool(FabricToolTags.PICKAXES).requiresTool()
-                .allowsSpawning(MobSpawning.NO_SPAWN));
+        this(id, FabricBlockSettings.of(METAL_MATERIAL).breakByTool(FabricToolTags.PICKAXES).destroyTime(4.0f).requiresCorrectToolForDrops()
+                .isValidSpawn(MobSpawning.NO_SPAWN));
     }
 
     public MIBlock(String id, float resistance) {
-        this(id, FabricBlockSettings.of(METAL_MATERIAL).hardness(4.0f).resistance(resistance).breakByTool(FabricToolTags.PICKAXES).requiresTool()
-                .allowsSpawning(MobSpawning.NO_SPAWN));
+        this(id, FabricBlockSettings.of(METAL_MATERIAL).breakByTool(FabricToolTags.PICKAXES).destroyTime(4.0f).explosionResistance(resistance)
+                .requiresCorrectToolForDrops()
+                .isValidSpawn(MobSpawning.NO_SPAWN));
     }
 
     // hull
@@ -133,12 +134,13 @@ public class MIBlock extends Block {
 
     // other
     public static final MIBlock INDUSTRIAL_TNT = new MIBlock("industrial_tnt",
-            Settings.of(Material.TNT).breakInstantly().sounds(BlockSoundGroup.GRASS));
+            Properties.of(Material.EXPLOSIVE).instabreak().sound(SoundType.GRASS));
 
-    public static final MIBlock NUKE = new MIBlock("nuke", Settings.of(Material.TNT).breakInstantly().sounds(BlockSoundGroup.GRASS));
+    public static final MIBlock NUKE = new MIBlock("nuke", Properties.of(Material.EXPLOSIVE).instabreak().sound(SoundType.GRASS));
 
     public static final MIBlock BLOCK_FIRE_CLAY_BRICKS = new MIBlock("fire_clay_bricks",
-            FabricBlockSettings.of(STONE_MATERIAL).hardness(2.0f).resistance(6.0f).breakByTool(FabricToolTags.PICKAXES, 0).requiresTool());
+            FabricBlockSettings.of(STONE_MATERIAL).breakByTool(FabricToolTags.PICKAXES, 0).destroyTime(2.0f).explosionResistance(6.0f)
+                    .requiresCorrectToolForDrops());
 
     public static final Block FORGE_HAMMER = new ForgeHammerBlock();
     public static final TrashCanBlock TRASH_CAN = new TrashCanBlock();

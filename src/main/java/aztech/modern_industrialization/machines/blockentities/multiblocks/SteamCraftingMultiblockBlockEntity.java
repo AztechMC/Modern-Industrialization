@@ -33,11 +33,11 @@ import aztech.modern_industrialization.machines.multiblocks.ShapeMatcher;
 import aztech.modern_industrialization.machines.multiblocks.ShapeTemplate;
 import aztech.modern_industrialization.machines.recipe.MachineRecipeType;
 import aztech.modern_industrialization.util.Simulation;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.Direction;
-import net.minecraft.world.World;
+import net.minecraft.core.Direction;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
 
 public class SteamCraftingMultiblockBlockEntity extends AbstractCraftingMultiblockBlockEntity {
 
@@ -92,8 +92,8 @@ public class SteamCraftingMultiblockBlockEntity extends AbstractCraftingMultiblo
         }
 
         @Override
-        public World getCrafterWorld() {
-            return world;
+        public Level getCrafterWorld() {
+            return level;
         }
     }
 
@@ -102,9 +102,9 @@ public class SteamCraftingMultiblockBlockEntity extends AbstractCraftingMultiblo
     }
 
     @Override
-    protected ActionResult onUse(PlayerEntity player, Hand hand, Direction face) {
-        ActionResult result = super.onUse(player, hand, face);
-        if (!result.isAccepted()) {
+    protected InteractionResult onUse(Player player, InteractionHand hand, Direction face) {
+        InteractionResult result = super.onUse(player, hand, face);
+        if (!result.consumesAction()) {
             return gunpowderOverclock.onUse(this, player, hand);
         }
         return result;

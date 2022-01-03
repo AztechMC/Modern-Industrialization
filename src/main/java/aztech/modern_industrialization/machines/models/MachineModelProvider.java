@@ -31,33 +31,33 @@ import java.util.function.Consumer;
 import net.fabricmc.fabric.api.client.model.ExtraModelProvider;
 import net.fabricmc.fabric.api.client.model.ModelProviderContext;
 import net.fabricmc.fabric.api.client.model.ModelResourceProvider;
-import net.minecraft.client.render.model.UnbakedModel;
-import net.minecraft.resource.ResourceManager;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.resources.model.UnbakedModel;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.packs.resources.ResourceManager;
 import org.jetbrains.annotations.Nullable;
 
 public class MachineModelProvider implements ModelResourceProvider, ExtraModelProvider {
-    private static final Map<Identifier, UnbakedModel> modelMap = new HashMap<>();
-    private static final List<Identifier> manuallyLoadedModels = new ArrayList<>();
+    private static final Map<ResourceLocation, UnbakedModel> modelMap = new HashMap<>();
+    private static final List<ResourceLocation> manuallyLoadedModels = new ArrayList<>();
 
-    public static void register(Identifier id, UnbakedModel model) {
+    public static void register(ResourceLocation id, UnbakedModel model) {
         if (modelMap.put(id, model) != null) {
             throw new RuntimeException("Duplicate registration of model " + id);
         }
     }
 
-    public static void loadManually(Identifier identifier) {
+    public static void loadManually(ResourceLocation identifier) {
         manuallyLoadedModels.add(identifier);
     }
 
     @Override
-    public @Nullable UnbakedModel loadModelResource(Identifier resourceId, ModelProviderContext context) {
+    public @Nullable UnbakedModel loadModelResource(ResourceLocation resourceId, ModelProviderContext context) {
         return modelMap.get(resourceId);
     }
 
     @Override
-    public void provideExtraModels(ResourceManager manager, Consumer<Identifier> out) {
-        for (Identifier id : manuallyLoadedModels) {
+    public void provideExtraModels(ResourceManager manager, Consumer<ResourceLocation> out) {
+        for (ResourceLocation id : manuallyLoadedModels) {
             out.accept(id);
         }
     }

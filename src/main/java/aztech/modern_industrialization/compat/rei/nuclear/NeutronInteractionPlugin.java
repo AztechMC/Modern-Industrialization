@@ -32,9 +32,9 @@ import me.shedaniel.rei.api.common.category.CategoryIdentifier;
 import me.shedaniel.rei.api.common.util.EntryStacks;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
-import net.minecraft.fluid.Fluid;
-import net.minecraft.fluid.Fluids;
-import net.minecraft.util.registry.Registry;
+import net.minecraft.core.Registry;
+import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.level.material.Fluids;
 
 public class NeutronInteractionPlugin implements REIClientPlugin {
 
@@ -79,7 +79,7 @@ public class NeutronInteractionPlugin implements REIClientPlugin {
         });
 
         for (Fluid fluid : Registry.FLUID) {
-            if (fluid.isStill(fluid.getDefaultState()) && fluid != Fluids.EMPTY) {
+            if (fluid.isSource(fluid.defaultFluidState()) && fluid != Fluids.EMPTY) {
                 FluidVariant variant = FluidVariant.of(fluid);
                 INuclearComponent component = INuclearComponent.of(variant);
                 if (component != null) {

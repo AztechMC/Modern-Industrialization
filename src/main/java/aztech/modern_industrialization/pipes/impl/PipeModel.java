@@ -27,6 +27,7 @@ import aztech.modern_industrialization.pipes.api.PipeEndpointType;
 import aztech.modern_industrialization.pipes.api.PipeNetworkType;
 import aztech.modern_industrialization.pipes.api.PipeRenderer;
 import com.mojang.datafixers.util.Pair;
+import com.mojang.math.Vector3f;
 import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
 import java.util.*;
 import java.util.function.Function;
@@ -38,22 +39,25 @@ import net.fabricmc.fabric.api.renderer.v1.material.RenderMaterial;
 import net.fabricmc.fabric.api.renderer.v1.model.FabricBakedModel;
 import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
 import net.fabricmc.fabric.api.rendering.data.v1.RenderAttachedBlockView;
-import net.minecraft.block.BlockState;
-import net.minecraft.client.render.model.*;
-import net.minecraft.client.render.model.json.JsonUnbakedModel;
-import net.minecraft.client.render.model.json.ModelOverrideList;
-import net.minecraft.client.render.model.json.ModelTransformation;
-import net.minecraft.client.texture.Sprite;
-import net.minecraft.client.texture.SpriteAtlasTexture;
-import net.minecraft.client.util.SpriteIdentifier;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.Vec3f;
-import net.minecraft.world.BlockRenderView;
+import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.renderer.block.model.BlockModel;
+import net.minecraft.client.renderer.block.model.ItemOverrides;
+import net.minecraft.client.renderer.block.model.ItemTransforms;
+import net.minecraft.client.renderer.texture.TextureAtlas;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.client.resources.model.Material;
+import net.minecraft.client.resources.model.ModelBakery;
+import net.minecraft.client.resources.model.ModelState;
+import net.minecraft.client.resources.model.UnbakedModel;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.BlockAndTintGetter;
+import net.minecraft.world.level.block.state.BlockState;
 
 /**
  * The models of a pipe block. It can handle up to three different pipe types.
@@ -61,15 +65,15 @@ import net.minecraft.world.BlockRenderView;
  * and two for connection handling.
  */
 public class PipeModel implements UnbakedModel, BakedModel, FabricBakedModel {
-    private static final Identifier DEFAULT_BLOCK_MODEL = new Identifier("minecraft:block/block");
-    private static final SpriteIdentifier PARTICLE_SPRITE = new SpriteIdentifier(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE,
-            new Identifier("minecraft:block/iron_block"));
-    private Sprite particleSprite;
+    private static final ResourceLocation DEFAULT_BLOCK_MODEL = new ResourceLocation("minecraft:block/block");
+    private static final Material PARTICLE_SPRITE = new Material(TextureAtlas.LOCATION_BLOCKS,
+            new ResourceLocation("minecraft:block/iron_block"));
+    private TextureAtlasSprite particleSprite;
     private Map<PipeRenderer.Factory, PipeRenderer> renderers = new Reference2ObjectOpenHashMap<>();
-    private ModelTransformation modelTransformation;
+    private ItemTransforms modelTransformation;
     private RenderMaterial cutoutMaterial;
 
-    public PipeModel(Sprite particleSprite, Map<PipeRenderer.Factory, PipeRenderer> renderers, ModelTransformation modelTransformation,
+    public PipeModel(TextureAtlasSprite particleSprite, Map<PipeRenderer.Factory, PipeRenderer> renderers, ItemTransforms modelTransformation,
             RenderMaterial cutoutMaterial) {
         this.particleSprite = particleSprite;
         this.renderers = renderers;
@@ -86,7 +90,7 @@ public class PipeModel implements UnbakedModel, BakedModel, FabricBakedModel {
     }
 
     @Override
-    public void emitBlockQuads(BlockRenderView blockRenderView, BlockState state, BlockPos pos, Supplier<Random> supplier,
+    public void emitBlockQuads(BlockAndTintGetter blockRenderView, BlockState state, BlockPos pos, Supplier<Random> supplier,
             RenderContext renderContext) {
         renderContext.pushTransform(quad -> {
             if (quad.tag() == 0) {
@@ -127,7 +131,7 @@ public class PipeModel implements UnbakedModel, BakedModel, FabricBakedModel {
 
             PipeEndpointType[][] connections = new PipeEndpointType[][] {
                     { null, null, null, null, PipeEndpointType.BLOCK, PipeEndpointType.BLOCK } };
-            renderers.get(type.getRenderer()).draw(null, null, renderContext, 0, connections, new NbtCompound());
+            renderers.get(type.getRenderer()).draw(null, null, renderContext, 0, connections, new CompoundTag());
 
             renderContext.popTransform();
             renderContext.popTransform();
@@ -145,8 +149,8 @@ public class PipeModel implements UnbakedModel, BakedModel, FabricBakedModel {
 
     private static final RenderContext.QuadTransform ITEM_TRANSFORM = quad -> {
         for (int i = 0; i < 4; ++i) {
-            Vec3f pos = quad.copyPos(i, null);
-            quad.pos(i, pos.getX(), pos.getY() * 2 - 0.5f, pos.getZ() * 2 - 0.5f);
+            Vector3f pos = quad.copyPos(i, null);
+            quad.pos(i, pos.x(), pos.y() * 2 - 0.5f, pos.z() * 2 - 0.5f);
         }
         return true;
     };
@@ -162,52 +166,52 @@ public class PipeModel implements UnbakedModel, BakedModel, FabricBakedModel {
     }
 
     @Override
-    public boolean hasDepth() {
+    public boolean isGui3d() {
         return false;
     }
 
     @Override
-    public boolean isSideLit() {
+    public boolean usesBlockLight() {
         return true;
     }
 
     @Override
-    public boolean isBuiltin() {
+    public boolean isCustomRenderer() {
         return false;
     }
 
     @Override
-    public Sprite getParticleSprite() {
+    public TextureAtlasSprite getParticleIcon() {
         return particleSprite;
     }
 
     @Override
-    public ModelTransformation getTransformation() {
+    public ItemTransforms getTransforms() {
         return modelTransformation;
     }
 
     @Override
-    public ModelOverrideList getOverrides() {
-        return ModelOverrideList.EMPTY;
+    public ItemOverrides getOverrides() {
+        return ItemOverrides.EMPTY;
     }
 
     @Override
-    public Collection<Identifier> getModelDependencies() {
+    public Collection<ResourceLocation> getDependencies() {
         return Arrays.asList(DEFAULT_BLOCK_MODEL);
     }
 
     @Override
-    public Collection<SpriteIdentifier> getTextureDependencies(Function<Identifier, UnbakedModel> unbakedModelGetter,
+    public Collection<Material> getMaterials(Function<ResourceLocation, UnbakedModel> unbakedModelGetter,
             Set<Pair<String, String>> unresolvedTextureReferences) {
         return PipeNetworkType.getTypes().values().stream().flatMap(r -> r.getRenderer().getSpriteDependencies().stream())
                 .collect(Collectors.toList());
     }
 
     @Override
-    public BakedModel bake(ModelLoader loader, Function<SpriteIdentifier, Sprite> textureGetter, ModelBakeSettings rotationContainer,
-            Identifier modelId) {
+    public BakedModel bake(ModelBakery loader, Function<Material, TextureAtlasSprite> textureGetter, ModelState rotationContainer,
+            ResourceLocation modelId) {
         particleSprite = textureGetter.apply(PARTICLE_SPRITE);
-        modelTransformation = ((JsonUnbakedModel) loader.getOrLoadModel(DEFAULT_BLOCK_MODEL)).getTransformations();
+        modelTransformation = ((BlockModel) loader.getModel(DEFAULT_BLOCK_MODEL)).getTransforms();
 
         renderers.clear();
         for (PipeRenderer.Factory rendererFactory : PipeNetworkType.getRenderers()) {

@@ -36,7 +36,7 @@ import dev.latvian.mods.kubejs.recipe.RecipeExceptionJS;
 import dev.latvian.mods.kubejs.recipe.RecipeJS;
 import dev.latvian.mods.kubejs.recipe.RegisterRecipeHandlersEvent;
 import dev.latvian.mods.kubejs.util.ListJS;
-import net.minecraft.util.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 
 public class MIKubeJSPlugin extends KubeJSPlugin {
@@ -87,7 +87,7 @@ public class MIKubeJSPlugin extends KubeJSPlugin {
             }
 
             if (json.has("id")) {
-                id = new Identifier(json.get("id").getAsString());
+                id = new ResourceLocation(json.get("id").getAsString());
             }
         }
 

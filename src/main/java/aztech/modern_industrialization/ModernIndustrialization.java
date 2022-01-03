@@ -65,19 +65,19 @@ import net.fabricmc.fabric.api.registry.FuelRegistry;
 import net.fabricmc.fabric.api.screenhandler.v1.ScreenHandlerRegistry;
 import net.fabricmc.fabric.api.tag.TagFactory;
 import net.fabricmc.fabric.api.tag.TagRegistry;
-import net.minecraft.block.Block;
-import net.minecraft.block.MapColor;
-import net.minecraft.block.Material;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.screen.ScreenHandlerType;
-import net.minecraft.tag.Tag;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
+import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.Tag;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.material.Material;
+import net.minecraft.world.level.material.MaterialColor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -88,21 +88,21 @@ public class ModernIndustrialization implements ModInitializer {
     public static final RuntimeResourcePack RESOURCE_PACK = RuntimeResourcePack.create("modern_industrialization:general");
 
     // Materials
-    public static final Material METAL_MATERIAL = new FabricMaterialBuilder(MapColor.IRON_GRAY).build();
-    public static final Material STONE_MATERIAL = new FabricMaterialBuilder(MapColor.STONE_GRAY).build();
+    public static final Material METAL_MATERIAL = new FabricMaterialBuilder(MaterialColor.METAL).build();
+    public static final Material STONE_MATERIAL = new FabricMaterialBuilder(MaterialColor.STONE).build();
 
-    public static final ItemGroup ITEM_GROUP = FabricItemGroupBuilder.build(new Identifier(MOD_ID, "general"),
+    public static final CreativeModeTab ITEM_GROUP = FabricItemGroupBuilder.build(new ResourceLocation(MOD_ID, "general"),
             () -> new ItemStack(Registry.ITEM.get(new MIIdentifier("forge_hammer"))));
 
     // Tags
-    public static final Tag<Item> SCREWDRIVERS = TagFactory.ITEM.create(new Identifier("c:screwdrivers"));
-    public static final Tag<Item> WRENCHES = TagFactory.ITEM.create(new Identifier("c:wrenches"));
+    public static final Tag<Item> SCREWDRIVERS = TagFactory.ITEM.create(new ResourceLocation("c:screwdrivers"));
+    public static final Tag<Item> WRENCHES = TagFactory.ITEM.create(new ResourceLocation("c:wrenches"));
 
     // ScreenHandlerType
-    public static final ScreenHandlerType<MachineScreenHandlers.Common> SCREEN_HANDLER_MACHINE = ScreenHandlerRegistry
+    public static final MenuType<MachineScreenHandlers.Common> SCREEN_HANDLER_MACHINE = ScreenHandlerRegistry
             .registerExtended(new MIIdentifier("machine"), MachineScreenHandlers::createClient);
-    public static final ScreenHandlerType<ForgeHammerScreenHandler> SCREEN_HANDLER_FORGE_HAMMER = ScreenHandlerRegistry
-            .registerSimple(new Identifier(MOD_ID, "forge_hammer"), ForgeHammerScreenHandler::new);
+    public static final MenuType<ForgeHammerScreenHandler> SCREEN_HANDLER_FORGE_HAMMER = ScreenHandlerRegistry
+            .registerSimple(new ResourceLocation(MOD_ID, "forge_hammer"), ForgeHammerScreenHandler::new);
 
     @Override
     public void onInitialize() {
@@ -155,13 +155,13 @@ public class ModernIndustrialization implements ModInitializer {
     }
 
     public static void registerItem(Item item, String id) {
-        Identifier ID = new MIIdentifier(id);
+        ResourceLocation ID = new MIIdentifier(id);
         Registry.register(Registry.ITEM, ID, item);
 
         RESOURCE_PACK.addModel(
                 JModel.model().parent(MIItem.handhelds.contains(id) ? "minecraft:item/handheld" : "minecraft:item/generated")
                         .textures(new JTextures().layer0(ID.getNamespace() + ":items/" + ID.getPath())),
-                new Identifier(ID.getNamespace() + ":item/" + ID.getPath()));
+                new ResourceLocation(ID.getNamespace() + ":item/" + ID.getPath()));
     }
 
     private void setupBlocks() {
@@ -172,9 +172,9 @@ public class ModernIndustrialization implements ModInitializer {
     }
 
     public static void registerBlock(Block block, Item item, String id, int flag) {
-        Identifier identifier = new MIIdentifier(id);
+        ResourceLocation identifier = new MIIdentifier(id);
         Registry.register(Registry.BLOCK, identifier, block);
-        if (Registry.ITEM.getOrEmpty(identifier).isEmpty()) {
+        if (Registry.ITEM.getOptional(identifier).isEmpty()) {
             Registry.register(Registry.ITEM, identifier, item);
         }
         if ((flag & MIBlock.FLAG_BLOCK_LOOT) != 0) {
@@ -205,10 +205,10 @@ public class ModernIndustrialization implements ModInitializer {
     }
 
     public static void registerBlock(MIBlock block) {
-        Identifier identifier = new MIIdentifier(block.id);
+        ResourceLocation identifier = new MIIdentifier(block.id);
         Registry.register(Registry.BLOCK, identifier, block);
 
-        if (Registry.ITEM.getOrEmpty(identifier).isEmpty()) {
+        if (Registry.ITEM.getOptional(identifier).isEmpty()) {
             Registry.register(Registry.ITEM, identifier, block.blockItem);
         }
 
@@ -254,7 +254,7 @@ public class ModernIndustrialization implements ModInitializer {
         addFuel("coke_dust", 6400);
         addFuel("coke_block", Short.MAX_VALUE); // F*** YOU VANILLA ! (Should be 6400*9 but it overflows ...)
         addFuel("coal_crushed_dust", 1600);
-        FuelRegistry.INSTANCE.add(TagRegistry.item(new Identifier("c:coal_dusts")), 1600);
+        FuelRegistry.INSTANCE.add(TagRegistry.item(new ResourceLocation("c:coal_dusts")), 1600);
         addFuel("coal_tiny_dust", 160);
         addFuel("lignite_coal", 1600);
         addFuel("lignite_coal_block", 16000);
@@ -280,27 +280,27 @@ public class ModernIndustrialization implements ModInitializer {
 
     private void setupWrench() {
         UseBlockCallback.EVENT.register((player, world, hand, hitResult) -> {
-            if (player.isSpectator() || !world.canPlayerModifyAt(player, hitResult.getBlockPos())) {
-                return ActionResult.PASS;
+            if (player.isSpectator() || !world.mayInteract(player, hitResult.getBlockPos())) {
+                return InteractionResult.PASS;
             }
 
-            boolean isWrench = player.getStackInHand(hand).isIn(WRENCHES);
-            boolean isScrewdriver = player.getStackInHand(hand).isIn(SCREWDRIVERS);
+            boolean isWrench = player.getItemInHand(hand).is(WRENCHES);
+            boolean isScrewdriver = player.getItemInHand(hand).is(SCREWDRIVERS);
             if (isWrench || isScrewdriver) {
                 BlockEntity entity = world.getBlockEntity(hitResult.getBlockPos());
                 if (isWrench && entity instanceof WrenchableBlockEntity wrenchable) {
                     if (wrenchable.useWrench(player, hand, hitResult)) {
-                        return ActionResult.success(world.isClient());
+                        return InteractionResult.sidedSuccess(world.isClientSide());
                     }
                 }
                 if (isScrewdriver && entity instanceof ScrewdriverableBlockEntity screwdriverable) {
                     if (screwdriverable.useScrewdriver(player, hand, hitResult)) {
-                        return ActionResult.success(world.isClient());
+                        return InteractionResult.sidedSuccess(world.isClientSide());
                     }
                 }
             }
 
-            return ActionResult.PASS;
+            return InteractionResult.PASS;
         });
     }
 }

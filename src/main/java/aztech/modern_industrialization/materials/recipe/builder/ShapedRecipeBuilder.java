@@ -30,7 +30,7 @@ import aztech.modern_industrialization.materials.part.Part;
 import aztech.modern_industrialization.recipe.json.ShapedRecipeJson;
 import com.google.gson.Gson;
 import java.util.function.Consumer;
-import net.minecraft.data.server.recipe.RecipeJsonProvider;
+import net.minecraft.data.recipes.FinishedRecipe;
 
 public class ShapedRecipeBuilder implements MaterialRecipeBuilder {
     private static final Gson GSON = new Gson();
@@ -114,7 +114,7 @@ public class ShapedRecipeBuilder implements MaterialRecipeBuilder {
     }
 
     @Override
-    public void save(Consumer<RecipeJsonProvider> consumer) {
+    public void save(Consumer<FinishedRecipe> consumer) {
         if (!canceled) {
             json.validate();
             String fullId = "materials/" + context.getMaterialName() + "/" + recipeId;

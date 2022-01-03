@@ -47,15 +47,15 @@ import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
-import net.minecraft.client.gui.Element;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.widget.ClickableWidget;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.screen.ScreenHandler;
-import net.minecraft.screen.slot.Slot;
-import net.minecraft.util.registry.Registry;
+import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.client.gui.components.events.GuiEventListener;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.core.Registry;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
 public class MIREIPlugin implements REIClientPlugin {
@@ -89,7 +89,8 @@ public class MIREIPlugin implements REIClientPlugin {
                 FluidVariant fk = stack.getStack().getValue() instanceof FluidStack fs ? FluidVariant.of(fs.getFluid(), fs.getTag()) : null;
                 ItemVariant ik = stack.getStack().getValue() instanceof ItemStack is ? ItemVariant.of(is) : null;
                 @Nullable
-                Element element = context.getScreen().hoveredElement(context.getCurrentPosition().x, context.getCurrentPosition().y).orElse(null);
+                GuiEventListener element = context.getScreen().getChildAt(context.getCurrentPosition().x, context.getCurrentPosition().y)
+                        .orElse(null);
                 if (element instanceof ReiDraggable dw) {
                     if (ik != null) {
                         return dw.dragItem(ik, Simulation.ACT);
@@ -99,13 +100,13 @@ public class MIREIPlugin implements REIClientPlugin {
                     }
                 }
                 if (context.getScreen() instanceof MIHandledScreen<?>handledScreen) {
-                    ScreenHandler handler = handledScreen.getScreenHandler();
+                    AbstractContainerMenu handler = handledScreen.getMenu();
                     Slot slot = handledScreen.getFocusedSlot();
                     if (slot instanceof ReiDraggable dw) {
                         int slotId = handler.slots.indexOf(slot);
                         if (ik != null && dw.dragItem(ik, Simulation.ACT)) {
-                            PacketByteBuf buf = PacketByteBufs.create();
-                            buf.writeInt(handler.syncId);
+                            FriendlyByteBuf buf = PacketByteBufs.create();
+                            buf.writeInt(handler.containerId);
                             buf.writeVarInt(slotId);
                             buf.writeBoolean(true);
                             ik.toPacket(buf);
@@ -113,8 +114,8 @@ public class MIREIPlugin implements REIClientPlugin {
                             return true;
                         }
                         if (fk != null && dw.dragFluid(fk, Simulation.ACT)) {
-                            PacketByteBuf buf = PacketByteBufs.create();
-                            buf.writeInt(handler.syncId);
+                            FriendlyByteBuf buf = PacketByteBufs.create();
+                            buf.writeInt(handler.containerId);
                             buf.writeVarInt(slotId);
                             buf.writeBoolean(false);
                             fk.toPacket(buf);
@@ -131,8 +132,8 @@ public class MIREIPlugin implements REIClientPlugin {
                 List<BoundsProvider> bounds = new ArrayList<>();
                 FluidVariant fk = stack.getStack().getValue() instanceof FluidStack fs ? FluidVariant.of(fs.getFluid(), fs.getTag()) : null;
                 ItemVariant ik = stack.getStack().getValue() instanceof ItemStack is ? ItemVariant.of(is) : null;
-                for (Element element : context.getScreen().children()) {
-                    if (element instanceof ClickableWidget cw && element instanceof ReiDraggable dw) {
+                for (GuiEventListener element : context.getScreen().children()) {
+                    if (element instanceof AbstractWidget cw && element instanceof ReiDraggable dw) {
                         if (ik != null && dw.dragItem(ik, Simulation.SIMULATE)) {
                             bounds.add(getWidgetBounds(cw));
                         }
@@ -142,7 +143,7 @@ public class MIREIPlugin implements REIClientPlugin {
                     }
                 }
                 if (context.getScreen() instanceof MIHandledScreen<?>handledScreen) {
-                    ScreenHandler handler = handledScreen.getScreenHandler();
+                    AbstractContainerMenu handler = handledScreen.getMenu();
                     for (Slot slot : handler.slots) {
                         if (slot instanceof ReiDraggable dw) {
                             if (ik != null && dw.dragItem(ik, Simulation.SIMULATE)) {
@@ -164,7 +165,7 @@ public class MIREIPlugin implements REIClientPlugin {
         });
     }
 
-    private static DraggableStackVisitor.BoundsProvider getWidgetBounds(ClickableWidget cw) {
+    private static DraggableStackVisitor.BoundsProvider getWidgetBounds(AbstractWidget cw) {
         return DraggableStackVisitor.BoundsProvider.ofRectangle(new Rectangle(cw.x, cw.y, cw.getWidth(), cw.getHeight()));
     }
 

@@ -24,7 +24,7 @@
 package aztech.modern_industrialization.nuclear;
 
 import aztech.modern_industrialization.ModernIndustrialization;
-import net.minecraft.item.Item;
+import net.minecraft.world.item.Item;
 
 public class NuclearItem {
 

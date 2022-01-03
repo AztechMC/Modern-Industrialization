@@ -34,8 +34,8 @@ import aztech.modern_industrialization.machines.multiblocks.MultiblockMachineBlo
 import aztech.modern_industrialization.machines.multiblocks.ShapeMatcher;
 import aztech.modern_industrialization.machines.multiblocks.ShapeTemplate;
 import aztech.modern_industrialization.util.Tickable;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.ItemStack;
 
 public class SteamBoilerMultiblockBlockEntity extends MultiblockMachineBlockEntity implements Tickable {
 
@@ -70,12 +70,12 @@ public class SteamBoilerMultiblockBlockEntity extends MultiblockMachineBlockEnti
 
     protected final void link() {
         if (shapeMatcher == null) {
-            shapeMatcher = new ShapeMatcher(world, pos, orientation.facingDirection, shapeTemplate);
-            shapeMatcher.registerListeners(world);
+            shapeMatcher = new ShapeMatcher(level, worldPosition, orientation.facingDirection, shapeTemplate);
+            shapeMatcher.registerListeners(level);
         }
         if (shapeMatcher.needsRematch()) {
             shapeValid.shapeValid = false;
-            shapeMatcher.rematch(world);
+            shapeMatcher.rematch(level);
 
             if (shapeMatcher.isMatchSuccessful()) {
                 inventory.rebuild(shapeMatcher);
@@ -92,7 +92,7 @@ public class SteamBoilerMultiblockBlockEntity extends MultiblockMachineBlockEnti
     protected final void unlink() {
         if (shapeMatcher != null) {
             shapeMatcher.unlinkHatches();
-            shapeMatcher.unregisterListeners(world);
+            shapeMatcher.unregisterListeners(level);
             shapeMatcher = null;
         }
     }
@@ -119,7 +119,7 @@ public class SteamBoilerMultiblockBlockEntity extends MultiblockMachineBlockEnti
 
     @Override
     public void tick() {
-        if (!world.isClient) {
+        if (!level.isClientSide) {
             link();
 
             if (shapeValid.shapeValid) {
@@ -131,7 +131,7 @@ public class SteamBoilerMultiblockBlockEntity extends MultiblockMachineBlockEnti
                 steamHeater.decreaseTemperature(1);
                 this.isActiveComponent.updateActive(false, this);
             }
-            markDirty();
+            setChanged();
         }
     }
 }

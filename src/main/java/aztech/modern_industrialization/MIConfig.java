@@ -49,7 +49,9 @@ public class MIConfig implements ConfigData {
     public boolean disableFuelTooltips = false;
     public boolean disableItemTagTooltips = false;
     public boolean newVersionMessage = true;
+    public boolean enableHatchPlacementOverlay = true;
     public boolean colorWaterLava = true;
+
     public boolean enableDebugCommands = false;
 
     @ConfigEntry.Gui.Excluded

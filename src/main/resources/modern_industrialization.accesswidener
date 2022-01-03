@@ -1,14 +1,14 @@
 accessWidener   v1  named
 
 # Used by the barrel interaction code to set the delay after a barrel attack
-accessible field net/minecraft/client/network/ClientPlayerInteractionManager blockBreakingCooldown I
+accessible field net/minecraft/client/multiplayer/MultiPlayerGameMode destroyDelay I
 
 # Used by the jetpack to prevent players from getting kicked
-accessible    field    net/minecraft/server/network/ServerPlayNetworkHandler    floatingTicks    I
+accessible    field    net/minecraft/server/network/ServerGamePacketListenerImpl    aboveGroundTickCount    I
 
 # Used by datagen to instantiate the client builtin resource pack
-accessible    field    net/minecraft/client/resource/ClientBuiltinResourcePackProvider    DEFAULT_PACK_METADATA    Lnet/minecraft/resource/metadata/PackResourceMetadata;
+accessible    field    net/minecraft/client/resources/ClientPackSource    BUILT_IN    Lnet/minecraft/server/packs/metadata/pack/PackMetadataSection;
 
 # Use for Ore registration
 
-accessible method net/minecraft/world/gen/feature/OrePlacedFeatures modifiersWithCount (ILnet/minecraft/world/gen/decorator/PlacementModifier;)Ljava/util/List;
+accessible method net/minecraft/data/worldgen/placement/OrePlacements commonOrePlacement (ILnet/minecraft/world/level/levelgen/placement/PlacementModifier;)Ljava/util/List;

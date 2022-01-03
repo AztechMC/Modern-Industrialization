@@ -42,12 +42,12 @@ import aztech.modern_industrialization.nuclear.*;
 import aztech.modern_industrialization.util.Tickable;
 import java.util.Optional;
 import java.util.function.Supplier;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.Hand;
-import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.util.math.Direction;
+import net.minecraft.core.Direction;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.phys.BlockHitResult;
 
 public class NuclearReactorMultiblockBlockEntity extends MultiblockMachineBlockEntity implements Tickable, ScrewdriverableBlockEntity {
 
@@ -87,7 +87,7 @@ public class NuclearReactorMultiblockBlockEntity extends MultiblockMachineBlockE
     }
 
     @Override
-    public boolean useScrewdriver(PlayerEntity player, Hand hand, BlockHitResult hitResult) {
+    public boolean useScrewdriver(Player player, InteractionHand hand, BlockHitResult hitResult) {
         return useScrewdriver(activeShape, player, hand, hitResult);
     }
 
@@ -108,7 +108,7 @@ public class NuclearReactorMultiblockBlockEntity extends MultiblockMachineBlockE
 
     @Override
     public void tick() {
-        if (!world.isClient) {
+        if (!level.isClientSide) {
             link();
             if (shapeValid.shapeValid) {
                 isActive.updateActive(NuclearGridHelper.simulate(nuclearGrid), this);
@@ -126,8 +126,8 @@ public class NuclearReactorMultiblockBlockEntity extends MultiblockMachineBlockE
         NuclearHatch[][] hatchesGrid = new NuclearHatch[size][size];
 
         for (HatchBlockEntity hatch : shapeMatcher.getMatchedHatches()) {
-            int x0 = hatch.getPos().getX() - getPos().getX();
-            int z0 = hatch.getPos().getZ() - getPos().getZ();
+            int x0 = hatch.getBlockPos().getX() - getBlockPos().getX();
+            int z0 = hatch.getBlockPos().getZ() - getBlockPos().getZ();
 
             int x, y;
 
@@ -212,13 +212,13 @@ public class NuclearReactorMultiblockBlockEntity extends MultiblockMachineBlockE
 
     protected final void link() {
         if (shapeMatcher == null) {
-            shapeMatcher = new ShapeMatcher(world, pos, orientation.facingDirection, getActiveShape());
-            shapeMatcher.registerListeners(world);
+            shapeMatcher = new ShapeMatcher(level, worldPosition, orientation.facingDirection, getActiveShape());
+            shapeMatcher.registerListeners(level);
         }
         if (shapeMatcher.needsRematch()) {
             shapeValid.shapeValid = false;
             nuclearGrid = null;
-            shapeMatcher.rematch(world);
+            shapeMatcher.rematch(level);
 
             if (shapeMatcher.isMatchSuccessful()) {
                 shapeValid.shapeValid = true;
@@ -235,7 +235,7 @@ public class NuclearReactorMultiblockBlockEntity extends MultiblockMachineBlockE
     protected final void unlink() {
         if (shapeMatcher != null) {
             shapeMatcher.unlinkHatches();
-            shapeMatcher.unregisterListeners(world);
+            shapeMatcher.unregisterListeners(level);
             shapeMatcher = null;
         }
     }

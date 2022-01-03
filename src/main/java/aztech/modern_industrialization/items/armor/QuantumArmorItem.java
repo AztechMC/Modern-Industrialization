@@ -28,22 +28,22 @@ import com.google.common.collect.Multimap;
 import java.util.ArrayList;
 import java.util.List;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
-import net.minecraft.client.item.TooltipContext;
-import net.minecraft.entity.EquipmentSlot;
-import net.minecraft.entity.attribute.EntityAttribute;
-import net.minecraft.entity.attribute.EntityAttributeModifier;
-import net.minecraft.item.ArmorItem;
-import net.minecraft.item.ArmorMaterial;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Wearable;
-import net.minecraft.recipe.Ingredient;
-import net.minecraft.sound.SoundEvent;
-import net.minecraft.sound.SoundEvents;
-import net.minecraft.text.LiteralText;
-import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
-import net.minecraft.util.Formatting;
-import net.minecraft.world.World;
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.ai.attributes.Attribute;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.item.ArmorItem;
+import net.minecraft.world.item.ArmorMaterial;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.Wearable;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
 
 public class QuantumArmorItem extends ArmorItem implements Wearable {
@@ -51,23 +51,23 @@ public class QuantumArmorItem extends ArmorItem implements Wearable {
 
     private static final ArmorMaterial MATERIAL = new ArmorMaterial() {
         @Override
-        public int getDurability(EquipmentSlot slot) {
+        public int getDurabilityForSlot(EquipmentSlot slot) {
             return 0;
         }
 
         @Override
-        public int getProtectionAmount(EquipmentSlot slot) {
+        public int getDefenseForSlot(EquipmentSlot slot) {
             return 0;
         }
 
         @Override
-        public int getEnchantability() {
+        public int getEnchantmentValue() {
             return 0;
         }
 
         @Override
         public SoundEvent getEquipSound() {
-            return SoundEvents.ITEM_ARMOR_EQUIP_GENERIC;
+            return SoundEvents.ARMOR_EQUIP_GENERIC;
         }
 
         @Override
@@ -98,16 +98,16 @@ public class QuantumArmorItem extends ArmorItem implements Wearable {
     }
 
     @Override
-    public Multimap<EntityAttribute, EntityAttributeModifier> getAttributeModifiers(EquipmentSlot slot) {
+    public Multimap<Attribute, AttributeModifier> getDefaultAttributeModifiers(EquipmentSlot slot) {
         return ImmutableMultimap.of();
     }
 
     @Override
-    public void appendTooltip(ItemStack stack, @Nullable World world, List<Text> list, TooltipContext context) {
-        list.add(LiteralText.EMPTY);
-        list.add(new TranslatableText("item.modifiers." + getSlotType().getName()).formatted(Formatting.GRAY));
+    public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> list, TooltipFlag context) {
+        list.add(TextComponent.EMPTY);
+        list.add(new TranslatableComponent("item.modifiers." + getSlot().getName()).withStyle(ChatFormatting.GRAY));
         String oneQuarterInfinity = " \u00B9\u2044\u2084 |\u221E> + \u00B3\u2044\u2084 |0>";
-        list.add(new TranslatableText("attribute.modifier.plus.0", oneQuarterInfinity, new TranslatableText("attribute.name.generic.armor"))
-                .formatted(Formatting.BLUE));
+        list.add(new TranslatableComponent("attribute.modifier.plus.0", oneQuarterInfinity, new TranslatableComponent("attribute.name.generic.armor"))
+                .withStyle(ChatFormatting.BLUE));
     }
 }

@@ -26,28 +26,28 @@ package aztech.modern_industrialization.items.armor;
 import aztech.modern_industrialization.items.FluidFuelItemHelper;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.entity.EquipmentSlot;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.particle.ParticleTypes;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.client.Minecraft;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.phys.Vec3;
 
 public class JetpackParticleAdder {
-    public static void addJetpackParticles(MinecraftClient client) {
-        if (client.world != null && !client.isPaused()) {
-            for (PlayerEntity player : client.world.getPlayers()) {
-                ItemStack chest = player.getEquippedStack(EquipmentSlot.CHEST);
+    public static void addJetpackParticles(Minecraft client) {
+        if (client.level != null && !client.isPaused()) {
+            for (Player player : client.level.players()) {
+                ItemStack chest = player.getItemBySlot(EquipmentSlot.CHEST);
                 if (chest.getItem() instanceof JetpackItem) {
                     JetpackItem jetpack = (JetpackItem) chest.getItem();
                     if (jetpack.isActivated(chest) && FluidFuelItemHelper.getAmount(chest) > 0) {
                         Random r = ThreadLocalRandom.current();
                         if (player.isFallFlying()) {
-                            Vec3d velocity = player.getVelocity();
-                            client.world.addParticle(ParticleTypes.FLAME, player.getX(), player.getY(), player.getZ(), -velocity.x, -velocity.y,
+                            Vec3 velocity = player.getDeltaMovement();
+                            client.level.addParticle(ParticleTypes.FLAME, player.getX(), player.getY(), player.getZ(), -velocity.x, -velocity.y,
                                     -velocity.z);
                         } else {
-                            client.world.addParticle(ParticleTypes.FLAME, player.getX(), player.getY() + 1.0, player.getZ(), 0, -1, 0);
+                            client.level.addParticle(ParticleTypes.FLAME, player.getX(), player.getY() + 1.0, player.getZ(), 0, -1, 0);
                         }
                     }
                 }

@@ -23,17 +23,17 @@
  */
 package aztech.modern_industrialization.pipes.gui;
 
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.screen.ScreenHandler;
-import net.minecraft.screen.ScreenHandlerType;
-import net.minecraft.screen.slot.Slot;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.inventory.Slot;
 
-public abstract class PipeScreenHandler extends ScreenHandler {
-    protected PipeScreenHandler(ScreenHandlerType<?> type, int syncId) {
+public abstract class PipeScreenHandler extends AbstractContainerMenu {
+    protected PipeScreenHandler(MenuType<?> type, int syncId) {
         super(type, syncId);
     }
 
-    protected void addPlayerInventorySlots(PlayerInventory playerInventory, int height) {
+    protected void addPlayerInventorySlots(Inventory playerInventory, int height) {
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 9; j++) {
                 this.addSlot(new Slot(playerInventory, i * 9 + j + 9, 8 + j * 18, PipeGuiHelper.getPlayerInvStart(height) + i * 18));

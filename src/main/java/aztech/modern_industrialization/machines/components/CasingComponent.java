@@ -32,16 +32,16 @@ import aztech.modern_industrialization.machines.models.MachineCasing;
 import aztech.modern_industrialization.machines.models.MachineCasings;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
-import net.minecraft.block.Block;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
-import net.minecraft.util.ItemScatterer;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.Containers;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 
 public class CasingComponent implements IComponent {
 
@@ -64,12 +64,12 @@ public class CasingComponent implements IComponent {
     }
 
     @Override
-    public void writeNbt(NbtCompound tag) {
+    public void writeNbt(CompoundTag tag) {
         tag.putString("casing", tierCasing.name);
     }
 
     @Override
-    public void readNbt(NbtCompound tag) {
+    public void readNbt(CompoundTag tag) {
         tierCasing = CableTier.getTier(tag.getString("casing"));
         if (tierCasing == null) {
             tierCasing = defaultCasing;
@@ -78,36 +78,36 @@ public class CasingComponent implements IComponent {
     }
 
     @Override
-    public void writeClientNbt(NbtCompound tag) {
+    public void writeClientNbt(CompoundTag tag) {
         tag.putString("casing", tierCasing.name);
     }
 
     @Override
-    public void readClientNbt(NbtCompound tag) {
+    public void readClientNbt(CompoundTag tag) {
         tierCasing = CableTier.getTier(tag.getString("casing"));
         if (tierCasing == null) {
             tierCasing = defaultCasing;
         }
     }
 
-    public void dropCasing(World world, BlockPos pos) {
+    public void dropCasing(Level world, BlockPos pos) {
         ItemStack stack = new ItemStack(blockCasing.inverse().get(tierCasing).asItem(), 1);
-        ItemScatterer.spawn(world, pos.getX(), pos.getY(), pos.getZ(), stack);
+        Containers.dropItemStack(world, pos.getX(), pos.getY(), pos.getZ(), stack);
 
     }
 
-    public ActionResult onUse(MachineBlockEntity be, PlayerEntity player, Hand hand) {
-        ItemStack stackInHand = player.getStackInHand(hand);
-        if (stackInHand.getItem() == MIItem.ITEM_CROWBAR && !player.isSneaking()) {
+    public InteractionResult onUse(MachineBlockEntity be, Player player, InteractionHand hand) {
+        ItemStack stackInHand = player.getItemInHand(hand);
+        if (stackInHand.getItem() == MIItem.ITEM_CROWBAR && !player.isShiftKeyDown()) {
             if (tierCasing != defaultCasing) {
-                dropCasing(be.getWorld(), be.getPos());
+                dropCasing(be.getLevel(), be.getBlockPos());
                 tierCasing = defaultCasing;
-                be.markDirty();
-                if (!be.getWorld().isClient()) {
+                be.setChanged();
+                if (!be.getLevel().isClientSide()) {
                     be.sync();
                 }
             }
-            return ActionResult.success(be.getWorld().isClient);
+            return InteractionResult.sidedSuccess(be.getLevel().isClientSide);
 
         } else {
             if (stackInHand.getItem() instanceof BlockItem && stackInHand.getCount() >= 1) {
@@ -116,24 +116,24 @@ public class CasingComponent implements IComponent {
                     CableTier newTier = blockCasing.get(blockItem.getBlock());
                     if (newTier != defaultCasing && newTier != tierCasing) {
                         if (defaultCasing != tierCasing) {
-                            dropCasing(be.getWorld(), be.getPos());
+                            dropCasing(be.getLevel(), be.getBlockPos());
                         }
                         tierCasing = newTier;
                         if (!player.isCreative()) {
-                            stackInHand.decrement(1);
+                            stackInHand.shrink(1);
                         }
-                        be.markDirty();
-                        if (!be.getWorld().isClient()) {
+                        be.setChanged();
+                        if (!be.getLevel().isClientSide()) {
                             be.sync();
                         }
-                        return ActionResult.success(be.getWorld().isClient);
+                        return InteractionResult.sidedSuccess(be.getLevel().isClientSide);
                     }
 
                 }
             }
 
         }
-        return ActionResult.PASS;
+        return InteractionResult.PASS;
     }
 
     public ItemStack getDrop() {

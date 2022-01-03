@@ -23,14 +23,14 @@
  */
 package aztech.modern_industrialization.textures;
 
+import com.mojang.blaze3d.platform.NativeImage;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BiConsumer;
-import net.minecraft.client.texture.NativeImage;
-import net.minecraft.resource.Resource;
-import net.minecraft.resource.ResourceManager;
-import net.minecraft.util.Identifier;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.packs.resources.Resource;
+import net.minecraft.server.packs.resources.ResourceManager;
 
 public class TextureManager {
     private final ResourceManager rm;
@@ -43,12 +43,12 @@ public class TextureManager {
     }
 
     public boolean hasAsset(String asset) {
-        return rm.containsResource(new Identifier(asset));
+        return rm.hasResource(new ResourceLocation(asset));
     }
 
     public NativeImage getAssetAsTexture(String textureId) throws IOException {
-        if (rm.containsResource(new Identifier(textureId))) {
-            try (Resource texture = rm.getResource(new Identifier(textureId))) {
+        if (rm.hasResource(new ResourceLocation(textureId))) {
+            try (Resource texture = rm.getResource(new ResourceLocation(textureId))) {
                 return NativeImage.read(texture.getInputStream());
             }
         } else {
@@ -64,8 +64,8 @@ public class TextureManager {
     }
 
     public void addTexture(String textureId, NativeImage image, boolean closeImage) throws IOException {
-        Identifier id = new Identifier(textureId);
-        if (!rm.containsResource(id)) { // Allow textures to be manually overridden.
+        ResourceLocation id = new ResourceLocation(textureId);
+        if (!rm.hasResource(id)) { // Allow textures to be manually overridden.
             textureWriter.accept(image, textureId);
         }
         if (closeImage) {

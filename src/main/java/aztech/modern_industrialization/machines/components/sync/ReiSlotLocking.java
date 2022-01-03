@@ -27,14 +27,14 @@ import aztech.modern_industrialization.machines.SyncedComponent;
 import aztech.modern_industrialization.machines.SyncedComponents;
 import aztech.modern_industrialization.machines.gui.ClientComponentRenderer;
 import java.util.function.Supplier;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.util.Identifier;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Inventory;
 
 public class ReiSlotLocking {
     @FunctionalInterface
     public interface SlotLockable {
-        void lockSlots(Identifier recipeId, PlayerInventory inventory);
+        void lockSlots(ResourceLocation recipeId, Inventory inventory);
     }
 
     public static class Server implements SyncedComponent.Server<Boolean> {
@@ -57,17 +57,17 @@ public class ReiSlotLocking {
         }
 
         @Override
-        public void writeInitialData(PacketByteBuf buf) {
+        public void writeInitialData(FriendlyByteBuf buf) {
             writeCurrentData(buf);
         }
 
         @Override
-        public void writeCurrentData(PacketByteBuf buf) {
+        public void writeCurrentData(FriendlyByteBuf buf) {
             buf.writeBoolean(allowLocking.get());
         }
 
         @Override
-        public Identifier getId() {
+        public ResourceLocation getId() {
             return SyncedComponents.REI_SLOT_LOCKING;
         }
     }
@@ -75,7 +75,7 @@ public class ReiSlotLocking {
     public static class Client implements SyncedComponent.Client {
         private boolean allowLocking;
 
-        public Client(PacketByteBuf initialData) {
+        public Client(FriendlyByteBuf initialData) {
             read(initialData);
         }
 
@@ -84,7 +84,7 @@ public class ReiSlotLocking {
         }
 
         @Override
-        public void read(PacketByteBuf buf) {
+        public void read(FriendlyByteBuf buf) {
             allowLocking = buf.readBoolean();
         }
 

@@ -37,10 +37,10 @@ import java.util.stream.Collectors;
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.gui.registry.GuiRegistry;
 import me.shedaniel.clothconfig2.api.ConfigEntryBuilder;
-import net.minecraft.item.Item;
-import net.minecraft.text.TranslatableText;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
+import net.minecraft.core.Registry;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
 
 public class MIMenu implements ModMenuApi {
 
@@ -51,11 +51,11 @@ public class MIMenu implements ModMenuApi {
     }
 
     private static String getOreTranslationKey(Material material) {
-        return getOreItem(material).getTranslationKey();
+        return getOreItem(material).getDescriptionId();
     }
 
     private static Item getOreItem(Material material) {
-        return Registry.ITEM.get(new Identifier(material.getParts().get(MIParts.ORE.key).getItemId()));
+        return Registry.ITEM.get(new ResourceLocation(material.getParts().get(MIParts.ORE.key).getItemId()));
     }
 
     private static boolean oreInList(List<String> list, Material material) {
@@ -98,9 +98,9 @@ public class MIMenu implements ModMenuApi {
         registry.registerAnnotationProvider(
                 (i13n, field, config, defaults,
                         registry1) -> Collections.singletonList(ENTRY_BUILDER
-                                .startSubCategory(new TranslatableText("text.modern_industrialization.custom_ore_gen"),
+                                .startSubCategory(new TranslatableComponent("text.modern_industrialization.custom_ore_gen"),
                                         MaterialRegistry.getMaterials().values().stream().filter(MIMenu::hasOreGen)
-                                                .map(i -> new CustomBooleanListEntry(new TranslatableText(getOreTranslationKey(i)),
+                                                .map(i -> new CustomBooleanListEntry(new TranslatableComponent(getOreTranslationKey(i)),
                                                         oreNotInList(field, config, i), () -> oreNotInList(field, config, i),
                                                         bool -> setOreInList(field, config, i, !bool), getOreItem(i)))
                                                 .collect(Collectors.toList()))

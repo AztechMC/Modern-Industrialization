@@ -24,10 +24,10 @@
 package aztech.modern_industrialization.mixin;
 
 import aztech.modern_industrialization.mixin_impl.SteamDrillHooks;
-import net.minecraft.network.packet.c2s.play.PlayerActionC2SPacket;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.server.network.ServerPlayerInteractionManager;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.protocol.game.ServerboundPlayerActionPacket;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.level.ServerPlayerGameMode;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -38,19 +38,19 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 /**
  * @reason Similar to {@link PlayerInventoryMixin}.
  */
-@Mixin(ServerPlayerInteractionManager.class)
+@Mixin(ServerPlayerGameMode.class)
 public class ServerPlayerInteractionManagerMixin {
     @Shadow
     @Final
-    private ServerPlayerEntity player;
+    private ServerPlayer player;
 
-    @Inject(at = @At("HEAD"), method = "finishMining")
-    private void finishMiningHead(BlockPos pos, PlayerActionC2SPacket.Action action, String reason, CallbackInfo ci) {
+    @Inject(at = @At("HEAD"), method = "destroyAndAck")
+    private void finishMiningHead(BlockPos pos, ServerboundPlayerActionPacket.Action action, String reason, CallbackInfo ci) {
         SteamDrillHooks.set(player);
     }
 
-    @Inject(at = @At("RETURN"), method = "finishMining")
-    private void finishMiningReturn(BlockPos pos, PlayerActionC2SPacket.Action action, String reason, CallbackInfo ci) {
+    @Inject(at = @At("RETURN"), method = "destroyAndAck")
+    private void finishMiningReturn(BlockPos pos, ServerboundPlayerActionPacket.Action action, String reason, CallbackInfo ci) {
         SteamDrillHooks.remove();
     }
 }

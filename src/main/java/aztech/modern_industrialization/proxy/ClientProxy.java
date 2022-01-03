@@ -31,21 +31,21 @@ import aztech.modern_industrialization.materials.MaterialBuilder;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.rendereregistry.v1.BlockEntityRendererRegistry;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.render.model.UnbakedModel;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.resources.model.UnbakedModel;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import org.jetbrains.annotations.Nullable;
 
 @Environment(EnvType.CLIENT)
 public class ClientProxy extends CommonProxy {
     @Override
-    public @Nullable PlayerEntity findUser(@Nullable LivingEntity entity) {
+    public @Nullable Player findUser(@Nullable LivingEntity entity) {
         if (Thread.currentThread().getName().equals("Render thread")) {
             // This is necessary for Magna's overlay
-            return MinecraftClient.getInstance().player;
+            return Minecraft.getInstance().player;
         }
         return super.findUser(entity);
     }

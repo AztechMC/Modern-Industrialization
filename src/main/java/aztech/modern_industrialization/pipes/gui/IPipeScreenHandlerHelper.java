@@ -24,7 +24,7 @@
 package aztech.modern_industrialization.pipes.gui;
 
 import aztech.modern_industrialization.pipes.api.PipeNetworkNode;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.world.entity.player.Player;
 import org.jetbrains.annotations.ApiStatus;
 
 /**
@@ -36,7 +36,7 @@ public interface IPipeScreenHandlerHelper {
 
     void callMarkDirty();
 
-    boolean isWithinUseDistance(PlayerEntity player);
+    boolean isWithinUseDistance(Player player);
 
     boolean doesNodeStillExist(PipeNetworkNode node);
 }

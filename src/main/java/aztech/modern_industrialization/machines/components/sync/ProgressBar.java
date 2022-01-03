@@ -28,11 +28,11 @@ import aztech.modern_industrialization.machines.SyncedComponent;
 import aztech.modern_industrialization.machines.SyncedComponents;
 import aztech.modern_industrialization.machines.gui.ClientComponentRenderer;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.function.Supplier;
-import net.minecraft.client.gui.DrawableHelper;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.gui.GuiComponent;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
 
 public class ProgressBar {
     public static class Server implements SyncedComponent.Server<Float> {
@@ -55,21 +55,21 @@ public class ProgressBar {
         }
 
         @Override
-        public void writeInitialData(PacketByteBuf buf) {
+        public void writeInitialData(FriendlyByteBuf buf) {
             buf.writeInt(params.renderX);
             buf.writeInt(params.renderY);
-            buf.writeString(params.progressBarType);
+            buf.writeUtf(params.progressBarType);
             buf.writeBoolean(params.isVertical);
             writeCurrentData(buf);
         }
 
         @Override
-        public void writeCurrentData(PacketByteBuf buf) {
+        public void writeCurrentData(FriendlyByteBuf buf) {
             buf.writeFloat(progressSupplier.get());
         }
 
         @Override
-        public Identifier getId() {
+        public ResourceLocation getId() {
             return SyncedComponents.PROGRESS_BAR;
         }
     }
@@ -78,13 +78,13 @@ public class ProgressBar {
         public final Parameters params;
         public float progress;
 
-        public Client(PacketByteBuf buf) {
-            this.params = new Parameters(buf.readInt(), buf.readInt(), buf.readString(), buf.readBoolean());
+        public Client(FriendlyByteBuf buf) {
+            this.params = new Parameters(buf.readInt(), buf.readInt(), buf.readUtf(), buf.readBoolean());
             read(buf);
         }
 
         @Override
-        public void read(PacketByteBuf buf) {
+        public void read(FriendlyByteBuf buf) {
             this.progress = buf.readFloat();
         }
 
@@ -95,28 +95,28 @@ public class ProgressBar {
 
         public class Renderer implements ClientComponentRenderer {
             @Override
-            public void renderBackground(DrawableHelper helper, MatrixStack matrices, int x, int y) {
+            public void renderBackground(GuiComponent helper, PoseStack matrices, int x, int y) {
                 RenderHelper.renderProgress(helper, matrices, x, y, params, progress);
             }
         }
     }
 
     public static class RenderHelper {
-        public static void renderProgress(DrawableHelper helper, MatrixStack matrices, int x, int y, Parameters params, float progress) {
-            renderProgress(helper.getZOffset(), matrices, x, y, params, progress);
+        public static void renderProgress(GuiComponent helper, PoseStack matrices, int x, int y, Parameters params, float progress) {
+            renderProgress(helper.getBlitOffset(), matrices, x, y, params, progress);
         }
 
-        public static void renderProgress(int zoffset, MatrixStack matrices, int x, int y, Parameters params, float progress) {
+        public static void renderProgress(int zoffset, PoseStack matrices, int x, int y, Parameters params, float progress) {
             RenderSystem.setShaderTexture(0, params.getTextureId());
             // background
-            DrawableHelper.drawTexture(matrices, x + params.renderX, y + params.renderY, zoffset, 0, 0, 20, 20, 20, 40);
+            GuiComponent.blit(matrices, x + params.renderX, y + params.renderY, zoffset, 0, 0, 20, 20, 20, 40);
             // foreground
             int foregroundPixels = (int) (progress * 20);
             if (foregroundPixels > 0) {
                 if (!params.isVertical) {
-                    DrawableHelper.drawTexture(matrices, x + params.renderX, y + params.renderY, zoffset, 0, 20, foregroundPixels, 20, 20, 40);
+                    GuiComponent.blit(matrices, x + params.renderX, y + params.renderY, zoffset, 0, 20, foregroundPixels, 20, 20, 40);
                 } else {
-                    DrawableHelper.drawTexture(matrices, x + params.renderX, y + params.renderY + 20 - foregroundPixels, zoffset, 0,
+                    GuiComponent.blit(matrices, x + params.renderX, y + params.renderY + 20 - foregroundPixels, zoffset, 0,
                             40 - foregroundPixels, 20, foregroundPixels, 20, 40);
                 }
             }
@@ -144,7 +144,7 @@ public class ProgressBar {
             this.isVertical = isVertical;
         }
 
-        public Identifier getTextureId() {
+        public ResourceLocation getTextureId() {
             return new MIIdentifier("textures/gui/progress_bar/" + progressBarType + ".png");
         }
     }

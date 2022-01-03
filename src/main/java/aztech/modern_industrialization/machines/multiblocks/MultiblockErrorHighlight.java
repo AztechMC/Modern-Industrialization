@@ -25,37 +25,37 @@ package aztech.modern_industrialization.machines.multiblocks;
 
 import aztech.modern_industrialization.util.RenderHelper;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.BufferBuilder;
 import java.util.HashMap;
 import java.util.Map;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
-import net.minecraft.block.BlockState;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.render.BufferBuilder;
-import net.minecraft.client.render.OverlayTexture;
-import net.minecraft.client.render.VertexConsumerProvider;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 
 public class MultiblockErrorHighlight {
     private static final Map<BlockPos, @Nullable BlockState> highlightQueue = new HashMap<>();
-    private static final VertexConsumerProvider.Immediate immediate = VertexConsumerProvider.immediate(new BufferBuilder(128));
+    private static final MultiBufferSource.BufferSource immediate = MultiBufferSource.immediate(new BufferBuilder(128));
 
     public static void init() {
         WorldRenderEvents.END.register(MultiblockErrorHighlight::end);
     }
 
     public static void enqueueHighlight(BlockPos pos, @Nullable BlockState state) {
-        highlightQueue.put(pos.toImmutable(), state);
+        highlightQueue.put(pos.immutable(), state);
     }
 
     private static void end(WorldRenderContext wrc) {
         if (highlightQueue.size() > 0) {
-            RenderSystem.clear(256, MinecraftClient.IS_SYSTEM_MAC);
+            RenderSystem.clear(256, Minecraft.ON_OSX);
             for (Map.Entry<BlockPos, @Nullable BlockState> entry : highlightQueue.entrySet()) {
-                wrc.matrixStack().push();
-                Vec3d cameraPos = MinecraftClient.getInstance().gameRenderer.getCamera().getPos();
+                wrc.matrixStack().pushPose();
+                Vec3 cameraPos = Minecraft.getInstance().gameRenderer.getMainCamera().getPosition();
                 BlockPos pos = entry.getKey();
                 double x = pos.getX() - cameraPos.x;
                 double y = pos.getY() - cameraPos.y;
@@ -65,15 +65,15 @@ public class MultiblockErrorHighlight {
 
                 BlockState state = entry.getValue();
                 if (state == null) {
-                    RenderHelper.drawCube(wrc.matrixStack(), immediate, 1, 50f / 256, 50f / 256, 15728880, OverlayTexture.DEFAULT_UV);
+                    RenderHelper.drawCube(wrc.matrixStack(), immediate, 1, 50f / 256, 50f / 256, 15728880, OverlayTexture.NO_OVERLAY);
                 } else {
-                    MinecraftClient.getInstance().getBlockRenderManager().renderBlockAsEntity(state, wrc.matrixStack(), immediate, 15728880,
-                            OverlayTexture.DEFAULT_UV);
+                    Minecraft.getInstance().getBlockRenderer().renderSingleBlock(state, wrc.matrixStack(), immediate, 15728880,
+                            OverlayTexture.NO_OVERLAY);
                 }
 
-                wrc.matrixStack().pop();
+                wrc.matrixStack().popPose();
             }
-            immediate.draw();
+            immediate.endBatch();
             highlightQueue.clear();
         }
     }

@@ -50,9 +50,9 @@ import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import net.fabricmc.fabric.api.client.rendereregistry.v1.BlockEntityRendererRegistry;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.fluid.Fluid;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.material.Fluid;
 
 // @formatter:off
 @SuppressWarnings("rawtypes")
@@ -700,7 +700,7 @@ public class MultiblockMachines {
         private SlotPositions fluidInputs = SlotPositions.empty();
         private SlotPositions fluidOutputs = SlotPositions.empty();
         private static final Predicate<MachineScreenHandlers.ClientScreen> SHAPE_VALID_PREDICATE = screen -> {
-            for (SyncedComponent.Client client : screen.getScreenHandler().components) {
+            for (SyncedComponent.Client client : screen.getMenu().components) {
                 if (client instanceof CraftingMultiblockGui.Client cmGui) {
                     if (cmGui.isShapeValid) {
                         return true;

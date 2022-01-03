@@ -24,8 +24,8 @@
 package aztech.modern_industrialization.machines;
 
 import aztech.modern_industrialization.machines.gui.ClientComponentRenderer;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.util.Identifier;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
 
 public final class SyncedComponent {
     /**
@@ -35,7 +35,7 @@ public final class SyncedComponent {
         /**
          * Read the current data, written by {@link Server#writeCurrentData}.
          */
-        void read(PacketByteBuf buf);
+        void read(FriendlyByteBuf buf);
 
         /**
          * @return A new renderer linked to this client-side component.
@@ -49,7 +49,7 @@ public final class SyncedComponent {
          * Create a new client synced component from the initial data, written by
          * {@link Server#writeInitialData}.
          */
-        Client createFromInitialData(PacketByteBuf buf);
+        Client createFromInitialData(FriendlyByteBuf buf);
     }
 
     /**
@@ -73,18 +73,18 @@ public final class SyncedComponent {
          * Write the initial data to the packet byte buf, used only when the screen is
          * opened.
          */
-        void writeInitialData(PacketByteBuf buf);
+        void writeInitialData(FriendlyByteBuf buf);
 
         /**
          * Write the current data to the packet byte buf, used when syncing after the
          * screen was opened.
          */
-        void writeCurrentData(PacketByteBuf buf);
+        void writeCurrentData(FriendlyByteBuf buf);
 
         /**
          * Return the id of the component. Must match that of the {@link Client}
          * registered with {@link SyncedComponents.Client#register}.
          */
-        Identifier getId();
+        ResourceLocation getId();
     }
 }

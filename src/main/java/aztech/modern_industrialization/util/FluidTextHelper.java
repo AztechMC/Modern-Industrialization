@@ -24,15 +24,15 @@
 package aztech.modern_industrialization.util;
 
 import com.google.common.math.LongMath;
-import net.minecraft.fluid.Fluid;
-import net.minecraft.util.registry.Registry;
+import net.minecraft.core.Registry;
+import net.minecraft.world.level.material.Fluid;
 
 /**
  * A few helpers to display fluids.
  */
 public class FluidTextHelper {
     public static String toString(Fluid fluid) {
-        return Registry.FLUID.getId(fluid).toString();
+        return Registry.FLUID.getKey(fluid).toString();
     }
 
     /**

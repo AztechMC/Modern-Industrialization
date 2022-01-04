@@ -246,7 +246,8 @@ abstract class PipePartBuilder {
             if (logicalSlot == 1) {
                 // short bend
                 if (connSlot == 0) {
-                    return 2;
+                    // same as below
+                    return direction == EAST ? 3 : 2;
                 }
             } else if (logicalSlot == 2) {
                 if (connSlot == 0) {

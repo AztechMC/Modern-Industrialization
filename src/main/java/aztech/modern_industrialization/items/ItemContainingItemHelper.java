@@ -32,6 +32,8 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ClickAction;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
+import org.apache.commons.lang3.mutable.Mutable;
+import org.apache.commons.lang3.mutable.MutableObject;
 
 public interface ItemContainingItemHelper {
     long getStackCapacity();
@@ -100,32 +102,45 @@ public interface ItemContainingItemHelper {
         return getStackCapacity() * getItemVariant(barrelStack).getItem().getMaxStackSize();
     }
 
-    default boolean handleOnStackClicked(ItemStack stackBarrel, Slot slot, ClickAction clickType, Player player) {
-        if (clickType != ClickAction.SECONDARY) {
-            return false;
+    default boolean handleStackedOnOther(ItemStack stackBarrel, Slot slot, ClickAction clickType, Player player) {
+        if (clickType == ClickAction.SECONDARY && slot.allowModification(player)) {
+            Mutable<ItemStack> ref = new MutableObject<>(slot.getItem());
+            boolean result = handleClick(stackBarrel, ref);
+            slot.set(ref.getValue());
+            return result;
         } else {
-            ItemStack itemStack = slot.getItem();
-            if (itemStack.isEmpty() && !isEmpty(stackBarrel)) {
-                long amount = Math.min(getAmount(stackBarrel), getItemVariant(stackBarrel).getItem().getMaxStackSize());
-                ItemStack newStack = getItemVariant(stackBarrel).toStack((int) (amount));
-                slot.set(newStack);
-                setAmount(stackBarrel, getAmount(stackBarrel) - amount);
-            } else if (!itemStack.isEmpty() && canDirectInsert(itemStack)) {
-                itemStack.shrink((int) insert(stackBarrel, ItemVariant.of(itemStack), itemStack.getCount()));
-            }
-            return true;
+            return false;
         }
     }
 
-    default boolean handleOnClicked(ItemStack stackBarrel, ItemStack itemStack, Slot slot, ClickAction clickType, Player player,
+    default boolean handleOtherStackedOnMe(ItemStack stackBarrel, ItemStack itemStack, Slot slot, ClickAction clickType, Player player,
             SlotAccess cursorStackReference) {
         if (clickType == ClickAction.SECONDARY && slot.allowModification(player)) {
-            if (!itemStack.isEmpty() && canDirectInsert(itemStack)) {
-                itemStack.shrink((int) insert(stackBarrel, ItemVariant.of(itemStack), itemStack.getCount()));
-            }
-            return true;
+            Mutable<ItemStack> ref = new MutableObject<>(itemStack);
+            boolean result = handleClick(stackBarrel, ref);
+            cursorStackReference.set(ref.getValue());
+            slot.setChanged();
+            return result;
         } else {
             return false;
+        }
+    }
+
+    private boolean handleClick(ItemStack stackBarrel, Mutable<ItemStack> otherStack) {
+        ItemStack other = otherStack.getValue().copy();
+        // Try to put into barrel
+        if ((isEmpty(stackBarrel) || getItemVariant(stackBarrel).matches(other)) && !other.isEmpty() && canDirectInsert(other)) {
+            other.shrink((int) insert(stackBarrel, ItemVariant.of(other), other.getCount()));
+            otherStack.setValue(other);
+            return true;
+        } else if (!isEmpty(stackBarrel) && other.isEmpty()) {
+            int amount = (int) Math.min(getAmount(stackBarrel), getItemVariant(stackBarrel).getItem().getMaxStackSize());
+            ItemStack newStack = getItemVariant(stackBarrel).toStack(amount);
+            otherStack.setValue(newStack);
+            setAmount(stackBarrel, getAmount(stackBarrel) - amount);
+            return true;
+        } else {
+            return !isEmpty(stackBarrel) || !other.isEmpty();
         }
     }
 }

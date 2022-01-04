@@ -91,12 +91,12 @@ public class BarrelItem extends BlockItem implements ItemContainingItemHelper {
 
     @Override
     public boolean overrideStackedOnOther(ItemStack stackBarrel, Slot slot, ClickAction clickType, Player player) {
-        return handleOnStackClicked(stackBarrel, slot, clickType, player);
+        return handleStackedOnOther(stackBarrel, slot, clickType, player);
     }
 
     @Override
     public boolean overrideOtherStackedOnMe(ItemStack stack, ItemStack otherStack, Slot slot, ClickAction clickType, Player player,
             SlotAccess cursorStackReference) {
-        return handleOnClicked(stack, otherStack, slot, clickType, player, cursorStackReference);
+        return handleOtherStackedOnMe(stack, otherStack, slot, clickType, player, cursorStackReference);
     }
 }

@@ -25,7 +25,6 @@ package aztech.modern_industrialization.recipe.json;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import com.google.gson.annotations.SerializedName;
 import java.util.function.Consumer;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.resources.ResourceLocation;
@@ -35,14 +34,6 @@ import net.minecraft.resources.ResourceLocation;
  */
 public class RecipeJson<T extends RecipeJson<T>> {
     public static Gson GSON = new Gson();
-
-    @SerializedName("mi:requires_mod")
-    private String requiredMod;
-
-    public T requiresMod(String modid) {
-        this.requiredMod = modid;
-        return (T) this;
-    }
 
     public final String toJson() {
         return GSON.toJson(this);

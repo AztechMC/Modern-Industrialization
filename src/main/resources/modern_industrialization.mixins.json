@@ -9,7 +9,6 @@
     "LivingEntityMixin",
     "PlayerEntitySteamDrillMixin",
     "PlayerInventoryMixin",
-    "RecipeManagerMixin",
     "ServerPlayerInteractionManagerMixin",
     "WorldChunkMixin"
   ],

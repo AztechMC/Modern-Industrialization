@@ -144,6 +144,9 @@ dependencies {
     include modImplementation("net.fabricmc.fabric-api:fabric-resource-conditions-api-v1:1.0.0+abf02f7665") {
         exclude(group: "net.fabricmc.fabric-api")
     }
+    include modImplementation("net.fabricmc.fabric-api:fabric-tool-attribute-api-v1:1.4.0-modified-technici4n+ea42e1b365") {
+        exclude(group: "net.fabricmc.fabric-api")
+    }
 
     minecraft "com.mojang:minecraft:${project.minecraft_version}"
     mappings loom.layered() {

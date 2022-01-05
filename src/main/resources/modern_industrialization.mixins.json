@@ -7,9 +7,6 @@
     "BlockMixin",
     "ItemStackMixin",
     "LivingEntityMixin",
-    "PlayerEntitySteamDrillMixin",
-    "PlayerInventoryMixin",
-    "ServerPlayerInteractionManagerMixin",
     "WorldChunkMixin"
   ],
   "injectors": {

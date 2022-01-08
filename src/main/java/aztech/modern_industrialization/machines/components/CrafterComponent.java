@@ -33,12 +33,15 @@ import aztech.modern_industrialization.inventory.ConfigurableItemStack;
 import aztech.modern_industrialization.machines.IComponent;
 import aztech.modern_industrialization.machines.recipe.MachineRecipe;
 import aztech.modern_industrialization.machines.recipe.MachineRecipeType;
+import aztech.modern_industrialization.stats.PlayerStatistics;
+import aztech.modern_industrialization.stats.PlayerStatisticsData;
 import aztech.modern_industrialization.util.Simulation;
 import com.google.common.base.Preconditions;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
@@ -50,6 +53,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Fluid;
+import org.jetbrains.annotations.Nullable;
 
 public class CrafterComponent implements IComponent.ServerOnly {
     public CrafterComponent(Inventory inventory, Behavior behavior) {
@@ -96,6 +100,18 @@ public class CrafterComponent implements IComponent.ServerOnly {
 
         default int getMaxFluidOutputs() {
             return Integer.MAX_VALUE;
+        }
+
+        @Nullable
+        UUID getOwnerUuid();
+
+        default PlayerStatistics getStatsOrDummy() {
+            var uuid = getOwnerUuid();
+            if (uuid == null) {
+                return PlayerStatistics.DUMMY;
+            } else {
+                return PlayerStatisticsData.get(getCrafterWorld().getServer()).get(uuid);
+            }
         }
     }
 
@@ -396,6 +412,9 @@ public class CrafterComponent implements IComponent.ServerOnly {
             for (ConfigurableItemStack stack : stacks) {
                 if (stack.getAmount() > 0 && input.matches(stack.getResource().toStack())) { // TODO: ItemStack creation slow?
                     int taken = Math.min((int) stack.getAmount(), remainingAmount);
+                    if (taken > 0 && !simulate) {
+                        behavior.getStatsOrDummy().addUsedItems(stack.getResource().getItem(), taken);
+                    }
                     stack.decrement(taken);
                     remainingAmount -= taken;
                     if (remainingAmount == 0)
@@ -424,6 +443,9 @@ public class CrafterComponent implements IComponent.ServerOnly {
             for (ConfigurableFluidStack stack : stacks) {
                 if (stack.getResource().equals(FluidVariant.of(input.fluid))) {
                     long taken = Math.min(remainingAmount, stack.getAmount());
+                    if (taken > 0 && !simulate) {
+                        behavior.getStatsOrDummy().addUsedFluids(stack.getResource().getFluid(), taken);
+                    }
                     stack.decrement(taken);
                     remainingAmount -= taken;
                     if (remainingAmount == 0)
@@ -481,6 +503,9 @@ public class CrafterComponent implements IComponent.ServerOnly {
                         if (ins > 0) {
                             locksToToggle.add(stackId - 1);
                             lockItems.add(output.item);
+                            if (!simulate) {
+                                behavior.getStatsOrDummy().addProducedItems(output.item, ins);
+                            }
                         }
                         if (remainingAmount == 0)
                             break;
@@ -530,6 +555,9 @@ public class CrafterComponent implements IComponent.ServerOnly {
                             stack.increment(inserted);
                             locksToToggle.add(j);
                             lockFluids.add(output.fluid);
+                            if (!simulate) {
+                                behavior.getStatsOrDummy().addProducedFluids(output.fluid, inserted);
+                            }
                         }
                         if (inserted < output.amount) {
                             ok = false;

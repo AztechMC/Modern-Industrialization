@@ -79,7 +79,7 @@ public abstract class MachineBlockEntity extends FastBlockEntity
     private boolean syncCausesRemesh = true;
 
     protected final OrientationComponent orientation;
-    protected final PlacedByComponent placedBy;
+    public final PlacedByComponent placedBy;
 
     public MachineBlockEntity(BEP bep, MachineGuiParameters guiParams, OrientationComponent.Params orientationParams) {
         super(bep.type(), bep.pos(), bep.state());

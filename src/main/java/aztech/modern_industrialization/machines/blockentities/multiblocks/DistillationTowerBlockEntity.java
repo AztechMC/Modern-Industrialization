@@ -35,12 +35,14 @@ import aztech.modern_industrialization.machines.recipe.MachineRecipeType;
 import aztech.modern_industrialization.util.Simulation;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import org.jetbrains.annotations.Nullable;
 
 // TODO: should the common part with ElectricCraftingMultiblockBlockEntity be refactored?
 public class DistillationTowerBlockEntity extends AbstractCraftingMultiblockBlockEntity {
@@ -121,6 +123,12 @@ public class DistillationTowerBlockEntity extends AbstractCraftingMultiblockBloc
         @Override
         public int getMaxFluidOutputs() {
             return activeShape.getActiveShapeIndex() + 1;
+        }
+
+        @Override
+        @Nullable
+        public UUID getOwnerUuid() {
+            return placedBy.placerId;
         }
     }
 

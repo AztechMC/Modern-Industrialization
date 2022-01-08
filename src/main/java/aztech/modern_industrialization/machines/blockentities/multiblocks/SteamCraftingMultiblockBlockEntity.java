@@ -33,11 +33,13 @@ import aztech.modern_industrialization.machines.multiblocks.ShapeMatcher;
 import aztech.modern_industrialization.machines.multiblocks.ShapeTemplate;
 import aztech.modern_industrialization.machines.recipe.MachineRecipeType;
 import aztech.modern_industrialization.util.Simulation;
+import java.util.UUID;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import org.jetbrains.annotations.Nullable;
 
 public class SteamCraftingMultiblockBlockEntity extends AbstractCraftingMultiblockBlockEntity {
 
@@ -94,6 +96,12 @@ public class SteamCraftingMultiblockBlockEntity extends AbstractCraftingMultiblo
         @Override
         public Level getCrafterWorld() {
             return level;
+        }
+
+        @Override
+        @Nullable
+        public UUID getOwnerUuid() {
+            return placedBy.placerId;
         }
     }
 

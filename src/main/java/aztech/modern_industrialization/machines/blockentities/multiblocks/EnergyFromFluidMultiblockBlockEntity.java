@@ -40,9 +40,7 @@ import java.util.List;
 import java.util.function.Predicate;
 import java.util.function.ToLongFunction;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.Nullable;
@@ -96,11 +94,6 @@ public class EnergyFromFluidMultiblockBlockEntity extends MultiblockMachineBlock
     @Override
     protected final MachineModelClientData getModelData() {
         return new MachineModelClientData(null, orientation.facingDirection).active(isActiveComponent.isActive);
-    }
-
-    @Override
-    public final void onPlaced(LivingEntity placer, ItemStack itemStack) {
-        orientation.onPlaced(placer, itemStack);
     }
 
     @Override

@@ -109,7 +109,7 @@ public abstract class HatchBlockEntity extends MachineBlockEntity implements Tic
 
     @Override
     public void onPlaced(LivingEntity placer, ItemStack itemStack) {
-        orientation.onPlaced(placer, itemStack);
+        super.onPlaced(placer, itemStack);
         if (orientation.params.hasOutput) {
             orientation.outputDirection = orientation.outputDirection.getOpposite();
         }

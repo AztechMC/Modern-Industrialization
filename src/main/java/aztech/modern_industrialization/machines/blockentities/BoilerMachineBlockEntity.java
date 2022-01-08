@@ -44,8 +44,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import net.minecraft.core.Direction;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.material.Fluids;
 
 public class BoilerMachineBlockEntity extends MachineBlockEntity implements Tickable {
@@ -106,11 +104,6 @@ public class BoilerMachineBlockEntity extends MachineBlockEntity implements Tick
         data.isActive = isActiveComponent.isActive;
         orientation.writeModelData(data);
         return data;
-    }
-
-    @Override
-    public void onPlaced(LivingEntity placer, ItemStack itemStack) {
-        orientation.onPlaced(placer, itemStack);
     }
 
     @Override

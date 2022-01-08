@@ -37,8 +37,6 @@ import aztech.modern_industrialization.util.Tickable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.item.ItemStack;
 
 public class ConfigurableChestMachineBlockEntity extends MachineBlockEntity implements Tickable {
 
@@ -69,11 +67,6 @@ public class ConfigurableChestMachineBlockEntity extends MachineBlockEntity impl
         MachineModelClientData data = new MachineModelClientData(MachineCasings.STEEL_CRATE);
         orientation.writeModelData(data);
         return data;
-    }
-
-    @Override
-    public void onPlaced(LivingEntity placer, ItemStack itemStack) {
-        orientation.onPlaced(placer, itemStack);
     }
 
     @Override

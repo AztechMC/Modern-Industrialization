@@ -34,8 +34,6 @@ import aztech.modern_industrialization.machines.multiblocks.MultiblockMachineBlo
 import aztech.modern_industrialization.machines.multiblocks.ShapeMatcher;
 import aztech.modern_industrialization.machines.multiblocks.ShapeTemplate;
 import aztech.modern_industrialization.util.Tickable;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.item.ItemStack;
 
 public class SteamBoilerMultiblockBlockEntity extends MultiblockMachineBlockEntity implements Tickable {
 
@@ -110,11 +108,6 @@ public class SteamBoilerMultiblockBlockEntity extends MultiblockMachineBlockEnti
     @Override
     protected MachineModelClientData getModelData() {
         return new MachineModelClientData(null, orientation.facingDirection).active(isActiveComponent.isActive);
-    }
-
-    @Override
-    public void onPlaced(LivingEntity placer, ItemStack itemStack) {
-        orientation.onPlaced(placer, itemStack);
     }
 
     @Override

@@ -36,8 +36,6 @@ import java.util.List;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
 
@@ -72,11 +70,6 @@ public abstract class AbstractWaterPumpBlockEntity extends MachineBlockEntity im
 
     protected int pumpingTicks = 0; // number of ticks spent pumping this iteration
     protected IsActiveComponent isActiveComponent;
-
-    @Override
-    public void onPlaced(LivingEntity placer, ItemStack itemStack) {
-        orientation.onPlaced(placer, itemStack);
-    }
 
     @Override
     public void tick() {

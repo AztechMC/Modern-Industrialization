@@ -154,7 +154,7 @@ public class MIMaterials {
 
         MaterialRegistry.addMaterial(addVanillaGem(false,
                 new MaterialBuilder("diamond", SHINY, GEM, new BakableTargetColoramp(0x48eeda, mcitem("diamond"), mcitem("diamond")), VERY_HARD)
-                        .addParts(ITEM_PURE_NON_METAL).addParts(PLATE).addParts(ExternalPart.of(HAMMER, MIItem.DIAMOND_HAMMER.getPath()))).build());
+                        .addParts(ITEM_PURE_NON_METAL).addParts(PLATE, LARGE_PLATE).addParts(ExternalPart.of(HAMMER, MIItem.DIAMOND_HAMMER.getPath()))).build());
 
         MaterialRegistry.addMaterial(addVanillaGem(false,
                 new MaterialBuilder("emerald", SHINY, GEM, new BakableTargetColoramp(0x3FF385, mcitem("emerald"), mcitem("emerald")), VERY_HARD)

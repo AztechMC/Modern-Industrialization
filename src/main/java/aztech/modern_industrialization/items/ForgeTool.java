@@ -30,6 +30,7 @@ import aztech.modern_industrialization.util.ResourceUtil;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.fabricmc.fabric.api.tag.TagFactory;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Tier;
 import net.minecraft.world.item.TieredItem;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -40,11 +41,50 @@ public class ForgeTool extends TieredItem {
     public static final MIIdentifier TAG = new MIIdentifier("forge_hammer_tools");
 
     public ForgeTool(Tier material, String id) {
-        super(material, new FabricItemSettings().stacksTo(1).tab(ModernIndustrialization.ITEM_GROUP));
+        super(forgeHammerMaterial(material), new FabricItemSettings().stacksTo(1).tab(ModernIndustrialization.ITEM_GROUP));
         this.id = id;
         MIItem.items.put(id, this);
         MIItem.handhelds.add(id);
         ResourceUtil.appendToItemTag(TAG, new MIIdentifier(id));
+    }
+
+    public boolean isValidRepairItem(ItemStack stack, ItemStack repairCandidate) {
+        return false;
+    }
+
+    private static Tier forgeHammerMaterial(Tier normalTier) {
+        return new Tier() {
+            @Override
+            public int getUses() {
+                return (normalTier.getUses() * 20) / 3;
+            }
+
+            @Override
+            public float getSpeed() {
+                return normalTier.getSpeed();
+            }
+
+            @Override
+            public float getAttackDamageBonus() {
+                return normalTier.getAttackDamageBonus();
+            }
+
+            @Override
+            public int getLevel() {
+                return normalTier.getLevel();
+            }
+
+            @Override
+            public int getEnchantmentValue() {
+                return normalTier.getEnchantmentValue();
+            }
+
+            @Override
+            public Ingredient getRepairIngredient() {
+                return normalTier.getRepairIngredient();
+            }
+        };
+
     }
 
     public String getPath() {

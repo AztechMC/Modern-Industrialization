@@ -59,7 +59,13 @@ public class ItemNetworkNode extends PipeNetworkNode {
     public void updateConnections(Level world, BlockPos pos) {
         // Remove the connection to the outside world if a connection to another pipe is
         // made.
-        connections.removeIf(connection -> network.manager.hasLink(pos, connection.direction));
+        connections.removeIf(connection -> {
+            if (network.manager.hasLink(pos, connection.direction)) {
+                connection.dropUpgrades(world, pos);
+                return true;
+            }
+            return false;
+        });
     }
 
     private boolean canConnect(Level world, BlockPos pos, Direction direction) {

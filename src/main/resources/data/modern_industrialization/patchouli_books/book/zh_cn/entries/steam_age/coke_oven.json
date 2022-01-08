@@ -1,42 +1,46 @@
 {
-  "name": "你喜欢焦炭/可乐吗?",
+  "name": "你喜欢焦炭吗？",
   "category": "modern_industrialization:steam_age",
   "icon": "modern_industrialization:coke_oven",
   "pages": [
     {
       "type": "text",
-      "text": "当你有了足够多的青铜机器后，你就可以开始造钢了。你的终极目标是造出采石场这个自动开采矿物的多方块结构。$(br2)你要做的第一步就是制作焦炭。不用氧气加热煤炭你就可以获得焦炭。为此你需要建造一个多方块结构——焦炉。"
+      "text": "一旦你拥有足够的青铜机器，你就可以开始制作钢铁了。最终目标是能够建造采石场，一个可以为你挖掘矿石的多方块！$(br2)第一步是在没有氧气的情况下加热煤来制造焦炭。为此，您需要构建一个多块焦炉。"
     },
     {
       "type": "crafting",
-      "recipe": "modern_industrialization:machine/fireclay/coke_oven",
+      "recipe": "modern_industrialization:steam_age/fireclay/coke_oven",
       "text": "对于第一个多方块结构，你需要一个焦炉，21个砖块和3个$(thing)仓$()：物流输入、物流输出和流体输入仓。"
     },
     {
       "type": "crafting",
-      "recipe": "modern_industrialization:machine/bronze/item_input_hatch",
-      "recipe2": "modern_industrialization:machine/bronze/item_output_hatch"
+      "recipe": "modern_industrialization:hatches/bronze/item_input_hatch",
+      "recipe2": "modern_industrialization:hatches/bronze/item_output_hatch"
     },
     {
       "type": "crafting",
-      "recipe": "modern_industrialization:machine/bronze/fluid_input_hatch",
-      "recipe2": "modern_industrialization:machine/bronze/fluid_output_hatch"
+      "recipe": "modern_industrialization:hatches/bronze/fluid_input_hatch",
+      "recipe2": "modern_industrialization:hatches/bronze/fluid_output_hatch"
     },
     {
       "type": "text",
-      "text": "焦炉在这个结构中用作$(thing)控制器$()。每个多方块结构都由控制器管理，但你无法直接与控制器直接交互，所有输出和输出都通过仓实现。需要流体输入仓是因为焦炉由蒸汽驱动，需要物流输入和输出仓是因为没有它们你就无法启动焦炉和获得产物！"
+      "text": "这里的焦炉块具有 $(thing)控制器$()的作用。每个多块都由一个控制器管理，但您通常无法直接与控制器交互：所有输入和输出都通过舱口。我们需要流体输入，因为焦炉由蒸汽驱动，我们需要煤的项目输入和焦炭的输出。$(br2)如果我们忘记了其中一个舱口，焦炉将无法启动！"
     },
     {
       "type": "text",
-      "text": "焦炉结构有三层：底层是由三个仓构成的3x3方阵，上面两层是3x3的空心方阵。控制器放在中间的一侧。如果你还不懂的话，请看$(l:https://streamable.com/08f74x)这个视频$()。$(br2)仓只需放在底层，放在哪里并不重要。"
+      "text": "$(l)拿着扳手查看丢失的块和错误！$() 您还可以握住舱口以了解它可以去哪里。$(br2)这个多块我们需要 21 块砖！ 检查 REI，它说总共有 24 个，但我们有 3 个舱口，所以我们只需要为剩下的 21 个块提供砖块！"
+    },
+    {
+      "type": "image",
+      "title": "Coke Oven!",
+      "images": [
+        "modern_industrialization:textures/guidebook/coke_oven.png"
+      ],
+      "text": "放置舱口的方法有很多种，这就是其中之一！"
     },
     {
       "type": "text",
-      "text": "当你放置好所有的方块后，请确认控制器的方向无误，然后用扳手右击中心。你会看到一条显示成功的消息。如果没有的话请检查错误。$(br2)将蒸汽放入流体输入仓，将煤炭放在物流输入仓即可启动焦炉。"
-    },
-    {
-      "type": "text",
-      "text": "焦炭不仅可用与制作钢，还能作为一种强大的燃料。它的燃烧时间是煤炭的4倍！"
+      "text": "一旦焦炉说 $(o)形状有效$()用蒸汽填充流体输入舱口，将煤放入项目输入舱口，你就可以开始了！$(br2)焦炭对钢铁非常有用，但它也是一种强大的燃料。它的使用寿命是煤炭的 4 倍！"
     }
   ],
   "sortnum": 9

@@ -34,6 +34,7 @@ import aztech.modern_industrialization.recipe.json.compat.IRCompressRecipeJson;
 import aztech.modern_industrialization.recipe.json.compat.TRCompressorRecipeJson;
 import java.util.function.Consumer;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
+import net.fabricmc.fabric.api.resource.conditions.v1.DefaultResourceConditions;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.world.level.material.Fluids;
 
@@ -165,6 +166,6 @@ public class CompatRecipesProvider extends MIRecipesProvider {
 
     private void addCompatRecipe(String id, RecipeJson<?> recipeJson) {
         id = "compat/%s/%s".formatted(currentCompatModid, id);
-        recipeJson.requiresMod(currentCompatModid).offerTo(consumer, id);
+        recipeJson.offerTo(withConditions(consumer, DefaultResourceConditions.allModsLoaded(currentCompatModid)), id);
     }
 }

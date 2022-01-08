@@ -1,0 +1,27 @@
+{
+  "name": "大型蒸汽锅炉",
+  "category": "modern_industrialization:electric_age",
+  "icon": "modern_industrialization:large_steam_boiler",
+  "pages": [
+    {
+      "type": "crafting",
+      "recipe": "modern_industrialization:electric_age/machine/large_steam_boiler_asbl",
+      "text": "大型蒸汽锅炉是小型青铜和钢制锅炉的升级版。它使用燃料的速度比熔炉快 8 倍，但在完全加热时会产生 256 mb/t 的蒸汽。不要忘记水，否则它不会起作用！"
+    },
+    {
+      "type": "crafting",
+      "recipe": "modern_industrialization:electric_age/casing/bronze_plated_bricks_asbl",
+      "text": "您需要的主要块是青铜镀层砖，但您还需要青铜管机壳和耐热机壳。"
+    },
+    {
+      "type": "crafting",
+      "recipe": "modern_industrialization:steam_age/bronze/casing_pipe_asbl",
+      "recipe2": "modern_industrialization:electric_age/casing/heatproof_machine_casing_asbl"
+    },
+    {
+      "type": "text",
+      "text": "大型蒸汽锅炉由一层耐热机壳和三层镀铜砖组成。$(br2)控制器进入第二层（即第一层青铜板砖）。$(br2)中间的两个块是青铜管机套管。$(br2)舱口必须放在底层。"
+    }
+  ],
+  "sortnum": 102
+}

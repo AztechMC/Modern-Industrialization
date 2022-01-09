@@ -23,6 +23,7 @@
  */
 package aztech.modern_industrialization.machines.components;
 
+import aztech.modern_industrialization.inventory.ChangeListener;
 import aztech.modern_industrialization.inventory.ConfigurableFluidStack;
 import aztech.modern_industrialization.inventory.ConfigurableItemStack;
 import aztech.modern_industrialization.inventory.MIInventory;
@@ -40,6 +41,19 @@ public class MachineInventoryComponent implements CrafterComponent.Inventory, IC
 
     public final MIInventory inventory;
 
+    private int invHash = 0;
+    private final ChangeListener listener = new ChangeListener() {
+        @Override
+        protected void onChange() {
+            invHash++;
+        }
+
+        @Override
+        protected boolean isValid(Object token) {
+            return true;
+        }
+    };
+
     public MachineInventoryComponent(List<ConfigurableItemStack> itemInputs, List<ConfigurableItemStack> itemOutputs,
             List<ConfigurableFluidStack> fluidInputs, List<ConfigurableFluidStack> fluidOutputs, SlotPositions itemPositions,
             SlotPositions fluidPositions) {
@@ -54,6 +68,9 @@ public class MachineInventoryComponent implements CrafterComponent.Inventory, IC
         List<ConfigurableFluidStack> fluidStacks = new ArrayList<>();
         fluidStacks.addAll(fluidInputs);
         fluidStacks.addAll(fluidOutputs);
+
+        listener.listenAll(itemStacks, null);
+        listener.listenAll(fluidStacks, null);
 
         this.inventory = new MIInventory(itemStacks, fluidStacks, itemPositions, fluidPositions);
     }
@@ -76,6 +93,11 @@ public class MachineInventoryComponent implements CrafterComponent.Inventory, IC
     @Override
     public List<ConfigurableFluidStack> getFluidOutputs() {
         return inventory.getFluidStacks().subList(fluidInputCount, fluidInputCount + fluidOutputCount);
+    }
+
+    @Override
+    public int hash() {
+        return invHash;
     }
 
     @Override

@@ -215,6 +215,7 @@ public class ConfigurableItemStack extends AbstractConfigurableStack<Item, ItemV
         public void set(ItemStack stack) {
             key = ItemVariant.of(stack);
             amount = stack.getCount();
+            notifyListeners();
             markDirty.run();
             cachedReturnedStack = stack;
         }

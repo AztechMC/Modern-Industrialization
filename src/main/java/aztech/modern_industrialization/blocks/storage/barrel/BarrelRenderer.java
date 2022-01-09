@@ -36,7 +36,9 @@ import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 
@@ -56,6 +58,8 @@ public class BarrelRenderer implements BlockEntityRenderer<BlockEntity> {
     public void render(BlockEntity entity, float tickDelta, PoseStack matrices, MultiBufferSource vertexConsumers, int light, int overlay) {
 
         BarrelBlockEntity barrelBlockEntity = (BarrelBlockEntity) entity;
+        var state = barrelBlockEntity.getBlockState();
+        var pos = barrelBlockEntity.getBlockPos();
 
         ItemVariant item = barrelBlockEntity.getResource();
         if (!item.isBlank()) {
@@ -65,12 +69,16 @@ public class BarrelRenderer implements BlockEntityRenderer<BlockEntity> {
                 ItemStack toRender = new ItemStack(item.getItem(), 1);
 
                 for (int i = 0; i < 4; i++) {
+                    var direction = Direction.from2DDataValue(i);
+                    if (!Block.shouldRenderFace(state, barrelBlockEntity.getLevel(), pos, direction, pos.relative(direction))) {
+                        continue;
+                    }
 
                     // Thanks TechReborn for rendering code
 
                     matrices.pushPose();
                     matrices.translate(0.5, 0, 0.5);
-                    matrices.mulPose(Vector3f.YP.rotationDegrees(i * 90F));
+                    matrices.mulPose(Vector3f.YP.rotationDegrees(-i * 90F));
                     matrices.scale(0.5F, 0.5F, 0.5F);
                     matrices.translate(0, 1.3, 1.01);
 
@@ -85,7 +93,7 @@ public class BarrelRenderer implements BlockEntityRenderer<BlockEntity> {
                     matrices.pushPose();
                     Font textRenderer = Minecraft.getInstance().font;
                     matrices.translate(0.5, 0.5, 0.5);
-                    matrices.mulPose(Vector3f.YP.rotationDegrees(i * 90F));
+                    matrices.mulPose(Vector3f.YP.rotationDegrees((2 - i) * 90F));
                     matrices.translate(0, 0.2, -0.505);
                     matrices.scale(-0.01f, -0.01F, -0.01f);
 

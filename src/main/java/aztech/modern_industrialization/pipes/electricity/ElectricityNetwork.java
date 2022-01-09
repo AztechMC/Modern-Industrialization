@@ -33,6 +33,9 @@ import java.util.*;
 import net.minecraft.server.level.ServerLevel;
 
 public class ElectricityNetwork extends PipeNetwork {
+    private static final List<EnergyInsertable> INSERTABLE_CACHE = new ArrayList<>();
+    private static final List<EnergyExtractable> EXTRACTABLE_CACHE = new ArrayList<>();
+
     final CableTier tier;
 
     public ElectricityNetwork(int id, PipeNetworkData data, CableTier tier) {
@@ -43,8 +46,8 @@ public class ElectricityNetwork extends PipeNetwork {
     @Override
     public void tick(ServerLevel world) {
         // Gather targets
-        List<EnergyInsertable> insertables = new ArrayList<>();
-        List<EnergyExtractable> extractables = new ArrayList<>();
+        List<EnergyInsertable> insertables = INSERTABLE_CACHE;
+        List<EnergyExtractable> extractables = EXTRACTABLE_CACHE;
         long networkAmount = 0;
         int loadedNodeCount = 0;
         for (var entry : iterateTickingNodes()) {
@@ -72,6 +75,10 @@ public class ElectricityNetwork extends PipeNetwork {
             networkAmount -= electricityNode.eu;
             --loadedNodeCount;
         }
+
+        // Very important to clear the static caches
+        insertables.clear();
+        extractables.clear();
     }
 
     /**

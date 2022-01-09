@@ -21,34 +21,40 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.recipe.json;
+package aztech.modern_industrialization.machines.components;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
-import java.util.function.Consumer;
-import net.minecraft.data.recipes.FinishedRecipe;
-import net.minecraft.resources.ResourceLocation;
+import aztech.modern_industrialization.machines.IComponent;
+import java.util.UUID;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import org.jetbrains.annotations.Nullable;
 
-/**
- * Base class for objects that can be written to JSON recipes with GSON.
- */
-public class RecipeJson<T extends RecipeJson<T>> {
-    public static Gson GSON = new Gson();
+public class PlacedByComponent implements IComponent {
+    @Nullable
+    public UUID placerId = null;
 
-    public final String toJson() {
-        return GSON.toJson(this);
+    @Override
+    public void writeNbt(CompoundTag tag) {
+        if (placerId != null) {
+            tag.putString("placer", placerId.toString());
+        }
     }
 
-    public final JsonObject toJsonObject() {
-        return GSON.toJsonTree(this).getAsJsonObject();
+    @Override
+    public void readNbt(CompoundTag tag) {
+        try {
+            placerId = UUID.fromString(tag.getString("placer"));
+        } catch (IllegalArgumentException iae) {
+            placerId = null;
+        }
     }
 
-    public final byte[] toBytes() {
-        return toJson().getBytes();
-    }
-
-    public final void offerTo(Consumer<FinishedRecipe> exporter, String recipeId) {
-        // note that FabricRecipesProvider will set the namespace to that of the mod anyway.
-        exporter.accept(new JsonProvider(new ResourceLocation(recipeId), this));
+    public void onPlaced(LivingEntity placer) {
+        if (placer instanceof Player) {
+            placerId = placer.getUUID();
+        } else {
+            placerId = null;
+        }
     }
 }

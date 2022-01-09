@@ -194,13 +194,17 @@ public class NuclearHatch extends HatchBlockEntity implements INuclearTile {
 
     @Override
     public int neutronGenerationTick(INuclearGrid grid) {
-        double meanNeutron = getMeanNeutronAbsorption(NeutronType.BOTH) + NuclearConstant.BASE_NEUTRON;
+        double meanNeutron = getMeanNeutronAbsorption(NeutronType.BOTH);
         int neutronsProduced = 0;
 
         if (!isFluid) {
             ItemVariant itemVariant = (ItemVariant) this.getVariant();
 
             if (!itemVariant.isBlank() && itemVariant.getItem() instanceof NuclearAbsorbable abs) {
+
+                if (itemVariant.getItem() instanceof NuclearFuel) {
+                    meanNeutron += NuclearConstant.BASE_NEUTRON;
+                }
 
                 ItemStack stack = itemVariant.toStack((int) getVariantAmount());
 

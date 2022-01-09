@@ -146,7 +146,7 @@ public class MachineOverlay {
                         double minY = ZONES[j], maxY = ZONES[j + 1];
                         boolean insideQuad = minX <= posOnFace.x && posOnFace.x <= maxX && minY <= posOnFace.y && posOnFace.y <= maxY;
                         emitter = meshBuilder.getEmitter();
-                        emitter.square(blockHitResult.getDirection(), (float) minX, (float) minY, (float) maxX, (float) maxY, -0.0001f);
+                        emitter.square(blockHitResult.getDirection(), (float) minX, (float) minY, (float) maxX, (float) maxY, -3.5e-4f);
                         float r = 0;
                         float g = insideQuad ? 1 : 0;
                         float b = insideQuad ? 0 : 1;

@@ -429,7 +429,7 @@ public class PipeBlockEntity extends FastBlockEntity implements IPipeScreenHandl
         SHAPE_CACHE = new VoxelShape[3][6][5];
         for (int slot = 0; slot < 3; slot++) {
             for (Direction direction : Direction.values()) {
-                int connectionTypes = slot == 0 ? 2 : slot == 1 ? 3 : 5;
+                int connectionTypes = slot == 0 ? 2 : slot == 1 ? 4 : 5;
                 for (int connectionType = 0; connectionType < connectionTypes; connectionType++) {
                     PipeShapeBuilder psb = new PipeShapeBuilder(PipePartBuilder.getSlotPos(slot), direction);
                     if (connectionType == 0)

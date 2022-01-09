@@ -24,7 +24,6 @@
 package aztech.modern_industrialization.proxy;
 
 import aztech.modern_industrialization.materials.MaterialBuilder;
-import aztech.modern_industrialization.mixin_impl.SteamDrillHooks;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.world.entity.LivingEntity;
@@ -57,7 +56,7 @@ public class CommonProxy {
         if (entity instanceof Player) {
             return (Player) entity;
         }
-        return SteamDrillHooks.getCurrentPlayer();
+        return null;
     }
 
     public void registerPartTankClient(MaterialBuilder.PartContext partContext, String itemPath, BlockEntityType<BlockEntity> blockEntityType) {

@@ -37,9 +37,9 @@ import aztech.modern_industrialization.machines.gui.MachineGuiParameters;
 import aztech.modern_industrialization.machines.init.MachineTier;
 import aztech.modern_industrialization.machines.recipe.MachineRecipeType;
 import aztech.modern_industrialization.util.Tickable;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.item.ItemStack;
+import java.util.UUID;
 import net.minecraft.world.level.Level;
+import org.jetbrains.annotations.Nullable;
 
 public abstract class AbstractCraftingMachineBlockEntity extends MachineBlockEntity implements CrafterComponent.Behavior, Tickable {
     public AbstractCraftingMachineBlockEntity(BEP bep, MachineRecipeType recipeType, MachineInventoryComponent inventory,
@@ -99,12 +99,13 @@ public abstract class AbstractCraftingMachineBlockEntity extends MachineBlockEnt
     }
 
     @Override
-    public void onPlaced(LivingEntity placer, ItemStack itemStack) {
-        orientation.onPlaced(placer, itemStack);
+    public Level getCrafterWorld() {
+        return level;
     }
 
     @Override
-    public Level getCrafterWorld() {
-        return level;
+    @Nullable
+    public UUID getOwnerUuid() {
+        return placedBy.placerId;
     }
 }

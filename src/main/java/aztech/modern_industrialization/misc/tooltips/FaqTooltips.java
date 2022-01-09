@@ -39,12 +39,12 @@ import net.minecraft.resources.ResourceLocation;
 public class FaqTooltips {
     private static final Map<ResourceLocation, String[]> TOOLTIPS = new HashMap<>();
 
-    private static void add(ResourceLocation id, String tooltipId, int lineCount) {
+    private static void add(String item, int lineCount) {
         Preconditions.checkArgument(lineCount > 0);
 
-        String[] lines = IntStream.range(0, lineCount).mapToObj(l -> tooltipId + "_" + l).toArray(String[]::new);
+        String[] lines = IntStream.range(0, lineCount).mapToObj(l -> item + "_" + l).toArray(String[]::new);
 
-        if (TOOLTIPS.put(id, lines) != null) {
+        if (TOOLTIPS.put(new MIIdentifier(item), lines) != null) {
             throw new IllegalStateException("Duplicate tooltip registration.");
         }
     }
@@ -54,8 +54,10 @@ public class FaqTooltips {
     }
 
     static {
-        add(new MIIdentifier("forge_hammer"), "forge_hammer", 2);
-        add(new MIIdentifier("stainless_steel_dust"), "stainless_steel_dust", 1);
+        add("forge_hammer", 2);
+        add("kanthal_coil", 2);
+        add("stainless_steel_dust", 1);
+        add("steam_blast_furnace", 2);
 
         ItemTooltipCallback.EVENT.register((stack, context, lines) -> {
             ResourceLocation itemId = Registry.ITEM.getKey(stack.getItem());

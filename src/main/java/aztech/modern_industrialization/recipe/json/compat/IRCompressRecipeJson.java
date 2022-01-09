@@ -30,13 +30,13 @@ public class IRCompressRecipeJson extends RecipeJson<IRCompressRecipeJson> {
     private final String type = "indrev:compress";
     private final int processTime = 300;
     private final TagIngredient[] ingredients;
-    private final ItemResult[] results;
+    private final ItemResult output;
 
     public IRCompressRecipeJson(String inputTag, String outputItem) {
         this.ingredients = new TagIngredient[] { new TagIngredient() };
         this.ingredients[0].tag = inputTag;
-        this.results = new ItemResult[] { new ItemResult() };
-        this.results[0].item = outputItem;
+        this.output = new ItemResult();
+        this.output.item = outputItem;
     }
 
     private static class TagIngredient {

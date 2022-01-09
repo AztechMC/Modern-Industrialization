@@ -21,26 +21,21 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.mixin_impl;
+package aztech.modern_industrialization.stats;
 
-import java.util.HashMap;
-import java.util.Map;
-import net.minecraft.world.entity.player.Player;
-import org.jetbrains.annotations.Nullable;
+public enum StatisticsRate {
+    LAST_SECOND(0, 20),
+    LAST_MINUTE(1, 20 * 60),
+    LAST_HOUR(2, 20 * 60 * 60),
+    ;
 
-public class SteamDrillHooks {
-    private static final Map<Thread, Player> currentPlayer = new HashMap<>();
+    public static final int COUNT = 3;
 
-    @Nullable
-    public static Player getCurrentPlayer() {
-        return currentPlayer.get(Thread.currentThread());
-    }
+    public final int id;
+    public final int ticks;
 
-    public static void set(Player player) {
-        currentPlayer.put(Thread.currentThread(), player);
-    }
-
-    public static void remove() {
-        currentPlayer.remove(Thread.currentThread());
+    StatisticsRate(int id, int ticks) {
+        this.id = id;
+        this.ticks = ticks;
     }
 }

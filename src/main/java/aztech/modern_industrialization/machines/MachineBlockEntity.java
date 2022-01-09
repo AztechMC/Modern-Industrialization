@@ -29,6 +29,7 @@ import aztech.modern_industrialization.inventory.ConfigurableFluidStack;
 import aztech.modern_industrialization.inventory.ConfigurableItemStack;
 import aztech.modern_industrialization.inventory.MIInventory;
 import aztech.modern_industrialization.machines.components.OrientationComponent;
+import aztech.modern_industrialization.machines.components.PlacedByComponent;
 import aztech.modern_industrialization.machines.gui.MachineGuiParameters;
 import aztech.modern_industrialization.machines.models.MachineModelClientData;
 import aztech.modern_industrialization.util.NbtHelper;
@@ -59,6 +60,7 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.phys.BlockHitResult;
+import org.jetbrains.annotations.MustBeInvokedByOverriders;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -76,18 +78,16 @@ public abstract class MachineBlockEntity extends FastBlockEntity
      */
     private boolean syncCausesRemesh = true;
 
-    /**
-     * Every machine has an orientation component: this is the only one that is
-     * here, the others are in subclasses.
-     */
     protected final OrientationComponent orientation;
+    public final PlacedByComponent placedBy;
 
     public MachineBlockEntity(BEP bep, MachineGuiParameters guiParams, OrientationComponent.Params orientationParams) {
         super(bep.type(), bep.pos(), bep.state());
         this.guiParams = guiParams;
         this.orientation = new OrientationComponent(orientationParams);
+        this.placedBy = new PlacedByComponent();
 
-        registerComponents(orientation);
+        registerComponents(orientation, placedBy);
     }
 
     protected final void registerClientComponent(SyncedComponent.Server component) {
@@ -158,7 +158,11 @@ public abstract class MachineBlockEntity extends FastBlockEntity
 
     protected abstract MachineModelClientData getModelData();
 
-    public abstract void onPlaced(LivingEntity placer, ItemStack itemStack);
+    @MustBeInvokedByOverriders
+    public void onPlaced(LivingEntity placer, ItemStack itemStack) {
+        orientation.onPlaced(placer, itemStack);
+        placedBy.onPlaced(placer);
+    }
 
     @Override
     public boolean useWrench(Player player, InteractionHand hand, BlockHitResult hitResult) {

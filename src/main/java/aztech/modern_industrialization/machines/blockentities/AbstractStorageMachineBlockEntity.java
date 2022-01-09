@@ -39,8 +39,6 @@ import aztech.modern_industrialization.machines.models.MachineCasing;
 import aztech.modern_industrialization.machines.models.MachineCasings;
 import aztech.modern_industrialization.machines.models.MachineModelClientData;
 import aztech.modern_industrialization.util.Tickable;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 
 public abstract class AbstractStorageMachineBlockEntity extends MachineBlockEntity implements Tickable {
@@ -84,11 +82,6 @@ public abstract class AbstractStorageMachineBlockEntity extends MachineBlockEnti
         MachineModelClientData data = new MachineModelClientData();
         orientation.writeModelData(data);
         return data;
-    }
-
-    @Override
-    public void onPlaced(LivingEntity placer, ItemStack itemStack) {
-        orientation.onPlaced(placer, itemStack);
     }
 
     @Override

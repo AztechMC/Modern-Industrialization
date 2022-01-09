@@ -51,9 +51,7 @@ import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.Tag;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
 
 public class ReplicatorMachineBlockEntity extends MachineBlockEntity implements Tickable {
 
@@ -123,11 +121,6 @@ public class ReplicatorMachineBlockEntity extends MachineBlockEntity implements 
         data.isActive = isActiveComponent.isActive;
         orientation.writeModelData(data);
         return data;
-    }
-
-    @Override
-    public void onPlaced(LivingEntity placer, ItemStack itemStack) {
-        orientation.onPlaced(placer, itemStack);
     }
 
     public boolean replicationStep(boolean simulate) {

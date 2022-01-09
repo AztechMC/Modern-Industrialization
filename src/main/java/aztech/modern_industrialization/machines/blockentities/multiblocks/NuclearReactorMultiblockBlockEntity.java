@@ -44,9 +44,7 @@ import java.util.Optional;
 import java.util.function.Supplier;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.BlockHitResult;
 
 public class NuclearReactorMultiblockBlockEntity extends MultiblockMachineBlockEntity implements Tickable, ScrewdriverableBlockEntity {
@@ -99,11 +97,6 @@ public class NuclearReactorMultiblockBlockEntity extends MultiblockMachineBlockE
     @Override
     protected final MachineModelClientData getModelData() {
         return new MachineModelClientData(null, orientation.facingDirection).active(isActive.isActive);
-    }
-
-    @Override
-    public final void onPlaced(LivingEntity placer, ItemStack itemStack) {
-        orientation.onPlaced(placer, itemStack);
     }
 
     @Override

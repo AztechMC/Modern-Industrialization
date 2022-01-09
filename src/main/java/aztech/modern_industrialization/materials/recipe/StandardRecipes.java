@@ -61,7 +61,7 @@ public final class StandardRecipes {
         new ShapedRecipeBuilder(ctx, GEAR, 1, "gear", "PbP", "bRb", "PbP").addTaggedPart('b', BOLT).addTaggedPart('P', PLATE).addTaggedPart('R',
                 RING);
 
-        new ShapedRecipeBuilder(ctx, HAMMER, 1, "hammer", "ppp", " s ", " s ").addTaggedPart('p', PLATE).addInput('s', "minecraft:stick");
+        new ShapedRecipeBuilder(ctx, HAMMER, 1, "hammer", "ppp", "psp", " s ").addTaggedPart('p', LARGE_PLATE).addInput('s', "minecraft:stick");
 
         new ShapedRecipeBuilder(ctx, RING, 2, "ring", "bRb", "R R", "bRb").addTaggedPart('b', BOLT).addTaggedPart('R', ROD);
 

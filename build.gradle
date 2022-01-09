@@ -138,7 +138,13 @@ repositories {
 
 dependencies {
     // TODO remove when fabric PR is merged
-    modImplementation("net.fabricmc.fabric-api:fabric-data-generation-api-v1:0.0.1+f8f4a6586d") {
+    modImplementation("net.fabricmc.fabric-api:fabric-data-generation-api-v1:1.1.0+abf02f7665") {
+        exclude(group: "net.fabricmc.fabric-api")
+    }
+    include modImplementation("net.fabricmc.fabric-api:fabric-resource-conditions-api-v1:1.0.0+abf02f7665") {
+        exclude(group: "net.fabricmc.fabric-api")
+    }
+    include modImplementation("net.fabricmc.fabric-api:fabric-tool-attribute-api-v1:1.4.0-modified-technici4n+ea42e1b365") {
         exclude(group: "net.fabricmc.fabric-api")
     }
 

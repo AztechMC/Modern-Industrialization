@@ -21,25 +21,21 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.mixin;
+package aztech.modern_industrialization.util;
 
-import aztech.modern_industrialization.mixin_impl.SteamDrillHooks;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.block.state.BlockState;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import java.util.concurrent.atomic.AtomicLong;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 
-@Mixin(Player.class)
-public class PlayerEntitySteamDrillMixin {
-    @Inject(at = @At("HEAD"), method = "hasCorrectToolForDrops")
-    public void canHarvestHead(BlockState state, CallbackInfoReturnable<Boolean> cir) {
-        SteamDrillHooks.set((Player) (Object) this);
+public class TickHelper {
+    private static final AtomicLong currentTick = new AtomicLong();
+
+    public static long getCurrentTick() {
+        return currentTick.get();
     }
 
-    @Inject(at = @At("RETURN"), method = "hasCorrectToolForDrops")
-    public void canHarvestReturn(BlockState state, CallbackInfoReturnable<Boolean> cir) {
-        SteamDrillHooks.remove();
+    static {
+        ServerTickEvents.START_SERVER_TICK.register(server -> {
+            currentTick.incrementAndGet();
+        });
     }
 }

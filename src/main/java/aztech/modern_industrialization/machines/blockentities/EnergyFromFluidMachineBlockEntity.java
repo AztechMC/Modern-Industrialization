@@ -47,8 +47,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.function.Predicate;
 import java.util.function.ToLongFunction;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.material.Fluid;
 
@@ -112,11 +110,6 @@ public class EnergyFromFluidMachineBlockEntity extends MachineBlockEntity implem
         data.isActive = isActiveComponent.isActive;
         orientation.writeModelData(data);
         return data;
-    }
-
-    @Override
-    public void onPlaced(LivingEntity placer, ItemStack itemStack) {
-        orientation.onPlaced(placer, itemStack);
     }
 
     @Override

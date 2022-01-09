@@ -26,6 +26,7 @@ package aztech.modern_industrialization.pipes;
 import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.ModernIndustrialization;
 import aztech.modern_industrialization.api.energy.CableTier;
+import aztech.modern_industrialization.debug.DebugCommands;
 import aztech.modern_industrialization.pipes.api.*;
 import aztech.modern_industrialization.pipes.electricity.ElectricityNetwork;
 import aztech.modern_industrialization.pipes.electricity.ElectricityNetworkData;
@@ -118,7 +119,7 @@ public class MIPipes {
         }
 
         registerPackets();
-        MIPipesCommands.init();
+        DebugCommands.init();
     }
 
     private void registerFluidPipeType(PipeColor color) {

@@ -36,9 +36,7 @@ import aztech.modern_industrialization.machines.multiblocks.ShapeMatcher;
 import aztech.modern_industrialization.machines.multiblocks.ShapeTemplate;
 import aztech.modern_industrialization.util.Tickable;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.Nullable;
 
@@ -89,11 +87,6 @@ public abstract class AbstractCraftingMultiblockBlockEntity extends MultiblockMa
     @Override
     protected final MachineModelClientData getModelData() {
         return new MachineModelClientData(null, orientation.facingDirection).active(isActive.isActive);
-    }
-
-    @Override
-    public final void onPlaced(LivingEntity placer, ItemStack itemStack) {
-        orientation.onPlaced(placer, itemStack);
     }
 
     @Override

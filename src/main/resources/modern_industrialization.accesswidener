@@ -10,5 +10,7 @@ accessible    field    net/minecraft/server/network/ServerGamePacketListenerImpl
 accessible    field    net/minecraft/client/resources/ClientPackSource    BUILT_IN    Lnet/minecraft/server/packs/metadata/pack/PackMetadataSection;
 
 # Use for Ore registration
-
 accessible method net/minecraft/data/worldgen/placement/OrePlacements commonOrePlacement (ILnet/minecraft/world/level/levelgen/placement/PlacementModifier;)Ljava/util/List;
+
+# Used to access all chunks
+accessible    field    net/minecraft/server/level/ChunkMap updatingChunkMap Lit/unimi/dsi/fastutil/longs/Long2ObjectLinkedOpenHashMap;

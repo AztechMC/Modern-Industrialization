@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.pipes;
+package aztech.modern_industrialization.debug;
 
 import static net.minecraft.commands.Commands.argument;
 import static net.minecraft.commands.Commands.literal;
@@ -31,8 +31,11 @@ import static net.minecraft.commands.arguments.coordinates.BlockPosArgument.bloc
 import static net.minecraft.commands.arguments.coordinates.BlockPosArgument.getLoadedBlockPos;
 
 import aztech.modern_industrialization.MIConfig;
+import aztech.modern_industrialization.machines.MachineBlockEntity;
+import aztech.modern_industrialization.pipes.MIPipes;
 import aztech.modern_industrialization.pipes.api.PipeNetworkType;
 import aztech.modern_industrialization.pipes.impl.PipeNetworks;
+import aztech.modern_industrialization.stats.PlayerStatisticsData;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
@@ -43,10 +46,12 @@ import net.minecraft.commands.SharedSuggestionProvider;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.block.Blocks;
 
-public class MIPipesCommands {
-    private static final SuggestionProvider<CommandSourceStack> SUGGESTION_PROVIDER = (context, builder) -> {
+public class DebugCommands {
+    private static final SuggestionProvider<CommandSourceStack> PIPE_TYPES_SUGGESTION_PROVIDER = (context, builder) -> {
         return SharedSuggestionProvider.suggestResource(PipeNetworkType.getTypes().keySet().stream(), builder);
     };
 
@@ -67,12 +72,24 @@ public class MIPipesCommands {
                                             })
                                     )
                                     .then(literal("add_ghost")
-                                            .then(argument("pipe_type", id()).suggests(SUGGESTION_PROVIDER)
+                                            .then(argument("pipe_type", id()).suggests(PIPE_TYPES_SUGGESTION_PROVIDER)
                                                     .executes(ctx -> {
                                                         return addGhostPipe(ctx.getSource(), getLoadedBlockPos(ctx, "pos"), getId(ctx, "pipe_type"));
                                                     })
                                             )
                                     )
+                            )
+                    )
+                    .then(literal("machines")
+                            .then(literal("claim_all")
+                                .executes(ctx -> {
+                                    return claimMachines(ctx.getSource().getPlayerOrException());
+                                })
+                            )
+                            .then(literal("dump_stats")
+                                .executes(ctx -> {
+                                    return dumpStats(ctx.getSource().getPlayerOrException());
+                                })
                             )
                     )
             );
@@ -115,6 +132,31 @@ public class MIPipesCommands {
                     true);
         }
 
+        return Command.SINGLE_SUCCESS;
+    }
+
+    private static int claimMachines(ServerPlayer player) {
+        for (var level : player.server.getAllLevels()) {
+            var chunkSource = level.getChunkSource();
+            for (var pos : chunkSource.chunkMap.updatingChunkMap.keySet()) {
+                var chunk = chunkSource.getChunk(ChunkPos.getX(pos), ChunkPos.getZ(pos), false);
+
+                if (chunk != null) {
+                    for (var be : chunk.getBlockEntities().values()) {
+                        if (be instanceof MachineBlockEntity machine) {
+                            machine.placedBy.onPlaced(player);
+                            machine.setChanged();
+                        }
+                    }
+                }
+            }
+        }
+        return Command.SINGLE_SUCCESS;
+    }
+
+    private static int dumpStats(ServerPlayer player) {
+        player.displayClientMessage(new TextComponent(
+                PlayerStatisticsData.get(player.server).get(player).toTag().toString()), false);
         return Command.SINGLE_SUCCESS;
     }
 }

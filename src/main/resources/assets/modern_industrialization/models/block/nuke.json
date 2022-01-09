@@ -1,8 +1,11 @@
 {
   "parent": "minecraft:block/cube_bottom_top",
   "textures": {
-    "top": "minecraft:block/tnt_top",
-    "bottom": "minecraft:block/tnt_bottom",
-    "side": "modern_industrialization:blocks/nuke"
+    "top": "modern_industrialization:blocks/nuke_top",
+    "bottom": "modern_industrialization:blocks/nuke_bottom",
+    "north": "modern_industrialization:blocks/nuke_north",
+    "south": "modern_industrialization:blocks/nuke_south",
+    "west": "modern_industrialization:blocks/nuke_west",
+    "east": "modern_industrialization:blocks/nuke_east"
   }
 }

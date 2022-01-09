@@ -1,0 +1,19 @@
+{
+  "default_overlays": {
+    "top": "modern_industrialization:blocks/machines/macerator/steel_overlay_top",
+    "top_active": "modern_industrialization:blocks/machines/macerator/steel_overlay_top_active",
+    "top_e": "modern_industrialization:blocks/machines/macerator/steel_overlay_top_ew",
+    "top_e_active": "modern_industrialization:blocks/machines/macerator/steel_overlay_top_active_ew",
+    "top_w": "modern_industrialization:blocks/machines/macerator/steel_overlay_top_ew",
+    "top_w_active": "modern_industrialization:blocks/machines/macerator/steel_overlay_top_active_ew",
+    "front": "modern_industrialization:blocks/machines/macerator/steel_overlay_front",
+    "front_active": "modern_industrialization:blocks/machines/macerator/steel_overlay_front_active",
+    "left": "modern_industrialization:blocks/machines/macerator/steel_overlay_left",
+    "left_active": "modern_industrialization:blocks/machines/macerator/steel_overlay_left_active",
+    "right": "modern_industrialization:blocks/machines/macerator/steel_overlay_right",
+    "right_active": "modern_industrialization:blocks/machines/macerator/steel_overlay_right_active",
+    "output": "modern_industrialization:blocks/overlays/steel_output",
+    "item_auto": "modern_industrialization:blocks/overlays/item_auto",
+    "fluid_auto": "modern_industrialization:blocks/overlays/fluid_auto"
+  }
+}

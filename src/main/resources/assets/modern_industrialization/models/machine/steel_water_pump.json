@@ -1,0 +1,16 @@
+{
+  "default_overlays": {
+    "top": "modern_industrialization:blocks/machines/water_pump/steel_overlay_top",
+    "top_e": "modern_industrialization:blocks/machines/water_pump/steel_overlay_top_e",
+    "top_s": "modern_industrialization:blocks/machines/water_pump/steel_overlay_top_s",
+    "top_w": "modern_industrialization:blocks/machines/water_pump/steel_overlay_top_w",
+    "front": "modern_industrialization:blocks/machines/water_pump/steel_overlay_front",
+    "right": "modern_industrialization:blocks/machines/water_pump/steel_overlay_side",
+    "right_active": "modern_industrialization:blocks/machines/water_pump/steel_overlay_side_active",
+    "left": "modern_industrialization:blocks/machines/water_pump/steel_overlay_side",
+    "left_active": "modern_industrialization:blocks/machines/water_pump/steel_overlay_side_active",
+    "output": "modern_industrialization:blocks/overlays/steel_output",
+    "item_auto": "modern_industrialization:blocks/overlays/item_auto",
+    "fluid_auto": "modern_industrialization:blocks/overlays/fluid_auto"
+  }
+}

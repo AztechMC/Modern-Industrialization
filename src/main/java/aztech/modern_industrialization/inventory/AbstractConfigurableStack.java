@@ -24,7 +24,9 @@
 package aztech.modern_industrialization.inventory;
 
 import aztech.modern_industrialization.util.Simulation;
+import java.util.IdentityHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import net.fabricmc.fabric.api.transfer.v1.storage.StoragePreconditions;
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
@@ -38,6 +40,7 @@ import net.minecraft.resources.ResourceLocation;
 
 public abstract class AbstractConfigurableStack<T, K extends TransferVariant<T>> extends SnapshotParticipant<ResourceAmount<K>>
         implements StorageView<K>, IConfigurableSlot {
+    private final Map<ChangeListener, Object> listeners = new IdentityHashMap<>();
     protected K key = getBlankVariant();
     protected long amount = 0;
     protected T lockedInstance = null;
@@ -80,6 +83,18 @@ public abstract class AbstractConfigurableStack<T, K extends TransferVariant<T>>
         this.pipesExtract = tag.getBoolean("pipesExtract");
     }
 
+    protected void notifyListeners() {
+        ChangeListener.notify(listeners);
+    }
+
+    public void addListener(ChangeListener listener, Object token) {
+        listeners.put(listener, token);
+    }
+
+    public void removeListener(ChangeListener listener) {
+        listeners.remove(listener);
+    }
+
     protected abstract T getEmptyInstance();
 
     protected abstract K getBlankVariant();
@@ -119,6 +134,7 @@ public abstract class AbstractConfigurableStack<T, K extends TransferVariant<T>>
         if (amount == 0) {
             this.key = getBlankVariant();
         }
+        notifyListeners();
     }
 
     public void empty() {
@@ -135,6 +151,7 @@ public abstract class AbstractConfigurableStack<T, K extends TransferVariant<T>>
 
     public void setKey(K key) {
         this.key = key;
+        notifyListeners();
     }
 
     public boolean isResourceAllowedByLock(T instance) {
@@ -166,6 +183,7 @@ public abstract class AbstractConfigurableStack<T, K extends TransferVariant<T>>
             throw new RuntimeException("Trying to override locked instance");
         machineLocked = true;
         this.lockedInstance = lockedInstance;
+        notifyListeners();
     }
 
     public void disableMachineLock() {
@@ -205,6 +223,7 @@ public abstract class AbstractConfigurableStack<T, K extends TransferVariant<T>>
         } else if (lockedInstance == null) {
             lockedInstance = key.getObject();
         }
+        notifyListeners();
     }
 
     public boolean canPlayerLock() {
@@ -300,6 +319,11 @@ public abstract class AbstractConfigurableStack<T, K extends TransferVariant<T>>
     public void readSnapshot(ResourceAmount<K> ra) {
         this.amount = ra.amount();
         this.key = ra.resource();
+    }
+
+    @Override
+    protected void onFinalCommit() {
+        notifyListeners();
     }
 
     public CompoundTag toNbt() {

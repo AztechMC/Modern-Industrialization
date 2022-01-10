@@ -70,16 +70,7 @@ public class CrafterComponent implements IComponent.ServerOnly {
 
         List<ConfigurableFluidStack> getFluidOutputs();
 
-        // TODO: this hash is expensive to compute, maybe we could do proper change
-        // detection
-        default int hash() {
-            int hash = 1;
-            hash = 31 * hash + getItemInputs().hashCode();
-            hash = 31 * hash + getItemOutputs().hashCode();
-            hash = 31 * hash + getFluidInputs().hashCode();
-            hash = 31 * hash + getFluidOutputs().hashCode();
-            return hash;
-        }
+        int hash();
     }
 
     public interface Behavior {

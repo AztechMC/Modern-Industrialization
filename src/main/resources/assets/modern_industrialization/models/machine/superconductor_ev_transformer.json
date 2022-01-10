@@ -1,0 +1,10 @@
+{
+  "default_overlays": {
+    "top": "modern_industrialization:blocks/machines/transformer/ev_overlay_top",
+    "front": "modern_industrialization:blocks/machines/transformer/ev_overlay_front",
+    "side": "modern_industrialization:blocks/machines/transformer/ev_overlay_side",
+    "output": "modern_industrialization:blocks/overlays/ev_transformer_out",
+    "item_auto": "modern_industrialization:blocks/overlays/item_auto",
+    "fluid_auto": "modern_industrialization:blocks/overlays/fluid_auto"
+  }
+}

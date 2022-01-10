@@ -2,7 +2,7 @@
   "default_overlays": {
     "front": "modern_industrialization:blocks/machines/hatch_energy/overlay_output",
     "side": "modern_industrialization:blocks/machines/hatch_energy/overlay_output",
-    "output": "modern_industrialization:blocks/overlays/output",
+    "output": "modern_industrialization:blocks/overlays/transformer_out",
     "item_auto": "modern_industrialization:blocks/overlays/item_auto",
     "fluid_auto": "modern_industrialization:blocks/overlays/fluid_auto"
   }

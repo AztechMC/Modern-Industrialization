@@ -6,6 +6,7 @@
     "north": "modern_industrialization:blocks/nuke_north",
     "south": "modern_industrialization:blocks/nuke_south",
     "west": "modern_industrialization:blocks/nuke_west",
-    "east": "modern_industrialization:blocks/nuke_east"
+    "east": "modern_industrialization:blocks/nuke_east",
+    "particle": "modern_industrialization:blocks/nuke_top"
   }
 }

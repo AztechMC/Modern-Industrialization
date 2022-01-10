@@ -40,8 +40,10 @@ import java.io.IOException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Predicate;
 import net.devtech.arrp.json.loot.*;
 import net.fabricmc.fabric.api.biome.v1.BiomeModifications;
+import net.fabricmc.fabric.api.biome.v1.BiomeSelectionContext;
 import net.fabricmc.fabric.api.biome.v1.BiomeSelectors;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
@@ -52,6 +54,7 @@ import net.minecraft.data.worldgen.placement.OrePlacements;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.valueproviders.UniformInt;
+import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraft.world.level.levelgen.VerticalAnchor;
@@ -158,7 +161,7 @@ public class OrePart extends UnbuildablePart<OrePart.OrePartParams> {
                                             HeightRangePlacement.uniform(VerticalAnchor.bottom(), VerticalAnchor.absolute(oreParams.maxYLevel)))));
 
                     var featureKey = ResourceKey.create(Registry.PLACED_FEATURE_REGISTRY, oreGenId);
-                    BiomeModifications.addFeature(BiomeSelectors.foundInOverworld(), GenerationStep.Decoration.UNDERGROUND_ORES, featureKey);
+                    BiomeModifications.addFeature(/*BiomeSelectors.foundInOverworld()*/MIBiomeSelector(), GenerationStep.Decoration.UNDERGROUND_ORES, featureKey);
 
                 }
             }
@@ -233,6 +236,19 @@ public class OrePart extends UnbuildablePart<OrePart.OrePartParams> {
         public OrePartParams(UniformInt xpDropped, MaterialOreSet set, int veinsPerChunk, int veinSize, int maxYLevel) {
             this(xpDropped, set, true, veinsPerChunk, veinSize, maxYLevel);
         }
+    }
+    public static Predicate<BiomeSelectionContext> MIBiomeSelector() {
+        return context -> {
+            var id = context.getBiomeKey().location();
+
+            // If the biome is in the end or the nether then do not generate ores
+            var category = context.getBiome().getBiomeCategory();
+            if (category == Biome.BiomeCategory.THEEND || category == Biome.BiomeCategory.NETHER || category == Biome.BiomeCategory.NONE) {
+                return false;
+            }
+
+            return true;
+        };
     }
 
 }

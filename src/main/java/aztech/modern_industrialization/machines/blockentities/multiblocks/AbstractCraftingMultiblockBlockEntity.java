@@ -24,6 +24,8 @@
 package aztech.modern_industrialization.machines.blockentities.multiblocks;
 
 import aztech.modern_industrialization.api.ScrewdriverableBlockEntity;
+import aztech.modern_industrialization.compat.megane.holder.CrafterComponentHolder;
+import aztech.modern_industrialization.compat.megane.holder.MultiblockInventoryComponentHolder;
 import aztech.modern_industrialization.inventory.MIInventory;
 import aztech.modern_industrialization.machines.BEP;
 import aztech.modern_industrialization.machines.components.*;
@@ -40,7 +42,8 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.Nullable;
 
-public abstract class AbstractCraftingMultiblockBlockEntity extends MultiblockMachineBlockEntity implements Tickable, ScrewdriverableBlockEntity {
+public abstract class AbstractCraftingMultiblockBlockEntity extends MultiblockMachineBlockEntity implements Tickable, ScrewdriverableBlockEntity,
+        MultiblockInventoryComponentHolder, CrafterComponentHolder {
     public AbstractCraftingMultiblockBlockEntity(BEP bep, String name, OrientationComponent.Params orientationParams,
             ShapeTemplate[] shapeTemplates) {
         super(bep, new MachineGuiParameters.Builder(name, false).backgroundHeight(200).build(), orientationParams);
@@ -72,6 +75,16 @@ public abstract class AbstractCraftingMultiblockBlockEntity extends MultiblockMa
 
     public ShapeTemplate getActiveShape() {
         return activeShape.getActiveShape();
+    }
+
+    @Override
+    public MultiblockInventoryComponent getMultiblockInventoryComponent() {
+        return inventory;
+    }
+
+    @Override
+    public CrafterComponent getCrafterComponent() {
+        return crafter;
     }
 
     @Override

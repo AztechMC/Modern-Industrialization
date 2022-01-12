@@ -28,18 +28,12 @@ import aztech.modern_industrialization.pipes.impl.PipeBlockEntity;
 import aztech.modern_industrialization.pipes.impl.PipeVoxelShape;
 import aztech.modern_industrialization.util.FluidHelper;
 import aztech.modern_industrialization.util.NbtHelper;
-import java.util.List;
-import mcp.mobius.waila.api.IComponentProvider;
-import mcp.mobius.waila.api.IDataAccessor;
-import mcp.mobius.waila.api.IPluginConfig;
+import mcp.mobius.waila.api.*;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
-import net.minecraft.ChatFormatting;
+import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.Style;
-import net.minecraft.network.chat.TextColor;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.*;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
@@ -48,9 +42,10 @@ import org.jetbrains.annotations.Nullable;
  * Overrides the name of the pipes in Waila to prevent
  * "block.modern_industrialization.pipe" being displayed.
  */
-public class PipeComponentProvider implements IComponentProvider {
-    private @Nullable PipeVoxelShape getHitShape(IDataAccessor accessor) {
-        PipeBlockEntity pipe = (PipeBlockEntity) accessor.getBlockEntity();
+public class PipeComponentProvider implements IBlockComponentProvider {
+
+    private @Nullable PipeVoxelShape getHitShape(IBlockAccessor accessor) {
+        PipeBlockEntity pipe = accessor.getBlockEntity();
         Vec3 hitPos = accessor.getHitResult().getLocation();
         BlockPos blockPos = accessor.getPosition();
         for (PipeVoxelShape partShape : pipe.getPartShapes()) {
@@ -67,17 +62,17 @@ public class PipeComponentProvider implements IComponentProvider {
     }
 
     @Override
-    public void appendHead(List<Component> tooltip, IDataAccessor accessor, IPluginConfig config) {
+    public void appendHead(ITooltip tooltip, IBlockAccessor accessor, IPluginConfig config) {
         PipeVoxelShape shape = getHitShape(accessor);
         if (shape != null) {
-            Component text = new TranslatableComponent(MIPipes.INSTANCE.getPipeItem(shape.type).getDescriptionId())
-                    .setStyle(Style.EMPTY.withColor(ChatFormatting.WHITE));
-            tooltip.set(0, text);
+            Component text = new TextComponent(IWailaConfig.get().getFormatting().formatBlockName(
+                    I18n.get(MIPipes.INSTANCE.getPipeItem(shape.type).getDescriptionId())));
+            tooltip.set(WailaConstants.OBJECT_NAME_TAG, text);
         }
     }
 
     @Override
-    public void appendBody(List<Component> tooltip, IDataAccessor accessor, IPluginConfig config) {
+    public void appendBody(ITooltip tooltip, IBlockAccessor accessor, IPluginConfig config) {
         PipeVoxelShape shape = getHitShape(accessor);
         if (shape != null) {
             CompoundTag tag = accessor.getServerData().getCompound(shape.type.getIdentifier().toString());
@@ -87,8 +82,7 @@ public class PipeComponentProvider implements IComponentProvider {
                 FluidVariant fluid = NbtHelper.getFluidCompatible(tag, "fluid");
                 long amount = tag.getLong("amount");
                 int capacity = tag.getInt("capacity");
-                tooltip.addAll(FluidHelper.getTooltipForFluidStorage(fluid, amount, capacity));
-
+                FluidHelper.getTooltipForFluidStorage(fluid, amount, capacity).forEach(tooltip::add);
             }
 
             if (tag.contains("eu")) {

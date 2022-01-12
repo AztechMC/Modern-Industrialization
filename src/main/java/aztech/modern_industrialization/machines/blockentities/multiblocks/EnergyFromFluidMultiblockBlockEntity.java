@@ -24,6 +24,7 @@
 package aztech.modern_industrialization.machines.blockentities.multiblocks;
 
 import aztech.modern_industrialization.api.ScrewdriverableBlockEntity;
+import aztech.modern_industrialization.compat.megane.holder.EnergyListComponentHolder;
 import aztech.modern_industrialization.inventory.MIInventory;
 import aztech.modern_industrialization.machines.BEP;
 import aztech.modern_industrialization.machines.components.*;
@@ -45,7 +46,8 @@ import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.Nullable;
 
-public class EnergyFromFluidMultiblockBlockEntity extends MultiblockMachineBlockEntity implements Tickable, ScrewdriverableBlockEntity {
+public class EnergyFromFluidMultiblockBlockEntity extends MultiblockMachineBlockEntity implements Tickable, ScrewdriverableBlockEntity,
+        EnergyListComponentHolder {
 
     public EnergyFromFluidMultiblockBlockEntity(BEP bep, String name, ShapeTemplate shapeTemplate, Predicate<Fluid> acceptedFluid,
             ToLongFunction<Fluid> fluidEUperMb, long maxEnergyOutput) {
@@ -72,6 +74,11 @@ public class EnergyFromFluidMultiblockBlockEntity extends MultiblockMachineBlock
 
     public ShapeTemplate getActiveShape() {
         return activeShape.getActiveShape();
+    }
+
+    @Override
+    public List<EnergyComponent> getEnergyComponents() {
+        return energyOutputs;
     }
 
     protected void onSuccessfulMatch(ShapeMatcher shapeMatcher) {

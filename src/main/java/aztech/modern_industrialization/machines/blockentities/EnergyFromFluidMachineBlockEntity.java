@@ -26,6 +26,7 @@ package aztech.modern_industrialization.machines.blockentities;
 import aztech.modern_industrialization.api.energy.CableTier;
 import aztech.modern_industrialization.api.energy.EnergyApi;
 import aztech.modern_industrialization.api.energy.EnergyExtractable;
+import aztech.modern_industrialization.compat.megane.holder.EnergyComponentHolder;
 import aztech.modern_industrialization.inventory.ConfigurableFluidStack;
 import aztech.modern_industrialization.inventory.ConfigurableItemStack;
 import aztech.modern_industrialization.inventory.MIInventory;
@@ -50,7 +51,7 @@ import java.util.function.ToLongFunction;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.material.Fluid;
 
-public class EnergyFromFluidMachineBlockEntity extends MachineBlockEntity implements Tickable {
+public class EnergyFromFluidMachineBlockEntity extends MachineBlockEntity implements Tickable, EnergyComponentHolder {
 
     private final CableTier outputTier;
     private final EnergyExtractable extractable;
@@ -125,6 +126,11 @@ public class EnergyFromFluidMachineBlockEntity extends MachineBlockEntity implem
         EnergyHelper.autoOuput(this, orientation, outputTier, energy);
 
         setChanged();
+    }
+
+    @Override
+    public EnergyComponent getEnergyComponent() {
+        return energy;
     }
 
     public static void registerEnergyApi(BlockEntityType<?> bet) {

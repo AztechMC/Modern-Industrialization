@@ -23,6 +23,7 @@
  */
 package aztech.modern_industrialization.machines.blockentities;
 
+import aztech.modern_industrialization.compat.megane.holder.CrafterComponentHolder;
 import aztech.modern_industrialization.inventory.MIInventory;
 import aztech.modern_industrialization.machines.BEP;
 import aztech.modern_industrialization.machines.MachineBlockEntity;
@@ -41,7 +42,8 @@ import java.util.UUID;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
 
-public abstract class AbstractCraftingMachineBlockEntity extends MachineBlockEntity implements CrafterComponent.Behavior, Tickable {
+public abstract class AbstractCraftingMachineBlockEntity extends MachineBlockEntity implements CrafterComponent.Behavior, Tickable,
+        CrafterComponentHolder {
     public AbstractCraftingMachineBlockEntity(BEP bep, MachineRecipeType recipeType, MachineInventoryComponent inventory,
             MachineGuiParameters guiParams, ProgressBar.Parameters progressBarParams, MachineTier tier) {
         super(bep, guiParams, new OrientationComponent.Params(true, inventory.itemOutputCount > 0, inventory.fluidOutputCount > 0));
@@ -66,6 +68,11 @@ public abstract class AbstractCraftingMachineBlockEntity extends MachineBlockEnt
     @Override
     public MachineRecipeType recipeType() {
         return type;
+    }
+
+    @Override
+    public CrafterComponent getCrafterComponent() {
+        return crafter;
     }
 
     @Override

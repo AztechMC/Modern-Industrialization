@@ -27,6 +27,7 @@ import aztech.modern_industrialization.api.energy.CableTier;
 import aztech.modern_industrialization.api.energy.EnergyApi;
 import aztech.modern_industrialization.api.energy.EnergyExtractable;
 import aztech.modern_industrialization.api.energy.EnergyInsertable;
+import aztech.modern_industrialization.compat.megane.holder.EnergyComponentHolder;
 import aztech.modern_industrialization.inventory.MIInventory;
 import aztech.modern_industrialization.machines.BEP;
 import aztech.modern_industrialization.machines.MachineBlockEntity;
@@ -41,7 +42,7 @@ import aztech.modern_industrialization.machines.models.MachineModelClientData;
 import aztech.modern_industrialization.util.Tickable;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 
-public abstract class AbstractStorageMachineBlockEntity extends MachineBlockEntity implements Tickable {
+public abstract class AbstractStorageMachineBlockEntity extends MachineBlockEntity implements Tickable, EnergyComponentHolder {
 
     protected final EnergyComponent energy;
 
@@ -87,6 +88,11 @@ public abstract class AbstractStorageMachineBlockEntity extends MachineBlockEnti
     @Override
     public void tick() {
         EnergyHelper.autoOuput(this, orientation, to, energy);
+    }
+
+    @Override
+    public EnergyComponent getEnergyComponent() {
+        return energy;
     }
 
     public static void registerEnergyApi(BlockEntityType<?> bet) {

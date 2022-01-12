@@ -26,6 +26,7 @@ package aztech.modern_industrialization.machines.blockentities;
 import aztech.modern_industrialization.api.energy.CableTier;
 import aztech.modern_industrialization.api.energy.EnergyApi;
 import aztech.modern_industrialization.api.energy.EnergyInsertable;
+import aztech.modern_industrialization.compat.megane.holder.EnergyComponentHolder;
 import aztech.modern_industrialization.inventory.ConfigurableFluidStack;
 import aztech.modern_industrialization.inventory.MIInventory;
 import aztech.modern_industrialization.inventory.SlotPositions;
@@ -38,7 +39,7 @@ import java.util.Collections;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.material.Fluids;
 
-public class ElectricWaterPumpBlockEntity extends AbstractWaterPumpBlockEntity {
+public class ElectricWaterPumpBlockEntity extends AbstractWaterPumpBlockEntity implements EnergyComponentHolder {
     public ElectricWaterPumpBlockEntity(BEP bep) {
         super(bep, "electric_water_pump");
 
@@ -78,6 +79,11 @@ public class ElectricWaterPumpBlockEntity extends AbstractWaterPumpBlockEntity {
         data.isActive = isActiveComponent.isActive;
         orientation.writeModelData(data);
         return data;
+    }
+
+    @Override
+    public EnergyComponent getEnergyComponent() {
+        return energy;
     }
 
     public static void registerEnergyApi(BlockEntityType<?> bet) {

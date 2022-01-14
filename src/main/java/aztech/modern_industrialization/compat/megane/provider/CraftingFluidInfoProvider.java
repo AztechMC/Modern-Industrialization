@@ -21,20 +21,22 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.compat.waila;
+package aztech.modern_industrialization.compat.megane.provider;
 
-import aztech.modern_industrialization.pipes.impl.PipeBlockEntity;
-import mcp.mobius.waila.api.IRegistrar;
-import mcp.mobius.waila.api.IWailaPlugin;
-import mcp.mobius.waila.api.TooltipPosition;
+import aztech.modern_industrialization.fluid.CraftingFluid;
+import lol.bai.megane.api.provider.FluidInfoProvider;
+import net.minecraft.network.chat.Component;
 
-public class MIWailaPlugin implements IWailaPlugin {
+public class CraftingFluidInfoProvider extends FluidInfoProvider<CraftingFluid> {
+
     @Override
-    public void register(IRegistrar r) {
-        r.addBlockData(new PipeDataProvider(), PipeBlockEntity.class);
-
-        PipeComponentProvider pipeComponentProvider = new PipeComponentProvider();
-        r.addComponent(pipeComponentProvider, TooltipPosition.HEAD, PipeBlockEntity.class);
-        r.addComponent(pipeComponentProvider, TooltipPosition.BODY, PipeBlockEntity.class);
+    public int getColor() {
+        return getObject().color;
     }
+
+    @Override
+    public Component getName() {
+        return getObject().block.getName();
+    }
+
 }

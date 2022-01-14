@@ -23,6 +23,7 @@
  */
 package aztech.modern_industrialization.machines.blockentities.multiblocks;
 
+import aztech.modern_industrialization.compat.megane.holder.EnergyListComponentHolder;
 import aztech.modern_industrialization.machines.BEP;
 import aztech.modern_industrialization.machines.components.*;
 import aztech.modern_industrialization.machines.init.MachineTier;
@@ -42,7 +43,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
 
-public class ElectricCraftingMultiblockBlockEntity extends AbstractCraftingMultiblockBlockEntity {
+public class ElectricCraftingMultiblockBlockEntity extends AbstractCraftingMultiblockBlockEntity implements EnergyListComponentHolder {
     public ElectricCraftingMultiblockBlockEntity(BEP bep, String name, ShapeTemplate shapeTemplate, MachineRecipeType recipeType) {
         super(bep, name, new OrientationComponent.Params(false, false, false), new ShapeTemplate[] { shapeTemplate });
         this.recipeType = recipeType;
@@ -58,6 +59,11 @@ public class ElectricCraftingMultiblockBlockEntity extends AbstractCraftingMulti
     private final List<EnergyComponent> energyInputs = new ArrayList<>();
     private final MachineRecipeType recipeType;
     private final UpgradeComponent upgrades;
+
+    @Override
+    public List<EnergyComponent> getEnergyComponents() {
+        return energyInputs;
+    }
 
     @Override
     protected void onSuccessfulMatch(ShapeMatcher shapeMatcher) {

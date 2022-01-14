@@ -46,7 +46,7 @@ public class CraftingFluid extends Fluid {
     public final String id;
     public final int color;
     public final boolean isGas;
-    private final CraftingFluidBlock block;
+    public final CraftingFluidBlock block;
 
     public CraftingFluid(String name, int color, boolean isGas) {
         this.color = color;

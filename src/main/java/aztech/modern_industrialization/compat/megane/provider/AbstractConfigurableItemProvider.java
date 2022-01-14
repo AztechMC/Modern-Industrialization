@@ -21,20 +21,20 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.compat.waila;
+package aztech.modern_industrialization.compat.megane.provider;
 
-import aztech.modern_industrialization.pipes.impl.PipeBlockEntity;
-import mcp.mobius.waila.api.IRegistrar;
-import mcp.mobius.waila.api.IWailaPlugin;
-import mcp.mobius.waila.api.TooltipPosition;
+import aztech.modern_industrialization.inventory.ConfigurableItemStack;
+import com.google.common.primitives.Ints;
+import lol.bai.megane.api.provider.ItemProvider;
+import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
-public class MIWailaPlugin implements IWailaPlugin {
+public abstract class AbstractConfigurableItemProvider<T> extends ItemProvider<T> {
+    protected abstract ConfigurableItemStack getConfigurableStack(int slot);
+
     @Override
-    public void register(IRegistrar r) {
-        r.addBlockData(new PipeDataProvider(), PipeBlockEntity.class);
-
-        PipeComponentProvider pipeComponentProvider = new PipeComponentProvider();
-        r.addComponent(pipeComponentProvider, TooltipPosition.HEAD, PipeBlockEntity.class);
-        r.addComponent(pipeComponentProvider, TooltipPosition.BODY, PipeBlockEntity.class);
+    public @NotNull ItemStack getStack(int slot) {
+        ConfigurableItemStack stack = getConfigurableStack(slot);
+        return stack.getResource().toStack(Ints.saturatedCast(stack.getAmount()));
     }
 }

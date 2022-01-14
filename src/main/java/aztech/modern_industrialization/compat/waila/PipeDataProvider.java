@@ -32,13 +32,10 @@ import mcp.mobius.waila.api.IServerDataProvider;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.entity.BlockEntity;
 
-public class PipeDataProvider implements IServerDataProvider<BlockEntity> {
+public class PipeDataProvider implements IServerDataProvider<PipeBlockEntity> {
     @Override
-    public void appendServerData(CompoundTag data, ServerPlayer player, Level world, BlockEntity be) {
-        PipeBlockEntity pipe = (PipeBlockEntity) be;
-
+    public void appendServerData(CompoundTag data, ServerPlayer player, Level world, PipeBlockEntity pipe) {
         for (PipeNetworkNode node : pipe.getNodes()) {
             CompoundTag pipeData = new CompoundTag();
 

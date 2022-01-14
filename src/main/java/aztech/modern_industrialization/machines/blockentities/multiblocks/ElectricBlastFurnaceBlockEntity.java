@@ -26,6 +26,7 @@ package aztech.modern_industrialization.machines.blockentities.multiblocks;
 import static aztech.modern_industrialization.machines.multiblocks.HatchType.*;
 
 import aztech.modern_industrialization.MIBlock;
+import aztech.modern_industrialization.compat.megane.holder.EnergyListComponentHolder;
 import aztech.modern_industrialization.compat.rei.machines.ReiMachineRecipes;
 import aztech.modern_industrialization.machines.BEP;
 import aztech.modern_industrialization.machines.components.*;
@@ -38,11 +39,7 @@ import aztech.modern_industrialization.machines.multiblocks.*;
 import aztech.modern_industrialization.machines.recipe.MachineRecipe;
 import aztech.modern_industrialization.machines.recipe.MachineRecipeType;
 import aztech.modern_industrialization.util.Simulation;
-import java.util.ArrayList;
-import java.util.IdentityHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.core.Direction;
@@ -55,7 +52,7 @@ import net.minecraft.world.level.block.Block;
 import org.jetbrains.annotations.Nullable;
 
 // TODO: should the common part with ElectricCraftingMultiblockBlockEntity be refactored?
-public class ElectricBlastFurnaceBlockEntity extends AbstractCraftingMultiblockBlockEntity {
+public class ElectricBlastFurnaceBlockEntity extends AbstractCraftingMultiblockBlockEntity implements EnergyListComponentHolder {
 
     private static final ShapeTemplate[] shapeTemplates;
 
@@ -72,6 +69,11 @@ public class ElectricBlastFurnaceBlockEntity extends AbstractCraftingMultiblockB
 
     private final List<EnergyComponent> energyInputs = new ArrayList<>();
     private final UpgradeComponent upgrades;
+
+    @Override
+    public List<EnergyComponent> getEnergyComponents() {
+        return energyInputs;
+    }
 
     @Override
     protected void onSuccessfulMatch(ShapeMatcher shapeMatcher) {

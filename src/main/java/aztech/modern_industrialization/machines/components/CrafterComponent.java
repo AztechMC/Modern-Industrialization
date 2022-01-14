@@ -141,6 +141,10 @@ public class CrafterComponent implements IComponent.ServerOnly {
         return activeRecipe != null;
     }
 
+    public Inventory getInventory() {
+        return inventory;
+    }
+
     public Behavior getBehavior() {
         return behavior;
     }

@@ -21,20 +21,33 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.compat.waila;
+package aztech.modern_industrialization.compat.megane.provider;
 
-import aztech.modern_industrialization.pipes.impl.PipeBlockEntity;
-import mcp.mobius.waila.api.IRegistrar;
-import mcp.mobius.waila.api.IWailaPlugin;
-import mcp.mobius.waila.api.TooltipPosition;
+import aztech.modern_industrialization.blocks.storage.tank.TankBlockEntity;
+import lol.bai.megane.api.provider.FluidProvider;
+import net.minecraft.world.level.material.Fluid;
+import org.jetbrains.annotations.Nullable;
 
-public class MIWailaPlugin implements IWailaPlugin {
+public class TankFluidProvider extends FluidProvider<TankBlockEntity> {
+
     @Override
-    public void register(IRegistrar r) {
-        r.addBlockData(new PipeDataProvider(), PipeBlockEntity.class);
-
-        PipeComponentProvider pipeComponentProvider = new PipeComponentProvider();
-        r.addComponent(pipeComponentProvider, TooltipPosition.HEAD, PipeBlockEntity.class);
-        r.addComponent(pipeComponentProvider, TooltipPosition.BODY, PipeBlockEntity.class);
+    public int getSlotCount() {
+        return 1;
     }
+
+    @Override
+    public @Nullable Fluid getFluid(int slot) {
+        return getObject().getResource().getFluid();
+    }
+
+    @Override
+    public double getStored(int slot) {
+        return droplets(getObject().getAmount());
+    }
+
+    @Override
+    public double getMax(int slot) {
+        return droplets(getObject().getCapacity());
+    }
+
 }

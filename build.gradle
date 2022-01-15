@@ -37,7 +37,7 @@ repositories {
     }
     // for WTHIT
     maven {
-        url 'https://bai.jfrog.io/artifactory/maven'
+        url 'https://maven.bai.lol'
     }
     // for AE2
     maven {
@@ -179,7 +179,7 @@ dependencies {
         exclude(group: "net.fabricmc.fabric-api")
     }
 
-    modRuntimeOnly modImplementation("mcp.mobius.waila:wthit:fabric-${project.wthit_version}") {
+    modImplementation("mcp.mobius.waila:wthit:fabric-${project.wthit_version}") {
         exclude(group: "net.fabricmc.fabric-api")
     }
 
@@ -203,6 +203,18 @@ dependencies {
 
     include modImplementation("io.github.ladysnake:PlayerAbilityLib:${project.pal_version}") {
         exclude(group: "net.fabricmc.fabric-api")
+    }
+
+    modImplementation("lol.bai.megane:megane-api:${project.megane_api_version}")
+
+    modRuntimeOnly("lol.bai.megane:megane-runtime:${project.megane_runtime_version}") {
+        exclude(group: "net.fabricmc.fabric-api")
+        exclude(group: "mcp.mobius.waila")
+    }
+
+    modRuntimeOnly("lol.bai.megane:megane-vanilla:${project.megane_vanilla_version}") {
+        exclude(group: "net.fabricmc.fabric-api")
+        exclude(group: "mcp.mobius.waila")
     }
 
     modCompileOnly('net.oskarstrom:DashLoader:2.1-dev4') {
@@ -379,6 +391,7 @@ if (System.getenv("CURSEFORGE_API_KEY") && !version.endsWith("-SNAPSHOT")) {
                 requiredDependency "fabric-api"
                 requiredDependency "roughly-enough-items"
                 optionalDependency "wthit"
+                optionalDependency "megane"
                 embeddedLibrary "auto-config-updated-api"
                 embeddedLibrary "patchouli-fabric"
             }

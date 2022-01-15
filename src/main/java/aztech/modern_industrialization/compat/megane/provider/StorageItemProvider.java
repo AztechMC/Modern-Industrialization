@@ -21,20 +21,31 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.compat.waila;
+package aztech.modern_industrialization.compat.megane.provider;
 
-import aztech.modern_industrialization.pipes.impl.PipeBlockEntity;
-import mcp.mobius.waila.api.IRegistrar;
-import mcp.mobius.waila.api.IWailaPlugin;
-import mcp.mobius.waila.api.TooltipPosition;
+import aztech.modern_industrialization.blocks.storage.AbstractStorageBlockEntity;
+import com.google.common.primitives.Ints;
+import lol.bai.megane.api.provider.ItemProvider;
+import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
+import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
-public class MIWailaPlugin implements IWailaPlugin {
+@SuppressWarnings("rawtypes")
+public class StorageItemProvider extends ItemProvider<AbstractStorageBlockEntity> {
     @Override
-    public void register(IRegistrar r) {
-        r.addBlockData(new PipeDataProvider(), PipeBlockEntity.class);
+    public boolean hasItems() {
+        return getObject().getResource() instanceof ItemVariant;
+    }
 
-        PipeComponentProvider pipeComponentProvider = new PipeComponentProvider();
-        r.addComponent(pipeComponentProvider, TooltipPosition.HEAD, PipeBlockEntity.class);
-        r.addComponent(pipeComponentProvider, TooltipPosition.BODY, PipeBlockEntity.class);
+    @Override
+    public int getSlotCount() {
+        return 1;
+    }
+
+    @Override
+    public @NotNull ItemStack getStack(int slot) {
+        return getObject().isEmpty() || getObject().isResourceBlank()
+                ? ItemStack.EMPTY
+                : ((ItemVariant) getObject().getResource()).toStack(Ints.saturatedCast(getObject().getAmount()));
     }
 }

@@ -21,20 +21,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.compat.waila;
+package aztech.modern_industrialization.compat.megane.holder;
 
-import aztech.modern_industrialization.pipes.impl.PipeBlockEntity;
-import mcp.mobius.waila.api.IRegistrar;
-import mcp.mobius.waila.api.IWailaPlugin;
-import mcp.mobius.waila.api.TooltipPosition;
+import aztech.modern_industrialization.machines.components.EnergyComponent;
 
-public class MIWailaPlugin implements IWailaPlugin {
-    @Override
-    public void register(IRegistrar r) {
-        r.addBlockData(new PipeDataProvider(), PipeBlockEntity.class);
-
-        PipeComponentProvider pipeComponentProvider = new PipeComponentProvider();
-        r.addComponent(pipeComponentProvider, TooltipPosition.HEAD, PipeBlockEntity.class);
-        r.addComponent(pipeComponentProvider, TooltipPosition.BODY, PipeBlockEntity.class);
-    }
+public interface EnergyComponentHolder {
+    EnergyComponent getEnergyComponent();
 }

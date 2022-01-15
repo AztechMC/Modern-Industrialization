@@ -21,20 +21,25 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.compat.waila;
+package aztech.modern_industrialization.compat.megane.provider;
 
-import aztech.modern_industrialization.pipes.impl.PipeBlockEntity;
-import mcp.mobius.waila.api.IRegistrar;
-import mcp.mobius.waila.api.IWailaPlugin;
-import mcp.mobius.waila.api.TooltipPosition;
+import aztech.modern_industrialization.compat.megane.holder.EnergyListComponentHolder;
+import aztech.modern_industrialization.machines.components.EnergyComponent;
+import lol.bai.megane.api.provider.EnergyProvider;
 
-public class MIWailaPlugin implements IWailaPlugin {
+public class ComponentListEnergyProvider extends EnergyProvider<EnergyListComponentHolder> {
     @Override
-    public void register(IRegistrar r) {
-        r.addBlockData(new PipeDataProvider(), PipeBlockEntity.class);
+    public boolean hasEnergy() {
+        return !getObject().getEnergyComponents().isEmpty();
+    }
 
-        PipeComponentProvider pipeComponentProvider = new PipeComponentProvider();
-        r.addComponent(pipeComponentProvider, TooltipPosition.HEAD, PipeBlockEntity.class);
-        r.addComponent(pipeComponentProvider, TooltipPosition.BODY, PipeBlockEntity.class);
+    @Override
+    public long getStored() {
+        return getObject().getEnergyComponents().stream().mapToLong(EnergyComponent::getEu).sum();
+    }
+
+    @Override
+    public long getMax() {
+        return getObject().getEnergyComponents().stream().mapToLong(EnergyComponent::getCapacity).sum();
     }
 }

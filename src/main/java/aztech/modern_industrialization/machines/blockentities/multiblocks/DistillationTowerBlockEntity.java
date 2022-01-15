@@ -24,6 +24,7 @@
 package aztech.modern_industrialization.machines.blockentities.multiblocks;
 
 import aztech.modern_industrialization.MIBlock;
+import aztech.modern_industrialization.compat.megane.holder.EnergyListComponentHolder;
 import aztech.modern_industrialization.compat.rei.machines.ReiMachineRecipes;
 import aztech.modern_industrialization.machines.BEP;
 import aztech.modern_industrialization.machines.components.*;
@@ -45,7 +46,7 @@ import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
 
 // TODO: should the common part with ElectricCraftingMultiblockBlockEntity be refactored?
-public class DistillationTowerBlockEntity extends AbstractCraftingMultiblockBlockEntity {
+public class DistillationTowerBlockEntity extends AbstractCraftingMultiblockBlockEntity implements EnergyListComponentHolder {
     private static final ShapeTemplate[] shapeTemplates;
 
     public DistillationTowerBlockEntity(BEP bep) {
@@ -61,6 +62,11 @@ public class DistillationTowerBlockEntity extends AbstractCraftingMultiblockBloc
 
     private final List<EnergyComponent> energyInputs = new ArrayList<>();
     private final UpgradeComponent upgrades;
+
+    @Override
+    public List<EnergyComponent> getEnergyComponents() {
+        return energyInputs;
+    }
 
     @Override
     protected void onSuccessfulMatch(ShapeMatcher shapeMatcher) {

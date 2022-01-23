@@ -1,0 +1,48 @@
+{
+  "type": "modern_industrialization:chemical_reactor",
+  "eu": 2,
+  "duration": 1200,
+  "item_inputs": [
+    {
+      "item": "minecraft:birch_sapling",
+      "amount": 1
+    },
+    {
+      "tag": "minecraft:dirt",
+      "amount": 1,
+      "probability": 0
+    },
+    {
+      "item": "modern_industrialization:carbon_dust",
+      "amount": 1
+    }
+  ],
+  "fluid_inputs": [
+    {
+      "fluid": "minecraft:water",
+      "amount": 2000
+    },
+    {
+      "fluid": "modern_industrialization:oxygen",
+      "amount": 2000
+    }
+  ],
+  "item_outputs": [
+    {
+      "item": "minecraft:birch_log",
+      "amount": 4
+    },
+    {
+      "item": "minecraft:birch_sapling",
+      "amount": 1
+    },
+    {
+      "item": "minecraft:birch_leaves",
+      "amount": 12
+    }
+  ],
+  "fluid_outputs": {
+    "fluid": "modern_industrialization:oxygen",
+    "amount": 2000
+  }
+}

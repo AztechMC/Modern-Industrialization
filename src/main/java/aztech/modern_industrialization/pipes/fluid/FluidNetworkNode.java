@@ -28,7 +28,9 @@ import static aztech.modern_industrialization.pipes.api.PipeEndpointType.*;
 import aztech.modern_industrialization.ModernIndustrialization;
 import aztech.modern_industrialization.pipes.api.PipeEndpointType;
 import aztech.modern_industrialization.pipes.api.PipeNetworkNode;
+import aztech.modern_industrialization.pipes.api.PipeNetworkType;
 import aztech.modern_industrialization.pipes.gui.IPipeScreenHandlerHelper;
+import aztech.modern_industrialization.pipes.impl.PipeNetworks;
 import aztech.modern_industrialization.util.IoStorage;
 import aztech.modern_industrialization.util.NbtHelper;
 import com.google.common.base.MoreObjects;
@@ -103,9 +105,17 @@ public class FluidNetworkNode extends PipeNetworkNode {
 
     @Override
     public void updateConnections(Level world, BlockPos pos) {
-        // Remove the connection to the outside world if a connection to another pipe is
-        // made.
-        connections.removeIf(connection -> network.manager.hasLink(pos, connection.direction));
+        // Remove the connection to the outside world if a connection to another pipe is made.
+        var levelNetworks = PipeNetworks.get((ServerLevel) world);
+        connections.removeIf(connection -> {
+            for (var type : PipeNetworkType.getTypes().values()) {
+                var manager = levelNetworks.getOptionalManager(type);
+                if (manager != null && manager.hasLink(pos, connection.direction)) {
+                    return true;
+                }
+            }
+            return false;
+        });
     }
 
     @Override

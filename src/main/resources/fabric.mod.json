@@ -44,7 +44,8 @@
     "fabricloader": ">=0.7.4",
     "fabric": ">=0.44",
     "minecraft": "1.18.x",
-    "roughlyenoughitems": "*"
+    "roughlyenoughitems": "*",
+    "team_reborn_energy": ">=2.2.0"
   },
   "breaks": {
     "optifabric": "*",

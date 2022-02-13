@@ -39,8 +39,16 @@ import aztech.modern_industrialization.machines.helper.EnergyHelper;
 import aztech.modern_industrialization.machines.models.MachineCasing;
 import aztech.modern_industrialization.machines.models.MachineCasings;
 import aztech.modern_industrialization.machines.models.MachineModelClientData;
+import aztech.modern_industrialization.util.Simulation;
 import aztech.modern_industrialization.util.Tickable;
+import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext;
+import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
+import net.minecraft.core.Direction;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.entity.BlockEntityType;
+import team.reborn.energy.api.EnergyStorage;
 
 public abstract class AbstractStorageMachineBlockEntity extends MachineBlockEntity implements Tickable, EnergyComponentHolder {
 
@@ -93,6 +101,29 @@ public abstract class AbstractStorageMachineBlockEntity extends MachineBlockEnti
     @Override
     public EnergyComponent getEnergyComponent() {
         return energy;
+    }
+
+    @Override
+    protected InteractionResult onUse(Player player, InteractionHand hand, Direction face) {
+        var energyItem = ContainerItemContext.ofPlayerHand(player, hand).find(EnergyStorage.ITEM);
+        if (energyItem != null) {
+            if (!player.level.isClientSide()) {
+                for (int i = 0; i < 10000; ++i) { // Try up to 10000 times to bypass I/O limits
+                    try (Transaction transaction = Transaction.openOuter()) {
+                        long inserted = energyItem.insert(energy.getEu(), transaction);
+
+                        if (inserted == 0) {
+                            break;
+                        }
+
+                        energy.consumeEu(inserted, Simulation.ACT);
+                        transaction.commit();
+                    }
+                }
+            }
+            return InteractionResult.sidedSuccess(player.level.isClientSide());
+        }
+        return super.onUse(player, hand, face);
     }
 
     public static void registerEnergyApi(BlockEntityType<?> bet) {

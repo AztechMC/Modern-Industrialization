@@ -23,7 +23,6 @@
  */
 package aztech.modern_industrialization.machines.multiblocks.world;
 
-import aztech.modern_industrialization.ModernIndustrialization;
 import java.util.Set;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerChunkEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
@@ -82,7 +81,6 @@ public class ChunkEventListeners {
 
     private static void serverStopCleanup() {
         if (listeners.size() != 0) {
-            ModernIndustrialization.LOGGER.warn("ChunkEventListeners#listeners is not empty at server stop! Active worlds: " + listeners.size());
             listeners = new ChunkPosMultiMap<>();
         }
     }

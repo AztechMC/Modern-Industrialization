@@ -114,7 +114,7 @@ public class ItemNetworkNode extends PipeNetworkNode {
         }
         // Otherwise try to connect
         if (canConnect(world, pos, direction)) {
-            connections.add(new ItemConnection(direction, BLOCK_IN, 0, 0));
+            connections.add(new ItemConnection(direction, BLOCK_IN, 0, -10));
         }
     }
 

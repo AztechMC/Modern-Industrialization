@@ -24,9 +24,8 @@
 package aztech.modern_industrialization.machines.init;
 
 import aztech.modern_industrialization.MIIdentifier;
-import aztech.modern_industrialization.machines.recipe.CuttingMachineRecipeType;
-import aztech.modern_industrialization.machines.recipe.FurnaceRecipeProxy;
-import aztech.modern_industrialization.machines.recipe.MachineRecipeType;
+import aztech.modern_industrialization.machines.recipe.*;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -53,6 +52,8 @@ public class MIMachineRecipeTypes {
     public static final MachineRecipeType POLARIZER = create("polarizer").withItemInputs().withItemOutputs();
     public static final MachineRecipeType UNPACKER = create("unpacker").withItemInputs().withItemOutputs();
     public static final MachineRecipeType WIREMILL = create("wiremill").withItemInputs().withItemOutputs();
+    public static final MachineRecipeType FILLING_MACHINE = create("filling_machine", FillingMachineRecipeType::new).withItemInputs().withFluidInputs().withItemOutputs();
+    public static final MachineRecipeType UNFILLING_MACHINE = create("unfilling_machine", UnfillingMachineRecipeType::new).withItemInputs().withItemOutputs().withFluidOutputs();
     // Multi block
     public static final MachineRecipeType BLAST_FURNACE = create("blast_furnace").withItemInputs().withItemOutputs().withFluidInputs().withFluidOutputs();
     public static final MachineRecipeType COKE_OVEN = create("coke_oven").withItemInputs().withItemOutputs().withFluidOutputs();

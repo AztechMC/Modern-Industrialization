@@ -75,6 +75,8 @@ public class MIAdvancementsProvider extends FabricAdvancementsProvider {
         var oilDrillingRig = createBasic(consumer, "oil_drilling_rig", electronicCircuit, FrameType.GOAL);
         var vacuumFreezer = createBasic(consumer, "vacuum_freezer", electronicCircuit, FrameType.GOAL);
         var mvSteamTurbine = createBasic(consumer, "mv_steam_turbine", electronicCircuit, FrameType.GOAL);
+        var fillingMachine = createBasic(consumer, "filling_machine", electronicCircuit, FrameType.GOAL);
+        var unfillingMachine = createBasic(consumer, "unfilling_machine", electronicCircuit, FrameType.GOAL);
         var dieselGenerator = createBasic(consumer, "diesel_generator", distillery);
         var dieselJetpack = createBasic(consumer, "diesel_jetpack", distillery, FrameType.CHALLENGE);
         var dieselChainsaw = createBasic(consumer, "diesel_chainsaw", distillery, FrameType.CHALLENGE);

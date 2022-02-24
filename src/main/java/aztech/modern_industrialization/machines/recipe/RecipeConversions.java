@@ -25,10 +25,17 @@ package aztech.modern_industrialization.machines.recipe;
 
 import aztech.modern_industrialization.MIFluids;
 import java.util.Collections;
+
+import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.SmeltingRecipe;
 import net.minecraft.world.item.crafting.StonecutterRecipe;
+import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.level.material.Fluids;
+
+import javax.annotation.Nullable;
 
 public class RecipeConversions {
     public static MachineRecipe of(SmeltingRecipe smeltingRecipe, MachineRecipeType type) {
@@ -57,5 +64,40 @@ public class RecipeConversions {
                         new MachineRecipe.ItemOutput(stonecuttingRecipe.getResultItem().getItem(), stonecuttingRecipe.getResultItem().getCount(), 1));
         recipe.fluidOutputs = Collections.emptyList();
         return recipe;
+    }
+
+    /**
+     * Makes a recipe for a filling or unfilling machine from a fluid object. May return null if the fluid cannot be used to create a recipe.
+     * @return Final recipe. May be null
+     */
+    @Nullable
+    public static MachineRecipe getFillingMachineRecipe(Fluid fluid, MachineRecipeType type, boolean unfill) {
+        if (fluid.getBucket() != null && fluid.isSource(fluid.defaultFluidState()) && fluid != Fluids.EMPTY) {
+            ResourceLocation fluidLocation = Registry.FLUID.getKey(fluid);
+
+            if (unfill) {
+                ResourceLocation id = new ResourceLocation(fluidLocation.getNamespace(), fluidLocation.getPath() + "_mi_unfilling_machine");
+                MachineRecipe recipe = new MachineRecipe(id, type);
+                recipe.eu = 2;
+                recipe.duration = 40;
+                recipe.itemInputs = Collections.singletonList(new MachineRecipe.ItemInput(Ingredient.of(fluid.getBucket()), 1, 1));
+                recipe.fluidInputs = Collections.emptyList();
+                recipe.itemOutputs = Collections.singletonList(new MachineRecipe.ItemOutput(Items.BUCKET, 1, 1));
+                recipe.fluidOutputs = Collections.singletonList(new MachineRecipe.FluidOutput(fluid, 81000, 1));
+                return recipe;
+            } else {
+                ResourceLocation id = new ResourceLocation(fluidLocation.getNamespace(), fluidLocation.getPath() + "_mi_filling_machine");
+                MachineRecipe recipe = new MachineRecipe(id, type);
+                recipe.eu = 2;
+                recipe.duration = 40;
+                recipe.itemInputs = Collections.singletonList(new MachineRecipe.ItemInput(Ingredient.of(Items.BUCKET), 1, 1));
+                recipe.fluidInputs = Collections.singletonList(new MachineRecipe.FluidInput(fluid, 81000, 1));
+                recipe.itemOutputs = Collections.singletonList(new MachineRecipe.ItemOutput(fluid.getBucket(), 1, 1));
+                recipe.fluidOutputs = Collections.emptyList();
+                return recipe;
+            }
+        } else {
+            return null;
+        }
     }
 }

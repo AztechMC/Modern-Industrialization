@@ -95,6 +95,22 @@ public class MachinesPlugin implements REIClientPlugin {
         registry.registerFiller((Predicate<Recipe<?>>) recipe -> recipe.getType() == RecipeType.STONECUTTING,
                 recipe -> new MachineRecipeDisplay(cuttingMachineId,
                         RecipeConversions.of((StonecutterRecipe) recipe, MIMachineRecipeTypes.CUTTING_MACHINE)));
+        // filling machine recipes
+        ResourceLocation fillingMachineId = new MIIdentifier("filling_machine");
+        for (Fluid fluid : Registry.FLUID) {
+            MachineRecipe recipe = RecipeConversions.getFillingMachineRecipe(fluid, MIMachineRecipeTypes.FILLING_MACHINE, false);
+            if (recipe != null) {
+                registry.add(new MachineRecipeDisplay(fillingMachineId, recipe));
+            }
+        }
+        // unfilling machine recipes
+        ResourceLocation unfillingMachineId = new MIIdentifier("unfilling_machine");
+        for (Fluid fluid : Registry.FLUID) {
+            MachineRecipe recipe = RecipeConversions.getFillingMachineRecipe(fluid, MIMachineRecipeTypes.UNFILLING_MACHINE, true);
+            if (recipe != null) {
+                registry.add(new MachineRecipeDisplay(unfillingMachineId, recipe));
+            }
+        }
         // multiblock shapes
         for (Tuple<String, ShapeTemplate> entry : ReiMachineRecipes.multiblockShapes) {
             registry.add(new MultiblockRecipeDisplay(entry.getA(), entry.getB()));

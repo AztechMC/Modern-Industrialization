@@ -1,0 +1,31 @@
+{
+  "type" : "minecraft:crafting_shaped",
+  "pattern" : [
+    "PtP",
+    "CHC",
+    "MaM"
+  ],
+  "key": {
+    "P": {
+      "item" : "modern_industrialization:pump"
+    },
+    "t" : {
+      "item" : "modern_industrialization:aluminum_tank"
+    },
+    "H" :{
+      "item" : "modern_industrialization:basic_machine_hull"
+    },
+    "C" : {
+      "item" : "modern_industrialization:analog_circuit"
+    },
+    "a": {
+      "item" : "modern_industrialization:tin_cable"
+    },
+    "M": {
+      "item": "modern_industrialization:motor"
+    }
+  },
+  "result": {
+    "item": "modern_industrialization:filling_machine"
+  }
+}

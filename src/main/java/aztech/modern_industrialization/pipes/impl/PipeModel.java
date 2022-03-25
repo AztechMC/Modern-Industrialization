@@ -99,22 +99,19 @@ public class PipeModel implements UnbakedModel, BakedModel, FabricBakedModel {
             return true;
         });
 
-        PipeBlockEntity.RenderAttachment attachment = (PipeBlockEntity.RenderAttachment) ((RenderAttachedBlockView) blockRenderView)
-                .getBlockEntityRenderAttachment(pos);
-        if (attachment == null) {
-            throw new NullPointerException(
-                    String.format("Null attachment for pipe rendering! This is not supposed to happen!\nPos: %s\nState: %s", pos, state));
-        }
-        int centerSlots = attachment.types.length;
-        for (int slot = 0; slot < centerSlots; slot++) {
-            // Set color
-            int color = attachment.types[slot].getColor();
-            renderContext.pushTransform(getColorTransform(color));
+        var maybeAttachment = ((RenderAttachedBlockView) blockRenderView).getBlockEntityRenderAttachment(pos);
+        if (maybeAttachment instanceof PipeBlockEntity.RenderAttachment attachment) {
+            int centerSlots = attachment.types.length;
+            for (int slot = 0; slot < centerSlots; slot++) {
+                // Set color
+                int color = attachment.types[slot].getColor();
+                renderContext.pushTransform(getColorTransform(color));
 
-            renderers.get(attachment.types[slot].getRenderer()).draw(blockRenderView, pos, renderContext, slot, attachment.renderedConnections,
-                    attachment.customData[slot]);
+                renderers.get(attachment.types[slot].getRenderer()).draw(blockRenderView, pos, renderContext, slot, attachment.renderedConnections,
+                        attachment.customData[slot]);
 
-            renderContext.popTransform();
+                renderContext.popTransform();
+            }
         }
         renderContext.popTransform();
     }

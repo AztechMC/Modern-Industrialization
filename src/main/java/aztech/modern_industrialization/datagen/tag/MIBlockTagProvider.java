@@ -26,7 +26,11 @@ package aztech.modern_industrialization.datagen.tag;
 import aztech.modern_industrialization.MIBlock;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
+import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.level.block.Block;
 
 public class MIBlockTagProvider extends FabricTagProvider.BlockTagProvider {
     public MIBlockTagProvider(FabricDataGenerator dataGenerator) {
@@ -39,6 +43,18 @@ public class MIBlockTagProvider extends FabricTagProvider.BlockTagProvider {
             if (block.isPickaxeMineable()) {
                 tag(BlockTags.MINEABLE_WITH_PICKAXE).add(block);
             }
+            if (block.getMiningLevel() > 0) {
+                tag(getMiningLevelTag(block.getMiningLevel())).add(block);
+            }
         }
+    }
+
+    private static TagKey<Block> getMiningLevelTag(int level) {
+        return switch (level) {
+        case 1 -> BlockTags.NEEDS_STONE_TOOL;
+        case 2 -> BlockTags.NEEDS_IRON_TOOL;
+        case 3 -> BlockTags.NEEDS_DIAMOND_TOOL;
+        default -> TagKey.create(Registry.BLOCK.key(), new ResourceLocation("fabric", "needs_tool_level_" + level));
+        };
     }
 }

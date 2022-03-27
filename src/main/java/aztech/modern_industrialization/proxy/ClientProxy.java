@@ -33,8 +33,8 @@ import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.rendereregistry.v1.BlockEntityRendererRegistry;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.model.UnbakedModel;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import org.jetbrains.annotations.Nullable;
@@ -42,12 +42,16 @@ import org.jetbrains.annotations.Nullable;
 @Environment(EnvType.CLIENT)
 public class ClientProxy extends CommonProxy {
     @Override
-    public @Nullable Player findUser(@Nullable LivingEntity entity) {
+    public @Nullable Player findUser(ItemStack mainHand) {
         if (Thread.currentThread().getName().equals("Render thread")) {
-            // This is necessary for Magna's overlay
-            return Minecraft.getInstance().player;
+            for (var player : Minecraft.getInstance().level.players()) {
+                if (player.getMainHandItem() == mainHand) {
+                    return player;
+                }
+            }
+            return null;
         }
-        return super.findUser(entity);
+        return super.findUser(mainHand);
     }
 
     @Override

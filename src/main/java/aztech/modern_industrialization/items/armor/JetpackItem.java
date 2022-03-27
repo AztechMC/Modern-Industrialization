@@ -28,7 +28,6 @@ import aztech.modern_industrialization.items.FluidFuelItemHelper;
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
 import java.util.List;
-import me.shedaniel.cloth.api.armor.v1.TickableArmor;
 import net.fabricmc.fabric.api.entity.event.v1.FabricElytraItem;
 import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
@@ -41,6 +40,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.SlotAccess;
@@ -61,7 +61,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 
-public class JetpackItem extends ArmorItem implements Wearable, TickableArmor, FabricElytraItem, ActivatableChestItem {
+public class JetpackItem extends ArmorItem implements Wearable, FabricElytraItem, ActivatableChestItem {
     public static final int CAPACITY = 8 * 81000;
 
     public JetpackItem(Properties settings) {
@@ -118,7 +118,13 @@ public class JetpackItem extends ArmorItem implements Wearable, TickableArmor, F
     }
 
     @Override
-    public void tickArmor(ItemStack stack, Player player) {
+    public void inventoryTick(ItemStack stack, Level level, Entity entity, int slotId, boolean isSelected) {
+        if (entity instanceof Player player && stack == player.getItemBySlot(EquipmentSlot.CHEST)) {
+            tickArmor(stack, player);
+        }
+    }
+
+    private void tickArmor(ItemStack stack, Player player) {
         if (isActivated(stack) && !player.isOnGround()) {
             FluidVariant fluid = FluidFuelItemHelper.getFluid(stack);
             long amount = FluidFuelItemHelper.getAmount(stack);

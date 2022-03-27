@@ -25,11 +25,21 @@ package aztech.modern_industrialization;
 
 import aztech.modern_industrialization.machines.blockentities.ReplicatorMachineBlockEntity;
 import aztech.modern_industrialization.util.ResourceUtil;
-import net.fabricmc.fabric.api.tag.TagRegistry;
+import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.item.Item;
 
 public class MITags {
+    public static final TagKey<Item> SCREWDRIVERS = item("screwdrivers");
+    public static final TagKey<Item> WRENCHES = item("wrenches");
+
+    public static final TagKey<Item> AXES = item("axes");
+    public static final TagKey<Item> PICKAXES = item("pickaxes");
+    public static final TagKey<Item> SHOVELS = item("shovels");
+    public static final TagKey<Item> SWORDS = item("swords");
+
     public static void init() {
         dyeTags();
         ReplicatorMachineBlockEntity.initTag();
@@ -48,7 +58,6 @@ public class MITags {
 
         for (DyeColor color : DyeColor.values()) {
             ResourceLocation tagId = new ResourceLocation("c", color.getName() + "_dyes");
-            TagRegistry.item(tagId);
             ResourceUtil.appendToItemTag(tagId, new ResourceLocation("minecraft:" + color.getName() + "_dye"));
             ResourceUtil.appendToItemTag(terracottas, new ResourceLocation("minecraft:" + color.getName() + "_terracotta"));
             ResourceUtil.appendToItemTag(terracottas, new ResourceLocation("minecraft:" + color.getName() + "_glazed_terracotta"));
@@ -57,5 +66,9 @@ public class MITags {
             ResourceUtil.appendToItemTag(glassPane, new ResourceLocation("minecraft:" + color.getName() + "_stained_glass_pane"));
             ResourceUtil.appendToItemTag(shulkerBox, new ResourceLocation("minecraft:" + color.getName() + "_shulker_box"));
         }
+    }
+
+    public static TagKey<Item> item(String path) {
+        return TagKey.create(Registry.ITEM.key(), new ResourceLocation("c", path));
     }
 }

@@ -28,13 +28,14 @@ import aztech.modern_industrialization.recipe.json.ShapedRecipeJson;
 import com.google.gson.Gson;
 import java.nio.charset.StandardCharsets;
 import java.util.Collection;
+import java.util.List;
 import java.util.function.Consumer;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.FolderPackResources;
 import net.minecraft.server.packs.PackType;
-import net.minecraft.server.packs.resources.SimpleReloadableResourceManager;
+import net.minecraft.server.packs.resources.MultiPackResourceManager;
 import org.apache.commons.io.IOUtils;
 
 public class AssemblerRecipesProvider extends MIRecipesProvider {
@@ -50,8 +51,7 @@ public class AssemblerRecipesProvider extends MIRecipesProvider {
     @Override
     protected void generateRecipes(Consumer<FinishedRecipe> consumer) {
         var nonGeneratedResources = dataGenerator.getOutputFolder().resolve("../../main/resources");
-        var manager = new SimpleReloadableResourceManager(PackType.SERVER_DATA);
-        manager.add(new FolderPackResources(nonGeneratedResources.toFile()));
+        var manager = new MultiPackResourceManager(PackType.SERVER_DATA, List.of(new FolderPackResources(nonGeneratedResources.toFile())));
 
         Collection<ResourceLocation> possibleTargets = manager.listResources("recipes", path -> path.endsWith(".json"));
         for (ResourceLocation pathId : possibleTargets) {

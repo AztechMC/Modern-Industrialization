@@ -21,24 +21,24 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.items.armor;
+package aztech.modern_industrialization.datagen.tag;
 
-import java.util.HashMap;
-import java.util.Map;
-import net.minecraft.world.entity.player.Player;
+import aztech.modern_industrialization.MIBlock;
+import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
+import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
+import net.minecraft.tags.BlockTags;
 
-public class MIKeyMap {
-    private static final Map<Player, Boolean> HOLDING_UP = new HashMap<>();
-
-    static boolean isHoldingUp(Player player) {
-        return HOLDING_UP.getOrDefault(player, false);
+public class MIBlockTagProvider extends FabricTagProvider.BlockTagProvider {
+    public MIBlockTagProvider(FabricDataGenerator dataGenerator) {
+        super(dataGenerator);
     }
 
-    static void update(Player player, boolean up) {
-        HOLDING_UP.put(player, up);
-    }
-
-    public static void clear(Player player) {
-        HOLDING_UP.remove(player);
+    @Override
+    protected void generateTags() {
+        for (var block : MIBlock.blocks.values()) {
+            if (block.isPickaxeMineable()) {
+                tag(BlockTags.MINEABLE_WITH_PICKAXE).add(block);
+            }
+        }
     }
 }

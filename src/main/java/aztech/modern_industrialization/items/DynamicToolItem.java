@@ -21,24 +21,19 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.items.armor;
+package aztech.modern_industrialization.items;
 
-import java.util.HashMap;
-import java.util.Map;
-import net.minecraft.world.entity.player.Player;
+import aztech.modern_industrialization.MITags;
+import net.minecraft.tags.BlockTags;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.state.BlockState;
+import org.jetbrains.annotations.ApiStatus;
 
-public class MIKeyMap {
-    private static final Map<Player, Boolean> HOLDING_UP = new HashMap<>();
-
-    static boolean isHoldingUp(Player player) {
-        return HOLDING_UP.getOrDefault(player, false);
-    }
-
-    static void update(Player player, boolean up) {
-        HOLDING_UP.put(player, up);
-    }
-
-    public static void clear(Player player) {
-        HOLDING_UP.remove(player);
+public interface DynamicToolItem {
+    @ApiStatus.NonExtendable
+    default boolean isSupportedBlock(ItemStack stack, BlockState state) {
+        return stack.is(MITags.AXES) && state.is(BlockTags.MINEABLE_WITH_AXE)
+                || stack.is(MITags.PICKAXES) && state.is(BlockTags.MINEABLE_WITH_PICKAXE)
+                || stack.is(MITags.SHOVELS) && state.is(BlockTags.MINEABLE_WITH_SHOVEL);
     }
 }

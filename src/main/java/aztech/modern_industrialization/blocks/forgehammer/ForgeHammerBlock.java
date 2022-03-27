@@ -26,7 +26,6 @@ package aztech.modern_industrialization.blocks.forgehammer;
 import aztech.modern_industrialization.MIBlock;
 import aztech.modern_industrialization.util.MobSpawning;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
-import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
@@ -56,9 +55,10 @@ public class ForgeHammerBlock extends MIBlock {
 
     public ForgeHammerBlock() {
         super("forge_hammer",
-                FabricBlockSettings.of(Material.METAL).breakByTool(FabricToolTags.PICKAXES).destroyTime(6.0f).requiresCorrectToolForDrops()
+                FabricBlockSettings.of(Material.METAL).destroyTime(6.0f).requiresCorrectToolForDrops()
                         .explosionResistance(1200).sound(SoundType.ANVIL).isValidSpawn(MobSpawning.NO_SPAWN),
                 MIBlock.FLAG_BLOCK_ITEM_MODEL | MIBlock.FLAG_BLOCK_LOOT);
+        setPickaxeMineable();
         VoxelShape[] parts = new VoxelShape[part_height.length];
         float currentY = 0;
         for (int i = 0; i < part_height.length; i++) {

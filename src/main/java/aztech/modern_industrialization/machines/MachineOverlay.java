@@ -23,7 +23,7 @@
  */
 package aztech.modern_industrialization.machines;
 
-import aztech.modern_industrialization.ModernIndustrialization;
+import aztech.modern_industrialization.MITags;
 import aztech.modern_industrialization.util.GeometryHelper;
 import aztech.modern_industrialization.util.RenderHelper;
 import com.mojang.blaze3d.vertex.VertexConsumer;
@@ -125,7 +125,7 @@ public class MachineOverlay {
             BlockPos pos = blockHitResult.getBlockPos();
             BlockState state = wrc.world().getBlockState(pos);
             if (state.getBlock() instanceof MachineBlock
-                    && Minecraft.getInstance().player.getMainHandItem().is(ModernIndustrialization.WRENCHES)) {
+                    && Minecraft.getInstance().player.getMainHandItem().is(MITags.WRENCHES)) {
                 wrc.matrixStack().pushPose();
                 Vec3 cameraPos = Minecraft.getInstance().gameRenderer.getMainCamera().getPosition();
                 double x = pos.getX() - cameraPos.x;

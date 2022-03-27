@@ -57,8 +57,6 @@ import aztech.modern_industrialization.pipes.MIPipes;
 import aztech.modern_industrialization.pipes.MIPipesClient;
 import aztech.modern_industrialization.pipes.impl.PipeItem;
 import aztech.modern_industrialization.util.TextHelper;
-import java.util.Collections;
-import java.util.List;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.command.v1.ClientCommandManager;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
@@ -73,7 +71,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.ItemTags;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
@@ -193,8 +191,7 @@ public class ModernIndustrializationClient implements ClientModInitializer {
                 }
 
                 if (context.isAdvanced() && !MIConfig.getConfig().disableItemTagTooltips) {
-                    List<ResourceLocation> ids = (List<ResourceLocation>) ItemTags.getAllTags().getMatchingTags(item);
-                    Collections.sort(ids);
+                    var ids = item.builtInRegistryHolder().tags().map(TagKey::location).sorted().toList();
                     for (ResourceLocation id : ids) {
                         lines.add(new TextComponent("#" + id).setStyle(TextHelper.GRAY_TEXT));
                     }

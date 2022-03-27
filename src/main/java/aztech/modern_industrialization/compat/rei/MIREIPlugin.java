@@ -23,6 +23,7 @@
  */
 package aztech.modern_industrialization.compat.rei;
 
+import aztech.modern_industrialization.MITags;
 import aztech.modern_industrialization.api.ReiDraggable;
 import aztech.modern_industrialization.client.screen.MIHandledScreen;
 import aztech.modern_industrialization.inventory.ConfigurableInventoryPackets;
@@ -44,7 +45,6 @@ import me.shedaniel.rei.api.common.util.EntryStacks;
 import me.shedaniel.rei.plugin.common.BuiltinPlugin;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
-import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.minecraft.client.gui.components.AbstractWidget;
@@ -63,10 +63,10 @@ public class MIREIPlugin implements REIClientPlugin {
     public void registerCategories(CategoryRegistry registry) {
         for (Item item : Registry.ITEM) {
             if (item instanceof DieselToolItem) {
-                if (FabricToolTags.AXES.contains(item)) {
+                if (item.builtInRegistryHolder().is(MITags.AXES)) {
                     registry.addWorkstations(BuiltinPlugin.STRIPPING, EntryStacks.of(item));
                 }
-                if (FabricToolTags.SHOVELS.contains(item)) {
+                if (item.builtInRegistryHolder().is(MITags.SHOVELS)) {
                     registry.addWorkstations(BuiltinPlugin.PATHING, EntryStacks.of(item));
                 }
             }

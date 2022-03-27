@@ -1,10 +1,9 @@
 plugins {
-    id 'fabric-loom' version '0.10-SNAPSHOT'
+    id 'fabric-loom' version '0.12-SNAPSHOT'
     id 'maven-publish'
     id 'com.diffplug.spotless' version '5.14.0'
     id 'com.matthewprenger.cursegradle' version '1.4.0'
     id "com.modrinth.minotaur" version "1.2.1"
-    id 'io.github.juuxel.loom-quiltflower-mini' version '1.2.1'
 }
 
 apply plugin: 'java-library'
@@ -26,7 +25,7 @@ repositories {
     }
     // for ARRP
     maven {
-        url = 'https://raw.githubusercontent.com/Devan-Kerman/Devan-Repo/master/'
+        url = "https://storage.googleapis.com/devan-maven/"
         content {
             includeGroup "net.devtech"
         }
@@ -50,7 +49,6 @@ repositories {
     maven {
         url "https://maven.shedaniel.me"
         content {
-            includeGroup "me.shedaniel.cloth.api"
             includeGroup "me.sargunvohra.mcmods"
             includeGroup "me.shedaniel.cloth"
             includeGroup "me.shedaniel"
@@ -138,20 +136,14 @@ repositories {
 
 dependencies {
     // TODO remove when fabric PR is merged
-    modImplementation("net.fabricmc.fabric-api:fabric-data-generation-api-v1:1.1.0+abf02f7665") {
-        exclude(group: "net.fabricmc.fabric-api")
-    }
-    include modImplementation("net.fabricmc.fabric-api:fabric-resource-conditions-api-v1:1.0.0+abf02f7665") {
-        exclude(group: "net.fabricmc.fabric-api")
-    }
-    include modImplementation("net.fabricmc.fabric-api:fabric-tool-attribute-api-v1:1.4.0-modified-technici4n+ea42e1b365") {
+    include modImplementation("net.fabricmc.fabric-api:fabric-item-api-v1:1.4.0+technici4n-stack-aware-attribute-modifiers+38b1a4fd60") {
         exclude(group: "net.fabricmc.fabric-api")
     }
 
     minecraft "com.mojang:minecraft:${project.minecraft_version}"
     mappings loom.layered() {
         officialMojangMappings()
-        parchment("org.parchmentmc.data:parchment-1.18.1:2021.12.19@zip")
+        parchment("org.parchmentmc.data:parchment-1.18.2:2022.03.13@zip")
     }
     modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
@@ -168,14 +160,7 @@ dependencies {
         exclude(group: "net.fabricmc.fabric-api")
     }
 
-    include modApi("me.shedaniel.cloth.api:cloth-armor-api-v1:${project.cloth_api_version}") {
-        exclude(group: "net.fabricmc.fabric-api")
-    }
-    include modApi("me.shedaniel.cloth.api:cloth-common-events-v1:${project.cloth_api_version}") {
-        exclude(group: "net.fabricmc.fabric-api")
-    }
-
-    include modImplementation("me.shedaniel.cloth:cloth-config-fabric:${project.cloth_config_version}") {
+    modImplementation("me.shedaniel.cloth:cloth-config-fabric:${project.cloth_config_version}") {
         exclude(group: "net.fabricmc.fabric-api")
     }
 
@@ -187,7 +172,7 @@ dependencies {
         exclude(group: "net.fabricmc.fabric-api")
     }
 
-    modImplementation("dev.latvian.mods:kubejs-fabric:1800.4.0-build.235") {
+    modImplementation("dev.latvian.mods:kubejs-fabric:1802.5.0-build.312") {
         exclude(group: "net.fabricmc.fabric-api")
     }
 
@@ -205,7 +190,9 @@ dependencies {
         exclude(group: "net.fabricmc.fabric-api")
     }
 
-    modImplementation("lol.bai.megane:megane-api:${project.megane_api_version}")
+    modImplementation("lol.bai.megane:megane-api:${project.megane_api_version}") {
+        exclude(group: "net.fabricmc.fabric-api")
+    }
 
     modRuntimeOnly("lol.bai.megane:megane-runtime:${project.megane_runtime_version}") {
         exclude(group: "net.fabricmc.fabric-api")
@@ -382,8 +369,7 @@ if (System.getenv("CURSEFORGE_API_KEY") && !version.endsWith("-SNAPSHOT")) {
             changelogType = "markdown"
             delegate.changelog = changelog
 
-            addGameVersion "1.18"
-            addGameVersion "1.18.1"
+            addGameVersion "1.18.2"
             addGameVersion "Fabric"
             addGameVersion "Java 17"
 
@@ -421,7 +407,6 @@ task publishModrinth (type: TaskModrinthUpload){
     delegate.changelog = changelog
     versionType = releaseChannel.toUpperCase()
     uploadFile = remapJar.archiveFile
-    addGameVersion "1.18"
-    addGameVersion "1.18.1"
+    addGameVersion "1.18.2"
     addLoader "fabric"
 }

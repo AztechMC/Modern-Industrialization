@@ -48,13 +48,11 @@ import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 import net.fabricmc.fabric.api.screenhandler.v1.ScreenHandlerRegistry;
-import net.fabricmc.fabric.api.tag.TagRegistry;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.Tag;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
@@ -67,8 +65,6 @@ public class MIPipes {
     public static final Block BLOCK_PIPE = new PipeBlock(FabricBlockSettings.of(Material.METAL).destroyTime(4.0f));
     public static final ResourceLocation ITEM_PIPES_ID = new MIIdentifier("item_pipes");
     public static final ResourceLocation FLUID_PIPES_ID = new MIIdentifier("fluid_pipes");
-    public static final Tag<Item> ITEM_PIPES = TagRegistry.item(ITEM_PIPES_ID);
-    public static final Tag<Item> FLUID_PIPES = TagRegistry.item(FLUID_PIPES_ID);
     public static BlockEntityType<PipeBlockEntity> BLOCK_ENTITY_TYPE_PIPE;
     private final Map<PipeNetworkType, PipeItem> pipeItems = new HashMap<>();
 

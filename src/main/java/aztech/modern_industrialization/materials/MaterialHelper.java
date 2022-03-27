@@ -27,7 +27,6 @@ import aztech.modern_industrialization.ModernIndustrialization;
 import aztech.modern_industrialization.materials.part.MIParts;
 import aztech.modern_industrialization.materials.part.Part;
 import net.devtech.arrp.json.tags.JTag;
-import net.fabricmc.fabric.api.tag.TagRegistry;
 import net.minecraft.resources.ResourceLocation;
 
 public class MaterialHelper {
@@ -52,7 +51,6 @@ public class MaterialHelper {
     public static void registerItemTag(String tag, JTag content) {
         ResourceLocation tagId = new ResourceLocation(tag);
         ModernIndustrialization.RESOURCE_PACK.addTag(new ResourceLocation(tagId.getNamespace(), "items/" + tagId.getPath()), content);
-        TagRegistry.item(tagId);
     }
 
 }

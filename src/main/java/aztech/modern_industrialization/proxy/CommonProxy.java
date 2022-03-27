@@ -25,9 +25,11 @@ package aztech.modern_industrialization.proxy;
 
 import aztech.modern_industrialization.materials.MaterialBuilder;
 import net.fabricmc.api.EnvType;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import org.jetbrains.annotations.Nullable;
@@ -48,13 +50,23 @@ public class CommonProxy {
         }
     }
 
+    private static MinecraftServer currentServer = null;
+    static {
+        ServerLifecycleEvents.SERVER_STARTED.register(s -> currentServer = s);
+        ServerLifecycleEvents.SERVER_STOPPED.register(s -> currentServer = null);
+    }
+
     /**
      * Try to find a suitable user.
      */
     @Nullable
-    public Player findUser(@Nullable LivingEntity entity) {
-        if (entity instanceof Player) {
-            return (Player) entity;
+    public Player findUser(ItemStack mainHand) {
+        if (currentServer != null) {
+            for (var player : currentServer.getPlayerList().getPlayers()) {
+                if (player.getMainHandItem() == mainHand) {
+                    return player;
+                }
+            }
         }
         return null;
     }

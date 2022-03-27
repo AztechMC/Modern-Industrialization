@@ -30,6 +30,7 @@ import aztech.modern_industrialization.proxy.CommonProxy;
 import aztech.modern_industrialization.util.NbtHelper;
 import aztech.modern_industrialization.util.Simulation;
 import aztech.modern_industrialization.util.TextHelper;
+import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -40,8 +41,8 @@ import it.unimi.dsi.fastutil.objects.Reference2IntOpenHashMap;
 import java.util.List;
 import java.util.Optional;
 import net.fabricmc.fabric.api.item.v1.FabricItem;
+import net.fabricmc.fabric.api.mininglevel.v1.MiningLevelManager;
 import net.fabricmc.fabric.api.registry.FuelRegistry;
-import net.fabricmc.fabric.api.tool.attribute.v1.DynamicAttributeTool;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiComponent;
@@ -54,7 +55,6 @@ import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextColor;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
-import net.minecraft.tags.Tag;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.Entity;
@@ -88,7 +88,7 @@ import org.jetbrains.annotations.Nullable;
  * fuel was used in a furnace). water: integer, the remaining ticks of water
  * (when full: 18000 ticks i.e. 15 minutes).
  */
-public class SteamDrillItem extends Item implements DynamicAttributeTool, MagnaTool, DynamicEnchantmentItem, ItemContainingItemHelper, FabricItem {
+public class SteamDrillItem extends Item implements DynamicToolItem, MagnaTool, DynamicEnchantmentItem, ItemContainingItemHelper, FabricItem {
     private static final int FULL_WATER = 18000;
 
     public SteamDrillItem(Properties settings) {
@@ -106,34 +106,37 @@ public class SteamDrillItem extends Item implements DynamicAttributeTool, MagnaT
     }
 
     @Override
-    public int getMiningLevel(Tag<Item> tag, BlockState state, ItemStack stack, @Nullable LivingEntity user) {
-        if (tag.contains(this) && canUse(stack)) {
-            return 2;
-        }
-        return 0;
+    public boolean isSuitableFor(ItemStack stack, BlockState state) {
+        int requiredLevel = MiningLevelManager.getRequiredMiningLevel(state);
+        return requiredLevel <= 4 && canUse(stack) && isSupportedBlock(stack, state);
     }
 
     @Override
-    public float getMiningSpeedMultiplier(Tag<Item> tag, BlockState state, ItemStack stack, @Nullable LivingEntity user) {
-        float speed = 1.0f;
-        if (tag.contains(this) && canUse(stack)) {
-            speed = 4.0f;
-        }
+    public float getDestroySpeed(ItemStack stack, BlockState state) {
+        if (canUse(stack)) {
+            if (isSuitableFor(stack, state)) {
+                float speed = 4.0f;
 
-        Player player = CommonProxy.INSTANCE.findUser(user);
+                Player player = CommonProxy.INSTANCE.findUser(stack);
 
-        if (Magna.CONFIG.breakSingleBlockWhenSneaking && player != null && player.isShiftKeyDown()) {
-            speed *= 4f;
+                if (Magna.CONFIG.breakSingleBlockWhenSneaking && player != null && player.isShiftKeyDown()) {
+                    speed *= 4f;
+                }
+                return speed;
+            } else {
+                return 1;
+            }
+        } else {
+            return 0;
         }
-        return speed;
     }
 
     @Override
-    public Multimap<Attribute, AttributeModifier> getDynamicModifiers(EquipmentSlot slot, ItemStack stack, @Nullable LivingEntity user) {
+    public Multimap<Attribute, AttributeModifier> getAttributeModifiers(ItemStack stack, EquipmentSlot slot) {
         if (slot == EquipmentSlot.MAINHAND && canUse(stack)) {
             return ItemHelper.createToolModifiers(5);
         }
-        return EMPTY;
+        return ImmutableMultimap.of();
     }
 
     @Override

@@ -30,6 +30,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Comparator;
+import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
@@ -40,7 +41,7 @@ import net.minecraft.data.DataProvider;
 import net.minecraft.data.HashCache;
 import net.minecraft.server.packs.FolderPackResources;
 import net.minecraft.server.packs.PackType;
-import net.minecraft.server.packs.resources.SimpleReloadableResourceManager;
+import net.minecraft.server.packs.resources.MultiPackResourceManager;
 
 public class TexturesProvider implements DataProvider {
     private final FabricDataGenerator dataGenerator;
@@ -63,10 +64,10 @@ public class TexturesProvider implements DataProvider {
 
         var generatedResources = dataGenerator.getOutputFolder();
         var nonGeneratedResources = dataGenerator.getOutputFolder().resolve("../../main/resources");
-        var manager = new SimpleReloadableResourceManager(PackType.CLIENT_RESOURCES);
-        manager.add(new DefaultClientPackResources(ClientPackSource.BUILT_IN, new AssetIndex(new File(""), "")));
-        manager.add(new FolderPackResources(nonGeneratedResources.toFile()));
-        manager.add(new FolderPackResources(generatedResources.toFile()));
+        var manager = new MultiPackResourceManager(PackType.CLIENT_RESOURCES, List.of(
+                new DefaultClientPackResources(ClientPackSource.BUILT_IN, new AssetIndex(new File(""), "")),
+                new FolderPackResources(nonGeneratedResources.toFile()),
+                new FolderPackResources(generatedResources.toFile())));
 
         MITextures.offerTextures((image, textureId) -> writeTexture(cache, image, textureId), manager);
     }

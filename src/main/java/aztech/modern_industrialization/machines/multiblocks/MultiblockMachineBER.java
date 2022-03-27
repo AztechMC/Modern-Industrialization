@@ -24,7 +24,7 @@
 package aztech.modern_industrialization.machines.multiblocks;
 
 import aztech.modern_industrialization.MIConfig;
-import aztech.modern_industrialization.ModernIndustrialization;
+import aztech.modern_industrialization.MITags;
 import aztech.modern_industrialization.machines.MachineBlock;
 import aztech.modern_industrialization.machines.MachineBlockEntityRenderer;
 import aztech.modern_industrialization.util.RenderHelper;
@@ -88,7 +88,7 @@ public class MultiblockMachineBER extends MachineBlockEntityRenderer<MultiblockM
 
     private static boolean isHoldingWrench() {
         Player player = Minecraft.getInstance().player;
-        return player.getMainHandItem().is(ModernIndustrialization.WRENCHES) || player.getOffhandItem().is(ModernIndustrialization.WRENCHES);
+        return player.getMainHandItem().is(MITags.WRENCHES) || player.getOffhandItem().is(MITags.WRENCHES);
     }
 
     @Nullable

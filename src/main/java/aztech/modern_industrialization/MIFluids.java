@@ -118,6 +118,7 @@ public class MIFluids {
         String id = fluid.name;
         Registry.register(Registry.FLUID, new MIIdentifier(id), fluid);
         Registry.register(Registry.ITEM, new MIIdentifier("bucket_" + id), fluid.getBucket());
+        Registry.register(Registry.BLOCK, new MIIdentifier(id), fluid.block);
         RESOURCE_PACK.addModel(JModel.model().parent("minecraft:item/generated").textures(new JTextures().layer0(MOD_ID + ":items/bucket/" + id)),
                 new MIIdentifier("item/bucket_" + id));
     }

@@ -23,18 +23,20 @@
  */
 package aztech.modern_industrialization.items.diesel_tools;
 
+import aztech.modern_industrialization.MITags;
 import aztech.modern_industrialization.api.DynamicEnchantmentItem;
 import aztech.modern_industrialization.api.FluidFuelRegistry;
 import aztech.modern_industrialization.fluid.CraftingFluid;
+import aztech.modern_industrialization.items.DynamicToolItem;
 import aztech.modern_industrialization.items.FluidFuelItemHelper;
 import aztech.modern_industrialization.items.ItemHelper;
+import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
 import it.unimi.dsi.fastutil.objects.Reference2IntArrayMap;
 import it.unimi.dsi.fastutil.objects.Reference2IntMap;
 import java.util.List;
 import java.util.Map;
-import net.fabricmc.fabric.api.tool.attribute.v1.DynamicAttributeTool;
-import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
+import net.fabricmc.fabric.api.mininglevel.v1.MiningLevelManager;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -42,7 +44,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.tags.Tag;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
@@ -67,10 +68,9 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.RotatedPillarBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
-import org.jetbrains.annotations.Nullable;
 
 // TODO: attack speed and damage
-public class DieselToolItem extends Item implements DynamicAttributeTool, Vanishable, DynamicEnchantmentItem {
+public class DieselToolItem extends Item implements Vanishable, DynamicEnchantmentItem, DynamicToolItem {
     public static final int CAPACITY = 4 * 81000;
     private final double damage;
 
@@ -99,17 +99,15 @@ public class DieselToolItem extends Item implements DynamicAttributeTool, Vanish
     }
 
     @Override
-    public float getMiningSpeedMultiplier(Tag<Item> tag, BlockState state, ItemStack stack, @Nullable LivingEntity user) {
-        if (tag.contains(this)) {
-            return getMiningSpeedMultiplier(stack);
-        }
-        return 0;
+    public boolean isSuitableFor(ItemStack stack, BlockState state) {
+        int requiredLevel = MiningLevelManager.getRequiredMiningLevel(state);
+        return requiredLevel <= 4 && FluidFuelItemHelper.getAmount(stack) > 0 && isSupportedBlock(stack, state);
     }
 
     @Override
-    public int getMiningLevel(Tag<Item> tag, BlockState state, ItemStack stack, @Nullable LivingEntity user) {
-        if (tag.contains(this) && FluidFuelItemHelper.getAmount(stack) > 0) {
-            return 4; // TODO: higher mining level?
+    public float getDestroySpeed(ItemStack stack, BlockState state) {
+        if (isSupportedBlock(stack, state)) {
+            return getMiningSpeedMultiplier(stack);
         }
         return 0;
     }
@@ -127,11 +125,11 @@ public class DieselToolItem extends Item implements DynamicAttributeTool, Vanish
     }
 
     @Override
-    public Multimap<Attribute, AttributeModifier> getDynamicModifiers(EquipmentSlot slot, ItemStack stack, @Nullable LivingEntity user) {
+    public Multimap<Attribute, AttributeModifier> getAttributeModifiers(ItemStack stack, EquipmentSlot slot) {
         if (slot == EquipmentSlot.MAINHAND && FluidFuelItemHelper.getAmount(stack) > 0) {
             return ItemHelper.createToolModifiers(damage * FluidFuelRegistry.getEu(FluidFuelItemHelper.getFluid(stack).getFluid()) / 300);
         }
-        return EMPTY;
+        return ImmutableMultimap.of();
     }
 
     @Override
@@ -201,7 +199,7 @@ public class DieselToolItem extends Item implements DynamicAttributeTool, Vanish
         BlockState state = w.getBlockState(pos);
         Player player = context.getPlayer();
         if (FluidFuelItemHelper.getAmount(stack) > 0) {
-            if (FabricToolTags.AXES.contains(this)) {
+            if (stack.is(MITags.AXES)) {
                 Block newBlock = StrippingAccess.getStrippedBlocks().get(state.getBlock());
                 if (newBlock != null) {
                     w.playSound(player, pos, SoundEvents.AXE_STRIP, SoundSource.BLOCKS, 1, 1);
@@ -211,7 +209,7 @@ public class DieselToolItem extends Item implements DynamicAttributeTool, Vanish
                     }
                     return InteractionResult.sidedSuccess(w.isClientSide);
                 }
-            } else if (FabricToolTags.SHOVELS.contains(this)) {
+            } else if (stack.is(MITags.SHOVELS)) {
                 BlockState newState = PathingAccess.getPathStates().get(state.getBlock());
                 if (newState != null) {
                     w.playSound(player, pos, SoundEvents.SHOVEL_FLATTEN, SoundSource.BLOCKS, 1, 1);

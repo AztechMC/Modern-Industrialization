@@ -28,6 +28,7 @@ import aztech.modern_industrialization.datagen.advancement.MIAdvancementsProvide
 import aztech.modern_industrialization.datagen.model.MachineModelsProvider;
 import aztech.modern_industrialization.datagen.recipe.*;
 import aztech.modern_industrialization.datagen.tag.MIBlockTagProvider;
+import aztech.modern_industrialization.datagen.tag.MIItemTagProvider;
 import aztech.modern_industrialization.datagen.texture.TexturesProvider;
 import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
@@ -53,6 +54,7 @@ public class MIDatagenEntrypoint implements DataGeneratorEntrypoint {
         dataGenerator.addProvider(MachineModelsProvider::new);
 
         dataGenerator.addProvider(MIBlockTagProvider::new);
+        dataGenerator.addProvider(MIItemTagProvider::new);
 
         dataGenerator.addProvider(TexturesProvider::new);
 

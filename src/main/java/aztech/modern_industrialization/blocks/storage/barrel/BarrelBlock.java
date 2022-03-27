@@ -58,7 +58,6 @@ public class BarrelBlock extends AbstractStorageBlock implements EntityBlock {
 
         this.asColumn();
         this.factory = factory;
-        ResourceUtil.appendToItemTag(new MIIdentifier("barrels"), new MIIdentifier(id));
     }
 
     @Nullable

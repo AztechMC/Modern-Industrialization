@@ -27,16 +27,16 @@ import static aztech.modern_industrialization.ModernIndustrialization.METAL_MATE
 
 import aztech.modern_industrialization.MIBlock;
 import aztech.modern_industrialization.MIItem;
+import aztech.modern_industrialization.datagen.tag.MIItemTagProvider;
 import aztech.modern_industrialization.materials.MaterialBuilder;
-import aztech.modern_industrialization.materials.MaterialHelper;
 import aztech.modern_industrialization.textures.MITextures;
 import aztech.modern_industrialization.textures.TextureHelper;
 import aztech.modern_industrialization.textures.TextureManager;
 import com.mojang.blaze3d.platform.NativeImage;
 import java.io.IOException;
-import net.devtech.arrp.json.tags.JTag;
+
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
 
 public class RegularPart extends Part implements BuildablePart {
 
@@ -46,8 +46,8 @@ public class RegularPart extends Part implements BuildablePart {
 
     public RegularPart(String key) {
         this(key, (registeringContext, partContext, part, itemPath, itemId, itemTag) -> {
-            MIItem.of(itemPath);
-            setupTag(part, itemId, itemTag);
+            var item = MIItem.of(itemPath);
+            setupTag(part, itemTag, item);
         }, (registeringContext, partContext, part, itemPath, itemId, itemTag) -> {
         }, (mtm, partContext, part, itemPath) -> MITextures.generateItemPartTexture(mtm, part.key, partContext.getMaterialSet(), itemPath, false,
                 partContext.getColoramp()));
@@ -61,24 +61,24 @@ public class RegularPart extends Part implements BuildablePart {
         this.textureRegister = textureRegister;
     }
 
-    private static void setupTag(Part part, String itemId, String itemTag) {
+    private static void setupTag(Part part, String itemTag, Item item) {
         // item tag
         // items whose path are overridden (such as fire clay ingot -> brick) are not
         // added to the tags
         for (Part partTagged : MIParts.TAGGED_PARTS) {
             if (partTagged.equals(part)) {
-                MaterialHelper.registerItemTag(itemTag.replaceFirst("#", ""), JTag.tag().add(new ResourceLocation(itemId)));
+                MIItemTagProvider.generateTag(itemTag.replaceFirst("#", ""), item);
             }
         }
     }
 
     public RegularPart asBlock(float hardness, float resistance, int miningLevel) {
         return new RegularPart(key, (registeringContext, partContext, part, itemPath, itemId, itemTag) -> {
-            new MIBlock(itemPath,
+            var block = new MIBlock(itemPath,
                     FabricBlockSettings.of(METAL_MATERIAL).destroyTime(hardness)
                             .explosionResistance(resistance)
                             .requiresCorrectToolForDrops()).setPickaxeMineable().setMiningLevel(miningLevel);
-            setupTag(part, itemId, itemTag);
+            setupTag(part, itemTag, block.blockItem);
         }, clientRegister, (mtm, partContext, part, itemPath) -> MITextures.generateItemPartTexture(mtm, part.key, partContext.getMaterialSet(),
                 itemPath, true, partContext.getColoramp()));
     }

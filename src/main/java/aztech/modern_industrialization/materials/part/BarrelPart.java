@@ -24,10 +24,12 @@
 package aztech.modern_industrialization.materials.part;
 
 import aztech.modern_industrialization.MIBlock;
+import aztech.modern_industrialization.MITags;
 import aztech.modern_industrialization.blocks.storage.barrel.BarrelBlock;
 import aztech.modern_industrialization.blocks.storage.barrel.BarrelBlockEntity;
 import aztech.modern_industrialization.blocks.storage.barrel.BarrelItem;
 import aztech.modern_industrialization.blocks.storage.barrel.BarrelRenderer;
+import aztech.modern_industrialization.datagen.tag.MIItemTagProvider;
 import aztech.modern_industrialization.util.TextHelper;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemStorage;
@@ -54,6 +56,7 @@ public class BarrelPart extends UnbuildablePart<Long> {
         return new RegularPart(key).asColumnBlock().withRegister((registeringContext, partContext, part, itemPath, itemId, itemTag) -> {
             EntityBlock factory = (pos, state) -> new BarrelBlockEntity(refs[0], pos, state, stackCapacity);
             BarrelBlock block = new BarrelBlock(itemPath, (MIBlock b) -> new BarrelItem(b, stackCapacity), factory);
+            MIItemTagProvider.generateTag(MITags.BARRELS, block.blockItem);
 
             refs[0] = Registry.register(Registry.BLOCK_ENTITY_TYPE, itemId,
                     FabricBlockEntityTypeBuilder.create(block.factory::newBlockEntity, block).build(null));

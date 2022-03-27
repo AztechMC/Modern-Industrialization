@@ -23,6 +23,7 @@
  */
 package aztech.modern_industrialization;
 
+import aztech.modern_industrialization.datagen.tag.MIItemTagProvider;
 import aztech.modern_industrialization.machines.blockentities.ReplicatorMachineBlockEntity;
 import aztech.modern_industrialization.util.ResourceUtil;
 import net.minecraft.core.Registry;
@@ -30,31 +31,34 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Items;
 
 public class MITags {
     public static final TagKey<Item> SCREWDRIVERS = item("screwdrivers");
     public static final TagKey<Item> WRENCHES = item("wrenches");
 
+    public static final TagKey<Item> BARRELS = miItem("barrels");
+    public static final TagKey<Item> TANKS = miItem("tanks");
+
+    // Fabric should provide those:
     public static final TagKey<Item> AXES = item("axes");
     public static final TagKey<Item> PICKAXES = item("pickaxes");
     public static final TagKey<Item> SHOVELS = item("shovels");
     public static final TagKey<Item> SWORDS = item("swords");
+    public static final TagKey<Item> SHULKER_BOX = item("shulker_box");
 
     public static void init() {
         dyeTags();
-        ReplicatorMachineBlockEntity.initTag();
     }
 
     private static void dyeTags() {
         ResourceLocation terracottas = new ResourceLocation("c", "terracottas");
         ResourceLocation glass = new ResourceLocation("c", "glass");
         ResourceLocation glassPane = new ResourceLocation("c", "glass_pane");
-        ResourceLocation shulkerBox = new ResourceLocation("c", "shulker_box");
 
         ResourceUtil.appendToItemTag(terracottas, new ResourceLocation("minecraft:terracotta"));
         ResourceUtil.appendToItemTag(glass, new ResourceLocation("minecraft:glass"));
         ResourceUtil.appendToItemTag(glassPane, new ResourceLocation("minecraft:glass_pane"));
-        ResourceUtil.appendToItemTag(shulkerBox, new ResourceLocation("minecraft:shulker_box"));
 
         for (DyeColor color : DyeColor.values()) {
             ResourceLocation tagId = new ResourceLocation("c", color.getName() + "_dyes");
@@ -64,11 +68,14 @@ public class MITags {
 
             ResourceUtil.appendToItemTag(glass, new ResourceLocation("minecraft:" + color.getName() + "_stained_glass"));
             ResourceUtil.appendToItemTag(glassPane, new ResourceLocation("minecraft:" + color.getName() + "_stained_glass_pane"));
-            ResourceUtil.appendToItemTag(shulkerBox, new ResourceLocation("minecraft:" + color.getName() + "_shulker_box"));
         }
     }
 
     public static TagKey<Item> item(String path) {
         return TagKey.create(Registry.ITEM.key(), new ResourceLocation("c", path));
+    }
+
+    public static TagKey<Item> miItem(String path) {
+        return TagKey.create(Registry.ITEM.key(), new MIIdentifier(path));
     }
 }

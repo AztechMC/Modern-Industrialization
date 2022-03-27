@@ -60,19 +60,7 @@ public class ReplicatorMachineBlockEntity extends MachineBlockEntity implements 
 
     private int progressTick = 0;
 
-    private static TagKey<Item> blacklisted;
-
-    public static void initTag() {
-        ResourceLocation blacklist = new MIIdentifier("replicator_blacklist");
-        blacklisted = TagKey.create(Registry.ITEM.key(), blacklist);
-
-        ResourceUtil.appendToItemTag(blacklist, new ResourceLocation("minecraft", "bundle"));
-
-        ResourceUtil.appendTagToItemTag(blacklist, new ResourceLocation("c", "shulker_box"));
-        ResourceUtil.appendTagToItemTag(blacklist, new MIIdentifier("tanks"));
-        ResourceUtil.appendTagToItemTag(blacklist, new MIIdentifier("barrels"));
-
-    }
+    public static final TagKey<Item> BLACKLISTED = TagKey.create(Registry.ITEM.key(), new MIIdentifier("replicator_blacklist"));
 
     public ReplicatorMachineBlockEntity(BEP bep) {
 
@@ -129,7 +117,7 @@ public class ReplicatorMachineBlockEntity extends MachineBlockEntity implements 
 
         if (!itemVariant.isBlank()) {
             // check blacklist
-            if (itemVariant.toStack().is(blacklisted)) {
+            if (itemVariant.toStack().is(BLACKLISTED)) {
                 return false;
             }
             // check that the item doesn't contain uu matter

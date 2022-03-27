@@ -32,7 +32,7 @@ jobs:
         MI_VERSION: git-${{ steps.var.outputs.commit_hash }}
     - name: Autotest Server
       run: |
-        mkdir run && echo "eula=true" >> run/eula.txt
+        mkdir run && echo eula=true >> run/eula.txt
         ./gradlew runAutoTestServer --stacktrace
         ! grep -q FATAL run/logs/latest.log
         ! grep -q JsonSyntaxException run/logs/latest.log

@@ -24,8 +24,10 @@
 package aztech.modern_industrialization.pipes;
 
 import aztech.modern_industrialization.MIIdentifier;
+import aztech.modern_industrialization.MITags;
 import aztech.modern_industrialization.ModernIndustrialization;
 import aztech.modern_industrialization.api.energy.CableTier;
+import aztech.modern_industrialization.datagen.tag.MIItemTagProvider;
 import aztech.modern_industrialization.debug.DebugCommands;
 import aztech.modern_industrialization.pipes.api.*;
 import aztech.modern_industrialization.pipes.electricity.ElectricityNetwork;
@@ -40,7 +42,6 @@ import aztech.modern_industrialization.pipes.item.ItemNetwork;
 import aztech.modern_industrialization.pipes.item.ItemNetworkData;
 import aztech.modern_industrialization.pipes.item.ItemNetworkNode;
 import aztech.modern_industrialization.pipes.item.ItemPipeScreenHandler;
-import aztech.modern_industrialization.util.ResourceUtil;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -63,8 +64,6 @@ public class MIPipes {
     public static final MIPipes INSTANCE = new MIPipes();
 
     public static final Block BLOCK_PIPE = new PipeBlock(FabricBlockSettings.of(Material.METAL).destroyTime(4.0f));
-    public static final ResourceLocation ITEM_PIPES_ID = new MIIdentifier("item_pipes");
-    public static final ResourceLocation FLUID_PIPES_ID = new MIIdentifier("fluid_pipes");
     public static BlockEntityType<PipeBlockEntity> BLOCK_ENTITY_TYPE_PIPE;
     private final Map<PipeNetworkType, PipeItem> pipeItems = new HashMap<>();
 
@@ -126,7 +125,7 @@ public class MIPipes {
         pipeItems.put(type, item);
         Registry.register(Registry.ITEM, new MIIdentifier(pipeId), item);
         PIPE_MODEL_NAMES.add(new MIIdentifier("item/" + pipeId));
-        ResourceUtil.appendToItemTag(FLUID_PIPES_ID, new MIIdentifier(pipeId));
+        MIItemTagProvider.generateTag(MITags.FLUID_PIPES, item);
     }
 
     private void registerItemPipeType(PipeColor color) {
@@ -137,7 +136,7 @@ public class MIPipes {
         pipeItems.put(type, item);
         Registry.register(Registry.ITEM, new MIIdentifier(pipeId), item);
         PIPE_MODEL_NAMES.add(new MIIdentifier("item/" + pipeId));
-        ResourceUtil.appendToItemTag(ITEM_PIPES_ID, new MIIdentifier(pipeId));
+        MIItemTagProvider.generateTag(MITags.ITEM_PIPES, item);
     }
 
     public void registerCableType(String name, int color, CableTier tier) {

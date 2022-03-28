@@ -34,7 +34,6 @@ import aztech.modern_industrialization.textures.TextureHelper;
 import aztech.modern_industrialization.textures.TextureManager;
 import com.mojang.blaze3d.platform.NativeImage;
 import java.io.IOException;
-
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.world.item.Item;
 

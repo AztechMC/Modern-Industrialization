@@ -23,15 +23,12 @@
  */
 package aztech.modern_industrialization;
 
-import aztech.modern_industrialization.datagen.tag.MIItemTagProvider;
-import aztech.modern_industrialization.machines.blockentities.ReplicatorMachineBlockEntity;
 import aztech.modern_industrialization.util.ResourceUtil;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.Items;
 
 public class MITags {
     public static final TagKey<Item> SCREWDRIVERS = item("screwdrivers");
@@ -39,6 +36,8 @@ public class MITags {
 
     public static final TagKey<Item> BARRELS = miItem("barrels");
     public static final TagKey<Item> TANKS = miItem("tanks");
+    public static final TagKey<Item> FLUID_PIPES = miItem("fluid_pipes");
+    public static final TagKey<Item> ITEM_PIPES = miItem("item_pipes");
 
     // Fabric should provide those:
     public static final TagKey<Item> AXES = item("axes");

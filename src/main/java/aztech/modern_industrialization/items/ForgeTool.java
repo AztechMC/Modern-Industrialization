@@ -26,7 +26,7 @@ package aztech.modern_industrialization.items;
 import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.MIItem;
 import aztech.modern_industrialization.ModernIndustrialization;
-import aztech.modern_industrialization.util.ResourceUtil;
+import aztech.modern_industrialization.datagen.tag.MIItemTagProvider;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.minecraft.core.Registry;
 import net.minecraft.tags.TagKey;
@@ -46,7 +46,7 @@ public class ForgeTool extends TieredItem {
         this.id = id;
         MIItem.items.put(id, this);
         MIItem.handhelds.add(id);
-        ResourceUtil.appendToItemTag(TAG.location(), new MIIdentifier(id));
+        MIItemTagProvider.generateTag(TAG, this);
     }
 
     public boolean isValidRepairItem(ItemStack stack, ItemStack repairCandidate) {

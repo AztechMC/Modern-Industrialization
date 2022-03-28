@@ -47,18 +47,6 @@ public class ResourceUtil {
         appendToTag(new ResourceLocation(tagId.getNamespace(), "items/" + tagId.getPath()), elementId);
     }
 
-    public static synchronized void appendTagToTag(ResourceLocation tagId, ResourceLocation subtag) {
-        // We use a copy-on-write strategy to update the JTag every time with the added
-        // entry.
-        JTag jtag = tags.computeIfAbsent(tagId, id -> JTag.tag());
-        jtag.tag(subtag);
-        ModernIndustrialization.RESOURCE_PACK.addTag(tagId, jtag);
-    }
-
-    public static synchronized void appendTagToTag(String tagId, String subtag) {
-        appendTagToTag(new ResourceLocation((tagId)), new ResourceLocation(subtag));
-    }
-
     public static synchronized void appendToTag(String tagId, String elementId) {
         appendToTag(new ResourceLocation(tagId), new ResourceLocation(elementId));
     }

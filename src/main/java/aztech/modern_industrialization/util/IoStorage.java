@@ -68,7 +68,7 @@ public class IoStorage<T> implements Storage<T> {
     }
 
     @Override
-    public Iterator<StorageView<T>> iterator(TransactionContext transaction) {
+    public Iterator<? extends StorageView<T>> iterator(TransactionContext transaction) {
         if (allowExtract) {
             return storage.iterator(transaction);
         } else {

@@ -135,11 +135,6 @@ repositories {
 }
 
 dependencies {
-    // TODO remove when fabric PR is merged
-    include modImplementation("net.fabricmc.fabric-api:fabric-item-api-v1:1.4.0+technici4n-stack-aware-attribute-modifiers+38b1a4fd60") {
-        exclude(group: "net.fabricmc.fabric-api")
-    }
-
     minecraft "com.mojang:minecraft:${project.minecraft_version}"
     mappings loom.layered() {
         officialMojangMappings()

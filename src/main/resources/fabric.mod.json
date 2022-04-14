@@ -42,10 +42,11 @@
   ],
   "depends": {
     "fabricloader": ">=0.7.4",
-    "fabric": ">=0.44",
+    "fabric": ">=0.50",
     "minecraft": "1.18.2",
     "roughlyenoughitems": "*",
-    "team_reborn_energy": ">=2.2.0"
+    "team_reborn_energy": ">=2.2.0",
+    "cloth-config": "*"
   },
   "breaks": {
     "optifabric": "*",

@@ -47,7 +47,7 @@ import org.jetbrains.annotations.NotNull;
 public class VersionEvents {
 
     private static final String url = "https://api.cfwidget.com/minecraft/mc-mods/modern-industrialization";
-    private static final SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.US);
+    private static final SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.US);
     private static final String alphaPostfix = "alpha";
 
     private record Version(String name, String url, Date date) implements Comparable<Version> {

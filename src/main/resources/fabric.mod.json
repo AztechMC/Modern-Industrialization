@@ -35,6 +35,9 @@
     ],
     "fabric-datagen": [
       "aztech.modern_industrialization.datagen.MIDatagenEntrypoint"
+    ],
+    "ae2": [
+      "aztech.modern_industrialization.compat.ae2.MIAEAddon"
     ]
   },
   "mixins": [

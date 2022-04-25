@@ -130,6 +130,15 @@ repositories {
             includeGroup "org.parchmentmc.data"
         }
     }
+    // for AE2
+    maven {
+        name = "Modmaven"
+        url = uri("https://modmaven.dev/")
+
+        content {
+            includeGroup("appeng")
+        }
+    }
     mavenLocal()
 
 }
@@ -200,6 +209,10 @@ dependencies {
     }
 
     modCompileOnly('net.oskarstrom:DashLoader:2.1-dev4') {
+        exclude(group: "net.fabricmc.fabric-api")
+    }
+
+    modImplementation("appeng:appliedenergistics2-fabric:${project.ae2_version}") {
         exclude(group: "net.fabricmc.fabric-api")
     }
 }

@@ -95,7 +95,9 @@ public abstract class AbstractStorageMachineBlockEntity extends MachineBlockEnti
 
     @Override
     public void tick() {
-        EnergyHelper.autoOuput(this, orientation, to, energy);
+        if (!level.isClientSide()) {
+            EnergyHelper.autoOuput(this, orientation, to, energy);
+        }
     }
 
     @Override

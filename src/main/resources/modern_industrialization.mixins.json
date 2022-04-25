@@ -7,7 +7,6 @@
     "BlockMixin",
     "ItemStackMixin",
     "LivingEntityMixin",
-    "P2PTunnelPartMixin",
     "WorldChunkMixin"
   ],
   "injectors": {

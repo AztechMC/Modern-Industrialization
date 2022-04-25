@@ -24,11 +24,13 @@
 package aztech.modern_industrialization.compat.ae2;
 
 import appeng.api.IAEAddonEntrypoint;
+import appeng.api.features.P2PTunnelAttunement;
 import appeng.api.inventories.PartApiLookup;
 import appeng.api.parts.PartModels;
 import appeng.items.parts.PartItem;
 import appeng.items.parts.PartModelsHelper;
 import aztech.modern_industrialization.MIIdentifier;
+import aztech.modern_industrialization.MITags;
 import aztech.modern_industrialization.ModernIndustrialization;
 import aztech.modern_industrialization.api.energy.EnergyApi;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
@@ -39,8 +41,9 @@ public class MIAEAddon implements IAEAddonEntrypoint {
     @Override
     public void onAe2Initialized() {
         PartModels.registerModels(PartModelsHelper.createModels(EnergyP2PTunnelPart.class));
-        Registry.register(Registry.ITEM, new MIIdentifier("energy_p2p_tunnel"), new PartItem<>(
+        var item = Registry.register(Registry.ITEM, new MIIdentifier("energy_p2p_tunnel"), new PartItem<>(
                 new FabricItemSettings().tab(ModernIndustrialization.ITEM_GROUP), EnergyP2PTunnelPart.class, EnergyP2PTunnelPart::new));
+        P2PTunnelAttunement.addItemByTag(MITags.miItem("energy_p2p_attunement"), item);
         PartApiLookup.register(EnergyApi.MOVEABLE, (part, context) -> part.getExposedApi(), EnergyP2PTunnelPart.class);
     }
 }

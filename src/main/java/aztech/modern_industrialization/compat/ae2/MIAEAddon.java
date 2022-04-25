@@ -29,6 +29,7 @@ import appeng.api.inventories.PartApiLookup;
 import appeng.api.parts.PartModels;
 import appeng.items.parts.PartItem;
 import appeng.items.parts.PartModelsHelper;
+import aztech.modern_industrialization.MIConfig;
 import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.MITags;
 import aztech.modern_industrialization.ModernIndustrialization;
@@ -40,6 +41,10 @@ public class MIAEAddon implements IAEAddonEntrypoint {
 
     @Override
     public void onAe2Initialized() {
+        if (!MIConfig.getConfig().enableAe2Integration) {
+            return;
+        }
+
         PartModels.registerModels(PartModelsHelper.createModels(EnergyP2PTunnelPart.class));
         var item = Registry.register(Registry.ITEM, new MIIdentifier("energy_p2p_tunnel"), new PartItem<>(
                 new FabricItemSettings().tab(ModernIndustrialization.ITEM_GROUP), EnergyP2PTunnelPart.class, EnergyP2PTunnelPart::new));

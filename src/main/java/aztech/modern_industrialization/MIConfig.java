@@ -54,6 +54,9 @@ public class MIConfig implements ConfigData {
 
     public boolean enableDebugCommands = false;
 
+    @ConfigEntry.Gui.RequiresRestart
+    public boolean enableAe2Integration = true;
+
     @ConfigEntry.Gui.Excluded
     private transient static boolean registered = false;
 

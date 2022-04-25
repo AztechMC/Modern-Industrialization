@@ -1201,6 +1201,7 @@
     "text.autoconfig.modern_industrialization.option.colorWaterLava": "Color water and lava",
     "text.autoconfig.modern_industrialization.option.disableFuelTooltips": "Fuel EU Tooltips Disabled",
     "text.autoconfig.modern_industrialization.option.disableItemTagTooltips": "Item Tag Tooltips Disabled",
+    "text.autoconfig.modern_industrialization.option.enableAe2Integration": "Enable the AE2 integration, if present",
     "text.autoconfig.modern_industrialization.option.enableDebugCommands": "Enable UNSUPPORTED and DANGEROUS debug commands",
     "text.autoconfig.modern_industrialization.option.enableHatchPlacementOverlay": "Show valid positions in multiblocks when holding a hatch",
     "text.autoconfig.modern_industrialization.option.generateOres": "Ore Generation Enabled (Need Restart)",

@@ -118,7 +118,7 @@ public class DieselToolItem extends Item implements Vanishable, DynamicEnchantme
             FluidVariant fluid = FluidFuelItemHelper.getFluid(stack);
             int burnTicks = FluidFuelRegistry.getEu(fluid.getFluid());
             if (burnTicks > 0) {
-                return 1.0f + burnTicks / 4.0f;
+                return 1.0f + burnTicks / 8.0f;
             }
         }
         return 1.0f;
@@ -127,7 +127,7 @@ public class DieselToolItem extends Item implements Vanishable, DynamicEnchantme
     @Override
     public Multimap<Attribute, AttributeModifier> getAttributeModifiers(ItemStack stack, EquipmentSlot slot) {
         if (slot == EquipmentSlot.MAINHAND && FluidFuelItemHelper.getAmount(stack) > 0) {
-            return ItemHelper.createToolModifiers(damage * FluidFuelRegistry.getEu(FluidFuelItemHelper.getFluid(stack).getFluid()) / 300);
+            return ItemHelper.createToolModifiers(damage * FluidFuelRegistry.getEu(FluidFuelItemHelper.getFluid(stack).getFluid()) / 600);
         }
         return ImmutableMultimap.of();
     }

@@ -143,12 +143,12 @@ public class JetpackItem extends ArmorItem implements Wearable, FabricElytraItem
                         // Boost forward if fall flying
                         Vec3 playerFacing = player.getLookAngle();
                         Vec3 playerVelocity = player.getDeltaMovement();
-                        double maxSpeed = Math.sqrt(FluidFuelRegistry.getEu(fluid.getFluid())) / 10;
+                        double maxSpeed = Math.sqrt(FluidFuelRegistry.getEu(fluid.getFluid()) / 200.0);
                         double attenuationFactor = 0.5;
                         player.setDeltaMovement(playerVelocity.scale(attenuationFactor).add(playerFacing.scale(maxSpeed)));
                     } else {
                         // Otherwise boost vertically
-                        double maxSpeed = Math.sqrt(FluidFuelRegistry.getEu(fluid.getFluid())) / 10;
+                        double maxSpeed = Math.sqrt(FluidFuelRegistry.getEu(fluid.getFluid()) / 200.0);
                         double acceleration = 0.25;
                         Vec3 v = player.getDeltaMovement();
                         if (v.y < maxSpeed) {

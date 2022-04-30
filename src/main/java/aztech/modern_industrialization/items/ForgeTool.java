@@ -27,6 +27,7 @@ import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.MIItem;
 import aztech.modern_industrialization.ModernIndustrialization;
 import aztech.modern_industrialization.datagen.tag.MIItemTagProvider;
+import java.util.Locale;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.minecraft.core.Registry;
 import net.minecraft.tags.TagKey;
@@ -84,6 +85,11 @@ public class ForgeTool extends TieredItem {
             public Ingredient getRepairIngredient() {
                 return normalTier.getRepairIngredient();
             }
+
+            @Override
+            public String toString() {
+                return normalTier.toString().toLowerCase(Locale.ROOT) + "_forge_tool";
+            }
         };
 
     }
@@ -121,6 +127,11 @@ public class ForgeTool extends TieredItem {
         @Override
         public Ingredient getRepairIngredient() {
             return Ingredient.of(TAG);
+        }
+
+        @Override
+        public String toString() {
+            return "modern_industrialization:steel";
         }
     };
 }

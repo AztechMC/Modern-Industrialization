@@ -89,6 +89,11 @@ public class GraviChestPlateItem extends ArmorItem implements Wearable, Activata
             public float getKnockbackResistance() {
                 return 0;
             }
+
+            @Override
+            public String toString() {
+                return getName().replace("/", ":");
+            }
         };
     }
 

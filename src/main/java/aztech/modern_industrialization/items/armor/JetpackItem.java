@@ -114,6 +114,11 @@ public class JetpackItem extends ArmorItem implements Wearable, FabricElytraItem
             public float getKnockbackResistance() {
                 return 0;
             }
+
+            @Override
+            public String toString() {
+                return getName().replace("/", ":");
+            }
         };
     }
 

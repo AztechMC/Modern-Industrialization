@@ -41,6 +41,7 @@ import aztech.modern_industrialization.misc.autotest.MIAutoTesting;
 import aztech.modern_industrialization.misc.guidebook.GuidebookEvents;
 import aztech.modern_industrialization.nuclear.NuclearItem;
 import aztech.modern_industrialization.pipes.MIPipes;
+import aztech.modern_industrialization.proxy.CommonProxy;
 import java.util.Map;
 import net.devtech.arrp.api.RRPCallback;
 import net.devtech.arrp.api.RuntimeResourcePack;
@@ -132,6 +133,8 @@ public class ModernIndustrialization implements ModInitializer {
             MIKeyMap.clear(handler.player);
         });
         GuidebookEvents.init();
+
+        CommonProxy.initEvents();
 
         if (System.getProperty("modern_industrialization.autoTest") != null) {
             MIAutoTesting.init();

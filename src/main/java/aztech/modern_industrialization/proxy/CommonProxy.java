@@ -51,7 +51,8 @@ public class CommonProxy {
     }
 
     private static MinecraftServer currentServer = null;
-    static {
+
+    public static void initEvents() {
         ServerLifecycleEvents.SERVER_STARTED.register(s -> currentServer = s);
         ServerLifecycleEvents.SERVER_STOPPED.register(s -> currentServer = null);
     }

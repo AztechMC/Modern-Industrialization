@@ -384,10 +384,11 @@ if (System.getenv("CURSEFORGE_API_KEY") && !version.endsWith("-SNAPSHOT")) {
             relations {
                 requiredDependency "fabric-api"
                 requiredDependency "roughly-enough-items"
+                requiredDependency "cloth-config"
                 optionalDependency "wthit"
                 optionalDependency "megane"
-                embeddedLibrary "auto-config-updated-api"
                 embeddedLibrary "patchouli-fabric"
+                embeddedLibrary "pal"
             }
             mainArtifact(remapJar.archiveFile) {
                 displayName = "Modern Industrialization v${version}"

@@ -25,6 +25,9 @@ package aztech.modern_industrialization.fluid;
 
 import aztech.modern_industrialization.MIFluids;
 import aztech.modern_industrialization.ModernIndustrialization;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariantAttributeHandler;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariantAttributes;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.Item;
@@ -58,6 +61,15 @@ public class CraftingFluid extends Fluid {
         this.block = new CraftingFluidBlock(name, color);
 
         MIFluids.FLUIDS.add(this);
+
+        if (isGas) {
+            FluidVariantAttributes.register(this, new FluidVariantAttributeHandler() {
+                @Override
+                public boolean isLighterThanAir(FluidVariant variant) {
+                    return true;
+                }
+            });
+        }
     }
 
     public CraftingFluid(String name, int color) {

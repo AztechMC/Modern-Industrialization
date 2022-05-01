@@ -74,6 +74,7 @@ public class ForgeHammerBlock extends MIBlock {
 
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
         if (world.isClientSide) {
@@ -95,11 +96,13 @@ public class ForgeHammerBlock extends MIBlock {
         }
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public VoxelShape getShape(BlockState state, BlockGetter view, BlockPos pos, CollisionContext context) {
         return shape;
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public boolean isPathfindable(BlockState state, BlockGetter world, BlockPos pos, PathComputationType type) {
         return false;

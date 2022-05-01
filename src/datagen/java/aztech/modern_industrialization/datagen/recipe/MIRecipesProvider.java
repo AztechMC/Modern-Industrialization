@@ -25,10 +25,10 @@ package aztech.modern_industrialization.datagen.recipe;
 
 import aztech.modern_industrialization.MIIdentifier;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
-import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipesProvider;
+import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider;
 import net.minecraft.resources.ResourceLocation;
 
-public abstract class MIRecipesProvider extends FabricRecipesProvider {
+public abstract class MIRecipesProvider extends FabricRecipeProvider {
     public MIRecipesProvider(FabricDataGenerator dataGenerator) {
         super(dataGenerator);
     }

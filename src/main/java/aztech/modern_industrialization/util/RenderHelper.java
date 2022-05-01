@@ -44,16 +44,17 @@ import net.fabricmc.fabric.api.renderer.v1.mesh.MutableQuadView;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
 import net.fabricmc.fabric.api.transfer.v1.client.fluid.FluidVariantRendering;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariantAttributes;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
+import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import org.lwjgl.system.MemoryStack;
@@ -136,7 +137,7 @@ public class RenderHelper {
         float topHeight = fill;
         float bottomHeight = TANK_W;
         // Render gas from top to bottom
-        if (FluidVariantRendering.fillsFromTop(fluid)) {
+        if (FluidVariantAttributes.isLighterThanAir(fluid)) {
             topHeight = 1 - TANK_W;
             bottomHeight = 1 - fill;
         }
@@ -163,7 +164,7 @@ public class RenderHelper {
     }
 
     public static void drawFluidInGui(PoseStack ms, FluidVariant fluid, float i, float j, int scale, float fractionUp) {
-        RenderSystem.setShaderTexture(0, TextureAtlas.LOCATION_BLOCKS);
+        RenderSystem.setShaderTexture(0, InventoryMenu.BLOCK_ATLAS);
         TextureAtlasSprite sprite = FluidVariantRendering.getSprite(fluid);
         int color = FluidVariantRendering.getColor(fluid);
 

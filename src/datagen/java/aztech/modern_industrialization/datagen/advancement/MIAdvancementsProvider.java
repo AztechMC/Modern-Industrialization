@@ -26,7 +26,7 @@ package aztech.modern_industrialization.datagen.advancement;
 import aztech.modern_industrialization.MIIdentifier;
 import java.util.function.Consumer;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
-import net.fabricmc.fabric.api.datagen.v1.provider.FabricAdvancementsProvider;
+import net.fabricmc.fabric.api.datagen.v1.provider.FabricAdvancementProvider;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.FrameType;
 import net.minecraft.advancements.critereon.InventoryChangeTrigger;
@@ -35,7 +35,7 @@ import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
 
-public class MIAdvancementsProvider extends FabricAdvancementsProvider {
+public class MIAdvancementsProvider extends FabricAdvancementProvider {
     public MIAdvancementsProvider(FabricDataGenerator dataGenerator) {
         super(dataGenerator);
     }

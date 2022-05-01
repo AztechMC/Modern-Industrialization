@@ -166,6 +166,7 @@ public final class MaterialBuilder {
             action.apply(recipeContext);
         }
         for (MaterialRecipeBuilder builder : recipesMap.values()) {
+            // noinspection deprecation
             builder.save(consumer);
         }
     }

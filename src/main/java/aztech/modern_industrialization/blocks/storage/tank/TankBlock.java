@@ -59,11 +59,13 @@ public class TankBlock extends AbstractStorageBlock implements EntityBlock {
         return true;
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public int getLightBlock(BlockState state, BlockGetter world, BlockPos pos) {
         return 0;
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
         if (((TankBlockEntity) world.getBlockEntity(pos)).onPlayerUse(player)) {

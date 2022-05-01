@@ -107,6 +107,7 @@ public abstract class PipeNetwork {
         if (!tickingCacheValid) {
             tickingNodesCache.clear();
             for (var chunkEntry : this.nodesByChunk.entrySet()) {
+                // noinspection deprecation
                 if (manager.tickingChunks.contains(chunkEntry.getKey())) {
                     for (var entry : chunkEntry.getValue().entrySet()) {
                         var node = entry.getValue();

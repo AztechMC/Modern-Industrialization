@@ -59,6 +59,7 @@ public class CreativeTankBlock extends MIBlock implements TickableBlock {
         return true;
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public int getLightBlock(BlockState state, BlockGetter world, BlockPos pos) {
         return 0;
@@ -75,6 +76,7 @@ public class CreativeTankBlock extends MIBlock implements TickableBlock {
         return stack;
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public List<ItemStack> getDrops(BlockState state, LootContext.Builder builder) {
         LootContext lootContext = builder.withParameter(LootContextParams.BLOCK_STATE, state).create(LootContextParamSets.BLOCK);
@@ -86,6 +88,7 @@ public class CreativeTankBlock extends MIBlock implements TickableBlock {
         return getStack(world.getBlockEntity(pos));
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
         if (((CreativeTankBlockEntity) world.getBlockEntity(pos)).onPlayerUse(player)) {

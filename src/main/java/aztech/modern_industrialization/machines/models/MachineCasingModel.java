@@ -35,7 +35,6 @@ import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.ItemOverrides;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
-import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.Material;
@@ -44,6 +43,7 @@ import net.minecraft.client.resources.model.ModelState;
 import net.minecraft.client.resources.model.UnbakedModel;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
 
@@ -68,7 +68,7 @@ public class MachineCasingModel implements UnbakedModel, BakedModel {
     public MachineCasingModel(String folder) {
         this.id = new MIIdentifier("machine_casing/" + folder);
         for (int i = 0; i < 3; ++i) {
-            spriteIds[i] = new Material(TextureAtlas.LOCATION_BLOCKS,
+            spriteIds[i] = new Material(InventoryMenu.BLOCK_ATLAS,
                     new MIIdentifier("blocks/casings/" + folder + "/" + SIDES[i]));
         }
 

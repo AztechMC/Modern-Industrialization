@@ -50,10 +50,10 @@ import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 import net.fabricmc.fabric.api.screenhandler.v1.ScreenHandlerRegistry;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
-import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
@@ -82,14 +82,14 @@ public class MIPipes {
             @Override
             public Collection<net.minecraft.client.resources.model.Material> getSpriteDependencies() {
                 return sprites.stream().map(
-                        n -> new net.minecraft.client.resources.model.Material(TextureAtlas.LOCATION_BLOCKS, new MIIdentifier("blocks/pipes/" + n)))
+                        n -> new net.minecraft.client.resources.model.Material(InventoryMenu.BLOCK_ATLAS, new MIIdentifier("blocks/pipes/" + n)))
                         .collect(Collectors.toList());
             }
 
             @Override
             public PipeRenderer create(Function<net.minecraft.client.resources.model.Material, TextureAtlasSprite> textureGetter) {
                 net.minecraft.client.resources.model.Material[] ids = sprites.stream()
-                        .map(n -> new net.minecraft.client.resources.model.Material(TextureAtlas.LOCATION_BLOCKS,
+                        .map(n -> new net.minecraft.client.resources.model.Material(InventoryMenu.BLOCK_ATLAS,
                                 new MIIdentifier("blocks/pipes/" + n)))
                         .toArray(net.minecraft.client.resources.model.Material[]::new);
                 return new PipeMeshCache(textureGetter, ids, innerQuads);

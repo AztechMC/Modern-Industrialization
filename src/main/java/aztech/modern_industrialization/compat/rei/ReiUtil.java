@@ -35,8 +35,8 @@ import me.shedaniel.rei.api.client.gui.widgets.Tooltip;
 import me.shedaniel.rei.api.common.entry.EntryIngredient;
 import me.shedaniel.rei.api.common.entry.EntryStack;
 import me.shedaniel.rei.api.common.util.EntryStacks;
-import net.fabricmc.fabric.api.transfer.v1.client.fluid.FluidVariantRendering;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariantAttributes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.item.Item;
@@ -63,7 +63,7 @@ public class ReiUtil {
         Component probabilityText = getProbabilityTooltip(probability);
         return EntryStacks.of(fluid, amount).setting(EntryStack.Settings.TOOLTIP_PROCESSOR, (stack, oldTooltip) -> {
             List<Component> tooltip = new ArrayList<>();
-            tooltip.add(FluidVariantRendering.getName(FluidVariant.of(fluid)));
+            tooltip.add(FluidVariantAttributes.getName(FluidVariant.of(fluid)));
             tooltip.add(FluidHelper.getFluidAmount(amount));
             if (probabilityText != null) {
                 tooltip.add(probabilityText);
@@ -98,7 +98,7 @@ public class ReiUtil {
     public static EntryStack<?> createFluidEntryStack(Fluid fluid) {
         return EntryStacks.of(fluid, 81000).setting(EntryStack.Settings.TOOLTIP_PROCESSOR, (stack, oldTooltip) -> {
             List<Component> tooltip = new ArrayList<>();
-            tooltip.add(FluidVariantRendering.getName(FluidVariant.of(fluid)));
+            tooltip.add(FluidVariantAttributes.getName(FluidVariant.of(fluid)));
             return Tooltip.create(tooltip);
         });
     }

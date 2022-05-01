@@ -49,7 +49,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
-import net.fabricmc.fabric.api.client.rendereregistry.v1.BlockEntityRendererRegistry;
+import net.fabricmc.fabric.api.client.rendering.v1.BlockEntityRendererRegistry;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.material.Fluid;
@@ -572,7 +572,7 @@ public class MultiblockMachines {
 
     public static void clientInit() {
         MachineModels.addTieredMachine("coke_oven", "coke_oven", MachineCasings.BRICKS, true, false, false);
-        BlockEntityRendererRegistry.INSTANCE.register(COKE_OVEN, MultiblockMachineBER::new);
+        BlockEntityRendererRegistry.register(COKE_OVEN, MultiblockMachineBER::new);
         new Rei("coke_oven", MIMachineRecipeTypes.COKE_OVEN, new ProgressBar.Parameters(77, 33, "arrow"))
                 .items(inputs -> inputs.addSlot(56, 35), outputs -> outputs.addSlot(102, 35))
                 .fluids(inputs -> {
@@ -580,7 +580,7 @@ public class MultiblockMachines {
                 .register();
 
         MachineModels.addTieredMachine("steam_blast_furnace", "steam_blast_furnace", MachineCasings.FIREBRICKS, true, false, false);
-        BlockEntityRendererRegistry.INSTANCE.register(STEAM_BLAST_FURNACE, MultiblockMachineBER::new);
+        BlockEntityRendererRegistry.register(STEAM_BLAST_FURNACE, MultiblockMachineBER::new);
         new Rei("steam_blast_furnace", MIMachineRecipeTypes.BLAST_FURNACE, new ProgressBar.Parameters(77, 33, "arrow"))
                 .items(inputs -> inputs.addSlots(56, 35, 2, 1), outputs -> outputs.addSlots(102, 35, 1, 1))
                 .fluids(fluids -> fluids.addSlots(36, 35, 1, 1), outputs -> outputs.addSlots(122, 35, 1, 1))
@@ -588,24 +588,24 @@ public class MultiblockMachines {
                 .register();
 
         MachineModels.addTieredMachine("electric_blast_furnace", "electric_blast_furnace", MachineCasings.HEATPROOF, true, false, false);
-        BlockEntityRendererRegistry.INSTANCE.register(ELECTRIC_BLAST_FURNACE, MultiblockMachineBER::new);
+        BlockEntityRendererRegistry.register(ELECTRIC_BLAST_FURNACE, MultiblockMachineBER::new);
         // note: the REI category is built in the static {} block of ElectricBlastFurnaceBlockEntity.java
 
         MachineModels.addTieredMachine("large_steam_boiler", "large_boiler", MachineCasings.BRONZE_PLATED_BRICKS, true, false, false);
-        BlockEntityRendererRegistry.INSTANCE.register(LARGE_STEAM_BOILER, MultiblockMachineBER::new);
+        BlockEntityRendererRegistry.register(LARGE_STEAM_BOILER, MultiblockMachineBER::new);
 
         MachineModels.addTieredMachine("advanced_large_steam_boiler", "large_boiler", MachineCasings.BRONZE_PLATED_BRICKS, true, false, false);
-        BlockEntityRendererRegistry.INSTANCE.register(ADVANCED_LARGE_STEAM_BOILER, MultiblockMachineBER::new);
+        BlockEntityRendererRegistry.register(ADVANCED_LARGE_STEAM_BOILER, MultiblockMachineBER::new);
 
         MachineModels.addTieredMachine("high_pressure_large_steam_boiler", "large_boiler", CLEAN_STAINLESS_STEEL, true, false, false);
-        BlockEntityRendererRegistry.INSTANCE.register(HIGH_PRESSURE_LARGE_STEAM_BOILER, MultiblockMachineBER::new);
+        BlockEntityRendererRegistry.register(HIGH_PRESSURE_LARGE_STEAM_BOILER, MultiblockMachineBER::new);
 
         MachineModels.addTieredMachine("high_pressure_advanced_large_steam_boiler", "large_boiler", CLEAN_STAINLESS_STEEL, true, false, false);
-        BlockEntityRendererRegistry.INSTANCE.register(HIGH_PRESSURE_ADVANCED_LARGE_STEAM_BOILER, MultiblockMachineBER::new);
+        BlockEntityRendererRegistry.register(HIGH_PRESSURE_ADVANCED_LARGE_STEAM_BOILER, MultiblockMachineBER::new);
 
 
         MachineModels.addTieredMachine("steam_quarry", "quarry", MachineCasings.STEEL, true, false, false);
-        BlockEntityRendererRegistry.INSTANCE.register(STEAM_QUARRY, MultiblockMachineBER::new);
+        BlockEntityRendererRegistry.register(STEAM_QUARRY, MultiblockMachineBER::new);
         new Rei("steam_quarry", MIMachineRecipeTypes.QUARRY, new ProgressBar.Parameters(77, 33, "arrow"))
                 .items(inputs -> inputs.addSlot(56, 35), outputs -> outputs.addSlots(102, 35, 4, 4))
                 .workstations("steam_quarry", "electric_quarry").extraTest(recipe -> recipe.eu <= 4)
@@ -616,17 +616,17 @@ public class MultiblockMachines {
                 .register();
 
         MachineModels.addTieredMachine("electric_quarry", "quarry", MachineCasings.STEEL, true, false, false);
-        BlockEntityRendererRegistry.INSTANCE.register(ELECTRIC_QUARRY, MultiblockMachineBER::new);
+        BlockEntityRendererRegistry.register(ELECTRIC_QUARRY, MultiblockMachineBER::new);
 
         MachineModels.addTieredMachine("vacuum_freezer", "vacuum_freezer", MachineCasings.FROSTPROOF, true, false, false);
-        BlockEntityRendererRegistry.INSTANCE.register(VACUUM_FREEZER, MultiblockMachineBER::new);
+        BlockEntityRendererRegistry.register(VACUUM_FREEZER, MultiblockMachineBER::new);
         new Rei("vacuum_freezer", MIMachineRecipeTypes.VACUUM_FREEZER, new ProgressBar.Parameters(77, 33, "arrow"))
                 .items(inputs -> inputs.addSlots(56, 35, 2, 1), outputs -> outputs.addSlot(102, 35))
                 .fluids(inputs -> inputs.addSlots(36, 35, 2, 1), outputs -> outputs.addSlot(122, 35))
                 .register();
 
         MachineModels.addTieredMachine("oil_drilling_rig", "oil_drilling_rig", MachineCasings.STEEL, true, false, false);
-        BlockEntityRendererRegistry.INSTANCE.register(OIL_DRILLING_RIG, MultiblockMachineBER::new);
+        BlockEntityRendererRegistry.register(OIL_DRILLING_RIG, MultiblockMachineBER::new);
         new Rei("oil_drilling_rig", MIMachineRecipeTypes.OIL_DRILLING_RIG, new ProgressBar.Parameters(77, 33, "arrow"))
                 .items(inputs -> inputs.addSlot(36, 35), outputs -> {
                 })
@@ -635,26 +635,26 @@ public class MultiblockMachines {
                 .register();
 
         MachineModels.addTieredMachine("distillation_tower", "distillation_tower", CLEAN_STAINLESS_STEEL, true, false, false);
-        BlockEntityRendererRegistry.INSTANCE.register(DISTILLATION_TOWER, MultiblockMachineBER::new);
+        BlockEntityRendererRegistry.register(DISTILLATION_TOWER, MultiblockMachineBER::new);
         new Rei("distillation_tower", MIMachineRecipeTypes.DISTILLATION_TOWER, new ProgressBar.Parameters(77, 33, "arrow"))
                 .fluids(inputs -> inputs.addSlot(56, 35), outputs -> outputs.addSlots(102, 35, 1, 8))
                 .register();
 
         MachineModels.addTieredMachine("large_diesel_generator", "diesel_generator", MachineCasings.SOLID_TITANIUM, true, false, false);
-        BlockEntityRendererRegistry.INSTANCE.register(LARGE_DIESEL_GENERATOR, MultiblockMachineBER::new);
+        BlockEntityRendererRegistry.register(LARGE_DIESEL_GENERATOR, MultiblockMachineBER::new);
 
         MachineModels.addTieredMachine("large_steam_turbine", "steam_turbine", CLEAN_STAINLESS_STEEL, true, false, false);
-        BlockEntityRendererRegistry.INSTANCE.register(LARGE_STEAM_TURBINE, MultiblockMachineBER::new);
+        BlockEntityRendererRegistry.register(LARGE_STEAM_TURBINE, MultiblockMachineBER::new);
 
         MachineModels.addTieredMachine("heat_exchanger", "heat_exchanger", MachineCasings.STAINLESS_STEEL_PIPE, true, false, false);
-        BlockEntityRendererRegistry.INSTANCE.register(HEAT_EXCHANGER, MultiblockMachineBER::new);
+        BlockEntityRendererRegistry.register(HEAT_EXCHANGER, MultiblockMachineBER::new);
         new Rei("heat_exchanger", MIMachineRecipeTypes.HEAT_EXCHANGER, new ProgressBar.Parameters(77, 42, "arrow"))
                 .items(inputs -> inputs.addSlot(36, 35), outputs -> outputs.addSlot(122, 35))
                 .fluids(inputs -> inputs.addSlots(56, 35, 2, 1), outputs -> outputs.addSlots(102, 35, 2, 1))
                 .register();
 
         MachineModels.addTieredMachine("pressurizer", "pressurizer", MachineCasings.TITANIUM_PIPE, true, false, false);
-        BlockEntityRendererRegistry.INSTANCE.register(PRESSURIZER, MultiblockMachineBER::new);
+        BlockEntityRendererRegistry.register(PRESSURIZER, MultiblockMachineBER::new);
         new Rei("pressurizer", MIMachineRecipeTypes.PRESSURIZER, new ProgressBar.Parameters(77, 33, "arrow"))
                 .items(inputs -> inputs.addSlot(38, 35), outputs -> {
                 })
@@ -662,28 +662,28 @@ public class MultiblockMachines {
                 .register();
 
         MachineModels.addTieredMachine("implosion_compressor", "compressor", MachineCasings.SOLID_TITANIUM, true, false, false);
-        BlockEntityRendererRegistry.INSTANCE.register(IMPLOSION_COMPRESSOR, MultiblockMachineBER::new);
+        BlockEntityRendererRegistry.register(IMPLOSION_COMPRESSOR, MultiblockMachineBER::new);
         new Rei("implosion_compressor", MIMachineRecipeTypes.IMPLOSION_COMPRESSOR, new ProgressBar.Parameters(77, 42, "compress"))
                 .items(inputs -> inputs.addSlots(36, 35, 2, 2), outputs -> outputs.addSlot(102, 42))
                 .register();
 
         MachineModels.addTieredMachine("nuclear_reactor", "nuclear_reactor", MachineCasings.NUCLEAR, true, false, false, true);
-        BlockEntityRendererRegistry.INSTANCE.register(NUCLEAR_REACTOR, MultiblockMachineBER::new);
+        BlockEntityRendererRegistry.register(NUCLEAR_REACTOR, MultiblockMachineBER::new);
 
         MachineModels.addTieredMachine("large_tank",
                 "large_tank", MachineCasings.STEEL, true, false, false, false);
-        BlockEntityRendererRegistry.INSTANCE.register(LARGE_TANK, MultiblockTankBER::new);
+        BlockEntityRendererRegistry.register(LARGE_TANK, MultiblockTankBER::new);
 
         MachineModels.addTieredMachine("fusion_reactor",
                 "fusion_reactor", MachineCasings.EV, true, false, false, true);
-        BlockEntityRendererRegistry.INSTANCE.register(FUSION_REACTOR, MultiblockMachineBER::new);
+        BlockEntityRendererRegistry.register(FUSION_REACTOR, MultiblockMachineBER::new);
         new Rei("fusion_reactor", MIMachineRecipeTypes.FUSION_REACTOR, new ProgressBar.Parameters(66, 33, "arrow"))
                 .fluids(inputs -> inputs.addSlots(26, 35, 1, 2), outputs -> outputs.addSlots(92, 35, 1, 3))
                 .register();
 
         MachineModels.addTieredMachine("plasma_turbine", "steam_turbine",
                 MachineCasings.PLASMA_HANDLING_IRIDIUM, true, false, false);
-        BlockEntityRendererRegistry.INSTANCE.register(PLASMA_TURBINE, MultiblockMachineBER::new);
+        BlockEntityRendererRegistry.register(PLASMA_TURBINE, MultiblockMachineBER::new);
     }
 
     private static final Rectangle CRAFTING_GUI = new Rectangle(CraftingMultiblockGui.X, CraftingMultiblockGui.Y,

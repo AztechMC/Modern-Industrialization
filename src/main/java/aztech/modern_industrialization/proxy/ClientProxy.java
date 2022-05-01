@@ -30,7 +30,7 @@ import aztech.modern_industrialization.machines.models.MachineModelProvider;
 import aztech.modern_industrialization.materials.MaterialBuilder;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.client.rendereregistry.v1.BlockEntityRendererRegistry;
+import net.fabricmc.fabric.api.client.rendering.v1.BlockEntityRendererRegistry;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.model.UnbakedModel;
 import net.minecraft.world.entity.player.Player;
@@ -59,6 +59,6 @@ public class ClientProxy extends CommonProxy {
         UnbakedModel tankModel = new TankModel(partContext.getMaterialName());
         MachineModelProvider.register(new MIIdentifier("block/" + itemPath), tankModel);
         MachineModelProvider.register(new MIIdentifier("item/" + itemPath), tankModel);
-        BlockEntityRendererRegistry.INSTANCE.register(blockEntityType, TankRenderer::new);
+        BlockEntityRendererRegistry.register(blockEntityType, TankRenderer::new);
     }
 }

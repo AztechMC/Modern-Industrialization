@@ -123,7 +123,7 @@ public class ModernIndustrialization implements ModInitializer {
 
         MIPipes.INSTANCE.setup();
 
-        RRPCallback.EVENT.register(a -> {
+        RRPCallback.BEFORE_VANILLA.register(a -> {
             a.add(RESOURCE_PACK);
         });
 

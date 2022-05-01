@@ -58,6 +58,7 @@ public class AbstractStorageBlock extends MIBlock {
         return stack;
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public List<ItemStack> getDrops(BlockState state, LootContext.Builder builder) {
         LootContext lootContext = builder.withParameter(LootContextParams.BLOCK_STATE, state).create(LootContextParamSets.BLOCK);

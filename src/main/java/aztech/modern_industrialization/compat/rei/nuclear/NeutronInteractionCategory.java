@@ -109,10 +109,10 @@ public class NeutronInteractionCategory implements DisplayCategory<NeutronIntera
         String absorptionString = String.format("%.1f ", 100 * interactionProb * absorption) + "%";
 
         widgets.add(Widgets.createLabel(new Point(centerX - 20, centerY - 15), new TextComponent(scatteringString))
-                .tooltipLine(new TranslatableComponent("text.modern_industrialization.scattering_probability").getString()));
+                .tooltip(new TranslatableComponent("text.modern_industrialization.scattering_probability").getString()));
 
         widgets.add(Widgets.createLabel(new Point(centerX + 30, centerY + 35), new TextComponent(absorptionString).setStyle(TextHelper.NEUTRONS))
-                .noShadow().tooltipLine(new TranslatableComponent("text.modern_industrialization.absorption_probability").getString()));
+                .noShadow().tooltip(new TranslatableComponent("text.modern_industrialization.absorption_probability").getString()));
 
         if (type == NeutronType.FAST) {
             double slowingProba = display.nuclearComponent.getNeutronBehaviour().neutronSlowingProbability();
@@ -123,12 +123,12 @@ public class NeutronInteractionCategory implements DisplayCategory<NeutronIntera
             widgets.add(Widgets
                     .createLabel(new Point(centerX + 60, centerY + 20),
                             new TextComponent(fastFractionString).setStyle(Style.EMPTY.withColor(0xbc1a1a)))
-                    .noShadow().tooltipLine(new TranslatableComponent("text.modern_industrialization.fast_neutron_fraction").getString()));
+                    .noShadow().tooltip(new TranslatableComponent("text.modern_industrialization.fast_neutron_fraction").getString()));
 
             widgets.add(Widgets
                     .createLabel(new Point(centerX + 60, centerY - 10),
                             new TextComponent(thermalFractionString).setStyle(Style.EMPTY.withColor(0x0c27a7)))
-                    .noShadow().tooltipLine(new TranslatableComponent("text.modern_industrialization.thermal_neutron_fraction").getString()));
+                    .noShadow().tooltip(new TranslatableComponent("text.modern_industrialization.thermal_neutron_fraction").getString()));
 
             int index = 1 + (int) Math.floor((slowingProba) * 9);
             if (slowingProba == 0) {
@@ -163,21 +163,21 @@ public class NeutronInteractionCategory implements DisplayCategory<NeutronIntera
                 .createLabel(new Point(centerX + 20, centerY + 35),
                         new TranslatableComponent("text.modern_industrialization.neutrons_multiplication",
                                 String.format("%.1f", fuel.neutronMultiplicationFactor)).setStyle(TextHelper.NEUTRONS))
-                .noShadow().tooltipLine(new TranslatableComponent("text.modern_industrialization.neutron_temperature_variation").getString()));
+                .noShadow().tooltip(new TranslatableComponent("text.modern_industrialization.neutron_temperature_variation").getString()));
 
         widgets.add(Widgets
                 .createLabel(new Point(centerX - 18, centerY + 23),
                         new TextComponent(String.format("%d EU", NuclearConstant.EU_FOR_FAST_NEUTRON)).setStyle(TextHelper.NEUTRONS))
-                .noShadow().tooltipLine(new TranslatableComponent("text.modern_industrialization.fast_neutron_energy").getString()));
+                .noShadow().tooltip(new TranslatableComponent("text.modern_industrialization.fast_neutron_energy").getString()));
 
         widgets.add(
                 Widgets.createLabel(new Point(centerX + 55, centerY + 23), new TextComponent(String.format("%d EU", fuel.directEUbyDesintegration)))
-                        .tooltipLine(new TranslatableComponent("text.modern_industrialization.direct_energy").getString()));
+                        .tooltip(new TranslatableComponent("text.modern_industrialization.direct_energy").getString()));
 
         widgets.add(Widgets
                 .createLabel(new Point(centerX + 55, centerY - 12),
                         new TextComponent(String.format("%.2f °C", (double) fuel.directEUbyDesintegration / NuclearConstant.EU_PER_DEGREE)))
-                .tooltipLine(new TranslatableComponent("text.modern_industrialization.direct_heat_by_desintegration").getString()));
+                .tooltip(new TranslatableComponent("text.modern_industrialization.direct_heat_by_desintegration").getString()));
 
         return widgets;
     }

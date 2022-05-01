@@ -65,9 +65,9 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.fabricmc.fabric.api.client.rendering.v1.TooltipComponentCallback;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
-import net.fabricmc.fabric.api.client.screenhandler.v1.ScreenRegistry;
 import net.fabricmc.fabric.impl.content.registry.FuelRegistryImpl;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
@@ -105,10 +105,10 @@ public class ModernIndustrializationClient implements ClientModInitializer {
 
     @SuppressWarnings({ "unchecked", "RedundantCast", "rawtypes" })
     private void setupScreens() {
-        ScreenRegistry.register(
+        MenuScreens.register(
                 (MenuType<? extends MachineScreenHandlers.Client>) (MenuType) ModernIndustrialization.SCREEN_HANDLER_MACHINE,
                 MachineScreenHandlers.ClientScreen::new);
-        ScreenRegistry.register(ModernIndustrialization.SCREEN_HANDLER_FORGE_HAMMER, ForgeHammerScreen::new);
+        MenuScreens.register(ModernIndustrialization.SCREEN_HANDLER_FORGE_HAMMER, ForgeHammerScreen::new);
     }
 
     private void setupPackets() {

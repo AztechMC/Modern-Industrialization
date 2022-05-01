@@ -51,6 +51,7 @@ public class OreBlock extends MIBlock {
         this.materialName = materialName;
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
         ItemStack handStack = player.getMainHandItem();
@@ -62,6 +63,7 @@ public class OreBlock extends MIBlock {
         return super.use(state, world, pos, player, hand, hit);
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public void spawnAfterBreak(BlockState state, ServerLevel world, BlockPos pos, ItemStack stack) {
         super.spawnAfterBreak(state, world, pos, stack);

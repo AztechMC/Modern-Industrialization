@@ -29,7 +29,7 @@ import aztech.modern_industrialization.MIBlock;
 import aztech.modern_industrialization.MIConfig;
 import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.blocks.OreBlock;
-import aztech.modern_industrialization.datagen.tag.MIItemTagProvider;
+import aztech.modern_industrialization.datagen.tag.TagsToGenerate;
 import aztech.modern_industrialization.materials.set.MaterialOreSet;
 import aztech.modern_industrialization.textures.TextureHelper;
 import com.google.common.collect.ImmutableList;
@@ -133,7 +133,7 @@ public class OrePart extends UnbuildablePart<OrePart.OrePartParams> {
                             .parameter("enchantment", "minecraft:fortune").parameter("formula", "minecraft:ore_drops"))
                             .function(new JFunction("minecraft:explosion_decay")).name(loot)))));
 
-            MIItemTagProvider.generateTag("c:" + partContext.getMaterialName() + "_ores", block.blockItem);
+            TagsToGenerate.generateTag("c:" + partContext.getMaterialName() + "_ores", block.blockItem);
 
             MIConfig config = MIConfig.getConfig();
 

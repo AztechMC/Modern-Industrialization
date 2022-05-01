@@ -75,7 +75,7 @@ public class TexturesProvider implements DataProvider {
     private void writeTexture(HashCache cache, NativeImage image, String textureId) {
         try {
             var path = dataGenerator.getOutputFolder().resolve("assets").resolve(textureId.replace(':', '/'));
-            var sha = SHA1.hashBytes(image.asByteArray()).toString();
+            var sha = DataProvider.SHA1.hashBytes(image.asByteArray()).toString();
             if (!Objects.equals(cache.getHash(path), sha) || !Files.exists(path)) {
                 Files.createDirectories(path.getParent());
                 image.writeToFile(path);

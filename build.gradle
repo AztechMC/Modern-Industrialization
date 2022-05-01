@@ -225,6 +225,24 @@ processResources {
     }
 }
 
+sourceSets {
+    main {
+        java {
+            srcDir "src/main"
+            exclude "**/compat/dashloader/**"
+        }
+        resources {
+            srcDir "src/generated/resources"
+        }
+    }
+    datagen {
+        compileClasspath += main.compileClasspath
+        runtimeClasspath += main.runtimeClasspath
+        compileClasspath += main.output
+        runtimeClasspath += main.output
+    }
+}
+
 loom {
     accessWidenerPath = file("src/main/resources/modern_industrialization.accesswidener")
     runs {
@@ -244,19 +262,7 @@ loom {
 
             ideConfigGenerated = true
             runDir "build/datagen"
-            source sourceSets.main
-        }
-    }
-}
-
-sourceSets {
-    main {
-        java {
-            srcDir "src/main"
-            exclude "**/compat/dashloader/**"
-        }
-        resources {
-            srcDir "src/generated/resources"
+            source sourceSets.datagen
         }
     }
 }

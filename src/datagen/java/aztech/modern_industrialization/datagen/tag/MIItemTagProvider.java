@@ -25,10 +25,6 @@ package aztech.modern_industrialization.datagen.tag;
 
 import aztech.modern_industrialization.MITags;
 import aztech.modern_industrialization.machines.blockentities.ReplicatorMachineBlockEntity;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
 import net.minecraft.core.Registry;
@@ -40,22 +36,6 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 
 public class MIItemTagProvider extends FabricTagProvider.ItemTagProvider {
-    private static final Map<String, List<Item>> tagToItemMap = new HashMap<>();
-
-    public static void generateTag(String tag, Item item) {
-        if (tag.startsWith("#")) {
-            throw new IllegalArgumentException("Tag must not start with #: " + tag);
-        }
-        tagToItemMap.computeIfAbsent(tag, t -> new ArrayList<>()).add(item);
-    }
-
-    public static void generateTag(String tag, String item) {
-        generateTag(tag, Registry.ITEM.get(new ResourceLocation(item)));
-    }
-
-    public static void generateTag(TagKey<Item> tag, Item item) {
-        generateTag(tag.location().toString(), item);
-    }
 
     public MIItemTagProvider(FabricDataGenerator dataGenerator) {
         super(dataGenerator, null);
@@ -63,7 +43,7 @@ public class MIItemTagProvider extends FabricTagProvider.ItemTagProvider {
 
     @Override
     protected void generateTags() {
-        for (var entry : tagToItemMap.entrySet()) {
+        for (var entry : TagsToGenerate.tagToItemMap.entrySet()) {
             var tagId = new ResourceLocation(entry.getKey());
             for (var item : entry.getValue()) {
                 tag(key(tagId)).add(item);

@@ -23,53 +23,19 @@
  */
 package aztech.modern_industrialization.datagen.model;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
-import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
-import net.minecraft.data.DataProvider;
-import net.minecraft.data.HashCache;
 
-public class MachineModelsProvider implements DataProvider {
-    private static final Map<String, MachineModelProperties> PROPS = new HashMap<>();
-    private static final Gson GSON = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
+public class MachineModelsToGenerate {
+    static final Map<String, MachineModelProperties> PROPS = new HashMap<>();
 
     public static void register(String machine, String overlay, boolean front, boolean top, boolean side, boolean active) {
         PROPS.put(machine, new MachineModelProperties(overlay, front, top, side, active));
     }
 
-    private final FabricDataGenerator gen;
-
-    public MachineModelsProvider(FabricDataGenerator gen) {
-        this.gen = gen;
-    }
-
-    @Override
-    public void run(HashCache cache) throws IOException {
-        Path outputPath = gen.getOutputFolder();
-        Path nonGeneratedPath = gen.getOutputFolder().resolve("../../main/resources");
-
-        for (var entry : PROPS.entrySet()) {
-            var modelPath = "assets/%s/models/machine/%s.json".formatted(gen.getModId(), entry.getKey());
-            if (!Files.exists(nonGeneratedPath.resolve(modelPath))) {
-                // Only generate the model json if it doesn't exist in the non-generated assets.
-                DataProvider.save(GSON, cache, entry.getValue().toMachineJson(), outputPath.resolve(modelPath));
-            }
-        }
-    }
-
-    @Override
-    public String getName() {
-        return "Machine Models Provider";
-    }
-
-    private record MachineModelProperties(String overlay, boolean front, boolean top, boolean side, boolean active) {
-        private JsonObject toMachineJson() {
+    record MachineModelProperties(String overlay, boolean front, boolean top, boolean side, boolean active) {
+        JsonObject toMachineJson() {
             var obj = new JsonObject();
             var defaultOverlays = new JsonObject();
 

@@ -27,7 +27,7 @@ import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.MITags;
 import aztech.modern_industrialization.ModernIndustrialization;
 import aztech.modern_industrialization.api.energy.CableTier;
-import aztech.modern_industrialization.datagen.tag.MIItemTagProvider;
+import aztech.modern_industrialization.datagen.tag.TagsToGenerate;
 import aztech.modern_industrialization.debug.DebugCommands;
 import aztech.modern_industrialization.pipes.api.*;
 import aztech.modern_industrialization.pipes.electricity.ElectricityNetwork;
@@ -125,7 +125,7 @@ public class MIPipes {
         pipeItems.put(type, item);
         Registry.register(Registry.ITEM, new MIIdentifier(pipeId), item);
         PIPE_MODEL_NAMES.add(new MIIdentifier("item/" + pipeId));
-        MIItemTagProvider.generateTag(MITags.FLUID_PIPES, item);
+        TagsToGenerate.generateTag(MITags.FLUID_PIPES, item);
     }
 
     private void registerItemPipeType(PipeColor color) {
@@ -136,7 +136,7 @@ public class MIPipes {
         pipeItems.put(type, item);
         Registry.register(Registry.ITEM, new MIIdentifier(pipeId), item);
         PIPE_MODEL_NAMES.add(new MIIdentifier("item/" + pipeId));
-        MIItemTagProvider.generateTag(MITags.ITEM_PIPES, item);
+        TagsToGenerate.generateTag(MITags.ITEM_PIPES, item);
     }
 
     public void registerCableType(String name, int color, CableTier tier) {

@@ -27,7 +27,7 @@ import static aztech.modern_industrialization.ModernIndustrialization.METAL_MATE
 
 import aztech.modern_industrialization.MIBlock;
 import aztech.modern_industrialization.MIItem;
-import aztech.modern_industrialization.datagen.tag.MIItemTagProvider;
+import aztech.modern_industrialization.datagen.tag.TagsToGenerate;
 import aztech.modern_industrialization.materials.MaterialBuilder;
 import aztech.modern_industrialization.textures.MITextures;
 import aztech.modern_industrialization.textures.TextureHelper;
@@ -66,7 +66,7 @@ public class RegularPart extends Part implements BuildablePart {
         // added to the tags
         for (Part partTagged : MIParts.TAGGED_PARTS) {
             if (partTagged.equals(part)) {
-                MIItemTagProvider.generateTag(itemTag.replaceFirst("#", ""), item);
+                TagsToGenerate.generateTag(itemTag.replaceFirst("#", ""), item);
             }
         }
     }

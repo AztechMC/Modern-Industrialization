@@ -108,6 +108,17 @@ public class CompatRecipesProvider extends MIRecipesProvider {
         addMiRecipe(MIMachineRecipeTypes.MACERATOR, "#c:silver_ores", "techreborn:raw_silver", 2);
         addMiRecipe(MIMachineRecipeTypes.MACERATOR, "#c:sphalerite_ores", "techreborn:sphalerite_dust", 2);
 
+        addCompatRecipe("annealed_copper_plate", new TRCompressorRecipeJson("c:annealed_copper_ingots", "modern_industrialization:annealed_copper_plate"));
+        addCompatRecipe("battery_alloy_plate", new TRCompressorRecipeJson("c:battery_alloy_ingots", "modern_industrialization:battery_alloy_plate"));
+        addCompatRecipe("beryllium_plate", new TRCompressorRecipeJson("c:beryllium_ingots", "modern_industrialization:beryllium_plate"));
+        addCompatRecipe("blastproof_alloy_plate", new TRCompressorRecipeJson("c:blastproof_alloy_ingots", "modern_industrialization:blastproof_alloy_plate"));
+        addCompatRecipe("cadmium_plate", new TRCompressorRecipeJson("c:cadmium_ingots", "modern_industrialization:cadmium_plate"));
+        addCompatRecipe("cupronickel_plate", new TRCompressorRecipeJson("c:cupronickel_ingots", "modern_industrialization:cupronickel_plate"));
+        addCompatRecipe("kanthal_plate", new TRCompressorRecipeJson("c:kanthal_ingots", "modern_industrialization:kanthal_plate"));
+        addCompatRecipe("silicon_plate", new TRCompressorRecipeJson("c:silicon_ingots", "modern_industrialization:silicon_plate"));
+        addCompatRecipe("stainless_steel_plate", new TRCompressorRecipeJson("c:stainless_steel_ingots", "modern_industrialization:stainless_steel_plate"));
+        addCompatRecipe("superconductor_plate", new TRCompressorRecipeJson("c:superconductor_ingots", "modern_industrialization:superconductor_plate"));
+
         for (Material material : MaterialRegistry.getMaterials().values()) {
             if (material.getParts().containsKey(MIParts.CURVED_PLATE.key)) {
                 String plate = material.name;

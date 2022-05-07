@@ -35,7 +35,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.BiFunction;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
-import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionHand;
@@ -60,8 +59,9 @@ public class MachineBlock extends MIBlock implements TickableBlock {
     public static final Map<String, MachineCasing> REGISTERED_MACHINES = new HashMap<>();
 
     public MachineBlock(String machineId, BiFunction<BlockPos, BlockState, BlockEntity> blockEntityConstructor) {
-        super(machineId, FabricBlockSettings.of(METAL_MATERIAL).breakByTool(FabricToolTags.PICKAXES).destroyTime(4.0f).requiresCorrectToolForDrops()
+        super(machineId, FabricBlockSettings.of(METAL_MATERIAL).destroyTime(4.0f).requiresCorrectToolForDrops()
                 .isValidSpawn(MobSpawning.NO_SPAWN), MIBlock.FLAG_BLOCK_LOOT);
+        setPickaxeMineable();
         this.blockEntityConstructor = blockEntityConstructor;
     }
 
@@ -70,6 +70,7 @@ public class MachineBlock extends MIBlock implements TickableBlock {
         return blockEntityConstructor.apply(pos, state);
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
         if (world.isClientSide) {
@@ -96,6 +97,7 @@ public class MachineBlock extends MIBlock implements TickableBlock {
         ((MachineBlockEntity) be).onPlaced(placer, itemStack);
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public void onRemove(BlockState state, Level world, BlockPos pos, BlockState newState, boolean moved) {
         if (!state.is(newState.getBlock())) {

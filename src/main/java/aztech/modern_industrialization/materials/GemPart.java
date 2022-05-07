@@ -23,12 +23,11 @@
  */
 package aztech.modern_industrialization.materials;
 
+import aztech.modern_industrialization.datagen.tag.TagsToGenerate;
 import aztech.modern_industrialization.materials.part.*;
 import aztech.modern_industrialization.textures.TextureHelper;
 import com.mojang.blaze3d.platform.NativeImage;
 import java.io.IOException;
-import net.devtech.arrp.json.tags.JTag;
-import net.minecraft.resources.ResourceLocation;
 
 public class GemPart extends Part implements BuildablePart {
 
@@ -43,8 +42,9 @@ public class GemPart extends Part implements BuildablePart {
 
     @Override
     public MaterialPart build(MaterialBuilder.PartContext ctx) {
-        return new RegularPart("gem").appendRegister((registeringContext, partContext, part, itemPath, itemId, itemTag) -> MaterialHelper
-                .registerItemTag("c:" + itemPath, JTag.tag().add(new ResourceLocation(itemId))))
+        return new RegularPart("gem").appendRegister((registeringContext, partContext, part, itemPath, itemId, itemTag) -> {
+            TagsToGenerate.generateTag("c:" + itemPath, itemId);
+        })
                 .withTextureRegister((mtm, partContext, part, itemPath) -> {
                     String template = String.format("modern_industrialization:textures/materialsets/gems/%s.png", partContext.getMaterialName());
                     try {

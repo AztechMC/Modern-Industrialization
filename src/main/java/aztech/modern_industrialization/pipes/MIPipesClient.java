@@ -37,7 +37,7 @@ import net.devtech.arrp.json.blockstate.JVariant;
 import net.fabricmc.fabric.api.client.model.ModelLoadingRegistry;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry;
-import net.fabricmc.fabric.api.client.screenhandler.v1.ScreenRegistry;
+import net.minecraft.client.gui.screens.MenuScreens;
 
 public class MIPipesClient {
     public void setupClient() {
@@ -45,8 +45,8 @@ public class MIPipesClient {
                 JState.state(new JVariant().put("", new JBlockModel("modern_industrialization:block/pipe"))), new MIIdentifier("pipe"));
         ModelLoadingRegistry.INSTANCE.registerResourceProvider(rm -> new PipeModelProvider());
         ColorProviderRegistry.BLOCK.register(new PipeColorProvider(), MIPipes.BLOCK_PIPE);
-        ScreenRegistry.register(MIPipes.SCREEN_HANDLER_TYPE_ITEM_PIPE, ItemPipeScreen::new);
-        ScreenRegistry.register(MIPipes.SCREEN_HANDLER_TYPE_FLUID_PIPE, FluidPipeScreen::new);
+        MenuScreens.register(MIPipes.SCREEN_HANDLER_TYPE_ITEM_PIPE, ItemPipeScreen::new);
+        MenuScreens.register(MIPipes.SCREEN_HANDLER_TYPE_FLUID_PIPE, FluidPipeScreen::new);
         registerPackets();
 
         PipeModelProvider.modelNames.addAll(MIPipes.PIPE_MODEL_NAMES);

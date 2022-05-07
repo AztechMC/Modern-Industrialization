@@ -34,6 +34,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.saveddata.SavedData;
+import org.jetbrains.annotations.Nullable;
 
 public class PipeNetworks extends SavedData {
     private static final String NAME = "modern_industrialization_pipe_networks";
@@ -46,6 +47,11 @@ public class PipeNetworks extends SavedData {
 
     public PipeNetworkManager getManager(PipeNetworkType type) {
         return managers.computeIfAbsent(type, PipeNetworkManager::new);
+    }
+
+    @Nullable
+    public PipeNetworkManager getOptionalManager(PipeNetworkType type) {
+        return managers.get(type);
     }
 
     @Override

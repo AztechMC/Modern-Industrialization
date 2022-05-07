@@ -26,10 +26,12 @@ package aztech.modern_industrialization.items;
 import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.MIItem;
 import aztech.modern_industrialization.ModernIndustrialization;
-import aztech.modern_industrialization.util.ResourceUtil;
+import aztech.modern_industrialization.datagen.tag.TagsToGenerate;
+import java.util.Locale;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
-import net.fabricmc.fabric.api.tag.TagFactory;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.core.Registry;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Tier;
 import net.minecraft.world.item.TieredItem;
@@ -38,14 +40,14 @@ import net.minecraft.world.item.crafting.Ingredient;
 public class ForgeTool extends TieredItem {
 
     public final String id;
-    public static final MIIdentifier TAG = new MIIdentifier("forge_hammer_tools");
+    public static final TagKey<Item> TAG = TagKey.create(Registry.ITEM.key(), new MIIdentifier("forge_hammer_tools"));
 
     public ForgeTool(Tier material, String id) {
         super(forgeHammerMaterial(material), new FabricItemSettings().stacksTo(1).tab(ModernIndustrialization.ITEM_GROUP));
         this.id = id;
         MIItem.items.put(id, this);
         MIItem.handhelds.add(id);
-        ResourceUtil.appendToItemTag(TAG, new MIIdentifier(id));
+        TagsToGenerate.generateTag(TAG, this);
     }
 
     public boolean isValidRepairItem(ItemStack stack, ItemStack repairCandidate) {
@@ -83,6 +85,11 @@ public class ForgeTool extends TieredItem {
             public Ingredient getRepairIngredient() {
                 return normalTier.getRepairIngredient();
             }
+
+            @Override
+            public String toString() {
+                return normalTier.toString().toLowerCase(Locale.ROOT) + "_forge_tool";
+            }
         };
 
     }
@@ -92,9 +99,6 @@ public class ForgeTool extends TieredItem {
     }
 
     public static Tier STEEL = new Tier() {
-
-        private static ResourceLocation TAG = new ResourceLocation("c:steel_ingots");
-
         @Override
         public int getUses() {
             return 650;
@@ -122,7 +126,12 @@ public class ForgeTool extends TieredItem {
 
         @Override
         public Ingredient getRepairIngredient() {
-            return Ingredient.of(TagFactory.ITEM.create(TAG));
+            return Ingredient.of(TAG);
+        }
+
+        @Override
+        public String toString() {
+            return "modern_industrialization:steel";
         }
     };
 }

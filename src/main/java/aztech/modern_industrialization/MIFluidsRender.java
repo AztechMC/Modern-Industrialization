@@ -31,16 +31,13 @@ import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandler;
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.fabricmc.fabric.api.resource.SimpleSynchronousResourceReloadListener;
-import net.fabricmc.fabric.api.transfer.v1.client.fluid.FluidVariantRenderHandler;
-import net.fabricmc.fabric.api.transfer.v1.client.fluid.FluidVariantRendering;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.material.FluidState;
 
@@ -60,7 +57,7 @@ public class MIFluidsRender {
             @Override
             public void onResourceManagerReload(ResourceManager manager) {
                 for (int i = 0; i < 2; ++i) {
-                    waterSprites[i] = Minecraft.getInstance().getTextureAtlas(TextureAtlas.LOCATION_BLOCKS).apply(waterSpriteIds[i]);
+                    waterSprites[i] = Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(waterSpriteIds[i]);
                 }
             }
         });
@@ -81,16 +78,6 @@ public class MIFluidsRender {
 
         for (CraftingFluid fluid : FLUIDS) {
             registerWaterlikeFluid.accept(fluid);
-
-            // If the fluid is a gas, make sure it's rendered upside down.
-            if (fluid.isGas) {
-                FluidVariantRendering.register(fluid, new FluidVariantRenderHandler() {
-                    @Override
-                    public boolean fillsFromTop(FluidVariant fluidKey) {
-                        return true;
-                    }
-                });
-            }
         }
     }
 }

@@ -23,18 +23,13 @@
  */
 package aztech.modern_industrialization.items.armor;
 
-import aztech.modern_industrialization.api.energy.EnergyApi;
-import aztech.modern_industrialization.api.energy.EnergyExtractable;
-import aztech.modern_industrialization.util.Simulation;
 import aztech.modern_industrialization.util.TextHelper;
 import io.github.ladysnake.pal.VanillaAbilities;
 import java.util.List;
-import me.shedaniel.cloth.api.armor.v1.TickableArmor;
-import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ArmorItem;
@@ -43,12 +38,12 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.Wearable;
-import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
+import team.reborn.energy.api.base.SimpleBatteryItem;
 
-public class GraviChestPlateItem extends ArmorItem implements Wearable, TickableArmor, ActivatableChestItem {
+public class GraviChestPlateItem extends ArmorItem implements Wearable, ActivatableChestItem, SimpleBatteryItem {
     public GraviChestPlateItem(Properties settings) {
         super(buildMaterial(), EquipmentSlot.CHEST, settings.stacksTo(1).rarity(Rarity.EPIC));
     }
@@ -94,46 +89,34 @@ public class GraviChestPlateItem extends ArmorItem implements Wearable, Tickable
             public float getKnockbackResistance() {
                 return 0;
             }
+
+            @Override
+            public String toString() {
+                return getName().replace("/", ":");
+            }
         };
     }
 
     public long getEnergy(ItemStack stack) {
-        return stack.hasTag() ? stack.getTag().getLong("energy") : 0;
+        return getStoredEnergy(stack);
     }
 
     public void setEnergy(ItemStack stack, long energy) {
-        if (energy == 0) {
-            stack.removeTagKey("energy");
-        } else {
-            stack.getOrCreateTag().putLong("energy", energy);
-        }
+        setStoredEnergy(stack, energy);
     }
 
     public static final long FLIGHT_COST = 1024;
     public static final long ENERGY_CAPACITY = 1 << 24;
 
     @Override
-    public void tickArmor(ItemStack stack, Player player) {
-        if (player.level.isClientSide())
+    public void inventoryTick(ItemStack stack, Level level, Entity entity, int slotId, boolean isSelected) {
+        if (level.isClientSide())
             return;
-        if (MIArmorEffects.SRC.grants(player, VanillaAbilities.ALLOW_FLYING) && player.getAbilities().flying) {
-            setEnergy(stack, Math.max(0, getEnergy(stack) - FLIGHT_COST));
-        }
-    }
-
-    @Override
-    public InteractionResult useOn(UseOnContext context) {
-        boolean didSomething = false;
-        for (Direction direction : Direction.values()) {
-            if (EnergyApi.MOVEABLE.find(context.getLevel(), context.getClickedPos(),
-                    context.getClickedFace()) instanceof EnergyExtractable extractable) {
-                ItemStack stack = context.getItemInHand();
-                long extracted = extractable.extractEnergy(ENERGY_CAPACITY - getEnergy(stack), Simulation.ACT);
-                setEnergy(stack, getEnergy(stack) + extracted);
-                didSomething = true;
+        if (entity instanceof Player player && stack == player.getItemBySlot(EquipmentSlot.CHEST)) {
+            if (MIArmorEffects.SRC.grants(player, VanillaAbilities.ALLOW_FLYING) && player.getAbilities().flying) {
+                setEnergy(stack, Math.max(0, getEnergy(stack) - FLIGHT_COST));
             }
         }
-        return didSomething ? InteractionResult.sidedSuccess(context.getLevel().isClientSide()) : InteractionResult.PASS;
     }
 
     @Override
@@ -149,5 +132,20 @@ public class GraviChestPlateItem extends ArmorItem implements Wearable, Tickable
     @Override
     public int getBarWidth(ItemStack stack) {
         return (int) Math.round(getEnergy(stack) / (double) ENERGY_CAPACITY * 13);
+    }
+
+    @Override
+    public long getEnergyCapacity() {
+        return ENERGY_CAPACITY;
+    }
+
+    @Override
+    public long getEnergyMaxInput() {
+        return ENERGY_CAPACITY;
+    }
+
+    @Override
+    public long getEnergyMaxOutput() {
+        return 0;
     }
 }

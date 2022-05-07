@@ -26,15 +26,12 @@ package aztech.modern_industrialization.blocks.storage.barrel;
 import static aztech.modern_industrialization.ModernIndustrialization.METAL_MATERIAL;
 
 import aztech.modern_industrialization.MIBlock;
-import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.blocks.storage.AbstractStorageBlock;
 import aztech.modern_industrialization.util.MobSpawning;
-import aztech.modern_industrialization.util.ResourceUtil;
 import java.util.function.Function;
 import net.fabricmc.fabric.api.event.player.AttackBlockCallback;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
-import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.fabricmc.fabric.api.transfer.v1.item.PlayerInventoryStorage;
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageUtil;
@@ -53,12 +50,12 @@ public class BarrelBlock extends AbstractStorageBlock implements EntityBlock {
     public final EntityBlock factory;
 
     public BarrelBlock(String id, Function<MIBlock, BlockItem> blockItemCtor, EntityBlock factory) {
-        super(id, FabricBlockSettings.of(METAL_MATERIAL).breakByTool(FabricToolTags.PICKAXES).destroyTime(4.0f).requiresCorrectToolForDrops()
+        super(id, FabricBlockSettings.of(METAL_MATERIAL).destroyTime(4.0f).requiresCorrectToolForDrops()
                 .isValidSpawn(MobSpawning.NO_SPAWN), blockItemCtor);
+        setPickaxeMineable();
 
         this.asColumn();
         this.factory = factory;
-        ResourceUtil.appendToItemTag(new MIIdentifier("barrels"), new MIIdentifier(id));
     }
 
     @Nullable

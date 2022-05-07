@@ -89,6 +89,11 @@ public class QuantumArmorItem extends ArmorItem implements Wearable {
         public float getKnockbackResistance() {
             return 0;
         }
+
+        @Override
+        public String toString() {
+            return getName().replace("/", ":");
+        }
     };
 
     public QuantumArmorItem(EquipmentSlot slot, FabricItemSettings settings) {

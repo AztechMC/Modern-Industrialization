@@ -159,7 +159,7 @@ public class PipeBlockEntity extends FastBlockEntity implements IPipeScreenHandl
         }
         pipes.add(node);
         node.buildInitialConnections(level, worldPosition);
-        onConnectionsChanged();
+        updateConnections();
     }
 
     /**

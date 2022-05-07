@@ -41,9 +41,8 @@ import aztech.modern_industrialization.misc.autotest.MIAutoTesting;
 import aztech.modern_industrialization.misc.guidebook.GuidebookEvents;
 import aztech.modern_industrialization.nuclear.NuclearItem;
 import aztech.modern_industrialization.pipes.MIPipes;
+import aztech.modern_industrialization.proxy.CommonProxy;
 import java.util.Map;
-import me.shedaniel.cloth.api.common.events.v1.PlayerChangeWorldCallback;
-import me.shedaniel.cloth.api.common.events.v1.PlayerLeaveCallback;
 import net.devtech.arrp.api.RRPCallback;
 import net.devtech.arrp.api.RuntimeResourcePack;
 import net.devtech.arrp.json.blockstate.JBlockModel;
@@ -57,17 +56,16 @@ import net.devtech.arrp.json.models.JModel;
 import net.devtech.arrp.json.models.JTextures;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.client.itemgroup.FabricItemGroupBuilder;
+import net.fabricmc.fabric.api.entity.event.v1.ServerEntityWorldChangeEvents;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricMaterialBuilder;
 import net.fabricmc.fabric.api.registry.FuelRegistry;
 import net.fabricmc.fabric.api.screenhandler.v1.ScreenHandlerRegistry;
-import net.fabricmc.fabric.api.tag.TagFactory;
-import net.fabricmc.fabric.api.tag.TagRegistry;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.Tag;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.CreativeModeTab;
@@ -93,10 +91,6 @@ public class ModernIndustrialization implements ModInitializer {
 
     public static final CreativeModeTab ITEM_GROUP = FabricItemGroupBuilder.build(new ResourceLocation(MOD_ID, "general"),
             () -> new ItemStack(Registry.ITEM.get(new MIIdentifier("forge_hammer"))));
-
-    // Tags
-    public static final Tag<Item> SCREWDRIVERS = TagFactory.ITEM.create(new ResourceLocation("c:screwdrivers"));
-    public static final Tag<Item> WRENCHES = TagFactory.ITEM.create(new ResourceLocation("c:wrenches"));
 
     // ScreenHandlerType
     public static final MenuType<MachineScreenHandlers.Common> SCREEN_HANDLER_MACHINE = ScreenHandlerRegistry
@@ -129,14 +123,18 @@ public class ModernIndustrialization implements ModInitializer {
 
         MIPipes.INSTANCE.setup();
 
-        RRPCallback.EVENT.register(a -> {
+        RRPCallback.BEFORE_VANILLA.register(a -> {
             a.add(RESOURCE_PACK);
         });
 
         ChunkEventListeners.init();
-        PlayerChangeWorldCallback.EVENT.register((player, oldWorld, newWorld) -> MIKeyMap.clear(player));
-        PlayerLeaveCallback.EVENT.register(MIKeyMap::clear);
+        ServerEntityWorldChangeEvents.AFTER_PLAYER_CHANGE_WORLD.register((player, oldWorld, newWorld) -> MIKeyMap.clear(player));
+        ServerPlayConnectionEvents.DISCONNECT.register((handler, server) -> {
+            MIKeyMap.clear(handler.player);
+        });
         GuidebookEvents.init();
+
+        CommonProxy.initEvents();
 
         if (System.getProperty("modern_industrialization.autoTest") != null) {
             MIAutoTesting.init();
@@ -254,7 +252,7 @@ public class ModernIndustrialization implements ModInitializer {
         addFuel("coke_dust", 6400);
         addFuel("coke_block", Short.MAX_VALUE); // F*** YOU VANILLA ! (Should be 6400*9 but it overflows ...)
         addFuel("coal_crushed_dust", 1600);
-        FuelRegistry.INSTANCE.add(TagRegistry.item(new ResourceLocation("c:coal_dusts")), 1600);
+        FuelRegistry.INSTANCE.add(MITags.item("coal_dusts"), 1600);
         addFuel("coal_tiny_dust", 160);
         addFuel("lignite_coal", 1600);
         addFuel("lignite_coal_block", 16000);
@@ -267,15 +265,14 @@ public class ModernIndustrialization implements ModInitializer {
         FluidFuelRegistry.register(MIFluids.HYDROGEN, 1);
         FluidFuelRegistry.register(MIFluids.DEUTERIUM, 1);
         FluidFuelRegistry.register(MIFluids.TRITIUM, 1);
-        FluidFuelRegistry.register(MIFluids.CRUDE_OIL, 8);
-        FluidFuelRegistry.register(MIFluids.SYNTHETIC_OIL, 8);
-        FluidFuelRegistry.register(MIFluids.NAPHTHA, 40);
-        FluidFuelRegistry.register(MIFluids.CREOSOTE, 80);
-        FluidFuelRegistry.register(MIFluids.LIGHT_FUEL, 80);
-        FluidFuelRegistry.register(MIFluids.HEAVY_FUEL, 120);
-        FluidFuelRegistry.register(MIFluids.DIESEL, 200);
-        FluidFuelRegistry.register(MIFluids.BOOSTED_DIESEL, 400);
-
+        FluidFuelRegistry.register(MIFluids.CRUDE_OIL, 16);
+        FluidFuelRegistry.register(MIFluids.SYNTHETIC_OIL, 16);
+        FluidFuelRegistry.register(MIFluids.NAPHTHA, 80);
+        FluidFuelRegistry.register(MIFluids.CREOSOTE, 160);
+        FluidFuelRegistry.register(MIFluids.LIGHT_FUEL, 160);
+        FluidFuelRegistry.register(MIFluids.HEAVY_FUEL, 240);
+        FluidFuelRegistry.register(MIFluids.DIESEL, 400);
+        FluidFuelRegistry.register(MIFluids.BOOSTED_DIESEL, 800);
     }
 
     private void setupWrench() {
@@ -284,8 +281,8 @@ public class ModernIndustrialization implements ModInitializer {
                 return InteractionResult.PASS;
             }
 
-            boolean isWrench = player.getItemInHand(hand).is(WRENCHES);
-            boolean isScrewdriver = player.getItemInHand(hand).is(SCREWDRIVERS);
+            boolean isWrench = player.getItemInHand(hand).is(MITags.WRENCHES);
+            boolean isScrewdriver = player.getItemInHand(hand).is(MITags.SCREWDRIVERS);
             if (isWrench || isScrewdriver) {
                 BlockEntity entity = world.getBlockEntity(hitResult.getBlockPos());
                 if (isWrench && entity instanceof WrenchableBlockEntity wrenchable) {

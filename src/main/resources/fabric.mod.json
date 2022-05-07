@@ -35,6 +35,9 @@
     ],
     "fabric-datagen": [
       "aztech.modern_industrialization.datagen.MIDatagenEntrypoint"
+    ],
+    "ae2": [
+      "aztech.modern_industrialization.compat.ae2.MIAEAddon"
     ]
   },
   "mixins": [
@@ -42,9 +45,11 @@
   ],
   "depends": {
     "fabricloader": ">=0.7.4",
-    "fabric": ">=0.44",
-    "minecraft": "1.18.x",
-    "roughlyenoughitems": "*"
+    "fabric": ">=0.50",
+    "minecraft": "1.18.2",
+    "roughlyenoughitems": "*",
+    "team_reborn_energy": ">=2.2.0",
+    "cloth-config": "*"
   },
   "breaks": {
     "optifabric": "*",

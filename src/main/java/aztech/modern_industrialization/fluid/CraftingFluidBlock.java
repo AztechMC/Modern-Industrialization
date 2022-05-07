@@ -33,8 +33,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.material.Material;
 
 /**
- * This is not a registered block, but it allows LBA to get the name of the
- * fluid by calling fluid.getBlockState().getBlock().getTranslationKey()
+ * Allows the transfer API to get the name of the fluid by calling fluid.getBlockState().getBlock().getTranslationKey().
  */
 public class CraftingFluidBlock extends Block {
     private final String translationKey;

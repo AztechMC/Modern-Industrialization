@@ -65,9 +65,9 @@ public class PipeComponentProvider implements IBlockComponentProvider {
     public void appendHead(ITooltip tooltip, IBlockAccessor accessor, IPluginConfig config) {
         PipeVoxelShape shape = getHitShape(accessor);
         if (shape != null) {
-            Component text = new TextComponent(IWailaConfig.get().getFormatting().formatBlockName(
-                    I18n.get(MIPipes.INSTANCE.getPipeItem(shape.type).getDescriptionId())));
-            tooltip.set(WailaConstants.OBJECT_NAME_TAG, text);
+            Component text = IWailaConfig.get().getFormatter().blockName(
+                    I18n.get(MIPipes.INSTANCE.getPipeItem(shape.type).getDescriptionId()));
+            tooltip.setLine(WailaConstants.OBJECT_NAME_TAG, text);
         }
     }
 

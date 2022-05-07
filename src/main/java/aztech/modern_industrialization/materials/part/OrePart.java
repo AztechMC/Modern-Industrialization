@@ -29,9 +29,9 @@ import aztech.modern_industrialization.MIBlock;
 import aztech.modern_industrialization.MIConfig;
 import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.blocks.OreBlock;
+import aztech.modern_industrialization.datagen.tag.TagsToGenerate;
 import aztech.modern_industrialization.materials.set.MaterialOreSet;
 import aztech.modern_industrialization.textures.TextureHelper;
-import aztech.modern_industrialization.util.ResourceUtil;
 import com.google.common.collect.ImmutableList;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
@@ -44,7 +44,6 @@ import net.devtech.arrp.json.loot.*;
 import net.fabricmc.fabric.api.biome.v1.BiomeModifications;
 import net.fabricmc.fabric.api.biome.v1.BiomeSelectors;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
-import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
 import net.minecraft.core.Registry;
 import net.minecraft.data.BuiltinRegistries;
 import net.minecraft.data.worldgen.features.OreFeatures;
@@ -55,9 +54,11 @@ import net.minecraft.util.valueproviders.UniformInt;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraft.world.level.levelgen.VerticalAnchor;
+import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.configurations.OreConfiguration;
 import net.minecraft.world.level.levelgen.placement.HeightRangePlacement;
+import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 
 public class OrePart extends UnbuildablePart<OrePart.OrePartParams> {
 
@@ -89,10 +90,11 @@ public class OrePart extends UnbuildablePart<OrePart.OrePartParams> {
     @Override
     public BuildablePart of(OrePartParams oreParams) {
         return new RegularPart(key).withRegister((registeringContext, partContext, part, itemPath, itemId, itemTag) -> {
-            MIBlock block = new OreBlock(itemPath, FabricBlockSettings.of(STONE_MATERIAL).breakByTool(FabricToolTags.PICKAXES, 1)
+            MIBlock block = new OreBlock(itemPath, FabricBlockSettings.of(STONE_MATERIAL)
                     .destroyTime(deepslate ? 4.5f : 3.0f).explosionResistance(3.0f)
                     .sound(deepslate ? SoundType.DEEPSLATE : SoundType.STONE).requiresCorrectToolForDrops(),
                     oreParams, partContext.getMaterialName());
+            block.setPickaxeMineable().setMiningLevel(1);
 
             Part mainPart = partContext.getMainPart();
             String loot;
@@ -131,7 +133,7 @@ public class OrePart extends UnbuildablePart<OrePart.OrePartParams> {
                             .parameter("enchantment", "minecraft:fortune").parameter("formula", "minecraft:ore_drops"))
                             .function(new JFunction("minecraft:explosion_decay")).name(loot)))));
 
-            ResourceUtil.appendToTag("c:items/" + partContext.getMaterialName() + "_ores", itemId);
+            TagsToGenerate.generateTag("c:" + partContext.getMaterialName() + "_ores", block.blockItem);
 
             MIConfig config = MIConfig.getConfig();
 
@@ -146,13 +148,14 @@ public class OrePart extends UnbuildablePart<OrePart.OrePartParams> {
                             deepslate ? OreFeatures.DEEPSLATE_ORE_REPLACEABLES : OreFeatures.STONE_ORE_REPLACEABLES,
                             block.defaultBlockState()));
 
-                    var configuredOreGen = Registry.register(
-                            BuiltinRegistries.CONFIGURED_FEATURE, oreGenId, Feature.ORE.configured(new OreConfiguration(target, oreParams.veinSize)));
+                    var configuredOreGen = BuiltinRegistries.register(
+                            BuiltinRegistries.CONFIGURED_FEATURE, oreGenId,
+                            new ConfiguredFeature<>(Feature.ORE, new OreConfiguration(target, oreParams.veinSize)));
 
                     Registry.register(
                             BuiltinRegistries.PLACED_FEATURE,
                             oreGenId,
-                            configuredOreGen.placed(
+                            new PlacedFeature(configuredOreGen,
                                     OrePlacements.commonOrePlacement(
                                             oreParams.veinsPerChunk,
                                             HeightRangePlacement.uniform(VerticalAnchor.bottom(), VerticalAnchor.absolute(oreParams.maxYLevel)))));

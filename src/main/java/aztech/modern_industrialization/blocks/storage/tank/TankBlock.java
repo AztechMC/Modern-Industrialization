@@ -24,10 +24,8 @@
 package aztech.modern_industrialization.blocks.storage.tank;
 
 import aztech.modern_industrialization.MIBlock;
-import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.blocks.storage.AbstractStorageBlock;
 import aztech.modern_industrialization.util.MobSpawning;
-import aztech.modern_industrialization.util.ResourceUtil;
 import java.util.function.Function;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.core.BlockPos;
@@ -50,7 +48,6 @@ public class TankBlock extends AbstractStorageBlock implements EntityBlock {
     public TankBlock(String id, Function<MIBlock, BlockItem> blockItemCtor, EntityBlock factory) {
         super(id, FabricBlockSettings.of(Material.METAL).destroyTime(4.0f).noOcclusion().isValidSpawn(MobSpawning.NO_SPAWN), blockItemCtor, 0);
         this.factory = factory;
-        ResourceUtil.appendToItemTag(new MIIdentifier("tanks"), new MIIdentifier(id));
     }
 
     @Override
@@ -62,11 +59,13 @@ public class TankBlock extends AbstractStorageBlock implements EntityBlock {
         return true;
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public int getLightBlock(BlockState state, BlockGetter world, BlockPos pos) {
         return 0;
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
         if (((TankBlockEntity) world.getBlockEntity(pos)).onPlayerUse(player)) {

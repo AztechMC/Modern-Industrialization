@@ -41,11 +41,11 @@ import net.fabricmc.fabric.api.renderer.v1.model.FabricBakedModel;
 import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
 import net.fabricmc.fabric.api.transfer.v1.client.fluid.FluidVariantRendering;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariantAttributes;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.BlockModel;
 import net.minecraft.client.renderer.block.model.ItemOverrides;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
-import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.Material;
@@ -55,6 +55,7 @@ import net.minecraft.client.resources.model.UnbakedModel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockAndTintGetter;
@@ -69,7 +70,7 @@ public class TankModel implements UnbakedModel, FabricBakedModel, BakedModel {
     private Mesh tankMesh;
 
     public TankModel(String tankType) {
-        tankSpriteId = new Material(TextureAtlas.LOCATION_BLOCKS, new MIIdentifier("blocks/tanks/" + tankType));
+        tankSpriteId = new Material(InventoryMenu.BLOCK_ATLAS, new MIIdentifier("blocks/tanks/" + tankType));
     }
 
     public TankModel(ItemTransforms transformation, Material tankSpriteId, TextureAtlasSprite tankSprite, RenderMaterial translucentMaterial,
@@ -114,7 +115,7 @@ public class TankModel implements UnbakedModel, FabricBakedModel, BakedModel {
         int color = FluidVariantRendering.getColor(fluid) | 255 << 24;
         for (Direction direction : Direction.values()) {
             float topSpace, depth, bottomSpace;
-            if (FluidVariantRendering.fillsFromTop(fluid)) {
+            if (FluidVariantAttributes.isLighterThanAir(fluid)) {
                 bottomSpace = direction.getAxis().isHorizontal() ? 1 - fillFraction + 0.01f : 0;
                 depth = direction == Direction.DOWN ? fillFraction : 0;
                 topSpace = 0;

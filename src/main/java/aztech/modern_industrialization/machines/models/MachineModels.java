@@ -23,7 +23,7 @@
  */
 package aztech.modern_industrialization.machines.models;
 
-import aztech.modern_industrialization.datagen.model.MachineModelsProvider;
+import aztech.modern_industrialization.datagen.model.MachineModelsToGenerate;
 import aztech.modern_industrialization.machines.MachineBlock;
 import aztech.modern_industrialization.machines.MachineBlockEntityRenderer;
 import net.fabricmc.fabric.api.client.model.ModelLoadingRegistry;
@@ -65,7 +65,7 @@ public final class MachineModels {
         // MachineModelProvider.register(new MIIdentifier("item/" + id), model);
         // TODO: refactor this
         MachineBlock.REGISTERED_MACHINES.put(id, defaultCasing);
-        MachineModelsProvider.register(id, overlayFolder, frontOverlay, topOverlay, sideOverlay, hasActive);
+        MachineModelsToGenerate.register(id, overlayFolder, frontOverlay, topOverlay, sideOverlay, hasActive);
     }
 
     public static void addTieredMachineTiers(String name, boolean frontOverlay, boolean topOverlay, boolean sideOverlay, String... tiers) {

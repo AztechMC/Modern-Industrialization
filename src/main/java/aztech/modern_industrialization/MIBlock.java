@@ -45,7 +45,6 @@ import net.devtech.arrp.json.loot.JPool;
 import net.devtech.arrp.json.models.JModel;
 import net.devtech.arrp.json.models.JTextures;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
-import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
@@ -64,6 +63,8 @@ public class MIBlock extends Block {
     private JModel blockModel;
     private JModel itemModel;
     private JState blockState;
+    private boolean pickaxeMineable = false;
+    private int miningLevel = 0;
 
     public final int FLAGS;
 
@@ -112,14 +113,16 @@ public class MIBlock extends Block {
     }
 
     public MIBlock(String id) {
-        this(id, FabricBlockSettings.of(METAL_MATERIAL).breakByTool(FabricToolTags.PICKAXES).destroyTime(4.0f).requiresCorrectToolForDrops()
+        this(id, FabricBlockSettings.of(METAL_MATERIAL).destroyTime(4.0f).requiresCorrectToolForDrops()
                 .isValidSpawn(MobSpawning.NO_SPAWN));
+        pickaxeMineable = true;
     }
 
     public MIBlock(String id, float resistance) {
-        this(id, FabricBlockSettings.of(METAL_MATERIAL).breakByTool(FabricToolTags.PICKAXES).destroyTime(4.0f).explosionResistance(resistance)
+        this(id, FabricBlockSettings.of(METAL_MATERIAL).destroyTime(4.0f).explosionResistance(resistance)
                 .requiresCorrectToolForDrops()
                 .isValidSpawn(MobSpawning.NO_SPAWN));
+        pickaxeMineable = true;
     }
 
     // hull
@@ -139,8 +142,8 @@ public class MIBlock extends Block {
     public static final MIBlock NUKE = new MIBlock("nuke", Properties.of(Material.EXPLOSIVE).instabreak().sound(SoundType.GRASS));
 
     public static final MIBlock BLOCK_FIRE_CLAY_BRICKS = new MIBlock("fire_clay_bricks",
-            FabricBlockSettings.of(STONE_MATERIAL).breakByTool(FabricToolTags.PICKAXES, 0).destroyTime(2.0f).explosionResistance(6.0f)
-                    .requiresCorrectToolForDrops());
+            FabricBlockSettings.of(STONE_MATERIAL).destroyTime(2.0f).explosionResistance(6.0f)
+                    .requiresCorrectToolForDrops()).setPickaxeMineable();
 
     public static final Block FORGE_HAMMER = new ForgeHammerBlock();
     public static final TrashCanBlock TRASH_CAN = new TrashCanBlock();
@@ -179,6 +182,16 @@ public class MIBlock extends Block {
         return this;
     }
 
+    public MIBlock setPickaxeMineable() {
+        pickaxeMineable = true;
+        return this;
+    }
+
+    public MIBlock setMiningLevel(int level) {
+        miningLevel = level;
+        return this;
+    }
+
     public void onRegister(Block block, Item blockItem) {
 
     }
@@ -197,5 +210,13 @@ public class MIBlock extends Block {
 
     public JState getBlockState() {
         return blockState;
+    }
+
+    public boolean isPickaxeMineable() {
+        return pickaxeMineable;
+    }
+
+    public int getMiningLevel() {
+        return miningLevel;
     }
 }

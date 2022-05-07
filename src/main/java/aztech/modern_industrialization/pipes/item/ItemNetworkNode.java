@@ -28,7 +28,9 @@ import static aztech.modern_industrialization.pipes.api.PipeEndpointType.*;
 import aztech.modern_industrialization.api.pipes.item.SpeedUpgrade;
 import aztech.modern_industrialization.pipes.api.PipeEndpointType;
 import aztech.modern_industrialization.pipes.api.PipeNetworkNode;
+import aztech.modern_industrialization.pipes.api.PipeNetworkType;
 import aztech.modern_industrialization.pipes.gui.IPipeScreenHandlerHelper;
+import aztech.modern_industrialization.pipes.impl.PipeNetworks;
 import java.util.*;
 import net.fabricmc.fabric.api.lookup.v1.block.BlockApiCache;
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
@@ -42,6 +44,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Inventory;
@@ -57,12 +60,15 @@ public class ItemNetworkNode extends PipeNetworkNode {
 
     @Override
     public void updateConnections(Level world, BlockPos pos) {
-        // Remove the connection to the outside world if a connection to another pipe is
-        // made.
+        // Remove the connection to the outside world if a connection to another pipe is made.
+        var levelNetworks = PipeNetworks.get((ServerLevel) world);
         connections.removeIf(connection -> {
-            if (network.manager.hasLink(pos, connection.direction)) {
-                connection.dropUpgrades(world, pos);
-                return true;
+            for (var type : PipeNetworkType.getTypes().values()) {
+                var manager = levelNetworks.getOptionalManager(type);
+                if (manager != null && manager.hasLink(pos, connection.direction)) {
+                    connection.dropUpgrades(world, pos);
+                    return true;
+                }
             }
             return false;
         });
@@ -114,7 +120,7 @@ public class ItemNetworkNode extends PipeNetworkNode {
         }
         // Otherwise try to connect
         if (canConnect(world, pos, direction)) {
-            connections.add(new ItemConnection(direction, BLOCK_IN, 0, 0));
+            connections.add(new ItemConnection(direction, BLOCK_IN, 0, -10));
         }
     }
 

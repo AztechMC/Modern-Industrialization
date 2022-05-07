@@ -173,6 +173,7 @@ public class PipeBlock extends Block implements EntityBlock {
         return true;
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public InteractionResult use(BlockState state, Level world, BlockPos blockPos, Player player, InteractionHand hand, BlockHitResult hit) {
         PipeBlockEntity pipeEntity = (PipeBlockEntity) world.getBlockEntity(blockPos);
@@ -188,6 +189,7 @@ public class PipeBlock extends Block implements EntityBlock {
         return InteractionResult.PASS;
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public List<ItemStack> getDrops(BlockState state, LootContext.Builder builder) {
         LootContext lootContext = builder.withParameter(LootContextParams.BLOCK_STATE, state).create(LootContextParamSets.BLOCK);
@@ -206,6 +208,7 @@ public class PipeBlock extends Block implements EntityBlock {
         return new ItemStack(targetedPart == null ? Items.AIR : MIPipes.INSTANCE.getPipeItem(targetedPart.type));
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public void neighborChanged(BlockState state, Level world, BlockPos pos, Block block, BlockPos fromPos, boolean notify) {
         if (!world.isClientSide) {
@@ -214,6 +217,7 @@ public class PipeBlock extends Block implements EntityBlock {
         super.neighborChanged(state, world, pos, block, fromPos, notify);
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public int getLightBlock(BlockState state, BlockGetter world, BlockPos pos) {
         return 0;
@@ -224,32 +228,38 @@ public class PipeBlock extends Block implements EntityBlock {
         return true;
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public VoxelShape getVisualShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext context) {
         return getCollisionShape(state, world, pos, context);
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public VoxelShape getShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext context) {
         var targetedPart = getTargetedPart(world, pos);
         return targetedPart != null ? targetedPart.shape : PipeBlockEntity.DEFAULT_SHAPE;
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public VoxelShape getInteractionShape(BlockState state, BlockGetter world, BlockPos pos) {
         return getCollisionShape(state, world, pos, null);
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public VoxelShape getOcclusionShape(BlockState state, BlockGetter world, BlockPos pos) {
         return getCollisionShape(state, world, pos, null);
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public VoxelShape getBlockSupportShape(BlockState state, BlockGetter world, BlockPos pos) {
         return getCollisionShape(state, world, pos, null);
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public VoxelShape getCollisionShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext context) {
         BlockEntity be = world.getBlockEntity(pos);
@@ -258,11 +268,13 @@ public class PipeBlock extends Block implements EntityBlock {
         return entity.currentCollisionShape;
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public boolean isPathfindable(BlockState state, BlockGetter world, BlockPos pos, PathComputationType type) {
         return false;
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public void onRemove(BlockState state, Level world, BlockPos pos, BlockState newState, boolean moved) {
         if (!state.is(newState.getBlock())) {

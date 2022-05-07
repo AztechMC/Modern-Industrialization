@@ -27,7 +27,7 @@ import aztech.modern_industrialization.util.RenderHelper;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Matrix4f;
 import com.mojang.math.Vector3f;
-import net.fabricmc.fabric.api.client.rendereregistry.v1.BlockEntityRendererRegistry;
+import net.fabricmc.fabric.api.client.rendering.v1.BlockEntityRendererRegistry;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -47,7 +47,7 @@ public class BarrelRenderer implements BlockEntityRenderer<BlockEntity> {
     private final int textColor;
 
     public static void register(BlockEntityType<BlockEntity> type, int textColor) {
-        BlockEntityRendererRegistry.INSTANCE.register(type, (BlockEntityRendererProvider.Context context) -> new BarrelRenderer(textColor));
+        BlockEntityRendererRegistry.register(type, (BlockEntityRendererProvider.Context context) -> new BarrelRenderer(textColor));
     }
 
     private BarrelRenderer(int textColor) {

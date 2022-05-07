@@ -223,10 +223,11 @@ public class PipeNetworkManager {
     }
 
     /**
-     * Check if a link exists. A node must exist at pos.
+     * Check if a link exists.
      */
     public boolean hasLink(BlockPos pos, Direction direction) {
-        return links.get(pos).contains(direction);
+        var nodeLinks = links.get(pos);
+        return nodeLinks != null && nodeLinks.contains(direction);
     }
 
     /**

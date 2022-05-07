@@ -36,11 +36,9 @@ import aztech.modern_industrialization.machines.components.sync.AutoExtract;
 import aztech.modern_industrialization.machines.components.sync.ProgressBar;
 import aztech.modern_industrialization.machines.gui.MachineGuiParameters;
 import aztech.modern_industrialization.machines.models.MachineModelClientData;
-import aztech.modern_industrialization.util.ResourceUtil;
 import aztech.modern_industrialization.util.Tickable;
 import java.util.Collections;
 import java.util.List;
-import net.fabricmc.fabric.api.tag.TagRegistry;
 import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
@@ -48,9 +46,9 @@ import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
+import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.Tag;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 
 public class ReplicatorMachineBlockEntity extends MachineBlockEntity implements Tickable {
@@ -60,19 +58,7 @@ public class ReplicatorMachineBlockEntity extends MachineBlockEntity implements 
 
     private int progressTick = 0;
 
-    private static Tag<Item> blacklisted;
-
-    public static void initTag() {
-        ResourceLocation blacklist = new MIIdentifier("replicator_blacklist");
-        blacklisted = TagRegistry.item(blacklist);
-
-        ResourceUtil.appendToItemTag(blacklist, new ResourceLocation("minecraft", "bundle"));
-
-        ResourceUtil.appendTagToItemTag(blacklist, new ResourceLocation("c", "shulker_box"));
-        ResourceUtil.appendTagToItemTag(blacklist, new MIIdentifier("tanks"));
-        ResourceUtil.appendTagToItemTag(blacklist, new MIIdentifier("barrels"));
-
-    }
+    public static final TagKey<Item> BLACKLISTED = TagKey.create(Registry.ITEM.key(), new MIIdentifier("replicator_blacklist"));
 
     public ReplicatorMachineBlockEntity(BEP bep) {
 
@@ -129,7 +115,7 @@ public class ReplicatorMachineBlockEntity extends MachineBlockEntity implements 
 
         if (!itemVariant.isBlank()) {
             // check blacklist
-            if (blacklisted.contains(itemVariant.getItem())) {
+            if (itemVariant.toStack().is(BLACKLISTED)) {
                 return false;
             }
             // check that the item doesn't contain uu matter

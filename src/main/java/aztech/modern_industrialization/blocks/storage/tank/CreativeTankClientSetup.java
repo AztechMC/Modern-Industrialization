@@ -29,7 +29,7 @@ import aztech.modern_industrialization.blocks.creativetank.CreativeTankRenderer;
 import aztech.modern_industrialization.machines.models.MachineModelProvider;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.client.rendereregistry.v1.BlockEntityRendererRegistry;
+import net.fabricmc.fabric.api.client.rendering.v1.BlockEntityRendererRegistry;
 import net.minecraft.client.resources.model.UnbakedModel;
 
 @Environment(EnvType.CLIENT)
@@ -39,6 +39,6 @@ public class CreativeTankClientSetup {
         MachineModelProvider.register(new MIIdentifier("block/creative_tank"), creativeTankModel);
         MachineModelProvider.register(new MIIdentifier("item/creative_tank"), creativeTankModel);
 
-        BlockEntityRendererRegistry.INSTANCE.register(MIBlockEntityTypes.CREATIVE_TANK, CreativeTankRenderer::new);
+        BlockEntityRendererRegistry.register(MIBlockEntityTypes.CREATIVE_TANK, CreativeTankRenderer::new);
     }
 }

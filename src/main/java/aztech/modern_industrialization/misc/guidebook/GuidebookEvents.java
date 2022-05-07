@@ -25,13 +25,14 @@ package aztech.modern_industrialization.misc.guidebook;
 
 import aztech.modern_industrialization.MIConfig;
 import aztech.modern_industrialization.MIItem;
-import me.shedaniel.cloth.api.common.events.v1.PlayerJoinCallback;
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.minecraft.world.item.ItemStack;
 
 public class GuidebookEvents {
     public static void init() {
-        PlayerJoinCallback.EVENT.register((connection, player) -> {
+        ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
+            var player = handler.player;
             if (MIConfig.getConfig().spawnWithGuideBook) {
                 GuidebookPersistentState state = GuidebookPersistentState.get(player.server);
                 if (!state.hasPlayerReceivedGuidebook(player)) {

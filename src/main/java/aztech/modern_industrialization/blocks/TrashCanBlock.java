@@ -29,7 +29,6 @@ import com.google.common.base.Preconditions;
 import java.util.Collections;
 import java.util.Iterator;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
-import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemStorage;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
@@ -44,9 +43,10 @@ import net.minecraft.world.level.material.Material;
 public class TrashCanBlock extends MIBlock {
     public TrashCanBlock() {
         super("trash_can",
-                FabricBlockSettings.of(Material.METAL).breakByTool(FabricToolTags.PICKAXES).destroyTime(6.0f).explosionResistance(1200)
+                FabricBlockSettings.of(Material.METAL).destroyTime(6.0f).explosionResistance(1200)
                         .requiresCorrectToolForDrops()
                         .sound(SoundType.METAL).isValidSpawn(MobSpawning.NO_SPAWN));
+        setPickaxeMineable();
     }
 
     @SuppressWarnings("unchecked")

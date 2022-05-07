@@ -43,7 +43,6 @@ import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.BlockModel;
 import net.minecraft.client.renderer.block.model.ItemOverrides;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
-import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.Material;
@@ -54,6 +53,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockAndTintGetter;
@@ -66,7 +66,7 @@ import net.minecraft.world.level.block.state.BlockState;
  */
 public class PipeModel implements UnbakedModel, BakedModel, FabricBakedModel {
     private static final ResourceLocation DEFAULT_BLOCK_MODEL = new ResourceLocation("minecraft:block/block");
-    private static final Material PARTICLE_SPRITE = new Material(TextureAtlas.LOCATION_BLOCKS,
+    private static final Material PARTICLE_SPRITE = new Material(InventoryMenu.BLOCK_ATLAS,
             new ResourceLocation("minecraft:block/iron_block"));
     private TextureAtlasSprite particleSprite;
     private Map<PipeRenderer.Factory, PipeRenderer> renderers = new Reference2ObjectOpenHashMap<>();
@@ -99,22 +99,19 @@ public class PipeModel implements UnbakedModel, BakedModel, FabricBakedModel {
             return true;
         });
 
-        PipeBlockEntity.RenderAttachment attachment = (PipeBlockEntity.RenderAttachment) ((RenderAttachedBlockView) blockRenderView)
-                .getBlockEntityRenderAttachment(pos);
-        if (attachment == null) {
-            throw new NullPointerException(
-                    String.format("Null attachment for pipe rendering! This is not supposed to happen!\nPos: %s\nState: %s", pos, state));
-        }
-        int centerSlots = attachment.types.length;
-        for (int slot = 0; slot < centerSlots; slot++) {
-            // Set color
-            int color = attachment.types[slot].getColor();
-            renderContext.pushTransform(getColorTransform(color));
+        var maybeAttachment = ((RenderAttachedBlockView) blockRenderView).getBlockEntityRenderAttachment(pos);
+        if (maybeAttachment instanceof PipeBlockEntity.RenderAttachment attachment) {
+            int centerSlots = attachment.types.length;
+            for (int slot = 0; slot < centerSlots; slot++) {
+                // Set color
+                int color = attachment.types[slot].getColor();
+                renderContext.pushTransform(getColorTransform(color));
 
-            renderers.get(attachment.types[slot].getRenderer()).draw(blockRenderView, pos, renderContext, slot, attachment.renderedConnections,
-                    attachment.customData[slot]);
+                renderers.get(attachment.types[slot].getRenderer()).draw(blockRenderView, pos, renderContext, slot, attachment.renderedConnections,
+                        attachment.customData[slot]);
 
-            renderContext.popTransform();
+                renderContext.popTransform();
+            }
         }
         renderContext.popTransform();
     }

@@ -34,6 +34,7 @@ import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
 import net.fabricmc.fabric.api.transfer.v1.client.fluid.FluidVariantRenderHandler;
 import net.fabricmc.fabric.api.transfer.v1.client.fluid.FluidVariantRendering;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariantAttributes;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
@@ -58,7 +59,7 @@ public class MultiblockTankBER extends MultiblockMachineBER {
             VertexConsumer vc = vcp.getBuffer(RenderType.translucent());
 
             FluidVariantRenderHandler handler = FluidVariantRendering.getHandlerOrDefault(fluid.getFluid());
-            TextureAtlasSprite sprite = handler.getSprite(fluid);
+            TextureAtlasSprite sprite = FluidVariantRendering.getSprite(fluid);
 
             int[] cornerPosition = tankBlockEntity.getCornerPosition();
 
@@ -75,7 +76,7 @@ public class MultiblockTankBER extends MultiblockMachineBER {
             float topHeight = fullness;
             float bottomHeight = 0;
             // Render gas from top to bottom
-            if (FluidVariantRendering.fillsFromTop(fluid)) {
+            if (FluidVariantAttributes.isLighterThanAir(fluid)) {
                 topHeight = 1;
                 bottomHeight = 1 - fullness;
             }

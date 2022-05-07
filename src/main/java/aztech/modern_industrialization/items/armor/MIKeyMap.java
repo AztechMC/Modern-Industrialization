@@ -38,7 +38,6 @@ public class MIKeyMap {
         HOLDING_UP.put(player, up);
     }
 
-    // TODO: call this on leave and dimension change
     public static void clear(Player player) {
         HOLDING_UP.remove(player);
     }

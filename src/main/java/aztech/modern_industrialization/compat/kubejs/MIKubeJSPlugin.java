@@ -126,10 +126,6 @@ public class MIKubeJSPlugin extends KubeJSPlugin {
 
         @Override
         public void serialize() {
-            if (id == null) {
-                throw new RecipeExceptionJS("You must specify an id for custom MI recipes! Recipe: " + json.toString());
-            }
-
             if (inputItems.size() > 0) {
                 JsonArray itemInputs = new JsonArray();
                 for (int i = 0; i < inputItems.size(); ++i) {

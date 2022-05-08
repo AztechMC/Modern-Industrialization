@@ -27,6 +27,7 @@ import aztech.modern_industrialization.api.FluidFuelRegistry;
 import aztech.modern_industrialization.api.ScrewdriverableBlockEntity;
 import aztech.modern_industrialization.api.WrenchableBlockEntity;
 import aztech.modern_industrialization.blocks.forgehammer.ForgeHammerScreenHandler;
+import aztech.modern_industrialization.definition.ItemDefinition;
 import aztech.modern_industrialization.inventory.ConfigurableInventoryPacketHandlers;
 import aztech.modern_industrialization.inventory.ConfigurableInventoryPackets;
 import aztech.modern_industrialization.items.armor.ArmorPackets;
@@ -43,6 +44,7 @@ import aztech.modern_industrialization.nuclear.NuclearItem;
 import aztech.modern_industrialization.pipes.MIPipes;
 import aztech.modern_industrialization.proxy.CommonProxy;
 import java.util.Map;
+
 import net.devtech.arrp.api.RRPCallback;
 import net.devtech.arrp.api.RuntimeResourcePack;
 import net.devtech.arrp.json.blockstate.JBlockModel;
@@ -144,22 +146,10 @@ public class ModernIndustrialization implements ModInitializer {
     }
 
     private void setupItems() {
-        for (Map.Entry<String, Item> entry : MIItem.items.entrySet()) {
-            registerItem(entry.getValue(), entry.getKey());
-            if (MIItem.registrationEvents.containsKey(entry.getKey())) {
-                MIItem.registrationEvents.get(entry.getKey()).accept(entry.getValue());
-            }
+        for (Map.Entry<ResourceLocation, ItemDefinition<?>> entry : MIItem.ITEMS.entrySet()) {
+            Registry.register(Registry.ITEM, entry.getKey(), entry.getValue().asItem());
+            entry.getValue().onRegister();
         }
-    }
-
-    public static void registerItem(Item item, String id) {
-        ResourceLocation ID = new MIIdentifier(id);
-        Registry.register(Registry.ITEM, ID, item);
-
-        RESOURCE_PACK.addModel(
-                JModel.model().parent(MIItem.handhelds.contains(id) ? "minecraft:item/handheld" : "minecraft:item/generated")
-                        .textures(new JTextures().layer0(ID.getNamespace() + ":items/" + ID.getPath())),
-                new ResourceLocation(ID.getNamespace() + ":item/" + ID.getPath()));
     }
 
     private void setupBlocks() {

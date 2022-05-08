@@ -75,30 +75,30 @@ public final class MITextures {
             casingFromTextureBricked(mtm, "bricked_steel", mtm.getAssetAsTexture("modern_industrialization:textures/blocks/steel_machine_casing.png"),
                     mtm.getAssetAsTexture("modern_industrialization:textures/blocks/fire_clay_bricks.png"));
 
-            mtm.addTexture("modern_industrialization:textures/items/mixed_ingot_blastproof.png",
-                    TextureHelper.tripleTexture(mtm.getAssetAsTexture("modern_industrialization:textures/items/stainless_steel_ingot.png"),
-                            mtm.getAssetAsTexture("modern_industrialization:textures/items/titanium_ingot.png"),
-                            mtm.getAssetAsTexture("modern_industrialization:textures/items/tungsten_ingot.png")));
+            mtm.addTexture("modern_industrialization:textures/item/mixed_ingot_blastproof.png",
+                    TextureHelper.tripleTexture(mtm.getAssetAsTexture("modern_industrialization:textures/item/stainless_steel_ingot.png"),
+                            mtm.getAssetAsTexture("modern_industrialization:textures/item/titanium_ingot.png"),
+                            mtm.getAssetAsTexture("modern_industrialization:textures/item/tungsten_ingot.png")));
 
-            mtm.addTexture("modern_industrialization:textures/items/mixed_plate_nuclear.png",
-                    TextureHelper.tripleTexture(mtm.getAssetAsTexture("modern_industrialization:textures/items/cadmium_plate.png"),
-                            mtm.getAssetAsTexture("modern_industrialization:textures/items/beryllium_plate.png"),
-                            mtm.getAssetAsTexture("modern_industrialization:textures/items/blastproof_alloy_plate.png"), 1, 2));
+            mtm.addTexture("modern_industrialization:textures/item/mixed_plate_nuclear.png",
+                    TextureHelper.tripleTexture(mtm.getAssetAsTexture("modern_industrialization:textures/item/cadmium_plate.png"),
+                            mtm.getAssetAsTexture("modern_industrialization:textures/item/beryllium_plate.png"),
+                            mtm.getAssetAsTexture("modern_industrialization:textures/item/blastproof_alloy_plate.png"), 1, 2));
 
-            mtm.addTexture("modern_industrialization:textures/items/mixed_ingot_iridium.png",
-                    TextureHelper.tripleTexture(mtm.getAssetAsTexture("modern_industrialization:textures/items/blastproof_alloy_ingot.png"),
-                            mtm.getAssetAsTexture("modern_industrialization:textures/items/iridium_ingot.png"),
-                            mtm.getAssetAsTexture("modern_industrialization:textures/items/blastproof_alloy_ingot.png")));
+            mtm.addTexture("modern_industrialization:textures/item/mixed_ingot_iridium.png",
+                    TextureHelper.tripleTexture(mtm.getAssetAsTexture("modern_industrialization:textures/item/blastproof_alloy_ingot.png"),
+                            mtm.getAssetAsTexture("modern_industrialization:textures/item/iridium_ingot.png"),
+                            mtm.getAssetAsTexture("modern_industrialization:textures/item/blastproof_alloy_ingot.png")));
 
-            NativeImage copperDrill = mtm.getAssetAsTexture("modern_industrialization:textures/items/copper_mining_drill.png");
-            NativeImage steamHandler = mtm.getAssetAsTexture("modern_industrialization:textures/items/steam_mining_drill_handler.png");
-            mtm.addTexture("modern_industrialization:textures/items/steam_mining_drill.png", TextureHelper.blend(steamHandler, copperDrill), true);
+            NativeImage copperDrill = mtm.getAssetAsTexture("modern_industrialization:textures/item/copper_mining_drill.png");
+            NativeImage steamHandler = mtm.getAssetAsTexture("modern_industrialization:textures/item/steam_mining_drill_handler.png");
+            mtm.addTexture("modern_industrialization:textures/item/steam_mining_drill.png", TextureHelper.blend(steamHandler, copperDrill), true);
             copperDrill.close();
             steamHandler.close();
 
-            NativeImage aluminumDrill = mtm.getAssetAsTexture("modern_industrialization:textures/items/aluminum_mining_drill.png");
-            NativeImage dieselHandler = mtm.getAssetAsTexture("modern_industrialization:textures/items/diesel_mining_drill_handler.png");
-            mtm.addTexture("modern_industrialization:textures/items/diesel_mining_drill.png", TextureHelper.blend(dieselHandler, aluminumDrill),
+            NativeImage aluminumDrill = mtm.getAssetAsTexture("modern_industrialization:textures/item/aluminum_mining_drill.png");
+            NativeImage dieselHandler = mtm.getAssetAsTexture("modern_industrialization:textures/item/diesel_mining_drill_handler.png");
+            mtm.addTexture("modern_industrialization:textures/item/diesel_mining_drill.png", TextureHelper.blend(dieselHandler, aluminumDrill),
                     true);
             aluminumDrill.close();
             dieselHandler.close();
@@ -190,7 +190,7 @@ public final class MITextures {
             if (isBlock) {
                 texturePath = String.format("modern_industrialization:textures/blocks/%s.png", path);
             } else {
-                texturePath = String.format("modern_industrialization:textures/items/%s.png", path);
+                texturePath = String.format("modern_industrialization:textures/item/%s.png", path);
             }
             mtm.addTexture(texturePath, texture);
             texture.close();
@@ -200,7 +200,7 @@ public final class MITextures {
     }
 
     public static void generateDoubleIngot(TextureManager mtm, String materialName) throws IOException {
-        String ingotTexture = String.format("modern_industrialization:textures/items/%s_ingot.png", materialName);
+        String ingotTexture = String.format("modern_industrialization:textures/item/%s_ingot.png", materialName);
         if (materialName.equals("gold") || materialName.equals("iron") || materialName.equals("copper")) {
             ingotTexture = String.format("minecraft:textures/item/%s_ingot.png", materialName);
         }
@@ -208,7 +208,7 @@ public final class MITextures {
         TextureHelper.doubleIngot(image);
         String itemPath = materialName + "_double_ingot";
 
-        mtm.addTexture(String.format("modern_industrialization:textures/items/%s.png", itemPath), image);
+        mtm.addTexture(String.format("modern_industrialization:textures/item/%s.png", itemPath), image);
         image.close();
     }
 
@@ -289,7 +289,7 @@ public final class MITextures {
             if (fluid.isGas) {
                 TextureHelper.flip(bucket_image);
             }
-            tm.addTexture(String.format("modern_industrialization:textures/items/bucket/%s.png", fluid.name), bucket_image);
+            tm.addTexture(String.format("modern_industrialization:textures/item/bucket/%s.png", fluid.name), bucket_image);
         } catch (IOException e) {
             e.printStackTrace();
         }

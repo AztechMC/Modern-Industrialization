@@ -50,7 +50,7 @@ public class MIItemPart {
 
             @Override
             public void register(MaterialBuilder.RegisteringContext context) {
-                MIItem.of(itemPath);
+                MIItem.item(itemPath, itemPath);
             }
         };
     }

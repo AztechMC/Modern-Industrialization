@@ -98,7 +98,7 @@ public class CasingComponent implements IComponent {
 
     public InteractionResult onUse(MachineBlockEntity be, Player player, InteractionHand hand) {
         ItemStack stackInHand = player.getItemInHand(hand);
-        if (stackInHand.getItem() == MIItem.ITEM_CROWBAR && !player.isShiftKeyDown()) {
+        if (stackInHand.getItem() == MIItem.ITEM_CROWBAR.asItem() && !player.isShiftKeyDown()) {
             if (tierCasing != defaultCasing) {
                 dropCasing(be.getLevel(), be.getBlockPos());
                 tierCasing = defaultCasing;

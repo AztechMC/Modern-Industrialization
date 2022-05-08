@@ -61,7 +61,7 @@ public class MIParts {
     public static final RegularPart DRILL = new RegularPart("drill").appendTextureRegister((mtm, partContext, part, itemPath) -> {
         String template = "modern_industrialization:textures/materialsets/common/drill.png";
         String templateOverlay = "modern_industrialization:textures/materialsets/common/mining_drill_overlay.png";
-        String texturePath = String.format("modern_industrialization:textures/items/%s.png", partContext.getMaterialName() + "_mining_drill");
+        String texturePath = String.format("modern_industrialization:textures/item/%s.png", partContext.getMaterialName() + "_mining_drill");
         try {
             NativeImage image = mtm.getAssetAsTexture(template);
             NativeImage overlay = mtm.getAssetAsTexture(templateOverlay);

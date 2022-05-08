@@ -41,8 +41,7 @@ public class NuclearComponentItem extends Item implements INuclearComponent<Item
     }
 
     public static NuclearComponentItem of(String id, int maxTemperature, double heatConduction, INeutronBehaviour neutronBehaviour) {
-        return (NuclearComponentItem) MIItem
-                .of((Properties settings) -> new NuclearComponentItem(settings, maxTemperature, heatConduction, neutronBehaviour), id, 1);
+        return MIItem.item(id, id, ( settings) -> new NuclearComponentItem(settings.maxCount(1), maxTemperature, heatConduction, neutronBehaviour)).asItem();
     }
 
     public int getMaxTemperature() {

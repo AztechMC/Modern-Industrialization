@@ -50,7 +50,7 @@ public class GemPart extends Part implements BuildablePart {
                     try {
                         NativeImage image = mtm.getAssetAsTexture(template);
                         TextureHelper.colorize(image, partContext.getColoramp());
-                        String texturePath = String.format("modern_industrialization:textures/items/%s.png", itemPath);
+                        String texturePath = String.format("modern_industrialization:textures/item/%s.png", itemPath);
                         mtm.addTexture(texturePath, image);
                         image.close();
                     } catch (IOException e) {

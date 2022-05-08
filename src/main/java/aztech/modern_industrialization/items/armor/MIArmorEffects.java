@@ -54,18 +54,18 @@ public class MIArmorEffects {
         if (chest.getItem() instanceof GraviChestPlateItem gsp && gsp.isActivated(chest) && gsp.getEnergy(chest) > 0) {
             return true;
         }
-        if (chest.getItem() == MIItem.QUANTUM_CHESTPLATE) {
+        if (chest.getItem() == MIItem.QUANTUM_CHESTPLATE.asItem()) {
             return true;
         }
         return false;
     }
 
     public static boolean canTankFlyIntoWall(ItemStack helmet) {
-        return helmet.getItem() == MIItem.RUBBER_HELMET || helmet.getItem() == MIItem.QUANTUM_HELMET;
+        return helmet.getItem() == MIItem.RUBBER_HELMET.asItem() || helmet.getItem() == MIItem.QUANTUM_HELMET.asItem();
     }
 
     public static boolean canTankFall(ItemStack boots) {
-        return boots.getItem() == MIItem.RUBBER_BOOTS || boots.getItem() == MIItem.QUANTUM_BOOTS;
+        return boots.getItem() == MIItem.RUBBER_BOOTS.asItem() || boots.getItem() == MIItem.QUANTUM_BOOTS.asItem();
     }
 
     public static final AbilitySource SRC = Pal.getAbilitySource(new MIIdentifier("modernindustrialization"));

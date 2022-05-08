@@ -45,7 +45,7 @@ public class RegularPart extends Part implements BuildablePart {
 
     public RegularPart(String key) {
         this(key, (registeringContext, partContext, part, itemPath, itemId, itemTag) -> {
-            var item = MIItem.of(itemPath);
+            var item = MIItem.item(itemPath, itemPath).asItem();
             setupTag(part, itemTag, item);
         }, (registeringContext, partContext, part, itemPath, itemId, itemTag) -> {
         }, (mtm, partContext, part, itemPath) -> MITextures.generateItemPartTexture(mtm, part.key, partContext.getMaterialSet(), itemPath, false,

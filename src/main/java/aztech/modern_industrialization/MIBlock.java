@@ -31,6 +31,7 @@ import aztech.modern_industrialization.blocks.creativestorageunit.CreativeStorag
 import aztech.modern_industrialization.blocks.creativetank.CreativeTankBlock;
 import aztech.modern_industrialization.blocks.creativetank.CreativeTankItem;
 import aztech.modern_industrialization.blocks.forgehammer.ForgeHammerBlock;
+import aztech.modern_industrialization.definition.ItemDefinition;
 import aztech.modern_industrialization.util.MobSpawning;
 import java.util.SortedMap;
 import java.util.TreeMap;
@@ -57,6 +58,7 @@ public class MIBlock extends Block {
     public static SortedMap<String, MIBlock> blocks = new TreeMap<>();
 
     public final Item blockItem;
+    private ItemDefinition<BlockItem> blockItemDefinition;
     public final String id;
 
     private JLootTable lootTables;
@@ -87,7 +89,8 @@ public class MIBlock extends Block {
             if (blockItemCtor != null) {
                 this.blockItem = blockItemCtor.apply(this);
             } else {
-                this.blockItem = MIItem.of(itemSettings -> new BlockItem(this, itemSettings), this.id, 64);
+                this.blockItemDefinition = MIItem.item(this.id, this.id, itemSettings -> new BlockItem(this, itemSettings.stacksTo(64)));
+                this.blockItem = this.blockItemDefinition.asItem();
             }
         }
 

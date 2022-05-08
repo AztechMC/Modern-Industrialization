@@ -58,7 +58,7 @@ public class RawMetalPart extends UnbuildablePart<MaterialRawSet> {
                 if (isBlock) {
                     texturePath = String.format("modern_industrialization:textures/blocks/%s.png", itemPath);
                 } else {
-                    texturePath = String.format("modern_industrialization:textures/items/%s.png", itemPath);
+                    texturePath = String.format("modern_industrialization:textures/item/%s.png", itemPath);
                 }
                 mtm.addTexture(texturePath, image);
                 image.close();

@@ -66,7 +66,7 @@ public class NuclearFuelPart extends UnbuildablePart<NuclearConstant.IsotopeFuel
 
         return new RegularPart(key).withRegister((registeringContext, partContext, part, itemPath, itemId, itemTag) -> {
             if (Type.DEPLETED == type) {
-                MIItem.of(itemPath, 64);
+                MIItem.item(itemPath, itemPath);
             } else {
                 NuclearFuel.of(itemPath, fuelParams, neutronBehaviour, partContext.getMaterialName() + "_fuel_rod_depleted");
             }

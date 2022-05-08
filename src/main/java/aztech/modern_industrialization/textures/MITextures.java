@@ -25,7 +25,7 @@ package aztech.modern_industrialization.textures;
 
 import aztech.modern_industrialization.MIFluids;
 import aztech.modern_industrialization.ModernIndustrialization;
-import aztech.modern_industrialization.fluid.CraftingFluid;
+import aztech.modern_industrialization.fluid.MIFluid;
 import aztech.modern_industrialization.materials.Material;
 import aztech.modern_industrialization.materials.MaterialRegistry;
 import aztech.modern_industrialization.materials.part.MaterialPart;
@@ -53,7 +53,7 @@ public final class MITextures {
                 }
             }
 
-            for (CraftingFluid fluid : MIFluids.FLUIDS) {
+            for (MIFluid fluid : MIFluids.FLUIDS) {
                 registerFluidTextures(mtm, fluid);
             }
 
@@ -274,7 +274,7 @@ public final class MITextures {
         }
     }
 
-    private static void registerFluidTextures(TextureManager tm, CraftingFluid fluid) {
+    private static void registerFluidTextures(TextureManager tm, MIFluid fluid) {
         String path = "modern_industrialization:textures/fluid/";
         String bucket = path + "bucket.png";
         String bucket_content = path + "bucket_content.png";
@@ -289,7 +289,7 @@ public final class MITextures {
             if (fluid.isGas) {
                 TextureHelper.flip(bucket_image);
             }
-            tm.addTexture(String.format("modern_industrialization:textures/item/bucket/%s.png", fluid.name), bucket_image);
+            tm.addTexture(String.format("modern_industrialization:textures/item/bucket_%s.png", fluid.name), bucket_image);
         } catch (IOException e) {
             e.printStackTrace();
         }

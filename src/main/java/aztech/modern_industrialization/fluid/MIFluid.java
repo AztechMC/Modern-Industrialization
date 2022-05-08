@@ -24,12 +24,16 @@
 package aztech.modern_industrialization.fluid;
 
 import aztech.modern_industrialization.MIFluids;
+import aztech.modern_industrialization.MIIdentifier;
+import aztech.modern_industrialization.MIItem;
 import aztech.modern_industrialization.ModernIndustrialization;
+import aztech.modern_industrialization.definition.ItemDefinition;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariantAttributeHandler;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariantAttributes;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.data.models.model.ModelTemplate;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.BlockGetter;
@@ -40,24 +44,29 @@ import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
+import java.util.Optional;
+
 /**
  * A fluid that can only be used for crafting, i.e. not be placed in the world.
  */
-public class CraftingFluid extends Fluid {
-    public final Item bucketItem;
+public class MIFluid extends Fluid {
+    public final ItemDefinition<MIBucketItem> bucketItemDefinition;
     public final String name;
     public final String id;
     public final int color;
     public final boolean isGas;
     public final CraftingFluidBlock block;
 
-    public CraftingFluid(String name, int color, boolean isGas) {
+    public MIFluid(String name, int color, boolean isGas) {
         this.color = color;
 
         this.name = name;
         this.id = "modern_industrialization:" + name;
         this.isGas = isGas;
-        bucketItem = new MIBucketItem(this, new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1).tab(ModernIndustrialization.ITEM_GROUP));
+        bucketItemDefinition = MIItem.item("bucket_" + this.name,
+                "bucket_" + this.name
+                , s -> new MIBucketItem(this, s)
+        );
         this.block = new CraftingFluidBlock(name, color);
 
         MIFluids.FLUIDS.add(this);
@@ -72,13 +81,13 @@ public class CraftingFluid extends Fluid {
         }
     }
 
-    public CraftingFluid(String name, int color) {
+    public MIFluid(String name, int color) {
         this(name, color, false);
     }
 
     @Override
     public Item getBucket() {
-        return bucketItem;
+        return bucketItemDefinition.asItem();
     }
 
     @Override

@@ -25,7 +25,7 @@ package aztech.modern_industrialization;
 
 import static aztech.modern_industrialization.MIFluids.FLUIDS;
 
-import aztech.modern_industrialization.fluid.CraftingFluid;
+import aztech.modern_industrialization.fluid.MIFluid;
 import java.util.function.Consumer;
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandler;
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry;
@@ -62,7 +62,7 @@ public class MIFluidsRender {
             }
         });
 
-        Consumer<CraftingFluid> registerWaterlikeFluid = (fluid) -> {
+        Consumer<MIFluid> registerWaterlikeFluid = (fluid) -> {
             FluidRenderHandlerRegistry.INSTANCE.register(fluid, new FluidRenderHandler() {
                 @Override
                 public TextureAtlasSprite[] getFluidSprites(BlockAndTintGetter blockRenderView, BlockPos blockPos, FluidState fluidState) {
@@ -76,7 +76,7 @@ public class MIFluidsRender {
             });
         };
 
-        for (CraftingFluid fluid : FLUIDS) {
+        for (MIFluid fluid : FLUIDS) {
             registerWaterlikeFluid.accept(fluid);
         }
     }

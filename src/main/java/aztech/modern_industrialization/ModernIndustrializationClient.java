@@ -142,7 +142,7 @@ public class ModernIndustrializationClient implements ClientModInitializer {
                 if (item == Items.GUNPOWDER) {
                     lines.add(new TranslatableComponent("text.modern_industrialization.gunpowder_upgrade").setStyle(TextHelper.GRAY_TEXT));
                 }
-                if (item == MIFluids.LUBRICANT.bucketItem) {
+                if (item == MIFluids.LUBRICANT.getBucket()) {
                     lines.add(new TranslatableComponent("text.modern_industrialization.lubricant_tooltip", LubricantHelper.mbPerTick)
                             .setStyle(TextHelper.GRAY_TEXT));
                 }

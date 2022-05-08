@@ -32,7 +32,7 @@ import aztech.modern_industrialization.compat.megane.holder.EnergyComponentHolde
 import aztech.modern_industrialization.compat.megane.holder.EnergyListComponentHolder;
 import aztech.modern_industrialization.compat.megane.holder.MultiblockInventoryComponentHolder;
 import aztech.modern_industrialization.compat.megane.provider.*;
-import aztech.modern_industrialization.fluid.CraftingFluid;
+import aztech.modern_industrialization.fluid.MIFluid;
 import aztech.modern_industrialization.machines.MachineBlockEntity;
 import lol.bai.megane.api.MeganeModule;
 import lol.bai.megane.api.registry.ClientRegistrar;
@@ -60,6 +60,6 @@ public class MIMeganeModule implements MeganeModule {
     public void registerClient(ClientRegistrar registrar) {
         registrar.addEnergyInfo(ModernIndustrialization.MOD_ID, 0xB70000, "EU");
 
-        registrar.addFluidInfo(CraftingFluid.class, new CraftingFluidInfoProvider());
+        registrar.addFluidInfo(MIFluid.class, new CraftingFluidInfoProvider());
     }
 }

@@ -158,10 +158,10 @@ public final class MIItem {
     public static final ItemDefinition<Item> ULTRADENSE_METAL_BALL = item("Ultradense Metal Ball", "ultradense_metal_ball");
     public static final ItemDefinition<Item> SINGULARITY = item("Singularity", "singularity", p -> new Item(p.rarity(Rarity.EPIC)));
 
-    public static final ItemDefinition<ForgeTool> IRON_HAMMER = item("Iron Hammer", "iron_hammer", p -> new ForgeTool(Tiers.IRON, p));
-    public static final ItemDefinition<ForgeTool> STEEL_HAMMER = item("Steel Hammer", "steel_hammer", p -> new ForgeTool(ForgeTool.STEEL, p));
-    public static final ItemDefinition<ForgeTool> DIAMOND_HAMMER = item("Diamond Hammer", "diamond_hammer", p -> new ForgeTool(Tiers.DIAMOND, p));
-    public static final ItemDefinition<ForgeTool> NETHERITE_HAMMER = item("Netherite Hammer", "netherite_hammer", p -> new ForgeTool(Tiers.NETHERITE, p));
+    public static final ItemDefinition<ForgeTool> IRON_HAMMER = itemHandheld("Iron Hammer", "iron_hammer", p -> new ForgeTool(Tiers.IRON, p));
+    public static final ItemDefinition<ForgeTool> STEEL_HAMMER = itemHandheld("Steel Hammer", "steel_hammer", p -> new ForgeTool(ForgeTool.STEEL, p));
+    public static final ItemDefinition<ForgeTool> DIAMOND_HAMMER = itemHandheld("Diamond Hammer", "diamond_hammer", p -> new ForgeTool(Tiers.DIAMOND, p));
+    public static final ItemDefinition<ForgeTool> NETHERITE_HAMMER = itemHandheld("Netherite Hammer", "netherite_hammer", p -> new ForgeTool(Tiers.NETHERITE, p));
 
 
     public static <T extends Item> ItemDefinition<T> item(

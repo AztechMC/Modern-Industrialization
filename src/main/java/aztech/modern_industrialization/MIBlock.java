@@ -33,9 +33,12 @@ import aztech.modern_industrialization.blocks.creativetank.CreativeTankItem;
 import aztech.modern_industrialization.blocks.forgehammer.ForgeHammerBlock;
 import aztech.modern_industrialization.definition.ItemDefinition;
 import aztech.modern_industrialization.util.MobSpawning;
+
+import java.util.Optional;
 import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.function.Function;
+
 import net.devtech.arrp.json.blockstate.JBlockModel;
 import net.devtech.arrp.json.blockstate.JState;
 import net.devtech.arrp.json.blockstate.JVariant;
@@ -47,6 +50,7 @@ import net.devtech.arrp.json.models.JModel;
 import net.devtech.arrp.json.models.JTextures;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
+import net.minecraft.data.models.model.ModelTemplate;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
@@ -86,23 +90,56 @@ public class MIBlock extends Block {
             throw new IllegalArgumentException("Block id already taken : " + this.id);
         } else {
             blocks.put(id, this);
-            if (blockItemCtor != null) {
-                this.blockItem = blockItemCtor.apply(this);
-            } else {
-                this.blockItemDefinition = MIItem.item(this.id, this.id, itemSettings -> new BlockItem(this, itemSettings.stacksTo(64)));
-                this.blockItem = this.blockItemDefinition.asItem();
-            }
+            this.blockItemDefinition = MIItem.item(this.id, this.id, itemSettings -> blockItemCtor == null ? new BlockItem(this, itemSettings.stacksTo(64))
+                            : blockItemCtor.apply(this),
+                    ((item, itemModelGenerators) -> itemModelGenerators.generateFlatItem(
+                            item, new ModelTemplate(Optional.of(new MIIdentifier(("block/" + id))), Optional.empty())
+                    )
+                    ));
+            this.blockItem = this.blockItemDefinition.asItem();
         }
 
-        this.setLootTables(JLootTable.loot("minecraft:block")
-                .pool(new JPool().rolls(1).entry(new JEntry().type("minecraft:item").name(ModernIndustrialization.MOD_ID + ":" + this.id))
-                        .condition(new JCondition("minecraft:survives_explosion"))));
+        this.
 
-        this.setBlockState(JState.state().add(new JVariant().put("", new JBlockModel(ModernIndustrialization.MOD_ID + ":block/" + id))));
-        this.setBlockModel(
-                JModel.model().parent("block/cube_all").textures(new JTextures().var("all", ModernIndustrialization.MOD_ID + ":blocks/" + id)));
+                setLootTables(JLootTable.loot("minecraft:block")
+                        .
 
-        this.setItemModel(JModel.model().parent(ModernIndustrialization.MOD_ID + ":block/" + id));
+                                pool(new JPool().
+
+                                        rolls(1).
+
+                                        entry(new JEntry().
+
+                                                type("minecraft:item").
+
+                                                name(ModernIndustrialization.MOD_ID + ":" + this.id))
+                                        .
+
+                                                condition(new JCondition("minecraft:survives_explosion"))));
+
+        this.
+
+                setBlockState(JState.state().
+
+                        add(new JVariant().
+
+                                put("", new JBlockModel(ModernIndustrialization.MOD_ID + ":block/" + id))));
+        this.
+
+                setBlockModel(
+                        JModel.model().
+
+                                parent("block/cube_all").
+
+                                textures(new JTextures().
+
+                                        var("all", ModernIndustrialization.MOD_ID + ":blocks/" + id)));
+
+        this.
+
+                setItemModel(JModel.model().
+
+                        parent(ModernIndustrialization.MOD_ID + ":block/" + id));
 
         this.FLAGS = registrationFlag;
     }

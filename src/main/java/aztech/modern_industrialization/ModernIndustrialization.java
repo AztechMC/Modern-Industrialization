@@ -112,11 +112,12 @@ public class ModernIndustrialization implements ModInitializer {
         SingleBlockSpecialMachines.init();
         MultiblockHatches.init();
         MultiblockMachines.init();
+        MIFluids.setupFluids();
         NuclearItem.init();
         setupItems();
         setupBlocks();
         MIBlockEntityTypes.init();
-        MIFluids.setupFluids();
+
         // fields.
         setupPackets();
         setupFuels();

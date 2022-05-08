@@ -26,7 +26,7 @@ package aztech.modern_industrialization.items.diesel_tools;
 import aztech.modern_industrialization.MITags;
 import aztech.modern_industrialization.api.DynamicEnchantmentItem;
 import aztech.modern_industrialization.api.FluidFuelRegistry;
-import aztech.modern_industrialization.fluid.CraftingFluid;
+import aztech.modern_industrialization.fluid.MIFluid;
 import aztech.modern_industrialization.items.DynamicToolItem;
 import aztech.modern_industrialization.items.FluidFuelItemHelper;
 import aztech.modern_industrialization.items.ItemHelper;
@@ -151,7 +151,7 @@ public class DieselToolItem extends Item implements Vanishable, DynamicEnchantme
     public int getBarColor(ItemStack stack) {
         Fluid fluid = FluidFuelItemHelper.getFluid(stack).getFluid();
 
-        if (fluid instanceof CraftingFluid cf) {
+        if (fluid instanceof MIFluid cf) {
             return cf.color;
         } else {
             return 0;

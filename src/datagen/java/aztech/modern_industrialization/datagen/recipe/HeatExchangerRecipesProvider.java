@@ -24,7 +24,7 @@
 package aztech.modern_industrialization.datagen.recipe;
 
 import aztech.modern_industrialization.MIFluids;
-import aztech.modern_industrialization.fluid.CraftingFluid;
+import aztech.modern_industrialization.fluid.MIFluid;
 import aztech.modern_industrialization.machines.init.MIMachineRecipeTypes;
 import aztech.modern_industrialization.recipe.json.MIRecipeJson;
 import java.util.function.Consumer;
@@ -45,7 +45,7 @@ public class HeatExchangerRecipesProvider extends MIRecipesProvider {
         } else if (f == Fluids.LAVA) {
             return (id ? "minecraft:" : "") + "lava";
         } else {
-            CraftingFluid fluid = (CraftingFluid) f;
+            MIFluid fluid = (MIFluid) f;
             return (id ? "modern_industrialization:" : "") + fluid.name;
         }
     }

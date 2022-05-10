@@ -144,14 +144,14 @@ public abstract class AbstractCraftingMultiblockBlockEntity extends MultiblockMa
 
                 // If there was an active recipe, we have to make sure the output fits, and lock
                 // the hatches.
-                if (crafter.tryContinueRecipe()) {
-                    allowNormalOperation = true;
-                }
             }
 
             if (shapeValid.update()) {
                 sync(false);
             }
+        }
+        if (shapeValid.shapeValid && !allowNormalOperation && crafter.tryContinueRecipe()) {
+            allowNormalOperation = true;
         }
     }
 

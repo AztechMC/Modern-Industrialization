@@ -31,232 +31,208 @@ import aztech.modern_industrialization.blocks.creativestorageunit.CreativeStorag
 import aztech.modern_industrialization.blocks.creativetank.CreativeTankBlock;
 import aztech.modern_industrialization.blocks.creativetank.CreativeTankItem;
 import aztech.modern_industrialization.blocks.forgehammer.ForgeHammerBlock;
-import aztech.modern_industrialization.definition.ItemDefinition;
-import aztech.modern_industrialization.util.MobSpawning;
-
-import java.util.Optional;
-import java.util.SortedMap;
-import java.util.TreeMap;
+import aztech.modern_industrialization.definition.BlockDefinition;
+import java.util.*;
+import java.util.function.BiConsumer;
+import java.util.function.BiFunction;
 import java.util.function.Function;
-
-import net.devtech.arrp.json.blockstate.JBlockModel;
-import net.devtech.arrp.json.blockstate.JState;
-import net.devtech.arrp.json.blockstate.JVariant;
-import net.devtech.arrp.json.loot.JCondition;
-import net.devtech.arrp.json.loot.JEntry;
-import net.devtech.arrp.json.loot.JLootTable;
-import net.devtech.arrp.json.loot.JPool;
-import net.devtech.arrp.json.models.JModel;
-import net.devtech.arrp.json.models.JTextures;
+import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
-import net.minecraft.data.models.model.ModelTemplate;
+import net.minecraft.data.loot.BlockLoot;
+import net.minecraft.data.models.BlockModelGenerators;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.BlockItem;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.Material;
 
-public class MIBlock extends Block {
+public class MIBlock {
 
-    public static SortedMap<String, MIBlock> blocks = new TreeMap<>();
-
-    public final Item blockItem;
-    private ItemDefinition<BlockItem> blockItemDefinition;
-    public final String id;
-
-    private JLootTable lootTables;
-    private JModel blockModel;
-    private JModel itemModel;
-    private JState blockState;
-    private boolean pickaxeMineable = false;
-    private int miningLevel = 0;
-
-    public final int FLAGS;
-
-    public static final int FLAG_BLOCK_LOOT = 1;
-    public static final int FLAG_BLOCK_MODEL = 1 << 1;
-    public static final int FLAG_BLOCK_ITEM_MODEL = 1 << 2;
-
-    public MIBlock(String id, Properties settings, int registrationFlag) {
-        this(id, settings, null, registrationFlag);
-    }
-
-    public MIBlock(String id, Properties settings, Function<MIBlock, BlockItem> blockItemCtor, int registrationFlag) {
-        super(settings);
-        this.id = id;
-
-        if (blocks.containsKey(id)) {
-            throw new IllegalArgumentException("Block id already taken : " + this.id);
-        } else {
-            blocks.put(id, this);
-            this.blockItemDefinition = MIItem.item(this.id, this.id, itemSettings -> blockItemCtor == null ? new BlockItem(this, itemSettings.stacksTo(64))
-                            : blockItemCtor.apply(this),
-                    ((item, itemModelGenerators) -> itemModelGenerators.generateFlatItem(
-                            item, new ModelTemplate(Optional.of(new MIIdentifier(("block/" + id))), Optional.empty())
-                    )
-                    ));
-            this.blockItem = this.blockItemDefinition.asItem();
-        }
-
-        this.
-
-                setLootTables(JLootTable.loot("minecraft:block")
-                        .
-
-                                pool(new JPool().
-
-                                        rolls(1).
-
-                                        entry(new JEntry().
-
-                                                type("minecraft:item").
-
-                                                name(ModernIndustrialization.MOD_ID + ":" + this.id))
-                                        .
-
-                                                condition(new JCondition("minecraft:survives_explosion"))));
-
-        this.
-
-                setBlockState(JState.state().
-
-                        add(new JVariant().
-
-                                put("", new JBlockModel(ModernIndustrialization.MOD_ID + ":block/" + id))));
-        this.
-
-                setBlockModel(
-                        JModel.model().
-
-                                parent("block/cube_all").
-
-                                textures(new JTextures().
-
-                                        var("all", ModernIndustrialization.MOD_ID + ":blocks/" + id)));
-
-        this.
-
-                setItemModel(JModel.model().
-
-                        parent(ModernIndustrialization.MOD_ID + ":block/" + id));
-
-        this.FLAGS = registrationFlag;
-    }
-
-    public MIBlock(String id, Properties settings) {
-        this(id, settings, FLAG_BLOCK_LOOT | FLAG_BLOCK_MODEL | FLAG_BLOCK_ITEM_MODEL);
-    }
-
-    public MIBlock(String id, Properties settings, Function<MIBlock, BlockItem> blockItemCtor) {
-        this(id, settings, blockItemCtor, FLAG_BLOCK_LOOT | FLAG_BLOCK_MODEL | FLAG_BLOCK_ITEM_MODEL);
-    }
-
-    public MIBlock(String id) {
-        this(id, FabricBlockSettings.of(METAL_MATERIAL).destroyTime(4.0f).requiresCorrectToolForDrops()
-                .isValidSpawn(MobSpawning.NO_SPAWN));
-        pickaxeMineable = true;
-    }
-
-    public MIBlock(String id, float resistance) {
-        this(id, FabricBlockSettings.of(METAL_MATERIAL).destroyTime(4.0f).explosionResistance(resistance)
-                .requiresCorrectToolForDrops()
-                .isValidSpawn(MobSpawning.NO_SPAWN));
-        pickaxeMineable = true;
-    }
+    public static SortedMap<ResourceLocation, BlockDefinition<?>> BLOCKS = new TreeMap<>();
 
     // hull
-    public static final MIBlock BASIC_MACHINE_HULL = new MIBlock("basic_machine_hull");
-    public static final MIBlock ADVANCED_MACHINE_HULL = new MIBlock("advanced_machine_hull");
-    public static final MIBlock TURBO_MACHINE_HULL = new MIBlock("turbo_machine_hull");
-    public static final MIBlock HIGHLY_ADVANCED_MACHINE_HULL = new MIBlock("highly_advanced_machine_hull");
-    public static final MIBlock QUANTUM_MACHINE_HULL = new MIBlock("quantum_machine_hull", 6000);
+    public static final BlockDefinition<Block> BASIC_MACHINE_HULL = block("Basic Machine Hull", "basic_machine_hull");
+    public static final BlockDefinition<Block> ADVANCED_MACHINE_HULL = block("Advanced Machine Hull", "advanced_machine_hull");
+    public static final BlockDefinition<Block> TURBO_MACHINE_HULL = block("Turbo Machine Hull", "turbo_machine_hull");
+    public static final BlockDefinition<Block> HIGHLY_ADVANCED_MACHINE_HULL = block("Highly Advanced Machine Hull", "highly_advanced_machine_hull");
+    public static final BlockDefinition<Block> QUANTUM_MACHINE_HULL = block("Quantum Machine Hull", "quantum_machine_hull",
+            BlockDefinitionParams.of().resistance(6000f));
 
     // Multiblock
-    public static final MIBlock FUSION_CHAMBER = new MIBlock("fusion_chamber");
+    public static final BlockDefinition<Block> FUSION_CHAMBER = block("Fusion Chamber", "fusion_chamber");
 
     // other
-    public static final MIBlock INDUSTRIAL_TNT = new MIBlock("industrial_tnt",
-            Properties.of(Material.EXPLOSIVE).instabreak().sound(SoundType.GRASS));
+    public static final BlockDefinition<Block> INDUSTRIAL_TNT = blockExplosive("Industrial TNT", "industrial_tnt");
+    public static final BlockDefinition<Block> NUKE = blockExplosive("Nuke", "nuke");
 
-    public static final MIBlock NUKE = new MIBlock("nuke", Properties.of(Material.EXPLOSIVE).instabreak().sound(SoundType.GRASS));
+    public static final BlockDefinition<Block> BLOCK_FIRE_CLAY_BRICKS = block("Fire Clay Bricks", "fire_clay_bricks",
+            BlockDefinitionParams.of(STONE_MATERIAL).destroyTime(2.0f).explosionResistance(6.0f).requiresCorrectToolForDrops());
 
-    public static final MIBlock BLOCK_FIRE_CLAY_BRICKS = new MIBlock("fire_clay_bricks",
-            FabricBlockSettings.of(STONE_MATERIAL).destroyTime(2.0f).explosionResistance(6.0f)
-                    .requiresCorrectToolForDrops()).setPickaxeMineable();
+    public static final BlockDefinition<ForgeHammerBlock> FORGE_HAMMER = block("Forge Hammer", "forge_hammer",
+            BlockDefinitionParams.of().withBlockConstructor(ForgeHammerBlock::new).noModel().destroyTime(6.0f).explosionResistance(1200)
+                    .sound(SoundType.ANVIL),
+            ForgeHammerBlock.class);
 
-    public static final Block FORGE_HAMMER = new ForgeHammerBlock();
-    public static final TrashCanBlock TRASH_CAN = new TrashCanBlock();
+    public static final BlockDefinition<TrashCanBlock> TRASH_CAN = block("Trash Can", "trash_can",
+            BlockDefinitionParams.of().withBlockConstructor(TrashCanBlock::new).noModel().destroyTime(6.0f).explosionResistance(1200),
+            TrashCanBlock.class)
+                    .withBlockRegistrationEvent(TrashCanBlock::onRegister);
 
-    public static final CreativeTankBlock CREATIVE_TANK_BLOCK = new CreativeTankBlock();
-    public static final CreativeStorageUnitBlock CREATIVE_STORAGE_UNIT = new CreativeStorageUnitBlock();
+    public static final BlockDefinition<CreativeTankBlock> CREATIVE_TANK_BLOCK = block(
+            "Creative Tank",
+            "creative_tank",
+            BlockDefinitionParams.of().withBlockConstructor(CreativeTankBlock::new)
+                    .withBlockItemConstructor(CreativeTankItem::new)
+                    .noModel().noLootTable().clearTags()
+                    .noOcclusion(),
+            CreativeTankBlock.class
 
-    static {
-        // Extra setup
-        FluidStorage.ITEM.registerForItems(CreativeTankItem.TankItemStorage::new, CREATIVE_TANK_BLOCK.blockItem);
-    }
+    ).withBlockRegistrationEvent(
+            (block, item) -> FluidStorage.ITEM.registerForItems(CreativeTankItem.TankItemStorage::new, item));
 
-    public MIBlock setLootTables(JLootTable lootTables) {
-        this.lootTables = lootTables;
-        return this;
-    }
+    public static final BlockDefinition<CreativeStorageUnitBlock> CREATIVE_STORAGE_UNIT = block("Creative Storage Unit",
+            "creative_storage_unit", BlockDefinitionParams.of().withBlockConstructor(CreativeStorageUnitBlock::new));
 
-    public MIBlock setBlockState(JState blockState) {
-        this.blockState = blockState;
-        return this;
-    }
+    private static <T extends Block> BlockDefinition<T> block(
+            String englishName,
+            String id,
+            T block,
+            BiFunction<Block, FabricItemSettings, BlockItem> blockItemCtor,
+            BiConsumer<Block, BlockModelGenerators> modelGenerator,
+            BiConsumer<Block, BlockLoot> lootTableGenerator,
+            List<TagKey<Block>> tags) {
+        BlockDefinition<T> definition = new BlockDefinition<T>(englishName, id, block, blockItemCtor, modelGenerator, lootTableGenerator, tags);
+        if (BLOCKS.put(definition.getId(), definition) != null) {
+            throw new IllegalArgumentException("Block id already taken : " + definition.getId());
+        }
 
-    public MIBlock setBlockModel(JModel blockModel) {
-        this.blockModel = blockModel;
-        return this;
-    }
-
-    public MIBlock asColumn() {
-        return this.setBlockModel(JModel.model().parent("block/cube_column")
-                .textures(new JTextures().var("end", ModernIndustrialization.MOD_ID + ":blocks/" + id + "_end").var("side",
-                        ModernIndustrialization.MOD_ID + ":blocks/" + id + "_side")));
-    }
-
-    public MIBlock setItemModel(JModel itemModel) {
-        this.itemModel = itemModel;
-        return this;
-    }
-
-    public MIBlock setPickaxeMineable() {
-        pickaxeMineable = true;
-        return this;
-    }
-
-    public MIBlock setMiningLevel(int level) {
-        miningLevel = level;
-        return this;
-    }
-
-    public void onRegister(Block block, Item blockItem) {
+        return definition;
 
     }
 
-    public JLootTable getLootTables() {
-        return lootTables;
+    public static <T extends Block> BlockDefinition<T> block(String englishName, String id,
+            BlockDefinitionParams<T> params) {
+        return block(englishName, id,
+                params.ctor.apply(params),
+                params.blockItemCtor,
+                params.modelGenerator,
+                params.lootTableGenerator,
+                params.tags);
     }
 
-    public JModel getBlockModel() {
-        return blockModel;
+    public static BlockDefinition<Block> block(String englishName, String id,
+            BlockBehaviour.Properties params) {
+        return block(englishName, id, params, Block.class);
     }
 
-    public JModel getItemModel() {
-        return itemModel;
+    public static <T extends Block> BlockDefinition<T> block(String englishName, String id,
+            BlockBehaviour.Properties params,
+            Class<T> blockClass) {
+        return block(englishName, id, (BlockDefinitionParams<T>) params);
     }
 
-    public JState getBlockState() {
-        return blockState;
+    public static BlockDefinition<Block> block(String englishName, String id) {
+        return MIBlock.block(englishName, id, BlockDefinitionParams.of());
     }
 
-    public boolean isPickaxeMineable() {
-        return pickaxeMineable;
+    public static BlockDefinition<Block> blockExplosive(String englishName, String id) {
+        return MIBlock.block(
+                englishName,
+                id,
+                new BlockDefinitionParams<>(
+                        BlockBehaviour.Properties.of(Material.EXPLOSIVE).instabreak().sound(SoundType.GRASS),
+                        Block::new,
+                        BlockItem::new,
+                        (block, modelGenerator) -> modelGenerator.createTrivialCube(block),
+                        (block, lootGenerator) -> lootGenerator.dropSelf(block),
+                        List.of()));
     }
 
-    public int getMiningLevel() {
-        return miningLevel;
+    public static class BlockDefinitionParams<T extends Block> extends FabricBlockSettings {
+
+        public BiConsumer<Block, BlockModelGenerators> modelGenerator;
+        public BiConsumer<Block, BlockLoot> lootTableGenerator;
+        public List<TagKey<Block>> tags;
+
+        public Function<BlockBehaviour.Properties, T> ctor;
+        public BiFunction<Block, FabricItemSettings, BlockItem> blockItemCtor;
+
+        protected BlockDefinitionParams(BlockBehaviour.Properties properties,
+                Function<BlockBehaviour.Properties, T> ctor,
+                BiFunction<Block, FabricItemSettings, BlockItem> blockItemCtor,
+                BiConsumer<Block, BlockModelGenerators> modelGenerator,
+                BiConsumer<Block, BlockLoot> lootTableGenerator,
+                List<TagKey<Block>> tags) {
+            super(properties);
+            this.ctor = ctor;
+            this.blockItemCtor = blockItemCtor;
+            this.modelGenerator = modelGenerator;
+            this.lootTableGenerator = lootTableGenerator;
+            this.tags = tags;
+        }
+
+        public static BlockDefinitionParams<Block> of(BlockBehaviour.Properties properties) {
+            return new BlockDefinitionParams<>(properties, Block::new, BlockItem::new,
+                    (block, modelGenerator) -> modelGenerator.createTrivialCube(block),
+                    (block, lootGenerator) -> lootGenerator.dropSelf(block),
+                    List.of(BlockTags.NEEDS_STONE_TOOL, BlockTags.MINEABLE_WITH_PICKAXE));
+        }
+
+        public static BlockDefinitionParams<Block> of(Material material) {
+            return of(FabricBlockSettings.of(material).destroyTime(4.0f).requiresCorrectToolForDrops());
+        }
+
+        public static BlockDefinitionParams<Block> of() {
+            return of(METAL_MATERIAL);
+        }
+
+        public <U extends Block> BlockDefinitionParams<U> withBlockConstructor(Function<BlockBehaviour.Properties, U> ctor) {
+            return new BlockDefinitionParams<>(this, ctor, this.blockItemCtor, this.modelGenerator, this.lootTableGenerator, this.tags);
+        }
+
+        public BlockDefinitionParams<T> withBlockItemConstructor(BiFunction<Block, FabricItemSettings, BlockItem> blockItemCtor) {
+            this.blockItemCtor = blockItemCtor;
+            return this;
+        }
+
+        public BlockDefinitionParams<T> withModel(BiConsumer<Block, BlockModelGenerators> modelGenerator) {
+            this.modelGenerator = modelGenerator;
+            return this;
+        }
+
+        public BlockDefinitionParams<T> withLootTable(BiConsumer<Block, BlockLoot> lootTableGenerator) {
+            this.lootTableGenerator = lootTableGenerator;
+            return this;
+        }
+
+        public BlockDefinitionParams<T> noModel() {
+            this.modelGenerator = null;
+            return this;
+        }
+
+        public BlockDefinitionParams<T> noLootTable() {
+            this.lootTableGenerator = null;
+            return this;
+        }
+
+        public BlockDefinitionParams<T> clearTags() {
+            this.tags.clear();
+            return this;
+        }
+
+        public BlockDefinitionParams<T> addMoreTags(TagKey<Block>... tagsToAdd) {
+            return this.addMoreTags(Arrays.asList(tagsToAdd));
+        }
+
+        public BlockDefinitionParams<T> addMoreTags(Collection<TagKey<Block>> tagsToAdd) {
+            this.tags.addAll(tagsToAdd);
+            return this;
+        }
+
     }
+
 }

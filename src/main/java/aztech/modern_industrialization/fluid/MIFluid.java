@@ -24,18 +24,14 @@
 package aztech.modern_industrialization.fluid;
 
 import aztech.modern_industrialization.MIFluids;
-import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.MIItem;
-import aztech.modern_industrialization.ModernIndustrialization;
 import aztech.modern_industrialization.definition.ItemDefinition;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariantAttributeHandler;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariantAttributes;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.data.models.model.ModelTemplate;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.state.BlockState;
@@ -43,8 +39,6 @@ import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.VoxelShape;
-
-import java.util.Optional;
 
 /**
  * A fluid that can only be used for crafting, i.e. not be placed in the world.
@@ -64,9 +58,7 @@ public class MIFluid extends Fluid {
         this.id = "modern_industrialization:" + name;
         this.isGas = isGas;
         bucketItemDefinition = MIItem.item("bucket_" + this.name,
-                "bucket_" + this.name
-                , s -> new MIBucketItem(this, s)
-        );
+                "bucket_" + this.name, s -> new MIBucketItem(this, s));
         this.block = new CraftingFluidBlock(name, color);
 
         MIFluids.FLUIDS.add(this);

@@ -26,6 +26,7 @@ package aztech.modern_industrialization.machines.blockentities.multiblocks;
 import static aztech.modern_industrialization.machines.multiblocks.HatchType.*;
 
 import aztech.modern_industrialization.MIBlock;
+import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.compat.megane.holder.EnergyListComponentHolder;
 import aztech.modern_industrialization.compat.rei.machines.ReiMachineRecipes;
 import aztech.modern_industrialization.machines.BEP;
@@ -152,14 +153,14 @@ public class ElectricBlastFurnaceBlockEntity extends AbstractCraftingMultiblockB
     }
 
     public static final ArrayList<String> coilNames = new ArrayList<>();
-    public static final ArrayList<MIBlock> coils = new ArrayList<>();
+    public static final ArrayList<Block> coils = new ArrayList<>();
     public static final Map<Block, Long> coilsMaxBaseEU = new IdentityHashMap<>();
 
     static {
         coilNames.add("cupronickel_coil");
         coilNames.add("kanthal_coil");
         for (String coilName : coilNames) {
-            coils.add(MIBlock.blocks.get(coilName));
+            coils.add(MIBlock.BLOCKS.get(new MIIdentifier(coilName)).asBlock());
         }
         coilsMaxBaseEU.put(coils.get(0), 32L);
         coilsMaxBaseEU.put(coils.get(1), 128L);
@@ -168,7 +169,7 @@ public class ElectricBlastFurnaceBlockEntity extends AbstractCraftingMultiblockB
 
         // Build shapes
         for (int i = 0; i < coils.size(); ++i) {
-            SimpleMember invarCasings = SimpleMember.forBlock(MIBlock.blocks.get("heatproof_machine_casing"));
+            SimpleMember invarCasings = SimpleMember.forBlock(MIBlock.BLOCKS.get(new MIIdentifier("heatproof_machine_casing")).asBlock());
             SimpleMember coilsBlocks = SimpleMember.forBlock(coils.get(i));
             HatchFlags ebfHatches = new HatchFlags.Builder().with(ITEM_INPUT, ITEM_OUTPUT, FLUID_INPUT, FLUID_OUTPUT, ENERGY_INPUT).build();
             ShapeTemplate ebfShape = new ShapeTemplate.Builder(MachineCasings.HEATPROOF).add3by3(0, invarCasings, false, ebfHatches)

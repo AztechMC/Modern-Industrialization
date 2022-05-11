@@ -21,24 +21,21 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.blocks.creativestorageunit;
+package aztech.modern_industrialization.util;
 
-import aztech.modern_industrialization.api.TickableBlock;
-import java.util.Properties;
-import net.minecraft.core.BlockPos;
+import java.util.List;
+import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.state.BlockState;
-import org.jetbrains.annotations.Nullable;
 
-public class CreativeStorageUnitBlock extends Block implements TickableBlock {
-    public CreativeStorageUnitBlock(Properties properties) {
-        super(properties);
-    }
+public class TagHelper {
 
-    @Nullable
-    @Override
-    public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
-        return new CreativeStorageUnitBlockEntity(pos, state);
+    public static List<TagKey<Block>> getMiningLevelTag(int level) {
+        return List.of(switch (level) {
+        case 1 -> BlockTags.NEEDS_STONE_TOOL;
+        case 2 -> BlockTags.NEEDS_IRON_TOOL;
+        case 3 -> BlockTags.NEEDS_DIAMOND_TOOL;
+        default -> throw new IllegalArgumentException();
+        }, BlockTags.MINEABLE_WITH_PICKAXE);
     }
 }

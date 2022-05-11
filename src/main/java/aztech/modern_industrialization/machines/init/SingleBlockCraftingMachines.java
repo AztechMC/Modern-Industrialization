@@ -53,7 +53,7 @@ public final class SingleBlockCraftingMachines {
     public static void init() {
         // @formatter:off
         registerMachineTiers(
-                "assembler", MIMachineRecipeTypes.ASSEMBLER, 9, 3, 2, 0,
+                "Assembler", "assembler", MIMachineRecipeTypes.ASSEMBLER, 9, 3, 2, 0,
                 guiParams -> guiParams.backgroundHeight(186),
                 new ProgressBar.Parameters(105, 45, "circuit"), new RecipeEfficiencyBar.Parameters(48, 86), new EnergyBar.Parameters(14, 44),
                 items -> items.addSlots(42, 27, 3, 3).addSlots(139, 27, 3, 1), fluids -> fluids.addSlots(98, 27, 1, 2),
@@ -61,84 +61,84 @@ public final class SingleBlockCraftingMachines {
                 TIER_ELECTRIC, 16
         );
         registerMachineTiers(
-                "centrifuge", MIMachineRecipeTypes.CENTRIFUGE, 1, 4, 1, 4, guiParams -> {},
+                "Centrifuge","centrifuge", MIMachineRecipeTypes.CENTRIFUGE, 1, 4, 1, 4, guiParams -> {},
                 new ProgressBar.Parameters(65, 33, "centrifuge"), new RecipeEfficiencyBar.Parameters(50, 66), DEFAULT_ENERGY_BAR,
                 items -> items.addSlot(42, 27).addSlots(93, 27, 2, 2), fluids -> fluids.addSlot(42, 45).addSlots(131, 27, 2, 2),
                 true, true, true,
                 TIER_ELECTRIC, 16
         );
         registerMachineTiers(
-                "chemical_reactor", MIMachineRecipeTypes.CHEMICAL_REACTOR, 3, 3, 3, 3, guiParams -> {},
+                "Chemical Reactor", "chemical_reactor", MIMachineRecipeTypes.CHEMICAL_REACTOR, 3, 3, 3, 3, guiParams -> {},
                 new ProgressBar.Parameters(88, 35, "triple_arrow"), new RecipeEfficiencyBar.Parameters(50, 66), new EnergyBar.Parameters(12, 35),
                 items -> items.addSlots(30, 27, 1, 3).addSlots(116, 27, 1, 3), fluids -> fluids.addSlots(30, 47, 1, 3).addSlots(116, 47, 1, 3),
                 true, false, false,
                 TIER_ELECTRIC, 24
         );
         registerMachineTiers(
-                "compressor", MIMachineRecipeTypes.COMPRESSOR, 1, 1, 0, 0, guiParams -> {},
+                "Compressor", "compressor", MIMachineRecipeTypes.COMPRESSOR, 1, 1, 0, 0, guiParams -> {},
                 new ProgressBar.Parameters(77, 34, "compress"), new RecipeEfficiencyBar.Parameters(38, 62), new EnergyBar.Parameters(18, 30),
                 items -> items.addSlot(56, 35).addSlot(102, 35), fluids -> {},
                 true, true, true,
                 TIER_BRONZE | TIER_STEEL | TIER_ELECTRIC, 16
         );
         registerMachineTiers(
-                "cutting_machine", MIMachineRecipeTypes.CUTTING_MACHINE, 1, 1, 1, 0, guiParams -> {},
+                "Cutting Machine","cutting_machine", MIMachineRecipeTypes.CUTTING_MACHINE, 1, 1, 1, 0, guiParams -> {},
                 new ProgressBar.Parameters(88, 31, "slice"), new RecipeEfficiencyBar.Parameters(38, 62), new EnergyBar.Parameters(15, 34),
                 items -> items.addSlot(60, 35).addSlot(120, 35), fluids -> fluids.addSlot(40, 35),
                 true, false, false,
                 TIER_BRONZE | TIER_STEEL | TIER_ELECTRIC, 16
         );
         registerMachineTiers(
-                "distillery", MIMachineRecipeTypes.DISTILLERY, 0, 0, 1, 1, guiParams -> {},
+                "Distillery", "distillery", MIMachineRecipeTypes.DISTILLERY, 0, 0, 1, 1, guiParams -> {},
                 new ProgressBar.Parameters(77, 33, "arrow"), new RecipeEfficiencyBar.Parameters(38, 62), new EnergyBar.Parameters(18, 30),
                 items -> {}, fluids -> fluids.addSlot(56, 35).addSlot(102, 35),
                 true, false, false,
                 TIER_ELECTRIC, 16
         );
         registerMachineTiers(
-                "electrolyzer", MIMachineRecipeTypes.ELECTROLYZER, 1, 4, 1, 4, guiParams -> {},
+                "Electrolyzer", "electrolyzer", MIMachineRecipeTypes.ELECTROLYZER, 1, 4, 1, 4, guiParams -> {},
                 new ProgressBar.Parameters(66, 35, "arrow"), new RecipeEfficiencyBar.Parameters(50, 66), DEFAULT_ENERGY_BAR,
                 items -> items.addSlot(42, 27).addSlots(93, 27, 2, 2), fluids -> fluids.addSlot(42, 47).addSlots(131, 27, 2, 2),
                 true, false, true,
                 TIER_ELECTRIC, 16
         );
         registerMachineTiers(
-                "furnace", MIMachineRecipeTypes.FURNACE, 1, 1, 0, 0, guiParams -> {},
+                "Furnace", "furnace", MIMachineRecipeTypes.FURNACE, 1, 1, 0, 0, guiParams -> {},
                 new ProgressBar.Parameters(77, 33, "arrow"), new RecipeEfficiencyBar.Parameters(38, 62), new EnergyBar.Parameters(18, 30),
                 items -> items.addSlot(56, 35).addSlot(102, 35), fluids -> {},
                 true, false, false,
                 TIER_BRONZE | TIER_STEEL | TIER_ELECTRIC, 16
         );
         registerMachineTiers(
-                "macerator", MIMachineRecipeTypes.MACERATOR, 1, 4, 0, 0, guiParams -> {},
+                "Macerator", "macerator", MIMachineRecipeTypes.MACERATOR, 1, 4, 0, 0, guiParams -> {},
                 new ProgressBar.Parameters(77, 33, "macerate"), new RecipeEfficiencyBar.Parameters(38, 66), DEFAULT_ENERGY_BAR,
                 items -> items.addSlot(56, 35).addSlots(102, 27, 2, 2), fluids -> {},
                 true, true, false,
                 TIER_BRONZE | TIER_STEEL | TIER_ELECTRIC, 16
         );
         registerMachineTiers(
-                "mixer", MIMachineRecipeTypes.MIXER, 4, 2, 2, 2, guiParams -> {},
+                "Mixer", "mixer", MIMachineRecipeTypes.MIXER, 4, 2, 2, 2, guiParams -> {},
                 new ProgressBar.Parameters(103, 33, "arrow"), new RecipeEfficiencyBar.Parameters(50, 66), new EnergyBar.Parameters(15, 34),
                 items -> items.addSlots(62, 27, 2, 2).addSlots(129, 27, 2, 1), fluids -> fluids.addSlots(42, 27, 2, 1).addSlots(149, 27, 2, 1),
                 true, true, true,
                 TIER_BRONZE | TIER_STEEL | TIER_ELECTRIC, 16
         );
         registerMachineTiers(
-                "packer", MIMachineRecipeTypes.PACKER, 3, 1, 0, 0, guiParams -> guiParams.backgroundHeight(178),
+                "Packer", "packer", MIMachineRecipeTypes.PACKER, 3, 1, 0, 0, guiParams -> guiParams.backgroundHeight(178),
                 new ProgressBar.Parameters(77, 33, "arrow"), new RecipeEfficiencyBar.Parameters(38, 74), new EnergyBar.Parameters(18, 30),
                 items -> items.addSlots(56, 18, 3, 1).addSlot(102, 36), fluids -> {},
                 true, false, false,
                 TIER_STEEL | TIER_ELECTRIC, 16
         );
         registerMachineTiers(
-                "polarizer", MIMachineRecipeTypes.POLARIZER, 2, 1, 0, 0, guiParams -> {},
+                "Polarizer", "polarizer", MIMachineRecipeTypes.POLARIZER, 2, 1, 0, 0, guiParams -> {},
                 new ProgressBar.Parameters(77, 30, "magnet"), new RecipeEfficiencyBar.Parameters(38, 62), new EnergyBar.Parameters(18, 30),
                 items -> items.addSlots(56, 23, 2, 1).addSlot(102, 32), fluids -> {},
                 true, true, false,
                 TIER_ELECTRIC, 16
         );
         registerMachineTiers(
-                "wiremill", MIMachineRecipeTypes.WIREMILL, 1, 1, 0, 0, guiParams -> {},
+                "Wiremill", "wiremill", MIMachineRecipeTypes.WIREMILL, 1, 1, 0, 0, guiParams -> {},
                 new ProgressBar.Parameters(77, 34, "wiremill"), new RecipeEfficiencyBar.Parameters(38, 62), new EnergyBar.Parameters(18, 30),
                 items -> items.addSlot(56, 35).addSlot(102, 35), fluids -> {},
                 true, true, false,
@@ -146,7 +146,7 @@ public final class SingleBlockCraftingMachines {
         );
 
         registerMachineTiers(
-                "unpacker", MIMachineRecipeTypes.UNPACKER, 1, 2, 0, 0, guiParams -> {},
+                "Unpacker", "unpacker", MIMachineRecipeTypes.UNPACKER, 1, 2, 0, 0, guiParams -> {},
                 new ProgressBar.Parameters(77, 33, "arrow"), new RecipeEfficiencyBar.Parameters(38, 66), new EnergyBar.Parameters(18, 30),
                 items -> items.addSlots(56, 36, 1, 1).addSlots(102, 27, 2, 1), fluids -> {},
                 true, false, false,
@@ -157,7 +157,8 @@ public final class SingleBlockCraftingMachines {
 
     private static final EnergyBar.Parameters DEFAULT_ENERGY_BAR = new EnergyBar.Parameters(18, 34);
 
-    public static void registerMachineTiers(String machine, MachineRecipeType type, int itemInputCount, int itemOutputCount, int fluidInputCount,
+    public static void registerMachineTiers(String englishName, String machine, MachineRecipeType type, int itemInputCount, int itemOutputCount,
+            int fluidInputCount,
             int fluidOutputCount, Consumer<MachineGuiParameters.Builder> guiParams, ProgressBar.Parameters progressBarParams,
             RecipeEfficiencyBar.Parameters efficiencyBarParams, EnergyBar.Parameters energyBarParams, Consumer<SlotPositions.Builder> itemPositions,
             Consumer<SlotPositions.Builder> fluidPositions, boolean frontOverlay, boolean topOverlay, boolean sideOverlay, int tiers,
@@ -174,12 +175,14 @@ public final class SingleBlockCraftingMachines {
             SlotPositions fluids = new SlotPositions.Builder().addSlot(12, 35).buildWithConsumer(fluidPositions);
             MachineTier tier = i == 0 ? MachineTier.BRONZE : MachineTier.STEEL;
             String prefix = i == 0 ? "bronze" : "steel";
+            String englishPrefix = i == 0 ? "Bronze " : "Steel ";
             int steamBuckets = i == 0 ? 2 : 4;
             MachineGuiParameters.Builder guiParamsBuilder = new MachineGuiParameters.Builder(prefix + "_" + machine, true);
             guiParams.accept(guiParamsBuilder);
             MachineGuiParameters builtGuiParams = guiParamsBuilder.build();
             String id = prefix + "_" + machine;
-            MachineRegistrationHelper.registerMachine(id,
+
+            MachineRegistrationHelper.registerMachine(englishPrefix + englishName, id,
                     bet -> new SteamCraftingMachineBlockEntity(bet, type,
                             buildComponent(itemInputCount, itemOutputCount, fluidInputCount, fluidOutputCount, items, fluids, steamBuckets,
                                     ioBucketCapacity),
@@ -203,7 +206,7 @@ public final class SingleBlockCraftingMachines {
             MachineGuiParameters.Builder guiParamsBuilder = new MachineGuiParameters.Builder(id, true);
             guiParams.accept(guiParamsBuilder);
             MachineGuiParameters builtGuiParams = guiParamsBuilder.build();
-            MachineRegistrationHelper.registerMachine(id,
+            MachineRegistrationHelper.registerMachine("Electric " + englishName, id,
                     bet -> new ElectricCraftingMachineBlockEntity(bet, type,
                             buildComponent(itemInputCount, itemOutputCount, fluidInputCount, fluidOutputCount, items, fluids, 0, ioBucketCapacity),
                             builtGuiParams,

@@ -36,6 +36,10 @@ import aztech.modern_industrialization.items.armor.RubberArmorMaterial;
 import aztech.modern_industrialization.items.diesel_tools.DieselToolItem;
 import aztech.modern_industrialization.items.tools.CrowbarItem;
 import aztech.modern_industrialization.items.tools.QuantumSword;
+import java.util.SortedMap;
+import java.util.TreeMap;
+import java.util.function.BiConsumer;
+import java.util.function.Function;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
 import net.minecraft.data.models.ItemModelGenerators;
@@ -47,26 +51,23 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.Tiers;
 
-import java.util.SortedMap;
-import java.util.TreeMap;
-import java.util.function.BiConsumer;
-import java.util.function.Function;
-
 @SuppressWarnings("unused")
 public final class MIItem {
 
     public static SortedMap<ResourceLocation, ItemDefinition<?>> ITEMS = new TreeMap<>();
-
 
     public static final ItemDefinition<Item> STEEL_UPGRADE = item("Steel Upgrade", "steel_upgrade");
 
     public static final ItemDefinition<GuideBookItem> ITEM_GUIDE_BOOK = item("Guidebook", "guidebook", GuideBookItem::new);
     public static final ItemDefinition<Item> ITEM_UNCOOKED_STEEL_DUST = item("Uncooked Steel Dust", "uncooked_steel_dust");
 
-    public static final ItemDefinition<ArmorItem> RUBBER_HELMET = item("Rubber Helmet", "rubber_helmet", s -> new ArmorItem(RubberArmorMaterial.INSTANCE, EquipmentSlot.HEAD, s.maxCount(1)));
-    public static final ItemDefinition<ArmorItem> RUBBER_BOOTS = item("Rubber Boots", "rubber_boots", s -> new ArmorItem(RubberArmorMaterial.INSTANCE, EquipmentSlot.FEET, s.maxCount(1)));
+    public static final ItemDefinition<ArmorItem> RUBBER_HELMET = item("Rubber Helmet", "rubber_helmet",
+            s -> new ArmorItem(RubberArmorMaterial.INSTANCE, EquipmentSlot.HEAD, s.maxCount(1)));
+    public static final ItemDefinition<ArmorItem> RUBBER_BOOTS = item("Rubber Boots", "rubber_boots",
+            s -> new ArmorItem(RubberArmorMaterial.INSTANCE, EquipmentSlot.FEET, s.maxCount(1)));
 
-    public static final ItemDefinition<Item> ITEM_MOTOR = item("Motor", "motor").withItemRegistrationEvent((item) -> SpeedUpgrade.LOOKUP.registerForItems((key, vd) -> () -> 2, item));
+    public static final ItemDefinition<Item> ITEM_MOTOR = item("Motor", "motor")
+            .withItemRegistrationEvent((item) -> SpeedUpgrade.LOOKUP.registerForItems((key, vd) -> () -> 2, item));
     public static final ItemDefinition<Item> ITEM_PISTON = item("Piston", "piston");
     public static final ItemDefinition<Item> ITEM_CONVEYOR = item("Conveyor", "conveyor");
     public static final ItemDefinition<Item> ITEM_ROBOT_ARM = item("Robot Arm", "robot_arm");
@@ -84,7 +85,8 @@ public final class MIItem {
     public static final ItemDefinition<Item> ITEM_DIODE = item("Diode", "diode");
     public static final ItemDefinition<Item> ITEM_ELECTRONIC_CIRCUIT_BOARD = item("Electronic Circuit Board", "electronic_circuit_board");
     public static final ItemDefinition<Item> ITEM_TRANSISTOR = item("Transistor", "transistor");
-    public static final ItemDefinition<Item> ITEM_LARGE_MOTOR = item("Large Motor", "large_motor").withItemRegistrationEvent((item) -> SpeedUpgrade.LOOKUP.registerForItems((key, vd) -> () -> 8, item));
+    public static final ItemDefinition<Item> ITEM_LARGE_MOTOR = item("Large Motor", "large_motor")
+            .withItemRegistrationEvent((item) -> SpeedUpgrade.LOOKUP.registerForItems((key, vd) -> () -> 8, item));
 
     public static final ItemDefinition<Item> ITEM_LARGE_PUMP = item("Large Pump", "large_pump");
 
@@ -101,8 +103,10 @@ public final class MIItem {
     public static final ItemDefinition<Item> ITEM_RANDOM_ACCESS_MEMORY = item("Random Access Memory", "random_access_memory");
     public static final ItemDefinition<Item> ITEM_MEMORY_MANAGEMENT_UNIT = item("Memory Management Unit", "memory_management_unit");
 
-    public static final ItemDefinition<Item> ITEM_QUANTUM_CIRCUIT_BOARD = item("Quantum Circuit Board", "quantum_circuit_board", (p) -> new Item(p.rarity(Rarity.RARE)));
-    public static final ItemDefinition<Item> ITEM_QUANTUM_CIRCUIT = item("Quantum Circuit", "quantum_circuit", (p) -> new Item(p.rarity(Rarity.RARE)));
+    public static final ItemDefinition<Item> ITEM_QUANTUM_CIRCUIT_BOARD = item("Quantum Circuit Board", "quantum_circuit_board",
+            (p) -> new Item(p.rarity(Rarity.RARE)));
+    public static final ItemDefinition<Item> ITEM_QUANTUM_CIRCUIT = item("Quantum Circuit", "quantum_circuit",
+            (p) -> new Item(p.rarity(Rarity.RARE)));
     public static final ItemDefinition<Item> ITEM_QBIT = item("QBit", "qbit", (p) -> new Item(p.rarity(Rarity.RARE)));
 
     public static final ItemDefinition<Item> ITEM_MONOCRYSTALLINE_SILICON = item("Monocrystalline Silicon", "monocrystalline_silicon");
@@ -111,10 +115,13 @@ public final class MIItem {
     public static final ItemDefinition<Item> BASIC_UPGRADE = item("Basic Upgrade", "basic_upgrade");
     public static final ItemDefinition<Item> ADVANCED_UPGRADE = item("Advanced Upgrade", "advanced_upgrade");
     public static final ItemDefinition<Item> TURBO_UPGRADE = item("Turbo Upgrade", "turbo_upgrade", (p) -> new Item(p.rarity(Rarity.UNCOMMON)));
-    public static final ItemDefinition<Item> HIGHLY_ADVANCED_UPGRADE = item("Highly Advanced Upgrade", "highly_advanced_upgrade", (p) -> new Item(p.rarity(Rarity.RARE)));
-    public static final ItemDefinition<Item> QUANTUM_UPGRADE = item("Quantum Upgrade", "quantum_upgrade", (p) -> new Item(p.maxCount(1).rarity(Rarity.RARE)));
+    public static final ItemDefinition<Item> HIGHLY_ADVANCED_UPGRADE = item("Highly Advanced Upgrade", "highly_advanced_upgrade",
+            (p) -> new Item(p.rarity(Rarity.RARE)));
+    public static final ItemDefinition<Item> QUANTUM_UPGRADE = item("Quantum Upgrade", "quantum_upgrade",
+            (p) -> new Item(p.maxCount(1).rarity(Rarity.RARE)));
 
-    public static final ItemDefinition<Item> ADVANCED_MOTOR = item("Advanced Motor", "advanced_motor").withItemRegistrationEvent((item) -> SpeedUpgrade.LOOKUP.registerForItems((key, vd) -> () -> 32, item));
+    public static final ItemDefinition<Item> ADVANCED_MOTOR = item("Advanced Motor", "advanced_motor")
+            .withItemRegistrationEvent((item) -> SpeedUpgrade.LOOKUP.registerForItems((key, vd) -> () -> 32, item));
     public static final ItemDefinition<Item> LARGE_ADVANCED_MOTOR = item("Large Advanced Motor", "large_advanced_motor").withItemRegistrationEvent(
             (item) -> SpeedUpgrade.LOOKUP.registerForItems((key, vd) -> () -> 64, item));
     public static final ItemDefinition<Item> ADVANCED_PUMP = item("Advanced Pump", "advanced_pump");
@@ -127,32 +134,45 @@ public final class MIItem {
 
     public static final ItemDefinition<Item> AIR_INTAKE = item("Air Intake", "air_intake", p -> new Item(p.maxCount(1)));
 
-    public static final ItemDefinition<Item> ITEM_PACKER_BLOCK_TEMPLATE = item("Packer Block Template", "packer_block_template", p -> new Item(p.rarity(Rarity.RARE).maxCount(1)));
-    public static final ItemDefinition<Item> ITEM_PACKER_DOUBLE_INGOT_TEMPLATE = item("Packer Double Ingot Template", "packer_double_ingot_template", p -> new Item(p.rarity(Rarity.RARE).maxCount(1)));
+    public static final ItemDefinition<Item> ITEM_PACKER_BLOCK_TEMPLATE = item("Packer Block Template", "packer_block_template",
+            p -> new Item(p.rarity(Rarity.RARE).maxCount(1)));
+    public static final ItemDefinition<Item> ITEM_PACKER_DOUBLE_INGOT_TEMPLATE = item("Packer Double Ingot Template", "packer_double_ingot_template",
+            p -> new Item(p.rarity(Rarity.RARE).maxCount(1)));
 
     public static final ItemDefinition<Item> ITEM_SCREWDRIVER = itemHandheld("Screw Driver", "screwdriver");
     public static final ItemDefinition<Item> ITEM_WRENCH = itemHandheld("Wrench", "wrench");
 
-    public static final ItemDefinition<JetpackItem> ITEM_DIESEL_JETPACK = item("Diesel Jetpack", "diesel_jetpack", JetpackItem::new).withItemRegistrationEvent(
-            (item) -> FluidStorage.ITEM.registerForItems((stack, ctx) -> new FluidFuelItemHelper.ItemStorage(JetpackItem.CAPACITY, ctx), item));
+    public static final ItemDefinition<JetpackItem> ITEM_DIESEL_JETPACK = item("Diesel Jetpack", "diesel_jetpack", JetpackItem::new)
+            .withItemRegistrationEvent(
+                    (item) -> FluidStorage.ITEM.registerForItems((stack, ctx) -> new FluidFuelItemHelper.ItemStorage(JetpackItem.CAPACITY, ctx),
+                            item));
 
-    public static final ItemDefinition<DieselToolItem> ITEM_DIESEL_CHAINSAW = itemHandheld("Diesel Chainsaw", "diesel_chainsaw", p -> new DieselToolItem(p, 12)).withItemRegistrationEvent(
-            (item) -> FluidStorage.ITEM.registerForItems((stack, ctx) -> new FluidFuelItemHelper.ItemStorage(DieselToolItem.CAPACITY, ctx), item));
+    public static final ItemDefinition<DieselToolItem> ITEM_DIESEL_CHAINSAW = itemHandheld("Diesel Chainsaw", "diesel_chainsaw",
+            p -> new DieselToolItem(p, 12)).withItemRegistrationEvent(
+                    (item) -> FluidStorage.ITEM.registerForItems((stack, ctx) -> new FluidFuelItemHelper.ItemStorage(DieselToolItem.CAPACITY, ctx),
+                            item));
 
-    public static final ItemDefinition<DieselToolItem> ITEM_DIESEL_MINING_DRILL = itemHandheld("Diesel Mining Drill", "diesel_mining_drill", s -> new DieselToolItem(s, 7)).withItemRegistrationEvent(
-            (item) -> FluidStorage.ITEM.registerForItems((stack, ctx) -> new FluidFuelItemHelper.ItemStorage(DieselToolItem.CAPACITY, ctx), item));
+    public static final ItemDefinition<DieselToolItem> ITEM_DIESEL_MINING_DRILL = itemHandheld("Diesel Mining Drill", "diesel_mining_drill",
+            s -> new DieselToolItem(s, 7)).withItemRegistrationEvent(
+                    (item) -> FluidStorage.ITEM.registerForItems((stack, ctx) -> new FluidFuelItemHelper.ItemStorage(DieselToolItem.CAPACITY, ctx),
+                            item));
 
-    public static final ItemDefinition<SteamDrillItem> ITEM_STEAM_MINING_DRILL = itemHandheld("Steam Mining Drill", "steam_mining_drill", SteamDrillItem::new);
+    public static final ItemDefinition<SteamDrillItem> ITEM_STEAM_MINING_DRILL = itemHandheld("Steam Mining Drill", "steam_mining_drill",
+            SteamDrillItem::new);
     public static final ItemDefinition<CrowbarItem> ITEM_CROWBAR = itemHandheld("Crowbar", "crowbar", CrowbarItem::new);
 
     public static final ItemDefinition<Item> COOLING_CELL = item("Cooling Cell", "cooling_cell");
 
     public static final ItemDefinition<GraviChestPlateItem> GRAVICHESTPLATE = item("Gravichestplate", "gravichestplate", GraviChestPlateItem::new);
 
-    public static final ItemDefinition<QuantumArmorItem> QUANTUM_BOOTS = item("Quantum Boots", "quantum_boots", s -> new QuantumArmorItem(EquipmentSlot.FEET, s));
-    public static final ItemDefinition<QuantumArmorItem> QUANTUM_LEGGINGS = item("Quantum Leggings", "quantum_leggings", s -> new QuantumArmorItem(EquipmentSlot.LEGS, s));
-    public static final ItemDefinition<QuantumArmorItem> QUANTUM_CHESTPLATE = item("Quantum Chestplate", "quantum_chestplate", s -> new QuantumArmorItem(EquipmentSlot.CHEST, s));
-    public static final ItemDefinition<QuantumArmorItem> QUANTUM_HELMET = item("Quantum Helmet", "quantum_helmet", s -> new QuantumArmorItem(EquipmentSlot.HEAD, s));
+    public static final ItemDefinition<QuantumArmorItem> QUANTUM_BOOTS = item("Quantum Boots", "quantum_boots",
+            s -> new QuantumArmorItem(EquipmentSlot.FEET, s));
+    public static final ItemDefinition<QuantumArmorItem> QUANTUM_LEGGINGS = item("Quantum Leggings", "quantum_leggings",
+            s -> new QuantumArmorItem(EquipmentSlot.LEGS, s));
+    public static final ItemDefinition<QuantumArmorItem> QUANTUM_CHESTPLATE = item("Quantum Chestplate", "quantum_chestplate",
+            s -> new QuantumArmorItem(EquipmentSlot.CHEST, s));
+    public static final ItemDefinition<QuantumArmorItem> QUANTUM_HELMET = item("Quantum Helmet", "quantum_helmet",
+            s -> new QuantumArmorItem(EquipmentSlot.HEAD, s));
     public static final ItemDefinition<QuantumSword> QUANTUM_SWORD = itemHandheld("Quantum Sword", "quantum_sword", QuantumSword::new);
 
     public static final ItemDefinition<Item> ULTRADENSE_METAL_BALL = item("Ultradense Metal Ball", "ultradense_metal_ball");
@@ -160,9 +180,10 @@ public final class MIItem {
 
     public static final ItemDefinition<ForgeTool> IRON_HAMMER = itemHandheld("Iron Hammer", "iron_hammer", p -> new ForgeTool(Tiers.IRON, p));
     public static final ItemDefinition<ForgeTool> STEEL_HAMMER = itemHandheld("Steel Hammer", "steel_hammer", p -> new ForgeTool(ForgeTool.STEEL, p));
-    public static final ItemDefinition<ForgeTool> DIAMOND_HAMMER = itemHandheld("Diamond Hammer", "diamond_hammer", p -> new ForgeTool(Tiers.DIAMOND, p));
-    public static final ItemDefinition<ForgeTool> NETHERITE_HAMMER = itemHandheld("Netherite Hammer", "netherite_hammer", p -> new ForgeTool(Tiers.NETHERITE, p));
-
+    public static final ItemDefinition<ForgeTool> DIAMOND_HAMMER = itemHandheld("Diamond Hammer", "diamond_hammer",
+            p -> new ForgeTool(Tiers.DIAMOND, p));
+    public static final ItemDefinition<ForgeTool> NETHERITE_HAMMER = itemHandheld("Netherite Hammer", "netherite_hammer",
+            p -> new ForgeTool(Tiers.NETHERITE, p));
 
     public static <T extends Item> ItemDefinition<T> item(
             String englishName,
@@ -170,13 +191,11 @@ public final class MIItem {
             Function<? super FabricItemSettings, T> ctor,
             BiConsumer<Item, ItemModelGenerators> modelGenerator) {
 
-        ResourceLocation id = new MIIdentifier(path);
         T item = ctor.apply((FabricItemSettings) new FabricItemSettings().tab(ModernIndustrialization.ITEM_GROUP));
-        ItemDefinition<T> definition = new ItemDefinition<>(englishName, id, item, modelGenerator);
+        ItemDefinition<T> definition = new ItemDefinition<>(englishName, path, item, modelGenerator);
 
-
-        if (ITEMS.put(id, definition) != null) {
-            throw new IllegalArgumentException("Item id already taken : " + id);
+        if (ITEMS.put(definition.getId(), definition) != null) {
+            throw new IllegalArgumentException("Item id already taken : " + definition.getId());
         }
 
         return definition;

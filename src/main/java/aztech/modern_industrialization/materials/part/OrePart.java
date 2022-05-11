@@ -30,22 +30,20 @@ import aztech.modern_industrialization.MIConfig;
 import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.blocks.OreBlock;
 import aztech.modern_industrialization.datagen.tag.TagsToGenerate;
+import aztech.modern_industrialization.definition.BlockDefinition;
 import aztech.modern_industrialization.materials.set.MaterialOreSet;
 import aztech.modern_industrialization.textures.TextureHelper;
 import com.google.common.collect.ImmutableList;
-import com.google.gson.Gson;
-import com.google.gson.JsonElement;
 import com.mojang.blaze3d.platform.NativeImage;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import net.devtech.arrp.json.loot.*;
 import net.fabricmc.fabric.api.biome.v1.BiomeModifications;
 import net.fabricmc.fabric.api.biome.v1.BiomeSelectors;
-import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.core.Registry;
 import net.minecraft.data.BuiltinRegistries;
+import net.minecraft.data.loot.BlockLoot;
 import net.minecraft.data.worldgen.features.OreFeatures;
 import net.minecraft.data.worldgen.placement.OrePlacements;
 import net.minecraft.resources.ResourceKey;
@@ -90,11 +88,6 @@ public class OrePart extends UnbuildablePart<OrePart.OrePartParams> {
     @Override
     public BuildablePart of(OrePartParams oreParams) {
         return new RegularPart(key).withRegister((registeringContext, partContext, part, itemPath, itemId, itemTag) -> {
-            MIBlock block = new OreBlock(itemPath, FabricBlockSettings.of(STONE_MATERIAL)
-                    .destroyTime(deepslate ? 4.5f : 3.0f).explosionResistance(3.0f)
-                    .sound(deepslate ? SoundType.DEEPSLATE : SoundType.STONE).requiresCorrectToolForDrops(),
-                    oreParams, partContext.getMaterialName());
-            block.setPickaxeMineable().setMiningLevel(1);
 
             Part mainPart = partContext.getMainPart();
             String loot;
@@ -108,32 +101,25 @@ public class OrePart extends UnbuildablePart<OrePart.OrePartParams> {
                 throw new UnsupportedOperationException("Could not find matching main part.");
             }
 
+            BlockDefinition<OreBlock> oreBlockBlockDefinition;
+            oreBlockBlockDefinition = MIBlock.block(
+                    itemPath,
+                    itemPath,
+                    MIBlock.BlockDefinitionParams.of(STONE_MATERIAL)
+                            .withBlockConstructor(s -> new OreBlock(s, oreParams, partContext.getMaterialName()))
+                            .withLootTable((block, lootGenerator) -> lootGenerator.add(block,
+                                    BlockLoot.createOreDrop(block, Registry.ITEM.get(new ResourceLocation(loot)))))
+                            .destroyTime(deepslate ? 4.5f : 3.0f).explosionResistance(3.0f)
+                            .sound(deepslate ? SoundType.DEEPSLATE : SoundType.STONE),
+                    OreBlock.class);
+
             // Sanity check: Ensure that ores don't drop xp, iff the main part is an ingot
             // (i.e. the drop is raw ore).
             if (mainPart.equals(MIParts.INGOT) != (oreParams.xpDropped.getMaxValue() == 0)) {
                 throw new IllegalArgumentException("Mismatch between raw ore and xp drops for material: " + partContext.getMaterialName());
             }
 
-            block.setLootTables(JLootTable.loot("minecraft:block")
-                    .pool(new JPool().rolls(1).bonus(0).entry(new JEntry().type("minecraft:alternatives").child(new JEntry().type("minecraft:item")
-                            .condition(new JCondition("minecraft:match_tool").parameter("predicate", new Gson().fromJson("""
-                                    {
-                                    "enchantments": [
-                                      {
-                                        "enchantment": "minecraft:silk_touch",
-                                        "levels": {
-                                          "min": 1
-                                        }
-                                      }
-                                    ]
-                                    }
-                                    """, JsonElement.class))).name(itemId)
-
-                    ).child(new JEntry().type("minecraft:item").function(new JFunction("minecraft:apply_bonus")
-                            .parameter("enchantment", "minecraft:fortune").parameter("formula", "minecraft:ore_drops"))
-                            .function(new JFunction("minecraft:explosion_decay")).name(loot)))));
-
-            TagsToGenerate.generateTag("c:" + partContext.getMaterialName() + "_ores", block.blockItem);
+            TagsToGenerate.generateTag("c:" + partContext.getMaterialName() + "_ores", oreBlockBlockDefinition.asItem());
 
             MIConfig config = MIConfig.getConfig();
 
@@ -146,7 +132,7 @@ public class OrePart extends UnbuildablePart<OrePart.OrePartParams> {
 
                     var target = ImmutableList.of(OreConfiguration.target(
                             deepslate ? OreFeatures.DEEPSLATE_ORE_REPLACEABLES : OreFeatures.STONE_ORE_REPLACEABLES,
-                            block.defaultBlockState()));
+                            oreBlockBlockDefinition.asBlock().defaultBlockState()));
 
                     var configuredOreGen = BuiltinRegistries.register(
                             BuiltinRegistries.CONFIGURED_FEATURE, oreGenId,

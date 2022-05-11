@@ -23,15 +23,9 @@
  */
 package aztech.modern_industrialization.blocks.storage.barrel;
 
-import static aztech.modern_industrialization.ModernIndustrialization.METAL_MATERIAL;
-
-import aztech.modern_industrialization.MIBlock;
 import aztech.modern_industrialization.blocks.storage.AbstractStorageBlock;
-import aztech.modern_industrialization.util.MobSpawning;
-import java.util.function.Function;
 import net.fabricmc.fabric.api.event.player.AttackBlockCallback;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
-import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.fabricmc.fabric.api.transfer.v1.item.PlayerInventoryStorage;
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageUtil;
@@ -39,7 +33,6 @@ import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -49,12 +42,8 @@ public class BarrelBlock extends AbstractStorageBlock implements EntityBlock {
 
     public final EntityBlock factory;
 
-    public BarrelBlock(String id, Function<MIBlock, BlockItem> blockItemCtor, EntityBlock factory) {
-        super(id, FabricBlockSettings.of(METAL_MATERIAL).destroyTime(4.0f).requiresCorrectToolForDrops()
-                .isValidSpawn(MobSpawning.NO_SPAWN), blockItemCtor);
-        setPickaxeMineable();
-
-        this.asColumn();
+    public BarrelBlock(Properties properties, EntityBlock factory) {
+        super(properties);
         this.factory = factory;
     }
 

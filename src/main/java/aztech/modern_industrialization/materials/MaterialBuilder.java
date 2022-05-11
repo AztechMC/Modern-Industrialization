@@ -41,6 +41,7 @@ public final class MaterialBuilder {
 
     private final Map<String, MaterialPart> partsMap = new TreeMap<>();
     private final PartContext partContext = new PartContext();
+    private final String englishName;
     private final String materialName;
     private final String materialSet;
     private final Coloramp coloramp;
@@ -49,7 +50,9 @@ public final class MaterialBuilder {
 
     private final Queue<RecipeAction> recipesActions = new LinkedList<>();
 
-    public MaterialBuilder(String materialName, MaterialSet materialSet, Part mainPart, Coloramp coloramp, MaterialHardness hardness) {
+    public MaterialBuilder(String englishName, String materialName, MaterialSet materialSet, Part mainPart, Coloramp coloramp,
+            MaterialHardness hardness) {
+        this.englishName = englishName;
         this.materialName = materialName;
         this.materialSet = materialSet.name;
         this.coloramp = coloramp;
@@ -57,16 +60,16 @@ public final class MaterialBuilder {
         this.hardness = hardness;
     }
 
-    public MaterialBuilder(String materialName, MaterialSet materialSet, Part mainPart, int color, MaterialHardness hardness) {
-        this(materialName, materialSet, mainPart, new DefaultColoramp(color), hardness);
+    public MaterialBuilder(String englishName, String materialName, MaterialSet materialSet, Part mainPart, int color, MaterialHardness hardness) {
+        this(englishName, materialName, materialSet, mainPart, new DefaultColoramp(color), hardness);
     }
 
-    public MaterialBuilder(String materialName, MaterialSet materialSet, Coloramp coloramp, MaterialHardness hardness) {
-        this(materialName, materialSet, MIParts.INGOT, coloramp, hardness);
+    public MaterialBuilder(String englishName, String materialName, MaterialSet materialSet, Coloramp coloramp, MaterialHardness hardness) {
+        this(englishName, materialName, materialSet, MIParts.INGOT, coloramp, hardness);
     }
 
-    public MaterialBuilder(String materialName, MaterialSet materialSet, int color, MaterialHardness hardness) {
-        this(materialName, materialSet, MIParts.INGOT, new DefaultColoramp(color), hardness);
+    public MaterialBuilder(String englishName, String materialName, MaterialSet materialSet, int color, MaterialHardness hardness) {
+        this(englishName, materialName, materialSet, MIParts.INGOT, new DefaultColoramp(color), hardness);
     }
 
     public String getMaterialName() {
@@ -172,6 +175,7 @@ public final class MaterialBuilder {
     }
 
     public class PartContext {
+
         public Coloramp getColoramp() {
             return coloramp;
         }
@@ -186,6 +190,10 @@ public final class MaterialBuilder {
 
         public Part getMainPart() {
             return mainPart;
+        }
+
+        public String getEnglishName() {
+            return englishName;
         }
     }
 

@@ -28,7 +28,6 @@ import aztech.modern_industrialization.MIItem;
 import aztech.modern_industrialization.util.TextHelper;
 import java.util.List;
 import java.util.Random;
-
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.minecraft.core.Registry;
@@ -86,7 +85,7 @@ public class NuclearFuel extends NuclearAbsorbable {
     }
 
     public static NuclearFuel of(String id, NuclearFuelParams params, INeutronBehaviour neutronBehaviour, String depletedVersionId) {
-        return  MIItem.item(id, id, (settings) -> new NuclearFuel(settings.maxCount(1), params, neutronBehaviour, depletedVersionId)).asItem();
+        return MIItem.item(id, id, (settings) -> new NuclearFuel(settings.maxCount(1), params, neutronBehaviour, depletedVersionId)).asItem();
     }
 
     @Override

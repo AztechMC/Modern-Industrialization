@@ -23,12 +23,10 @@
  */
 package aztech.modern_industrialization.blocks;
 
-import aztech.modern_industrialization.MIBlock;
-import aztech.modern_industrialization.util.MobSpawning;
 import com.google.common.base.Preconditions;
 import java.util.Collections;
 import java.util.Iterator;
-import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
+import java.util.Properties;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemStorage;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
@@ -37,16 +35,11 @@ import net.fabricmc.fabric.api.transfer.v1.storage.base.InsertionOnlyStorage;
 import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.SoundType;
-import net.minecraft.world.level.material.Material;
 
-public class TrashCanBlock extends MIBlock {
-    public TrashCanBlock() {
-        super("trash_can",
-                FabricBlockSettings.of(Material.METAL).destroyTime(6.0f).explosionResistance(1200)
-                        .requiresCorrectToolForDrops()
-                        .sound(SoundType.METAL).isValidSpawn(MobSpawning.NO_SPAWN));
-        setPickaxeMineable();
+public class TrashCanBlock extends Block {
+    public TrashCanBlock(Properties properties) {
+        super(properties);
+
     }
 
     @SuppressWarnings("unchecked")
@@ -76,8 +69,7 @@ public class TrashCanBlock extends MIBlock {
         }
     }
 
-    @Override
-    public void onRegister(Block block, Item blockItem) {
+    public static void onRegister(Block block, Item blockItem) {
         ItemStorage.SIDED.registerForBlocks((world, pos, state, be, direction) -> TrashCanBlock.trashStorage(), block);
         FluidStorage.SIDED.registerForBlocks((world, pos, state, be, direction) -> TrashCanBlock.trashStorage(), block);
         FluidStorage.ITEM.registerForItems((key, ctx) -> TrashCanBlock.trashStorage(), blockItem);

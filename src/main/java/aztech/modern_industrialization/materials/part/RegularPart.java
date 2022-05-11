@@ -23,8 +23,6 @@
  */
 package aztech.modern_industrialization.materials.part;
 
-import static aztech.modern_industrialization.ModernIndustrialization.METAL_MATERIAL;
-
 import aztech.modern_industrialization.MIBlock;
 import aztech.modern_industrialization.MIItem;
 import aztech.modern_industrialization.datagen.tag.TagsToGenerate;
@@ -32,9 +30,10 @@ import aztech.modern_industrialization.materials.MaterialBuilder;
 import aztech.modern_industrialization.textures.MITextures;
 import aztech.modern_industrialization.textures.TextureHelper;
 import aztech.modern_industrialization.textures.TextureManager;
+import aztech.modern_industrialization.util.TagHelper;
 import com.mojang.blaze3d.platform.NativeImage;
 import java.io.IOException;
-import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
+import net.minecraft.data.models.model.TexturedModel;
 import net.minecraft.world.item.Item;
 
 public class RegularPart extends Part implements BuildablePart {
@@ -73,21 +72,43 @@ public class RegularPart extends Part implements BuildablePart {
 
     public RegularPart asBlock(float hardness, float resistance, int miningLevel) {
         return new RegularPart(key, (registeringContext, partContext, part, itemPath, itemId, itemTag) -> {
-            var block = new MIBlock(itemPath,
-                    FabricBlockSettings.of(METAL_MATERIAL).destroyTime(hardness)
-                            .explosionResistance(resistance)
-                            .requiresCorrectToolForDrops()).setPickaxeMineable().setMiningLevel(miningLevel);
-            setupTag(part, itemTag, block.blockItem);
+
+            String englishName = itemPath;
+
+            var blockDefinition = MIBlock.block(
+                    englishName,
+                    itemPath,
+                    MIBlock.BlockDefinitionParams.of()
+                            .clearTags()
+                            .addMoreTags(TagHelper.getMiningLevelTag(miningLevel))
+                            .destroyTime(hardness)
+                            .explosionResistance(resistance));
+
+            setupTag(part, itemTag, blockDefinition.asItem());
+
         }, clientRegister, (mtm, partContext, part, itemPath) -> MITextures.generateItemPartTexture(mtm, part.key, partContext.getMaterialSet(),
                 itemPath, true, partContext.getColoramp()));
     }
 
     public RegularPart asColumnBlock() {
         return new RegularPart(key, (registeringContext, partContext, part, itemPath, itemId, itemTag) -> {
-            MIBlock block = new MIBlock(itemPath,
-                    FabricBlockSettings.of(METAL_MATERIAL).destroyTime(5.0f).explosionResistance(6.0f)
-                            .requiresCorrectToolForDrops()).setPickaxeMineable();
-            block.asColumn();
+
+            String englishName = itemPath;
+
+            var blockDefinition = MIBlock.block(
+                    englishName,
+                    itemPath,
+                    MIBlock.BlockDefinitionParams.of()
+                            .clearTags()
+                            .addMoreTags(TagHelper.getMiningLevelTag(1))
+                            .withModel((block, model) -> model.createTrivialBlock(block, TexturedModel.COLUMN))
+                            .destroyTime(5.0f)
+                            .explosionResistance(6.0f)
+
+            );
+
+            setupTag(part, itemTag, blockDefinition.asItem());
+
         }, clientRegister, (mtm, partContext, part, itemPath) -> {
             for (String suffix : new String[] { "_end", "_side" }) {
                 String template = String.format("modern_industrialization:textures/materialsets/common/%s%s.png", part, suffix);

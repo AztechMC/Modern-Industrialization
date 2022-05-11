@@ -24,18 +24,20 @@
 package aztech.modern_industrialization.api.energy;
 
 public enum CableTier {
-    LV("lv", 32),
-    MV("mv", 32 * 4),
-    HV("hv", 32 * 4 * 8),
-    EV("ev", 32 * 4 * 8 * 8),
-    SUPERCONDUCTOR("superconductor", 128000000);
+    LV("LV", "lv", 32),
+    MV("MV", "mv", 32 * 4),
+    HV("HV", "hv", 32 * 4 * 8),
+    EV("EV", "ev", 32 * 4 * 8 * 8),
+    SUPERCONDUCTOR("Superconductor", "superconductor", 128000000);
 
+    public final String englishName;
     public final String name;
     public final long eu;
 
     public final String translationKey;
 
-    CableTier(String name, long eu) {
+    CableTier(String englishName, String name, long eu) {
+        this.englishName = englishName;
         this.name = name;
         this.eu = eu;
         this.translationKey = "text.modern_industrialization.cable_tier_" + name;

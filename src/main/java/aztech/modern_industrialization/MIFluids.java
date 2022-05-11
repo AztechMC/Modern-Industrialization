@@ -24,9 +24,8 @@
 package aztech.modern_industrialization;
 
 import aztech.modern_industrialization.fluid.MIFluid;
-import net.minecraft.core.Registry;
-
 import java.util.ArrayList;
+import net.minecraft.core.Registry;
 
 // @formatter:off
 public class MIFluids {

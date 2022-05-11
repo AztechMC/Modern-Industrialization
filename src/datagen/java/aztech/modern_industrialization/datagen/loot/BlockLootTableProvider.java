@@ -21,24 +21,23 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.blocks.creativestorageunit;
+package aztech.modern_industrialization.datagen.loot;
 
-import aztech.modern_industrialization.api.TickableBlock;
-import java.util.Properties;
-import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.state.BlockState;
-import org.jetbrains.annotations.Nullable;
+import aztech.modern_industrialization.MIBlock;
+import aztech.modern_industrialization.definition.BlockDefinition;
+import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
+import net.fabricmc.fabric.api.datagen.v1.provider.FabricBlockLootTablesProvider;
 
-public class CreativeStorageUnitBlock extends Block implements TickableBlock {
-    public CreativeStorageUnitBlock(Properties properties) {
-        super(properties);
+public class BlockLootTableProvider extends FabricBlockLootTablesProvider {
+
+    public BlockLootTableProvider(FabricDataGenerator dataGenerator) {
+        super(dataGenerator);
     }
 
-    @Nullable
     @Override
-    public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
-        return new CreativeStorageUnitBlockEntity(pos, state);
+    protected void generateBlockLootTables() {
+        for (BlockDefinition<?> blockDefinition : MIBlock.BLOCKS.values()) {
+            blockDefinition.lootTableGenerator.accept(blockDefinition.block, this);
+        }
     }
 }

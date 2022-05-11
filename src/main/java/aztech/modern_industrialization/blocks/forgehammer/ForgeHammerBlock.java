@@ -24,8 +24,6 @@
 package aztech.modern_industrialization.blocks.forgehammer;
 
 import aztech.modern_industrialization.MIBlock;
-import aztech.modern_industrialization.util.MobSpawning;
-import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
@@ -38,27 +36,23 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.material.Material;
 import net.minecraft.world.level.pathfinder.PathComputationType;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
-public class ForgeHammerBlock extends MIBlock {
+public class ForgeHammerBlock extends Block {
 
     private VoxelShape shape;
     private int part_height[] = { 4, 1, 5, 5 };
     private int part_width[] = { 14, 10, 8, 14 };
 
-    public ForgeHammerBlock() {
-        super("forge_hammer",
-                FabricBlockSettings.of(Material.METAL).destroyTime(6.0f).requiresCorrectToolForDrops()
-                        .explosionResistance(1200).sound(SoundType.ANVIL).isValidSpawn(MobSpawning.NO_SPAWN),
-                MIBlock.FLAG_BLOCK_ITEM_MODEL | MIBlock.FLAG_BLOCK_LOOT);
-        setPickaxeMineable();
+    public ForgeHammerBlock(Properties properties) {
+        super(properties);
+
         VoxelShape[] parts = new VoxelShape[part_height.length];
         float currentY = 0;
         for (int i = 0; i < part_height.length; i++) {
@@ -89,7 +83,7 @@ public class ForgeHammerBlock extends MIBlock {
 
                 @Override
                 public Component getDisplayName() {
-                    return new TranslatableComponent(MIBlock.FORGE_HAMMER.getDescriptionId());
+                    return new TranslatableComponent(MIBlock.FORGE_HAMMER.asBlock().getDescriptionId());
                 }
             });
             return InteractionResult.CONSUME;

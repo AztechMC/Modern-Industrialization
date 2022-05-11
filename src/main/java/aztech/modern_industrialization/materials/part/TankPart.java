@@ -23,18 +23,16 @@
  */
 package aztech.modern_industrialization.materials.part;
 
-import static aztech.modern_industrialization.ModernIndustrialization.ITEM_GROUP;
-
 import aztech.modern_industrialization.MIBlock;
 import aztech.modern_industrialization.MITags;
 import aztech.modern_industrialization.blocks.storage.tank.*;
 import aztech.modern_industrialization.datagen.tag.TagsToGenerate;
+import aztech.modern_industrialization.definition.BlockDefinition;
 import aztech.modern_industrialization.proxy.CommonProxy;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
 import net.minecraft.core.Registry;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -57,8 +55,20 @@ public class TankPart extends UnbuildablePart<Long> {
 
         return new RegularPart(key).withoutTextureRegister().withRegister((registeringContext, partContext, part, itemPath, itemId, itemTag) -> {
             EntityBlock factory = (pos, state) -> new TankBlockEntity(bet.getValue(), pos, state, capacity);
-            TankBlock block = new TankBlock(itemPath, (MIBlock b) -> new TankItem(b, new Item.Properties().tab(ITEM_GROUP), capacity), factory);
-            TankItem item = (TankItem) block.blockItem;
+
+            String englishName = itemPath;
+
+            BlockDefinition<TankBlock> blockDefinition = MIBlock.block(
+                    englishName,
+                    itemPath,
+                    MIBlock.BlockDefinitionParams.of().withBlockConstructor(
+                            s -> new TankBlock(factory)).withBlockItemConstructor(
+                                    (b, s) -> new TankItem(b, capacity))
+                            .noModel().noLootTable());
+
+            TankBlock block = blockDefinition.asBlock();
+            TankItem item = (TankItem) blockDefinition.asItem();
+
             TagsToGenerate.generateTag(MITags.TANKS, item);
 
             bet.setValue(Registry.register(Registry.BLOCK_ENTITY_TYPE, itemId,

@@ -24,7 +24,6 @@
 package aztech.modern_industrialization.items;
 
 import aztech.modern_industrialization.MIIdentifier;
-import aztech.modern_industrialization.MIItem;
 import aztech.modern_industrialization.ModernIndustrialization;
 import aztech.modern_industrialization.datagen.tag.TagsToGenerate;
 import java.util.Locale;
@@ -89,7 +88,6 @@ public class ForgeTool extends TieredItem {
         };
 
     }
-
 
     public static Tier STEEL = new Tier() {
         @Override

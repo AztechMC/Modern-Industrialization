@@ -28,7 +28,6 @@ import aztech.modern_industrialization.util.TextHelper;
 import com.google.common.base.Preconditions;
 import java.util.List;
 import java.util.Random;
-
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -43,7 +42,7 @@ public class NuclearAbsorbable extends NuclearComponentItem {
     public final int desintegrationMax;
 
     public NuclearAbsorbable(FabricItemSettings settings, int maxTemperature, double heatConduction, INeutronBehaviour neutronBehaviour,
-                             int desintegrationMax) {
+            int desintegrationMax) {
         super(settings, maxTemperature, heatConduction, neutronBehaviour);
         this.desintegrationMax = desintegrationMax;
     }
@@ -58,7 +57,8 @@ public class NuclearAbsorbable extends NuclearComponentItem {
     public static NuclearComponentItem of(String id, int maxTemperature, double heatConduction, INeutronBehaviour neutronBehaviour,
             int desintegrationMax) {
         return MIItem.item(id, id,
-                (settings) -> new NuclearAbsorbable(settings.maxCount(1), maxTemperature, heatConduction, neutronBehaviour, desintegrationMax)).asItem();
+                (settings) -> new NuclearAbsorbable(settings.maxCount(1), maxTemperature, heatConduction, neutronBehaviour, desintegrationMax))
+                .asItem();
     }
 
     @Override

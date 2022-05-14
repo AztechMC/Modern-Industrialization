@@ -7,22 +7,22 @@
       "type": "spotlight",
       "title": "不锈钢",
       "item": "modern_industrialization:stainless_steel_ingot",
-      "text": "不锈钢是您需要大量使用的下一种材料。请继续阅读以了解原因！$(br2)在电高炉 (EBF) 中熔炼不锈钢粉尘会给您带来热锭，您可以使用真空冷冻机将其冷却回普通锭。"
+      "text": "不锈钢是下一种你需要大量使用的材料。请继续阅读以了解原因！$(br2)在电高炉中熔炼不锈钢粉会获得热不锈钢锭，你可以使用真空冷却机将其冷却回普通锭。"
     },
     {
       "type": "crafting",
       "recipe": "modern_industrialization:electric_age/machine/vacuum_freezer_asbl",
-      "text": "你可以用REI检查基材，用扳手检查准确的形状！"
+      "text": "你可以用REI查看基础材料，用扳手检查正确的形状！"
     },
     {
       "type": "crafting",
       "recipe": "modern_industrialization:electric_age/machine/distillation_tower_asbl",
-      "text": "一旦你有了一些数字电路，一定要建造一个蒸馏塔。酿酒厂只给你一个石油加工输出，但塔给你每层一个！"
+      "text": "一旦你有了一些数字电路，一定要建造一个蒸馏塔。蒸馏室只给你一个石油加工输出，但蒸馏塔每层给你一个！"
     },
     {
       "type": "crafting",
       "recipe": "modern_industrialization:tools/screwdriver",
-      "text": "要更改蒸馏塔的高度，请用螺丝刀右键单击它。这也适用于具有多种形状的其他多块，$(l)例如 Kanthal 层电高炉 (EBF)。$()"
+      "text": "要更改蒸馏塔的高度，请用螺丝刀右键单击它。这也适用于具有多种形状的其他多方块结构，$(l)例如白铜级电高炉。$()"
     }
   ],
   "sortnum": 201

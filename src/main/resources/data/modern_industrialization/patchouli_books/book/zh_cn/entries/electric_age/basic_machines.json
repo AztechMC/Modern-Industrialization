@@ -1,30 +1,30 @@
 {
-  "name": "电机",
+  "name": "电力机器",
   "category": "modern_industrialization:electric_age",
   "icon": "modern_industrialization:assembler",
   "pages": [
     {
       "type": "text",
-      "text": "电机的工作原理与蒸汽机完全相同，不同之处在于它们需要电力而不是蒸汽，并且它们会逐步超频配方，最高可达 32 EU/t。$(br2)您可以使用 REI 查看您已经熟悉的机器的电动版本的配方。"
+      "text": "电力机器的工作原理与蒸汽机器完全相同，不同之处在于它们需要电力而不是蒸汽，并且它们会逐步超频配方，最高可达32EU/t。$(br2)你可以使用REI查看你已经熟悉的机器的电力版本的配方。"
     },
     {
       "type": "crafting",
       "recipe": "modern_industrialization:electric_age/machine/polarizer_asbl",
-      "text": "偏振器使东西偏振。它还没有很多配方，但它已经对自动化电机很有用！"
+      "text": "电磁偏振器可以磁化顺磁体。它还没有很多配方，但对于自动化生产电动机已经非常有用！"
     },
     {
       "type": "crafting",
       "recipe": "modern_industrialization:electric_age/machine/assembler_asbl",
-      "text": "您会想要大量生产的第一台机器！ 汇编器允许您自动化几乎所有配方，如果您使用插槽锁定，每个汇编器最多 3 个。"
+      "text": "这是第一台你会想要大量生产的机器！装配机允许你自动化几乎所有配方，如果你使用物品槽锁定，每台装配机最多可处理3种配方。"
     },
     {
       "type": "text",
-      "text": "我们强烈建议您尽快使用组装机自动化机器外壳、模拟电路、电机、活塞、机械臂和传送带，这将使制造电机基本免费！"
+      "text": "我们强烈建议你尽快使用装配机自动化生产机器外壳、模拟电路、电动机、活塞、机械臂和传送带，这将使制造电力机器基本免费！"
     },
     {
       "type": "crafting",
       "recipe": "modern_industrialization:electric_age/machine/configurable_chest_asbl",
-      "text": "可配置箱子不是机器，但是一旦您拥有模拟电路，您就可以制作它！$(br2)它有 21 个可配置的插槽和自动提取功能！ 对自动化非常有用！"
+      "text": "可配置箱子不是机器，但是一旦你拥有模拟电路，你就可以制作它！$(br2)它有21个可配置的物品槽和自动提取功能！对自动化非常有用！"
     }
   ],
   "sortnum": 104

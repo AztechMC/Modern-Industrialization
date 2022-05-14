@@ -1,32 +1,32 @@
 {
-  "name": "高压力！",
+  "name": "高压！",
   "category": "modern_industrialization:midgame",
   "icon": "modern_industrialization:pressurizer",
   "pages": [
     {
       "type": "crafting",
       "recipe": "modern_industrialization:electric_age/machine/pressurizer_asbl",
-      "text": "增压器是一种由钛制成的新型多块，可以将水变成 HP（高压）水，将蒸汽变成 HP 蒸汽，反之亦然。"
+      "text": "增压器是一种由钛制成的新型多方块结构，可以将水变成高压水，将蒸汽变成高压蒸汽，以此类推。"
     },
     {
       "type": "crafting",
       "recipe": "modern_industrialization:electric_age/machine/high_pressure_large_steam_boiler_asbl",
-      "text": "一旦您可以使用高压 (HP) 水，您就可以使用高压大型蒸汽锅炉来生产高压蒸汽。$(br2)一毫桶 HP 蒸汽相当于 8 mB 普通蒸汽，即 8 EU。”"
+      "text": "一旦你可以使用高压水，你就可以使用高压大型蒸汽锅炉来生产高压蒸汽。$(br2)1mb高压蒸汽相当于8mb普通蒸汽，即8EU。"
     },
     {
       "type": "crafting",
       "recipe": "modern_industrialization:electric_age/machine/large_steam_turbine_asbl",
-      "text": "大型汽轮机将接受常规蒸汽 (1 mB = 1 EU) 和 HP 蒸汽 (1 mB = 8 EU) 进入 EU，并将产生高达 16384 EU/t！ $(l)然而，它既不会给你回普通水，也不会给你 HP 水。$()"
+      "text": "大型蒸汽涡轮机同时接受常规蒸汽（1mb=1EU）和高压蒸汽（1mB=8EU）转化为EU，且功率高达16384EU/t！$(l)然而它既不会返还普通水，也不会返还高压水。$()"
     },
     {
       "type": "crafting",
       "recipe": "modern_industrialization:electric_age/machine/heat_exchanger_asbl",
-      "text": "请记住，将水加压成 HP 水会消耗大量能量，但涡轮机不会将其返还！ 您可以使用热交换器为另一个循环回收 HP 水。"
+      "text": "请记住，将水加压成高压水会消耗大量能量，但蒸汽涡轮机不会将其返还！你可以使用热交换机为另一个循环回收高压水。"
     },
     {
       "type": "crafting",
       "recipe": "modern_industrialization:electric_age/machine/hv_steam_turbine_asbl",
-      "text": "小型装置的另一种选择是使用高压蒸汽轮机。与其他高压发电机一样，它将产生 512 EU/t。这个只接受普通蒸汽。"
+      "text": "小型设施的另一种选择是使用高压蒸汽涡轮机。与其他高压发电机一样，它能产生512EU/t。它只接受普通蒸汽。"
     }
   ],
   "sortnum": 202

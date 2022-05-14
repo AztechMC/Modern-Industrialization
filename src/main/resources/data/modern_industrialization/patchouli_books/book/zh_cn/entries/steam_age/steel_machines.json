@@ -24,12 +24,12 @@
     {
       "type": "crafting",
       "recipe": "modern_industrialization:steam_age/steel/packer_asbl",
-      "text": "打包机是用钢打造的新机器，可以帮你自动合成简易物品。它可以自动合成双层锭、管道等物品，详见REI。"
+      "text": "打包机是用钢打造的新机器，可以帮你自动合成简易物品，例如双层锭、管道等，详见REI。"
     },
     {
       "type": "crafting",
       "recipe": "modern_industrialization:steam_age/steel/unpacker_asbl",
-      "text": "拆箱机，一种只能用钢制成的新机器...猜猜它是做什么的。o_O"
+      "text": "拆包机，一种只能用钢制成的新机器...猜猜它是做什么的。o_O"
     },
     {
       "type": "crafting",

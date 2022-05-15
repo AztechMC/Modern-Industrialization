@@ -33,6 +33,7 @@ import aztech.modern_industrialization.materials.part.Part;
 import aztech.modern_industrialization.materials.recipe.builder.MIRecipeBuilder;
 import aztech.modern_industrialization.materials.recipe.builder.ShapedRecipeBuilder;
 import aztech.modern_industrialization.materials.recipe.builder.SmeltingRecipeBuilder;
+import net.fabricmc.fabric.api.tag.convention.v1.ConventionalItemTags;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
 
@@ -71,7 +72,7 @@ public final class StandardRecipes {
         new ShapedRecipeBuilder(ctx, CABLE, 3, "cable", "rrr", "www", "rrr").addInput('r', MIItem.ITEM_RUBBER_SHEET)
                 .addTaggedPart('w', WIRE).exportToMachine(MIMachineRecipeTypes.PACKER);
 
-        new ShapedRecipeBuilder(ctx, TANK, 1, "tank", "###", "#G#", "###").addTaggedPart('#', PLATE).addInput('G', Blocks.GLASS)
+        new ShapedRecipeBuilder(ctx, TANK, 1, "tank", "###", "#G#", "###").addTaggedPart('#', PLATE).addInput('G', ConventionalItemTags.GLASS_BLOCKS)
                 .exportToAssembler();
         new ShapedRecipeBuilder(ctx, BARREL, 1, "barrel", "###", "#b#", "###").addTaggedPart('#', PLATE).addInput('b', Blocks.BARREL)
                 .exportToAssembler();

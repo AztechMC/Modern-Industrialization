@@ -46,8 +46,6 @@ import aztech.modern_industrialization.nuclear.NuclearItem;
 import aztech.modern_industrialization.pipes.MIPipes;
 import aztech.modern_industrialization.proxy.CommonProxy;
 import java.util.Map;
-import net.devtech.arrp.api.RRPCallback;
-import net.devtech.arrp.api.RuntimeResourcePack;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.client.itemgroup.FabricItemGroupBuilder;
 import net.fabricmc.fabric.api.entity.event.v1.ServerEntityWorldChangeEvents;
@@ -76,7 +74,6 @@ public class ModernIndustrialization implements ModInitializer {
 
     public static final String MOD_ID = "modern_industrialization";
     public static final Logger LOGGER = LogManager.getLogger("Modern Industrialization");
-    public static final RuntimeResourcePack RESOURCE_PACK = RuntimeResourcePack.create("modern_industrialization:general");
 
     // Materials
     public static final Material METAL_MATERIAL = new FabricMaterialBuilder(MaterialColor.METAL).build();
@@ -97,7 +94,6 @@ public class ModernIndustrialization implements ModInitializer {
         // However, some things (like resources) may still be uninitialized.
         // Proceed with mild caution.
         MIMaterials.init();
-        MITags.init();
         MIMachineRecipeTypes.init();
         SingleBlockCraftingMachines.init();
         SingleBlockSpecialMachines.init();
@@ -116,10 +112,6 @@ public class ModernIndustrialization implements ModInitializer {
         setupWrench();
 
         MIPipes.INSTANCE.setup();
-
-        RRPCallback.BEFORE_VANILLA.register(a -> {
-            a.add(RESOURCE_PACK);
-        });
 
         ChunkEventListeners.init();
         ServerEntityWorldChangeEvents.AFTER_PLAYER_CHANGE_WORLD.register((player, oldWorld, newWorld) -> MIKeyMap.clear(player));

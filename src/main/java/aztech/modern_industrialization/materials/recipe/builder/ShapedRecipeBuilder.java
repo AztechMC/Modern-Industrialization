@@ -32,6 +32,8 @@ import com.google.gson.Gson;
 import java.util.function.Consumer;
 import net.minecraft.core.Registry;
 import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.level.ItemLike;
 
 public class ShapedRecipeBuilder implements MaterialRecipeBuilder {
@@ -72,6 +74,10 @@ public class ShapedRecipeBuilder implements MaterialRecipeBuilder {
             canceled = true;
         }
         return this;
+    }
+
+    public ShapedRecipeBuilder addInput(char key, TagKey<Item> tag) {
+        return addInput(key, "#" + tag.location().toString());
     }
 
     public ShapedRecipeBuilder addInput(char key, String maybeTag) {

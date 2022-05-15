@@ -21,19 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.items;
+package aztech.modern_industrialization.datagen.tag;
 
-import net.fabricmc.fabric.api.tag.convention.v1.ConventionalItemTags;
-import net.minecraft.tags.BlockTags;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.state.BlockState;
-import org.jetbrains.annotations.ApiStatus;
-
-public interface DynamicToolItem {
-    @ApiStatus.NonExtendable
-    default boolean isSupportedBlock(ItemStack stack, BlockState state) {
-        return stack.is(ConventionalItemTags.AXES) && state.is(BlockTags.MINEABLE_WITH_AXE)
-                || stack.is(ConventionalItemTags.PICKAXES) && state.is(BlockTags.MINEABLE_WITH_PICKAXE)
-                || stack.is(ConventionalItemTags.SHOVELS) && state.is(BlockTags.MINEABLE_WITH_SHOVEL);
-    }
+public interface MINoTagCheckProvider {
 }

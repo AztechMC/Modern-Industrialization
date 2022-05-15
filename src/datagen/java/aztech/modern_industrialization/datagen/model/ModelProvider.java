@@ -29,6 +29,7 @@ import aztech.modern_industrialization.MIItem;
 import aztech.modern_industrialization.definition.BlockDefinition;
 import aztech.modern_industrialization.definition.FluidDefinition;
 import aztech.modern_industrialization.definition.ItemDefinition;
+import aztech.modern_industrialization.pipes.MIPipes;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricModelProvider;
 import net.minecraft.data.models.BlockModelGenerators;
@@ -52,6 +53,8 @@ public class ModelProvider extends FabricModelProvider {
             blockStateModelGenerator.createNonTemplateModelBlock(
                     fluidDefinition.fluidBlock);
         }
+
+        blockStateModelGenerator.createNonTemplateModelBlock(MIPipes.BLOCK_PIPE);
     }
 
     @Override

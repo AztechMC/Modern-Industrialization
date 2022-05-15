@@ -23,13 +23,6 @@ repositories {
             includeGroup "curse.maven"
         }
     }
-    // for ARRP
-    maven {
-        url = "https://storage.googleapis.com/devan-maven/"
-        content {
-            includeGroup "net.devtech"
-        }
-    }
     // for Patchouli
     maven {
         url 'https://maven.blamejared.com'
@@ -153,9 +146,6 @@ dependencies {
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
     // Dependencies
-    include modImplementation("net.devtech:arrp:${project.arrp_version}") {
-        exclude(group: "net.fabricmc.fabric-api")
-    }
 
     modImplementation("me.shedaniel:RoughlyEnoughItems-fabric:${project.rei_version}") {
         exclude(group: "net.fabricmc.fabric-api")
@@ -176,7 +166,7 @@ dependencies {
         exclude(group: "net.fabricmc.fabric-api")
     }
 
-    modImplementation("dev.latvian.mods:kubejs-fabric:1802.5.0-build.312") {
+    modCompileOnly("dev.latvian.mods:kubejs-fabric:1802.5.0-build.312") {
         exclude(group: "net.fabricmc.fabric-api")
     }
 

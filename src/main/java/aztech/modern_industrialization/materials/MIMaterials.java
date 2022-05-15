@@ -31,7 +31,10 @@ import static aztech.modern_industrialization.materials.set.MaterialSet.*;
 import aztech.modern_industrialization.MIItem;
 import aztech.modern_industrialization.api.energy.CableTier;
 import aztech.modern_industrialization.machines.init.MIMachineRecipeTypes;
-import aztech.modern_industrialization.materials.part.*;
+import aztech.modern_industrialization.materials.part.ExternalPart;
+import aztech.modern_industrialization.materials.part.MIItemPart;
+import aztech.modern_industrialization.materials.part.Part;
+import aztech.modern_industrialization.materials.part.RegularPart;
 import aztech.modern_industrialization.materials.recipe.ForgeHammerRecipes;
 import aztech.modern_industrialization.materials.recipe.SmeltingRecipes;
 import aztech.modern_industrialization.materials.recipe.StandardRecipes;
@@ -43,9 +46,6 @@ import aztech.modern_industrialization.nuclear.INeutronBehaviour;
 import aztech.modern_industrialization.nuclear.NuclearAbsorbable;
 import aztech.modern_industrialization.nuclear.NuclearConstant;
 import aztech.modern_industrialization.textures.coloramp.BakableTargetColoramp;
-import aztech.modern_industrialization.util.ResourceUtil;
-import net.devtech.arrp.json.tags.JTag;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.valueproviders.UniformInt;
 
 // @formatter:off
@@ -53,7 +53,6 @@ public class MIMaterials {
 
     public static void init() {
         addMaterials();
-        addExtraTags();
     }
 
     public static final String commonPath = "modern_industrialization:textures/materialsets/common/";
@@ -478,51 +477,4 @@ public class MIMaterials {
 
     }
 
-    /**
-     * Add material tags for special parts, like vanilla stuff
-     */
-    private static void addExtraTags() {
-        ResourceUtil.registerItemTag("c:iron_blocks", JTag.tag().add(new ResourceLocation("minecraft:iron_block")));
-        ResourceUtil.registerItemTag("c:iron_ingots", JTag.tag().add(new ResourceLocation("minecraft:iron_ingot")));
-        ResourceUtil.registerItemTag("c:iron_nuggets", JTag.tag().add(new ResourceLocation("minecraft:iron_nugget")));
-        ResourceUtil.registerItemTag("c:iron_ores", JTag.tag().tag(new ResourceLocation("minecraft:iron_ores")));
-        ResourceUtil.registerItemTag("c:raw_iron_ores", JTag.tag().add(new ResourceLocation("minecraft:raw_iron")));
-        ResourceUtil.registerItemTag("c:raw_iron_blocks", JTag.tag().add(new ResourceLocation("minecraft:raw_iron_block")));
-
-        JTag copperBlocks = JTag.tag().add(new ResourceLocation("minecraft:copper_block")).add(new ResourceLocation("minecraft:waxed_copper_block"));
-
-        ResourceUtil.registerItemTag("c:copper_blocks", copperBlocks);
-        ResourceUtil.registerItemTag("c:copper_ingots", JTag.tag().add(new ResourceLocation("minecraft:copper_ingot")));
-        ResourceUtil.registerItemTag("c:copper_ores", JTag.tag().tag(new ResourceLocation("minecraft:copper_ores")));
-        ResourceUtil.registerItemTag("c:raw_copper_ores", JTag.tag().add(new ResourceLocation("minecraft:raw_copper")));
-        ResourceUtil.registerItemTag("c:raw_copper_blocks", JTag.tag().add(new ResourceLocation("minecraft:raw_copper_block")));
-
-        JTag goldOres = JTag.tag().tag(new ResourceLocation("minecraft:gold_ores")); // .add(new Identifier("minecraft:gilded_blackstone"));
-
-        ResourceUtil.registerItemTag("c:gold_blocks", JTag.tag().add(new ResourceLocation("minecraft:gold_block")));
-        ResourceUtil.registerItemTag("c:gold_ingots", JTag.tag().add(new ResourceLocation("minecraft:gold_ingot")));
-        ResourceUtil.registerItemTag("c:gold_nuggets", JTag.tag().add(new ResourceLocation("minecraft:gold_nugget")));
-        ResourceUtil.registerItemTag("c:gold_ores", goldOres);
-        ResourceUtil.registerItemTag("c:raw_gold_ores", JTag.tag().add(new ResourceLocation("minecraft:raw_gold")));
-        ResourceUtil.registerItemTag("c:raw_gold_blocks", JTag.tag().add(new ResourceLocation("minecraft:raw_gold_block")));
-
-        ResourceUtil.registerItemTag("c:coal_ores", JTag.tag().add(new ResourceLocation("minecraft:deepslate_coal_ore")));
-        ResourceUtil.registerItemTag("c:coal_blocks", JTag.tag().add(new ResourceLocation("minecraft:coal_block")));
-        ResourceUtil.registerItemTag("c:coal_ores", JTag.tag().tag(new ResourceLocation("minecraft:coal_ores")));
-
-        ResourceUtil.registerItemTag("c:redstone_ores", JTag.tag().tag(new ResourceLocation("minecraft:redstone_ores")));
-        ResourceUtil.registerItemTag("c:redstone_blocks", JTag.tag().add(new ResourceLocation("minecraft:redstone_block")));
-
-        ResourceUtil.registerItemTag("c:emerald_ores", JTag.tag().tag(new ResourceLocation("minecraft:emerald_ores")));
-        ResourceUtil.registerItemTag("c:emerald_blocks", JTag.tag().add(new ResourceLocation("minecraft:emerald_block")));
-
-        ResourceUtil.registerItemTag("c:diamond_ores", JTag.tag().tag(new ResourceLocation("minecraft:diamond_ores")));
-        ResourceUtil.registerItemTag("c:diamond_blocks", JTag.tag().add(new ResourceLocation("minecraft:diamond_block")));
-
-        ResourceUtil.registerItemTag("c:lapis_ores", JTag.tag().tag(new ResourceLocation("minecraft:lapis_ores")));
-        ResourceUtil.registerItemTag("c:lapis_blocks", JTag.tag().add(new ResourceLocation("minecraft:lapis_block")));
-
-        ResourceUtil.appendToTag("c:items/quartz_ores", "minecraft:nether_quartz_ore");
-
-    }
 }

@@ -23,7 +23,6 @@
  */
 package aztech.modern_industrialization.items.diesel_tools;
 
-import aztech.modern_industrialization.MITags;
 import aztech.modern_industrialization.api.DynamicEnchantmentItem;
 import aztech.modern_industrialization.api.FluidFuelRegistry;
 import aztech.modern_industrialization.fluid.MIFluid;
@@ -37,6 +36,7 @@ import it.unimi.dsi.fastutil.objects.Reference2IntMap;
 import java.util.List;
 import java.util.Map;
 import net.fabricmc.fabric.api.mininglevel.v1.MiningLevelManager;
+import net.fabricmc.fabric.api.tag.convention.v1.ConventionalItemTags;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -199,7 +199,7 @@ public class DieselToolItem extends Item implements Vanishable, DynamicEnchantme
         BlockState state = w.getBlockState(pos);
         Player player = context.getPlayer();
         if (FluidFuelItemHelper.getAmount(stack) > 0) {
-            if (stack.is(MITags.AXES)) {
+            if (stack.is(ConventionalItemTags.AXES)) {
                 Block newBlock = StrippingAccess.getStrippedBlocks().get(state.getBlock());
                 if (newBlock != null) {
                     w.playSound(player, pos, SoundEvents.AXE_STRIP, SoundSource.BLOCKS, 1, 1);
@@ -209,7 +209,7 @@ public class DieselToolItem extends Item implements Vanishable, DynamicEnchantme
                     }
                     return InteractionResult.sidedSuccess(w.isClientSide);
                 }
-            } else if (stack.is(MITags.SHOVELS)) {
+            } else if (stack.is(ConventionalItemTags.SHOVELS)) {
                 BlockState newState = PathingAccess.getPathStates().get(state.getBlock());
                 if (newState != null) {
                     w.playSound(player, pos, SoundEvents.SHOVEL_FLATTEN, SoundSource.BLOCKS, 1, 1);

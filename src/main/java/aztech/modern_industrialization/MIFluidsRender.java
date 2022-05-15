@@ -25,6 +25,7 @@ package aztech.modern_industrialization;
 
 import static aztech.modern_industrialization.MIFluids.FLUIDS;
 
+import aztech.modern_industrialization.definition.FluidDefinition;
 import aztech.modern_industrialization.fluid.MIFluid;
 import java.util.function.Consumer;
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandler;
@@ -76,8 +77,8 @@ public class MIFluidsRender {
             });
         };
 
-        for (MIFluid fluid : FLUIDS) {
-            registerWaterlikeFluid.accept(fluid);
+        for (FluidDefinition fluid : FLUIDS.values()) {
+            registerWaterlikeFluid.accept(fluid.fluid);
         }
     }
 }

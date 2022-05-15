@@ -36,12 +36,12 @@ public class BlockPart extends UnbuildablePart<MaterialBlockSet> {
 
     @Override
     public BuildablePart of(MaterialBlockSet set) {
-        return new RegularPart(this.key).asBlock().withTextureRegister((mtm, partContext, part, itemPath) -> {
+        return new RegularPart("Block of %s", this.key).asBlock().withTextureRegister((mtm, partContext, part, itemPath) -> {
             String template = String.format("modern_industrialization:textures/materialsets/blocks/%s.png", set.name);
             try {
                 NativeImage image = mtm.getAssetAsTexture(template);
                 TextureHelper.colorize(image, partContext.getColoramp());
-                String texturePath = String.format("modern_industrialization:textures/blocks/%s.png", itemPath);
+                String texturePath = String.format("modern_industrialization:textures/block/%s.png", itemPath);
                 mtm.addTexture(texturePath, image);
                 image.close();
             } catch (IOException e) {

@@ -37,5 +37,6 @@ public class TagHelper {
         case 3 -> BlockTags.NEEDS_DIAMOND_TOOL;
         default -> throw new IllegalArgumentException();
         }, BlockTags.MINEABLE_WITH_PICKAXE);
+
     }
 }

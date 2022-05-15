@@ -28,6 +28,7 @@ import aztech.modern_industrialization.api.ScrewdriverableBlockEntity;
 import aztech.modern_industrialization.api.WrenchableBlockEntity;
 import aztech.modern_industrialization.blocks.forgehammer.ForgeHammerScreenHandler;
 import aztech.modern_industrialization.definition.BlockDefinition;
+import aztech.modern_industrialization.definition.FluidDefinition;
 import aztech.modern_industrialization.definition.ItemDefinition;
 import aztech.modern_industrialization.inventory.ConfigurableInventoryPacketHandlers;
 import aztech.modern_industrialization.inventory.ConfigurableInventoryPackets;
@@ -88,7 +89,7 @@ public class ModernIndustrialization implements ModInitializer {
     public static final MenuType<MachineScreenHandlers.Common> SCREEN_HANDLER_MACHINE = ScreenHandlerRegistry
             .registerExtended(new MIIdentifier("machine"), MachineScreenHandlers::createClient);
     public static final MenuType<ForgeHammerScreenHandler> SCREEN_HANDLER_FORGE_HAMMER = ScreenHandlerRegistry
-            .registerSimple(new ResourceLocation(MOD_ID, "forge_hammer"), ForgeHammerScreenHandler::new);
+            .registerSimple(new MIIdentifier("forge_hammer"), ForgeHammerScreenHandler::new);
 
     @Override
     public void onInitialize() {
@@ -102,8 +103,8 @@ public class ModernIndustrialization implements ModInitializer {
         SingleBlockSpecialMachines.init();
         MultiblockHatches.init();
         MultiblockMachines.init();
-        MIFluids.setupFluids();
         NuclearItem.init();
+        setupFluids();
         setupItems();
         setupBlocks();
         MIBlockEntityTypes.init();
@@ -147,6 +148,13 @@ public class ModernIndustrialization implements ModInitializer {
         for (Map.Entry<ResourceLocation, BlockDefinition<?>> entry : MIBlock.BLOCKS.entrySet()) {
             Registry.register(Registry.BLOCK, entry.getKey(), entry.getValue().asBlock());
             entry.getValue().onRegister();
+        }
+    }
+
+    private void setupFluids() {
+        for (Map.Entry<ResourceLocation, FluidDefinition> entry : MIFluids.FLUIDS.entrySet()) {
+            Registry.register(Registry.BLOCK, entry.getKey(), entry.getValue().fluidBlock);
+            Registry.register(Registry.FLUID, entry.getKey(), entry.getValue().asFluid());
         }
     }
 

@@ -39,7 +39,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
 
-public class BlockDefinition<T extends Block> extends Definition<T> implements ItemLike {
+public class BlockDefinition<T extends Block> extends Definition implements ItemLike {
 
     public final T block;
     public final ItemDefinition<BlockItem> blockItem;
@@ -76,7 +76,12 @@ public class BlockDefinition<T extends Block> extends Definition<T> implements I
 
     @Override
     public Item asItem() {
-        return blockItem.asItem();
+        if (blockItem != null) {
+            return blockItem.asItem();
+        } else {
+            return null;
+        }
+
     }
 
     public T asBlock() {

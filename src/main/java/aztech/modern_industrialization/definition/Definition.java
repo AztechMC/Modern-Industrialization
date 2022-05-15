@@ -24,10 +24,14 @@
 package aztech.modern_industrialization.definition;
 
 import aztech.modern_industrialization.MIIdentifier;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import net.minecraft.resources.ResourceLocation;
 
-public abstract class Definition<T> {
+public abstract class Definition {
+
+    public static List<Definition> TRANSLATABLE_DEFINITION = new ArrayList<>();
 
     private final ResourceLocation id;
     private final String englishName;
@@ -42,11 +46,20 @@ public abstract class Definition<T> {
 
     public abstract String getTranslationKey();
 
-    public Definition(String englishName, String id) {
-        Objects.requireNonNull(id, "id");
+    public Definition(String englishName, String path) {
+        Objects.requireNonNull(path, "path");
         Objects.requireNonNull(englishName, "englishName");
-        this.id = new MIIdentifier(id);
+        this.id = new MIIdentifier(path);
         this.englishName = englishName;
+        TRANSLATABLE_DEFINITION.add(this);
+    }
+
+    public String getResourceAsString(boolean id) {
+        if (id) {
+            return this.id.toString();
+        } else {
+            return this.id.getPath();
+        }
     }
 
 }

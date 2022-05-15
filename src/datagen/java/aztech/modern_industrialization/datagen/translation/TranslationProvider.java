@@ -23,14 +23,21 @@
  */
 package aztech.modern_industrialization.datagen.translation;
 
-import aztech.modern_industrialization.MIItem;
-import aztech.modern_industrialization.datagen.MIDatagenEntrypoint;
-import aztech.modern_industrialization.definition.ItemDefinition;
+import aztech.modern_industrialization.definition.Definition;
+import aztech.modern_industrialization.pipes.MIPipes;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
+import java.io.BufferedWriter;
 import java.io.FileReader;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.LinkOption;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.TreeMap;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.minecraft.data.DataProvider;
@@ -39,44 +46,70 @@ import oshi.util.tuples.Pair;
 
 public record TranslationProvider(FabricDataGenerator gen) implements DataProvider {
 
+    private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
+
     @Override
     public void run(HashCache cache) throws IOException {
-        String langPathClean = "assets/modern_industrialization/lang/en_us_clean.json";
-        String langPathConflict = "assets/modern_industrialization/lang/en_us_conflict.json";
-        String langPathAll = "assets/modern_industrialization/lang/en_us_all.json";
+        String langPathAll = "assets/modern_industrialization/lang/en_us.json";
 
         Path outputPath = gen.getOutputFolder();
 
-        TreeMap<String, String> translation = MIDatagenEntrypoint.GSON
-                .fromJson(new FileReader("../../src/main/resources/assets/modern_industrialization/lang/en_us.json"), TreeMap.class);
+        TreeMap<String, String> translation = GSON
+                .fromJson(new FileReader("../../src/main/resources/assets/modern_industrialization/lang/en_us_not_generated.json",
+                        StandardCharsets.UTF_8), TreeMap.class);
 
-        TreeMap<String, String> translationClean = (TreeMap<String, String>) translation.clone();
         TreeMap<String, String> translationAll = (TreeMap<String, String>) translation.clone();
-        TreeMap<String, String> translationConflict = new TreeMap<>();
 
         List<Pair<String, String>> translationsPair = new ArrayList<>();
 
-        for (ItemDefinition<?> itemDefinition : MIItem.ITEMS.values()) {
-            translationsPair.add(new Pair<>(itemDefinition.getTranslationKey(), itemDefinition.getEnglishName()));
+        for (Definition definition : Definition.TRANSLATABLE_DEFINITION) {
+            translationsPair.add(new Pair<>(definition.getTranslationKey(), definition.getEnglishName()));
+        }
+
+        for (var entry : MIPipes.TRANSLATION.entrySet()) {
+            translationsPair.add(new Pair<>(entry.getKey(), entry.getValue()));
         }
 
         for (Pair<String, String> translationPair : translationsPair) {
-            if (translation.containsKey(translationPair.getA())) {
-                if (translationPair.getB().equals(translation.get(translationPair.getA()))) {
-                    translationClean.remove(translationPair.getA());
-                } else {
-                    translationConflict.put(translationPair.getA(), translationPair.getB());
+
+            translationAll.put(translationPair.getA(), translationPair.getB());
+
+        }
+
+        save(cache, GSON.toJsonTree(translationAll), outputPath.resolve(langPathAll));
+
+    }
+
+    private void save(HashCache cache, JsonElement jsonElement, Path path) throws IOException {
+
+        String sortedJson = GSON.toJson(jsonElement);
+        String prettyPrinted = sortedJson.replace("\\u0027", "\'");
+
+        String string2 = SHA1.hashUnencodedChars(prettyPrinted).toString();
+        if (!Objects.equals(cache.getHash(path), string2) || !Files.exists(path, new LinkOption[0])) {
+            Files.createDirectories(path.getParent());
+            BufferedWriter bufferedWriter = Files.newBufferedWriter(path);
+
+            try {
+                bufferedWriter.write(prettyPrinted);
+            } catch (Throwable var10) {
+                if (bufferedWriter != null) {
+                    try {
+                        bufferedWriter.close();
+                    } catch (Throwable var9) {
+                        var10.addSuppressed(var9);
+                    }
                 }
-            } else {
-                translationAll.put(translationPair.getA(), translationPair.getB());
+
+                throw var10;
+            }
+
+            if (bufferedWriter != null) {
+                bufferedWriter.close();
             }
         }
 
-        DataProvider.save(MIDatagenEntrypoint.GSON, cache, MIDatagenEntrypoint.GSON.toJsonTree(translationClean), outputPath.resolve(langPathClean));
-        DataProvider.save(MIDatagenEntrypoint.GSON, cache, MIDatagenEntrypoint.GSON.toJsonTree(translationConflict),
-                outputPath.resolve(langPathConflict));
-        DataProvider.save(MIDatagenEntrypoint.GSON, cache, MIDatagenEntrypoint.GSON.toJsonTree(translationAll), outputPath.resolve(langPathAll));
-
+        cache.putNew(path, string2);
     }
 
     @Override

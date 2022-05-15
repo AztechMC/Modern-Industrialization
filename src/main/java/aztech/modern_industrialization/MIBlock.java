@@ -41,6 +41,7 @@ import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
 import net.minecraft.data.loot.BlockLoot;
 import net.minecraft.data.models.BlockModelGenerators;
+import net.minecraft.data.models.model.TexturedModel;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
@@ -50,6 +51,7 @@ import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.Material;
 
+@SuppressWarnings("unused")
 public class MIBlock {
 
     public static SortedMap<ResourceLocation, BlockDefinition<?>> BLOCKS = new TreeMap<>();
@@ -77,8 +79,8 @@ public class MIBlock {
                     .sound(SoundType.ANVIL),
             ForgeHammerBlock.class);
 
-    public static final BlockDefinition<TrashCanBlock> TRASH_CAN = block("Trash Can", "trash_can",
-            BlockDefinitionParams.of().withBlockConstructor(TrashCanBlock::new).noModel().destroyTime(6.0f).explosionResistance(1200),
+    public static final BlockDefinition<TrashCanBlock> TRASH_CAN = block("Automatic Trash Can", "trash_can",
+            BlockDefinitionParams.of().withBlockConstructor(TrashCanBlock::new).destroyTime(6.0f).explosionResistance(1200),
             TrashCanBlock.class)
                     .withBlockRegistrationEvent(TrashCanBlock::onRegister);
 
@@ -105,7 +107,7 @@ public class MIBlock {
             BiConsumer<Block, BlockModelGenerators> modelGenerator,
             BiConsumer<Block, BlockLoot> lootTableGenerator,
             List<TagKey<Block>> tags) {
-        BlockDefinition<T> definition = new BlockDefinition<T>(englishName, id, block, blockItemCtor, modelGenerator, lootTableGenerator, tags);
+        BlockDefinition<T> definition = new BlockDefinition<>(englishName, id, block, blockItemCtor, modelGenerator, lootTableGenerator, tags);
         if (BLOCKS.put(definition.getId(), definition) != null) {
             throw new IllegalArgumentException("Block id already taken : " + definition.getId());
         }
@@ -143,20 +145,18 @@ public class MIBlock {
         return MIBlock.block(
                 englishName,
                 id,
-                new BlockDefinitionParams<>(
-                        BlockBehaviour.Properties.of(Material.EXPLOSIVE).instabreak().sound(SoundType.GRASS),
-                        Block::new,
-                        BlockItem::new,
-                        (block, modelGenerator) -> modelGenerator.createTrivialCube(block),
-                        (block, lootGenerator) -> lootGenerator.dropSelf(block),
-                        List.of()));
+                BlockDefinitionParams.of(
+                        BlockBehaviour.Properties.of(Material.EXPLOSIVE).instabreak().sound(SoundType.GRASS))
+                        .clearTags().noModel());
+
+        // TODO : Datagen model
     }
 
     public static class BlockDefinitionParams<T extends Block> extends FabricBlockSettings {
 
         public BiConsumer<Block, BlockModelGenerators> modelGenerator;
         public BiConsumer<Block, BlockLoot> lootTableGenerator;
-        public List<TagKey<Block>> tags;
+        public final ArrayList<TagKey<Block>> tags = new ArrayList<>();
 
         public Function<BlockBehaviour.Properties, T> ctor;
         public BiFunction<Block, FabricItemSettings, BlockItem> blockItemCtor;
@@ -172,7 +172,7 @@ public class MIBlock {
             this.blockItemCtor = blockItemCtor;
             this.modelGenerator = modelGenerator;
             this.lootTableGenerator = lootTableGenerator;
-            this.tags = tags;
+            this.tags.addAll(tags);
         }
 
         public static BlockDefinitionParams<Block> of(BlockBehaviour.Properties properties) {
@@ -204,13 +204,18 @@ public class MIBlock {
             return this;
         }
 
+        public BlockDefinitionParams<T> withModel(TexturedModel.Provider model) {
+            return this.withModel((block, blockModelGenerator) -> blockModelGenerator.createTrivialBlock(block, model));
+        }
+
         public BlockDefinitionParams<T> withLootTable(BiConsumer<Block, BlockLoot> lootTableGenerator) {
             this.lootTableGenerator = lootTableGenerator;
             return this;
         }
 
         public BlockDefinitionParams<T> noModel() {
-            this.modelGenerator = null;
+            this.modelGenerator = (block, modelGenerator) -> modelGenerator.createNonTemplateModelBlock(block);
+            // still creating the blockstate
             return this;
         }
 

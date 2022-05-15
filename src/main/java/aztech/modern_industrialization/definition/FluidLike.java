@@ -21,35 +21,15 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.recipe.json;
+package aztech.modern_industrialization.definition;
 
-import net.minecraft.core.Registry;
-import net.minecraft.world.item.Item;
+import net.minecraft.world.level.material.Fluid;
 
-@SuppressWarnings({ "FieldCanBeLocal", "MismatchedQueryAndUpdateOfCollection", "UnusedDeclaration" })
-public class SmithingRecipeJson extends RecipeJson {
+public interface FluidLike {
 
-    private final String type;
-    private final Ingredient base;
-    private final Ingredient addition;
-    private final Ingredient result;
+    public Fluid asFluid();
 
-    public static class Ingredient {
-        String item;
-
-        public Ingredient(String item) {
-            this.item = item;
-        }
-    }
-
-    public SmithingRecipeJson(String base, String addition, String result) {
-        this.type = "minecraft:smithing";
-        this.base = new Ingredient(base);
-        this.addition = new Ingredient(addition);
-        this.result = new Ingredient(result);
-    }
-
-    public SmithingRecipeJson(Item base, Item addition, Item result) {
-        this(Registry.ITEM.getKey(base).toString(), Registry.ITEM.getKey(addition).toString(), Registry.ITEM.getKey(result).toString());
+    public static FluidLike of(Fluid fluid) {
+        return () -> fluid;
     }
 }

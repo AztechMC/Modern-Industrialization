@@ -24,7 +24,7 @@
 package aztech.modern_industrialization.recipe.json;
 
 @SuppressWarnings({ "FieldCanBeLocal", "MismatchedQueryAndUpdateOfCollection", "UnusedDeclaration" })
-public class SmeltingRecipeJson extends RecipeJson<SmeltingRecipeJson> {
+public class SmeltingRecipeJson extends RecipeJson {
 
     private final String type;
     private final int cookingtime;

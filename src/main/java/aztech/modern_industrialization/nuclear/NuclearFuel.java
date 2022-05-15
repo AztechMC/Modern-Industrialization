@@ -84,8 +84,10 @@ public class NuclearFuel extends NuclearAbsorbable {
 
     }
 
-    public static NuclearFuel of(String id, NuclearFuelParams params, INeutronBehaviour neutronBehaviour, String depletedVersionId) {
-        return MIItem.item(id, id, (settings) -> new NuclearFuel(settings.maxCount(1), params, neutronBehaviour, depletedVersionId)).asItem();
+    public static NuclearFuel of(String englishName, String id, NuclearFuelParams params, INeutronBehaviour neutronBehaviour,
+            String depletedVersionId) {
+        return MIItem.item(englishName, id, (settings) -> new NuclearFuel(settings.maxCount(1), params, neutronBehaviour, depletedVersionId))
+                .asItem();
     }
 
     @Override

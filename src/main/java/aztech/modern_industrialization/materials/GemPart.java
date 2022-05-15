@@ -42,7 +42,7 @@ public class GemPart extends Part implements BuildablePart {
 
     @Override
     public MaterialPart build(MaterialBuilder.PartContext ctx) {
-        return new RegularPart("gem").appendRegister((registeringContext, partContext, part, itemPath, itemId, itemTag) -> {
+        return new RegularPart("", "gem").appendRegister((registeringContext, partContext, part, itemPath, itemId, itemTag) -> {
             TagsToGenerate.generateTag("c:" + itemPath, itemId);
         })
                 .withTextureRegister((mtm, partContext, part, itemPath) -> {

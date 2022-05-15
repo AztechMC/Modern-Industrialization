@@ -45,40 +45,49 @@ public class TankPart extends UnbuildablePart<Long> {
     }
 
     public RegularPart of(int bucketCapacity) {
-        return of((long) bucketCapacity);
+        return of("Tank", (long) bucketCapacity);
+    }
+
+    public RegularPart of(String englishNameFormatter, int bucketCapacity) {
+        return of(englishNameFormatter, (long) bucketCapacity);
     }
 
     @Override
     public RegularPart of(Long bucketCapacity) {
+        return of("Tank", bucketCapacity);
+    }
+
+    public RegularPart of(String englishNameFormatter, Long bucketCapacity) {
         MutableObject<BlockEntityType<BlockEntity>> bet = new MutableObject<>();
         long capacity = FluidConstants.BUCKET * bucketCapacity;
 
-        return new RegularPart(key).withoutTextureRegister().withRegister((registeringContext, partContext, part, itemPath, itemId, itemTag) -> {
-            EntityBlock factory = (pos, state) -> new TankBlockEntity(bet.getValue(), pos, state, capacity);
+        return new RegularPart(englishNameFormatter, key).withoutTextureRegister()
+                .withRegister((registeringContext, partContext, part, itemPath, itemId, itemTag) -> {
+                    EntityBlock factory = (pos, state) -> new TankBlockEntity(bet.getValue(), pos, state, capacity);
 
-            String englishName = itemPath;
+                    String englishName = RegularPart.getEnglishName(englishNameFormatter, partContext.getEnglishName());
 
-            BlockDefinition<TankBlock> blockDefinition = MIBlock.block(
-                    englishName,
-                    itemPath,
-                    MIBlock.BlockDefinitionParams.of().withBlockConstructor(
-                            s -> new TankBlock(factory)).withBlockItemConstructor(
-                                    (b, s) -> new TankItem(b, capacity))
-                            .noModel().noLootTable());
+                    BlockDefinition<TankBlock> blockDefinition = MIBlock.block(
+                            englishName,
+                            itemPath,
+                            MIBlock.BlockDefinitionParams.of().withBlockConstructor(
+                                    s -> new TankBlock(factory)).withBlockItemConstructor(
+                                            (b, s) -> new TankItem(b, capacity))
+                                    .noModel().noLootTable());
 
-            TankBlock block = blockDefinition.asBlock();
-            TankItem item = (TankItem) blockDefinition.asItem();
+                    TankBlock block = blockDefinition.asBlock();
+                    TankItem item = (TankItem) blockDefinition.asItem();
 
-            TagsToGenerate.generateTag(MITags.TANKS, item);
+                    TagsToGenerate.generateTag(MITags.TANKS, item);
 
-            bet.setValue(Registry.register(Registry.BLOCK_ENTITY_TYPE, itemId,
-                    FabricBlockEntityTypeBuilder.create(block.factory::newBlockEntity, block).build(null)));
+                    bet.setValue(Registry.register(Registry.BLOCK_ENTITY_TYPE, itemId,
+                            FabricBlockEntityTypeBuilder.create(block.factory::newBlockEntity, block).build(null)));
 
-            // Fluid API
-            FluidStorage.SIDED.registerSelf(bet.getValue());
-            item.registerItemApi();
-        }).withClientRegister((registeringContext, partContext, part, itemPath, itemId, itemTag) -> {
-            CommonProxy.INSTANCE.registerPartTankClient(partContext, itemPath, bet.getValue());
-        });
+                    // Fluid API
+                    FluidStorage.SIDED.registerSelf(bet.getValue());
+                    item.registerItemApi();
+                }).withClientRegister((registeringContext, partContext, part, itemPath, itemId, itemTag) -> {
+                    CommonProxy.INSTANCE.registerPartTankClient(partContext, itemPath, bet.getValue());
+                });
     }
 }

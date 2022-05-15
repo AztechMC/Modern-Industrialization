@@ -24,8 +24,10 @@
 package aztech.modern_industrialization.datagen.model;
 
 import aztech.modern_industrialization.MIBlock;
+import aztech.modern_industrialization.MIFluids;
 import aztech.modern_industrialization.MIItem;
 import aztech.modern_industrialization.definition.BlockDefinition;
+import aztech.modern_industrialization.definition.FluidDefinition;
 import aztech.modern_industrialization.definition.ItemDefinition;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricModelProvider;
@@ -41,14 +43,23 @@ public class ModelProvider extends FabricModelProvider {
     @Override
     public void generateBlockStateModels(BlockModelGenerators blockStateModelGenerator) {
         for (BlockDefinition<?> blockDefinition : MIBlock.BLOCKS.values()) {
-            blockDefinition.modelGenerator.accept(blockDefinition.asBlock(), blockStateModelGenerator);
+            if (blockDefinition.modelGenerator != null) {
+                blockDefinition.modelGenerator.accept(blockDefinition.asBlock(), blockStateModelGenerator);
+            }
+        }
+
+        for (FluidDefinition fluidDefinition : MIFluids.FLUIDS.values()) {
+            blockStateModelGenerator.createNonTemplateModelBlock(
+                    fluidDefinition.fluidBlock);
         }
     }
 
     @Override
     public void generateItemModels(ItemModelGenerators itemModelGenerator) {
         for (ItemDefinition<?> itemDefinition : MIItem.ITEMS.values()) {
-            itemDefinition.modelGenerator.accept(itemDefinition.asItem(), itemModelGenerator);
+            if (itemDefinition.modelGenerator != null) {
+                itemDefinition.modelGenerator.accept(itemDefinition.asItem(), itemModelGenerator);
+            }
         }
     }
 

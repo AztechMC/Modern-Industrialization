@@ -26,7 +26,7 @@ package aztech.modern_industrialization.recipe.json.compat;
 import aztech.modern_industrialization.recipe.json.RecipeJson;
 
 @SuppressWarnings({ "unused", "FieldCanBeLocal" })
-public class IRCompressRecipeJson extends RecipeJson<IRCompressRecipeJson> {
+public class IRCompressRecipeJson extends RecipeJson {
     private final String type = "indrev:compress";
     private final int processTime = 300;
     private final TagIngredient[] ingredients;

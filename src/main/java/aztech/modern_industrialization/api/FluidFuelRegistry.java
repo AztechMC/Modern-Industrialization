@@ -23,12 +23,17 @@
  */
 package aztech.modern_industrialization.api;
 
+import aztech.modern_industrialization.definition.FluidLike;
 import java.util.*;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
 
 public class FluidFuelRegistry {
     private static final Map<Fluid, Integer> fluidEus = new HashMap<>();
+
+    public static void register(FluidLike fluid, int eu) {
+        register(fluid.asFluid(), eu);
+    }
 
     public static void register(Fluid fluid, int eu) {
         if (eu <= 0) {

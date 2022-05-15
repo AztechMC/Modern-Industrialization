@@ -24,29 +24,45 @@
 package aztech.modern_industrialization.pipes;
 
 public enum PipeColor {
-    REGULAR("", 14599002),
-    WHITE("white_", 16383998),
-    ORANGE("orange_", 16351261),
-    MAGENTA("magenta_", 13061821),
-    LIGHT_BLUE("light_blue_", 3847130),
-    YELLOW("yellow_", 16701501),
-    LIME("lime_", 8439583),
-    PINK("pink_", 15961002),
-    GRAY("gray_", 4673362),
-    LIGHT_GRAY("light_gray_", 10329495),
-    CYAN("cyan_", 1481884),
-    PURPLE("purple_", 8991416),
-    BLUE("blue_", 3949738),
-    BROWN("brown_", 8606770),
-    GREEN("green_", 6192150),
-    RED("red_", 11546150),
-    BLACK("black_", 1908001);
+    REGULAR(14599002),
+    WHITE("White", "white", 16383998),
+    ORANGE("Orange", "orange", 16351261),
+    MAGENTA("Magenta", "magenta", 13061821),
+    LIGHT_BLUE("Light Blue", "light_blue", 3847130),
+    YELLOW("Yellow", "yellow", 16701501),
+    LIME("Lime", "lime", 8439583),
+    PINK("Pink", "pink", 15961002),
+    GRAY("Gray", "gray", 4673362),
+    LIGHT_GRAY("Light Gray", "light_gray", 10329495),
+    CYAN("Cyan", "cyan", 1481884),
+    PURPLE("Purple", "purple", 8991416),
+    BLUE("Blue", "blue", 3949738),
+    BROWN("Brown", "brown", 8606770),
+    GREEN("Green", "green", 6192150),
+    RED("Red", "red", 11546150),
+    BLACK("Black", "black", 1908001);
 
-    public final String prefix;
     public final int color;
+    public final String englishName;
+    public final String name;
+    public final String englishNamePrefix;
+    public final String prefix;
 
-    PipeColor(String prefix, int color) {
-        this.prefix = prefix;
+    PipeColor(String englishName, String name, int color) {
+        this.englishName = englishName;
+        this.name = name;
+        this.color = color;
+        this.englishNamePrefix = englishName + " ";
+        this.prefix = name + "_";
+
+    }
+
+    PipeColor(int color) {
+        this.englishName = "";
+        this.name = "";
+        this.englishNamePrefix = "";
+        this.prefix = "";
         this.color = color;
     }
+
 }

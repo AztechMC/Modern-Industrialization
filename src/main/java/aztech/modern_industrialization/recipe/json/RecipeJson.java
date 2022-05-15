@@ -32,7 +32,7 @@ import net.minecraft.resources.ResourceLocation;
 /**
  * Base class for objects that can be written to JSON recipes with GSON.
  */
-public class RecipeJson<T extends RecipeJson<T>> {
+public class RecipeJson {
     public static Gson GSON = new Gson();
 
     public final String toJson() {

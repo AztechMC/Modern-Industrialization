@@ -43,13 +43,10 @@ import aztech.modern_industrialization.datagen.tag.MIBlockTagProvider;
 import aztech.modern_industrialization.datagen.tag.MIItemTagProvider;
 import aztech.modern_industrialization.datagen.texture.TexturesProvider;
 import aztech.modern_industrialization.datagen.translation.TranslationProvider;
-import com.google.gson.Gson;
 import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 
 public class MIDatagenEntrypoint implements DataGeneratorEntrypoint {
-
-    public static final Gson GSON = new Gson();
 
     @Override
     public void onInitializeDataGenerator(FabricDataGenerator dataGenerator) {

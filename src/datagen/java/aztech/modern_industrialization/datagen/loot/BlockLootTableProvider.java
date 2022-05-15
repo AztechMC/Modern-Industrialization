@@ -37,7 +37,9 @@ public class BlockLootTableProvider extends FabricBlockLootTablesProvider {
     @Override
     protected void generateBlockLootTables() {
         for (BlockDefinition<?> blockDefinition : MIBlock.BLOCKS.values()) {
-            blockDefinition.lootTableGenerator.accept(blockDefinition.block, this);
+            if (blockDefinition.lootTableGenerator != null) {
+                blockDefinition.lootTableGenerator.accept(blockDefinition.block, this);
+            }
         }
     }
 }

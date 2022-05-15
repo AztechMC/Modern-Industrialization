@@ -54,9 +54,10 @@ public class NuclearAbsorbable extends NuclearComponentItem {
         tag.putInt("desRem", value);
     }
 
-    public static NuclearComponentItem of(String id, int maxTemperature, double heatConduction, INeutronBehaviour neutronBehaviour,
+    public static NuclearComponentItem of(String englishName, String id, int maxTemperature, double heatConduction,
+            INeutronBehaviour neutronBehaviour,
             int desintegrationMax) {
-        return MIItem.item(id, id,
+        return MIItem.item(englishName, id,
                 (settings) -> new NuclearAbsorbable(settings.maxCount(1), maxTemperature, heatConduction, neutronBehaviour, desintegrationMax))
                 .asItem();
     }

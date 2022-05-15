@@ -50,35 +50,44 @@ public class BarrelPart extends UnbuildablePart<Long> {
         return of((long) stackCapacity);
     }
 
+    public RegularPart of(String englishName, int stackCapacity) {
+        return of(englishName, (long) stackCapacity);
+    }
+
     @Override
     public RegularPart of(Long stackCapacity) {
+        return of("Barrel", stackCapacity);
+    }
 
+    public RegularPart of(String englishNameFormatter, Long stackCapacity) {
         BlockEntityType<BlockEntity>[] refs = new BlockEntityType[1]; // evil hack
 
-        return new RegularPart(key).asColumnBlock().withRegister((registeringContext, partContext, part, itemPath, itemId, itemTag) -> {
-            EntityBlock factory = (pos, state) -> new BarrelBlockEntity(refs[0], pos, state, stackCapacity);
+        return new RegularPart(englishNameFormatter, key).asColumnBlock()
+                .withRegister((registeringContext, partContext, part, itemPath, itemId, itemTag) -> {
+                    EntityBlock factory = (pos, state) -> new BarrelBlockEntity(refs[0], pos, state, stackCapacity);
 
-            String englishName = itemPath;
+                    String englishName = RegularPart.getEnglishName(englishNameFormatter, partContext.getEnglishName());
+                    ;
 
-            BlockDefinition<BarrelBlock> blockDefinition = MIBlock.block(
-                    englishName,
-                    itemPath,
-                    MIBlock.BlockDefinitionParams.of().withBlockConstructor(
-                            s -> new BarrelBlock(s, factory)).withBlockItemConstructor(
-                                    (b, s) -> new BarrelItem(b, stackCapacity))
-                            .withModel(
-                                    ((block, blockModelGenerators) -> blockModelGenerators.createTrivialBlock(block, TexturedModel.COLUMN)))
-                            .noLootTable());
+                    BlockDefinition<BarrelBlock> blockDefinition = MIBlock.block(
+                            englishName,
+                            itemPath,
+                            MIBlock.BlockDefinitionParams.of().withBlockConstructor(
+                                    s -> new BarrelBlock(s, factory)).withBlockItemConstructor(
+                                            (b, s) -> new BarrelItem(b, stackCapacity))
+                                    .withModel(
+                                            ((block, blockModelGenerators) -> blockModelGenerators.createTrivialBlock(block, TexturedModel.COLUMN)))
+                                    .noLootTable());
 
-            TagsToGenerate.generateTag(MITags.BARRELS, blockDefinition.asItem());
-            BarrelBlock block = blockDefinition.asBlock();
+                    TagsToGenerate.generateTag(MITags.BARRELS, blockDefinition.asItem());
+                    BarrelBlock block = blockDefinition.asBlock();
 
-            refs[0] = Registry.register(Registry.BLOCK_ENTITY_TYPE, itemId,
-                    FabricBlockEntityTypeBuilder.create(block.factory::newBlockEntity, block).build(null));
+                    refs[0] = Registry.register(Registry.BLOCK_ENTITY_TYPE, itemId,
+                            FabricBlockEntityTypeBuilder.create(block.factory::newBlockEntity, block).build(null));
 
-            ItemStorage.SIDED.registerSelf(refs[0]);
-        }).withClientRegister((registeringContext, partContext, part, itemPath, itemId, itemTag) -> BarrelRenderer.register(refs[0],
-                TextHelper.getOverlayTextColor(partContext.getColoramp().getMeanRGB())));
+                    ItemStorage.SIDED.registerSelf(refs[0]);
+                }).withClientRegister((registeringContext, partContext, part, itemPath, itemId, itemTag) -> BarrelRenderer.register(refs[0],
+                        TextHelper.getOverlayTextColor(partContext.getColoramp().getMeanRGB())));
     }
 
 }

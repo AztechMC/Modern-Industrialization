@@ -58,7 +58,7 @@ public final class MIItem {
 
     public static final ItemDefinition<Item> STEEL_UPGRADE = item("Steel Upgrade", "steel_upgrade");
 
-    public static final ItemDefinition<GuideBookItem> ITEM_GUIDE_BOOK = item("Guidebook", "guidebook", GuideBookItem::new);
+    public static final ItemDefinition<GuideBookItem> ITEM_GUIDE_BOOK = item("Modern Industrialization Guidebook", "guidebook", GuideBookItem::new);
     public static final ItemDefinition<Item> ITEM_UNCOOKED_STEEL_DUST = item("Uncooked Steel Dust", "uncooked_steel_dust");
 
     public static final ItemDefinition<ArmorItem> RUBBER_HELMET = item("Rubber Helmet", "rubber_helmet",
@@ -125,12 +125,12 @@ public final class MIItem {
     public static final ItemDefinition<Item> LARGE_ADVANCED_MOTOR = item("Large Advanced Motor", "large_advanced_motor").withItemRegistrationEvent(
             (item) -> SpeedUpgrade.LOOKUP.registerForItems((key, vd) -> () -> 64, item));
     public static final ItemDefinition<Item> ADVANCED_PUMP = item("Advanced Pump", "advanced_pump");
-    public static final ItemDefinition<Item> LARGE_ADVANCED_PUMP = item("Advanced Pump", "large_advanced_pump");
+    public static final ItemDefinition<Item> LARGE_ADVANCED_PUMP = item("Large Advanced Pump", "large_advanced_pump");
 
     public static final ItemDefinition<Item> MIXED_INGOT_BLASTPROOF = item("Mixed Ingot Blastproof", "mixed_ingot_blastproof");
-    public static final ItemDefinition<Item> MIXED_INGOT_IRIDIUM = item("Mixed Ingot Iridium", "mixed_ingot_iridium");
+    public static final ItemDefinition<Item> MIXED_INGOT_IRIDIUM = item("Mixed Iridium Ingot", "mixed_ingot_iridium");
 
-    public static final ItemDefinition<Item> MIXED_PLATE_NUCLEAR = item("Mixed Plate Nuclear", "mixed_plate_nuclear");
+    public static final ItemDefinition<Item> MIXED_PLATE_NUCLEAR = item("Nuclear Mixed Plate", "mixed_plate_nuclear");
 
     public static final ItemDefinition<Item> AIR_INTAKE = item("Air Intake", "air_intake", p -> new Item(p.maxCount(1)));
 
@@ -139,7 +139,7 @@ public final class MIItem {
     public static final ItemDefinition<Item> ITEM_PACKER_DOUBLE_INGOT_TEMPLATE = item("Packer Double Ingot Template", "packer_double_ingot_template",
             p -> new Item(p.rarity(Rarity.RARE).maxCount(1)));
 
-    public static final ItemDefinition<Item> ITEM_SCREWDRIVER = itemHandheld("Screw Driver", "screwdriver");
+    public static final ItemDefinition<Item> ITEM_SCREWDRIVER = itemHandheld("Screwdriver", "screwdriver");
     public static final ItemDefinition<Item> ITEM_WRENCH = itemHandheld("Wrench", "wrench");
 
     public static final ItemDefinition<JetpackItem> ITEM_DIESEL_JETPACK = item("Diesel Jetpack", "diesel_jetpack", JetpackItem::new)

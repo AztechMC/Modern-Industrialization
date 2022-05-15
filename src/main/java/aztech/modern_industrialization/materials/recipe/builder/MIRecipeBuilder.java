@@ -32,22 +32,25 @@ import com.google.gson.Gson;
 import java.util.function.Consumer;
 import net.minecraft.data.recipes.FinishedRecipe;
 
-public class MIRecipeBuilder implements MaterialRecipeBuilder {
+public class MIRecipeBuilder extends MIRecipeJson<MIRecipeBuilder> implements MaterialRecipeBuilder {
     private static final Gson GSON = new Gson();
 
-    public final String recipeId;
-    private final MaterialBuilder.RecipeContext context;
-    private boolean canceled = false;
-    private final MIRecipeJson json;
+    public transient final String recipeId;
+    private transient final MaterialBuilder.RecipeContext context;
+    private transient boolean canceled = false;
 
     public MIRecipeBuilder(MaterialBuilder.RecipeContext context, MachineRecipeType type, String recipeSuffix, int eu, int duration) {
-        this(context, type, recipeSuffix, MIRecipeJson.create(type, eu, duration));
-    }
-
-    public MIRecipeBuilder(MaterialBuilder.RecipeContext context, MachineRecipeType type, String recipeSuffix, MIRecipeJson json) {
+        super(type, eu, duration);
         this.recipeId = type.getPath() + "/" + recipeSuffix;
         this.context = context;
-        this.json = json;
+        context.addRecipe(this);
+    }
+
+    public MIRecipeBuilder(MaterialBuilder.RecipeContext context, String recipeSuffix,
+            MIRecipeJson<?> otherWithSameRecipeData) {
+        super(otherWithSameRecipeData);
+        this.recipeId = this.machineRecipeType.getPath() + "/" + recipeSuffix;
+        this.context = context;
         context.addRecipe(this);
     }
 
@@ -87,24 +90,6 @@ public class MIRecipeBuilder implements MaterialRecipeBuilder {
         return this;
     }
 
-    /**
-     * Also supports tags prefixed by #.
-     */
-    public MIRecipeBuilder addItemInput(String maybeTag, int amount) {
-        json.addItemInput(maybeTag, amount);
-        return this;
-    }
-
-    public MIRecipeBuilder addFluidInput(String fluid, int amount) {
-        json.addFluidInput(fluid, amount);
-        return this;
-    }
-
-    public MIRecipeBuilder addFluidOutput(String fluid, int amount) {
-        json.addFluidOutput(fluid, amount);
-        return this;
-    }
-
     public MIRecipeBuilder addPartOutput(Part part, int amount) {
         return addPartOutput(context.getPart(part), amount);
     }
@@ -113,13 +98,8 @@ public class MIRecipeBuilder implements MaterialRecipeBuilder {
         if (part == null) {
             canceled = true;
         } else {
-            return addOutput(part.getItemId(), amount);
+            return addItemOutput(part.getItemId(), amount);
         }
-        return this;
-    }
-
-    public MIRecipeBuilder addOutput(String itemId, int amount) {
-        this.json.addItemOutput(itemId, amount);
         return this;
     }
 
@@ -131,23 +111,8 @@ public class MIRecipeBuilder implements MaterialRecipeBuilder {
         if (part == null) {
             canceled = true;
         } else {
-            return addOutput(part.getItemId(), amount, probability);
+            return addItemOutput(part.getItemId(), amount, probability);
         }
-        return this;
-    }
-
-    public MIRecipeBuilder addOutput(String itemId, int amount, double probability) {
-        this.json.addItemOutput(itemId, amount, probability);
-        return this;
-    }
-
-    public MIRecipeBuilder addInput(String itemId, int amount, double probability) {
-        this.json.addItemInput(itemId, amount, probability);
-        return this;
-    }
-
-    public MIRecipeBuilder addInput(String itemId, int amount) {
-        this.json.addItemInput(itemId, amount);
         return this;
     }
 
@@ -169,7 +134,7 @@ public class MIRecipeBuilder implements MaterialRecipeBuilder {
     public void save(Consumer<FinishedRecipe> consumer) {
         if (!canceled) {
             String fullId = "materials/" + context.getMaterialName() + "/" + recipeId;
-            json.offerTo(consumer, fullId);
+            this.offerTo(consumer, fullId);
         }
     }
 

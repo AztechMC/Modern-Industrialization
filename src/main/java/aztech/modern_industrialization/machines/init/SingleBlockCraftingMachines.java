@@ -206,7 +206,14 @@ public final class SingleBlockCraftingMachines {
             MachineGuiParameters.Builder guiParamsBuilder = new MachineGuiParameters.Builder(id, true);
             guiParams.accept(guiParamsBuilder);
             MachineGuiParameters builtGuiParams = guiParamsBuilder.build();
-            MachineRegistrationHelper.registerMachine("Electric " + englishName, id,
+
+            String electricEnglishName = englishName;
+
+            if ((tiers & TIER_BRONZE) > 0 | (tiers & TIER_STEEL) > 0) {
+                electricEnglishName = "Electric " + englishName;
+            }
+
+            MachineRegistrationHelper.registerMachine(electricEnglishName, id,
                     bet -> new ElectricCraftingMachineBlockEntity(bet, type,
                             buildComponent(itemInputCount, itemOutputCount, fluidInputCount, fluidOutputCount, items, fluids, 0, ioBucketCapacity),
                             builtGuiParams,
@@ -253,7 +260,7 @@ public final class SingleBlockCraftingMachines {
         }
         List<ConfigurableFluidStack> fluidInputStacks = new ArrayList<>();
         if (steamBuckets > 0) {
-            fluidInputStacks.add(ConfigurableFluidStack.lockedInputSlot(81000L * steamBuckets, MIFluids.STEAM));
+            fluidInputStacks.add(ConfigurableFluidStack.lockedInputSlot(81000L * steamBuckets, MIFluids.STEAM.asFluid()));
         }
         for (int i = 0; i < fluidInputCount; ++i) {
             fluidInputStacks.add(ConfigurableFluidStack.standardInputSlot(81000L * ioBucketCapacity));

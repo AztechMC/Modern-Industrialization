@@ -69,7 +69,8 @@ public class ReplicatorMachineBlockEntity extends MachineBlockEntity implements 
 
         long capacity = 81000 * 256;
 
-        List<ConfigurableFluidStack> fluidInput = Collections.singletonList(ConfigurableFluidStack.lockedInputSlot(capacity, MIFluids.UU_MATER));
+        List<ConfigurableFluidStack> fluidInput = Collections
+                .singletonList(ConfigurableFluidStack.lockedInputSlot(capacity, MIFluids.UU_MATER.asFluid()));
         List<ConfigurableItemStack> itemInputs = Collections.singletonList(ConfigurableItemStack.standardInputSlot());
         List<ConfigurableItemStack> itemOutputs = Collections.singletonList(ConfigurableItemStack.standardOutputSlot());
 
@@ -123,7 +124,7 @@ public class ReplicatorMachineBlockEntity extends MachineBlockEntity implements 
             if (fluidItem != null) {
                 try (Transaction tx = Transaction.openOuter()) {
                     for (var view : fluidItem.iterable(tx)) {
-                        if (view.getResource().isOf(MIFluids.UU_MATER)) {
+                        if (view.getResource().isOf(MIFluids.UU_MATER.asFluid())) {
                             return false;
                         }
                     }
@@ -135,7 +136,7 @@ public class ReplicatorMachineBlockEntity extends MachineBlockEntity implements 
                 MIFluidStorage fluidStorage = new MIFluidStorage(inventoryComponent.getFluidInputs());
 
                 long inserted = itemStorage.insertAllSlot(itemVariant, 1, tx);
-                long uuMatterExtraced = fluidStorage.extractAllSlot(FluidVariant.of(MIFluids.UU_MATER), FluidConstants.BUCKET / 10, tx);
+                long uuMatterExtraced = fluidStorage.extractAllSlot(MIFluids.UU_MATER.variant(), FluidConstants.BUCKET / 10, tx);
 
                 if (inserted == 1 && uuMatterExtraced == FluidConstants.BUCKET / 10) {
                     if (!simulate) {

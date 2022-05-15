@@ -29,8 +29,11 @@ import com.mojang.blaze3d.platform.NativeImage;
 
 public class CasingPart extends Part implements BuildablePart {
 
-    public CasingPart(String key) {
+    public final String englishName;
+
+    public CasingPart(String englishName, String key) {
         super(key);
+        this.englishName = englishName;
     }
 
     @Override
@@ -38,24 +41,25 @@ public class CasingPart extends Part implements BuildablePart {
         return this;
     }
 
-    public BuildablePart of(String path, float resistance) {
-        RegularPart regPart = new RegularPart(this.key).asBlock(5, resistance, 1).withTextureRegister((mtm, partContext, part, itemPath) -> {
-            try {
-                NativeImage image = MITextures.generateTexture(mtm, part.key, partContext.getMaterialSet(), partContext.getColoramp());
+    public BuildablePart of(String englishNameFormatter, String path, float resistance) {
+        RegularPart regPart = new RegularPart(englishNameFormatter, this.key).asBlock(5, resistance, 1)
+                .withTextureRegister((mtm, partContext, part, itemPath) -> {
+                    try {
+                        NativeImage image = MITextures.generateTexture(mtm, part.key, partContext.getMaterialSet(), partContext.getColoramp());
 
-                if (part.equals(MIParts.MACHINE_CASING)) {
-                    MITextures.casingFromTexture(mtm, partContext.getMaterialName(), image);
-                    MITextures.tankFromTexture(mtm, partContext.getMaterialName(), image);
-                } else {
-                    MITextures.casingFromTexture(mtm, itemPath, image);
-                }
-                MITextures.appendTexture(mtm, image, itemPath, true);
-                image.close();
+                        if (part.equals(MIParts.MACHINE_CASING)) {
+                            MITextures.casingFromTexture(mtm, partContext.getMaterialName(), image);
+                            MITextures.tankFromTexture(mtm, partContext.getMaterialName(), image);
+                        } else {
+                            MITextures.casingFromTexture(mtm, itemPath, image);
+                        }
+                        MITextures.appendTexture(mtm, image, itemPath, true);
+                        image.close();
 
-            } catch (Throwable throwable) {
-                MITextures.logTextureGenerationError(throwable, itemPath, partContext.getMaterialSet(), part.key);
-            }
-        });
+                    } catch (Throwable throwable) {
+                        MITextures.logTextureGenerationError(throwable, itemPath, partContext.getMaterialSet(), part.key);
+                    }
+                });
         if (path != null) {
             return regPart.withCustomPath(path, path);
         }
@@ -64,15 +68,15 @@ public class CasingPart extends Part implements BuildablePart {
 
     @Override
     public MaterialPart build(MaterialBuilder.PartContext ctx) {
-        return of(null, 6f).build(ctx);
+        return of(englishName, null, 6f).build(ctx);
     }
 
-    public BuildablePart of(String path) {
-        return of(path, 6f);
+    public BuildablePart of(String englishName, String path) {
+        return of(englishName + "!", path, 6f);
     }
 
     public BuildablePart of(float resistance) {
-        return of(null, resistance);
+        return of(englishName, null, resistance);
     }
 
 }

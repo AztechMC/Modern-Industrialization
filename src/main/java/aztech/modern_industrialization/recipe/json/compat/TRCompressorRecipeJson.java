@@ -26,7 +26,7 @@ package aztech.modern_industrialization.recipe.json.compat;
 import aztech.modern_industrialization.recipe.json.RecipeJson;
 
 @SuppressWarnings({ "unused", "FieldCanBeLocal" })
-public class TRCompressorRecipeJson extends RecipeJson<TRCompressorRecipeJson> {
+public class TRCompressorRecipeJson extends RecipeJson {
     private final String type = "techreborn:compressor";
     private final int power = 10;
     private final int time = 300;

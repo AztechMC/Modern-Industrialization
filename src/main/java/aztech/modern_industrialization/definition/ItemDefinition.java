@@ -30,7 +30,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
 
-public class ItemDefinition<T extends Item> extends Definition<T> implements ItemLike {
+public class ItemDefinition<T extends Item> extends Definition implements ItemLike {
 
     private final T item;
 

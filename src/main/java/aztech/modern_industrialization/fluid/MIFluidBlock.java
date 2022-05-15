@@ -35,11 +35,11 @@ import net.minecraft.world.level.material.Material;
 /**
  * Allows the transfer API to get the name of the fluid by calling fluid.getBlockState().getBlock().getTranslationKey().
  */
-public class CraftingFluidBlock extends Block {
+public class MIFluidBlock extends Block {
     private final String translationKey;
     private final int color;
 
-    public CraftingFluidBlock(String name, int color) {
+    public MIFluidBlock(String name, int color) {
         super(FabricBlockSettings.of(Material.WATER));
         this.translationKey = "block.modern_industrialization." + name;
         this.color = FluidHelper.getColorMinLuminance(color);

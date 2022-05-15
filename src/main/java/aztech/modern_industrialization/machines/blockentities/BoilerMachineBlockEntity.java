@@ -75,7 +75,7 @@ public class BoilerMachineBlockEntity extends MachineBlockEntity implements Tick
         SlotPositions itemPositions = new SlotPositions.Builder().addSlot(INPUT_SLOT_X, INPUT_SLOT_Y).build();
 
         List<ConfigurableFluidStack> fluidStacks = Arrays.asList(ConfigurableFluidStack.lockedInputSlot(capacity, Fluids.WATER),
-                ConfigurableFluidStack.lockedOutputSlot(capacity, MIFluids.STEAM));
+                ConfigurableFluidStack.lockedOutputSlot(capacity, MIFluids.STEAM.asFluid()));
         SlotPositions fluidPositions = new SlotPositions.Builder().addSlot(WATER_SLOT_X, WATER_SLOT_Y).addSlot(OUTPUT_SLOT_X, OUTPUT_SLOT_Y).build();
         inventory = new MIInventory(itemStacks, fluidStacks, itemPositions, fluidPositions);
 

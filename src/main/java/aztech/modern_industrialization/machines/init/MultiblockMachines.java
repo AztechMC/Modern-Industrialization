@@ -362,10 +362,11 @@ public class MultiblockMachines {
                 "Large Steam Turbine",
                 "large_steam_turbine", bet ->
                 new EnergyFromFluidMultiblockBlockEntity(bet, "large_steam_turbine", largeSteamTurbineShape,
-                        (Fluid f) -> (f == MIFluids.STEAM || f == MIFluids.HIGH_PRESSURE_STEAM
-                                || f == MIFluids.HIGH_PRESSURE_HEAVY_WATER_STEAM
-                                || f == MIFluids.HEAVY_WATER_STEAM),
-                        (Fluid f) -> ((f == MIFluids.STEAM || f == MIFluids.HEAVY_WATER_STEAM) ? 1 : 8)
+
+                        (Fluid f) -> (f == MIFluids.STEAM.asFluid() || f == MIFluids.HIGH_PRESSURE_STEAM.asFluid()
+                                || f == MIFluids.HIGH_PRESSURE_HEAVY_WATER_STEAM.asFluid()
+                                || f == MIFluids.HEAVY_WATER_STEAM.asFluid()),
+                        (Fluid f) -> ((f == MIFluids.STEAM.asFluid() || f == MIFluids.HEAVY_WATER_STEAM.asFluid()) ? 1 : 8)
                         , 16384));
         ReiMachineRecipes.registerMultiblockShape("large_steam_turbine", largeSteamTurbineShape);
     }
@@ -553,7 +554,7 @@ public class MultiblockMachines {
                 "Plasma Turbine",
                 "plasma_turbine", bet ->
                 new EnergyFromFluidMultiblockBlockEntity(bet, "plasma_turbine", plasmaTurbineShape,
-                        (fluid) -> (fluid == MIFluids.HELIUM_PLASMA),
+                        (fluid) -> (fluid == MIFluids.HELIUM_PLASMA.asFluid()),
                         (heliumPlasma) -> 100000,
                         1 << 20));
         ReiMachineRecipes.registerMultiblockShape("plasma_turbine", plasmaTurbineShape);

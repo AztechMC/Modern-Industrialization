@@ -70,7 +70,7 @@ public class TankModel implements UnbakedModel, FabricBakedModel, BakedModel {
     private Mesh tankMesh;
 
     public TankModel(String tankType) {
-        tankSpriteId = new Material(InventoryMenu.BLOCK_ATLAS, new MIIdentifier("blocks/tanks/" + tankType));
+        tankSpriteId = new Material(InventoryMenu.BLOCK_ATLAS, new MIIdentifier("block/" + tankType + "_tank"));
     }
 
     public TankModel(ItemTransforms transformation, Material tankSpriteId, TextureAtlasSprite tankSprite, RenderMaterial translucentMaterial,

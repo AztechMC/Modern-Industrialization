@@ -202,6 +202,7 @@ public final class MaterialBuilder {
         public MaterialPart getMaterialPart(Part part) {
             return partsMap.get(part.key);
         }
+
     }
 
     public class RecipeContext {

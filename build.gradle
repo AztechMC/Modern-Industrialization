@@ -315,7 +315,7 @@ spotless {
         licenseHeaderFile 'LICENSE.java'
     }
     format 'json', {
-        target 'src/**/lang/*.json'
+        target 'src/main/**/lang/*.json'
         addStep(JsonOrderStep.create())
     }
 }

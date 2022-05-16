@@ -38,16 +38,16 @@ import java.util.Set;
 
 public class MIParts {
 
-    public static final RegularPart BATTERY = new RegularPart("battery");
+    public static final RegularPart BATTERY = new RegularPart("Battery", "battery");
     public static final BarrelPart BARREL = new BarrelPart();
-    public static final RegularPart BLADE = new RegularPart("blade");
+    public static final RegularPart BLADE = new RegularPart("Blade", "blade");
     public static final BlockPart BLOCK = new BlockPart();
-    public static final RegularPart BOLT = new RegularPart("bolt");
+    public static final RegularPart BOLT = new RegularPart("Bolt", "bolt");
     public static final CablePart CABLE = new CablePart();
-    public static final RegularPart COIL = new RegularPart("coil").asColumnBlock();
-    public static final RegularPart CRUSHED_DUST = new RegularPart("crushed_dust");
-    public static final RegularPart CURVED_PLATE = new RegularPart("curved_plate");
-    public static final RegularPart DOUBLE_INGOT = new RegularPart("double_ingot")
+    public static final RegularPart COIL = new RegularPart("Coil", "coil").asColumnBlock();
+    public static final RegularPart CRUSHED_DUST = new RegularPart("Crushed Dust", "crushed_dust");
+    public static final RegularPart CURVED_PLATE = new RegularPart("Curved Plate", "curved_plate");
+    public static final RegularPart DOUBLE_INGOT = new RegularPart("Double Ingot", "double_ingot")
             .withTextureRegister((mtm, partContext, part, itemPath) -> mtm.runAtEnd(() -> {
                 try {
                     MITextures.generateDoubleIngot(mtm, partContext.getMaterialName());
@@ -56,12 +56,12 @@ public class MIParts {
                 }
             }));
 
-    public static final RegularPart DRILL_HEAD = new RegularPart("drill_head");
+    public static final RegularPart DRILL_HEAD = new RegularPart("Drill Head", "drill_head");
 
-    public static final RegularPart DRILL = new RegularPart("drill").appendTextureRegister((mtm, partContext, part, itemPath) -> {
+    public static final RegularPart DRILL = new RegularPart("Drill", "drill").appendTextureRegister((mtm, partContext, part, itemPath) -> {
         String template = "modern_industrialization:textures/materialsets/common/drill.png";
         String templateOverlay = "modern_industrialization:textures/materialsets/common/mining_drill_overlay.png";
-        String texturePath = String.format("modern_industrialization:textures/items/%s.png", partContext.getMaterialName() + "_mining_drill");
+        String texturePath = String.format("modern_industrialization:textures/item/%s.png", partContext.getMaterialName() + "_mining_drill");
         try {
             NativeImage image = mtm.getAssetAsTexture(template);
             NativeImage overlay = mtm.getAssetAsTexture(templateOverlay);
@@ -74,43 +74,43 @@ public class MIParts {
         }
     });
 
-    public static final RegularPart DUST = new RegularPart("dust");
-    public static final RegularPart FINE_WIRE = new RegularPart("fine_wire");
-    public static final RegularPart GEAR = new RegularPart("gear");
+    public static final RegularPart DUST = new RegularPart("Dust", "dust");
+    public static final RegularPart FINE_WIRE = new RegularPart("Fine Wire", "fine_wire");
+    public static final RegularPart GEAR = new RegularPart("Gear", "gear");
     public static final GemPart GEM = new GemPart();
 
-    public static final RegularPart HAMMER = new RegularPart("hammer");
+    public static final RegularPart HAMMER = new RegularPart("Hammer", "hammer");
 
-    public static final RegularPart HOT_INGOT = new RegularPart("hot_ingot")
+    public static final RegularPart HOT_INGOT = new RegularPart("Hot Ingot", "hot_ingot")
             .withTextureRegister((mtm, partContext, part, itemPath) -> MITextures.generateItemPartTexture(mtm, MIParts.INGOT.key,
                     partContext.getMaterialSet(), itemPath, false, new HotIngotColoramp(partContext.getColoramp(), 0.1, 0.5)));
-    public static final RegularPart INGOT = new RegularPart("ingot");
-    public static final RegularPart LARGE_PLATE = new RegularPart("large_plate");
-    public static final CasingPart MACHINE_CASING = new CasingPart("machine_casing");
-    public static final CasingPart MACHINE_CASING_PIPE = new CasingPart("machine_casing_pipe");
-    public static final CasingPart MACHINE_CASING_SPECIAL = new CasingPart("machine_casing_special");
-    public static final RegularPart NUGGET = new RegularPart("nugget");
+    public static final RegularPart INGOT = new RegularPart("Ingot", "ingot");
+    public static final RegularPart LARGE_PLATE = new RegularPart("Large Plate", "large_plate");
+    public static final CasingPart MACHINE_CASING = new CasingPart("Machine Casing", "machine_casing");
+    public static final CasingPart MACHINE_CASING_PIPE = new CasingPart("Pipe Machine Casing", "machine_casing_pipe");
+    public static final CasingPart MACHINE_CASING_SPECIAL = new CasingPart("Special Casing", "machine_casing_special");
+    public static final RegularPart NUGGET = new RegularPart("Nugget", "nugget");
     public static final OrePart ORE = new OrePart(false);
     public static final OrePart ORE_DEEPLSATE = new OrePart(true);
-    public static final RegularPart PLATE = new RegularPart("plate");
+    public static final RegularPart PLATE = new RegularPart("Plate", "plate");
     public static final RawMetalPart RAW_METAL = new RawMetalPart(false);
     public static final RawMetalPart RAW_METAL_BLOCK = new RawMetalPart(true);
-    public static final RegularPart RING = new RegularPart("ring");
-    public static final RegularPart ROD = new RegularPart("rod");
-    public static final RegularPart ROD_MAGNETIC = new RegularPart("rod_magnetic").withOverlay(ROD, "magnetic");
-    public static final RegularPart ROTOR = new RegularPart("rotor");
+    public static final RegularPart RING = new RegularPart("Ring", "ring");
+    public static final RegularPart ROD = new RegularPart("Rod", "rod");
+    public static final RegularPart ROD_MAGNETIC = new RegularPart("Magnetic %s Rod", "rod_magnetic").withOverlay(ROD, "magnetic");
+    public static final RegularPart ROTOR = new RegularPart("Rotor", "rotor");
     public static final TankPart TANK = new TankPart();
-    public static final RegularPart TINY_DUST = new RegularPart("tiny_dust");
-    public static final RegularPart WIRE = new RegularPart("wire");
-    public static final RegularPart WIRE_MAGNETIC = new RegularPart("wire_magnetic").withOverlay(WIRE, "magnetic");
+    public static final RegularPart TINY_DUST = new RegularPart("Tiny Dust", "tiny_dust");
+    public static final RegularPart WIRE = new RegularPart("Wire", "wire");
+    public static final RegularPart WIRE_MAGNETIC = new RegularPart("Magnetic %s Wire", "wire_magnetic").withOverlay(WIRE, "magnetic");
 
     public static final NuclearFuelPart FUEL_ROD = new NuclearFuelPart(SIMPLE);
     public static final NuclearFuelPart FUEL_ROD_DEPLETED = new NuclearFuelPart(DEPLETED);
     public static final NuclearFuelPart FUEL_ROD_DOUBLE = new NuclearFuelPart(DOUBLE);
     public static final NuclearFuelPart FUEL_ROD_QUAD = new NuclearFuelPart(QUAD);
 
-    public static final RegularPart N_DOPED_PLATE = new RegularPart("n_doped_plate").withOverlay(PLATE, "n_doped");
-    public static final RegularPart P_DOPED_PLATE = new RegularPart("p_doped_plate").withOverlay(PLATE, "p_doped");
+    public static final RegularPart N_DOPED_PLATE = new RegularPart("N-Doped %s Plate", "n_doped_plate").withOverlay(PLATE, "n_doped");
+    public static final RegularPart P_DOPED_PLATE = new RegularPart("P-Doped %s Plate", "p_doped_plate").withOverlay(PLATE, "p_doped");
 
     public static final BuildablePart[] ITEM_PURE_NON_METAL = new BuildablePart[] { TINY_DUST, DUST, CRUSHED_DUST };
     public static final BuildablePart[] ITEM_PURE_METAL = new BuildablePart[] { INGOT, NUGGET, TINY_DUST, DUST };

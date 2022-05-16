@@ -67,6 +67,8 @@ public class MIPipes {
     public static BlockEntityType<PipeBlockEntity> BLOCK_ENTITY_TYPE_PIPE;
     private final Map<PipeNetworkType, PipeItem> pipeItems = new HashMap<>();
 
+    public static final Map<String, String> TRANSLATION = new HashMap<>();
+
     public static final Map<PipeItem, CableTier> electricityPipeTier = new HashMap<>();
 
     public static final MenuType<ItemPipeScreenHandler> SCREEN_HANDLER_TYPE_ITEM_PIPE = ScreenHandlerRegistry
@@ -82,7 +84,7 @@ public class MIPipes {
             @Override
             public Collection<net.minecraft.client.resources.model.Material> getSpriteDependencies() {
                 return sprites.stream().map(
-                        n -> new net.minecraft.client.resources.model.Material(InventoryMenu.BLOCK_ATLAS, new MIIdentifier("blocks/pipes/" + n)))
+                        n -> new net.minecraft.client.resources.model.Material(InventoryMenu.BLOCK_ATLAS, new MIIdentifier("block/pipes/" + n)))
                         .collect(Collectors.toList());
             }
 
@@ -90,7 +92,7 @@ public class MIPipes {
             public PipeRenderer create(Function<net.minecraft.client.resources.model.Material, TextureAtlasSprite> textureGetter) {
                 net.minecraft.client.resources.model.Material[] ids = sprites.stream()
                         .map(n -> new net.minecraft.client.resources.model.Material(InventoryMenu.BLOCK_ATLAS,
-                                new MIIdentifier("blocks/pipes/" + n)))
+                                new MIIdentifier("block/pipes/" + n)))
                         .toArray(net.minecraft.client.resources.model.Material[]::new);
                 return new PipeMeshCache(textureGetter, ids, innerQuads);
             }
@@ -126,10 +128,12 @@ public class MIPipes {
         Registry.register(Registry.ITEM, new MIIdentifier(pipeId), item);
         PIPE_MODEL_NAMES.add(new MIIdentifier("item/" + pipeId));
         TagsToGenerate.generateTag(MITags.FLUID_PIPES, item);
+        TRANSLATION.put(item.getDescriptionId(), color.englishNamePrefix + "Fluid Pipe");
     }
 
     private void registerItemPipeType(PipeColor color) {
         String pipeId = color.prefix + "item_pipe";
+
         PipeNetworkType type = PipeNetworkType.register(new MIIdentifier(pipeId), ItemNetwork::new, ItemNetworkNode::new, color.color, true,
                 ITEM_RENDERER);
         PipeItem item = new PipeItem(new Item.Properties().tab(ModernIndustrialization.ITEM_GROUP), type, new ItemNetworkData());
@@ -137,9 +141,11 @@ public class MIPipes {
         Registry.register(Registry.ITEM, new MIIdentifier(pipeId), item);
         PIPE_MODEL_NAMES.add(new MIIdentifier("item/" + pipeId));
         TagsToGenerate.generateTag(MITags.ITEM_PIPES, item);
+        TRANSLATION.put(item.getDescriptionId(), color.englishNamePrefix + "Item Pipe");
     }
 
-    public void registerCableType(String name, int color, CableTier tier) {
+    public void registerCableType(String englishName, String name, int color, CableTier tier) {
+
         String cableId = name + "_cable";
         PipeNetworkType type = PipeNetworkType.register(new MIIdentifier(cableId), (id, data) -> new ElectricityNetwork(id, data, tier),
                 ElectricityNetworkNode::new, color, false, ELECTRICITY_RENDERER);
@@ -148,6 +154,8 @@ public class MIPipes {
         electricityPipeTier.put(item, tier);
         Registry.register(Registry.ITEM, new MIIdentifier(cableId), item);
         PIPE_MODEL_NAMES.add(new MIIdentifier("item/" + cableId));
+        TRANSLATION.put(item.getDescriptionId(), englishName);
+
     }
 
     public PipeItem getPipeItem(PipeNetworkType type) {

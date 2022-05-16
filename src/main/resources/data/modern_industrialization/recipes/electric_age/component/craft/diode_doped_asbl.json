@@ -12,7 +12,7 @@
       "item" : "modern_industrialization:silicon_n_doped_plate"
     },
     "g" : {
-      "item" : "minecraft:glass"
+      "tag" : "c:glass_blocks"
     },
     "e" : {
       "item" : "modern_industrialization:electrum_fine_wire"

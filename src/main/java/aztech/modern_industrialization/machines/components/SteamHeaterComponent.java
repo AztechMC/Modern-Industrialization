@@ -70,18 +70,20 @@ public class SteamHeaterComponent extends TemperatureComponent {
 
         double euProducedLowPressure = 0;
         if (acceptLowPressure) {
-            euProducedLowPressure = tryMakeSteam(fluidInputs, fluidOutputs, Fluids.WATER, MIFluids.STEAM, 1);
+            euProducedLowPressure = tryMakeSteam(fluidInputs, fluidOutputs, Fluids.WATER, MIFluids.STEAM.asFluid(), 1);
             if (euProducedLowPressure == 0) {
-                euProducedLowPressure = tryMakeSteam(fluidInputs, fluidOutputs, MIFluids.HEAVY_WATER, MIFluids.HEAVY_WATER_STEAM, 1);
+                euProducedLowPressure = tryMakeSteam(fluidInputs, fluidOutputs, MIFluids.HEAVY_WATER.asFluid(), MIFluids.HEAVY_WATER_STEAM.asFluid(),
+                        1);
             }
         }
 
         double euProducedHighPressure = 0;
         if (acceptHighPressure) {
-            euProducedHighPressure = tryMakeSteam(fluidInputs, fluidOutputs, MIFluids.HIGH_PRESSURE_WATER, MIFluids.HIGH_PRESSURE_STEAM, 8);
+            euProducedHighPressure = tryMakeSteam(fluidInputs, fluidOutputs, MIFluids.HIGH_PRESSURE_WATER.asFluid(),
+                    MIFluids.HIGH_PRESSURE_STEAM.asFluid(), 8);
             if (euProducedHighPressure == 0) {
-                euProducedHighPressure = tryMakeSteam(fluidInputs, fluidOutputs, MIFluids.HIGH_PRESSURE_HEAVY_WATER,
-                        MIFluids.HIGH_PRESSURE_HEAVY_WATER_STEAM, 8);
+                euProducedHighPressure = tryMakeSteam(fluidInputs, fluidOutputs, MIFluids.HIGH_PRESSURE_HEAVY_WATER.asFluid(),
+                        MIFluids.HIGH_PRESSURE_HEAVY_WATER_STEAM.asFluid(), 8);
             }
         }
         return euProducedLowPressure + euProducedHighPressure;

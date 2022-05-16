@@ -87,13 +87,13 @@ public class DyeRecipesProvider extends MIRecipesProvider {
 
             // glass
             MIRecipeJson.create(MIMachineRecipeTypes.MIXER, 2, 100).addItemInput("#c:" + color.getName() + "_dyes", 1)
-                    .addItemInput("#c:glass", 8)
+                    .addItemInput("#c:glass_blocks", 8)
                     .addItemOutput("minecraft:" + color.getName() + "_stained_glass", 8)
                     .offerTo(consumer, pathPrefix + "mixer/glass");
 
             // glassPane
             MIRecipeJson.create(MIMachineRecipeTypes.MIXER, 2, 100).addItemInput("#c:" + color.getName() + "_dyes", 1)
-                    .addItemInput("#c:glass_pane", 8).addItemOutput("minecraft:" + color.getName() + "_stained_glass_pane", 8)
+                    .addItemInput("#c:glass_panes", 8).addItemOutput("minecraft:" + color.getName() + "_stained_glass_pane", 8)
                     .offerTo(consumer, pathPrefix + "mixer/glass_pane");
 
             // shulker Box

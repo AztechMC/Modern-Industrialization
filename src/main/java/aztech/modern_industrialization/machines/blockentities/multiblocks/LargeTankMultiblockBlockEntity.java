@@ -24,6 +24,7 @@
 package aztech.modern_industrialization.machines.blockentities.multiblocks;
 
 import aztech.modern_industrialization.MIBlock;
+import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.inventory.MIInventory;
 import aztech.modern_industrialization.machines.BEP;
 import aztech.modern_industrialization.machines.components.DynamicShapeComponent;
@@ -73,7 +74,7 @@ public class LargeTankMultiblockBlockEntity extends MultiblockMachineBlockEntity
         int sizeZ = 3 + (index % 25) % 5;
 
         ShapeTemplate.Builder templateBuilder = new ShapeTemplate.Builder(MachineCasings.STEEL);
-        SimpleMember steelCasing = SimpleMember.forBlock(MIBlock.blocks.get("steel_machine_casing"));
+        SimpleMember steelCasing = SimpleMember.forBlock(MIBlock.BLOCKS.get(new MIIdentifier("steel_machine_casing")).asBlock());
         SimpleMember glass = SimpleMember.forBlock(Blocks.GLASS);
         HatchFlags hatchFlags = new HatchFlags.Builder().build();
 

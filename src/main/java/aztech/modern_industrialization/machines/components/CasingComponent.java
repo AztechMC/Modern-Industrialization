@@ -50,11 +50,11 @@ public class CasingComponent implements IComponent {
     private static final BiMap<Block, CableTier> blockCasing = HashBiMap.create();
 
     static {
-        blockCasing.put(MIBlock.BASIC_MACHINE_HULL, CableTier.LV);
-        blockCasing.put(MIBlock.ADVANCED_MACHINE_HULL, CableTier.MV);
-        blockCasing.put(MIBlock.TURBO_MACHINE_HULL, CableTier.HV);
-        blockCasing.put(MIBlock.HIGHLY_ADVANCED_MACHINE_HULL, CableTier.EV);
-        blockCasing.put(MIBlock.QUANTUM_MACHINE_HULL, CableTier.SUPERCONDUCTOR);
+        blockCasing.put(MIBlock.BASIC_MACHINE_HULL.asBlock(), CableTier.LV);
+        blockCasing.put(MIBlock.ADVANCED_MACHINE_HULL.asBlock(), CableTier.MV);
+        blockCasing.put(MIBlock.TURBO_MACHINE_HULL.asBlock(), CableTier.HV);
+        blockCasing.put(MIBlock.HIGHLY_ADVANCED_MACHINE_HULL.asBlock(), CableTier.EV);
+        blockCasing.put(MIBlock.QUANTUM_MACHINE_HULL.asBlock(), CableTier.SUPERCONDUCTOR);
     }
 
     public CasingComponent(CableTier defaultCasing) {
@@ -98,7 +98,7 @@ public class CasingComponent implements IComponent {
 
     public InteractionResult onUse(MachineBlockEntity be, Player player, InteractionHand hand) {
         ItemStack stackInHand = player.getItemInHand(hand);
-        if (stackInHand.getItem() == MIItem.ITEM_CROWBAR && !player.isShiftKeyDown()) {
+        if (stackInHand.getItem() == MIItem.ITEM_CROWBAR.asItem() && !player.isShiftKeyDown()) {
             if (tierCasing != defaultCasing) {
                 dropCasing(be.getLevel(), be.getBlockPos());
                 tierCasing = defaultCasing;

@@ -69,7 +69,7 @@ public class MachineCasingModel implements UnbakedModel, BakedModel {
         this.id = new MIIdentifier("machine_casing/" + folder);
         for (int i = 0; i < 3; ++i) {
             spriteIds[i] = new Material(InventoryMenu.BLOCK_ATLAS,
-                    new MIIdentifier("blocks/casings/" + folder + "/" + SIDES[i]));
+                    new MIIdentifier("block/casings/" + folder + "/" + SIDES[i]));
         }
 
         MachineModelProvider.register(id, this);

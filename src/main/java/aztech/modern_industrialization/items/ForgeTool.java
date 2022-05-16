@@ -24,7 +24,6 @@
 package aztech.modern_industrialization.items;
 
 import aztech.modern_industrialization.MIIdentifier;
-import aztech.modern_industrialization.MIItem;
 import aztech.modern_industrialization.ModernIndustrialization;
 import aztech.modern_industrialization.datagen.tag.TagsToGenerate;
 import java.util.Locale;
@@ -39,14 +38,10 @@ import net.minecraft.world.item.crafting.Ingredient;
 
 public class ForgeTool extends TieredItem {
 
-    public final String id;
     public static final TagKey<Item> TAG = TagKey.create(Registry.ITEM.key(), new MIIdentifier("forge_hammer_tools"));
 
-    public ForgeTool(Tier material, String id) {
-        super(forgeHammerMaterial(material), new FabricItemSettings().stacksTo(1).tab(ModernIndustrialization.ITEM_GROUP));
-        this.id = id;
-        MIItem.items.put(id, this);
-        MIItem.handhelds.add(id);
+    public ForgeTool(Tier material, FabricItemSettings p) {
+        super(forgeHammerMaterial(material), p.stacksTo(1).tab(ModernIndustrialization.ITEM_GROUP));
         TagsToGenerate.generateTag(TAG, this);
     }
 
@@ -92,10 +87,6 @@ public class ForgeTool extends TieredItem {
             }
         };
 
-    }
-
-    public String getPath() {
-        return "modern_industrialization:" + id;
     }
 
     public static Tier STEEL = new Tier() {

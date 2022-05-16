@@ -42,7 +42,7 @@ public class GemPart extends Part implements BuildablePart {
 
     @Override
     public MaterialPart build(MaterialBuilder.PartContext ctx) {
-        return new RegularPart("gem").appendRegister((registeringContext, partContext, part, itemPath, itemId, itemTag) -> {
+        return new RegularPart("", "gem").appendRegister((registeringContext, partContext, part, itemPath, itemId, itemTag) -> {
             TagsToGenerate.generateTag("c:" + itemPath, itemId);
         })
                 .withTextureRegister((mtm, partContext, part, itemPath) -> {
@@ -50,7 +50,7 @@ public class GemPart extends Part implements BuildablePart {
                     try {
                         NativeImage image = mtm.getAssetAsTexture(template);
                         TextureHelper.colorize(image, partContext.getColoramp());
-                        String texturePath = String.format("modern_industrialization:textures/items/%s.png", itemPath);
+                        String texturePath = String.format("modern_industrialization:textures/item/%s.png", itemPath);
                         mtm.addTexture(texturePath, image);
                         image.close();
                     } catch (IOException e) {

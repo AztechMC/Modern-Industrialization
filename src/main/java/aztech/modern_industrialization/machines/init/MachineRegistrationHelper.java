@@ -23,10 +23,13 @@
  */
 package aztech.modern_industrialization.machines.init;
 
+import aztech.modern_industrialization.MIBlock;
 import aztech.modern_industrialization.MIIdentifier;
+import aztech.modern_industrialization.definition.BlockDefinition;
 import aztech.modern_industrialization.machines.BEP;
 import aztech.modern_industrialization.machines.MachineBlock;
 import aztech.modern_industrialization.machines.models.MachineModels;
+import aztech.modern_industrialization.util.MobSpawning;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -49,11 +52,20 @@ public class MachineRegistrationHelper {
      * @param extraRegistrators A list of BET consumer used for API registration.
      */
     @SafeVarargs
-    public static BlockEntityType<?> registerMachine(String id, Function<BEP, BlockEntity> factory,
+    public static BlockEntityType<?> registerMachine(String englishName, String id, Function<BEP, BlockEntity> factory,
             Consumer<BlockEntityType<?>>... extraRegistrators) {
         BlockEntityType<?>[] bet = new BlockEntityType[1];
         BiFunction<BlockPos, BlockState, BlockEntity> ctor = (pos, state) -> factory.apply(new BEP(bet[0], pos, state));
-        Block block = new MachineBlock(id, ctor);
+
+        BlockDefinition<MachineBlock> blockDefinition = MIBlock.block(
+                englishName,
+                id,
+                MIBlock.BlockDefinitionParams.of().withBlockConstructor(
+                        (s) -> new MachineBlock(ctor, s)).noModel().isValidSpawn(MobSpawning.NO_SPAWN),
+                MachineBlock.class);
+
+        Block block = blockDefinition.asBlock();
+
         bet[0] = Registry.register(Registry.BLOCK_ENTITY_TYPE, new MIIdentifier(id),
                 FabricBlockEntityTypeBuilder.create(ctor::apply, block).build(null));
         for (Consumer<BlockEntityType<?>> extraRegistrator : extraRegistrators) {

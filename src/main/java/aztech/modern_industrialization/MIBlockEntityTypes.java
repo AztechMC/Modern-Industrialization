@@ -26,6 +26,7 @@ package aztech.modern_industrialization;
 import aztech.modern_industrialization.api.energy.EnergyApi;
 import aztech.modern_industrialization.blocks.creativestorageunit.CreativeStorageUnitBlockEntity;
 import aztech.modern_industrialization.blocks.creativetank.CreativeTankBlockEntity;
+import aztech.modern_industrialization.definition.BlockDefinition;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
 import net.minecraft.core.Registry;
@@ -48,7 +49,7 @@ public class MIBlockEntityTypes {
         EnergyApi.MOVEABLE.registerForBlockEntities((be, d) -> EnergyApi.CREATIVE_EXTRACTABLE, CREATIVE_STORAGE_UNIT);
     }
 
-    private static <T extends BlockEntity> BlockEntityType<T> register(MIBlock block, FabricBlockEntityTypeBuilder.Factory<T> factory) {
-        return Registry.register(Registry.BLOCK_ENTITY_TYPE, new MIIdentifier(block.id), FabricBlockEntityTypeBuilder.create(factory, block).build());
+    private static <T extends BlockEntity> BlockEntityType<T> register(BlockDefinition<?> block, FabricBlockEntityTypeBuilder.Factory<T> factory) {
+        return Registry.register(Registry.BLOCK_ENTITY_TYPE, block.getId(), FabricBlockEntityTypeBuilder.create(factory, block.asBlock()).build());
     }
 }

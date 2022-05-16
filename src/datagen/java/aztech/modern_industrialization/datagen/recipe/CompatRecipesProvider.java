@@ -164,7 +164,7 @@ public class CompatRecipesProvider extends MIRecipesProvider {
         addCompatRecipe(id, MIRecipeJson.create(machine, eu, duration).addItemInput(input, 1).addItemOutput(output, outputAmount));
     }
 
-    private void addCompatRecipe(String id, RecipeJson<?> recipeJson) {
+    private void addCompatRecipe(String id, RecipeJson recipeJson) {
         id = "compat/%s/%s".formatted(currentCompatModid, id);
         recipeJson.offerTo(withConditions(consumer, DefaultResourceConditions.allModsLoaded(currentCompatModid)), id);
     }

@@ -1,7 +1,7 @@
 {
     "textures": {
-        "forge_hammer": "modern_industrialization:blocks/forge_hammer",
-        "particle" :  "modern_industrialization:blocks/forge_hammer"
+        "forge_hammer": "modern_industrialization:block/forge_hammer",
+        "particle" :  "modern_industrialization:block/forge_hammer"
     },
     "display": {
         "gui": {

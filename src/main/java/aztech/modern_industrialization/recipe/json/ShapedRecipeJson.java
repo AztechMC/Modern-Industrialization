@@ -29,7 +29,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @SuppressWarnings({ "FieldCanBeLocal", "MismatchedQueryAndUpdateOfCollection", "UnusedDeclaration" })
-public class ShapedRecipeJson extends RecipeJson<ShapedRecipeJson> {
+public class ShapedRecipeJson extends RecipeJson {
     public final String type = "minecraft:crafting_shaped";
     public final String[] pattern;
     public final Map<Character, ItemInput> key = new HashMap<>();
@@ -115,16 +115,16 @@ public class ShapedRecipeJson extends RecipeJson<ShapedRecipeJson> {
         }
     }
 
-    public MIRecipeJson exportToAssembler() {
+    public MIRecipeJson<?> exportToAssembler() {
         return exportToMachine(MIMachineRecipeTypes.ASSEMBLER, 8, 200, 1);
     }
 
-    public MIRecipeJson exportToMachine(MachineRecipeType machine, int eu, int duration, int division) {
+    public MIRecipeJson<?> exportToMachine(MachineRecipeType machine, int eu, int duration, int division) {
         if (result.count % division != 0) {
             throw new IllegalArgumentException("Output must be divisible by division");
         }
 
-        MIRecipeJson assemblerJson = MIRecipeJson.create(machine, eu, duration).addItemOutput(result.item, result.count / division);
+        MIRecipeJson<?> assemblerJson = MIRecipeJson.create(machine, eu, duration).addItemOutput(result.item, result.count / division);
         for (Map.Entry<Character, ItemInput> entry : key.entrySet()) {
             int count = 0;
             for (String row : pattern) {

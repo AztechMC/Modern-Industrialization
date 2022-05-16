@@ -23,7 +23,6 @@
  */
 package aztech.modern_industrialization.blocks;
 
-import aztech.modern_industrialization.MIBlock;
 import aztech.modern_industrialization.MIItem;
 import aztech.modern_industrialization.materials.part.OrePart;
 import net.minecraft.core.BlockPos;
@@ -36,17 +35,19 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 
 // An MIBlock that converts a book into the guide book when right clicked
-public class OreBlock extends MIBlock {
+public class OreBlock extends Block {
 
     public final OrePart.OrePartParams params;
     public final String materialName;
 
-    public OreBlock(String id, Properties settings, OrePart.OrePartParams params, String materialName) {
-        super(id, settings);
+    public OreBlock(BlockBehaviour.Properties settings, OrePart.OrePartParams params, String materialName) {
+        super(settings);
         this.params = params;
         this.materialName = materialName;
     }

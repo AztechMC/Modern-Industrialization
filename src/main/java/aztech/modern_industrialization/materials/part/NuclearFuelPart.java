@@ -64,15 +64,24 @@ public class NuclearFuelPart extends UnbuildablePart<NuclearConstant.IsotopeFuel
 
         INeutronBehaviour neutronBehaviour = INeutronBehaviour.of(NuclearConstant.ScatteringType.HEAVY, params, type.size);
 
-        return new RegularPart(key).withRegister((registeringContext, partContext, part, itemPath, itemId, itemTag) -> {
-            if (Type.DEPLETED == type) {
-                MIItem.of(itemPath, 64);
-            } else {
-                NuclearFuel.of(itemPath, fuelParams, neutronBehaviour, partContext.getMaterialName() + "_fuel_rod_depleted");
-            }
-        }).withTextureRegister((mtm, partContext, part, itemPath) -> MITextures.generateItemPartTexture(mtm,
-                type == Type.DEPLETED ? Type.SIMPLE.key : type.key, "common", itemPath, false,
-                type == Type.DEPLETED ? new ColorampDepleted(partContext.getColoramp()) : partContext.getColoramp()));
+        String englishNameFormatter = switch (type) {
+        case SIMPLE -> "Fuel Rod";
+        case DOUBLE -> "Double Fuel Rod";
+        case QUAD -> "Quad Fuel Rod";
+        case DEPLETED -> "Depleted %s Fuel Rod";
+        };
+
+        return new RegularPart(englishNameFormatter,
+                key).withRegister((registeringContext, partContext, part, itemPath, itemId, itemTag) -> {
+                    if (Type.DEPLETED == type) {
+                        MIItem.item(RegularPart.getEnglishName(englishNameFormatter, partContext.getEnglishName()), itemPath);
+                    } else {
+                        NuclearFuel.of(RegularPart.getEnglishName(englishNameFormatter, partContext.getEnglishName()), itemPath, fuelParams,
+                                neutronBehaviour, partContext.getMaterialName() + "_fuel_rod_depleted");
+                    }
+                }).withTextureRegister((mtm, partContext, part, itemPath) -> MITextures.generateItemPartTexture(mtm,
+                        type == Type.DEPLETED ? Type.SIMPLE.key : type.key, "common", itemPath, false,
+                        type == Type.DEPLETED ? new ColorampDepleted(partContext.getColoramp()) : partContext.getColoramp()));
     }
 
     public List<BuildablePart> ofAll(NuclearConstant.IsotopeFuelParams params) {

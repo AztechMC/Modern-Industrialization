@@ -30,7 +30,11 @@ import aztech.modern_industrialization.materials.part.Part;
 import aztech.modern_industrialization.recipe.json.ShapedRecipeJson;
 import com.google.gson.Gson;
 import java.util.function.Consumer;
+import net.minecraft.core.Registry;
 import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.level.ItemLike;
 
 public class ShapedRecipeBuilder implements MaterialRecipeBuilder {
     private static final Gson GSON = new Gson();
@@ -72,11 +76,19 @@ public class ShapedRecipeBuilder implements MaterialRecipeBuilder {
         return this;
     }
 
+    public ShapedRecipeBuilder addInput(char key, TagKey<Item> tag) {
+        return addInput(key, "#" + tag.location().toString());
+    }
+
     public ShapedRecipeBuilder addInput(char key, String maybeTag) {
         if (!canceled) {
             json.addInput(key, maybeTag);
         }
         return this;
+    }
+
+    public ShapedRecipeBuilder addInput(char key, ItemLike item) {
+        return addInput(key, Registry.ITEM.getKey(item.asItem()).toString());
     }
 
     public ShapedRecipeBuilder exportToAssembler(int eu, int duration) {
@@ -89,7 +101,7 @@ public class ShapedRecipeBuilder implements MaterialRecipeBuilder {
 
     public ShapedRecipeBuilder exportToMachine(MachineRecipeType machine, int eu, int duration, int division) {
         if (!canceled) {
-            new MIRecipeBuilder(context, machine, id, json.exportToMachine(machine, eu, duration, division));
+            new MIRecipeBuilder(context, id, json.exportToMachine(machine, eu, duration, division));
         }
 
         return this;

@@ -51,7 +51,7 @@ public class RecipeConversions {
         recipe.eu = 2;
         recipe.duration = 200;
         recipe.itemInputs = Collections.singletonList(new MachineRecipe.ItemInput(stonecuttingRecipe.getIngredients().get(0), 1, 1));
-        recipe.fluidInputs = Collections.singletonList(new MachineRecipe.FluidInput(MIFluids.LUBRICANT, 81, 1));
+        recipe.fluidInputs = Collections.singletonList(new MachineRecipe.FluidInput(MIFluids.LUBRICANT.asFluid(), 81, 1));
         recipe.itemOutputs = Collections
                 .singletonList(
                         new MachineRecipe.ItemOutput(stonecuttingRecipe.getResultItem().getItem(), stonecuttingRecipe.getResultItem().getCount(), 1));

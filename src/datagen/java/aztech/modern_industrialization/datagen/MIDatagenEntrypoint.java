@@ -25,7 +25,9 @@ package aztech.modern_industrialization.datagen;
 
 import aztech.modern_industrialization.ModernIndustrialization;
 import aztech.modern_industrialization.datagen.advancement.MIAdvancementsProvider;
+import aztech.modern_industrialization.datagen.loot.BlockLootTableProvider;
 import aztech.modern_industrialization.datagen.model.MachineModelsProvider;
+import aztech.modern_industrialization.datagen.model.ModelProvider;
 import aztech.modern_industrialization.datagen.recipe.AlloyRecipesProvider;
 import aztech.modern_industrialization.datagen.recipe.AssemblerRecipesProvider;
 import aztech.modern_industrialization.datagen.recipe.CompatRecipesProvider;
@@ -40,10 +42,12 @@ import aztech.modern_industrialization.datagen.recipe.VanillaCompatRecipesProvid
 import aztech.modern_industrialization.datagen.tag.MIBlockTagProvider;
 import aztech.modern_industrialization.datagen.tag.MIItemTagProvider;
 import aztech.modern_industrialization.datagen.texture.TexturesProvider;
+import aztech.modern_industrialization.datagen.translation.TranslationProvider;
 import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 
 public class MIDatagenEntrypoint implements DataGeneratorEntrypoint {
+
     @Override
     public void onInitializeDataGenerator(FabricDataGenerator dataGenerator) {
         ModernIndustrialization.LOGGER.info("Starting Modern Industrialization Datagen");
@@ -59,10 +63,13 @@ public class MIDatagenEntrypoint implements DataGeneratorEntrypoint {
         dataGenerator.addProvider(CompatRecipesProvider::new);
         dataGenerator.addProvider(SteelUpgradeProvider::new);
         dataGenerator.addProvider(VanillaCompatRecipesProvider::new);
+        dataGenerator.addProvider(BlockLootTableProvider::new);
 
         dataGenerator.addProvider(MIAdvancementsProvider::new);
 
         dataGenerator.addProvider(MachineModelsProvider::new);
+        dataGenerator.addProvider(ModelProvider::new);
+        dataGenerator.addProvider(TranslationProvider::new);
 
         dataGenerator.addProvider(MIBlockTagProvider::new);
         dataGenerator.addProvider(MIItemTagProvider::new);

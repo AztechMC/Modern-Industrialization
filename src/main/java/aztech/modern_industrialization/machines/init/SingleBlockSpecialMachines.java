@@ -39,37 +39,38 @@ public class SingleBlockSpecialMachines {
 
     public static void init() {
 
-        MachineRegistrationHelper.registerMachine("bronze_boiler", bet -> new BoilerMachineBlockEntity(bet, true),
+        MachineRegistrationHelper.registerMachine("Bronze Boiler", "bronze_boiler", bet -> new BoilerMachineBlockEntity(bet, true),
                 MachineBlockEntity::registerFluidApi, MachineBlockEntity::registerItemApi);
-        MachineRegistrationHelper.registerMachine("steel_boiler", bet -> new BoilerMachineBlockEntity(bet, false),
+        MachineRegistrationHelper.registerMachine("Steel Boiler", "steel_boiler", bet -> new BoilerMachineBlockEntity(bet, false),
                 MachineBlockEntity::registerFluidApi, MachineBlockEntity::registerItemApi);
 
         // TODO: register water pumps in REI?
-        MachineRegistrationHelper.registerMachine("bronze_water_pump", bet -> new SteamWaterPumpBlockEntity(bet, true),
+        MachineRegistrationHelper.registerMachine("Bronze Water Pump", "bronze_water_pump", bet -> new SteamWaterPumpBlockEntity(bet, true),
                 MachineBlockEntity::registerFluidApi);
-        MachineRegistrationHelper.registerMachine("steel_water_pump", bet -> new SteamWaterPumpBlockEntity(bet, false),
+        MachineRegistrationHelper.registerMachine("Steel Water Pump", "steel_water_pump", bet -> new SteamWaterPumpBlockEntity(bet, false),
                 MachineBlockEntity::registerFluidApi);
-        MachineRegistrationHelper.registerMachine("electric_water_pump", ElectricWaterPumpBlockEntity::new, MachineBlockEntity::registerFluidApi,
+        MachineRegistrationHelper.registerMachine("Electric Water Pump", "electric_water_pump", ElectricWaterPumpBlockEntity::new,
+                MachineBlockEntity::registerFluidApi,
                 ElectricWaterPumpBlockEntity::registerEnergyApi);
 
         registerTransformers();
         registerSteamTurbines(32, 128, 512);
         registerEUStorage();
 
-        MachineRegistrationHelper.registerMachine("diesel_generator",
+        MachineRegistrationHelper.registerMachine("Diesel Generator", "diesel_generator",
                 bet -> new EnergyFromFluidMachineBlockEntity(bet, "diesel_generator", CableTier.MV, 12000, 32000, 256,
                         (Fluid f) -> (FluidFuelRegistry.getEu(f) != 0), FluidFuelRegistry::getEu),
                 MachineBlockEntity::registerFluidApi, EnergyFromFluidMachineBlockEntity::registerEnergyApi);
 
-        MachineRegistrationHelper.registerMachine("turbo_diesel_generator",
+        MachineRegistrationHelper.registerMachine("Turbo Diesel Generator", "turbo_diesel_generator",
                 bet -> new EnergyFromFluidMachineBlockEntity(bet, "turbo_diesel_generator", CableTier.HV, 60000, 64000, 1024,
                         (Fluid f) -> (FluidFuelRegistry.getEu(f) != 0), FluidFuelRegistry::getEu),
                 MachineBlockEntity::registerFluidApi, EnergyFromFluidMachineBlockEntity::registerEnergyApi);
 
-        MachineRegistrationHelper.registerMachine("configurable_chest", ConfigurableChestMachineBlockEntity::new,
+        MachineRegistrationHelper.registerMachine("Configurable Chest", "configurable_chest", ConfigurableChestMachineBlockEntity::new,
                 MachineBlockEntity::registerItemApi);
 
-        MachineRegistrationHelper.registerMachine("replicator", ReplicatorMachineBlockEntity::new, MachineBlockEntity::registerFluidApi,
+        MachineRegistrationHelper.registerMachine("Replicator", "replicator", ReplicatorMachineBlockEntity::new, MachineBlockEntity::registerFluidApi,
                 MachineBlockEntity::registerItemApi);
 
         if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
@@ -91,11 +92,13 @@ public class SingleBlockSpecialMachines {
             final CableTier up = tiers[i + 1];
 
             String lowToUp = TransformerMachineBlockEntity.getTransformerName(low, up);
-            MachineRegistrationHelper.registerMachine(lowToUp, bet -> new TransformerMachineBlockEntity(bet, low, up),
+            String lowToUpName = TransformerMachineBlockEntity.getTransformerEnglishName(low, up);
+            MachineRegistrationHelper.registerMachine(lowToUpName, lowToUp, bet -> new TransformerMachineBlockEntity(bet, low, up),
                     AbstractStorageMachineBlockEntity::registerEnergyApi);
 
             String upToLow = TransformerMachineBlockEntity.getTransformerName(up, low);
-            MachineRegistrationHelper.registerMachine(upToLow, bet -> new TransformerMachineBlockEntity(bet, up, low),
+            String upToLowName = TransformerMachineBlockEntity.getTransformerEnglishName(up, low);
+            MachineRegistrationHelper.registerMachine(upToLowName, upToLow, bet -> new TransformerMachineBlockEntity(bet, up, low),
                     AbstractStorageMachineBlockEntity::registerEnergyApi);
 
             if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
@@ -113,10 +116,11 @@ public class SingleBlockSpecialMachines {
         for (int i = 0; i < maxConsumption.length; i++) {
             CableTier tier = CableTier.values()[i];
             String id = tier.name + "_steam_turbine";
+            String englishName = tier.englishName + " Steam Turbine";
             final int eu = maxConsumption[i];
             final int fluidCapacity = 16000 * (1 << i);
-            MachineRegistrationHelper.registerMachine(id,
-                    bet -> new EnergyFromFluidMachineBlockEntity(bet, id, tier, eu * 100L, fluidCapacity, eu, MIFluids.STEAM, 1),
+            MachineRegistrationHelper.registerMachine(englishName, id,
+                    bet -> new EnergyFromFluidMachineBlockEntity(bet, id, tier, eu * 100L, fluidCapacity, eu, MIFluids.STEAM.asFluid(), 1),
                     MachineBlockEntity::registerFluidApi, EnergyFromFluidMachineBlockEntity::registerEnergyApi);
 
             if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
@@ -128,7 +132,8 @@ public class SingleBlockSpecialMachines {
     private static void registerEUStorage() {
         for (CableTier tier : CableTier.values()) {
             String id = tier.name + "_storage_unit";
-            MachineRegistrationHelper.registerMachine(id, bet -> new StorageMachineBlockEntity(bet, tier, id, 60 * 5 * 20 * tier.eu),
+            String englishName = tier.englishName + " Storage Unit";
+            MachineRegistrationHelper.registerMachine(englishName, id, bet -> new StorageMachineBlockEntity(bet, tier, id, 60 * 5 * 20 * tier.eu),
                     AbstractStorageMachineBlockEntity::registerEnergyApi);
 
             if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {

@@ -23,8 +23,6 @@
  */
 package aztech.modern_industrialization.materials.part;
 
-import static aztech.modern_industrialization.ModernIndustrialization.METAL_MATERIAL;
-
 import aztech.modern_industrialization.MIBlock;
 import aztech.modern_industrialization.MIItem;
 import aztech.modern_industrialization.datagen.tag.TagsToGenerate;
@@ -32,9 +30,10 @@ import aztech.modern_industrialization.materials.MaterialBuilder;
 import aztech.modern_industrialization.textures.MITextures;
 import aztech.modern_industrialization.textures.TextureHelper;
 import aztech.modern_industrialization.textures.TextureManager;
+import aztech.modern_industrialization.util.TagHelper;
 import com.mojang.blaze3d.platform.NativeImage;
 import java.io.IOException;
-import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
+import net.minecraft.data.models.model.TexturedModel;
 import net.minecraft.world.item.Item;
 
 public class RegularPart extends Part implements BuildablePart {
@@ -43,9 +42,33 @@ public class RegularPart extends Part implements BuildablePart {
     private final Register clientRegister;
     private final TextureRegister textureRegister;
 
-    public RegularPart(String key) {
-        this(key, (registeringContext, partContext, part, itemPath, itemId, itemTag) -> {
-            var item = MIItem.of(itemPath);
+    private final String englishNameFormatter;
+
+    public static String getEnglishName(String englishNameFormatter, String partEnglishName) {
+        String englishName;
+
+        if (englishNameFormatter.equals("")) {
+            return partEnglishName;
+        }
+
+        if (englishNameFormatter.endsWith("!")) {
+            englishName = englishNameFormatter.subSequence(0, englishNameFormatter.length() - 1).toString();
+        } else {
+            if (!englishNameFormatter.contains("%s")) {
+                englishName = partEnglishName + " " + englishNameFormatter;
+            } else {
+                englishName = String.format(englishNameFormatter, partEnglishName);
+            }
+        }
+
+        return englishName;
+
+    }
+
+    public RegularPart(String englishNameFormatter, String key) {
+        this(englishNameFormatter, key, (registeringContext, partContext, part, itemPath, itemId, itemTag) -> {
+
+            var item = MIItem.item(getEnglishName(englishNameFormatter, partContext.getEnglishName()), itemPath).asItem();
             setupTag(part, itemTag, item);
         }, (registeringContext, partContext, part, itemPath, itemId, itemTag) -> {
         }, (mtm, partContext, part, itemPath) -> MITextures.generateItemPartTexture(mtm, part.key, partContext.getMaterialSet(), itemPath, false,
@@ -53,8 +76,9 @@ public class RegularPart extends Part implements BuildablePart {
 
     }
 
-    private RegularPart(String key, Register register, Register clientRegister, TextureRegister textureRegister) {
+    private RegularPart(String englishNameFormatter, String key, Register register, Register clientRegister, TextureRegister textureRegister) {
         super(key);
+        this.englishNameFormatter = englishNameFormatter;
         this.register = register;
         this.clientRegister = clientRegister;
         this.textureRegister = textureRegister;
@@ -72,30 +96,48 @@ public class RegularPart extends Part implements BuildablePart {
     }
 
     public RegularPart asBlock(float hardness, float resistance, int miningLevel) {
-        return new RegularPart(key, (registeringContext, partContext, part, itemPath, itemId, itemTag) -> {
-            var block = new MIBlock(itemPath,
-                    FabricBlockSettings.of(METAL_MATERIAL).destroyTime(hardness)
-                            .explosionResistance(resistance)
-                            .requiresCorrectToolForDrops()).setPickaxeMineable().setMiningLevel(miningLevel);
-            setupTag(part, itemTag, block.blockItem);
+        return new RegularPart(englishNameFormatter, key, (registeringContext, partContext, part, itemPath, itemId, itemTag) -> {
+
+            var blockDefinition = MIBlock.block(
+                    getEnglishName(englishNameFormatter, partContext.getEnglishName()),
+                    itemPath,
+                    MIBlock.BlockDefinitionParams.of()
+                            .clearTags()
+                            .addMoreTags(TagHelper.getMiningLevelTag(miningLevel))
+                            .destroyTime(hardness)
+                            .explosionResistance(resistance));
+
+            setupTag(part, itemTag, blockDefinition.asItem());
+
         }, clientRegister, (mtm, partContext, part, itemPath) -> MITextures.generateItemPartTexture(mtm, part.key, partContext.getMaterialSet(),
                 itemPath, true, partContext.getColoramp()));
     }
 
     public RegularPart asColumnBlock() {
-        return new RegularPart(key, (registeringContext, partContext, part, itemPath, itemId, itemTag) -> {
-            MIBlock block = new MIBlock(itemPath,
-                    FabricBlockSettings.of(METAL_MATERIAL).destroyTime(5.0f).explosionResistance(6.0f)
-                            .requiresCorrectToolForDrops()).setPickaxeMineable();
-            block.asColumn();
+        return new RegularPart(englishNameFormatter, key, (registeringContext, partContext, part, itemPath, itemId, itemTag) -> {
+
+            var blockDefinition = MIBlock.block(
+                    getEnglishName(englishNameFormatter, partContext.getEnglishName()),
+                    itemPath,
+                    MIBlock.BlockDefinitionParams.of()
+                            .clearTags()
+                            .addMoreTags(TagHelper.getMiningLevelTag(1))
+                            .withModel(TexturedModel.COLUMN)
+                            .destroyTime(5.0f)
+                            .explosionResistance(6.0f)
+
+            );
+
+            setupTag(part, itemTag, blockDefinition.asItem());
+
         }, clientRegister, (mtm, partContext, part, itemPath) -> {
-            for (String suffix : new String[] { "_end", "_side" }) {
+            for (String suffix : new String[] { "_side", "_top" }) {
                 String template = String.format("modern_industrialization:textures/materialsets/common/%s%s.png", part, suffix);
                 try {
                     NativeImage image = mtm.getAssetAsTexture(template);
                     TextureHelper.colorize(image, partContext.getColoramp());
                     String texturePath;
-                    texturePath = String.format("modern_industrialization:textures/blocks/%s%s.png", itemPath, suffix);
+                    texturePath = String.format("modern_industrialization:textures/block/%s%s.png", itemPath, suffix);
                     mtm.addTexture(texturePath, image);
                     image.close();
                 } catch (IOException e) {
@@ -113,23 +155,23 @@ public class RegularPart extends Part implements BuildablePart {
     }
 
     public RegularPart asBlock() {
-        return asBlock(5, 6, 0);
+        return asBlock(5, 6, 1);
     }
 
     public RegularPart withRegister(Register register) {
-        return new RegularPart(key, register, clientRegister, textureRegister);
+        return new RegularPart(englishNameFormatter, key, register, clientRegister, textureRegister);
     }
 
     public RegularPart withClientRegister(Register clientRegister) {
-        return new RegularPart(key, register, clientRegister, textureRegister);
+        return new RegularPart(englishNameFormatter, key, register, clientRegister, textureRegister);
     }
 
     public RegularPart withTextureRegister(TextureRegister textureRegister) {
-        return new RegularPart(key, register, clientRegister, textureRegister);
+        return new RegularPart(englishNameFormatter, key, register, clientRegister, textureRegister);
     }
 
     public RegularPart appendRegister(Register register) {
-        return new RegularPart(key,
+        return new RegularPart(englishNameFormatter, key,
 
                 (registeringContext, partContext, part, itemPath, itemId, itemTag) -> {
                     RegularPart.this.register.register(registeringContext, partContext, part, itemPath, itemId, itemTag);
@@ -138,7 +180,7 @@ public class RegularPart extends Part implements BuildablePart {
     }
 
     public RegularPart appendTextureRegister(TextureRegister textureRegister) {
-        return new RegularPart(key, register, clientRegister, (mtm, partContext, part, itemPath) -> {
+        return new RegularPart(englishNameFormatter, key, register, clientRegister, (mtm, partContext, part, itemPath) -> {
             RegularPart.this.textureRegister.register(mtm, partContext, part, itemPath);
             textureRegister.register(mtm, partContext, part, itemPath);
         });

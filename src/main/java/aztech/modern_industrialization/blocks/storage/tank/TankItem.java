@@ -23,6 +23,8 @@
  */
 package aztech.modern_industrialization.blocks.storage.tank;
 
+import static aztech.modern_industrialization.ModernIndustrialization.ITEM_GROUP;
+
 import aztech.modern_industrialization.util.FluidHelper;
 import aztech.modern_industrialization.util.NbtHelper;
 import java.util.List;
@@ -34,6 +36,7 @@ import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleVariantItemStorage
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
@@ -43,8 +46,8 @@ public class TankItem extends BlockItem {
 
     public final long capacity;
 
-    public TankItem(Block block, Properties settings, long capacity) {
-        super(block, settings);
+    public TankItem(Block block, long capacity) {
+        super(block, new Item.Properties().tab(ITEM_GROUP));
         this.capacity = capacity;
     }
 

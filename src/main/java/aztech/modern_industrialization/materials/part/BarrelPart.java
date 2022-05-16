@@ -30,10 +30,12 @@ import aztech.modern_industrialization.blocks.storage.barrel.BarrelBlockEntity;
 import aztech.modern_industrialization.blocks.storage.barrel.BarrelItem;
 import aztech.modern_industrialization.blocks.storage.barrel.BarrelRenderer;
 import aztech.modern_industrialization.datagen.tag.TagsToGenerate;
+import aztech.modern_industrialization.definition.BlockDefinition;
 import aztech.modern_industrialization.util.TextHelper;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemStorage;
 import net.minecraft.core.Registry;
+import net.minecraft.data.models.model.TexturedModel;
 import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -48,22 +50,44 @@ public class BarrelPart extends UnbuildablePart<Long> {
         return of((long) stackCapacity);
     }
 
+    public RegularPart of(String englishName, int stackCapacity) {
+        return of(englishName, (long) stackCapacity);
+    }
+
     @Override
     public RegularPart of(Long stackCapacity) {
+        return of("Barrel", stackCapacity);
+    }
 
+    public RegularPart of(String englishNameFormatter, Long stackCapacity) {
         BlockEntityType<BlockEntity>[] refs = new BlockEntityType[1]; // evil hack
 
-        return new RegularPart(key).asColumnBlock().withRegister((registeringContext, partContext, part, itemPath, itemId, itemTag) -> {
-            EntityBlock factory = (pos, state) -> new BarrelBlockEntity(refs[0], pos, state, stackCapacity);
-            BarrelBlock block = new BarrelBlock(itemPath, (MIBlock b) -> new BarrelItem(b, stackCapacity), factory);
-            TagsToGenerate.generateTag(MITags.BARRELS, block.blockItem);
+        return new RegularPart(englishNameFormatter, key).asColumnBlock()
+                .withRegister((registeringContext, partContext, part, itemPath, itemId, itemTag) -> {
+                    EntityBlock factory = (pos, state) -> new BarrelBlockEntity(refs[0], pos, state, stackCapacity);
 
-            refs[0] = Registry.register(Registry.BLOCK_ENTITY_TYPE, itemId,
-                    FabricBlockEntityTypeBuilder.create(block.factory::newBlockEntity, block).build(null));
+                    String englishName = RegularPart.getEnglishName(englishNameFormatter, partContext.getEnglishName());
+                    ;
 
-            ItemStorage.SIDED.registerSelf(refs[0]);
-        }).withClientRegister((registeringContext, partContext, part, itemPath, itemId, itemTag) -> BarrelRenderer.register(refs[0],
-                TextHelper.getOverlayTextColor(partContext.getColoramp().getMeanRGB())));
+                    BlockDefinition<BarrelBlock> blockDefinition = MIBlock.block(
+                            englishName,
+                            itemPath,
+                            MIBlock.BlockDefinitionParams.of().withBlockConstructor(
+                                    s -> new BarrelBlock(s, factory)).withBlockItemConstructor(
+                                            (b, s) -> new BarrelItem(b, stackCapacity))
+                                    .withModel(
+                                            ((block, blockModelGenerators) -> blockModelGenerators.createTrivialBlock(block, TexturedModel.COLUMN)))
+                                    .noLootTable());
+
+                    TagsToGenerate.generateTag(MITags.BARRELS, blockDefinition.asItem());
+                    BarrelBlock block = blockDefinition.asBlock();
+
+                    refs[0] = Registry.register(Registry.BLOCK_ENTITY_TYPE, itemId,
+                            FabricBlockEntityTypeBuilder.create(block.factory::newBlockEntity, block).build(null));
+
+                    ItemStorage.SIDED.registerSelf(refs[0]);
+                }).withClientRegister((registeringContext, partContext, part, itemPath, itemId, itemTag) -> BarrelRenderer.register(refs[0],
+                        TextHelper.getOverlayTextColor(partContext.getColoramp().getMeanRGB())));
     }
 
 }

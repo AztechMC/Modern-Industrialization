@@ -35,4 +35,8 @@ public class TransformerMachineBlockEntity extends AbstractStorageMachineBlockEn
     public static String getTransformerName(CableTier from, CableTier to) {
         return from.name + "_" + to.name + "_transformer";
     }
+
+    public static String getTransformerEnglishName(CableTier from, CableTier to) {
+        return from.englishName + " to " + to.englishName + " Transformer";
+    }
 }

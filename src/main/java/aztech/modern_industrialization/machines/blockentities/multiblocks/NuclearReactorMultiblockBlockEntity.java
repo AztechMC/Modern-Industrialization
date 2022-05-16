@@ -24,6 +24,7 @@
 package aztech.modern_industrialization.machines.blockentities.multiblocks;
 
 import aztech.modern_industrialization.MIBlock;
+import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.api.ScrewdriverableBlockEntity;
 import aztech.modern_industrialization.compat.rei.machines.ReiMachineRecipes;
 import aztech.modern_industrialization.inventory.MIInventory;
@@ -244,8 +245,8 @@ public class NuclearReactorMultiblockBlockEntity extends MultiblockMachineBlockE
         shapeTemplates = new ShapeTemplate[4];
         gridLayout = new boolean[4][][];
 
-        SimpleMember casing = SimpleMember.forBlock(MIBlock.blocks.get("nuclear_casing"));
-        SimpleMember pipe = SimpleMember.forBlock(MIBlock.blocks.get("nuclear_alloy_machine_casing_pipe"));
+        SimpleMember casing = SimpleMember.forBlock(MIBlock.BLOCKS.get(new MIIdentifier("nuclear_casing")).asBlock());
+        SimpleMember pipe = SimpleMember.forBlock(MIBlock.BLOCKS.get(new MIIdentifier("nuclear_alloy_machine_casing_pipe")).asBlock());
         HatchFlags top = new HatchFlags.Builder().with(HatchType.NUCLEAR_FLUID, HatchType.NUCLEAR_ITEM).build();
         for (int i = 0; i < 4; i++) {
             ShapeTemplate.Builder builder = new ShapeTemplate.Builder(MachineCasings.NUCLEAR);

@@ -31,7 +31,10 @@ import static aztech.modern_industrialization.materials.set.MaterialSet.*;
 import aztech.modern_industrialization.MIItem;
 import aztech.modern_industrialization.api.energy.CableTier;
 import aztech.modern_industrialization.machines.init.MIMachineRecipeTypes;
-import aztech.modern_industrialization.materials.part.*;
+import aztech.modern_industrialization.materials.part.ExternalPart;
+import aztech.modern_industrialization.materials.part.MIItemPart;
+import aztech.modern_industrialization.materials.part.Part;
+import aztech.modern_industrialization.materials.part.RegularPart;
 import aztech.modern_industrialization.materials.recipe.ForgeHammerRecipes;
 import aztech.modern_industrialization.materials.recipe.SmeltingRecipes;
 import aztech.modern_industrialization.materials.recipe.StandardRecipes;
@@ -43,9 +46,6 @@ import aztech.modern_industrialization.nuclear.INeutronBehaviour;
 import aztech.modern_industrialization.nuclear.NuclearAbsorbable;
 import aztech.modern_industrialization.nuclear.NuclearConstant;
 import aztech.modern_industrialization.textures.coloramp.BakableTargetColoramp;
-import aztech.modern_industrialization.util.ResourceUtil;
-import net.devtech.arrp.json.tags.JTag;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.valueproviders.UniformInt;
 
 // @formatter:off
@@ -53,13 +53,12 @@ public class MIMaterials {
 
     public static void init() {
         addMaterials();
-        addExtraTags();
     }
 
     public static final String commonPath = "modern_industrialization:textures/materialsets/common/";
     public static final String templatePath = "modern_industrialization:textures/template/";
     public static final String mcPath = "minecraft:textures/item/";
-    public static final String miPath = "modern_industrialization:textures/items/";
+    public static final String miPath = "modern_industrialization:textures/item/";
 
     public static String common(String name) {
         return commonPath + name + ".png";
@@ -122,50 +121,50 @@ public class MIMaterials {
                 .cancelRecipes("smelting/ore_deepslate_to_gem_smelting", "smelting/ore_deepslate_to_gem_blasting");
 
         if (compressor) {
-            res.addRecipes(context -> new MIRecipeBuilder(context, MIMachineRecipeTypes.COMPRESSOR, n).addTaggedPartInput(DUST, 1).addOutput("minecraft:" + gemPath, 1));
+            res.addRecipes(context -> new MIRecipeBuilder(context, MIMachineRecipeTypes.COMPRESSOR, n).addTaggedPartInput(DUST, 1).addItemOutput("minecraft:" + gemPath, 1));
         }
         return res;
     }
 
     private static void addMaterials() {
         MaterialRegistry.addMaterial(addVanillaMetal(true,
-                new MaterialBuilder("gold", SHINY, new BakableTargetColoramp(0xFFE650, common(INGOT), mcitem("gold_ingot")), SOFT)
+                new MaterialBuilder("Gold", "gold", SHINY, new BakableTargetColoramp(0xFFE650, common(INGOT), mcitem("gold_ingot")), SOFT)
                         .addParts(BOLT, RING, GEAR, ROD, CURVED_PLATE, DOUBLE_INGOT, DUST, INGOT, LARGE_PLATE, NUGGET, PLATE, TINY_DUST)
                         .addParts(DRILL_HEAD, DRILL)).build());
 
         MaterialRegistry
                 .addMaterial(
                         addVanillaMetal(true,
-                                new MaterialBuilder("iron", METALLIC, new BakableTargetColoramp(0xC8C8C8, common(INGOT), mcitem("iron_ingot")),
+                                new MaterialBuilder("Iron", "iron", METALLIC, new BakableTargetColoramp(0xC8C8C8, common(INGOT), mcitem("iron_ingot")),
                                         AVERAGE).addParts(BOLT, RING, GEAR, ROD, DOUBLE_INGOT, DUST, INGOT, LARGE_PLATE, NUGGET, PLATE, TINY_DUST)
-                                        .addParts(ExternalPart.of(HAMMER, MIItem.IRON_HAMMER.getPath())))
+                                        .addParts(ExternalPart.of(HAMMER, MIItem.IRON_HAMMER.getId().toString())))
                                 .build());
 
         MaterialRegistry.addMaterial(addVanillaMetal(false,
-                new MaterialBuilder("copper", METALLIC, new BakableTargetColoramp(0xe77c56, common(INGOT), mcitem("copper_ingot")), SOFT)
+                new MaterialBuilder("Copper", "copper", METALLIC, new BakableTargetColoramp(0xe77c56, common(INGOT), mcitem("copper_ingot")), SOFT)
                         .addParts(BOLT, BLADE, RING, ROTOR, GEAR, ROD, CURVED_PLATE, DOUBLE_INGOT, DUST, INGOT, LARGE_PLATE, NUGGET, PLATE, TINY_DUST)
                         .addParts(WIRE).addParts(FINE_WIRE).addParts(CABLE.of(CableTier.LV)).addParts(DRILL_HEAD, DRILL))
                 .cancelRecipes("macerator/ore_to_raw", "forge_hammer/ore_to_raw_metal",
                         "forge_hammer/ore_to_raw_metal_with_tool", "forge_hammer/ore_to_dust_with_tool").build());
 
         MaterialRegistry.addMaterial(
-                addVanillaGem(true, new MaterialBuilder("coal", STONE, GEM, new BakableTargetColoramp(0x282828, common(PLATE), mcitem("coal")), SOFT)
+                addVanillaGem(true, new MaterialBuilder("Coal", "coal", STONE, GEM, new BakableTargetColoramp(0x282828, common(PLATE), mcitem("coal")), SOFT)
                         .addParts(ITEM_PURE_NON_METAL)).addRecipes(ForgeHammerRecipes::apply).build());
 
         MaterialRegistry.addMaterial(addVanillaGem(false,
-                new MaterialBuilder("diamond", SHINY, GEM, new BakableTargetColoramp(0x48eeda, mcitem("diamond"), mcitem("diamond")), VERY_HARD)
-                        .addParts(ITEM_PURE_NON_METAL).addParts(PLATE, LARGE_PLATE).addParts(ExternalPart.of(HAMMER, MIItem.DIAMOND_HAMMER.getPath()))).build());
+                new MaterialBuilder("Diamond", "diamond", SHINY, GEM, new BakableTargetColoramp(0x48eeda, mcitem("diamond"), mcitem("diamond")), VERY_HARD)
+                        .addParts(ITEM_PURE_NON_METAL).addParts(PLATE, LARGE_PLATE).addParts(ExternalPart.of(HAMMER, MIItem.DIAMOND_HAMMER.getId().toString()))).build());
 
         MaterialRegistry.addMaterial(addVanillaGem(false,
-                new MaterialBuilder("emerald", SHINY, GEM, new BakableTargetColoramp(0x3FF385, mcitem("emerald"), mcitem("emerald")), VERY_HARD)
+                new MaterialBuilder("Emerald", "emerald", SHINY, GEM, new BakableTargetColoramp(0x3FF385, mcitem("emerald"), mcitem("emerald")), VERY_HARD)
                         .addParts(ITEM_PURE_NON_METAL).addParts(PLATE)).build());
 
         MaterialRegistry.addMaterial(addVanillaGem(true, "lapis_lazuli",
-                new MaterialBuilder("lapis", DULL, GEM, new BakableTargetColoramp(0x1A2D8D, common("dust"), mcitem("lapis_lazuli")), SOFT)
+                new MaterialBuilder("Lapis Lazuli", "lapis", DULL, GEM, new BakableTargetColoramp(0x1A2D8D, common("dust"), mcitem("lapis_lazuli")), SOFT)
                         .addParts(ITEM_PURE_NON_METAL).addParts(PLATE)).cancelRecipes("macerator/ore_to_crushed").build());
 
         MaterialRegistry
-                .addMaterial(new MaterialBuilder("redstone", STONE, DUST, new BakableTargetColoramp(0xd20000, common(DUST), mcitem("redstone")), SOFT)
+                .addMaterial(new MaterialBuilder("Redstone","redstone", STONE, DUST, new BakableTargetColoramp(0xd20000, common(DUST), mcitem("redstone")), SOFT)
                         .addParts(TINY_DUST, CRUSHED_DUST, BATTERY).addParts(ExternalPart.of(DUST, "minecraft:redstone", "minecraft:redstone"))
                         .addParts(ExternalPart.of(BLOCK, "#c:redstone_blocks", "minecraft:redstone_block"))
                         .addParts(ExternalPart.of(ORE, "#c:redstone_ores", "minecraft:redstone_ore"))
@@ -174,52 +173,52 @@ public class MIMaterials {
                         .cancelRecipes("craft/block_from_dust", "craft/dust_from_block").build());
 
         MaterialRegistry
-                .addMaterial(new MaterialBuilder("quartz", STONE, GEM, new BakableTargetColoramp(0xf0ebe4, mcitem("quartz"), mcitem("quartz")), SOFT)
+                .addMaterial(new MaterialBuilder("Quartz","quartz", STONE, GEM, new BakableTargetColoramp(0xf0ebe4, mcitem("quartz"), mcitem("quartz")), SOFT)
                         .addParts(CRUSHED_DUST, DUST, TINY_DUST).addParts(ORE.of(UniformInt.of(2, 5), MaterialOreSet.QUARTZ))
                         .addParts(ExternalPart.of(GEM, "minecraft:quartz", "minecraft:quartz")).addRecipes(StandardRecipes::apply)
                         .cancelRecipes("macerator/ore_to_crushed").addRecipes(context -> new MIRecipeBuilder(context, MIMachineRecipeTypes.COMPRESSOR, "quartz")
-                                .addTaggedPartInput(DUST, 1).addOutput("minecraft:quartz", 1))
+                                .addTaggedPartInput(DUST, 1).addItemOutput("minecraft:quartz", 1))
                         .build());
 
-        MaterialRegistry.addMaterial(new MaterialBuilder("brick", STONE, new BakableTargetColoramp(0xb75a36, common("ingot"), mcitem("brick")), SOFT)
+        MaterialRegistry.addMaterial(new MaterialBuilder("Brick", "brick", STONE, new BakableTargetColoramp(0xb75a36, common("ingot"), mcitem("brick")), SOFT)
                 .addParts(DUST, TINY_DUST).addParts(ExternalPart.of(INGOT, "minecraft:brick", "minecraft:brick"))
                 .addRecipes(StandardRecipes::apply, SmeltingRecipes::apply).build());
 
         MaterialRegistry.addMaterial(
-                new MaterialBuilder("fire_clay", STONE, new BakableTargetColoramp(0xb75a36, common("ingot"), miitem("fire_clay_brick")), SOFT)
-                        .addParts(DUST).addParts(MIItemPart.of(INGOT, "fire_clay_brick")).addRecipes(SmeltingRecipes::apply).build());
+                new MaterialBuilder("Fire Clay", "fire_clay", STONE, new BakableTargetColoramp(0xb75a36, common("ingot"), miitem("fire_clay_brick")), SOFT)
+                        .addParts(DUST).addParts(MIItemPart.of(INGOT, "Fire Clay Brick", "fire_clay_brick")).addRecipes(SmeltingRecipes::apply).build());
 
         MaterialRegistry
-                .addMaterial(new MaterialBuilder("coke", STONE, GEM, new BakableTargetColoramp(0x6d6d57, common("dust"), miitem("coke")), SOFT)
-                        .addParts(DUST).addParts(MIItemPart.of(GEM, "coke")).addParts(BLOCK.of(MaterialBlockSet.COAL))
+                .addMaterial(new MaterialBuilder("Coke", "coke", STONE, GEM, new BakableTargetColoramp(0x6d6d57, common("dust"), miitem("coke")), SOFT)
+                        .addParts(DUST).addParts(MIItemPart.of(GEM, "Coke", "coke")).addParts(BLOCK.of(MaterialBlockSet.COAL))
 
                         .addRecipes(context -> new MIRecipeBuilder(context, MIMachineRecipeTypes.COMPRESSOR, "dust").addTaggedPartInput(DUST, 1).addPartOutput(GEM, 1))
                         .addRecipes(StandardRecipes::apply).build());
 
         MaterialRegistry.addMaterial(
-                new MaterialBuilder("bronze", SHINY, new BakableTargetColoramp(0xffcc00, common("ingot"), template("bronze_ingot")), SOFT)
+                new MaterialBuilder("Bronze", "bronze", SHINY, new BakableTargetColoramp(0xffcc00, common("ingot"), template("bronze_ingot")), SOFT)
                         .addParts(BOLT, BLADE, RING, ROTOR, GEAR, ROD, CURVED_PLATE, DOUBLE_INGOT, DUST, INGOT, LARGE_PLATE, NUGGET, PLATE, TINY_DUST)
                         .removeParts(CRUSHED_DUST).addParts(BLOCK.of(MaterialBlockSet.COPPER)).addParts(TANK.of(4)).addParts(DRILL_HEAD, DRILL)
                         .addParts(BARREL.of(32)).addParts(MACHINE_CASING, MACHINE_CASING_PIPE)
-                        .addParts(MACHINE_CASING_SPECIAL.of("bronze_plated_bricks"))
+                        .addParts(MACHINE_CASING_SPECIAL.of("Bronze Plated Bricks", "bronze_plated_bricks"))
                         .addRecipes(ForgeHammerRecipes::apply, SmeltingRecipes::apply, StandardRecipes::apply).build());
 
         MaterialRegistry
-                .addMaterial(new MaterialBuilder("tin", DULL, new BakableTargetColoramp(0xc0bcd0, common("ingot"), template("tin_ingot")), SOFT)
+                .addMaterial(new MaterialBuilder("Tin", "tin", DULL, new BakableTargetColoramp(0xc0bcd0, common("ingot"), template("tin_ingot")), SOFT)
                         .addParts(BOLT, BLADE, RING, ROTOR, ROD, CURVED_PLATE, DOUBLE_INGOT, DUST, INGOT, LARGE_PLATE, NUGGET, PLATE, TINY_DUST)
                         .addParts(ORE.ofAll(16, 9, 64, MaterialOreSet.IRON)).addParts(WIRE).addParts(RAW_METAL.of(MaterialRawSet.GOLD))
                         .addParts(BLOCK.of(MaterialBlockSet.COPPER)).addParts(CABLE.of(CableTier.LV))
                         .addRecipes(ForgeHammerRecipes::apply, SmeltingRecipes::apply, StandardRecipes::apply).build());
 
         MaterialRegistry.addMaterial(
-                new MaterialBuilder("steel", METALLIC, new BakableTargetColoramp(0x3f3f3f, common("ingot"), template("steel_ingot")), AVERAGE)
+                new MaterialBuilder("Steel", "steel", METALLIC, new BakableTargetColoramp(0x3f3f3f, common("ingot"), template("steel_ingot")), AVERAGE)
                         .addParts(BOLT, RING, ROD, GEAR, CURVED_PLATE, DOUBLE_INGOT, DUST, INGOT, LARGE_PLATE, NUGGET, PLATE, TINY_DUST)
                         .addParts(ROD_MAGNETIC).addParts(BLOCK.of(MaterialBlockSet.IRON)).addParts(DRILL_HEAD, DRILL)
                         .addParts(MACHINE_CASING, MACHINE_CASING_PIPE).addParts(TANK.of(8)).addParts(BARREL.of(128))
-                        .addParts(ExternalPart.of(HAMMER, MIItem.STEEL_HAMMER.getPath()))
+                        .addParts(ExternalPart.of(HAMMER, MIItem.STEEL_HAMMER.getId().toString()))
                         .addRecipes(ForgeHammerRecipes::apply, SmeltingRecipes::apply, StandardRecipes::apply).build());
 
-        MaterialRegistry.addMaterial(new MaterialBuilder("lignite_coal", STONE, GEM, 0x644646, SOFT).addParts(ITEM_PURE_NON_METAL)
+        MaterialRegistry.addMaterial(new MaterialBuilder("Lignite Coal", "lignite_coal", STONE, GEM, 0x644646, SOFT).addParts(ITEM_PURE_NON_METAL)
                 .addParts(BLOCK.of(MaterialBlockSet.COAL)).addParts(GEM)
                 .addParts(ORE.ofAll(UniformInt.of(0, 2), 25, 17, 256, MaterialOreSet.COAL))
                 .addRecipes(ForgeHammerRecipes::apply, SmeltingRecipes::apply, StandardRecipes::apply).cancelRecipes("macerator/crushed_dust")
@@ -227,98 +226,107 @@ public class MIMaterials {
                 .build());
 
         MaterialRegistry.addMaterial(
-                new MaterialBuilder("aluminum", METALLIC, new BakableTargetColoramp(0x3fcaff, common("ingot"), template("aluminum_ingot")), AVERAGE)
+                new MaterialBuilder("Aluminum","aluminum", METALLIC, new BakableTargetColoramp(0x3fcaff, common("ingot"), template("aluminum_ingot")), AVERAGE)
                         .addParts(BOLT, BLADE, RING, ROTOR, GEAR, ROD, CURVED_PLATE, DOUBLE_INGOT, DUST, INGOT, LARGE_PLATE, NUGGET, PLATE, TINY_DUST)
-                        .addParts(WIRE).addParts(BLOCK.of(MaterialBlockSet.GOLD)).addParts(MACHINE_CASING.of("advanced_machine_casing"))
-                        .addParts(DRILL_HEAD, DRILL).addParts(MACHINE_CASING_SPECIAL.of("frostproof_machine_casing")).addParts(TANK.of(16))
+                        .addParts(WIRE).addParts(BLOCK.of(MaterialBlockSet.GOLD)).addParts(MACHINE_CASING.of("Advanced Machine Casing", "advanced_machine_casing"))
+                        .addParts(DRILL_HEAD, DRILL).addParts(MACHINE_CASING_SPECIAL.of("Frostproof Machine Casing", "frostproof_machine_casing")).addParts(TANK.of(16))
                         .addParts(BARREL.of(512)).addParts(CABLE.of(CableTier.HV)).addRecipes(StandardRecipes::apply)
                         .addRecipes(SmeltingRecipes::applyBlastFurnace).build());
 
-        MaterialRegistry.addMaterial(new MaterialBuilder("bauxite", DULL, DUST, 0xC86400, SOFT).addParts(ITEM_PURE_NON_METAL)
+        MaterialRegistry.addMaterial(new MaterialBuilder("Bauxite", "bauxite", DULL, DUST, 0xC86400, SOFT).addParts(ITEM_PURE_NON_METAL)
                 .addParts(BLOCK.of(MaterialBlockSet.LAPIS)).addParts(ORE.ofAll(UniformInt.of(1, 4), 24, 7, 32, MaterialOreSet.REDSTONE))
                 .addRecipes(StandardRecipes::apply).build());
 
         MaterialRegistry
-                .addMaterial(new MaterialBuilder("lead", DULL, new BakableTargetColoramp(0x6a76bc, common("ingot"), template("lead_ingot")), AVERAGE)
+                .addMaterial(new MaterialBuilder("Lead", "lead", DULL, new BakableTargetColoramp(0x6a76bc, common("ingot"), template("lead_ingot")), AVERAGE)
                         .addParts(DOUBLE_INGOT, DUST, INGOT, NUGGET, PLATE, TINY_DUST).addParts(BLOCK.of(MaterialBlockSet.COPPER))
                         .addParts(ORE.ofAll(16, 5, 64, MaterialOreSet.IRON)).addParts(RAW_METAL.of(MaterialRawSet.IRON))
                         .addRecipes(StandardRecipes::apply, SmeltingRecipes::apply).cancelRecipes("macerator/raw_metal").build());
 
-        MaterialRegistry.addMaterial(new MaterialBuilder("battery_alloy", DULL, 0x9C7CA0, SOFT)
+        MaterialRegistry.addMaterial(new MaterialBuilder("Battery Alloy", "battery_alloy", DULL, 0x9C7CA0, SOFT)
                 .addParts(TINY_DUST, DUST, INGOT, DOUBLE_INGOT, PLATE, CURVED_PLATE, NUGGET, LARGE_PLATE).addParts(BLOCK.of(MaterialBlockSet.IRON))
                 .addRecipes(StandardRecipes::apply, SmeltingRecipes::apply).build());
 
         MaterialRegistry
-                .addMaterial(new MaterialBuilder("invar", METALLIC, 0xDCDC96, AVERAGE).addParts(MACHINE_CASING_SPECIAL.of("heatproof_machine_casing"))
+                .addMaterial(new MaterialBuilder("Invar", "invar", METALLIC, 0xDCDC96, AVERAGE)
+                        .addParts(MACHINE_CASING_SPECIAL.of(
+                                "Heatproof Machine Casing",
+                                "heatproof_machine_casing"))
                         .addParts(TINY_DUST, DUST, INGOT, ROD, DOUBLE_INGOT, RING, BOLT, PLATE, LARGE_PLATE, NUGGET, GEAR)
                         .addParts(BLOCK.of(MaterialBlockSet.IRON)).addRecipes(StandardRecipes::apply, SmeltingRecipes::apply).build());
 
-        MaterialRegistry.addMaterial(new MaterialBuilder("cupronickel", METALLIC, 0xE39681, SOFT)
+        MaterialRegistry.addMaterial(new MaterialBuilder("Cupronickel", "cupronickel", METALLIC, 0xE39681, SOFT)
                 .addParts(TINY_DUST, DUST, INGOT, DOUBLE_INGOT, PLATE, WIRE, NUGGET, WIRE_MAGNETIC).addParts(COIL)
                 .addParts(BLOCK.of(MaterialBlockSet.COPPER)).addParts(CABLE.of(CableTier.MV))
                 .addRecipes(StandardRecipes::apply, SmeltingRecipes::apply).build());
 
-        MaterialRegistry.addMaterial(new MaterialBuilder("antimony", SHINY, 0xDCDCF0, SOFT).addParts(ITEM_PURE_METAL)
+        MaterialRegistry.addMaterial(new MaterialBuilder("Antimony", "antimony", SHINY, 0xDCDCF0, SOFT).addParts(ITEM_PURE_METAL)
                 .addParts(RAW_METAL.of(MaterialRawSet.COPPER)).addParts(BLOCK.of(MaterialBlockSet.IRON))
                 .addParts(ORE.ofAll(20, 5, 64, MaterialOreSet.REDSTONE)).addRecipes(StandardRecipes::apply, SmeltingRecipes::apply).build());
 
         MaterialRegistry
-                .addMaterial(new MaterialBuilder("nickel", METALLIC, 0xFAFAC8, AVERAGE).addParts(DOUBLE_INGOT, DUST, INGOT, NUGGET, PLATE, TINY_DUST)
+                .addMaterial(new MaterialBuilder("Nickel", "nickel", METALLIC, 0xFAFAC8, AVERAGE).addParts(DOUBLE_INGOT, DUST, INGOT, NUGGET, PLATE, TINY_DUST)
                         .addParts(RAW_METAL.ofAll(MaterialRawSet.IRON)).addParts(BLOCK.of(MaterialBlockSet.IRON))
                         .addParts(ORE.ofAll(14, 6, 64, MaterialOreSet.IRON)).addRecipes(StandardRecipes::apply, SmeltingRecipes::apply).build());
 
         MaterialRegistry.addMaterial(
-                new MaterialBuilder("silver", SHINY, new BakableTargetColoramp(0xDCDCFF, common("ingot"), template("silver_ingot")), SOFT)
+                new MaterialBuilder("Silver", "silver", SHINY, new BakableTargetColoramp(0xDCDCFF, common("ingot"), template("silver_ingot")), SOFT)
                         .addParts(RAW_METAL.ofAll(MaterialRawSet.GOLD)).addParts(CABLE.of(CableTier.LV))
                         .addParts(DOUBLE_INGOT, DUST, INGOT, NUGGET, PLATE, TINY_DUST, WIRE).addParts(BLOCK.of(MaterialBlockSet.GOLD))
                         .addRecipes(StandardRecipes::apply, SmeltingRecipes::apply).build());
 
         MaterialRegistry.addMaterial(
-                new MaterialBuilder("sodium", STONE, DUST, 0x071CB8, SOFT).addParts(ITEM_PURE_NON_METAL).addParts(BLOCK.of(MaterialBlockSet.LAPIS))
+                new MaterialBuilder("Sodium","sodium", STONE, DUST, 0x071CB8, SOFT).addParts(ITEM_PURE_NON_METAL).addParts(BLOCK.of(MaterialBlockSet.LAPIS))
                         .addParts(BATTERY).removeParts(CRUSHED_DUST).addRecipes(StandardRecipes::apply, SmeltingRecipes::apply).build());
 
-        MaterialRegistry.addMaterial(new MaterialBuilder("salt", STONE, DUST, 0xc7d6c5, SOFT).addParts(ITEM_PURE_NON_METAL)
+        MaterialRegistry.addMaterial(new MaterialBuilder("Salt","salt", STONE, DUST, 0xc7d6c5, SOFT).addParts(ITEM_PURE_NON_METAL)
                 .addParts(BLOCK.of(MaterialBlockSet.REDSTONE)).addParts(ORE.ofAll(UniformInt.of(1, 3), 6, 6, 64, MaterialOreSet.COAL))
                 .addRecipes(StandardRecipes::apply).build());
 
         MaterialRegistry.addMaterial(
-                new MaterialBuilder("titanium", METALLIC, new BakableTargetColoramp(0xDCA0F0, common("ingot"), template("titanium_ingot")), HARD)
+                new MaterialBuilder("Titanium", "titanium", METALLIC, new BakableTargetColoramp(0xDCA0F0, common("ingot"), template("titanium_ingot")), HARD)
                         .addParts(BOLT, BLADE, RING, ROTOR, GEAR, ROD, CURVED_PLATE, DOUBLE_INGOT, DUST, INGOT, LARGE_PLATE, NUGGET, PLATE, TINY_DUST)
                         .addParts(BLOCK.of(MaterialBlockSet.NETHERITE)).addParts(RAW_METAL.ofAll(MaterialRawSet.COPPER)).addParts(HOT_INGOT)
-                        .addParts(MACHINE_CASING.of("highly_advanced_machine_casing")).addParts(DRILL_HEAD, DRILL).addParts(MACHINE_CASING_PIPE)
-                        .addParts(MACHINE_CASING_SPECIAL.of("solid_titanium_machine_casing")).addParts(ORE.of(MaterialOreSet.IRON))
+                        .addParts(MACHINE_CASING.of(
+                                "Highly Advanced Machine Casing",
+                                "highly_advanced_machine_casing")).addParts(DRILL_HEAD, DRILL).addParts(MACHINE_CASING_PIPE)
+                        .addParts(MACHINE_CASING_SPECIAL.of("Solid Titanium Machine Casing", "solid_titanium_machine_casing")).addParts(ORE.of(MaterialOreSet.IRON))
                         .addParts(TANK.of(64)).addParts(BARREL.of(8192)).addRecipes(StandardRecipes::apply)
                         .addRecipes((ctx) -> SmeltingRecipes.applyBlastFurnace(ctx, true, 128, 400)).cancelRecipes("macerator/raw_metal").build());
 
         MaterialRegistry.addMaterial(
-                new MaterialBuilder("electrum", SHINY, new BakableTargetColoramp(0xFFFF64, common("ingot"), template("electrum_ingot")), SOFT)
+                new MaterialBuilder("Electrum", "electrum", SHINY, new BakableTargetColoramp(0xFFFF64, common("ingot"), template("electrum_ingot")), SOFT)
                         .addParts(DOUBLE_INGOT, DUST, INGOT, NUGGET, PLATE, TINY_DUST).addParts(BLOCK.of(MaterialBlockSet.GOLD))
                         .addParts(WIRE, FINE_WIRE).addParts(CABLE.of(CableTier.MV)).addRecipes(StandardRecipes::apply, SmeltingRecipes::apply)
                         .build());
 
-        MaterialRegistry.addMaterial(new MaterialBuilder("silicon", METALLIC, 0x3C3C50, SOFT).addParts(ITEM_PURE_METAL)
+        MaterialRegistry.addMaterial(new MaterialBuilder("Silicon", "silicon", METALLIC, 0x3C3C50, SOFT).addParts(ITEM_PURE_METAL)
                 .addParts(BLOCK.of(MaterialBlockSet.IRON)).addParts(N_DOPED_PLATE, P_DOPED_PLATE).addParts(PLATE, DOUBLE_INGOT, BATTERY)
                 .addRecipes(StandardRecipes::apply, SmeltingRecipes::apply).build());
 
-        MaterialRegistry.addMaterial(new MaterialBuilder("stainless_steel", SHINY,
+        MaterialRegistry.addMaterial(new MaterialBuilder("Stainless Steel", "stainless_steel", SHINY,
                 new BakableTargetColoramp(0xC8C8DC, common("ingot"), template("stainless_steel_ingot")), HARD)
                 .addParts(BLOCK.of(MaterialBlockSet.IRON))
                 .addParts(BOLT, BLADE, RING, ROTOR, GEAR, ROD, CURVED_PLATE, DOUBLE_INGOT, DUST, INGOT, LARGE_PLATE, NUGGET, PLATE, TINY_DUST)
-                .addParts(HOT_INGOT).addParts(DRILL_HEAD, DRILL).addParts(MACHINE_CASING.of("turbo_machine_casing"))
-                .addParts(MACHINE_CASING_PIPE).addParts(MACHINE_CASING_SPECIAL.of("clean_stainless_steel_machine_casing"))
+                .addParts(HOT_INGOT).addParts(DRILL_HEAD, DRILL).addParts(MACHINE_CASING.of(
+                        "Turbo Machine Casing",
+                        "turbo_machine_casing"))
+                .addParts(MACHINE_CASING_PIPE).addParts(MACHINE_CASING_SPECIAL.of(
+                        "Clean Stainless Steel Machine Casing",
+                        "clean_stainless_steel_machine_casing"))
                 .addParts(ROD_MAGNETIC).addParts(TANK.of(32)).addParts(BARREL.of(4096)).addRecipes(StandardRecipes::apply)
                 .addRecipes((ctx) -> SmeltingRecipes.applyBlastFurnace(ctx, true, 32, 400)).cancelRecipes("polarizer/rod_magnetic").build());
 
         MaterialRegistry
-                .addMaterial(new MaterialBuilder("ruby", SHINY, 0xd1001f, HARD).addParts(DUST, TINY_DUST).addRecipes(StandardRecipes::apply).build());
+                .addMaterial(new MaterialBuilder("Ruby", "ruby", SHINY, 0xd1001f, HARD).addParts(DUST, TINY_DUST).addRecipes(StandardRecipes::apply).build());
 
         MaterialRegistry
                 .addMaterial(
-                        new MaterialBuilder("carbon", DULL, 0x444444, SOFT).addParts(DUST, TINY_DUST, PLATE)
+                        new MaterialBuilder("Carbon","carbon", DULL, 0x444444, SOFT).addParts(DUST, TINY_DUST, PLATE)
                                 .addParts(
                                         LARGE_PLATE
                                                 .withRegister((registeringContext, partContext, part, itemPath, itemId, itemTag) -> NuclearAbsorbable
-                                                        .of(itemPath, 2500, 2 * NuclearConstant.BASE_HEAT_CONDUCTION,
+                                                        .of("Carbon Large Plate", itemPath, 2500, 2 * NuclearConstant.BASE_HEAT_CONDUCTION,
                                                                 INeutronBehaviour.of(NuclearConstant.ScatteringType.MEDIUM, NuclearConstant.CARBON,
                                                                         2),
                                                                 NuclearConstant.DESINTEGRATION_BY_ROD * 2)))
@@ -327,56 +335,56 @@ public class MIMaterials {
                                 .addRecipes(StandardRecipes::apply).build());
 
         MaterialRegistry.addMaterial(
-                new MaterialBuilder("chromium", SHINY, new BakableTargetColoramp(0xFFE6E6, common("ingot"), template("chromium_ingot")), AVERAGE)
+                new MaterialBuilder("Chromium", "chromium", SHINY, new BakableTargetColoramp(0xFFE6E6, common("ingot"), template("chromium_ingot")), AVERAGE)
                         .addParts(CRUSHED_DUST).addParts(BLOCK.of(MaterialBlockSet.GOLD)).addParts(ITEM_PURE_METAL).addParts(HOT_INGOT)
                         .addParts(PLATE, LARGE_PLATE, DOUBLE_INGOT).addRecipes(StandardRecipes::apply)
                         .addRecipes((ctx) -> SmeltingRecipes.applyBlastFurnace(ctx, true, 32, 400)).cancelRecipes("macerator/crushed_dust").build());
 
-        MaterialRegistry.addMaterial(new MaterialBuilder("manganese", DULL, 0xC1C1C1, AVERAGE).addParts(BLOCK.of(MaterialBlockSet.IRON))
+        MaterialRegistry.addMaterial(new MaterialBuilder("Manganese","manganese", DULL, 0xC1C1C1, AVERAGE).addParts(BLOCK.of(MaterialBlockSet.IRON))
                 .addParts(ITEM_PURE_METAL).addParts(CRUSHED_DUST).addRecipes(StandardRecipes::apply).cancelRecipes("macerator/crushed_dust").build());
 
-        MaterialRegistry.addMaterial(new MaterialBuilder("beryllium", SHINY, 0x64B464, HARD).addParts(BLOCK.of(MaterialBlockSet.NETHERITE))
+        MaterialRegistry.addMaterial(new MaterialBuilder("Beryllium", "beryllium", SHINY, 0x64B464, HARD).addParts(BLOCK.of(MaterialBlockSet.NETHERITE))
                 .addParts(DOUBLE_INGOT, DUST, INGOT, NUGGET, PLATE, TINY_DUST).addRecipes(StandardRecipes::apply).build());
 
-        MaterialRegistry.addMaterial(new MaterialBuilder("annealed_copper", SHINY, 0xff924f, SOFT).addParts(ITEM_PURE_METAL)
+        MaterialRegistry.addMaterial(new MaterialBuilder("Annealed Copper", "annealed_copper", SHINY, 0xff924f, SOFT).addParts(ITEM_PURE_METAL)
                 .addParts(BLOCK.of(MaterialBlockSet.COPPER)).addParts(PLATE, WIRE, DOUBLE_INGOT, HOT_INGOT).addParts(CABLE.of(CableTier.EV))
                 .addRecipes(StandardRecipes::apply).addRecipes((ctx) -> SmeltingRecipes.applyBlastFurnace(ctx, false, 64)).build());
 
-        MaterialRegistry.addMaterial(new MaterialBuilder("uranium", DULL, 0x39e600, AVERAGE).addParts(FUEL_ROD.ofAll(NuclearConstant.U))
+        MaterialRegistry.addMaterial(new MaterialBuilder("Uranium","uranium", DULL, 0x39e600, AVERAGE).addParts(FUEL_ROD.ofAll(NuclearConstant.U))
                 .addParts(ITEM_PURE_METAL).addParts(ROD).addParts(BLOCK.of(MaterialBlockSet.GOLD)).addParts(ORE.ofAll(8, 5, 16, COPPER))
                 .addParts(RAW_METAL.of(MaterialRawSet.URANIUM)).addRecipes(StandardRecipes::apply)
                 .addRecipes((ctx) -> SmeltingRecipes.applyBlastFurnace(ctx, 128)).build());
 
         MaterialRegistry.addMaterial(
-                new MaterialBuilder("uranium_235", SHINY, 0xe60045, VERY_HARD).addParts(BLOCK.of(MaterialBlockSet.GOLD)).addParts(ITEM_PURE_METAL)
+                new MaterialBuilder("Uranium 235", "uranium_235", SHINY, 0xe60045, VERY_HARD).addParts(BLOCK.of(MaterialBlockSet.GOLD)).addParts(ITEM_PURE_METAL)
                         .addRecipes(StandardRecipes::apply).addRecipes((ctx) -> SmeltingRecipes.applyBlastFurnace(ctx, 128)).build());
 
         MaterialRegistry.addMaterial(
-                new MaterialBuilder("uranium_238", DULL, 0x55bd33, SOFT).addParts(BLOCK.of(MaterialBlockSet.GOLD)).addParts(ITEM_PURE_METAL)
+                new MaterialBuilder("Uranium 238", "uranium_238", DULL, 0x55bd33, SOFT).addParts(BLOCK.of(MaterialBlockSet.GOLD)).addParts(ITEM_PURE_METAL)
                         .addRecipes(StandardRecipes::apply).addRecipes((ctx) -> SmeltingRecipes.applyBlastFurnace(ctx, 128)).build());
 
-        MaterialRegistry.addMaterial(new MaterialBuilder("le_uranium", DULL, 0x70a33c, VERY_HARD).addParts(FUEL_ROD.ofAll(NuclearConstant.LEU))
+        MaterialRegistry.addMaterial(new MaterialBuilder("LE Uranium","le_uranium", DULL, 0x70a33c, VERY_HARD).addParts(FUEL_ROD.ofAll(NuclearConstant.LEU))
                 .addParts(BLOCK.of(MaterialBlockSet.GOLD)).addParts(ITEM_PURE_METAL).addParts(ROD).addRecipes(StandardRecipes::apply)
                 .addRecipes((ctx) -> SmeltingRecipes.applyBlastFurnace(ctx, 128)).build());
 
-        MaterialRegistry.addMaterial(new MaterialBuilder("he_uranium", DULL, 0xaae838, VERY_HARD).addParts(FUEL_ROD.ofAll(NuclearConstant.HEU))
+        MaterialRegistry.addMaterial(new MaterialBuilder("HE Uranium","he_uranium", DULL, 0xaae838, VERY_HARD).addParts(FUEL_ROD.ofAll(NuclearConstant.HEU))
                 .addParts(BLOCK.of(MaterialBlockSet.GOLD)).addParts(ITEM_PURE_METAL).addParts(ROD).addRecipes(StandardRecipes::apply)
                 .addRecipes((ctx) -> SmeltingRecipes.applyBlastFurnace(ctx, 128)).build());
 
-        MaterialRegistry.addMaterial(new MaterialBuilder("le_mox", SHINY, 0x00e7e5, VERY_HARD).addParts(BLOCK.of(MaterialBlockSet.GOLD))
+        MaterialRegistry.addMaterial(new MaterialBuilder("LE Mox","le_mox", SHINY, 0x00e7e5, VERY_HARD).addParts(BLOCK.of(MaterialBlockSet.GOLD))
                 .addParts(FUEL_ROD.ofAll(NuclearConstant.LE_MOX)).addParts(ITEM_PURE_METAL).addParts(ROD).addRecipes(StandardRecipes::apply)
                 .addRecipes((ctx) -> SmeltingRecipes.applyBlastFurnace(ctx, 128)).build());
 
-        MaterialRegistry.addMaterial(new MaterialBuilder("he_mox", SHINY, 0xcc87fa, VERY_HARD).addParts(BLOCK.of(MaterialBlockSet.GOLD))
+        MaterialRegistry.addMaterial(new MaterialBuilder("HE Mox", "he_mox", SHINY, 0xcc87fa, VERY_HARD).addParts(BLOCK.of(MaterialBlockSet.GOLD))
                 .addParts(FUEL_ROD.ofAll(NuclearConstant.HE_MOX)).addParts(ITEM_PURE_METAL).addParts(ROD).addRecipes(StandardRecipes::apply)
                 .addRecipes((ctx) -> SmeltingRecipes.applyBlastFurnace(ctx, 128)).build());
 
-        MaterialRegistry.addMaterial(new MaterialBuilder("plutonium", SHINY, 0xd701e7, VERY_HARD).addParts(BLOCK.of(MaterialBlockSet.GOLD))
+        MaterialRegistry.addMaterial(new MaterialBuilder("Plutonium", "plutonium", SHINY, 0xd701e7, VERY_HARD).addParts(BLOCK.of(MaterialBlockSet.GOLD))
                 .addParts(ITEM_PURE_METAL).addParts(BATTERY).addRecipes(StandardRecipes::apply)
                 .addRecipes((ctx) -> SmeltingRecipes.applyBlastFurnace(ctx, 128)).build());
 
         MaterialRegistry.addMaterial(
-                new MaterialBuilder("platinum", SHINY, new BakableTargetColoramp(0xffe5ba, common("ingot"), template("platinum_ingot")), AVERAGE)
+                new MaterialBuilder("Platinum", "platinum", SHINY, new BakableTargetColoramp(0xffe5ba, common("ingot"), template("platinum_ingot")), AVERAGE)
                         .addParts(BLOCK.of(MaterialBlockSet.GOLD)).addParts(RAW_METAL.ofAll(MaterialRawSet.GOLD))
                         .addParts(ORE.of(MaterialOreSet.GOLD)).addParts(ITEM_PURE_METAL)
                         .addParts(PLATE, DOUBLE_INGOT, WIRE, FINE_WIRE, HOT_INGOT).addParts(CABLE.of(CableTier.EV))
@@ -384,21 +392,23 @@ public class MIMaterials {
                         .cancelRecipes("macerator/raw_metal").build());
 
         MaterialRegistry.addMaterial(
-                new MaterialBuilder("kanthal", METALLIC, new BakableTargetColoramp(0xcfcb00, common("ingot"), template("kanthal_ingot")), HARD)
+                new MaterialBuilder("Kanthal", "kanthal", METALLIC, new BakableTargetColoramp(0xcfcb00, common("ingot"), template("kanthal_ingot")), HARD)
                         .addParts(TINY_DUST, DUST, PLATE, INGOT, NUGGET, WIRE, DOUBLE_INGOT, HOT_INGOT).addParts(COIL)
                         .addParts(BLOCK.of(MaterialBlockSet.COPPER)).addRecipes((ctx) -> SmeltingRecipes.applyBlastFurnace(ctx, true, 32, 400))
                         .addParts(CABLE.of(CableTier.HV)).addRecipes(StandardRecipes::apply).build());
 
         MaterialRegistry.addMaterial(
-                new MaterialBuilder("iridium", SHINY, new BakableTargetColoramp(0xe1e6f5, common("ingot"), template("iridium_ingot")), VERY_HARD)
+                new MaterialBuilder("Iridium", "iridium", SHINY, new BakableTargetColoramp(0xe1e6f5, common("ingot"), template("iridium_ingot")), VERY_HARD)
                         .addParts(BLOCK.of(MaterialBlockSet.DIAMOND)).addParts(ITEM_PURE_METAL).addParts(CURVED_PLATE)
                         .addParts(ORE.ofAll(10, 1, 16, MaterialOreSet.DIAMOND))
-                        .addParts(MACHINE_CASING.of("quantum_machine_casing", 6000f))
+                        .addParts(MACHINE_CASING.of("Quantum Machine Casing!", "quantum_machine_casing", 6000f))
 
-                        .addParts(TANK.of(Integer.MAX_VALUE).withCustomPath("quantum_tank"))
-                        .addParts(BARREL.of(Integer.MAX_VALUE).withCustomPath("quantum_barrel"))
+                        .addParts(TANK.of("Quantum Tank!", Integer.MAX_VALUE).withCustomPath("quantum_tank"))
+                        .addParts(BARREL.of("Quantum Barrel!", Integer.MAX_VALUE).withCustomPath("quantum_barrel"))
 
-                        .addParts(MACHINE_CASING_SPECIAL.of("plasma_handling_iridium_machine_casing", 6000f))
+                        .addParts(MACHINE_CASING_SPECIAL.of(
+                                "Plasma Handling %s Machine Casing",
+                                "plasma_handling_iridium_machine_casing", 6000f))
                         .addParts(MACHINE_CASING_PIPE.of(6000f))
                         .addParts(RAW_METAL.of(MaterialRawSet.IRIDIUM), PLATE)
 
@@ -409,105 +419,62 @@ public class MIMaterials {
                         .cancelRecipes("assembler/tank")
                         .cancelRecipes("assembler/barrel").build());
 
-        MaterialRegistry.addMaterial(new MaterialBuilder("mozanite", STONE, DUST, 0x96248e, SOFT).addParts(CRUSHED_DUST, DUST, TINY_DUST)
+        MaterialRegistry.addMaterial(new MaterialBuilder("Mozanite", "mozanite", STONE, DUST, 0x96248e, SOFT).addParts(CRUSHED_DUST, DUST, TINY_DUST)
                 .addParts(BLOCK.of(MaterialBlockSet.REDSTONE)).addParts(ORE.ofAll(UniformInt.of(1, 4), 2, 3, 24, MaterialOreSet.LAPIS))
                 .addRecipes(StandardRecipes::apply).build());
 
         MaterialRegistry
-                .addMaterial(new MaterialBuilder("cadmium", DULL, 0x967224, SOFT)
+                .addMaterial(new MaterialBuilder("Cadmium", "cadmium", DULL, 0x967224, SOFT)
                         .addParts(DUST, TINY_DUST, INGOT, PLATE, ROD, DOUBLE_INGOT,
                                 BATTERY)
                         .addParts(
-                                new RegularPart(FUEL_ROD.key)
+                                new RegularPart("Control Rod", FUEL_ROD.key)
                                         .withRegister(
                                                 (registeringContext, partContext, part, itemPath1, itemId, itemTag) -> NuclearAbsorbable
-                                                        .of(itemPath1, 1900, 0.5 * NuclearConstant.BASE_HEAT_CONDUCTION,
+                                                        .of("Cadmium Control Rod", itemPath1, 1900, 0.5 * NuclearConstant.BASE_HEAT_CONDUCTION,
                                                                 INeutronBehaviour.of(NuclearConstant.ScatteringType.HEAVY, NuclearConstant.CADMIUM,
                                                                         1),
                                                                 NuclearConstant.DESINTEGRATION_BY_ROD))
                                         .withCustomFormattablePath("%s_control_rod"))
                         .addRecipes(StandardRecipes::apply, SmeltingRecipes::apply).build());
 
-        MaterialRegistry.addMaterial(new MaterialBuilder("neodymium", STONE, DUST, 0x1d4506, SOFT).addParts(BLOCK.of(MaterialBlockSet.REDSTONE))
+        MaterialRegistry.addMaterial(new MaterialBuilder("Neodymium", "neodymium", STONE, DUST, 0x1d4506, SOFT).addParts(BLOCK.of(MaterialBlockSet.REDSTONE))
                 .addParts(DUST, TINY_DUST).addRecipes(StandardRecipes::apply).build());
 
-        MaterialRegistry.addMaterial(new MaterialBuilder("yttrium", STONE, DUST, 0x135166, SOFT).addParts(BLOCK.of(MaterialBlockSet.REDSTONE))
+        MaterialRegistry.addMaterial(new MaterialBuilder("Yttrium", "yttrium", STONE, DUST, 0x135166, SOFT).addParts(BLOCK.of(MaterialBlockSet.REDSTONE))
                 .addParts(DUST, TINY_DUST).addRecipes(StandardRecipes::apply).build());
 
         MaterialRegistry.addMaterial(
-                new MaterialBuilder("superconductor", SHINY, new BakableTargetColoramp(0x86e3ec, common("ingot"), template("superconductor_ingot")),
+                new MaterialBuilder("Superconductor", "superconductor", SHINY, new BakableTargetColoramp(0x86e3ec, common("ingot"), template("superconductor_ingot")),
                         HARD).addParts(TINY_DUST, DUST, PLATE, INGOT, NUGGET, WIRE, DOUBLE_INGOT, HOT_INGOT).addParts(COIL)
                         .addParts(CABLE.of(CableTier.SUPERCONDUCTOR)).addRecipes(StandardRecipes::apply)
                         .cancelRecipes("craft/cable", "packer/cable").build());
 
         MaterialRegistry.addMaterial(
-                new MaterialBuilder("tungsten", METALLIC, new BakableTargetColoramp(0x8760ad, common("ingot"), template("tungsten_ingot")), VERY_HARD)
+                new MaterialBuilder("Tungsten", "tungsten", METALLIC, new BakableTargetColoramp(0x8760ad, common("ingot"), template("tungsten_ingot")), VERY_HARD)
                         .addParts(RAW_METAL.ofAll(MaterialRawSet.COPPER))
                         .addParts(TINY_DUST, DUST, PLATE, INGOT, NUGGET, LARGE_PLATE, DOUBLE_INGOT, ROD)
                         .addParts(BLOCK.of(MaterialBlockSet.NETHERITE)).addParts(ORE.ofAll(6, 5, 20, MaterialOreSet.IRON))
                         .addRecipes(StandardRecipes::apply).build());
 
         MaterialRegistry
-                .addMaterial(new MaterialBuilder("blastproof_alloy", METALLIC, 0x524c3a, VERY_HARD).addParts(INGOT, PLATE, LARGE_PLATE, CURVED_PLATE)
-                        .addParts(MACHINE_CASING_SPECIAL.of("blastproof_casing", 6000f)).addRecipes(StandardRecipes::apply).build());
+                .addMaterial(new MaterialBuilder("Blastproof Alloy","blastproof_alloy", METALLIC, 0x524c3a, VERY_HARD).addParts(INGOT, PLATE, LARGE_PLATE, CURVED_PLATE)
+                        .addParts(MACHINE_CASING_SPECIAL.of(
+                                "Blastproof Casing!",
+                                "blastproof_casing", 6000f)).addRecipes(StandardRecipes::apply).build());
 
-        MaterialRegistry.addMaterial(new MaterialBuilder("nuclear_alloy", METALLIC, 0x3d4d32, VERY_HARD).addParts(PLATE, LARGE_PLATE)
-                .addParts(MACHINE_CASING_SPECIAL.of("nuclear_casing", 6000f)).addParts(MACHINE_CASING_PIPE.of(6000f))
+        MaterialRegistry.addMaterial(new MaterialBuilder("Nuclear Alloy", "nuclear_alloy", METALLIC, 0x3d4d32, VERY_HARD).addParts(PLATE, LARGE_PLATE)
+                .addParts(MACHINE_CASING_SPECIAL.of(
+                        "%s Casing",
+                        "nuclear_casing", 6000f)).addParts(MACHINE_CASING_PIPE.of(6000f))
                 .addRecipes(StandardRecipes::apply).build());
 
-        MaterialRegistry.addMaterial(new MaterialBuilder("soldering_alloy", DULL, DUST, 0xffabc4bf, SOFT).addParts(DUST, TINY_DUST)
+        MaterialRegistry.addMaterial(new MaterialBuilder("Soldering Alloy","soldering_alloy", DULL, DUST, 0xffabc4bf, SOFT).addParts(DUST, TINY_DUST)
                 .addParts(BLOCK.of(MaterialBlockSet.REDSTONE)).addRecipes(StandardRecipes::apply).build());
 
-        MaterialRegistry.addMaterial(new MaterialBuilder("sulfur", DULL, DUST, 0xddb614, SOFT).addParts(DUST, TINY_DUST)
+        MaterialRegistry.addMaterial(new MaterialBuilder("Sulfur", "sulfur", DULL, DUST, 0xddb614, SOFT).addParts(DUST, TINY_DUST)
                 .addParts(BLOCK.of(MaterialBlockSet.REDSTONE)).addRecipes(StandardRecipes::apply).build());
 
     }
 
-    /**
-     * Add material tags for special parts, like vanilla stuff
-     */
-    private static void addExtraTags() {
-        ResourceUtil.registerItemTag("c:iron_blocks", JTag.tag().add(new ResourceLocation("minecraft:iron_block")));
-        ResourceUtil.registerItemTag("c:iron_ingots", JTag.tag().add(new ResourceLocation("minecraft:iron_ingot")));
-        ResourceUtil.registerItemTag("c:iron_nuggets", JTag.tag().add(new ResourceLocation("minecraft:iron_nugget")));
-        ResourceUtil.registerItemTag("c:iron_ores", JTag.tag().tag(new ResourceLocation("minecraft:iron_ores")));
-        ResourceUtil.registerItemTag("c:raw_iron_ores", JTag.tag().add(new ResourceLocation("minecraft:raw_iron")));
-        ResourceUtil.registerItemTag("c:raw_iron_blocks", JTag.tag().add(new ResourceLocation("minecraft:raw_iron_block")));
-
-        JTag copperBlocks = JTag.tag().add(new ResourceLocation("minecraft:copper_block")).add(new ResourceLocation("minecraft:waxed_copper_block"));
-
-        ResourceUtil.registerItemTag("c:copper_blocks", copperBlocks);
-        ResourceUtil.registerItemTag("c:copper_ingots", JTag.tag().add(new ResourceLocation("minecraft:copper_ingot")));
-        ResourceUtil.registerItemTag("c:copper_ores", JTag.tag().tag(new ResourceLocation("minecraft:copper_ores")));
-        ResourceUtil.registerItemTag("c:raw_copper_ores", JTag.tag().add(new ResourceLocation("minecraft:raw_copper")));
-        ResourceUtil.registerItemTag("c:raw_copper_blocks", JTag.tag().add(new ResourceLocation("minecraft:raw_copper_block")));
-
-        JTag goldOres = JTag.tag().tag(new ResourceLocation("minecraft:gold_ores")); // .add(new Identifier("minecraft:gilded_blackstone"));
-
-        ResourceUtil.registerItemTag("c:gold_blocks", JTag.tag().add(new ResourceLocation("minecraft:gold_block")));
-        ResourceUtil.registerItemTag("c:gold_ingots", JTag.tag().add(new ResourceLocation("minecraft:gold_ingot")));
-        ResourceUtil.registerItemTag("c:gold_nuggets", JTag.tag().add(new ResourceLocation("minecraft:gold_nugget")));
-        ResourceUtil.registerItemTag("c:gold_ores", goldOres);
-        ResourceUtil.registerItemTag("c:raw_gold_ores", JTag.tag().add(new ResourceLocation("minecraft:raw_gold")));
-        ResourceUtil.registerItemTag("c:raw_gold_blocks", JTag.tag().add(new ResourceLocation("minecraft:raw_gold_block")));
-
-        ResourceUtil.registerItemTag("c:coal_ores", JTag.tag().add(new ResourceLocation("minecraft:deepslate_coal_ore")));
-        ResourceUtil.registerItemTag("c:coal_blocks", JTag.tag().add(new ResourceLocation("minecraft:coal_block")));
-        ResourceUtil.registerItemTag("c:coal_ores", JTag.tag().tag(new ResourceLocation("minecraft:coal_ores")));
-
-        ResourceUtil.registerItemTag("c:redstone_ores", JTag.tag().tag(new ResourceLocation("minecraft:redstone_ores")));
-        ResourceUtil.registerItemTag("c:redstone_blocks", JTag.tag().add(new ResourceLocation("minecraft:redstone_block")));
-
-        ResourceUtil.registerItemTag("c:emerald_ores", JTag.tag().tag(new ResourceLocation("minecraft:emerald_ores")));
-        ResourceUtil.registerItemTag("c:emerald_blocks", JTag.tag().add(new ResourceLocation("minecraft:emerald_block")));
-
-        ResourceUtil.registerItemTag("c:diamond_ores", JTag.tag().tag(new ResourceLocation("minecraft:diamond_ores")));
-        ResourceUtil.registerItemTag("c:diamond_blocks", JTag.tag().add(new ResourceLocation("minecraft:diamond_block")));
-
-        ResourceUtil.registerItemTag("c:lapis_ores", JTag.tag().tag(new ResourceLocation("minecraft:lapis_ores")));
-        ResourceUtil.registerItemTag("c:lapis_blocks", JTag.tag().add(new ResourceLocation("minecraft:lapis_block")));
-
-        ResourceUtil.appendToTag("c:items/quartz_ores", "minecraft:nether_quartz_ore");
-
-    }
 }

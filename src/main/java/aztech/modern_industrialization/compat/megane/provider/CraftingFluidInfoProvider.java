@@ -23,11 +23,11 @@
  */
 package aztech.modern_industrialization.compat.megane.provider;
 
-import aztech.modern_industrialization.fluid.CraftingFluid;
+import aztech.modern_industrialization.fluid.MIFluid;
 import lol.bai.megane.api.provider.FluidInfoProvider;
 import net.minecraft.network.chat.Component;
 
-public class CraftingFluidInfoProvider extends FluidInfoProvider<CraftingFluid> {
+public class CraftingFluidInfoProvider extends FluidInfoProvider<MIFluid> {
 
     @Override
     public int getColor() {

@@ -23,15 +23,10 @@
  */
 package aztech.modern_industrialization.fluid;
 
-import aztech.modern_industrialization.MIFluids;
-import aztech.modern_industrialization.ModernIndustrialization;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariantAttributeHandler;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariantAttributes;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.state.BlockState;
@@ -43,37 +38,15 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 /**
  * A fluid that can only be used for crafting, i.e. not be placed in the world.
  */
-public class CraftingFluid extends Fluid {
-    public final Item bucketItem;
-    public final String name;
-    public final String id;
+public class MIFluid extends Fluid {
+
+    public final MIFluidBlock block;
     public final int color;
-    public final boolean isGas;
-    public final CraftingFluidBlock block;
+    private BucketItem bucketItem;
 
-    public CraftingFluid(String name, int color, boolean isGas) {
+    public MIFluid(MIFluidBlock block, int color) {
+        this.block = block;
         this.color = color;
-
-        this.name = name;
-        this.id = "modern_industrialization:" + name;
-        this.isGas = isGas;
-        bucketItem = new MIBucketItem(this, new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1).tab(ModernIndustrialization.ITEM_GROUP));
-        this.block = new CraftingFluidBlock(name, color);
-
-        MIFluids.FLUIDS.add(this);
-
-        if (isGas) {
-            FluidVariantAttributes.register(this, new FluidVariantAttributeHandler() {
-                @Override
-                public boolean isLighterThanAir(FluidVariant variant) {
-                    return true;
-                }
-            });
-        }
-    }
-
-    public CraftingFluid(String name, int color) {
-        this(name, color, false);
     }
 
     @Override
@@ -129,5 +102,9 @@ public class CraftingFluid extends Fluid {
     @Override
     public VoxelShape getShape(FluidState state, BlockGetter world, BlockPos pos) {
         return null;
+    }
+
+    public void setBucketItem(BucketItem bucketItem) {
+        this.bucketItem = bucketItem;
     }
 }

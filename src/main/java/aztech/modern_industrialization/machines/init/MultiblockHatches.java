@@ -45,17 +45,17 @@ import net.fabricmc.loader.api.FabricLoader;
 
 public class MultiblockHatches {
     public static void init() {
-        registerItemHatches("bronze", MachineCasings.BRONZE, 1, 1, 80, 40);
-        registerItemHatches("steel", MachineCasings.STEEL, 2, 1, 80, 30);
-        registerItemHatches("advanced", MachineCasings.MV, 2, 2, 71, 30);
-        registerItemHatches("turbo", MachineCasings.HV, 3, 3, 62, 21);
-        registerItemHatches("highly_advanced", MachineCasings.EV, 3, 5, 44, 18);
+        registerItemHatches("Bronze", "bronze", MachineCasings.BRONZE, 1, 1, 80, 40);
+        registerItemHatches("Steel", "steel", MachineCasings.STEEL, 2, 1, 80, 30);
+        registerItemHatches("Advanced", "advanced", MachineCasings.MV, 2, 2, 71, 30);
+        registerItemHatches("Turbo", "turbo", MachineCasings.HV, 3, 3, 62, 21);
+        registerItemHatches("Highly Advanced", "highly_advanced", MachineCasings.EV, 3, 5, 44, 18);
 
-        registerFluidHatches("bronze", MachineCasings.BRONZE, 4);
-        registerFluidHatches("steel", MachineCasings.STEEL, 8);
-        registerFluidHatches("advanced", MachineCasings.MV, 16);
-        registerFluidHatches("turbo", MachineCasings.HV, 32);
-        registerFluidHatches("highly_advanced", MachineCasings.EV, 64);
+        registerFluidHatches("Bronze", "bronze", MachineCasings.BRONZE, 4);
+        registerFluidHatches("Steel", "steel", MachineCasings.STEEL, 8);
+        registerFluidHatches("Advanced", "advanced", MachineCasings.MV, 16);
+        registerFluidHatches("Turbo", "turbo", MachineCasings.HV, 32);
+        registerFluidHatches("Highly Advanced", "highly_advanced", MachineCasings.EV, 64);
 
         registerEnergyHatches(CableTier.LV);
         registerEnergyHatches(CableTier.MV);
@@ -63,8 +63,11 @@ public class MultiblockHatches {
         registerEnergyHatches(CableTier.EV);
         registerEnergyHatches(CableTier.SUPERCONDUCTOR);
 
-        MachineRegistrationHelper.registerMachine("nuclear_item_hatch", bet -> new NuclearHatch(bet, false), NuclearHatch::registerItemApi);
-        MachineRegistrationHelper.registerMachine("nuclear_fluid_hatch", bet -> new NuclearHatch(bet, true), NuclearHatch::registerFluidApi);
+        MachineRegistrationHelper.registerMachine(
+                "Nuclear Item Hatch",
+                "nuclear_item_hatch", bet -> new NuclearHatch(bet, false), NuclearHatch::registerItemApi);
+        MachineRegistrationHelper.registerMachine("Nuclear Fluid Hatch", "nuclear_fluid_hatch", bet -> new NuclearHatch(bet, true),
+                NuclearHatch::registerFluidApi);
 
         if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
             MachineModels.addTieredMachine("nuclear_item_hatch", "hatch_nuclear", MachineCasings.NUCLEAR, false, true, false, false);
@@ -72,11 +75,13 @@ public class MultiblockHatches {
         }
     }
 
-    private static void registerItemHatches(String prefix, MachineCasing casing, int rows, int columns, int xStart, int yStart) {
+    private static void registerItemHatches(
+            String englishPrefix, String prefix, MachineCasing casing, int rows, int columns, int xStart, int yStart) {
         for (int iter = 0; iter < 2; ++iter) {
             boolean input = iter == 0;
             String machine = prefix + "_item_" + (input ? "input" : "output") + "_hatch";
-            MachineRegistrationHelper.registerMachine(machine, bet -> {
+            String englishName = englishPrefix + " Item" + (input ? " Input" : " Output") + " Hatch";
+            MachineRegistrationHelper.registerMachine(englishName, machine, bet -> {
                 List<ConfigurableItemStack> itemStacks = new ArrayList<>();
                 for (int i = 0; i < rows * columns; ++i) {
                     if (input) {
@@ -98,11 +103,12 @@ public class MultiblockHatches {
     public static final int FLUID_HATCH_SLOT_X = 80;
     public static final int FLUID_HATCH_SLOT_Y = 40;
 
-    private static void registerFluidHatches(String prefix, MachineCasing casing, int bucketCapacity) {
+    private static void registerFluidHatches(String englishPrefix, String prefix, MachineCasing casing, int bucketCapacity) {
         for (int iter = 0; iter < 2; ++iter) {
             boolean input = iter == 0;
             String machine = prefix + "_fluid_" + (input ? "input" : "output") + "_hatch";
-            MachineRegistrationHelper.registerMachine(machine, bet -> {
+            String englishName = englishPrefix + " Fluid" + (input ? " Input" : " Output") + " Hatch";
+            MachineRegistrationHelper.registerMachine(englishName, machine, bet -> {
                 List<ConfigurableFluidStack> fluidStacks = Collections
                         .singletonList(input ? ConfigurableFluidStack.standardInputSlot(bucketCapacity * 81000L)
                                 : ConfigurableFluidStack.standardOutputSlot(bucketCapacity * 81000L));
@@ -120,7 +126,9 @@ public class MultiblockHatches {
         for (int iter = 0; iter < 2; ++iter) {
             boolean input = iter == 0;
             String machine = tier.name + "_energy_" + (input ? "input" : "output") + "_hatch";
-            MachineRegistrationHelper.registerMachine(machine, bet -> new EnergyHatch(bet, machine, input, tier), EnergyHatch::registerEnergyApi);
+            String englishName = tier.englishName + " Energy" + (input ? " Input" : " Output") + " Hatch";
+            MachineRegistrationHelper.registerMachine(englishName, machine, bet -> new EnergyHatch(bet, machine, input, tier),
+                    EnergyHatch::registerEnergyApi);
             if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
                 MachineModels.addTieredMachine(machine, "hatch_energy", MachineCasings.casingFromCableTier(tier), true, false, true, false);
             }

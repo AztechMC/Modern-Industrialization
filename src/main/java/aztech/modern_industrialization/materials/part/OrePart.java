@@ -30,22 +30,20 @@ import aztech.modern_industrialization.MIConfig;
 import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.blocks.OreBlock;
 import aztech.modern_industrialization.datagen.tag.TagsToGenerate;
+import aztech.modern_industrialization.definition.BlockDefinition;
 import aztech.modern_industrialization.materials.set.MaterialOreSet;
 import aztech.modern_industrialization.textures.TextureHelper;
 import com.google.common.collect.ImmutableList;
-import com.google.gson.Gson;
-import com.google.gson.JsonElement;
 import com.mojang.blaze3d.platform.NativeImage;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import net.devtech.arrp.json.loot.*;
 import net.fabricmc.fabric.api.biome.v1.BiomeModifications;
 import net.fabricmc.fabric.api.biome.v1.BiomeSelectors;
-import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.core.Registry;
 import net.minecraft.data.BuiltinRegistries;
+import net.minecraft.data.loot.BlockLoot;
 import net.minecraft.data.worldgen.features.OreFeatures;
 import net.minecraft.data.worldgen.placement.OrePlacements;
 import net.minecraft.resources.ResourceKey;
@@ -89,112 +87,103 @@ public class OrePart extends UnbuildablePart<OrePart.OrePartParams> {
 
     @Override
     public BuildablePart of(OrePartParams oreParams) {
-        return new RegularPart(key).withRegister((registeringContext, partContext, part, itemPath, itemId, itemTag) -> {
-            MIBlock block = new OreBlock(itemPath, FabricBlockSettings.of(STONE_MATERIAL)
-                    .destroyTime(deepslate ? 4.5f : 3.0f).explosionResistance(3.0f)
-                    .sound(deepslate ? SoundType.DEEPSLATE : SoundType.STONE).requiresCorrectToolForDrops(),
-                    oreParams, partContext.getMaterialName());
-            block.setPickaxeMineable().setMiningLevel(1);
+        return new RegularPart("", key)
+                .withRegister((registeringContext, partContext, part, itemPath, itemId, itemTag) -> {
 
-            Part mainPart = partContext.getMainPart();
-            String loot;
-            if (mainPart.equals(MIParts.INGOT)) {
-                loot = registeringContext.getMaterialPart(MIParts.RAW_METAL).getItemId();
-            } else if (mainPart.equals(MIParts.DUST)) {
-                loot = registeringContext.getMaterialPart(MIParts.DUST).getItemId();
-            } else if (mainPart.equals(MIParts.GEM)) {
-                loot = registeringContext.getMaterialPart(MIParts.GEM).getItemId();
-            } else {
-                throw new UnsupportedOperationException("Could not find matching main part.");
-            }
+                    Part mainPart = partContext.getMainPart();
+                    String loot;
+                    if (mainPart.equals(MIParts.INGOT)) {
+                        loot = registeringContext.getMaterialPart(MIParts.RAW_METAL).getItemId();
+                    } else if (mainPart.equals(MIParts.DUST)) {
+                        loot = registeringContext.getMaterialPart(MIParts.DUST).getItemId();
+                    } else if (mainPart.equals(MIParts.GEM)) {
+                        loot = registeringContext.getMaterialPart(MIParts.GEM).getItemId();
+                    } else {
+                        throw new UnsupportedOperationException("Could not find matching main part.");
+                    }
 
-            // Sanity check: Ensure that ores don't drop xp, iff the main part is an ingot
-            // (i.e. the drop is raw ore).
-            if (mainPart.equals(MIParts.INGOT) != (oreParams.xpDropped.getMaxValue() == 0)) {
-                throw new IllegalArgumentException("Mismatch between raw ore and xp drops for material: " + partContext.getMaterialName());
-            }
+                    BlockDefinition<OreBlock> oreBlockBlockDefinition;
+                    oreBlockBlockDefinition = MIBlock.block(
+                            RegularPart.getEnglishName(deepslate ? "Deepslate %s Ore" : "Ore", partContext.getEnglishName()),
+                            itemPath,
+                            MIBlock.BlockDefinitionParams.of(STONE_MATERIAL)
+                                    .withBlockConstructor(s -> new OreBlock(s, oreParams, partContext.getMaterialName()))
+                                    .withLootTable((block, lootGenerator) -> lootGenerator.add(block,
+                                            BlockLoot.createOreDrop(block, Registry.ITEM.get(new ResourceLocation(loot)))))
+                                    .destroyTime(deepslate ? 4.5f : 3.0f).explosionResistance(3.0f)
+                                    .sound(deepslate ? SoundType.DEEPSLATE : SoundType.STONE),
+                            OreBlock.class);
 
-            block.setLootTables(JLootTable.loot("minecraft:block")
-                    .pool(new JPool().rolls(1).bonus(0).entry(new JEntry().type("minecraft:alternatives").child(new JEntry().type("minecraft:item")
-                            .condition(new JCondition("minecraft:match_tool").parameter("predicate", new Gson().fromJson("""
-                                    {
-                                    "enchantments": [
-                                      {
-                                        "enchantment": "minecraft:silk_touch",
-                                        "levels": {
-                                          "min": 1
-                                        }
-                                      }
-                                    ]
-                                    }
-                                    """, JsonElement.class))).name(itemId)
+                    // Sanity check: Ensure that ores don't drop xp, iff the main part is an ingot
+                    // (i.e. the drop is raw ore).
+                    if (mainPart.equals(MIParts.INGOT) != (oreParams.xpDropped.getMaxValue() == 0)) {
+                        throw new IllegalArgumentException("Mismatch between raw ore and xp drops for material: " + partContext.getMaterialName());
+                    }
 
-                    ).child(new JEntry().type("minecraft:item").function(new JFunction("minecraft:apply_bonus")
-                            .parameter("enchantment", "minecraft:fortune").parameter("formula", "minecraft:ore_drops"))
-                            .function(new JFunction("minecraft:explosion_decay")).name(loot)))));
+                    TagsToGenerate.generateTag("c:" + partContext.getMaterialName() + "_ores", oreBlockBlockDefinition.asItem());
 
-            TagsToGenerate.generateTag("c:" + partContext.getMaterialName() + "_ores", block.blockItem);
+                    MIConfig config = MIConfig.getConfig();
 
-            MIConfig config = MIConfig.getConfig();
+                    if (oreParams.generate) {
+                        GENERATED_MATERIALS.add(partContext.getMaterialName());
+                        if (config.generateOres && !config.blacklistedOres.contains(partContext.getMaterialName())) {
+                            // TODO 1.18
 
-            if (oreParams.generate) {
-                GENERATED_MATERIALS.add(partContext.getMaterialName());
-                if (config.generateOres && !config.blacklistedOres.contains(partContext.getMaterialName())) {
-                    // TODO 1.18
+                            ResourceLocation oreGenId = new MIIdentifier(
+                                    (deepslate ? "deepslate_" : "") + "ore_generator_" + partContext.getMaterialName());
 
-                    ResourceLocation oreGenId = new MIIdentifier((deepslate ? "deepslate_" : "") + "ore_generator_" + partContext.getMaterialName());
+                            var target = ImmutableList.of(OreConfiguration.target(
+                                    deepslate ? OreFeatures.DEEPSLATE_ORE_REPLACEABLES : OreFeatures.STONE_ORE_REPLACEABLES,
+                                    oreBlockBlockDefinition.asBlock().defaultBlockState()));
 
-                    var target = ImmutableList.of(OreConfiguration.target(
-                            deepslate ? OreFeatures.DEEPSLATE_ORE_REPLACEABLES : OreFeatures.STONE_ORE_REPLACEABLES,
-                            block.defaultBlockState()));
+                            var configuredOreGen = BuiltinRegistries.register(
+                                    BuiltinRegistries.CONFIGURED_FEATURE, oreGenId,
+                                    new ConfiguredFeature<>(Feature.ORE, new OreConfiguration(target, oreParams.veinSize)));
 
-                    var configuredOreGen = BuiltinRegistries.register(
-                            BuiltinRegistries.CONFIGURED_FEATURE, oreGenId,
-                            new ConfiguredFeature<>(Feature.ORE, new OreConfiguration(target, oreParams.veinSize)));
+                            Registry.register(
+                                    BuiltinRegistries.PLACED_FEATURE,
+                                    oreGenId,
+                                    new PlacedFeature(configuredOreGen,
+                                            OrePlacements.commonOrePlacement(
+                                                    oreParams.veinsPerChunk,
+                                                    HeightRangePlacement.uniform(VerticalAnchor.bottom(),
+                                                            VerticalAnchor.absolute(oreParams.maxYLevel)))));
 
-                    Registry.register(
-                            BuiltinRegistries.PLACED_FEATURE,
-                            oreGenId,
-                            new PlacedFeature(configuredOreGen,
-                                    OrePlacements.commonOrePlacement(
-                                            oreParams.veinsPerChunk,
-                                            HeightRangePlacement.uniform(VerticalAnchor.bottom(), VerticalAnchor.absolute(oreParams.maxYLevel)))));
+                            var featureKey = ResourceKey.create(Registry.PLACED_FEATURE_REGISTRY, oreGenId);
+                            BiomeModifications.addFeature(BiomeSelectors.foundInOverworld(), GenerationStep.Decoration.UNDERGROUND_ORES, featureKey);
 
-                    var featureKey = ResourceKey.create(Registry.PLACED_FEATURE_REGISTRY, oreGenId);
-                    BiomeModifications.addFeature(BiomeSelectors.foundInOverworld(), GenerationStep.Decoration.UNDERGROUND_ORES, featureKey);
+                        }
+                    }
 
-                }
-            }
+                }).withTextureRegister((mtm, partContext, part, itemPath) -> {
+                    String template = String.format("modern_industrialization:textures/materialsets/ores/%s.png", oreParams.set.name);
+                    try {
 
-        }).withTextureRegister((mtm, partContext, part, itemPath) -> {
-            String template = String.format("modern_industrialization:textures/materialsets/ores/%s.png", oreParams.set.name);
-            try {
+                        String from =
 
-                String from =
+                                switch (oreParams.set) {
+                        case IRON -> deepslate ? "deepslate_iron_ore" : "iron_ore";
+                        case COPPER -> deepslate ? "deepslate_copper_ore" : "copper_ore";
+                        case LAPIS -> deepslate ? "deepslate_lapis_ore" : "lapis_ore";
+                        case REDSTONE -> deepslate ? "deepslate" : "redstone_ore";
+                        case DIAMOND -> deepslate ? "deepslate" : "diamond_ore";
+                        case GOLD -> deepslate ? "deepslate_gold_ore" : "gold_ore";
+                        case EMERALD -> deepslate ? "deepslate_emerald_ore" : "emerald_ore";
+                        case COAL -> deepslate ? "deepslate_coal_ore" : "coal_ore";
+                        default -> deepslate ? "deepslate" : "stone";
+                        };
 
-                        switch (oreParams.set) {
-                case IRON -> deepslate ? "deepslate_iron_ore" : "iron_ore";
-                case COPPER -> deepslate ? "deepslate_copper_ore" : "copper_ore";
-                case LAPIS -> deepslate ? "deepslate_lapis_ore" : "lapis_ore";
-                case REDSTONE -> deepslate ? "deepslate" : "redstone_ore";
-                case DIAMOND -> deepslate ? "deepslate" : "diamond_ore";
-                case GOLD -> deepslate ? "deepslate_gold_ore" : "gold_ore";
-                case EMERALD -> deepslate ? "deepslate_emerald_ore" : "emerald_ore";
-                case COAL -> deepslate ? "deepslate_coal_ore" : "coal_ore";
-                default -> deepslate ? "deepslate" : "stone";
-                };
-
-                NativeImage image = mtm.getAssetAsTexture(String.format("minecraft:textures/block/%s.png", from));
-                NativeImage top = mtm.getAssetAsTexture(template);
-                TextureHelper.colorize(top, partContext.getColoramp());
-                String texturePath = String.format("modern_industrialization:textures/blocks/%s.png", itemPath);
-                mtm.addTexture(texturePath, TextureHelper.blend(image, top), true);
-                top.close();
-                image.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }).withCustomFormattablePath((deepslate ? "deepslate_" : "") + "%s_ore", "%s_ores");
+                        NativeImage image = mtm.getAssetAsTexture(String.format("minecraft:textures/block/%s.png", from));
+                        NativeImage top = mtm.getAssetAsTexture(template);
+                        TextureHelper.colorize(top, partContext.getColoramp());
+                        String texturePath = String.format("modern_industrialization:textures/block/%s.png", itemPath);
+                        mtm.addTexture(texturePath, TextureHelper.blend(image, top), true);
+                        top.close();
+                        image.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }).withCustomFormattablePath((deepslate ? "deepslate_" : "") + "%s_ore", "%s_ores");
     }
 
     public List<BuildablePart> ofAll(OrePartParams params) {

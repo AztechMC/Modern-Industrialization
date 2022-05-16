@@ -43,7 +43,7 @@ public class RawMetalPart extends UnbuildablePart<MaterialRawSet> {
 
     @Override
     public BuildablePart of(MaterialRawSet set) {
-        RegularPart part = new RegularPart(key);
+        RegularPart part = new RegularPart(isBlock ? "Block of Raw %s" : "Raw %s", key);
 
         if (isBlock) {
             part = part.asBlock(5, 6, 1);
@@ -56,9 +56,9 @@ public class RawMetalPart extends UnbuildablePart<MaterialRawSet> {
                 TextureHelper.colorize(image, partContext.getColoramp());
                 String texturePath;
                 if (isBlock) {
-                    texturePath = String.format("modern_industrialization:textures/blocks/%s.png", itemPath);
+                    texturePath = String.format("modern_industrialization:textures/block/%s.png", itemPath);
                 } else {
-                    texturePath = String.format("modern_industrialization:textures/items/%s.png", itemPath);
+                    texturePath = String.format("modern_industrialization:textures/item/%s.png", itemPath);
                 }
                 mtm.addTexture(texturePath, image);
                 image.close();

@@ -3,6 +3,6 @@
   "textures": {
     "top": "minecraft:block/tnt_top",
     "bottom": "minecraft:block/tnt_bottom",
-    "side": "modern_industrialization:blocks/itnt"
+    "side": "modern_industrialization:block/itnt"
   }
 }

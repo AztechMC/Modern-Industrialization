@@ -87,16 +87,16 @@ public interface INuclearComponent<T extends TransferVariant> {
     public static INuclearComponent of(FluidVariant fluid) {
         if (fluid.equals(FluidVariant.of(Fluids.WATER))) {
             return INuclearComponent.of(fluid, NuclearConstant.BASE_HEAT_CONDUCTION * 5, 1, NuclearConstant.ScatteringType.ULTRA_LIGHT,
-                    NuclearConstant.HYDROGEN, FluidVariant.of(MIFluids.DEUTERIUM), false);
-        } else if (fluid.equals(FluidVariant.of(MIFluids.HEAVY_WATER))) {
+                    NuclearConstant.HYDROGEN, MIFluids.DEUTERIUM.variant(), false);
+        } else if (fluid.equals(MIFluids.HEAVY_WATER.variant())) {
             return INuclearComponent.of(fluid, NuclearConstant.BASE_HEAT_CONDUCTION * 6, 1, NuclearConstant.ScatteringType.LIGHT,
-                    NuclearConstant.DEUTERIUM, FluidVariant.of(MIFluids.TRITIUM), false);
-        } else if (fluid.equals(FluidVariant.of(MIFluids.HIGH_PRESSURE_WATER))) {
+                    NuclearConstant.DEUTERIUM, MIFluids.TRITIUM.variant(), false);
+        } else if (fluid.equals(MIFluids.HIGH_PRESSURE_WATER.variant())) {
             return INuclearComponent.of(fluid, NuclearConstant.BASE_HEAT_CONDUCTION * 5, 4, NuclearConstant.ScatteringType.ULTRA_LIGHT,
-                    NuclearConstant.HYDROGEN, FluidVariant.of(MIFluids.DEUTERIUM), true);
-        } else if (fluid.equals(FluidVariant.of(MIFluids.HIGH_PRESSURE_HEAVY_WATER))) {
+                    NuclearConstant.HYDROGEN, MIFluids.DEUTERIUM.variant(), true);
+        } else if (fluid.equals(MIFluids.HIGH_PRESSURE_HEAVY_WATER.variant())) {
             return INuclearComponent.of(fluid, NuclearConstant.BASE_HEAT_CONDUCTION * 6, 4, NuclearConstant.ScatteringType.LIGHT,
-                    NuclearConstant.DEUTERIUM, FluidVariant.of(MIFluids.TRITIUM), true);
+                    NuclearConstant.DEUTERIUM, MIFluids.TRITIUM.variant(), true);
         }
         return null;
     }

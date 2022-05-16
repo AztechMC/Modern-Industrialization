@@ -27,7 +27,7 @@ import net.minecraft.core.Registry;
 import net.minecraft.world.item.Item;
 
 @SuppressWarnings({ "FieldCanBeLocal", "MismatchedQueryAndUpdateOfCollection", "UnusedDeclaration" })
-public class SmithingRecipeJson extends RecipeJson<SmithingRecipeJson> {
+public class SmithingRecipeJson extends RecipeJson {
 
     private final String type;
     private final Ingredient base;

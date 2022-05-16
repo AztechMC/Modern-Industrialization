@@ -19,7 +19,7 @@
       "tag": "modern_industrialization:fluid_pipes"
     },
     "g" :{
-      "item": "minecraft:glass"
+      "tag": "c:glass_blocks"
     }
   },
   "result": {

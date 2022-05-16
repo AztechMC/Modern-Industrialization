@@ -46,7 +46,7 @@ public class FluidFuelsCategory implements DisplayCategory<FluidFuelDisplay> {
 
     @Override
     public Renderer getIcon() {
-        return EntryStacks.of(MIFluids.DIESEL.bucketItem);
+        return EntryStacks.of(MIFluids.DIESEL.getBucket());
     }
 
     @Override

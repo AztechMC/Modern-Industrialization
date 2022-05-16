@@ -28,7 +28,7 @@ import aztech.modern_industrialization.materials.MaterialBuilder;
 
 public class MIItemPart {
 
-    public static MaterialPart of(Part part, String itemPath) {
+    public static MaterialPart of(Part part, String englishName, String itemPath) {
 
         String itemId = "modern_industrialization:" + itemPath;
 
@@ -50,7 +50,7 @@ public class MIItemPart {
 
             @Override
             public void register(MaterialBuilder.RegisteringContext context) {
-                MIItem.of(itemPath);
+                MIItem.item(englishName, itemPath);
             }
         };
     }

@@ -40,28 +40,28 @@ public class MachineModelsToGenerate {
             var defaultOverlays = new JsonObject();
 
             if (top) {
-                defaultOverlays.addProperty("top", "modern_industrialization:blocks/machines/%s/overlay_top".formatted(overlay));
+                defaultOverlays.addProperty("top", "modern_industrialization:block/machines/%s/overlay_top".formatted(overlay));
                 if (active) {
-                    defaultOverlays.addProperty("top_active", "modern_industrialization:blocks/machines/%s/overlay_top_active".formatted(overlay));
+                    defaultOverlays.addProperty("top_active", "modern_industrialization:block/machines/%s/overlay_top_active".formatted(overlay));
                 }
             }
             if (front) {
-                defaultOverlays.addProperty("front", "modern_industrialization:blocks/machines/%s/overlay_front".formatted(overlay));
+                defaultOverlays.addProperty("front", "modern_industrialization:block/machines/%s/overlay_front".formatted(overlay));
                 if (active) {
                     defaultOverlays.addProperty("front_active",
-                            "modern_industrialization:blocks/machines/%s/overlay_front_active".formatted(overlay));
+                            "modern_industrialization:block/machines/%s/overlay_front_active".formatted(overlay));
                 }
             }
             if (side) {
-                defaultOverlays.addProperty("side", "modern_industrialization:blocks/machines/%s/overlay_side".formatted(overlay));
+                defaultOverlays.addProperty("side", "modern_industrialization:block/machines/%s/overlay_side".formatted(overlay));
                 if (active) {
-                    defaultOverlays.addProperty("side_active", "modern_industrialization:blocks/machines/%s/overlay_side_active".formatted(overlay));
+                    defaultOverlays.addProperty("side_active", "modern_industrialization:block/machines/%s/overlay_side_active".formatted(overlay));
                 }
             }
 
-            defaultOverlays.addProperty("output", "modern_industrialization:blocks/overlays/output");
-            defaultOverlays.addProperty("item_auto", "modern_industrialization:blocks/overlays/item_auto");
-            defaultOverlays.addProperty("fluid_auto", "modern_industrialization:blocks/overlays/fluid_auto");
+            defaultOverlays.addProperty("output", "modern_industrialization:block/overlays/output");
+            defaultOverlays.addProperty("item_auto", "modern_industrialization:block/overlays/item_auto");
+            defaultOverlays.addProperty("fluid_auto", "modern_industrialization:block/overlays/fluid_auto");
 
             obj.add("default_overlays", defaultOverlays);
             return obj;

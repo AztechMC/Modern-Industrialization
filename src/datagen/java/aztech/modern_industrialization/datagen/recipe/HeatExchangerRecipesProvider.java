@@ -24,13 +24,13 @@
 package aztech.modern_industrialization.datagen.recipe;
 
 import aztech.modern_industrialization.MIFluids;
-import aztech.modern_industrialization.fluid.CraftingFluid;
+import aztech.modern_industrialization.definition.FluidDefinition;
+import aztech.modern_industrialization.definition.FluidLike;
 import aztech.modern_industrialization.machines.init.MIMachineRecipeTypes;
 import aztech.modern_industrialization.recipe.json.MIRecipeJson;
 import java.util.function.Consumer;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.minecraft.data.recipes.FinishedRecipe;
-import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
 
 public class HeatExchangerRecipesProvider extends MIRecipesProvider {
@@ -39,21 +39,20 @@ public class HeatExchangerRecipesProvider extends MIRecipesProvider {
         super(dataGenerator);
     }
 
-    private static String fluidToString(Fluid f, boolean id) {
-        if (f == Fluids.WATER) {
+    private static String fluidToString(FluidLike f, boolean id) {
+        if (f.asFluid() == Fluids.WATER) {
             return (id ? "minecraft:" : "") + "water";
-        } else if (f == Fluids.LAVA) {
+        } else if (f.asFluid() == Fluids.LAVA) {
             return (id ? "minecraft:" : "") + "lava";
         } else {
-            CraftingFluid fluid = (CraftingFluid) f;
-            return (id ? "modern_industrialization:" : "") + fluid.name;
+            return ((FluidDefinition) f).getResourceAsString(id);
         }
     }
 
     @Override
     protected void generateRecipes(Consumer<FinishedRecipe> consumer) {
-        Fluid[] hots = { MIFluids.STEAM, MIFluids.HEAVY_WATER_STEAM, MIFluids.HIGH_PRESSURE_HEAVY_WATER_STEAM, MIFluids.HIGH_PRESSURE_STEAM };
-        Fluid[] cold = { Fluids.WATER, MIFluids.HEAVY_WATER, MIFluids.HIGH_PRESSURE_HEAVY_WATER, MIFluids.HIGH_PRESSURE_WATER };
+        FluidLike[] hots = { MIFluids.STEAM, MIFluids.HEAVY_WATER_STEAM, MIFluids.HIGH_PRESSURE_HEAVY_WATER_STEAM, MIFluids.HIGH_PRESSURE_STEAM };
+        FluidLike[] cold = { FluidLike.of(Fluids.WATER), MIFluids.HEAVY_WATER, MIFluids.HIGH_PRESSURE_HEAVY_WATER, MIFluids.HIGH_PRESSURE_WATER };
         int[] amount = { 1, 1, 8, 8 };
 
         int amountBaseHot = 16000;

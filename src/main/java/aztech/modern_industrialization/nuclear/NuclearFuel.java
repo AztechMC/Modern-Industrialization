@@ -28,6 +28,7 @@ import aztech.modern_industrialization.MIItem;
 import aztech.modern_industrialization.util.TextHelper;
 import java.util.List;
 import java.util.Random;
+import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.minecraft.core.Registry;
 import net.minecraft.network.chat.Component;
@@ -54,7 +55,7 @@ public class NuclearFuel extends NuclearAbsorbable {
             double neutronMultiplicationFactor, double directEnergyFactor, int size) {
     }
 
-    public NuclearFuel(Properties settings, NuclearFuelParams params, INeutronBehaviour neutronBehaviour, String depletedVersionId) {
+    public NuclearFuel(FabricItemSettings settings, NuclearFuelParams params, INeutronBehaviour neutronBehaviour, String depletedVersionId) {
 
         this(settings, params.desintegrationMax, params.maxTemperature, params.tempLimitLow, params.tempLimitHigh, params.neutronMultiplicationFactor,
                 params.directEnergyFactor, neutronBehaviour, params.size, depletedVersionId);
@@ -65,7 +66,7 @@ public class NuclearFuel extends NuclearAbsorbable {
         return 25 * (int) (temperature / 25d);
     }
 
-    private NuclearFuel(Properties settings, int desintegrationMax, int maxTemperature, int tempLimitLow, int tempLimitHigh,
+    private NuclearFuel(FabricItemSettings settings, int desintegrationMax, int maxTemperature, int tempLimitLow, int tempLimitHigh,
             double neutronMultiplicationFactor, double directEnergyFactor, INeutronBehaviour neutronBehaviour, int size, String depletedVersionId) {
 
         super(settings, clampTemp(maxTemperature), 0.8 * NuclearConstant.BASE_HEAT_CONDUCTION, neutronBehaviour, desintegrationMax);
@@ -83,9 +84,10 @@ public class NuclearFuel extends NuclearAbsorbable {
 
     }
 
-    public static NuclearFuel of(String id, NuclearFuelParams params, INeutronBehaviour neutronBehaviour, String depletedVersionId) {
-
-        return (NuclearFuel) MIItem.of((Properties settings) -> new NuclearFuel(settings, params, neutronBehaviour, depletedVersionId), id, 1);
+    public static NuclearFuel of(String englishName, String id, NuclearFuelParams params, INeutronBehaviour neutronBehaviour,
+            String depletedVersionId) {
+        return MIItem.item(englishName, id, (settings) -> new NuclearFuel(settings.maxCount(1), params, neutronBehaviour, depletedVersionId))
+                .asItem();
     }
 
     @Override

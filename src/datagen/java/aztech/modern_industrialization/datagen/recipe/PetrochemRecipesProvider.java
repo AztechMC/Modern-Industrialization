@@ -26,7 +26,8 @@ package aztech.modern_industrialization.datagen.recipe;
 import static aztech.modern_industrialization.MIFluids.*;
 
 import aztech.modern_industrialization.MIIdentifier;
-import aztech.modern_industrialization.fluid.CraftingFluid;
+import aztech.modern_industrialization.definition.FluidLike;
+import aztech.modern_industrialization.fluid.MIFluid;
 import aztech.modern_industrialization.machines.init.MIMachineRecipeTypes;
 import aztech.modern_industrialization.recipe.json.MIRecipeJson;
 import com.google.common.base.Preconditions;
@@ -100,12 +101,16 @@ public class PetrochemRecipesProvider extends MIRecipesProvider {
     private void generateSulfuricPurification(Consumer<FinishedRecipe> consumer, Fluid purifiedFluid) {
         String baseName = Registry.FLUID.getKey(purifiedFluid).getPath();
         Fluid sulfuricFluid = Registry.FLUID.get(new MIIdentifier("sulfuric_" + baseName));
-        Preconditions.checkArgument(sulfuricFluid instanceof CraftingFluid);
+        Preconditions.checkArgument(sulfuricFluid instanceof MIFluid);
 
         MIRecipeJson.create(MIMachineRecipeTypes.CHEMICAL_REACTOR, 16, 400)
-                .addFluidInput(sulfuricFluid, 12000).addFluidInput(HYDROGEN, 2000)
-                .addFluidOutput(purifiedFluid, 12000).addFluidOutput(SULFURIC_ACID, 2000)
+                .addFluidInput(sulfuricFluid, 12000).addFluidInput(HYDROGEN.asFluid(), 2000)
+                .addFluidOutput(purifiedFluid, 12000).addFluidOutput(SULFURIC_ACID.asFluid(), 2000)
                 .offerTo(consumer, "petrochem/sulfuric_purification/" + baseName);
+    }
+
+    private void generateSulfuricPurification(Consumer<FinishedRecipe> consumer, FluidLike purifiedFluid) {
+        generateSulfuricPurification(consumer, purifiedFluid.asFluid());
     }
 
     private void generatePolymerization(Consumer<FinishedRecipe> consumer, Fluid input, Fluid output) {
@@ -120,8 +125,16 @@ public class PetrochemRecipesProvider extends MIRecipesProvider {
         }
     }
 
+    private void generatePolymerization(Consumer<FinishedRecipe> consumer, FluidLike input, FluidLike output) {
+        generatePolymerization(consumer, input.asFluid(), output.asFluid());
+    }
+
     private static FluidEntry f(Fluid fluid, int amount) {
         return new FluidEntry(fluid, amount);
+    }
+
+    private static FluidEntry f(FluidLike fluid, int amount) {
+        return f(fluid.asFluid(), amount);
     }
 
     private record FluidEntry(Fluid fluid, int amount) {

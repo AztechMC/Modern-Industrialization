@@ -49,7 +49,6 @@ public class CasingPart extends Part implements BuildablePart {
 
                         if (part.equals(MIParts.MACHINE_CASING)) {
                             MITextures.casingFromTexture(mtm, partContext.getMaterialName(), image);
-                            MITextures.tankFromTexture(mtm, partContext.getMaterialName(), image);
                         } else {
                             MITextures.casingFromTexture(mtm, itemPath, image);
                         }

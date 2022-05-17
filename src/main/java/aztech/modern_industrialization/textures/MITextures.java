@@ -224,26 +224,6 @@ public final class MITextures {
         }
     }
 
-    public static void tankFromTexture(TextureManager tm, String tank, NativeImage texture) {
-        try {
-            String s = String.format("modern_industrialization:textures/block/%s_tank.png", tank);
-            NativeImage creativeTankTexture = tm.getAssetAsTexture("modern_industrialization:textures/block/creative_tank.png");
-            NativeImage tankTexture = TextureHelper.copy(texture);
-            if (tankTexture.getHeight() != creativeTankTexture.getHeight() || tankTexture.getWidth() != creativeTankTexture.getWidth()) {
-                throw new RuntimeException("Casing and creative tank texture not the same size !");
-            }
-            for (int i = 1; i < tankTexture.getWidth() - 1; i++) {
-                for (int j = 1; j < tankTexture.getHeight() - 1; j++) {
-                    tankTexture.setPixelRGBA(i, j, creativeTankTexture.getPixelRGBA(i, j));
-                }
-            }
-            tm.addTexture(s, tankTexture);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-    }
-
     public static void casingFromTextureBricked(TextureManager tm, String casing, NativeImage texture, NativeImage brick) {
         for (String side : new String[] { "top", "side", "bottom" }) {
             try {

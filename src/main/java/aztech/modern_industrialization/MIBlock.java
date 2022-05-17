@@ -32,6 +32,7 @@ import aztech.modern_industrialization.blocks.creativetank.CreativeTankBlock;
 import aztech.modern_industrialization.blocks.creativetank.CreativeTankItem;
 import aztech.modern_industrialization.blocks.forgehammer.ForgeHammerBlock;
 import aztech.modern_industrialization.definition.BlockDefinition;
+import aztech.modern_industrialization.materials.part.TankPart;
 import java.util.*;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
@@ -89,7 +90,7 @@ public class MIBlock {
             "creative_tank",
             BlockDefinitionParams.of().withBlockConstructor(CreativeTankBlock::new)
                     .withBlockItemConstructor(CreativeTankItem::new)
-                    .noModel().noLootTable().clearTags()
+                    .withModel(TankPart.createModelGenerator("creative")).noLootTable().clearTags()
                     .noOcclusion(),
             CreativeTankBlock.class
 

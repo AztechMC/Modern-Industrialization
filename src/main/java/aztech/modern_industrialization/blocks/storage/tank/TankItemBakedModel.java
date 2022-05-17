@@ -23,18 +23,12 @@
  */
 package aztech.modern_industrialization.blocks.storage.tank;
 
-import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.blocks.creativetank.CreativeTankItem;
-import com.mojang.datafixers.util.Pair;
-import java.util.*;
-import java.util.function.Function;
+import java.util.Collections;
+import java.util.List;
+import java.util.Random;
 import java.util.function.Supplier;
-import net.fabricmc.fabric.api.renderer.v1.Renderer;
-import net.fabricmc.fabric.api.renderer.v1.RendererAccess;
-import net.fabricmc.fabric.api.renderer.v1.material.BlendMode;
 import net.fabricmc.fabric.api.renderer.v1.material.RenderMaterial;
-import net.fabricmc.fabric.api.renderer.v1.mesh.Mesh;
-import net.fabricmc.fabric.api.renderer.v1.mesh.MeshBuilder;
 import net.fabricmc.fabric.api.renderer.v1.mesh.MutableQuadView;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
 import net.fabricmc.fabric.api.renderer.v1.model.FabricBakedModel;
@@ -43,43 +37,27 @@ import net.fabricmc.fabric.api.transfer.v1.client.fluid.FluidVariantRendering;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariantAttributes;
 import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.renderer.block.model.BlockModel;
 import net.minecraft.client.renderer.block.model.ItemOverrides;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
-import net.minecraft.client.resources.model.Material;
-import net.minecraft.client.resources.model.ModelBakery;
-import net.minecraft.client.resources.model.ModelState;
-import net.minecraft.client.resources.model.UnbakedModel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
 
-public class TankModel implements UnbakedModel, FabricBakedModel, BakedModel {
-    private static final ResourceLocation BASE_BLOCK_MODEL = new ResourceLocation("minecraft:block/block");
-    ItemTransforms transformation;
-    private final Material tankSpriteId;
-    private TextureAtlasSprite tankSprite;
-    private RenderMaterial translucentMaterial;
-    private Mesh tankMesh;
+/**
+ * Supplements the existing tank model for tank items to also render the tank's fill level.
+ */
+public class TankItemBakedModel implements FabricBakedModel, BakedModel {
+    private final BakedModel blockModel;
+    private final RenderMaterial translucentMaterial;
 
-    public TankModel(String tankType) {
-        tankSpriteId = new Material(InventoryMenu.BLOCK_ATLAS, new MIIdentifier("block/" + tankType + "_tank"));
-    }
-
-    public TankModel(ItemTransforms transformation, Material tankSpriteId, TextureAtlasSprite tankSprite, RenderMaterial translucentMaterial,
-            Mesh tankMesh) {
-        this.transformation = transformation;
-        this.tankSpriteId = tankSpriteId;
-        this.tankSprite = tankSprite;
+    public TankItemBakedModel(BakedModel blockModel, RenderMaterial translucentMaterial) {
+        this.blockModel = blockModel;
         this.translucentMaterial = translucentMaterial;
-        this.tankMesh = tankMesh;
     }
 
     @Override
@@ -89,13 +67,11 @@ public class TankModel implements UnbakedModel, FabricBakedModel, BakedModel {
 
     @Override
     public void emitBlockQuads(BlockAndTintGetter blockView, BlockState state, BlockPos pos, Supplier<Random> randomSupplier, RenderContext context) {
-        // Base mesh
-        context.meshConsumer().accept(tankMesh);
     }
 
     @Override
     public void emitItemQuads(ItemStack stack, Supplier<Random> randomSupplier, RenderContext context) {
-        context.meshConsumer().accept(tankMesh);
+        context.fallbackConsumer().accept(blockModel);
 
         Item it = stack.getItem();
         if (it instanceof TankItem item) {
@@ -159,54 +135,16 @@ public class TankModel implements UnbakedModel, FabricBakedModel, BakedModel {
 
     @Override
     public TextureAtlasSprite getParticleIcon() {
-        return tankSprite;
+        return blockModel.getParticleIcon();
     }
 
     @Override
     public ItemTransforms getTransforms() {
-        return transformation;
+        return blockModel.getTransforms();
     }
 
     @Override
     public ItemOverrides getOverrides() {
         return ItemOverrides.EMPTY;
-    }
-
-    @Override
-    public Collection<ResourceLocation> getDependencies() {
-        return Arrays.asList(BASE_BLOCK_MODEL);
-    }
-
-    @Override
-    public Collection<Material> getMaterials(Function<ResourceLocation, UnbakedModel> unbakedModelGetter,
-            Set<Pair<String, String>> unresolvedTextureReferences) {
-        return Arrays.asList(tankSpriteId);
-    }
-
-    @Override
-    public BakedModel bake(ModelBakery loader, Function<Material, TextureAtlasSprite> textureGetter, ModelState rotationContainer,
-            ResourceLocation modelId) {
-        transformation = ((BlockModel) loader.getModel(BASE_BLOCK_MODEL)).getTransforms();
-        tankSprite = textureGetter.apply(tankSpriteId);
-
-        Renderer renderer = RendererAccess.INSTANCE.getRenderer();
-        RenderMaterial cutoutMaterial = renderer.materialFinder().blendMode(0, BlendMode.CUTOUT_MIPPED).find();
-        translucentMaterial = renderer.materialFinder().blendMode(0, BlendMode.TRANSLUCENT).emissive(0, true).find();
-        MeshBuilder builder = RendererAccess.INSTANCE.getRenderer().meshBuilder();
-        QuadEmitter emitter = builder.getEmitter();
-        for (Direction direction : Direction.values()) {
-            emitter.material(cutoutMaterial);
-            emitter.square(direction, 0, 0, 1, 1, 0.0f);
-            emitter.cullFace(direction);
-            emitter.spriteBake(0, tankSprite, MutableQuadView.BAKE_LOCK_UV);
-            emitter.spriteColor(0, -1, -1, -1, -1);
-            emitter.emit();
-        }
-        tankMesh = builder.build();
-        return this;
-    }
-
-    public Mesh getTankMesh() {
-        return tankMesh;
     }
 }

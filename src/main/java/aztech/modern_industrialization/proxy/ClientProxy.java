@@ -24,17 +24,18 @@
 package aztech.modern_industrialization.proxy;
 
 import aztech.modern_industrialization.MIIdentifier;
-import aztech.modern_industrialization.blocks.storage.tank.TankModel;
+import aztech.modern_industrialization.blocks.storage.tank.TankItemUnbakedModel;
 import aztech.modern_industrialization.blocks.storage.tank.TankRenderer;
 import aztech.modern_industrialization.machines.models.MachineModelProvider;
-import aztech.modern_industrialization.materials.MaterialBuilder;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.client.rendering.v1.BlockEntityRendererRegistry;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.resources.model.UnbakedModel;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import org.jetbrains.annotations.Nullable;
@@ -55,10 +56,9 @@ public class ClientProxy extends CommonProxy {
     }
 
     @Override
-    public void registerPartTankClient(MaterialBuilder.PartContext partContext, String itemPath, BlockEntityType<BlockEntity> blockEntityType) {
-        UnbakedModel tankModel = new TankModel(partContext.getMaterialName());
-        MachineModelProvider.register(new MIIdentifier("block/" + itemPath), tankModel);
-        MachineModelProvider.register(new MIIdentifier("item/" + itemPath), tankModel);
+    public void registerPartTankClient(Block tankBlock, String materialName, String itemPath, BlockEntityType<BlockEntity> blockEntityType) {
+        MachineModelProvider.register(new MIIdentifier("item/" + itemPath), new TankItemUnbakedModel(materialName));
+        BlockRenderLayerMap.INSTANCE.putBlock(tankBlock, RenderType.translucent());
         BlockEntityRendererRegistry.register(blockEntityType, TankRenderer::new);
     }
 }

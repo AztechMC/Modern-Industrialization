@@ -23,22 +23,22 @@
  */
 package aztech.modern_industrialization.blocks.storage.tank;
 
+import aztech.modern_industrialization.MIBlock;
 import aztech.modern_industrialization.MIBlockEntityTypes;
 import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.blocks.creativetank.CreativeTankRenderer;
 import aztech.modern_industrialization.machines.models.MachineModelProvider;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.client.rendering.v1.BlockEntityRendererRegistry;
-import net.minecraft.client.resources.model.UnbakedModel;
+import net.minecraft.client.renderer.RenderType;
 
 @Environment(EnvType.CLIENT)
 public class CreativeTankClientSetup {
     public static void setupClient() {
-        UnbakedModel creativeTankModel = new TankModel("creative");
-        MachineModelProvider.register(new MIIdentifier("block/creative_tank"), creativeTankModel);
-        MachineModelProvider.register(new MIIdentifier("item/creative_tank"), creativeTankModel);
-
+        MachineModelProvider.register(new MIIdentifier("item/creative_tank"), new TankItemUnbakedModel("creative"));
+        BlockRenderLayerMap.INSTANCE.putBlock(MIBlock.CREATIVE_TANK_BLOCK.asBlock(), RenderType.translucent());
         BlockEntityRendererRegistry.register(MIBlockEntityTypes.CREATIVE_TANK, CreativeTankRenderer::new);
     }
 }

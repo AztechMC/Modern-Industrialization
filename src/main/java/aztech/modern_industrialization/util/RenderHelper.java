@@ -115,7 +115,7 @@ public class RenderHelper {
         }
     }
 
-    private static final float TANK_W = 0.02f;
+    private static final float TANK_W = 1 / 16f;
     public static final int FULL_LIGHT = 0x00F0_00F0;
 
     public static void drawFluidInTank(BlockEntity be, PoseStack ms, MultiBufferSource vcp, FluidVariant fluid, float fill) {

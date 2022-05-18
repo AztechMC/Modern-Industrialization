@@ -131,8 +131,8 @@ public class RenderHelper {
         float b = (color & 255) / 256f;
 
         // Make sure fill is within [TANK_W, 1 - TANK_W]
-        fill = Math.min(fill, 1 - TANK_W);
-        fill = Math.max(fill, TANK_W);
+        fill = Math.min(fill, 1 - TANK_W - 0.01f);
+        fill = Math.max(fill, TANK_W + 0.01f);
         // Top and bottom positions of the fluid inside the tank
         float topHeight = fill;
         float bottomHeight = TANK_W;

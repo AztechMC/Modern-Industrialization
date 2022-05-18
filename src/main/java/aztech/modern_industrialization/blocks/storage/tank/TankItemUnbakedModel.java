@@ -42,12 +42,12 @@ import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
 
 public class TankItemUnbakedModel implements UnbakedModel {
-    private final String materialName;
+    private final String blockPath;
     private final ResourceLocation blockModel;
 
-    public TankItemUnbakedModel(String materialName) {
-        this.materialName = materialName;
-        this.blockModel = new MIIdentifier("block/" + materialName + "_tank");
+    public TankItemUnbakedModel(String blockPath) {
+        this.blockPath = blockPath;
+        this.blockModel = new MIIdentifier("block/" + blockPath);
     }
 
     @Override

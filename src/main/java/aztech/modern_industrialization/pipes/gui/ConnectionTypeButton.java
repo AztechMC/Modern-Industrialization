@@ -23,10 +23,10 @@
  */
 package aztech.modern_industrialization.pipes.gui;
 
+import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.pipes.gui.iface.ConnectionTypeInterface;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 
 class ConnectionTypeButton extends Button {
     private final ConnectionTypeInterface connectionType;
@@ -38,6 +38,11 @@ class ConnectionTypeButton extends Button {
 
     @Override
     public Component getMessage() {
-        return new TranslatableComponent("text.modern_industrialization.pipe_connection_" + connectionType.getConnectionType());
+        return switch (connectionType.getConnectionType()) {
+        case 0 -> MIText.PipeConnectionIn.text();
+        case 1 -> MIText.PipeConnectionIO.text();
+        case 2 -> MIText.PipeConnectionOut.text();
+        default -> throw new IllegalArgumentException("Connection type must be either 0, 1 or 2");
+        };
     }
 }

@@ -23,6 +23,7 @@
  */
 package aztech.modern_industrialization.util;
 
+import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.textures.TextureHelper;
 import java.util.Arrays;
 import java.util.List;
@@ -33,7 +34,6 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextColor;
 import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
 
 public class TextHelper {
     public static final Style GRAY_TEXT = Style.EMPTY.withColor(TextColor.fromRgb(0xa9a9a9)).withItalic(true);
@@ -63,10 +63,14 @@ public class TextHelper {
     }
 
     public record Amount(String digit, String unit) {
-    };
+    }
+
+    ;
 
     public record MaxedAmount(String digit, String maxDigit, String unit) {
-    };
+    }
+
+    ;
 
     public static final String[] units = new String[] { "k", "M", "G", "T", "P", "E" };
     public static final long[] nums = new long[] { 1000L, 1000_000L, 1000_000_000L, 1000_000_000_000L, 1000_000_000_000_000L,
@@ -134,30 +138,30 @@ public class TextHelper {
 
     public static MutableComponent getEuTextMaxed(long eu, long max) {
         var amount = getMaxedAmount(eu, max);
-        return new TranslatableComponent("text.modern_industrialization.eu_maxed", amount.digit(), amount.maxDigit(), amount.unit());
+        return MIText.EuMaxed.text(amount.digit(), amount.maxDigit(), amount.unit());
     }
 
     public static MutableComponent getEuText(double eu) {
         var amount = getAmount(eu);
-        return new TranslatableComponent("text.modern_industrialization.eu", amount.digit(),
+        return MIText.Eu.text(amount.digit(),
                 amount.unit());
     }
 
     public static MutableComponent getEuTextTick(double eu) {
         var amount = getAmount(eu);
-        return new TranslatableComponent("text.modern_industrialization.eu_t", amount.digit(),
+        return MIText.EuT.text(amount.digit(),
                 amount.unit());
     }
 
     public static MutableComponent getEuText(long eu) {
         var amount = getAmount(eu);
-        return new TranslatableComponent("text.modern_industrialization.eu", amount.digit(),
+        return MIText.Eu.text(amount.digit(),
                 amount.unit());
     }
 
     public static MutableComponent getEuTextTick(long eu) {
         var amount = getAmount(eu);
-        return new TranslatableComponent("text.modern_industrialization.eu_t", amount.digit(),
+        return MIText.Eu.text(amount.digit(),
                 amount.unit());
     }
 
@@ -193,15 +197,14 @@ public class TextHelper {
         return text;
     }
 
-    public static MutableComponent formatWithNumber(String translationKey, long... numbers) {
+    public static MutableComponent formatWithNumber(MIText text, long... numbers) {
         List<Component> numberText = Arrays.stream(numbers).mapToObj(n -> new TextComponent("" + n).setStyle(TextHelper.NUMBER_TEXT))
                 .collect(Collectors.toList());
-        return new TranslatableComponent(translationKey, numberText.toArray());
+        return text.text(numberText.toArray());
     }
 
     public static Component getEuStorageTooltip(long totalEu) {
-        return new TranslatableComponent("text.modern_industrialization.base_eu_total_stored", getEuText(totalEu, true))
-                .setStyle(TextHelper.GRAY_TEXT);
+        return MIText.BaseEuTotalStored.text(getEuText(totalEu, true)).setStyle(TextHelper.GRAY_TEXT);
     }
 
 }

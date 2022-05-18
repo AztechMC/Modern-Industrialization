@@ -23,6 +23,7 @@
  */
 package aztech.modern_industrialization.blocks.storage.barrel;
 
+import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.ModernIndustrialization;
 import aztech.modern_industrialization.items.ItemContainingItemHelper;
 import aztech.modern_industrialization.util.TextHelper;
@@ -31,7 +32,6 @@ import java.util.Optional;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextColor;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.SlotAccess;
 import net.minecraft.world.entity.player.Player;
@@ -64,8 +64,8 @@ public class BarrelItem extends BlockItem implements ItemContainingItemHelper {
     public void appendHoverText(ItemStack stack, Level world, List<Component> tooltip, TooltipFlag context) {
         Style style = Style.EMPTY.withColor(TextColor.fromRgb(0xa9a9a9)).withItalic(false);
         if (isEmpty(stack)) {
-            tooltip.add(new TranslatableComponent("text.modern_industrialization.empty").setStyle(style));
-            tooltip.add(new TranslatableComponent("text.modern_industrialization.barrel_stack", stackCapacity).setStyle(TextHelper.YELLOW));
+            tooltip.add(MIText.Empty.text().setStyle(style));
+            tooltip.add(MIText.BarrelStack.text(stackCapacity).setStyle(TextHelper.YELLOW));
         }
     }
 

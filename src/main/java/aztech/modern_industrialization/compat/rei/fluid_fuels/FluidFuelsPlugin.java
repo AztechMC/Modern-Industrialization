@@ -25,6 +25,7 @@ package aztech.modern_industrialization.compat.rei.fluid_fuels;
 
 import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.MIItem;
+import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.api.FluidFuelRegistry;
 import aztech.modern_industrialization.util.TextHelper;
 import java.util.Collections;
@@ -37,7 +38,6 @@ import me.shedaniel.rei.api.common.entry.EntryStack;
 import me.shedaniel.rei.api.common.util.EntryStacks;
 import net.minecraft.core.Registry;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.material.Fluid;
 
@@ -80,7 +80,7 @@ public class FluidFuelsPlugin implements REIClientPlugin {
     }
 
     private static final List<Component> DOUBLE_EFFICIENCY = Collections
-            .singletonList(new TranslatableComponent("text.modern_industrialization.double_fluid_fuel_efficiency").setStyle(TextHelper.UPGRADE_TEXT));
+            .singletonList(MIText.DoubleFluidFuelEfficiency.text().setStyle(TextHelper.UPGRADE_TEXT));
 
     private void addDoubleEfficiency(CategoryRegistry registry, String... idNamespaces) {
         for (String idNamespace : idNamespaces) {

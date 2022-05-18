@@ -23,25 +23,29 @@
  */
 package aztech.modern_industrialization.api.energy;
 
+import aztech.modern_industrialization.MIText;
+import net.minecraft.network.chat.Component;
+
 public enum CableTier {
-    LV("LV", "lv", 32),
-    MV("MV", "mv", 32 * 4),
-    HV("HV", "hv", 32 * 4 * 8),
-    EV("EV", "ev", 32 * 4 * 8 * 8),
-    SUPERCONDUCTOR("Superconductor", "superconductor", 128000000);
+    LV("LV", "lv", 32, MIText.CableTierLV),
+    MV("MV", "mv", 32 * 4, MIText.CableTierMV),
+    HV("HV", "hv", 32 * 4 * 8, MIText.CableTierHV),
+    EV("EV", "ev", 32 * 4 * 8 * 8, MIText.CableTierEV),
+    SUPERCONDUCTOR("Superconductor", "superconductor", 128000000, MIText.CableTierSuperconductor);
 
     public final String englishName;
     public final String name;
     public final long eu;
 
     public final String translationKey;
+    public final Component englishNameComponent;
 
-    CableTier(String englishName, String name, long eu) {
+    CableTier(String englishName, String name, long eu, MIText englishNameComponent) {
         this.englishName = englishName;
         this.name = name;
         this.eu = eu;
         this.translationKey = "text.modern_industrialization.cable_tier_" + name;
-
+        this.englishNameComponent = englishNameComponent.text();
     }
 
     /**

@@ -23,6 +23,7 @@
  */
 package aztech.modern_industrialization.machines.components.sync;
 
+import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.machines.MachinePackets;
 import aztech.modern_industrialization.machines.SyncedComponent;
 import aztech.modern_industrialization.machines.SyncedComponents;
@@ -38,7 +39,6 @@ import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 
 /**
@@ -143,11 +143,41 @@ public class AutoExtract {
                 }, () -> {
                     List<Component> lines = new ArrayList<>();
                     if (extractStatus[index]) {
-                        lines.add(new TranslatableComponent("text.modern_industrialization." + type + "_auto_" + insertOrExtract + "_on"));
-                        lines.add(new TranslatableComponent("text.modern_industrialization.click_to_disable").setStyle(TextHelper.GRAY_TEXT));
+                        Component component;
+
+                        if (isItem) {
+                            if (displayAsInsert) {
+                                component = MIText.ItemAutoInsertOn.text();
+                            } else {
+                                component = MIText.ItemAutoExtractOn.text();
+                            }
+                        } else {
+                            if (displayAsInsert) {
+                                component = MIText.FluidAutoInsertOn.text();
+                            } else {
+                                component = MIText.FluidAutoExtractOn.text();
+                            }
+                        }
+                        lines.add(component);
+                        lines.add(MIText.ClickToDisable.text().setStyle(TextHelper.GRAY_TEXT));
                     } else {
-                        lines.add(new TranslatableComponent("text.modern_industrialization." + type + "_auto_" + insertOrExtract + "_off"));
-                        lines.add(new TranslatableComponent("text.modern_industrialization.click_to_enable").setStyle(TextHelper.GRAY_TEXT));
+                        Component component;
+                        if (isItem) {
+                            if (displayAsInsert) {
+                                component = MIText.ItemAutoInsertOff.text();
+                            } else {
+                                component = MIText.ItemAutoExtractOff.text();
+                            }
+                        } else {
+                            if (displayAsInsert) {
+                                component = MIText.FluidAutoInsertOff.text();
+                            } else {
+                                component = MIText.FluidAutoExtractOff.text();
+                            }
+                        }
+
+                        lines.add(component);
+                        lines.add(MIText.ClickToEnable.text().setStyle(TextHelper.GRAY_TEXT));
                     }
                     return lines;
                 }, () -> extractStatus[index]);

@@ -24,6 +24,7 @@
 package aztech.modern_industrialization.machines.components.sync;
 
 import aztech.modern_industrialization.MIIdentifier;
+import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.machines.MachineScreenHandlers;
 import aztech.modern_industrialization.machines.SyncedComponent;
 import aztech.modern_industrialization.machines.SyncedComponents;
@@ -158,7 +159,7 @@ public class RecipeEfficiencyBar {
                         tooltip.add(new TranslatableComponent("text.modern_industrialization.efficiency_eu", currentRecipeEu));
 
                     } else {
-                        tooltip.add(new TranslatableComponent("text.modern_industrialization.efficiency_default_message"));
+                        tooltip.add(MIText.EfficiencyDefaultMessage.text());
                     }
 
                     tooltip.add(new TranslatableComponent("text.modern_industrialization.efficiency_max_overclock", maxRecipeEu));

@@ -24,12 +24,12 @@
 package aztech.modern_industrialization.items;
 
 import aztech.modern_industrialization.MIIdentifier;
+import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.util.TextHelper;
 import java.util.List;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
@@ -60,6 +60,6 @@ public class GuideBookItem extends Item {
 
     @Override
     public void appendHoverText(ItemStack stack, Level world, List<Component> tooltip, TooltipFlag context) {
-        tooltip.add(new TranslatableComponent("book.modern_industrialization.subtitle").setStyle(TextHelper.GRAY_TEXT));
+        tooltip.add(MIText.BookSubtitle.text().setStyle(TextHelper.GRAY_TEXT));
     }
 }

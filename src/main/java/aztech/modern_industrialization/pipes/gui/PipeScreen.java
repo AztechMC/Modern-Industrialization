@@ -23,6 +23,7 @@
  */
 package aztech.modern_industrialization.pipes.gui;
 
+import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.client.screen.MIHandledScreen;
 import aztech.modern_industrialization.pipes.gui.iface.ConnectionTypeInterface;
 import aztech.modern_industrialization.pipes.gui.iface.PriorityInterface;
@@ -111,7 +112,7 @@ public abstract class PipeScreen<SH extends AbstractContainerMenu> extends MIHan
         }, (button, matrices, mouseX, mouseY) -> {
             List<Component> lines = new ArrayList<>();
             lines.add(new TranslatableComponent("text.modern_industrialization.pipe_connection_tooltip_" + connectionType.getConnectionType()));
-            lines.add(new TranslatableComponent("text.modern_industrialization.pipe_connection_help").setStyle(TextHelper.GRAY_TEXT));
+            lines.add(MIText.PipeConnectionHelp.text().setStyle(TextHelper.GRAY_TEXT));
             renderComponentTooltip(matrices, lines, mouseX, mouseY);
         }, connectionType));
     }

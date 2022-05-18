@@ -24,6 +24,7 @@
 package aztech.modern_industrialization.compat.rei.machines;
 
 import aztech.modern_industrialization.MIIdentifier;
+import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.inventory.SlotPositions;
 import aztech.modern_industrialization.machines.MachineScreenHandlers;
 import aztech.modern_industrialization.machines.components.sync.EnergyBar;
@@ -131,8 +132,7 @@ public class MachineRecipeCategory implements DisplayCategory<MachineRecipeDispl
                     (float) (System.currentTimeMillis() / recipeMillis % 1.0));
         }));
 
-        Component totalEuTooltip = new TranslatableComponent("text.modern_industrialization.base_eu_total",
-                TextHelper.getEuText(recipeDisplay.getTicks() * recipeDisplay.getEu()));
+        Component totalEuTooltip = MIText.BaseEuTotal.text(TextHelper.getEuText((long) recipeDisplay.getTicks() * recipeDisplay.getEu()));
 
         // Draw filled energy bar
         widgets.add(Widgets.createDrawableWidget((helper, matrices, mouseX, mouseY, delta) -> {
@@ -149,7 +149,7 @@ public class MachineRecipeCategory implements DisplayCategory<MachineRecipeDispl
                 .leftAligned().noShadow().color(0xFF404040, 0xFFBBBBBB));
         widgets.add(Widgets
                 .createLabel(new Point(bounds.getMaxX() - 5, bounds.y + 5),
-                        new TranslatableComponent("text.modern_industrialization.base_duration_seconds", recipeDisplay.getSeconds()))
+                        MIText.BaseDurationSeconds.text(recipeDisplay.getSeconds()))
                 .rightAligned().noShadow().color(0xFF404040, 0xFFBBBBBB));
         // Total EU tooltip
         Rectangle tooltipZone = new Rectangle(bounds.x + 2, bounds.y + 5, bounds.width - 10, 12);

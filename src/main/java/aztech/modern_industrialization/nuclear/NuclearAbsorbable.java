@@ -24,6 +24,7 @@
 package aztech.modern_industrialization.nuclear;
 
 import aztech.modern_industrialization.MIItem;
+import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.util.TextHelper;
 import com.google.common.base.Preconditions;
 import java.util.List;
@@ -31,7 +32,6 @@ import java.util.Random;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
@@ -65,8 +65,8 @@ public class NuclearAbsorbable extends NuclearComponentItem {
     @Override
     public void appendHoverText(ItemStack stack, Level world, List<Component> tooltip, TooltipFlag context) {
         super.appendHoverText(stack, world, tooltip, context);
-        tooltip.add(new TranslatableComponent("text.modern_industrialization.rem_absorption", getRemainingDesintegrations(stack), desintegrationMax)
-                .setStyle(TextHelper.GRAY_TEXT));
+
+        tooltip.add(MIText.RemAbsorption.text(getRemainingDesintegrations(stack), desintegrationMax).setStyle(TextHelper.GRAY_TEXT));
 
     }
 

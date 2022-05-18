@@ -24,6 +24,7 @@
 package aztech.modern_industrialization.compat.modmenu;
 
 import aztech.modern_industrialization.MIConfig;
+import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.materials.Material;
 import aztech.modern_industrialization.materials.MaterialRegistry;
 import aztech.modern_industrialization.materials.part.MIParts;
@@ -98,7 +99,7 @@ public class MIMenu implements ModMenuApi {
         registry.registerAnnotationProvider(
                 (i13n, field, config, defaults,
                         registry1) -> Collections.singletonList(ENTRY_BUILDER
-                                .startSubCategory(new TranslatableComponent("text.modern_industrialization.custom_ore_gen"),
+                                .startSubCategory(MIText.CustomOreGen.text(),
                                         MaterialRegistry.getMaterials().values().stream().filter(MIMenu::hasOreGen)
                                                 .map(i -> new CustomBooleanListEntry(new TranslatableComponent(getOreTranslationKey(i)),
                                                         oreNotInList(field, config, i), () -> oreNotInList(field, config, i),

@@ -24,6 +24,7 @@
 package aztech.modern_industrialization.misc.tooltips;
 
 import aztech.modern_industrialization.MIIdentifier;
+import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.util.TextHelper;
 import com.google.common.base.Preconditions;
 import java.util.HashMap;
@@ -66,7 +67,7 @@ public class FaqTooltips {
             if (tooltipLines != null) {
                 lines.add(new TextComponent(""));
                 if (Screen.hasShiftDown()) {
-                    lines.add(new TranslatableComponent("text.modern_industrialization.additional_tips").setStyle(TextHelper.FAQ_HEADER_TOOLTIP));
+                    lines.add(MIText.AdditionalTips.text().setStyle(TextHelper.FAQ_HEADER_TOOLTIP));
                     for (String line : tooltipLines) {
                         TranslatableComponent text = new TranslatableComponent("item_tooltip.modern_industrialization." + line);
                         text.setStyle(TextHelper.FAQ_TOOLTIP);
@@ -74,7 +75,7 @@ public class FaqTooltips {
                     }
                 } else {
                     lines.add(
-                            new TranslatableComponent("text.modern_industrialization.additional_tips_shift").setStyle(TextHelper.FAQ_HEADER_TOOLTIP));
+                            MIText.AdditionalTipsShift.text().setStyle(TextHelper.FAQ_HEADER_TOOLTIP));
                 }
             }
         });

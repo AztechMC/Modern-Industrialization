@@ -25,6 +25,7 @@ package aztech.modern_industrialization.compat.rei.nuclear;
 
 import static net.minecraft.client.gui.GuiComponent.blit;
 
+import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.compat.rei.ReiUtil;
 import aztech.modern_industrialization.machines.MachineScreenHandlers;
 import aztech.modern_industrialization.nuclear.INuclearComponent;
@@ -46,7 +47,6 @@ import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
 
 public class ThermalInteractionCategory implements DisplayCategory<ThermalInteractionDisplay> {
 
@@ -82,7 +82,7 @@ public class ThermalInteractionCategory implements DisplayCategory<ThermalIntera
     }
 
     private List<Widget> setupNeutronEfficiency(NuclearFuel nuclearComponent, Rectangle bounds) {
-        List<Widget> widgets = defaultWidget(nuclearComponent, bounds, "neutron_production_temperature_effect");
+        List<Widget> widgets = defaultWidget(nuclearComponent, bounds, MIText.NeutronProductionTemperatureEffect.text());
 
         Rectangle area = new Rectangle(bounds.x + 10, bounds.y + 45, bounds.getWidth() - 20, bounds.getHeight() - 50);
         widgets.add(Widgets.createFilledRectangle(area, 0xFF8b8b8b));
@@ -119,7 +119,7 @@ public class ThermalInteractionCategory implements DisplayCategory<ThermalIntera
         return widgets;
     }
 
-    private static List<Widget> defaultWidget(INuclearComponent nuclearComponent, Rectangle bounds, String titleKey) {
+    private static List<Widget> defaultWidget(INuclearComponent nuclearComponent, Rectangle bounds, Component title) {
         List<Widget> widgets = new ArrayList<>();
         widgets.add(Widgets.createRecipeBase(bounds));
 
@@ -136,7 +136,6 @@ public class ThermalInteractionCategory implements DisplayCategory<ThermalIntera
             widgets.add(Widgets.createSlot(pos).entry(ReiUtil.createFluidEntryStack(fluidVariant.getFluid())));
         }
 
-        Component title = new TranslatableComponent("text.modern_industrialization." + titleKey);
         Point posTitle = new Point(centerX, bounds.y + 8);
         widgets.add(Widgets.createLabel(posTitle, title));
         return widgets;
@@ -144,11 +143,11 @@ public class ThermalInteractionCategory implements DisplayCategory<ThermalIntera
     }
 
     private List<Widget> setupThermalProperties(INuclearComponent nuclearComponent, Rectangle bounds) {
-        List<Widget> widgets = defaultWidget(nuclearComponent, bounds, "thermal_properties");
+        List<Widget> widgets = defaultWidget(nuclearComponent, bounds, MIText.ThermalInteraction.text());
         int centerX = bounds.x + bounds.width / 2;
         int centerY = bounds.y + bounds.height / 2;
 
-        Component heatConduction = new TranslatableComponent("text.modern_industrialization.heat_conduction",
+        Component heatConduction = MIText.HeatConduction.text(
                 String.format("%.2f", nuclearComponent.getHeatConduction())).setStyle(TextHelper.HEAT_CONDUCTION);
 
         widgets.add(Widgets.createLabel(new Point(centerX, centerY), heatConduction).noShadow());
@@ -156,8 +155,7 @@ public class ThermalInteractionCategory implements DisplayCategory<ThermalIntera
         int maxTemperature = nuclearComponent.getMaxTemperature();
 
         if (maxTemperature != Integer.MAX_VALUE) {
-            Component maxTemp = new TranslatableComponent("text.modern_industrialization.max_temp", maxTemperature)
-                    .setStyle(TextHelper.MAX_TEMP_TEXT);
+            Component maxTemp = MIText.MaxTemp.text(maxTemperature).setStyle(TextHelper.MAX_TEMP_TEXT);
             widgets.add(Widgets.createLabel(new Point(centerX, centerY + 12), maxTemp).noShadow());
         }
 
@@ -166,7 +164,7 @@ public class ThermalInteractionCategory implements DisplayCategory<ThermalIntera
 
     @Override
     public Component getTitle() {
-        return new TranslatableComponent("text.modern_industrialization.thermal_interaction");
+        return MIText.ThermalInteraction.text();
     }
 
     @Override

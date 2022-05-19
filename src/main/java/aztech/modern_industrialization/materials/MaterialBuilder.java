@@ -159,7 +159,7 @@ public final class MaterialBuilder {
             event.onRegister(context);
         }
 
-        return new Material(materialName, Collections.unmodifiableMap(partsMap), this::buildRecipes);
+        return new Material(materialName, hardness, Collections.unmodifiableMap(partsMap), this::buildRecipes);
     }
 
     public void buildRecipes(Consumer<FinishedRecipe> consumer) {

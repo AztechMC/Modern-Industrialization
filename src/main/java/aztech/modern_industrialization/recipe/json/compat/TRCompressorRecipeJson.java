@@ -23,13 +23,14 @@
  */
 package aztech.modern_industrialization.recipe.json.compat;
 
+import aztech.modern_industrialization.materials.MaterialHardness;
 import aztech.modern_industrialization.recipe.json.RecipeJson;
 
 @SuppressWarnings({ "unused", "FieldCanBeLocal" })
 public class TRCompressorRecipeJson extends RecipeJson {
     private final String type = "techreborn:compressor";
     private final int power = 10;
-    private final int time = 300;
+    private int time = 300;
     private final TagIngredient[] ingredients;
     private final ItemResult[] results;
 
@@ -38,6 +39,11 @@ public class TRCompressorRecipeJson extends RecipeJson {
         this.ingredients[0].tag = inputTag;
         this.results = new ItemResult[] { new ItemResult() };
         this.results[0].item = outputItem;
+    }
+
+    public TRCompressorRecipeJson scaleTime(MaterialHardness hardness) {
+        this.time = (int) (this.time * hardness.timeFactor);
+        return this;
     }
 
     private static class TagIngredient {

@@ -24,6 +24,7 @@
 package aztech.modern_industrialization.materials;
 
 import aztech.modern_industrialization.materials.part.MaterialPart;
+import aztech.modern_industrialization.materials.part.Part;
 import java.util.Collections;
 import java.util.Map;
 import java.util.function.Consumer;
@@ -34,17 +35,27 @@ import net.minecraft.data.recipes.FinishedRecipe;
  */
 public class Material {
     public final String name;
+    public final MaterialHardness hardness;
     final Map<String, MaterialPart> parts;
 
     public final Consumer<Consumer<FinishedRecipe>> registerRecipes;
 
-    Material(String name, Map<String, MaterialPart> parts, Consumer<Consumer<FinishedRecipe>> registerRecipes) {
+    Material(String name, MaterialHardness hardness, Map<String, MaterialPart> parts, Consumer<Consumer<FinishedRecipe>> registerRecipes) {
         this.name = name;
+        this.hardness = hardness;
         this.parts = parts;
         this.registerRecipes = registerRecipes;
     }
 
     public Map<String, MaterialPart> getParts() {
         return Collections.unmodifiableMap(parts);
+    }
+
+    public MaterialPart getPart(Part part) {
+        var ret = parts.get(part.key);
+        if (ret == null) {
+            throw new IllegalArgumentException("Can't find part " + part + " in material " + name);
+        }
+        return ret;
     }
 }

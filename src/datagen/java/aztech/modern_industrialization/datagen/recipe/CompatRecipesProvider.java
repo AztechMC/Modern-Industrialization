@@ -25,6 +25,7 @@ package aztech.modern_industrialization.datagen.recipe;
 
 import aztech.modern_industrialization.machines.init.MIMachineRecipeTypes;
 import aztech.modern_industrialization.machines.recipe.MachineRecipeType;
+import aztech.modern_industrialization.materials.MIMaterials;
 import aztech.modern_industrialization.materials.Material;
 import aztech.modern_industrialization.materials.MaterialRegistry;
 import aztech.modern_industrialization.materials.part.MIParts;
@@ -32,6 +33,8 @@ import aztech.modern_industrialization.recipe.json.MIRecipeJson;
 import aztech.modern_industrialization.recipe.json.RecipeJson;
 import aztech.modern_industrialization.recipe.json.compat.IRCompressRecipeJson;
 import aztech.modern_industrialization.recipe.json.compat.TRCompressorRecipeJson;
+import com.google.common.base.Preconditions;
+import java.util.List;
 import java.util.function.Consumer;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.fabricmc.fabric.api.resource.conditions.v1.DefaultResourceConditions;
@@ -114,6 +117,28 @@ public class CompatRecipesProvider extends MIRecipesProvider {
                 addCompatRecipe("%s_curved_plate".formatted(plate),
                         new TRCompressorRecipeJson("c:%s_plates".formatted(plate), "modern_industrialization:%s_curved_plate".formatted(plate)));
             }
+        }
+
+        var plateCompatMaterials = List.of(
+                MIMaterials.ANNEALED_COPPER,
+                MIMaterials.BATTERY_ALLOY,
+                MIMaterials.BERYLLIUM,
+                MIMaterials.BLASTPROOF_ALLOY,
+                MIMaterials.CADMIUM,
+                MIMaterials.CUPRONICKEL,
+                MIMaterials.KANTHAL,
+                MIMaterials.SILICON,
+                MIMaterials.STAINLESS_STEEL,
+                MIMaterials.SUPERCONDUCTOR);
+        for (var material : plateCompatMaterials) {
+            // Currently the TR compressor builder only accepts tags without the prefix, so we check that.
+            var tag = material.getPart(MIParts.INGOT).getTaggedItemId();
+            Preconditions.checkArgument(tag.startsWith("#"));
+            tag = tag.substring(1);
+            addCompatRecipe(material.name + "_plate",
+                    new TRCompressorRecipeJson(
+                            tag,
+                            material.getPart(MIParts.PLATE).getItemId()).scaleTime(material.hardness));
         }
     }
 

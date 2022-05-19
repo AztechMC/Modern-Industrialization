@@ -25,8 +25,10 @@ package aztech.modern_industrialization.datagen.tag;
 
 import aztech.modern_industrialization.MIBlock;
 import aztech.modern_industrialization.definition.BlockDefinition;
+import aztech.modern_industrialization.pipes.MIPipes;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
+import net.minecraft.tags.BlockTags;
 
 public class MIBlockTagProvider extends FabricTagProvider.BlockTagProvider {
     public MIBlockTagProvider(FabricDataGenerator dataGenerator) {
@@ -40,6 +42,8 @@ public class MIBlockTagProvider extends FabricTagProvider.BlockTagProvider {
                 tag(tag).add(definition.asBlock());
             }
         }
+
+        tag(BlockTags.MINEABLE_WITH_PICKAXE).add(MIPipes.BLOCK_PIPE);
     }
 
 }

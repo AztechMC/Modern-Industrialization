@@ -63,7 +63,7 @@ import net.minecraft.world.level.material.Material;
 public class MIPipes {
     public static final MIPipes INSTANCE = new MIPipes();
 
-    public static final Block BLOCK_PIPE = new PipeBlock(FabricBlockSettings.of(Material.METAL).destroyTime(4.0f));
+    public static final Block BLOCK_PIPE = new PipeBlock(FabricBlockSettings.of(Material.METAL).destroyTime(2.0f));
     public static BlockEntityType<PipeBlockEntity> BLOCK_ENTITY_TYPE_PIPE;
     private final Map<PipeNetworkType, PipeItem> pipeItems = new HashMap<>();
 

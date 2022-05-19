@@ -137,6 +137,9 @@ repositories {
 }
 
 dependencies {
+    // TODO: remove when it's included in prod builds
+    include modImplementation("net.fabricmc.fabric-api:fabric-data-generation-api-v1:2.0.9+e19de87d60")
+
     minecraft "com.mojang:minecraft:${project.minecraft_version}"
     mappings loom.layered() {
         officialMojangMappings()

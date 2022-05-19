@@ -25,12 +25,17 @@ package aztech.modern_industrialization.materials.part;
 
 import aztech.modern_industrialization.materials.MaterialBuilder;
 import aztech.modern_industrialization.textures.TextureManager;
+import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.level.ItemLike;
 
 /**
  * Stores a single combination material/part Register it and generate the
  * associated texture
  **/
-public interface MaterialPart {
+public interface MaterialPart extends ItemLike {
     /**
      * @return The name of this part, for example "ingot" or "dust".
      */
@@ -43,9 +48,13 @@ public interface MaterialPart {
     String getTaggedItemId();
 
     /**
-     * @return The id of this part.
+     * @return The full id of this part. Includes the namespace and the path, separated by :.
      */
     String getItemId();
+
+    default Item asItem() {
+        return Registry.ITEM.getOrThrow(ResourceKey.create(Registry.ITEM_REGISTRY, new ResourceLocation(getItemId())));
+    }
 
     default void register(MaterialBuilder.RegisteringContext context) {
 

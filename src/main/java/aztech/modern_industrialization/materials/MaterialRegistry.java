@@ -31,10 +31,11 @@ import java.util.TreeMap;
 public class MaterialRegistry {
     static final Map<String, Material> MATERIALS = new TreeMap<>();
 
-    public static void addMaterial(Material material) {
+    public static Material addMaterial(Material material) {
         if (MATERIALS.put(material.name, material) != null) {
             throw new IllegalStateException("Duplicate registration of material " + material.name);
         }
+        return material;
     }
 
     public static Material getMaterial(String name) {

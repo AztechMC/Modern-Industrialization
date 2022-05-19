@@ -58,7 +58,7 @@ public class ClientProxy extends CommonProxy {
     @Override
     public void registerPartTankClient(Block tankBlock, String materialName, String itemPath, BlockEntityType<BlockEntity> blockEntityType) {
         MachineModelProvider.register(new MIIdentifier("item/" + itemPath), new TankItemUnbakedModel(itemPath));
-        BlockRenderLayerMap.INSTANCE.putBlock(tankBlock, RenderType.translucent());
+        BlockRenderLayerMap.INSTANCE.putBlock(tankBlock, RenderType.cutout());
         BlockEntityRendererRegistry.register(blockEntityType, TankRenderer::new);
     }
 }

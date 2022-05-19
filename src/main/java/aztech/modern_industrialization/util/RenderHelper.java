@@ -115,7 +115,7 @@ public class RenderHelper {
         }
     }
 
-    private static final float TANK_W = 1 / 16f;
+    private static final float TANK_W = 1 / 16f + 0.001f;
     public static final int FULL_LIGHT = 0x00F0_00F0;
 
     public static void drawFluidInTank(BlockEntity be, PoseStack ms, MultiBufferSource vcp, FluidVariant fluid, float fill) {
@@ -131,8 +131,7 @@ public class RenderHelper {
         float b = (color & 255) / 256f;
 
         // Make sure fill is within [TANK_W, 1 - TANK_W]
-        fill = Math.min(fill, 1 - TANK_W - 0.01f);
-        fill = Math.max(fill, TANK_W + 0.01f);
+        fill = TANK_W + (1 - 2 * TANK_W) * Math.min(1, Math.max(fill, 0));
         // Top and bottom positions of the fluid inside the tank
         float topHeight = fill;
         float bottomHeight = TANK_W;

@@ -38,7 +38,7 @@ import net.minecraft.client.renderer.RenderType;
 public class CreativeTankClientSetup {
     public static void setupClient() {
         MachineModelProvider.register(new MIIdentifier("item/creative_tank"), new TankItemUnbakedModel("creative_tank"));
-        BlockRenderLayerMap.INSTANCE.putBlock(MIBlock.CREATIVE_TANK_BLOCK.asBlock(), RenderType.translucent());
+        BlockRenderLayerMap.INSTANCE.putBlock(MIBlock.CREATIVE_TANK_BLOCK.asBlock(), RenderType.cutout());
         BlockEntityRendererRegistry.register(MIBlockEntityTypes.CREATIVE_TANK, CreativeTankRenderer::new);
     }
 }

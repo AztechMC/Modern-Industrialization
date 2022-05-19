@@ -42,7 +42,6 @@ import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.HoverEvent;
 import net.minecraft.network.chat.Style;
-import net.minecraft.network.chat.TranslatableComponent;
 import org.jetbrains.annotations.NotNull;
 
 public class VersionEvents {
@@ -122,7 +121,7 @@ public class VersionEvents {
                             Minecraft.getInstance().execute(() -> {
                                 if (Minecraft.getInstance().player == player) {
                                     player.displayClientMessage(
-                                            new TranslatableComponent("text.modern_industrialization.new_version", lastVersionString,
+                                            MIText.NewVersion.text(lastVersionString,
                                                     MIText.CurseForge.text().setStyle(styleClick)),
                                             false);
                                 }

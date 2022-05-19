@@ -30,19 +30,20 @@ import net.minecraft.network.chat.TranslatableComponent;
 public enum MIText {
 
     ModernIndustrialization("Modern Industrialization", "itemGroup." +
-            aztech.modern_industrialization.ModernIndustrialization.ITEM_GROUP.getRecipeFolderName()),
+            aztech.modern_industrialization.ModernIndustrialization.ITEM_GROUP.getRecipeFolderName(),
+            "modern_industrialization", "itemGroup.modern_industrialization.general"),
     AbsorptionProbability("Absorption Probability"),
     AdditionalTips("Pro-tips:"),
     AdditionalTipsShift("Pro-tips: [Press Shift]"),
     BarrelStack("Can store up to %d stacks"),
     BaseDurationSeconds("%s sec"),
     BaseEuRecipe("Recipe Base : %s"),
-    BaseEuT("%d EU/t"),
+    // BaseEuT("%d EU/t"), // not used
     BaseEuTotal("Total : %s"),
     BaseEuTotalStored("Total Energy Stored : %s"),
     Blacklist("Blacklist mode enabled"),
     Both("Both"),
-    Burnup("Burnup: %d"),
+    // Burnup("Burnup: %d"), // not used
     BookSubtitle("Technology For Newbies"),
     CableTierEV("Extreme Voltage"),
     CableTierHV("High Voltage"),
@@ -76,7 +77,7 @@ public enum MIText {
     Enabled("Enabled"),
     EnergyFill("Energy: %s %%"),
     Eu("%s %sEU"),
-    EuByDesintegration("%d EU / Desintegration"),
+    // EuByDesintegration("%d EU / Desintegration"), // not used
     EuCable("%s - Max network transfer : %s"),
     EuGenerationMode("EU Generation"),
     EuInDieselGenerator("EU per mb : %d"),
@@ -90,7 +91,7 @@ public enum MIText {
     FluidAutoInsertOff("Fluid auto-insertion disabled"),
     FluidAutoInsertOn("Fluid auto-insertion enabled"),
     FluidFuels("Fluid Fuels"),
-    FluidLock("Locked to : %s"),
+    // FluidLock("Locked to : %s"), // not used
     FluidSlotIO("Fluid IO, Left Click to Insert or Extract"),
     FluidSlotInput("Fluid Input, Left Click to Insert or Extract"),
     FluidSlotOutput("Fluid Output, Left Click to Extract"),
@@ -98,7 +99,7 @@ public enum MIText {
     GravichestplateEnabled("Gravichestplate enabled!"),
     GunpowderTime("Overclock : %s"),
     GunpowderUpgrade("MI : double Steam Machines speed for 2 minutes"),
-    Heat("Heat : %s"),
+    // Heat("Heat : %s"), // not used
     HeatConduction("Heat Conduction %s / °Ct"),
     ItemAutoExtractOff("Item auto-extraction disabled"),
     ItemAutoExtractOn("Item auto-extraction enabled"),
@@ -111,18 +112,18 @@ public enum MIText {
     LockingModeOn("Lock editing enabled"),
     LubricantTooltip("Right-Click on Electric Machine : consume %s mb for 1 efficiency tick"),
     MachineUpgrade("Electric Machine Upgrade : Max Overclock +%d EU/t"),
-    MajToTooltip("+ Press [Maj] to show complete tooltip"),
+    // MajToTooltip("+ Press [Maj] to show complete tooltip"), // not used
     MaxTemp("Max Temperature : %d C°"),
-    MultiblockShapeElectricBlastFurnace0Invalid("EBF Cupronickel Shape Invalid"),
-    MultiblockShapeElectricBlastFurnace0Valid("EBF Cupronickel Shape Valid"),
+    // MultiblockShapeElectricBlastFurnace0Invalid("EBF Cupronickel Shape Invalid"), // not used
+    // MultiblockShapeElectricBlastFurnace0Valid("EBF Cupronickel Shape Valid"), // not used
     MultiblockShapeInvalid("Shape Invalid"),
     MultiblockShapeValid("Shape Valid"),
     MultiblockStatusActive("Status : Active"),
-    MultiblockStatusInactive("Status : Idle"),
+    MultiblockStatusInactive("Status : Idle"), // not used
     NetworkFluidHelpClear("Shift-click to clear the network of its fluid."),
     NetworkFluidHelpSet("Click with a container to set the fluid for the network."),
     Neutron("%d Neutron"),
-    NeutronAbs("Neutron Absorption : %s %%"),
+    NeutronAbs("Neutron Absorption : %s %%"), // not used
     NeutronAbsorption("Neutron Absorption"),
     NeutronAbsorptionMode("Neutron Absorption"),
     NeutronFluxMode("Neutron Flux"),
@@ -144,9 +145,9 @@ public enum MIText {
     PipeConnectionIO("I/O"),
     PipeConnectionOut("OUT"),
     PipeConnectionHelp("Click to change"),
-    PipeConnectionTooltip0("Insert only"),
-    PipeConnectionTooltip1("Insert or Extract"),
-    PipeConnectionTooltip2("Extract only"),
+    PipeConnectionTooltipInsertOnly("Insert only"),
+    PipeConnectionTooltipInsertOrExtract("Insert or Extract"),
+    PipeConnectionTooltipExtractOnly("Extract only"),
     PriorityExtract("Extract priority: %d"),
     PriorityExtractHelp("Lower priorities first, only into higher priorities."),
     PriorityInsert("Insert priority: %d"),
@@ -159,20 +160,20 @@ public enum MIText {
     RemAbsorption("Remaining Absorption : %d / %d "),
     ScatteringProbability("Scattering Probability"),
     SecondsLeft("Seconds left: %s"),
-    ShapeError("Multiblock shape error at (%d, %d, %d): %s"),
-    ShapeErrorBlock("Expected block %s"),
-    ShapeErrorHatch("Expected hatch: one of %s"),
-    ShapeErrorHatch0("Item Input"),
-    ShapeErrorHatch1("Item Output"),
-    ShapeErrorHatch2("Fluid Input"),
-    ShapeErrorHatch3("Fluid Output"),
-    ShapeErrorHatch4("Energy Input"),
-    ShapeErrorHatch5("Energy Output"),
-    ShapeErrorHatchSeparator(" / "),
-    ShapeErrorOr("%s or %s"),
-    ShapeErrorTooManyHatches("Multiblock shape error: found %d hatches, but only up to %d are allowed."),
-    ShapeErrorVerticalChain("Expected vertical Chain"),
-    ShapeValid("Multiblock shape is correct"),
+    // ShapeError("Multiblock shape error at (%d, %d, %d): %s"), // not used
+    // ShapeErrorBlock("Expected block %s"), // not used
+    // ShapeErrorHatch("Expected hatch: one of %s"), // not used
+    // ShapeErrorHatch0("Item Input"), // not used
+    // ShapeErrorHatch1("Item Output"),// not used
+    // ShapeErrorHatch2("Fluid Input"), // not used
+    // ShapeErrorHatch3("Fluid Output"), // not used
+    // ShapeErrorHatch4("Energy Input"), // not used
+    // ShapeErrorHatch5("Energy Output"), // not used
+    // ShapeErrorHatchSeparator(" / "), // not used
+    // ShapeErrorOr("%s or %s"), // not used
+    ShapeErrorTooManyHatches("Multiblock shape error: found %d hatches, but only up to %d are allowed."), // not used
+    ShapeErrorVerticalChain("Expected vertical Chain"), // not used
+    ShapeValid("Multiblock shape is correct"), // not used
     SingleNeutronCapture("Single Neutron Capture"),
     SteamDrillFuelHelp("2) Place fuel inside the drill (right click)."),
     SteamDrillProfit("3) Enjoy 3x3 Silk Touch."),
@@ -183,7 +184,7 @@ public enum MIText {
     ThermalInteraction("Thermal Interaction"),
     ThermalNeutron("Thermal Neutron"),
     ThermalNeutronFraction("Thermal Scattered Neutron Fraction"),
-    ThermalProperties("Thermal Properties"),
+    // ThermalProperties("Thermal Properties"), // not used
     ToolSwitchedFortune("Fortune Mode enabled!"),
     ToolSwitchedSilkTouch("Silk Touch Mode enabled!"),
     TooltipSpeedUpgrade("Item Pipe Speed Upgrade: +%d items / 3s."),

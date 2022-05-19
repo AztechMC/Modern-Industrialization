@@ -53,7 +53,6 @@ import net.minecraft.core.Registry;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
@@ -424,8 +423,7 @@ public class NuclearReactorGui {
                         Component euProduction = TextHelper.getEuTextTick(data.euProduction, true);
                         Component euFuelConsumption = TextHelper.getEuTextTick(data.euFuelConsumption, true);
 
-                        Component tooltip = new TranslatableComponent("text.modern_industrialization.nuclear_fuel_efficiency_tooltip", euProduction,
-                                euFuelConsumption);
+                        Component tooltip = MIText.NuclearFuelEfficiencyTooltip.text(euProduction, euFuelConsumption);
 
                         screen.renderTooltip(matrices, tooltip, cursorX, cursorY);
                         return;
@@ -435,7 +433,7 @@ public class NuclearReactorGui {
 
             public Component getEfficiencyText() {
                 String eff = String.format("%.1f", 100 * data.euProduction / data.euFuelConsumption);
-                return new TranslatableComponent("text.modern_industrialization.efficiency_nuclear", eff).setStyle(TextHelper.RED);
+                return MIText.EfficiencyNuclear.text(eff).setStyle(TextHelper.RED);
             }
 
             private boolean drawButton() {
@@ -458,9 +456,8 @@ public class NuclearReactorGui {
                     container.addButton(centerX + 64, 4, 20, 20, new TextComponent(""),
                             (i) -> currentMode = Mode.values()[(currentMode.index + 1) % Mode.values().length],
                             () -> List.of(modeTooltip[currentMode.index],
-
-                                    new TranslatableComponent("text.modern_industrialization.click_to_switch",
-                                            modeTooltip[(currentMode.index + 1) % Mode.values().length]).setStyle(TextHelper.GRAY_TEXT)),
+                                    MIText.ClickToSwitch.text(modeTooltip[(currentMode.index + 1) % Mode.values().length])
+                                            .setStyle(TextHelper.GRAY_TEXT)),
                             (screen, button, matrices, mouseX, mouseY, delta) -> {
                                 button.renderVanilla(matrices, mouseX, mouseY, delta);
                                 if (currentMode == Mode.NUCLEAR_FUEL) {
@@ -481,8 +478,7 @@ public class NuclearReactorGui {
                     container
                             .addButton(centerX + 64, 150, 20, 20, new TextComponent(""), (i) -> neutronMode = nextNeutronMode(),
                                     () -> List.of(neutronModeTooltip[neutronMode.index],
-                                            new TranslatableComponent("text.modern_industrialization.click_to_switch",
-                                                    neutronModeTooltip[nextNeutronMode().index]).setStyle(TextHelper.GRAY_TEXT)),
+                                            MIText.ClickToSwitch.text(neutronModeTooltip[nextNeutronMode().index]).setStyle(TextHelper.GRAY_TEXT)),
                                     (screen, button, matrices, mouseX, mouseY, delta) -> {
 
                                         button.renderVanilla(matrices, mouseX, mouseY, delta);

@@ -26,6 +26,7 @@ package aztech.modern_industrialization.machines.components.sync;
 import static aztech.modern_industrialization.machines.components.sync.EnergyBar.Client.Renderer.HEIGHT;
 import static aztech.modern_industrialization.machines.components.sync.EnergyBar.Client.Renderer.WIDTH;
 
+import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.machines.MachineScreenHandlers;
 import aztech.modern_industrialization.machines.SyncedComponent;
 import aztech.modern_industrialization.machines.SyncedComponents;
@@ -40,7 +41,6 @@ import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 
 public class EnergyBar {
@@ -126,11 +126,10 @@ public class EnergyBar {
                 if (RenderHelper.isPointWithinRectangle(params.renderX, params.renderY, WIDTH, HEIGHT, cursorX - x, cursorY - y)) {
                     Component tooltip;
                     if (Screen.hasShiftDown()) {
-                        tooltip = new TranslatableComponent("text.modern_industrialization.energy_bar", eu, maxEu, "");
+                        tooltip = MIText.EuMaxed.text(eu, maxEu, "");
                     } else {
                         TextHelper.MaxedAmount maxedAmount = TextHelper.getMaxedAmount(eu, maxEu);
-                        tooltip = new TranslatableComponent("text.modern_industrialization.energy_bar", maxedAmount.digit(), maxedAmount.maxDigit(),
-                                maxedAmount.unit());
+                        tooltip = MIText.EuMaxed.text(maxedAmount.digit(), maxedAmount.maxDigit(), maxedAmount.unit());
                     }
                     screen.renderComponentTooltip(matrices, Collections.singletonList(tooltip), cursorX, cursorY);
                 }

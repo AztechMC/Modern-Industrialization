@@ -26,6 +26,7 @@ package aztech.modern_industrialization.datagen.translation;
 import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.ModernIndustrialization;
 import aztech.modern_industrialization.definition.Definition;
+import aztech.modern_industrialization.misc.tooltips.FaqTooltips;
 import aztech.modern_industrialization.pipes.MIPipes;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -74,6 +75,10 @@ public record TranslationProvider(FabricDataGenerator gen) implements DataProvid
         }
 
         for (var entry : MIPipes.TRANSLATION.entrySet()) {
+            translationsPair.add(new Pair<>(entry.getKey(), entry.getValue()));
+        }
+
+        for (var entry : FaqTooltips.TOOLTIPS_ENGLISH_TRANSLATION.entrySet()) {
             translationsPair.add(new Pair<>(entry.getKey(), entry.getValue()));
         }
 

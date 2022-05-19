@@ -53,7 +53,7 @@ public class BlockDefinition<T extends Block> extends Definition implements Item
             BiConsumer<Block, BlockLoot> lootTableGenerator,
             List<TagKey<Block>> tags) {
 
-        super(englishName, id);
+        super(englishName, id, false);
         this.block = block;
         this.blockItem = MIItem.item(
                 englishName,

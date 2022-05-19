@@ -24,6 +24,7 @@
 package aztech.modern_industrialization.machines.components.sync;
 
 import aztech.modern_industrialization.MIIdentifier;
+import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.machines.SyncedComponent;
 import aztech.modern_industrialization.machines.SyncedComponents;
 import aztech.modern_industrialization.machines.components.CrafterComponent;
@@ -36,7 +37,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 
 public class CraftingMultiblockGui {
@@ -157,28 +157,32 @@ public class CraftingMultiblockGui {
 
                 textRenderer
                         .draw(matrices,
-                                new TranslatableComponent(isShapeValid ? "text.modern_industrialization.multiblock_shape_valid"
-                                        : "text.modern_industrialization.multiblock_shape_invalid"),
+                                isShapeValid ? MIText.MultiblockShapeValid.text() : MIText.MultiblockShapeInvalid.text(),
                                 x + 9, y + 23, isShapeValid ? 0xFFFFFF : 0xFF0000);
                 if (isShapeValid) {
-                    textRenderer.draw(matrices, new TranslatableComponent(hasActiveRecipe ? "text.modern_industrialization.multiblock_status_active"
-                            : "text.modern_industrialization.multiblock_status_inactive"), x + 9, y + 34, 0xFFFFFF);
+                    textRenderer.draw(matrices,
+
+                            hasActiveRecipe ? MIText.MultiblockStatusActive.text() : MIText.MultiblockStatusActive.text(), x + 9, y + 34, 0xFFFFFF);
                     if (hasActiveRecipe) {
                         textRenderer.draw(matrices,
-                                new TranslatableComponent("text.modern_industrialization.progress", String.format("%.1f", progress * 100) + " %"),
+                                MIText.Progress.text(String.format("%.1f", progress * 100) + " %"),
                                 x + 9,
                                 y + 45, 0xFFFFFF);
 
                         textRenderer.draw(matrices,
-                                new TranslatableComponent("text.modern_industrialization.efficiency_ticks", efficiencyTicks, maxEfficiencyTicks),
+                                MIText.EfficiencyTicks.text(efficiencyTicks, maxEfficiencyTicks),
                                 x + 9,
                                 y + 56, 0xFFFFFF);
 
-                        textRenderer.draw(matrices, new TranslatableComponent("text.modern_industrialization.base_eu_recipe",
-                                TextHelper.getEuTextTick(baseRecipeEu)), x + 9, y + 67, 0xFFFFFF);
+                        textRenderer.draw(matrices,
+                                MIText.BaseEuRecipe.text(
+                                        TextHelper.getEuTextTick(baseRecipeEu)),
+                                x + 9, y + 67, 0xFFFFFF);
 
-                        textRenderer.draw(matrices, new TranslatableComponent("text.modern_industrialization.current_eu_recipe",
-                                TextHelper.getEuTextTick(currentRecipeEu)), x + 9, y + 78, 0xFFFFFF);
+                        textRenderer.draw(matrices,
+                                MIText.CurrentEuRecipe.text(
+                                        TextHelper.getEuTextTick(currentRecipeEu)),
+                                x + 9, y + 78, 0xFFFFFF);
                     }
                 }
             }

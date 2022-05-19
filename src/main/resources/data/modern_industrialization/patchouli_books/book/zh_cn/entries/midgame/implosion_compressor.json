@@ -7,12 +7,12 @@
       "type": "spotlight",
       "title": "熟悉的蓝色宝石",
       "item": "minecraft:diamond",
-      "text": "使用工业 TNT，内爆压缩机能够压缩灰尘和最耐磨材料的锭。这包括钨、防爆合金、铍——这些材料对核裂变非常重要——最后还有钻石！"
+      "text": "使用工业TNT，内爆压缩机能够压缩最坚固材料的矿粉和锭。这包括钨、防爆合金、铍——这些材料对核裂变非常重要——还有钻石！"
     },
     {
       "type": "crafting",
       "recipe": "modern_industrialization:electric_age/machine/implosion_compressor_asbl",
-      "text": "希望您现在已经学会检查每个 REI 配方，所以您应该很容易发现防爆混合锭和钨块可以用压缩机制造......当然，直到您拥有第一台内爆压缩机！"
+      "text": "希望你现在已经学会自己查看每个REI配方，所以你应该很容易发现防爆合金锭和钨粒可以用压缩机制造...当然，直到你拥有第一台内爆压缩机！"
     }
   ],
   "sortnum": 205

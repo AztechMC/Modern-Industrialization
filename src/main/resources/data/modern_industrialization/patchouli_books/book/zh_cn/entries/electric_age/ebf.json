@@ -6,22 +6,22 @@
     {
       "type": "crafting",
       "recipe": "modern_industrialization:electric_age/machine/electric_blast_furnace_asbl",
-      "text": "电高炉是蒸汽高炉的电动版本。它可以解锁新配方，并且与其他多块电机一样，默认情况下其超频限制为 128 EU/t。"
+      "text": "电高炉是蒸汽高炉的电动版本。它可以解锁新配方，并且与其他多方块电力机器一样，默认情况下其超频限制为128EU/t。"
     },
     {
       "type": "crafting",
       "recipe": "modern_industrialization:materials/cupronickel/craft/coil",
-      "text": "EBF由一层耐热机壳、两层空心白铜线圈和另一层耐热机壳制成。控制器必须在底层，在顶层或底层有阴影。"
+      "text": "电高炉由一层耐热机器外壳、两层空心的白铜线圈和另一层耐热机器外壳制成。控制器必须放在底层，且接口仓需放在顶层或底层。"
     },
     {
       "type": "crafting",
       "recipe": "modern_industrialization:hatches/basic/energy_input_hatch",
-      "text": "不要忘记添加能量输入舱，否则 EBF 将没有能量！ LV 能量输入舱口仅连接到 LV 电缆。"
+      "text": "不要忘记添加能量输入仓，否则电高炉将没有能量！低压能量输入仓仅连接到低压电缆。"
     },
     {
       "type": "crafting",
       "recipe": "modern_industrialization:hatches/advanced/energy_input_hatch",
-      "text": "MV 能量输入舱口仅连接到 MV 电缆，如果您的 EBF 需要大量能量，这将非常有用！ 你还不能制作它们，但请记住它们存在......"
+      "text": "中压能量输入仓仅连接到中压电缆，如果你的电高炉需要大量能量，这会非常有用！你还不能制作它们，但请记住它们的存在..."
     }
   ],
   "sortnum": 105

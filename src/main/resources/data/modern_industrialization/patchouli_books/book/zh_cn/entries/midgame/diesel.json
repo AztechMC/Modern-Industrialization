@@ -6,12 +6,12 @@
     {
       "type": "crafting",
       "recipe": "modern_industrialization:electric_age/machine/turbo_diesel_generator_asbl",
-      "text": "请记住，您可以使用涡轮柴油发电机进行兼容 HV 发电。正如您所料，它的产量高达 512 EU/t。请记住，您可以使用 REI 找到每种燃料中存储的能量。"
+      "text": "请记住，你可以使用涡轮柴油发电机进行兼容高压的发电。正如你所料，它的产量高达512 EU/t。同时，你可以使用REI找到每种燃料中存储的能量。"
     },
     {
       "type": "crafting",
       "recipe": "modern_industrialization:electric_age/machine/large_diesel_generator_asbl",
-      "text": "一旦您可以使用处理单元和高度先进的机器外壳，就可以考虑制造一些大型柴油发电机。这些坏男孩中的每一个都会将燃料转化为 EU，高达 16384 EU/t！"
+      "text": "一旦你可以使用处理单元和高级机器外壳，就可以考虑制造一些大型柴油发电机。每一个大家伙都能将燃料转化为EU，功率高达16384EU/t！"
     }
   ],
   "sortnum": 204

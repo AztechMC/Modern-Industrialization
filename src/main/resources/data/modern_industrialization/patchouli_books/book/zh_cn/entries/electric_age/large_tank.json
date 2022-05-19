@@ -1,16 +1,16 @@
 {
-  "name": "大坦克",
+  "name": "大型储罐",
   "category": "modern_industrialization:electric_age",
   "icon": "modern_industrialization:large_tank",
   "pages": [
     {
       "type": "crafting",
       "recipe": "modern_industrialization:electric_age/machine/large_tank_asbl",
-      "text": "大罐是一个多方块，可让您储存大量流体，例如蒸汽。它可以为结构中的每个块（包括侧面）存储 64 桶流体。"
+      "text": "大型储罐是一个多方块结构，可以储存大量流体，例如蒸汽。结构中的每个方块（包括侧面）都可以存储64桶流体。"
     },
     {
       "type": "text",
-      "text": "您只会看到最小形状的预览，但您可以在水箱的顶部、背面和侧面添加图层。正面必须保持水平对称。$(br2)只有管道可以进入储罐，并且只能通过控制器。$(br2)不要破坏控制器，否则您将丢失所有储存的液体！"
+      "text": "你只会看到最小形状的预览，但你可以在储罐的顶部、背面和侧面添加更多层。正面必须保持水平对称。$(br2)只有管道可以与储罐交互，并且只能经过控制器。$(br2)不要破坏控制器，否则你将丢失所有储存的流体！"
     }
   ],
   "sortnum": 101

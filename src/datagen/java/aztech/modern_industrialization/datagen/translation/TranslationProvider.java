@@ -24,7 +24,6 @@
 package aztech.modern_industrialization.datagen.translation;
 
 import aztech.modern_industrialization.MIText;
-import aztech.modern_industrialization.ModernIndustrialization;
 import aztech.modern_industrialization.definition.Definition;
 import aztech.modern_industrialization.misc.tooltips.FaqTooltips;
 import aztech.modern_industrialization.pipes.MIPipes;
@@ -37,15 +36,11 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.TreeMap;
+import java.util.*;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.HashCache;
 import org.jetbrains.annotations.NotNull;
-import oshi.util.tuples.Pair;
 
 public record TranslationProvider(FabricDataGenerator gen) implements DataProvider {
 
@@ -54,6 +49,18 @@ public record TranslationProvider(FabricDataGenerator gen) implements DataProvid
     private static final String OUTPUT_PATH = "assets/modern_industrialization/lang/en_us.json";
     private static final String INPUT_PATH = "../../src/main/resources/assets/modern_industrialization/lang/en_us_not_generated.json";
 
+    private static final HashMap<String, String> TRANSLATION_PAIRS = new HashMap<>();
+
+    public static void addTranslation(String key, String englishValue) {
+        if (!TRANSLATION_PAIRS.containsKey(key)) {
+            TRANSLATION_PAIRS.put(key, englishValue);
+        } else {
+            throw new IllegalArgumentException(
+                    String.format("Error adding translation key %s for translation %s : already registered for translation %s",
+                            key, englishValue, TRANSLATION_PAIRS.get(key)));
+        }
+    }
+
     @Override
     public void run(@NotNull HashCache cache) throws IOException {
 
@@ -61,44 +68,43 @@ public record TranslationProvider(FabricDataGenerator gen) implements DataProvid
 
         TreeMap<String, String> translation = GSON.fromJson(new FileReader(INPUT_PATH, StandardCharsets.UTF_8), TreeMap.class);
 
-        List<Pair<String, String>> translationsPair = new ArrayList<>();
-
         for (var entry : MIText.values()) {
-            translationsPair.add(new Pair<>(entry.getTranslationKey(), entry.getEnglishText()));
+            addTranslation(entry.getTranslationKey(), entry.getEnglishText());
             for (String additionalKey : entry.getAdditionalTranslationKey()) {
-                translationsPair.add(new Pair<>(additionalKey, entry.getEnglishText()));
+                addTranslation(additionalKey, entry.getEnglishText());
             }
         }
 
         for (Definition definition : Definition.TRANSLATABLE_DEFINITION) {
-            translationsPair.add(new Pair<>(definition.getTranslationKey(), definition.getEnglishName()));
+            addTranslation(definition.getTranslationKey(), definition.getEnglishName());
         }
 
         for (var entry : MIPipes.TRANSLATION.entrySet()) {
-            translationsPair.add(new Pair<>(entry.getKey(), entry.getValue()));
+            addTranslation(entry.getKey(), entry.getValue());
         }
 
         for (var entry : FaqTooltips.TOOLTIPS_ENGLISH_TRANSLATION.entrySet()) {
-            translationsPair.add(new Pair<>(entry.getKey(), entry.getValue()));
+            addTranslation(entry.getKey(), entry.getValue());
         }
 
-        for (Pair<String, String> translationPair : translationsPair) {
-            String key = translationPair.getA();
-            String value = translationPair.getB();
+        for (var entry : TRANSLATION_PAIRS.entrySet()) {
+            String key = entry.getKey();
+            String value = entry.getValue();
 
             if (translation.containsKey(key)) {
-                ModernIndustrialization.LOGGER.warn("Warning duplicate translation " + key + " : " + value + "/" + translation.get(key));
+                throw new IllegalArgumentException("Translation key : " + key + " cannot be registered for associated value : " + value + "," +
+                        ", already associated to :" + translation.get(key));
             }
 
             translation.put(key, value);
 
         }
 
-        save(cache, GSON.toJsonTree(translation), outputPath.resolve(OUTPUT_PATH));
+        customJsonSave(cache, GSON.toJsonTree(translation), outputPath.resolve(OUTPUT_PATH));
 
     }
 
-    private void save(HashCache cache, JsonElement jsonElement, Path path) throws IOException {
+    private void customJsonSave(HashCache cache, JsonElement jsonElement, Path path) throws IOException {
 
         String sortedJson = GSON.toJson(jsonElement);
         String prettyPrinted = sortedJson.replace("\\u0027", "'");

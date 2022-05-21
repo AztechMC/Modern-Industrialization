@@ -68,4 +68,12 @@ public abstract class Definition {
         }
     }
 
+    public String path() {
+        return getResourceAsString(false);
+    }
+
+    public String id() {
+        return getResourceAsString(true);
+    }
+
 }

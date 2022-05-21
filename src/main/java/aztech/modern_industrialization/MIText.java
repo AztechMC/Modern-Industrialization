@@ -31,7 +31,7 @@ public enum MIText {
 
     ModernIndustrialization("Modern Industrialization", "itemGroup." +
             aztech.modern_industrialization.ModernIndustrialization.ITEM_GROUP.getRecipeFolderName(),
-            "modern_industrialization", "itemGroup.modern_industrialization.general"),
+            "modern_industrialization"),
     AbsorptionProbability("Absorption Probability"),
     AdditionalTips("Pro-tips:"),
     AdditionalTipsShift("Pro-tips: [Press Shift]"),

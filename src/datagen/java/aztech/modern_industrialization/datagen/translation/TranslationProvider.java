@@ -23,6 +23,7 @@
  */
 package aztech.modern_industrialization.datagen.translation;
 
+import aztech.modern_industrialization.MIConfig;
 import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.definition.Definition;
 import aztech.modern_industrialization.misc.tooltips.FaqTooltips;
@@ -33,6 +34,7 @@ import com.google.gson.JsonElement;
 import java.io.BufferedWriter;
 import java.io.FileReader;
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -72,6 +74,13 @@ public record TranslationProvider(FabricDataGenerator gen) implements DataProvid
             addTranslation(entry.getTranslationKey(), entry.getEnglishText());
             for (String additionalKey : entry.getAdditionalTranslationKey()) {
                 addTranslation(additionalKey, entry.getEnglishText());
+            }
+        }
+
+        for (Field f : MIConfig.class.getFields()) {
+            EnglishTranslation englishTranslation = f.getAnnotation(EnglishTranslation.class);
+            if (englishTranslation != null) {
+                addTranslation("text.autoconfig.modern_industrialization.option." + f.getName(), englishTranslation.value());
             }
         }
 

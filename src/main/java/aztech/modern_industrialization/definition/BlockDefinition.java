@@ -23,16 +23,13 @@
  */
 package aztech.modern_industrialization.definition;
 
-import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.MIItem;
 import java.util.List;
-import java.util.Optional;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.minecraft.data.loot.BlockLoot;
 import net.minecraft.data.models.BlockModelGenerators;
-import net.minecraft.data.models.model.ModelTemplate;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
@@ -61,9 +58,9 @@ public class BlockDefinition<T extends Block> extends Definition implements Item
         this.blockItem = MIItem.item(
                 englishName,
                 id,
-                (s) -> blockItemCtor.apply(block, s),
-                ((item, itemModelGenerators) -> itemModelGenerators.generateFlatItem(
-                        item, new ModelTemplate(Optional.of(new MIIdentifier(("block/" + id))), Optional.empty()))));
+                s -> blockItemCtor.apply(block, s),
+                (item, itemModelGenerators) -> {
+                });
         this.modelGenerator = modelGenerator;
         this.lootTableGenerator = lootTableGenerator;
         this.tags = tags;

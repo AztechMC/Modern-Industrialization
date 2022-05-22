@@ -34,6 +34,7 @@ import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricModelProvider;
 import net.minecraft.data.models.BlockModelGenerators;
 import net.minecraft.data.models.ItemModelGenerators;
+import net.minecraft.world.level.block.Blocks;
 
 public class ModelProvider extends FabricModelProvider {
 
@@ -50,8 +51,7 @@ public class ModelProvider extends FabricModelProvider {
         }
 
         for (FluidDefinition fluidDefinition : MIFluids.FLUIDS.values()) {
-            blockStateModelGenerator.createNonTemplateModelBlock(
-                    fluidDefinition.fluidBlock);
+            blockStateModelGenerator.createNonTemplateModelBlock(fluidDefinition.fluidBlock, Blocks.AIR);
         }
 
         blockStateModelGenerator.createNonTemplateModelBlock(MIPipes.BLOCK_PIPE);

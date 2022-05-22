@@ -28,20 +28,17 @@ import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextColor;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.material.Material;
 
 /**
- * Allows the transfer API to get the name of the fluid by calling fluid.getBlockState().getBlock().getTranslationKey().
+ * Allows the transfer API to get the colored name of the fluid by calling fluid.getBlockState().getName().
  */
 public class MIFluidBlock extends Block {
-    private final String translationKey;
     private final int color;
 
-    public MIFluidBlock(String name, int color) {
+    public MIFluidBlock(int color) {
         super(FabricBlockSettings.of(Material.WATER));
-        this.translationKey = "block.modern_industrialization." + name;
         this.color = FluidHelper.getColorMinLuminance(color);
     }
 
@@ -50,12 +47,7 @@ public class MIFluidBlock extends Block {
     }
 
     @Override
-    public String getDescriptionId() {
-        return translationKey;
-    }
-
-    @Override
     public MutableComponent getName() {
-        return new TranslatableComponent(this.translationKey).setStyle(Style.EMPTY.withColor(TextColor.fromRgb(color)));
+        return super.getName().setStyle(Style.EMPTY.withColor(TextColor.fromRgb(color)));
     }
 }

@@ -25,10 +25,15 @@ package aztech.modern_industrialization.datagen.loot;
 
 import aztech.modern_industrialization.MIBlock;
 import aztech.modern_industrialization.definition.BlockDefinition;
+import java.util.Map;
+import java.util.function.BiConsumer;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
-import net.fabricmc.fabric.api.datagen.v1.provider.FabricBlockLootTablesProvider;
+import net.fabricmc.fabric.api.datagen.v1.provider.FabricBlockLootTableProvider;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.storage.loot.BuiltInLootTables;
+import net.minecraft.world.level.storage.loot.LootTable;
 
-public class BlockLootTableProvider extends FabricBlockLootTablesProvider {
+public class BlockLootTableProvider extends FabricBlockLootTableProvider {
 
     public BlockLootTableProvider(FabricDataGenerator dataGenerator) {
         super(dataGenerator);
@@ -40,6 +45,22 @@ public class BlockLootTableProvider extends FabricBlockLootTablesProvider {
             if (blockDefinition.lootTableGenerator != null) {
                 blockDefinition.lootTableGenerator.accept(blockDefinition.block, this);
             }
+        }
+    }
+
+    // Override to disable strict validation
+    @Override
+    public void accept(BiConsumer<ResourceLocation, LootTable.Builder> biConsumer) {
+        generateBlockLootTables();
+
+        for (Map.Entry<ResourceLocation, LootTable.Builder> entry : map.entrySet()) {
+            ResourceLocation identifier = entry.getKey();
+
+            if (identifier.equals(BuiltInLootTables.EMPTY)) {
+                continue;
+            }
+
+            biConsumer.accept(identifier, entry.getValue());
         }
     }
 }

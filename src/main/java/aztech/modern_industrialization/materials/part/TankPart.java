@@ -47,13 +47,12 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import org.apache.commons.lang3.mutable.MutableObject;
 
 public class TankPart extends UnbuildablePart<Long> {
-    public static BiConsumer<Block, BlockModelGenerators> createModelGenerator() {
-        return (block, gen) -> {
-            var textureSlot = TextureSlot.create("0");
-            var mapping = TextureMapping.singleSlot(textureSlot, new MIIdentifier("block/" + Registry.BLOCK.getKey(block).getPath()));
-            gen.createTrivialBlock(block, mapping, new ModelTemplate(Optional.of(new MIIdentifier("base/tank")), Optional.empty(), textureSlot));
-        };
-    }
+    public static final BiConsumer<Block, BlockModelGenerators> MODEL_GENERATOR = (block, gen) -> {
+        var textureSlot = TextureSlot.create("0");
+        var mapping = TextureMapping.singleSlot(textureSlot, new MIIdentifier("block/" + Registry.BLOCK.getKey(block).getPath()));
+        gen.skipAutoItemBlock(block);
+        gen.createTrivialBlock(block, mapping, new ModelTemplate(Optional.of(new MIIdentifier("base/tank")), Optional.empty(), textureSlot));
+    };
 
     public TankPart() {
         super("tank");
@@ -89,7 +88,7 @@ public class TankPart extends UnbuildablePart<Long> {
                             MIBlock.BlockDefinitionParams.of().withBlockConstructor(
                                     s -> new TankBlock(factory)).withBlockItemConstructor(
                                             (b, s) -> new TankItem(b, capacity))
-                                    .withModel(createModelGenerator())
+                                    .withModel(MODEL_GENERATOR)
                                     .noLootTable());
 
                     TankBlock block = blockDefinition.asBlock();

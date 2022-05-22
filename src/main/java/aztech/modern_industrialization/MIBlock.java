@@ -90,7 +90,7 @@ public class MIBlock {
             "creative_tank",
             BlockDefinitionParams.of().withBlockConstructor(CreativeTankBlock::new)
                     .withBlockItemConstructor(CreativeTankItem::new)
-                    .withModel(TankPart.createModelGenerator()).noLootTable().clearTags()
+                    .withModel(TankPart.MODEL_GENERATOR).noLootTable().clearTags()
                     .noOcclusion(),
             CreativeTankBlock.class
 

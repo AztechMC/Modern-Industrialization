@@ -47,7 +47,7 @@ public class FluidDefinition extends Definition implements FluidLike {
         this.color = color;
         this.isGas = isGas;
 
-        fluidBlock = new MIFluidBlock(id, color);
+        fluidBlock = new MIFluidBlock(color);
         fluid = new MIFluid(fluidBlock, color);
         bucketItemDefinition = MIItem.item(englishName + " Bucket",
                 "bucket_" + id, s -> new MIBucketItem(fluid, s));

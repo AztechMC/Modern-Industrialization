@@ -14,3 +14,6 @@ accessible method net/minecraft/data/worldgen/placement/OrePlacements commonOreP
 
 # Used to access all chunks
 accessible    field    net/minecraft/server/level/ChunkMap updatingChunkMap Lit/unimi/dsi/fastutil/longs/Long2ObjectLinkedOpenHashMap;
+
+# Used by loot datagen
+accessible    field    net/minecraft/data/loot/BlockLoot    map    Ljava/util/Map;

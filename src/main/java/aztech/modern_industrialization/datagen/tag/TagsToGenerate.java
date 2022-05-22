@@ -23,17 +23,14 @@
  */
 package aztech.modern_industrialization.datagen.tag;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import net.minecraft.core.Registry;
-import net.minecraft.resources.ResourceLocation;
+import java.util.*;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 
 public class TagsToGenerate {
+
     static final Map<String, List<Item>> tagToItemMap = new HashMap<>();
+    static final Map<String, Set<String>> tagToBeAddedToAnotherTag = new HashMap<>();
 
     public static void generateTag(String tag, Item item) {
         if (tag.startsWith("#")) {
@@ -42,8 +39,17 @@ public class TagsToGenerate {
         tagToItemMap.computeIfAbsent(tag, t -> new ArrayList<>()).add(item);
     }
 
-    public static void generateTag(String tag, String item) {
-        generateTag(tag, Registry.ITEM.get(new ResourceLocation(item)));
+    public static void addTagToTag(String tagTobeAdded, String tagTarget) {
+        if (tagTobeAdded.startsWith("#")) {
+            throw new IllegalArgumentException("Tag must not start with #: " + tagTobeAdded);
+        }
+        if (tagTarget.startsWith("#")) {
+            throw new IllegalArgumentException("Tag must not start with #: " + tagTarget);
+        }
+
+        tagToBeAddedToAnotherTag.computeIfAbsent(tagTarget, t -> new HashSet<>()).add(tagTobeAdded);
+        ;
+
     }
 
     public static void generateTag(TagKey<Item> tag, Item item) {

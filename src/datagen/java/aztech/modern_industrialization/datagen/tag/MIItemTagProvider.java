@@ -57,6 +57,13 @@ public class MIItemTagProvider extends FabricTagProvider.ItemTagProvider {
             }
         }
 
+        for (var entry : TagsToGenerate.tagToBeAddedToAnotherTag.entrySet()) {
+            var tagId = new ResourceLocation(entry.getKey());
+            for (var tag : entry.getValue()) {
+                tag(key(tagId)).forceAddTag(key(tag));
+            }
+        }
+
         tag(ReplicatorMachineBlockEntity.BLACKLISTED)
                 .add(Items.BUNDLE)
                 .forceAddTag(ConventionalItemTags.SHULKER_BOXES)

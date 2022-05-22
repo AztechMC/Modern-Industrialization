@@ -42,6 +42,7 @@ import java.util.Set;
 import net.fabricmc.fabric.api.biome.v1.BiomeModifications;
 import net.fabricmc.fabric.api.biome.v1.BiomeSelectors;
 import net.fabricmc.fabric.api.tag.convention.v1.ConventionalBlockTags;
+import net.fabricmc.fabric.api.tag.convention.v1.ConventionalItemTags;
 import net.minecraft.core.Registry;
 import net.minecraft.data.BuiltinRegistries;
 import net.minecraft.data.loot.BlockLoot;
@@ -122,7 +123,10 @@ public class OrePart extends UnbuildablePart<OrePart.OrePartParams> {
                         throw new IllegalArgumentException("Mismatch between raw ore and xp drops for material: " + partContext.getMaterialName());
                     }
 
-                    TagsToGenerate.generateTag("c:" + partContext.getMaterialName() + "_ores", oreBlockBlockDefinition.asItem());
+                    String tag = "c:" + partContext.getMaterialName() + "_ores";
+
+                    TagsToGenerate.generateTag(tag, oreBlockBlockDefinition.asItem());
+                    TagsToGenerate.addTagToTag(tag, ConventionalItemTags.ORES.location().toString());
 
                     MIConfig config = MIConfig.getConfig();
 

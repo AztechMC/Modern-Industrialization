@@ -41,6 +41,7 @@ import java.util.List;
 import java.util.Set;
 import net.fabricmc.fabric.api.biome.v1.BiomeModifications;
 import net.fabricmc.fabric.api.biome.v1.BiomeSelectors;
+import net.fabricmc.fabric.api.tag.convention.v1.ConventionalBlockTags;
 import net.minecraft.core.Registry;
 import net.minecraft.data.BuiltinRegistries;
 import net.minecraft.data.loot.BlockLoot;
@@ -110,6 +111,7 @@ public class OrePart extends UnbuildablePart<OrePart.OrePartParams> {
                                     .withBlockConstructor(s -> new OreBlock(s, oreParams, partContext.getMaterialName()))
                                     .withLootTable((block, lootGenerator) -> lootGenerator.add(block,
                                             BlockLoot.createOreDrop(block, Registry.ITEM.get(new ResourceLocation(loot)))))
+                                    .addMoreTags(List.of(ConventionalBlockTags.ORES))
                                     .destroyTime(deepslate ? 4.5f : 3.0f).explosionResistance(3.0f)
                                     .sound(deepslate ? SoundType.DEEPSLATE : SoundType.STONE),
                             OreBlock.class);

@@ -24,10 +24,13 @@
 package aztech.modern_industrialization.datagen.tag;
 
 import aztech.modern_industrialization.MIBlock;
+import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.definition.BlockDefinition;
 import aztech.modern_industrialization.pipes.MIPipes;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
+import net.fabricmc.fabric.api.tag.convention.v1.ConventionalBlockTags;
+import net.minecraft.core.Registry;
 import net.minecraft.tags.BlockTags;
 
 public class MIBlockTagProvider extends FabricTagProvider.BlockTagProvider {
@@ -44,6 +47,8 @@ public class MIBlockTagProvider extends FabricTagProvider.BlockTagProvider {
         }
 
         tag(BlockTags.MINEABLE_WITH_PICKAXE).add(MIPipes.BLOCK_PIPE);
+        tag(ConventionalBlockTags.QUARTZ_ORES).add(Registry.BLOCK.get(new MIIdentifier("quartz_ore"))); // Have no idea why there is such a tag but go
+                                                                                                        // add it
     }
 
 }

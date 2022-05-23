@@ -23,6 +23,7 @@
  */
 package aztech.modern_industrialization.items;
 
+import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.api.DynamicEnchantmentItem;
 import aztech.modern_industrialization.machines.MachineScreenHandlers;
 import aztech.modern_industrialization.machines.components.sync.ProgressBar;
@@ -54,7 +55,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextColor;
 import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.Entity;
@@ -267,7 +267,7 @@ public class SteamDrillItem extends Item implements DynamicToolItem, MagnaTool, 
         var data = (SteamDrillTooltipData) getTooltipImage(stack).get();
 
         // Water %
-        tooltip.add(new TranslatableComponent("text.modern_industrialization.water_percent", data.waterLevel).setStyle(TextHelper.WATER_TEXT));
+        tooltip.add(MIText.WaterPercent.text(data.waterLevel).setStyle(TextHelper.WATER_TEXT));
         int barWater = (int) Math.ceil(data.waterLevel / 5d);
         int barVoid = 20 - barWater;
         // Water bar
@@ -275,12 +275,12 @@ public class SteamDrillItem extends Item implements DynamicToolItem, MagnaTool, 
                 .append(new TextComponent("|".repeat(barVoid)).setStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x6b6b6b)))));
         // Fuel left
         if (data.burnTicks > 0) {
-            tooltip.add(new TranslatableComponent("text.modern_industrialization.seconds_left", data.burnTicks / 100).setStyle(TextHelper.GRAY_TEXT));
+            tooltip.add(MIText.SecondsLeft.text(data.burnTicks / 100).setStyle(TextHelper.GRAY_TEXT));
         }
         // Usage guide
-        tooltip.add(new TranslatableComponent("text.modern_industrialization.steam_drill_water_help").setStyle(TextHelper.UPGRADE_TEXT));
-        tooltip.add(new TranslatableComponent("text.modern_industrialization.steam_drill_fuel_help").setStyle(TextHelper.UPGRADE_TEXT));
-        tooltip.add(new TranslatableComponent("text.modern_industrialization.steam_drill_profit").setStyle(TextHelper.UPGRADE_TEXT));
+        tooltip.add(MIText.SteamDrillWaterHelp.text().setStyle(TextHelper.UPGRADE_TEXT));
+        tooltip.add(MIText.SteamDrillFuelHelp.text().setStyle(TextHelper.UPGRADE_TEXT));
+        tooltip.add(MIText.SteamDrillProfit.text().setStyle(TextHelper.UPGRADE_TEXT));
     }
 
     public record SteamDrillTooltipData(int waterLevel, int burnTicks, int maxBurnTicks, ItemVariant variant, long amount)

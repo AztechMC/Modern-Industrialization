@@ -46,12 +46,18 @@ public abstract class Definition {
 
     public abstract String getTranslationKey();
 
-    public Definition(String englishName, String path) {
+    public Definition(String englishName, String path, boolean addToTranslation) {
         Objects.requireNonNull(path, "path");
         Objects.requireNonNull(englishName, "englishName");
         this.id = new MIIdentifier(path);
         this.englishName = englishName;
-        TRANSLATABLE_DEFINITION.add(this);
+        if (addToTranslation) {
+            TRANSLATABLE_DEFINITION.add(this);
+        }
+    }
+
+    public Definition(String englishName, String path) {
+        this(englishName, path, true);
     }
 
     public String getResourceAsString(boolean id) {
@@ -60,6 +66,14 @@ public abstract class Definition {
         } else {
             return this.id.getPath();
         }
+    }
+
+    public String path() {
+        return getResourceAsString(false);
+    }
+
+    public String id() {
+        return getResourceAsString(true);
     }
 
 }

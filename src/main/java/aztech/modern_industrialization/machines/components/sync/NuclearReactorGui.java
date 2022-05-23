@@ -26,6 +26,7 @@ package aztech.modern_industrialization.machines.components.sync;
 import static aztech.modern_industrialization.nuclear.NeutronType.*;
 
 import aztech.modern_industrialization.MIIdentifier;
+import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.compat.rei.nuclear.NeutronInteractionCategory;
 import aztech.modern_industrialization.machines.MachineScreenHandlers;
 import aztech.modern_industrialization.machines.SyncedComponent;
@@ -52,7 +53,6 @@ import net.minecraft.core.Registry;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
@@ -168,16 +168,16 @@ public class NuclearReactorGui {
 
             }
 
-            Component[] modeTooltip = new Component[] { new TranslatableComponent("text.modern_industrialization.nuclear_fuel_mode"),
-                    new TranslatableComponent("text.modern_industrialization.temperature_mode"),
-                    new TranslatableComponent("text.modern_industrialization.neutron_absorption_mode"),
-                    new TranslatableComponent("text.modern_industrialization.neutron_flux_mode"),
-                    new TranslatableComponent("text.modern_industrialization.neutron_generation_mode"),
-                    new TranslatableComponent("text.modern_industrialization.eu_generation_mode") };
+            Component[] modeTooltip = new Component[] { MIText.NuclearFuelMode.text(),
+                    MIText.TemperatureMode.text(),
+                    MIText.NeutronAbsorptionMode.text(),
+                    MIText.NeutronFluxMode.text(),
+                    MIText.NeutronGenerationMode.text(),
+                    MIText.EuGenerationMode.text() };
 
-            Component[] neutronModeTooltip = new Component[] { new TranslatableComponent("text.modern_industrialization.fast_neutron"),
-                    new TranslatableComponent("text.modern_industrialization.thermal_neutron"),
-                    new TranslatableComponent("text.modern_industrialization.both") };
+            Component[] neutronModeTooltip = new Component[] { MIText.FastNeutron.text(),
+                    MIText.ThermalNeutron.text(),
+                    MIText.Both.text() };
 
             @Override
             public void renderBackground(GuiComponent helper, PoseStack matrices, int x, int y) {
@@ -283,7 +283,7 @@ public class NuclearReactorGui {
 
                 } else {
                     Font renderer = Minecraft.getInstance().font;
-                    Component text = new TranslatableComponent("text.modern_industrialization.multiblock_shape_invalid")
+                    Component text = MIText.MultiblockShapeInvalid.text()
                             .setStyle(TextHelper.RED.withBold(true));
                     int width = renderer.width(text);
                     renderer.draw(matrices, text, x + centerX - width / 2f, y + centerY, 0xFFFFFF);
@@ -320,11 +320,11 @@ public class NuclearReactorGui {
                                 int temperature = (int) tileData.getTemperature();
                                 List<Component> tooltip = new ArrayList<>();
 
-                                tooltip.add(new TranslatableComponent("text.modern_industrialization.temperature", temperature));
+                                tooltip.add(MIText.Temperature.text(temperature));
 
                                 if (!variant.isBlank() && variant instanceof ItemVariant itemVariant) {
                                     if (itemVariant.getItem() instanceof NuclearComponentItem item) {
-                                        tooltip.add(new TranslatableComponent("text.modern_industrialization.max_temp", item.getMaxTemperature())
+                                        tooltip.add(MIText.MaxTemp.text(item.getMaxTemperature())
                                                 .setStyle(TextHelper.YELLOW));
                                     }
                                 }
@@ -336,9 +336,7 @@ public class NuclearReactorGui {
                                 double euGeneration = tileData.getMeanEuGeneration();
                                 screen.renderTooltip(matrices, TextHelper.getEuTextTick(euGeneration, true), cursorX, cursorY);
                                 return;
-                            }
-
-                            else {
+                            } else {
                                 double neutronRateFast;
                                 double neutronRateThermal;
 
@@ -372,7 +370,8 @@ public class NuclearReactorGui {
                                 }
                                 String neutronRateString = String.format("%.1f", neutronRate);
                                 List<Component> tooltips = new ArrayList<>();
-                                tooltips.add(new TranslatableComponent("text.modern_industrialization.neutrons_rate", neutronRateString));
+
+                                tooltips.add(MIText.NeutronsRate.text(neutronRateString));
 
                                 if (neutronMode == BOTH && neutronRate > 0 && currentMode != Mode.NEUTRON_GENERATION) {
                                     String neutronRateFastString = String.format("%.1f", neutronRateFast);
@@ -383,15 +382,15 @@ public class NuclearReactorGui {
                                     if (neutronRateFast > 0) {
                                         tooltips.add(
                                                 new TextComponent(
-                                                        new TranslatableComponent("text.modern_industrialization.fast_neutron").getString() + " : "
-                                                                + new TranslatableComponent("text.modern_industrialization.neutrons_rate",
+                                                        MIText.FastNeutron.text().getString() + " : "
+                                                                + MIText.NeutronsRate.text(
                                                                         neutronRateFastString).getString()
                                                                 + neutronRateFastFractionString).setStyle(TextHelper.GRAY_TEXT));
                                     }
                                     if (neutronRateThermal > 0) {
                                         tooltips.add(new TextComponent(
-                                                new TranslatableComponent("text.modern_industrialization.thermal_neutron").getString() + " : "
-                                                        + new TranslatableComponent("text.modern_industrialization.neutrons_rate",
+                                                MIText.ThermalNeutron.text().getString() + " : "
+                                                        + MIText.NeutronsRate.text(
                                                                 neutronRateThermalString).getString()
                                                         + neutronRateThermalFractionString).setStyle(TextHelper.GRAY_TEXT));
                                     }
@@ -401,8 +400,9 @@ public class NuclearReactorGui {
                                     if (tileData.getComponent().isPresent()) {
                                         if (tileData.getComponent().get() instanceof NuclearFuel fuel) {
                                             double efficiencyFactor = fuel.efficiencyFactor(tileData.getTemperature());
-                                            tooltips.add(new TranslatableComponent("text.modern_industrialization.thermal_efficiency",
-                                                    String.format("%.1f", efficiencyFactor * 100)).setStyle(TextHelper.YELLOW));
+                                            tooltips.add(
+                                                    MIText.ThermalEfficiency.text(
+                                                            String.format("%.1f", efficiencyFactor * 100)).setStyle(TextHelper.YELLOW));
                                         }
                                     }
                                 }
@@ -423,8 +423,7 @@ public class NuclearReactorGui {
                         Component euProduction = TextHelper.getEuTextTick(data.euProduction, true);
                         Component euFuelConsumption = TextHelper.getEuTextTick(data.euFuelConsumption, true);
 
-                        Component tooltip = new TranslatableComponent("text.modern_industrialization.nuclear_fuel_efficiency_tooltip", euProduction,
-                                euFuelConsumption);
+                        Component tooltip = MIText.NuclearFuelEfficiencyTooltip.text(euProduction, euFuelConsumption);
 
                         screen.renderTooltip(matrices, tooltip, cursorX, cursorY);
                         return;
@@ -434,7 +433,7 @@ public class NuclearReactorGui {
 
             public Component getEfficiencyText() {
                 String eff = String.format("%.1f", 100 * data.euProduction / data.euFuelConsumption);
-                return new TranslatableComponent("text.modern_industrialization.efficiency_nuclear", eff).setStyle(TextHelper.RED);
+                return MIText.EfficiencyNuclear.text(eff).setStyle(TextHelper.RED);
             }
 
             private boolean drawButton() {
@@ -457,9 +456,8 @@ public class NuclearReactorGui {
                     container.addButton(centerX + 64, 4, 20, 20, new TextComponent(""),
                             (i) -> currentMode = Mode.values()[(currentMode.index + 1) % Mode.values().length],
                             () -> List.of(modeTooltip[currentMode.index],
-
-                                    new TranslatableComponent("text.modern_industrialization.click_to_switch",
-                                            modeTooltip[(currentMode.index + 1) % Mode.values().length]).setStyle(TextHelper.GRAY_TEXT)),
+                                    MIText.ClickToSwitch.text(modeTooltip[(currentMode.index + 1) % Mode.values().length])
+                                            .setStyle(TextHelper.GRAY_TEXT)),
                             (screen, button, matrices, mouseX, mouseY, delta) -> {
                                 button.renderVanilla(matrices, mouseX, mouseY, delta);
                                 if (currentMode == Mode.NUCLEAR_FUEL) {
@@ -480,8 +478,7 @@ public class NuclearReactorGui {
                     container
                             .addButton(centerX + 64, 150, 20, 20, new TextComponent(""), (i) -> neutronMode = nextNeutronMode(),
                                     () -> List.of(neutronModeTooltip[neutronMode.index],
-                                            new TranslatableComponent("text.modern_industrialization.click_to_switch",
-                                                    neutronModeTooltip[nextNeutronMode().index]).setStyle(TextHelper.GRAY_TEXT)),
+                                            MIText.ClickToSwitch.text(neutronModeTooltip[nextNeutronMode().index]).setStyle(TextHelper.GRAY_TEXT)),
                                     (screen, button, matrices, mouseX, mouseY, delta) -> {
 
                                         button.renderVanilla(matrices, mouseX, mouseY, delta);
@@ -513,7 +510,8 @@ public class NuclearReactorGui {
         return Math.log(1 + 10 * neutronNumber) / Math.log(1 + 10 * neutronsMax);
     }
 
-    public record Data(boolean valid, int gridSizeX, int gridSizeY, Optional<INuclearTileData>[] tilesData, double euProduction,
+    public record Data(boolean valid, int gridSizeX, int gridSizeY, Optional<INuclearTileData>[] tilesData,
+            double euProduction,
             double euFuelConsumption) {
 
         public int toIndex(int x, int y) {

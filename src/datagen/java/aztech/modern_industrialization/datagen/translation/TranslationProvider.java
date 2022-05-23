@@ -23,89 +23,99 @@
  */
 package aztech.modern_industrialization.datagen.translation;
 
+import aztech.modern_industrialization.MIConfig;
+import aztech.modern_industrialization.MIText;
+import aztech.modern_industrialization.compat.rei.machines.ReiMachineRecipes;
 import aztech.modern_industrialization.definition.Definition;
+import aztech.modern_industrialization.misc.tooltips.FaqTooltips;
 import aztech.modern_industrialization.pipes.MIPipes;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import java.io.BufferedWriter;
-import java.io.FileReader;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
+import java.lang.reflect.Field;
 import java.nio.file.Files;
-import java.nio.file.LinkOption;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.TreeMap;
+import java.util.*;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.HashCache;
-import oshi.util.tuples.Pair;
+import org.jetbrains.annotations.NotNull;
 
 public record TranslationProvider(FabricDataGenerator gen) implements DataProvider {
-
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
 
+    private static final String OUTPUT_PATH = "assets/modern_industrialization/lang/en_us.json";
+
+    private static final Map<String, String> TRANSLATION_PAIRS = new TreeMap<>();
+
+    public static void addTranslation(String key, String englishValue) {
+        if (!TRANSLATION_PAIRS.containsKey(key)) {
+            TRANSLATION_PAIRS.put(key, englishValue);
+        } else {
+            throw new IllegalArgumentException(
+                    String.format("Error adding translation key %s for translation %s : already registered for translation %s",
+                            key, englishValue, TRANSLATION_PAIRS.get(key)));
+        }
+    }
+
+    private static void addManualEntries() {
+        addTranslation("block.modern_industrialization.pipe", "Pipe(s)");
+        addTranslation("book.modern_industrialization.landing_text",
+                "Welcome to Modern Industrialization! To get started, be sure to collect a lot of Copper Ore and Tin Ore.");
+        addTranslation("item.modern_industrialization.energy_p2p_tunnel", "EU P2P Tunnel");
+        addTranslation("key.modern_industrialization.activate", "Toggle Flight");
+        addTranslation("text.autoconfig.modern_industrialization.title", "Modern Industrialization Menu");
+    }
+
     @Override
-    public void run(HashCache cache) throws IOException {
-        String langPathAll = "assets/modern_industrialization/lang/en_us.json";
+    public void run(@NotNull HashCache cache) throws IOException {
+        addManualEntries();
 
-        Path outputPath = gen.getOutputFolder();
+        for (var entry : MIText.values()) {
+            addTranslation(entry.getTranslationKey(), entry.getEnglishText());
+            for (String additionalKey : entry.getAdditionalTranslationKey()) {
+                addTranslation(additionalKey, entry.getEnglishText());
+            }
+        }
 
-        TreeMap<String, String> translation = GSON
-                .fromJson(new FileReader("../../src/main/resources/assets/modern_industrialization/lang/en_us_not_generated.json",
-                        StandardCharsets.UTF_8), TreeMap.class);
-
-        TreeMap<String, String> translationAll = (TreeMap<String, String>) translation.clone();
-
-        List<Pair<String, String>> translationsPair = new ArrayList<>();
+        for (Field f : MIConfig.class.getFields()) {
+            EnglishTranslation englishTranslation = f.getAnnotation(EnglishTranslation.class);
+            if (englishTranslation != null) {
+                addTranslation("text.autoconfig.modern_industrialization.option." + f.getName(), englishTranslation.value());
+            }
+        }
 
         for (Definition definition : Definition.TRANSLATABLE_DEFINITION) {
-            translationsPair.add(new Pair<>(definition.getTranslationKey(), definition.getEnglishName()));
+            addTranslation(definition.getTranslationKey(), definition.getEnglishName());
         }
 
         for (var entry : MIPipes.TRANSLATION.entrySet()) {
-            translationsPair.add(new Pair<>(entry.getKey(), entry.getValue()));
+            addTranslation(entry.getKey(), entry.getValue());
         }
 
-        for (Pair<String, String> translationPair : translationsPair) {
-
-            translationAll.put(translationPair.getA(), translationPair.getB());
-
+        for (var entry : FaqTooltips.TOOLTIPS_ENGLISH_TRANSLATION.entrySet()) {
+            addTranslation(entry.getKey(), entry.getValue());
         }
 
-        save(cache, GSON.toJsonTree(translationAll), outputPath.resolve(langPathAll));
+        for (var entry : ReiMachineRecipes.categories.entrySet()) {
+            addTranslation("rei_categories.modern_industrialization." + entry.getKey(), entry.getValue().englishName);
+        }
 
+        customJsonSave(cache, GSON.toJsonTree(TRANSLATION_PAIRS), gen.getOutputFolder().resolve(OUTPUT_PATH));
     }
 
-    private void save(HashCache cache, JsonElement jsonElement, Path path) throws IOException {
-
+    private void customJsonSave(HashCache cache, JsonElement jsonElement, Path path) throws IOException {
         String sortedJson = GSON.toJson(jsonElement);
-        String prettyPrinted = sortedJson.replace("\\u0027", "\'");
+        String prettyPrinted = sortedJson.replace("\\u0027", "'");
 
         String string2 = SHA1.hashUnencodedChars(prettyPrinted).toString();
-        if (!Objects.equals(cache.getHash(path), string2) || !Files.exists(path, new LinkOption[0])) {
+        if (!Objects.equals(cache.getHash(path), string2) || !Files.exists(path)) {
             Files.createDirectories(path.getParent());
-            BufferedWriter bufferedWriter = Files.newBufferedWriter(path);
 
-            try {
+            try (BufferedWriter bufferedWriter = Files.newBufferedWriter(path);) {
                 bufferedWriter.write(prettyPrinted);
-            } catch (Throwable var10) {
-                if (bufferedWriter != null) {
-                    try {
-                        bufferedWriter.close();
-                    } catch (Throwable var9) {
-                        var10.addSuppressed(var9);
-                    }
-                }
-
-                throw var10;
-            }
-
-            if (bufferedWriter != null) {
-                bufferedWriter.close();
             }
         }
 

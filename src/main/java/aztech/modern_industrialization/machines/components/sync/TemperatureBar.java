@@ -24,6 +24,7 @@
 package aztech.modern_industrialization.machines.components.sync;
 
 import aztech.modern_industrialization.MIIdentifier;
+import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.machines.MachineScreenHandlers;
 import aztech.modern_industrialization.machines.SyncedComponent;
 import aztech.modern_industrialization.machines.SyncedComponents;
@@ -36,7 +37,6 @@ import java.util.function.Supplier;
 import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 
 public class TemperatureBar {
@@ -120,7 +120,7 @@ public class TemperatureBar {
                 if (aztech.modern_industrialization.util.RenderHelper.isPointWithinRectangle(params.renderX, params.renderY, WIDTH, HEIGHT,
                         cursorX - x, cursorY - y)) {
                     List<Component> tooltip = new ArrayList<>();
-                    tooltip.add(new TranslatableComponent("text.modern_industrialization.temperature", temperature));
+                    tooltip.add(MIText.Temperature.text(temperature));
                     screen.renderComponentTooltip(matrices, tooltip, cursorX, cursorY);
                 }
             }

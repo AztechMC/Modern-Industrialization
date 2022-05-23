@@ -234,8 +234,9 @@ public final class SingleBlockCraftingMachines {
 
         SlotPositions items = new SlotPositions.Builder().buildWithConsumer(itemPositions);
         SlotPositions fluids = new SlotPositions.Builder().buildWithConsumer(fluidPositions);
-        registerReiTiers(machine, type,
-                new MachineCategoryParams(null, items.sublist(0, itemInputCount), items.sublist(itemInputCount, itemInputCount + itemOutputCount),
+        registerReiTiers(englishName, machine, type,
+                new MachineCategoryParams(null, null, items.sublist(0, itemInputCount),
+                        items.sublist(itemInputCount, itemInputCount + itemOutputCount),
                         fluids.sublist(0, fluidInputCount), fluids.sublist(fluidInputCount, fluidInputCount + fluidOutputCount), progressBarParams,
                         null),
                 tiers);
@@ -273,7 +274,8 @@ public final class SingleBlockCraftingMachines {
         return new MachineInventoryComponent(itemInputStacks, itemOutputStacks, fluidInputStacks, fluidOutputStacks, itemPositions, fluidPositions);
     }
 
-    private static void registerReiTiers(String machine, MachineRecipeType recipeType, MachineCategoryParams categoryParams, int tiers) {
+    private static void registerReiTiers(String englishName, String machine, MachineRecipeType recipeType, MachineCategoryParams categoryParams,
+            int tiers) {
         if (FabricLoader.getInstance().getEnvironmentType() == EnvType.SERVER)
             return;
 
@@ -283,10 +285,12 @@ public final class SingleBlockCraftingMachines {
             if (((tiers >> i) & 1) > 0) {
                 int minEu = previousMaxEu + 1;
                 int maxEu = i == 0 ? 2 : i == 1 ? 4 : Integer.MAX_VALUE;
-                previousMaxEu = maxEu;
                 String prefix = i == 0 ? "bronze_" : i == 1 ? "steel_" : tiers == TIER_ELECTRIC ? "" : "electric_";
                 String itemId = prefix + machine;
-                MachineCategoryParams category = new MachineCategoryParams(itemId, categoryParams.itemInputs, categoryParams.itemOutputs,
+                String englishPrefix = i == 0 ? "Bronze " : i == 1 ? "Steel " : "Electric ";
+                String fullEnglishName = tiers == TIER_ELECTRIC || previousMaxEu == 0 ? englishName : englishPrefix + englishName;
+                MachineCategoryParams category = new MachineCategoryParams(fullEnglishName, itemId, categoryParams.itemInputs,
+                        categoryParams.itemOutputs,
                         categoryParams.fluidInputs, categoryParams.fluidOutputs, categoryParams.progressBarParams,
                         recipe -> recipe.getType() == recipeType && minEu <= recipe.eu && recipe.eu <= maxEu);
                 ReiMachineRecipes.registerCategory(itemId, category);
@@ -296,6 +300,7 @@ public final class SingleBlockCraftingMachines {
                     param.workstations.add(itemId);
                     ReiMachineRecipes.registerRecipeCategoryForMachine(itemId, param.category);
                 }
+                previousMaxEu = maxEu;
             }
         }
     }

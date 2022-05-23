@@ -21,28 +21,14 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.pipes.gui;
+package aztech.modern_industrialization.datagen.translation;
 
-import aztech.modern_industrialization.MIText;
-import aztech.modern_industrialization.pipes.gui.iface.ConnectionTypeInterface;
-import net.minecraft.client.gui.components.Button;
-import net.minecraft.network.chat.Component;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 
-class ConnectionTypeButton extends Button {
-    private final ConnectionTypeInterface connectionType;
+@Retention(RetentionPolicy.RUNTIME)
+public @interface EnglishTranslation {
 
-    public ConnectionTypeButton(int x, int y, OnPress onPress, OnTooltip tooltipSupplier, ConnectionTypeInterface connectionType) {
-        super(x, y, 20, 20, null, onPress, tooltipSupplier);
-        this.connectionType = connectionType;
-    }
+    String value();
 
-    @Override
-    public Component getMessage() {
-        return switch (connectionType.getConnectionType()) {
-        case 0 -> MIText.PipeConnectionIn.text();
-        case 1 -> MIText.PipeConnectionIO.text();
-        case 2 -> MIText.PipeConnectionOut.text();
-        default -> throw new IllegalArgumentException("Connection type must be either 0, 1 or 2");
-        };
-    }
 }

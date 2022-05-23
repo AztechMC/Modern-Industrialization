@@ -24,6 +24,7 @@
 package aztech.modern_industrialization.compat.rei.fluid_fuels;
 
 import aztech.modern_industrialization.MIFluids;
+import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.api.FluidFuelRegistry;
 import java.util.ArrayList;
 import java.util.List;
@@ -36,7 +37,6 @@ import me.shedaniel.rei.api.client.registry.display.DisplayCategory;
 import me.shedaniel.rei.api.common.category.CategoryIdentifier;
 import me.shedaniel.rei.api.common.util.EntryStacks;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 
 public class FluidFuelsCategory implements DisplayCategory<FluidFuelDisplay> {
     @Override
@@ -51,7 +51,7 @@ public class FluidFuelsCategory implements DisplayCategory<FluidFuelDisplay> {
 
     @Override
     public Component getTitle() {
-        return new TranslatableComponent(FluidFuelsPlugin.CATEGORY.getIdentifier().toString());
+        return MIText.FluidFuels.text();
     }
 
     @Override
@@ -60,9 +60,12 @@ public class FluidFuelsCategory implements DisplayCategory<FluidFuelDisplay> {
         widgets.add(Widgets.createRecipeBase(bounds));
         widgets.add(Widgets.createSlot(new Point(bounds.x + 15, bounds.y + 10)).entry(EntryStacks.of(recipeDisplay.fluid)));
         int totalEnergy = FluidFuelRegistry.getEu(recipeDisplay.fluid);
+
+        Component text = MIText.EuInDieselGenerator.text(totalEnergy);
+
         widgets.add(Widgets
                 .createLabel(new Point(bounds.x + 50, bounds.y + 14),
-                        new TranslatableComponent("text.modern_industrialization.eu_in_diesel_generator", totalEnergy))
+                        text)
                 .leftAligned().noShadow().color(0xFF404040, 0xFFBBBBBB));
         return widgets;
     }

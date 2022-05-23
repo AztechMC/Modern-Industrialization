@@ -68,8 +68,8 @@ import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.fabricmc.fabric.impl.content.registry.FuelRegistryImpl;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.MenuScreens;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.inventory.MenuType;
@@ -123,8 +123,8 @@ public class ModernIndustrializationClient implements ClientModInitializer {
         ItemTooltipCallback.EVENT.register(((stack, context, lines) -> {
             SpeedUpgrade upgrade = SpeedUpgrade.LOOKUP.find(stack, null);
             if (upgrade != null) {
-                lines.add(new TranslatableComponent("text.modern_industrialization.tooltip_speed_upgrade", upgrade.value())
-                        .setStyle(TextHelper.UPGRADE_TEXT));
+                Component tooltip = MIText.TooltipSpeedUpgrade.text(upgrade.value()).setStyle(TextHelper.UPGRADE_TEXT);
+                lines.add(tooltip);
             }
 
             Item item = stack.getItem();
@@ -134,27 +134,27 @@ public class ModernIndustrializationClient implements ClientModInitializer {
                     PipeItem pipe = (PipeItem) item;
                     if (MIPipes.electricityPipeTier.containsKey(pipe)) {
                         CableTier tier = MIPipes.electricityPipeTier.get(pipe);
-                        lines.add(
-                                new TranslatableComponent("text.modern_industrialization.eu_cable", new TranslatableComponent(tier.translationKey),
-                                        TextHelper.getEuTextTick(tier.getMaxTransfer(), true)));
+                        Component tooltip = MIText.EuCable.text(tier.englishName, TextHelper.getEuTextTick(tier.getMaxTransfer(), true));
+                        lines.add(tooltip);
                     }
                 }
                 if (item == Items.GUNPOWDER) {
-                    lines.add(new TranslatableComponent("text.modern_industrialization.gunpowder_upgrade").setStyle(TextHelper.GRAY_TEXT));
+                    lines.add(MIText.GunpowderUpgrade.text().setStyle(TextHelper.GRAY_TEXT));
                 }
                 if (item == MIFluids.LUBRICANT.getBucket()) {
-                    lines.add(new TranslatableComponent("text.modern_industrialization.lubricant_tooltip", LubricantHelper.mbPerTick)
-                            .setStyle(TextHelper.GRAY_TEXT));
+                    Component tooltip = MIText.LubricantTooltip.text(LubricantHelper.mbPerTick).setStyle(TextHelper.GRAY_TEXT);
+                    lines.add(tooltip);
                 }
                 if (UpgradeComponent.upgrades.containsKey(item)) {
-                    lines.add(new TranslatableComponent("text.modern_industrialization.machine_upgrade", UpgradeComponent.upgrades.get(item))
-                            .setStyle(TextHelper.UPGRADE_TEXT));
+                    Component tooltip = MIText.MachineUpgrade.text(UpgradeComponent.upgrades.get(item)).setStyle(TextHelper.UPGRADE_TEXT);
+                    lines.add(tooltip);
                 }
                 if (item instanceof BlockItem) {
                     Block block = ((BlockItem) item).getBlock();
                     if (ElectricBlastFurnaceBlockEntity.coilsMaxBaseEU.containsKey(block)) {
-                        lines.add(new TranslatableComponent("text.modern_industrialization.ebf_max_eu",
-                                ElectricBlastFurnaceBlockEntity.coilsMaxBaseEU.get(block)).setStyle(TextHelper.UPGRADE_TEXT));
+                        Component tooltip = MIText.EbfMaxEu.text(ElectricBlastFurnaceBlockEntity.coilsMaxBaseEU.get(block))
+                                .setStyle(TextHelper.UPGRADE_TEXT);
+                        lines.add(tooltip);
                     } else if (block instanceof OreBlock oreBlock) {
                         if (oreBlock.params.generate) {
 
@@ -162,12 +162,12 @@ public class ModernIndustrializationClient implements ClientModInitializer {
 
                             if (config.generateOres && !config.blacklistedOres.contains(oreBlock.materialName)) {
                                 lines.add(TextHelper
-                                        .formatWithNumber("text.modern_industrialization.ore_generation_tooltip_y", -64, oreBlock.params.maxYLevel)
+                                        .formatWithNumber(MIText.OreGenerationTooltipY, -64, oreBlock.params.maxYLevel)
                                         .setStyle(TextHelper.GRAY_TEXT_NOT_ITALIC));
-                                lines.add(TextHelper.formatWithNumber("text.modern_industrialization.ore_generation_tooltip_vein_frequency",
+                                lines.add(TextHelper.formatWithNumber(MIText.OreGenerationTooltipVeinFrequency,
                                         oreBlock.params.veinsPerChunk).setStyle(TextHelper.GRAY_TEXT_NOT_ITALIC));
                                 lines.add(TextHelper
-                                        .formatWithNumber("text.modern_industrialization.ore_generation_tooltip_vein_size", oreBlock.params.veinSize)
+                                        .formatWithNumber(MIText.OreGenerationTooltipVeinSize, oreBlock.params.veinSize)
                                         .setStyle(TextHelper.GRAY_TEXT_NOT_ITALIC));
                             }
 

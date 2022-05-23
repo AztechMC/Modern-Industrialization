@@ -25,6 +25,7 @@ package aztech.modern_industrialization.compat.rei.machines;
 
 import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.MIItem;
+import aztech.modern_industrialization.MIText;
 import java.util.ArrayList;
 import java.util.List;
 import me.shedaniel.math.Point;
@@ -38,7 +39,6 @@ import me.shedaniel.rei.api.common.category.CategoryIdentifier;
 import me.shedaniel.rei.api.common.entry.EntryIngredient;
 import me.shedaniel.rei.api.common.util.EntryStacks;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 
 public class MultiblockRecipeCategory implements DisplayCategory<MultiblockRecipeDisplay> {
@@ -55,7 +55,7 @@ public class MultiblockRecipeCategory implements DisplayCategory<MultiblockRecip
 
     @Override
     public Component getTitle() {
-        return new TranslatableComponent("rei_categories.modern_industrialization.multiblock_shapes");
+        return MIText.MultiblockMaterials.text();
     }
 
     @Override

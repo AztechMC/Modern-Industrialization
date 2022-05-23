@@ -25,6 +25,7 @@ package aztech.modern_industrialization.compat.rei.forgehammer_recipe;
 
 import aztech.modern_industrialization.MIBlock;
 import aztech.modern_industrialization.MIIdentifier;
+import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.blocks.forgehammer.ForgeHammerScreen;
 import java.util.ArrayList;
 import java.util.List;
@@ -57,7 +58,7 @@ public class ForgeHammerRecipeCategory implements DisplayCategory<ForgeHammerRec
 
     @Override
     public Component getTitle() {
-        return new TranslatableComponent(id.toString());
+        return new TranslatableComponent(MIBlock.FORGE_HAMMER.getTranslationKey());
     }
 
     @Override
@@ -78,11 +79,11 @@ public class ForgeHammerRecipeCategory implements DisplayCategory<ForgeHammerRec
                     .entries(recipeDisplay.getInputEntries().get(1)).markInput());
             widgets.add(
                     Widgets.createSlot(new Point(startPoint.x + 4, startPoint.y + 5)).entries(recipeDisplay.getInputEntries().get(0)).markInput());
-            text = new TranslatableComponent("text.modern_industrialization.durability_cost", recipeDisplay.recipe.eu);
+            text = MIText.DurabilityCost.text(recipeDisplay.recipe.eu);
         } else {
             widgets.add(
                     Widgets.createSlot(new Point(startPoint.x + 4, startPoint.y + 5)).entries(recipeDisplay.getInputEntries().get(0)).markInput());
-            text = new TranslatableComponent("text.modern_industrialization.no_tool_required");
+            text = MIText.NoToolRequired.text();
         }
 
         widgets.add(Widgets

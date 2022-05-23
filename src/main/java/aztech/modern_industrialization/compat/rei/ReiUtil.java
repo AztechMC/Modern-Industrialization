@@ -23,6 +23,7 @@
  */
 package aztech.modern_industrialization.compat.rei;
 
+import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.machines.recipe.MachineRecipe;
 import aztech.modern_industrialization.util.FluidHelper;
 import aztech.modern_industrialization.util.TextHelper;
@@ -38,7 +39,7 @@ import me.shedaniel.rei.api.common.util.EntryStacks;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariantAttributes;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.material.Fluid;
@@ -77,13 +78,12 @@ public class ReiUtil {
         if (probability == 1) {
             return null;
         } else {
-            TranslatableComponent text;
+            MutableComponent text;
             if (probability == 0) {
-                text = new TranslatableComponent("text.modern_industrialization.probability_zero");
+                text = MIText.ProbabilityZero.text();
             } else {
-                text = new TranslatableComponent("text.modern_industrialization.probability", PROBABILITY_FORMAT.format(probability * 100));
+                text = MIText.Probability.text(PROBABILITY_FORMAT.format(probability * 100));
             }
-
             text.setStyle(TextHelper.YELLOW);
             return text;
         }

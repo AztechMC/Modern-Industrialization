@@ -24,6 +24,7 @@
 package aztech.modern_industrialization.misc.version;
 
 import aztech.modern_industrialization.MIConfig;
+import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.ModernIndustrialization;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -41,7 +42,6 @@ import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.HoverEvent;
 import net.minecraft.network.chat.Style;
-import net.minecraft.network.chat.TranslatableComponent;
 import org.jetbrains.annotations.NotNull;
 
 public class VersionEvents {
@@ -116,13 +116,13 @@ public class VersionEvents {
 
                             Style styleClick = Style.EMPTY.withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, url))
                                     .applyFormat(ChatFormatting.UNDERLINE).applyFormat(ChatFormatting.GREEN).withHoverEvent(new HoverEvent(
-                                            HoverEvent.Action.SHOW_TEXT, new TranslatableComponent("text.modern_industrialization.click_url")));
+                                            HoverEvent.Action.SHOW_TEXT, MIText.ClickUrl.text()));
 
                             Minecraft.getInstance().execute(() -> {
                                 if (Minecraft.getInstance().player == player) {
                                     player.displayClientMessage(
-                                            new TranslatableComponent("text.modern_industrialization.new_version", lastVersionString,
-                                                    new TranslatableComponent("text.modern_industrialization.curse_forge").setStyle(styleClick)),
+                                            MIText.NewVersion.text(lastVersionString,
+                                                    MIText.CurseForge.text().setStyle(styleClick)),
                                             false);
                                 }
                             });

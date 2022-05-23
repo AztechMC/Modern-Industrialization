@@ -23,6 +23,8 @@
  */
 package aztech.modern_industrialization.compat.waila;
 
+import aztech.modern_industrialization.MIText;
+import aztech.modern_industrialization.api.energy.CableTier;
 import aztech.modern_industrialization.pipes.MIPipes;
 import aztech.modern_industrialization.pipes.impl.PipeBlockEntity;
 import aztech.modern_industrialization.pipes.impl.PipeVoxelShape;
@@ -89,8 +91,9 @@ public class PipeComponentProvider implements IBlockComponentProvider {
                 long eu = tag.getLong("eu");
                 long maxEu = tag.getLong("maxEu");
                 String tier = tag.getString("tier");
-                tooltip.add(new TranslatableComponent("text.modern_industrialization.cable_tier_" + tier));
-                tooltip.add(new TranslatableComponent("text.modern_industrialization.energy_bar", eu, maxEu).setStyle(style));
+
+                tooltip.add(CableTier.getTier(tier).englishNameComponent);
+                tooltip.add(MIText.EuMaxed.text(eu, maxEu, "").setStyle(style));
             }
         }
     }

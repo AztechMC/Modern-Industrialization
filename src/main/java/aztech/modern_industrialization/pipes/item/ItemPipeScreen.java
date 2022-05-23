@@ -24,6 +24,7 @@
 package aztech.modern_industrialization.pipes.item;
 
 import aztech.modern_industrialization.MIIdentifier;
+import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.pipes.gui.PipeGuiHelper;
 import aztech.modern_industrialization.pipes.gui.PipeScreen;
 import aztech.modern_industrialization.pipes.impl.PipePackets;
@@ -40,7 +41,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextColor;
 import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 
@@ -65,11 +65,11 @@ public class ItemPipeScreen extends PipeScreen<ItemPipeScreenHandler> {
         }, (button, matrices, mouseX, mouseY) -> {
             List<Component> lines = new ArrayList<>();
             if (menu.pipeInterface.isWhitelist()) {
-                lines.add(new TranslatableComponent("text.modern_industrialization.whitelist"));
-                lines.add(new TranslatableComponent("text.modern_industrialization.click_to_toggle_blacklist").setStyle(SECONDARY_INFO));
+                lines.add(MIText.Whitelist.text());
+                lines.add(MIText.ClickToToggleBlacklist.text().setStyle(SECONDARY_INFO));
             } else {
-                lines.add(new TranslatableComponent("text.modern_industrialization.blacklist"));
-                lines.add(new TranslatableComponent("text.modern_industrialization.click_to_toggle_whitelist").setStyle(SECONDARY_INFO));
+                lines.add(MIText.Blacklist.text());
+                lines.add(MIText.ClickToToggleWhitelist.text().setStyle(SECONDARY_INFO));
             }
             renderComponentTooltip(matrices, lines, mouseX, mouseY);
         }));
@@ -86,7 +86,7 @@ public class ItemPipeScreen extends PipeScreen<ItemPipeScreenHandler> {
         Component title = this.title;
         if (menu.pipeInterface.isWhitelist() && menu.pipeInterface.isFilterEmpty()) {
             title = title.copy().append(new TextComponent(" "))
-                    .append(new TranslatableComponent("text.modern_industrialization.empty_whitelist_warning").setStyle(TextHelper.WARNING_TEXT));
+                    .append(MIText.EmptyWhitelistWarning.text().setStyle(TextHelper.WARNING_TEXT));
         }
         this.font.draw(matrices, title, (float) this.titleLabelX, (float) this.titleLabelY, 0x404040);
         this.font.draw(matrices, this.playerInventoryTitle, (float) this.inventoryLabelX, (float) this.inventoryLabelY, 0x404040);

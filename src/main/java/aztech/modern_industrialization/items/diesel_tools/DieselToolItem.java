@@ -23,6 +23,7 @@
  */
 package aztech.modern_industrialization.items.diesel_tools;
 
+import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.api.DynamicEnchantmentItem;
 import aztech.modern_industrialization.api.FluidFuelRegistry;
 import aztech.modern_industrialization.fluid.MIFluid;
@@ -41,7 +42,6 @@ import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
@@ -183,7 +183,7 @@ public class DieselToolItem extends Item implements Vanishable, DynamicEnchantme
             setFortune(stack, !isFortune(stack));
             if (!world.isClientSide) {
                 user.displayClientMessage(
-                        new TranslatableComponent("text.modern_industrialization.tool_switched_" + (isFortune(stack) ? "fortune" : "silk_touch")),
+                        isFortune(stack) ? MIText.ToolSwitchedFortune.text() : MIText.ToolSwitchedSilkTouch.text(),
                         false);
             }
             return InteractionResultHolder.sidedSuccess(stack, world.isClientSide);

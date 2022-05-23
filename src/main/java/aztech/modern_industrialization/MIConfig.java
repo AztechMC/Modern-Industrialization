@@ -24,6 +24,7 @@
 package aztech.modern_industrialization;
 
 import aztech.modern_industrialization.compat.modmenu.OreConfigEntry;
+import aztech.modern_industrialization.datagen.translation.EnglishTranslation;
 import java.util.Collections;
 import java.util.List;
 import me.shedaniel.autoconfig.AutoConfig;
@@ -38,24 +39,31 @@ public class MIConfig implements ConfigData {
     @ConfigEntry.Gui.Excluded
     public static final transient String NAME = "modern_industrialization";
 
-    @ConfigEntry.Gui.RequiresRestart
-    public boolean generateOres = true;
-
     @OreConfigEntry
     public List<String> blacklistedOres = Collections.emptyList();
 
+    @EnglishTranslation(value = "Grant Guidebook at Spawn")
     public boolean spawnWithGuideBook = true;
+    @EnglishTranslation(value = "Grant Guidebook at Respawn")
     public boolean respawnWithGuideBook = true;
+    @EnglishTranslation(value = "Disable display of Fuel EU in tooltips")
     public boolean disableFuelTooltips = false;
+    @EnglishTranslation(value = "Disable display of Item Tag in tooltips")
     public boolean disableItemTagTooltips = false;
+    @EnglishTranslation(value = "Display when a new version is available")
     public boolean newVersionMessage = true;
+    @EnglishTranslation(value = "Show valid positions in multiblocks when holding a hatch")
     public boolean enableHatchPlacementOverlay = true;
+    @EnglishTranslation(value = "Color Water and Lava")
     public boolean colorWaterLava = true;
-
+    @EnglishTranslation(value = "Enable UNSUPPORTED and DANGEROUS debug commands")
     public boolean enableDebugCommands = false;
-
     @ConfigEntry.Gui.RequiresRestart
+    @EnglishTranslation(value = "Enable the AE2 integration, if present (Restart needed)")
     public boolean enableAe2Integration = true;
+    @ConfigEntry.Gui.RequiresRestart
+    @EnglishTranslation(value = "Ore Generation Enabled (Restart needed)")
+    public boolean generateOres = true;
 
     @ConfigEntry.Gui.Excluded
     private transient static boolean registered = false;

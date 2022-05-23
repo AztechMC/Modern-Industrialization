@@ -23,6 +23,7 @@
  */
 package aztech.modern_industrialization.compat.modmenu;
 
+import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.util.TextHelper;
 import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.function.Consumer;
@@ -40,13 +41,14 @@ public class CustomBooleanListEntry extends BooleanListEntry {
     private final Item item;
 
     public CustomBooleanListEntry(Component fieldName, boolean value, Supplier<Boolean> defaultValue, Consumer<Boolean> saveConsumer, Item item) {
+
         super(fieldName, value, new TranslatableComponent("text.cloth-config.reset_value"), defaultValue, saveConsumer, null, true);
         this.item = item;
     }
 
     public Component getYesNoText(boolean bool) {
-        return bool ? new TranslatableComponent("text.modern_industrialization.enabled").setStyle(TextHelper.GREEN)
-                : new TranslatableComponent("text.modern_industrialization.disabled").setStyle(TextHelper.RED);
+        return bool ? MIText.Enabled.text().setStyle(TextHelper.GREEN)
+                : MIText.Disabled.text().setStyle(TextHelper.RED);
     }
 
     public void render(PoseStack matrices, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean isHovered,

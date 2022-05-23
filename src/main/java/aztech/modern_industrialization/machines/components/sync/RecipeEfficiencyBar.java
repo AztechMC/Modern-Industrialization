@@ -24,6 +24,7 @@
 package aztech.modern_industrialization.machines.components.sync;
 
 import aztech.modern_industrialization.MIIdentifier;
+import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.machines.MachineScreenHandlers;
 import aztech.modern_industrialization.machines.SyncedComponent;
 import aztech.modern_industrialization.machines.SyncedComponents;
@@ -38,7 +39,6 @@ import java.util.List;
 import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 
 public class RecipeEfficiencyBar {
@@ -152,16 +152,16 @@ public class RecipeEfficiencyBar {
                     List<Component> tooltip = new ArrayList<>();
                     if (hasActiveRecipe) {
                         DecimalFormat factorFormat = new DecimalFormat("#.#");
-                        tooltip.add(new TranslatableComponent("text.modern_industrialization.efficiency_ticks", efficiencyTicks, maxEfficiencyTicks));
-                        tooltip.add(new TranslatableComponent("text.modern_industrialization.efficiency_factor",
-                                factorFormat.format((double) currentRecipeEu / baseRecipeEu)));
-                        tooltip.add(new TranslatableComponent("text.modern_industrialization.efficiency_eu", currentRecipeEu));
+
+                        tooltip.add(MIText.EfficiencyTicks.text(efficiencyTicks, maxEfficiencyTicks));
+                        tooltip.add(MIText.EfficiencyFactor.text(factorFormat.format((double) currentRecipeEu / baseRecipeEu)));
+                        tooltip.add(MIText.EfficiencyEu.text(currentRecipeEu));
 
                     } else {
-                        tooltip.add(new TranslatableComponent("text.modern_industrialization.efficiency_default_message"));
+                        tooltip.add(MIText.EfficiencyDefaultMessage.text());
                     }
 
-                    tooltip.add(new TranslatableComponent("text.modern_industrialization.efficiency_max_overclock", maxRecipeEu));
+                    tooltip.add(MIText.EfficiencyMaxOverclock.text(maxRecipeEu));
 
                     screen.renderComponentTooltip(matrices, tooltip, cursorX, cursorY);
                 }

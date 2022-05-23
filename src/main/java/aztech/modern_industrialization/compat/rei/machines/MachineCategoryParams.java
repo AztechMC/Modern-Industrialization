@@ -31,6 +31,7 @@ import java.util.List;
 import java.util.function.Predicate;
 
 public class MachineCategoryParams {
+    public final String englishName;
     public final String category;
     public final SlotPositions itemInputs;
     public final SlotPositions itemOutputs;
@@ -40,8 +41,9 @@ public class MachineCategoryParams {
     public final Predicate<MachineRecipe> recipePredicate;
     public final List<String> workstations = new ArrayList<>();
 
-    public MachineCategoryParams(String category, SlotPositions itemInputs, SlotPositions itemOutputs, SlotPositions fluidInputs,
+    public MachineCategoryParams(String englishName, String category, SlotPositions itemInputs, SlotPositions itemOutputs, SlotPositions fluidInputs,
             SlotPositions fluidOutputs, ProgressBar.Parameters progressBarParams, Predicate<MachineRecipe> recipePredicate) {
+        this.englishName = englishName;
         this.category = category;
         this.itemInputs = itemInputs;
         this.itemOutputs = itemOutputs;

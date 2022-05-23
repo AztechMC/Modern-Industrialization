@@ -24,6 +24,7 @@
 package aztech.modern_industrialization.pipes.fluid;
 
 import aztech.modern_industrialization.MIIdentifier;
+import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.api.ReiDraggable;
 import aztech.modern_industrialization.machines.MachineScreenHandlers;
 import aztech.modern_industrialization.pipes.gui.PipeScreen;
@@ -43,7 +44,6 @@ import net.fabricmc.fabric.api.transfer.v1.storage.StorageUtil;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
@@ -75,9 +75,9 @@ public class FluidPipeScreen extends PipeScreen<FluidPipeScreenHandler> {
                     List<Component> lines = new ArrayList<>();
                     lines.add(FluidHelper.getFluidName(menu.iface.getNetworkFluid(), false));
                     if (!menu.iface.getNetworkFluid().isBlank()) {
-                        lines.add(new TranslatableComponent("text.modern_industrialization.network_fluid_help_clear").setStyle(TextHelper.GRAY_TEXT));
+                        lines.add(MIText.NetworkFluidHelpClear.text().setStyle(TextHelper.GRAY_TEXT));
                     } else {
-                        lines.add(new TranslatableComponent("text.modern_industrialization.network_fluid_help_set").setStyle(TextHelper.GRAY_TEXT));
+                        lines.add(MIText.NetworkFluidHelpSet.text().setStyle(TextHelper.GRAY_TEXT));
                     }
                     renderComponentTooltip(matrices, lines, mouseX, mouseY);
                 }, menu.iface));

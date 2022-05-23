@@ -23,6 +23,7 @@
  */
 package aztech.modern_industrialization.pipes.gui;
 
+import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.client.screen.MIHandledScreen;
 import aztech.modern_industrialization.pipes.gui.iface.ConnectionTypeInterface;
 import aztech.modern_industrialization.pipes.gui.iface.PriorityInterface;
@@ -38,7 +39,6 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -74,8 +74,23 @@ public abstract class PipeScreen<SH extends AbstractContainerMenu> extends MIHan
     protected void addPriorityWidgets(int startX, int startY, PriorityInterface priority, String tooltipType, int channel) {
         Button.OnTooltip tooltip = (button, matrices, mouseX, mouseY) -> {
             List<Component> lines = new ArrayList<>();
-            lines.add(new TranslatableComponent("text.modern_industrialization.priority_" + tooltipType, priority.getPriority(channel)));
-            lines.add(new TranslatableComponent("text.modern_industrialization.priority_" + tooltipType + "_help").setStyle(TextHelper.GRAY_TEXT));
+
+            MIText priorityText = switch (tooltipType) {
+            case "transfer" -> MIText.PriorityTransfer;
+            case "insert" -> MIText.PriorityInsert;
+            case "extract" -> MIText.PriorityExtract;
+            default -> throw new IllegalArgumentException("tooltipType : " + tooltipType + " must be either transfer, insert or extract");
+            };
+
+            MIText priorityTextHelp = switch (tooltipType) {
+            case "transfer" -> MIText.PriorityTransferHelp;
+            case "insert" -> MIText.PriorityInsertHelp;
+            case "extract" -> MIText.PriorityExtractHelp;
+            default -> throw new IllegalArgumentException("tooltipTypeHelp : " + tooltipType + " must be either transfer, insert or extract");
+            };
+
+            lines.add(priorityText.text(priority.getPriority(channel)));
+            lines.add(priorityTextHelp.text().setStyle(TextHelper.GRAY_TEXT));
             renderComponentTooltip(matrices, lines, mouseX, mouseY);
         };
         addPriorityButton(startX, startY, 20, 12, "--", -10, priority, channel, tooltip);
@@ -110,8 +125,15 @@ public abstract class PipeScreen<SH extends AbstractContainerMenu> extends MIHan
             ClientPlayNetworking.send(PipePackets.SET_CONNECTION_TYPE, buf);
         }, (button, matrices, mouseX, mouseY) -> {
             List<Component> lines = new ArrayList<>();
-            lines.add(new TranslatableComponent("text.modern_industrialization.pipe_connection_tooltip_" + connectionType.getConnectionType()));
-            lines.add(new TranslatableComponent("text.modern_industrialization.pipe_connection_help").setStyle(TextHelper.GRAY_TEXT));
+            Component component = switch (connectionType.getConnectionType()) {
+            case 0 -> MIText.PipeConnectionTooltipInsertOnly.text();
+            case 1 -> MIText.PipeConnectionTooltipInsertOrExtract.text();
+            case 2 -> MIText.PipeConnectionTooltipExtractOnly.text();
+            default -> throw new IllegalArgumentException("Connection Type " + connectionType.getConnectionType() + " must be either 0, 1, 2");
+            };
+
+            lines.add(component);
+            lines.add(MIText.PipeConnectionHelp.text().setStyle(TextHelper.GRAY_TEXT));
             renderComponentTooltip(matrices, lines, mouseX, mouseY);
         }, connectionType));
     }

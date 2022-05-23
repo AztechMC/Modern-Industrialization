@@ -23,6 +23,7 @@
  */
 package aztech.modern_industrialization.util;
 
+import aztech.modern_industrialization.MIText;
 import java.util.ArrayList;
 import java.util.List;
 import net.fabricmc.api.EnvType;
@@ -38,7 +39,6 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextColor;
 import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.item.TooltipFlag;
 
 public class FluidHelper {
@@ -46,7 +46,7 @@ public class FluidHelper {
     public static Component getFluidName(FluidVariant fluid, boolean grayIfEmpty) {
         if (fluid.isBlank()) {
             Style style = grayIfEmpty ? Style.EMPTY.withColor(TextColor.fromRgb(0xa9a9a9)).withItalic(true) : Style.EMPTY;
-            return new TranslatableComponent("text.modern_industrialization.empty").setStyle(style);
+            return MIText.Empty.text().setStyle(style);
         } else {
             return FluidVariantAttributes.getName(fluid);
         }

@@ -23,7 +23,9 @@
  */
 package aztech.modern_industrialization.misc.tooltips;
 
+import aztech.modern_industrialization.MIBlock;
 import aztech.modern_industrialization.MIIdentifier;
+import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.util.TextHelper;
 import com.google.common.base.Preconditions;
 import java.util.HashMap;
@@ -35,48 +37,64 @@ import net.minecraft.core.Registry;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.ItemLike;
 
 public class FaqTooltips {
+
     private static final Map<ResourceLocation, String[]> TOOLTIPS = new HashMap<>();
 
-    private static void add(String item, int lineCount) {
+    public static final Map<String, String> TOOLTIPS_ENGLISH_TRANSLATION = new HashMap<>();
+
+    private static void add(String item, String... englishTooltipsLine) {
+        int lineCount = englishTooltipsLine.length;
+
         Preconditions.checkArgument(lineCount > 0);
 
-        String[] lines = IntStream.range(0, lineCount).mapToObj(l -> item + "_" + l).toArray(String[]::new);
+        String[] translationKey = IntStream.range(0, lineCount).mapToObj(l -> "item_tooltip.modern_industrialization." + item + "_" + l)
+                .toArray(String[]::new);
 
-        if (TOOLTIPS.put(new MIIdentifier(item), lines) != null) {
+        if (TOOLTIPS.put(new MIIdentifier(item), translationKey) != null) {
             throw new IllegalStateException("Duplicate tooltip registration.");
+        }
+
+        for (int i = 0; i < lineCount; i++) {
+            TOOLTIPS_ENGLISH_TRANSLATION.put(translationKey[i], englishTooltipsLine[i]);
         }
     }
 
-    public static void init() {
-        // init static
+    private static void add(ItemLike item, String... englishTooltipsLine) {
+        add(Registry.ITEM.getKey(item.asItem()).getPath(), englishTooltipsLine);
     }
 
-    static {
-        add("forge_hammer", 2);
-        add("kanthal_coil", 2);
-        add("stainless_steel_dust", 1);
-        add("steam_blast_furnace", 2);
+    public static void init() {
+        setupAllTooltips();
 
         ItemTooltipCallback.EVENT.register((stack, context, lines) -> {
             ResourceLocation itemId = Registry.ITEM.getKey(stack.getItem());
-            String[] tooltipLines = TOOLTIPS.get(itemId);
+            String[] tooltipTranslationKey = TOOLTIPS.get(itemId);
 
-            if (tooltipLines != null) {
+            if (tooltipTranslationKey != null) {
                 lines.add(new TextComponent(""));
                 if (Screen.hasShiftDown()) {
-                    lines.add(new TranslatableComponent("text.modern_industrialization.additional_tips").setStyle(TextHelper.FAQ_HEADER_TOOLTIP));
-                    for (String line : tooltipLines) {
-                        TranslatableComponent text = new TranslatableComponent("item_tooltip.modern_industrialization." + line);
+                    lines.add(MIText.AdditionalTips.text().setStyle(TextHelper.FAQ_HEADER_TOOLTIP));
+                    for (String translationKey : tooltipTranslationKey) {
+                        TranslatableComponent text = new TranslatableComponent(translationKey);
                         text.setStyle(TextHelper.FAQ_TOOLTIP);
                         lines.add(text);
                     }
                 } else {
                     lines.add(
-                            new TranslatableComponent("text.modern_industrialization.additional_tips_shift").setStyle(TextHelper.FAQ_HEADER_TOOLTIP));
+                            MIText.AdditionalTipsShift.text().setStyle(TextHelper.FAQ_HEADER_TOOLTIP));
                 }
             }
         });
+    }
+
+    private static void setupAllTooltips() {
+        add(MIBlock.FORGE_HAMMER, "Use it to increase the yield of your ore blocks early game!",
+                "(Use the Steam Mining Drill for an easy to get Silk Touch.)");
+        add("kanthal_coil", "Right-click the EBF with a Screwdriver", "to change the coils to Kanthal");
+        add("stainless_steel_dust", "Use Slot-Locking with REI to differentiate its recipe from the invar dust");
+        add("steam_blast_furnace", "Needs at least one Steel or higher tier", "hatch for 3 and 4 EU/t recipes");
     }
 }

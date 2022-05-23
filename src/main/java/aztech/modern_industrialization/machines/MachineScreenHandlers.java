@@ -24,6 +24,7 @@
 package aztech.modern_industrialization.machines;
 
 import aztech.modern_industrialization.MIIdentifier;
+import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.ModernIndustrialization;
 import aztech.modern_industrialization.client.screen.MIHandledScreen;
 import aztech.modern_industrialization.inventory.*;
@@ -53,7 +54,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Inventory;
@@ -293,11 +293,11 @@ public class MachineScreenHandlers {
             }, () -> {
                 List<Component> lines = new ArrayList<>();
                 if (menu.lockingMode) {
-                    lines.add(new TranslatableComponent("text.modern_industrialization.locking_mode_on"));
-                    lines.add(new TranslatableComponent("text.modern_industrialization.click_to_disable").setStyle(TextHelper.GRAY_TEXT));
+                    lines.add(MIText.LockingModeOn.text());
+                    lines.add(MIText.ClickToDisable.text().setStyle(TextHelper.GRAY_TEXT));
                 } else {
-                    lines.add(new TranslatableComponent("text.modern_industrialization.locking_mode_off"));
-                    lines.add(new TranslatableComponent("text.modern_industrialization.click_to_enable").setStyle(TextHelper.GRAY_TEXT));
+                    lines.add(MIText.LockingModeOff.text());
+                    lines.add(MIText.ClickToEnable.text().setStyle(TextHelper.GRAY_TEXT));
                 }
                 return lines;
             }, () -> menu.lockingMode);
@@ -422,12 +422,12 @@ public class MachineScreenHandlers {
 
                 if (stack.canPlayerInsert()) {
                     if (stack.canPlayerExtract()) {
-                        tooltip.add(new TranslatableComponent("text.modern_industrialization.fluid_slot_IO").setStyle(TextHelper.GRAY_TEXT));
+                        tooltip.add(MIText.FluidSlotIO.text().setStyle(TextHelper.GRAY_TEXT));
                     } else {
-                        tooltip.add(new TranslatableComponent("text.modern_industrialization.fluid_slot_input").setStyle(TextHelper.GRAY_TEXT));
+                        tooltip.add(MIText.FluidSlotInput.text().setStyle(TextHelper.GRAY_TEXT));
                     }
                 } else if (stack.canPlayerExtract()) {
-                    tooltip.add(new TranslatableComponent("text.modern_industrialization.fluid_slot_output").setStyle(TextHelper.GRAY_TEXT));
+                    tooltip.add(MIText.FluidSlotOutput.text().setStyle(TextHelper.GRAY_TEXT));
                 }
                 this.renderComponentTooltip(matrices, tooltip, mouseX, mouseY);
             } else if (slot instanceof ConfigurableItemSlot confSlot) {
@@ -445,7 +445,7 @@ public class MachineScreenHandlers {
             List<Component> textTooltip;
             if (vanillaStack.isEmpty()) {
                 textTooltip = new ArrayList<>();
-                textTooltip.add(new TranslatableComponent("text.modern_industrialization.empty"));
+                textTooltip.add(MIText.Empty.text());
             } else {
                 textTooltip = getTooltipFromItem(vanillaStack);
             }
@@ -456,7 +456,7 @@ public class MachineScreenHandlers {
                 capacityText.setStyle(TextHelper.YELLOW_BOLD);
             }
             textTooltip.add(
-                    new TranslatableComponent("text.modern_industrialization.configurable_slot_capacity", capacityText)
+                    MIText.ConfigurableSlotCapacity.text(capacityText)
                             .setStyle(TextHelper.GRAY_TEXT));
             // Render
             renderTooltip(matrices, textTooltip, data, mouseX, mouseY);

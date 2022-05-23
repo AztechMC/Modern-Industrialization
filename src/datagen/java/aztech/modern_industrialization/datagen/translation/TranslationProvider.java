@@ -25,6 +25,7 @@ package aztech.modern_industrialization.datagen.translation;
 
 import aztech.modern_industrialization.MIConfig;
 import aztech.modern_industrialization.MIText;
+import aztech.modern_industrialization.compat.rei.machines.ReiMachineRecipes;
 import aztech.modern_industrialization.definition.Definition;
 import aztech.modern_industrialization.misc.tooltips.FaqTooltips;
 import aztech.modern_industrialization.pipes.MIPipes;
@@ -32,10 +33,8 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import java.io.BufferedWriter;
-import java.io.FileReader;
 import java.io.IOException;
 import java.lang.reflect.Field;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
@@ -45,13 +44,11 @@ import net.minecraft.data.HashCache;
 import org.jetbrains.annotations.NotNull;
 
 public record TranslationProvider(FabricDataGenerator gen) implements DataProvider {
-
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
 
     private static final String OUTPUT_PATH = "assets/modern_industrialization/lang/en_us.json";
-    private static final String INPUT_PATH = "../../src/main/resources/assets/modern_industrialization/lang/en_us_not_generated.json";
 
-    private static final HashMap<String, String> TRANSLATION_PAIRS = new HashMap<>();
+    private static final Map<String, String> TRANSLATION_PAIRS = new TreeMap<>();
 
     public static void addTranslation(String key, String englishValue) {
         if (!TRANSLATION_PAIRS.containsKey(key)) {
@@ -63,12 +60,18 @@ public record TranslationProvider(FabricDataGenerator gen) implements DataProvid
         }
     }
 
+    private static void addManualEntries() {
+        addTranslation("block.modern_industrialization.pipe", "Pipe(s)");
+        addTranslation("book.modern_industrialization.landing_text",
+                "Welcome to Modern Industrialization! To get started, be sure to collect a lot of Copper Ore and Tin Ore.");
+        addTranslation("item.modern_industrialization.energy_p2p_tunnel", "EU P2P Tunnel");
+        addTranslation("key.modern_industrialization.activate", "Toggle Flight");
+        addTranslation("text.autoconfig.modern_industrialization.title", "Modern Industrialization Menu");
+    }
+
     @Override
     public void run(@NotNull HashCache cache) throws IOException {
-
-        Path outputPath = gen.getOutputFolder();
-
-        TreeMap<String, String> translation = GSON.fromJson(new FileReader(INPUT_PATH, StandardCharsets.UTF_8), TreeMap.class);
+        addManualEntries();
 
         for (var entry : MIText.values()) {
             addTranslation(entry.getTranslationKey(), entry.getEnglishText());
@@ -96,46 +99,24 @@ public record TranslationProvider(FabricDataGenerator gen) implements DataProvid
             addTranslation(entry.getKey(), entry.getValue());
         }
 
-        for (var entry : TRANSLATION_PAIRS.entrySet()) {
-            String key = entry.getKey();
-            String value = entry.getValue();
-
-            if (translation.containsKey(key)) {
-                throw new IllegalArgumentException("Translation key : " + key + " cannot be registered for associated value : " + value + "," +
-                        ", already associated to :" + translation.get(key));
-            }
-
-            translation.put(key, value);
-
+        for (var entry : ReiMachineRecipes.categories.entrySet()) {
+            addTranslation("rei_categories.modern_industrialization." + entry.getKey(), entry.getValue().englishName);
         }
 
-        customJsonSave(cache, GSON.toJsonTree(translation), outputPath.resolve(OUTPUT_PATH));
-
+        customJsonSave(cache, GSON.toJsonTree(TRANSLATION_PAIRS), gen.getOutputFolder().resolve(OUTPUT_PATH));
     }
 
     private void customJsonSave(HashCache cache, JsonElement jsonElement, Path path) throws IOException {
-
         String sortedJson = GSON.toJson(jsonElement);
         String prettyPrinted = sortedJson.replace("\\u0027", "'");
 
         String string2 = SHA1.hashUnencodedChars(prettyPrinted).toString();
         if (!Objects.equals(cache.getHash(path), string2) || !Files.exists(path)) {
             Files.createDirectories(path.getParent());
-            BufferedWriter bufferedWriter = Files.newBufferedWriter(path);
 
-            try {
+            try (BufferedWriter bufferedWriter = Files.newBufferedWriter(path);) {
                 bufferedWriter.write(prettyPrinted);
-            } catch (Throwable var10) {
-                try {
-                    bufferedWriter.close();
-                } catch (Throwable var9) {
-                    var10.addSuppressed(var9);
-                }
-
-                throw var10;
             }
-
-            bufferedWriter.close();
         }
 
         cache.putNew(path, string2);

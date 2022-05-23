@@ -38,7 +38,7 @@ import net.minecraft.util.Tuple;
  * called even if REI is not loaded, and should not reference the REI API.
  */
 public class ReiMachineRecipes {
-    static final Map<String, MachineCategoryParams> categories = new TreeMap<>();
+    public static final Map<String, MachineCategoryParams> categories = new TreeMap<>();
     /**
      * Maps a machine block id to the list of recipe categories.
      */

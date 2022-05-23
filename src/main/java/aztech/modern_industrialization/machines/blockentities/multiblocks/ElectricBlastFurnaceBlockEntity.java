@@ -153,6 +153,7 @@ public class ElectricBlastFurnaceBlockEntity extends AbstractCraftingMultiblockB
     }
 
     public static final ArrayList<String> coilNames = new ArrayList<>();
+    public static final ArrayList<String> coilEnglishNames = new ArrayList<>();
     public static final ArrayList<Block> coils = new ArrayList<>();
     public static final Map<Block, Long> coilsMaxBaseEU = new IdentityHashMap<>();
 
@@ -162,6 +163,8 @@ public class ElectricBlastFurnaceBlockEntity extends AbstractCraftingMultiblockB
         for (String coilName : coilNames) {
             coils.add(MIBlock.BLOCKS.get(new MIIdentifier(coilName)).asBlock());
         }
+        coilEnglishNames.add(" (Cupronickel Tier)");
+        coilEnglishNames.add(" (Kanthal Tier)");
         coilsMaxBaseEU.put(coils.get(0), 32L);
         coilsMaxBaseEU.put(coils.get(1), 128L);
 
@@ -188,7 +191,7 @@ public class ElectricBlastFurnaceBlockEntity extends AbstractCraftingMultiblockB
             }
 
             if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
-                new MultiblockMachines.Rei("electric_blast_furnace_" + i, MIMachineRecipeTypes.BLAST_FURNACE,
+                new MultiblockMachines.Rei("EBF" + coilEnglishNames.get(i), "electric_blast_furnace_" + i, MIMachineRecipeTypes.BLAST_FURNACE,
                         new ProgressBar.Parameters(77, 33, "arrow"))
                                 .items(inputs -> inputs.addSlots(56, 35, 2, 1), outputs -> outputs.addSlot(102, 35))
                                 .fluids(fluids -> fluids.addSlot(36, 35), outputs -> outputs.addSlot(122, 35))

@@ -84,6 +84,8 @@ public class MIFluids {
     public static final FluidDefinition SODIUM_HYDROXIDE = fluid("Sodium Hydroxide", "sodium_hydroxide", 0xff5071c9);
     public static final FluidDefinition SOLDERING_ALLOY = fluid("Soldering Alloy", "soldering_alloy", 0xffabc4bf);
     public static final FluidDefinition STEAM = fluid("Steam", "steam", 0xffeeeeee, true);
+    public static final FluidDefinition STEAM_CRACKED_HEAVY_FUEL = fluid("Steam-Cracked Heavy Fuel", "steam_cracked_heavy_fuel", 0xffffe57d);
+    public static final FluidDefinition STEAM_CRACKED_LIGHT_FUEL = fluid("Steam-Cracked Light Fuel", "steam_cracked_light_fuel", 0xffffeca4);
     public static final FluidDefinition STEAM_CRACKED_NAPHTHA = fluid("Steam-Cracked Naphtha", "steam_cracked_naphtha", 0xffd2d0ae);
     public static final FluidDefinition STYRENE = fluid("Styrene","styrene", 0xff9e47f2);
     public static final FluidDefinition STYRENE_BUTADIENE = fluid("Styrene-Butadiene", "styrene_butadiene", 0xff9c8040);

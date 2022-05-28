@@ -165,7 +165,7 @@ public class MachineRecipeCategory implements DisplayCategory<MachineRecipeDispl
                         MIText.BaseDurationSeconds.text(recipeDisplay.getSeconds()))
                 .rightAligned().noShadow().color(0xFF404040, 0xFFBBBBBB));
         // Draw steel hatch
-        boolean steelHatchRequired = params.isMultiblock && recipeDisplay.getEu() > 2;
+        boolean steelHatchRequired = params.steamMode.steam && params.isMultiblock && recipeDisplay.getEu() > 2;
         if (steelHatchRequired) {
             widgets.add(Widgets.createDrawableWidget((helper, matrices, mouseX, mouseY, delta) -> {
                 var stack = RenderSystem.getModelViewStack();
@@ -191,7 +191,7 @@ public class MachineRecipeCategory implements DisplayCategory<MachineRecipeDispl
                 tooltips.add(MIText.RequiresSteelHatch1.text().withStyle(ChatFormatting.GRAY));
             }
         }
-        Rectangle tooltipZone = new Rectangle(bounds.x + 2, bounds.y + 5, bounds.width - 10, 12);
+        Rectangle tooltipZone = new Rectangle(bounds.x + 2, bounds.y + 5, bounds.width - 10, 11);
         widgets.add(Widgets.createDrawableWidget((helper, matrices, mouseX, mouseY, delta) -> {
             if (tooltipZone.contains(mouseX, mouseY)) {
                 Tooltip.create(tooltips).queue();

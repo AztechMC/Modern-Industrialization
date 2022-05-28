@@ -48,6 +48,17 @@ public class PetrochemRecipesProvider extends MIRecipesProvider {
                 f(SULFURIC_LIGHT_FUEL, 500),
                 f(SULFURIC_HEAVY_FUEL, 200),
                 f(SULFURIC_NAPHTHA, 300));
+        generateDistillation(consumer, 20, 200, f(STEAM_CRACKED_HEAVY_FUEL, 1000),
+                f(LIGHT_FUEL, 500),
+                f(METHANE, 100),
+                f(BUTADIENE, 250),
+                f(BENZENE, 150));
+        generateDistillation(consumer, 25, 200, f(STEAM_CRACKED_LIGHT_FUEL, 1000),
+                f(METHANE, 200),
+                f(ACETYLENE, 100),
+                f(ETHYLENE, 300),
+                f(BUTADIENE, 200),
+                f(BENZENE, 200));
         generateDistillation(consumer, 15, 200, f(STEAM_CRACKED_NAPHTHA, 1000),
                 f(METHANE, 150),
                 f(ACETYLENE, 50),
@@ -70,6 +81,9 @@ public class PetrochemRecipesProvider extends MIRecipesProvider {
         generatePolymerization(consumer, CAPROLACTAM, NYLON);
         generatePolymerization(consumer, ACRYLIC_ACID, ACRYLIC_GLUE);
         generatePolymerization(consumer, STYRENE_BUTADIENE, STYRENE_BUTADIENE_RUBBER);
+        generateSteamCracking(consumer, HEAVY_FUEL, STEAM_CRACKED_HEAVY_FUEL);
+        generateSteamCracking(consumer, LIGHT_FUEL, STEAM_CRACKED_LIGHT_FUEL);
+        generateSteamCracking(consumer, NAPHTHA, STEAM_CRACKED_NAPHTHA);
     }
 
     /**
@@ -127,6 +141,14 @@ public class PetrochemRecipesProvider extends MIRecipesProvider {
 
     private void generatePolymerization(Consumer<FinishedRecipe> consumer, FluidLike input, FluidLike output) {
         generatePolymerization(consumer, input.asFluid(), output.asFluid());
+    }
+
+    private void generateSteamCracking(Consumer<FinishedRecipe> consumer, FluidLike input, FluidLike output) {
+        MIRecipeJson.create(MIMachineRecipeTypes.CHEMICAL_REACTOR, 8, 100)
+                .addFluidInput(input, 1000)
+                .addFluidInput(STEAM, 100)
+                .addFluidOutput(output, 1000)
+                .offerTo(consumer, "petrochem/steam_cracking/" + Registry.FLUID.getKey(input.asFluid()).getPath());
     }
 
     private static FluidEntry f(Fluid fluid, int amount) {

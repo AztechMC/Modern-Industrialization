@@ -161,7 +161,7 @@ public class TextHelper {
 
     public static MutableComponent getEuTextTick(long eu) {
         var amount = getAmount(eu);
-        return MIText.Eu.text(amount.digit(),
+        return MIText.EuT.text(amount.digit(),
                 amount.unit());
     }
 

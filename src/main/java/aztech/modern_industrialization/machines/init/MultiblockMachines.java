@@ -33,6 +33,7 @@ import aztech.modern_industrialization.api.FluidFuelRegistry;
 import aztech.modern_industrialization.compat.rei.Rectangle;
 import aztech.modern_industrialization.compat.rei.machines.MachineCategoryParams;
 import aztech.modern_industrialization.compat.rei.machines.ReiMachineRecipes;
+import aztech.modern_industrialization.compat.rei.machines.SteamMode;
 import aztech.modern_industrialization.inventory.SlotPositions;
 import aztech.modern_industrialization.machines.MachineScreenHandlers;
 import aztech.modern_industrialization.machines.SyncedComponent;
@@ -55,9 +56,9 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.material.Fluid;
 
-// @formatter:off
 @SuppressWarnings("rawtypes")
 public class MultiblockMachines {
+    // @formatter:off
     public static BlockEntityType COKE_OVEN;
     public static BlockEntityType STEAM_BLAST_FURNACE;
     public static BlockEntityType STEAM_QUARRY;
@@ -611,6 +612,7 @@ public class MultiblockMachines {
                 .items(inputs -> inputs.addSlot(56, 35), outputs -> outputs.addSlot(102, 35))
                 .fluids(inputs -> {
                 }, outputs -> outputs.addSlot(102, 53))
+                .steam(true)
                 .register();
 
         MachineModels.addTieredMachine("steam_blast_furnace", "steam_blast_furnace", MachineCasings.FIREBRICKS, true, false, false);
@@ -619,6 +621,7 @@ public class MultiblockMachines {
                 .items(inputs -> inputs.addSlots(56, 35, 2, 1), outputs -> outputs.addSlots(102, 35, 1, 1))
                 .fluids(fluids -> fluids.addSlots(36, 35, 1, 1), outputs -> outputs.addSlots(122, 35, 1, 1))
                 .workstations("steam_blast_furnace", "electric_blast_furnace").extraTest(recipe -> recipe.eu <= 4)
+                .steam(false)
                 .register();
 
         MachineModels.addTieredMachine("electric_blast_furnace", "electric_blast_furnace", MachineCasings.HEATPROOF, true, false, false);
@@ -643,6 +646,7 @@ public class MultiblockMachines {
         new Rei("Steam Quarry", "steam_quarry", MIMachineRecipeTypes.QUARRY, new ProgressBar.Parameters(77, 33, "arrow"))
                 .items(inputs -> inputs.addSlot(56, 35), outputs -> outputs.addSlots(102, 35, 4, 4))
                 .workstations("steam_quarry", "electric_quarry").extraTest(recipe -> recipe.eu <= 4)
+                .steam(false)
                 .register();
         new Rei("Electric Quarry", "electric_quarry", MIMachineRecipeTypes.QUARRY, new ProgressBar.Parameters(77, 33, "arrow"))
                 .items(inputs -> inputs.addSlot(56, 35), outputs -> outputs.addSlots(102, 35, 4, 4))
@@ -719,6 +723,7 @@ public class MultiblockMachines {
                 MachineCasings.PLASMA_HANDLING_IRIDIUM, true, false, false);
         BlockEntityRendererRegistry.register(PLASMA_TURBINE, MultiblockMachineBER::new);
     }
+    // @formatter:on
 
     private static final Rectangle CRAFTING_GUI = new Rectangle(CraftingMultiblockGui.X, CraftingMultiblockGui.Y,
             CraftingMultiblockGui.W, CraftingMultiblockGui.H);
@@ -734,6 +739,7 @@ public class MultiblockMachines {
         private SlotPositions itemOutputs = SlotPositions.empty();
         private SlotPositions fluidInputs = SlotPositions.empty();
         private SlotPositions fluidOutputs = SlotPositions.empty();
+        private SteamMode steamMode = SteamMode.ELECTRIC_ONLY;
         private static final Predicate<MachineScreenHandlers.ClientScreen> SHAPE_VALID_PREDICATE = screen -> {
             for (SyncedComponent.Client client : screen.getMenu().components) {
                 if (client instanceof CraftingMultiblockGui.Client cmGui) {
@@ -777,8 +783,14 @@ public class MultiblockMachines {
             return this;
         }
 
+        public Rei steam(boolean steamOnly) {
+            this.steamMode = steamOnly ? SteamMode.STEAM_ONLY : SteamMode.BOTH;
+            return this;
+        }
+
         public final void register() {
-            ReiMachineRecipes.registerCategory(category, new MachineCategoryParams(englishName, category, itemInputs, itemOutputs, fluidInputs, fluidOutputs, progressBarParams, recipe -> recipe.getType() == recipeType && extraTest.test(recipe)));
+            ReiMachineRecipes.registerCategory(category, new MachineCategoryParams(englishName, category, itemInputs, itemOutputs, fluidInputs,
+                    fluidOutputs, progressBarParams, recipe -> recipe.getType() == recipeType && extraTest.test(recipe), true, steamMode));
             for (String workstation : workstations) {
                 ReiMachineRecipes.registerWorkstation(category, workstation);
                 ReiMachineRecipes.registerRecipeCategoryForMachine(workstation, category, SHAPE_VALID_PREDICATE);

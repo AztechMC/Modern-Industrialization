@@ -31,9 +31,7 @@ import aztech.modern_industrialization.machines.components.sync.EnergyBar;
 import aztech.modern_industrialization.machines.components.sync.ProgressBar;
 import aztech.modern_industrialization.util.TextHelper;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -48,11 +46,15 @@ import me.shedaniel.rei.api.client.registry.display.DisplayCategory;
 import me.shedaniel.rei.api.common.category.CategoryIdentifier;
 import me.shedaniel.rei.api.common.entry.EntryIngredient;
 import me.shedaniel.rei.api.common.util.EntryStacks;
-import net.minecraft.client.gui.components.events.GuiEventListener;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.core.Registry;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
 
 public class MachineRecipeCategory implements DisplayCategory<MachineRecipeDisplay> {
     private final ResourceLocation id;
@@ -132,40 +134,69 @@ public class MachineRecipeCategory implements DisplayCategory<MachineRecipeDispl
                     (float) (System.currentTimeMillis() / recipeMillis % 1.0));
         }));
 
-        Component totalEuTooltip = MIText.BaseEuTotal.text(TextHelper.getEuText((long) recipeDisplay.getTicks() * recipeDisplay.getEu()));
-
         // Draw filled energy bar
         widgets.add(Widgets.createDrawableWidget((helper, matrices, mouseX, mouseY, delta) -> {
             matrices.pushPose();
+
             matrices.translate(bounds.x + 5, bounds.y + 5, 0);
             matrices.scale(0.5f, 0.5f, 0.5f);
-            EnergyBar.Client.Renderer.renderEnergy(helper, matrices, 0, 0, 1);
+            switch (params.steamMode) {
+            case BOTH -> {
+                RenderSystem.setShaderTexture(0, MachineScreenHandlers.SLOT_ATLAS);
+                helper.blit(matrices, -2, -2, 80, 18, 20, 20);
+            }
+            case STEAM_ONLY -> {
+                RenderSystem.setShaderTexture(0, new MIIdentifier("textures/item/bucket_steam.png"));
+                GuiComponent.blit(matrices, 0, 0, helper.getBlitOffset(), 0, 0, 16, 16, 16, 16);
+            }
+            case ELECTRIC_ONLY -> {
+                EnergyBar.Client.Renderer.renderEnergy(helper, matrices, 0, 0, 1);
+            }
+            }
+
             matrices.popPose();
         }));
-        // Draw EU/t and seconds
         widgets.add(Widgets
-                .createLabel(new Point(bounds.x + 15, bounds.y + 5),
+                .createLabel(new Point(bounds.x + 15 + (params.steamMode.steam ? 2 : 0), bounds.y + 5),
                         TextHelper.getEuTextTick(recipeDisplay.getEu()))
                 .leftAligned().noShadow().color(0xFF404040, 0xFFBBBBBB));
         widgets.add(Widgets
                 .createLabel(new Point(bounds.getMaxX() - 5, bounds.y + 5),
                         MIText.BaseDurationSeconds.text(recipeDisplay.getSeconds()))
                 .rightAligned().noShadow().color(0xFF404040, 0xFFBBBBBB));
-        // Total EU tooltip
-        Rectangle tooltipZone = new Rectangle(bounds.x + 2, bounds.y + 5, bounds.width - 10, 12);
-        widgets.add(new Widget() {
-            @Override
-            public void render(PoseStack matrices, int mouseX, int mouseY, float delta) {
-                if (tooltipZone.contains(mouseX, mouseY)) {
-                    Tooltip.create(totalEuTooltip).queue();
-                }
-            }
+        // Draw steel hatch
+        boolean steelHatchRequired = params.isMultiblock && recipeDisplay.getEu() > 2;
+        if (steelHatchRequired) {
+            widgets.add(Widgets.createDrawableWidget((helper, matrices, mouseX, mouseY, delta) -> {
+                var stack = RenderSystem.getModelViewStack();
+                stack.pushPose();
+                stack.translate(bounds.getCenterX() - 5, bounds.y + 5, 0);
+                stack.scale(0.6f, 0.6f, 1);
+                RenderSystem.applyModelViewMatrix();
 
-            @Override
-            public List<? extends GuiEventListener> children() {
-                return Collections.emptyList();
+                Minecraft.getInstance().getItemRenderer().renderGuiItem(new ItemStack(Registry.ITEM.get(new MIIdentifier("steel_item_input_hatch"))),
+                        0, 0);
+
+                stack.popPose();
+                RenderSystem.applyModelViewMatrix();
+            }));
+        }
+        // Tooltips
+        List<Component> tooltips = new ArrayList<>();
+        tooltips.add(MIText.BaseEuTotal.text(TextHelper.getEuText((long) recipeDisplay.getTicks() * recipeDisplay.getEu())));
+        if (params.steamMode.steam) {
+            tooltips.add((params.steamMode.electric ? MIText.AcceptsSteamToo : MIText.AcceptsSteam).text().withStyle(ChatFormatting.GRAY));
+            if (steelHatchRequired) {
+                tooltips.add(MIText.RequiresSteelHatch0.text().setStyle(Style.EMPTY.withUnderlined(true)));
+                tooltips.add(MIText.RequiresSteelHatch1.text().withStyle(ChatFormatting.GRAY));
             }
-        });
+        }
+        Rectangle tooltipZone = new Rectangle(bounds.x + 2, bounds.y + 5, bounds.width - 10, 12);
+        widgets.add(Widgets.createDrawableWidget((helper, matrices, mouseX, mouseY, delta) -> {
+            if (tooltipZone.contains(mouseX, mouseY)) {
+                Tooltip.create(tooltips).queue();
+            }
+        }));
 
         return widgets;
     }

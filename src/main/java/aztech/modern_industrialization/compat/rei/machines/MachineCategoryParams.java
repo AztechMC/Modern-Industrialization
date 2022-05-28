@@ -39,10 +39,13 @@ public class MachineCategoryParams {
     public final SlotPositions fluidOutputs;
     public final ProgressBar.Parameters progressBarParams;
     public final Predicate<MachineRecipe> recipePredicate;
+    public final boolean isMultiblock;
+    public final SteamMode steamMode;
     public final List<String> workstations = new ArrayList<>();
 
     public MachineCategoryParams(String englishName, String category, SlotPositions itemInputs, SlotPositions itemOutputs, SlotPositions fluidInputs,
-            SlotPositions fluidOutputs, ProgressBar.Parameters progressBarParams, Predicate<MachineRecipe> recipePredicate) {
+            SlotPositions fluidOutputs, ProgressBar.Parameters progressBarParams, Predicate<MachineRecipe> recipePredicate, boolean isMultiblock,
+            SteamMode steamMode) {
         this.englishName = englishName;
         this.category = category;
         this.itemInputs = itemInputs;
@@ -51,5 +54,7 @@ public class MachineCategoryParams {
         this.fluidOutputs = fluidOutputs;
         this.progressBarParams = progressBarParams;
         this.recipePredicate = recipePredicate;
+        this.isMultiblock = isMultiblock;
+        this.steamMode = steamMode;
     }
 }

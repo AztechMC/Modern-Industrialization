@@ -27,6 +27,7 @@ import aztech.modern_industrialization.MIFluids;
 import aztech.modern_industrialization.compat.rei.Rectangle;
 import aztech.modern_industrialization.compat.rei.machines.MachineCategoryParams;
 import aztech.modern_industrialization.compat.rei.machines.ReiMachineRecipes;
+import aztech.modern_industrialization.compat.rei.machines.SteamMode;
 import aztech.modern_industrialization.inventory.ConfigurableFluidStack;
 import aztech.modern_industrialization.inventory.ConfigurableItemStack;
 import aztech.modern_industrialization.inventory.SlotPositions;
@@ -238,7 +239,7 @@ public final class SingleBlockCraftingMachines {
                 new MachineCategoryParams(null, null, items.sublist(0, itemInputCount),
                         items.sublist(itemInputCount, itemInputCount + itemOutputCount),
                         fluids.sublist(0, fluidInputCount), fluids.sublist(fluidInputCount, fluidInputCount + fluidOutputCount), progressBarParams,
-                        null),
+                        null, false, SteamMode.BOTH),
                 tiers);
     }
 
@@ -292,7 +293,8 @@ public final class SingleBlockCraftingMachines {
                 MachineCategoryParams category = new MachineCategoryParams(fullEnglishName, itemId, categoryParams.itemInputs,
                         categoryParams.itemOutputs,
                         categoryParams.fluidInputs, categoryParams.fluidOutputs, categoryParams.progressBarParams,
-                        recipe -> recipe.getType() == recipeType && minEu <= recipe.eu && recipe.eu <= maxEu);
+                        recipe -> recipe.getType() == recipeType && minEu <= recipe.eu && recipe.eu <= maxEu, false,
+                        i < 2 ? SteamMode.BOTH : SteamMode.ELECTRIC_ONLY);
                 ReiMachineRecipes.registerCategory(itemId, category);
                 ReiMachineRecipes.registerMachineClickArea(itemId, new Rectangle(categoryParams.progressBarParams));
                 previousCategories.add(category);

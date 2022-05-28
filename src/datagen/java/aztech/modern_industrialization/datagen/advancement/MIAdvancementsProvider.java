@@ -45,7 +45,8 @@ public class MIAdvancementsProvider extends FabricAdvancementProvider {
     @Override
     // @formatter:off
     public void generateAdvancement(Consumer<Advancement> consumer) {
-        var forgeHammer = createBasic(consumer, "forge_hammer", null, FrameType.GOAL, "Is This A Forge Mod?", "Craft a Forge Hammer and begin exploring Modern Industrialization");
+        var guidebook = createBasic(consumer, "guidebook", null, "Modern Industrialization", "Obtain the Modern Industrialization guidebook.");
+        var forgeHammer = createBasic(consumer, "forge_hammer", guidebook, FrameType.GOAL, "Is This A Forge Mod?", "Craft a Forge Hammer and start exploring the mod.");
         var steamMiningDrill = createBasic(consumer, "steam_mining_drill", forgeHammer, FrameType.GOAL, "Getting That 3x3 Going", "Craft a Steam Mining Drill");
         var fireClayBricks = createBasic(consumer, "fire_clay_bricks", forgeHammer, "Almost Steam?", "Craft Fire Clay Bricks");
         var bronzeFurnace = createBasic(consumer, "bronze_furnace", fireClayBricks, "Twenty Times More Fuel Efficient", "Craft a Bronze Furnace");
@@ -87,7 +88,7 @@ public class MIAdvancementsProvider extends FabricAdvancementProvider {
         var hvSteamTurbine = createBasic(consumer, "hv_steam_turbine", mvSteamTurbine, "Better than Water Wheel", "Craft an HV Steam Turbine");
         var largeSteamTurbine = createBasic(consumer, "large_steam_turbine", hvSteamTurbine, "Enslaved Hurricane", "Craft a Large Steam Turbine");
         var distillationTower = createBasic(consumer, "distillation_tower", digitalCircuit, FrameType.GOAL, "TOTAL™ Distillation", "Craft a Distillation Tower to unlock to full potential of oil processing");
-        var crowbar = createBasic(consumer, "crowbar", steelMachineCasing, "I'm Mr Crowbar and this is my friend", "... which is also a crowbar. Craft a Crowbar to interact with machine upgrades and casing");
+        var crowbar = createBasic(consumer, "crowbar", steelMachineCasing, "I'm Mr Crowbar and this is...", "...my friend, which is also a crowbar. Craft a Crowbar to interact with machine upgrades and casings.");
         var heatExchanger = createBasic(consumer, "heat_exchanger", digitalCircuit, "Lava Power but Balanced",  "Craft a Heat Exchanger to avoid losing high pressure (and cheese easy energy from lava production)");
         var stainlessSteel = createBasic(consumer, "stainless_steel_ingot", vacuumFreezer, FrameType.GOAL, "Invar with Slot Locking", "Craft a Stainless Steel Ingot");
         var screwdriver = createBasic(consumer, "screwdriver", stainlessSteel, "Multiblocks  of Madness", "Craft a Screwdriver to switch between Multiblock shapes" );
@@ -134,7 +135,7 @@ public class MIAdvancementsProvider extends FabricAdvancementProvider {
         if (parent != null) {
             advancementTask.parent(parent);
         } else {
-            background = new MIIdentifier("textures/blocks/fire_clay_bricks.png");
+            background = new MIIdentifier("textures/block/fire_clay_bricks.png");
         }
 
         advancementTask.display(

@@ -148,7 +148,7 @@ public class MIAdvancementsProvider extends FabricAdvancementProvider {
         if (parent != null) {
             advancementTask.parent(parent);
         } else {
-            background = new MIIdentifier("textures/blocks/fire_clay_bricks.png");
+            background = new MIIdentifier("textures/block/fire_clay_bricks.png");
         }
 
         advancementTask.display(

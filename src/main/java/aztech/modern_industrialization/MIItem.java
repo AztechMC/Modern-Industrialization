@@ -140,7 +140,7 @@ public final class MIItem {
             p -> new Item(p.rarity(Rarity.RARE).maxCount(1)));
 
     public static final ItemDefinition<Item> ITEM_SCREWDRIVER = itemHandheld("Screwdriver", "screwdriver");
-    public static final ItemDefinition<Item> ITEM_WRENCH = itemHandheld("Wrench", "wrench");
+    public static final ItemDefinition<Item> ITEM_WRENCH = itemNoModel("Wrench", "wrench");
 
     public static final ItemDefinition<JetpackItem> ITEM_DIESEL_JETPACK = item("Diesel Jetpack", "diesel_jetpack", JetpackItem::new)
             .withItemRegistrationEvent(
@@ -213,6 +213,11 @@ public final class MIItem {
 
     public static ItemDefinition<Item> itemHandheld(String englishName, String path) {
         return MIItem.itemHandheld(englishName, path, Item::new);
+    }
+
+    public static ItemDefinition<Item> itemNoModel(String englishName, String path) {
+        return MIItem.item(englishName, path, Item::new, (item, modelGenerator) -> {
+        });
     }
 
     public static <T extends Item> ItemDefinition<T> itemHandheld(String englishName, String path, Function<? super FabricItemSettings, T> ctor) {

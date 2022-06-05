@@ -141,6 +141,16 @@ public final class StandardRecipes {
                 .addTaggedPartInput(ROD, 1).addTaggedPartInput(GEAR, 2).addFluidInput(MIFluids.SOLDERING_ALLOY, 75)
                 .addPartOutput(DRILL_HEAD, 1);
 
+        new MIRecipeBuilder(ctx, MIMachineRecipeTypes.ASSEMBLER, "cable_synthetic_rubber")
+                .addTaggedPartInput(WIRE, 3)
+                .addFluidInput(MIFluids.SYNTHETIC_RUBBER, 30)
+                .addPartOutput(CABLE, 3);
+
+        new MIRecipeBuilder(ctx, MIMachineRecipeTypes.ASSEMBLER, "cable_styrene_rubber")
+                .addTaggedPartInput(WIRE, 3)
+                .addFluidInput(MIFluids.STYRENE_BUTADIENE_RUBBER, 6)
+                .addPartOutput(CABLE, 3);
+
         new MIRecipeBuilder(ctx, MIMachineRecipeTypes.ASSEMBLER, "fuel_rod", 16, 200)
                 .addItemInput("modern_industrialization:blastproof_alloy_curved_plate", 2)
                 .addItemInput(MIItem.ITEM_LARGE_MOTOR, 1).addItemInput(MIItem.ITEM_ROBOT_ARM, 2).addTaggedPartInput(ROD, 18)

@@ -27,6 +27,7 @@ import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.machines.init.MIMachineRecipeTypes;
 import aztech.modern_industrialization.recipe.json.MIRecipeJson;
 import aztech.modern_industrialization.recipe.json.SmithingRecipeJson;
+import java.util.Set;
 import java.util.function.Consumer;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.minecraft.core.Registry;
@@ -35,7 +36,8 @@ import net.minecraft.world.item.Item;
 
 public class SteelUpgradeProvider extends MIRecipesProvider {
 
-    private static final String[] WITH_UPGRADE = { "compressor", "macerator", "cutting_machine", "water_pump", "mixer" };
+    private static final String[] WITH_UPGRADE = { "compressor", "macerator", "cutting_machine", "water_pump", "mixer", "furnace", "boiler" };
+    private static final Set<String> NO_UNPACKER = Set.of("furnace", "boiler");
 
     public SteelUpgradeProvider(FabricDataGenerator dataGenerator) {
         super(dataGenerator);
@@ -57,9 +59,11 @@ public class SteelUpgradeProvider extends MIRecipesProvider {
                     .addItemInput(upgrade, 1).addItemOutput(steel, 1);
             recipePacker.offerTo(consumer, "upgrade/packer/steel/" + machine);
 
-            MIRecipeJson recipeUnpacker = MIRecipeJson.create(MIMachineRecipeTypes.UNPACKER, 2, 100).addItemOutput(bronze, 1)
-                    .addItemOutput(upgrade, 1).addItemInput(steel, 1);
-            recipeUnpacker.offerTo(consumer, "upgrade/unpacker/steel/" + machine);
+            if (!NO_UNPACKER.contains(machine)) {
+                MIRecipeJson recipeUnpacker = MIRecipeJson.create(MIMachineRecipeTypes.UNPACKER, 2, 100).addItemOutput(bronze, 1)
+                        .addItemOutput(upgrade, 1).addItemInput(steel, 1);
+                recipeUnpacker.offerTo(consumer, "upgrade/unpacker/steel/" + machine);
+            }
         }
 
     }

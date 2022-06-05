@@ -1,0 +1,13 @@
+{
+  "type": "modern_industrialization:macerator",
+  "eu": 2,
+  "duration": 800,
+  "item_inputs": {
+    "item": "minecraft:ancient_debris",
+    "amount": 1
+  },
+  "item_outputs": {
+    "item": "minecraft:netherite_scrap",
+    "amount": 2
+  }
+}

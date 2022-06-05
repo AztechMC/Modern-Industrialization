@@ -27,10 +27,7 @@ import static aztech.modern_industrialization.materials.part.NuclearFuelPart.Typ
 
 import aztech.modern_industrialization.materials.GemPart;
 import aztech.modern_industrialization.textures.MITextures;
-import aztech.modern_industrialization.textures.TextureHelper;
 import aztech.modern_industrialization.textures.coloramp.HotIngotColoramp;
-import com.mojang.blaze3d.platform.NativeImage;
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -58,21 +55,7 @@ public class MIParts {
 
     public static final RegularPart DRILL_HEAD = new RegularPart("Drill Head", "drill_head");
 
-    public static final RegularPart DRILL = new RegularPart("Drill", "drill").appendTextureRegister((mtm, partContext, part, itemPath) -> {
-        String template = "modern_industrialization:textures/materialsets/common/drill.png";
-        String templateOverlay = "modern_industrialization:textures/materialsets/common/mining_drill_overlay.png";
-        String texturePath = String.format("modern_industrialization:textures/item/%s.png", partContext.getMaterialName() + "_mining_drill");
-        try {
-            NativeImage image = mtm.getAssetAsTexture(template);
-            NativeImage overlay = mtm.getAssetAsTexture(templateOverlay);
-            TextureHelper.colorize(image, partContext.getColoramp());
-            mtm.addTexture(texturePath, TextureHelper.blend(image, overlay), true);
-            image.close();
-            overlay.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    });
+    public static final RegularPart DRILL = new RegularPart("Drill", "drill");
 
     public static final RegularPart DUST = new RegularPart("Dust", "dust");
     public static final RegularPart FINE_WIRE = new RegularPart("Fine Wire", "fine_wire");

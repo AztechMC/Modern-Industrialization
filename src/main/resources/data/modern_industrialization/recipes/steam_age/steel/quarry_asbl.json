@@ -16,7 +16,7 @@
       "tag": "c:steel_gears"
     },
     "P": {
-      "item": "minecraft:diamond_pickaxe"
+      "item": "modern_industrialization:invar_rotary_blade"
     },
     "C": {
       "item": "modern_industrialization:steel_machine_casing"

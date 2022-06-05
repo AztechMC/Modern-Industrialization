@@ -20,4 +20,8 @@ The link is on CurseForge.
 ## License
 The code is under the MIT license.
 
-The assets are all under CC0, most from GregoriusT and some from us.
+The assets are all under CC0. Many textures are original, and for many we adjusted the work of others. Thanks go to:
+- GregoriusT for the original GregTech textures,
+- Falkory for redoing many textures,
+- Spool for some of the crafting component textures,
+- VirtualLilith for the rotary blade texture.

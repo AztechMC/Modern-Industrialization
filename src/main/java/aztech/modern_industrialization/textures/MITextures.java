@@ -90,19 +90,6 @@ public final class MITextures {
                             mtm.getAssetAsTexture("modern_industrialization:textures/item/iridium_ingot.png"),
                             mtm.getAssetAsTexture("modern_industrialization:textures/item/blastproof_alloy_ingot.png")));
 
-            NativeImage copperDrill = mtm.getAssetAsTexture("modern_industrialization:textures/item/copper_mining_drill.png");
-            NativeImage steamHandler = mtm.getAssetAsTexture("modern_industrialization:textures/item/steam_mining_drill_handler.png");
-            mtm.addTexture("modern_industrialization:textures/item/steam_mining_drill.png", TextureHelper.blend(steamHandler, copperDrill), true);
-            copperDrill.close();
-            steamHandler.close();
-
-            NativeImage aluminumDrill = mtm.getAssetAsTexture("modern_industrialization:textures/item/aluminum_mining_drill.png");
-            NativeImage dieselHandler = mtm.getAssetAsTexture("modern_industrialization:textures/item/diesel_mining_drill_handler.png");
-            mtm.addTexture("modern_industrialization:textures/item/diesel_mining_drill.png", TextureHelper.blend(dieselHandler, aluminumDrill),
-                    true);
-            aluminumDrill.close();
-            dieselHandler.close();
-
             mtm.onEnd();
         } catch (Throwable exception) {
             ModernIndustrialization.LOGGER.error("Failed to generate texture pack.", exception);

@@ -23,6 +23,7 @@
  */
 package aztech.modern_industrialization.inventory;
 
+import aztech.modern_industrialization.util.Simulation;
 import io.netty.buffer.Unpooled;
 import java.util.List;
 import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
@@ -41,6 +42,7 @@ import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 
 /**
  * The ScreenHandler for a configurable inventory. The first slots must be the
@@ -143,14 +145,22 @@ public abstract class ConfigurableScreenHandler extends AbstractContainerMenu {
                     }
                 }
                 return;
-            } else if (slot instanceof ConfigurableItemStack.ConfigurableItemSlot) {
+            } else if (slot instanceof ConfigurableItemStack.ConfigurableItemSlot itemSlot) {
                 if (lockingMode) {
-                    if (actionType != ClickType.PICKUP) {
-                        return;
+                    switch (actionType) {
+                    case PICKUP -> {
+                        ConfigurableItemStack itemStack = itemSlot.getConfStack();
+                        itemStack.togglePlayerLock(getCarried().getItem());
                     }
-                    ConfigurableItemStack.ConfigurableItemSlot itemSlot = (ConfigurableItemStack.ConfigurableItemSlot) slot;
-                    ConfigurableItemStack itemStack = itemSlot.getConfStack();
-                    itemStack.togglePlayerLock(getCarried().getItem());
+                    case QUICK_MOVE -> {
+                        // Try to move everything to player inventory
+                        insertItem(itemSlot, 0, PLAYER_SLOTS, true);
+                        // Lock to air if empty
+                        if (slot.getItem().isEmpty()) {
+                            itemSlot.getConfStack().playerLock(Items.AIR, Simulation.ACT);
+                        }
+                    }
+                    }
                     return;
                 }
             }
@@ -159,26 +169,27 @@ public abstract class ConfigurableScreenHandler extends AbstractContainerMenu {
     }
 
     @Override
-    public ItemStack quickMoveStack(Player player, int slotIndex) {
+    public final ItemStack quickMoveStack(Player player, int slotIndex) {
+        handleShiftClick(player, slotIndex);
+        return ItemStack.EMPTY;
+    }
+
+    protected void handleShiftClick(Player player, int slotIndex) {
         Slot slot = this.slots.get(slotIndex);
 
-        if (slot != null && slot.hasItem() && slot.mayPickup(player)) {
+        if (slot.hasItem() && slot.mayPickup(player)) {
             if (slotIndex < PLAYER_SLOTS) { // from player to container inventory
                 if (!this.insertItem(slot, PLAYER_SLOTS, this.slots.size(), false)) {
                     if (slotIndex < 27) { // inside inventory
-                        if (!this.insertItem(slot, 27, 36, false)) { // toolbar
-                            return ItemStack.EMPTY;
-                        }
-                    } else if (!this.insertItem(slot, 0, 27, false)) {
-                        return ItemStack.EMPTY;
+                        this.insertItem(slot, 27, 36, false);// toolbar
+                    } else {
+                        this.insertItem(slot, 0, 27, false);
                     }
                 }
-            } else if (!this.insertItem(slot, 0, PLAYER_SLOTS, true)) { // from container inventory to player
-                return ItemStack.EMPTY;
+            } else { // from container inventory to player
+                this.insertItem(slot, 0, PLAYER_SLOTS, true);
             }
         }
-
-        return ItemStack.EMPTY;
     }
 
     @Deprecated

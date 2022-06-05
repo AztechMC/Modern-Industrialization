@@ -31,6 +31,7 @@ import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.blocks.OreBlock;
 import aztech.modern_industrialization.datagen.tag.TagsToGenerate;
 import aztech.modern_industrialization.definition.BlockDefinition;
+import aztech.modern_industrialization.items.SortOrder;
 import aztech.modern_industrialization.materials.set.MaterialOreSet;
 import aztech.modern_industrialization.textures.TextureHelper;
 import com.google.common.collect.ImmutableList;
@@ -90,16 +91,16 @@ public class OrePart extends UnbuildablePart<OrePart.OrePartParams> {
     @Override
     public BuildablePart of(OrePartParams oreParams) {
         return new RegularPart("", key)
-                .withRegister((registeringContext, partContext, part, itemPath, itemId, itemTag) -> {
+                .withRegister((partContext, part, itemPath, itemId, itemTag) -> {
 
                     Part mainPart = partContext.getMainPart();
                     String loot;
                     if (mainPart.equals(MIParts.INGOT)) {
-                        loot = registeringContext.getMaterialPart(MIParts.RAW_METAL).getItemId();
+                        loot = partContext.getMaterialPart(MIParts.RAW_METAL).getItemId();
                     } else if (mainPart.equals(MIParts.DUST)) {
-                        loot = registeringContext.getMaterialPart(MIParts.DUST).getItemId();
+                        loot = partContext.getMaterialPart(MIParts.DUST).getItemId();
                     } else if (mainPart.equals(MIParts.GEM)) {
-                        loot = registeringContext.getMaterialPart(MIParts.GEM).getItemId();
+                        loot = partContext.getMaterialPart(MIParts.GEM).getItemId();
                     } else {
                         throw new UnsupportedOperationException("Could not find matching main part.");
                     }
@@ -113,6 +114,7 @@ public class OrePart extends UnbuildablePart<OrePart.OrePartParams> {
                                     .withLootTable((block, lootGenerator) -> lootGenerator.add(block,
                                             BlockLoot.createOreDrop(block, Registry.ITEM.get(new ResourceLocation(loot)))))
                                     .addMoreTags(List.of(ConventionalBlockTags.ORES))
+                                    .sortOrder(SortOrder.ORES.and(partContext.getMaterialName()))
                                     .destroyTime(deepslate ? 4.5f : 3.0f).explosionResistance(3.0f)
                                     .sound(deepslate ? SoundType.DEEPSLATE : SoundType.STONE),
                             OreBlock.class);

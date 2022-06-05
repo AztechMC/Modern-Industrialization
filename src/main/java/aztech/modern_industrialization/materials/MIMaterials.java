@@ -382,7 +382,7 @@ public class MIMaterials {
                         new MaterialBuilder("Carbon", "carbon", DULL, 0x444444, SOFT).addParts(DUST, TINY_DUST, PLATE)
                                 .addParts(
                                         LARGE_PLATE
-                                                .withRegister((registeringContext, partContext, part, itemPath, itemId, itemTag) -> NuclearAbsorbable
+                                                .withRegister((partContext, part, itemPath, itemId, itemTag) -> NuclearAbsorbable
                                                         .of("Carbon Large Plate", itemPath, 2500, 2 * NuclearConstant.BASE_HEAT_CONDUCTION,
                                                                 INeutronBehaviour.of(NuclearConstant.ScatteringType.MEDIUM, NuclearConstant.CARBON,
                                                                         2),
@@ -486,8 +486,7 @@ public class MIMaterials {
                                 BATTERY)
                         .addParts(
                                 new RegularPart("Control Rod", FUEL_ROD.key)
-                                        .withRegister(
-                                                (registeringContext, partContext, part, itemPath1, itemId, itemTag) -> NuclearAbsorbable
+                                        .withRegister((partContext, part, itemPath1, itemId, itemTag) -> NuclearAbsorbable
                                                         .of("Cadmium Control Rod", itemPath1, 1900, 0.5 * NuclearConstant.BASE_HEAT_CONDUCTION,
                                                                 INeutronBehaviour.of(NuclearConstant.ScatteringType.HEAVY, NuclearConstant.CADMIUM,
                                                                         1),

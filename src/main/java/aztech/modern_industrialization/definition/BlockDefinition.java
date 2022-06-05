@@ -24,6 +24,7 @@
 package aztech.modern_industrialization.definition;
 
 import aztech.modern_industrialization.MIItem;
+import aztech.modern_industrialization.items.SortOrder;
 import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
@@ -51,7 +52,8 @@ public class BlockDefinition<T extends Block> extends Definition implements Item
             BiFunction<Block, FabricItemSettings, BlockItem> blockItemCtor,
             BiConsumer<Block, BlockModelGenerators> modelGenerator,
             BiConsumer<Block, BlockLoot> lootTableGenerator,
-            List<TagKey<Block>> tags) {
+            List<TagKey<Block>> tags,
+            SortOrder sortOrder) {
 
         super(englishName, id, false);
         this.block = block;
@@ -60,7 +62,8 @@ public class BlockDefinition<T extends Block> extends Definition implements Item
                 id,
                 s -> blockItemCtor.apply(block, s),
                 (item, itemModelGenerators) -> {
-                });
+                },
+                sortOrder);
         this.modelGenerator = modelGenerator;
         this.lootTableGenerator = lootTableGenerator;
         this.tags = tags;

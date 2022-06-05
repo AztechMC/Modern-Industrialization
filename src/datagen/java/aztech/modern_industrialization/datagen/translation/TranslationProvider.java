@@ -28,7 +28,6 @@ import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.compat.rei.machines.ReiMachineRecipes;
 import aztech.modern_industrialization.definition.Definition;
 import aztech.modern_industrialization.misc.tooltips.FaqTooltips;
-import aztech.modern_industrialization.pipes.MIPipes;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
@@ -89,10 +88,6 @@ public record TranslationProvider(FabricDataGenerator gen) implements DataProvid
 
         for (Definition definition : Definition.TRANSLATABLE_DEFINITION) {
             addTranslation(definition.getTranslationKey(), definition.getEnglishName());
-        }
-
-        for (var entry : MIPipes.TRANSLATION.entrySet()) {
-            addTranslation(entry.getKey(), entry.getValue());
         }
 
         for (var entry : FaqTooltips.TOOLTIPS_ENGLISH_TRANSLATION.entrySet()) {

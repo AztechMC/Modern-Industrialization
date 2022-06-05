@@ -56,7 +56,7 @@ public interface MaterialPart extends ItemLike {
         return Registry.ITEM.getOrThrow(ResourceKey.create(Registry.ITEM_REGISTRY, new ResourceLocation(getItemId())));
     }
 
-    default void register(MaterialBuilder.RegisteringContext context) {
+    default void register(MaterialBuilder.PartContext context) {
 
     }
 

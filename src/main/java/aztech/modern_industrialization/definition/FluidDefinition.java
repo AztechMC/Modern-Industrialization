@@ -27,6 +27,7 @@ import aztech.modern_industrialization.MIItem;
 import aztech.modern_industrialization.fluid.MIBucketItem;
 import aztech.modern_industrialization.fluid.MIFluid;
 import aztech.modern_industrialization.fluid.MIFluidBlock;
+import aztech.modern_industrialization.items.SortOrder;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariantAttributeHandler;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariantAttributes;
@@ -50,7 +51,7 @@ public class FluidDefinition extends Definition implements FluidLike {
         fluidBlock = new MIFluidBlock(color);
         fluid = new MIFluid(fluidBlock, color);
         bucketItemDefinition = MIItem.item(englishName + " Bucket",
-                "bucket_" + id, s -> new MIBucketItem(fluid, s));
+                "bucket_" + id, s -> new MIBucketItem(fluid, s), SortOrder.BUCKETS);
 
         fluid.setBucketItem(bucketItemDefinition.asItem());
 

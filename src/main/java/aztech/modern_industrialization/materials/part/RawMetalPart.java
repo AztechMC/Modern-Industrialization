@@ -26,6 +26,7 @@ package aztech.modern_industrialization.materials.part;
 import static aztech.modern_industrialization.materials.part.MIParts.RAW_METAL;
 import static aztech.modern_industrialization.materials.part.MIParts.RAW_METAL_BLOCK;
 
+import aztech.modern_industrialization.items.SortOrder;
 import aztech.modern_industrialization.materials.set.MaterialRawSet;
 import aztech.modern_industrialization.textures.TextureHelper;
 import com.mojang.blaze3d.platform.NativeImage;
@@ -46,7 +47,7 @@ public class RawMetalPart extends UnbuildablePart<MaterialRawSet> {
         RegularPart part = new RegularPart(isBlock ? "Block of Raw %s" : "Raw %s", key);
 
         if (isBlock) {
-            part = part.asBlock(5, 6, 1);
+            part = part.asBlock(SortOrder.RAW_ORE_BLOCKS, 5, 6, 1);
         }
 
         part = part.withTextureRegister((mtm, partContext, part1, itemPath) -> {

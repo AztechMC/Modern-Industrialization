@@ -147,7 +147,7 @@ public final class MaterialBuilder {
     }
 
     public final Material build(RegisteringEvent... events) {
-        RegisteringContext context = new RegisteringContext();
+        var context = new PartContext();
         for (MaterialPart part : partsMap.values()) {
             part.register(context);
             if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
@@ -195,14 +195,10 @@ public final class MaterialBuilder {
         public String getEnglishName() {
             return englishName;
         }
-    }
-
-    public class RegisteringContext {
 
         public MaterialPart getMaterialPart(Part part) {
             return partsMap.get(part.key);
         }
-
     }
 
     public class RecipeContext {
@@ -256,6 +252,6 @@ public final class MaterialBuilder {
     @FunctionalInterface
     public interface RegisteringEvent {
 
-        void onRegister(RegisteringContext context);
+        void onRegister(PartContext context);
     }
 }

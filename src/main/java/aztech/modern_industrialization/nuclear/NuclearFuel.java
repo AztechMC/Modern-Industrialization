@@ -25,6 +25,7 @@ package aztech.modern_industrialization.nuclear;
 
 import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.MIItem;
+import aztech.modern_industrialization.items.SortOrder;
 import aztech.modern_industrialization.util.TextHelper;
 import java.util.List;
 import java.util.Random;
@@ -86,7 +87,9 @@ public class NuclearFuel extends NuclearAbsorbable {
 
     public static NuclearFuel of(String englishName, String id, NuclearFuelParams params, INeutronBehaviour neutronBehaviour,
             String depletedVersionId) {
-        return MIItem.item(englishName, id, (settings) -> new NuclearFuel(settings.maxCount(1), params, neutronBehaviour, depletedVersionId))
+        return MIItem
+                .item(englishName, id, (settings) -> new NuclearFuel(settings.maxCount(1), params, neutronBehaviour, depletedVersionId),
+                        SortOrder.ITEMS_OTHER)
                 .asItem();
     }
 

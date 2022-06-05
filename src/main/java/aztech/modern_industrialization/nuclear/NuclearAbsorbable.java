@@ -25,6 +25,7 @@ package aztech.modern_industrialization.nuclear;
 
 import aztech.modern_industrialization.MIItem;
 import aztech.modern_industrialization.MIText;
+import aztech.modern_industrialization.items.SortOrder;
 import aztech.modern_industrialization.util.TextHelper;
 import com.google.common.base.Preconditions;
 import java.util.List;
@@ -58,7 +59,8 @@ public class NuclearAbsorbable extends NuclearComponentItem {
             INeutronBehaviour neutronBehaviour,
             int desintegrationMax) {
         return MIItem.item(englishName, id,
-                (settings) -> new NuclearAbsorbable(settings.maxCount(1), maxTemperature, heatConduction, neutronBehaviour, desintegrationMax))
+                (settings) -> new NuclearAbsorbable(settings.maxCount(1), maxTemperature, heatConduction, neutronBehaviour, desintegrationMax),
+                SortOrder.ITEMS_OTHER)
                 .asItem();
     }
 

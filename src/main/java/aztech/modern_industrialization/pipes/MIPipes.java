@@ -24,11 +24,12 @@
 package aztech.modern_industrialization.pipes;
 
 import aztech.modern_industrialization.MIIdentifier;
+import aztech.modern_industrialization.MIItem;
 import aztech.modern_industrialization.MITags;
-import aztech.modern_industrialization.ModernIndustrialization;
 import aztech.modern_industrialization.api.energy.CableTier;
 import aztech.modern_industrialization.datagen.tag.TagsToGenerate;
 import aztech.modern_industrialization.debug.DebugCommands;
+import aztech.modern_industrialization.items.SortOrder;
 import aztech.modern_industrialization.pipes.api.*;
 import aztech.modern_industrialization.pipes.electricity.ElectricityNetwork;
 import aztech.modern_industrialization.pipes.electricity.ElectricityNetworkData;
@@ -55,7 +56,6 @@ import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.inventory.MenuType;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.material.Material;
@@ -66,8 +66,6 @@ public class MIPipes {
     public static final Block BLOCK_PIPE = new PipeBlock(FabricBlockSettings.of(Material.METAL).destroyTime(2.0f));
     public static BlockEntityType<PipeBlockEntity> BLOCK_ENTITY_TYPE_PIPE;
     private final Map<PipeNetworkType, PipeItem> pipeItems = new HashMap<>();
-
-    public static final Map<String, String> TRANSLATION = new HashMap<>();
 
     public static final Map<PipeItem, CableTier> electricityPipeTier = new HashMap<>();
 
@@ -112,6 +110,8 @@ public class MIPipes {
 
         for (PipeColor color : PipeColor.values()) {
             registerFluidPipeType(color);
+        }
+        for (PipeColor color : PipeColor.values()) {
             registerItemPipeType(color);
         }
 
@@ -123,39 +123,36 @@ public class MIPipes {
         String pipeId = color.prefix + "fluid_pipe";
         PipeNetworkType type = PipeNetworkType.register(new MIIdentifier(pipeId), (id, data) -> new FluidNetwork(id, data, 81000),
                 FluidNetworkNode::new, color.color, true, FLUID_RENDERER);
-        PipeItem item = new PipeItem(new Item.Properties().tab(ModernIndustrialization.ITEM_GROUP), type, new FluidNetworkData(FluidVariant.blank()));
+        var itemDef = MIItem.itemNoModel(color.englishNamePrefix + "Fluid Pipe", pipeId,
+                prop -> new PipeItem(prop, type, new FluidNetworkData(FluidVariant.blank())), SortOrder.PIPES);
+        var item = itemDef.asItem();
         pipeItems.put(type, item);
-        Registry.register(Registry.ITEM, new MIIdentifier(pipeId), item);
         PIPE_MODEL_NAMES.add(new MIIdentifier("item/" + pipeId));
         TagsToGenerate.generateTag(MITags.FLUID_PIPES, item);
-        TRANSLATION.put(item.getDescriptionId(), color.englishNamePrefix + "Fluid Pipe");
     }
 
     private void registerItemPipeType(PipeColor color) {
         String pipeId = color.prefix + "item_pipe";
-
         PipeNetworkType type = PipeNetworkType.register(new MIIdentifier(pipeId), ItemNetwork::new, ItemNetworkNode::new, color.color, true,
                 ITEM_RENDERER);
-        PipeItem item = new PipeItem(new Item.Properties().tab(ModernIndustrialization.ITEM_GROUP), type, new ItemNetworkData());
+        var itemDef = MIItem.itemNoModel(color.englishNamePrefix + "Item Pipe", pipeId, prop -> new PipeItem(prop, type, new ItemNetworkData()),
+                SortOrder.PIPES);
+        var item = itemDef.asItem();
         pipeItems.put(type, item);
-        Registry.register(Registry.ITEM, new MIIdentifier(pipeId), item);
         PIPE_MODEL_NAMES.add(new MIIdentifier("item/" + pipeId));
         TagsToGenerate.generateTag(MITags.ITEM_PIPES, item);
-        TRANSLATION.put(item.getDescriptionId(), color.englishNamePrefix + "Item Pipe");
     }
 
     public void registerCableType(String englishName, String name, int color, CableTier tier) {
-
         String cableId = name + "_cable";
         PipeNetworkType type = PipeNetworkType.register(new MIIdentifier(cableId), (id, data) -> new ElectricityNetwork(id, data, tier),
                 ElectricityNetworkNode::new, color, false, ELECTRICITY_RENDERER);
-        PipeItem item = new PipeItem(new Item.Properties().tab(ModernIndustrialization.ITEM_GROUP), type, new ElectricityNetworkData());
+        var itemDef = MIItem.itemNoModel(englishName, cableId, prop -> new PipeItem(prop, type, new ElectricityNetworkData()),
+                SortOrder.CABLES.and(tier));
+        var item = itemDef.asItem();
         pipeItems.put(type, item);
         electricityPipeTier.put(item, tier);
-        Registry.register(Registry.ITEM, new MIIdentifier(cableId), item);
         PIPE_MODEL_NAMES.add(new MIIdentifier("item/" + cableId));
-        TRANSLATION.put(item.getDescriptionId(), englishName);
-
     }
 
     public PipeItem getPipeItem(PipeNetworkType type) {

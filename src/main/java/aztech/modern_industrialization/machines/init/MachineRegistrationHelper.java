@@ -26,6 +26,7 @@ package aztech.modern_industrialization.machines.init;
 import aztech.modern_industrialization.MIBlock;
 import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.definition.BlockDefinition;
+import aztech.modern_industrialization.items.SortOrder;
 import aztech.modern_industrialization.machines.BEP;
 import aztech.modern_industrialization.machines.MachineBlock;
 import aztech.modern_industrialization.machines.models.MachineModels;
@@ -60,7 +61,7 @@ public class MachineRegistrationHelper {
         BlockDefinition<MachineBlock> blockDefinition = MIBlock.block(
                 englishName,
                 id,
-                MIBlock.BlockDefinitionParams.of().withBlockConstructor(
+                MIBlock.BlockDefinitionParams.of().sortOrder(SortOrder.MACHINES).withBlockConstructor(
                         (s) -> new MachineBlock(ctor, s)).noModel().isValidSpawn(MobSpawning.NO_SPAWN),
                 MachineBlock.class);
 

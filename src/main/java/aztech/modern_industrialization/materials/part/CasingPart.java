@@ -23,6 +23,7 @@
  */
 package aztech.modern_industrialization.materials.part;
 
+import aztech.modern_industrialization.items.SortOrder;
 import aztech.modern_industrialization.materials.MaterialBuilder;
 import aztech.modern_industrialization.textures.MITextures;
 import com.mojang.blaze3d.platform.NativeImage;
@@ -42,7 +43,7 @@ public class CasingPart extends Part implements BuildablePart {
     }
 
     public BuildablePart of(String englishNameFormatter, String path, float resistance) {
-        RegularPart regPart = new RegularPart(englishNameFormatter, this.key).asBlock(5, resistance, 1)
+        RegularPart regPart = new RegularPart(englishNameFormatter, this.key).asBlock(SortOrder.CASINGS, 5, resistance, 1)
                 .withTextureRegister((mtm, partContext, part, itemPath) -> {
                     try {
                         NativeImage image = MITextures.generateTexture(mtm, part.key, partContext.getMaterialSet(), partContext.getColoramp());

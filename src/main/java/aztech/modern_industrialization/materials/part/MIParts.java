@@ -25,6 +25,7 @@ package aztech.modern_industrialization.materials.part;
 
 import static aztech.modern_industrialization.materials.part.NuclearFuelPart.Type.*;
 
+import aztech.modern_industrialization.items.SortOrder;
 import aztech.modern_industrialization.materials.GemPart;
 import aztech.modern_industrialization.textures.MITextures;
 import aztech.modern_industrialization.textures.coloramp.HotIngotColoramp;
@@ -41,7 +42,7 @@ public class MIParts {
     public static final BlockPart BLOCK = new BlockPart();
     public static final RegularPart BOLT = new RegularPart("Bolt", "bolt");
     public static final CablePart CABLE = new CablePart();
-    public static final RegularPart COIL = new RegularPart("Coil", "coil").asColumnBlock();
+    public static final RegularPart COIL = new RegularPart("Coil", "coil").asColumnBlock(SortOrder.COILS);
     public static final RegularPart CRUSHED_DUST = new RegularPart("Crushed Dust", "crushed_dust");
     public static final RegularPart CURVED_PLATE = new RegularPart("Curved Plate", "curved_plate");
     public static final RegularPart DOUBLE_INGOT = new RegularPart("Double Ingot", "double_ingot")

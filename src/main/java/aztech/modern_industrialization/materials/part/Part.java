@@ -23,11 +23,13 @@
  */
 package aztech.modern_industrialization.materials.part;
 
+import org.jetbrains.annotations.NotNull;
+
 /*
 Key to be type safe in the material builder
 
  */
-public class Part {
+public class Part implements Comparable<Part> {
 
     public final String key;
 
@@ -51,5 +53,10 @@ public class Part {
     @Override
     public String toString() {
         return key;
+    }
+
+    @Override
+    public int compareTo(@NotNull Part o) {
+        return key.compareTo(o.key);
     }
 }

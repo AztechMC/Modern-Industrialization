@@ -23,6 +23,7 @@
  */
 package aztech.modern_industrialization.definition;
 
+import aztech.modern_industrialization.items.SortOrder;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import net.minecraft.data.models.ItemModelGenerators;
@@ -33,16 +34,18 @@ import net.minecraft.world.level.ItemLike;
 public class ItemDefinition<T extends Item> extends Definition implements ItemLike {
 
     private final T item;
+    public final SortOrder sortOrder;
 
     public final BiConsumer<Item, ItemModelGenerators> modelGenerator;
     private Consumer<Item> onItemRegistrationEvent;
 
     public ItemDefinition(String englishName, String id, T item,
-            BiConsumer<Item, ItemModelGenerators> modelGenerator) {
+            BiConsumer<Item, ItemModelGenerators> modelGenerator, SortOrder sortOrder) {
         super(englishName, id);
         this.item = item;
         this.modelGenerator = modelGenerator;
         this.onItemRegistrationEvent = null;
+        this.sortOrder = sortOrder;
     }
 
     public ItemDefinition<T> withItemRegistrationEvent(Consumer<Item> onItemRegistrationEvent) {

@@ -29,7 +29,6 @@ import aztech.modern_industrialization.api.WrenchableBlockEntity;
 import aztech.modern_industrialization.blocks.forgehammer.ForgeHammerScreenHandler;
 import aztech.modern_industrialization.definition.BlockDefinition;
 import aztech.modern_industrialization.definition.FluidDefinition;
-import aztech.modern_industrialization.definition.ItemDefinition;
 import aztech.modern_industrialization.inventory.ConfigurableInventoryPacketHandlers;
 import aztech.modern_industrialization.inventory.ConfigurableInventoryPackets;
 import aztech.modern_industrialization.items.armor.ArmorPackets;
@@ -45,6 +44,7 @@ import aztech.modern_industrialization.misc.guidebook.GuidebookEvents;
 import aztech.modern_industrialization.nuclear.NuclearItem;
 import aztech.modern_industrialization.pipes.MIPipes;
 import aztech.modern_industrialization.proxy.CommonProxy;
+import java.util.Comparator;
 import java.util.Map;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.client.itemgroup.FabricItemGroupBuilder;
@@ -100,6 +100,7 @@ public class ModernIndustrialization implements ModInitializer {
         MultiblockHatches.init();
         MultiblockMachines.init();
         NuclearItem.init();
+        MIPipes.INSTANCE.setup();
         setupFluids();
         setupItems();
         setupBlocks();
@@ -110,8 +111,6 @@ public class ModernIndustrialization implements ModInitializer {
         setupFuels();
         MIArmorEffects.init();
         setupWrench();
-
-        MIPipes.INSTANCE.setup();
 
         ChunkEventListeners.init();
         ServerEntityWorldChangeEvents.AFTER_PLAYER_CHANGE_WORLD.register((player, oldWorld, newWorld) -> MIKeyMap.clear(player));
@@ -130,10 +129,10 @@ public class ModernIndustrialization implements ModInitializer {
     }
 
     private void setupItems() {
-        for (Map.Entry<ResourceLocation, ItemDefinition<?>> entry : MIItem.ITEMS.entrySet()) {
+        MIItem.ITEMS.entrySet().stream().sorted(Comparator.comparing(e -> e.getValue().sortOrder)).forEach(entry -> {
             Registry.register(Registry.ITEM, entry.getKey(), entry.getValue().asItem());
             entry.getValue().onRegister();
-        }
+        });
     }
 
     private void setupBlocks() {

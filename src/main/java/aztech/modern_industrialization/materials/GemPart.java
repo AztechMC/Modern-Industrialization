@@ -23,7 +23,6 @@
  */
 package aztech.modern_industrialization.materials;
 
-import aztech.modern_industrialization.MIItem;
 import aztech.modern_industrialization.datagen.tag.TagsToGenerate;
 import aztech.modern_industrialization.materials.part.*;
 import aztech.modern_industrialization.textures.TextureHelper;
@@ -43,8 +42,8 @@ public class GemPart extends Part implements BuildablePart {
 
     @Override
     public MaterialPart build(MaterialBuilder.PartContext ctx) {
-        return new RegularPart("", "gem").withRegister((registeringContext, partContext, part, itemPath, itemId, itemTag) -> {
-            var item = MIItem.item(partContext.getEnglishName(), itemPath).asItem();
+        return new RegularPart("", "gem").withRegister((partContext, part, itemPath, itemId, itemTag) -> {
+            var item = RegularPart.createSimpleItem(partContext.getEnglishName(), itemPath, partContext, part);
             TagsToGenerate.generateTag("c:" + itemPath, item.asItem());
         })
                 .withTextureRegister((mtm, partContext, part, itemPath) -> {

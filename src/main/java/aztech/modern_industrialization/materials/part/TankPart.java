@@ -29,6 +29,7 @@ import aztech.modern_industrialization.MITags;
 import aztech.modern_industrialization.blocks.storage.tank.*;
 import aztech.modern_industrialization.datagen.tag.TagsToGenerate;
 import aztech.modern_industrialization.definition.BlockDefinition;
+import aztech.modern_industrialization.items.SortOrder;
 import aztech.modern_industrialization.proxy.CommonProxy;
 import java.util.Optional;
 import java.util.function.BiConsumer;
@@ -76,8 +77,8 @@ public class TankPart extends UnbuildablePart<Long> {
         long capacity = FluidConstants.BUCKET * bucketCapacity;
 
         return new RegularPart(englishNameFormatter, key)
-                .asBlock()
-                .withRegister((registeringContext, partContext, part, itemPath, itemId, itemTag) -> {
+                .asBlock(SortOrder.TANKS)
+                .withRegister((partContext, part, itemPath, itemId, itemTag) -> {
                     EntityBlock factory = (pos, state) -> new TankBlockEntity(bet.getValue(), pos, state, capacity);
 
                     String englishName = RegularPart.getEnglishName(englishNameFormatter, partContext.getEnglishName());
@@ -89,7 +90,8 @@ public class TankPart extends UnbuildablePart<Long> {
                                     s -> new TankBlock(factory)).withBlockItemConstructor(
                                             (b, s) -> new TankItem(b, capacity))
                                     .withModel(MODEL_GENERATOR)
-                                    .noLootTable());
+                                    .noLootTable()
+                                    .sortOrder(SortOrder.TANKS.and(partContext.getMaterialName())));
 
                     TankBlock block = blockDefinition.asBlock();
                     TankItem item = (TankItem) blockDefinition.asItem();

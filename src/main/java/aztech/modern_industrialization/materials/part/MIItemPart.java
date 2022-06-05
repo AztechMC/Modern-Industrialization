@@ -24,6 +24,7 @@
 package aztech.modern_industrialization.materials.part;
 
 import aztech.modern_industrialization.MIItem;
+import aztech.modern_industrialization.items.SortOrder;
 import aztech.modern_industrialization.materials.MaterialBuilder;
 
 public class MIItemPart {
@@ -49,8 +50,8 @@ public class MIItemPart {
             }
 
             @Override
-            public void register(MaterialBuilder.RegisteringContext context) {
-                MIItem.item(englishName, itemPath);
+            public void register(MaterialBuilder.PartContext context) {
+                MIItem.item(englishName, itemPath, SortOrder.MATERIALS.and(context.getMaterialName()));
             }
         };
     }

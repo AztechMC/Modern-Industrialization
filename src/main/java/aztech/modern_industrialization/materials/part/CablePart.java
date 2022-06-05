@@ -35,7 +35,7 @@ public class CablePart extends UnbuildablePart<CableTier> {
     @Override
     public BuildablePart of(CableTier tier) {
         return new RegularPart("Cable", this.key).withoutTextureRegister()
-                .withRegister((registeringContext, partContext, part, itemPath, itemId, itemTag) -> MIPipes.INSTANCE
+                .withRegister((partContext, part, itemPath, itemId, itemTag) -> MIPipes.INSTANCE
                         .registerCableType(
                                 partContext.getEnglishName() + " Cable",
                                 partContext.getMaterialName(), partContext.getColoramp().getMeanRGB() | 0xff000000, tier));

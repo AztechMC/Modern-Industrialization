@@ -32,6 +32,7 @@ import aztech.modern_industrialization.blocks.creativetank.CreativeTankBlock;
 import aztech.modern_industrialization.blocks.creativetank.CreativeTankItem;
 import aztech.modern_industrialization.blocks.forgehammer.ForgeHammerBlock;
 import aztech.modern_industrialization.definition.BlockDefinition;
+import aztech.modern_industrialization.items.SortOrder;
 import aztech.modern_industrialization.materials.part.TankPart;
 import java.util.*;
 import java.util.function.BiConsumer;
@@ -57,33 +58,29 @@ public class MIBlock {
 
     public static SortedMap<ResourceLocation, BlockDefinition<?>> BLOCKS = new TreeMap<>();
 
-    // hull
+    // @formatter:off
+    // Forge hammer
+    public static final BlockDefinition<ForgeHammerBlock> FORGE_HAMMER = block("Forge Hammer", "forge_hammer",
+            BlockDefinitionParams.of().withBlockConstructor(ForgeHammerBlock::new).sortOrder(SortOrder.FORGE_HAMMER).noModel().destroyTime(6.0f).explosionResistance(1200)
+                    .sound(SoundType.ANVIL),
+            ForgeHammerBlock.class);
+
+    // Bronze stuff
+    public static final BlockDefinition<TrashCanBlock> TRASH_CAN = block("Automatic Trash Can", "trash_can",
+            BlockDefinitionParams.of().withBlockConstructor(TrashCanBlock::new).destroyTime(6.0f).explosionResistance(1200),
+            TrashCanBlock.class)
+            .withBlockRegistrationEvent(TrashCanBlock::onRegister);
+
+    // Other
     public static final BlockDefinition<Block> BASIC_MACHINE_HULL = block("Basic Machine Hull", "basic_machine_hull");
     public static final BlockDefinition<Block> ADVANCED_MACHINE_HULL = block("Advanced Machine Hull", "advanced_machine_hull");
     public static final BlockDefinition<Block> TURBO_MACHINE_HULL = block("Turbo Machine Hull", "turbo_machine_hull");
     public static final BlockDefinition<Block> HIGHLY_ADVANCED_MACHINE_HULL = block("Highly Advanced Machine Hull", "highly_advanced_machine_hull");
-    public static final BlockDefinition<Block> QUANTUM_MACHINE_HULL = block("Quantum Machine Hull", "quantum_machine_hull",
-            BlockDefinitionParams.of().resistance(6000f));
+    public static final BlockDefinition<Block> QUANTUM_MACHINE_HULL = block("Quantum Machine Hull", "quantum_machine_hull", BlockDefinitionParams.of().resistance(6000f));
 
-    // Multiblock
     public static final BlockDefinition<Block> FUSION_CHAMBER = block("Fusion Chamber", "fusion_chamber");
-
-    // other
     public static final BlockDefinition<Block> INDUSTRIAL_TNT = blockExplosive("Industrial TNT", "industrial_tnt");
     public static final BlockDefinition<Block> NUKE = blockExplosive("Nuke", "nuke");
-
-    public static final BlockDefinition<Block> BLOCK_FIRE_CLAY_BRICKS = block("Fire Clay Bricks", "fire_clay_bricks",
-            BlockDefinitionParams.of(STONE_MATERIAL).destroyTime(2.0f).explosionResistance(6.0f).requiresCorrectToolForDrops());
-
-    public static final BlockDefinition<ForgeHammerBlock> FORGE_HAMMER = block("Forge Hammer", "forge_hammer",
-            BlockDefinitionParams.of().withBlockConstructor(ForgeHammerBlock::new).noModel().destroyTime(6.0f).explosionResistance(1200)
-                    .sound(SoundType.ANVIL),
-            ForgeHammerBlock.class);
-
-    public static final BlockDefinition<TrashCanBlock> TRASH_CAN = block("Automatic Trash Can", "trash_can",
-            BlockDefinitionParams.of().withBlockConstructor(TrashCanBlock::new).destroyTime(6.0f).explosionResistance(1200),
-            TrashCanBlock.class)
-                    .withBlockRegistrationEvent(TrashCanBlock::onRegister);
 
     public static final BlockDefinition<CreativeTankBlock> CREATIVE_TANK_BLOCK = block(
             "Creative Tank",
@@ -93,12 +90,17 @@ public class MIBlock {
                     .withModel(TankPart.MODEL_GENERATOR).noLootTable().clearTags()
                     .noOcclusion(),
             CreativeTankBlock.class
-
     ).withBlockRegistrationEvent(
             (block, item) -> FluidStorage.ITEM.registerForItems(CreativeTankItem.TankItemStorage::new, item));
 
     public static final BlockDefinition<CreativeStorageUnitBlock> CREATIVE_STORAGE_UNIT = block("Creative Storage Unit",
             "creative_storage_unit", BlockDefinitionParams.of().withBlockConstructor(CreativeStorageUnitBlock::new));
+
+    // Materials
+    public static final BlockDefinition<Block> BLOCK_FIRE_CLAY_BRICKS = block("Fire Clay Bricks", "fire_clay_bricks",
+            BlockDefinitionParams.of(STONE_MATERIAL).sortOrder(SortOrder.MATERIALS.and("fire_clay")).destroyTime(2.0f).explosionResistance(6.0f).requiresCorrectToolForDrops());
+
+    // @formatter:on
 
     private static <T extends Block> BlockDefinition<T> block(
             String englishName,
@@ -107,8 +109,10 @@ public class MIBlock {
             BiFunction<Block, FabricItemSettings, BlockItem> blockItemCtor,
             BiConsumer<Block, BlockModelGenerators> modelGenerator,
             BiConsumer<Block, BlockLoot> lootTableGenerator,
-            List<TagKey<Block>> tags) {
-        BlockDefinition<T> definition = new BlockDefinition<>(englishName, id, block, blockItemCtor, modelGenerator, lootTableGenerator, tags);
+            List<TagKey<Block>> tags,
+            SortOrder sortOrder) {
+        BlockDefinition<T> definition = new BlockDefinition<>(englishName, id, block, blockItemCtor, modelGenerator, lootTableGenerator, tags,
+                sortOrder);
         if (BLOCKS.put(definition.getId(), definition) != null) {
             throw new IllegalArgumentException("Block id already taken : " + definition.getId());
         }
@@ -124,7 +128,8 @@ public class MIBlock {
                 params.blockItemCtor,
                 params.modelGenerator,
                 params.lootTableGenerator,
-                params.tags);
+                params.tags,
+                params.sortOrder);
     }
 
     public static BlockDefinition<Block> block(String englishName, String id,
@@ -158,6 +163,7 @@ public class MIBlock {
         public BiConsumer<Block, BlockModelGenerators> modelGenerator;
         public BiConsumer<Block, BlockLoot> lootTableGenerator;
         public final ArrayList<TagKey<Block>> tags = new ArrayList<>();
+        public SortOrder sortOrder = SortOrder.BLOCKS_OTHERS;
 
         public Function<BlockBehaviour.Properties, T> ctor;
         public BiFunction<Block, FabricItemSettings, BlockItem> blockItemCtor;
@@ -239,6 +245,10 @@ public class MIBlock {
             return this;
         }
 
+        public BlockDefinitionParams<T> sortOrder(SortOrder sortOrder) {
+            this.sortOrder = sortOrder;
+            return this;
+        }
     }
 
 }

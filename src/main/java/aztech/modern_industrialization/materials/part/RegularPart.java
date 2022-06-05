@@ -26,6 +26,7 @@ package aztech.modern_industrialization.materials.part;
 import aztech.modern_industrialization.MIBlock;
 import aztech.modern_industrialization.MIItem;
 import aztech.modern_industrialization.datagen.tag.TagsToGenerate;
+import aztech.modern_industrialization.items.SortOrder;
 import aztech.modern_industrialization.materials.MaterialBuilder;
 import aztech.modern_industrialization.textures.MITextures;
 import aztech.modern_industrialization.textures.TextureHelper;
@@ -66,11 +67,10 @@ public class RegularPart extends Part implements BuildablePart {
     }
 
     public RegularPart(String englishNameFormatter, String key) {
-        this(englishNameFormatter, key, (registeringContext, partContext, part, itemPath, itemId, itemTag) -> {
-
-            var item = MIItem.item(getEnglishName(englishNameFormatter, partContext.getEnglishName()), itemPath).asItem();
+        this(englishNameFormatter, key, (partContext, part, itemPath, itemId, itemTag) -> {
+            var item = createSimpleItem(getEnglishName(englishNameFormatter, partContext.getEnglishName()), itemPath, partContext, part);
             setupTag(part, itemTag, item);
-        }, (registeringContext, partContext, part, itemPath, itemId, itemTag) -> {
+        }, (partContext, part, itemPath, itemId, itemTag) -> {
         }, (mtm, partContext, part, itemPath) -> MITextures.generateItemPartTexture(mtm, part.key, partContext.getMaterialSet(), itemPath, false,
                 partContext.getColoramp()));
 
@@ -84,6 +84,10 @@ public class RegularPart extends Part implements BuildablePart {
         this.textureRegister = textureRegister;
     }
 
+    public static Item createSimpleItem(String englishName, String itemPath, MaterialBuilder.PartContext partContext, Part part) {
+        return MIItem.item(englishName, itemPath, SortOrder.MATERIALS.and(partContext.getMaterialName()).and(part)).asItem();
+    }
+
     private static void setupTag(Part part, String itemTag, Item item) {
         // item tag
         // items whose path are overridden (such as fire clay ingot -> brick) are not
@@ -95,8 +99,8 @@ public class RegularPart extends Part implements BuildablePart {
         }
     }
 
-    public RegularPart asBlock(float hardness, float resistance, int miningLevel) {
-        return new RegularPart(englishNameFormatter, key, (registeringContext, partContext, part, itemPath, itemId, itemTag) -> {
+    public RegularPart asBlock(SortOrder sortOrder, float hardness, float resistance, int miningLevel) {
+        return new RegularPart(englishNameFormatter, key, (partContext, part, itemPath, itemId, itemTag) -> {
 
             var blockDefinition = MIBlock.block(
                     getEnglishName(englishNameFormatter, partContext.getEnglishName()),
@@ -104,6 +108,7 @@ public class RegularPart extends Part implements BuildablePart {
                     MIBlock.BlockDefinitionParams.of()
                             .clearTags()
                             .addMoreTags(TagHelper.getMiningLevelTag(miningLevel))
+                            .sortOrder(sortOrder.and(partContext.getMaterialName()))
                             .destroyTime(hardness)
                             .explosionResistance(resistance));
 
@@ -113,8 +118,8 @@ public class RegularPart extends Part implements BuildablePart {
                 itemPath, true, partContext.getColoramp()));
     }
 
-    public RegularPart asColumnBlock() {
-        return new RegularPart(englishNameFormatter, key, (registeringContext, partContext, part, itemPath, itemId, itemTag) -> {
+    public RegularPart asColumnBlock(SortOrder sortOrder) {
+        return new RegularPart(englishNameFormatter, key, (partContext, part, itemPath, itemId, itemTag) -> {
 
             var blockDefinition = MIBlock.block(
                     getEnglishName(englishNameFormatter, partContext.getEnglishName()),
@@ -122,6 +127,7 @@ public class RegularPart extends Part implements BuildablePart {
                     MIBlock.BlockDefinitionParams.of()
                             .clearTags()
                             .addMoreTags(TagHelper.getMiningLevelTag(1))
+                            .sortOrder(sortOrder.and(partContext.getMaterialName()))
                             .withModel(TexturedModel.COLUMN)
                             .destroyTime(5.0f)
                             .explosionResistance(6.0f)
@@ -154,8 +160,8 @@ public class RegularPart extends Part implements BuildablePart {
         });
     }
 
-    public RegularPart asBlock() {
-        return asBlock(5, 6, 1);
+    public RegularPart asBlock(SortOrder sortOrder) {
+        return asBlock(sortOrder, 5, 6, 1);
     }
 
     public RegularPart withRegister(Register register) {
@@ -173,9 +179,9 @@ public class RegularPart extends Part implements BuildablePart {
     public RegularPart appendRegister(Register register) {
         return new RegularPart(englishNameFormatter, key,
 
-                (registeringContext, partContext, part, itemPath, itemId, itemTag) -> {
-                    RegularPart.this.register.register(registeringContext, partContext, part, itemPath, itemId, itemTag);
-                    register.register(registeringContext, partContext, part, itemPath, itemId, itemTag);
+                (partContext, part, itemPath, itemId, itemTag) -> {
+                    RegularPart.this.register.register(partContext, part, itemPath, itemId, itemTag);
+                    register.register(partContext, part, itemPath, itemId, itemTag);
                 }, clientRegister, this.textureRegister);
     }
 
@@ -210,13 +216,13 @@ public class RegularPart extends Part implements BuildablePart {
             }
 
             @Override
-            public void register(MaterialBuilder.RegisteringContext registeringContext) {
-                register.register(registeringContext, partContext, part, itemPath, itemId, itemTag);
+            public void register(MaterialBuilder.PartContext context) {
+                register.register(partContext, part, itemPath, itemId, itemTag);
 
             }
 
             public void registerClient() {
-                clientRegister.register(null, partContext, part, itemPath, itemId, itemTag);
+                clientRegister.register(partContext, part, itemPath, itemId, itemTag);
             }
 
             @Override
@@ -280,8 +286,7 @@ public class RegularPart extends Part implements BuildablePart {
     @FunctionalInterface
     public interface Register {
 
-        void register(MaterialBuilder.RegisteringContext registeringContext, MaterialBuilder.PartContext partContext, Part part, String itemPath,
-                String itemId, String itemTag);
+        void register(MaterialBuilder.PartContext partContext, Part part, String itemPath, String itemId, String itemTag);
 
     }
 

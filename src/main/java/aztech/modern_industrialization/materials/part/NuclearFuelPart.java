@@ -24,6 +24,7 @@
 package aztech.modern_industrialization.materials.part;
 
 import aztech.modern_industrialization.MIItem;
+import aztech.modern_industrialization.items.SortOrder;
 import aztech.modern_industrialization.nuclear.INeutronBehaviour;
 import aztech.modern_industrialization.nuclear.NuclearConstant;
 import aztech.modern_industrialization.nuclear.NuclearFuel;
@@ -72,9 +73,9 @@ public class NuclearFuelPart extends UnbuildablePart<NuclearConstant.IsotopeFuel
         };
 
         return new RegularPart(englishNameFormatter,
-                key).withRegister((registeringContext, partContext, part, itemPath, itemId, itemTag) -> {
+                key).withRegister((partContext, part, itemPath, itemId, itemTag) -> {
                     if (Type.DEPLETED == type) {
-                        MIItem.item(RegularPart.getEnglishName(englishNameFormatter, partContext.getEnglishName()), itemPath);
+                        MIItem.item(RegularPart.getEnglishName(englishNameFormatter, partContext.getEnglishName()), itemPath, SortOrder.ITEMS_OTHER);
                     } else {
                         NuclearFuel.of(RegularPart.getEnglishName(englishNameFormatter, partContext.getEnglishName()), itemPath, fuelParams,
                                 neutronBehaviour, partContext.getMaterialName() + "_fuel_rod_depleted");

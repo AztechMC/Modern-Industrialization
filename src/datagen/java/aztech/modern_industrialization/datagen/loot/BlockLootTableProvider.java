@@ -24,14 +24,11 @@
 package aztech.modern_industrialization.datagen.loot;
 
 import aztech.modern_industrialization.MIBlock;
+import aztech.modern_industrialization.MIFluids;
 import aztech.modern_industrialization.definition.BlockDefinition;
-import java.util.Map;
-import java.util.function.BiConsumer;
+import aztech.modern_industrialization.pipes.MIPipes;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricBlockLootTableProvider;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.level.storage.loot.BuiltInLootTables;
-import net.minecraft.world.level.storage.loot.LootTable;
 
 public class BlockLootTableProvider extends FabricBlockLootTableProvider {
 
@@ -44,23 +41,16 @@ public class BlockLootTableProvider extends FabricBlockLootTableProvider {
         for (BlockDefinition<?> blockDefinition : MIBlock.BLOCKS.values()) {
             if (blockDefinition.lootTableGenerator != null) {
                 blockDefinition.lootTableGenerator.accept(blockDefinition.block, this);
+            } else {
+                excludeFromStrictValidation(blockDefinition.block);
             }
         }
-    }
 
-    // Override to disable strict validation
-    @Override
-    public void accept(BiConsumer<ResourceLocation, LootTable.Builder> biConsumer) {
-        generateBlockLootTables();
-
-        for (Map.Entry<ResourceLocation, LootTable.Builder> entry : map.entrySet()) {
-            ResourceLocation identifier = entry.getKey();
-
-            if (identifier.equals(BuiltInLootTables.EMPTY)) {
-                continue;
-            }
-
-            biConsumer.accept(identifier, entry.getValue());
+        // Loot is dynamic
+        excludeFromStrictValidation(MIPipes.BLOCK_PIPE);
+        // No drops for these
+        for (var fluid : MIFluids.FLUIDS.values()) {
+            excludeFromStrictValidation(fluid.fluidBlock);
         }
     }
 }

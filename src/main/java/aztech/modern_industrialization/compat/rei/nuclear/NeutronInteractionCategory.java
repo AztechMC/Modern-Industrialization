@@ -205,11 +205,11 @@ public class NeutronInteractionCategory implements DisplayCategory<NeutronIntera
         } else if (display.nuclearComponent.getVariant() instanceof FluidVariant fluidVariant) {
 
             widgets.add(Widgets.createSlot(new Point(centerX - 35, centerY))
-                    .entry(ReiUtil.createFluidEntryStack(fluidVariant.getFluid(), 1, probability)));
+                    .entry(ReiUtil.createFluidEntryStack(fluidVariant.getFluid(), 1, probability, true)));
             FluidVariant product = (FluidVariant) display.nuclearComponent.getNeutronProduct();
 
             widgets.add(Widgets.createSlot(new Point(centerX + 35, centerY))
-                    .entry(ReiUtil.createFluidEntryStack(product.getFluid(), amount, probability)));
+                    .entry(ReiUtil.createFluidEntryStack(product.getFluid(), amount, probability, false)));
         }
 
         Component title = MIText.NeutronAbsorption.text();

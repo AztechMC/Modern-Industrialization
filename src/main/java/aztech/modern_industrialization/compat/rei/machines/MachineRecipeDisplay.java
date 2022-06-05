@@ -57,11 +57,11 @@ public class MachineRecipeDisplay implements Display {
 
     public Stream<EntryIngredient> getItemInputs() {
         return recipe.itemInputs.stream().map(i -> ReiUtil.createInputEntries(i)
-                .map(e -> e.setting(EntryStack.Settings.TOOLTIP_APPEND_EXTRA, ReiUtil.getProbabilitySetting(i.probability))));
+                .map(e -> e.setting(EntryStack.Settings.TOOLTIP_APPEND_EXTRA, ReiUtil.getProbabilitySetting(i.probability, true))));
     }
 
     public Stream<EntryIngredient> getFluidInputs() {
-        return recipe.fluidInputs.stream().map(i -> EntryIngredient.of(ReiUtil.createFluidEntryStack(i.fluid, i.amount, i.probability)));
+        return recipe.fluidInputs.stream().map(i -> EntryIngredient.of(ReiUtil.createFluidEntryStack(i.fluid, i.amount, i.probability, true)));
     }
 
     @Override
@@ -70,11 +70,11 @@ public class MachineRecipeDisplay implements Display {
     }
 
     public Stream<EntryIngredient> getItemOutputs() {
-        return recipe.itemOutputs.stream().map(i -> EntryIngredient.of(ReiUtil.createItemEntryStack(i.item, i.amount, i.probability)));
+        return recipe.itemOutputs.stream().map(i -> EntryIngredient.of(ReiUtil.createItemEntryStack(i.item, i.amount, i.probability, false)));
     }
 
     public Stream<EntryIngredient> getFluidOutputs() {
-        return recipe.fluidOutputs.stream().map(i -> EntryIngredient.of(ReiUtil.createFluidEntryStack(i.fluid, i.amount, i.probability)));
+        return recipe.fluidOutputs.stream().map(i -> EntryIngredient.of(ReiUtil.createFluidEntryStack(i.fluid, i.amount, i.probability, false)));
     }
 
     @Override

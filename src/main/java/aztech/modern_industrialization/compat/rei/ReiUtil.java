@@ -55,13 +55,14 @@ public class ReiUtil {
         return EntryIngredient.of(input.getInputItems().stream().map(i -> EntryStacks.of(new ItemStack(i, input.amount))).toList());
     }
 
-    public static EntryStack<?> createItemEntryStack(Item item, int amount, float probability) {
-        return EntryStacks.of(new ItemStack(item, amount)).setting(EntryStack.Settings.TOOLTIP_APPEND_EXTRA, getProbabilitySetting(probability));
+    public static EntryStack<?> createItemEntryStack(Item item, int amount, float probability, boolean input) {
+        return EntryStacks.of(new ItemStack(item, amount)).setting(EntryStack.Settings.TOOLTIP_APPEND_EXTRA,
+                getProbabilitySetting(probability, input));
     }
 
-    public static EntryStack<?> createFluidEntryStack(Fluid fluid, long amount, float probability) {
+    public static EntryStack<?> createFluidEntryStack(Fluid fluid, long amount, float probability, boolean input) {
         @Nullable
-        Component probabilityText = getProbabilityTooltip(probability);
+        Component probabilityText = getProbabilityTooltip(probability, input);
         return EntryStacks.of(fluid, amount).setting(EntryStack.Settings.TOOLTIP_PROCESSOR, (stack, oldTooltip) -> {
             List<Component> tooltip = new ArrayList<>();
             tooltip.add(FluidVariantAttributes.getName(FluidVariant.of(fluid)));
@@ -74,24 +75,29 @@ public class ReiUtil {
     }
 
     @Nullable
-    public static Component getProbabilityTooltip(float probability) {
+    public static Component getProbabilityTooltip(float probability, boolean input) {
         if (probability == 1) {
             return null;
         } else {
             MutableComponent text;
             if (probability == 0) {
-                text = MIText.ProbabilityZero.text();
+                text = MIText.NotConsumed.text();
             } else {
-                text = MIText.Probability.text(PROBABILITY_FORMAT.format(probability * 100));
+                if (input) {
+                    text = MIText.ChanceConsumption.text(PROBABILITY_FORMAT.format(probability * 100));
+                } else {
+                    text = MIText.ChanceProduction.text(PROBABILITY_FORMAT.format(probability * 100));
+                }
+
             }
             text.setStyle(TextHelper.YELLOW);
             return text;
         }
     }
 
-    public static Function<EntryStack<?>, List<Component>> getProbabilitySetting(float probability) {
+    public static Function<EntryStack<?>, List<Component>> getProbabilitySetting(float probability, boolean input) {
         @Nullable
-        Component tooltip = getProbabilityTooltip(probability);
+        Component tooltip = getProbabilityTooltip(probability, input);
         return es -> tooltip == null ? List.of() : List.of(tooltip);
     }
 

@@ -60,7 +60,7 @@ public class MultiblockRecipeCategory implements DisplayCategory<MultiblockRecip
 
     @Override
     public Renderer getIcon() {
-        return EntryStacks.of(MIItem.ITEM_WRENCH);
+        return EntryStacks.of(MIItem.WRENCH);
     }
 
     @Override

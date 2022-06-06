@@ -23,20 +23,23 @@
  */
 package aztech.modern_industrialization.api.pipes.item;
 
-import net.fabricmc.fabric.api.lookup.v1.item.ItemApiLookup;
-import net.minecraft.resources.ResourceLocation;
+import aztech.modern_industrialization.MIItem;
+import java.util.IdentityHashMap;
+import java.util.Map;
+import net.minecraft.world.item.Item;
 
 /**
  * A speed upgrade for an item pipe
  */
-@FunctionalInterface
-public interface SpeedUpgrade {
-    /**
-     * @return By how much this increases the number of transferred items every 3
-     *         seconds.
-     */
-    long value();
+public class SpeedUpgrade {
 
-    ItemApiLookup<SpeedUpgrade, Void> LOOKUP = ItemApiLookup.get(new ResourceLocation("modern_industrialization:item_pipe_speed_upgrade"),
-            SpeedUpgrade.class, Void.class);
+    public final static Map<Item, Long> UPGRADES = new IdentityHashMap<>();
+
+    static {
+        UPGRADES.put(MIItem.MOTOR.asItem(), 2L);
+        UPGRADES.put(MIItem.LARGE_MOTOR.asItem(), 8L);
+        UPGRADES.put(MIItem.ADVANCED_MOTOR.asItem(), 32L);
+        UPGRADES.put(MIItem.LARGE_ADVANCED_MOTOR.asItem(), 64L);
+    }
+
 }

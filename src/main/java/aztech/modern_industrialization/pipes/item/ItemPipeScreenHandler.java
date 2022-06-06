@@ -228,7 +228,7 @@ public class ItemPipeScreenHandler extends PipeScreenHandler {
 
         @Override
         public boolean mayPlace(ItemStack stack) {
-            return SpeedUpgrade.LOOKUP.find(stack, null) != null;
+            return SpeedUpgrade.UPGRADES.getOrDefault(stack.getItem(), 0L) != 0L;
         }
 
         @Override

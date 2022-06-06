@@ -25,41 +25,37 @@ package aztech.modern_industrialization.misc.tooltips;
 
 import aztech.modern_industrialization.MIBlock;
 import aztech.modern_industrialization.MIIdentifier;
-import aztech.modern_industrialization.MIText;
-import aztech.modern_industrialization.util.TextHelper;
+import aztech.modern_industrialization.MITooltips;
 import com.google.common.base.Preconditions;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
-import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.Registry;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.ItemLike;
 
 public class FaqTooltips {
 
-    private static final Map<ResourceLocation, String[]> TOOLTIPS = new HashMap<>();
-
     public static final Map<String, String> TOOLTIPS_ENGLISH_TRANSLATION = new HashMap<>();
 
-    private static void add(String item, String... englishTooltipsLine) {
+    private static void add(String itemId, String... englishTooltipsLine) {
         int lineCount = englishTooltipsLine.length;
 
         Preconditions.checkArgument(lineCount > 0);
 
-        String[] translationKey = IntStream.range(0, lineCount).mapToObj(l -> "item_tooltip.modern_industrialization." + item + "_" + l)
+        String[] translationKey = IntStream.range(0, lineCount).mapToObj(l -> "item_tooltip.modern_industrialization." + itemId + "_" + l)
                 .toArray(String[]::new);
-
-        if (TOOLTIPS.put(new MIIdentifier(item), translationKey) != null) {
-            throw new IllegalStateException("Duplicate tooltip registration.");
-        }
 
         for (int i = 0; i < lineCount; i++) {
             TOOLTIPS_ENGLISH_TRANSLATION.put(translationKey[i], englishTooltipsLine[i]);
         }
+
+        MITooltips.TooltipAttachment.ofMultiline(
+                item -> item == Registry.ITEM.get(new MIIdentifier(itemId)),
+                itemStack -> Arrays.stream(translationKey).map(s -> new TranslatableComponent(s).withStyle(MITooltips.DEFAULT_STYLE))
+                        .collect(Collectors.toList()));
     }
 
     private static void add(ItemLike item, String... englishTooltipsLine) {
@@ -68,26 +64,6 @@ public class FaqTooltips {
 
     public static void init() {
         setupAllTooltips();
-
-        ItemTooltipCallback.EVENT.register((stack, context, lines) -> {
-            ResourceLocation itemId = Registry.ITEM.getKey(stack.getItem());
-            String[] tooltipTranslationKey = TOOLTIPS.get(itemId);
-
-            if (tooltipTranslationKey != null) {
-                lines.add(new TextComponent(""));
-                if (Screen.hasShiftDown()) {
-                    lines.add(MIText.AdditionalTips.text().setStyle(TextHelper.FAQ_HEADER_TOOLTIP));
-                    for (String translationKey : tooltipTranslationKey) {
-                        TranslatableComponent text = new TranslatableComponent(translationKey);
-                        text.setStyle(TextHelper.FAQ_TOOLTIP);
-                        lines.add(text);
-                    }
-                } else {
-                    lines.add(
-                            MIText.AdditionalTipsShift.text().setStyle(TextHelper.FAQ_HEADER_TOOLTIP));
-                }
-            }
-        });
     }
 
     private static void setupAllTooltips() {

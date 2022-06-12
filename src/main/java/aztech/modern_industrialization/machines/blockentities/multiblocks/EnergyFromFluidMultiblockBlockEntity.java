@@ -27,7 +27,6 @@ import aztech.modern_industrialization.api.ScrewdriverableBlockEntity;
 import aztech.modern_industrialization.compat.megane.holder.EnergyListComponentHolder;
 import aztech.modern_industrialization.inventory.MIInventory;
 import aztech.modern_industrialization.machines.BEP;
-import aztech.modern_industrialization.machines.blockentities.FluidConsumerHolder;
 import aztech.modern_industrialization.machines.components.*;
 import aztech.modern_industrialization.machines.gui.MachineGuiParameters;
 import aztech.modern_industrialization.machines.models.MachineModelClientData;
@@ -39,13 +38,14 @@ import aztech.modern_industrialization.util.Simulation;
 import aztech.modern_industrialization.util.Tickable;
 import java.util.ArrayList;
 import java.util.List;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.Nullable;
 
 public class EnergyFromFluidMultiblockBlockEntity extends MultiblockMachineBlockEntity implements Tickable, ScrewdriverableBlockEntity,
-        EnergyListComponentHolder, FluidConsumerHolder {
+        EnergyListComponentHolder, TooltipProvider {
 
     public EnergyFromFluidMultiblockBlockEntity(BEP bep, String name, ShapeTemplate shapeTemplate,
             FluidConsumerComponent fluidConsumer) {
@@ -162,7 +162,7 @@ public class EnergyFromFluidMultiblockBlockEntity extends MultiblockMachineBlock
     }
 
     @Override
-    public FluidConsumerComponent getFluidConsumer() {
-        return fluidConsumer;
+    public List<Component> getTooltips() {
+        return fluidConsumer.getTooltips();
     }
 }

@@ -26,9 +26,9 @@ package aztech.modern_industrialization;
 import aztech.modern_industrialization.api.pipes.item.SpeedUpgrade;
 import aztech.modern_industrialization.blocks.OreBlock;
 import aztech.modern_industrialization.machines.MachineBlock;
-import aztech.modern_industrialization.machines.blockentities.FluidConsumerHolder;
 import aztech.modern_industrialization.machines.blockentities.multiblocks.ElectricBlastFurnaceBlockEntity;
 import aztech.modern_industrialization.machines.components.LubricantHelper;
+import aztech.modern_industrialization.machines.components.TooltipProvider;
 import aztech.modern_industrialization.machines.components.UpgradeComponent;
 import aztech.modern_industrialization.nuclear.NuclearAbsorbable;
 import aztech.modern_industrialization.nuclear.NuclearFuel;
@@ -155,11 +155,10 @@ public class MITooltips {
 
     public static final TooltipAttachment GUNPOWDER = TooltipAttachment.of(Items.GUNPOWDER, MIText.GunpowderUpgrade);
 
-    public static final TooltipAttachment FLUID_CONSUMER = TooltipAttachment.ofMultiline(
+    public static final TooltipAttachment MACHINE_TOOLTIPS = TooltipAttachment.ofMultiline(
             (item) -> item instanceof BlockItem blockItem && blockItem.getBlock() instanceof MachineBlock machineBlock &&
-                    machineBlock.BLOCK_ENTITY_INSTANCE instanceof FluidConsumerHolder,
-            (itemStack) -> ((FluidConsumerHolder) ((MachineBlock) ((BlockItem) itemStack.getItem()).getBlock()).BLOCK_ENTITY_INSTANCE)
-                    .getFluidConsumer().createInformationTooltips());
+                    machineBlock.BLOCK_ENTITY_INSTANCE instanceof TooltipProvider,
+            (itemStack) -> ((TooltipProvider) ((MachineBlock) ((BlockItem) itemStack.getItem()).getBlock()).BLOCK_ENTITY_INSTANCE).getTooltips());
 
     public static final TooltipAttachment NUCLEAR = TooltipAttachment.ofMultiline(
             item -> item.asItem() instanceof NuclearAbsorbable,

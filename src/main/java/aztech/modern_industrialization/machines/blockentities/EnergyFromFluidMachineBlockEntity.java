@@ -33,10 +33,7 @@ import aztech.modern_industrialization.inventory.MIInventory;
 import aztech.modern_industrialization.inventory.SlotPositions;
 import aztech.modern_industrialization.machines.BEP;
 import aztech.modern_industrialization.machines.MachineBlockEntity;
-import aztech.modern_industrialization.machines.components.EnergyComponent;
-import aztech.modern_industrialization.machines.components.FluidConsumerComponent;
-import aztech.modern_industrialization.machines.components.IsActiveComponent;
-import aztech.modern_industrialization.machines.components.OrientationComponent;
+import aztech.modern_industrialization.machines.components.*;
 import aztech.modern_industrialization.machines.components.sync.EnergyBar;
 import aztech.modern_industrialization.machines.gui.MachineGuiParameters;
 import aztech.modern_industrialization.machines.helper.EnergyHelper;
@@ -46,10 +43,12 @@ import aztech.modern_industrialization.util.Tickable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.material.Fluid;
 
-public class EnergyFromFluidMachineBlockEntity extends MachineBlockEntity implements Tickable, EnergyComponentHolder, FluidConsumerHolder {
+public class EnergyFromFluidMachineBlockEntity extends MachineBlockEntity implements Tickable, EnergyComponentHolder,
+        TooltipProvider {
 
     private final CableTier outputTier;
     private final EnergyExtractable extractable;
@@ -149,7 +148,7 @@ public class EnergyFromFluidMachineBlockEntity extends MachineBlockEntity implem
     }
 
     @Override
-    public FluidConsumerComponent getFluidConsumer() {
-        return fluidConsumer;
+    public List<Component> getTooltips() {
+        return fluidConsumer.getTooltips();
     }
 }

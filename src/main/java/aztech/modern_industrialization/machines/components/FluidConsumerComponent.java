@@ -42,7 +42,7 @@ import org.jetbrains.annotations.NotNull;
 /**
  * A component that turns fluids into energy.
  */
-public class FluidConsumerComponent implements IComponent.ServerOnly {
+public class FluidConsumerComponent implements IComponent.ServerOnly, TooltipProvider {
     private long euBuffer = 0;
     /**
      * The maximum EU that can be produced by one production operation, to limit the
@@ -125,7 +125,7 @@ public class FluidConsumerComponent implements IComponent.ServerOnly {
         }
     }
 
-    public List<Component> createInformationTooltips() {
+    public List<Component> getTooltips() {
 
         List<Component> returnList = new ArrayList<>();
 

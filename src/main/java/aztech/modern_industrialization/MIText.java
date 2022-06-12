@@ -102,6 +102,7 @@ public enum MIText {
     GravichestplateEnabled("Gravichestplate enabled!"),
     GunpowderTime("Overclock : %s"),
     GunpowderUpgrade("MI : double Steam Machines speed for 2 minutes"),
+    GunpowderUpgradeMachine("Use Gunpowder to double the speed for 2 minutes"),
     HeatConduction("Heat Conduction %s / °Ct"),
     ItemAutoExtractOff("Item auto-extraction disabled"),
     ItemAutoExtractOn("Item auto-extraction enabled"),

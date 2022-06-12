@@ -21,11 +21,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.machines.blockentities;
+package aztech.modern_industrialization.machines.components;
 
-import aztech.modern_industrialization.machines.components.FluidConsumerComponent;
+import java.util.List;
+import net.minecraft.network.chat.Component;
 
-public interface FluidConsumerHolder {
+public interface TooltipProvider {
 
-    FluidConsumerComponent getFluidConsumer();
+    List<Component> getTooltips();
 }

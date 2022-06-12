@@ -27,6 +27,7 @@ import aztech.modern_industrialization.api.ScrewdriverableBlockEntity;
 import aztech.modern_industrialization.compat.megane.holder.EnergyListComponentHolder;
 import aztech.modern_industrialization.inventory.MIInventory;
 import aztech.modern_industrialization.machines.BEP;
+import aztech.modern_industrialization.machines.blockentities.FluidConsumerHolder;
 import aztech.modern_industrialization.machines.components.*;
 import aztech.modern_industrialization.machines.gui.MachineGuiParameters;
 import aztech.modern_industrialization.machines.models.MachineModelClientData;
@@ -38,26 +39,23 @@ import aztech.modern_industrialization.util.Simulation;
 import aztech.modern_industrialization.util.Tickable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Predicate;
-import java.util.function.ToLongFunction;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.Nullable;
 
 public class EnergyFromFluidMultiblockBlockEntity extends MultiblockMachineBlockEntity implements Tickable, ScrewdriverableBlockEntity,
-        EnergyListComponentHolder {
+        EnergyListComponentHolder, FluidConsumerHolder {
 
-    public EnergyFromFluidMultiblockBlockEntity(BEP bep, String name, ShapeTemplate shapeTemplate, Predicate<Fluid> acceptedFluid,
-            ToLongFunction<Fluid> fluidEUperMb, long maxEnergyOutput) {
+    public EnergyFromFluidMultiblockBlockEntity(BEP bep, String name, ShapeTemplate shapeTemplate,
+            FluidConsumerComponent fluidConsumer) {
 
         super(bep, new MachineGuiParameters.Builder(name, false).backgroundHeight(128).build(), new OrientationComponent.Params(false, false, false));
 
         this.activeShape = new ActiveShapeComponent(new ShapeTemplate[] { shapeTemplate });
         this.inventory = new MultiblockInventoryComponent();
         this.isActiveComponent = new IsActiveComponent();
-        this.fluidConsumer = new FluidConsumerComponent(maxEnergyOutput, acceptedFluid, fluidEUperMb);
+        this.fluidConsumer = fluidConsumer;
 
         this.registerComponents(activeShape, isActiveComponent, fluidConsumer);
     }
@@ -161,5 +159,10 @@ public class EnergyFromFluidMultiblockBlockEntity extends MultiblockMachineBlock
             shapeMatcher.unregisterListeners(level);
             shapeMatcher = null;
         }
+    }
+
+    @Override
+    public FluidConsumerComponent getFluidConsumer() {
+        return fluidConsumer;
     }
 }

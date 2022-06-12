@@ -25,6 +25,8 @@ package aztech.modern_industrialization;
 
 import aztech.modern_industrialization.api.pipes.item.SpeedUpgrade;
 import aztech.modern_industrialization.blocks.OreBlock;
+import aztech.modern_industrialization.machines.MachineBlock;
+import aztech.modern_industrialization.machines.blockentities.FluidConsumerHolder;
 import aztech.modern_industrialization.machines.blockentities.multiblocks.ElectricBlastFurnaceBlockEntity;
 import aztech.modern_industrialization.machines.components.LubricantHelper;
 import aztech.modern_industrialization.machines.components.UpgradeComponent;
@@ -39,6 +41,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariantAttributes;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
@@ -46,6 +50,7 @@ import net.minecraft.network.chat.TextColor;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.world.item.*;
 import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.level.material.Fluid;
 
 @SuppressWarnings("unused")
 public class MITooltips {
@@ -81,6 +86,8 @@ public class MITooltips {
         }
     }
 
+    // Parser
+
     public static final Parser<Object> DEFAULT_PARSER = new Parser<>() {
         @Override
         Component parse(Object o) {
@@ -91,6 +98,11 @@ public class MITooltips {
                     break;
                 }
             }
+
+            if (o instanceof Fluid f) {
+                return FLUID_PARSER.parse(f);
+            }
+
             return new TextComponent(String.valueOf(o)).withStyle(style);
         }
     };
@@ -110,6 +122,15 @@ public class MITooltips {
             return MIText.Eu.text(amount.digit(), amount.unit()).withStyle(NUMBER_TEXT);
         }
     };
+
+    public static final Parser<Fluid> FLUID_PARSER = new Parser<>() {
+        @Override
+        Component parse(Fluid fluid) {
+            return FluidVariantAttributes.getName(FluidVariant.of(fluid));
+        }
+    };
+
+    // Tooltips
 
     public static final TooltipAttachment CABLES = TooltipAttachment.of(
             (item) -> item instanceof PipeItem pipe && MIPipes.electricityPipeTier.containsKey(pipe),
@@ -133,6 +154,12 @@ public class MITooltips {
             new Line(MIText.LubricantTooltip).arg(LubricantHelper.mbPerTick));
 
     public static final TooltipAttachment GUNPOWDER = TooltipAttachment.of(Items.GUNPOWDER, MIText.GunpowderUpgrade);
+
+    public static final TooltipAttachment FLUID_CONSUMER = TooltipAttachment.ofMultiline(
+            (item) -> item instanceof BlockItem blockItem && blockItem.getBlock() instanceof MachineBlock machineBlock &&
+                    machineBlock.BLOCK_ENTITY_INSTANCE instanceof FluidConsumerHolder,
+            (itemStack) -> ((FluidConsumerHolder) ((MachineBlock) ((BlockItem) itemStack.getItem()).getBlock()).BLOCK_ENTITY_INSTANCE)
+                    .getFluidConsumer().createInformationTooltips());
 
     public static final TooltipAttachment NUCLEAR = TooltipAttachment.ofMultiline(
             item -> item.asItem() instanceof NuclearAbsorbable,

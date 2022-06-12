@@ -29,6 +29,7 @@ import aztech.modern_industrialization.definition.BlockDefinition;
 import aztech.modern_industrialization.items.SortOrder;
 import aztech.modern_industrialization.machines.BEP;
 import aztech.modern_industrialization.machines.MachineBlock;
+import aztech.modern_industrialization.machines.MachineBlockEntity;
 import aztech.modern_industrialization.machines.models.MachineModels;
 import aztech.modern_industrialization.util.MobSpawning;
 import java.util.function.BiFunction;
@@ -40,7 +41,6 @@ import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 
@@ -53,10 +53,11 @@ public class MachineRegistrationHelper {
      * @param extraRegistrators A list of BET consumer used for API registration.
      */
     @SafeVarargs
-    public static BlockEntityType<?> registerMachine(String englishName, String id, Function<BEP, BlockEntity> factory,
+    public static BlockEntityType<?> registerMachine(String englishName, String id,
+            Function<BEP, MachineBlockEntity> factory,
             Consumer<BlockEntityType<?>>... extraRegistrators) {
         BlockEntityType<?>[] bet = new BlockEntityType[1];
-        BiFunction<BlockPos, BlockState, BlockEntity> ctor = (pos, state) -> factory.apply(new BEP(bet[0], pos, state));
+        BiFunction<BlockPos, BlockState, MachineBlockEntity> ctor = (pos, state) -> factory.apply(new BEP(bet[0], pos, state));
 
         BlockDefinition<MachineBlock> blockDefinition = MIBlock.block(
                 englishName,

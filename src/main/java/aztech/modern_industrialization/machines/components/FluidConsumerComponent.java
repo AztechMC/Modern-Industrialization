@@ -23,13 +23,21 @@
  */
 package aztech.modern_industrialization.machines.components;
 
+import aztech.modern_industrialization.MIText;
+import aztech.modern_industrialization.MITooltips;
+import aztech.modern_industrialization.api.FluidFuelRegistry;
 import aztech.modern_industrialization.inventory.ConfigurableFluidStack;
 import aztech.modern_industrialization.machines.IComponent;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.PriorityQueue;
 import java.util.function.Predicate;
 import java.util.function.ToLongFunction;
+import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.material.Fluid;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * A component that turns fluids into energy.
@@ -44,10 +52,29 @@ public class FluidConsumerComponent implements IComponent.ServerOnly {
     private final Predicate<Fluid> acceptedFluid;
     private final ToLongFunction<Fluid> fluidEUperMb;
 
-    public FluidConsumerComponent(long maxEuProduction, Predicate<Fluid> acceptedFluid, ToLongFunction<Fluid> fluidEUperMb) {
+    private final boolean fluidFuelsOnly;
+
+    private FluidConsumerComponent(long maxEuProduction, Predicate<Fluid> acceptedFluid, ToLongFunction<Fluid> fluidEUperMb,
+            boolean fluidFuelsOnly) {
+        this.fluidFuelsOnly = fluidFuelsOnly;
         this.maxEuProduction = maxEuProduction;
         this.acceptedFluid = acceptedFluid;
         this.fluidEUperMb = fluidEUperMb;
+    }
+
+    public static FluidConsumerComponent of(long maxEuProduction, Predicate<Fluid> acceptedFluid, ToLongFunction<Fluid> fluidEUperMb) {
+        return new FluidConsumerComponent(maxEuProduction, acceptedFluid, fluidEUperMb, false);
+    }
+
+    public static FluidConsumerComponent of(long maxEuProduction, Fluid acceptedFluid, long fluidEUperMb) {
+        return of(maxEuProduction, (Fluid f) -> (f == acceptedFluid), (Fluid f) -> (fluidEUperMb));
+    }
+
+    public static FluidConsumerComponent ofFluidFuels(long maxEuProduction) {
+        return new FluidConsumerComponent(maxEuProduction,
+                (Fluid f) -> (FluidFuelRegistry.getEu(f) != 0),
+                FluidFuelRegistry::getEu,
+                true);
     }
 
     @Override
@@ -89,6 +116,53 @@ public class FluidConsumerComponent implements IComponent.ServerOnly {
             }
         }
         return euProduced;
+    }
+
+    private record InformationEntry(long euPerMb, Fluid fluid) implements Comparable<InformationEntry> {
+        @Override
+        public int compareTo(@NotNull FluidConsumerComponent.InformationEntry o) {
+            return Long.compare(euPerMb, o.euPerMb);
+        }
+    }
+
+    public List<Component> createInformationTooltips() {
+
+        List<Component> returnList = new ArrayList<>();
+
+        returnList.add(new MITooltips.Line(MIText.MaxEuProduction).arg(
+                this.maxEuProduction,
+                MITooltips.EU_PER_TICK_PARSER).build());
+
+        if (this.fluidFuelsOnly) {
+            returnList.add(new MITooltips.Line(MIText.AcceptAnyFluidFuels).build());
+
+        } else {
+            PriorityQueue<InformationEntry> informationEntries = new PriorityQueue<>();
+
+            for (Fluid f : Registry.FLUID) {
+                if (this.acceptedFluid.test(f)) {
+                    informationEntries.add(
+                            new InformationEntry(this.fluidEUperMb.applyAsLong(f), f));
+                }
+            }
+
+            if (informationEntries.size() == 0) {
+                throw new IllegalStateException("No fluids accepted for FluidConsumerComponent");
+            } else if (informationEntries.size() == 1) {
+                InformationEntry entry = informationEntries.poll();
+                returnList.add(new MITooltips.Line(MIText.AcceptSingleFluid)
+                        .arg(entry.fluid).arg(entry.euPerMb, MITooltips.EU_PARSER).build());
+            } else {
+                returnList.add(new MITooltips.Line(MIText.AcceptFollowingFluid).build());
+                for (InformationEntry entry : informationEntries) {
+                    returnList.add(
+                            new MITooltips.Line(MIText.AcceptFollowingFluidEntry)
+                                    .arg(entry.fluid).arg(entry.euPerMb, MITooltips.EU_PARSER).build());
+                }
+            }
+
+        }
+        return returnList;
     }
 
 }

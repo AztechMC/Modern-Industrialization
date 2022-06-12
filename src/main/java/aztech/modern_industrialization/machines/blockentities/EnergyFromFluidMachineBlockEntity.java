@@ -46,12 +46,10 @@ import aztech.modern_industrialization.util.Tickable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.function.Predicate;
-import java.util.function.ToLongFunction;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.material.Fluid;
 
-public class EnergyFromFluidMachineBlockEntity extends MachineBlockEntity implements Tickable, EnergyComponentHolder {
+public class EnergyFromFluidMachineBlockEntity extends MachineBlockEntity implements Tickable, EnergyComponentHolder, FluidConsumerHolder {
 
     private final CableTier outputTier;
     private final EnergyExtractable extractable;
@@ -59,10 +57,11 @@ public class EnergyFromFluidMachineBlockEntity extends MachineBlockEntity implem
     protected final MIInventory inventory;
     protected EnergyComponent energy;
     protected IsActiveComponent isActiveComponent;
+
     protected FluidConsumerComponent fluidConsumer;
 
     private EnergyFromFluidMachineBlockEntity(BEP bep, String name, CableTier outputTier, long energyCapacity, long fluidCapacity,
-            long maxEnergyOutput, Predicate<Fluid> acceptedFluid, ToLongFunction<Fluid> fluidEUperMb, Fluid locked, boolean lockButton) {
+            FluidConsumerComponent fluidConsumer, Fluid locked, boolean lockButton) {
         super(bep, new MachineGuiParameters.Builder(name, lockButton).build(), new OrientationComponent.Params(true, false, false));
         this.outputTier = outputTier;
         this.energy = new EnergyComponent(energyCapacity);
@@ -81,7 +80,7 @@ public class EnergyFromFluidMachineBlockEntity extends MachineBlockEntity implem
             fluidStacks = Collections.singletonList(ConfigurableFluidStack.lockedInputSlot(81 * fluidCapacity, locked));
         }
 
-        fluidConsumer = new FluidConsumerComponent(maxEnergyOutput, acceptedFluid, fluidEUperMb);
+        this.fluidConsumer = fluidConsumer;
         SlotPositions fluidPositions = new SlotPositions.Builder().addSlot(25, 38).build();
         inventory = new MIInventory(itemStacks, fluidStacks, itemPositions, fluidPositions);
 
@@ -90,13 +89,18 @@ public class EnergyFromFluidMachineBlockEntity extends MachineBlockEntity implem
     }
 
     public EnergyFromFluidMachineBlockEntity(BEP bep, String name, CableTier outputTier, long energyCapacity, long fluidCapacity,
-            long maxEnergyOutput, Predicate<Fluid> acceptedFluid, ToLongFunction<Fluid> fluidEUperMb) {
-        this(bep, name, outputTier, energyCapacity, fluidCapacity, maxEnergyOutput, acceptedFluid, fluidEUperMb, null, true);
+            FluidConsumerComponent fluidConsumer) {
+        this(bep, name, outputTier, energyCapacity, fluidCapacity, fluidConsumer, null, true);
     }
 
     public EnergyFromFluidMachineBlockEntity(BEP bep, String name, CableTier outputTier, long energyCapacity, long fluidCapacity,
             long maxEnergyOutput, Fluid acceptedFluid, long fluidEUperMb) {
-        this(bep, name, outputTier, energyCapacity, fluidCapacity, maxEnergyOutput, (Fluid f) -> (f == acceptedFluid), (Fluid f) -> (fluidEUperMb),
+
+        this(bep, name, outputTier, energyCapacity, fluidCapacity,
+                FluidConsumerComponent.of(
+                        maxEnergyOutput,
+                        acceptedFluid,
+                        fluidEUperMb),
                 acceptedFluid, false);
     }
 
@@ -142,5 +146,10 @@ public class EnergyFromFluidMachineBlockEntity extends MachineBlockEntity implem
                 return null;
             }
         }, bet);
+    }
+
+    @Override
+    public FluidConsumerComponent getFluidConsumer() {
+        return fluidConsumer;
     }
 }

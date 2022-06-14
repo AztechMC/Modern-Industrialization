@@ -40,14 +40,14 @@ import net.minecraft.world.item.ItemStack;
 public class UpgradeComponent implements IComponent.ServerOnly {
 
     private ItemStack itemStack;
-    public final static Map<Item, Long> upgrades = new IdentityHashMap<>();
+    public final static Map<Item, Long> UPGRADES = new IdentityHashMap<>();
 
     static {
-        upgrades.put(MIItem.BASIC_UPGRADE.asItem(), 2L);
-        upgrades.put(MIItem.ADVANCED_UPGRADE.asItem(), 8L);
-        upgrades.put(MIItem.TURBO_UPGRADE.asItem(), 32L);
-        upgrades.put(MIItem.HIGHLY_ADVANCED_UPGRADE.asItem(), 128L);
-        upgrades.put(MIItem.QUANTUM_UPGRADE.asItem(), 999999999L);
+        UPGRADES.put(MIItem.BASIC_UPGRADE.asItem(), 2L);
+        UPGRADES.put(MIItem.ADVANCED_UPGRADE.asItem(), 8L);
+        UPGRADES.put(MIItem.TURBO_UPGRADE.asItem(), 32L);
+        UPGRADES.put(MIItem.HIGHLY_ADVANCED_UPGRADE.asItem(), 128L);
+        UPGRADES.put(MIItem.QUANTUM_UPGRADE.asItem(), 999999999L);
     }
 
     public UpgradeComponent() {
@@ -70,7 +70,7 @@ public class UpgradeComponent implements IComponent.ServerOnly {
         if (stackInHand.isEmpty()) {
             return InteractionResult.PASS;
         }
-        if (stackInHand.getItem() == MIItem.ITEM_CROWBAR.asItem() && player.isShiftKeyDown()) {
+        if (stackInHand.getItem() == MIItem.CROWBAR.asItem() && player.isShiftKeyDown()) {
             BlockPos pos = be.getBlockPos();
             if (!itemStack.isEmpty()) {
                 Containers.dropItemStack(be.getLevel(), pos.getX(), pos.getY(), pos.getZ(), itemStack);
@@ -83,7 +83,7 @@ public class UpgradeComponent implements IComponent.ServerOnly {
             }
 
         } else {
-            if (upgrades.containsKey(stackInHand.getItem())) {
+            if (UPGRADES.containsKey(stackInHand.getItem())) {
                 boolean changed = false;
                 if (itemStack.isEmpty()) {
                     itemStack = stackInHand.copy();
@@ -119,7 +119,7 @@ public class UpgradeComponent implements IComponent.ServerOnly {
         if (itemStack.isEmpty()) {
             return 0;
         } else {
-            return itemStack.getCount() * upgrades.get(itemStack.getItem());
+            return itemStack.getCount() * UPGRADES.get(itemStack.getItem());
         }
     }
 

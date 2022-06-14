@@ -26,16 +26,11 @@ package aztech.modern_industrialization.nuclear;
 import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.MIItem;
 import aztech.modern_industrialization.items.SortOrder;
-import aztech.modern_industrialization.util.TextHelper;
-import java.util.List;
 import java.util.Random;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.minecraft.core.Registry;
-import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.level.Level;
 
 public class NuclearFuel extends NuclearAbsorbable {
 
@@ -101,13 +96,6 @@ public class NuclearFuel extends NuclearAbsorbable {
     @Override
     public long getNeutronProductAmount() {
         return size;
-    }
-
-    @Override
-    public void appendHoverText(ItemStack stack, Level world, List<Component> tooltip, TooltipFlag context) {
-        super.appendHoverText(stack, world, tooltip, context);
-        long totalEu = (long) totalEUbyDesintegration * desintegrationMax;
-        tooltip.add(TextHelper.getEuStorageTooltip(totalEu));
     }
 
     public double efficiencyFactor(double temperature) {

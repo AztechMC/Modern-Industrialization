@@ -26,6 +26,9 @@ package aztech.modern_industrialization.pipes.impl;
 import aztech.modern_industrialization.pipes.MIPipes;
 import aztech.modern_industrialization.pipes.api.PipeNetworkData;
 import aztech.modern_industrialization.pipes.api.PipeNetworkType;
+import aztech.modern_industrialization.pipes.electricity.ElectricityNetworkData;
+import aztech.modern_industrialization.pipes.fluid.FluidNetworkData;
+import aztech.modern_industrialization.pipes.item.ItemNetworkData;
 import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionResult;
@@ -150,5 +153,17 @@ public class PipeItem extends Item {
         CollisionContext shapeContext = ctx.getPlayer() == null ? CollisionContext.empty() : CollisionContext.of(ctx.getPlayer());
         return ctx.getLevel().getBlockState(pos).canBeReplaced(new BlockPlaceContext(ctx)) && state.canSurvive(ctx.getLevel(), pos)
                 && ctx.getLevel().isUnobstructed(state, pos, shapeContext);
+    }
+
+    public boolean isItemPipe() {
+        return this.defaultData instanceof ItemNetworkData;
+    }
+
+    public boolean isFluidPipe() {
+        return this.defaultData instanceof FluidNetworkData;
+    }
+
+    public boolean isCable() {
+        return this.defaultData instanceof ElectricityNetworkData;
     }
 }

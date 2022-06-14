@@ -30,10 +30,7 @@ import aztech.modern_industrialization.inventory.MIInventory;
 import aztech.modern_industrialization.inventory.SlotPositions;
 import aztech.modern_industrialization.machines.BEP;
 import aztech.modern_industrialization.machines.MachineBlockEntity;
-import aztech.modern_industrialization.machines.components.FuelBurningComponent;
-import aztech.modern_industrialization.machines.components.IsActiveComponent;
-import aztech.modern_industrialization.machines.components.OrientationComponent;
-import aztech.modern_industrialization.machines.components.SteamHeaterComponent;
+import aztech.modern_industrialization.machines.components.*;
 import aztech.modern_industrialization.machines.components.sync.ProgressBar;
 import aztech.modern_industrialization.machines.components.sync.TemperatureBar;
 import aztech.modern_industrialization.machines.gui.MachineGuiParameters;
@@ -44,9 +41,10 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.material.Fluids;
 
-public class BoilerMachineBlockEntity extends MachineBlockEntity implements Tickable {
+public class BoilerMachineBlockEntity extends MachineBlockEntity implements Tickable, TooltipProvider {
 
     public static final int WATER_SLOT_X = 50;
     public static final int WATER_SLOT_Y = 32;
@@ -122,4 +120,10 @@ public class BoilerMachineBlockEntity extends MachineBlockEntity implements Tick
 
         setChanged();
     }
+
+    @Override
+    public List<Component> getTooltips() {
+        return fuelBurning.getTooltips();
+    }
+
 }

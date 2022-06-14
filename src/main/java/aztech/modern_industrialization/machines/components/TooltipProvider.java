@@ -21,25 +21,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.api.pipes.item;
+package aztech.modern_industrialization.machines.components;
 
-import aztech.modern_industrialization.MIItem;
-import java.util.IdentityHashMap;
-import java.util.Map;
-import net.minecraft.world.item.Item;
+import java.util.List;
+import net.minecraft.network.chat.Component;
 
-/**
- * A speed upgrade for an item pipe
- */
-public class SpeedUpgrade {
+public interface TooltipProvider {
 
-    public final static Map<Item, Long> UPGRADES = new IdentityHashMap<>();
-
-    static {
-        UPGRADES.put(MIItem.MOTOR.asItem(), 2L);
-        UPGRADES.put(MIItem.LARGE_MOTOR.asItem(), 8L);
-        UPGRADES.put(MIItem.ADVANCED_MOTOR.asItem(), 32L);
-        UPGRADES.put(MIItem.LARGE_ADVANCED_MOTOR.asItem(), 64L);
-    }
-
+    List<Component> getTooltips();
 }

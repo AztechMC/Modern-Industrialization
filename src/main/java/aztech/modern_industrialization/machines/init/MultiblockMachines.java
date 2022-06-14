@@ -29,7 +29,6 @@ import static aztech.modern_industrialization.machines.multiblocks.HatchType.*;
 import aztech.modern_industrialization.MIBlock;
 import aztech.modern_industrialization.MIFluids;
 import aztech.modern_industrialization.MIIdentifier;
-import aztech.modern_industrialization.api.FluidFuelRegistry;
 import aztech.modern_industrialization.compat.rei.Rectangle;
 import aztech.modern_industrialization.compat.rei.machines.MachineCategoryParams;
 import aztech.modern_industrialization.compat.rei.machines.ReiMachineRecipes;
@@ -38,6 +37,7 @@ import aztech.modern_industrialization.inventory.SlotPositions;
 import aztech.modern_industrialization.machines.MachineScreenHandlers;
 import aztech.modern_industrialization.machines.SyncedComponent;
 import aztech.modern_industrialization.machines.blockentities.multiblocks.*;
+import aztech.modern_industrialization.machines.components.FluidConsumerComponent;
 import aztech.modern_industrialization.machines.components.sync.CraftingMultiblockGui;
 import aztech.modern_industrialization.machines.components.sync.ProgressBar;
 import aztech.modern_industrialization.machines.models.MachineCasing;
@@ -328,8 +328,9 @@ public class MultiblockMachines {
         LARGE_DIESEL_GENERATOR = MachineRegistrationHelper.registerMachine(
                 "Large Diesel Generator",
                 "large_diesel_generator", bet ->
-                new EnergyFromFluidMultiblockBlockEntity(bet, "large_diesel_generator", largeDieselGeneratorShape,
-                        (Fluid f) -> (FluidFuelRegistry.getEu(f) != 0), FluidFuelRegistry::getEu, 16384));
+                new EnergyFromFluidMultiblockBlockEntity(bet, "large_diesel_generator",
+                        largeDieselGeneratorShape,
+                        FluidConsumerComponent.ofFluidFuels(16384)));
         ReiMachineRecipes.registerMultiblockShape("large_diesel_generator", largeDieselGeneratorShape);
     }
 
@@ -363,12 +364,12 @@ public class MultiblockMachines {
                 "Large Steam Turbine",
                 "large_steam_turbine", bet ->
                 new EnergyFromFluidMultiblockBlockEntity(bet, "large_steam_turbine", largeSteamTurbineShape,
-
-                        (Fluid f) -> (f == MIFluids.STEAM.asFluid() || f == MIFluids.HIGH_PRESSURE_STEAM.asFluid()
-                                || f == MIFluids.HIGH_PRESSURE_HEAVY_WATER_STEAM.asFluid()
-                                || f == MIFluids.HEAVY_WATER_STEAM.asFluid()),
-                        (Fluid f) -> ((f == MIFluids.STEAM.asFluid() || f == MIFluids.HEAVY_WATER_STEAM.asFluid()) ? 1 : 8)
-                        , 16384));
+                        FluidConsumerComponent.of(16384,
+                                (Fluid f) -> (f == MIFluids.STEAM.asFluid() || f == MIFluids.HIGH_PRESSURE_STEAM.asFluid()
+                                        || f == MIFluids.HIGH_PRESSURE_HEAVY_WATER_STEAM.asFluid()
+                                        || f == MIFluids.HEAVY_WATER_STEAM.asFluid()),
+                                (Fluid f) -> ((f == MIFluids.STEAM.asFluid() || f == MIFluids.HEAVY_WATER_STEAM.asFluid()) ? 1 : 8)
+                                 )));
         ReiMachineRecipes.registerMultiblockShape("large_steam_turbine", largeSteamTurbineShape);
     }
 
@@ -555,9 +556,11 @@ public class MultiblockMachines {
                 "Plasma Turbine",
                 "plasma_turbine", bet ->
                 new EnergyFromFluidMultiblockBlockEntity(bet, "plasma_turbine", plasmaTurbineShape,
-                        (fluid) -> (fluid == MIFluids.HELIUM_PLASMA.asFluid()),
-                        (heliumPlasma) -> 100000,
-                        1 << 20));
+                        FluidConsumerComponent.of(
+                                1 << 20,
+                                MIFluids.HELIUM_PLASMA.asFluid(),
+                                100000
+                        )));
         ReiMachineRecipes.registerMultiblockShape("plasma_turbine", plasmaTurbineShape);
     }
 

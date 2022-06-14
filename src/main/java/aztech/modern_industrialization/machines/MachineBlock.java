@@ -46,7 +46,9 @@ import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.Nullable;
 
 public class MachineBlock extends Block implements TickableBlock {
-    private final BiFunction<BlockPos, BlockState, BlockEntity> blockEntityConstructor;
+
+    private final BiFunction<BlockPos, BlockState, MachineBlockEntity> blockEntityConstructor;
+    public final MachineBlockEntity BLOCK_ENTITY_INSTANCE; // Use for tooltip and information
 
     /**
      * Used by the model loading code to identify machine models.
@@ -54,13 +56,16 @@ public class MachineBlock extends Block implements TickableBlock {
      */
     public static final Map<String, MachineCasing> REGISTERED_MACHINES = new HashMap<>();
 
-    public MachineBlock(BiFunction<BlockPos, BlockState, BlockEntity> blockEntityConstructor, Properties properties) {
+    public MachineBlock(BiFunction<BlockPos, BlockState, MachineBlockEntity> blockEntityConstructor, Properties properties) {
         super(properties);
         this.blockEntityConstructor = blockEntityConstructor;
+        BLOCK_ENTITY_INSTANCE = newBlockEntity(
+                BlockPos.ZERO,
+                this.defaultBlockState());
     }
 
     @Override
-    public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
+    public MachineBlockEntity newBlockEntity(BlockPos pos, BlockState state) {
         return blockEntityConstructor.apply(pos, state);
     }
 

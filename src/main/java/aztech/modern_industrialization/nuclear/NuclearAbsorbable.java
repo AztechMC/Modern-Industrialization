@@ -24,19 +24,13 @@
 package aztech.modern_industrialization.nuclear;
 
 import aztech.modern_industrialization.MIItem;
-import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.items.SortOrder;
-import aztech.modern_industrialization.util.TextHelper;
 import com.google.common.base.Preconditions;
-import java.util.List;
 import java.util.Random;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.level.Level;
 
 public class NuclearAbsorbable extends NuclearComponentItem {
 
@@ -62,14 +56,6 @@ public class NuclearAbsorbable extends NuclearComponentItem {
                 (settings) -> new NuclearAbsorbable(settings.maxCount(1), maxTemperature, heatConduction, neutronBehaviour, desintegrationMax),
                 SortOrder.ITEMS_OTHER)
                 .asItem();
-    }
-
-    @Override
-    public void appendHoverText(ItemStack stack, Level world, List<Component> tooltip, TooltipFlag context) {
-        super.appendHoverText(stack, world, tooltip, context);
-
-        tooltip.add(MIText.RemAbsorption.text(getRemainingDesintegrations(stack), desintegrationMax).setStyle(TextHelper.GRAY_TEXT));
-
     }
 
     public double getDurabilityBarProgress(ItemStack stack) {

@@ -27,10 +27,7 @@ import static net.minecraft.core.Direction.UP;
 
 import aztech.modern_industrialization.inventory.*;
 import aztech.modern_industrialization.machines.BEP;
-import aztech.modern_industrialization.machines.components.NeutronHistoryComponent;
-import aztech.modern_industrialization.machines.components.OrientationComponent;
-import aztech.modern_industrialization.machines.components.SteamHeaterComponent;
-import aztech.modern_industrialization.machines.components.TemperatureComponent;
+import aztech.modern_industrialization.machines.components.*;
 import aztech.modern_industrialization.machines.components.sync.TemperatureBar;
 import aztech.modern_industrialization.machines.gui.MachineGuiParameters;
 import aztech.modern_industrialization.machines.multiblocks.HatchBlockEntity;

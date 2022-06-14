@@ -34,8 +34,10 @@ import aztech.modern_industrialization.machines.multiblocks.MultiblockMachineBlo
 import aztech.modern_industrialization.machines.multiblocks.ShapeMatcher;
 import aztech.modern_industrialization.machines.multiblocks.ShapeTemplate;
 import aztech.modern_industrialization.util.Tickable;
+import java.util.List;
+import net.minecraft.network.chat.Component;
 
-public class SteamBoilerMultiblockBlockEntity extends MultiblockMachineBlockEntity implements Tickable {
+public class SteamBoilerMultiblockBlockEntity extends MultiblockMachineBlockEntity implements Tickable, TooltipProvider {
 
     private ShapeMatcher shapeMatcher;
     private final ShapeTemplate shapeTemplate;
@@ -126,5 +128,10 @@ public class SteamBoilerMultiblockBlockEntity extends MultiblockMachineBlockEnti
             }
             setChanged();
         }
+    }
+
+    @Override
+    public List<Component> getTooltips() {
+        return fuelBurning.getTooltips();
     }
 }

@@ -69,7 +69,7 @@ public final class StandardRecipes {
 
         new ShapedRecipeBuilder(ctx, RING, 2, "ring", "bRb", "R R", "bRb").addTaggedPart('b', BOLT).addTaggedPart('R', ROD);
 
-        new ShapedRecipeBuilder(ctx, CABLE, 3, "cable", "rrr", "www", "rrr").addInput('r', MIItem.ITEM_RUBBER_SHEET)
+        new ShapedRecipeBuilder(ctx, CABLE, 3, "cable", "rrr", "www", "rrr").addInput('r', MIItem.RUBBER_SHEET)
                 .addTaggedPart('w', WIRE).exportToMachine(MIMachineRecipeTypes.PACKER);
 
         new ShapedRecipeBuilder(ctx, TANK, 1, "tank", "###", "#G#", "###").addTaggedPart('#', PLATE).addInput('G', ConventionalItemTags.GLASS_BLOCKS)
@@ -118,9 +118,9 @@ public final class StandardRecipes {
         addCuttingMachine(ctx, "rod", ROD, BOLT, 2);
         // PACKER
         new MIRecipeBuilder(ctx, MIMachineRecipeTypes.PACKER, "block").addTaggedPartInput(ctx.getMainPart(), 9)
-                .addItemInput(MIItem.ITEM_PACKER_BLOCK_TEMPLATE, 1, 0.0).addPartOutput(BLOCK, 1);
+                .addItemInput(MIItem.PACKER_BLOCK_TEMPLATE, 1, 0.0).addPartOutput(BLOCK, 1);
         new MIRecipeBuilder(ctx, MIMachineRecipeTypes.PACKER, "double_ingot").addTaggedPartInput(INGOT, 2)
-                .addItemInput(MIItem.ITEM_PACKER_DOUBLE_INGOT_TEMPLATE, 1, 0.0).addPartOutput(DOUBLE_INGOT, 1);
+                .addItemInput(MIItem.PACKER_DOUBLE_INGOT_TEMPLATE, 1, 0.0).addPartOutput(DOUBLE_INGOT, 1);
 
         new MIRecipeBuilder(ctx, MIMachineRecipeTypes.PACKER, "fuel_rod_double").addPartInput(FUEL_ROD, 2).addItemInput("#c:nuclear_alloy_plates", 1)
                 .addPartOutput(FUEL_ROD_DOUBLE, 1);
@@ -153,7 +153,7 @@ public final class StandardRecipes {
 
         new MIRecipeBuilder(ctx, MIMachineRecipeTypes.ASSEMBLER, "fuel_rod", 16, 200)
                 .addItemInput("modern_industrialization:blastproof_alloy_curved_plate", 2)
-                .addItemInput(MIItem.ITEM_LARGE_MOTOR, 1).addItemInput(MIItem.ITEM_ROBOT_ARM, 2).addTaggedPartInput(ROD, 18)
+                .addItemInput(MIItem.LARGE_MOTOR, 1).addItemInput(MIItem.ROBOT_ARM, 2).addTaggedPartInput(ROD, 18)
                 .addFluidInput(MIFluids.SOLDERING_ALLOY, 500).addFluidInput(MIFluids.HELIUM, 100)
                 .addPartOutput(FUEL_ROD, 1);
 

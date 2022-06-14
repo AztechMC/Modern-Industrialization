@@ -24,6 +24,7 @@
 package aztech.modern_industrialization.items;
 
 import aztech.modern_industrialization.MIText;
+import aztech.modern_industrialization.MITooltips;
 import aztech.modern_industrialization.api.DynamicEnchantmentItem;
 import aztech.modern_industrialization.machines.MachineScreenHandlers;
 import aztech.modern_industrialization.machines.components.sync.ProgressBar;
@@ -278,9 +279,9 @@ public class SteamDrillItem extends Item implements DynamicToolItem, MagnaTool, 
             tooltip.add(MIText.SecondsLeft.text(data.burnTicks / 100).setStyle(TextHelper.GRAY_TEXT));
         }
         // Usage guide
-        tooltip.add(MIText.SteamDrillWaterHelp.text().setStyle(TextHelper.UPGRADE_TEXT));
-        tooltip.add(MIText.SteamDrillFuelHelp.text().setStyle(TextHelper.UPGRADE_TEXT));
-        tooltip.add(MIText.SteamDrillProfit.text().setStyle(TextHelper.UPGRADE_TEXT));
+        tooltip.add(MIText.SteamDrillWaterHelp.text().setStyle(MITooltips.DEFAULT_STYLE));
+        tooltip.add(MIText.SteamDrillFuelHelp.text().setStyle(MITooltips.DEFAULT_STYLE));
+        tooltip.add(MIText.SteamDrillProfit.text().setStyle(MITooltips.DEFAULT_STYLE));
     }
 
     public record SteamDrillTooltipData(int waterLevel, int burnTicks, int maxBurnTicks, ItemVariant variant, long amount)

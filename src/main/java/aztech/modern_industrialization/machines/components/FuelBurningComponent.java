@@ -23,17 +23,21 @@
  */
 package aztech.modern_industrialization.machines.components;
 
+import aztech.modern_industrialization.MIText;
+import aztech.modern_industrialization.MITooltips;
 import aztech.modern_industrialization.api.FluidFuelRegistry;
 import aztech.modern_industrialization.inventory.ConfigurableFluidStack;
 import aztech.modern_industrialization.inventory.ConfigurableItemStack;
 import aztech.modern_industrialization.machines.IComponent;
 import aztech.modern_industrialization.util.ItemStackHelper;
+import java.util.ArrayList;
 import java.util.List;
 import net.fabricmc.fabric.impl.content.registry.FuelRegistryImpl;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
 
-public class FuelBurningComponent implements IComponent {
+public class FuelBurningComponent implements IComponent, TooltipProvider {
     /**
      * How many EUs worth of heat can be produced every tick at most.
      */
@@ -150,5 +154,20 @@ public class FuelBurningComponent implements IComponent {
     @Override
     public void readNbt(CompoundTag tag) {
         burningEuBuffer = tag.getLong("burningEuBuffer");
+    }
+
+    @Override
+    public List<Component> getTooltips() {
+        List<Component> returnList = new ArrayList<>();
+        returnList.add(new MITooltips.Line(MIText.MaxEuProduction).arg(
+                this.maxEuProduction,
+                MITooltips.EU_PER_TICK_PARSER).build());
+
+        if (burningEuMultiplier == 2) {
+            returnList.add(
+                    new MITooltips.Line(MIText.DoubleFluidFuelEfficiency).build());
+        }
+
+        return returnList;
     }
 }

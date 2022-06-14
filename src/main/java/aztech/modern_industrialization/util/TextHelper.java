@@ -25,20 +25,14 @@ package aztech.modern_industrialization.util;
 
 import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.textures.TextureHelper;
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextColor;
-import net.minecraft.network.chat.TextComponent;
 
 public class TextHelper {
     public static final Style GRAY_TEXT = Style.EMPTY.withColor(TextColor.fromRgb(0xa9a9a9)).withItalic(true);
-    public static final Style GRAY_TEXT_NOT_ITALIC = Style.EMPTY.withColor(TextColor.fromRgb(0xa9a9a9)).withItalic(false);
-    public static final Style UPGRADE_TEXT = Style.EMPTY.withColor(TextColor.fromRgb(0xc3ff9c));
     public static final Style NUMBER_TEXT = Style.EMPTY.withColor(TextColor.fromRgb(0xffde7d)).withItalic(false);
     public static final Style WATER_TEXT = Style.EMPTY.withColor(TextColor.fromRgb(0x3264ff));
     public static final Style WARNING_TEXT = Style.EMPTY.withColor(ChatFormatting.RED);
@@ -47,8 +41,6 @@ public class TextHelper {
     public static final Style NEUTRONS = Style.EMPTY.withColor(TextColor.fromRgb(0x29a329));
     public static final Style YELLOW_BOLD = Style.EMPTY.withColor(ChatFormatting.YELLOW).withBold(true);
     public static final Style YELLOW = Style.EMPTY.withColor(ChatFormatting.YELLOW);
-    public static final Style FAQ_HEADER_TOOLTIP = Style.EMPTY.withColor(TextColor.fromRgb(0xf5c42d)).withBold(true);
-    public static final Style FAQ_TOOLTIP = Style.EMPTY.withColor(TextColor.fromRgb(0xf7d25e)).withItalic(true);
 
     public static final Style RED = Style.EMPTY.withColor(ChatFormatting.RED);
     public static final Style GREEN = Style.EMPTY.withColor(ChatFormatting.GREEN);
@@ -85,7 +77,19 @@ public class TextHelper {
         } else {
             return String.format("%.1f", fract);
         }
+    }
 
+    public static Amount getAmountGeneric(Number number) {
+        if (number instanceof Long l) {
+            return getAmount(l);
+        } else if (number instanceof Integer i) {
+            return getAmount(i);
+        } else if (number instanceof Double d) {
+            return getAmount(d);
+        } else if (number instanceof Float f) {
+            return getAmount(f);
+        }
+        throw new IllegalArgumentException("Number " + number + " is neither long, int, double or float");
     }
 
     public static Amount getAmount(double amount) {
@@ -165,22 +169,6 @@ public class TextHelper {
                 amount.unit());
     }
 
-    public static Component getEuText(long eu, boolean style) {
-        MutableComponent text = getEuText(eu);
-        if (style) {
-            text.setStyle(TextHelper.NUMBER_TEXT);
-        }
-        return text;
-    }
-
-    public static Component getEuTextTick(long eu, boolean style) {
-        MutableComponent text = getEuTextTick(eu);
-        if (style) {
-            text.setStyle(TextHelper.NUMBER_TEXT);
-        }
-        return text;
-    }
-
     public static Component getEuTextTick(double eu, boolean style) {
         MutableComponent text = getEuTextTick(eu);
         if (style) {
@@ -195,16 +183,6 @@ public class TextHelper {
             text.setStyle(TextHelper.NUMBER_TEXT);
         }
         return text;
-    }
-
-    public static MutableComponent formatWithNumber(MIText text, long... numbers) {
-        List<Component> numberText = Arrays.stream(numbers).mapToObj(n -> new TextComponent("" + n).setStyle(TextHelper.NUMBER_TEXT))
-                .collect(Collectors.toList());
-        return text.text(numberText.toArray());
-    }
-
-    public static Component getEuStorageTooltip(long totalEu) {
-        return MIText.BaseEuTotalStored.text(getEuText(totalEu, true)).setStyle(TextHelper.GRAY_TEXT);
     }
 
 }

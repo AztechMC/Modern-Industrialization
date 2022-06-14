@@ -23,18 +23,22 @@
  */
 package aztech.modern_industrialization.machines.components;
 
+import aztech.modern_industrialization.MIText;
+import aztech.modern_industrialization.MITooltips;
 import aztech.modern_industrialization.machines.IComponent;
 import aztech.modern_industrialization.machines.MachineBlockEntity;
+import java.util.List;
 import java.util.Random;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 
-public class GunpowderOverclockComponent implements IComponent {
+public class GunpowderOverclockComponent implements IComponent, TooltipProvider {
 
     public int overclockGunpowderTick;
 
@@ -87,5 +91,10 @@ public class GunpowderOverclockComponent implements IComponent {
                 }
             }
         }
+    }
+
+    @Override
+    public List<Component> getTooltips() {
+        return List.of(new MITooltips.Line(MIText.GunpowderUpgradeMachine).build());
     }
 }

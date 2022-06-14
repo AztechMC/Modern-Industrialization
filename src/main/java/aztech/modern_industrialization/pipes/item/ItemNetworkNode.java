@@ -238,8 +238,7 @@ public class ItemNetworkNode extends PipeNetworkNode {
         }
 
         long getMoves() {
-            SpeedUpgrade upgrade = SpeedUpgrade.LOOKUP.find(upgradeStack, null);
-            return 16 + (upgrade == null ? 0 : upgrade.value() * upgradeStack.getCount());
+            return 16 + (SpeedUpgrade.UPGRADES.getOrDefault(upgradeStack.getItem(), 0L) * upgradeStack.getCount());
         }
 
         private void dropUpgrades(Level world, BlockPos pos) {

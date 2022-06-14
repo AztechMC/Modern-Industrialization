@@ -25,9 +25,6 @@ package aztech.modern_industrialization;
 
 import static net.fabricmc.fabric.api.client.command.v1.ClientCommandManager.literal;
 
-import aztech.modern_industrialization.api.energy.CableTier;
-import aztech.modern_industrialization.api.pipes.item.SpeedUpgrade;
-import aztech.modern_industrialization.blocks.OreBlock;
 import aztech.modern_industrialization.blocks.forgehammer.ForgeHammerScreen;
 import aztech.modern_industrialization.blocks.storage.barrel.BarrelTooltipData;
 import aztech.modern_industrialization.blocks.storage.barrel.client.BarrelTooltipComponent;
@@ -44,18 +41,12 @@ import aztech.modern_industrialization.machines.ClientMachinePackets;
 import aztech.modern_industrialization.machines.MachineOverlay;
 import aztech.modern_industrialization.machines.MachinePackets;
 import aztech.modern_industrialization.machines.MachineScreenHandlers;
-import aztech.modern_industrialization.machines.blockentities.multiblocks.ElectricBlastFurnaceBlockEntity;
 import aztech.modern_industrialization.machines.components.FuelBurningComponent;
-import aztech.modern_industrialization.machines.components.LubricantHelper;
-import aztech.modern_industrialization.machines.components.UpgradeComponent;
 import aztech.modern_industrialization.machines.init.MultiblockMachines;
 import aztech.modern_industrialization.machines.models.MachineModels;
 import aztech.modern_industrialization.machines.multiblocks.MultiblockErrorHighlight;
-import aztech.modern_industrialization.misc.tooltips.FaqTooltips;
 import aztech.modern_industrialization.misc.version.VersionEvents;
-import aztech.modern_industrialization.pipes.MIPipes;
 import aztech.modern_industrialization.pipes.MIPipesClient;
-import aztech.modern_industrialization.pipes.impl.PipeItem;
 import aztech.modern_industrialization.util.TextHelper;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.command.v1.ClientCommandManager;
@@ -68,15 +59,11 @@ import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.fabricmc.fabric.impl.content.registry.FuelRegistryImpl;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.MenuScreens;
-import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.inventory.MenuType;
-import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.Items;
-import net.minecraft.world.level.block.Block;
 
 public class ModernIndustrializationClient implements ClientModInitializer {
     @Override
@@ -98,7 +85,6 @@ public class ModernIndustrializationClient implements ClientModInitializer {
         setupTooltips();
         setupClientCommands();
         VersionEvents.init();
-        FaqTooltips.init();
 
         ModernIndustrialization.LOGGER.info("Modern Industrialization client setup done!");
     }
@@ -121,69 +107,19 @@ public class ModernIndustrializationClient implements ClientModInitializer {
 
     private void setupTooltips() {
         ItemTooltipCallback.EVENT.register(((stack, context, lines) -> {
-            SpeedUpgrade upgrade = SpeedUpgrade.LOOKUP.find(stack, null);
-            if (upgrade != null) {
-                Component tooltip = MIText.TooltipSpeedUpgrade.text(upgrade.value()).setStyle(TextHelper.UPGRADE_TEXT);
-                lines.add(tooltip);
-            }
+
+            MITooltips.attachTooltip(stack, lines);
 
             Item item = stack.getItem();
-
             if (item != null) {
-                if (item instanceof PipeItem) {
-                    PipeItem pipe = (PipeItem) item;
-                    if (MIPipes.electricityPipeTier.containsKey(pipe)) {
-                        CableTier tier = MIPipes.electricityPipeTier.get(pipe);
-                        Component tooltip = MIText.EuCable.text(tier.englishName, TextHelper.getEuTextTick(tier.getMaxTransfer(), true));
-                        lines.add(tooltip);
-                    }
-                }
-                if (item == Items.GUNPOWDER) {
-                    lines.add(MIText.GunpowderUpgrade.text().setStyle(TextHelper.GRAY_TEXT));
-                }
-                if (item == MIFluids.LUBRICANT.getBucket()) {
-                    Component tooltip = MIText.LubricantTooltip.text(LubricantHelper.mbPerTick).setStyle(TextHelper.GRAY_TEXT);
-                    lines.add(tooltip);
-                }
-                if (UpgradeComponent.upgrades.containsKey(item)) {
-                    Component tooltip = MIText.MachineUpgrade.text(UpgradeComponent.upgrades.get(item)).setStyle(TextHelper.UPGRADE_TEXT);
-                    lines.add(tooltip);
-                }
-                if (item instanceof BlockItem) {
-                    Block block = ((BlockItem) item).getBlock();
-                    if (ElectricBlastFurnaceBlockEntity.coilsMaxBaseEU.containsKey(block)) {
-                        Component tooltip = MIText.EbfMaxEu.text(ElectricBlastFurnaceBlockEntity.coilsMaxBaseEU.get(block))
-                                .setStyle(TextHelper.UPGRADE_TEXT);
-                        lines.add(tooltip);
-                    } else if (block instanceof OreBlock oreBlock) {
-                        if (oreBlock.params.generate) {
-
-                            MIConfig config = MIConfig.getConfig();
-
-                            if (config.generateOres && !config.blacklistedOres.contains(oreBlock.materialName)) {
-                                lines.add(TextHelper
-                                        .formatWithNumber(MIText.OreGenerationTooltipY, -64, oreBlock.params.maxYLevel)
-                                        .setStyle(TextHelper.GRAY_TEXT_NOT_ITALIC));
-                                lines.add(TextHelper.formatWithNumber(MIText.OreGenerationTooltipVeinFrequency,
-                                        oreBlock.params.veinsPerChunk).setStyle(TextHelper.GRAY_TEXT_NOT_ITALIC));
-                                lines.add(TextHelper
-                                        .formatWithNumber(MIText.OreGenerationTooltipVeinSize, oreBlock.params.veinSize)
-                                        .setStyle(TextHelper.GRAY_TEXT_NOT_ITALIC));
-                            }
-
-                        }
-                    }
-                }
-
                 // Apparently tooltips are accessed from the main menu, or something, hence the
                 // != null check
                 if (Minecraft.getInstance().level != null && !MIConfig.getConfig().disableFuelTooltips) {
                     try {
                         Integer fuelTime = FuelRegistryImpl.INSTANCE.get(item);
                         if (fuelTime != null && fuelTime > 0) {
-
                             long totalEu = fuelTime * FuelBurningComponent.EU_PER_BURN_TICK;
-                            lines.add(TextHelper.getEuStorageTooltip(totalEu));
+                            lines.add(new MITooltips.Line(MIText.BaseEuTotalStored).arg(totalEu, MITooltips.EU_PARSER).build());
                         }
                     } catch (Exception e) {
                         ModernIndustrialization.LOGGER.warn("Could not show MI fuel tooltip.", e);

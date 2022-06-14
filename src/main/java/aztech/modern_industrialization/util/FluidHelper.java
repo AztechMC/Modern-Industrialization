@@ -45,7 +45,7 @@ public class FluidHelper {
 
     public static Component getFluidName(FluidVariant fluid, boolean grayIfEmpty) {
         if (fluid.isBlank()) {
-            Style style = grayIfEmpty ? Style.EMPTY.withColor(TextColor.fromRgb(0xa9a9a9)).withItalic(true) : Style.EMPTY;
+            Style style = grayIfEmpty ? Style.EMPTY.withColor(TextColor.fromRgb(0xa9a9a9)).withItalic(false) : Style.EMPTY;
             return MIText.Empty.text().setStyle(style);
         } else {
             return FluidVariantAttributes.getName(fluid);

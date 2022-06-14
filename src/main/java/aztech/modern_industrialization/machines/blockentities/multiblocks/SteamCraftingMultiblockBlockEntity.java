@@ -27,21 +27,24 @@ import aztech.modern_industrialization.machines.BEP;
 import aztech.modern_industrialization.machines.components.CrafterComponent;
 import aztech.modern_industrialization.machines.components.GunpowderOverclockComponent;
 import aztech.modern_industrialization.machines.components.OrientationComponent;
+import aztech.modern_industrialization.machines.components.TooltipProvider;
 import aztech.modern_industrialization.machines.helper.SteamHelper;
 import aztech.modern_industrialization.machines.multiblocks.HatchBlockEntity;
 import aztech.modern_industrialization.machines.multiblocks.ShapeMatcher;
 import aztech.modern_industrialization.machines.multiblocks.ShapeTemplate;
 import aztech.modern_industrialization.machines.recipe.MachineRecipeType;
 import aztech.modern_industrialization.util.Simulation;
+import java.util.List;
 import java.util.UUID;
 import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
 
-public class SteamCraftingMultiblockBlockEntity extends AbstractCraftingMultiblockBlockEntity {
+public class SteamCraftingMultiblockBlockEntity extends AbstractCraftingMultiblockBlockEntity implements TooltipProvider {
 
     private final GunpowderOverclockComponent gunpowderOverclock;
 
@@ -70,6 +73,11 @@ public class SteamCraftingMultiblockBlockEntity extends AbstractCraftingMultiblo
                 steelTier = true;
             }
         }
+    }
+
+    @Override
+    public List<Component> getTooltips() {
+        return gunpowderOverclock.getTooltips();
     }
 
     private class Behavior implements CrafterComponent.Behavior {

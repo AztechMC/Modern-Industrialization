@@ -67,7 +67,7 @@ public class MIPipes {
     public static BlockEntityType<PipeBlockEntity> BLOCK_ENTITY_TYPE_PIPE;
     private final Map<PipeNetworkType, PipeItem> pipeItems = new HashMap<>();
 
-    public static final Map<PipeItem, CableTier> electricityPipeTier = new HashMap<>();
+    public static final Map<PipeItem, CableTier> ELECTRICITY_PIPE_TIER = new HashMap<>();
 
     public static final MenuType<ItemPipeScreenHandler> SCREEN_HANDLER_TYPE_ITEM_PIPE = ScreenHandlerRegistry
             .registerExtended(new MIIdentifier("item_pipe"), ItemPipeScreenHandler::new);
@@ -151,7 +151,7 @@ public class MIPipes {
                 SortOrder.CABLES.and(tier));
         var item = itemDef.asItem();
         pipeItems.put(type, item);
-        electricityPipeTier.put(item, tier);
+        ELECTRICITY_PIPE_TIER.put(item, tier);
         PIPE_MODEL_NAMES.add(new MIIdentifier("item/" + cableId));
     }
 

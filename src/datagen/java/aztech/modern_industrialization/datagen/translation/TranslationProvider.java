@@ -25,9 +25,9 @@ package aztech.modern_industrialization.datagen.translation;
 
 import aztech.modern_industrialization.MIConfig;
 import aztech.modern_industrialization.MIText;
+import aztech.modern_industrialization.MITooltips;
 import aztech.modern_industrialization.compat.rei.machines.ReiMachineRecipes;
 import aztech.modern_industrialization.definition.Definition;
-import aztech.modern_industrialization.misc.tooltips.FaqTooltips;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
@@ -36,7 +36,9 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.*;
+import java.util.Map;
+import java.util.Objects;
+import java.util.TreeMap;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.HashCache;
@@ -90,7 +92,7 @@ public record TranslationProvider(FabricDataGenerator gen) implements DataProvid
             addTranslation(definition.getTranslationKey(), definition.getEnglishName());
         }
 
-        for (var entry : FaqTooltips.TOOLTIPS_ENGLISH_TRANSLATION.entrySet()) {
+        for (var entry : MITooltips.TOOLTIPS_ENGLISH_TRANSLATION.entrySet()) {
             addTranslation(entry.getKey(), entry.getValue());
         }
 

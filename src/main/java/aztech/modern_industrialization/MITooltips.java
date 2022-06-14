@@ -35,27 +35,26 @@ import aztech.modern_industrialization.nuclear.NuclearFuel;
 import aztech.modern_industrialization.pipes.MIPipes;
 import aztech.modern_industrialization.pipes.impl.PipeItem;
 import aztech.modern_industrialization.util.TextHelper;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import com.google.common.base.Preconditions;
+import java.util.*;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariantAttributes;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.Style;
-import net.minecraft.network.chat.TextColor;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.core.Registry;
+import net.minecraft.network.chat.*;
 import net.minecraft.world.item.*;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.material.Fluid;
+import org.jetbrains.annotations.NotNull;
 
 @SuppressWarnings("unused")
 public class MITooltips {
 
-    public static final List<TooltipAttachment> TOOLTIPS = new LinkedList<>();
+    public static final PriorityQueue<TooltipAttachment> TOOLTIPS = new PriorityQueue<>();
 
     public static final Style DEFAULT_STYLE = Style.EMPTY.withColor(TextColor.fromRgb(0xa9a9a9)).withItalic(false);
     public static final Style NUMBER_TEXT = Style.EMPTY.withColor(TextColor.fromRgb(0xffde7d)).withItalic(false);
@@ -133,9 +132,9 @@ public class MITooltips {
     // Tooltips
 
     public static final TooltipAttachment CABLES = TooltipAttachment.of(
-            (item) -> item instanceof PipeItem pipe && MIPipes.electricityPipeTier.containsKey(pipe),
+            (item) -> item instanceof PipeItem pipe && MIPipes.ELECTRICITY_PIPE_TIER.containsKey(pipe),
             itemStack -> {
-                var tier = MIPipes.electricityPipeTier.get((PipeItem) itemStack.getItem());
+                var tier = MIPipes.ELECTRICITY_PIPE_TIER.get((PipeItem) itemStack.getItem());
                 return new Line(MIText.EuCable).arg(tier.englishName).arg(tier.getMaxTransfer(), EU_PER_TICK_PARSER).build();
             });
 
@@ -199,11 +198,70 @@ public class MITooltips {
             UpgradeComponent.UPGRADES::containsKey,
             (itemStack) -> new Line(MIText.MachineUpgrade).arg(UpgradeComponent.UPGRADES.get(itemStack.getItem()), EU_PER_TICK_PARSER).build());
 
-    public static class TooltipAttachment {
+    // Long Tooltip with only text, no need of MIText
+
+    public static final Map<String, String> TOOLTIPS_ENGLISH_TRANSLATION = new HashMap<>();
+
+    private static void add(Predicate<ItemLike> attachTo, String translationId, String... englishTooltipsLine) {
+        int lineCount = englishTooltipsLine.length;
+
+        Preconditions.checkArgument(lineCount > 0);
+
+        String[] translationKey = IntStream.range(0, lineCount).mapToObj(l -> "item_tooltip.modern_industrialization." + translationId + ".line_" + l)
+                .toArray(String[]::new);
+
+        for (int i = 0; i < lineCount; i++) {
+            TOOLTIPS_ENGLISH_TRANSLATION.put(translationKey[i], englishTooltipsLine[i]);
+        }
+
+        MITooltips.TooltipAttachment.ofMultiline(
+                attachTo::test,
+                itemStack -> Arrays.stream(translationKey).map(s -> new TranslatableComponent(s).withStyle(MITooltips.DEFAULT_STYLE))
+                        .collect(Collectors.toList()));
+    }
+
+    private static void add(ItemLike itemLike, String... englishTooltipsLine) {
+        add((item) -> itemLike.asItem() == item, Registry.ITEM.getKey(itemLike.asItem()).getPath(), englishTooltipsLine);
+    }
+
+    private static void add(String itemId, String... englishTooltipsLine) {
+        add(Registry.ITEM.get(new MIIdentifier(itemId)), englishTooltipsLine);
+    }
+
+    static {
+        add(MIBlock.FORGE_HAMMER, "Use it to increase the yield of your ore blocks early game!",
+                "(Use the Steam Mining Drill for an easy to get Silk Touch.)");
+        add("kanthal_coil", "Right-click the EBF with a Screwdriver", "to change the coils to Kanthal");
+        add("stainless_steel_dust", "Use Slot-Locking with REI to differentiate its recipe from the invar dust");
+        add("steam_blast_furnace", "Needs at least one Steel or higher tier", "hatch for 3 and 4 EU/t recipes");
+        add(MIBlock.TRASH_CAN,
+                "Will delete any item or fluid sent into it.",
+                "Can also be used to empty a fluid slot",
+                "by Right-Clicking on it with a Trash Can");
+
+        add(itemLike -> itemLike.asItem() instanceof PipeItem pipe && (pipe.isItemPipe() || pipe.isFluidPipe()),
+                "pipe",
+                "Can be instantly retrieved by",
+                "Right-Clicking with any Wrench.",
+                "Use Shift + Right-Click to connect ",
+                "directly the pipe to the target block.");
+
+        add(itemLike -> itemLike.asItem() instanceof PipeItem pipe && pipe.isCable(),
+                "cable", " ",
+                "Can power blocks from any mod, but can",
+                "only extract energy from Modern",
+                "Industrialization blocks and machines.",
+                "They also are the only cables able",
+                "to power Modern Industrialization machines.");
+
+    }
+
+    public static class TooltipAttachment implements Comparable<TooltipAttachment> {
 
         public final Predicate<Item> addTooltip;
         public final Function<ItemStack, List<Component>> tooltipLines;
         public boolean requiresShift = true;
+        public int priority = 0;
 
         public static TooltipAttachment ofMultiline(Predicate<Item> addTooltip, Function<ItemStack, List<Component>> tooltipLines) {
             return new TooltipAttachment(addTooltip, tooltipLines);
@@ -240,6 +298,15 @@ public class MITooltips {
             return this;
         }
 
+        public TooltipAttachment setPriority(int priority) {
+            this.priority = priority;
+            return this;
+        }
+
+        @Override
+        public int compareTo(@NotNull MITooltips.TooltipAttachment o) {
+            return -Integer.compare(priority, o.priority);
+        }
     }
 
     public static class Line {

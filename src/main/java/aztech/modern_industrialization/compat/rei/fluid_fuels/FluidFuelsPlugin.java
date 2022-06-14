@@ -25,19 +25,13 @@ package aztech.modern_industrialization.compat.rei.fluid_fuels;
 
 import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.MIItem;
-import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.api.FluidFuelRegistry;
-import aztech.modern_industrialization.util.TextHelper;
-import java.util.Collections;
-import java.util.List;
 import me.shedaniel.rei.api.client.plugins.REIClientPlugin;
 import me.shedaniel.rei.api.client.registry.category.CategoryRegistry;
 import me.shedaniel.rei.api.client.registry.display.DisplayRegistry;
 import me.shedaniel.rei.api.common.category.CategoryIdentifier;
-import me.shedaniel.rei.api.common.entry.EntryStack;
 import me.shedaniel.rei.api.common.util.EntryStacks;
 import net.minecraft.core.Registry;
-import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.material.Fluid;
 
@@ -48,8 +42,8 @@ public class FluidFuelsPlugin implements REIClientPlugin {
     public void registerCategories(CategoryRegistry registry) {
         registry.add(new FluidFuelsCategory());
 
-        addItem(registry, "diesel_generator", "turbo_diesel_generator", "large_diesel_generator");
-        addDoubleEfficiency(registry, "large_steam_boiler", "advanced_large_steam_boiler", "high_pressure_large_steam_boiler",
+        addItem(registry, "diesel_generator", "turbo_diesel_generator", "large_diesel_generator", "large_steam_boiler", "advanced_large_steam_boiler",
+                "high_pressure_large_steam_boiler",
                 "high_pressure_advanced_large_steam_boiler");
         addItem(registry, MIItem.DIESEL_JETPACK.asItem(), MIItem.DIESEL_CHAINSAW.asItem(), MIItem.DIESEL_MINING_DRILL.asItem());
 
@@ -79,13 +73,4 @@ public class FluidFuelsPlugin implements REIClientPlugin {
         }
     }
 
-    private static final List<Component> DOUBLE_EFFICIENCY = Collections
-            .singletonList(MIText.DoubleFluidFuelEfficiency.text().setStyle(TextHelper.UPGRADE_TEXT));
-
-    private void addDoubleEfficiency(CategoryRegistry registry, String... idNamespaces) {
-        for (String idNamespace : idNamespaces) {
-            EntryStack<?> entry = EntryStacks.of(get(idNamespace)).setting(EntryStack.Settings.TOOLTIP_APPEND_EXTRA, es -> DOUBLE_EFFICIENCY);
-            registry.addWorkstations(CATEGORY, entry);
-        }
-    }
 }

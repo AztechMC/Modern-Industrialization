@@ -33,7 +33,6 @@ import net.minecraft.network.chat.TextColor;
 
 public class TextHelper {
     public static final Style GRAY_TEXT = Style.EMPTY.withColor(TextColor.fromRgb(0xa9a9a9)).withItalic(true);
-    public static final Style UPGRADE_TEXT = Style.EMPTY.withColor(TextColor.fromRgb(0xc3ff9c));
     public static final Style NUMBER_TEXT = Style.EMPTY.withColor(TextColor.fromRgb(0xffde7d)).withItalic(false);
     public static final Style WATER_TEXT = Style.EMPTY.withColor(TextColor.fromRgb(0x3264ff));
     public static final Style WARNING_TEXT = Style.EMPTY.withColor(ChatFormatting.RED);
@@ -168,14 +167,6 @@ public class TextHelper {
         var amount = getAmount(eu);
         return MIText.EuT.text(amount.digit(),
                 amount.unit());
-    }
-
-    public static Component getEuText(long eu, boolean style) {
-        MutableComponent text = getEuText(eu);
-        if (style) {
-            text.setStyle(TextHelper.NUMBER_TEXT);
-        }
-        return text;
     }
 
     public static Component getEuTextTick(double eu, boolean style) {

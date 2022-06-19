@@ -23,6 +23,9 @@
  */
 package aztech.modern_industrialization.machines.blockentities.multiblocks;
 
+import aztech.modern_industrialization.MIFluids;
+import aztech.modern_industrialization.MIText;
+import aztech.modern_industrialization.MITooltips;
 import aztech.modern_industrialization.inventory.MIInventory;
 import aztech.modern_industrialization.machines.BEP;
 import aztech.modern_industrialization.machines.components.*;
@@ -36,6 +39,7 @@ import aztech.modern_industrialization.machines.multiblocks.ShapeTemplate;
 import aztech.modern_industrialization.util.Tickable;
 import java.util.List;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.level.material.Fluids;
 
 public class SteamBoilerMultiblockBlockEntity extends MultiblockMachineBlockEntity implements Tickable, TooltipProvider {
 
@@ -47,6 +51,8 @@ public class SteamBoilerMultiblockBlockEntity extends MultiblockMachineBlockEnti
 
     private final SteamHeaterComponent steamHeater;
     private final FuelBurningComponent fuelBurning;
+
+    public final boolean highPressure;
 
     public SteamBoilerMultiblockBlockEntity(BEP bep, ShapeTemplate shapeTemplate, String name, long maxEuProduction, boolean highPressure) {
         super(bep, new MachineGuiParameters.Builder(name, false).build(), new OrientationComponent.Params(false, false, false));
@@ -63,6 +69,8 @@ public class SteamBoilerMultiblockBlockEntity extends MultiblockMachineBlockEnti
 
         registerClientComponent(new ProgressBar.Server(PROGRESS_BAR, () -> (float) fuelBurning.getBurningProgress()));
         registerClientComponent(new TemperatureBar.Server(TEMPERATURE_BAR, () -> (int) steamHeater.getTemperature()));
+
+        this.highPressure = highPressure;
 
         this.registerComponents(isActiveComponent, steamHeater, fuelBurning);
 
@@ -132,6 +140,15 @@ public class SteamBoilerMultiblockBlockEntity extends MultiblockMachineBlockEnti
 
     @Override
     public List<Component> getTooltips() {
-        return fuelBurning.getTooltips();
+        List<Component> tooltips = fuelBurning.getTooltips();
+
+        if (highPressure) {
+            tooltips.add(new MITooltips.Line(MIText.AcceptLowHighPressure).arg(MIFluids.HIGH_PRESSURE_WATER).arg(MIFluids.HIGH_PRESSURE_HEAVY_WATER)
+                    .build());
+        } else {
+            tooltips.add(new MITooltips.Line(MIText.AcceptLowHighPressure).arg(Fluids.WATER).arg(MIFluids.HEAVY_WATER).build());
+        }
+
+        return tooltips;
     }
 }

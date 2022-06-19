@@ -25,6 +25,7 @@ package aztech.modern_industrialization;
 
 import aztech.modern_industrialization.api.pipes.item.SpeedUpgrade;
 import aztech.modern_industrialization.blocks.OreBlock;
+import aztech.modern_industrialization.definition.FluidLike;
 import aztech.modern_industrialization.machines.MachineBlock;
 import aztech.modern_industrialization.machines.blockentities.multiblocks.ElectricBlastFurnaceBlockEntity;
 import aztech.modern_industrialization.machines.components.LubricantHelper;
@@ -100,6 +101,8 @@ public class MITooltips {
 
             if (o instanceof Fluid f) {
                 return FLUID_PARSER.parse(f);
+            } else if (o instanceof FluidLike f) {
+                return FLUID_PARSER.parse(f.asFluid());
             }
 
             return new TextComponent(String.valueOf(o)).withStyle(style);

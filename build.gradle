@@ -132,6 +132,13 @@ repositories {
             includeGroup("appeng")
         }
     }
+    // For the "No Indium?" mod
+    maven {
+        url = 'https://maven.cafeteria.dev/releases/'
+        content {
+            includeGroup "me.luligabi"
+        }
+    }
     mavenLocal()
 
 }
@@ -183,6 +190,9 @@ dependencies {
     include modImplementation("io.github.ladysnake:PlayerAbilityLib:${project.pal_version}") {
         exclude(group: "net.fabricmc.fabric-api")
     }
+
+    // Include No Indium? https://github.com/Luligabi1/NoIndium
+    include "me.luligabi:NoIndium:${project.no_indium_version}"
 
     modImplementation("lol.bai.megane:megane-api:${project.megane_api_version}") {
         exclude(group: "net.fabricmc.fabric-api")
@@ -384,6 +394,7 @@ if (System.getenv("CURSEFORGE_API_KEY") && !version.endsWith("-SNAPSHOT")) {
                 requiredDependency "cloth-config"
                 optionalDependency "wthit"
                 optionalDependency "megane"
+                embeddedLibrary "no-indium"
                 embeddedLibrary "patchouli-fabric"
                 embeddedLibrary "pal"
             }

@@ -59,7 +59,7 @@ public final class MIItem {
 
     // @formatter:off
     // Guide book first so people read it!
-    public static final ItemDefinition<GuideBookItem> GUIDE_BOOK = item("Modern Industrialization Guidebook", "guidebook", GuideBookItem::new, SortOrder.GUIDE_BOOK);
+    public static final ItemDefinition<GuideBookItem> GUIDE_BOOK = item("MI Guidebook", "guidebook", GuideBookItem::new, SortOrder.GUIDE_BOOK);
 
     // Forge hammer, then the various hammers!
     public static final ItemDefinition<ForgeTool> IRON_HAMMER = itemHandheld("Iron Hammer", "iron_hammer", p -> new ForgeTool(Tiers.IRON, p), HAMMER);

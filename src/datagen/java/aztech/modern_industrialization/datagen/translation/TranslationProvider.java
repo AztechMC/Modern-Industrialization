@@ -65,6 +65,10 @@ public record TranslationProvider(FabricDataGenerator gen) implements DataProvid
         addTranslation("block.modern_industrialization.pipe", "Pipe(s)");
         addTranslation("book.modern_industrialization.landing_text",
                 "Welcome to Modern Industrialization! To get started, be sure to collect a lot of Copper Ore and Tin Ore.");
+
+        addTranslation("book.modern_industrialization.subtitle",
+                "Modern Industrialization");
+
         addTranslation("item.modern_industrialization.energy_p2p_tunnel", "EU P2P Tunnel");
         addTranslation("key.modern_industrialization.activate", "Toggle Flight");
         addTranslation("text.autoconfig.modern_industrialization.title", "Modern Industrialization Menu");

@@ -213,6 +213,8 @@ public class PipeBlockEntity extends FastBlockEntity implements IPipeScreenHandl
             if (pipe.getType() == type) {
                 pipe.addConnection(level, worldPosition, direction);
                 pipe.getManager().addLink(worldPosition, direction, true);
+                pipe.updateConnections(level, worldPosition);
+
                 onConnectionsChanged();
                 return;
             }

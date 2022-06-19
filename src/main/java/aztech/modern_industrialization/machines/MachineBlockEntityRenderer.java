@@ -24,6 +24,7 @@
 package aztech.modern_industrialization.machines;
 
 import aztech.modern_industrialization.client.model.MachineBakedModel;
+import aztech.modern_industrialization.compat.sodium.SodiumCompat;
 import aztech.modern_industrialization.machines.models.MachineCasing;
 import aztech.modern_industrialization.machines.models.MachineModelClientData;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -108,6 +109,8 @@ public class MachineBlockEntityRenderer<T extends MachineBlockEntity> implements
                 if (quad != null) {
                     int faceLight = LevelRenderer.getLightColor(entity.getLevel(), entity.getBlockState(), entity.getBlockPos().relative(d));
                     vc.putBulkData(matrices.last(), quad, 1.0f, 1.0f, 1.0f, faceLight, OverlayTexture.NO_OVERLAY);
+
+                    SodiumCompat.markSpriteActive(quad.getSprite());
                 }
             }
         }

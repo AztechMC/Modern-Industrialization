@@ -23,6 +23,7 @@
  */
 package aztech.modern_industrialization.util;
 
+import aztech.modern_industrialization.compat.sodium.SodiumCompat;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.BufferUploader;
@@ -129,6 +130,8 @@ public class RenderHelper {
         float r = ((color >> 16) & 255) / 256f;
         float g = ((color >> 8) & 255) / 256f;
         float b = (color & 255) / 256f;
+
+        SodiumCompat.markSpriteActive(sprite);
 
         // Make sure fill is within [TANK_W, 1 - TANK_W]
         fill = TANK_W + (1 - 2 * TANK_W) * Math.min(1, Math.max(fill, 0));

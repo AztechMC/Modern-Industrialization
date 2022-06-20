@@ -29,8 +29,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.mojang.datafixers.util.Pair;
-import java.io.InputStreamReader;
-import java.nio.charset.StandardCharsets;
+import java.io.BufferedReader;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
@@ -49,7 +48,6 @@ import net.minecraft.client.resources.model.ModelBakery;
 import net.minecraft.client.resources.model.ModelState;
 import net.minecraft.client.resources.model.UnbakedModel;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.inventory.InventoryMenu;
 import org.jetbrains.annotations.Nullable;
@@ -58,9 +56,8 @@ public class MachineUnbakedModel implements UnbakedModel {
     private static final ResourceLocation BASE_BLOCK_MODEL = new ResourceLocation("minecraft:block/block");
     private static final Gson GSON = new GsonBuilder().registerTypeAdapter(ResourceLocation.class, new ResourceLocation.Serializer()).create();
 
-    public static MachineUnbakedModel deserialize(MachineCasing baseCasing, Resource jsonModel) {
-        var stream = new InputStreamReader(jsonModel.getInputStream(), StandardCharsets.UTF_8);
-        var element = JsonParser.parseReader(stream);
+    public static MachineUnbakedModel deserialize(MachineCasing baseCasing, BufferedReader jsonModelReader) {
+        var element = JsonParser.parseReader(jsonModelReader);
         return new MachineUnbakedModel(baseCasing, element.getAsJsonObject());
     }
 

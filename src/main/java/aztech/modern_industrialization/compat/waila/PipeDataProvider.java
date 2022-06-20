@@ -28,15 +28,15 @@ import aztech.modern_industrialization.pipes.electricity.ElectricityNetworkNode;
 import aztech.modern_industrialization.pipes.fluid.FluidNetworkNode;
 import aztech.modern_industrialization.pipes.impl.PipeBlockEntity;
 import aztech.modern_industrialization.util.NbtHelper;
+import mcp.mobius.waila.api.IPluginConfig;
+import mcp.mobius.waila.api.IServerAccessor;
 import mcp.mobius.waila.api.IServerDataProvider;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.level.Level;
 
 public class PipeDataProvider implements IServerDataProvider<PipeBlockEntity> {
     @Override
-    public void appendServerData(CompoundTag data, ServerPlayer player, Level world, PipeBlockEntity pipe) {
-        for (PipeNetworkNode node : pipe.getNodes()) {
+    public void appendServerData(CompoundTag data, IServerAccessor<PipeBlockEntity> accessor, IPluginConfig config) {
+        for (PipeNetworkNode node : accessor.getTarget().getNodes()) {
             CompoundTag pipeData = new CompoundTag();
 
             if (node instanceof FluidNetworkNode) {

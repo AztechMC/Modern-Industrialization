@@ -28,14 +28,14 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.components.Button;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 
 class PriorityButton extends Button {
     private final int u;
 
     public PriorityButton(int x, int y, int width, int u, String message, OnPress onPress, OnTooltip tooltipSupplier) {
-        super(x, y, width, 12, new TextComponent(message), onPress, tooltipSupplier);
+        super(x, y, width, 12, Component.literal(message), onPress, tooltipSupplier);
         this.u = u;
     }
 

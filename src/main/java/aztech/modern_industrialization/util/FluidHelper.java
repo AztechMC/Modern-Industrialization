@@ -38,7 +38,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextColor;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.world.item.TooltipFlag;
 
 public class FluidHelper {
@@ -77,11 +76,11 @@ public class FluidHelper {
     public static MutableComponent getFluidAmount(long amount, long capacity) {
         if (capacity < 100 * FluidConstants.BUCKET || Screen.hasShiftDown()) {
             String text = FluidTextHelper.getUnicodeMillibuckets(amount, false) + " / " + capacity / 81;
-            return new TextComponent(text + " mB");
+            return Component.literal(text + " mB");
         } else {
             var maxedAmount = TextHelper.getMaxedAmount((double) amount / FluidConstants.BUCKET,
                     (double) capacity / FluidConstants.BUCKET);
-            return new TextComponent(maxedAmount.digit() + " / " + maxedAmount.maxDigit() + " " + maxedAmount.unit() + "B");
+            return Component.literal(maxedAmount.digit() + " / " + maxedAmount.maxDigit() + " " + maxedAmount.unit() + "B");
         }
 
     }
@@ -90,10 +89,10 @@ public class FluidHelper {
     public static MutableComponent getFluidAmount(long amount) {
         if (amount < 100 * FluidConstants.BUCKET || Screen.hasShiftDown()) {
             String text = FluidTextHelper.getUnicodeMillibuckets(amount, false);
-            return new TextComponent(text + " mB");
+            return Component.literal(text + " mB");
         } else {
             var amountUnit = TextHelper.getAmount((double) amount / FluidConstants.BUCKET);
-            return new TextComponent(amountUnit.digit() + " " + amountUnit.unit() + "B");
+            return Component.literal(amountUnit.digit() + " " + amountUnit.unit() + "B");
         }
     }
 

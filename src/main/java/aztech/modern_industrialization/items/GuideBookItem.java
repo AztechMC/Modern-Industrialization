@@ -29,7 +29,6 @@ import aztech.modern_industrialization.util.TextHelper;
 import java.util.List;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
@@ -52,7 +51,7 @@ public class GuideBookItem extends Item {
                 PatchouliAPI.get().openBookGUI((ServerPlayer) user, new MIIdentifier("book"));
                 return InteractionResultHolder.success(user.getItemInHand(hand));
             } else {
-                user.displayClientMessage(new TextComponent("Patchouli is not loaded, can't open guide book!"), true);
+                user.displayClientMessage(Component.literal("Patchouli is not loaded, can't open guide book!"), true);
             }
         }
         return InteractionResultHolder.consume(user.getItemInHand(hand));

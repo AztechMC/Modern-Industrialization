@@ -26,10 +26,10 @@ package aztech.modern_industrialization.nuclear;
 import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.MIItem;
 import aztech.modern_industrialization.items.SortOrder;
-import java.util.Random;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.minecraft.core.Registry;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.ItemStack;
 
 public class NuclearFuel extends NuclearAbsorbable {
@@ -106,7 +106,7 @@ public class NuclearFuel extends NuclearAbsorbable {
         return factor;
     }
 
-    public int simulateDesintegration(double neutronsReceived, ItemStack stack, double temperature, Random rand, INuclearGrid grid) {
+    public int simulateDesintegration(double neutronsReceived, ItemStack stack, double temperature, RandomSource rand, INuclearGrid grid) {
         int absorption = simulateAbsorption(neutronsReceived, stack, rand);
         double fuelEuConsumed = absorption * totalEUbyDesintegration;
         grid.registerEuFuelConsumption(fuelEuConsumed);

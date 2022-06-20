@@ -59,7 +59,7 @@ public class TrashCanBlock extends Block {
         }
 
         @Override
-        public Iterator<StorageView> iterator(TransactionContext transaction) {
+        public Iterator<StorageView> iterator() {
             return Collections.emptyIterator();
         }
 

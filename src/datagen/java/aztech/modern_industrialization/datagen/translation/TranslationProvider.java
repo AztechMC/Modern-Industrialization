@@ -28,21 +28,19 @@ import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.MITooltips;
 import aztech.modern_industrialization.compat.rei.machines.ReiMachineRecipes;
 import aztech.modern_industrialization.definition.Definition;
+import com.google.common.hash.Hashing;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
-import java.io.BufferedWriter;
 import java.io.IOException;
 import java.lang.reflect.Field;
-import java.nio.file.Files;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.util.Map;
-import java.util.Objects;
 import java.util.TreeMap;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
+import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
-import net.minecraft.data.HashCache;
-import org.jetbrains.annotations.NotNull;
 
 public record TranslationProvider(FabricDataGenerator gen) implements DataProvider {
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
@@ -75,7 +73,7 @@ public record TranslationProvider(FabricDataGenerator gen) implements DataProvid
     }
 
     @Override
-    public void run(@NotNull HashCache cache) throws IOException {
+    public void run(CachedOutput cache) throws IOException {
         addManualEntries();
 
         for (var entry : MIText.values()) {
@@ -107,20 +105,10 @@ public record TranslationProvider(FabricDataGenerator gen) implements DataProvid
         customJsonSave(cache, GSON.toJsonTree(TRANSLATION_PAIRS), gen.getOutputFolder().resolve(OUTPUT_PATH));
     }
 
-    private void customJsonSave(HashCache cache, JsonElement jsonElement, Path path) throws IOException {
+    private void customJsonSave(CachedOutput cache, JsonElement jsonElement, Path path) throws IOException {
         String sortedJson = GSON.toJson(jsonElement);
         String prettyPrinted = sortedJson.replace("\\u0027", "'");
-
-        String string2 = SHA1.hashUnencodedChars(prettyPrinted).toString();
-        if (!Objects.equals(cache.getHash(path), string2) || !Files.exists(path)) {
-            Files.createDirectories(path.getParent());
-
-            try (BufferedWriter bufferedWriter = Files.newBufferedWriter(path);) {
-                bufferedWriter.write(prettyPrinted);
-            }
-        }
-
-        cache.putNew(path, string2);
+        cache.writeIfNeeded(path, prettyPrinted.getBytes(StandardCharsets.UTF_8), Hashing.sha1().hashString(prettyPrinted, StandardCharsets.UTF_8));
     }
 
     @Override

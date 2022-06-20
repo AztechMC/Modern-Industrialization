@@ -26,15 +26,13 @@ package aztech.modern_industrialization.blocks.creativetank;
 import aztech.modern_industrialization.ModernIndustrialization;
 import aztech.modern_industrialization.util.FluidHelper;
 import aztech.modern_industrialization.util.NbtHelper;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
 import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.StoragePreconditions;
-import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.ExtractionOnlyStorage;
-import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleViewIterator;
+import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleSlotStorage;
 import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.BlockItem;
@@ -61,7 +59,7 @@ public class CreativeTankItem extends BlockItem {
         tooltip.add(FluidHelper.getFluidName(getFluid(stack), true));
     }
 
-    public static class TankItemStorage implements ExtractionOnlyStorage<FluidVariant>, StorageView<FluidVariant> {
+    public static class TankItemStorage implements ExtractionOnlyStorage<FluidVariant>, SingleSlotStorage<FluidVariant> {
         private final FluidVariant fluid;
 
         public TankItemStorage(ItemStack stack, ContainerItemContext ignored) {
@@ -92,11 +90,6 @@ public class CreativeTankItem extends BlockItem {
         @Override
         public long getAmount() {
             return Integer.MAX_VALUE;
-        }
-
-        @Override
-        public Iterator<StorageView<FluidVariant>> iterator(TransactionContext transaction) {
-            return SingleViewIterator.create(this, transaction);
         }
     }
 }

@@ -29,8 +29,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
+import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
-import net.minecraft.data.HashCache;
 
 public class MachineModelsProvider implements DataProvider {
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
@@ -42,7 +42,7 @@ public class MachineModelsProvider implements DataProvider {
     }
 
     @Override
-    public void run(HashCache cache) throws IOException {
+    public void run(CachedOutput cache) throws IOException {
         Path outputPath = gen.getOutputFolder();
         Path nonGeneratedPath = gen.getOutputFolder().resolve("../../main/resources");
 
@@ -50,7 +50,7 @@ public class MachineModelsProvider implements DataProvider {
             var modelPath = "assets/%s/models/machine/%s.json".formatted(gen.getModId(), entry.getKey());
             if (!Files.exists(nonGeneratedPath.resolve(modelPath))) {
                 // Only generate the model json if it doesn't exist in the non-generated assets.
-                DataProvider.save(GSON, cache, entry.getValue().toMachineJson(), outputPath.resolve(modelPath));
+                DataProvider.saveStable(cache, GSON.toJsonTree(entry.getValue().toMachineJson()), outputPath.resolve(modelPath));
             }
         }
     }

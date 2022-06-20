@@ -40,11 +40,11 @@ import com.mojang.brigadier.Command;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import com.mojang.brigadier.suggestion.SuggestionProvider;
-import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
+import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.SharedSuggestionProvider;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.ChunkPos;
@@ -57,7 +57,7 @@ public class DebugCommands {
 
     // @formatter:off
     public static void init() {
-        CommandRegistrationCallback.EVENT.register((dispatcher, dedicated) -> {
+        CommandRegistrationCallback.EVENT.register((dispatcher, context, env) -> {
             if (!MIConfig.getConfig().enableDebugCommands) {
                 return;
             }
@@ -108,7 +108,7 @@ public class DebugCommands {
             var manager = networks.getManager(type);
             if (manager.hasNode(pos)) {
                 manager.removeNode(pos);
-                src.sendSuccess(new TextComponent("Successfully removed pipe of type %s at position %s.".formatted(type.getIdentifier(), pos)), true);
+                src.sendSuccess(Component.literal("Successfully removed pipe of type %s at position %s.".formatted(type.getIdentifier(), pos)), true);
             }
         }
 
@@ -118,17 +118,17 @@ public class DebugCommands {
     private static int addGhostPipe(CommandSourceStack src, BlockPos pos, ResourceLocation pipeType) throws CommandSyntaxException {
         PipeNetworkType type = PipeNetworkType.get(pipeType);
         if (type == null) {
-            throw new SimpleCommandExceptionType(new TextComponent("Unknown pipe network type: " + pipeType)).create();
+            throw new SimpleCommandExceptionType(Component.literal("Unknown pipe network type: " + pipeType)).create();
         }
 
         var networks = PipeNetworks.get(src.getLevel());
         var manager = networks.getManager(type);
         if (!manager.hasNode(pos)) {
             manager.addNode(type.getNodeCtor().get(), pos, MIPipes.INSTANCE.getPipeItem(type).defaultData);
-            src.sendSuccess(new TextComponent("Successfully added pipe of type %s at position %s.".formatted(type.getIdentifier(), pos)), true);
+            src.sendSuccess(Component.literal("Successfully added pipe of type %s at position %s.".formatted(type.getIdentifier(), pos)), true);
         } else {
             src.sendSuccess(
-                    new TextComponent("Failed to add pipe of type %s at position %s as it already existed.".formatted(type.getIdentifier(), pos)),
+                    Component.literal("Failed to add pipe of type %s at position %s as it already existed.".formatted(type.getIdentifier(), pos)),
                     true);
         }
 
@@ -155,7 +155,7 @@ public class DebugCommands {
     }
 
     private static int dumpStats(ServerPlayer player) {
-        player.displayClientMessage(new TextComponent(
+        player.displayClientMessage(Component.literal(
                 PlayerStatisticsData.get(player.server).get(player).toTag().toString()), false);
         return Command.SINGLE_SUCCESS;
     }

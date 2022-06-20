@@ -27,7 +27,6 @@ import aztech.modern_industrialization.MIBlockEntityTypes;
 import aztech.modern_industrialization.api.FastBlockEntity;
 import aztech.modern_industrialization.api.WrenchableBlockEntity;
 import aztech.modern_industrialization.util.NbtHelper;
-import java.util.Iterator;
 import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
@@ -35,7 +34,7 @@ import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.fabricmc.fabric.api.transfer.v1.storage.StoragePreconditions;
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.ExtractionOnlyStorage;
-import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleViewIterator;
+import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleSlotStorage;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
 import net.minecraft.core.BlockPos;
@@ -52,7 +51,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.Nullable;
 
 public class CreativeTankBlockEntity extends FastBlockEntity
-        implements ExtractionOnlyStorage<FluidVariant>, StorageView<FluidVariant>, WrenchableBlockEntity {
+        implements ExtractionOnlyStorage<FluidVariant>, SingleSlotStorage<FluidVariant>, WrenchableBlockEntity {
     FluidVariant fluid = FluidVariant.blank();
 
     public CreativeTankBlockEntity(BlockPos pos, BlockState state) {
@@ -95,13 +94,11 @@ public class CreativeTankBlockEntity extends FastBlockEntity
         Storage<FluidVariant> handIo = ContainerItemContext.ofPlayerHand(player, InteractionHand.MAIN_HAND).find(FluidStorage.ITEM);
         if (handIo != null) {
             if (isResourceBlank()) {
-                try (Transaction transaction = Transaction.openOuter()) {
-                    for (StorageView<FluidVariant> view : handIo.iterable(transaction)) {
-                        if (!view.isResourceBlank()) {
-                            fluid = view.getResource();
-                            onChanged();
-                            break;
-                        }
+                for (StorageView<FluidVariant> view : handIo) {
+                    if (!view.isResourceBlank()) {
+                        fluid = view.getResource();
+                        onChanged();
+                        break;
                     }
                 }
                 return !isResourceBlank();
@@ -130,11 +127,6 @@ public class CreativeTankBlockEntity extends FastBlockEntity
     @Override
     public long getCapacity() {
         return Long.MAX_VALUE;
-    }
-
-    @Override
-    public Iterator<StorageView<FluidVariant>> iterator(TransactionContext transaction) {
-        return SingleViewIterator.create(this, transaction);
     }
 
     @Override

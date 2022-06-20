@@ -24,7 +24,7 @@
 package aztech.modern_industrialization.items.armor;
 
 import aztech.modern_industrialization.MIIdentifier;
-import net.fabricmc.fabric.api.network.PacketConsumer;
+import aztech.modern_industrialization.util.UnsidedPacketHandler;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
@@ -32,16 +32,14 @@ import net.minecraft.world.item.ItemStack;
 
 public class ArmorPackets {
     public static final ResourceLocation UPDATE_KEYS = new MIIdentifier("update_keys");
-    public static final PacketConsumer ON_UPDATE_KEYS = (context, buffer) -> {
+    public static final UnsidedPacketHandler ON_UPDATE_KEYS = (player, buffer) -> {
         boolean up = buffer.readBoolean();
-        context.getTaskQueue().execute(() -> {
-            MIKeyMap.update(context.getPlayer(), up);
-        });
+        return () -> MIKeyMap.update(player, up);
     };
     public static final ResourceLocation ACTIVATE_CHEST = new MIIdentifier("activate_chest");
-    public static final PacketConsumer ON_ACTIVATE_CHEST = (context, buffer) -> {
+    public static final UnsidedPacketHandler ON_ACTIVATE_CHEST = (player, buffer) -> {
         boolean activated = buffer.readBoolean();
-        context.getTaskQueue().execute(() -> activateChest(context.getPlayer(), activated));
+        return () -> activateChest(player, activated);
     };
 
     static void activateChest(Player player, boolean activated) {

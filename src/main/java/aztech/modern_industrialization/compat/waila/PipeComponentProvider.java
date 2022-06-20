@@ -84,7 +84,7 @@ public class PipeComponentProvider implements IBlockComponentProvider {
                 FluidVariant fluid = NbtHelper.getFluidCompatible(tag, "fluid");
                 long amount = tag.getLong("amount");
                 int capacity = tag.getInt("capacity");
-                FluidHelper.getTooltipForFluidStorage(fluid, amount, capacity).forEach(tooltip::add);
+                FluidHelper.getTooltipForFluidStorage(fluid, amount, capacity).forEach(c -> tooltip.addLine().with(c));
             }
 
             if (tag.contains("eu")) {
@@ -92,8 +92,8 @@ public class PipeComponentProvider implements IBlockComponentProvider {
                 long maxEu = tag.getLong("maxEu");
                 String tier = tag.getString("tier");
 
-                tooltip.add(CableTier.getTier(tier).englishNameComponent);
-                tooltip.add(MIText.EuMaxed.text(eu, maxEu, "").setStyle(style));
+                tooltip.addLine().with(CableTier.getTier(tier).englishNameComponent);
+                tooltip.addLine().with(MIText.EuMaxed.text(eu, maxEu, "").setStyle(style));
             }
         }
     }

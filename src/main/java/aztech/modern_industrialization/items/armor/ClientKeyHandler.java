@@ -28,7 +28,7 @@ import io.netty.buffer.Unpooled;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
-import net.fabricmc.fabric.api.network.ClientSidePacketRegistry;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.Options;
@@ -66,7 +66,7 @@ public class ClientKeyHandler {
                 ArmorPackets.activateChest(client.player, activated);
                 FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.buffer());
                 buf.writeBoolean(activated);
-                ClientSidePacketRegistry.INSTANCE.sendToServer(ArmorPackets.ACTIVATE_CHEST, buf);
+                ClientPlayNetworking.send(ArmorPackets.ACTIVATE_CHEST, buf);
             }
         }
     }
@@ -84,7 +84,7 @@ public class ClientKeyHandler {
             MIKeyMap.update(client.player, up);
             FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.buffer());
             buf.writeBoolean(up);
-            ClientSidePacketRegistry.INSTANCE.sendToServer(ArmorPackets.UPDATE_KEYS, buf);
+            ClientPlayNetworking.send(ArmorPackets.UPDATE_KEYS, buf);
         }
     }
 }

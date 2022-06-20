@@ -55,7 +55,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextColor;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.Entity;
@@ -272,8 +271,8 @@ public class SteamDrillItem extends Item implements DynamicToolItem, MagnaTool, 
         int barWater = (int) Math.ceil(data.waterLevel / 5d);
         int barVoid = 20 - barWater;
         // Water bar
-        tooltip.add(new TextComponent("|".repeat(barWater)).setStyle(TextHelper.WATER_TEXT)
-                .append(new TextComponent("|".repeat(barVoid)).setStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x6b6b6b)))));
+        tooltip.add(Component.literal("|".repeat(barWater)).setStyle(TextHelper.WATER_TEXT)
+                .append(Component.literal("|".repeat(barVoid)).setStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x6b6b6b)))));
         // Fuel left
         if (data.burnTicks > 0) {
             tooltip.add(MIText.SecondsLeft.text(data.burnTicks / 100).setStyle(TextHelper.GRAY_TEXT));

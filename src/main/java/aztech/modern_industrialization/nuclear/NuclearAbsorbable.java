@@ -26,10 +26,10 @@ package aztech.modern_industrialization.nuclear;
 import aztech.modern_industrialization.MIItem;
 import aztech.modern_industrialization.items.SortOrder;
 import com.google.common.base.Preconditions;
-import java.util.Random;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.ItemStack;
 
 public class NuclearAbsorbable extends NuclearComponentItem {
@@ -87,11 +87,11 @@ public class NuclearAbsorbable extends NuclearComponentItem {
         return tag.getInt("desRem");
     }
 
-    protected static int randIntFromDouble(double value, Random rand) {
+    protected static int randIntFromDouble(double value, RandomSource rand) {
         return (int) Math.floor(value) + (rand.nextDouble() < (value % 1) ? 1 : 0);
     }
 
-    public int simulateAbsorption(double neutronsReceived, ItemStack stack, Random rand) {
+    public int simulateAbsorption(double neutronsReceived, ItemStack stack, RandomSource rand) {
         int absorbNeutrons = Math.min(randIntFromDouble(neutronsReceived, rand), getRemainingDesintegrations(stack));
 
         setRemainingDesintegrations(stack, getRemainingDesintegrations(stack) - absorbNeutrons);

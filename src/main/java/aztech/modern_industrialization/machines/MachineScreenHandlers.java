@@ -53,7 +53,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Inventory;
@@ -283,7 +282,7 @@ public class MachineScreenHandlers {
         }
 
         private void addLockButton() {
-            addButton(40, new TextComponent("slot locking"), syncId -> {
+            addButton(40, Component.literal("slot locking"), syncId -> {
                 boolean newLockingMode = !menu.lockingMode;
                 menu.lockingMode = newLockingMode;
                 FriendlyByteBuf buf = PacketByteBufs.create();
@@ -451,7 +450,7 @@ public class MachineScreenHandlers {
             }
             Optional<TooltipComponent> data = vanillaStack.getTooltipImage();
             // Append capacity
-            TextComponent capacityText = new TextComponent(String.valueOf(stack.getAdjustedCapacity()));
+            var capacityText = Component.literal(String.valueOf(stack.getAdjustedCapacity()));
             if (stack.getAdjustedCapacity() != 64) {
                 capacityText.setStyle(TextHelper.YELLOW_BOLD);
             }

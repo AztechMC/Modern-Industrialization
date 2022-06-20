@@ -38,7 +38,6 @@ import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceLocation;
 
 /**
@@ -132,7 +131,7 @@ public class AutoExtract {
                 String type = isItem ? "item" : "fluid";
                 int index = isItem ? 0 : 1;
                 String insertOrExtract = displayAsInsert ? "insert" : "extract";
-                container.addButton(u, new TextComponent(type + " auto-extract"), syncId -> {
+                container.addButton(u, Component.literal(type + " auto-extract"), syncId -> {
                     boolean newExtract = !extractStatus[index];
                     extractStatus[index] = newExtract;
                     FriendlyByteBuf buf = PacketByteBufs.create();

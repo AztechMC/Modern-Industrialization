@@ -122,11 +122,9 @@ public class ReplicatorMachineBlockEntity extends MachineBlockEntity implements 
             // check that the item doesn't contain uu matter
             Storage<FluidVariant> fluidItem = ContainerItemContext.withInitial(itemVariant, 1).find(FluidStorage.ITEM);
             if (fluidItem != null) {
-                try (Transaction tx = Transaction.openOuter()) {
-                    for (var view : fluidItem.iterable(tx)) {
-                        if (view.getResource().isOf(MIFluids.UU_MATER.asFluid())) {
-                            return false;
-                        }
+                for (var view : fluidItem) {
+                    if (view.getResource().isOf(MIFluids.UU_MATER.asFluid())) {
+                        return false;
                     }
                 }
             }

@@ -197,7 +197,7 @@ public class RenderHelper {
         bufferBuilder.vertex(model, x1, y0, z).color(r, g, b, 1).uv(u1, v0).endVertex();
         bufferBuilder.vertex(model, x0, y0, z).color(r, g, b, 1).uv(u0, v0).endVertex();
         bufferBuilder.end();
-        BufferUploader.end(bufferBuilder);
+        BufferUploader.drawWithShader(bufferBuilder.end());
 
         RenderSystem.enableDepthTest();
     }
@@ -321,8 +321,7 @@ public class RenderHelper {
         bufferBuilder.vertex(matrix, (float) x2, (float) y2, 0.0F).color(g, h, k, f).endVertex();
         bufferBuilder.vertex(matrix, (float) x2, (float) y1, 0.0F).color(g, h, k, f).endVertex();
         bufferBuilder.vertex(matrix, (float) x1, (float) y1, 0.0F).color(g, h, k, f).endVertex();
-        bufferBuilder.end();
-        BufferUploader.end(bufferBuilder);
+        BufferUploader.drawWithShader(bufferBuilder.end());
         RenderSystem.enableTexture();
         RenderSystem.disableBlend();
     }

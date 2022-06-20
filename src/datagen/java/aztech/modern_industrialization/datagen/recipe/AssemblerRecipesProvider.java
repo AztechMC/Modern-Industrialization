@@ -27,7 +27,6 @@ import aztech.modern_industrialization.recipe.json.MIRecipeJson;
 import aztech.modern_industrialization.recipe.json.ShapedRecipeJson;
 import com.google.gson.Gson;
 import java.nio.charset.StandardCharsets;
-import java.util.Collection;
 import java.util.List;
 import java.util.function.Consumer;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
@@ -51,15 +50,16 @@ public class AssemblerRecipesProvider extends MIRecipesProvider {
     @Override
     protected void generateRecipes(Consumer<FinishedRecipe> consumer) {
         var nonGeneratedResources = dataGenerator.getOutputFolder().resolve("../../main/resources");
-        var manager = new MultiPackResourceManager(PackType.SERVER_DATA, List.of(new FolderPackResources(nonGeneratedResources.toFile())));
-
-        Collection<ResourceLocation> possibleTargets = manager.listResources("recipes", path -> path.endsWith(".json"));
-        for (ResourceLocation pathId : possibleTargets) {
-            if (shouldConvertToAssembler(pathId)) {
-                try (var resource = manager.getResource(pathId)) {
-                    convertToAssembler(consumer, pathId, IOUtils.toByteArray(resource.getInputStream()));
-                } catch (Exception exception) {
-                    throw new RuntimeException("Failed to convert asbl recipe %s. Error: %s".formatted(pathId, exception), exception);
+        try (var manager = new MultiPackResourceManager(PackType.SERVER_DATA, List.of(new FolderPackResources(nonGeneratedResources.toFile())))) {
+            var possibleTargets = manager.listResources("recipes", path -> path.getNamespace().endsWith(".json"));
+            for (var entry : possibleTargets.entrySet()) {
+                var pathId = entry.getKey();
+                if (shouldConvertToAssembler(pathId)) {
+                    try (var stream = entry.getValue().open()) {
+                        convertToAssembler(consumer, pathId, IOUtils.toByteArray(stream));
+                    } catch (Exception exception) {
+                        throw new RuntimeException("Failed to convert asbl recipe %s. Error: %s".formatted(pathId, exception), exception);
+                    }
                 }
             }
         }

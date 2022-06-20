@@ -27,7 +27,6 @@ import aztech.modern_industrialization.util.FluidHelper;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextColor;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -43,6 +42,6 @@ public class MIBucketItem extends BucketItem {
 
     @Override
     public Component getName(ItemStack stack) {
-        return new TranslatableComponent(this.getDescriptionId(stack)).setStyle(Style.EMPTY.withColor(TextColor.fromRgb(color)));
+        return Component.translatable(this.getDescriptionId(stack)).setStyle(Style.EMPTY.withColor(TextColor.fromRgb(color)));
     }
 }

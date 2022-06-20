@@ -23,14 +23,11 @@
  */
 package aztech.modern_industrialization;
 
-import static net.fabricmc.fabric.api.client.command.v1.ClientCommandManager.literal;
-
 import aztech.modern_industrialization.blocks.forgehammer.ForgeHammerScreen;
 import aztech.modern_industrialization.blocks.storage.barrel.BarrelTooltipData;
 import aztech.modern_industrialization.blocks.storage.barrel.client.BarrelTooltipComponent;
 import aztech.modern_industrialization.blocks.storage.tank.CreativeTankClientSetup;
 import aztech.modern_industrialization.client.model.MachineModelLoader;
-import aztech.modern_industrialization.debug.MissingTranslationsCommand;
 import aztech.modern_industrialization.inventory.ConfigurableInventoryPacketHandlers;
 import aztech.modern_industrialization.inventory.ConfigurableInventoryPackets;
 import aztech.modern_industrialization.items.SteamDrillItem;
@@ -49,7 +46,6 @@ import aztech.modern_industrialization.misc.version.VersionEvents;
 import aztech.modern_industrialization.pipes.MIPipesClient;
 import aztech.modern_industrialization.util.TextHelper;
 import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.fabric.api.client.command.v1.ClientCommandManager;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
@@ -59,7 +55,7 @@ import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.fabricmc.fabric.impl.content.registry.FuelRegistryImpl;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.MenuScreens;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.inventory.MenuType;
@@ -83,7 +79,6 @@ public class ModernIndustrializationClient implements ClientModInitializer {
         ClientTickEvents.END_CLIENT_TICK.register(ClientKeyHandler::onEndTick);
         HudRenderCallback.EVENT.register(HudRenderer::onRenderHud);
         setupTooltips();
-        setupClientCommands();
         VersionEvents.init();
 
         ModernIndustrialization.LOGGER.info("Modern Industrialization client setup done!");
@@ -129,7 +124,7 @@ public class ModernIndustrializationClient implements ClientModInitializer {
                 if (context.isAdvanced() && !MIConfig.getConfig().disableItemTagTooltips) {
                     var ids = item.builtInRegistryHolder().tags().map(TagKey::location).sorted().toList();
                     for (ResourceLocation id : ids) {
-                        lines.add(new TextComponent("#" + id).setStyle(TextHelper.GRAY_TEXT));
+                        lines.add(Component.literal("#" + id).setStyle(TextHelper.GRAY_TEXT));
                     }
                 }
             }
@@ -143,11 +138,5 @@ public class ModernIndustrializationClient implements ClientModInitializer {
             }
             return null;
         });
-    }
-
-    private void setupClientCommands() {
-        ClientCommandManager.DISPATCHER.register(literal("miclient")//
-                .then(literal("dump_missing_translations").executes(MissingTranslationsCommand::run))//
-        );
     }
 }

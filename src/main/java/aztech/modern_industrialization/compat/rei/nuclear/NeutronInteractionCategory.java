@@ -49,7 +49,6 @@ import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.core.Registry;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceLocation;
 
 public class NeutronInteractionCategory implements DisplayCategory<NeutronInteractionDisplay> {
@@ -108,11 +107,11 @@ public class NeutronInteractionCategory implements DisplayCategory<NeutronIntera
         String scatteringString = String.format("%.1f ", 100 * interactionProb * scattering) + "%";
         String absorptionString = String.format("%.1f ", 100 * interactionProb * absorption) + "%";
 
-        widgets.add(Widgets.createLabel(new Point(centerX - 20, centerY - 15), new TextComponent(scatteringString))
-                .tooltip(MIText.ScatteringProbability.text().getString()));
+        widgets.add(Widgets.createLabel(new Point(centerX - 20, centerY - 15), Component.literal(scatteringString))
+                .tooltip(MIText.ScatteringProbability.text()));
 
-        widgets.add(Widgets.createLabel(new Point(centerX + 30, centerY + 35), new TextComponent(absorptionString).setStyle(TextHelper.NEUTRONS))
-                .noShadow().tooltip(MIText.AbsorptionProbability.text().getString()));
+        widgets.add(Widgets.createLabel(new Point(centerX + 30, centerY + 35), Component.literal(absorptionString).setStyle(TextHelper.NEUTRONS))
+                .noShadow().tooltip(MIText.AbsorptionProbability.text()));
 
         if (type == NeutronType.FAST) {
             double slowingProba = display.nuclearComponent.getNeutronBehaviour().neutronSlowingProbability();
@@ -122,13 +121,13 @@ public class NeutronInteractionCategory implements DisplayCategory<NeutronIntera
 
             widgets.add(Widgets
                     .createLabel(new Point(centerX + 60, centerY + 20),
-                            new TextComponent(fastFractionString).setStyle(Style.EMPTY.withColor(0xbc1a1a)))
-                    .noShadow().tooltip(MIText.FastNeutronFraction.text().getString()));
+                            Component.literal(fastFractionString).setStyle(Style.EMPTY.withColor(0xbc1a1a)))
+                    .noShadow().tooltip(MIText.FastNeutronFraction.text()));
 
             widgets.add(Widgets
                     .createLabel(new Point(centerX + 60, centerY - 10),
-                            new TextComponent(thermalFractionString).setStyle(Style.EMPTY.withColor(0x0c27a7)))
-                    .noShadow().tooltip(MIText.ThermalNeutronFraction.text().getString()));
+                            Component.literal(thermalFractionString).setStyle(Style.EMPTY.withColor(0x0c27a7)))
+                    .noShadow().tooltip(MIText.ThermalNeutronFraction.text()));
 
             int index = 1 + (int) Math.floor((slowingProba) * 9);
             if (slowingProba == 0) {
@@ -162,21 +161,21 @@ public class NeutronInteractionCategory implements DisplayCategory<NeutronIntera
         widgets.add(Widgets
                 .createLabel(new Point(centerX + 20, centerY + 35),
                         MIText.NeutronsMultiplication.text(String.format("%.1f", fuel.neutronMultiplicationFactor)).setStyle(TextHelper.NEUTRONS))
-                .noShadow().tooltip(MIText.NeutronTemperatureVariation.text().getString()));
+                .noShadow().tooltip(MIText.NeutronTemperatureVariation.text()));
 
         widgets.add(Widgets
                 .createLabel(new Point(centerX - 18, centerY + 23),
-                        new TextComponent(String.format("%d EU", NuclearConstant.EU_FOR_FAST_NEUTRON)).setStyle(TextHelper.NEUTRONS))
-                .noShadow().tooltip(MIText.FastNeutronEnergy.text().getString()));
+                        Component.literal(String.format("%d EU", NuclearConstant.EU_FOR_FAST_NEUTRON)).setStyle(TextHelper.NEUTRONS))
+                .noShadow().tooltip(MIText.FastNeutronEnergy.text()));
 
         widgets.add(
-                Widgets.createLabel(new Point(centerX + 55, centerY + 23), new TextComponent(String.format("%d EU", fuel.directEUbyDesintegration)))
-                        .tooltip(MIText.DirectEnergy.text().getString()));
+                Widgets.createLabel(new Point(centerX + 55, centerY + 23), Component.literal(String.format("%d EU", fuel.directEUbyDesintegration)))
+                        .tooltip(MIText.DirectEnergy.text()));
 
         widgets.add(Widgets
                 .createLabel(new Point(centerX + 55, centerY - 12),
-                        new TextComponent(String.format("%.2f °C", (double) fuel.directEUbyDesintegration / NuclearConstant.EU_PER_DEGREE)))
-                .tooltip(MIText.DirectHeatByDesintegration.text().getString()));
+                        Component.literal(String.format("%.2f °C", (double) fuel.directEUbyDesintegration / NuclearConstant.EU_PER_DEGREE)))
+                .tooltip(MIText.DirectHeatByDesintegration.text()));
 
         return widgets;
     }

@@ -184,7 +184,7 @@ public class ItemNetwork extends PipeNetwork {
         int getPriority();
 
         @Override
-        default Iterator<StorageView<ItemVariant>> iterator(TransactionContext transaction) {
+        default Iterator<StorageView<ItemVariant>> iterator() {
             return Collections.emptyIterator();
         }
     }

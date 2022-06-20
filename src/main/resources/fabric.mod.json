@@ -23,7 +23,7 @@
     "client": [
       "aztech.modern_industrialization.ModernIndustrializationClient"
     ],
-    "rei_plugins": [
+    "rei_client": [
       "aztech.modern_industrialization.compat.rei.MIREIPlugin",
       "aztech.modern_industrialization.compat.rei.fluid_fuels.FluidFuelsPlugin",
       "aztech.modern_industrialization.compat.rei.forgehammer_recipe.ForgeHammerRecipePlugin",
@@ -46,7 +46,7 @@
   "depends": {
     "fabricloader": ">=0.7.4",
     "fabric": ">=0.55.1",
-    "minecraft": "1.18.2",
+    "minecraft": "1.19.x",
     "roughlyenoughitems": "*",
     "team_reborn_energy": ">=2.2.0",
     "cloth-config": "*"

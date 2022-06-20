@@ -25,13 +25,10 @@ package aztech.modern_industrialization.blocks.storage;
 
 import aztech.modern_industrialization.api.FastBlockEntity;
 import aztech.modern_industrialization.api.WrenchableBlockEntity;
-import java.util.Iterator;
-import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.fabricmc.fabric.api.transfer.v1.storage.StoragePreconditions;
-import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
 import net.fabricmc.fabric.api.transfer.v1.storage.TransferVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.ResourceAmount;
-import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleViewIterator;
+import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleSlotStorage;
 import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
 import net.fabricmc.fabric.api.transfer.v1.transaction.base.SnapshotParticipant;
 import net.minecraft.core.BlockPos;
@@ -49,7 +46,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.Nullable;
 
 public abstract class AbstractStorageBlockEntity<T extends TransferVariant<?>> extends FastBlockEntity
-        implements Storage<T>, StorageView<T>, WrenchableBlockEntity {
+        implements SingleSlotStorage<T>, WrenchableBlockEntity {
 
     protected T resource;
     protected long amount;
@@ -160,11 +157,6 @@ public abstract class AbstractStorageBlockEntity<T extends TransferVariant<?>> e
     }
 
     public abstract long getCapacityForResource(T resource);
-
-    @Override
-    public Iterator<StorageView<T>> iterator(TransactionContext transaction) {
-        return SingleViewIterator.create(this, transaction);
-    }
 
     private class ResourceParticipant extends SnapshotParticipant<ResourceAmount<T>> {
         @Override

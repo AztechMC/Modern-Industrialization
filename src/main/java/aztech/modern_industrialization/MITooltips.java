@@ -105,7 +105,7 @@ public class MITooltips {
                 return FLUID_PARSER.parse(f.asFluid());
             }
 
-            return new TextComponent(String.valueOf(o)).withStyle(style);
+            return Component.literal(String.valueOf(o)).withStyle(style);
         }
     };
 
@@ -219,7 +219,7 @@ public class MITooltips {
 
         MITooltips.TooltipAttachment.ofMultiline(
                 attachTo::test,
-                itemStack -> Arrays.stream(translationKey).map(s -> new TranslatableComponent(s).withStyle(MITooltips.DEFAULT_STYLE))
+                itemStack -> Arrays.stream(translationKey).map(s -> Component.translatable(s).withStyle(MITooltips.DEFAULT_STYLE))
                         .collect(Collectors.toList()));
     }
 

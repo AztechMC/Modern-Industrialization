@@ -38,7 +38,6 @@ import me.shedaniel.rei.api.client.registry.display.DisplayCategory;
 import me.shedaniel.rei.api.common.category.CategoryIdentifier;
 import me.shedaniel.rei.api.common.util.EntryStacks;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 
@@ -58,7 +57,7 @@ public class ForgeHammerRecipeCategory implements DisplayCategory<ForgeHammerRec
 
     @Override
     public Component getTitle() {
-        return new TranslatableComponent(MIBlock.FORGE_HAMMER.getTranslationKey());
+        return Component.translatable(MIBlock.FORGE_HAMMER.getTranslationKey());
     }
 
     @Override

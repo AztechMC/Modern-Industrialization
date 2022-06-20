@@ -24,25 +24,24 @@
 package aztech.modern_industrialization.datagen.texture;
 
 import aztech.modern_industrialization.textures.MITextures;
+import com.google.common.hash.Hashing;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.mojang.blaze3d.platform.NativeImage;
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Stream;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.minecraft.client.resources.AssetIndex;
 import net.minecraft.client.resources.ClientPackSource;
 import net.minecraft.client.resources.DefaultClientPackResources;
+import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
-import net.minecraft.data.HashCache;
 import net.minecraft.server.packs.FolderPackResources;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.resources.MultiPackResourceManager;
@@ -56,7 +55,7 @@ public class TexturesProvider implements DataProvider {
     }
 
     @Override
-    public void run(HashCache cache) throws IOException {
+    public void run(CachedOutput cache) throws IOException {
         // Delete output folder first, because textures won't be generated if they already exist,
         // leading to the DataCache clearing the textures when it deletes unused paths from the cache.
         // Code from https://stackoverflow.com/questions/35988192/java-nio-most-concise-recursive-directory-delete
@@ -80,33 +79,19 @@ public class TexturesProvider implements DataProvider {
                 manager);
     }
 
-    private void writeTexture(HashCache cache, NativeImage image, String textureId) {
+    private void writeTexture(CachedOutput cache, NativeImage image, String textureId) {
         try {
             var path = dataGenerator.getOutputFolder().resolve("assets").resolve(textureId.replace(':', '/'));
-            var sha = DataProvider.SHA1.hashBytes(image.asByteArray()).toString();
-            if (!Objects.equals(cache.getHash(path), sha) || !Files.exists(path)) {
-                Files.createDirectories(path.getParent());
-                image.writeToFile(path);
-            }
-            cache.putNew(path, sha);
+            cache.writeIfNeeded(path, image.asByteArray(), Hashing.sha1().hashBytes(image.asByteArray()));
         } catch (IOException ex) {
             throw new RuntimeException("Failed to write texture " + textureId, ex);
         }
     }
 
-    private void customJsonSave(HashCache cache, JsonElement jsonElement, String path) {
+    private void customJsonSave(CachedOutput cache, JsonElement jsonElement, String path) {
         try {
-            String sortedJson = GSON.toJson(jsonElement);
             Path pathFormatted = dataGenerator.getOutputFolder().resolve("assets").resolve(path.replace(':', '/'));
-            String prettyPrinted = sortedJson.replace("\\u0027", "'");
-            String string2 = SHA1.hashUnencodedChars(prettyPrinted).toString();
-            if (!Objects.equals(cache.getHash(pathFormatted), string2) || !Files.exists(pathFormatted)) {
-                Files.createDirectories(pathFormatted.getParent());
-                try (BufferedWriter bufferedWriter = Files.newBufferedWriter(pathFormatted);) {
-                    bufferedWriter.write(prettyPrinted);
-                }
-            }
-            cache.putNew(pathFormatted, string2);
+            DataProvider.saveStable(cache, jsonElement, pathFormatted);
         } catch (IOException ex) {
             throw new RuntimeException("Failed to write element in texture creation " + path, ex);
         }

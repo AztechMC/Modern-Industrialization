@@ -27,8 +27,6 @@ import java.util.List;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -53,10 +51,10 @@ public class QuantumSword extends Item {
 
     @Override
     public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> list, TooltipFlag context) {
-        list.add(TextComponent.EMPTY);
-        list.add(new TranslatableComponent("item.modifiers.mainhand").withStyle(ChatFormatting.GRAY));
+        list.add(Component.empty());
+        list.add(Component.translatable("item.modifiers.mainhand").withStyle(ChatFormatting.GRAY));
         String infinity = "\u221e";
-        list.add(new TranslatableComponent("attribute.modifier.plus.0", infinity, new TranslatableComponent("attribute.name.generic.attack_damage"))
+        list.add(Component.translatable("attribute.modifier.plus.0", infinity, Component.translatable("attribute.name.generic.attack_damage"))
                 .withStyle(ChatFormatting.BLUE));
     }
 }

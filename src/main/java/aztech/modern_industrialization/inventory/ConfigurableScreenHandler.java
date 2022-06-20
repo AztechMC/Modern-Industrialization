@@ -26,7 +26,7 @@ package aztech.modern_industrialization.inventory;
 import aztech.modern_industrialization.util.Simulation;
 import io.netty.buffer.Unpooled;
 import java.util.List;
-import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
@@ -78,7 +78,7 @@ public abstract class ConfigurableScreenHandler extends AbstractContainerMenu {
                     buf.writeInt(containerId);
                     buf.writeInt(i);
                     buf.writeNbt(trackedItems.get(i).toNbt());
-                    ServerSidePacketRegistry.INSTANCE.sendToPlayer(player, ConfigurableInventoryPackets.UPDATE_ITEM_SLOT, buf);
+                    ServerPlayNetworking.send(player, ConfigurableInventoryPackets.UPDATE_ITEM_SLOT, buf);
                 }
             }
             for (int i = 0; i < trackedFluids.size(); i++) {
@@ -88,7 +88,7 @@ public abstract class ConfigurableScreenHandler extends AbstractContainerMenu {
                     buf.writeInt(containerId);
                     buf.writeInt(i);
                     buf.writeNbt(trackedFluids.get(i).toNbt());
-                    ServerSidePacketRegistry.INSTANCE.sendToPlayer(player, ConfigurableInventoryPackets.UPDATE_FLUID_SLOT, buf);
+                    ServerPlayNetworking.send(player, ConfigurableInventoryPackets.UPDATE_FLUID_SLOT, buf);
                 }
             }
         }
@@ -112,7 +112,7 @@ public abstract class ConfigurableScreenHandler extends AbstractContainerMenu {
                         // Extract first
                         long previousAmount = fluidStack.amount;
                         try (Transaction transaction = Transaction.openOuter()) {
-                            for (StorageView<FluidVariant> view : io.iterable(transaction)) {
+                            for (StorageView<FluidVariant> view : io) {
                                 FluidVariant fluid = view.getResource();
                                 if (!fluid.isBlank() && fluidSlot.canInsertFluid(fluid)) {
                                     try (Transaction tx = transaction.openNested()) {

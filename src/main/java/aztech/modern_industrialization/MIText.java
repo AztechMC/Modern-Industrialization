@@ -24,8 +24,8 @@
 package aztech.modern_industrialization;
 
 import java.util.List;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.network.chat.TranslatableComponent;
 
 public enum MIText {
 
@@ -204,11 +204,11 @@ public enum MIText {
     }
 
     public MutableComponent text() {
-        return new TranslatableComponent(getTranslationKey());
+        return Component.translatable(getTranslationKey());
     }
 
     public MutableComponent text(Object... args) {
-        return new TranslatableComponent(getTranslationKey(), args);
+        return Component.translatable(getTranslationKey(), args);
     }
 
 }

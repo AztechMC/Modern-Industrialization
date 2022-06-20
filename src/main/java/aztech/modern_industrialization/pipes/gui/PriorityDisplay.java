@@ -28,7 +28,6 @@ import java.util.function.Supplier;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.util.FormattedCharSequence;
 
 class PriorityDisplay extends Button {
@@ -46,7 +45,7 @@ class PriorityDisplay extends Button {
 
     @Override
     public Component getMessage() {
-        return new TextComponent(Integer.toString(priorityGetter.get()));
+        return Component.literal(Integer.toString(priorityGetter.get()));
     }
 
     @Override

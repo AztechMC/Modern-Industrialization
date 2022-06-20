@@ -52,7 +52,6 @@ import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.core.Registry;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
@@ -381,18 +380,20 @@ public class NuclearReactorGui {
 
                                     if (neutronRateFast > 0) {
                                         tooltips.add(
-                                                new TextComponent(
+                                                Component.literal(
                                                         MIText.FastNeutron.text().getString() + " : "
                                                                 + MIText.NeutronsRate.text(
                                                                         neutronRateFastString).getString()
-                                                                + neutronRateFastFractionString).setStyle(TextHelper.GRAY_TEXT));
+                                                                + neutronRateFastFractionString)
+                                                        .setStyle(TextHelper.GRAY_TEXT));
                                     }
                                     if (neutronRateThermal > 0) {
-                                        tooltips.add(new TextComponent(
+                                        tooltips.add(Component.literal(
                                                 MIText.ThermalNeutron.text().getString() + " : "
                                                         + MIText.NeutronsRate.text(
                                                                 neutronRateThermalString).getString()
-                                                        + neutronRateThermalFractionString).setStyle(TextHelper.GRAY_TEXT));
+                                                        + neutronRateThermalFractionString)
+                                                .setStyle(TextHelper.GRAY_TEXT));
                                     }
                                 }
 
@@ -453,7 +454,7 @@ public class NuclearReactorGui {
 
                 if (drawButton()) {
 
-                    container.addButton(centerX + 64, 4, 20, 20, new TextComponent(""),
+                    container.addButton(centerX + 64, 4, 20, 20, Component.literal(""),
                             (i) -> currentMode = Mode.values()[(currentMode.index + 1) % Mode.values().length],
                             () -> List.of(modeTooltip[currentMode.index],
                                     MIText.ClickToSwitch.text(modeTooltip[(currentMode.index + 1) % Mode.values().length])
@@ -476,7 +477,7 @@ public class NuclearReactorGui {
                             });
 
                     container
-                            .addButton(centerX + 64, 150, 20, 20, new TextComponent(""), (i) -> neutronMode = nextNeutronMode(),
+                            .addButton(centerX + 64, 150, 20, 20, Component.literal(""), (i) -> neutronMode = nextNeutronMode(),
                                     () -> List.of(neutronModeTooltip[neutronMode.index],
                                             MIText.ClickToSwitch.text(neutronModeTooltip[nextNeutronMode().index]).setStyle(TextHelper.GRAY_TEXT)),
                                     (screen, button, matrices, mouseX, mouseY, delta) -> {

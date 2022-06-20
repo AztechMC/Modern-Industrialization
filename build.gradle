@@ -69,7 +69,7 @@ repositories {
             includeGroup "com.github.KubeJS-Mods"
             includeGroup "com.github.GabrielOlvH"
             /* For Magna */
-            includeGroup "com.github.Draylar"
+            includeGroup "com.github.Technici4n"
             includeGroup "com.github.Draylar.omega-config"
         }
     }
@@ -177,7 +177,7 @@ dependencies {
         exclude(group: "net.fabricmc.fabric-api")
     }
 
-    include modImplementation("com.github.Draylar:magna:${project.magna_version}") {
+    include modImplementation("com.github.Technici4n:magna:${project.magna_version}") {
         exclude(group: "io.github.prospector")
         exclude(group: "me.shedaniel.cloth")
         exclude(group: "net.fabricmc.fabric-api")
@@ -194,10 +194,12 @@ dependencies {
     // Include No Indium? https://github.com/Luligabi1/NoIndium
     include "me.luligabi:NoIndium:${project.no_indium_version}"
 
-    modImplementation("lol.bai.megane:megane-api:${project.megane_api_version}") {
+
+    /* TODO 1.19 modImplementation */ modCompileOnly("lol.bai.megane:megane-api:${project.megane_api_version}") {
         exclude(group: "net.fabricmc.fabric-api")
     }
 
+    /* TODO 1.19
     modRuntimeOnly("lol.bai.megane:megane-runtime:${project.megane_runtime_version}") {
         exclude(group: "net.fabricmc.fabric-api")
         exclude(group: "mcp.mobius.waila")
@@ -206,13 +208,13 @@ dependencies {
     modRuntimeOnly("lol.bai.megane:megane-vanilla:${project.megane_vanilla_version}") {
         exclude(group: "net.fabricmc.fabric-api")
         exclude(group: "mcp.mobius.waila")
-    }
+    } */
 
     modCompileOnly('net.oskarstrom:DashLoader:2.1-dev4') {
         exclude(group: "net.fabricmc.fabric-api")
     }
 
-    modImplementation("appeng:appliedenergistics2-fabric:${project.ae2_version}") {
+    /* TODO 1.19 modImplementation */ modCompileOnly("appeng:appliedenergistics2-fabric:${project.ae2_version}") {
         exclude(group: "net.fabricmc.fabric-api")
     }
 }

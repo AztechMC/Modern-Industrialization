@@ -42,7 +42,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -332,7 +331,7 @@ public class ItemNetworkNode extends PipeNetworkNode {
 
             @Override
             public Component getDisplayName() {
-                return new TranslatableComponent("item." + pipeType.getNamespace() + "." + pipeType.getPath());
+                return Component.translatable("item." + pipeType.getNamespace() + "." + pipeType.getPath());
             }
 
             @Override

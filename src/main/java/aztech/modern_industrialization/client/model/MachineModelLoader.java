@@ -61,7 +61,7 @@ public class MachineModelLoader implements ModelVariantProvider {
         var casing = MachineBlock.REGISTERED_MACHINES.get(path);
         if (casing != null) {
             // This is a machine, load its json model.
-            try (var resource = this.resourceManager.getResource(new MIIdentifier("models/machine/" + path + ".json"))) {
+            try (var resource = this.resourceManager.getResource(new MIIdentifier("models/machine/" + path + ".json")).get().openAsReader()) {
                 return MachineUnbakedModel.deserialize(casing, resource);
             } catch (IOException exception) {
                 throw new ModelProviderException("Failed to find machine model json for machine " + modelIdentifier);

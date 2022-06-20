@@ -31,7 +31,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BiConsumer;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
 
 public class TextureManager {
@@ -49,13 +48,14 @@ public class TextureManager {
     }
 
     public boolean hasAsset(String asset) {
-        return rm.hasResource(new ResourceLocation(asset));
+        return rm.getResource(new ResourceLocation(asset)).isPresent();
     }
 
     public NativeImage getAssetAsTexture(String textureId) throws IOException {
-        if (rm.hasResource(new ResourceLocation(textureId))) {
-            try (Resource texture = rm.getResource(new ResourceLocation(textureId))) {
-                return NativeImage.read(texture.getInputStream());
+        var resource = rm.getResource(new ResourceLocation(textureId));
+        if (resource.isPresent()) {
+            try (var stream = resource.get().open()) {
+                return NativeImage.read(stream);
             }
         } else {
             throw new IOException("Couldn't find texture " + textureId);
@@ -71,7 +71,7 @@ public class TextureManager {
 
     public void addTexture(String textureId, NativeImage image, boolean closeImage) throws IOException {
         ResourceLocation id = new ResourceLocation(textureId);
-        if (!rm.hasResource(id)) { // Allow textures to be manually overridden.
+        if (rm.getResource(id).isEmpty()) { // Allow textures to be manually overridden.
             textureWriter.accept(image, textureId);
         }
         if (closeImage) {

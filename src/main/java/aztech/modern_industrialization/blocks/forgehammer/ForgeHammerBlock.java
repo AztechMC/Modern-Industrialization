@@ -26,7 +26,6 @@ package aztech.modern_industrialization.blocks.forgehammer;
 import aztech.modern_industrialization.MIBlock;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.MenuProvider;
@@ -83,7 +82,7 @@ public class ForgeHammerBlock extends Block {
 
                 @Override
                 public Component getDisplayName() {
-                    return new TranslatableComponent(MIBlock.FORGE_HAMMER.asBlock().getDescriptionId());
+                    return Component.translatable(MIBlock.FORGE_HAMMER.asBlock().getDescriptionId());
                 }
             });
             return InteractionResult.CONSUME;

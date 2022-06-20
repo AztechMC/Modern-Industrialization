@@ -50,7 +50,6 @@ import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.client.itemgroup.FabricItemGroupBuilder;
 import net.fabricmc.fabric.api.entity.event.v1.ServerEntityWorldChangeEvents;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
-import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricMaterialBuilder;
@@ -158,8 +157,8 @@ public class ModernIndustrialization implements ModInitializer {
                 ConfigurableInventoryPacketHandlers.C2S.ADJUST_SLOT_CAPACITY);
         ServerPlayNetworking.registerGlobalReceiver(MachinePackets.C2S.SET_AUTO_EXTRACT, MachinePackets.C2S.ON_SET_AUTO_EXTRACT);
         ServerPlayNetworking.registerGlobalReceiver(MachinePackets.C2S.REI_LOCK_SLOTS, MachinePackets.C2S.ON_REI_LOCK_SLOTS);
-        ServerSidePacketRegistry.INSTANCE.register(ArmorPackets.UPDATE_KEYS, ArmorPackets.ON_UPDATE_KEYS);
-        ServerSidePacketRegistry.INSTANCE.register(ArmorPackets.ACTIVATE_CHEST, ArmorPackets.ON_ACTIVATE_CHEST);
+        ServerPlayNetworking.registerGlobalReceiver(ArmorPackets.UPDATE_KEYS, ArmorPackets.ON_UPDATE_KEYS::handleC2S);
+        ServerPlayNetworking.registerGlobalReceiver(ArmorPackets.ACTIVATE_CHEST, ArmorPackets.ON_ACTIVATE_CHEST::handleC2S);
     }
 
     private static void addFuel(String id, int burnTicks) {

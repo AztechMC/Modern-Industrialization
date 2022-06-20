@@ -28,7 +28,6 @@ import aztech.modern_industrialization.machines.models.MachineModelClientData;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 import java.util.function.Supplier;
 import net.fabricmc.fabric.api.renderer.v1.material.RenderMaterial;
 import net.fabricmc.fabric.api.renderer.v1.mesh.MutableQuadView;
@@ -43,6 +42,7 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
@@ -73,7 +73,7 @@ public class MachineBakedModel implements BakedModel, FabricBakedModel {
     }
 
     @Override
-    public void emitBlockQuads(BlockAndTintGetter blockRenderView, BlockState blockState, BlockPos blockPos, Supplier<Random> supplier,
+    public void emitBlockQuads(BlockAndTintGetter blockRenderView, BlockState blockState, BlockPos blockPos, Supplier<RandomSource> supplier,
             RenderContext renderContext) {
         if (blockRenderView instanceof RenderAttachedBlockView bv) {
             Object attachment = bv.getBlockEntityRenderAttachment(blockPos);
@@ -94,7 +94,7 @@ public class MachineBakedModel implements BakedModel, FabricBakedModel {
     }
 
     @Override
-    public void emitItemQuads(ItemStack itemStack, Supplier<Random> supplier, RenderContext renderContext) {
+    public void emitItemQuads(ItemStack itemStack, Supplier<RandomSource> supplier, RenderContext renderContext) {
         renderBase(renderContext, baseCasing, Direction.NORTH);
     }
 
@@ -153,7 +153,7 @@ public class MachineBakedModel implements BakedModel, FabricBakedModel {
     }
 
     @Override
-    public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction face, Random random) {
+    public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction face, RandomSource random) {
         return Collections.emptyList();
     }
 

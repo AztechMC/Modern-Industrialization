@@ -38,7 +38,6 @@ import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -98,7 +97,7 @@ public abstract class PipeScreen<SH extends AbstractContainerMenu> extends MIHan
         addPriorityButton(startX + 62, startY, 12, 0, "+", +1, priority, channel, tooltip);
         addPriorityButton(startX + 76, startY, 20, 12, "++", +10, priority, channel, tooltip);
         addRenderableWidget(
-                new PriorityDisplay(startX + 34 + this.leftPos, startY + this.topPos, 28, 12, new TextComponent(""), tooltip,
+                new PriorityDisplay(startX + 34 + this.leftPos, startY + this.topPos, 28, 12, Component.literal(""), tooltip,
                         () -> priority.getPriority(channel),
                         font));
     }

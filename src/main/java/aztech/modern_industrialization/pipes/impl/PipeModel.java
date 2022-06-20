@@ -53,6 +53,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -90,7 +91,7 @@ public class PipeModel implements UnbakedModel, BakedModel, FabricBakedModel {
     }
 
     @Override
-    public void emitBlockQuads(BlockAndTintGetter blockRenderView, BlockState state, BlockPos pos, Supplier<Random> supplier,
+    public void emitBlockQuads(BlockAndTintGetter blockRenderView, BlockState state, BlockPos pos, Supplier<RandomSource> supplier,
             RenderContext renderContext) {
         renderContext.pushTransform(quad -> {
             if (quad.tag() == 0) {
@@ -117,7 +118,7 @@ public class PipeModel implements UnbakedModel, BakedModel, FabricBakedModel {
     }
 
     @Override
-    public void emitItemQuads(ItemStack itemStack, Supplier<Random> supplier, RenderContext renderContext) {
+    public void emitItemQuads(ItemStack itemStack, Supplier<RandomSource> supplier, RenderContext renderContext) {
         Item item = itemStack.getItem();
         if (item instanceof PipeItem) {
             // TODO: remove allocation if it becomes an issue
@@ -153,7 +154,7 @@ public class PipeModel implements UnbakedModel, BakedModel, FabricBakedModel {
     };
 
     @Override
-    public List<BakedQuad> getQuads(BlockState state, Direction face, Random random) {
+    public List<BakedQuad> getQuads(BlockState state, Direction face, RandomSource random) {
         return Collections.emptyList();
     }
 

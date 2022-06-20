@@ -32,7 +32,6 @@ import me.shedaniel.clothconfig2.gui.entries.BooleanListEntry;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
@@ -42,7 +41,7 @@ public class CustomBooleanListEntry extends BooleanListEntry {
 
     public CustomBooleanListEntry(Component fieldName, boolean value, Supplier<Boolean> defaultValue, Consumer<Boolean> saveConsumer, Item item) {
 
-        super(fieldName, value, new TranslatableComponent("text.cloth-config.reset_value"), defaultValue, saveConsumer, null, true);
+        super(fieldName, value, Component.translatable("text.cloth-config.reset_value"), defaultValue, saveConsumer, null, true);
         this.item = item;
     }
 

@@ -39,7 +39,7 @@ import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.gui.registry.GuiRegistry;
 import me.shedaniel.clothconfig2.api.ConfigEntryBuilder;
 import net.minecraft.core.Registry;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 
@@ -101,7 +101,7 @@ public class MIMenu implements ModMenuApi {
                         registry1) -> Collections.singletonList(ENTRY_BUILDER
                                 .startSubCategory(MIText.CustomOreGen.text(),
                                         MaterialRegistry.getMaterials().values().stream().filter(MIMenu::hasOreGen)
-                                                .map(i -> new CustomBooleanListEntry(new TranslatableComponent(getOreTranslationKey(i)),
+                                                .map(i -> new CustomBooleanListEntry(Component.translatable(getOreTranslationKey(i)),
                                                         oreNotInList(field, config, i), () -> oreNotInList(field, config, i),
                                                         bool -> setOreInList(field, config, i, !bool), getOreItem(i)))
                                                 .collect(Collectors.toList()))

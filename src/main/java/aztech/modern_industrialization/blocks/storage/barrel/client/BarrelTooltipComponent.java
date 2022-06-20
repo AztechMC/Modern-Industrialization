@@ -35,7 +35,6 @@ import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextColor;
-import net.minecraft.network.chat.TextComponent;
 
 public record BarrelTooltipComponent(BarrelTooltipData data) implements ClientTooltipComponent {
 
@@ -71,20 +70,20 @@ public record BarrelTooltipComponent(BarrelTooltipData data) implements ClientTo
         Component itemNumber;
 
         if (maxCount == 1 || Screen.hasShiftDown()) {
-            itemNumber = new TextComponent(String.format("%d / %d", amount, stackCapacity * maxCount)).setStyle(TextHelper.YELLOW);
+            itemNumber = Component.literal(String.format("%d / %d", amount, stackCapacity * maxCount)).setStyle(TextHelper.YELLOW);
         } else {
             if (stackNumber > 0) {
                 if (rem != 0) {
-                    itemNumber = new TextComponent(String.format("%d × %d + %d / %d × %d", stackNumber, maxCount, rem, stackCapacity, maxCount))
+                    itemNumber = Component.literal(String.format("%d × %d + %d / %d × %d", stackNumber, maxCount, rem, stackCapacity, maxCount))
                             .setStyle(TextHelper.YELLOW);
 
                 } else {
-                    itemNumber = new TextComponent(String.format("%d × %d / %d × %d", stackNumber, maxCount, stackCapacity, maxCount))
+                    itemNumber = Component.literal(String.format("%d × %d / %d × %d", stackNumber, maxCount, stackCapacity, maxCount))
                             .setStyle(TextHelper.YELLOW);
 
                 }
             } else {
-                itemNumber = new TextComponent(String.format("%d / %d × %d", rem, stackCapacity, maxCount)).setStyle(TextHelper.YELLOW);
+                itemNumber = Component.literal(String.format("%d / %d × %d", rem, stackCapacity, maxCount)).setStyle(TextHelper.YELLOW);
             }
         }
 

@@ -23,7 +23,9 @@
  */
 package aztech.modern_industrialization.util;
 
+import java.util.Iterator;
 import java.util.List;
+import java.util.NoSuchElementException;
 import net.fabricmc.fabric.api.transfer.v1.item.InventoryStorage;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
@@ -67,5 +69,26 @@ public class StorageUtil2 {
 
             return amount;
         }
+    }
+
+    public static <T> Iterator<T> singletonIterator(T it) {
+        return new Iterator<T>() {
+            boolean hasNext = true;
+
+            @Override
+            public boolean hasNext() {
+                return hasNext;
+            }
+
+            @Override
+            public T next() {
+                if (!hasNext) {
+                    throw new NoSuchElementException();
+                }
+
+                hasNext = false;
+                return it;
+            }
+        };
     }
 }

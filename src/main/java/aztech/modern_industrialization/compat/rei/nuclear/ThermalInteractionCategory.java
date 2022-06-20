@@ -46,7 +46,6 @@ import me.shedaniel.rei.api.common.util.EntryStacks;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 
 public class ThermalInteractionCategory implements DisplayCategory<ThermalInteractionDisplay> {
 
@@ -92,11 +91,11 @@ public class ThermalInteractionCategory implements DisplayCategory<ThermalIntera
         int px3 = bounds.x + bounds.getWidth() - 20;
         int px2 = (px1 + px3) / 2;
 
-        widgets.add(Widgets.createLabel(new Point(px1, py), new TextComponent("0°C")));
+        widgets.add(Widgets.createLabel(new Point(px1, py), Component.literal("0°C")));
 
-        widgets.add(Widgets.createLabel(new Point(px2, py), new TextComponent(String.format("%d°C", nuclearComponent.tempLimitLow))));
+        widgets.add(Widgets.createLabel(new Point(px2, py), Component.literal(String.format("%d°C", nuclearComponent.tempLimitLow))));
 
-        widgets.add(Widgets.createLabel(new Point(px3 - 8, py), new TextComponent(String.format("%d°C", nuclearComponent.tempLimitHigh))));
+        widgets.add(Widgets.createLabel(new Point(px3 - 8, py), Component.literal(String.format("%d°C", nuclearComponent.tempLimitHigh))));
 
         widgets.add(Widgets.createDrawableWidget((helper, matrices, mouseX, mouseY, delta) -> {
             RenderSystem.setShaderTexture(0, MachineScreenHandlers.SLOT_ATLAS);
@@ -111,10 +110,10 @@ public class ThermalInteractionCategory implements DisplayCategory<ThermalIntera
         }));
 
         widgets.add(Widgets
-                .createLabel(new Point(px1 - 2, area.y + 2), new TextComponent(String.format("%.1f", nuclearComponent.neutronMultiplicationFactor)))
+                .createLabel(new Point(px1 - 2, area.y + 2), Component.literal(String.format("%.1f", nuclearComponent.neutronMultiplicationFactor)))
                 .noShadow());
 
-        widgets.add(Widgets.createLabel(new Point(px3 + 6, py - 10), new TextComponent("0")).noShadow());
+        widgets.add(Widgets.createLabel(new Point(px3 + 6, py - 10), Component.literal("0")).noShadow());
 
         return widgets;
     }

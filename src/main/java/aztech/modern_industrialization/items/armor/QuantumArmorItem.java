@@ -30,8 +30,6 @@ import java.util.List;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -109,10 +107,10 @@ public class QuantumArmorItem extends ArmorItem implements Wearable {
 
     @Override
     public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> list, TooltipFlag context) {
-        list.add(TextComponent.EMPTY);
-        list.add(new TranslatableComponent("item.modifiers." + getSlot().getName()).withStyle(ChatFormatting.GRAY));
+        list.add(Component.empty());
+        list.add(Component.translatable("item.modifiers." + getSlot().getName()).withStyle(ChatFormatting.GRAY));
         String oneQuarterInfinity = " \u00B9\u2044\u2084 |\u221E> + \u00B3\u2044\u2084 |0>";
-        list.add(new TranslatableComponent("attribute.modifier.plus.0", oneQuarterInfinity, new TranslatableComponent("attribute.name.generic.armor"))
+        list.add(Component.translatable("attribute.modifier.plus.0", oneQuarterInfinity, Component.translatable("attribute.name.generic.armor"))
                 .withStyle(ChatFormatting.BLUE));
     }
 }

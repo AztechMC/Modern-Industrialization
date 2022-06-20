@@ -28,7 +28,6 @@ import aztech.modern_industrialization.MITooltips;
 import aztech.modern_industrialization.machines.IComponent;
 import aztech.modern_industrialization.machines.MachineBlockEntity;
 import java.util.List;
-import java.util.Random;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -80,7 +79,7 @@ public class GunpowderOverclockComponent implements IComponent, TooltipProvider 
         } else if (overclockGunpowderTick > 0) {
             if (be.getLevel().isClientSide()) {
                 for (int iter = 0; iter < 3; iter++) {
-                    Random random = be.getLevel().getRandom();
+                    var random = be.getLevel().getRandom();
                     double d = be.getBlockPos().getX() + 0.5D;
                     double e = be.getBlockPos().getY();
                     double f = be.getBlockPos().getZ() + 0.5D;

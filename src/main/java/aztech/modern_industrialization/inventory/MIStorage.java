@@ -143,7 +143,7 @@ public class MIStorage<T, K extends TransferVariant<T>, S extends AbstractConfig
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
     @Override
-    public Iterator<StorageView<K>> iterator(TransactionContext transaction) {
+    public Iterator<StorageView<K>> iterator() {
         return (Iterator) stacks.iterator();
     }
 }

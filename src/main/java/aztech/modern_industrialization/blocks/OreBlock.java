@@ -66,9 +66,9 @@ public class OreBlock extends Block {
 
     @SuppressWarnings("deprecation")
     @Override
-    public void spawnAfterBreak(BlockState state, ServerLevel world, BlockPos pos, ItemStack stack) {
-        super.spawnAfterBreak(state, world, pos, stack);
-        if (EnchantmentHelper.getItemEnchantmentLevel(Enchantments.SILK_TOUCH, stack) == 0) {
+    public void spawnAfterBreak(BlockState state, ServerLevel world, BlockPos pos, ItemStack stack, boolean bl) {
+        super.spawnAfterBreak(state, world, pos, stack, bl);
+        if (bl && EnchantmentHelper.getItemEnchantmentLevel(Enchantments.SILK_TOUCH, stack) == 0) {
             int i = this.params.xpDropped.sample(world.random);
             if (i > 0) {
                 this.popExperience(world, pos, i);

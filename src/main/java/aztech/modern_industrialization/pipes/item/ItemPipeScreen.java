@@ -40,7 +40,6 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextColor;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 
@@ -85,7 +84,7 @@ public class ItemPipeScreen extends PipeScreen<ItemPipeScreenHandler> {
     protected void renderLabels(PoseStack matrices, int mouseX, int mouseY) {
         Component title = this.title;
         if (menu.pipeInterface.isWhitelist() && menu.pipeInterface.isFilterEmpty()) {
-            title = title.copy().append(new TextComponent(" "))
+            title = title.copy().append(Component.literal(" "))
                     .append(MIText.EmptyWhitelistWarning.text().setStyle(TextHelper.WARNING_TEXT));
         }
         this.font.draw(matrices, title, (float) this.titleLabelX, (float) this.titleLabelY, 0x404040);
@@ -99,7 +98,7 @@ public class ItemPipeScreen extends PipeScreen<ItemPipeScreenHandler> {
 
     private class WhitelistButton extends Button {
         public WhitelistButton(int i, int j, OnPress onPress, OnTooltip tooltipSupplier) {
-            super(i + 148, j + 44, 20, 20, new TextComponent("test!"), onPress, tooltipSupplier);
+            super(i + 148, j + 44, 20, 20, Component.literal("test!"), onPress, tooltipSupplier);
         }
 
         @Override

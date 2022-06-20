@@ -32,7 +32,7 @@ import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.FrameType;
 import net.minecraft.advancements.critereon.InventoryChangeTrigger;
 import net.minecraft.core.Registry;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
 
@@ -140,8 +140,8 @@ public class MIAdvancementsProvider extends FabricAdvancementProvider {
 
         advancementTask.display(
                 item,
-                new TranslatableComponent(titleKey),
-                new TranslatableComponent(descKey),
+                Component.translatable(titleKey),
+                Component.translatable(descKey),
                 background,
                 frame,
                 true,

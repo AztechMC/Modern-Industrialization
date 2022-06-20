@@ -57,7 +57,6 @@ import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.core.Registry;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
@@ -77,7 +76,7 @@ public class MachineRecipeCategory implements DisplayCategory<MachineRecipeDispl
 
     @Override
     public Component getTitle() {
-        return new TranslatableComponent("rei_categories.modern_industrialization." + id.getPath());
+        return Component.translatable("rei_categories.modern_industrialization." + id.getPath());
     }
 
     @Override

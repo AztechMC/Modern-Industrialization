@@ -23,12 +23,17 @@
  */
 package aztech.modern_industrialization.compat.rei.machines;
 
+import static aztech.modern_industrialization.MITooltips.EU_PER_TICK_PARSER;
+
 import aztech.modern_industrialization.MIIdentifier;
+import aztech.modern_industrialization.MIItem;
 import aztech.modern_industrialization.MIText;
+import aztech.modern_industrialization.MITooltips;
 import aztech.modern_industrialization.inventory.SlotPositions;
 import aztech.modern_industrialization.machines.MachineScreenHandlers;
 import aztech.modern_industrialization.machines.components.sync.EnergyBar;
 import aztech.modern_industrialization.machines.components.sync.ProgressBar;
+import aztech.modern_industrialization.machines.init.MachineTier;
 import aztech.modern_industrialization.util.TextHelper;
 import com.mojang.blaze3d.systems.RenderSystem;
 import java.util.ArrayList;
@@ -164,18 +169,21 @@ public class MachineRecipeCategory implements DisplayCategory<MachineRecipeDispl
                 .createLabel(new Point(bounds.getMaxX() - 5, bounds.y + 5),
                         MIText.BaseDurationSeconds.text(recipeDisplay.getSeconds()))
                 .rightAligned().noShadow().color(0xFF404040, 0xFFBBBBBB));
-        // Draw steel hatch
-        boolean steelHatchRequired = params.steamMode.steam && params.isMultiblock && recipeDisplay.getEu() > 2;
-        if (steelHatchRequired) {
+        // Draw steel hatch or upgrades
+        boolean steelHatchRequired = params.steamMode.steam && params.isMultiblock && recipeDisplay.getEu() > MachineTier.BRONZE.getMaxEu();
+        int upgradeEuRequired = recipeDisplay.getEu() - (params.isMultiblock ? MachineTier.MULTIBLOCK : MachineTier.LV).getMaxEu();
+        if (steelHatchRequired || upgradeEuRequired > 0) {
             widgets.add(Widgets.createDrawableWidget((helper, matrices, mouseX, mouseY, delta) -> {
                 var stack = RenderSystem.getModelViewStack();
                 stack.pushPose();
-                stack.translate(bounds.getCenterX() - 5, bounds.y + 5, 0);
+                stack.translate(bounds.getCenterX() - 5, bounds.y + 4, 0);
                 stack.scale(0.6f, 0.6f, 1);
                 RenderSystem.applyModelViewMatrix();
 
-                Minecraft.getInstance().getItemRenderer().renderGuiItem(new ItemStack(Registry.ITEM.get(new MIIdentifier("steel_item_input_hatch"))),
-                        0, 0);
+                var displayedStack = new ItemStack(
+                        steelHatchRequired ? Registry.ITEM.get(new MIIdentifier("steel_item_input_hatch")) : MIItem.BASIC_UPGRADE);
+
+                Minecraft.getInstance().getItemRenderer().renderGuiItem(displayedStack, 0, 0);
 
                 stack.popPose();
                 RenderSystem.applyModelViewMatrix();
@@ -190,6 +198,9 @@ public class MachineRecipeCategory implements DisplayCategory<MachineRecipeDispl
                 tooltips.add(MIText.RequiresSteelHatch0.text().setStyle(Style.EMPTY.withUnderlined(true)));
                 tooltips.add(MIText.RequiresSteelHatch1.text().withStyle(ChatFormatting.GRAY));
             }
+        }
+        if (upgradeEuRequired > 0) {
+            tooltips.add(new MITooltips.Line(MIText.RequiresUpgrades).arg(upgradeEuRequired, EU_PER_TICK_PARSER).build());
         }
         Rectangle tooltipZone = new Rectangle(bounds.x + 2, bounds.y + 5, bounds.width - 10, 11);
         widgets.add(Widgets.createDrawableWidget((helper, matrices, mouseX, mouseY, delta) -> {

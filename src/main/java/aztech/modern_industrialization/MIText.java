@@ -161,6 +161,7 @@ public enum MIText {
     RemAbsorption("Remaining Absorption : %d / %d "),
     RequiresSteelHatch0("Steam Only:"),
     RequiresSteelHatch1("- Requires at least one Steel Hatch (Any)"),
+    RequiresUpgrades("Requires at least +%s of upgrades."),
     ScatteringProbability("Scattering Probability"),
     SecondsLeft("Seconds left: %s"),
     SingleNeutronCapture("Single Neutron Capture"),

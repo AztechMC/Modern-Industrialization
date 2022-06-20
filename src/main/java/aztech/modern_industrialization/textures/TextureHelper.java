@@ -47,6 +47,18 @@ public class TextureHelper {
         }
     }
 
+    public static void setAlpha(NativeImage image, int alpha) {
+        for (int i = 0; i < image.getWidth(); ++i) {
+            for (int j = 0; j < image.getHeight(); ++j) {
+                int color = image.getPixelRGBA(i, j);
+                int r = getR(color);
+                int g = getG(color);
+                int b = getB(color);
+                image.setPixelRGBA(i, j, fromArgb(alpha, r, g, b));
+            }
+        }
+    }
+
     public static void increaseBrightness(NativeImage image, float minBrightness) {
         for (int i = 0; i < image.getWidth(); ++i) {
             for (int j = 0; j < image.getHeight(); ++j) {

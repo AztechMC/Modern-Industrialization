@@ -23,6 +23,8 @@
  */
 package aztech.modern_industrialization.textures;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
 import com.mojang.blaze3d.platform.NativeImage;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -35,11 +37,15 @@ import net.minecraft.server.packs.resources.ResourceManager;
 public class TextureManager {
     private final ResourceManager rm;
     private final BiConsumer<NativeImage, String> textureWriter;
+    private final BiConsumer<JsonElement, String> mcMetaWriter;
     private final List<Runnable> endRunnables = new ArrayList<>();
 
-    public TextureManager(ResourceManager rm, BiConsumer<NativeImage, String> textureWriter) {
+    private final Gson GSON = new Gson();
+
+    public TextureManager(ResourceManager rm, BiConsumer<NativeImage, String> textureWriter, BiConsumer<JsonElement, String> mcMetaWriter) {
         this.rm = rm;
         this.textureWriter = textureWriter;
+        this.mcMetaWriter = mcMetaWriter;
     }
 
     public boolean hasAsset(String asset) {
@@ -73,6 +79,10 @@ public class TextureManager {
         }
     }
 
+    public void addMcMeta(String path, MCMetaInfo info) {
+        mcMetaWriter.accept(GSON.toJsonTree(info), path);
+    }
+
     public void runAtEnd(Runnable runnable) {
         endRunnables.add(runnable);
     }
@@ -83,4 +93,35 @@ public class TextureManager {
         }
         endRunnables.clear();
     }
+
+    public static class Animation {
+        private final int frametime;
+
+        public Animation(int frametime) {
+            this.frametime = frametime;
+        }
+
+        public int frametime() {
+            return frametime;
+        }
+    }
+
+    public static class AnimationWithFrames extends Animation {
+        public final List<Integer> frames;
+
+        public AnimationWithFrames(int frametime, List<Integer> frames) {
+            super(frametime);
+            this.frames = frames;
+        }
+    }
+
+    public static class MCMetaInfo {
+        public final Animation animation;
+
+        public MCMetaInfo(Animation animation) {
+            this.animation = animation;
+        }
+
+    }
+
 }

@@ -24,7 +24,11 @@
 package aztech.modern_industrialization.datagen.texture;
 
 import aztech.modern_industrialization.textures.MITextures;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
 import com.mojang.blaze3d.platform.NativeImage;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -45,6 +49,7 @@ import net.minecraft.server.packs.resources.MultiPackResourceManager;
 
 public class TexturesProvider implements DataProvider {
     private final FabricDataGenerator dataGenerator;
+    private final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
 
     public TexturesProvider(FabricDataGenerator dataGenerator) {
         this.dataGenerator = dataGenerator;
@@ -69,7 +74,10 @@ public class TexturesProvider implements DataProvider {
                 new FolderPackResources(nonGeneratedResources.toFile()),
                 new FolderPackResources(generatedResources.toFile())));
 
-        MITextures.offerTextures((image, textureId) -> writeTexture(cache, image, textureId), manager);
+        MITextures.offerTextures(
+                (image, textureId) -> writeTexture(cache, image, textureId),
+                (json, path) -> customJsonSave(cache, json, path),
+                manager);
     }
 
     private void writeTexture(HashCache cache, NativeImage image, String textureId) {
@@ -83,6 +91,24 @@ public class TexturesProvider implements DataProvider {
             cache.putNew(path, sha);
         } catch (IOException ex) {
             throw new RuntimeException("Failed to write texture " + textureId, ex);
+        }
+    }
+
+    private void customJsonSave(HashCache cache, JsonElement jsonElement, String path) {
+        try {
+            String sortedJson = GSON.toJson(jsonElement);
+            Path pathFormatted = dataGenerator.getOutputFolder().resolve("assets").resolve(path.replace(':', '/'));
+            String prettyPrinted = sortedJson.replace("\\u0027", "'");
+            String string2 = SHA1.hashUnencodedChars(prettyPrinted).toString();
+            if (!Objects.equals(cache.getHash(pathFormatted), string2) || !Files.exists(pathFormatted)) {
+                Files.createDirectories(pathFormatted.getParent());
+                try (BufferedWriter bufferedWriter = Files.newBufferedWriter(pathFormatted);) {
+                    bufferedWriter.write(prettyPrinted);
+                }
+            }
+            cache.putNew(pathFormatted, string2);
+        } catch (IOException ex) {
+            throw new RuntimeException("Failed to write element in texture creation " + path, ex);
         }
     }
 

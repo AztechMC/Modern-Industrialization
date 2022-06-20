@@ -32,6 +32,7 @@ import aztech.modern_industrialization.materials.part.MaterialPart;
 import aztech.modern_industrialization.textures.coloramp.BakableTargetColoramp;
 import aztech.modern_industrialization.textures.coloramp.Coloramp;
 import aztech.modern_industrialization.textures.coloramp.DefaultColoramp;
+import com.google.gson.JsonElement;
 import com.mojang.blaze3d.platform.NativeImage;
 import java.io.IOException;
 import java.util.function.BiConsumer;
@@ -39,8 +40,9 @@ import net.minecraft.server.packs.resources.ResourceManager;
 
 public final class MITextures {
 
-    public static void offerTextures(BiConsumer<NativeImage, String> textureWriter, ResourceManager manager) {
-        TextureManager mtm = new TextureManager(manager, textureWriter);
+    public static void offerTextures(BiConsumer<NativeImage, String> textureWriter, BiConsumer<JsonElement, String> mcMetaWriter,
+            ResourceManager manager) {
+        TextureManager mtm = new TextureManager(manager, textureWriter, mcMetaWriter);
 
         for (BakableTargetColoramp coloramp : BakableTargetColoramp.bakableTargetColoramps) {
             coloramp.baked(mtm);
@@ -242,14 +244,18 @@ public final class MITextures {
     }
 
     private static void registerFluidTextures(TextureManager tm, FluidDefinition fluid) {
+
         String path = "modern_industrialization:textures/fluid/";
         String bucket = path + "bucket.png";
         String bucket_content = path + "bucket_content.png";
 
+        Coloramp fluidColoramp = new DefaultColoramp(fluid.color);
+
+        // Bucket
         try {
             NativeImage bucket_image = tm.getAssetAsTexture(bucket);
             NativeImage bucket_content_image = tm.getAssetAsTexture(bucket_content);
-            TextureHelper.colorize(bucket_content_image, new DefaultColoramp(fluid.color));
+            TextureHelper.colorize(bucket_content_image, fluidColoramp);
             NativeImage oldBucketImage = bucket_image;
             bucket_image = TextureHelper.blend(oldBucketImage, bucket_content_image);
             oldBucketImage.close();
@@ -257,6 +263,21 @@ public final class MITextures {
                 TextureHelper.flip(bucket_image);
             }
             tm.addTexture(String.format("modern_industrialization:textures/item/bucket_%s.png", fluid.path()), bucket_image);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        // Flowing Textures
+
+        String pathFluid = path + String.format("template/%s.png", fluid.fluidTexture.path);
+
+        try {
+            NativeImage fluidAnim = tm.getAssetAsTexture(pathFluid);
+            TextureHelper.colorize(fluidAnim, fluidColoramp);
+            TextureHelper.setAlpha(fluidAnim, fluid.opacity);
+            tm.addTexture(String.format("modern_industrialization:textures/fluid/%s_still.png", fluid.path()), fluidAnim, true);
+            tm.addMcMeta(String.format("modern_industrialization:textures/fluid/%s_still.png.mcmeta", fluid.path()), fluid.fluidTexture.mcMetaInfo);
+
         } catch (IOException e) {
             e.printStackTrace();
         }

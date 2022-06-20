@@ -36,14 +36,24 @@ import net.minecraft.world.level.material.Fluid;
 
 public class FluidDefinition extends Definition implements FluidLike {
 
+    public static final int LOW_OPACITY = 180;
+    public static final int FULL_OPACITY = 255;
+    public static final int NEAR_OPACITY = 240;
+    public static final int MEDIUM_OPACITY = 230;
+
     public final MIFluidBlock fluidBlock;
     public final MIFluid fluid;
+
     public final int color;
+    public final int opacity;
+
     public final boolean isGas;
+
+    public final FluidTexture fluidTexture;
 
     public final ItemDefinition<MIBucketItem> bucketItemDefinition;
 
-    public FluidDefinition(String englishName, String id, int color, boolean isGas) {
+    public FluidDefinition(String englishName, String id, int color, int opacity, FluidTexture texture, boolean isGas) {
         super(englishName, id);
         this.color = color;
         this.isGas = isGas;
@@ -54,6 +64,8 @@ public class FluidDefinition extends Definition implements FluidLike {
                 "bucket_" + id, s -> new MIBucketItem(fluid, s), SortOrder.BUCKETS);
 
         fluid.setBucketItem(bucketItemDefinition.asItem());
+        this.fluidTexture = texture;
+        this.opacity = opacity;
 
         if (isGas) {
             FluidVariantAttributes.register(fluid, new FluidVariantAttributeHandler() {
@@ -83,4 +95,5 @@ public class FluidDefinition extends Definition implements FluidLike {
     public FluidVariant variant() {
         return FluidVariant.of(this.asFluid());
     }
+
 }

@@ -156,6 +156,7 @@ public enum MIText {
     PriorityInsertHelp("Higher priorities first."),
     PriorityTransfer("Transfer priority: %d"),
     PriorityTransferHelp("Pipes will interact with higher priorities first."),
+    PutMotorToUpgrade("Put any Motor here to improve Item Pipe Speed"),
     NotConsumed("Not consumed"),
     Progress("Progress : %s"),
     RemAbsorption("Remaining Absorption : %d / %d "),

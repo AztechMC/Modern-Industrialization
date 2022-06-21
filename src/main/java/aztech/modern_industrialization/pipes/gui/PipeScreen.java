@@ -67,7 +67,7 @@ public abstract class PipeScreen<SH extends AbstractContainerMenu> extends MIHan
     @Override
     public void render(PoseStack matrices, int mouseX, int mouseY, float delta) {
         super.render(matrices, mouseX, mouseY, delta);
-        super.renderTooltip(matrices, mouseX, mouseY);
+        renderTooltip(matrices, mouseX, mouseY);
     }
 
     protected void addPriorityWidgets(int startX, int startY, PriorityInterface priority, String tooltipType, int channel) {

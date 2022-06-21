@@ -25,6 +25,7 @@ package aztech.modern_industrialization.pipes.item;
 
 import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.MIText;
+import aztech.modern_industrialization.MITooltips;
 import aztech.modern_industrialization.pipes.gui.PipeGuiHelper;
 import aztech.modern_industrialization.pipes.gui.PipeScreen;
 import aztech.modern_industrialization.pipes.impl.PipePackets;
@@ -34,6 +35,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import io.netty.buffer.Unpooled;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.FriendlyByteBuf;
@@ -89,6 +91,18 @@ public class ItemPipeScreen extends PipeScreen<ItemPipeScreenHandler> {
         }
         this.font.draw(matrices, title, (float) this.titleLabelX, (float) this.titleLabelY, 0x404040);
         this.font.draw(matrices, this.playerInventoryTitle, (float) this.inventoryLabelX, (float) this.inventoryLabelY, 0x404040);
+    }
+
+    @Override
+    protected void renderTooltip(PoseStack matrices, int x, int y) {
+        super.renderTooltip(matrices, x, y);
+
+        if (this.hoveredSlot != null && this.hoveredSlot instanceof ItemPipeScreenHandler.UpgradeSlot && !this.hoveredSlot.hasItem()) {
+            this.renderTooltip(
+                    matrices,
+                    List.of(new MITooltips.Line(MIText.PutMotorToUpgrade).build()), Optional.empty(), x, y);
+        }
+
     }
 
     @Override

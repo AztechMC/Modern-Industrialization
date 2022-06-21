@@ -53,6 +53,8 @@ public class ItemPipeScreenHandler extends PipeScreenHandler {
     private int trackedPriority1;
     private int trackedType;
 
+    public static final int UPGRADE_SLOT_X = 150, UPGRADE_SLOT_Y = 70;
+
     public ItemPipeScreenHandler(int syncId, Inventory playerInventory, FriendlyByteBuf buf) {
         this(syncId, playerInventory, ItemPipeInterface.ofBuf(buf));
     }
@@ -76,7 +78,7 @@ public class ItemPipeScreenHandler extends PipeScreenHandler {
         }
 
         // Upgrade slot
-        this.addSlot(new UpgradeSlot(150, 70));
+        this.addSlot(new UpgradeSlot(UPGRADE_SLOT_X, UPGRADE_SLOT_Y));
     }
 
     @Override
@@ -221,7 +223,7 @@ public class ItemPipeScreenHandler extends PipeScreenHandler {
         }
     }
 
-    private class UpgradeSlot extends Slot {
+    public class UpgradeSlot extends Slot {
         public UpgradeSlot(int x, int y) {
             super(new UnsupportedOperationInventory(), -1, x, y);
         }

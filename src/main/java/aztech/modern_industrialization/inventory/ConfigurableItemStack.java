@@ -221,6 +221,11 @@ public class ConfigurableItemStack extends AbstractConfigurableStack<Item, ItemV
         }
 
         @Override
+        public void initialize(ItemStack itemStack) {
+            set(itemStack);
+        }
+
+        @Override
         public void setChanged() {
             if (cachedReturnedStack != null) {
                 set(cachedReturnedStack);

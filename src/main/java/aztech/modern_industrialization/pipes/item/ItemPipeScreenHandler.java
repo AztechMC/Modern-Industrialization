@@ -210,6 +210,11 @@ public class ItemPipeScreenHandler extends PipeScreenHandler {
         }
 
         @Override
+        public void initialize(ItemStack itemStack) {
+            set(itemStack);
+        }
+
+        @Override
         public boolean dragFluid(FluidVariant fluidKey, Simulation simulation) {
             return false;
         }
@@ -241,6 +246,11 @@ public class ItemPipeScreenHandler extends PipeScreenHandler {
         @Override
         public void set(ItemStack stack) {
             pipeInterface.setUpgradeStack(stack);
+        }
+
+        @Override
+        public void initialize(ItemStack itemStack) {
+            set(itemStack);
         }
 
         @Override

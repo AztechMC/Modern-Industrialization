@@ -227,6 +227,11 @@ public class ConfigurableFluidStack extends AbstractConfigurableStack<Fluid, Flu
         }
 
         @Override
+        public void initialize(ItemStack itemStack) {
+            set(itemStack);
+        }
+
+        @Override
         public void setChanged() {
             markDirty.run();
         }

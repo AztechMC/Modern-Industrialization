@@ -51,7 +51,7 @@ public class AssemblerRecipesProvider extends MIRecipesProvider {
     protected void generateRecipes(Consumer<FinishedRecipe> consumer) {
         var nonGeneratedResources = dataGenerator.getOutputFolder().resolve("../../main/resources");
         try (var manager = new MultiPackResourceManager(PackType.SERVER_DATA, List.of(new FolderPackResources(nonGeneratedResources.toFile())))) {
-            var possibleTargets = manager.listResources("recipes", path -> path.getNamespace().endsWith(".json"));
+            var possibleTargets = manager.listResources("recipes", path -> path.getPath().endsWith(".json"));
             for (var entry : possibleTargets.entrySet()) {
                 var pathId = entry.getKey();
                 if (shouldConvertToAssembler(pathId)) {

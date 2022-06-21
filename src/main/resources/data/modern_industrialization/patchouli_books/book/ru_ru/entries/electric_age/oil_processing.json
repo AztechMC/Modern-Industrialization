@@ -1,7 +1,7 @@
 {
   "name": "Переработка нефти",
   "category": "modern_industrialization:electric_age",
-  "icon": "modern_industrialization:bucket_diesel",
+  "icon": "modern_industrialization:diesel_bucket",
   "pages": [
     {
       "type": "crafting",

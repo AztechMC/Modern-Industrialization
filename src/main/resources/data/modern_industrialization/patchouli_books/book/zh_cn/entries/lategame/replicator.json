@@ -1,11 +1,11 @@
 {
   "name": "E=mc²",
   "category": "modern_industrialization:endgame",
-  "icon": "modern_industrialization:bucket_uu_matter",
+  "icon": "modern_industrialization:uu_matter_bucket",
   "pages": [
     {
       "type": "spotlight",
-      "item": "modern_industrialization:bucket_uu_matter",
+      "item": "modern_industrialization:uu_matter_bucket",
       "text": "使用合适的电解器装置和奇点，大量能量可以通过量子霍金辐射转化为“普遍可用物质”，也被称为UU物质——宇宙的底层物质。"
     },
     {

@@ -52,13 +52,11 @@ import me.shedaniel.rei.api.common.category.CategoryIdentifier;
 import me.shedaniel.rei.api.common.entry.EntryIngredient;
 import me.shedaniel.rei.api.common.util.EntryStacks;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.core.Registry;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.ItemStack;
 
 public class MachineRecipeCategory implements DisplayCategory<MachineRecipeDisplay> {
     private final ResourceLocation id;
@@ -176,21 +174,12 @@ public class MachineRecipeCategory implements DisplayCategory<MachineRecipeDispl
             upgradeEuRequired = 0;
         }
         if (steelHatchRequired || upgradeEuRequired > 0) {
-            widgets.add(Widgets.createDrawableWidget((helper, matrices, mouseX, mouseY, delta) -> {
-                var stack = RenderSystem.getModelViewStack();
-                stack.pushPose();
-                stack.translate(bounds.getCenterX() - 5, bounds.y + 4, 0);
-                stack.scale(0.6f, 0.6f, 1);
-                RenderSystem.applyModelViewMatrix();
-
-                var displayedStack = new ItemStack(
-                        steelHatchRequired ? Registry.ITEM.get(new MIIdentifier("steel_item_input_hatch")) : MIItem.BASIC_UPGRADE);
-
-                Minecraft.getInstance().getItemRenderer().renderGuiItem(displayedStack, 0, 0);
-
-                stack.popPose();
-                RenderSystem.applyModelViewMatrix();
-            }));
+            var displayedItem = steelHatchRequired ? Registry.ITEM.get(new MIIdentifier("steel_item_input_hatch")) : MIItem.BASIC_UPGRADE;
+            widgets.add(Widgets.createSlot(new Rectangle(bounds.getCenterX() - 3, bounds.y + 4.5, 10.8, 10.8))
+                    .entry(EntryStacks.of(displayedItem))
+                    .disableTooltips()
+                    .disableHighlight()
+                    .disableBackground());
         }
         // Tooltips
         List<Component> tooltips = new ArrayList<>();

@@ -1,11 +1,11 @@
 {
   "name": "E = mc²",
   "category": "modern_industrialization:endgame",
-  "icon": "modern_industrialization:bucket_uu_matter",
+  "icon": "modern_industrialization:uu_matter_bucket",
   "pages": [
     {
       "type": "spotlight",
-      "item": "modern_industrialization:bucket_uu_matter",
+      "item": "modern_industrialization:uu_matter_bucket",
       "text": "전해조와 특이점을 잘 구성한다면, 호킹 복사를 통해 엄청난 양의 에너지를 UU 물질로 만들 수 있습니다. UU 물질은 우주의 기본 구성 단위입니다."
     },
     {

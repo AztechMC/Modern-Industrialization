@@ -1,11 +1,11 @@
 {
   "name": "E = mc²",
   "category": "modern_industrialization:endgame",
-  "icon": "modern_industrialization:bucket_uu_matter",
+  "icon": "modern_industrialization:uu_matter_bucket",
   "pages": [
     {
       "type": "spotlight",
-      "item": "modern_industrialization:bucket_uu_matter",
+      "item": "modern_industrialization:uu_matter_bucket",
       "text": "With a suitable Electrolyzer setup and a Singularity, large amounts of energy can be turned through Quantum Hawnking Radiation,  into Universally Useable Matter also known as UU Matter, the very fabric of the universe."
     },
     {

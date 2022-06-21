@@ -25,7 +25,7 @@ package aztech.modern_industrialization.machines.components.sync;
 
 import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.MIText;
-import aztech.modern_industrialization.machines.MachineScreenHandlers;
+import aztech.modern_industrialization.machines.MachineGuis;
 import aztech.modern_industrialization.machines.SyncedComponent;
 import aztech.modern_industrialization.machines.SyncedComponents;
 import aztech.modern_industrialization.machines.gui.ClientComponentRenderer;
@@ -110,13 +110,13 @@ public class TemperatureBar {
                         102, 6);
                 int barPixels = (int) ((float) temperature / params.temperatureMax * WIDTH);
                 GuiComponent.blit(matrices, x + params.renderX, y + params.renderY, helper.getBlitOffset(), 0, 0, barPixels, HEIGHT, 102, 6);
-                RenderSystem.setShaderTexture(0, MachineScreenHandlers.SLOT_ATLAS);
+                RenderSystem.setShaderTexture(0, MachineGuis.SLOT_ATLAS);
                 helper.blit(matrices, x + params.renderX - 22, y + params.renderY + HEIGHT / 2 - 10, 144, 0, 20, 20);
 
             }
 
             @Override
-            public void renderTooltip(MachineScreenHandlers.ClientScreen screen, PoseStack matrices, int x, int y, int cursorX, int cursorY) {
+            public void renderTooltip(MachineGuis.ClientScreen screen, PoseStack matrices, int x, int y, int cursorX, int cursorY) {
                 if (aztech.modern_industrialization.util.RenderHelper.isPointWithinRectangle(params.renderX, params.renderY, WIDTH, HEIGHT,
                         cursorX - x, cursorY - y)) {
                     List<Component> tooltip = new ArrayList<>();

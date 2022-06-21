@@ -34,7 +34,7 @@ import aztech.modern_industrialization.compat.rei.machines.MachineCategoryParams
 import aztech.modern_industrialization.compat.rei.machines.ReiMachineRecipes;
 import aztech.modern_industrialization.compat.rei.machines.SteamMode;
 import aztech.modern_industrialization.inventory.SlotPositions;
-import aztech.modern_industrialization.machines.MachineScreenHandlers;
+import aztech.modern_industrialization.machines.MachineGuis;
 import aztech.modern_industrialization.machines.SyncedComponent;
 import aztech.modern_industrialization.machines.blockentities.multiblocks.*;
 import aztech.modern_industrialization.machines.components.FluidConsumerComponent;
@@ -743,7 +743,7 @@ public class MultiblockMachines {
         private SlotPositions fluidInputs = SlotPositions.empty();
         private SlotPositions fluidOutputs = SlotPositions.empty();
         private SteamMode steamMode = SteamMode.ELECTRIC_ONLY;
-        private static final Predicate<MachineScreenHandlers.ClientScreen> SHAPE_VALID_PREDICATE = screen -> {
+        private static final Predicate<MachineGuis.ClientScreen> SHAPE_VALID_PREDICATE = screen -> {
             for (SyncedComponent.Client client : screen.getMenu().components) {
                 if (client instanceof CraftingMultiblockGui.Client cmGui) {
                     if (cmGui.isShapeValid) {

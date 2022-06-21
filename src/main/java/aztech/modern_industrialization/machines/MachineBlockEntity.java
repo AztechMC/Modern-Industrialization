@@ -122,15 +122,13 @@ public abstract class MachineBlockEntity extends FastBlockEntity
 
     @Override
     public final AbstractContainerMenu createMenu(int syncId, Inventory inv, Player player) {
-        return new MachineScreenHandlers.Server(syncId, inv, this, guiParams);
+        return new MachineGuis.Server(syncId, inv, this, guiParams);
     }
 
     @Override
     public final void writeScreenOpeningData(ServerPlayer player, FriendlyByteBuf buf) {
         // Write inventory
         MIInventory inv = getInventory();
-        buf.writeInt(inv.getItemStacks().size());
-        buf.writeInt(inv.getFluidStacks().size());
         CompoundTag tag = new CompoundTag();
         NbtHelper.putList(tag, "items", inv.getItemStacks(), ConfigurableItemStack::toNbt);
         NbtHelper.putList(tag, "fluids", inv.getFluidStacks(), ConfigurableFluidStack::toNbt);

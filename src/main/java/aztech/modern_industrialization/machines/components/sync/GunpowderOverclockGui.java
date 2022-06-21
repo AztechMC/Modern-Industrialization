@@ -24,7 +24,7 @@
 package aztech.modern_industrialization.machines.components.sync;
 
 import aztech.modern_industrialization.MIText;
-import aztech.modern_industrialization.machines.MachineScreenHandlers;
+import aztech.modern_industrialization.machines.MachineGuis;
 import aztech.modern_industrialization.machines.SyncedComponent;
 import aztech.modern_industrialization.machines.SyncedComponents;
 import aztech.modern_industrialization.machines.gui.ClientComponentRenderer;
@@ -103,7 +103,7 @@ public class GunpowderOverclockGui {
             @Override
             public void renderBackground(GuiComponent helper, PoseStack matrices, int x, int y) {
                 if (remTick > 0) {
-                    RenderSystem.setShaderTexture(0, MachineScreenHandlers.SLOT_ATLAS);
+                    RenderSystem.setShaderTexture(0, MachineGuis.SLOT_ATLAS);
                     int px = x + params.renderX;
                     int py = y + params.renderY;
                     helper.blit(matrices, px, py, 0, 58, 20, 20);
@@ -111,7 +111,7 @@ public class GunpowderOverclockGui {
             }
 
             @Override
-            public void renderTooltip(MachineScreenHandlers.ClientScreen screen, PoseStack matrices, int x, int y, int cursorX, int cursorY) {
+            public void renderTooltip(MachineGuis.ClientScreen screen, PoseStack matrices, int x, int y, int cursorX, int cursorY) {
                 if (remTick > 0) {
                     if (RenderHelper.isPointWithinRectangle(params.renderX, params.renderY, 20, 20, cursorX - x, cursorY - y)) {
                         List<Component> tooltip = new ArrayList<>();

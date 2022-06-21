@@ -26,7 +26,7 @@ package aztech.modern_industrialization.pipes.fluid;
 import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.api.ReiDraggable;
-import aztech.modern_industrialization.machines.MachineScreenHandlers;
+import aztech.modern_industrialization.machines.MachineGuis;
 import aztech.modern_industrialization.pipes.gui.PipeScreen;
 import aztech.modern_industrialization.pipes.impl.PipePackets;
 import aztech.modern_industrialization.util.*;
@@ -121,7 +121,7 @@ public class FluidPipeScreen extends PipeScreen<FluidPipeScreenHandler> {
         @Override
         public void renderButton(PoseStack matrices, int mouseX, int mouseY, float delta) {
             // Render fluid slot
-            RenderSystem.setShaderTexture(0, MachineScreenHandlers.SLOT_ATLAS);
+            RenderSystem.setShaderTexture(0, MachineGuis.SLOT_ATLAS);
             blit(matrices, x - 1, y - 1, 18, 0, 18, 18);
             // Render the fluid itself
             if (!iface.getNetworkFluid().isBlank()) {

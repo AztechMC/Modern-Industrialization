@@ -23,7 +23,7 @@
  */
 package aztech.modern_industrialization.machines.components.sync;
 
-import aztech.modern_industrialization.machines.MachineScreenHandlers;
+import aztech.modern_industrialization.machines.MachineGuis;
 import aztech.modern_industrialization.machines.SyncedComponent;
 import aztech.modern_industrialization.machines.SyncedComponents;
 import aztech.modern_industrialization.machines.gui.ClientComponentRenderer;
@@ -104,7 +104,7 @@ public class FluidGUIComponent {
                 FluidVariant fluid = fluidData.fluid;
                 float fracFull = (float) fluidData.amount / fluidData.capacity;
 
-                RenderSystem.setShaderTexture(0, MachineScreenHandlers.SLOT_ATLAS);
+                RenderSystem.setShaderTexture(0, MachineGuis.SLOT_ATLAS);
                 helper.blit(matrices, x + posX, y + posY, 92, 38, 46, 62);
 
                 if (!fluid.isBlank()) {
@@ -116,13 +116,13 @@ public class FluidGUIComponent {
                         }
                     }
                 }
-                RenderSystem.setShaderTexture(0, MachineScreenHandlers.SLOT_ATLAS);
+                RenderSystem.setShaderTexture(0, MachineGuis.SLOT_ATLAS);
                 helper.blit(matrices, x + posX + 7, y + posY + 7, 60, 38, 32, 48);
 
             }
 
             @Override
-            public void renderTooltip(MachineScreenHandlers.ClientScreen screen, PoseStack matrices, int x, int y, int cursorX, int cursorY) {
+            public void renderTooltip(MachineGuis.ClientScreen screen, PoseStack matrices, int x, int y, int cursorX, int cursorY) {
                 if (RenderHelper.isPointWithinRectangle(posX + 7, posY + 7, 32, 48, cursorX - x, cursorY - y)) {
                     screen.renderComponentTooltip(matrices,
                             FluidHelper.getTooltipForFluidStorage(fluidData.fluid, fluidData.amount, fluidData.capacity),

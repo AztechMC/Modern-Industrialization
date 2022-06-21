@@ -34,8 +34,8 @@ import aztech.modern_industrialization.inventory.ConfigurableInventoryPackets;
 import aztech.modern_industrialization.items.armor.ArmorPackets;
 import aztech.modern_industrialization.items.armor.MIArmorEffects;
 import aztech.modern_industrialization.items.armor.MIKeyMap;
+import aztech.modern_industrialization.machines.MachineGuis;
 import aztech.modern_industrialization.machines.MachinePackets;
-import aztech.modern_industrialization.machines.MachineScreenHandlers;
 import aztech.modern_industrialization.machines.init.*;
 import aztech.modern_industrialization.machines.multiblocks.world.ChunkEventListeners;
 import aztech.modern_industrialization.materials.MIMaterials;
@@ -82,8 +82,8 @@ public class ModernIndustrialization implements ModInitializer {
             () -> new ItemStack(Registry.ITEM.get(new MIIdentifier("forge_hammer"))));
 
     // ScreenHandlerType
-    public static final MenuType<MachineScreenHandlers.Common> SCREEN_HANDLER_MACHINE = ScreenHandlerRegistry
-            .registerExtended(new MIIdentifier("machine"), MachineScreenHandlers::createClient);
+    public static final MenuType<MachineGuis.Common> SCREEN_HANDLER_MACHINE = ScreenHandlerRegistry
+            .registerExtended(new MIIdentifier("machine"), MachineGuis::createClient);
     public static final MenuType<ForgeHammerScreenHandler> SCREEN_HANDLER_FORGE_HAMMER = ScreenHandlerRegistry
             .registerSimple(new MIIdentifier("forge_hammer"), ForgeHammerScreenHandler::new);
 

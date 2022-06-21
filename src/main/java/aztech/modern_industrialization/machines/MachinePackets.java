@@ -44,7 +44,7 @@ public class MachinePackets {
             boolean isExtract = buf.readBoolean();
             ms.execute(() -> {
                 if (player.containerMenu.containerId == syncId) {
-                    MachineScreenHandlers.Server screenHandler = (MachineScreenHandlers.Server) player.containerMenu;
+                    MachineGuis.Server screenHandler = (MachineGuis.Server) player.containerMenu;
                     AutoExtract.Server autoExtract = screenHandler.blockEntity.getComponent(SyncedComponents.AUTO_EXTRACT);
                     OrientationComponent orientation = autoExtract.getOrientation();
                     if (isItem) {
@@ -63,7 +63,7 @@ public class MachinePackets {
             ResourceLocation recipeId = buf.readResourceLocation();
             ms.execute(() -> {
                 AbstractContainerMenu sh = player.containerMenu;
-                if (sh.containerId == syncId && sh instanceof MachineScreenHandlers.Server screenHandler) {
+                if (sh.containerId == syncId && sh instanceof MachineGuis.Server screenHandler) {
                     // Check that locking the slots is allowed in the first place
                     ReiSlotLocking.Server slotLocking = screenHandler.blockEntity.getComponent(SyncedComponents.REI_SLOT_LOCKING);
                     if (!slotLocking.allowLocking.get())

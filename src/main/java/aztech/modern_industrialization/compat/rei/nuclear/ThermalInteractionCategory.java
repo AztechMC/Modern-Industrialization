@@ -27,7 +27,7 @@ import static net.minecraft.client.gui.GuiComponent.blit;
 
 import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.compat.rei.ReiUtil;
-import aztech.modern_industrialization.machines.MachineScreenHandlers;
+import aztech.modern_industrialization.machines.MachineGuis;
 import aztech.modern_industrialization.nuclear.INuclearComponent;
 import aztech.modern_industrialization.nuclear.NuclearFuel;
 import aztech.modern_industrialization.util.TextHelper;
@@ -56,7 +56,7 @@ public class ThermalInteractionCategory implements DisplayCategory<ThermalIntera
 
             @Override
             public void render(PoseStack matrices, Rectangle bounds, int mouseX, int mouseY, float delta) {
-                RenderSystem.setShaderTexture(0, MachineScreenHandlers.SLOT_ATLAS);
+                RenderSystem.setShaderTexture(0, MachineGuis.SLOT_ATLAS);
                 blit(matrices, bounds.x - 1, bounds.y - 1, z, 145, 1, 18, 18, 256, 256);
             }
 
@@ -98,7 +98,7 @@ public class ThermalInteractionCategory implements DisplayCategory<ThermalIntera
         widgets.add(Widgets.createLabel(new Point(px3 - 8, py), Component.literal(String.format("%d°C", nuclearComponent.tempLimitHigh))));
 
         widgets.add(Widgets.createDrawableWidget((helper, matrices, mouseX, mouseY, delta) -> {
-            RenderSystem.setShaderTexture(0, MachineScreenHandlers.SLOT_ATLAS);
+            RenderSystem.setShaderTexture(0, MachineGuis.SLOT_ATLAS);
             for (int i = 1; i < area.getWidth() / 2; i++) {
                 helper.blit(matrices, area.x + i, area.y + 4, 0, 255, 1, 1);
             }

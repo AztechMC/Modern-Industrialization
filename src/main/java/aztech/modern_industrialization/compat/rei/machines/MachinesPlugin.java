@@ -27,7 +27,7 @@ import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.compat.rei.Rectangle;
 import aztech.modern_industrialization.inventory.ConfigurableFluidStack;
 import aztech.modern_industrialization.inventory.ConfigurableItemStack;
-import aztech.modern_industrialization.machines.MachineScreenHandlers;
+import aztech.modern_industrialization.machines.MachineGuis;
 import aztech.modern_industrialization.machines.init.MIMachineRecipeTypes;
 import aztech.modern_industrialization.machines.multiblocks.ShapeTemplate;
 import aztech.modern_industrialization.machines.recipe.MachineRecipe;
@@ -108,8 +108,8 @@ public class MachinesPlugin implements REIClientPlugin {
 
     @Override
     public void registerScreens(ScreenRegistry registry) {
-        registry.registerClickArea(MachineScreenHandlers.ClientScreen.class, context -> {
-            MachineScreenHandlers.Client screenHandler = context.getScreen().getMenu();
+        registry.registerClickArea(MachineGuis.ClientScreen.class, context -> {
+            MachineGuis.Client screenHandler = context.getScreen().getMenu();
             String blockId = screenHandler.guiParams.blockId;
             List<ReiMachineRecipes.ClickAreaCategory> categories = ReiMachineRecipes.machineToClickAreaCategory.getOrDefault(blockId,
                     Collections.emptyList());
@@ -135,8 +135,8 @@ public class MachinesPlugin implements REIClientPlugin {
         });
 
         registry.registerFocusedStack((screen, mouse) -> {
-            if (screen instanceof MachineScreenHandlers.ClientScreen) {
-                Slot slot = ((MachineScreenHandlers.ClientScreen) screen).getFocusedSlot();
+            if (screen instanceof MachineGuis.ClientScreen) {
+                Slot slot = ((MachineGuis.ClientScreen) screen).getFocusedSlot();
                 if (slot instanceof ConfigurableFluidStack.ConfigurableFluidSlot) {
                     ConfigurableFluidStack stack = ((ConfigurableFluidStack.ConfigurableFluidSlot) slot).getConfStack();
                     if (stack.getAmount() > 0) {

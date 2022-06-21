@@ -28,7 +28,7 @@ import static aztech.modern_industrialization.nuclear.NeutronType.*;
 import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.compat.rei.nuclear.NeutronInteractionCategory;
-import aztech.modern_industrialization.machines.MachineScreenHandlers;
+import aztech.modern_industrialization.machines.MachineGuis;
 import aztech.modern_industrialization.machines.SyncedComponent;
 import aztech.modern_industrialization.machines.SyncedComponents;
 import aztech.modern_industrialization.machines.blockentities.hatches.NuclearHatch;
@@ -188,7 +188,7 @@ public class NuclearReactorGui {
                             Optional<INuclearTileData> tile = data.tilesData()[index];
                             if (tile.isPresent()) {
                                 INuclearTileData tileData = tile.get();
-                                RenderSystem.setShaderTexture(0, MachineScreenHandlers.SLOT_ATLAS);
+                                RenderSystem.setShaderTexture(0, MachineGuis.SLOT_ATLAS);
                                 int px = x + centerX - data.gridSizeX * 9 + i * 18;
                                 int py = y + centerY - data.gridSizeY * 9 + j * 18;
 
@@ -203,7 +203,7 @@ public class NuclearReactorGui {
 
                                 if (variantAmount > 0 & !variant.isBlank()) {
                                     if (variant instanceof ItemVariant itemVariant) {
-                                        ((MachineScreenHandlers.ClientScreen) helper).renderItemInGui(itemVariant.toStack((int) variantAmount),
+                                        ((MachineGuis.ClientScreen) helper).renderItemInGui(itemVariant.toStack((int) variantAmount),
                                                 px + 1, py + 1);
                                     } else if (variant instanceof FluidVariant fluidVariant) {
                                         RenderSystem.disableBlend();
@@ -259,7 +259,7 @@ public class NuclearReactorGui {
                                     if (!variant.isBlank() && variant instanceof ItemVariant itemVariant) {
                                         if (itemVariant.getItem() instanceof NuclearComponentItem item) {
                                             if (tileData.getTemperature() + 100 > item.getMaxTemperature()) {
-                                                RenderSystem.setShaderTexture(0, MachineScreenHandlers.SLOT_ATLAS);
+                                                RenderSystem.setShaderTexture(0, MachineGuis.SLOT_ATLAS);
                                                 RenderSystem.enableBlend();
                                                 RenderSystem.disableDepthTest();
                                                 if (System.currentTimeMillis() % 1000 > 500) {
@@ -290,7 +290,7 @@ public class NuclearReactorGui {
             }
 
             @Override
-            public void renderTooltip(MachineScreenHandlers.ClientScreen screen, PoseStack matrices, int x, int y, int cursorX, int cursorY) {
+            public void renderTooltip(MachineGuis.ClientScreen screen, PoseStack matrices, int x, int y, int cursorX, int cursorY) {
                 int i = (cursorX - (x + centerX - data.gridSizeX * 9)) / 18;
                 int j = (cursorY - (y + centerY - data.gridSizeY * 9)) / 18;
 
@@ -462,12 +462,12 @@ public class NuclearReactorGui {
                             (screen, button, matrices, mouseX, mouseY, delta) -> {
                                 button.renderVanilla(matrices, mouseX, mouseY, delta);
                                 if (currentMode == Mode.NUCLEAR_FUEL) {
-                                    ((MachineScreenHandlers.ClientScreen) screen).renderItemInGui(fuelStack, button.x + 1, button.y + 1);
+                                    ((MachineGuis.ClientScreen) screen).renderItemInGui(fuelStack, button.x + 1, button.y + 1);
                                 } else if (currentMode == Mode.EU_GENERATION) {
-                                    RenderSystem.setShaderTexture(0, MachineScreenHandlers.SLOT_ATLAS);
+                                    RenderSystem.setShaderTexture(0, MachineGuis.SLOT_ATLAS);
                                     screen.blit(matrices, button.x + 4, button.y + 2, 243, 1, 13, 17);
                                 } else {
-                                    RenderSystem.setShaderTexture(0, MachineScreenHandlers.SLOT_ATLAS);
+                                    RenderSystem.setShaderTexture(0, MachineGuis.SLOT_ATLAS);
                                     screen.blit(matrices, button.x, button.y, 124 + currentMode.index * 20, 0, 20, 20);
                                 }
                                 if (button.isHoveredOrFocused()) {

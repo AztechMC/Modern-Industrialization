@@ -26,7 +26,7 @@ package aztech.modern_industrialization.items;
 import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.MITooltips;
 import aztech.modern_industrialization.api.DynamicEnchantmentItem;
-import aztech.modern_industrialization.machines.MachineScreenHandlers;
+import aztech.modern_industrialization.machines.MachineGuis;
 import aztech.modern_industrialization.machines.components.sync.ProgressBar;
 import aztech.modern_industrialization.proxy.CommonProxy;
 import aztech.modern_industrialization.util.NbtHelper;
@@ -307,7 +307,7 @@ public class SteamDrillItem extends Item implements DynamicToolItem, MagnaTool, 
         @Override
         public void renderImage(Font textRenderer, int x, int y, PoseStack matrices, ItemRenderer itemRenderer, int z) {
             // Slot background
-            RenderSystem.setShaderTexture(0, MachineScreenHandlers.SLOT_ATLAS);
+            RenderSystem.setShaderTexture(0, MachineGuis.SLOT_ATLAS);
             GuiComponent.blit(matrices, x, y, 0, 0, 18, 18, 256, 256);
             // Stack itself
             ItemStack stack = data.variant.toStack((int) data.amount);

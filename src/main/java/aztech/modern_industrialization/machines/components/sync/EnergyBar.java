@@ -23,11 +23,8 @@
  */
 package aztech.modern_industrialization.machines.components.sync;
 
-import static aztech.modern_industrialization.machines.components.sync.EnergyBar.Client.Renderer.HEIGHT;
-import static aztech.modern_industrialization.machines.components.sync.EnergyBar.Client.Renderer.WIDTH;
-
 import aztech.modern_industrialization.MIText;
-import aztech.modern_industrialization.machines.MachineScreenHandlers;
+import aztech.modern_industrialization.machines.MachineGuis;
 import aztech.modern_industrialization.machines.SyncedComponent;
 import aztech.modern_industrialization.machines.SyncedComponents;
 import aztech.modern_industrialization.machines.gui.ClientComponentRenderer;
@@ -108,7 +105,7 @@ public class EnergyBar {
             public static final int HEIGHT = 18;
 
             public static void renderEnergy(GuiComponent helper, PoseStack matrices, int px, int py, float fill) {
-                RenderSystem.setShaderTexture(0, MachineScreenHandlers.SLOT_ATLAS);
+                RenderSystem.setShaderTexture(0, MachineGuis.SLOT_ATLAS);
                 helper.blit(matrices, px, py, 230, 0, WIDTH, HEIGHT);
                 int fillPixels = (int) (fill * HEIGHT * 0.9 + HEIGHT * 0.1);
                 if (fill > 0.95)
@@ -122,7 +119,7 @@ public class EnergyBar {
             }
 
             @Override
-            public void renderTooltip(MachineScreenHandlers.ClientScreen screen, PoseStack matrices, int x, int y, int cursorX, int cursorY) {
+            public void renderTooltip(MachineGuis.ClientScreen screen, PoseStack matrices, int x, int y, int cursorX, int cursorY) {
                 if (RenderHelper.isPointWithinRectangle(params.renderX, params.renderY, WIDTH, HEIGHT, cursorX - x, cursorY - y)) {
                     Component tooltip;
                     if (Screen.hasShiftDown()) {

@@ -65,7 +65,7 @@ import net.minecraft.world.item.Items;
 import org.jetbrains.annotations.Nullable;
 
 @SuppressWarnings({ "rawtypes" })
-public class MachineScreenHandlers {
+public class MachineGuis {
     public static abstract class Common extends ConfigurableScreenHandler {
         public final MachineGuiParameters guiParams;
 
@@ -142,8 +142,6 @@ public class MachineScreenHandlers {
     @SuppressWarnings("ConstantConditions")
     public static Client createClient(int syncId, Inventory playerInventory, FriendlyByteBuf buf) {
         // Inventory
-        int itemStackCount = buf.readInt();
-        int fluidStackCount = buf.readInt();
         List<ConfigurableItemStack> itemStacks = new ArrayList<>();
         List<ConfigurableFluidStack> fluidStacks = new ArrayList<>();
         CompoundTag tag = buf.readNbt();

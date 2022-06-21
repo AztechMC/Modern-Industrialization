@@ -67,8 +67,8 @@ public class SteamBoilerMultiblockBlockEntity extends MultiblockMachineBlockEnti
         steamHeater = new SteamHeaterComponent(2500, maxEuProduction, maxEuProduction / 32, !highPressure, highPressure);
         fuelBurning = new FuelBurningComponent(steamHeater, 2);
 
-        registerClientComponent(new ProgressBar.Server(PROGRESS_BAR, () -> (float) fuelBurning.getBurningProgress()));
-        registerClientComponent(new TemperatureBar.Server(TEMPERATURE_BAR, () -> (int) steamHeater.getTemperature()));
+        registerGuiComponent(new ProgressBar.Server(PROGRESS_BAR, () -> (float) fuelBurning.getBurningProgress()));
+        registerGuiComponent(new TemperatureBar.Server(TEMPERATURE_BAR, () -> (int) steamHeater.getTemperature()));
 
         this.highPressure = highPressure;
 

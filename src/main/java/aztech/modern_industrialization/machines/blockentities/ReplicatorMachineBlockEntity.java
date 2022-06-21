@@ -92,8 +92,8 @@ public class ReplicatorMachineBlockEntity extends MachineBlockEntity implements 
             }
         });
 
-        registerClientComponent(new ProgressBar.Server(progressBarParams, () -> (float) progressTick / 20));
-        registerClientComponent(new AutoExtract.Server(orientation, false));
+        registerGuiComponent(new ProgressBar.Server(progressBarParams, () -> (float) progressTick / 20));
+        registerGuiComponent(new AutoExtract.Server(orientation, false));
 
     }
 

@@ -35,10 +35,11 @@ import aztech.modern_industrialization.items.armor.ClientKeyHandler;
 import aztech.modern_industrialization.items.armor.HudRenderer;
 import aztech.modern_industrialization.items.armor.JetpackParticleAdder;
 import aztech.modern_industrialization.machines.ClientMachinePackets;
-import aztech.modern_industrialization.machines.MachineGuis;
 import aztech.modern_industrialization.machines.MachineOverlay;
 import aztech.modern_industrialization.machines.MachinePackets;
 import aztech.modern_industrialization.machines.components.FuelBurningComponent;
+import aztech.modern_industrialization.machines.gui.MachineMenuClient;
+import aztech.modern_industrialization.machines.gui.MachineScreen;
 import aztech.modern_industrialization.machines.init.MultiblockMachines;
 import aztech.modern_industrialization.machines.models.MachineModels;
 import aztech.modern_industrialization.machines.multiblocks.MultiblockErrorHighlight;
@@ -87,8 +88,8 @@ public class ModernIndustrializationClient implements ClientModInitializer {
     @SuppressWarnings({ "unchecked", "RedundantCast", "rawtypes" })
     private void setupScreens() {
         MenuScreens.register(
-                (MenuType<? extends MachineGuis.Client>) (MenuType) ModernIndustrialization.SCREEN_HANDLER_MACHINE,
-                MachineGuis.ClientScreen::new);
+                (MenuType<? extends MachineMenuClient>) (MenuType) ModernIndustrialization.SCREEN_HANDLER_MACHINE,
+                MachineScreen::new);
         MenuScreens.register(ModernIndustrialization.SCREEN_HANDLER_FORGE_HAMMER, ForgeHammerScreen::new);
     }
 

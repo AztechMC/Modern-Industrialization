@@ -27,6 +27,7 @@ import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.machines.components.OrientationComponent;
 import aztech.modern_industrialization.machines.components.sync.AutoExtract;
 import aztech.modern_industrialization.machines.components.sync.ReiSlotLocking;
+import aztech.modern_industrialization.machines.gui.MachineMenuServer;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -44,7 +45,7 @@ public class MachinePackets {
             boolean isExtract = buf.readBoolean();
             ms.execute(() -> {
                 if (player.containerMenu.containerId == syncId) {
-                    MachineGuis.Server screenHandler = (MachineGuis.Server) player.containerMenu;
+                    var screenHandler = (MachineMenuServer) player.containerMenu;
                     AutoExtract.Server autoExtract = screenHandler.blockEntity.getComponent(SyncedComponents.AUTO_EXTRACT);
                     OrientationComponent orientation = autoExtract.getOrientation();
                     if (isItem) {
@@ -63,7 +64,7 @@ public class MachinePackets {
             ResourceLocation recipeId = buf.readResourceLocation();
             ms.execute(() -> {
                 AbstractContainerMenu sh = player.containerMenu;
-                if (sh.containerId == syncId && sh instanceof MachineGuis.Server screenHandler) {
+                if (sh.containerId == syncId && sh instanceof MachineMenuServer screenHandler) {
                     // Check that locking the slots is allowed in the first place
                     ReiSlotLocking.Server slotLocking = screenHandler.blockEntity.getComponent(SyncedComponents.REI_SLOT_LOCKING);
                     if (!slotLocking.allowLocking.get())

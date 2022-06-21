@@ -84,7 +84,7 @@ public class NuclearHatch extends HatchBlockEntity implements INuclearTile {
         registerComponents(inventory, nuclearReactorComponent, neutronHistory);
 
         TemperatureBar.Parameters temperatureParams = new TemperatureBar.Parameters(43, 63, NuclearConstant.MAX_TEMPERATURE);
-        registerClientComponent(new TemperatureBar.Server(temperatureParams, () -> (int) nuclearReactorComponent.getTemperature()));
+        registerGuiComponent(new TemperatureBar.Server(temperatureParams, () -> (int) nuclearReactorComponent.getTemperature()));
 
     }
 

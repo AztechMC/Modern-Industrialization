@@ -25,6 +25,7 @@ package aztech.modern_industrialization.machines;
 
 import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.machines.components.sync.*;
+import aztech.modern_industrialization.machines.gui.GuiComponent;
 import java.util.HashMap;
 import java.util.Map;
 import net.minecraft.resources.ResourceLocation;
@@ -42,13 +43,13 @@ public final class SyncedComponents {
     public static final ResourceLocation NUCLEAR_REACTOR_GUI = new MIIdentifier("nuclear_reactor_gui");
 
     public static final class Client {
-        private static final Map<ResourceLocation, SyncedComponent.ClientFactory> components = new HashMap<>();
+        private static final Map<ResourceLocation, GuiComponent.ClientFactory> components = new HashMap<>();
 
-        public static SyncedComponent.ClientFactory get(ResourceLocation identifier) {
+        public static GuiComponent.ClientFactory get(ResourceLocation identifier) {
             return components.get(identifier);
         }
 
-        public static void register(ResourceLocation id, SyncedComponent.ClientFactory clientFactory) {
+        public static void register(ResourceLocation id, GuiComponent.ClientFactory clientFactory) {
             if (components.put(id, clientFactory) != null) {
                 throw new RuntimeException("Duplicate registration of component identifier.");
             }

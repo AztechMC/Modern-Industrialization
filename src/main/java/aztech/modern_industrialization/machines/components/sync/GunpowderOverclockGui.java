@@ -24,24 +24,23 @@
 package aztech.modern_industrialization.machines.components.sync;
 
 import aztech.modern_industrialization.MIText;
-import aztech.modern_industrialization.machines.MachineGuis;
-import aztech.modern_industrialization.machines.SyncedComponent;
 import aztech.modern_industrialization.machines.SyncedComponents;
 import aztech.modern_industrialization.machines.gui.ClientComponentRenderer;
+import aztech.modern_industrialization.machines.gui.GuiComponent;
+import aztech.modern_industrialization.machines.gui.MachineScreen;
 import aztech.modern_industrialization.util.RenderHelper;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
-import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
 public class GunpowderOverclockGui {
 
-    public static class Server implements SyncedComponent.Server<Integer> {
+    public static class Server implements GuiComponent.Server<Integer> {
 
         public final Parameters params;
         public final Supplier<Integer> remTickSupplier;
@@ -79,7 +78,7 @@ public class GunpowderOverclockGui {
         }
     }
 
-    public static class Client implements SyncedComponent.Client {
+    public static class Client implements GuiComponent.Client {
         final Parameters params;
         int remTick;
 
@@ -101,9 +100,9 @@ public class GunpowderOverclockGui {
         public class Renderer implements ClientComponentRenderer {
 
             @Override
-            public void renderBackground(GuiComponent helper, PoseStack matrices, int x, int y) {
+            public void renderBackground(net.minecraft.client.gui.GuiComponent helper, PoseStack matrices, int x, int y) {
                 if (remTick > 0) {
-                    RenderSystem.setShaderTexture(0, MachineGuis.SLOT_ATLAS);
+                    RenderSystem.setShaderTexture(0, MachineScreen.SLOT_ATLAS);
                     int px = x + params.renderX;
                     int py = y + params.renderY;
                     helper.blit(matrices, px, py, 0, 58, 20, 20);
@@ -111,7 +110,7 @@ public class GunpowderOverclockGui {
             }
 
             @Override
-            public void renderTooltip(MachineGuis.ClientScreen screen, PoseStack matrices, int x, int y, int cursorX, int cursorY) {
+            public void renderTooltip(MachineScreen screen, PoseStack matrices, int x, int y, int cursorX, int cursorY) {
                 if (remTick > 0) {
                     if (RenderHelper.isPointWithinRectangle(params.renderX, params.renderY, 20, 20, cursorX - x, cursorY - y)) {
                         List<Component> tooltip = new ArrayList<>();

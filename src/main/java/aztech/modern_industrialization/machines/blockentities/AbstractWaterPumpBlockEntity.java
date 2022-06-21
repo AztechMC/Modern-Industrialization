@@ -49,7 +49,7 @@ public abstract class AbstractWaterPumpBlockEntity extends MachineBlockEntity im
         super(bep, new MachineGuiParameters.Builder(blockName, false).build(), new OrientationComponent.Params(true, false, false));
 
         isActiveComponent = new IsActiveComponent();
-        registerClientComponent(new ProgressBar.Server(PROGRESS_BAR, () -> (float) pumpingTicks / OPERATION_TICKS));
+        registerGuiComponent(new ProgressBar.Server(PROGRESS_BAR, () -> (float) pumpingTicks / OPERATION_TICKS));
         this.registerComponents(isActiveComponent, new IComponent() {
             @Override
             public void writeNbt(CompoundTag tag) {

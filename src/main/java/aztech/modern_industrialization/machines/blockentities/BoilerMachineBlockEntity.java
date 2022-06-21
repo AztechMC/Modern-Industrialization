@@ -84,8 +84,8 @@ public class BoilerMachineBlockEntity extends MachineBlockEntity implements Tick
 
         ProgressBar.Parameters progressParams = new ProgressBar.Parameters(133, 50, "furnace", true);
         TemperatureBar.Parameters temperatureParams = new TemperatureBar.Parameters(42, 75, 1500);
-        registerClientComponent(new ProgressBar.Server(progressParams, () -> (float) fuelBurning.getBurningProgress()));
-        registerClientComponent(new TemperatureBar.Server(temperatureParams, () -> (int) steamHeater.getTemperature()));
+        registerGuiComponent(new ProgressBar.Server(progressParams, () -> (float) fuelBurning.getBurningProgress()));
+        registerGuiComponent(new TemperatureBar.Server(temperatureParams, () -> (int) steamHeater.getTemperature()));
 
         this.registerComponents(inventory, isActiveComponent, steamHeater, fuelBurning);
 

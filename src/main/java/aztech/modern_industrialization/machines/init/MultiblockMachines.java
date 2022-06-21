@@ -34,12 +34,12 @@ import aztech.modern_industrialization.compat.rei.machines.MachineCategoryParams
 import aztech.modern_industrialization.compat.rei.machines.ReiMachineRecipes;
 import aztech.modern_industrialization.compat.rei.machines.SteamMode;
 import aztech.modern_industrialization.inventory.SlotPositions;
-import aztech.modern_industrialization.machines.MachineGuis;
-import aztech.modern_industrialization.machines.SyncedComponent;
 import aztech.modern_industrialization.machines.blockentities.multiblocks.*;
 import aztech.modern_industrialization.machines.components.FluidConsumerComponent;
 import aztech.modern_industrialization.machines.components.sync.CraftingMultiblockGui;
 import aztech.modern_industrialization.machines.components.sync.ProgressBar;
+import aztech.modern_industrialization.machines.gui.GuiComponent;
+import aztech.modern_industrialization.machines.gui.MachineScreen;
 import aztech.modern_industrialization.machines.models.MachineCasing;
 import aztech.modern_industrialization.machines.models.MachineCasings;
 import aztech.modern_industrialization.machines.models.MachineModels;
@@ -743,8 +743,8 @@ public class MultiblockMachines {
         private SlotPositions fluidInputs = SlotPositions.empty();
         private SlotPositions fluidOutputs = SlotPositions.empty();
         private SteamMode steamMode = SteamMode.ELECTRIC_ONLY;
-        private static final Predicate<MachineGuis.ClientScreen> SHAPE_VALID_PREDICATE = screen -> {
-            for (SyncedComponent.Client client : screen.getMenu().components) {
+        private static final Predicate<MachineScreen> SHAPE_VALID_PREDICATE = screen -> {
+            for (GuiComponent.Client client : screen.getMenu().components) {
                 if (client instanceof CraftingMultiblockGui.Client cmGui) {
                     if (cmGui.isShapeValid) {
                         return true;

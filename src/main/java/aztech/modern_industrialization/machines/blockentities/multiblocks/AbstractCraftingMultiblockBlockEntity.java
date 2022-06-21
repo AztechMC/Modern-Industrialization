@@ -52,8 +52,8 @@ public abstract class AbstractCraftingMultiblockBlockEntity extends MultiblockMa
         this.inventory = new MultiblockInventoryComponent();
         this.crafter = new CrafterComponent(inventory, getBehavior());
         this.isActive = new IsActiveComponent();
-        registerClientComponent(new CraftingMultiblockGui.Server(() -> shapeValid.shapeValid, crafter::getProgress, crafter));
-        registerClientComponent(new ReiSlotLocking.Server(crafter::lockRecipe, () -> allowNormalOperation));
+        registerGuiComponent(new CraftingMultiblockGui.Server(() -> shapeValid.shapeValid, crafter::getProgress, crafter));
+        registerGuiComponent(new ReiSlotLocking.Server(crafter::lockRecipe, () -> allowNormalOperation));
         registerComponents(activeShape, crafter, isActive);
     }
 

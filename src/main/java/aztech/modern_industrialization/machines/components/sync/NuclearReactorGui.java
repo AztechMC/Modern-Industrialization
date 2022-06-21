@@ -28,11 +28,11 @@ import static aztech.modern_industrialization.nuclear.NeutronType.*;
 import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.compat.rei.nuclear.NeutronInteractionCategory;
-import aztech.modern_industrialization.machines.MachineGuis;
-import aztech.modern_industrialization.machines.SyncedComponent;
 import aztech.modern_industrialization.machines.SyncedComponents;
 import aztech.modern_industrialization.machines.blockentities.hatches.NuclearHatch;
 import aztech.modern_industrialization.machines.gui.ClientComponentRenderer;
+import aztech.modern_industrialization.machines.gui.GuiComponent;
+import aztech.modern_industrialization.machines.gui.MachineScreen;
 import aztech.modern_industrialization.nuclear.*;
 import aztech.modern_industrialization.util.FluidHelper;
 import aztech.modern_industrialization.util.RenderHelper;
@@ -48,7 +48,6 @@ import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.TransferVariant;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.core.Registry;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
@@ -57,7 +56,7 @@ import net.minecraft.world.item.ItemStack;
 
 public class NuclearReactorGui {
 
-    public record Server(Supplier<Data> dataSupplier) implements SyncedComponent.Server<Data> {
+    public record Server(Supplier<Data> dataSupplier) implements GuiComponent.Server<Data> {
 
         @Override
         public Data copyData() {
@@ -107,7 +106,7 @@ public class NuclearReactorGui {
         }
     }
 
-    public static class Client implements SyncedComponent.Client {
+    public static class Client implements GuiComponent.Client {
 
         private Data data;
 
@@ -179,7 +178,7 @@ public class NuclearReactorGui {
                     MIText.Both.text() };
 
             @Override
-            public void renderBackground(GuiComponent helper, PoseStack matrices, int x, int y) {
+            public void renderBackground(net.minecraft.client.gui.GuiComponent helper, PoseStack matrices, int x, int y) {
 
                 if (data.valid) {
                     for (int i = 0; i < data.gridSizeX; i++) {
@@ -188,7 +187,7 @@ public class NuclearReactorGui {
                             Optional<INuclearTileData> tile = data.tilesData()[index];
                             if (tile.isPresent()) {
                                 INuclearTileData tileData = tile.get();
-                                RenderSystem.setShaderTexture(0, MachineGuis.SLOT_ATLAS);
+                                RenderSystem.setShaderTexture(0, MachineScreen.SLOT_ATLAS);
                                 int px = x + centerX - data.gridSizeX * 9 + i * 18;
                                 int py = y + centerY - data.gridSizeY * 9 + j * 18;
 
@@ -203,7 +202,7 @@ public class NuclearReactorGui {
 
                                 if (variantAmount > 0 & !variant.isBlank()) {
                                     if (variant instanceof ItemVariant itemVariant) {
-                                        ((MachineGuis.ClientScreen) helper).renderItemInGui(itemVariant.toStack((int) variantAmount),
+                                        ((MachineScreen) helper).renderItemInGui(itemVariant.toStack((int) variantAmount),
                                                 px + 1, py + 1);
                                     } else if (variant instanceof FluidVariant fluidVariant) {
                                         RenderSystem.disableBlend();
@@ -249,7 +248,7 @@ public class NuclearReactorGui {
 
                                     matrices.translate(px, py, 0);
                                     matrices.scale(18, 18, 1);
-                                    GuiComponent.blit(matrices, 0, 0, u, v, 1, 1, 300, 60);
+                                    net.minecraft.client.gui.GuiComponent.blit(matrices, 0, 0, u, v, 1, 1, 300, 60);
                                     matrices.scale(1 / 18f, 1 / 18f, 1);
                                     matrices.translate(-px, -py, 0);
 
@@ -259,7 +258,7 @@ public class NuclearReactorGui {
                                     if (!variant.isBlank() && variant instanceof ItemVariant itemVariant) {
                                         if (itemVariant.getItem() instanceof NuclearComponentItem item) {
                                             if (tileData.getTemperature() + 100 > item.getMaxTemperature()) {
-                                                RenderSystem.setShaderTexture(0, MachineGuis.SLOT_ATLAS);
+                                                RenderSystem.setShaderTexture(0, MachineScreen.SLOT_ATLAS);
                                                 RenderSystem.enableBlend();
                                                 RenderSystem.disableDepthTest();
                                                 if (System.currentTimeMillis() % 1000 > 500) {
@@ -290,7 +289,7 @@ public class NuclearReactorGui {
             }
 
             @Override
-            public void renderTooltip(MachineGuis.ClientScreen screen, PoseStack matrices, int x, int y, int cursorX, int cursorY) {
+            public void renderTooltip(MachineScreen screen, PoseStack matrices, int x, int y, int cursorX, int cursorY) {
                 int i = (cursorX - (x + centerX - data.gridSizeX * 9)) / 18;
                 int j = (cursorY - (y + centerY - data.gridSizeY * 9)) / 18;
 
@@ -462,12 +461,12 @@ public class NuclearReactorGui {
                             (screen, button, matrices, mouseX, mouseY, delta) -> {
                                 button.renderVanilla(matrices, mouseX, mouseY, delta);
                                 if (currentMode == Mode.NUCLEAR_FUEL) {
-                                    ((MachineGuis.ClientScreen) screen).renderItemInGui(fuelStack, button.x + 1, button.y + 1);
+                                    ((MachineScreen) screen).renderItemInGui(fuelStack, button.x + 1, button.y + 1);
                                 } else if (currentMode == Mode.EU_GENERATION) {
-                                    RenderSystem.setShaderTexture(0, MachineGuis.SLOT_ATLAS);
+                                    RenderSystem.setShaderTexture(0, MachineScreen.SLOT_ATLAS);
                                     screen.blit(matrices, button.x + 4, button.y + 2, 243, 1, 13, 17);
                                 } else {
-                                    RenderSystem.setShaderTexture(0, MachineGuis.SLOT_ATLAS);
+                                    RenderSystem.setShaderTexture(0, MachineScreen.SLOT_ATLAS);
                                     screen.blit(matrices, button.x, button.y, 124 + currentMode.index * 20, 0, 20, 20);
                                 }
                                 if (button.isHoveredOrFocused()) {

@@ -66,7 +66,7 @@ public class EnergyFromFluidMachineBlockEntity extends MachineBlockEntity implem
         this.energy = new EnergyComponent(energyCapacity);
         this.extractable = energy.buildExtractable((CableTier tier) -> tier == outputTier);
         EnergyBar.Parameters energyBarParams = new EnergyBar.Parameters(76, 39);
-        registerClientComponent(new EnergyBar.Server(energyBarParams, energy::getEu, energy::getCapacity));
+        registerGuiComponent(new EnergyBar.Server(energyBarParams, energy::getEu, energy::getCapacity));
         this.isActiveComponent = new IsActiveComponent();
 
         List<ConfigurableItemStack> itemStacks = new ArrayList<>();

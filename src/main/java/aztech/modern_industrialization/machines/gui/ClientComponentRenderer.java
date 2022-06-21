@@ -23,7 +23,6 @@
  */
 package aztech.modern_industrialization.machines.gui;
 
-import aztech.modern_industrialization.machines.MachineGuis;
 import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.List;
 import java.util.function.Consumer;
@@ -41,7 +40,7 @@ public interface ClientComponentRenderer {
 
     void renderBackground(GuiComponent helper, PoseStack matrices, int x, int y);
 
-    default void renderTooltip(MachineGuis.ClientScreen screen, PoseStack matrices, int x, int y, int cursorX, int cursorY) {
+    default void renderTooltip(MachineScreen screen, PoseStack matrices, int x, int y, int cursorX, int cursorY) {
     }
 
     interface ButtonContainer {
@@ -71,7 +70,7 @@ public interface ClientComponentRenderer {
 
     @FunctionalInterface
     interface CustomButtonRenderer {
-        void renderButton(Screen screen, MachineGuis.ClientScreen.MachineButton button, PoseStack matrices, int mouseX, int mouseY,
+        void renderButton(Screen screen, MachineScreen.MachineButton button, PoseStack matrices, int mouseX, int mouseY,
                 float delta);
     }
 

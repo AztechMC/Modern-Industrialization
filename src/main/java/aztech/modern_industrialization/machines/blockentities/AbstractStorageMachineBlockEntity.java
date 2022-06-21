@@ -71,7 +71,7 @@ public abstract class AbstractStorageMachineBlockEntity extends MachineBlockEnti
         insertable = energy.buildInsertable((CableTier tier) -> tier == from);
         extractable = energy.buildExtractable((CableTier tier) -> tier == to);
         EnergyBar.Parameters energyBarParams = new EnergyBar.Parameters(76, 39);
-        registerClientComponent(new EnergyBar.Server(energyBarParams, energy::getEu, energy::getCapacity));
+        registerGuiComponent(new EnergyBar.Server(energyBarParams, energy::getEu, energy::getCapacity));
 
         this.registerComponents(energy);
 

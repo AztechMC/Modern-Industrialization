@@ -25,7 +25,7 @@ package aztech.modern_industrialization.compat.rei.machines;
 
 import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.compat.rei.Rectangle;
-import aztech.modern_industrialization.machines.MachineGuis;
+import aztech.modern_industrialization.machines.gui.MachineScreen;
 import aztech.modern_industrialization.machines.multiblocks.ShapeTemplate;
 import java.util.*;
 import java.util.function.Predicate;
@@ -70,7 +70,7 @@ public class ReiMachineRecipes {
     }
 
     public static void registerRecipeCategoryForMachine(String machine, String category,
-            Predicate<MachineGuis.ClientScreen> screenPredicate) {
+            Predicate<MachineScreen> screenPredicate) {
         machineToClickAreaCategory.computeIfAbsent(machine, k -> new ArrayList<>())
                 .add(new ClickAreaCategory(new MIIdentifier(category), screenPredicate));
     }
@@ -85,9 +85,9 @@ public class ReiMachineRecipes {
 
     static class ClickAreaCategory {
         public final ResourceLocation category;
-        public final Predicate<MachineGuis.ClientScreen> predicate;
+        public final Predicate<MachineScreen> predicate;
 
-        ClickAreaCategory(ResourceLocation category, Predicate<MachineGuis.ClientScreen> predicate) {
+        ClickAreaCategory(ResourceLocation category, Predicate<MachineScreen> predicate) {
             this.category = category;
             this.predicate = predicate;
         }

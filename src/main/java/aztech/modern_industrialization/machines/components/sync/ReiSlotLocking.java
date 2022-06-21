@@ -23,9 +23,9 @@
  */
 package aztech.modern_industrialization.machines.components.sync;
 
-import aztech.modern_industrialization.machines.SyncedComponent;
 import aztech.modern_industrialization.machines.SyncedComponents;
 import aztech.modern_industrialization.machines.gui.ClientComponentRenderer;
+import aztech.modern_industrialization.machines.gui.GuiComponent;
 import java.util.function.Supplier;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
@@ -37,7 +37,7 @@ public class ReiSlotLocking {
         void lockSlots(ResourceLocation recipeId, Inventory inventory);
     }
 
-    public static class Server implements SyncedComponent.Server<Boolean> {
+    public static class Server implements GuiComponent.Server<Boolean> {
         public final SlotLockable slotLockable;
         public final Supplier<Boolean> allowLocking;
 
@@ -72,7 +72,7 @@ public class ReiSlotLocking {
         }
     }
 
-    public static class Client implements SyncedComponent.Client {
+    public static class Client implements GuiComponent.Client {
         private boolean allowLocking;
 
         public Client(FriendlyByteBuf initialData) {

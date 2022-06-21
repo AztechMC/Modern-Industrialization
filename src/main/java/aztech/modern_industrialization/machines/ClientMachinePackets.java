@@ -23,6 +23,7 @@
  */
 package aztech.modern_industrialization.machines;
 
+import aztech.modern_industrialization.machines.gui.MachineMenuClient;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
@@ -36,7 +37,7 @@ public class ClientMachinePackets {
         mc.execute(() -> {
             try {
                 if (mc.player.containerMenu.containerId == syncId) {
-                    MachineGuis.Client screenHandler = (MachineGuis.Client) mc.player.containerMenu;
+                    MachineMenuClient screenHandler = (MachineMenuClient) mc.player.containerMenu;
                     screenHandler.components.get(componentIndex).read(buf);
                 }
             } finally {

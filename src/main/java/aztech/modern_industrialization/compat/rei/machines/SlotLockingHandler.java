@@ -24,9 +24,9 @@
 package aztech.modern_industrialization.compat.rei.machines;
 
 import aztech.modern_industrialization.MIIdentifier;
-import aztech.modern_industrialization.machines.MachineGuis;
 import aztech.modern_industrialization.machines.MachinePackets;
 import aztech.modern_industrialization.machines.components.sync.ReiSlotLocking;
+import aztech.modern_industrialization.machines.gui.MachineMenuClient;
 import java.util.List;
 import me.shedaniel.rei.api.client.registry.category.CategoryRegistry;
 import me.shedaniel.rei.api.client.registry.transfer.TransferHandler;
@@ -45,10 +45,10 @@ public class SlotLockingHandler implements TransferHandler {
     public @NotNull Result handle(@NotNull Context context) {
         if (!(context.getDisplay() instanceof MachineRecipeDisplay))
             return Result.createNotApplicable();
-        if (!(context.getMenu() instanceof MachineGuis.Client))
+        if (!(context.getMenu() instanceof MachineMenuClient))
             return Result.createNotApplicable();
         MachineRecipeDisplay display = (MachineRecipeDisplay) context.getDisplay();
-        MachineGuis.Client handler = (MachineGuis.Client) context.getMenu();
+        MachineMenuClient handler = (MachineMenuClient) context.getMenu();
         if (!canApply(handler, display))
             return Result.createNotApplicable();
         ReiSlotLocking.Client slotLocking = handler.getComponent(ReiSlotLocking.Client.class);
@@ -63,7 +63,7 @@ public class SlotLockingHandler implements TransferHandler {
         return Result.createSuccessful().blocksFurtherHandling();
     }
 
-    private boolean canApply(MachineGuis.Client handler, MachineRecipeDisplay display) {
+    private boolean canApply(MachineMenuClient handler, MachineRecipeDisplay display) {
         // Check if the block is in the worktables - it's a hack but it should work. :P
         String blockId = handler.guiParams.blockId;
         List<EntryIngredient> workstations = CategoryRegistry.getInstance().get(display.getCategoryIdentifier()).getWorkstations();

@@ -73,7 +73,7 @@ public class NuclearReactorMultiblockBlockEntity extends MultiblockMachineBlockE
         efficiencyHistory = new IntegerHistoryComponent(new String[] { "euProduction", "euFuelConsumption" }, 300);
         isActive = new IsActiveComponent();
         registerComponents(activeShape, isActive, efficiencyHistory);
-        this.registerClientComponent(new NuclearReactorGui.Server(this::sendData));
+        this.registerGuiComponent(new NuclearReactorGui.Server(this::sendData));
 
     }
 

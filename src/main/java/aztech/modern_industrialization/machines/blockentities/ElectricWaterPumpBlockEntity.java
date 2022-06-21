@@ -49,7 +49,7 @@ public class ElectricWaterPumpBlockEntity extends AbstractWaterPumpBlockEntity i
                 new SlotPositions.Builder().addSlot(OUTPUT_SLOT_X, OUTPUT_SLOT_Y).build());
         this.energy = new EnergyComponent(3200);
         this.insertable = energy.buildInsertable(tier -> tier == CableTier.LV);
-        registerClientComponent(new EnergyBar.Server(new EnergyBar.Parameters(18, 32), energy::getEu, energy::getCapacity));
+        registerGuiComponent(new EnergyBar.Server(new EnergyBar.Parameters(18, 32), energy::getEu, energy::getCapacity));
         this.registerComponents(energy);
         this.registerComponents(inventory);
     }

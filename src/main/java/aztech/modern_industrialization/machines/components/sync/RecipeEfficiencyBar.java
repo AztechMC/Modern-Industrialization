@@ -25,24 +25,23 @@ package aztech.modern_industrialization.machines.components.sync;
 
 import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.MIText;
-import aztech.modern_industrialization.machines.MachineGuis;
-import aztech.modern_industrialization.machines.SyncedComponent;
 import aztech.modern_industrialization.machines.SyncedComponents;
 import aztech.modern_industrialization.machines.components.CrafterComponent;
 import aztech.modern_industrialization.machines.gui.ClientComponentRenderer;
+import aztech.modern_industrialization.machines.gui.GuiComponent;
+import aztech.modern_industrialization.machines.gui.MachineScreen;
 import aztech.modern_industrialization.util.RenderHelper;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
-import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
 public class RecipeEfficiencyBar {
-    public static class Server implements SyncedComponent.Server<Data> {
+    public static class Server implements GuiComponent.Server<Data> {
         private final Parameters params;
         private final CrafterComponent crafter;
 
@@ -99,7 +98,7 @@ public class RecipeEfficiencyBar {
         }
     }
 
-    public static class Client implements SyncedComponent.Client {
+    public static class Client implements GuiComponent.Client {
         final Parameters params;
         boolean hasActiveRecipe;
         int efficiencyTicks;
@@ -135,19 +134,21 @@ public class RecipeEfficiencyBar {
 
         public class Renderer implements ClientComponentRenderer {
             @Override
-            public void renderBackground(GuiComponent helper, PoseStack matrices, int x, int y) {
+            public void renderBackground(net.minecraft.client.gui.GuiComponent helper, PoseStack matrices, int x, int y) {
                 RenderSystem.setShaderTexture(0, TEXTURE);
-                GuiComponent.blit(matrices, x + params.renderX - 1, y + params.renderY - 1, helper.getBlitOffset(), 0, 2, WIDTH + 2, HEIGHT + 2,
+                net.minecraft.client.gui.GuiComponent.blit(matrices, x + params.renderX - 1, y + params.renderY - 1, helper.getBlitOffset(), 0, 2,
+                        WIDTH + 2, HEIGHT + 2,
                         102, 6);
                 if (hasActiveRecipe) {
                     int barPixels = (int) ((float) efficiencyTicks / maxEfficiencyTicks * WIDTH);
-                    GuiComponent.blit(matrices, x + params.renderX, y + params.renderY, helper.getBlitOffset(), 0, 0, barPixels, HEIGHT, 102,
+                    net.minecraft.client.gui.GuiComponent.blit(matrices, x + params.renderX, y + params.renderY, helper.getBlitOffset(), 0, 0,
+                            barPixels, HEIGHT, 102,
                             6);
                 }
             }
 
             @Override
-            public void renderTooltip(MachineGuis.ClientScreen screen, PoseStack matrices, int x, int y, int cursorX, int cursorY) {
+            public void renderTooltip(MachineScreen screen, PoseStack matrices, int x, int y, int cursorX, int cursorY) {
                 if (RenderHelper.isPointWithinRectangle(params.renderX, params.renderY, WIDTH, HEIGHT, cursorX - x, cursorY - y)) {
                     List<Component> tooltip = new ArrayList<>();
                     if (hasActiveRecipe) {

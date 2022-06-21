@@ -21,17 +21,30 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.machines;
+package aztech.modern_industrialization.machines.gui;
 
-import aztech.modern_industrialization.machines.gui.ClientComponentRenderer;
+import aztech.modern_industrialization.machines.SyncedComponents;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.inventory.Slot;
 
-public final class SyncedComponent {
+public final class GuiComponent {
+    public interface Common {
+        /**
+         * Perform any common menu setup here.
+         */
+        default void setupMenu(MenuFacade menu) {
+        }
+
+        interface MenuFacade {
+            void addSlotToMenu(Slot slot);
+        }
+    }
+
     /**
      * Client part of a synced component.
      */
-    public interface Client {
+    public interface Client extends Common {
         /**
          * Read the current data, written by {@link Server#writeCurrentData}.
          */
@@ -57,7 +70,7 @@ public final class SyncedComponent {
      * 
      * @param <D> Synced data type.
      */
-    public interface Server<D> {
+    public interface Server<D> extends Common {
         /**
          * @return A copy of the current sync data.
          */

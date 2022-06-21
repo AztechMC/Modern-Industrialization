@@ -55,8 +55,8 @@ public class ElectricCraftingMachineBlockEntity extends AbstractCraftingMachineB
         this.upgrades = new UpgradeComponent();
         this.energy = new EnergyComponent(casing::getEuCapacity);
         this.insertable = energy.buildInsertable(cableTier -> this.casing.canInsertEu(cableTier));
-        registerClientComponent(new EnergyBar.Server(energyBarParams, energy::getEu, energy::getCapacity));
-        registerClientComponent(new RecipeEfficiencyBar.Server(efficiencyBarParams, crafter));
+        registerGuiComponent(new EnergyBar.Server(energyBarParams, energy::getEu, energy::getCapacity));
+        registerGuiComponent(new RecipeEfficiencyBar.Server(efficiencyBarParams, crafter));
         this.registerComponents(casing, upgrades, energy);
     }
 

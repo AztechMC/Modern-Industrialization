@@ -30,7 +30,9 @@ import aztech.modern_industrialization.inventory.ConfigurableItemStack;
 import aztech.modern_industrialization.inventory.MIInventory;
 import aztech.modern_industrialization.machines.components.OrientationComponent;
 import aztech.modern_industrialization.machines.components.PlacedByComponent;
+import aztech.modern_industrialization.machines.gui.GuiComponent;
 import aztech.modern_industrialization.machines.gui.MachineGuiParameters;
+import aztech.modern_industrialization.machines.gui.MachineMenuServer;
 import aztech.modern_industrialization.machines.models.MachineModelClientData;
 import aztech.modern_industrialization.util.NbtHelper;
 import aztech.modern_industrialization.util.RenderHelper;
@@ -69,7 +71,7 @@ import org.jetbrains.annotations.Nullable;
 @SuppressWarnings("rawtypes")
 public abstract class MachineBlockEntity extends FastBlockEntity
         implements ExtendedScreenHandlerFactory, RenderAttachmentBlockEntity, WrenchableBlockEntity {
-    final List<SyncedComponent.Server> syncedComponents = new ArrayList<>();
+    public final List<GuiComponent.Server> guiComponents = new ArrayList<>();
     private final List<IComponent> icomponents = new ArrayList<>();
     private final MachineGuiParameters guiParams;
     /**
@@ -89,8 +91,8 @@ public abstract class MachineBlockEntity extends FastBlockEntity
         registerComponents(orientation, placedBy);
     }
 
-    protected final void registerClientComponent(SyncedComponent.Server component) {
-        syncedComponents.add(component);
+    protected final void registerGuiComponent(GuiComponent.Server component) {
+        guiComponents.add(component);
     }
 
     protected final void registerComponents(IComponent... components) {
@@ -106,8 +108,8 @@ public abstract class MachineBlockEntity extends FastBlockEntity
      * @throws RuntimeException if the component doesn't exist.
      */
     @SuppressWarnings("unchecked")
-    public <S extends SyncedComponent.Server> S getComponent(ResourceLocation componentId) {
-        for (SyncedComponent.Server component : syncedComponents) {
+    public <S extends GuiComponent.Server> S getComponent(ResourceLocation componentId) {
+        for (GuiComponent.Server component : guiComponents) {
             if (component.getId().equals(componentId)) {
                 return (S) component;
             }
@@ -122,7 +124,7 @@ public abstract class MachineBlockEntity extends FastBlockEntity
 
     @Override
     public final AbstractContainerMenu createMenu(int syncId, Inventory inv, Player player) {
-        return new MachineGuis.Server(syncId, inv, this, guiParams);
+        return new MachineMenuServer(syncId, inv, this, guiParams);
     }
 
     @Override
@@ -136,9 +138,9 @@ public abstract class MachineBlockEntity extends FastBlockEntity
         // Write slot positions
         inv.itemPositions.write(buf);
         inv.fluidPositions.write(buf);
-        buf.writeInt(syncedComponents.size());
+        buf.writeInt(guiComponents.size());
         // Write components
-        for (SyncedComponent.Server component : syncedComponents) {
+        for (GuiComponent.Server component : guiComponents) {
             buf.writeResourceLocation(component.getId());
             component.writeInitialData(buf);
         }

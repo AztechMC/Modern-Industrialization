@@ -42,7 +42,7 @@ public class ItemHatch extends HatchBlockEntity {
         this.inventory = inventory;
 
         registerComponents(inventory);
-        registerClientComponent(new AutoExtract.Server(orientation, input));
+        registerGuiComponent(new AutoExtract.Server(orientation, input));
     }
 
     private final boolean input;

@@ -52,9 +52,9 @@ public abstract class AbstractCraftingMachineBlockEntity extends MachineBlockEnt
         this.type = recipeType;
         this.tier = tier;
         this.isActiveComponent = new IsActiveComponent();
-        registerClientComponent(new AutoExtract.Server(orientation));
-        registerClientComponent(new ProgressBar.Server(progressBarParams, crafter::getProgress));
-        registerClientComponent(new ReiSlotLocking.Server(crafter::lockRecipe, () -> true));
+        registerGuiComponent(new AutoExtract.Server(orientation));
+        registerGuiComponent(new ProgressBar.Server(progressBarParams, crafter::getProgress));
+        registerGuiComponent(new ReiSlotLocking.Server(crafter::lockRecipe, () -> true));
         this.registerComponents(crafter, this.inventory, isActiveComponent);
     }
 

@@ -30,9 +30,9 @@ import aztech.modern_industrialization.MIItem;
 import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.MITooltips;
 import aztech.modern_industrialization.inventory.SlotPositions;
-import aztech.modern_industrialization.machines.MachineGuis;
 import aztech.modern_industrialization.machines.components.sync.EnergyBar;
 import aztech.modern_industrialization.machines.components.sync.ProgressBar;
+import aztech.modern_industrialization.machines.gui.MachineScreen;
 import aztech.modern_industrialization.machines.init.MachineTier;
 import aztech.modern_industrialization.util.TextHelper;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -146,7 +146,7 @@ public class MachineRecipeCategory implements DisplayCategory<MachineRecipeDispl
             matrices.scale(0.5f, 0.5f, 0.5f);
             switch (params.steamMode) {
             case BOTH -> {
-                RenderSystem.setShaderTexture(0, MachineGuis.SLOT_ATLAS);
+                RenderSystem.setShaderTexture(0, MachineScreen.SLOT_ATLAS);
                 helper.blit(matrices, -2, -2, 80, 18, 20, 20);
             }
             case STEAM_ONLY -> {
@@ -244,7 +244,7 @@ public class MachineRecipeCategory implements DisplayCategory<MachineRecipeDispl
 
     private static Widget createFluidSlotBackground(Point point) {
         return Widgets.createDrawableWidget((helper, matrices, mouseX, mouseY, delta) -> {
-            RenderSystem.setShaderTexture(0, MachineGuis.SLOT_ATLAS);
+            RenderSystem.setShaderTexture(0, MachineScreen.SLOT_ATLAS);
             helper.blit(matrices, point.x - 1, point.y - 1, 18, 0, 18, 18);
         });
     }

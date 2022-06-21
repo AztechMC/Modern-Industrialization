@@ -53,7 +53,7 @@ public class SteamCraftingMachineBlockEntity extends AbstractCraftingMachineBloc
 
         GunpowderOverclockGui.Parameters gunpowderOverclockGuiParams = new GunpowderOverclockGui.Parameters(progressBarParams.renderX,
                 progressBarParams.renderY + 20);
-        registerClientComponent(new GunpowderOverclockGui.Server(gunpowderOverclockGuiParams, () -> gunpowderOverclock.overclockGunpowderTick));
+        registerGuiComponent(new GunpowderOverclockGui.Server(gunpowderOverclockGuiParams, () -> gunpowderOverclock.overclockGunpowderTick));
         this.registerComponents(gunpowderOverclock);
     }
 

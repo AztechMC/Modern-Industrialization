@@ -25,17 +25,16 @@ package aztech.modern_industrialization.machines.components.sync;
 
 import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.machines.MachinePackets;
-import aztech.modern_industrialization.machines.SyncedComponent;
 import aztech.modern_industrialization.machines.SyncedComponents;
 import aztech.modern_industrialization.machines.components.OrientationComponent;
 import aztech.modern_industrialization.machines.gui.ClientComponentRenderer;
+import aztech.modern_industrialization.machines.gui.GuiComponent;
 import aztech.modern_industrialization.util.TextHelper;
 import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.ArrayList;
 import java.util.List;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
-import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -45,7 +44,7 @@ import net.minecraft.resources.ResourceLocation;
  * but the logic stays the same.
  */
 public class AutoExtract {
-    public static class Server implements SyncedComponent.Server<Data> {
+    public static class Server implements GuiComponent.Server<Data> {
         private final OrientationComponent orientation;
         private final boolean displayAsInsert; // true for auto-insert
 
@@ -92,7 +91,7 @@ public class AutoExtract {
         }
     }
 
-    public static class Client implements SyncedComponent.Client {
+    public static class Client implements GuiComponent.Client {
         final boolean displayAsInsert;
         final boolean hasExtractItems, hasExtractFluids;
         boolean[] extractStatus = new boolean[2];
@@ -183,7 +182,7 @@ public class AutoExtract {
             }
 
             @Override
-            public void renderBackground(GuiComponent helper, PoseStack matrices, int x, int y) {
+            public void renderBackground(net.minecraft.client.gui.GuiComponent helper, PoseStack matrices, int x, int y) {
             }
         }
     }

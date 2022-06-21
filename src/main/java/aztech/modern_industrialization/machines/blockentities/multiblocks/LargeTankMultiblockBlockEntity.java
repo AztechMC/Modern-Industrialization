@@ -123,7 +123,7 @@ public class LargeTankMultiblockBlockEntity extends MultiblockMachineBlockEntity
 
         this.registerComponents(shapeComponent);
         this.registerComponents(fluidStorage);
-        this.registerClientComponent(new FluidGUIComponent.Server(this::getFluidData));
+        this.registerGuiComponent(new FluidGUIComponent.Server(this::getFluidData));
     }
 
     public FluidGUIComponent.Data getFluidData() {

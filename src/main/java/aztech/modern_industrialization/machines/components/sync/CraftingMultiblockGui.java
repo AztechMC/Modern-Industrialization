@@ -25,22 +25,21 @@ package aztech.modern_industrialization.machines.components.sync;
 
 import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.MIText;
-import aztech.modern_industrialization.machines.SyncedComponent;
 import aztech.modern_industrialization.machines.SyncedComponents;
 import aztech.modern_industrialization.machines.components.CrafterComponent;
 import aztech.modern_industrialization.machines.gui.ClientComponentRenderer;
+import aztech.modern_industrialization.machines.gui.GuiComponent;
 import aztech.modern_industrialization.util.TextHelper;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.function.Supplier;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 
 public class CraftingMultiblockGui {
-    public static class Server implements SyncedComponent.Server<Data> {
+    public static class Server implements GuiComponent.Server<Data> {
 
         private final CrafterComponent crafter;
         private final Supplier<Boolean> isShapeValid;
@@ -110,7 +109,7 @@ public class CraftingMultiblockGui {
         }
     }
 
-    public static class Client implements SyncedComponent.Client {
+    public static class Client implements GuiComponent.Client {
         public boolean isShapeValid;
         boolean hasActiveRecipe;
         float progress;
@@ -148,11 +147,11 @@ public class CraftingMultiblockGui {
             private final MIIdentifier texture = new MIIdentifier("textures/gui/container/multiblock_info.png");
 
             @Override
-            public void renderBackground(GuiComponent helper, PoseStack matrices, int x, int y) {
+            public void renderBackground(net.minecraft.client.gui.GuiComponent helper, PoseStack matrices, int x, int y) {
 
                 Minecraft minecraftClient = Minecraft.getInstance();
                 RenderSystem.setShaderTexture(0, texture);
-                GuiComponent.blit(matrices, x + X, y + Y, 0, 0, W, H, W, H);
+                net.minecraft.client.gui.GuiComponent.blit(matrices, x + X, y + Y, 0, 0, W, H, W, H);
                 Font textRenderer = minecraftClient.font;
 
                 textRenderer

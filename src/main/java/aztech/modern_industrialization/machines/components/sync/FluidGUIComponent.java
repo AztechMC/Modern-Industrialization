@@ -23,23 +23,22 @@
  */
 package aztech.modern_industrialization.machines.components.sync;
 
-import aztech.modern_industrialization.machines.MachineGuis;
-import aztech.modern_industrialization.machines.SyncedComponent;
 import aztech.modern_industrialization.machines.SyncedComponents;
 import aztech.modern_industrialization.machines.gui.ClientComponentRenderer;
+import aztech.modern_industrialization.machines.gui.GuiComponent;
+import aztech.modern_industrialization.machines.gui.MachineScreen;
 import aztech.modern_industrialization.util.FluidHelper;
 import aztech.modern_industrialization.util.RenderHelper;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.function.Supplier;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
-import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 
 public class FluidGUIComponent {
 
-    public static class Server implements SyncedComponent.Server<Data> {
+    public static class Server implements GuiComponent.Server<Data> {
 
         public final Supplier<Data> fluidDataSupplier;
 
@@ -77,7 +76,7 @@ public class FluidGUIComponent {
         }
     }
 
-    public static class Client implements SyncedComponent.Client {
+    public static class Client implements GuiComponent.Client {
 
         Data fluidData;
 
@@ -100,11 +99,11 @@ public class FluidGUIComponent {
             private static final int posX = 70, posY = 12;
 
             @Override
-            public void renderBackground(GuiComponent helper, PoseStack matrices, int x, int y) {
+            public void renderBackground(net.minecraft.client.gui.GuiComponent helper, PoseStack matrices, int x, int y) {
                 FluidVariant fluid = fluidData.fluid;
                 float fracFull = (float) fluidData.amount / fluidData.capacity;
 
-                RenderSystem.setShaderTexture(0, MachineGuis.SLOT_ATLAS);
+                RenderSystem.setShaderTexture(0, MachineScreen.SLOT_ATLAS);
                 helper.blit(matrices, x + posX, y + posY, 92, 38, 46, 62);
 
                 if (!fluid.isBlank()) {
@@ -116,13 +115,13 @@ public class FluidGUIComponent {
                         }
                     }
                 }
-                RenderSystem.setShaderTexture(0, MachineGuis.SLOT_ATLAS);
+                RenderSystem.setShaderTexture(0, MachineScreen.SLOT_ATLAS);
                 helper.blit(matrices, x + posX + 7, y + posY + 7, 60, 38, 32, 48);
 
             }
 
             @Override
-            public void renderTooltip(MachineGuis.ClientScreen screen, PoseStack matrices, int x, int y, int cursorX, int cursorY) {
+            public void renderTooltip(MachineScreen screen, PoseStack matrices, int x, int y, int cursorX, int cursorY) {
                 if (RenderHelper.isPointWithinRectangle(posX + 7, posY + 7, 32, 48, cursorX - x, cursorY - y)) {
                     screen.renderComponentTooltip(matrices,
                             FluidHelper.getTooltipForFluidStorage(fluidData.fluid, fluidData.amount, fluidData.capacity),

@@ -171,6 +171,10 @@ public class MachineRecipeCategory implements DisplayCategory<MachineRecipeDispl
         // Draw steel hatch or upgrades
         boolean steelHatchRequired = params.steamMode.steam && params.isMultiblock && recipeDisplay.getEu() > MachineTier.BRONZE.getMaxEu();
         int upgradeEuRequired = recipeDisplay.getEu() - (params.isMultiblock ? MachineTier.MULTIBLOCK : MachineTier.LV).getMaxEu();
+        // Ugly fusion reactor workaround
+        if (upgradeEuRequired > 0 && id.getPath().equals("fusion_reactor")) {
+            upgradeEuRequired = 0;
+        }
         if (steelHatchRequired || upgradeEuRequired > 0) {
             widgets.add(Widgets.createDrawableWidget((helper, matrices, mouseX, mouseY, delta) -> {
                 var stack = RenderSystem.getModelViewStack();

@@ -44,6 +44,7 @@ public final class PlankRecipesProvider extends MIRecipesProvider {
         genPlanks(consumer, "jungle", "logs");
         genPlanks(consumer, "acacia", "logs");
         genPlanks(consumer, "dark_oak", "logs");
+        genPlanks(consumer, "mangrove", "logs");
         genPlanks(consumer, "crimson", "stems");
         genPlanks(consumer, "warped", "stems");
     }

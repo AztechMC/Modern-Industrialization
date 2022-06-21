@@ -61,7 +61,7 @@ public class FluidDefinition extends Definition implements FluidLike {
         fluidBlock = new MIFluidBlock(color);
         fluid = new MIFluid(fluidBlock, color);
         bucketItemDefinition = MIItem.item(englishName + " Bucket",
-                "bucket_" + id, s -> new MIBucketItem(fluid, s), SortOrder.BUCKETS);
+                id + "_bucket", s -> new MIBucketItem(fluid, s), SortOrder.BUCKETS);
 
         fluid.setBucketItem(bucketItemDefinition.asItem());
         this.fluidTexture = texture;

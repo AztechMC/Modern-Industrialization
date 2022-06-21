@@ -114,7 +114,7 @@ public class MIAdvancementsProvider extends FabricAdvancementProvider {
         var highlyAdvancedUpgrade = createBasic(consumer, "highly_advanced_upgrade", processingUnit, "I'm speed", "Craft an Highly Advanced Upgrade");
         var quantumUpgrade = createBasic(consumer, "quantum_upgrade", quantumCircuit, FrameType.GOAL, "Time Dilation", "Craft a Quantum Upgrade to unlock unlimited recipe speed");
         var replicator = createBasic(consumer, "replicator", quantumUpgrade, FrameType.CHALLENGE, "Legal Duping", "Craft a Replicator and replicate any item you want using UU Matter");
-        var uuMatter = createBasic(consumer, "bucket_uu_matter", singularity, FrameType.GOAL, "Liquid Creative Mode", "Produce a bucket of UU Matter to start duplication in the replicator");
+        var uuMatter = createBasic(consumer, "uu_matter_bucket", singularity, FrameType.GOAL, "Liquid Creative Mode", "Produce a bucket of UU Matter to start duplication in the replicator");
         var quantumSword = createBasic(consumer, "quantum_sword", quantumUpgrade, FrameType.CHALLENGE, "Annihilation Operator", "Craft a Quantum Sword and disintegrate your foes (or the Wandering Trader llama's)");
         var quantumChestplate = createBasic(consumer, "quantum_chestplate", quantumUpgrade, FrameType.CHALLENGE, "Quantum Immortality™", "Craft a Quantum Chestplate to reduce the probability of taking any damage by 25% for each piece of the Quantum Armor Set");
     }

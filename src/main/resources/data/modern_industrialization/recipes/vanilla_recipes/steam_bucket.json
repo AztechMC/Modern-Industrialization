@@ -4,5 +4,5 @@
   "ingredient":{
     "item":"minecraft:water_bucket"
   },
-  "result":"modern_industrialization:bucket_steam"
+  "result":"modern_industrialization:steam_bucket"
 }

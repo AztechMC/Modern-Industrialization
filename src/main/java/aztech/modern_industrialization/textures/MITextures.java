@@ -262,7 +262,7 @@ public final class MITextures {
             if (fluid.isGas) {
                 TextureHelper.flip(bucket_image);
             }
-            tm.addTexture(String.format("modern_industrialization:textures/item/bucket_%s.png", fluid.path()), bucket_image);
+            tm.addTexture(String.format("modern_industrialization:textures/item/%s_bucket.png", fluid.path()), bucket_image);
         } catch (IOException e) {
             e.printStackTrace();
         }

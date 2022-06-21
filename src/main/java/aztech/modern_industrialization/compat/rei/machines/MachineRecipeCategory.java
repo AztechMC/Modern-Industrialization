@@ -150,7 +150,7 @@ public class MachineRecipeCategory implements DisplayCategory<MachineRecipeDispl
                 helper.blit(matrices, -2, -2, 80, 18, 20, 20);
             }
             case STEAM_ONLY -> {
-                RenderSystem.setShaderTexture(0, new MIIdentifier("textures/item/bucket_steam.png"));
+                RenderSystem.setShaderTexture(0, new MIIdentifier("textures/item/steam_bucket.png"));
                 GuiComponent.blit(matrices, 0, 0, helper.getBlitOffset(), 0, 0, 16, 16, 16, 16);
             }
             case ELECTRIC_ONLY -> {

@@ -29,6 +29,7 @@ import aztech.modern_industrialization.compat.megane.holder.EnergyListComponentH
 import aztech.modern_industrialization.compat.rei.machines.ReiMachineRecipes;
 import aztech.modern_industrialization.machines.BEP;
 import aztech.modern_industrialization.machines.components.*;
+import aztech.modern_industrialization.machines.guicomponents.SlotPanel;
 import aztech.modern_industrialization.machines.init.MIMachineRecipeTypes;
 import aztech.modern_industrialization.machines.init.MachineTier;
 import aztech.modern_industrialization.machines.models.MachineCasings;
@@ -54,6 +55,7 @@ public class DistillationTowerBlockEntity extends AbstractCraftingMultiblockBloc
         super(bep, "distillation_tower", new OrientationComponent.Params(false, false, false), shapeTemplates);
         this.upgrades = new UpgradeComponent();
         this.registerComponents(upgrades);
+        registerGuiComponent(new SlotPanel.Server(this).withUpgrades(upgrades));
     }
 
     @Override

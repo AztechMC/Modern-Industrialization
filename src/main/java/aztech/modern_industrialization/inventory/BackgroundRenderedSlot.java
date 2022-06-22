@@ -21,21 +21,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.compat.rei;
+package aztech.modern_industrialization.inventory;
 
-import aztech.modern_industrialization.machines.guicomponents.ProgressBar;
-
-public class Rectangle {
-    public final int x, y, w, h;
-
-    public Rectangle(int x, int y, int w, int h) {
-        this.x = x;
-        this.y = y;
-        this.w = w;
-        this.h = h;
-    }
-
-    public Rectangle(ProgressBar.Parameters progressBar) {
-        this(progressBar.renderX, progressBar.renderY, 20, 20);
-    }
+/**
+ * Implement this on a slot to render its background automatically.
+ */
+public interface BackgroundRenderedSlot {
 }

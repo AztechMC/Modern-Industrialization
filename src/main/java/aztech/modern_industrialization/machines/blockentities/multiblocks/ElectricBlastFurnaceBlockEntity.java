@@ -31,7 +31,8 @@ import aztech.modern_industrialization.compat.megane.holder.EnergyListComponentH
 import aztech.modern_industrialization.compat.rei.machines.ReiMachineRecipes;
 import aztech.modern_industrialization.machines.BEP;
 import aztech.modern_industrialization.machines.components.*;
-import aztech.modern_industrialization.machines.components.sync.ProgressBar;
+import aztech.modern_industrialization.machines.guicomponents.ProgressBar;
+import aztech.modern_industrialization.machines.guicomponents.SlotPanel;
 import aztech.modern_industrialization.machines.init.MIMachineRecipeTypes;
 import aztech.modern_industrialization.machines.init.MachineTier;
 import aztech.modern_industrialization.machines.init.MultiblockMachines;
@@ -61,6 +62,7 @@ public class ElectricBlastFurnaceBlockEntity extends AbstractCraftingMultiblockB
         super(bep, "electric_blast_furnace", new OrientationComponent.Params(false, false, false), shapeTemplates);
         this.upgrades = new UpgradeComponent();
         this.registerComponents(upgrades);
+        registerGuiComponent(new SlotPanel.Server(this).withUpgrades(upgrades));
     }
 
     @Override

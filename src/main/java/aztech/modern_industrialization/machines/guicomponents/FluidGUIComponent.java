@@ -21,9 +21,9 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.machines.components.sync;
+package aztech.modern_industrialization.machines.guicomponents;
 
-import aztech.modern_industrialization.machines.SyncedComponents;
+import aztech.modern_industrialization.machines.GuiComponents;
 import aztech.modern_industrialization.machines.gui.ClientComponentRenderer;
 import aztech.modern_industrialization.machines.gui.GuiComponent;
 import aztech.modern_industrialization.machines.gui.MachineScreen;
@@ -72,7 +72,7 @@ public class FluidGUIComponent {
 
         @Override
         public ResourceLocation getId() {
-            return SyncedComponents.FLUID_STORAGE_GUI;
+            return GuiComponents.FLUID_STORAGE_GUI;
         }
     }
 
@@ -81,11 +81,11 @@ public class FluidGUIComponent {
         Data fluidData;
 
         public Client(FriendlyByteBuf buf) {
-            read(buf);
+            readCurrentData(buf);
         }
 
         @Override
-        public void read(FriendlyByteBuf buf) {
+        public void readCurrentData(FriendlyByteBuf buf) {
             fluidData = new Data(FluidVariant.fromPacket(buf), buf.readLong(), buf.readLong());
         }
 

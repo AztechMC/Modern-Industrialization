@@ -25,9 +25,9 @@ package aztech.modern_industrialization.machines;
 
 import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.machines.components.OrientationComponent;
-import aztech.modern_industrialization.machines.components.sync.AutoExtract;
-import aztech.modern_industrialization.machines.components.sync.ReiSlotLocking;
 import aztech.modern_industrialization.machines.gui.MachineMenuServer;
+import aztech.modern_industrialization.machines.guicomponents.AutoExtract;
+import aztech.modern_industrialization.machines.guicomponents.ReiSlotLocking;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -46,7 +46,7 @@ public class MachinePackets {
             ms.execute(() -> {
                 if (player.containerMenu.containerId == syncId) {
                     var screenHandler = (MachineMenuServer) player.containerMenu;
-                    AutoExtract.Server autoExtract = screenHandler.blockEntity.getComponent(SyncedComponents.AUTO_EXTRACT);
+                    AutoExtract.Server autoExtract = screenHandler.blockEntity.getComponent(GuiComponents.AUTO_EXTRACT);
                     OrientationComponent orientation = autoExtract.getOrientation();
                     if (isItem) {
                         orientation.extractItems = isExtract;
@@ -66,7 +66,7 @@ public class MachinePackets {
                 AbstractContainerMenu sh = player.containerMenu;
                 if (sh.containerId == syncId && sh instanceof MachineMenuServer screenHandler) {
                     // Check that locking the slots is allowed in the first place
-                    ReiSlotLocking.Server slotLocking = screenHandler.blockEntity.getComponent(SyncedComponents.REI_SLOT_LOCKING);
+                    ReiSlotLocking.Server slotLocking = screenHandler.blockEntity.getComponent(GuiComponents.REI_SLOT_LOCKING);
                     if (!slotLocking.allowLocking.get())
                         return;
 

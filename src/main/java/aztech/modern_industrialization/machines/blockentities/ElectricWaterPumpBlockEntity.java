@@ -32,7 +32,7 @@ import aztech.modern_industrialization.inventory.MIInventory;
 import aztech.modern_industrialization.inventory.SlotPositions;
 import aztech.modern_industrialization.machines.BEP;
 import aztech.modern_industrialization.machines.components.EnergyComponent;
-import aztech.modern_industrialization.machines.components.sync.EnergyBar;
+import aztech.modern_industrialization.machines.guicomponents.EnergyBar;
 import aztech.modern_industrialization.machines.models.MachineModelClientData;
 import aztech.modern_industrialization.util.Simulation;
 import java.util.Collections;

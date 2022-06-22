@@ -25,7 +25,6 @@ package aztech.modern_industrialization.inventory;
 
 import aztech.modern_industrialization.api.ReiDraggable;
 import aztech.modern_industrialization.util.Simulation;
-import aztech.modern_industrialization.util.UnsupportedOperationInventory;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -35,7 +34,6 @@ import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -171,7 +169,7 @@ public class ConfigurableItemStack extends AbstractConfigurableStack<Item, ItemV
         return adjustedCapacity;
     }
 
-    public class ConfigurableItemSlot extends Slot implements ReiDraggable {
+    public class ConfigurableItemSlot extends HackySlot implements ReiDraggable {
         private final Predicate<ItemStack> insertPredicate;
         private final Runnable markDirty;
         // Vanilla MC code modifies the stack returned by `getStack()` directly, but it
@@ -186,7 +184,7 @@ public class ConfigurableItemStack extends AbstractConfigurableStack<Item, ItemV
         }
 
         public ConfigurableItemSlot(Runnable markDirty, int x, int y, Predicate<ItemStack> insertPredicate) {
-            super(new UnsupportedOperationInventory(), 0, x, y);
+            super(x, y);
 
             this.insertPredicate = insertPredicate;
             this.markDirty = markDirty;
@@ -207,43 +205,21 @@ public class ConfigurableItemStack extends AbstractConfigurableStack<Item, ItemV
         }
 
         @Override
-        public ItemStack getItem() {
-            return cachedReturnedStack = key.toStack((int) amount);
+        protected ItemStack getStack() {
+            return key.toStack((int) amount);
         }
 
         @Override
-        public void set(ItemStack stack) {
+        protected void setStack(ItemStack stack) {
             key = ItemVariant.of(stack);
             amount = stack.getCount();
             notifyListeners();
             markDirty.run();
-            cachedReturnedStack = stack;
-        }
-
-        @Override
-        public void initialize(ItemStack itemStack) {
-            set(itemStack);
-        }
-
-        @Override
-        public void setChanged() {
-            if (cachedReturnedStack != null) {
-                set(cachedReturnedStack);
-            }
         }
 
         @Override
         public int getMaxStackSize() {
             return adjustedCapacity;
-        }
-
-        @Override
-        public ItemStack remove(int amount) {
-            ItemStack stack = key.toStack(amount);
-            decrement(amount);
-            cachedReturnedStack = null;
-            markDirty.run();
-            return stack;
         }
 
         @Override

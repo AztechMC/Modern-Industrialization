@@ -73,7 +73,7 @@ public abstract class MachineBlockEntity extends FastBlockEntity
         implements ExtendedScreenHandlerFactory, RenderAttachmentBlockEntity, WrenchableBlockEntity {
     public final List<GuiComponent.Server> guiComponents = new ArrayList<>();
     private final List<IComponent> icomponents = new ArrayList<>();
-    private final MachineGuiParameters guiParams;
+    public final MachineGuiParameters guiParams;
     /**
      * Server-side only: true if the next call to sync() will trigger a remesh.
      */

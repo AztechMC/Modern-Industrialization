@@ -29,9 +29,9 @@ import aztech.modern_industrialization.compat.megane.holder.MultiblockInventoryC
 import aztech.modern_industrialization.inventory.MIInventory;
 import aztech.modern_industrialization.machines.BEP;
 import aztech.modern_industrialization.machines.components.*;
-import aztech.modern_industrialization.machines.components.sync.CraftingMultiblockGui;
-import aztech.modern_industrialization.machines.components.sync.ReiSlotLocking;
 import aztech.modern_industrialization.machines.gui.MachineGuiParameters;
+import aztech.modern_industrialization.machines.guicomponents.CraftingMultiblockGui;
+import aztech.modern_industrialization.machines.guicomponents.ReiSlotLocking;
 import aztech.modern_industrialization.machines.models.MachineModelClientData;
 import aztech.modern_industrialization.machines.multiblocks.MultiblockMachineBlockEntity;
 import aztech.modern_industrialization.machines.multiblocks.ShapeMatcher;

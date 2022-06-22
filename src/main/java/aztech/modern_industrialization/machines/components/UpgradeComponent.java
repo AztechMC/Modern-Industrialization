@@ -39,7 +39,7 @@ import net.minecraft.world.item.ItemStack;
 
 public class UpgradeComponent implements IComponent.ServerOnly {
 
-    private ItemStack itemStack;
+    private ItemStack itemStack = ItemStack.EMPTY;
     public final static Map<Item, Long> UPGRADES = new IdentityHashMap<>();
 
     static {
@@ -48,11 +48,6 @@ public class UpgradeComponent implements IComponent.ServerOnly {
         UPGRADES.put(MIItem.TURBO_UPGRADE.asItem(), 32L);
         UPGRADES.put(MIItem.HIGHLY_ADVANCED_UPGRADE.asItem(), 128L);
         UPGRADES.put(MIItem.QUANTUM_UPGRADE.asItem(), 999999999L);
-    }
-
-    public UpgradeComponent() {
-        itemStack = ItemStack.EMPTY;
-
     }
 
     @Override
@@ -127,4 +122,9 @@ public class UpgradeComponent implements IComponent.ServerOnly {
         return itemStack;
     }
 
+    public void setStackServer(MachineBlockEntity be, ItemStack stack) {
+        itemStack = stack;
+        be.setChanged();
+        be.sync();
+    }
 }

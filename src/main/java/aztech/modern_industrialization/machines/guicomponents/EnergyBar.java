@@ -21,43 +21,43 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.machines.components.sync;
+package aztech.modern_industrialization.machines.guicomponents;
 
 import aztech.modern_industrialization.MIText;
-import aztech.modern_industrialization.machines.SyncedComponents;
+import aztech.modern_industrialization.machines.GuiComponents;
 import aztech.modern_industrialization.machines.gui.ClientComponentRenderer;
 import aztech.modern_industrialization.machines.gui.GuiComponent;
 import aztech.modern_industrialization.machines.gui.MachineScreen;
 import aztech.modern_industrialization.util.RenderHelper;
+import aztech.modern_industrialization.util.TextHelper;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Collections;
 import java.util.function.Supplier;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
-public class GunpowderOverclockGui {
-
-    public static class Server implements GuiComponent.Server<Integer> {
-
+public class EnergyBar {
+    public static class Server implements GuiComponent.Server<Data> {
         public final Parameters params;
-        public final Supplier<Integer> remTickSupplier;
+        public final Supplier<Long> euSupplier, maxEuSupplier;
 
-        public Server(Parameters params, Supplier<Integer> remTickSupplier) {
+        public Server(Parameters params, Supplier<Long> euSupplier, Supplier<Long> maxEuSupplier) {
             this.params = params;
-            this.remTickSupplier = remTickSupplier;
+            this.euSupplier = euSupplier;
+            this.maxEuSupplier = maxEuSupplier;
         }
 
         @Override
-        public Integer copyData() {
-            return remTickSupplier.get();
+        public Data copyData() {
+            return new Data(euSupplier.get(), maxEuSupplier.get());
         }
 
         @Override
-        public boolean needsSync(Integer cachedData) {
-            return !cachedData.equals(remTickSupplier.get());
+        public boolean needsSync(Data cachedData) {
+            return cachedData.eu != euSupplier.get() || cachedData.maxEu != maxEuSupplier.get();
         }
 
         @Override
@@ -69,27 +69,29 @@ public class GunpowderOverclockGui {
 
         @Override
         public void writeCurrentData(FriendlyByteBuf buf) {
-            buf.writeInt(remTickSupplier.get());
+            buf.writeLong(euSupplier.get());
+            buf.writeLong(maxEuSupplier.get());
         }
 
         @Override
         public ResourceLocation getId() {
-            return SyncedComponents.GUNPOWDER_OVERCLOCK_GUI;
+            return GuiComponents.ENERGY_BAR;
         }
     }
 
     public static class Client implements GuiComponent.Client {
         final Parameters params;
-        int remTick;
+        long eu, maxEu;
 
         public Client(FriendlyByteBuf buf) {
             this.params = new Parameters(buf.readInt(), buf.readInt());
-            read(buf);
+            readCurrentData(buf);
         }
 
         @Override
-        public void read(FriendlyByteBuf buf) {
-            remTick = buf.readInt();
+        public void readCurrentData(FriendlyByteBuf buf) {
+            eu = buf.readLong();
+            maxEu = buf.readLong();
         }
 
         @Override
@@ -98,40 +100,46 @@ public class GunpowderOverclockGui {
         }
 
         public class Renderer implements ClientComponentRenderer {
+            public static final int WIDTH = 13;
+            public static final int HEIGHT = 18;
+
+            public static void renderEnergy(net.minecraft.client.gui.GuiComponent helper, PoseStack matrices, int px, int py, float fill) {
+                RenderSystem.setShaderTexture(0, MachineScreen.SLOT_ATLAS);
+                helper.blit(matrices, px, py, 230, 0, WIDTH, HEIGHT);
+                int fillPixels = (int) (fill * HEIGHT * 0.9 + HEIGHT * 0.1);
+                if (fill > 0.95)
+                    fillPixels = HEIGHT;
+                helper.blit(matrices, px, py + HEIGHT - fillPixels, 243, HEIGHT - fillPixels, WIDTH, fillPixels);
+            }
 
             @Override
             public void renderBackground(net.minecraft.client.gui.GuiComponent helper, PoseStack matrices, int x, int y) {
-                if (remTick > 0) {
-                    RenderSystem.setShaderTexture(0, MachineScreen.SLOT_ATLAS);
-                    int px = x + params.renderX;
-                    int py = y + params.renderY;
-                    helper.blit(matrices, px, py, 0, 58, 20, 20);
-                }
+                renderEnergy(helper, matrices, x + params.renderX, y + params.renderY, (float) eu / maxEu);
             }
 
             @Override
             public void renderTooltip(MachineScreen screen, PoseStack matrices, int x, int y, int cursorX, int cursorY) {
-                if (remTick > 0) {
-                    if (RenderHelper.isPointWithinRectangle(params.renderX, params.renderY, 20, 20, cursorX - x, cursorY - y)) {
-                        List<Component> tooltip = new ArrayList<>();
-
-                        int seconds = remTick / 20;
-                        int hours = seconds / 3600;
-                        int minutes = (seconds % 3600) / 60;
-
-                        String time = String.format("%d", seconds);
-
-                        if (hours > 0) {
-                            time = String.format("%d:%02d:%02d", hours, minutes, seconds % 60);
-                        } else if (minutes > 0) {
-                            time = String.format("%d:%02d", minutes, seconds % 60);
-                        }
-
-                        tooltip.add(MIText.GunpowderTime.text(time));
-                        screen.renderComponentTooltip(matrices, tooltip, cursorX, cursorY);
+                if (RenderHelper.isPointWithinRectangle(params.renderX, params.renderY, WIDTH, HEIGHT, cursorX - x, cursorY - y)) {
+                    Component tooltip;
+                    if (Screen.hasShiftDown()) {
+                        tooltip = MIText.EuMaxed.text(eu, maxEu, "");
+                    } else {
+                        TextHelper.MaxedAmount maxedAmount = TextHelper.getMaxedAmount(eu, maxEu);
+                        tooltip = MIText.EuMaxed.text(maxedAmount.digit(), maxedAmount.maxDigit(), maxedAmount.unit());
                     }
+                    screen.renderComponentTooltip(matrices, Collections.singletonList(tooltip), cursorX, cursorY);
                 }
             }
+        }
+    }
+
+    private static class Data {
+        final long eu;
+        final long maxEu;
+
+        Data(long eu, long maxEu) {
+            this.eu = eu;
+            this.maxEu = maxEu;
         }
     }
 

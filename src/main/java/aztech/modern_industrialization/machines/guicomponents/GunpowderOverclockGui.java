@@ -21,14 +21,14 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.machines.components.sync;
+package aztech.modern_industrialization.machines.guicomponents;
 
-import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.MIText;
-import aztech.modern_industrialization.machines.SyncedComponents;
+import aztech.modern_industrialization.machines.GuiComponents;
 import aztech.modern_industrialization.machines.gui.ClientComponentRenderer;
 import aztech.modern_industrialization.machines.gui.GuiComponent;
 import aztech.modern_industrialization.machines.gui.MachineScreen;
+import aztech.modern_industrialization.util.RenderHelper;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.ArrayList;
@@ -38,57 +38,58 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
-public class TemperatureBar {
-    public static class Server implements GuiComponent.Server<Integer> {
-        private final Parameters params;
-        private final Supplier<Integer> temperatureSupplier;
+public class GunpowderOverclockGui {
 
-        public Server(Parameters params, Supplier<Integer> temperatureSupplier) {
+    public static class Server implements GuiComponent.Server<Integer> {
+
+        public final Parameters params;
+        public final Supplier<Integer> remTickSupplier;
+
+        public Server(Parameters params, Supplier<Integer> remTickSupplier) {
             this.params = params;
-            this.temperatureSupplier = temperatureSupplier;
+            this.remTickSupplier = remTickSupplier;
         }
 
         @Override
         public Integer copyData() {
-            return temperatureSupplier.get();
+            return remTickSupplier.get();
         }
 
         @Override
         public boolean needsSync(Integer cachedData) {
-            return !cachedData.equals(temperatureSupplier.get());
+            return !cachedData.equals(remTickSupplier.get());
         }
 
         @Override
         public void writeInitialData(FriendlyByteBuf buf) {
             buf.writeInt(params.renderX);
             buf.writeInt(params.renderY);
-            buf.writeInt(params.temperatureMax);
             writeCurrentData(buf);
         }
 
         @Override
         public void writeCurrentData(FriendlyByteBuf buf) {
-            buf.writeInt(temperatureSupplier.get());
+            buf.writeInt(remTickSupplier.get());
         }
 
         @Override
         public ResourceLocation getId() {
-            return SyncedComponents.TEMPERATURE_BAR;
+            return GuiComponents.GUNPOWDER_OVERCLOCK_GUI;
         }
     }
 
     public static class Client implements GuiComponent.Client {
-        public final Parameters params;
-        public int temperature;
+        final Parameters params;
+        int remTick;
 
         public Client(FriendlyByteBuf buf) {
-            this.params = new Parameters(buf.readInt(), buf.readInt(), buf.readInt());
-            read(buf);
+            this.params = new Parameters(buf.readInt(), buf.readInt());
+            readCurrentData(buf);
         }
 
         @Override
-        public void read(FriendlyByteBuf buf) {
-            this.temperature = buf.readInt();
+        public void readCurrentData(FriendlyByteBuf buf) {
+            remTick = buf.readInt();
         }
 
         @Override
@@ -98,31 +99,37 @@ public class TemperatureBar {
 
         public class Renderer implements ClientComponentRenderer {
 
-            private final MIIdentifier TEXTURE = new MIIdentifier("textures/gui/efficiency_bar.png");
-            private final int WIDTH = 100, HEIGHT = 2;
-
             @Override
             public void renderBackground(net.minecraft.client.gui.GuiComponent helper, PoseStack matrices, int x, int y) {
-                RenderSystem.setShaderTexture(0, TEXTURE);
-                // background
-                net.minecraft.client.gui.GuiComponent.blit(matrices, x + params.renderX - 1, y + params.renderY - 1, helper.getBlitOffset(), 0, 2,
-                        WIDTH + 2, HEIGHT + 2,
-                        102, 6);
-                int barPixels = (int) ((float) temperature / params.temperatureMax * WIDTH);
-                net.minecraft.client.gui.GuiComponent.blit(matrices, x + params.renderX, y + params.renderY, helper.getBlitOffset(), 0, 0, barPixels,
-                        HEIGHT, 102, 6);
-                RenderSystem.setShaderTexture(0, MachineScreen.SLOT_ATLAS);
-                helper.blit(matrices, x + params.renderX - 22, y + params.renderY + HEIGHT / 2 - 10, 144, 0, 20, 20);
-
+                if (remTick > 0) {
+                    RenderSystem.setShaderTexture(0, MachineScreen.SLOT_ATLAS);
+                    int px = x + params.renderX;
+                    int py = y + params.renderY;
+                    helper.blit(matrices, px, py, 0, 58, 20, 20);
+                }
             }
 
             @Override
             public void renderTooltip(MachineScreen screen, PoseStack matrices, int x, int y, int cursorX, int cursorY) {
-                if (aztech.modern_industrialization.util.RenderHelper.isPointWithinRectangle(params.renderX, params.renderY, WIDTH, HEIGHT,
-                        cursorX - x, cursorY - y)) {
-                    List<Component> tooltip = new ArrayList<>();
-                    tooltip.add(MIText.Temperature.text(temperature));
-                    screen.renderComponentTooltip(matrices, tooltip, cursorX, cursorY);
+                if (remTick > 0) {
+                    if (RenderHelper.isPointWithinRectangle(params.renderX, params.renderY, 20, 20, cursorX - x, cursorY - y)) {
+                        List<Component> tooltip = new ArrayList<>();
+
+                        int seconds = remTick / 20;
+                        int hours = seconds / 3600;
+                        int minutes = (seconds % 3600) / 60;
+
+                        String time = String.format("%d", seconds);
+
+                        if (hours > 0) {
+                            time = String.format("%d:%02d:%02d", hours, minutes, seconds % 60);
+                        } else if (minutes > 0) {
+                            time = String.format("%d:%02d", minutes, seconds % 60);
+                        }
+
+                        tooltip.add(MIText.GunpowderTime.text(time));
+                        screen.renderComponentTooltip(matrices, tooltip, cursorX, cursorY);
+                    }
                 }
             }
         }
@@ -130,12 +137,10 @@ public class TemperatureBar {
 
     public static class Parameters {
         public final int renderX, renderY;
-        public final int temperatureMax;
 
-        public Parameters(int renderX, int renderY, int temperatureMax) {
+        public Parameters(int renderX, int renderY) {
             this.renderX = renderX;
             this.renderY = renderY;
-            this.temperatureMax = temperatureMax;
         }
     }
 }

@@ -21,11 +21,11 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.machines.components.sync;
+package aztech.modern_industrialization.machines.guicomponents;
 
 import aztech.modern_industrialization.MIText;
+import aztech.modern_industrialization.machines.GuiComponents;
 import aztech.modern_industrialization.machines.MachinePackets;
-import aztech.modern_industrialization.machines.SyncedComponents;
 import aztech.modern_industrialization.machines.components.OrientationComponent;
 import aztech.modern_industrialization.machines.gui.ClientComponentRenderer;
 import aztech.modern_industrialization.machines.gui.GuiComponent;
@@ -83,7 +83,7 @@ public class AutoExtract {
 
         @Override
         public ResourceLocation getId() {
-            return SyncedComponents.AUTO_EXTRACT;
+            return GuiComponents.AUTO_EXTRACT;
         }
 
         public OrientationComponent getOrientation() {
@@ -100,11 +100,11 @@ public class AutoExtract {
             displayAsInsert = buf.readBoolean();
             hasExtractItems = buf.readBoolean();
             hasExtractFluids = buf.readBoolean();
-            read(buf);
+            readCurrentData(buf);
         }
 
         @Override
-        public void read(FriendlyByteBuf buf) {
+        public void readCurrentData(FriendlyByteBuf buf) {
             extractStatus[0] = buf.readBoolean();
             extractStatus[1] = buf.readBoolean();
         }

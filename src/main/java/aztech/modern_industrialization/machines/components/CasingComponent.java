@@ -47,7 +47,7 @@ public class CasingComponent implements IComponent {
 
     private CableTier tierCasing;
     private final CableTier defaultCasing;
-    private static final BiMap<Block, CableTier> blockCasing = HashBiMap.create();
+    public static final BiMap<Block, CableTier> blockCasing = HashBiMap.create();
 
     static {
         blockCasing.put(MIBlock.BASIC_MACHINE_HULL.asBlock(), CableTier.LV);
@@ -110,8 +110,7 @@ public class CasingComponent implements IComponent {
             return InteractionResult.sidedSuccess(be.getLevel().isClientSide);
 
         } else {
-            if (stackInHand.getItem() instanceof BlockItem && stackInHand.getCount() >= 1) {
-                BlockItem blockItem = (BlockItem) stackInHand.getItem();
+            if (stackInHand.getItem() instanceof BlockItem blockItem && stackInHand.getCount() >= 1) {
                 if (blockCasing.containsKey(blockItem.getBlock())) {
                     CableTier newTier = blockCasing.get(blockItem.getBlock());
                     if (newTier != defaultCasing && newTier != tierCasing) {

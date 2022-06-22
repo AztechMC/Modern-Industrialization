@@ -21,14 +21,14 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.machines.components.sync;
+package aztech.modern_industrialization.machines.guicomponents;
 
 import static aztech.modern_industrialization.nuclear.NeutronType.*;
 
 import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.compat.rei.nuclear.NeutronInteractionCategory;
-import aztech.modern_industrialization.machines.SyncedComponents;
+import aztech.modern_industrialization.machines.GuiComponents;
 import aztech.modern_industrialization.machines.blockentities.hatches.NuclearHatch;
 import aztech.modern_industrialization.machines.gui.ClientComponentRenderer;
 import aztech.modern_industrialization.machines.gui.GuiComponent;
@@ -102,7 +102,7 @@ public class NuclearReactorGui {
 
         @Override
         public ResourceLocation getId() {
-            return SyncedComponents.NUCLEAR_REACTOR_GUI;
+            return GuiComponents.NUCLEAR_REACTOR_GUI;
         }
     }
 
@@ -111,11 +111,11 @@ public class NuclearReactorGui {
         private Data data;
 
         public Client(FriendlyByteBuf buf) {
-            read(buf);
+            readCurrentData(buf);
         }
 
         @Override
-        public void read(FriendlyByteBuf buf) {
+        public void readCurrentData(FriendlyByteBuf buf) {
             boolean valid = buf.readBoolean();
             if (valid) {
                 int sizeX = buf.readInt();

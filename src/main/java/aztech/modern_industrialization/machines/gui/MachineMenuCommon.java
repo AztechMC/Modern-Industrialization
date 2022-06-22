@@ -32,7 +32,7 @@ import java.util.List;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.Slot;
 
-public abstract class MachineMenuCommon extends ConfigurableScreenHandler implements GuiComponent.Common.MenuFacade {
+public abstract class MachineMenuCommon extends ConfigurableScreenHandler implements GuiComponent.MenuFacade {
     public final MachineGuiParameters guiParams;
 
     MachineMenuCommon(int syncId, Inventory playerInventory, MIInventory inventory, MachineGuiParameters guiParams,
@@ -50,6 +50,11 @@ public abstract class MachineMenuCommon extends ConfigurableScreenHandler implem
             this.addSlot(new Slot(playerInventory, j, guiParams.playerInventoryX + j * 18, guiParams.playerInventoryY + 58));
         }
 
+        // Gui components first (we want to prioritize them with shift click)
+        for (var component : guiComponents) {
+            component.setupMenu(this);
+        }
+
         // Configurable slots
         for (int i = 0; i < inventory.getItemStacks().size(); ++i) {
             ConfigurableItemStack stack = inventory.getItemStacks().get(i);
@@ -63,14 +68,15 @@ public abstract class MachineMenuCommon extends ConfigurableScreenHandler implem
             this.addSlot(stack.new ConfigurableFluidSlot(() -> {
             }, inventory.fluidPositions.getX(i), inventory.fluidPositions.getY(i)));
         }
-
-        for (var component : guiComponents) {
-            component.setupMenu(this);
-        }
     }
 
     @Override
     public void addSlotToMenu(Slot slot) {
         addSlot(slot);
+    }
+
+    @Override
+    public MachineGuiParameters getGuiParams() {
+        return guiParams;
     }
 }

@@ -27,7 +27,7 @@ import aztech.modern_industrialization.inventory.ConfigurableFluidStack;
 import aztech.modern_industrialization.inventory.ConfigurableItemStack;
 import aztech.modern_industrialization.inventory.MIInventory;
 import aztech.modern_industrialization.inventory.SlotPositions;
-import aztech.modern_industrialization.machines.SyncedComponents;
+import aztech.modern_industrialization.machines.GuiComponents;
 import aztech.modern_industrialization.util.NbtHelper;
 import java.util.ArrayList;
 import java.util.List;
@@ -56,7 +56,7 @@ public class MachineMenuClient extends MachineMenuCommon {
         int componentCount = buf.readInt();
         for (int i = 0; i < componentCount; ++i) {
             ResourceLocation id = buf.readResourceLocation();
-            components.add(SyncedComponents.Client.get(id).createFromInitialData(buf));
+            components.add(GuiComponents.Client.get(id).createFromInitialData(buf));
         }
         // GUI params
         MachineGuiParameters guiParams = MachineGuiParameters.read(buf);

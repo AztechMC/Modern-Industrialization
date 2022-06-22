@@ -23,21 +23,20 @@
  */
 package aztech.modern_industrialization.machines.gui;
 
-import aztech.modern_industrialization.machines.SyncedComponents;
+import aztech.modern_industrialization.machines.GuiComponents;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.Slot;
 
 public final class GuiComponent {
-    public interface Common {
-        /**
-         * Perform any common menu setup here.
-         */
-        default void setupMenu(MenuFacade menu) {
-        }
+    public interface MenuFacade {
+        void addSlotToMenu(Slot slot);
 
-        interface MenuFacade {
-            void addSlotToMenu(Slot slot);
+        MachineGuiParameters getGuiParams();
+    }
+
+    public interface Common {
+        default void setupMenu(MenuFacade menu) {
         }
     }
 
@@ -48,7 +47,7 @@ public final class GuiComponent {
         /**
          * Read the current data, written by {@link Server#writeCurrentData}.
          */
-        void read(FriendlyByteBuf buf);
+        void readCurrentData(FriendlyByteBuf buf);
 
         /**
          * @return A new renderer linked to this client-side component.
@@ -96,7 +95,7 @@ public final class GuiComponent {
 
         /**
          * Return the id of the component. Must match that of the {@link Client}
-         * registered with {@link SyncedComponents.Client#register}.
+         * registered with {@link GuiComponents.Client#register}.
          */
         ResourceLocation getId();
     }

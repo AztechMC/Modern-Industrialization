@@ -26,6 +26,7 @@ package aztech.modern_industrialization.machines.blockentities.multiblocks;
 import aztech.modern_industrialization.compat.megane.holder.EnergyListComponentHolder;
 import aztech.modern_industrialization.machines.BEP;
 import aztech.modern_industrialization.machines.components.*;
+import aztech.modern_industrialization.machines.guicomponents.SlotPanel;
 import aztech.modern_industrialization.machines.init.MachineTier;
 import aztech.modern_industrialization.machines.multiblocks.HatchBlockEntity;
 import aztech.modern_industrialization.machines.multiblocks.ShapeMatcher;
@@ -49,6 +50,7 @@ public class ElectricCraftingMultiblockBlockEntity extends AbstractCraftingMulti
         this.recipeType = recipeType;
         this.upgrades = new UpgradeComponent();
         this.registerComponents(upgrades);
+        registerGuiComponent(new SlotPanel.Server(this).withUpgrades(upgrades));
     }
 
     @Override

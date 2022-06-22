@@ -29,10 +29,11 @@ import aztech.modern_industrialization.api.energy.EnergyInsertable;
 import aztech.modern_industrialization.compat.megane.holder.EnergyComponentHolder;
 import aztech.modern_industrialization.machines.BEP;
 import aztech.modern_industrialization.machines.components.*;
-import aztech.modern_industrialization.machines.components.sync.EnergyBar;
-import aztech.modern_industrialization.machines.components.sync.ProgressBar;
-import aztech.modern_industrialization.machines.components.sync.RecipeEfficiencyBar;
 import aztech.modern_industrialization.machines.gui.MachineGuiParameters;
+import aztech.modern_industrialization.machines.guicomponents.EnergyBar;
+import aztech.modern_industrialization.machines.guicomponents.ProgressBar;
+import aztech.modern_industrialization.machines.guicomponents.RecipeEfficiencyBar;
+import aztech.modern_industrialization.machines.guicomponents.SlotPanel;
 import aztech.modern_industrialization.machines.init.MachineTier;
 import aztech.modern_industrialization.machines.models.MachineModelClientData;
 import aztech.modern_industrialization.machines.recipe.MachineRecipeType;
@@ -57,6 +58,7 @@ public class ElectricCraftingMachineBlockEntity extends AbstractCraftingMachineB
         this.insertable = energy.buildInsertable(cableTier -> this.casing.canInsertEu(cableTier));
         registerGuiComponent(new EnergyBar.Server(energyBarParams, energy::getEu, energy::getCapacity));
         registerGuiComponent(new RecipeEfficiencyBar.Server(efficiencyBarParams, crafter));
+        registerGuiComponent(new SlotPanel.Server(this).withUpgrades(upgrades));
         this.registerComponents(casing, upgrades, energy);
     }
 

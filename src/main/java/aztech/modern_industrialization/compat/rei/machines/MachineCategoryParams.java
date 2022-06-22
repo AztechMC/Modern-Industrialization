@@ -24,7 +24,7 @@
 package aztech.modern_industrialization.compat.rei.machines;
 
 import aztech.modern_industrialization.inventory.SlotPositions;
-import aztech.modern_industrialization.machines.components.sync.ProgressBar;
+import aztech.modern_industrialization.machines.guicomponents.ProgressBar;
 import aztech.modern_industrialization.machines.recipe.MachineRecipe;
 import java.util.ArrayList;
 import java.util.List;

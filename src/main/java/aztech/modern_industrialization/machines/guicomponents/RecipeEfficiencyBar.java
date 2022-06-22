@@ -21,11 +21,11 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.machines.components.sync;
+package aztech.modern_industrialization.machines.guicomponents;
 
 import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.MIText;
-import aztech.modern_industrialization.machines.SyncedComponents;
+import aztech.modern_industrialization.machines.GuiComponents;
 import aztech.modern_industrialization.machines.components.CrafterComponent;
 import aztech.modern_industrialization.machines.gui.ClientComponentRenderer;
 import aztech.modern_industrialization.machines.gui.GuiComponent;
@@ -94,7 +94,7 @@ public class RecipeEfficiencyBar {
 
         @Override
         public ResourceLocation getId() {
-            return SyncedComponents.RECIPE_EFFICIENCY_BAR;
+            return GuiComponents.RECIPE_EFFICIENCY_BAR;
         }
     }
 
@@ -109,11 +109,11 @@ public class RecipeEfficiencyBar {
 
         public Client(FriendlyByteBuf buf) {
             this.params = new Parameters(buf.readInt(), buf.readInt());
-            read(buf);
+            readCurrentData(buf);
         }
 
         @Override
-        public void read(FriendlyByteBuf buf) {
+        public void readCurrentData(FriendlyByteBuf buf) {
             hasActiveRecipe = buf.readBoolean();
             if (hasActiveRecipe) {
                 efficiencyTicks = buf.readInt();

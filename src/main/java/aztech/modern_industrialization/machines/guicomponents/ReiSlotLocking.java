@@ -21,9 +21,9 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.machines.components.sync;
+package aztech.modern_industrialization.machines.guicomponents;
 
-import aztech.modern_industrialization.machines.SyncedComponents;
+import aztech.modern_industrialization.machines.GuiComponents;
 import aztech.modern_industrialization.machines.gui.ClientComponentRenderer;
 import aztech.modern_industrialization.machines.gui.GuiComponent;
 import java.util.function.Supplier;
@@ -68,7 +68,7 @@ public class ReiSlotLocking {
 
         @Override
         public ResourceLocation getId() {
-            return SyncedComponents.REI_SLOT_LOCKING;
+            return GuiComponents.REI_SLOT_LOCKING;
         }
     }
 
@@ -76,7 +76,7 @@ public class ReiSlotLocking {
         private boolean allowLocking;
 
         public Client(FriendlyByteBuf initialData) {
-            read(initialData);
+            readCurrentData(initialData);
         }
 
         public boolean isLockingAllowed() {
@@ -84,7 +84,7 @@ public class ReiSlotLocking {
         }
 
         @Override
-        public void read(FriendlyByteBuf buf) {
+        public void readCurrentData(FriendlyByteBuf buf) {
             allowLocking = buf.readBoolean();
         }
 

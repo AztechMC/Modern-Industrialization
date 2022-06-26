@@ -1,0 +1,35 @@
+{
+  "type": "modern_industrialization:assembler",
+  "duration": 200,
+  "eu": 2,
+  "fluid_inputs": [
+    {
+      "amount": 75,
+      "fluid": "modern_industrialization:soldering_alloy"
+    }
+  ],
+  "item_inputs": [
+    {
+      "amount": 1,
+      "tag": "c:steel_plates"
+    },
+    {
+      "amount": 2,
+      "item": "modern_industrialization:steel_curved_plate"
+    },
+    {
+      "amount": 1,
+      "item": "modern_industrialization:steel_rod"
+    },
+    {
+      "amount": 2,
+      "tag": "c:steel_gears"
+    }
+  ],
+  "item_outputs": [
+    {
+      "amount": 1,
+      "item": "modern_industrialization:steel_drill_head"
+    }
+  ]
+}

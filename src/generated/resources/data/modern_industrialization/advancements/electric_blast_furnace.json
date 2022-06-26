@@ -1,0 +1,37 @@
+{
+  "parent": "modern_industrialization:lv_steam_turbine",
+  "criteria": {
+    "checkInv": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "modern_industrialization:electric_blast_furnace"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "announce_to_chat": true,
+    "description": {
+      "translate": "advancements.modern_industrialization.electric_blast_furnace.description"
+    },
+    "frame": "goal",
+    "hidden": false,
+    "icon": {
+      "item": "modern_industrialization:electric_blast_furnace"
+    },
+    "show_toast": true,
+    "title": {
+      "translate": "advancements.modern_industrialization.electric_blast_furnace"
+    }
+  },
+  "requirements": [
+    [
+      "checkInv"
+    ]
+  ]
+}

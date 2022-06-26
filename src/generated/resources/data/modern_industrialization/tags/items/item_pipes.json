@@ -1,0 +1,22 @@
+{
+  "replace": false,
+  "values": [
+    "modern_industrialization:item_pipe",
+    "modern_industrialization:white_item_pipe",
+    "modern_industrialization:orange_item_pipe",
+    "modern_industrialization:magenta_item_pipe",
+    "modern_industrialization:light_blue_item_pipe",
+    "modern_industrialization:yellow_item_pipe",
+    "modern_industrialization:lime_item_pipe",
+    "modern_industrialization:pink_item_pipe",
+    "modern_industrialization:gray_item_pipe",
+    "modern_industrialization:light_gray_item_pipe",
+    "modern_industrialization:cyan_item_pipe",
+    "modern_industrialization:purple_item_pipe",
+    "modern_industrialization:blue_item_pipe",
+    "modern_industrialization:brown_item_pipe",
+    "modern_industrialization:green_item_pipe",
+    "modern_industrialization:red_item_pipe",
+    "modern_industrialization:black_item_pipe"
+  ]
+}

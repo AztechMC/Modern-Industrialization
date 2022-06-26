@@ -1,0 +1,24 @@
+{
+  "type": "modern_industrialization:mixer",
+  "duration": 200,
+  "eu": 2,
+  "fluid_inputs": [
+    {
+      "amount": 25,
+      "fluid": "modern_industrialization:benzene"
+    }
+  ],
+  "item_inputs": [
+    {
+      "amount": 1,
+      "probability": 0.0,
+      "tag": "c:red_dyes"
+    }
+  ],
+  "item_outputs": [
+    {
+      "amount": 1,
+      "item": "minecraft:red_dye"
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "type": "modern_industrialization:forge_hammer",
+  "duration": 0,
+  "eu": 20,
+  "item_inputs": [
+    {
+      "amount": 1,
+      "tag": "c:steel_plates"
+    }
+  ],
+  "item_outputs": [
+    {
+      "amount": 1,
+      "item": "modern_industrialization:steel_curved_plate"
+    }
+  ]
+}

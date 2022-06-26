@@ -1,0 +1,27 @@
+{
+  "type": "modern_industrialization:quarry",
+  "duration": 600,
+  "eu": 16,
+  "fabric:load_conditions": [
+    {
+      "condition": "fabric:all_mods_loaded",
+      "values": [
+        "indrev"
+      ]
+    }
+  ],
+  "item_inputs": [
+    {
+      "amount": 1,
+      "item": "indrev:cable_mk1",
+      "probability": 0.6
+    }
+  ],
+  "item_outputs": [
+    {
+      "amount": 6,
+      "item": "indrev:nikolite_ore",
+      "probability": 0.03
+    }
+  ]
+}

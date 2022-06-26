@@ -1,0 +1,17 @@
+{
+  "type": "modern_industrialization:forge_hammer",
+  "duration": 0,
+  "eu": 25,
+  "item_inputs": [
+    {
+      "amount": 1,
+      "tag": "c:lignite_coal_ores"
+    }
+  ],
+  "item_outputs": [
+    {
+      "amount": 4,
+      "item": "modern_industrialization:lignite_coal_dust"
+    }
+  ]
+}

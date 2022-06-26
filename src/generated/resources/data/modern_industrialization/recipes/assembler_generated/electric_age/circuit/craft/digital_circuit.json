@@ -1,0 +1,33 @@
+{
+  "type": "modern_industrialization:assembler",
+  "duration": 200,
+  "eu": 8,
+  "item_inputs": [
+    {
+      "amount": 1,
+      "item": "modern_industrialization:or_gate"
+    },
+    {
+      "amount": 4,
+      "item": "modern_industrialization:electronic_circuit"
+    },
+    {
+      "amount": 2,
+      "item": "modern_industrialization:not_gate"
+    },
+    {
+      "amount": 1,
+      "item": "modern_industrialization:and_gate"
+    },
+    {
+      "amount": 1,
+      "item": "modern_industrialization:digital_circuit_board"
+    }
+  ],
+  "item_outputs": [
+    {
+      "amount": 1,
+      "item": "modern_industrialization:digital_circuit"
+    }
+  ]
+}

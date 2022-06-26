@@ -1,0 +1,29 @@
+{
+  "type": "modern_industrialization:assembler",
+  "duration": 200,
+  "eu": 8,
+  "item_inputs": [
+    {
+      "amount": 4,
+      "item": "modern_industrialization:cupronickel_wire_magnetic"
+    },
+    {
+      "amount": 1,
+      "item": "modern_industrialization:basic_machine_hull"
+    },
+    {
+      "amount": 2,
+      "item": "modern_industrialization:tin_cable"
+    },
+    {
+      "amount": 2,
+      "item": "modern_industrialization:analog_circuit"
+    }
+  ],
+  "item_outputs": [
+    {
+      "amount": 1,
+      "item": "modern_industrialization:electric_furnace"
+    }
+  ]
+}

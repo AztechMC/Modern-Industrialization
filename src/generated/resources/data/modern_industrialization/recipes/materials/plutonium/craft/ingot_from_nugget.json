@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "x": {
+      "tag": "c:plutonium_nuggets"
+    },
+    "y": {
+      "item": "modern_industrialization:plutonium_nugget"
+    }
+  },
+  "pattern": [
+    "yxx",
+    "xxx",
+    "xxx"
+  ],
+  "result": {
+    "count": 1,
+    "item": "modern_industrialization:plutonium_ingot"
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "type": "modern_industrialization:distillery",
+  "duration": 200,
+  "eu": 12,
+  "fluid_inputs": [
+    {
+      "amount": 1000,
+      "fluid": "modern_industrialization:crude_oil"
+    }
+  ],
+  "fluid_outputs": [
+    {
+      "amount": 200,
+      "fluid": "modern_industrialization:sulfuric_heavy_fuel"
+    }
+  ]
+}

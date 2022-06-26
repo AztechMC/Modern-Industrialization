@@ -1,0 +1,22 @@
+{
+  "type": "modern_industrialization:packer",
+  "duration": 100,
+  "eu": 2,
+  "item_inputs": [
+    {
+      "amount": 9,
+      "tag": "c:copper_ingots"
+    },
+    {
+      "amount": 1,
+      "item": "modern_industrialization:packer_block_template",
+      "probability": 0.0
+    }
+  ],
+  "item_outputs": [
+    {
+      "amount": 1,
+      "item": "minecraft:copper_block"
+    }
+  ]
+}

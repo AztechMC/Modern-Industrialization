@@ -1,0 +1,23 @@
+{
+  "type": "modern_industrialization:cutting_machine",
+  "duration": 200,
+  "eu": 2,
+  "fluid_inputs": [
+    {
+      "amount": 1,
+      "fluid": "modern_industrialization:lubricant"
+    }
+  ],
+  "item_inputs": [
+    {
+      "amount": 1,
+      "item": "modern_industrialization:iron_rod"
+    }
+  ],
+  "item_outputs": [
+    {
+      "amount": 2,
+      "item": "modern_industrialization:iron_bolt"
+    }
+  ]
+}

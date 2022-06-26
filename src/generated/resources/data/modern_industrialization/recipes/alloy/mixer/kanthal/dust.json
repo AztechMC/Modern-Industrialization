@@ -1,0 +1,25 @@
+{
+  "type": "modern_industrialization:mixer",
+  "duration": 100,
+  "eu": 2,
+  "item_inputs": [
+    {
+      "amount": 1,
+      "tag": "c:chromium_dusts"
+    },
+    {
+      "amount": 1,
+      "tag": "c:aluminum_dusts"
+    },
+    {
+      "amount": 1,
+      "tag": "c:stainless_steel_dusts"
+    }
+  ],
+  "item_outputs": [
+    {
+      "amount": 3,
+      "item": "modern_industrialization:kanthal_dust"
+    }
+  ]
+}

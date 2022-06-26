@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:smithing",
+  "addition": {
+    "item": "modern_industrialization:steel_upgrade"
+  },
+  "base": {
+    "item": "modern_industrialization:bronze_furnace"
+  },
+  "result": {
+    "item": "modern_industrialization:steel_furnace"
+  }
+}

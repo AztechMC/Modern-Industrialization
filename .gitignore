@@ -29,10 +29,4 @@ bin/
 
 run/
 
-# datagen script
-
-__pycache__/
-
-# datagen
-
-src/generated/
+src/generated/resources/.cache

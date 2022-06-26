@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "x": {
+      "item": "modern_industrialization:deepslate_lead_ore"
+    }
+  },
+  "pattern": [
+    "   ",
+    " x ",
+    "   "
+  ],
+  "result": {
+    "count": 1,
+    "item": "modern_industrialization:lead_ore"
+  }
+}

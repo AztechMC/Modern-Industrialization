@@ -1,0 +1,21 @@
+{
+  "type": "modern_industrialization:mixer",
+  "duration": 100,
+  "eu": 2,
+  "item_inputs": [
+    {
+      "amount": 1,
+      "tag": "c:magenta_dyes"
+    },
+    {
+      "amount": 8,
+      "tag": "minecraft:wool"
+    }
+  ],
+  "item_outputs": [
+    {
+      "amount": 8,
+      "item": "minecraft:magenta_wool"
+    }
+  ]
+}

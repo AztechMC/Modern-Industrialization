@@ -1,0 +1,29 @@
+{
+  "type": "modern_industrialization:mixer",
+  "duration": 100,
+  "eu": 2,
+  "item_inputs": [
+    {
+      "amount": 1,
+      "tag": "c:chromium_dusts"
+    },
+    {
+      "amount": 6,
+      "tag": "c:iron_dusts"
+    },
+    {
+      "amount": 1,
+      "tag": "c:nickel_dusts"
+    },
+    {
+      "amount": 1,
+      "tag": "c:manganese_dusts"
+    }
+  ],
+  "item_outputs": [
+    {
+      "amount": 9,
+      "item": "modern_industrialization:stainless_steel_dust"
+    }
+  ]
+}

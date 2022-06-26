@@ -1,0 +1,23 @@
+{
+  "type": "techreborn:compressor",
+  "fabric:load_conditions": [
+    {
+      "condition": "fabric:all_mods_loaded",
+      "values": [
+        "techreborn"
+      ]
+    }
+  ],
+  "ingredients": [
+    {
+      "tag": "c:blastproof_alloy_plates"
+    }
+  ],
+  "power": 10,
+  "results": [
+    {
+      "item": "modern_industrialization:blastproof_alloy_curved_plate"
+    }
+  ],
+  "time": 300
+}

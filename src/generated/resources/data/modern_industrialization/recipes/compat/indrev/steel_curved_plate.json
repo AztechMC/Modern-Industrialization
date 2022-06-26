@@ -1,0 +1,21 @@
+{
+  "type": "indrev:compress",
+  "fabric:load_conditions": [
+    {
+      "condition": "fabric:all_mods_loaded",
+      "values": [
+        "indrev"
+      ]
+    }
+  ],
+  "ingredients": [
+    {
+      "tag": "c:steel_plates"
+    }
+  ],
+  "output": {
+    "count": 1,
+    "item": "modern_industrialization:steel_curved_plate"
+  },
+  "processTime": 300
+}

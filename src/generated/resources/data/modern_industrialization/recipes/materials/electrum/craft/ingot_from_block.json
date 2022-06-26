@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "x": {
+      "item": "modern_industrialization:electrum_block"
+    }
+  },
+  "pattern": [
+    "x"
+  ],
+  "result": {
+    "count": 9,
+    "item": "modern_industrialization:electrum_ingot"
+  }
+}

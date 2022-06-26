@@ -1,0 +1,37 @@
+{
+  "parent": "modern_industrialization:stainless_steel_ingot",
+  "criteria": {
+    "checkInv": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "modern_industrialization:screwdriver"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "announce_to_chat": true,
+    "description": {
+      "translate": "advancements.modern_industrialization.screwdriver.description"
+    },
+    "frame": "task",
+    "hidden": false,
+    "icon": {
+      "item": "modern_industrialization:screwdriver"
+    },
+    "show_toast": true,
+    "title": {
+      "translate": "advancements.modern_industrialization.screwdriver"
+    }
+  },
+  "requirements": [
+    [
+      "checkInv"
+    ]
+  ]
+}

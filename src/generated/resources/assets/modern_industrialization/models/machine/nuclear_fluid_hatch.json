@@ -1,0 +1,8 @@
+{
+  "default_overlays": {
+    "fluid_auto": "modern_industrialization:block/overlays/fluid_auto",
+    "item_auto": "modern_industrialization:block/overlays/item_auto",
+    "output": "modern_industrialization:block/overlays/output",
+    "top": "modern_industrialization:block/machines/hatch_nuclear/overlay_top"
+  }
+}

@@ -1,0 +1,37 @@
+{
+  "parent": "modern_industrialization:digital_circuit",
+  "criteria": {
+    "checkInv": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "modern_industrialization:heat_exchanger"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "announce_to_chat": true,
+    "description": {
+      "translate": "advancements.modern_industrialization.heat_exchanger.description"
+    },
+    "frame": "task",
+    "hidden": false,
+    "icon": {
+      "item": "modern_industrialization:heat_exchanger"
+    },
+    "show_toast": true,
+    "title": {
+      "translate": "advancements.modern_industrialization.heat_exchanger"
+    }
+  },
+  "requirements": [
+    [
+      "checkInv"
+    ]
+  ]
+}

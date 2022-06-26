@@ -1,0 +1,29 @@
+{
+  "type": "modern_industrialization:assembler",
+  "duration": 200,
+  "eu": 8,
+  "item_inputs": [
+    {
+      "amount": 2,
+      "item": "modern_industrialization:clean_stainless_steel_machine_casing"
+    },
+    {
+      "amount": 2,
+      "item": "modern_industrialization:digital_circuit"
+    },
+    {
+      "amount": 1,
+      "item": "modern_industrialization:advanced_large_steam_boiler"
+    },
+    {
+      "amount": 4,
+      "item": "modern_industrialization:advanced_pump"
+    }
+  ],
+  "item_outputs": [
+    {
+      "amount": 1,
+      "item": "modern_industrialization:high_pressure_large_steam_boiler"
+    }
+  ]
+}

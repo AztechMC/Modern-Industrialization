@@ -1,0 +1,37 @@
+{
+  "type": "modern_industrialization:assembler",
+  "duration": 200,
+  "eu": 8,
+  "item_inputs": [
+    {
+      "amount": 1,
+      "tag": "modern_industrialization:fluid_pipes"
+    },
+    {
+      "amount": 2,
+      "item": "modern_industrialization:large_pump"
+    },
+    {
+      "amount": 1,
+      "item": "modern_industrialization:basic_machine_hull"
+    },
+    {
+      "amount": 2,
+      "tag": "c:glass_blocks"
+    },
+    {
+      "amount": 2,
+      "item": "modern_industrialization:electronic_circuit"
+    },
+    {
+      "amount": 1,
+      "item": "modern_industrialization:electrum_cable"
+    }
+  ],
+  "item_outputs": [
+    {
+      "amount": 1,
+      "item": "modern_industrialization:distillery"
+    }
+  ]
+}

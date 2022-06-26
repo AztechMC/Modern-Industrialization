@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:smithing",
+  "addition": {
+    "item": "modern_industrialization:steel_upgrade"
+  },
+  "base": {
+    "item": "modern_industrialization:bronze_cutting_machine"
+  },
+  "result": {
+    "item": "modern_industrialization:steel_cutting_machine"
+  }
+}

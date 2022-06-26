@@ -1,0 +1,29 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "G": {
+      "tag": "c:bronze_gears"
+    },
+    "R": {
+      "item": "modern_industrialization:bronze_rod"
+    },
+    "b": {
+      "item": "modern_industrialization:bronze_bolt"
+    },
+    "c": {
+      "item": "modern_industrialization:bronze_curved_plate"
+    },
+    "p": {
+      "tag": "c:bronze_plates"
+    }
+  },
+  "pattern": [
+    "bcp",
+    "GRc",
+    "bGb"
+  ],
+  "result": {
+    "count": 1,
+    "item": "modern_industrialization:bronze_drill_head"
+  }
+}

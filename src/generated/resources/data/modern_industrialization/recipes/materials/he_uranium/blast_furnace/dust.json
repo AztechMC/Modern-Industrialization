@@ -1,0 +1,17 @@
+{
+  "type": "modern_industrialization:blast_furnace",
+  "duration": 200,
+  "eu": 128,
+  "item_inputs": [
+    {
+      "amount": 1,
+      "tag": "c:he_uranium_dusts"
+    }
+  ],
+  "item_outputs": [
+    {
+      "amount": 1,
+      "item": "modern_industrialization:he_uranium_ingot"
+    }
+  ]
+}

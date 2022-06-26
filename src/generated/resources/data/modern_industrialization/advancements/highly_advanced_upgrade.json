@@ -1,0 +1,37 @@
+{
+  "parent": "modern_industrialization:processing_unit",
+  "criteria": {
+    "checkInv": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "modern_industrialization:highly_advanced_upgrade"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "announce_to_chat": true,
+    "description": {
+      "translate": "advancements.modern_industrialization.highly_advanced_upgrade.description"
+    },
+    "frame": "task",
+    "hidden": false,
+    "icon": {
+      "item": "modern_industrialization:highly_advanced_upgrade"
+    },
+    "show_toast": true,
+    "title": {
+      "translate": "advancements.modern_industrialization.highly_advanced_upgrade"
+    }
+  },
+  "requirements": [
+    [
+      "checkInv"
+    ]
+  ]
+}

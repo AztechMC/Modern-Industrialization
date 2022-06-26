@@ -1,0 +1,17 @@
+{
+  "type": "modern_industrialization:compressor",
+  "duration": 200,
+  "eu": 2,
+  "item_inputs": [
+    {
+      "amount": 1,
+      "tag": "c:aluminum_ingots"
+    }
+  ],
+  "item_outputs": [
+    {
+      "amount": 1,
+      "item": "modern_industrialization:aluminum_plate"
+    }
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "P": {
+      "tag": "c:stainless_steel_plates"
+    },
+    "R": {
+      "item": "modern_industrialization:stainless_steel_ring"
+    },
+    "b": {
+      "item": "modern_industrialization:stainless_steel_bolt"
+    }
+  },
+  "pattern": [
+    "PbP",
+    "bRb",
+    "PbP"
+  ],
+  "result": {
+    "count": 1,
+    "item": "modern_industrialization:stainless_steel_gear"
+  }
+}

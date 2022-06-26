@@ -1,0 +1,23 @@
+{
+  "type": "techreborn:compressor",
+  "fabric:load_conditions": [
+    {
+      "condition": "fabric:all_mods_loaded",
+      "values": [
+        "techreborn"
+      ]
+    }
+  ],
+  "ingredients": [
+    {
+      "tag": "c:beryllium_ingots"
+    }
+  ],
+  "power": 10,
+  "results": [
+    {
+      "item": "modern_industrialization:beryllium_plate"
+    }
+  ],
+  "time": 600
+}

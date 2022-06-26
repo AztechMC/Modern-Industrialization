@@ -1,0 +1,21 @@
+{
+  "type": "modern_industrialization:assembler",
+  "duration": 200,
+  "eu": 8,
+  "item_inputs": [
+    {
+      "amount": 8,
+      "tag": "c:titanium_plates"
+    },
+    {
+      "amount": 1,
+      "tag": "c:glass_blocks"
+    }
+  ],
+  "item_outputs": [
+    {
+      "amount": 1,
+      "item": "modern_industrialization:titanium_tank"
+    }
+  ]
+}

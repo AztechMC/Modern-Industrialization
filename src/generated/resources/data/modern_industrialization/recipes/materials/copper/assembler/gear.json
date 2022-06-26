@@ -1,0 +1,27 @@
+{
+  "type": "modern_industrialization:assembler",
+  "duration": 100,
+  "eu": 2,
+  "fluid_inputs": [
+    {
+      "amount": 100,
+      "fluid": "modern_industrialization:soldering_alloy"
+    }
+  ],
+  "item_inputs": [
+    {
+      "amount": 4,
+      "tag": "c:copper_plates"
+    },
+    {
+      "amount": 1,
+      "item": "modern_industrialization:copper_ring"
+    }
+  ],
+  "item_outputs": [
+    {
+      "amount": 2,
+      "item": "modern_industrialization:copper_gear"
+    }
+  ]
+}

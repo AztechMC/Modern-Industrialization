@@ -1,0 +1,9 @@
+{
+  "replace": false,
+  "values": [
+    "minecraft:bundle",
+    "#c:shulker_boxes",
+    "#modern_industrialization:tanks",
+    "#modern_industrialization:barrels"
+  ]
+}

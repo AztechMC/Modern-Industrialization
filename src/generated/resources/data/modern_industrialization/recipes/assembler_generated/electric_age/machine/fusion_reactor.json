@@ -1,0 +1,25 @@
+{
+  "type": "modern_industrialization:assembler",
+  "duration": 200,
+  "eu": 8,
+  "item_inputs": [
+    {
+      "amount": 6,
+      "item": "modern_industrialization:fusion_chamber"
+    },
+    {
+      "amount": 1,
+      "item": "modern_industrialization:quantum_machine_hull"
+    },
+    {
+      "amount": 2,
+      "item": "modern_industrialization:quantum_circuit"
+    }
+  ],
+  "item_outputs": [
+    {
+      "amount": 1,
+      "item": "modern_industrialization:fusion_reactor"
+    }
+  ]
+}

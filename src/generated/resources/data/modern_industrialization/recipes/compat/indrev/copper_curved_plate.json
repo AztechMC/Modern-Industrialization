@@ -1,0 +1,21 @@
+{
+  "type": "indrev:compress",
+  "fabric:load_conditions": [
+    {
+      "condition": "fabric:all_mods_loaded",
+      "values": [
+        "indrev"
+      ]
+    }
+  ],
+  "ingredients": [
+    {
+      "tag": "c:copper_plates"
+    }
+  ],
+  "output": {
+    "count": 1,
+    "item": "modern_industrialization:copper_curved_plate"
+  },
+  "processTime": 300
+}

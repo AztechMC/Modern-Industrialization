@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "B": {
+      "item": "modern_industrialization:stainless_steel_blade"
+    },
+    "R": {
+      "item": "modern_industrialization:stainless_steel_ring"
+    },
+    "b": {
+      "item": "modern_industrialization:stainless_steel_bolt"
+    }
+  },
+  "pattern": [
+    "bBb",
+    "BRB",
+    "bBb"
+  ],
+  "result": {
+    "count": 1,
+    "item": "modern_industrialization:stainless_steel_rotor"
+  }
+}

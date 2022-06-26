@@ -1,0 +1,33 @@
+{
+  "type": "modern_industrialization:assembler",
+  "duration": 200,
+  "eu": 8,
+  "item_inputs": [
+    {
+      "amount": 4,
+      "item": "modern_industrialization:advanced_pump"
+    },
+    {
+      "amount": 1,
+      "item": "modern_industrialization:turbo_machine_hull"
+    },
+    {
+      "amount": 1,
+      "item": "modern_industrialization:digital_circuit"
+    },
+    {
+      "amount": 2,
+      "item": "modern_industrialization:titanium_machine_casing_pipe"
+    },
+    {
+      "amount": 1,
+      "item": "modern_industrialization:aluminum_cable"
+    }
+  ],
+  "item_outputs": [
+    {
+      "amount": 1,
+      "item": "modern_industrialization:pressurizer"
+    }
+  ]
+}

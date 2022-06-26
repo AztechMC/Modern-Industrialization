@@ -1,0 +1,17 @@
+{
+  "type": "modern_industrialization:forge_hammer",
+  "duration": 0,
+  "eu": 15,
+  "item_inputs": [
+    {
+      "amount": 3,
+      "tag": "c:raw_gold_ores"
+    }
+  ],
+  "item_outputs": [
+    {
+      "amount": 4,
+      "item": "modern_industrialization:gold_dust"
+    }
+  ]
+}

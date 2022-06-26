@@ -1,0 +1,29 @@
+{
+  "type": "modern_industrialization:assembler",
+  "duration": 200,
+  "eu": 8,
+  "item_inputs": [
+    {
+      "amount": 4,
+      "item": "modern_industrialization:large_pump"
+    },
+    {
+      "amount": 2,
+      "item": "modern_industrialization:processing_unit"
+    },
+    {
+      "amount": 1,
+      "item": "modern_industrialization:high_pressure_large_steam_boiler"
+    },
+    {
+      "amount": 2,
+      "item": "modern_industrialization:large_advanced_pump"
+    }
+  ],
+  "item_outputs": [
+    {
+      "amount": 1,
+      "item": "modern_industrialization:high_pressure_advanced_large_steam_boiler"
+    }
+  ]
+}

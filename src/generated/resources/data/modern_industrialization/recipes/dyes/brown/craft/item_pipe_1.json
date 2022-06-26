@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "d": {
+      "tag": "c:brown_dyes"
+    },
+    "p": {
+      "tag": "modern_industrialization:item_pipes"
+    }
+  },
+  "pattern": [
+    "pd"
+  ],
+  "result": {
+    "count": 1,
+    "item": "modern_industrialization:brown_item_pipe"
+  }
+}

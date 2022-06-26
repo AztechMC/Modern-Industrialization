@@ -1,0 +1,29 @@
+{
+  "type": "modern_industrialization:assembler",
+  "duration": 200,
+  "eu": 8,
+  "item_inputs": [
+    {
+      "amount": 4,
+      "item": "modern_industrialization:nuclear_alloy_large_plate"
+    },
+    {
+      "amount": 1,
+      "item": "modern_industrialization:highly_advanced_machine_hull"
+    },
+    {
+      "amount": 2,
+      "item": "modern_industrialization:processing_unit"
+    },
+    {
+      "amount": 2,
+      "item": "modern_industrialization:cadmium_control_rod"
+    }
+  ],
+  "item_outputs": [
+    {
+      "amount": 1,
+      "item": "modern_industrialization:nuclear_reactor"
+    }
+  ]
+}

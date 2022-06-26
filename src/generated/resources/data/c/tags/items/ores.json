@@ -1,0 +1,19 @@
+{
+  "replace": false,
+  "values": [
+    "#c:salt_ores",
+    "#c:platinum_ores",
+    "#c:lead_ores",
+    "#c:uranium_ores",
+    "#c:tin_ores",
+    "#c:quartz_ores",
+    "#c:iridium_ores",
+    "#c:tungsten_ores",
+    "#c:titanium_ores",
+    "#c:lignite_coal_ores",
+    "#c:bauxite_ores",
+    "#c:antimony_ores",
+    "#c:nickel_ores",
+    "#c:mozanite_ores"
+  ]
+}

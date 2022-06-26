@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "R": {
+      "item": "modern_industrialization:gold_rod"
+    },
+    "b": {
+      "item": "modern_industrialization:gold_bolt"
+    }
+  },
+  "pattern": [
+    "bRb",
+    "R R",
+    "bRb"
+  ],
+  "result": {
+    "count": 2,
+    "item": "modern_industrialization:gold_ring"
+  }
+}

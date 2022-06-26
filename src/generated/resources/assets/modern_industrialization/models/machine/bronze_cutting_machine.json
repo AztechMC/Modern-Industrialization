@@ -1,0 +1,9 @@
+{
+  "default_overlays": {
+    "fluid_auto": "modern_industrialization:block/overlays/fluid_auto",
+    "front": "modern_industrialization:block/machines/cutting_machine/overlay_front",
+    "front_active": "modern_industrialization:block/machines/cutting_machine/overlay_front_active",
+    "item_auto": "modern_industrialization:block/overlays/item_auto",
+    "output": "modern_industrialization:block/overlays/output"
+  }
+}

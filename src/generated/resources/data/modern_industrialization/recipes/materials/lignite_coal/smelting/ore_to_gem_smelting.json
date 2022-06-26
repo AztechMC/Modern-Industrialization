@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:smelting",
+  "cookingtime": 200,
+  "experience": 0.7,
+  "ingredient": {
+    "item": "modern_industrialization:lignite_coal_ore"
+  },
+  "result": "modern_industrialization:lignite_coal"
+}

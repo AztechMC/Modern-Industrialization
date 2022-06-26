@@ -1,0 +1,23 @@
+{
+  "type": "techreborn:compressor",
+  "fabric:load_conditions": [
+    {
+      "condition": "fabric:all_mods_loaded",
+      "values": [
+        "techreborn"
+      ]
+    }
+  ],
+  "ingredients": [
+    {
+      "tag": "c:bronze_plates"
+    }
+  ],
+  "power": 10,
+  "results": [
+    {
+      "item": "modern_industrialization:bronze_curved_plate"
+    }
+  ],
+  "time": 300
+}

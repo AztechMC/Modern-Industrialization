@@ -1,0 +1,21 @@
+{
+  "type": "modern_industrialization:packer",
+  "duration": 200,
+  "eu": 2,
+  "item_inputs": [
+    {
+      "amount": 6,
+      "item": "modern_industrialization:rubber_sheet"
+    },
+    {
+      "amount": 3,
+      "item": "modern_industrialization:aluminum_wire"
+    }
+  ],
+  "item_outputs": [
+    {
+      "amount": 3,
+      "item": "modern_industrialization:aluminum_cable"
+    }
+  ]
+}

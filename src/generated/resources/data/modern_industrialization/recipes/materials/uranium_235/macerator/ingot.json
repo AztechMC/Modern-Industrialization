@@ -1,0 +1,17 @@
+{
+  "type": "modern_industrialization:macerator",
+  "duration": 800,
+  "eu": 2,
+  "item_inputs": [
+    {
+      "amount": 1,
+      "tag": "c:uranium_235_ingots"
+    }
+  ],
+  "item_outputs": [
+    {
+      "amount": 1,
+      "item": "modern_industrialization:uranium_235_dust"
+    }
+  ]
+}

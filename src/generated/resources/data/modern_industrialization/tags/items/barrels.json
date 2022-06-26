@@ -1,0 +1,11 @@
+{
+  "replace": false,
+  "values": [
+    "modern_industrialization:bronze_barrel",
+    "modern_industrialization:steel_barrel",
+    "modern_industrialization:aluminum_barrel",
+    "modern_industrialization:titanium_barrel",
+    "modern_industrialization:stainless_steel_barrel",
+    "modern_industrialization:quantum_barrel"
+  ]
+}

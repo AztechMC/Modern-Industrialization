@@ -1,0 +1,37 @@
+{
+  "parent": "modern_industrialization:forge_hammer",
+  "criteria": {
+    "checkInv": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "modern_industrialization:bronze_compressor"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "announce_to_chat": true,
+    "description": {
+      "translate": "advancements.modern_industrialization.bronze_compressor.description"
+    },
+    "frame": "task",
+    "hidden": false,
+    "icon": {
+      "item": "modern_industrialization:bronze_compressor"
+    },
+    "show_toast": true,
+    "title": {
+      "translate": "advancements.modern_industrialization.bronze_compressor"
+    }
+  },
+  "requirements": [
+    [
+      "checkInv"
+    ]
+  ]
+}

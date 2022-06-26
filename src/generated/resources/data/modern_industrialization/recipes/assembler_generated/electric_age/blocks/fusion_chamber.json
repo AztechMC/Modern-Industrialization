@@ -1,0 +1,29 @@
+{
+  "type": "modern_industrialization:assembler",
+  "duration": 200,
+  "eu": 8,
+  "item_inputs": [
+    {
+      "amount": 4,
+      "item": "modern_industrialization:superconductor_coil"
+    },
+    {
+      "amount": 2,
+      "item": "modern_industrialization:large_heat_exchanger"
+    },
+    {
+      "amount": 2,
+      "item": "modern_industrialization:nuclear_alloy_large_plate"
+    },
+    {
+      "amount": 1,
+      "item": "modern_industrialization:plasma_handling_iridium_machine_casing"
+    }
+  ],
+  "item_outputs": [
+    {
+      "amount": 1,
+      "item": "modern_industrialization:fusion_chamber"
+    }
+  ]
+}

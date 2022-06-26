@@ -1,0 +1,25 @@
+{
+  "type": "modern_industrialization:assembler",
+  "duration": 200,
+  "eu": 8,
+  "item_inputs": [
+    {
+      "amount": 6,
+      "item": "modern_industrialization:bronze_curved_plate"
+    },
+    {
+      "amount": 1,
+      "tag": "c:yellow_dyes"
+    },
+    {
+      "amount": 2,
+      "tag": "c:steel_gears"
+    }
+  ],
+  "item_outputs": [
+    {
+      "amount": 16,
+      "item": "modern_industrialization:yellow_item_pipe"
+    }
+  ]
+}

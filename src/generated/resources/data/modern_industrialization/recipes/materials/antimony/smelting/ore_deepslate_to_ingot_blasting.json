@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:blasting",
+  "cookingtime": 100,
+  "experience": 0.7,
+  "ingredient": {
+    "item": "modern_industrialization:deepslate_antimony_ore"
+  },
+  "result": "modern_industrialization:antimony_ingot"
+}

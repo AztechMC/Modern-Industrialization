@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "d": {
+      "tag": "c:red_dyes"
+    },
+    "p": {
+      "tag": "modern_industrialization:fluid_pipes"
+    }
+  },
+  "pattern": [
+    "ppp",
+    "pdp",
+    "ppp"
+  ],
+  "result": {
+    "count": 8,
+    "item": "modern_industrialization:red_fluid_pipe"
+  }
+}

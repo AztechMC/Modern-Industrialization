@@ -1,0 +1,37 @@
+{
+  "parent": "modern_industrialization:forge_hammer",
+  "criteria": {
+    "checkInv": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "modern_industrialization:steam_mining_drill"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "announce_to_chat": true,
+    "description": {
+      "translate": "advancements.modern_industrialization.steam_mining_drill.description"
+    },
+    "frame": "goal",
+    "hidden": false,
+    "icon": {
+      "item": "modern_industrialization:steam_mining_drill"
+    },
+    "show_toast": true,
+    "title": {
+      "translate": "advancements.modern_industrialization.steam_mining_drill"
+    }
+  },
+  "requirements": [
+    [
+      "checkInv"
+    ]
+  ]
+}

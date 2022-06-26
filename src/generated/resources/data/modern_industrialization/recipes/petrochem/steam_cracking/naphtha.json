@@ -1,0 +1,21 @@
+{
+  "type": "modern_industrialization:chemical_reactor",
+  "duration": 100,
+  "eu": 8,
+  "fluid_inputs": [
+    {
+      "amount": 1000,
+      "fluid": "modern_industrialization:naphtha"
+    },
+    {
+      "amount": 100,
+      "fluid": "modern_industrialization:steam"
+    }
+  ],
+  "fluid_outputs": [
+    {
+      "amount": 1000,
+      "fluid": "modern_industrialization:steam_cracked_naphtha"
+    }
+  ]
+}

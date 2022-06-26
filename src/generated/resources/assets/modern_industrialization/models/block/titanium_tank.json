@@ -1,0 +1,6 @@
+{
+  "parent": "modern_industrialization:base/tank",
+  "textures": {
+    "0": "modern_industrialization:block/titanium_tank"
+  }
+}

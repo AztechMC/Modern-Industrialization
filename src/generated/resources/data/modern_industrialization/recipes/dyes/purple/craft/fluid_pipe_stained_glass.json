@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+      "item": "modern_industrialization:bronze_curved_plate"
+    },
+    "P": {
+      "item": "purple_stained_glass_pane"
+    },
+    "r": {
+      "item": "modern_industrialization:copper_rotor"
+    }
+  },
+  "pattern": [
+    "CCC",
+    "rPr",
+    "CCC"
+  ],
+  "result": {
+    "count": 16,
+    "item": "modern_industrialization:purple_fluid_pipe"
+  }
+}

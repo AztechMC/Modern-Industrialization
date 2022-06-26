@@ -1,0 +1,25 @@
+{
+  "type": "modern_industrialization:assembler",
+  "duration": 200,
+  "eu": 8,
+  "item_inputs": [
+    {
+      "amount": 1,
+      "item": "light_blue_stained_glass_pane"
+    },
+    {
+      "amount": 2,
+      "item": "modern_industrialization:copper_rotor"
+    },
+    {
+      "amount": 6,
+      "item": "modern_industrialization:bronze_curved_plate"
+    }
+  ],
+  "item_outputs": [
+    {
+      "amount": 16,
+      "item": "modern_industrialization:light_blue_fluid_pipe"
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "G": {
+      "tag": "c:titanium_gears"
+    },
+    "R": {
+      "item": "modern_industrialization:titanium_rod"
+    },
+    "b": {
+      "item": "modern_industrialization:titanium_bolt"
+    },
+    "c": {
+      "item": "modern_industrialization:titanium_curved_plate"
+    },
+    "p": {
+      "tag": "c:titanium_plates"
+    }
+  },
+  "pattern": [
+    "bcp",
+    "GRc",
+    "bGb"
+  ],
+  "result": {
+    "count": 1,
+    "item": "modern_industrialization:titanium_drill_head"
+  }
+}

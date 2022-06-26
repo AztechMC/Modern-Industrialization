@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:smelting",
+  "cookingtime": 200,
+  "experience": 0.08,
+  "ingredient": {
+    "item": "modern_industrialization:copper_tiny_dust"
+  },
+  "result": "modern_industrialization:copper_nugget"
+}

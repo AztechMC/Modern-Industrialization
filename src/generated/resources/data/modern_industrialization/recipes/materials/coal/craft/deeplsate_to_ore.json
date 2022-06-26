@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "x": {
+      "item": "minecraft:deepslate_coal_ore"
+    }
+  },
+  "pattern": [
+    "   ",
+    " x ",
+    "   "
+  ],
+  "result": {
+    "count": 1,
+    "item": "minecraft:coal_ore"
+  }
+}

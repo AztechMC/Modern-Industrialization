@@ -57,21 +57,31 @@ public abstract class AbstractStorageMachineBlockEntity extends MachineBlockEnti
     protected final EnergyInsertable insertable;
     protected final EnergyExtractable extractable;
 
-    protected final long eu_capacity;
+    protected final long euCapacity;
     protected final CableTier from, to;
 
-    public AbstractStorageMachineBlockEntity(BEP bep, CableTier from, CableTier to, String name, long eu_capacity) {
+    protected boolean extractableOnOutputDirection;
+
+    public AbstractStorageMachineBlockEntity(BEP bep, CableTier from, CableTier to, String name, long euCapacity) {
+        this(bep, from, to, name, euCapacity, true);
+
+    }
+
+    public AbstractStorageMachineBlockEntity(BEP bep, CableTier from, CableTier to, String name, long euCapacity,
+            boolean extractableOnOutputDirection) {
         super(bep, new MachineGuiParameters.Builder(name, false).build(), new OrientationComponent.Params(true, false, false));
 
         this.from = from;
         this.to = to;
-        this.eu_capacity = eu_capacity;
+        this.euCapacity = euCapacity;
 
-        this.energy = new EnergyComponent(eu_capacity);
+        this.energy = new EnergyComponent(euCapacity);
         insertable = energy.buildInsertable((CableTier tier) -> tier == from);
         extractable = energy.buildExtractable((CableTier tier) -> tier == to);
         EnergyBar.Parameters energyBarParams = new EnergyBar.Parameters(76, 39);
         registerGuiComponent(new EnergyBar.Server(energyBarParams, energy::getEu, energy::getCapacity));
+
+        this.extractableOnOutputDirection = extractableOnOutputDirection;
 
         this.registerComponents(energy);
 
@@ -131,10 +141,19 @@ public abstract class AbstractStorageMachineBlockEntity extends MachineBlockEnti
     public static void registerEnergyApi(BlockEntityType<?> bet) {
         EnergyApi.MOVEABLE.registerForBlockEntities((be, direction) -> {
             AbstractStorageMachineBlockEntity abe = (AbstractStorageMachineBlockEntity) be;
-            if (abe.orientation.outputDirection == direction) {
-                return abe.extractable;
+
+            if (abe.extractableOnOutputDirection) {
+                if (abe.orientation.outputDirection == direction) {
+                    return abe.extractable;
+                } else {
+                    return abe.insertable;
+                }
             } else {
-                return abe.insertable;
+                if (abe.orientation.outputDirection == direction) {
+                    return abe.insertable;
+                } else {
+                    return abe.extractable;
+                }
             }
         }, bet);
     }

@@ -25,7 +25,12 @@ package aztech.modern_industrialization.inventory;
 
 import aztech.modern_industrialization.util.Simulation;
 import io.netty.buffer.Unpooled;
+import java.util.HashSet;
+import java.util.IdentityHashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.function.Predicate;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
@@ -55,6 +60,9 @@ public abstract class ConfigurableScreenHandler extends AbstractContainerMenu {
     protected MIInventory inventory;
     private List<ConfigurableItemStack> trackedItems;
     private List<ConfigurableFluidStack> trackedFluids;
+    // Groups slots together to avoid shift-click splitting a stack across to unrelated subinventories.
+    private final Map<Slot, SlotGroup> slotGroups = new IdentityHashMap<>();
+    private final Set<SlotGroup> slotGroupIndices = new HashSet<>();
 
     protected ConfigurableScreenHandler(MenuType<?> type, int syncId, Inventory playerInventory, MIInventory inventory) {
         super(type, syncId);
@@ -67,10 +75,15 @@ public abstract class ConfigurableScreenHandler extends AbstractContainerMenu {
         }
     }
 
+    protected Slot addSlot(Slot slot, SlotGroup slotGroup) {
+        slotGroups.put(slot, slotGroup);
+        slotGroupIndices.add(slotGroup);
+        return super.addSlot(slot);
+    }
+
     @Override
     public void broadcastChanges() {
-        if (playerInventory.player instanceof ServerPlayer) {
-            ServerPlayer player = (ServerPlayer) playerInventory.player;
+        if (playerInventory.player instanceof ServerPlayer player) {
             for (int i = 0; i < trackedItems.size(); i++) {
                 if (!trackedItems.get(i).equals(inventory.getItemStacks().get(i))) {
                     trackedItems.set(i, new ConfigurableItemStack(inventory.getItemStacks().get(i)));
@@ -179,12 +192,16 @@ public abstract class ConfigurableScreenHandler extends AbstractContainerMenu {
 
         if (slot.hasItem() && slot.mayPickup(player)) {
             if (slotIndex < PLAYER_SLOTS) { // from player to container inventory
-                if (!this.insertItem(slot, PLAYER_SLOTS, this.slots.size(), false)) {
-                    if (slotIndex < 27) { // inside inventory
-                        this.insertItem(slot, 27, 36, false);// toolbar
-                    } else {
-                        this.insertItem(slot, 0, 27, false);
+                // move by slot group
+                for (var group : slotGroupIndices) {
+                    if (this.insertItem(slot, PLAYER_SLOTS, this.slots.size(), false, s -> slotGroups.get(s) == group)) {
+                        return;
                     }
+                }
+                if (slotIndex < 27) { // inside inventory
+                    this.insertItem(slot, 27, 36, false);// toolbar
+                } else {
+                    this.insertItem(slot, 0, 27, false);
                 }
             } else { // from container inventory to player
                 this.insertItem(slot, 0, PLAYER_SLOTS, true);
@@ -203,6 +220,10 @@ public abstract class ConfigurableScreenHandler extends AbstractContainerMenu {
      * @return True if something was inserted.
      */
     protected boolean insertItem(Slot sourceSlot, int startIndex, int endIndex, boolean fromLast) {
+        return insertItem(sourceSlot, startIndex, endIndex, fromLast, s -> true);
+    }
+
+    protected boolean insertItem(Slot sourceSlot, int startIndex, int endIndex, boolean fromLast, Predicate<Slot> filter) {
         boolean insertedSomething = false;
         for (int iter = 0; iter < 2; ++iter) {
             boolean allowEmptySlots = iter == 1; // iteration 0 only allows insertion into existing slots
@@ -213,7 +234,7 @@ public abstract class ConfigurableScreenHandler extends AbstractContainerMenu {
                 ItemStack sourceStack = sourceSlot.getItem();
                 ItemStack targetStack = targetSlot.getItem();
 
-                if (targetSlot.mayPlace(sourceStack)
+                if (filter.test(targetSlot) && targetSlot.mayPlace(sourceStack)
                         && ((allowEmptySlots && targetStack.isEmpty()) || ItemStack.isSameItemSameTags(targetStack, sourceStack))) {
                     int maxInsert = targetSlot.getMaxStackSize(sourceStack) - targetStack.getCount();
                     if (maxInsert > 0) {

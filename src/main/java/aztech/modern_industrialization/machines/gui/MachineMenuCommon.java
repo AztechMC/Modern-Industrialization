@@ -28,6 +28,7 @@ import aztech.modern_industrialization.inventory.ConfigurableFluidStack;
 import aztech.modern_industrialization.inventory.ConfigurableItemStack;
 import aztech.modern_industrialization.inventory.ConfigurableScreenHandler;
 import aztech.modern_industrialization.inventory.MIInventory;
+import aztech.modern_industrialization.inventory.SlotGroup;
 import java.util.List;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.Slot;
@@ -60,19 +61,19 @@ public abstract class MachineMenuCommon extends ConfigurableScreenHandler implem
             ConfigurableItemStack stack = inventory.getItemStacks().get(i);
             // FIXME: markDirty and insert predicate
             this.addSlot(stack.new ConfigurableItemSlot(() -> {
-            }, inventory.itemPositions.getX(i), inventory.itemPositions.getY(i), s -> true));
+            }, inventory.itemPositions.getX(i), inventory.itemPositions.getY(i), s -> true), SlotGroup.CONFIGURABLE_STACKS);
         }
         for (int i = 0; i < inventory.getFluidStacks().size(); ++i) {
             ConfigurableFluidStack stack = inventory.getFluidStacks().get(i);
             // FIXME: markDirty
             this.addSlot(stack.new ConfigurableFluidSlot(() -> {
-            }, inventory.fluidPositions.getX(i), inventory.fluidPositions.getY(i)));
+            }, inventory.fluidPositions.getX(i), inventory.fluidPositions.getY(i)), SlotGroup.CONFIGURABLE_STACKS);
         }
     }
 
     @Override
-    public void addSlotToMenu(Slot slot) {
-        addSlot(slot);
+    public void addSlotToMenu(Slot slot, SlotGroup slotGroup) {
+        addSlot(slot, slotGroup);
     }
 
     @Override

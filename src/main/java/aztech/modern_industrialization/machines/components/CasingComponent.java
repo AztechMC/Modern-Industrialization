@@ -24,7 +24,6 @@
 package aztech.modern_industrialization.machines.components;
 
 import aztech.modern_industrialization.MIBlock;
-import aztech.modern_industrialization.MIItem;
 import aztech.modern_industrialization.api.energy.CableTier;
 import aztech.modern_industrialization.machines.IComponent;
 import aztech.modern_industrialization.machines.MachineBlockEntity;
@@ -39,9 +38,12 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import org.jetbrains.annotations.Nullable;
 
 public class CasingComponent implements IComponent {
 
@@ -93,46 +95,36 @@ public class CasingComponent implements IComponent {
     public void dropCasing(Level world, BlockPos pos) {
         ItemStack stack = new ItemStack(blockCasing.inverse().get(tierCasing).asItem(), 1);
         Containers.dropItemStack(world, pos.getX(), pos.getY(), pos.getZ(), stack);
-
     }
 
     public InteractionResult onUse(MachineBlockEntity be, Player player, InteractionHand hand) {
         ItemStack stackInHand = player.getItemInHand(hand);
-        if (stackInHand.getItem() == MIItem.CROWBAR.asItem() && !player.isShiftKeyDown()) {
-            if (tierCasing != defaultCasing) {
-                dropCasing(be.getLevel(), be.getBlockPos());
-                tierCasing = defaultCasing;
+        if (stackInHand.getCount() >= 1) {
+            var newTier = getCasingTier(stackInHand.getItem());
+            if (newTier != null && newTier != defaultCasing && newTier != tierCasing) {
+                if (defaultCasing != tierCasing) {
+                    dropCasing(be.getLevel(), be.getBlockPos());
+                }
+                tierCasing = newTier;
+                if (!player.isCreative()) {
+                    stackInHand.shrink(1);
+                }
                 be.setChanged();
                 if (!be.getLevel().isClientSide()) {
                     be.sync();
                 }
+                return InteractionResult.sidedSuccess(be.getLevel().isClientSide);
             }
-            return InteractionResult.sidedSuccess(be.getLevel().isClientSide);
-
-        } else {
-            if (stackInHand.getItem() instanceof BlockItem blockItem && stackInHand.getCount() >= 1) {
-                if (blockCasing.containsKey(blockItem.getBlock())) {
-                    CableTier newTier = blockCasing.get(blockItem.getBlock());
-                    if (newTier != defaultCasing && newTier != tierCasing) {
-                        if (defaultCasing != tierCasing) {
-                            dropCasing(be.getLevel(), be.getBlockPos());
-                        }
-                        tierCasing = newTier;
-                        if (!player.isCreative()) {
-                            stackInHand.shrink(1);
-                        }
-                        be.setChanged();
-                        if (!be.getLevel().isClientSide()) {
-                            be.sync();
-                        }
-                        return InteractionResult.sidedSuccess(be.getLevel().isClientSide);
-                    }
-
-                }
-            }
-
         }
         return InteractionResult.PASS;
+    }
+
+    @Nullable
+    private static CableTier getCasingTier(Item item) {
+        if (item instanceof BlockItem blockItem) {
+            return blockCasing.get(blockItem.getBlock());
+        }
+        return null;
     }
 
     public ItemStack getDrop() {
@@ -140,6 +132,22 @@ public class CasingComponent implements IComponent {
             return new ItemStack(blockCasing.inverse().get(tierCasing).asItem(), 1);
         }
         return ItemStack.EMPTY;
+    }
+
+    public void setCasingServer(MachineBlockEntity be, ItemStack casing) {
+        if (casing.isEmpty()) {
+            tierCasing = defaultCasing;
+            be.setChanged();
+            be.sync();
+            be.getLevel().blockUpdated(be.getBlockPos(), Blocks.AIR);
+        }
+        var tier = getCasingTier(casing.getItem());
+        if (tier != null && tier != defaultCasing) {
+            tierCasing = tier;
+            be.setChanged();
+            be.sync();
+            be.getLevel().blockUpdated(be.getBlockPos(), Blocks.AIR);
+        }
     }
 
     public MachineCasing getCasing() {

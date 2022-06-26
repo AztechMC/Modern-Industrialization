@@ -177,7 +177,7 @@ public class ConfigurableFluidStack extends AbstractConfigurableStack<Fluid, Flu
         return tag;
     }
 
-    public class ConfigurableFluidSlot extends Slot implements ReiDraggable {
+    public class ConfigurableFluidSlot extends Slot implements ReiDraggable, BackgroundRenderedSlot {
         private final Runnable markDirty;
 
         public ConfigurableFluidSlot(ConfigurableFluidSlot other) {
@@ -244,6 +244,11 @@ public class ConfigurableFluidStack extends AbstractConfigurableStack<Fluid, Flu
         @Override
         public boolean dragItem(ItemVariant itemKey, Simulation simulation) {
             return false;
+        }
+
+        @Override
+        public int getBackgroundU() {
+            return isPlayerLocked() ? 90 : isMachineLocked() ? 126 : 18;
         }
     }
 }

@@ -169,13 +169,9 @@ public class ConfigurableItemStack extends AbstractConfigurableStack<Item, ItemV
         return adjustedCapacity;
     }
 
-    public class ConfigurableItemSlot extends HackySlot implements ReiDraggable {
+    public class ConfigurableItemSlot extends HackySlot implements ReiDraggable, BackgroundRenderedSlot {
         private final Predicate<ItemStack> insertPredicate;
         private final Runnable markDirty;
-        // Vanilla MC code modifies the stack returned by `getStack()` directly, but it
-        // calls `markDirty()` when that happens, so we just cache the returned stack,
-        // and set it when `markDirty()` is called.
-        private ItemStack cachedReturnedStack = null;
 
         public ConfigurableItemSlot(ConfigurableItemSlot other) {
             this(other.markDirty, other.x, other.y, other.insertPredicate);
@@ -230,6 +226,11 @@ public class ConfigurableItemStack extends AbstractConfigurableStack<Item, ItemV
         @Override
         public boolean dragItem(ItemVariant itemKey, Simulation simulation) {
             return playerLock(itemKey.getItem(), simulation);
+        }
+
+        @Override
+        public int getBackgroundU() {
+            return isPlayerLocked() ? 72 : isMachineLocked() ? 108 : 0;
         }
     }
 }

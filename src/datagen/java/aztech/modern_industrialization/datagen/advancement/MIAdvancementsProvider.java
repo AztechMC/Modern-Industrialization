@@ -88,7 +88,6 @@ public class MIAdvancementsProvider extends FabricAdvancementProvider {
         var hvSteamTurbine = createBasic(consumer, "hv_steam_turbine", mvSteamTurbine, "Better than Water Wheel", "Craft an HV Steam Turbine");
         var largeSteamTurbine = createBasic(consumer, "large_steam_turbine", hvSteamTurbine, "Enslaved Hurricane", "Craft a Large Steam Turbine");
         var distillationTower = createBasic(consumer, "distillation_tower", digitalCircuit, FrameType.GOAL, "TOTAL™ Distillation", "Craft a Distillation Tower to unlock to full potential of oil processing");
-        var crowbar = createBasic(consumer, "crowbar", steelMachineCasing, "I'm Mr Crowbar and this is...", "...my friend, which is also a crowbar. Craft a Crowbar to interact with machine upgrades and casings.");
         var heatExchanger = createBasic(consumer, "heat_exchanger", digitalCircuit, "Lava Power but Balanced",  "Craft a Heat Exchanger to avoid losing high pressure (and cheese easy energy from lava production)");
         var stainlessSteel = createBasic(consumer, "stainless_steel_ingot", vacuumFreezer, FrameType.GOAL, "Invar with Slot Locking", "Craft a Stainless Steel Ingot");
         var screwdriver = createBasic(consumer, "screwdriver", stainlessSteel, "Multiblocks  of Madness", "Craft a Screwdriver to switch between Multiblock shapes" );

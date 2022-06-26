@@ -27,4 +27,11 @@ package aztech.modern_industrialization.inventory;
  * Implement this on a slot to render its background automatically.
  */
 public interface BackgroundRenderedSlot {
+    default int getBackgroundU() {
+        return 0;
+    }
+
+    default int getBackgroundV() {
+        return 0;
+    }
 }

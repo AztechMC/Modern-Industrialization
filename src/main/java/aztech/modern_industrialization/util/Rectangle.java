@@ -21,23 +21,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.items.tools;
+package aztech.modern_industrialization.util;
 
-import net.minecraft.world.InteractionResult;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.context.UseOnContext;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.BlockHitResult;
-
-public class CrowbarItem extends Item {
-    public CrowbarItem(Properties settings) {
-        super(settings.stacksTo(1));
-    }
-
-    @Override
-    public InteractionResult useOn(UseOnContext context) {
-        BlockState state = context.getLevel().getBlockState(context.getClickedPos());
-        return state.use(context.getLevel(), context.getPlayer(), context.getHand(),
-                new BlockHitResult(context.getClickLocation(), context.getClickedFace(), context.getClickedPos(), context.isInside()));
+public record Rectangle(int x, int y, int w, int h) {
+    public boolean contains(double x, double y) {
+        return this.x <= x && x <= this.x + this.w && this.y <= y && y < this.y + this.h;
     }
 }

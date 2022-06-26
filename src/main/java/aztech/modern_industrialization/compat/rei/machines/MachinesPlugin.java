@@ -24,7 +24,6 @@
 package aztech.modern_industrialization.compat.rei.machines;
 
 import aztech.modern_industrialization.MIIdentifier;
-import aztech.modern_industrialization.compat.rei.Rectangle;
 import aztech.modern_industrialization.inventory.ConfigurableFluidStack;
 import aztech.modern_industrialization.inventory.ConfigurableItemStack;
 import aztech.modern_industrialization.machines.gui.MachineMenuClient;
@@ -33,6 +32,7 @@ import aztech.modern_industrialization.machines.init.MIMachineRecipeTypes;
 import aztech.modern_industrialization.machines.multiblocks.ShapeTemplate;
 import aztech.modern_industrialization.machines.recipe.MachineRecipe;
 import aztech.modern_industrialization.machines.recipe.RecipeConversions;
+import aztech.modern_industrialization.util.Rectangle;
 import dev.architectury.event.CompoundEventResult;
 import java.util.*;
 import java.util.function.Predicate;
@@ -162,10 +162,14 @@ public class MachinesPlugin implements REIClientPlugin {
             }
             return CompoundEventResult.pass();
         });
+
+        registry.exclusionZones().register(MachineScreen.class, screen -> {
+            return screen.getExtraBoxes().stream().map(r -> new me.shedaniel.math.Rectangle(r.x(), r.y(), r.w(), r.h())).toList();
+        });
     }
 
     private static boolean contains(Rectangle rectangle, Point mousePosition) {
-        return rectangle.x <= mousePosition.x && mousePosition.x <= rectangle.x + rectangle.w && rectangle.y <= mousePosition.y
-                && mousePosition.y <= rectangle.y + rectangle.h;
+        return rectangle.x() <= mousePosition.x && mousePosition.x <= rectangle.x() + rectangle.w() && rectangle.y() <= mousePosition.y
+                && mousePosition.y <= rectangle.y() + rectangle.h();
     }
 }

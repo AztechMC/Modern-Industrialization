@@ -24,7 +24,6 @@
 package aztech.modern_industrialization.machines.init;
 
 import aztech.modern_industrialization.MIFluids;
-import aztech.modern_industrialization.compat.rei.Rectangle;
 import aztech.modern_industrialization.compat.rei.machines.MachineCategoryParams;
 import aztech.modern_industrialization.compat.rei.machines.ReiMachineRecipes;
 import aztech.modern_industrialization.compat.rei.machines.SteamMode;
@@ -296,7 +295,7 @@ public final class SingleBlockCraftingMachines {
                         recipe -> recipe.getType() == recipeType && minEu <= recipe.eu && recipe.eu <= maxEu, false,
                         i < 2 ? SteamMode.BOTH : SteamMode.ELECTRIC_ONLY);
                 ReiMachineRecipes.registerCategory(itemId, category);
-                ReiMachineRecipes.registerMachineClickArea(itemId, new Rectangle(categoryParams.progressBarParams));
+                ReiMachineRecipes.registerMachineClickArea(itemId, categoryParams.progressBarParams.toRectangle());
                 previousCategories.add(category);
                 for (MachineCategoryParams param : previousCategories) {
                     param.workstations.add(itemId);

@@ -25,12 +25,13 @@ package aztech.modern_industrialization.machines.gui;
 
 import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.MIText;
-import aztech.modern_industrialization.ModernIndustrialization;
 import aztech.modern_industrialization.client.screen.MIHandledScreen;
+import aztech.modern_industrialization.inventory.BackgroundRenderedSlot;
 import aztech.modern_industrialization.inventory.ConfigurableFluidStack;
 import aztech.modern_industrialization.inventory.ConfigurableInventoryPackets;
 import aztech.modern_industrialization.inventory.ConfigurableItemStack;
 import aztech.modern_industrialization.util.FluidHelper;
+import aztech.modern_industrialization.util.Rectangle;
 import aztech.modern_industrialization.util.RenderHelper;
 import aztech.modern_industrialization.util.TextHelper;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -56,7 +57,9 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 
 public class MachineScreen extends MIHandledScreen<MachineMenuClient> implements ClientComponentRenderer.ButtonContainer {
-    public static final ResourceLocation SLOT_ATLAS = new ResourceLocation(ModernIndustrialization.MOD_ID, "textures/gui/container/slot_atlas.png");
+    public static final ResourceLocation SLOT_ATLAS = new MIIdentifier("textures/gui/container/slot_atlas.png");
+    public static final ResourceLocation BACKGROUND = new MIIdentifier("textures/gui/container/background.png");
+
     private final List<ClientComponentRenderer> renderers = new ArrayList<>();
 
     public MachineScreen(MachineMenuClient handler, Inventory inventory, Component title) {
@@ -188,7 +191,7 @@ public class MachineScreen extends MIHandledScreen<MachineMenuClient> implements
     // drawBackground() is called too late, so it's not used at all.
     // This function is used by our custom render() function when appropriate.
     private void actualDrawBackground(PoseStack matrices) {
-        RenderSystem.setShaderTexture(0, new MIIdentifier("textures/gui/container/background.png"));
+        RenderSystem.setShaderTexture(0, BACKGROUND);
         int bw = menu.guiParams.backgroundWidth;
         int bh = menu.guiParams.backgroundHeight;
         blit(matrices, leftPos, topPos + 4, 0, 256 - bh + 4, bw, bh - 4);
@@ -202,17 +205,11 @@ public class MachineScreen extends MIHandledScreen<MachineMenuClient> implements
     private void renderConfigurableSlotBackgrounds(PoseStack matrices) {
         RenderSystem.setShaderTexture(0, SLOT_ATLAS);
         for (Slot slot : this.menu.slots) {
-            int px = leftPos + slot.x - 1;
-            int py = topPos + slot.y - 1;
-            int u;
-            if (slot instanceof ConfigurableFluidStack.ConfigurableFluidSlot fluidSlot) {
-                u = fluidSlot.getConfStack().isPlayerLocked() ? 90 : fluidSlot.getConfStack().isMachineLocked() ? 126 : 18;
-            } else if (slot instanceof ConfigurableItemStack.ConfigurableItemSlot itemSlot) {
-                u = itemSlot.getConfStack().isPlayerLocked() ? 72 : itemSlot.getConfStack().isMachineLocked() ? 108 : 0;
-            } else {
-                continue;
+            if (slot instanceof BackgroundRenderedSlot brs) {
+                int px = leftPos + slot.x - 1;
+                int py = topPos + slot.y - 1;
+                this.blit(matrices, px, py, brs.getBackgroundU(), brs.getBackgroundV(), 18, 18);
             }
-            this.blit(matrices, px, py, u, 0, 18, 18);
         }
     }
 
@@ -346,9 +343,23 @@ public class MachineScreen extends MIHandledScreen<MachineMenuClient> implements
         return false;
     }
 
+    @Override
+    protected boolean hasClickedOutside(double mouseX, double mouseY, int guiLeft, int guiTop, int mouseButton) {
+        return getExtraBoxes().stream().noneMatch(r -> r.contains(mouseX, mouseY))
+                && super.hasClickedOutside(mouseX, mouseY, guiLeft, guiTop, mouseButton);
+    }
+
     // This is used by the REI plugin to detect fluid slots
     public Slot getFocusedSlot() {
         return hoveredSlot;
+    }
+
+    public List<Rectangle> getExtraBoxes() {
+        var list = new ArrayList<Rectangle>();
+        for (var renderer : renderers) {
+            renderer.addExtraBoxes(list, leftPos, topPos);
+        }
+        return list;
     }
 
     public class MachineButton extends Button {

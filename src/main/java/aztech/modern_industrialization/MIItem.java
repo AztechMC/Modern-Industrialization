@@ -36,7 +36,6 @@ import aztech.modern_industrialization.items.armor.JetpackItem;
 import aztech.modern_industrialization.items.armor.QuantumArmorItem;
 import aztech.modern_industrialization.items.armor.RubberArmorMaterial;
 import aztech.modern_industrialization.items.diesel_tools.DieselToolItem;
-import aztech.modern_industrialization.items.tools.CrowbarItem;
 import aztech.modern_industrialization.items.tools.QuantumSword;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -141,7 +140,6 @@ public final class MIItem {
     // Tools
     public static final ItemDefinition<Item> WRENCH = itemNoModel("Wrench", "wrench", ITEMS_OTHER);
     public static final ItemDefinition<Item> SCREWDRIVER = itemHandheld("Screwdriver", "screwdriver");
-    public static final ItemDefinition<CrowbarItem> CROWBAR = itemHandheld("Crowbar", "crowbar", CrowbarItem::new);
 
     public static final ItemDefinition<SteamDrillItem> STEAM_MINING_DRILL = itemHandheld("Steam Mining Drill", "steam_mining_drill",SteamDrillItem::new);
 

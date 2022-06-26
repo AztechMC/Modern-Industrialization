@@ -24,8 +24,11 @@
 package aztech.modern_industrialization.machines.guicomponents;
 
 import aztech.modern_industrialization.MIBlock;
+import aztech.modern_industrialization.MIText;
+import aztech.modern_industrialization.MITooltips;
 import aztech.modern_industrialization.inventory.BackgroundRenderedSlot;
 import aztech.modern_industrialization.inventory.HackySlot;
+import aztech.modern_industrialization.inventory.SlotGroup;
 import aztech.modern_industrialization.machines.GuiComponents;
 import aztech.modern_industrialization.machines.MachineBlockEntity;
 import aztech.modern_industrialization.machines.components.CasingComponent;
@@ -33,12 +36,18 @@ import aztech.modern_industrialization.machines.components.UpgradeComponent;
 import aztech.modern_industrialization.machines.gui.ClientComponentRenderer;
 import aztech.modern_industrialization.machines.gui.GuiComponent;
 import aztech.modern_industrialization.machines.gui.MachineGuiParameters;
+import aztech.modern_industrialization.machines.gui.MachineScreen;
+import aztech.modern_industrialization.util.Rectangle;
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Unit;
 import net.minecraft.world.Container;
@@ -49,16 +58,16 @@ import net.minecraft.world.item.ItemStack;
 
 public class SlotPanel {
     private static int getSlotX(MachineGuiParameters guiParameters) {
-        return guiParameters.backgroundWidth + 5;
+        return guiParameters.backgroundWidth + 6;
     }
 
     private static int getSlotY(int slotIndex) {
-        return 20 + slotIndex * 20;
+        return 19 + slotIndex * 20;
     }
 
     public static class Server implements GuiComponent.Server<Unit> {
         private final MachineBlockEntity machine;
-        private final List<Supplier<Slot>> slotFactories = new ArrayList<>();
+        private final List<Consumer<GuiComponent.MenuFacade>> slotFactories = new ArrayList<>();
         private final List<SlotType> slotTypes = new ArrayList<>();
 
         public Server(MachineBlockEntity machine) {
@@ -66,24 +75,37 @@ public class SlotPanel {
         }
 
         public Server withUpgrades(UpgradeComponent upgradeComponent) {
+            return addSlot(SlotType.UPGRADES, () -> upgradeComponent.getDrop().copy(), upgradeComponent::setStackServer);
+        }
+
+        public Server withCasing(CasingComponent casingComponent) {
+            return addSlot(SlotType.CASINGS, () -> casingComponent.getDrop().copy(), casingComponent::setCasingServer);
+        }
+
+        private Server addSlot(SlotType type, Supplier<ItemStack> getStack, BiConsumer<MachineBlockEntity, ItemStack> setStack) {
             int slotIndex = slotTypes.size();
-            slotFactories.add(() -> new HackySlot(getSlotX(machine.guiParams), getSlotY(slotIndex)) {
+            slotFactories.add(facade -> facade.addSlotToMenu(new HackySlot(getSlotX(machine.guiParams), getSlotY(slotIndex)) {
                 @Override
                 protected ItemStack getStack() {
-                    return upgradeComponent.getDrop().copy();
+                    return getStack.get();
                 }
 
                 @Override
                 protected void setStack(ItemStack stack) {
-                    upgradeComponent.setStackServer(machine, stack);
+                    setStack.accept(machine, stack);
                 }
 
                 @Override
                 public boolean mayPlace(ItemStack stack) {
-                    return SlotType.UPGRADES.insertionChecker.test(stack);
+                    return type.mayPlace(stack);
                 }
-            });
-            slotTypes.add(SlotType.UPGRADES);
+
+                @Override
+                public int getMaxStackSize() {
+                    return type.slotLimit;
+                }
+            }, type.group));
+            slotTypes.add(type);
             return this;
         }
 
@@ -117,13 +139,14 @@ public class SlotPanel {
         @Override
         public void setupMenu(GuiComponent.MenuFacade menu) {
             for (var factory : slotFactories) {
-                menu.addSlotToMenu(factory.get());
+                factory.accept(menu);
             }
         }
     }
 
     public static class Client implements GuiComponent.Client {
         private final List<SlotType> slotTypes = new ArrayList<>();
+        private MachineGuiParameters guiParams;
 
         public Client(FriendlyByteBuf buf) {
             int slotCount = buf.readVarInt();
@@ -138,50 +161,111 @@ public class SlotPanel {
 
         @Override
         public void setupMenu(GuiComponent.MenuFacade menu) {
+            guiParams = menu.getGuiParams();
+
             for (int i = 0; i < slotTypes.size(); ++i) {
                 var type = slotTypes.get(i);
-                menu.addSlotToMenu(new SlotWithBackground(new SimpleContainer(1), 0, getSlotX(menu.getGuiParams()), getSlotY(i)) {
+
+                class ClientSlot extends SlotWithBackground implements SlotTooltip {
+                    public ClientSlot(int i) {
+                        super(new SimpleContainer(1), 0, getSlotX(menu.getGuiParams()), getSlotY(i));
+                    }
+
                     @Override
                     public boolean mayPlace(ItemStack stack) {
-                        return type.insertionChecker.test(stack);
+                        return type.mayPlace(stack);
                     }
 
                     @Override
                     public int getMaxStackSize() {
                         return type.slotLimit;
                     }
-                });
+
+                    @Override
+                    public int getBackgroundU() {
+                        return type.u;
+                    }
+
+                    @Override
+                    public int getBackgroundV() {
+                        return type.v;
+                    }
+
+                    @Override
+                    public Component getTooltip() {
+                        return MITooltips.line(type.tooltip).build();
+                    }
+                }
+
+                menu.addSlotToMenu(new ClientSlot(i), type.group);
             }
         }
 
         @Override
         public ClientComponentRenderer createRenderer() {
             return new ClientComponentRenderer() {
+                private Rectangle getBox(int leftPos, int topPos) {
+                    return new Rectangle(leftPos + guiParams.backgroundWidth, topPos + 10, 31, 14 + 20 * slotTypes.size());
+                }
+
+                @Override
+                public void addExtraBoxes(List<Rectangle> rectangles, int leftPos, int topPos) {
+                    rectangles.add(getBox(leftPos, topPos));
+                }
+
                 @Override
                 public void renderBackground(net.minecraft.client.gui.GuiComponent helper, PoseStack matrices, int x, int y) {
+                    RenderSystem.setShaderTexture(0, MachineScreen.BACKGROUND);
+                    var box = getBox(x, y);
 
+                    int textureX = box.x() - x - box.w();
+                    helper.blit(matrices, box.x(), box.y(), textureX, 0, box.w(), box.h() - 4);
+                    helper.blit(matrices, box.x(), box.y() + box.h() - 4, textureX, 252, box.w(), 4);
+                }
+
+                @Override
+                public void renderTooltip(MachineScreen screen, PoseStack matrices, int x, int y, int cursorX, int cursorY) {
+                    if (screen.getFocusedSlot() instanceof SlotTooltip st && !screen.getFocusedSlot().hasItem()) {
+                        screen.renderTooltip(matrices, st.getTooltip(), cursorX, cursorY);
+                    }
                 }
             };
+        }
+
+        interface SlotTooltip {
+            Component getTooltip();
         }
     }
 
     private enum SlotType {
-        UPGRADES(64, stack -> UpgradeComponent.UPGRADES.containsKey(stack.getItem())),
+        UPGRADES(SlotGroup.UPGRADES, 64, stack -> UpgradeComponent.UPGRADES.containsKey(stack.getItem()), 0, 80,
+                MIText.AcceptsUpgrades),
         // Assumes that the default casing is always the LV casing for now
-        CASINGS(1, stack -> {
+        CASINGS(SlotGroup.CASING, 1, stack -> {
             if (stack.getItem() instanceof BlockItem block && block != MIBlock.BASIC_MACHINE_HULL.asItem()) {
                 return CasingComponent.blockCasing.containsKey(block.getBlock());
             }
             return false;
-        }),
+        }, 18, 80, MIText.AcceptsCasings),
         ;
 
+        private final SlotGroup group;
         public final int slotLimit;
-        public final Predicate<ItemStack> insertionChecker;
+        private final Predicate<ItemStack> insertionChecker;
+        private final int u, v;
+        private final MIText tooltip;
 
-        SlotType(int slotLimit, Predicate<ItemStack> insertionChecker) {
+        SlotType(SlotGroup group, int slotLimit, Predicate<ItemStack> insertionChecker, int u, int v, MIText tooltip) {
+            this.group = group;
             this.slotLimit = slotLimit;
             this.insertionChecker = insertionChecker;
+            this.u = u;
+            this.v = v;
+            this.tooltip = tooltip;
+        }
+
+        public boolean mayPlace(ItemStack stack) {
+            return insertionChecker.test(stack);
         }
     }
 

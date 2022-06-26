@@ -23,6 +23,7 @@
  */
 package aztech.modern_industrialization.machines.gui;
 
+import aztech.modern_industrialization.inventory.SlotGroup;
 import aztech.modern_industrialization.machines.GuiComponents;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
@@ -30,7 +31,7 @@ import net.minecraft.world.inventory.Slot;
 
 public final class GuiComponent {
     public interface MenuFacade {
-        void addSlotToMenu(Slot slot);
+        void addSlotToMenu(Slot slot, SlotGroup slotGroup);
 
         MachineGuiParameters getGuiParams();
     }

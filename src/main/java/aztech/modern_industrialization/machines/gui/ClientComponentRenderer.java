@@ -23,6 +23,7 @@
  */
 package aztech.modern_industrialization.machines.gui;
 
+import aztech.modern_industrialization.util.Rectangle;
 import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.List;
 import java.util.function.Consumer;
@@ -41,6 +42,9 @@ public interface ClientComponentRenderer {
     void renderBackground(GuiComponent helper, PoseStack matrices, int x, int y);
 
     default void renderTooltip(MachineScreen screen, PoseStack matrices, int x, int y, int cursorX, int cursorY) {
+    }
+
+    default void addExtraBoxes(List<Rectangle> rectangles, int leftPos, int topPos) {
     }
 
     interface ButtonContainer {

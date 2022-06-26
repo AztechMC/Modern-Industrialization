@@ -312,6 +312,10 @@ public class MITooltips {
         }
     }
 
+    public static Line line(MIText baseText) {
+        return new Line(baseText);
+    }
+
     public static class Line {
 
         public final MIText baseText;

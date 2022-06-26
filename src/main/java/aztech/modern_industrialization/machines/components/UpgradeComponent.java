@@ -28,9 +28,7 @@ import aztech.modern_industrialization.machines.IComponent;
 import aztech.modern_industrialization.machines.MachineBlockEntity;
 import java.util.IdentityHashMap;
 import java.util.Map;
-import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -65,10 +63,24 @@ public class UpgradeComponent implements IComponent.ServerOnly {
         if (stackInHand.isEmpty()) {
             return InteractionResult.PASS;
         }
-        if (stackInHand.getItem() == MIItem.CROWBAR.asItem() && player.isShiftKeyDown()) {
-            BlockPos pos = be.getBlockPos();
-            if (!itemStack.isEmpty()) {
-                Containers.dropItemStack(be.getLevel(), pos.getX(), pos.getY(), pos.getZ(), itemStack);
+        if (UPGRADES.containsKey(stackInHand.getItem())) {
+            boolean changed = false;
+            if (itemStack.isEmpty()) {
+                itemStack = stackInHand.copy();
+                if (!player.isCreative()) {
+                    stackInHand.setCount(0);
+                }
+                changed = true;
+
+            } else if (stackInHand.getItem() == itemStack.getItem()) {
+                int maxAdded = Math.min(stackInHand.getCount(), itemStack.getMaxStackSize() - itemStack.getCount());
+                changed = maxAdded > 0;
+                itemStack.grow(maxAdded);
+                if (!player.isCreative()) {
+                    stackInHand.shrink(maxAdded);
+                }
+            }
+            if (changed) {
                 be.setChanged();
                 if (!be.getLevel().isClientSide()) {
                     be.sync();
@@ -77,34 +89,6 @@ public class UpgradeComponent implements IComponent.ServerOnly {
                 return InteractionResult.sidedSuccess(be.getLevel().isClientSide);
             }
 
-        } else {
-            if (UPGRADES.containsKey(stackInHand.getItem())) {
-                boolean changed = false;
-                if (itemStack.isEmpty()) {
-                    itemStack = stackInHand.copy();
-                    if (!player.isCreative()) {
-                        stackInHand.setCount(0);
-                    }
-                    changed = true;
-
-                } else if (stackInHand.getItem() == itemStack.getItem()) {
-                    int maxAdded = Math.min(stackInHand.getCount(), itemStack.getMaxStackSize() - itemStack.getCount());
-                    changed = maxAdded > 0;
-                    itemStack.grow(maxAdded);
-                    if (!player.isCreative()) {
-                        stackInHand.shrink(maxAdded);
-                    }
-                }
-                if (changed) {
-                    be.setChanged();
-                    if (!be.getLevel().isClientSide()) {
-                        be.sync();
-
-                    }
-                    return InteractionResult.sidedSuccess(be.getLevel().isClientSide);
-                }
-
-            }
         }
 
         return InteractionResult.PASS;

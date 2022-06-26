@@ -27,6 +27,7 @@ import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.machines.GuiComponents;
 import aztech.modern_industrialization.machines.gui.ClientComponentRenderer;
 import aztech.modern_industrialization.machines.gui.GuiComponent;
+import aztech.modern_industrialization.util.Rectangle;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.function.Supplier;
@@ -147,6 +148,10 @@ public class ProgressBar {
 
         public ResourceLocation getTextureId() {
             return new MIIdentifier("textures/gui/progress_bar/" + progressBarType + ".png");
+        }
+
+        public Rectangle toRectangle() {
+            return new Rectangle(renderX, renderY, 20, 20);
         }
     }
 }

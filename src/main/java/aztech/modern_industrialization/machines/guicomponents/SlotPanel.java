@@ -183,12 +183,12 @@ public class SlotPanel {
 
                     @Override
                     public int getBackgroundU() {
-                        return type.u;
+                        return hasItem() ? type.u : 0;
                     }
 
                     @Override
                     public int getBackgroundV() {
-                        return type.v;
+                        return hasItem() ? type.v : 0;
                     }
 
                     @Override

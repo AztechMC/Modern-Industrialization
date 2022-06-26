@@ -25,6 +25,9 @@ package aztech.modern_industrialization.machines.blockentities.hatches;
 
 import static net.minecraft.core.Direction.UP;
 
+import aztech.modern_industrialization.MIFluids;
+import aztech.modern_industrialization.MIText;
+import aztech.modern_industrialization.MITooltips;
 import aztech.modern_industrialization.inventory.*;
 import aztech.modern_industrialization.machines.BEP;
 import aztech.modern_industrialization.machines.components.*;
@@ -42,9 +45,11 @@ import net.fabricmc.fabric.api.transfer.v1.item.ItemStorage;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.TransferVariant;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
+import net.minecraft.network.chat.Component;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.material.Fluids;
 
 public class NuclearHatch extends HatchBlockEntity implements INuclearTile {
 
@@ -77,7 +82,7 @@ public class NuclearHatch extends HatchBlockEntity implements INuclearTile {
             fluidStack.add(ConfigurableFluidStack.standardOutputSlot(capacity));
             inventory = new MIInventory(Collections.emptyList(), fluidStack, SlotPositions.empty(), slotPos);
             nuclearReactorComponent = new SteamHeaterComponent(NuclearConstant.MAX_TEMPERATURE, NuclearConstant.MAX_HATCH_EU_PRODUCTION,
-                    NuclearConstant.EU_PER_DEGREE, true, true);
+                    NuclearConstant.EU_PER_DEGREE, true, true, false);
         }
 
         neutronHistory = new NeutronHistoryComponent();
@@ -328,6 +333,19 @@ public class NuclearHatch extends HatchBlockEntity implements INuclearTile {
 
     public static void registerFluidApi(BlockEntityType<?> bet) {
         FluidStorage.SIDED.registerForBlockEntities((be, direction) -> direction == UP ? ((NuclearHatch) be).getInventory().fluidStorage : null, bet);
+    }
+
+    @Override
+    public List<Component> getTooltips() {
+        if (isFluid) {
+            return List.of(new MITooltips.Line(MIText.MaxEuProductionSteam).arg(
+                    NuclearConstant.MAX_HATCH_EU_PRODUCTION,
+                    MITooltips.EU_PER_TICK_PARSER).arg(MIFluids.STEAM).build(),
+                    new MITooltips.Line(MIText.AcceptLowAndHighPressure).arg(Fluids.WATER).arg(MIFluids.HEAVY_WATER)
+                            .arg(MIFluids.HIGH_PRESSURE_WATER).arg(MIFluids.HIGH_PRESSURE_HEAVY_WATER).build());
+        } else {
+            return Collections.emptyList();
+        }
     }
 
 }

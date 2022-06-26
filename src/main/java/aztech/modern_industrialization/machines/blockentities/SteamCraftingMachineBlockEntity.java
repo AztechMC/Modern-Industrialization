@@ -26,7 +26,6 @@ package aztech.modern_industrialization.machines.blockentities;
 import aztech.modern_industrialization.machines.BEP;
 import aztech.modern_industrialization.machines.components.GunpowderOverclockComponent;
 import aztech.modern_industrialization.machines.components.MachineInventoryComponent;
-import aztech.modern_industrialization.machines.components.TooltipProvider;
 import aztech.modern_industrialization.machines.gui.MachineGuiParameters;
 import aztech.modern_industrialization.machines.guicomponents.GunpowderOverclockGui;
 import aztech.modern_industrialization.machines.guicomponents.ProgressBar;
@@ -42,7 +41,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 
-public class SteamCraftingMachineBlockEntity extends AbstractCraftingMachineBlockEntity implements TooltipProvider {
+public class SteamCraftingMachineBlockEntity extends AbstractCraftingMachineBlockEntity {
 
     private final GunpowderOverclockComponent gunpowderOverclock;
 

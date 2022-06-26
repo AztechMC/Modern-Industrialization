@@ -23,6 +23,7 @@
  */
 package aztech.modern_industrialization.machines.components;
 
+import aztech.modern_industrialization.MIFluids;
 import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.MITooltips;
 import aztech.modern_industrialization.api.FluidFuelRegistry;
@@ -37,7 +38,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
 
-public class FuelBurningComponent implements IComponent, TooltipProvider {
+public class FuelBurningComponent implements IComponent {
     /**
      * How many EUs worth of heat can be produced every tick at most.
      */
@@ -109,7 +110,7 @@ public class FuelBurningComponent implements IComponent, TooltipProvider {
         }
 
         // Refill buffer with item fuel
-        outer: while (burningEuBuffer == 0) {
+        outer: while (burningEuBuffer < maxEuProduction) {
             // Find first item fuel
             for (ConfigurableItemStack stack : itemInputs) {
                 Item fuel = stack.getResource().getItem();
@@ -156,12 +157,13 @@ public class FuelBurningComponent implements IComponent, TooltipProvider {
         burningEuBuffer = tag.getLong("burningEuBuffer");
     }
 
-    @Override
     public List<Component> getTooltips() {
         List<Component> returnList = new ArrayList<>();
-        returnList.add(new MITooltips.Line(MIText.MaxEuProduction).arg(
+        returnList.add(new MITooltips.Line(MIText.MaxEuProductionSteam).arg(
                 this.maxEuProduction,
-                MITooltips.EU_PER_TICK_PARSER).build());
+                MITooltips.EU_PER_TICK_PARSER)
+                .arg(MIFluids.STEAM)
+                .build());
 
         if (burningEuMultiplier == 2) {
             returnList.add(

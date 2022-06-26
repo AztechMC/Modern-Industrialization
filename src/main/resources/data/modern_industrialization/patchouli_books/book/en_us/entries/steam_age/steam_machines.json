@@ -30,7 +30,7 @@
     {
       "type": "crafting",
       "recipe": "modern_industrialization:steam_age/bronze/furnace_asbl",
-      "text": "The Furnace is... well... a Furnace. It is as slow as normal Furnaces, but it uses 20 times less fuel because steam is very efficient."
+      "text": "The Furnace is... well... a Furnace. It is as slow as normal Furnaces, but it uses 10 times less fuel because steam is very efficient."
     },
     {
       "type": "text",

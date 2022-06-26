@@ -47,8 +47,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.material.Fluid;
 
-public class EnergyFromFluidMachineBlockEntity extends MachineBlockEntity implements Tickable, EnergyComponentHolder,
-        TooltipProvider {
+public class EnergyFromFluidMachineBlockEntity extends MachineBlockEntity implements Tickable, EnergyComponentHolder {
 
     private final CableTier outputTier;
     private final EnergyExtractable extractable;

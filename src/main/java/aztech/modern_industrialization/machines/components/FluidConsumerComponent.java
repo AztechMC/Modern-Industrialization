@@ -42,7 +42,7 @@ import org.jetbrains.annotations.NotNull;
 /**
  * A component that turns fluids into energy.
  */
-public class FluidConsumerComponent implements IComponent.ServerOnly, TooltipProvider {
+public class FluidConsumerComponent implements IComponent.ServerOnly {
     private long euBuffer = 0;
     /**
      * The maximum EU that can be produced by one production operation, to limit the

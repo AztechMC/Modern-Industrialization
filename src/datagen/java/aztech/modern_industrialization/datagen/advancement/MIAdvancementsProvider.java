@@ -49,7 +49,7 @@ public class MIAdvancementsProvider extends FabricAdvancementProvider {
         var forgeHammer = createBasic(consumer, "forge_hammer", guidebook, FrameType.GOAL, "Is This A Forge Mod?", "Craft a Forge Hammer and start exploring the mod.");
         var steamMiningDrill = createBasic(consumer, "steam_mining_drill", forgeHammer, FrameType.GOAL, "Getting That 3x3 Going", "Craft a Steam Mining Drill");
         var fireClayBricks = createBasic(consumer, "fire_clay_bricks", forgeHammer, "Almost Steam?", "Craft Fire Clay Bricks");
-        var bronzeFurnace = createBasic(consumer, "bronze_furnace", fireClayBricks, "Twenty Times More Fuel Efficient", "Craft a Bronze Furnace");
+        var bronzeFurnace = createBasic(consumer, "bronze_furnace", fireClayBricks, "Ten Times More Fuel Efficient", "Craft a Bronze Furnace");
         var bronzeCompressor = createBasic(consumer, "bronze_compressor", forgeHammer, "An Automatic Forge Mod", "Craft a Bronze Compressor");
         var bronzeMixer = createBasic(consumer, "bronze_mixer", forgeHammer, "Mixing Without Mixins", "Craft a Bronze Mixer");
         var bronzeMacerator = createBasic(consumer, "bronze_macerator", forgeHammer, "Ore Hemiquadrupling", "Craft a Bronze Macerator");

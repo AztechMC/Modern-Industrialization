@@ -48,21 +48,21 @@ public class SteamHeaterComponent extends TemperatureComponent {
     public final boolean acceptHighPressure;
     public final boolean acceptLowPressure;
 
+    public final boolean requiresContinuousOperation;
+    public static final double INPUT_ENERGY_RATIO_FOR_STARTUP = 0.8; // only if requires continuous operation
+
     public SteamHeaterComponent(double temperatureMax, long maxEuProduction, long euPerDegree) {
-        super(temperatureMax);
-        this.maxEuProduction = maxEuProduction;
-        this.euPerDegree = euPerDegree;
-        this.acceptLowPressure = true;
-        this.acceptHighPressure = false;
+        this(maxEuProduction, maxEuProduction, euPerDegree, true, false, false);
     }
 
     public SteamHeaterComponent(double temperatureMax, long maxEuProduction, long euPerDegree, boolean acceptLowPressure,
-            boolean acceptHighPressure) {
+            boolean acceptHighPressure, boolean requiresContinuousOperation) {
         super(temperatureMax);
         this.maxEuProduction = maxEuProduction;
         this.euPerDegree = euPerDegree;
         this.acceptLowPressure = acceptLowPressure;
         this.acceptHighPressure = acceptHighPressure;
+        this.requiresContinuousOperation = requiresContinuousOperation;
     }
 
     // return eu produced
@@ -86,7 +86,14 @@ public class SteamHeaterComponent extends TemperatureComponent {
                         MIFluids.HIGH_PRESSURE_HEAVY_WATER_STEAM.asFluid(), 8);
             }
         }
-        return euProducedLowPressure + euProducedHighPressure;
+
+        double totalEuProduced = euProducedLowPressure + euProducedHighPressure;
+
+        if (this.requiresContinuousOperation) {
+            this.decreaseTemperature(INPUT_ENERGY_RATIO_FOR_STARTUP * (this.maxEuProduction - totalEuProduced) / this.euPerDegree);
+        }
+
+        return totalEuProduced;
     }
 
     private double tryMakeSteam(List<ConfigurableFluidStack> input, List<ConfigurableFluidStack> output, Fluid water, Fluid steam, int euPerSteamMb) {

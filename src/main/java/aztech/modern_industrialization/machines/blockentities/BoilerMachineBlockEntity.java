@@ -44,7 +44,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.material.Fluids;
 
-public class BoilerMachineBlockEntity extends MachineBlockEntity implements Tickable, TooltipProvider {
+public class BoilerMachineBlockEntity extends MachineBlockEntity implements Tickable {
 
     public static final int WATER_SLOT_X = 50;
     public static final int WATER_SLOT_Y = 32;
@@ -78,8 +78,8 @@ public class BoilerMachineBlockEntity extends MachineBlockEntity implements Tick
         inventory = new MIInventory(itemStacks, fluidStacks, itemPositions, fluidPositions);
 
         this.bronze = bronze;
-        steamHeater = new SteamHeaterComponent(1500, bronze ? 8 : 16, 8, true, false);
-        fuelBurning = new FuelBurningComponent(steamHeater, 2);
+        steamHeater = new SteamHeaterComponent(1500, bronze ? 8 : 16, 8, true, false, false);
+        fuelBurning = new FuelBurningComponent(steamHeater, 1);
         this.isActiveComponent = new IsActiveComponent();
 
         ProgressBar.Parameters progressParams = new ProgressBar.Parameters(133, 50, "furnace", true);

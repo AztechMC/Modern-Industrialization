@@ -242,4 +242,8 @@ public abstract class MachineBlockEntity extends FastBlockEntity
     public List<ItemStack> dropExtra() {
         return new ArrayList<>();
     }
+
+    public List<Component> getTooltips() {
+        return List.of();
+    }
 }

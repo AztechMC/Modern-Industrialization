@@ -41,7 +41,7 @@ import java.util.List;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.material.Fluids;
 
-public class SteamBoilerMultiblockBlockEntity extends MultiblockMachineBlockEntity implements Tickable, TooltipProvider {
+public class SteamBoilerMultiblockBlockEntity extends MultiblockMachineBlockEntity implements Tickable {
 
     private ShapeMatcher shapeMatcher;
     private final ShapeTemplate shapeTemplate;
@@ -64,7 +64,8 @@ public class SteamBoilerMultiblockBlockEntity extends MultiblockMachineBlockEnti
         ProgressBar.Parameters PROGRESS_BAR = new ProgressBar.Parameters(82, 30, "furnace", true);
         TemperatureBar.Parameters TEMPERATURE_BAR = new TemperatureBar.Parameters(42, 55, 2500);
 
-        steamHeater = new SteamHeaterComponent(2500, maxEuProduction, maxEuProduction / 32, !highPressure, highPressure);
+        steamHeater = new SteamHeaterComponent(2500, maxEuProduction,
+                maxEuProduction / 32, !highPressure, highPressure, true);
         fuelBurning = new FuelBurningComponent(steamHeater, 2);
 
         registerGuiComponent(new ProgressBar.Server(PROGRESS_BAR, () -> (float) fuelBurning.getBurningProgress()));
@@ -142,11 +143,13 @@ public class SteamBoilerMultiblockBlockEntity extends MultiblockMachineBlockEnti
     public List<Component> getTooltips() {
         List<Component> tooltips = fuelBurning.getTooltips();
 
+        tooltips.add(new MITooltips.Line(MIText.ContinuousOperation).build());
+
         if (highPressure) {
-            tooltips.add(new MITooltips.Line(MIText.AcceptLowHighPressure).arg(MIFluids.HIGH_PRESSURE_WATER).arg(MIFluids.HIGH_PRESSURE_HEAVY_WATER)
+            tooltips.add(new MITooltips.Line(MIText.AcceptLowOrHighPressure).arg(MIFluids.HIGH_PRESSURE_WATER).arg(MIFluids.HIGH_PRESSURE_HEAVY_WATER)
                     .build());
         } else {
-            tooltips.add(new MITooltips.Line(MIText.AcceptLowHighPressure).arg(Fluids.WATER).arg(MIFluids.HEAVY_WATER).build());
+            tooltips.add(new MITooltips.Line(MIText.AcceptLowOrHighPressure).arg(Fluids.WATER).arg(MIFluids.HEAVY_WATER).build());
         }
 
         return tooltips;

@@ -27,7 +27,6 @@ import aztech.modern_industrialization.machines.BEP;
 import aztech.modern_industrialization.machines.components.CrafterComponent;
 import aztech.modern_industrialization.machines.components.GunpowderOverclockComponent;
 import aztech.modern_industrialization.machines.components.OrientationComponent;
-import aztech.modern_industrialization.machines.components.TooltipProvider;
 import aztech.modern_industrialization.machines.helper.SteamHelper;
 import aztech.modern_industrialization.machines.multiblocks.HatchBlockEntity;
 import aztech.modern_industrialization.machines.multiblocks.ShapeMatcher;
@@ -44,7 +43,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
 
-public class SteamCraftingMultiblockBlockEntity extends AbstractCraftingMultiblockBlockEntity implements TooltipProvider {
+public class SteamCraftingMultiblockBlockEntity extends AbstractCraftingMultiblockBlockEntity {
 
     private final GunpowderOverclockComponent gunpowderOverclock;
 

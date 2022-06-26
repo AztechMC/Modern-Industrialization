@@ -5,7 +5,7 @@
   "pages": [
     {
       "type": "text",
-      "text": "Steam machines need steam to function, and that's exactly what the boiler provides.$(br2)It will slowly use fuel to heat up. When it's hot enough, it will start to produce steam. Don't forget to feed it with water or your fuel will burn for nothing."
+      "text": "Steam machines need steam to function, and that's exactly what the boiler provides.$(br2)It will slowly use fuel to heat up. When it's hot enough, it will start to produce steam."
     },
     {
       "type": "smelting",

@@ -37,7 +37,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 
-public class GunpowderOverclockComponent implements IComponent, TooltipProvider {
+public class GunpowderOverclockComponent implements IComponent {
 
     public int overclockGunpowderTick;
 
@@ -92,7 +92,6 @@ public class GunpowderOverclockComponent implements IComponent, TooltipProvider 
         }
     }
 
-    @Override
     public List<Component> getTooltips() {
         return List.of(new MITooltips.Line(MIText.GunpowderUpgradeMachine).build());
     }

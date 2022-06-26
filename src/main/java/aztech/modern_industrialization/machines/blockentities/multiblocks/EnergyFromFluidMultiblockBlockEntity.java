@@ -45,7 +45,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.Nullable;
 
 public class EnergyFromFluidMultiblockBlockEntity extends MultiblockMachineBlockEntity implements Tickable, ScrewdriverableBlockEntity,
-        EnergyListComponentHolder, TooltipProvider {
+        EnergyListComponentHolder {
 
     public EnergyFromFluidMultiblockBlockEntity(BEP bep, String name, ShapeTemplate shapeTemplate,
             FluidConsumerComponent fluidConsumer) {

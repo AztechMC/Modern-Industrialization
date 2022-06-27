@@ -27,9 +27,6 @@ import aztech.modern_industrialization.inventory.ConfigurableFluidStack;
 import aztech.modern_industrialization.machines.MachineBlockEntity;
 import java.util.List;
 import lol.bai.megane.api.provider.FluidProvider;
-import net.minecraft.core.BlockPos;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Fluid;
 import org.jetbrains.annotations.Nullable;
 
@@ -37,10 +34,8 @@ public class MachineFluidProvider extends FluidProvider<MachineBlockEntity> {
     private List<ConfigurableFluidStack> stacks;
 
     @Override
-    public void setContext(Level world, BlockPos pos, Player player, MachineBlockEntity machineBlockEntity) {
-        super.setContext(world, pos, player, machineBlockEntity);
-
-        this.stacks = machineBlockEntity.getInventory().getFluidStacks();
+    protected void init() {
+        this.stacks = getObject().getInventory().getFluidStacks();
     }
 
     @Override

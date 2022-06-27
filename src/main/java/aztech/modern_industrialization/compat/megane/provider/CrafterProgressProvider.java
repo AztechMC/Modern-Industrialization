@@ -28,10 +28,7 @@ import aztech.modern_industrialization.inventory.ConfigurableItemStack;
 import aztech.modern_industrialization.machines.components.CrafterComponent;
 import com.google.common.primitives.Ints;
 import lol.bai.megane.api.provider.ProgressProvider;
-import net.minecraft.core.BlockPos;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
 public class CrafterProgressProvider extends ProgressProvider<CrafterComponentHolder> {
@@ -39,11 +36,9 @@ public class CrafterProgressProvider extends ProgressProvider<CrafterComponentHo
     private CrafterComponent.Inventory inventory;
 
     @Override
-    public void setContext(Level world, BlockPos pos, Player player, CrafterComponentHolder holder) {
-        super.setContext(world, pos, player, holder);
-
-        this.crafter = holder.getCrafterComponent();
-        this.inventory = holder.getCrafterComponent().getInventory();
+    protected void init() {
+        this.crafter = getObject().getCrafterComponent();
+        this.inventory = getObject().getCrafterComponent().getInventory();
     }
 
     @Override

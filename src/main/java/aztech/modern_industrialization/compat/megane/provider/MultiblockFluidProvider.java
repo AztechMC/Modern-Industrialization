@@ -27,9 +27,6 @@ import aztech.modern_industrialization.compat.megane.holder.MultiblockInventoryC
 import aztech.modern_industrialization.inventory.ConfigurableFluidStack;
 import java.util.List;
 import lol.bai.megane.api.provider.FluidProvider;
-import net.minecraft.core.BlockPos;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Fluid;
 import org.jetbrains.annotations.Nullable;
 
@@ -38,11 +35,9 @@ public class MultiblockFluidProvider extends FluidProvider<MultiblockInventoryCo
     private List<ConfigurableFluidStack> outputs;
 
     @Override
-    public void setContext(Level world, BlockPos pos, Player player, MultiblockInventoryComponentHolder holder) {
-        super.setContext(world, pos, player, holder);
-
-        this.inputs = holder.getMultiblockInventoryComponent().getFluidInputs();
-        this.outputs = holder.getMultiblockInventoryComponent().getFluidOutputs();
+    protected void init() {
+        this.inputs = getObject().getMultiblockInventoryComponent().getFluidInputs();
+        this.outputs = getObject().getMultiblockInventoryComponent().getFluidOutputs();
     }
 
     @Override

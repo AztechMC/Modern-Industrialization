@@ -25,7 +25,6 @@ package aztech.modern_industrialization.inventory;
 
 import aztech.modern_industrialization.util.Simulation;
 import io.netty.buffer.Unpooled;
-import java.util.HashSet;
 import java.util.IdentityHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;

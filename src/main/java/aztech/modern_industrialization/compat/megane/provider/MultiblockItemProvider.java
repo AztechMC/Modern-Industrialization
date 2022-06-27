@@ -26,20 +26,15 @@ package aztech.modern_industrialization.compat.megane.provider;
 import aztech.modern_industrialization.compat.megane.holder.MultiblockInventoryComponentHolder;
 import aztech.modern_industrialization.inventory.ConfigurableItemStack;
 import java.util.List;
-import net.minecraft.core.BlockPos;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.Level;
 
 public class MultiblockItemProvider extends AbstractConfigurableItemProvider<MultiblockInventoryComponentHolder> {
     private List<ConfigurableItemStack> inputs;
     private List<ConfigurableItemStack> outputs;
 
     @Override
-    public void setContext(Level world, BlockPos pos, Player player, MultiblockInventoryComponentHolder holder) {
-        super.setContext(world, pos, player, holder);
-
-        this.inputs = holder.getMultiblockInventoryComponent().getItemInputs();
-        this.outputs = holder.getMultiblockInventoryComponent().getItemOutputs();
+    protected void init() {
+        this.inputs = getObject().getMultiblockInventoryComponent().getItemInputs();
+        this.outputs = getObject().getMultiblockInventoryComponent().getItemOutputs();
     }
 
     @Override

@@ -195,11 +195,10 @@ dependencies {
     include "me.luligabi:NoIndium:${project.no_indium_version}"
 
 
-    /* TODO 1.19 modImplementation */ modCompileOnly("lol.bai.megane:megane-api:${project.megane_api_version}") {
+    modImplementation("lol.bai.megane:megane-api:${project.megane_api_version}") {
         exclude(group: "net.fabricmc.fabric-api")
     }
 
-    /* TODO 1.19
     modRuntimeOnly("lol.bai.megane:megane-runtime:${project.megane_runtime_version}") {
         exclude(group: "net.fabricmc.fabric-api")
         exclude(group: "mcp.mobius.waila")
@@ -208,7 +207,7 @@ dependencies {
     modRuntimeOnly("lol.bai.megane:megane-vanilla:${project.megane_vanilla_version}") {
         exclude(group: "net.fabricmc.fabric-api")
         exclude(group: "mcp.mobius.waila")
-    } */
+    }
 
     modCompileOnly('net.oskarstrom:DashLoader:2.1-dev4') {
         exclude(group: "net.fabricmc.fabric-api")
@@ -386,7 +385,7 @@ if (System.getenv("CURSEFORGE_API_KEY") && !version.endsWith("-SNAPSHOT")) {
             changelogType = "markdown"
             delegate.changelog = changelog
 
-            addGameVersion "1.18.2"
+            addGameVersion "1.19"
             addGameVersion "Fabric"
             addGameVersion "Java 17"
 
@@ -426,6 +425,6 @@ task publishModrinth (type: TaskModrinthUpload){
     delegate.changelog = changelog
     versionType = releaseChannel.toUpperCase()
     uploadFile = remapJar.archiveFile
-    addGameVersion "1.18.2"
+    addGameVersion "1.19"
     addLoader "fabric"
 }

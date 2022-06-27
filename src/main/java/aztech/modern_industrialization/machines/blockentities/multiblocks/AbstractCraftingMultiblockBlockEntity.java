@@ -23,7 +23,6 @@
  */
 package aztech.modern_industrialization.machines.blockentities.multiblocks;
 
-import aztech.modern_industrialization.api.ScrewdriverableBlockEntity;
 import aztech.modern_industrialization.compat.megane.holder.CrafterComponentHolder;
 import aztech.modern_industrialization.compat.megane.holder.MultiblockInventoryComponentHolder;
 import aztech.modern_industrialization.inventory.MIInventory;
@@ -37,12 +36,9 @@ import aztech.modern_industrialization.machines.multiblocks.MultiblockMachineBlo
 import aztech.modern_industrialization.machines.multiblocks.ShapeMatcher;
 import aztech.modern_industrialization.machines.multiblocks.ShapeTemplate;
 import aztech.modern_industrialization.util.Tickable;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.Nullable;
 
-public abstract class AbstractCraftingMultiblockBlockEntity extends MultiblockMachineBlockEntity implements Tickable, ScrewdriverableBlockEntity,
+public abstract class AbstractCraftingMultiblockBlockEntity extends MultiblockMachineBlockEntity implements Tickable,
         MultiblockInventoryComponentHolder, CrafterComponentHolder {
     public AbstractCraftingMultiblockBlockEntity(BEP bep, String name, OrientationComponent.Params orientationParams,
             ShapeTemplate[] shapeTemplates) {
@@ -85,11 +81,6 @@ public abstract class AbstractCraftingMultiblockBlockEntity extends MultiblockMa
     @Override
     public CrafterComponent getCrafterComponent() {
         return crafter;
-    }
-
-    @Override
-    public boolean useScrewdriver(Player player, InteractionHand hand, BlockHitResult hitResult) {
-        return useScrewdriver(activeShape, player, hand, hitResult);
     }
 
     @Override
@@ -156,7 +147,7 @@ public abstract class AbstractCraftingMultiblockBlockEntity extends MultiblockMa
     }
 
     @Override
-    protected final void unlink() {
+    public final void unlink() {
         if (shapeMatcher != null) {
             shapeMatcher.unlinkHatches();
             shapeMatcher.unregisterListeners(level);

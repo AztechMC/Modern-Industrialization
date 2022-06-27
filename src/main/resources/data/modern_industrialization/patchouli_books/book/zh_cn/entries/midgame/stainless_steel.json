@@ -18,11 +18,6 @@
       "type": "crafting",
       "recipe": "modern_industrialization:electric_age/machine/distillation_tower_asbl",
       "text": "一旦你有了一些数字电路，一定要建造一个蒸馏塔。蒸馏室只给你一个石油加工输出，但蒸馏塔每层给你一个！"
-    },
-    {
-      "type": "crafting",
-      "recipe": "modern_industrialization:tools/screwdriver",
-      "text": "要更改蒸馏塔的高度，请用螺丝刀右键单击它。这也适用于具有多种形状的其他多方块结构，$(l)例如白铜级电高炉。$()"
     }
   ],
   "sortnum": 201

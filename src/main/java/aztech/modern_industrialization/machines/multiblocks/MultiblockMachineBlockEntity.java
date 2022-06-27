@@ -25,8 +25,6 @@ package aztech.modern_industrialization.machines.multiblocks;
 
 import aztech.modern_industrialization.machines.BEP;
 import aztech.modern_industrialization.machines.MachineBlockEntity;
-import aztech.modern_industrialization.machines.MachineOverlay;
-import aztech.modern_industrialization.machines.components.ActiveShapeComponent;
 import aztech.modern_industrialization.machines.components.OrientationComponent;
 import aztech.modern_industrialization.machines.components.ShapeValidComponent;
 import aztech.modern_industrialization.machines.gui.MachineGuiParameters;
@@ -47,7 +45,7 @@ public abstract class MultiblockMachineBlockEntity extends MachineBlockEntity {
         return shapeValid.shapeValid;
     }
 
-    protected abstract void unlink();
+    public abstract void unlink();
 
     @Override
     public boolean useWrench(Player player, InteractionHand hand, BlockHitResult hitResult) {
@@ -69,20 +67,6 @@ public abstract class MultiblockMachineBlockEntity extends MachineBlockEntity {
     }
 
     public abstract ShapeTemplate getActiveShape();
-
-    /**
-     * Helper method for subclasses that want standard screwdriver handling.
-     */
-    protected boolean useScrewdriver(ActiveShapeComponent activeShape, Player player, InteractionHand hand, BlockHitResult hitResult) {
-        if (activeShape.useScrewdriver(player, hand, MachineOverlay.findHitSide(hitResult))) {
-            if (!player.getCommandSenderWorld().isClientSide()) {
-                unlink();
-                sync(false);
-            }
-            return true;
-        }
-        return false;
-    }
 
     public OrientationComponent getOrientation() {
         return orientation;

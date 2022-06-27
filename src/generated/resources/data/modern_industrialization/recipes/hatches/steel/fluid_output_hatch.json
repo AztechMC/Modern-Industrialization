@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "U": {
+      "item": "modern_industrialization:steel_machine_casing"
+    },
+    "V": {
+      "item": "modern_industrialization:steel_tank"
+    }
+  },
+  "pattern": [
+    "U",
+    "V"
+  ],
+  "result": {
+    "count": 1,
+    "item": "modern_industrialization:steel_fluid_output_hatch"
+  }
+}

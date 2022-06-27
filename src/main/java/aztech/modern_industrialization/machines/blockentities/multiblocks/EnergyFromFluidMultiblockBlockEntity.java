@@ -23,7 +23,6 @@
  */
 package aztech.modern_industrialization.machines.blockentities.multiblocks;
 
-import aztech.modern_industrialization.api.ScrewdriverableBlockEntity;
 import aztech.modern_industrialization.compat.megane.holder.EnergyListComponentHolder;
 import aztech.modern_industrialization.inventory.MIInventory;
 import aztech.modern_industrialization.machines.BEP;
@@ -39,12 +38,9 @@ import aztech.modern_industrialization.util.Tickable;
 import java.util.ArrayList;
 import java.util.List;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.Nullable;
 
-public class EnergyFromFluidMultiblockBlockEntity extends MultiblockMachineBlockEntity implements Tickable, ScrewdriverableBlockEntity,
+public class EnergyFromFluidMultiblockBlockEntity extends MultiblockMachineBlockEntity implements Tickable,
         EnergyListComponentHolder {
 
     public EnergyFromFluidMultiblockBlockEntity(BEP bep, String name, ShapeTemplate shapeTemplate,
@@ -84,11 +80,6 @@ public class EnergyFromFluidMultiblockBlockEntity extends MultiblockMachineBlock
         for (HatchBlockEntity hatch : shapeMatcher.getMatchedHatches()) {
             hatch.appendEnergyOutputs(energyOutputs);
         }
-    }
-
-    @Override
-    public boolean useScrewdriver(Player player, InteractionHand hand, BlockHitResult hitResult) {
-        return useScrewdriver(activeShape, player, hand, hitResult);
     }
 
     @Override
@@ -153,7 +144,7 @@ public class EnergyFromFluidMultiblockBlockEntity extends MultiblockMachineBlock
     }
 
     @Override
-    protected final void unlink() {
+    public final void unlink() {
         if (shapeMatcher != null) {
             shapeMatcher.unlinkHatches();
             shapeMatcher.unregisterListeners(level);

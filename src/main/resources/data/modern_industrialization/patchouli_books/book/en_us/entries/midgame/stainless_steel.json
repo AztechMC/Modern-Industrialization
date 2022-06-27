@@ -18,11 +18,6 @@
       "type": "crafting",
       "recipe": "modern_industrialization:electric_age/machine/distillation_tower_asbl",
       "text": "Once you get some digital circuits going, make sure to build a Distillation Tower. The Distillery only gives you one oil processing output, but the tower gives you ONE PER LAYER!"
-    },
-    {
-      "type": "crafting",
-      "recipe": "modern_industrialization:tools/screwdriver",
-      "text": "To change the height of the Distillation Tower, right-click it with a screwdriver. This applies to other multiblocks with multiple shapes as well, $(l)such as the Kanthal tier EBF.$()"
     }
   ],
   "sortnum": 201

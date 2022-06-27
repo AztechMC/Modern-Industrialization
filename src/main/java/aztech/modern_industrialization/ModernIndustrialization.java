@@ -24,7 +24,6 @@
 package aztech.modern_industrialization;
 
 import aztech.modern_industrialization.api.FluidFuelRegistry;
-import aztech.modern_industrialization.api.ScrewdriverableBlockEntity;
 import aztech.modern_industrialization.api.WrenchableBlockEntity;
 import aztech.modern_industrialization.blocks.forgehammer.ForgeHammerScreenHandler;
 import aztech.modern_industrialization.definition.BlockDefinition;
@@ -64,7 +63,6 @@ import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.level.material.MaterialColor;
 import org.apache.logging.log4j.LogManager;
@@ -156,6 +154,7 @@ public class ModernIndustrialization implements ModInitializer {
                 ConfigurableInventoryPacketHandlers.C2S.DO_SLOT_DRAGGING);
         ServerPlayNetworking.registerGlobalReceiver(ConfigurableInventoryPackets.ADJUST_SLOT_CAPACITY,
                 ConfigurableInventoryPacketHandlers.C2S.ADJUST_SLOT_CAPACITY);
+        ServerPlayNetworking.registerGlobalReceiver(MachinePackets.C2S.CHANGE_SHAPE, MachinePackets.C2S.ON_CHANGE_SHAPE);
         ServerPlayNetworking.registerGlobalReceiver(MachinePackets.C2S.SET_AUTO_EXTRACT, MachinePackets.C2S.ON_SET_AUTO_EXTRACT);
         ServerPlayNetworking.registerGlobalReceiver(MachinePackets.C2S.REI_LOCK_SLOTS, MachinePackets.C2S.ON_REI_LOCK_SLOTS);
         ServerPlayNetworking.registerGlobalReceiver(ArmorPackets.UPDATE_KEYS, ArmorPackets.ON_UPDATE_KEYS::handleC2S);
@@ -204,17 +203,9 @@ public class ModernIndustrialization implements ModInitializer {
                 return InteractionResult.PASS;
             }
 
-            boolean isWrench = player.getItemInHand(hand).is(MITags.WRENCHES);
-            boolean isScrewdriver = player.getItemInHand(hand).is(MITags.SCREWDRIVERS);
-            if (isWrench || isScrewdriver) {
-                BlockEntity entity = world.getBlockEntity(hitResult.getBlockPos());
-                if (isWrench && entity instanceof WrenchableBlockEntity wrenchable) {
+            if (player.getItemInHand(hand).is(MITags.WRENCHES)) {
+                if (world.getBlockEntity(hitResult.getBlockPos()) instanceof WrenchableBlockEntity wrenchable) {
                     if (wrenchable.useWrench(player, hand, hitResult)) {
-                        return InteractionResult.sidedSuccess(world.isClientSide());
-                    }
-                }
-                if (isScrewdriver && entity instanceof ScrewdriverableBlockEntity screwdriverable) {
-                    if (screwdriverable.useScrewdriver(player, hand, hitResult)) {
                         return InteractionResult.sidedSuccess(world.isClientSide());
                     }
                 }

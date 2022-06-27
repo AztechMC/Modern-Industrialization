@@ -1,3 +1,0 @@
-# GSON uses LF only, this prevents annoyance on Windows where only EOLs differ
-# Credits to mekanism for this trick!
-*.json eol=lf

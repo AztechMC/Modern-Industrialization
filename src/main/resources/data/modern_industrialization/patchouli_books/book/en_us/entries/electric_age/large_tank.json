@@ -10,7 +10,7 @@
     },
     {
       "type": "text",
-      "text": "You will only see a preview of the smallest shape, but you can add layers on the top, the back and the sides of the tank. The front face must remain horizontally symmetrical.$(br2)Only pipes may access the tank, and only through the controller.$(br2)Don't break the controller or you will lose all of the stored fluid!"
+      "text": "The Large Tank has many possible sizes depending on how much storage you need. You can open the size configuration panel by clicking on a button in the controller.$(br2)Only pipes may access the tank, and only through the controller.$(br2)Don't break the controller or you will lose all of the stored fluid!"
     }
   ],
   "sortnum": 101

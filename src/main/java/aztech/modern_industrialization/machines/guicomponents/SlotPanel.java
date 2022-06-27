@@ -49,7 +49,6 @@ import java.util.function.Supplier;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.Unit;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.inventory.Slot;
@@ -65,7 +64,7 @@ public class SlotPanel {
         return 19 + slotIndex * 20;
     }
 
-    public static class Server implements GuiComponent.Server<Unit> {
+    public static class Server implements GuiComponent.ServerNoData {
         private final MachineBlockEntity machine;
         private final List<Consumer<GuiComponent.MenuFacade>> slotFactories = new ArrayList<>();
         private final List<SlotType> slotTypes = new ArrayList<>();
@@ -110,25 +109,11 @@ public class SlotPanel {
         }
 
         @Override
-        public Unit copyData() {
-            return Unit.INSTANCE;
-        }
-
-        @Override
-        public boolean needsSync(Unit cachedData) {
-            return false;
-        }
-
-        @Override
         public void writeInitialData(FriendlyByteBuf buf) {
             buf.writeVarInt(slotFactories.size());
             for (var type : slotTypes) {
                 buf.writeEnum(type);
             }
-        }
-
-        @Override
-        public void writeCurrentData(FriendlyByteBuf buf) {
         }
 
         @Override
@@ -146,7 +131,6 @@ public class SlotPanel {
 
     public static class Client implements GuiComponent.Client {
         private final List<SlotType> slotTypes = new ArrayList<>();
-        private MachineGuiParameters guiParams;
 
         public Client(FriendlyByteBuf buf) {
             int slotCount = buf.readVarInt();
@@ -161,8 +145,6 @@ public class SlotPanel {
 
         @Override
         public void setupMenu(GuiComponent.MenuFacade menu) {
-            guiParams = menu.getGuiParams();
-
             for (int i = 0; i < slotTypes.size(); ++i) {
                 var type = slotTypes.get(i);
 
@@ -202,10 +184,10 @@ public class SlotPanel {
         }
 
         @Override
-        public ClientComponentRenderer createRenderer() {
+        public ClientComponentRenderer createRenderer(MachineScreen machineScreen) {
             return new ClientComponentRenderer() {
                 private Rectangle getBox(int leftPos, int topPos) {
-                    return new Rectangle(leftPos + guiParams.backgroundWidth, topPos + 10, 31, 14 + 20 * slotTypes.size());
+                    return new Rectangle(leftPos + machineScreen.getGuiParams().backgroundWidth, topPos + 10, 31, 14 + 20 * slotTypes.size());
                 }
 
                 @Override

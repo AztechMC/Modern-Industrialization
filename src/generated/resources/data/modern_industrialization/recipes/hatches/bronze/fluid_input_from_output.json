@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "U": {
+      "item": "modern_industrialization:bronze_fluid_output_hatch"
+    }
+  },
+  "pattern": [
+    "U"
+  ],
+  "result": {
+    "count": 1,
+    "item": "modern_industrialization:bronze_fluid_input_hatch"
+  }
+}

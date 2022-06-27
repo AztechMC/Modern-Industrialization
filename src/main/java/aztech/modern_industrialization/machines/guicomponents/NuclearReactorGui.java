@@ -135,7 +135,7 @@ public class NuclearReactorGui {
         }
 
         @Override
-        public ClientComponentRenderer createRenderer() {
+        public ClientComponentRenderer createRenderer(MachineScreen machineScreen) {
             return new Renderer();
         }
 
@@ -450,53 +450,48 @@ public class NuclearReactorGui {
 
             @Override
             public void addButtons(ButtonContainer container) {
+                container.addButton(centerX + 64, 4, 20, 20, (i) -> currentMode = Mode.values()[(currentMode.index + 1) % Mode.values().length],
+                        () -> List.of(modeTooltip[currentMode.index],
+                                MIText.ClickToSwitch.text(modeTooltip[(currentMode.index + 1) % Mode.values().length])
+                                        .setStyle(TextHelper.GRAY_TEXT)),
+                        (screen, button, matrices, mouseX, mouseY, delta) -> {
+                            button.renderVanilla(matrices, mouseX, mouseY, delta);
+                            if (currentMode == Mode.NUCLEAR_FUEL) {
+                                screen.renderItemInGui(fuelStack, button.x + 1, button.y + 1);
+                            } else if (currentMode == Mode.EU_GENERATION) {
+                                RenderSystem.setShaderTexture(0, MachineScreen.SLOT_ATLAS);
+                                screen.blit(matrices, button.x + 4, button.y + 2, 243, 1, 13, 17);
+                            } else {
+                                RenderSystem.setShaderTexture(0, MachineScreen.SLOT_ATLAS);
+                                screen.blit(matrices, button.x, button.y, 124 + currentMode.index * 20, 0, 20, 20);
+                            }
+                            if (button.isHoveredOrFocused()) {
+                                button.renderToolTip(matrices, mouseX, mouseY);
+                            }
 
-                if (drawButton()) {
+                        }, this::drawButton);
 
-                    container.addButton(centerX + 64, 4, 20, 20, Component.literal(""),
-                            (i) -> currentMode = Mode.values()[(currentMode.index + 1) % Mode.values().length],
-                            () -> List.of(modeTooltip[currentMode.index],
-                                    MIText.ClickToSwitch.text(modeTooltip[(currentMode.index + 1) % Mode.values().length])
-                                            .setStyle(TextHelper.GRAY_TEXT)),
-                            (screen, button, matrices, mouseX, mouseY, delta) -> {
-                                button.renderVanilla(matrices, mouseX, mouseY, delta);
-                                if (currentMode == Mode.NUCLEAR_FUEL) {
-                                    ((MachineScreen) screen).renderItemInGui(fuelStack, button.x + 1, button.y + 1);
-                                } else if (currentMode == Mode.EU_GENERATION) {
-                                    RenderSystem.setShaderTexture(0, MachineScreen.SLOT_ATLAS);
-                                    screen.blit(matrices, button.x + 4, button.y + 2, 243, 1, 13, 17);
-                                } else {
-                                    RenderSystem.setShaderTexture(0, MachineScreen.SLOT_ATLAS);
-                                    screen.blit(matrices, button.x, button.y, 124 + currentMode.index * 20, 0, 20, 20);
-                                }
-                                if (button.isHoveredOrFocused()) {
-                                    button.renderToolTip(matrices, mouseX, mouseY);
-                                }
+                container
+                        .addButton(centerX + 64, 150, 20, 20, (i) -> neutronMode = nextNeutronMode(),
+                                () -> List.of(neutronModeTooltip[neutronMode.index],
+                                        MIText.ClickToSwitch.text(neutronModeTooltip[nextNeutronMode().index]).setStyle(TextHelper.GRAY_TEXT)),
+                                (screen, button, matrices, mouseX, mouseY, delta) -> {
 
-                            });
+                                    button.renderVanilla(matrices, mouseX, mouseY, delta);
+                                    RenderSystem.setShaderTexture(0, NeutronInteractionCategory.TEXTURE_ATLAS);
 
-                    container
-                            .addButton(centerX + 64, 150, 20, 20, Component.literal(""), (i) -> neutronMode = nextNeutronMode(),
-                                    () -> List.of(neutronModeTooltip[neutronMode.index],
-                                            MIText.ClickToSwitch.text(neutronModeTooltip[nextNeutronMode().index]).setStyle(TextHelper.GRAY_TEXT)),
-                                    (screen, button, matrices, mouseX, mouseY, delta) -> {
+                                    if (neutronMode == FAST) {
+                                        screen.blit(matrices, button.x + 2, button.y + 2, 0, 240, 16, 16);
+                                    } else if (neutronMode == NeutronType.THERMAL) {
+                                        screen.blit(matrices, button.x + 2, button.y + 2, 160, 240, 16, 16);
+                                    } else if (neutronMode == BOTH) {
+                                        screen.blit(matrices, button.x + 2, button.y + 2, 80, 240, 16, 16);
+                                    }
 
-                                        button.renderVanilla(matrices, mouseX, mouseY, delta);
-                                        RenderSystem.setShaderTexture(0, NeutronInteractionCategory.TEXTURE_ATLAS);
-
-                                        if (neutronMode == FAST) {
-                                            screen.blit(matrices, button.x + 2, button.y + 2, 0, 240, 16, 16);
-                                        } else if (neutronMode == NeutronType.THERMAL) {
-                                            screen.blit(matrices, button.x + 2, button.y + 2, 160, 240, 16, 16);
-                                        } else if (neutronMode == BOTH) {
-                                            screen.blit(matrices, button.x + 2, button.y + 2, 80, 240, 16, 16);
-                                        }
-
-                                        if (button.isHoveredOrFocused()) {
-                                            button.renderToolTip(matrices, mouseX, mouseY);
-                                        }
-                                    }, this::drawNeutronButton);
-                }
+                                    if (button.isHoveredOrFocused()) {
+                                        button.renderToolTip(matrices, mouseX, mouseY);
+                                    }
+                                }, this::drawNeutronButton);
             }
 
         }

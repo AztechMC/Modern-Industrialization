@@ -32,7 +32,7 @@ import net.minecraft.data.recipes.FinishedRecipe;
 
 public class HatchRecipesProvider extends MIRecipesProvider {
 
-    private static final String pathPrefix = "/hatches/";
+    private static final String pathPrefix = "hatches/";
 
     public HatchRecipesProvider(FabricDataGenerator dataGenerator) {
         super(dataGenerator);

@@ -139,7 +139,6 @@ public final class MIItem {
 
     // Tools
     public static final ItemDefinition<Item> WRENCH = itemNoModel("Wrench", "wrench", ITEMS_OTHER);
-    public static final ItemDefinition<Item> SCREWDRIVER = itemHandheld("Screwdriver", "screwdriver");
 
     public static final ItemDefinition<SteamDrillItem> STEAM_MINING_DRILL = itemHandheld("Steam Mining Drill", "steam_mining_drill",SteamDrillItem::new);
 

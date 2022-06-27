@@ -27,6 +27,7 @@ import aztech.modern_industrialization.inventory.SlotGroup;
 import aztech.modern_industrialization.machines.GuiComponents;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Unit;
 import net.minecraft.world.inventory.Slot;
 
 public final class GuiComponent {
@@ -53,7 +54,7 @@ public final class GuiComponent {
         /**
          * @return A new renderer linked to this client-side component.
          */
-        ClientComponentRenderer createRenderer();
+        ClientComponentRenderer createRenderer(MachineScreen machineScreen);
     }
 
     @FunctionalInterface
@@ -99,5 +100,24 @@ public final class GuiComponent {
          * registered with {@link GuiComponents.Client#register}.
          */
         ResourceLocation getId();
+    }
+
+    /**
+     * Convenience override when no data needs to be synced.
+     */
+    public interface ServerNoData extends Server<Unit> {
+        @Override
+        default Unit copyData() {
+            return Unit.INSTANCE;
+        }
+
+        @Override
+        default boolean needsSync(Unit cachedData) {
+            return false;
+        }
+
+        @Override
+        default void writeCurrentData(FriendlyByteBuf buf) {
+        }
     }
 }

@@ -25,10 +25,12 @@ package aztech.modern_industrialization.machines.blockentities.multiblocks;
 
 import aztech.modern_industrialization.MIBlock;
 import aztech.modern_industrialization.MIIdentifier;
+import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.compat.megane.holder.EnergyListComponentHolder;
 import aztech.modern_industrialization.compat.rei.machines.ReiMachineRecipes;
 import aztech.modern_industrialization.machines.BEP;
 import aztech.modern_industrialization.machines.components.*;
+import aztech.modern_industrialization.machines.guicomponents.ShapeSelection;
 import aztech.modern_industrialization.machines.guicomponents.SlotPanel;
 import aztech.modern_industrialization.machines.init.MIMachineRecipeTypes;
 import aztech.modern_industrialization.machines.init.MachineTier;
@@ -39,6 +41,7 @@ import aztech.modern_industrialization.util.Simulation;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.IntStream;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -49,6 +52,7 @@ import org.jetbrains.annotations.Nullable;
 
 // TODO: should the common part with ElectricCraftingMultiblockBlockEntity be refactored?
 public class DistillationTowerBlockEntity extends AbstractCraftingMultiblockBlockEntity implements EnergyListComponentHolder {
+    private static final int MAX_HEIGHT = 9;
     private static final ShapeTemplate[] shapeTemplates;
 
     public DistillationTowerBlockEntity(BEP bep) {
@@ -56,6 +60,21 @@ public class DistillationTowerBlockEntity extends AbstractCraftingMultiblockBloc
         this.upgrades = new UpgradeComponent();
         this.registerComponents(upgrades);
         registerGuiComponent(new SlotPanel.Server(this).withUpgrades(upgrades));
+
+        registerGuiComponent(new ShapeSelection.Server(new ShapeSelection.Behavior() {
+            @Override
+            public void handleClick(int clickedLine, int delta) {
+                activeShape.incrementShape(DistillationTowerBlockEntity.this, delta);
+            }
+
+            @Override
+            public int getCurrentIndex(int line) {
+                return activeShape.getActiveShapeIndex();
+            }
+        }, new ShapeSelection.LineInfo(
+                MAX_HEIGHT,
+                IntStream.range(1, MAX_HEIGHT + 1).mapToObj(MIText.ShapeTextHeight::text).toList(),
+                false)));
     }
 
     @Override
@@ -148,14 +167,13 @@ public class DistillationTowerBlockEntity extends AbstractCraftingMultiblockBloc
     }
 
     static {
-        int maxHeight = 9;
-        shapeTemplates = new ShapeTemplate[maxHeight];
+        shapeTemplates = new ShapeTemplate[MAX_HEIGHT];
 
         SimpleMember casing = SimpleMember.forBlock(MIBlock.BLOCKS.get(new MIIdentifier("clean_stainless_steel_machine_casing")).asBlock());
         SimpleMember pipe = SimpleMember.forBlock(MIBlock.BLOCKS.get(new MIIdentifier("stainless_steel_machine_casing_pipe")).asBlock());
         HatchFlags bottom = new HatchFlags.Builder().with(HatchType.ENERGY_INPUT, HatchType.FLUID_INPUT).build();
         HatchFlags layer = new HatchFlags.Builder().with(HatchType.FLUID_OUTPUT).build();
-        for (int i = 0; i < maxHeight; ++i) {
+        for (int i = 0; i < MAX_HEIGHT; ++i) {
             ShapeTemplate.Builder builder = new ShapeTemplate.Builder(MachineCasings.CLEAN_STAINLESS_STEEL);
             for (int y = 0; y <= i + 1; ++y) {
                 builder.add3by3(y, casing, y != 0, y == 0 ? bottom : layer);

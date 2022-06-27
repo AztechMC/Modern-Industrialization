@@ -29,6 +29,7 @@ import aztech.modern_industrialization.machines.MachinePackets;
 import aztech.modern_industrialization.machines.components.OrientationComponent;
 import aztech.modern_industrialization.machines.gui.ClientComponentRenderer;
 import aztech.modern_industrialization.machines.gui.GuiComponent;
+import aztech.modern_industrialization.machines.gui.MachineScreen;
 import aztech.modern_industrialization.util.TextHelper;
 import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.ArrayList;
@@ -110,7 +111,7 @@ public class AutoExtract {
         }
 
         @Override
-        public ClientComponentRenderer createRenderer() {
+        public ClientComponentRenderer createRenderer(MachineScreen machineScreen) {
             return new Renderer();
         }
 
@@ -130,7 +131,7 @@ public class AutoExtract {
                 String type = isItem ? "item" : "fluid";
                 int index = isItem ? 0 : 1;
                 String insertOrExtract = displayAsInsert ? "insert" : "extract";
-                container.addButton(u, Component.literal(type + " auto-extract"), syncId -> {
+                container.addButton(u, syncId -> {
                     boolean newExtract = !extractStatus[index];
                     extractStatus[index] = newExtract;
                     FriendlyByteBuf buf = PacketByteBufs.create();

@@ -24,11 +24,10 @@
 package aztech.modern_industrialization.machines.components;
 
 import aztech.modern_industrialization.machines.IComponent;
+import aztech.modern_industrialization.machines.multiblocks.MultiblockMachineBlockEntity;
 import aztech.modern_industrialization.machines.multiblocks.ShapeTemplate;
-import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.entity.player.Player;
+import net.minecraft.util.Mth;
 
 public class ActiveShapeComponent implements IComponent {
     public final ShapeTemplate[] shapeTemplates;
@@ -38,12 +37,17 @@ public class ActiveShapeComponent implements IComponent {
         this.shapeTemplates = shapeTemplates;
     }
 
-    public boolean useScrewdriver(Player player, InteractionHand hand, Direction face) {
-        if (shapeTemplates.length > 1) {
-            activeShape = (activeShape + 1) % shapeTemplates.length;
-            return true;
+    public void incrementShape(MultiblockMachineBlockEntity machine, int delta) {
+        setShape(machine, Mth.clamp(activeShape + delta, 0, shapeTemplates.length - 1));
+    }
+
+    public void setShape(MultiblockMachineBlockEntity machine, int newShape) {
+        if (newShape != activeShape) {
+            activeShape = newShape;
+            machine.setChanged();
+            machine.unlink();
+            machine.sync(false);
         }
-        return false;
     }
 
     public ShapeTemplate getActiveShape() {

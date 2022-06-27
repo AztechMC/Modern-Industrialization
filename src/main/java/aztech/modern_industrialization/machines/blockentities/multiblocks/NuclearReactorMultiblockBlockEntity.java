@@ -25,7 +25,7 @@ package aztech.modern_industrialization.machines.blockentities.multiblocks;
 
 import aztech.modern_industrialization.MIBlock;
 import aztech.modern_industrialization.MIIdentifier;
-import aztech.modern_industrialization.api.ScrewdriverableBlockEntity;
+import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.compat.rei.machines.ReiMachineRecipes;
 import aztech.modern_industrialization.inventory.MIInventory;
 import aztech.modern_industrialization.machines.BEP;
@@ -36,19 +36,18 @@ import aztech.modern_industrialization.machines.components.IsActiveComponent;
 import aztech.modern_industrialization.machines.components.OrientationComponent;
 import aztech.modern_industrialization.machines.gui.MachineGuiParameters;
 import aztech.modern_industrialization.machines.guicomponents.NuclearReactorGui;
+import aztech.modern_industrialization.machines.guicomponents.ShapeSelection;
 import aztech.modern_industrialization.machines.models.MachineCasings;
 import aztech.modern_industrialization.machines.models.MachineModelClientData;
 import aztech.modern_industrialization.machines.multiblocks.*;
 import aztech.modern_industrialization.nuclear.*;
 import aztech.modern_industrialization.util.Tickable;
+import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
 import net.minecraft.core.Direction;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.phys.BlockHitResult;
 
-public class NuclearReactorMultiblockBlockEntity extends MultiblockMachineBlockEntity implements Tickable, ScrewdriverableBlockEntity {
+public class NuclearReactorMultiblockBlockEntity extends MultiblockMachineBlockEntity implements Tickable {
 
     private static final ShapeTemplate[] shapeTemplates;
     /**
@@ -75,6 +74,19 @@ public class NuclearReactorMultiblockBlockEntity extends MultiblockMachineBlockE
         registerComponents(activeShape, isActive, efficiencyHistory);
         this.registerGuiComponent(new NuclearReactorGui.Server(this::sendData));
 
+        registerGuiComponent(new ShapeSelection.Server(new ShapeSelection.Behavior() {
+            @Override
+            public void handleClick(int clickedLine, int delta) {
+                activeShape.incrementShape(NuclearReactorMultiblockBlockEntity.this, delta);
+            }
+
+            @Override
+            public int getCurrentIndex(int line) {
+                return activeShape.getActiveShapeIndex();
+            }
+        }, new ShapeSelection.LineInfo(
+                4, List.of(MIText.ShapeTextSmall.text(), MIText.ShapeTextMedium.text(), MIText.ShapeTextLarge.text(), MIText.ShapeTextExtreme.text()),
+                true)));
     }
 
     public NuclearReactorGui.Data sendData() {
@@ -83,11 +95,6 @@ public class NuclearReactorMultiblockBlockEntity extends MultiblockMachineBlockE
         } else {
             return new NuclearReactorGui.Data(false, 0, 0, null, 0, 0);
         }
-    }
-
-    @Override
-    public boolean useScrewdriver(Player player, InteractionHand hand, BlockHitResult hitResult) {
-        return useScrewdriver(activeShape, player, hand, hitResult);
     }
 
     @Override
@@ -226,7 +233,7 @@ public class NuclearReactorMultiblockBlockEntity extends MultiblockMachineBlockE
     }
 
     @Override
-    protected final void unlink() {
+    public final void unlink() {
         if (shapeMatcher != null) {
             shapeMatcher.unlinkHatches();
             shapeMatcher.unregisterListeners(level);

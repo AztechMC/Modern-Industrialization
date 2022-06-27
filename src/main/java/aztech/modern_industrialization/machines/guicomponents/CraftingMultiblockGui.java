@@ -29,6 +29,7 @@ import aztech.modern_industrialization.machines.GuiComponents;
 import aztech.modern_industrialization.machines.components.CrafterComponent;
 import aztech.modern_industrialization.machines.gui.ClientComponentRenderer;
 import aztech.modern_industrialization.machines.gui.GuiComponent;
+import aztech.modern_industrialization.machines.gui.MachineScreen;
 import aztech.modern_industrialization.util.TextHelper;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -138,7 +139,7 @@ public class CraftingMultiblockGui {
         }
 
         @Override
-        public ClientComponentRenderer createRenderer() {
+        public ClientComponentRenderer createRenderer(MachineScreen machineScreen) {
             return new Renderer();
         }
 

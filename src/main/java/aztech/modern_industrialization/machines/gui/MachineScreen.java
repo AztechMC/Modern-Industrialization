@@ -66,7 +66,7 @@ public class MachineScreen extends MIHandledScreen<MachineMenuClient> implements
         super(handler, inventory, title);
 
         for (GuiComponent.Client component : handler.components) {
-            renderers.add(component.createRenderer());
+            renderers.add(component.createRenderer(this));
         }
 
         this.imageHeight = handler.guiParams.backgroundHeight;
@@ -107,48 +107,62 @@ public class MachineScreen extends MIHandledScreen<MachineMenuClient> implements
         }
     }
 
+    public void blitButton(Button button, PoseStack pose, int baseU, int baseV, int selectedOverlayU, int selectedOverlayV, int mouseX, int mouseY) {
+        RenderSystem.setShaderTexture(0, SLOT_ATLAS);
+        blit(pose, button.x, button.y, baseU, baseV, button.getWidth(), button.getHeight());
+        if (button.isHoveredOrFocused()) {
+            blit(pose, button.x, button.y, selectedOverlayU, selectedOverlayV, button.getWidth(), button.getHeight());
+            button.renderToolTip(pose, mouseX, mouseY);
+        }
+    }
+
+    /**
+     * Helper method to draw a 20x20 button.
+     */
+    public void blitButton(Button button, PoseStack pose, int u, int v, int mouseX, int mouseY) {
+        blitButton(button, pose, u, v, 60, 18, mouseX, mouseY);
+    }
+
+    /**
+     * Helper method to draw a 12x12 button.
+     */
+    public void blitButtonSmall(Button button, PoseStack pose, int u, int v, int mouseX, int mouseY) {
+        blitButton(button, pose, u, v, 138, 58, mouseX, mouseY);
+    }
+
+    public void blitButtonNoHighlight(Button button, PoseStack pose, int u, int v, int mouseX, int mouseY) {
+        RenderSystem.setShaderTexture(0, SLOT_ATLAS);
+        blit(pose, button.x, button.y, u, v, button.getWidth(), button.getHeight());
+        if (button.isHoveredOrFocused()) {
+            button.renderToolTip(pose, mouseX, mouseY);
+        }
+    }
+
     @Override
-    public void addButton(int u, Component message, Consumer<Integer> pressAction, Supplier<List<Component>> tooltipSupplier,
+    public MachineButton addButton(int u, Consumer<Integer> pressAction, Supplier<List<Component>> tooltipSupplier,
             Supplier<Boolean> isPressed) {
 
-        addRenderableWidget(new MachineButton(buttonX(), buttonY(), 20, 20, message, b -> pressAction.accept(menu.containerId),
+        return addRenderableWidget(new MachineButton(buttonX(), buttonY(), 20, 20, b -> pressAction.accept(menu.containerId),
                 (button, matrices, mouseX, mouseY) -> renderComponentTooltip(matrices, tooltipSupplier.get(), mouseX, mouseY),
-
                 (screen, button, matrices, mouseX, mouseY, delta) -> {
-                    RenderSystem.setShaderTexture(0, SLOT_ATLAS);
-                    int v = 18;
-                    if (isPressed.get()) {
-                        v += 20;
-                    }
-                    blit(matrices, button.x, button.y, u, v, 20, 20);
-                    if (button.isHoveredOrFocused()) {
-                        blit(matrices, button.x, button.y, 60, 18, 20, 20);
-                        button.renderToolTip(matrices, mouseX, mouseY);
-                    }
-                }));
+                    blitButton(button, matrices, u, isPressed.get() ? 38 : 18, mouseX, mouseY);
+                }, () -> true));
 
     }
 
     @Override
-    public void addButton(int posX, int posY, int width, int height, Component message, Consumer<Integer> pressAction,
+    public MachineButton addButton(int posX, int posY, int width, int height, Consumer<Integer> pressAction,
             Supplier<List<Component>> tooltipSupplier, ClientComponentRenderer.CustomButtonRenderer renderer, Supplier<Boolean> isButtonPresent) {
 
-        addRenderableWidget(new MachineButton(posX + leftPos, posY + topPos, width, height, message, b -> {
-            if (isButtonPresent.get())
-                pressAction.accept(menu.containerId);
+        return addRenderableWidget(new MachineButton(posX + leftPos, posY + topPos, width, height, b -> {
+            pressAction.accept(menu.containerId);
         }, (button, matrices, mouseX, mouseY) -> {
-            if (isButtonPresent.get())
-                renderComponentTooltip(matrices, tooltipSupplier.get(), mouseX, mouseY);
-        }, (screen, button, matrices, mouseX, mouseY, delta) -> {
-            if (isButtonPresent.get()) {
-                renderer.renderButton(screen, button, matrices, mouseX, mouseY, delta);
-            }
-        }) {
-        });
+            renderComponentTooltip(matrices, tooltipSupplier.get(), mouseX, mouseY);
+        }, renderer, isButtonPresent));
     }
 
     private void addLockButton() {
-        addButton(40, Component.literal("slot locking"), syncId -> {
+        addButton(40, syncId -> {
             boolean newLockingMode = !menu.lockingMode;
             menu.lockingMode = newLockingMode;
             FriendlyByteBuf buf = PacketByteBufs.create();
@@ -170,6 +184,13 @@ public class MachineScreen extends MIHandledScreen<MachineMenuClient> implements
 
     @Override
     public void render(PoseStack matrices, int mouseX, int mouseY, float delta) {
+        // Update button visibility
+        for (var element : renderables) {
+            if (element instanceof MachineButton machineButton) {
+                machineButton.visible = machineButton.isPresent.get();
+            }
+        }
+
         // Shadow around the GUI
         renderBackground(matrices);
         RenderSystem.enableBlend();
@@ -349,6 +370,10 @@ public class MachineScreen extends MIHandledScreen<MachineMenuClient> implements
                 && super.hasClickedOutside(mouseX, mouseY, guiLeft, guiTop, mouseButton);
     }
 
+    public MachineGuiParameters getGuiParams() {
+        return menu.getGuiParams();
+    }
+
     // This is used by the REI plugin to detect fluid slots
     public Slot getFocusedSlot() {
         return hoveredSlot;
@@ -365,20 +390,30 @@ public class MachineScreen extends MIHandledScreen<MachineMenuClient> implements
     public class MachineButton extends Button {
 
         final ClientComponentRenderer.CustomButtonRenderer renderer;
+        final Supplier<Boolean> isPresent;
 
-        private MachineButton(int x, int y, int width, int height, Component message, OnPress onPress, OnTooltip tooltipSupplier,
-                ClientComponentRenderer.CustomButtonRenderer renderer) {
-            super(x, y, width, height, message, onPress, tooltipSupplier);
+        private MachineButton(int x, int y, int width, int height, OnPress onPress, OnTooltip tooltipSupplier,
+                ClientComponentRenderer.CustomButtonRenderer renderer, Supplier<Boolean> isPresent) {
+            super(x, y, width, height, Component.empty(), onPress, (btn, mat, mouseX, mouseY) -> {
+                if (isPresent.get()) {
+                    tooltipSupplier.onTooltip(btn, mat, mouseX, mouseY);
+                }
+            });
             this.renderer = renderer;
+            this.isPresent = isPresent;
         }
 
         @Override
         public void renderButton(PoseStack matrices, int mouseX, int mouseY, float delta) {
-            renderer.renderButton(MachineScreen.this, this, matrices, mouseX, mouseY, delta);
+            if (isPresent.get()) {
+                renderer.renderButton(MachineScreen.this, this, matrices, mouseX, mouseY, delta);
+            }
         }
 
         public void renderVanilla(PoseStack matrices, int mouseX, int mouseY, float delta) {
-            super.renderButton(matrices, mouseX, mouseY, delta);
+            if (isPresent.get()) {
+                super.renderButton(matrices, mouseX, mouseY, delta);
+            }
         }
     }
 }

@@ -18,11 +18,6 @@
       "type": "crafting",
       "recipe": "modern_industrialization:electric_age/machine/distillation_tower_asbl",
       "text": "디지털 회로를 만들었다면, 증류탑을 꼭 건설하세요. 증류소는 원유 처리 부산물을 하나밖에 얻을 수 없었지만, 증류탑은 층 하나당 부산물을 하나씩 얻을 수 있습니다!"
-    },
-    {
-      "type": "crafting",
-      "recipe": "modern_industrialization:tools/screwdriver",
-      "text": "증류탑의 높이를 바꾸려면 스크류드라이버를 들고 컨트롤러를 우클릭하세요. 이 방법은 다른 멀티블록에도 적용됩니다:$(l)전기 용광로에 칸탈 코일을 사용하는 것처럼요.$()"
     }
   ],
   "sortnum": 201

@@ -27,6 +27,7 @@ import aztech.modern_industrialization.util.Simulation;
 import io.netty.buffer.Unpooled;
 import java.util.HashSet;
 import java.util.IdentityHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -62,7 +63,7 @@ public abstract class ConfigurableScreenHandler extends AbstractContainerMenu {
     private List<ConfigurableFluidStack> trackedFluids;
     // Groups slots together to avoid shift-click splitting a stack across to unrelated subinventories.
     private final Map<Slot, SlotGroup> slotGroups = new IdentityHashMap<>();
-    private final Set<SlotGroup> slotGroupIndices = new HashSet<>();
+    private final Set<SlotGroup> slotGroupIndices = new LinkedHashSet<>();
 
     protected ConfigurableScreenHandler(MenuType<?> type, int syncId, Inventory playerInventory, MIInventory inventory) {
         super(type, syncId);

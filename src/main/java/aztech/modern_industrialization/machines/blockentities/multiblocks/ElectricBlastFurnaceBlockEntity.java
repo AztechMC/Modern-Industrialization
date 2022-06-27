@@ -27,11 +27,13 @@ import static aztech.modern_industrialization.machines.multiblocks.HatchType.*;
 
 import aztech.modern_industrialization.MIBlock;
 import aztech.modern_industrialization.MIIdentifier;
+import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.compat.megane.holder.EnergyListComponentHolder;
 import aztech.modern_industrialization.compat.rei.machines.ReiMachineRecipes;
 import aztech.modern_industrialization.machines.BEP;
 import aztech.modern_industrialization.machines.components.*;
 import aztech.modern_industrialization.machines.guicomponents.ProgressBar;
+import aztech.modern_industrialization.machines.guicomponents.ShapeSelection;
 import aztech.modern_industrialization.machines.guicomponents.SlotPanel;
 import aztech.modern_industrialization.machines.init.MIMachineRecipeTypes;
 import aztech.modern_industrialization.machines.init.MachineTier;
@@ -63,6 +65,18 @@ public class ElectricBlastFurnaceBlockEntity extends AbstractCraftingMultiblockB
         this.upgrades = new UpgradeComponent();
         this.registerComponents(upgrades);
         registerGuiComponent(new SlotPanel.Server(this).withUpgrades(upgrades));
+
+        registerGuiComponent(new ShapeSelection.Server(new ShapeSelection.Behavior() {
+            @Override
+            public void handleClick(int clickedLine, int delta) {
+                activeShape.incrementShape(ElectricBlastFurnaceBlockEntity.this, delta);
+            }
+
+            @Override
+            public int getCurrentIndex(int line) {
+                return activeShape.getActiveShapeIndex();
+            }
+        }, new ShapeSelection.LineInfo(2, List.of(MIText.ShapeTextCupronickel.text(), MIText.ShapeTextKanthal.text()), true)));
     }
 
     @Override

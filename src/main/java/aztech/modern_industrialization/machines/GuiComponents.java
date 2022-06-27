@@ -34,6 +34,7 @@ import aztech.modern_industrialization.machines.guicomponents.NuclearReactorGui;
 import aztech.modern_industrialization.machines.guicomponents.ProgressBar;
 import aztech.modern_industrialization.machines.guicomponents.RecipeEfficiencyBar;
 import aztech.modern_industrialization.machines.guicomponents.ReiSlotLocking;
+import aztech.modern_industrialization.machines.guicomponents.ShapeSelection;
 import aztech.modern_industrialization.machines.guicomponents.SlotPanel;
 import aztech.modern_industrialization.machines.guicomponents.TemperatureBar;
 import java.util.HashMap;
@@ -50,6 +51,7 @@ public final class GuiComponents {
     public static final ResourceLocation PROGRESS_BAR = new MIIdentifier("progress_bar");
     public static final ResourceLocation RECIPE_EFFICIENCY_BAR = new MIIdentifier("recipe_efficiency_bar");
     public static final ResourceLocation REI_SLOT_LOCKING = new MIIdentifier("rei_slot_locking");
+    public static final ResourceLocation SHAPE_SELECTION = new MIIdentifier("shape_selection");
     public static final ResourceLocation SLOT_PANEL = new MIIdentifier("slot_panel");
     public static final ResourceLocation TEMPERATURE_BAR = new MIIdentifier("temperature_bar");
 
@@ -76,6 +78,7 @@ public final class GuiComponents {
             register(PROGRESS_BAR, ProgressBar.Client::new);
             register(RECIPE_EFFICIENCY_BAR, RecipeEfficiencyBar.Client::new);
             register(REI_SLOT_LOCKING, ReiSlotLocking.Client::new);
+            register(SHAPE_SELECTION, ShapeSelection.Client::new);
             register(SLOT_PANEL, SlotPanel.Client::new);
             register(TEMPERATURE_BAR, TemperatureBar.Client::new);
         }

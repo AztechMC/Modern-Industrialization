@@ -28,7 +28,10 @@ import aztech.modern_industrialization.machines.components.OrientationComponent;
 import aztech.modern_industrialization.machines.gui.MachineMenuServer;
 import aztech.modern_industrialization.machines.guicomponents.AutoExtract;
 import aztech.modern_industrialization.machines.guicomponents.ReiSlotLocking;
+import aztech.modern_industrialization.machines.guicomponents.ShapeSelection;
+import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 
@@ -75,5 +78,26 @@ public class MachinePackets {
                 }
             });
         };
+        public static final ResourceLocation CHANGE_SHAPE = new MIIdentifier("change_shape");
+        public static final ServerPlayNetworking.PlayChannelHandler ON_CHANGE_SHAPE = (ms, player, handler, buf, sender) -> {
+            int syncId = buf.readInt();
+            int shapeLine = buf.readVarInt();
+            boolean clickedLeftButton = buf.readBoolean();
+            ms.execute(() -> {
+                AbstractContainerMenu menu = player.containerMenu;
+                if (menu.containerId == syncId && menu instanceof MachineMenuServer machineMenu) {
+                    ShapeSelection.Server shapeSelection = machineMenu.blockEntity.getComponent(GuiComponents.SHAPE_SELECTION);
+                    shapeSelection.behavior.handleClick(shapeLine, clickedLeftButton ? -1 : +1);
+                }
+            });
+        };
+
+        public static FriendlyByteBuf encodeChangeShape(int syncId, int shapeLine, boolean clickedLeftButton) {
+            var buf = PacketByteBufs.create();
+            buf.writeInt(syncId);
+            buf.writeVarInt(shapeLine);
+            buf.writeBoolean(clickedLeftButton);
+            return buf;
+        }
     }
 }

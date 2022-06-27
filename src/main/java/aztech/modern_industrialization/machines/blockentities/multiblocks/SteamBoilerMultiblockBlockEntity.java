@@ -98,7 +98,7 @@ public class SteamBoilerMultiblockBlockEntity extends MultiblockMachineBlockEnti
     }
 
     @Override
-    protected final void unlink() {
+    public final void unlink() {
         if (shapeMatcher != null) {
             shapeMatcher.unlinkHatches();
             shapeMatcher.unregisterListeners(level);

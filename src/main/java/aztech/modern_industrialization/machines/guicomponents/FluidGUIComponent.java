@@ -90,7 +90,7 @@ public class FluidGUIComponent {
         }
 
         @Override
-        public ClientComponentRenderer createRenderer() {
+        public ClientComponentRenderer createRenderer(MachineScreen machineScreen) {
             return new Renderer();
         }
 

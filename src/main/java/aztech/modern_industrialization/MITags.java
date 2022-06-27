@@ -29,7 +29,6 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 
 public class MITags {
-    public static final TagKey<Item> SCREWDRIVERS = item("screwdrivers");
     public static final TagKey<Item> WRENCHES = item("wrenches");
 
     public static final TagKey<Item> BARRELS = miItem("barrels");

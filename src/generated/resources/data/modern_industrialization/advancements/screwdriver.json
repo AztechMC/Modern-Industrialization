@@ -6,7 +6,7 @@
         "items": [
           {
             "items": [
-              "modern_industrialization:screwdriver"
+              "minecraft:air"
             ]
           }
         ]
@@ -22,7 +22,7 @@
     "frame": "task",
     "hidden": false,
     "icon": {
-      "item": "modern_industrialization:screwdriver"
+      "item": "minecraft:air"
     },
     "show_toast": true,
     "title": {

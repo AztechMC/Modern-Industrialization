@@ -90,8 +90,7 @@ public class MIAdvancementsProvider extends FabricAdvancementProvider {
         var distillationTower = createBasic(consumer, "distillation_tower", digitalCircuit, FrameType.GOAL, "TOTAL™ Distillation", "Craft a Distillation Tower to unlock to full potential of oil processing");
         var heatExchanger = createBasic(consumer, "heat_exchanger", digitalCircuit, "Lava Power but Balanced",  "Craft a Heat Exchanger to avoid losing high pressure (and cheese easy energy from lava production)");
         var stainlessSteel = createBasic(consumer, "stainless_steel_ingot", vacuumFreezer, FrameType.GOAL, "Invar with Slot Locking", "Craft a Stainless Steel Ingot");
-        var screwdriver = createBasic(consumer, "screwdriver", stainlessSteel, "Multiblocks  of Madness", "Craft a Screwdriver to switch between Multiblock shapes" );
-        var kanthalCoil = createBasic(consumer, "kanthal_coil", screwdriver, "Electric Better Furnace", "Craft a Kanthal Coil to unlock new EBF recipes");
+        var kanthalCoil = createBasic(consumer, "kanthal_coil", stainlessSteel, "Electric Better Furnace", "Craft a Kanthal Coil to unlock new EBF recipes");
         var processingUnit = createBasic(consumer, "processing_unit", kanthalCoil, "Bitcoin Miner", "Craft a Processing Unit");
         var titaniumIngot = createBasic(consumer, "titanium_ingot", kanthalCoil, "Steel but Pink", "Craft a Titanium Ingot");
         var blastProofAlloyPlate = createBasic(consumer, "blastproof_alloy_plate", titaniumIngot, "Creeper Nightmare", "Craft a Blastproof Alloy Plate in the compressor");

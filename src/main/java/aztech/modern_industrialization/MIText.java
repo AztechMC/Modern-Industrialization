@@ -116,6 +116,7 @@ public enum MIText {
     JetpackDisabled("Jetpack disabled!"),
     JetpackFill("Fuel: %d %%"),
     JetpackEnabled("Jetpack enabled!"),
+    LargeTankTooltips("Stores %s buckets of fluid per block in the structure"),
     LockingModeOff("Lock editing disabled"),
     LockingModeOn("Lock editing enabled"),
     LubricantTooltip("Right-Click on Electric Machine : consume %s mb for 1 efficiency tick"),

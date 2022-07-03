@@ -233,7 +233,6 @@ public class MITooltips {
     static {
         add(MIBlock.FORGE_HAMMER, "Use it to increase the yield of your ore blocks early game!",
                 "(Use the Steam Mining Drill for an easy to get Silk Touch.)");
-        add("kanthal_coil", "Right-click the EBF with a Screwdriver", "to change the coils to Kanthal");
         add("stainless_steel_dust", "Use Slot-Locking with REI to differentiate its recipe from the invar dust");
         add("steam_blast_furnace", "Needs at least one Steel or higher tier", "hatch for 3 and 4 EU/t recipes");
         add(MIBlock.TRASH_CAN,

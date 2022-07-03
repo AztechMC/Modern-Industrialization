@@ -26,6 +26,7 @@ package aztech.modern_industrialization.machines.blockentities.multiblocks;
 import aztech.modern_industrialization.MIBlock;
 import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.MIText;
+import aztech.modern_industrialization.MITooltips;
 import aztech.modern_industrialization.inventory.MIInventory;
 import aztech.modern_industrialization.machines.BEP;
 import aztech.modern_industrialization.machines.components.ActiveShapeComponent;
@@ -38,12 +39,14 @@ import aztech.modern_industrialization.machines.models.MachineCasings;
 import aztech.modern_industrialization.machines.models.MachineModelClientData;
 import aztech.modern_industrialization.machines.multiblocks.*;
 import aztech.modern_industrialization.util.Tickable;
+import java.util.List;
 import java.util.stream.IntStream;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -55,6 +58,8 @@ public class LargeTankMultiblockBlockEntity extends MultiblockMachineBlockEntity
     private static final int[] X_SIZES = new int[] { 3, 5, 7 };
     private static final int[] Y_SIZES = new int[] { 3, 4, 5, 6, 7 };
     private static final int[] Z_SIZES = new int[] { 3, 4, 5, 6, 7 };
+
+    public static final int BUCKET_PER_STRUCTURE_BLOCK = 64;
 
     private static int getXComponent(int shapeIndex) {
         return shapeIndex / 25;
@@ -256,7 +261,7 @@ public class LargeTankMultiblockBlockEntity extends MultiblockMachineBlockEntity
         int sizeY = Y_SIZES[getYComponent(index)];
         int sizeZ = Z_SIZES[getZComponent(index)];
         int volume = sizeX * sizeY * sizeZ;
-        long capacity = (long) volume * 64 * FluidConstants.BUCKET; // 64 Bucket / Block
+        long capacity = (long) volume * BUCKET_PER_STRUCTURE_BLOCK * FluidConstants.BUCKET; // 64 Bucket / Block
         fluidStorage.setCapacity(capacity);
     }
 
@@ -296,6 +301,11 @@ public class LargeTankMultiblockBlockEntity extends MultiblockMachineBlockEntity
 
         return cornerPosition;
 
+    }
+
+    @Override
+    public List<Component> getTooltips() {
+        return List.of(new MITooltips.Line(MIText.LargeTankTooltips).arg(BUCKET_PER_STRUCTURE_BLOCK).build());
     }
 
 }

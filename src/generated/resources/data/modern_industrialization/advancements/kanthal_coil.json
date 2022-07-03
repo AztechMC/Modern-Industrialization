@@ -1,5 +1,5 @@
 {
-  "parent": "modern_industrialization:screwdriver",
+  "parent": "modern_industrialization:stainless_steel_ingot",
   "criteria": {
     "checkInv": {
       "conditions": {

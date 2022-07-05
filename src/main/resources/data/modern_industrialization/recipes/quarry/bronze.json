@@ -5,38 +5,38 @@
   "item_inputs": {
     "item": "modern_industrialization:bronze_drill",
     "amount": 1,
-    "probability": 0.01
+    "probability": 0.04
   },
   "item_outputs": [
     {
       "item": "minecraft:iron_ore",
-      "amount": 8,
-      "probability": 0.05
+      "amount": 1,
+      "probability": 0.4
     },
     {
       "item": "minecraft:coal_ore",
-      "amount": 8,
-      "probability": 0.05
+      "amount": 1,
+      "probability": 0.4
     },
     {
       "item": "minecraft:copper_ore",
-      "amount": 4,
-      "probability": 0.05
+      "amount": 1,
+      "probability": 0.2
     },
     {
       "item": "modern_industrialization:tin_ore",
-      "amount": 6,
-      "probability": 0.05
+      "amount": 1,
+      "probability": 0.3
     },
     {
       "item": "minecraft:gold_ore",
-      "amount": 5,
-      "probability": 0.03
+      "amount": 1,
+      "probability": 0.15
     },
     {
       "item": "minecraft:redstone_ore",
-      "amount": 10,
-      "probability": 0.02
+      "amount": 1,
+      "probability": 0.2
     }
   ]
 }

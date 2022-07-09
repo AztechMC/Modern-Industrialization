@@ -23,8 +23,12 @@
  */
 package aztech.modern_industrialization.datagen.tag;
 
+import appeng.api.features.P2PTunnelAttunement;
 import aztech.modern_industrialization.MITags;
+import aztech.modern_industrialization.compat.ae2.MIAEAddon;
 import aztech.modern_industrialization.machines.blockentities.ReplicatorMachineBlockEntity;
+import aztech.modern_industrialization.materials.MIMaterials;
+import aztech.modern_industrialization.materials.part.MIParts;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
 import net.fabricmc.fabric.api.tag.convention.v1.ConventionalItemTags;
@@ -69,6 +73,9 @@ public class MIItemTagProvider extends FabricTagProvider.ItemTagProvider {
                 .forceAddTag(ConventionalItemTags.SHULKER_BOXES)
                 .addTag(MITags.TANKS)
                 .addTag(MITags.BARRELS);
+
+        tag(P2PTunnelAttunement.getAttunementTag(MIAEAddon.ENERGY_P2P_TUNNEL))
+                .add(MIMaterials.SUPERCONDUCTOR.getPart(MIParts.CABLE).asItem());
     }
 
     private static TagKey<Item> key(ResourceLocation id) {

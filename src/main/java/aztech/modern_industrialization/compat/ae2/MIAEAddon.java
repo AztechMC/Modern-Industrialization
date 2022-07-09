@@ -31,13 +31,15 @@ import appeng.items.parts.PartItem;
 import appeng.items.parts.PartModelsHelper;
 import aztech.modern_industrialization.MIConfig;
 import aztech.modern_industrialization.MIIdentifier;
-import aztech.modern_industrialization.MITags;
 import aztech.modern_industrialization.ModernIndustrialization;
 import aztech.modern_industrialization.api.energy.EnergyApi;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.minecraft.core.Registry;
+import net.minecraft.world.item.Item;
 
 public class MIAEAddon implements IAEAddonEntrypoint {
+    public static final Item ENERGY_P2P_TUNNEL = new PartItem<>(
+            new FabricItemSettings().tab(ModernIndustrialization.ITEM_GROUP), EnergyP2PTunnelPart.class, EnergyP2PTunnelPart::new);
 
     @Override
     public void onAe2Initialized() {
@@ -46,9 +48,8 @@ public class MIAEAddon implements IAEAddonEntrypoint {
         }
 
         PartModels.registerModels(PartModelsHelper.createModels(EnergyP2PTunnelPart.class));
-        var item = Registry.register(Registry.ITEM, new MIIdentifier("energy_p2p_tunnel"), new PartItem<>(
-                new FabricItemSettings().tab(ModernIndustrialization.ITEM_GROUP), EnergyP2PTunnelPart.class, EnergyP2PTunnelPart::new));
-        P2PTunnelAttunement.addItemByTag(MITags.miItem("energy_p2p_attunement"), item);
+        var item = Registry.register(Registry.ITEM, new MIIdentifier("energy_p2p_tunnel"), ENERGY_P2P_TUNNEL);
+        P2PTunnelAttunement.registerAttunementTag(item);
         PartApiLookup.register(EnergyApi.MOVEABLE, (part, context) -> part.getExposedApi(), EnergyP2PTunnelPart.class);
     }
 }

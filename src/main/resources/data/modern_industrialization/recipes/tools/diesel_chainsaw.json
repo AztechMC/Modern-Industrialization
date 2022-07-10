@@ -1,8 +1,8 @@
 {
   "type" : "minecraft:crafting_shaped",
   "pattern" : [
-    "  r",
-    "Mr ",
+    " Rr",
+    "MrR",
     "tM "
   ],
   "key" : {
@@ -14,6 +14,9 @@
     },
     "t" : {
       "item" : "modern_industrialization:aluminum_tank"
+    },
+    "R" : {
+      "item" : "modern_industrialization:rubber_sheet"
     }
   },
   "result": {

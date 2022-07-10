@@ -23,17 +23,27 @@
  */
 package aztech.modern_industrialization.items;
 
+import net.fabricmc.fabric.api.mininglevel.v1.FabricMineableTags;
 import net.fabricmc.fabric.api.tag.convention.v1.ConventionalItemTags;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.ApiStatus;
 
 public interface DynamicToolItem {
+
+    ItemStack SHEAR_STACK = new ItemStack(Items.SHEARS, 1);
+
     @ApiStatus.NonExtendable
     default boolean isSupportedBlock(ItemStack stack, BlockState state) {
         return stack.is(ConventionalItemTags.AXES) && state.is(BlockTags.MINEABLE_WITH_AXE)
                 || stack.is(ConventionalItemTags.PICKAXES) && state.is(BlockTags.MINEABLE_WITH_PICKAXE)
-                || stack.is(ConventionalItemTags.SHOVELS) && state.is(BlockTags.MINEABLE_WITH_SHOVEL);
+                || stack.is(ConventionalItemTags.SHOVELS) && state.is(BlockTags.MINEABLE_WITH_SHOVEL)
+                || stack.is(ConventionalItemTags.SHEARS) &&
+                        (state.is(FabricMineableTags.SHEARS_MINEABLE) || Items.SHEARS.getDestroySpeed(
+                                SHEAR_STACK, state) > 1.0f)
+                || stack.is(ConventionalItemTags.SWORDS) && state.is(FabricMineableTags.SWORD_MINEABLE);
     }
+
 }

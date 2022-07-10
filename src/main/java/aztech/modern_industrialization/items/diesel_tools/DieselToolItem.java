@@ -49,6 +49,7 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Shearable;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.player.Player;
@@ -67,6 +68,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.RotatedPillarBlock;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.material.Fluid;
 
 // TODO: attack speed and damage
@@ -255,5 +257,26 @@ public class DieselToolItem extends Item implements Vanishable, DynamicEnchantme
         public static Map<Block, BlockState> getPathStates() {
             return FLATTENABLES;
         }
+    }
+
+    public InteractionResult interactLivingEntity(ItemStack stack, Player player, LivingEntity interactionTarget, InteractionHand usedHand) {
+
+        final int defaultMb = 100;
+        float speedMultiplier = this.getMiningSpeedMultiplier(stack);
+        int costMb = (int) (defaultMb / speedMultiplier);
+
+        if (FluidFuelItemHelper.getAmount(stack) >= costMb) {
+            if (stack.is(ConventionalItemTags.SHEARS) && interactionTarget instanceof Shearable shearable) {
+                if (!interactionTarget.level.isClientSide && shearable.readyForShearing()) {
+                    shearable.shear(SoundSource.PLAYERS);
+                    interactionTarget.gameEvent(GameEvent.SHEAR, player);
+                    return InteractionResult.SUCCESS;
+                } else {
+                    return InteractionResult.CONSUME;
+                }
+            }
+        }
+
+        return InteractionResult.PASS;
     }
 }

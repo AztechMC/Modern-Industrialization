@@ -29,11 +29,13 @@ import aztech.modern_industrialization.machines.models.MachineCasing;
 import aztech.modern_industrialization.machines.models.MachineModelClientData;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import java.lang.reflect.Field;
 import java.util.IdentityHashMap;
 import net.fabricmc.fabric.api.renderer.v1.Renderer;
 import net.fabricmc.fabric.api.renderer.v1.RendererAccess;
 import net.fabricmc.fabric.api.renderer.v1.mesh.MutableQuadView;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
+import net.fabricmc.fabric.api.renderer.v1.model.ForwardingBakedModel;
 import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
@@ -43,6 +45,7 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
@@ -89,12 +92,41 @@ public class MachineBlockEntityRenderer<T extends MachineBlockEntity> implements
         return quad == NO_QUAD ? null : (BakedQuad) quad;
     }
 
+    private static final Field FORWARDING_BAKED_MODEL_WRAPPED;
+    static {
+        try {
+            FORWARDING_BAKED_MODEL_WRAPPED = ForwardingBakedModel.class.getDeclaredField("wrapped");
+            FORWARDING_BAKED_MODEL_WRAPPED.setAccessible(true);
+        } catch (ReflectiveOperationException reflectiveException) {
+            throw new RuntimeException("Failed to find ForwardingBakedModel field \"wrapped\"", reflectiveException);
+        }
+    }
+
+    private MachineBakedModel getMachineModel(BlockState state) {
+        var model = blockModels.getBlockModel(state);
+
+        while (true) {
+            if (model instanceof MachineBakedModel mbm) {
+                return mbm;
+            } else if (model instanceof ForwardingBakedModel fbm) {
+                // When mods like Continuity are used, it's possible that the machine model is behind some delegate.
+                try {
+                    model = (BakedModel) FORWARDING_BAKED_MODEL_WRAPPED.get(fbm);
+                } catch (ReflectiveOperationException reflectiveException) {
+                    throw new RuntimeException("Failed to read machine model", reflectiveException);
+                }
+            } else {
+                throw new RuntimeException("Couldn't find for model for machine %s, wrong model is present: %s".formatted(state, model));
+            }
+        }
+    }
+
     @Override
     public void render(T entity, float tickDelta, PoseStack matrices, MultiBufferSource vcp, int light, int overlay) {
         BlockState state = entity.getBlockState();
         if (lastBlockState == null) {
             lastBlockState = state;
-            model = (MachineBakedModel) blockModels.getBlockModel(state);
+            model = getMachineModel(state);
         } else if (lastBlockState != state) {
             // Sanity check.
             throw new IllegalStateException("Tried to use the same machine BER with two block states: " + state + " and " + lastBlockState);

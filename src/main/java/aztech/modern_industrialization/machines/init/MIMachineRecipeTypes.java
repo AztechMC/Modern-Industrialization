@@ -24,6 +24,7 @@
 package aztech.modern_industrialization.machines.init;
 
 import aztech.modern_industrialization.MIIdentifier;
+import aztech.modern_industrialization.machines.recipe.CentrifugeMachineRecipeType;
 import aztech.modern_industrialization.machines.recipe.CuttingMachineRecipeType;
 import aztech.modern_industrialization.machines.recipe.FurnaceRecipeProxy;
 import aztech.modern_industrialization.machines.recipe.MachineRecipeType;
@@ -39,7 +40,7 @@ public class MIMachineRecipeTypes {
     // @formatter:off
     // Single block
     public static final MachineRecipeType ASSEMBLER = create("assembler").withItemInputs().withFluidInputs().withItemOutputs();
-    public static final MachineRecipeType CENTRIFUGE = create("centrifuge").withItemInputs().withFluidInputs().withItemOutputs().withFluidOutputs();
+    public static final MachineRecipeType CENTRIFUGE = create("centrifuge", CentrifugeMachineRecipeType::new).withItemInputs().withFluidInputs().withItemOutputs().withFluidOutputs();
     public static final MachineRecipeType CHEMICAL_REACTOR = create("chemical_reactor").withItemInputs().withFluidInputs().withItemOutputs().withFluidOutputs();
     public static final MachineRecipeType COMPRESSOR = create("compressor").withItemInputs().withItemOutputs();
     public static final MachineRecipeType CUTTING_MACHINE = create("cutting_machine", CuttingMachineRecipeType::new).withItemInputs().withFluidInputs().withItemOutputs();

@@ -1,0 +1,17 @@
+{
+  "type": "modern_industrialization:distillery",
+  "duration": 800,
+  "eu": 8,
+  "fluid_inputs": [
+    {
+      "amount": 1000,
+      "fluid": "modern_industrialization:sugar_solution"
+    }
+  ],
+  "fluid_outputs": [
+    {
+      "amount": 10,
+      "fluid": "modern_industrialization:ethanol"
+    }
+  ]
+}

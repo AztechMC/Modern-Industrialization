@@ -54,6 +54,7 @@ import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.SmeltingRecipe;
 import net.minecraft.world.item.crafting.StonecutterRecipe;
+import net.minecraft.world.level.block.ComposterBlock;
 import net.minecraft.world.level.material.Fluid;
 
 public class MachinesPlugin implements REIClientPlugin {
@@ -96,6 +97,14 @@ public class MachinesPlugin implements REIClientPlugin {
         registry.registerFiller((Predicate<Recipe<?>>) recipe -> recipe.getType() == RecipeType.STONECUTTING,
                 recipe -> new MachineRecipeDisplay(cuttingMachineId,
                         RecipeConversions.of((StonecutterRecipe) recipe, MIMachineRecipeTypes.CUTTING_MACHINE)));
+
+        // Plant Oil in Centrifuge
+        for (var itemCompostable : ComposterBlock.COMPOSTABLES.keySet()) {
+            registry.add(
+                    new MachineRecipeDisplay(new MIIdentifier("centrifuge"),
+                            RecipeConversions.ofCompostable(itemCompostable)));
+        }
+
         // multiblock shapes
         for (Tuple<String, ShapeTemplate> entry : ReiMachineRecipes.multiblockShapes) {
             registry.add(new MultiblockRecipeDisplay(entry.getA(), entry.getB()));

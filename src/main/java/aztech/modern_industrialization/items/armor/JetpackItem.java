@@ -24,6 +24,7 @@
 package aztech.modern_industrialization.items.armor;
 
 import aztech.modern_industrialization.api.FluidFuelRegistry;
+import aztech.modern_industrialization.fluid.MIFluid;
 import aztech.modern_industrialization.items.FluidFuelItemHelper;
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
@@ -58,6 +59,7 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.Wearable;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 
@@ -183,6 +185,17 @@ public class JetpackItem extends ArmorItem implements Wearable, FabricElytraItem
 
     public boolean hasDurabilityBar(ItemStack itemStack) {
         return true;
+    }
+
+    @Override
+    public int getBarColor(ItemStack stack) {
+        Fluid fluid = FluidFuelItemHelper.getFluid(stack).getFluid();
+
+        if (fluid instanceof MIFluid cf) {
+            return cf.color;
+        } else {
+            return 0;
+        }
     }
 
     @Override

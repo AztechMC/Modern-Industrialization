@@ -42,6 +42,7 @@ public class MIFluids {
     public static final FluidDefinition ACRYLIC_GLUE = fluid("Acrylic Glue", "acrylic_glue", 0xff1bde54, FULL_OPACITY);
     public static final FluidDefinition ARGON = fluid("Argon", "argon", 0xffe339a7, true);
     public static final FluidDefinition BENZENE = fluid("Benzene", "benzene",  0xfff0d179, NEAR_OPACITY);
+    public static final FluidDefinition BIODIESEL = fluid("Biodiesel", "biodiesel", 0xff5cb020, NEAR_OPACITY);
     public static final FluidDefinition BOOSTED_DIESEL = fluid("Boosted Diesel", "boosted_diesel", 0xfffd9b0a, NEAR_OPACITY);
     public static final FluidDefinition BUTADIENE = fluid("Butadiene", "butadiene", 0xffd0bd1a, NEAR_OPACITY);
     public static final FluidDefinition CAPROLACTAM = fluid("Caprolactam", "caprolactam", 0xff795450, NEAR_OPACITY);
@@ -77,15 +78,18 @@ public class MIFluids {
     public static final FluidDefinition NITROGEN = fluid("Nitrogen", "nitrogen", 0xff4491a6, true);
     public static final FluidDefinition NYLON = fluid("Nylon", "nylon", 0xff986a64, FULL_OPACITY);
     public static final FluidDefinition OXYGEN = fluid("Oxygen", "oxygen", 0xff3296f2, true);
+    public static final FluidDefinition PLANT_OIL = fluid("Plant Oil", "plant_oil", 0xff78bd1e, NEAR_OPACITY);
     public static final FluidDefinition PLATINUM_SULFURIC_SOLUTION = fluid("Platinum Sulfuric Solution", "platinum_sulfuric_solution", 0xffe69e75, MEDIUM_OPACITY);
     public static final FluidDefinition POLYETHYLENE = fluid("Polyethylene", "polyethylene", 0xff639c98, NEAR_OPACITY);
     public static final FluidDefinition POLYVINYL_CHLORIDE = fluid("Polyvinyl Chloride", "polyvinyl_chloride", 0xfff6d3ec, true);
     public static final FluidDefinition PROPENE = fluid("Propene", "propene", 0xff98644c, NEAR_OPACITY);
     public static final FluidDefinition PURIFIED_PLATINUM_SULFURIC_SOLUTION = fluid("Purified Platinum Sulfuric Solution","purified_platinum_sulfuric_solution", 0xffedc08a, MEDIUM_OPACITY);
+    public static final FluidDefinition RAW_BIODIESEL = fluid("Raw Biodiesel", "raw_biodiesel", 0xff2c8009, FULL_OPACITY);
     public static final FluidDefinition RAW_SYNTHETIC_OIL = fluid("Raw Synthetic Oil", "raw_synthetic_oil", 0xff474740, NEAR_OPACITY);
     public static final FluidDefinition SHALE_OIL = fluid("Shale Oil", "shale_oil", 0xff6e7373, NEAR_OPACITY);
     public static final FluidDefinition SODIUM_HYDROXIDE = fluid("Sodium Hydroxide", "sodium_hydroxide", 0xff5071c9);
     public static final FluidDefinition SOLDERING_ALLOY = fluid("Soldering Alloy", "soldering_alloy", 0xffabc4bf, FULL_OPACITY , FluidTexture.LAVA_LIKE, false);
+    public static final FluidDefinition SUGAR_SOLUTION = fluid("Sugar Solution", "sugar_solution", 0xff8fccdb, MEDIUM_OPACITY);
     public static final FluidDefinition STEAM = fluid("Steam", "steam", 0xffeeeeee, MEDIUM_OPACITY, FluidTexture.STEAM_LIKE,true);
     public static final FluidDefinition STEAM_CRACKED_HEAVY_FUEL = fluid("Steam-Cracked Heavy Fuel", "steam_cracked_heavy_fuel", 0xffffe57d, NEAR_OPACITY);
     public static final FluidDefinition STEAM_CRACKED_LIGHT_FUEL = fluid("Steam-Cracked Light Fuel", "steam_cracked_light_fuel", 0xffffeca4, NEAR_OPACITY);

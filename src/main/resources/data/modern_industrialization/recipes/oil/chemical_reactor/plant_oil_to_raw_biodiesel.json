@@ -1,0 +1,25 @@
+{
+  "type": "modern_industrialization:chemical_reactor",
+  "eu": 12,
+  "duration": 300,
+  "fluid_inputs": [
+    {
+      "fluid": "modern_industrialization:plant_oil",
+      "amount": 6000
+    },
+    {
+      "fluid": "modern_industrialization:ethanol",
+      "amount": 400
+    },
+    {
+      "fluid": "modern_industrialization:sodium_hydroxide",
+      "amount": 100
+    }
+  ],
+  "fluid_outputs": [
+    {
+      "fluid": "modern_industrialization:raw_biodiesel",
+      "amount": 1500
+    }
+  ]
+}

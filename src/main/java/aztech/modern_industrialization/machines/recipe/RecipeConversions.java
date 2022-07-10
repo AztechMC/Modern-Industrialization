@@ -24,13 +24,20 @@
 package aztech.modern_industrialization.machines.recipe;
 
 import aztech.modern_industrialization.MIFluids;
+import aztech.modern_industrialization.MIIdentifier;
+import aztech.modern_industrialization.machines.init.MIMachineRecipeTypes;
 import java.util.Collections;
+import java.util.List;
+import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.SmeltingRecipe;
 import net.minecraft.world.item.crafting.StonecutterRecipe;
+import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.level.block.ComposterBlock;
 
 public class RecipeConversions {
+
     public static MachineRecipe of(SmeltingRecipe smeltingRecipe, MachineRecipeType type) {
         Ingredient ingredient = smeltingRecipe.getIngredients().get(0);
         ResourceLocation id = new ResourceLocation(smeltingRecipe.getId().getNamespace(), smeltingRecipe.getId().getPath() + "_exported_mi_furnace");
@@ -57,5 +64,31 @@ public class RecipeConversions {
                         new MachineRecipe.ItemOutput(stonecuttingRecipe.getResultItem().getItem(), stonecuttingRecipe.getResultItem().getCount(), 1));
         recipe.fluidOutputs = Collections.emptyList();
         return recipe;
+    }
+
+    public static MachineRecipe ofCompostable(ItemLike compostable) {
+        float probability = ComposterBlock.COMPOSTABLES.getOrDefault(compostable.asItem(), 0.0F);
+        if (probability > 0.0F) {
+            ResourceLocation id = new MIIdentifier(Registry.ITEM.getKey(compostable.asItem()).getPath() + "_to_plant_oil");
+            MachineRecipe plantOil = new MachineRecipe(id, MIMachineRecipeTypes.CENTRIFUGE);
+            plantOil.eu = 8;
+            plantOil.duration = 200;
+
+            plantOil.itemInputs = List.of(new MachineRecipe.ItemInput(
+                    Ingredient.of(compostable),
+                    1,
+                    1.0f));
+
+            plantOil.fluidInputs = Collections.emptyList();
+
+            plantOil.fluidOutputs = List.of(new MachineRecipe.FluidOutput(
+                    MIFluids.PLANT_OIL.asFluid(),
+                    (long) (probability * 81000),
+                    1.0f));
+            plantOil.itemOutputs = Collections.emptyList();
+            return plantOil;
+        } else {
+            return null;
+        }
     }
 }

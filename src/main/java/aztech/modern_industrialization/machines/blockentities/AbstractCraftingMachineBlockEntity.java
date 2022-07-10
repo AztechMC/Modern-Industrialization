@@ -48,7 +48,7 @@ public abstract class AbstractCraftingMachineBlockEntity extends MachineBlockEnt
             MachineGuiParameters guiParams, ProgressBar.Parameters progressBarParams, MachineTier tier) {
         super(bep, guiParams, new OrientationComponent.Params(true, inventory.itemOutputCount > 0, inventory.fluidOutputCount > 0));
         this.inventory = inventory;
-        this.crafter = new CrafterComponent(inventory, this);
+        this.crafter = new CrafterComponent(this, inventory, this);
         this.type = recipeType;
         this.tier = tier;
         this.isActiveComponent = new IsActiveComponent();

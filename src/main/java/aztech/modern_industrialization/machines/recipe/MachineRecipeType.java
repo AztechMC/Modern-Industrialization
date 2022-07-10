@@ -24,6 +24,8 @@
 package aztech.modern_industrialization.machines.recipe;
 
 import aztech.modern_industrialization.machines.init.MIMachineRecipeTypes;
+import aztech.modern_industrialization.machines.recipe.condition.MachineProcessCondition;
+import aztech.modern_industrialization.machines.recipe.condition.MachineProcessConditions;
 import com.google.gson.*;
 import java.util.*;
 import java.util.function.BiConsumer;
@@ -183,6 +185,8 @@ public class MachineRecipeType implements RecipeType<MachineRecipe>, RecipeSeria
         recipe.itemOutputs = readArray(json, "item_outputs", MachineRecipeType::readItemOutput);
         recipe.fluidOutputs = readArray(json, "fluid_outputs", MachineRecipeType::readFluidOutput);
 
+        recipe.conditions = readConditions(json);
+
         validateRecipe(recipe);
 
         return recipe;
@@ -296,6 +300,24 @@ public class MachineRecipeType implements RecipeType<MachineRecipe>, RecipeSeria
         return new MachineRecipe.FluidOutput(fluid, amount, probability);
     }
 
+    private static List<MachineProcessCondition> readConditions(JsonObject object) {
+        if (!object.has("process_conditions")) {
+            return List.of();
+        }
+        JsonArray array = GsonHelper.getAsJsonArray(object, "process_conditions");
+        List<MachineProcessCondition> conditions = new ArrayList<>(array.size());
+        for (var condJson : array) {
+            var obj = condJson.getAsJsonObject();
+            var id = new ResourceLocation(GsonHelper.getAsString(obj, "id"));
+            var serializer = MachineProcessConditions.get(id);
+            if (serializer == null) {
+                throw new IllegalArgumentException("Unknown machine process condition " + id);
+            }
+            conditions.add(serializer.fromJson(obj));
+        }
+        return conditions;
+    }
+
     private static <T> List<T> readList(FriendlyByteBuf buf, Function<FriendlyByteBuf, T> reader) {
         List<T> l = new ArrayList<>();
         int size = buf.readVarInt();
@@ -321,6 +343,11 @@ public class MachineRecipeType implements RecipeType<MachineRecipe>, RecipeSeria
         recipe.fluidInputs = readList(buf, b -> new MachineRecipe.FluidInput(Registry.FLUID.byId(b.readVarInt()), b.readVarLong(), b.readFloat()));
         recipe.itemOutputs = readList(buf, b -> new MachineRecipe.ItemOutput(Item.byId(b.readVarInt()), b.readVarInt(), b.readFloat()));
         recipe.fluidOutputs = readList(buf, b -> new MachineRecipe.FluidOutput(Registry.FLUID.byId(b.readVarInt()), b.readVarLong(), b.readFloat()));
+        recipe.conditions = readList(buf, b -> {
+            var serializer = MachineProcessConditions.get(b.readResourceLocation());
+            var json = b.readUtf();
+            return serializer.fromJson(JsonParser.parseString(json).getAsJsonObject());
+        });
 
         return recipe;
     }
@@ -349,5 +376,14 @@ public class MachineRecipeType implements RecipeType<MachineRecipe>, RecipeSeria
             buf.writeVarLong(i.amount);
             buf.writeFloat(i.probability);
         });
+        writeList(buf, recipe.conditions, (b, cond) -> {
+            var serializer = cond.getSerializer();
+            buf.writeResourceLocation(MachineProcessConditions.getId(serializer));
+            buf.writeUtf(serializer.toJson(cast(cond)).toString());
+        });
+    }
+
+    private static <T> T cast(Object object) {
+        return (T) object;
     }
 }

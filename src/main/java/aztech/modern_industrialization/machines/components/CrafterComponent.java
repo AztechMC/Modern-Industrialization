@@ -31,8 +31,10 @@ import aztech.modern_industrialization.inventory.AbstractConfigurableStack;
 import aztech.modern_industrialization.inventory.ConfigurableFluidStack;
 import aztech.modern_industrialization.inventory.ConfigurableItemStack;
 import aztech.modern_industrialization.machines.IComponent;
+import aztech.modern_industrialization.machines.MachineBlockEntity;
 import aztech.modern_industrialization.machines.recipe.MachineRecipe;
 import aztech.modern_industrialization.machines.recipe.MachineRecipeType;
+import aztech.modern_industrialization.machines.recipe.condition.MachineProcessCondition;
 import aztech.modern_industrialization.stats.PlayerStatistics;
 import aztech.modern_industrialization.stats.PlayerStatisticsData;
 import aztech.modern_industrialization.util.Simulation;
@@ -56,9 +58,12 @@ import net.minecraft.world.level.material.Fluid;
 import org.jetbrains.annotations.Nullable;
 
 public class CrafterComponent implements IComponent.ServerOnly {
-    public CrafterComponent(Inventory inventory, Behavior behavior) {
+    private final MachineProcessCondition.Context conditionContext;
+
+    public CrafterComponent(MachineBlockEntity blockEntity, Inventory inventory, Behavior behavior) {
         this.inventory = inventory;
         this.behavior = behavior;
+        this.conditionContext = () -> blockEntity;
     }
 
     public interface Inventory {
@@ -267,7 +272,7 @@ public class CrafterComponent implements IComponent.ServerOnly {
 
     private void loadDelayedActiveRecipe() {
         if (delayedActiveRecipe != null) {
-            activeRecipe = behavior.recipeType().getRecipe((ServerLevel) behavior.getCrafterWorld(), delayedActiveRecipe);
+            activeRecipe = behavior.recipeType().getRecipe(behavior.getCrafterWorld(), delayedActiveRecipe);
             delayedActiveRecipe = null;
             if (activeRecipe == null) { // If a recipe got removed, we need to reset the efficiency and the used energy
                 // to allow the machine to resume processing.
@@ -280,7 +285,7 @@ public class CrafterComponent implements IComponent.ServerOnly {
     private boolean updateActiveRecipe() {
         // Only then can we run the iteration over the recipes
         for (MachineRecipe recipe : getRecipes()) {
-            if (behavior.banRecipe(recipe))
+            if (behavior.banRecipe(recipe) || !recipe.conditionsMatch(conditionContext))
                 continue;
             if (tryStartRecipe(recipe)) {
                 // Make sure we recalculate the max efficiency ticks if the recipe changes or if
@@ -587,7 +592,7 @@ public class CrafterComponent implements IComponent.ServerOnly {
 
     public void lockRecipe(ResourceLocation recipeId, net.minecraft.world.entity.player.Inventory inventory) {
         // Find MachineRecipe
-        Optional<MachineRecipe> optionalMachineRecipe = behavior.recipeType().getRecipes((ServerLevel) behavior.getCrafterWorld()).stream()
+        Optional<MachineRecipe> optionalMachineRecipe = behavior.recipeType().getRecipes(behavior.getCrafterWorld()).stream()
                 .filter(recipe -> recipe.getId().equals(recipeId)).findFirst();
         if (optionalMachineRecipe.isEmpty())
             return;

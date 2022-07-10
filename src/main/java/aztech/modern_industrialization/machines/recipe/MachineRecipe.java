@@ -23,6 +23,7 @@
  */
 package aztech.modern_industrialization.machines.recipe;
 
+import aztech.modern_industrialization.machines.recipe.condition.MachineProcessCondition;
 import aztech.modern_industrialization.util.DefaultedListWrapper;
 import java.util.Arrays;
 import java.util.List;
@@ -49,6 +50,7 @@ public class MachineRecipe implements Recipe<Container> {
     public List<FluidInput> fluidInputs;
     public List<ItemOutput> itemOutputs;
     public List<FluidOutput> fluidOutputs;
+    public List<MachineProcessCondition> conditions = List.of();
 
     MachineRecipe(ResourceLocation id, MachineRecipeType type) {
         this.id = id;
@@ -116,6 +118,15 @@ public class MachineRecipe implements Recipe<Container> {
     @Override
     public RecipeType<?> getType() {
         return type;
+    }
+
+    public boolean conditionsMatch(MachineProcessCondition.Context context) {
+        for (var condition : conditions) {
+            if (!condition.canProcessRecipe(context, this)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     public static class ItemInput {

@@ -57,6 +57,7 @@ import net.minecraft.core.Registry;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.ItemLike;
 
 public class MachineRecipeCategory implements DisplayCategory<MachineRecipeDisplay> {
     private final ResourceLocation id;
@@ -173,9 +174,18 @@ public class MachineRecipeCategory implements DisplayCategory<MachineRecipeDispl
         if (upgradeEuRequired > 0 && id.getPath().equals("fusion_reactor")) {
             upgradeEuRequired = 0;
         }
-        if (steelHatchRequired || upgradeEuRequired > 0) {
-            var displayedItem = steelHatchRequired ? Registry.ITEM.get(new MIIdentifier("steel_item_input_hatch")) : MIItem.BASIC_UPGRADE;
-            widgets.add(Widgets.createSlot(new Rectangle(bounds.getCenterX() - 3, bounds.y + 4.5, 10.8, 10.8))
+        // Conditions
+        boolean conditionsRequired = recipeDisplay.recipe.conditions.size() > 0;
+        if (steelHatchRequired || upgradeEuRequired > 0 || conditionsRequired) {
+            ItemLike displayedItem;
+            if (steelHatchRequired) {
+                displayedItem = Registry.ITEM.get(new MIIdentifier("steel_item_input_hatch"));
+            } else if (conditionsRequired) {
+                displayedItem = MIItem.WRENCH;
+            } else {
+                displayedItem = MIItem.BASIC_UPGRADE;
+            }
+            widgets.add(Widgets.createSlot(new Rectangle(bounds.getCenterX() - 3, bounds.y + 3.75, 10.8, 10.8))
                     .entry(EntryStacks.of(displayedItem))
                     .disableTooltips()
                     .disableHighlight()
@@ -193,6 +203,11 @@ public class MachineRecipeCategory implements DisplayCategory<MachineRecipeDispl
         }
         if (upgradeEuRequired > 0) {
             tooltips.add(new MITooltips.Line(MIText.RequiresUpgrades).arg(upgradeEuRequired, EU_PER_TICK_PARSER).build());
+        }
+        if (conditionsRequired) {
+            for (var condition : recipeDisplay.recipe.conditions) {
+                condition.appendDescription(tooltips);
+            }
         }
         Rectangle tooltipZone = new Rectangle(bounds.x + 2, bounds.y + 5, bounds.width - 10, 11);
         widgets.add(Widgets.createDrawableWidget((helper, matrices, mouseX, mouseY, delta) -> {

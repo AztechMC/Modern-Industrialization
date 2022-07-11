@@ -142,7 +142,7 @@ public class MIMaterials {
         MaterialBuilder res = builder.overridePart(ExternalPart.of(INGOT, "#c:" + n + "_ingots", "minecraft:" + n + "_ingot"))
                 .addParts(ExternalPart.of(BLOCK, "#c:" + n + "_blocks", "minecraft:" + n + "_block"))
                 .addParts(ExternalPart.of(ORE, "#c:" + n + "_ores", "minecraft:" + n + "_ore"))
-                .addParts(ExternalPart.of(ORE_DEEPLSATE, "#c:" + n + "_ores", "minecraft:deepslate_" + n + "_ore"))
+                .addParts(ExternalPart.of(ORE_DEEPSLATE, "#c:" + n + "_ores", "minecraft:deepslate_" + n + "_ore"))
                 .addParts(ExternalPart.of(RAW_METAL, "#c:raw_" + n + "_ores", "minecraft:raw_" + n))
                 .addParts(ExternalPart.of(RAW_METAL_BLOCK, "#c:raw_" + n + "_blocks", "minecraft:raw_" + n + "_block"));
 
@@ -171,7 +171,7 @@ public class MIMaterials {
         MaterialBuilder res = builder.addParts(ExternalPart.of(GEM, "minecraft:" + gemPath, "minecraft:" + gemPath))
                 .addParts(ExternalPart.of(BLOCK, "#c:" + n + "_blocks", "minecraft:" + n + "_block"))
                 .addParts(ExternalPart.of(ORE, "#c:" + n + "_ores", "minecraft:" + n + "_ore"))
-                .addParts(ExternalPart.of(ORE_DEEPLSATE, "#c:" + n + "_ores", "minecraft:deepslate_" + n + "_ore"));
+                .addParts(ExternalPart.of(ORE_DEEPSLATE, "#c:" + n + "_ores", "minecraft:deepslate_" + n + "_ore"));
 
         res.addRecipes(SmeltingRecipes::apply, StandardRecipes::apply).cancelRecipes("craft/block_from_gem", "craft/gem_from_block")
                 .cancelRecipes("smelting/ore_to_gem_smelting", "smelting/ore_to_gem_blasting")
@@ -225,7 +225,7 @@ public class MIMaterials {
                         .addParts(TINY_DUST, CRUSHED_DUST, BATTERY).addParts(ExternalPart.of(DUST, "minecraft:redstone", "minecraft:redstone"))
                         .addParts(ExternalPart.of(BLOCK, "#c:redstone_blocks", "minecraft:redstone_block"))
                         .addParts(ExternalPart.of(ORE, "#c:redstone_ores", "minecraft:redstone_ore"))
-                        .addParts(ExternalPart.of(ORE_DEEPLSATE, "#c:redstone_ores", "minecraft:deepslate_redstone_ore"))
+                        .addParts(ExternalPart.of(ORE_DEEPSLATE, "#c:redstone_ores", "minecraft:deepslate_redstone_ore"))
                         .addRecipes(StandardRecipes::apply, SmeltingRecipes::apply).cancelRecipes("macerator/ore_to_crushed")
                         .cancelRecipes("craft/block_from_dust", "craft/dust_from_block").build());
 

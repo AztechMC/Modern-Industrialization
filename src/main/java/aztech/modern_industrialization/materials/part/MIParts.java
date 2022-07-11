@@ -75,7 +75,7 @@ public class MIParts {
     public static final CasingPart MACHINE_CASING_SPECIAL = new CasingPart("Special Casing", "machine_casing_special");
     public static final RegularPart NUGGET = new RegularPart("Nugget", "nugget");
     public static final OrePart ORE = new OrePart(false);
-    public static final OrePart ORE_DEEPLSATE = new OrePart(true);
+    public static final OrePart ORE_DEEPSLATE = new OrePart(true);
     public static final RegularPart PLATE = new RegularPart("Plate", "plate");
     public static final RawMetalPart RAW_METAL = new RawMetalPart(false);
     public static final RawMetalPart RAW_METAL_BLOCK = new RawMetalPart(true);

@@ -35,6 +35,7 @@ import net.minecraft.world.item.crafting.SmeltingRecipe;
 import net.minecraft.world.item.crafting.StonecutterRecipe;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.ComposterBlock;
+import org.jetbrains.annotations.Nullable;
 
 public class RecipeConversions {
 
@@ -66,6 +67,7 @@ public class RecipeConversions {
         return recipe;
     }
 
+    @Nullable
     public static MachineRecipe ofCompostable(ItemLike compostable) {
         float probability = ComposterBlock.COMPOSTABLES.getOrDefault(compostable.asItem(), 0.0F);
         if (probability > 0.0F) {

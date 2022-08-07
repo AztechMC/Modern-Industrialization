@@ -100,9 +100,10 @@ public class MachinesPlugin implements REIClientPlugin {
 
         // Plant Oil in Centrifuge
         for (var itemCompostable : ComposterBlock.COMPOSTABLES.keySet()) {
-            registry.add(
-                    new MachineRecipeDisplay(new MIIdentifier("centrifuge"),
-                            RecipeConversions.ofCompostable(itemCompostable)));
+            var recipe = RecipeConversions.ofCompostable(itemCompostable);
+            if (recipe != null) {
+                registry.add(new MachineRecipeDisplay(new MIIdentifier("centrifuge"), recipe));
+            }
         }
 
         // multiblock shapes

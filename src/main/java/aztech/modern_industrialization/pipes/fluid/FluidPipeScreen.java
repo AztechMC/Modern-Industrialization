@@ -46,7 +46,6 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.item.ItemStack;
 
 public class FluidPipeScreen extends PipeScreen<FluidPipeScreenHandler> {
     private static final ResourceLocation TEXTURE = new MIIdentifier("textures/gui/pipe/fluid.png");
@@ -88,9 +87,7 @@ public class FluidPipeScreen extends PipeScreen<FluidPipeScreenHandler> {
         FluidVariant targetFluid = null;
         if (iface.getNetworkFluid().isBlank()) {
             // Want to set the fluid
-            ItemStack cursorStack = menu.getCarried();
-            FluidVariant fluid = StorageUtil.findStoredResource(ContainerItemContext.ofPlayerCursor(minecraft.player, menu).find(FluidStorage.ITEM),
-                    null);
+            FluidVariant fluid = StorageUtil.findStoredResource(ContainerItemContext.ofPlayerCursor(minecraft.player, menu).find(FluidStorage.ITEM));
             if (fluid != null && !fluid.isBlank()) {
                 targetFluid = fluid;
             }

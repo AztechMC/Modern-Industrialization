@@ -7,18 +7,13 @@
       "type": "spotlight",
       "title": "超频升级",
       "item": "modern_industrialization:basic_upgrade",
-      "text": "你已经知道普通电力机器的超频上限为32EU/t，而电动多方块机器的超频上限为128EU/t。$(br2)用升级组件右键单击机器或多方块结构能够增加其最大超频！查看REI以了解确切数额。"
-    },
-    {
-      "type": "crafting",
-      "recipe": "modern_industrialization:tools/crowbar",
-      "text": "手持撬棍Shift+右键单击机器以删除其包含的升级。右键单击它以移除其升级后的外壳并将其降级回低压层。等等，你可以那样做？ ..."
+      "text": "你知道普通电力机器的超频上限为32EU/t，而电动多方块机器的超频上限为128EU/t吗？$(br2)在机器或多方块菜单中，添加升级来增加其最大超频！查看REI以了解确切数额。"
     },
     {
       "type": "spotlight",
       "title": "机壳升级",
       "item": "modern_industrialization:advanced_machine_hull",
-      "text": "是的你可以！使用进阶机器外壳右键单击机器将其升级为中压层：它现在将仅接受中压电缆连接。用撬棍右键单击以删除升级。"
+      "text": "是的你可以！使用进阶机器外壳右键点击机器将其升级为中压等级：它现在将仅接受中压电缆连接。也可以通过机器界面添加或删除升级。"
     }
   ],
   "sortnum": 200

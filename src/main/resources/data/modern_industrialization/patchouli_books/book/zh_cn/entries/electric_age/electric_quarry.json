@@ -6,7 +6,7 @@
     {
       "type": "crafting",
       "recipe": "modern_industrialization:electric_age/machine/electric_quarry_asbl",
-      "text": "电力采石场是蒸汽采石场的电力版本。为它提供物品和能量，然后看着你的资源噌噌噌地变多！$(br2)它的结构与蒸汽采石场完全相同。"
+      "text": "电力采石机是蒸汽采石机的电力版本。为它提供物品和能量，然后看着你的资源噌噌噌地变多！$(br2)它的结构与蒸汽采石机完全相同。"
     },
     {
       "type": "crafting",

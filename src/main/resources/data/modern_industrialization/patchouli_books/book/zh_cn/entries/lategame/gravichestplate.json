@@ -6,7 +6,7 @@
     {
       "type": "spotlight",
       "item": "modern_industrialization:gravichestplate",
-      "text": "重力胸甲采用先进的超导体技术，将佩戴者周围的重力场反转。$(br2)它消耗EU，并且可以通过右键单击能够输出能量的方块来充电。"
+      "text": "重力胸甲采用先进的超导体技术，将佩戴者周围的重力场反转。$(br2)它消耗EU，并且可以通过右键点击能够输出能量的方块来充电。"
     },
     {
       "type": "text",

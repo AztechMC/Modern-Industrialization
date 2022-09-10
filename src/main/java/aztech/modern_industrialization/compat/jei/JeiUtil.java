@@ -28,21 +28,14 @@ import aztech.modern_industrialization.machines.recipe.MachineRecipe;
 import aztech.modern_industrialization.util.FluidHelper;
 import aztech.modern_industrialization.util.TextHelper;
 import java.text.DecimalFormat;
-import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nullable;
-import me.shedaniel.rei.api.client.gui.widgets.Tooltip;
-import me.shedaniel.rei.api.common.entry.EntryStack;
-import me.shedaniel.rei.api.common.util.EntryStacks;
 import mezz.jei.api.fabric.constants.FabricTypes;
 import mezz.jei.api.gui.builder.IRecipeSlotBuilder;
 import mezz.jei.api.recipe.RecipeIngredientRole;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariantAttributes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.material.Fluid;
 
 public class JeiUtil {
 
@@ -78,14 +71,6 @@ public class JeiUtil {
             text.setStyle(TextHelper.YELLOW);
             return text;
         }
-    }
-
-    public static EntryStack<?> createFluidEntryStack(Fluid fluid) {
-        return EntryStacks.of(fluid, 81000).setting(EntryStack.Settings.TOOLTIP_PROCESSOR, (stack, oldTooltip) -> {
-            List<Component> tooltip = new ArrayList<>();
-            tooltip.add(FluidVariantAttributes.getName(FluidVariant.of(fluid)));
-            return Tooltip.create(tooltip);
-        });
     }
 
     public static void customizeTooltip(IRecipeSlotBuilder slot) {

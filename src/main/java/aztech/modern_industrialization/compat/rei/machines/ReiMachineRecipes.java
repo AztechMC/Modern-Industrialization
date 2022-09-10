@@ -41,15 +41,15 @@ public class ReiMachineRecipes {
     /**
      * Maps a machine block id to the list of recipe categories.
      */
-    static final Map<String, List<ClickAreaCategory>> machineToClickAreaCategory = new HashMap<>();
+    public static final Map<String, List<ClickAreaCategory>> machineToClickAreaCategory = new HashMap<>();
     /**
      * Maps a machine block id to the parameters of the click area for the recipe.
      */
-    static final Map<String, Rectangle> machineToClickArea = new HashMap<>();
+    public static final Map<String, Rectangle> machineToClickArea = new HashMap<>();
     /**
      * List of registered multiblock shape "recipes".
      */
-    static final List<Tuple<String, ShapeTemplate>> multiblockShapes = new ArrayList<>();
+    public static final List<Tuple<String, ShapeTemplate>> multiblockShapes = new ArrayList<>();
 
     public static void registerCategory(String machine, MachineCategoryParams params) {
         if (categories.put(machine, params) != null) {
@@ -83,7 +83,7 @@ public class ReiMachineRecipes {
         multiblockShapes.add(new Tuple<>(machine, shapeTemplate));
     }
 
-    static class ClickAreaCategory {
+    public static class ClickAreaCategory {
         public final ResourceLocation category;
         public final Predicate<MachineScreen> predicate;
 

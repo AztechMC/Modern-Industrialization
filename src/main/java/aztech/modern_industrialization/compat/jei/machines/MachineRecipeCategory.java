@@ -115,12 +115,12 @@ public class MachineRecipeCategory implements IRecipeCategory<MachineRecipe> {
         for (int i = 0; i < positions.size(); i++) {
             var x = offset.x + positions.getX(i);
             var y = offset.y + positions.getY(i);
-            var slot = builder.addSlot(RecipeIngredientRole.INPUT, x, y);
+            var slot = builder.addSlot(RecipeIngredientRole.INPUT, x, y)
+                    .setBackground(itemSlotBackground, -1, -1);
 
             if (i < recipe.itemInputs.size()) {
                 var input = recipe.itemInputs.get(i);
                 slot.addIngredients(input.ingredient);
-                slot.setBackground(itemSlotBackground, -1, -1);
                 JeiUtil.customizeTooltip(slot, input.probability);
             }
         }
@@ -133,12 +133,12 @@ public class MachineRecipeCategory implements IRecipeCategory<MachineRecipe> {
         for (int i = 0; i < positions.size(); i++) {
             var x = offset.x + positions.getX(i);
             var y = offset.y + positions.getY(i);
-            var slot = builder.addSlot(RecipeIngredientRole.OUTPUT, x, y);
+            var slot = builder.addSlot(RecipeIngredientRole.OUTPUT, x, y)
+                    .setBackground(itemSlotBackground, -1, -1);
 
             if (i < recipe.itemOutputs.size()) {
                 var output = recipe.itemOutputs.get(i);
                 slot.addItemStack(output.item.getDefaultInstance());
-                slot.setBackground(itemSlotBackground, -1, -1);
                 JeiUtil.customizeTooltip(slot, output.probability);
             }
         }
@@ -151,12 +151,12 @@ public class MachineRecipeCategory implements IRecipeCategory<MachineRecipe> {
         for (int i = 0; i < positions.size(); i++) {
             var x = offset.x + positions.getX(i);
             var y = offset.y + positions.getY(i);
-            var slot = builder.addSlot(RecipeIngredientRole.INPUT, x, y);
+            var slot = builder.addSlot(RecipeIngredientRole.INPUT, x, y)
+                    .setBackground(fluidSlotBackground, -1, -1);
 
             if (i < recipe.fluidInputs.size()) {
                 var input = recipe.fluidInputs.get(i);
                 slot.addFluidStack(input.fluid, input.amount);
-                slot.setBackground(fluidSlotBackground, -1, -1);
                 JeiUtil.customizeTooltip(slot, input.probability);
             }
         }
@@ -169,12 +169,12 @@ public class MachineRecipeCategory implements IRecipeCategory<MachineRecipe> {
         for (int i = 0; i < positions.size(); i++) {
             var x = offset.x + positions.getX(i);
             var y = offset.y + positions.getY(i);
-            var slot = builder.addSlot(RecipeIngredientRole.OUTPUT, x, y);
+            var slot = builder.addSlot(RecipeIngredientRole.OUTPUT, x, y)
+                    .setBackground(fluidSlotBackground, -1, -1);
 
             if (i < recipe.fluidOutputs.size()) {
                 var output = recipe.fluidOutputs.get(i);
                 slot.addFluidStack(output.fluid, output.amount);
-                slot.setBackground(fluidSlotBackground, -1, -1);
                 JeiUtil.customizeTooltip(slot, output.probability);
             }
         }

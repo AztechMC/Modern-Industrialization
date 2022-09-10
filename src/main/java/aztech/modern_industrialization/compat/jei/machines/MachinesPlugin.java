@@ -226,16 +226,18 @@ public class MachinesPlugin implements IModPlugin {
             public @Nullable Object getIngredientUnderMouse(MachineScreen screen, double mouseX, double mouseY) {
                 Slot slot = screen.getFocusedSlot();
                 if (slot instanceof ConfigurableFluidStack.ConfigurableFluidSlot) {
+                    var fluidHelper = jeiRuntime.getJeiHelpers().getPlatformFluidHelper();
+
                     ConfigurableFluidStack stack = ((ConfigurableFluidStack.ConfigurableFluidSlot) slot).getConfStack();
                     if (stack.getAmount() > 0) {
                         Fluid fluid = stack.getResource().getFluid();
                         if (fluid != null) {
-                            return fluid;
+                            return fluidHelper.create(fluid, 1);
                         }
                     } else if (stack.getLockedInstance() != null) {
                         Fluid fluid = stack.getLockedInstance();
                         if (fluid != null) {
-                            return fluid;
+                            return fluidHelper.create(fluid, 1);
                         }
                     }
                 } else if (slot instanceof ConfigurableItemStack.ConfigurableItemSlot) {

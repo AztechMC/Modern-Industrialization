@@ -57,7 +57,7 @@ import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.core.Registry;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
-import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.item.ItemStack;
 
 public class MachineRecipeCategory implements IRecipeCategory<MachineRecipe> {
     private final RecipeType<MachineRecipe> type;
@@ -66,6 +66,8 @@ public class MachineRecipeCategory implements IRecipeCategory<MachineRecipe> {
     private final IDrawable background;
     private final IDrawable itemSlotBackground;
     private final IDrawable fluidSlotBackground;
+
+    private final IDrawable steelHatch, wrench, upgrade;
 
     public MachineRecipeCategory(IJeiHelpers jeiHelpers,
             RecipeType<MachineRecipe> type,
@@ -78,6 +80,10 @@ public class MachineRecipeCategory implements IRecipeCategory<MachineRecipe> {
         this.icon = guiHelper.createDrawableItemStack(Registry.ITEM.get(new MIIdentifier(params.workstations.get(0))).getDefaultInstance());
         this.itemSlotBackground = guiHelper.getSlotDrawable();
         this.fluidSlotBackground = guiHelper.createDrawable(MachineScreen.SLOT_ATLAS, 18, 0, 18, 18);
+
+        this.steelHatch = guiHelper.createDrawableItemStack(new ItemStack(Registry.ITEM.get(new MIIdentifier("steel_item_input_hatch"))));
+        this.wrench = guiHelper.createDrawableItemStack(MIItem.WRENCH.stack());
+        this.upgrade = guiHelper.createDrawableItemStack(MIItem.BASIC_UPGRADE.stack());
     }
 
     @Override
@@ -120,7 +126,7 @@ public class MachineRecipeCategory implements IRecipeCategory<MachineRecipe> {
 
             if (i < recipe.itemInputs.size()) {
                 var input = recipe.itemInputs.get(i);
-                slot.addIngredients(input.ingredient);
+                slot.addItemStacks(JeiUtil.getItemStacks(input));
                 JeiUtil.customizeTooltip(slot, input.probability);
             }
         }
@@ -138,7 +144,7 @@ public class MachineRecipeCategory implements IRecipeCategory<MachineRecipe> {
 
             if (i < recipe.itemOutputs.size()) {
                 var output = recipe.itemOutputs.get(i);
-                slot.addItemStack(output.item.getDefaultInstance());
+                slot.addItemStack(JeiUtil.getItemStack(output));
                 JeiUtil.customizeTooltip(slot, output.probability);
             }
         }
@@ -157,6 +163,7 @@ public class MachineRecipeCategory implements IRecipeCategory<MachineRecipe> {
             if (i < recipe.fluidInputs.size()) {
                 var input = recipe.fluidInputs.get(i);
                 slot.addFluidStack(input.fluid, input.amount);
+                JeiUtil.overrideFluidRenderer(slot);
                 JeiUtil.customizeTooltip(slot, input.probability);
             }
         }
@@ -175,6 +182,7 @@ public class MachineRecipeCategory implements IRecipeCategory<MachineRecipe> {
             if (i < recipe.fluidOutputs.size()) {
                 var output = recipe.fluidOutputs.get(i);
                 slot.addFluidStack(output.fluid, output.amount);
+                JeiUtil.overrideFluidRenderer(slot);
                 JeiUtil.customizeTooltip(slot, output.probability);
             }
         }
@@ -229,23 +237,20 @@ public class MachineRecipeCategory implements IRecipeCategory<MachineRecipe> {
         // Conditions
         boolean conditionsRequired = isConditionsRequired(recipe);
         if (steelHatchRequired || upgradeEuRequired > 0 || conditionsRequired) {
-            ItemLike displayedItem;
+            IDrawable displayedItem;
             if (steelHatchRequired) {
-                displayedItem = Registry.ITEM.get(new MIIdentifier("steel_item_input_hatch"));
+                displayedItem = steelHatch;
             } else if (conditionsRequired) {
-                displayedItem = MIItem.WRENCH;
+                displayedItem = wrench;
             } else {
-                displayedItem = MIItem.BASIC_UPGRADE;
+                displayedItem = upgrade;
             }
 
             stack.pushPose();
-            stack.translate(background.getWidth() / 2.f - 3, 3.75, 0);
-            stack.scale(0.675f, 0.675f, 1);
-            client.getItemRenderer().renderGuiItem(
-                    displayedItem.asItem().getDefaultInstance(),
-                    0,
-                    0);
-            stack.pushPose();
+            stack.translate(background.getWidth() / 2.f - 5, 4, 0);
+            stack.scale(0.6f, 0.6f, 1);
+            displayedItem.draw(stack);
+            stack.popPose();
         }
 
     }

@@ -62,49 +62,52 @@ public class BarrelRenderer implements BlockEntityRenderer<BlockEntity> {
         var pos = barrelBlockEntity.getBlockPos();
 
         ItemVariant item = barrelBlockEntity.getResource();
+
+        if (barrelBlockEntity.isLocked()) {
+            RenderHelper.drawLockedTexture(barrelBlockEntity, matrices, vertexConsumers);
+        }
+
         if (!item.isBlank()) {
             long amount = barrelBlockEntity.getAmount();
-            if (amount > 0) {
 
-                ItemStack toRender = new ItemStack(item.getItem(), 1);
+            ItemStack toRender = new ItemStack(item.getItem(), 1);
 
-                for (int i = 0; i < 4; i++) {
-                    var direction = Direction.from2DDataValue(i);
-                    if (!Block.shouldRenderFace(state, barrelBlockEntity.getLevel(), pos, direction, pos.relative(direction))) {
-                        continue;
-                    }
-
-                    // Thanks TechReborn for rendering code
-
-                    matrices.pushPose();
-                    matrices.translate(0.5, 0, 0.5);
-                    matrices.mulPose(Vector3f.YP.rotationDegrees(-i * 90F));
-                    matrices.scale(0.5F, 0.5F, 0.5F);
-                    matrices.translate(0, 1.25, 1.01);
-
-                    matrices.mulPoseMatrix(Matrix4f.createScaleMatrix(1, 1, 0.01f));
-                    matrices.last().normal().mul(Vector3f.XN.rotationDegrees(45f));
-
-                    Minecraft.getInstance().getItemRenderer().renderStatic(toRender, ItemTransforms.TransformType.GUI, RenderHelper.FULL_LIGHT,
-                            OverlayTexture.NO_OVERLAY, matrices, vertexConsumers, 0);
-
-                    matrices.popPose();
-
-                    matrices.pushPose();
-                    Font textRenderer = Minecraft.getInstance().font;
-                    matrices.translate(0.5, 0.5, 0.5);
-                    matrices.mulPose(Vector3f.YP.rotationDegrees((2 - i) * 90F));
-                    matrices.translate(0, 0.15, -0.505);
-                    matrices.scale(-0.01f, -0.01F, -0.01f);
-
-                    float xPosition;
-                    String count = String.valueOf(amount);
-                    xPosition = (float) (-textRenderer.width(count) / 2);
-                    textRenderer.drawInBatch(count, xPosition, -4f + 40, textColor, false, matrices.last().pose(), vertexConsumers, false, 0,
-                            RenderHelper.FULL_LIGHT);
-
-                    matrices.popPose();
+            for (int i = 0; i < 4; i++) {
+                var direction = Direction.from2DDataValue(i);
+                if (!Block.shouldRenderFace(state, barrelBlockEntity.getLevel(), pos, direction, pos.relative(direction))) {
+                    continue;
                 }
+
+                // Thanks TechReborn for rendering code
+
+                matrices.pushPose();
+                matrices.translate(0.5, 0, 0.5);
+                matrices.mulPose(Vector3f.YP.rotationDegrees(-i * 90F));
+                matrices.scale(0.5F, 0.5F, 0.5F);
+                matrices.translate(0, 1.25, 1.01);
+
+                matrices.mulPoseMatrix(Matrix4f.createScaleMatrix(1, 1, 0.01f));
+                matrices.last().normal().mul(Vector3f.XN.rotationDegrees(45f));
+
+                Minecraft.getInstance().getItemRenderer().renderStatic(toRender, ItemTransforms.TransformType.GUI, RenderHelper.FULL_LIGHT,
+                        OverlayTexture.NO_OVERLAY, matrices, vertexConsumers, 0);
+
+                matrices.popPose();
+
+                matrices.pushPose();
+                Font textRenderer = Minecraft.getInstance().font;
+                matrices.translate(0.5, 0.5, 0.5);
+                matrices.mulPose(Vector3f.YP.rotationDegrees((2 - i) * 90F));
+                matrices.translate(0, 0.15, -0.505);
+                matrices.scale(-0.01f, -0.01F, -0.01f);
+
+                float xPosition;
+                String count = String.valueOf(amount);
+                xPosition = (float) (-textRenderer.width(count) / 2);
+                textRenderer.drawInBatch(count, xPosition, -4f + 40, textColor, false, matrices.last().pose(), vertexConsumers, false, 0,
+                        RenderHelper.FULL_LIGHT);
+
+                matrices.popPose();
             }
 
         }

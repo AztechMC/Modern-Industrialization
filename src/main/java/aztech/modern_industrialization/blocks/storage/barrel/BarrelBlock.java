@@ -53,7 +53,7 @@ public class BarrelBlock extends AbstractStorageBlock implements EntityBlock {
         return factory.newBlockEntity(pos, state);
     }
 
-    static {
+    public static void setupBarrelEvents() {
         UseBlockCallback.EVENT.register((player, world, hand, hitResult) -> {
             if (world.getBlockEntity(hitResult.getBlockPos()) instanceof BarrelBlockEntity barrel
                     && hitResult.getDirection().getAxis().isHorizontal()) {

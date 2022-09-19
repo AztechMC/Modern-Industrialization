@@ -23,6 +23,7 @@
  */
 package aztech.modern_industrialization.blocks.storage;
 
+import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.api.FastBlockEntity;
 import aztech.modern_industrialization.api.WrenchableBlockEntity;
 import net.fabricmc.fabric.api.transfer.v1.storage.StoragePreconditions;
@@ -51,6 +52,7 @@ public abstract class AbstractStorageBlockEntity<T extends TransferVariant<?>> e
     protected T resource;
     protected long amount;
     private long version;
+    private boolean isLocked;
 
     private final ResourceParticipant participant = new ResourceParticipant();
 
@@ -83,9 +85,13 @@ public abstract class AbstractStorageBlockEntity<T extends TransferVariant<?>> e
             var block = (AbstractStorageBlock) getBlockState().getBlock();
             level.addFreshEntity(new ItemEntity(level, hit.getLocation().x, hit.getLocation().y, hit.getLocation().z, block.getStack(this)));
             level.setBlockAndUpdate(worldPosition, Blocks.AIR.defaultBlockState());
-            return true;
+        } else {
+            this.toggleLocked();
+            player.displayClientMessage(
+                    isLocked ? MIText.Locked.text() : MIText.Unlocked.text(), true);
+
         }
-        return false;
+        return true;
     }
 
     @Override
@@ -96,7 +102,7 @@ public abstract class AbstractStorageBlockEntity<T extends TransferVariant<?>> e
     @Override
     public long insert(T resource, long maxAmount, TransactionContext transaction) {
         StoragePreconditions.notBlankNotNegative(resource, maxAmount);
-        if (this.resource.isBlank() || this.resource.equals(resource)) {
+        if ((this.resource.isBlank() && !this.isLocked) || this.resource.equals(resource)) {
             long inserted = Math.min(maxAmount, getCapacityForResource(resource) - amount);
             if (inserted > 0) {
                 participant.updateSnapshots(transaction);
@@ -116,7 +122,7 @@ public abstract class AbstractStorageBlockEntity<T extends TransferVariant<?>> e
             if (extracted > 0) {
                 participant.updateSnapshots(transaction);
                 amount -= extracted;
-                if (amount == 0) {
+                if (amount == 0 && !isLocked) {
                     this.resource = getBlankResource();
                 }
             }
@@ -174,5 +180,29 @@ public abstract class AbstractStorageBlockEntity<T extends TransferVariant<?>> e
         protected void onFinalCommit() {
             onChanged();
         }
+    }
+
+    public boolean isLocked() {
+        return isLocked;
+    }
+
+    public boolean toggleLocked() {
+        isLocked = !isLocked;
+        if (!isLocked && amount == 0) {
+            resource = getBlankResource();
+        }
+        return isLocked;
+    }
+
+    @Override
+    public void load(CompoundTag tag) {
+        amount = tag.getLong("amt");
+        isLocked = tag.getBoolean("locked");
+    }
+
+    @Override
+    public void saveAdditional(CompoundTag tag) {
+        tag.putLong("amt", amount);
+        tag.putBoolean("locked", isLocked);
     }
 }

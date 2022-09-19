@@ -37,8 +37,17 @@ public class TankRenderer implements BlockEntityRenderer<BlockEntity> {
     @Override
     public void render(BlockEntity entity, float tickDelta, PoseStack matrices, MultiBufferSource vertexConsumers, int light, int overlay) {
         TankBlockEntity tank = (TankBlockEntity) entity;
-        if (!tank.getResource().isBlank() && tank.getAmount() > 0) {
-            RenderHelper.drawFluidInTank(entity, matrices, vertexConsumers, tank.getResource(), (float) tank.getAmount() / tank.capacity);
+        if (!tank.getResource().isBlank()) {
+            if (tank.getAmount() > 0) {
+                RenderHelper.drawFluidInTank(entity, matrices, vertexConsumers, tank.getResource(), (float) tank.getAmount() / tank.capacity);
+            } else if (tank.isLocked()) {
+                RenderHelper.drawFluidInTank(entity, matrices, vertexConsumers, tank.getResource(), 0.01f);
+            }
+
+        }
+
+        if (tank.isLocked()) {
+            RenderHelper.drawLockedTexture(tank, matrices, vertexConsumers);
         }
     }
 }

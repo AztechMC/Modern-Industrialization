@@ -1196,6 +1196,7 @@
   "text.modern_industrialization.JetpackEnabled": "Jetpack enabled!",
   "text.modern_industrialization.JetpackFill": "Fuel: %d %%",
   "text.modern_industrialization.LargeTankTooltips": "Stores %s buckets of fluid per block in the structure",
+  "text.modern_industrialization.Locked": "Locked",
   "text.modern_industrialization.LockingModeOff": "Lock editing disabled",
   "text.modern_industrialization.LockingModeOn": "Lock editing enabled",
   "text.modern_industrialization.LubricantTooltip": "Right-Click on Electric Machine : consume %s mb for 1 efficiency tick",
@@ -1276,6 +1277,7 @@
   "text.modern_industrialization.ToolSwitchedSilkTouch": "Silk Touch Mode enabled!",
   "text.modern_industrialization.TooltipSpeedUpgrade": "Item Pipe Speed Upgrade: +%d items / 3s.",
   "text.modern_industrialization.TooltipsShiftRequired": "Press [Shift] for info",
+  "text.modern_industrialization.Unlocked": "Unlocked",
   "text.modern_industrialization.WaterPercent": "Water: %s %%",
   "text.modern_industrialization.Whitelist": "Whitelist mode enabled"
 }

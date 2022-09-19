@@ -23,6 +23,7 @@
  */
 package aztech.modern_industrialization.util;
 
+import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.compat.sodium.SodiumCompat;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.BufferBuilder;
@@ -37,6 +38,7 @@ import com.mojang.math.Vector3f;
 import com.mojang.math.Vector4f;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
+import net.fabricmc.fabric.api.event.client.ClientSpriteRegistryCallback;
 import net.fabricmc.fabric.api.renderer.v1.Renderer;
 import net.fabricmc.fabric.api.renderer.v1.RendererAccess;
 import net.fabricmc.fabric.api.renderer.v1.material.BlendMode;
@@ -46,6 +48,7 @@ import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
 import net.fabricmc.fabric.api.transfer.v1.client.fluid.FluidVariantRendering;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariantAttributes;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
@@ -57,12 +60,14 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import org.lwjgl.system.MemoryStack;
 
 public class RenderHelper {
     private static final BakedQuad[] OVERLAY_QUADS;
     private static final float W = 0.05f;
+    private static final MIIdentifier LOCKED_TEXTURE_LOCATION = new MIIdentifier("block/locked");
 
     public static void drawOverlay(PoseStack ms, MultiBufferSource vcp, float r, float g, float b, int light, int overlay) {
         VertexConsumer vc = vcp.getBuffer(RenderType.solid());
@@ -323,6 +328,41 @@ public class RenderHelper {
         BufferUploader.drawWithShader(bufferBuilder.end());
         RenderSystem.enableTexture();
         RenderSystem.disableBlend();
+    }
+
+    public static void drawLockedTexture(BlockEntity entity, PoseStack matrices, MultiBufferSource vertexConsumers) {
+        VertexConsumer vc = vertexConsumers.getBuffer(RenderType.cutout());
+        var sprite = Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(LOCKED_TEXTURE_LOCATION);
+        // draw the sprite on each face
+
+        var pos = entity.getBlockPos();
+        var state = entity.getBlockState();
+
+        Renderer renderer = RendererAccess.INSTANCE.getRenderer();
+        for (Direction direction : Direction.values()) {
+            if (direction.getAxis().isVertical() ||
+                    !Block.shouldRenderFace(state, entity.getLevel(), pos,
+                            direction.getOpposite(), pos.relative(direction.getOpposite()))) {
+                continue;
+            }
+
+            QuadEmitter emitter = renderer.meshBuilder().getEmitter();
+
+            emitter.square(direction, 1, 0, 0, 1, 1.015f);
+            emitter.spriteBake(0, sprite, MutableQuadView.BAKE_LOCK_UV);
+
+            vc.putBulkData(matrices.last(),
+                    emitter.toBakedQuad(0, sprite, false),
+                    1, 1, 1, RenderHelper.FULL_LIGHT, OverlayTexture.NO_OVERLAY);
+        }
+    }
+
+    public static void setupRenderHelper() {
+
+        ClientSpriteRegistryCallback.event(InventoryMenu.BLOCK_ATLAS).register(
+                (atlas, registry) -> {
+                    registry.register(LOCKED_TEXTURE_LOCATION);
+                });
     }
 
 }

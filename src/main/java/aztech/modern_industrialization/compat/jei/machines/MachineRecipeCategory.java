@@ -205,7 +205,6 @@ public class MachineRecipeCategory implements IRecipeCategory<MachineRecipe> {
         // Draw filled energy bar
         stack.pushPose();
 
-        stack.translate(5, 5, 0);
         stack.scale(0.5f, 0.5f, 0.5f);
         switch (params.steamMode) {
         case BOTH -> {
@@ -224,11 +223,11 @@ public class MachineRecipeCategory implements IRecipeCategory<MachineRecipe> {
         stack.popPose();
 
         var font = client.font;
-        font.draw(stack, TextHelper.getEuTextTick(getEu(recipe)), 15 + (params.steamMode.steam ? 2 : 0), 5, 0xFF404040);
+        font.draw(stack, TextHelper.getEuTextTick(getEu(recipe)), 10 + (params.steamMode.steam ? 2 : 0), 0, 0xFF404040);
 
         var durationText = MIText.BaseDurationSeconds.text(getSeconds(recipe));
         var durationTextWidth = font.width(durationText);
-        font.draw(stack, durationText, background.getWidth() - 5 - durationTextWidth, 5, 0xFF404040);
+        font.draw(stack, durationText, background.getWidth() - durationTextWidth, 0, 0xFF404040);
 
         // Draw steel hatch or upgrades
         var steelHatchRequired = isSteelHatchRequired(recipe);
@@ -247,7 +246,7 @@ public class MachineRecipeCategory implements IRecipeCategory<MachineRecipe> {
             }
 
             stack.pushPose();
-            stack.translate(background.getWidth() / 2.f - 5, 4, 0);
+            stack.translate(background.getWidth() / 2.f - 5, 0, 0);
             stack.scale(0.6f, 0.6f, 1);
             displayedItem.draw(stack);
             stack.popPose();
@@ -257,7 +256,7 @@ public class MachineRecipeCategory implements IRecipeCategory<MachineRecipe> {
 
     @Override
     public List<Component> getTooltipStrings(MachineRecipe recipe, IRecipeSlotsView recipeSlotsView, double mouseX, double mouseY) {
-        var tooltipZone = new aztech.modern_industrialization.util.Rectangle(2, 5, background.getWidth() - 10, 11);
+        var tooltipZone = new aztech.modern_industrialization.util.Rectangle(0, -2, background.getWidth(), 12);
         if (!tooltipZone.contains(mouseX, mouseY)) {
             return Collections.emptyList();
         }
@@ -316,7 +315,7 @@ public class MachineRecipeCategory implements IRecipeCategory<MachineRecipe> {
         }
 
         // Room for text above
-        return Y - y + 25;
+        return Y - y + 14;
     }
 
     private int getDisplayWidth() {
@@ -328,7 +327,7 @@ public class MachineRecipeCategory implements IRecipeCategory<MachineRecipe> {
             }
         }
 
-        return Math.max(X - x + 15, 120);
+        return Math.max(X - x, 120);
     }
 
     private double getSeconds(MachineRecipe recipe) {
@@ -355,7 +354,7 @@ public class MachineRecipeCategory implements IRecipeCategory<MachineRecipe> {
             }
         }
         int xoffset = (background.getWidth() - X + x) / 2 - x;
-        int yoffset = 17 - y;
+        int yoffset = 12 - y;
 
         return new DrawOffset(xoffset, yoffset);
     }

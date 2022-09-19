@@ -30,6 +30,7 @@ import aztech.modern_industrialization.util.NbtHelper;
 import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariantAttributes;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.fabricmc.fabric.api.transfer.v1.storage.StoragePreconditions;
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
@@ -42,6 +43,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
@@ -97,6 +99,7 @@ public class CreativeTankBlockEntity extends FastBlockEntity
                 for (StorageView<FluidVariant> view : handIo) {
                     if (!view.isResourceBlank()) {
                         fluid = view.getResource();
+                        player.playNotifySound(FluidVariantAttributes.getFillSound(fluid), SoundSource.BLOCKS, 1, 1);
                         onChanged();
                         break;
                     }
@@ -105,7 +108,10 @@ public class CreativeTankBlockEntity extends FastBlockEntity
             } else {
                 try (Transaction tx = Transaction.openOuter()) {
                     long inserted = handIo.insert(fluid, Long.MAX_VALUE, tx);
-                    tx.commit();
+                    if (inserted > 0) {
+                        player.playNotifySound(FluidVariantAttributes.getFillSound(fluid), SoundSource.BLOCKS, 1, 1);
+                        tx.commit();
+                    }
                     return inserted > 0;
                 }
             }

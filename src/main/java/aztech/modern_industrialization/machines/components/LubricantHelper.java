@@ -27,8 +27,10 @@ import aztech.modern_industrialization.MIFluids;
 import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariantAttributes;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -49,6 +51,7 @@ public class LubricantHelper {
                     try (Transaction tx = Transaction.openOuter()) {
                         long extracted = handIo.extract(MIFluids.LUBRICANT.variant(), (long) rem * dropPerTick, tx);
                         if (extracted % dropPerTick == 0) {
+                            player.playNotifySound(FluidVariantAttributes.getFillSound(MIFluids.LUBRICANT.variant()), SoundSource.BLOCKS, 1, 1);
                             crafter.increaseEfficiencyTicks((int) (extracted / dropPerTick));
                             tx.commit();
                             return InteractionResult.SUCCESS;
@@ -58,6 +61,8 @@ public class LubricantHelper {
                             try (Transaction txVoid = Transaction.openOuter()) {
                                 long extractedVoid = handIo.extract(MIFluids.LUBRICANT.variant(), attempt, txVoid);
                                 if (extractedVoid > 0) {
+                                    player.playNotifySound(FluidVariantAttributes.getFillSound(MIFluids.LUBRICANT.variant()), SoundSource.BLOCKS, 1,
+                                            1);
                                     crafter.increaseEfficiencyTicks((int) (extractedVoid / dropPerTick));
                                     txVoid.commit();
                                     return InteractionResult.SUCCESS;

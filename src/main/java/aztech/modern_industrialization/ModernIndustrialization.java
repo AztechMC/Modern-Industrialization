@@ -55,6 +55,7 @@ import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricMaterialBuilder;
 import net.fabricmc.fabric.api.registry.FuelRegistry;
 import net.fabricmc.fabric.api.screenhandler.v1.ScreenHandlerRegistry;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariantAttributes;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionResult;
@@ -144,6 +145,10 @@ public class ModernIndustrialization implements ModInitializer {
         for (Map.Entry<ResourceLocation, FluidDefinition> entry : MIFluids.FLUIDS.entrySet()) {
             Registry.register(Registry.BLOCK, entry.getKey(), entry.getValue().fluidBlock);
             Registry.register(Registry.FLUID, entry.getKey(), entry.getValue().asFluid());
+        }
+
+        if (MIConfig.getConfig().colorWaterLava) {
+            FluidVariantAttributes.enableColoredVanillaFluidNames();
         }
     }
 

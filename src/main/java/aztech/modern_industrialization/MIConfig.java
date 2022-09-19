@@ -56,6 +56,7 @@ public class MIConfig implements ConfigData {
     public boolean newVersionMessage = true;
     @EnglishTranslation(value = "Show valid positions in multiblocks when holding a hatch")
     public boolean enableHatchPlacementOverlay = true;
+    @ConfigEntry.Gui.RequiresRestart
     @EnglishTranslation(value = "Color Water and Lava")
     public boolean colorWaterLava = true;
     @EnglishTranslation(value = "Enable UNSUPPORTED and DANGEROUS debug commands")

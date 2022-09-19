@@ -29,11 +29,8 @@ import aztech.modern_industrialization.datagen.tag.TagsToGenerate;
 import aztech.modern_industrialization.items.SortOrder;
 import aztech.modern_industrialization.materials.MaterialBuilder;
 import aztech.modern_industrialization.textures.MITextures;
-import aztech.modern_industrialization.textures.TextureHelper;
 import aztech.modern_industrialization.textures.TextureManager;
 import aztech.modern_industrialization.util.TagHelper;
-import com.mojang.blaze3d.platform.NativeImage;
-import java.io.IOException;
 import net.minecraft.data.models.model.TexturedModel;
 import net.minecraft.world.item.Item;
 
@@ -137,22 +134,17 @@ public class RegularPart extends Part implements BuildablePart {
             setupTag(part, itemTag, blockDefinition.asItem());
 
         }, clientRegister, (mtm, partContext, part, itemPath) -> {
-            for (String suffix : new String[] { "_side", "_top" }) {
-                String template = String.format("modern_industrialization:textures/materialsets/common/%s%s.png", part, suffix);
-                try {
-                    NativeImage image = mtm.getAssetAsTexture(template);
-                    TextureHelper.colorize(image, partContext.getColoramp());
-                    String texturePath;
-                    texturePath = String.format("modern_industrialization:textures/block/%s%s.png", itemPath, suffix);
-                    mtm.addTexture(texturePath, image);
-                    image.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
+            for (String suffix : new String[] { "side", "top" }) {
+                MITextures.generateItemPartTexture(
+                        mtm,
+                        part.key + "_" + suffix,
+                        partContext.getMaterialSet(),
+                        itemPath + "_" + suffix,
+                        true,
+                        partContext.getColoramp());
 
-        );
+            }
+        });
     }
 
     public RegularPart withoutTextureRegister() {

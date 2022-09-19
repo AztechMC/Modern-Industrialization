@@ -115,6 +115,8 @@ public class MIItemTagProvider extends FabricTagProvider.ItemTagProvider {
 
         tag(key("c:quartz_ores")).add(Items.NETHER_QUARTZ_ORE);
 
+        tag(key("c:wooden_barrels")).add(Items.BARREL);
+
         ResourceLocation terracottas = new ResourceLocation("c", "terracottas");
         tag(key(terracottas)).add(Items.TERRACOTTA);
 

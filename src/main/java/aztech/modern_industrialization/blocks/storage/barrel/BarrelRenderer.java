@@ -80,7 +80,7 @@ public class BarrelRenderer implements BlockEntityRenderer<BlockEntity> {
                     matrices.translate(0.5, 0, 0.5);
                     matrices.mulPose(Vector3f.YP.rotationDegrees(-i * 90F));
                     matrices.scale(0.5F, 0.5F, 0.5F);
-                    matrices.translate(0, 1.3, 1.01);
+                    matrices.translate(0, 1.25, 1.01);
 
                     matrices.mulPoseMatrix(Matrix4f.createScaleMatrix(1, 1, 0.01f));
                     matrices.last().normal().mul(Vector3f.XN.rotationDegrees(45f));
@@ -94,7 +94,7 @@ public class BarrelRenderer implements BlockEntityRenderer<BlockEntity> {
                     Font textRenderer = Minecraft.getInstance().font;
                     matrices.translate(0.5, 0.5, 0.5);
                     matrices.mulPose(Vector3f.YP.rotationDegrees((2 - i) * 90F));
-                    matrices.translate(0, 0.2, -0.505);
+                    matrices.translate(0, 0.15, -0.505);
                     matrices.scale(-0.01f, -0.01F, -0.01f);
 
                     float xPosition;

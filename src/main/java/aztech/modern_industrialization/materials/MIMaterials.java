@@ -398,8 +398,8 @@ public class MIMaterials {
                         .addParts(PLATE, LARGE_PLATE, DOUBLE_INGOT).addRecipes(StandardRecipes::apply)
                         .addRecipes((ctx) -> SmeltingRecipes.applyBlastFurnace(ctx, true, 32, 400)).cancelRecipes("macerator/crushed_dust").build());
 
-        MANGANESE = MaterialRegistry.addMaterial(new MaterialBuilder("Manganese", "manganese", DULL, 0xC1C1C1, AVERAGE).addParts(BLOCK.of(MaterialBlockSet.IRON))
-                .addParts(ITEM_PURE_METAL).addParts(CRUSHED_DUST).addRecipes(StandardRecipes::apply).cancelRecipes("macerator/crushed_dust").build());
+        MANGANESE = MaterialRegistry.addMaterial(new MaterialBuilder("Manganese", "manganese", DULL, 0xC1C1C1, AVERAGE)
+                .addParts(DUST, TINY_DUST, CRUSHED_DUST).addRecipes(StandardRecipes::apply).cancelRecipes("macerator/crushed_dust").build());
 
         BERYLLIUM = MaterialRegistry.addMaterial(new MaterialBuilder("Beryllium", "beryllium", SHINY, 0x64B464, HARD).addParts(BLOCK.of(MaterialBlockSet.NETHERITE))
                 .addParts(DOUBLE_INGOT, DUST, INGOT, NUGGET, PLATE, TINY_DUST).addRecipes(StandardRecipes::apply).build());

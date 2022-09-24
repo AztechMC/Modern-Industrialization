@@ -71,7 +71,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.material.Fluid;
 
-// TODO: attack speed and damage
 public class DieselToolItem extends Item implements Vanishable, DynamicEnchantmentItem, DynamicToolItem {
     public static final int CAPACITY = 4 * 81000;
     private final double damage;

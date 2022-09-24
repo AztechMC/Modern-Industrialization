@@ -26,14 +26,12 @@ package aztech.modern_industrialization.datagen.recipe;
 import aztech.modern_industrialization.MIFluids;
 import aztech.modern_industrialization.machines.init.MIMachineRecipeTypes;
 import aztech.modern_industrialization.recipe.json.MIRecipeJson;
-import java.util.List;
 import java.util.function.Consumer;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.minecraft.core.Registry;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.level.block.Blocks;
 
 /**
  * Datagen for recipes that produce vanilla materials using MI machines.
@@ -60,13 +58,15 @@ public class VanillaCompatRecipesProvider extends MIRecipesProvider {
                 Items.WAXED_OXIDIZED_CUT_COPPER_SLAB);
         generateCopperOxidation(exporter, Items.WAXED_CUT_COPPER_STAIRS, Items.WAXED_EXPOSED_CUT_COPPER_STAIRS,
                 Items.WAXED_WEATHERED_CUT_COPPER_STAIRS, Items.WAXED_OXIDIZED_CUT_COPPER_STAIRS);
+
+        // misc recipes
+        MIRecipeJson.create(MIMachineRecipeTypes.MACERATOR, 2, 100)
+                .addItemInput(Items.STONE, 1)
+                .addItemOutput(Items.COBBLESTONE, 1)
+                .offerTo(exporter, "vanilla_recipes/macerator/stone_to_cobblestone");
     }
 
     private void generateCopperOxidation(Consumer<FinishedRecipe> exporter, Item unaffected, Item exposed, Item weathered, Item oxidized) {
-        var copperBlocks = List.of(
-                Blocks.COPPER_BLOCK, Blocks.CUT_COPPER, Blocks.CUT_COPPER_SLAB, Blocks.CUT_COPPER_STAIRS,
-                Blocks.WAXED_COPPER_BLOCK, Blocks.WAXED_CUT_COPPER, Blocks.WAXED_CUT_COPPER_SLAB, Blocks.WAXED_CUT_COPPER_STAIRS);
-
         oxidize(exporter, unaffected, exposed);
         oxidize(exporter, exposed, weathered);
         oxidize(exporter, weathered, oxidized);

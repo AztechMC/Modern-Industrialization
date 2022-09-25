@@ -74,7 +74,7 @@ public final class StandardRecipes {
 
         new ShapedRecipeBuilder(ctx, TANK, 1, "tank", "###", "#G#", "###").addTaggedPart('#', PLATE).addInput('G', ConventionalItemTags.GLASS_BLOCKS)
                 .exportToAssembler();
-        new ShapedRecipeBuilder(ctx, BARREL, 1, "barrel", "###", "#b#", "###").addTaggedPart('#', PLATE).addInput('b', Blocks.BARREL)
+        new ShapedRecipeBuilder(ctx, BARREL, 1, "barrel", "###", "#b#", "###").addTaggedPart('#', PLATE).addInput('b', "#c:barrels")
                 .exportToAssembler();
 
         new ShapedRecipeBuilder(ctx, DRILL_HEAD, 1, "drill_head", "bcp", "GRc", "bGb").addTaggedPart('G', GEAR).addPart('b', BOLT)

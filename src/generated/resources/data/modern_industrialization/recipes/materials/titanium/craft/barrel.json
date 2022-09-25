@@ -5,7 +5,7 @@
       "tag": "c:titanium_plates"
     },
     "b": {
-      "item": "minecraft:barrel"
+      "tag": "c:barrels"
     }
   },
   "pattern": [

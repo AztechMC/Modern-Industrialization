@@ -25,6 +25,7 @@ package aztech.modern_industrialization.materials.part;
 
 import aztech.modern_industrialization.MIBlock;
 import aztech.modern_industrialization.MITags;
+import aztech.modern_industrialization.blocks.storage.StorageBehaviour;
 import aztech.modern_industrialization.blocks.storage.barrel.BarrelBlock;
 import aztech.modern_industrialization.blocks.storage.barrel.BarrelBlockEntity;
 import aztech.modern_industrialization.blocks.storage.barrel.BarrelItem;
@@ -32,9 +33,9 @@ import aztech.modern_industrialization.blocks.storage.barrel.BarrelRenderer;
 import aztech.modern_industrialization.datagen.tag.TagsToGenerate;
 import aztech.modern_industrialization.definition.BlockDefinition;
 import aztech.modern_industrialization.items.SortOrder;
-import aztech.modern_industrialization.util.TextHelper;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemStorage;
+import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.minecraft.core.Registry;
 import net.minecraft.data.models.model.TexturedModel;
 import net.minecraft.world.level.block.EntityBlock;
@@ -65,7 +66,10 @@ public class BarrelPart extends UnbuildablePart<Long> {
 
         return new RegularPart(englishNameFormatter, key).asColumnBlock(SortOrder.BARRELS)
                 .withRegister((partContext, part, itemPath, itemId, itemTag) -> {
-                    EntityBlock factory = (pos, state) -> new BarrelBlockEntity(refs[0], pos, state, stackCapacity);
+
+                    StorageBehaviour<ItemVariant> barrelStorageBehaviour = BarrelBlock.withStackCapacity(stackCapacity);
+
+                    EntityBlock factory = (pos, state) -> new BarrelBlockEntity(refs[0], pos, state, barrelStorageBehaviour);
 
                     String englishName = RegularPart.getEnglishName(englishNameFormatter, partContext.getEnglishName());
 
@@ -74,9 +78,8 @@ public class BarrelPart extends UnbuildablePart<Long> {
                             itemPath,
                             MIBlock.BlockDefinitionParams.of().withBlockConstructor(
                                     s -> new BarrelBlock(s, factory)).withBlockItemConstructor(
-                                            (b, s) -> new BarrelItem(b, stackCapacity))
-                                    .withModel(
-                                            ((block, blockModelGenerators) -> blockModelGenerators.createTrivialBlock(block, TexturedModel.COLUMN)))
+                                            (b, s) -> new BarrelItem(b, barrelStorageBehaviour))
+                                    .withModel(TexturedModel.COLUMN)
                                     .noLootTable()
                                     .sortOrder(SortOrder.BARRELS.and(stackCapacity)));
 
@@ -87,8 +90,7 @@ public class BarrelPart extends UnbuildablePart<Long> {
                             FabricBlockEntityTypeBuilder.create(block.factory::newBlockEntity, block).build(null));
 
                     ItemStorage.SIDED.registerSelf(refs[0]);
-                }).withClientRegister((partContext, part, itemPath, itemId, itemTag) -> BarrelRenderer.register(refs[0],
-                        TextHelper.getOverlayTextColor(partContext.getColoramp().getMeanRGB())));
+                }).withClientRegister((partContext, part, itemPath, itemId, itemTag) -> BarrelRenderer.register(refs[0]));
     }
 
 }

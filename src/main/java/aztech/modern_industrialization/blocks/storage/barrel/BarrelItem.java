@@ -25,10 +25,13 @@ package aztech.modern_industrialization.blocks.storage.barrel;
 
 import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.ModernIndustrialization;
+import aztech.modern_industrialization.blocks.storage.AbstractStorageBlockItem;
+import aztech.modern_industrialization.blocks.storage.StorageBehaviour;
 import aztech.modern_industrialization.items.ItemContainingItemHelper;
 import aztech.modern_industrialization.util.TextHelper;
 import java.util.List;
 import java.util.Optional;
+import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextColor;
@@ -38,47 +41,53 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ClickAction;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
-import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 
-public class BarrelItem extends BlockItem implements ItemContainingItemHelper {
+public class BarrelItem extends AbstractStorageBlockItem<ItemVariant> implements ItemContainingItemHelper {
 
     private static final int ITEM_BAR_COLOR = Mth.color(0.4F, 0.4F, 1.0F);
-    public final long stackCapacity;
 
-    public BarrelItem(Block block, long stackCapacity) {
-        super(block, new Item.Properties().stacksTo(1).tab(ModernIndustrialization.ITEM_GROUP));
-        this.stackCapacity = stackCapacity;
-    }
-
-    @Override
-    public long getStackCapacity() {
-        return stackCapacity;
+    public BarrelItem(Block block, StorageBehaviour<ItemVariant> behaviour) {
+        super(block,
+                new Item.Properties().stacksTo(1).tab(ModernIndustrialization.ITEM_GROUP),
+                behaviour);
     }
 
     @Override
     public void appendHoverText(ItemStack stack, Level world, List<Component> tooltip, TooltipFlag context) {
-        Style style = Style.EMPTY.withColor(TextColor.fromRgb(0xa9a9a9)).withItalic(false);
-        if (isEmpty(stack)) {
-            tooltip.add(MIText.Empty.text().setStyle(style));
-            tooltip.add(MIText.BarrelStack.text(stackCapacity).setStyle(TextHelper.YELLOW));
+        if (behaviour instanceof BarrelBlock.BarrelStorage barrelStorage) {
+            Style style = Style.EMPTY.withColor(TextColor.fromRgb(0xa9a9a9)).withItalic(false);
+            if (isEmpty(stack) && isUnlocked(stack)) {
+                tooltip.add(MIText.Empty.text().setStyle(style));
+                tooltip.add(MIText.BarrelStack.text(barrelStorage.stackCapacity).setStyle(TextHelper.YELLOW));
+            }
         }
+        super.appendHoverText(stack, world, tooltip, context);
+    }
+
+    public long getCurrentCapacity(ItemStack stack) {
+        return behaviour.getCapacityForResource(getResource(stack));
     }
 
     public Optional<TooltipComponent> getTooltipImage(ItemStack stack) {
-        if (!isEmpty(stack)) {
-            return Optional.of(new BarrelTooltipData(getItemVariant(stack), getAmount(stack), getCurrentCapacity(stack)));
-        } else {
-            return Optional.empty();
+        if (!getBehaviour().isCreative()) {
+            if (!isEmpty(stack) || !isUnlocked(stack)) {
+                return Optional.of(new BarrelTooltipData(getResource(stack), getAmount(stack),
+                        getCurrentCapacity(stack), false));
+            }
+        } else if (!getResource(stack).isBlank()) {
+            return Optional.of(new BarrelTooltipData(getResource(stack), -1,
+                    -1, true));
         }
+        return Optional.empty();
     }
 
     public boolean isBarVisible(ItemStack stack) {
-        return getAmount(stack) > 0;
+        return !getBehaviour().isCreative() && getAmount(stack) > 0;
     }
 
     public int getBarWidth(ItemStack stack) {
@@ -98,5 +107,10 @@ public class BarrelItem extends BlockItem implements ItemContainingItemHelper {
     public boolean overrideOtherStackedOnMe(ItemStack stack, ItemStack otherStack, Slot slot, ClickAction clickType, Player player,
             SlotAccess cursorStackReference) {
         return handleOtherStackedOnMe(stack, otherStack, slot, clickType, player, cursorStackReference);
+    }
+
+    @Override
+    public ItemVariant getBlankResource() {
+        return ItemVariant.blank();
     }
 }

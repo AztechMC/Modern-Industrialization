@@ -29,9 +29,13 @@ import static aztech.modern_industrialization.ModernIndustrialization.STONE_MATE
 import aztech.modern_industrialization.blocks.TrashCanBlock;
 import aztech.modern_industrialization.blocks.creativestorageunit.CreativeStorageUnitBlock;
 import aztech.modern_industrialization.blocks.forgehammer.ForgeHammerBlock;
+import aztech.modern_industrialization.blocks.storage.StorageBehaviour;
+import aztech.modern_industrialization.blocks.storage.barrel.BarrelBlock;
+import aztech.modern_industrialization.blocks.storage.barrel.BarrelItem;
+import aztech.modern_industrialization.blocks.storage.barrel.CreativeBarrelBlockEntity;
 import aztech.modern_industrialization.blocks.storage.tank.TankBlock;
+import aztech.modern_industrialization.blocks.storage.tank.TankItem;
 import aztech.modern_industrialization.blocks.storage.tank.creativetank.CreativeTankBlockEntity;
-import aztech.modern_industrialization.blocks.storage.tank.creativetank.CreativeTankItem;
 import aztech.modern_industrialization.definition.BlockDefinition;
 import aztech.modern_industrialization.items.SortOrder;
 import aztech.modern_industrialization.materials.part.TankPart;
@@ -42,7 +46,6 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
 import net.minecraft.data.loot.BlockLoot;
 import net.minecraft.data.models.BlockModelGenerators;
 import net.minecraft.data.models.model.TexturedModel;
@@ -89,13 +92,24 @@ public class MIBlock {
             "creative_tank",
             BlockDefinitionParams.of()
                     .withBlockConstructor(() -> new TankBlock(CreativeTankBlockEntity::new))
-                    .withBlockItemConstructor(CreativeTankItem::new)
+                    .withBlockItemConstructor((b, s) -> new TankItem(b, StorageBehaviour.creative()))
                     .withModel(TankPart.MODEL_GENERATOR).noLootTable().clearTags()
                     .noOcclusion(),
-                    TankBlock.class
+            TankBlock.class
     ).withBlockRegistrationEvent(
-            (block, item) -> FluidStorage.ITEM.registerForItems(CreativeTankItem.TankItemStorage::new, item));
+            (block, item) -> ((TankItem) item).registerItemApi());
 
+
+    public static final BlockDefinition<BarrelBlock> CREATIVE_BARREL = block(
+            "Creative Barrel",
+            "creative_barrel",
+            BlockDefinitionParams.of()
+                    .withBlockConstructor((p) -> new BarrelBlock(p, CreativeBarrelBlockEntity::new))
+                    .withBlockItemConstructor((b, s) -> new BarrelItem(b, StorageBehaviour.creative()))
+                    .withModel(TexturedModel.COLUMN).noLootTable().clearTags()
+                    .noOcclusion(),
+            BarrelBlock.class
+    );
 
 
     public static final BlockDefinition<CreativeStorageUnitBlock> CREATIVE_STORAGE_UNIT = block("Creative Storage Unit",

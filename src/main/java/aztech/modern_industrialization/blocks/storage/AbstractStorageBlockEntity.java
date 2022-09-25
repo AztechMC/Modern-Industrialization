@@ -59,7 +59,7 @@ public abstract class AbstractStorageBlockEntity<T extends TransferVariant<?>> e
     private long version;
     private boolean isLocked;
 
-    private final StorageBehaviour<T> behaviour;
+    public final StorageBehaviour<T> behaviour;
 
     private final ResourceParticipant participant = new ResourceParticipant();
 
@@ -253,6 +253,10 @@ public abstract class AbstractStorageBlockEntity<T extends TransferVariant<?>> e
             tag.putLong("amt", amount);
         }
         saveResource(resource, tag);
+    }
+
+    public void setResource(T resource) {
+        this.resource = resource;
     }
 
     public abstract T loadResource(CompoundTag tag);

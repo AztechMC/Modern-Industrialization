@@ -54,7 +54,7 @@ public class AbstractStorageBlock extends Block implements EntityBlock {
     protected ItemStack getStack(BlockEntity entity) {
         var storageBlockEntity = (AbstractStorageBlockEntity<?>) entity;
         ItemStack stack = new ItemStack(asItem());
-        if (!storageBlockEntity.isEmpty()) {
+        if (!storageBlockEntity.isEmpty() || storageBlockEntity.isLocked()) {
             CompoundTag tag = new CompoundTag();
             tag.put("BlockEntityTag", storageBlockEntity.saveWithoutMetadata());
             stack.setTag(tag);

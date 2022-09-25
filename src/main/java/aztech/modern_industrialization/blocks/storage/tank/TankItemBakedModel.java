@@ -23,7 +23,6 @@
  */
 package aztech.modern_industrialization.blocks.storage.tank;
 
-import aztech.modern_industrialization.blocks.storage.tank.creativetank.CreativeTankItem;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Supplier;
@@ -43,7 +42,6 @@ import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
@@ -74,15 +72,18 @@ public class TankItemBakedModel implements FabricBakedModel, BakedModel {
     public void emitItemQuads(ItemStack stack, Supplier<RandomSource> randomSupplier, RenderContext context) {
         context.fallbackConsumer().accept(blockModel);
 
-        Item it = stack.getItem();
-        if (it instanceof TankItem item) {
-            if (!item.isEmpty(stack)) {
-                float fillFraction = (float) item.getAmount(stack) / item.capacity;
-                drawFluid(context.getEmitter(), fillFraction, item.getFluid(stack));
-            }
-        } else if (it instanceof CreativeTankItem) {
-            if (!CreativeTankItem.isEmpty(stack)) {
-                drawFluid(context.getEmitter(), 1, CreativeTankItem.getFluid(stack));
+        TankItem tank = (TankItem) stack.getItem();
+
+        if (!tank.getResource(stack).isBlank()) {
+            if (tank.behaviour.isCreative()) {
+                drawFluid(context.getEmitter(), 1, tank.getResource(stack));
+            } else {
+                if (tank.getAmount(stack) > 0) {
+                    drawFluid(context.getEmitter(), (float) tank.getAmount(stack) / tank.behaviour.getCapacityForResource(
+                            tank.getResource(stack)), tank.getResource(stack));
+                } else if (!tank.isUnlocked(stack)) {
+                    drawFluid(context.getEmitter(), 0.01f, tank.getResource(stack));
+                }
             }
         }
     }

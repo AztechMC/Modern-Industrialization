@@ -41,21 +41,18 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
+import org.jetbrains.annotations.NotNull;
 
 public class BarrelRenderer implements BlockEntityRenderer<BlockEntity> {
 
-    private final int textColor;
-
-    public static void register(BlockEntityType<BlockEntity> type, int textColor) {
-        BlockEntityRendererRegistry.register(type, (BlockEntityRendererProvider.Context context) -> new BarrelRenderer(textColor));
-    }
-
-    private BarrelRenderer(int textColor) {
-        this.textColor = textColor;
+    public static void register(BlockEntityType<?> type) {
+        BlockEntityRendererRegistry.register(type,
+                (BlockEntityRendererProvider<BlockEntity>) (context) -> new BarrelRenderer());
     }
 
     @Override
-    public void render(BlockEntity entity, float tickDelta, PoseStack matrices, MultiBufferSource vertexConsumers, int light, int overlay) {
+    public void render(@NotNull BlockEntity entity, float tickDelta, @NotNull PoseStack matrices, @NotNull MultiBufferSource vertexConsumers,
+            int light, int overlay) {
 
         BarrelBlockEntity barrelBlockEntity = (BarrelBlockEntity) entity;
         var state = barrelBlockEntity.getBlockState();
@@ -68,12 +65,19 @@ public class BarrelRenderer implements BlockEntityRenderer<BlockEntity> {
         }
 
         if (!item.isBlank()) {
-            long amount = barrelBlockEntity.getAmount();
+
+            String amount;
+            if (barrelBlockEntity.behaviour.isCreative()) {
+                amount = "∞";
+            } else {
+                amount = String.valueOf(barrelBlockEntity.getAmount());
+            }
 
             ItemStack toRender = new ItemStack(item.getItem(), 1);
 
             for (int i = 0; i < 4; i++) {
                 var direction = Direction.from2DDataValue(i);
+                assert barrelBlockEntity.getLevel() != null;
                 if (!Block.shouldRenderFace(state, barrelBlockEntity.getLevel(), pos, direction, pos.relative(direction))) {
                     continue;
                 }
@@ -102,9 +106,8 @@ public class BarrelRenderer implements BlockEntityRenderer<BlockEntity> {
                 matrices.scale(-0.01f, -0.01F, -0.01f);
 
                 float xPosition;
-                String count = String.valueOf(amount);
-                xPosition = (float) (-textRenderer.width(count) / 2);
-                textRenderer.drawInBatch(count, xPosition, -4f + 40, textColor, false, matrices.last().pose(), vertexConsumers, false, 0,
+                xPosition = (float) (-textRenderer.width(amount) / 2);
+                textRenderer.drawInBatch(amount, xPosition, -4f + 40, 0x000000, false, matrices.last().pose(), vertexConsumers, false, 0,
                         RenderHelper.FULL_LIGHT);
 
                 matrices.popPose();

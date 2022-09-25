@@ -26,6 +26,7 @@ package aztech.modern_industrialization.materials.part;
 import aztech.modern_industrialization.MIBlock;
 import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.MITags;
+import aztech.modern_industrialization.blocks.storage.StorageBehaviour;
 import aztech.modern_industrialization.blocks.storage.tank.*;
 import aztech.modern_industrialization.datagen.tag.TagsToGenerate;
 import aztech.modern_industrialization.definition.BlockDefinition;
@@ -36,6 +37,7 @@ import java.util.function.BiConsumer;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.minecraft.core.Registry;
 import net.minecraft.data.models.BlockModelGenerators;
 import net.minecraft.data.models.model.ModelTemplate;
@@ -43,7 +45,6 @@ import net.minecraft.data.models.model.TextureMapping;
 import net.minecraft.data.models.model.TextureSlot;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import org.apache.commons.lang3.mutable.MutableObject;
 
@@ -73,13 +74,16 @@ public class TankPart extends UnbuildablePart<Long> {
     }
 
     public RegularPart of(String englishNameFormatter, Long bucketCapacity) {
-        MutableObject<BlockEntityType<BlockEntity>> bet = new MutableObject<>();
+        MutableObject<BlockEntityType<AbstractTankBlockEntity>> bet = new MutableObject<>();
         long capacity = FluidConstants.BUCKET * bucketCapacity;
 
         return new RegularPart(englishNameFormatter, key)
                 .asBlock(SortOrder.TANKS)
                 .withRegister((partContext, part, itemPath, itemId, itemTag) -> {
-                    EntityBlock factory = (pos, state) -> new TankBlockEntity(bet.getValue(), pos, state, capacity);
+
+                    StorageBehaviour<FluidVariant> tankStorageBehaviour = StorageBehaviour.uniformQuantity(capacity);
+
+                    EntityBlock factory = (pos, state) -> new TankBlockEntity(bet.getValue(), pos, state, tankStorageBehaviour);
 
                     String englishName = RegularPart.getEnglishName(englishNameFormatter, partContext.getEnglishName());
 
@@ -88,7 +92,7 @@ public class TankPart extends UnbuildablePart<Long> {
                             itemPath,
                             MIBlock.BlockDefinitionParams.of().withBlockConstructor(
                                     s -> new TankBlock(factory)).withBlockItemConstructor(
-                                            (b, s) -> new TankItem(b, capacity))
+                                            (b, s) -> new TankItem(b, tankStorageBehaviour))
                                     .withModel(MODEL_GENERATOR)
                                     .noLootTable()
                                     .sortOrder(SortOrder.TANKS.and(partContext.getMaterialName())));
@@ -98,9 +102,10 @@ public class TankPart extends UnbuildablePart<Long> {
 
                     TagsToGenerate.generateTag(MITags.TANKS, item);
 
-                    bet.setValue(Registry.register(Registry.BLOCK_ENTITY_TYPE, itemId,
-                            FabricBlockEntityTypeBuilder.create(block.factory::newBlockEntity, block).build(null)));
-
+                    // noinspection unchecked,rawtypes
+                    bet.setValue((BlockEntityType) Registry.register(Registry.BLOCK_ENTITY_TYPE, itemId,
+                            FabricBlockEntityTypeBuilder.create(
+                                    block.factory::newBlockEntity, block).build(null)));
                     // Fluid API
                     FluidStorage.SIDED.registerSelf(bet.getValue());
                     item.registerItemApi();

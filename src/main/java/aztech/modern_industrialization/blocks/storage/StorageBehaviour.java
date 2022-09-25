@@ -25,9 +25,13 @@ package aztech.modern_industrialization.blocks.storage;
 
 public abstract class StorageBehaviour<T> {
 
-    public abstract boolean isLockable();
+    public boolean isLockable() {
+        return false;
+    }
 
-    public abstract boolean isCreative();
+    public boolean isCreative() {
+        return false;
+    }
 
     public abstract long getCapacityForResource(T resource);
 
@@ -67,6 +71,14 @@ public abstract class StorageBehaviour<T> {
                 return quantity;
             }
         };
+    }
+
+    public boolean canInsert(T resource) {
+        return true;
+    }
+
+    public boolean canExtract(T resource) {
+        return true;
     }
 
 }

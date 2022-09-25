@@ -26,6 +26,7 @@ package aztech.modern_industrialization.items;
 import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.MITooltips;
 import aztech.modern_industrialization.api.DynamicEnchantmentItem;
+import aztech.modern_industrialization.blocks.storage.StorageBehaviour;
 import aztech.modern_industrialization.machines.gui.MachineScreen;
 import aztech.modern_industrialization.machines.guicomponents.ProgressBar;
 import aztech.modern_industrialization.proxy.CommonProxy;
@@ -46,6 +47,7 @@ import net.fabricmc.fabric.api.item.v1.FabricItem;
 import net.fabricmc.fabric.api.mininglevel.v1.MiningLevelManager;
 import net.fabricmc.fabric.api.registry.FuelRegistry;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
+import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
@@ -88,7 +90,23 @@ import org.jetbrains.annotations.Nullable;
  * fuel was used in a furnace). water: integer, the remaining ticks of water
  * (when full: 18000 ticks i.e. 15 minutes).
  */
-public class SteamDrillItem extends Item implements DynamicToolItem, MagnaTool, DynamicEnchantmentItem, ItemContainingItemHelper, FabricItem {
+public class SteamDrillItem
+        extends Item
+        implements DynamicToolItem, MagnaTool, DynamicEnchantmentItem, ItemContainingItemHelper, FabricItem {
+
+    public static final StorageBehaviour<ItemVariant> DRILL_BEHAVIOUR = new StorageBehaviour<>() {
+        @Override
+        public long getCapacityForResource(ItemVariant resource) {
+            return resource.getItem().getMaxStackSize();
+        }
+
+        public boolean canInsert(ItemVariant item) {
+            Integer burnTicks = FuelRegistry.INSTANCE.get(item.getItem());
+            return burnTicks != null && burnTicks > 0;
+        }
+
+    };
+
     private static final int FULL_WATER = 18000;
 
     public SteamDrillItem(Properties settings) {
@@ -208,14 +226,23 @@ public class SteamDrillItem extends Item implements DynamicToolItem, MagnaTool, 
     }
 
     private int consumeFuel(ItemStack stack, Simulation simulation) {
-        Integer burnTicks = FuelRegistry.INSTANCE.get(getItemVariant(stack).getItem());
+        Integer burnTicks = FuelRegistry.INSTANCE.get(getResource(stack).getItem());
         if (burnTicks != null && burnTicks > 0) {
             if (simulation.isActing()) {
-                Item burnt = getItemVariant(stack).getItem();
+                Item burnt = getResource(stack).getItem();
                 setAmount(stack, getAmount(stack) - 1);
 
                 if (burnt.hasCraftingRemainingItem()) {
-                    insert(stack, ItemVariant.of(burnt.getCraftingRemainingItem()), 1);
+                    try (Transaction tx = Transaction.openOuter()) {
+                        var storage = GenericItemStorage.of(stack, this);
+                        storage.insert(
+                                ItemVariant.of(burnt.getCraftingRemainingItem()),
+                                1,
+                                tx,
+                                true);
+                        tx.commit();
+                    }
+
                 }
             }
             return burnTicks;
@@ -234,15 +261,10 @@ public class SteamDrillItem extends Item implements DynamicToolItem, MagnaTool, 
         CompoundTag tag = stack.getTag();
         if (tag != null) {
             return Optional.of(new SteamDrillTooltipData(tag.getInt("water") * 100 / FULL_WATER, tag.getInt("burnTicks"), tag.getInt("maxBurnTicks"),
-                    getItemVariant(stack), getAmount(stack)));
+                    getResource(stack), getAmount(stack)));
         } else {
             return Optional.of(new SteamDrillTooltipData(0, 0, 1, ItemVariant.blank(), 0));
         }
-    }
-
-    @Override
-    public long getStackCapacity() {
-        return 1;
     }
 
     @Override
@@ -254,12 +276,6 @@ public class SteamDrillItem extends Item implements DynamicToolItem, MagnaTool, 
     public boolean overrideOtherStackedOnMe(ItemStack stackBarrel, ItemStack itemStack, Slot slot, ClickAction clickType, Player player,
             SlotAccess cursorStackReference) {
         return handleOtherStackedOnMe(stackBarrel, itemStack, slot, clickType, player, cursorStackReference);
-    }
-
-    @Override
-    public boolean canDirectInsert(ItemStack stack) {
-        Integer fuelTime = FuelRegistry.INSTANCE.get(stack.getItem());
-        return fuelTime != null && fuelTime > 0 && ItemContainingItemHelper.super.canDirectInsert(stack);
     }
 
     @Override
@@ -281,6 +297,16 @@ public class SteamDrillItem extends Item implements DynamicToolItem, MagnaTool, 
         tooltip.add(MIText.SteamDrillWaterHelp.text().setStyle(MITooltips.DEFAULT_STYLE));
         tooltip.add(MIText.SteamDrillFuelHelp.text().setStyle(MITooltips.DEFAULT_STYLE));
         tooltip.add(MIText.SteamDrillProfit.text().setStyle(MITooltips.DEFAULT_STYLE));
+    }
+
+    @Override
+    public ItemVariant getBlankResource() {
+        return ItemVariant.blank();
+    }
+
+    @Override
+    public StorageBehaviour<ItemVariant> getBehaviour() {
+        return DRILL_BEHAVIOUR;
     }
 
     public record SteamDrillTooltipData(int waterLevel, int burnTicks, int maxBurnTicks, ItemVariant variant, long amount)

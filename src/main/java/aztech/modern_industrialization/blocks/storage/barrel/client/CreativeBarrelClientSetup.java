@@ -21,23 +21,17 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.blocks.storage.tank.creativetank;
+package aztech.modern_industrialization.blocks.storage.barrel.client;
 
-import aztech.modern_industrialization.util.RenderHelper;
-import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
-import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import aztech.modern_industrialization.MIBlockEntityTypes;
+import aztech.modern_industrialization.blocks.storage.barrel.BarrelRenderer;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 
-public class CreativeTankRenderer implements BlockEntityRenderer<CreativeTankBlockEntity> {
-    public CreativeTankRenderer(BlockEntityRendererProvider.Context context) {
-    }
+@Environment(EnvType.CLIENT)
+public class CreativeBarrelClientSetup {
 
-    @Override
-    public void render(CreativeTankBlockEntity entity, float tickDelta, PoseStack matrices, MultiBufferSource vertexConsumers, int light,
-            int overlay) {
-        if (!entity.isResourceBlank()) {
-            RenderHelper.drawFluidInTank(entity, matrices, vertexConsumers, entity.getResource(), 1);
-        }
+    public static void setupClient() {
+        BarrelRenderer.register(MIBlockEntityTypes.CREATIVE_BARREL);
     }
 }

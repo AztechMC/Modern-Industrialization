@@ -21,35 +21,17 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.blocks.storage.tank;
+package aztech.modern_industrialization.blocks.storage.barrel;
 
+import aztech.modern_industrialization.MIBlockEntityTypes;
 import aztech.modern_industrialization.blocks.storage.StorageBehaviour;
-import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
-import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
-import net.fabricmc.fabric.api.transfer.v1.storage.StorageUtil;
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 
-public class TankBlockEntity extends AbstractTankBlockEntity {
+public class CreativeBarrelBlockEntity extends BarrelBlockEntity {
 
-    public TankBlockEntity(BlockEntityType<?> bet, BlockPos pos, BlockState state, StorageBehaviour<FluidVariant> behaviour) {
-        super(bet, pos, state, behaviour);
+    public CreativeBarrelBlockEntity(BlockPos pos, BlockState state) {
+        super(MIBlockEntityTypes.CREATIVE_BARREL, pos, state, StorageBehaviour.creative());
     }
 
-    public boolean onPlayerUse(Player player) {
-        Storage<FluidVariant> handIo = ContainerItemContext.ofPlayerHand(player, InteractionHand.MAIN_HAND).find(FluidStorage.ITEM);
-        if (handIo != null) {
-            // move from hand into this tank
-            if (StorageUtil.move(handIo, this, f -> true, Long.MAX_VALUE, null) > 0)
-                return true;
-            // move from this tank into hand
-            return StorageUtil.move(this, handIo, f -> true, Long.MAX_VALUE, null) > 0;
-        }
-        return false;
-    }
 }

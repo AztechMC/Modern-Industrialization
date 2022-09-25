@@ -21,12 +21,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.blocks.storage.tank;
+package aztech.modern_industrialization.blocks.storage.tank.creativetank;
 
 import aztech.modern_industrialization.MIBlock;
 import aztech.modern_industrialization.MIBlockEntityTypes;
 import aztech.modern_industrialization.MIIdentifier;
-import aztech.modern_industrialization.blocks.creativetank.CreativeTankRenderer;
+import aztech.modern_industrialization.blocks.storage.tank.TankItemUnbakedModel;
 import aztech.modern_industrialization.machines.models.MachineModelProvider;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -37,7 +37,8 @@ import net.minecraft.client.renderer.RenderType;
 @Environment(EnvType.CLIENT)
 public class CreativeTankClientSetup {
     public static void setupClient() {
-        MachineModelProvider.register(new MIIdentifier("item/creative_tank"), new TankItemUnbakedModel("creative_tank"));
+        MachineModelProvider.register(new MIIdentifier("item/creative_tank"),
+                new TankItemUnbakedModel("creative_tank"));
         BlockRenderLayerMap.INSTANCE.putBlock(MIBlock.CREATIVE_TANK_BLOCK.asBlock(), RenderType.cutout());
         BlockEntityRendererRegistry.register(MIBlockEntityTypes.CREATIVE_TANK, CreativeTankRenderer::new);
     }

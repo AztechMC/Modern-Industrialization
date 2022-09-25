@@ -50,17 +50,12 @@ public class BarrelBlockEntity extends AbstractStorageBlockEntity<ItemVariant> {
     }
 
     @Override
-    public void load(CompoundTag tag) {
-        super.load(tag);
-        resource = ItemVariant.fromNbt(tag.getCompound("item"));
-        if (resource.isBlank()) {
-            amount = 0;
-        }
+    public ItemVariant loadResource(CompoundTag tag) {
+        return ItemVariant.fromNbt(tag.getCompound("item"));
     }
 
     @Override
-    public void saveAdditional(CompoundTag tag) {
-        super.saveAdditional(tag);
+    public void saveResource(ItemVariant resource, CompoundTag tag) {
         tag.put("item", resource.toNbt());
     }
 }

@@ -23,34 +23,40 @@
  */
 package aztech.modern_industrialization.blocks.storage.tank;
 
+import aztech.modern_industrialization.blocks.storage.AbstractStorageBlockEntity;
 import aztech.modern_industrialization.blocks.storage.StorageBehaviour;
-import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
+import aztech.modern_industrialization.util.NbtHelper;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
-import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
-import net.fabricmc.fabric.api.transfer.v1.storage.StorageUtil;
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.InteractionHand;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 
-public class TankBlockEntity extends AbstractTankBlockEntity {
+public abstract class AbstractTankBlockEntity extends AbstractStorageBlockEntity<FluidVariant> {
 
-    public TankBlockEntity(BlockEntityType<?> bet, BlockPos pos, BlockState state, long capacity) {
-        super(bet, pos, state, StorageBehaviour.uniformQuantity(capacity));
+    public AbstractTankBlockEntity(BlockEntityType<?> bet,
+            BlockPos pos,
+            BlockState state,
+            StorageBehaviour<FluidVariant> behaviour) {
+        super(bet, pos, state, behaviour);
     }
 
-    public boolean onPlayerUse(Player player) {
-        Storage<FluidVariant> handIo = ContainerItemContext.ofPlayerHand(player, InteractionHand.MAIN_HAND).find(FluidStorage.ITEM);
-        if (handIo != null) {
-            // move from hand into this tank
-            if (StorageUtil.move(handIo, this, f -> true, Long.MAX_VALUE, null) > 0)
-                return true;
-            // move from this tank into hand
-            if (StorageUtil.move(this, handIo, f -> true, Long.MAX_VALUE, null) > 0)
-                return true;
-        }
-        return false;
+    @Override
+    public FluidVariant loadResource(CompoundTag tag) {
+        return NbtHelper.getFluidCompatible(tag, "fluid");
     }
+
+    @Override
+    public void saveResource(FluidVariant resource, CompoundTag tag) {
+        NbtHelper.putFluid(tag, "fluid", getResource());
+    }
+
+    @Override
+    public FluidVariant getBlankResource() {
+        return FluidVariant.blank();
+    }
+
+    public abstract boolean onPlayerUse(Player player);
+
 }

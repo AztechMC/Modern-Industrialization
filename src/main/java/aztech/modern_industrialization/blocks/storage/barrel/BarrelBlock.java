@@ -43,7 +43,7 @@ public class BarrelBlock extends AbstractStorageBlock implements EntityBlock {
     public final EntityBlock factory;
 
     public BarrelBlock(Properties properties, EntityBlock factory) {
-        super(properties);
+        super(properties, behaviour);
         this.factory = factory;
     }
 

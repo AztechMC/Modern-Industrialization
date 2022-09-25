@@ -23,7 +23,7 @@
  */
 package aztech.modern_industrialization.compat.megane.provider;
 
-import aztech.modern_industrialization.blocks.creativetank.CreativeTankBlockEntity;
+import aztech.modern_industrialization.blocks.storage.tank.creativetank.CreativeTankBlockEntity;
 import lol.bai.megane.api.provider.FluidProvider;
 import net.minecraft.world.level.material.Fluid;
 import org.jetbrains.annotations.Nullable;

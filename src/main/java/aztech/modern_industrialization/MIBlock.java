@@ -28,9 +28,10 @@ import static aztech.modern_industrialization.ModernIndustrialization.STONE_MATE
 
 import aztech.modern_industrialization.blocks.TrashCanBlock;
 import aztech.modern_industrialization.blocks.creativestorageunit.CreativeStorageUnitBlock;
-import aztech.modern_industrialization.blocks.creativetank.CreativeTankBlock;
-import aztech.modern_industrialization.blocks.creativetank.CreativeTankItem;
 import aztech.modern_industrialization.blocks.forgehammer.ForgeHammerBlock;
+import aztech.modern_industrialization.blocks.storage.tank.TankBlock;
+import aztech.modern_industrialization.blocks.storage.tank.creativetank.CreativeTankBlockEntity;
+import aztech.modern_industrialization.blocks.storage.tank.creativetank.CreativeTankItem;
 import aztech.modern_industrialization.definition.BlockDefinition;
 import aztech.modern_industrialization.items.SortOrder;
 import aztech.modern_industrialization.materials.part.TankPart;
@@ -38,6 +39,7 @@ import java.util.*;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.Function;
+import java.util.function.Supplier;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
@@ -82,16 +84,19 @@ public class MIBlock {
     public static final BlockDefinition<Block> INDUSTRIAL_TNT = blockExplosive("Industrial TNT", "industrial_tnt");
     public static final BlockDefinition<Block> NUKE = blockExplosive("Nuke", "nuke");
 
-    public static final BlockDefinition<CreativeTankBlock> CREATIVE_TANK_BLOCK = block(
+    public static final BlockDefinition<TankBlock> CREATIVE_TANK_BLOCK = block(
             "Creative Tank",
             "creative_tank",
-            BlockDefinitionParams.of().withBlockConstructor(CreativeTankBlock::new)
+            BlockDefinitionParams.of()
+                    .withBlockConstructor(() -> new TankBlock(CreativeTankBlockEntity::new))
                     .withBlockItemConstructor(CreativeTankItem::new)
                     .withModel(TankPart.MODEL_GENERATOR).noLootTable().clearTags()
                     .noOcclusion(),
-            CreativeTankBlock.class
+                    TankBlock.class
     ).withBlockRegistrationEvent(
             (block, item) -> FluidStorage.ITEM.registerForItems(CreativeTankItem.TankItemStorage::new, item));
+
+
 
     public static final BlockDefinition<CreativeStorageUnitBlock> CREATIVE_STORAGE_UNIT = block("Creative Storage Unit",
             "creative_storage_unit", BlockDefinitionParams.of().withBlockConstructor(CreativeStorageUnitBlock::new));
@@ -199,6 +204,15 @@ public class MIBlock {
 
         public <U extends Block> BlockDefinitionParams<U> withBlockConstructor(Function<BlockBehaviour.Properties, U> ctor) {
             return new BlockDefinitionParams<>(this, ctor, this.blockItemCtor, this.modelGenerator, this.lootTableGenerator, this.tags);
+        }
+
+        public <U extends Block> BlockDefinitionParams<U> withBlockConstructor(Supplier<U> ctor) {
+            return new BlockDefinitionParams<>(this,
+                    p -> ctor.get(),
+                    this.blockItemCtor,
+                    this.modelGenerator,
+                    this.lootTableGenerator,
+                    this.tags);
         }
 
         public BlockDefinitionParams<T> withBlockItemConstructor(BiFunction<Block, FabricItemSettings, BlockItem> blockItemCtor) {

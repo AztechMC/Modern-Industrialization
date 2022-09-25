@@ -49,16 +49,25 @@ import org.jetbrains.annotations.Nullable;
 public abstract class AbstractStorageBlockEntity<T extends TransferVariant<?>> extends FastBlockEntity
         implements SingleSlotStorage<T>, WrenchableBlockEntity {
 
+    @Override
+    public long getVersion() {
+        return version;
+    }
+
     protected T resource;
     protected long amount;
     private long version;
     private boolean isLocked;
 
+    private final StorageBehaviour<T> behaviour;
+
     private final ResourceParticipant participant = new ResourceParticipant();
 
-    public AbstractStorageBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
+    public AbstractStorageBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state,
+            StorageBehaviour<T> behaviour) {
         super(type, pos, state);
         resource = getBlankResource();
+        this.behaviour = behaviour;
     }
 
     public void onChanged() {
@@ -86,10 +95,11 @@ public abstract class AbstractStorageBlockEntity<T extends TransferVariant<?>> e
             level.addFreshEntity(new ItemEntity(level, hit.getLocation().x, hit.getLocation().y, hit.getLocation().z, block.getStack(this)));
             level.setBlockAndUpdate(worldPosition, Blocks.AIR.defaultBlockState());
         } else {
-            this.toggleLocked();
-            player.displayClientMessage(
-                    isLocked ? MIText.Locked.text() : MIText.Unlocked.text(), true);
-
+            if (this.behaviour.isLockable()) {
+                this.toggleLocked();
+                player.displayClientMessage(
+                        isLocked() ? MIText.Locked.text() : MIText.Unlocked.text(), true);
+            }
         }
         return true;
     }
@@ -100,10 +110,20 @@ public abstract class AbstractStorageBlockEntity<T extends TransferVariant<?>> e
     }
 
     @Override
+    public boolean supportsInsertion() {
+        return !behaviour.isCreative();
+    }
+
+    @Override
     public long insert(T resource, long maxAmount, TransactionContext transaction) {
         StoragePreconditions.notBlankNotNegative(resource, maxAmount);
-        if ((this.resource.isBlank() && !this.isLocked) || this.resource.equals(resource)) {
-            long inserted = Math.min(maxAmount, getCapacityForResource(resource) - amount);
+
+        if (behaviour.isCreative()) {
+            return 0;
+        }
+
+        if ((this.resource.isBlank() && !this.isLocked()) || this.resource.equals(resource)) {
+            long inserted = Math.min(maxAmount, behaviour.getCapacityForResource(resource) - amount);
             if (inserted > 0) {
                 participant.updateSnapshots(transaction);
                 amount += inserted;
@@ -117,26 +137,29 @@ public abstract class AbstractStorageBlockEntity<T extends TransferVariant<?>> e
     @Override
     public long extract(T resource, long maxAmount, TransactionContext transaction) {
         StoragePreconditions.notBlankNotNegative(resource, maxAmount);
-        if (resource.equals(this.resource)) {
-            long extracted = Math.min(maxAmount, amount);
-            if (extracted > 0) {
-                participant.updateSnapshots(transaction);
-                amount -= extracted;
-                if (amount == 0 && !isLocked) {
-                    this.resource = getBlankResource();
+
+        if (behaviour.isCreative()) {
+            return maxAmount;
+        } else {
+            if (resource.equals(this.resource)) {
+                long extracted = Math.min(maxAmount, amount);
+                if (extracted > 0) {
+                    participant.updateSnapshots(transaction);
+                    amount -= extracted;
+                    if (amount == 0 && !isLocked()) {
+                        this.resource = getBlankResource();
+                    }
                 }
+                return extracted;
             }
-            return extracted;
+            return 0;
         }
-        return 0;
     }
 
     @Override
     public boolean isResourceBlank() {
         return getResource().isBlank();
     }
-
-    public abstract T getBlankResource();
 
     @Override
     public T getResource() {
@@ -145,24 +168,28 @@ public abstract class AbstractStorageBlockEntity<T extends TransferVariant<?>> e
 
     @Override
     public long getAmount() {
-        return amount;
+        if (isResourceBlank()) {
+            return 0;
+        }
+        if (!behaviour.isCreative()) {
+            return amount;
+        } else {
+            return Long.MAX_VALUE;
+        }
     }
 
     public boolean isEmpty() {
-        return amount == 0;
-    }
-
-    @Override
-    public long getVersion() {
-        return version;
+        if (!behaviour.isCreative()) {
+            return amount == 0;
+        } else {
+            return resource.isBlank();
+        }
     }
 
     @Override
     public long getCapacity() {
-        return this.getCapacityForResource(resource);
+        return behaviour.getCapacityForResource(resource);
     }
-
-    public abstract long getCapacityForResource(T resource);
 
     private class ResourceParticipant extends SnapshotParticipant<ResourceAmount<T>> {
         @Override
@@ -183,26 +210,54 @@ public abstract class AbstractStorageBlockEntity<T extends TransferVariant<?>> e
     }
 
     public boolean isLocked() {
-        return isLocked;
-    }
-
-    public boolean toggleLocked() {
-        isLocked = !isLocked;
-        if (!isLocked && amount == 0) {
-            resource = getBlankResource();
+        if (!behaviour.isLockable()) {
+            return false;
         }
         return isLocked;
     }
 
+    public void toggleLocked() {
+        if (behaviour.isLockable()) {
+            isLocked = !isLocked;
+            if (!isLocked && amount == 0) {
+                resource = getBlankResource();
+            }
+        }
+    }
+
     @Override
     public void load(CompoundTag tag) {
-        amount = tag.getLong("amt");
-        isLocked = tag.getBoolean("locked");
+        resource = loadResource(tag);
+
+        if (behaviour.isLockable()) {
+            isLocked = tag.getBoolean("locked");
+        }
+
+        if (!behaviour.isCreative()) {
+            amount = tag.getLong("amt");
+            if (resource.isBlank()) {
+                amount = 0;
+            }
+        }
+
     }
 
     @Override
     public void saveAdditional(CompoundTag tag) {
-        tag.putLong("amt", amount);
-        tag.putBoolean("locked", isLocked);
+
+        if (behaviour.isLockable()) {
+            tag.putBoolean("locked", isLocked);
+        }
+
+        if (!behaviour.isCreative()) {
+            tag.putLong("amt", amount);
+        }
+        saveResource(resource, tag);
     }
+
+    public abstract T loadResource(CompoundTag tag);
+
+    public abstract void saveResource(T resource, CompoundTag tag);
+
+    public abstract T getBlankResource();
 }

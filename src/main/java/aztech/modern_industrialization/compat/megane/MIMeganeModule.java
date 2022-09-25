@@ -24,9 +24,9 @@
 package aztech.modern_industrialization.compat.megane;
 
 import aztech.modern_industrialization.ModernIndustrialization;
-import aztech.modern_industrialization.blocks.creativetank.CreativeTankBlockEntity;
 import aztech.modern_industrialization.blocks.storage.AbstractStorageBlockEntity;
 import aztech.modern_industrialization.blocks.storage.tank.TankBlockEntity;
+import aztech.modern_industrialization.blocks.storage.tank.creativetank.CreativeTankBlockEntity;
 import aztech.modern_industrialization.compat.megane.holder.CrafterComponentHolder;
 import aztech.modern_industrialization.compat.megane.holder.EnergyComponentHolder;
 import aztech.modern_industrialization.compat.megane.holder.EnergyListComponentHolder;

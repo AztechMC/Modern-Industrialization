@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.blocks.creativetank;
+package aztech.modern_industrialization.blocks.storage.tank.creativetank;
 
 import aztech.modern_industrialization.util.RenderHelper;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -37,7 +37,7 @@ public class CreativeTankRenderer implements BlockEntityRenderer<CreativeTankBlo
     public void render(CreativeTankBlockEntity entity, float tickDelta, PoseStack matrices, MultiBufferSource vertexConsumers, int light,
             int overlay) {
         if (!entity.isResourceBlank()) {
-            RenderHelper.drawFluidInTank(entity, matrices, vertexConsumers, entity.fluid, 1);
+            RenderHelper.drawFluidInTank(entity, matrices, vertexConsumers, entity.getResource(), 1);
         }
     }
 }

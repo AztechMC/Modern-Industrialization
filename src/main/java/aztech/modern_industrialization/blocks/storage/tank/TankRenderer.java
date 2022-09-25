@@ -39,7 +39,7 @@ public class TankRenderer implements BlockEntityRenderer<BlockEntity> {
         TankBlockEntity tank = (TankBlockEntity) entity;
         if (!tank.getResource().isBlank()) {
             if (tank.getAmount() > 0) {
-                RenderHelper.drawFluidInTank(entity, matrices, vertexConsumers, tank.getResource(), (float) tank.getAmount() / tank.capacity);
+                RenderHelper.drawFluidInTank(entity, matrices, vertexConsumers, tank.getResource(), (float) tank.getAmount() / tank.getCapacity());
             } else if (tank.isLocked()) {
                 RenderHelper.drawFluidInTank(entity, matrices, vertexConsumers, tank.getResource(), 0.01f);
             }

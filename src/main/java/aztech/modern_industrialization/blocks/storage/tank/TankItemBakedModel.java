@@ -23,7 +23,7 @@
  */
 package aztech.modern_industrialization.blocks.storage.tank;
 
-import aztech.modern_industrialization.blocks.creativetank.CreativeTankItem;
+import aztech.modern_industrialization.blocks.storage.tank.creativetank.CreativeTankItem;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Supplier;

@@ -24,8 +24,9 @@
 package aztech.modern_industrialization;
 
 import aztech.modern_industrialization.api.energy.EnergyApi;
+import aztech.modern_industrialization.blocks.creativebarrel.CreativeBarrelBlockEntity;
 import aztech.modern_industrialization.blocks.creativestorageunit.CreativeStorageUnitBlockEntity;
-import aztech.modern_industrialization.blocks.creativetank.CreativeTankBlockEntity;
+import aztech.modern_industrialization.blocks.storage.tank.creativetank.CreativeTankBlockEntity;
 import aztech.modern_industrialization.definition.BlockDefinition;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
@@ -38,11 +39,13 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
  */
 public class MIBlockEntityTypes {
     public static BlockEntityType<CreativeTankBlockEntity> CREATIVE_TANK;
+    public static BlockEntityType<CreativeBarrelBlockEntity> CREATIVE_BARREL;
     public static BlockEntityType<CreativeStorageUnitBlockEntity> CREATIVE_STORAGE_UNIT;
 
     public static void init() {
         CREATIVE_TANK = register(MIBlock.CREATIVE_TANK_BLOCK, CreativeTankBlockEntity::new);
         CREATIVE_STORAGE_UNIT = register(MIBlock.CREATIVE_STORAGE_UNIT, CreativeStorageUnitBlockEntity::new);
+        CREATIVE_BARREL = register(MIBlock.CREATIVE_BARREL_BLOCK, CreativeBarrelBlockEntity::new);
 
         // API registrations below
         FluidStorage.SIDED.registerSelf(CREATIVE_TANK);

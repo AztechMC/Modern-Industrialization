@@ -146,15 +146,20 @@ public class ElectricityNetworkNode extends PipeNetworkNode {
     }
 
     // Used in the Waila plugin
-    public long getEu() {
-        return eu;
+    private long getMaxTransfer() {
+        return ((ElectricityNetwork) network).tier.getMaxTransfer();
     }
 
-    public long getMaxEu() {
-        return getTier().getMaxTransfer();
+    public InGameInfo collectNetworkInfo() {
+        long stored = 0, capacity = 0;
+        for (var posNode : network.iterateTickingNodes()) {
+            var node = (ElectricityNetworkNode) posNode.getNode();
+            stored += node.eu;
+            capacity += getMaxTransfer(); // max transfer is also max eu capacity
+        }
+        return new InGameInfo(stored, capacity, ((ElectricityNetwork) network).stats.getValue(), getMaxTransfer());
     }
 
-    public CableTier getTier() {
-        return ((ElectricityNetwork) network).tier;
+    public record InGameInfo(long stored, long capacity, long transfer, long maxTransfer) {
     }
 }

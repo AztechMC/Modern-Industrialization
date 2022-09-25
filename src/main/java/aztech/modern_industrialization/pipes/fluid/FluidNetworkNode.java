@@ -331,15 +331,21 @@ public class FluidNetworkNode extends PipeNetworkNode {
     }
 
     // Used in the Waila plugin
-    public long getAmount() {
-        return amount;
-    }
-
-    public int getCapacity() {
-        return ((FluidNetwork) network).nodeCapacity;
-    }
-
-    public FluidVariant getFluid() {
+    private FluidVariant getFluid() {
         return ((FluidNetworkData) network.data).fluid;
+    }
+
+    public InGameInfo collectNetworkInfo() {
+        long stored = 0, capacity = 0;
+        var fluidNetwork = (FluidNetwork) network;
+        for (var posNode : network.iterateTickingNodes()) {
+            var node = (FluidNetworkNode) posNode.getNode();
+            stored += node.amount;
+            capacity += fluidNetwork.nodeCapacity;
+        }
+        return new InGameInfo(getFluid(), stored, capacity, fluidNetwork.stats.getValue(), capacity);
+    }
+
+    public record InGameInfo(FluidVariant fluid, long stored, long capacity, long transfer, long maxTransfer) {
     }
 }

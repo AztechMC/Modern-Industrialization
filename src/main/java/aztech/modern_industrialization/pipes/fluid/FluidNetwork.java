@@ -23,6 +23,7 @@
  */
 package aztech.modern_industrialization.pipes.fluid;
 
+import aztech.modern_industrialization.pipes.PipeStatsCollector;
 import aztech.modern_industrialization.pipes.api.PipeNetwork;
 import aztech.modern_industrialization.pipes.api.PipeNetworkData;
 import aztech.modern_industrialization.pipes.api.PipeNetworkNode;
@@ -38,6 +39,7 @@ import net.minecraft.server.level.ServerLevel;
 
 public class FluidNetwork extends PipeNetwork {
     final int nodeCapacity;
+    final PipeStatsCollector stats = new PipeStatsCollector();
 
     public FluidNetwork(int id, PipeNetworkData data, int nodeCapacity) {
         super(id, data == null ? new FluidNetworkData(FluidVariant.blank()) : data);
@@ -61,12 +63,16 @@ public class FluidNetwork extends PipeNetwork {
         long networkCapacity = (long) loadedNodeCount * nodeCapacity;
         FluidVariant fluid = ((FluidNetworkData) data).fluid;
 
+        long extracted = 0, inserted = 0;
+
         if (!fluid.isBlank()) {
             try (Transaction transaction = Transaction.openOuter()) {
                 // Extract from targets into the network
-                networkAmount += transferByPriority(Storage::extract, targets, fluid, networkCapacity - networkAmount, transaction);
+                extracted = transferByPriority(Storage::extract, targets, fluid, networkCapacity - networkAmount, transaction);
+                networkAmount += extracted;
                 // Insert into the targets from the network
-                networkAmount -= transferByPriority(Storage::insert, targets, fluid, networkAmount, transaction);
+                inserted = transferByPriority(Storage::insert, targets, fluid, networkAmount, transaction);
+                networkAmount -= inserted;
 
                 transaction.commit();
             }
@@ -80,6 +86,8 @@ public class FluidNetwork extends PipeNetwork {
                 loadedNodeCount--;
             }
         }
+
+        stats.addValue(Math.max(extracted, inserted));
 
         for (var entry : iterateTickingNodes()) {
             ((FluidNetworkNode) entry.getNode()).afterTick(world, entry.getPos());

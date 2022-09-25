@@ -27,7 +27,7 @@ import aztech.modern_industrialization.pipes.api.PipeNetworkNode;
 import aztech.modern_industrialization.pipes.electricity.ElectricityNetworkNode;
 import aztech.modern_industrialization.pipes.fluid.FluidNetworkNode;
 import aztech.modern_industrialization.pipes.impl.PipeBlockEntity;
-import aztech.modern_industrialization.util.NbtHelper;
+import aztech.modern_industrialization.pipes.item.ItemNetworkNode;
 import mcp.mobius.waila.api.IPluginConfig;
 import mcp.mobius.waila.api.IServerAccessor;
 import mcp.mobius.waila.api.IServerDataProvider;
@@ -39,18 +39,27 @@ public class PipeDataProvider implements IServerDataProvider<PipeBlockEntity> {
         for (PipeNetworkNode node : accessor.getTarget().getNodes()) {
             CompoundTag pipeData = new CompoundTag();
 
-            if (node instanceof FluidNetworkNode) {
-                FluidNetworkNode fluidNode = (FluidNetworkNode) node;
-                pipeData.putLong("amount", fluidNode.getAmount());
-                pipeData.putInt("capacity", fluidNode.getCapacity());
-                NbtHelper.putFluid(pipeData, "fluid", fluidNode.getFluid());
+            if (node instanceof FluidNetworkNode fluidNode) {
+                var info = fluidNode.collectNetworkInfo();
+                pipeData.put("fluid", info.fluid().toNbt());
+                pipeData.putLong("amount", info.stored());
+                pipeData.putLong("capacity", info.capacity());
+                pipeData.putLong("transfer", info.transfer());
+                pipeData.putLong("maxTransfer", info.maxTransfer());
             }
 
-            if (node instanceof ElectricityNetworkNode) {
-                ElectricityNetworkNode electricityNode = (ElectricityNetworkNode) node;
-                pipeData.putLong("eu", electricityNode.getEu());
-                pipeData.putLong("maxEu", electricityNode.getMaxEu());
-                pipeData.putString("tier", electricityNode.getTier().toString());
+            if (node instanceof ElectricityNetworkNode electricityNode) {
+                var info = electricityNode.collectNetworkInfo();
+                pipeData.putLong("eu", info.stored());
+                pipeData.putLong("maxEu", info.capacity());
+                pipeData.putLong("transfer", info.transfer());
+                pipeData.putLong("maxTransfer", info.maxTransfer());
+            }
+
+            if (node instanceof ItemNetworkNode itemNode) {
+                var info = itemNode.collectNetworkInfo();
+                pipeData.putLong("items", info.movedItems());
+                pipeData.putInt("pulse", info.pulse());
             }
 
             data.put(node.getType().getIdentifier().toString(), pipeData);

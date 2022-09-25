@@ -41,15 +41,15 @@ import lol.bai.megane.api.registry.CommonRegistrar;
 public class MIMeganeModule implements MeganeModule {
     @Override
     public void registerCommon(CommonRegistrar registrar) {
-        registrar.addEnergy(EnergyListComponentHolder.class, new ComponentListEnergyProvider());
+        registrar.addEnergy(500, EnergyListComponentHolder.class, new ComponentListEnergyProvider());
         registrar.addEnergy(EnergyComponentHolder.class, new ComponentEnergyProvider());
 
-        registrar.addFluid(MultiblockInventoryComponentHolder.class, new MultiblockFluidProvider());
+        registrar.addFluid(500, MultiblockInventoryComponentHolder.class, new MultiblockFluidProvider());
         registrar.addFluid(TankBlockEntity.class, new TankFluidProvider());
         registrar.addFluid(CreativeTankBlockEntity.class, new CreativeTankFluidProvider());
         registrar.addFluid(MachineBlockEntity.class, new MachineFluidProvider());
 
-        registrar.addItem(MultiblockInventoryComponentHolder.class, new MultiblockItemProvider());
+        registrar.addItem(500, MultiblockInventoryComponentHolder.class, new MultiblockItemProvider());
         registrar.addItem(AbstractStorageBlockEntity.class, new StorageItemProvider());
         registrar.addItem(MachineBlockEntity.class, new MachineItemProvider());
 

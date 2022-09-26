@@ -52,7 +52,6 @@ public class TankPart extends UnbuildablePart<Long> {
     public static final BiConsumer<Block, BlockModelGenerators> MODEL_GENERATOR = (block, gen) -> {
         var textureSlot = TextureSlot.create("0");
         var mapping = TextureMapping.singleSlot(textureSlot, new MIIdentifier("block/" + Registry.BLOCK.getKey(block).getPath()));
-        gen.skipAutoItemBlock(block);
         gen.createTrivialBlock(block, mapping, new ModelTemplate(Optional.of(new MIIdentifier("base/tank")), Optional.empty(), textureSlot));
     };
 
@@ -94,6 +93,7 @@ public class TankPart extends UnbuildablePart<Long> {
                                     s -> new TankBlock(factory)).withBlockItemConstructor(
                                             (b, s) -> new TankItem(b, tankStorageBehaviour))
                                     .withModel(MODEL_GENERATOR)
+                                    .withBlockEntityRendererItemModel()
                                     .noLootTable()
                                     .sortOrder(SortOrder.TANKS.and(partContext.getMaterialName())));
 
@@ -110,7 +110,7 @@ public class TankPart extends UnbuildablePart<Long> {
                     FluidStorage.SIDED.registerSelf(bet.getValue());
                     item.registerItemApi();
 
-                    CommonProxy.INSTANCE.registerPartTankClient(block, partContext.getMaterialName(), itemPath, bet.getValue());
+                    CommonProxy.INSTANCE.registerPartTankClient(block, item, partContext.getMaterialName(), itemPath, bet.getValue());
                 });
     }
 }

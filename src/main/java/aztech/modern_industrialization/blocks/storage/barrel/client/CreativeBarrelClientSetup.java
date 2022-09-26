@@ -23,15 +23,19 @@
  */
 package aztech.modern_industrialization.blocks.storage.barrel.client;
 
+import aztech.modern_industrialization.MIBlock;
 import aztech.modern_industrialization.MIBlockEntityTypes;
 import aztech.modern_industrialization.blocks.storage.barrel.BarrelRenderer;
+import aztech.modern_industrialization.util.RenderHelper;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.fabricmc.fabric.api.client.rendering.v1.BuiltinItemRendererRegistry;
 
 @Environment(EnvType.CLIENT)
 public class CreativeBarrelClientSetup {
 
     public static void setupClient() {
-        BarrelRenderer.register(MIBlockEntityTypes.CREATIVE_BARREL);
+        BarrelRenderer.register(MIBlockEntityTypes.CREATIVE_BARREL, 0x000000);
+        BuiltinItemRendererRegistry.INSTANCE.register(MIBlock.CREATIVE_BARREL, RenderHelper.BLOCK_AND_ENTITY_RENDERER);
     }
 }

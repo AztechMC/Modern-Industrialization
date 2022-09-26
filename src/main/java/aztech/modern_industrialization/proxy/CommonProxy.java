@@ -29,6 +29,7 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -72,7 +73,7 @@ public class CommonProxy {
         return null;
     }
 
-    public void registerPartTankClient(Block tankBlock, String materialName, String itemPath,
+    public void registerPartTankClient(Block tankBlock, Item tankItem, String materialName, String itemPath,
             BlockEntityType<AbstractTankBlockEntity> blockEntityType) {
     }
 }

@@ -184,6 +184,7 @@ public class SteamDrillItem
         if (tag != null && tag.getInt("water") > 0) {
             if (tag.getInt("burnTicks") == 0) {
                 int burnTicks = consumeFuel(stack, Simulation.ACT);
+                tag = stack.getOrCreateTag(); // consumeFuel might cause the tag to change
                 tag.putInt("burnTicks", burnTicks);
                 tag.putInt("maxBurnTicks", burnTicks);
             }

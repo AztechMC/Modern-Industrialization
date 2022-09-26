@@ -31,6 +31,7 @@ import java.util.function.BiFunction;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.minecraft.data.loot.BlockLoot;
 import net.minecraft.data.models.BlockModelGenerators;
+import net.minecraft.data.models.ItemModelGenerators;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
@@ -51,6 +52,7 @@ public class BlockDefinition<T extends Block> extends Definition implements Item
     public BlockDefinition(String englishName, String id, T block,
             BiFunction<Block, FabricItemSettings, BlockItem> blockItemCtor,
             BiConsumer<Block, BlockModelGenerators> modelGenerator,
+            BiConsumer<Item, ItemModelGenerators> itemModelGenerator,
             BiConsumer<Block, BlockLoot> lootTableGenerator,
             List<TagKey<Block>> tags,
             SortOrder sortOrder) {
@@ -61,8 +63,7 @@ public class BlockDefinition<T extends Block> extends Definition implements Item
                 englishName,
                 id,
                 s -> blockItemCtor.apply(block, s),
-                (item, itemModelGenerators) -> {
-                },
+                itemModelGenerator,
                 sortOrder);
         this.modelGenerator = modelGenerator;
         this.lootTableGenerator = lootTableGenerator;

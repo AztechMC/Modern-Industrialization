@@ -18,5 +18,8 @@ accessible    field    net/minecraft/server/level/ChunkMap updatingChunkMap Lit/
 # Used by loot datagen
 accessible    field    net/minecraft/data/loot/BlockLoot    map    Ljava/util/Map;
 
+# Used by model datagen
+accessible  field   net/minecraft/data/models/ItemModelGenerators   output  Ljava/util/function/BiConsumer;
+
 # Access list of renderables in the screen
 accessible field net/minecraft/client/gui/screens/Screen renderables Ljava/util/List;

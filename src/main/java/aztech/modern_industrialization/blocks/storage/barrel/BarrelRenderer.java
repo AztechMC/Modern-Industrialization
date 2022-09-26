@@ -45,9 +45,15 @@ import org.jetbrains.annotations.NotNull;
 
 public class BarrelRenderer implements BlockEntityRenderer<BlockEntity> {
 
-    public static void register(BlockEntityType<?> type) {
+    public static void register(BlockEntityType<?> type, int itemNameColor) {
         BlockEntityRendererRegistry.register(type,
-                (BlockEntityRendererProvider<BlockEntity>) (context) -> new BarrelRenderer());
+                (BlockEntityRendererProvider<BlockEntity>) (context) -> new BarrelRenderer(itemNameColor));
+    }
+
+    private final int itemNameColor;
+
+    public BarrelRenderer(int itemNameColor) {
+        this.itemNameColor = itemNameColor;
     }
 
     @Override
@@ -73,14 +79,35 @@ public class BarrelRenderer implements BlockEntityRenderer<BlockEntity> {
                 amount = String.valueOf(barrelBlockEntity.getAmount());
             }
 
-            ItemStack toRender = new ItemStack(item.getItem(), 1);
+            ItemStack toRender = item.toStack();
 
             for (int i = 0; i < 4; i++) {
                 var direction = Direction.from2DDataValue(i);
-                assert barrelBlockEntity.getLevel() != null;
-                if (!Block.shouldRenderFace(state, barrelBlockEntity.getLevel(), pos, direction, pos.relative(direction))) {
+                // Note: level can be null from builtin item renderer
+                if (barrelBlockEntity.getLevel() != null
+                        && !Block.shouldRenderFace(state, barrelBlockEntity.getLevel(), pos, direction, pos.relative(direction))) {
                     continue;
                 }
+
+                String itemName = toRender.getHoverName().getString();
+                matrices.pushPose();
+                Font textRenderer = Minecraft.getInstance().font;
+                matrices.translate(0.5, 1.14, 0.5);
+                matrices.mulPose(Vector3f.YP.rotationDegrees((2 - i) * 90F));
+                matrices.translate(0, 0.15, -0.505);
+                matrices.scale(-0.01f, -0.01F, -0.01f);
+
+                // Adjust width
+                final int maxWidth = 100;
+                if (textRenderer.width(itemName) > maxWidth) {
+                    itemName = textRenderer.plainSubstrByWidth(itemName, maxWidth - textRenderer.width("...")) + "...";
+                }
+
+                float xPosition = (float) (-textRenderer.width(itemName) / 2);
+                textRenderer.drawInBatch(itemName, xPosition, -4f + 40, itemNameColor, false, matrices.last().pose(), vertexConsumers, false, 0,
+                        RenderHelper.FULL_LIGHT);
+
+                matrices.popPose();
 
                 // Thanks TechReborn for rendering code
 
@@ -88,7 +115,7 @@ public class BarrelRenderer implements BlockEntityRenderer<BlockEntity> {
                 matrices.translate(0.5, 0, 0.5);
                 matrices.mulPose(Vector3f.YP.rotationDegrees(-i * 90F));
                 matrices.scale(0.5F, 0.5F, 0.5F);
-                matrices.translate(0, 1.25, 1.01);
+                matrices.translate(0, 1.125, 1.01);
 
                 matrices.mulPoseMatrix(Matrix4f.createScaleMatrix(1, 1, 0.01f));
                 matrices.last().normal().mul(Vector3f.XN.rotationDegrees(45f));
@@ -99,13 +126,11 @@ public class BarrelRenderer implements BlockEntityRenderer<BlockEntity> {
                 matrices.popPose();
 
                 matrices.pushPose();
-                Font textRenderer = Minecraft.getInstance().font;
                 matrices.translate(0.5, 0.5, 0.5);
                 matrices.mulPose(Vector3f.YP.rotationDegrees((2 - i) * 90F));
-                matrices.translate(0, 0.15, -0.505);
+                matrices.translate(0, 0.0875, -0.505);
                 matrices.scale(-0.01f, -0.01F, -0.01f);
 
-                float xPosition;
                 xPosition = (float) (-textRenderer.width(amount) / 2);
                 textRenderer.drawInBatch(amount, xPosition, -4f + 40, 0x000000, false, matrices.last().pose(), vertexConsumers, false, 0,
                         RenderHelper.FULL_LIGHT);

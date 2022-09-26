@@ -25,6 +25,7 @@ package aztech.modern_industrialization.util;
 
 import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.compat.sodium.SodiumCompat;
+import com.google.common.base.Suppliers;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.BufferUploader;
@@ -38,6 +39,9 @@ import com.mojang.math.Vector3f;
 import com.mojang.math.Vector4f;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
+import java.util.Objects;
+import java.util.function.Supplier;
+import net.fabricmc.fabric.api.client.rendering.v1.BuiltinItemRendererRegistry;
 import net.fabricmc.fabric.api.event.client.ClientSpriteRegistryCallback;
 import net.fabricmc.fabric.api.renderer.v1.Renderer;
 import net.fabricmc.fabric.api.renderer.v1.RendererAccess;
@@ -58,67 +62,76 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.inventory.InventoryMenu;
+import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import org.lwjgl.system.MemoryStack;
 
 public class RenderHelper {
-    private static final BakedQuad[] OVERLAY_QUADS;
+    private static final Supplier<BakedQuad[]> OVERLAY_QUADS;
     private static final float W = 0.05f;
     private static final MIIdentifier LOCKED_TEXTURE_LOCATION = new MIIdentifier("block/locked");
 
     public static void drawOverlay(PoseStack ms, MultiBufferSource vcp, float r, float g, float b, int light, int overlay) {
         VertexConsumer vc = vcp.getBuffer(RenderType.solid());
-        for (BakedQuad overlayQuad : OVERLAY_QUADS) {
+        for (BakedQuad overlayQuad : OVERLAY_QUADS.get()) {
             vc.putBulkData(ms.last(), overlayQuad, r, g, b, light, overlay);
         }
     }
 
     static {
-        OVERLAY_QUADS = new BakedQuad[24];
-        Renderer r = RendererAccess.INSTANCE.getRenderer();
-        RenderMaterial material = r.materialFinder().blendMode(0, BlendMode.SOLID).find();
-        for (Direction direction : Direction.values()) {
-            QuadEmitter emitter;
-            emitter = r.meshBuilder().getEmitter();
-            emitter.square(direction, 0, 0, 1, W, 0);
-            emitter.material(material);
-            OVERLAY_QUADS[direction.get3DDataValue() * 4] = emitter.toBakedQuad(0, null, false);
-            emitter = r.meshBuilder().getEmitter();
-            emitter.square(direction, 0, 1 - W, 1, 1, 0);
-            emitter.material(material);
-            OVERLAY_QUADS[direction.get3DDataValue() * 4 + 1] = emitter.toBakedQuad(0, null, false);
-            emitter = r.meshBuilder().getEmitter();
-            emitter.square(direction, 0, W, W, 1 - W, 0);
-            emitter.material(material);
-            OVERLAY_QUADS[direction.get3DDataValue() * 4 + 2] = emitter.toBakedQuad(0, null, false);
-            emitter = r.meshBuilder().getEmitter();
-            emitter.square(direction, 1 - W, W, 1, 1 - W, 0);
-            emitter.material(material);
-            OVERLAY_QUADS[direction.get3DDataValue() * 4 + 3] = emitter.toBakedQuad(0, null, false);
-        }
+        OVERLAY_QUADS = Suppliers.memoize(() -> {
+            var overlayQuads = new BakedQuad[24];
+            Renderer r = RendererAccess.INSTANCE.getRenderer();
+            RenderMaterial material = r.materialFinder().blendMode(0, BlendMode.SOLID).find();
+            for (Direction direction : Direction.values()) {
+                QuadEmitter emitter;
+                emitter = r.meshBuilder().getEmitter();
+                emitter.square(direction, 0, 0, 1, W, 0);
+                emitter.material(material);
+                overlayQuads[direction.get3DDataValue() * 4] = emitter.toBakedQuad(0, null, false);
+                emitter = r.meshBuilder().getEmitter();
+                emitter.square(direction, 0, 1 - W, 1, 1, 0);
+                emitter.material(material);
+                overlayQuads[direction.get3DDataValue() * 4 + 1] = emitter.toBakedQuad(0, null, false);
+                emitter = r.meshBuilder().getEmitter();
+                emitter.square(direction, 0, W, W, 1 - W, 0);
+                emitter.material(material);
+                overlayQuads[direction.get3DDataValue() * 4 + 2] = emitter.toBakedQuad(0, null, false);
+                emitter = r.meshBuilder().getEmitter();
+                emitter.square(direction, 1 - W, W, 1, 1 - W, 0);
+                emitter.material(material);
+                overlayQuads[direction.get3DDataValue() * 4 + 3] = emitter.toBakedQuad(0, null, false);
+            }
+            return overlayQuads;
+        });
     }
 
-    private static final BakedQuad[] CUBE_QUADS;
+    private static final Supplier<BakedQuad[]> CUBE_QUADS;
 
     public static void drawCube(PoseStack ms, MultiBufferSource vcp, float r, float g, float b, int light, int overlay) {
         VertexConsumer vc = vcp.getBuffer(RenderType.solid());
-        for (BakedQuad cubeQuad : CUBE_QUADS) {
+        for (BakedQuad cubeQuad : CUBE_QUADS.get()) {
             vc.putBulkData(ms.last(), cubeQuad, r, g, b, light, overlay);
         }
     }
 
     static {
-        CUBE_QUADS = new BakedQuad[6];
-        Renderer r = RendererAccess.INSTANCE.getRenderer();
-        for (Direction direction : Direction.values()) {
-            QuadEmitter emitter;
-            emitter = r.meshBuilder().getEmitter();
-            emitter.square(direction, 0, 0, 1, 1, 0);
-            CUBE_QUADS[direction.get3DDataValue()] = emitter.toBakedQuad(0, null, false);
-        }
+        CUBE_QUADS = Suppliers.memoize(() -> {
+            var cubeQuads = new BakedQuad[6];
+            Renderer r = RendererAccess.INSTANCE.getRenderer();
+            for (Direction direction : Direction.values()) {
+                QuadEmitter emitter;
+                emitter = r.meshBuilder().getEmitter();
+                emitter.square(direction, 0, 0, 1, 1, 0);
+                cubeQuads[direction.get3DDataValue()] = emitter.toBakedQuad(0, null, false);
+            }
+            return cubeQuads;
+        });
     }
 
     private static final float TANK_W = 1 / 16f + 0.001f;
@@ -341,7 +354,8 @@ public class RenderHelper {
         Renderer renderer = RendererAccess.INSTANCE.getRenderer();
         for (Direction direction : Direction.values()) {
             if (direction.getAxis().isVertical() ||
-                    !Block.shouldRenderFace(state, entity.getLevel(), pos,
+            // Note: level can be null from builtin item renderer
+                    entity.getLevel() != null && !Block.shouldRenderFace(state, entity.getLevel(), pos,
                             direction.getOpposite(), pos.relative(direction.getOpposite()))) {
                 continue;
             }
@@ -356,6 +370,26 @@ public class RenderHelper {
                     1, 1, 1, RenderHelper.FULL_LIGHT, OverlayTexture.NO_OVERLAY);
         }
     }
+
+    public static final BuiltinItemRendererRegistry.DynamicItemRenderer BLOCK_AND_ENTITY_RENDERER = (stack, mode, matrices, vertexConsumers, light,
+            overlay) -> {
+        if (!(stack.getItem() instanceof BlockItem blockItem)) {
+            throw new IllegalArgumentException("Stack must be a block item!");
+        }
+        if (!(blockItem.getBlock() instanceof EntityBlock entityBlock)) {
+            throw new IllegalArgumentException("Block must be an entity block!");
+        }
+
+        var fakeBlockEntity = entityBlock.newBlockEntity(BlockPos.ZERO, blockItem.getBlock().defaultBlockState());
+        var tag = Objects.requireNonNullElseGet(stack.getTagElement("BlockEntityTag"), CompoundTag::new);
+        Objects.requireNonNull(fakeBlockEntity).load(tag);
+
+        // Render the base block first
+        Minecraft.getInstance().getBlockRenderer().renderSingleBlock(fakeBlockEntity.getBlockState(), matrices, vertexConsumers, light, overlay);
+        // Render additional data using the block entity renderer
+        var renderer = Minecraft.getInstance().getBlockEntityRenderDispatcher().getRenderer(fakeBlockEntity);
+        Objects.requireNonNull(renderer).render(fakeBlockEntity, Minecraft.getInstance().getFrameTime(), matrices, vertexConsumers, light, overlay);
+    };
 
     public static void setupRenderHelper() {
 

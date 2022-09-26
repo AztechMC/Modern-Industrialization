@@ -77,7 +77,7 @@ public class GraviChestPlateItem extends ArmorItem implements Wearable, Activata
 
             @Override
             public String getName() {
-                return "modern_industrialization/gravichestplate";
+                return "modern_industrialization:gravichestplate";
             }
 
             @Override

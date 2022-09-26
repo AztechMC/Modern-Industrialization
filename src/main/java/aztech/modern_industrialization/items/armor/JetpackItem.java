@@ -104,7 +104,7 @@ public class JetpackItem extends ArmorItem implements Wearable, FabricElytraItem
 
             @Override
             public String getName() {
-                return "modern_industrialization/diesel_jetpack";
+                return "modern_industrialization:diesel_jetpack";
             }
 
             @Override

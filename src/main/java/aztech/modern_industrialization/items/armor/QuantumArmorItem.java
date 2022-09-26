@@ -75,7 +75,7 @@ public class QuantumArmorItem extends ArmorItem implements Wearable {
 
         @Override
         public String getName() {
-            return "modern_industrialization/quantum";
+            return "modern_industrialization:quantum";
         }
 
         @Override

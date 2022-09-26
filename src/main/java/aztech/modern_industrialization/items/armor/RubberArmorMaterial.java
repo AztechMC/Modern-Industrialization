@@ -61,7 +61,7 @@ public enum RubberArmorMaterial implements ArmorMaterial {
 
     @Override
     public String getName() {
-        return "modern_industrialization/rubber";
+        return "modern_industrialization:rubber";
     }
 
     @Override

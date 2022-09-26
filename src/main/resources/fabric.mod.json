@@ -52,7 +52,7 @@
   ],
   "depends": {
     "fabricloader": ">=0.7.4",
-    "fabric": ">=0.61.0",
+    "fabric": ">=0.62.0",
     "minecraft": "1.19.x",
     "team_reborn_energy": ">=2.2.0",
     "cloth-config": "*"

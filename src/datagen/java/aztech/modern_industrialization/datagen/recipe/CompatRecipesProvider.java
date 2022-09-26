@@ -144,21 +144,18 @@ public class CompatRecipesProvider extends MIRecipesProvider {
 
     private void generateAe2Compat() {
         addMiRecipe(MIMachineRecipeTypes.ELECTROLYZER, "ae2:certus_quartz_crystal", "ae2:charged_certus_quartz_crystal", 1, 8, 60);
-        addCompatRecipe("macerator/certus_ore", MIRecipeJson.create(MIMachineRecipeTypes.MACERATOR, 2, 200)
-                .addItemInput("#c:certus_quartz_ores", 1)
-                .addItemOutput("ae2:certus_quartz_dust", 5)
-                .addItemOutput("ae2:certus_quartz_crystal", 1, 0.1));
+
         addMiRecipe(MIMachineRecipeTypes.MACERATOR, "#c:certus_quartz", "ae2:certus_quartz_dust", 1, 2, 100);
+        addMiRecipe(MIMachineRecipeTypes.MACERATOR, "minecraft:ender_pearl", "ae2:ender_dust", 1, 2, 100);
         addMiRecipe(MIMachineRecipeTypes.MACERATOR, "ae2:fluix_crystal", "ae2:fluix_dust", 1, 2, 100);
+        addMiRecipe(MIMachineRecipeTypes.MACERATOR, "ae2:sky_stone_block", "ae2:sky_dust", 1, 2, 100);
+
         addCompatRecipe("mixer/fluix", MIRecipeJson.create(MIMachineRecipeTypes.MIXER, 8, 100)
                 .addItemInput("minecraft:quartz", 1)
                 .addItemInput("ae2:charged_certus_quartz_crystal", 1)
                 .addItemInput("minecraft:redstone", 1)
                 .addFluidInput(Fluids.WATER, 1000, 0)
-                .addItemOutput("ae2:fluix_dust", 2));
-        addCompatRecipe("quarry_ae2", MIRecipeJson.create(MIMachineRecipeTypes.QUARRY, 16, 600)
-                .addItemInput("ae2:fluix_glass_cable", 1, 0.2)
-                .addItemOutput("ae2:quartz_ore", 8, 0.02));
+                .addItemOutput("ae2:fluix_crystal", 2));
     }
 
     private void generateIndrevCompat() {

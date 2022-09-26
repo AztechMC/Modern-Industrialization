@@ -41,70 +41,101 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
+import org.jetbrains.annotations.NotNull;
 
 public class BarrelRenderer implements BlockEntityRenderer<BlockEntity> {
 
-    private final int textColor;
-
-    public static void register(BlockEntityType<BlockEntity> type, int textColor) {
-        BlockEntityRendererRegistry.register(type, (BlockEntityRendererProvider.Context context) -> new BarrelRenderer(textColor));
+    public static void register(BlockEntityType<?> type, int itemNameColor) {
+        BlockEntityRendererRegistry.register(type,
+                (BlockEntityRendererProvider<BlockEntity>) (context) -> new BarrelRenderer(itemNameColor));
     }
 
-    private BarrelRenderer(int textColor) {
-        this.textColor = textColor;
+    private final int itemNameColor;
+
+    public BarrelRenderer(int itemNameColor) {
+        this.itemNameColor = itemNameColor;
     }
 
     @Override
-    public void render(BlockEntity entity, float tickDelta, PoseStack matrices, MultiBufferSource vertexConsumers, int light, int overlay) {
+    public void render(@NotNull BlockEntity entity, float tickDelta, @NotNull PoseStack matrices, @NotNull MultiBufferSource vertexConsumers,
+            int light, int overlay) {
 
         BarrelBlockEntity barrelBlockEntity = (BarrelBlockEntity) entity;
         var state = barrelBlockEntity.getBlockState();
         var pos = barrelBlockEntity.getBlockPos();
 
         ItemVariant item = barrelBlockEntity.getResource();
+
+        if (barrelBlockEntity.isLocked()) {
+            RenderHelper.drawLockedTexture(barrelBlockEntity, matrices, vertexConsumers);
+        }
+
         if (!item.isBlank()) {
-            long amount = barrelBlockEntity.getAmount();
-            if (amount > 0) {
 
-                ItemStack toRender = new ItemStack(item.getItem(), 1);
+            String amount;
+            if (barrelBlockEntity.behaviour.isCreative()) {
+                amount = "∞";
+            } else {
+                amount = String.valueOf(barrelBlockEntity.getAmount());
+            }
 
-                for (int i = 0; i < 4; i++) {
-                    var direction = Direction.from2DDataValue(i);
-                    if (!Block.shouldRenderFace(state, barrelBlockEntity.getLevel(), pos, direction, pos.relative(direction))) {
-                        continue;
-                    }
+            ItemStack toRender = item.toStack();
 
-                    // Thanks TechReborn for rendering code
-
-                    matrices.pushPose();
-                    matrices.translate(0.5, 0, 0.5);
-                    matrices.mulPose(Vector3f.YP.rotationDegrees(-i * 90F));
-                    matrices.scale(0.5F, 0.5F, 0.5F);
-                    matrices.translate(0, 1.3, 1.01);
-
-                    matrices.mulPoseMatrix(Matrix4f.createScaleMatrix(1, 1, 0.01f));
-                    matrices.last().normal().mul(Vector3f.XN.rotationDegrees(45f));
-
-                    Minecraft.getInstance().getItemRenderer().renderStatic(toRender, ItemTransforms.TransformType.GUI, RenderHelper.FULL_LIGHT,
-                            OverlayTexture.NO_OVERLAY, matrices, vertexConsumers, 0);
-
-                    matrices.popPose();
-
-                    matrices.pushPose();
-                    Font textRenderer = Minecraft.getInstance().font;
-                    matrices.translate(0.5, 0.5, 0.5);
-                    matrices.mulPose(Vector3f.YP.rotationDegrees((2 - i) * 90F));
-                    matrices.translate(0, 0.2, -0.505);
-                    matrices.scale(-0.01f, -0.01F, -0.01f);
-
-                    float xPosition;
-                    String count = String.valueOf(amount);
-                    xPosition = (float) (-textRenderer.width(count) / 2);
-                    textRenderer.drawInBatch(count, xPosition, -4f + 40, textColor, false, matrices.last().pose(), vertexConsumers, false, 0,
-                            RenderHelper.FULL_LIGHT);
-
-                    matrices.popPose();
+            for (int i = 0; i < 4; i++) {
+                var direction = Direction.from2DDataValue(i);
+                // Note: level can be null from builtin item renderer
+                if (barrelBlockEntity.getLevel() != null
+                        && !Block.shouldRenderFace(state, barrelBlockEntity.getLevel(), pos, direction, pos.relative(direction))) {
+                    continue;
                 }
+
+                String itemName = toRender.getHoverName().getString();
+                matrices.pushPose();
+                Font textRenderer = Minecraft.getInstance().font;
+                matrices.translate(0.5, 1.14, 0.5);
+                matrices.mulPose(Vector3f.YP.rotationDegrees((2 - i) * 90F));
+                matrices.translate(0, 0.15, -0.505);
+                matrices.scale(-0.01f, -0.01F, -0.01f);
+
+                // Adjust width
+                final int maxWidth = 100;
+                if (textRenderer.width(itemName) > maxWidth) {
+                    itemName = textRenderer.plainSubstrByWidth(itemName, maxWidth - textRenderer.width("...")) + "...";
+                }
+
+                float xPosition = (float) (-textRenderer.width(itemName) / 2);
+                textRenderer.drawInBatch(itemName, xPosition, -4f + 40, itemNameColor, false, matrices.last().pose(), vertexConsumers, false, 0,
+                        RenderHelper.FULL_LIGHT);
+
+                matrices.popPose();
+
+                // Thanks TechReborn for rendering code
+
+                matrices.pushPose();
+                matrices.translate(0.5, 0, 0.5);
+                matrices.mulPose(Vector3f.YP.rotationDegrees(-i * 90F));
+                matrices.scale(0.5F, 0.5F, 0.5F);
+                matrices.translate(0, 1.125, 1.01);
+
+                matrices.mulPoseMatrix(Matrix4f.createScaleMatrix(1, 1, 0.01f));
+                matrices.last().normal().mul(Vector3f.XN.rotationDegrees(45f));
+
+                Minecraft.getInstance().getItemRenderer().renderStatic(toRender, ItemTransforms.TransformType.GUI, RenderHelper.FULL_LIGHT,
+                        OverlayTexture.NO_OVERLAY, matrices, vertexConsumers, 0);
+
+                matrices.popPose();
+
+                matrices.pushPose();
+                matrices.translate(0.5, 0.5, 0.5);
+                matrices.mulPose(Vector3f.YP.rotationDegrees((2 - i) * 90F));
+                matrices.translate(0, 0.0875, -0.505);
+                matrices.scale(-0.01f, -0.01F, -0.01f);
+
+                xPosition = (float) (-textRenderer.width(amount) / 2);
+                textRenderer.drawInBatch(amount, xPosition, -4f + 40, 0x000000, false, matrices.last().pose(), vertexConsumers, false, 0,
+                        RenderHelper.FULL_LIGHT);
+
+                matrices.popPose();
             }
 
         }

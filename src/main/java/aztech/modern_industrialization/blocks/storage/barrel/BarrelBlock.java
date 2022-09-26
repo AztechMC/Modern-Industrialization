@@ -24,6 +24,7 @@
 package aztech.modern_industrialization.blocks.storage.barrel;
 
 import aztech.modern_industrialization.blocks.storage.AbstractStorageBlock;
+import aztech.modern_industrialization.blocks.storage.StorageBehaviour;
 import net.fabricmc.fabric.api.event.player.AttackBlockCallback;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
@@ -31,32 +32,28 @@ import net.fabricmc.fabric.api.transfer.v1.item.PlayerInventoryStorage;
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageUtil;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.minecraft.client.Minecraft;
-import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.level.block.EntityBlock;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.state.BlockState;
-import org.jetbrains.annotations.Nullable;
 
 public class BarrelBlock extends AbstractStorageBlock implements EntityBlock {
 
-    public final EntityBlock factory;
-
     public BarrelBlock(Properties properties, EntityBlock factory) {
-        super(properties);
-        this.factory = factory;
+        super(properties, factory);
     }
 
-    @Nullable
-    @Override
-    public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
-        return factory.newBlockEntity(pos, state);
-    }
-
-    static {
+    public static void setupBarrelEvents() {
         UseBlockCallback.EVENT.register((player, world, hand, hitResult) -> {
             if (world.getBlockEntity(hitResult.getBlockPos()) instanceof BarrelBlockEntity barrel
                     && hitResult.getDirection().getAxis().isHorizontal()) {
+
+                if (barrel.behaviour.isCreative()) {
+                    ItemVariant currentInHand = ItemVariant.of(player.getMainHandItem());
+                    if (!currentInHand.isBlank() && barrel.isResourceBlank()) {
+                        barrel.setResource(currentInHand);
+                        return InteractionResult.sidedSuccess(world.isClientSide);
+                    }
+                }
+
                 if (!player.isShiftKeyDown()) {
                     if (StorageUtil.move(PlayerInventoryStorage.of(player).getSlots().get(player.getInventory().selected), barrel,
                             (itemVariant) -> true, Long.MAX_VALUE, null) > 0) {
@@ -68,6 +65,7 @@ public class BarrelBlock extends AbstractStorageBlock implements EntityBlock {
                             Long.MAX_VALUE, null) > 0) {
                         return InteractionResult.sidedSuccess(world.isClientSide);
                     }
+
                 }
             }
             return InteractionResult.PASS;
@@ -101,4 +99,37 @@ public class BarrelBlock extends AbstractStorageBlock implements EntityBlock {
         // Add a 5 tick delay like vanilla.
         Minecraft.getInstance().gameMode.destroyDelay = 5;
     }
+
+    public static BarrelStorage withStackCapacity(long stackCapacity) {
+        return new BarrelStorage(stackCapacity);
+    }
+
+    public static class BarrelStorage extends StorageBehaviour<ItemVariant> {
+
+        public final long stackCapacity;
+
+        public BarrelStorage(long stackCapacity) {
+            this.stackCapacity = stackCapacity;
+        }
+
+        @Override
+        public boolean isLockable() {
+            return true;
+        }
+
+        @Override
+        public long getCapacityForResource(ItemVariant resource) {
+            if (resource.isBlank()) {
+                return stackCapacity * 64;
+            } else {
+                return stackCapacity * resource.getItem().getMaxStackSize();
+            }
+        }
+
+        @Override
+        public boolean canInsert(ItemVariant resource) {
+            return resource.getItem().canFitInsideContainerItems();
+        }
+    }
+
 }

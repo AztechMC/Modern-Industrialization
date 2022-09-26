@@ -25,6 +25,7 @@ package aztech.modern_industrialization.materials.part;
 
 import aztech.modern_industrialization.MIBlock;
 import aztech.modern_industrialization.MITags;
+import aztech.modern_industrialization.blocks.storage.StorageBehaviour;
 import aztech.modern_industrialization.blocks.storage.barrel.BarrelBlock;
 import aztech.modern_industrialization.blocks.storage.barrel.BarrelBlockEntity;
 import aztech.modern_industrialization.blocks.storage.barrel.BarrelItem;
@@ -32,14 +33,19 @@ import aztech.modern_industrialization.blocks.storage.barrel.BarrelRenderer;
 import aztech.modern_industrialization.datagen.tag.TagsToGenerate;
 import aztech.modern_industrialization.definition.BlockDefinition;
 import aztech.modern_industrialization.items.SortOrder;
+import aztech.modern_industrialization.util.RenderHelper;
 import aztech.modern_industrialization.util.TextHelper;
+import net.fabricmc.fabric.api.client.rendering.v1.BuiltinItemRendererRegistry;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemStorage;
+import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.minecraft.core.Registry;
 import net.minecraft.data.models.model.TexturedModel;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
+import org.apache.commons.lang3.mutable.MutableObject;
 
 public class BarrelPart extends UnbuildablePart<Long> {
 
@@ -62,10 +68,14 @@ public class BarrelPart extends UnbuildablePart<Long> {
 
     public RegularPart of(String englishNameFormatter, Long stackCapacity) {
         BlockEntityType<BlockEntity>[] refs = new BlockEntityType[1]; // evil hack
+        MutableObject<Item> itemRef = new MutableObject<>();
 
         return new RegularPart(englishNameFormatter, key).asColumnBlock(SortOrder.BARRELS)
                 .withRegister((partContext, part, itemPath, itemId, itemTag) -> {
-                    EntityBlock factory = (pos, state) -> new BarrelBlockEntity(refs[0], pos, state, stackCapacity);
+
+                    StorageBehaviour<ItemVariant> barrelStorageBehaviour = BarrelBlock.withStackCapacity(stackCapacity);
+
+                    EntityBlock factory = (pos, state) -> new BarrelBlockEntity(refs[0], pos, state, barrelStorageBehaviour);
 
                     String englishName = RegularPart.getEnglishName(englishNameFormatter, partContext.getEnglishName());
 
@@ -74,21 +84,24 @@ public class BarrelPart extends UnbuildablePart<Long> {
                             itemPath,
                             MIBlock.BlockDefinitionParams.of().withBlockConstructor(
                                     s -> new BarrelBlock(s, factory)).withBlockItemConstructor(
-                                            (b, s) -> new BarrelItem(b, stackCapacity))
-                                    .withModel(
-                                            ((block, blockModelGenerators) -> blockModelGenerators.createTrivialBlock(block, TexturedModel.COLUMN)))
+                                            (b, s) -> new BarrelItem(b, barrelStorageBehaviour))
+                                    .withModel(TexturedModel.COLUMN)
+                                    .withBlockEntityRendererItemModel()
                                     .noLootTable()
                                     .sortOrder(SortOrder.BARRELS.and(stackCapacity)));
 
                     TagsToGenerate.generateTag(MITags.BARRELS, blockDefinition.asItem());
                     BarrelBlock block = blockDefinition.asBlock();
+                    itemRef.setValue(blockDefinition.asItem());
 
                     refs[0] = Registry.register(Registry.BLOCK_ENTITY_TYPE, itemId,
                             FabricBlockEntityTypeBuilder.create(block.factory::newBlockEntity, block).build(null));
 
                     ItemStorage.SIDED.registerSelf(refs[0]);
-                }).withClientRegister((partContext, part, itemPath, itemId, itemTag) -> BarrelRenderer.register(refs[0],
-                        TextHelper.getOverlayTextColor(partContext.getColoramp().getMeanRGB())));
+                }).withClientRegister((partContext, part, itemPath, itemId, itemTag) -> {
+                    BarrelRenderer.register(refs[0], TextHelper.getOverlayTextColor(partContext.getColoramp().getMeanRGB()));
+                    BuiltinItemRendererRegistry.INSTANCE.register(itemRef.getValue(), RenderHelper.BLOCK_AND_ENTITY_RENDERER);
+                });
     }
 
 }

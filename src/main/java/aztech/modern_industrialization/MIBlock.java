@@ -28,26 +28,35 @@ import static aztech.modern_industrialization.ModernIndustrialization.STONE_MATE
 
 import aztech.modern_industrialization.blocks.TrashCanBlock;
 import aztech.modern_industrialization.blocks.creativestorageunit.CreativeStorageUnitBlock;
-import aztech.modern_industrialization.blocks.creativetank.CreativeTankBlock;
-import aztech.modern_industrialization.blocks.creativetank.CreativeTankItem;
 import aztech.modern_industrialization.blocks.forgehammer.ForgeHammerBlock;
+import aztech.modern_industrialization.blocks.storage.StorageBehaviour;
+import aztech.modern_industrialization.blocks.storage.barrel.BarrelBlock;
+import aztech.modern_industrialization.blocks.storage.barrel.BarrelItem;
+import aztech.modern_industrialization.blocks.storage.barrel.CreativeBarrelBlockEntity;
+import aztech.modern_industrialization.blocks.storage.tank.TankBlock;
+import aztech.modern_industrialization.blocks.storage.tank.TankItem;
+import aztech.modern_industrialization.blocks.storage.tank.creativetank.CreativeTankBlockEntity;
 import aztech.modern_industrialization.definition.BlockDefinition;
 import aztech.modern_industrialization.items.SortOrder;
 import aztech.modern_industrialization.materials.part.TankPart;
+import com.google.gson.JsonParser;
 import java.util.*;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.Function;
+import java.util.function.Supplier;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
 import net.minecraft.data.loot.BlockLoot;
 import net.minecraft.data.models.BlockModelGenerators;
+import net.minecraft.data.models.ItemModelGenerators;
+import net.minecraft.data.models.model.ModelLocationUtils;
 import net.minecraft.data.models.model.TexturedModel;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
@@ -82,16 +91,34 @@ public class MIBlock {
     public static final BlockDefinition<Block> INDUSTRIAL_TNT = blockExplosive("Industrial TNT", "industrial_tnt");
     public static final BlockDefinition<Block> NUKE = blockExplosive("Nuke", "nuke");
 
-    public static final BlockDefinition<CreativeTankBlock> CREATIVE_TANK_BLOCK = block(
+    public static final BlockDefinition<TankBlock> CREATIVE_TANK_BLOCK = block(
             "Creative Tank",
             "creative_tank",
-            BlockDefinitionParams.of().withBlockConstructor(CreativeTankBlock::new)
-                    .withBlockItemConstructor(CreativeTankItem::new)
-                    .withModel(TankPart.MODEL_GENERATOR).noLootTable().clearTags()
+            BlockDefinitionParams.of()
+                    .withBlockConstructor(() -> new TankBlock(CreativeTankBlockEntity::new))
+                    .withBlockItemConstructor((b, s) -> new TankItem(b, StorageBehaviour.creative()))
+                    .withModel(TankPart.MODEL_GENERATOR)
+                    .withBlockEntityRendererItemModel()
+                    .noLootTable().clearTags()
                     .noOcclusion(),
-            CreativeTankBlock.class
+            TankBlock.class
     ).withBlockRegistrationEvent(
-            (block, item) -> FluidStorage.ITEM.registerForItems(CreativeTankItem.TankItemStorage::new, item));
+            (block, item) -> ((TankItem) item).registerItemApi());
+
+
+    public static final BlockDefinition<BarrelBlock> CREATIVE_BARREL = block(
+            "Creative Barrel",
+            "creative_barrel",
+            BlockDefinitionParams.of()
+                    .withBlockConstructor((p) -> new BarrelBlock(p, CreativeBarrelBlockEntity::new))
+                    .withBlockItemConstructor((b, s) -> new BarrelItem(b, StorageBehaviour.creative()))
+                    .withModel(TexturedModel.COLUMN)
+                    .withBlockEntityRendererItemModel()
+                    .noLootTable().clearTags()
+                    .noOcclusion(),
+            BarrelBlock.class
+    );
+
 
     public static final BlockDefinition<CreativeStorageUnitBlock> CREATIVE_STORAGE_UNIT = block("Creative Storage Unit",
             "creative_storage_unit", BlockDefinitionParams.of().withBlockConstructor(CreativeStorageUnitBlock::new));
@@ -108,10 +135,12 @@ public class MIBlock {
             T block,
             BiFunction<Block, FabricItemSettings, BlockItem> blockItemCtor,
             BiConsumer<Block, BlockModelGenerators> modelGenerator,
+            BiConsumer<Item, ItemModelGenerators> itemModelGenerator,
             BiConsumer<Block, BlockLoot> lootTableGenerator,
             List<TagKey<Block>> tags,
             SortOrder sortOrder) {
-        BlockDefinition<T> definition = new BlockDefinition<>(englishName, id, block, blockItemCtor, modelGenerator, lootTableGenerator, tags,
+        BlockDefinition<T> definition = new BlockDefinition<>(englishName, id, block, blockItemCtor, modelGenerator, itemModelGenerator,
+                lootTableGenerator, tags,
                 sortOrder);
         if (BLOCKS.put(definition.getId(), definition) != null) {
             throw new IllegalArgumentException("Block id already taken : " + definition.getId());
@@ -127,6 +156,7 @@ public class MIBlock {
                 params.ctor.apply(params),
                 params.blockItemCtor,
                 params.modelGenerator,
+                params.itemModelGenerator,
                 params.lootTableGenerator,
                 params.tags,
                 params.sortOrder);
@@ -161,6 +191,8 @@ public class MIBlock {
     public static class BlockDefinitionParams<T extends Block> extends FabricBlockSettings {
 
         public BiConsumer<Block, BlockModelGenerators> modelGenerator;
+        public BiConsumer<Item, ItemModelGenerators> itemModelGenerator = (item, gen) -> {
+        };
         public BiConsumer<Block, BlockLoot> lootTableGenerator;
         public final ArrayList<TagKey<Block>> tags = new ArrayList<>();
         public SortOrder sortOrder = SortOrder.BLOCKS_OTHERS;
@@ -201,6 +233,15 @@ public class MIBlock {
             return new BlockDefinitionParams<>(this, ctor, this.blockItemCtor, this.modelGenerator, this.lootTableGenerator, this.tags);
         }
 
+        public <U extends Block> BlockDefinitionParams<U> withBlockConstructor(Supplier<U> ctor) {
+            return new BlockDefinitionParams<>(this,
+                    p -> ctor.get(),
+                    this.blockItemCtor,
+                    this.modelGenerator,
+                    this.lootTableGenerator,
+                    this.tags);
+        }
+
         public BlockDefinitionParams<T> withBlockItemConstructor(BiFunction<Block, FabricItemSettings, BlockItem> blockItemCtor) {
             this.blockItemCtor = blockItemCtor;
             return this;
@@ -213,6 +254,62 @@ public class MIBlock {
 
         public BlockDefinitionParams<T> withModel(TexturedModel.Provider model) {
             return this.withModel((block, blockModelGenerator) -> blockModelGenerator.createTrivialBlock(block, model));
+        }
+
+        public BlockDefinitionParams<T> withItemModel(BiConsumer<Item, ItemModelGenerators> itemModelGenerator) {
+            this.itemModelGenerator = itemModelGenerator;
+            return this;
+        }
+
+        public BlockDefinitionParams<T> withBlockEntityRendererItemModel() {
+            var currentModel = this.modelGenerator;
+            return withModel((block, gen) -> {
+                currentModel.accept(block, gen);
+                // Skip default item model
+                gen.skipAutoItemBlock(block);
+            }).withItemModel((item, gen) -> {
+                // We need the builtin/entity parent and the proper transforms (copied from block/block.json from vanilla)
+                gen.output.accept(ModelLocationUtils.getModelLocation(item), () -> {
+                    var json = JsonParser.parseString("""
+                            {
+                                "display": {
+                                    "gui": {
+                                        "rotation": [ 30, 225, 0 ],
+                                        "translation": [ 0, 0, 0],
+                                        "scale":[ 0.625, 0.625, 0.625 ]
+                                    },
+                                    "ground": {
+                                        "rotation": [ 0, 0, 0 ],
+                                        "translation": [ 0, 3, 0],
+                                        "scale":[ 0.25, 0.25, 0.25 ]
+                                    },
+                                    "fixed": {
+                                        "rotation": [ 0, 0, 0 ],
+                                        "translation": [ 0, 0, 0],
+                                        "scale":[ 0.5, 0.5, 0.5 ]
+                                    },
+                                    "thirdperson_righthand": {
+                                        "rotation": [ 75, 45, 0 ],
+                                        "translation": [ 0, 2.5, 0],
+                                        "scale": [ 0.375, 0.375, 0.375 ]
+                                    },
+                                    "firstperson_righthand": {
+                                        "rotation": [ 0, 45, 0 ],
+                                        "translation": [ 0, 0, 0 ],
+                                        "scale": [ 0.40, 0.40, 0.40 ]
+                                    },
+                                    "firstperson_lefthand": {
+                                        "rotation": [ 0, 225, 0 ],
+                                        "translation": [ 0, 0, 0 ],
+                                        "scale": [ 0.40, 0.40, 0.40 ]
+                                    }
+                                }
+                            }
+                                                        """).getAsJsonObject();
+                    json.addProperty("parent", "builtin/entity");
+                    return json;
+                });
+            });
         }
 
         public BlockDefinitionParams<T> withLootTable(BiConsumer<Block, BlockLoot> lootTableGenerator) {

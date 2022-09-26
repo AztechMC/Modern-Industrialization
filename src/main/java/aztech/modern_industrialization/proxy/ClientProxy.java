@@ -23,20 +23,20 @@
  */
 package aztech.modern_industrialization.proxy;
 
-import aztech.modern_industrialization.MIIdentifier;
-import aztech.modern_industrialization.blocks.storage.tank.TankItemUnbakedModel;
+import aztech.modern_industrialization.blocks.storage.tank.AbstractTankBlockEntity;
 import aztech.modern_industrialization.blocks.storage.tank.TankRenderer;
-import aztech.modern_industrialization.machines.models.MachineModelProvider;
+import aztech.modern_industrialization.util.RenderHelper;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.client.rendering.v1.BlockEntityRendererRegistry;
+import net.fabricmc.fabric.api.client.rendering.v1.BuiltinItemRendererRegistry;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import org.jetbrains.annotations.Nullable;
 
@@ -56,9 +56,10 @@ public class ClientProxy extends CommonProxy {
     }
 
     @Override
-    public void registerPartTankClient(Block tankBlock, String materialName, String itemPath, BlockEntityType<BlockEntity> blockEntityType) {
-        MachineModelProvider.register(new MIIdentifier("item/" + itemPath), new TankItemUnbakedModel(itemPath));
+    public void registerPartTankClient(Block tankBlock, Item tankItem, String materialName, String itemPath,
+            BlockEntityType<AbstractTankBlockEntity> blockEntityType) {
         BlockRenderLayerMap.INSTANCE.putBlock(tankBlock, RenderType.cutout());
         BlockEntityRendererRegistry.register(blockEntityType, TankRenderer::new);
+        BuiltinItemRendererRegistry.INSTANCE.register(tankItem, RenderHelper.BLOCK_AND_ENTITY_RENDERER);
     }
 }

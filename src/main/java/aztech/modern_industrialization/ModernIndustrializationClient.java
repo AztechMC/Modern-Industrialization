@@ -26,7 +26,8 @@ package aztech.modern_industrialization;
 import aztech.modern_industrialization.blocks.forgehammer.ForgeHammerScreen;
 import aztech.modern_industrialization.blocks.storage.barrel.BarrelTooltipData;
 import aztech.modern_industrialization.blocks.storage.barrel.client.BarrelTooltipComponent;
-import aztech.modern_industrialization.blocks.storage.tank.CreativeTankClientSetup;
+import aztech.modern_industrialization.blocks.storage.barrel.client.CreativeBarrelClientSetup;
+import aztech.modern_industrialization.blocks.storage.tank.creativetank.CreativeTankClientSetup;
 import aztech.modern_industrialization.client.model.MachineModelLoader;
 import aztech.modern_industrialization.inventory.ConfigurableInventoryPacketHandlers;
 import aztech.modern_industrialization.inventory.ConfigurableInventoryPackets;
@@ -45,6 +46,7 @@ import aztech.modern_industrialization.machines.models.MachineModels;
 import aztech.modern_industrialization.machines.multiblocks.MultiblockErrorHighlight;
 import aztech.modern_industrialization.misc.version.VersionEvents;
 import aztech.modern_industrialization.pipes.MIPipesClient;
+import aztech.modern_industrialization.util.RenderHelper;
 import aztech.modern_industrialization.util.TextHelper;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
@@ -70,8 +72,10 @@ public class ModernIndustrializationClient implements ClientModInitializer {
     public void onInitializeClient() {
         setupScreens();
         MIFluidsRender.setupFluidRenders();
+        RenderHelper.setupRenderHelper();
         setupPackets();
         CreativeTankClientSetup.setupClient();
+        CreativeBarrelClientSetup.setupClient();
         MachineModels.init();
         MachineModelLoader.init();
         MultiblockMachines.clientInit();

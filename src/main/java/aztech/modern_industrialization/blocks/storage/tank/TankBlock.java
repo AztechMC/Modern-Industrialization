@@ -33,23 +33,16 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.EntityBlock;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.BlockHitResult;
 
 public class TankBlock extends AbstractStorageBlock implements EntityBlock {
 
-    public final EntityBlock factory;
-
     public TankBlock(EntityBlock factory) {
-        super(FabricBlockSettings.of(Material.METAL).destroyTime(4.0f).noOcclusion().isValidSpawn(MobSpawning.NO_SPAWN));
-        this.factory = factory;
-    }
-
-    @Override
-    public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
-        return factory.newBlockEntity(pos, state);
+        super(FabricBlockSettings.of(Material.METAL)
+                .destroyTime(4.0f).noOcclusion().isValidSpawn(MobSpawning.NO_SPAWN),
+                factory);
     }
 
     public boolean propagatesSkylightDown(BlockState state, BlockGetter world, BlockPos pos) {
@@ -65,7 +58,7 @@ public class TankBlock extends AbstractStorageBlock implements EntityBlock {
     @SuppressWarnings("deprecation")
     @Override
     public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
-        if (((TankBlockEntity) world.getBlockEntity(pos)).onPlayerUse(player)) {
+        if (((AbstractTankBlockEntity) world.getBlockEntity(pos)).onPlayerUse(player)) {
             return InteractionResult.sidedSuccess(world.isClientSide);
         }
         return InteractionResult.PASS;

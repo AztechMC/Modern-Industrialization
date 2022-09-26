@@ -35,7 +35,6 @@ import aztech.modern_industrialization.materials.recipe.builder.ShapedRecipeBuil
 import aztech.modern_industrialization.materials.recipe.builder.SmeltingRecipeBuilder;
 import net.fabricmc.fabric.api.tag.convention.v1.ConventionalItemTags;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.level.block.Blocks;
 
 /**
  * Standard conversion recipes for all materials.
@@ -74,7 +73,9 @@ public final class StandardRecipes {
 
         new ShapedRecipeBuilder(ctx, TANK, 1, "tank", "###", "#G#", "###").addTaggedPart('#', PLATE).addInput('G', ConventionalItemTags.GLASS_BLOCKS)
                 .exportToAssembler();
-        new ShapedRecipeBuilder(ctx, BARREL, 1, "barrel", "###", "#b#", "###").addTaggedPart('#', PLATE).addInput('b', Blocks.BARREL)
+        new ShapedRecipeBuilder(ctx, BARREL, 1, "barrel", "###", "#b#", "###")
+                .addTaggedPart('#', PLATE)
+                .addInput('b', "#c:wooden_barrels")
                 .exportToAssembler();
 
         new ShapedRecipeBuilder(ctx, DRILL_HEAD, 1, "drill_head", "bcp", "GRc", "bGb").addTaggedPart('G', GEAR).addPart('b', BOLT)

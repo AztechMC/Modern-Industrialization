@@ -30,23 +30,31 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 
-public class AbstractStorageBlock extends Block {
+public class AbstractStorageBlock extends Block implements EntityBlock {
 
-    public AbstractStorageBlock(BlockBehaviour.Properties settings) {
+    public final EntityBlock factory;
+
+    public AbstractStorageBlock(Properties settings, EntityBlock factory) {
         super(settings);
+        this.factory = factory;
+    }
+
+    @Override
+    public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
+        return factory.newBlockEntity(pos, state);
     }
 
     protected ItemStack getStack(BlockEntity entity) {
         var storageBlockEntity = (AbstractStorageBlockEntity<?>) entity;
         ItemStack stack = new ItemStack(asItem());
-        if (!storageBlockEntity.isEmpty()) {
+        if (!storageBlockEntity.isEmpty() || storageBlockEntity.isLocked()) {
             CompoundTag tag = new CompoundTag();
             tag.put("BlockEntityTag", storageBlockEntity.saveWithoutMetadata());
             stack.setTag(tag);

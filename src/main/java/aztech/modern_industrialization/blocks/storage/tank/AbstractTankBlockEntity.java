@@ -21,37 +21,42 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.blocks.storage.barrel;
+package aztech.modern_industrialization.blocks.storage.tank;
 
 import aztech.modern_industrialization.blocks.storage.AbstractStorageBlockEntity;
 import aztech.modern_industrialization.blocks.storage.StorageBehaviour;
-import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
+import aztech.modern_industrialization.util.NbtHelper;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 
-public class BarrelBlockEntity extends AbstractStorageBlockEntity<ItemVariant> {
+public abstract class AbstractTankBlockEntity extends AbstractStorageBlockEntity<FluidVariant> {
 
-    public BarrelBlockEntity(BlockEntityType type,
+    public AbstractTankBlockEntity(BlockEntityType<?> bet,
             BlockPos pos,
             BlockState state,
-            StorageBehaviour<ItemVariant> behaviour) {
-        super(type, pos, state, behaviour);
+            StorageBehaviour<FluidVariant> behaviour) {
+        super(bet, pos, state, behaviour);
     }
 
     @Override
-    public ItemVariant getBlankResource() {
-        return ItemVariant.blank();
+    public FluidVariant loadResource(CompoundTag tag) {
+        return NbtHelper.getFluidCompatible(tag, "fluid");
     }
 
     @Override
-    public ItemVariant loadResource(CompoundTag tag) {
-        return ItemVariant.fromNbt(tag.getCompound("item"));
+    public void saveResource(FluidVariant resource, CompoundTag tag) {
+        NbtHelper.putFluid(tag, "fluid", getResource());
     }
 
     @Override
-    public void saveResource(ItemVariant resource, CompoundTag tag) {
-        tag.put("item", resource.toNbt());
+    public FluidVariant getBlankResource() {
+        return FluidVariant.blank();
     }
+
+    public abstract boolean onPlayerUse(Player player);
+
 }

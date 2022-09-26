@@ -69,21 +69,25 @@ public record BarrelTooltipComponent(BarrelTooltipData data) implements ClientTo
 
         Component itemNumber;
 
-        if (maxCount == 1 || Screen.hasShiftDown()) {
-            itemNumber = Component.literal(String.format("%d / %d", amount, stackCapacity * maxCount)).setStyle(TextHelper.YELLOW);
+        if (data.creative()) {
+            itemNumber = Component.literal("∞ / ∞").setStyle(TextHelper.YELLOW);
         } else {
-            if (stackNumber > 0) {
-                if (rem != 0) {
-                    itemNumber = Component.literal(String.format("%d × %d + %d / %d × %d", stackNumber, maxCount, rem, stackCapacity, maxCount))
-                            .setStyle(TextHelper.YELLOW);
-
-                } else {
-                    itemNumber = Component.literal(String.format("%d × %d / %d × %d", stackNumber, maxCount, stackCapacity, maxCount))
-                            .setStyle(TextHelper.YELLOW);
-
-                }
+            if (maxCount == 1 || !Screen.hasShiftDown()) {
+                itemNumber = Component.literal(String.format("%d / %d", amount, stackCapacity * maxCount)).setStyle(TextHelper.YELLOW);
             } else {
-                itemNumber = Component.literal(String.format("%d / %d × %d", rem, stackCapacity, maxCount)).setStyle(TextHelper.YELLOW);
+                if (stackNumber > 0) {
+                    if (rem != 0) {
+                        itemNumber = Component.literal(String.format("%d × %d + %d / %d × %d", stackNumber, maxCount, rem, stackCapacity, maxCount))
+                                .setStyle(TextHelper.YELLOW);
+
+                    } else {
+                        itemNumber = Component.literal(String.format("%d × %d / %d × %d", stackNumber, maxCount, stackCapacity, maxCount))
+                                .setStyle(TextHelper.YELLOW);
+
+                    }
+                } else {
+                    itemNumber = Component.literal(String.format("%d / %d × %d", rem, stackCapacity, maxCount)).setStyle(TextHelper.YELLOW);
+                }
             }
         }
 

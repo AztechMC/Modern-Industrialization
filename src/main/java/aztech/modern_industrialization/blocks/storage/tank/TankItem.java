@@ -25,106 +25,74 @@ package aztech.modern_industrialization.blocks.storage.tank;
 
 import static aztech.modern_industrialization.ModernIndustrialization.ITEM_GROUP;
 
+import aztech.modern_industrialization.blocks.storage.AbstractStorageBlockItem;
+import aztech.modern_industrialization.blocks.storage.StorageBehaviour;
 import aztech.modern_industrialization.util.FluidHelper;
 import aztech.modern_industrialization.util.NbtHelper;
 import java.util.List;
-import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
-import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
-import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleVariantItemStorage;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 
-public class TankItem extends BlockItem {
+public class TankItem extends AbstractStorageBlockItem<FluidVariant> {
 
-    public final long capacity;
+    public TankItem(Block block, StorageBehaviour<FluidVariant> behaviour) {
+        super(block, new Item.Properties().tab(ITEM_GROUP), behaviour);
 
-    public TankItem(Block block, long capacity) {
-        super(block, new Item.Properties().tab(ITEM_GROUP));
-        this.capacity = capacity;
     }
 
     public void registerItemApi() {
-        FluidStorage.ITEM.registerForItems(TankItemStorage::new, this);
+        FluidStorage.ITEM.registerForItems(
+                (stack, context) -> new GenericItemStorage<>(this, context), this);
     }
 
-    public boolean isEmpty(ItemStack stack) {
-        return stack.getTagElement("BlockEntityTag") == null;
+    @Override
+    public FluidVariant getBlankResource() {
+        return FluidVariant.blank();
     }
 
-    public FluidVariant getFluid(ItemStack stack) {
-        return NbtHelper.getFluidCompatible(stack.getTagElement("BlockEntityTag"), "fluid");
-    }
-
-    private void setFluid(ItemStack stack, FluidVariant fluid) {
-        NbtHelper.putFluid(stack.getOrCreateTagElement("BlockEntityTag"), "fluid", fluid);
-    }
-
-    public long getAmount(ItemStack stack) {
-        if (getFluid(stack).isBlank()) {
-            return 0;
-        }
+    @Override
+    public FluidVariant getResource(ItemStack stack) {
         CompoundTag tag = stack.getTagElement("BlockEntityTag");
-        if (tag == null)
-            return 0;
-        else
-            return tag.getLong("amt");
+        if (tag != null) {
+            return NbtHelper.getFluidCompatible(tag, "fluid");
+        } else {
+            return FluidVariant.blank();
+        }
     }
 
-    private void setAmount(ItemStack stack, long amount) {
-        stack.getOrCreateTagElement("BlockEntityTag").putLong("amt", amount);
+    @Override
+    public void setResourceNoClean(ItemStack stack, FluidVariant resource) {
+        CompoundTag tag = stack.getOrCreateTagElement("BlockEntityTag");
+        NbtHelper.putFluid(tag, "fluid", resource);
     }
 
     @Override
     public void appendHoverText(ItemStack stack, Level world, List<Component> tooltip, TooltipFlag context) {
-        if (isEmpty(stack)) {
-            tooltip.addAll(FluidHelper.getTooltipForFluidStorage(FluidVariant.blank(), 0, capacity));
+
+        if (this.behaviour.isCreative()) {
+            tooltip.add(FluidHelper.getFluidName(getResource(stack), true));
         } else {
-            tooltip.addAll(FluidHelper.getTooltipForFluidStorage(getFluid(stack), getAmount(stack), capacity));
-        }
-    }
+            long capacity = behaviour.getCapacityForResource(getResource(stack));
 
-    class TankItemStorage extends SingleVariantItemStorage<FluidVariant> {
-        public TankItemStorage(ItemStack stack, ContainerItemContext context) {
-            super(context);
-        }
-
-        @Override
-        protected FluidVariant getBlankResource() {
-            return FluidVariant.blank();
-        }
-
-        @Override
-        protected FluidVariant getResource(ItemVariant currentVariant) {
-            return getFluid(currentVariant.toStack());
-        }
-
-        @Override
-        protected long getAmount(ItemVariant currentVariant) {
-            return TankItem.this.getAmount(currentVariant.toStack());
-        }
-
-        @Override
-        protected long getCapacity(FluidVariant variant) {
-            return capacity;
-        }
-
-        @Override
-        protected ItemVariant getUpdatedVariant(ItemVariant currentVariant, FluidVariant newResource, long newAmount) {
-            // TODO: Note that any enchantment or custom name is nuked, fix this?
-            ItemStack stack = new ItemStack(currentVariant.getItem());
-            if (!newResource.isBlank() && newAmount > 0) {
-                setFluid(stack, newResource);
-                setAmount(stack, newAmount);
+            if (isEmpty(stack)) {
+                if (!isUnlocked(stack)) {
+                    tooltip.addAll(FluidHelper.getTooltipForFluidStorage(getResource(stack), 0, capacity));
+                } else {
+                    tooltip.addAll(FluidHelper.getTooltipForFluidStorage(FluidVariant.blank(), 0, capacity));
+                }
+            } else {
+                tooltip.addAll(FluidHelper.getTooltipForFluidStorage(getResource(stack), getAmount(stack), capacity));
             }
-            return ItemVariant.of(stack);
         }
+
+        super.appendHoverText(stack, world, tooltip, context);
     }
+
 }

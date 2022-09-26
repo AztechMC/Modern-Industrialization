@@ -21,10 +21,21 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.blocks.storage.barrel;
+package aztech.modern_industrialization.blocks.storage.barrel.client;
 
-import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
-import net.minecraft.world.inventory.tooltip.TooltipComponent;
+import aztech.modern_industrialization.MIBlock;
+import aztech.modern_industrialization.MIBlockEntityTypes;
+import aztech.modern_industrialization.blocks.storage.barrel.BarrelRenderer;
+import aztech.modern_industrialization.util.RenderHelper;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import net.fabricmc.fabric.api.client.rendering.v1.BuiltinItemRendererRegistry;
 
-public record BarrelTooltipData(ItemVariant variant, long amount, long capacity, boolean creative) implements TooltipComponent {
+@Environment(EnvType.CLIENT)
+public class CreativeBarrelClientSetup {
+
+    public static void setupClient() {
+        BarrelRenderer.register(MIBlockEntityTypes.CREATIVE_BARREL, 0x000000);
+        BuiltinItemRendererRegistry.INSTANCE.register(MIBlock.CREATIVE_BARREL, RenderHelper.BLOCK_AND_ENTITY_RENDERER);
+    }
 }

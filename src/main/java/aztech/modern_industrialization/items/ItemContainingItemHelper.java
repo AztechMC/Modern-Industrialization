@@ -23,10 +23,11 @@
  */
 package aztech.modern_industrialization.items;
 
-import com.google.common.base.Preconditions;
+import net.fabricmc.fabric.api.transfer.v1.item.InventoryStorage;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
-import net.fabricmc.fabric.api.transfer.v1.storage.StoragePreconditions;
+import net.fabricmc.fabric.api.transfer.v1.storage.StorageUtil;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.SlotAccess;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ClickAction;
@@ -35,72 +36,7 @@ import net.minecraft.world.item.ItemStack;
 import org.apache.commons.lang3.mutable.Mutable;
 import org.apache.commons.lang3.mutable.MutableObject;
 
-public interface ItemContainingItemHelper {
-    long getStackCapacity();
-
-    default boolean canDirectInsert(ItemStack stack) {
-        return stack.getItem().canFitInsideContainerItems();
-    }
-
-    default boolean isEmpty(ItemStack stack) {
-        return stack.getTagElement("BlockEntityTag") == null;
-    }
-
-    default ItemVariant getItemVariant(ItemStack stack) {
-        if (isEmpty(stack)) {
-            return ItemVariant.blank();
-        } else {
-            return ItemVariant.fromNbt(stack.getTagElement("BlockEntityTag").getCompound("item"));
-        }
-    }
-
-    private void setItemVariant(ItemStack stack, ItemVariant item) {
-        stack.getOrCreateTagElement("BlockEntityTag").put("item", item.toNbt());
-    }
-
-    default long insert(ItemStack stackBarrel, ItemVariant inserted, long maxAmount) {
-        StoragePreconditions.notBlankNotNegative(inserted, maxAmount);
-
-        if (this.isEmpty(stackBarrel) || this.getItemVariant(stackBarrel).equals(inserted)) {
-            long maxInsert = getCapacity(inserted) - getAmount(stackBarrel);
-            long insertedAmount = Math.min(maxAmount, maxInsert);
-
-            if (insertedAmount > 0) {
-                setAmount(stackBarrel, getAmount(stackBarrel) + insertedAmount);
-                setItemVariant(stackBarrel, inserted);
-            }
-            return insertedAmount;
-        }
-        return 0;
-    }
-
-    default long getAmount(ItemStack stack) {
-        if (getItemVariant(stack).isBlank()) {
-            return 0;
-        }
-        CompoundTag tag = stack.getTagElement("BlockEntityTag");
-        if (tag == null)
-            return 0;
-        else
-            return tag.getLong("amt");
-    }
-
-    default void setAmount(ItemStack stack, long amount) {
-        Preconditions.checkArgument(amount >= 0, "Can not set a barrel item to a negative amount");
-
-        stack.getOrCreateTagElement("BlockEntityTag").putLong("amt", amount);
-        if (amount == 0) {
-            stack.removeTagKey("BlockEntityTag");
-        }
-    }
-
-    default long getCapacity(ItemVariant variant) {
-        return getStackCapacity() * variant.getItem().getMaxStackSize();
-    }
-
-    default long getCurrentCapacity(ItemStack barrelStack) {
-        return getStackCapacity() * getItemVariant(barrelStack).getItem().getMaxStackSize();
-    }
+public interface ItemContainingItemHelper extends ContainerItem<ItemVariant> {
 
     default boolean handleStackedOnOther(ItemStack stackBarrel, Slot slot, ClickAction clickType, Player player) {
         if (clickType == ClickAction.SECONDARY && slot.allowModification(player)) {
@@ -126,21 +62,36 @@ public interface ItemContainingItemHelper {
         }
     }
 
-    private boolean handleClick(ItemStack stackBarrel, Mutable<ItemStack> otherStack) {
-        ItemStack other = otherStack.getValue().copy();
-        // Try to put into barrel
-        if ((isEmpty(stackBarrel) || getItemVariant(stackBarrel).matches(other)) && !other.isEmpty() && canDirectInsert(other)) {
-            other.shrink((int) insert(stackBarrel, ItemVariant.of(other), other.getCount()));
-            otherStack.setValue(other);
-            return true;
-        } else if (!isEmpty(stackBarrel) && other.isEmpty()) {
-            int amount = (int) Math.min(getAmount(stackBarrel), getItemVariant(stackBarrel).getItem().getMaxStackSize());
-            ItemStack newStack = getItemVariant(stackBarrel).toStack(amount);
-            otherStack.setValue(newStack);
-            setAmount(stackBarrel, getAmount(stackBarrel) - amount);
+    private boolean handleClick(ItemStack barrelLike, Mutable<ItemStack> otherStack) {
+        if (!(barrelLike.getItem() instanceof ItemContainingItemHelper helper)) {
+            throw new AssertionError("This method should only be called on a ItemContainingItemHelper.");
+        }
+
+        var barrelStorage = GenericItemStorage.of(barrelLike, this);
+        SimpleContainer otherInv = new SimpleContainer(otherStack.getValue().copy());
+        var otherInvStorage = InventoryStorage.of(otherInv, null);
+
+        if (StorageUtil.move(otherInvStorage, barrelStorage, (iv) -> true, Long.MAX_VALUE, null) > 0
+                || StorageUtil.move(barrelStorage, otherInvStorage, (iv) -> true, Long.MAX_VALUE, null) > 0) {
+            otherStack.setValue(otherInv.getItem(0));
             return true;
         } else {
-            return !isEmpty(stackBarrel) || !other.isEmpty();
+            return !isEmpty(barrelLike) || !otherStack.getValue().isEmpty();
         }
+    }
+
+    @Override
+    default ItemVariant getResource(ItemStack stack) {
+        CompoundTag tag = stack.getTagElement("BlockEntityTag");
+        if (tag != null) {
+            return ItemVariant.fromNbt(tag.getCompound("item"));
+        } else {
+            return ItemVariant.blank();
+        }
+    }
+
+    @Override
+    default void setResourceNoClean(ItemStack stack, ItemVariant item) {
+        stack.getOrCreateTagElement("BlockEntityTag").put("item", item.toNbt());
     }
 }

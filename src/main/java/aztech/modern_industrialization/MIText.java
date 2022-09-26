@@ -119,6 +119,7 @@ public enum MIText {
     LargeTankTooltips("Stores %s buckets of fluid per block in the structure"),
     LockingModeOff("Lock editing disabled"),
     LockingModeOn("Lock editing enabled"),
+    Locked("Locked"),
     LubricantTooltip("Right-Click on Electric Machine : consume %s mb for 1 efficiency tick"),
     MachineUpgrade("Electric Machine Upgrade : Max Overclock +%s"),
     MaxTemp("Max Temperature : %d C°"),
@@ -206,6 +207,7 @@ public enum MIText {
     ToolSwitchedSilkTouch("Silk Touch Mode enabled!"),
     TooltipSpeedUpgrade("Item Pipe Speed Upgrade: +%d items / 3s."),
     TooltipsShiftRequired("Press [Shift] for info"),
+    Unlocked("Unlocked"),
     WaterPercent("Water: %s %%"),
     Whitelist("Whitelist mode enabled");
 

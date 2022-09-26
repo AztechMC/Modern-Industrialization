@@ -64,6 +64,16 @@ public class ConfigurableFluidStack extends AbstractConfigurableStack<Fluid, Flu
         return stack;
     }
 
+    public static ConfigurableFluidStack standardIOSlot(long capacity, boolean pipeIO) {
+        ConfigurableFluidStack stack = new ConfigurableFluidStack(capacity);
+        stack.playerInsert = true;
+        if (pipeIO) {
+            stack.pipesInsert = true;
+            stack.pipesExtract = true;
+        }
+        return stack;
+    }
+
     public static ConfigurableFluidStack lockedInputSlot(long capacity, Fluid fluid) {
         ConfigurableFluidStack stack = new ConfigurableFluidStack(capacity);
         stack.key = FluidVariant.of(fluid);

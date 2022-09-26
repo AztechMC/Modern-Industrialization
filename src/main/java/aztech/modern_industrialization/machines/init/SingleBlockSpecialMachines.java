@@ -69,6 +69,9 @@ public class SingleBlockSpecialMachines {
         MachineRegistrationHelper.registerMachine("Configurable Chest", "configurable_chest", ConfigurableChestMachineBlockEntity::new,
                 MachineBlockEntity::registerItemApi);
 
+        MachineRegistrationHelper.registerMachine("Configurable Tank", "configurable_tank", ConfigurableTankMachineBlockEntity::new,
+                MachineBlockEntity::registerFluidApi);
+
         MachineRegistrationHelper.registerMachine("Replicator", "replicator", ReplicatorMachineBlockEntity::new, MachineBlockEntity::registerFluidApi,
                 MachineBlockEntity::registerItemApi);
 
@@ -79,6 +82,7 @@ public class SingleBlockSpecialMachines {
             MachineModels.addTieredMachine("diesel_generator", "diesel_generator", MachineCasings.MV, true, true, true);
             MachineModels.addTieredMachine("turbo_diesel_generator", "diesel_generator", MachineCasings.HV, true, true, true);
             MachineModels.addTieredMachine("configurable_chest", "", MachineCasings.STEEL_CRATE, false, false, false, false);
+            MachineModels.addTieredMachine("configurable_tank", "", MachineCasings.CONFIGURABLE_TANK, false, false, false, false);
             MachineModels.addTieredMachine("replicator", "replicator", MachineCasings.SUPERCONDUCTOR, true, false, true, true);
 
         }

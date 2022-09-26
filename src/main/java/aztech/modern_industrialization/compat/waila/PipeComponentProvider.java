@@ -24,18 +24,29 @@
 package aztech.modern_industrialization.compat.waila;
 
 import aztech.modern_industrialization.MIText;
-import aztech.modern_industrialization.api.energy.CableTier;
+import aztech.modern_industrialization.MITooltips;
+import aztech.modern_industrialization.compat.waila.component.BarComponent;
+import aztech.modern_industrialization.compat.waila.component.CenteredTextComponent;
 import aztech.modern_industrialization.pipes.MIPipes;
 import aztech.modern_industrialization.pipes.impl.PipeBlockEntity;
 import aztech.modern_industrialization.pipes.impl.PipeVoxelShape;
+import aztech.modern_industrialization.pipes.item.ItemNetwork;
 import aztech.modern_industrialization.util.FluidHelper;
-import aztech.modern_industrialization.util.NbtHelper;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.util.List;
+import lol.bai.megane.api.provider.FluidInfoProvider;
 import mcp.mobius.waila.api.*;
+import mcp.mobius.waila.api.component.PairComponent;
+import mcp.mobius.waila.api.component.WrappedComponent;
+import net.fabricmc.fabric.api.transfer.v1.client.fluid.FluidVariantRendering;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.*;
+import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
@@ -78,23 +89,107 @@ public class PipeComponentProvider implements IBlockComponentProvider {
         PipeVoxelShape shape = getHitShape(accessor);
         if (shape != null) {
             CompoundTag tag = accessor.getServerData().getCompound(shape.type.getIdentifier().toString());
-            Style style = Style.EMPTY.withColor(TextColor.fromRgb(0xa9a9a9)).withItalic(true);
 
             if (tag.contains("fluid")) {
-                FluidVariant fluid = NbtHelper.getFluidCompatible(tag, "fluid");
-                long amount = tag.getLong("amount");
-                int capacity = tag.getInt("capacity");
-                FluidHelper.getTooltipForFluidStorage(fluid, amount, capacity).forEach(c -> tooltip.addLine().with(c));
+                FluidVariant fluid = FluidVariant.fromNbt(tag.getCompound("fluid"));
+                long stored = tag.getLong("amount");
+                long capacity = tag.getInt("capacity");
+                long transfer = tag.getLong("transfer");
+                long maxTransfer = tag.getLong("maxTransfer");
+
+                if (fluid.isBlank()) {
+                    // Show "Empty"
+                    tooltip.addLine(MIText.Empty.text());
+                } else {
+                    var fluidName = FluidHelper.getFluidName(fluid, true);
+                    int color = FluidVariantRendering.getColor(fluid);
+
+                    if (FabricLoader.getInstance().isModLoaded("megane-runtime")) {
+                        color = improveFluidColor(accessor, color, fluid);
+                    }
+
+                    // Total fluid
+                    tooltip.addLine(new PairComponent(
+                            new WrappedComponent(MIText.NetworkAmount.text()),
+                            new BarComponent(color, stored / 81.0, capacity / 81.0, "mb", false)));
+
+                    // Which fluid
+                    tooltip.addLine(new PairComponent(
+                            new WrappedComponent(MIText.NetworkFluid.text()),
+                            new CenteredTextComponent(
+                                    fluidName)));
+
+                    // Transfer rate
+                    tooltip.addLine(new PairComponent(
+                            new WrappedComponent(MIText.NetworkTransfer.text()),
+                            new BarComponent(color, transfer / 81.0, maxTransfer / 81.0, "mb/t", false)));
+
+                }
             }
 
             if (tag.contains("eu")) {
-                long eu = tag.getLong("eu");
-                long maxEu = tag.getLong("maxEu");
-                String tier = tag.getString("tier");
+                long stored = tag.getLong("eu");
+                long capacity = tag.getLong("maxEu");
+                long transfer = tag.getLong("transfer");
+                long maxTransfer = tag.getLong("maxTransfer");
 
-                tooltip.addLine().with(CableTier.getTier(tier).englishNameComponent);
-                tooltip.addLine().with(MIText.EuMaxed.text(eu, maxEu, "").setStyle(style));
+                // Total EU
+                tooltip.addLine(new PairComponent(
+                        new WrappedComponent(MIText.NetworkEnergy.text()),
+                        new BarComponent(0x710C00, stored, capacity, "EU", false)));
+
+                // Voltage tier
+                tooltip.addLine(new PairComponent(
+                        new WrappedComponent(MIText.NetworkTier.text()),
+                        new CenteredTextComponent(
+                                MIPipes.ELECTRICITY_PIPE_TIER.get(MIPipes.INSTANCE.getPipeItem(shape.type)).englishNameComponent
+                                        .copy().withStyle(MITooltips.NUMBER_TEXT))));
+
+                // EU/t
+                tooltip.addLine(new PairComponent(
+                        new WrappedComponent(MIText.NetworkTransfer.text()),
+                        new BarComponent(0x710C00, transfer, maxTransfer, "EU/t", false)));
+            }
+
+            if (tag.contains("items")) {
+                long items = tag.getLong("items");
+                int pulse = tag.getInt("pulse");
+
+                // Delay
+                tooltip.addLine(new PairComponent(
+                        new WrappedComponent(MIText.NetworkDelay.text()),
+                        new BarComponent(0xFFD14A, (ItemNetwork.TICK_RATE - pulse) / 20.0, ItemNetwork.TICK_RATE / 20.0, "s", false)));
+
+                // Moved items
+                tooltip.addLine(new PairComponent(
+                        new WrappedComponent(MIText.NetworkMovedItems.text()),
+                        new CenteredTextComponent(Component.literal("" + items).withStyle(MITooltips.NUMBER_TEXT))));
             }
         }
+    }
+
+    /**
+     * Try to find a better color if possible by reflecting into megane's internals ;-)
+     */
+    private static int improveFluidColor(IBlockAccessor accessor, int color, FluidVariant fluid) {
+        try {
+            Class<?> registrarClass = Class.forName("lol.bai.megane.runtime.registry.Registrar");
+            Field fluidInfoField = registrarClass.getField("FLUID_INFO");
+            fluidInfoField.setAccessible(true);
+            Object registry = fluidInfoField.get(null);
+            Method getMethod = registry.getClass().getMethod("get", Object.class);
+            List<FluidInfoProvider<Fluid>> providers = (List<FluidInfoProvider<Fluid>>) getMethod.invoke(registry, fluid.getFluid());
+
+            for (var provider : providers) {
+                provider.setContext(accessor.getWorld(), accessor.getPosition(), accessor.getHitResult(), accessor.getPlayer(), fluid.getFluid());
+                provider.setFluidInfoContext(fluid.getNbt());
+                if (provider.hasFluidInfo()) {
+                    return provider.getColor();
+                }
+            }
+        } catch (Exception ignored) {
+        }
+
+        return color;
     }
 }

@@ -40,6 +40,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.inventory.DataSlot;
+import net.minecraft.world.inventory.ResultContainer;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -101,12 +102,10 @@ public class ForgeHammerScreenHandler extends AbstractContainerMenu {
             }
         };
 
-        this.output = new Slot(new SimpleContainer(1) {
-            public void setChanged() {
-                super.setChanged();
-                ForgeHammerScreenHandler.this.slotsChanged(this);
-            }
-        }, 0, 143, 32) {
+        // Note: don't use new SimpleInventory(1), as ResultContainer always returns the full stack in removeItem !
+        // This ensures that the whole item is always removed from the slot, even if someone right-clicks the output slot.
+        // (Instead of leaving half the result behind, which gets overridden by the next recipe).
+        this.output = new Slot(new ResultContainer(), 0, 143, 32) {
             public boolean mayPlace(ItemStack stack) {
                 return false;
             }

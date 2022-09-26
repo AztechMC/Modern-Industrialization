@@ -8,6 +8,16 @@
       "text": "Electric machines work exactly the same as steam machines, except that they require electricity instead of steam and they progressively overclock recipes up to 32 EU/t.$(br2)You can use REI to view the recipes for the electric version of the machines you are already familiar with."
     },
     {
+      "type": "spotlight",
+      "item": "modern_industrialization:lubricant_bucket",
+      "text": "Lubricant is a fluid that can be obtained by mixing creosote and redstone. Right-click an electric machine with a lubricant container such as a lubricant bucket to overclock it manually.$(br2)Each 25 mb of lubricant will add 1 (overclocking) efficiency tick to the machine."
+    },
+    {
+      "type": "crafting",
+      "recipe": "modern_industrialization:electric_age/machine/configurable_chest_asbl",
+      "text": "The Configurable Chest is not a machine, but once you have Analog Circuits, you can craft it!$(br2)It has 21 configurable slots, and auto-extract functionality! Very useful for automation!"
+    },
+    {
       "type": "crafting",
       "recipe": "modern_industrialization:electric_age/machine/polarizer_asbl",
       "text": "The Polarizer polarizes stuff. It doesn't have many recipes yet, but it is already useful to automate Motors!"
@@ -20,11 +30,6 @@
     {
       "type": "text",
       "text": "We strongly suggest that you automate Machine Hull, Analog Circuits, Motors, Pistons, Robot Arms and Conveyor Belts using Assemblers as soon as possible, that will make crafting electric machines basically free!"
-    },
-    {
-      "type": "crafting",
-      "recipe": "modern_industrialization:electric_age/machine/configurable_chest_asbl",
-      "text": "The Configurable Chest is not a machine, but once you have Analog Circuits, you can craft it!$(br2)It has 21 configurable slots, and auto-extract functionality! Very useful for automation!"
     }
   ],
   "sortnum": 104

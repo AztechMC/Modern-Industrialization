@@ -31,12 +31,13 @@ repositories {
     maven {
         url 'https://maven.bai.lol'
     }
-    // for AE2
+    // for AE2 and JEI
     maven {
         name "Modmaven"
         url "https://modmaven.dev"
         content {
             includeGroup "appeng"
+            includeGroup "mezz.jei"
         }
     }
     maven {
@@ -154,9 +155,28 @@ dependencies {
 
     // Dependencies
 
-    modImplementation("me.shedaniel:RoughlyEnoughItems-fabric:${project.rei_version}") {
-        exclude(group: "net.fabricmc.fabric-api")
+    if (project.runtime_itemlist_mod == "jei") {
+        modImplementation("mezz.jei:jei-${project.jei_minecraft_version}-fabric:${project.jei_version}") {
+            exclude group: "mezz.jei"
+        }
+
+        modCompileOnly("me.shedaniel:RoughlyEnoughItems-fabric:${project.rei_version}") {
+            exclude group: "net.fabricmc.fabric-api"
+        }
+    } else if (project.runtime_itemlist_mod == "rei") {
+        modCompileOnly("mezz.jei:jei-${project.jei_minecraft_version}-fabric:${project.jei_version}") {
+            exclude group: "mezz.jei"
+        }
+
+        // Manually override architectury TODO remove once REI's dependency is fixed
+        modRuntimeOnly "dev.architectury:architectury-fabric:6.2.43"
+        modImplementation("me.shedaniel:RoughlyEnoughItems-fabric:${project.rei_version}") {
+            exclude(group: "net.fabricmc.fabric-api")
+        }
+    } else {
+        throw new GradleException("Invalid runtime_itemlist_mod value: " + project.runtime_itemlist_mod)
     }
+
     include modImplementation("vazkii.patchouli:Patchouli:${project.patchouli_version}") {
         exclude(group: "net.fabricmc.fabric-api")
     }
@@ -215,6 +235,7 @@ dependencies {
 
     modImplementation("appeng:appliedenergistics2-fabric:${project.ae2_version}") {
         exclude(group: "net.fabricmc.fabric-api")
+        exclude(group: "me.shedaniel")
     }
 }
 

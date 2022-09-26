@@ -51,11 +51,14 @@ import aztech.modern_industrialization.util.TextHelper;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.fabricmc.fabric.api.client.rendering.v1.TooltipComponentCallback;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.fabricmc.fabric.impl.content.registry.FuelRegistryImpl;
+import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.network.chat.Component;
@@ -85,6 +88,15 @@ public class ModernIndustrializationClient implements ClientModInitializer {
         HudRenderCallback.EVENT.register(HudRenderer::onRenderHud);
         setupTooltips();
         VersionEvents.init();
+
+        // Warn if neither JEI nor REI is present!
+        if (!FabricLoader.getInstance().isModLoaded("jei") && !FabricLoader.getInstance().isModLoaded("roughlyenoughitems")) {
+            ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> {
+                if (MIConfig.getConfig().enableNoJeiMessage) {
+                    client.player.displayClientMessage(MIText.NoJei.text().withStyle(ChatFormatting.GOLD), false);
+                }
+            });
+        }
 
         ModernIndustrialization.LOGGER.info("Modern Industrialization client setup done!");
     }

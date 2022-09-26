@@ -38,6 +38,13 @@
     ],
     "ae2": [
       "aztech.modern_industrialization.compat.ae2.MIAEAddon"
+    ],
+    "jei_mod_plugin": [
+      "aztech.modern_industrialization.compat.jei.fluid_fuels.FluidFuelsPlugin",
+      "aztech.modern_industrialization.compat.jei.MIJEIPlugin",
+      "aztech.modern_industrialization.compat.jei.forgehammer_recipe.ForgeHammerRecipePlugin",
+      "aztech.modern_industrialization.compat.jei.machines.MachinesPlugin",
+      "aztech.modern_industrialization.compat.jei.nuclear.NeutronInteractionPlugin"
     ]
   },
   "mixins": [
@@ -45,9 +52,8 @@
   ],
   "depends": {
     "fabricloader": ">=0.7.4",
-    "fabric": ">=0.55.1",
+    "fabric": ">=0.61.0",
     "minecraft": "1.19.x",
-    "roughlyenoughitems": "*",
     "team_reborn_energy": ">=2.2.0",
     "cloth-config": "*"
   },

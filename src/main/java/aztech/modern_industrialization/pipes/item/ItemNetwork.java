@@ -48,9 +48,11 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.Item;
 
 public class ItemNetwork extends PipeNetwork {
+    public static final int TICK_RATE = 60;
     private static final ReferenceOpenHashSet<Item> WHITELIST_CACHED_SET = new ReferenceOpenHashSet<>();
 
-    private int inactiveTicks = 0;
+    int inactiveTicks = 0;
+    long lastMovedItems = 0;
 
     public ItemNetwork(int id, PipeNetworkData data) {
         super(id, data == null ? new ItemNetworkData() : data);
@@ -61,7 +63,7 @@ public class ItemNetwork extends PipeNetwork {
         // Only tick once
         if (inactiveTicks == 0) {
             doNetworkTransfer(world);
-            inactiveTicks = 60;
+            inactiveTicks = TICK_RATE;
         }
         --inactiveTicks;
     }
@@ -88,6 +90,7 @@ public class ItemNetwork extends PipeNetwork {
         // Do the actual transfer.
         var insertTargets = getAggregatedInsertTargets(world);
         var insertStorage = new CombinedStorage<>(insertTargets);
+        lastMovedItems = 0;
         try (Transaction tx = Transaction.openOuter()) {
             for (ExtractionTarget target : extractionTargets) {
                 // Lower priority extracts first, and pipes can only move items to things that have >= priorities.
@@ -96,7 +99,8 @@ public class ItemNetwork extends PipeNetwork {
                     insertTargets.remove(insertTargets.size() - 1);
                 }
 
-                StorageUtil.move(target.storage, insertStorage, target.connection::canStackMoveThrough, target.connection.getMoves(), tx);
+                lastMovedItems += StorageUtil.move(target.storage, insertStorage, target.connection::canStackMoveThrough,
+                        target.connection.getMoves(), tx);
             }
             tx.commit();
         }

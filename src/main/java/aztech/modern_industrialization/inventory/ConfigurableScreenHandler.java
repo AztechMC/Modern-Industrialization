@@ -35,11 +35,13 @@ import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariantAttributes;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -109,7 +111,7 @@ public abstract class ConfigurableScreenHandler extends AbstractContainerMenu {
     }
 
     @Override
-    public void clicked(int i, int j, ClickType actionType, Player playerEntity) {
+    public void clicked(int i, int j, ClickType actionType, Player player) {
         if (i >= 0) {
             Slot slot = this.slots.get(i);
             if (slot instanceof ConfigurableFluidStack.ConfigurableFluidSlot fluidSlot) {
@@ -120,7 +122,7 @@ public abstract class ConfigurableScreenHandler extends AbstractContainerMenu {
                 if (lockingMode) {
                     fluidStack.togglePlayerLock();
                 } else {
-                    Storage<FluidVariant> io = ContainerItemContext.ofPlayerCursor(playerEntity, this).find(FluidStorage.ITEM);
+                    Storage<FluidVariant> io = ContainerItemContext.ofPlayerCursor(player, this).find(FluidStorage.ITEM);
                     if (io != null) {
                         // Extract first
                         long previousAmount = fluidStack.amount;
@@ -131,6 +133,7 @@ public abstract class ConfigurableScreenHandler extends AbstractContainerMenu {
                                     try (Transaction tx = transaction.openNested()) {
                                         long extracted = view.extract(fluid, fluidStack.getRemainingSpace(), tx);
                                         if (extracted > 0) {
+                                            player.playNotifySound(FluidVariantAttributes.getEmptySound(fluid), SoundSource.BLOCKS, 1, 1);
                                             tx.commit();
                                             fluidStack.increment(extracted);
                                             fluidStack.setKey(fluid);
@@ -149,10 +152,14 @@ public abstract class ConfigurableScreenHandler extends AbstractContainerMenu {
                         FluidVariant fluid = fluidStack.getResource();
                         if (!fluid.isBlank() && fluidSlot.canExtractFluid(fluid)) {
                             try (Transaction tx = Transaction.openOuter()) {
-                                fluidStack.decrement(io.insert(fluid, fluidStack.getAmount(), tx));
-                                tx.commit();
-                                // TODO: markDirty?
-                                return;
+                                long inserted = io.insert(fluid, fluidStack.getAmount(), tx);
+                                if (inserted > 0) {
+                                    fluidStack.decrement(inserted);
+                                    player.playNotifySound(FluidVariantAttributes.getFillSound(fluid), SoundSource.BLOCKS, 1, 1);
+                                    tx.commit();
+                                    // TODO: markDirty?
+                                    return;
+                                }
                             }
                         }
                     }
@@ -178,7 +185,7 @@ public abstract class ConfigurableScreenHandler extends AbstractContainerMenu {
                 }
             }
         }
-        super.clicked(i, j, actionType, playerEntity);
+        super.clicked(i, j, actionType, player);
     }
 
     @Override

@@ -103,7 +103,7 @@ public abstract class PipeNetwork {
         return Collections.unmodifiableMap(this.nodes);
     }
 
-    protected Collection<PosNode> iterateTickingNodes() {
+    public Collection<PosNode> iterateTickingNodes() {
         if (!tickingCacheValid) {
             tickingNodesCache.clear();
             for (var chunkEntry : this.nodesByChunk.entrySet()) {
@@ -124,7 +124,7 @@ public abstract class PipeNetwork {
         return tickingNodesCache;
     }
 
-    protected static class PosNode {
+    public static class PosNode {
         private final BlockPos pos;
         private final PipeNetworkNode node;
 

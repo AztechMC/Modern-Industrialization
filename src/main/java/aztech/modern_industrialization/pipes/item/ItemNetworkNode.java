@@ -345,4 +345,13 @@ public class ItemNetworkNode extends PipeNetworkNode {
             }
         }
     }
+
+    // Used in the Waila plugin
+    public InGameInfo collectNetworkInfo() {
+        var itemNetwork = (ItemNetwork) network;
+        return new InGameInfo(itemNetwork.lastMovedItems, itemNetwork.inactiveTicks);
+    }
+
+    public record InGameInfo(long movedItems, int pulse) {
+    }
 }

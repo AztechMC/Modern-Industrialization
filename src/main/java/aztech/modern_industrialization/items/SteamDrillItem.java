@@ -43,7 +43,6 @@ import it.unimi.dsi.fastutil.objects.Reference2IntMap;
 import it.unimi.dsi.fastutil.objects.Reference2IntOpenHashMap;
 import java.util.List;
 import java.util.Optional;
-import net.fabricmc.fabric.api.item.v1.FabricItem;
 import net.fabricmc.fabric.api.mininglevel.v1.MiningLevelManager;
 import net.fabricmc.fabric.api.registry.FuelRegistry;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
@@ -92,7 +91,7 @@ import org.jetbrains.annotations.Nullable;
  */
 public class SteamDrillItem
         extends Item
-        implements DynamicToolItem, MagnaTool, DynamicEnchantmentItem, ItemContainingItemHelper, FabricItem {
+        implements DynamicToolItem, MagnaTool, DynamicEnchantmentItem, ItemContainingItemHelper {
 
     public static final StorageBehaviour<ItemVariant> DRILL_BEHAVIOUR = new StorageBehaviour<>() {
         @Override
@@ -111,6 +110,19 @@ public class SteamDrillItem
 
     public SteamDrillItem(Properties settings) {
         super(settings.stacksTo(1).rarity(Rarity.UNCOMMON));
+    }
+
+    private static boolean isNotSilkTouch(ItemStack stack) {
+        CompoundTag tag = stack.getTag();
+        return tag != null && tag.getBoolean("nosilk");
+    }
+
+    private static void setSilkTouch(ItemStack stack, boolean silkTouch) {
+        if (silkTouch) {
+            stack.removeTagKey("nosilk");
+        } else {
+            stack.getOrCreateTag().putBoolean("nosilk", true);
+        }
     }
 
     @Override
@@ -193,6 +205,18 @@ public class SteamDrillItem
 
     @Override
     public InteractionResultHolder<ItemStack> use(Level world, Player user, InteractionHand hand) {
+        // Enable or disable silk touch
+        if (hand == InteractionHand.MAIN_HAND && user.isShiftKeyDown()) {
+            ItemStack stack = user.getItemInHand(hand);
+            setSilkTouch(stack, isNotSilkTouch(stack));
+            if (!world.isClientSide) {
+                user.displayClientMessage(
+                        isNotSilkTouch(stack) ? MIText.ToolSwitchedNoSilkTouch.text() : MIText.ToolSwitchedSilkTouch.text(), false);
+            }
+            return InteractionResultHolder.sidedSuccess(stack, world.isClientSide);
+        }
+
+        // Refill water
         ItemStack itemStack = user.getItemInHand(hand);
         BlockHitResult hitResult = getPlayerPOVHitResult(world, user, ClipContext.Fluid.ANY);
         if (hitResult.getType() != HitResult.Type.BLOCK)
@@ -202,6 +226,7 @@ public class SteamDrillItem
             itemStack.getOrCreateTag().putInt("water", FULL_WATER);
             return InteractionResultHolder.sidedSuccess(itemStack, world.isClientSide());
         }
+
         return super.use(world, user, hand);
     }
 
@@ -254,7 +279,9 @@ public class SteamDrillItem
     @Override
     public Reference2IntMap<Enchantment> getEnchantments(ItemStack stack) {
         Reference2IntMap<Enchantment> map = new Reference2IntOpenHashMap<>();
-        map.put(Enchantments.SILK_TOUCH, 1);
+        if (!isNotSilkTouch(stack)) {
+            map.put(Enchantments.SILK_TOUCH, 1);
+        }
         return map;
     }
 
@@ -298,6 +325,7 @@ public class SteamDrillItem
         tooltip.add(MIText.SteamDrillWaterHelp.text().setStyle(MITooltips.DEFAULT_STYLE));
         tooltip.add(MIText.SteamDrillFuelHelp.text().setStyle(MITooltips.DEFAULT_STYLE));
         tooltip.add(MIText.SteamDrillProfit.text().setStyle(MITooltips.DEFAULT_STYLE));
+        tooltip.add(MIText.SteamDrillToggle.text().setStyle(MITooltips.DEFAULT_STYLE));
     }
 
     @Override

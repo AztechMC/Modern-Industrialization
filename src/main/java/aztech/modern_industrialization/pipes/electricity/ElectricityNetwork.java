@@ -26,6 +26,7 @@ package aztech.modern_industrialization.pipes.electricity;
 import aztech.modern_industrialization.api.energy.CableTier;
 import aztech.modern_industrialization.api.energy.EnergyExtractable;
 import aztech.modern_industrialization.api.energy.EnergyInsertable;
+import aztech.modern_industrialization.pipes.PipeStatsCollector;
 import aztech.modern_industrialization.pipes.api.PipeNetwork;
 import aztech.modern_industrialization.pipes.api.PipeNetworkData;
 import aztech.modern_industrialization.util.Simulation;
@@ -37,6 +38,7 @@ public class ElectricityNetwork extends PipeNetwork {
     private static final List<EnergyExtractable> EXTRACTABLE_CACHE = new ArrayList<>();
 
     final CableTier tier;
+    final PipeStatsCollector stats = new PipeStatsCollector();
 
     public ElectricityNetwork(int id, PipeNetworkData data, CableTier tier) {
         super(id, data == null ? new ElectricityNetworkData() : data);
@@ -64,9 +66,14 @@ public class ElectricityNetwork extends PipeNetwork {
         // Do the transfer
         long networkCapacity = loadedNodeCount * tier.getMaxTransfer();
         long extractMaxAmount = Math.min(tier.getMaxTransfer(), networkCapacity - networkAmount);
-        networkAmount += transferForTargets(EnergyExtractable::extractEnergy, extractables, extractMaxAmount);
+        long extracted = transferForTargets(EnergyExtractable::extractEnergy, extractables, extractMaxAmount);
+        networkAmount += extracted;
+
         long insertMaxAmount = Math.min(tier.getMaxTransfer(), networkAmount);
-        networkAmount -= transferForTargets(EnergyInsertable::insertEnergy, insertables, insertMaxAmount);
+        long inserted = transferForTargets(EnergyInsertable::insertEnergy, insertables, insertMaxAmount);
+        networkAmount -= inserted;
+
+        stats.addValue(Math.max(extracted, inserted));
 
         // Split energy evenly across the nodes
         for (var entry : iterateTickingNodes()) {

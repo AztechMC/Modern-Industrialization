@@ -89,7 +89,7 @@ public class MITooltips {
 
     public static final Parser<Object> DEFAULT_PARSER = new Parser<>() {
         @Override
-        Component parse(Object o) {
+        public Component parse(Object o) {
             Style style = DEFAULT_STYLE;
             for (var entry : DEFAULT_ARGUMENT_STYLE.entrySet()) {
                 if (o.getClass().isAssignableFrom(entry.getKey())) {
@@ -110,7 +110,7 @@ public class MITooltips {
 
     public static final Parser<Number> EU_PER_TICK_PARSER = new Parser<>() {
         @Override
-        Component parse(Number number) {
+        public Component parse(Number number) {
             TextHelper.Amount amount = TextHelper.getAmountGeneric(number);
             return MIText.EuT.text(amount.digit(), amount.unit()).withStyle(NUMBER_TEXT);
         }
@@ -118,7 +118,7 @@ public class MITooltips {
 
     public static final Parser<Number> EU_PARSER = new Parser<>() {
         @Override
-        Component parse(Number number) {
+        public Component parse(Number number) {
             TextHelper.Amount amount = TextHelper.getAmountGeneric(number);
             return MIText.Eu.text(amount.digit(), amount.unit()).withStyle(NUMBER_TEXT);
         }
@@ -126,7 +126,7 @@ public class MITooltips {
 
     public static final Parser<Fluid> FLUID_PARSER = new Parser<>() {
         @Override
-        Component parse(Fluid fluid) {
+        public Component parse(Fluid fluid) {
             return FluidVariantAttributes.getName(FluidVariant.of(fluid));
         }
     };
@@ -346,8 +346,8 @@ public class MITooltips {
 
     }
 
-    static abstract class Parser<T> {
-        abstract Component parse(T t);
+    public static abstract class Parser<T> {
+        public abstract Component parse(T t);
     }
 
 }

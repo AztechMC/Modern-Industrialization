@@ -56,6 +56,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -142,7 +143,7 @@ public class RenderHelper {
     }
 
     public static void drawFluidInTank(Level world, BlockPos pos, PoseStack ms, MultiBufferSource vcp, FluidVariant fluid, float fill) {
-        VertexConsumer vc = vcp.getBuffer(RenderType.translucent());
+        VertexConsumer vc = vcp.getBuffer(Sheets.translucentCullBlockSheet());
         TextureAtlasSprite sprite = FluidVariantRendering.getSprite(fluid);
         int color = FluidVariantRendering.getColor(fluid, world, pos);
         float r = ((color >> 16) & 255) / 256f;

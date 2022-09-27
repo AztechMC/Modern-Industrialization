@@ -26,7 +26,9 @@ package aztech.modern_industrialization.machines;
 import aztech.modern_industrialization.MITags;
 import aztech.modern_industrialization.util.GeometryHelper;
 import aztech.modern_industrialization.util.RenderHelper;
+import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.blaze3d.vertex.VertexFormat;
 import com.mojang.math.Matrix4f;
 import java.util.ArrayList;
 import java.util.List;
@@ -35,6 +37,7 @@ import net.fabricmc.fabric.api.renderer.v1.RendererAccess;
 import net.fabricmc.fabric.api.renderer.v1.mesh.MeshBuilder;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -45,6 +48,7 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import org.jetbrains.annotations.Nullable;
 
 public class MachineOverlay {
     private static final double SIDE = 0.25;
@@ -117,9 +121,7 @@ public class MachineOverlay {
     }
 
     @SuppressWarnings("ConstantConditions")
-    public static boolean onBlockOutline(WorldRenderContext wrc, WorldRenderContext.BlockOutlineContext boc) {
-        HitResult hitResult = Minecraft.getInstance().hitResult;
-
+    public static boolean onBlockOutline(WorldRenderContext wrc, @Nullable HitResult hitResult) {
         if (hitResult != null && hitResult.getType() == HitResult.Type.BLOCK) {
             BlockHitResult blockHitResult = (BlockHitResult) hitResult;
             BlockPos pos = blockHitResult.getBlockPos();
@@ -139,7 +141,7 @@ public class MachineOverlay {
 
                 MeshBuilder meshBuilder = RendererAccess.INSTANCE.getRenderer().meshBuilder();
                 QuadEmitter emitter;
-                VertexConsumer vc = wrc.consumers().getBuffer(RenderType.translucent());
+                VertexConsumer vc = wrc.consumers().getBuffer(RenderTypeHolder.getMachineOverlayType());
                 for (int i = 0; i < 3; ++i) {
                     for (int j = 0; j < 3; ++j) {
                         double minX = ZONES[i], maxX = ZONES[i + 1];
@@ -150,10 +152,11 @@ public class MachineOverlay {
                         float r = 0;
                         float g = insideQuad ? 1 : 0;
                         float b = insideQuad ? 0 : 1;
-                        RenderHelper.quadWithAlpha(vc, wrc.matrixStack().last(), emitter.toBakedQuad(0, null, false), r, g, b, 0.5f, 0x7fffffff,
+                        RenderHelper.quadWithAlpha(vc, wrc.matrixStack().last(), emitter.toBakedQuad(0, null, false), r, g, b, 0.3f, 0x7fffffff,
                                 -2130706433);
                     }
                 }
+                Minecraft.getInstance().renderBuffers().bufferSource().endBatch(RenderTypeHolder.getMachineOverlayType());
 
                 // Extra lines
                 VertexConsumer lines = wrc.consumers().getBuffer(RenderType.lines());
@@ -179,5 +182,29 @@ public class MachineOverlay {
         // assume normal is not useful, it was added in 1.17 but the shader doesn't seem
         // to use it.
         lines.vertex(model, (float) coord.x, (float) coord.y, (float) coord.z).color(0f, 0f, 0f, 0.4f).normal(0, 0, 0).endVertex();
+    }
+
+    // This is a subclass to get access to a bunch of fields and classes.
+    // TODO: PR more access wideners to fabric
+    private static class RenderTypeHolder extends RenderType {
+        private static RenderType OVERLAY_TYPE;
+
+        private static RenderType getMachineOverlayType() {
+            if (OVERLAY_TYPE == null) {
+                OVERLAY_TYPE = create("machine_overlay", DefaultVertexFormat.POSITION_COLOR_NORMAL, VertexFormat.Mode.QUADS, 65536, false, true,
+                        CompositeState.builder()
+                                .setTransparencyState(TransparencyStateShard.TRANSLUCENT_TRANSPARENCY)
+                                .setTextureState(NO_TEXTURE)
+                                .setLightmapState(NO_LIGHTMAP)
+                                .setShaderState(RenderStateShard.POSITION_COLOR_SHADER)
+                                .createCompositeState(false));
+            }
+            return OVERLAY_TYPE;
+        }
+
+        private RenderTypeHolder(String string, VertexFormat vertexFormat, VertexFormat.Mode mode, int i, boolean bl, boolean bl2, Runnable runnable,
+                Runnable runnable2) {
+            super(string, vertexFormat, mode, i, bl, bl2, runnable, runnable2);
+        }
     }
 }

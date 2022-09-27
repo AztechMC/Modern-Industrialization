@@ -36,7 +36,7 @@ import net.fabricmc.fabric.api.transfer.v1.client.fluid.FluidVariantRendering;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariantAttributes;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -56,7 +56,7 @@ public class MultiblockTankBER extends MultiblockMachineBER {
         FluidVariant fluid = tankBlockEntity.getFluid();
         if (tankBlockEntity.shapeValid.shapeValid && !fluid.isBlank() && tankBlockEntity.getFullnessFraction() > 0) {
 
-            VertexConsumer vc = vcp.getBuffer(RenderType.translucent());
+            VertexConsumer vc = vcp.getBuffer(Sheets.translucentCullBlockSheet());
 
             FluidVariantRenderHandler handler = FluidVariantRendering.getHandlerOrDefault(fluid.getFluid());
             TextureAtlasSprite sprite = FluidVariantRendering.getSprite(fluid);

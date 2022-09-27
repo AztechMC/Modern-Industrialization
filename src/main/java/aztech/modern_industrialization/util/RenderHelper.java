@@ -24,6 +24,7 @@
 package aztech.modern_industrialization.util;
 
 import aztech.modern_industrialization.MIIdentifier;
+import aztech.modern_industrialization.client.MIRenderTypes;
 import aztech.modern_industrialization.compat.sodium.SodiumCompat;
 import com.google.common.base.Suppliers;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -78,7 +79,7 @@ public class RenderHelper {
     private static final MIIdentifier LOCKED_TEXTURE_LOCATION = new MIIdentifier("block/locked");
 
     public static void drawOverlay(PoseStack ms, MultiBufferSource vcp, float r, float g, float b, int light, int overlay) {
-        VertexConsumer vc = vcp.getBuffer(RenderType.solid());
+        VertexConsumer vc = vcp.getBuffer(MIRenderTypes.solidHighlight());
         for (BakedQuad overlayQuad : OVERLAY_QUADS.get()) {
             vc.putBulkData(ms.last(), overlayQuad, r, g, b, light, overlay);
         }
@@ -115,7 +116,7 @@ public class RenderHelper {
     private static final Supplier<BakedQuad[]> CUBE_QUADS;
 
     public static void drawCube(PoseStack ms, MultiBufferSource vcp, float r, float g, float b, int light, int overlay) {
-        VertexConsumer vc = vcp.getBuffer(RenderType.solid());
+        VertexConsumer vc = vcp.getBuffer(MIRenderTypes.solidHighlight());
         for (BakedQuad cubeQuad : CUBE_QUADS.get()) {
             vc.putBulkData(ms.last(), cubeQuad, r, g, b, light, overlay);
         }

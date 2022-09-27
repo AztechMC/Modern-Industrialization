@@ -238,7 +238,7 @@ public abstract class AbstractConfigurableStack<T, K extends TransferVariant<T>>
             boolean allowEmptyStacks = iter == 1;
 
             for (AbstractConfigurableStack<T, K> stack : stacks) {
-                if (stack.lockedInstance == null) {
+                if (stack.lockedInstance == null || stack.lockedInstance == stack.getEmptyInstance()) {
                     if (stack.key.isOf(instance) || (stack.isResourceBlank() && allowEmptyStacks)) {
                         stack.lockedInstance = instance;
                         stack.playerLocked = true;

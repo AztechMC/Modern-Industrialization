@@ -105,6 +105,7 @@ public class ModernIndustrialization implements ModInitializer {
         setupItems();
         setupBlocks();
         MIBlockEntityTypes.init();
+        MIVillager.init();
 
         // fields.
         setupPackets();

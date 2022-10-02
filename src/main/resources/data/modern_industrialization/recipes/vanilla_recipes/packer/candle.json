@@ -1,0 +1,21 @@
+{
+  "type": "modern_industrialization:packer",
+  "eu": 2,
+  "duration": 100,
+  "item_inputs": [
+    {
+      "item": "minecraft:string",
+      "amount": 1
+    },
+    {
+      "item": "modern_industrialization:wax",
+      "amount": 1
+    }
+  ],
+  "item_outputs": [
+    {
+      "item": "minecraft:candle",
+      "amount": 1
+    }
+  ]
+}

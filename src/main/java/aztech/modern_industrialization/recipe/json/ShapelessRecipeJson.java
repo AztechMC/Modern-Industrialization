@@ -28,6 +28,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import net.minecraft.core.Registry;
+import net.minecraft.world.level.ItemLike;
 
 public class ShapelessRecipeJson extends RecipeJson {
 
@@ -43,14 +45,28 @@ public class ShapelessRecipeJson extends RecipeJson {
         this.result.count = count;
     }
 
-    public void addIngredient(Ingredient ingredient) {
+    public ShapelessRecipeJson(ItemLike result, int count) {
+        this(Registry.ITEM.getKey(result.asItem()).toString(), count);
+    }
+
+    public ShapelessRecipeJson(ItemLike result) {
+        this(Registry.ITEM.getKey(result.asItem()).toString(), 1);
+    }
+
+    public ShapelessRecipeJson addIngredient(Ingredient ingredient) {
         this.ingredients.add(ingredient);
+        return this;
+    }
+
+    public ShapelessRecipeJson addIngredient(ItemLike item) {
+        Ingredient ingredient = new Ingredient();
+        ingredient.item = Registry.ITEM.getKey(item.asItem()).toString();
+        return addIngredient(ingredient);
     }
 
     public static class Ingredient {
         public String item;
         public String tag;
-
     }
 
     private static class Result {

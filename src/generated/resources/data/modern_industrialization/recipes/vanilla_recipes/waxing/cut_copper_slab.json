@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "minecraft:cut_copper_slab"
+    },
+    {
+      "item": "modern_industrialization:wax"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "item": "minecraft:waxed_cut_copper_slab"
+  }
+}

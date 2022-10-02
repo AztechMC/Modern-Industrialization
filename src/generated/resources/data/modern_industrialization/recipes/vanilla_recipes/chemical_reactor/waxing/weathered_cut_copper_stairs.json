@@ -1,0 +1,21 @@
+{
+  "type": "modern_industrialization:chemical_reactor",
+  "duration": 100,
+  "eu": 8,
+  "item_inputs": [
+    {
+      "amount": 1,
+      "item": "modern_industrialization:wax"
+    },
+    {
+      "amount": 1,
+      "item": "minecraft:weathered_cut_copper_stairs"
+    }
+  ],
+  "item_outputs": [
+    {
+      "amount": 1,
+      "item": "minecraft:waxed_weathered_cut_copper_stairs"
+    }
+  ]
+}

@@ -221,6 +221,15 @@ public class PipeBlockEntity extends FastBlockEntity implements IPipeScreenHandl
         }
     }
 
+    public boolean customUse(PipeVoxelShape shape, Player player, InteractionHand hand) {
+        for (var node : pipes) {
+            if (node.getType() == shape.type) {
+                return node.customUse(this, player, hand, shape.direction);
+            }
+        }
+        return false;
+    }
+
     public ExtendedScreenHandlerFactory getGui(PipeNetworkType type, Direction direction) {
         for (PipeNetworkNode pipe : pipes) {
             if (pipe.getType() == type) {

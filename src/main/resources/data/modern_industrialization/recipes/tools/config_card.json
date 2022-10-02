@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " c ",
+    "gpg",
+    " c "
+  ],
+  "key": {
+    "c": {
+      "item": "modern_industrialization:analog_circuit"
+    },
+    "g": {
+      "item": "minecraft:glass_pane"
+    },
+    "p": {
+      "item": "minecraft:paper"
+    }
+  },
+  "result": {
+    "item": "modern_industrialization:config_card"
+  }
+}
+

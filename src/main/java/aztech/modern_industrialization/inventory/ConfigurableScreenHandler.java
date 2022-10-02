@@ -33,15 +33,9 @@ import java.util.Set;
 import java.util.function.Predicate;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariantAttributes;
-import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
-import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
-import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
+import net.fabricmc.fabric.api.transfer.v1.item.PlayerInventoryStorage;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -122,47 +116,7 @@ public abstract class ConfigurableScreenHandler extends AbstractContainerMenu {
                 if (lockingMode) {
                     fluidStack.togglePlayerLock();
                 } else {
-                    Storage<FluidVariant> io = ContainerItemContext.ofPlayerCursor(player, this).find(FluidStorage.ITEM);
-                    if (io != null) {
-                        // Extract first
-                        long previousAmount = fluidStack.amount;
-                        try (Transaction transaction = Transaction.openOuter()) {
-                            for (StorageView<FluidVariant> view : io) {
-                                FluidVariant fluid = view.getResource();
-                                if (!fluid.isBlank() && fluidSlot.canInsertFluid(fluid)) {
-                                    try (Transaction tx = transaction.openNested()) {
-                                        long extracted = view.extract(fluid, fluidStack.getRemainingSpace(), tx);
-                                        if (extracted > 0) {
-                                            player.playNotifySound(FluidVariantAttributes.getEmptySound(fluid), SoundSource.BLOCKS, 1, 1);
-                                            tx.commit();
-                                            fluidStack.increment(extracted);
-                                            fluidStack.setKey(fluid);
-                                        }
-                                    }
-                                }
-                            }
-                            transaction.commit();
-                        }
-                        if (previousAmount != fluidStack.amount) {
-                            // TODO: markDirty?
-                            return;
-                        }
-
-                        // Otherwise insert
-                        FluidVariant fluid = fluidStack.getResource();
-                        if (!fluid.isBlank() && fluidSlot.canExtractFluid(fluid)) {
-                            try (Transaction tx = Transaction.openOuter()) {
-                                long inserted = io.insert(fluid, fluidStack.getAmount(), tx);
-                                if (inserted > 0) {
-                                    fluidStack.decrement(inserted);
-                                    player.playNotifySound(FluidVariantAttributes.getFillSound(fluid), SoundSource.BLOCKS, 1, 1);
-                                    tx.commit();
-                                    // TODO: markDirty?
-                                    return;
-                                }
-                            }
-                        }
-                    }
+                    fluidSlot.playerInteract(ContainerItemContext.ofPlayerCursor(player, this), player, true);
                 }
                 return;
             } else if (slot instanceof ConfigurableItemStack.ConfigurableItemSlot itemSlot) {
@@ -199,6 +153,16 @@ public abstract class ConfigurableScreenHandler extends AbstractContainerMenu {
 
         if (slot.hasItem() && slot.mayPickup(player)) {
             if (slotIndex < PLAYER_SLOTS) { // from player to container inventory
+                // try to shift-click fluid first
+                var playerInvStorage = PlayerInventoryStorage.of(player);
+                var ctx = ContainerItemContext.ofPlayerSlot(player, playerInvStorage.getSlot(slot.getContainerSlot()));
+                for (var maybeFluidSlot : slots) {
+                    if (maybeFluidSlot instanceof ConfigurableFluidStack.ConfigurableFluidSlot fluidSlot
+                            && fluidSlot.playerInteract(ctx, player, false)) {
+                        return;
+                    }
+                }
+
                 // move by slot group
                 for (var group : slotGroupIndices) {
                     if (this.insertItem(slot, PLAYER_SLOTS, this.slots.size(), false, s -> slotGroups.get(s) == group)) {

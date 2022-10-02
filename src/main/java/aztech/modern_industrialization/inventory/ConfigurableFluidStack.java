@@ -30,10 +30,16 @@ import com.google.common.base.Preconditions;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariantAttributes;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
+import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
+import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
@@ -259,6 +265,58 @@ public class ConfigurableFluidStack extends AbstractConfigurableStack<Fluid, Flu
         @Override
         public int getBackgroundU() {
             return isPlayerLocked() ? 90 : isMachineLocked() ? 126 : 18;
+        }
+
+        /**
+         * Interact with this slot, return true if something happened.
+         */
+        public boolean playerInteract(ContainerItemContext context, Player player, boolean allowSlotExtract) {
+            var io = context.find(FluidStorage.ITEM);
+            if (io != null) {
+                // Extract first
+                long previousAmount = amount;
+                try (Transaction transaction = Transaction.openOuter()) {
+                    for (StorageView<FluidVariant> view : io) {
+                        FluidVariant fluid = view.getResource();
+                        if (!fluid.isBlank() && canInsertFluid(fluid)) {
+                            try (Transaction tx = transaction.openNested()) {
+                                long extracted = view.extract(fluid, getRemainingSpace(), tx);
+                                if (extracted > 0) {
+                                    player.playNotifySound(FluidVariantAttributes.getEmptySound(fluid), SoundSource.BLOCKS, 1, 1);
+                                    tx.commit();
+                                    increment(extracted);
+                                    setKey(fluid);
+                                }
+                            }
+                        }
+                    }
+                    transaction.commit();
+                }
+                if (previousAmount != amount) {
+                    // TODO: markDirty?
+                    return true;
+                }
+
+                if (!allowSlotExtract) {
+                    return false;
+                }
+
+                // Otherwise insert
+                FluidVariant fluid = getResource();
+                if (!fluid.isBlank() && canExtractFluid(fluid)) {
+                    try (Transaction tx = Transaction.openOuter()) {
+                        long inserted = io.insert(fluid, getAmount(), tx);
+                        if (inserted > 0) {
+                            decrement(inserted);
+                            player.playNotifySound(FluidVariantAttributes.getFillSound(fluid), SoundSource.BLOCKS, 1, 1);
+                            tx.commit();
+                            // TODO: markDirty?
+                            return true;
+                        }
+                    }
+                }
+            }
+            return false;
         }
     }
 }

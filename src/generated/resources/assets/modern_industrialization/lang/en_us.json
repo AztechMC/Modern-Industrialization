@@ -1127,6 +1127,7 @@
   "text.modern_industrialization.AcceptsUpgrades": "Add upgrades to increase max processing EU/t.",
   "text.modern_industrialization.AllowCreativeFligth": "Allow Creative Flight",
   "text.modern_industrialization.BarrelStack": "Can store up to %d stacks",
+  "text.modern_industrialization.BarrelStorageComponent": "%s / %s (%s)",
   "text.modern_industrialization.BaseDurationSeconds": "%s sec",
   "text.modern_industrialization.BaseEuRecipe": "Recipe Base : %s",
   "text.modern_industrialization.BaseEuTotal": "Total : %s",

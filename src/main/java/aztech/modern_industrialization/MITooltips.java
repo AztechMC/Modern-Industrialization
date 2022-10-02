@@ -61,6 +61,22 @@ public class MITooltips {
 
     private static final Map<Class<?>, Style> DEFAULT_ARGUMENT_STYLE = new HashMap<>();
 
+    public static int colorFromProgress(double progress, boolean zeroIsGreen) {
+        // clip to [0, 1]
+        progress = Math.max(0, Math.min(1, progress));
+        if (!zeroIsGreen) {
+            progress = 1 - progress;
+        }
+
+        double r = Math.min(2 * progress, 1);
+        double g = Math.min(1, 2 - 2 * progress);
+        return (int) (r * 255) << 16 | (int) (g * 255) << 8;
+    }
+
+    public static Style styleFromProgress(double progress, boolean zeroIsGreen) {
+        return Style.EMPTY.withColor(TextColor.fromRgb(colorFromProgress(progress, zeroIsGreen))).withItalic(false);
+    }
+
     static {
         DEFAULT_ARGUMENT_STYLE.put(Integer.class, NUMBER_TEXT);
         DEFAULT_ARGUMENT_STYLE.put(Long.class, NUMBER_TEXT);
@@ -128,6 +144,22 @@ public class MITooltips {
         @Override
         public Component parse(Fluid fluid) {
             return FluidVariantAttributes.getName(FluidVariant.of(fluid));
+        }
+    };
+
+    public static final Parser<Double> RATIO_PERCENTAGE_PARSER = new Parser<>() {
+        @Override
+        public Component parse(Double ratio) {
+            String percentage = String.format("%.1f", ratio * 100);
+            return Component.literal(percentage + "%").withStyle(styleFromProgress(ratio, false));
+        }
+    };
+
+    public static final Parser<Double> INVERTED_RATIO_PERCENTAGE_PARSER = new Parser<>() {
+        @Override
+        public Component parse(Double ratio) {
+            String percentage = String.format("%.1f", ratio * 100);
+            return Component.literal(percentage + "%").withStyle(styleFromProgress(ratio, true));
         }
     };
 

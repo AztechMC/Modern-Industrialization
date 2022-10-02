@@ -185,7 +185,7 @@ public class DieselToolItem extends Item implements Vanishable, DynamicEnchantme
             if (!world.isClientSide) {
                 user.displayClientMessage(
                         isFortune(stack) ? MIText.ToolSwitchedFortune.text() : MIText.ToolSwitchedSilkTouch.text(),
-                        false);
+                        true);
             }
             return InteractionResultHolder.sidedSuccess(stack, world.isClientSide);
         }

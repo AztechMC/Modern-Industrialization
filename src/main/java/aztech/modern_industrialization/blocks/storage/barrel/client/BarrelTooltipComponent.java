@@ -23,6 +23,8 @@
  */
 package aztech.modern_industrialization.blocks.storage.barrel.client;
 
+import aztech.modern_industrialization.MIText;
+import aztech.modern_industrialization.MITooltips;
 import aztech.modern_industrialization.blocks.storage.barrel.BarrelTooltipData;
 import aztech.modern_industrialization.util.TextHelper;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -34,7 +36,6 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
-import net.minecraft.network.chat.TextColor;
 
 public record BarrelTooltipComponent(BarrelTooltipData data) implements ClientTooltipComponent {
 
@@ -51,7 +52,7 @@ public record BarrelTooltipComponent(BarrelTooltipData data) implements ClientTo
     @Override
     public void renderText(Font textRenderer, int x, int y, Matrix4f matrix4f, MultiBufferSource.BufferSource immediate) {
 
-        Style style = Style.EMPTY.withColor(TextColor.fromRgb(0xa9a9a9)).withItalic(false);
+        Style style = MITooltips.DEFAULT_STYLE;
 
         textRenderer.drawInBatch(data.variant().toStack().getHoverName().copy().setStyle(style), x, y, -1, true, matrix4f, immediate, false, 0,
                 15728880);
@@ -61,34 +62,30 @@ public record BarrelTooltipComponent(BarrelTooltipData data) implements ClientTo
     }
 
     public Component getItemNumber() {
-        long maxCount = data.variant().getItem().getMaxStackSize();
-        long stackCapacity = data.capacity() / maxCount;
         long amount = data.amount();
-        long stackNumber = amount / maxCount;
-        long rem = amount % maxCount;
-
+        long capacity = data.capacity();
         Component itemNumber;
 
+        Style style = TextHelper.YELLOW;
+
         if (data.creative()) {
-            itemNumber = Component.literal("∞ / ∞").setStyle(TextHelper.YELLOW);
+            itemNumber = Component.literal("∞ / ∞").setStyle(style);
         } else {
-            if (maxCount == 1 || !Screen.hasShiftDown()) {
-                itemNumber = Component.literal(String.format("%d / %d", amount, stackCapacity * maxCount)).setStyle(TextHelper.YELLOW);
+            String amountStr;
+            String capacityStr;
+            Component percent = MITooltips.INVERTED_RATIO_PERCENTAGE_PARSER.parse((double) amount / capacity);
+
+            if (Screen.hasShiftDown()) {
+                amountStr = "" + amount;
+                capacityStr = "" + capacity;
+
             } else {
-                if (stackNumber > 0) {
-                    if (rem != 0) {
-                        itemNumber = Component.literal(String.format("%d × %d + %d / %d × %d", stackNumber, maxCount, rem, stackCapacity, maxCount))
-                                .setStyle(TextHelper.YELLOW);
-
-                    } else {
-                        itemNumber = Component.literal(String.format("%d × %d / %d × %d", stackNumber, maxCount, stackCapacity, maxCount))
-                                .setStyle(TextHelper.YELLOW);
-
-                    }
-                } else {
-                    itemNumber = Component.literal(String.format("%d / %d × %d", rem, stackCapacity, maxCount)).setStyle(TextHelper.YELLOW);
-                }
+                var amountText = TextHelper.getAmount(amount);
+                var capacityText = TextHelper.getAmount(capacity);
+                amountStr = amountText.digit() + amountText.unit();
+                capacityStr = capacityText.digit() + capacityText.unit();
             }
+            itemNumber = MIText.BarrelStorageComponent.text(amountStr, capacityStr, percent).setStyle(style);
         }
 
         return itemNumber;

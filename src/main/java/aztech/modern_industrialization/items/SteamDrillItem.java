@@ -211,7 +211,7 @@ public class SteamDrillItem
             setSilkTouch(stack, isNotSilkTouch(stack));
             if (!world.isClientSide) {
                 user.displayClientMessage(
-                        isNotSilkTouch(stack) ? MIText.ToolSwitchedNoSilkTouch.text() : MIText.ToolSwitchedSilkTouch.text(), false);
+                        isNotSilkTouch(stack) ? MIText.ToolSwitchedNoSilkTouch.text() : MIText.ToolSwitchedSilkTouch.text(), true);
             }
             return InteractionResultHolder.sidedSuccess(stack, world.isClientSide);
         }

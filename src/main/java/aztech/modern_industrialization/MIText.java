@@ -46,6 +46,7 @@ public enum MIText {
     AllowCreativeFligth("Allow Creative Flight"),
     BarrelStack("Can store up to %d stacks"),
     BaseDurationSeconds("%s sec"),
+    BarrelStorageComponent("%s / %s (%s)"),
     BaseEuRecipe("Recipe Base : %s"),
     BaseEuTotal("Total : %s"),
     BaseEuTotalStored("Total Energy Stored : %s"),

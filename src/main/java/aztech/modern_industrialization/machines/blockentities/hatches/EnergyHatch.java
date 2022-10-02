@@ -25,8 +25,7 @@ package aztech.modern_industrialization.machines.blockentities.hatches;
 
 import aztech.modern_industrialization.api.energy.CableTier;
 import aztech.modern_industrialization.api.energy.EnergyApi;
-import aztech.modern_industrialization.api.energy.EnergyExtractable;
-import aztech.modern_industrialization.api.energy.EnergyInsertable;
+import aztech.modern_industrialization.api.energy.MIEnergyStorage;
 import aztech.modern_industrialization.compat.megane.holder.EnergyComponentHolder;
 import aztech.modern_industrialization.inventory.MIInventory;
 import aztech.modern_industrialization.machines.BEP;
@@ -58,8 +57,8 @@ public class EnergyHatch extends HatchBlockEntity implements EnergyComponentHold
     private final boolean input;
 
     protected final EnergyComponent energy;
-    protected final EnergyInsertable insertable;
-    protected final EnergyExtractable extractable;
+    protected final MIEnergyStorage insertable;
+    protected final MIEnergyStorage extractable;
 
     @Override
     public HatchType getHatchType() {
@@ -96,7 +95,7 @@ public class EnergyHatch extends HatchBlockEntity implements EnergyComponentHold
     }
 
     public static void registerEnergyApi(BlockEntityType<?> bet) {
-        EnergyApi.MOVEABLE.registerForBlockEntities((be, direction) -> {
+        EnergyApi.SIDED.registerForBlockEntities((be, direction) -> {
             EnergyHatch eh = (EnergyHatch) be;
             if (eh.input) {
                 return eh.insertable;

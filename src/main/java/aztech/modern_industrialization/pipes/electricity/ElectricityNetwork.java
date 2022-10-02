@@ -24,18 +24,17 @@
 package aztech.modern_industrialization.pipes.electricity;
 
 import aztech.modern_industrialization.api.energy.CableTier;
-import aztech.modern_industrialization.api.energy.EnergyExtractable;
-import aztech.modern_industrialization.api.energy.EnergyInsertable;
+import aztech.modern_industrialization.api.energy.MIEnergyStorage;
 import aztech.modern_industrialization.pipes.PipeStatsCollector;
 import aztech.modern_industrialization.pipes.api.PipeNetwork;
 import aztech.modern_industrialization.pipes.api.PipeNetworkData;
-import aztech.modern_industrialization.util.Simulation;
 import java.util.*;
+import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
+import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
 import net.minecraft.server.level.ServerLevel;
 
 public class ElectricityNetwork extends PipeNetwork {
-    private static final List<EnergyInsertable> INSERTABLE_CACHE = new ArrayList<>();
-    private static final List<EnergyExtractable> EXTRACTABLE_CACHE = new ArrayList<>();
+    private static final List<MIEnergyStorage> STORAGES_CACHE = new ArrayList<>();
 
     final CableTier tier;
     final PipeStatsCollector stats = new PipeStatsCollector();
@@ -48,32 +47,33 @@ public class ElectricityNetwork extends PipeNetwork {
     @Override
     public void tick(ServerLevel world) {
         // Gather targets
-        List<EnergyInsertable> insertables = INSERTABLE_CACHE;
-        List<EnergyExtractable> extractables = EXTRACTABLE_CACHE;
+        List<MIEnergyStorage> storages = STORAGES_CACHE;
         long networkAmount = 0;
         int loadedNodeCount = 0;
         for (var entry : iterateTickingNodes()) {
             ElectricityNetworkNode node = (ElectricityNetworkNode) entry.getNode();
-            node.appendAttributes(world, entry.getPos(), insertables, extractables);
+            node.appendAttributes(world, entry.getPos(), tier, storages);
             networkAmount += node.eu;
             loadedNodeCount++;
         }
 
         // Filter targets
-        insertables.removeIf(insertable -> !insertable.canInsert(tier));
-        extractables.removeIf(extractable -> !extractable.canExtract(tier));
+        storages.removeIf(s -> !s.canConnect(tier));
 
         // Do the transfer
         long networkCapacity = loadedNodeCount * tier.getMaxTransfer();
-        long extractMaxAmount = Math.min(tier.getMaxTransfer(), networkCapacity - networkAmount);
-        long extracted = transferForTargets(EnergyExtractable::extractEnergy, extractables, extractMaxAmount);
-        networkAmount += extracted;
+        try (var tx = Transaction.openOuter()) {
+            long extractMaxAmount = Math.min(tier.getMaxTransfer(), networkCapacity - networkAmount);
+            long extracted = transferForTargets(MIEnergyStorage::extract, storages, extractMaxAmount, tx);
+            networkAmount += extracted;
 
-        long insertMaxAmount = Math.min(tier.getMaxTransfer(), networkAmount);
-        long inserted = transferForTargets(EnergyInsertable::insertEnergy, insertables, insertMaxAmount);
-        networkAmount -= inserted;
+            long insertMaxAmount = Math.min(tier.getMaxTransfer(), networkAmount);
+            long inserted = transferForTargets(MIEnergyStorage::insert, storages, insertMaxAmount, tx);
+            networkAmount -= inserted;
 
-        stats.addValue(Math.max(extracted, inserted));
+            tx.commit();
+            stats.addValue(Math.max(extracted, inserted));
+        }
 
         // Split energy evenly across the nodes
         for (var entry : iterateTickingNodes()) {
@@ -84,51 +84,53 @@ public class ElectricityNetwork extends PipeNetwork {
         }
 
         // Very important to clear the static caches
-        insertables.clear();
-        extractables.clear();
+        storages.clear();
     }
 
     /**
      * Perform a transfer operation across a list of targets. Will not mutate the
      * list. Does not check for the network's max transfer rate specifically.
      */
-    private static <T> long transferForTargets(TransferOperation<T> operation, List<T> targets, long maxAmount) {
+    private static long transferForTargets(TransferOperation operation, List<MIEnergyStorage> targets, long maxAmount,
+            TransactionContext transaction) {
         // Build target list
-        List<EnergyTarget<T>> sortableTargets = new ArrayList<>(targets.size());
-        for (T target : targets) {
-            sortableTargets.add(new EnergyTarget<>(target));
+        List<EnergyTarget> sortableTargets = new ArrayList<>(targets.size());
+        for (var target : targets) {
+            sortableTargets.add(new EnergyTarget(target));
         }
         // Shuffle for better transfer on average
         Collections.shuffle(sortableTargets);
         // Simulate the transfer for every target
-        for (EnergyTarget<T> target : sortableTargets) {
-            target.simulationResult = operation.transfer(target.target, maxAmount, Simulation.SIMULATE);
+        for (EnergyTarget target : sortableTargets) {
+            try (var nested = transaction.openNested()) {
+                target.simulationResult = operation.transfer(target.target, maxAmount, nested);
+            }
         }
         // Sort from low to high result
         sortableTargets.sort(Comparator.comparing(t -> t.simulationResult));
         // Actually perform the transfer
         long transferredAmount = 0;
         for (int i = 0; i < sortableTargets.size(); ++i) {
-            EnergyTarget<T> target = sortableTargets.get(i);
+            EnergyTarget target = sortableTargets.get(i);
             int remainingTargets = sortableTargets.size() - i;
             long remainingAmount = maxAmount - transferredAmount;
             long targetMaxAmount = remainingAmount / remainingTargets;
 
-            transferredAmount += operation.transfer(target.target, targetMaxAmount, Simulation.ACT);
+            transferredAmount += operation.transfer(target.target, targetMaxAmount, transaction);
         }
         return transferredAmount;
     }
 
     @FunctionalInterface
-    private interface TransferOperation<T> {
-        long transfer(T transferable, long maxAmount, Simulation simulation);
+    private interface TransferOperation {
+        long transfer(MIEnergyStorage transferable, long maxAmount, TransactionContext transaction);
     }
 
-    private static class EnergyTarget<T> {
-        final T target;
+    private static class EnergyTarget {
+        final MIEnergyStorage target;
         long simulationResult;
 
-        EnergyTarget(T target) {
+        EnergyTarget(MIEnergyStorage target) {
             this.target = target;
         }
     }

@@ -25,8 +25,7 @@ package aztech.modern_industrialization.machines.blockentities;
 
 import aztech.modern_industrialization.api.energy.CableTier;
 import aztech.modern_industrialization.api.energy.EnergyApi;
-import aztech.modern_industrialization.api.energy.EnergyExtractable;
-import aztech.modern_industrialization.api.energy.EnergyInsertable;
+import aztech.modern_industrialization.api.energy.MIEnergyStorage;
 import aztech.modern_industrialization.compat.megane.holder.EnergyComponentHolder;
 import aztech.modern_industrialization.inventory.MIInventory;
 import aztech.modern_industrialization.machines.BEP;
@@ -54,8 +53,8 @@ public abstract class AbstractStorageMachineBlockEntity extends MachineBlockEnti
 
     protected final EnergyComponent energy;
 
-    protected final EnergyInsertable insertable;
-    protected final EnergyExtractable extractable;
+    protected final MIEnergyStorage insertable;
+    protected final MIEnergyStorage extractable;
 
     protected final long euCapacity;
     protected final CableTier from, to;
@@ -106,7 +105,7 @@ public abstract class AbstractStorageMachineBlockEntity extends MachineBlockEnti
     @Override
     public void tick() {
         if (!level.isClientSide()) {
-            EnergyHelper.autoOuput(this, orientation, to, energy);
+            EnergyHelper.autoOuput(this, orientation, to, extractable);
         }
     }
 
@@ -139,7 +138,7 @@ public abstract class AbstractStorageMachineBlockEntity extends MachineBlockEnti
     }
 
     public static void registerEnergyApi(BlockEntityType<?> bet) {
-        EnergyApi.MOVEABLE.registerForBlockEntities((be, direction) -> {
+        EnergyApi.SIDED.registerForBlockEntities((be, direction) -> {
             AbstractStorageMachineBlockEntity abe = (AbstractStorageMachineBlockEntity) be;
 
             if (abe.extractableOnOutputDirection) {

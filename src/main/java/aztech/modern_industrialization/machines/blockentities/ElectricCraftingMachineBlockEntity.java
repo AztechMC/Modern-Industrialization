@@ -25,7 +25,7 @@ package aztech.modern_industrialization.machines.blockentities;
 
 import aztech.modern_industrialization.api.energy.CableTier;
 import aztech.modern_industrialization.api.energy.EnergyApi;
-import aztech.modern_industrialization.api.energy.EnergyInsertable;
+import aztech.modern_industrialization.api.energy.MIEnergyStorage;
 import aztech.modern_industrialization.compat.megane.holder.EnergyComponentHolder;
 import aztech.modern_industrialization.machines.BEP;
 import aztech.modern_industrialization.machines.components.*;
@@ -65,7 +65,7 @@ public class ElectricCraftingMachineBlockEntity extends AbstractCraftingMachineB
     private final CasingComponent casing;
     private final UpgradeComponent upgrades;
     private final EnergyComponent energy;
-    private final EnergyInsertable insertable;
+    private final MIEnergyStorage insertable;
 
     @Override
     public long consumeEu(long max, Simulation simulation) {
@@ -81,7 +81,7 @@ public class ElectricCraftingMachineBlockEntity extends AbstractCraftingMachineB
     }
 
     public static void registerEnergyApi(BlockEntityType<?> bet) {
-        EnergyApi.MOVEABLE.registerForBlockEntities((be, direction) -> ((ElectricCraftingMachineBlockEntity) be).insertable, bet);
+        EnergyApi.SIDED.registerForBlockEntities((be, direction) -> ((ElectricCraftingMachineBlockEntity) be).insertable, bet);
     }
 
     @Override

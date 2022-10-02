@@ -25,7 +25,7 @@ package aztech.modern_industrialization.machines.blockentities;
 
 import aztech.modern_industrialization.api.energy.CableTier;
 import aztech.modern_industrialization.api.energy.EnergyApi;
-import aztech.modern_industrialization.api.energy.EnergyInsertable;
+import aztech.modern_industrialization.api.energy.MIEnergyStorage;
 import aztech.modern_industrialization.compat.megane.holder.EnergyComponentHolder;
 import aztech.modern_industrialization.inventory.ConfigurableFluidStack;
 import aztech.modern_industrialization.inventory.MIInventory;
@@ -56,7 +56,7 @@ public class ElectricWaterPumpBlockEntity extends AbstractWaterPumpBlockEntity i
 
     private final MIInventory inventory;
     private final EnergyComponent energy;
-    private final EnergyInsertable insertable;
+    private final MIEnergyStorage insertable;
 
     @Override
     protected long consumeEu(long max) {
@@ -87,6 +87,6 @@ public class ElectricWaterPumpBlockEntity extends AbstractWaterPumpBlockEntity i
     }
 
     public static void registerEnergyApi(BlockEntityType<?> bet) {
-        EnergyApi.MOVEABLE.registerForBlockEntities((be, direction) -> ((ElectricWaterPumpBlockEntity) be).insertable, bet);
+        EnergyApi.SIDED.registerForBlockEntities((be, direction) -> ((ElectricWaterPumpBlockEntity) be).insertable, bet);
     }
 }

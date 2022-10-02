@@ -24,18 +24,31 @@
 package aztech.modern_industrialization.machines.components;
 
 import aztech.modern_industrialization.api.energy.CableTier;
-import aztech.modern_industrialization.api.energy.EnergyExtractable;
-import aztech.modern_industrialization.api.energy.EnergyInsertable;
+import aztech.modern_industrialization.api.energy.MIEnergyStorage;
 import aztech.modern_industrialization.machines.IComponent;
 import aztech.modern_industrialization.util.Simulation;
 import com.google.common.base.Preconditions;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
+import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
+import net.fabricmc.fabric.api.transfer.v1.transaction.base.SnapshotParticipant;
 import net.minecraft.nbt.CompoundTag;
 
 public class EnergyComponent implements IComponent.ServerOnly {
     private long storedEu;
     private final Supplier<Long> capacity;
+
+    private final SnapshotParticipant<Long> participant = new SnapshotParticipant<>() {
+        @Override
+        protected Long createSnapshot() {
+            return storedEu;
+        }
+
+        @Override
+        protected void readSnapshot(Long snapshot) {
+            storedEu = snapshot;
+        }
+    };
 
     public EnergyComponent(Supplier<Long> capacity) {
         this.capacity = capacity;
@@ -87,45 +100,70 @@ public class EnergyComponent implements IComponent.ServerOnly {
         return ext;
     }
 
-    public void insertEnergy(EnergyInsertable insertable) {
-        setEu(getEu() - insertable.insertEnergy(getEu(), Simulation.ACT));
+    private abstract class EnergyStorage implements MIEnergyStorage {
+        @Override
+        public long getAmount() {
+            return storedEu;
+        }
+
+        @Override
+        public long getCapacity() {
+            return capacity.get();
+        }
     }
 
-    public EnergyInsertable buildInsertable(Predicate<CableTier> canInsert) {
-        return new EnergyInsertable() {
+    public MIEnergyStorage buildInsertable(Predicate<CableTier> canInsert) {
+        return new EnergyStorage() {
             @Override
-            public long insertEnergy(long amount, Simulation simulation) {
-                Preconditions.checkArgument(amount >= 0, "May not insert < 0 energy.");
-                long inserted = Math.min(amount, capacity.get() - getEu());
-                if (simulation.isActing()) {
-                    setEu(getEu() + inserted);
-                    // TODO: markDirty?
-                }
+            public long insert(long maxAmount, TransactionContext transaction) {
+                Preconditions.checkArgument(maxAmount >= 0, "May not insert < 0 energy.");
+                long inserted = Math.min(maxAmount, capacity.get() - getEu());
+                participant.updateSnapshots(transaction);
+                storedEu += inserted;
                 return inserted;
             }
 
             @Override
-            public boolean canInsert(CableTier tier) {
-                return canInsert.test(tier);
+            public long extract(long maxAmount, TransactionContext transaction) {
+                return 0;
+            }
+
+            @Override
+            public boolean supportsExtraction() {
+                return false;
+            }
+
+            @Override
+            public boolean canConnect(CableTier cableTier) {
+                return canInsert.test(cableTier);
             }
         };
     }
 
-    public EnergyExtractable buildExtractable(Predicate<CableTier> canExtract) {
-        return new EnergyExtractable() {
+    public MIEnergyStorage buildExtractable(Predicate<CableTier> canExtract) {
+        return new EnergyStorage() {
             @Override
-            public long extractEnergy(long amount, Simulation simulation) {
-                Preconditions.checkArgument(amount >= 0, "May not extract < 0 energy.");
-                long extracted = Math.min(amount, getEu());
-                if (simulation.isActing()) {
-                    setEu(getEu() - extracted);
-                }
+            public long insert(long maxAmount, TransactionContext transaction) {
+                return 0;
+            }
+
+            @Override
+            public boolean supportsInsertion() {
+                return false;
+            }
+
+            @Override
+            public long extract(long maxAmount, TransactionContext transaction) {
+                Preconditions.checkArgument(maxAmount >= 0, "May not extract < 0 energy.");
+                long extracted = Math.min(maxAmount, getEu());
+                participant.updateSnapshots(transaction);
+                storedEu -= extracted;
                 return extracted;
             }
 
             @Override
-            public boolean canExtract(CableTier tier) {
-                return canExtract.test(tier);
+            public boolean canConnect(CableTier cableTier) {
+                return canExtract.test(cableTier);
             }
         };
     }

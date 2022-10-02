@@ -50,6 +50,6 @@ public class MIAEAddon implements IAEAddonEntrypoint {
         PartModels.registerModels(PartModelsHelper.createModels(EnergyP2PTunnelPart.class));
         var item = Registry.register(Registry.ITEM, new MIIdentifier("energy_p2p_tunnel"), ENERGY_P2P_TUNNEL);
         P2PTunnelAttunement.registerAttunementTag(item);
-        PartApiLookup.register(EnergyApi.MOVEABLE, (part, context) -> part.getExposedApi(), EnergyP2PTunnelPart.class);
+        PartApiLookup.register(EnergyApi.SIDED, (part, context) -> part.getExposedApi(), EnergyP2PTunnelPart.class);
     }
 }

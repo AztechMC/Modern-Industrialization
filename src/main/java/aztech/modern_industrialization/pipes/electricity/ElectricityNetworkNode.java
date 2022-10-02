@@ -42,23 +42,23 @@ import org.jetbrains.annotations.NotNull;
 
 public class ElectricityNetworkNode extends PipeNetworkNode {
     private List<Direction> connections = new ArrayList<>();
-    private final List<BlockApiCache<EnergyMoveable, @NotNull Direction>> caches = new ArrayList<>();
+    private final List<BlockApiCache<MIEnergyStorage, @NotNull Direction>> caches = new ArrayList<>();
     long eu = 0;
 
-    public void appendAttributes(ServerLevel world, BlockPos pos, List<EnergyInsertable> insertables, List<EnergyExtractable> extractables) {
+    public void appendAttributes(ServerLevel world, BlockPos pos, CableTier cableTier, List<MIEnergyStorage> storages) {
         if (caches.size() != connections.size()) {
             caches.clear();
             for (Direction direction : connections) {
-                caches.add(BlockApiCache.create(EnergyApi.MOVEABLE, world, pos.relative(direction)));
+                caches.add(BlockApiCache.create(EnergyApi.SIDED, world, pos.relative(direction)));
             }
         }
         for (int i = 0; i < connections.size(); ++i) {
             Direction targetDir = connections.get(i).getOpposite();
-            EnergyMoveable moveable = caches.get(i).find(targetDir);
-            if (moveable instanceof EnergyInsertable)
-                insertables.add((EnergyInsertable) moveable);
-            if (moveable instanceof EnergyExtractable)
-                extractables.add((EnergyExtractable) moveable);
+            MIEnergyStorage storage = caches.get(i).find(targetDir);
+            if (storage == null || !storage.canConnect(cableTier)) {
+                continue;
+            }
+            storages.add(storage);
         }
     }
 
@@ -139,10 +139,8 @@ public class ElectricityNetworkNode extends PipeNetworkNode {
     }
 
     private boolean canConnect(Level world, BlockPos pos, Direction direction) {
-        EnergyMoveable moveable = EnergyApi.MOVEABLE.find(world, pos.relative(direction), direction.getOpposite());
-        CableTier tier = ((ElectricityNetwork) network).tier;
-        return moveable instanceof EnergyInsertable && ((EnergyInsertable) moveable).canInsert(tier)
-                || moveable instanceof EnergyExtractable && ((EnergyExtractable) moveable).canExtract(tier);
+        var storage = EnergyApi.SIDED.find(world, pos.relative(direction), direction.getOpposite());
+        return storage != null && (storage.supportsInsertion() || storage.supportsExtraction());
     }
 
     // Used in the Waila plugin

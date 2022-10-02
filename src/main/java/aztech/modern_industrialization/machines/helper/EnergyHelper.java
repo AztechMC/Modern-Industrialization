@@ -25,20 +25,20 @@ package aztech.modern_industrialization.machines.helper;
 
 import aztech.modern_industrialization.api.energy.CableTier;
 import aztech.modern_industrialization.api.energy.EnergyApi;
-import aztech.modern_industrialization.api.energy.EnergyInsertable;
-import aztech.modern_industrialization.api.energy.EnergyMoveable;
+import aztech.modern_industrialization.api.energy.MIEnergyStorage;
 import aztech.modern_industrialization.machines.MachineBlockEntity;
-import aztech.modern_industrialization.machines.components.EnergyComponent;
 import aztech.modern_industrialization.machines.components.OrientationComponent;
+import team.reborn.energy.api.EnergyStorageUtil;
 
 public class EnergyHelper {
 
-    public static void autoOuput(MachineBlockEntity machine, OrientationComponent orientation, CableTier output, EnergyComponent energy) {
-        EnergyMoveable insertable = EnergyApi.MOVEABLE.find(machine.getLevel(), machine.getBlockPos().relative(orientation.outputDirection),
+    public static void autoOuput(MachineBlockEntity machine, OrientationComponent orientation, CableTier output, MIEnergyStorage energySource) {
+        var storage = EnergyApi.SIDED.find(machine.getLevel(), machine.getBlockPos().relative(orientation.outputDirection),
                 orientation.outputDirection.getOpposite());
-        if (insertable instanceof EnergyInsertable && ((EnergyInsertable) insertable).canInsert(output)) {
-            energy.insertEnergy((EnergyInsertable) insertable);
+        if (storage != null && storage.canConnect(output)) {
+            if (EnergyStorageUtil.move(energySource, storage, Long.MAX_VALUE, null) > 0) {
+                machine.setChanged();
+            }
         }
-        machine.setChanged();
     }
 }

@@ -57,10 +57,12 @@ public class MIConfig implements ConfigData {
     @EnglishTranslation(value = "Show valid positions in multiblocks when holding a hatch")
     public boolean enableHatchPlacementOverlay = true;
     @ConfigEntry.Gui.RequiresRestart
-    @EnglishTranslation(value = "Color Water and Lava")
+    @EnglishTranslation(value = "Color Water and Lava (Restart needed)")
     public boolean colorWaterLava = true;
     @EnglishTranslation(value = "Enable UNSUPPORTED and DANGEROUS debug commands")
     public boolean enableDebugCommands = false;
+    @EnglishTranslation(value = "Enable bi-directional energy compatibility with Tech Reborn Energy. We recommend leaving this to false unless the other mods have been balanced accordingly.")
+    public boolean enableBidirectionalEnergyCompat = false;
     @ConfigEntry.Gui.RequiresRestart
     @EnglishTranslation(value = "Enable the AE2 integration, if present (Restart needed)")
     public boolean enableAe2Integration = true;

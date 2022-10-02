@@ -25,7 +25,7 @@ package aztech.modern_industrialization.machines.blockentities;
 
 import aztech.modern_industrialization.api.energy.CableTier;
 import aztech.modern_industrialization.api.energy.EnergyApi;
-import aztech.modern_industrialization.api.energy.EnergyExtractable;
+import aztech.modern_industrialization.api.energy.MIEnergyStorage;
 import aztech.modern_industrialization.compat.megane.holder.EnergyComponentHolder;
 import aztech.modern_industrialization.inventory.ConfigurableFluidStack;
 import aztech.modern_industrialization.inventory.ConfigurableItemStack;
@@ -50,7 +50,7 @@ import net.minecraft.world.level.material.Fluid;
 public class EnergyFromFluidMachineBlockEntity extends MachineBlockEntity implements Tickable, EnergyComponentHolder {
 
     private final CableTier outputTier;
-    private final EnergyExtractable extractable;
+    private final MIEnergyStorage extractable;
 
     protected final MIInventory inventory;
     protected EnergyComponent energy;
@@ -125,7 +125,7 @@ public class EnergyFromFluidMachineBlockEntity extends MachineBlockEntity implem
         energy.insertEu(euProduced, Simulation.ACT);
         isActiveComponent.updateActive(0 != euProduced, this);
 
-        EnergyHelper.autoOuput(this, orientation, outputTier, energy);
+        EnergyHelper.autoOuput(this, orientation, outputTier, extractable);
 
         setChanged();
     }
@@ -136,7 +136,7 @@ public class EnergyFromFluidMachineBlockEntity extends MachineBlockEntity implem
     }
 
     public static void registerEnergyApi(BlockEntityType<?> bet) {
-        EnergyApi.MOVEABLE.registerForBlockEntities((be, direction) -> {
+        EnergyApi.SIDED.registerForBlockEntities((be, direction) -> {
             EnergyFromFluidMachineBlockEntity abe = (EnergyFromFluidMachineBlockEntity) be;
             if (abe.orientation.outputDirection == direction) {
                 return abe.extractable;

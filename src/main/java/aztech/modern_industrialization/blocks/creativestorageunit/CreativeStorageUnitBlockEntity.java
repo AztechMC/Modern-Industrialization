@@ -26,11 +26,10 @@ package aztech.modern_industrialization.blocks.creativestorageunit;
 import aztech.modern_industrialization.MIBlockEntityTypes;
 import aztech.modern_industrialization.api.FastBlockEntity;
 import aztech.modern_industrialization.api.energy.EnergyApi;
-import aztech.modern_industrialization.api.energy.EnergyInsertable;
-import aztech.modern_industrialization.api.energy.EnergyMoveable;
-import aztech.modern_industrialization.util.Simulation;
+import aztech.modern_industrialization.api.energy.MIEnergyStorage;
 import aztech.modern_industrialization.util.Tickable;
 import net.fabricmc.fabric.api.lookup.v1.block.BlockApiCache;
+import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
@@ -38,7 +37,7 @@ import net.minecraft.world.level.block.state.BlockState;
 
 public class CreativeStorageUnitBlockEntity extends FastBlockEntity implements Tickable {
     @SuppressWarnings("unchecked")
-    private final BlockApiCache<EnergyMoveable, Direction>[] caches = new BlockApiCache[6];
+    private final BlockApiCache<MIEnergyStorage, Direction>[] caches = new BlockApiCache[6];
 
     public CreativeStorageUnitBlockEntity(BlockPos pos, BlockState state) {
         super(MIBlockEntityTypes.CREATIVE_STORAGE_UNIT, pos, state);
@@ -51,11 +50,15 @@ public class CreativeStorageUnitBlockEntity extends FastBlockEntity implements T
 
             for (Direction direction : Direction.values()) {
                 if (caches[direction.ordinal()] == null) {
-                    caches[direction.ordinal()] = BlockApiCache.create(EnergyApi.MOVEABLE, serverWorld, worldPosition.relative(direction));
+                    caches[direction.ordinal()] = BlockApiCache.create(EnergyApi.SIDED, serverWorld, worldPosition.relative(direction));
                 }
 
-                if (caches[direction.ordinal()].find(direction.getOpposite()) instanceof EnergyInsertable insertable) {
-                    insertable.insertEnergy(Long.MAX_VALUE, Simulation.ACT);
+                var target = caches[direction.ordinal()].find(direction.getOpposite());
+                if (target != null) {
+                    try (var tx = Transaction.openOuter()) {
+                        target.insert(Long.MAX_VALUE, tx);
+                        tx.commit();
+                    }
                 }
             }
         }

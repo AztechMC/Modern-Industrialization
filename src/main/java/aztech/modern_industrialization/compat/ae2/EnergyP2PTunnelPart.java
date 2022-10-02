@@ -29,25 +29,21 @@ import appeng.api.parts.IPartModel;
 import appeng.items.parts.PartModels;
 import appeng.parts.p2p.CapabilityP2PTunnelPart;
 import aztech.modern_industrialization.api.energy.*;
-import aztech.modern_industrialization.util.Simulation;
-import java.lang.invoke.MethodHandle;
-import java.lang.invoke.MethodHandles;
 import java.util.List;
 import net.fabricmc.fabric.api.transfer.v1.storage.StoragePreconditions;
-import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
-import net.minecraft.Util;
+import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
+import team.reborn.energy.api.EnergyStorage;
 
-public class EnergyP2PTunnelPart extends CapabilityP2PTunnelPart<EnergyP2PTunnelPart, EnergyMoveable> {
+public class EnergyP2PTunnelPart extends CapabilityP2PTunnelPart<EnergyP2PTunnelPart, MIEnergyStorage> {
 
     private static final P2PModels MODELS = new P2PModels("part/energy_p2p_tunnel");
 
     public EnergyP2PTunnelPart(IPartItem<?> partItem) {
-        super(partItem, EnergyApi.MOVEABLE);
+        super(partItem, EnergyApi.SIDED);
 
         inputHandler = new InputEnergyStorage();
         outputHandler = new OutputEnergyStorage();
-        emptyHandler = new EnergyMoveable() {
-        };
+        emptyHandler = EnergyApi.EMPTY;
     }
 
     @PartModels
@@ -60,93 +56,114 @@ public class EnergyP2PTunnelPart extends CapabilityP2PTunnelPart<EnergyP2PTunnel
         return MODELS.getModel(this.isPowered(), this.isActive());
     }
 
-    private class InputEnergyStorage implements EnergyInsertable {
+    private class InputEnergyStorage implements MIEnergyStorage.NoExtract {
         @Override
-        public long insertEnergy(long amount, Simulation simulation) {
-            StoragePreconditions.notNegative(amount);
+        public boolean supportsInsertion() {
+            for (var output : getOutputs()) {
+                try (var capabilityGuard = output.getAdjacentCapability()) {
+                    if (capabilityGuard.get().supportsInsertion()) {
+                        return true;
+                    }
+                }
+            }
 
-            var total = 0L;
-            var outputTunnels = getOutputs().size();
+            return false;
+        }
+
+        @Override
+        public long insert(long maxAmount, TransactionContext transaction) {
+            StoragePreconditions.notNegative(maxAmount);
+            long total = 0;
+
+            final int outputTunnels = getOutputs().size();
+            final long amount = maxAmount;
 
             if (outputTunnels == 0 || amount == 0) {
                 return 0;
             }
 
-            var amountPerOutput = amount / outputTunnels;
-            var overflow = amountPerOutput == 0 ? amount : amount % amountPerOutput;
+            final long amountPerOutput = amount / outputTunnels;
+            long overflow = amountPerOutput == 0 ? amount : amount % amountPerOutput;
 
             for (var target : getOutputs()) {
-                try (var capabilityGuard = target.getAdjacentCapability()) {
-                    if (get(capabilityGuard) instanceof EnergyInsertable insertable) {
-                        var toSend = amountPerOutput + overflow;
-                        var received = insertable.insertEnergy(toSend, simulation);
+                try (CapabilityGuard capabilityGuard = target.getAdjacentCapability()) {
+                    final EnergyStorage output = capabilityGuard.get();
+                    final long toSend = amountPerOutput + overflow;
 
-                        overflow = toSend - received;
-                        total += received;
-                    }
+                    final long received = output.insert(toSend, transaction);
+
+                    overflow = toSend - received;
+                    total += received;
                 }
             }
 
-            try (var tx = Transaction.openOuter()) {
-                queueTunnelDrain(PowerUnits.TR, total, tx);
-
-                if (simulation.isActing()) {
-                    tx.commit();
-                }
-            }
+            queueTunnelDrain(PowerUnits.TR, total, transaction);
 
             return total;
         }
 
         @Override
-        public boolean canInsert(CableTier tier) {
-            return tier == CableTier.SUPERCONDUCTOR;
-        }
-    }
-
-    private class OutputEnergyStorage implements EnergyExtractable {
-        @Override
-        public long extractEnergy(long maxAmount, Simulation simulation) {
-            try (var input = getInputCapability()) {
-                if (get(input) instanceof EnergyExtractable extractable) {
-                    var extracted = extractable.extractEnergy(maxAmount, simulation);
-
-                    try (var tx = Transaction.openOuter()) {
-                        queueTunnelDrain(PowerUnits.TR, extracted, tx);
-
-                        if (simulation.isActing()) {
-                            tx.commit();
-                        }
-                    }
-
-                    return extracted;
+        public long getAmount() {
+            long tot = 0;
+            for (var output : getOutputs()) {
+                try (var capabilityGuard = output.getAdjacentCapability()) {
+                    tot += capabilityGuard.get().getAmount();
                 }
             }
-
-            return 0;
+            return tot;
         }
 
         @Override
-        public boolean canExtract(CableTier tier) {
-            return tier == CableTier.SUPERCONDUCTOR;
+        public long getCapacity() {
+            long tot = 0;
+            for (var output : getOutputs()) {
+                try (var capabilityGuard = output.getAdjacentCapability()) {
+                    tot += capabilityGuard.get().getCapacity();
+                }
+            }
+            return tot;
+        }
+
+        @Override
+        public boolean canConnect(CableTier cableTier) {
+            return cableTier == CableTier.SUPERCONDUCTOR;
         }
     }
 
-    private static final MethodHandle GET = Util.make(() -> {
-        try {
-            var get = CapabilityGuard.class.getDeclaredMethod("get");
-            get.setAccessible(true);
-            return MethodHandles.lookup().unreflect(get);
-        } catch (NoSuchMethodException | IllegalAccessException e) {
-            throw new RuntimeException(e);
+    private class OutputEnergyStorage implements MIEnergyStorage.NoInsert {
+        @Override
+        public boolean supportsExtraction() {
+            try (var input = getInputCapability()) {
+                return input.get().supportsExtraction();
+            }
         }
-    });
 
-    private EnergyMoveable get(CapabilityGuard guard) {
-        try {
-            return (EnergyMoveable) (Object) GET.invokeExact(guard);
-        } catch (Throwable e) {
-            throw new RuntimeException(e);
+        @Override
+        public long extract(long maxAmount, TransactionContext transaction) {
+            try (var input = getInputCapability()) {
+                long extracted = input.get().extract(maxAmount, transaction);
+                queueTunnelDrain(PowerUnits.TR, extracted, transaction);
+                return extracted;
+            }
+        }
+
+        @Override
+        public long getAmount() {
+            try (var input = getInputCapability()) {
+                return input.get().getAmount();
+            }
+        }
+
+        @Override
+        public long getCapacity() {
+            try (var input = getInputCapability()) {
+                return input.get().getCapacity();
+            }
+        }
+
+        @Override
+        public boolean canConnect(CableTier cableTier) {
+            return cableTier == CableTier.SUPERCONDUCTOR;
         }
     }
 }

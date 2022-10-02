@@ -23,23 +23,33 @@
  */
 package aztech.modern_industrialization.api.energy;
 
-import aztech.modern_industrialization.util.Simulation;
+import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
+import team.reborn.energy.api.EnergyStorage;
 
-public interface EnergyExtractable extends EnergyMoveable {
-    /**
-     * Attempt to extract an energy packet.
-     * 
-     * @param maxAmount The max amount of EU to extract.
-     * @return How much energy was extracted, or 0 if no energy could be extracted.
-     */
-    long extractEnergy(long maxAmount, Simulation simulation);
+public interface MIEnergyStorage extends EnergyStorage {
+    boolean canConnect(CableTier cableTier);
 
-    /**
-     * Return whether the machine can send energy to a given pipe tier.
-     * 
-     * @param tier The tier of the connexion.
-     * @return whether true if the machine can send energy to that pipe tier, or
-     *         false otherwise.
-     */
-    boolean canExtract(CableTier tier);
+    interface NoExtract extends MIEnergyStorage {
+        @Override
+        default boolean supportsExtraction() {
+            return false;
+        }
+
+        @Override
+        default long extract(long maxAmount, TransactionContext transaction) {
+            return 0;
+        }
+    }
+
+    interface NoInsert extends MIEnergyStorage {
+        @Override
+        default boolean supportsInsertion() {
+            return false;
+        }
+
+        @Override
+        default long insert(long maxAmount, TransactionContext transaction) {
+            return 0;
+        }
+    }
 }

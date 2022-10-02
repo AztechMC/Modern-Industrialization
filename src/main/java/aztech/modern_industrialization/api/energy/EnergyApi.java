@@ -23,63 +23,129 @@
  */
 package aztech.modern_industrialization.api.energy;
 
-import aztech.modern_industrialization.ModernIndustrialization;
-import aztech.modern_industrialization.util.Simulation;
+import aztech.modern_industrialization.MIConfig;
 import net.fabricmc.fabric.api.lookup.v1.block.BlockApiLookup;
-import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
+import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import team.reborn.energy.api.EnergyStorage;
+import team.reborn.energy.api.base.DelegatingEnergyStorage;
 
 public class EnergyApi {
-    public static final BlockApiLookup<EnergyMoveable, Direction> MOVEABLE = BlockApiLookup
-            .get(new ResourceLocation("modern_industrialization:energy_moveable"), EnergyMoveable.class, Direction.class);
+    public static final BlockApiLookup<MIEnergyStorage, Direction> SIDED = BlockApiLookup
+            .get(new ResourceLocation("modern_industrialization:sided_mi_energy_storage"), MIEnergyStorage.class, Direction.class);
 
-    public static final EnergyExtractable CREATIVE_EXTRACTABLE = new EnergyExtractable() {
+    private static final ThreadLocal<Boolean> IN_COMPAT = ThreadLocal.withInitial(() -> false);
+
+    public static final MIEnergyStorage CREATIVE = new MIEnergyStorage.NoInsert() {
         @Override
-        public long extractEnergy(long maxAmount, Simulation simulation) {
+        public boolean canConnect(CableTier cableTier) {
+            return true;
+        }
+
+        @Override
+        public long extract(long maxAmount, TransactionContext transaction) {
             return maxAmount;
         }
 
         @Override
-        public boolean canExtract(CableTier tier) {
-            return true;
+        public long getAmount() {
+            return Long.MAX_VALUE;
+        }
+
+        @Override
+        public long getCapacity() {
+            return Long.MAX_VALUE;
         }
     };
 
+    public static final MIEnergyStorage EMPTY = new EmptyStorage();
+
+    private static class EmptyStorage implements MIEnergyStorage.NoInsert, MIEnergyStorage.NoExtract {
+        @Override
+        public boolean canConnect(CableTier cableTier) {
+            return false;
+        }
+
+        @Override
+        public long getAmount() {
+            return 0;
+        }
+
+        @Override
+        public long getCapacity() {
+            return 0;
+        }
+    }
+
     static {
         // Compat wrapper for TR energy
-        MOVEABLE.registerFallback((world, pos, state, blockEntity, context) -> {
-            EnergyStorage storage = EnergyStorage.SIDED.find(world, pos, state, blockEntity, context);
-
-            if (storage == null || !storage.supportsInsertion()) {
+        EnergyStorage.SIDED.registerFallback((world, pos, state, blockEntity, context) -> {
+            if (!MIConfig.getConfig().enableBidirectionalEnergyCompat || IN_COMPAT.get()) {
                 return null;
             }
-            return new EnergyInsertable() {
-                @Override
-                public long insertEnergy(long amount, Simulation simulation) {
-                    long inserted;
-                    try (Transaction tx = Transaction.openOuter()) {
-                        inserted = storage.insert(amount, tx);
-                        if (simulation.isActing())
-                            tx.commit();
-                    }
 
-                    if (inserted < 0) {
-                        ModernIndustrialization.LOGGER.warn(String.format(
-                                "Tried inserting up to %d energy, but broken EnergyStorage %s inserted a negative amount of energy %d.%nWorld and position: %s %s.",
-                                amount, storage, inserted, world, pos));
-                        return 0;
-                    } else {
-                        return inserted;
-                    }
-                }
-
-                @Override
-                public boolean canInsert(CableTier tier) {
-                    return true;
-                }
-            };
+            IN_COMPAT.set(true);
+            try {
+                return SIDED.find(world, pos, state, blockEntity, context);
+            } finally {
+                IN_COMPAT.set(false);
+            }
         });
+
+        SIDED.registerFallback((world, pos, state, blockEntity, context) -> {
+            if (IN_COMPAT.get()) {
+                return null;
+            }
+
+            IN_COMPAT.set(true);
+            try {
+                EnergyStorage trStorage = EnergyStorage.SIDED.find(world, pos, state, blockEntity, context);
+                if (trStorage == null) {
+                    return null;
+                }
+
+                if (MIConfig.getConfig().enableBidirectionalEnergyCompat) {
+                    return new WrappedTrStorage(trStorage);
+                } else {
+                    return trStorage.supportsInsertion() ? new InsertOnlyTrStorage(trStorage) : null;
+                }
+            } finally {
+                IN_COMPAT.set(false);
+            }
+        });
+    }
+
+    private record InsertOnlyTrStorage(EnergyStorage trStorage) implements MIEnergyStorage.NoExtract {
+        @Override
+        public boolean canConnect(CableTier cableTier) {
+            return true;
+        }
+
+        @Override
+        public long insert(long maxAmount, TransactionContext transaction) {
+            return trStorage.insert(maxAmount, transaction);
+        }
+
+        @Override
+        public long getAmount() {
+            return trStorage.getAmount();
+        }
+
+        @Override
+        public long getCapacity() {
+            return trStorage.getCapacity();
+        }
+    }
+
+    private static class WrappedTrStorage extends DelegatingEnergyStorage implements MIEnergyStorage {
+        public WrappedTrStorage(EnergyStorage backingStorage) {
+            super(backingStorage, null);
+        }
+
+        @Override
+        public boolean canConnect(CableTier cableTier) {
+            return true;
+        }
     }
 }

@@ -52,7 +52,7 @@ public class MIBlockEntityTypes {
         // API registrations below
         FluidStorage.SIDED.registerSelf(CREATIVE_TANK);
         ItemStorage.SIDED.registerSelf(CREATIVE_BARREL);
-        EnergyApi.MOVEABLE.registerForBlockEntities((be, d) -> EnergyApi.CREATIVE_EXTRACTABLE, CREATIVE_STORAGE_UNIT);
+        EnergyApi.SIDED.registerForBlockEntities((be, d) -> EnergyApi.CREATIVE, CREATIVE_STORAGE_UNIT);
     }
 
     private static <T extends BlockEntity> BlockEntityType<T> register(BlockDefinition<?> block, FabricBlockEntityTypeBuilder.Factory<T> factory) {

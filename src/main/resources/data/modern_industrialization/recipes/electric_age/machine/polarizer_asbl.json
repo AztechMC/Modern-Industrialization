@@ -1,9 +1,9 @@
 {
   "type" : "minecraft:crafting_shaped",
   "pattern" : [
-    "wrw",
+    "wLw",
     "pHp",
-    "wrw"
+    "wLw"
   ],
   "key":
   {
@@ -16,8 +16,8 @@
     "p": {
       "item" : "modern_industrialization:tin_cable"
     },
-    "r" : {
-      "item" : "modern_industrialization:steel_rod"
+    "L" : {
+      "item" : "modern_industrialization:inductor"
     }
   },
 

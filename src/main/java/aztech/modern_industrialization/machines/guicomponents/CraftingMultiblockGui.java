@@ -164,25 +164,33 @@ public class CraftingMultiblockGui {
 
                             hasActiveRecipe ? MIText.MultiblockStatusActive.text() : MIText.MultiblockStatusActive.text(), x + 9, y + 34, 0xFFFFFF);
                     if (hasActiveRecipe) {
+
+                        int deltaY = 45;
+
                         textRenderer.draw(matrices,
                                 MIText.Progress.text(String.format("%.1f", progress * 100) + " %"),
                                 x + 9,
-                                y + 45, 0xFFFFFF);
+                                y + deltaY, 0xFFFFFF);
+                        deltaY += 11;
 
-                        textRenderer.draw(matrices,
-                                MIText.EfficiencyTicks.text(efficiencyTicks, maxEfficiencyTicks),
-                                x + 9,
-                                y + 56, 0xFFFFFF);
+                        if (efficiencyTicks != 0 || maxEfficiencyTicks != 0) {
+                            textRenderer.draw(matrices,
+                                    MIText.EfficiencyTicks.text(efficiencyTicks, maxEfficiencyTicks),
+                                    x + 9,
+                                    y + deltaY, 0xFFFFFF);
+                            deltaY += 11;
+                        }
 
                         textRenderer.draw(matrices,
                                 MIText.BaseEuRecipe.text(
                                         TextHelper.getEuTextTick(baseRecipeEu)),
-                                x + 9, y + 67, 0xFFFFFF);
+                                x + 9, y + deltaY, 0xFFFFFF);
+                        deltaY += 11;
 
                         textRenderer.draw(matrices,
                                 MIText.CurrentEuRecipe.text(
                                         TextHelper.getEuTextTick(currentRecipeEu)),
-                                x + 9, y + 78, 0xFFFFFF);
+                                x + 9, y + deltaY, 0xFFFFFF);
                     }
                 }
             }

@@ -86,7 +86,7 @@ public final class MIItem {
 
     // Circuits
     public static final ItemDefinition<Item> CIRCUIT_BOARD = item("Analog Circuit Board", "analog_circuit_board", ITEMS_OTHER);
-    public static final ItemDefinition<Item> CIRCUIT = item("Analog Circuit", "analog_circuit", ITEMS_OTHER);
+    public static final ItemDefinition<Item> ANALOG_CIRCUIT = item("Analog Circuit", "analog_circuit", ITEMS_OTHER);
     public static final ItemDefinition<Item> ELECTRONIC_CIRCUIT_BOARD = item("Electronic Circuit Board", "electronic_circuit_board", ITEMS_OTHER);
     public static final ItemDefinition<Item> ELECTRONIC_CIRCUIT = item("Electronic Circuit", "electronic_circuit", ITEMS_OTHER);
     public static final ItemDefinition<Item> PROCESSING_UNIT_BOARD = item("Processing Unit Board", "processing_unit_board", ITEMS_OTHER);

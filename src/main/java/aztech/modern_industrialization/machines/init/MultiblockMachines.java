@@ -282,7 +282,7 @@ public class MultiblockMachines {
         OIL_DRILLING_RIG = MachineRegistrationHelper.registerMachine(
                 "Oil Drilling Rig",
                 "oil_drilling_rig", bet -> new ElectricCraftingMultiblockBlockEntity(bet,
-                "oil_drilling_rig", oilDrillingRigShape, MIMachineRecipeTypes.OIL_DRILLING_RIG));
+                        "oil_drilling_rig", oilDrillingRigShape, MIMachineRecipeTypes.OIL_DRILLING_RIG));
         ReiMachineRecipes.registerMultiblockShape("oil_drilling_rig", oilDrillingRigShape);
     }
 
@@ -328,13 +328,13 @@ public class MultiblockMachines {
         LARGE_DIESEL_GENERATOR = MachineRegistrationHelper.registerMachine(
                 "Large Diesel Generator",
                 "large_diesel_generator", bet ->
-                new EnergyFromFluidMultiblockBlockEntity(bet, "large_diesel_generator",
-                        largeDieselGeneratorShape,
-                        FluidConsumerComponent.ofFluidFuels(16384)));
+                        new EnergyFromFluidMultiblockBlockEntity(bet, "large_diesel_generator",
+                                largeDieselGeneratorShape,
+                                FluidConsumerComponent.ofFluidFuels(16384)));
         ReiMachineRecipes.registerMultiblockShape("large_diesel_generator", largeDieselGeneratorShape);
     }
 
-    private static ShapeTemplate largeTurbineShape(MachineCasing mainCasing, SimpleMember casing, SimpleMember pipe){
+    private static ShapeTemplate largeTurbineShape(MachineCasing mainCasing, SimpleMember casing, SimpleMember pipe) {
         ShapeTemplate.Builder largeTurbineBuilder = new ShapeTemplate.Builder(mainCasing);
         for (int z = 0; z < 4; z++) {
             for (int x = -1; x <= 1; x++) {
@@ -363,13 +363,13 @@ public class MultiblockMachines {
         LARGE_STEAM_TURBINE = MachineRegistrationHelper.registerMachine(
                 "Large Steam Turbine",
                 "large_steam_turbine", bet ->
-                new EnergyFromFluidMultiblockBlockEntity(bet, "large_steam_turbine", largeSteamTurbineShape,
-                        FluidConsumerComponent.of(16384,
-                                (Fluid f) -> (f == MIFluids.STEAM.asFluid() || f == MIFluids.HIGH_PRESSURE_STEAM.asFluid()
-                                        || f == MIFluids.HIGH_PRESSURE_HEAVY_WATER_STEAM.asFluid()
-                                        || f == MIFluids.HEAVY_WATER_STEAM.asFluid()),
-                                (Fluid f) -> ((f == MIFluids.STEAM.asFluid() || f == MIFluids.HEAVY_WATER_STEAM.asFluid()) ? 1 : 8)
-                                 )));
+                        new EnergyFromFluidMultiblockBlockEntity(bet, "large_steam_turbine", largeSteamTurbineShape,
+                                FluidConsumerComponent.of(16384,
+                                        (Fluid f) -> (f == MIFluids.STEAM.asFluid() || f == MIFluids.HIGH_PRESSURE_STEAM.asFluid()
+                                                || f == MIFluids.HIGH_PRESSURE_HEAVY_WATER_STEAM.asFluid()
+                                                || f == MIFluids.HEAVY_WATER_STEAM.asFluid()),
+                                        (Fluid f) -> ((f == MIFluids.STEAM.asFluid() || f == MIFluids.HEAVY_WATER_STEAM.asFluid()) ? 1 : 8)
+                                )));
         ReiMachineRecipes.registerMultiblockShape("large_steam_turbine", largeSteamTurbineShape);
     }
 
@@ -381,13 +381,13 @@ public class MultiblockMachines {
                     if (z > 0 && z < 4) {
 
                         heatExchangerShapeBuilder.add(x, y, z, x == -1 ? invarCasings : x == 0 ? stainlessSteelPipe : frostproofMachineCasing,
-                                (y == 1 && x == 0 && z == 2) ? energyInput : null);
+                                ((y == 1 || y == -1) && x == 0) ? energyInput : null);
                     } else {
                         if (z != 0 || x != 0 || y != 0) {
                             HatchFlags flag = null;
-                            if (y == -1 && x == 0) {
-                                flag = new HatchFlags.Builder().with(z == 0 ? ITEM_INPUT : ITEM_OUTPUT).build();
-                            } else if (y == 0 && x != 0) {
+                            if (x == 0) {
+                                flag = new HatchFlags.Builder().with(z == 0 ? ITEM_INPUT : ITEM_OUTPUT).with(ENERGY_INPUT).build();
+                            } else {
                                 boolean fluidOutput = (x == -1) ^ (z == 0);
                                 flag = new HatchFlags.Builder().with(fluidOutput ? FLUID_OUTPUT : FLUID_INPUT).build();
                             }
@@ -493,19 +493,19 @@ public class MultiblockMachines {
             for (int i = 0; i < 7; i++) {
                 int x = i + 1;
 
-                for(int k = 0; k < 4; k++){
+                for (int k = 0; k < 4; k++) {
                     int[] placement = shape[6 - i];
                     int z0 = placement[0];
                     int z1 = z0 + placement[1];
                     int z2 = z1 + placement[2];
                     int z3 = z2 + placement[3];
                     for (int z = z0; z < z3; z++) {
-                        if(z < z1 || z >= z2) {
+                        if (z < z1 || z >= z2) {
                             fusionReactorShapeBuilder.add(x, y, z, highlyAdvancedHull);
                             fusionReactorShapeBuilder.add(-x, y, z, highlyAdvancedHull);
                             fusionReactorShapeBuilder.add(x, y, 14 - z, highlyAdvancedHull);
                             fusionReactorShapeBuilder.add(-x, y, 14 - z, highlyAdvancedHull);
-                        }else if(z >= z1) {
+                        } else if (z >= z1) {
                             fusionReactorShapeBuilder.add(x, y, z, fusionChamber);
                             fusionReactorShapeBuilder.add(-x, y, z, fusionChamber);
                             fusionReactorShapeBuilder.add(x, y, 14 - z, fusionChamber);
@@ -519,7 +519,7 @@ public class MultiblockMachines {
             HatchFlags flags = new HatchFlags.Builder().with(FLUID_INPUT, FLUID_OUTPUT, ENERGY_INPUT).build();
 
             for (int l = 0; l < ((y == 0) ? 3 : 2); l++) {
-                if(!(y == 0 && l == 1)) {
+                if (!(y == 0 && l == 1)) {
 
                     HatchFlags currentFlag = l == 0 ? flags : null;
 
@@ -529,11 +529,11 @@ public class MultiblockMachines {
                     fusionReactorShapeBuilder.add(0, y, 14 - l, highlyAdvancedHull, currentFlag);
                     fusionReactorShapeBuilder.add(-7 + l, y, 7, highlyAdvancedHull, currentFlag);
                     fusionReactorShapeBuilder.add(7 - l, y, 7, highlyAdvancedHull, currentFlag);
-                }else{
+                } else {
                     fusionReactorShapeBuilder.add(0, y, l, fusionChamber);
                     fusionReactorShapeBuilder.add(0, y, 14 - l, fusionChamber);
-                    fusionReactorShapeBuilder.add(-7+l, y, 7, fusionChamber);
-                    fusionReactorShapeBuilder.add(7 -l , y, 7, fusionChamber);
+                    fusionReactorShapeBuilder.add(-7 + l, y, 7, fusionChamber);
+                    fusionReactorShapeBuilder.add(7 - l, y, 7, fusionChamber);
                 }
             }
         }
@@ -555,12 +555,12 @@ public class MultiblockMachines {
         PLASMA_TURBINE = MachineRegistrationHelper.registerMachine(
                 "Plasma Turbine",
                 "plasma_turbine", bet ->
-                new EnergyFromFluidMultiblockBlockEntity(bet, "plasma_turbine", plasmaTurbineShape,
-                        FluidConsumerComponent.of(
-                                1 << 20,
-                                MIFluids.HELIUM_PLASMA.asFluid(),
-                                100000
-                        )));
+                        new EnergyFromFluidMultiblockBlockEntity(bet, "plasma_turbine", plasmaTurbineShape,
+                                FluidConsumerComponent.of(
+                                        1 << 20,
+                                        MIFluids.HELIUM_PLASMA.asFluid(),
+                                        100000
+                                )));
         ReiMachineRecipes.registerMultiblockShape("plasma_turbine", plasmaTurbineShape);
     }
 

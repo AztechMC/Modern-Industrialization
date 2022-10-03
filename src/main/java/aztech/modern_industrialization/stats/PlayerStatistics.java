@@ -23,27 +23,39 @@
  */
 package aztech.modern_industrialization.stats;
 
+import dev.ftb.mods.ftbquests.item.MissingItem;
+import dev.ftb.mods.ftbquests.quest.ServerQuestFile;
+import dev.ftb.mods.ftbquests.quest.task.ItemTask;
+import dev.ftb.mods.ftbteams.FTBTeamsAPI;
 import java.util.IdentityHashMap;
 import java.util.Map;
+import java.util.UUID;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
 
 public class PlayerStatistics {
-    public static final PlayerStatistics DUMMY = new PlayerStatistics();
+    public static final PlayerStatistics DUMMY = new PlayerStatistics(null);
 
+    private static final boolean IS_TEAMS_PRESENT = FabricLoader.getInstance().isModLoaded("ftbteams");
+
+    private final UUID uuid;
     private final Map<Item, StatisticValue> usedItems = new IdentityHashMap<>(), producedItems = new IdentityHashMap<>();
     private final Map<Fluid, StatisticValue> usedFluids = new IdentityHashMap<>(), producedFluids = new IdentityHashMap<>();
 
-    PlayerStatistics() {
+    PlayerStatistics(UUID uuid) {
+        this.uuid = uuid;
     }
 
-    PlayerStatistics(CompoundTag nbt) {
+    PlayerStatistics(UUID uuid, CompoundTag nbt) {
+        this.uuid = uuid;
         readNbt(Registry.ITEM, usedItems, nbt.getCompound("usedItems"));
         readNbt(Registry.ITEM, producedItems, nbt.getCompound("producedItems"));
         readNbt(Registry.FLUID, usedFluids, nbt.getCompound("usedFluids"));
@@ -64,7 +76,12 @@ public class PlayerStatistics {
     }
 
     public void addProducedItems(ItemLike what, long amount) {
-        producedItems.computeIfAbsent(what.asItem(), i -> new StatisticValue()).add(amount);
+        var item = what.asItem();
+        producedItems.computeIfAbsent(item, i -> new StatisticValue()).add(amount);
+
+        if (uuid != null && IS_TEAMS_PRESENT) {
+            FTBQuests.addCompleted(uuid, item, amount);
+        }
     }
 
     public void addUsedFluids(Fluid what, long amount) {
@@ -93,5 +110,30 @@ public class PlayerStatistics {
             tag.put(registry.getKey(entry.getKey()).toString(), entry.getValue().toNbt());
         }
         return tag;
+    }
+
+    private static class FTBQuests {
+        private static void addCompleted(UUID uuid, Item item, long amount) {
+            var file = ServerQuestFile.INSTANCE;
+            var data = file.getNullableTeamData(FTBTeamsAPI.getPlayerTeamID(uuid));
+
+            if (data == null || data.isLocked()) {
+                return;
+            }
+
+            ItemStack stack = new ItemStack(item, (int) amount);
+
+            for (var task : file.getSubmitTasks()) {
+                if (task instanceof ItemTask itemTask && data.canStartTasks(task.quest)) {
+                    if (data.isCompleted(task) || itemTask.item.getItem() instanceof MissingItem || item instanceof MissingItem) {
+                        continue;
+                    }
+
+                    if (!task.consumesResources() && itemTask.test(stack)) {
+                        data.addProgress(task, amount);
+                    }
+                }
+            }
+        }
     }
 }

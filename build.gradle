@@ -140,6 +140,14 @@ repositories {
             includeGroup "me.luligabi"
         }
     }
+    // For FTBTeams/FTBQuests
+    maven {
+        url "https://maven.saps.dev/minecraft"
+        content {
+            includeGroup "dev.latvian.mods"
+            includeGroup "dev.ftb.mods"
+        }
+    }
     mavenLocal()
 
 }
@@ -234,6 +242,11 @@ dependencies {
     }
 
     modImplementation("appeng:appliedenergistics2-fabric:${project.ae2_version}") {
+        exclude(group: "net.fabricmc.fabric-api")
+        exclude(group: "me.shedaniel")
+    }
+
+    modCompileOnly("dev.ftb.mods:ftb-quests-fabric:${project.ftb_quests_version}") {
         exclude(group: "net.fabricmc.fabric-api")
         exclude(group: "me.shedaniel")
     }

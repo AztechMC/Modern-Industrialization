@@ -24,101 +24,88 @@
 package aztech.modern_industrialization.compat.kubejs;
 
 import aztech.modern_industrialization.machines.init.MIMachineRecipeTypes;
-import aztech.modern_industrialization.machines.recipe.MachineRecipeType;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
 import dev.latvian.mods.kubejs.KubeJSPlugin;
-import dev.latvian.mods.kubejs.item.ItemStackJS;
-import dev.latvian.mods.kubejs.item.ingredient.IngredientJS;
-import dev.latvian.mods.kubejs.item.ingredient.IngredientStackJS;
-import dev.latvian.mods.kubejs.recipe.RecipeExceptionJS;
-import dev.latvian.mods.kubejs.recipe.RecipeJS;
-import dev.latvian.mods.kubejs.recipe.RegisterRecipeHandlersEvent;
-import dev.latvian.mods.kubejs.util.ListJS;
+import dev.latvian.mods.kubejs.item.ingredient.IngredientPlatformHelper;
+import dev.latvian.mods.kubejs.item.ingredient.IngredientStack;
+import dev.latvian.mods.kubejs.recipe.*;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
-import org.jetbrains.annotations.NotNull;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
+import org.jetbrains.annotations.Nullable;
 
 public class MIKubeJSPlugin extends KubeJSPlugin {
     @Override
-    public void addRecipes(RegisterRecipeHandlersEvent event) {
-        for (MachineRecipeType mrt : MIMachineRecipeTypes.getRecipeTypes()) {
+    public void registerRecipeTypes(RegisterRecipeTypesEvent event) {
+        for (var mrt : MIMachineRecipeTypes.getRecipeTypes()) {
             event.register(mrt.getId(), MachineRecipe::new);
         }
     }
 
     private static class MachineRecipe extends RecipeJS {
-        private float[] itemInputProbabilities;
-        private float[] itemOutputProbabilities;
+        public final Map<ItemStack, Float> outputItems = new LinkedHashMap<>();
+        public final Map<Ingredient, Float> inputItems = new LinkedHashMap<>();
 
         @Override
-        public void create(@NotNull ListJS listJS) {
+        public void create(RecipeArguments recipeArguments) {
             throw new RecipeExceptionJS("MachineRecipe#create should never be called");
         }
 
         @Override
         public void deserialize() {
-            JsonElement j = json.get("item_inputs");
-            if (j != null) {
-                if (j.isJsonArray()) {
-                    JsonArray arr = j.getAsJsonArray();
-                    itemInputProbabilities = new float[arr.size()];
-                    for (int i = 0; i < arr.size(); ++i) {
-                        readItemInput(arr.get(i), i);
-                    }
-                } else {
-                    itemInputProbabilities = new float[1];
-                    readItemInput(j, 0);
+            readItemInput(json.get("item_inputs"));
+            readItemOutput(json.get("item_outputs"));
+
+            if (json.get("id") instanceof JsonPrimitive string) {
+                id = new ResourceLocation(string.getAsString());
+            }
+        }
+
+        private void readItemInput(JsonElement element) {
+            if (element instanceof JsonObject object) {
+                var amount = 1;
+
+                if (object.has("amount")) {
+                    amount = object.get("amount").getAsInt();
                 }
-            }
 
-            JsonElement o = json.get("item_outputs");
-            if (o != null) {
-                if (o.isJsonArray()) {
-                    JsonArray arr = o.getAsJsonArray();
-                    itemOutputProbabilities = new float[arr.size()];
-                    for (int i = 0; i < arr.size(); ++i) {
-                        readItemOutput(arr.get(i), i);
-                    }
-                } else {
-                    itemOutputProbabilities = new float[1];
-                    readItemOutput(o, 0);
+                if (object.has("count")) {
+                    amount = object.get("count").getAsInt();
                 }
-            }
 
-            if (json.has("id")) {
-                id = new ResourceLocation(json.get("id").getAsString());
+                inputItems.put((Ingredient) (Object) IngredientPlatformHelper.get().stack(parseItemInput(element, ""), amount),
+                        readProbability(object));
+            } else if (element instanceof JsonArray array) {
+                for (var entry : array) {
+                    readItemInput(entry);
+                }
+            } else if (element != null) {
+                throw new UnsupportedOperationException();
             }
         }
 
-        private void readItemInput(JsonElement el, int index) {
-            JsonObject obj = el.getAsJsonObject();
-            int amount = 1;
-            if (obj.has("amount"))
-                amount = obj.get("amount").getAsInt();
-            if (obj.has("count"))
-                amount = obj.get("count").getAsInt();
-            IngredientJS ing = IngredientJS.of(obj);
-            ing = ing.withCount(amount);
-            inputItems.add(ing);
-            itemInputProbabilities[index] = readProbability(obj);
-        }
-
-        private void readItemOutput(JsonElement el, int index) {
-            JsonObject obj = el.getAsJsonObject();
-            ItemStackJS stack = ItemStackJS.resultFromRecipeJson(obj);
-            if (obj.has("amount")) {
-                stack.setCount(obj.get("amount").getAsInt());
-            } else {
-                stack.setCount(1);
+        private void readItemOutput(JsonElement element) {
+            if (element instanceof JsonObject object) {
+                outputItems.put(parseItemOutput(object), readProbability(object));
+            } else if (element instanceof JsonArray array) {
+                for (var entry : array) {
+                    readItemOutput(entry);
+                }
+            } else if (element != null) {
+                throw new UnsupportedOperationException();
             }
-            outputItems.add(stack);
-            itemOutputProbabilities[index] = readProbability(obj);
         }
 
-        private float readProbability(JsonObject o) {
-            if (o.has("probability")) {
-                return o.get("probability").getAsFloat();
+        private float readProbability(JsonObject object) {
+            if (object.get("probability") instanceof JsonPrimitive probability) {
+                return probability.getAsFloat();
             } else {
                 return 1.0f;
             }
@@ -126,36 +113,89 @@ public class MIKubeJSPlugin extends KubeJSPlugin {
 
         @Override
         public void serialize() {
-            if (inputItems.size() > 0) {
-                JsonArray itemInputs = new JsonArray();
-                for (int i = 0; i < inputItems.size(); ++i) {
-                    IngredientJS ingredient = inputItems.get(i).asIngredientStack();
-                    JsonObject o = (JsonObject) ingredient.toJson();
-                    o.addProperty("probability", itemInputProbabilities[i]);
+            if (serializeInputs && !inputItems.isEmpty()) {
+                var itemInputs = new JsonArray();
+
+                for (var entry : inputItems.entrySet()) {
+                    var o = entry.getKey().toJson().getAsJsonObject();
+                    o.addProperty("probability", entry.getValue());
                     itemInputs.add(o);
                 }
+
                 json.add("item_inputs", itemInputs);
             }
 
-            if (outputItems.size() > 0) {
-                JsonArray itemOutputs = new JsonArray();
-                for (int i = 0; i < outputItems.size(); ++i) {
-                    ItemStackJS stack = outputItems.get(i);
-                    JsonObject o = new JsonObject();
-                    o.addProperty("probability", itemOutputProbabilities[i]);
-                    o.addProperty("item", stack.getId());
-                    o.addProperty("amount", stack.getCount());
+            if (serializeOutputs && !outputItems.isEmpty()) {
+                var itemOutputs = new JsonArray();
+
+                for (var entry : outputItems.entrySet()) {
+                    var o = new JsonObject();
+                    o.addProperty("probability", entry.getValue());
+                    o.addProperty("item", Registry.ITEM.getKey(entry.getKey().getItem()).toString());
+                    o.addProperty("amount", entry.getKey().getCount());
                     itemOutputs.add(o);
                 }
+
                 json.add("item_outputs", itemOutputs);
             }
         }
 
         @Override
-        public JsonElement serializeIngredientStack(IngredientStackJS in) {
-            JsonObject json = new JsonObject();
-            json.add(in.ingredientKey, in.ingredient.toJson());
-            json.addProperty(in.countKey, in.getCount());
+        public boolean hasInput(IngredientMatch match) {
+            for (var ingredient : inputItems.keySet()) {
+                if (match.contains(ingredient)) {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        @Override
+        public boolean replaceInput(IngredientMatch match, Ingredient with, ItemInputTransformer transformer) {
+            var changes = new HashMap<Ingredient, Ingredient>();
+
+            for (var item : inputItems.keySet()) {
+                changes.put(item, transformer.transform(this, match, item, with));
+            }
+
+            for (var entry : changes.entrySet()) {
+                inputItems.put(entry.getValue(), inputItems.remove(entry.getKey()));
+            }
+
+            return !changes.isEmpty();
+        }
+
+        @Override
+        public boolean hasOutput(IngredientMatch match) {
+            for (var item : outputItems.keySet()) {
+                if (match.contains(item)) {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        @Override
+        public boolean replaceOutput(IngredientMatch match, ItemStack with, ItemOutputTransformer transformer) {
+            var changes = new HashMap<ItemStack, ItemStack>();
+
+            for (var item : outputItems.keySet()) {
+                changes.put(item, transformer.transform(this, match, item, with));
+            }
+
+            for (var entry : changes.entrySet()) {
+                outputItems.put(entry.getValue(), outputItems.remove(entry.getKey()));
+            }
+
+            return !changes.isEmpty();
+        }
+
+        @Override
+        public @Nullable JsonElement serializeIngredientStack(IngredientStack in) {
+            var json = in.getIngredient().toJson().getAsJsonObject();
+            json.addProperty("count", in.getCount());
             return json;
         }
     }

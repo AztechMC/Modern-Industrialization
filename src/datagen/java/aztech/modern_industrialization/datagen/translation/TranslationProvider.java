@@ -35,6 +35,7 @@ import com.google.gson.JsonElement;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Map;
 import java.util.TreeMap;
@@ -74,8 +75,7 @@ public record TranslationProvider(FabricDataGenerator gen) implements DataProvid
         addTranslation("text.autoconfig.modern_industrialization.title", "Modern Industrialization Menu");
     }
 
-    @Override
-    public void run(CachedOutput cache) throws IOException {
+    private static void collectTranslationEntries() {
         addManualEntries();
 
         for (var entry : MIText.values()) {
@@ -103,8 +103,58 @@ public record TranslationProvider(FabricDataGenerator gen) implements DataProvid
         for (var entry : ReiMachineRecipes.categories.entrySet()) {
             addTranslation("rei_categories.modern_industrialization." + entry.getKey(), entry.getValue().englishName);
         }
+    }
+
+    @Override
+    public void run(CachedOutput cache) throws IOException {
+        collectTranslationEntries();
 
         customJsonSave(cache, GSON.toJsonTree(TRANSLATION_PAIRS), gen.getOutputFolder().resolve(OUTPUT_PATH));
+
+        // Inspect manual translations for other languages
+        Path manualTranslationsPath = gen.getOutputFolder().resolve("../../main/resources/assets/modern_industrialization/lang");
+        try (var paths = Files.walk(manualTranslationsPath, 1)) {
+            paths.forEach(path -> {
+                try {
+                    String lang = path.getFileName().toString();
+                    if (lang.endsWith(".json")) {
+                        lang = lang.substring(0, lang.length() - 5);
+                        @SuppressWarnings("unchecked")
+                        TreeMap<String, String> manualTranslations = GSON.fromJson(Files.readString(path), TreeMap.class);
+
+                        TreeMap<String, String> output = new TreeMap<>();
+                        int ok = 0, missing = 0, unused = 0;
+
+                        for (var entry : TRANSLATION_PAIRS.entrySet()) {
+                            if (!manualTranslations.containsKey(entry.getKey())) {
+                                output.put(entry.getKey(), "[UNTRANSLATED] " + entry.getValue());
+                                missing++;
+                            }
+                        }
+
+                        for (var entry : manualTranslations.entrySet()) {
+                            if (TRANSLATION_PAIRS.containsKey(entry.getKey())) {
+                                output.put(entry.getKey(), entry.getValue());
+                                ok++;
+                            } else {
+                                output.put(entry.getKey(), "[UNUSED, PLEASE REMOVE] " + entry.getValue());
+                                unused++;
+                            }
+                        }
+
+                        if (missing > 0 || unused > 0) {
+                            String message = "%d ok, %d missing, %d unused".formatted(ok, missing, unused);
+                            output.put("__summary", message);
+
+                            var savePath = gen.getOutputFolder().resolve("assets/modern_industrialization/lang/untranslated/" + lang + ".json");
+                            customJsonSave(cache, GSON.toJsonTree(output), savePath);
+                        }
+                    }
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            });
+        }
     }
 
     private void customJsonSave(CachedOutput cache, JsonElement jsonElement, Path path) throws IOException {

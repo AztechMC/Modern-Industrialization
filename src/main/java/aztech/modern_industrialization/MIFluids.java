@@ -74,6 +74,7 @@ public class MIFluids {
     public static final FluidDefinition LUBRICANT = fluid("Lubricant", "lubricant", 0xffffc400, FULL_OPACITY);
     public static final FluidDefinition MANGANESE_SULFURIC_SOLUTION = fluid("Manganese Sulfuric Solution", "manganese_sulfuric_solution", 0xffb96c3f, MEDIUM_OPACITY);
     public static final FluidDefinition METHANE = fluid("Methane", "methane", 0xffb740d9, true);
+    public static final FluidDefinition MOLTEN_REDSTONE = fluid("Molten Redstone", "molten_redstone", 0xffac0c04, FULL_OPACITY);
     public static final FluidDefinition NAPHTHA = fluid("Naphtha", "naphtha", 0xffa5a25e, NEAR_OPACITY);
     public static final FluidDefinition NITROGEN = fluid("Nitrogen", "nitrogen", 0xff4491a6, true);
     public static final FluidDefinition NYLON = fluid("Nylon", "nylon", 0xff986a64, FULL_OPACITY);
@@ -108,7 +109,6 @@ public class MIFluids {
     public static final FluidDefinition TRITIUM = fluid("Tritium", "tritium", 0xffcc1b50, true);
     public static final FluidDefinition UU_MATER = fluid("UU Matter", "uu_matter", 0xffff00bf, FULL_OPACITY, false);
     public static final FluidDefinition VINYL_CHLORIDE = fluid("Vinyl Chloride", "vinyl_chloride", 0xffeda7d9, MEDIUM_OPACITY);
-    public static final FluidDefinition MOLTEN_REDSTONE = fluid("Molten Redstone", "molten_redstone", 0xffac0c04, FULL_OPACITY);
 
     public static FluidDefinition fluid(String englishName, String id, int color, int opacity, FluidTexture texture,  boolean isGas){
         FluidDefinition definition =  new FluidDefinition(englishName, id, color, opacity, texture, isGas);

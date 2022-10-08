@@ -23,6 +23,7 @@
  */
 package aztech.modern_industrialization.datagen.recipe;
 
+import aztech.modern_industrialization.MIFluids;
 import aztech.modern_industrialization.machines.init.MIMachineRecipeTypes;
 import aztech.modern_industrialization.machines.recipe.MachineRecipeType;
 import aztech.modern_industrialization.materials.MIMaterials;
@@ -35,6 +36,7 @@ import aztech.modern_industrialization.recipe.json.compat.IRCompressRecipeJson;
 import aztech.modern_industrialization.recipe.json.compat.TRCompressorRecipeJson;
 import com.google.common.base.Preconditions;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Consumer;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.fabricmc.fabric.api.resource.conditions.v1.DefaultResourceConditions;
@@ -156,6 +158,34 @@ public class CompatRecipesProvider extends MIRecipesProvider {
                 .addItemInput("minecraft:redstone", 1)
                 .addFluidInput(Fluids.WATER, 1000, 0)
                 .addItemOutput("ae2:fluix_crystal", 2));
+
+        for (var entry : Map.of(
+                "calculation", "ae2:certus_quartz_crystal",
+                "engineering", "#c:diamonds",
+                "logic", "#c:gold_ingots").entrySet()) {
+            var type = entry.getKey();
+            var ingredient = entry.getValue();
+
+            addCompatRecipe("printed_" + type + "_processor", MIRecipeJson.create(MIMachineRecipeTypes.PACKER, 8, 200)
+                    .addItemInput(ingredient, 1)
+                    .addItemInput("ae2:" + type + "_processor_press", 1, 0)
+                    .addItemOutput("ae2:printed_" + type + "_processor", 1));
+            addCompatRecipe(type + "_processor", MIRecipeJson.create(MIMachineRecipeTypes.ASSEMBLER, 8, 200)
+                    .addItemInput("ae2:printed_" + type + "_processor", 1)
+                    .addItemInput("ae2:printed_silicon", 1)
+                    .addFluidInput(MIFluids.MOLTEN_REDSTONE, 100)
+                    .addItemOutput("ae2:" + type + "_processor", 1));
+        }
+
+        addCompatRecipe("printed_silicon", MIRecipeJson.create(MIMachineRecipeTypes.PACKER, 8, 200)
+                .addItemInput("#c:silicon", 1)
+                .addItemInput("ae2:silicon_press", 1, 0)
+                .addItemOutput("ae2:printed_silicon", 1));
+
+        addCompatRecipe("printed_silicon_from_ingot", MIRecipeJson.create(MIMachineRecipeTypes.PACKER, 8, 200)
+                .addItemInput(MIMaterials.SILICON.getPart(MIParts.INGOT), 1)
+                .addItemInput("ae2:silicon_press", 1, 0)
+                .addItemOutput("ae2:printed_silicon", 1));
     }
 
     private void generateIndrevCompat() {

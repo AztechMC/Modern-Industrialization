@@ -1,7 +1,7 @@
 {
   "type": "modern_industrialization:vacuum_freezer",
   "eu": 16,
-  "duration": 40,
+  "duration": 10,
   "fluid_inputs": [
     {
       "fluid": "modern_industrialization:molten_redstone",

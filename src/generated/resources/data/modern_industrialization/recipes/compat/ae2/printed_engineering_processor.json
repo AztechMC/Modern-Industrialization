@@ -1,0 +1,30 @@
+{
+  "type": "modern_industrialization:packer",
+  "duration": 200,
+  "eu": 8,
+  "fabric:load_conditions": [
+    {
+      "condition": "fabric:all_mods_loaded",
+      "values": [
+        "ae2"
+      ]
+    }
+  ],
+  "item_inputs": [
+    {
+      "amount": 1,
+      "tag": "c:diamonds"
+    },
+    {
+      "amount": 1,
+      "item": "ae2:engineering_processor_press",
+      "probability": 0.0
+    }
+  ],
+  "item_outputs": [
+    {
+      "amount": 1,
+      "item": "ae2:printed_engineering_processor"
+    }
+  ]
+}

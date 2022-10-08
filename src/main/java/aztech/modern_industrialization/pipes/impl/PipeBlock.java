@@ -194,7 +194,7 @@ public class PipeBlock extends Block implements EntityBlock, SimpleWaterloggedBl
             SoundEvent sound = null;
             if (partShape.direction == null) {
                 if (!world.isClientSide) {
-                    pipe.addConnection(partShape.type, hit.getDirection());
+                    pipe.addConnection(player, partShape.type, hit.getDirection());
                 } else {
                     sound = group.getPlaceSound();
                 }
@@ -220,14 +220,16 @@ public class PipeBlock extends Block implements EntityBlock, SimpleWaterloggedBl
         PipeBlockEntity pipeEntity = (PipeBlockEntity) world.getBlockEntity(blockPos);
 
         PipeVoxelShape partShape = getHitPart(pipeEntity, hit);
-        if (partShape != null && partShape.opensGui) {
-            if (!world.isClientSide) {
-                player.openMenu(pipeEntity.getGui(partShape.type, partShape.direction));
-            }
-            return InteractionResult.sidedSuccess(world.isClientSide);
+        if (partShape == null || !partShape.opensGui) {
+            return InteractionResult.PASS;
         }
 
-        return InteractionResult.PASS;
+        if (!world.isClientSide) {
+            if (!pipeEntity.customUse(partShape, player, hand)) {
+                player.openMenu(pipeEntity.getGui(partShape.type, partShape.direction));
+            }
+        }
+        return InteractionResult.sidedSuccess(world.isClientSide);
     }
 
     @SuppressWarnings("deprecation")

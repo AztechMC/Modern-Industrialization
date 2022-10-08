@@ -25,32 +25,42 @@ package aztech.modern_industrialization.pipes.item;
 
 import static aztech.modern_industrialization.pipes.api.PipeEndpointType.*;
 
+import aztech.modern_industrialization.MIItem;
+import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.api.pipes.item.SpeedUpgrade;
+import aztech.modern_industrialization.items.ConfigCardItem;
 import aztech.modern_industrialization.pipes.api.PipeEndpointType;
 import aztech.modern_industrialization.pipes.api.PipeNetworkNode;
 import aztech.modern_industrialization.pipes.api.PipeNetworkType;
 import aztech.modern_industrialization.pipes.gui.IPipeScreenHandlerHelper;
+import aztech.modern_industrialization.pipes.impl.PipeBlockEntity;
 import aztech.modern_industrialization.pipes.impl.PipeNetworks;
 import java.util.*;
 import net.fabricmc.fabric.api.lookup.v1.block.BlockApiCache;
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemStorage;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
+import net.fabricmc.fabric.api.transfer.v1.item.PlayerInventoryStorage;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
+import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import org.jetbrains.annotations.Nullable;
 
 // LBA
 public class ItemNetworkNode extends PipeNetworkNode {
@@ -110,7 +120,7 @@ public class ItemNetworkNode extends PipeNetworkNode {
     }
 
     @Override
-    public void addConnection(Level world, BlockPos pos, Direction direction) {
+    public void addConnection(PipeBlockEntity pipe, Player player, Level world, BlockPos pos, Direction direction) {
         // Refuse if it already exists
         for (ItemConnection connection : connections) {
             if (connection.direction == direction) {
@@ -119,7 +129,13 @@ public class ItemNetworkNode extends PipeNetworkNode {
         }
         // Otherwise try to connect
         if (canConnect(world, pos, direction)) {
-            connections.add(new ItemConnection(direction, BLOCK_IN, 0, -10));
+            var conn = new ItemConnection(direction, BLOCK_IN, 0, -10);
+            connections.add(conn);
+            // Apply memory card in the off-hand.
+            var offHandItem = player.getOffhandItem();
+            if (MIItem.CONFIG_CARD.is(offHandItem)) {
+                conn.applyConfig(pipe, offHandItem.getTagElement(ConfigCardItem.TAG_SAVEDCONFIG), player);
+            }
         }
     }
 
@@ -157,7 +173,10 @@ public class ItemNetworkNode extends PipeNetworkNode {
                 connection.whitelist = connectionTag.getBoolean("whitelist");
                 for (int i = 0; i < ItemPipeInterface.SLOTS; i++) {
                     connection.stacks[i] = ItemStack.of(connectionTag.getCompound(Integer.toString(i)));
-                    connection.stacks[i].setCount(1);
+                    if (!connection.stacks[i].isEmpty()) {
+                        connection.stacks[i].setCount(1);
+                    }
+                    ;
                 }
                 connection.refreshStacksCache();
                 connection.upgradeStack = ItemStack.of(connectionTag.getCompound("upgradeStack"));
@@ -193,6 +212,30 @@ public class ItemNetworkNode extends PipeNetworkNode {
                 conn.upgradeStack = ItemStack.EMPTY;
             }
         }
+    }
+
+    @Override
+    public boolean customUse(PipeBlockEntity pipe, Player player, InteractionHand hand, @Nullable Direction hitDirection) {
+        for (ItemConnection conn : connections) {
+            if (conn.direction != hitDirection) {
+                continue;
+            }
+
+            var stack = player.getItemInHand(hand);
+            if (!MIItem.CONFIG_CARD.is(stack)) {
+                return false;
+            }
+
+            if (player.isShiftKeyDown()) {
+                stack.getOrCreateTag().put(ConfigCardItem.TAG_SAVEDCONFIG, conn.getConfig());
+                player.displayClientMessage(MIText.ConfigCardSet.text(), true);
+            } else if (stack.getTagElement(ConfigCardItem.TAG_SAVEDCONFIG) != null) {
+                conn.applyConfig(pipe, stack.getTagElement(ConfigCardItem.TAG_SAVEDCONFIG), player);
+                player.displayClientMessage(MIText.ConfigCardApplied.text(), true);
+            }
+            return true;
+        }
+        return false;
     }
 
     class ItemConnection {
@@ -244,6 +287,74 @@ public class ItemNetworkNode extends PipeNetworkNode {
             if (!upgradeStack.isEmpty()) {
                 world.addFreshEntity(new ItemEntity(world, pos.getX(), pos.getY(), pos.getZ(), upgradeStack));
                 upgradeStack = ItemStack.EMPTY;
+            }
+        }
+
+        CompoundTag getConfig() {
+            CompoundTag tag = new CompoundTag();
+            tag.putInt("connectionType", encodeConnectionType(type));
+            tag.putBoolean("whitelist", whitelist);
+            tag.putInt("insertPriority", insertPriority);
+            tag.putInt("extractPriority", extractPriority);
+            ListTag filterTag = new ListTag();
+            for (ItemStack itemStack : stacks) {
+                filterTag.add(itemStack.save(new CompoundTag()));
+            }
+            tag.put("filter", filterTag);
+            tag.put("upgrade", upgradeStack.save(new CompoundTag()));
+            return tag;
+        }
+
+        void applyConfig(PipeBlockEntity pipe, @Nullable CompoundTag tag, Player player) {
+            if (tag == null) {
+                return;
+            }
+            var decodedType = decodeConnectionType(tag.getInt("connectionType"));
+            boolean remesh = decodedType != type;
+            type = decodedType;
+            whitelist = tag.getBoolean("whitelist");
+            insertPriority = tag.getInt("insertPriority");
+            extractPriority = tag.getInt("extractPriority");
+            ListTag filterTag = tag.getList("filter", Tag.TAG_COMPOUND);
+            for (int i = 0; i < ItemPipeInterface.SLOTS; i++) {
+                stacks[i] = ItemStack.of(filterTag.getCompound(i));
+                if (!stacks[i].isEmpty()) {
+                    stacks[i].setCount(1);
+                }
+            }
+
+            ItemStack requestedUpgrade = ItemStack.of(tag.getCompound("upgrade"));
+            if (player.getAbilities().instabuild) {
+                // Creative mode -> apply upgrades immediately
+                upgradeStack = requestedUpgrade;
+            } else {
+                // Otherwise -> try to grab the upgrades from the player's inventory, and deposit the old one.
+                ItemVariant requestedVariant = ItemVariant.of(requestedUpgrade);
+
+                if (requestedVariant.matches(upgradeStack)) {
+                    int delta = requestedUpgrade.getCount() - upgradeStack.getCount();
+                    if (delta > 0) {
+                        upgradeStack.grow(fetchItems(player, requestedVariant, delta));
+                    } else {
+                        player.getInventory().placeItemBackInInventory(upgradeStack.split(-delta));
+                    }
+                } else {
+                    player.getInventory().placeItemBackInInventory(upgradeStack);
+                    upgradeStack = requestedVariant.toStack(fetchItems(player, requestedVariant, requestedUpgrade.getCount()));
+                }
+            }
+
+            pipe.setChanged();
+            if (remesh) {
+                pipe.sync();
+            }
+        }
+
+        private int fetchItems(Player player, ItemVariant what, int maxAmount) {
+            try (var tx = Transaction.openOuter()) {
+                int extracted = (int) PlayerInventoryStorage.of(player).extract(what, maxAmount, tx);
+                tx.commit();
+                return extracted;
             }
         }
 

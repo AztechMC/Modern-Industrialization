@@ -44,7 +44,7 @@ import org.jetbrains.annotations.Nullable;
 public class ClientProxy extends CommonProxy {
     @Override
     public @Nullable Player findUser(ItemStack mainHand) {
-        if (Thread.currentThread().getName().equals("Render thread")) {
+        if (Minecraft.getInstance().isSameThread()) {
             for (var player : Minecraft.getInstance().level.players()) {
                 if (player.getMainHandItem() == mainHand) {
                     return player;

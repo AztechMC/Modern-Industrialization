@@ -24,13 +24,17 @@
 package aztech.modern_industrialization.pipes.api;
 
 import aztech.modern_industrialization.pipes.gui.IPipeScreenHandlerHelper;
+import aztech.modern_industrialization.pipes.impl.PipeBlockEntity;
 import java.util.List;
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import org.jetbrains.annotations.Nullable;
 
 public abstract class PipeNetworkNode {
     protected PipeNetwork network;
@@ -49,7 +53,7 @@ public abstract class PipeNetworkNode {
 
     public abstract void removeConnection(Level world, BlockPos pos, Direction direction);
 
-    public abstract void addConnection(Level world, BlockPos pos, Direction direction);
+    public abstract void addConnection(PipeBlockEntity pipe, Player player, Level world, BlockPos pos, Direction direction);
 
     /**
      * Get the connection screen handler factory, or null if there is not gui for
@@ -76,5 +80,12 @@ public abstract class PipeNetworkNode {
     }
 
     public void appendDroppedStacks(List<ItemStack> droppedStacks) {
+    }
+
+    /**
+     * Return true if something was done.
+     */
+    public boolean customUse(PipeBlockEntity pipe, Player player, InteractionHand hand, @Nullable Direction hitDirection) {
+        return false;
     }
 }

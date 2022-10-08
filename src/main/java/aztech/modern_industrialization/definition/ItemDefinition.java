@@ -67,6 +67,10 @@ public class ItemDefinition<T extends Item> extends Definition implements ItemLi
         return new ItemStack(item, stackSize);
     }
 
+    public boolean is(ItemStack stack) {
+        return stack.is(item);
+    }
+
     @Override
     public T asItem() {
         return item;

@@ -208,10 +208,10 @@ public class PipeBlockEntity extends FastBlockEntity implements IPipeScreenHandl
     /**
      * Add a pipe connection.
      */
-    public void addConnection(PipeNetworkType type, Direction direction) {
+    public void addConnection(Player player, PipeNetworkType type, Direction direction) {
         for (PipeNetworkNode pipe : pipes) {
             if (pipe.getType() == type) {
-                pipe.addConnection(level, worldPosition, direction);
+                pipe.addConnection(this, player, level, worldPosition, direction);
                 pipe.getManager().addLink(worldPosition, direction, true);
                 pipe.updateConnections(level, worldPosition);
 
@@ -219,6 +219,15 @@ public class PipeBlockEntity extends FastBlockEntity implements IPipeScreenHandl
                 return;
             }
         }
+    }
+
+    public boolean customUse(PipeVoxelShape shape, Player player, InteractionHand hand) {
+        for (var node : pipes) {
+            if (node.getType() == shape.type) {
+                return node.customUse(this, player, hand, shape.direction);
+            }
+        }
+        return false;
     }
 
     public ExtendedScreenHandlerFactory getGui(PipeNetworkType type, Direction direction) {

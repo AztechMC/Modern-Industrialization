@@ -83,11 +83,10 @@ public class PipeItem extends Item {
             placingPos = context.getClickedPos().relative(context.getClickedFace());
             Level world = context.getLevel();
             BlockEntity entity = world.getBlockEntity(placingPos);
-            if (entity instanceof PipeBlockEntity) {
-                PipeBlockEntity pipeEntity = (PipeBlockEntity) entity;
+            if (entity instanceof PipeBlockEntity pipeEntity) {
                 if (pipeEntity.connections.containsKey(type)) {
                     if (!world.isClientSide) {
-                        pipeEntity.addConnection(type, context.getClickedFace().getOpposite());
+                        pipeEntity.addConnection(context.getPlayer(), type, context.getClickedFace().getOpposite());
                     }
                     // update adjacent pipes
                     world.blockUpdated(placingPos, Blocks.AIR);

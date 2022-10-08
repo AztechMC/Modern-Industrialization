@@ -28,6 +28,7 @@ import static aztech.modern_industrialization.pipes.api.PipeEndpointType.*;
 import aztech.modern_industrialization.api.energy.*;
 import aztech.modern_industrialization.pipes.api.PipeEndpointType;
 import aztech.modern_industrialization.pipes.api.PipeNetworkNode;
+import aztech.modern_industrialization.pipes.impl.PipeBlockEntity;
 import aztech.modern_industrialization.util.NbtHelper;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -37,6 +38,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
@@ -110,7 +112,7 @@ public class ElectricityNetworkNode extends PipeNetworkNode {
     }
 
     @Override
-    public void addConnection(Level world, BlockPos pos, Direction direction) {
+    public void addConnection(PipeBlockEntity pipe, Player player, Level world, BlockPos pos, Direction direction) {
         // Refuse if it already exists
         for (Direction connection : connections) {
             if (connection == direction) {

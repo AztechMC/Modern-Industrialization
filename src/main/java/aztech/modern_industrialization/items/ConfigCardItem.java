@@ -24,16 +24,27 @@
 package aztech.modern_industrialization.items;
 
 import aztech.modern_industrialization.MIText;
+import aztech.modern_industrialization.MITooltips;
 import aztech.modern_industrialization.pipes.impl.PipeBlock;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
+import org.jetbrains.annotations.Nullable;
 
 public class ConfigCardItem extends Item {
     public static final String TAG_SAVEDCONFIG = "savedconfig";
@@ -65,5 +76,47 @@ public class ConfigCardItem extends Item {
             return InteractionResultHolder.sidedSuccess(player.getItemInHand(usedHand), level.isClientSide());
         }
         return super.use(level, player, usedHand);
+    }
+
+    @Override
+    public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, TooltipFlag isAdvanced) {
+        var tag = stack.getTagElement(TAG_SAVEDCONFIG);
+        if (tag != null) {
+            var filterSize = readItemPipeFilter(tag).size();
+            MutableComponent component;
+            if (filterSize == 0) {
+                component = MIText.ConfigCardConfiguredNoItems.text();
+            } else {
+                component = MIText.ConfigCardConfiguredItems.text(Component.literal("" + filterSize).setStyle(MITooltips.NUMBER_TEXT));
+            }
+            tooltipComponents.add(component.withStyle(MITooltips.DEFAULT_STYLE));
+        }
+    }
+
+    private static List<ItemStack> readItemPipeFilter(CompoundTag tag) {
+        List<ItemStack> stacks = new ArrayList<>();
+        var filterTag = tag.getList("filter", Tag.TAG_COMPOUND);
+        for (int i = 0; i < filterTag.size(); ++i) {
+            var filterStack = ItemStack.of(filterTag.getCompound(i));
+            if (!filterStack.isEmpty()) {
+                filterStack.setCount(1);
+                stacks.add(filterStack);
+            }
+        }
+        return stacks;
+    }
+
+    @Override
+    public Optional<TooltipComponent> getTooltipImage(ItemStack stack) {
+        var tag = stack.getTagElement(TAG_SAVEDCONFIG);
+        if (tag == null) {
+            return Optional.empty();
+        }
+
+        var stacks = readItemPipeFilter(tag);
+        return stacks.isEmpty() ? Optional.empty() : Optional.of(new TooltipData(stacks));
+    }
+
+    public record TooltipData(List<ItemStack> filter) implements TooltipComponent {
     }
 }

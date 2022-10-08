@@ -1,19 +1,25 @@
 {
   "type": "minecraft:crafting_shaped",
   "pattern": [
-    " c ",
-    "gpg",
-    " c "
+    "ggg",
+    "rcr",
+    "ibi"
   ],
   "key": {
-    "c": {
-      "item": "modern_industrialization:analog_circuit"
-    },
     "g": {
       "item": "minecraft:glass_pane"
     },
-    "p": {
-      "item": "minecraft:paper"
+    "c": {
+      "item": "modern_industrialization:capacitor"
+    },
+    "r": {
+      "item": "modern_industrialization:resistor"
+    },
+    "b": {
+      "item": "modern_industrialization:analog_circuit_board"
+    },
+    "i": {
+      "item": "modern_industrialization:inductor"
     }
   },
   "result": {

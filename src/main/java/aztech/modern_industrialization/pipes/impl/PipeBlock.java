@@ -194,7 +194,7 @@ public class PipeBlock extends Block implements EntityBlock, SimpleWaterloggedBl
             SoundEvent sound = null;
             if (partShape.direction == null) {
                 if (!world.isClientSide) {
-                    pipe.addConnection(partShape.type, hit.getDirection());
+                    pipe.addConnection(player, partShape.type, hit.getDirection());
                 } else {
                     sound = group.getPlaceSound();
                 }

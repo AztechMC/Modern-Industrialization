@@ -31,10 +31,12 @@ import aztech.modern_industrialization.blocks.storage.tank.creativetank.Creative
 import aztech.modern_industrialization.client.model.MachineModelLoader;
 import aztech.modern_industrialization.inventory.ConfigurableInventoryPacketHandlers;
 import aztech.modern_industrialization.inventory.ConfigurableInventoryPackets;
+import aztech.modern_industrialization.items.ConfigCardItem;
 import aztech.modern_industrialization.items.SteamDrillItem;
 import aztech.modern_industrialization.items.armor.ClientKeyHandler;
 import aztech.modern_industrialization.items.armor.HudRenderer;
 import aztech.modern_industrialization.items.armor.JetpackParticleAdder;
+import aztech.modern_industrialization.items.client.ClientConfigCardTooltip;
 import aztech.modern_industrialization.machines.ClientMachinePackets;
 import aztech.modern_industrialization.machines.MachineOverlay;
 import aztech.modern_industrialization.machines.MachinePackets;
@@ -152,6 +154,8 @@ public class ModernIndustrializationClient implements ClientModInitializer {
                 return new BarrelTooltipComponent(barrelData);
             } else if (data instanceof SteamDrillItem.SteamDrillTooltipData steamDrillData) {
                 return new SteamDrillItem.SteamDrillTooltipComponent(steamDrillData);
+            } else if (data instanceof ConfigCardItem.TooltipData configCardData) {
+                return new ClientConfigCardTooltip(configCardData);
             }
             return null;
         });

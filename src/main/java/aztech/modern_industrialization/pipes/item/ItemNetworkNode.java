@@ -25,6 +25,7 @@ package aztech.modern_industrialization.pipes.item;
 
 import static aztech.modern_industrialization.pipes.api.PipeEndpointType.*;
 
+import aztech.modern_industrialization.MIItem;
 import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.api.pipes.item.SpeedUpgrade;
 import aztech.modern_industrialization.items.ConfigCardItem;
@@ -119,7 +120,7 @@ public class ItemNetworkNode extends PipeNetworkNode {
     }
 
     @Override
-    public void addConnection(Level world, BlockPos pos, Direction direction) {
+    public void addConnection(PipeBlockEntity pipe, Player player, Level world, BlockPos pos, Direction direction) {
         // Refuse if it already exists
         for (ItemConnection connection : connections) {
             if (connection.direction == direction) {
@@ -128,7 +129,13 @@ public class ItemNetworkNode extends PipeNetworkNode {
         }
         // Otherwise try to connect
         if (canConnect(world, pos, direction)) {
-            connections.add(new ItemConnection(direction, BLOCK_IN, 0, -10));
+            var conn = new ItemConnection(direction, BLOCK_IN, 0, -10);
+            connections.add(conn);
+            // Apply memory card in the off-hand.
+            var offHandItem = player.getOffhandItem();
+            if (MIItem.CONFIG_CARD.is(offHandItem)) {
+                conn.applyConfig(pipe, offHandItem.getTagElement(ConfigCardItem.TAG_SAVEDCONFIG), player);
+            }
         }
     }
 
@@ -215,7 +222,7 @@ public class ItemNetworkNode extends PipeNetworkNode {
             }
 
             var stack = player.getItemInHand(hand);
-            if (!(stack.getItem() instanceof ConfigCardItem)) {
+            if (!MIItem.CONFIG_CARD.is(stack)) {
                 return false;
             }
 
@@ -298,7 +305,10 @@ public class ItemNetworkNode extends PipeNetworkNode {
             return tag;
         }
 
-        void applyConfig(PipeBlockEntity pipe, CompoundTag tag, Player player) {
+        void applyConfig(PipeBlockEntity pipe, @Nullable CompoundTag tag, Player player) {
+            if (tag == null) {
+                return;
+            }
             var decodedType = decodeConnectionType(tag.getInt("connectionType"));
             boolean remesh = decodedType != type;
             type = decodedType;
@@ -312,19 +322,26 @@ public class ItemNetworkNode extends PipeNetworkNode {
                     stacks[i].setCount(1);
                 }
             }
-            ItemStack requestedUpgrade = ItemStack.of(tag.getCompound("upgrade"));
-            ItemVariant requestedVariant = ItemVariant.of(requestedUpgrade);
 
-            if (requestedVariant.matches(upgradeStack)) {
-                int delta = requestedUpgrade.getCount() - upgradeStack.getCount();
-                if (delta > 0) {
-                    upgradeStack.grow(fetchItems(player, requestedVariant, delta));
-                } else {
-                    player.getInventory().placeItemBackInInventory(upgradeStack.split(-delta));
-                }
+            ItemStack requestedUpgrade = ItemStack.of(tag.getCompound("upgrade"));
+            if (player.getAbilities().instabuild) {
+                // Creative mode -> apply upgrades immediately
+                upgradeStack = requestedUpgrade;
             } else {
-                player.getInventory().placeItemBackInInventory(upgradeStack);
-                upgradeStack = requestedVariant.toStack(fetchItems(player, requestedVariant, requestedUpgrade.getCount()));
+                // Otherwise -> try to grab the upgrades from the player's inventory, and deposit the old one.
+                ItemVariant requestedVariant = ItemVariant.of(requestedUpgrade);
+
+                if (requestedVariant.matches(upgradeStack)) {
+                    int delta = requestedUpgrade.getCount() - upgradeStack.getCount();
+                    if (delta > 0) {
+                        upgradeStack.grow(fetchItems(player, requestedVariant, delta));
+                    } else {
+                        player.getInventory().placeItemBackInInventory(upgradeStack.split(-delta));
+                    }
+                } else {
+                    player.getInventory().placeItemBackInInventory(upgradeStack);
+                    upgradeStack = requestedVariant.toStack(fetchItems(player, requestedVariant, requestedUpgrade.getCount()));
+                }
             }
 
             pipe.setChanged();

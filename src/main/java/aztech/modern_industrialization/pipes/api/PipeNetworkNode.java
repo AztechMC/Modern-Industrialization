@@ -53,7 +53,7 @@ public abstract class PipeNetworkNode {
 
     public abstract void removeConnection(Level world, BlockPos pos, Direction direction);
 
-    public abstract void addConnection(Level world, BlockPos pos, Direction direction);
+    public abstract void addConnection(PipeBlockEntity pipe, Player player, Level world, BlockPos pos, Direction direction);
 
     /**
      * Get the connection screen handler factory, or null if there is not gui for

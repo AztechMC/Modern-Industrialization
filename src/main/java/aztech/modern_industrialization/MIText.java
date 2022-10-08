@@ -68,6 +68,8 @@ public enum MIText {
     ClickUrl("Click to open link"),
     ConfigCardApplied("Applied pipe settings from Config Card"),
     ConfigCardCleared("Cleared Config Card"),
+    ConfigCardConfiguredItems("Configured (%d items)"),
+    ConfigCardConfiguredNoItems("Configured (no items)"),
     ConfigCardSet("Copied pipe settings to Config Card"),
     ConfigurableSlotCapacity("Capacity: %s. Adjust with mouse scroll."),
     ContinuousOperation("Maximum efficiency reached only under continuous operation"),

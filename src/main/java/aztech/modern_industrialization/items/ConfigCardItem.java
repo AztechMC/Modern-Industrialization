@@ -50,7 +50,7 @@ public class ConfigCardItem extends Item {
     public static final String TAG_SAVEDCONFIG = "savedconfig";
 
     public ConfigCardItem(Properties properties) {
-        super(properties);
+        super(properties.stacksTo(1));
     }
 
     @Override

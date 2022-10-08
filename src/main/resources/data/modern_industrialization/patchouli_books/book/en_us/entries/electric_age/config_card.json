@@ -1,0 +1,17 @@
+{
+  "name": "Configuration Card",
+  "category": "modern_industrialization:electric_age",
+  "icon": "modern_industrialization:config_card",
+  "pages": [
+    {
+      "type": "crafting",
+      "recipe": "modern_industrialization:tools/config_card",
+      "text": "The configuration card can be used to copy the configuration of an Item Pipe to another. Use Shift + Right-Clic on the Item Pipe to copy its configuration into the card, then use the card on another Item Pipe to apply the configuration."
+    },
+    {
+      "type": "text",
+      "text": "Holding the configuration in your offhand will automatically apply it to any Item Pipe you place."
+    }
+  ],
+  "sortnum": 110
+}

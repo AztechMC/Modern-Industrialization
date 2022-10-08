@@ -444,6 +444,7 @@
   "block.modern_industrialization.yttrium_block": "Block of Yttrium",
   "book.modern_industrialization.landing_text": "Welcome to Modern Industrialization! To get started, be sure to collect a lot of Copper Ore and Tin Ore.",
   "book.modern_industrialization.subtitle": "Modern Industrialization",
+  "entity.minecraft.villager.industrialist": "Industrialist",
   "item.modern_industrialization.acetylene_bucket": "Acetylene Bucket",
   "item.modern_industrialization.acrylic_acid_bucket": "Acrylic Acid Bucket",
   "item.modern_industrialization.acrylic_glue_bucket": "Acrylic Glue Bucket",

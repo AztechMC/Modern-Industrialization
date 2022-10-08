@@ -41,6 +41,7 @@ import aztech.modern_industrialization.datagen.recipe.SteelUpgradeProvider;
 import aztech.modern_industrialization.datagen.recipe.VanillaCompatRecipesProvider;
 import aztech.modern_industrialization.datagen.tag.MIBlockTagProvider;
 import aztech.modern_industrialization.datagen.tag.MIItemTagProvider;
+import aztech.modern_industrialization.datagen.tag.MIPoiTypeTagProvider;
 import aztech.modern_industrialization.datagen.texture.TexturesProvider;
 import aztech.modern_industrialization.datagen.translation.TranslationProvider;
 import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint;
@@ -73,6 +74,7 @@ public class MIDatagenEntrypoint implements DataGeneratorEntrypoint {
 
         dataGenerator.addProvider(MIBlockTagProvider::new);
         dataGenerator.addProvider(MIItemTagProvider::new);
+        dataGenerator.addProvider(MIPoiTypeTagProvider::new);
 
         dataGenerator.addProvider(TexturesProvider::new);
 

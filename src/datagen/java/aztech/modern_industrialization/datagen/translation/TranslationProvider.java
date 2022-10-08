@@ -67,6 +67,8 @@ public record TranslationProvider(FabricDataGenerator gen) implements DataProvid
         addTranslation("book.modern_industrialization.subtitle",
                 "Modern Industrialization");
 
+        addTranslation("entity.minecraft.villager.industrialist", "Industrialist");
+
         addTranslation("item.modern_industrialization.energy_p2p_tunnel", "EU P2P Tunnel");
         addTranslation("key.modern_industrialization.activate", "Toggle Flight");
         addTranslation("text.autoconfig.modern_industrialization.title", "Modern Industrialization Menu");

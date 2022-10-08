@@ -23,8 +23,10 @@
  */
 package aztech.modern_industrialization.stats;
 
+import aztech.modern_industrialization.compat.ftbquests.FTBQuestsFacade;
 import java.util.IdentityHashMap;
 import java.util.Map;
+import java.util.UUID;
 import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
@@ -35,15 +37,18 @@ import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
 
 public class PlayerStatistics {
-    public static final PlayerStatistics DUMMY = new PlayerStatistics();
+    public static final PlayerStatistics DUMMY = new PlayerStatistics(null);
 
+    private final UUID uuid;
     private final Map<Item, StatisticValue> usedItems = new IdentityHashMap<>(), producedItems = new IdentityHashMap<>();
     private final Map<Fluid, StatisticValue> usedFluids = new IdentityHashMap<>(), producedFluids = new IdentityHashMap<>();
 
-    PlayerStatistics() {
+    PlayerStatistics(UUID uuid) {
+        this.uuid = uuid;
     }
 
-    PlayerStatistics(CompoundTag nbt) {
+    PlayerStatistics(UUID uuid, CompoundTag nbt) {
+        this.uuid = uuid;
         readNbt(Registry.ITEM, usedItems, nbt.getCompound("usedItems"));
         readNbt(Registry.ITEM, producedItems, nbt.getCompound("producedItems"));
         readNbt(Registry.FLUID, usedFluids, nbt.getCompound("usedFluids"));
@@ -64,7 +69,12 @@ public class PlayerStatistics {
     }
 
     public void addProducedItems(ItemLike what, long amount) {
-        producedItems.computeIfAbsent(what.asItem(), i -> new StatisticValue()).add(amount);
+        var item = what.asItem();
+        producedItems.computeIfAbsent(item, i -> new StatisticValue()).add(amount);
+
+        if (uuid != null) {
+            FTBQuestsFacade.INSTANCE.addCompleted(uuid, item, amount);
+        }
     }
 
     public void addUsedFluids(Fluid what, long amount) {

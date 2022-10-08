@@ -38,7 +38,8 @@ public class PlayerStatisticsData extends SavedData {
 
     private PlayerStatisticsData(CompoundTag tag) {
         for (var key : tag.getAllKeys()) {
-            stats.put(UUID.fromString(key), new PlayerStatistics(tag.getCompound(key)));
+            var uuid = UUID.fromString(key);
+            stats.put(uuid, new PlayerStatistics(uuid, tag.getCompound(key)));
         }
     }
 
@@ -47,7 +48,7 @@ public class PlayerStatisticsData extends SavedData {
 
     public PlayerStatistics get(UUID uuid) {
         Objects.requireNonNull(uuid);
-        return stats.computeIfAbsent(uuid, u -> new PlayerStatistics());
+        return stats.computeIfAbsent(uuid, PlayerStatistics::new);
     }
 
     public PlayerStatistics get(Player player) {

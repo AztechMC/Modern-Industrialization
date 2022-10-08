@@ -1,0 +1,27 @@
+{
+  "type": "modern_industrialization:packer",
+  "eu": 8,
+  "duration": 200,
+  "item_inputs": [
+    {
+      "tag": "c:gold_ingots"
+    },
+    {
+      "item": "ae2:logic_processor_press",
+      "probability": 0
+    }
+  ],
+  "item_outputs": [
+    {
+      "item": "ae2:printed_logic_processor"
+    }
+  ],
+  "fabric:load_conditions": [
+    {
+      "condition": "fabric:all_mods_loaded",
+      "values": [
+        "ae2"
+      ]
+    }
+  ]
+}

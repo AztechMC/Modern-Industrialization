@@ -108,6 +108,7 @@ public class MIFluids {
     public static final FluidDefinition TRITIUM = fluid("Tritium", "tritium", 0xffcc1b50, true);
     public static final FluidDefinition UU_MATER = fluid("UU Matter", "uu_matter", 0xffff00bf, FULL_OPACITY, false);
     public static final FluidDefinition VINYL_CHLORIDE = fluid("Vinyl Chloride", "vinyl_chloride", 0xffeda7d9, MEDIUM_OPACITY);
+    public static final FluidDefinition MOLTEN_REDSTONE = fluid("Molten Redstone", "molten_redstone", 0xffac0c04, FULL_OPACITY);
 
     public static FluidDefinition fluid(String englishName, String id, int color, int opacity, FluidTexture texture,  boolean isGas){
         FluidDefinition definition =  new FluidDefinition(englishName, id, color, opacity, texture, isGas);

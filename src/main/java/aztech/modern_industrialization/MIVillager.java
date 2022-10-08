@@ -50,8 +50,6 @@ public class MIVillager {
     public static void init() {
         Registry.register(Registry.VILLAGER_PROFESSION, ID, PROFESSION);
 
-
-
         sellItemsToVillager(1, MIMaterials.LIGNITE_COAL.getPart(MIParts.GEM).asItem(), 15,
                 16, 2);
         buyItemsFromVillager(1, MIMaterials.FIRE_CLAY.getPart(MIParts.INGOT), 2, 6, 2);
@@ -65,13 +63,11 @@ public class MIVillager {
         buyItemsFromVillager(2, MIItem.RUBBER_SHEET, 1, 6, 2);
         sellItemsToVillager(2, MIMaterials.SULFUR.getPart(MIParts.DUST), 4, 16, 2);
 
-
         buyItemsFromVillager(3, MIMaterials.BRONZE.getPart(MIParts.GEAR), 4, 1, 5);
         buyItemsFromVillager(3, MIMaterials.BRONZE.getPart(MIParts.ROTOR), 4, 1, 5);
         buyItemsFromVillager(3, MIMaterials.STEEL.getPart(MIParts.INGOT), 6, 3, 10);
         sellItemsToVillager(3, Registry.ITEM.get(new MIIdentifier("item_pipe")), 4, 20, 10);
         sellItemsToVillager(3, Registry.ITEM.get(new MIIdentifier("fluid_pipe")), 4, 20, 10);
-
 
         buyItemsFromVillager(4, MIMaterials.STEEL.getPart(MIParts.GEAR), 5, 1, 5);
         buyItemsFromVillager(4, MIMaterials.STEEL.getPart(MIParts.PLATE), 6, 3, 10);

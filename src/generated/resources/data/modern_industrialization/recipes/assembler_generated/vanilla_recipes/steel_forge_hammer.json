@@ -4,8 +4,8 @@
   "eu": 8,
   "item_inputs": [
     {
-      "amount": 5,
-      "tag": "c:steel_blocks"
+      "amount": 3,
+      "tag": "c:steel_plates"
     },
     {
       "amount": 4,

@@ -1,13 +1,13 @@
 {
   "type": "minecraft:crafting_shaped",
   "pattern": [
-    "III",
-    "IiI",
+    "___",
+    " i ",
     "iii"
   ],
   "key": {
-    "I": {
-      "tag": "c:steel_blocks"
+    "_": {
+      "tag": "c:steel_plates"
     },
     "i": {
       "tag": "c:steel_ingots"

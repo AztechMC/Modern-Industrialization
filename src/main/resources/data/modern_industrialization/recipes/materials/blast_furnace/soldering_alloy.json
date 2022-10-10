@@ -1,7 +1,7 @@
 {
   "type" : "modern_industrialization:blast_furnace",
   "eu" : 4,
-  "duration" : 600,
+  "duration" : 300,
   "item_inputs" : {
     "tag" : "c:soldering_alloy_dusts",
     "amount" : 1

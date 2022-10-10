@@ -1,14 +1,14 @@
 {
   "type": "modern_industrialization:vacuum_freezer",
   "eu": 16,
-  "duration": 10,
+  "duration": 20,
   "fluid_inputs": [
     {
       "fluid": "modern_industrialization:molten_redstone",
-      "amount": 125
+      "amount": 1000
     }
   ],
   "item_outputs": {
-    "item": "minecraft:redstone"
+    "item": "minecraft:redstone_block"
   }
 }

@@ -384,7 +384,7 @@ final class JsonOrderStep {
                         String apply(String input) {
                             TreeMap<String, Object> jsonMap = GSON.fromJson(input, TreeMap.class);
                             String sortedJson = GSON.toJson(jsonMap);
-                            String prettyPrinted = sortedJson.replace('  "', '    "').replace('\\u0027', '\'');
+                            String prettyPrinted = sortedJson.replace('\\u0027', '\'');
                             return prettyPrinted + "\n";
                         }
                     }

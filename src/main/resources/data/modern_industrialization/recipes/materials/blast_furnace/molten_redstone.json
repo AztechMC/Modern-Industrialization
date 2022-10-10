@@ -1,7 +1,7 @@
 {
   "type": "modern_industrialization:blast_furnace",
   "eu": 4,
-  "duration": 600,
+  "duration": 100,
   "item_inputs": {
     "item": "minecraft:redstone",
     "amount": 1

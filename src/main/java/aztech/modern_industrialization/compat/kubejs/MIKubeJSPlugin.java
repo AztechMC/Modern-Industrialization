@@ -29,8 +29,8 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import dev.latvian.mods.kubejs.KubeJSPlugin;
-import dev.latvian.mods.kubejs.item.ingredient.IngredientPlatformHelper;
 import dev.latvian.mods.kubejs.item.ingredient.IngredientStack;
+import dev.latvian.mods.kubejs.platform.IngredientPlatformHelper;
 import dev.latvian.mods.kubejs.recipe.*;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -80,7 +80,7 @@ public class MIKubeJSPlugin extends KubeJSPlugin {
                     amount = object.get("count").getAsInt();
                 }
 
-                inputItems.put((Ingredient) (Object) IngredientPlatformHelper.get().stack(parseItemInput(element, ""), amount),
+                inputItems.put(IngredientPlatformHelper.get().stack(parseItemInput(element, ""), amount),
                         readProbability(object));
             } else if (element instanceof JsonArray array) {
                 for (var entry : array) {

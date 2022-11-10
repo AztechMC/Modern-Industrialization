@@ -31,7 +31,7 @@ public interface FTBQuestsFacade {
     FTBQuestsFacade INSTANCE = getInstance();
 
     private static FTBQuestsFacade getInstance() {
-        if (FabricLoader.getInstance().isModLoaded("ftbteams")) {
+        if (FabricLoader.getInstance().isModLoaded("ftbquests")) {
             try {
                 return Class.forName("aztech.modern_industrialization.compat.ftbquests.FTBQuestsFacadeImpl")
                         .asSubclass(FTBQuestsFacade.class).getConstructor().newInstance();

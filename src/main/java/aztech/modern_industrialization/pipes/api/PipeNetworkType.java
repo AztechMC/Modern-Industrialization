@@ -24,9 +24,7 @@
 package aztech.modern_industrialization.pipes.api;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 import java.util.function.BiFunction;
 import java.util.function.Supplier;
 import net.minecraft.resources.ResourceLocation;
@@ -44,21 +42,18 @@ public final class PipeNetworkType implements Comparable<PipeNetworkType> {
     private final int serialNumber;
     private final int color;
     private final boolean opensGui;
-    private final PipeRenderer.Factory renderer;
+    Object renderer;
 
     private static Map<ResourceLocation, PipeNetworkType> types = new HashMap<>();
-    private static Set<PipeRenderer.Factory> pipeRenderers = new HashSet<>();
     private static int nextSerialNumber = 0;
 
     private PipeNetworkType(ResourceLocation identifier, BiFunction<Integer, PipeNetworkData, PipeNetwork> networkCtor,
-            Supplier<PipeNetworkNode> nodeCtor,
-            int color, boolean opensGui, PipeRenderer.Factory renderer, int serialNumber) {
+            Supplier<PipeNetworkNode> nodeCtor, int color, boolean opensGui, int serialNumber) {
         this.identifier = identifier;
         this.networkCtor = networkCtor;
         this.nodeCtor = nodeCtor;
         this.color = color;
         this.opensGui = opensGui;
-        this.renderer = renderer;
         this.serialNumber = serialNumber;
     }
 
@@ -91,27 +86,18 @@ public final class PipeNetworkType implements Comparable<PipeNetworkType> {
     }
 
     public static PipeNetworkType register(ResourceLocation identifier, BiFunction<Integer, PipeNetworkData, PipeNetwork> networkCtor,
-            Supplier<PipeNetworkNode> nodeCtor, int color, boolean opensGui, PipeRenderer.Factory renderer) {
+            Supplier<PipeNetworkNode> nodeCtor, int color, boolean opensGui) {
         color |= 0xff000000;
-        PipeNetworkType type = new PipeNetworkType(identifier, networkCtor, nodeCtor, color, opensGui, renderer, nextSerialNumber++);
+        PipeNetworkType type = new PipeNetworkType(identifier, networkCtor, nodeCtor, color, opensGui, nextSerialNumber++);
         PipeNetworkType previousType = types.put(identifier, type);
         if (previousType != null) {
             throw new IllegalArgumentException("Attempting to register another PipeNetworkType with the same identifier.");
         }
-        pipeRenderers.add(renderer);
         return type;
     }
 
     @Override
     public int compareTo(PipeNetworkType o) {
         return Integer.compare(serialNumber, o.serialNumber);
-    }
-
-    public PipeRenderer.Factory getRenderer() {
-        return renderer;
-    }
-
-    public static Set<PipeRenderer.Factory> getRenderers() {
-        return new HashSet<>(pipeRenderers);
     }
 }

@@ -24,6 +24,7 @@
 package aztech.modern_industrialization.materials.part;
 
 import static aztech.modern_industrialization.ModernIndustrialization.STONE_MATERIAL;
+import static aztech.modern_industrialization.materials.property.MaterialProperty.MAIN_PART;
 
 import aztech.modern_industrialization.MIBlock;
 import aztech.modern_industrialization.MIConfig;
@@ -33,10 +34,7 @@ import aztech.modern_industrialization.datagen.tag.TagsToGenerate;
 import aztech.modern_industrialization.definition.BlockDefinition;
 import aztech.modern_industrialization.items.SortOrder;
 import aztech.modern_industrialization.materials.set.MaterialOreSet;
-import aztech.modern_industrialization.textures.TextureHelper;
 import com.google.common.collect.ImmutableList;
-import com.mojang.blaze3d.platform.NativeImage;
-import java.io.IOException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -93,7 +91,7 @@ public class OrePart extends UnbuildablePart<OrePart.OrePartParams> {
         return new RegularPart("", key)
                 .withRegister((partContext, part, itemPath, itemId, itemTag) -> {
 
-                    Part mainPart = partContext.getMainPart();
+                    Part mainPart = partContext.get(MAIN_PART);
                     String loot;
                     if (mainPart.equals(MIParts.INGOT)) {
                         loot = partContext.getMaterialPart(MIParts.RAW_METAL).getItemId();
@@ -163,35 +161,9 @@ public class OrePart extends UnbuildablePart<OrePart.OrePartParams> {
                         }
                     }
 
-                }).withTextureRegister((mtm, partContext, part, itemPath) -> {
-                    String template = String.format("modern_industrialization:textures/materialsets/ores/%s.png", oreParams.set.name);
-                    try {
-
-                        String from =
-
-                                switch (oreParams.set) {
-                        case IRON -> deepslate ? "deepslate_iron_ore" : "iron_ore";
-                        case COPPER -> deepslate ? "deepslate_copper_ore" : "copper_ore";
-                        case LAPIS -> deepslate ? "deepslate_lapis_ore" : "lapis_ore";
-                        case REDSTONE -> deepslate ? "deepslate" : "redstone_ore";
-                        case DIAMOND -> deepslate ? "deepslate" : "diamond_ore";
-                        case GOLD -> deepslate ? "deepslate_gold_ore" : "gold_ore";
-                        case EMERALD -> deepslate ? "deepslate_emerald_ore" : "emerald_ore";
-                        case COAL -> deepslate ? "deepslate_coal_ore" : "coal_ore";
-                        default -> deepslate ? "deepslate" : "stone";
-                        };
-
-                        NativeImage image = mtm.getAssetAsTexture(String.format("minecraft:textures/block/%s.png", from));
-                        NativeImage top = mtm.getAssetAsTexture(template);
-                        TextureHelper.colorize(top, partContext.getColoramp());
-                        String texturePath = String.format("modern_industrialization:textures/block/%s.png", itemPath);
-                        mtm.addTexture(texturePath, TextureHelper.blend(image, top), true);
-                        top.close();
-                        image.close();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }).withCustomFormattablePath((deepslate ? "deepslate_" : "") + "%s_ore", "%s_ores");
+                })
+                .withTexture(new TextureGenParams.Ore(deepslate, oreParams.set))
+                .withCustomFormattablePath((deepslate ? "deepslate_" : "") + "%s_ore", "%s_ores");
     }
 
     public List<BuildablePart> ofAll(OrePartParams params) {

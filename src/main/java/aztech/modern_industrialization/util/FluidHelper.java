@@ -24,24 +24,18 @@
 package aztech.modern_industrialization.util;
 
 import aztech.modern_industrialization.MIText;
+import aztech.modern_industrialization.proxy.CommonProxy;
 import java.util.ArrayList;
 import java.util.List;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.transfer.v1.client.fluid.FluidVariantRendering;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariantAttributes;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextColor;
-import net.minecraft.world.item.TooltipFlag;
 
 public class FluidHelper {
-
     public static Component getFluidName(FluidVariant fluid, boolean grayIfEmpty) {
         if (fluid.isBlank()) {
             Style style = grayIfEmpty ? Style.EMPTY.withColor(TextColor.fromRgb(0xa9a9a9)).withItalic(false) : Style.EMPTY;
@@ -51,30 +45,8 @@ public class FluidHelper {
         }
     }
 
-    public static List<Component> getTooltip(FluidVariant fluid, boolean grayIfEmpty) {
-
-        if (fluid.isBlank()) {
-            ArrayList<Component> list = new ArrayList();
-            list.add(getFluidName(fluid, grayIfEmpty));
-            return list;
-        }
-        return FluidVariantRendering.getTooltip(fluid,
-                Minecraft.getInstance().options.advancedItemTooltips ? TooltipFlag.Default.ADVANCED : TooltipFlag.Default.NORMAL);
-    }
-
-    public static List<Component> getTooltipForFluidStorage(FluidVariant fluid, long amount, long capacity, boolean grayIfEmpty) {
-        List<Component> tooltip = FluidHelper.getTooltip(fluid, grayIfEmpty);
-        tooltip.add(FluidHelper.getFluidAmount(amount, capacity));
-        return tooltip;
-    }
-
-    public static List<Component> getTooltipForFluidStorage(FluidVariant fluid, long amount, long capacity) {
-        return getTooltipForFluidStorage(fluid, amount, capacity, true);
-    }
-
-    @Environment(EnvType.CLIENT)
     public static MutableComponent getFluidAmount(long amount, long capacity) {
-        if (capacity < 100 * FluidConstants.BUCKET || Screen.hasShiftDown()) {
+        if (capacity < 100 * FluidConstants.BUCKET || CommonProxy.INSTANCE.hasShiftDown()) {
             String text = FluidTextHelper.getUnicodeMillibuckets(amount, false) + " / " + capacity / 81;
             return Component.literal(text + " mB");
         } else {
@@ -85,9 +57,8 @@ public class FluidHelper {
 
     }
 
-    @Environment(EnvType.CLIENT)
     public static MutableComponent getFluidAmount(long amount) {
-        if (amount < 100 * FluidConstants.BUCKET || Screen.hasShiftDown()) {
+        if (amount < 100 * FluidConstants.BUCKET || CommonProxy.INSTANCE.hasShiftDown()) {
             String text = FluidTextHelper.getUnicodeMillibuckets(amount, false);
             return Component.literal(text + " mB");
         } else {
@@ -113,5 +84,25 @@ public class FluidHelper {
         } else {
             return color;
         }
+    }
+
+    public static List<Component> getTooltip(FluidVariant fluid, boolean grayIfEmpty) {
+
+        if (fluid.isBlank()) {
+            ArrayList<Component> list = new ArrayList();
+            list.add(getFluidName(fluid, grayIfEmpty));
+            return list;
+        }
+        return CommonProxy.INSTANCE.getFluidTooltip(fluid);
+    }
+
+    public static List<Component> getTooltipForFluidStorage(FluidVariant fluid, long amount, long capacity, boolean grayIfEmpty) {
+        List<Component> tooltip = getTooltip(fluid, grayIfEmpty);
+        tooltip.add(getFluidAmount(amount, capacity));
+        return tooltip;
+    }
+
+    public static List<Component> getTooltipForFluidStorage(FluidVariant fluid, long amount, long capacity) {
+        return getTooltipForFluidStorage(fluid, amount, capacity, true);
     }
 }

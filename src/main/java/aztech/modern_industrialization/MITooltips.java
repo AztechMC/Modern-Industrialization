@@ -34,6 +34,7 @@ import aztech.modern_industrialization.nuclear.NuclearAbsorbable;
 import aztech.modern_industrialization.nuclear.NuclearFuel;
 import aztech.modern_industrialization.pipes.MIPipes;
 import aztech.modern_industrialization.pipes.impl.PipeItem;
+import aztech.modern_industrialization.proxy.CommonProxy;
 import aztech.modern_industrialization.util.TextHelper;
 import com.google.common.base.Preconditions;
 import java.util.*;
@@ -43,7 +44,6 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariantAttributes;
-import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.Registry;
 import net.minecraft.network.chat.*;
 import net.minecraft.world.item.*;
@@ -90,7 +90,7 @@ public class MITooltips {
             boolean hasPrintRequiredShift = false;
             for (var tooltip : TOOLTIPS) {
                 if (tooltip.addTooltip.test(item)) {
-                    if (!tooltip.requiresShift || Screen.hasShiftDown()) {
+                    if (!tooltip.requiresShift || CommonProxy.INSTANCE.hasShiftDown()) {
                         lines.addAll(tooltip.tooltipLines.apply(stack));
                     } else if (tooltip.requiresShift && !hasPrintRequiredShift) {
                         lines.add(MIText.TooltipsShiftRequired.text().setStyle(DEFAULT_STYLE));
@@ -190,8 +190,8 @@ public class MITooltips {
 
     public static final TooltipAttachment MACHINE_TOOLTIPS = TooltipAttachment.ofMultiline(
             (item) -> item instanceof BlockItem blockItem && blockItem.getBlock() instanceof MachineBlock machineBlock &&
-                    !machineBlock.BLOCK_ENTITY_INSTANCE.getTooltips().isEmpty(),
-            (itemStack) -> (((MachineBlock) ((BlockItem) itemStack.getItem()).getBlock()).BLOCK_ENTITY_INSTANCE).getTooltips());
+                    !machineBlock.getBlockEntityInstance().getTooltips().isEmpty(),
+            (itemStack) -> (((MachineBlock) ((BlockItem) itemStack.getItem()).getBlock()).getBlockEntityInstance()).getTooltips());
 
     public static final TooltipAttachment NUCLEAR = TooltipAttachment.ofMultiline(
             item -> item.asItem() instanceof NuclearAbsorbable,

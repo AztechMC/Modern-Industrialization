@@ -23,6 +23,8 @@
  */
 package aztech.modern_industrialization.materials.recipe.builder;
 
+import static aztech.modern_industrialization.materials.property.MaterialProperty.HARDNESS;
+
 import aztech.modern_industrialization.machines.init.MIMachineRecipeTypes;
 import aztech.modern_industrialization.machines.recipe.MachineRecipeType;
 import aztech.modern_industrialization.materials.MaterialBuilder;
@@ -108,7 +110,7 @@ public class ShapedRecipeBuilder implements MaterialRecipeBuilder {
     }
 
     public ShapedRecipeBuilder exportToMachine(MachineRecipeType machine) {
-        return exportToMachine(machine, 2, (int) (200 * context.getHardness().timeFactor), 1);
+        return exportToMachine(machine, 2, (int) (200 * context.get(HARDNESS).timeFactor), 1);
     }
 
     public boolean isCanceled() {

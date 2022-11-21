@@ -29,23 +29,19 @@ import aztech.modern_industrialization.MIBlock;
 import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.compat.megane.holder.EnergyListComponentHolder;
-import aztech.modern_industrialization.compat.rei.machines.ReiMachineRecipes;
 import aztech.modern_industrialization.machines.BEP;
 import aztech.modern_industrialization.machines.components.*;
-import aztech.modern_industrialization.machines.guicomponents.ProgressBar;
 import aztech.modern_industrialization.machines.guicomponents.ShapeSelection;
 import aztech.modern_industrialization.machines.guicomponents.SlotPanel;
 import aztech.modern_industrialization.machines.init.MIMachineRecipeTypes;
 import aztech.modern_industrialization.machines.init.MachineTier;
-import aztech.modern_industrialization.machines.init.MultiblockMachines;
 import aztech.modern_industrialization.machines.models.MachineCasings;
 import aztech.modern_industrialization.machines.multiblocks.*;
 import aztech.modern_industrialization.machines.recipe.MachineRecipe;
 import aztech.modern_industrialization.machines.recipe.MachineRecipeType;
+import aztech.modern_industrialization.proxy.CommonProxy;
 import aztech.modern_industrialization.util.Simulation;
 import java.util.*;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -164,7 +160,7 @@ public class ElectricBlastFurnaceBlockEntity extends AbstractCraftingMultiblockB
 
     public static void registerReiShapes() {
         for (ShapeTemplate shapeTemplate : shapeTemplates) {
-            ReiMachineRecipes.registerMultiblockShape("electric_blast_furnace", shapeTemplate);
+            CommonProxy.INSTANCE.registerReiMultiblockShape("electric_blast_furnace", shapeTemplate);
         }
     }
 
@@ -194,26 +190,6 @@ public class ElectricBlastFurnaceBlockEntity extends AbstractCraftingMultiblockB
             ShapeTemplate ebfShape = new ShapeTemplate.Builder(MachineCasings.HEATPROOF).add3by3(0, invarCasings, false, ebfHatches)
                     .add3by3(1, coilsBlocks, true, null).add3by3(2, coilsBlocks, true, null).add3by3(3, invarCasings, false, ebfHatches).build();
             shapeTemplates[i] = ebfShape;
-        }
-
-        // Register REI categories
-        for (int i = 0; i < coils.size(); ++i) {
-            long previousMax = i == 0 ? 4 : coilsMaxBaseEU.get(coils.get(i - 1));
-            long currentMax = coilsMaxBaseEU.get(coils.get(i));
-            List<String> workstations = new ArrayList<>();
-            workstations.add("electric_blast_furnace");
-            for (int j = i; j < coils.size(); ++j) {
-                workstations.add(coilNames.get(j));
-            }
-
-            if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
-                new MultiblockMachines.Rei("EBF" + coilEnglishNames.get(i), "electric_blast_furnace_" + i, MIMachineRecipeTypes.BLAST_FURNACE,
-                        new ProgressBar.Parameters(77, 33, "arrow"))
-                                .items(inputs -> inputs.addSlots(56, 35, 2, 1), outputs -> outputs.addSlot(102, 35))
-                                .fluids(fluids -> fluids.addSlot(36, 35), outputs -> outputs.addSlot(122, 35))
-                                .extraTest(recipe -> previousMax < recipe.eu && recipe.eu <= currentMax)
-                                .workstations(workstations.toArray(new String[0])).register();
-            }
         }
     }
 }

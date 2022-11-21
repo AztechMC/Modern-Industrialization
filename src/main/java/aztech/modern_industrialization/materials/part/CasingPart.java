@@ -25,8 +25,6 @@ package aztech.modern_industrialization.materials.part;
 
 import aztech.modern_industrialization.items.SortOrder;
 import aztech.modern_industrialization.materials.MaterialBuilder;
-import aztech.modern_industrialization.textures.MITextures;
-import com.mojang.blaze3d.platform.NativeImage;
 
 public class CasingPart extends Part implements BuildablePart {
 
@@ -43,23 +41,8 @@ public class CasingPart extends Part implements BuildablePart {
     }
 
     public BuildablePart of(String englishNameFormatter, String path, float resistance) {
-        RegularPart regPart = new RegularPart(englishNameFormatter, this.key).asBlock(SortOrder.CASINGS, 5, resistance, 1)
-                .withTextureRegister((mtm, partContext, part, itemPath) -> {
-                    try {
-                        NativeImage image = MITextures.generateTexture(mtm, part.key, partContext.getMaterialSet(), partContext.getColoramp());
-
-                        if (part.equals(MIParts.MACHINE_CASING)) {
-                            MITextures.casingFromTexture(mtm, partContext.getMaterialName(), image);
-                        } else {
-                            MITextures.casingFromTexture(mtm, itemPath, image);
-                        }
-                        MITextures.appendTexture(mtm, image, itemPath, true);
-                        image.close();
-
-                    } catch (Throwable throwable) {
-                        MITextures.logTextureGenerationError(throwable, itemPath, partContext.getMaterialSet(), part.key);
-                    }
-                });
+        RegularPart regPart = new RegularPart(englishNameFormatter, this.key)
+                .asBlock(SortOrder.CASINGS, new TextureGenParams.CasingBlock(this.equals(MIParts.MACHINE_CASING)), 5, resistance, 1);
         if (path != null) {
             return regPart.withCustomPath(path, path);
         }

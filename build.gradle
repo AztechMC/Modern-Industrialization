@@ -260,6 +260,10 @@ processResources {
     }
 }
 
+loom {
+    splitEnvironmentSourceSets()
+}
+
 sourceSets {
     main {
         java {
@@ -271,15 +275,21 @@ sourceSets {
         }
     }
     datagen {
-        compileClasspath += main.compileClasspath
-        runtimeClasspath += main.runtimeClasspath
-        compileClasspath += main.output
-        runtimeClasspath += main.output
+        compileClasspath += client.compileClasspath
+        runtimeClasspath += client.runtimeClasspath
+        compileClasspath += client.output
+        runtimeClasspath += client.output
     }
 }
 
 loom {
     accessWidenerPath = file("src/main/resources/modern_industrialization.accesswidener")
+    mods {
+        moderndynamics {
+            sourceSet sourceSets.main
+            sourceSet sourceSets.client
+        }
+    }
     runs {
         autoTestServer {
             server()
@@ -287,7 +297,6 @@ loom {
             vmArg "-Dmodern_industrialization.autoTest"
 
             ideConfigGenerated = true
-            source sourceSets.main
         }
         datagenClient {
             client()

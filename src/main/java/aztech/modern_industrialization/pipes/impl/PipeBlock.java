@@ -28,8 +28,6 @@ import aztech.modern_industrialization.pipes.api.PipeNetworkNode;
 import aztech.modern_industrialization.util.MobSpawning;
 import java.util.ArrayList;
 import java.util.List;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.sounds.SoundEvent;
@@ -39,7 +37,6 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
@@ -123,6 +120,11 @@ public class PipeBlock extends Block implements EntityBlock, SimpleWaterloggedBl
     }
 
     @Nullable
+    public static PipeVoxelShape getHitPart(Level level, BlockPos pos, BlockHitResult hit) {
+        return level.getBlockEntity(pos) instanceof PipeBlockEntity pipe ? getHitPart(pipe, hit) : null;
+    }
+
+    @Nullable
     private static PipeVoxelShape getHitPart(PipeBlockEntity pipe, BlockHitResult hit) {
         for (PipeVoxelShape partShape : pipe.getPartShapes()) {
             if (isPartHit(partShape.shape, hit)) {
@@ -130,38 +132,6 @@ public class PipeBlock extends Block implements EntityBlock, SimpleWaterloggedBl
             }
         }
         return null;
-    }
-
-    @Nullable
-    private static PipeVoxelShape getTargetedPart(BlockGetter blockView, BlockPos pos) {
-        if (!(blockView instanceof Level world) || !world.isClientSide()) {
-            return null;
-        }
-        PipeVoxelShape currentBest = null;
-        // Not fond of the use of client-side classes...
-        if (world.getBlockEntity(pos) instanceof PipeBlockEntity pipe) {
-            double smallestDistance = 10000;
-
-            for (PipeVoxelShape pipePartShape : pipe.getPartShapes()) {
-                VoxelShape partShape = pipePartShape.shape;
-                float tickDelta = Minecraft.getInstance().getFrameTime();
-                LocalPlayer player = Minecraft.getInstance().player;
-                Vec3 vec3d = player.getEyePosition(tickDelta);
-                Vec3 vec3d2 = player.getViewVector(tickDelta);
-                double maxDistance = Minecraft.getInstance().gameMode.getPickRange();
-                Vec3 vec3d3 = vec3d.add(vec3d2.x * maxDistance, vec3d2.y * maxDistance, vec3d2.z * maxDistance);
-                BlockHitResult hit = partShape.clip(vec3d, vec3d3, pos);
-                if (hit != null && isPartHit(partShape, hit)) {
-                    double dist = hit.getLocation().distanceTo(vec3d);
-
-                    if (dist < smallestDistance) {
-                        smallestDistance = dist;
-                        currentBest = pipePartShape;
-                    }
-                }
-            }
-        }
-        return currentBest;
     }
 
     static boolean useWrench(PipeBlockEntity pipe, Player player, InteractionHand hand, BlockHitResult hit) {
@@ -245,12 +215,6 @@ public class PipeBlock extends Block implements EntityBlock, SimpleWaterloggedBl
         return droppedStacks;
     }
 
-    @Override
-    public ItemStack getCloneItemStack(BlockGetter world, BlockPos pos, BlockState state) {
-        var targetedPart = getTargetedPart(world, pos);
-        return new ItemStack(targetedPart == null ? Items.AIR : MIPipes.INSTANCE.getPipeItem(targetedPart.type));
-    }
-
     @SuppressWarnings("deprecation")
     @Override
     public void neighborChanged(BlockState state, Level world, BlockPos pos, Block block, BlockPos fromPos, boolean notify) {
@@ -273,38 +237,7 @@ public class PipeBlock extends Block implements EntityBlock, SimpleWaterloggedBl
 
     @SuppressWarnings("deprecation")
     @Override
-    public VoxelShape getVisualShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext context) {
-        return getCollisionShape(state, world, pos, context);
-    }
-
-    @SuppressWarnings("deprecation")
-    @Override
     public VoxelShape getShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext context) {
-        var targetedPart = getTargetedPart(world, pos);
-        return targetedPart != null ? targetedPart.shape : PipeBlockEntity.DEFAULT_SHAPE;
-    }
-
-    @SuppressWarnings("deprecation")
-    @Override
-    public VoxelShape getInteractionShape(BlockState state, BlockGetter world, BlockPos pos) {
-        return getCollisionShape(state, world, pos, null);
-    }
-
-    @SuppressWarnings("deprecation")
-    @Override
-    public VoxelShape getOcclusionShape(BlockState state, BlockGetter world, BlockPos pos) {
-        return getCollisionShape(state, world, pos, null);
-    }
-
-    @SuppressWarnings("deprecation")
-    @Override
-    public VoxelShape getBlockSupportShape(BlockState state, BlockGetter world, BlockPos pos) {
-        return getCollisionShape(state, world, pos, null);
-    }
-
-    @SuppressWarnings("deprecation")
-    @Override
-    public VoxelShape getCollisionShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext context) {
         BlockEntity be = world.getBlockEntity(pos);
         if (!(be instanceof PipeBlockEntity entity))
             return PipeBlockEntity.DEFAULT_SHAPE; // Because Mojang fucked up

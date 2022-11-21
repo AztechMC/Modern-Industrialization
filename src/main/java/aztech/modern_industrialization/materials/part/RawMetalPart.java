@@ -28,9 +28,6 @@ import static aztech.modern_industrialization.materials.part.MIParts.RAW_METAL_B
 
 import aztech.modern_industrialization.items.SortOrder;
 import aztech.modern_industrialization.materials.set.MaterialRawSet;
-import aztech.modern_industrialization.textures.TextureHelper;
-import com.mojang.blaze3d.platform.NativeImage;
-import java.io.IOException;
 import java.util.List;
 
 public class RawMetalPart extends UnbuildablePart<MaterialRawSet> {
@@ -47,33 +44,14 @@ public class RawMetalPart extends UnbuildablePart<MaterialRawSet> {
         RegularPart part = new RegularPart(isBlock ? "Block of Raw %s" : "Raw %s", key);
 
         if (isBlock) {
-            part = part.asBlock(SortOrder.RAW_ORE_BLOCKS, 5, 6, 1);
-        }
-
-        part = part.withTextureRegister((mtm, partContext, part1, itemPath) -> {
-            String template = String.format("modern_industrialization:textures/materialsets/raw/%s.png", set.name + (isBlock ? "_block" : ""));
-            try {
-                NativeImage image = mtm.getAssetAsTexture(template);
-                TextureHelper.colorize(image, partContext.getColoramp());
-                String texturePath;
-                if (isBlock) {
-                    texturePath = String.format("modern_industrialization:textures/block/%s.png", itemPath);
-                } else {
-                    texturePath = String.format("modern_industrialization:textures/item/%s.png", itemPath);
-                }
-                mtm.addTexture(texturePath, image);
-                image.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        });
-
-        if (isBlock) {
-            return part.withCustomFormattablePath("raw_%s_block", "raw_%s_blocks");
+            return part
+                    .asBlock(SortOrder.RAW_ORE_BLOCKS, new TextureGenParams.RawMetal(true, set), 5, 6, 1)
+                    .withCustomFormattablePath("raw_%s_block", "raw_%s_blocks");
         } else {
-            return part.withCustomFormattablePath("raw_%s", "raw_%s_ores");
+            return part
+                    .withTexture(new TextureGenParams.RawMetal(false, set))
+                    .withCustomFormattablePath("raw_%s", "raw_%s_ores");
         }
-
     }
 
     public List<BuildablePart> ofAll(MaterialRawSet set) {

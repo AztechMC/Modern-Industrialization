@@ -26,8 +26,6 @@ package aztech.modern_industrialization.machines.models;
 import aztech.modern_industrialization.api.energy.CableTier;
 import java.util.HashMap;
 import java.util.Map;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.loader.api.FabricLoader;
 
 public class MachineCasings {
 
@@ -75,10 +73,6 @@ public class MachineCasings {
     private static MachineCasing create(String name) {
         MachineCasing casing = new MachineCasing(name);
         registeredCasings.put(name, casing);
-        // Load model on the client only
-        if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
-            casing.mcm = new MachineCasingModel(name);
-        }
         return casing;
     }
 

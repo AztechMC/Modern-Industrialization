@@ -23,19 +23,10 @@
  */
 package aztech.modern_industrialization.machines.guicomponents;
 
-import aztech.modern_industrialization.MIIdentifier;
-import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.machines.GuiComponents;
-import aztech.modern_industrialization.machines.gui.ClientComponentRenderer;
 import aztech.modern_industrialization.machines.gui.GuiComponent;
-import aztech.modern_industrialization.machines.gui.MachineScreen;
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.function.Supplier;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
 public class TemperatureBar {
@@ -74,57 +65,6 @@ public class TemperatureBar {
         @Override
         public ResourceLocation getId() {
             return GuiComponents.TEMPERATURE_BAR;
-        }
-    }
-
-    public static class Client implements GuiComponent.Client {
-        public final Parameters params;
-        public int temperature;
-
-        public Client(FriendlyByteBuf buf) {
-            this.params = new Parameters(buf.readInt(), buf.readInt(), buf.readInt());
-            readCurrentData(buf);
-        }
-
-        @Override
-        public void readCurrentData(FriendlyByteBuf buf) {
-            this.temperature = buf.readInt();
-        }
-
-        @Override
-        public ClientComponentRenderer createRenderer(MachineScreen machineScreen) {
-            return new Renderer();
-        }
-
-        public class Renderer implements ClientComponentRenderer {
-
-            private final MIIdentifier TEXTURE = new MIIdentifier("textures/gui/efficiency_bar.png");
-            private final int WIDTH = 100, HEIGHT = 2;
-
-            @Override
-            public void renderBackground(net.minecraft.client.gui.GuiComponent helper, PoseStack matrices, int x, int y) {
-                RenderSystem.setShaderTexture(0, TEXTURE);
-                // background
-                net.minecraft.client.gui.GuiComponent.blit(matrices, x + params.renderX - 1, y + params.renderY - 1, helper.getBlitOffset(), 0, 2,
-                        WIDTH + 2, HEIGHT + 2,
-                        102, 6);
-                int barPixels = (int) ((float) temperature / params.temperatureMax * WIDTH);
-                net.minecraft.client.gui.GuiComponent.blit(matrices, x + params.renderX, y + params.renderY, helper.getBlitOffset(), 0, 0, barPixels,
-                        HEIGHT, 102, 6);
-                RenderSystem.setShaderTexture(0, MachineScreen.SLOT_ATLAS);
-                helper.blit(matrices, x + params.renderX - 22, y + params.renderY + HEIGHT / 2 - 10, 144, 0, 20, 20);
-
-            }
-
-            @Override
-            public void renderTooltip(MachineScreen screen, PoseStack matrices, int x, int y, int cursorX, int cursorY) {
-                if (aztech.modern_industrialization.util.RenderHelper.isPointWithinRectangle(params.renderX, params.renderY, WIDTH, HEIGHT,
-                        cursorX - x, cursorY - y)) {
-                    List<Component> tooltip = new ArrayList<>();
-                    tooltip.add(MIText.Temperature.text(temperature));
-                    screen.renderComponentTooltip(matrices, tooltip, cursorX, cursorY);
-                }
-            }
         }
     }
 

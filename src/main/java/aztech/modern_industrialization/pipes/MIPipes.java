@@ -43,18 +43,15 @@ import aztech.modern_industrialization.pipes.item.ItemNetwork;
 import aztech.modern_industrialization.pipes.item.ItemNetworkData;
 import aztech.modern_industrialization.pipes.item.ItemNetworkNode;
 import aztech.modern_industrialization.pipes.item.ItemPipeScreenHandler;
+import aztech.modern_industrialization.proxy.CommonProxy;
 import java.util.*;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 import net.fabricmc.fabric.api.screenhandler.v1.ScreenHandlerRegistry;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -76,33 +73,6 @@ public class MIPipes {
 
     public static final Set<ResourceLocation> PIPE_MODEL_NAMES = new HashSet<>();
 
-    // TODO: move this to MIPipesClient ?
-    private static PipeRenderer.Factory makeRenderer(List<String> sprites, boolean innerQuads) {
-        return new PipeRenderer.Factory() {
-            @Override
-            public Collection<net.minecraft.client.resources.model.Material> getSpriteDependencies() {
-                return sprites.stream().map(
-                        n -> new net.minecraft.client.resources.model.Material(InventoryMenu.BLOCK_ATLAS, new MIIdentifier("block/pipes/" + n)))
-                        .collect(Collectors.toList());
-            }
-
-            @Override
-            public PipeRenderer create(Function<net.minecraft.client.resources.model.Material, TextureAtlasSprite> textureGetter) {
-                net.minecraft.client.resources.model.Material[] ids = sprites.stream()
-                        .map(n -> new net.minecraft.client.resources.model.Material(InventoryMenu.BLOCK_ATLAS,
-                                new MIIdentifier("block/pipes/" + n)))
-                        .toArray(net.minecraft.client.resources.model.Material[]::new);
-                return new PipeMeshCache(textureGetter, ids, innerQuads);
-            }
-        };
-    }
-
-    private static final PipeRenderer.Factory ITEM_RENDERER = makeRenderer(Arrays.asList("item", "item_item", "item_in", "item_in_out", "item_out"),
-            false);
-    private static final PipeRenderer.Factory FLUID_RENDERER = makeRenderer(
-            Arrays.asList("fluid", "fluid_item", "fluid_in", "fluid_in_out", "fluid_out"), true);
-    private static final PipeRenderer.Factory ELECTRICITY_RENDERER = makeRenderer(Arrays.asList("electricity", "electricity_blocks"), false);
-
     public void setup() {
         Registry.register(Registry.BLOCK, new MIIdentifier("pipe"), BLOCK_PIPE);
         BLOCK_ENTITY_TYPE_PIPE = Registry.register(Registry.BLOCK_ENTITY_TYPE, new MIIdentifier("pipe"),
@@ -122,7 +92,7 @@ public class MIPipes {
     private void registerFluidPipeType(PipeColor color) {
         String pipeId = color.prefix + "fluid_pipe";
         PipeNetworkType type = PipeNetworkType.register(new MIIdentifier(pipeId), (id, data) -> new FluidNetwork(id, data, 81000),
-                FluidNetworkNode::new, color.color, true, FLUID_RENDERER);
+                FluidNetworkNode::new, color.color, true);
         var itemDef = MIItem.itemNoModel(color.englishNamePrefix + "Fluid Pipe", pipeId,
                 prop -> new PipeItem(prop, type, new FluidNetworkData(FluidVariant.blank())), SortOrder.PIPES);
         var item = itemDef.asItem();
@@ -133,8 +103,7 @@ public class MIPipes {
 
     private void registerItemPipeType(PipeColor color) {
         String pipeId = color.prefix + "item_pipe";
-        PipeNetworkType type = PipeNetworkType.register(new MIIdentifier(pipeId), ItemNetwork::new, ItemNetworkNode::new, color.color, true,
-                ITEM_RENDERER);
+        PipeNetworkType type = PipeNetworkType.register(new MIIdentifier(pipeId), ItemNetwork::new, ItemNetworkNode::new, color.color, true);
         var itemDef = MIItem.itemNoModel(color.englishNamePrefix + "Item Pipe", pipeId, prop -> new PipeItem(prop, type, new ItemNetworkData()),
                 SortOrder.PIPES);
         var item = itemDef.asItem();
@@ -146,7 +115,7 @@ public class MIPipes {
     public void registerCableType(String englishName, String name, int color, CableTier tier) {
         String cableId = name + "_cable";
         PipeNetworkType type = PipeNetworkType.register(new MIIdentifier(cableId), (id, data) -> new ElectricityNetwork(id, data, tier),
-                ElectricityNetworkNode::new, color, false, ELECTRICITY_RENDERER);
+                ElectricityNetworkNode::new, color, false);
         var itemDef = MIItem.itemNoModel(englishName, cableId, prop -> new PipeItem(prop, type, new ElectricityNetworkData()),
                 SortOrder.CABLES.and(tier));
         var item = itemDef.asItem();
@@ -160,9 +129,9 @@ public class MIPipes {
     }
 
     public void registerPackets() {
-        ServerPlayNetworking.registerGlobalReceiver(PipePackets.SET_ITEM_WHITELIST, PipePackets.ON_SET_ITEM_WHITELIST::handleC2S);
-        ServerPlayNetworking.registerGlobalReceiver(PipePackets.SET_CONNECTION_TYPE, PipePackets.ON_SET_CONNECTION_TYPE::handleC2S);
+        CommonProxy.INSTANCE.registerUnsidedPacket(PipePackets.SET_ITEM_WHITELIST, PipePackets.ON_SET_ITEM_WHITELIST);
+        CommonProxy.INSTANCE.registerUnsidedPacket(PipePackets.SET_CONNECTION_TYPE, PipePackets.ON_SET_CONNECTION_TYPE);
         ServerPlayNetworking.registerGlobalReceiver(PipePackets.INCREMENT_PRIORITY, PipePackets.ON_INCREMENT_PRIORITY);
-        ServerPlayNetworking.registerGlobalReceiver(PipePackets.SET_NETWORK_FLUID, PipePackets.ON_SET_NETWORK_FLUID::handleC2S);
+        CommonProxy.INSTANCE.registerUnsidedPacket(PipePackets.SET_NETWORK_FLUID, PipePackets.ON_SET_NETWORK_FLUID);
     }
 }

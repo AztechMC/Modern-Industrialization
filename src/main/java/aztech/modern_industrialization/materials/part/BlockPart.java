@@ -25,9 +25,6 @@ package aztech.modern_industrialization.materials.part;
 
 import aztech.modern_industrialization.items.SortOrder;
 import aztech.modern_industrialization.materials.set.MaterialBlockSet;
-import aztech.modern_industrialization.textures.TextureHelper;
-import com.mojang.blaze3d.platform.NativeImage;
-import java.io.IOException;
 
 public class BlockPart extends UnbuildablePart<MaterialBlockSet> {
 
@@ -37,17 +34,6 @@ public class BlockPart extends UnbuildablePart<MaterialBlockSet> {
 
     @Override
     public BuildablePart of(MaterialBlockSet set) {
-        return new RegularPart("Block of %s", this.key).asBlock(SortOrder.STORAGE_BLOCKS).withTextureRegister((mtm, partContext, part, itemPath) -> {
-            String template = String.format("modern_industrialization:textures/materialsets/blocks/%s.png", set.name);
-            try {
-                NativeImage image = mtm.getAssetAsTexture(template);
-                TextureHelper.colorize(image, partContext.getColoramp());
-                String texturePath = String.format("modern_industrialization:textures/block/%s.png", itemPath);
-                mtm.addTexture(texturePath, image);
-                image.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        });
+        return new RegularPart("Block of %s", this.key).asBlock(SortOrder.STORAGE_BLOCKS, new TextureGenParams.Block(set));
     }
 }

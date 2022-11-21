@@ -24,7 +24,6 @@
 package aztech.modern_industrialization.util;
 
 import aztech.modern_industrialization.MIText;
-import aztech.modern_industrialization.textures.TextureHelper;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -44,15 +43,6 @@ public class TextHelper {
 
     public static final Style RED = Style.EMPTY.withColor(ChatFormatting.RED);
     public static final Style GREEN = Style.EMPTY.withColor(ChatFormatting.GREEN);
-
-    public static int getOverlayTextColor(int rgb) {
-        double luminance = TextureHelper.getLuminance(rgb);
-        if (luminance < 0.5) {
-            return 0xFFFFFF;
-        } else {
-            return 0x000000;
-        }
-    }
 
     public record Amount(String digit, String unit) {
     }

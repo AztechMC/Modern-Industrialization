@@ -24,75 +24,15 @@
 package aztech.modern_industrialization.inventory;
 
 import aztech.modern_industrialization.api.ReiDraggable;
-import aztech.modern_industrialization.inventory.ConfigurableFluidStack.ConfigurableFluidSlot;
 import aztech.modern_industrialization.inventory.ConfigurableItemStack.ConfigurableItemSlot;
 import aztech.modern_industrialization.util.Simulation;
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.Slot;
 
 public class ConfigurableInventoryPacketHandlers {
-    public static class S2C {
-        // sync id, slot id, slot tag
-        public static final ClientPlayNetworking.PlayChannelHandler UPDATE_ITEM_SLOT = (mc, handler, buf, sender) -> {
-            int syncId = buf.readInt();
-            int stackId = buf.readInt();
-            CompoundTag tag = buf.readNbt();
-            mc.execute(() -> {
-                AbstractContainerMenu sh = mc.player.containerMenu;
-                if (sh.containerId == syncId) {
-                    ConfigurableScreenHandler csh = (ConfigurableScreenHandler) sh;
-                    ConfigurableItemStack oldStack = csh.inventory.getItemStacks().get(stackId);
-                    // update stack
-                    ConfigurableItemStack newStack = new ConfigurableItemStack(tag);
-                    csh.inventory.getItemStacks().set(stackId, newStack);
-                    // update slot
-                    for (int i = 0; i < csh.slots.size(); ++i) {
-                        Slot slot = csh.slots.get(i);
-                        if (slot instanceof ConfigurableItemSlot is) {
-                            if (is.getConfStack() == oldStack) {
-                                csh.slots.set(i, newStack.new ConfigurableItemSlot(is));
-                                return;
-                            }
-                        }
-                    }
-                    throw new RuntimeException("Could not find slot to replace!");
-                }
-            });
-        };
-        // sync id, slot id, slot tag
-        public static final ClientPlayNetworking.PlayChannelHandler UPDATE_FLUID_SLOT = (mc, handler, buf, sender) -> {
-            int syncId = buf.readInt();
-            int stackId = buf.readInt();
-            CompoundTag tag = buf.readNbt();
-            mc.execute(() -> {
-                AbstractContainerMenu sh = mc.player.containerMenu;
-                if (sh.containerId == syncId) {
-                    ConfigurableScreenHandler csh = (ConfigurableScreenHandler) sh;
-                    ConfigurableFluidStack oldStack = csh.inventory.getFluidStacks().get(stackId);
-                    // update stack
-                    ConfigurableFluidStack newStack = new ConfigurableFluidStack(tag);
-                    csh.inventory.getFluidStacks().set(stackId, newStack);
-                    // update slot
-                    for (int i = 0; i < csh.slots.size(); ++i) {
-                        Slot slot = csh.slots.get(i);
-                        if (slot instanceof ConfigurableFluidSlot fs) {
-                            if (fs.getConfStack() == oldStack) {
-                                csh.slots.set(i, newStack.new ConfigurableFluidSlot(fs));
-                                return;
-                            }
-                        }
-                    }
-                    throw new RuntimeException("Could not find slot to replace!");
-                }
-            });
-        };
-    }
-
     public static class C2S {
         // sync id, new locking mode
         public static final ServerPlayNetworking.PlayChannelHandler SET_LOCKING_MODE = (ms, player, handler, buf, sender) -> {

@@ -35,7 +35,6 @@ import aztech.modern_industrialization.items.armor.ArmorPackets;
 import aztech.modern_industrialization.items.armor.MIArmorEffects;
 import aztech.modern_industrialization.items.armor.MIKeyMap;
 import aztech.modern_industrialization.machines.MachinePackets;
-import aztech.modern_industrialization.machines.gui.MachineMenuClient;
 import aztech.modern_industrialization.machines.gui.MachineMenuCommon;
 import aztech.modern_industrialization.machines.init.*;
 import aztech.modern_industrialization.machines.multiblocks.world.ChunkEventListeners;
@@ -84,7 +83,7 @@ public class ModernIndustrialization implements ModInitializer {
 
     // ScreenHandlerType
     public static final MenuType<MachineMenuCommon> SCREEN_HANDLER_MACHINE = ScreenHandlerRegistry
-            .registerExtended(new MIIdentifier("machine"), MachineMenuClient::create);
+            .registerExtended(new MIIdentifier("machine"), CommonProxy.INSTANCE::createClientMachineMenu);
     public static final MenuType<ForgeHammerScreenHandler> SCREEN_HANDLER_FORGE_HAMMER = ScreenHandlerRegistry
             .registerSimple(new MIIdentifier("forge_hammer"), ForgeHammerScreenHandler::new);
 
@@ -164,8 +163,8 @@ public class ModernIndustrialization implements ModInitializer {
         ServerPlayNetworking.registerGlobalReceiver(MachinePackets.C2S.CHANGE_SHAPE, MachinePackets.C2S.ON_CHANGE_SHAPE);
         ServerPlayNetworking.registerGlobalReceiver(MachinePackets.C2S.SET_AUTO_EXTRACT, MachinePackets.C2S.ON_SET_AUTO_EXTRACT);
         ServerPlayNetworking.registerGlobalReceiver(MachinePackets.C2S.REI_LOCK_SLOTS, MachinePackets.C2S.ON_REI_LOCK_SLOTS);
-        ServerPlayNetworking.registerGlobalReceiver(ArmorPackets.UPDATE_KEYS, ArmorPackets.ON_UPDATE_KEYS::handleC2S);
-        ServerPlayNetworking.registerGlobalReceiver(ArmorPackets.ACTIVATE_CHEST, ArmorPackets.ON_ACTIVATE_CHEST::handleC2S);
+        CommonProxy.INSTANCE.registerUnsidedPacket(ArmorPackets.UPDATE_KEYS, ArmorPackets.ON_UPDATE_KEYS);
+        CommonProxy.INSTANCE.registerUnsidedPacket(ArmorPackets.ACTIVATE_CHEST, ArmorPackets.ON_ACTIVATE_CHEST);
     }
 
     private static void addFuel(String id, int burnTicks) {

@@ -23,6 +23,8 @@
  */
 package aztech.modern_industrialization.materials.recipe.builder;
 
+import static aztech.modern_industrialization.materials.property.MaterialProperty.HARDNESS;
+
 import aztech.modern_industrialization.machines.recipe.MachineRecipeType;
 import aztech.modern_industrialization.materials.MaterialBuilder;
 import aztech.modern_industrialization.materials.part.MaterialPart;
@@ -55,7 +57,7 @@ public class MIRecipeBuilder extends MIRecipeJson<MIRecipeBuilder> implements Ma
     }
 
     public MIRecipeBuilder(MaterialBuilder.RecipeContext context, MachineRecipeType type, String recipeSuffix) {
-        this(context, type, recipeSuffix, 2, (int) (200 * context.getHardness().timeFactor));
+        this(context, type, recipeSuffix, 2, (int) (200 * context.get(HARDNESS).timeFactor));
     }
 
     public MIRecipeBuilder(MaterialBuilder.RecipeContext context, MachineRecipeType type, Part recipeSuffix) {

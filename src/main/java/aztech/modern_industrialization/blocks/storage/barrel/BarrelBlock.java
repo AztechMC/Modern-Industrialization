@@ -25,13 +25,13 @@ package aztech.modern_industrialization.blocks.storage.barrel;
 
 import aztech.modern_industrialization.blocks.storage.AbstractStorageBlock;
 import aztech.modern_industrialization.blocks.storage.StorageBehaviour;
+import aztech.modern_industrialization.proxy.CommonProxy;
 import net.fabricmc.fabric.api.event.player.AttackBlockCallback;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.fabricmc.fabric.api.transfer.v1.item.PlayerInventoryStorage;
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageUtil;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
-import net.minecraft.client.Minecraft;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.level.block.EntityBlock;
 
@@ -84,20 +84,13 @@ public class BarrelBlock extends AbstractStorageBlock implements EntityBlock {
                         PlayerInventoryStorage.of(player).offerOrDrop(extractedResource, extracted, transaction);
 
                         transaction.commit();
-                        if (world.isClientSide()) {
-                            updateDestroyDelay();
-                        }
+                        CommonProxy.INSTANCE.delayNextBlockAttack(player);
                     }
                     return InteractionResult.sidedSuccess(world.isClientSide);
                 }
             }
             return InteractionResult.PASS;
         });
-    }
-
-    private static void updateDestroyDelay() {
-        // Add a 5 tick delay like vanilla.
-        Minecraft.getInstance().gameMode.destroyDelay = 5;
     }
 
     public static BarrelStorage withStackCapacity(long stackCapacity) {

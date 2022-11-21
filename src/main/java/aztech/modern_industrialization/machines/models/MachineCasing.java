@@ -23,13 +23,9 @@
  */
 package aztech.modern_industrialization.machines.models;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
-
 public class MachineCasing {
     public final String name;
-    @Environment(EnvType.CLIENT)
-    public MachineCasingModel mcm;
+    Object model;
 
     MachineCasing(String name) {
         this.name = name;

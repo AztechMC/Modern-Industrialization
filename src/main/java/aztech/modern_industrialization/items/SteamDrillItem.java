@@ -27,16 +27,12 @@ import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.MITooltips;
 import aztech.modern_industrialization.api.DynamicEnchantmentItem;
 import aztech.modern_industrialization.blocks.storage.StorageBehaviour;
-import aztech.modern_industrialization.machines.gui.MachineScreen;
-import aztech.modern_industrialization.machines.guicomponents.ProgressBar;
 import aztech.modern_industrialization.proxy.CommonProxy;
 import aztech.modern_industrialization.util.NbtHelper;
 import aztech.modern_industrialization.util.Simulation;
 import aztech.modern_industrialization.util.TextHelper;
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import draylar.magna.Magna;
 import draylar.magna.api.MagnaTool;
 import it.unimi.dsi.fastutil.objects.Reference2IntMap;
@@ -47,10 +43,6 @@ import net.fabricmc.fabric.api.mininglevel.v1.MiningLevelManager;
 import net.fabricmc.fabric.api.registry.FuelRegistry;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
-import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiComponent;
-import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
-import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -340,37 +332,5 @@ public class SteamDrillItem
 
     public record SteamDrillTooltipData(int waterLevel, int burnTicks, int maxBurnTicks, ItemVariant variant, long amount)
             implements TooltipComponent {
-    }
-
-    public static class SteamDrillTooltipComponent implements ClientTooltipComponent {
-        final SteamDrillTooltipData data;
-
-        public SteamDrillTooltipComponent(SteamDrillTooltipData data) {
-            this.data = data;
-        }
-
-        @Override
-        public int getHeight() {
-            return 20;
-        }
-
-        @Override
-        public int getWidth(Font textRenderer) {
-            return 40;
-        }
-
-        @Override
-        public void renderImage(Font textRenderer, int x, int y, PoseStack matrices, ItemRenderer itemRenderer, int z) {
-            // Slot background
-            RenderSystem.setShaderTexture(0, MachineScreen.SLOT_ATLAS);
-            GuiComponent.blit(matrices, x, y, 0, 0, 18, 18, 256, 256);
-            // Stack itself
-            ItemStack stack = data.variant.toStack((int) data.amount);
-            itemRenderer.renderAndDecorateItem(stack, x + 1, y + 1);
-            itemRenderer.renderGuiItemDecorations(textRenderer, stack, x + 1, y + 1);
-            // Burning flame next to the stack
-            var progressParams = new ProgressBar.Parameters(0, 0, "furnace", true);
-            ProgressBar.RenderHelper.renderProgress(0, matrices, x + 20, y, progressParams, (float) data.burnTicks / data.maxBurnTicks);
-        }
     }
 }

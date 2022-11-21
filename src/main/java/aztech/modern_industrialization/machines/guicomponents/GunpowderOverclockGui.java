@@ -23,19 +23,10 @@
  */
 package aztech.modern_industrialization.machines.guicomponents;
 
-import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.machines.GuiComponents;
-import aztech.modern_industrialization.machines.gui.ClientComponentRenderer;
 import aztech.modern_industrialization.machines.gui.GuiComponent;
-import aztech.modern_industrialization.machines.gui.MachineScreen;
-import aztech.modern_industrialization.util.RenderHelper;
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.function.Supplier;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
 public class GunpowderOverclockGui {
@@ -75,63 +66,6 @@ public class GunpowderOverclockGui {
         @Override
         public ResourceLocation getId() {
             return GuiComponents.GUNPOWDER_OVERCLOCK_GUI;
-        }
-    }
-
-    public static class Client implements GuiComponent.Client {
-        final Parameters params;
-        int remTick;
-
-        public Client(FriendlyByteBuf buf) {
-            this.params = new Parameters(buf.readInt(), buf.readInt());
-            readCurrentData(buf);
-        }
-
-        @Override
-        public void readCurrentData(FriendlyByteBuf buf) {
-            remTick = buf.readInt();
-        }
-
-        @Override
-        public ClientComponentRenderer createRenderer(MachineScreen machineScreen) {
-            return new Renderer();
-        }
-
-        public class Renderer implements ClientComponentRenderer {
-
-            @Override
-            public void renderBackground(net.minecraft.client.gui.GuiComponent helper, PoseStack matrices, int x, int y) {
-                if (remTick > 0) {
-                    RenderSystem.setShaderTexture(0, MachineScreen.SLOT_ATLAS);
-                    int px = x + params.renderX;
-                    int py = y + params.renderY;
-                    helper.blit(matrices, px, py, 0, 58, 20, 20);
-                }
-            }
-
-            @Override
-            public void renderTooltip(MachineScreen screen, PoseStack matrices, int x, int y, int cursorX, int cursorY) {
-                if (remTick > 0) {
-                    if (RenderHelper.isPointWithinRectangle(params.renderX, params.renderY, 20, 20, cursorX - x, cursorY - y)) {
-                        List<Component> tooltip = new ArrayList<>();
-
-                        int seconds = remTick / 20;
-                        int hours = seconds / 3600;
-                        int minutes = (seconds % 3600) / 60;
-
-                        String time = String.format("%d", seconds);
-
-                        if (hours > 0) {
-                            time = String.format("%d:%02d:%02d", hours, minutes, seconds % 60);
-                        } else if (minutes > 0) {
-                            time = String.format("%d:%02d", minutes, seconds % 60);
-                        }
-
-                        tooltip.add(MIText.GunpowderTime.text(time));
-                        screen.renderComponentTooltip(matrices, tooltip, cursorX, cursorY);
-                    }
-                }
-            }
         }
     }
 

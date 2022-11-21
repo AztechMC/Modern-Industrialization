@@ -25,19 +25,19 @@ package aztech.modern_industrialization.machines.init;
 
 import aztech.modern_industrialization.MIBlock;
 import aztech.modern_industrialization.MIIdentifier;
+import aztech.modern_industrialization.datagen.model.MachineModelsToGenerate;
 import aztech.modern_industrialization.definition.BlockDefinition;
 import aztech.modern_industrialization.items.SortOrder;
 import aztech.modern_industrialization.machines.BEP;
 import aztech.modern_industrialization.machines.MachineBlock;
 import aztech.modern_industrialization.machines.MachineBlockEntity;
-import aztech.modern_industrialization.machines.models.MachineModels;
+import aztech.modern_industrialization.machines.models.MachineCasing;
+import aztech.modern_industrialization.machines.models.MachineCasings;
 import aztech.modern_industrialization.util.MobSpawning;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
-import net.fabricmc.api.EnvType;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
-import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
 import net.minecraft.world.level.block.Block;
@@ -74,11 +74,38 @@ public class MachineRegistrationHelper {
             extraRegistrator.accept(bet[0]);
         }
 
-        if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
-            MachineModels.addMachineBer(bet[0], id);
-        }
-
         return bet[0];
     }
 
+    @SuppressWarnings("IfCanBeSwitch")
+    public static void addMachineModel(String tier, String id, String machineType, boolean frontOverlay, boolean topOverlay, boolean sideOverlay) {
+        MachineCasing defaultCasing;
+        if (tier.equals("bronze")) {
+            defaultCasing = MachineCasings.BRONZE;
+        } else if (tier.equals("steel")) {
+            defaultCasing = MachineCasings.STEEL;
+        } else if (tier.equals("electric")) {
+            defaultCasing = MachineCasings.LV;
+        } else {
+            throw new RuntimeException("Invalid tier: " + tier);
+        }
+        addMachineModel(id, machineType, defaultCasing, frontOverlay, topOverlay, sideOverlay);
+    }
+
+    public static void addMachineModel(String id, String overlayFolder, MachineCasing defaultCasing, boolean frontOverlay, boolean topOverlay,
+            boolean sideOverlay) {
+        addMachineModel(id, overlayFolder, defaultCasing, frontOverlay, topOverlay, sideOverlay, true);
+    }
+
+    public static void addMachineModel(String id, String overlayFolder, MachineCasing defaultCasing, boolean frontOverlay, boolean topOverlay,
+            boolean sideOverlay, boolean hasActive) {
+        MachineBlock.REGISTERED_MACHINES.put(id, defaultCasing);
+        MachineModelsToGenerate.register(id, overlayFolder, frontOverlay, topOverlay, sideOverlay, hasActive);
+    }
+
+    public static void addModelsForTiers(String name, boolean frontOverlay, boolean topOverlay, boolean sideOverlay, String... tiers) {
+        for (String tier : tiers) {
+            addMachineModel(tier, tier + "_" + name, name, frontOverlay, topOverlay, sideOverlay);
+        }
+    }
 }

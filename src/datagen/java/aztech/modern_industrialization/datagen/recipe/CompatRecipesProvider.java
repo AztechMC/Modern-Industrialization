@@ -23,6 +23,8 @@
  */
 package aztech.modern_industrialization.datagen.recipe;
 
+import static aztech.modern_industrialization.materials.property.MaterialProperty.HARDNESS;
+
 import aztech.modern_industrialization.MIFluids;
 import aztech.modern_industrialization.machines.init.MIMachineRecipeTypes;
 import aztech.modern_industrialization.machines.recipe.MachineRecipeType;
@@ -140,7 +142,7 @@ public class CompatRecipesProvider extends MIRecipesProvider {
             addCompatRecipe(material.name + "_plate",
                     new TRCompressorRecipeJson(
                             tag,
-                            material.getPart(MIParts.PLATE).getItemId()).scaleTime(material.hardness));
+                            material.getPart(MIParts.PLATE).getItemId()).scaleTime(material.get(HARDNESS)));
         }
     }
 

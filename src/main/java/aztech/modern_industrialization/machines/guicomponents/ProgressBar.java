@@ -25,12 +25,8 @@ package aztech.modern_industrialization.machines.guicomponents;
 
 import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.machines.GuiComponents;
-import aztech.modern_industrialization.machines.gui.ClientComponentRenderer;
 import aztech.modern_industrialization.machines.gui.GuiComponent;
-import aztech.modern_industrialization.machines.gui.MachineScreen;
 import aztech.modern_industrialization.util.Rectangle;
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.function.Supplier;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
@@ -72,57 +68,6 @@ public class ProgressBar {
         @Override
         public ResourceLocation getId() {
             return GuiComponents.PROGRESS_BAR;
-        }
-    }
-
-    public static class Client implements GuiComponent.Client {
-        public final Parameters params;
-        public float progress;
-
-        public Client(FriendlyByteBuf buf) {
-            this.params = new Parameters(buf.readInt(), buf.readInt(), buf.readUtf(), buf.readBoolean());
-            readCurrentData(buf);
-        }
-
-        @Override
-        public void readCurrentData(FriendlyByteBuf buf) {
-            this.progress = buf.readFloat();
-        }
-
-        @Override
-        public ClientComponentRenderer createRenderer(MachineScreen machineScreen) {
-            return new Renderer();
-        }
-
-        public class Renderer implements ClientComponentRenderer {
-            @Override
-            public void renderBackground(net.minecraft.client.gui.GuiComponent helper, PoseStack matrices, int x, int y) {
-                RenderHelper.renderProgress(helper, matrices, x, y, params, progress);
-            }
-        }
-    }
-
-    public static class RenderHelper {
-        public static void renderProgress(net.minecraft.client.gui.GuiComponent helper, PoseStack matrices, int x, int y, Parameters params,
-                float progress) {
-            renderProgress(helper.getBlitOffset(), matrices, x, y, params, progress);
-        }
-
-        public static void renderProgress(int zoffset, PoseStack matrices, int x, int y, Parameters params, float progress) {
-            RenderSystem.setShaderTexture(0, params.getTextureId());
-            // background
-            net.minecraft.client.gui.GuiComponent.blit(matrices, x + params.renderX, y + params.renderY, zoffset, 0, 0, 20, 20, 20, 40);
-            // foreground
-            int foregroundPixels = (int) (progress * 20);
-            if (foregroundPixels > 0) {
-                if (!params.isVertical) {
-                    net.minecraft.client.gui.GuiComponent.blit(matrices, x + params.renderX, y + params.renderY, zoffset, 0, 20, foregroundPixels, 20,
-                            20, 40);
-                } else {
-                    net.minecraft.client.gui.GuiComponent.blit(matrices, x + params.renderX, y + params.renderY + 20 - foregroundPixels, zoffset, 0,
-                            40 - foregroundPixels, 20, foregroundPixels, 20, 40);
-                }
-            }
         }
     }
 

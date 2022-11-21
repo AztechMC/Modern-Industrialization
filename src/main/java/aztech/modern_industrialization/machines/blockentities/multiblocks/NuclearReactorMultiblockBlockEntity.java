@@ -26,7 +26,6 @@ package aztech.modern_industrialization.machines.blockentities.multiblocks;
 import aztech.modern_industrialization.MIBlock;
 import aztech.modern_industrialization.MIIdentifier;
 import aztech.modern_industrialization.MIText;
-import aztech.modern_industrialization.compat.rei.machines.ReiMachineRecipes;
 import aztech.modern_industrialization.inventory.MIInventory;
 import aztech.modern_industrialization.machines.BEP;
 import aztech.modern_industrialization.machines.blockentities.hatches.NuclearHatch;
@@ -41,6 +40,7 @@ import aztech.modern_industrialization.machines.models.MachineCasings;
 import aztech.modern_industrialization.machines.models.MachineModelClientData;
 import aztech.modern_industrialization.machines.multiblocks.*;
 import aztech.modern_industrialization.nuclear.*;
+import aztech.modern_industrialization.proxy.CommonProxy;
 import aztech.modern_industrialization.util.Tickable;
 import java.util.List;
 import java.util.Optional;
@@ -243,7 +243,7 @@ public class NuclearReactorMultiblockBlockEntity extends MultiblockMachineBlockE
 
     public static void registerReiShapes() {
         for (ShapeTemplate shapeTemplate : shapeTemplates) {
-            ReiMachineRecipes.registerMultiblockShape("nuclear_reactor", shapeTemplate);
+            CommonProxy.INSTANCE.registerReiMultiblockShape("nuclear_reactor", shapeTemplate);
         }
     }
 

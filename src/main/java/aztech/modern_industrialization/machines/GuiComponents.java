@@ -24,21 +24,6 @@
 package aztech.modern_industrialization.machines;
 
 import aztech.modern_industrialization.MIIdentifier;
-import aztech.modern_industrialization.machines.gui.GuiComponent;
-import aztech.modern_industrialization.machines.guicomponents.AutoExtract;
-import aztech.modern_industrialization.machines.guicomponents.CraftingMultiblockGui;
-import aztech.modern_industrialization.machines.guicomponents.EnergyBar;
-import aztech.modern_industrialization.machines.guicomponents.FluidGUIComponent;
-import aztech.modern_industrialization.machines.guicomponents.GunpowderOverclockGui;
-import aztech.modern_industrialization.machines.guicomponents.NuclearReactorGui;
-import aztech.modern_industrialization.machines.guicomponents.ProgressBar;
-import aztech.modern_industrialization.machines.guicomponents.RecipeEfficiencyBar;
-import aztech.modern_industrialization.machines.guicomponents.ReiSlotLocking;
-import aztech.modern_industrialization.machines.guicomponents.ShapeSelection;
-import aztech.modern_industrialization.machines.guicomponents.SlotPanel;
-import aztech.modern_industrialization.machines.guicomponents.TemperatureBar;
-import java.util.HashMap;
-import java.util.Map;
 import net.minecraft.resources.ResourceLocation;
 
 public final class GuiComponents {
@@ -54,33 +39,4 @@ public final class GuiComponents {
     public static final ResourceLocation SHAPE_SELECTION = new MIIdentifier("shape_selection");
     public static final ResourceLocation SLOT_PANEL = new MIIdentifier("slot_panel");
     public static final ResourceLocation TEMPERATURE_BAR = new MIIdentifier("temperature_bar");
-
-    public static final class Client {
-        private static final Map<ResourceLocation, GuiComponent.ClientFactory> components = new HashMap<>();
-
-        public static GuiComponent.ClientFactory get(ResourceLocation identifier) {
-            return components.get(identifier);
-        }
-
-        public static void register(ResourceLocation id, GuiComponent.ClientFactory clientFactory) {
-            if (components.put(id, clientFactory) != null) {
-                throw new RuntimeException("Duplicate registration of component identifier.");
-            }
-        }
-
-        static {
-            register(AUTO_EXTRACT, AutoExtract.Client::new);
-            register(CRAFTING_MULTIBLOCK_GUI, CraftingMultiblockGui.Client::new);
-            register(ENERGY_BAR, EnergyBar.Client::new);
-            register(FLUID_STORAGE_GUI, FluidGUIComponent.Client::new);
-            register(GUNPOWDER_OVERCLOCK_GUI, GunpowderOverclockGui.Client::new);
-            register(NUCLEAR_REACTOR_GUI, NuclearReactorGui.Client::new);
-            register(PROGRESS_BAR, ProgressBar.Client::new);
-            register(RECIPE_EFFICIENCY_BAR, RecipeEfficiencyBar.Client::new);
-            register(REI_SLOT_LOCKING, ReiSlotLocking.Client::new);
-            register(SHAPE_SELECTION, ShapeSelection.Client::new);
-            register(SLOT_PANEL, SlotPanel.Client::new);
-            register(TEMPERATURE_BAR, TemperatureBar.Client::new);
-        }
-    }
 }

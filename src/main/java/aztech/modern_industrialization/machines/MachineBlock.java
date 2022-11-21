@@ -48,7 +48,7 @@ import org.jetbrains.annotations.Nullable;
 public class MachineBlock extends Block implements TickableBlock {
 
     private final BiFunction<BlockPos, BlockState, MachineBlockEntity> blockEntityConstructor;
-    public final MachineBlockEntity BLOCK_ENTITY_INSTANCE; // Use for tooltip and information
+    private MachineBlockEntity blockEntityInstance = null; // Used for tooltip, information, and BER registration
 
     /**
      * Used by the model loading code to identify machine models.
@@ -59,9 +59,6 @@ public class MachineBlock extends Block implements TickableBlock {
     public MachineBlock(BiFunction<BlockPos, BlockState, MachineBlockEntity> blockEntityConstructor, Properties properties) {
         super(properties);
         this.blockEntityConstructor = blockEntityConstructor;
-        BLOCK_ENTITY_INSTANCE = newBlockEntity(
-                BlockPos.ZERO,
-                this.defaultBlockState());
     }
 
     @Override
@@ -116,5 +113,12 @@ public class MachineBlock extends Block implements TickableBlock {
             }
         }
         super.onRemove(state, world, pos, newState, moved);
+    }
+
+    public MachineBlockEntity getBlockEntityInstance() {
+        if (blockEntityInstance == null) {
+            blockEntityInstance = newBlockEntity(BlockPos.ZERO, this.defaultBlockState());
+        }
+        return blockEntityInstance;
     }
 }

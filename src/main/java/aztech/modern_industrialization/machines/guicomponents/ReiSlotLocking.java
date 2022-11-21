@@ -24,9 +24,7 @@
 package aztech.modern_industrialization.machines.guicomponents;
 
 import aztech.modern_industrialization.machines.GuiComponents;
-import aztech.modern_industrialization.machines.gui.ClientComponentRenderer;
 import aztech.modern_industrialization.machines.gui.GuiComponent;
-import aztech.modern_industrialization.machines.gui.MachineScreen;
 import java.util.function.Supplier;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
@@ -73,27 +71,4 @@ public class ReiSlotLocking {
         }
     }
 
-    public static class Client implements GuiComponent.Client {
-        private boolean allowLocking;
-
-        public Client(FriendlyByteBuf initialData) {
-            readCurrentData(initialData);
-        }
-
-        public boolean isLockingAllowed() {
-            return allowLocking;
-        }
-
-        @Override
-        public void readCurrentData(FriendlyByteBuf buf) {
-            allowLocking = buf.readBoolean();
-        }
-
-        @Override
-        public ClientComponentRenderer createRenderer(MachineScreen machineScreen) {
-            // nothing to do;
-            return (helper, matrices, x, y) -> {
-            };
-        }
-    }
 }

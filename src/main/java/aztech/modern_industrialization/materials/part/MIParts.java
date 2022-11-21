@@ -27,8 +27,6 @@ import static aztech.modern_industrialization.materials.part.NuclearFuelPart.Typ
 
 import aztech.modern_industrialization.items.SortOrder;
 import aztech.modern_industrialization.materials.GemPart;
-import aztech.modern_industrialization.textures.MITextures;
-import aztech.modern_industrialization.textures.coloramp.HotIngotColoramp;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -46,13 +44,7 @@ public class MIParts {
     public static final RegularPart CRUSHED_DUST = new RegularPart("Crushed Dust", "crushed_dust");
     public static final RegularPart CURVED_PLATE = new RegularPart("Curved Plate", "curved_plate");
     public static final RegularPart DOUBLE_INGOT = new RegularPart("Double Ingot", "double_ingot")
-            .withTextureRegister((mtm, partContext, part, itemPath) -> mtm.runAtEnd(() -> {
-                try {
-                    MITextures.generateDoubleIngot(mtm, partContext.getMaterialName());
-                } catch (Throwable throwable) {
-                    MITextures.logTextureGenerationError(throwable, partContext.getMaterialName(), partContext.getMaterialSet(), part.key);
-                }
-            }));
+            .withTexture(new TextureGenParams.DoubleIngot());
 
     public static final RegularPart DRILL_HEAD = new RegularPart("Drill Head", "drill_head");
 
@@ -66,8 +58,7 @@ public class MIParts {
     public static final RegularPart HAMMER = new RegularPart("Hammer", "hammer");
 
     public static final RegularPart HOT_INGOT = new RegularPart("Hot Ingot", "hot_ingot")
-            .withTextureRegister((mtm, partContext, part, itemPath) -> MITextures.generateItemPartTexture(mtm, MIParts.INGOT.key,
-                    partContext.getMaterialSet(), itemPath, false, new HotIngotColoramp(partContext.getColoramp(), 0.1, 0.5)));
+            .withTexture(new TextureGenParams.HotIngot());
     public static final RegularPart INGOT = new RegularPart("Ingot", "ingot");
     public static final RegularPart LARGE_PLATE = new RegularPart("Large Plate", "large_plate");
     public static final CasingPart MACHINE_CASING = new CasingPart("Machine Casing", "machine_casing");

@@ -35,7 +35,7 @@ import aztech.modern_industrialization.machines.gui.MachineGuiParameters;
 import aztech.modern_industrialization.machines.gui.MachineMenuServer;
 import aztech.modern_industrialization.machines.models.MachineModelClientData;
 import aztech.modern_industrialization.util.NbtHelper;
-import aztech.modern_industrialization.util.RenderHelper;
+import aztech.modern_industrialization.util.WorldHelper;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -220,7 +220,7 @@ public abstract class MachineBlockEntity extends FastBlockEntity
                 component.readClientNbt(tag);
             }
             if (forceChunkRemesh) {
-                RenderHelper.forceChunkRemesh(level, worldPosition);
+                WorldHelper.forceChunkRemesh(level, worldPosition);
             }
         }
     }

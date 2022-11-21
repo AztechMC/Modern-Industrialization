@@ -29,8 +29,6 @@ import aztech.modern_industrialization.nuclear.INeutronBehaviour;
 import aztech.modern_industrialization.nuclear.NuclearConstant;
 import aztech.modern_industrialization.nuclear.NuclearFuel;
 import aztech.modern_industrialization.nuclear.NuclearFuel.NuclearFuelParams;
-import aztech.modern_industrialization.textures.MITextures;
-import aztech.modern_industrialization.textures.coloramp.ColorampDepleted;
 import java.util.List;
 
 public class NuclearFuelPart extends UnbuildablePart<NuclearConstant.IsotopeFuelParams> {
@@ -72,7 +70,7 @@ public class NuclearFuelPart extends UnbuildablePart<NuclearConstant.IsotopeFuel
         case DEPLETED -> "Depleted %s Fuel Rod";
         };
 
-        return new RegularPart(englishNameFormatter,
+        var out = new RegularPart(englishNameFormatter,
                 key).withRegister((partContext, part, itemPath, itemId, itemTag) -> {
                     if (Type.DEPLETED == type) {
                         MIItem.item(RegularPart.getEnglishName(englishNameFormatter, partContext.getEnglishName()), itemPath, SortOrder.ITEMS_OTHER);
@@ -80,9 +78,11 @@ public class NuclearFuelPart extends UnbuildablePart<NuclearConstant.IsotopeFuel
                         NuclearFuel.of(RegularPart.getEnglishName(englishNameFormatter, partContext.getEnglishName()), itemPath, fuelParams,
                                 neutronBehaviour, partContext.getMaterialName() + "_fuel_rod_depleted");
                     }
-                }).withTextureRegister((mtm, partContext, part, itemPath) -> MITextures.generateItemPartTexture(mtm,
-                        type == Type.DEPLETED ? Type.SIMPLE.key : type.key, "common", itemPath, false,
-                        type == Type.DEPLETED ? new ColorampDepleted(partContext.getColoramp()) : partContext.getColoramp()));
+                });
+        if (type == Type.DEPLETED) {
+            out = out.withTexture(new TextureGenParams.DepletedNuclear());
+        }
+        return out;
     }
 
     public List<BuildablePart> ofAll(NuclearConstant.IsotopeFuelParams params) {

@@ -23,20 +23,10 @@
  */
 package aztech.modern_industrialization.machines.guicomponents;
 
-import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.machines.GuiComponents;
-import aztech.modern_industrialization.machines.gui.ClientComponentRenderer;
 import aztech.modern_industrialization.machines.gui.GuiComponent;
-import aztech.modern_industrialization.machines.gui.MachineScreen;
-import aztech.modern_industrialization.util.RenderHelper;
-import aztech.modern_industrialization.util.TextHelper;
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
-import java.util.Collections;
 import java.util.function.Supplier;
-import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
 public class EnergyBar {
@@ -76,60 +66,6 @@ public class EnergyBar {
         @Override
         public ResourceLocation getId() {
             return GuiComponents.ENERGY_BAR;
-        }
-    }
-
-    public static class Client implements GuiComponent.Client {
-        final Parameters params;
-        long eu, maxEu;
-
-        public Client(FriendlyByteBuf buf) {
-            this.params = new Parameters(buf.readInt(), buf.readInt());
-            readCurrentData(buf);
-        }
-
-        @Override
-        public void readCurrentData(FriendlyByteBuf buf) {
-            eu = buf.readLong();
-            maxEu = buf.readLong();
-        }
-
-        @Override
-        public ClientComponentRenderer createRenderer(MachineScreen machineScreen) {
-            return new Renderer();
-        }
-
-        public class Renderer implements ClientComponentRenderer {
-            public static final int WIDTH = 13;
-            public static final int HEIGHT = 18;
-
-            public static void renderEnergy(net.minecraft.client.gui.GuiComponent helper, PoseStack matrices, int px, int py, float fill) {
-                RenderSystem.setShaderTexture(0, MachineScreen.SLOT_ATLAS);
-                helper.blit(matrices, px, py, 230, 0, WIDTH, HEIGHT);
-                int fillPixels = (int) (fill * HEIGHT * 0.9 + HEIGHT * 0.1);
-                if (fill > 0.95)
-                    fillPixels = HEIGHT;
-                helper.blit(matrices, px, py + HEIGHT - fillPixels, 243, HEIGHT - fillPixels, WIDTH, fillPixels);
-            }
-
-            @Override
-            public void renderBackground(net.minecraft.client.gui.GuiComponent helper, PoseStack matrices, int x, int y) {
-                renderEnergy(helper, matrices, x + params.renderX, y + params.renderY, (float) eu / maxEu);
-            }
-
-            @Override
-            public void renderTooltip(MachineScreen screen, PoseStack matrices, int x, int y, int cursorX, int cursorY) {
-                if (RenderHelper.isPointWithinRectangle(params.renderX, params.renderY, WIDTH, HEIGHT, cursorX - x, cursorY - y)) {
-                    Component tooltip;
-                    if (Screen.hasShiftDown()) {
-                        tooltip = MIText.EuMaxed.text(eu, maxEu, "");
-                    } else {
-                        TextHelper.MaxedAmount maxedAmount = TextHelper.getMaxedAmount(eu, maxEu);
-                        tooltip = MIText.EuMaxed.text(maxedAmount.digit(), maxedAmount.maxDigit(), maxedAmount.unit());
-                    }
-                    screen.renderComponentTooltip(matrices, Collections.singletonList(tooltip), cursorX, cursorY);
-                }
-            }
         }
     }
 

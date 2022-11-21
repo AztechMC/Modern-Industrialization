@@ -24,7 +24,6 @@
 package aztech.modern_industrialization.materials.part;
 
 import aztech.modern_industrialization.materials.MaterialBuilder;
-import aztech.modern_industrialization.textures.TextureManager;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -60,10 +59,7 @@ public interface MaterialPart extends ItemLike {
 
     }
 
-    default void registerTextures(TextureManager textureManager) {
-
-    }
-
-    default void registerClient() {
+    default boolean isRegularPart() {
+        return false;
     }
 }

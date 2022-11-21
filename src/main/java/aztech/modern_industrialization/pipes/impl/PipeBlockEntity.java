@@ -31,7 +31,7 @@ import aztech.modern_industrialization.pipes.MIPipes;
 import aztech.modern_industrialization.pipes.api.*;
 import aztech.modern_industrialization.pipes.gui.IPipeScreenHandlerHelper;
 import aztech.modern_industrialization.util.NbtHelper;
-import aztech.modern_industrialization.util.RenderHelper;
+import aztech.modern_industrialization.util.WorldHelper;
 import java.util.*;
 import net.fabricmc.fabric.api.rendering.data.v1.RenderAttachmentBlockEntity;
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
@@ -297,7 +297,7 @@ public class PipeBlockEntity extends FastBlockEntity implements IPipeScreenHandl
             }
             rebuildCollisionShape();
 
-            RenderHelper.forceChunkRemesh(level, worldPosition);
+            WorldHelper.forceChunkRemesh(level, worldPosition);
         }
     }
 

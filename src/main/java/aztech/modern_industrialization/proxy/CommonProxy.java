@@ -23,11 +23,26 @@
  */
 package aztech.modern_industrialization.proxy;
 
+import aztech.modern_industrialization.blocks.storage.barrel.BarrelBlockEntity;
 import aztech.modern_industrialization.blocks.storage.tank.AbstractTankBlockEntity;
+import aztech.modern_industrialization.compat.rei.machines.MachineCategoryParams;
+import aztech.modern_industrialization.machines.gui.MachineMenuCommon;
+import aztech.modern_industrialization.machines.multiblocks.ShapeTemplate;
+import aztech.modern_industrialization.machines.recipe.MachineRecipeType;
+import aztech.modern_industrialization.util.UnsidedPacketHandler;
+import java.util.ArrayList;
+import java.util.List;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariantAttributes;
 import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -35,6 +50,9 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import org.jetbrains.annotations.Nullable;
 
+/**
+ * Abstractions over client-only code called in common code.
+ */
 public class CommonProxy {
     public static CommonProxy INSTANCE = instantiateProxy();
 
@@ -73,7 +91,40 @@ public class CommonProxy {
         return null;
     }
 
+    public void delayNextBlockAttack(Player player) {
+    }
+
+    public boolean hasShiftDown() {
+        return false;
+    }
+
+    public List<Component> getFluidTooltip(FluidVariant variant) {
+        List<Component> list = new ArrayList<>();
+        list.add(FluidVariantAttributes.getName(variant));
+        return list;
+    }
+
+    public void registerUnsidedPacket(ResourceLocation identifier, UnsidedPacketHandler handler) {
+        ServerPlayNetworking.registerGlobalReceiver(identifier, (server, player, listener, buf, responseSender) -> {
+            server.execute(handler.handlePacket(player, buf));
+        });
+    }
+
     public void registerPartTankClient(Block tankBlock, Item tankItem, String materialName, String itemPath,
             BlockEntityType<AbstractTankBlockEntity> blockEntityType) {
+    }
+
+    public void registerPartBarrelClient(Block barrelBlock, Item barrelItem, String materialName, String itemPath,
+            BlockEntityType<BarrelBlockEntity> blockEntityType, int meanRgb) {
+    }
+
+    public MachineMenuCommon createClientMachineMenu(int syncId, Inventory playerInventory, FriendlyByteBuf buf) {
+        throw new UnsupportedOperationException("Only supported on the server");
+    }
+
+    public void registerReiTiers(String englishName, String machine, MachineRecipeType recipeType, MachineCategoryParams categoryParams, int tiers) {
+    }
+
+    public void registerReiMultiblockShape(String machine, ShapeTemplate shapeTemplate) {
     }
 }

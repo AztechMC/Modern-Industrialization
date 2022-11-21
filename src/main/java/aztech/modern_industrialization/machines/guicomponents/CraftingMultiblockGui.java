@@ -23,19 +23,10 @@
  */
 package aztech.modern_industrialization.machines.guicomponents;
 
-import aztech.modern_industrialization.MIIdentifier;
-import aztech.modern_industrialization.MIText;
 import aztech.modern_industrialization.machines.GuiComponents;
 import aztech.modern_industrialization.machines.components.CrafterComponent;
-import aztech.modern_industrialization.machines.gui.ClientComponentRenderer;
 import aztech.modern_industrialization.machines.gui.GuiComponent;
-import aztech.modern_industrialization.machines.gui.MachineScreen;
-import aztech.modern_industrialization.util.TextHelper;
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.function.Supplier;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Font;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 
@@ -107,94 +98,6 @@ public class CraftingMultiblockGui {
         @Override
         public ResourceLocation getId() {
             return GuiComponents.CRAFTING_MULTIBLOCK_GUI;
-        }
-    }
-
-    public static class Client implements GuiComponent.Client {
-        public boolean isShapeValid;
-        boolean hasActiveRecipe;
-        float progress;
-        int efficiencyTicks;
-        int maxEfficiencyTicks;
-        long currentRecipeEu;
-        long baseRecipeEu;
-
-        public Client(FriendlyByteBuf buf) {
-            readCurrentData(buf);
-        }
-
-        @Override
-        public void readCurrentData(FriendlyByteBuf buf) {
-            isShapeValid = buf.readBoolean();
-            if (isShapeValid) {
-                hasActiveRecipe = buf.readBoolean();
-                if (hasActiveRecipe) {
-                    progress = buf.readFloat();
-                    efficiencyTicks = buf.readInt();
-                    maxEfficiencyTicks = buf.readInt();
-                    currentRecipeEu = buf.readLong();
-                    baseRecipeEu = buf.readLong();
-                }
-            }
-        }
-
-        @Override
-        public ClientComponentRenderer createRenderer(MachineScreen machineScreen) {
-            return new Renderer();
-        }
-
-        public class Renderer implements ClientComponentRenderer {
-
-            private final MIIdentifier texture = new MIIdentifier("textures/gui/container/multiblock_info.png");
-
-            @Override
-            public void renderBackground(net.minecraft.client.gui.GuiComponent helper, PoseStack matrices, int x, int y) {
-
-                Minecraft minecraftClient = Minecraft.getInstance();
-                RenderSystem.setShaderTexture(0, texture);
-                net.minecraft.client.gui.GuiComponent.blit(matrices, x + X, y + Y, 0, 0, W, H, W, H);
-                Font textRenderer = minecraftClient.font;
-
-                textRenderer
-                        .draw(matrices,
-                                isShapeValid ? MIText.MultiblockShapeValid.text() : MIText.MultiblockShapeInvalid.text(),
-                                x + 9, y + 23, isShapeValid ? 0xFFFFFF : 0xFF0000);
-                if (isShapeValid) {
-                    textRenderer.draw(matrices,
-
-                            hasActiveRecipe ? MIText.MultiblockStatusActive.text() : MIText.MultiblockStatusActive.text(), x + 9, y + 34, 0xFFFFFF);
-                    if (hasActiveRecipe) {
-
-                        int deltaY = 45;
-
-                        textRenderer.draw(matrices,
-                                MIText.Progress.text(String.format("%.1f", progress * 100) + " %"),
-                                x + 9,
-                                y + deltaY, 0xFFFFFF);
-                        deltaY += 11;
-
-                        if (efficiencyTicks != 0 || maxEfficiencyTicks != 0) {
-                            textRenderer.draw(matrices,
-                                    MIText.EfficiencyTicks.text(efficiencyTicks, maxEfficiencyTicks),
-                                    x + 9,
-                                    y + deltaY, 0xFFFFFF);
-                            deltaY += 11;
-                        }
-
-                        textRenderer.draw(matrices,
-                                MIText.BaseEuRecipe.text(
-                                        TextHelper.getEuTextTick(baseRecipeEu)),
-                                x + 9, y + deltaY, 0xFFFFFF);
-                        deltaY += 11;
-
-                        textRenderer.draw(matrices,
-                                MIText.CurrentEuRecipe.text(
-                                        TextHelper.getEuTextTick(currentRecipeEu)),
-                                x + 9, y + deltaY, 0xFFFFFF);
-                    }
-                }
-            }
-
         }
     }
 

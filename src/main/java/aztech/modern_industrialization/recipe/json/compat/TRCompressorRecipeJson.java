@@ -23,7 +23,7 @@
  */
 package aztech.modern_industrialization.recipe.json.compat;
 
-import aztech.modern_industrialization.materials.MaterialHardness;
+import aztech.modern_industrialization.materials.property.MaterialHardness;
 import aztech.modern_industrialization.recipe.json.RecipeJson;
 
 @SuppressWarnings({ "unused", "FieldCanBeLocal" })

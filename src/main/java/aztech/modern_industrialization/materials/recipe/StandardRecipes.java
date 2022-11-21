@@ -24,6 +24,8 @@
 package aztech.modern_industrialization.materials.recipe;
 
 import static aztech.modern_industrialization.materials.part.MIParts.*;
+import static aztech.modern_industrialization.materials.property.MaterialProperty.HARDNESS;
+import static aztech.modern_industrialization.materials.property.MaterialProperty.MAIN_PART;
 
 import aztech.modern_industrialization.MIFluids;
 import aztech.modern_industrialization.MIItem;
@@ -46,7 +48,7 @@ public final class StandardRecipes {
         // CRAFTING
         add3By3Crafting(ctx, TINY_DUST, DUST, true);
         add3By3Crafting(ctx, NUGGET, INGOT, true);
-        add3By3Crafting(ctx, ctx.getMainPart(), BLOCK, false); // Not in packer due to conflicts with double ingots.
+        add3By3Crafting(ctx, ctx.get(MAIN_PART), BLOCK, false); // Not in packer due to conflicts with double ingots.
         add3By3Crafting(ctx, RAW_METAL, RAW_METAL_BLOCK, true);
 
         new ShapedRecipeBuilder(ctx, BLADE, 4, "blade", "P", "P", "I").addTaggedPart('P', CURVED_PLATE).addTaggedPart('I', ROD)
@@ -92,8 +94,8 @@ public final class StandardRecipes {
         addMaceratorRecycling(ctx, BOLT, 2);
         addMaceratorRecycling(ctx, ROD, 4);
         addMaceratorRecycling(ctx, ROTOR, 27);
-        if (!ctx.getMainPart().equals(DUST)) {
-            addMaceratorRecycling(ctx, ctx.getMainPart(), 9);
+        if (!ctx.get(MAIN_PART).equals(DUST)) {
+            addMaceratorRecycling(ctx, ctx.get(MAIN_PART), 9);
         }
         addMaceratorRecycling(ctx, BLADE, 5);
         addMaceratorRecycling(ctx, DRILL_HEAD, 7 * 9 + 4);
@@ -102,23 +104,23 @@ public final class StandardRecipes {
         new MIRecipeBuilder(ctx, MIMachineRecipeTypes.MACERATOR, "ore_to_crushed").addTaggedPartInput(ORE, 1).addPartOutput(CRUSHED_DUST, 3);
         new MIRecipeBuilder(ctx, MIMachineRecipeTypes.MACERATOR, "ore_to_raw").addTaggedPartInput(ORE, 1).addPartOutput(RAW_METAL, 3);
 
-        new MIRecipeBuilder(ctx, MIMachineRecipeTypes.MACERATOR, "crushed_dust", 2, (int) (100 * ctx.getHardness().timeFactor))
+        new MIRecipeBuilder(ctx, MIMachineRecipeTypes.MACERATOR, "crushed_dust", 2, (int) (100 * ctx.get(HARDNESS).timeFactor))
                 .addTaggedPartInput(CRUSHED_DUST, 1)
                 .addPartOutput(DUST, 1).addPartOutput(DUST, 1, 0.5);
-        new MIRecipeBuilder(ctx, MIMachineRecipeTypes.MACERATOR, "raw_metal", 2, (int) (100 * ctx.getHardness().timeFactor))
+        new MIRecipeBuilder(ctx, MIMachineRecipeTypes.MACERATOR, "raw_metal", 2, (int) (100 * ctx.get(HARDNESS).timeFactor))
                 .addTaggedPartInput(RAW_METAL, 1)
                 .addPartOutput(DUST, 1).addPartOutput(DUST, 1, 0.5);
         // COMPRESSOR
-        new MIRecipeBuilder(ctx, MIMachineRecipeTypes.COMPRESSOR, "main").addTaggedPartInput(ctx.getMainPart(), 1).addPartOutput(PLATE, 1);
+        new MIRecipeBuilder(ctx, MIMachineRecipeTypes.COMPRESSOR, "main").addTaggedPartInput(ctx.get(MAIN_PART), 1).addPartOutput(PLATE, 1);
         new MIRecipeBuilder(ctx, MIMachineRecipeTypes.COMPRESSOR, "plate").addTaggedPartInput(PLATE, 1).addPartOutput(CURVED_PLATE, 1);
         new MIRecipeBuilder(ctx, MIMachineRecipeTypes.COMPRESSOR, "double_ingot").addTaggedPartInput(DOUBLE_INGOT, 1).addPartOutput(PLATE, 2);
         new MIRecipeBuilder(ctx, MIMachineRecipeTypes.COMPRESSOR, "ring").addTaggedPartInput(ROD, 1).addPartOutput(RING, 1);
         // CUTTING MACHINE
-        addCuttingMachine(ctx, "main", ctx.getMainPart(), ROD, 2);
+        addCuttingMachine(ctx, "main", ctx.get(MAIN_PART), ROD, 2);
         addCuttingMachine(ctx, "double_ingot", DOUBLE_INGOT, ROD, 4);
         addCuttingMachine(ctx, "rod", ROD, BOLT, 2);
         // PACKER
-        new MIRecipeBuilder(ctx, MIMachineRecipeTypes.PACKER, "block").addTaggedPartInput(ctx.getMainPart(), 9)
+        new MIRecipeBuilder(ctx, MIMachineRecipeTypes.PACKER, "block").addTaggedPartInput(ctx.get(MAIN_PART), 9)
                 .addItemInput(MIItem.PACKER_BLOCK_TEMPLATE, 1, 0.0).addPartOutput(BLOCK, 1);
         new MIRecipeBuilder(ctx, MIMachineRecipeTypes.PACKER, "double_ingot").addTaggedPartInput(INGOT, 2)
                 .addItemInput(MIItem.PACKER_DOUBLE_INGOT_TEMPLATE, 1, 0.0).addPartOutput(DOUBLE_INGOT, 1);

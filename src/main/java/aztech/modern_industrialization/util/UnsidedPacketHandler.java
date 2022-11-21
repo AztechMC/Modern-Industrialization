@@ -23,15 +23,7 @@
  */
 package aztech.modern_industrialization.util;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.networking.v1.PacketSender;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.server.network.ServerGamePacketListenerImpl;
 import net.minecraft.world.entity.player.Player;
 
 /**
@@ -39,14 +31,4 @@ import net.minecraft.world.entity.player.Player;
  */
 public interface UnsidedPacketHandler {
     Runnable handlePacket(Player player, FriendlyByteBuf buf);
-
-    default void handleC2S(MinecraftServer server, ServerPlayer player, ServerGamePacketListenerImpl handler, FriendlyByteBuf buf,
-            PacketSender responseSender) {
-        server.execute(handlePacket(player, buf));
-    }
-
-    @Environment(EnvType.CLIENT)
-    default void handleS2C(Minecraft client, ClientPacketListener handler, FriendlyByteBuf buf, PacketSender responseSender) {
-        client.execute(handlePacket(client.player, buf));
-    }
 }

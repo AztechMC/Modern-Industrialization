@@ -77,7 +77,7 @@ public class TankPart extends UnbuildablePart<Long> {
         long capacity = FluidConstants.BUCKET * bucketCapacity;
 
         return new RegularPart(englishNameFormatter, key)
-                .asBlock(SortOrder.TANKS)
+                .asBlock(SortOrder.TANKS, new TextureGenParams.SimpleRecoloredBlock())
                 .withRegister((partContext, part, itemPath, itemId, itemTag) -> {
 
                     StorageBehaviour<FluidVariant> tankStorageBehaviour = StorageBehaviour.uniformQuantity(capacity);

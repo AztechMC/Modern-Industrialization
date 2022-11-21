@@ -24,6 +24,7 @@
 package aztech.modern_industrialization.materials.recipe;
 
 import static aztech.modern_industrialization.materials.part.MIParts.*;
+import static aztech.modern_industrialization.materials.property.MaterialProperty.HARDNESS;
 
 import aztech.modern_industrialization.machines.init.MIMachineRecipeTypes;
 import aztech.modern_industrialization.materials.MaterialBuilder;
@@ -84,7 +85,7 @@ public class ForgeHammerRecipes {
 
         String recipeName = inputPart.key + "_to_" + outputPart.key + ((cost == 0) ? "" : "_with_tool");
 
-        new MIRecipeBuilder(ctx, MIMachineRecipeTypes.FORGE_HAMMER, recipeName, (int) ((cost) * ctx.getHardness().timeFactor),
+        new MIRecipeBuilder(ctx, MIMachineRecipeTypes.FORGE_HAMMER, recipeName, (int) ((cost) * ctx.get(HARDNESS).timeFactor),
                 0).addTaggedPartInput(inputPart, inputCount).addPartOutput(outputPart, outputCount);
     }
 

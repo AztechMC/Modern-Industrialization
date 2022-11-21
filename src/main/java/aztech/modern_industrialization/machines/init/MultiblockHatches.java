@@ -36,12 +36,9 @@ import aztech.modern_industrialization.machines.blockentities.hatches.NuclearHat
 import aztech.modern_industrialization.machines.gui.MachineGuiParameters;
 import aztech.modern_industrialization.machines.models.MachineCasing;
 import aztech.modern_industrialization.machines.models.MachineCasings;
-import aztech.modern_industrialization.machines.models.MachineModels;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.loader.api.FabricLoader;
 
 public class MultiblockHatches {
     public static void init() {
@@ -69,10 +66,8 @@ public class MultiblockHatches {
         MachineRegistrationHelper.registerMachine("Nuclear Fluid Hatch", "nuclear_fluid_hatch", bet -> new NuclearHatch(bet, true),
                 NuclearHatch::registerFluidApi);
 
-        if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
-            MachineModels.addTieredMachine("nuclear_item_hatch", "hatch_nuclear", MachineCasings.NUCLEAR, false, true, false, false);
-            MachineModels.addTieredMachine("nuclear_fluid_hatch", "hatch_nuclear", MachineCasings.NUCLEAR, false, true, false, false);
-        }
+        MachineRegistrationHelper.addMachineModel("nuclear_item_hatch", "hatch_nuclear", MachineCasings.NUCLEAR, false, true, false, false);
+        MachineRegistrationHelper.addMachineModel("nuclear_fluid_hatch", "hatch_nuclear", MachineCasings.NUCLEAR, false, true, false, false);
     }
 
     private static void registerItemHatches(
@@ -94,9 +89,7 @@ public class MultiblockHatches {
                         new SlotPositions.Builder().addSlots(xStart, yStart, rows, columns).build(), SlotPositions.empty());
                 return new ItemHatch(bet, new MachineGuiParameters.Builder(machine, true).build(), input, !prefix.equals("bronze"), inventory);
             }, MachineBlockEntity::registerItemApi);
-            if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
-                MachineModels.addTieredMachine(machine, "hatch_item", casing, true, false, true, false);
-            }
+            MachineRegistrationHelper.addMachineModel(machine, "hatch_item", casing, true, false, true, false);
         }
     }
 
@@ -116,9 +109,7 @@ public class MultiblockHatches {
                         new SlotPositions.Builder().addSlot(FLUID_HATCH_SLOT_X, FLUID_HATCH_SLOT_Y).build());
                 return new FluidHatch(bet, new MachineGuiParameters.Builder(machine, true).build(), input, !prefix.equals("bronze"), inventory);
             }, MachineBlockEntity::registerFluidApi);
-            if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
-                MachineModels.addTieredMachine(machine, "hatch_fluid", casing, true, false, true, false);
-            }
+            MachineRegistrationHelper.addMachineModel(machine, "hatch_fluid", casing, true, false, true, false);
         }
     }
 
@@ -129,9 +120,7 @@ public class MultiblockHatches {
             String englishName = tier.englishName + " Energy" + (input ? " Input" : " Output") + " Hatch";
             MachineRegistrationHelper.registerMachine(englishName, machine, bet -> new EnergyHatch(bet, machine, input, tier),
                     EnergyHatch::registerEnergyApi);
-            if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
-                MachineModels.addTieredMachine(machine, "hatch_energy", MachineCasings.casingFromCableTier(tier), true, false, true, false);
-            }
+            MachineRegistrationHelper.addMachineModel(machine, "hatch_energy", MachineCasings.casingFromCableTier(tier), true, false, true, false);
         }
     }
 }

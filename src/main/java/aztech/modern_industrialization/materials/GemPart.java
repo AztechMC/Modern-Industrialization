@@ -25,9 +25,6 @@ package aztech.modern_industrialization.materials;
 
 import aztech.modern_industrialization.datagen.tag.TagsToGenerate;
 import aztech.modern_industrialization.materials.part.*;
-import aztech.modern_industrialization.textures.TextureHelper;
-import com.mojang.blaze3d.platform.NativeImage;
-import java.io.IOException;
 
 public class GemPart extends Part implements BuildablePart {
 
@@ -46,17 +43,7 @@ public class GemPart extends Part implements BuildablePart {
             var item = RegularPart.createSimpleItem(partContext.getEnglishName(), itemPath, partContext, part);
             TagsToGenerate.generateTag("c:" + itemPath, item.asItem());
         })
-                .withTextureRegister((mtm, partContext, part, itemPath) -> {
-                    String template = String.format("modern_industrialization:textures/materialsets/gems/%s.png", partContext.getMaterialName());
-                    try {
-                        NativeImage image = mtm.getAssetAsTexture(template);
-                        TextureHelper.colorize(image, partContext.getColoramp());
-                        String texturePath = String.format("modern_industrialization:textures/item/%s.png", itemPath);
-                        mtm.addTexture(texturePath, image);
-                        image.close();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }).withCustomFormattablePath("%s", "%s").build(ctx);
+                .withTexture(new TextureGenParams.Gem())
+                .withCustomFormattablePath("%s", "%s").build(ctx);
     }
 }

@@ -24,56 +24,40 @@
 package aztech.modern_industrialization.materials;
 
 import aztech.modern_industrialization.materials.part.BuildablePart;
-import aztech.modern_industrialization.materials.part.MIParts;
 import aztech.modern_industrialization.materials.part.MaterialPart;
 import aztech.modern_industrialization.materials.part.Part;
+import aztech.modern_industrialization.materials.property.MaterialProperty;
 import aztech.modern_industrialization.materials.recipe.builder.MaterialRecipeBuilder;
-import aztech.modern_industrialization.materials.set.MaterialSet;
-import aztech.modern_industrialization.textures.coloramp.Coloramp;
-import aztech.modern_industrialization.textures.coloramp.DefaultColoramp;
 import java.util.*;
 import java.util.function.Consumer;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.data.recipes.FinishedRecipe;
 
 public final class MaterialBuilder {
 
     private final Map<String, MaterialPart> partsMap = new TreeMap<>();
+    private final Map<MaterialProperty<?>, Object> properties = new IdentityHashMap<>();
     private final PartContext partContext = new PartContext();
     private final String englishName;
     private final String materialName;
-    private final String materialSet;
-    private final Coloramp coloramp;
-    private final Part mainPart;
-    private final MaterialHardness hardness;
 
     private final Queue<RecipeAction> recipesActions = new LinkedList<>();
 
-    public MaterialBuilder(String englishName, String materialName, MaterialSet materialSet, Part mainPart, Coloramp coloramp,
-            MaterialHardness hardness) {
+    public MaterialBuilder(String englishName, String materialName) {
         this.englishName = englishName;
         this.materialName = materialName;
-        this.materialSet = materialSet.name;
-        this.coloramp = coloramp;
-        this.mainPart = mainPart;
-        this.hardness = hardness;
-    }
 
-    public MaterialBuilder(String englishName, String materialName, MaterialSet materialSet, Part mainPart, int color, MaterialHardness hardness) {
-        this(englishName, materialName, materialSet, mainPart, new DefaultColoramp(color), hardness);
-    }
-
-    public MaterialBuilder(String englishName, String materialName, MaterialSet materialSet, Coloramp coloramp, MaterialHardness hardness) {
-        this(englishName, materialName, materialSet, MIParts.INGOT, coloramp, hardness);
-    }
-
-    public MaterialBuilder(String englishName, String materialName, MaterialSet materialSet, int color, MaterialHardness hardness) {
-        this(englishName, materialName, materialSet, MIParts.INGOT, new DefaultColoramp(color), hardness);
+        for (var prop : MaterialProperty.PROPERTIES) {
+            properties.put(prop, prop.defaultValue);
+        }
     }
 
     public String getMaterialName() {
         return materialName;
+    }
+
+    public <T> MaterialBuilder set(MaterialProperty<T> prop, T value) {
+        this.properties.put(prop, value);
+        return this;
     }
 
     public MaterialBuilder addParts(BuildablePart... parts) {
@@ -150,16 +134,13 @@ public final class MaterialBuilder {
         var context = new PartContext();
         for (MaterialPart part : partsMap.values()) {
             part.register(context);
-            if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
-                part.registerClient();
-            }
         }
 
         for (RegisteringEvent event : events) {
             event.onRegister(context);
         }
 
-        return new Material(materialName, hardness, Collections.unmodifiableMap(partsMap), this::buildRecipes);
+        return new Material(materialName, properties, Collections.unmodifiableMap(partsMap), this::buildRecipes);
     }
 
     public void buildRecipes(Consumer<FinishedRecipe> consumer) {
@@ -176,20 +157,8 @@ public final class MaterialBuilder {
 
     public class PartContext {
 
-        public Coloramp getColoramp() {
-            return coloramp;
-        }
-
         public String getMaterialName() {
             return materialName;
-        }
-
-        public String getMaterialSet() {
-            return materialSet;
-        }
-
-        public Part getMainPart() {
-            return mainPart;
         }
 
         public String getEnglishName() {
@@ -198,6 +167,10 @@ public final class MaterialBuilder {
 
         public MaterialPart getMaterialPart(Part part) {
             return partsMap.get(part.key);
+        }
+
+        public <T> T get(MaterialProperty<T> prop) {
+            return (T) properties.get(prop);
         }
     }
 
@@ -234,12 +207,8 @@ public final class MaterialBuilder {
             return materialName;
         }
 
-        public Part getMainPart() {
-            return mainPart;
-        }
-
-        public MaterialHardness getHardness() {
-            return hardness;
+        public <T> T get(MaterialProperty<T> prop) {
+            return (T) properties.get(prop);
         }
     }
 

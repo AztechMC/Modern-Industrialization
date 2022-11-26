@@ -21,35 +21,42 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package aztech.modern_industrialization.compat.kubejs;
+package aztech.modern_industrialization;
 
-import aztech.modern_industrialization.MIStartup;
-import aztech.modern_industrialization.compat.kubejs.event.MIMaterialKubeJSEvents;
-import aztech.modern_industrialization.compat.kubejs.recipe.MachineRecipeJS;
-import aztech.modern_industrialization.machines.init.MIMachineRecipeTypes;
-import dev.latvian.mods.kubejs.KubeJSPlugin;
-import dev.latvian.mods.kubejs.recipe.*;
+import net.fabricmc.api.ModInitializer;
+import net.fabricmc.loader.api.FabricLoader;
 
-public class MIKubeJSPlugin extends KubeJSPlugin {
-    @Override
-    public void init() {
-    }
+/**
+ * Class to work around Fabric not allowing ordering between loaded mods.
+ * If KubeJS is loaded and the integration is enabled, we only init MI from the KubeJS plugin.
+ */
+public class MIStartup implements ModInitializer {
+    private static boolean initialized = false;
 
-    @Override
-    public void registerEvents() {
-        MIMaterialKubeJSEvents.EVENT_GROUP.register();
-    }
-
-    @Override
-    public void initStartup() {
-        KubeJSFacade.instance = new LoadedKubeJSFacade();
-        MIStartup.onKubejsPluginLoaded();
-    }
-
-    @Override
-    public void registerRecipeTypes(RegisterRecipeTypesEvent event) {
-        for (var mrt : MIMachineRecipeTypes.getRecipeTypes()) {
-            event.register(mrt.getId(), MachineRecipeJS::new);
+    private static void initialize() {
+        if (initialized) {
+            throw new IllegalStateException("MIStartup#initialize should only be called once");
         }
+
+        initialized = true;
+        ModernIndustrialization.initialize();
+    }
+
+    @Override
+    public void onInitialize() {
+        if (!FabricLoader.getInstance().isModLoaded("kubejs")) {
+            initialize();
+        }
+    }
+
+    public static void onClientStartup() {
+        // Sanity check
+        if (!initialized) {
+            throw new IllegalStateException("MI client init is called but MI hasn't been initialized yet?");
+        }
+    }
+
+    public static void onKubejsPluginLoaded() {
+        initialize();
     }
 }

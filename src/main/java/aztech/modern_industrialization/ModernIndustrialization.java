@@ -46,7 +46,6 @@ import aztech.modern_industrialization.pipes.MIPipes;
 import aztech.modern_industrialization.proxy.CommonProxy;
 import java.util.Comparator;
 import java.util.Map;
-import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.client.itemgroup.FabricItemGroupBuilder;
 import net.fabricmc.fabric.api.entity.event.v1.ServerEntityWorldChangeEvents;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
@@ -69,7 +68,7 @@ import net.minecraft.world.level.material.MaterialColor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class ModernIndustrialization implements ModInitializer {
+public class ModernIndustrialization {
 
     public static final String MOD_ID = "modern_industrialization";
     public static final Logger LOGGER = LogManager.getLogger("Modern Industrialization");
@@ -87,11 +86,7 @@ public class ModernIndustrialization implements ModInitializer {
     public static final MenuType<ForgeHammerScreenHandler> SCREEN_HANDLER_FORGE_HAMMER = ScreenHandlerRegistry
             .registerSimple(new MIIdentifier("forge_hammer"), ForgeHammerScreenHandler::new);
 
-    @Override
-    public void onInitialize() {
-        // This code runs as soon as Minecraft is in a mod-load-ready state.
-        // However, some things (like resources) may still be uninitialized.
-        // Proceed with mild caution.
+    public static void initialize() {
         MIMaterials.init();
         MIMachineRecipeTypes.init();
         SingleBlockCraftingMachines.init();
@@ -128,21 +123,21 @@ public class ModernIndustrialization implements ModInitializer {
         LOGGER.info("Modern Industrialization setup done!");
     }
 
-    private void setupItems() {
+    private static void setupItems() {
         MIItem.ITEMS.entrySet().stream().sorted(Comparator.comparing(e -> e.getValue().sortOrder)).forEach(entry -> {
             Registry.register(Registry.ITEM, entry.getKey(), entry.getValue().asItem());
             entry.getValue().onRegister();
         });
     }
 
-    private void setupBlocks() {
+    private static void setupBlocks() {
         for (Map.Entry<ResourceLocation, BlockDefinition<?>> entry : MIBlock.BLOCKS.entrySet()) {
             Registry.register(Registry.BLOCK, entry.getKey(), entry.getValue().asBlock());
             entry.getValue().onRegister();
         }
     }
 
-    private void setupFluids() {
+    private static void setupFluids() {
         for (Map.Entry<ResourceLocation, FluidDefinition> entry : MIFluids.FLUIDS.entrySet()) {
             Registry.register(Registry.BLOCK, entry.getKey(), entry.getValue().fluidBlock);
             Registry.register(Registry.FLUID, entry.getKey(), entry.getValue().asFluid());
@@ -153,7 +148,7 @@ public class ModernIndustrialization implements ModInitializer {
         }
     }
 
-    private void setupPackets() {
+    private static void setupPackets() {
         ServerPlayNetworking.registerGlobalReceiver(ConfigurableInventoryPackets.SET_LOCKING_MODE,
                 ConfigurableInventoryPacketHandlers.C2S.SET_LOCKING_MODE);
         ServerPlayNetworking.registerGlobalReceiver(ConfigurableInventoryPackets.DO_SLOT_DRAGGING,
@@ -175,7 +170,7 @@ public class ModernIndustrialization implements ModInitializer {
         FuelRegistry.INSTANCE.add(item, burnTicks);
     }
 
-    private void setupFuels() {
+    private static void setupFuels() {
         addFuel("coke", 6400);
         addFuel("coke_dust", 6400);
         addFuel("coke_block", Short.MAX_VALUE); // F*** YOU VANILLA ! (Should be 6400*9 but it overflows ...)
@@ -205,7 +200,7 @@ public class ModernIndustrialization implements ModInitializer {
         FluidFuelRegistry.register(MIFluids.BOOSTED_DIESEL, 800);
     }
 
-    private void setupWrench() {
+    private static void setupWrench() {
         UseBlockCallback.EVENT.register((player, world, hand, hitResult) -> {
             if (player.isSpectator() || !world.mayInteract(player, hitResult.getBlockPos())) {
                 return InteractionResult.PASS;

@@ -73,6 +73,8 @@ import net.minecraft.world.item.Item;
 public class ModernIndustrializationClient implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
+        MIStartup.onClientStartup();
+
         setupScreens();
         MIFluidsRender.setupFluidRenders();
         RenderHelper.setupRenderHelper();

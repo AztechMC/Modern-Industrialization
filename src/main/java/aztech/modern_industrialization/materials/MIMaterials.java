@@ -29,6 +29,7 @@ import static aztech.modern_industrialization.materials.set.MaterialSet.*;
 
 import aztech.modern_industrialization.MIItem;
 import aztech.modern_industrialization.api.energy.CableTier;
+import aztech.modern_industrialization.compat.kubejs.KubeJSFacade;
 import aztech.modern_industrialization.machines.init.MIMachineRecipeTypes;
 import aztech.modern_industrialization.materials.part.ExternalPart;
 import aztech.modern_industrialization.materials.part.MIItemPart;
@@ -741,6 +742,7 @@ public class MIMaterials {
                         .set(MaterialProperty.HARDNESS, SOFT).addParts(DUST, TINY_DUST)
                 .addParts(BLOCK.of(MaterialBlockSet.REDSTONE)).addRecipes(StandardRecipes::apply));
 
+        KubeJSFacade.instance.fireAddMaterialsEvent();
     }
 
 }

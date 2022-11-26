@@ -5,7 +5,7 @@
   "item_inputs": {
     "item": "modern_industrialization:gold_drill",
     "amount": 1,
-    "probability": 0.025
+    "probability": 0.1
   },
   "item_outputs": [
     {
@@ -29,8 +29,8 @@
     },
     {
       "item": "minecraft:magma_block",
-      "amount": 10,
-      "probability": 0.05
+      "amount": 5,
+      "probability": 0.1
     },
     {
       "item": "minecraft:soul_sand",
@@ -40,13 +40,13 @@
     {
       "item": "minecraft:ancient_debris",
       "amount": 1,
-      "probability": 0.01
+      "probability": 0.05
     },
 
     {
       "item": "minecraft:glowstone",
-      "amount": 12,
-      "probability": 0.05
+      "amount": 4,
+      "probability": 0.15
     },
     {
       "item": "minecraft:nether_quartz_ore",
@@ -55,8 +55,8 @@
     },
     {
       "item": "minecraft:nether_gold_ore",
-      "amount": 5,
-      "probability": 0.05
+      "amount": 1,
+      "probability": 0.25
     }
   ]
 }

@@ -5,28 +5,28 @@
   "item_inputs": {
     "item": "modern_industrialization:stainless_steel_drill",
     "amount": 1,
-    "probability": 0.01
+    "probability": 0.04
   },
   "item_outputs": [
     {
       "item": "modern_industrialization:titanium_ore",
-      "amount": 10,
-      "probability": 0.015
+      "amount": 1,
+      "probability": 0.15
     },
     {
       "item": "modern_industrialization:tungsten_ore",
-      "amount": 5,
-      "probability": 0.02
+      "amount": 1,
+      "probability": 0.2
     },
     {
       "item": "modern_industrialization:mozanite_ore",
-      "amount": 5,
-      "probability": 0.05
+      "amount": 1,
+      "probability": 0.25
     },
     {
       "item": "modern_industrialization:platinum_ore",
-      "amount": 4,
-      "probability": 0.03
+      "amount": 1,
+      "probability": 0.12
     }
   ]
 }
